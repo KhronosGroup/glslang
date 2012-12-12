@@ -41,16 +41,16 @@
 /* Based on:
 ANSI C Yacc grammar
 
-In 1985, Jeff Lee published his Yacc grammar (which is accompanied by a 
-matching Lex specification) for the April 30, 1985 draft version of the 
+In 1985, Jeff Lee published his Yacc grammar (which is accompanied by a
+matching Lex specification) for the April 30, 1985 draft version of the
 ANSI C standard.  Tom Stockfisch reposted it to net.sources in 1987; that
 original, as mentioned in the answer to question 17.25 of the comp.lang.c
 FAQ, can be ftp'ed from ftp.uu.net, file usenet/net.sources/ansi.c.grammar.Z.
- 
-I intend to keep this version as close to the current C Standard grammar as 
-possible; please let me know if you discover discrepancies. 
 
-Jutta Degener, 1995 
+I intend to keep this version as close to the current C Standard grammar as
+possible; please let me know if you discover discrepancies.
+
+Jutta Degener, 1995
 */
 
 #include "SymbolTable.h"
@@ -67,52 +67,23 @@ Jutta Degener, 1995
     #define parseContext (*((TParseContext*)(parseContextLocal)))
     #define YY_DECL int yylex(YYSTYPE* pyylval, void* parseContextLocal)
     #define YYLEX_PARAM (void*)(parseContextLocal)
-    extern void yyerror(char*);    
+    extern void yyerror(char*);
 #endif
-
-#define FRAG_VERT_ONLY(S, L) {                                                  \
-    if (parseContext.language != EShLangFragment &&                             \
-        parseContext.language != EShLangVertex) {                               \
-        parseContext.error(L, " supported in vertex/fragment shaders only ", S, "", "");   \
-        parseContext.recover();                                                            \
-    }                                                                           \
-}
 
 #define VERTEX_ONLY(S, L) {                                                     \
     if (parseContext.language != EShLangVertex) {                               \
-        parseContext.error(L, " supported in vertex shaders only ", S, "", "");            \
-        parseContext.recover();                                                            \
+        parseContext.error(L, " supported in vertex shaders only ", S, "", ""); \
+        parseContext.recover();                                                 \
     }                                                                           \
 }
 
-#define FRAG_ONLY(S, L) {                                                       \
-    if (parseContext.language != EShLangFragment) {                             \
-        parseContext.error(L, " supported in fragment shaders only ", S, "", "");          \
-        parseContext.recover();                                                            \
-    }                                                                           \
+#define FRAG_ONLY(S, L) {                                                        \
+    if (parseContext.language != EShLangFragment) {                              \
+        parseContext.error(L, " supported in fragment shaders only ", S, "", "");\
+        parseContext.recover();                                                  \
+    }                                                                            \
 }
 
-#define PACK_ONLY(S, L) {                                                       \
-    if (parseContext.language != EShLangPack) {                                 \
-        parseContext.error(L, " supported in pack shaders only ", S, "", "");              \
-        parseContext.recover();                                                            \
-    }                                                                           \
-}
-
-#define UNPACK_ONLY(S, L) {                                                     \
-    if (parseContext.language != EShLangUnpack) {                               \
-        parseContext.error(L, " supported in unpack shaders only ", S, "", "");            \
-        parseContext.recover();                                                            \
-    }                                                                           \
-}
-
-#define PACK_UNPACK_ONLY(S, L) {                                                \
-    if (parseContext.language != EShLangUnpack &&                               \
-        parseContext.language != EShLangPack) {                                 \
-        parseContext.error(L, " supported in pack/unpack shaders only ", S, "", "");       \
-        parseContext.recover();                                                            \
-    }                                                                           \
-}
 %}
 %union {
     struct {
@@ -153,16 +124,52 @@ Jutta Degener, 1995
 
 %pure_parser /* Just in case is called from multiple threads */
 %expect 1 /* One shift reduce conflict because of if | else */
-%token <lex> ATTRIBUTE CONST_QUAL BOOL_TYPE FLOAT_TYPE INT_TYPE
-%token <lex> BREAK CONTINUE DO ELSE FOR IF DISCARD RETURN
-%token <lex> BVEC2 BVEC3 BVEC4 IVEC2 IVEC3 IVEC4 VEC2 VEC3 VEC4
-%token <lex> MATRIX2 MATRIX3 MATRIX4 IN_QUAL OUT_QUAL INOUT_QUAL UNIFORM VARYING
-%token <lex> STRUCT VOID_TYPE WHILE
+
+%token <lex> ATTRIBUTE VARYING
+%token <lex> CONST BOOL FLOAT DOUBLE INT UINT
+%token <lex> BREAK CONTINUE DO ELSE FOR IF DISCARD RETURN SWITCH CASE DEFAULT SUBROUTINE
+%token <lex> BVEC2 BVEC3 BVEC4 IVEC2 IVEC3 IVEC4 UVEC2 UVEC3 UVEC4 VEC2 VEC3 VEC4
+%token <lex> MAT2 MAT3 MAT4 CENTROID IN OUT INOUT 
+%token <lex> UNIFORM PATCH SAMPLE
+%token <lex> COHERENT VOLATILE RESTRICT READONLY WRITEONLY
+%token <lex> DVEC2 DVEC3 DVEC4 DMAT2 DMAT3 DMAT4
+%token <lex> NOPERSPECTIVE FLAT SMOOTH LAYOUT
+
+%token <lex> MAT2X2 MAT2X3 MAT2X4
+%token <lex> MAT3X2 MAT3X3 MAT3X4
+%token <lex> MAT4X2 MAT4X3 MAT4X4
+%token <lex> DMAT2X2 DMAT2X3 DMAT2X4
+%token <lex> DMAT3X2 DMAT3X3 DMAT3X4
+%token <lex> DMAT4X2 DMAT4X3 DMAT4X4
+%token <lex> ATOMIC_UINT
+
 %token <lex> SAMPLER1D SAMPLER2D SAMPLER3D SAMPLERCUBE SAMPLER1DSHADOW SAMPLER2DSHADOW
+%token <lex> SAMPLERCUBESHADOW SAMPLER1DARRAY SAMPLER2DARRAY SAMPLER1DARRAYSHADOW
+%token <lex> SAMPLER2DARRAYSHADOW ISAMPLER1D ISAMPLER2D ISAMPLER3D ISAMPLERCUBE
+%token <lex> ISAMPLER1DARRAY ISAMPLER2DARRAY USAMPLER1D USAMPLER2D USAMPLER3D
+%token <lex> USAMPLERCUBE USAMPLER1DARRAY USAMPLER2DARRAY
+%token <lex> SAMPLER2DRECT SAMPLER2DRECTSHADOW ISAMPLER2DRECT USAMPLER2DRECT
+%token <lex> SAMPLERBUFFER ISAMPLERBUFFER USAMPLERBUFFER
+%token <lex> SAMPLERCUBEARRAY SAMPLERCUBEARRAYSHADOW
+%token <lex> ISAMPLERCUBEARRAY USAMPLERCUBEARRAY
+%token <lex> SAMPLER2DMS ISAMPLER2DMS USAMPLER2DMS
+%token <lex> SAMPLER2DMSARRAY ISAMPLER2DMSARRAY USAMPLER2DMSARRAY
 
-%token <lex> SAMPLERRECTARB SAMPLERRECTSHADOWARB // ARB_texture_rectangle
+%token <lex> IMAGE1D IIMAGE1D UIMAGE1D IMAGE2D IIMAGE2D 
+%token <lex> UIMAGE2D IMAGE3D IIMAGE3D UIMAGE3D
+%token <lex> IMAGE2DRECT IIMAGE2DRECT UIMAGE2DRECT 
+%token <lex> IMAGECUBE IIMAGECUBE UIMAGECUBE
+%token <lex> IMAGEBUFFER IIMAGEBUFFER UIMAGEBUFFER
+%token <lex> IMAGE1DARRAY IIMAGE1DARRAY UIMAGE1DARRAY 
+%token <lex> IMAGE2DARRAY IIMAGE2DARRAY UIMAGE2DARRAY
+%token <lex> IMAGECUBEARRAY IIMAGECUBEARRAY UIMAGECUBEARRAY
+%token <lex> IMAGE2DMS IIMAGE2DMS UIMAGE2DMS 
+%token <lex> IMAGE2DMSARRAY IIMAGE2DMSARRAY UIMAGE2DMSARRAY
 
-%token <lex> IDENTIFIER TYPE_NAME FLOATCONSTANT INTCONSTANT BOOLCONSTANT
+%token <lex> STRUCT VOID WHILE
+
+%token <lex> IDENTIFIER TYPE_NAME 
+%token <lex> FLOATCONSTANT DOUBLECONSTANT INTCONSTANT UINTCONSTANT BOOLCONSTANT
 %token <lex> FIELD_SELECTION
 %token <lex> LEFT_OP RIGHT_OP
 %token <lex> INC_OP DEC_OP LE_OP GE_OP EQ_OP NE_OP
@@ -174,20 +181,24 @@ Jutta Degener, 1995
 %token <lex> COMMA COLON EQUAL SEMICOLON BANG DASH TILDE PLUS STAR SLASH PERCENT
 %token <lex> LEFT_ANGLE RIGHT_ANGLE VERTICAL_BAR CARET AMPERSAND QUESTION
 
+%token <lex> INVARIANT PRECISE
+%token <lex> HIGH_PRECISION MEDIUM_PRECISION LOW_PRECISION PRECISION
+
 %type <interm> assignment_operator unary_operator
 %type <interm.intermTypedNode> variable_identifier primary_expression postfix_expression
 %type <interm.intermTypedNode> expression integer_expression assignment_expression
 %type <interm.intermTypedNode> unary_expression multiplicative_expression additive_expression
-%type <interm.intermTypedNode> relational_expression equality_expression 
+%type <interm.intermTypedNode> relational_expression equality_expression
 %type <interm.intermTypedNode> conditional_expression constant_expression
 %type <interm.intermTypedNode> logical_or_expression logical_xor_expression logical_and_expression
 %type <interm.intermTypedNode> shift_expression and_expression exclusive_or_expression inclusive_or_expression
-%type <interm.intermTypedNode> function_call initializer condition conditionopt
+%type <interm.intermTypedNode> function_call initializer initializer_list condition conditionopt
 
 %type <interm.intermNode> translation_unit function_definition
 %type <interm.intermNode> statement simple_statement
-%type <interm.intermAggregate>  statement_list compound_statement 
+%type <interm.intermAggregate>  statement_list compound_statement
 %type <interm.intermNode> declaration_statement selection_statement expression_statement
+%type <interm.intermNode> switch_statement case_label switch_statement_list
 %type <interm.intermNode> declaration external_declaration
 %type <interm.intermNode> for_init_statement compound_statement_no_new_scope
 %type <interm.nodePair> selection_rest_statement for_rest_statement
@@ -195,35 +206,34 @@ Jutta Degener, 1995
 %type <interm> single_declaration init_declarator_list
 
 %type <interm> parameter_declaration parameter_declarator parameter_type_specifier
-%type <interm.qualifier> parameter_qualifier
 
-%type <interm.type> type_qualifier fully_specified_type type_specifier 
+%type <interm.type> precise_qualifier invariant_qualifier interpolation_qualifier storage_qualifier precision_qualifier
+%type <interm.type> layout_qualifier layout_qualifier_id_list
+
+%type <interm.type> type_qualifier fully_specified_type type_specifier
+%type <interm.type> single_type_qualifier
 %type <interm.type> type_specifier_nonarray
-%type <interm.type> struct_specifier 
-%type <interm.typeLine> struct_declarator 
-%type <interm.typeList> struct_declarator_list struct_declaration struct_declaration_list
-%type <interm.function> function_header function_declarator function_identifier
-%type <interm.function> function_header_with_parameters function_call_header 
+%type <interm.type> struct_specifier
+%type <interm.typeLine> struct_declarator
+%type <interm.typeList> struct_declarator_list struct_declaration struct_declaration_list type_name_list
+%type <interm.function> function_header function_declarator
+%type <interm.function> function_header_with_parameters
 %type <interm> function_call_header_with_parameters function_call_header_no_parameters function_call_generic function_prototype
-%type <interm> function_call_or_method
+%type <interm> function_call_or_method function_identifier function_call_header
 
-%start translation_unit 
+%start translation_unit
 %%
 
-variable_identifier 
+variable_identifier
     : IDENTIFIER {
         // The symbol table search was done in the lexical phase
         const TSymbol* symbol = $1.symbol;
         const TVariable* variable;
         if (symbol == 0) {
-            parseContext.error($1.line, "undeclared identifier", $1.string->c_str(), "");
-            parseContext.recover();
-            TType type(EbtFloat);
-            TVariable* fakeVariable = new TVariable($1.string, type);
-            parseContext.symbolTable.insert(*fakeVariable);
+            TVariable* fakeVariable = new TVariable($1.string, TType(EbtVoid));
             variable = fakeVariable;
         } else {
-            // This identifier can only be a variable type symbol 
+            // This identifier can only be a variable type symbol
             if (! symbol->isVariable()) {
                 parseContext.error($1.line, "variable expected", $1.string->c_str(), "");
                 parseContext.recover();
@@ -237,10 +247,10 @@ variable_identifier
         if (variable->getType().getQualifier() == EvqConst ) {
             constUnion* constArray = variable->getConstPointer();
             TType t(variable->getType());
-            $$ = parseContext.intermediate.addConstantUnion(constArray, t, $1.line);        
+            $$ = parseContext.intermediate.addConstantUnion(constArray, t, $1.line);
         } else
-            $$ = parseContext.intermediate.addSymbol(variable->getUniqueId(), 
-                                                     variable->getName(), 
+            $$ = parseContext.intermediate.addSymbol(variable->getUniqueId(),
+                                                     variable->getName(),
                                                      variable->getType(), $1.line);
     }
     ;
@@ -250,19 +260,21 @@ primary_expression
         $$ = $1;
     }
     | INTCONSTANT {
-        //
-        // INT_TYPE is only 16-bit plus sign bit for vertex/fragment shaders, 
-        // check for overflow for constants
-        //
-        if (abs($1.i) >= (1 << 16)) {
-            parseContext.error($1.line, " integer constant overflow", "", "");
-            parseContext.recover();
-        }
+        constUnion *unionArray = new constUnion[1];
+        unionArray->setIConst($1.i);
+        $$ = parseContext.intermediate.addConstantUnion(unionArray, TType(EbtInt, EvqConst), $1.line);
+    }
+    | UINTCONSTANT {
         constUnion *unionArray = new constUnion[1];
         unionArray->setIConst($1.i);
         $$ = parseContext.intermediate.addConstantUnion(unionArray, TType(EbtInt, EvqConst), $1.line);
     }
     | FLOATCONSTANT {
+        constUnion *unionArray = new constUnion[1];
+        unionArray->setFConst($1.f);
+        $$ = parseContext.intermediate.addConstantUnion(unionArray, TType(EbtFloat, EvqConst), $1.line);
+    }
+    | DOUBLECONSTANT {
         constUnion *unionArray = new constUnion[1];
         unionArray->setFConst($1.f);
         $$ = parseContext.intermediate.addConstantUnion(unionArray, TType(EbtFloat, EvqConst), $1.line);
@@ -278,10 +290,11 @@ primary_expression
     ;
 
 postfix_expression
-    : primary_expression { 
+    : primary_expression {
         $$ = $1;
-    } 
+    }
     | postfix_expression LEFT_BRACKET integer_expression RIGHT_BRACKET {
+        parseContext.variableErrorCheck($1);
         if (!$1->isArray() && !$1->isMatrix() && !$1->isVector()) {
             if ($1->getAsSymbolNode())
                 parseContext.error($2.line, " left of '[' is not of type array, matrix, or vector ", $1->getAsSymbolNode()->getSymbol().c_str(), "");
@@ -293,13 +306,13 @@ postfix_expression
             if ($1->isArray()) { // constant folding for arrays
                 $$ = parseContext.addConstArrayNode($3->getAsConstantUnion()->getUnionArrayPointer()->getIConst(), $1, $2.line);
             } else if ($1->isVector()) {  // constant folding for vectors
-                TVectorFields fields;                
+                TVectorFields fields;
                 fields.num = 1;
                 fields.offsets[0] = $3->getAsConstantUnion()->getUnionArrayPointer()->getIConst(); // need to do it this way because v.xy sends fields integer array
                 $$ = parseContext.addConstVectorNode(fields, $1, $2.line);
             } else if ($1->isMatrix()) { // constant folding for matrices
                 $$ = parseContext.addConstMatrixNode($3->getAsConstantUnion()->getUnionArrayPointer()->getIConst(), $1, $2.line);
-            } 
+            }
         } else {
             if ($3->getQualifier() == EvqConst) {
                 if (($1->isVector() || $1->isMatrix()) && $1->getType().getNominalSize() <= $3->getAsConstantUnion()->getUnionArrayPointer()->getIConst() && !$1->isArray() ) {
@@ -310,10 +323,10 @@ postfix_expression
                         if ($1->getType().getArraySize() == 0) {
                             if ($1->getType().getMaxArraySize() <= $3->getAsConstantUnion()->getUnionArrayPointer()->getIConst()) {
                                 if (parseContext.arraySetMaxSize($1->getAsSymbolNode(), $1->getTypePointer(), $3->getAsConstantUnion()->getUnionArrayPointer()->getIConst(), true, $2.line))
-                                    parseContext.recover(); 
+                                    parseContext.recover();
                             } else {
                                 if (parseContext.arraySetMaxSize($1->getAsSymbolNode(), $1->getTypePointer(), 0, false, $2.line))
-                                    parseContext.recover(); 
+                                    parseContext.recover();
                             }
                         } else if ( $3->getAsConstantUnion()->getUnionArrayPointer()->getIConst() >= $1->getType().getArraySize()) {
                             parseContext.error($2.line, "", "[", "array index out of range '%d'", $3->getAsConstantUnion()->getUnionArrayPointer()->getIConst());
@@ -327,10 +340,10 @@ postfix_expression
                     parseContext.error($2.line, "", "[", "array must be redeclared with a size before being indexed with a variable");
                     parseContext.recover();
                 }
-                
+
                 $$ = parseContext.intermediate.addIndex(EOpIndexIndirect, $1, $3, $2.line);
             }
-        } 
+        }
         if ($$ == 0) {
             constUnion *unionArray = new constUnion[1];
             unionArray->setFConst(0.0f);
@@ -340,30 +353,46 @@ postfix_expression
                 $$->setType(TType($1->getType().getStruct(), $1->getType().getTypeName()));
             else
                 $$->setType(TType($1->getBasicType(), EvqTemporary, $1->getNominalSize(), $1->isMatrix()));
-                
+
             if ($1->getType().getQualifier() == EvqConst)
                 $$->getTypePointer()->changeQualifier(EvqConst);
-        } else if ($1->isMatrix() && $1->getType().getQualifier() == EvqConst)         
-            $$->setType(TType($1->getBasicType(), EvqConst, $1->getNominalSize()));     
-        else if ($1->isMatrix())            
-            $$->setType(TType($1->getBasicType(), EvqTemporary, $1->getNominalSize()));     
-        else if ($1->isVector() && $1->getType().getQualifier() == EvqConst)          
-            $$->setType(TType($1->getBasicType(), EvqConst));     
-        else if ($1->isVector())       
+        } else if ($1->isMatrix() && $1->getType().getQualifier() == EvqConst)
+            $$->setType(TType($1->getBasicType(), EvqConst, $1->getNominalSize()));
+        else if ($1->isMatrix())
+            $$->setType(TType($1->getBasicType(), EvqTemporary, $1->getNominalSize()));
+        else if ($1->isVector() && $1->getType().getQualifier() == EvqConst)
+            $$->setType(TType($1->getBasicType(), EvqConst));
+        else if ($1->isVector())
             $$->setType(TType($1->getBasicType(), EvqTemporary));
         else
-            $$->setType($1->getType()); 
+            $$->setType($1->getType());
     }
     | function_call {
         $$ = $1;
     }
-    | postfix_expression DOT FIELD_SELECTION {        
+    | postfix_expression DOT FIELD_SELECTION {
+        parseContext.variableErrorCheck($1);
         if ($1->isArray()) {
-            parseContext.error($3.line, "cannot apply dot operator to an array", ".", "");
-            parseContext.recover();
-        }
+            //
+            // It can only be a method (e.g., length), which can't be resolved until
+            // we later see the function calling syntax.  Save away the name for now.
+            //
 
-        if ($1->isVector()) {
+            // TODO: if next token is not "(", then this is an error
+
+            if (*$3.string == "length") {
+                if (parseContext.extensionErrorCheck($3.line, "GL_3DL_array_objects")) {
+                    parseContext.recover();
+                    $$ = $1;
+                } else {
+                    $$ = parseContext.intermediate.addMethod($1, TType(EbtInt), $3.string, $2.line);
+                }
+            } else {
+                parseContext.error($3.line, "only the length method is supported for array", $3.string->c_str(), "");
+                parseContext.recover();
+                $$ = $1;
+            }
+        } else if ($1->isVector()) {
             TVectorFields fields;
             if (! parseContext.parseVectorFields(*$3.string, $1->getNominalSize(), fields, $3.line)) {
                 fields.num = 1;
@@ -388,9 +417,9 @@ postfix_expression
                     $$->setType(TType($1->getBasicType()));
                 } else {
                     TString vectorString = *$3.string;
-                    TIntermTyped* index = parseContext.intermediate.addSwizzle(fields, $3.line);                
+                    TIntermTyped* index = parseContext.intermediate.addSwizzle(fields, $3.line);
                     $$ = parseContext.intermediate.addIndex(EOpVectorSwizzle, $1, index, $2.line);
-                    $$->setType(TType($1->getBasicType(),EvqTemporary, (int) vectorString.size()));  
+                    $$->setType(TType($1->getBasicType(),EvqTemporary, (int) vectorString.size()));
                 }
             }
         } else if ($1->isMatrix()) {
@@ -409,13 +438,13 @@ postfix_expression
                 constUnion *unionArray = new constUnion[1];
                 unionArray->setIConst(0);
                 TIntermTyped* index = parseContext.intermediate.addConstantUnion(unionArray, TType(EbtInt, EvqConst), $3.line);
-                $$ = parseContext.intermediate.addIndex(EOpIndexDirect, $1, index, $2.line);                
+                $$ = parseContext.intermediate.addIndex(EOpIndexDirect, $1, index, $2.line);
                 $$->setType(TType($1->getBasicType(), EvqTemporary, $1->getNominalSize()));
             } else {
                 constUnion *unionArray = new constUnion[1];
                 unionArray->setIConst(fields.col * $1->getNominalSize() + fields.row);
                 TIntermTyped* index = parseContext.intermediate.addConstantUnion(unionArray, TType(EbtInt, EvqConst), $3.line);
-                $$ = parseContext.intermediate.addIndex(EOpIndexDirect, $1, index, $2.line);                
+                $$ = parseContext.intermediate.addIndex(EOpIndexDirect, $1, index, $2.line);
                 $$->setType(TType($1->getBasicType()));
             }
         } else if ($1->getBasicType() == EbtStruct) {
@@ -431,7 +460,7 @@ postfix_expression
                     if ((*fields)[i].type->getFieldName() == *$3.string) {
                         fieldFound = true;
                         break;
-                    }                
+                    }
                 }
                 if (fieldFound) {
                     if ($1->getType().getQualifier() == EvqConst) {
@@ -450,7 +479,7 @@ postfix_expression
                         constUnion *unionArray = new constUnion[1];
                         unionArray->setIConst(i);
                         TIntermTyped* index = parseContext.intermediate.addConstantUnion(unionArray, TType(EbtInt, EvqConst), $3.line);
-                        $$ = parseContext.intermediate.addIndex(EOpIndexDirectStruct, $1, index, $2.line);                
+                        $$ = parseContext.intermediate.addIndex(EOpIndexDirectStruct, $1, index, $2.line);
                         $$->setType(*(*fields)[i].type);
                     }
                 } else {
@@ -467,6 +496,7 @@ postfix_expression
         // don't delete $3.string, it's from the pool
     }
     | postfix_expression INC_OP {
+        parseContext.variableErrorCheck($1);
         if (parseContext.lValueErrorCheck($2.line, "++", $1))
             parseContext.recover();
         $$ = parseContext.intermediate.addUnaryMath(EOpPostIncrement, $1, $2.line, parseContext.symbolTable);
@@ -477,6 +507,7 @@ postfix_expression
         }
     }
     | postfix_expression DEC_OP {
+        parseContext.variableErrorCheck($1);
         if (parseContext.lValueErrorCheck($2.line, "--", $1))
             parseContext.recover();
         $$ = parseContext.intermediate.addUnaryMath(EOpPostDecrement, $1, $2.line, parseContext.symbolTable);
@@ -488,20 +519,20 @@ postfix_expression
     }
     ;
 
-integer_expression 
+integer_expression
     : expression {
         if (parseContext.integerErrorCheck($1, "[]"))
             parseContext.recover();
-        $$ = $1; 
+        $$ = $1;
     }
     ;
 
-function_call 
+function_call
     : function_call_or_method {
         TFunction* fnCall = $1.function;
         TOperator op = fnCall->getBuiltInOp();
-        
         if (op == EOpArrayLength) {
+            // TODO: check for no arguments to .length()
             if ($1.intermNode->getAsTyped() == 0 || $1.intermNode->getAsTyped()->getType().getArraySize() == 0) {
                 parseContext.error($1.line, "", fnCall->getName().c_str(), "array must be declared with a size before using this method");
                 parseContext.recover();
@@ -513,7 +544,7 @@ function_call
         } else if (op != EOpNull) {
             //
             // Then this should be a constructor.
-            // Don't go through the symbol table for constructors.  
+            // Don't go through the symbol table for constructors.
             // Their parameters will be verified algorithmically.
             //
             TType type(EbtVoid);  // use this to get the type back
@@ -525,8 +556,8 @@ function_call
                 //
                 $$ = parseContext.addConstructor($1.intermNode, &type, op, fnCall, $1.line);
             }
-            
-            if ($$ == 0) {        
+
+            if ($$ == 0) {
                 parseContext.recover();
                 $$ = parseContext.intermediate.setAggregateOperator(0, op, $1.line);
             }
@@ -554,7 +585,7 @@ function_call
                         //
                         $$ = parseContext.intermediate.addUnaryMath(op, $1.intermNode, 0, parseContext.symbolTable);
                         if ($$ == 0)  {
-                            parseContext.error($1.intermNode->getLine(), " wrong operand type", "Internal Error", 
+                            parseContext.error($1.intermNode->getLine(), " wrong operand type", "Internal Error",
                                 "built in unary operator function.  Type: %s",
                                 static_cast<TIntermTyped*>($1.intermNode)->getCompleteString().c_str());
                             YYERROR;
@@ -564,15 +595,15 @@ function_call
                     }
                 } else {
                     // This is a real function call
-                    
+
                     $$ = parseContext.intermediate.setAggregateOperator($1.intermAggregate, EOpFunctionCall, $1.line);
-                    $$->setType(fnCandidate->getReturnType());                   
-                    
+                    $$->setType(fnCandidate->getReturnType());
+
                     // this is how we know whether the given function is a builtIn function or a user defined function
                     // if builtIn == false, it's a userDefined -> could be an overloaded builtIn function also
                     // if builtIn == true, it's definitely a builtIn function with EOpNull
-                    if (!builtIn) 
-                        $$->getAsAggregate()->setUserDefined(); 
+                    if (!builtIn)
+                        $$->getAsAggregate()->setUserDefined();
                     $$->getAsAggregate()->setName(fnCandidate->getMangledName());
 
                     TQualifier qual;
@@ -602,28 +633,10 @@ function_call
     }
     ;
 
+// TODO: can we eliminate function_call_or_method and function_call_generic?
 function_call_or_method
     : function_call_generic {
         $$ = $1;
-    }
-    | postfix_expression DOT function_call_generic {
-        if ($1->isArray() && $3.function->getName() == "length") {
-            //
-            // implement array.length()
-            //
-            if (parseContext.extensionErrorCheck($3.line, "GL_3DL_array_objects")) {
-                parseContext.recover();
-                $$ = $3;
-            } else {
-                $$ = $3;
-                $$.intermNode = $1;
-                $$.function->relateToOperator(EOpArrayLength);
-            }
-        } else {
-            parseContext.error($3.line, "methods are not supported", "", "");
-            parseContext.recover();
-            $$ = $3;
-        }
     }
     ;
 
@@ -637,23 +650,21 @@ function_call_generic
         $$.line = $2.line;
     }
     ;
-    
-function_call_header_no_parameters 
-    : function_call_header VOID_TYPE {
-        $$.function = $1;
-        $$.intermNode = 0;
+
+function_call_header_no_parameters
+    : function_call_header VOID {
+        $$ = $1;
     }
     | function_call_header {
-        $$.function = $1;
-        $$.intermNode = 0;
+        $$ = $1;
     }
     ;
 
 function_call_header_with_parameters
     : function_call_header assignment_expression {
         TParameter param = { 0, new TType($2->getType()) };
-        $1->addParameter(param);
-        $$.function = $1;
+        $1.function->addParameter(param);
+        $$.function = $1.function;
         $$.intermNode = $2;
     }
     | function_call_header_with_parameters COMMA assignment_expression {
@@ -664,19 +675,22 @@ function_call_header_with_parameters
     }
     ;
 
-function_call_header 
+function_call_header
     : function_identifier LEFT_PAREN {
         $$ = $1;
     }
     ;
 
 // Grammar Note:  Constructors look like functions, but are recognized as types.
-    
+
 function_identifier
     : type_specifier {
         //
         // Constructor
         //
+        $$.function = 0;
+        $$.intermNode = 0;
+
         if ($1.array) {
             if (parseContext.extensionErrorCheck($1.line, "GL_3DL_array_objects")) {
                 parseContext.recover();
@@ -688,73 +702,94 @@ function_identifier
             TString tempString = "";
             TType type($1);
             TFunction *function = new TFunction(&tempString, type, EOpConstructStruct);
-            $$ = function;
+            $$.function = function;
         } else {
             TOperator op = EOpNull;
             switch ($1.type) {
             case EbtFloat:
                 if ($1.matrix) {
                     switch($1.size) {
-                    case 2:                                     op = EOpConstructMat2;  break;
-                    case 3:                                     op = EOpConstructMat3;  break;
-                    case 4:                                     op = EOpConstructMat4;  break;
-                    }         
-                } else {      
+                    case 2: op = EOpConstructMat2;  break;
+                    case 3: op = EOpConstructMat3;  break;
+                    case 4: op = EOpConstructMat4;  break;
+                    }
+                } else {
                     switch($1.size) {
-                    case 1:                                     op = EOpConstructFloat; break;
-                    case 2:                                     op = EOpConstructVec2;  break;
-                    case 3:                                     op = EOpConstructVec3;  break;
-                    case 4:                                     op = EOpConstructVec4;  break;
-                    }       
-                }  
-                break;               
+                    case 1: op = EOpConstructFloat; break;
+                    case 2: op = EOpConstructVec2;  break;
+                    case 3: op = EOpConstructVec3;  break;
+                    case 4: op = EOpConstructVec4;  break;
+                    }
+                }
+                break;
             case EbtInt:
                 switch($1.size) {
-                case 1:                                         op = EOpConstructInt;   break;
-                case 2:       FRAG_VERT_ONLY("ivec2", $1.line); op = EOpConstructIVec2; break;
-                case 3:       FRAG_VERT_ONLY("ivec3", $1.line); op = EOpConstructIVec3; break;
-                case 4:       FRAG_VERT_ONLY("ivec4", $1.line); op = EOpConstructIVec4; break;
-                }         
-                break;    
+                case 1: op = EOpConstructInt;   break;
+                case 2: op = EOpConstructIVec2; break;
+                case 3: op = EOpConstructIVec3; break;
+                case 4: op = EOpConstructIVec4; break;
+                }
+                break;
             case EbtBool:
                 switch($1.size) {
-                case 1:                                         op = EOpConstructBool;  break;
-                case 2:       FRAG_VERT_ONLY("bvec2", $1.line); op = EOpConstructBVec2; break;
-                case 3:       FRAG_VERT_ONLY("bvec3", $1.line); op = EOpConstructBVec3; break;
-                case 4:       FRAG_VERT_ONLY("bvec4", $1.line); op = EOpConstructBVec4; break;
-                }         
+                case 1:  op = EOpConstructBool;  break;
+                case 2:  op = EOpConstructBVec2; break;
+                case 3:  op = EOpConstructBVec3; break;
+                case 4:  op = EOpConstructBVec4; break;
+                }
                 break;
             }
-            if (op == EOpNull) {                    
+            if (op == EOpNull) {
                 parseContext.error($1.line, "cannot construct this type", TType::getBasicString($1.type), "");
                 parseContext.recover();
                 $1.type = EbtFloat;
                 op = EOpConstructFloat;
-            }            
+            }
             TString tempString = "";
             TType type($1);
             TFunction *function = new TFunction(&tempString, type, op);
-            $$ = function;
+            $$.function = function;
         }
     }
-    | IDENTIFIER {
-        if (parseContext.reservedErrorCheck($1.line, *$1.string)) 
-            parseContext.recover();
-        TType type(EbtVoid);
-        TFunction *function = new TFunction($1.string, type);
-        $$ = function;
-    }
-    | FIELD_SELECTION {
-        if (parseContext.reservedErrorCheck($1.line, *$1.string)) 
-            parseContext.recover();
-        TType type(EbtVoid);
-        TFunction *function = new TFunction($1.string, type);
-        $$ = function;
+    | postfix_expression {
+        //
+        // Should be a method or subroutine call, but we don't have arguments yet.
+        //
+        $$.function = 0;
+        $$.intermNode = 0;
+
+        TIntermMethod* method = $1->getAsMethodNode();
+        if (method) {
+            if (method->getObject()->isArray()) {
+                $$.function = new TFunction(&method->getMethodName(), TType(EbtInt), EOpArrayLength);
+                $$.intermNode = method->getObject();
+            } else {
+                parseContext.error(method->getLine(), "only arrays have methods", "", "");
+                parseContext.recover();
+            }
+        } else {
+            TIntermSymbol* symbol = $1->getAsSymbolNode();
+            if (symbol) {
+                if (parseContext.reservedErrorCheck(symbol->getLine(), symbol->getSymbol()))
+                    parseContext.recover();
+                TFunction *function = new TFunction(&symbol->getSymbol(), TType(EbtVoid));
+                $$.function = function;
+            } else {
+                parseContext.error($1->getLine(), "function call, method or subroutine call expected", "", "");
+                parseContext.recover();
+            }
+        }
+
+        if ($$.function == 0) {
+            // error recover
+            $$.function = new TFunction(&TString(""), TType(EbtVoid), EOpNull);
+        }
     }
     ;
 
 unary_expression
     : postfix_expression {
+        parseContext.variableErrorCheck($1);
         $$ = $1;
     }
     | INC_OP unary_expression {
@@ -786,7 +821,7 @@ unary_expression
                 case EOpNegative:   errorOp = "-"; break;
                 case EOpLogicalNot: errorOp = "!"; break;
                 case EOpBitwiseNot: errorOp = "~"; break;
-				default: break;
+                default: break;
                 }
                 parseContext.unaryOpError($1.line, errorOp, $2->getCompleteString());
                 parseContext.recover();
@@ -802,15 +837,13 @@ unary_operator
     : PLUS  { $$.line = $1.line; $$.op = EOpNull; }
     | DASH  { $$.line = $1.line; $$.op = EOpNegative; }
     | BANG  { $$.line = $1.line; $$.op = EOpLogicalNot; }
-    | TILDE { PACK_UNPACK_ONLY("~", $1.line);  
-              $$.line = $1.line; $$.op = EOpBitwiseNot; }
+    | TILDE { $$.line = $1.line; $$.op = EOpBitwiseNot; }
     ;
 // Grammar Note:  No '*' or '&' unary ops.  Pointers are not supported.
 
 multiplicative_expression
     : unary_expression { $$ = $1; }
     | multiplicative_expression STAR unary_expression {
-        FRAG_VERT_ONLY("*", $2.line);
         $$ = parseContext.intermediate.addBinaryMath(EOpMul, $1, $3, $2.line, parseContext.symbolTable);
         if ($$ == 0) {
             parseContext.binaryOpError($2.line, "*", $1->getCompleteString(), $3->getCompleteString());
@@ -819,7 +852,6 @@ multiplicative_expression
         }
     }
     | multiplicative_expression SLASH unary_expression {
-        FRAG_VERT_ONLY("/", $2.line); 
         $$ = parseContext.intermediate.addBinaryMath(EOpDiv, $1, $3, $2.line, parseContext.symbolTable);
         if ($$ == 0) {
             parseContext.binaryOpError($2.line, "/", $1->getCompleteString(), $3->getCompleteString());
@@ -828,7 +860,6 @@ multiplicative_expression
         }
     }
     | multiplicative_expression PERCENT unary_expression {
-        PACK_UNPACK_ONLY("%", $2.line);
         $$ = parseContext.intermediate.addBinaryMath(EOpMod, $1, $3, $2.line, parseContext.symbolTable);
         if ($$ == 0) {
             parseContext.binaryOpError($2.line, "%", $1->getCompleteString(), $3->getCompleteString());
@@ -840,7 +871,7 @@ multiplicative_expression
 
 additive_expression
     : multiplicative_expression { $$ = $1; }
-    | additive_expression PLUS multiplicative_expression {  
+    | additive_expression PLUS multiplicative_expression {
         $$ = parseContext.intermediate.addBinaryMath(EOpAdd, $1, $3, $2.line, parseContext.symbolTable);
         if ($$ == 0) {
             parseContext.binaryOpError($2.line, "+", $1->getCompleteString(), $3->getCompleteString());
@@ -854,14 +885,13 @@ additive_expression
             parseContext.binaryOpError($2.line, "-", $1->getCompleteString(), $3->getCompleteString());
             parseContext.recover();
             $$ = $1;
-        } 
+        }
     }
     ;
 
 shift_expression
     : additive_expression { $$ = $1; }
     | shift_expression LEFT_OP additive_expression {
-        PACK_UNPACK_ONLY("<<", $2.line);
         $$ = parseContext.intermediate.addBinaryMath(EOpLeftShift, $1, $3, $2.line, parseContext.symbolTable);
         if ($$ == 0) {
             parseContext.binaryOpError($2.line, "<<", $1->getCompleteString(), $3->getCompleteString());
@@ -870,7 +900,6 @@ shift_expression
         }
     }
     | shift_expression RIGHT_OP additive_expression {
-        PACK_UNPACK_ONLY(">>", $2.line);
         $$ = parseContext.intermediate.addBinaryMath(EOpRightShift, $1, $3, $2.line, parseContext.symbolTable);
         if ($$ == 0) {
             parseContext.binaryOpError($2.line, ">>", $1->getCompleteString(), $3->getCompleteString());
@@ -882,7 +911,7 @@ shift_expression
 
 relational_expression
     : shift_expression { $$ = $1; }
-    | relational_expression LEFT_ANGLE shift_expression { 
+    | relational_expression LEFT_ANGLE shift_expression {
         $$ = parseContext.intermediate.addBinaryMath(EOpLessThan, $1, $3, $2.line, parseContext.symbolTable);
         if ($$ == 0) {
             parseContext.binaryOpError($2.line, "<", $1->getCompleteString(), $3->getCompleteString());
@@ -892,7 +921,7 @@ relational_expression
             $$ = parseContext.intermediate.addConstantUnion(unionArray, TType(EbtBool, EvqConst), $2.line);
         }
     }
-    | relational_expression RIGHT_ANGLE shift_expression  { 
+    | relational_expression RIGHT_ANGLE shift_expression  {
         $$ = parseContext.intermediate.addBinaryMath(EOpGreaterThan, $1, $3, $2.line, parseContext.symbolTable);
         if ($$ == 0) {
             parseContext.binaryOpError($2.line, ">", $1->getCompleteString(), $3->getCompleteString());
@@ -902,7 +931,7 @@ relational_expression
             $$ = parseContext.intermediate.addConstantUnion(unionArray, TType(EbtBool, EvqConst), $2.line);
         }
     }
-    | relational_expression LE_OP shift_expression  { 
+    | relational_expression LE_OP shift_expression  {
         $$ = parseContext.intermediate.addBinaryMath(EOpLessThanEqual, $1, $3, $2.line, parseContext.symbolTable);
         if ($$ == 0) {
             parseContext.binaryOpError($2.line, "<=", $1->getCompleteString(), $3->getCompleteString());
@@ -912,7 +941,7 @@ relational_expression
             $$ = parseContext.intermediate.addConstantUnion(unionArray, TType(EbtBool, EvqConst), $2.line);
         }
     }
-    | relational_expression GE_OP shift_expression  { 
+    | relational_expression GE_OP shift_expression  {
         $$ = parseContext.intermediate.addBinaryMath(EOpGreaterThanEqual, $1, $3, $2.line, parseContext.symbolTable);
         if ($$ == 0) {
             parseContext.binaryOpError($2.line, ">=", $1->getCompleteString(), $3->getCompleteString());
@@ -937,7 +966,7 @@ equality_expression
         } else if (($1->isArray() || $3->isArray()) && parseContext.extensionErrorCheck($2.line, "GL_3DL_array_objects"))
             parseContext.recover();
     }
-    | equality_expression NE_OP relational_expression { 
+    | equality_expression NE_OP relational_expression {
         $$ = parseContext.intermediate.addBinaryMath(EOpNotEqual, $1, $3, $2.line, parseContext.symbolTable);
         if ($$ == 0) {
             parseContext.binaryOpError($2.line, "!=", $1->getCompleteString(), $3->getCompleteString());
@@ -953,7 +982,6 @@ equality_expression
 and_expression
     : equality_expression { $$ = $1; }
     | and_expression AMPERSAND equality_expression {
-        PACK_UNPACK_ONLY("&", $2.line);
         $$ = parseContext.intermediate.addBinaryMath(EOpAnd, $1, $3, $2.line, parseContext.symbolTable);
         if ($$ == 0) {
             parseContext.binaryOpError($2.line, "&", $1->getCompleteString(), $3->getCompleteString());
@@ -966,7 +994,6 @@ and_expression
 exclusive_or_expression
     : and_expression { $$ = $1; }
     | exclusive_or_expression CARET and_expression {
-        PACK_UNPACK_ONLY("^", $2.line);
         $$ = parseContext.intermediate.addBinaryMath(EOpExclusiveOr, $1, $3, $2.line, parseContext.symbolTable);
         if ($$ == 0) {
             parseContext.binaryOpError($2.line, "^", $1->getCompleteString(), $3->getCompleteString());
@@ -979,7 +1006,6 @@ exclusive_or_expression
 inclusive_or_expression
     : exclusive_or_expression { $$ = $1; }
     | inclusive_or_expression VERTICAL_BAR exclusive_or_expression {
-        PACK_UNPACK_ONLY("|", $2.line);
         $$ = parseContext.intermediate.addBinaryMath(EOpInclusiveOr, $1, $3, $2.line, parseContext.symbolTable);
         if ($$ == 0) {
             parseContext.binaryOpError($2.line, "|", $1->getCompleteString(), $3->getCompleteString());
@@ -1005,7 +1031,7 @@ logical_and_expression
 
 logical_xor_expression
     : logical_and_expression { $$ = $1; }
-    | logical_xor_expression XOR_OP logical_and_expression  { 
+    | logical_xor_expression XOR_OP logical_and_expression  {
         $$ = parseContext.intermediate.addBinaryMath(EOpLogicalXor, $1, $3, $2.line, parseContext.symbolTable);
         if ($$ == 0) {
             parseContext.binaryOpError($2.line, "^^", $1->getCompleteString(), $3->getCompleteString());
@@ -1019,7 +1045,7 @@ logical_xor_expression
 
 logical_or_expression
     : logical_xor_expression { $$ = $1; }
-    | logical_or_expression OR_OP logical_xor_expression  { 
+    | logical_or_expression OR_OP logical_xor_expression  {
         $$ = parseContext.intermediate.addBinaryMath(EOpLogicalOr, $1, $3, $2.line, parseContext.symbolTable);
         if ($$ == 0) {
             parseContext.binaryOpError($2.line, "||", $1->getCompleteString(), $3->getCompleteString());
@@ -1036,11 +1062,11 @@ conditional_expression
     | logical_or_expression QUESTION expression COLON assignment_expression {
        if (parseContext.boolErrorCheck($2.line, $1))
             parseContext.recover();
-       
+
         $$ = parseContext.intermediate.addSelection($1, $3, $5, $2.line);
         if ($3->getType() != $5->getType())
             $$ = 0;
-            
+
         if ($$ == 0) {
             parseContext.binaryOpError($2.line, ":", $3->getCompleteString(), $5->getCompleteString());
             parseContext.recover();
@@ -1051,7 +1077,7 @@ conditional_expression
 
 assignment_expression
     : conditional_expression { $$ = $1; }
-    | unary_expression assignment_operator assignment_expression {        
+    | unary_expression assignment_operator assignment_expression {
         if (parseContext.lValueErrorCheck($2.line, "assign", $1))
             parseContext.recover();
         $$ = parseContext.intermediate.addAssign($2.op, $1, $3, $2.line);
@@ -1065,17 +1091,17 @@ assignment_expression
     ;
 
 assignment_operator
-    : EQUAL        {                                    $$.line = $1.line; $$.op = EOpAssign; }
-    | MUL_ASSIGN   { FRAG_VERT_ONLY("*=", $1.line);     $$.line = $1.line; $$.op = EOpMulAssign; }
-    | DIV_ASSIGN   { FRAG_VERT_ONLY("/=", $1.line);     $$.line = $1.line; $$.op = EOpDivAssign; }
-    | MOD_ASSIGN   { PACK_UNPACK_ONLY("%=", $1.line);   $$.line = $1.line; $$.op = EOpModAssign; }
-    | ADD_ASSIGN   {                                    $$.line = $1.line; $$.op = EOpAddAssign; }
-    | SUB_ASSIGN   {                                    $$.line = $1.line; $$.op = EOpSubAssign; }
-    | LEFT_ASSIGN  { PACK_UNPACK_ONLY("<<=", $1.line);  $$.line = $1.line; $$.op = EOpLeftShiftAssign; }
-    | RIGHT_ASSIGN { PACK_UNPACK_ONLY("<<=", $1.line);  $$.line = $1.line; $$.op = EOpRightShiftAssign; }
-    | AND_ASSIGN   { PACK_UNPACK_ONLY("&=",  $1.line);  $$.line = $1.line; $$.op = EOpAndAssign; }
-    | XOR_ASSIGN   { PACK_UNPACK_ONLY("^=",  $1.line);  $$.line = $1.line; $$.op = EOpExclusiveOrAssign; }
-    | OR_ASSIGN    { PACK_UNPACK_ONLY("|=",  $1.line);  $$.line = $1.line; $$.op = EOpInclusiveOrAssign; }
+    : EQUAL        { $$.line = $1.line; $$.op = EOpAssign; }
+    | MUL_ASSIGN   { $$.line = $1.line; $$.op = EOpMulAssign; }
+    | DIV_ASSIGN   { $$.line = $1.line; $$.op = EOpDivAssign; }
+    | MOD_ASSIGN   { $$.line = $1.line; $$.op = EOpModAssign; }
+    | ADD_ASSIGN   { $$.line = $1.line; $$.op = EOpAddAssign; }
+    | SUB_ASSIGN   { $$.line = $1.line; $$.op = EOpSubAssign; }
+    | LEFT_ASSIGN  { $$.line = $1.line; $$.op = EOpLeftShiftAssign; }
+    | RIGHT_ASSIGN { $$.line = $1.line; $$.op = EOpRightShiftAssign; }
+    | AND_ASSIGN   { $$.line = $1.line; $$.op = EOpAndAssign; }
+    | XOR_ASSIGN   { $$.line = $1.line; $$.op = EOpExclusiveOrAssign; }
+    | OR_ASSIGN    { $$.line = $1.line; $$.op = EOpInclusiveOrAssign; }
     ;
 
 expression
@@ -1101,24 +1127,67 @@ constant_expression
     ;
 
 declaration
-    : function_prototype SEMICOLON   { $$ = 0; }
-    | init_declarator_list SEMICOLON { 
+    : function_prototype SEMICOLON {
+        $$ = 0;
+        // TODO: subroutines: make the identifier a user type for this signature
+    }
+    | init_declarator_list SEMICOLON {
         if ($1.intermAggregate)
-            $1.intermAggregate->setOperator(EOpSequence); 
-        $$ = $1.intermAggregate; 
+            $1.intermAggregate->setOperator(EOpSequence);
+        $$ = $1.intermAggregate;
+    }
+    | PRECISION precision_qualifier type_specifier SEMICOLON {
+        $$ = 0;
+    }
+    | type_qualifier IDENTIFIER LEFT_BRACE struct_declaration_list RIGHT_BRACE SEMICOLON {
+        // block
+        $$ = 0;
+    }
+    | type_qualifier IDENTIFIER LEFT_BRACE struct_declaration_list RIGHT_BRACE IDENTIFIER SEMICOLON {
+        // block
+        $$ = 0;
+    }
+    | type_qualifier IDENTIFIER LEFT_BRACE struct_declaration_list RIGHT_BRACE IDENTIFIER LEFT_BRACKET RIGHT_BRACKET SEMICOLON {
+        // block
+        $$ = 0;
+    }
+    | type_qualifier IDENTIFIER LEFT_BRACE struct_declaration_list RIGHT_BRACE IDENTIFIER LEFT_BRACKET constant_expression RIGHT_BRACKET SEMICOLON {
+        // block
+        $$ = 0;
+    }
+    | type_qualifier SEMICOLON {
+        // setting defaults
+        $$ = 0;
+    }
+    | type_qualifier IDENTIFIER SEMICOLON {
+        // precise foo;
+        // invariant foo;
+        $$ = 0;
+    }
+    | type_qualifier IDENTIFIER identifier_list SEMICOLON {
+        // precise foo, bar;
+        // invariant foo, bar;
+        $$ = 0;
     }
     ;
 
-function_prototype 
+identifier_list
+    : COMMA IDENTIFIER {
+    }
+    | identifier_list COMMA IDENTIFIER {
+    }
+    ;
+
+function_prototype
     : function_declarator RIGHT_PAREN  {
         //
         // Multiple declarations of the same function are allowed.
         //
-        // If this is a definition, the definition production code will check for redefinitions 
+        // If this is a definition, the definition production code will check for redefinitions
         // (we don't know at this point if it's a definition or not).
         //
         // Redeclarations are allowed.  But, return types and parameter qualifiers must match.
-        //        
+        //
         TFunction* prevDec = static_cast<TFunction*>(parseContext.symbolTable.find($1->getMangledName()));
         if (prevDec) {
             if (prevDec->getReturnType() != $1->getReturnType()) {
@@ -1132,7 +1201,7 @@ function_prototype
                 }
             }
         }
-        
+
         //
         // If this is a redeclaration, it could also be a definition,
         // in which case, we want to use the variable names from this one, and not the one that's
@@ -1145,29 +1214,29 @@ function_prototype
     }
     ;
 
-function_declarator 
+function_declarator
     : function_header {
         $$ = $1;
     }
-    | function_header_with_parameters { 
-        $$ = $1;  
+    | function_header_with_parameters {
+        $$ = $1;
     }
     ;
 
 
 function_header_with_parameters
     : function_header parameter_declaration {
-        // Add the parameter 
+        // Add the parameter
         $$ = $1;
         if ($2.param.type->getBasicType() != EbtVoid)
             $1->addParameter($2.param);
         else
             delete $2.param.type;
     }
-    | function_header_with_parameters COMMA parameter_declaration {   
+    | function_header_with_parameters COMMA parameter_declaration {
         //
         // Only first parameter of one-parameter functions can be void
-        // The check for named parameters not being void is done in parameter_declarator 
+        // The check for named parameters not being void is done in parameter_declarator
         //
         if ($3.param.type->getBasicType() == EbtVoid) {
             //
@@ -1177,14 +1246,14 @@ function_header_with_parameters
             parseContext.recover();
             delete $3.param.type;
         } else {
-            // Add the parameter 
-            $$ = $1; 
+            // Add the parameter
+            $$ = $1;
             $1->addParameter($3.param);
         }
     }
     ;
 
-function_header 
+function_header
     : fully_specified_type IDENTIFIER LEFT_PAREN {
         if ($1.qualifier != EvqGlobal && $1.qualifier != EvqTemporary) {
             parseContext.error($2.line, "no qualifiers allowed for function return", getQualifierString($1.qualifier), "");
@@ -1193,8 +1262,8 @@ function_header
         // make sure a sampler is not involved as well...
         if (parseContext.structQualifierErrorCheck($2.line, $1))
             parseContext.recover();
-        
-        // Add the function as a prototype after parsing it (we do not support recursion) 
+
+        // Add the function as a prototype after parsing it (we do not support recursion)
         TFunction *function;
         TType type($1);
         function = new TFunction($2.string, type);
@@ -1203,7 +1272,7 @@ function_header
     ;
 
 parameter_declarator
-    // Type + name 
+    // Type + name
     : type_specifier IDENTIFIER {
         if ($1.type == EbtVoid) {
             parseContext.error($2.line, "illegal use of type 'void'", $2.string->c_str(), "");
@@ -1219,76 +1288,63 @@ parameter_declarator
         // Check that we can make an array out of this type
         if (parseContext.arrayTypeErrorCheck($3.line, $1))
             parseContext.recover();
-            
+
         if (parseContext.reservedErrorCheck($2.line, *$2.string))
             parseContext.recover();
-            
+
         int size;
         if (parseContext.arraySizeErrorCheck($3.line, $4, size))
             parseContext.recover();
         $1.setArray(true, size);
-             
-        TType* type = new TType($1);
-        TParameter param = { $2.string, type };
+
+        TParameter param = { $2.string, new TType($1)};
         $$.line = $2.line;
         $$.param = param;
     }
     ;
 
-parameter_declaration 
-    // 
-    // The only parameter qualifier a parameter can have are 
-    // IN_QUAL, OUT_QUAL, INOUT_QUAL, or CONST.
+parameter_declaration
     //
-    
+    // With name
     //
-    // Type + name 
-    //
-    : type_qualifier parameter_qualifier parameter_declarator {
-        $$ = $3;
-        if (parseContext.paramErrorCheck($3.line, $1.qualifier, $2, $$.param.type))
-            parseContext.recover();
-    }
-    | parameter_qualifier parameter_declarator {
+    : type_qualifier parameter_declarator {
         $$ = $2;
-        if (parseContext.parameterSamplerErrorCheck($2.line, $1, *$2.param.type))
+
+        if (parseContext.parameterSamplerErrorCheck($2.line, $1.qualifier, *$2.param.type))
             parseContext.recover();
-        if (parseContext.paramErrorCheck($2.line, EvqTemporary, $1, $$.param.type))
+        if (parseContext.paramErrorCheck($1.line, $1.qualifier, $$.param.type))
+            parseContext.recover();
+    }
+    | parameter_declarator {
+        $$ = $1;
+
+        if (parseContext.parameterSamplerErrorCheck($1.line, EvqIn, *$1.param.type))
+            parseContext.recover();
+        if (parseContext.paramErrorCheck($1.line, EvqTemporary, $$.param.type))
             parseContext.recover();
     }
     //
-    // Only type 
+    // Without name
     //
-    | type_qualifier parameter_qualifier parameter_type_specifier {
-        $$ = $3;
-        if (parseContext.paramErrorCheck($3.line, $1.qualifier, $2, $$.param.type))
-            parseContext.recover();
-    }
-    | parameter_qualifier parameter_type_specifier {
+    | type_qualifier parameter_type_specifier {
         $$ = $2;
-        if (parseContext.parameterSamplerErrorCheck($2.line, $1, *$2.param.type))
+        
+        if (parseContext.parameterSamplerErrorCheck($2.line, $1.qualifier, *$2.param.type))
             parseContext.recover();
-        if (parseContext.paramErrorCheck($2.line, EvqTemporary, $1, $$.param.type))
+        if (parseContext.paramErrorCheck($1.line, $1.qualifier, $$.param.type))
             parseContext.recover();
     }
-    ;
-    
-parameter_qualifier
-    : /* empty */ {
-        $$ = EvqIn;
-    }
-    | IN_QUAL {
-        $$ = EvqIn;
-    }
-    | OUT_QUAL {
-        $$ = EvqOut;
-    }
-    | INOUT_QUAL {
-        $$ = EvqInOut;
+    | parameter_type_specifier {
+        $$ = $1;
+
+        if (parseContext.parameterSamplerErrorCheck($1.line, $1.qualifier, *$1.param.type))
+            parseContext.recover();
+        if (parseContext.paramErrorCheck($1.line, EvqTemporary, $$.param.type))
+            parseContext.recover();
     }
     ;
 
-parameter_type_specifier 
+parameter_type_specifier
     : type_specifier {
         TParameter param = { 0, new TType($1) };
         $$.param = param;
@@ -1298,12 +1354,12 @@ parameter_type_specifier
 init_declarator_list
     : single_declaration {
         $$ = $1;
-    } 
+    }
     | init_declarator_list COMMA IDENTIFIER {
         $$ = $1;
         if (parseContext.structQualifierErrorCheck($3.line, $$.type))
             parseContext.recover();
-        
+
         if (parseContext.nonInitConstErrorCheck($3.line, *$3.string, $$.type))
             parseContext.recover();
 
@@ -1313,12 +1369,12 @@ init_declarator_list
     | init_declarator_list COMMA IDENTIFIER LEFT_BRACKET RIGHT_BRACKET {
         if (parseContext.structQualifierErrorCheck($3.line, $1.type))
             parseContext.recover();
-            
+
         if (parseContext.nonInitConstErrorCheck($3.line, *$3.string, $1.type))
             parseContext.recover();
 
         $$ = $1;
-        
+
         if (parseContext.arrayTypeErrorCheck($4.line, $1.type) || parseContext.arrayQualifierErrorCheck($4.line, $1.type))
             parseContext.recover();
         else {
@@ -1331,10 +1387,10 @@ init_declarator_list
     | init_declarator_list COMMA IDENTIFIER LEFT_BRACKET constant_expression RIGHT_BRACKET {
         if (parseContext.structQualifierErrorCheck($3.line, $1.type))
             parseContext.recover();
-            
+
         if (parseContext.nonInitConstErrorCheck($3.line, *$3.string, $1.type))
             parseContext.recover();
-        
+
         $$ = $1;
 
         if (parseContext.arrayTypeErrorCheck($4.line, $1.type) || parseContext.arrayQualifierErrorCheck($4.line, $1.type))
@@ -1343,7 +1399,7 @@ init_declarator_list
             int size;
             if (parseContext.arraySizeErrorCheck($4.line, $5, size))
                 parseContext.recover();
-            $1.type.setArray(true, size);        
+            $1.type.setArray(true, size);
             TVariable* variable;
             if (parseContext.arrayErrorCheck($4.line, *$3.string, $1.type, variable))
                 parseContext.recover();
@@ -1352,14 +1408,14 @@ init_declarator_list
     | init_declarator_list COMMA IDENTIFIER LEFT_BRACKET RIGHT_BRACKET EQUAL initializer {
         if (parseContext.structQualifierErrorCheck($3.line, $1.type))
             parseContext.recover();
-            
+
         $$ = $1;
-            
+
         TVariable* variable = 0;
         if (parseContext.arrayTypeErrorCheck($4.line, $1.type) || parseContext.arrayQualifierErrorCheck($4.line, $1.type))
             parseContext.recover();
         else {
-			$1.type.setArray(true, $7->getType().getArraySize());
+            $1.type.setArray(true, $7->getType().getArraySize());
             if (parseContext.arrayErrorCheck($4.line, *$3.string, $1.type, variable))
                 parseContext.recover();
         }
@@ -1385,9 +1441,9 @@ init_declarator_list
     | init_declarator_list COMMA IDENTIFIER LEFT_BRACKET constant_expression RIGHT_BRACKET EQUAL initializer {
         if (parseContext.structQualifierErrorCheck($3.line, $1.type))
             parseContext.recover();
-            
+
         $$ = $1;
-            
+
         TVariable* variable = 0;
         if (parseContext.arrayTypeErrorCheck($4.line, $1.type) || parseContext.arrayQualifierErrorCheck($4.line, $1.type))
             parseContext.recover();
@@ -1421,9 +1477,9 @@ init_declarator_list
     | init_declarator_list COMMA IDENTIFIER EQUAL initializer {
         if (parseContext.structQualifierErrorCheck($3.line, $1.type))
             parseContext.recover();
-        
+
         $$ = $1;
-        
+
         TIntermNode* intermNode;
         if (!parseContext.executeInitializer($3.line, *$3.string, $1.type, $5, intermNode)) {
             //
@@ -1440,18 +1496,22 @@ init_declarator_list
     }
     ;
 
-single_declaration 
+single_declaration
     : fully_specified_type {
         $$.type = $1;
         $$.intermAggregate = 0;
-    }    
+    }
     | fully_specified_type IDENTIFIER {
         $$.intermAggregate = 0;
+
+        if (parseContext.globalQualifierFixAndErrorCheck($1.line, $1.qualifier))
+            parseContext.recover();
+
         $$.type = $1;
 
         if (parseContext.structQualifierErrorCheck($2.line, $$.type))
             parseContext.recover();
-        
+
         if (parseContext.nonInitConstErrorCheck($2.line, *$2.string, $$.type))
             parseContext.recover();
 
@@ -1471,7 +1531,7 @@ single_declaration
         if (parseContext.arrayTypeErrorCheck($3.line, $1) || parseContext.arrayQualifierErrorCheck($3.line, $1))
             parseContext.recover();
         else {
-            $1.setArray(true);        
+            $1.setArray(true);
             TVariable* variable;
             if (parseContext.arrayErrorCheck($3.line, *$2.string, $1, variable))
                 parseContext.recover();
@@ -1484,7 +1544,7 @@ single_declaration
 
         if (parseContext.nonInitConstErrorCheck($2.line, *$2.string, $1))
             parseContext.recover();
-            
+
         $$.type = $1;
 
         if (parseContext.arrayTypeErrorCheck($3.line, $1) || parseContext.arrayQualifierErrorCheck($3.line, $1))
@@ -1493,7 +1553,7 @@ single_declaration
             int size;
             if (parseContext.arraySizeErrorCheck($3.line, $4, size))
                 parseContext.recover();
-            
+
             $1.setArray(true, size);
             TVariable* variable;
             if (parseContext.arrayErrorCheck($3.line, *$2.string, $1, variable))
@@ -1519,7 +1579,7 @@ single_declaration
 
         if (parseContext.extensionErrorCheck($$.line, "GL_3DL_array_objects"))
             parseContext.recover();
-        else {        
+        else {
             TIntermNode* intermNode;
             if (!parseContext.executeInitializer($2.line, *$2.string, $1, $6, intermNode, variable)) {
                 //
@@ -1550,7 +1610,7 @@ single_declaration
             int size;
             if (parseContext.arraySizeErrorCheck($3.line, $4, size))
                 parseContext.recover();
-            
+
             $1.setArray(true, size);
             if (parseContext.arrayErrorCheck($3.line, *$2.string, $1, variable))
                 parseContext.recover();
@@ -1558,7 +1618,7 @@ single_declaration
 
         if (parseContext.extensionErrorCheck($$.line, "GL_3DL_array_objects"))
             parseContext.recover();
-        else {        
+        else {
             TIntermNode* intermNode;
             if (!parseContext.executeInitializer($2.line, *$2.string, $1, $7, intermNode, variable)) {
                 //
@@ -1572,7 +1632,7 @@ single_declaration
                 parseContext.recover();
                 $$.intermAggregate = 0;
             }
-        }        
+        }
     }
     | fully_specified_type IDENTIFIER EQUAL initializer {
         if (parseContext.structQualifierErrorCheck($2.line, $1))
@@ -1594,80 +1654,13 @@ single_declaration
             $$.intermAggregate = 0;
         }
     }
-    
-//
-// Place holder for the pack/unpack languages.
-//
-//    | buffer_specifier {
-//        $$.intermAggregate = 0;
-//    }
-    ;
 
 // Grammar Note:  No 'enum', or 'typedef'.
-
-//
-// Place holder for the pack/unpack languages.
-//
-//%type <interm> buffer_declaration
-//%type <interm.type> buffer_specifier input_or_output buffer_declaration_list 
-//buffer_specifier
-//    : input_or_output LEFT_BRACE buffer_declaration_list RIGHT_BRACE {
-//    }
-//    ;
-//
-//input_or_output
-//    : INPUT {
-//        if (parseContext.globalErrorCheck($1.line, parseContext.symbolTable.atGlobalLevel(), "input"))
-//            parseContext.recover();
-//        UNPACK_ONLY("input", $1.line);
-//        $$.qualifier = EvqInput;        
-//    }
-//    | OUTPUT {
-//        if (parseContext.globalErrorCheck($1.line, parseContext.symbolTable.atGlobalLevel(), "output"))
-//            parseContext.recover();
-//        PACK_ONLY("output", $1.line);
-//        $$.qualifier = EvqOutput;
-//    }
-//    ;
-
-//
-// Place holder for the pack/unpack languages.
-//
-//buffer_declaration_list
-//    : buffer_declaration {
-//    }
-//    | buffer_declaration_list buffer_declaration {
-//    }
-//    ;
-
-//
-// Input/output semantics:
-//   float must be 16 or 32 bits
-//   float alignment restrictions?
-//   check for only one input and only one output
-//   sum of bitfields has to be multiple of 32
-//
-
-//
-// Place holder for the pack/unpack languages.
-//
-//buffer_declaration
-//    : type_specifier IDENTIFIER COLON constant_expression SEMICOLON {
-//        if (parseContext.reservedErrorCheck($2.line, *$2.string, parseContext))
-//            parseContext.recover();
-//        $$.variable = new TVariable($2.string, $1);
-//        if (! parseContext.symbolTable.insert(*$$.variable)) {
-//            parseContext.error($2.line, "redefinition", $$.variable->getName().c_str(), "");
-//            parseContext.recover();
-//            // don't have to delete $$.variable, the pool pop will take care of it
-//        }
-//    }
-//    ;
 
 fully_specified_type
     : type_specifier {
         $$ = $1;
-                
+
         if ($1.array) {
             if (parseContext.extensionErrorCheck($1.line, "GL_3DL_array_objects")) {
                 parseContext.recover();
@@ -1675,7 +1668,7 @@ fully_specified_type
             }
         }
     }
-    | type_qualifier type_specifier  {        
+    | type_qualifier type_specifier  {
         if ($2.array && parseContext.extensionErrorCheck($2.line, "GL_3DL_array_objects")) {
             parseContext.recover();
             $2.setArray(false);
@@ -1684,7 +1677,7 @@ fully_specified_type
             parseContext.recover();
             $2.setArray(false);
         }
-        
+
         if ($1.qualifier == EvqAttribute &&
             ($2.type == EbtBool || $2.type == EbtInt)) {
             parseContext.error($2.line, "cannot be bool or int", getQualifierString($1.qualifier), "");
@@ -1695,16 +1688,101 @@ fully_specified_type
             parseContext.error($2.line, "cannot be bool or int", getQualifierString($1.qualifier), "");
             parseContext.recover();
         }
-        $$ = $2; 
+        $$ = $2;
         $$.qualifier = $1.qualifier;
     }
     ;
 
+invariant_qualifier
+    : INVARIANT {
+    }
+    ;
+
+interpolation_qualifier
+    : SMOOTH {
+    }
+    | FLAT {
+    }
+    | NOPERSPECTIVE {
+    }
+    ;
+
+layout_qualifier
+    : LAYOUT LEFT_PAREN layout_qualifier_id_list RIGHT_PAREN {
+    }
+    ;
+
+layout_qualifier_id_list
+    : layout_qualifier_id {
+    }
+    | layout_qualifier_id_list COMMA layout_qualifier_id {
+    }
+
+layout_qualifier_id
+    : IDENTIFIER {
+    }
+    | IDENTIFIER EQUAL INTCONSTANT {
+    }
+    ;
+
+precise_qualifier
+    : PRECISE {
+    }
+    ;
+
 type_qualifier
-    : CONST_QUAL {
+    : single_type_qualifier {
+        $$ = $1;
+    }
+    | type_qualifier single_type_qualifier {
+        $$ = $1;
+        // TODO: merge qualifiers in $1 and $2 and check for duplication
+
+        if ($$.type == EbtVoid) {
+            $$.type = $2.type;
+        }
+
+        if ($$.qualifier == EvqTemporary) {
+            $$.qualifier = $2.qualifier;
+        } else if ($$.qualifier == EvqIn  && $2.qualifier == EvqOut ||
+                   $$.qualifier == EvqOut && $2.qualifier == EvqIn) {
+            $$.qualifier = EvqInOut;
+        } else if ($$.qualifier == EvqIn    && $2.qualifier == EvqConst ||
+                   $$.qualifier == EvqConst && $2.qualifier == EvqIn) {
+            $$.qualifier = EvqConstReadOnly;
+        }
+    }
+    ;
+
+single_type_qualifier
+    : storage_qualifier {
+        $$ = $1;
+    }
+    | layout_qualifier {
+        $$ = $1;
+    }
+    | precision_qualifier {
+        $$ = $1;
+    }
+    | interpolation_qualifier {
+        // allow inheritance of storage qualifier from block declaration
+        $$ = $1;
+    }
+    | invariant_qualifier {
+        // allow inheritance of storage qualifier from block declaration
+        $$ = $1;
+    }
+    | precise_qualifier {
+        // allow inheritance of storage qualifier from block declaration
+        $$ = $1;
+    }
+    ;
+
+storage_qualifier
+    : CONST {
         $$.setBasic(EbtVoid, EvqConst, $1.line);
     }
-    | ATTRIBUTE { 
+    | ATTRIBUTE {
         VERTEX_ONLY("attribute", $1.line);
         if (parseContext.globalErrorCheck($1.line, parseContext.symbolTable.atGlobalLevel(), "attribute"))
             parseContext.recover();
@@ -1718,10 +1796,94 @@ type_qualifier
         else
             $$.setBasic(EbtVoid, EvqVaryingIn, $1.line);
     }
+    | INOUT {
+        if (parseContext.globalErrorCheck($1.line, parseContext.symbolTable.atGlobalLevel(), "out"))
+            parseContext.recover();
+        $$.setBasic(EbtVoid, EvqInOut, $1.line);
+    }
+    | IN {
+        if (parseContext.globalErrorCheck($1.line, parseContext.symbolTable.atGlobalLevel(), "in"))
+            parseContext.recover();
+        $$.setBasic(EbtVoid, EvqIn, $1.line);
+    }
+    | OUT {
+        if (parseContext.globalErrorCheck($1.line, parseContext.symbolTable.atGlobalLevel(), "out"))
+            parseContext.recover();
+        $$.setBasic(EbtVoid, EvqOut, $1.line);
+    }
+    | CENTROID {
+        if (parseContext.globalErrorCheck($1.line, parseContext.symbolTable.atGlobalLevel(), "centroid"))
+            parseContext.recover();
+        $$.setBasic(EbtVoid, EvqVaryingIn, $1.line);
+    }
+    | PATCH {
+        // TODO: implement this qualifier
+        if (parseContext.globalErrorCheck($1.line, parseContext.symbolTable.atGlobalLevel(), "patch"))
+            parseContext.recover();
+        $$.setBasic(EbtVoid, EvqUniform, $1.line);
+    }
+    | SAMPLE {
+        // TODO: implement this qualifier
+        if (parseContext.globalErrorCheck($1.line, parseContext.symbolTable.atGlobalLevel(), "sample"))
+            parseContext.recover();
+        $$.setBasic(EbtVoid, EvqUniform, $1.line);
+    }
     | UNIFORM {
         if (parseContext.globalErrorCheck($1.line, parseContext.symbolTable.atGlobalLevel(), "uniform"))
             parseContext.recover();
         $$.setBasic(EbtVoid, EvqUniform, $1.line);
+    }
+    | COHERENT {
+        // TODO: implement this qualifier
+        if (parseContext.globalErrorCheck($1.line, parseContext.symbolTable.atGlobalLevel(), "coherent"))
+            parseContext.recover();
+        $$.setBasic(EbtVoid, EvqUniform, $1.line);
+    }
+    | VOLATILE {
+        // TODO: implement this qualifier
+        if (parseContext.globalErrorCheck($1.line, parseContext.symbolTable.atGlobalLevel(), "volatile"))
+            parseContext.recover();
+        $$.setBasic(EbtVoid, EvqUniform, $1.line);
+    }
+    | RESTRICT {
+        // TODO: implement this qualifier
+        if (parseContext.globalErrorCheck($1.line, parseContext.symbolTable.atGlobalLevel(), "restrict"))
+            parseContext.recover();
+        $$.setBasic(EbtVoid, EvqUniform, $1.line);
+    }
+    | READONLY {
+        // TODO: implement this qualifier
+        if (parseContext.globalErrorCheck($1.line, parseContext.symbolTable.atGlobalLevel(), "readonly"))
+            parseContext.recover();
+        $$.setBasic(EbtVoid, EvqUniform, $1.line);
+    }
+    | WRITEONLY {
+        // TODO: implement this qualifier
+        if (parseContext.globalErrorCheck($1.line, parseContext.symbolTable.atGlobalLevel(), "writeonly"))
+            parseContext.recover();
+        $$.setBasic(EbtVoid, EvqUniform, $1.line);
+    }
+    | SUBROUTINE {
+        if (parseContext.globalErrorCheck($1.line, parseContext.symbolTable.atGlobalLevel(), "subroutine"))
+            parseContext.recover();
+        $$.setBasic(EbtVoid, EvqUniform, $1.line);
+    }
+    | SUBROUTINE LEFT_PAREN type_name_list RIGHT_PAREN {
+        if (parseContext.globalErrorCheck($1.line, parseContext.symbolTable.atGlobalLevel(), "subroutine"))
+            parseContext.recover();
+        $$.setBasic(EbtVoid, EvqUniform, $1.line);
+        // TODO: subroutine semantics
+        // 1) make sure each identifier is a type declared earlier with SUBROUTINE
+        // 2) save all of the identifiers for future comparison with the declared function
+    }
+    ;
+
+type_name_list
+    : TYPE_NAME {
+        // TODO: add subroutine type to list
+    }
+    | type_name_list COMMA TYPE_NAME {
+        // TODO: add subroutine type to list
     }
     ;
 
@@ -1729,9 +1891,12 @@ type_specifier
     : type_specifier_nonarray {
         $$ = $1;
     }
+    | type_specifier_nonarray LEFT_BRACKET RIGHT_BRACKET {
+        $$ = $1;
+    }
     | type_specifier_nonarray LEFT_BRACKET constant_expression RIGHT_BRACKET {
         $$ = $1;
-        
+
         if (parseContext.arrayTypeErrorCheck($2.line, $1))
             parseContext.recover();
         else {
@@ -1744,27 +1909,32 @@ type_specifier
     ;
 
 type_specifier_nonarray
-    : VOID_TYPE {
+    : VOID {
         TQualifier qual = parseContext.symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
-        $$.setBasic(EbtVoid, qual, $1.line); 
+        $$.setBasic(EbtVoid, qual, $1.line);
     }
-    | FLOAT_TYPE {
+    | FLOAT {
         TQualifier qual = parseContext.symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
         $$.setBasic(EbtFloat, qual, $1.line);
     }
-    | INT_TYPE {
+    | DOUBLE {
+        TQualifier qual = parseContext.symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
+        // TODO: implement EbtDouble, check all float types
+        $$.setBasic(EbtFloat, qual, $1.line);
+    }
+    | INT {
+        // TODO: implement EbtUint, check all int types
         TQualifier qual = parseContext.symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
         $$.setBasic(EbtInt, qual, $1.line);
     }
-    | BOOL_TYPE {
+    | UINT {
+        TQualifier qual = parseContext.symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
+        $$.setBasic(EbtInt, qual, $1.line);
+    }
+    | BOOL {
         TQualifier qual = parseContext.symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
         $$.setBasic(EbtBool, qual, $1.line);
     }
-//    | UNSIGNED INT_TYPE { 
-//        PACK_UNPACK_ONLY("unsigned", $1.line); 
-//        TQualifier qual = parseContext.symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
-//        $$.setBasic(EbtInt, qual, $1.line); 
-//    }
     | VEC2 {
         TQualifier qual = parseContext.symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
         $$.setBasic(EbtFloat, qual, $1.line);
@@ -1779,6 +1949,12 @@ type_specifier_nonarray
         TQualifier qual = parseContext.symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
         $$.setBasic(EbtFloat, qual, $1.line);
         $$.setAggregate(4);
+    }
+    | DVEC2 {
+    }
+    | DVEC3 {
+    }
+    | DVEC4 {
     }
     | BVEC2 {
         TQualifier qual = parseContext.symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
@@ -1810,88 +1986,535 @@ type_specifier_nonarray
         $$.setBasic(EbtInt, qual, $1.line);
         $$.setAggregate(4);
     }
-    | MATRIX2 {
-        FRAG_VERT_ONLY("mat2", $1.line); 
+    | UVEC2 {
+        TQualifier qual = parseContext.symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
+        $$.setBasic(EbtInt, qual, $1.line);
+        $$.setAggregate(2);
+    }
+    | UVEC3 {
+        TQualifier qual = parseContext.symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
+        $$.setBasic(EbtInt, qual, $1.line);
+        $$.setAggregate(3);
+    }
+    | UVEC4 {
+        TQualifier qual = parseContext.symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
+        $$.setBasic(EbtInt, qual, $1.line);
+        $$.setAggregate(4);
+    }
+    | MAT2 {
         TQualifier qual = parseContext.symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
         $$.setBasic(EbtFloat, qual, $1.line);
         $$.setAggregate(2, true);
     }
-    | MATRIX3 { 
-        FRAG_VERT_ONLY("mat3", $1.line); 
+    | MAT3 {
         TQualifier qual = parseContext.symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
         $$.setBasic(EbtFloat, qual, $1.line);
         $$.setAggregate(3, true);
     }
-    | MATRIX4 { 
-        FRAG_VERT_ONLY("mat4", $1.line);
+    | MAT4 {
         TQualifier qual = parseContext.symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
         $$.setBasic(EbtFloat, qual, $1.line);
         $$.setAggregate(4, true);
-    } 
+    }
+    | MAT2X2 {
+        // TODO: implement this type
+        TQualifier qual = parseContext.symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
+        $$.setBasic(EbtFloat, qual, $1.line);
+        $$.setAggregate(4, true);
+    }
+    | MAT2X3 {
+        // TODO: implement this type
+        TQualifier qual = parseContext.symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
+        $$.setBasic(EbtFloat, qual, $1.line);
+        $$.setAggregate(4, true);
+    }
+    | MAT2X4 {
+        // TODO: implement this type
+        TQualifier qual = parseContext.symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
+        $$.setBasic(EbtFloat, qual, $1.line);
+        $$.setAggregate(4, true);
+    }
+    | MAT3X2 {
+        // TODO: implement this type
+        TQualifier qual = parseContext.symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
+        $$.setBasic(EbtFloat, qual, $1.line);
+        $$.setAggregate(4, true);
+    }
+    | MAT3X3 {
+        // TODO: implement this type
+        TQualifier qual = parseContext.symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
+        $$.setBasic(EbtFloat, qual, $1.line);
+        $$.setAggregate(4, true);
+    }
+    | MAT3X4 {
+        // TODO: implement this type
+        TQualifier qual = parseContext.symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
+        $$.setBasic(EbtFloat, qual, $1.line);
+        $$.setAggregate(4, true);
+    }
+    | MAT4X2 {
+        // TODO: implement this type
+        TQualifier qual = parseContext.symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
+        $$.setBasic(EbtFloat, qual, $1.line);
+        $$.setAggregate(4, true);
+    }
+    | MAT4X3 {
+        // TODO: implement this type
+        TQualifier qual = parseContext.symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
+        $$.setBasic(EbtFloat, qual, $1.line);
+        $$.setAggregate(4, true);
+    }
+    | MAT4X4 {
+        // TODO: implement this type
+        TQualifier qual = parseContext.symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
+        $$.setBasic(EbtFloat, qual, $1.line);
+        $$.setAggregate(4, true);
+    }
+    | DMAT2 {
+        // TODO: implement this type
+        TQualifier qual = parseContext.symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
+        $$.setBasic(EbtFloat, qual, $1.line);
+        $$.setAggregate(4, true);
+    }
+    | DMAT3 {
+        // TODO: implement this type
+        TQualifier qual = parseContext.symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
+        $$.setBasic(EbtFloat, qual, $1.line);
+        $$.setAggregate(4, true);
+    }
+    | DMAT4 {
+        // TODO: implement this type
+        TQualifier qual = parseContext.symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
+        $$.setBasic(EbtFloat, qual, $1.line);
+        $$.setAggregate(4, true);
+    }
+    | DMAT2X2 {
+        // TODO: implement this type
+        TQualifier qual = parseContext.symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
+        $$.setBasic(EbtFloat, qual, $1.line);
+        $$.setAggregate(4, true);
+    }
+    | DMAT2X3 {
+        // TODO: implement this type
+        TQualifier qual = parseContext.symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
+        $$.setBasic(EbtFloat, qual, $1.line);
+        $$.setAggregate(4, true);
+    }
+    | DMAT2X4 {
+        // TODO: implement this type
+        TQualifier qual = parseContext.symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
+        $$.setBasic(EbtFloat, qual, $1.line);
+        $$.setAggregate(4, true);
+    }
+    | DMAT3X2 {
+        // TODO: implement this type
+        TQualifier qual = parseContext.symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
+        $$.setBasic(EbtFloat, qual, $1.line);
+        $$.setAggregate(4, true);
+    }
+    | DMAT3X3 {
+        // TODO: implement this type
+        TQualifier qual = parseContext.symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
+        $$.setBasic(EbtFloat, qual, $1.line);
+        $$.setAggregate(4, true);
+    }
+    | DMAT3X4 {
+        // TODO: implement this type
+        TQualifier qual = parseContext.symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
+        $$.setBasic(EbtFloat, qual, $1.line);
+        $$.setAggregate(4, true);
+    }
+    | DMAT4X2 {
+        // TODO: implement this type
+        TQualifier qual = parseContext.symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
+        $$.setBasic(EbtFloat, qual, $1.line);
+        $$.setAggregate(4, true);
+    }
+    | DMAT4X3 {
+        // TODO: implement this type
+        TQualifier qual = parseContext.symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
+        $$.setBasic(EbtFloat, qual, $1.line);
+        $$.setAggregate(4, true);
+    }
+    | DMAT4X4 {
+        // TODO: implement this type
+        TQualifier qual = parseContext.symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
+        $$.setBasic(EbtFloat, qual, $1.line);
+        $$.setAggregate(4, true);
+    }
+    | ATOMIC_UINT {
+        // TODO: add type
+        TQualifier qual = parseContext.symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
+        $$.setBasic(EbtInt, qual, $1.line);
+    }
     | SAMPLER1D {
-        FRAG_VERT_ONLY("sampler1D", $1.line);
         TQualifier qual = parseContext.symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
         $$.setBasic(EbtSampler1D, qual, $1.line);
-    } 
+    }
     | SAMPLER2D {
-        FRAG_VERT_ONLY("sampler2D", $1.line);
         TQualifier qual = parseContext.symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
         $$.setBasic(EbtSampler2D, qual, $1.line);
-    } 
+    }
     | SAMPLER3D {
-        FRAG_VERT_ONLY("sampler3D", $1.line);
         TQualifier qual = parseContext.symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
         $$.setBasic(EbtSampler3D, qual, $1.line);
-    } 
+    }
     | SAMPLERCUBE {
-        FRAG_VERT_ONLY("samplerCube", $1.line);
         TQualifier qual = parseContext.symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
         $$.setBasic(EbtSamplerCube, qual, $1.line);
-    } 
+    }
     | SAMPLER1DSHADOW {
-        FRAG_VERT_ONLY("sampler1DShadow", $1.line);
         TQualifier qual = parseContext.symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
         $$.setBasic(EbtSampler1DShadow, qual, $1.line);
-    } 
+    }
     | SAMPLER2DSHADOW {
-        FRAG_VERT_ONLY("sampler2DShadow", $1.line);
         TQualifier qual = parseContext.symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
         $$.setBasic(EbtSampler2DShadow, qual, $1.line);
-    } 
-    | SAMPLERRECTARB {
-        // ARB_texture_rectangle
-
-        FRAG_VERT_ONLY("samplerRectARB", $1.line);
+    }
+    | SAMPLERCUBESHADOW {
+        TQualifier qual = parseContext.symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
+        $$.setBasic(EbtSampler2DShadow, qual, $1.line);
+    }
+    | SAMPLER1DARRAY {
+        TQualifier qual = parseContext.symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
+        $$.setBasic(EbtSampler2DShadow, qual, $1.line);
+    }
+    | SAMPLER2DARRAY {
+        TQualifier qual = parseContext.symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
+        $$.setBasic(EbtSampler2DShadow, qual, $1.line);
+    }
+    | SAMPLER1DARRAYSHADOW {
+        TQualifier qual = parseContext.symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
+        $$.setBasic(EbtSampler2DShadow, qual, $1.line);
+    }
+    | SAMPLER2DARRAYSHADOW {
+        TQualifier qual = parseContext.symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
+        $$.setBasic(EbtSampler2DShadow, qual, $1.line);
+    }
+    | SAMPLERCUBEARRAY {
+        TQualifier qual = parseContext.symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
+        $$.setBasic(EbtSampler2DShadow, qual, $1.line);
+    }
+    | SAMPLERCUBEARRAYSHADOW {
+        TQualifier qual = parseContext.symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
+        $$.setBasic(EbtSampler2DShadow, qual, $1.line);
+    }
+    | ISAMPLER1D {
+        TQualifier qual = parseContext.symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
+        $$.setBasic(EbtSampler2DShadow, qual, $1.line);
+    }
+    | ISAMPLER2D {
+        TQualifier qual = parseContext.symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
+        $$.setBasic(EbtSampler2DShadow, qual, $1.line);
+    }
+    | ISAMPLER3D {
+        TQualifier qual = parseContext.symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
+        $$.setBasic(EbtSampler2DShadow, qual, $1.line);
+    }
+    | ISAMPLERCUBE {
+        TQualifier qual = parseContext.symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
+        $$.setBasic(EbtSampler2DShadow, qual, $1.line);
+    }
+    | ISAMPLER1DARRAY {
+        TQualifier qual = parseContext.symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
+        $$.setBasic(EbtSampler2DShadow, qual, $1.line);
+    }
+    | ISAMPLER2DARRAY {
+        TQualifier qual = parseContext.symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
+        $$.setBasic(EbtSampler2DShadow, qual, $1.line);
+    }
+    | ISAMPLERCUBEARRAY {
+        TQualifier qual = parseContext.symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
+        $$.setBasic(EbtSampler2DShadow, qual, $1.line);
+    }
+    | USAMPLER1D {
+        TQualifier qual = parseContext.symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
+        $$.setBasic(EbtSampler2DShadow, qual, $1.line);
+    }
+    | USAMPLER2D {
+        TQualifier qual = parseContext.symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
+        $$.setBasic(EbtSampler2DShadow, qual, $1.line);
+    }
+    | USAMPLER3D {
+        TQualifier qual = parseContext.symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
+        $$.setBasic(EbtSampler2DShadow, qual, $1.line);
+    }
+    | USAMPLERCUBE {
+        TQualifier qual = parseContext.symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
+        $$.setBasic(EbtSampler2DShadow, qual, $1.line);
+    }
+    | USAMPLER1DARRAY {
+        TQualifier qual = parseContext.symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
+        $$.setBasic(EbtSampler2DShadow, qual, $1.line);
+    }
+    | USAMPLER2DARRAY {
+        TQualifier qual = parseContext.symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
+        $$.setBasic(EbtSampler2DShadow, qual, $1.line);
+    }
+    | USAMPLERCUBEARRAY {
+        TQualifier qual = parseContext.symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
+        $$.setBasic(EbtSampler2DShadow, qual, $1.line);
+    }
+    | SAMPLER2DRECT {
         if (parseContext.extensionErrorCheck($1.line, "GL_ARB_texture_rectangle"))
             parseContext.recover();
-        
+
         TQualifier qual = parseContext.symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
         $$.setBasic(EbtSamplerRect, qual, $1.line);
     }
-    | SAMPLERRECTSHADOWARB {
-        // ARB_texture_rectangle
-
-        FRAG_VERT_ONLY("samplerRectShadowARB", $1.line);
+    | SAMPLER2DRECTSHADOW {
         if (parseContext.extensionErrorCheck($1.line, "GL_ARB_texture_rectangle"))
             parseContext.recover();
 
         TQualifier qual = parseContext.symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
         $$.setBasic(EbtSamplerRectShadow, qual, $1.line);
     }
+    | ISAMPLER2DRECT {
+        if (parseContext.extensionErrorCheck($1.line, "GL_ARB_texture_rectangle"))
+            parseContext.recover();
+
+        TQualifier qual = parseContext.symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
+        $$.setBasic(EbtSamplerRect, qual, $1.line);
+    }
+    | USAMPLER2DRECT {
+        if (parseContext.extensionErrorCheck($1.line, "GL_ARB_texture_rectangle"))
+            parseContext.recover();
+
+        TQualifier qual = parseContext.symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
+        $$.setBasic(EbtSamplerRect, qual, $1.line);
+    }
+    | SAMPLERBUFFER {
+        // TODO: implement this type
+        TQualifier qual = parseContext.symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
+        $$.setBasic(EbtSampler2D, qual, $1.line);
+    }
+    | ISAMPLERBUFFER {
+        // TODO: implement this type
+        TQualifier qual = parseContext.symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
+        $$.setBasic(EbtSampler2D, qual, $1.line);
+    }
+    | USAMPLERBUFFER {
+        // TODO: implement this type
+        TQualifier qual = parseContext.symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
+        $$.setBasic(EbtSampler2D, qual, $1.line);
+    }
+    | SAMPLER2DMS {
+        // TODO: implement this type
+        TQualifier qual = parseContext.symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
+        $$.setBasic(EbtSampler2D, qual, $1.line);
+    }
+    | ISAMPLER2DMS {
+        // TODO: implement this type
+        TQualifier qual = parseContext.symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
+        $$.setBasic(EbtSampler2D, qual, $1.line);
+    }
+    | USAMPLER2DMS {
+        // TODO: implement this type
+        TQualifier qual = parseContext.symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
+        $$.setBasic(EbtSampler2D, qual, $1.line);
+    }
+    | SAMPLER2DMSARRAY {
+        // TODO: implement this type
+        TQualifier qual = parseContext.symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
+        $$.setBasic(EbtSampler2D, qual, $1.line);
+    }
+    | ISAMPLER2DMSARRAY {
+        // TODO: implement this type
+        TQualifier qual = parseContext.symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
+        $$.setBasic(EbtSampler2D, qual, $1.line);
+    }
+    | USAMPLER2DMSARRAY {
+        // TODO: implement this type
+        TQualifier qual = parseContext.symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
+        $$.setBasic(EbtSampler2D, qual, $1.line);
+    }
+    | IMAGE1D {
+        // TODO: implement this type
+        TQualifier qual = parseContext.symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
+        $$.setBasic(EbtSampler2D, qual, $1.line);
+    }
+    | IIMAGE1D {
+        // TODO: implement this type
+        TQualifier qual = parseContext.symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
+        $$.setBasic(EbtSampler2D, qual, $1.line);
+    }
+    | UIMAGE1D {
+        // TODO: implement this type
+        TQualifier qual = parseContext.symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
+        $$.setBasic(EbtSampler2D, qual, $1.line);
+    }
+    | IMAGE2D {
+        // TODO: implement this type
+        TQualifier qual = parseContext.symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
+        $$.setBasic(EbtSampler2D, qual, $1.line);
+    }
+    | IIMAGE2D {
+        // TODO: implement this type
+        TQualifier qual = parseContext.symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
+        $$.setBasic(EbtSampler2D, qual, $1.line);
+    }
+    | UIMAGE2D {
+        // TODO: implement this type
+        TQualifier qual = parseContext.symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
+        $$.setBasic(EbtSampler2D, qual, $1.line);
+    }
+    | IMAGE3D {
+        // TODO: implement this type
+        TQualifier qual = parseContext.symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
+        $$.setBasic(EbtSampler2D, qual, $1.line);
+    }
+    | IIMAGE3D {
+        // TODO: implement this type
+        TQualifier qual = parseContext.symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
+        $$.setBasic(EbtSampler2D, qual, $1.line);
+    }
+    | UIMAGE3D {
+        // TODO: implement this type
+        TQualifier qual = parseContext.symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
+        $$.setBasic(EbtSampler2D, qual, $1.line);
+    }
+    | IMAGE2DRECT {
+        // TODO: implement this type
+        TQualifier qual = parseContext.symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
+        $$.setBasic(EbtSampler2D, qual, $1.line);
+    }
+    | IIMAGE2DRECT {
+        // TODO: implement this type
+        TQualifier qual = parseContext.symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
+        $$.setBasic(EbtSampler2D, qual, $1.line);
+    }
+    | UIMAGE2DRECT {
+        // TODO: implement this type
+        TQualifier qual = parseContext.symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
+        $$.setBasic(EbtSampler2D, qual, $1.line);
+    }
+    | IMAGECUBE {
+        // TODO: implement this type
+        TQualifier qual = parseContext.symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
+        $$.setBasic(EbtSampler2D, qual, $1.line);
+    }
+    | IIMAGECUBE {
+        // TODO: implement this type
+        TQualifier qual = parseContext.symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
+        $$.setBasic(EbtSampler2D, qual, $1.line);
+    }
+    | UIMAGECUBE {
+        // TODO: implement this type
+        TQualifier qual = parseContext.symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
+        $$.setBasic(EbtSampler2D, qual, $1.line);
+    }
+    | IMAGEBUFFER {
+        // TODO: implement this type
+        TQualifier qual = parseContext.symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
+        $$.setBasic(EbtSampler2D, qual, $1.line);
+    }
+    | IIMAGEBUFFER {
+        // TODO: implement this type
+        TQualifier qual = parseContext.symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
+        $$.setBasic(EbtSampler2D, qual, $1.line);
+    }
+    | UIMAGEBUFFER {
+        // TODO: implement this type
+        TQualifier qual = parseContext.symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
+        $$.setBasic(EbtSampler2D, qual, $1.line);
+    }
+    | IMAGE1DARRAY {
+        // TODO: implement this type
+        TQualifier qual = parseContext.symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
+        $$.setBasic(EbtSampler2D, qual, $1.line);
+    }
+    | IIMAGE1DARRAY {
+        // TODO: implement this type
+        TQualifier qual = parseContext.symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
+        $$.setBasic(EbtSampler2D, qual, $1.line);
+    }
+    | UIMAGE1DARRAY {
+        // TODO: implement this type
+        TQualifier qual = parseContext.symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
+        $$.setBasic(EbtSampler2D, qual, $1.line);
+    }
+    | IMAGE2DARRAY {
+        // TODO: implement this type
+        TQualifier qual = parseContext.symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
+        $$.setBasic(EbtSampler2D, qual, $1.line);
+    }
+    | IIMAGE2DARRAY {
+        // TODO: implement this type
+        TQualifier qual = parseContext.symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
+        $$.setBasic(EbtSampler2D, qual, $1.line);
+    }
+    | UIMAGE2DARRAY {
+        // TODO: implement this type
+        TQualifier qual = parseContext.symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
+        $$.setBasic(EbtSampler2D, qual, $1.line);
+    }
+    | IMAGECUBEARRAY {
+        // TODO: implement this type
+        TQualifier qual = parseContext.symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
+        $$.setBasic(EbtSampler2D, qual, $1.line);
+    }
+    | IIMAGECUBEARRAY {
+        // TODO: implement this type
+        TQualifier qual = parseContext.symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
+        $$.setBasic(EbtSampler2D, qual, $1.line);
+    }
+    | UIMAGECUBEARRAY {
+        // TODO: implement this type
+        TQualifier qual = parseContext.symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
+        $$.setBasic(EbtSampler2D, qual, $1.line);
+    }
+    | IMAGE2DMS {
+        // TODO: implement this type
+        TQualifier qual = parseContext.symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
+        $$.setBasic(EbtSampler2D, qual, $1.line);
+    }
+    | IIMAGE2DMS {
+        // TODO: implement this type
+        TQualifier qual = parseContext.symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
+        $$.setBasic(EbtSampler2D, qual, $1.line);
+    }
+    | UIMAGE2DMS {
+        // TODO: implement this type
+        TQualifier qual = parseContext.symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
+        $$.setBasic(EbtSampler2D, qual, $1.line);
+    }
+    | IMAGE2DMSARRAY {
+        // TODO: implement this type
+        TQualifier qual = parseContext.symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
+        $$.setBasic(EbtSampler2D, qual, $1.line);
+    }
+    | IIMAGE2DMSARRAY {
+        // TODO: implement this type
+        TQualifier qual = parseContext.symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
+        $$.setBasic(EbtSampler2D, qual, $1.line);
+    }
+    | UIMAGE2DMSARRAY {
+        // TODO: implement this type
+        TQualifier qual = parseContext.symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
+        $$.setBasic(EbtSampler2D, qual, $1.line);
+    }
     | struct_specifier {
-        FRAG_VERT_ONLY("struct", $1.line);
         $$ = $1;
         $$.qualifier = parseContext.symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
     }
-    | TYPE_NAME {     
+    | TYPE_NAME {
         //
-        // This is for user defined type names.  The lexical phase looked up the 
+        // This is for user defined type names.  The lexical phase looked up the
         // type.
         //
         TType& structure = static_cast<TVariable*>($1.symbol)->getType();
         TQualifier qual = parseContext.symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
         $$.setBasic(EbtStruct, qual, $1.line);
         $$.userDef = &structure;
+    }
+    ;
+
+precision_qualifier
+    : HIGH_PRECISION {
+    }
+    | MEDIUM_PRECISION {
+    }
+    | LOW_PRECISION {
     }
     ;
 
@@ -1912,7 +2535,7 @@ struct_specifier
         $$.userDef = structure;
     }
     ;
-    
+
 struct_declaration_list
     : struct_declaration {
         $$ = $1;
@@ -1930,11 +2553,11 @@ struct_declaration_list
         }
     }
     ;
-    
+
 struct_declaration
     : type_specifier struct_declarator_list SEMICOLON {
         $$ = $2;
-        
+
         if (parseContext.voidErrorCheck($1.line, (*$2)[0].type->getFieldName(), $1)) {
             parseContext.recover();
         }
@@ -1955,8 +2578,31 @@ struct_declaration
                 (*$$)[i].type->setTypeName($1.userDef->getTypeName());
         }
     }
+    | type_qualifier type_specifier struct_declarator_list SEMICOLON {
+        $$ = $3;
+
+        if (parseContext.voidErrorCheck($2.line, (*$3)[0].type->getFieldName(), $2)) {
+            parseContext.recover();
+        }
+        for (unsigned int i = 0; i < $$->size(); ++i) {
+            //
+            // Careful not to replace already know aspects of type, like array-ness
+            //
+            (*$$)[i].type->setType($2.type, $2.size, $2.matrix, $2.userDef);
+
+            // don't allow arrays of arrays
+            if ((*$$)[i].type->isArray()) {
+                if (parseContext.arrayTypeErrorCheck($2.line, $2))
+                    parseContext.recover();
+            }
+            if ($2.array)
+                (*$$)[i].type->setArraySize($2.arraySize);
+            if ($2.userDef)
+                (*$$)[i].type->setTypeName($2.userDef->getTypeName());
+        }
+    }
     ;
-        
+
 struct_declarator_list
     : struct_declarator {
         $$ = NewPoolTTypeList();
@@ -1966,9 +2612,15 @@ struct_declarator_list
         $$->push_back($3);
     }
     ;
-    
+
 struct_declarator
     : IDENTIFIER {
+        $$.type = new TType(EbtVoid);
+        $$.line = $1.line;
+        $$.type->setFieldName(*$1.string);
+    }
+    | IDENTIFIER LEFT_BRACKET RIGHT_BRACKET {
+        // allow non-sized arrays in blocks
         $$.type = new TType(EbtVoid);
         $$.line = $1.line;
         $$.type->setFieldName(*$1.string);
@@ -1977,7 +2629,7 @@ struct_declarator
         $$.type = new TType(EbtVoid);
         $$.line = $1.line;
         $$.type->setFieldName(*$1.string);
-        
+
         int size;
         if (parseContext.arraySizeErrorCheck($2.line, $3, size))
             parseContext.recover();
@@ -1986,10 +2638,28 @@ struct_declarator
     ;
 
 initializer
-    : assignment_expression { $$ = $1; }
+    : assignment_expression {
+        $$ = $1;
+    }
+    | LEFT_BRACE initializer_list RIGHT_BRACE { 
+        $$ = $2;
+    }
+    | LEFT_BRACE initializer_list COMMA RIGHT_BRACE { 
+        $$ = $2;
+    }
     ;
 
-declaration_statement 
+initializer_list
+    : initializer {
+        $$ = $1;
+    }
+    | initializer_list COMMA initializer {
+        // TODO: implement the list
+        $$ = $3;
+    }
+    ;
+
+declaration_statement
     : declaration { $$ = $1; }
     ;
 
@@ -1998,12 +2668,14 @@ statement
     | simple_statement    { $$ = $1; }
     ;
 
-// Grammar Note:  No labeled statements; 'goto' is not supported.
+// Grammar Note:  labeled statements for switch statements only; 'goto' is not supported.
 
-simple_statement 
+simple_statement
     : declaration_statement { $$ = $1; }
-    | expression_statement  { $$ = $1; } 
+    | expression_statement  { $$ = $1; }
     | selection_statement   { $$ = $1; }
+    | switch_statement      { $$ = $1; }
+    | case_label            { $$ = $1; }
     | iteration_statement   { $$ = $1; }
     | jump_statement        { $$ = $1; }
     ;
@@ -2011,34 +2683,34 @@ simple_statement
 compound_statement
     : LEFT_BRACE RIGHT_BRACE { $$ = 0; }
     | LEFT_BRACE { parseContext.symbolTable.push(); } statement_list { parseContext.symbolTable.pop(); } RIGHT_BRACE {
-        if ($3 != 0)            
-            $3->setOperator(EOpSequence); 
+        if ($3 != 0)
+            $3->setOperator(EOpSequence);
         $$ = $3;
     }
     ;
 
-statement_no_new_scope 
+statement_no_new_scope
     : compound_statement_no_new_scope { $$ = $1; }
     | simple_statement                { $$ = $1; }
     ;
 
-compound_statement_no_new_scope 
-    // Statement that doesn't create a new scope, for selection_statement, iteration_statement 
-    : LEFT_BRACE RIGHT_BRACE { 
-        $$ = 0; 
+compound_statement_no_new_scope
+    // Statement that doesn't create a new scope, for selection_statement, iteration_statement
+    : LEFT_BRACE RIGHT_BRACE {
+        $$ = 0;
     }
-    | LEFT_BRACE statement_list RIGHT_BRACE { 
+    | LEFT_BRACE statement_list RIGHT_BRACE {
         if ($2)
-            $2->setOperator(EOpSequence); 
-        $$ = $2; 
+            $2->setOperator(EOpSequence);
+        $$ = $2;
     }
     ;
 
 statement_list
     : statement {
-        $$ = parseContext.intermediate.makeAggregate($1, 0); 
+        $$ = parseContext.intermediate.makeAggregate($1, 0);
     }
-    | statement_list statement { 
+    | statement_list statement {
         $$ = parseContext.intermediate.growAggregate($1, $2, 0);
     }
     ;
@@ -2049,32 +2721,30 @@ expression_statement
     ;
 
 selection_statement
-    : IF LEFT_PAREN expression RIGHT_PAREN selection_rest_statement { 
+    : IF LEFT_PAREN expression RIGHT_PAREN selection_rest_statement {
         if (parseContext.boolErrorCheck($1.line, $3))
             parseContext.recover();
         $$ = parseContext.intermediate.addSelection($3, $5, $1.line);
     }
     ;
 
-selection_rest_statement 
+selection_rest_statement
     : statement ELSE statement {
         $$.node1 = $1;
         $$.node2 = $3;
     }
-    | statement { 
+    | statement {
         $$.node1 = $1;
         $$.node2 = 0;
     }
     ;
 
-// Grammar Note:  No 'switch'.  Switch statements not supported.
-
 condition
-    // In 1996 c++ draft, conditions can include single declarations 
+    // In 1996 c++ draft, conditions can include single declarations
     : expression {
         $$ = $1;
         if (parseContext.boolErrorCheck($1->getLine(), $1))
-            parseContext.recover();          
+            parseContext.recover();
     }
     | fully_specified_type IDENTIFIER EQUAL initializer {
         TIntermNode* intermNode;
@@ -2082,7 +2752,7 @@ condition
             parseContext.recover();
         if (parseContext.boolErrorCheck($2.line, $1))
             parseContext.recover();
-        
+
         if (!parseContext.executeInitializer($2.line, *$2.string, $1, $4, intermNode))
             $$ = $4;
         else {
@@ -2092,8 +2762,32 @@ condition
     }
     ;
 
+switch_statement
+    : SWITCH LEFT_PAREN expression RIGHT_PAREN { ++parseContext.switchNestingLevel; } LEFT_BRACE switch_statement_list RIGHT_BRACE {
+        $$ = 0;
+        --parseContext.switchNestingLevel;
+    }
+    ;
+
+switch_statement_list
+    : /* nothing */ {
+    }
+    | statement_list {
+        $$ = $1;
+    }
+    ;
+
+case_label
+    : CASE expression COLON {
+        $$ = 0;
+    }
+    | DEFAULT COLON {
+        $$ = 0;
+    }
+    ;
+
 iteration_statement
-    : WHILE LEFT_PAREN { parseContext.symbolTable.push(); ++parseContext.loopNestingLevel; } condition RIGHT_PAREN statement_no_new_scope { 
+    : WHILE LEFT_PAREN { parseContext.symbolTable.push(); ++parseContext.loopNestingLevel; } condition RIGHT_PAREN statement_no_new_scope {
         parseContext.symbolTable.pop();
         $$ = parseContext.intermediate.addLoop($6, $4, 0, true, $1.line);
         --parseContext.loopNestingLevel;
@@ -2101,7 +2795,7 @@ iteration_statement
     | DO { ++parseContext.loopNestingLevel; } statement WHILE LEFT_PAREN expression RIGHT_PAREN SEMICOLON {
         if (parseContext.boolErrorCheck($8.line, $6))
             parseContext.recover();
-                    
+
         $$ = parseContext.intermediate.addLoop($3, $6, 0, false, $4.line);
         --parseContext.loopNestingLevel;
     }
@@ -2117,26 +2811,26 @@ iteration_statement
     }
     ;
 
-for_init_statement 
+for_init_statement
     : expression_statement {
-        $$ = $1; 
-    } 
+        $$ = $1;
+    }
     | declaration_statement {
         $$ = $1;
     }
     ;
 
-conditionopt 
-    : condition { 
-        $$ = $1; 
+conditionopt
+    : condition {
+        $$ = $1;
     }
-    | /* May be null */ { 
-        $$ = 0; 
+    | /* May be null */ {
+        $$ = 0;
     }
     ;
 
-for_rest_statement 
-    : conditionopt SEMICOLON { 
+for_rest_statement
+    : conditionopt SEMICOLON {
         $$.node1 = $1;
         $$.node2 = 0;
     }
@@ -2151,14 +2845,14 @@ jump_statement
         if (parseContext.loopNestingLevel <= 0) {
             parseContext.error($1.line, "continue statement only allowed in loops", "", "");
             parseContext.recover();
-        }        
+        }
         $$ = parseContext.intermediate.addBranch(EOpContinue, $1.line);
     }
     | BREAK SEMICOLON {
-        if (parseContext.loopNestingLevel <= 0) {
-            parseContext.error($1.line, "break statement only allowed in loops", "", "");
+        if (parseContext.loopNestingLevel + parseContext.switchNestingLevel <= 0) {
+            parseContext.error($1.line, "break statement only allowed in switch and loops", "", "");
             parseContext.recover();
-        }        
+        }
         $$ = parseContext.intermediate.addBranch(EOpBreak, $1.line);
     }
     | RETURN SEMICOLON {
@@ -2168,7 +2862,7 @@ jump_statement
             parseContext.recover();
         }
     }
-    | RETURN expression SEMICOLON {        
+    | RETURN expression SEMICOLON {
         $$ = parseContext.intermediate.addBranch(EOpReturn, $2, $1.line);
         parseContext.functionReturnsValue = true;
         if (parseContext.currentFunctionType->getBasicType() == EbtVoid) {
@@ -2182,15 +2876,15 @@ jump_statement
     | DISCARD SEMICOLON {
         FRAG_ONLY("discard", $1.line);
         $$ = parseContext.intermediate.addBranch(EOpKill, $1.line);
-    }        
+    }
     ;
 
 // Grammar Note:  No 'goto'.  Gotos are not supported.
 
 translation_unit
-    : external_declaration { 
-        $$ = $1; 
-        parseContext.treeRoot = $$; 
+    : external_declaration {
+        $$ = $1;
+        parseContext.treeRoot = $$;
     }
     | translation_unit external_declaration {
         $$ = parseContext.intermediate.growAggregate($1, $2, 0);
@@ -2199,11 +2893,11 @@ translation_unit
     ;
 
 external_declaration
-    : function_definition { 
-        $$ = $1; 
+    : function_definition {
+        $$ = $1;
     }
-    | declaration { 
-        $$ = $1; 
+    | declaration {
+        $$ = $1;
     }
     ;
 
@@ -2224,7 +2918,7 @@ function_definition
             parseContext.recover();
         }
         prevDec->setDefined();
-        
+
         //
         // Raise error message if main function takes any parameters or return anything other than void
         //
@@ -2236,23 +2930,23 @@ function_definition
             if (function.getReturnType().getBasicType() != EbtVoid) {
                 parseContext.error($1.line, "", function.getReturnType().getBasicString(), "main function cannot return a value");
                 parseContext.recover();
-            }            
+            }
         }
-   
+
         //
         // New symbol table scope for body of function plus its arguments
         //
         parseContext.symbolTable.push();
-        
+
         //
         // Remember the return type for later checking for RETURN statements.
         //
         parseContext.currentFunctionType = &(prevDec->getReturnType());
         parseContext.functionReturnsValue = false;
-        
-        // 
+
+        //
         // Insert parameters into the symbol table.
-        // If the parameter has no name, it's not an error, just don't insert it 
+        // If the parameter has no name, it's not an error, just don't insert it
         // (could be used for unused args).
         //
         // Also, accumulate the list of parameters into the HIL, so lower level code
@@ -2263,7 +2957,7 @@ function_definition
             TParameter& param = function[i];
             if (param.name != 0) {
                 TVariable *variable = new TVariable(param.name, *param.type);
-                // 
+                //
                 // Insert the parameters with name in the symbol table.
                 //
                 if (! parseContext.symbolTable.insert(*variable)) {
@@ -2275,15 +2969,15 @@ function_definition
                 // Transfer ownership of name pointer to symbol table.
                 //
                 param.name = 0;
-                
+
                 //
                 // Add the parameter to the HIL
-                //                
+                //
                 paramNodes = parseContext.intermediate.growAggregate(
-                                               paramNodes, 
+                                               paramNodes,
                                                parseContext.intermediate.addSymbol(variable->getUniqueId(),
                                                                        variable->getName(),
-                                                                       variable->getType(), $1.line), 
+                                                                       variable->getType(), $1.line),
                                                $1.line);
             } else {
                 paramNodes = parseContext.intermediate.growAggregate(paramNodes, parseContext.intermediate.addSymbol(0, "", *param.type, $1.line), $1.line);
@@ -2305,8 +2999,8 @@ function_definition
         parseContext.intermediate.setAggregateOperator($$, EOpFunction, $1.line);
         $$->getAsAggregate()->setName($1.function->getMangledName().c_str());
         $$->getAsAggregate()->setType($1.function->getReturnType());
-        
-        // store the pragma information for debug and optimize and other vendor specific 
+
+        // store the pragma information for debug and optimize and other vendor specific
         // information. This information can be queried from the parse tree
         $$->getAsAggregate()->setOptimize(parseContext.contextPragma.optimize);
         $$->getAsAggregate()->setDebug(parseContext.contextPragma.debug);

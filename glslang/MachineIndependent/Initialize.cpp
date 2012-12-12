@@ -918,18 +918,6 @@ void IdentifyBuiltIns(EShLanguage language, TSymbolTable& symbolTable)
 
         break;
 
-    case EShLangPack:
-    case EShLangUnpack:
-        symbolTable.relateToOperator("itof",         EOpItof);
-        symbolTable.relateToOperator("ftoi",         EOpFtoi);
-        symbolTable.relateToOperator("skipPixels",   EOpSkipPixels);
-        symbolTable.relateToOperator("readInput",    EOpReadInput);
-        symbolTable.relateToOperator("writePixel",   EOpWritePixel);
-        symbolTable.relateToOperator("bitmapLSB",    EOpBitmapLsb);
-        symbolTable.relateToOperator("bitmapMSB",    EOpBitmapMsb);
-        symbolTable.relateToOperator("writeOutput",  EOpWriteOutput);
-        symbolTable.relateToOperator("readPixel",    EOpReadPixel);
-        break;
 	default: assert(false && "Language not supported");
     }
 }

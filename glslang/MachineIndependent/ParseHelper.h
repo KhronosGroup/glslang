@@ -66,17 +66,19 @@ struct TPragma {
 struct TParseContext {
     TParseContext(TSymbolTable& symt, TIntermediate& interm, EShLanguage L, TInfoSink& is) : 
             intermediate(interm), symbolTable(symt), infoSink(is), language(L), treeRoot(0),
-            recoveredFromError(false), numErrors(0), lexAfterType(false), loopNestingLevel(0), 
+            recoveredFromError(false), numErrors(0), lexAfterType(false), loopNestingLevel(0),
+            switchNestingLevel(0),
             inTypeParen(false), contextPragma(true, false) {  }
     TIntermediate& intermediate; // to hold and build a parse tree
     TSymbolTable& symbolTable;   // symbol table that goes with the language currently being parsed
     TInfoSink& infoSink;
-    EShLanguage language;        // vertex or fragment language (future: pack or unpack)
+    EShLanguage language;        // vertex or fragment language
     TIntermNode* treeRoot;       // root of parse tree being created
     bool recoveredFromError;     // true if a parse error has occurred, but we continue to parse
     int numErrors;
     bool lexAfterType;           // true if we've recognized a type, so can only be looking for an identifier
     int loopNestingLevel;        // 0 if outside all loops
+    int switchNestingLevel;      // 0 if outside all switch statements
     bool inTypeParen;            // true if in parentheses, looking only for an identifier
     const TType* currentFunctionType;  // the return type of the function that's currently being parsed
     bool functionReturnsValue;   // true if a non-void function has a return
@@ -93,6 +95,7 @@ struct TParseContext {
     void assignError(int line, const char* op, TString left, TString right);
     void unaryOpError(int line, char* op, TString operand);
     void binaryOpError(int line, char* op, TString left, TString right);
+    void variableErrorCheck(TIntermTyped*& nodePtr);
     bool lValueErrorCheck(int line, char* op, TIntermTyped*);
     bool constErrorCheck(TIntermTyped* node);
     bool integerErrorCheck(TIntermTyped* node, char* token);
@@ -107,12 +110,13 @@ struct TParseContext {
     bool boolErrorCheck(int, const TIntermTyped*);
     bool boolErrorCheck(int, const TPublicType&);
     bool samplerErrorCheck(int line, const TPublicType& pType, const char* reason);
+    bool globalQualifierFixAndErrorCheck(int line, TQualifier&);
     bool structQualifierErrorCheck(int line, const TPublicType& pType);
     bool parameterSamplerErrorCheck(int line, TQualifier qualifier, const TType& type);
     bool containsSampler(TType& type);
     bool nonInitConstErrorCheck(int line, TString& identifier, TPublicType& type);
     bool nonInitErrorCheck(int line, TString& identifier, TPublicType& type);
-    bool paramErrorCheck(int line, TQualifier qualifier, TQualifier paramQualifier, TType* type);
+    bool paramErrorCheck(int line, TQualifier qualifier, TType* type);
     bool extensionErrorCheck(int line, const char*);
     const TFunction* findFunction(int line, TFunction* pfnCall, bool *builtIn = 0);
     bool executeInitializer(TSourceLoc line, TString& identifier, TPublicType& pType, 

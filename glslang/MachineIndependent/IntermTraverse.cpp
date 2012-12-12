@@ -51,6 +51,12 @@
 //
 // Traversal functions for terminals are straighforward....
 //
+void TIntermMethod::traverse(TIntermTraverser* it)
+{
+    // TODO: current tree should always resolve all methods as constants
+    // 4.3 will leave some length methods as methods
+}
+
 void TIntermSymbol::traverse(TIntermTraverser* it)
 {
     if (it->visitSymbol)

@@ -118,6 +118,8 @@ enum TOperator {
 
     EOpVectorSwizzle,
 
+    EOpMethod,
+
     //
     // Built-in functions potentially mapped to operators
     //
@@ -168,17 +170,7 @@ enum TOperator {
 
     EOpAny,
     EOpAll,
-    
-    EOpItof,         // pack/unpack only
-    EOpFtoi,         // pack/unpack only    
-    EOpSkipPixels,   // pack/unpack only
-    EOpReadInput,    // unpack only
-    EOpWritePixel,   // unpack only
-    EOpBitmapLsb,    // unpack only
-    EOpBitmapMsb,    // unpack only
-    EOpWriteOutput,  // pack only
-    EOpReadPixel,    // pack only
-    
+
     //
     // Branch
     //
@@ -242,6 +234,7 @@ class TIntermBinary;
 class TIntermConstantUnion;
 class TIntermSelection;
 class TIntermTyped;
+class TIntermMethod;
 class TIntermSymbol;
 class TInfoSink;
 
@@ -261,6 +254,7 @@ public:
     virtual TIntermAggregate* getAsAggregate()     { return 0; }
     virtual TIntermBinary*    getAsBinaryNode()    { return 0; }
     virtual TIntermSelection* getAsSelectionNode() { return 0; }
+    virtual TIntermMethod*    getAsMethodNode()    { return 0; }
     virtual TIntermSymbol*    getAsSymbolNode()    { return 0; }
     virtual ~TIntermNode() { }
 protected:
@@ -340,6 +334,23 @@ public:
 protected:
     TOperator flowOp;
     TIntermTyped* expression;  // non-zero except for "return exp;" statements
+};
+
+//
+// Represent method names before seeing their calling signature
+// or resolving them to operations.  Just an expression as the base object
+// and a textural name.
+//
+class TIntermMethod : public TIntermTyped {
+public:
+    TIntermMethod(TIntermTyped* o, const TType& t, const TString& m) : TIntermTyped(t), object(o), method(m) { }
+    virtual TIntermMethod* getAsMethodNode() { return this; }
+    virtual const TString& getMethodName() const { return method; }
+    virtual TIntermTyped* getObject() const { return object; }
+    virtual void traverse(TIntermTraverser*);
+protected:
+    TIntermTyped* object;
+    TString method;
 };
 
 //

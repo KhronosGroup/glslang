@@ -212,8 +212,6 @@ int C_DECL main(int argc, char* argv[])
 //
 //   .frag*    = fragment programs
 //   .vert*    = vertex programs
-//   .pack*    = pack programs
-//   .unpa*    = unpack pragrams
 //
 static EShLanguage FindLanguage(char *name)
 {
@@ -228,8 +226,6 @@ static EShLanguage FindLanguage(char *name)
     if (ext = strrchr(name, '.')) {
         if (strncmp(ext, ".frag", 4) == 0) return EShLangFragment;
         if (strncmp(ext, ".vert", 4) == 0) return EShLangVertex;
-        if (strncmp(ext, ".pack", 4) == 0) return EShLangPack;
-        if (strncmp(ext, ".unpa", 4) == 0) return EShLangUnpack;
     }
 
     return EShLangFragment;

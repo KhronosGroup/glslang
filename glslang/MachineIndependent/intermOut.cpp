@@ -306,16 +306,6 @@ bool OutputAggregate(bool /* preVisit */, TIntermAggregate* node, TIntermTravers
     case EOpRefract:       out.debug << "refract";                 break;
     case EOpMul:           out.debug << "component-wise multiply"; break;
 
-    case EOpItof:          out.debug << "itof";        break;
-    case EOpFtoi:          out.debug << "ftoi";        break;
-    case EOpSkipPixels:    out.debug << "skipPixels";  break;
-    case EOpReadInput:     out.debug << "readInput";   break;
-    case EOpWritePixel:    out.debug << "writePixel";  break;
-    case EOpBitmapLsb:     out.debug << "bitmapLSB";   break;
-    case EOpBitmapMsb:     out.debug << "bitmapMSB";   break;
-    case EOpWriteOutput:   out.debug << "writeOutput"; break;
-    case EOpReadPixel:     out.debug << "readPixel";   break;
-
     default: out.debug.message(EPrefixError, "Bad aggregation op");
     }
 

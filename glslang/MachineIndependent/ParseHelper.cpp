@@ -252,6 +252,30 @@ void TParseContext::binaryOpError(int line, char* op, TString left, TString righ
 }
 
 //
+// A basic type of EbtVoid is a key that the name string was seen in the source, but
+// it was not found as a variable in the symbol table.  If so, give the error
+// message and insert a dummy variable in the symbol table to prevent future errors.
+//
+void TParseContext::variableErrorCheck(TIntermTyped*& nodePtr) 
+{
+    TIntermSymbol* symbol = nodePtr->getAsSymbolNode();
+    if (symbol && symbol->getType().getBasicType() == EbtVoid) {
+        error(symbol->getLine(), "undeclared identifier", symbol->getSymbol().c_str(), "");
+        recover();
+
+        // Add to symbol table to prevent future error messages on the same name
+            
+        TVariable* fakeVariable = new TVariable(&symbol->getSymbol(), TType(EbtFloat));
+        symbolTable.insert(*fakeVariable);
+
+        // substitute a symbol node for this new variable
+        nodePtr = intermediate.addSymbol(fakeVariable->getUniqueId(), 
+                                         fakeVariable->getName(), 
+                                         fakeVariable->getType(), symbol->getLine());
+    }
+}
+
+//
 // Both test and if necessary, spit out an error, to see if the node is really
 // an l-value that can be operated on this way.
 //
@@ -311,7 +335,6 @@ bool TParseContext::lValueErrorCheck(int line, char* op, TIntermTyped* node)
     case EvqAttribute:      message = "can't modify an attribute";   break;
     case EvqUniform:        message = "can't modify a uniform";      break;
     case EvqVaryingIn:      message = "can't modify a varying";      break;
-    case EvqInput:          message = "can't modify an input";       break;
     case EvqFace:           message = "can't modify gl_FrontFace";   break;
     case EvqFragCoord:      message = "can't modify gl_FragCoord";   break;
     default:
@@ -590,6 +613,24 @@ bool TParseContext::samplerErrorCheck(int line, const TPublicType& pType, const 
     } else if (IsSampler(pType.type)) {
         error(line, reason, TType::getBasicString(pType.type), "");
 
+        return true;
+    }
+
+    return false;
+}
+
+bool TParseContext::globalQualifierFixAndErrorCheck(int line, TQualifier& qualifier)
+{
+    switch (qualifier) {
+    case EvqIn:
+        qualifier = EvqVaryingIn;
+        return false;
+    case EvqOut:
+        qualifier = EvqVaryingOut;
+        return false;
+    case EvqInOut:
+        qualifier = EvqVaryingIn;
+        error(line, "cannot use both 'in' and 'out' at global scope", "", "");
         return true;
     }
 
@@ -885,23 +926,26 @@ bool TParseContext::nonInitErrorCheck(int line, TString& identifier, TPublicType
     return false;
 }
 
-bool TParseContext::paramErrorCheck(int line, TQualifier qualifier, TQualifier paramQualifier, TType* type)
-{    
-    if (qualifier != EvqConst && qualifier != EvqTemporary) {
+bool TParseContext::paramErrorCheck(int line, TQualifier qualifier, TType* type)
+{
+    switch (qualifier) {
+    case EvqConst:
+    case EvqConstReadOnly:
+        type->changeQualifier(EvqConstReadOnly);
+        return false;
+    case EvqIn:
+    case EvqOut:
+    case EvqInOut:
+        type->changeQualifier(qualifier);
+        return false;
+    case EvqTemporary:
+        type->changeQualifier(EvqIn);
+        return false;
+    default:
+        type->changeQualifier(EvqIn);
         error(line, "qualifier not allowed on function parameter", getQualifierString(qualifier), "");
         return true;
     }
-    if (qualifier == EvqConst && paramQualifier != EvqIn) {
-        error(line, "qualifier not allowed with ", getQualifierString(qualifier), getQualifierString(paramQualifier));
-        return true;
-    }
-
-    if (qualifier == EvqConst)
-        type->changeQualifier(EvqConstReadOnly);
-    else
-        type->changeQualifier(paramQualifier);
-
-    return false;
 }
 
 bool TParseContext::extensionErrorCheck(int line, const char* extension)

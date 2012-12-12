@@ -77,10 +77,6 @@ enum TQualifier {
     EvqVaryingOut,    // vertex shaders only  read/write
     EvqUniform,       // Readonly, vertex and fragment
 
-    // pack/unpack input and output
-    EvqInput,
-    EvqOutput,
-
     // parameters
     EvqIn,
     EvqOut,
@@ -113,16 +109,14 @@ __inline const char* getQualifierString(TQualifier q)
     case EvqTemporary:      return "Temporary";      break;
     case EvqGlobal:         return "Global";         break;
     case EvqConst:          return "const";          break;
-    case EvqConstReadOnly:  return "const";          break;
+    case EvqConstReadOnly:  return "const (read only)"; break;
     case EvqAttribute:      return "attribute";      break;
-    case EvqVaryingIn:      return "varying";        break;
-    case EvqVaryingOut:     return "varying";        break;
+    case EvqVaryingIn:      return "varying in";     break;
+    case EvqVaryingOut:     return "varying out";    break;
     case EvqUniform:        return "uniform";        break;
     case EvqIn:             return "in";             break;
     case EvqOut:            return "out";            break;
     case EvqInOut:          return "inout";          break;
-    case EvqInput:          return "input";          break;
-    case EvqOutput:         return "output";         break;
     case EvqPosition:       return "Position";       break;
     case EvqPointSize:      return "PointSize";      break;
     case EvqClipVertex:     return "ClipVertex";     break;

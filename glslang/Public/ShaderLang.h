@@ -72,8 +72,6 @@ SH_IMPORT_EXPORT int __fastcall ShFinalize();
 typedef enum {
 	EShLangVertex,
 	EShLangFragment,
-	EShLangPack,
-    EShLangUnpack,
     EShLangCount,
 } EShLanguage;
 
@@ -82,8 +80,6 @@ typedef enum {
 //
 typedef enum {
     EShExVertexFragment,
-    EShExPackFragment,
-    EShExUnpackFragment,
     EShExFragment
 } EShExecutable;
 

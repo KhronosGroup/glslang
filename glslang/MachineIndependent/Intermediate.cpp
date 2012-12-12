@@ -554,6 +554,14 @@ TIntermTyped* TIntermediate::addComma(TIntermTyped* left, TIntermTyped* right, T
     }
 }
 
+TIntermTyped* TIntermediate::addMethod(TIntermTyped* object, TType& type, const TString* name, TSourceLoc line)
+{
+    TIntermMethod* method = new TIntermMethod(object, type, *name);
+    method->setLine(line);
+
+    return method;
+}
+
 //
 // For "?:" test nodes.  There are three children; a condition,
 // a true path, and a false path.  The two paths are specified
