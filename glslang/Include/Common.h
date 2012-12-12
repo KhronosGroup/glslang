@@ -158,7 +158,7 @@ inline const TString String(const int i, const int base = 10)
     char text[16];     // 32 bit ints are at most 10 digits in base 10
     
     #ifdef _WIN32
-        itoa(i, text, base);
+        _itoa_s(i, text, base);
     #else
         // we assume base 10 for all cases
         sprintf(text, "%d", i);
@@ -172,15 +172,16 @@ const unsigned int SourceLocStringShift = 16;
 
 __inline TPersistString FormatSourceLoc(const TSourceLoc loc)
 {
-    char locText[64];
+	const int maxSize = 64;
+    char locText[maxSize];
 
     int string = loc >> SourceLocStringShift;
     int line = loc & SourceLocLineMask;
 
     if (line)
-        sprintf(locText, "%d:%d", string, line);
+        sprintf_s(locText, maxSize, "%d:%d", string, line);
     else
-        sprintf(locText, "%d:? ", string);
+        sprintf_s(locText, maxSize, "%d:? ", string);
 
     return TPersistString(locText);
 }

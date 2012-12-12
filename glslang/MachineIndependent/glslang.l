@@ -59,7 +59,7 @@ O           [0-7]
 #include <stdio.h>
 #include <stdlib.h>
 #include "ParseHelper.h"
-#include "glslang_tab.h"
+#include "glslang_tab.cpp.h"
 
 /* windows only pragma */
 #ifdef _MSC_VER
@@ -84,7 +84,7 @@ TSourceLoc yylineno;
 
 %option noyywrap
 %option never-interactive
-%option outfile="Gen_glslang.cpp"
+%option outfile="gen_glslang.cpp"
 %x FIELDS
 
 

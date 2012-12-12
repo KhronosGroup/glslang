@@ -284,13 +284,14 @@ void usage()
 # define MAX_SOURCE_STRINGS 5
 char** ReadFileData(char *fileName) 
 {
-    FILE *in    = fopen(fileName, "r");
+    FILE *in;
+	int errorCode = fopen_s(&in, fileName, "r");
     char *fdata;
     int count = 0;
     char**return_data=(char**)malloc(MAX_SOURCE_STRINGS+1);
 
     //return_data[MAX_SOURCE_STRINGS]=NULL;
-	if (!in) {
+	if (errorCode) {
         printf("Error: unable to open input file: %s\n", fileName);
         return 0;
     }

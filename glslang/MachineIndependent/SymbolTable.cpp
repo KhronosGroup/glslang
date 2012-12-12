@@ -81,8 +81,9 @@ void TType::buildMangledName(TString& mangledName)
 
     mangledName += static_cast<char>('0' + getNominalSize());
     if (isArray()) {
-        char buf[10];
-        sprintf(buf, "%d", arraySize);
+		const int maxSize = 10;
+        char buf[maxSize];
+        sprintf_s(buf, maxSize, "%d", arraySize);
         mangledName += '[';
         mangledName += buf;
         mangledName += ']';

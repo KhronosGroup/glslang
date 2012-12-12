@@ -203,12 +203,13 @@ void TParseContext::recover()
 void C_DECL TParseContext::error(TSourceLoc nLine, const char *szReason, const char *szToken, 
                                  const char *szExtraInfoFormat, ...)
 {
-    char szExtraInfo[400];
+	const int maxSize = 400;
+    char szExtraInfo[maxSize];
     va_list marker;
     
     va_start(marker, szExtraInfoFormat);
     
-    _vsnprintf(szExtraInfo, sizeof(szExtraInfo), szExtraInfoFormat, marker);
+    _vsnprintf_s(szExtraInfo, maxSize, sizeof(szExtraInfo), szExtraInfoFormat, marker);
     
     /* VC++ format: file(linenum) : error #: 'token' : extrainfo */
     infoSink.info.prefix(EPrefixError);
@@ -1126,8 +1127,8 @@ TIntermTyped* TParseContext::addConstructor(TIntermNode* node, const TType* type
             newNode = constructBuiltIn(type, op, *p, node->getLine(), true);
         
         if (newNode) {
-            sequenceVector.erase(p); 
-            sequenceVector.insert(p, newNode);
+            p = sequenceVector.erase(p); 
+            p = sequenceVector.insert(p, newNode);
         }
     }
 

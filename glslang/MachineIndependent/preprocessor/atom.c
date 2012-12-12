@@ -79,6 +79,8 @@ NVIDIA HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 // atom.c
 //
 
+#define _CRT_SECURE_NO_WARNINGS
+
 #include <assert.h>
 #include <stdlib.h>
 #include <stdio.h>

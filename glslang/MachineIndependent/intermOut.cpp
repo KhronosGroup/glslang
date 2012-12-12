@@ -55,19 +55,21 @@ public:
 
 TString TType::getCompleteString() const
 {
-    char buf[100];
+	const int maxSize = 100;
+    char buf[maxSize];
     char *p = &buf[0];
+	char *end = &buf[maxSize];
 
     if (qualifier != EvqTemporary && qualifier != EvqGlobal)
-        p += sprintf(p, "%s ", getQualifierString());
+        p += sprintf_s(p, end - p, "%s ", getQualifierString());
     if (array)
-        p += sprintf(p, "array of ");
+        p += sprintf_s(p, end - p, "array of ");
     if (matrix)
-        p += sprintf(p, "%dX%d matrix of ", size, size);
+        p += sprintf_s(p, end - p, "%dX%d matrix of ", size, size);
     else if (size > 1)
-        p += sprintf(p, "%d-component vector of ", size);
+        p += sprintf_s(p, end - p, "%d-component vector of ", size);
 
-    sprintf(p, "%s", getBasicString());
+    sprintf_s(p, end - p, "%s", getBasicString());
 
     return TString(buf);
 }   
@@ -101,8 +103,9 @@ void OutputSymbol(TIntermSymbol* node, TIntermTraverser* it)
 
     OutputTreeText(oit->infoSink, node, oit->depth);
 
-    char buf[100];
-    sprintf(buf, "'%s' (%s)\n",
+	const int maxSize = 100;
+    char buf[maxSize];
+    sprintf_s(buf, maxSize, "'%s' (%s)\n",
            node->getSymbol().c_str(),
            node->getCompleteString().c_str());
 
@@ -380,16 +383,18 @@ void OutputConstantUnion(TIntermConstantUnion* node, TIntermTraverser* it)
             break;
         case EbtFloat:
             {
-                char buf[300];
-                sprintf(buf, "%f (%s)", node->getUnionArrayPointer()[i].getFConst(), "const float");
+				const int maxSize = 300;
+                char buf[maxSize];
+                sprintf_s(buf, maxSize, "%f (%s)", node->getUnionArrayPointer()[i].getFConst(), "const float");
 
                 out.debug << buf << "\n";           
             }
             break;
         case EbtInt:
             {
-                char buf[300];
-                sprintf(buf, "%d (%s)", node->getUnionArrayPointer()[i].getIConst(), "const int");
+				const int maxSize = 300;
+                char buf[maxSize];
+                sprintf_s(buf, maxSize, "%d (%s)", node->getUnionArrayPointer()[i].getIConst(), "const int");
 
                 out.debug << buf << "\n";
                 break;

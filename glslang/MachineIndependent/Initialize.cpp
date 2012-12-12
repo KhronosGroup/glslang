@@ -728,41 +728,42 @@ void TBuiltIns::initialize(const TBuiltInResource &resources)
         // Implementation dependent constants.  The example values below
         // are the minimum values allowed for these maximums.
         //
-        char builtInConstant[80];
-        sprintf(builtInConstant, "const int  gl_MaxLights = %d;", resources.maxLights); // GL 1.0
+		const int maxSize = 80;
+        char builtInConstant[maxSize];
+        sprintf_s(builtInConstant, maxSize, "const int  gl_MaxLights = %d;", resources.maxLights); // GL 1.0
         s.append(TString(builtInConstant));                            
         
-        sprintf(builtInConstant, "const int  gl_MaxClipPlanes = %d;", resources.maxClipPlanes);  // GL 1.0
+        sprintf_s(builtInConstant, maxSize, "const int  gl_MaxClipPlanes = %d;", resources.maxClipPlanes);  // GL 1.0
         s.append(TString(builtInConstant));
         
-        sprintf(builtInConstant, "const int  gl_MaxTextureUnits = %d;", resources.maxTextureUnits); // GL 1.2
+        sprintf_s(builtInConstant, maxSize, "const int  gl_MaxTextureUnits = %d;", resources.maxTextureUnits); // GL 1.2
         s.append(TString(builtInConstant));
         
-        sprintf(builtInConstant, "const int  gl_MaxTextureCoords = %d;", resources.maxTextureCoords); // ARB_fragment_program
+        sprintf_s(builtInConstant, maxSize, "const int  gl_MaxTextureCoords = %d;", resources.maxTextureCoords); // ARB_fragment_program
         s.append(TString(builtInConstant));
         
-        sprintf(builtInConstant, "const int  gl_MaxVertexAttribs = %d;", resources.maxVertexAttribs); // ARB_vertex_shader
+        sprintf_s(builtInConstant, maxSize, "const int  gl_MaxVertexAttribs = %d;", resources.maxVertexAttribs); // ARB_vertex_shader
         s.append(TString(builtInConstant));
         
-        sprintf(builtInConstant, "const int  gl_MaxVertexUniformComponents = %d;", resources.maxVertexUniformComponents); // ARB_vertex_shader
+        sprintf_s(builtInConstant, maxSize, "const int  gl_MaxVertexUniformComponents = %d;", resources.maxVertexUniformComponents); // ARB_vertex_shader
         s.append(TString(builtInConstant));       
         
-        sprintf(builtInConstant, "const int  gl_MaxVaryingFloats = %d;", resources.maxVaryingFloats); // ARB_vertex_shader
+        sprintf_s(builtInConstant, maxSize, "const int  gl_MaxVaryingFloats = %d;", resources.maxVaryingFloats); // ARB_vertex_shader
         s.append(TString(builtInConstant));        
         
-        sprintf(builtInConstant, "const int  gl_MaxVertexTextureImageUnits = %d;", resources.maxVertexTextureImageUnits); // ARB_vertex_shader
+        sprintf_s(builtInConstant, maxSize, "const int  gl_MaxVertexTextureImageUnits = %d;", resources.maxVertexTextureImageUnits); // ARB_vertex_shader
         s.append(TString(builtInConstant));        
         
-        sprintf(builtInConstant, "const int  gl_MaxCombinedTextureImageUnits = %d;", resources.maxCombinedTextureImageUnits); // ARB_vertex_shader
+        sprintf_s(builtInConstant, maxSize, "const int  gl_MaxCombinedTextureImageUnits = %d;", resources.maxCombinedTextureImageUnits); // ARB_vertex_shader
         s.append(TString(builtInConstant));        
         
-        sprintf(builtInConstant, "const int  gl_MaxTextureImageUnits = %d;", resources.maxTextureImageUnits); // ARB_fragment_shader
+        sprintf_s(builtInConstant, maxSize, "const int  gl_MaxTextureImageUnits = %d;", resources.maxTextureImageUnits); // ARB_fragment_shader
         s.append(TString(builtInConstant));
         
-        sprintf(builtInConstant, "const int  gl_MaxFragmentUniformComponents = %d;", resources.maxFragmentUniformComponents); // ARB_fragment_shader
+        sprintf_s(builtInConstant, maxSize, "const int  gl_MaxFragmentUniformComponents = %d;", resources.maxFragmentUniformComponents); // ARB_fragment_shader
         s.append(TString(builtInConstant));
         
-        sprintf(builtInConstant, "const int  gl_MaxDrawBuffers = %d;", resources.maxDrawBuffers); // proposed ARB_draw_buffers
+        sprintf_s(builtInConstant, maxSize, "const int  gl_MaxDrawBuffers = %d;", resources.maxDrawBuffers); // proposed ARB_draw_buffers
         s.append(TString(builtInConstant));
 
         //

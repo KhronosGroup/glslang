@@ -80,8 +80,9 @@ bool ParseBinary(bool /* preVisit */, TIntermBinary* node, TIntermTraverser* it)
     TQualifier qualifier = node->getType().getQualifier();
     
     if (qualifier != EvqConst) {
-        char buf[200];
-        sprintf(buf, "'constructor' : assigning non-constant to %s", oit->type.getCompleteString().c_str());
+		const int maxSize = 200;
+        char buf[maxSize];
+        sprintf_s(buf, maxSize, "'constructor' : assigning non-constant to %s", oit->type.getCompleteString().c_str());
         oit->infoSink.info.message(EPrefixError, buf, node->getLine());
         oit->error = true;
         return false;  
@@ -96,8 +97,9 @@ bool ParseUnary(bool /* preVisit */, TIntermUnary* node, TIntermTraverser* it)
 {
     TConstTraverser* oit = static_cast<TConstTraverser*>(it);
 
-    char buf[200];
-    sprintf(buf, "'constructor' : assigning non-constant to '%s'", oit->type.getCompleteString().c_str());
+	const int maxSize = 200;
+    char buf[maxSize];
+    sprintf_s(buf, maxSize, "'constructor' : assigning non-constant to '%s'", oit->type.getCompleteString().c_str());
     oit->infoSink.info.message(EPrefixError, buf, node->getLine());
     oit->error = true;
     return false;  
@@ -108,8 +110,9 @@ bool ParseAggregate(bool /* preVisit */, TIntermAggregate* node, TIntermTraverse
     TConstTraverser* oit = static_cast<TConstTraverser*>(it);
 
     if (!node->isConstructor() && node->getOp() != EOpComma) {
-        char buf[200];
-        sprintf(buf, "'constructor' : assigning non-constant to '%s'", oit->type.getCompleteString().c_str());
+		const int maxSize = 200;
+        char buf[maxSize];
+        sprintf_s(buf, maxSize, "'constructor' : assigning non-constant to '%s'", oit->type.getCompleteString().c_str());
         oit->infoSink.info.message(EPrefixError, buf, node->getLine());
         oit->error = true;
         return false;  

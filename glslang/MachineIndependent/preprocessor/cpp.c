@@ -78,6 +78,8 @@ NVIDIA HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 // cpp.c
 //
 
+#define _CRT_SECURE_NO_WARNINGS
+
 #include <stdarg.h>
 #include <stdio.h>
 #include <stdlib.h>
