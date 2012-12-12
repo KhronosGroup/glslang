@@ -216,7 +216,7 @@ int C_DECL main(int argc, char* argv[])
 static EShLanguage FindLanguage(char *name)
 {
     if (!name)
-        return EShLangFragment;
+        return EShLangVertex;
 
     char *ext = strrchr(name, '.');
 
@@ -225,10 +225,9 @@ static EShLanguage FindLanguage(char *name)
     
     if (ext = strrchr(name, '.')) {
         if (strncmp(ext, ".frag", 4) == 0) return EShLangFragment;
-        if (strncmp(ext, ".vert", 4) == 0) return EShLangVertex;
     }
 
-    return EShLangFragment;
+    return EShLangVertex;
 }
 
 

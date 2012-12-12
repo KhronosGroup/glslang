@@ -181,6 +181,9 @@ TSourceLoc yylineno;
 "vec2"         {  pyylval->lex.line = yylineno; parseContext.lexAfterType = true; return (VEC2); }
 "vec3"         {  pyylval->lex.line = yylineno; parseContext.lexAfterType = true; return (VEC3); }
 "vec4"         {  pyylval->lex.line = yylineno; parseContext.lexAfterType = true; return (VEC4); }
+"dvec2"        {  pyylval->lex.line = yylineno; parseContext.lexAfterType = true; return (DVEC2); }
+"dvec3"        {  pyylval->lex.line = yylineno; parseContext.lexAfterType = true; return (DVEC3); }
+"dvec4"        {  pyylval->lex.line = yylineno; parseContext.lexAfterType = true; return (DVEC4); }
 "ivec2"        {  pyylval->lex.line = yylineno; parseContext.lexAfterType = true; return (IVEC2); }
 "ivec3"        {  pyylval->lex.line = yylineno; parseContext.lexAfterType = true; return (IVEC3); }
 "ivec4"        {  pyylval->lex.line = yylineno; parseContext.lexAfterType = true; return (IVEC4); }
@@ -301,9 +304,6 @@ TSourceLoc yylineno;
 "fvec2"        {  PaReservedWord(); return 0; }
 "fvec3"        {  PaReservedWord(); return 0; }
 "fvec4"        {  PaReservedWord(); return 0; }
-"dvec2"        {  PaReservedWord(); return 0; }
-"dvec3"        {  PaReservedWord(); return 0; }
-"dvec4"        {  PaReservedWord(); return 0; }
 
 "sampler3DRect"        {  PaReservedWord(); return 0; }
 

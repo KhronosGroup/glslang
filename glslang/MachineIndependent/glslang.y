@@ -1598,6 +1598,8 @@ layout_qualifier_id
     }
     | IDENTIFIER EQUAL INTCONSTANT {
     }
+    | SHARED {
+    }
     ;
 
 precise_qualifier

@@ -712,6 +712,7 @@ bool TParseContext::arraySizeErrorCheck(int line, TIntermTyped* expr, int& size)
     TIntermConstantUnion* constant = expr->getAsConstantUnion();
     if (constant == 0 || constant->getBasicType() != EbtInt) {
         error(line, "array size must be a constant integer expression", "", "");
+        size = 1;
         return true;
     }
 
