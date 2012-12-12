@@ -1,0 +1,28 @@
+Microsoft Visual Studio Solution File, Format Version 7.00
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Tests - StandAlone", "StandAlone.vcproj", "{660D0A05-69A9-4F09-9664-02FBEB08FAE2}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Targets - glslang (generic)", "glslang.vcproj", "{3B146CC5-B2B8-4573-9D46-6139E2EDFEA3}"
+EndProject
+Global
+	GlobalSection(SolutionConfiguration) = preSolution
+		ConfigName.0 = UserM_Debug
+		ConfigName.1 = UserM_Release
+	EndGlobalSection
+	GlobalSection(ProjectDependencies) = postSolution
+		{660D0A05-69A9-4F09-9664-02FBEB08FAE2}.0 = {3B146CC5-B2B8-4573-9D46-6139E2EDFEA3}
+	EndGlobalSection
+	GlobalSection(ProjectConfiguration) = postSolution
+		{660D0A05-69A9-4F09-9664-02FBEB08FAE2}.UserM_Debug.ActiveCfg = UserM_Debug|Win32
+		{660D0A05-69A9-4F09-9664-02FBEB08FAE2}.UserM_Debug.Build.0 = UserM_Debug|Win32
+		{660D0A05-69A9-4F09-9664-02FBEB08FAE2}.UserM_Release.ActiveCfg = UserM_Release|Win32
+		{660D0A05-69A9-4F09-9664-02FBEB08FAE2}.UserM_Release.Build.0 = UserM_Release|Win32
+		{3B146CC5-B2B8-4573-9D46-6139E2EDFEA3}.UserM_Debug.ActiveCfg = UserM_Debug|Win32
+		{3B146CC5-B2B8-4573-9D46-6139E2EDFEA3}.UserM_Debug.Build.0 = UserM_Debug|Win32
+		{3B146CC5-B2B8-4573-9D46-6139E2EDFEA3}.UserM_Release.ActiveCfg = UserM_Release|Win32
+		{3B146CC5-B2B8-4573-9D46-6139E2EDFEA3}.UserM_Release.Build.0 = UserM_Release|Win32
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+	EndGlobalSection
+	GlobalSection(ExtensibilityAddIns) = postSolution
+	EndGlobalSection
+EndGlobal
