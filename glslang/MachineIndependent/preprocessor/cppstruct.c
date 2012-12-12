@@ -132,6 +132,8 @@ int ResetPreprocessor(void)
 		cpp->elsedepth[cpp->elsetracker]=0; 
 	cpp->elsetracker=0;
     cpp->tokensBeforeEOF = 0;
+    cpp->version = 110;
+    cpp->profileAtom = 0;
     return 1;
 }
 

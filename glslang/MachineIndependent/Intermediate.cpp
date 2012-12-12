@@ -243,9 +243,10 @@ TIntermTyped* TIntermediate::addUnaryMath(TOperator op, TIntermNode* childNode, 
     //
     TBasicType newType = EbtVoid;
     switch (op) {
-    case EOpConstructInt:   newType = EbtInt;   break;
-    case EOpConstructBool:  newType = EbtBool;  break;
-    case EOpConstructFloat: newType = EbtFloat; break;
+    case EOpConstructInt:    newType = EbtInt;   break;
+    case EOpConstructBool:   newType = EbtBool;  break;
+    case EOpConstructFloat:  newType = EbtFloat; break;
+    case EOpConstructDouble: newType = EbtDouble; break;
     default: break;
     }
 

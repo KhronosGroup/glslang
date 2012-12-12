@@ -42,13 +42,16 @@ public:
     POOL_ALLOCATOR_NEW_DELETE(GlobalPoolAllocator)        
     void setIConst(int i) {iConst = i; type = EbtInt; }
     void setFConst(float f) {fConst = f; type = EbtFloat; }
+    void setDConst(double d) {dConst = d; type = EbtDouble; }
     void setBConst(bool b) {bConst = b; type = EbtBool; }
 
     int getIConst() { return iConst; }
     float getFConst() { return fConst; }
+    double getDConst() { return dConst; }
     bool getBConst() { return bConst; }
     int getIConst() const { return iConst; }
     float getFConst() const { return fConst; }
+    double getDConst() const { return dConst; }
     bool getBConst() const { return bConst; }
 
     bool operator==(const int i) const
@@ -62,6 +65,14 @@ public:
     bool operator==(const float f) const
     {
         if (f == fConst)
+            return true;
+
+        return false;
+    }
+
+    bool operator==(const double d) const
+    {
+        if (d == dConst)
             return true;
 
         return false;
@@ -88,6 +99,11 @@ public:
             break;
         case EbtFloat:
             if (constant.fConst == fConst)
+                return true;
+
+            break;
+        case EbtDouble:
+            if (constant.dConst == dConst)
                 return true;
 
             break;
@@ -135,6 +151,11 @@ public:
                 return true;
 
             return false;
+        case EbtDouble:
+            if (dConst > constant.dConst)
+                return true;
+
+            return false;
         default:
             assert(false && "Default missing");
             return false;
@@ -157,6 +178,11 @@ public:
                 return true;
 
             return false;
+        case EbtDouble:
+            if (dConst < constant.dConst)
+                return true;
+
+            return false;
         default:
             assert(false && "Default missing");
             return false;
@@ -172,6 +198,7 @@ public:
         switch (type) {
         case EbtInt: returnValue.setIConst(iConst + constant.iConst); break;
         case EbtFloat: returnValue.setFConst(fConst + constant.fConst); break;
+        case EbtDouble: returnValue.setDConst(dConst + constant.dConst); break;
         default: assert(false && "Default missing");
         }
 
@@ -185,6 +212,7 @@ public:
         switch (type) {
         case EbtInt: returnValue.setIConst(iConst - constant.iConst); break;
         case EbtFloat: returnValue.setFConst(fConst - constant.fConst); break;
+        case EbtDouble: returnValue.setDConst(dConst - constant.dConst); break;
         default: assert(false && "Default missing");
         }
 
@@ -198,6 +226,7 @@ public:
         switch (type) {
         case EbtInt: returnValue.setIConst(iConst * constant.iConst); break;
         case EbtFloat: returnValue.setFConst(fConst * constant.fConst); break; 
+        case EbtDouble: returnValue.setDConst(dConst * constant.dConst); break; 
         default: assert(false && "Default missing");
         }
 
@@ -307,6 +336,7 @@ private:
         int iConst;  // used for ivec, scalar ints
         bool bConst; // used for bvec, scalar bools
         float fConst;   // used for vec, mat, scalar floats
+        double dConst;  // used for dvec, dmat, scalar doubles
     } ;
 
     TBasicType type;

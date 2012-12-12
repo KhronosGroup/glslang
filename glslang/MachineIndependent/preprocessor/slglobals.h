@@ -83,6 +83,8 @@ NVIDIA HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 typedef struct CPPStruct_Rec CPPStruct;
 
+// Multi-threading note: The existence of this global makes
+// this preprocessing single-threaded only.
 extern CPPStruct *cpp;
 
 #undef  CPPC_DEBUG_THE_COMPILER

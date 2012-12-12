@@ -187,6 +187,7 @@ enum TOperator {
     EOpConstructInt,
     EOpConstructBool,
     EOpConstructFloat,
+    EOpConstructDouble,
     EOpConstructVec2,
     EOpConstructVec3,
     EOpConstructVec4,

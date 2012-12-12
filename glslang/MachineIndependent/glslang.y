@@ -93,6 +93,7 @@ Jutta Degener, 1995
             float f;
             int i;
             bool b;
+            double d;
         };
         TSymbol* symbol;
     } lex;
@@ -278,8 +279,8 @@ primary_expression
     }
     | DOUBLECONSTANT {
         constUnion *unionArray = new constUnion[1];
-        unionArray->setFConst($1.f);
-        $$ = parseContext.intermediate.addConstantUnion(unionArray, TType(EbtFloat, EvqConst), $1.line);
+        unionArray->setDConst($1.d);
+        $$ = parseContext.intermediate.addConstantUnion(unionArray, TType(EbtDouble, EvqConst), $1.line);
     }
     | BOOLCONSTANT {
         constUnion *unionArray = new constUnion[1];
@@ -1825,7 +1826,7 @@ type_specifier_nonarray
     | DOUBLE {
         TQualifier qual = parseContext.symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
         // TODO: implement EbtDouble, check all float types
-        $$.setBasic(EbtFloat, qual, $1.line);
+        $$.setBasic(EbtDouble, qual, $1.line);
     }
     | INT {
         // TODO: implement EbtUint, check all int types

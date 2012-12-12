@@ -225,47 +225,9 @@ int ScanFromString(char *s)
 ///////////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////// Floating point constants: /////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////
-/*
- * lBuildFloatValue() - Quick and dirty conversion to floating point.  Since all
- *         we need is single precision this should be quite precise.
- */
-
-static float lBuildFloatValue(const char *str, int len, int exp)
-{
-    double val, expval, ten;
-    int ii, llen, absexp;
-    float rv;
-
-    val = 0.0;
-    llen = len;
-    for (ii = 0; ii < len; ii++)
-        val = val*10.0 + (str[ii] - '0');
-    if (exp != 0) {
-        absexp = exp > 0 ? exp : -exp;
-        expval = 1.0f;
-        ten = 10.0;
-        while (absexp) {
-            if (absexp & 1)
-                expval *= ten;
-            ten *= ten;
-            absexp >>= 1;
-        }
-        if (exp >= 0) {
-            val *= expval;
-        } else {
-            val /= expval;
-        }
-    }
-    rv = (float)val;
-    if (isinff(rv)) {
-		CPPErrorToInfoLog(" ERROR___FP_CONST_OVERFLOW");
-    }
-    return rv;
-} // lBuildFloatValue
-
 
 /*
- * lFloatConst() - Scan a floating point constant.  Assumes that the scanner
+ * lFloatConst() - Scan a single- or double-precision floating point constant.  Assumes that the scanner
  *         has seen at least one digit, followed by either a decimal '.' or the
  *         letter 'e'.
  */
@@ -274,7 +236,6 @@ static int lFloatConst(char *str, int len, int ch, yystypepp * yylvalpp)
 {
     int HasDecimal, declen, exp, ExpSign;
     int str_len;
-    float lval;
     
     HasDecimal = 0;
     declen = 0;
@@ -303,41 +264,76 @@ static int lFloatConst(char *str, int len, int ch, yystypepp * yylvalpp)
     // Exponent:
 
     if (ch == 'e' || ch == 'E') {
-        ExpSign = 1;
-		str[len++]=ch;
-        ch = cpp->currentInput->getch(cpp->currentInput, yylvalpp);
-        if (ch == '+') {
-            str[len++]=ch;  
-			ch = cpp->currentInput->getch(cpp->currentInput, yylvalpp);
-        } else if (ch == '-') {
-            ExpSign = -1;
-			str[len++]=ch;
+        if (len >= MAX_SYMBOL_NAME_LEN) {
+            CPPErrorToInfoLog("ERROR___FP_CONST_TOO_LONG");
+            len = 1,str_len=1;
+        } else {
+            ExpSign = 1;
+		    str[len++]=ch;
             ch = cpp->currentInput->getch(cpp->currentInput, yylvalpp);
-        }
-        if (ch >= '0' && ch <= '9') {
-            while (ch >= '0' && ch <= '9') {
-                exp = exp*10 + ch - '0';
-				str[len++]=ch;
+            if (ch == '+') {
+                str[len++]=ch;  
+			    ch = cpp->currentInput->getch(cpp->currentInput, yylvalpp);
+            } else if (ch == '-') {
+                ExpSign = -1;
+			    str[len++]=ch;
                 ch = cpp->currentInput->getch(cpp->currentInput, yylvalpp);
             }
-        } else {
-            CPPErrorToInfoLog("ERROR___ERROR_IN_EXPONENT");
+            if (ch >= '0' && ch <= '9') {
+                while (ch >= '0' && ch <= '9') {
+                    if (len < MAX_SYMBOL_NAME_LEN) {
+                        exp = exp*10 + ch - '0';
+				        str[len++]=ch;
+                        ch = cpp->currentInput->getch(cpp->currentInput, yylvalpp);
+                    } else {
+                        CPPErrorToInfoLog("ERROR___FP_CONST_TOO_LONG");
+                        len = 1,str_len=1;
+                    }
+                }
+            } else {
+                CPPErrorToInfoLog("ERROR___ERROR_IN_EXPONENT");
+            }
+            exp *= ExpSign;
         }
-        exp *= ExpSign;
     }
       
     if (len == 0) {
-        lval = 0.0f;
+        yylvalpp->sc_fval = 0.0f;
+        yylvalpp->sc_dval = 0.0;
 		strcpy(str,"0.0");
     } else {
+        if (ch == 'l' || ch == 'L') {
+            int ch2 = cpp->currentInput->getch(cpp->currentInput, yylvalpp);
+            if (ch2 != 'f' && ch2 != 'F') {
+                cpp->currentInput->ungetch(cpp->currentInput, ch2, yylvalpp);
+                cpp->currentInput->ungetch(cpp->currentInput, ch, yylvalpp);
+            } else {
+                if (len < MAX_SYMBOL_NAME_LEN-1) {
+                    str[len++] = ch;
+                    str[len++] = ch2;
+                } else {
+                    CPPErrorToInfoLog("ERROR___FP_CONST_TOO_LONG");
+                    len = 1,str_len=1;
+                }
+            }
+        } else if (ch == 'f' || ch == 'F') {
+            if (len < MAX_SYMBOL_NAME_LEN)
+                str[len++] = ch;
+            else {
+                CPPErrorToInfoLog("ERROR___FP_CONST_TOO_LONG");
+                len = 1,str_len=1;
+            }
+        } else 
+            cpp->currentInput->ungetch(cpp->currentInput, ch, yylvalpp);
+
         str[len]='\0';      
-        lval = lBuildFloatValue(str, str_len, exp - declen);
+        
+        yylvalpp->sc_dval = strtod(str, 0);
+        yylvalpp->sc_fval = (float)yylvalpp->sc_dval;
     }
     // Suffix:
-    
-    yylvalpp->sc_fval = lval;
     strcpy(yylvalpp->symbol_name,str);
-    cpp->currentInput->ungetch(cpp->currentInput, ch, yylvalpp);            
+
     return CPP_FLOATCONSTANT;
 } // lFloatConst
 
@@ -454,7 +450,7 @@ static int byte_scan(InputSrc *in, yystypepp * yylvalpp)
                     }
                     ch = cpp->currentInput->getch(cpp->currentInput, yylvalpp);
                 } while (ch >= '0' && ch <= '7');
-                if (ch == '.' || ch == 'e' || ch == 'f' || ch == 'h' || ch == 'x'|| ch == 'E') 
+                if (ch == '.' || ch == 'e' || ch == 'f' || ch == 'h' || ch == 'x'|| ch == 'E' || ch == 'F' || ch == 'l' || ch == 'L') 
                      return lFloatConst(yylvalpp->symbol_name, len, ch, yylvalpp);
                 yylvalpp->symbol_name[len] = '\0';
 				cpp->currentInput->ungetch(cpp->currentInput, ch, yylvalpp);
@@ -476,7 +472,7 @@ static int byte_scan(InputSrc *in, yystypepp * yylvalpp)
                     ch = cpp->currentInput->getch(cpp->currentInput, yylvalpp);
                 }
             } while (ch >= '0' && ch <= '9');
-            if (ch == '.' || ch == 'e' || ch == 'f' || ch == 'h' || ch == 'x'|| ch == 'E') {
+            if (ch == '.' || ch == 'e' || ch == 'f' || ch == 'h' || ch == 'x'|| ch == 'E' || ch == 'F' || ch == 'l' || ch == 'L') {
                 return lFloatConst(yylvalpp->symbol_name, len, ch, yylvalpp);
             } else {
                 yylvalpp->symbol_name[len] = '\0';

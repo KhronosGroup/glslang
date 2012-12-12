@@ -82,6 +82,7 @@ NVIDIA HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 typedef struct {
     int    sc_int;
     float  sc_fval;
+    double sc_dval;
     int    sc_ident;
 	char   symbol_name[MAX_SYMBOL_NAME_LEN+1];
 } yystypepp;

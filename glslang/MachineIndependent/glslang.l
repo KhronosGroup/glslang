@@ -54,6 +54,8 @@ H           [a-fA-F0-9]
 E           [Ee][+-]?{D}+
 O           [0-7]
 U           [uU]
+F           [fF]
+LF          [lL][fF]
 
 /* TODO: double literals, which will likely require pre-processor rework */
 /* TODO: unsigned int literals, which will likely require pre-processor rework */
@@ -329,9 +331,15 @@ TSourceLoc yylineno;
 0{D}+{U}          { pyylval->lex.line = yylineno; parseContext.error(yylineno, "Invalid Octal number.", yytext, "", ""); parseContext.recover(); return 0;}
 {D}+{U}           { pyylval->lex.line = yylineno; pyylval->lex.i = strtol(yytext, 0, 0); return(UINTCONSTANT); }
 
-{D}+{E}           { pyylval->lex.line = yylineno; pyylval->lex.f = static_cast<float>(atof(yytext)); return(FLOATCONSTANT); }
-{D}+"."{D}*({E})? { pyylval->lex.line = yylineno; pyylval->lex.f = static_cast<float>(atof(yytext)); return(FLOATCONSTANT); }
-"."{D}+({E})?     { pyylval->lex.line = yylineno; pyylval->lex.f = static_cast<float>(atof(yytext)); return(FLOATCONSTANT); }
+{D}+{F}               { pyylval->lex.line = yylineno; pyylval->lex.f = static_cast<float>(atof(yytext)); return(FLOATCONSTANT); }
+{D}+{E}{F}?           { pyylval->lex.line = yylineno; pyylval->lex.f = static_cast<float>(atof(yytext)); return(FLOATCONSTANT); }
+{D}+"."{D}*({E})?{F}? { pyylval->lex.line = yylineno; pyylval->lex.f = static_cast<float>(atof(yytext)); return(FLOATCONSTANT); }
+"."{D}+({E})?{F}?     { pyylval->lex.line = yylineno; pyylval->lex.f = static_cast<float>(atof(yytext)); return(FLOATCONSTANT); }
+
+{D}+{LF}              { pyylval->lex.line = yylineno; pyylval->lex.d = atof(yytext); return(DOUBLECONSTANT); }
+{D}+{E}{LF}           { pyylval->lex.line = yylineno; pyylval->lex.d = atof(yytext); return(DOUBLECONSTANT); }
+{D}+"."{D}*({E})?{LF} { pyylval->lex.line = yylineno; pyylval->lex.d = atof(yytext); return(DOUBLECONSTANT); }
+"."{D}+({E})?{LF}     { pyylval->lex.line = yylineno; pyylval->lex.d = atof(yytext); return(DOUBLECONSTANT); }
 
 "/*"            {  int ret = PaParseComment(pyylval->lex.line, parseContext); if (!ret) return ret; }   
 

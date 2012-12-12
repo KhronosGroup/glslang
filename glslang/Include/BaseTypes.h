@@ -41,6 +41,7 @@
 enum TBasicType {
     EbtVoid,
     EbtFloat,
+    EbtDouble,
     EbtInt,
     EbtBool,
     EbtGuardSamplerBegin,  // non type:  see implementation of IsSampler()

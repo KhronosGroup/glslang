@@ -115,6 +115,9 @@ static int __LINE__Atom = 0;
 static int __FILE__Atom = 0;
 static int __VERSION__Atom = 0;
 static int versionAtom = 0;
+static int coreAtom = 0;
+static int compatibilityAtom = 0;
+static int esAtom = 0;
 static int extensionAtom = 0;
 
 static Scope *macros = 0;
@@ -149,6 +152,9 @@ int InitCPP(void)
     __FILE__Atom = LookUpAddString(atable, "__FILE__");
 	__VERSION__Atom = LookUpAddString(atable, "__VERSION__");
     versionAtom = LookUpAddString(atable, "version");
+    coreAtom = LookUpAddString(atable, "core");
+    compatibilityAtom = LookUpAddString(atable, "compatibility");
+    esAtom = LookUpAddString(atable, "es");
     extensionAtom = LookUpAddString(atable, "extension");
     macros = NewScopeInPool(mem_CreatePool(0, 0));
     strcpy(buffer, "PROFILE_");
@@ -660,8 +666,6 @@ static int CPPpragma(yystypepp * yylvalpp)
 	return token;    
 } // CPPpragma
 
-#define GL2_VERSION_NUMBER 110
-
 static int CPPversion(yystypepp * yylvalpp)
 {
 
@@ -680,10 +684,8 @@ static int CPPversion(yystypepp * yylvalpp)
         CPPErrorToInfoLog("#version");
 	
     yylvalpp->sc_int=atoi(yylvalpp->symbol_name);
-	//SetVersionNumber(yylvalpp->sc_int);
-    
-    if (yylvalpp->sc_int != GL2_VERSION_NUMBER)
-        CPPShInfoLogMsg("Version number not supported by GL2");
+
+    cpp->version = yylvalpp->sc_int;
 
     token = cpp->currentInput->scan(cpp->currentInput, yylvalpp);
     
@@ -691,8 +693,20 @@ static int CPPversion(yystypepp * yylvalpp)
 		return token;
 	}
 	else{
-        CPPErrorToInfoLog("#version");
+        cpp->profileAtom = yylvalpp->sc_ident;
+        if (cpp->profileAtom != coreAtom &&
+            cpp->profileAtom != compatibilityAtom &&
+            cpp->profileAtom != esAtom)
+            CPPErrorToInfoLog("#version profile name");
+
+        token = cpp->currentInput->scan(cpp->currentInput, yylvalpp);
+    
+	    if (token == '\n')
+		    return token;
+        else
+            CPPErrorToInfoLog("#version");
 	}
+
     return token;
 } // CPPversion
 

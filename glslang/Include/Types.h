@@ -235,6 +235,7 @@ public:
         switch (t) {
         case EbtVoid:              return "void";              break;
         case EbtFloat:             return "float";             break;
+        case EbtDouble:            return "double";            break;
         case EbtInt:               return "int";               break;
         case EbtBool:              return "bool";              break;
         case EbtSampler1D:         return "sampler1D";         break;

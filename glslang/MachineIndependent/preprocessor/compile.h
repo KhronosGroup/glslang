@@ -127,6 +127,10 @@ struct CPPStruct_Rec {
     int    PaArgc;                // count of strings in the array
     char** PaArgv;                // our array of strings to parse    
     unsigned int tokensBeforeEOF : 1;
+
+    // Declared version of the shader
+    int version;
+    int profileAtom;
 };
 
 #endif // !defined(__COMPILE_H)
