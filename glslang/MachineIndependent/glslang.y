@@ -112,6 +112,7 @@ Jutta Degener, 1995
             TParameter param;
             TTypeLine typeLine;
             TTypeList* typeList;
+            TVector<int>* intVector;
         };
     } interm;
 }
@@ -130,7 +131,7 @@ Jutta Degener, 1995
 %token <lex> BREAK CONTINUE DO ELSE FOR IF DISCARD RETURN SWITCH CASE DEFAULT SUBROUTINE
 %token <lex> BVEC2 BVEC3 BVEC4 IVEC2 IVEC3 IVEC4 UVEC2 UVEC3 UVEC4 VEC2 VEC3 VEC4
 %token <lex> MAT2 MAT3 MAT4 CENTROID IN OUT INOUT 
-%token <lex> UNIFORM PATCH SAMPLE
+%token <lex> UNIFORM PATCH SAMPLE BUFFER SHARED
 %token <lex> COHERENT VOLATILE RESTRICT READONLY WRITEONLY
 %token <lex> DVEC2 DVEC3 DVEC4 DMAT2 DMAT3 DMAT4
 %token <lex> NOPERSPECTIVE FLAT SMOOTH LAYOUT
@@ -207,6 +208,7 @@ Jutta Degener, 1995
 
 %type <interm> parameter_declaration parameter_declarator parameter_type_specifier
 
+%type <interm> array_specifier
 %type <interm.type> precise_qualifier invariant_qualifier interpolation_qualifier storage_qualifier precision_qualifier
 %type <interm.type> layout_qualifier layout_qualifier_id_list
 
@@ -1147,11 +1149,7 @@ declaration
         // block
         $$ = 0;
     }
-    | type_qualifier IDENTIFIER LEFT_BRACE struct_declaration_list RIGHT_BRACE IDENTIFIER LEFT_BRACKET RIGHT_BRACKET SEMICOLON {
-        // block
-        $$ = 0;
-    }
-    | type_qualifier IDENTIFIER LEFT_BRACE struct_declaration_list RIGHT_BRACE IDENTIFIER LEFT_BRACKET constant_expression RIGHT_BRACKET SEMICOLON {
+    | type_qualifier IDENTIFIER LEFT_BRACE struct_declaration_list RIGHT_BRACE IDENTIFIER array_specifier SEMICOLON {
         // block
         $$ = 0;
     }
@@ -1284,18 +1282,14 @@ parameter_declarator
         $$.line = $2.line;
         $$.param = param;
     }
-    | type_specifier IDENTIFIER LEFT_BRACKET constant_expression RIGHT_BRACKET {
-        // Check that we can make an array out of this type
-        if (parseContext.arrayTypeErrorCheck($3.line, $1))
+    | type_specifier IDENTIFIER array_specifier {
+        if (parseContext.arraySizeRequiredErrorCheck($3.line, $3.intVector->front()))
             parseContext.recover();
 
         if (parseContext.reservedErrorCheck($2.line, *$2.string))
             parseContext.recover();
 
-        int size;
-        if (parseContext.arraySizeErrorCheck($3.line, $4, size))
-            parseContext.recover();
-        $1.setArray(true, size);
+        $1.setArray(true, $3.intVector->front());
 
         TParameter param = { $2.string, new TType($1)};
         $$.line = $2.line;
@@ -1366,7 +1360,7 @@ init_declarator_list
         if (parseContext.nonInitErrorCheck($3.line, *$3.string, $$.type))
             parseContext.recover();
     }
-    | init_declarator_list COMMA IDENTIFIER LEFT_BRACKET RIGHT_BRACKET {
+    | init_declarator_list COMMA IDENTIFIER array_specifier {
         if (parseContext.structQualifierErrorCheck($3.line, $1.type))
             parseContext.recover();
 
@@ -1375,47 +1369,26 @@ init_declarator_list
 
         $$ = $1;
 
-        if (parseContext.arrayTypeErrorCheck($4.line, $1.type) || parseContext.arrayQualifierErrorCheck($4.line, $1.type))
+        if (parseContext.arrayQualifierErrorCheck($4.line, $1.type))
             parseContext.recover();
         else {
-            $1.type.setArray(true);
+            $1.type.setArray(true, $4.intVector->front());
             TVariable* variable;
             if (parseContext.arrayErrorCheck($4.line, *$3.string, $1.type, variable))
                 parseContext.recover();
         }
     }
-    | init_declarator_list COMMA IDENTIFIER LEFT_BRACKET constant_expression RIGHT_BRACKET {
-        if (parseContext.structQualifierErrorCheck($3.line, $1.type))
-            parseContext.recover();
-
-        if (parseContext.nonInitConstErrorCheck($3.line, *$3.string, $1.type))
-            parseContext.recover();
-
-        $$ = $1;
-
-        if (parseContext.arrayTypeErrorCheck($4.line, $1.type) || parseContext.arrayQualifierErrorCheck($4.line, $1.type))
-            parseContext.recover();
-        else {
-            int size;
-            if (parseContext.arraySizeErrorCheck($4.line, $5, size))
-                parseContext.recover();
-            $1.type.setArray(true, size);
-            TVariable* variable;
-            if (parseContext.arrayErrorCheck($4.line, *$3.string, $1.type, variable))
-                parseContext.recover();
-        }
-    }
-    | init_declarator_list COMMA IDENTIFIER LEFT_BRACKET RIGHT_BRACKET EQUAL initializer {
+    | init_declarator_list COMMA IDENTIFIER array_specifier EQUAL initializer {
         if (parseContext.structQualifierErrorCheck($3.line, $1.type))
             parseContext.recover();
 
         $$ = $1;
 
         TVariable* variable = 0;
-        if (parseContext.arrayTypeErrorCheck($4.line, $1.type) || parseContext.arrayQualifierErrorCheck($4.line, $1.type))
+        if (parseContext.arrayQualifierErrorCheck($4.line, $1.type))
             parseContext.recover();
         else {
-            $1.type.setArray(true, $7->getType().getArraySize());
+            $1.type.setArray(true, $4.intVector->front());
             if (parseContext.arrayErrorCheck($4.line, *$3.string, $1.type, variable))
                 parseContext.recover();
         }
@@ -1424,48 +1397,12 @@ init_declarator_list
             parseContext.recover();
         else {
             TIntermNode* intermNode;
-            if (!parseContext.executeInitializer($3.line, *$3.string, $1.type, $7, intermNode, variable)) {
+            if (!parseContext.executeInitializer($3.line, *$3.string, $1.type, $6, intermNode, variable)) {
                 //
                 // build the intermediate representation
                 //
                 if (intermNode)
-                    $$.intermAggregate = parseContext.intermediate.growAggregate($1.intermNode, intermNode, $6.line);
-                else
-                    $$.intermAggregate = $1.intermAggregate;
-            } else {
-                parseContext.recover();
-                $$.intermAggregate = 0;
-            }
-        }
-    }
-    | init_declarator_list COMMA IDENTIFIER LEFT_BRACKET constant_expression RIGHT_BRACKET EQUAL initializer {
-        if (parseContext.structQualifierErrorCheck($3.line, $1.type))
-            parseContext.recover();
-
-        $$ = $1;
-
-        TVariable* variable = 0;
-        if (parseContext.arrayTypeErrorCheck($4.line, $1.type) || parseContext.arrayQualifierErrorCheck($4.line, $1.type))
-            parseContext.recover();
-        else {
-            int size;
-            if (parseContext.arraySizeErrorCheck($4.line, $5, size))
-                parseContext.recover();
-            $1.type.setArray(true, size);
-            if (parseContext.arrayErrorCheck($4.line, *$3.string, $1.type, variable))
-                parseContext.recover();
-        }
-
-        if (parseContext.extensionErrorCheck($$.line, "GL_3DL_array_objects"))
-            parseContext.recover();
-        else {
-            TIntermNode* intermNode;
-            if (!parseContext.executeInitializer($3.line, *$3.string, $1.type, $8, intermNode, variable)) {
-                //
-                // build the intermediate representation
-                //
-                if (intermNode)
-                    $$.intermAggregate = parseContext.intermediate.growAggregate($1.intermNode, intermNode, $7.line);
+                    $$.intermAggregate = parseContext.intermediate.growAggregate($1.intermNode, intermNode, $5.line);
                 else
                     $$.intermAggregate = $1.intermAggregate;
             } else {
@@ -1518,7 +1455,7 @@ single_declaration
         if (parseContext.nonInitErrorCheck($2.line, *$2.string, $$.type))
             parseContext.recover();
     }
-    | fully_specified_type IDENTIFIER LEFT_BRACKET RIGHT_BRACKET {
+    | fully_specified_type IDENTIFIER array_specifier {
         $$.intermAggregate = 0;
         if (parseContext.structQualifierErrorCheck($2.line, $1))
             parseContext.recover();
@@ -1528,39 +1465,16 @@ single_declaration
 
         $$.type = $1;
 
-        if (parseContext.arrayTypeErrorCheck($3.line, $1) || parseContext.arrayQualifierErrorCheck($3.line, $1))
+        if (parseContext.arrayQualifierErrorCheck($3.line, $1))
             parseContext.recover();
         else {
-            $1.setArray(true);
+            $1.setArray(true, $3.intVector->front());
             TVariable* variable;
             if (parseContext.arrayErrorCheck($3.line, *$2.string, $1, variable))
                 parseContext.recover();
         }
     }
-    | fully_specified_type IDENTIFIER LEFT_BRACKET constant_expression RIGHT_BRACKET {
-        $$.intermAggregate = 0;
-        if (parseContext.structQualifierErrorCheck($2.line, $1))
-            parseContext.recover();
-
-        if (parseContext.nonInitConstErrorCheck($2.line, *$2.string, $1))
-            parseContext.recover();
-
-        $$.type = $1;
-
-        if (parseContext.arrayTypeErrorCheck($3.line, $1) || parseContext.arrayQualifierErrorCheck($3.line, $1))
-            parseContext.recover();
-        else {
-            int size;
-            if (parseContext.arraySizeErrorCheck($3.line, $4, size))
-                parseContext.recover();
-
-            $1.setArray(true, size);
-            TVariable* variable;
-            if (parseContext.arrayErrorCheck($3.line, *$2.string, $1, variable))
-                parseContext.recover();
-        }
-    }
-    | fully_specified_type IDENTIFIER LEFT_BRACKET RIGHT_BRACKET EQUAL initializer {
+    | fully_specified_type IDENTIFIER array_specifier EQUAL initializer {
         $$.intermAggregate = 0;
 
         if (parseContext.structQualifierErrorCheck($2.line, $1))
@@ -1569,10 +1483,10 @@ single_declaration
         $$.type = $1;
 
         TVariable* variable = 0;
-        if (parseContext.arrayTypeErrorCheck($3.line, $1) || parseContext.arrayQualifierErrorCheck($3.line, $1))
+        if (parseContext.arrayQualifierErrorCheck($3.line, $1))
             parseContext.recover();
         else {
-            $1.setArray(true, $6->getType().getArraySize());
+            $1.setArray(true, $3.intVector->front());
             if (parseContext.arrayErrorCheck($3.line, *$2.string, $1, variable))
                 parseContext.recover();
         }
@@ -1581,51 +1495,12 @@ single_declaration
             parseContext.recover();
         else {
             TIntermNode* intermNode;
-            if (!parseContext.executeInitializer($2.line, *$2.string, $1, $6, intermNode, variable)) {
+            if (!parseContext.executeInitializer($2.line, *$2.string, $1, $5, intermNode, variable)) {
                 //
                 // Build intermediate representation
                 //
                 if (intermNode)
-                    $$.intermAggregate = parseContext.intermediate.makeAggregate(intermNode, $5.line);
-                else
-                    $$.intermAggregate = 0;
-            } else {
-                parseContext.recover();
-                $$.intermAggregate = 0;
-            }
-        }
-    }
-    | fully_specified_type IDENTIFIER LEFT_BRACKET constant_expression RIGHT_BRACKET EQUAL initializer {
-        $$.intermAggregate = 0;
-
-        if (parseContext.structQualifierErrorCheck($2.line, $1))
-            parseContext.recover();
-
-        $$.type = $1;
-
-        TVariable* variable = 0;
-        if (parseContext.arrayTypeErrorCheck($3.line, $1) || parseContext.arrayQualifierErrorCheck($3.line, $1))
-            parseContext.recover();
-        else {
-            int size;
-            if (parseContext.arraySizeErrorCheck($3.line, $4, size))
-                parseContext.recover();
-
-            $1.setArray(true, size);
-            if (parseContext.arrayErrorCheck($3.line, *$2.string, $1, variable))
-                parseContext.recover();
-        }
-
-        if (parseContext.extensionErrorCheck($$.line, "GL_3DL_array_objects"))
-            parseContext.recover();
-        else {
-            TIntermNode* intermNode;
-            if (!parseContext.executeInitializer($2.line, *$2.string, $1, $7, intermNode, variable)) {
-                //
-                // Build intermediate representation
-                //
-                if (intermNode)
-                    $$.intermAggregate = parseContext.intermediate.makeAggregate(intermNode, $6.line);
+                    $$.intermAggregate = parseContext.intermediate.makeAggregate(intermNode, $4.line);
                 else
                     $$.intermAggregate = 0;
             } else {
@@ -1833,6 +1708,16 @@ storage_qualifier
             parseContext.recover();
         $$.setBasic(EbtVoid, EvqUniform, $1.line);
     }
+    | BUFFER {
+        if (parseContext.globalErrorCheck($1.line, parseContext.symbolTable.atGlobalLevel(), "buffer"))
+            parseContext.recover();
+        $$.setBasic(EbtVoid, EvqUniform, $1.line);
+    }
+    | SHARED {
+        if (parseContext.globalErrorCheck($1.line, parseContext.symbolTable.atGlobalLevel(), "shared"))
+            parseContext.recover();
+        $$.setBasic(EbtVoid, EvqUniform, $1.line);
+    }
     | COHERENT {
         // TODO: implement this qualifier
         if (parseContext.globalErrorCheck($1.line, parseContext.symbolTable.atGlobalLevel(), "coherent"))
@@ -1891,20 +1776,38 @@ type_specifier
     : type_specifier_nonarray {
         $$ = $1;
     }
-    | type_specifier_nonarray LEFT_BRACKET RIGHT_BRACKET {
+    | type_specifier_nonarray array_specifier {
         $$ = $1;
+        $$.setArray(true, $2.intVector->front());
     }
-    | type_specifier_nonarray LEFT_BRACKET constant_expression RIGHT_BRACKET {
+    ;
+
+array_specifier
+    : LEFT_BRACKET RIGHT_BRACKET {
+        $$.line = $1.line;
+        $$.intVector = new TVector<int>;
+        $$.intVector->push_back(0);
+    }
+    | LEFT_BRACKET constant_expression RIGHT_BRACKET {
+        $$.line = $1.line;
+        $$.intVector = new TVector<int>;
+
+        int size;
+        if (parseContext.arraySizeErrorCheck($2->getLine(), $2, size))
+            parseContext.recover();
+        $$.intVector->push_back(size);
+    }
+    | array_specifier LEFT_BRACKET RIGHT_BRACKET {
+        $$ = $1;
+        $$.intVector->push_back(0);
+    }
+    | array_specifier LEFT_BRACKET constant_expression RIGHT_BRACKET {
         $$ = $1;
 
-        if (parseContext.arrayTypeErrorCheck($2.line, $1))
+        int size;
+        if (parseContext.arraySizeErrorCheck($3->getLine(), $3, size))
             parseContext.recover();
-        else {
-            int size;
-            if (parseContext.arraySizeErrorCheck($2.line, $3, size))
-                parseContext.recover();
-            $$.setArray(true, size);
-        }
+        $$.intVector->push_back(size);
     }
     ;
 
@@ -2567,11 +2470,6 @@ struct_declaration
             //
             (*$$)[i].type->setType($1.type, $1.size, $1.matrix, $1.userDef);
 
-            // don't allow arrays of arrays
-            if ((*$$)[i].type->isArray()) {
-                if (parseContext.arrayTypeErrorCheck($1.line, $1))
-                    parseContext.recover();
-            }
             if ($1.array)
                 (*$$)[i].type->setArraySize($1.arraySize);
             if ($1.userDef)
@@ -2590,11 +2488,6 @@ struct_declaration
             //
             (*$$)[i].type->setType($2.type, $2.size, $2.matrix, $2.userDef);
 
-            // don't allow arrays of arrays
-            if ((*$$)[i].type->isArray()) {
-                if (parseContext.arrayTypeErrorCheck($2.line, $2))
-                    parseContext.recover();
-            }
             if ($2.array)
                 (*$$)[i].type->setArraySize($2.arraySize);
             if ($2.userDef)
@@ -2619,21 +2512,11 @@ struct_declarator
         $$.line = $1.line;
         $$.type->setFieldName(*$1.string);
     }
-    | IDENTIFIER LEFT_BRACKET RIGHT_BRACKET {
-        // allow non-sized arrays in blocks
+    | IDENTIFIER array_specifier {
         $$.type = new TType(EbtVoid);
         $$.line = $1.line;
         $$.type->setFieldName(*$1.string);
-    }
-    | IDENTIFIER LEFT_BRACKET constant_expression RIGHT_BRACKET {
-        $$.type = new TType(EbtVoid);
-        $$.line = $1.line;
-        $$.type->setFieldName(*$1.string);
-
-        int size;
-        if (parseContext.arraySizeErrorCheck($2.line, $3, size))
-            parseContext.recover();
-        $$.type->setArraySize(size);
+        $$.type->setArraySize($2.intVector->front());
     }
     ;
 

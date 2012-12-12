@@ -745,17 +745,16 @@ bool TParseContext::arrayQualifierErrorCheck(int line, TPublicType type)
 }
 
 //
-// See if this type can be an array.
+// Require array to have size
 //
 // Returns true if there is an error.
 //
-bool TParseContext::arrayTypeErrorCheck(int line, TPublicType type)
+bool TParseContext::arraySizeRequiredErrorCheck(int line, int& size)
 {
-    //
-    // Can the type be an array?
-    //
-    if (type.array) {
-        error(line, "cannot declare arrays of arrays", TType(type).getCompleteString().c_str(), "");
+    if (size == 0) {
+        error(line, "array size required", "", "");
+        size = 1;
+
         return true;
     }
 

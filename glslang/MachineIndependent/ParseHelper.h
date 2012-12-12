@@ -103,7 +103,7 @@ struct TParseContext {
     bool constructorErrorCheck(int line, TIntermNode*, TFunction&, TOperator, TType*);
     bool arraySizeErrorCheck(int line, TIntermTyped* expr, int& size);
     bool arrayQualifierErrorCheck(int line, TPublicType type);
-    bool arrayTypeErrorCheck(int line, TPublicType type);
+    bool arraySizeRequiredErrorCheck(int line, int& size);
     bool arrayErrorCheck(int line, TString& identifier, TPublicType type, TVariable*& variable);
     bool insertBuiltInArrayAtGlobalLevel();
     bool voidErrorCheck(int, const TString&, const TPublicType&);

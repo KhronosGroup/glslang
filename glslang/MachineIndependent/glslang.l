@@ -100,6 +100,8 @@ TSourceLoc yylineno;
 "patch"        {  pyylval->lex.line = yylineno; return(PATCH); }
 "sample"       {  pyylval->lex.line = yylineno; return(SAMPLE); }
 "uniform"      {  pyylval->lex.line = yylineno; return(UNIFORM); }
+"buffer"       {  pyylval->lex.line = yylineno; return(BUFFER); }
+"shared"       {  pyylval->lex.line = yylineno; return(SHARED); }
 "coherent"     {  pyylval->lex.line = yylineno; return(COHERENT); }
 "volatile"     {  pyylval->lex.line = yylineno; return(VOLATILE); }
 "restrict"     {  pyylval->lex.line = yylineno; return(RESTRICT); }
