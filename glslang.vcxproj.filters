@@ -17,9 +17,6 @@
     <Filter Include="Public">
       <UniqueIdentifier>{c79e7f4d-1836-4b72-b201-46e72e4e4b6b}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Generic Code Gen">
-      <UniqueIdentifier>{b56dd525-2a9c-4ae5-a6b4-d024e624c6b4}</UniqueIdentifier>
-    </Filter>
     <Filter Include="OSDependent">
       <UniqueIdentifier>{d48b8f48-5784-4cb6-bead-7f98647a1c44}</UniqueIdentifier>
     </Filter>
@@ -90,12 +87,6 @@
     </ClCompile>
     <ClCompile Include="glslang\MachineIndependent\preprocessor\tokens.c">
       <Filter>Machine Independent\CPP</Filter>
-    </ClCompile>
-    <ClCompile Include="glslang\GenericCodeGen\CodeGen.cpp">
-      <Filter>Generic Code Gen</Filter>
-    </ClCompile>
-    <ClCompile Include="glslang\GenericCodeGen\Link.cpp">
-      <Filter>Generic Code Gen</Filter>
     </ClCompile>
     <ClCompile Include="glslang\OSDependent\Windows\main.cpp">
       <Filter>OSDependent\Windows</Filter>

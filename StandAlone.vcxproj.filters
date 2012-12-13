@@ -10,5 +10,11 @@
     <ClCompile Include="Standalone\StandAlone.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="glslang\GenericCodeGen\CodeGen.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="glslang\GenericCodeGen\Link.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

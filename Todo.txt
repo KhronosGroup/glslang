@@ -8,9 +8,31 @@ Major items to do:
   - version
   - stage
   
-* Add semantics for all new grammar (1.2 through 4.3)
+* Add semantics and productions for all new grammar (1.2 through 4.3)
+	1.2
+	 - uniform initializers
+	 - non-square matrices
+	 - centroids/multisample
+	 - gl_PointCoord
+
+	1.3
+	 - integer ops
+	 - integer built-in functions
+	 - switch
+	 - bunch of new built-ins
+	 - noperspective
+
+	1.4
+	 - uniform blocks
+	 - layout qualifiers
+	 - texture buffers
+
+	1.5
+	 - geometry shaders
+
+	3.3
+	 - ...
 
 * Replace the preprocessor with a better one.
 
 * Verify/fix thread safety of the parse context.
-
