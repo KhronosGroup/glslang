@@ -83,6 +83,7 @@ NVIDIA HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "parser.h"
 #include "tokens.h"
+#include "Versions.h"
 
 int InitCPP(void);
 int FinalCPP(void);
@@ -113,6 +114,8 @@ void  SetStringNumber(int);                 // Set string number.
 int   GetLineNumber(void);                  // Get the current String Number. 
 int   GetStringNumber(void);                // Get the current String Number. 
 const char* GetStrfromTStr(void);           // Convert TString to String.  
+void  SetVersion(int);
+void  SetProfile(EProfile);
 void  updateExtensionBehavior(const char* extName, const char* behavior);
 int   FreeCPP(void);
 

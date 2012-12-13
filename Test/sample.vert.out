@@ -4,7 +4,7 @@
 0:37    Function Parameters: 
 0:39    Sequence
 0:39      move second child to first child (3-component vector of float)
-0:39        'color' (varying 3-component vector of float)
+0:39        'color' (varying out 3-component vector of float)
 0:39        1.000000 (const float)
 0:39        1.000000 (const float)
 0:39        1.000000 (const float)

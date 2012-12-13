@@ -739,8 +739,8 @@ bool TParseContext::arrayQualifierErrorCheck(int line, TPublicType type)
         return true;
     }
 
-    if (type.qualifier == EvqConst && extensionErrorCheck(line, "GL_3DL_array_objects"))
-        return true;
+    if (type.qualifier == EvqConst)
+        profileRequires(line, ENoProfile, 120, "GL_3DL_array_objects", "const array");
 
     return false;
 }
@@ -946,20 +946,6 @@ bool TParseContext::paramErrorCheck(int line, TQualifier qualifier, TType* type)
         error(line, "qualifier not allowed on function parameter", getQualifierString(qualifier), "");
         return true;
     }
-}
-
-bool TParseContext::extensionErrorCheck(int line, const char* extension)
-{       
-    if (extensionBehavior[extension] == EBhWarn) {
-        infoSink.info.message(EPrefixWarning, ("extension " + TString(extension) + " is being used").c_str(), line);
-        return false;
-    }
-    if (extensionBehavior[extension] == EBhDisable) {
-        error(line, "extension", extension, "is disabled");
-        return true;
-    }
-
-    return false;
 }
 
 /////////////////////////////////////////////////////////////////////////////////
@@ -1448,7 +1434,7 @@ void TParseContext::initializeExtensionBehavior()
     // example code: extensionBehavior["test"] = EBhDisable; // where "test" is the name of 
     // supported extension
     //
-    extensionBehavior["GL_ARB_texture_rectangle"] = EBhRequire;
+    extensionBehavior["GL_ARB_texture_rectangle"] = EBhDisable;
     extensionBehavior["GL_3DL_array_objects"] = EBhDisable;
 }
 
@@ -1457,7 +1443,7 @@ OS_TLSIndex GlobalParseContextIndex = OS_INVALID_TLS_INDEX;
 bool InitializeParseContextIndex()
 {
     if (GlobalParseContextIndex != OS_INVALID_TLS_INDEX) {
-        assert(0 && "InitializeParseContextIndex(): Parse Context already initalised");
+        assert(0 && "InitializeParseContextIndex(): Parse Context already initialised");
         return false;
     }
 
@@ -1467,7 +1453,7 @@ bool InitializeParseContextIndex()
     GlobalParseContextIndex = OS_AllocTLSIndex();
     
     if (GlobalParseContextIndex == OS_INVALID_TLS_INDEX) {
-        assert(0 && "InitializeParseContextIndex(): Parse Context already initalised");
+        assert(0 && "InitializeParseContextIndex(): Parse Context already initialised");
         return false;
     }
 
@@ -1477,13 +1463,13 @@ bool InitializeParseContextIndex()
 bool InitializeGlobalParseContext()
 {
     if (GlobalParseContextIndex == OS_INVALID_TLS_INDEX) {
-        assert(0 && "InitializeGlobalParseContext(): Parse Context index not initalised");
+        assert(0 && "InitializeGlobalParseContext(): Parse Context index not initialized");
         return false;
     }
 
     TThreadParseContext *lpParseContext = static_cast<TThreadParseContext *>(OS_GetTLSValue(GlobalParseContextIndex));
     if (lpParseContext != 0) {
-        assert(0 && "InitializeParseContextIndex(): Parse Context already initalised");
+        assert(0 && "InitializeParseContextIndex(): Parse Context already initialized");
         return false;
     }
 
@@ -1513,7 +1499,7 @@ TParseContextPointer& GetGlobalParseContext()
 bool FreeParseContext()
 {
     if (GlobalParseContextIndex == OS_INVALID_TLS_INDEX) {
-        assert(0 && "FreeParseContext(): Parse Context index not initalised");
+        assert(0 && "FreeParseContext(): Parse Context index not initialized");
         return false;
     }
 
@@ -1529,7 +1515,7 @@ bool FreeParseContextIndex()
     OS_TLSIndex tlsiIndex = GlobalParseContextIndex;
 
     if (GlobalParseContextIndex == OS_INVALID_TLS_INDEX) {
-        assert(0 && "FreeParseContextIndex(): Parse Context index not initalised");
+        assert(0 && "FreeParseContextIndex(): Parse Context index not initialized");
         return false;
     }
 

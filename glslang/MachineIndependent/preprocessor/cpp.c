@@ -685,18 +685,22 @@ static int CPPversion(yystypepp * yylvalpp)
 	
     yylvalpp->sc_int=atoi(yylvalpp->symbol_name);
 
-    cpp->version = yylvalpp->sc_int;
+    SetVersion(yylvalpp->sc_int);
 
     token = cpp->currentInput->scan(cpp->currentInput, yylvalpp);
     
-	if (token == '\n'){
+	if (token == '\n') {
+        SetProfile(ENoProfile);
 		return token;
 	}
-	else{
-        cpp->profileAtom = yylvalpp->sc_ident;
-        if (cpp->profileAtom != coreAtom &&
-            cpp->profileAtom != compatibilityAtom &&
-            cpp->profileAtom != esAtom)
+	else {
+        if (yylvalpp->sc_ident == coreAtom)
+            SetProfile(ECoreProfile);
+        else if (yylvalpp->sc_ident == compatibilityAtom)
+            SetProfile(ECompatibilityProfile);
+        else if (yylvalpp->sc_ident == esAtom)
+            SetProfile(EEsProfile);
+        else 
             CPPErrorToInfoLog("#version profile name");
 
         token = cpp->currentInput->scan(cpp->currentInput, yylvalpp);

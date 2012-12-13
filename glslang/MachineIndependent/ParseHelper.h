@@ -2,6 +2,8 @@
 //Copyright (C) 2002-2005  3Dlabs Inc. Ltd.
 //All rights reserved.
 //
+//Copyright (C) 2012 LunarG, Inc.
+//
 //Redistribution and use in source and binary forms, with or without
 //modification, are permitted provided that the following conditions
 //are met:
@@ -34,6 +36,7 @@
 #ifndef _PARSER_HELPER_INCLUDED_
 #define _PARSER_HELPER_INCLUDED_
 
+#include "Versions.h"
 #include "../Include/ShHandle.h"
 #include "SymbolTable.h"
 #include "localintermediate.h"
@@ -67,8 +70,9 @@ struct TParseContext {
     TParseContext(TSymbolTable& symt, TIntermediate& interm, EShLanguage L, TInfoSink& is) : 
             intermediate(interm), symbolTable(symt), infoSink(is), language(L), treeRoot(0),
             recoveredFromError(false), numErrors(0), lexAfterType(false), loopNestingLevel(0),
-            switchNestingLevel(0),
-            inTypeParen(false), contextPragma(true, false) {  }
+            switchNestingLevel(0), inTypeParen(false), 
+            version(110), profile(ENoProfile), futureCompatibility(false),
+            contextPragma(true, false) {  }
     TIntermediate& intermediate; // to hold and build a parse tree
     TSymbolTable& symbolTable;   // symbol table that goes with the language currently being parsed
     TInfoSink& infoSink;
@@ -82,7 +86,16 @@ struct TParseContext {
     bool inTypeParen;            // true if in parentheses, looking only for an identifier
     const TType* currentFunctionType;  // the return type of the function that's currently being parsed
     bool functionReturnsValue;   // true if a non-void function has a return
-    TMap<TString, TBehavior> extensionBehavior;
+
+    int version;                 // the declared version in the shader (110 by default)
+    EProfile profile;            // the declared profile in the shader (core by default)
+    bool futureCompatibility;    // true if requesting errors for future compatibility (false by default)
+    TMap<TString, TBehavior> extensionBehavior;    // for each extension string, what it's current enablement is
+    
+    struct TPragma contextPragma;
+	TString HashErrMsg; 
+    bool AfterEOF;
+
     void initializeExtensionBehavior();
 
     void C_DECL error(TSourceLoc, const char *szReason, const char *szToken, 
@@ -117,7 +130,6 @@ struct TParseContext {
     bool nonInitConstErrorCheck(int line, TString& identifier, TPublicType& type);
     bool nonInitErrorCheck(int line, TString& identifier, TPublicType& type);
     bool paramErrorCheck(int line, TQualifier qualifier, TType* type);
-    bool extensionErrorCheck(int line, const char*);
     const TFunction* findFunction(int line, TFunction* pfnCall, bool *builtIn = 0);
     bool executeInitializer(TSourceLoc line, TString& identifier, TPublicType& pType, 
                             TIntermTyped* initializer, TIntermNode*& intermNode, TVariable* variable = 0);
@@ -131,9 +143,12 @@ struct TParseContext {
     TIntermTyped* addConstArrayNode(int index, TIntermTyped* node, TSourceLoc line);
     TIntermTyped* addConstStruct(TString& , TIntermTyped*, TSourceLoc);
     bool arraySetMaxSize(TIntermSymbol*, TType*, int, bool, TSourceLoc);
-	struct TPragma contextPragma;
-	TString HashErrMsg; 
-    bool AfterEOF;
+    void requireProfile(int line, EProfileMask profileMask, const char *featureDesc);
+    void requireStage(int line, EShLanguageMask languageMask, const char *featureDesc);
+    void profileRequires(int line, EProfile callingProfile, int minVersion, int numExtensions, const char* extensions[], const char *featureDesc);
+    void profileRequires(int line, EProfile callingProfile, int minVersion, const char* extension, const char *featureDesc);
+    void checkDeprecated(int line, EProfile callingProfile, int depVersion, const char *featureDesc);
+    void requireNotRemoved(int line, EProfile callingProfile, int removedVersion, const char *featureDesc);
 };
 
 int PaParseStrings(char* argv[], int strLen[], int argc, TParseContext&);

@@ -2,6 +2,8 @@
 //Copyright (C) 2002-2005  3Dlabs Inc. Ltd.
 //All rights reserved.
 //
+//Copyright (C) 2012 LunarG, Inc.
+//
 //Redistribution and use in source and binary forms, with or without
 //modification, are permitted provided that the following conditions
 //are met:
@@ -69,20 +71,6 @@ Jutta Degener, 1995
     #define YYLEX_PARAM (void*)(parseContextLocal)
     extern void yyerror(char*);
 #endif
-
-#define VERTEX_ONLY(S, L) {                                                     \
-    if (parseContext.language != EShLangVertex) {                               \
-        parseContext.error(L, " supported in vertex shaders only ", S, "", ""); \
-        parseContext.recover();                                                 \
-    }                                                                           \
-}
-
-#define FRAG_ONLY(S, L) {                                                        \
-    if (parseContext.language != EShLangFragment) {                              \
-        parseContext.error(L, " supported in fragment shaders only ", S, "", "");\
-        parseContext.recover();                                                  \
-    }                                                                            \
-}
 
 %}
 %union {
@@ -384,12 +372,8 @@ postfix_expression
             // TODO: if next token is not "(", then this is an error
 
             if (*$3.string == "length") {
-                if (parseContext.extensionErrorCheck($3.line, "GL_3DL_array_objects")) {
-                    parseContext.recover();
-                    $$ = $1;
-                } else {
-                    $$ = parseContext.intermediate.addMethod($1, TType(EbtInt), $3.string, $2.line);
-                }
+                parseContext.profileRequires($3.line, ENoProfile, 120, "GL_3DL_array_objects", ".length");
+                $$ = parseContext.intermediate.addMethod($1, TType(EbtInt), $3.string, $2.line);
             } else {
                 parseContext.error($3.line, "only the length method is supported for array", $3.string->c_str(), "");
                 parseContext.recover();
@@ -695,10 +679,7 @@ function_identifier
         $$.intermNode = 0;
 
         if ($1.array) {
-            if (parseContext.extensionErrorCheck($1.line, "GL_3DL_array_objects")) {
-                parseContext.recover();
-                $1.setArray(false);
-            }
+            parseContext.profileRequires($1.line, ENoProfile, 120, "GL_3DL_array_objects", "array");
         }
 
         if ($1.userDef) {
@@ -966,8 +947,8 @@ equality_expression
             constUnion *unionArray = new constUnion[1];
             unionArray->setBConst(false);
             $$ = parseContext.intermediate.addConstantUnion(unionArray, TType(EbtBool, EvqConst), $2.line);
-        } else if (($1->isArray() || $3->isArray()) && parseContext.extensionErrorCheck($2.line, "GL_3DL_array_objects"))
-            parseContext.recover();
+        } else if (($1->isArray() || $3->isArray()))
+            parseContext.profileRequires($2.line, ENoProfile, 120, "GL_3DL_array_objects", "==");
     }
     | equality_expression NE_OP relational_expression {
         $$ = parseContext.intermediate.addBinaryMath(EOpNotEqual, $1, $3, $2.line, parseContext.symbolTable);
@@ -977,8 +958,8 @@ equality_expression
             constUnion *unionArray = new constUnion[1];
             unionArray->setBConst(false);
             $$ = parseContext.intermediate.addConstantUnion(unionArray, TType(EbtBool, EvqConst), $2.line);
-        } else if (($1->isArray() || $3->isArray()) && parseContext.extensionErrorCheck($2.line, "GL_3DL_array_objects"))
-            parseContext.recover();
+        } else if (($1->isArray() || $3->isArray()))
+            parseContext.profileRequires($2.line, ENoProfile, 120, "GL_3DL_array_objects", "!=");
     }
     ;
 
@@ -1088,8 +1069,8 @@ assignment_expression
             parseContext.assignError($2.line, "assign", $1->getCompleteString(), $3->getCompleteString());
             parseContext.recover();
             $$ = $1;
-        } else if (($1->isArray() || $3->isArray()) && parseContext.extensionErrorCheck($2.line, "GL_3DL_array_objects"))
-            parseContext.recover();
+        } else if (($1->isArray() || $3->isArray()))
+            parseContext.profileRequires($2.line, ENoProfile, 120, "GL_3DL_array_objects", "=");
     }
     ;
 
@@ -1394,22 +1375,20 @@ init_declarator_list
                 parseContext.recover();
         }
 
-        if (parseContext.extensionErrorCheck($$.line, "GL_3DL_array_objects"))
+        parseContext.profileRequires($5.line, ENoProfile, 120, "GL_3DL_array_objects", "initializer");
+
+        TIntermNode* intermNode;
+        if (!parseContext.executeInitializer($3.line, *$3.string, $1.type, $6, intermNode, variable)) {
+            //
+            // build the intermediate representation
+            //
+            if (intermNode)
+                $$.intermAggregate = parseContext.intermediate.growAggregate($1.intermNode, intermNode, $5.line);
+            else
+                $$.intermAggregate = $1.intermAggregate;
+        } else {
             parseContext.recover();
-        else {
-            TIntermNode* intermNode;
-            if (!parseContext.executeInitializer($3.line, *$3.string, $1.type, $6, intermNode, variable)) {
-                //
-                // build the intermediate representation
-                //
-                if (intermNode)
-                    $$.intermAggregate = parseContext.intermediate.growAggregate($1.intermNode, intermNode, $5.line);
-                else
-                    $$.intermAggregate = $1.intermAggregate;
-            } else {
-                parseContext.recover();
-                $$.intermAggregate = 0;
-            }
+            $$.intermAggregate = 0;
         }
     }
     | init_declarator_list COMMA IDENTIFIER EQUAL initializer {
@@ -1492,22 +1471,20 @@ single_declaration
                 parseContext.recover();
         }
 
-        if (parseContext.extensionErrorCheck($$.line, "GL_3DL_array_objects"))
-            parseContext.recover();
-        else {
-            TIntermNode* intermNode;
-            if (!parseContext.executeInitializer($2.line, *$2.string, $1, $5, intermNode, variable)) {
-                //
-                // Build intermediate representation
-                //
-                if (intermNode)
-                    $$.intermAggregate = parseContext.intermediate.makeAggregate(intermNode, $4.line);
-                else
-                    $$.intermAggregate = 0;
-            } else {
-                parseContext.recover();
+        parseContext.profileRequires($4.line, ENoProfile, 120, "GL_3DL_array_objects", "initializer");
+
+        TIntermNode* intermNode;
+        if (!parseContext.executeInitializer($2.line, *$2.string, $1, $5, intermNode, variable)) {
+            //
+            // Build intermediate representation
+            //
+            if (intermNode)
+                $$.intermAggregate = parseContext.intermediate.makeAggregate(intermNode, $4.line);
+            else
                 $$.intermAggregate = 0;
-            }
+        } else {
+            parseContext.recover();
+            $$.intermAggregate = 0;
         }
     }
     | fully_specified_type IDENTIFIER EQUAL initializer {
@@ -1538,17 +1515,13 @@ fully_specified_type
         $$ = $1;
 
         if ($1.array) {
-            if (parseContext.extensionErrorCheck($1.line, "GL_3DL_array_objects")) {
-                parseContext.recover();
-                $1.setArray(false);
-            }
+            parseContext.profileRequires($1.line, ENoProfile, 120, "GL_3DL_array_objects", "array");
         }
     }
     | type_qualifier type_specifier  {
-        if ($2.array && parseContext.extensionErrorCheck($2.line, "GL_3DL_array_objects")) {
-            parseContext.recover();
-            $2.setArray(false);
-        }
+        if ($2.array)
+            parseContext.profileRequires($1.line, ENoProfile, 120, "GL_3DL_array_objects", "array");
+
         if ($2.array && parseContext.arrayQualifierErrorCheck($2.line, $1)) {
             parseContext.recover();
             $2.setArray(false);
@@ -1661,12 +1634,15 @@ storage_qualifier
         $$.setBasic(EbtVoid, EvqConst, $1.line);
     }
     | ATTRIBUTE {
-        VERTEX_ONLY("attribute", $1.line);
+        //parseContext.requireProfile($1.line, (EProfileMask)(ENoProfileMask | ECompatibilityProfileMask), "attribute");
+        parseContext.requireStage($1.line, EShLangVertexMask, "attribute");
+        parseContext.requireNotRemoved($1.line, ECoreProfile, 420, "attribute");
         if (parseContext.globalErrorCheck($1.line, parseContext.symbolTable.atGlobalLevel(), "attribute"))
             parseContext.recover();
         $$.setBasic(EbtVoid, EvqAttribute, $1.line);
     }
     | VARYING {
+        parseContext.requireNotRemoved($1.line, ECoreProfile, 420, "varying");
         if (parseContext.globalErrorCheck($1.line, parseContext.symbolTable.atGlobalLevel(), "varying"))
             parseContext.recover();
         if (parseContext.language == EShLangVertex)
@@ -2162,29 +2138,25 @@ type_specifier_nonarray
         $$.setBasic(EbtSampler2DShadow, qual, $1.line);
     }
     | SAMPLER2DRECT {
-        if (parseContext.extensionErrorCheck($1.line, "GL_ARB_texture_rectangle"))
-            parseContext.recover();
+        parseContext.profileRequires($1.line, ENoProfile, 140, "GL_ARB_texture_rectangle", "rectangle texture");
 
         TQualifier qual = parseContext.symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
         $$.setBasic(EbtSamplerRect, qual, $1.line);
     }
     | SAMPLER2DRECTSHADOW {
-        if (parseContext.extensionErrorCheck($1.line, "GL_ARB_texture_rectangle"))
-            parseContext.recover();
+        parseContext.profileRequires($1.line, ECoreProfile, 140, "GL_ARB_texture_rectangle", "rectangle texture");
 
         TQualifier qual = parseContext.symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
         $$.setBasic(EbtSamplerRectShadow, qual, $1.line);
     }
     | ISAMPLER2DRECT {
-        if (parseContext.extensionErrorCheck($1.line, "GL_ARB_texture_rectangle"))
-            parseContext.recover();
+        parseContext.profileRequires($1.line, ECoreProfile, 140, "GL_ARB_texture_rectangle", "rectangle texture");
 
         TQualifier qual = parseContext.symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
         $$.setBasic(EbtSamplerRect, qual, $1.line);
     }
     | USAMPLER2DRECT {
-        if (parseContext.extensionErrorCheck($1.line, "GL_ARB_texture_rectangle"))
-            parseContext.recover();
+        parseContext.profileRequires($1.line, ECoreProfile, 140, "GL_ARB_texture_rectangle", "rectangle texture");
 
         TQualifier qual = parseContext.symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
         $$.setBasic(EbtSamplerRect, qual, $1.line);
@@ -2760,7 +2732,7 @@ jump_statement
         }
     }
     | DISCARD SEMICOLON {
-        FRAG_ONLY("discard", $1.line);
+        parseContext.requireStage($1.line, EShLangFragmentMask, "discard");
         $$ = parseContext.intermediate.addBranch(EOpKill, $1.line);
     }
     ;

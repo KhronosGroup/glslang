@@ -71,9 +71,22 @@ SH_IMPORT_EXPORT int __fastcall ShFinalize();
 //
 typedef enum {
 	EShLangVertex,
+    EShLangTessControl,
+    EShLangTessEvaluation,
+    EShLangGeometry,
 	EShLangFragment,
     EShLangCount,
 } EShLanguage;
+
+typedef enum {
+	EShLangVertexMask         = (1 << EShLangVertex),
+    EShLangTessControlMask    = (1 << EShLangTessControl),
+    EShLangTessEvaluationMask = (1 << EShLangTessEvaluation),
+    EShLangGeometryMask       = (1 << EShLangGeometry),
+	EShLangFragmentMask       = (1 << EShLangFragment),
+} EShLanguageMask;
+
+extern char* StageName[EShLangCount];
 
 //
 // Types of output the linker will create.

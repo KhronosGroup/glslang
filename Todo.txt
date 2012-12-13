@@ -1,0 +1,16 @@
+Minor "to do" items are identified in the source code with "TODO..." comments.
+
+Major items to do:
+
+* Use the new versioning infrastructure to identify all errors specific to
+  - profile
+  - extension
+  - version
+  - stage
+  
+* Add semantics for all new grammar (1.2 through 4.3)
+
+* Replace the preprocessor with a better one.
+
+* Verify/fix thread safety of the parse context.
+

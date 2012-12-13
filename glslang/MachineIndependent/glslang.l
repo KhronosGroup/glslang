@@ -3,6 +3,8 @@
 //Copyright (C) 2002-2005  3Dlabs Inc. Ltd.
 //All rights reserved.
 //
+//Copyright (C) 2012 LunarG, Inc.
+//
 //Redistribution and use in source and binary forms, with or without
 //modification, are permitted provided that the following conditions
 //are met:
@@ -568,7 +570,7 @@ void CPPShInfoLogMsg(const char *msg)
 
 void CPPErrorToInfoLog(char *msg)
 {
-    ((TParseContext *)cpp->pC)->error(yylineno,"syntax error", "",msg,"");
+    ((TParseContext *)cpp->pC)->error(yylineno, "CPP error:", "",msg,"");
     GlobalParseContext->recover();
 }
 
@@ -706,6 +708,48 @@ const char* GetStrfromTStr(void)
 void ResetTString(void)
 {
     ((TParseContext *)cpp->pC)->HashErrMsg = "";
+}
+
+void SetVersion(int version)
+{
+    ((TParseContext *)cpp->pC)->version = version;
+}
+
+const int FirstProfileVersion = 150;
+
+// Important assumption:  SetVersion() is called before SetProfile(), and is always called
+// if there is a version, sending in a ENoProfile if there is no profile given.
+void SetProfile(EProfile profile)
+{
+    int version = ((TParseContext *)cpp->pC)->version;
+
+    if (profile == ENoProfile) {
+        if (version == 100 || version == 300) {
+            CPPErrorToInfoLog("versions 100 and 300 require specifying the es profile");
+            ((TParseContext *)cpp->pC)->profile = ENoProfile;
+        } else if (version >= FirstProfileVersion)
+            ((TParseContext *)cpp->pC)->profile = ECoreProfile;
+        else
+            ((TParseContext *)cpp->pC)->profile = ENoProfile;
+    } else { 
+        // a profile was provided...
+        if (version == 100 || version == 300) {
+            if (profile != EEsProfile)
+                CPPErrorToInfoLog("versions 100 and 300 only support the es profile");            
+            ((TParseContext *)cpp->pC)->profile = EEsProfile;
+        } else {
+            if (profile == EEsProfile) {
+                CPPErrorToInfoLog("only versions 100 and 300 support the es profile");
+                if (version >= FirstProfileVersion)
+                    ((TParseContext *)cpp->pC)->profile = ECoreProfile;
+                else
+                    ((TParseContext *)cpp->pC)->profile = ENoProfile;
+            } else {
+                // typical desktop case... e.g., "#version 410 core"
+                ((TParseContext *)cpp->pC)->profile = profile;
+            }
+        }
+    }
 }
 
 TBehavior GetBehavior(const char* behavior)

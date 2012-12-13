@@ -282,6 +282,8 @@ int ShCompile(
     
     GenerateBuiltInSymbolTable(resources, compiler->infoSink, &symbolTable, compiler->getLanguage());
 
+    // TODO: this is happening *after* initialization, which already parsed some things... what parse context was that?
+    // what extensions did it have?
     TParseContext parseContext(symbolTable, intermediate, compiler->getLanguage(), compiler->infoSink);
     parseContext.initializeExtensionBehavior();
 

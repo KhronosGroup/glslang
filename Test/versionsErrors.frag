@@ -1,5 +1,5 @@
 //
-//Copyright (C) 2002-2004  3Dlabs Inc. Ltd.
+//Copyright (C) 2012 LunarG, Inc.
 //All rights reserved.
 //
 //Redistribution and use in source and binary forms, with or without
@@ -14,7 +14,7 @@
 //    disclaimer in the documentation and/or other materials provided
 //    with the distribution.
 //
-//    Neither the name of 3Dlabs Inc. Ltd. nor the names of its
+//    Neither the name of LunarG Inc. nor the names of its
 //    contributors may be used to endorse or promote products derived
 //    from this software without specific prior written permission.
 //
@@ -31,10 +31,16 @@
 //ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 //POSSIBILITY OF SUCH DAMAGE.
 //
+#version 110 es
 
-varying vec3 color;
+#extension GL_ARB_texture_rectangle : disable
+
+attribute vec3 color;
+
+uniform sampler2DRect foo;
 
 void main()
 {
-    gl_FragColor = vec4(color, 1.0);
+    gl_FragColor = vec4(color, 142.0f);
+    discard;
 }
