@@ -815,7 +815,7 @@ bool TIntermBinary::promote(TInfoSink& infoSink)
     if (right->getNominalSize() > size)
         size = right->getNominalSize();
 
-    TBasicType type = left->getBasicType();
+    TBasicType basicType = left->getBasicType();
 
     //
     // Arrays have to be exact matches.
@@ -827,7 +827,8 @@ bool TIntermBinary::promote(TInfoSink& infoSink)
     // Base assumption:  just make the type the same as the left
     // operand.  Then only deviations from this need be coded.
     //
-    setType(TType(type, EvqTemporary, left->getNominalSize(), left->isMatrix()));
+    setType(left->getType());
+    type.changeQualifier(EvqTemporary);
 
     //
     // Array operations.
@@ -844,12 +845,8 @@ bool TIntermBinary::promote(TInfoSink& infoSink)
             setType(TType(EbtBool));
             break;
 
-        //
-        // Set array information.
-        //
         case EOpAssign:
-            getType().setArraySize(left->getType().getArraySize());
-            getType().setArrayInformationType(left->getType().getArrayInformationType());
+            // array information was correctly set above
             break;
 
         default:
@@ -939,12 +936,12 @@ bool TIntermBinary::promote(TInfoSink& infoSink)
                 op = EOpVectorTimesMatrix;
             else {
                 op = EOpMatrixTimesScalar;
-                setType(TType(type, EvqTemporary, size, true));
+                setType(TType(basicType, EvqTemporary, size, true));
             }
         } else if (left->isMatrix() && !right->isMatrix()) {
             if (right->isVector()) {
                 op = EOpMatrixTimesVector;
-                setType(TType(type, EvqTemporary, size, false));
+                setType(TType(basicType, EvqTemporary, size, false));
             } else {
                 op = EOpMatrixTimesScalar;
             }
@@ -955,7 +952,7 @@ bool TIntermBinary::promote(TInfoSink& infoSink)
                 // leave as component product
             } else if (left->isVector() || right->isVector()) {
                 op = EOpVectorTimesScalar;
-                setType(TType(type, EvqTemporary, size, false));
+                setType(TType(basicType, EvqTemporary, size, false));
             }
         } else {
             infoSink.info.message(EPrefixInternalError, "Missing elses", getLine());
@@ -984,7 +981,7 @@ bool TIntermBinary::promote(TInfoSink& infoSink)
                 if (! left->isVector())
                     return false;
                 op = EOpVectorTimesScalarAssign;
-                setType(TType(type, EvqTemporary, size, false));
+                setType(TType(basicType, EvqTemporary, size, false));
             }
         } else {
             infoSink.info.message(EPrefixInternalError, "Missing elses", getLine());
@@ -1007,7 +1004,7 @@ bool TIntermBinary::promote(TInfoSink& infoSink)
             left->isVector() && right->isMatrix() ||
             left->getBasicType() != right->getBasicType())
             return false;
-        setType(TType(type, EvqTemporary, size, left->isMatrix() || right->isMatrix()));
+        setType(TType(basicType, EvqTemporary, size, left->isMatrix() || right->isMatrix()));
         break;
         
     case EOpEqual:

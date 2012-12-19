@@ -281,7 +281,7 @@ public:
 	TIntermTyped(const TType& t) : type(t)  { }
     virtual TIntermTyped* getAsTyped()         { return this; }
     virtual void setType(const TType& t) { type = t; }
-    virtual TType getType() const { return type; }
+    virtual const TType& getType() const { return type; }
     virtual TType* getTypePointer() { return &type; }
     
     virtual TBasicType getBasicType() const { return type.getBasicType(); }
