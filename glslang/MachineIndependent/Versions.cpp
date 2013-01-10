@@ -88,7 +88,7 @@ void TParseContext::requireStage(int line, EShLanguageMask languageMask, const c
 
 //
 // Within a profile, if a feature requires a version level or extension, use
-// ProfileRequires().  This only checks if the current profile matches 
+// ProfileRequires().  This only checks if the current profile matches
 // the passed-in profile.
 //
 
@@ -137,7 +137,8 @@ void TParseContext::checkDeprecated(int line, EProfile callingProfile, int depVe
                 error(line, "deprecated, may be removed in future release", featureDesc, "");
                 recover();
             } else {
-                infoSink.info.message(EPrefixWarning, (TString(featureDesc) + " being used, but may be removed in future release").c_str(), line);
+                infoSink.info.message(EPrefixWarning, (TString(featureDesc) + " deprecated in version " +
+                                                       String(depVersion) + "; may be removed in future release").c_str(), line);
             }
         }
     }

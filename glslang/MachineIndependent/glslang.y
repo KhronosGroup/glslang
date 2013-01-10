@@ -1121,6 +1121,7 @@ declaration
         $$ = $1.intermAggregate;
     }
     | PRECISION precision_qualifier type_specifier SEMICOLON {
+        parseContext.profileRequires($1.line, ENoProfile, 130, 0, "precision statement");
         $$ = 0;
     }
     | type_qualifier IDENTIFIER LEFT_BRACE struct_declaration_list RIGHT_BRACE SEMICOLON {
@@ -1641,15 +1642,19 @@ storage_qualifier
         $$.setBasic(EbtVoid, EvqConst, $1.line);
     }
     | ATTRIBUTE {
-        //parseContext.requireProfile($1.line, (EProfileMask)(ENoProfileMask | ECompatibilityProfileMask), "attribute");
         parseContext.requireStage($1.line, EShLangVertexMask, "attribute");
+
+        parseContext.checkDeprecated($1.line, ENoProfile, 140, "attribute");
         parseContext.requireNotRemoved($1.line, ECoreProfile, 420, "attribute");
+
         if (parseContext.globalErrorCheck($1.line, parseContext.symbolTable.atGlobalLevel(), "attribute"))
             parseContext.recover();
         $$.setBasic(EbtVoid, EvqAttribute, $1.line);
     }
     | VARYING {
+        parseContext.checkDeprecated($1.line, ENoProfile, 140, "varying");
         parseContext.requireNotRemoved($1.line, ECoreProfile, 420, "varying");
+        
         if (parseContext.globalErrorCheck($1.line, parseContext.symbolTable.atGlobalLevel(), "varying"))
             parseContext.recover();
         if (parseContext.language == EShLangVertex)
@@ -2396,10 +2401,13 @@ type_specifier_nonarray
 
 precision_qualifier
     : HIGH_PRECISION {
+        parseContext.profileRequires($1.line, ENoProfile, 130, 0, "highp precision qualifier");
     }
     | MEDIUM_PRECISION {
+        parseContext.profileRequires($1.line, ENoProfile, 130, 0, "mediump precision qualifier");
     }
     | LOW_PRECISION {
+        parseContext.profileRequires($1.line, ENoProfile, 130, 0, "lowp precision qualifier");
     }
     ;
 
