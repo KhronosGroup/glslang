@@ -1,4 +1,4 @@
-#version 110
+#version 150
 
 #extension GL_3DL_array_objects : enable
 

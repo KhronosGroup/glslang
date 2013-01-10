@@ -122,7 +122,7 @@ void TParseContext::profileRequires(int line, EProfile callingProfile, int minVe
 // one that takes a single extension
 void TParseContext::profileRequires(int line, EProfile callingProfile, int minVersion, const char* extension, const char *featureDesc)
 {
-    profileRequires(line, callingProfile, minVersion, 1, &extension, featureDesc);
+    profileRequires(line, callingProfile, minVersion, extension ? 1 : 0, &extension, featureDesc);
 }
 
 //

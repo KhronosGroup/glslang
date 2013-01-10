@@ -1417,6 +1417,9 @@ single_declaration
     : fully_specified_type {
         $$.type = $1;
         $$.intermAggregate = 0;
+
+        if (parseContext.globalQualifierFixAndErrorCheck($1.line, $1.qualifier))
+            parseContext.recover();
     }
     | fully_specified_type IDENTIFIER {
         $$.intermAggregate = 0;
@@ -1437,6 +1440,10 @@ single_declaration
     }
     | fully_specified_type IDENTIFIER array_specifier {
         $$.intermAggregate = 0;
+
+        if (parseContext.globalQualifierFixAndErrorCheck($1.line, $1.qualifier))
+            parseContext.recover();
+
         if (parseContext.structQualifierErrorCheck($2.line, $1))
             parseContext.recover();
 

@@ -213,7 +213,8 @@ enum TDebugOptions {
 	EDebugOpIntermediate       = 0x001,
 	EDebugOpAssembly           = 0x002,
     EDebugOpObjectCode         = 0x004,
-	EDebugOpLinkMaps           = 0x008
+	EDebugOpLinkMaps           = 0x008,
+	EDebugSuppressInfolog      = 0x010
 };
 #ifdef __cplusplus
     }

@@ -623,14 +623,19 @@ bool TParseContext::globalQualifierFixAndErrorCheck(int line, TQualifier& qualif
 {
     switch (qualifier) {
     case EvqIn:
+        profileRequires(line, ENoProfile, 130, 0, "in for stage inputs");
+        profileRequires(line, EEsProfile, 300, 0, "in for stage inputs");
         qualifier = EvqVaryingIn;
-        return false;
+        break;
     case EvqOut:
+        profileRequires(line, ENoProfile, 130, 0, "out for stage outputs");
+        profileRequires(line, EEsProfile, 300, 0, "out for stage outputs");
         qualifier = EvqVaryingOut;
-        return false;
+        break;
     case EvqInOut:
         qualifier = EvqVaryingIn;
-        error(line, "cannot use both 'in' and 'out' at global scope", "", "");
+        error(line, "cannot use 'inout' at global scope", "", "");
+
         return true;
     }
 
