@@ -46,7 +46,7 @@
 //   so that symbol table lookups are never ambiguous.  This allows
 //   a simpler symbol table structure.
 //
-// * Pushing and popping of scope, so symbol table will really be a stack 
+// * Pushing and popping of scope, so symbol table will really be a stack
 //   of symbol tables.  Searched from the top, with new inserts going into
 //   the top.
 //
@@ -61,11 +61,11 @@
 #include "../Include/Common.h"
 #include "../Include/intermediate.h"
 #include "../Include/InfoSink.h"
- 
+
 //
 // Symbol base class.  (Can build functions or variables out of these...)
 //
-class TSymbol {    
+class TSymbol {
 public:
     POOL_ALLOCATOR_NEW_DELETE(GlobalPoolAllocator)
     TSymbol(const TString *n) :  name(n) { }
@@ -87,29 +87,29 @@ protected:
 
 //
 // Variable class, meaning a symbol that's not a function.
-// 
+//
 // There could be a separate class heirarchy for Constant variables;
 // Only one of int, bool, or float, (or none) is correct for
 // any particular use, but it's easy to do this way, and doesn't
 // seem worth having separate classes, and "getConst" can't simply return
-// different values for different types polymorphically, so this is 
+// different values for different types polymorphically, so this is
 // just simple and pragmatic.
 //
 class TVariable : public TSymbol {
 public:
     TVariable(const TString *name, const TType& t, bool uT = false ) : TSymbol(name), type(t), userType(uT), unionArray(0), arrayInformationType(0) { }
     virtual ~TVariable() { }
-    virtual bool isVariable() const { return true; }    
-    TType& getType() { return type; }    
+    virtual bool isVariable() const { return true; }
+    TType& getType() { return type; }
     const TType& getType() const { return type; }
     bool isUserType() const { return userType; }
-    void changeQualifier(TQualifier qualifier) { type.changeQualifier(qualifier); }
+    void setStorageQualifier(TStorageQualifier qualifier) { type.getQualifier().storage = qualifier; }
     void updateArrayInformationType(TType *t) { arrayInformationType = t; }
     TType* getArrayInformationType() { return arrayInformationType; }
 
     virtual void dump(TInfoSink &infoSink) const;
 
-    constUnion* getConstPointer() { 
+    constUnion* getConstPointer() {
         if (!unionArray)
             unionArray = new constUnion[type.getObjectSize()];
 
@@ -121,11 +121,11 @@ public:
     void shareConstPointer( constUnion *constArray)
     {
         delete unionArray;
-        unionArray = constArray;  
+        unionArray = constArray;
     }
 	TVariable(const TVariable&, TStructureMap& remapper); // copy constructor
 	virtual TVariable* clone(TStructureMap& remapper);
-      
+
 protected:
     TType type;
     bool userType;
@@ -149,7 +149,7 @@ struct TParameter {
 };
 
 //
-// The function sub-class of a symbol.  
+// The function sub-class of a symbol.
 //
 class TFunction : public TSymbol {
 public:
@@ -158,21 +158,21 @@ public:
         returnType(TType(EbtVoid)),
         op(o),
         defined(false) { }
-    TFunction(const TString *name, TType& retType, TOperator tOp = EOpNull) : 
-        TSymbol(name), 
+    TFunction(const TString *name, TType& retType, TOperator tOp = EOpNull) :
+        TSymbol(name),
         returnType(retType),
         mangledName(*name + '('),
         op(tOp),
         defined(false) { }
 	virtual ~TFunction();
-    virtual bool isFunction() const { return true; }    
-    
-    void addParameter(TParameter& p) 
-    { 
+    virtual bool isFunction() const { return true; }
+
+    void addParameter(TParameter& p)
+    {
         parameters.push_back(p);
         mangledName = mangledName + p.type->getMangledName();
     }
-    
+
     const TString& getMangledName() const { return mangledName; }
     const TType& getReturnType() const { return returnType; }
     void relateToOperator(TOperator o) { op = o; }
@@ -180,14 +180,14 @@ public:
     void setDefined() { defined = true; }
     bool isDefined() { return defined; }
 
-    int getParamCount() const { return static_cast<int>(parameters.size()); }    
+    int getParamCount() const { return static_cast<int>(parameters.size()); }
           TParameter& operator [](int i)       { return parameters[i]; }
     const TParameter& operator [](int i) const { return parameters[i]; }
-    
+
     virtual void dump(TInfoSink &infoSink) const;
 	TFunction(const TFunction&, TStructureMap& remapper);
 	virtual TFunction* clone(TStructureMap& remapper);
-    
+
 protected:
     typedef TVector<TParameter> TParamList;
 	TParamList parameters;
@@ -201,17 +201,17 @@ protected:
 class TSymbolTableLevel {
 public:
     POOL_ALLOCATOR_NEW_DELETE(GlobalPoolAllocator)
-    TSymbolTableLevel() { }
+    TSymbolTableLevel() : defaultPrecision (0) { }
 	~TSymbolTableLevel();
-    
-    bool insert(TSymbol& symbol) 
+
+    bool insert(TSymbol& symbol)
     {
         //
         // returning true means symbol was added to the table
         //
         tInsertResult result;
         result = level.insert(tLevelPair(symbol.getMangledName(), &symbol));
-        
+
         return result.second;
     }
 
@@ -224,17 +224,44 @@ public:
             return (*it).second;
     }
 
+    // Use this to do a lazy 'push' of precision defaults the first time
+    // a precision statement is seen in a new scope.  Leave it at 0 for
+    // when no push was needed.  Thus, it is not the current defaults,
+    // it is what to restore the defaults to when popping a level.
+    void setPreviousDefaultPrecisions(const TPrecisionQualifier *p)
+    {
+        // can call multiple times at one scope, will only latch on first call,
+        // as we're tracking the previous scope's values, not the current values
+        if (defaultPrecision != 0)
+            return;
+
+        defaultPrecision = new TPrecisionQualifier[EbtNumTypes];
+        for (int t = 0; t < EbtNumTypes; ++t)
+            defaultPrecision[t] = p[t];
+    }
+
+    void getPreviousDefaultPrecisions(TPrecisionQualifier *p)
+    {
+        // can be called for table level pops that didn't set the
+        // defaults
+        if (defaultPrecision == 0 || p == 0)
+            return;
+
+        for (int t = 0; t < EbtNumTypes; ++t)
+            p[t] = defaultPrecision[t];
+    }
 
     void relateToOperator(const char* name, TOperator op);
     void dump(TInfoSink &infoSink) const;
 	TSymbolTableLevel* clone(TStructureMap& remapper);
-    
+
 protected:
     typedef std::map<TString, TSymbol*, std::less<TString>, pool_allocator<std::pair<const TString, TSymbol*> > > tLevel;
     typedef const tLevel::value_type tLevelPair;
     typedef std::pair<tLevel::iterator, bool> tInsertResult;
 
     tLevel level;
+    TPrecisionQualifier *defaultPrecision;
 };
 
 class TSymbolTable {
@@ -258,7 +285,7 @@ public:
     {
         // level 0 is always built In symbols, so we never pop that out
         while (table.size() > 1)
-            pop();
+            pop(0);
     }
 
     //
@@ -270,13 +297,17 @@ public:
     bool atBuiltInLevel() { return atSharedBuiltInLevel() || atDynamicBuiltInLevel(); }
     bool atSharedBuiltInLevel() { return table.size() == 1; }	
     bool atGlobalLevel() { return table.size() <= 3; }
-    void push() { 
+    
+    void push()
+    {
         table.push_back(new TSymbolTableLevel);
     }
 
-    void pop() { 
-        delete table[currentLevel()]; 
-        table.pop_back(); 
+    void pop(TPrecisionQualifier *p)
+    {
+        table[currentLevel()]->getPreviousDefaultPrecisions(p);
+        delete table[currentLevel()];
+        table.pop_back();
     }
 
     bool insert(TSymbol& symbol)
@@ -284,8 +315,8 @@ public:
         symbol.setUniqueId(++uniqueId);
         return table[currentLevel()]->insert(symbol);
     }
-    
-    TSymbol* find(const TString& name, bool* builtIn = 0, bool *sameScope = 0) 
+
+    TSymbol* find(const TString& name, bool* builtIn = 0, bool *sameScope = 0)
     {
         int level = currentLevel();
         TSymbol* symbol;
@@ -307,7 +338,9 @@ public:
     void dump(TInfoSink &infoSink) const;
 	void copyTable(const TSymbolTable& copyOf);
 
-protected:    
+    void setPreviousDefaultPrecisions(TPrecisionQualifier *p) { table[currentLevel()]->setPreviousDefaultPrecisions(p); }
+
+protected:
     int currentLevel() const { return static_cast<int>(table.size()) - 1; }
     bool atDynamicBuiltInLevel() { return table.size() == 2; }
 

@@ -55,7 +55,7 @@ enum TBasicType {
     EbtSamplerRectShadow,  // ARB_texture_rectangle
     EbtGuardSamplerEnd,    // non type:  see implementation of IsSampler()
     EbtStruct,
-    EbtAddress,            // should be deprecated??
+    EbtNumTypes
 };
 
 __inline bool IsSampler(TBasicType type)
@@ -69,7 +69,7 @@ __inline bool IsSampler(TBasicType type)
 // to allocate variables in.  Since built-ins tend to go to different registers
 // than varying or uniform, it makes sense they are peers, not sub-classes.
 //
-enum TQualifier {
+enum TStorageQualifier {
     EvqTemporary,     // For temporaries (within a function), read/write
     EvqGlobal,        // For globals read/write
     EvqConst,         // User defined constants and non-output parameters in functions
@@ -104,7 +104,7 @@ enum TQualifier {
 //
 // This is just for debug print out, carried along with the definitions above.
 //
-__inline const char* getQualifierString(TQualifier q) 
+__inline const char* getStorageQualifierString(TStorageQualifier q) 
 {
     switch (q) {
     case EvqTemporary:      return "Temporary";      break;
@@ -126,6 +126,24 @@ __inline const char* getQualifierString(TQualifier q)
     case EvqFragColor:      return "FragColor";      break;
     case EvqFragDepth:      return "FragDepth";      break;
     default:                return "unknown qualifier";
+    }
+}
+
+enum TPrecisionQualifier {
+    EpqNone,
+    EpqLow,
+    EpqMedium,
+    EpqHigh
+};
+
+__inline const char* getPrecisionQualifierString(TPrecisionQualifier p)
+{
+    switch(p) {
+    case EpqNone:   return "";        break;
+    case EpqLow:    return "lowp";    break;
+    case EpqMedium: return "mediump"; break;
+    case EpqHigh:   return "highp";   break;
+    default:        return "unknown precision qualifier";
     }
 }
 

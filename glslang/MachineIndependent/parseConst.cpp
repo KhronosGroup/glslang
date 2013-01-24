@@ -69,15 +69,15 @@ void ParseSymbol(TIntermSymbol* node, TIntermTraverser* it)
 {
     TConstTraverser* oit = static_cast<TConstTraverser*>(it);
     oit->infoSink.info.message(EPrefixInternalError, "Symbol Node found in constant constructor", node->getLine());
-    return;
 
+    return;
 }
 
 bool ParseBinary(bool /* preVisit */, TIntermBinary* node, TIntermTraverser* it)
 {
     TConstTraverser* oit = static_cast<TConstTraverser*>(it);
     
-    TQualifier qualifier = node->getType().getQualifier();
+    TStorageQualifier qualifier = node->getType().getQualifier().storage;
     
     if (qualifier != EvqConst) {
 		const int maxSize = 200;
@@ -85,6 +85,7 @@ bool ParseBinary(bool /* preVisit */, TIntermBinary* node, TIntermTraverser* it)
         sprintf_s(buf, maxSize, "'constructor' : assigning non-constant to %s", oit->type.getCompleteString().c_str());
         oit->infoSink.info.message(EPrefixError, buf, node->getLine());
         oit->error = true;
+
         return false;  
     }
 
@@ -102,6 +103,7 @@ bool ParseUnary(bool /* preVisit */, TIntermUnary* node, TIntermTraverser* it)
     sprintf_s(buf, maxSize, "'constructor' : assigning non-constant to '%s'", oit->type.getCompleteString().c_str());
     oit->infoSink.info.message(EPrefixError, buf, node->getLine());
     oit->error = true;
+
     return false;  
 }
 
@@ -115,11 +117,13 @@ bool ParseAggregate(bool /* preVisit */, TIntermAggregate* node, TIntermTraverse
         sprintf_s(buf, maxSize, "'constructor' : assigning non-constant to '%s'", oit->type.getCompleteString().c_str());
         oit->infoSink.info.message(EPrefixError, buf, node->getLine());
         oit->error = true;
+
         return false;  
     }
 
     if (node->getSequence().size() == 0) {
         oit->error = true;
+
         return false;
     }
 
@@ -152,6 +156,7 @@ bool ParseAggregate(bool /* preVisit */, TIntermAggregate* node, TIntermTraverse
         oit->isMatrix = false;
         oit->matrixSize = 0;
     }
+
     return false;
 }
 
@@ -229,6 +234,7 @@ bool ParseLoop(bool /* preVisit */, TIntermLoop* node, TIntermTraverser* it)
     TConstTraverser* oit = static_cast<TConstTraverser*>(it);
     oit->infoSink.info.message(EPrefixInternalError, "Loop Node found in constant constructor", node->getLine());
     oit->error = true;
+    
     return false;
 }
 
@@ -237,6 +243,7 @@ bool ParseBranch(bool /* previsit*/, TIntermBranch* node, TIntermTraverser* it)
     TConstTraverser* oit = static_cast<TConstTraverser*>(it);
     oit->infoSink.info.message(EPrefixInternalError, "Branch Node found in constant constructor", node->getLine());
     oit->error = true;
+    
     return false;
 }
 

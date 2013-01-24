@@ -96,7 +96,6 @@ Jutta Degener, 1995
         };
         union {
             TPublicType type;
-            TQualifier qualifier;
             TFunction* function;
             TParameter param;
             TTypeLine typeLine;
@@ -235,7 +234,7 @@ variable_identifier
         // don't delete $1.string, it's used by error recovery, and the pool
         // pop will reclaim the memory
 
-        if (variable->getType().getQualifier() == EvqConst ) {
+        if (variable->getType().getQualifier().storage == EvqConst ) {
             constUnion* constArray = variable->getConstPointer();
             TType t(variable->getType());
             $$ = parseContext.intermediate.addConstantUnion(constArray, t, $1.line);
@@ -293,7 +292,7 @@ postfix_expression
                 parseContext.error($2.line, " left of '[' is not of type array, matrix, or vector ", "expression", "");
             parseContext.recover();
         }
-        if ($1->getType().getQualifier() == EvqConst && $3->getQualifier() == EvqConst) {
+        if ($1->getType().getQualifier().storage == EvqConst && $3->getQualifier().storage == EvqConst) {
             if ($1->isArray()) { // constant folding for arrays
                 $$ = parseContext.addConstArrayNode($3->getAsConstantUnion()->getUnionArrayPointer()->getIConst(), $1, $2.line);
             } else if ($1->isVector()) {  // constant folding for vectors
@@ -305,7 +304,7 @@ postfix_expression
                 $$ = parseContext.addConstMatrixNode($3->getAsConstantUnion()->getUnionArrayPointer()->getIConst(), $1, $2.line);
             }
         } else {
-            if ($3->getQualifier() == EvqConst) {
+            if ($3->getQualifier().storage == EvqConst) {
                 if (($1->isVector() || $1->isMatrix()) && $1->getType().getNominalSize() <= $3->getAsConstantUnion()->getUnionArrayPointer()->getIConst() && !$1->isArray() ) {
                     parseContext.error($2.line, "", "[", "field selection out of range '%d'", $3->getAsConstantUnion()->getUnionArrayPointer()->getIConst());
                     parseContext.recover();
@@ -345,13 +344,13 @@ postfix_expression
             else
                 $$->setType(TType($1->getBasicType(), EvqTemporary, $1->getNominalSize(), $1->isMatrix()));
 
-            if ($1->getType().getQualifier() == EvqConst)
-                $$->getTypePointer()->changeQualifier(EvqConst);
-        } else if ($1->isMatrix() && $1->getType().getQualifier() == EvqConst)
+            if ($1->getType().getQualifier().storage == EvqConst)
+                $$->getTypePointer()->getQualifier().storage = EvqConst;
+        } else if ($1->isMatrix() && $1->getType().getQualifier().storage == EvqConst)
             $$->setType(TType($1->getBasicType(), EvqConst, $1->getNominalSize()));
         else if ($1->isMatrix())
             $$->setType(TType($1->getBasicType(), EvqTemporary, $1->getNominalSize()));
-        else if ($1->isVector() && $1->getType().getQualifier() == EvqConst)
+        else if ($1->isVector() && $1->getType().getQualifier().storage == EvqConst)
             $$->setType(TType($1->getBasicType(), EvqConst));
         else if ($1->isVector())
             $$->setType(TType($1->getBasicType(), EvqTemporary));
@@ -387,7 +386,7 @@ postfix_expression
                 parseContext.recover();
             }
 
-            if ($1->getType().getQualifier() == EvqConst) { // constant folding for vector fields
+            if ($1->getType().getQualifier().storage == EvqConst) { // constant folding for vector fields
                 $$ = parseContext.addConstVectorNode(fields, $1, $3.line);
                 if ($$ == 0) {
                     parseContext.recover();
@@ -450,7 +449,7 @@ postfix_expression
                     }
                 }
                 if (fieldFound) {
-                    if ($1->getType().getQualifier() == EvqConst) {
+                    if ($1->getType().getQualifier().storage == EvqConst) {
                         $$ = parseContext.addConstStruct(*$3.string, $1, $2.line);
                         if ($$ == 0) {
                             parseContext.recover();
@@ -460,7 +459,7 @@ postfix_expression
                             $$->setType(*(*fields)[i].type);
                             // change the qualifier of the return type, not of the structure field
                             // as the structure definition is shared between various structures.
-                            $$->getTypePointer()->changeQualifier(EvqConst);
+                            $$->getTypePointer()->getQualifier().storage = EvqConst;
                         }
                     } else {
                         constUnion *unionArray = new constUnion[1];
@@ -593,10 +592,10 @@ function_call
                         $$->getAsAggregate()->setUserDefined();
                     $$->getAsAggregate()->setName(fnCandidate->getMangledName());
 
-                    TQualifier qual;
-                    TQualifierList& qualifierList = $$->getAsAggregate()->getQualifier();
+                    TStorageQualifier qual;
+                    TQualifierList& qualifierList = $$->getAsAggregate()->getQualifierList();
                     for (int i = 0; i < fnCandidate->getParamCount(); ++i) {
-                        qual = (*fnCandidate)[i].type->getQualifier();
+                        qual = (*fnCandidate)[i].type->getQualifier().storage;
                         if (qual == EvqOut || qual == EvqInOut) {
                             if (parseContext.lValueErrorCheck($$->getLine(), "assign", $$->getAsAggregate()->getSequence()[i]->getAsTyped())) {
                                 parseContext.error($1.intermNode->getLine(), "Constant value cannot be passed for 'out' or 'inout' parameters.", "Error", "");
@@ -682,6 +681,7 @@ function_identifier
             parseContext.profileRequires($1.line, ENoProfile, 120, "GL_3DL_array_objects", "array");
         }
 
+        $1.qualifier.precision = EpqNone;
         if ($1.userDef) {
             TString tempString = "";
             TType type($1);
@@ -1122,6 +1122,11 @@ declaration
     }
     | PRECISION precision_qualifier type_specifier SEMICOLON {
         parseContext.profileRequires($1.line, ENoProfile, 130, 0, "precision statement");
+        
+        // lazy setting of the previous scope's defaults, only takes on first one in a particular scope
+        parseContext.symbolTable.setPreviousDefaultPrecisions(&parseContext.defaultPrecision[0]);
+
+		parseContext.setDefaultPrecision($1.line, $3.type, $2.qualifier.precision);
         $$ = 0;
     }
     | type_qualifier IDENTIFIER LEFT_BRACE struct_declaration_list RIGHT_BRACE SEMICOLON {
@@ -1176,8 +1181,9 @@ function_prototype
                 parseContext.recover();
             }
             for (int i = 0; i < prevDec->getParamCount(); ++i) {
-                if ((*prevDec)[i].type->getQualifier() != (*$1)[i].type->getQualifier()) {
-                    parseContext.error($2.line, "overloaded functions must have the same parameter qualifiers", (*$1)[i].type->getQualifierString(), "");
+                if ((*prevDec)[i].type->getQualifier().storage != (*$1)[i].type->getQualifier().storage) {
+                    parseContext.error($2.line, "overloaded functions must have the same parameter qualifiers", 
+                                       (*$1)[i].type->getStorageQualifierString(), "");
                     parseContext.recover();
                 }
             }
@@ -1236,8 +1242,9 @@ function_header_with_parameters
 
 function_header
     : fully_specified_type IDENTIFIER LEFT_PAREN {
-        if ($1.qualifier != EvqGlobal && $1.qualifier != EvqTemporary) {
-            parseContext.error($2.line, "no qualifiers allowed for function return", getQualifierString($1.qualifier), "");
+        if ($1.qualifier.storage != EvqGlobal && $1.qualifier.storage != EvqTemporary) {
+            parseContext.error($2.line, "no qualifiers allowed for function return", 
+                               getStorageQualifierString($1.qualifier.storage), "");
             parseContext.recover();
         }
         // make sure a sampler is not involved as well...
@@ -1261,6 +1268,7 @@ parameter_declarator
         }
         if (parseContext.reservedErrorCheck($2.line, *$2.string))
             parseContext.recover();
+        
         TParameter param = {$2.string, new TType($1)};
         $$.line = $2.line;
         $$.param = param;
@@ -1286,10 +1294,12 @@ parameter_declaration
     //
     : type_qualifier parameter_declarator {
         $$ = $2;
+        if ($1.qualifier.precision != EpqNone)
+            $$.param.type->getQualifier().precision = $1.qualifier.precision;
 
-        if (parseContext.parameterSamplerErrorCheck($2.line, $1.qualifier, *$2.param.type))
+        if (parseContext.parameterSamplerErrorCheck($2.line, $1.qualifier.storage, *$$.param.type))
             parseContext.recover();
-        if (parseContext.paramErrorCheck($1.line, $1.qualifier, $$.param.type))
+        if (parseContext.paramErrorCheck($1.line, $1.qualifier.storage, $$.param.type))
             parseContext.recover();
     }
     | parameter_declarator {
@@ -1305,16 +1315,18 @@ parameter_declaration
     //
     | type_qualifier parameter_type_specifier {
         $$ = $2;
+        if ($1.qualifier.precision != EpqNone)
+            $$.param.type->getQualifier().precision = $1.qualifier.precision;
         
-        if (parseContext.parameterSamplerErrorCheck($2.line, $1.qualifier, *$2.param.type))
+        if (parseContext.parameterSamplerErrorCheck($2.line, $1.qualifier.storage, *$$.param.type))
             parseContext.recover();
-        if (parseContext.paramErrorCheck($1.line, $1.qualifier, $$.param.type))
+        if (parseContext.paramErrorCheck($1.line, $1.qualifier.storage, $$.param.type))
             parseContext.recover();
     }
     | parameter_type_specifier {
         $$ = $1;
 
-        if (parseContext.parameterSamplerErrorCheck($1.line, $1.qualifier, *$1.param.type))
+        if (parseContext.parameterSamplerErrorCheck($1.line, EvqIn, *$1.param.type))
             parseContext.recover();
         if (parseContext.paramErrorCheck($1.line, EvqTemporary, $$.param.type))
             parseContext.recover();
@@ -1535,18 +1547,20 @@ fully_specified_type
             $2.setArray(false);
         }
 
-        if ($1.qualifier == EvqAttribute &&
+        if ($1.qualifier.storage == EvqAttribute &&
             ($2.type == EbtBool || $2.type == EbtInt)) {
-            parseContext.error($2.line, "cannot be bool or int", getQualifierString($1.qualifier), "");
+            parseContext.error($2.line, "cannot be bool or int", getStorageQualifierString($1.qualifier.storage), "");
             parseContext.recover();
         }
-        if (($1.qualifier == EvqVaryingIn || $1.qualifier == EvqVaryingOut) &&
+        if (($1.qualifier.storage == EvqVaryingIn || $1.qualifier.storage == EvqVaryingOut) &&
             ($2.type == EbtBool || $2.type == EbtInt)) {
-            parseContext.error($2.line, "cannot be bool or int", getQualifierString($1.qualifier), "");
+            parseContext.error($2.line, "cannot be bool or int", getStorageQualifierString($1.qualifier.storage), "");
             parseContext.recover();
         }
         $$ = $2;
         $$.qualifier = $1.qualifier;
+        if ($$.qualifier.precision == EpqNone)
+            $$.qualifier.precision = $2.qualifier.precision;
     }
     ;
 
@@ -1601,15 +1615,18 @@ type_qualifier
             $$.type = $2.type;
         }
 
-        if ($$.qualifier == EvqTemporary) {
-            $$.qualifier = $2.qualifier;
-        } else if ($$.qualifier == EvqIn  && $2.qualifier == EvqOut ||
-                   $$.qualifier == EvqOut && $2.qualifier == EvqIn) {
-            $$.qualifier = EvqInOut;
-        } else if ($$.qualifier == EvqIn    && $2.qualifier == EvqConst ||
-                   $$.qualifier == EvqConst && $2.qualifier == EvqIn) {
-            $$.qualifier = EvqConstReadOnly;
+        if ($$.qualifier.storage == EvqTemporary) {
+            $$.qualifier.storage = $2.qualifier.storage;
+        } else if ($$.qualifier.storage == EvqIn  && $2.qualifier.storage == EvqOut ||
+                   $$.qualifier.storage == EvqOut && $2.qualifier.storage == EvqIn) {
+            $$.qualifier.storage = EvqInOut;
+        } else if ($$.qualifier.storage == EvqIn    && $2.qualifier.storage == EvqConst ||
+                   $$.qualifier.storage == EvqConst && $2.qualifier.storage == EvqIn) {
+            $$.qualifier.storage = EvqConstReadOnly;
         }
+
+        if ($$.qualifier.precision == EpqNone)
+            $$.qualifier.precision = $2.qualifier.precision;
     }
     ;
 
@@ -1639,7 +1656,8 @@ single_type_qualifier
 
 storage_qualifier
     : CONST {
-        $$.setBasic(EbtVoid, EvqConst, $1.line);
+        $$.init($1.line);
+        $$.qualifier.storage = EvqConst;
     }
     | ATTRIBUTE {
         parseContext.requireStage($1.line, EShLangVertexMask, "attribute");
@@ -1649,7 +1667,9 @@ storage_qualifier
 
         if (parseContext.globalErrorCheck($1.line, parseContext.symbolTable.atGlobalLevel(), "attribute"))
             parseContext.recover();
-        $$.setBasic(EbtVoid, EvqAttribute, $1.line);
+
+        $$.init($1.line);
+        $$.qualifier.storage = EvqAttribute;
     }
     | VARYING {
         parseContext.checkDeprecated($1.line, ENoProfile, 140, "varying");
@@ -1657,97 +1677,115 @@ storage_qualifier
         
         if (parseContext.globalErrorCheck($1.line, parseContext.symbolTable.atGlobalLevel(), "varying"))
             parseContext.recover();
-        if (parseContext.language == EShLangVertex)
-            $$.setBasic(EbtVoid, EvqVaryingOut, $1.line);
+
+        $$.init($1.line);
+        if (parseContext.language == EShLangVertex)            
+            $$.qualifier.storage = EvqVaryingOut;
         else
-            $$.setBasic(EbtVoid, EvqVaryingIn, $1.line);
+            $$.qualifier.storage = EvqVaryingIn;
     }
     | INOUT {
         if (parseContext.globalErrorCheck($1.line, parseContext.symbolTable.atGlobalLevel(), "out"))
             parseContext.recover();
-        $$.setBasic(EbtVoid, EvqInOut, $1.line);
+        $$.init($1.line);
+        $$.qualifier.storage = EvqInOut;
     }
     | IN {
         if (parseContext.globalErrorCheck($1.line, parseContext.symbolTable.atGlobalLevel(), "in"))
             parseContext.recover();
-        $$.setBasic(EbtVoid, EvqIn, $1.line);
+        $$.init($1.line);
+        $$.qualifier.storage = EvqIn;
     }
     | OUT {
         if (parseContext.globalErrorCheck($1.line, parseContext.symbolTable.atGlobalLevel(), "out"))
             parseContext.recover();
-        $$.setBasic(EbtVoid, EvqOut, $1.line);
+        $$.init($1.line);
+        $$.qualifier.storage = EvqOut;
     }
     | CENTROID {
         if (parseContext.globalErrorCheck($1.line, parseContext.symbolTable.atGlobalLevel(), "centroid"))
             parseContext.recover();
-        $$.setBasic(EbtVoid, EvqVaryingIn, $1.line);
+        $$.init($1.line);
+        $$.qualifier.storage = EvqVaryingIn;
     }
     | PATCH {
         // TODO: implement this qualifier
         if (parseContext.globalErrorCheck($1.line, parseContext.symbolTable.atGlobalLevel(), "patch"))
             parseContext.recover();
-        $$.setBasic(EbtVoid, EvqUniform, $1.line);
+        $$.init($1.line);
+        $$.qualifier.storage = EvqUniform;
     }
     | SAMPLE {
         // TODO: implement this qualifier
         if (parseContext.globalErrorCheck($1.line, parseContext.symbolTable.atGlobalLevel(), "sample"))
             parseContext.recover();
-        $$.setBasic(EbtVoid, EvqUniform, $1.line);
+        $$.init($1.line);
+        $$.qualifier.storage = EvqUniform;
     }
     | UNIFORM {
         if (parseContext.globalErrorCheck($1.line, parseContext.symbolTable.atGlobalLevel(), "uniform"))
             parseContext.recover();
-        $$.setBasic(EbtVoid, EvqUniform, $1.line);
+        $$.init($1.line);
+        $$.qualifier.storage = EvqUniform;
     }
     | BUFFER {
         if (parseContext.globalErrorCheck($1.line, parseContext.symbolTable.atGlobalLevel(), "buffer"))
             parseContext.recover();
-        $$.setBasic(EbtVoid, EvqUniform, $1.line);
+        $$.init($1.line);
+        $$.qualifier.storage = EvqUniform;
     }
     | SHARED {
         if (parseContext.globalErrorCheck($1.line, parseContext.symbolTable.atGlobalLevel(), "shared"))
             parseContext.recover();
-        $$.setBasic(EbtVoid, EvqUniform, $1.line);
+        $$.init($1.line);
+        $$.qualifier.storage = EvqUniform;
     }
     | COHERENT {
         // TODO: implement this qualifier
         if (parseContext.globalErrorCheck($1.line, parseContext.symbolTable.atGlobalLevel(), "coherent"))
             parseContext.recover();
-        $$.setBasic(EbtVoid, EvqUniform, $1.line);
+        $$.init($1.line);
+        $$.qualifier.storage = EvqUniform;
     }
     | VOLATILE {
         // TODO: implement this qualifier
         if (parseContext.globalErrorCheck($1.line, parseContext.symbolTable.atGlobalLevel(), "volatile"))
             parseContext.recover();
-        $$.setBasic(EbtVoid, EvqUniform, $1.line);
+        $$.init($1.line);
+        $$.qualifier.storage = EvqUniform;
     }
     | RESTRICT {
         // TODO: implement this qualifier
         if (parseContext.globalErrorCheck($1.line, parseContext.symbolTable.atGlobalLevel(), "restrict"))
             parseContext.recover();
-        $$.setBasic(EbtVoid, EvqUniform, $1.line);
+        $$.init($1.line);
+        $$.qualifier.storage = EvqUniform;
     }
     | READONLY {
         // TODO: implement this qualifier
         if (parseContext.globalErrorCheck($1.line, parseContext.symbolTable.atGlobalLevel(), "readonly"))
             parseContext.recover();
-        $$.setBasic(EbtVoid, EvqUniform, $1.line);
+        $$.init($1.line);
+        $$.qualifier.storage = EvqUniform;
     }
     | WRITEONLY {
         // TODO: implement this qualifier
         if (parseContext.globalErrorCheck($1.line, parseContext.symbolTable.atGlobalLevel(), "writeonly"))
             parseContext.recover();
-        $$.setBasic(EbtVoid, EvqUniform, $1.line);
+        $$.init($1.line);
+        $$.qualifier.storage = EvqUniform;
     }
     | SUBROUTINE {
         if (parseContext.globalErrorCheck($1.line, parseContext.symbolTable.atGlobalLevel(), "subroutine"))
             parseContext.recover();
-        $$.setBasic(EbtVoid, EvqUniform, $1.line);
+        $$.init($1.line);
+        $$.qualifier.storage = EvqUniform;
     }
     | SUBROUTINE LEFT_PAREN type_name_list RIGHT_PAREN {
         if (parseContext.globalErrorCheck($1.line, parseContext.symbolTable.atGlobalLevel(), "subroutine"))
             parseContext.recover();
-        $$.setBasic(EbtVoid, EvqUniform, $1.line);
+        $$.init($1.line);
+        $$.qualifier.storage = EvqUniform;
         // TODO: subroutine semantics
         // 1) make sure each identifier is a type declared earlier with SUBROUTINE
         // 2) save all of the identifiers for future comparison with the declared function
@@ -1766,9 +1804,11 @@ type_name_list
 type_specifier
     : type_specifier_nonarray {
         $$ = $1;
+        $$.qualifier.precision = parseContext.defaultPrecision[$$.type];
     }
     | type_specifier_nonarray array_specifier {
         $$ = $1;
+        $$.qualifier.precision = parseContext.defaultPrecision[$$.type];
         $$.setArray(true, $2.intVector->front());
     }
     ;
@@ -1804,588 +1844,587 @@ array_specifier
 
 type_specifier_nonarray
     : VOID {
-        TQualifier qual = parseContext.symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
-        $$.setBasic(EbtVoid, qual, $1.line);
+        $$.init($1.line, parseContext.symbolTable.atGlobalLevel());
+        $$.type = EbtVoid;
     }
     | FLOAT {
-        TQualifier qual = parseContext.symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
-        $$.setBasic(EbtFloat, qual, $1.line);
+        $$.init($1.line, parseContext.symbolTable.atGlobalLevel());
+        $$.type = EbtFloat;
     }
     | DOUBLE {
-        TQualifier qual = parseContext.symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
-        // TODO: implement EbtDouble, check all float types
-        $$.setBasic(EbtDouble, qual, $1.line);
+        $$.init($1.line, parseContext.symbolTable.atGlobalLevel());
+        $$.type = EbtDouble;
     }
     | INT {
-        // TODO: implement EbtUint, check all int types
-        TQualifier qual = parseContext.symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
-        $$.setBasic(EbtInt, qual, $1.line);
+        $$.init($1.line, parseContext.symbolTable.atGlobalLevel());
+        $$.type = EbtInt;
     }
     | UINT {
-        TQualifier qual = parseContext.symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
-        $$.setBasic(EbtInt, qual, $1.line);
+        // TODO: implement EbtUint, check all int types
+        $$.init($1.line, parseContext.symbolTable.atGlobalLevel());
+        $$.type = EbtInt;
     }
     | BOOL {
-        TQualifier qual = parseContext.symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
-        $$.setBasic(EbtBool, qual, $1.line);
+        $$.init($1.line, parseContext.symbolTable.atGlobalLevel());
+        $$.type = EbtBool;
     }
     | VEC2 {
-        TQualifier qual = parseContext.symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
-        $$.setBasic(EbtFloat, qual, $1.line);
+        $$.init($1.line, parseContext.symbolTable.atGlobalLevel());
+        $$.type = EbtFloat;
         $$.setAggregate(2);
     }
     | VEC3 {
-        TQualifier qual = parseContext.symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
-        $$.setBasic(EbtFloat, qual, $1.line);
+        $$.init($1.line, parseContext.symbolTable.atGlobalLevel());
+        $$.type = EbtFloat;
         $$.setAggregate(3);
     }
     | VEC4 {
-        TQualifier qual = parseContext.symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
-        $$.setBasic(EbtFloat, qual, $1.line);
+        $$.init($1.line, parseContext.symbolTable.atGlobalLevel());
+        $$.type = EbtFloat;
         $$.setAggregate(4);
     }
     | DVEC2 {
+        $$.init($1.line, parseContext.symbolTable.atGlobalLevel());
+        $$.type = EbtDouble;
+        $$.setAggregate(2);
     }
     | DVEC3 {
+        $$.init($1.line, parseContext.symbolTable.atGlobalLevel());
+        $$.type = EbtDouble;
+        $$.setAggregate(3);
     }
     | DVEC4 {
+        $$.init($1.line, parseContext.symbolTable.atGlobalLevel());
+        $$.type = EbtDouble;
+        $$.setAggregate(4);
     }
     | BVEC2 {
-        TQualifier qual = parseContext.symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
-        $$.setBasic(EbtBool, qual, $1.line);
+        $$.init($1.line, parseContext.symbolTable.atGlobalLevel());
+        $$.type = EbtBool;
         $$.setAggregate(2);
     }
     | BVEC3 {
-        TQualifier qual = parseContext.symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
-        $$.setBasic(EbtBool, qual, $1.line);
+        $$.init($1.line, parseContext.symbolTable.atGlobalLevel());
+        $$.type = EbtBool;
         $$.setAggregate(3);
     }
     | BVEC4 {
-        TQualifier qual = parseContext.symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
-        $$.setBasic(EbtBool, qual, $1.line);
+        $$.init($1.line, parseContext.symbolTable.atGlobalLevel());
+        $$.type = EbtBool;
         $$.setAggregate(4);
     }
     | IVEC2 {
-        TQualifier qual = parseContext.symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
-        $$.setBasic(EbtInt, qual, $1.line);
+        $$.init($1.line, parseContext.symbolTable.atGlobalLevel());
+        $$.type = EbtInt;
         $$.setAggregate(2);
     }
     | IVEC3 {
-        TQualifier qual = parseContext.symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
-        $$.setBasic(EbtInt, qual, $1.line);
+        $$.init($1.line, parseContext.symbolTable.atGlobalLevel());
+        $$.type = EbtInt;
         $$.setAggregate(3);
     }
     | IVEC4 {
-        TQualifier qual = parseContext.symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
-        $$.setBasic(EbtInt, qual, $1.line);
+        $$.init($1.line, parseContext.symbolTable.atGlobalLevel());
+        $$.type = EbtInt;
         $$.setAggregate(4);
     }
     | UVEC2 {
-        TQualifier qual = parseContext.symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
-        $$.setBasic(EbtInt, qual, $1.line);
+        $$.init($1.line, parseContext.symbolTable.atGlobalLevel());
+        $$.type = EbtInt;
         $$.setAggregate(2);
     }
     | UVEC3 {
-        TQualifier qual = parseContext.symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
-        $$.setBasic(EbtInt, qual, $1.line);
+        $$.init($1.line, parseContext.symbolTable.atGlobalLevel());
+        $$.type = EbtInt;
         $$.setAggregate(3);
     }
     | UVEC4 {
-        TQualifier qual = parseContext.symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
-        $$.setBasic(EbtInt, qual, $1.line);
+        $$.init($1.line, parseContext.symbolTable.atGlobalLevel());
+        $$.type = EbtInt;
         $$.setAggregate(4);
     }
     | MAT2 {
-        TQualifier qual = parseContext.symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
-        $$.setBasic(EbtFloat, qual, $1.line);
+        $$.init($1.line, parseContext.symbolTable.atGlobalLevel());
+        $$.type = EbtFloat;
         $$.setAggregate(2, true);
     }
     | MAT3 {
-        TQualifier qual = parseContext.symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
-        $$.setBasic(EbtFloat, qual, $1.line);
+        $$.init($1.line, parseContext.symbolTable.atGlobalLevel());
+        $$.type = EbtFloat;
         $$.setAggregate(3, true);
     }
     | MAT4 {
-        TQualifier qual = parseContext.symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
-        $$.setBasic(EbtFloat, qual, $1.line);
+        $$.init($1.line, parseContext.symbolTable.atGlobalLevel());
+        $$.type = EbtFloat;
         $$.setAggregate(4, true);
     }
     | MAT2X2 {
-        // TODO: implement this type
-        TQualifier qual = parseContext.symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
-        $$.setBasic(EbtFloat, qual, $1.line);
-        $$.setAggregate(4, true);
+        $$.init($1.line, parseContext.symbolTable.atGlobalLevel());
+        $$.type = EbtFloat;
+        $$.setAggregate(2, true);
     }
     | MAT2X3 {
         // TODO: implement this type
-        TQualifier qual = parseContext.symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
-        $$.setBasic(EbtFloat, qual, $1.line);
-        $$.setAggregate(4, true);
+        $$.init($1.line, parseContext.symbolTable.atGlobalLevel());
+        $$.type = EbtFloat;
+        $$.setAggregate(3, true);
     }
     | MAT2X4 {
         // TODO: implement this type
-        TQualifier qual = parseContext.symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
-        $$.setBasic(EbtFloat, qual, $1.line);
+        $$.init($1.line, parseContext.symbolTable.atGlobalLevel());
+        $$.type = EbtFloat;
         $$.setAggregate(4, true);
     }
     | MAT3X2 {
         // TODO: implement this type
-        TQualifier qual = parseContext.symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
-        $$.setBasic(EbtFloat, qual, $1.line);
-        $$.setAggregate(4, true);
+        $$.init($1.line, parseContext.symbolTable.atGlobalLevel());
+        $$.type = EbtFloat;
+        $$.setAggregate(3, true);
     }
     | MAT3X3 {
-        // TODO: implement this type
-        TQualifier qual = parseContext.symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
-        $$.setBasic(EbtFloat, qual, $1.line);
-        $$.setAggregate(4, true);
+        $$.init($1.line, parseContext.symbolTable.atGlobalLevel());
+        $$.type = EbtFloat;
+        $$.setAggregate(3, true);
     }
     | MAT3X4 {
         // TODO: implement this type
-        TQualifier qual = parseContext.symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
-        $$.setBasic(EbtFloat, qual, $1.line);
+        $$.init($1.line, parseContext.symbolTable.atGlobalLevel());
+        $$.type = EbtFloat;
         $$.setAggregate(4, true);
     }
     | MAT4X2 {
         // TODO: implement this type
-        TQualifier qual = parseContext.symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
-        $$.setBasic(EbtFloat, qual, $1.line);
+        $$.init($1.line, parseContext.symbolTable.atGlobalLevel());
+        $$.type = EbtFloat;
         $$.setAggregate(4, true);
     }
     | MAT4X3 {
         // TODO: implement this type
-        TQualifier qual = parseContext.symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
-        $$.setBasic(EbtFloat, qual, $1.line);
+        $$.init($1.line, parseContext.symbolTable.atGlobalLevel());
+        $$.type = EbtFloat;
         $$.setAggregate(4, true);
     }
     | MAT4X4 {
-        // TODO: implement this type
-        TQualifier qual = parseContext.symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
-        $$.setBasic(EbtFloat, qual, $1.line);
+        $$.init($1.line, parseContext.symbolTable.atGlobalLevel());
+        $$.type = EbtFloat;
         $$.setAggregate(4, true);
     }
     | DMAT2 {
-        // TODO: implement this type
-        TQualifier qual = parseContext.symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
-        $$.setBasic(EbtFloat, qual, $1.line);
-        $$.setAggregate(4, true);
+        $$.init($1.line, parseContext.symbolTable.atGlobalLevel());
+        $$.type = EbtDouble;
+        $$.setAggregate(2, true);
     }
     | DMAT3 {
-        // TODO: implement this type
-        TQualifier qual = parseContext.symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
-        $$.setBasic(EbtFloat, qual, $1.line);
-        $$.setAggregate(4, true);
+        $$.init($1.line, parseContext.symbolTable.atGlobalLevel());
+        $$.type = EbtDouble;
+        $$.setAggregate(3, true);
     }
     | DMAT4 {
-        // TODO: implement this type
-        TQualifier qual = parseContext.symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
-        $$.setBasic(EbtFloat, qual, $1.line);
+        $$.init($1.line, parseContext.symbolTable.atGlobalLevel());
+        $$.type = EbtDouble;
         $$.setAggregate(4, true);
     }
     | DMAT2X2 {
-        // TODO: implement this type
-        TQualifier qual = parseContext.symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
-        $$.setBasic(EbtFloat, qual, $1.line);
-        $$.setAggregate(4, true);
+        $$.init($1.line, parseContext.symbolTable.atGlobalLevel());
+        $$.type = EbtDouble;
+        $$.setAggregate(2, true);
     }
     | DMAT2X3 {
         // TODO: implement this type
-        TQualifier qual = parseContext.symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
-        $$.setBasic(EbtFloat, qual, $1.line);
-        $$.setAggregate(4, true);
+        $$.init($1.line, parseContext.symbolTable.atGlobalLevel());
+        $$.type = EbtDouble;
+        $$.setAggregate(3, true);
     }
     | DMAT2X4 {
         // TODO: implement this type
-        TQualifier qual = parseContext.symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
-        $$.setBasic(EbtFloat, qual, $1.line);
+        $$.init($1.line, parseContext.symbolTable.atGlobalLevel());
+        $$.type = EbtDouble;
         $$.setAggregate(4, true);
     }
     | DMAT3X2 {
         // TODO: implement this type
-        TQualifier qual = parseContext.symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
-        $$.setBasic(EbtFloat, qual, $1.line);
-        $$.setAggregate(4, true);
+        $$.init($1.line, parseContext.symbolTable.atGlobalLevel());
+        $$.type = EbtDouble;
+        $$.setAggregate(3, true);
     }
     | DMAT3X3 {
-        // TODO: implement this type
-        TQualifier qual = parseContext.symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
-        $$.setBasic(EbtFloat, qual, $1.line);
-        $$.setAggregate(4, true);
+        $$.init($1.line, parseContext.symbolTable.atGlobalLevel());
+        $$.type = EbtDouble;
+        $$.setAggregate(3, true);
     }
     | DMAT3X4 {
         // TODO: implement this type
-        TQualifier qual = parseContext.symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
-        $$.setBasic(EbtFloat, qual, $1.line);
+        $$.init($1.line, parseContext.symbolTable.atGlobalLevel());
+        $$.type = EbtDouble;
         $$.setAggregate(4, true);
     }
     | DMAT4X2 {
         // TODO: implement this type
-        TQualifier qual = parseContext.symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
-        $$.setBasic(EbtFloat, qual, $1.line);
+        $$.init($1.line, parseContext.symbolTable.atGlobalLevel());
+        $$.type = EbtDouble;
         $$.setAggregate(4, true);
     }
     | DMAT4X3 {
         // TODO: implement this type
-        TQualifier qual = parseContext.symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
-        $$.setBasic(EbtFloat, qual, $1.line);
+        $$.init($1.line, parseContext.symbolTable.atGlobalLevel());
+        $$.type = EbtDouble;
         $$.setAggregate(4, true);
     }
     | DMAT4X4 {
-        // TODO: implement this type
-        TQualifier qual = parseContext.symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
-        $$.setBasic(EbtFloat, qual, $1.line);
+        $$.init($1.line, parseContext.symbolTable.atGlobalLevel());
+        $$.type = EbtDouble;
         $$.setAggregate(4, true);
     }
     | ATOMIC_UINT {
         // TODO: add type
-        TQualifier qual = parseContext.symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
-        $$.setBasic(EbtInt, qual, $1.line);
+        $$.init($1.line, parseContext.symbolTable.atGlobalLevel());
+        $$.type = EbtInt;
     }
     | SAMPLER1D {
-        TQualifier qual = parseContext.symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
-        $$.setBasic(EbtSampler1D, qual, $1.line);
+        $$.init($1.line, parseContext.symbolTable.atGlobalLevel());
+        $$.type = EbtSampler1D;
     }
     | SAMPLER2D {
-        TQualifier qual = parseContext.symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
-        $$.setBasic(EbtSampler2D, qual, $1.line);
+        $$.init($1.line, parseContext.symbolTable.atGlobalLevel());
+        $$.type = EbtSampler2D;
     }
     | SAMPLER3D {
-        TQualifier qual = parseContext.symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
-        $$.setBasic(EbtSampler3D, qual, $1.line);
+        $$.init($1.line, parseContext.symbolTable.atGlobalLevel());
+        $$.type = EbtSampler3D;
     }
     | SAMPLERCUBE {
-        TQualifier qual = parseContext.symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
-        $$.setBasic(EbtSamplerCube, qual, $1.line);
+        $$.init($1.line, parseContext.symbolTable.atGlobalLevel());
+        $$.type = EbtSamplerCube;
     }
     | SAMPLER1DSHADOW {
-        TQualifier qual = parseContext.symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
-        $$.setBasic(EbtSampler1DShadow, qual, $1.line);
+        $$.init($1.line, parseContext.symbolTable.atGlobalLevel());
+        $$.type = EbtSampler1DShadow;
     }
     | SAMPLER2DSHADOW {
-        TQualifier qual = parseContext.symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
-        $$.setBasic(EbtSampler2DShadow, qual, $1.line);
+        $$.init($1.line, parseContext.symbolTable.atGlobalLevel());
+        $$.type = EbtSampler2DShadow;
     }
     | SAMPLERCUBESHADOW {
-        TQualifier qual = parseContext.symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
-        $$.setBasic(EbtSampler2DShadow, qual, $1.line);
+        $$.init($1.line, parseContext.symbolTable.atGlobalLevel());
+        $$.type = EbtSampler2DShadow;
     }
     | SAMPLER1DARRAY {
-        TQualifier qual = parseContext.symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
-        $$.setBasic(EbtSampler2DShadow, qual, $1.line);
+        $$.init($1.line, parseContext.symbolTable.atGlobalLevel());
+        $$.type = EbtSampler2DShadow;
     }
     | SAMPLER2DARRAY {
-        TQualifier qual = parseContext.symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
-        $$.setBasic(EbtSampler2DShadow, qual, $1.line);
+        $$.init($1.line, parseContext.symbolTable.atGlobalLevel());
+        $$.type = EbtSampler2DShadow;
     }
     | SAMPLER1DARRAYSHADOW {
-        TQualifier qual = parseContext.symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
-        $$.setBasic(EbtSampler2DShadow, qual, $1.line);
+        $$.init($1.line, parseContext.symbolTable.atGlobalLevel());
+        $$.type = EbtSampler2DShadow;
     }
     | SAMPLER2DARRAYSHADOW {
-        TQualifier qual = parseContext.symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
-        $$.setBasic(EbtSampler2DShadow, qual, $1.line);
+        $$.init($1.line, parseContext.symbolTable.atGlobalLevel());
+        $$.type = EbtSampler2DShadow;
     }
     | SAMPLERCUBEARRAY {
-        TQualifier qual = parseContext.symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
-        $$.setBasic(EbtSampler2DShadow, qual, $1.line);
+        $$.init($1.line, parseContext.symbolTable.atGlobalLevel());
+        $$.type = EbtSampler2DShadow;
     }
     | SAMPLERCUBEARRAYSHADOW {
-        TQualifier qual = parseContext.symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
-        $$.setBasic(EbtSampler2DShadow, qual, $1.line);
+        $$.init($1.line, parseContext.symbolTable.atGlobalLevel());
+        $$.type = EbtSampler2DShadow;
     }
     | ISAMPLER1D {
-        TQualifier qual = parseContext.symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
-        $$.setBasic(EbtSampler2DShadow, qual, $1.line);
+        $$.init($1.line, parseContext.symbolTable.atGlobalLevel());
+        $$.type = EbtSampler2DShadow;
     }
     | ISAMPLER2D {
-        TQualifier qual = parseContext.symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
-        $$.setBasic(EbtSampler2DShadow, qual, $1.line);
+        $$.init($1.line, parseContext.symbolTable.atGlobalLevel());
+        $$.type = EbtSampler2DShadow;
     }
     | ISAMPLER3D {
-        TQualifier qual = parseContext.symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
-        $$.setBasic(EbtSampler2DShadow, qual, $1.line);
+        $$.init($1.line, parseContext.symbolTable.atGlobalLevel());
+        $$.type = EbtSampler2DShadow;
     }
     | ISAMPLERCUBE {
-        TQualifier qual = parseContext.symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
-        $$.setBasic(EbtSampler2DShadow, qual, $1.line);
+        $$.init($1.line, parseContext.symbolTable.atGlobalLevel());
+        $$.type = EbtSampler2DShadow;
     }
     | ISAMPLER1DARRAY {
-        TQualifier qual = parseContext.symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
-        $$.setBasic(EbtSampler2DShadow, qual, $1.line);
+        $$.init($1.line, parseContext.symbolTable.atGlobalLevel());
+        $$.type = EbtSampler2DShadow;
     }
     | ISAMPLER2DARRAY {
-        TQualifier qual = parseContext.symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
-        $$.setBasic(EbtSampler2DShadow, qual, $1.line);
+        $$.init($1.line, parseContext.symbolTable.atGlobalLevel());
+        $$.type = EbtSampler2DShadow;
     }
     | ISAMPLERCUBEARRAY {
-        TQualifier qual = parseContext.symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
-        $$.setBasic(EbtSampler2DShadow, qual, $1.line);
+        $$.init($1.line, parseContext.symbolTable.atGlobalLevel());
+        $$.type = EbtSampler2DShadow;
     }
     | USAMPLER1D {
-        TQualifier qual = parseContext.symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
-        $$.setBasic(EbtSampler2DShadow, qual, $1.line);
+        $$.init($1.line, parseContext.symbolTable.atGlobalLevel());
+        $$.type = EbtSampler2DShadow;
     }
     | USAMPLER2D {
-        TQualifier qual = parseContext.symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
-        $$.setBasic(EbtSampler2DShadow, qual, $1.line);
+        $$.init($1.line, parseContext.symbolTable.atGlobalLevel());
+        $$.type = EbtSampler2DShadow;
     }
     | USAMPLER3D {
-        TQualifier qual = parseContext.symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
-        $$.setBasic(EbtSampler2DShadow, qual, $1.line);
+        $$.init($1.line, parseContext.symbolTable.atGlobalLevel());
+        $$.type = EbtSampler2DShadow;
     }
     | USAMPLERCUBE {
-        TQualifier qual = parseContext.symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
-        $$.setBasic(EbtSampler2DShadow, qual, $1.line);
+        $$.init($1.line, parseContext.symbolTable.atGlobalLevel());
+        $$.type = EbtSampler2DShadow;
     }
     | USAMPLER1DARRAY {
-        TQualifier qual = parseContext.symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
-        $$.setBasic(EbtSampler2DShadow, qual, $1.line);
+        $$.init($1.line, parseContext.symbolTable.atGlobalLevel());
+        $$.type = EbtSampler2DShadow;
     }
     | USAMPLER2DARRAY {
-        TQualifier qual = parseContext.symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
-        $$.setBasic(EbtSampler2DShadow, qual, $1.line);
+        $$.init($1.line, parseContext.symbolTable.atGlobalLevel());
+        $$.type = EbtSampler2DShadow;
     }
     | USAMPLERCUBEARRAY {
-        TQualifier qual = parseContext.symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
-        $$.setBasic(EbtSampler2DShadow, qual, $1.line);
+        $$.init($1.line, parseContext.symbolTable.atGlobalLevel());
+        $$.type = EbtSampler2DShadow;
     }
     | SAMPLER2DRECT {
         parseContext.profileRequires($1.line, ENoProfile, 140, "GL_ARB_texture_rectangle", "rectangle texture");
 
-        TQualifier qual = parseContext.symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
-        $$.setBasic(EbtSamplerRect, qual, $1.line);
+        $$.init($1.line, parseContext.symbolTable.atGlobalLevel());
+        $$.type = EbtSamplerRect;
     }
     | SAMPLER2DRECTSHADOW {
         parseContext.profileRequires($1.line, ECoreProfile, 140, "GL_ARB_texture_rectangle", "rectangle texture");
 
-        TQualifier qual = parseContext.symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
-        $$.setBasic(EbtSamplerRectShadow, qual, $1.line);
+        $$.init($1.line, parseContext.symbolTable.atGlobalLevel());
+        $$.type = EbtSamplerRectShadow;
     }
     | ISAMPLER2DRECT {
         parseContext.profileRequires($1.line, ECoreProfile, 140, "GL_ARB_texture_rectangle", "rectangle texture");
 
-        TQualifier qual = parseContext.symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
-        $$.setBasic(EbtSamplerRect, qual, $1.line);
+        $$.init($1.line, parseContext.symbolTable.atGlobalLevel());
+        $$.type = EbtSamplerRect;
     }
     | USAMPLER2DRECT {
         parseContext.profileRequires($1.line, ECoreProfile, 140, "GL_ARB_texture_rectangle", "rectangle texture");
 
-        TQualifier qual = parseContext.symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
-        $$.setBasic(EbtSamplerRect, qual, $1.line);
+        $$.init($1.line, parseContext.symbolTable.atGlobalLevel());
+        $$.type = EbtSamplerRect;
     }
     | SAMPLERBUFFER {
         // TODO: implement this type
-        TQualifier qual = parseContext.symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
-        $$.setBasic(EbtSampler2D, qual, $1.line);
+        $$.init($1.line, parseContext.symbolTable.atGlobalLevel());
+        $$.type = EbtSampler2D;
     }
     | ISAMPLERBUFFER {
         // TODO: implement this type
-        TQualifier qual = parseContext.symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
-        $$.setBasic(EbtSampler2D, qual, $1.line);
+        $$.init($1.line, parseContext.symbolTable.atGlobalLevel());
+        $$.type = EbtSampler2D;
     }
     | USAMPLERBUFFER {
         // TODO: implement this type
-        TQualifier qual = parseContext.symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
-        $$.setBasic(EbtSampler2D, qual, $1.line);
+        $$.init($1.line, parseContext.symbolTable.atGlobalLevel());
+        $$.type = EbtSampler2D;
     }
     | SAMPLER2DMS {
         // TODO: implement this type
-        TQualifier qual = parseContext.symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
-        $$.setBasic(EbtSampler2D, qual, $1.line);
+        $$.init($1.line, parseContext.symbolTable.atGlobalLevel());
+        $$.type = EbtSampler2D;
     }
     | ISAMPLER2DMS {
         // TODO: implement this type
-        TQualifier qual = parseContext.symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
-        $$.setBasic(EbtSampler2D, qual, $1.line);
+        $$.init($1.line, parseContext.symbolTable.atGlobalLevel());
+        $$.type = EbtSampler2D;
     }
     | USAMPLER2DMS {
         // TODO: implement this type
-        TQualifier qual = parseContext.symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
-        $$.setBasic(EbtSampler2D, qual, $1.line);
+        $$.init($1.line, parseContext.symbolTable.atGlobalLevel());
+        $$.type = EbtSampler2D;
     }
     | SAMPLER2DMSARRAY {
         // TODO: implement this type
-        TQualifier qual = parseContext.symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
-        $$.setBasic(EbtSampler2D, qual, $1.line);
+        $$.init($1.line, parseContext.symbolTable.atGlobalLevel());
+        $$.type = EbtSampler2D;
     }
     | ISAMPLER2DMSARRAY {
         // TODO: implement this type
-        TQualifier qual = parseContext.symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
-        $$.setBasic(EbtSampler2D, qual, $1.line);
+        $$.init($1.line, parseContext.symbolTable.atGlobalLevel());
+        $$.type = EbtSampler2D;
     }
     | USAMPLER2DMSARRAY {
         // TODO: implement this type
-        TQualifier qual = parseContext.symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
-        $$.setBasic(EbtSampler2D, qual, $1.line);
+        $$.init($1.line, parseContext.symbolTable.atGlobalLevel());
+        $$.type = EbtSampler2D;
     }
     | IMAGE1D {
         // TODO: implement this type
-        TQualifier qual = parseContext.symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
-        $$.setBasic(EbtSampler2D, qual, $1.line);
+        $$.init($1.line, parseContext.symbolTable.atGlobalLevel());
+        $$.type = EbtSampler2D;
     }
     | IIMAGE1D {
         // TODO: implement this type
-        TQualifier qual = parseContext.symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
-        $$.setBasic(EbtSampler2D, qual, $1.line);
+        $$.init($1.line, parseContext.symbolTable.atGlobalLevel());
+        $$.type = EbtSampler2D;
     }
     | UIMAGE1D {
         // TODO: implement this type
-        TQualifier qual = parseContext.symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
-        $$.setBasic(EbtSampler2D, qual, $1.line);
+        $$.init($1.line, parseContext.symbolTable.atGlobalLevel());
+        $$.type = EbtSampler2D;
     }
     | IMAGE2D {
         // TODO: implement this type
-        TQualifier qual = parseContext.symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
-        $$.setBasic(EbtSampler2D, qual, $1.line);
+        $$.init($1.line, parseContext.symbolTable.atGlobalLevel());
+        $$.type = EbtSampler2D;
     }
     | IIMAGE2D {
         // TODO: implement this type
-        TQualifier qual = parseContext.symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
-        $$.setBasic(EbtSampler2D, qual, $1.line);
+        $$.init($1.line, parseContext.symbolTable.atGlobalLevel());
+        $$.type = EbtSampler2D;
     }
     | UIMAGE2D {
         // TODO: implement this type
-        TQualifier qual = parseContext.symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
-        $$.setBasic(EbtSampler2D, qual, $1.line);
+        $$.init($1.line, parseContext.symbolTable.atGlobalLevel());
+        $$.type = EbtSampler2D;
     }
     | IMAGE3D {
         // TODO: implement this type
-        TQualifier qual = parseContext.symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
-        $$.setBasic(EbtSampler2D, qual, $1.line);
+        $$.init($1.line, parseContext.symbolTable.atGlobalLevel());
+        $$.type = EbtSampler2D;
     }
     | IIMAGE3D {
         // TODO: implement this type
-        TQualifier qual = parseContext.symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
-        $$.setBasic(EbtSampler2D, qual, $1.line);
+        $$.init($1.line, parseContext.symbolTable.atGlobalLevel());
+        $$.type = EbtSampler2D;
     }
     | UIMAGE3D {
         // TODO: implement this type
-        TQualifier qual = parseContext.symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
-        $$.setBasic(EbtSampler2D, qual, $1.line);
+        $$.init($1.line, parseContext.symbolTable.atGlobalLevel());
+        $$.type = EbtSampler2D;
     }
     | IMAGE2DRECT {
         // TODO: implement this type
-        TQualifier qual = parseContext.symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
-        $$.setBasic(EbtSampler2D, qual, $1.line);
+        $$.init($1.line, parseContext.symbolTable.atGlobalLevel());
+        $$.type = EbtSampler2D;
     }
     | IIMAGE2DRECT {
         // TODO: implement this type
-        TQualifier qual = parseContext.symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
-        $$.setBasic(EbtSampler2D, qual, $1.line);
+        $$.init($1.line, parseContext.symbolTable.atGlobalLevel());
+        $$.type = EbtSampler2D;
     }
     | UIMAGE2DRECT {
         // TODO: implement this type
-        TQualifier qual = parseContext.symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
-        $$.setBasic(EbtSampler2D, qual, $1.line);
+        $$.init($1.line, parseContext.symbolTable.atGlobalLevel());
+        $$.type = EbtSampler2D;
     }
     | IMAGECUBE {
         // TODO: implement this type
-        TQualifier qual = parseContext.symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
-        $$.setBasic(EbtSampler2D, qual, $1.line);
+        $$.init($1.line, parseContext.symbolTable.atGlobalLevel());
+        $$.type = EbtSampler2D;
     }
     | IIMAGECUBE {
         // TODO: implement this type
-        TQualifier qual = parseContext.symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
-        $$.setBasic(EbtSampler2D, qual, $1.line);
+        $$.init($1.line, parseContext.symbolTable.atGlobalLevel());
+        $$.type = EbtSampler2D;
     }
     | UIMAGECUBE {
         // TODO: implement this type
-        TQualifier qual = parseContext.symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
-        $$.setBasic(EbtSampler2D, qual, $1.line);
+        $$.init($1.line, parseContext.symbolTable.atGlobalLevel());
+        $$.type = EbtSampler2D;
     }
     | IMAGEBUFFER {
         // TODO: implement this type
-        TQualifier qual = parseContext.symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
-        $$.setBasic(EbtSampler2D, qual, $1.line);
+        $$.init($1.line, parseContext.symbolTable.atGlobalLevel());
+        $$.type = EbtSampler2D;
     }
     | IIMAGEBUFFER {
         // TODO: implement this type
-        TQualifier qual = parseContext.symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
-        $$.setBasic(EbtSampler2D, qual, $1.line);
+        $$.init($1.line, parseContext.symbolTable.atGlobalLevel());
+        $$.type = EbtSampler2D;
     }
     | UIMAGEBUFFER {
         // TODO: implement this type
-        TQualifier qual = parseContext.symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
-        $$.setBasic(EbtSampler2D, qual, $1.line);
+        $$.init($1.line, parseContext.symbolTable.atGlobalLevel());
+        $$.type = EbtSampler2D;
     }
     | IMAGE1DARRAY {
         // TODO: implement this type
-        TQualifier qual = parseContext.symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
-        $$.setBasic(EbtSampler2D, qual, $1.line);
+        $$.init($1.line, parseContext.symbolTable.atGlobalLevel());
+        $$.type = EbtSampler2D;
     }
     | IIMAGE1DARRAY {
         // TODO: implement this type
-        TQualifier qual = parseContext.symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
-        $$.setBasic(EbtSampler2D, qual, $1.line);
+        $$.init($1.line, parseContext.symbolTable.atGlobalLevel());
+        $$.type = EbtSampler2D;
     }
     | UIMAGE1DARRAY {
         // TODO: implement this type
-        TQualifier qual = parseContext.symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
-        $$.setBasic(EbtSampler2D, qual, $1.line);
+        $$.init($1.line, parseContext.symbolTable.atGlobalLevel());
+        $$.type = EbtSampler2D;
     }
     | IMAGE2DARRAY {
         // TODO: implement this type
-        TQualifier qual = parseContext.symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
-        $$.setBasic(EbtSampler2D, qual, $1.line);
+        $$.init($1.line, parseContext.symbolTable.atGlobalLevel());
+        $$.type = EbtSampler2D;
     }
     | IIMAGE2DARRAY {
         // TODO: implement this type
-        TQualifier qual = parseContext.symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
-        $$.setBasic(EbtSampler2D, qual, $1.line);
+        $$.init($1.line, parseContext.symbolTable.atGlobalLevel());
+        $$.type = EbtSampler2D;
     }
     | UIMAGE2DARRAY {
         // TODO: implement this type
-        TQualifier qual = parseContext.symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
-        $$.setBasic(EbtSampler2D, qual, $1.line);
+        $$.init($1.line, parseContext.symbolTable.atGlobalLevel());
+        $$.type = EbtSampler2D;
     }
     | IMAGECUBEARRAY {
         // TODO: implement this type
-        TQualifier qual = parseContext.symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
-        $$.setBasic(EbtSampler2D, qual, $1.line);
+        $$.init($1.line, parseContext.symbolTable.atGlobalLevel());
+        $$.type = EbtSampler2D;
     }
     | IIMAGECUBEARRAY {
         // TODO: implement this type
-        TQualifier qual = parseContext.symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
-        $$.setBasic(EbtSampler2D, qual, $1.line);
+        $$.init($1.line, parseContext.symbolTable.atGlobalLevel());
+        $$.type = EbtSampler2D;
     }
     | UIMAGECUBEARRAY {
         // TODO: implement this type
-        TQualifier qual = parseContext.symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
-        $$.setBasic(EbtSampler2D, qual, $1.line);
+        $$.init($1.line, parseContext.symbolTable.atGlobalLevel());
+        $$.type = EbtSampler2D;
     }
     | IMAGE2DMS {
         // TODO: implement this type
-        TQualifier qual = parseContext.symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
-        $$.setBasic(EbtSampler2D, qual, $1.line);
+        $$.init($1.line, parseContext.symbolTable.atGlobalLevel());
+        $$.type = EbtSampler2D;
     }
     | IIMAGE2DMS {
         // TODO: implement this type
-        TQualifier qual = parseContext.symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
-        $$.setBasic(EbtSampler2D, qual, $1.line);
+        $$.init($1.line, parseContext.symbolTable.atGlobalLevel());
+        $$.type = EbtSampler2D;
     }
     | UIMAGE2DMS {
         // TODO: implement this type
-        TQualifier qual = parseContext.symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
-        $$.setBasic(EbtSampler2D, qual, $1.line);
+        $$.init($1.line, parseContext.symbolTable.atGlobalLevel());
+        $$.type = EbtSampler2D;
     }
     | IMAGE2DMSARRAY {
         // TODO: implement this type
-        TQualifier qual = parseContext.symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
-        $$.setBasic(EbtSampler2D, qual, $1.line);
+        $$.init($1.line, parseContext.symbolTable.atGlobalLevel());
+        $$.type = EbtSampler2D;
     }
     | IIMAGE2DMSARRAY {
         // TODO: implement this type
-        TQualifier qual = parseContext.symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
-        $$.setBasic(EbtSampler2D, qual, $1.line);
+        $$.init($1.line, parseContext.symbolTable.atGlobalLevel());
+        $$.type = EbtSampler2D;
     }
     | UIMAGE2DMSARRAY {
         // TODO: implement this type
-        TQualifier qual = parseContext.symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
-        $$.setBasic(EbtSampler2D, qual, $1.line);
+        $$.init($1.line, parseContext.symbolTable.atGlobalLevel());
+        $$.type = EbtSampler2D;
     }
     | struct_specifier {
         $$ = $1;
-        $$.qualifier = parseContext.symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
+        $$.qualifier.storage = parseContext.symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
     }
     | TYPE_NAME {
         //
@@ -2393,8 +2432,8 @@ type_specifier_nonarray
         // type.
         //
         TType& structure = static_cast<TVariable*>($1.symbol)->getType();
-        TQualifier qual = parseContext.symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
-        $$.setBasic(EbtStruct, qual, $1.line);
+        $$.init($1.line, parseContext.symbolTable.atGlobalLevel());
+        $$.type = EbtStruct;
         $$.userDef = &structure;
     }
     ;
@@ -2402,12 +2441,18 @@ type_specifier_nonarray
 precision_qualifier
     : HIGH_PRECISION {
         parseContext.profileRequires($1.line, ENoProfile, 130, 0, "highp precision qualifier");
+        $$.init($1.line);
+		$$.qualifier.precision = EpqHigh;
     }
     | MEDIUM_PRECISION {
         parseContext.profileRequires($1.line, ENoProfile, 130, 0, "mediump precision qualifier");
+        $$.init($1.line);
+		$$.qualifier.precision = EpqMedium;
     }
     | LOW_PRECISION {
         parseContext.profileRequires($1.line, ENoProfile, 130, 0, "lowp precision qualifier");
+        $$.init($1.line);
+		$$.qualifier.precision = EpqLow;
     }
     ;
 
@@ -2419,12 +2464,14 @@ struct_specifier
             parseContext.error($2.line, "redefinition", $2.string->c_str(), "struct");
             parseContext.recover();
         }
-        $$.setBasic(EbtStruct, EvqTemporary, $1.line);
+        $$.init($1.line);
+        $$.type = EbtStruct;
         $$.userDef = structure;
     }
     | STRUCT LEFT_BRACE struct_declaration_list RIGHT_BRACE {
         TType* structure = new TType($3, TString(""));
-        $$.setBasic(EbtStruct, EvqTemporary, $1.line);
+        $$.init($1.line);
+        $$.type = EbtStruct;
         $$.userDef = structure;
     }
     ;
@@ -2555,7 +2602,9 @@ simple_statement
 
 compound_statement
     : LEFT_BRACE RIGHT_BRACE { $$ = 0; }
-    | LEFT_BRACE { parseContext.symbolTable.push(); } statement_list { parseContext.symbolTable.pop(); } RIGHT_BRACE {
+    | LEFT_BRACE { parseContext.symbolTable.push(); } 
+      statement_list { parseContext.symbolTable.pop(&parseContext.defaultPrecision[0]); } 
+      RIGHT_BRACE {
         if ($3 != 0)
             $3->setOperator(EOpSequence);
         $$ = $3;
@@ -2660,8 +2709,12 @@ case_label
     ;
 
 iteration_statement
-    : WHILE LEFT_PAREN { parseContext.symbolTable.push(); ++parseContext.loopNestingLevel; } condition RIGHT_PAREN statement_no_new_scope {
-        parseContext.symbolTable.pop();
+    : WHILE LEFT_PAREN { 
+        parseContext.symbolTable.push(); 
+        ++parseContext.loopNestingLevel; 
+    }
+      condition RIGHT_PAREN statement_no_new_scope {
+        parseContext.symbolTable.pop(&parseContext.defaultPrecision[0]);
         $$ = parseContext.intermediate.addLoop($6, $4, 0, true, $1.line);
         --parseContext.loopNestingLevel;
     }
@@ -2672,8 +2725,12 @@ iteration_statement
         $$ = parseContext.intermediate.addLoop($3, $6, 0, false, $4.line);
         --parseContext.loopNestingLevel;
     }
-    | FOR LEFT_PAREN { parseContext.symbolTable.push(); ++parseContext.loopNestingLevel; } for_init_statement for_rest_statement RIGHT_PAREN statement_no_new_scope {
-        parseContext.symbolTable.pop();
+    | FOR LEFT_PAREN { 
+        parseContext.symbolTable.push();
+        ++parseContext.loopNestingLevel; 
+    } 
+      for_init_statement for_rest_statement RIGHT_PAREN statement_no_new_scope {
+        parseContext.symbolTable.pop(&parseContext.defaultPrecision[0]);
         $$ = parseContext.intermediate.makeAggregate($4, $2.line);
         $$ = parseContext.intermediate.growAggregate(
                 $$,
@@ -2867,7 +2924,7 @@ function_definition
             parseContext.error($1.line, "function does not return a value:", "", $1.function->getName().c_str());
             parseContext.recover();
         }
-        parseContext.symbolTable.pop();
+        parseContext.symbolTable.pop(&parseContext.defaultPrecision[0]);
         $$ = parseContext.intermediate.growAggregate($1.intermAggregate, $3, 0);
         parseContext.intermediate.setAggregateOperator($$, EOpFunction, $1.line);
         $$->getAsAggregate()->setName($1.function->getMangledName().c_str());

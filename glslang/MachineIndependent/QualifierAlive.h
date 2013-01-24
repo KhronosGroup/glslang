@@ -32,4 +32,4 @@
 //POSSIBILITY OF SUCH DAMAGE.
 //
 
-bool QualifierWritten(TIntermNode* root, TQualifier);
+bool QualifierWritten(TIntermNode* root, TStorageQualifier);

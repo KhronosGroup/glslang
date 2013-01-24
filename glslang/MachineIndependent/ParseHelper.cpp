@@ -44,6 +44,25 @@
 //
 ////////////////////////////////////////////////////////////////////////
 
+
+TParseContext::TParseContext(TSymbolTable& symt, TIntermediate& interm, EShLanguage L, TInfoSink& is) : 
+            intermediate(interm), symbolTable(symt), infoSink(is), language(L), treeRoot(0),
+            recoveredFromError(false), numErrors(0), lexAfterType(false), loopNestingLevel(0),
+            switchNestingLevel(0), inTypeParen(false), 
+            version(110), profile(ENoProfile), futureCompatibility(false),
+            contextPragma(true, false)
+{
+    // Default precisions for version 110, to be overridden for 
+    // other versions/profiles/stage combinations
+    for (int type = 0; type < EbtNumTypes; ++type)
+        defaultPrecision[type] = EpqHigh;
+    
+    defaultPrecision[EbtVoid]   = EpqNone;
+    defaultPrecision[EbtDouble] = EpqNone;
+    defaultPrecision[EbtBool]   = EpqNone;
+    defaultPrecision[EbtVoid]   = EpqNone;
+}
+
 //
 // Look at a '.' field selector string and change it into offsets
 // for a vector.
@@ -331,7 +350,7 @@ bool TParseContext::lValueErrorCheck(int line, char* op, TIntermTyped* node)
         symbol = symNode->getSymbol().c_str();
 
     char* message = 0;
-    switch (node->getQualifier()) {
+    switch (node->getQualifier().storage) {
     case EvqConst:          message = "can't modify a const";        break;
     case EvqConstReadOnly:  message = "can't modify a const";        break;
     case EvqAttribute:      message = "can't modify an attribute";   break;
@@ -395,7 +414,7 @@ bool TParseContext::lValueErrorCheck(int line, char* op, TIntermTyped* node)
 //
 bool TParseContext::constErrorCheck(TIntermTyped* node)
 {
-    if (node->getQualifier() == EvqConst)
+    if (node->getQualifier().storage == EvqConst)
         return false;
 
     error(node->getLine(), "constant expression required", "", "");
@@ -503,14 +522,14 @@ bool TParseContext::constructorErrorCheck(int line, TIntermNode* node, TFunction
             overFull = true;
         if (op != EOpConstructStruct && !type->isArray() && size >= type->getObjectSize())
             full = true;
-        if (function[i].type->getQualifier() != EvqConst)
+        if (function[i].type->getQualifier().storage != EvqConst)
             constType = false;
         if (function[i].type->isArray())
             arrayArg = true;
     }
     
     if (constType)
-        type->changeQualifier(EvqConst);
+        type->getQualifier().storage = EvqConst;
 
     if (type->isArray() && type->getArraySize() != function.getParamCount()) {
         error(line, "array constructor needs one argument per array element", "constructor", "");
@@ -623,19 +642,19 @@ bool TParseContext::samplerErrorCheck(int line, const TPublicType& pType, const 
 
 bool TParseContext::globalQualifierFixAndErrorCheck(int line, TQualifier& qualifier)
 {
-    switch (qualifier) {
+    switch (qualifier.storage) {
     case EvqIn:
         profileRequires(line, ENoProfile, 130, 0, "in for stage inputs");
         profileRequires(line, EEsProfile, 300, 0, "in for stage inputs");
-        qualifier = EvqVaryingIn;
+        qualifier.storage = EvqVaryingIn;
         break;
     case EvqOut:
         profileRequires(line, ENoProfile, 130, 0, "out for stage outputs");
         profileRequires(line, EEsProfile, 300, 0, "out for stage outputs");
-        qualifier = EvqVaryingOut;
+        qualifier.storage = EvqVaryingOut;
         break;
     case EvqInOut:
-        qualifier = EvqVaryingIn;
+        qualifier.storage = EvqVaryingIn;
         error(line, "cannot use 'inout' at global scope", "", "");
 
         return true;
@@ -646,20 +665,34 @@ bool TParseContext::globalQualifierFixAndErrorCheck(int line, TQualifier& qualif
 
 bool TParseContext::structQualifierErrorCheck(int line, const TPublicType& pType)
 {
-    if ((pType.qualifier == EvqVaryingIn || pType.qualifier == EvqVaryingOut || pType.qualifier == EvqAttribute) &&
+    if ((pType.qualifier.storage == EvqVaryingIn || 
+         pType.qualifier.storage == EvqVaryingOut || 
+         pType.qualifier.storage == EvqAttribute) &&
         pType.type == EbtStruct) {
-        error(line, "cannot be used with a structure", getQualifierString(pType.qualifier), "");
+
+        error(line, "cannot be used with a structure", getStorageQualifierString(pType.qualifier.storage), "");
         
         return true;
     }
 
-    if (pType.qualifier != EvqUniform && samplerErrorCheck(line, pType, "samplers must be uniform"))
+    if (pType.qualifier.storage != EvqUniform && samplerErrorCheck(line, pType, "samplers must be uniform"))
         return true;
 
     return false;
 }
 
-bool TParseContext::parameterSamplerErrorCheck(int line, TQualifier qualifier, const TType& type)
+void TParseContext::setDefaultPrecision(int line, TBasicType type, TPrecisionQualifier qualifier)
+{
+    // TODO: push and pop for nested scopes
+    if (IsSampler(type) || type == EbtInt || type == EbtFloat) {
+        defaultPrecision[type] = qualifier;
+    } else {
+        error(line, "cannot apply precision statement to this type", TType::getBasicString(type), "");
+        recover();
+    }
+}
+
+bool TParseContext::parameterSamplerErrorCheck(int line, TStorageQualifier qualifier, const TType& type)
 {
     if ((qualifier == EvqOut || qualifier == EvqInOut) && 
              type.getBasicType() != EbtStruct && IsSampler(type.getBasicType())) {
@@ -741,12 +774,12 @@ bool TParseContext::arraySizeErrorCheck(int line, TIntermTyped* expr, int& size)
 //
 bool TParseContext::arrayQualifierErrorCheck(int line, TPublicType type)
 {
-    if (type.qualifier == EvqAttribute) {
+    if (type.qualifier.storage == EvqAttribute) {
         error(line, "cannot declare arrays of this qualifier", TType(type).getCompleteString().c_str(), "");
         return true;
     }
 
-    if (type.qualifier == EvqConst)
+    if (type.qualifier.storage == EvqConst)
         profileRequires(line, ENoProfile, 120, "GL_3DL_array_objects", "const array");
 
     return false;
@@ -899,8 +932,8 @@ bool TParseContext::nonInitConstErrorCheck(int line, TString& identifier, TPubli
     //
     // Make the qualifier make sense.
     //
-    if (type.qualifier == EvqConst) {
-        type.qualifier = EvqTemporary;
+    if (type.qualifier.storage  == EvqConst) {
+        type.qualifier.storage = EvqTemporary;
         error(line, "variables with qualifier 'const' must be initialized", identifier.c_str(), "");
         return true;
     }
@@ -933,24 +966,24 @@ bool TParseContext::nonInitErrorCheck(int line, TString& identifier, TPublicType
     return false;
 }
 
-bool TParseContext::paramErrorCheck(int line, TQualifier qualifier, TType* type)
+bool TParseContext::paramErrorCheck(int line, TStorageQualifier qualifier, TType* type)
 {
     switch (qualifier) {
     case EvqConst:
     case EvqConstReadOnly:
-        type->changeQualifier(EvqConstReadOnly);
+        type->getQualifier().storage = EvqConstReadOnly;
         return false;
     case EvqIn:
     case EvqOut:
     case EvqInOut:
-        type->changeQualifier(qualifier);
+        type->getQualifier().storage = qualifier;
         return false;
     case EvqTemporary:
-        type->changeQualifier(EvqIn);
+        type->getQualifier().storage = EvqIn;
         return false;
     default:
-        type->changeQualifier(EvqIn);
-        error(line, "qualifier not allowed on function parameter", getQualifierString(qualifier), "");
+        type->getQualifier().storage = EvqIn;
+        error(line, "qualifier not allowed on function parameter", getStorageQualifierString(qualifier), "");
         return true;
     }
 }
@@ -1016,9 +1049,9 @@ bool TParseContext::executeInitializer(TSourceLoc line, TString& identifier, TPu
     //
     // identifier must be of type constant, a global, or a temporary
     //
-    TQualifier qualifier = variable->getType().getQualifier();
+    TStorageQualifier qualifier = variable->getType().getQualifier().storage;
     if ((qualifier != EvqTemporary) && (qualifier != EvqGlobal) && (qualifier != EvqConst)) {
-        error(line, " cannot initialize this type of qualifier ", variable->getType().getQualifierString(), "");
+        error(line, " cannot initialize this type of qualifier ", variable->getType().getStorageQualifierString(), "");
         return true;
     }
     //
@@ -1026,15 +1059,15 @@ bool TParseContext::executeInitializer(TSourceLoc line, TString& identifier, TPu
     //
 
     if (qualifier == EvqConst) {
-        if (qualifier != initializer->getType().getQualifier()) {
+        if (qualifier != initializer->getType().getQualifier().storage) {
             error(line, " assigning non-constant to", "=", "'%s'", variable->getType().getCompleteString().c_str());
-            variable->getType().changeQualifier(EvqTemporary);
+            variable->getType().getQualifier().storage = EvqTemporary;
             return true;
         }
         if (type != initializer->getType()) {
             error(line, " non-matching types for const initializer ", 
-                variable->getType().getQualifierString(), "");
-            variable->getType().changeQualifier(EvqTemporary);
+                variable->getType().getStorageQualifierString(), "");
+            variable->getType().getQualifier().storage = EvqTemporary;
             return true;
         }
         if (initializer->getAsConstantUnion()) { 
@@ -1053,7 +1086,7 @@ bool TParseContext::executeInitializer(TSourceLoc line, TString& identifier, TPu
             variable->shareConstPointer(constArray);
         } else {
             error(line, " cannot assign to", "=", "'%s'", variable->getType().getCompleteString().c_str());
-            variable->getType().changeQualifier(EvqTemporary);
+            variable->getType().getQualifier().storage = EvqTemporary;
             return true;
         }
     }

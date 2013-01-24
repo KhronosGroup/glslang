@@ -92,12 +92,11 @@ int ShInitialize()
 
         SetGlobalPoolAllocatorPtr(gPoolAllocator);
 
-        symTables[EShLangVertex].pop();
-        symTables[EShLangFragment].pop();
+        symTables[EShLangVertex].pop(0);
+        symTables[EShLangFragment].pop(0);
 
         builtInPoolAllocator->popAll();
-        delete builtInPoolAllocator;        
-
+        delete builtInPoolAllocator;
     }
 
     return ret ? 1 : 0;
@@ -343,7 +342,7 @@ int ShCompile(
     // throwing away all but the built-ins.
     //
     while (! symbolTable.atSharedBuiltInLevel())
-        symbolTable.pop();
+        symbolTable.pop(0);
 
     FinalizePreprocessor();
     //

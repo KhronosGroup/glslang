@@ -285,14 +285,14 @@ public:
     virtual TType* getTypePointer() { return &type; }
     
     virtual TBasicType getBasicType() const { return type.getBasicType(); }
-    virtual TQualifier getQualifier() const { return type.getQualifier(); }
+    virtual TQualifier& getQualifier() { return type.getQualifier(); }
     virtual int getNominalSize() const { return type.getNominalSize(); }
     virtual int getSize() const { return type.getInstanceSize(); }
     virtual bool isMatrix() const { return type.isMatrix(); }
     virtual bool isArray()  const { return type.isArray(); }
     virtual bool isVector() const { return type.isVector(); }
     const char* getBasicString()      const { return type.getBasicString(); }
-    const char* getQualifierString()  const { return type.getQualifierString(); }
+    const char* getStorageQualifierString()  const { return type.getStorageQualifierString(); }
     TString getCompleteString() const { return type.getCompleteString(); }
 
 protected:
@@ -451,7 +451,7 @@ public:
     virtual void traverse(TIntermTraverser*);
     virtual void setUserDefined() { userDefined = true; }
     virtual bool isUserDefined() { return userDefined; }
-    virtual TQualifierList& getQualifier() { return qualifier; }
+    virtual TQualifierList& getQualifierList() { return qualifier; }
 	void setOptimize(bool o) { optimize = o; }
 	void setDebug(bool d) { debug = d; }
 	bool getOptimize() { return optimize; }

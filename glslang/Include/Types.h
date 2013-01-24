@@ -56,13 +56,20 @@ inline TTypeList* NewPoolTTypeList()
 
 //
 // This is a workaround for a problem with the yacc stack,  It can't have
-// types that it thinks have non-trivial constructors.  It should 
+// types that it thinks have non-trivial constructors.  It should
 // just be used while recognizing the grammar, not anything else.  Pointers
 // could be used, but also trying to avoid lots of memory management overhead.
 //
 // Not as bad as it looks, there is no actual assumption that the fields
 // match up or are name the same or anything like that.
 //
+
+class TQualifier {
+public:
+	TStorageQualifier storage     : 7;
+    TPrecisionQualifier precision : 3;
+};
+
 class TPublicType {
 public:
     TBasicType type;
@@ -74,16 +81,27 @@ public:
     TType* userDef;
     int line;
 
-    void setBasic(TBasicType bt, TQualifier q, int ln = 0) 
-    { 
-        type = bt;
-        qualifier = q;
+    void initType(int ln = 0)
+    {
+        type = EbtVoid;
         size = 1;
         matrix = false;
         array = false;
         arraySize = 0;
         userDef = 0;
         line = ln;
+    }
+
+    void initQualifiers(bool global = false)
+    {
+        qualifier.storage = global ? EvqGlobal : EvqTemporary;
+        qualifier.precision = EpqNone;
+    }
+
+    void init(int line = 0, bool global = false)
+    {
+        initType(line);
+        initQualifiers(global);
     }
 
     void setAggregate(int s, bool m = false)
@@ -107,22 +125,28 @@ typedef std::map<TTypeList*, TTypeList*>::iterator TStructureMapIterator;
 class TType {
 public:
     POOL_ALLOCATOR_NEW_DELETE(GlobalPoolAllocator)
-    explicit TType(TBasicType t, TQualifier q = EvqTemporary, int s = 1, bool m = false, bool a = false) :
-                            type(t), qualifier(q), size(s), matrix(m), array(a), arraySize(0),
-                            structure(0), structureSize(0), maxArraySize(0), arrayInformationType(0), fieldName(0), mangled(0), typeName(0)
-                            { }
+    explicit TType(TBasicType t, TStorageQualifier q = EvqTemporary, int s = 1, bool m = false, bool a = false) :
+                            type(t), size(s), matrix(m), array(a), arraySize(0),
+                            structure(0), structureSize(0), maxArraySize(0), arrayInformationType(0),
+                            fieldName(0), mangled(0), typeName(0) {
+                                qualifier.storage = q;
+                                qualifier.precision = EpqNone;
+                            }
     explicit TType(const TPublicType &p) :
-                            type(p.type), qualifier(p.qualifier), size(p.size), matrix(p.matrix), array(p.array), arraySize(p.arraySize), 
+                            type(p.type), size(p.size), matrix(p.matrix), array(p.array), arraySize(p.arraySize),
                             structure(0), structureSize(0), maxArraySize(0), arrayInformationType(0), fieldName(0), mangled(0), typeName(0)
                             {
-                              if (p.userDef) {
-                                  structure = p.userDef->getStruct();
-                                  typeName = NewPoolTString(p.userDef->getTypeName().c_str());
-                              }
+                                qualifier = p.qualifier;
+                                if (p.userDef) {
+                                    structure = p.userDef->getStruct();
+                                    typeName = NewPoolTString(p.userDef->getTypeName().c_str());
+                                }
                             }
     explicit TType(TTypeList* userDef, const TString& n) :
-                            type(EbtStruct), qualifier(EvqTemporary), size(1), matrix(false), array(false), arraySize(0),
+                            type(EbtStruct), size(1), matrix(false), array(false), arraySize(0),
                             structure(userDef), maxArraySize(0), arrayInformationType(0), fieldName(0), mangled(0) {
+                                qualifier.storage = EvqTemporary;
+                                qualifier.precision = EpqNone;
 								typeName = NewPoolTString(n.c_str());
                             }
 	explicit TType() {}
@@ -180,47 +204,47 @@ public:
 
 		return newType;
 	}
-    
+
     virtual void setType(TBasicType t, int s, bool m, bool a, int aS = 0)
                             { type = t; size = s; matrix = m; array = a; arraySize = aS; }
     virtual void setType(TBasicType t, int s, bool m, TType* userDef = 0)
-                            { type = t; 
-                              size = s; 
-                              matrix = m; 
+                            { type = t;
+                              size = s;
+                              matrix = m;
                               if (userDef)
-                                  structure = userDef->getStruct(); 
+                                  structure = userDef->getStruct();
                               // leave array information intact.
                             }
     virtual void setTypeName(const TString& n) { typeName = NewPoolTString(n.c_str()); }
     virtual void setFieldName(const TString& n) { fieldName = NewPoolTString(n.c_str()); }
     virtual const TString& getTypeName() const
-    { 
+    {
 		assert(typeName);    		
-    	return *typeName; 
+    	return *typeName;
     }
 
     virtual const TString& getFieldName() const
-    { 
+    {
     	assert(fieldName);
-		return *fieldName; 
+		return *fieldName;
     }
-    
+
     virtual TBasicType getBasicType() const { return type; }
-    virtual TQualifier getQualifier() const { return qualifier; }
-    virtual void changeQualifier(TQualifier q) { qualifier = q; }
+    virtual TQualifier& getQualifier() { return qualifier; }
+    virtual const TQualifier& getQualifier() const { return qualifier; }
 
     // One-dimensional size of single instance type
-    virtual int getNominalSize() const { return size; }  
-    
+    virtual int getNominalSize() const { return size; }
+
     // Full-dimensional size of single instance of type
-    virtual int getInstanceSize() const  
+    virtual int getInstanceSize() const
     {
         if (matrix)
             return size * size;
         else
             return size;
     }
-    
+
 	virtual bool isMatrix() const { return matrix ? true : false; }
     virtual bool isArray() const  { return array ? true : false; }
     int getArraySize() const { return arraySize; }
@@ -251,18 +275,19 @@ public:
         }
     }
     const char* getBasicString() const { return TType::getBasicString(type); }
-    const char* getQualifierString() const { return ::getQualifierString(qualifier); }
+    const char* getStorageQualifierString() const { return ::getStorageQualifierString(qualifier.storage); }
+    const char* getPrecisionQualifierString() const { return ::getPrecisionQualifierString(qualifier.precision); }
     TTypeList* getStruct() { return structure; }
 
     int getObjectSize() const
     {
         int totalSize;
-        
+
         if (getBasicType() == EbtStruct)
             totalSize = getStructSize();
         else if (matrix)
-            totalSize = size * size;            
-        else 
+            totalSize = size * size;
+        else
             totalSize = size;
 
         if (isArray())
@@ -275,10 +300,10 @@ public:
     TString& getMangledName() {
         if (!mangled) {
 			mangled = NewPoolTString("");
-            buildMangledName(*mangled);            
+            buildMangledName(*mangled);
             *mangled += ';' ;
         }
-    
+
         return *mangled;
     }
     bool sameElementType(const TType& right) const {
@@ -299,16 +324,17 @@ public:
         return !operator==(right);
     }
     TString getCompleteString() const;
-        
+
 protected:
     void buildMangledName(TString&);
     int getStructSize() const;
 
-	TBasicType type      : 6;
-	TQualifier qualifier : 7;
+	TBasicType type      : 8;
 	int size             : 8; // size of vector or matrix, not size of array
 	unsigned int matrix  : 1;
 	unsigned int array   : 1;
+    TQualifier qualifier;
+
     int arraySize;
 
     TTypeList* structure;      // 0 unless this is a struct

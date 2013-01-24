@@ -45,7 +45,7 @@ struct TMatrixFields {
     bool wholeRow;
     bool wholeCol;
     int row;
-    int col;    
+    int col;
 };
 
 typedef enum {
@@ -67,12 +67,7 @@ struct TPragma {
 // they can be passed to the parser without needing a global.
 //
 struct TParseContext {
-    TParseContext(TSymbolTable& symt, TIntermediate& interm, EShLanguage L, TInfoSink& is) : 
-            intermediate(interm), symbolTable(symt), infoSink(is), language(L), treeRoot(0),
-            recoveredFromError(false), numErrors(0), lexAfterType(false), loopNestingLevel(0),
-            switchNestingLevel(0), inTypeParen(false), 
-            version(110), profile(ENoProfile), futureCompatibility(false),
-            contextPragma(true, false) {  }
+    TParseContext(TSymbolTable& symt, TIntermediate& interm, EShLanguage L, TInfoSink& is);
     TIntermediate& intermediate; // to hold and build a parse tree
     TSymbolTable& symbolTable;   // symbol table that goes with the language currently being parsed
     TInfoSink& infoSink;
@@ -91,18 +86,19 @@ struct TParseContext {
     EProfile profile;            // the declared profile in the shader (core by default)
     bool futureCompatibility;    // true if requesting errors for future compatibility (false by default)
     TMap<TString, TBehavior> extensionBehavior;    // for each extension string, what it's current enablement is
-    
+
     struct TPragma contextPragma;
-	TString HashErrMsg; 
+    TPrecisionQualifier defaultPrecision[EbtNumTypes];
+	TString HashErrMsg;
     bool AfterEOF;
 
     void initializeExtensionBehavior();
 
-    void C_DECL error(TSourceLoc, const char *szReason, const char *szToken, 
+    void C_DECL error(TSourceLoc, const char *szReason, const char *szToken,
                       const char *szExtraInfoFormat, ...);
     bool reservedErrorCheck(int line, const TString& identifier);
     void recover();
-    
+
     bool parseVectorFields(const TString&, int vecSize, TVectorFields&, int line);
     bool parseMatrixFields(const TString&, int matSize, TMatrixFields&, int line);
     void assignError(int line, const char* op, TString left, TString right);
@@ -125,13 +121,14 @@ struct TParseContext {
     bool samplerErrorCheck(int line, const TPublicType& pType, const char* reason);
     bool globalQualifierFixAndErrorCheck(int line, TQualifier&);
     bool structQualifierErrorCheck(int line, const TPublicType& pType);
-    bool parameterSamplerErrorCheck(int line, TQualifier qualifier, const TType& type);
+    void setDefaultPrecision(int line, TBasicType, TPrecisionQualifier);
+    bool parameterSamplerErrorCheck(int line, TStorageQualifier qualifier, const TType& type);
     bool containsSampler(TType& type);
     bool nonInitConstErrorCheck(int line, TString& identifier, TPublicType& type);
     bool nonInitErrorCheck(int line, TString& identifier, TPublicType& type);
-    bool paramErrorCheck(int line, TQualifier qualifier, TType* type);
+    bool paramErrorCheck(int line, TStorageQualifier qualifier, TType* type);
     const TFunction* findFunction(int line, TFunction* pfnCall, bool *builtIn = 0);
-    bool executeInitializer(TSourceLoc line, TString& identifier, TPublicType& pType, 
+    bool executeInitializer(TSourceLoc line, TString& identifier, TPublicType& pType,
                             TIntermTyped* initializer, TIntermNode*& intermNode, TVariable* variable = 0);
     bool areAllChildConst(TIntermAggregate* aggrNode);
     TIntermTyped* addConstructor(TIntermNode*, const TType*, TOperator, TFunction*, TSourceLoc);

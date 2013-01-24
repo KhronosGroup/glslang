@@ -546,13 +546,14 @@ TIntermNode* TIntermediate::addSelection(TIntermTyped* cond, TIntermNodePair nod
 
 TIntermTyped* TIntermediate::addComma(TIntermTyped* left, TIntermTyped* right, TSourceLoc line)
 {
-    if (left->getType().getQualifier() == EvqConst && right->getType().getQualifier() == EvqConst) {
+    if (left->getType().getQualifier().storage == EvqConst && 
+        right->getType().getQualifier().storage == EvqConst) {
         return right;
     } else {
         TIntermTyped *commaAggregate = growAggregate(left, right, line);
         commaAggregate->getAsAggregate()->setOperator(EOpComma);    
         commaAggregate->setType(right->getType());
-        commaAggregate->getTypePointer()->changeQualifier(EvqTemporary);
+        commaAggregate->getTypePointer()->getQualifier().storage = EvqTemporary;
         return commaAggregate;
     }
 }
@@ -830,7 +831,11 @@ bool TIntermBinary::promote(TInfoSink& infoSink)
     // operand.  Then only deviations from this need be coded.
     //
     setType(left->getType());
-    type.changeQualifier(EvqTemporary);
+    type.getQualifier().storage = EvqTemporary;
+
+    // Fix precision qualifiers
+    if (right->getQualifier().precision > getQualifier().precision)
+        getQualifier().precision = right->getQualifier().precision;
 
     //
     // Array operations.
@@ -1510,7 +1515,8 @@ TIntermTyped* TIntermediate::promoteConstantUnion(TBasicType promoteTo, TIntermC
     
     const TType& t = node->getType();
     
-    return addConstantUnion(leftUnionArray, TType(promoteTo, t.getQualifier(), t.getNominalSize(), t.isMatrix(), t.isArray()), node->getLine());
+    return addConstantUnion(leftUnionArray, TType(promoteTo, t.getQualifier().storage, t.getNominalSize(), t.isMatrix(), 
+                            t.isArray()), node->getLine());
 }
 
 void TIntermAggregate::addToPragmaTable(const TPragmaTable& pTable)

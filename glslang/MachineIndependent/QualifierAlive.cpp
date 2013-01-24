@@ -36,7 +36,7 @@
 
 class TAliveTraverser : public TIntermTraverser {
 public:
-    TAliveTraverser(TQualifier q) : TIntermTraverser(), found(false), qualifier(q)
+    TAliveTraverser(TStorageQualifier q) : TIntermTraverser(), found(false), qualifier(q)
     {
         visitSymbol    = AliveSymbol;
         visitSelection = AliveSelection;
@@ -45,7 +45,7 @@ public:
     bool wasFound() { return found; }
 protected:
     bool found;
-    TQualifier qualifier;
+    TStorageQualifier qualifier;
 
     friend void AliveSymbol(TIntermSymbol*, TIntermTraverser*);
     friend bool AliveSelection(bool, TIntermSelection*, TIntermTraverser*);
@@ -59,7 +59,7 @@ protected:
 // ?? It does not do this well yet, this is just a place holder
 // that simply determines if it was reference at all, anywhere.
 //
-bool QualifierWritten(TIntermNode* node, TQualifier qualifier)
+bool QualifierWritten(TIntermNode* node, TStorageQualifier qualifier)
 {
     TAliveTraverser it(qualifier);
 
@@ -76,7 +76,7 @@ void AliveSymbol(TIntermSymbol* node, TIntermTraverser* it)
     //
     // If it's what we're looking for, record it.
     //
-    if (node->getQualifier() == lit->qualifier)
+    if (node->getQualifier().storage == lit->qualifier)
         lit->found = true;
 }
 

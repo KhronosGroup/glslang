@@ -732,6 +732,24 @@ void SetVersion(int version)
 {
     TParseContext& parseContext = *((TParseContext *)cpp->pC);
     parseContext.version = version;
+
+	if (version == 100 || version == 300) {
+	    for (int type = 0; type < EbtNumTypes; ++type)
+		    parseContext.defaultPrecision[type] = EpqNone;
+
+	    if (parseContext.language == EShLangVertex) {
+			parseContext.defaultPrecision[EbtInt] = EpqHigh;
+			parseContext.defaultPrecision[EbtFloat] = EpqHigh;
+			parseContext.defaultPrecision[EbtSampler2D] = EpqLow;
+			parseContext.defaultPrecision[EbtSamplerCube] = EpqLow;
+        }
+
+        if (parseContext.language == EShLangFragment)  {
+			parseContext.defaultPrecision[EbtInt] = EpqMedium;
+			parseContext.defaultPrecision[EbtSampler2D] = EpqLow;
+			parseContext.defaultPrecision[EbtSamplerCube] = EpqLow;
+        }
+	}
 }
 
 const int FirstProfileVersion = 150;

@@ -60,10 +60,12 @@ TString TType::getCompleteString() const
     char *p = &buf[0];
 	char *end = &buf[maxSize];
 
-    if (qualifier != EvqTemporary && qualifier != EvqGlobal)
-        p += sprintf_s(p, end - p, "%s ", getQualifierString());
+    if (qualifier.storage != EvqTemporary && qualifier.storage != EvqGlobal)
+        p += sprintf_s(p, end - p, "%s ", getStorageQualifierString());
     if (array)
         p += sprintf_s(p, end - p, "array of ");
+    if (qualifier.precision != EpqNone)
+        p += sprintf_s(p, end - p, "%s ", getPrecisionQualifierString());
     if (matrix)
         p += sprintf_s(p, end - p, "%dX%d matrix of ", size, size);
     else if (size > 1)
