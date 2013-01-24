@@ -743,22 +743,28 @@ void SetProfile(EProfile profile)
     TParseContext& parseContext = *((TParseContext *)cpp->pC);
 
     if (profile == ENoProfile) {
-        if (parseContext.version == 100 || parseContext.version == 300) {
-            CPPErrorToInfoLog("versions 100 and 300 require specifying the es profile");
+        if (parseContext.version == 300) {
+            CPPErrorToInfoLog("version 300 requires specifying the 'es' profile");
             parseContext.profile = ENoProfile;
         } else if (parseContext.version >= FirstProfileVersion)
             parseContext.profile = ECoreProfile;
         else
             parseContext.profile = ENoProfile;
-    } else { 
+    } else {
         // a profile was provided...
-        if (parseContext.version == 100 || parseContext.version == 300) {
+        if (parseContext.version < 150) {
+            CPPErrorToInfoLog("versions before 150 do not allow a profile token");
+            if (parseContext.version == 100)
+                parseContext.profile = EEsProfile;
+            else
+                parseContext.profile = ENoProfile;
+        } else if (parseContext.version == 300) {
             if (profile != EEsProfile)
-                CPPErrorToInfoLog("versions 100 and 300 only support the es profile");            
+                CPPErrorToInfoLog("only version 300 supports the es profile");
             parseContext.profile = EEsProfile;
         } else {
             if (profile == EEsProfile) {
-                CPPErrorToInfoLog("only versions 100 and 300 support the es profile");
+                CPPErrorToInfoLog("only version 300 supports the es profile");
                 if (parseContext.version >= FirstProfileVersion)
                     parseContext.profile = ECoreProfile;
                 else
