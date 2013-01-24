@@ -38,16 +38,16 @@
 /* Based on
 ANSI C grammar, Lex specification
 
-In 1985, Jeff Lee published this Lex specification together with a Yacc 
-grammar for the April 30, 1985 ANSI C draft.  Tom Stockfisch reposted 
-both to net.sources in 1987; that original, as mentioned in the answer 
-to question 17.25 of the comp.lang.c FAQ, can be ftp'ed from ftp.uu.net, 
-file usenet/net.sources/ansi.c.grammar.Z. 
+In 1985, Jeff Lee published this Lex specification together with a Yacc
+grammar for the April 30, 1985 ANSI C draft.  Tom Stockfisch reposted
+both to net.sources in 1987; that original, as mentioned in the answer
+to question 17.25 of the comp.lang.c FAQ, can be ftp'ed from ftp.uu.net,
+file usenet/net.sources/ansi.c.grammar.Z.
 
-I intend to keep this version as close to the current C Standard grammar 
-as possible; please let me know if you discover discrepancies. 
+I intend to keep this version as close to the current C Standard grammar
+as possible; please let me know if you discover discrepancies.
 
-Jutta Degener, 1995 
+Jutta Degener, 1995
 */
 
 D           [0-9]
@@ -62,7 +62,7 @@ LF          [lL][fF]
 /* TODO: double literals, which will likely require pre-processor rework */
 /* TODO: unsigned int literals, which will likely require pre-processor rework */
 
-%option nounput 
+%option nounput
 %{
 #include <stdio.h>
 #include <stdlib.h>
@@ -79,13 +79,13 @@ TSourceLoc yylineno;
 
 #ifdef _WIN32
     extern int yyparse(TParseContext&);
-    #define YY_DECL int yylex(YYSTYPE* pyylval, TParseContext& parseContext)    
+    #define YY_DECL int yylex(YYSTYPE* pyylval, TParseContext& parseContext)
 #else
     extern int yyparse(void*);
     #define YY_DECL int yylex(YYSTYPE* pyylval, void* parseContextLocal)
     #define parseContext (*((TParseContext*)(parseContextLocal)))		
 #endif
- 
+
 #define YY_INPUT(buf,result,max_size) (result = yy_input(buf, max_size))
 
 %}
@@ -317,10 +317,10 @@ TSourceLoc yylineno;
 "namespace"    {  PaReservedWord(); return 0; }
 "using"        {  PaReservedWord(); return 0; }
 
-{L}({L}|{D})*       {  
-   pyylval->lex.line = yylineno; 
-   pyylval->lex.string = NewPoolTString(yytext); 
-   return PaIdentOrType(*pyylval->lex.string, parseContext, pyylval->lex.symbol); 
+{L}({L}|{D})*       {
+   pyylval->lex.line = yylineno;
+   pyylval->lex.string = NewPoolTString(yytext);
+   return PaIdentOrType(*pyylval->lex.string, parseContext, pyylval->lex.symbol);
 }
 
 0[xX]{H}+         { pyylval->lex.line = yylineno; pyylval->lex.i = strtol(yytext, 0, 0); return(INTCONSTANT); }
@@ -343,7 +343,7 @@ TSourceLoc yylineno;
 {D}+"."{D}*({E})?{LF} { pyylval->lex.line = yylineno; pyylval->lex.d = atof(yytext); return(DOUBLECONSTANT); }
 "."{D}+({E})?{LF}     { pyylval->lex.line = yylineno; pyylval->lex.d = atof(yytext); return(DOUBLECONSTANT); }
 
-"/*"            {  int ret = PaParseComment(pyylval->lex.line, parseContext); if (!ret) return ret; }   
+"/*"            {  int ret = PaParseComment(pyylval->lex.line, parseContext); if (!ret) return ret; }
 
 "+="            {  pyylval->lex.line = yylineno; return(ADD_ASSIGN); }
 "-="            {  pyylval->lex.line = yylineno; return(SUB_ASSIGN); }
@@ -392,10 +392,10 @@ TSourceLoc yylineno;
 "&"         {  pyylval->lex.line = yylineno; return(AMPERSAND); }
 "?"         {  pyylval->lex.line = yylineno; return(QUESTION); }
 
-<FIELDS>{L}({L}|{D})* { 
-BEGIN(INITIAL);      
-    pyylval->lex.line = yylineno;     
-    pyylval->lex.string = NewPoolTString(yytext); 
+<FIELDS>{L}({L}|{D})* {
+BEGIN(INITIAL);
+    pyylval->lex.line = yylineno;
+    pyylval->lex.string = NewPoolTString(yytext);
     return FIELD_SELECTION; }
 <FIELDS>[ \t\v\f\r] {}
 
@@ -410,7 +410,7 @@ BEGIN(INITIAL);
 //Including Pre-processor.
 extern "C" {
   #include "./preprocessor/preprocess.h"
-} 
+}
 
 //
 // The YY_INPUT macro just calls this.  Maybe this could be just put into
@@ -424,7 +424,7 @@ int yy_input(char* buf, int max_size)
 
     if ((len = yylex_CPP(buf, max_size)) == 0)
         return 0;
-    if (len >= max_size) 
+    if (len >= max_size)
         YY_FATAL_ERROR( "input buffer overflow, can't enlarge buffer because scanner uses REJECT" );
 
     buf[len] = ' ';
@@ -441,15 +441,15 @@ int yy_input(char* buf, int max_size)
 int PaParseStrings(char* argv[], int strLen[], int argc, TParseContext& parseContextLocal)
 {
     int argv0len;
-    
-    ScanFromString(argv[0]); 
-    
+
+    ScanFromString(argv[0]);
+
     //Storing the Current Compiler Parse context into the cpp structure.
 	cpp->pC = (void*)&parseContextLocal;
 	
 	if (!argv || argc == 0)
         return 1;
-    
+
     for (int i = 0; i < argc; ++i) {
         if (!argv[i]) {
             parseContextLocal.error(0, "Null shader source string", "", "");
@@ -457,7 +457,7 @@ int PaParseStrings(char* argv[], int strLen[], int argc, TParseContext& parseCon
             return 1;
         }
     }
-    
+
     if (!strLen) {
         argv0len = (int) strlen(argv[0]);
         strLen   = &argv0len;
@@ -470,11 +470,11 @@ int PaParseStrings(char* argv[], int strLen[], int argc, TParseContext& parseCon
     cpp->PaStrLen   = strLen;
     cpp->notAVersionToken = 0;
     yylineno   = 1;
-   
-    if (*cpp->PaStrLen >= 0) {    
+
+    if (*cpp->PaStrLen >= 0) {
         int ret;
         #ifdef _WIN32
-            ret = yyparse(parseContextLocal);            
+            ret = yyparse(parseContextLocal);
         #else
             ret = yyparse((void*)(&parseContextLocal));
         #endif
@@ -487,9 +487,11 @@ int PaParseStrings(char* argv[], int strLen[], int argc, TParseContext& parseCon
         return 0;
 }
 
-void yyerror(char *s) 
+void yyerror(char *s)
 {
-    if (((TParseContext *)cpp->pC)->AfterEOF) {
+    TParseContext& parseContext = *((TParseContext *)cpp->pC);
+
+    if (parseContext.AfterEOF) {
         if (cpp->tokensBeforeEOF == 1) {
             GlobalParseContext->error(yylineno, "syntax error", "pre-mature EOF", s, "");
             GlobalParseContext->recover();
@@ -497,7 +499,7 @@ void yyerror(char *s)
     } else {
         GlobalParseContext->error(yylineno, "syntax error", yytext, s, "");
         GlobalParseContext->recover();
-    }            
+    }
 }
 
 void PaReservedWord()
@@ -516,7 +518,7 @@ int PaIdentOrType(TString& id, TParseContext& parseContextLocal, TSymbol*& symbo
             return TYPE_NAME;
         }
     }
-    
+
     return IDENTIFIER;
 }
 
@@ -524,7 +526,7 @@ int PaParseComment(int &lineno, TParseContext& parseContextLocal)
 {
     int transitionFlag = 0;
     int nextChar;
-    
+
     while (transitionFlag != 2) {
         nextChar = yyinput();
         if (nextChar == '\n')
@@ -542,7 +544,7 @@ int PaParseComment(int &lineno, TParseContext& parseContextLocal)
             /* Raise error message here */
             parseContextLocal.error(yylineno, "End of shader found before end of comment.", "", "", "");
             GlobalParseContext->recover();
-            return YY_NULL; 
+            return YY_NULL;
         default :  /* Any other character will be a part of the comment */
             transitionFlag = 0;
         }
@@ -554,23 +556,31 @@ extern "C" {
 
 void CPPDebugLogMsg(const char *msg)
 {
-    ((TParseContext *)cpp->pC)->infoSink.debug.message(EPrefixNone, msg);
+    TParseContext& parseContext = *((TParseContext *)cpp->pC);
+
+    parseContext.infoSink.debug.message(EPrefixNone, msg);
 }
 
 void CPPWarningToInfoLog(const char *msg)
 {
-    ((TParseContext *)cpp->pC)->infoSink.info.message(EPrefixWarning, msg, yylineno); 
+    TParseContext& parseContext = *((TParseContext *)cpp->pC);
+
+    parseContext.infoSink.info.message(EPrefixWarning, msg, yylineno);
 }
 
 void CPPShInfoLogMsg(const char *msg)
 {
-    ((TParseContext *)cpp->pC)->error(yylineno,"", "",msg,"");
+    TParseContext& parseContext = *((TParseContext *)cpp->pC);
+
+    parseContext.error(yylineno,"", "",msg,"");
     GlobalParseContext->recover();
 }
 
 void CPPErrorToInfoLog(char *msg)
 {
-    ((TParseContext *)cpp->pC)->error(yylineno, "CPP error:", "",msg,"");
+    TParseContext& parseContext = *((TParseContext *)cpp->pC);
+
+    parseContext.error(yylineno, "CPP error:", "",msg,"");
     GlobalParseContext->recover();
 }
 
@@ -608,27 +618,29 @@ void DecLineNumber(void)
 }
 
 void HandlePragma(const char **tokens, int numTokens)
-{    
+{
+    TParseContext& parseContext = *((TParseContext *)cpp->pC);
+
     if (!strcmp(tokens[0], "optimize")) {
         if (numTokens != 4) {
             CPPShInfoLogMsg("optimize pragma syntax is incorrect");
             return;
         }
-        
+
         if (strcmp(tokens[1], "(")) {
             CPPShInfoLogMsg("\"(\" expected after 'optimize' keyword");
             return;
         }
-            
+
         if (!strcmp(tokens[2], "on"))
-            ((TParseContext *)cpp->pC)->contextPragma.optimize = true;
+            parseContext.contextPragma.optimize = true;
         else if (!strcmp(tokens[2], "off"))
-            ((TParseContext *)cpp->pC)->contextPragma.optimize = false;
+            parseContext.contextPragma.optimize = false;
         else {
             CPPShInfoLogMsg("\"on\" or \"off\" expected after '(' for 'optimize' pragma");
             return;
         }
-        
+
         if (strcmp(tokens[3], ")")) {
             CPPShInfoLogMsg("\")\" expected to end 'optimize' pragma");
             return;
@@ -638,21 +650,21 @@ void HandlePragma(const char **tokens, int numTokens)
             CPPShInfoLogMsg("debug pragma syntax is incorrect");
             return;
         }
-        
+
         if (strcmp(tokens[1], "(")) {
             CPPShInfoLogMsg("\"(\" expected after 'debug' keyword");
             return;
         }
-            
+
         if (!strcmp(tokens[2], "on"))
-            ((TParseContext *)cpp->pC)->contextPragma.debug = true;
+            parseContext.contextPragma.debug = true;
         else if (!strcmp(tokens[2], "off"))
-            ((TParseContext *)cpp->pC)->contextPragma.debug = false;
+            parseContext.contextPragma.debug = false;
         else {
             CPPShInfoLogMsg("\"on\" or \"off\" expected after '(' for 'debug' pragma");
             return;
         }
-        
+
         if (strcmp(tokens[3], ")")) {
             CPPShInfoLogMsg("\")\" expected to end 'debug' pragma");
             return;
@@ -662,23 +674,23 @@ void HandlePragma(const char **tokens, int numTokens)
 #ifdef PRAGMA_TABLE
         //
         // implementation specific pragma
-        // use ((TParseContext *)cpp->pC)->contextPragma.pragmaTable to store the information about pragma
+        // use parseContext.contextPragma.pragmaTable to store the information about pragma
         // For now, just ignore the pragma that the implementation cannot recognize
         // An Example of one such implementation for a pragma that has a syntax like
         // #pragma pragmaname(pragmavalue)
         // This implementation stores the current pragmavalue against the pragma name in pragmaTable.
-        //        
-        if (numTokens == 4 && !strcmp(tokens[1], "(") && !strcmp(tokens[3], ")")) {              
-            TPragmaTable& pragmaTable = ((TParseContext *)cpp->pC)->contextPragma.pragmaTable;
+        //
+        if (numTokens == 4 && !strcmp(tokens[1], "(") && !strcmp(tokens[3], ")")) {
+            TPragmaTable& pragmaTable = parseContext.contextPragma.pragmaTable;
             TPragmaTable::iterator iter;
             iter = pragmaTable.find(TString(tokens[0]));
             if (iter != pragmaTable.end()) {
                 iter->second = tokens[2];
             } else {
                 pragmaTable[tokens[0]] = tokens[2];
-            }        
+            }
         } else if (numTokens >= 2) {
-            TPragmaTable& pragmaTable = ((TParseContext *)cpp->pC)->contextPragma.pragmaTable;
+            TPragmaTable& pragmaTable = parseContext.contextPragma.pragmaTable;
             TPragmaTable::iterator iter;
             iter = pragmaTable.find(TString(tokens[0]));
             if (iter != pragmaTable.end()) {
@@ -693,26 +705,33 @@ void HandlePragma(const char **tokens, int numTokens)
 
 void StoreStr(char *string)
 {
+    TParseContext& parseContext = *((TParseContext *)cpp->pC);
+
     TString strSrc;
     strSrc = TString(string);
 
-    ((TParseContext *)cpp->pC)->HashErrMsg = ((TParseContext *)cpp->pC)->HashErrMsg + " " + strSrc;
+    parseContext.HashErrMsg = parseContext.HashErrMsg + " " + strSrc;
 }
 
 const char* GetStrfromTStr(void)
 {
-    cpp->ErrMsg = (((TParseContext *)cpp->pC)->HashErrMsg).c_str();
+    TParseContext& parseContext = *((TParseContext *)cpp->pC);
+
+    cpp->ErrMsg = parseContext.HashErrMsg.c_str();
     return cpp->ErrMsg;
 }
 
 void ResetTString(void)
 {
-    ((TParseContext *)cpp->pC)->HashErrMsg = "";
+    TParseContext& parseContext = *((TParseContext *)cpp->pC);
+
+    parseContext.HashErrMsg = "";
 }
 
 void SetVersion(int version)
 {
-    ((TParseContext *)cpp->pC)->version = version;
+    TParseContext& parseContext = *((TParseContext *)cpp->pC);
+    parseContext.version = version;
 }
 
 const int FirstProfileVersion = 150;
@@ -721,32 +740,32 @@ const int FirstProfileVersion = 150;
 // if there is a version, sending in a ENoProfile if there is no profile given.
 void SetProfile(EProfile profile)
 {
-    int version = ((TParseContext *)cpp->pC)->version;
+    TParseContext& parseContext = *((TParseContext *)cpp->pC);
 
     if (profile == ENoProfile) {
-        if (version == 100 || version == 300) {
+        if (parseContext.version == 100 || parseContext.version == 300) {
             CPPErrorToInfoLog("versions 100 and 300 require specifying the es profile");
-            ((TParseContext *)cpp->pC)->profile = ENoProfile;
-        } else if (version >= FirstProfileVersion)
-            ((TParseContext *)cpp->pC)->profile = ECoreProfile;
+            parseContext.profile = ENoProfile;
+        } else if (parseContext.version >= FirstProfileVersion)
+            parseContext.profile = ECoreProfile;
         else
-            ((TParseContext *)cpp->pC)->profile = ENoProfile;
+            parseContext.profile = ENoProfile;
     } else { 
         // a profile was provided...
-        if (version == 100 || version == 300) {
+        if (parseContext.version == 100 || parseContext.version == 300) {
             if (profile != EEsProfile)
                 CPPErrorToInfoLog("versions 100 and 300 only support the es profile");            
-            ((TParseContext *)cpp->pC)->profile = EEsProfile;
+            parseContext.profile = EEsProfile;
         } else {
             if (profile == EEsProfile) {
                 CPPErrorToInfoLog("only versions 100 and 300 support the es profile");
-                if (version >= FirstProfileVersion)
-                    ((TParseContext *)cpp->pC)->profile = ECoreProfile;
+                if (parseContext.version >= FirstProfileVersion)
+                    parseContext.profile = ECoreProfile;
                 else
-                    ((TParseContext *)cpp->pC)->profile = ENoProfile;
+                    parseContext.profile = ENoProfile;
             } else {
                 // typical desktop case... e.g., "#version 410 core"
-                ((TParseContext *)cpp->pC)->profile = profile;
+                parseContext.profile = profile;
             }
         }
     }
@@ -765,36 +784,37 @@ TBehavior GetBehavior(const char* behavior)
     else {
         CPPShInfoLogMsg((TString("behavior '") + behavior + "' is not supported").c_str());
         return EBhDisable;
-    }        
+    }
 }
 
-void  updateExtensionBehavior(const char* extName, const char* behavior)
+void updateExtensionBehavior(const char* extName, const char* behavior)
 {
+    TParseContext& parseContext = *((TParseContext *)cpp->pC);
     TBehavior behaviorVal = GetBehavior(behavior);
     TMap<TString, TBehavior>:: iterator iter;
     TString msg;
-    
+
     // special cased for all extension
     if (!strcmp(extName, "all")) {
         if (behaviorVal == EBhRequire || behaviorVal == EBhEnable) {
-            CPPShInfoLogMsg("extension 'all' cannot have 'require' or 'enable' behavior");  
+            CPPShInfoLogMsg("extension 'all' cannot have 'require' or 'enable' behavior");
             return;
         } else {
-            for (iter =  ((TParseContext *)cpp->pC)->extensionBehavior.begin(); iter != ((TParseContext *)cpp->pC)->extensionBehavior.end(); ++iter)
+            for (iter = parseContext.extensionBehavior.begin(); iter != parseContext.extensionBehavior.end(); ++iter)
                 iter->second = behaviorVal;
-        }        
+        }
     } else {
-        iter = ((TParseContext *)cpp->pC)->extensionBehavior.find(TString(extName));
-        if (iter == ((TParseContext *)cpp->pC)->extensionBehavior.end()) {
+        iter = parseContext.extensionBehavior.find(TString(extName));
+        if (iter == parseContext.extensionBehavior.end()) {
             switch (behaviorVal) {
             case EBhRequire:
-                CPPShInfoLogMsg((TString("extension '") + extName + "' is not supported").c_str());  
+                CPPShInfoLogMsg((TString("extension '") + extName + "' is not supported").c_str());
                 break;
             case EBhEnable:
             case EBhWarn:
             case EBhDisable:
                 msg = TString("extension '") + extName + "' is not supported";
-                ((TParseContext *)cpp->pC)->infoSink.info.message(EPrefixWarning, msg.c_str(), yylineno); 
+                parseContext.infoSink.info.message(EPrefixWarning, msg.c_str(), yylineno);
                 break;
             }
             return;
@@ -802,7 +822,7 @@ void  updateExtensionBehavior(const char* extName, const char* behavior)
             iter->second = behaviorVal;
     }
 }
-        
+
 }  // extern "C"
 
 void setInitialState()
