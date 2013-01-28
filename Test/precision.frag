@@ -35,17 +35,19 @@ void main()
         int level2_high;
         sum += level2_high;
         do {
-            if (1) {
+            if (true) {
                 precision mediump int;
                 int level4_medium;
                 sum += level4_medium;
             }
             int level3_high;
             sum += level3_high;
-        } while (1);	
+        } while (true);	
         int level2_high2;
         sum += level2_high2;
     }
     int level1_low3;
     sum += level1_low3;
+
+    sum += 4 + ((ivec2(level1_low3) * ivec2(level1_high) + ivec2((/* comma operator */level1_low3, level1_high)))).x;
 }

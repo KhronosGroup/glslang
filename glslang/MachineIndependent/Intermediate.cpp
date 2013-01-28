@@ -836,6 +836,8 @@ bool TIntermBinary::promote(TInfoSink& infoSink)
     // Fix precision qualifiers
     if (right->getQualifier().precision > getQualifier().precision)
         getQualifier().precision = right->getQualifier().precision;
+    left->propagatePrecision(getQualifier().precision);
+    right->propagatePrecision(getQualifier().precision);
 
     //
     // Array operations.
@@ -1078,7 +1080,53 @@ bool CompareStruct(const TType& leftNodeType, constUnion* rightUnionArray, const
         }
     }
     return true;
-} 
+}
+
+void TIntermTyped::propagatePrecision(TPrecisionQualifier newPrecision)
+{
+    if (getQualifier().precision != EpqNone || (getBasicType() != EbtInt && getBasicType() != EbtFloat))
+        return;
+
+    getQualifier().precision = newPrecision;
+
+    TIntermBinary* binaryNode = getAsBinaryNode();
+    if (binaryNode) {
+        binaryNode->getLeft()->propagatePrecision(newPrecision);
+        binaryNode->getRight()->propagatePrecision(newPrecision);
+    }
+
+    TIntermUnary* unaryNode = getAsUnaryNode();
+    if (unaryNode)
+        unaryNode->getOperand()->propagatePrecision(newPrecision);
+
+    TIntermAggregate* aggregateNode = getAsAggregate();
+    if (aggregateNode) {
+        TIntermSequence operands = aggregateNode->getSequence();
+        for (unsigned int i = 0; i < operands.size(); ++i) {
+            TIntermTyped* typedNode = operands[i]->getAsTyped();
+            if (! typedNode)
+                break;
+            typedNode->propagatePrecision(newPrecision);
+        }
+    }
+
+    TIntermSelection* selectionNode = getAsSelectionNode();
+    if (selectionNode) {
+        TIntermTyped* typedNode = selectionNode->getTrueBlock()->getAsTyped();
+        if (typedNode) {
+            typedNode->propagatePrecision(newPrecision);
+            typedNode = selectionNode->getFalseBlock()->getAsTyped();
+            if (typedNode)
+                typedNode->propagatePrecision(newPrecision);
+        }
+    }
+
+    // TODO: propagate precision for
+    //    comma operator:  just through the last operand
+    //    ":?" and ",": where is this triggered?
+    //    built-in function calls: how much to propagate to arguments?
+    //    performance: don't do this for desktop profiles
+}
 
 bool CompareStructure(const TType& leftNodeType, constUnion* rightUnionArray, constUnion* leftUnionArray)
 {

@@ -258,11 +258,11 @@ bool OutputAggregate(bool /* preVisit */, TIntermAggregate* node, TIntermTravers
     OutputTreeText(out, node, oit->depth);
 
     switch (node->getOp()) {
-    case EOpSequence:      out.debug << "Sequence\n"; return true;
-    case EOpComma:         out.debug << "Comma\n"; return true;
+    case EOpSequence:      out.debug << "Sequence\n";       return true;
+    case EOpComma:         out.debug << "Comma";            break;
     case EOpFunction:      out.debug << "Function Definition: " << node->getName(); break;
-    case EOpFunctionCall:  out.debug << "Function Call: " << node->getName(); break;
-    case EOpParameters:    out.debug << "Function Parameters: ";              break;
+    case EOpFunctionCall:  out.debug << "Function Call: "       << node->getName(); break;
+    case EOpParameters:    out.debug << "Function Parameters: ";                    break;
     
     case EOpConstructFloat: out.debug << "Construct float"; break;
     case EOpConstructVec2:  out.debug << "Construct vec2";  break;

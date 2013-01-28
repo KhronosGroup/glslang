@@ -60,7 +60,6 @@ TParseContext::TParseContext(TSymbolTable& symt, TIntermediate& interm, EShLangu
     defaultPrecision[EbtVoid]   = EpqNone;
     defaultPrecision[EbtDouble] = EpqNone;
     defaultPrecision[EbtBool]   = EpqNone;
-    defaultPrecision[EbtVoid]   = EpqNone;
 }
 
 //

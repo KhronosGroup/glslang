@@ -231,6 +231,7 @@ enum TOperator {
 
 class TIntermTraverser;
 class TIntermAggregate;
+class TIntermUnary;
 class TIntermBinary;
 class TIntermConstantUnion;
 class TIntermSelection;
@@ -253,6 +254,7 @@ public:
     virtual TIntermTyped*     getAsTyped()         { return 0; }
     virtual TIntermConstantUnion*     getAsConstantUnion()         { return 0; }
     virtual TIntermAggregate* getAsAggregate()     { return 0; }
+    virtual TIntermUnary*     getAsUnaryNode()     { return 0; }
     virtual TIntermBinary*    getAsBinaryNode()    { return 0; }
     virtual TIntermSelection* getAsSelectionNode() { return 0; }
     virtual TIntermMethod*    getAsMethodNode()    { return 0; }
@@ -270,9 +272,6 @@ struct TIntermNodePair {
     TIntermNode* node2;
 };
 
-class TIntermSymbol;
-class TIntermBinary;
-
 //
 // Intermediate class for nodes that have a type.
 //
@@ -286,6 +285,7 @@ public:
     
     virtual TBasicType getBasicType() const { return type.getBasicType(); }
     virtual TQualifier& getQualifier() { return type.getQualifier(); }
+    virtual void propagatePrecision(TPrecisionQualifier);
     virtual int getNominalSize() const { return type.getNominalSize(); }
     virtual int getSize() const { return type.getInstanceSize(); }
     virtual bool isMatrix() const { return type.isMatrix(); }
@@ -428,6 +428,7 @@ public:
     virtual void traverse(TIntermTraverser*);
     virtual void setOperand(TIntermTyped* o) { operand = o; }
     virtual TIntermTyped* getOperand() { return operand; }
+    virtual TIntermUnary* getAsUnaryNode() { return this; }
     virtual bool promote(TInfoSink&);
 protected:
     TIntermTyped* operand;
