@@ -752,19 +752,20 @@ void SetVersion(int version)
 	}
 }
 
-const int FirstProfileVersion = 150;
-
 // Important assumption:  SetVersion() is called before SetProfile(), and is always called
 // if there is a version, sending in a ENoProfile if there is no profile given.
 void SetProfile(EProfile profile)
 {
+    const int FirstProfileVersion = 150;
     TParseContext& parseContext = *((TParseContext *)cpp->pC);
 
     if (profile == ENoProfile) {
         if (parseContext.version == 300) {
             CPPErrorToInfoLog("version 300 requires specifying the 'es' profile");
-            parseContext.profile = ENoProfile;
-        } else if (parseContext.version >= FirstProfileVersion)
+            parseContext.profile = EEsProfile;
+        } else if (parseContext.version == 100)
+            parseContext.profile = EEsProfile;
+        else if (parseContext.version >= FirstProfileVersion)
             parseContext.profile = ECoreProfile;
         else
             parseContext.profile = ENoProfile;
