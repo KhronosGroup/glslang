@@ -836,8 +836,10 @@ bool TIntermBinary::promote(TInfoSink& infoSink)
     // Fix precision qualifiers
     if (right->getQualifier().precision > getQualifier().precision)
         getQualifier().precision = right->getQualifier().precision;
-    left->propagatePrecision(getQualifier().precision);
-    right->propagatePrecision(getQualifier().precision);
+    if (getQualifier().precision != EpqNone) {
+        left->propagatePrecision(getQualifier().precision);
+        right->propagatePrecision(getQualifier().precision);
+    }
 
     //
     // Array operations.
@@ -1125,7 +1127,8 @@ void TIntermTyped::propagatePrecision(TPrecisionQualifier newPrecision)
     //    comma operator:  just through the last operand
     //    ":?" and ",": where is this triggered?
     //    built-in function calls: how much to propagate to arguments?
-    //    performance: don't do this for desktop profiles
+    //    length()?
+    //    indexing?
 }
 
 bool CompareStructure(const TType& leftNodeType, constUnion* rightUnionArray, constUnion* leftUnionArray)

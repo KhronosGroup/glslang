@@ -734,9 +734,6 @@ void SetVersion(int version)
     parseContext.version = version;
 
 	if (version == 100 || version == 300) {
-	    for (int type = 0; type < EbtNumTypes; ++type)
-		    parseContext.defaultPrecision[type] = EpqNone;
-
 	    if (parseContext.language == EShLangVertex) {
 			parseContext.defaultPrecision[EbtInt] = EpqHigh;
 			parseContext.defaultPrecision[EbtFloat] = EpqHigh;

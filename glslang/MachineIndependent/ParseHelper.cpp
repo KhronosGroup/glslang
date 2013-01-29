@@ -55,11 +55,7 @@ TParseContext::TParseContext(TSymbolTable& symt, TIntermediate& interm, EShLangu
     // Default precisions for version 110, to be overridden for 
     // other versions/profiles/stage combinations
     for (int type = 0; type < EbtNumTypes; ++type)
-        defaultPrecision[type] = EpqHigh;
-    
-    defaultPrecision[EbtVoid]   = EpqNone;
-    defaultPrecision[EbtDouble] = EpqNone;
-    defaultPrecision[EbtBool]   = EpqNone;
+        defaultPrecision[type] = EpqNone;
 }
 
 //

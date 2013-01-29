@@ -2442,17 +2442,20 @@ precision_qualifier
     : HIGH_PRECISION {
         parseContext.profileRequires($1.line, ENoProfile, 130, 0, "highp precision qualifier");
         $$.init($1.line);
-		$$.qualifier.precision = EpqHigh;
+        if (parseContext.profile == EEsProfile)
+		    $$.qualifier.precision = EpqHigh;
     }
     | MEDIUM_PRECISION {
         parseContext.profileRequires($1.line, ENoProfile, 130, 0, "mediump precision qualifier");
         $$.init($1.line);
-		$$.qualifier.precision = EpqMedium;
+        if (parseContext.profile == EEsProfile)
+	    	$$.qualifier.precision = EpqMedium;
     }
     | LOW_PRECISION {
         parseContext.profileRequires($1.line, ENoProfile, 130, 0, "lowp precision qualifier");
         $$.init($1.line);
-		$$.qualifier.precision = EpqLow;
+        if (parseContext.profile == EEsProfile)
+    		$$.qualifier.precision = EpqLow;
     }
     ;
 
