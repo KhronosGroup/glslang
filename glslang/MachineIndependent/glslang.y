@@ -73,6 +73,7 @@ Jutta Degener, 1995
 #endif
 
 %}
+
 %union {
     struct {
         TSourceLoc line;
@@ -1664,6 +1665,7 @@ storage_qualifier
 
         parseContext.checkDeprecated($1.line, ENoProfile, 140, "attribute");
         parseContext.requireNotRemoved($1.line, ECoreProfile, 420, "attribute");
+        parseContext.requireNotRemoved($1.line, EEsProfile, 300, "attribute");
 
         if (parseContext.globalErrorCheck($1.line, parseContext.symbolTable.atGlobalLevel(), "attribute"))
             parseContext.recover();
@@ -1674,6 +1676,7 @@ storage_qualifier
     | VARYING {
         parseContext.checkDeprecated($1.line, ENoProfile, 140, "varying");
         parseContext.requireNotRemoved($1.line, ECoreProfile, 420, "varying");
+        parseContext.requireNotRemoved($1.line, EEsProfile, 300, "varying");
         
         if (parseContext.globalErrorCheck($1.line, parseContext.symbolTable.atGlobalLevel(), "varying"))
             parseContext.recover();

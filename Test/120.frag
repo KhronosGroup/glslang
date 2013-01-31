@@ -1,10 +1,10 @@
 #version 120
 
-lowp vec3 a;
-mediump float b;
-highp int c;
+float lowp;
+float mediump;
+float highp;
 
-precision highp float;
+float precision;
 
 in vec4 i;
 out vec4 o;
