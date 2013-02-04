@@ -399,21 +399,19 @@ int ShLinkExt(
 
     THandleList cObjects;
 
-    {// support MSVC++6.0
-        for (int i = 0; i < numHandles; ++i) {
-            if (compHandles[i] == 0)
-                return 0;
-            TShHandleBase* base = reinterpret_cast<TShHandleBase*>(compHandles[i]);
-            if (base->getAsLinker()) {
-                cObjects.push_back(base->getAsLinker());
-            }
-            if (base->getAsCompiler())
-                cObjects.push_back(base->getAsCompiler());
-    
-    
-            if (cObjects[i] == 0)
-                return 0;
+    for (int i = 0; i < numHandles; ++i) {
+        if (compHandles[i] == 0)
+            return 0;
+        TShHandleBase* base = reinterpret_cast<TShHandleBase*>(compHandles[i]);
+        if (base->getAsLinker()) {
+            cObjects.push_back(base->getAsLinker());
         }
+        if (base->getAsCompiler())
+            cObjects.push_back(base->getAsCompiler());
+    
+    
+        if (cObjects[i] == 0)
+            return 0;
     }
 
     TShHandleBase* base = reinterpret_cast<TShHandleBase*>(linkHandle);
@@ -424,13 +422,11 @@ int ShLinkExt(
 
     linker->infoSink.info.erase();
 
-    {// support MSVC++6.0
-        for (int i = 0; i < numHandles; ++i) {
-            if (cObjects[i]->getAsCompiler()) {
-                if (! cObjects[i]->getAsCompiler()->linkable()) {
-                    linker->infoSink.info.message(EPrefixError, "Not all shaders have valid object code.");                
-                    return 0;
-                }
+    for (int i = 0; i < numHandles; ++i) {
+        if (cObjects[i]->getAsCompiler()) {
+            if (! cObjects[i]->getAsCompiler()->linkable()) {
+                linker->infoSink.info.message(EPrefixError, "Not all shaders have valid object code.");                
+                return 0;
             }
         }
     }

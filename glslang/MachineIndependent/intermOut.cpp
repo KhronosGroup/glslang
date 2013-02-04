@@ -66,10 +66,10 @@ TString TType::getCompleteString() const
         p += sprintf_s(p, end - p, "array of ");
     if (qualifier.precision != EpqNone)
         p += sprintf_s(p, end - p, "%s ", getPrecisionQualifierString());
-    if (matrix)
-        p += sprintf_s(p, end - p, "%dX%d matrix of ", size, size);
-    else if (size > 1)
-        p += sprintf_s(p, end - p, "%d-component vector of ", size);
+    if (matrixCols > 0)
+        p += sprintf_s(p, end - p, "%dX%d matrix of ", matrixCols, matrixRows);
+    else if (vectorSize > 1)
+        p += sprintf_s(p, end - p, "%d-component vector of ", vectorSize);
 
     sprintf_s(p, end - p, "%s", getBasicString());
 
@@ -276,9 +276,24 @@ bool OutputAggregate(bool /* preVisit */, TIntermAggregate* node, TIntermTravers
     case EOpConstructIVec2: out.debug << "Construct ivec2"; break;
     case EOpConstructIVec3: out.debug << "Construct ivec3"; break;
     case EOpConstructIVec4: out.debug << "Construct ivec4"; break;
-    case EOpConstructMat2:  out.debug << "Construct mat2";  break;
-    case EOpConstructMat3:  out.debug << "Construct mat3";  break;
-    case EOpConstructMat4:  out.debug << "Construct mat4";  break;
+    case EOpConstructMat2x2:  out.debug << "Construct mat2";    break;
+    case EOpConstructMat2x3:  out.debug << "Construct mat2x3";  break;
+    case EOpConstructMat2x4:  out.debug << "Construct mat2x4";  break;
+    case EOpConstructMat3x2:  out.debug << "Construct mat3x2";  break;
+    case EOpConstructMat3x3:  out.debug << "Construct mat3";    break;
+    case EOpConstructMat3x4:  out.debug << "Construct mat3x4";  break;
+    case EOpConstructMat4x2:  out.debug << "Construct mat4x2";  break;
+    case EOpConstructMat4x3:  out.debug << "Construct mat4x3";  break;
+    case EOpConstructMat4x4:  out.debug << "Construct mat4";    break;
+    case EOpConstructDMat2x2: out.debug << "Construct dmat2";   break;
+    case EOpConstructDMat2x3: out.debug << "Construct dmat2x3"; break;
+    case EOpConstructDMat2x4: out.debug << "Construct dmat2x4"; break;
+    case EOpConstructDMat3x2: out.debug << "Construct dmat3x2"; break;
+    case EOpConstructDMat3x3: out.debug << "Construct dmat3";   break;
+    case EOpConstructDMat3x4: out.debug << "Construct dmat3x4"; break;
+    case EOpConstructDMat4x2: out.debug << "Construct dmat4x2"; break;
+    case EOpConstructDMat4x3: out.debug << "Construct dmat4x3"; break;
+    case EOpConstructDMat4x4: out.debug << "Construct dmat4";  break;
     case EOpConstructStruct:  out.debug << "Construct structure";  break;
         
     case EOpLessThan:         out.debug << "Compare Less Than";             break;
@@ -398,8 +413,8 @@ void OutputConstantUnion(TIntermConstantUnion* node, TIntermTraverser* it)
                 sprintf_s(buf, maxSize, "%d (%s)", node->getUnionArrayPointer()[i].getIConst(), "const int");
 
                 out.debug << buf << "\n";
-                break;
             }
+            break;
         default: 
             out.info.message(EPrefixInternalError, "Unknown constant", node->getLine());
             break;

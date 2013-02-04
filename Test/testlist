@@ -10,3 +10,6 @@ versionsErrors.vert
 130.frag
 140.frag
 precision.frag
+nonSquare.vert
+matrixError.vert
+

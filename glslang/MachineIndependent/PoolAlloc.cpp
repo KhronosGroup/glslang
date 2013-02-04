@@ -175,7 +175,6 @@ TPoolAllocator::~TPoolAllocator()
     }
 }
 
-// Support MSVC++ 6.0
 const unsigned char TAllocation::guardBlockBeginVal = 0xfb;
 const unsigned char TAllocation::guardBlockEndVal   = 0xfe;
 const unsigned char TAllocation::userDataFill       = 0xcd;

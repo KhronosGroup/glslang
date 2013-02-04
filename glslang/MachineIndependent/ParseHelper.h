@@ -100,7 +100,6 @@ struct TParseContext {
     void recover();
 
     bool parseVectorFields(const TString&, int vecSize, TVectorFields&, int line);
-    bool parseMatrixFields(const TString&, int matSize, TMatrixFields&, int line);
     void assignError(int line, const char* op, TString left, TString right);
     void unaryOpError(int line, char* op, TString operand);
     void binaryOpError(int line, char* op, TString left, TString right);

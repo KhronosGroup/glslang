@@ -306,8 +306,10 @@ postfix_expression
             }
         } else {
             if ($3->getQualifier().storage == EvqConst) {
-                if (($1->isVector() || $1->isMatrix()) && $1->getType().getNominalSize() <= $3->getAsConstantUnion()->getUnionArrayPointer()->getIConst() && !$1->isArray() ) {
-                    parseContext.error($2.line, "", "[", "field selection out of range '%d'", $3->getAsConstantUnion()->getUnionArrayPointer()->getIConst());
+                int index = $3->getAsConstantUnion()->getUnionArrayPointer()->getIConst();
+                if (! $1->isArray() && ($1->isVector() && $1->getType().getVectorSize() <= index ||
+                                        $1->isMatrix() && $1->getType().getMatrixCols() <= index)) {
+                    parseContext.error($2.line, "", "[", "index out of range '%d'", $3->getAsConstantUnion()->getUnionArrayPointer()->getIConst());
                     parseContext.recover();
                 } else {
                     if ($1->isArray()) {
@@ -339,24 +341,13 @@ postfix_expression
             constUnion *unionArray = new constUnion[1];
             unionArray->setFConst(0.0f);
             $$ = parseContext.intermediate.addConstantUnion(unionArray, TType(EbtFloat, EvqConst), $2.line);
-        } else if ($1->isArray()) {
-            if ($1->getType().getStruct())
-                $$->setType(TType($1->getType().getStruct(), $1->getType().getTypeName()));
-            else
-                $$->setType(TType($1->getBasicType(), EvqTemporary, $1->getNominalSize(), $1->isMatrix()));
-
-            if ($1->getType().getQualifier().storage == EvqConst)
-                $$->getTypePointer()->getQualifier().storage = EvqConst;
-        } else if ($1->isMatrix() && $1->getType().getQualifier().storage == EvqConst)
-            $$->setType(TType($1->getBasicType(), EvqConst, $1->getNominalSize()));
-        else if ($1->isMatrix())
-            $$->setType(TType($1->getBasicType(), EvqTemporary, $1->getNominalSize()));
-        else if ($1->isVector() && $1->getType().getQualifier().storage == EvqConst)
-            $$->setType(TType($1->getBasicType(), EvqConst));
-        else if ($1->isVector())
-            $$->setType(TType($1->getBasicType(), EvqTemporary));
-        else
-            $$->setType($1->getType());
+        } else {
+            TType newType = $1->getType();
+            newType.dereference();
+            $$->setType(newType);
+            //?? why didn't the code above get the type right?
+            //?? write a deference test
+        }
     }
     | function_call {
         $$ = $1;
@@ -381,7 +372,7 @@ postfix_expression
             }
         } else if ($1->isVector()) {
             TVectorFields fields;
-            if (! parseContext.parseVectorFields(*$3.string, $1->getNominalSize(), fields, $3.line)) {
+            if (! parseContext.parseVectorFields(*$3.string, $1->getVectorSize(), fields, $3.line)) {
                 fields.num = 1;
                 fields.offsets[0] = 0;
                 parseContext.recover();
@@ -410,30 +401,8 @@ postfix_expression
                 }
             }
         } else if ($1->isMatrix()) {
-            TMatrixFields fields;
-            if (! parseContext.parseMatrixFields(*$3.string, $1->getNominalSize(), fields, $3.line)) {
-                fields.wholeRow = false;
-                fields.wholeCol = false;
-                fields.row = 0;
-                fields.col = 0;
-                parseContext.recover();
-            }
-
-            if (fields.wholeRow || fields.wholeCol) {
-                parseContext.error($2.line, " non-scalar fields not implemented yet", ".", "");
-                parseContext.recover();
-                constUnion *unionArray = new constUnion[1];
-                unionArray->setIConst(0);
-                TIntermTyped* index = parseContext.intermediate.addConstantUnion(unionArray, TType(EbtInt, EvqConst), $3.line);
-                $$ = parseContext.intermediate.addIndex(EOpIndexDirect, $1, index, $2.line);
-                $$->setType(TType($1->getBasicType(), EvqTemporary, $1->getNominalSize()));
-            } else {
-                constUnion *unionArray = new constUnion[1];
-                unionArray->setIConst(fields.col * $1->getNominalSize() + fields.row);
-                TIntermTyped* index = parseContext.intermediate.addConstantUnion(unionArray, TType(EbtInt, EvqConst), $3.line);
-                $$ = parseContext.intermediate.addIndex(EOpIndexDirect, $1, index, $2.line);
-                $$->setType(TType($1->getBasicType()));
-            }
+            parseContext.error($2.line, "field selection not allowed on matrix", ".", "");
+            parseContext.recover();
         } else if ($1->getBasicType() == EbtStruct) {
             bool fieldFound = false;
             TTypeList* fields = $1->getType().getStruct();
@@ -455,8 +424,7 @@ postfix_expression
                         if ($$ == 0) {
                             parseContext.recover();
                             $$ = $1;
-                        }
-                        else {
+                        } else {
                             $$->setType(*(*fields)[i].type);
                             // change the qualifier of the return type, not of the structure field
                             // as the structure definition is shared between various structures.
@@ -476,6 +444,7 @@ postfix_expression
                 }
             }
         } else {
+            //?? fix message
             parseContext.error($2.line, " field selection requires structure, vector, or matrix on left hand side", $3.string->c_str(), "");
             parseContext.recover();
             $$ = $1;
@@ -692,14 +661,32 @@ function_identifier
             TOperator op = EOpNull;
             switch ($1.type) {
             case EbtFloat:
-                if ($1.matrix) {
-                    switch($1.size) {
-                    case 2: op = EOpConstructMat2;  break;
-                    case 3: op = EOpConstructMat3;  break;
-                    case 4: op = EOpConstructMat4;  break;
+                if ($1.matrixCols) {
+                    switch ($1.matrixCols) {
+                    case 2:
+                        switch ($1.matrixRows) {
+                        case 2: op = EOpConstructMat2x2; break;
+                        case 3: op = EOpConstructMat2x3; break;
+                        case 4: op = EOpConstructMat2x4; break;
+                        }
+                        break;
+                    case 3:
+                        switch ($1.matrixRows) {
+                        case 2: op = EOpConstructMat3x2; break;
+                        case 3: op = EOpConstructMat3x3; break;
+                        case 4: op = EOpConstructMat3x4; break;
+                        }
+                        break;
+                    case 4:
+                        switch ($1.matrixRows) {
+                        case 2: op = EOpConstructMat4x2; break;
+                        case 3: op = EOpConstructMat4x3; break;
+                        case 4: op = EOpConstructMat4x4; break;
+                        }
+                        break;
                     }
                 } else {
-                    switch($1.size) {
+                    switch($1.vectorSize) {
                     case 1: op = EOpConstructFloat; break;
                     case 2: op = EOpConstructVec2;  break;
                     case 3: op = EOpConstructVec3;  break;
@@ -707,8 +694,42 @@ function_identifier
                     }
                 }
                 break;
+            case EbtDouble:
+                if ($1.matrixCols) {
+                    switch ($1.matrixCols) {
+                    case 2:
+                        switch ($1.matrixRows) {
+                        case 2: op = EOpConstructDMat2x2; break;
+                        case 3: op = EOpConstructDMat2x3; break;
+                        case 4: op = EOpConstructDMat2x4; break;
+                        }
+                        break;
+                    case 3:
+                        switch ($1.matrixRows) {
+                        case 2: op = EOpConstructDMat3x2; break;
+                        case 3: op = EOpConstructDMat3x3; break;
+                        case 4: op = EOpConstructDMat3x4; break;
+                        }
+                        break;
+                    case 4:
+                        switch ($1.matrixRows) {
+                        case 2: op = EOpConstructDMat4x2; break;
+                        case 3: op = EOpConstructDMat4x3; break;
+                        case 4: op = EOpConstructDMat4x4; break;
+                        }
+                        break;
+                    }
+                } else {
+                    switch($1.vectorSize) {
+                    case 1: op = EOpConstructDouble; break;
+                    case 2: op = EOpConstructDVec2;  break;
+                    case 3: op = EOpConstructDVec3;  break;
+                    case 4: op = EOpConstructDVec4;  break;
+                    }
+                }
+                break;
             case EbtInt:
-                switch($1.size) {
+                switch($1.vectorSize) {
                 case 1: op = EOpConstructInt;   break;
                 case 2: op = EOpConstructIVec2; break;
                 case 3: op = EOpConstructIVec3; break;
@@ -716,7 +737,7 @@ function_identifier
                 }
                 break;
             case EbtBool:
-                switch($1.size) {
+                switch($1.vectorSize) {
                 case 1:  op = EOpConstructBool;  break;
                 case 2:  op = EOpConstructBVec2; break;
                 case 3:  op = EOpConstructBVec3; break;
@@ -1874,209 +1895,197 @@ type_specifier_nonarray
     | VEC2 {
         $$.init($1.line, parseContext.symbolTable.atGlobalLevel());
         $$.type = EbtFloat;
-        $$.setAggregate(2);
+        $$.setVector(2);
     }
     | VEC3 {
         $$.init($1.line, parseContext.symbolTable.atGlobalLevel());
         $$.type = EbtFloat;
-        $$.setAggregate(3);
+        $$.setVector(3);
     }
     | VEC4 {
         $$.init($1.line, parseContext.symbolTable.atGlobalLevel());
         $$.type = EbtFloat;
-        $$.setAggregate(4);
+        $$.setVector(4);
     }
     | DVEC2 {
         $$.init($1.line, parseContext.symbolTable.atGlobalLevel());
         $$.type = EbtDouble;
-        $$.setAggregate(2);
+        $$.setVector(2);
     }
     | DVEC3 {
         $$.init($1.line, parseContext.symbolTable.atGlobalLevel());
         $$.type = EbtDouble;
-        $$.setAggregate(3);
+        $$.setVector(3);
     }
     | DVEC4 {
         $$.init($1.line, parseContext.symbolTable.atGlobalLevel());
         $$.type = EbtDouble;
-        $$.setAggregate(4);
+        $$.setVector(4);
     }
     | BVEC2 {
         $$.init($1.line, parseContext.symbolTable.atGlobalLevel());
         $$.type = EbtBool;
-        $$.setAggregate(2);
+        $$.setVector(2);
     }
     | BVEC3 {
         $$.init($1.line, parseContext.symbolTable.atGlobalLevel());
         $$.type = EbtBool;
-        $$.setAggregate(3);
+        $$.setVector(3);
     }
     | BVEC4 {
         $$.init($1.line, parseContext.symbolTable.atGlobalLevel());
         $$.type = EbtBool;
-        $$.setAggregate(4);
+        $$.setVector(4);
     }
     | IVEC2 {
         $$.init($1.line, parseContext.symbolTable.atGlobalLevel());
         $$.type = EbtInt;
-        $$.setAggregate(2);
+        $$.setVector(2);
     }
     | IVEC3 {
         $$.init($1.line, parseContext.symbolTable.atGlobalLevel());
         $$.type = EbtInt;
-        $$.setAggregate(3);
+        $$.setVector(3);
     }
     | IVEC4 {
         $$.init($1.line, parseContext.symbolTable.atGlobalLevel());
         $$.type = EbtInt;
-        $$.setAggregate(4);
+        $$.setVector(4);
     }
     | UVEC2 {
         $$.init($1.line, parseContext.symbolTable.atGlobalLevel());
         $$.type = EbtInt;
-        $$.setAggregate(2);
+        $$.setVector(2);
     }
     | UVEC3 {
         $$.init($1.line, parseContext.symbolTable.atGlobalLevel());
         $$.type = EbtInt;
-        $$.setAggregate(3);
+        $$.setVector(3);
     }
     | UVEC4 {
         $$.init($1.line, parseContext.symbolTable.atGlobalLevel());
         $$.type = EbtInt;
-        $$.setAggregate(4);
+        $$.setVector(4);
     }
     | MAT2 {
         $$.init($1.line, parseContext.symbolTable.atGlobalLevel());
         $$.type = EbtFloat;
-        $$.setAggregate(2, true);
+        $$.setMatrix(2, 2);
     }
     | MAT3 {
         $$.init($1.line, parseContext.symbolTable.atGlobalLevel());
         $$.type = EbtFloat;
-        $$.setAggregate(3, true);
+        $$.setMatrix(3, 3);
     }
     | MAT4 {
         $$.init($1.line, parseContext.symbolTable.atGlobalLevel());
         $$.type = EbtFloat;
-        $$.setAggregate(4, true);
+        $$.setMatrix(4, 4);
     }
     | MAT2X2 {
         $$.init($1.line, parseContext.symbolTable.atGlobalLevel());
         $$.type = EbtFloat;
-        $$.setAggregate(2, true);
+        $$.setMatrix(2, 2);
     }
     | MAT2X3 {
-        // TODO: implement this type
         $$.init($1.line, parseContext.symbolTable.atGlobalLevel());
         $$.type = EbtFloat;
-        $$.setAggregate(3, true);
+        $$.setMatrix(2, 3);
     }
     | MAT2X4 {
-        // TODO: implement this type
         $$.init($1.line, parseContext.symbolTable.atGlobalLevel());
         $$.type = EbtFloat;
-        $$.setAggregate(4, true);
+        $$.setMatrix(2, 4);
     }
     | MAT3X2 {
-        // TODO: implement this type
         $$.init($1.line, parseContext.symbolTable.atGlobalLevel());
         $$.type = EbtFloat;
-        $$.setAggregate(3, true);
+        $$.setMatrix(3, 2);
     }
     | MAT3X3 {
         $$.init($1.line, parseContext.symbolTable.atGlobalLevel());
         $$.type = EbtFloat;
-        $$.setAggregate(3, true);
+        $$.setMatrix(3, 3);
     }
     | MAT3X4 {
-        // TODO: implement this type
         $$.init($1.line, parseContext.symbolTable.atGlobalLevel());
         $$.type = EbtFloat;
-        $$.setAggregate(4, true);
+        $$.setMatrix(3, 4);
     }
     | MAT4X2 {
-        // TODO: implement this type
         $$.init($1.line, parseContext.symbolTable.atGlobalLevel());
         $$.type = EbtFloat;
-        $$.setAggregate(4, true);
+        $$.setMatrix(4, 2);
     }
     | MAT4X3 {
-        // TODO: implement this type
         $$.init($1.line, parseContext.symbolTable.atGlobalLevel());
         $$.type = EbtFloat;
-        $$.setAggregate(4, true);
+        $$.setMatrix(4, 3);
     }
     | MAT4X4 {
         $$.init($1.line, parseContext.symbolTable.atGlobalLevel());
         $$.type = EbtFloat;
-        $$.setAggregate(4, true);
+        $$.setMatrix(4, 4);
     }
     | DMAT2 {
         $$.init($1.line, parseContext.symbolTable.atGlobalLevel());
         $$.type = EbtDouble;
-        $$.setAggregate(2, true);
+        $$.setMatrix(2, 2);
     }
     | DMAT3 {
         $$.init($1.line, parseContext.symbolTable.atGlobalLevel());
         $$.type = EbtDouble;
-        $$.setAggregate(3, true);
+        $$.setMatrix(3, 3);
     }
     | DMAT4 {
         $$.init($1.line, parseContext.symbolTable.atGlobalLevel());
         $$.type = EbtDouble;
-        $$.setAggregate(4, true);
+        $$.setMatrix(4, 4);
     }
     | DMAT2X2 {
         $$.init($1.line, parseContext.symbolTable.atGlobalLevel());
         $$.type = EbtDouble;
-        $$.setAggregate(2, true);
+        $$.setMatrix(2, 2);
     }
     | DMAT2X3 {
-        // TODO: implement this type
         $$.init($1.line, parseContext.symbolTable.atGlobalLevel());
         $$.type = EbtDouble;
-        $$.setAggregate(3, true);
+        $$.setMatrix(2, 3);
     }
     | DMAT2X4 {
-        // TODO: implement this type
         $$.init($1.line, parseContext.symbolTable.atGlobalLevel());
         $$.type = EbtDouble;
-        $$.setAggregate(4, true);
+        $$.setMatrix(2, 4);
     }
     | DMAT3X2 {
-        // TODO: implement this type
         $$.init($1.line, parseContext.symbolTable.atGlobalLevel());
         $$.type = EbtDouble;
-        $$.setAggregate(3, true);
+        $$.setMatrix(3, 2);
     }
     | DMAT3X3 {
         $$.init($1.line, parseContext.symbolTable.atGlobalLevel());
         $$.type = EbtDouble;
-        $$.setAggregate(3, true);
+        $$.setMatrix(3, 3);
     }
     | DMAT3X4 {
-        // TODO: implement this type
         $$.init($1.line, parseContext.symbolTable.atGlobalLevel());
         $$.type = EbtDouble;
-        $$.setAggregate(4, true);
+        $$.setMatrix(3, 4);
     }
     | DMAT4X2 {
-        // TODO: implement this type
         $$.init($1.line, parseContext.symbolTable.atGlobalLevel());
         $$.type = EbtDouble;
-        $$.setAggregate(4, true);
+        $$.setMatrix(4, 2);
     }
     | DMAT4X3 {
-        // TODO: implement this type
         $$.init($1.line, parseContext.symbolTable.atGlobalLevel());
         $$.type = EbtDouble;
-        $$.setAggregate(4, true);
+        $$.setMatrix(4, 3);
     }
     | DMAT4X4 {
         $$.init($1.line, parseContext.symbolTable.atGlobalLevel());
         $$.type = EbtDouble;
-        $$.setAggregate(4, true);
+        $$.setMatrix(4, 4);
     }
     | ATOMIC_UINT {
         // TODO: add type
@@ -2511,7 +2520,7 @@ struct_declaration
             //
             // Careful not to replace already know aspects of type, like array-ness
             //
-            (*$$)[i].type->setType($1.type, $1.size, $1.matrix, $1.userDef);
+            (*$$)[i].type->setElementType($1.type, $1.vectorSize, $1.matrixCols, $1.matrixRows, $1.userDef);
 
             if ($1.array)
                 (*$$)[i].type->setArraySize($1.arraySize);
@@ -2529,7 +2538,7 @@ struct_declaration
             //
             // Careful not to replace already know aspects of type, like array-ness
             //
-            (*$$)[i].type->setType($2.type, $2.size, $2.matrix, $2.userDef);
+            (*$$)[i].type->setElementType($2.type, $2.vectorSize, $2.matrixCols, $2.matrixRows, $2.userDef);
 
             if ($2.array)
                 (*$$)[i].type->setArraySize($2.arraySize);
@@ -2924,7 +2933,6 @@ function_definition
         parseContext.loopNestingLevel = 0;
     }
     compound_statement_no_new_scope {
-        //?? Check that all paths return a value if return type != void ?
         //   May be best done as post process phase on intermediate code
         if (parseContext.currentFunctionType->getBasicType() != EbtVoid && ! parseContext.functionReturnsValue) {
             parseContext.error($1.line, "function does not return a value:", "", $1.function->getName().c_str());

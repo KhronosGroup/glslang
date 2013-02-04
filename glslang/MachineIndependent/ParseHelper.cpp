@@ -150,55 +150,6 @@ bool TParseContext::parseVectorFields(const TString& compString, int vecSize, TV
     return true;
 }
 
-
-//
-// Look at a '.' field selector string and change it into offsets
-// for a matrix.
-//
-bool TParseContext::parseMatrixFields(const TString& compString, int matSize, TMatrixFields& fields, int line)
-{
-    fields.wholeRow = false;
-    fields.wholeCol = false;
-    fields.row = -1;
-    fields.col = -1;
-
-    if (compString.size() != 2) {
-        error(line, "illegal length of matrix field selection", compString.c_str(), "");
-        return false;
-    }
-
-    if (compString[0] == '_') {
-        if (compString[1] < '0' || compString[1] > '3') {
-            error(line, "illegal matrix field selection", compString.c_str(), "");
-            return false;
-        }
-        fields.wholeCol = true;
-        fields.col = compString[1] - '0';
-    } else if (compString[1] == '_') {
-        if (compString[0] < '0' || compString[0] > '3') {
-            error(line, "illegal matrix field selection", compString.c_str(), "");
-            return false;
-        }
-        fields.wholeRow = true;
-        fields.row = compString[0] - '0';
-    } else {
-        if (compString[0] < '0' || compString[0] > '3' ||
-            compString[1] < '0' || compString[1] > '3') {
-            error(line, "illegal matrix field selection", compString.c_str(), "");
-            return false;
-        }
-        fields.row = compString[0] - '0';
-        fields.col = compString[1] - '0';
-    }
-
-    if (fields.row >= matSize || fields.col >= matSize) {
-        error(line, "matrix field selection out of range", compString.c_str(), "");
-        return false;
-    }
-
-    return true;
-}
-
 ///////////////////////////////////////////////////////////////////////
 //
 // Errors
@@ -261,7 +212,7 @@ void TParseContext::unaryOpError(int line, char* op, TString operand)
 //
 void TParseContext::binaryOpError(int line, char* op, TString left, TString right)
 {
-    error(line, " wrong operand types ", op, 
+    error(line, " wrong operand types:", op,
             "no operation '%s' exists that takes a left-hand operand of type '%s' and "
             "a right operand of type '%s' (or there is no acceptable conversion)", 
             op, left.c_str(), right.c_str());
@@ -425,7 +376,7 @@ bool TParseContext::constErrorCheck(TIntermTyped* node)
 //
 bool TParseContext::integerErrorCheck(TIntermTyped* node, char* token)
 {
-    if (node->getBasicType() == EbtInt && node->getNominalSize() == 1)
+    if (node->getBasicType() == EbtInt && node->getVectorSize() == 1)
         return false;
 
     error(node->getLine(), "integer expression required", token, "");
@@ -487,9 +438,24 @@ bool TParseContext::constructorErrorCheck(int line, TIntermNode* node, TFunction
 
     bool constructingMatrix = false;
     switch(op) {
-    case EOpConstructMat2:
-    case EOpConstructMat3:
-    case EOpConstructMat4:
+    case EOpConstructMat2x2:
+    case EOpConstructMat2x3:
+    case EOpConstructMat2x4:
+    case EOpConstructMat3x2:
+    case EOpConstructMat3x3:
+    case EOpConstructMat3x4:
+    case EOpConstructMat4x2:
+    case EOpConstructMat4x3:
+    case EOpConstructMat4x4:
+    case EOpConstructDMat2x2:
+    case EOpConstructDMat2x3:
+    case EOpConstructDMat2x4:
+    case EOpConstructDMat3x2:
+    case EOpConstructDMat3x3:
+    case EOpConstructDMat3x4:
+    case EOpConstructDMat4x2:
+    case EOpConstructDMat4x3:
+    case EOpConstructDMat4x4:
         constructingMatrix = true;
         break;
     default: 
@@ -608,7 +574,7 @@ bool TParseContext::boolErrorCheck(int line, const TIntermTyped* type)
 //
 bool TParseContext::boolErrorCheck(int line, const TPublicType& pType)
 {
-    if (pType.type != EbtBool || pType.array || pType.matrix || (pType.size > 1)) {
+    if (pType.type != EbtBool || pType.array || pType.matrixCols > 1 || (pType.vectorSize > 1)) {
         error(line, "boolean expression expected", "", "");
         return true;
     } 
@@ -1138,7 +1104,7 @@ TIntermTyped* TParseContext::addConstructor(TIntermNode* node, const TType* type
     
     TType elementType = *type;
     if (type->isArray())
-        elementType.clearArrayness();
+        elementType.dereference();
 
     bool singleArg;
     if (aggrNode) {
@@ -1246,11 +1212,33 @@ TIntermTyped* TParseContext::constructBuiltIn(const TType* type, TOperator op, T
     case EOpConstructVec2:
     case EOpConstructVec3:
     case EOpConstructVec4:
-    case EOpConstructMat2:
-    case EOpConstructMat3:
-    case EOpConstructMat4:
+    case EOpConstructMat2x2:
+    case EOpConstructMat2x3:
+    case EOpConstructMat2x4:
+    case EOpConstructMat3x2:
+    case EOpConstructMat3x3:
+    case EOpConstructMat3x4:
+    case EOpConstructMat4x2:
+    case EOpConstructMat4x3:
+    case EOpConstructMat4x4:
     case EOpConstructFloat:
         basicOp = EOpConstructFloat;
+        break;
+
+    case EOpConstructDVec2:
+    case EOpConstructDVec3:
+    case EOpConstructDVec4:
+    case EOpConstructDMat2x2:
+    case EOpConstructDMat2x3:
+    case EOpConstructDMat2x4:
+    case EOpConstructDMat3x2:
+    case EOpConstructDMat3x3:
+    case EOpConstructDMat3x4:
+    case EOpConstructDMat4x2:
+    case EOpConstructDMat4x3:
+    case EOpConstructDMat4x4:
+    case EOpConstructDouble:
+        basicOp = EOpConstructDouble;
         break;
 
     case EOpConstructIVec2:
@@ -1345,7 +1333,7 @@ TIntermTyped* TParseContext::addConstVectorNode(TVectorFields& fields, TIntermTy
 
     for (int i = 0; i < fields.num; i++) {
         if (fields.offsets[i] >= node->getType().getObjectSize()) {
-            error(line, "", "[", "vector field selection out of range '%d'", fields.offsets[i]);
+            error(line, "", "[", "vector index out of range '%d'", fields.offsets[i]);
             recover();
             fields.offsets[i] = 0;
         }
@@ -1368,7 +1356,7 @@ TIntermTyped* TParseContext::addConstMatrixNode(int index, TIntermTyped* node, T
     TIntermTyped* typedNode;
     TIntermConstantUnion* tempConstantNode = node->getAsConstantUnion();
 
-    if (index >= node->getType().getNominalSize()) {
+    if (index >= node->getType().getMatrixCols()) {
         error(line, "", "[", "matrix field selection out of range '%d'", index);
         recover();
         index = 0;
@@ -1376,7 +1364,8 @@ TIntermTyped* TParseContext::addConstMatrixNode(int index, TIntermTyped* node, T
 
     if (tempConstantNode) {
          constUnion* unionArray = tempConstantNode->getUnionArrayPointer();
-         int size = tempConstantNode->getType().getNominalSize();
+         int size = tempConstantNode->getType().getMatrixRows();
+         // Note: the type is corrected (dereferenced) by the caller
          typedNode = intermediate.addConstantUnion(&unionArray[size*index], tempConstantNode->getType(), line);
     } else {
         error(line, "Cannot offset into the matrix", "Error", "");
@@ -1401,10 +1390,10 @@ TIntermTyped* TParseContext::addConstArrayNode(int index, TIntermTyped* node, TS
     TIntermConstantUnion* tempConstantNode = node->getAsConstantUnion();
     int arraySize = node->getType().getArraySize();
     TType arrayElementType = node->getType();
-    arrayElementType.clearArrayness();
+    arrayElementType.dereference();
 
     if (index >= node->getType().getArraySize()) {
-        error(line, "", "[", "array field selection out of range '%d'", index);
+        error(line, "", "[", "array index out of range '%d'", index);
         recover();
         index = 0;
     }

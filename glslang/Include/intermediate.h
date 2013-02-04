@@ -184,6 +184,7 @@ enum TOperator {
     // Constructors
     //
 
+    EOpConstructGuardStart,
     EOpConstructInt,
     EOpConstructBool,
     EOpConstructFloat,
@@ -191,16 +192,35 @@ enum TOperator {
     EOpConstructVec2,
     EOpConstructVec3,
     EOpConstructVec4,
+    EOpConstructDVec2,
+    EOpConstructDVec3,
+    EOpConstructDVec4,
     EOpConstructBVec2,
     EOpConstructBVec3,
     EOpConstructBVec4,
     EOpConstructIVec2,
     EOpConstructIVec3,
     EOpConstructIVec4,
-    EOpConstructMat2,
-    EOpConstructMat3,
-    EOpConstructMat4,
+    EOpConstructMat2x2,
+    EOpConstructMat2x3,
+    EOpConstructMat2x4,
+    EOpConstructMat3x2,
+    EOpConstructMat3x3,
+    EOpConstructMat3x4,
+    EOpConstructMat4x2,
+    EOpConstructMat4x3,
+    EOpConstructMat4x4,
+    EOpConstructDMat2x2,
+    EOpConstructDMat2x3,
+    EOpConstructDMat2x4,
+    EOpConstructDMat3x2,
+    EOpConstructDMat3x3,
+    EOpConstructDMat3x4,
+    EOpConstructDMat4x2,
+    EOpConstructDMat4x3,
+    EOpConstructDMat4x4,
     EOpConstructStruct,
+    EOpConstructGuardEnd,
 
     //
     // moves
@@ -286,8 +306,10 @@ public:
     virtual TBasicType getBasicType() const { return type.getBasicType(); }
     virtual TQualifier& getQualifier() { return type.getQualifier(); }
     virtual void propagatePrecision(TPrecisionQualifier);
-    virtual int getNominalSize() const { return type.getNominalSize(); }
-    virtual int getSize() const { return type.getInstanceSize(); }
+    virtual int getVectorSize() const { return type.getVectorSize(); }
+    virtual int getMatrixCols() const { return type.getMatrixCols(); }
+    virtual int getMatrixRows() const { return type.getMatrixRows(); }
+    //virtual int getSize() const { return type.getInstanceSize(); }
     virtual bool isMatrix() const { return type.isMatrix(); }
     virtual bool isArray()  const { return type.isArray(); }
     virtual bool isVector() const { return type.isVector(); }

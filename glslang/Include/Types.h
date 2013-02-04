@@ -74,8 +74,9 @@ class TPublicType {
 public:
     TBasicType type;
     TQualifier qualifier;
-    int size;          // size of vector or matrix, not size of array
-    bool matrix;
+    int vectorSize : 4;
+    int matrixCols : 4;
+    int matrixRows : 4;
     bool array;
     int arraySize;
     TType* userDef;
@@ -84,8 +85,9 @@ public:
     void initType(int ln = 0)
     {
         type = EbtVoid;
-        size = 1;
-        matrix = false;
+        vectorSize = 1;
+        matrixRows = 0;
+        matrixCols = 0;
         array = false;
         arraySize = 0;
         userDef = 0;
@@ -104,10 +106,16 @@ public:
         initQualifiers(global);
     }
 
-    void setAggregate(int s, bool m = false)
+    void setVector(int s)
     {
-        size = s;
-        matrix = m;
+        vectorSize = s;
+    }
+
+    void setMatrix(int c, int r)
+    {
+        matrixRows = r;
+        matrixCols = c;
+        vectorSize = 0;
     }
 
     void setArray(bool a, int s = 0)
@@ -125,15 +133,16 @@ typedef std::map<TTypeList*, TTypeList*>::iterator TStructureMapIterator;
 class TType {
 public:
     POOL_ALLOCATOR_NEW_DELETE(GlobalPoolAllocator)
-    explicit TType(TBasicType t, TStorageQualifier q = EvqTemporary, int s = 1, bool m = false, bool a = false) :
-                            type(t), size(s), matrix(m), array(a), arraySize(0),
+    explicit TType(TBasicType t, TStorageQualifier q = EvqTemporary, int vs = 1, int mc = 0, int mr = 0) :
+                            type(t), vectorSize(vs), matrixCols(mc), matrixRows(mr), array(false), arraySize(0),
                             structure(0), structureSize(0), maxArraySize(0), arrayInformationType(0),
-                            fieldName(0), mangled(0), typeName(0) {
+                            fieldName(0), mangled(0), typeName(0) 
+                            {
                                 qualifier.storage = q;
                                 qualifier.precision = EpqNone;
                             }
     explicit TType(const TPublicType &p) :
-                            type(p.type), size(p.size), matrix(p.matrix), array(p.array), arraySize(p.arraySize),
+                            type(p.type), vectorSize(p.vectorSize), matrixCols(p.matrixCols), matrixRows(p.matrixRows), array(p.array), arraySize(p.arraySize),
                             structure(0), structureSize(0), maxArraySize(0), arrayInformationType(0), fieldName(0), mangled(0), typeName(0)
                             {
                                 qualifier = p.qualifier;
@@ -143,8 +152,9 @@ public:
                                 }
                             }
     explicit TType(TTypeList* userDef, const TString& n) :
-                            type(EbtStruct), size(1), matrix(false), array(false), arraySize(0),
-                            structure(userDef), maxArraySize(0), arrayInformationType(0), fieldName(0), mangled(0) {
+                            type(EbtStruct), vectorSize(1), matrixCols(0), matrixRows(0), array(false), arraySize(0),
+                            structure(userDef), maxArraySize(0), arrayInformationType(0), fieldName(0), mangled(0) 
+                            {
                                 qualifier.storage = EvqTemporary;
                                 qualifier.precision = EpqNone;
 								typeName = NewPoolTString(n.c_str());
@@ -158,8 +168,9 @@ public:
 	{
 		type = copyOf.type;
 		qualifier = copyOf.qualifier;
-		size = copyOf.size;
-		matrix = copyOf.matrix;
+		vectorSize = copyOf.vectorSize;
+		matrixCols = copyOf.matrixCols;
+		matrixRows = copyOf.matrixRows;
 		array = copyOf.array;
 		arraySize = copyOf.arraySize;
 		
@@ -205,16 +216,30 @@ public:
 		return newType;
 	}
 
-    virtual void setType(TBasicType t, int s, bool m, bool a, int aS = 0)
-                            { type = t; size = s; matrix = m; array = a; arraySize = aS; }
-    virtual void setType(TBasicType t, int s, bool m, TType* userDef = 0)
-                            { type = t;
-                              size = s;
-                              matrix = m;
-                              if (userDef)
-                                  structure = userDef->getStruct();
-                              // leave array information intact.
-                            }
+    virtual void dereference()
+    {
+        if (array) {
+            array = false;
+            arraySize = 0;
+            maxArraySize = 0;
+        } else if (matrixCols > 0) {
+            vectorSize = matrixRows;
+            matrixCols = 0;
+            matrixRows = 0;
+        } else if (vectorSize > 1)
+            vectorSize = 1;
+    }
+
+    virtual void setElementType(TBasicType t, int s, int mc, int mr, TType* userDef)
+    { 
+        type = t;
+        vectorSize = s;
+        matrixCols = mc;
+        matrixRows = mr;
+        if (userDef)
+            structure = userDef->getStruct();
+        // leave array information intact.
+    }
     virtual void setTypeName(const TString& n) { typeName = NewPoolTString(n.c_str()); }
     virtual void setFieldName(const TString& n) { fieldName = NewPoolTString(n.c_str()); }
     virtual const TString& getTypeName() const
@@ -232,29 +257,20 @@ public:
     virtual TBasicType getBasicType() const { return type; }
     virtual TQualifier& getQualifier() { return qualifier; }
     virtual const TQualifier& getQualifier() const { return qualifier; }
+    
+    virtual int getVectorSize() const { return vectorSize; }
+    virtual int getMatrixCols() const { return matrixCols; }
+    virtual int getMatrixRows() const { return matrixRows; }
 
-    // One-dimensional size of single instance type
-    virtual int getNominalSize() const { return size; }
-
-    // Full-dimensional size of single instance of type
-    virtual int getInstanceSize() const
-    {
-        if (matrix)
-            return size * size;
-        else
-            return size;
-    }
-
-	virtual bool isMatrix() const { return matrix ? true : false; }
+	virtual bool isMatrix() const { return matrixCols ? true : false; }
     virtual bool isArray() const  { return array ? true : false; }
     int getArraySize() const { return arraySize; }
     void setArraySize(int s) { array = true; arraySize = s; }
     void setMaxArraySize (int s) { maxArraySize = s; }
     int getMaxArraySize () const { return maxArraySize; }
-    void clearArrayness() { array = false; arraySize = 0; maxArraySize = 0; }
     void setArrayInformationType(TType* t) { arrayInformationType = t; }
     TType* getArrayInformationType() { return arrayInformationType; }
-    virtual bool isVector() const { return size > 1 && !matrix; }
+    virtual bool isVector() const { return vectorSize > 1; }
     static char* getBasicString(TBasicType t) {
         switch (t) {
         case EbtVoid:              return "void";              break;
@@ -285,10 +301,10 @@ public:
 
         if (getBasicType() == EbtStruct)
             totalSize = getStructSize();
-        else if (matrix)
-            totalSize = size * size;
+        else if (matrixCols)
+            totalSize = matrixCols * matrixRows;
         else
-            totalSize = size;
+            totalSize = vectorSize;
 
         if (isArray())
             totalSize *= Max(getArraySize(), getMaxArraySize());
@@ -307,17 +323,19 @@ public:
         return *mangled;
     }
     bool sameElementType(const TType& right) const {
-        return      type == right.type   &&
-                    size == right.size   &&
-                  matrix == right.matrix &&
-               structure == right.structure;
+        return       type == right.type       &&
+               vectorSize == right.vectorSize &&
+               matrixCols == right.matrixCols &&
+               matrixRows == right.matrixRows &&
+                structure == right.structure;
     }
     bool operator==(const TType& right) const {
-        return      type == right.type   &&
-                    size == right.size   &&
-                  matrix == right.matrix &&
-                   array == right.array  && (!array || arraySize == right.arraySize) &&
-               structure == right.structure;
+        return       type == right.type       &&
+               vectorSize == right.vectorSize &&
+               matrixCols == right.matrixCols &&
+               matrixRows == right.matrixRows &&
+                    array == right.array      && (!array || arraySize == right.arraySize) &&
+                structure == right.structure;
         // don't check the qualifier, it's not ever what's being sought after
     }
     bool operator!=(const TType& right) const {
@@ -330,8 +348,9 @@ protected:
     int getStructSize() const;
 
 	TBasicType type      : 8;
-	int size             : 8; // size of vector or matrix, not size of array
-	unsigned int matrix  : 1;
+    int vectorSize       : 4;
+    int matrixCols       : 4;
+    int matrixRows       : 4;
 	unsigned int array   : 1;
     TQualifier qualifier;
 

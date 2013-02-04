@@ -934,7 +934,7 @@ void IdentifyBuiltIns(EShLanguage language, TSymbolTable& symbolTable, const TBu
 
     case EShLangFragment: {
             // Set up gl_FragData.  The array size.
-            TType fragData(EbtFloat, EvqFragColor,   4, false, true);
+            TType fragData(EbtFloat, EvqFragColor, 4);
             fragData.setArraySize(resources.maxDrawBuffers);
             symbolTable.insert(*new TVariable(NewPoolTString("gl_FragData"),    fragData));
         }

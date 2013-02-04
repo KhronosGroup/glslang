@@ -70,17 +70,21 @@ void TType::buildMangledName(TString& mangledName)
         mangledName += "struct-";
         if (typeName)
         	mangledName += *typeName;
-        {// support MSVC++6.0
-            for (unsigned int i = 0; i < structure->size(); ++i) {
-                mangledName += '-';
-                (*structure)[i].type->buildMangledName(mangledName);
-            }
+        for (unsigned int i = 0; i < structure->size(); ++i) {
+            mangledName += '-';
+            (*structure)[i].type->buildMangledName(mangledName);
         }
     default: 
         break;
     }
 
-    mangledName += static_cast<char>('0' + getNominalSize());
+    if (getVectorSize() > 0)
+        mangledName += static_cast<char>('0' + getVectorSize());
+    else {
+        mangledName += static_cast<char>('0' + getMatrixCols());
+        mangledName += static_cast<char>('0' + getMatrixRows());
+    }
+
     if (isArray()) {
 		const int maxSize = 10;
         char buf[maxSize];

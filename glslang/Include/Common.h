@@ -54,22 +54,12 @@
     #pragma warning(disable : 4201) // nameless union
 #endif
 
-//
-// Doing the push and pop below for warnings does not leave the warning state
-// the way it was.  This seems like a defect in the compiler.  We would like
-// to do this, but since it does not work correctly right now, it is turned
-// off.
-//
-//??#pragma warning(push, 3)
-
-	#include <set>
-    #include <vector>
-    #include <map>
-    #include <list>
-    #include <string>
-    #include <stdio.h>
-
-//??#pragma warning(pop)
+#include <set>
+#include <vector>
+#include <map>
+#include <list>
+#include <string>
+#include <stdio.h>
 
 typedef int TSourceLoc;
 

@@ -41,7 +41,8 @@
 class TConstTraverser : public TIntermTraverser {
 public:
     TConstTraverser(constUnion* cUnion, bool singleConstParam, TOperator constructType, TInfoSink& sink, TSymbolTable& symTable, TType& t) : unionArray(cUnion), type(t),
-        constructorType(constructType), singleConstantParam(singleConstParam), infoSink(sink), symbolTable(symTable), error(false), isMatrix(false), matrixSize(0) {  index = 0; tOp = EOpNull;}
+        constructorType(constructType), singleConstantParam(singleConstParam), infoSink(sink), symbolTable(symTable), error(false), isMatrix(false), 
+        matrixCols(0), matrixRows(0) {  index = 0; tOp = EOpNull;}
     int index ;
     constUnion *unionArray;
     TOperator tOp;
@@ -53,7 +54,8 @@ public:
     bool error;
     int size; // size of the constructor ( 4 for vec4)
     bool isMatrix;
-    int matrixSize; // dimension of the matrix (nominal size and not the instance size)
+    int matrixCols;
+    int matrixRows;
 };
 
 //
@@ -128,15 +130,15 @@ bool ParseAggregate(bool /* preVisit */, TIntermAggregate* node, TIntermTraverse
     }
 
     bool flag = node->getSequence().size() == 1 && node->getSequence()[0]->getAsTyped()->getAsConstantUnion();
-    if (flag) 
-    {
+    if (flag) {
         oit->singleConstantParam = true; 
         oit->constructorType = node->getOp();
         oit->size = node->getType().getObjectSize();
 
         if (node->getType().isMatrix()) {
             oit->isMatrix = true;
-            oit->matrixSize = node->getType().getNominalSize();
+            oit->matrixCols = node->getType().getMatrixCols();
+            oit->matrixRows = node->getType().getMatrixRows();
         }
     }       
 
@@ -154,7 +156,8 @@ bool ParseAggregate(bool /* preVisit */, TIntermAggregate* node, TIntermTraverse
         oit->constructorType = EOpNull;
         oit->size = 0;
         oit->isMatrix = false;
-        oit->matrixSize = 0;
+        oit->matrixCols = 0;
+        oit->matrixRows = 0;
     }
 
     return false;
@@ -189,12 +192,13 @@ void ParseConstantUnion(TIntermConstantUnion* node, TIntermTraverser* it)
             (oit->index)++;
         }
     } else {
-        int size, totalSize, matrixSize;
+        int size, totalSize, matrixCols, matrixRows;
         bool isMatrix = false;
         size = oit->size;
-        matrixSize = oit->matrixSize;
+        matrixCols = oit->matrixCols;
+        matrixRows = oit->matrixRows;
         isMatrix = oit->isMatrix;
-        totalSize = oit->index + size ;
+        totalSize = oit->index + size;
         constUnion *rightUnionArray = node->getUnionArrayPointer();
         if (!isMatrix) {
             int count = 0;
@@ -215,7 +219,7 @@ void ParseConstantUnion(TIntermConstantUnion* node, TIntermTraverser* it)
             for (int i = index; i < totalSize; i++) {
                 if (i >= instanceSize)
                     return;
-                if (index - i == 0 || (i - index) % (matrixSize + 1) == 0 )
+                if (index - i == 0 || (i - index) % (matrixRows + 1) == 0 )
                     leftUnionArray[i] = rightUnionArray[count];
                 else 
                     leftUnionArray[i].setFConst(0.0f);

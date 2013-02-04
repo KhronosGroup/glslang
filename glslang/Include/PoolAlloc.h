@@ -113,7 +113,6 @@ private:
     unsigned char* mem;           // beginning of our allocation (pts to header)
     TAllocation* prevAlloc;       // prior allocation in the chain
 
-    // Support MSVC++ 6.0
     const static unsigned char guardBlockBeginVal;
     const static unsigned char guardBlockEndVal;
     const static unsigned char userDataFill;
