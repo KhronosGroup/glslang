@@ -295,65 +295,71 @@ static int CPPundef(yystypepp * yylvalpp)
 } // CPPundef
 
 /* CPPelse -- skip forward to appropriate spot.  This is actually used
-** to skip to and #endif after seeing an #else, AND to skip to a #else,
+** to skip to a #endif after seeing an #else, AND to skip to a #else,
 ** #elif, or #endif after a #if/#ifdef/#ifndef/#elif test was false
 */
 
 static int CPPelse(int matchelse, yystypepp * yylvalpp)
 {
-    int atom,depth=0;
+    int atom;
+    int depth = 0;
     int token = cpp->currentInput->scan(cpp->currentInput, yylvalpp);
-	
-	while (token > 0) {
+
+    while (token > 0) {
         if (token != '#') {
-		    while (token != '\n')
+            while (token != '\n')
                 token = cpp->currentInput->scan(cpp->currentInput, yylvalpp);
-            
+
             token = cpp->currentInput->scan(cpp->currentInput, yylvalpp);
             continue;
         }
-		if ((token = cpp->currentInput->scan(cpp->currentInput, yylvalpp)) != CPP_IDENTIFIER)
-			continue;
+
+        if ((token = cpp->currentInput->scan(cpp->currentInput, yylvalpp)) != CPP_IDENTIFIER)
+            continue;
+
         atom = yylvalpp->sc_ident;
-        if (atom == ifAtom || atom == ifdefAtom || atom == ifndefAtom){
-            depth++; cpp->ifdepth++; cpp->elsetracker++;
-		}
-		else if (atom == endifAtom) {
-            if(--depth<=0){
-		        cpp->elsedepth[cpp->elsetracker]=0;
-			    --cpp->elsetracker;
+        if (atom == ifAtom || atom == ifdefAtom || atom == ifndefAtom) {
+            depth++; 
+            cpp->ifdepth++; 
+            cpp->elsetracker++;
+        } else if (atom == endifAtom) {
+            if (depth == 0) {
+                // found the #endif we are looking for
+                cpp->elsedepth[cpp->elsetracker] = 0;
+                --cpp->elsetracker;
                 if (cpp->ifdepth) 
                     --cpp->ifdepth;
                 break;
-            }             
-                --cpp->elsetracker;
-                --cpp->ifdepth;
             }
-        else if (((int)(matchelse) != 0)&& depth==0) {
-			if (atom == elseAtom ) {
+            --depth;
+            --cpp->elsetracker;
+            --cpp->ifdepth;
+        } else if (matchelse && depth == 0) {
+            if (atom == elseAtom ) {
+                // found the #else we are looking for
                 token = cpp->currentInput->scan(cpp->currentInput, yylvalpp);
                 if (token != '\n') {
                     CPPWarningToInfoLog("unexpected tokens following #else preprocessor directive - expected a newline");
                     while (token != '\n')
                         token = cpp->currentInput->scan(cpp->currentInput, yylvalpp);
                 } 
-				break;
-			} 
-			else if (atom == elifAtom) {
+                break;
+            } else if (atom == elifAtom) {
                 /* we decrement cpp->ifdepth here, because CPPif will increment
-                 * it and we really want to leave it alone */
-				if (cpp->ifdepth){
-					--cpp->ifdepth;
-				    --cpp->elsetracker;
-				}
+                * it and we really want to leave it alone */
+                if (cpp->ifdepth) {
+                    --cpp->ifdepth;
+                    --cpp->elsetracker;
+                }
+
                 return CPPif(yylvalpp);
             }
-		}
-        else if((atom==elseAtom) && (!ChkCorrectElseNesting())){
+        } else if((atom == elseAtom) && (!ChkCorrectElseNesting())) {
             CPPErrorToInfoLog("#else after a #else");
             cpp->CompileError=1;
         }
-	};
+    };  // end while
+
     return token;
 }
 

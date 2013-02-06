@@ -38,6 +38,16 @@ sum += 50000.0;
         sum += 0.2;
     #endif
 
+    //no
+    sum += 0.01;
+    #ifdef ON
+        //no
+        sum += 0.02;
+    #else
+        //no
+        sum += 0.03;
+    #endif
+
 //no
     sum + 0.3;
 
