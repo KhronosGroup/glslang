@@ -190,7 +190,7 @@ bool InitializeSymbolTable(TBuiltInStrings* BuiltInStrings, EShLanguage language
 	else
 		symbolTable = &symbolTables[language];
 
-    TParseContext parseContext(*symbolTable, intermediate, language, infoSink);
+    TParseContext parseContext(*symbolTable, intermediate, language, infoSink, 110);
 
     GlobalParseContext = &parseContext;
     
@@ -255,7 +255,8 @@ int ShCompile(
     const int numStrings,
     const EShOptimizationLevel optLevel,
     const TBuiltInResource* resources,
-    int debugOptions
+    int debugOptions,
+    int defaultVersion
     )
 {
     if (!InitThread())
@@ -281,9 +282,7 @@ int ShCompile(
     
     GenerateBuiltInSymbolTable(resources, compiler->infoSink, &symbolTable, compiler->getLanguage());
 
-    // TODO: this is happening *after* initialization, which already parsed some things... what parse context was that?
-    // what extensions did it have?
-    TParseContext parseContext(symbolTable, intermediate, compiler->getLanguage(), compiler->infoSink);
+    TParseContext parseContext(symbolTable, intermediate, compiler->getLanguage(), compiler->infoSink, defaultVersion);
     parseContext.initializeExtensionBehavior();
 
     GlobalParseContext = &parseContext;

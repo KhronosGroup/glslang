@@ -154,7 +154,8 @@ SH_IMPORT_EXPORT int ShCompile(
     const int numStrings,
     const EShOptimizationLevel,
     const TBuiltInResource *resources,
-    int debugOptions
+    int debugOptions,
+    int defaultVersion = 110 // use 100 for ES environment
     );
 
 

@@ -798,66 +798,13 @@ void ResetTString(void)
 void SetVersion(int version)
 {
     TParseContext& parseContext = *((TParseContext *)cpp->pC);
-    parseContext.version = version;
-
-	if (version == 100 || version == 300) {
-	    if (parseContext.language == EShLangVertex) {
-			parseContext.defaultPrecision[EbtInt] = EpqHigh;
-			parseContext.defaultPrecision[EbtFloat] = EpqHigh;
-			parseContext.defaultPrecision[EbtSampler2D] = EpqLow;
-			parseContext.defaultPrecision[EbtSamplerCube] = EpqLow;
-        }
-
-        if (parseContext.language == EShLangFragment)  {
-			parseContext.defaultPrecision[EbtInt] = EpqMedium;
-			parseContext.defaultPrecision[EbtSampler2D] = EpqLow;
-			parseContext.defaultPrecision[EbtSamplerCube] = EpqLow;
-        }
-	}
+    parseContext.setVersion(version);
 }
 
-// Important assumption:  SetVersion() is called before SetProfile(), and is always called
-// if there is a version, sending in a ENoProfile if there is no profile given.
 void SetProfile(EProfile profile)
 {
-    const int FirstProfileVersion = 150;
     TParseContext& parseContext = *((TParseContext *)cpp->pC);
-
-    if (profile == ENoProfile) {
-        if (parseContext.version == 300) {
-            CPPErrorToInfoLog("version 300 requires specifying the 'es' profile");
-            parseContext.profile = EEsProfile;
-        } else if (parseContext.version == 100)
-            parseContext.profile = EEsProfile;
-        else if (parseContext.version >= FirstProfileVersion)
-            parseContext.profile = ECoreProfile;
-        else
-            parseContext.profile = ENoProfile;
-    } else {
-        // a profile was provided...
-        if (parseContext.version < 150) {
-            CPPErrorToInfoLog("versions before 150 do not allow a profile token");
-            if (parseContext.version == 100)
-                parseContext.profile = EEsProfile;
-            else
-                parseContext.profile = ENoProfile;
-        } else if (parseContext.version == 300) {
-            if (profile != EEsProfile)
-                CPPErrorToInfoLog("only version 300 supports the es profile");
-            parseContext.profile = EEsProfile;
-        } else {
-            if (profile == EEsProfile) {
-                CPPErrorToInfoLog("only version 300 supports the es profile");
-                if (parseContext.version >= FirstProfileVersion)
-                    parseContext.profile = ECoreProfile;
-                else
-                    parseContext.profile = ENoProfile;
-            } else {
-                // typical desktop case... e.g., "#version 410 core"
-                parseContext.profile = profile;
-            }
-        }
-    }
+    parseContext.setProfile(profile);
 }
 
 TBehavior GetBehavior(const char* behavior)

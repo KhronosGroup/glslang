@@ -45,17 +45,82 @@
 ////////////////////////////////////////////////////////////////////////
 
 
-TParseContext::TParseContext(TSymbolTable& symt, TIntermediate& interm, EShLanguage L, TInfoSink& is) : 
+TParseContext::TParseContext(TSymbolTable& symt, TIntermediate& interm, EShLanguage L, TInfoSink& is, int defaultVersion) : 
             intermediate(interm), symbolTable(symt), infoSink(is), language(L), treeRoot(0),
             recoveredFromError(false), numErrors(0), lexAfterType(false), loopNestingLevel(0),
             switchNestingLevel(0), inTypeParen(false), 
-            version(110), profile(ENoProfile), futureCompatibility(false),
+            futureCompatibility(false),
             contextPragma(true, false)
 {
     // Default precisions for version 110, to be overridden for 
     // other versions/profiles/stage combinations
     for (int type = 0; type < EbtNumTypes; ++type)
         defaultPrecision[type] = EpqNone;
+
+    setVersion(defaultVersion);
+    setProfile(ENoProfile);
+}
+
+void TParseContext::setVersion(int newVersion)
+{
+    version = newVersion;
+	if (version == 100 || version == 300) {
+	    if (language == EShLangVertex) {
+			defaultPrecision[EbtInt] = EpqHigh;
+			defaultPrecision[EbtFloat] = EpqHigh;
+			defaultPrecision[EbtSampler2D] = EpqLow;
+			defaultPrecision[EbtSamplerCube] = EpqLow;
+        }
+
+        if (language == EShLangFragment)  {
+			defaultPrecision[EbtInt] = EpqMedium;
+			defaultPrecision[EbtSampler2D] = EpqLow;
+			defaultPrecision[EbtSamplerCube] = EpqLow;
+        }
+	}
+}
+
+// Important assumption:  SetVersion() is called before SetProfile(), and is always called
+// if there is a version, sending in a ENoProfile if there is no profile given.
+void TParseContext::setProfile(EProfile newProfile)
+{
+    const int FirstProfileVersion = 150;
+
+    if (newProfile == ENoProfile) {
+        if (version == 300) {
+            error(1, "version 300 requires specifying the 'es' profile", "#version", "");
+            profile = EEsProfile;
+        } else if (version == 100)
+            profile = EEsProfile;
+        else if (version >= FirstProfileVersion)
+            profile = ECoreProfile;
+        else
+            profile = ENoProfile;
+    } else {
+        // a profile was provided...
+        if (version < 150) {
+            error(1, "versions before 150 do not allow a profile token", "#version", "");
+            if (version == 100)
+                profile = EEsProfile;
+            else
+                profile = ENoProfile;
+        } else if (version == 300) {
+            if (newProfile != EEsProfile)
+                error(1, "only version 300 supports the es profile", "#version", "");
+            profile = EEsProfile;
+        } else {
+            if (newProfile == EEsProfile) {
+                error(1, "only version 300 supports the es profile", "#version", "");
+                if (version >= FirstProfileVersion)
+                    profile = ECoreProfile;
+                else
+                    profile = ENoProfile;
+            } else {
+                // typical desktop case... e.g., "#version 410 core"
+                profile = newProfile;
+            }
+        }
+    }
 }
 
 //
