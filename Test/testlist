@@ -12,4 +12,7 @@ versionsErrors.vert
 precision.frag
 nonSquare.vert
 matrixError.vert
-
+cppSimple.vert
+cppIndent.vert
+cppNest.vert
+cppComplexExpr.vert
