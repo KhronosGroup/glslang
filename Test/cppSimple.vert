@@ -1,3 +1,5 @@
+#version 110
+
 #define ON
 
 float sum = 0.0;

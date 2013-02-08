@@ -77,7 +77,10 @@ void TParseContext::setVersion(int newVersion)
 			defaultPrecision[EbtSampler2D] = EpqLow;
 			defaultPrecision[EbtSamplerCube] = EpqLow;
         }
-	}
+	} else {
+        for (int type = 0; type < EbtNumTypes; ++type)
+            defaultPrecision[type] = EpqNone;
+    }
 }
 
 // Important assumption:  SetVersion() is called before SetProfile(), and is always called
