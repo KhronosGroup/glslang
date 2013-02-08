@@ -16,3 +16,4 @@ cppSimple.vert
 cppIndent.vert
 cppNest.vert
 cppComplexExpr.vert
+pointCoord.frag

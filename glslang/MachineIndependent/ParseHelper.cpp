@@ -76,6 +76,7 @@ void TParseContext::setVersion(int newVersion)
 			defaultPrecision[EbtInt] = EpqMedium;
 			defaultPrecision[EbtSampler2D] = EpqLow;
 			defaultPrecision[EbtSamplerCube] = EpqLow;
+            // TODO: give error when using float in frag shader without default precision
         }
 	} else {
         for (int type = 0; type < EbtNumTypes; ++type)
@@ -294,7 +295,10 @@ void TParseContext::binaryOpError(int line, char* op, TString left, TString righ
 void TParseContext::variableErrorCheck(TIntermTyped*& nodePtr) 
 {
     TIntermSymbol* symbol = nodePtr->getAsSymbolNode();
-    if (symbol && symbol->getType().getBasicType() == EbtVoid) {
+    if (! symbol)
+        return;
+
+    if (symbol->getType().getBasicType() == EbtVoid) {
         error(symbol->getLine(), "undeclared identifier", symbol->getSymbol().c_str(), "");
         recover();
 
@@ -307,6 +311,12 @@ void TParseContext::variableErrorCheck(TIntermTyped*& nodePtr)
         nodePtr = intermediate.addSymbol(fakeVariable->getUniqueId(), 
                                          fakeVariable->getName(), 
                                          fakeVariable->getType(), symbol->getLine());
+    } else {
+        switch (symbol->getQualifier().storage) {
+        case EvqPointCoord:
+            profileRequires(symbol->getLine(), ENoProfile, 120, 0, "gl_PointCoord");
+            break;
+        }
     }
 }
 
@@ -372,6 +382,7 @@ bool TParseContext::lValueErrorCheck(int line, char* op, TIntermTyped* node)
     case EvqVaryingIn:      message = "can't modify a varying";      break;
     case EvqFace:           message = "can't modify gl_FrontFace";   break;
     case EvqFragCoord:      message = "can't modify gl_FragCoord";   break;
+    case EvqPointCoord:     message = "can't modify gl_PointCoord";  break;
     default:
 
         //

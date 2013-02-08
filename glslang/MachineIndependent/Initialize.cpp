@@ -831,14 +831,13 @@ void IdentifyBuiltIns(EShLanguage language, TSymbolTable& symbolTable)
     // the built-in header files.
     //
     switch(language) {
+    case EShLangFragment:
+        symbolTable.insert(*new TVariable(NewPoolTString("gl_FrontFacing"), TType(EbtBool,  EvqFace,        1)));
+        symbolTable.insert(*new TVariable(NewPoolTString("gl_FragCoord"),   TType(EbtFloat, EvqFragCoord,   4)));
+        symbolTable.insert(*new TVariable(NewPoolTString("gl_PointCoord"),  TType(EbtFloat, EvqPointCoord,  2)));
 
-    case EShLangFragment: {
-            symbolTable.insert(*new TVariable(NewPoolTString("gl_FrontFacing"), TType(EbtBool,  EvqFace, 1)));
-            symbolTable.insert(*new TVariable(NewPoolTString("gl_FragCoord"),   TType(EbtFloat, EvqFragCoord,   4)));
-            symbolTable.insert(*new TVariable(NewPoolTString("gl_FragColor"),   TType(EbtFloat, EvqFragColor,   4)));
-            symbolTable.insert(*new TVariable(NewPoolTString("gl_FragDepth"),   TType(EbtFloat, EvqFragDepth,   1)));
-
-        }
+        symbolTable.insert(*new TVariable(NewPoolTString("gl_FragColor"),   TType(EbtFloat, EvqFragColor,   4)));
+        symbolTable.insert(*new TVariable(NewPoolTString("gl_FragDepth"),   TType(EbtFloat, EvqFragDepth,   1)));
         break;
 
     case EShLangVertex:
@@ -846,7 +845,12 @@ void IdentifyBuiltIns(EShLanguage language, TSymbolTable& symbolTable)
         symbolTable.insert(*new TVariable(NewPoolTString("gl_PointSize"),   TType(EbtFloat, EvqPointSize,   1)));
         symbolTable.insert(*new TVariable(NewPoolTString("gl_ClipVertex"),  TType(EbtFloat, EvqClipVertex,  4)));
         break;
-	default: break;
+        
+    case EShLangTessControl:
+    case EShLangTessEvaluation:
+    case EShLangGeometry:
+        // TODO: support these stages
+        break;
     }
 
     //

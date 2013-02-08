@@ -217,8 +217,7 @@ bool InitializeSymbolTable(TBuiltInStrings* BuiltInStrings, EShLanguage language
     }
     
     for (TBuiltInStrings::iterator i  = BuiltInStrings[parseContext.language].begin();
-                                    i != BuiltInStrings[parseContext.language].end();
-                                    ++i) {
+                                   i != BuiltInStrings[parseContext.language].end();    ++i) {
         const char* builtInShaders[1];
         int builtInLengths[1];
 

@@ -94,6 +94,7 @@ enum TStorageQualifier {
     // built-ins read by fragment shader
     EvqFace,
     EvqFragCoord,
+    EvqPointCoord,
 
     // built-ins written by fragment shader
     EvqFragColor,
@@ -123,8 +124,9 @@ __inline const char* getStorageQualifierString(TStorageQualifier q)
     case EvqPosition:       return "Position";       break;
     case EvqPointSize:      return "PointSize";      break;
     case EvqClipVertex:     return "ClipVertex";     break;
-    case EvqFace:           return "Face";           break;
+    case EvqFace:           return "FrontFacing";    break;
     case EvqFragCoord:      return "FragCoord";      break;
+    case EvqPointCoord:     return "PointCoord";     break;
     case EvqFragColor:      return "FragColor";      break;
     case EvqFragDepth:      return "FragDepth";      break;
     default:                return "unknown qualifier";
