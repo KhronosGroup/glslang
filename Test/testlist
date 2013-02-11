@@ -17,3 +17,5 @@ cppIndent.vert
 cppNest.vert
 cppComplexExpr.vert
 pointCoord.frag
+array.frag
+array100.frag

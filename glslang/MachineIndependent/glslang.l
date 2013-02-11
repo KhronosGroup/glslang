@@ -861,7 +861,7 @@ void updateExtensionBehavior(const char* extName, const char* behavior)
 
 }  // extern "C"
 
-void setInitialState()
+void ResetFlex()
 {
     yy_start = 1;
 }

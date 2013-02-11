@@ -194,13 +194,11 @@ bool InitializeSymbolTable(TBuiltInStrings* BuiltInStrings, EShLanguage language
 
     GlobalParseContext = &parseContext;
     
-    setInitialState();
-
     assert(symbolTable->isEmpty() || symbolTable->atSharedBuiltInLevel());
        
     //
     // Parse the built-ins.  This should only happen once per
-    // language symbol table.
+    // language symbol table when no 'resources' are passed in.
     //
     // Push the symbol table to give it an initial scope.  This
     // push should not have a corresponding pop, so that built-ins
@@ -208,6 +206,7 @@ bool InitializeSymbolTable(TBuiltInStrings* BuiltInStrings, EShLanguage language
     //
 
     symbolTable->push();
+
     
     //Initialize the Preprocessor
     int ret = InitPreprocessor();
@@ -215,6 +214,8 @@ bool InitializeSymbolTable(TBuiltInStrings* BuiltInStrings, EShLanguage language
         infoSink.info.message(EPrefixInternalError,  "Unable to intialize the Preprocessor");
         return false;
     }
+
+    ResetFlex();
     
     for (TBuiltInStrings::iterator i  = BuiltInStrings[parseContext.language].begin();
                                    i != BuiltInStrings[parseContext.language].end();    ++i) {
@@ -229,15 +230,13 @@ bool InitializeSymbolTable(TBuiltInStrings* BuiltInStrings, EShLanguage language
             return false;
         }
     }
+    FinalizePreprocessor();
 
 	if (resources) {
 		IdentifyBuiltIns(parseContext.language, *symbolTable, *resources);
-	} else {									   
+	} else {
 		IdentifyBuiltIns(parseContext.language, *symbolTable);
 	}
-
-    FinalizePreprocessor();
-
     return true;
 }
 
@@ -279,6 +278,8 @@ int ShCompile(
     TIntermediate intermediate(compiler->infoSink);
     TSymbolTable symbolTable(SymbolTables[compiler->getLanguage()]);
     
+    // Add built-in symbols that are potentially context dependent;
+    // they get popped again further down.
     GenerateBuiltInSymbolTable(resources, compiler->infoSink, &symbolTable, compiler->getLanguage());
 
     TParseContext parseContext(symbolTable, intermediate, compiler->getLanguage(), compiler->infoSink, defaultVersion);
@@ -286,9 +287,9 @@ int ShCompile(
 
     GlobalParseContext = &parseContext;
     
-    setInitialState();
+    ResetFlex();
+    InitPreprocessor();
 
-    InitPreprocessor();    
     //
     // Parse the application's shaders.  All the following symbol table
     // work will be throw-away, so push a new allocation scope that can

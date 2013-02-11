@@ -254,6 +254,7 @@ bool CompileFile(char *fileName, ShHandle compiler, int debugOptions, const TBui
 #ifdef MEASURE_MEMORY
 
         GetProcessMemoryInfo(GetCurrentProcess(), &counters, sizeof(counters));
+        printf("Working set size: %d\n", counters.WorkingSetSize);
     }
 #endif
 

@@ -104,14 +104,12 @@ enum TStorageQualifier {
     EvqLast,
 };
 
-//
-// This is just for debug print out, carried along with the definitions above.
-//
+// These will show up in error messages
 __inline const char* getStorageQualifierString(TStorageQualifier q) 
 {
     switch (q) {
-    case EvqTemporary:      return "Temporary";      break;
-    case EvqGlobal:         return "Global";         break;
+    case EvqTemporary:      return "temporary";      break;
+    case EvqGlobal:         return "global";         break;
     case EvqConst:          return "const";          break;
     case EvqConstReadOnly:  return "const (read only)"; break;
     case EvqAttribute:      return "attribute";      break;
@@ -121,14 +119,14 @@ __inline const char* getStorageQualifierString(TStorageQualifier q)
     case EvqIn:             return "in";             break;
     case EvqOut:            return "out";            break;
     case EvqInOut:          return "inout";          break;
-    case EvqPosition:       return "Position";       break;
-    case EvqPointSize:      return "PointSize";      break;
-    case EvqClipVertex:     return "ClipVertex";     break;
-    case EvqFace:           return "FrontFacing";    break;
-    case EvqFragCoord:      return "FragCoord";      break;
-    case EvqPointCoord:     return "PointCoord";     break;
-    case EvqFragColor:      return "FragColor";      break;
-    case EvqFragDepth:      return "FragDepth";      break;
+    case EvqPosition:       return "gl_Position";    break;
+    case EvqPointSize:      return "gl_PointSize";   break;
+    case EvqClipVertex:     return "gl_ClipVertex";  break;
+    case EvqFace:           return "gl_FrontFacing"; break;
+    case EvqFragCoord:      return "gl_FragCoord";   break;
+    case EvqPointCoord:     return "gl_PointCoord";  break;
+    case EvqFragColor:      return "fragment out";   break;
+    case EvqFragDepth:      return "gl_FragDepth";   break;
     default:                return "unknown qualifier";
     }
 }

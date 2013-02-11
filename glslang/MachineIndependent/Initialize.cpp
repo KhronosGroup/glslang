@@ -713,7 +713,7 @@ void TBuiltIns::initialize()
 void TBuiltIns::initialize(const TBuiltInResource &resources)
 {
     //
-    // Initialize all the built-in strings for parsing.
+    // Initialize the context-dependent (resource-dependent) built-in strings for parsing.
     //
     TString StandardUniforms;    
 
@@ -939,7 +939,9 @@ void IdentifyBuiltIns(EShLanguage language, TSymbolTable& symbolTable, const TBu
     case EShLangFragment: {
             // Set up gl_FragData.  The array size.
             TType fragData(EbtFloat, EvqFragColor, 4);
-            fragData.setArraySize(resources.maxDrawBuffers);
+            TArraySizes arraySizes = NewPoolTArraySizes();
+            arraySizes->push_back(resources.maxDrawBuffers);
+            fragData.setArraySizes(arraySizes);
             symbolTable.insert(*new TVariable(NewPoolTString("gl_FragData"),    fragData));
         }
         break;

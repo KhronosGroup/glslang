@@ -125,7 +125,7 @@ struct TParseContext {
     bool structQualifierErrorCheck(int line, const TPublicType& pType);
     void setDefaultPrecision(int line, TBasicType, TPrecisionQualifier);
     bool parameterSamplerErrorCheck(int line, TStorageQualifier qualifier, const TType& type);
-    bool containsSampler(TType& type);
+    bool containsSampler(const TType& type);
     bool nonInitConstErrorCheck(int line, TString& identifier, TPublicType& type);
     bool nonInitErrorCheck(int line, TString& identifier, TPublicType& type);
     bool paramErrorCheck(int line, TStorageQualifier qualifier, TType* type);
@@ -154,7 +154,7 @@ int PaParseStrings(char* argv[], int strLen[], int argc, TParseContext&);
 void PaReservedWord();
 int PaIdentOrType(TString& id, TParseContext&, TSymbol*&);
 int PaParseComment(int &lineno, TParseContext&);
-void setInitialState();
+void ResetFlex();
 
 typedef TParseContext* TParseContextPointer;
 extern TParseContextPointer& GetGlobalParseContext();

@@ -57,6 +57,24 @@ inline TTypeList* NewPoolTTypeList()
 }
 
 //
+// TODO: TArraySizes memory: This could be replaced by something smaller.
+// Almost all arrays could be handled by two sizes each fitting
+// in 16 bits, needing a real vector only in the cases where there
+// are more than 3 sizes or a size needing more than 16 bits.
+//
+// The type is a pointer, so that it can be non-allocated and zero
+// for the vast majority of non-array types.  Note that means if it
+// is used, it will be containing at least one size.
+
+typedef TVector<int>* TArraySizes;
+
+inline TArraySizes NewPoolTArraySizes()
+{
+    void* memory = GlobalPoolAllocator.allocate(sizeof(TVector<int>));
+    return new(memory) TVector<int>;
+}
+
+//
 // This is a workaround for a problem with the yacc stack,  It can't have
 // types that it thinks have non-trivial constructors.  It should
 // just be used while recognizing the grammar, not anything else.  Pointers
@@ -79,9 +97,8 @@ public:
     int vectorSize : 4;
     int matrixCols : 4;
     int matrixRows : 4;
-    bool array;
-    int arraySize;
-    TType* userDef;
+    TArraySizes arraySizes;
+    const TType* userDef;
     int line;
 
     void initType(int ln = 0)
@@ -90,8 +107,7 @@ public:
         vectorSize = 1;
         matrixRows = 0;
         matrixCols = 0;
-        array = false;
-        arraySize = 0;
+        arraySizes = 0;
         userDef = 0;
         line = ln;
     }
@@ -110,6 +126,8 @@ public:
 
     void setVector(int s)
     {
+        matrixRows = 0;
+        matrixCols = 0;
         vectorSize = s;
     }
 
@@ -118,12 +136,6 @@ public:
         matrixRows = r;
         matrixCols = c;
         vectorSize = 0;
-    }
-
-    void setArray(bool a, int s = 0)
-    {
-        array = a;
-        arraySize = s;
     }
 };
 
@@ -136,7 +148,7 @@ class TType {
 public:
     POOL_ALLOCATOR_NEW_DELETE(GlobalPoolAllocator)
     explicit TType(TBasicType t, TStorageQualifier q = EvqTemporary, int vs = 1, int mc = 0, int mr = 0) :
-                            type(t), vectorSize(vs), matrixCols(mc), matrixRows(mr), array(false), arraySize(0),
+                            type(t), vectorSize(vs), matrixCols(mc), matrixRows(mr), arraySizes(0),
                             structure(0), structureSize(0), maxArraySize(0), arrayInformationType(0),
                             fieldName(0), mangled(0), typeName(0) 
                             {
@@ -144,7 +156,7 @@ public:
                                 qualifier.precision = EpqNone;
                             }
     explicit TType(const TPublicType &p) :
-                            type(p.type), vectorSize(p.vectorSize), matrixCols(p.matrixCols), matrixRows(p.matrixRows), array(p.array), arraySize(p.arraySize),
+                            type(p.type), vectorSize(p.vectorSize), matrixCols(p.matrixCols), matrixRows(p.matrixRows), arraySizes(p.arraySizes),
                             structure(0), structureSize(0), maxArraySize(0), arrayInformationType(0), fieldName(0), mangled(0), typeName(0)
                             {
                                 qualifier = p.qualifier;
@@ -154,7 +166,7 @@ public:
                                 }
                             }
     explicit TType(TTypeList* userDef, const TString& n) :
-                            type(EbtStruct), vectorSize(1), matrixCols(0), matrixRows(0), array(false), arraySize(0),
+                            type(EbtStruct), vectorSize(1), matrixCols(0), matrixRows(0), arraySizes(0),
                             structure(userDef), maxArraySize(0), arrayInformationType(0), fieldName(0), mangled(0) 
                             {
                                 qualifier.storage = EvqTemporary;
@@ -173,9 +185,13 @@ public:
 		vectorSize = copyOf.vectorSize;
 		matrixCols = copyOf.matrixCols;
 		matrixRows = copyOf.matrixRows;
-		array = copyOf.array;
-		arraySize = copyOf.arraySize;
-		
+
+        if (copyOf.arraySizes) {
+            arraySizes = NewPoolTArraySizes();
+            *arraySizes = *copyOf.arraySizes;
+        } else
+            arraySizes = 0;
+
 		TStructureMapIterator iter;
 		if (copyOf.structure) {
 	        if ((iter = remapper.find(structure)) == remapper.end()) {
@@ -220,9 +236,8 @@ public:
 
     virtual void dereference()
     {
-        if (array) {
-            array = false;
-            arraySize = 0;
+        if (arraySizes) {
+            arraySizes = 0;
             maxArraySize = 0;
         } else if (matrixCols > 0) {
             vectorSize = matrixRows;
@@ -232,7 +247,7 @@ public:
             vectorSize = 1;
     }
 
-    virtual void setElementType(TBasicType t, int s, int mc, int mr, TType* userDef)
+    virtual void setElementType(TBasicType t, int s, int mc, int mr, const TType* userDef)
     { 
         type = t;
         vectorSize = s;
@@ -265,9 +280,15 @@ public:
     virtual int getMatrixRows() const { return matrixRows; }
 
 	virtual bool isMatrix() const { return matrixCols ? true : false; }
-    virtual bool isArray() const  { return array ? true : false; }
-    int getArraySize() const { return arraySize; }
-    void setArraySize(int s) { array = true; arraySize = s; }
+    virtual bool isArray() const  { return arraySizes != 0; }
+    int getArraySize() const { return arraySizes->front(); }
+    void setArraySizes(TArraySizes s) {
+        // copy; we don't want distinct types sharing the same descriptor
+        if (! arraySizes)
+            arraySizes = NewPoolTArraySizes();
+        *arraySizes = *s;
+    }
+    void changeArraySize(int s) { arraySizes->front() = s; }
     void setMaxArraySize (int s) { maxArraySize = s; }
     int getMaxArraySize () const { return maxArraySize; }
     void setArrayInformationType(TType* t) { arrayInformationType = t; }
@@ -336,7 +357,7 @@ public:
                vectorSize == right.vectorSize &&
                matrixCols == right.matrixCols &&
                matrixRows == right.matrixRows &&
-                    array == right.array      && (!array || arraySize == right.arraySize) &&
+              (arraySizes == 0 && right.arraySizes == 0 || (arraySizes && right.arraySizes && *arraySizes == *right.arraySizes)) &&
                 structure == right.structure;
         // don't check the qualifier, it's not ever what's being sought after
     }
@@ -353,10 +374,9 @@ protected:
     int vectorSize       : 4;
     int matrixCols       : 4;
     int matrixRows       : 4;
-	unsigned int array   : 1;
     TQualifier qualifier;
 
-    int arraySize;
+    TArraySizes arraySizes;
 
     TTypeList* structure;      // 0 unless this is a struct
     mutable int structureSize;

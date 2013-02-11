@@ -64,8 +64,12 @@ TString TType::getCompleteString() const
 
     if (qualifier.storage != EvqTemporary && qualifier.storage != EvqGlobal)
         p += sprintf_s(p, end - p, "%s ", getStorageQualifierString());
-    if (array)
-        p += sprintf_s(p, end - p, "array of ");
+    if (arraySizes) {
+        if (arraySizes->front() == 0)
+            p += sprintf_s(p, end - p, "unsized array of ");
+        else
+            p += sprintf_s(p, end - p, "%d-element array of ", arraySizes->front());
+    }
     if (qualifier.precision != EpqNone)
         p += sprintf_s(p, end - p, "%s ", getPrecisionQualifierString());
     if (matrixCols > 0)

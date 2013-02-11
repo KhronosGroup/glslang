@@ -571,9 +571,14 @@ bool TParseContext::constructorErrorCheck(int line, TIntermNode* node, TFunction
     if (constType)
         type->getQualifier().storage = EvqConst;
 
-    if (type->isArray() && type->getArraySize() != function.getParamCount()) {
-        error(line, "array constructor needs one argument per array element", "constructor", "");
-        return true;
+    if (type->isArray()) {
+        if (type->getArraySize() == 0) {
+            // auto adapt the constructor type to the number of arguments
+            type->changeArraySize(function.getParamCount());
+        } else if (type->getArraySize() != function.getParamCount()) {
+            error(line, "array constructor needs one argument per array element", "constructor", "");
+            return true;
+        }
     }
 
     if (arrayArg && op != EOpConstructStruct) {
@@ -653,7 +658,7 @@ bool TParseContext::boolErrorCheck(int line, const TIntermTyped* type)
 //
 bool TParseContext::boolErrorCheck(int line, const TPublicType& pType)
 {
-    if (pType.type != EbtBool || pType.array || pType.matrixCols > 1 || (pType.vectorSize > 1)) {
+    if (pType.type != EbtBool || pType.arraySizes || pType.matrixCols > 1 || (pType.vectorSize > 1)) {
         error(line, "boolean expression expected", "", "");
         return true;
     } 
@@ -743,7 +748,7 @@ bool TParseContext::parameterSamplerErrorCheck(int line, TStorageQualifier quali
     return false;
 }
 
-bool TParseContext::containsSampler(TType& type)
+bool TParseContext::containsSampler(const TType& type)
 {
     if (IsSampler(type.getBasicType()))
         return true;
@@ -866,9 +871,6 @@ bool TParseContext::arrayErrorCheck(int line, TString& identifier, TPublicType t
         
         variable = new TVariable(&identifier, TType(type));
 
-        if (type.arraySize)
-            variable->getType().setArraySize(type.arraySize);
-
         if (! symbolTable.insert(*variable)) {
             delete variable;
             error(line, "INTERNAL ERROR inserting new symbol", identifier.c_str(), "");
@@ -897,16 +899,15 @@ bool TParseContext::arrayErrorCheck(int line, TString& identifier, TPublicType t
 
         TType* t = variable->getArrayInformationType();
         while (t != 0) {
-            if (t->getMaxArraySize() > type.arraySize) {
+            if (t->getMaxArraySize() > type.arraySizes->front()) {
                 error(line, "higher index value already used for the array", identifier.c_str(), "");
                 return true;
             }
-            t->setArraySize(type.arraySize);
+            t->setArraySizes(type.arraySizes);
             t = t->getArrayInformationType();
         }
 
-        if (type.arraySize)
-            variable->getType().setArraySize(type.arraySize);
+        variable->getType().setArraySizes(type.arraySizes);
     } 
 
     if (voidErrorCheck(line, identifier, type))
@@ -1094,10 +1095,15 @@ bool TParseContext::executeInitializer(TSourceLoc line, TString& identifier, TPu
         error(line, " cannot initialize this type of qualifier ", variable->getType().getStorageQualifierString(), "");
         return true;
     }
+
+    // Fix arrayness if variable is unsized, getting size for initializer    
+    if (initializer->getType().isArray() && initializer->getType().getArraySize() > 0 && 
+                            type.isArray() &&                   type.getArraySize() == 0)
+        type.changeArraySize(initializer->getType().getArraySize());
+
     //
     // test for and propagate constant
     //
-
     if (qualifier == EvqConst) {
         if (qualifier != initializer->getType().getQualifier().storage) {
             error(line, " assigning non-constant to", "=", "'%s'", variable->getType().getCompleteString().c_str());
@@ -1471,8 +1477,8 @@ TIntermTyped* TParseContext::addConstArrayNode(int index, TIntermTyped* node, TS
     TType arrayElementType = node->getType();
     arrayElementType.dereference();
 
-    if (index >= node->getType().getArraySize()) {
-        error(line, "", "[", "array index out of range '%d'", index);
+    if (index >= node->getType().getArraySize() || index < 0) {
+        error(line, "", "[", "array index '%d' out of range", index);
         recover();
         index = 0;
     }

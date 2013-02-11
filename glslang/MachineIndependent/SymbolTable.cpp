@@ -87,10 +87,10 @@ void TType::buildMangledName(TString& mangledName)
         mangledName += static_cast<char>('0' + getMatrixRows());
     }
 
-    if (isArray()) {
+    if (arraySizes) {
 		const int maxSize = 10;
         char buf[maxSize];
-        sprintf_s(buf, maxSize, "%d", arraySize);
+        sprintf_s(buf, maxSize, "%d", arraySizes->front());
         mangledName += '[';
         mangledName += buf;
         mangledName += ']';

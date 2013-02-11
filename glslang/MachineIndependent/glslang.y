@@ -101,7 +101,7 @@ Jutta Degener, 1995
             TParameter param;
             TTypeLine typeLine;
             TTypeList* typeList;
-            TVector<int>* intVector;
+            TArraySizes arraySizes;
         };
     } interm;
 }
@@ -321,7 +321,8 @@ postfix_expression
                                 if (parseContext.arraySetMaxSize($1->getAsSymbolNode(), $1->getTypePointer(), 0, false, $2.line))
                                     parseContext.recover();
                             }
-                        } else if ( $3->getAsConstantUnion()->getUnionArrayPointer()->getIConst() >= $1->getType().getArraySize()) {
+                        } else if ( $3->getAsConstantUnion()->getUnionArrayPointer()->getIConst() >= $1->getType().getArraySize() ||
+                                    $3->getAsConstantUnion()->getUnionArrayPointer()->getIConst() < 0) {
                             parseContext.error($2.line, "", "[", "array index out of range '%d'", $3->getAsConstantUnion()->getUnionArrayPointer()->getIConst());
                             parseContext.recover();
                         }
@@ -345,8 +346,8 @@ postfix_expression
             TType newType = $1->getType();
             newType.dereference();
             $$->setType(newType);
-            //?? why didn't the code above get the type right?
-            //?? write a deference test
+            //?? why wouldn't the code above get the type right?
+            //?? write a dereference test
         }
     }
     | function_call {
@@ -444,8 +445,7 @@ postfix_expression
                 }
             }
         } else {
-            //?? fix message
-            parseContext.error($2.line, " field selection requires structure, vector, or matrix on left hand side", $3.string->c_str(), "");
+            parseContext.error($2.line, " dot operator requires structure, array, vector, or matrix on left hand side", $3.string->c_str(), "");
             parseContext.recover();
             $$ = $1;
         }
@@ -489,13 +489,16 @@ function_call
         TOperator op = fnCall->getBuiltInOp();
         if (op == EOpArrayLength) {
             // TODO: check for no arguments to .length()
-            if ($1.intermNode->getAsTyped() == 0 || $1.intermNode->getAsTyped()->getType().getArraySize() == 0) {
+            int length;
+            if ($1.intermNode->getAsTyped() == 0 || ! $1.intermNode->getAsTyped()->getType().isArray() || $1.intermNode->getAsTyped()->getType().getArraySize() == 0) {
                 parseContext.error($1.line, "", fnCall->getName().c_str(), "array must be declared with a size before using this method");
                 parseContext.recover();
-            }
+                length = 1;
+            } else
+                length = $1.intermNode->getAsTyped()->getType().getArraySize();
 
             constUnion *unionArray = new constUnion[1];
-            unionArray->setIConst($1.intermNode->getAsTyped()->getType().getArraySize());
+            unionArray->setIConst(length);
             $$ = parseContext.intermediate.addConstantUnion(unionArray, TType(EbtInt, EvqConst), $1.line);
         } else if (op != EOpNull) {
             //
@@ -647,8 +650,9 @@ function_identifier
         $$.function = 0;
         $$.intermNode = 0;
 
-        if ($1.array) {
-            parseContext.profileRequires($1.line, ENoProfile, 120, "GL_3DL_array_objects", "array");
+        if ($1.arraySizes) {
+            parseContext.profileRequires($1.line, ENoProfile, 120, "GL_3DL_array_objects", "arrayed constructor");
+            parseContext.profileRequires($1.line, EEsProfile, 300, "GL_3DL_array_objects", "arrayed constructor");
         }
 
         $1.qualifier.precision = EpqNone;
@@ -1284,6 +1288,10 @@ function_header
 parameter_declarator
     // Type + name
     : type_specifier IDENTIFIER {
+        if ($1.arraySizes) {
+            parseContext.profileRequires($1.line, ENoProfile, 120, "GL_3DL_array_objects", "arrayed type");
+            parseContext.profileRequires($1.line, EEsProfile, 300, 0, "arrayed type");
+        }
         if ($1.type == EbtVoid) {
             parseContext.error($2.line, "illegal use of type 'void'", $2.string->c_str(), "");
             parseContext.recover();
@@ -1296,13 +1304,18 @@ parameter_declarator
         $$.param = param;
     }
     | type_specifier IDENTIFIER array_specifier {
-        if (parseContext.arraySizeRequiredErrorCheck($3.line, $3.intVector->front()))
+        if ($1.arraySizes) {
+            parseContext.profileRequires($1.line, ENoProfile, 120, "GL_3DL_array_objects", "arrayed type");
+            parseContext.profileRequires($1.line, EEsProfile, 300, 0, "arrayed type");
+        }
+
+        if (parseContext.arraySizeRequiredErrorCheck($3.line, $3.arraySizes->front()))
             parseContext.recover();
 
         if (parseContext.reservedErrorCheck($2.line, *$2.string))
             parseContext.recover();
 
-        $1.setArray(true, $3.intVector->front());
+        $1.arraySizes = $3.arraySizes;
 
         TParameter param = { $2.string, new TType($1)};
         $$.line = $2.line;
@@ -1389,7 +1402,7 @@ init_declarator_list
         if (parseContext.arrayQualifierErrorCheck($4.line, $1.type))
             parseContext.recover();
         else {
-            $1.type.setArray(true, $4.intVector->front());
+            $1.type.arraySizes = $4.arraySizes;
             TVariable* variable;
             if (parseContext.arrayErrorCheck($4.line, *$3.string, $1.type, variable))
                 parseContext.recover();
@@ -1405,7 +1418,7 @@ init_declarator_list
         if (parseContext.arrayQualifierErrorCheck($4.line, $1.type))
             parseContext.recover();
         else {
-            $1.type.setArray(true, $4.intVector->front());
+            $1.type.arraySizes = $4.arraySizes;
             if (parseContext.arrayErrorCheck($4.line, *$3.string, $1.type, variable))
                 parseContext.recover();
         }
@@ -1490,7 +1503,7 @@ single_declaration
         if (parseContext.arrayQualifierErrorCheck($3.line, $1))
             parseContext.recover();
         else {
-            $1.setArray(true, $3.intVector->front());
+            $1.arraySizes = $3.arraySizes;
             TVariable* variable;
             if (parseContext.arrayErrorCheck($3.line, *$2.string, $1, variable))
                 parseContext.recover();
@@ -1508,7 +1521,7 @@ single_declaration
         if (parseContext.arrayQualifierErrorCheck($3.line, $1))
             parseContext.recover();
         else {
-            $1.setArray(true, $3.intVector->front());
+            $1.arraySizes = $3.arraySizes;
             if (parseContext.arrayErrorCheck($3.line, *$2.string, $1, variable))
                 parseContext.recover();
         }
@@ -1556,17 +1569,20 @@ fully_specified_type
     : type_specifier {
         $$ = $1;
 
-        if ($1.array) {
-            parseContext.profileRequires($1.line, ENoProfile, 120, "GL_3DL_array_objects", "array");
+        if ($1.arraySizes) {
+            parseContext.profileRequires($1.line, ENoProfile, 120, "GL_3DL_array_objects", "arrayed type");
+            parseContext.profileRequires($1.line, EEsProfile, 300, 0, "arrayed type");
         }
     }
     | type_qualifier type_specifier  {
-        if ($2.array)
-            parseContext.profileRequires($1.line, ENoProfile, 120, "GL_3DL_array_objects", "array");
+        if ($2.arraySizes) {
+            parseContext.profileRequires($2.line, ENoProfile, 120, "GL_3DL_array_objects", "arrayed type");
+            parseContext.profileRequires($2.line, EEsProfile, 300, 0, "arrayed type");
+        }
 
-        if ($2.array && parseContext.arrayQualifierErrorCheck($2.line, $1)) {
+        if ($2.arraySizes && parseContext.arrayQualifierErrorCheck($2.line, $1)) {
             parseContext.recover();
-            $2.setArray(false);
+            $2.arraySizes = 0;
         }
 
         if ($1.qualifier.storage == EvqAttribute &&
@@ -1833,28 +1849,28 @@ type_specifier
     | type_specifier_nonarray array_specifier {
         $$ = $1;
         $$.qualifier.precision = parseContext.defaultPrecision[$$.type];
-        $$.setArray(true, $2.intVector->front());
+        $$.arraySizes = $2.arraySizes;
     }
     ;
 
 array_specifier
     : LEFT_BRACKET RIGHT_BRACKET {
         $$.line = $1.line;
-        $$.intVector = new TVector<int>;
-        $$.intVector->push_back(0);
+        $$.arraySizes = NewPoolTArraySizes();
+        $$.arraySizes->push_back(0);
     }
     | LEFT_BRACKET constant_expression RIGHT_BRACKET {
         $$.line = $1.line;
-        $$.intVector = new TVector<int>;
+        $$.arraySizes = NewPoolTArraySizes();
 
         int size;
         if (parseContext.arraySizeErrorCheck($2->getLine(), $2, size))
             parseContext.recover();
-        $$.intVector->push_back(size);
+        $$.arraySizes->push_back(size);
     }
     | array_specifier LEFT_BRACKET RIGHT_BRACKET {
         $$ = $1;
-        $$.intVector->push_back(0);
+        $$.arraySizes->push_back(0);
     }
     | array_specifier LEFT_BRACKET constant_expression RIGHT_BRACKET {
         $$ = $1;
@@ -1862,7 +1878,7 @@ array_specifier
         int size;
         if (parseContext.arraySizeErrorCheck($3->getLine(), $3, size))
             parseContext.recover();
-        $$.intVector->push_back(size);
+        $$.arraySizes->push_back(size);
     }
     ;
 
@@ -2443,7 +2459,7 @@ type_specifier_nonarray
         // This is for user defined type names.  The lexical phase looked up the
         // type.
         //
-        TType& structure = static_cast<TVariable*>($1.symbol)->getType();
+        const TType& structure = static_cast<const TVariable*>($1.symbol)->getType();
         $$.init($1.line, parseContext.symbolTable.atGlobalLevel());
         $$.type = EbtStruct;
         $$.userDef = &structure;
@@ -2511,6 +2527,11 @@ struct_declaration_list
 
 struct_declaration
     : type_specifier struct_declarator_list SEMICOLON {
+        if ($1.arraySizes) {
+            parseContext.profileRequires($1.line, ENoProfile, 120, "GL_3DL_array_objects", "arrayed type");
+            parseContext.profileRequires($1.line, EEsProfile, 300, 0, "arrayed type");
+        }
+
         $$ = $2;
 
         if (parseContext.voidErrorCheck($1.line, (*$2)[0].type->getFieldName(), $1)) {
@@ -2522,13 +2543,18 @@ struct_declaration
             //
             (*$$)[i].type->setElementType($1.type, $1.vectorSize, $1.matrixCols, $1.matrixRows, $1.userDef);
 
-            if ($1.array)
-                (*$$)[i].type->setArraySize($1.arraySize);
+            if ($1.arraySizes)
+                (*$$)[i].type->setArraySizes($1.arraySizes);
             if ($1.userDef)
                 (*$$)[i].type->setTypeName($1.userDef->getTypeName());
         }
     }
     | type_qualifier type_specifier struct_declarator_list SEMICOLON {
+        if ($2.arraySizes) {
+            parseContext.profileRequires($2.line, ENoProfile, 120, "GL_3DL_array_objects", "arrayed type");
+            parseContext.profileRequires($2.line, EEsProfile, 300, 0, "arrayed type");
+        }
+
         $$ = $3;
 
         if (parseContext.voidErrorCheck($2.line, (*$3)[0].type->getFieldName(), $2)) {
@@ -2540,8 +2566,8 @@ struct_declaration
             //
             (*$$)[i].type->setElementType($2.type, $2.vectorSize, $2.matrixCols, $2.matrixRows, $2.userDef);
 
-            if ($2.array)
-                (*$$)[i].type->setArraySize($2.arraySize);
+            if ($2.arraySizes)
+                (*$$)[i].type->setArraySizes($2.arraySizes);
             if ($2.userDef)
                 (*$$)[i].type->setTypeName($2.userDef->getTypeName());
         }
@@ -2568,7 +2594,7 @@ struct_declarator
         $$.type = new TType(EbtVoid);
         $$.line = $1.line;
         $$.type->setFieldName(*$1.string);
-        $$.type->setArraySize($2.intVector->front());
+        $$.type->setArraySizes($2.arraySizes);
     }
     ;
 
