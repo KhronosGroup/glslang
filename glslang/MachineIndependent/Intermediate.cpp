@@ -544,14 +544,14 @@ TIntermTyped* TIntermediate::addComma(TIntermTyped* left, TIntermTyped* right, T
         return right;
     } else {
         TIntermTyped *commaAggregate = growAggregate(left, right, line);
-        commaAggregate->getAsAggregate()->setOperator(EOpComma);    
+        commaAggregate->getAsAggregate()->setOperator(EOpComma);
         commaAggregate->setType(right->getType());
         commaAggregate->getTypePointer()->getQualifier().storage = EvqTemporary;
         return commaAggregate;
     }
 }
 
-TIntermTyped* TIntermediate::addMethod(TIntermTyped* object, TType& type, const TString* name, TSourceLoc line)
+TIntermTyped* TIntermediate::addMethod(TIntermTyped* object, const TType& type, const TString* name, TSourceLoc line)
 {
     TIntermMethod* method = new TIntermMethod(object, type, *name);
     method->setLine(line);
@@ -1217,7 +1217,7 @@ TIntermTyped* TIntermConstantUnion::fold(TOperator op, TIntermTyped* constantNod
                 case EbtInt:   
                     if (rightUnionArray[i] == 0) {
                         infoSink.info.message(EPrefixWarning, "Divide by zero error during constant folding", getLine());
-                        tempConstArray[i].setIConst(INT_MAX);
+                        tempConstArray[i].setIConst(0xEFFFFFFF);
                     } else
                         tempConstArray[i].setIConst(unionArray[i].getIConst() / rightUnionArray[i].getIConst());
                     break;            

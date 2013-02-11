@@ -39,10 +39,14 @@
 
 #ifdef _WIN32
     #include <basetsd.h>
+    #define snprintf sprintf_s
+    #define safe_vsprintf(buf,max,format,args) vsnprintf_s((buf), (max), (max), (format), (args))
 #elif defined (solaris)
+    #define safe_vsprintf(buf,max,format,args) vsnprintf((buf), (max), (format), (args))
     #include <sys/int_types.h>
     #define UINT_PTR uintptr_t
 #else
+    #define safe_vsprintf(buf,max,format,args) vsnprintf((buf), (max), (format), (args))
     #include <stdint.h>
     #define UINT_PTR uintptr_t
 #endif
@@ -60,10 +64,9 @@
 #include <list>
 #include <string>
 #include <stdio.h>
+#include <assert.h>
 
 typedef int TSourceLoc;
-
-	#include <assert.h>
 
 #include "PoolAlloc.h"
 
@@ -171,9 +174,9 @@ __inline TPersistString FormatSourceLoc(const TSourceLoc loc)
     int line = loc & SourceLocLineMask;
 
     if (line)
-        sprintf_s(locText, maxSize, "%d:%d", string, line);
+        snprintf(locText, maxSize, "%d:%d", string, line);
     else
-        sprintf_s(locText, maxSize, "%d:? ", string);
+        snprintf(locText, maxSize, "%d:? ", string);
 
     return TPersistString(locText);
 }

@@ -90,7 +90,7 @@ void TType::buildMangledName(TString& mangledName)
     if (arraySizes) {
 		const int maxSize = 10;
         char buf[maxSize];
-        sprintf_s(buf, maxSize, "%d", arraySizes->front());
+        snprintf(buf, maxSize, "%d", arraySizes->front());
         mangledName += '[';
         mangledName += buf;
         mangledName += ']';
@@ -213,7 +213,7 @@ TVariable* TVariable::clone(TStructureMap& remapper)
 	return variable;
 }
 
-TFunction::TFunction(const TFunction& copyOf, TStructureMap& remapper) : TSymbol(copyOf)
+TFunction::TFunction(const TFunction& copyOf, const TStructureMap& remapper) : TSymbol(copyOf)
 {	
 	for (unsigned int i = 0; i < copyOf.parameters.size(); ++i) {
 		TParameter param;

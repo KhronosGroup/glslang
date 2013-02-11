@@ -56,7 +56,6 @@ void IdentifyBuiltIns(EShLanguage, TSymbolTable&);
 void IdentifyBuiltIns(EShLanguage, TSymbolTable&, const TBuiltInResource &resources);
 bool GenerateBuiltInSymbolTable(const TBuiltInResource* resources, TInfoSink&, TSymbolTable*, EShLanguage language = EShLangCount);
 bool InitializeSymbolTable(TBuiltInStrings* BuiltInStrings, EShLanguage language, TInfoSink& infoSink, const TBuiltInResource *resources, TSymbolTable*);
-char* GetPreprocessorBuiltinString();
 extern "C" int InitPreprocessor(void);
 extern "C" int FinalizePreprocessor(void);
 

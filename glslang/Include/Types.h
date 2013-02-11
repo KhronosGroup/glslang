@@ -140,7 +140,7 @@ public:
 };
 
 typedef std::map<TTypeList*, TTypeList*> TStructureMap;
-typedef std::map<TTypeList*, TTypeList*>::iterator TStructureMapIterator;
+typedef std::map<TTypeList*, TTypeList*>::const_iterator TStructureMapIterator;
 //
 // Base class for things that have a type.
 //
@@ -178,7 +178,7 @@ public:
 
 	TType(const TType& type) { *this = type; }
 
-	void copyType(const TType& copyOf, TStructureMap& remapper)
+	void copyType(const TType& copyOf, const TStructureMap& remapper)
 	{
 		type = copyOf.type;
 		qualifier = copyOf.qualifier;
@@ -226,7 +226,7 @@ public:
 		arrayInformationType = 0; // arrayInformationType should not be set for builtIn symbol table level
 	}
 
-	TType* clone(TStructureMap& remapper)
+	TType* clone(const TStructureMap& remapper)
 	{
 		TType *newType = new TType();
 		newType->copyType(*this, remapper);
@@ -294,7 +294,7 @@ public:
     void setArrayInformationType(TType* t) { arrayInformationType = t; }
     TType* getArrayInformationType() { return arrayInformationType; }
     virtual bool isVector() const { return vectorSize > 1; }
-    static char* getBasicString(TBasicType t) {
+    static const char* getBasicString(TBasicType t) {
         switch (t) {
         case EbtVoid:              return "void";              break;
         case EbtFloat:             return "float";             break;

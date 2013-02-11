@@ -153,7 +153,7 @@ void TParseContext::requireNotRemoved(int line, EProfile callingProfile, int rem
         if (version >= removedVersion) {
             const int maxSize = 60;
             char buf[maxSize];
-            sprintf_s(buf, maxSize, "%s profile; removed in version %d", ProfileName[profile], removedVersion);
+            snprintf(buf, maxSize, "%s profile; removed in version %d", ProfileName[profile], removedVersion);
             error(line, "no longer supported in", featureDesc, buf);
             recover();
         }

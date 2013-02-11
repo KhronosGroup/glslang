@@ -32,6 +32,8 @@
 //POSSIBILITY OF SUCH DAMAGE.
 //
 
+#ifdef USE_QUALIFIER_ALIVE
+
 #include "../Include/intermediate.h"
 
 class TAliveTraverser : public TIntermTraverser {
@@ -89,3 +91,5 @@ bool AliveSelection(bool preVisit, TIntermSelection* node, TIntermTraverser* it)
 
     return true;
 }
+
+#endif

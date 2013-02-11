@@ -792,7 +792,8 @@ function_identifier
 
         if ($$.function == 0) {
             // error recover
-            $$.function = new TFunction(&TString(""), TType(EbtVoid), EOpNull);
+            TString empty("");
+            $$.function = new TFunction(&empty, TType(EbtVoid), EOpNull);
         }
     }
     ;
@@ -826,11 +827,11 @@ unary_expression
         if ($1.op != EOpNull) {
             $$ = parseContext.intermediate.addUnaryMath($1.op, $2, $1.line, parseContext.symbolTable);
             if ($$ == 0) {
-                char* errorOp = "";
+                char errorOp[2] = {0, 0};
                 switch($1.op) {
-                case EOpNegative:   errorOp = "-"; break;
-                case EOpLogicalNot: errorOp = "!"; break;
-                case EOpBitwiseNot: errorOp = "~"; break;
+                case EOpNegative:   errorOp[0] = '-'; break;
+                case EOpLogicalNot: errorOp[0] = '!'; break;
+                case EOpBitwiseNot: errorOp[0] = '~'; break;
                 default: break;
                 }
                 parseContext.unaryOpError($1.line, errorOp, $2->getCompleteString());

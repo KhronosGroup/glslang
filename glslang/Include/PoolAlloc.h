@@ -104,7 +104,7 @@ public:
     }
 
 private:
-    void checkGuardBlock(unsigned char* blockMem, unsigned char val, char* locText) const;
+    void checkGuardBlock(unsigned char* blockMem, unsigned char val, const char* locText) const;
 
     // Find offsets to pre and post guard blocks, and user data buffer
     unsigned char* preGuard()  const { return mem + headerSize(); }

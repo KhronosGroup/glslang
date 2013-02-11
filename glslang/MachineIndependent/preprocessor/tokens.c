@@ -77,7 +77,10 @@ NVIDIA HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //
 // tokens.c
 //
-#define _CRT_SECURE_NO_WARNINGS
+#ifdef _WIN32
+    #define _CRT_SECURE_NO_WARNINGS
+    #define snprintf sprintf_s
+#endif
 
 #include <assert.h>
 #include <stdlib.h>
@@ -447,10 +450,10 @@ void DumpTokenStream(FILE *fp, TokenStream *s, yystypepp * yylvalpp) {
         switch (token) {
         case CPP_IDENTIFIER:
         case CPP_TYPEIDENTIFIER:
-            sprintf_s(str, maxSize, "%s ", GetAtomString(atable, yylvalpp->sc_ident));
+            snprintf(str, maxSize, "%s ", GetAtomString(atable, yylvalpp->sc_ident));
             break;
         case CPP_STRCONSTANT:
-            sprintf_s(str, maxSize, "\"%s\"", GetAtomString(atable, yylvalpp->sc_ident));
+            snprintf(str, maxSize, "\"%s\"", GetAtomString(atable, yylvalpp->sc_ident));
             break;
         case CPP_FLOATCONSTANT:
             //printf("%g9.6 ", yylvalpp->sc_fval);
@@ -460,9 +463,9 @@ void DumpTokenStream(FILE *fp, TokenStream *s, yystypepp * yylvalpp) {
             break;
         default:
             if (token >= 127)
-                sprintf_s(str, maxSize, "%s ", GetAtomString(atable, token));
+                snprintf(str, maxSize, "%s ", GetAtomString(atable, token));
             else
-                sprintf_s(str, maxSize, "%c", token);
+                snprintf(str, maxSize, "%c", token);
             break;
         }
         CPPDebugLogMsg(str);

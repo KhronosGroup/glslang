@@ -142,7 +142,7 @@ protected:
 struct TParameter {
     TString *name;
     TType* type;
-	void copyParam(const TParameter& param, TStructureMap& remapper) {
+	void copyParam(const TParameter& param, const TStructureMap& remapper) {
 		name = NewPoolTString(param.name->c_str());
 		type = param.type->clone(remapper);
 	}
@@ -158,12 +158,13 @@ public:
         returnType(TType(EbtVoid)),
         op(o),
         defined(false) { }
-    TFunction(const TString *name, TType& retType, TOperator tOp = EOpNull) :
+    TFunction(const TString *name, const TType& retType, TOperator tOp = EOpNull) :
         TSymbol(name),
         returnType(retType),
         mangledName(*name + '('),
         op(tOp),
         defined(false) { }
+	TFunction(const TFunction&, const TStructureMap& remapper);
 	virtual ~TFunction();
     virtual bool isFunction() const { return true; }
 
@@ -185,7 +186,6 @@ public:
     const TParameter& operator [](int i) const { return parameters[i]; }
 
     virtual void dump(TInfoSink &infoSink) const;
-	TFunction(const TFunction&, TStructureMap& remapper);
 	virtual TFunction* clone(TStructureMap& remapper);
 
 protected:

@@ -73,7 +73,7 @@ public:
     TInfoSinkBase& operator<<(int n)                   { append(String(n)); return *this; }
     TInfoSinkBase& operator<<(const unsigned int n)    { append(String(n)); return *this; }
     TInfoSinkBase& operator<<(float n)                 { const int size = 40; char buf[size]; 
-														 sprintf_s(buf, size, (fabs(n) > 1e-8 && fabs(n) < 1e8) || n == 0.0f ?
+														 snprintf(buf, size, (fabs(n) > 1e-8 && fabs(n) < 1e8) || n == 0.0f ?
 																   "%f" : "%g", n);
 														 append(buf); 
 														 return *this; }

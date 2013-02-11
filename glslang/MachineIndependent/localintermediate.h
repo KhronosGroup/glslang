@@ -65,7 +65,7 @@ public:
     TIntermNode*  addSelection(TIntermTyped* cond, TIntermNodePair code, TSourceLoc);
     TIntermTyped* addSelection(TIntermTyped* cond, TIntermTyped* trueBlock, TIntermTyped* falseBlock, TSourceLoc);
     TIntermTyped* addComma(TIntermTyped* left, TIntermTyped* right, TSourceLoc);
-    TIntermTyped* addMethod(TIntermTyped*, TType&, const TString*, TSourceLoc);
+    TIntermTyped* addMethod(TIntermTyped*, const TType&, const TString*, TSourceLoc);
     TIntermConstantUnion* addConstantUnion(constUnion*, const TType&, TSourceLoc);
     TIntermTyped* promoteConstantUnion(TBasicType, TIntermConstantUnion*) ;
     bool parseConstTree(TSourceLoc, TIntermNode*, constUnion*, TOperator, TSymbolTable&, TType, bool singleConstantParam = false);        

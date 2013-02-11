@@ -13,7 +13,7 @@ OBJECTS= Initialize.o IntermTraverse.o \
 	RemoveTree.o ShaderLang.o intermOut.o parseConst.o SymbolTable.o \
 	InfoSink.o
 
-SRCS= Gen_glslang.cpp Gen_glslang_tab.cpp Initialize.cpp IntermTraverse.cpp \
+SRCS= gen_glslang.cpp gen_glslang_tab.cpp Initialize.cpp IntermTraverse.cpp \
 	Intermediate.cpp ParseHelper.cpp PoolAlloc.cp QualifierAlive.cpp \
 	RemoveTree.cpp ShaderLang.cpp SymbolTable.cpp intermOut.cpp \
 	parseConst.cpp InfoSink.cpp
@@ -24,27 +24,27 @@ default: all
 
 all: $(SHAREDOBJECT)
 
-$(SHAREDOBJECT): Gen_glslang.o Gen_glslang_tab.o $(OBJECTS) \
+$(SHAREDOBJECT): gen_glslang.o gen_glslang_tab.o $(OBJECTS) \
 	$(LIBPREPROCESSOR) $(LIBCODEGEN) $(LIBOSDEPENDENT) $(LIBINITIALISATION)
-	$(CC) -fPIC -shared -lc -o $@ $(OBJECTS) $(LIBPREPROCESSOR) $(LIBCODEGEN) $(LIBOSDEPENDENT) $(LIBINITIALISATION) Gen_glslang.o Gen_glslang_tab.o
+	$(CC) -fPIC -shared -lc -o $@ $(OBJECTS) $(LIBPREPROCESSOR) $(LIBCODEGEN) $(LIBOSDEPENDENT) $(LIBINITIALISATION) gen_glslang.o gen_glslang_tab.o
 
-Gen_glslang.o : Gen_glslang.cpp glslang_tab.h
-	$(CC) -c $(INCLUDE) Gen_glslang.cpp -o $@
+gen_glslang.o : gen_glslang.cpp glslang_tab.h
+	$(CC) -c $(INCLUDE) gen_glslang.cpp -o $@
 
-Gen_glslang_tab.o : Gen_glslang_tab.cpp 
-	$(CC) -c $(INCLUDE) Gen_glslang_tab.cpp -o $@
+gen_glslang_tab.o : gen_glslang_tab.cpp 
+	$(CC) -c $(INCLUDE) gen_glslang_tab.cpp -o $@
 
-Gen_glslang.cpp: glslang.l
-	@echo Generating Gen_glslang.cpp
+gen_glslang.cpp: glslang.l
+	@echo Generating gen_glslang.cpp
 	@dos2unix glslang.l
 	flex glslang.l
 
-Gen_glslang_tab.cpp glslang_tab.h: glslang.y
-	@echo Generating Gen_glslang_tab.cpp
+gen_glslang_tab.cpp glslang_tab.h: glslang.y
+	@echo Generating gen_glslang_tab.cpp
 	@dos2unix glslang.y
 	bison -t -v -d glslang.y
-	mv glslang.tab.c Gen_glslang_tab.cpp
-	mv glslang.tab.h glslang_tab.h
+	mv glslang.tab.c gen_glslang_tab.cpp
+	mv glslang.tab.h glslang_tab.cpp.h
 
 %.o : %.cpp
 	$(CC) $(CPPFLAGS) -c $<
@@ -72,7 +72,7 @@ depend:
 #
 .PHONY : clean
 clean :
-	$(RM) *.o *.a Gen_glslang_tab.cpp Gen_glslang.cpp glslang_tab.h glslang.output
+	$(RM) *.o *.a gen_glslang_tab.cpp gen_glslang.cpp glslang_tab.h glslang.output
 	$(RM) ./lib/*.so
 	cd $(INCPREPROCESSOR); make clean
 	cd $(INCCODEGEN); make clean
@@ -81,27 +81,27 @@ clean :
 	
 # DO NOT DELETE
 
-Gen_glslang.o: ParseHelper.h ../Include/ShHandle.h
-Gen_glslang.o: ../Public/ShaderLang.h ../Include/InfoSink.h
-Gen_glslang.o: ../Include/Common.h ../Include/PoolAlloc.h SymbolTable.h
-Gen_glslang.o: ../Include/Common.h ../Include/intermediate.h
-Gen_glslang.o: ../Include/Types.h ../Include/BaseTypes.h
-Gen_glslang.o: ../Include/ConstantUnion.h ../Include/InfoSink.h
-Gen_glslang.o: localintermediate.h ../Include/intermediate.h
-Gen_glslang.o: ../Public/ShaderLang.h glslang_tab.h ./unistd.h
-Gen_glslang.o: ./preprocessor/preprocess.h ./preprocessor/slglobals.h
-Gen_glslang.o: ./preprocessor/memory.h ./preprocessor/atom.h
-Gen_glslang.o: ./preprocessor/scanner.h ./preprocessor/parser.h
-Gen_glslang.o: ./preprocessor/cpp.h ./preprocessor/tokens.h
-Gen_glslang.o: ./preprocessor/symbols.h ./preprocessor/compile.h
-Gen_glslang_tab.o: SymbolTable.h ../Include/Common.h
-Gen_glslang_tab.o: ../Include/intermediate.h ../Include/Common.h
-Gen_glslang_tab.o: ../Include/PoolAlloc.h ../Include/Types.h
-Gen_glslang_tab.o: ../Include/BaseTypes.h ../Include/ConstantUnion.h
-Gen_glslang_tab.o: ../Include/InfoSink.h ParseHelper.h ../Include/ShHandle.h
-Gen_glslang_tab.o: ../Public/ShaderLang.h
-Gen_glslang_tab.o: ../Include/InfoSink.h localintermediate.h
-Gen_glslang_tab.o: ../Include/intermediate.h ../Public/ShaderLang.h
+gen_glslang.o: ParseHelper.h ../Include/ShHandle.h
+gen_glslang.o: ../Public/ShaderLang.h ../Include/InfoSink.h
+gen_glslang.o: ../Include/Common.h ../Include/PoolAlloc.h SymbolTable.h
+gen_glslang.o: ../Include/Common.h ../Include/intermediate.h
+gen_glslang.o: ../Include/Types.h ../Include/BaseTypes.h
+gen_glslang.o: ../Include/ConstantUnion.h ../Include/InfoSink.h
+gen_glslang.o: localintermediate.h ../Include/intermediate.h
+gen_glslang.o: ../Public/ShaderLang.h glslang_tab.h ./unistd.h
+gen_glslang.o: ./preprocessor/preprocess.h ./preprocessor/slglobals.h
+gen_glslang.o: ./preprocessor/memory.h ./preprocessor/atom.h
+gen_glslang.o: ./preprocessor/scanner.h ./preprocessor/parser.h
+gen_glslang.o: ./preprocessor/cpp.h ./preprocessor/tokens.h
+gen_glslang.o: ./preprocessor/symbols.h ./preprocessor/compile.h
+gen_glslang_tab.o: SymbolTable.h ../Include/Common.h
+gen_glslang_tab.o: ../Include/intermediate.h ../Include/Common.h
+gen_glslang_tab.o: ../Include/PoolAlloc.h ../Include/Types.h
+gen_glslang_tab.o: ../Include/BaseTypes.h ../Include/ConstantUnion.h
+gen_glslang_tab.o: ../Include/InfoSink.h ParseHelper.h ../Include/ShHandle.h
+gen_glslang_tab.o: ../Public/ShaderLang.h
+gen_glslang_tab.o: ../Include/InfoSink.h localintermediate.h
+gen_glslang_tab.o: ../Include/intermediate.h ../Public/ShaderLang.h
 Initialize.o: ../Include/intermediate.h Initialize.h
 Initialize.o: ../Include/ResourceLimits.h ../Include/Common.h
 Initialize.o: ../Include/PoolAlloc.h ../Include/ShHandle.h

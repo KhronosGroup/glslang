@@ -36,6 +36,8 @@
 
 #ifdef _WIN32
     #include <windows.h>
+#else
+    #include <string.h>
 #endif
 
 void TInfoSinkBase::append(const char *s)           

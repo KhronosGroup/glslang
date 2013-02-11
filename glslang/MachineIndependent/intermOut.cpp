@@ -63,21 +63,21 @@ TString TType::getCompleteString() const
 	char *end = &buf[maxSize];
 
     if (qualifier.storage != EvqTemporary && qualifier.storage != EvqGlobal)
-        p += sprintf_s(p, end - p, "%s ", getStorageQualifierString());
+        p += snprintf(p, end - p, "%s ", getStorageQualifierString());
     if (arraySizes) {
         if (arraySizes->front() == 0)
-            p += sprintf_s(p, end - p, "unsized array of ");
+            p += snprintf(p, end - p, "unsized array of ");
         else
-            p += sprintf_s(p, end - p, "%d-element array of ", arraySizes->front());
+            p += snprintf(p, end - p, "%d-element array of ", arraySizes->front());
     }
     if (qualifier.precision != EpqNone)
-        p += sprintf_s(p, end - p, "%s ", getPrecisionQualifierString());
+        p += snprintf(p, end - p, "%s ", getPrecisionQualifierString());
     if (matrixCols > 0)
-        p += sprintf_s(p, end - p, "%dX%d matrix of ", matrixCols, matrixRows);
+        p += snprintf(p, end - p, "%dX%d matrix of ", matrixCols, matrixRows);
     else if (vectorSize > 1)
-        p += sprintf_s(p, end - p, "%d-component vector of ", vectorSize);
+        p += snprintf(p, end - p, "%d-component vector of ", vectorSize);
 
-    sprintf_s(p, end - p, "%s", getBasicString());
+    snprintf(p, end - p, "%s", getBasicString());
 
     return TString(buf);
 }   
@@ -113,7 +113,7 @@ void OutputSymbol(TIntermSymbol* node, TIntermTraverser* it)
 
 	const int maxSize = 100;
     char buf[maxSize];
-    sprintf_s(buf, maxSize, "'%s' (%s)\n",
+    snprintf(buf, maxSize, "'%s' (%s)\n",
            node->getSymbol().c_str(),
            node->getCompleteString().c_str());
 
@@ -398,7 +398,7 @@ void OutputConstantUnion(TIntermConstantUnion* node, TIntermTraverser* it)
             {
 				const int maxSize = 300;
                 char buf[maxSize];
-                sprintf_s(buf, maxSize, "%f (%s)", node->getUnionArrayPointer()[i].getFConst(), "const float");
+                snprintf(buf, maxSize, "%f (%s)", node->getUnionArrayPointer()[i].getFConst(), "const float");
 
                 out.debug << buf << "\n";           
             }
@@ -407,7 +407,7 @@ void OutputConstantUnion(TIntermConstantUnion* node, TIntermTraverser* it)
             {
 				const int maxSize = 300;
                 char buf[maxSize];
-                sprintf_s(buf, maxSize, "%f (%s)", node->getUnionArrayPointer()[i].getDConst(), "const double");
+                snprintf(buf, maxSize, "%f (%s)", node->getUnionArrayPointer()[i].getDConst(), "const double");
 
                 out.debug << buf << "\n";           
             }
@@ -416,7 +416,7 @@ void OutputConstantUnion(TIntermConstantUnion* node, TIntermTraverser* it)
             {
 				const int maxSize = 300;
                 char buf[maxSize];
-                sprintf_s(buf, maxSize, "%d (%s)", node->getUnionArrayPointer()[i].getIConst(), "const int");
+                snprintf(buf, maxSize, "%d (%s)", node->getUnionArrayPointer()[i].getIConst(), "const int");
 
                 out.debug << buf << "\n";
             }

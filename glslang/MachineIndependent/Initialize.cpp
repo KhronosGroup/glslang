@@ -732,40 +732,40 @@ void TBuiltIns::initialize(const TBuiltInResource &resources)
         //
 		const int maxSize = 80;
         char builtInConstant[maxSize];
-        sprintf_s(builtInConstant, maxSize, "const int  gl_MaxLights = %d;", resources.maxLights); // GL 1.0
+        snprintf(builtInConstant, maxSize, "const int  gl_MaxLights = %d;", resources.maxLights); // GL 1.0
         s.append(TString(builtInConstant));                            
         
-        sprintf_s(builtInConstant, maxSize, "const int  gl_MaxClipPlanes = %d;", resources.maxClipPlanes);  // GL 1.0
+        snprintf(builtInConstant, maxSize, "const int  gl_MaxClipPlanes = %d;", resources.maxClipPlanes);  // GL 1.0
         s.append(TString(builtInConstant));
         
-        sprintf_s(builtInConstant, maxSize, "const int  gl_MaxTextureUnits = %d;", resources.maxTextureUnits); // GL 1.2
+        snprintf(builtInConstant, maxSize, "const int  gl_MaxTextureUnits = %d;", resources.maxTextureUnits); // GL 1.2
         s.append(TString(builtInConstant));
         
-        sprintf_s(builtInConstant, maxSize, "const int  gl_MaxTextureCoords = %d;", resources.maxTextureCoords); // ARB_fragment_program
+        snprintf(builtInConstant, maxSize, "const int  gl_MaxTextureCoords = %d;", resources.maxTextureCoords); // ARB_fragment_program
         s.append(TString(builtInConstant));
         
-        sprintf_s(builtInConstant, maxSize, "const int  gl_MaxVertexAttribs = %d;", resources.maxVertexAttribs); // ARB_vertex_shader
+        snprintf(builtInConstant, maxSize, "const int  gl_MaxVertexAttribs = %d;", resources.maxVertexAttribs); // ARB_vertex_shader
         s.append(TString(builtInConstant));
         
-        sprintf_s(builtInConstant, maxSize, "const int  gl_MaxVertexUniformComponents = %d;", resources.maxVertexUniformComponents); // ARB_vertex_shader
+        snprintf(builtInConstant, maxSize, "const int  gl_MaxVertexUniformComponents = %d;", resources.maxVertexUniformComponents); // ARB_vertex_shader
         s.append(TString(builtInConstant));       
         
-        sprintf_s(builtInConstant, maxSize, "const int  gl_MaxVaryingFloats = %d;", resources.maxVaryingFloats); // ARB_vertex_shader
+        snprintf(builtInConstant, maxSize, "const int  gl_MaxVaryingFloats = %d;", resources.maxVaryingFloats); // ARB_vertex_shader
         s.append(TString(builtInConstant));        
         
-        sprintf_s(builtInConstant, maxSize, "const int  gl_MaxVertexTextureImageUnits = %d;", resources.maxVertexTextureImageUnits); // ARB_vertex_shader
+        snprintf(builtInConstant, maxSize, "const int  gl_MaxVertexTextureImageUnits = %d;", resources.maxVertexTextureImageUnits); // ARB_vertex_shader
         s.append(TString(builtInConstant));        
         
-        sprintf_s(builtInConstant, maxSize, "const int  gl_MaxCombinedTextureImageUnits = %d;", resources.maxCombinedTextureImageUnits); // ARB_vertex_shader
+        snprintf(builtInConstant, maxSize, "const int  gl_MaxCombinedTextureImageUnits = %d;", resources.maxCombinedTextureImageUnits); // ARB_vertex_shader
         s.append(TString(builtInConstant));        
         
-        sprintf_s(builtInConstant, maxSize, "const int  gl_MaxTextureImageUnits = %d;", resources.maxTextureImageUnits); // ARB_fragment_shader
+        snprintf(builtInConstant, maxSize, "const int  gl_MaxTextureImageUnits = %d;", resources.maxTextureImageUnits); // ARB_fragment_shader
         s.append(TString(builtInConstant));
         
-        sprintf_s(builtInConstant, maxSize, "const int  gl_MaxFragmentUniformComponents = %d;", resources.maxFragmentUniformComponents); // ARB_fragment_shader
+        snprintf(builtInConstant, maxSize, "const int  gl_MaxFragmentUniformComponents = %d;", resources.maxFragmentUniformComponents); // ARB_fragment_shader
         s.append(TString(builtInConstant));
         
-        sprintf_s(builtInConstant, maxSize, "const int  gl_MaxDrawBuffers = %d;", resources.maxDrawBuffers); // proposed ARB_draw_buffers
+        snprintf(builtInConstant, maxSize, "const int  gl_MaxDrawBuffers = %d;", resources.maxDrawBuffers); // proposed ARB_draw_buffers
         s.append(TString(builtInConstant));
 
         //
@@ -948,12 +948,4 @@ void IdentifyBuiltIns(EShLanguage language, TSymbolTable& symbolTable, const TBu
 
 	default: break;
     }
-}
-
-char* GetPreprocessorBuiltinString()
-{
-    static char *PreprocessorBuiltinString = "#define GL_ARB_texture_rectangle 1\n"
-                                             "#define GL_3DL_array_objects 1\n";
-
-    return PreprocessorBuiltinString;
 }

@@ -84,7 +84,7 @@ bool ParseBinary(bool /* preVisit */, TIntermBinary* node, TIntermTraverser* it)
     if (qualifier != EvqConst) {
 		const int maxSize = 200;
         char buf[maxSize];
-        sprintf_s(buf, maxSize, "'constructor' : assigning non-constant to %s", oit->type.getCompleteString().c_str());
+        snprintf(buf, maxSize, "'constructor' : assigning non-constant to %s", oit->type.getCompleteString().c_str());
         oit->infoSink.info.message(EPrefixError, buf, node->getLine());
         oit->error = true;
 
@@ -102,7 +102,7 @@ bool ParseUnary(bool /* preVisit */, TIntermUnary* node, TIntermTraverser* it)
 
 	const int maxSize = 200;
     char buf[maxSize];
-    sprintf_s(buf, maxSize, "'constructor' : assigning non-constant to '%s'", oit->type.getCompleteString().c_str());
+    snprintf(buf, maxSize, "'constructor' : assigning non-constant to '%s'", oit->type.getCompleteString().c_str());
     oit->infoSink.info.message(EPrefixError, buf, node->getLine());
     oit->error = true;
 
@@ -116,7 +116,7 @@ bool ParseAggregate(bool /* preVisit */, TIntermAggregate* node, TIntermTraverse
     if (!node->isConstructor() && node->getOp() != EOpComma) {
 		const int maxSize = 200;
         char buf[maxSize];
-        sprintf_s(buf, maxSize, "'constructor' : assigning non-constant to '%s'", oit->type.getCompleteString().c_str());
+        snprintf(buf, maxSize, "'constructor' : assigning non-constant to '%s'", oit->type.getCompleteString().c_str());
         oit->infoSink.info.message(EPrefixError, buf, node->getLine());
         oit->error = true;
 

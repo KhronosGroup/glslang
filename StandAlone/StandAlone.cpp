@@ -73,12 +73,12 @@ ShBinding FixedAttributeBindings[] = {
 ShBindingTable FixedAttributeTable = { 3, FixedAttributeBindings };
 
 static EShLanguage FindLanguage(char *lang);
-bool CompileFile(char *fileName, ShHandle, int, const TBuiltInResource*);
+bool CompileFile(const char *fileName, ShHandle, int, const TBuiltInResource*);
 void usage();
 void FreeFileData(char **data);
-char** ReadFileData(char *fileName);
-void InfoLogMsg(char* msg, const char* name, const int num);
-int ShOutputMultipleStrings(char ** );
+char** ReadFileData(const char *fileName);
+void InfoLogMsg(const char* msg, const char* name, const int num);
+int ShOutputMultipleStrings(const char *);
 //Added to accomodate the multiple strings.
 int OutputMultipleStrings = 1;
 
@@ -134,7 +134,7 @@ int C_DECL main(int argc, char* argv[])
                 case 'i': debugOptions |= EDebugOpIntermediate;       break;
                 case 'a': debugOptions |= EDebugOpAssembly;           break;
 #endif
-                case 'c': if(!ShOutputMultipleStrings(++argv))
+                case 'c': if(!ShOutputMultipleStrings((++argv)[0]))
                                                          return EFailUsage; 
                           --argc;                                    break;
                 case 'm': debugOptions |= EDebugOpLinkMaps;           break;
@@ -234,7 +234,7 @@ static EShLanguage FindLanguage(char *name)
 //
 //   Read a file's data into a string, and compile it using ShCompile
 //
-bool CompileFile(char *fileName, ShHandle compiler, int debugOptions, const TBuiltInResource *resources)
+bool CompileFile(const char *fileName, ShHandle compiler, int debugOptions, const TBuiltInResource *resources)
 {
     int ret;
     char **data = ReadFileData(fileName);
@@ -278,7 +278,7 @@ void usage()
 //   Malloc a string of sufficient size and read a string into it.
 //
 # define MAX_SOURCE_STRINGS 5
-char** ReadFileData(char *fileName) 
+char** ReadFileData(const char *fileName) 
 {
     FILE *in;
 	int errorCode = fopen_s(&in, fileName, "r");
@@ -345,15 +345,15 @@ void FreeFileData(char **data)
 
 
 
-void InfoLogMsg(char* msg, const char* name, const int num)
+void InfoLogMsg(const char* msg, const char* name, const int num)
 {
     printf(num >= 0 ? "#### %s %s %d INFO LOG ####\n" :
            "#### %s %s INFO LOG ####\n", msg, name, num);
 }
 
-int ShOutputMultipleStrings(char **argv)
+int ShOutputMultipleStrings(const char *argv)
 {
-	if(!(abs(OutputMultipleStrings = atoi(*argv)))||((OutputMultipleStrings >5 || OutputMultipleStrings < 1)? 1:0)){
+	if(!(abs(OutputMultipleStrings = atoi(argv)))||((OutputMultipleStrings >5 || OutputMultipleStrings < 1)? 1:0)){
 	   printf("Invalid Command Line Argument after -c option.\n"
               "Usage: -c <integer> where integer =[1,5]\n"
               "This option must be specified before the input file path\n");

@@ -245,7 +245,7 @@ void C_DECL TParseContext::error(TSourceLoc nLine, const char *szReason, const c
     
     va_start(marker, szExtraInfoFormat);
     
-    _vsnprintf_s(szExtraInfo, maxSize, sizeof(szExtraInfo), szExtraInfoFormat, marker);
+    safe_vsprintf(szExtraInfo, maxSize, szExtraInfoFormat, marker);
     
     /* VC++ format: file(linenum) : error #: 'token' : extrainfo */
     infoSink.info.prefix(EPrefixError);
@@ -269,7 +269,7 @@ void TParseContext::assignError(int line, const char* op, TString left, TString 
 //
 // Same error message for all places unary operations don't work.
 //
-void TParseContext::unaryOpError(int line, char* op, TString operand)
+void TParseContext::unaryOpError(int line, const char* op, TString operand)
 {
    error(line, " wrong operand type", op, 
           "no operation '%s' exists that takes an operand of type %s (or there is no acceptable conversion)",
@@ -279,7 +279,7 @@ void TParseContext::unaryOpError(int line, char* op, TString operand)
 //
 // Same error message for all binary operations don't work.
 //
-void TParseContext::binaryOpError(int line, char* op, TString left, TString right)
+void TParseContext::binaryOpError(int line, const char* op, TString left, TString right)
 {
     error(line, " wrong operand types:", op,
             "no operation '%s' exists that takes a left-hand operand of type '%s' and "
@@ -326,7 +326,7 @@ void TParseContext::variableErrorCheck(TIntermTyped*& nodePtr)
 //
 // Returns true if the was an error.
 //
-bool TParseContext::lValueErrorCheck(int line, char* op, TIntermTyped* node)
+bool TParseContext::lValueErrorCheck(int line, const char* op, TIntermTyped* node)
 {
     TIntermSymbol* symNode = node->getAsSymbolNode();
     TIntermBinary* binaryNode = node->getAsBinaryNode();
@@ -373,7 +373,7 @@ bool TParseContext::lValueErrorCheck(int line, char* op, TIntermTyped* node)
     if (symNode != 0)
         symbol = symNode->getSymbol().c_str();
 
-    char* message = 0;
+    const char* message = 0;
     switch (node->getQualifier().storage) {
     case EvqConst:          message = "can't modify a const";        break;
     case EvqConstReadOnly:  message = "can't modify a const";        break;
@@ -453,7 +453,7 @@ bool TParseContext::constErrorCheck(TIntermTyped* node)
 //
 // Returns true if the was an error.
 //
-bool TParseContext::integerErrorCheck(TIntermTyped* node, char* token)
+bool TParseContext::integerErrorCheck(TIntermTyped* node, const char* token)
 {
     if (node->getBasicType() == EbtInt && node->getVectorSize() == 1)
         return false;
@@ -469,7 +469,7 @@ bool TParseContext::integerErrorCheck(TIntermTyped* node, char* token)
 //
 // Returns true if the was an error.
 //
-bool TParseContext::globalErrorCheck(int line, bool global, char* token)
+bool TParseContext::globalErrorCheck(int line, bool global, const char* token)
 {
     if (global)
         return false;
