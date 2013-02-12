@@ -151,8 +151,6 @@ struct TParseContext {
 };
 
 int PaParseStrings(char* argv[], int strLen[], int argc, TParseContext&);
-void PaReservedWord();
-int PaIdentOrType(TString& id, TParseContext&, TSymbol*&);
 int PaParseComment(int &lineno, TParseContext&);
 void ResetFlex();
 

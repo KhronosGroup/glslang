@@ -69,7 +69,10 @@ LF          [lL][fF]
 #include "ParseHelper.h"
 #include "glslang_tab.cpp.h"
 
+int PaReservedWord();
+int PaIdentOrType(TString& id, TParseContext&, TSymbol*&);
 int PaIdentOrReserved(bool reserved, TParseContext&, int line, const char* text, YYSTYPE* pyylval);
+int PaES30ReservedFromGLSL(int version, TParseContext& pc, int line, const char* text, YYSTYPE* pyylval, int keyword);
 int PaPrecisionKeyword(TParseContext&, int line, const char* text, YYSTYPE* pyylval, int keyword);
 int PaMatNxM(TParseContext&, int line, const char* text, YYSTYPE* pyylval, int keyword);
 int PaDMat(TParseContext&, int line, const char* text, YYSTYPE* pyylval, int keyword);
@@ -104,18 +107,22 @@ int yy_input(char* buf, int max_size);
 %%
 <*>"//"[^\n]*"\n"     { /* ?? carriage and/or line-feed? */ };
 
-"attribute"    {  pyylval->lex.line = yylineno; return(ATTRIBUTE); }
+"attribute"    {  pyylval->lex.line = yylineno; return(ATTRIBUTE); }  // TODO ES 30 reserved
 "const"        {  pyylval->lex.line = yylineno; return(CONST); }
 "uniform"      {  pyylval->lex.line = yylineno; return(UNIFORM); }
-"varying"      {  pyylval->lex.line = yylineno; return(VARYING); }
+"varying"      {  pyylval->lex.line = yylineno; return(VARYING); }    // TODO ES 30 reserved
 "buffer"       {  pyylval->lex.line = yylineno; return(BUFFER); }
 "shared"       {  pyylval->lex.line = yylineno; return(SHARED); }
 
-"coherent"     {  pyylval->lex.line = yylineno; return(COHERENT); }
-"volatile"     {  pyylval->lex.line = yylineno; return(VOLATILE); }
-"restrict"     {  pyylval->lex.line = yylineno; return(RESTRICT); }
-"readonly"     {  pyylval->lex.line = yylineno; return(READONLY); }
-"writeonly"    {  pyylval->lex.line = yylineno; return(WRITEONLY); }
+"coherent"     {  return PaES30ReservedFromGLSL(420, parseContext, yylineno, yytext, pyylval, COHERENT); }
+"volatile"     {  if (parseContext.profile == EEsProfile || parseContext.version < 420) 
+                      return PaReservedWord();    
+                  else
+                       pyylval->lex.line = yylineno; return(VOLATILE); 
+               }
+"restrict"     {  return PaES30ReservedFromGLSL(420, parseContext, yylineno, yytext, pyylval, RESTRICT); }
+"readonly"     {  return PaES30ReservedFromGLSL(420, parseContext, yylineno, yytext, pyylval, READONLY); }
+"writeonly"    {  return PaES30ReservedFromGLSL(420, parseContext, yylineno, yytext, pyylval, WRITEONLY); }
 
 "layout"       {  pyylval->lex.line = yylineno; return(LAYOUT); }
 
@@ -124,8 +131,8 @@ int yy_input(char* buf, int max_size);
 "smooth"        {  pyylval->lex.line = yylineno; return(SMOOTH); }
 "noperspective" {  pyylval->lex.line = yylineno; return(NOPERSPECTIVE); }
 
-"patch"        {  pyylval->lex.line = yylineno; return(PATCH); }
-"sample"       {  pyylval->lex.line = yylineno; return(SAMPLE); }
+"patch"        {  return PaES30ReservedFromGLSL(400, parseContext, yylineno, yytext, pyylval, PATCH); }
+"sample"       {  return PaES30ReservedFromGLSL(400, parseContext, yylineno, yytext, pyylval, SAMPLE); }
 
 "break"        {  pyylval->lex.line = yylineno; return(BREAK); }
 "continue"     {  pyylval->lex.line = yylineno; return(CONTINUE); }
@@ -139,7 +146,7 @@ int yy_input(char* buf, int max_size);
 "if"           {  pyylval->lex.line = yylineno; return(IF); }
 "else"         {  pyylval->lex.line = yylineno; return(ELSE); }
 
-"subroutine"   {  pyylval->lex.line = yylineno; return(SUBROUTINE); }
+"subroutine"   {  return PaES30ReservedFromGLSL(400, parseContext, yylineno, yytext, pyylval, SUBROUTINE); }
 
 "in"           {  pyylval->lex.line = yylineno; return(IN); }
 "out"          {  pyylval->lex.line = yylineno; return(OUT); }
@@ -165,7 +172,7 @@ int yy_input(char* buf, int max_size);
 "discard"      {  pyylval->lex.line = yylineno; return(DISCARD); }
 "return"       {  pyylval->lex.line = yylineno; return(RETURN); }
 
-"atomic_uint"  { pyylval->lex.line = yylineno; parseContext.lexAfterType = true; return(ATOMIC_UINT); }
+"atomic_uint"  { return PaES30ReservedFromGLSL(420, parseContext, yylineno, yytext, pyylval, ATOMIC_UINT); }
 
 "mat2"         { pyylval->lex.line = yylineno; parseContext.lexAfterType = true; return(MAT2); }
 "mat3"         { pyylval->lex.line = yylineno; parseContext.lexAfterType = true; return(MAT3); }
@@ -294,7 +301,10 @@ int yy_input(char* buf, int max_size);
 "this"         {  PaReservedWord(); return 0; }
 "packed"       {  PaReservedWord(); return 0; }
 
-"resource"     {  PaReservedWord(); return 0; }
+"resource"     {  if (parseContext.profile == EEsProfile && parseContext.version >= 300 ||
+                      parseContext.profile != EEsProfile && parseContext.version >= 420)    
+                          return PaReservedWord();
+               }
 
 "goto"         {  PaReservedWord(); return 0; }
 
@@ -520,10 +530,12 @@ void yyerror(char *s)
     }
 }
 
-void PaReservedWord()
+int PaReservedWord()
 {
     GlobalParseContext->error(yylineno, "Reserved word.", yytext, "", "");
     GlobalParseContext->recover();
+
+    return 0;
 }
 
 int PaIdentOrType(TString& id, TParseContext& parseContextLocal, TSymbol*& symbol)
@@ -547,8 +559,30 @@ int PaIdentOrReserved(bool reserved, TParseContext& pc, int line, const char* te
 
     pyylval->lex.line = line;
     pyylval->lex.string = NewPoolTString(text);
+    pc.infoSink.info.message(EPrefixWarning, pyylval->lex.string->c_str(), yylineno);
+    pc.infoSink.info.message(EPrefixWarning, "using future reserved keyword", yylineno);
 
     return PaIdentOrType(*pyylval->lex.string, pc, pyylval->lex.symbol);
+}
+
+int PaES30ReservedFromGLSL(int version, TParseContext& pc, int line, const char* text, YYSTYPE* pyylval, int keyword)
+{
+    if (pc.profile == EEsProfile && pc.version < 300 ||
+        pc.profile != EEsProfile && pc.version < version) {
+            pyylval->lex.line = yylineno;
+            pyylval->lex.string = NewPoolTString(yytext);
+            pc.infoSink.info.message(EPrefixWarning, pyylval->lex.string->c_str(), yylineno);
+            pc.infoSink.info.message(EPrefixWarning, "future reserved word in ES 300 and keyword in GLSL", yylineno);
+
+            return PaIdentOrType(*pyylval->lex.string, pc, pyylval->lex.symbol);
+    } else if (pc.profile == EEsProfile && pc.version >= 300)
+
+        return PaReservedWord();
+    else {
+        pyylval->lex.line = yylineno;
+
+        return keyword;
+    }
 }
 
 int PaPrecisionKeyword(TParseContext& pc, int line, const char* text, YYSTYPE* pyylval, int keyword)
@@ -558,7 +592,9 @@ int PaPrecisionKeyword(TParseContext& pc, int line, const char* text, YYSTYPE* p
 
     pyylval->lex.line = line;
     pyylval->lex.string = NewPoolTString(text);
-    
+    pc.infoSink.info.message(EPrefixWarning, pyylval->lex.string->c_str(), yylineno);
+    pc.infoSink.info.message(EPrefixWarning, "using ES precision qualifier keyword", yylineno);
+
     return PaIdentOrType(*pyylval->lex.string, pc, pyylval->lex.symbol);
 }
 
@@ -569,6 +605,8 @@ int PaMatNxM(TParseContext& pc, int line, const char* text, YYSTYPE* pyylval, in
 
     pyylval->lex.line = line;
     pyylval->lex.string = NewPoolTString(text);
+    pc.infoSink.info.message(EPrefixWarning, pyylval->lex.string->c_str(), yylineno);
+    pc.infoSink.info.message(EPrefixWarning, "using future non-square matrix type keyword", yylineno);
 
     return PaIdentOrType(*pyylval->lex.string, pc, pyylval->lex.symbol);
 }
@@ -582,9 +620,11 @@ int PaDMat(TParseContext& pc, int line, const char* text, YYSTYPE* pyylval, int 
 
     if (pc.profile != EEsProfile && pc.version >= 400)
         return keyword;
-    
+
     pyylval->lex.line = line;
     pyylval->lex.string = NewPoolTString(text);
+    pc.infoSink.info.message(EPrefixWarning, pyylval->lex.string->c_str(), yylineno);
+    pc.infoSink.info.message(EPrefixWarning, "using future type keyword", yylineno);
 
     return PaIdentOrType(*pyylval->lex.string, pc, pyylval->lex.symbol);
 }
