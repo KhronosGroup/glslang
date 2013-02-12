@@ -218,7 +218,7 @@ static int CPPdefine(yystypepp * yylvalpp)
             return token;
         }
         mac.argc = argc;
-        mac.args = mem_Alloc(macros->pool, argc * sizeof(int));
+        mac.args = (int*)mem_Alloc(macros->pool, argc * sizeof(int));
         memcpy(mac.args, args, argc * sizeof(int));
         token = cpp->currentInput->scan(cpp->currentInput, yylvalpp);
 	}
@@ -392,7 +392,7 @@ static int op_neg(int a) { return -a; }
 static int op_cmpl(int a) { return ~a; }
 static int op_not(int a) { return !a; }
 
-struct {
+struct Tbinops {
     int token, prec, (*op)(int, int);
 } binop[] = {
     { CPP_OR_OP, LOGOR, op_logor },
@@ -415,7 +415,7 @@ struct {
     { '%', MUL, op_mod },
 };
 
-struct {
+struct tunops {
     int token, (*op)(int);
 } unop[] = {
     { '+', op_pos },
@@ -853,7 +853,7 @@ static int eof_scan(InputSrc *in, yystypepp * yylvalpp) { return -1; }
 static void noop(InputSrc *in, int ch, yystypepp * yylvalpp) { }
 
 static void PushEofSrc() {
-    InputSrc *in = malloc(sizeof(InputSrc));
+    InputSrc *in = (InputSrc*)malloc(sizeof(InputSrc));
     memset(in, 0, sizeof(InputSrc));
     in->scan = eof_scan;
     in->getch = eof_scan;
@@ -902,7 +902,9 @@ typedef struct MacroInputSrc {
 /* macro_scan ---
 ** return the next token for a macro expanion, handling macro args 
 */
-static int macro_scan(MacroInputSrc *in, yystypepp * yylvalpp) {
+static int macro_scan(InputSrc *inInput, yystypepp * yylvalpp) {
+    MacroInputSrc* in = (MacroInputSrc*)inInput;
+
     int i;
     int token = ReadToken(in->mac->body, yylvalpp);
     if (token == CPP_IDENTIFIER) {
@@ -957,9 +959,9 @@ int MacroExpand(int atom, yystypepp * yylvalpp)
     }
     if (!sym || sym->details.mac.undef) return 0;
     if (sym->details.mac.busy) return 0;        // no recursive expansions
-    in = malloc(sizeof(*in));
+    in = (MacroInputSrc*)malloc(sizeof(*in));
     memset(in, 0, sizeof(*in));
-    in->base.scan = (void *)macro_scan;
+    in->base.scan = macro_scan;
     in->base.line = cpp->currentInput->line;
     in->base.name = cpp->currentInput->name;
     in->mac = &sym->details.mac;
@@ -970,7 +972,7 @@ int MacroExpand(int atom, yystypepp * yylvalpp)
             yylvalpp->sc_ident = atom;
             return 0;
         }
-        in->args = malloc(in->mac->argc * sizeof(TokenStream *));
+        in->args = (TokenStream**)malloc(in->mac->argc * sizeof(TokenStream *));
         for (i=0; i<in->mac->argc; i++)
             in->args[i] = NewTokenStream("macro arg", 0);
 		i=0;j=0;

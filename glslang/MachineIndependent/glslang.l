@@ -643,11 +643,11 @@ void CPPShInfoLogMsg(const char *msg)
     GlobalParseContext->recover();
 }
 
-void CPPErrorToInfoLog(char *msg)
+void CPPErrorToInfoLog(const char *msg)
 {
     TParseContext& pc = *((TParseContext *)cpp->pC);
 
-    pc.error(yylineno, "CPP error:", "",msg,"");
+    pc.error(yylineno, "CPP error:", "", msg, "");
     GlobalParseContext->recover();
 }
 
@@ -770,7 +770,7 @@ void HandlePragma(const char **tokens, int numTokens)
     }
 }
 
-void StoreStr(char *string)
+void StoreStr(const char *string)
 {
     TParseContext& pc = *((TParseContext *)cpp->pC);
 

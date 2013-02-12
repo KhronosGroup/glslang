@@ -72,7 +72,7 @@ depend:
 #
 .PHONY : clean
 clean :
-	$(RM) *.o *.a gen_glslang_tab.cpp gen_glslang.cpp glslang_tab.h glslang.output
+	$(RM) *.o *.a gen_glslang_tab.cpp glslang_tab.cpp glslang_tab.cpp.h gen_glslang.cpp glslang_tab.h glslang.output
 	$(RM) ./lib/*.so
 	cd $(INCPREPROCESSOR); make clean
 	cd $(INCCODEGEN); make clean

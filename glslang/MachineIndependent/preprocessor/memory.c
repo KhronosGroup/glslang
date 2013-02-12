@@ -124,7 +124,7 @@ MemoryPool *mem_CreatePool(size_t chunksize, unsigned int align)
     if (align & (align-1)) return 0;
     if (chunksize < sizeof(MemoryPool)) return 0;
     if (chunksize & (align-1)) return 0;
-    if (!(pool = malloc(chunksize))) return 0;
+    if (!(pool = (MemoryPool*)malloc(chunksize))) return 0;
     pool->next = 0;
     pool->chunksize = chunksize;
     pool->alignmask = (uintptr_t)(align)-1;  
@@ -162,10 +162,10 @@ void *mem_Alloc(MemoryPool *pool, size_t size)
         if (minreq >= pool->chunksize) {
             // request size is too big for the chunksize, so allocate it as
             // a single chunk of the right size
-            ch = malloc(minreq);
+            ch = (struct chunk*)malloc(minreq);
             if (!ch) return 0;
         } else {
-            ch = malloc(pool->chunksize);
+            ch = (struct chunk*)malloc(pool->chunksize);
             if (!ch) return 0;
             pool->free = (uintptr_t)ch + minreq;
             pool->end = (uintptr_t)ch + pool->chunksize;
@@ -181,7 +181,7 @@ int mem_AddCleanup(MemoryPool *pool, void (*fn)(void *), void *arg) {
     struct cleanup *cleanup;
 
     pool->free = (pool->free + sizeof(void *) - 1) & ~(sizeof(void *)-1);
-    cleanup = mem_Alloc(pool, sizeof(struct cleanup));
+    cleanup = (struct cleanup *)(mem_Alloc(pool, sizeof(struct cleanup)));
     if (!cleanup) return -1;
     cleanup->next = pool->cleanup;
     cleanup->fn = fn;

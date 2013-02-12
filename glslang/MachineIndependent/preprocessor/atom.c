@@ -357,11 +357,11 @@ static int GrowAtomTable(AtomTable *atable, int size)
 
     if (atable->size < size) {
         if (atable->amap) {
-            newmap = realloc(atable->amap, sizeof(int)*size);
-            newrev = realloc(atable->arev, sizeof(int)*size);
+            newmap = (int*)realloc(atable->amap, sizeof(int)*size);
+            newrev = (int*)realloc(atable->arev, sizeof(int)*size);
         } else {
-            newmap = malloc(sizeof(int)*size);
-            newrev = malloc(sizeof(int)*size);
+            newmap = (int*)malloc(sizeof(int)*size);
+            newrev = (int*)malloc(sizeof(int)*size);
             atable->size = 0;
         }
         if (!newmap || !newrev) {
