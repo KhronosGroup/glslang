@@ -587,8 +587,8 @@ bool TParseContext::constructorErrorCheck(int line, TIntermNode* node, TFunction
     }
 
     if (matrixInMatrix && !type->isArray()) {
-        error(line, "constructing matrix from matrix", "constructor", "(reserved)");
-        return true;
+        profileRequires(line, ENoProfile, 120, 0, "constructing matrix from matrix");
+        return false;
     }
 
     if (overFull) {
