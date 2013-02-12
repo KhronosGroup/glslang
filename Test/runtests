@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+
+RUNCMD=../Build/Debug/glslang.exe
+TARGETDIR=localout
+BASEDIR=localbase
+
+while read t; do
+    echo Running $t...
+	b=`basename $t`
+    ./StandAlone -i $t > $TARGETDIR/$b.out
+    diff $BASEDIR/$b.out $TARGETDIR/$b.out
+done < testlist
