@@ -323,16 +323,15 @@ static int CPPelse(int matchelse, yystypepp * yylvalpp)
             cpp->ifdepth++; 
             cpp->elsetracker++;
         } else if (atom == endifAtom) {
+            cpp->elsedepth[cpp->elsetracker] = 0;
+            --cpp->elsetracker;
             if (depth == 0) {
                 // found the #endif we are looking for
-                cpp->elsedepth[cpp->elsetracker] = 0;
-                --cpp->elsetracker;
                 if (cpp->ifdepth) 
                     --cpp->ifdepth;
                 break;
             }
             --depth;
-            --cpp->elsetracker;
             --cpp->ifdepth;
         } else if (matchelse && depth == 0) {
             if (atom == elseAtom ) {
@@ -349,6 +348,7 @@ static int CPPelse(int matchelse, yystypepp * yylvalpp)
                 * it and we really want to leave it alone */
                 if (cpp->ifdepth) {
                     --cpp->ifdepth;
+                    cpp->elsedepth[cpp->elsetracker] = 0;
                     --cpp->elsetracker;
                 }
 
@@ -356,7 +356,7 @@ static int CPPelse(int matchelse, yystypepp * yylvalpp)
             }
         } else if((atom == elseAtom) && (!ChkCorrectElseNesting())) {
             CPPErrorToInfoLog("#else after a #else");
-            cpp->CompileError=1;
+            cpp->CompileError = 1;
         }
     };  // end while
 
@@ -499,13 +499,14 @@ error:
     return token;
 } // eval
 
-static int CPPif(yystypepp * yylvalpp) {
+static int CPPif(yystypepp * yylvalpp) 
+{
     int token = cpp->currentInput->scan(cpp->currentInput, yylvalpp);
     int res = 0, err = 0;
 	cpp->elsetracker++;
     if (!cpp->ifdepth++)
         ifloc = *cpp->tokenLoc;
-	if(cpp->ifdepth >MAX_IF_NESTING){
+	if (cpp->ifdepth > MAX_IF_NESTING){
         CPPErrorToInfoLog("max #if nesting depth exceeded");
 		return 0;
 	}
@@ -772,10 +773,10 @@ int readCPPline(yystypepp * yylvalpp)
         if (yylvalpp->sc_ident == defineAtom) {
              token = CPPdefine(yylvalpp);
         } else if (yylvalpp->sc_ident == elseAtom) {
-			 if(ChkCorrectElseNesting()){
-                 if (!cpp->ifdepth ){
+			 if (ChkCorrectElseNesting()) {
+                 if (! cpp->ifdepth) {
                      CPPErrorToInfoLog("#else mismatch");
-                     cpp->CompileError=1;
+                     cpp->CompileError = 1;
                  }
                  token = cpp->currentInput->scan(cpp->currentInput, yylvalpp);
                  if (token != '\n') {
@@ -784,9 +785,9 @@ int readCPPline(yystypepp * yylvalpp)
                          token = cpp->currentInput->scan(cpp->currentInput, yylvalpp);
                  }
 			     token = CPPelse(0, yylvalpp);
-             }else{
+             } else {
                  CPPErrorToInfoLog("#else after a #else");
-                 cpp->ifdepth=0;
+                 cpp->ifdepth = 0;
                  cpp->notAVersionToken = 1;
                  return 0;
              }
@@ -801,7 +802,7 @@ int readCPPline(yystypepp * yylvalpp)
                 token = cpp->currentInput->scan(cpp->currentInput, yylvalpp);
 		    token = CPPelse(0, yylvalpp);
         } else if (yylvalpp->sc_ident == endifAtom) {
-			 cpp->elsedepth[cpp->elsetracker]=0;
+			 cpp->elsedepth[cpp->elsetracker] = 0;
 		     --cpp->elsetracker;
              if (!cpp->ifdepth){
                  CPPErrorToInfoLog("#endif mismatch");
@@ -1055,11 +1056,11 @@ int MacroExpand(int atom, yystypepp * yylvalpp)
 
 int ChkCorrectElseNesting(void)
 {
-    if(cpp->elsedepth[cpp->elsetracker]==0){
-	  cpp->elsedepth[cpp->elsetracker]=1;
-      return 1;          
+    if (cpp->elsedepth[cpp->elsetracker] == 0) {
+        cpp->elsedepth[cpp->elsetracker] = 1;
+
+        return 1;
     }
+
     return 0;
 }
-
-
