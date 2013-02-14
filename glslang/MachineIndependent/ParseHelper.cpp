@@ -70,7 +70,7 @@ void TParseContext::setVersion(int newVersion)
 			defaultPrecision[EbtFloat] = EpqHigh;
 			defaultPrecision[EbtSampler2D] = EpqLow;
 			defaultPrecision[EbtSamplerCube] = EpqLow;
-        }
+}
 
         if (language == EShLangFragment)  {
 			defaultPrecision[EbtInt] = EpqMedium;
@@ -728,7 +728,6 @@ bool TParseContext::structQualifierErrorCheck(int line, const TPublicType& pType
 
 void TParseContext::setDefaultPrecision(int line, TBasicType type, TPrecisionQualifier qualifier)
 {
-    // TODO: push and pop for nested scopes
     if (IsSampler(type) || type == EbtInt || type == EbtFloat) {
         defaultPrecision[type] = qualifier;
     } else {
@@ -772,7 +771,12 @@ bool TParseContext::insertBuiltInArrayAtGlobalLevel()
         error(0, "INTERNAL ERROR finding symbol", name->c_str(), "");
         return true;
     }
-    TVariable* variable = static_cast<TVariable*>(symbol);
+    TVariable* variable = symbol->getAsVariable();
+
+    if (! variable) {
+        error(0, "INTERNAL ERROR, variable expected", name->c_str(), "");
+        return true;
+    }
 
     TVariable* newVariable = new TVariable(name, variable->getType());
 
@@ -784,8 +788,6 @@ bool TParseContext::insertBuiltInArrayAtGlobalLevel()
 
     return false;
 }
-
-
 
 //
 // Do size checking for an array type's size.
@@ -877,12 +879,13 @@ bool TParseContext::arrayErrorCheck(int line, TString& identifier, TPublicType t
             return true;
         }
     } else {
-        if (! symbol->isVariable()) {
-            error(line, "variable expected", identifier.c_str(), "");
+        variable = symbol->getAsVariable();
+
+        if (! variable) {
+            error(line, "array variable name expected", identifier.c_str(), "");
             return true;
         }
 
-        variable = static_cast<TVariable*>(symbol);
         if (! variable->getType().isArray()) {
             error(line, "redeclaring non-array as array", identifier.c_str(), "");
             return true;
@@ -924,7 +927,12 @@ bool TParseContext::arraySetMaxSize(TIntermSymbol *node, TType* type, int size, 
         error(line, " undeclared identifier", node->getSymbol().c_str(), "");
         return true;
     }
-    TVariable* variable = static_cast<TVariable*>(symbol);
+
+    TVariable* variable = symbol->getAsVariable();
+    if (! variable) {
+        error(0, "array variable name expected", node->getSymbol().c_str(), "");
+        return true;
+    }
 
     type->setArrayInformationType(variable->getArrayInformationType());
     variable->updateArrayInformationType(type);
@@ -933,12 +941,12 @@ bool TParseContext::arraySetMaxSize(TIntermSymbol *node, TType* type, int size, 
     // its an error
     if (node->getSymbol() == "gl_TexCoord") {
         TSymbol* texCoord = symbolTable.find("gl_MaxTextureCoords", &builtIn);
-        if (texCoord == 0) {
+        if (! texCoord || ! texCoord->getAsVariable()) {
             infoSink.info.message(EPrefixInternalError, "gl_MaxTextureCoords not defined", line);
             return true;
         }
 
-        int texCoordValue = static_cast<TVariable*>(texCoord)->getConstPointer()[0].getIConst();
+        int texCoordValue = texCoord->getAsVariable()->getConstUnionPointer()[0].getIConst();
         if (texCoordValue <= size) {
             error(line, "", "[", "gl_TexCoord can only have a max array size of up to gl_MaxTextureCoords", "");
             return true;
@@ -1042,19 +1050,20 @@ bool TParseContext::paramErrorCheck(int line, TStorageQualifier qualifier, TType
 //
 const TFunction* TParseContext::findFunction(int line, TFunction* call, bool *builtIn)
 {
-    const TSymbol* symbol = symbolTable.find(call->getMangledName(), builtIn);
+    TSymbol* symbol = symbolTable.find(call->getMangledName(), builtIn);
 
     if (symbol == 0) {        
         error(line, "no matching overloaded function found", call->getName().c_str(), "");
-        return 0;
-    }
 
-    if (! symbol->isFunction()) {
-        error(line, "function name expected", call->getName().c_str(), "");
         return 0;
     }
     
-    const TFunction* function = static_cast<const TFunction*>(symbol);
+    const TFunction* function = symbol->getAsFunction();
+    if (! function) {
+        error(line, "function name expected", call->getName().c_str(), "");
+
+        return 0;
+    }
     
     return function;
 }
@@ -1117,7 +1126,7 @@ bool TParseContext::executeInitializer(TSourceLoc line, TString& identifier, TPu
             return true;
         }
         if (initializer->getAsConstantUnion()) { 
-            constUnion* unionArray = variable->getConstPointer();
+            constUnion* unionArray = variable->getConstUnionPointer();
 
             if (type.getObjectSize() == 1 && type.getBasicType() != EbtStruct) {
 	            *unionArray = (initializer->getAsConstantUnion()->getUnionArrayPointer())[0];
@@ -1125,11 +1134,14 @@ bool TParseContext::executeInitializer(TSourceLoc line, TString& identifier, TPu
                 variable->shareConstPointer(initializer->getAsConstantUnion()->getUnionArrayPointer());
             }
         } else if (initializer->getAsSymbolNode()) {
-            const TSymbol* symbol = symbolTable.find(initializer->getAsSymbolNode()->getSymbol());
-            const TVariable* tVar = static_cast<const TVariable*>(symbol);
-
-            constUnion* constArray = tVar->getConstPointer();
-            variable->shareConstPointer(constArray);
+            TSymbol* symbol = symbolTable.find(initializer->getAsSymbolNode()->getSymbol());
+            if (TVariable* tVar = symbol->getAsVariable()) {
+                constUnion* constArray = tVar->getConstUnionPointer();
+                variable->shareConstPointer(constArray);
+            } else {
+                error(line, "expected variable", initializer->getAsSymbolNode()->getSymbol().c_str(), "");
+                return true;
+            }
         } else {
             error(line, " cannot assign to", "=", "'%s'", variable->getType().getCompleteString().c_str());
             variable->getType().getQualifier().storage = EvqTemporary;

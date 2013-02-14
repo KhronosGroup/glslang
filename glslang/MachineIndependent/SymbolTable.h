@@ -65,6 +65,8 @@
 //
 // Symbol base class.  (Can build functions or variables out of these...)
 //
+class TVariable;
+class TFunction;
 class TSymbol {
 public:
     POOL_ALLOCATOR_NEW_DELETE(GlobalPoolAllocator)
@@ -72,8 +74,8 @@ public:
     virtual ~TSymbol() { /* don't delete name, it's from the pool */ }
     const TString& getName() const { return *name; }
     virtual const TString& getMangledName() const { return getName(); }
-    virtual bool isFunction() const { return false; }
-    virtual bool isVariable() const { return false; }
+    virtual TFunction* getAsFunction() { return 0; }
+    virtual TVariable* getAsVariable() { return 0; }
     void setUniqueId(int id) { uniqueId = id; }
     int getUniqueId() const { return uniqueId; }
     virtual void dump(TInfoSink &infoSink) const = 0;	
@@ -99,7 +101,7 @@ class TVariable : public TSymbol {
 public:
     TVariable(const TString *name, const TType& t, bool uT = false ) : TSymbol(name), type(t), userType(uT), unionArray(0), arrayInformationType(0) { }
     virtual ~TVariable() { }
-    virtual bool isVariable() const { return true; }
+    virtual TVariable* getAsVariable() { return this; }
     TType& getType() { return type; }
     const TType& getType() const { return type; }
     bool isUserType() const { return userType; }
@@ -109,14 +111,14 @@ public:
 
     virtual void dump(TInfoSink &infoSink) const;
 
-    constUnion* getConstPointer() {
+    constUnion* getConstUnionPointer() {
         if (!unionArray)
             unionArray = new constUnion[type.getObjectSize()];
 
         return unionArray;
     }
 
-    constUnion* getConstPointer() const { return unionArray; }
+    constUnion* getConstUnionPointer() const { return unionArray; }
 
     void shareConstPointer( constUnion *constArray)
     {
@@ -166,7 +168,7 @@ public:
         defined(false) { }
 	TFunction(const TFunction&, const TStructureMap& remapper);
 	virtual ~TFunction();
-    virtual bool isFunction() const { return true; }
+    virtual TFunction* getAsFunction() { return this; }
 
     void addParameter(TParameter& p)
     {

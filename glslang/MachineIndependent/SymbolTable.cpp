@@ -35,7 +35,7 @@
 //
 
 //
-// Symbol table for parsing.  Most functionaliy and main ideas 
+// Symbol table for parsing.  Most functionaliy and main ideas
 // are documented in the header file.
 //
 
@@ -76,7 +76,7 @@ void TType::buildMangledName(TString& mangledName)
             mangledName += '-';
             (*structure)[i].type->buildMangledName(mangledName);
         }
-    default: 
+    default:
         break;
     }
 
@@ -98,7 +98,7 @@ void TType::buildMangledName(TString& mangledName)
 }
 
 int TType::getStructSize() const
-{ 
+{
     if (!getStruct()) {
         assert(false && "Not a struct");
         return 0;
@@ -107,7 +107,7 @@ int TType::getStructSize() const
     if (structureSize == 0)
         for (TTypeList::iterator tl = getStruct()->begin(); tl != getStruct()->end(); tl++)
             structureSize += ((*tl).type)->getObjectSize();
-        
+
     return structureSize;
 }
 
@@ -115,7 +115,7 @@ int TType::getStructSize() const
 // Dump functions.
 //
 
-void TVariable::dump(TInfoSink& infoSink) const 
+void TVariable::dump(TInfoSink& infoSink) const
 {
     infoSink.debug << getName().c_str() << ": " << type.getStorageQualifierString() << " " << type.getBasicString();
     if (type.isArray()) {
@@ -129,7 +129,7 @@ void TFunction::dump(TInfoSink &infoSink) const
     infoSink.debug << getName().c_str() << ": " <<  returnType.getBasicString() << " " << getMangledName().c_str() << "\n";
 }
 
-void TSymbolTableLevel::dump(TInfoSink &infoSink) const 
+void TSymbolTableLevel::dump(TInfoSink &infoSink) const
 {
     tLevel::const_iterator it;
     for (it = level.begin(); it != level.end(); ++it)
@@ -170,18 +170,17 @@ TSymbolTableLevel::~TSymbolTableLevel()
 // performance operation, and only intended for symbol tables that
 // live across a large number of compiles.
 //
-void TSymbolTableLevel::relateToOperator(const char* name, TOperator op) 
+void TSymbolTableLevel::relateToOperator(const char* name, TOperator op)
 {
     tLevel::iterator it;
     for (it = level.begin(); it != level.end(); ++it) {
-        if ((*it).second->isFunction()) {
-            TFunction* function = static_cast<TFunction*>((*it).second);
+        TFunction* function = (*it).second->getAsFunction();
+        if (function) {
             if (function->getName() == name)
                 function->relateToOperator(op);
         }
     }
-}    
-
+}
 
 TSymbol::TSymbol(const TSymbol& copyOf)
 {
@@ -194,11 +193,11 @@ TVariable::TVariable(const TVariable& copyOf, TStructureMap& remapper) : TSymbol
 	type.copyType(copyOf.type, remapper);
 	userType = copyOf.userType;
 	// for builtIn symbol table level, unionArray and arrayInformation pointers should be NULL
-	assert(copyOf.arrayInformationType == 0); 
+	assert(copyOf.arrayInformationType == 0);
 	arrayInformationType = 0;
 
 	if (copyOf.unionArray) {		
-		assert(!copyOf.type.getStruct()); 
+		assert(!copyOf.type.getStruct());
 		assert(copyOf.type.getObjectSize() == 1);
 		unionArray = new constUnion[1];
         unionArray[0] = copyOf.unionArray[0];
@@ -206,7 +205,7 @@ TVariable::TVariable(const TVariable& copyOf, TStructureMap& remapper) : TSymbol
 		unionArray = 0;
 }
 
-TVariable* TVariable::clone(TStructureMap& remapper) 
+TVariable* TVariable::clone(TStructureMap& remapper)
 {
 	TVariable *variable = new TVariable(*this, remapper);
 
@@ -227,7 +226,7 @@ TFunction::TFunction(const TFunction& copyOf, const TStructureMap& remapper) : T
 	defined = copyOf.defined;
 }
 
-TFunction* TFunction::clone(TStructureMap& remapper) 
+TFunction* TFunction::clone(TStructureMap& remapper)
 {
 	TFunction *function = new TFunction(*this, remapper);
 

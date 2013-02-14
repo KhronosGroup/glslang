@@ -217,26 +217,24 @@ Jutta Degener, 1995
 
 variable_identifier
     : IDENTIFIER {
-        // The symbol table search was done in the lexical phase
-        const TSymbol* symbol = $1.symbol;
-        const TVariable* variable;
-        if (symbol == 0) {
-            TVariable* fakeVariable = new TVariable($1.string, TType(EbtVoid));
-            variable = fakeVariable;
-        } else {
-            // This identifier can only be a variable type symbol
-            if (! symbol->isVariable()) {
-                parseContext.error($1.line, "variable expected", $1.string->c_str(), "");
-                parseContext.recover();
-            }
-            variable = static_cast<const TVariable*>(symbol);
+        // The symbol table search was done in the lexical phase, but
+        // if this is a new symbol, it won't find it, which is okay at this
+        // point in the grammar.
+        TSymbol* symbol = $1.symbol;
+        const TVariable* variable = symbol ? symbol->getAsVariable() : 0;
+        if (symbol && ! variable) {
+            parseContext.error($1.line, "variable name expected", $1.string->c_str(), "");
+            parseContext.recover();
         }
+
+        if (! variable)
+            variable = new TVariable($1.string, TType(EbtVoid));
 
         // don't delete $1.string, it's used by error recovery, and the pool
         // pop will reclaim the memory
 
         if (variable->getType().getQualifier().storage == EvqConst ) {
-            constUnion* constArray = variable->getConstPointer();
+            constUnion* constArray = variable->getConstUnionPointer();
             TType t(variable->getType());
             $$ = parseContext.intermediate.addConstantUnion(constArray, t, $1.line);
         } else
@@ -1201,7 +1199,8 @@ function_prototype
         //
         // Redeclarations are allowed.  But, return types and parameter qualifiers must match.
         //
-        TFunction* prevDec = static_cast<TFunction*>(parseContext.symbolTable.find($1->getMangledName()));
+        TSymbol* symbol = parseContext.symbolTable.find($1->getMangledName());
+        TFunction* prevDec = symbol ? symbol->getAsFunction() : 0;
         if (prevDec) {
             if (prevDec->getReturnType() != $1->getReturnType()) {
                 parseContext.error($2.line, "overloaded functions must have the same return type", $1->getReturnType().getBasicString(), "");
@@ -2460,10 +2459,15 @@ type_specifier_nonarray
         // This is for user defined type names.  The lexical phase looked up the
         // type.
         //
-        const TType& structure = static_cast<const TVariable*>($1.symbol)->getType();
-        $$.init($1.line, parseContext.symbolTable.atGlobalLevel());
-        $$.type = EbtStruct;
-        $$.userDef = &structure;
+        if (TVariable* variable = ($1.symbol)->getAsVariable()) { 
+            const TType& structure = variable->getType();
+            $$.init($1.line, parseContext.symbolTable.atGlobalLevel());
+            $$.type = EbtStruct;
+            $$.userDef = &structure;
+        } else {
+            parseContext.error($1.line, "expected type name", $1.string->c_str(), "");
+            parseContext.recover();
+        }
     }
     ;
 
@@ -2876,20 +2880,35 @@ external_declaration
 function_definition
     : function_prototype {
         TFunction& function = *($1.function);
-        TFunction* prevDec = static_cast<TFunction*>(parseContext.symbolTable.find(function.getMangledName()));
+        TSymbol* symbol = parseContext.symbolTable.find(function.getMangledName());
+        TFunction* prevDec = symbol ? symbol->getAsFunction() : 0;
+
+        if (! prevDec) {
+            parseContext.error($1.line, "can't find function name", function.getName().c_str(), "");
+            parseContext.recover();
+        }
+
         //
         // Note:  'prevDec' could be 'function' if this is the first time we've seen function
         // as it would have just been put in the symbol table.  Otherwise, we're looking up
         // an earlier occurance.
         //
-        if (prevDec->isDefined()) {
+        if (prevDec && prevDec->isDefined()) {
             //
             // Then this function already has a body.
             //
             parseContext.error($1.line, "function already has a body", function.getName().c_str(), "");
             parseContext.recover();
         }
-        prevDec->setDefined();
+        if (prevDec) {
+            prevDec->setDefined();
+            //
+            // Remember the return type for later checking for RETURN statements.
+            //
+            parseContext.currentFunctionType = &(prevDec->getReturnType());
+        } else 
+             parseContext.currentFunctionType = new TType(EbtVoid);
+        parseContext.functionReturnsValue = false;
 
         //
         // Raise error message if main function takes any parameters or return anything other than void
@@ -2909,12 +2928,6 @@ function_definition
         // New symbol table scope for body of function plus its arguments
         //
         parseContext.symbolTable.push();
-
-        //
-        // Remember the return type for later checking for RETURN statements.
-        //
-        parseContext.currentFunctionType = &(prevDec->getReturnType());
-        parseContext.functionReturnsValue = false;
 
         //
         // Insert parameters into the symbol table.
