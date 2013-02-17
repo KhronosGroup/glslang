@@ -155,6 +155,15 @@ public:
                                 qualifier.storage = q;
                                 qualifier.precision = EpqNone;
                             }
+             TType(TBasicType t, TStorageQualifier q, TPrecisionQualifier p, int vs = 1, int mc = 0, int mr = 0) :
+                            type(t), vectorSize(vs), matrixCols(mc), matrixRows(mr), arraySizes(0),
+                            structure(0), structureSize(0), maxArraySize(0), arrayInformationType(0),
+                            fieldName(0), mangled(0), typeName(0) 
+                            {
+                                qualifier.storage = q;
+                                qualifier.precision = p;
+                                assert(p >= 0 && p <= EpqHigh);
+                            }
     explicit TType(const TPublicType &p) :
                             type(p.type), vectorSize(p.vectorSize), matrixCols(p.matrixCols), matrixRows(p.matrixRows), arraySizes(p.arraySizes),
                             structure(0), structureSize(0), maxArraySize(0), arrayInformationType(0), fieldName(0), mangled(0), typeName(0)

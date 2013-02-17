@@ -1,5 +1,7 @@
 //
 //Copyright (C) 2002-2005  3Dlabs Inc. Ltd.
+//Copyright (C) 2013 LunarG, Inc.
+//
 //All rights reserved.
 //
 //Redistribution and use in source and binary forms, with or without
@@ -99,6 +101,12 @@ void GenerateResources(TBuiltInResource& resources)
     resources.maxTextureImageUnits = 32;
     resources.maxFragmentUniformComponents = 4096;
     resources.maxDrawBuffers = 32;
+    resources.maxVertexUniformVectors = 128;
+    resources.maxVaryingVectors = 8;
+    resources.maxFragmentUniformVectors = 16;
+    resources.maxVertexOutputVectors = 16;
+    resources.minProgramTexelOffset = -8;
+    resources.maxProgramTexelOffset = 7;
 }
 
 int C_DECL main(int argc, char* argv[])

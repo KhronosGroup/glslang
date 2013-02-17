@@ -1,5 +1,7 @@
 //
 //Copyright (C) 2002-2005  3Dlabs Inc. Ltd.
+//Copyright (C) 2013 LunarG, Inc.
+//
 //All rights reserved.
 //
 //Redistribution and use in source and binary forms, with or without
@@ -48,5 +50,11 @@ struct TBuiltInResource {
     int maxTextureImageUnits;
     int maxFragmentUniformComponents;
     int maxDrawBuffers;
+    int maxVertexUniformVectors;
+    int maxVaryingVectors;
+    int maxFragmentUniformVectors;
+    int maxVertexOutputVectors;
+    int minProgramTexelOffset;
+    int maxProgramTexelOffset;
 };
 #endif // _RESOURCE_LIMITS_INCLUDED_

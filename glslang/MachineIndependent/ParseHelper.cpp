@@ -38,94 +38,42 @@
 #include "Include/InitializeParseContext.h"
 #include "osinclude.h"
 #include <stdarg.h>
+
+TParseContext::TParseContext(TSymbolTable& symt, TIntermediate& interm, int v, EProfile p, EShLanguage L, TInfoSink& is) : 
+            intermediate(interm), symbolTable(symt), infoSink(is), language(L), treeRoot(0),
+            recoveredFromError(false), numErrors(0), lexAfterType(false), loopNestingLevel(0),
+            switchNestingLevel(0), inTypeParen(false), 
+            version(v), profile(p), futureCompatibility(false),
+            contextPragma(true, false)
+{
+    for (int type = 0; type < EbtNumTypes; ++type)
+        defaultPrecision[type] = EpqNone;
+
+    if (profile == EEsProfile) {
+        switch (language) {
+        case EShLangVertex:
+            defaultPrecision[EbtInt] = EpqHigh;
+            defaultPrecision[EbtFloat] = EpqHigh;
+            defaultPrecision[EbtSampler2D] = EpqLow;
+            defaultPrecision[EbtSamplerCube] = EpqLow;
+            break;
+        case EShLangFragment:
+            defaultPrecision[EbtInt] = EpqMedium;
+            defaultPrecision[EbtSampler2D] = EpqLow;
+            defaultPrecision[EbtSamplerCube] = EpqLow;
+            // TODO: give error when using float in frag shader without default precision
+            break;
+        default:
+            error(1, "INTERNAL ERROR", "unexpected language", "");
+        }
+    }
+}
+
 ///////////////////////////////////////////////////////////////////////
 //
 // Sub- vector and matrix fields
 //
 ////////////////////////////////////////////////////////////////////////
-
-
-TParseContext::TParseContext(TSymbolTable& symt, TIntermediate& interm, EShLanguage L, TInfoSink& is, int defaultVersion) : 
-            intermediate(interm), symbolTable(symt), infoSink(is), language(L), treeRoot(0),
-            recoveredFromError(false), numErrors(0), lexAfterType(false), loopNestingLevel(0),
-            switchNestingLevel(0), inTypeParen(false), 
-            futureCompatibility(false),
-            contextPragma(true, false)
-{
-    // Default precisions for version 110, to be overridden for 
-    // other versions/profiles/stage combinations
-    for (int type = 0; type < EbtNumTypes; ++type)
-        defaultPrecision[type] = EpqNone;
-
-    setVersion(defaultVersion);
-    setProfile(ENoProfile);
-}
-
-void TParseContext::setVersion(int newVersion)
-{
-    version = newVersion;
-	if (version == 100 || version == 300) {
-	    if (language == EShLangVertex) {
-			defaultPrecision[EbtInt] = EpqHigh;
-			defaultPrecision[EbtFloat] = EpqHigh;
-			defaultPrecision[EbtSampler2D] = EpqLow;
-			defaultPrecision[EbtSamplerCube] = EpqLow;
-}
-
-        if (language == EShLangFragment)  {
-			defaultPrecision[EbtInt] = EpqMedium;
-			defaultPrecision[EbtSampler2D] = EpqLow;
-			defaultPrecision[EbtSamplerCube] = EpqLow;
-            // TODO: give error when using float in frag shader without default precision
-        }
-	} else {
-        for (int type = 0; type < EbtNumTypes; ++type)
-            defaultPrecision[type] = EpqNone;
-    }
-}
-
-// Important assumption:  SetVersion() is called before SetProfile(), and is always called
-// if there is a version, sending in a ENoProfile if there is no profile given.
-void TParseContext::setProfile(EProfile newProfile)
-{
-    const int FirstProfileVersion = 150;
-
-    if (newProfile == ENoProfile) {
-        if (version == 300) {
-            error(1, "version 300 requires specifying the 'es' profile", "#version", "");
-            profile = EEsProfile;
-        } else if (version == 100)
-            profile = EEsProfile;
-        else if (version >= FirstProfileVersion)
-            profile = ECoreProfile;
-        else
-            profile = ENoProfile;
-    } else {
-        // a profile was provided...
-        if (version < 150) {
-            error(1, "versions before 150 do not allow a profile token", "#version", "");
-            if (version == 100)
-                profile = EEsProfile;
-            else
-                profile = ENoProfile;
-        } else if (version == 300) {
-            if (newProfile != EEsProfile)
-                error(1, "only version 300 supports the es profile", "#version", "");
-            profile = EEsProfile;
-        } else {
-            if (newProfile == EEsProfile) {
-                error(1, "only version 300 supports the es profile", "#version", "");
-                if (version >= FirstProfileVersion)
-                    profile = ECoreProfile;
-                else
-                    profile = ENoProfile;
-            } else {
-                // typical desktop case... e.g., "#version 410 core"
-                profile = newProfile;
-            }
-        }
-    }
-}
 
 //
 // Look at a '.' field selector string and change it into offsets
@@ -380,6 +328,8 @@ bool TParseContext::lValueErrorCheck(int line, const char* op, TIntermTyped* nod
     case EvqAttribute:      message = "can't modify an attribute";   break;
     case EvqUniform:        message = "can't modify a uniform";      break;
     case EvqVaryingIn:      message = "can't modify a varying";      break;
+    case EvqInstanceId:     message = "can't modify gl_InstanceID";  break;
+    case EvqVertexId:       message = "can't modify gl_VertexID";    break;
     case EvqFace:           message = "can't modify gl_FrontFace";   break;
     case EvqFragCoord:      message = "can't modify gl_FragCoord";   break;
     case EvqPointCoord:     message = "can't modify gl_PointCoord";  break;
@@ -767,9 +717,10 @@ bool TParseContext::insertBuiltInArrayAtGlobalLevel()
 {
     TString *name = NewPoolTString("gl_TexCoord");
     TSymbol* symbol = symbolTable.find(*name);
-    if (!symbol) {
-        error(0, "INTERNAL ERROR finding symbol", name->c_str(), "");
-        return true;
+    if (! symbol) {
+        // assume it was not added due to version/profile
+
+        return false;
     }
     TVariable* variable = symbol->getAsVariable();
 

@@ -86,6 +86,10 @@ enum TStorageQualifier {
     EvqInOut,
     EvqConstReadOnly,
 
+    // built-ins read by vertex shader
+    EvqVertexId,
+    EvqInstanceId,
+
     // built-ins written by vertex shader
     EvqPosition,
     EvqPointSize,
@@ -119,6 +123,8 @@ __inline const char* getStorageQualifierString(TStorageQualifier q)
     case EvqIn:             return "in";             break;
     case EvqOut:            return "out";            break;
     case EvqInOut:          return "inout";          break;
+    case EvqVertexId:       return "gl_VertexId";    break;
+    case EvqInstanceId:     return "gl_InstanceId";  break;
     case EvqPosition:       return "gl_Position";    break;
     case EvqPointSize:      return "gl_PointSize";   break;
     case EvqClipVertex:     return "gl_ClipVertex";  break;

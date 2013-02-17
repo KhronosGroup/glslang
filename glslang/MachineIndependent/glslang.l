@@ -479,14 +479,14 @@ int PaParseStrings(char* argv[], int strLen[], int argc, TParseContext& parseCon
         return 1;
 
     for (int i = 0; i < argc; ++i) {
-        if (!argv[i]) {
+        if (! argv[i]) {
             parseContextLocal.error(0, "Null shader source string", "", "");
             parseContextLocal.recover();
             return 1;
         }
     }
 
-    if (!strLen) {
+    if (! strLen) {
         argv0len = (int) strlen(argv[0]);
         strLen   = &argv0len;
     }
@@ -499,7 +499,16 @@ int PaParseStrings(char* argv[], int strLen[], int argc, TParseContext& parseCon
     cpp->notAVersionToken = 0;
     yylineno   = 1;
 
-    if (*cpp->PaStrLen >= 0) {
+    // TODO: CPP: a shader containing nothing but white space and comments is valid, even though it has no parse tokens
+    int len = 0;
+    while (argv[0][len] == ' '  ||
+           argv[0][len] == '\t' ||
+           argv[0][len] == '\n' ||
+           argv[0][len] == '\r')
+        if (++len >= strLen[0])
+            return 0;
+
+    if (*cpp->PaStrLen > 0) {
         int ret;
         #ifdef _WIN32
             ret = yyparse(parseContextLocal);
@@ -510,8 +519,7 @@ int PaParseStrings(char* argv[], int strLen[], int argc, TParseContext& parseCon
              return 1;
         else
              return 0;
-    }
-    else
+    } else
         return 0;
 }
 
@@ -838,14 +846,18 @@ void ResetTString(void)
 
 void SetVersion(int version)
 {
-    TParseContext& pc = *((TParseContext *)cpp->pC);
-    pc.setVersion(version);
+    // called by the CPP, but this functionality is currently
+    // taken over by ScanVersion() before parsing starts
+
+    // CPP should still report errors in semantics
 }
 
 void SetProfile(EProfile profile)
 {
-    TParseContext& pc = *((TParseContext *)cpp->pC);
-    pc.setProfile(profile);
+    // called by the CPP, but this functionality is currently
+    // taken over by ScanVersion() before parsing starts
+
+    // CPP should still report errors in semantics
 }
 
 TBehavior GetBehavior(const char* behavior)

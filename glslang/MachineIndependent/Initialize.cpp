@@ -36,14 +36,16 @@
 
 //
 // Create strings that declare built-in definitions, add built-ins that
-// cannot be expressed in the files, and establish mappings between 
+// cannot be expressed in the files, and establish mappings between
 // built-in functions and operators.
 //
 
 #include "../Include/intermediate.h"
 #include "Initialize.h"
 
-void TBuiltIns::initialize()
+const int FirstProfileVersion = 150;
+
+void TBuiltIns::initialize(int version, EProfile profile)
 {
     //
     // Initialize all the built-in strings for parsing.
@@ -467,7 +469,7 @@ void TBuiltIns::initialize()
 		s.append(TString("vec4 texture3D(sampler3D sampler, vec3 coord, float bias);"));
         s.append(TString("vec4 texture3DProj(sampler3D sampler, vec4 coord, float bias);"));
         s.append(TString("vec4 textureCube(samplerCube sampler, vec3 coord, float bias);"));
-        
+
 		s.append(TString("vec4 shadow1D(sampler1DShadow sampler, vec3 coord, float bias);"));
         s.append(TString("vec4 shadow2D(sampler2DShadow sampler, vec3 coord, float bias);"));
         s.append(TString("vec4 shadow1DProj(sampler1DShadow sampler, vec4 coord, float bias);"));
@@ -498,185 +500,208 @@ void TBuiltIns::initialize()
         //============================================================================
 
         TString& s = StandardUniforms;
-       
-
-        //
-        // OpenGL'uniform' state.  Page numbers are in reference to version
-        // 1.4 of the OpenGL specification.
-        //
-
-        //
-        // Matrix state. p. 31, 32, 37, 39, 40.
-        //
-        s.append(TString("uniform mat4  gl_ModelViewMatrix;"));
-        s.append(TString("uniform mat4  gl_ProjectionMatrix;"));
-        s.append(TString("uniform mat4  gl_ModelViewProjectionMatrix;"));
-
-        //
-        // Derived matrix state that provides inverse and transposed versions
-        // of the matrices above.
-        //
-        s.append(TString("uniform mat3  gl_NormalMatrix;"));
-
-        s.append(TString("uniform mat4  gl_ModelViewMatrixInverse;"));
-        s.append(TString("uniform mat4  gl_ProjectionMatrixInverse;"));
-        s.append(TString("uniform mat4  gl_ModelViewProjectionMatrixInverse;"));
-
-        s.append(TString("uniform mat4  gl_ModelViewMatrixTranspose;"));
-        s.append(TString("uniform mat4  gl_ProjectionMatrixTranspose;"));
-        s.append(TString("uniform mat4  gl_ModelViewProjectionMatrixTranspose;"));
-
-        s.append(TString("uniform mat4  gl_ModelViewMatrixInverseTranspose;"));
-        s.append(TString("uniform mat4  gl_ProjectionMatrixInverseTranspose;"));
-        s.append(TString("uniform mat4  gl_ModelViewProjectionMatrixInverseTranspose;"));
-
-        //
-        // Normal scaling p. 39.
-        //
-        s.append(TString("uniform float gl_NormalScale;"));
 
         //
         // Depth range in window coordinates, p. 33
         //
         s.append(TString("struct gl_DepthRangeParameters {"));
-        s.append(TString("    float near;"));        // n
-        s.append(TString("    float far;"));         // f
-        s.append(TString("    float diff;"));        // f - n
+        if (profile == EEsProfile) {
+            s.append(TString("    highp float near;"));        // n
+            s.append(TString("    highp float far;"));         // f
+            s.append(TString("    highp float diff;"));        // f - n
+        } else {
+            s.append(TString("    float near;"));        // n
+            s.append(TString("    float far;"));         // f
+            s.append(TString("    float diff;"));        // f - n
+        }
         s.append(TString("};"));
         s.append(TString("uniform gl_DepthRangeParameters gl_DepthRange;"));
 
+        if (profile != EEsProfile && (version < FirstProfileVersion || profile == ECompatibilityProfile)) {
+            //
+            // Matrix state. p. 31, 32, 37, 39, 40.
+            //
+            s.append(TString("uniform mat4  gl_ModelViewMatrix;"));
+            s.append(TString("uniform mat4  gl_ProjectionMatrix;"));
+            s.append(TString("uniform mat4  gl_ModelViewProjectionMatrix;"));
 
-        //
-        // Point Size, p. 66, 67.
-        //
-        s.append(TString("struct gl_PointParameters {"));
-        s.append(TString("    float size;"));
-        s.append(TString("    float sizeMin;"));
-        s.append(TString("    float sizeMax;"));
-        s.append(TString("    float fadeThresholdSize;"));
-        s.append(TString("    float distanceConstantAttenuation;"));
-        s.append(TString("    float distanceLinearAttenuation;"));
-        s.append(TString("    float distanceQuadraticAttenuation;"));
-        s.append(TString("};"));
-         
-        s.append(TString("uniform gl_PointParameters gl_Point;"));
+            //
+            // Derived matrix state that provides inverse and transposed versions
+            // of the matrices above.
+            //
+            s.append(TString("uniform mat3  gl_NormalMatrix;"));
 
-        //
-        // Material State p. 50, 55.
-        //
-        s.append(TString("struct gl_MaterialParameters {"));
-        s.append(TString("    vec4  emission;"));    // Ecm
-        s.append(TString("    vec4  ambient;"));     // Acm
-        s.append(TString("    vec4  diffuse;"));     // Dcm
-        s.append(TString("    vec4  specular;"));    // Scm
-        s.append(TString("    float shininess;"));   // Srm
-        s.append(TString("};"));
-        s.append(TString("uniform gl_MaterialParameters  gl_FrontMaterial;"));
-        s.append(TString("uniform gl_MaterialParameters  gl_BackMaterial;"));
+            s.append(TString("uniform mat4  gl_ModelViewMatrixInverse;"));
+            s.append(TString("uniform mat4  gl_ProjectionMatrixInverse;"));
+            s.append(TString("uniform mat4  gl_ModelViewProjectionMatrixInverse;"));
 
-        //
-        // Light State p 50, 53, 55.
-        //
+            s.append(TString("uniform mat4  gl_ModelViewMatrixTranspose;"));
+            s.append(TString("uniform mat4  gl_ProjectionMatrixTranspose;"));
+            s.append(TString("uniform mat4  gl_ModelViewProjectionMatrixTranspose;"));
 
-        s.append(TString("struct gl_LightSourceParameters {"));
-        s.append(TString("    vec4  ambient;"));             // Acli
-        s.append(TString("    vec4  diffuse;"));             // Dcli
-        s.append(TString("    vec4  specular;"));            // Scli
-        s.append(TString("    vec4  position;"));            // Ppli
-        s.append(TString("    vec4  halfVector;"));          // Derived: Hi
-        s.append(TString("    vec3  spotDirection;"));       // Sdli
-        s.append(TString("    float spotExponent;"));        // Srli
-        s.append(TString("    float spotCutoff;"));          // Crli
-                                                             // (range: [0.0,90.0], 180.0)
-        s.append(TString("    float spotCosCutoff;"));       // Derived: cos(Crli)
-                                                             // (range: [1.0,0.0],-1.0)
-        s.append(TString("    float constantAttenuation;")); // K0
-        s.append(TString("    float linearAttenuation;"));   // K1
-        s.append(TString("    float quadraticAttenuation;"));// K2
-        s.append(TString("};"));
+            s.append(TString("uniform mat4  gl_ModelViewMatrixInverseTranspose;"));
+            s.append(TString("uniform mat4  gl_ProjectionMatrixInverseTranspose;"));
+            s.append(TString("uniform mat4  gl_ModelViewProjectionMatrixInverseTranspose;"));
 
+            //
+            // Normal scaling p. 39.
+            //
+            s.append(TString("uniform float gl_NormalScale;"));
 
-        s.append(TString("struct gl_LightModelParameters {"));
-        s.append(TString("    vec4  ambient;"));       // Acs
-        s.append(TString("};"));
+            //
+            // Point Size, p. 66, 67.
+            //
+            s.append(TString("struct gl_PointParameters {"));
+            s.append(TString("    float size;"));
+            s.append(TString("    float sizeMin;"));
+            s.append(TString("    float sizeMax;"));
+            s.append(TString("    float fadeThresholdSize;"));
+            s.append(TString("    float distanceConstantAttenuation;"));
+            s.append(TString("    float distanceLinearAttenuation;"));
+            s.append(TString("    float distanceQuadraticAttenuation;"));
+            s.append(TString("};"));
 
-        s.append(TString("uniform gl_LightModelParameters  gl_LightModel;"));
+            s.append(TString("uniform gl_PointParameters gl_Point;"));
 
-        //
-        // Derived state from products of light and material.
-        //
+            //
+            // Material State p. 50, 55.
+            //
+            s.append(TString("struct gl_MaterialParameters {"));
+            s.append(TString("    vec4  emission;"));    // Ecm
+            s.append(TString("    vec4  ambient;"));     // Acm
+            s.append(TString("    vec4  diffuse;"));     // Dcm
+            s.append(TString("    vec4  specular;"));    // Scm
+            s.append(TString("    float shininess;"));   // Srm
+            s.append(TString("};"));
+            s.append(TString("uniform gl_MaterialParameters  gl_FrontMaterial;"));
+            s.append(TString("uniform gl_MaterialParameters  gl_BackMaterial;"));
 
-        s.append(TString("struct gl_LightModelProducts {"));
-        s.append(TString("    vec4  sceneColor;"));     // Derived. Ecm + Acm * Acs
-        s.append(TString("};"));
+            //
+            // Light State p 50, 53, 55.
+            //
 
-        s.append(TString("uniform gl_LightModelProducts gl_FrontLightModelProduct;"));
-        s.append(TString("uniform gl_LightModelProducts gl_BackLightModelProduct;"));
-
-        s.append(TString("struct gl_LightProducts {"));
-        s.append(TString("    vec4  ambient;"));        // Acm * Acli
-        s.append(TString("    vec4  diffuse;"));        // Dcm * Dcli
-        s.append(TString("    vec4  specular;"));       // Scm * Scli
-        s.append(TString("};"));
-
+            s.append(TString("struct gl_LightSourceParameters {"));
+            s.append(TString("    vec4  ambient;"));             // Acli
+            s.append(TString("    vec4  diffuse;"));             // Dcli
+            s.append(TString("    vec4  specular;"));            // Scli
+            s.append(TString("    vec4  position;"));            // Ppli
+            s.append(TString("    vec4  halfVector;"));          // Derived: Hi
+            s.append(TString("    vec3  spotDirection;"));       // Sdli
+            s.append(TString("    float spotExponent;"));        // Srli
+            s.append(TString("    float spotCutoff;"));          // Crli
+                                                                 // (range: [0.0,90.0], 180.0)
+            s.append(TString("    float spotCosCutoff;"));       // Derived: cos(Crli)
+                                                                 // (range: [1.0,0.0],-1.0)
+            s.append(TString("    float constantAttenuation;")); // K0
+            s.append(TString("    float linearAttenuation;"));   // K1
+            s.append(TString("    float quadraticAttenuation;"));// K2
+            s.append(TString("};"));
 
 
+            s.append(TString("struct gl_LightModelParameters {"));
+            s.append(TString("    vec4  ambient;"));       // Acs
+            s.append(TString("};"));
 
-        //
-        // Fog p. 161
-        //
-        s.append(TString("struct gl_FogParameters {"));
-        s.append(TString("    vec4  color;"));
-        s.append(TString("    float density;"));
-        s.append(TString("    float start;"));
-        s.append(TString("    float end;"));
-        s.append(TString("    float scale;"));   //  1 / (gl_FogEnd - gl_FogStart)
-        s.append(TString("};"));
-         
-        s.append(TString("uniform gl_FogParameters gl_Fog;"));
+            s.append(TString("uniform gl_LightModelParameters  gl_LightModel;"));
+
+            //
+            // Derived state from products of light and material.
+            //
+
+            s.append(TString("struct gl_LightModelProducts {"));
+            s.append(TString("    vec4  sceneColor;"));     // Derived. Ecm + Acm * Acs
+            s.append(TString("};"));
+
+            s.append(TString("uniform gl_LightModelProducts gl_FrontLightModelProduct;"));
+            s.append(TString("uniform gl_LightModelProducts gl_BackLightModelProduct;"));
+
+            s.append(TString("struct gl_LightProducts {"));
+            s.append(TString("    vec4  ambient;"));        // Acm * Acli
+            s.append(TString("    vec4  diffuse;"));        // Dcm * Dcli
+            s.append(TString("    vec4  specular;"));       // Scm * Scli
+            s.append(TString("};"));
+
+            //
+            // Fog p. 161
+            //
+            s.append(TString("struct gl_FogParameters {"));
+            s.append(TString("    vec4  color;"));
+            s.append(TString("    float density;"));
+            s.append(TString("    float start;"));
+            s.append(TString("    float end;"));
+            s.append(TString("    float scale;"));   //  1 / (gl_FogEnd - gl_FogStart)
+            s.append(TString("};"));
+
+            s.append(TString("uniform gl_FogParameters gl_Fog;"));
+        }
 
         s.append(TString("\n"));
     }
-    {
-        //============================================================================
-        //
-        // Vertex attributes, p. 19.
-        //
-        //============================================================================
+    //============================================================================
+    //
+    // Vertex attributes, p. 19.
+    //
+    //============================================================================
 
+    if (profile != EEsProfile) {
         TString& s = StandardVertexAttributes;
 
-        s.append(TString("attribute vec4  gl_Color;"));
-        s.append(TString("attribute vec4  gl_SecondaryColor;"));
-        s.append(TString("attribute vec3  gl_Normal;"));
-        s.append(TString("attribute vec4  gl_Vertex;"));
-        s.append(TString("attribute vec4  gl_MultiTexCoord0;"));
-        s.append(TString("attribute vec4  gl_MultiTexCoord1;"));
-        s.append(TString("attribute vec4  gl_MultiTexCoord2;"));
-        s.append(TString("attribute vec4  gl_MultiTexCoord3;"));
-        s.append(TString("attribute vec4  gl_MultiTexCoord4;"));
-        s.append(TString("attribute vec4  gl_MultiTexCoord5;"));
-        s.append(TString("attribute vec4  gl_MultiTexCoord6;"));
-        s.append(TString("attribute vec4  gl_MultiTexCoord7;"));
-        s.append(TString("attribute float gl_FogCoord;"));
+        if (version < 130) {
+            s.append(TString("attribute vec4  gl_Color;"));
+            s.append(TString("attribute vec4  gl_SecondaryColor;"));
+            s.append(TString("attribute vec3  gl_Normal;"));
+            s.append(TString("attribute vec4  gl_Vertex;"));
+            s.append(TString("attribute vec4  gl_MultiTexCoord0;"));
+            s.append(TString("attribute vec4  gl_MultiTexCoord1;"));
+            s.append(TString("attribute vec4  gl_MultiTexCoord2;"));
+            s.append(TString("attribute vec4  gl_MultiTexCoord3;"));
+            s.append(TString("attribute vec4  gl_MultiTexCoord4;"));
+            s.append(TString("attribute vec4  gl_MultiTexCoord5;"));
+            s.append(TString("attribute vec4  gl_MultiTexCoord6;"));
+            s.append(TString("attribute vec4  gl_MultiTexCoord7;"));
+            s.append(TString("attribute float gl_FogCoord;"));
+        } else if (version < FirstProfileVersion || profile == ECompatibilityProfile) {
+            s.append(TString("in vec4  gl_Color;"));
+            s.append(TString("in vec4  gl_SecondaryColor;"));
+            s.append(TString("in vec3  gl_Normal;"));
+            s.append(TString("in vec4  gl_Vertex;"));
+            s.append(TString("in vec4  gl_MultiTexCoord0;"));
+            s.append(TString("in vec4  gl_MultiTexCoord1;"));
+            s.append(TString("in vec4  gl_MultiTexCoord2;"));
+            s.append(TString("in vec4  gl_MultiTexCoord3;"));
+            s.append(TString("in vec4  gl_MultiTexCoord4;"));
+            s.append(TString("in vec4  gl_MultiTexCoord5;"));
+            s.append(TString("in vec4  gl_MultiTexCoord6;"));
+            s.append(TString("in vec4  gl_MultiTexCoord7;"));
+            s.append(TString("in float gl_FogCoord;"));
+        }
 
         s.append(TString("\n"));
     }
-    {
-        //============================================================================
-        //
-        // Define the output varying interface from the vertex shader.
-        //
-        //============================================================================
+    //============================================================================
+    //
+    // Define the output varying interface from the vertex shader.
+    //
+    //============================================================================
 
+    if (profile != EEsProfile) {
         TString& s = StandardVertexVaryings;
 
-        s.append(TString("varying vec4  gl_FrontColor;"));
-        s.append(TString("varying vec4  gl_BackColor;"));
-        s.append(TString("varying vec4  gl_FrontSecondaryColor;"));
-        s.append(TString("varying vec4  gl_BackSecondaryColor;"));
-        s.append(TString("varying vec4  gl_TexCoord[];"));
-        s.append(TString("varying float gl_FogFragCoord;"));
+        if (version < 130) {
+            s.append(TString("varying vec4  gl_FrontColor;"));
+            s.append(TString("varying vec4  gl_BackColor;"));
+            s.append(TString("varying vec4  gl_FrontSecondaryColor;"));
+            s.append(TString("varying vec4  gl_BackSecondaryColor;"));
+            s.append(TString("varying vec4  gl_TexCoord[];"));
+            s.append(TString("varying float gl_FogFragCoord;"));
+        } else if (version < FirstProfileVersion || profile == ECompatibilityProfile) {
+            s.append(TString("out vec4  gl_FrontColor;"));
+            s.append(TString("out vec4  gl_BackColor;"));
+            s.append(TString("out vec4  gl_FrontSecondaryColor;"));
+            s.append(TString("out vec4  gl_BackSecondaryColor;"));
+            s.append(TString("out vec4  gl_TexCoord[];"));
+            s.append(TString("out float gl_FogFragCoord;"));
+        }
 
         s.append(TString("\n"));
     }
@@ -687,14 +712,22 @@ void TBuiltIns::initialize()
         //
         //============================================================================
 
-        TString& s = StandardFragmentVaryings;
+        if (profile != EEsProfile) {
+            TString& s = StandardFragmentVaryings;
+            if (version < 130) {
+                s.append(TString("varying vec4  gl_Color;"));
+                s.append(TString("varying vec4  gl_SecondaryColor;"));
+                s.append(TString("varying vec4  gl_TexCoord[];"));
+                s.append(TString("varying float gl_FogFragCoord;"));
+            } else if (version < FirstProfileVersion || profile == ECompatibilityProfile) {
+                s.append(TString("in vec4  gl_Color;"));
+                s.append(TString("in vec4  gl_SecondaryColor;"));
+                s.append(TString("in vec4  gl_TexCoord[];"));
+                s.append(TString("in float gl_FogFragCoord;"));
+            }
 
-        s.append(TString("varying vec4  gl_Color;"));
-        s.append(TString("varying vec4  gl_SecondaryColor;"));
-        s.append(TString("varying vec4  gl_TexCoord[];"));
-        s.append(TString("varying float gl_FogFragCoord;"));
-
-        s.append(TString("\n"));
+            s.append(TString("\n"));
+        }
     }
 
     builtInStrings[EShLangFragment].push_back(BuiltInFunctions.c_str());
@@ -710,12 +743,12 @@ void TBuiltIns::initialize()
 }
 
 
-void TBuiltIns::initialize(const TBuiltInResource &resources)
+void TBuiltIns::initialize(const TBuiltInResource &resources, int version, EProfile profile, EShLanguage language)
 {
     //
     // Initialize the context-dependent (resource-dependent) built-in strings for parsing.
     //
-    TString StandardUniforms;    
+    TString StandardUniforms;
 
     {
         //============================================================================
@@ -725,97 +758,137 @@ void TBuiltIns::initialize(const TBuiltInResource &resources)
         //============================================================================
 
         TString& s = StandardUniforms;
-       
+		const int maxSize = 80;
+        char builtInConstant[maxSize];
+
         //
         // Implementation dependent constants.  The example values below
         // are the minimum values allowed for these maximums.
         //
-		const int maxSize = 80;
-        char builtInConstant[maxSize];
-        snprintf(builtInConstant, maxSize, "const int  gl_MaxLights = %d;", resources.maxLights); // GL 1.0
-        s.append(TString(builtInConstant));                            
-        
-        snprintf(builtInConstant, maxSize, "const int  gl_MaxClipPlanes = %d;", resources.maxClipPlanes);  // GL 1.0
-        s.append(TString(builtInConstant));
-        
-        snprintf(builtInConstant, maxSize, "const int  gl_MaxTextureUnits = %d;", resources.maxTextureUnits); // GL 1.2
-        s.append(TString(builtInConstant));
-        
-        snprintf(builtInConstant, maxSize, "const int  gl_MaxTextureCoords = %d;", resources.maxTextureCoords); // ARB_fragment_program
-        s.append(TString(builtInConstant));
-        
-        snprintf(builtInConstant, maxSize, "const int  gl_MaxVertexAttribs = %d;", resources.maxVertexAttribs); // ARB_vertex_shader
-        s.append(TString(builtInConstant));
-        
-        snprintf(builtInConstant, maxSize, "const int  gl_MaxVertexUniformComponents = %d;", resources.maxVertexUniformComponents); // ARB_vertex_shader
-        s.append(TString(builtInConstant));       
-        
-        snprintf(builtInConstant, maxSize, "const int  gl_MaxVaryingFloats = %d;", resources.maxVaryingFloats); // ARB_vertex_shader
-        s.append(TString(builtInConstant));        
-        
-        snprintf(builtInConstant, maxSize, "const int  gl_MaxVertexTextureImageUnits = %d;", resources.maxVertexTextureImageUnits); // ARB_vertex_shader
-        s.append(TString(builtInConstant));        
-        
-        snprintf(builtInConstant, maxSize, "const int  gl_MaxCombinedTextureImageUnits = %d;", resources.maxCombinedTextureImageUnits); // ARB_vertex_shader
-        s.append(TString(builtInConstant));        
-        
-        snprintf(builtInConstant, maxSize, "const int  gl_MaxTextureImageUnits = %d;", resources.maxTextureImageUnits); // ARB_fragment_shader
-        s.append(TString(builtInConstant));
-        
-        snprintf(builtInConstant, maxSize, "const int  gl_MaxFragmentUniformComponents = %d;", resources.maxFragmentUniformComponents); // ARB_fragment_shader
-        s.append(TString(builtInConstant));
-        
-        snprintf(builtInConstant, maxSize, "const int  gl_MaxDrawBuffers = %d;", resources.maxDrawBuffers); // proposed ARB_draw_buffers
-        s.append(TString(builtInConstant));
 
-        //
-        // OpenGL'uniform' state.  Page numbers are in reference to version
-        // 1.4 of the OpenGL specification.
-        //
+        if (profile == EEsProfile) {
+            snprintf(builtInConstant, maxSize, "const mediump int  gl_MaxVertexAttribs = %d;", resources.maxVertexAttribs);
+            s.append(TString(builtInConstant));
 
-        //
-        // Matrix state. p. 31, 32, 37, 39, 40.
-        //
-        s.append(TString("uniform mat4  gl_TextureMatrix[gl_MaxTextureCoords];"));
+            snprintf(builtInConstant, maxSize, "const mediump int  gl_MaxVertexUniformVectors = %d;", resources.maxVertexUniformVectors);
+            s.append(TString(builtInConstant));
 
-        //
-        // Derived matrix state that provides inverse and transposed versions
-        // of the matrices above.
-        //
-        s.append(TString("uniform mat4  gl_TextureMatrixInverse[gl_MaxTextureCoords];"));
+            snprintf(builtInConstant, maxSize, "const mediump int  gl_MaxVertexTextureImageUnits = %d;", resources.maxVertexTextureImageUnits);
+            s.append(TString(builtInConstant));
 
-        s.append(TString("uniform mat4  gl_TextureMatrixTranspose[gl_MaxTextureCoords];"));
+            snprintf(builtInConstant, maxSize, "const mediump int  gl_MaxCombinedTextureImageUnits = %d;", resources.maxCombinedTextureImageUnits);
+            s.append(TString(builtInConstant));
 
-        s.append(TString("uniform mat4  gl_TextureMatrixInverseTranspose[gl_MaxTextureCoords];"));
+            snprintf(builtInConstant, maxSize, "const mediump int  gl_MaxTextureImageUnits = %d;", resources.maxTextureImageUnits);
+            s.append(TString(builtInConstant));
+            
+            snprintf(builtInConstant, maxSize, "const mediump int  gl_MaxFragmentUniformVectors = %d;", resources.maxFragmentUniformVectors);
+            s.append(TString(builtInConstant));
 
-        //
-        // Clip planes p. 42.
-        //
-        s.append(TString("uniform vec4  gl_ClipPlane[gl_MaxClipPlanes];"));
+            snprintf(builtInConstant, maxSize, "const mediump int  gl_MaxDrawBuffers = %d;", resources.maxDrawBuffers);
+            s.append(TString(builtInConstant));
 
-        //
-        // Light State p 50, 53, 55.
-        //
-        s.append(TString("uniform gl_LightSourceParameters  gl_LightSource[gl_MaxLights];"));
+            if (version == 100) {
+                snprintf(builtInConstant, maxSize, "const mediump int  gl_MaxVaryingVectors = %d;", resources.maxVaryingVectors);
+                s.append(TString(builtInConstant));
+            } else {
+                snprintf(builtInConstant, maxSize, "const mediump int  gl_MaxVertexOutputVectors = %d;", resources.maxVertexOutputVectors);
+                s.append(TString(builtInConstant));
 
-        //
-        // Derived state from products of light.
-        //
-        s.append(TString("uniform gl_LightProducts gl_FrontLightProduct[gl_MaxLights];"));
-        s.append(TString("uniform gl_LightProducts gl_BackLightProduct[gl_MaxLights];"));
+                snprintf(builtInConstant, maxSize, "const mediump int  gl_MinProgramTexelOffset = %d;", resources.minProgramTexelOffset);
+                s.append(TString(builtInConstant));
+                
+                snprintf(builtInConstant, maxSize, "const mediump int  gl_MaxProgramTexelOffset = %d;", resources.maxProgramTexelOffset);
+                s.append(TString(builtInConstant));
+            }
+        } else {
+            snprintf(builtInConstant, maxSize, "const int  gl_MaxVertexAttribs = %d;", resources.maxVertexAttribs);
+            s.append(TString(builtInConstant));
 
-        //
-        // Textureg Environment and Generation, p. 152, p. 40-42.
-        //
-        s.append(TString("uniform vec4  gl_TextureEnvColor[gl_MaxTextureImageUnits];"));
-        s.append(TString("uniform vec4  gl_EyePlaneS[gl_MaxTextureCoords];"));
-        s.append(TString("uniform vec4  gl_EyePlaneT[gl_MaxTextureCoords];"));
-        s.append(TString("uniform vec4  gl_EyePlaneR[gl_MaxTextureCoords];"));
-        s.append(TString("uniform vec4  gl_EyePlaneQ[gl_MaxTextureCoords];"));
-        s.append(TString("uniform vec4  gl_ObjectPlaneS[gl_MaxTextureCoords];"));
-        s.append(TString("uniform vec4  gl_ObjectPlaneT[gl_MaxTextureCoords];"));
-        s.append(TString("uniform vec4  gl_ObjectPlaneR[gl_MaxTextureCoords];"));
-        s.append(TString("uniform vec4  gl_ObjectPlaneQ[gl_MaxTextureCoords];"));
+            snprintf(builtInConstant, maxSize, "const int  gl_MaxVertexTextureImageUnits = %d;", resources.maxVertexTextureImageUnits);
+            s.append(TString(builtInConstant));
+
+            snprintf(builtInConstant, maxSize, "const int  gl_MaxCombinedTextureImageUnits = %d;", resources.maxCombinedTextureImageUnits);
+            s.append(TString(builtInConstant));
+
+            snprintf(builtInConstant, maxSize, "const int  gl_MaxTextureImageUnits = %d;", resources.maxTextureImageUnits);
+            s.append(TString(builtInConstant));
+
+            snprintf(builtInConstant, maxSize, "const int  gl_MaxDrawBuffers = %d;", resources.maxDrawBuffers);
+            s.append(TString(builtInConstant));
+
+            snprintf(builtInConstant, maxSize, "const int  gl_MaxLights = %d;", resources.maxLights);
+            s.append(TString(builtInConstant));
+
+            snprintf(builtInConstant, maxSize, "const int  gl_MaxClipPlanes = %d;", resources.maxClipPlanes);
+            s.append(TString(builtInConstant));
+
+            snprintf(builtInConstant, maxSize, "const int  gl_MaxTextureUnits = %d;", resources.maxTextureUnits);
+            s.append(TString(builtInConstant));
+
+            snprintf(builtInConstant, maxSize, "const int  gl_MaxTextureCoords = %d;", resources.maxTextureCoords);
+            s.append(TString(builtInConstant));
+
+            snprintf(builtInConstant, maxSize, "const int  gl_MaxVertexUniformComponents = %d;", resources.maxVertexUniformComponents);
+            s.append(TString(builtInConstant));
+
+            snprintf(builtInConstant, maxSize, "const int  gl_MaxVaryingFloats = %d;", resources.maxVaryingFloats);
+            s.append(TString(builtInConstant));
+
+            snprintf(builtInConstant, maxSize, "const int  gl_MaxFragmentUniformComponents = %d;", resources.maxFragmentUniformComponents);
+            s.append(TString(builtInConstant));
+
+            if (version < FirstProfileVersion || profile == ECompatibilityProfile) {
+                //
+                // OpenGL'uniform' state.  Page numbers are in reference to version
+                // 1.4 of the OpenGL specification.
+                //
+
+                //
+                // Matrix state. p. 31, 32, 37, 39, 40.
+                //
+                s.append(TString("uniform mat4  gl_TextureMatrix[gl_MaxTextureCoords];"));
+
+                //
+                // Derived matrix state that provides inverse and transposed versions
+                // of the matrices above.
+                //
+                s.append(TString("uniform mat4  gl_TextureMatrixInverse[gl_MaxTextureCoords];"));
+
+                s.append(TString("uniform mat4  gl_TextureMatrixTranspose[gl_MaxTextureCoords];"));
+
+                s.append(TString("uniform mat4  gl_TextureMatrixInverseTranspose[gl_MaxTextureCoords];"));
+
+                //
+                // Clip planes p. 42.
+                //
+                s.append(TString("uniform vec4  gl_ClipPlane[gl_MaxClipPlanes];"));
+
+                //
+                // Light State p 50, 53, 55.
+                //
+                s.append(TString("uniform gl_LightSourceParameters  gl_LightSource[gl_MaxLights];"));
+
+                //
+                // Derived state from products of light.
+                //
+                s.append(TString("uniform gl_LightProducts gl_FrontLightProduct[gl_MaxLights];"));
+                s.append(TString("uniform gl_LightProducts gl_BackLightProduct[gl_MaxLights];"));
+
+                //
+                // Textureg Environment and Generation, p. 152, p. 40-42.
+                //
+                s.append(TString("uniform vec4  gl_TextureEnvColor[gl_MaxTextureImageUnits];"));
+                s.append(TString("uniform vec4  gl_EyePlaneS[gl_MaxTextureCoords];"));
+                s.append(TString("uniform vec4  gl_EyePlaneT[gl_MaxTextureCoords];"));
+                s.append(TString("uniform vec4  gl_EyePlaneR[gl_MaxTextureCoords];"));
+                s.append(TString("uniform vec4  gl_EyePlaneQ[gl_MaxTextureCoords];"));
+                s.append(TString("uniform vec4  gl_ObjectPlaneS[gl_MaxTextureCoords];"));
+                s.append(TString("uniform vec4  gl_ObjectPlaneT[gl_MaxTextureCoords];"));
+                s.append(TString("uniform vec4  gl_ObjectPlaneR[gl_MaxTextureCoords];"));
+                s.append(TString("uniform vec4  gl_ObjectPlaneQ[gl_MaxTextureCoords];"));
+            }
+        }
 
         s.append(TString("\n"));
     }
@@ -824,28 +897,57 @@ void TBuiltIns::initialize(const TBuiltInResource &resources)
     builtInStrings[EShLangVertex].push_back(StandardUniforms);
 }
 
-void IdentifyBuiltIns(EShLanguage language, TSymbolTable& symbolTable)
+void IdentifyBuiltIns(int version, EProfile profile, EShLanguage language, TSymbolTable& symbolTable)
 {
+    TPrecisionQualifier pq;
     //
-    // First, insert some special built-in variables that are not in 
-    // the built-in header files.
+    // First, insert some special built-in variables that are not in
+    // the built-in text strings.
     //
     switch(language) {
     case EShLangFragment:
-        symbolTable.insert(*new TVariable(NewPoolTString("gl_FrontFacing"), TType(EbtBool,  EvqFace,        1)));
-        symbolTable.insert(*new TVariable(NewPoolTString("gl_FragCoord"),   TType(EbtFloat, EvqFragCoord,   4)));
-        symbolTable.insert(*new TVariable(NewPoolTString("gl_PointCoord"),  TType(EbtFloat, EvqPointCoord,  2)));
+        symbolTable.insert(*new TVariable(NewPoolTString("gl_FrontFacing"), TType(EbtBool,  EvqFace, 1)));
 
-        symbolTable.insert(*new TVariable(NewPoolTString("gl_FragColor"),   TType(EbtFloat, EvqFragColor,   4)));
-        symbolTable.insert(*new TVariable(NewPoolTString("gl_FragDepth"),   TType(EbtFloat, EvqFragDepth,   1)));
+        if (profile == EEsProfile)
+            pq = version == 100 ? EpqMedium : EpqHigh;
+        else
+            pq = EpqNone;
+        symbolTable.insert(*new TVariable(NewPoolTString("gl_FragCoord"),   TType(EbtFloat, EvqFragCoord, pq, 4)));
+
+        if (profile == EEsProfile || version >= 120) {
+            pq = profile == EEsProfile ? EpqMedium : EpqNone;
+            symbolTable.insert(*new TVariable(NewPoolTString("gl_PointCoord"),  TType(EbtFloat, EvqPointCoord, pq, 2)));
+        }
+
+        if (version < FirstProfileVersion || profile == ECompatibilityProfile) {
+            pq = profile == EEsProfile ? EpqMedium : EpqNone;
+            symbolTable.insert(*new TVariable(NewPoolTString("gl_FragColor"),   TType(EbtFloat, EvqFragColor, pq, 4)));
+        }
+
+        if (profile != EEsProfile || version > 100) {
+            pq = profile == EEsProfile ? EpqHigh : EpqNone;
+            symbolTable.insert(*new TVariable(NewPoolTString("gl_FragDepth"),   TType(EbtFloat, EvqFragDepth, pq, 1)));
+        }
         break;
 
     case EShLangVertex:
-        symbolTable.insert(*new TVariable(NewPoolTString("gl_Position"),    TType(EbtFloat, EvqPosition,    4)));
-        symbolTable.insert(*new TVariable(NewPoolTString("gl_PointSize"),   TType(EbtFloat, EvqPointSize,   1)));
-        symbolTable.insert(*new TVariable(NewPoolTString("gl_ClipVertex"),  TType(EbtFloat, EvqClipVertex,  4)));
+        pq = profile == EEsProfile ? EpqHigh : EpqNone;
+        symbolTable.insert(*new TVariable(NewPoolTString("gl_Position"),    TType(EbtFloat, EvqPosition, pq, 4)));
+
+        pq = profile == EEsProfile ? (version > 100 ? EpqHigh : EpqMedium) : EpqNone;
+        symbolTable.insert(*new TVariable(NewPoolTString("gl_PointSize"),   TType(EbtFloat, EvqPointSize, pq, 1)));
+
+        if (profile != EEsProfile)
+            symbolTable.insert(*new TVariable(NewPoolTString("gl_ClipVertex"),  TType(EbtFloat, EvqClipVertex, 4)));
+
+        if (version >= 130) {
+            pq = profile == EEsProfile ? EpqHigh : EpqNone;
+            symbolTable.insert(*new TVariable(NewPoolTString("gl_VertexID"),    TType(EbtInt, EvqVertexId, pq, 1)));
+            if (version >= 140)
+                symbolTable.insert(*new TVariable(NewPoolTString("gl_InstanceID"),  TType(EbtInt, EvqInstanceId, pq, 1)));
+        }
         break;
-        
+
     case EShLangTessControl:
     case EShLangTessEvaluation:
     case EShLangGeometry:
@@ -870,7 +972,7 @@ void IdentifyBuiltIns(EShLanguage language, TSymbolTable& symbolTable)
     symbolTable.relateToOperator("greaterThan",      EOpGreaterThan);
     symbolTable.relateToOperator("lessThanEqual",    EOpLessThanEqual);
     symbolTable.relateToOperator("greaterThanEqual", EOpGreaterThanEqual);
-    
+
     symbolTable.relateToOperator("radians",      EOpRadians);
     symbolTable.relateToOperator("degrees",      EOpDegrees);
     symbolTable.relateToOperator("sin",          EOpSin);
@@ -908,7 +1010,7 @@ void IdentifyBuiltIns(EShLanguage language, TSymbolTable& symbolTable)
     symbolTable.relateToOperator("faceforward",  EOpFaceForward);
     symbolTable.relateToOperator("reflect",      EOpReflect);
     symbolTable.relateToOperator("refract",      EOpRefract);
-    
+
     symbolTable.relateToOperator("any",          EOpAny);
     symbolTable.relateToOperator("all",          EOpAll);
 
@@ -916,10 +1018,10 @@ void IdentifyBuiltIns(EShLanguage language, TSymbolTable& symbolTable)
 
     case EShLangVertex:
         break;
-    
+
     case EShLangFragment:
-        symbolTable.relateToOperator("dFdx",         EOpDPdx);             
-        symbolTable.relateToOperator("dFdy",         EOpDPdy);             
+        symbolTable.relateToOperator("dFdx",         EOpDPdx);
+        symbolTable.relateToOperator("dFdy",         EOpDPdy);
         symbolTable.relateToOperator("fwidth",       EOpFwidth);
 
         break;
@@ -928,16 +1030,17 @@ void IdentifyBuiltIns(EShLanguage language, TSymbolTable& symbolTable)
     }
 }
 
-void IdentifyBuiltIns(EShLanguage language, TSymbolTable& symbolTable, const TBuiltInResource &resources)
+void IdentifyBuiltIns(int version, EProfile profile, EShLanguage language, TSymbolTable& symbolTable, const TBuiltInResource &resources)
 {
     //
-    // First, insert some special built-in variables that are not in 
-    // the built-in header files.
+    // Set resource-specific built-ins not yet handled.
     //
     switch(language) {
 
-    case EShLangFragment: {
-            // Set up gl_FragData.  The array size.
+    case EShLangFragment:
+        // Set up gl_FragData based on current array size.
+        if (version < FirstProfileVersion || profile == ECompatibilityProfile) {
+            TPrecisionQualifier pq = profile == EEsProfile ? EpqMedium : EpqNone;
             TType fragData(EbtFloat, EvqFragColor, 4);
             TArraySizes arraySizes = NewPoolTArraySizes();
             arraySizes->push_back(resources.maxDrawBuffers);

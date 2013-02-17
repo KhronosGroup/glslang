@@ -1,5 +1,7 @@
 //
 //Copyright (C) 2002-2005  3Dlabs Inc. Ltd.
+//Copyright (C) 2013 LunarG, Inc.
+//
 //All rights reserved.
 //
 //Redistribution and use in source and binary forms, with or without
@@ -39,23 +41,22 @@
 #include "../Include/Common.h"
 #include "../Include/ShHandle.h"
 #include "SymbolTable.h"
+#include "Versions.h"
 
 typedef TVector<TString> TBuiltInStrings;
 
 class TBuiltIns {
 public:
     POOL_ALLOCATOR_NEW_DELETE(GlobalPoolAllocator)
-    void initialize();
-	void initialize(const TBuiltInResource& resources);
+    void initialize(int version, EProfile);
+	void initialize(const TBuiltInResource& resources, int version, EProfile, EShLanguage);
     TBuiltInStrings* getBuiltInStrings() { return builtInStrings; }
 protected:
     TBuiltInStrings builtInStrings[EShLangCount];
 };
 
-void IdentifyBuiltIns(EShLanguage, TSymbolTable&);
-void IdentifyBuiltIns(EShLanguage, TSymbolTable&, const TBuiltInResource &resources);
-bool GenerateBuiltInSymbolTable(const TBuiltInResource* resources, TInfoSink&, TSymbolTable*, EShLanguage language = EShLangCount);
-bool InitializeSymbolTable(TBuiltInStrings* BuiltInStrings, EShLanguage language, TInfoSink& infoSink, const TBuiltInResource *resources, TSymbolTable*);
+void IdentifyBuiltIns(int version, EProfile profile, EShLanguage, TSymbolTable&);
+void IdentifyBuiltIns(int version, EProfile profile, EShLanguage, TSymbolTable&, const TBuiltInResource &resources);
 extern "C" int InitPreprocessor(void);
 extern "C" int FinalizePreprocessor(void);
 

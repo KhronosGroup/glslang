@@ -67,9 +67,9 @@ struct TPragma {
 // they can be passed to the parser without needing a global.
 //
 struct TParseContext {
-    TParseContext(TSymbolTable& symt, TIntermediate& interm, EShLanguage L, TInfoSink& is, int defaultVersion);
+    TParseContext(TSymbolTable&, TIntermediate&, int version, EProfile, EShLanguage, TInfoSink&);
     TIntermediate& intermediate; // to hold and build a parse tree
-    TSymbolTable& symbolTable;   // symbol table that goes with the language currently being parsed
+    TSymbolTable& symbolTable;   // symbol table that goes with the current language, version, and profile
     TInfoSink& infoSink;
     EShLanguage language;        // vertex or fragment language
     TIntermNode* treeRoot;       // root of parse tree being created
@@ -91,9 +91,6 @@ struct TParseContext {
     TPrecisionQualifier defaultPrecision[EbtNumTypes];
 	TString HashErrMsg;
     bool AfterEOF;
-
-    void setVersion(int);
-    void setProfile(EProfile);
 
     void initializeExtensionBehavior();
 

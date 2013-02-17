@@ -257,7 +257,7 @@ struct TThreadGlobalPools
         TPoolAllocator* globalPoolAllocator;
 };
 
-void SetGlobalPoolAllocatorPtr(TPoolAllocator* poolAllocator);
+void SetGlobalPoolAllocatorPtr(TPoolAllocator& poolAllocator);
 
 //
 // This STL compatible allocator is intended to be used as the allocator

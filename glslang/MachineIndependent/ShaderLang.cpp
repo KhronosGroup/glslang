@@ -1,5 +1,7 @@
 //
 //Copyright (C) 2002-2005  3Dlabs Inc. Ltd.
+//Copyright (C) 2013 LunarG, Inc.
+//
 //All rights reserved.
 //
 //Redistribution and use in source and binary forms, with or without
@@ -35,7 +37,10 @@
 //
 // Implement the top-level of interface to the compiler/linker,
 // as defined in ShaderLang.h
+// This is the platform independent interface between an OGL driver
+// and the shading language compiler/linker.
 //
+
 #include "SymbolTable.h"
 #include "ParseHelper.h"
 
@@ -45,61 +50,355 @@
 #define SH_EXPORTING
 #include "../Public/ShaderLang.h"
 #include "Initialize.h"
+
+namespace { // anonymous namespace for file-local functions and symbols
+
+int MapVersionToIndex(int version)
+{
+        switch(version) {
+        case 100: return  0;
+        case 110: return  1;
+        case 120: return  2;
+        case 130: return  3;
+        case 140: return  4;
+        case 150: return  5;
+        case 300: return  6;
+        case 330: return  7;
+        case 400: return  8;
+        case 410: return  9;
+        case 420: return 10;
+        case 430: return 11;
+        default:  //      |
+            return  0; // |
+        }         //      |
+}                 //      V
+const int VersionCount = 12;
+
 //
-// A symbol table for each language.  Each has a different
-// set of built-ins, and we want to preserve that from
+// A symbol table per version per profile per language.  This will be sparsely
+// populated, so they will only only be generated as needed.
+// 
+// Each has a different set of built-ins, and we want to preserve that from
 // compile to compile.
 //
-TSymbolTable SymbolTables[EShLangCount];
-
+// TODO: thread safety: ensure the built-in symbol table levels are reado only.
+TSymbolTable* SharedSymbolTables[VersionCount][EProfileCount][EShLangCount] = {};
 
 TPoolAllocator* PerProcessGPA = 0;
-//
-// This is the platform independent interface between an OGL driver
-// and the shading language compiler/linker.
-//
+
+bool InitializeSymbolTable(TBuiltInStrings* BuiltInStrings, int version, EProfile profile, EShLanguage language, TInfoSink& infoSink, 
+                           const TBuiltInResource* resources, TSymbolTable* symbolTables)
+{
+    TIntermediate intermediate(infoSink);	
+    TSymbolTable* symbolTable;
+	
+	if (resources)
+		symbolTable = symbolTables;
+	else
+		symbolTable = &symbolTables[language];
+
+    TParseContext parseContext(*symbolTable, intermediate, version, profile, language, infoSink);
+
+    GlobalParseContext = &parseContext;
+    
+    assert(symbolTable->isEmpty() || symbolTable->atSharedBuiltInLevel());
+       
+    //
+    // Parse the built-ins.  This should only happen once per
+    // language symbol table when no 'resources' are passed in.
+    //
+    // Push the symbol table to give it an initial scope.  This
+    // push should not have a corresponding pop, so that built-ins
+    // are preserved, and the test for an empty table fails.
+    //
+
+    symbolTable->push();
+
+    
+    //Initialize the Preprocessor
+    int ret = InitPreprocessor();
+    if (ret) {
+        infoSink.info.message(EPrefixInternalError,  "Unable to intialize the Preprocessor");
+        return false;
+    }
+
+    ResetFlex();
+    
+    for (TBuiltInStrings::iterator i  = BuiltInStrings[parseContext.language].begin();
+                                   i != BuiltInStrings[parseContext.language].end();    ++i) {
+        const char* builtInShaders[1];
+        int builtInLengths[1];
+
+        builtInShaders[0] = (*i).c_str();
+        builtInLengths[0] = (int) (*i).size();
+
+        if (PaParseStrings(const_cast<char**>(builtInShaders), builtInLengths, 1, parseContext) != 0) {
+            infoSink.info.message(EPrefixInternalError, "Unable to parse built-ins");
+
+            return false;
+        }
+    }
+    FinalizePreprocessor();
+
+	if (resources) {
+		IdentifyBuiltIns(version, profile, parseContext.language, *symbolTable, *resources);
+	} else {
+		IdentifyBuiltIns(version, profile, parseContext.language, *symbolTable);
+	}
+    return true;
+}
+
+bool GenerateBuiltInSymbolTable(TInfoSink& infoSink, TSymbolTable* symbolTables, int version, EProfile profile)
+{
+    TBuiltIns builtIns;
+    
+	builtIns.initialize(version, profile);
+	InitializeSymbolTable(builtIns.getBuiltInStrings(), version, profile, EShLangVertex, infoSink, 0, symbolTables);
+	InitializeSymbolTable(builtIns.getBuiltInStrings(), version, profile, EShLangFragment, infoSink, 0, symbolTables);
+
+    return true;
+}
+
+bool AddContextSpecificSymbols(const TBuiltInResource* resources, TInfoSink& infoSink, TSymbolTable* symbolTables, int version, EProfile profile, EShLanguage language)
+{
+    TBuiltIns builtIns;
+    
+	builtIns.initialize(*resources, version, profile, language);
+    InitializeSymbolTable(builtIns.getBuiltInStrings(), version, profile, language, infoSink, resources, symbolTables);
+
+    return true;
+}
 
 //
 // Driver must call this first, once, before doing any other
 // compiler/linker operations.
 //
-int ShInitialize()
+
+void SetupBuiltinSymbolTable(int version, EProfile profile)
 {
     TInfoSink infoSink;
-    bool ret = true;
 
-    if (!InitProcess())
-        return 0;
+    // This function is for lazy setup.  See if already done.
+    int versionIndex = MapVersionToIndex(version);
+    if (SharedSymbolTables[versionIndex][profile][EShLangVertex])
+        return;
 
-    // This method should be called once per process. If its called by multiple threads, then 
-    // we need to have thread synchronization code around the initialization of per process
-    // global pool allocator
-    if (!PerProcessGPA) { 
-        TPoolAllocator *builtInPoolAllocator = new TPoolAllocator(true);
-        builtInPoolAllocator->push();
-        TPoolAllocator* gPoolAllocator = &GlobalPoolAllocator;
-        SetGlobalPoolAllocatorPtr(builtInPoolAllocator);
+    TPoolAllocator& savedGPA = GetGlobalPoolAllocator();
+    TPoolAllocator *builtInPoolAllocator = new TPoolAllocator(true);
+    SetGlobalPoolAllocatorPtr(*builtInPoolAllocator);
 
-        TSymbolTable symTables[EShLangCount];
-        GenerateBuiltInSymbolTable(0, infoSink, symTables);
+    TSymbolTable symTables[EShLangCount];
+    GenerateBuiltInSymbolTable(infoSink, symTables, version, profile);
 
-        PerProcessGPA = new TPoolAllocator(true);
-        PerProcessGPA->push();
-        SetGlobalPoolAllocatorPtr(PerProcessGPA);
+    SetGlobalPoolAllocatorPtr(*PerProcessGPA);
 
-        SymbolTables[EShLangVertex].copyTable(symTables[EShLangVertex]);
-        SymbolTables[EShLangFragment].copyTable(symTables[EShLangFragment]);
+    SharedSymbolTables[versionIndex][profile][EShLangVertex] = new TSymbolTable;
+    SharedSymbolTables[versionIndex][profile][EShLangVertex]->copyTable(symTables[EShLangVertex]);
+    SharedSymbolTables[versionIndex][profile][EShLangFragment] = new TSymbolTable;
+    SharedSymbolTables[versionIndex][profile][EShLangFragment]->copyTable(symTables[EShLangFragment]);
+        
+    symTables[EShLangVertex].pop(0);
+    symTables[EShLangFragment].pop(0);
 
-        SetGlobalPoolAllocatorPtr(gPoolAllocator);
+    builtInPoolAllocator->popAll();
+    delete builtInPoolAllocator;
 
-        symTables[EShLangVertex].pop(0);
-        symTables[EShLangFragment].pop(0);
+    SetGlobalPoolAllocatorPtr(savedGPA);
+}
 
-        builtInPoolAllocator->popAll();
-        delete builtInPoolAllocator;
+// returns true if something whas consumed
+bool ConsumeWhitespaceComment(const char*& s)
+{
+    const char* startPoint = s;
+
+    // first, skip white space    
+    while (*s == ' ' || *s == '\t' || *s == '\n' || *s == '\r') {
+        ++s;
     }
 
-    return ret ? 1 : 0;
+    // then, check for a comment
+    if (*s == '/') {
+        if (*(s+1) == '/') {
+            s += 2;
+            do {
+                while (*s && *s != '\\' && *s != '\n')
+                    ++s;
+
+                if (*s == '\n' || *s == 0) {
+                    if (*s == '\n') {
+                        ++s;
+                        if (*s == '\r')
+                            ++s;
+                    }  // else it's 0, end of string
+
+                    // we reached the end of the comment
+                    break;
+                } else {
+                    // it's a '\', so we need to keep going, after skipping what's escaped
+                    ++s;
+                    if (*s == '\n') {
+                        ++s;
+                        if (*s == '\r')
+                            ++s;
+                    } else {
+                        // skip the escaped character
+                        if (*s)
+                            ++s;
+                    }
+                }
+            } while (true);
+        } else if (*(s+1) == '*') {
+            s += 2;
+            do {
+                while (*s && *s != '*')
+                    ++s;
+                if (*s == '*') {
+                    ++s;
+                    if (*s == '/') {
+                        ++s;
+                        break;
+                    } // else not end of comment, keep going
+                } else // end of string
+                    break;
+            } while (true);
+        } // else it's not a comment
+    } // else it's not a comment
+
+    return startPoint != s;
+}
+
+void ScanVersion(const char* const shaderStrings[], int numStrings, int& version, EProfile& profile)
+{
+    // This function doesn't have to get all the semantics correct, 
+    // just find the #version if there is a correct one present.
+    // The CPP will have the responsibility of getting all the semantics right.
+
+    version = 0;  // means not found
+    profile = ENoProfile;
+
+    const char* s = &shaderStrings[0][0];
+
+    // TODO: ES error check: #version must be on first line
+
+    while (ConsumeWhitespaceComment(s))
+        ;
+
+    // #
+    if (*s != '#')
+        return;
+    ++s;
+
+    // whitespace
+    while (*s == ' ' || *s == '\t') {
+        ++s;
+    }
+
+    // version
+    if (strncmp(s, "version", 7) != 0)
+        return;
+
+    // whitespace
+    s += 7;
+    while (*s == ' ' || *s == '\t') {
+        ++s;
+    }
+
+    // version number
+    while (*s >= '0' && *s <= '9') {
+        version = 10 * version + (*s - '0');
+        ++s;
+    }
+    if (version == 0)
+        return;
+    
+    // whitespace
+    while (*s == ' ' || *s == '\t') {
+        ++s;
+    }
+
+    // profile
+    const char* end = s;
+    while (*end != ' ' && *end != '\t' && *end != '\n') {
+        if (*end == 0)
+            return;
+        ++end;
+    }
+    int profileLength = end - s;
+    if (profileLength == 2 && strncmp(s, "es", profileLength) == 0)
+        profile = EEsProfile;
+    else if (profileLength == 4 && strncmp(s, "core", profileLength) == 0)
+        profile = ECoreProfile;
+    else if (profileLength == 13 && strncmp(s, "compatibility", profileLength) == 0)
+        profile = ECompatibilityProfile;
+}
+
+bool DeduceProfile(TInfoSink& infoSink, int version, EProfile& profile)
+{
+    const int FirstProfileVersion = 150;
+
+    if (profile == ENoProfile) {
+        if (version == 300) {
+            infoSink.info.message(EPrefixError, "#version: version 300 requires specifying the 'es' profile");
+            profile = EEsProfile;
+            
+            return false;
+        } else if (version == 100)
+            profile = EEsProfile;
+        else if (version >= FirstProfileVersion)
+            profile = ECoreProfile;
+        else
+            profile = ENoProfile;
+    } else {
+        // a profile was provided...
+        if (version < 150) {
+            infoSink.info.message(EPrefixError, "#version: versions before 150 do not allow a profile token");
+            if (version == 100)
+                profile = EEsProfile;
+            else
+                profile = ENoProfile;
+
+            return false;
+        } else if (version == 300) {
+            if (profile != EEsProfile) {
+                infoSink.info.message(EPrefixError, "#version: version 300 supports only the es profile");
+
+                return false;
+            }
+            profile = EEsProfile;
+        } else {
+            if (profile == EEsProfile) {
+                infoSink.info.message(EPrefixError, "#version: only version 300 supports the es profile");
+                if (version >= FirstProfileVersion)
+                    profile = ECoreProfile;
+                else
+                    profile = ENoProfile;
+
+                return false;
+            } 
+            // else: typical desktop case... e.g., "#version 410 core"
+        }
+    }
+
+    return true;
+}
+
+
+}; // end anonymous namespace for local functions
+
+int ShInitialize()
+{
+    if (! InitProcess())
+        return 0;
+
+    // TODO: Thread safety:
+    // This method should be called once per process. If it's called by multiple threads, then 
+    // we need to have thread synchronization code around the initialization of per process
+    // global pool allocator
+    if (! PerProcessGPA) { 
+        PerProcessGPA = new TPoolAllocator(true);
+    }
+    
+    return true;
 }
 
 //
@@ -156,88 +455,17 @@ void ShDestruct(ShHandle handle)
 // Cleanup symbol tables
 //
 int __fastcall ShFinalize()
-{  
-  if (PerProcessGPA) {
-    PerProcessGPA->popAll();
-    delete PerProcessGPA;
-  }
-  return 1;
-}
-
-bool GenerateBuiltInSymbolTable(const TBuiltInResource* resources, TInfoSink& infoSink, TSymbolTable* symbolTables, EShLanguage language)
 {
-    TBuiltIns builtIns;
-    
-	if (resources) {
-		builtIns.initialize(*resources);
-		InitializeSymbolTable(builtIns.getBuiltInStrings(), language, infoSink, resources, symbolTables);
-	} else {
-		builtIns.initialize();
-		InitializeSymbolTable(builtIns.getBuiltInStrings(), EShLangVertex, infoSink, resources, symbolTables);
-		InitializeSymbolTable(builtIns.getBuiltInStrings(), EShLangFragment, infoSink, resources, symbolTables);
-	}
+    for (int version = 0; version < VersionCount; ++version)
+        for (int p = 0; p < EProfileCount; ++p)
+            for (int lang = 0; lang < EShLangCount; ++lang)
+                delete SharedSymbolTables[version][p][lang];
 
-    return true;
-}
-
-bool InitializeSymbolTable(TBuiltInStrings* BuiltInStrings, EShLanguage language, TInfoSink& infoSink, const TBuiltInResource* resources, TSymbolTable* symbolTables)
-{
-    TIntermediate intermediate(infoSink);	
-    TSymbolTable* symbolTable;
-	
-	if (resources)
-		symbolTable = symbolTables;
-	else
-		symbolTable = &symbolTables[language];
-
-    TParseContext parseContext(*symbolTable, intermediate, language, infoSink, 110);
-
-    GlobalParseContext = &parseContext;
-    
-    assert(symbolTable->isEmpty() || symbolTable->atSharedBuiltInLevel());
-       
-    //
-    // Parse the built-ins.  This should only happen once per
-    // language symbol table when no 'resources' are passed in.
-    //
-    // Push the symbol table to give it an initial scope.  This
-    // push should not have a corresponding pop, so that built-ins
-    // are preserved, and the test for an empty table fails.
-    //
-
-    symbolTable->push();
-
-    
-    //Initialize the Preprocessor
-    int ret = InitPreprocessor();
-    if (ret) {
-        infoSink.info.message(EPrefixInternalError,  "Unable to intialize the Preprocessor");
-        return false;
+    if (PerProcessGPA) {
+        PerProcessGPA->popAll();
+        delete PerProcessGPA;
     }
-
-    ResetFlex();
-    
-    for (TBuiltInStrings::iterator i  = BuiltInStrings[parseContext.language].begin();
-                                   i != BuiltInStrings[parseContext.language].end();    ++i) {
-        const char* builtInShaders[1];
-        int builtInLengths[1];
-
-        builtInShaders[0] = (*i).c_str();
-        builtInLengths[0] = (int) (*i).size();
-
-        if (PaParseStrings(const_cast<char**>(builtInShaders), builtInLengths, 1, parseContext) != 0) {
-            infoSink.info.message(EPrefixInternalError, "Unable to parse built-ins");
-            return false;
-        }
-    }
-    FinalizePreprocessor();
-
-	if (resources) {
-		IdentifyBuiltIns(parseContext.language, *symbolTable, *resources);
-	} else {
-		IdentifyBuiltIns(parseContext.language, *symbolTable);
-	}
-    return true;
+    return 1;
 }
 
 //
@@ -262,12 +490,11 @@ int ShCompile(
 
     if (handle == 0)
         return 0;
-
     TShHandleBase* base = reinterpret_cast<TShHandleBase*>(handle);
     TCompiler* compiler = base->getAsCompiler();
     if (compiler == 0)
         return 0;
-    
+
     GlobalPoolAllocator.push();
     compiler->infoSink.info.erase();
     compiler->infoSink.debug.erase();
@@ -275,14 +502,29 @@ int ShCompile(
     if (numStrings == 0)
         return 1;
 
+    int version;
+    EProfile profile;
+    ScanVersion(shaderStrings, numStrings, version, profile);
+    if (version == 0)
+        version = defaultVersion;
+    bool goodProfile = DeduceProfile(compiler->infoSink, version, profile);
+
     TIntermediate intermediate(compiler->infoSink);
-    TSymbolTable symbolTable(SymbolTables[compiler->getLanguage()]);
+    
+    SetupBuiltinSymbolTable(version, profile);
+    TSymbolTable symbolTable(*SharedSymbolTables[MapVersionToIndex(version)]
+                                                [profile]
+                                                [compiler->getLanguage()]); 
     
     // Add built-in symbols that are potentially context dependent;
     // they get popped again further down.
-    GenerateBuiltInSymbolTable(resources, compiler->infoSink, &symbolTable, compiler->getLanguage());
+    AddContextSpecificSymbols(resources, compiler->infoSink, &symbolTable, version, profile, compiler->getLanguage());
 
-    TParseContext parseContext(symbolTable, intermediate, compiler->getLanguage(), compiler->infoSink, defaultVersion);
+    TParseContext parseContext(symbolTable, intermediate, version, profile, compiler->getLanguage(), compiler->infoSink);
+    
+    if (! goodProfile)
+        parseContext.error(1, "incorrect", "#version", "");
+
     parseContext.initializeExtensionBehavior();
 
     GlobalParseContext = &parseContext;
@@ -298,7 +540,7 @@ int ShCompile(
     bool success = true;
     
     symbolTable.push();
-    if (!symbolTable.atGlobalLevel())
+    if (! symbolTable.atGlobalLevel())
         parseContext.infoSink.info.message(EPrefixInternalError, "Wrong symbol table level");
 
     if (parseContext.insertBuiltInArrayAtGlobalLevel())
@@ -326,7 +568,7 @@ int ShCompile(
                     success = false;
             }
         }
-    } else if (!success) {
+    } else if (! success) {
         parseContext.infoSink.info.prefix(EPrefixError);
         parseContext.infoSink.info << parseContext.numErrors << " compilation errors.  No code generated.\n\n";
         success = false;
@@ -579,4 +821,3 @@ int ShGetUniformLocation(const ShHandle handle, const char* name)
 
     return uniformMap->getLocation(name);
 }
-

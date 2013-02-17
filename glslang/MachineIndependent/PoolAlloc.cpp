@@ -52,8 +52,7 @@ void InitializeGlobalPools()
     
     threadData->globalPoolAllocator = globalPoolAllocator;
     	
-    OS_SetTLSValue(PoolIndex, threadData);     
-	globalPoolAllocator->push();
+    OS_SetTLSValue(PoolIndex, threadData);
 }
 
 void FreeGlobalPools()
@@ -90,11 +89,11 @@ TPoolAllocator& GetGlobalPoolAllocator()
     return *threadData->globalPoolAllocator;
 }
 
-void SetGlobalPoolAllocatorPtr(TPoolAllocator* poolAllocator)
+void SetGlobalPoolAllocatorPtr(TPoolAllocator& poolAllocator)
 {
     TThreadGlobalPools* threadData = static_cast<TThreadGlobalPools*>(OS_GetTLSValue(PoolIndex));
 
-    threadData->globalPoolAllocator = poolAllocator;
+    threadData->globalPoolAllocator = &poolAllocator;
 }
 
 //
@@ -143,6 +142,8 @@ TPoolAllocator::TPoolAllocator(bool g, int growthIncrement, int allocationAlignm
     if (headerSkip < sizeof(tHeader)) {
         headerSkip = (sizeof(tHeader) + alignmentMask) & ~alignmentMask;
     }
+
+    push();
 }
 
 TPoolAllocator::~TPoolAllocator()
