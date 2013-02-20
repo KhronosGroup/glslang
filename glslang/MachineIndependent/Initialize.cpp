@@ -389,33 +389,70 @@ void TBuiltIns::initialize(int version, EProfile profile)
         //
         // Texture Functions.
         //
-        s.append(TString("vec4 texture1D(sampler1D sampler, float coord);"));
-        s.append(TString("vec4 texture1DProj(sampler1D sampler, vec2 coord);"));
-        s.append(TString("vec4 texture1DProj(sampler1D sampler, vec4 coord);"));
+        if (profile != EEsProfile || version == 100) {
+            s.append(TString("vec4 texture2D(sampler2D sampler, vec2 coord);"));
+            s.append(TString("vec4 texture2D(sampler2D sampler, vec2 coord, float bias);"));
 
-        s.append(TString("vec4 texture2D(sampler2D sampler, vec2 coord);"));
-        s.append(TString("vec4 texture2DProj(sampler2D sampler, vec3 coord);"));
-        s.append(TString("vec4 texture2DProj(sampler2D sampler, vec4 coord);"));
+            s.append(TString("vec4 texture2DProj(sampler2D sampler, vec3 coord);"));
+            s.append(TString("vec4 texture2DProj(sampler2D sampler, vec4 coord);"));
+            s.append(TString("vec4 texture2DProj(sampler2D sampler, vec3 coord, float bias);"));
+            s.append(TString("vec4 texture2DProj(sampler2D sampler, vec4 coord, float bias);"));
+        
+            s.append(TString("vec4 texture2DLod(sampler2D sampler, vec2 coord, float lod);"));
 
-        s.append(TString("vec4 texture3D(sampler3D sampler, vec3 coord);"));
-        s.append(TString("vec4 texture3DProj(sampler3D sampler, vec4 coord);"));
+            s.append(TString("vec4 texture2DProjLod(sampler2D sampler, vec3 coord, float lod);"));
+            s.append(TString("vec4 texture2DProjLod(sampler2D sampler, vec4 coord, float lod);"));
 
-        s.append(TString("vec4 textureCube(samplerCube sampler, vec3 coord);"));
+            s.append(TString("vec4 textureCube(samplerCube sampler, vec3 coord);"));
+            s.append(TString("vec4 textureCube(samplerCube sampler, vec3 coord, float bias);"));
 
-        s.append(TString("vec4 shadow1D(sampler1DShadow sampler, vec3 coord);"));
+            s.append(TString("vec4 textureCubeLod(samplerCube sampler, vec3 coord, float lod);"));
+        }
 
-        s.append(TString("vec4 shadow2D(sampler2DShadow sampler, vec3 coord);"));
+        if (profile != EEsProfile || version > 100) {
+            s.append(TString("vec4 texture1D(sampler1D sampler, float coord);"));
+            s.append(TString("vec4 texture1D(sampler1D sampler, float coord, float bias);"));
+            
+            s.append(TString("vec4 texture1DProj(sampler1D sampler, vec2 coord);"));
+            s.append(TString("vec4 texture1DProj(sampler1D sampler, vec4 coord);"));
+            s.append(TString("vec4 texture1DProj(sampler1D sampler, vec2 coord, float bias);"));
+            s.append(TString("vec4 texture1DProj(sampler1D sampler, vec4 coord, float bias);"));
+            
+            s.append(TString("vec4 texture1DProjLod(sampler1D sampler, vec2 coord, float lod);"));
+            s.append(TString("vec4 texture1DProjLod(sampler1D sampler, vec4 coord, float lod);"));
 
-        s.append(TString("vec4 shadow1DProj(sampler1DShadow sampler, vec4 coord);"));
+            s.append(TString("vec4 texture3D(sampler3D sampler, vec3 coord);"));
+            s.append(TString("vec4 texture3D(sampler3D sampler, vec3 coord, float bias);"));
 
-        s.append(TString("vec4 shadow2DProj(sampler2DShadow sampler, vec4 coord);"));
+            s.append(TString("vec4 texture3DProj(sampler3D sampler, vec4 coord);"));
+            s.append(TString("vec4 texture3DProj(sampler3D sampler, vec4 coord, float bias);"));
+        
+            s.append(TString("vec4 texture3DLod(sampler3D sampler, vec3 coord, float lod);"));
 
-        // ARB_texture_rectangle
-        s.append(TString("vec4 texture2DRect(sampler2DRect sampler, vec2 coord);"));
-        s.append(TString("vec4 texture2DRectProj(sampler2DRect sampler, vec3 coord);"));
-        s.append(TString("vec4 texture2DRectProj(sampler2DRect sampler, vec4 coord);"));
-        s.append(TString("vec4 shadow2DRect(sampler2DRectShadow sampler, vec3 coord);"));
-        s.append(TString("vec4 shadow2DRectProj(sampler2DRectShadow sampler, vec4 coord);"));
+            s.append(TString("vec4 texture3DProjLod(sampler3D sampler, vec4 coord, float lod);"));
+
+            s.append(TString("vec4 shadow1D(sampler1DShadow sampler, vec3 coord);"));
+            s.append(TString("vec4 shadow1D(sampler1DShadow sampler, vec3 coord, float bias);"));
+
+            s.append(TString("vec4 shadow2D(sampler2DShadow sampler, vec3 coord);"));
+            s.append(TString("vec4 shadow2D(sampler2DShadow sampler, vec3 coord, float bias);"));
+
+            s.append(TString("vec4 shadow1DProj(sampler1DShadow sampler, vec4 coord);"));
+            s.append(TString("vec4 shadow1DProj(sampler1DShadow sampler, vec4 coord, float bias);"));
+
+            s.append(TString("vec4 shadow2DProj(sampler2DShadow sampler, vec4 coord);"));
+            s.append(TString("vec4 shadow2DProj(sampler2DShadow sampler, vec4 coord, float bias);"));
+            
+            s.append(TString("vec4 shadow1DProjLod(sampler1DShadow sampler, vec4 coord, float lod);"));
+            s.append(TString("vec4 shadow2DProjLod(sampler2DShadow sampler, vec4 coord, float lod);"));
+
+            // ARB_texture_rectangle
+            s.append(TString("vec4 texture2DRect(sampler2DRect sampler, vec2 coord);"));
+            s.append(TString("vec4 texture2DRectProj(sampler2DRect sampler, vec3 coord);"));
+            s.append(TString("vec4 texture2DRectProj(sampler2DRect sampler, vec4 coord);"));
+            s.append(TString("vec4 shadow2DRect(sampler2DRectShadow sampler, vec3 coord);"));
+            s.append(TString("vec4 shadow2DRectProj(sampler2DRectShadow sampler, vec4 coord);"));
+        }
 
         //
         // Noise functions.
