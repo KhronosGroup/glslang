@@ -1202,6 +1202,18 @@ TIntermTyped* TIntermConstantUnion::fold(TOperator op, TIntermTyped* constantNod
             }
             returnType = TType(getType().getBasicType(), EvqConst, 0, getMatrixRows(), node->getMatrixCols());
             break;
+        case EOpOuterProduct:
+            // TODO: functionality >= 120
+            break;
+        case EOpDeterminant:
+            // TODO: functionality >= 150
+            break;
+        case EOpMatrixInverse:
+            // TODO: functionality >= 150
+            break;
+        case EOpTranspose:
+            // TODO: functionality >= 120
+            break;
         case EOpDiv: 
             tempConstArray = new constUnion[objectSize];
             for (int i = 0; i < objectSize; i++) {

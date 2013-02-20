@@ -283,6 +283,38 @@ void TBuiltIns::initialize(int version, EProfile profile)
         s.append(TString("mat3 matrixCompMult(mat3 x, mat3 y);"));
         s.append(TString("mat4 matrixCompMult(mat4 x, mat4 y);"));
 
+        if (version >= 120) {
+            s.append(TString("mat2   outerProduct(vec2 c, vec2 r);"));
+            s.append(TString("mat3   outerProduct(vec3 c, vec3 r);"));
+            s.append(TString("mat4   outerProduct(vec4 c, vec4 r);"));
+            s.append(TString("mat2x3 outerProduct(vec3 c, vec2 r);"));
+            s.append(TString("mat3x2 outerProduct(vec2 c, vec3 r);"));
+            s.append(TString("mat2x4 outerProduct(vec4 c, vec2 r);"));
+            s.append(TString("mat4x2 outerProduct(vec2 c, vec4 r);"));
+            s.append(TString("mat3x4 outerProduct(vec4 c, vec3 r);"));
+            s.append(TString("mat4x3 outerProduct(vec3 c, vec4 r);"));
+
+            s.append(TString("mat2   transpose(mat2   m);"));
+            s.append(TString("mat3   transpose(mat3   m);"));
+            s.append(TString("mat4   transpose(mat4   m);"));
+            s.append(TString("mat2x3 transpose(mat3x2 m);"));
+            s.append(TString("mat3x2 transpose(mat2x3 m);"));
+            s.append(TString("mat2x4 transpose(mat4x2 m);"));
+            s.append(TString("mat4x2 transpose(mat2x4 m);"));
+            s.append(TString("mat3x4 transpose(mat4x3 m);"));
+            s.append(TString("mat4x3 transpose(mat3x4 m);"));
+
+            if (version >= 150) {
+                s.append(TString("float determinant(mat2 m);"));
+                s.append(TString("float determinant(mat3 m);"));
+                s.append(TString("float determinant(mat4 m);"));
+                
+                s.append(TString("mat2 inverse(mat2 m);"));
+                s.append(TString("mat3 inverse(mat3 m);"));
+                s.append(TString("mat4 inverse(mat4 m);"));
+            }
+        }
+
         //
         // Vector relational functions.
         //
@@ -795,6 +827,9 @@ void TBuiltIns::initialize(const TBuiltInResource &resources, int version, EProf
                 snprintf(builtInConstant, maxSize, "const mediump int  gl_MaxVertexOutputVectors = %d;", resources.maxVertexOutputVectors);
                 s.append(TString(builtInConstant));
 
+                snprintf(builtInConstant, maxSize, "const mediump int  gl_MaxFragmentInputVectors = %d;", resources.maxFragmentInputVectors);
+                s.append(TString(builtInConstant));
+
                 snprintf(builtInConstant, maxSize, "const mediump int  gl_MinProgramTexelOffset = %d;", resources.minProgramTexelOffset);
                 s.append(TString(builtInConstant));
                 
@@ -964,6 +999,15 @@ void IdentifyBuiltIns(int version, EProfile profile, EShLanguage language, TSymb
     symbolTable.relateToOperator("not",              EOpVectorLogicalNot);
 
     symbolTable.relateToOperator("matrixCompMult",   EOpMul);
+    if (version >= 120) {
+        symbolTable.relateToOperator("outerProduct", EOpOuterProduct);
+        symbolTable.relateToOperator("transpose", EOpTranspose);
+        if (version >= 150) {
+            symbolTable.relateToOperator("determinant", EOpDeterminant);                
+            symbolTable.relateToOperator("inverse", EOpMatrixInverse);
+        }
+    }
+
     symbolTable.relateToOperator("mod",              EOpMod);
 
     symbolTable.relateToOperator("equal",            EOpVectorEqual);

@@ -105,6 +105,7 @@ void GenerateResources(TBuiltInResource& resources)
     resources.maxVaryingVectors = 8;
     resources.maxFragmentUniformVectors = 16;
     resources.maxVertexOutputVectors = 16;
+    resources.maxFragmentInputVectors = 15;
     resources.minProgramTexelOffset = -8;
     resources.maxProgramTexelOffset = 7;
 }

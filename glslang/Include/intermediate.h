@@ -169,6 +169,10 @@ enum TOperator {
     EOpFwidth,          // Fragment only
 
     EOpMatrixTimesMatrix,
+    EOpOuterProduct,
+    EOpDeterminant,
+    EOpMatrixInverse,
+    EOpTranspose,
 
     EOpAny,
     EOpAll,

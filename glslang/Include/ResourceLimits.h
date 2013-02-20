@@ -54,6 +54,7 @@ struct TBuiltInResource {
     int maxVaryingVectors;
     int maxFragmentUniformVectors;
     int maxVertexOutputVectors;
+    int maxFragmentInputVectors;
     int minProgramTexelOffset;
     int maxProgramTexelOffset;
 };

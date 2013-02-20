@@ -46,7 +46,7 @@
 //
 
 //
-// Use this class to carry along data from node to node in 
+// Use this class to carry along data from node to node in
 // the traversal
 //
 class TOutputTraverser : public TIntermTraverser {
@@ -80,7 +80,7 @@ TString TType::getCompleteString() const
     snprintf(p, end - p, "%s", getBasicString());
 
     return TString(buf);
-}   
+}
 
 //
 // Helper functions for printing, not part of traversing.
@@ -91,7 +91,7 @@ void OutputTreeText(TInfoSink& infoSink, TIntermNode* node, const int depth)
     int i;
 
     infoSink.debug << FormatSourceLoc(node->getLine());
-    
+
     for (i = 0; i < depth; ++i)
         infoSink.debug << "  ";
 }
@@ -135,7 +135,7 @@ bool OutputBinary(bool /* preVisit */, TIntermBinary* node, TIntermTraverser* it
     case EOpVectorTimesMatrixAssign:  out.debug << "matrix mult second child into first child";  break;
     case EOpVectorTimesScalarAssign:  out.debug << "vector scale second child into first child"; break;
     case EOpMatrixTimesScalarAssign:  out.debug << "matrix scale second child into first child"; break;
-    case EOpMatrixTimesMatrixAssign:  out.debug << "matrix mult second child into first child"; break;
+    case EOpMatrixTimesMatrixAssign:  out.debug << "matrix mult second child into first child";  break;
     case EOpDivAssign:                out.debug << "divide second child into first child";       break;
     case EOpModAssign:                out.debug << "mod second child into first child";          break;
     case EOpAndAssign:                out.debug << "and second child into first child";          break;
@@ -192,7 +192,7 @@ bool OutputUnary(bool /* preVisit */, TIntermUnary* node, TIntermTraverser* it)
 
     OutputTreeText(out, node, oit->depth);
 
-    switch (node->getOp()) {        
+    switch (node->getOp()) {
     case EOpNegative:       out.debug << "Negate value";         break;
     case EOpVectorLogicalNot:
     case EOpLogicalNot:     out.debug << "Negate conditional";   break;
@@ -234,10 +234,13 @@ bool OutputUnary(bool /* preVisit */, TIntermUnary* node, TIntermTraverser* it)
 
     case EOpLength:         out.debug << "length";               break;
     case EOpNormalize:      out.debug << "normalize";            break;
-    case EOpDPdx:           out.debug << "dPdx";                 break;               
-    case EOpDPdy:           out.debug << "dPdy";                 break;   
-    case EOpFwidth:         out.debug << "fwidth";               break;                   
-    
+    case EOpDPdx:           out.debug << "dPdx";                 break;
+    case EOpDPdy:           out.debug << "dPdy";                 break;
+    case EOpFwidth:         out.debug << "fwidth";               break;
+    case EOpDeterminant:    out.debug << "determinant";          break;
+    case EOpMatrixInverse:  out.debug << "inverse";              break;
+    case EOpTranspose:      out.debug << "transpose";            break;
+
     case EOpAny:            out.debug << "any";                  break;
     case EOpAll:            out.debug << "all";                  break;
 
@@ -269,7 +272,7 @@ bool OutputAggregate(bool /* preVisit */, TIntermAggregate* node, TIntermTravers
     case EOpFunction:      out.debug << "Function Definition: " << node->getName(); break;
     case EOpFunctionCall:  out.debug << "Function Call: "       << node->getName(); break;
     case EOpParameters:    out.debug << "Function Parameters: ";                    break;
-    
+
     case EOpConstructFloat: out.debug << "Construct float"; break;
     case EOpConstructVec2:  out.debug << "Construct vec2";  break;
     case EOpConstructVec3:  out.debug << "Construct vec3";  break;
@@ -301,7 +304,7 @@ bool OutputAggregate(bool /* preVisit */, TIntermAggregate* node, TIntermTravers
     case EOpConstructDMat4x3: out.debug << "Construct dmat4x3"; break;
     case EOpConstructDMat4x4: out.debug << "Construct dmat4";  break;
     case EOpConstructStruct:  out.debug << "Construct structure";  break;
-        
+
     case EOpLessThan:         out.debug << "Compare Less Than";             break;
     case EOpGreaterThan:      out.debug << "Compare Greater Than";          break;
     case EOpLessThanEqual:    out.debug << "Compare Less Than or Equal";    break;
@@ -328,13 +331,14 @@ bool OutputAggregate(bool /* preVisit */, TIntermAggregate* node, TIntermTravers
     case EOpReflect:       out.debug << "reflect";                 break;
     case EOpRefract:       out.debug << "refract";                 break;
     case EOpMul:           out.debug << "component-wise multiply"; break;
+    case EOpOuterProduct:  out.debug << "outer product";           break;
 
     default: out.debug.message(EPrefixError, "Bad aggregation op");
     }
 
     if (node->getOp() != EOpSequence && node->getOp() != EOpParameters)
         out.debug << " (" << node->getCompleteString() << ")";
-    
+
     out.debug << "\n";
 
     return true;
@@ -349,9 +353,9 @@ bool OutputSelection(bool /* preVisit */, TIntermSelection* node, TIntermTravers
 
     out.debug << "Test condition and select";
     out.debug << " (" << node->getCompleteString() << ")\n";
-    
+
     ++oit->depth;
-    
+
     OutputTreeText(oit->infoSink, node, oit->depth);
     out.debug << "Condition\n";
     node->getCondition()->traverse(it);
@@ -362,13 +366,13 @@ bool OutputSelection(bool /* preVisit */, TIntermSelection* node, TIntermTravers
 		node->getTrueBlock()->traverse(it);
 	} else
 		out.debug << "true case is null\n";
-    
+
     if (node->getFalseBlock()) {
         OutputTreeText(oit->infoSink, node, oit->depth);
         out.debug << "false case\n";
         node->getFalseBlock()->traverse(it);
     }
-    
+
     --oit->depth;
 
     return false;
@@ -378,7 +382,7 @@ void OutputConstantUnion(TIntermConstantUnion* node, TIntermTraverser* it)
 {
     TOutputTraverser* oit = static_cast<TOutputTraverser*>(it);
     TInfoSink& out = oit->infoSink;
-    
+
     int size = node->getType().getObjectSize();
 
     for (int i = 0; i < size; i++) {
@@ -400,7 +404,7 @@ void OutputConstantUnion(TIntermConstantUnion* node, TIntermTraverser* it)
                 char buf[maxSize];
                 snprintf(buf, maxSize, "%f (%s)", node->getUnionArrayPointer()[i].getFConst(), "const float");
 
-                out.debug << buf << "\n";           
+                out.debug << buf << "\n";
             }
             break;
         case EbtDouble:
@@ -409,7 +413,7 @@ void OutputConstantUnion(TIntermConstantUnion* node, TIntermTraverser* it)
                 char buf[maxSize];
                 snprintf(buf, maxSize, "%f (%s)", node->getUnionArrayPointer()[i].getDConst(), "const double");
 
-                out.debug << buf << "\n";           
+                out.debug << buf << "\n";
             }
             break;
         case EbtInt:
@@ -421,7 +425,7 @@ void OutputConstantUnion(TIntermConstantUnion* node, TIntermTraverser* it)
                 out.debug << buf << "\n";
             }
             break;
-        default: 
+        default:
             out.info.message(EPrefixInternalError, "Unknown constant", node->getLine());
             break;
         }
@@ -434,21 +438,21 @@ bool OutputLoop(bool /* preVisit */, TIntermLoop* node, TIntermTraverser* it)
     TInfoSink& out = oit->infoSink;
 
     OutputTreeText(out, node, oit->depth);
-    
+
     out.debug << "Loop with condition ";
     if (! node->testFirst())
         out.debug << "not ";
     out.debug << "tested first\n";
-    
+
     ++oit->depth;
-    
+
     OutputTreeText(oit->infoSink, node, oit->depth);
     if (node->getTest()) {
         out.debug << "Loop Condition\n";
         node->getTest()->traverse(it);
     } else
         out.debug << "No loop condition\n";
-    
+
     OutputTreeText(oit->infoSink, node, oit->depth);
     if (node->getBody()) {
         out.debug << "Loop Body\n";
