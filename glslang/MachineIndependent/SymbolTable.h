@@ -144,8 +144,12 @@ protected:
 struct TParameter {
     TString *name;
     TType* type;
-	void copyParam(const TParameter& param, const TStructureMap& remapper) {
-		name = NewPoolTString(param.name->c_str());
+	void copyParam(const TParameter& param, const TStructureMap& remapper) 
+    {
+		if (param.name)
+            name = NewPoolTString(param.name->c_str());
+        else
+            name = 0;
 		type = param.type->clone(remapper);
 	}
 };
