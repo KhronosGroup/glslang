@@ -612,7 +612,7 @@ bool TParseContext::samplerErrorCheck(int line, const TPublicType& pType, const 
 {
     if (pType.type == EbtStruct) {
         if (containsSampler(*pType.userDef)) {
-            error(line, reason, TType::getBasicString(pType.type), "(structure contains a sampler)");
+            error(line, reason, TType::getBasicString(pType.type), "(structure contains a sampler/image)");
         
             return true;
         }
@@ -683,7 +683,7 @@ bool TParseContext::parameterSamplerErrorCheck(int line, TStorageQualifier quali
 {
     if ((qualifier == EvqOut || qualifier == EvqInOut) && 
              type.getBasicType() != EbtStruct && type.getBasicType() == EbtSampler) {
-        error(line, "samplers cannot be output parameters", type.getBasicString(), "");
+        error(line, "samplers cannot be output parameters", type.getCompleteTypeString().c_str(), "");
         return true;
     }
 
@@ -1334,7 +1334,7 @@ TIntermTyped* TParseContext::constructStruct(TIntermNode* node, TType* type, int
             return intermediate.setAggregateOperator(node->getAsTyped(), EOpConstructStruct, line);
     } else {
         error(line, "", "constructor", "cannot convert parameter %d from '%s' to '%s'", paramCount,
-                node->getAsTyped()->getType().getBasicString(), type->getBasicString());
+                node->getAsTyped()->getType().getCompleteTypeString().c_str(), type->getCompleteTypeString().c_str());
         recover();
     }
 

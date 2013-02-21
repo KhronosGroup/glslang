@@ -1203,7 +1203,7 @@ function_prototype
         TFunction* prevDec = symbol ? symbol->getAsFunction() : 0;
         if (prevDec) {
             if (prevDec->getReturnType() != $1->getReturnType()) {
-                parseContext.error($2.line, "overloaded functions must have the same return type", $1->getReturnType().getBasicString(), "");
+                parseContext.error($2.line, "overloaded functions must have the same return type", $1->getReturnType().getCompleteTypeString().c_str(), "");
                 parseContext.recover();
             }
             for (int i = 0; i < prevDec->getParamCount(); ++i) {
@@ -2950,7 +2950,7 @@ function_definition
                 parseContext.recover();
             }
             if (function.getReturnType().getBasicType() != EbtVoid) {
-                parseContext.error($1.line, "", function.getReturnType().getBasicString(), "main function cannot return a value");
+                parseContext.error($1.line, "", function.getReturnType().getCompleteTypeString().c_str(), "main function cannot return a value");
                 parseContext.recover();
             }
         }

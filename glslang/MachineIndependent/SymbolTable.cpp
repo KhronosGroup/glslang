@@ -131,7 +131,7 @@ int TType::getStructSize() const
 
 void TVariable::dump(TInfoSink& infoSink) const
 {
-    infoSink.debug << getName().c_str() << ": " << type.getStorageQualifierString() << " " << type.getBasicString();
+    infoSink.debug << getName().c_str() << ": " << type.getStorageQualifierString() << " " << type.getCompleteTypeString();
     if (type.isArray()) {
         infoSink.debug << "[0]";
     }
@@ -140,7 +140,7 @@ void TVariable::dump(TInfoSink& infoSink) const
 
 void TFunction::dump(TInfoSink &infoSink) const
 {
-    infoSink.debug << getName().c_str() << ": " <<  returnType.getBasicString() << " " << getMangledName().c_str() << "\n";
+    infoSink.debug << getName().c_str() << ": " <<  returnType.getCompleteTypeString() << " " << getMangledName().c_str() << "\n";
 }
 
 void TSymbolTableLevel::dump(TInfoSink &infoSink) const

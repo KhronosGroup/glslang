@@ -350,6 +350,7 @@ public:
     }
 
     virtual TBasicType getBasicType() const { return type; }
+    virtual const TSampler& getSampler() const { return sampler; }
     virtual TQualifier& getQualifier() { return qualifier; }
     virtual const TQualifier& getQualifier() const { return qualifier; }
 
@@ -384,6 +385,9 @@ public:
         default:                   return "unknown type";
         }
     }
+    TString getCompleteString() const;
+    TString getCompleteTypeString() const;
+
     const char* getBasicString() const { return TType::getBasicString(type); }
     const char* getStorageQualifierString() const { return ::getStorageQualifierString(qualifier.storage); }
     const char* getPrecisionQualifierString() const { return ::getPrecisionQualifierString(qualifier.precision); }
@@ -440,8 +444,6 @@ public:
     {
         return !operator==(right);
     }
-
-    TString getCompleteString() const;
 
 protected:
     void buildMangledName(TString&);

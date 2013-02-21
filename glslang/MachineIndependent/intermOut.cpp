@@ -55,30 +55,9 @@ public:
     TInfoSink& infoSink;
 };
 
-TString TType::getCompleteString() const
+TString TType::getCompleteTypeString() const
 {
-	const int maxSize = 100;
-    char buf[maxSize];
-    char *p = &buf[0];
-	char *end = &buf[maxSize];
-
-    if (qualifier.storage != EvqTemporary && qualifier.storage != EvqGlobal)
-        p += snprintf(p, end - p, "%s ", getStorageQualifierString());
-    if (arraySizes) {
-        if (arraySizes->front() == 0)
-            p += snprintf(p, end - p, "unsized array of ");
-        else
-            p += snprintf(p, end - p, "%d-element array of ", arraySizes->front());
-    }
-    if (qualifier.precision != EpqNone)
-        p += snprintf(p, end - p, "%s ", getPrecisionQualifierString());
-    if (matrixCols > 0)
-        p += snprintf(p, end - p, "%dX%d matrix of ", matrixCols, matrixRows);
-    else if (vectorSize > 1)
-        p += snprintf(p, end - p, "%d-component vector of ", vectorSize);
-
-    *p = 0;
-    TString s(buf);
+    TString s;
 
     if (type == EbtSampler) {
         switch (sampler.type) {
@@ -106,6 +85,35 @@ TString TType::getCompleteString() const
             s.append("MS");
     } else
         s.append(getBasicString());
+
+    return s;
+}
+
+TString TType::getCompleteString() const
+{
+	const int maxSize = 100;
+    char buf[maxSize];
+    char *p = &buf[0];
+	char *end = &buf[maxSize];
+
+    if (qualifier.storage != EvqTemporary && qualifier.storage != EvqGlobal)
+        p += snprintf(p, end - p, "%s ", getStorageQualifierString());
+    if (arraySizes) {
+        if (arraySizes->front() == 0)
+            p += snprintf(p, end - p, "unsized array of ");
+        else
+            p += snprintf(p, end - p, "%d-element array of ", arraySizes->front());
+    }
+    if (qualifier.precision != EpqNone)
+        p += snprintf(p, end - p, "%s ", getPrecisionQualifierString());
+    if (matrixCols > 0)
+        p += snprintf(p, end - p, "%dX%d matrix of ", matrixCols, matrixRows);
+    else if (vectorSize > 1)
+        p += snprintf(p, end - p, "%d-component vector of ", vectorSize);
+
+    *p = 0;
+    TString s(buf);
+    s.append(getCompleteTypeString());
 
     return s;
 }
