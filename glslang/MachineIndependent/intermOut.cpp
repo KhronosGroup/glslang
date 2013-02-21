@@ -77,9 +77,37 @@ TString TType::getCompleteString() const
     else if (vectorSize > 1)
         p += snprintf(p, end - p, "%d-component vector of ", vectorSize);
 
-    snprintf(p, end - p, "%s", getBasicString());
+    *p = 0;
+    TString s(buf);
 
-    return TString(buf);
+    if (type == EbtSampler) {
+        switch (sampler.type) {
+        case EbtFloat:               break;
+        case EbtInt:  s.append("i"); break;
+        case EbtUint: s.append("u"); break;
+        }
+        if (sampler.image)
+            s.append("image");
+        else
+            s.append("sampler");
+        switch (sampler.dim) {
+        case Esd1D:      s.append("1D");     break;
+        case Esd2D:      s.append("2D");     break;
+        case Esd3D:      s.append("3D");     break;
+        case EsdCube:    s.append("Cube");   break;
+        case EsdRect:    s.append("Rect");   break;
+        case EsdBuffer:  s.append("Buffer"); break;
+        }
+        if (sampler.arrayed)
+            s.append("Array");
+        if (sampler.shadow)
+            s.append("Shadow");
+        if (sampler.ms)
+            s.append("MS");
+    } else
+        s.append(getBasicString());
+
+    return s;
 }
 
 //

@@ -38,32 +38,19 @@
 #define _BASICTYPES_INCLUDED_
 
 //
-// Basic type.  Arrays, vectors, etc., are orthogonal to this.
+// Basic type.  Arrays, vectors, sampler details, etc., are orthogonal to this.
 //
 enum TBasicType {
     EbtVoid,
     EbtFloat,
     EbtDouble,
     EbtInt,
+    EbtUint,
     EbtBool,
-    EbtGuardSamplerBegin,  // non type:  see implementation of IsSampler()
-    EbtSampler1D,
-    EbtSampler2D,
-    EbtSampler3D,
-    EbtSamplerCube,
-    EbtSampler1DShadow,
-    EbtSampler2DShadow,
-    EbtSamplerRect,        // ARB_texture_rectangle
-    EbtSamplerRectShadow,  // ARB_texture_rectangle
-    EbtGuardSamplerEnd,    // non type:  see implementation of IsSampler()
+    EbtSampler,
     EbtStruct,
     EbtNumTypes
 };
-
-__inline bool IsSampler(TBasicType type)
-{   
-    return type > EbtGuardSamplerBegin && type < EbtGuardSamplerEnd;
-}
 
 //
 // Qualifiers and built-ins.  These are mainly used to see what can be read

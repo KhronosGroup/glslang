@@ -347,14 +347,7 @@ TIntermTyped* TIntermediate::addConversion(TOperator op, const TType& type, TInt
     //
     switch (node->getBasicType()) {
     case EbtVoid:
-    case EbtSampler1D:
-    case EbtSampler2D:
-    case EbtSampler3D:
-    case EbtSamplerCube:
-    case EbtSampler1DShadow:
-    case EbtSampler2DShadow:
-    case EbtSamplerRect:        // ARB_texture_rectangle
-    case EbtSamplerRectShadow:  // ARB_texture_rectangle
+    case EbtSampler:
         return 0;
     default: break;
     }

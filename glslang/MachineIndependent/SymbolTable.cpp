@@ -60,14 +60,28 @@ void TType::buildMangledName(TString& mangledName)
     case EbtDouble:             mangledName += 'd';      break;
     case EbtInt:                mangledName += 'i';      break;
     case EbtBool:               mangledName += 'b';      break;
-    case EbtSampler1D:          mangledName += "s1";     break;
-    case EbtSampler2D:          mangledName += "s2";     break;
-    case EbtSampler3D:          mangledName += "s3";     break;
-    case EbtSamplerCube:        mangledName += "sC";     break;
-    case EbtSampler1DShadow:    mangledName += "sS1";    break;
-    case EbtSampler2DShadow:    mangledName += "sS2";    break;
-    case EbtSamplerRect:        mangledName += "sR2";    break;  // ARB_texture_rectangle
-    case EbtSamplerRectShadow:  mangledName += "sSR2";   break;  // ARB_texture_rectangle
+    case EbtSampler:
+        switch (sampler.type) {
+        case EbtInt:   mangledName += "i"; break;
+        case EbtUint:  mangledName += "u"; break;
+        }
+        if (sampler.image)
+            mangledName += "I";
+        else
+            mangledName += "s";
+        if (sampler.arrayed)
+            mangledName += "A";
+        if (sampler.shadow)
+            mangledName += "S";
+        switch (sampler.dim) {
+        case Esd1D:       mangledName += "1";  break;
+        case Esd2D:       mangledName += "2";  break;
+        case Esd3D:       mangledName += "3";  break;
+        case EsdCube:     mangledName += "C";  break;
+        case EsdRect:     mangledName += "R2"; break;
+        case EsdBuffer:   mangledName += "B";  break;
+        }
+        break;
     case EbtStruct:
         mangledName += "struct-";
         if (typeName)

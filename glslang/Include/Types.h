@@ -41,6 +41,68 @@
 #include "../Include/BaseTypes.h"
 
 //
+// Details within a sampler type
+//
+enum TSamplerDim {
+    EsdNone,
+    Esd1D,
+    Esd2D,
+    Esd3D,
+    EsdCube,
+    EsdRect,
+    EsdBuffer
+};
+
+struct TSampler {
+    TBasicType type : 8;  // type returned by sampler
+    TSamplerDim dim : 8;
+    bool    arrayed : 1;
+    bool     shadow : 1;
+    bool         ms : 1;
+    bool      image : 1;
+
+    void clear()
+    {
+        type = EbtVoid;
+        dim = EsdNone;
+        arrayed = false;
+        shadow = false;
+        ms = false;
+        image = false;
+    }
+
+    void set(TBasicType t, TSamplerDim d, bool a = false, bool s = false, bool m = false)
+    {
+        type = t;
+        dim = d;
+        arrayed = a;
+        shadow = s;
+        ms = m;
+        image = false;
+    }
+
+    void setImage(TBasicType t, TSamplerDim d, bool a = false, bool s = false, bool m = false)
+    {
+        type = t;
+        dim = d;
+        arrayed = a;
+        shadow = s;
+        ms = m;
+        image = true;
+    }
+
+    bool operator==(const TSampler& right) const
+    {
+        return type == right.type &&
+                dim == right.dim &&
+            arrayed == right.arrayed &&
+             shadow == right.shadow &&
+                 ms == right.ms &&
+              image == right.image;
+    }
+};
+
+//
 // Need to have association of line numbers to types in a list for building structs.
 //
 class TType;
@@ -93,6 +155,7 @@ public:
 class TPublicType {
 public:
     TBasicType type;
+    TSampler sampler;
     TQualifier qualifier;
     int vectorSize : 4;
     int matrixCols : 4;
@@ -121,6 +184,7 @@ public:
     void init(int line = 0, bool global = false)
     {
         initType(line);
+        sampler.clear();
         initQualifiers(global);
     }
 
@@ -150,16 +214,18 @@ public:
     explicit TType(TBasicType t, TStorageQualifier q = EvqTemporary, int vs = 1, int mc = 0, int mr = 0) :
                             type(t), vectorSize(vs), matrixCols(mc), matrixRows(mr), arraySizes(0),
                             structure(0), structureSize(0), maxArraySize(0), arrayInformationType(0),
-                            fieldName(0), mangled(0), typeName(0) 
+                            fieldName(0), mangled(0), typeName(0)
                             {
+                                sampler.clear();
                                 qualifier.storage = q;
                                 qualifier.precision = EpqNone;
                             }
              TType(TBasicType t, TStorageQualifier q, TPrecisionQualifier p, int vs = 1, int mc = 0, int mr = 0) :
                             type(t), vectorSize(vs), matrixCols(mc), matrixRows(mr), arraySizes(0),
                             structure(0), structureSize(0), maxArraySize(0), arrayInformationType(0),
-                            fieldName(0), mangled(0), typeName(0) 
+                            fieldName(0), mangled(0), typeName(0)
                             {
+                                sampler.clear();
                                 qualifier.storage = q;
                                 qualifier.precision = p;
                                 assert(p >= 0 && p <= EpqHigh);
@@ -168,6 +234,7 @@ public:
                             type(p.type), vectorSize(p.vectorSize), matrixCols(p.matrixCols), matrixRows(p.matrixRows), arraySizes(p.arraySizes),
                             structure(0), structureSize(0), maxArraySize(0), arrayInformationType(0), fieldName(0), mangled(0), typeName(0)
                             {
+                                sampler = p.sampler;
                                 qualifier = p.qualifier;
                                 if (p.userDef) {
                                     structure = p.userDef->getStruct();
@@ -176,8 +243,9 @@ public:
                             }
     explicit TType(TTypeList* userDef, const TString& n) :
                             type(EbtStruct), vectorSize(1), matrixCols(0), matrixRows(0), arraySizes(0),
-                            structure(userDef), maxArraySize(0), arrayInformationType(0), fieldName(0), mangled(0) 
+                            structure(userDef), maxArraySize(0), arrayInformationType(0), fieldName(0), mangled(0)
                             {
+                                sampler.clear();
                                 qualifier.storage = EvqTemporary;
                                 qualifier.precision = EpqNone;
 								typeName = NewPoolTString(n.c_str());
@@ -190,6 +258,7 @@ public:
 	void copyType(const TType& copyOf, const TStructureMap& remapper)
 	{
 		type = copyOf.type;
+        sampler = copyOf.sampler;
 		qualifier = copyOf.qualifier;
 		vectorSize = copyOf.vectorSize;
 		matrixCols = copyOf.matrixCols;
@@ -257,7 +326,7 @@ public:
     }
 
     virtual void setElementType(TBasicType t, int s, int mc, int mr, const TType* userDef)
-    { 
+    {
         type = t;
         vectorSize = s;
         matrixCols = mc;
@@ -283,7 +352,7 @@ public:
     virtual TBasicType getBasicType() const { return type; }
     virtual TQualifier& getQualifier() { return qualifier; }
     virtual const TQualifier& getQualifier() const { return qualifier; }
-    
+
     virtual int getVectorSize() const { return vectorSize; }
     virtual int getMatrixCols() const { return matrixCols; }
     virtual int getMatrixRows() const { return matrixRows; }
@@ -305,20 +374,13 @@ public:
     virtual bool isVector() const { return vectorSize > 1; }
     static const char* getBasicString(TBasicType t) {
         switch (t) {
-        case EbtVoid:              return "void";              break;
-        case EbtFloat:             return "float";             break;
-        case EbtDouble:            return "double";            break;
-        case EbtInt:               return "int";               break;
-        case EbtBool:              return "bool";              break;
-        case EbtSampler1D:         return "sampler1D";         break;
-        case EbtSampler2D:         return "sampler2D";         break;
-        case EbtSampler3D:         return "sampler3D";         break;
-        case EbtSamplerCube:       return "samplerCube";       break;
-        case EbtSampler1DShadow:   return "sampler1DShadow";   break;
-        case EbtSampler2DShadow:   return "sampler2DShadow";   break;
-        case EbtSamplerRect:       return "samplerRect";       break; // ARB_texture_rectangle
-        case EbtSamplerRectShadow: return "samplerRectShadow"; break; // ARB_texture_rectangle
-        case EbtStruct:            return "structure";         break;
+        case EbtVoid:              return "void";
+        case EbtFloat:             return "float";
+        case EbtDouble:            return "double";
+        case EbtInt:               return "int";
+        case EbtBool:              return "bool";
+        case EbtSampler:           return "sampler/image";
+        case EbtStruct:            return "structure";
         default:                   return "unknown type";
         }
     }
@@ -345,7 +407,8 @@ public:
     }
 
     TTypeList* getStruct() const { return structure; }
-    TString& getMangledName() {
+    TString& getMangledName()
+    {
         if (!mangled) {
 			mangled = NewPoolTString("");
             buildMangledName(*mangled);
@@ -354,25 +417,30 @@ public:
 
         return *mangled;
     }
-    bool sameElementType(const TType& right) const {
+
+    bool sameElementType(const TType& right) const
+    {
         return       type == right.type       &&
+                  sampler == right.sampler    &&
                vectorSize == right.vectorSize &&
                matrixCols == right.matrixCols &&
                matrixRows == right.matrixRows &&
                 structure == right.structure;
     }
-    bool operator==(const TType& right) const {
-        return       type == right.type       &&
-               vectorSize == right.vectorSize &&
-               matrixCols == right.matrixCols &&
-               matrixRows == right.matrixRows &&
-              (arraySizes == 0 && right.arraySizes == 0 || (arraySizes && right.arraySizes && *arraySizes == *right.arraySizes)) &&
-                structure == right.structure;
+
+    bool operator==(const TType& right) const
+    {
+        return sameElementType(right) &&
+               (arraySizes == 0 && right.arraySizes == 0 ||
+                (arraySizes && right.arraySizes && *arraySizes == *right.arraySizes));
         // don't check the qualifier, it's not ever what's being sought after
     }
-    bool operator!=(const TType& right) const {
+
+    bool operator!=(const TType& right) const
+    {
         return !operator==(right);
     }
+
     TString getCompleteString() const;
 
 protected:
@@ -383,6 +451,7 @@ protected:
     int vectorSize       : 4;
     int matrixCols       : 4;
     int matrixRows       : 4;
+    TSampler sampler;
     TQualifier qualifier;
 
     TArraySizes arraySizes;

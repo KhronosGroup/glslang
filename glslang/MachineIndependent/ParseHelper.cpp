@@ -54,13 +54,12 @@ TParseContext::TParseContext(TSymbolTable& symt, TIntermediate& interm, int v, E
         case EShLangVertex:
             defaultPrecision[EbtInt] = EpqHigh;
             defaultPrecision[EbtFloat] = EpqHigh;
-            defaultPrecision[EbtSampler2D] = EpqLow;
-            defaultPrecision[EbtSamplerCube] = EpqLow;
+            defaultPrecision[EbtSampler] = EpqLow;
+            //?? what about different sampler types?
             break;
         case EShLangFragment:
             defaultPrecision[EbtInt] = EpqMedium;
-            defaultPrecision[EbtSampler2D] = EpqLow;
-            defaultPrecision[EbtSamplerCube] = EpqLow;
+            defaultPrecision[EbtSampler] = EpqLow;
             // TODO: give error when using float in frag shader without default precision
             break;
         default:
@@ -339,14 +338,7 @@ bool TParseContext::lValueErrorCheck(int line, const char* op, TIntermTyped* nod
         // Type that can't be written to?
         //
         switch (node->getBasicType()) {
-        case EbtSampler1D:
-        case EbtSampler2D:
-        case EbtSampler3D:
-        case EbtSamplerCube:
-        case EbtSampler1DShadow:
-        case EbtSampler2DShadow:
-        case EbtSamplerRect:       // ARB_texture_rectangle
-        case EbtSamplerRectShadow: // ARB_texture_rectangle
+        case EbtSampler:
             message = "can't modify a sampler";
             break;
         case EbtVoid:
@@ -562,7 +554,7 @@ bool TParseContext::constructorErrorCheck(int line, TIntermNode* node, TFunction
         error(line, "constructor argument does not have a type", "constructor", "");
         return true;
     }
-    if (op != EOpConstructStruct && IsSampler(typed->getBasicType())) {
+    if (op != EOpConstructStruct && typed->getBasicType() == EbtSampler) {
         error(line, "cannot convert a sampler", "constructor", "");
         return true;
     }
@@ -626,7 +618,7 @@ bool TParseContext::samplerErrorCheck(int line, const TPublicType& pType, const 
         }
         
         return false;
-    } else if (IsSampler(pType.type)) {
+    } else if (pType.type == EbtSampler) {
         error(line, reason, TType::getBasicString(pType.type), "");
 
         return true;
@@ -670,7 +662,7 @@ bool TParseContext::structQualifierErrorCheck(int line, const TPublicType& pType
         return true;
     }
 
-    if (pType.qualifier.storage != EvqUniform && samplerErrorCheck(line, pType, "samplers must be uniform"))
+    if (pType.qualifier.storage != EvqUniform && samplerErrorCheck(line, pType, "samplers and images must be uniform"))
         return true;
 
     return false;
@@ -678,7 +670,8 @@ bool TParseContext::structQualifierErrorCheck(int line, const TPublicType& pType
 
 void TParseContext::setDefaultPrecision(int line, TBasicType type, TPrecisionQualifier qualifier)
 {
-    if (IsSampler(type) || type == EbtInt || type == EbtFloat) {
+    //?? what about different sampler types?
+    if (type == EbtSampler || type == EbtInt || type == EbtFloat) {
         defaultPrecision[type] = qualifier;
     } else {
         error(line, "cannot apply precision statement to this type", TType::getBasicString(type), "");
@@ -689,7 +682,7 @@ void TParseContext::setDefaultPrecision(int line, TBasicType type, TPrecisionQua
 bool TParseContext::parameterSamplerErrorCheck(int line, TStorageQualifier qualifier, const TType& type)
 {
     if ((qualifier == EvqOut || qualifier == EvqInOut) && 
-             type.getBasicType() != EbtStruct && IsSampler(type.getBasicType())) {
+             type.getBasicType() != EbtStruct && type.getBasicType() == EbtSampler) {
         error(line, "samplers cannot be output parameters", type.getBasicString(), "");
         return true;
     }
@@ -699,7 +692,7 @@ bool TParseContext::parameterSamplerErrorCheck(int line, TStorageQualifier quali
 
 bool TParseContext::containsSampler(const TType& type)
 {
-    if (IsSampler(type.getBasicType()))
+    if (type.getBasicType() == EbtSampler)
         return true;
 
     if (type.getBasicType() == EbtStruct) {
