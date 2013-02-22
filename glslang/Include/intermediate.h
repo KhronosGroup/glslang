@@ -315,12 +315,9 @@ public:
     virtual int getVectorSize() const { return type.getVectorSize(); }
     virtual int getMatrixCols() const { return type.getMatrixCols(); }
     virtual int getMatrixRows() const { return type.getMatrixRows(); }
-    //virtual int getSize() const { return type.getInstanceSize(); }
     virtual bool isMatrix() const { return type.isMatrix(); }
     virtual bool isArray()  const { return type.isArray(); }
     virtual bool isVector() const { return type.isVector(); }
-    const char* getBasicString()      const { return type.getBasicString(); }
-    const char* getStorageQualifierString()  const { return type.getStorageQualifierString(); }
     TString getCompleteString() const { return type.getCompleteString(); }
 
 protected:

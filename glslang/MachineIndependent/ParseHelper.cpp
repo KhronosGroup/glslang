@@ -55,7 +55,7 @@ TParseContext::TParseContext(TSymbolTable& symt, TIntermediate& interm, int v, E
             defaultPrecision[EbtInt] = EpqHigh;
             defaultPrecision[EbtFloat] = EpqHigh;
             defaultPrecision[EbtSampler] = EpqLow;
-            //?? what about different sampler types?
+            // TODO: functionality: need default precisions per sampler type
             break;
         case EShLangFragment:
             defaultPrecision[EbtInt] = EpqMedium;
@@ -670,7 +670,6 @@ bool TParseContext::structQualifierErrorCheck(int line, const TPublicType& pType
 
 void TParseContext::setDefaultPrecision(int line, TBasicType type, TPrecisionQualifier qualifier)
 {
-    //?? what about different sampler types?
     if (type == EbtSampler || type == EbtInt || type == EbtFloat) {
         defaultPrecision[type] = qualifier;
     } else {

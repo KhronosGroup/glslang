@@ -50,7 +50,8 @@ enum TSamplerDim {
     Esd3D,
     EsdCube,
     EsdRect,
-    EsdBuffer
+    EsdBuffer,
+    EsdNumDims
 };
 
 struct TSampler {
@@ -99,6 +100,37 @@ struct TSampler {
              shadow == right.shadow &&
                  ms == right.ms &&
               image == right.image;
+    }
+
+    TString getString() const
+    {
+        TString s;
+
+        switch (type) {
+        case EbtFloat:               break;
+        case EbtInt:  s.append("i"); break;
+        case EbtUint: s.append("u"); break;
+        }
+        if (image)
+            s.append("image");
+        else
+            s.append("sampler");
+        switch (dim) {
+        case Esd1D:      s.append("1D");     break;
+        case Esd2D:      s.append("2D");     break;
+        case Esd3D:      s.append("3D");     break;
+        case EsdCube:    s.append("Cube");   break;
+        case EsdRect:    s.append("Rect");   break;
+        case EsdBuffer:  s.append("Buffer"); break;
+        }
+        if (ms)
+            s.append("MS");
+        if (arrayed)
+            s.append("Array");
+        if (shadow)
+            s.append("Shadow");
+
+        return s;
     }
 };
 
@@ -385,8 +417,43 @@ public:
         default:                   return "unknown type";
         }
     }
-    TString getCompleteString() const;
-    TString getCompleteTypeString() const;
+
+    TString TType::getCompleteString() const
+    {
+	    const int maxSize = 100;
+        char buf[maxSize];
+        char *p = &buf[0];
+	    char *end = &buf[maxSize];
+
+        if (qualifier.storage != EvqTemporary && qualifier.storage != EvqGlobal)
+            p += snprintf(p, end - p, "%s ", getStorageQualifierString());
+        if (arraySizes) {
+            if (arraySizes->front() == 0)
+                p += snprintf(p, end - p, "unsized array of ");
+            else
+                p += snprintf(p, end - p, "%d-element array of ", arraySizes->front());
+        }
+        if (qualifier.precision != EpqNone)
+            p += snprintf(p, end - p, "%s ", getPrecisionQualifierString());
+        if (matrixCols > 0)
+            p += snprintf(p, end - p, "%dX%d matrix of ", matrixCols, matrixRows);
+        else if (vectorSize > 1)
+            p += snprintf(p, end - p, "%d-component vector of ", vectorSize);
+
+        *p = 0;
+        TString s(buf);
+        s.append(getCompleteTypeString());
+
+        return s;
+    }
+
+    TString getCompleteTypeString() const
+    {
+        if (type == EbtSampler)
+            return sampler.getString();
+        else
+            return getBasicString(type);
+    }
 
     const char* getBasicString() const { return TType::getBasicString(type); }
     const char* getStorageQualifierString() const { return ::getStorageQualifierString(qualifier.storage); }
