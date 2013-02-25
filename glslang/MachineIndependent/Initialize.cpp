@@ -45,8 +45,32 @@
 
 const int FirstProfileVersion = 150;
 
+TBuiltIns::TBuiltIns()
+{
+    prefixes[EbtFloat] =  "";
+    prefixes[EbtInt]   = "i";
+    prefixes[EbtUint]  = "u";
+    
+    postfixes[2] = "2";
+    postfixes[3] = "3";
+    postfixes[4] = "4";
+
+    dimMap[Esd1D] = 1;
+    dimMap[Esd2D] = 2;
+    dimMap[EsdRect] = 2;
+    dimMap[Esd3D] = 3;
+    dimMap[EsdCube] = 3;
+    dimMap[EsdBuffer] = 1;
+}
+
+TBuiltIns::~TBuiltIns()
+{
+}
+
 void TBuiltIns::initialize(int version, EProfile profile)
 {
+    // TODO: Performance/Memory: consider an extra outer scope for built-ins common across all stages
+
     //
     // Initialize all the built-in strings for parsing.
     //
@@ -389,7 +413,7 @@ void TBuiltIns::initialize(int version, EProfile profile)
         s.append(TString("\n"));
 
         //
-        // Original style texture Functions existing in both stages.
+        // Original-style texture Functions existing in both stages.
         // (Per-stage functions below.)
         //
         if (profile != EEsProfile || version == 100) {
@@ -464,7 +488,7 @@ void TBuiltIns::initialize(int version, EProfile profile)
         s.append(TString("vec4 ftransform();"));
 
         //
-        // Texture Functions with lod.
+        // Original-style texture Functions with lod.
         //
         if (profile != EEsProfile || version == 100) {
             s.append(TString("vec4 texture2DLod(sampler2D, vec2, float);"));
@@ -495,7 +519,7 @@ void TBuiltIns::initialize(int version, EProfile profile)
         TString& s = BuiltInFunctionsFragment;
 
         //
-        // Texture Functions with bias.
+        // Original-style texture Functions with bias.
         //
         if (profile != EEsProfile || version == 100) {
             s.append(TString("vec4 texture2D(sampler2D, vec2, float);"));
@@ -770,7 +794,7 @@ void TBuiltIns::initialize(int version, EProfile profile)
         }
     }
 
-    builtInStrings[EShLangFragment].push_back(BuiltInFunctions.c_str());
+    builtInStrings[EShLangFragment].push_back(BuiltInFunctions);
     builtInStrings[EShLangFragment].push_back(BuiltInFunctionsFragment);
     builtInStrings[EShLangFragment].push_back(StandardUniforms);
     builtInStrings[EShLangFragment].push_back(StandardFragmentVaryings);
@@ -780,6 +804,301 @@ void TBuiltIns::initialize(int version, EProfile profile)
     builtInStrings[EShLangVertex].push_back(StandardVertexVaryings);
     builtInStrings[EShLangVertex].push_back(StandardVertexAttributes);
     builtInStrings[EShLangVertex].push_back(StandardUniforms);
+
+    if (version >= 130)
+        add2ndGenerationSamplingImaging(version, profile);
+
+#ifdef TEST_MODE
+    printf("VERTEX SYMBOLS \n");
+    for (unsigned int i = 0; i < builtInStrings[EShLangVertex].size(); ++i)
+        printf("%s", builtInStrings[EShLangVertex][i].c_str());
+    
+    printf("FRAGMENT SYMBOLS \n");
+    for (unsigned int i = 0; i < builtInStrings[EShLangFragment].size(); ++i)
+        printf("%s", builtInStrings[EShLangFragment][i].c_str());
+#endif
+}
+
+void TBuiltIns::add2ndGenerationSamplingImaging(int version, EProfile profile)
+{
+    TBasicType bTypes[3] = { EbtFloat, EbtInt, EbtUint };
+
+    // enumerate all the types
+    for (int image = 0; image <= 1; ++image) { // loop over "bool" image vs sampler
+            
+        if (image > 0 && version < 420)
+            continue;
+
+        for (int shadow = 0; shadow <= 1; ++shadow) { // loop over "bool" shadow or not
+            for (int ms = 0; ms <=1; ++ms) {
+
+                if ((ms || image) && shadow)
+                    continue;
+                if (ms && (profile == EEsProfile || version < 150))
+                    continue;
+
+                for (int arrayed = 0; arrayed <= 1; ++arrayed) { // loop over "bool" arrayed or not
+                    for (int dim = Esd1D; dim < EsdNumDims; ++dim) { // 1D, 2D, ..., buffer
+
+                        if ((dim == Esd1D || dim == EsdRect) && profile == EEsProfile)
+                            continue;
+                        if (dim != Esd2D && ms)
+                            continue;
+                        if ((dim == Esd3D || dim == EsdRect) && arrayed)
+                            continue;
+                        if (dim == Esd3D && shadow)
+                            continue;
+                        if (dim == EsdCube && arrayed && version < 400)
+                            continue;
+                        if (dim == EsdBuffer && (profile == EEsProfile || version < 140))
+                            continue;
+                        if (dim == EsdBuffer && (shadow || arrayed || ms))
+                            continue;
+
+                        for (int bType = 0; bType < 3; ++bType) { // float, int, uint results
+
+                            if (shadow && bType > 0)
+                                continue;
+
+                            //
+                            // Now, make all the function prototypes for the type we just built...
+                            // 
+
+                            TSampler sampler;
+                            sampler.set(bTypes[bType], (TSamplerDim)dim, arrayed ? true : false, 
+                                                                         shadow  ? true : false, 
+                                                                         ms      ? true : false);
+                            if (image)
+                                sampler.image = true;
+
+                            TString typeName = sampler.getString();
+
+                            addQueryFunctions(sampler, typeName, version, profile);
+                                                        
+                            if (image)
+                                addImageFunctions(sampler, typeName, version, profile);
+                            else                                
+                                addSamplingFunctions(sampler, typeName, version, profile);
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+void TBuiltIns::addQueryFunctions(TSampler sampler, TString& typeName, int version, EProfile profile)
+{
+    //
+    // textureSize
+    //
+
+    if (version < 430 && sampler.image)
+        return;
+
+    TString s;
+    if (profile == EEsProfile)
+        s.append("highp ");
+    int dims = dimMap[sampler.dim] + (sampler.arrayed ? 1 : 0) - (sampler.dim == EsdCube ? 1 : 0);
+    if (dims == 1)
+        s.append("int");
+    else {
+        s.append("ivec");
+        s.append(postfixes[dims]);
+    }
+    if (sampler.image)
+        s.append(" imageSize(");
+    else
+        s.append(" textureSize(");
+    s.append(typeName);
+    if (! sampler.image && sampler.dim != EsdRect && sampler.dim != EsdBuffer && ! sampler.ms)
+        s.append(",int);\n");
+    else
+        s.append(");\n");
+    builtInStrings[EShLangFragment].push_back(s);
+    builtInStrings[EShLangVertex].push_back(s);
+
+    // TODO: Functionality: version 420 imaging functions
+}
+
+void TBuiltIns::addImageFunctions(TSampler sampler, TString& typeName, int version, EProfile profile)
+{
+    // TODO: Functionality: version 420 imaging functions
+}
+
+void TBuiltIns::addSamplingFunctions(TSampler sampler, TString& typeName, int version, EProfile profile)
+{
+    // make one string per stage to contain all functions of the passed-in type for that stage
+    TString functions[EShLangCount];
+
+    //
+    // texturing
+    //
+    for (int proj = 0; proj <= 1; ++proj) { // loop over "bool" projective or not
+
+        if (proj && (sampler.dim == EsdCube || sampler.dim == EsdBuffer || sampler.arrayed || sampler.ms))
+            continue;
+
+        for (int lod = 0; lod <= 1; ++lod) {
+
+            if (lod && (sampler.dim == EsdBuffer || sampler.dim == EsdRect || sampler.ms))
+                continue;
+            if (lod && sampler.dim == Esd2D && sampler.arrayed && sampler.shadow)
+                continue;
+            if (lod && sampler.dim == EsdCube && sampler.shadow)
+                continue;
+
+            for (int bias = 0; bias <= 1; ++bias) {
+
+                if (bias && (lod || sampler.ms))
+                    continue;
+                if (bias && sampler.dim == Esd2D && sampler.shadow && sampler.arrayed)
+                    continue;
+                if (bias && (sampler.dim == EsdRect || sampler.dim == EsdBuffer))
+                    continue;
+
+                for (int offset = 0; offset <= 1; ++offset) { // loop over "bool" offset or not
+
+                    if (proj + offset + bias + lod > 3)
+                        continue;
+                    if (offset && (sampler.dim == EsdCube || sampler.dim == EsdBuffer || sampler.ms))
+                        continue;
+
+                    for (int fetch = 0; fetch <= 1; ++fetch) { // loop over "bool" fetch or not
+
+                        if (proj + offset + fetch + bias + lod > 3)
+                            continue;
+                        if (fetch && (lod || bias))
+                            continue;
+                        if (fetch && (sampler.shadow || sampler.dim == EsdCube))
+                            continue;
+                        if (fetch == 0 && (sampler.ms || sampler.dim == EsdBuffer))
+                            continue;
+
+                        for (int grad = 0; grad <= 1; ++grad) { // loop over "bool" grad or not
+
+                            if (grad && (lod || bias || sampler.ms))
+                                continue;
+                            if (grad && sampler.dim == EsdBuffer)
+                                continue;
+                            if (proj + offset + fetch + grad + bias + lod > 3)
+                                continue;
+
+                            for (int extraProj = 0; extraProj <= 1; ++extraProj) {
+                                bool compare = false;
+                                int totalDims = dimMap[sampler.dim] + proj + (sampler.arrayed ? 1 : 0) + (sampler.shadow ? 1 : 0);
+                                if (totalDims > 4 && sampler.shadow) {
+                                    compare = true;
+                                    totalDims = 4;
+                                }
+                                assert(totalDims <= 4);
+
+                                if (extraProj && ! proj)
+                                    continue;
+                                if (extraProj && (sampler.dim == Esd3D || sampler.shadow))
+                                    continue;
+                                
+                                TString s;
+
+                                // return type
+                                if (sampler.shadow)
+                                    s.append("float ");
+                                else {
+                                    s.append(prefixes[sampler.type]);
+                                    s.append("vec4 ");
+                                }
+
+                                // name
+                                if (fetch)
+                                    s.append("texel");
+                                else
+                                    s.append("texture");
+                                if (proj)
+                                    s.append("Proj");
+                                if (lod)
+                                    s.append("Lod");
+                                if (grad)
+                                    s.append("Grad");
+                                if (fetch)
+                                    s.append("Fetch");
+                                if (offset)
+                                    s.append("Offset");
+                                s.append("(");
+
+                                // sampler type
+                                s.append(typeName);
+
+                                // P coordinate
+                                if (extraProj)
+                                    s.append(",vec4");
+                                else {
+                                    s.append(",");
+                                    TBasicType t = fetch ? EbtInt : EbtFloat;
+                                    if (totalDims == 1) 
+                                        s.append(TType::getBasicString(t));
+                                    else {
+                                        s.append(prefixes[t]);
+                                        s.append("vec");
+                                        s.append(postfixes[totalDims]);
+                                    }
+                                }                                
+
+                                if (bias && compare)
+                                    continue;
+
+                                // non-optional lod argument (lod that's not driven by lod loop)
+                                if (fetch && sampler.dim != EsdBuffer && !sampler.ms)
+                                    s.append(",int");
+
+                                // non-optional lod
+                                if (lod)
+                                    s.append(",float");
+
+                                // gradient arguments
+                                if (grad) {
+                                    if (dimMap[sampler.dim] == 1)
+                                        s.append(",float,float");
+                                    else {
+                                        s.append(",vec");
+                                        s.append(postfixes[dimMap[sampler.dim]]);
+                                        s.append(",vec");
+                                        s.append(postfixes[dimMap[sampler.dim]]);
+                                    }
+                                }
+
+                                // offset
+                                if (offset) {
+                                    if (dimMap[sampler.dim] == 1)
+                                        s.append(",int");
+                                    else {
+                                        s.append(",ivec");
+                                        s.append(postfixes[dimMap[sampler.dim]]);
+                                    }
+                                }
+
+                                // optional bias or non-optional compare
+                                if (bias || compare)
+                                    s.append(",float");
+
+                                s.append(");\n");
+
+                                // Add to the per-language set of built-ins
+
+                                if (! bias) {
+                                    functions[EShLangVertex].append(s);
+                                    // all stages other than fragment get this here too
+                                }
+                                functions[EShLangFragment].append(s);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    builtInStrings[EShLangVertex].push_back(functions[EShLangVertex]);
+    builtInStrings[EShLangFragment].push_back(functions[EShLangFragment]);
 }
 
 void TBuiltIns::initialize(const TBuiltInResource &resources, int version, EProfile profile, EShLanguage language)

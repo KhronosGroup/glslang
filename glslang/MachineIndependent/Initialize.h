@@ -48,11 +48,24 @@ typedef TVector<TString> TBuiltInStrings;
 class TBuiltIns {
 public:
     POOL_ALLOCATOR_NEW_DELETE(GlobalPoolAllocator)
+    TBuiltIns();
+    virtual ~TBuiltIns();
     void initialize(int version, EProfile);
 	void initialize(const TBuiltInResource& resources, int version, EProfile, EShLanguage);
     TBuiltInStrings* getBuiltInStrings() { return builtInStrings; }
+
 protected:
+    void add2ndGenerationSamplingImaging(int version, EProfile profile);
+    void addQueryFunctions(TSampler, TString& typeName, int version, EProfile profile);
+    void addImageFunctions(TSampler, TString& typeName, int version, EProfile profile);
+    void addSamplingFunctions(TSampler, TString& typeName, int version, EProfile profile);
+
     TBuiltInStrings builtInStrings[EShLangCount];
+
+    // Helpers for making text
+    const char* postfixes[5];
+    const char* prefixes[EbtNumTypes];
+    int dimMap[EsdNumDims];
 };
 
 void IdentifyBuiltIns(int version, EProfile profile, EShLanguage, TSymbolTable&);

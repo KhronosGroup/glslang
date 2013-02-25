@@ -120,7 +120,7 @@ struct TSampler {
         case Esd2D:      s.append("2D");     break;
         case Esd3D:      s.append("3D");     break;
         case EsdCube:    s.append("Cube");   break;
-        case EsdRect:    s.append("Rect");   break;
+        case EsdRect:    s.append("2DRect"); break;
         case EsdBuffer:  s.append("Buffer"); break;
         }
         if (ms)
@@ -411,6 +411,7 @@ public:
         case EbtFloat:             return "float";
         case EbtDouble:            return "double";
         case EbtInt:               return "int";
+        case EbtUint:              return "uint";
         case EbtBool:              return "bool";
         case EbtSampler:           return "sampler/image";
         case EbtStruct:            return "structure";
