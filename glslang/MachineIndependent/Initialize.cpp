@@ -986,7 +986,11 @@ void TBuiltIns::addSamplingFunctions(TSampler sampler, TString& typeName, int ve
 
                             for (int extraProj = 0; extraProj <= 1; ++extraProj) {
                                 bool compare = false;
-                                int totalDims = dimMap[sampler.dim] + proj + (sampler.arrayed ? 1 : 0) + (sampler.shadow ? 1 : 0);
+                                int totalDims = dimMap[sampler.dim] + (sampler.arrayed ? 1 : 0);
+                                // skip dummy unused second component for 1D non-array shadows
+                                if (sampler.shadow && totalDims < 2)
+                                    totalDims = 2;
+                                totalDims += (sampler.shadow ? 1 : 0) + proj;
                                 if (totalDims > 4 && sampler.shadow) {
                                     compare = true;
                                     totalDims = 4;

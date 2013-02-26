@@ -28,32 +28,31 @@ in ivec2 ic2D;
 in ivec3 ic3D;
 in ivec4 ic4D;
 
-out vec4 FragData;
-
 void main()
 {
-    vec4 v = texture(s2D, c2D);
-    v += textureProj(s3D, c4D);
-    v += textureLod(s2DArray, c3D, 1.2);
-    v.y += textureOffset(s2DShadow, c3D, ic2D, c1D);
-    v += texelFetch(s3D, ic3D, ic1D);
-    v += texelFetchOffset(s2D, ic2D, 4, ic2D);
-    v.y += textureLodOffset(s2DShadow, c3D, c1D, ic2D);
-    v += textureProjLodOffset(s2D, c3D, c1D, ic2D);
-    v += textureGrad(sCube, c3D, c3D, c3D);
-    v.x += textureGradOffset(s2DArrayShadow, c4D, c2D, c2D, ic2D);
-    v += textureProjGrad(s3D, c4D, c3D, c3D);
-    v += textureProjGradOffset(s2D, c3D, c2D, c2D, ic2D);
+    float f;
+    vec4 v;
+    v = texture(s2D, c2D);
+    v = textureProj(s3D, c4D);
+    v = textureLod(s2DArray, c3D, 1.2);
+    f = textureOffset(s2DShadow, c3D, ic2D, c1D);
+    v = texelFetch(s3D, ic3D, ic1D);
+    v = texelFetchOffset(s2D, ic2D, 4, ic2D);
+    f = textureLodOffset(s2DShadow, c3D, c1D, ic2D);
+    v = textureProjLodOffset(s2D, c3D, c1D, ic2D);
+    v = textureGrad(sCube, c3D, c3D, c3D);
+    f = textureGradOffset(s2DArrayShadow, c4D, c2D, c2D, ic2D);
+    v = textureProjGrad(s3D, c4D, c3D, c3D);
+    v = textureProjGradOffset(s2D, c3D, c2D, c2D, ic2D);
 
-    ivec4 iv = texture(is2D, c2D);
-    iv += textureProjOffset(is2D, c4D, ic2D);
-    iv += textureProjLod(is2D, c3D, c1D);
-    iv += textureProjGrad(is2D, c3D, c2D, c2D);
-    iv += texture(is3D, c3D, 4.2);
-    iv += textureLod(isCube, c3D, c1D);
-    iv += texelFetch(is2DArray, ic3D, ic1D);
+    ivec4 iv;
+    iv = texture(is2D, c2D);
+    iv = textureProjOffset(is2D, c4D, ic2D);
+    iv = textureProjLod(is2D, c3D, c1D);
+    iv = textureProjGrad(is2D, c3D, c2D, c2D);
+    iv = texture(is3D, c3D, 4.2);
+    iv = textureLod(isCube, c3D, c1D);
+    iv = texelFetch(is2DArray, ic3D, ic1D);
 
-    iv.xy += textureSize(sCubeShadow, 2);
-
-    FragData = v + vec4(iv);
+    iv.xy = textureSize(sCubeShadow, 2);
 }
