@@ -44,6 +44,7 @@
 #include "Initialize.h"
 
 const int FirstProfileVersion = 150;
+const bool ForwardCompatibility = false;
 
 TBuiltIns::TBuiltIns()
 {
@@ -1284,7 +1285,7 @@ void IdentifyBuiltIns(int version, EProfile profile, EShLanguage language, TSymb
             symbolTable.insert(*new TVariable(NewPoolTString("gl_PointCoord"),  TType(EbtFloat, EvqPointCoord, pq, 2)));
         }
 
-        if (version < FirstProfileVersion || profile == ECompatibilityProfile) {
+        if (version < FirstProfileVersion || profile == ECompatibilityProfile || (! ForwardCompatibility && profile != EEsProfile && version < 420)) {
             pq = profile == EEsProfile ? EpqMedium : EpqNone;
             symbolTable.insert(*new TVariable(NewPoolTString("gl_FragColor"),   TType(EbtFloat, EvqFragColor, pq, 4)));
         }
@@ -1413,7 +1414,7 @@ void IdentifyBuiltIns(int version, EProfile profile, EShLanguage language, TSymb
 
     case EShLangFragment:
         // Set up gl_FragData based on current array size.
-        if (version < FirstProfileVersion || profile == ECompatibilityProfile) {
+        if (version < FirstProfileVersion || profile == ECompatibilityProfile || (! ForwardCompatibility && profile != EEsProfile && version < 420)) {
             TPrecisionQualifier pq = profile == EEsProfile ? EpqMedium : EpqNone;
             TType fragData(EbtFloat, EvqFragColor, 4);
             TArraySizes arraySizes = NewPoolTArraySizes();
