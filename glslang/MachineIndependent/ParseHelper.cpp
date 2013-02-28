@@ -1326,11 +1326,12 @@ TIntermTyped* TParseContext::constructBuiltIn(const TType* type, TOperator op, T
 //
 TIntermTyped* TParseContext::constructStruct(TIntermNode* node, TType* type, int paramCount, TSourceLoc line, bool subset)
 {
-    if (*type == node->getAsTyped()->getType()) {
+    TIntermNode* converted = intermediate.addConversion(EOpConstructStruct, *type, node->getAsTyped());
+    if (converted->getAsTyped()->getType() == *type) {
         if (subset)
-            return node->getAsTyped();
+            return converted->getAsTyped();
         else
-            return intermediate.setAggregateOperator(node->getAsTyped(), EOpConstructStruct, line);
+            return intermediate.setAggregateOperator(converted->getAsTyped(), EOpConstructStruct, line);
     } else {
         error(line, "", "constructor", "cannot convert parameter %d from '%s' to '%s'", paramCount,
                 node->getAsTyped()->getType().getCompleteTypeString().c_str(), type->getCompleteTypeString().c_str());

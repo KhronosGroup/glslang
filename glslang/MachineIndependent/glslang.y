@@ -1073,9 +1073,6 @@ conditional_expression
             parseContext.recover();
 
         $$ = parseContext.intermediate.addSelection($1, $3, $5, $2.line);
-        if ($3->getType() != $5->getType())
-            $$ = 0;
-
         if ($$ == 0) {
             parseContext.binaryOpError($2.line, ":", $3->getCompleteString(), $5->getCompleteString());
             parseContext.recover();

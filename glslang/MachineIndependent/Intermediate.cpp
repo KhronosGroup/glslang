@@ -93,32 +93,24 @@ TIntermTyped* TIntermediate::addBinaryMath(TOperator op, TIntermTyped* left, TIn
     case EOpSub:
     case EOpDiv:
     case EOpMul:
-        if (left->getType().getBasicType() == EbtStruct || left->getType().getBasicType() == EbtBool)
+        if (left->getType().getBasicType() == EbtStruct || left->getType().getBasicType() == EbtBool || left->getType().isArray())
             return 0;
-    default: break; 
     }
 
     // 
     // First try converting the children to compatible types.
     //
-
-    if (!(left->getType().getStruct() && right->getType().getStruct())) {
-        TIntermTyped* child = addConversion(op, left->getType(), right);
+    TIntermTyped* child = addConversion(op, left->getType(), right);
+    if (child)
+        right = child;
+    else {
+        child = addConversion(op, right->getType(), left);
         if (child)
-            right = child;
-        else {
-            child = addConversion(op, right->getType(), left);
-            if (child)
-                left = child;
-            else
-                return 0;
-        }
-    } else {
-        if (left->getType() != right->getType())
+            left = child;
+        else
             return 0;
     }
-
-
+    
     //
     // Need a new node holding things together then.  Make
     // one and promote it to the right type.
@@ -228,13 +220,10 @@ TIntermTyped* TIntermediate::addUnaryMath(TOperator op, TIntermNode* childNode, 
     case EOpNegative:
         if (child->getType().getBasicType() == EbtStruct || child->getType().isArray())
             return 0;
-    default: break;
     }
     
     //
     // Do we need to promote the operand?
-    //
-    // Note: Implicit promotions were removed from the language.
     //
     TBasicType newType = EbtVoid;
     switch (op) {
@@ -242,7 +231,6 @@ TIntermTyped* TIntermediate::addUnaryMath(TOperator op, TIntermNode* childNode, 
     case EOpConstructBool:   newType = EbtBool;  break;
     case EOpConstructFloat:  newType = EbtFloat; break;
     case EOpConstructDouble: newType = EbtDouble; break;
-    default: break;
     }
 
     if (newType != EbtVoid) {
@@ -261,8 +249,8 @@ TIntermTyped* TIntermediate::addUnaryMath(TOperator op, TIntermNode* childNode, 
     case EOpConstructInt:
     case EOpConstructBool:
     case EOpConstructFloat:
+    case EOpConstructDouble:
         return child;
-    default: break;
     }
     
     TIntermConstantUnion *childTempConstant = 0;
@@ -370,11 +358,14 @@ TIntermTyped* TIntermediate::addConversion(TOperator op, const TType& type, TInt
     if (type.isArray() || node->getType().isArray())
         return 0;
 
+    // Note: callers are responsible for other aspects of shape, 
+    // like vector and matrix sizes.
+
     TBasicType promoteTo;
     
     switch (op) {
     //
-    // Explicit conversions
+    // Explicit conversions (unary operations)
     //
     case EOpConstructBool:
         promoteTo = EbtBool;
@@ -385,31 +376,83 @@ TIntermTyped* TIntermediate::addConversion(TOperator op, const TType& type, TInt
     case EOpConstructInt:
         promoteTo = EbtInt;
         break;
-    default:
-        //
-        // implicit conversions were removed from the language.
-        //
-        if (type.getBasicType() != node->getType().getBasicType())
+
+    //
+    // List all the binary ops that can implicitly convert one operand to the other's type;
+    // This implements the 'policy' for implicit type conversion.
+    // 
+    case EOpLessThan:
+    case EOpGreaterThan:
+    case EOpLessThanEqual:
+    case EOpGreaterThanEqual:
+    case EOpEqual:
+    case EOpNotEqual:
+
+    case EOpAdd:
+    case EOpSub:
+    case EOpMul:
+    case EOpDiv:
+
+    case EOpVectorTimesScalar:
+    case EOpVectorTimesMatrix:
+    case EOpMatrixTimesVector:
+    case EOpMatrixTimesScalar:
+
+    case EOpAssign:
+    case EOpAddAssign:
+    case EOpSubAssign:
+    case EOpMulAssign:
+    case EOpVectorTimesScalarAssign:
+    case EOpMatrixTimesScalarAssign:
+    case EOpDivAssign:
+    case EOpModAssign:
+
+    case EOpSequence:
+    case EOpConstructStruct:
+
+        if (type.getBasicType() == node->getType().getBasicType())
+            return node;
+
+        if (canImplicitlyPromote(node->getType().getBasicType(), type.getBasicType()))
+            promoteTo = type.getBasicType();
+        else
             return 0;
-        //
-        // Size and structure could still differ, but that's
-        // handled by operator promotion.
-        //
-        return node;
+
+        break;
+
+    default:
+        // default is to require a match; all exceptions should have case statements above
+
+        if (type.getBasicType() == node->getType().getBasicType())
+            return node;
+        else
+            return 0;
     }
     
     if (node->getAsConstantUnion()) {
 
         return (promoteConstantUnion(promoteTo, node->getAsConstantUnion()));
-    } else {
-    
+    } else {    
         //
         // Add a new newNode for the conversion.
         //
         TIntermUnary* newNode = 0;
 
         TOperator newOp = EOpNull;
+
+        // This is 'mechanism' here, it does any conversion told.  The policy comes
+        // from the shader or the above code.
         switch (promoteTo) {
+        case EbtDouble:
+            //switch (node->getBasicType()) {
+            //case EbtInt:   newOp = EOpConvIntToDouble;  break;
+            //case EbtBool:  newOp = EOpConvBoolToDouble; break;
+            //case EbtFloat:  newOp = EOpConvFloatToDouble; break;
+            //default: 
+                infoSink.info.message(EPrefixInternalError, "Bad promotion node", node->getLine());
+                return 0;
+            //}
+            break;
         case EbtFloat:
             switch (node->getBasicType()) {
             case EbtInt:   newOp = EOpConvIntToFloat;  break;
@@ -448,6 +491,55 @@ TIntermTyped* TIntermediate::addConversion(TOperator op, const TType& type, TInt
         newNode->setOperand(node);
 
         return newNode;
+    }
+}
+
+//
+// See if the 'from' type is allowed to be implicitly converted to the 
+// 'to' type.  This is not about vector/array/struct, only about basic type.
+//
+bool TIntermediate::canImplicitlyPromote(TBasicType from, TBasicType to)
+{
+    if (profile == EEsProfile || version == 110)
+        return 0;
+
+    switch (to) {
+    case EbtDouble:
+        switch (from) {
+        case EbtInt:
+        case EbtUint:
+        case EbtFloat:
+        case EbtDouble:
+            return true;
+        default:
+            return false;
+        }
+    case EbtFloat:
+        switch (from) {
+        case EbtInt:
+        case EbtUint:
+        case EbtFloat:
+            return true;
+        default:
+            return false;
+        }
+    case EbtUint:
+        switch (from) {
+        case EbtInt:
+        case EbtUint:
+            return true;
+        default:
+            return false;
+        }
+    case EbtInt:
+        switch (from) {
+        case EbtInt:
+            return true;
+        default:
+            return false;
+        }
+    default:
+        return false;
     }
 }
 

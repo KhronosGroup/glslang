@@ -89,7 +89,7 @@ TPoolAllocator* PerProcessGPA = 0;
 bool InitializeSymbolTable(TBuiltInStrings* BuiltInStrings, int version, EProfile profile, EShLanguage language, TInfoSink& infoSink, 
                            const TBuiltInResource* resources, TSymbolTable* symbolTables)
 {
-    TIntermediate intermediate(infoSink);	
+    TIntermediate intermediate(infoSink, version, profile);	
     TSymbolTable* symbolTable;
 	
 	if (resources)
@@ -509,7 +509,7 @@ int ShCompile(
         version = defaultVersion;
     bool goodProfile = DeduceProfile(compiler->infoSink, version, profile);
 
-    TIntermediate intermediate(compiler->infoSink);
+    TIntermediate intermediate(compiler->infoSink, version, profile);
     
     SetupBuiltinSymbolTable(version, profile);
     TSymbolTable symbolTable(*SharedSymbolTables[MapVersionToIndex(version)]

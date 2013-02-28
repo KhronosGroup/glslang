@@ -38,6 +38,7 @@
 #include "../Include/intermediate.h"
 #include "../Public/ShaderLang.h"
 #include "SymbolTable.h"
+#include "Versions.h"
 
 struct TVectorFields {
     int offsets[4];
@@ -52,13 +53,14 @@ class TIntermediate {
 public:    
     POOL_ALLOCATOR_NEW_DELETE(GlobalPoolAllocator)
 
-    TIntermediate(TInfoSink& i) : infoSink(i) { }
+    TIntermediate(TInfoSink& i, int v, EProfile p) : infoSink(i), version(v), profile(p) { }
     TIntermSymbol* addSymbol(int Id, const TString&, const TType&, TSourceLoc);
     TIntermTyped* addConversion(TOperator, const TType&, TIntermTyped*);
     TIntermTyped* addBinaryMath(TOperator op, TIntermTyped* left, TIntermTyped* right, TSourceLoc, TSymbolTable&);
     TIntermTyped* addAssign(TOperator op, TIntermTyped* left, TIntermTyped* right, TSourceLoc);
     TIntermTyped* addIndex(TOperator op, TIntermTyped* base, TIntermTyped* index, TSourceLoc);
     TIntermTyped* addUnaryMath(TOperator op, TIntermNode* child, TSourceLoc, TSymbolTable&);
+    bool canImplicitlyPromote(TBasicType from, TBasicType to);
     TIntermAggregate* growAggregate(TIntermNode* left, TIntermNode* right, TSourceLoc);
     TIntermAggregate* makeAggregate(TIntermNode* node, TSourceLoc);
     TIntermAggregate* setAggregateOperator(TIntermNode*, TOperator, TSourceLoc);
@@ -79,6 +81,8 @@ public:
     
 protected:
     TInfoSink& infoSink;
+    EProfile profile;
+    int version;
 
 private:
     void operator=(TIntermediate&); // prevent assignments
