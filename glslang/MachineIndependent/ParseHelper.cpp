@@ -668,6 +668,62 @@ bool TParseContext::structQualifierErrorCheck(int line, const TPublicType& pType
     return false;
 }
 
+//
+// Merge characteristics of the 'right' qualifier into the 'left'.
+// If there is duplication, issue error messages.
+// 
+// Return true if there was an error.
+//
+bool TParseContext::mergeQualifiersErrorCheck(int line, TPublicType& left, const TPublicType& right)
+{
+    bool bad = false;
+
+    // Storage qualification
+    if (left.qualifier.storage == EvqTemporary)
+        left.qualifier.storage = right.qualifier.storage;
+    else if (left.qualifier.storage == EvqIn  && right.qualifier.storage == EvqOut ||
+             left.qualifier.storage == EvqOut && right.qualifier.storage == EvqIn)
+        left.qualifier.storage = EvqInOut;
+    else if (left.qualifier.storage == EvqIn    && right.qualifier.storage == EvqConst ||
+             left.qualifier.storage == EvqConst && right.qualifier.storage == EvqIn)
+        left.qualifier.storage = EvqConstReadOnly;
+    else if ( left.qualifier.storage != EvqTemporary &&
+             right.qualifier.storage != EvqTemporary) {
+        error(line, "too many storage qualifiers", getStorageQualifierString(right.qualifier.storage), "");
+        bad = true;
+    }
+
+    // Precision qualifiers
+    if (left.qualifier.precision == EpqNone)
+        left.qualifier.precision = right.qualifier.precision;
+    else if (right.qualifier.precision) {
+        error(line, "only one precision qualifier allowed", getPrecisionQualifierString(right.qualifier.precision), "");
+        bad = true;
+    }
+
+    // other qualifiers
+    #define MERGE_SINGLETON(field) bad |= left.qualifier.field && right.qualifier.field; left.qualifier.field |= right.qualifier.field;
+    MERGE_SINGLETON(buffer);
+    MERGE_SINGLETON(invariant);
+    MERGE_SINGLETON(centroid);
+    MERGE_SINGLETON(smooth);
+    MERGE_SINGLETON(flat);
+    MERGE_SINGLETON(nopersp);
+    MERGE_SINGLETON(patch);
+    MERGE_SINGLETON(sample);
+    MERGE_SINGLETON(shared);
+    MERGE_SINGLETON(coherent);
+    MERGE_SINGLETON(volatil);
+    MERGE_SINGLETON(restrict);
+    MERGE_SINGLETON(readonly);
+    MERGE_SINGLETON(writeonly);
+
+    if (bad)
+        error(line, "replicated qualifiers", "", "");
+
+    return bad;
+}
+
 void TParseContext::setDefaultPrecision(int line, TBasicType type, TPrecisionQualifier qualifier)
 {
     if (type == EbtSampler || type == EbtInt || type == EbtFloat) {

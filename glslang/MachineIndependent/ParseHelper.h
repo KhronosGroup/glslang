@@ -120,6 +120,7 @@ struct TParseContext {
     bool samplerErrorCheck(int line, const TPublicType& pType, const char* reason);
     bool globalQualifierFixAndErrorCheck(int line, TQualifier&);
     bool structQualifierErrorCheck(int line, const TPublicType& pType);
+    bool mergeQualifiersErrorCheck(int line, TPublicType& left, const TPublicType& right);
     void setDefaultPrecision(int line, TBasicType, TPrecisionQualifier);
     bool parameterSamplerErrorCheck(int line, TStorageQualifier qualifier, const TType& type);
     bool containsSampler(const TType& type);

@@ -9,6 +9,9 @@ float precision;
 in vec4 i;
 out vec4 o;
 
+uniform sampler2D s2D;
+centroid varying vec2 centTexCoord;
+
 uniform mat4x2 m;
 
 struct s {
@@ -58,4 +61,6 @@ void main()
     b = a;             // ERROR
     b = b + f;         // ERROR
     f |= b;            // ERROR
+
+    gl_FragColor = texture2D(s2D, centTexCoord);
 }

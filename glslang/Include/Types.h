@@ -169,19 +169,52 @@ inline TArraySizes NewPoolTArraySizes()
 }
 
 //
-// This is a workaround for a problem with the yacc stack,  It can't have
+// TPublicType is a workaround for a problem with the yacc stack,  It can't have
 // types that it thinks have non-trivial constructors.  It should
 // just be used while recognizing the grammar, not anything else.  Pointers
 // could be used, but also trying to avoid lots of memory management overhead.
 //
 // Not as bad as it looks, there is no actual assumption that the fields
-// match up or are name the same or anything like that.
+// match up or are named the same or anything like that.
 //
 
 class TQualifier {
 public:
+    void clear()
+    {
+        storage   = EvqTemporary;
+        precision = EpqNone;
+        buffer    = false;
+        invariant = false;
+        centroid  = false;
+        smooth    = false;
+        flat      = false;
+        nopersp   = false;
+        patch     = false;
+        sample    = false;
+        shared    = false;
+        coherent  = false;
+        volatil   = false;
+        restrict  = false;
+        readonly  = false;
+        writeonly = false;
+    }
 	TStorageQualifier storage     : 7;
     TPrecisionQualifier precision : 3;
+    bool buffer    : 1;
+    bool invariant : 1;
+    bool centroid  : 1;
+    bool smooth    : 1;
+    bool flat      : 1;
+    bool nopersp   : 1;
+    bool patch     : 1;
+    bool sample    : 1;
+    bool shared    : 1;
+    bool coherent  : 1;
+    bool volatil   : 1;
+    bool restrict  : 1;
+    bool readonly  : 1;
+    bool writeonly : 1;
 };
 
 class TPublicType {
@@ -209,8 +242,9 @@ public:
 
     void initQualifiers(bool global = false)
     {
-        qualifier.storage = global ? EvqGlobal : EvqTemporary;
-        qualifier.precision = EpqNone;
+        qualifier.clear();
+        if (global)
+            qualifier.storage = EvqGlobal;
     }
 
     void init(int line = 0, bool global = false)
@@ -249,8 +283,8 @@ public:
                             fieldName(0), mangled(0), typeName(0)
                             {
                                 sampler.clear();
+                                qualifier.clear();
                                 qualifier.storage = q;
-                                qualifier.precision = EpqNone;
                             }
              TType(TBasicType t, TStorageQualifier q, TPrecisionQualifier p, int vs = 1, int mc = 0, int mr = 0) :
                             type(t), vectorSize(vs), matrixCols(mc), matrixRows(mr), arraySizes(0),
@@ -258,6 +292,7 @@ public:
                             fieldName(0), mangled(0), typeName(0)
                             {
                                 sampler.clear();
+                                qualifier.clear();
                                 qualifier.storage = q;
                                 qualifier.precision = p;
                                 assert(p >= 0 && p <= EpqHigh);
@@ -278,8 +313,7 @@ public:
                             structure(userDef), maxArraySize(0), arrayInformationType(0), fieldName(0), mangled(0)
                             {
                                 sampler.clear();
-                                qualifier.storage = EvqTemporary;
-                                qualifier.precision = EpqNone;
+                                qualifier.clear();
 								typeName = NewPoolTString(n.c_str());
                             }
 	explicit TType() {}
@@ -421,11 +455,39 @@ public:
 
     TString TType::getCompleteString() const
     {
-	    const int maxSize = 100;
+	    const int maxSize = 200;
         char buf[maxSize];
         char *p = &buf[0];
 	    char *end = &buf[maxSize];
 
+        if (qualifier.buffer)
+            p += snprintf(p, end - p, "buffer ");
+        if (qualifier.invariant)
+            p += snprintf(p, end - p, "invariant ");
+        if (qualifier.centroid)
+            p += snprintf(p, end - p, "centroid ");
+        if (qualifier.smooth)
+            p += snprintf(p, end - p, "smooth ");
+        if (qualifier.flat)
+            p += snprintf(p, end - p, "flat ");
+        if (qualifier.nopersp)
+            p += snprintf(p, end - p, "noperspective ");
+        if (qualifier.patch)
+            p += snprintf(p, end - p, "patch ");
+        if (qualifier.sample)
+            p += snprintf(p, end - p, "sample ");
+        if (qualifier.shared)
+            p += snprintf(p, end - p, "shared ");
+        if (qualifier.coherent)
+            p += snprintf(p, end - p, "coherent ");
+        if (qualifier.volatil)
+            p += snprintf(p, end - p, "volatile ");
+        if (qualifier.restrict)
+            p += snprintf(p, end - p, "restrict ");
+        if (qualifier.readonly)
+            p += snprintf(p, end - p, "readonly ");
+        if (qualifier.writeonly)
+            p += snprintf(p, end - p, "writeonly ");
         if (qualifier.storage != EvqTemporary && qualifier.storage != EvqGlobal)
             p += snprintf(p, end - p, "%s ", getStorageQualifierString());
         if (arraySizes) {

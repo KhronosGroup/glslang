@@ -1601,20 +1601,42 @@ fully_specified_type
 
 invariant_qualifier
     : INVARIANT {
+        parseContext.profileRequires($$.line, ENoProfile, 120, 0, "invariant");
+        $$.init($1.line);
+        $$.qualifier.invariant = true;
     }
     ;
 
 interpolation_qualifier
     : SMOOTH {
+        if (parseContext.globalErrorCheck($1.line, parseContext.symbolTable.atGlobalLevel(), "smooth"))
+            parseContext.recover();
+        parseContext.profileRequires($$.line, ENoProfile, 130, 0, "smooth");
+        parseContext.profileRequires($$.line, EEsProfile, 300, 0, "smooth");
+        $$.init($1.line);
+        $$.qualifier.smooth = true;
     }
     | FLAT {
+        if (parseContext.globalErrorCheck($1.line, parseContext.symbolTable.atGlobalLevel(), "flat"))
+            parseContext.recover();
+        parseContext.profileRequires($$.line, ENoProfile, 130, 0, "flat");
+        parseContext.profileRequires($$.line, EEsProfile, 300, 0, "flat");
+        $$.init($1.line);
+        $$.qualifier.flat = true;
     }
     | NOPERSPECTIVE {
+        if (parseContext.globalErrorCheck($1.line, parseContext.symbolTable.atGlobalLevel(), "noperspective"))
+            parseContext.recover();
+        parseContext.requireProfile($$.line, static_cast<EProfileMask>(~EEsProfileMask), "noperspective");
+        parseContext.profileRequires($$.line, ENoProfile, 130, 0, "noperspective");
+        $$.init($1.line);
+        $$.qualifier.nopersp = true;
     }
     ;
 
 layout_qualifier
     : LAYOUT LEFT_PAREN layout_qualifier_id_list RIGHT_PAREN {
+        $$.init($1.line);
     }
     ;
 
@@ -1635,6 +1657,7 @@ layout_qualifier_id
 
 precise_qualifier
     : PRECISE {
+        $$.init($1.line);
     }
     ;
 
@@ -1644,24 +1667,11 @@ type_qualifier
     }
     | type_qualifier single_type_qualifier {
         $$ = $1;
-        // TODO: merge qualifiers in $1 and $2 and check for duplication
-
-        if ($$.type == EbtVoid) {
+        if ($$.type == EbtVoid)
             $$.type = $2.type;
-        }
 
-        if ($$.qualifier.storage == EvqTemporary) {
-            $$.qualifier.storage = $2.qualifier.storage;
-        } else if ($$.qualifier.storage == EvqIn  && $2.qualifier.storage == EvqOut ||
-                   $$.qualifier.storage == EvqOut && $2.qualifier.storage == EvqIn) {
-            $$.qualifier.storage = EvqInOut;
-        } else if ($$.qualifier.storage == EvqIn    && $2.qualifier.storage == EvqConst ||
-                   $$.qualifier.storage == EvqConst && $2.qualifier.storage == EvqIn) {
-            $$.qualifier.storage = EvqConstReadOnly;
-        }
-
-        if ($$.qualifier.precision == EpqNone)
-            $$.qualifier.precision = $2.qualifier.precision;
+        if (parseContext.mergeQualifiersErrorCheck($$.line, $$, $2))
+            parseContext.recover();
     }
     ;
 
@@ -1741,24 +1751,24 @@ storage_qualifier
         $$.qualifier.storage = EvqOut;
     }
     | CENTROID {
+        parseContext.profileRequires($$.line, ENoProfile, 120, 0, "centroid");
+        parseContext.profileRequires($$.line, EEsProfile, 300, 0, "centroid");
         if (parseContext.globalErrorCheck($1.line, parseContext.symbolTable.atGlobalLevel(), "centroid"))
             parseContext.recover();
         $$.init($1.line);
-        $$.qualifier.storage = EvqVaryingIn;
+        $$.qualifier.centroid = true;
     }
     | PATCH {
-        // TODO: implement this qualifier
         if (parseContext.globalErrorCheck($1.line, parseContext.symbolTable.atGlobalLevel(), "patch"))
             parseContext.recover();
         $$.init($1.line);
-        $$.qualifier.storage = EvqUniform;
+        $$.qualifier.patch = true;
     }
     | SAMPLE {
-        // TODO: implement this qualifier
         if (parseContext.globalErrorCheck($1.line, parseContext.symbolTable.atGlobalLevel(), "sample"))
             parseContext.recover();
         $$.init($1.line);
-        $$.qualifier.storage = EvqUniform;
+        $$.qualifier.sample = true;
     }
     | UNIFORM {
         if (parseContext.globalErrorCheck($1.line, parseContext.symbolTable.atGlobalLevel(), "uniform"))
@@ -1770,48 +1780,32 @@ storage_qualifier
         if (parseContext.globalErrorCheck($1.line, parseContext.symbolTable.atGlobalLevel(), "buffer"))
             parseContext.recover();
         $$.init($1.line);
-        $$.qualifier.storage = EvqUniform;
+        $$.qualifier.storage = EvqUniform;        
+        $$.qualifier.buffer = true;
     }
     | SHARED {
-        if (parseContext.globalErrorCheck($1.line, parseContext.symbolTable.atGlobalLevel(), "shared"))
-            parseContext.recover();
         $$.init($1.line);
-        $$.qualifier.storage = EvqUniform;
+        $$.qualifier.shared = true;
     }
     | COHERENT {
-        // TODO: implement this qualifier
-        if (parseContext.globalErrorCheck($1.line, parseContext.symbolTable.atGlobalLevel(), "coherent"))
-            parseContext.recover();
         $$.init($1.line);
-        $$.qualifier.storage = EvqUniform;
+        $$.qualifier.coherent = true;
     }
     | VOLATILE {
-        // TODO: implement this qualifier
-        if (parseContext.globalErrorCheck($1.line, parseContext.symbolTable.atGlobalLevel(), "volatile"))
-            parseContext.recover();
         $$.init($1.line);
-        $$.qualifier.storage = EvqUniform;
+        $$.qualifier.volatil = true;
     }
     | RESTRICT {
-        // TODO: implement this qualifier
-        if (parseContext.globalErrorCheck($1.line, parseContext.symbolTable.atGlobalLevel(), "restrict"))
-            parseContext.recover();
         $$.init($1.line);
-        $$.qualifier.storage = EvqUniform;
+        $$.qualifier.restrict = true;
     }
     | READONLY {
-        // TODO: implement this qualifier
-        if (parseContext.globalErrorCheck($1.line, parseContext.symbolTable.atGlobalLevel(), "readonly"))
-            parseContext.recover();
         $$.init($1.line);
-        $$.qualifier.storage = EvqUniform;
+        $$.qualifier.readonly = true;
     }
     | WRITEONLY {
-        // TODO: implement this qualifier
-        if (parseContext.globalErrorCheck($1.line, parseContext.symbolTable.atGlobalLevel(), "writeonly"))
-            parseContext.recover();
         $$.init($1.line);
-        $$.qualifier.storage = EvqUniform;
+        $$.qualifier.writeonly = true;
     }
     | SUBROUTINE {
         if (parseContext.globalErrorCheck($1.line, parseContext.symbolTable.atGlobalLevel(), "subroutine"))

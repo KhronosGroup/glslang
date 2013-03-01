@@ -268,30 +268,30 @@ int yy_input(char* buf, int max_size);
 "image3D"              { pyylval->lex.line = yylineno; parseContext.lexAfterType = true; return(IMAGE3D); }
 "iimage3D"             { pyylval->lex.line = yylineno; parseContext.lexAfterType = true; return(IIMAGE3D); }
 "uimage3D"             { pyylval->lex.line = yylineno; parseContext.lexAfterType = true; return(UIMAGE3D); }
-"image2Drect"          { pyylval->lex.line = yylineno; parseContext.lexAfterType = true; return(IMAGE2DRECT); }
-"iimage2Drect"         { pyylval->lex.line = yylineno; parseContext.lexAfterType = true; return(IIMAGE2DRECT); }
-"uimage2Drect"         { pyylval->lex.line = yylineno; parseContext.lexAfterType = true; return(UIMAGE2DRECT); }
+"image2DRect"          { pyylval->lex.line = yylineno; parseContext.lexAfterType = true; return(IMAGE2DRECT); }
+"iimage2DRect"         { pyylval->lex.line = yylineno; parseContext.lexAfterType = true; return(IIMAGE2DRECT); }
+"uimage2DRect"         { pyylval->lex.line = yylineno; parseContext.lexAfterType = true; return(UIMAGE2DRECT); }
 "imageCube"            { pyylval->lex.line = yylineno; parseContext.lexAfterType = true; return(IMAGECUBE); }
 "iimageCube"           { pyylval->lex.line = yylineno; parseContext.lexAfterType = true; return(IIMAGECUBE); }
 "uimageCube"           { pyylval->lex.line = yylineno; parseContext.lexAfterType = true; return(UIMAGECUBE); }
 "imageBuffer"          { pyylval->lex.line = yylineno; parseContext.lexAfterType = true; return(IMAGEBUFFER); }
 "iimageBuffer"         { pyylval->lex.line = yylineno; parseContext.lexAfterType = true; return(IIMAGEBUFFER); }
 "uimageBuffer"         { pyylval->lex.line = yylineno; parseContext.lexAfterType = true; return(UIMAGEBUFFER); }
-"image1Darray"         { pyylval->lex.line = yylineno; parseContext.lexAfterType = true; return(IMAGE1DARRAY); }
-"iimage1Darray"        { pyylval->lex.line = yylineno; parseContext.lexAfterType = true; return(IIMAGE1DARRAY); }
-"uimage1Darray"        { pyylval->lex.line = yylineno; parseContext.lexAfterType = true; return(UIMAGE1DARRAY); }
-"image2Darray"         { pyylval->lex.line = yylineno; parseContext.lexAfterType = true; return(IMAGE2DARRAY); }
-"iimage2Darray"        { pyylval->lex.line = yylineno; parseContext.lexAfterType = true; return(IIMAGE2DARRAY); }
-"uimage2Darray"        { pyylval->lex.line = yylineno; parseContext.lexAfterType = true; return(UIMAGE2DARRAY); }
-"imageCubearray"       { pyylval->lex.line = yylineno; parseContext.lexAfterType = true; return(IMAGECUBEARRAY); }
-"iimageCubearray"      { pyylval->lex.line = yylineno; parseContext.lexAfterType = true; return(IIMAGECUBEARRAY); }
-"uimageCubearray"      { pyylval->lex.line = yylineno; parseContext.lexAfterType = true; return(UIMAGECUBEARRAY); }
+"image1DArray"         { pyylval->lex.line = yylineno; parseContext.lexAfterType = true; return(IMAGE1DARRAY); }
+"iimage1DArray"        { pyylval->lex.line = yylineno; parseContext.lexAfterType = true; return(IIMAGE1DARRAY); }
+"uimage1DArray"        { pyylval->lex.line = yylineno; parseContext.lexAfterType = true; return(UIMAGE1DARRAY); }
+"image2DArray"         { pyylval->lex.line = yylineno; parseContext.lexAfterType = true; return(IMAGE2DARRAY); }
+"iimage2DArray"        { pyylval->lex.line = yylineno; parseContext.lexAfterType = true; return(IIMAGE2DARRAY); }
+"uimage2DArray"        { pyylval->lex.line = yylineno; parseContext.lexAfterType = true; return(UIMAGE2DARRAY); }
+"imageCubeArray"       { pyylval->lex.line = yylineno; parseContext.lexAfterType = true; return(IMAGECUBEARRAY); }
+"iimageCubeArray"      { pyylval->lex.line = yylineno; parseContext.lexAfterType = true; return(IIMAGECUBEARRAY); }
+"uimageCubeArray"      { pyylval->lex.line = yylineno; parseContext.lexAfterType = true; return(UIMAGECUBEARRAY); }
 "image2DMS"            { pyylval->lex.line = yylineno; parseContext.lexAfterType = true; return(IMAGE2DMS); }
 "iimage2DMS"           { pyylval->lex.line = yylineno; parseContext.lexAfterType = true; return(IIMAGE2DMS); }
 "uimage2DMS"           { pyylval->lex.line = yylineno; parseContext.lexAfterType = true; return(UIMAGE2DMS); }
-"image2DMSarray"       { pyylval->lex.line = yylineno; parseContext.lexAfterType = true; return(IMAGE2DMSARRAY); }
-"iimage2DMSarray"      { pyylval->lex.line = yylineno; parseContext.lexAfterType = true; return(IIMAGE2DMSARRAY); }
-"uimage2DMSarray"      { pyylval->lex.line = yylineno; parseContext.lexAfterType = true; return(UIMAGE2DMSARRAY); }
+"image2DMSArray"       { pyylval->lex.line = yylineno; parseContext.lexAfterType = true; return(IMAGE2DMSARRAY); }
+"iimage2DMSArray"      { pyylval->lex.line = yylineno; parseContext.lexAfterType = true; return(IIMAGE2DMSARRAY); }
+"uimage2DMSArray"      { pyylval->lex.line = yylineno; parseContext.lexAfterType = true; return(UIMAGE2DMSARRAY); }
 
 "struct"       {  pyylval->lex.line = yylineno; return(STRUCT); }
 
