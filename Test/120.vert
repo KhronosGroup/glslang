@@ -15,4 +15,15 @@ void main()
 {
     centTexCoord = attv2; 
     gl_Position = attv4;
+
+    vec3[12] a;
+    vec4[a.length()] b;
+    gl_Position = b[b.length()-1];
+
+    float f[];
+    int a = f.length();
 }
+
+uniform float initted = 3.4;
+
+const float concall = sin(0.3);
