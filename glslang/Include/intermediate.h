@@ -406,6 +406,7 @@ public:
     virtual TIntermConstantUnion* getAsConstantUnion()  { return this; }
     virtual void traverse(TIntermTraverser* );
     virtual TIntermTyped* fold(TOperator, TIntermTyped*, TInfoSink&);
+    virtual TIntermTyped* fold(TOperator, const TType&, TInfoSink&);
 protected:
     constUnion *unionArrayPointer;
 };

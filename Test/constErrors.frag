@@ -18,5 +18,5 @@ void main()
     vec4 e[constInt + uniformInt]; // error
     vec4 f[uniformInt + constInt]; // error
 
-    vec4 g[sin(3.2)];              // okay
+    vec4 g[int(sin(0.3)) + 1];     // okay
 }

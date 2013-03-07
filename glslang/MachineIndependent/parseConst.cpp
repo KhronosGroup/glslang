@@ -40,8 +40,8 @@
 //
 class TConstTraverser : public TIntermTraverser {
 public:
-    TConstTraverser(constUnion* cUnion, bool singleConstParam, TOperator constructType, TInfoSink& sink, TSymbolTable& symTable, TType& t) : unionArray(cUnion), type(t),
-        constructorType(constructType), singleConstantParam(singleConstParam), infoSink(sink), symbolTable(symTable), error(false), isMatrix(false), 
+    TConstTraverser(constUnion* cUnion, bool singleConstParam, TOperator constructType, TInfoSink& sink, TType& t) : unionArray(cUnion), type(t),
+        constructorType(constructType), singleConstantParam(singleConstParam), infoSink(sink), error(false), isMatrix(false), 
         matrixCols(0), matrixRows(0) {  index = 0; tOp = EOpNull;}
     int index ;
     constUnion *unionArray;
@@ -50,7 +50,6 @@ public:
     TOperator constructorType;
     bool singleConstantParam;
     TInfoSink& infoSink;
-    TSymbolTable& symbolTable;
     bool error;
     int size; // size of the constructor ( 4 for vec4)
     bool isMatrix;
@@ -256,12 +255,12 @@ bool ParseBranch(bool /* previsit*/, TIntermBranch* node, TIntermTraverser* it)
 // Individual functions can be initialized to 0 to skip processing of that
 // type of node.  It's children will still be processed.
 //
-bool TIntermediate::parseConstTree(TSourceLoc line, TIntermNode* root, constUnion* unionArray, TOperator constructorType, TSymbolTable& symbolTable, TType t, bool singleConstantParam)
+bool TIntermediate::parseConstTree(TSourceLoc line, TIntermNode* root, constUnion* unionArray, TOperator constructorType, TType t, bool singleConstantParam)
 {
     if (root == 0)
         return false;
 
-    TConstTraverser it(unionArray, singleConstantParam, constructorType, infoSink, symbolTable, t);
+    TConstTraverser it(unionArray, singleConstantParam, constructorType, infoSink, t);
     
     it.visitAggregate = ParseAggregate;
     it.visitBinary = ParseBinary;

@@ -147,6 +147,7 @@ xcopy /y $(IntDir)$(TargetName)$(TargetExt) Test</Command>
     </ResourceCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="glslang\MachineIndependent\Constant.cpp" />
     <ClCompile Include="glslang\MachineIndependent\gen_glslang.cpp" />
     <ClCompile Include="glslang\MachineIndependent\glslang_tab.cpp" />
     <ClCompile Include="glslang\MachineIndependent\InfoSink.cpp" />

@@ -336,6 +336,7 @@ postfix_expression
                 $$ = parseContext.intermediate.addIndex(EOpIndexIndirect, $1, $3, $2.line);
             }
         }
+
         if ($$ == 0) {
             constUnion *unionArray = new constUnion[1];
             unionArray->setFConst(0.0f);
@@ -344,8 +345,7 @@ postfix_expression
             TType newType = $1->getType();
             newType.dereference();
             $$->setType(newType);
-            //?? why wouldn't the code above get the type right?
-            //?? write a dereference test
+            // TODO: testing: write a set of dereference tests
         }
     }
     | function_call {
@@ -511,14 +511,13 @@ function_call
                 //
                 // It's a constructor, of type 'type'.
                 //
-                $$ = parseContext.addConstructor($1.intermNode, &type, op, fnCall, $1.line);
+                $$ = parseContext.addConstructor($1.intermNode, type, op, fnCall, $1.line);
             }
 
             if ($$ == 0) {
                 parseContext.recover();
-                $$ = parseContext.intermediate.setAggregateOperator(0, op, $1.line);
+                $$ = parseContext.intermediate.setAggregateOperator(0, op, type, $1.line);
             }
-            $$->setType(type);
         } else {
             //
             // Not a constructor.  Find it in the symbol table.
@@ -538,7 +537,9 @@ function_call
                     //
                     if (fnCandidate->getParamCount() == 1) {
                         //
-                        // Treat it like a built-in unary operator.
+                        // Treat it like a built-in unary operator.  
+                        // addUnaryMath() should get the type correct on its own;
+                        // including constness (which would differ from the prototype).
                         //
                         $$ = parseContext.intermediate.addUnaryMath(op, $1.intermNode, 0, parseContext.symbolTable);
                         if ($$ == 0)  {
@@ -548,13 +549,12 @@ function_call
                             YYERROR;
                         }
                     } else {
-                        $$ = parseContext.intermediate.setAggregateOperator($1.intermAggregate, op, $1.line);
+                        $$ = parseContext.intermediate.setAggregateOperator($1.intermAggregate, op, fnCandidate->getReturnType(), $1.line);
                     }
                 } else {
                     // This is a real function call
 
-                    $$ = parseContext.intermediate.setAggregateOperator($1.intermAggregate, EOpFunctionCall, $1.line);
-                    $$->setType(fnCandidate->getReturnType());
+                    $$ = parseContext.intermediate.setAggregateOperator($1.intermAggregate, EOpFunctionCall, fnCandidate->getReturnType(), $1.line);
 
                     // this is how we know whether the given function is a builtIn function or a user defined function
                     // if builtIn == false, it's a userDefined -> could be an overloaded builtIn function also
@@ -576,7 +576,6 @@ function_call
                         qualifierList.push_back(qual);
                     }
                 }
-                $$->setType(fnCandidate->getReturnType());
             } else {
                 // error message was put out by PaFindFunction()
                 // Put on a dummy node for error recovery
@@ -2991,7 +2990,7 @@ function_definition
                 paramNodes = parseContext.intermediate.growAggregate(paramNodes, parseContext.intermediate.addSymbol(0, "", *param.type, $1.line), $1.line);
             }
         }
-        parseContext.intermediate.setAggregateOperator(paramNodes, EOpParameters, $1.line);
+        parseContext.intermediate.setAggregateOperator(paramNodes, EOpParameters, TType(EbtVoid), $1.line);
         $1.intermAggregate = paramNodes;
         parseContext.loopNestingLevel = 0;
     }
@@ -3003,9 +3002,8 @@ function_definition
         }
         parseContext.symbolTable.pop(&parseContext.defaultPrecision[0]);
         $$ = parseContext.intermediate.growAggregate($1.intermAggregate, $3, 0);
-        parseContext.intermediate.setAggregateOperator($$, EOpFunction, $1.line);
+        parseContext.intermediate.setAggregateOperator($$, EOpFunction, $1.function->getReturnType(), $1.line);
         $$->getAsAggregate()->setName($1.function->getMangledName().c_str());
-        $$->getAsAggregate()->setType($1.function->getReturnType());
 
         // store the pragma information for debug and optimize and other vendor specific
         // information. This information can be queried from the parse tree

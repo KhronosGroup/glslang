@@ -105,7 +105,7 @@ int yy_input(char* buf, int max_size);
 
 
 %%
-<*>"//"[^\n]*"\n"     { /* ?? carriage and/or line-feed? */ };
+<*>"//"[^\n]*"\n"     { /* CPP should have taken care of this */ };
 
 "attribute"    {  pyylval->lex.line = yylineno; return(ATTRIBUTE); }  // TODO ES 30 reserved
 "const"        {  pyylval->lex.line = yylineno; return(CONST); }

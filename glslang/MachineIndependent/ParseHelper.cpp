@@ -1161,33 +1161,12 @@ bool TParseContext::executeInitializer(TSourceLoc line, TString& identifier, TPu
     return false;
 }
 
-bool TParseContext::areAllChildConst(TIntermAggregate* aggrNode)
-{
-    if (!aggrNode->isConstructor())
-        return false;
-
-    bool allConstant = true;
-
-    // check if all the child nodes are constants so that they can be inserted into 
-    // the parent node
-    if (aggrNode) {
-        TIntermSequence &childSequenceVector = aggrNode->getSequence() ;
-        for (TIntermSequence::iterator p = childSequenceVector.begin(); 
-                                    p != childSequenceVector.end(); p++) {
-            if (!(*p)->getAsTyped()->getAsConstantUnion())
-                return false;
-        }
-    }
-
-    return allConstant;
-}
-
 // This function is used to test for the correctness of the parameters passed to various constructor functions
 // and also convert them to the right datatype if it is allowed and required. 
 //
 // Returns 0 for an error or the constructed node (aggregate or typed) for no error.
 //
-TIntermTyped* TParseContext::addConstructor(TIntermNode* node, const TType* type, TOperator op, TFunction* fnCall, TSourceLoc line)
+TIntermTyped* TParseContext::addConstructor(TIntermNode* node, const TType& type, TOperator op, TFunction* fnCall, TSourceLoc line)
 {
     if (node == 0)
         return 0;
@@ -1196,10 +1175,10 @@ TIntermTyped* TParseContext::addConstructor(TIntermNode* node, const TType* type
     
     TTypeList::iterator memberTypes;
     if (op == EOpConstructStruct)
-        memberTypes = type->getStruct()->begin();
+        memberTypes = type.getStruct()->begin();
     
-    TType elementType = *type;
-    if (type->isArray())
+    TType elementType = type;
+    if (type.isArray())
         elementType.dereference();
 
     bool singleArg;
@@ -1215,18 +1194,15 @@ TIntermTyped* TParseContext::addConstructor(TIntermNode* node, const TType* type
     if (singleArg) {
         // If structure constructor or array constructor is being called 
         // for only one parameter inside the structure, we need to call constructStruct function once.
-        if (type->isArray())
-            newNode = constructStruct(node, &elementType, 1, node->getLine(), false);
+        if (type.isArray())
+            newNode = constructStruct(node, elementType, 1, node->getLine());
         else if (op == EOpConstructStruct)
-            newNode = constructStruct(node, (*memberTypes).type, 1, node->getLine(), false);
+            newNode = constructStruct(node, *(*memberTypes).type, 1, node->getLine());
         else
             newNode = constructBuiltIn(type, op, node, node->getLine(), false);
 
-        if (newNode && newNode->getAsAggregate()) {
-            TIntermTyped* constConstructor = foldConstConstructor(newNode->getAsAggregate(), *type);
-            if (constConstructor)
-                return constConstructor;
-        }
+        if (newNode && (type.isArray() || op == EOpConstructStruct))
+            newNode = intermediate.setAggregateOperator(newNode, EOpConstructStruct, type, line);
 
         return newNode;
     }
@@ -1246,10 +1222,10 @@ TIntermTyped* TParseContext::addConstructor(TIntermNode* node, const TType* type
     
     for (TIntermSequence::iterator p = sequenceVector.begin(); 
                                    p != sequenceVector.end(); p++, paramCount++) {
-        if (type->isArray())
-            newNode = constructStruct(*p, &elementType, paramCount+1, node->getLine(), true);
+        if (type.isArray())
+            newNode = constructStruct(*p, elementType, paramCount+1, node->getLine());
         else if (op == EOpConstructStruct)
-            newNode = constructStruct(*p, (memberTypes[paramCount]).type, paramCount+1, node->getLine(), true);
+            newNode = constructStruct(*p, *(memberTypes[paramCount]).type, paramCount+1, node->getLine());
         else
             newNode = constructBuiltIn(type, op, *p, node->getLine(), true);
         
@@ -1259,34 +1235,9 @@ TIntermTyped* TParseContext::addConstructor(TIntermNode* node, const TType* type
         }
     }
 
-    TIntermTyped* constructor = intermediate.setAggregateOperator(aggrNode, op, line);
-    TIntermTyped* constConstructor = foldConstConstructor(constructor->getAsAggregate(), *type);
-    if (constConstructor)
-        return constConstructor;
+    TIntermTyped* constructor = intermediate.setAggregateOperator(aggrNode, op, type, line);
 
     return constructor;
-}
-
-TIntermTyped* TParseContext::foldConstConstructor(TIntermAggregate* aggrNode, const TType& type)
-{
-    bool canBeFolded = areAllChildConst(aggrNode);
-    aggrNode->setType(type);
-    if (canBeFolded) {
-        bool returnVal = false;
-        constUnion* unionArray = new constUnion[type.getObjectSize()];
-        if (aggrNode->getSequence().size() == 1)  {
-            returnVal = intermediate.parseConstTree(aggrNode->getLine(), aggrNode, unionArray, aggrNode->getOp(), symbolTable,  type, true);
-        }
-        else {
-            returnVal = intermediate.parseConstTree(aggrNode->getLine(), aggrNode, unionArray, aggrNode->getOp(), symbolTable,  type);
-        }
-        if (returnVal)
-            return 0;
-
-        return intermediate.addConstantUnion(unionArray, type, aggrNode->getLine());
-    }
-
-    return 0;
 }
 
 // Function for constructor implementation. Calls addUnaryMath with appropriate EOp value
@@ -1296,7 +1247,7 @@ TIntermTyped* TParseContext::foldConstConstructor(TIntermAggregate* aggrNode, co
 //
 // Returns 0 for an error or the constructed node.
 //
-TIntermTyped* TParseContext::constructBuiltIn(const TType* type, TOperator op, TIntermNode* node, TSourceLoc line, bool subset)
+TIntermTyped* TParseContext::constructBuiltIn(const TType& type, TOperator op, TIntermNode* node, TSourceLoc line, bool subset)
 {
     TIntermTyped* newNode;
     TOperator basicOp;
@@ -1368,11 +1319,11 @@ TIntermTyped* TParseContext::constructBuiltIn(const TType* type, TOperator op, T
     //
     
     // Otherwise, skip out early.
-    if (subset || newNode != node && newNode->getType() == *type)
+    if (subset || newNode != node && newNode->getType() == type)
         return newNode;
 
     // setAggregateOperator will insert a new node for the constructor, as needed.
-    return intermediate.setAggregateOperator(newNode, op, line);
+    return intermediate.setAggregateOperator(newNode, op, type, line);
 }
 
 // This function tests for the type of the parameters to the structures constructors. Raises
@@ -1380,21 +1331,18 @@ TIntermTyped* TParseContext::constructBuiltIn(const TType* type, TOperator op, T
 //
 // Returns 0 for an error or the input node itself if the expected and the given parameter types match.
 //
-TIntermTyped* TParseContext::constructStruct(TIntermNode* node, TType* type, int paramCount, TSourceLoc line, bool subset)
+TIntermTyped* TParseContext::constructStruct(TIntermNode* node, const TType& type, int paramCount, TSourceLoc line)
 {
-    TIntermNode* converted = intermediate.addConversion(EOpConstructStruct, *type, node->getAsTyped());
-    if (converted->getAsTyped()->getType() == *type) {
-        if (subset)
-            return converted->getAsTyped();
-        else
-            return intermediate.setAggregateOperator(converted->getAsTyped(), EOpConstructStruct, line);
-    } else {
+    TIntermTyped* converted = intermediate.addConversion(EOpConstructStruct, type, node->getAsTyped());
+    if (! converted || converted->getType() != type) {
         error(line, "", "constructor", "cannot convert parameter %d from '%s' to '%s'", paramCount,
-                node->getAsTyped()->getType().getCompleteTypeString().c_str(), type->getCompleteTypeString().c_str());
+                node->getAsTyped()->getType().getCompleteTypeString().c_str(), type.getCompleteTypeString().c_str());
         recover();
+
+        return 0;
     }
 
-    return 0;
+    return converted;
 }
 
 //
