@@ -128,6 +128,10 @@ static Scope *macros = 0;
 
 static SourceLoc ifloc; /* outermost #if */
 
+int ChkCorrectElseNesting(void);
+int PredefineMacro(char *);
+void FreeMacro(MacroSymbol *);
+
 int InitCPP(void)
 {
     char        buffer[64], *t;

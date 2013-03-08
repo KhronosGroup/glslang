@@ -36,6 +36,7 @@
 #include "./../glslang/Include/ShHandle.h"
 #include "./../glslang/Public/ShaderLang.h"
 #include <string.h>
+#include <stdlib.h>
 #include <math.h>
 
 #ifdef _WIN32
@@ -283,17 +284,46 @@ void usage()
 }
 
 
+#ifndef _WIN32
+
+#include <errno.h>
+
+int fopen_s(
+   FILE** pFile,
+   const char *filename,
+   const char *mode
+)
+{
+   if (!pFile || !filename || !mode) {
+      return EINVAL;
+   }
+
+   FILE* f = fopen(filename, mode);
+   if (! f) {
+      if (errno != 0) {
+         return errno;
+      } else {
+         return ENOENT;
+      }
+   }
+   *pFile = f;
+
+   return 0;
+}
+
+#endif
+
 //
 //   Malloc a string of sufficient size and read a string into it.
 //
-# define MAX_SOURCE_STRINGS 5
 char** ReadFileData(const char *fileName) 
 {
     FILE *in;
 	int errorCode = fopen_s(&in, fileName, "r");
     char *fdata;
     int count = 0;
-    char**return_data=(char**)malloc(MAX_SOURCE_STRINGS+1);
+    const int maxSourceStrings = 5;
+    char** return_data = (char**)malloc(maxSourceStrings+1);
 
     //return_data[MAX_SOURCE_STRINGS]=NULL;
 	if (errorCode) {

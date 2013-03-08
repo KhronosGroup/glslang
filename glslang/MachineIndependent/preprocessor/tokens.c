@@ -242,7 +242,7 @@ void DeleteTokenStream(TokenStream *pTok)
 void RecordToken(TokenStream *pTok, int token, yystypepp * yylvalpp)
 {
     const char *s;
-    unsigned char *str=NULL;
+    char *str = NULL;
 
     if (token > 256)
         lAddByte(pTok, (unsigned char)((token & 0x7f) + 0x80));
@@ -259,10 +259,10 @@ void RecordToken(TokenStream *pTok, int token, yystypepp * yylvalpp)
         break;
     case CPP_FLOATCONSTANT:
     case CPP_INTCONSTANT:
-         str=yylvalpp->symbol_name;
+         str = yylvalpp->symbol_name;
          while (*str){
-            lAddByte(pTok,(unsigned char) *str);
-            *str++;
+            lAddByte(pTok, (unsigned char) *str);
+            str++;
          }
          lAddByte(pTok, 0);
          break;
@@ -398,7 +398,7 @@ static int scan_token(TokenInputSrc *in, yystypepp * yylvalpp)
 
 int ReadFromTokenStream(TokenStream *ts, int name, int (*final)(CPPStruct *))
 {
-    TokenInputSrc *in = malloc(sizeof(TokenInputSrc));
+    TokenInputSrc *in = (TokenInputSrc *) malloc(sizeof(TokenInputSrc));
     memset(in, 0, sizeof(TokenInputSrc));
     in->base.name = name;
     in->base.prev = cpp->currentInput;
@@ -426,12 +426,14 @@ static int reget_token(UngotToken *t, yystypepp * yylvalpp)
     return token;
 }
 
+typedef int (*scanFnPtr_t)(struct InputSrc *, yystypepp *);
+
 void UngetToken(int token, yystypepp * yylvalpp) {
-    UngotToken *t = malloc(sizeof(UngotToken));
+    UngotToken *t = (UngotToken *) malloc(sizeof(UngotToken));
     memset(t, 0, sizeof(UngotToken));
     t->token = token;
     t->lval = *yylvalpp;
-    t->base.scan = (void *)reget_token;
+    t->base.scan = (scanFnPtr_t)reget_token;
     t->base.prev = cpp->currentInput;
     t->base.name = cpp->currentInput->name;
     t->base.line = cpp->currentInput->line;

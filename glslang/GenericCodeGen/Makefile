@@ -5,6 +5,8 @@ AR=ar
 
 SRCS=CodeGen.cpp Link.cpp
 
+CPPFLAGS = -fPIC
+
 default : all
 all : libCodeGen.a
 
@@ -13,7 +15,7 @@ libCodeGen.a : $(OBJECTS)
 	ranlib $@
 
 %.o : %.cpp
-	$(CC) -c $<
+	$(CC) -c $(CPPFLAGS) $<
 
 #
 # Cleanup

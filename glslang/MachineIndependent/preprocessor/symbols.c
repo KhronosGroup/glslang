@@ -94,7 +94,7 @@ Scope *CurrentScope = NULL;
 Scope *GlobalScope = NULL;
 
 static void unlinkScope(void *_scope) {
-    Scope *scope = _scope;
+    Scope *scope = (Scope*)_scope;
 
     if (scope->next)
         scope->next->prev = scope->prev;
@@ -112,7 +112,7 @@ Scope *NewScopeInPool(MemoryPool *pool)
 {
     Scope *lScope;
 
-    lScope = mem_Alloc(pool, sizeof(Scope));
+    lScope = (Scope*)mem_Alloc(pool, sizeof(Scope));
     lScope->pool = pool;
     lScope->parent = NULL;
     lScope->funScope = NULL;

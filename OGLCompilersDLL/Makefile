@@ -1,12 +1,11 @@
 INCLUDE = -I. -I../glslang -I../glslang/Include -I../glslang/OSDependent/Linux -I../glslang/MachineIndependent
 WARNINGS = -Wall -Wwrite-strings -Wpointer-arith -Wcast-align -Wstrict-prototypes \
 	-Wnested-externs
-DEFINE = -Dlinux -D__i386__
-  
+
 CPP = g++
-CPPOPTIONS = -O3 -Wno-deprecated -D_ALT_NS=1
-CPPOPTIONS = -g -Wno-deprecated -D_ALT_NS=1 
-CPPFLAGS = $(CPPOPTIONS) $(DEFINE) $(INCLUDE)
+CPPOPTIONS = -O3 -Wno-deprecated -D_ALT_NS=1 -fPIC
+CPPOPTIONS = -g -Wno-deprecated -D_ALT_NS=1 -fPIC
+CPPFLAGS = $(CPPOPTIONS) $(INCLUDE)
 
 #
 # Linking related

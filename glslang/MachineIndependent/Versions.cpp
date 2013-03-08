@@ -108,6 +108,7 @@ void TParseContext::profileRequires(int line, EProfile callingProfile, int minVe
             case EBhEnable:
                 okay = true;
                 break;
+            default: break; // some compilers want this
             }
         }
 

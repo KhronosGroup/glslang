@@ -920,6 +920,8 @@ void updateExtensionBehavior(const char* extName, const char* behavior)
                 msg = TString("extension '") + extName + "' is not supported";
                 pc.infoSink.info.message(EPrefixWarning, msg.c_str(), yylineno);
                 break;
+            default:
+                assert(0 && "unexpected behaviorVal");
             }
 
             return;

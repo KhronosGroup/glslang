@@ -264,6 +264,7 @@ void TParseContext::variableErrorCheck(TIntermTyped*& nodePtr)
         case EvqPointCoord:
             profileRequires(symbol->getLine(), ENoProfile, 120, 0, "gl_PointCoord");
             break;
+        default: break; // some compilers want this
         }
     }
 }
@@ -647,6 +648,7 @@ bool TParseContext::globalQualifierFixAndErrorCheck(int line, TQualifier& qualif
         error(line, "cannot use 'inout' at global scope", "", "");
 
         return true;
+    default: break; // some compilers want this
     }
 
     return false;

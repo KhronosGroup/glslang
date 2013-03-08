@@ -93,6 +93,7 @@ TIntermTyped* TIntermediate::addBinaryMath(TOperator op, TIntermTyped* left, TIn
     case EOpMul:
         if (left->getType().getBasicType() == EbtStruct || left->getType().getBasicType() == EbtBool || left->getType().isArray())
             return 0;
+    default: break; // some compilers want this
     }
 
     // 
@@ -218,6 +219,7 @@ TIntermTyped* TIntermediate::addUnaryMath(TOperator op, TIntermNode* childNode, 
     case EOpNegative:
         if (child->getType().getBasicType() == EbtStruct || child->getType().isArray())
             return 0;
+    default: break; // some compilers want this
     }
 
     //
@@ -229,6 +231,7 @@ TIntermTyped* TIntermediate::addUnaryMath(TOperator op, TIntermNode* childNode, 
     case EOpConstructBool:   newType = EbtBool;  break;
     case EOpConstructFloat:  newType = EbtFloat; break;
     case EOpConstructDouble: newType = EbtDouble; break;
+    default: break; // some compilers want this
     }
 
     if (newType != EbtVoid) {
@@ -249,6 +252,7 @@ TIntermTyped* TIntermediate::addUnaryMath(TOperator op, TIntermNode* childNode, 
     case EOpConstructFloat:
     case EOpConstructDouble:
         return child;
+    default: break; // some compilers want this
     }
     
     TIntermConstantUnion *childTempConstant = 0;

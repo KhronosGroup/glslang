@@ -85,12 +85,6 @@ NVIDIA HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "tokens.h"
 #include "Versions.h"
 
-int InitCPP(void);
-int FinalCPP(void);
-int  readCPPline(yystypepp * yylvalpp);
-int MacroExpand(int atom, yystypepp * yylvalpp);
-int ChkCorrectElseNesting(void);
-
 typedef struct MacroSymbol {
     int argc;
     int *args;
@@ -99,8 +93,14 @@ typedef struct MacroSymbol {
     unsigned undef:1;
 } MacroSymbol;
 
-void FreeMacro(MacroSymbol *);
-int PredefineMacro(char *);
+int InitCPP(void);
+int FinalCPP(void);
+int readCPPline(yystypepp * yylvalpp);
+int MacroExpand(int atom, yystypepp * yylvalpp);
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 void  CPPDebugLogMsg(const char *msg);      // Prints information into debug log
 void  CPPShInfoLogMsg(const char*);         // Store cpp Err Msg into Sh.Info.Log
@@ -117,5 +117,10 @@ void  SetVersion(int);
 void  SetProfile(EProfile);
 void  updateExtensionBehavior(const char* extName, const char* behavior);
 int   FreeCPP(void);
+
+#ifdef __cplusplus
+}
+#endif
+
 
 #endif // !(defined(__CPP_H)

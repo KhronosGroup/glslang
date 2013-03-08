@@ -1,7 +1,7 @@
 INCLUDE = -I../
-CC = g++
+CC = gcc
 
-CPPFLAGS=$(DEFINE) $(INCLUDE)
+CPPFLAGS=$(DEFINE) $(INCLUDE) -fPIC
 
 OBJECTS = atom.o cpp.o cppstruct.o memory.o scanner.o symbols.o tokens.o
 AR=ar
@@ -14,7 +14,7 @@ libPreprocessor.a : $(OBJECTS)
 	ranlib $@
 
 %.o : %.c
-	$(CC) $(CPPFLAGS) -c $<
+	$(CC) -c $(CPPFLAGS) $<
 
 #
 # Cleanup

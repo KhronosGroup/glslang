@@ -208,7 +208,7 @@ static void str_ungetch(StringInputSrc *in, int ch, yystypepp *type) {
 int ScanFromString(char *s)
 {
     
-	StringInputSrc *in = malloc(sizeof(StringInputSrc));
+	StringInputSrc *in = (StringInputSrc *)malloc(sizeof(StringInputSrc));
     memset(in, 0, sizeof(StringInputSrc));
 	in->p = s;
     in->base.line = 1;

@@ -87,6 +87,9 @@ NVIDIA HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "parser.h"
 
 // Not really atom table stuff but needed first...
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 typedef struct SourceLoc_Rec {
     unsigned short file, line;
@@ -114,5 +117,10 @@ void SetStringNumber(int);
 void IncLineNumber(void);
 void DecLineNumber(void);
 int FreeScanner(void);                  // Free the cpp scanner
+
+#ifdef __cplusplus
+}
+#endif
+
 #endif // !(defined(__SCANNER_H)
 

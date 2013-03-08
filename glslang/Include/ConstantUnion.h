@@ -108,6 +108,11 @@ public:
                 return true;
 
             break;
+        case EbtUint:
+            if (constant.uConst == uConst)
+                return true;
+
+            break;
         case EbtFloat:
             if (constant.fConst == fConst)
                 return true;
@@ -123,6 +128,8 @@ public:
                 return true;
 
             break;
+        default:
+            assert(false && "Default missing");
         }
 
         return false;

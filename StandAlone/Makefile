@@ -17,7 +17,7 @@ SHAREDOBJECT:
 	cd $(OBJECTPATH); make all
 
 %.o : %.cpp
-	$(CC) -c $<
+	$(CC) -g -c $<
 
 #
 # Cleanup

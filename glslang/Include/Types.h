@@ -110,6 +110,7 @@ struct TSampler {
         case EbtFloat:               break;
         case EbtInt:  s.append("i"); break;
         case EbtUint: s.append("u"); break;
+        default:  break;  // some compilers want this
         }
         if (image)
             s.append("image");
@@ -122,6 +123,7 @@ struct TSampler {
         case EsdCube:    s.append("Cube");   break;
         case EsdRect:    s.append("2DRect"); break;
         case EsdBuffer:  s.append("Buffer"); break;
+        default:  break;  // some compilers want this
         }
         if (ms)
             s.append("MS");
@@ -453,7 +455,7 @@ public:
         }
     }
 
-    TString TType::getCompleteString() const
+    TString getCompleteString() const
     {
 	    const int maxSize = 200;
         char buf[maxSize];

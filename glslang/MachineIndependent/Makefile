@@ -11,13 +11,13 @@ LIBCODEGEN=./../GenericCodeGen/libCodeGen.a
 OBJECTS= Initialize.o IntermTraverse.o \
 	Intermediate.o ParseHelper.o PoolAlloc.o QualifierAlive.o \
 	RemoveTree.o ShaderLang.o intermOut.o parseConst.o SymbolTable.o \
-	InfoSink.o
+	InfoSink.o Versions.o Constant.o
 
 SRCS= gen_glslang.cpp gen_glslang_tab.cpp Initialize.cpp IntermTraverse.cpp \
 	Intermediate.cpp ParseHelper.cpp PoolAlloc.cp QualifierAlive.cpp \
 	RemoveTree.cpp ShaderLang.cpp SymbolTable.cpp intermOut.cpp \
-	parseConst.cpp InfoSink.cpp
-CPPFLAGS=$(DEFINE) $(INCLUDE)
+	parseConst.cpp InfoSink.cpp Versions.cpp Constant.cpp
+CPPFLAGS=$(DEFINE) $(INCLUDE) -fPIC
 SHAREDOBJECT=./lib/libglslang.so
 
 default: all
@@ -26,13 +26,13 @@ all: $(SHAREDOBJECT)
 
 $(SHAREDOBJECT): gen_glslang.o gen_glslang_tab.o $(OBJECTS) \
 	$(LIBPREPROCESSOR) $(LIBCODEGEN) $(LIBOSDEPENDENT) $(LIBINITIALISATION)
-	$(CC) -fPIC -shared -lc -o $@ $(OBJECTS) $(LIBPREPROCESSOR) $(LIBCODEGEN) $(LIBOSDEPENDENT) $(LIBINITIALISATION) gen_glslang.o gen_glslang_tab.o
+	$(CC) -fPIC -shared -o $@ -rdynamic -Wl,-whole-archive $(OBJECTS) $(LIBPREPROCESSOR) $(LIBCODEGEN) $(LIBOSDEPENDENT) $(LIBINITIALISATION) gen_glslang.o gen_glslang_tab.o -Wl,-no-whole-archive
 
 gen_glslang.o : gen_glslang.cpp glslang_tab.h
-	$(CC) -c $(INCLUDE) gen_glslang.cpp -o $@
+	$(CC) -fPIC -c $(INCLUDE) gen_glslang.cpp -o $@
 
 gen_glslang_tab.o : gen_glslang_tab.cpp 
-	$(CC) -c $(INCLUDE) gen_glslang_tab.cpp -o $@
+	$(CC) -fPIC -c $(INCLUDE) gen_glslang_tab.cpp -o $@
 
 gen_glslang.cpp: glslang.l
 	@echo Generating gen_glslang.cpp
@@ -159,3 +159,5 @@ parseConst.o: ../Include/ConstantUnion.h ../Include/InfoSink.h
 parseConst.o: localintermediate.h ../Include/intermediate.h
 parseConst.o: ../Public/ShaderLang.h
 InfoSink.o: ../Include/InfoSink.h
+Versions.o: ParseHelper.h  Versions.h ../Include/ShHandle.h SymbolTable.h localintermediate.h
+Constant.o: localintermediate.h ../Include/intermediate.h ../Public/ShaderLang.h SymbolTable.h Versions.h

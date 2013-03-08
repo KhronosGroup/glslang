@@ -64,6 +64,7 @@ void TType::buildMangledName(TString& mangledName)
         switch (sampler.type) {
         case EbtInt:   mangledName += "i"; break;
         case EbtUint:  mangledName += "u"; break;
+        default: break; // some compilers want this
         }
         if (sampler.image)
             mangledName += "I";
@@ -80,6 +81,7 @@ void TType::buildMangledName(TString& mangledName)
         case EsdCube:     mangledName += "C";  break;
         case EsdRect:     mangledName += "R2"; break;
         case EsdBuffer:   mangledName += "B";  break;
+        default: break; // some compilers want this
         }
         break;
     case EbtStruct:

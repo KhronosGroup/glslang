@@ -79,7 +79,7 @@ NVIDIA HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <stdlib.h>
 #include <string.h>
 
-#ifdef __STDC99__
+#ifdef _WIN32
 #include <stdint.h>
 #elif defined (_WIN64)
 typedef unsigned __int64 uintptr_t;

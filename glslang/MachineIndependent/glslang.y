@@ -669,6 +669,7 @@ function_identifier
                         case 2: op = EOpConstructMat2x2; break;
                         case 3: op = EOpConstructMat2x3; break;
                         case 4: op = EOpConstructMat2x4; break;
+                        default: break; // some compilers want this
                         }
                         break;
                     case 3:
@@ -676,6 +677,7 @@ function_identifier
                         case 2: op = EOpConstructMat3x2; break;
                         case 3: op = EOpConstructMat3x3; break;
                         case 4: op = EOpConstructMat3x4; break;
+                        default: break; // some compilers want this
                         }
                         break;
                     case 4:
@@ -683,8 +685,10 @@ function_identifier
                         case 2: op = EOpConstructMat4x2; break;
                         case 3: op = EOpConstructMat4x3; break;
                         case 4: op = EOpConstructMat4x4; break;
+                        default: break; // some compilers want this
                         }
                         break;
+                    default: break; // some compilers want this
                     }
                 } else {
                     switch($1.vectorSize) {
@@ -692,6 +696,7 @@ function_identifier
                     case 2: op = EOpConstructVec2;  break;
                     case 3: op = EOpConstructVec3;  break;
                     case 4: op = EOpConstructVec4;  break;
+                    default: break; // some compilers want this
                     }
                 }
                 break;
@@ -703,6 +708,7 @@ function_identifier
                         case 2: op = EOpConstructDMat2x2; break;
                         case 3: op = EOpConstructDMat2x3; break;
                         case 4: op = EOpConstructDMat2x4; break;
+                        default: break; // some compilers want this
                         }
                         break;
                     case 3:
@@ -710,6 +716,7 @@ function_identifier
                         case 2: op = EOpConstructDMat3x2; break;
                         case 3: op = EOpConstructDMat3x3; break;
                         case 4: op = EOpConstructDMat3x4; break;
+                        default: break; // some compilers want this
                         }
                         break;
                     case 4:
@@ -717,6 +724,7 @@ function_identifier
                         case 2: op = EOpConstructDMat4x2; break;
                         case 3: op = EOpConstructDMat4x3; break;
                         case 4: op = EOpConstructDMat4x4; break;
+                        default: break; // some compilers want this
                         }
                         break;
                     }
@@ -726,6 +734,7 @@ function_identifier
                     case 2: op = EOpConstructDVec2;  break;
                     case 3: op = EOpConstructDVec3;  break;
                     case 4: op = EOpConstructDVec4;  break;
+                    default: break; // some compilers want this
                     }
                 }
                 break;
@@ -735,6 +744,7 @@ function_identifier
                 case 2: op = EOpConstructIVec2; break;
                 case 3: op = EOpConstructIVec3; break;
                 case 4: op = EOpConstructIVec4; break;
+                default: break; // some compilers want this
                 }
                 break;
             case EbtBool:
@@ -743,8 +753,10 @@ function_identifier
                 case 2:  op = EOpConstructBVec2; break;
                 case 3:  op = EOpConstructBVec3; break;
                 case 4:  op = EOpConstructBVec4; break;
+                default: break; // some compilers want this
                 }
                 break;
+            default: break; // some compilers want this
             }
             if (op == EOpNull) {
                 parseContext.error($1.line, "cannot construct this type", TType::getBasicString($1.type), "");
@@ -829,7 +841,7 @@ unary_expression
                 case EOpNegative:   errorOp[0] = '-'; break;
                 case EOpLogicalNot: errorOp[0] = '!'; break;
                 case EOpBitwiseNot: errorOp[0] = '~'; break;
-                default: break;
+                default: break; // some compilers want this
                 }
                 parseContext.unaryOpError($1.line, errorOp, $2->getCompleteString());
                 parseContext.recover();

@@ -1318,6 +1318,9 @@ void IdentifyBuiltIns(int version, EProfile profile, EShLanguage language, TSymb
     case EShLangTessEvaluation:
     case EShLangGeometry:
         // TODO: support these stages
+    
+    default:
+        assert(false && "Language not supported");
         break;
     }
 
