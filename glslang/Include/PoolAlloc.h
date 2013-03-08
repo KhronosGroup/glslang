@@ -283,37 +283,13 @@ public:
     pointer address(reference x) const { return &x; }
     const_pointer address(const_reference x) const { return &x; }
 
-#ifdef USING_SGI_STL
-	pool_allocator()  { }
-#else
     pool_allocator() : allocator(GlobalPoolAllocator) { }
     pool_allocator(TPoolAllocator& a) : allocator(a) { }
     pool_allocator(const pool_allocator<T>& p) : allocator(p.allocator) { }
-#endif
 
-#if defined(_MSC_VER) && _MSC_VER >= 1300
     template<class Other>
-#ifdef USING_SGI_STL
-        pool_allocator(const pool_allocator<Other>& p) /*: allocator(p.getAllocator())*/ { }
-#else
         pool_allocator(const pool_allocator<Other>& p) : allocator(p.getAllocator()) { }
-#endif
-#endif
 
-#ifndef _WIN32
-        template<class Other>
-            pool_allocator(const pool_allocator<Other>& p) : allocator(p.getAllocator()) { }
-#endif
-
-#ifdef USING_SGI_STL
-    static pointer allocate(size_type n) { 
-        return reinterpret_cast<pointer>(getAllocator().allocate(n)); }
-    pointer allocate(size_type n, const void*) { 
-        return reinterpret_cast<pointer>(getAllocator().allocate(n)); }
-
-	static void deallocate(void*, size_type) { }
-    static void deallocate(pointer, size_type) { }
-#else
     pointer allocate(size_type n) { 
         return reinterpret_cast<pointer>(getAllocator().allocate(n * sizeof(T))); }
     pointer allocate(size_type n, const void*) { 
@@ -321,7 +297,6 @@ public:
 
 	void deallocate(void*, size_type) { }
     void deallocate(pointer, size_type) { }
-#endif
 
 	pointer _Charalloc(size_t n) {
         return reinterpret_cast<pointer>(getAllocator().allocate(n)); }
@@ -335,16 +310,12 @@ public:
     size_type max_size() const { return static_cast<size_type>(-1) / sizeof(T); }
     size_type max_size(int size) const { return static_cast<size_type>(-1) / size; }
 
-#ifdef USING_SGI_STL
-    //void setAllocator(TPoolAllocator* a) { allocator = a; }
-    static  TPoolAllocator& getAllocator() { return GlobalPoolAllocator; }
-#else
     void setAllocator(TPoolAllocator* a) { allocator = *a; }
     TPoolAllocator& getAllocator() const { return allocator; }
 
 protected:
+    pool_allocator& operator=(const pool_allocator& rhs) { return *this; }
     TPoolAllocator& allocator;
-#endif
 };
 
 #endif // _POOLALLOC_INCLUDED_
