@@ -572,8 +572,10 @@ int PaIdentOrReserved(bool reserved, TParseContext& pc, int line, const char* te
 
     pyylval->lex.line = line;
     pyylval->lex.string = NewPoolTString(text);
-    pc.infoSink.info.message(EPrefixWarning, pyylval->lex.string->c_str(), yylineno);
-    pc.infoSink.info.message(EPrefixWarning, "using future reserved keyword", yylineno);
+    if (pc.futureCompatibility) {
+        pc.infoSink.info.message(EPrefixWarning, pyylval->lex.string->c_str(), yylineno);
+        pc.infoSink.info.message(EPrefixWarning, "using future reserved keyword", yylineno);
+    }
 
     return PaIdentOrType(*pyylval->lex.string, pc, pyylval->lex.symbol);
 }
@@ -584,8 +586,10 @@ int PaES30ReservedFromGLSL(int version, TParseContext& pc, int line, const char*
         pc.profile != EEsProfile && pc.version < version) {
             pyylval->lex.line = yylineno;
             pyylval->lex.string = NewPoolTString(yytext);
-            pc.infoSink.info.message(EPrefixWarning, pyylval->lex.string->c_str(), yylineno);
-            pc.infoSink.info.message(EPrefixWarning, "future reserved word in ES 300 and keyword in GLSL", yylineno);
+            if (pc.futureCompatibility) {
+                pc.infoSink.info.message(EPrefixWarning, pyylval->lex.string->c_str(), yylineno);
+                pc.infoSink.info.message(EPrefixWarning, "future reserved word in ES 300 and keyword in GLSL", yylineno);
+            }
 
             return PaIdentOrType(*pyylval->lex.string, pc, pyylval->lex.symbol);
     } else if (pc.profile == EEsProfile && pc.version >= 300)
@@ -605,8 +609,10 @@ int PaPrecisionKeyword(TParseContext& pc, int line, const char* text, YYSTYPE* p
 
     pyylval->lex.line = line;
     pyylval->lex.string = NewPoolTString(text);
-    pc.infoSink.info.message(EPrefixWarning, pyylval->lex.string->c_str(), yylineno);
-    pc.infoSink.info.message(EPrefixWarning, "using ES precision qualifier keyword", yylineno);
+    if (pc.futureCompatibility) {
+        pc.infoSink.info.message(EPrefixWarning, pyylval->lex.string->c_str(), yylineno);
+        pc.infoSink.info.message(EPrefixWarning, "using ES precision qualifier keyword", yylineno);
+    }
 
     return PaIdentOrType(*pyylval->lex.string, pc, pyylval->lex.symbol);
 }
@@ -618,8 +624,10 @@ int PaMatNxM(TParseContext& pc, int line, const char* text, YYSTYPE* pyylval, in
 
     pyylval->lex.line = line;
     pyylval->lex.string = NewPoolTString(text);
-    pc.infoSink.info.message(EPrefixWarning, pyylval->lex.string->c_str(), yylineno);
-    pc.infoSink.info.message(EPrefixWarning, "using future non-square matrix type keyword", yylineno);
+    if (pc.futureCompatibility) {
+        pc.infoSink.info.message(EPrefixWarning, pyylval->lex.string->c_str(), yylineno);
+        pc.infoSink.info.message(EPrefixWarning, "using future non-square matrix type keyword", yylineno);
+    }
 
     return PaIdentOrType(*pyylval->lex.string, pc, pyylval->lex.symbol);
 }
@@ -636,8 +644,10 @@ int PaDMat(TParseContext& pc, int line, const char* text, YYSTYPE* pyylval, int 
 
     pyylval->lex.line = line;
     pyylval->lex.string = NewPoolTString(text);
-    pc.infoSink.info.message(EPrefixWarning, pyylval->lex.string->c_str(), yylineno);
-    pc.infoSink.info.message(EPrefixWarning, "using future type keyword", yylineno);
+    if (pc.futureCompatibility) {
+        pc.infoSink.info.message(EPrefixWarning, pyylval->lex.string->c_str(), yylineno);
+        pc.infoSink.info.message(EPrefixWarning, "using future type keyword", yylineno);
+    }
 
     return PaIdentOrType(*pyylval->lex.string, pc, pyylval->lex.symbol);
 }
@@ -685,7 +695,8 @@ void CPPWarningToInfoLog(const char *msg)
 {
     TParseContext& pc = *((TParseContext *)cpp->pC);
 
-    pc.infoSink.info.message(EPrefixWarning, msg, yylineno);
+    if (! pc.relaxedChecking)
+        pc.infoSink.info.message(EPrefixWarning, msg, yylineno);
 }
 
 void CPPShInfoLogMsg(const char *msg)
@@ -910,6 +921,7 @@ void updateExtensionBehavior(const char* extName, const char* behavior)
                 pc.infoSink.info.message(EPrefixWarning, msg.c_str(), yylineno);
                 break;
             }
+
             return;
         } else
             iter->second = behaviorVal;

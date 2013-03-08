@@ -178,7 +178,6 @@ TIntermTyped* TIntermConstantUnion::fold(TOperator op, TIntermTyped* constantNod
             switch (getType().getBasicType()) {
             case EbtFloat:
                 if (rightUnionArray[i] == 0.0f) {
-                    infoSink.info.message(EPrefixWarning, "Divide by zero error during constant folding", getLine());
                     newConstArray[i].setFConst(FLT_MAX);
                 } else
                     newConstArray[i].setFConst(unionArray[i].getFConst() / rightUnionArray[i].getFConst());
@@ -186,7 +185,6 @@ TIntermTyped* TIntermConstantUnion::fold(TOperator op, TIntermTyped* constantNod
 
             case EbtInt:
                 if (rightUnionArray[i] == 0) {
-                    infoSink.info.message(EPrefixWarning, "Divide by zero error during constant folding", getLine());
                     newConstArray[i].setIConst(0xEFFFFFFF);
                 } else
                     newConstArray[i].setIConst(unionArray[i].getIConst() / rightUnionArray[i].getIConst());

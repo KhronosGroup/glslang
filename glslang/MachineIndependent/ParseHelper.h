@@ -67,7 +67,8 @@ struct TPragma {
 // they can be passed to the parser without needing a global.
 //
 struct TParseContext {
-    TParseContext(TSymbolTable&, TIntermediate&, int version, EProfile, EShLanguage, TInfoSink&);
+    TParseContext(TSymbolTable&, TIntermediate&, int version, EProfile, EShLanguage, TInfoSink&,
+                  bool forwardCompatible = false, bool relaxedChecking = false);
     TIntermediate& intermediate; // to hold and build a parse tree
     TSymbolTable& symbolTable;   // symbol table that goes with the current language, version, and profile
     TInfoSink& infoSink;
@@ -82,8 +83,10 @@ struct TParseContext {
     const TType* currentFunctionType;  // the return type of the function that's currently being parsed
     bool functionReturnsValue;   // true if a non-void function has a return
 
-    int version;                 // the declared version in the shader (110 by default)
+    int version;                 // version, updated by #version in the shader
     EProfile profile;            // the declared profile in the shader (core by default)
+    bool forwardCompatible;      // true if errors are to be given for use of deprecated features
+    bool relaxedChecking;        // suppress warnings and reduce error checking
     bool futureCompatibility;    // true if requesting errors for future compatibility (false by default)
     TMap<TString, TBehavior> extensionBehavior;    // for each extension string, what it's current enablement is
 

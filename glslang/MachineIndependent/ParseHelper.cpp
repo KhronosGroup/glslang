@@ -39,11 +39,12 @@
 #include "osinclude.h"
 #include <stdarg.h>
 
-TParseContext::TParseContext(TSymbolTable& symt, TIntermediate& interm, int v, EProfile p, EShLanguage L, TInfoSink& is) : 
+TParseContext::TParseContext(TSymbolTable& symt, TIntermediate& interm, int v, EProfile p, EShLanguage L, TInfoSink& is,                             
+                             bool fc, bool rc) : 
             intermediate(interm), symbolTable(symt), infoSink(is), language(L), treeRoot(0),
             recoveredFromError(false), numErrors(0), lexAfterType(false), loopNestingLevel(0),
             switchNestingLevel(0), inTypeParen(false), 
-            version(v), profile(p), futureCompatibility(false),
+            version(v), profile(p), forwardCompatible(fc), relaxedChecking(rc),
             contextPragma(true, false)
 {
     for (int type = 0; type < EbtNumTypes; ++type)
@@ -438,6 +439,7 @@ bool TParseContext::reservedErrorCheck(int line, const TString& identifier)
         if (identifier.find("__") != TString::npos) {
             //error(line, "Two consecutive underscores are reserved for future use.", identifier.c_str(), "", "");
             //return true;
+            // TODO: make this an error
             infoSink.info.message(EPrefixWarning, "Two consecutive underscores are reserved for future use.", line);
             return false;
         }

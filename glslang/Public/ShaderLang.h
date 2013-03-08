@@ -155,7 +155,9 @@ SH_IMPORT_EXPORT int ShCompile(
     const EShOptimizationLevel,
     const TBuiltInResource *resources,
     int debugOptions,
-    int defaultVersion = 110 // use 100 for ES environment
+    int defaultVersion = 110,         // use 100 for ES environment, overridden by #version in shader
+    bool forwardCompatible = false,   // give errors for use of deprecated features
+    bool relaxedChecking = false      // no warnings, reduced errors
     );
 
 

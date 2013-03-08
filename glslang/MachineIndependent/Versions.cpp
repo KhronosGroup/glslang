@@ -132,10 +132,10 @@ void TParseContext::checkDeprecated(int line, EProfile callingProfile, int depVe
 {
     if (profile == callingProfile) {
         if (version >= depVersion) {
-            if (futureCompatibility) {
+            if (forwardCompatible) {
                 error(line, "deprecated, may be removed in future release", featureDesc, "");
                 recover();
-            } else {
+            } else if (! relaxedChecking) {
                 infoSink.info.message(EPrefixWarning, (TString(featureDesc) + " deprecated in version " +
                                                        String(depVersion) + "; may be removed in future release").c_str(), line);
             }
