@@ -108,6 +108,15 @@ typedef enum {
 } EShOptimizationLevel;
 
 //
+// Message choices for what errors and warnings are given.
+//
+enum EShMessages {
+    EShMsgDefault          = 0,         // default is to give all required errors and extra warnings
+    EShMsgRelaxedErrors    = (1 << 0),  // be liberal in accepting input
+    EShMsgSuppressWarnings = (1 << 1)   // suppress all warnings, except those required by the specification
+};
+
+//
 // Build a table for bindings.  This can be used for locating
 // attributes, uniforms, globals, etc., as needed.
 //
@@ -155,9 +164,9 @@ SH_IMPORT_EXPORT int ShCompile(
     const EShOptimizationLevel,
     const TBuiltInResource *resources,
     int debugOptions,
-    int defaultVersion = 110,         // use 100 for ES environment, overridden by #version in shader
-    bool forwardCompatible = false,   // give errors for use of deprecated features
-    bool relaxedChecking = false      // no warnings, reduced errors
+    int defaultVersion = 110,            // use 100 for ES environment, overridden by #version in shader
+    bool forwardCompatible = false,      // give errors for use of deprecated features
+    EShMessages messages = EShMsgDefault // warnings and errors
     );
 
 

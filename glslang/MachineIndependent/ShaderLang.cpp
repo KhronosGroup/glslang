@@ -484,7 +484,7 @@ int ShCompile(
     int debugOptions,
     int defaultVersion,        // use 100 for ES environment, 110 for desktop
     bool forwardCompatible,    // give errors for use of deprecated features
-    bool relaxedChecking       // no warnings, reduced errors
+    EShMessages messages       // warnings/errors
     )
 {
     if (!InitThread())
@@ -522,7 +522,7 @@ int ShCompile(
     // they get popped again further down.
     AddContextSpecificSymbols(resources, compiler->infoSink, &symbolTable, version, profile, compiler->getLanguage());
 
-    TParseContext parseContext(symbolTable, intermediate, version, profile, compiler->getLanguage(), compiler->infoSink, forwardCompatible, relaxedChecking);
+    TParseContext parseContext(symbolTable, intermediate, version, profile, compiler->getLanguage(), compiler->infoSink, forwardCompatible, messages);
     
     if (! goodProfile)
         parseContext.error(1, "incorrect", "#version", "");

@@ -68,7 +68,7 @@ struct TPragma {
 //
 struct TParseContext {
     TParseContext(TSymbolTable&, TIntermediate&, int version, EProfile, EShLanguage, TInfoSink&,
-                  bool forwardCompatible = false, bool relaxedChecking = false);
+                  bool forwardCompatible = false, EShMessages messages = EShMsgDefault);
     TIntermediate& intermediate; // to hold and build a parse tree
     TSymbolTable& symbolTable;   // symbol table that goes with the current language, version, and profile
     TInfoSink& infoSink;
@@ -86,7 +86,7 @@ struct TParseContext {
     int version;                 // version, updated by #version in the shader
     EProfile profile;            // the declared profile in the shader (core by default)
     bool forwardCompatible;      // true if errors are to be given for use of deprecated features
-    bool relaxedChecking;        // suppress warnings and reduce error checking
+    EShMessages messages;        // errors/warnings
     bool futureCompatibility;    // true if requesting errors for future compatibility (false by default)
     TMap<TString, TBehavior> extensionBehavior;    // for each extension string, what it's current enablement is
 

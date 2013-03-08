@@ -40,11 +40,11 @@
 #include <stdarg.h>
 
 TParseContext::TParseContext(TSymbolTable& symt, TIntermediate& interm, int v, EProfile p, EShLanguage L, TInfoSink& is,                             
-                             bool fc, bool rc) : 
+                             bool fc, EShMessages m) : 
             intermediate(interm), symbolTable(symt), infoSink(is), language(L), treeRoot(0),
             recoveredFromError(false), numErrors(0), lexAfterType(false), loopNestingLevel(0),
             switchNestingLevel(0), inTypeParen(false), 
-            version(v), profile(p), forwardCompatible(fc), relaxedChecking(rc),
+            version(v), profile(p), forwardCompatible(fc), messages(m),
             contextPragma(true, false)
 {
     for (int type = 0; type < EbtNumTypes; ++type)
