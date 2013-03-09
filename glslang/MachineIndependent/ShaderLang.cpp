@@ -212,42 +212,42 @@ bool ConsumeWhitespaceComment(const char*& s)
     const char* startPoint = s;
 
     // first, skip white space    
-    while (*s == ' ' || *s == '\t' || *s == '\n' || *s == '\r') {
+    while (*s == ' ' || *s == '\t' || *s == '\r' || *s == '\n') {
         ++s;
     }
 
     // then, check for a comment
     if (*s == '/') {
         if (*(s+1) == '/') {
+
+            // a '//' style comment
             s += 2;
             do {
-                while (*s && *s != '\\' && *s != '\n')
+                while (*s && *s != '\\' && *s != '\r' && *s != '\n')
                     ++s;
 
-                if (*s == '\n' || *s == 0) {
-                    if (*s == '\n') {
+                if (*s == '\r' || *s == '\n' || *s == 0) {
+                    while (*s == '\r' || *s == '\n')
                         ++s;
-                        if (*s == '\r')
-                            ++s;
-                    }  // else it's 0, end of string
 
                     // we reached the end of the comment
                     break;
                 } else {
                     // it's a '\', so we need to keep going, after skipping what's escaped
                     ++s;
-                    if (*s == '\n') {
-                        ++s;
-                        if (*s == '\r')
-                            ++s;
-                    } else {
+                    if (*s == '\r' && *(s+1) == '\n')
+                        s += 2;
+                    else {
                         // skip the escaped character
                         if (*s)
                             ++s;
                     }
                 }
             } while (true);
+
         } else if (*(s+1) == '*') {
+
+            // a '/*' style comment
             s += 2;
             do {
                 while (*s && *s != '*')
@@ -318,7 +318,7 @@ void ScanVersion(const char* const shaderStrings[], int numStrings, int& version
 
     // profile
     const char* end = s;
-    while (*end != ' ' && *end != '\t' && *end != '\n') {
+    while (*end != ' ' && *end != '\t' && *end != '\n' && *end != '\r') {
         if (*end == 0)
             return;
         ++end;

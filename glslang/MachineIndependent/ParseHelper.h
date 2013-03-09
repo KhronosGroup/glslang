@@ -87,7 +87,6 @@ struct TParseContext {
     EProfile profile;            // the declared profile in the shader (core by default)
     bool forwardCompatible;      // true if errors are to be given for use of deprecated features
     EShMessages messages;        // errors/warnings
-    bool futureCompatibility;    // true if requesting errors for future compatibility (false by default)
     TMap<TString, TBehavior> extensionBehavior;    // for each extension string, what it's current enablement is
 
     struct TPragma contextPragma;

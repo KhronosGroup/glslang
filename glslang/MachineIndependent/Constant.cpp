@@ -34,6 +34,7 @@
 //POSSIBILITY OF SUCH DAMAGE.
 //
 
+#include "float.h"
 #include "localintermediate.h"
 
 namespace {

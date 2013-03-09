@@ -87,7 +87,7 @@ typedef enum {
 	EShLangFragmentMask       = (1 << EShLangFragment),
 } EShLanguageMask;
 
-extern char* StageName[EShLangCount];
+extern const char* StageName[EShLangCount];
 
 //
 // Types of output the linker will create.
@@ -121,7 +121,7 @@ enum EShMessages {
 // attributes, uniforms, globals, etc., as needed.
 //
 typedef struct {
-    char* name;
+    const char* name;
     int binding;
 } ShBinding;
 

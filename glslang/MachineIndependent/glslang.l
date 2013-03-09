@@ -527,7 +527,7 @@ int PaParseStrings(char* argv[], int strLen[], int argc, TParseContext& parseCon
         return 0;
 }
 
-void yyerror(char *s)
+void yyerror(const char *s)
 {
     TParseContext& pc = *((TParseContext *)cpp->pC);
 
@@ -572,7 +572,7 @@ int PaIdentOrReserved(bool reserved, TParseContext& pc, int line, const char* te
 
     pyylval->lex.line = line;
     pyylval->lex.string = NewPoolTString(text);
-    if (pc.futureCompatibility && ! (pc.messages & EShMsgSuppressWarnings)) {
+    if (pc.forwardCompatible && ! (pc.messages & EShMsgSuppressWarnings)) {
         pc.infoSink.info.message(EPrefixWarning, pyylval->lex.string->c_str(), yylineno);
         pc.infoSink.info.message(EPrefixWarning, "using future reserved keyword", yylineno);
     }
@@ -586,7 +586,7 @@ int PaES30ReservedFromGLSL(int version, TParseContext& pc, int line, const char*
         pc.profile != EEsProfile && pc.version < version) {
             pyylval->lex.line = yylineno;
             pyylval->lex.string = NewPoolTString(yytext);
-            if (pc.futureCompatibility && ! (pc.messages & EShMsgSuppressWarnings)) {
+            if (pc.forwardCompatible && ! (pc.messages & EShMsgSuppressWarnings)) {
                 pc.infoSink.info.message(EPrefixWarning, pyylval->lex.string->c_str(), yylineno);
                 pc.infoSink.info.message(EPrefixWarning, "future reserved word in ES 300 and keyword in GLSL", yylineno);
             }
@@ -609,7 +609,7 @@ int PaPrecisionKeyword(TParseContext& pc, int line, const char* text, YYSTYPE* p
 
     pyylval->lex.line = line;
     pyylval->lex.string = NewPoolTString(text);
-    if (pc.futureCompatibility && ! (pc.messages & EShMsgSuppressWarnings)) {
+    if (pc.forwardCompatible && ! (pc.messages & EShMsgSuppressWarnings)) {
         pc.infoSink.info.message(EPrefixWarning, pyylval->lex.string->c_str(), yylineno);
         pc.infoSink.info.message(EPrefixWarning, "using ES precision qualifier keyword", yylineno);
     }
@@ -624,7 +624,7 @@ int PaMatNxM(TParseContext& pc, int line, const char* text, YYSTYPE* pyylval, in
 
     pyylval->lex.line = line;
     pyylval->lex.string = NewPoolTString(text);
-    if (pc.futureCompatibility && ! (pc.messages & EShMsgSuppressWarnings)) {
+    if (pc.forwardCompatible && ! (pc.messages & EShMsgSuppressWarnings)) {
         pc.infoSink.info.message(EPrefixWarning, pyylval->lex.string->c_str(), yylineno);
         pc.infoSink.info.message(EPrefixWarning, "using future non-square matrix type keyword", yylineno);
     }
@@ -644,7 +644,7 @@ int PaDMat(TParseContext& pc, int line, const char* text, YYSTYPE* pyylval, int 
 
     pyylval->lex.line = line;
     pyylval->lex.string = NewPoolTString(text);
-    if (pc.futureCompatibility && ! (pc.messages & EShMsgSuppressWarnings)) {
+    if (pc.forwardCompatible && ! (pc.messages & EShMsgSuppressWarnings)) {
         pc.infoSink.info.message(EPrefixWarning, pyylval->lex.string->c_str(), yylineno);
         pc.infoSink.info.message(EPrefixWarning, "using future type keyword", yylineno);
     }

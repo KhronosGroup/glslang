@@ -44,7 +44,7 @@
 
 #include "ParseHelper.h"
 
-char* StageName[EShLangCount] = {
+const char* StageName[EShLangCount] = {
     "vertex",
     "tessellation control",
     "tessellation evaluation",
@@ -52,7 +52,7 @@ char* StageName[EShLangCount] = {
     "fragment"
 };
 
-char* ProfileName[EProfileCount] = {
+const char* ProfileName[EProfileCount] = {
     "none",
     "core",
     "compatibility",

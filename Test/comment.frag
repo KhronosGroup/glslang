@@ -9,4 +9,11 @@ oanot */
 // escape nothing \o oeu
 // escape newline \
 still in a comment
+// escape newline \
+
+// a different comment
+#version 430 core
+varying vec4 v;
+void main() {}
+
 
