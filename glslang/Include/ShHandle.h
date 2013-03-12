@@ -45,7 +45,7 @@
 
 #define SH_EXPORTING   
 #include "../Public/ShaderLang.h"
-
+#include "../MachineIndependent/Versions.h"
 #include "InfoSink.h"
 
 class TCompiler;
@@ -91,7 +91,7 @@ public:
     EShLanguage getLanguage() { return language; }
     virtual TInfoSink& getInfoSink() { return infoSink; }
 
-    virtual bool compile(TIntermNode* root) = 0;
+    virtual bool compile(TIntermNode* root, int version = 0, EProfile profile = ENoProfile) = 0;
 
     virtual TCompiler* getAsCompiler() { return this; }
     virtual bool linkable() { return haveValidObjectCode; }

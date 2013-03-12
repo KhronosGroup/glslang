@@ -34,6 +34,7 @@
 
 #include "../Include/Common.h"
 #include "../Include/ShHandle.h"
+#include "../MachineIndependent/Versions.h"
 
 //
 // Here is where real machine specific high-level data would be defined.
@@ -41,7 +42,7 @@
 class TGenericCompiler : public TCompiler {
 public:
     TGenericCompiler(EShLanguage l, int dOptions) : TCompiler(l, infoSink), debugOptions(dOptions) { }
-    virtual bool compile(TIntermNode* root);
+    virtual bool compile(TIntermNode* root, int version = 0, EProfile profile = ENoProfile);
     TInfoSink infoSink;
     int debugOptions;
 };
@@ -67,7 +68,7 @@ void DeleteCompiler(TCompiler* compiler)
 //
 //  Generate code from the given parse tree
 //
-bool TGenericCompiler::compile(TIntermNode *root)
+bool TGenericCompiler::compile(TIntermNode *root, int version, EProfile profile)
 {
     haveValidObjectCode = true;
 

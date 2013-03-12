@@ -566,7 +566,7 @@ int ShCompile(
                 //
                 // Call the machine dependent compiler
                 //
-                if (! compiler->compile(parseContext.treeRoot))
+                if (! compiler->compile(parseContext.treeRoot, parseContext.version, parseContext.profile))
                     success = false;
             }
         }
