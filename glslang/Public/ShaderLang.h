@@ -67,6 +67,7 @@ SH_IMPORT_EXPORT int ShInitialize();
 // Driver should call this at shutdown.
 //
 SH_IMPORT_EXPORT int __fastcall ShFinalize();
+
 //
 // Types of languages the compiler can consume.
 //

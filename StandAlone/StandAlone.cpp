@@ -132,7 +132,7 @@ int C_DECL main(int argc, char* argv[])
         argc--;
         argv++;    
         for (; argc >= 1; argc--, argv++) {
-            if (argv[0][0] == '-' || argv[0][0] == '/') {
+            if (argv[0][0] == '-') {
                 switch (argv[0][1]) {
                 case 'd': delay    = true;                           break;
 
