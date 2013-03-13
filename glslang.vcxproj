@@ -226,17 +226,13 @@ xcopy /y $(IntDir)$(TargetName)$(TargetExt) Test</Command>
       <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">SET BISON_SIMPLE=%(RootDir)%(Directory)..\..\tools\bison.simple
 SET BISON_HAIRY=%(RootDir)%(Directory)..\..\tools\bison.simple
 cd %(RootDir)%(Directory)
-%(RootDir)%(Directory)..\..\tools\bison.exe -d -t glslang.y -o glslang_tab.cpp
-</Command>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">%(RootDir)%(Directory)glslang_tab.cpp;%(RootDir)%(Directory)glslang_tab.cpp.h</Outputs>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Executing Bison on %(FullPath)</Message>
+%(RootDir)%(Directory)..\..\tools\bison.exe -d -t glslang.y -o glslang_tab.cpp</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">%(RootDir)%(Directory)Gen_%(Filename)_tab.cpp;%(Outputs)</Outputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Executing Bison on glslang.y</Message>
       <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">SET BISON_SIMPLE=%(RootDir)%(Directory)..\..\tools\bison.simple
 SET BISON_HAIRY=%(RootDir)%(Directory)..\..\tools\bison.simple
 cd %(RootDir)%(Directory)
-%(RootDir)%(Directory)..\..\tools\bison.exe -d -t -v %(Filename).y
-if EXIST %(RootDir)%(Directory)Gen_%(Filename)_tab.cpp del %(RootDir)%(Directory)Gen_%(Filename)_tab.cpp
-rename %(RootDir)%(Directory)%(Filename)_tab.c Gen_%(Filename)_tab.cpp
-</Command>
+%(RootDir)%(Directory)..\..\tools\bison.exe -d -t glslang.y -o glslang_tab.cpp</Command>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">%(RootDir)%(Directory)Gen_%(Filename)_tab.cpp;%(Outputs)</Outputs>
     </CustomBuild>
   </ItemGroup>
@@ -249,6 +245,12 @@ rename %(RootDir)%(Directory)%(Filename)_tab.c Gen_%(Filename)_tab.cpp
       <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Executing flex on glslang.l</Message>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">%(RootDir)%(Directory)gen_glslang.cpp</Outputs>
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">%(RootDir)%(Directory)glslang_tab.cpp.h</AdditionalInputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">cd %(RootDir)%(Directory)
+%(RootDir)%(Directory)..\..\tools\flex.exe glslang.l
+</Command>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Executing flex on glslang.l</Message>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">%(RootDir)%(Directory)gen_glslang.cpp</Outputs>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">%(RootDir)%(Directory)glslang_tab.cpp.h</AdditionalInputs>
     </CustomBuild>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
