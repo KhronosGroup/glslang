@@ -332,7 +332,7 @@ static int lFloatConst(char *str, int len, int ch, yystypepp * yylvalpp)
         yylvalpp->sc_fval = (float)yylvalpp->sc_dval;
     }
     // Suffix:
-    strcpy(yylvalpp->symbol_name,str);
+    strcpy(yylvalpp->symbol_name, str);
 
     return CPP_FLOATCONSTANT;
 } // lFloatConst
@@ -346,7 +346,8 @@ static int byte_scan(InputSrc *in, yystypepp * yylvalpp)
     char symbol_name[MAX_SYMBOL_NAME_LEN + 1];
     char string_val[MAX_STRING_LEN + 1];
     int AlreadyComplained;
-    int len, ch, ii, ival = 0;
+    int len, ch, ii;
+    unsigned ival = 0;
 
     for (;;) {
         yylvalpp->sc_int = 0;
@@ -431,9 +432,12 @@ static int byte_scan(InputSrc *in, yystypepp * yylvalpp)
                 } else {
                     CPPErrorToInfoLog("ERROR___ERROR_IN_HEX_CONSTANT");
                 }
+                if (ch == 'u' || ch == 'U')
+                    yylvalpp->symbol_name[len++] = ch;
+                else
+				    cpp->currentInput->ungetch(cpp->currentInput, ch, yylvalpp);
                 yylvalpp->symbol_name[len] = '\0';
-				cpp->currentInput->ungetch(cpp->currentInput, ch, yylvalpp);
-				yylvalpp->sc_int = ival;
+				yylvalpp->sc_int = (int)ival;
                 return CPP_INTCONSTANT;
             } else if (ch >= '0' && ch <= '7') { // octal integer constants
                 AlreadyComplained = 0;
@@ -454,7 +458,7 @@ static int byte_scan(InputSrc *in, yystypepp * yylvalpp)
                      return lFloatConst(yylvalpp->symbol_name, len, ch, yylvalpp);
                 yylvalpp->symbol_name[len] = '\0';
 				cpp->currentInput->ungetch(cpp->currentInput, ch, yylvalpp);
-				yylvalpp->sc_int = ival;
+				yylvalpp->sc_int = (int)ival;
                 return CPP_INTCONSTANT;
             } else {
 				cpp->currentInput->ungetch(cpp->currentInput, ch, yylvalpp);
@@ -467,7 +471,7 @@ static int byte_scan(InputSrc *in, yystypepp * yylvalpp)
                 if (len < MAX_SYMBOL_NAME_LEN) {
                     if (len > 0 || ch != '0') {
                         yylvalpp->symbol_name[len] = ch;
-                   len++;
+                        len++;
                     }
                     ch = cpp->currentInput->getch(cpp->currentInput, yylvalpp);
                 }
@@ -475,22 +479,27 @@ static int byte_scan(InputSrc *in, yystypepp * yylvalpp)
             if (ch == '.' || ch == 'e' || ch == 'f' || ch == 'h' || ch == 'x'|| ch == 'E' || ch == 'F' || ch == 'l' || ch == 'L') {
                 return lFloatConst(yylvalpp->symbol_name, len, ch, yylvalpp);
             } else {
-                yylvalpp->symbol_name[len] = '\0';
-				cpp->currentInput->ungetch(cpp->currentInput, ch, yylvalpp);
+                // Finish handling signed and unsigned integers
+                int numericLen = len;
+                if (ch == 'u' || ch == 'U')
+                    yylvalpp->symbol_name[len++] = ch;
+                else
+                    cpp->currentInput->ungetch(cpp->currentInput, ch, yylvalpp);
+
+                yylvalpp->symbol_name[len] = '\0';				
                 ival = 0;
                 AlreadyComplained = 0;
-                for (ii = 0; ii < len; ii++) {
+                for (ii = 0; ii < numericLen; ii++) {
                     ch = yylvalpp->symbol_name[ii] - '0';
-                    if ((ival > 214748364) || (ival == 214748364 && ch >= 8)) {
-                        if (!AlreadyComplained)
-                           CPPErrorToInfoLog("ERROR___INTEGER_CONST_OVERFLOW");
+                    if ((ival > 429496729) || (ival == 429496729 && ch >= 6)) {
+                        if (! AlreadyComplained)
+                            CPPErrorToInfoLog("ERROR___INTEGER_CONST_OVERFLOW");
                         AlreadyComplained = 1;
                     }
-                    ival = ival*10 + ch;
+                    ival = ival * 10 + ch;
                 }
-                yylvalpp->sc_int = ival;
-                if(ival==0)
-                   strcpy(yylvalpp->symbol_name,"0");
+                yylvalpp->sc_int = (int)ival;
+
                 return CPP_INTCONSTANT;
             }
             break;
