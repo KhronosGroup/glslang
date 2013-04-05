@@ -10,7 +10,11 @@ lowp vec2 foo(mediump vec3 mv3)
 
 int global_medium;
 
-precision highp int;
+precision highp int; 
+precision highp ivec2;     // ERROR
+precision mediump int[2];  // ERROR
+precision lowp uint;       // ERROR
+precision mediump vec4;    // ERROR
 
 int global_high;
 

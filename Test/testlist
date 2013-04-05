@@ -29,3 +29,4 @@ constErrors.frag
 constFold.frag
 errors.frag
 forwardRef.frag
+uint.frag

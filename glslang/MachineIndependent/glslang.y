@@ -82,6 +82,7 @@ extern void yyerror(const char*);
             TString *string;
             float f;
             int i;
+            unsigned int u;
             bool b;
             double d;
         };
@@ -120,7 +121,7 @@ extern void yyerror(const char*);
 %token <lex> CONST BOOL FLOAT DOUBLE INT UINT
 %token <lex> BREAK CONTINUE DO ELSE FOR IF DISCARD RETURN SWITCH CASE DEFAULT SUBROUTINE
 %token <lex> BVEC2 BVEC3 BVEC4 IVEC2 IVEC3 IVEC4 UVEC2 UVEC3 UVEC4 VEC2 VEC3 VEC4
-%token <lex> MAT2 MAT3 MAT4 CENTROID IN OUT INOUT 
+%token <lex> MAT2 MAT3 MAT4 CENTROID IN OUT INOUT
 %token <lex> UNIFORM PATCH SAMPLE BUFFER SHARED
 %token <lex> COHERENT VOLATILE RESTRICT READONLY WRITEONLY
 %token <lex> DVEC2 DVEC3 DVEC4 DMAT2 DMAT3 DMAT4
@@ -146,20 +147,20 @@ extern void yyerror(const char*);
 %token <lex> SAMPLER2DMS ISAMPLER2DMS USAMPLER2DMS
 %token <lex> SAMPLER2DMSARRAY ISAMPLER2DMSARRAY USAMPLER2DMSARRAY
 
-%token <lex> IMAGE1D IIMAGE1D UIMAGE1D IMAGE2D IIMAGE2D 
+%token <lex> IMAGE1D IIMAGE1D UIMAGE1D IMAGE2D IIMAGE2D
 %token <lex> UIMAGE2D IMAGE3D IIMAGE3D UIMAGE3D
-%token <lex> IMAGE2DRECT IIMAGE2DRECT UIMAGE2DRECT 
+%token <lex> IMAGE2DRECT IIMAGE2DRECT UIMAGE2DRECT
 %token <lex> IMAGECUBE IIMAGECUBE UIMAGECUBE
 %token <lex> IMAGEBUFFER IIMAGEBUFFER UIMAGEBUFFER
-%token <lex> IMAGE1DARRAY IIMAGE1DARRAY UIMAGE1DARRAY 
+%token <lex> IMAGE1DARRAY IIMAGE1DARRAY UIMAGE1DARRAY
 %token <lex> IMAGE2DARRAY IIMAGE2DARRAY UIMAGE2DARRAY
 %token <lex> IMAGECUBEARRAY IIMAGECUBEARRAY UIMAGECUBEARRAY
-%token <lex> IMAGE2DMS IIMAGE2DMS UIMAGE2DMS 
+%token <lex> IMAGE2DMS IIMAGE2DMS UIMAGE2DMS
 %token <lex> IMAGE2DMSARRAY IIMAGE2DMSARRAY UIMAGE2DMSARRAY
 
 %token <lex> STRUCT VOID WHILE
 
-%token <lex> IDENTIFIER TYPE_NAME 
+%token <lex> IDENTIFIER TYPE_NAME
 %token <lex> FLOATCONSTANT DOUBLECONSTANT INTCONSTANT UINTCONSTANT BOOLCONSTANT
 %token <lex> FIELD_SELECTION
 %token <lex> LEFT_OP RIGHT_OP
@@ -254,10 +255,11 @@ primary_expression
         unionArray->setIConst($1.i);
         $$ = parseContext.intermediate.addConstantUnion(unionArray, TType(EbtInt, EvqConst), $1.line);
     }
-    | UINTCONSTANT {
+    | UINTCONSTANT {        
+        parseContext.fullIntegerCheck($1.line, "unsigned literal");
         constUnion *unionArray = new constUnion[1];
-        unionArray->setIConst($1.i);
-        $$ = parseContext.intermediate.addConstantUnion(unionArray, TType(EbtInt, EvqConst), $1.line);
+        unionArray->setUConst($1.u);
+        $$ = parseContext.intermediate.addConstantUnion(unionArray, TType(EbtUint, EvqConst), $1.line);
     }
     | FLOATCONSTANT {
         constUnion *unionArray = new constUnion[1];
@@ -265,6 +267,7 @@ primary_expression
         $$ = parseContext.intermediate.addConstantUnion(unionArray, TType(EbtFloat, EvqConst), $1.line);
     }
     | DOUBLECONSTANT {
+        parseContext.doubleCheck($1.line, "double literal");
         constUnion *unionArray = new constUnion[1];
         unionArray->setDConst($1.d);
         $$ = parseContext.intermediate.addConstantUnion(unionArray, TType(EbtDouble, EvqConst), $1.line);
@@ -538,7 +541,7 @@ function_call
                     //
                     if (fnCandidate->getParamCount() == 1) {
                         //
-                        // Treat it like a built-in unary operator.  
+                        // Treat it like a built-in unary operator.
                         // addUnaryMath() should get the type correct on its own;
                         // including constness (which would differ from the prototype).
                         //
@@ -748,6 +751,15 @@ function_identifier
                 default: break; // some compilers want this
                 }
                 break;
+            case EbtUint:
+                switch($1.vectorSize) {
+                case 1: op = EOpConstructUint;  break;
+                case 2: op = EOpConstructUVec2; break;
+                case 3: op = EOpConstructUVec3; break;
+                case 4: op = EOpConstructUVec4; break;
+                default: break; // some compilers want this
+                }
+                break;
             case EbtBool:
                 switch($1.vectorSize) {
                 case 1:  op = EOpConstructBool;  break;
@@ -913,6 +925,7 @@ additive_expression
 shift_expression
     : additive_expression { $$ = $1; }
     | shift_expression LEFT_OP additive_expression {
+        parseContext.fullIntegerCheck($2.line, "bit shift left");
         $$ = parseContext.intermediate.addBinaryMath(EOpLeftShift, $1, $3, $2.line, parseContext.symbolTable);
         if ($$ == 0) {
             parseContext.binaryOpError($2.line, "<<", $1->getCompleteString(), $3->getCompleteString());
@@ -921,6 +934,7 @@ shift_expression
         }
     }
     | shift_expression RIGHT_OP additive_expression {
+        parseContext.fullIntegerCheck($2.line, "bit shift right");
         $$ = parseContext.intermediate.addBinaryMath(EOpRightShift, $1, $3, $2.line, parseContext.symbolTable);
         if ($$ == 0) {
             parseContext.binaryOpError($2.line, ">>", $1->getCompleteString(), $3->getCompleteString());
@@ -1003,6 +1017,7 @@ equality_expression
 and_expression
     : equality_expression { $$ = $1; }
     | and_expression AMPERSAND equality_expression {
+        parseContext.fullIntegerCheck($2.line, "bitwise and");
         $$ = parseContext.intermediate.addBinaryMath(EOpAnd, $1, $3, $2.line, parseContext.symbolTable);
         if ($$ == 0) {
             parseContext.binaryOpError($2.line, "&", $1->getCompleteString(), $3->getCompleteString());
@@ -1015,6 +1030,7 @@ and_expression
 exclusive_or_expression
     : and_expression { $$ = $1; }
     | exclusive_or_expression CARET and_expression {
+        parseContext.fullIntegerCheck($2.line, "bitwise exclusive or");
         $$ = parseContext.intermediate.addBinaryMath(EOpExclusiveOr, $1, $3, $2.line, parseContext.symbolTable);
         if ($$ == 0) {
             parseContext.binaryOpError($2.line, "^", $1->getCompleteString(), $3->getCompleteString());
@@ -1027,6 +1043,7 @@ exclusive_or_expression
 inclusive_or_expression
     : exclusive_or_expression { $$ = $1; }
     | inclusive_or_expression VERTICAL_BAR exclusive_or_expression {
+        parseContext.fullIntegerCheck($2.line, "bitwise inclusive or");
         $$ = parseContext.intermediate.addBinaryMath(EOpInclusiveOr, $1, $3, $2.line, parseContext.symbolTable);
         if ($$ == 0) {
             parseContext.binaryOpError($2.line, "|", $1->getCompleteString(), $3->getCompleteString());
@@ -1115,11 +1132,26 @@ assignment_operator
     | MOD_ASSIGN   { $$.line = $1.line; $$.op = EOpModAssign; }
     | ADD_ASSIGN   { $$.line = $1.line; $$.op = EOpAddAssign; }
     | SUB_ASSIGN   { $$.line = $1.line; $$.op = EOpSubAssign; }
-    | LEFT_ASSIGN  { $$.line = $1.line; $$.op = EOpLeftShiftAssign; }
-    | RIGHT_ASSIGN { $$.line = $1.line; $$.op = EOpRightShiftAssign; }
-    | AND_ASSIGN   { $$.line = $1.line; $$.op = EOpAndAssign; }
-    | XOR_ASSIGN   { $$.line = $1.line; $$.op = EOpExclusiveOrAssign; }
-    | OR_ASSIGN    { $$.line = $1.line; $$.op = EOpInclusiveOrAssign; }
+    | LEFT_ASSIGN  {
+        parseContext.fullIntegerCheck($1.line, "bit-shift left assign");
+        $$.line = $1.line; $$.op = EOpLeftShiftAssign;
+    }
+    | RIGHT_ASSIGN {
+        parseContext.fullIntegerCheck($1.line, "bit-shift right assign");
+        $$.line = $1.line; $$.op = EOpRightShiftAssign;
+    }
+    | AND_ASSIGN   {
+        parseContext.fullIntegerCheck($1.line, "bitwise-and assign");
+        $$.line = $1.line; $$.op = EOpAndAssign;
+    }
+    | XOR_ASSIGN   {
+        parseContext.fullIntegerCheck($1.line, "bitwise-xor assign");
+        $$.line = $1.line; $$.op = EOpExclusiveOrAssign;
+    }
+    | OR_ASSIGN    {
+        parseContext.fullIntegerCheck($1.line, "bitwise-or assign");
+        $$.line = $1.line; $$.op = EOpInclusiveOrAssign;
+    }
     ;
 
 expression
@@ -1156,11 +1188,11 @@ declaration
     }
     | PRECISION precision_qualifier type_specifier SEMICOLON {
         parseContext.profileRequires($1.line, ENoProfile, 130, 0, "precision statement");
-        
+
         // lazy setting of the previous scope's defaults, only takes on first one in a particular scope
         parseContext.symbolTable.setPreviousDefaultPrecisions(&parseContext.defaultPrecision[0]);
 
-		parseContext.setDefaultPrecision($1.line, $3.type, $2.qualifier.precision);
+		parseContext.setDefaultPrecision($1.line, $3, $2.qualifier.precision);
         $$ = 0;
     }
     | type_qualifier IDENTIFIER LEFT_BRACE struct_declaration_list RIGHT_BRACE SEMICOLON {
@@ -1217,7 +1249,7 @@ function_prototype
             }
             for (int i = 0; i < prevDec->getParamCount(); ++i) {
                 if ((*prevDec)[i].type->getQualifier().storage != (*$1)[i].type->getQualifier().storage) {
-                    parseContext.error($2.line, "overloaded functions must have the same parameter qualifiers", 
+                    parseContext.error($2.line, "overloaded functions must have the same parameter qualifiers",
                                        (*$1)[i].type->getStorageQualifierString(), "");
                     parseContext.recover();
                 }
@@ -1278,7 +1310,7 @@ function_header_with_parameters
 function_header
     : fully_specified_type IDENTIFIER LEFT_PAREN {
         if ($1.qualifier.storage != EvqGlobal && $1.qualifier.storage != EvqTemporary) {
-            parseContext.error($2.line, "no qualifiers allowed for function return", 
+            parseContext.error($2.line, "no qualifiers allowed for function return",
                                getStorageQualifierString($1.qualifier.storage), "");
             parseContext.recover();
         }
@@ -1307,7 +1339,7 @@ parameter_declarator
         }
         if (parseContext.reservedErrorCheck($2.line, *$2.string))
             parseContext.recover();
-        
+
         TParameter param = {$2.string, new TType($1)};
         $$.line = $2.line;
         $$.param = param;
@@ -1361,7 +1393,7 @@ parameter_declaration
         $$ = $2;
         if ($1.qualifier.precision != EpqNone)
             $$.param.type->getQualifier().precision = $1.qualifier.precision;
-        
+
         if (parseContext.parameterSamplerErrorCheck($2.line, $1.qualifier.storage, *$$.param.type))
             parseContext.recover();
         if (parseContext.paramErrorCheck($1.line, $1.qualifier.storage, $$.param.type))
@@ -1595,12 +1627,12 @@ fully_specified_type
         }
 
         if ($1.qualifier.storage == EvqAttribute &&
-            ($2.type == EbtBool || $2.type == EbtInt)) {
+            ($2.type == EbtBool || $2.type == EbtInt || $2.type == EbtUint)) {
             parseContext.error($2.line, "cannot be bool or int", getStorageQualifierString($1.qualifier.storage), "");
             parseContext.recover();
         }
         if (($1.qualifier.storage == EvqVaryingIn || $1.qualifier.storage == EvqVaryingOut) &&
-            ($2.type == EbtBool || $2.type == EbtInt)) {
+            ($2.type == EbtBool || $2.type == EbtInt || $2.type == EbtUint)) {
             parseContext.error($2.line, "cannot be bool or int", getStorageQualifierString($1.qualifier.storage), "");
             parseContext.recover();
         }
@@ -1734,12 +1766,12 @@ storage_qualifier
         parseContext.checkDeprecated($1.line, ECoreProfile, 150, "varying");
         parseContext.requireNotRemoved($1.line, ECoreProfile, 420, "varying");
         parseContext.requireNotRemoved($1.line, EEsProfile, 300, "varying");
-        
+
         if (parseContext.globalErrorCheck($1.line, parseContext.symbolTable.atGlobalLevel(), "varying"))
             parseContext.recover();
 
         $$.init($1.line);
-        if (parseContext.language == EShLangVertex)            
+        if (parseContext.language == EShLangVertex)
             $$.qualifier.storage = EvqVaryingOut;
         else
             $$.qualifier.storage = EvqVaryingIn;
@@ -1792,7 +1824,7 @@ storage_qualifier
         if (parseContext.globalErrorCheck($1.line, parseContext.symbolTable.atGlobalLevel(), "buffer"))
             parseContext.recover();
         $$.init($1.line);
-        $$.qualifier.storage = EvqUniform;        
+        $$.qualifier.storage = EvqUniform;
         $$.qualifier.buffer = true;
     }
     | SHARED {
@@ -1896,6 +1928,7 @@ type_specifier_nonarray
         $$.type = EbtFloat;
     }
     | DOUBLE {
+        parseContext.doubleCheck($1.line, "double");
         $$.init($1.line, parseContext.symbolTable.atGlobalLevel());
         $$.type = EbtDouble;
     }
@@ -1904,9 +1937,9 @@ type_specifier_nonarray
         $$.type = EbtInt;
     }
     | UINT {
-        // TODO: implement EbtUint, check all int types
+        parseContext.fullIntegerCheck($1.line, "unsigned integer");
         $$.init($1.line, parseContext.symbolTable.atGlobalLevel());
-        $$.type = EbtInt;
+        $$.type = EbtUint;
     }
     | BOOL {
         $$.init($1.line, parseContext.symbolTable.atGlobalLevel());
@@ -1928,16 +1961,19 @@ type_specifier_nonarray
         $$.setVector(4);
     }
     | DVEC2 {
+        parseContext.doubleCheck($1.line, "double vector");
         $$.init($1.line, parseContext.symbolTable.atGlobalLevel());
         $$.type = EbtDouble;
         $$.setVector(2);
     }
     | DVEC3 {
+        parseContext.doubleCheck($1.line, "double vector");
         $$.init($1.line, parseContext.symbolTable.atGlobalLevel());
         $$.type = EbtDouble;
         $$.setVector(3);
     }
     | DVEC4 {
+        parseContext.doubleCheck($1.line, "double vector");
         $$.init($1.line, parseContext.symbolTable.atGlobalLevel());
         $$.type = EbtDouble;
         $$.setVector(4);
@@ -1973,18 +2009,21 @@ type_specifier_nonarray
         $$.setVector(4);
     }
     | UVEC2 {
+        parseContext.fullIntegerCheck($1.line, "unsigned integer vector");
         $$.init($1.line, parseContext.symbolTable.atGlobalLevel());
-        $$.type = EbtInt;
+        $$.type = EbtUint;
         $$.setVector(2);
     }
     | UVEC3 {
+        parseContext.fullIntegerCheck($1.line, "unsigned integer vector");
         $$.init($1.line, parseContext.symbolTable.atGlobalLevel());
-        $$.type = EbtInt;
+        $$.type = EbtUint;
         $$.setVector(3);
     }
     | UVEC4 {
+        parseContext.fullIntegerCheck($1.line, "unsigned integer vector");
         $$.init($1.line, parseContext.symbolTable.atGlobalLevel());
-        $$.type = EbtInt;
+        $$.type = EbtUint;
         $$.setVector(4);
     }
     | MAT2 {
@@ -2048,61 +2087,73 @@ type_specifier_nonarray
         $$.setMatrix(4, 4);
     }
     | DMAT2 {
+        parseContext.doubleCheck($1.line, "double matrix");
         $$.init($1.line, parseContext.symbolTable.atGlobalLevel());
         $$.type = EbtDouble;
         $$.setMatrix(2, 2);
     }
     | DMAT3 {
+        parseContext.doubleCheck($1.line, "double matrix");
         $$.init($1.line, parseContext.symbolTable.atGlobalLevel());
         $$.type = EbtDouble;
         $$.setMatrix(3, 3);
     }
     | DMAT4 {
+        parseContext.doubleCheck($1.line, "double matrix");
         $$.init($1.line, parseContext.symbolTable.atGlobalLevel());
         $$.type = EbtDouble;
         $$.setMatrix(4, 4);
     }
     | DMAT2X2 {
+        parseContext.doubleCheck($1.line, "double matrix");
         $$.init($1.line, parseContext.symbolTable.atGlobalLevel());
         $$.type = EbtDouble;
         $$.setMatrix(2, 2);
     }
     | DMAT2X3 {
+        parseContext.doubleCheck($1.line, "double matrix");
         $$.init($1.line, parseContext.symbolTable.atGlobalLevel());
         $$.type = EbtDouble;
         $$.setMatrix(2, 3);
     }
     | DMAT2X4 {
+        parseContext.doubleCheck($1.line, "double matrix");
         $$.init($1.line, parseContext.symbolTable.atGlobalLevel());
         $$.type = EbtDouble;
         $$.setMatrix(2, 4);
     }
     | DMAT3X2 {
+        parseContext.doubleCheck($1.line, "double matrix");
         $$.init($1.line, parseContext.symbolTable.atGlobalLevel());
         $$.type = EbtDouble;
         $$.setMatrix(3, 2);
     }
     | DMAT3X3 {
+        parseContext.doubleCheck($1.line, "double matrix");
         $$.init($1.line, parseContext.symbolTable.atGlobalLevel());
         $$.type = EbtDouble;
         $$.setMatrix(3, 3);
     }
     | DMAT3X4 {
+        parseContext.doubleCheck($1.line, "double matrix");
         $$.init($1.line, parseContext.symbolTable.atGlobalLevel());
         $$.type = EbtDouble;
         $$.setMatrix(3, 4);
     }
     | DMAT4X2 {
+        parseContext.doubleCheck($1.line, "double matrix");
         $$.init($1.line, parseContext.symbolTable.atGlobalLevel());
         $$.type = EbtDouble;
         $$.setMatrix(4, 2);
     }
     | DMAT4X3 {
+        parseContext.doubleCheck($1.line, "double matrix");
         $$.init($1.line, parseContext.symbolTable.atGlobalLevel());
         $$.type = EbtDouble;
         $$.setMatrix(4, 3);
     }
     | DMAT4X4 {
+        parseContext.doubleCheck($1.line, "double matrix");
         $$.init($1.line, parseContext.symbolTable.atGlobalLevel());
         $$.type = EbtDouble;
         $$.setMatrix(4, 4);
@@ -2494,7 +2545,7 @@ type_specifier_nonarray
         // This is for user defined type names.  The lexical phase looked up the
         // type.
         //
-        if (TVariable* variable = ($1.symbol)->getAsVariable()) { 
+        if (TVariable* variable = ($1.symbol)->getAsVariable()) {
             const TType& structure = variable->getType();
             $$.init($1.line, parseContext.symbolTable.atGlobalLevel());
             $$.type = EbtStruct;
@@ -2642,10 +2693,10 @@ initializer
     : assignment_expression {
         $$ = $1;
     }
-    | LEFT_BRACE initializer_list RIGHT_BRACE { 
+    | LEFT_BRACE initializer_list RIGHT_BRACE {
         $$ = $2;
     }
-    | LEFT_BRACE initializer_list COMMA RIGHT_BRACE { 
+    | LEFT_BRACE initializer_list COMMA RIGHT_BRACE {
         $$ = $2;
     }
     ;
@@ -2683,8 +2734,8 @@ simple_statement
 
 compound_statement
     : LEFT_BRACE RIGHT_BRACE { $$ = 0; }
-    | LEFT_BRACE { parseContext.symbolTable.push(); } 
-      statement_list { parseContext.symbolTable.pop(&parseContext.defaultPrecision[0]); } 
+    | LEFT_BRACE { parseContext.symbolTable.push(); }
+      statement_list { parseContext.symbolTable.pop(&parseContext.defaultPrecision[0]); }
       RIGHT_BRACE {
         if ($3 != 0)
             $3->setOperator(EOpSequence);
@@ -2790,9 +2841,9 @@ case_label
     ;
 
 iteration_statement
-    : WHILE LEFT_PAREN { 
-        parseContext.symbolTable.push(); 
-        ++parseContext.loopNestingLevel; 
+    : WHILE LEFT_PAREN {
+        parseContext.symbolTable.push();
+        ++parseContext.loopNestingLevel;
     }
       condition RIGHT_PAREN statement_no_new_scope {
         parseContext.symbolTable.pop(&parseContext.defaultPrecision[0]);
@@ -2806,10 +2857,10 @@ iteration_statement
         $$ = parseContext.intermediate.addLoop($3, $6, 0, false, $4.line);
         --parseContext.loopNestingLevel;
     }
-    | FOR LEFT_PAREN { 
+    | FOR LEFT_PAREN {
         parseContext.symbolTable.push();
-        ++parseContext.loopNestingLevel; 
-    } 
+        ++parseContext.loopNestingLevel;
+    }
       for_init_statement for_rest_statement RIGHT_PAREN statement_no_new_scope {
         parseContext.symbolTable.pop(&parseContext.defaultPrecision[0]);
         $$ = parseContext.intermediate.makeAggregate($4, $2.line);
@@ -2941,7 +2992,7 @@ function_definition
             // Remember the return type for later checking for RETURN statements.
             //
             parseContext.currentFunctionType = &(prevDec->getReturnType());
-        } else 
+        } else
              parseContext.currentFunctionType = new TType(EbtVoid);
         parseContext.functionReturnsValue = false;
 

@@ -3,22 +3,22 @@
 #extension GL_3DL_array_objects : enable
 
 int  a = 0xffffffff;  // 32 bits, a gets the value -1
-//int  b = 0xffffffffU; // ERROR: can't convert uint to int
+int  b = 0xffffffffU; // ERROR: can't convert uint to int
 uint c = 0xffffffff;  // 32 bits, c gets the value 0xFFFFFFFF
-//uint d = 0xffffffffU; // 32 bits, d gets the value 0xFFFFFFFF
+uint d = 0xffffffffU; // 32 bits, d gets the value 0xFFFFFFFF
 int  e = -1;          // the literal is "1", then negation is performed,
                       //   and the resulting non-literal 32-bit signed 
                       //   bit pattern of 0xFFFFFFFF is assigned, giving e 
                       //   the value of -1.
-//uint f = -1u;         // the literal is "1u", then negation is performed,
+uint f = -1u;         // the literal is "1u", then negation is performed,
                       //   and the resulting non-literal 32-bit unsigned 
                       //   bit pattern of 0xFFFFFFFF is assigned, giving f 
                       //   the value of 0xFFFFFFFF.
 int  g = 3000000000;  // a signed decimal literal taking 32 bits,
                       //   setting the sign bit, g gets -1294967296
 int  h = 0xA0000000;  // okay, 32-bit signed hexadecimal
-//int  i = 5000000000;  // ERROR: needs more than 32 bits
-//int  j = 0xFFFFFFFFF; // ERROR: needs more that 32 bits
+int  i = 5000000000;  // ERROR: needs more than 32 bits
+int  j = 0xFFFFFFFFF; // ERROR: needs more that 32 bits
 int  k = 0x80000000;  // k gets -2147483648 == 0x80000000
 int  l = 2147483648;  // l gets -2147483648 (the literal set the sign bit)
 

@@ -285,10 +285,21 @@ public:
     constUnion operator>>(const constUnion& constant) const
     { 
         constUnion returnValue;
-        assert(type == constant.type);
         switch (type) {
-        case EbtInt:  returnValue.setIConst(iConst >> constant.iConst); break;
-        case EbtUint: returnValue.setUConst(uConst >> constant.uConst); break;
+        case EbtInt:
+            switch (constant.type) {
+            case EbtInt:   returnValue.setIConst(iConst >> constant.iConst); break;
+            case EbtUint:  returnValue.setIConst(iConst >> constant.uConst); break;
+            default:       assert(false && "Default missing");           
+            }
+            break;
+        case EbtUint:
+            switch (constant.type) {
+            case EbtInt:   returnValue.setUConst(uConst >> constant.iConst); break;
+            case EbtUint:  returnValue.setUConst(uConst >> constant.uConst); break;
+            default:       assert(false && "Default missing");           
+            }
+            break;
         default:     assert(false && "Default missing");
         }
 
@@ -298,10 +309,21 @@ public:
     constUnion operator<<(const constUnion& constant) const
     { 
         constUnion returnValue;
-        assert(type == constant.type);
         switch (type) {
-        case EbtInt:  returnValue.setIConst(iConst << constant.iConst); break;
-        case EbtUint: returnValue.setUConst(uConst << constant.uConst); break;
+        case EbtInt:
+            switch (constant.type) {
+            case EbtInt:   returnValue.setIConst(iConst << constant.iConst); break;
+            case EbtUint:  returnValue.setIConst(iConst << constant.uConst); break;
+            default:       assert(false && "Default missing");           
+            }
+            break;
+        case EbtUint:
+            switch (constant.type) {
+            case EbtInt:   returnValue.setUConst(uConst << constant.iConst); break;
+            case EbtUint:  returnValue.setUConst(uConst << constant.uConst); break;
+            default:       assert(false && "Default missing");           
+            }
+            break;
         default:     assert(false && "Default missing");
         }
 

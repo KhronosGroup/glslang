@@ -160,3 +160,16 @@ void TParseContext::requireNotRemoved(int line, EProfile callingProfile, int rem
         }
     }
 }
+
+void TParseContext::fullIntegerCheck(int line, const char* op)
+{   
+    profileRequires(line, ENoProfile, 130, 0, op); 
+    profileRequires(line, EEsProfile, 300, 0, op);
+}
+
+void TParseContext::doubleCheck(int line, const char* op)
+{   
+    requireProfile(line, (EProfileMask)(ECoreProfileMask | ECompatibilityProfileMask), op);
+    profileRequires(line, ECoreProfile, 400, 0, op);
+    profileRequires(line, ECompatibilityProfile, 400, 0, op);
+}

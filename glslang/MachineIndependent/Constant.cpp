@@ -120,11 +120,6 @@ TIntermTyped* TIntermConstantUnion::fold(TOperator op, TIntermTyped* constantNod
     TIntermConstantUnion *node = constantNode->getAsConstantUnion();
     constUnion *rightUnionArray = node->getUnionArrayPointer();
 
-    if (getType().getBasicType() != node->getBasicType()) {
-        infoSink.info.message(EPrefixInternalError, "Constant folding basic types don't match", getLine());
-        return 0;
-    }
-
     if (constantNode->getType().getObjectSize() == 1 && objectSize > 1) {
         // for a case like float f = vec4(2,3,4,5) + 1.2;
         rightUnionArray = new constUnion[objectSize];
@@ -189,6 +184,13 @@ TIntermTyped* TIntermConstantUnion::fold(TOperator op, TIntermTyped* constantNod
                     newConstArray[i].setIConst(0xEFFFFFFF);
                 } else
                     newConstArray[i].setIConst(unionArray[i].getIConst() / rightUnionArray[i].getIConst());
+                break;
+
+            case EbtUint:
+                if (rightUnionArray[i] == 0) {
+                    newConstArray[i].setUConst(0xFFFFFFFF);
+                } else
+                    newConstArray[i].setUConst(unionArray[i].getUConst() / rightUnionArray[i].getUConst());
                 break;
             default:
                 infoSink.info.message(EPrefixInternalError, "Constant folding cannot be done for \"/\"", getLine());
@@ -388,6 +390,7 @@ TIntermTyped* TIntermConstantUnion::fold(TOperator op, const TType& returnType, 
             switch (getType().getBasicType()) {
             case EbtFloat: newConstArray[i].setFConst(-unionArray[i].getFConst()); break;
             case EbtInt:   newConstArray[i].setIConst(-unionArray[i].getIConst()); break;
+            case EbtUint:  newConstArray[i].setUConst(static_cast<unsigned int>(-static_cast<int>(unionArray[i].getUConst())));  break;
             default:
                 infoSink.info.message(EPrefixInternalError, "Unary operation not folded into constant", getLine());
                 return 0;

@@ -123,7 +123,7 @@ struct TParseContext {
     bool globalQualifierFixAndErrorCheck(int line, TQualifier&);
     bool structQualifierErrorCheck(int line, const TPublicType& pType);
     bool mergeQualifiersErrorCheck(int line, TPublicType& left, const TPublicType& right);
-    void setDefaultPrecision(int line, TBasicType, TPrecisionQualifier);
+    void setDefaultPrecision(int line, TPublicType&, TPrecisionQualifier);
     bool parameterSamplerErrorCheck(int line, TStorageQualifier qualifier, const TType& type);
     bool containsSampler(const TType& type);
     bool nonInitConstErrorCheck(int line, TString& identifier, TPublicType& type);
@@ -146,6 +146,8 @@ struct TParseContext {
     void profileRequires(int line, EProfile callingProfile, int minVersion, const char* extension, const char *featureDesc);
     void checkDeprecated(int line, EProfile callingProfile, int depVersion, const char *featureDesc);
     void requireNotRemoved(int line, EProfile callingProfile, int removedVersion, const char *featureDesc);
+    void fullIntegerCheck(int line, const char* op);
+    void doubleCheck(int line, const char* op);
 };
 
 int PaParseStrings(char* argv[], int strLen[], int argc, TParseContext&);

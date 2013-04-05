@@ -176,12 +176,26 @@ bool OutputUnary(bool /* preVisit */, TIntermUnary* node, TIntermTraverser* it)
     case EOpPreIncrement:   out.debug << "Pre-Increment";        break;
     case EOpPreDecrement:   out.debug << "Pre-Decrement";        break;
 
-    case EOpConvIntToBool:  out.debug << "Convert int to bool";  break;
-    case EOpConvFloatToBool:out.debug << "Convert float to bool";break;
-    case EOpConvBoolToFloat:out.debug << "Convert bool to float";break;
-    case EOpConvIntToFloat: out.debug << "Convert int to float"; break;
-    case EOpConvFloatToInt: out.debug << "Convert float to int"; break;
-    case EOpConvBoolToInt:  out.debug << "Convert bool to int";  break;
+    case EOpConvIntToBool:     out.debug << "Convert int to bool";     break;
+    case EOpConvUintToBool:    out.debug << "Convert uint to bool";    break;
+    case EOpConvFloatToBool:   out.debug << "Convert float to bool";   break;
+    case EOpConvDoubleToBool:  out.debug << "Convert double to bool";  break;
+    case EOpConvIntToFloat:    out.debug << "Convert int to float";    break;
+    case EOpConvUintToFloat:   out.debug << "Convert uint to float";   break;
+    case EOpConvDoubleToFloat: out.debug << "Convert double to float"; break;
+    case EOpConvBoolToFloat:   out.debug << "Convert bool to float";   break;
+    case EOpConvUintToInt:     out.debug << "Convert uint to int";     break;
+    case EOpConvFloatToInt:    out.debug << "Convert float to int";    break;
+    case EOpConvDoubleToInt:   out.debug << "Convert double to int";   break;
+    case EOpConvBoolToInt:     out.debug << "Convert bool to int";     break;
+    case EOpConvIntToUint:     out.debug << "Convert int to uint";     break;
+    case EOpConvFloatToUint:   out.debug << "Convert float to uint";   break;
+    case EOpConvDoubleToUint:  out.debug << "Convert double to uint";  break;
+    case EOpConvBoolToUint:    out.debug << "Convert bool to uint";    break;
+    case EOpConvIntToDouble:   out.debug << "Convert int to double";   break;
+    case EOpConvUintToDouble:  out.debug << "Convert uint to double";  break;
+    case EOpConvFloatToDouble: out.debug << "Convert float to double"; break;
+    case EOpConvBoolToDouble:  out.debug << "Convert bool to double";  break;
 
     case EOpRadians:        out.debug << "radians";              break;
     case EOpDegrees:        out.debug << "degrees";              break;
@@ -258,6 +272,10 @@ bool OutputAggregate(bool /* preVisit */, TIntermAggregate* node, TIntermTravers
     case EOpConstructIVec2: out.debug << "Construct ivec2"; break;
     case EOpConstructIVec3: out.debug << "Construct ivec3"; break;
     case EOpConstructIVec4: out.debug << "Construct ivec4"; break;
+    case EOpConstructUint:    out.debug << "Construct uint";    break;
+    case EOpConstructUVec2:   out.debug << "Construct uvec2";   break;
+    case EOpConstructUVec3:   out.debug << "Construct uvec3";   break;
+    case EOpConstructUVec4:   out.debug << "Construct uvec4";   break;
     case EOpConstructMat2x2:  out.debug << "Construct mat2";    break;
     case EOpConstructMat2x3:  out.debug << "Construct mat2x3";  break;
     case EOpConstructMat2x4:  out.debug << "Construct mat2x4";  break;
@@ -394,6 +412,15 @@ void OutputConstantUnion(TIntermConstantUnion* node, TIntermTraverser* it)
 				const int maxSize = 300;
                 char buf[maxSize];
                 snprintf(buf, maxSize, "%d (%s)", node->getUnionArrayPointer()[i].getIConst(), "const int");
+
+                out.debug << buf << "\n";
+            }
+            break;
+        case EbtUint:
+            {
+				const int maxSize = 300;
+                char buf[maxSize];
+                snprintf(buf, maxSize, "%u (%s)", node->getUnionArrayPointer()[i].getUConst(), "const uint");
 
                 out.debug << buf << "\n";
             }

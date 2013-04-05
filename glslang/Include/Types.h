@@ -269,6 +269,11 @@ public:
         matrixCols = c;
         vectorSize = 0;
     }
+
+    bool isScalar()
+    {
+        return matrixCols == 0 && vectorSize == 1 && arraySizes == 0 && userDef == 0;
+    }
 };
 
 typedef std::map<TTypeList*, TTypeList*> TStructureMap;

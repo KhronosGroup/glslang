@@ -355,15 +355,15 @@ int yy_input(char* buf, int max_size);
    return PaIdentOrType(*pyylval->lex.string, parseContext, pyylval->lex.symbol);
 }
 
-0[xX]{H}+         { pyylval->lex.line = yylineno; pyylval->lex.i = strtol(yytext, 0, 0); return(INTCONSTANT); }
-0{O}+             { pyylval->lex.line = yylineno; pyylval->lex.i = strtol(yytext, 0, 0); return(INTCONSTANT); }
+0[xX]{H}+         { pyylval->lex.line = yylineno; pyylval->lex.i = strtoul(yytext, 0, 0); return(INTCONSTANT); }
+0{O}+             { pyylval->lex.line = yylineno; pyylval->lex.i = strtoul(yytext, 0, 0); return(INTCONSTANT); }
 0{D}+             { pyylval->lex.line = yylineno; parseContext.error(yylineno, "Invalid Octal number.", yytext, "", ""); parseContext.recover(); return 0;}
-{D}+              { pyylval->lex.line = yylineno; pyylval->lex.i = strtol(yytext, 0, 0); return(INTCONSTANT); }
+{D}+              { pyylval->lex.line = yylineno; pyylval->lex.i = strtoul(yytext, 0, 0); return(INTCONSTANT); }
 
-0[xX]{H}+{U}      { pyylval->lex.line = yylineno; pyylval->lex.i = strtol(yytext, 0, 0); return(UINTCONSTANT); }
-0{O}+{U}          { pyylval->lex.line = yylineno; pyylval->lex.i = strtol(yytext, 0, 0); return(UINTCONSTANT); }
+0[xX]{H}+{U}      { pyylval->lex.line = yylineno; pyylval->lex.u = strtoul(yytext, 0, 0); return(UINTCONSTANT); }
+0{O}+{U}          { pyylval->lex.line = yylineno; pyylval->lex.u = strtoul(yytext, 0, 0); return(UINTCONSTANT); }
 0{D}+{U}          { pyylval->lex.line = yylineno; parseContext.error(yylineno, "Invalid Octal number.", yytext, "", ""); parseContext.recover(); return 0;}
-{D}+{U}           { pyylval->lex.line = yylineno; pyylval->lex.i = strtol(yytext, 0, 0); return(UINTCONSTANT); }
+{D}+{U}           { pyylval->lex.line = yylineno; pyylval->lex.u = strtoul(yytext, 0, 0); return(UINTCONSTANT); }
 
 {D}+{F}               { pyylval->lex.line = yylineno; pyylval->lex.f = static_cast<float>(atof(yytext)); return(FLOATCONSTANT); }
 {D}+{E}{F}?           { pyylval->lex.line = yylineno; pyylval->lex.f = static_cast<float>(atof(yytext)); return(FLOATCONSTANT); }

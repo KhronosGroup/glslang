@@ -54,12 +54,14 @@ TParseContext::TParseContext(TSymbolTable& symt, TIntermediate& interm, int v, E
         switch (language) {
         case EShLangVertex:
             defaultPrecision[EbtInt] = EpqHigh;
+            defaultPrecision[EbtUint] = EpqHigh;
             defaultPrecision[EbtFloat] = EpqHigh;
             defaultPrecision[EbtSampler] = EpqLow;
             // TODO: functionality: need default precisions per sampler type
             break;
         case EShLangFragment:
             defaultPrecision[EbtInt] = EpqMedium;
+            defaultPrecision[EbtUint] = EpqMedium;
             defaultPrecision[EbtSampler] = EpqLow;
             // TODO: give error when using float in frag shader without default precision
             break;
@@ -399,10 +401,10 @@ bool TParseContext::constErrorCheck(TIntermTyped* node)
 //
 bool TParseContext::integerErrorCheck(TIntermTyped* node, const char* token)
 {
-    if (node->getBasicType() == EbtInt && node->getVectorSize() == 1)
+    if ((node->getBasicType() == EbtInt || node->getBasicType() == EbtUint) && node->getVectorSize() == 1 && ! node->isArray())
         return false;
 
-    error(node->getLine(), "integer expression required", token, "");
+    error(node->getLine(), "scalar integer expression required", token, "");
 
     return true;
 }
@@ -728,14 +730,22 @@ bool TParseContext::mergeQualifiersErrorCheck(int line, TPublicType& left, const
     return bad;
 }
 
-void TParseContext::setDefaultPrecision(int line, TBasicType type, TPrecisionQualifier qualifier)
+void TParseContext::setDefaultPrecision(int line, TPublicType& publicType, TPrecisionQualifier qualifier)
 {
-    if (type == EbtSampler || type == EbtInt || type == EbtFloat) {
-        defaultPrecision[type] = qualifier;
-    } else {
-        error(line, "cannot apply precision statement to this type", TType::getBasicString(type), "");
-        recover();
+    TBasicType basicType = publicType.type;
+
+    if (basicType == EbtSampler || basicType == EbtInt || basicType == EbtFloat) {
+        if (publicType.isScalar()) {
+            defaultPrecision[basicType] = qualifier;
+            if (basicType == EbtInt)
+                defaultPrecision[EbtUint] = qualifier;
+            
+            return;  // all is well
+        }
     }
+
+    error(line, "cannot apply precision statement to this type; use 'float', 'int' or a sampler type", TType::getBasicString(basicType), "");
+    recover();
 }
 
 bool TParseContext::parameterSamplerErrorCheck(int line, TStorageQualifier qualifier, const TType& type)
@@ -800,7 +810,7 @@ bool TParseContext::insertBuiltInArrayAtGlobalLevel()
 bool TParseContext::arraySizeErrorCheck(int line, TIntermTyped* expr, int& size)
 {
     TIntermConstantUnion* constant = expr->getAsConstantUnion();
-    if (constant == 0 || constant->getBasicType() != EbtInt) {
+    if (constant == 0 || (constant->getBasicType() != EbtInt && constant->getBasicType() != EbtUint)) {
         error(line, "array size must be a constant integer expression", "", "");
         size = 1;
         return true;
@@ -1297,6 +1307,13 @@ TIntermTyped* TParseContext::constructBuiltIn(const TType& type, TOperator op, T
     case EOpConstructIVec4:
     case EOpConstructInt:
         basicOp = EOpConstructInt;
+        break;
+
+    case EOpConstructUVec2:
+    case EOpConstructUVec3:
+    case EOpConstructUVec4:
+    case EOpConstructUint:
+        basicOp = EOpConstructUint;
         break;
 
     case EOpConstructBVec2:
