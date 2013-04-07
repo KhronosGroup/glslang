@@ -217,6 +217,18 @@ public:
     bool restrict  : 1;
     bool readonly  : 1;
     bool writeonly : 1;
+    bool isMemory()
+    {
+        return coherent || volatil || restrict || readonly || writeonly;
+    }
+    bool isInterpolation()
+    {
+        return flat || smooth || nopersp;
+    }
+    bool isAuxillary()
+    {
+        return centroid || patch || sample;
+    }
 };
 
 class TPublicType {

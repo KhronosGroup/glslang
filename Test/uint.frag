@@ -1,9 +1,9 @@
 #version 300 es
-
-in uvec2 t;
+in uvec2 badu;  // ERROR
+flat in uvec2 t;
 in float f;
 in vec2 tc;
-
+in bool bad;    // ERROR
 uniform uvec4 v;
 uniform int i;
 uniform bool b;

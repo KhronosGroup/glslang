@@ -112,15 +112,15 @@ struct TParseContext {
     bool globalErrorCheck(int line, bool global, const char* token);
     bool constructorErrorCheck(int line, TIntermNode*, TFunction&, TOperator, TType*);
     bool arraySizeErrorCheck(int line, TIntermTyped* expr, int& size);
-    bool arrayQualifierErrorCheck(int line, TPublicType type);
+    bool arrayQualifierErrorCheck(int line, const TPublicType&);
     bool arraySizeRequiredErrorCheck(int line, int& size);
-    bool arrayErrorCheck(int line, TString& identifier, TPublicType type, TVariable*& variable);
+    bool arrayErrorCheck(int line, TString& identifier, const TPublicType&, TVariable*& variable);
     bool insertBuiltInArrayAtGlobalLevel();
     bool voidErrorCheck(int, const TString&, const TPublicType&);
     bool boolErrorCheck(int, const TIntermTyped*);
     bool boolErrorCheck(int, const TPublicType&);
     bool samplerErrorCheck(int line, const TPublicType& pType, const char* reason);
-    bool globalQualifierFixAndErrorCheck(int line, TQualifier&);
+    bool globalQualifierFixAndErrorCheck(int line, TQualifier&, const TPublicType&);
     bool structQualifierErrorCheck(int line, const TPublicType& pType);
     bool mergeQualifiersErrorCheck(int line, TPublicType& left, const TPublicType& right);
     void setDefaultPrecision(int line, TPublicType&, TPrecisionQualifier);

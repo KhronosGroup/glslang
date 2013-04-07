@@ -7,6 +7,8 @@ uniform mat4x4 m44;
 in vec3 v3;
 in vec2 v2;
 
+in vec4 bad[10];
+
 void main()
 {
     int id = gl_VertexID + gl_InstanceID;

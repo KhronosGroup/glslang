@@ -328,9 +328,8 @@ bool TParseContext::lValueErrorCheck(int line, const char* op, TIntermTyped* nod
     switch (node->getQualifier().storage) {
     case EvqConst:          message = "can't modify a const";        break;
     case EvqConstReadOnly:  message = "can't modify a const";        break;
-    case EvqAttribute:      message = "can't modify an attribute";   break;
+    case EvqVaryingIn:      message = "can't modify shader input";   break;
     case EvqUniform:        message = "can't modify a uniform";      break;
-    case EvqVaryingIn:      message = "can't modify a varying";      break;
     case EvqInstanceId:     message = "can't modify gl_InstanceID";  break;
     case EvqVertexId:       message = "can't modify gl_VertexID";    break;
     case EvqFace:           message = "can't modify gl_FrontFace";   break;
@@ -617,7 +616,7 @@ bool TParseContext::samplerErrorCheck(int line, const TPublicType& pType, const 
 {
     if (pType.type == EbtStruct) {
         if (containsSampler(*pType.userDef)) {
-            error(line, reason, TType::getBasicString(pType.type), "(structure contains a sampler/image)");
+            error(line, reason, TType::getBasicString(pType.type), "(structure cannot contain a sampler or image)");
         
             return true;
         }
@@ -632,8 +631,13 @@ bool TParseContext::samplerErrorCheck(int line, const TPublicType& pType, const 
     return false;
 }
 
-bool TParseContext::globalQualifierFixAndErrorCheck(int line, TQualifier& qualifier)
+bool TParseContext::globalQualifierFixAndErrorCheck(int line, TQualifier& qualifier, const TPublicType& publicType)
 {
+    if (! symbolTable.atGlobalLevel())
+        return false;
+
+    // First, move from parameter qualifiers to shader in/out qualifiers
+
     switch (qualifier.storage) {
     case EvqIn:
         profileRequires(line, ENoProfile, 130, 0, "in for stage inputs");
@@ -645,31 +649,68 @@ bool TParseContext::globalQualifierFixAndErrorCheck(int line, TQualifier& qualif
         profileRequires(line, EEsProfile, 300, 0, "out for stage outputs");
         qualifier.storage = EvqVaryingOut;
         break;
+    case EvqVaryingIn:
+    case EvqVaryingOut:
+        break;
     case EvqInOut:
         qualifier.storage = EvqVaryingIn;
         error(line, "cannot use 'inout' at global scope", "", "");
 
         return true;
-    default: break; // some compilers want this
+    default:
+        break;
     }
 
-    return false;
-}
+    // Do non in/out error checks
 
-bool TParseContext::structQualifierErrorCheck(int line, const TPublicType& pType)
-{
-    if ((pType.qualifier.storage == EvqVaryingIn || 
-         pType.qualifier.storage == EvqVaryingOut || 
-         pType.qualifier.storage == EvqAttribute) &&
-        pType.type == EbtStruct) {
+    if (qualifier.storage != EvqUniform && samplerErrorCheck(line, publicType, "samplers and images must be uniform"))
+        return true;
 
-        error(line, "cannot be used with a structure", getStorageQualifierString(pType.qualifier.storage), "");
-        
+    if (qualifier.storage != EvqVaryingIn && qualifier.storage != EvqVaryingOut)
+        return false;
+
+    // now, knowing it is a shader in/out, do all the in/out semantic checks
+
+    if (publicType.type == EbtBool) {
+        error(line, "cannot be bool",  getStorageQualifierString(qualifier.storage), "");
         return true;
     }
 
-    if (pType.qualifier.storage != EvqUniform && samplerErrorCheck(line, pType, "samplers and images must be uniform"))
+    if (language == EShLangVertex && qualifier.storage == EvqVaryingIn) {
+        if (publicType.type == EbtStruct) {
+            error(line, "cannot be a structure or array",  getStorageQualifierString(qualifier.storage), "");
+            return true;
+        }
+        if (publicType.arraySizes) {
+            requireProfile(line, (EProfileMask)~EEsProfileMask, "vertex input arrays");
+            profileRequires(line, ENoProfile, 150, 0, "vertex input arrays");
+        }
+    }
+
+    if (language == EShLangFragment && qualifier.storage == EvqVaryingOut) {
+        profileRequires(line, EEsProfile, 300, 0, "fragment shader output");
+        if (publicType.type == EbtStruct) {
+            error(line, "cannot be a structure",  getStorageQualifierString(qualifier.storage), "");
+            return true;
+        }
+    }
+
+    if (publicType.type == EbtInt || publicType.type == EbtUint || publicType.type == EbtDouble) {
+        profileRequires(line, EEsProfile, 300, 0, "shader input/output");
+        if (language != EShLangVertex   && qualifier.storage == EvqVaryingIn  && ! qualifier.flat ||
+            language != EShLangFragment && qualifier.storage == EvqVaryingOut && ! qualifier.flat) {
+            error(line, "must be qualified as 'flat'", getStorageQualifierString(qualifier.storage), TType::getBasicString(publicType.type));
+         
+            return true;
+        }
+    }
+
+    if (language == EShLangVertex && qualifier.storage == EvqVaryingIn && 
+        (qualifier.isAuxillary() || qualifier.isInterpolation() || qualifier.isMemory() || qualifier.buffer || qualifier.invariant)) {
+        error(line, "vertex input cannot be further qualified", "", "");
+
         return true;
+    }
 
     return false;
 }
@@ -832,13 +873,8 @@ bool TParseContext::arraySizeErrorCheck(int line, TIntermTyped* expr, int& size)
 //
 // Returns true if there is an error.
 //
-bool TParseContext::arrayQualifierErrorCheck(int line, TPublicType type)
+bool TParseContext::arrayQualifierErrorCheck(int line, const TPublicType& type)
 {
-    if (type.qualifier.storage == EvqAttribute) {
-        error(line, "cannot declare arrays of this qualifier", TType(type).getCompleteString().c_str(), "");
-        return true;
-    }
-
     if (type.qualifier.storage == EvqConst)
         profileRequires(line, ENoProfile, 120, "GL_3DL_array_objects", "const array");
 
@@ -870,7 +906,7 @@ bool TParseContext::arraySizeRequiredErrorCheck(int line, int& size)
 //
 // Returns true if there was an error.
 //
-bool TParseContext::arrayErrorCheck(int line, TString& identifier, TPublicType type, TVariable*& variable)
+bool TParseContext::arrayErrorCheck(int line, TString& identifier, const TPublicType& type, TVariable*& variable)
 {
     //
     // Don't check for reserved word use until after we know it's not in the symbol table,

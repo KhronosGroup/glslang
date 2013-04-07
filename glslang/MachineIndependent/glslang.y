@@ -1302,9 +1302,6 @@ function_header
                                getStorageQualifierString($1.qualifier.storage), "");
             parseContext.recover();
         }
-        // make sure a sampler is not involved as well...
-        if (parseContext.structQualifierErrorCheck($2.line, $1))
-            parseContext.recover();
 
         // Add the function as a prototype after parsing it (we do not support recursion)
         TFunction *function;
@@ -1410,9 +1407,6 @@ init_declarator_list
     }
     | init_declarator_list COMMA IDENTIFIER {
         $$ = $1;
-        if (parseContext.structQualifierErrorCheck($3.line, $$.type))
-            parseContext.recover();
-
         if (parseContext.nonInitConstErrorCheck($3.line, *$3.string, $$.type))
             parseContext.recover();
 
@@ -1420,9 +1414,6 @@ init_declarator_list
             parseContext.recover();
     }
     | init_declarator_list COMMA IDENTIFIER array_specifier {
-        if (parseContext.structQualifierErrorCheck($3.line, $1.type))
-            parseContext.recover();
-
         if (parseContext.nonInitConstErrorCheck($3.line, *$3.string, $1.type))
             parseContext.recover();
 
@@ -1438,9 +1429,6 @@ init_declarator_list
         }
     }
     | init_declarator_list COMMA IDENTIFIER array_specifier EQUAL initializer {
-        if (parseContext.structQualifierErrorCheck($3.line, $1.type))
-            parseContext.recover();
-
         $$ = $1;
 
         TVariable* variable = 0;
@@ -1469,9 +1457,6 @@ init_declarator_list
         }
     }
     | init_declarator_list COMMA IDENTIFIER EQUAL initializer {
-        if (parseContext.structQualifierErrorCheck($3.line, $1.type))
-            parseContext.recover();
-
         $$ = $1;
 
         TIntermNode* intermNode;
@@ -1494,20 +1479,10 @@ single_declaration
     : fully_specified_type {
         $$.type = $1;
         $$.intermAggregate = 0;
-
-        if (parseContext.globalQualifierFixAndErrorCheck($1.line, $1.qualifier))
-            parseContext.recover();
     }
     | fully_specified_type IDENTIFIER {
         $$.intermAggregate = 0;
-
-        if (parseContext.globalQualifierFixAndErrorCheck($1.line, $1.qualifier))
-            parseContext.recover();
-
         $$.type = $1;
-
-        if (parseContext.structQualifierErrorCheck($2.line, $$.type))
-            parseContext.recover();
 
         if (parseContext.nonInitConstErrorCheck($2.line, *$2.string, $$.type))
             parseContext.recover();
@@ -1517,13 +1492,6 @@ single_declaration
     }
     | fully_specified_type IDENTIFIER array_specifier {
         $$.intermAggregate = 0;
-
-        if (parseContext.globalQualifierFixAndErrorCheck($1.line, $1.qualifier))
-            parseContext.recover();
-
-        if (parseContext.structQualifierErrorCheck($2.line, $1))
-            parseContext.recover();
-
         if (parseContext.nonInitConstErrorCheck($2.line, *$2.string, $1))
             parseContext.recover();
 
@@ -1540,10 +1508,6 @@ single_declaration
     }
     | fully_specified_type IDENTIFIER array_specifier EQUAL initializer {
         $$.intermAggregate = 0;
-
-        if (parseContext.structQualifierErrorCheck($2.line, $1))
-            parseContext.recover();
-
         $$.type = $1;
 
         TVariable* variable = 0;
@@ -1572,9 +1536,6 @@ single_declaration
         }
     }
     | fully_specified_type IDENTIFIER EQUAL initializer {
-        if (parseContext.structQualifierErrorCheck($2.line, $1))
-            parseContext.recover();
-
         $$.type = $1;
 
         TIntermNode* intermNode;
@@ -1604,6 +1565,9 @@ fully_specified_type
         }
     }
     | type_qualifier type_specifier  {
+        if (parseContext.globalQualifierFixAndErrorCheck($1.line, $1.qualifier, $2))
+            parseContext.recover();
+
         if ($2.arraySizes) {
             parseContext.profileRequires($2.line, ENoProfile, 120, "GL_3DL_array_objects", "arrayed type");
             parseContext.profileRequires($2.line, EEsProfile, 300, 0, "arrayed type");
@@ -1614,16 +1578,6 @@ fully_specified_type
             $2.arraySizes = 0;
         }
 
-        if ($1.qualifier.storage == EvqAttribute &&
-            ($2.type == EbtBool || $2.type == EbtInt || $2.type == EbtUint)) {
-            parseContext.error($2.line, "cannot be bool or int", getStorageQualifierString($1.qualifier.storage), "");
-            parseContext.recover();
-        }
-        if (($1.qualifier.storage == EvqVaryingIn || $1.qualifier.storage == EvqVaryingOut) &&
-            ($2.type == EbtBool || $2.type == EbtInt || $2.type == EbtUint)) {
-            parseContext.error($2.line, "cannot be bool or int", getStorageQualifierString($1.qualifier.storage), "");
-            parseContext.recover();
-        }
         $$ = $2;
         $$.qualifier = $1.qualifier;
         if ($$.qualifier.precision == EpqNone)
@@ -1747,7 +1701,7 @@ storage_qualifier
             parseContext.recover();
 
         $$.init($1.line);
-        $$.qualifier.storage = EvqAttribute;
+        $$.qualifier.storage = EvqVaryingIn;
     }
     | VARYING {
         parseContext.checkDeprecated($1.line, ENoProfile, 140, "varying");
@@ -2790,8 +2744,6 @@ condition
     }
     | fully_specified_type IDENTIFIER EQUAL initializer {
         TIntermNode* intermNode;
-        if (parseContext.structQualifierErrorCheck($2.line, $1))
-            parseContext.recover();
         if (parseContext.boolErrorCheck($2.line, $1))
             parseContext.recover();
 

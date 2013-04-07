@@ -62,9 +62,8 @@ enum TStorageQualifier {
     EvqTemporary,     // For temporaries (within a function), read/write
     EvqGlobal,        // For globals read/write
     EvqConst,         // User defined constants and non-output parameters in functions
-    EvqAttribute,     // Readonly 
-    EvqVaryingIn,     // readonly, fragment shaders only
-    EvqVaryingOut,    // vertex shaders only  read/write
+    EvqVaryingIn,     // pipeline input, read only
+    EvqVaryingOut,    // pipeline ouput, read/write
     EvqUniform,       // Readonly, vertex and fragment
 
     // parameters
@@ -103,9 +102,8 @@ __inline const char* getStorageQualifierString(TStorageQualifier q)
     case EvqGlobal:         return "global";         break;
     case EvqConst:          return "const";          break;
     case EvqConstReadOnly:  return "const (read only)"; break;
-    case EvqAttribute:      return "attribute";      break;
-    case EvqVaryingIn:      return "varying in";     break;
-    case EvqVaryingOut:     return "varying out";    break;
+    case EvqVaryingIn:      return "shader in";      break;
+    case EvqVaryingOut:     return "shader out";     break;
     case EvqUniform:        return "uniform";        break;
     case EvqIn:             return "in";             break;
     case EvqOut:            return "out";            break;
