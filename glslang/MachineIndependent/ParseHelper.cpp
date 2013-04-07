@@ -1329,7 +1329,7 @@ TIntermTyped* TParseContext::constructBuiltIn(const TType& type, TOperator op, T
 
         return 0;
     }
-    newNode = intermediate.addUnaryMath(basicOp, node, node->getLine(), symbolTable);
+    newNode = intermediate.addUnaryMath(basicOp, node, node->getLine());
     if (newNode == 0) {
         error(line, "can't convert", "constructor", "");
         return 0;

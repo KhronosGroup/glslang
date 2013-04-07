@@ -124,8 +124,10 @@ __inline const char* getStorageQualifierString(TStorageQualifier q)
     }
 }
 
+// In this enum, order matters; users can assume higher precision is a bigger value
+// and EpqNone is 0.
 enum TPrecisionQualifier {
-    EpqNone,
+    EpqNone = 0,
     EpqLow,
     EpqMedium,
     EpqHigh

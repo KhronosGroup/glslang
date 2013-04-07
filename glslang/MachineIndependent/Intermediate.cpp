@@ -69,7 +69,7 @@ TIntermSymbol* TIntermediate::addSymbol(int id, const TString& name, const TType
 //
 // Returns the added node.
 //
-TIntermTyped* TIntermediate::addBinaryMath(TOperator op, TIntermTyped* left, TIntermTyped* right, TSourceLoc line, TSymbolTable& symbolTable)
+TIntermTyped* TIntermediate::addBinaryMath(TOperator op, TIntermTyped* left, TIntermTyped* right, TSourceLoc line)
 {
     switch (op) {
     case EOpLessThan:
@@ -195,9 +195,8 @@ TIntermTyped* TIntermediate::addIndex(TOperator op, TIntermTyped* base, TIntermT
 //
 // Returns the added node.
 //
-TIntermTyped* TIntermediate::addUnaryMath(TOperator op, TIntermNode* childNode, TSourceLoc line, TSymbolTable& symbolTable)
+TIntermTyped* TIntermediate::addUnaryMath(TOperator op, TIntermNode* childNode, TSourceLoc line)
 {
-    TIntermUnary* node;
     TIntermTyped* child = childNode->getAsTyped();
 
     if (child == 0) {
@@ -245,7 +244,7 @@ TIntermTyped* TIntermediate::addUnaryMath(TOperator op, TIntermNode* childNode, 
     }
 
     //
-    // For constructors, we are now done, it's all in the conversion.
+    // For constructors, we are now done, it was all in the conversion.
     //
     switch (op) {
     case EOpConstructInt:
@@ -256,15 +255,11 @@ TIntermTyped* TIntermediate::addUnaryMath(TOperator op, TIntermNode* childNode, 
         return child;
     default: break; // some compilers want this
     }
-    
-    TIntermConstantUnion *childTempConstant = 0;
-    if (child->getAsConstantUnion())
-        childTempConstant = child->getAsConstantUnion();
-        
+
     //
     // Make a new node for the operator.
     //
-    node = new TIntermUnary(op);
+    TIntermUnary* node = new TIntermUnary(op);
     if (line == 0)
         line = child->getLine();
     node->setLine(line);
@@ -273,14 +268,69 @@ TIntermTyped* TIntermediate::addUnaryMath(TOperator op, TIntermNode* childNode, 
     if (! node->promote(infoSink))
         return 0;
 
-    if (childTempConstant)  {
-        TIntermTyped* newChild = childTempConstant->fold(op, node->getType(), infoSink);
-        
-        if (newChild)
-            return newChild;
-    } 
+    if (child->getAsConstantUnion())
+        return child->getAsConstantUnion()->fold(op, node->getType(), infoSink);
 
     return node;
+}
+
+TIntermTyped* TIntermediate::addBuiltInFunctionCall(TOperator op, bool unary, TIntermNode* childNode, const TType& returnType)
+{
+    if (unary) {
+        //
+        // Treat it like a unary operator.
+        // addUnaryMath() should get the type correct on its own;
+        // including constness (which would differ from the prototype).
+        //        
+        TIntermTyped* child = childNode->getAsTyped();
+        if (child == 0) {
+            infoSink.info.message(EPrefixInternalError, "Bad type in AddUnaryMath", child->getLine());
+
+            return 0;
+        }
+
+        if (child->getAsConstantUnion())
+
+            return child->getAsConstantUnion()->fold(op, returnType, infoSink);
+
+        TIntermUnary* node = new TIntermUnary(op);
+        node->setLine(child->getLine());
+        node->setOperand(child);
+        node->setType(returnType);
+
+        // propagate precision up from child
+        if (returnType.getQualifier().precision == EpqNone && profile == EEsProfile)
+            node->getQualifier().precision = child->getQualifier().precision;
+
+        // propagate precision down to child
+        if (node->getQualifier().precision != EpqNone &&
+            child->getQualifier().precision == EpqNone)
+            child->getQualifier().precision = node->getQualifier().precision;
+
+        return node;
+    } else {
+        // setAggregateOperater() calls fold() for constant folding
+        TIntermTyped* node = setAggregateOperator(childNode, op, returnType, childNode->getLine());
+
+        if (returnType.getQualifier().precision == EpqNone && profile == EEsProfile) {
+            // get maximum precision from arguments, for the built-in's return precision
+
+            TIntermSequence& sequence = node->getAsAggregate()->getSequence();
+            TPrecisionQualifier maxPq = EpqNone;
+            for (unsigned int arg = 0; arg < sequence.size(); ++arg)
+                maxPq = std::max(maxPq, sequence[arg]->getAsTyped()->getQualifier().precision);
+            node->getQualifier().precision = maxPq;
+        }
+
+        if (node->getQualifier().precision != EpqNone) {
+            TIntermSequence& sequence = node->getAsAggregate()->getSequence();
+            for (unsigned int arg = 0; arg < sequence.size(); ++arg)
+                if (sequence[arg]->getAsTyped()->getQualifier().precision == EpqNone)
+                    sequence[arg]->getAsTyped()->getQualifier().precision = node->getQualifier().precision;
+        }
+
+        return node;
+    }
 }
 
 //
@@ -898,39 +948,7 @@ bool TIntermUnary::promote(TInfoSink&)
             return false;
         break;
 
-    //
-    // Operators for built-ins are already type checked against their prototype.
-    // Special case the non-float ones, just so we don't give an error.
-    //
-
-    case EOpAny:
-    case EOpAll:
-        setType(TType(EbtBool));
-
-        return true;
-
-    case EOpVectorLogicalNot:
-        break;
-
-    case EOpLength:
-        setType(TType(EbtFloat, EvqTemporary, operand->getQualifier().precision));
-
-        return true;
-
-    case EOpTranspose:
-        setType(TType(operand->getType().getBasicType(), EvqTemporary, operand->getQualifier().precision, 0, 
-                                                                       operand->getType().getMatrixRows(),
-                                                                       operand->getType().getMatrixCols()));
-        return true;
-        
-    case EOpDeterminant:
-        setType(TType(operand->getType().getBasicType(), EvqTemporary, operand->getQualifier().precision));
-
-        return true;
-
     default:
-        // TODO: functionality: uint/int versions of built-ins
-        //       make sure all paths set the type
         if (operand->getBasicType() != EbtFloat)
 
             return false;

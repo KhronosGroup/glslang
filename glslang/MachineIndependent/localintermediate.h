@@ -56,10 +56,11 @@ public:
     TIntermediate(TInfoSink& i, int v, EProfile p) : infoSink(i), version(v), profile(p) { }
     TIntermSymbol* addSymbol(int Id, const TString&, const TType&, TSourceLoc);
     TIntermTyped* addConversion(TOperator, const TType&, TIntermTyped*);
-    TIntermTyped* addBinaryMath(TOperator op, TIntermTyped* left, TIntermTyped* right, TSourceLoc, TSymbolTable&);
+    TIntermTyped* addBinaryMath(TOperator, TIntermTyped* left, TIntermTyped* right, TSourceLoc);
     TIntermTyped* addAssign(TOperator op, TIntermTyped* left, TIntermTyped* right, TSourceLoc);
     TIntermTyped* addIndex(TOperator op, TIntermTyped* base, TIntermTyped* index, TSourceLoc);
-    TIntermTyped* addUnaryMath(TOperator op, TIntermNode* child, TSourceLoc, TSymbolTable&);
+    TIntermTyped* addUnaryMath(TOperator, TIntermNode* child, TSourceLoc);
+    TIntermTyped* addBuiltInFunctionCall(TOperator, bool unary, TIntermNode*, const TType& returnType);
     bool canImplicitlyPromote(TBasicType from, TBasicType to);
     TIntermAggregate* growAggregate(TIntermNode* left, TIntermNode* right, TSourceLoc);
     TIntermAggregate* makeAggregate(TIntermNode* node, TSourceLoc);
