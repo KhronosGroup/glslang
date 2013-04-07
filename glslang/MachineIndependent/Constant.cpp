@@ -444,9 +444,26 @@ TIntermTyped* TIntermConstantUnion::fold(TOperator op, const TType& returnType, 
 
         case EOpAbs:
         case EOpSign:
-        case EOpFloor:
+        case EOpFloor:            
+        case EOpTrunc:
+        case EOpRound:
+        case EOpRoundEven:
         case EOpCeil:
         case EOpFract:
+
+        case EOpIsNan:
+        case EOpIsInf:
+
+        case EOpFloatBitsToInt:
+        case EOpFloatBitsToUint:
+        case EOpIntBitsToFloat:
+        case EOpUintBitsToFloat:
+        case EOpPackSnorm2x16:
+        case EOpUnpackSnorm2x16:
+        case EOpPackUnorm2x16:
+        case EOpUnpackUnorm2x16:
+        case EOpPackHalf2x16:
+        case EOpUnpackHalf2x16:
 
         case EOpLength:
 
@@ -549,6 +566,7 @@ TIntermTyped* TIntermediate::fold(TIntermAggregate* aggrNode)
 
     case EOpAtan:
     case EOpPow:
+    case EOpModf:
     case EOpClamp:
     case EOpMix:
     case EOpStep:

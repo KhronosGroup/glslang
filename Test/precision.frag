@@ -30,6 +30,11 @@ void main()
     precision lowp int;
     int level1_low;
     sum += level1_low;
+    
+    // test maxing precisions of args to get precision of builtin
+    lowp float arg1;
+    mediump float arg2;
+    lowp float d = distance(arg1, arg2);
 
     {
         int level2_low;

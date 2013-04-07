@@ -216,8 +216,25 @@ bool OutputUnary(bool /* preVisit */, TIntermUnary* node, TIntermTraverser* it)
     case EOpAbs:            out.debug << "Absolute value";       break;
     case EOpSign:           out.debug << "Sign";                 break;
     case EOpFloor:          out.debug << "Floor";                break;
+    case EOpTrunc:          out.debug << "trunc";                break;
+    case EOpRound:          out.debug << "round";                break;
+    case EOpRoundEven:      out.debug << "roundEven";            break;
     case EOpCeil:           out.debug << "Ceiling";              break;
     case EOpFract:          out.debug << "Fraction";             break;
+
+    case EOpIsNan:          out.debug << "isnan";                break;
+    case EOpIsInf:          out.debug << "isinf";                break;
+
+    case EOpFloatBitsToInt: out.debug << "floatBitsToInt";       break;
+    case EOpFloatBitsToUint:out.debug << "floatBitsToUint";      break;
+    case EOpIntBitsToFloat: out.debug << "intBitsToFloat";       break;
+    case EOpUintBitsToFloat:out.debug << "uintBitsToFloat";      break;
+    case EOpPackSnorm2x16:  out.debug << "packSnorm2x16";        break;
+    case EOpUnpackSnorm2x16:out.debug << "unpackSnorm2x16";      break;
+    case EOpPackUnorm2x16:  out.debug << "packUnorm2x16";        break;
+    case EOpUnpackUnorm2x16:out.debug << "unpackUnorm2x16";      break;
+    case EOpPackHalf2x16:   out.debug << "packHalf2x16";         break;
+    case EOpUnpackHalf2x16: out.debug << "unpackHalf2x16";       break;
 
     case EOpLength:         out.debug << "length";               break;
     case EOpNormalize:      out.debug << "normalize";            break;
@@ -304,6 +321,7 @@ bool OutputAggregate(bool /* preVisit */, TIntermAggregate* node, TIntermTravers
     case EOpVectorNotEqual:   out.debug << "NotEqual";                      break;
 
     case EOpMod:           out.debug << "mod";         break;
+    case EOpModf:          out.debug << "modf";        break;
     case EOpPow:           out.debug << "pow";         break;
 
     case EOpAtan:          out.debug << "arc tangent"; break;

@@ -186,15 +186,47 @@ void TBuiltIns::initialize(int version, EProfile profile)
         s.append(TString("vec3  abs(vec3  x);"));
         s.append(TString("vec4  abs(vec4  x);"));
 
+        if (version >= 130) {
+            s.append(TString("  int abs(  int x);"));
+            s.append(TString("ivec2 abs(ivec2 x);"));
+            s.append(TString("ivec3 abs(ivec3 x);"));
+            s.append(TString("ivec4 abs(ivec4 x);"));
+        }
+
+
         s.append(TString("float sign(float x);"));
         s.append(TString("vec2  sign(vec2  x);"));
         s.append(TString("vec3  sign(vec3  x);"));
         s.append(TString("vec4  sign(vec4  x);"));
 
+        if (version >= 130) {
+            s.append(TString("  int sign(  int x);"));
+            s.append(TString("ivec2 sign(ivec2 x);"));
+            s.append(TString("ivec3 sign(ivec3 x);"));
+            s.append(TString("ivec4 sign(ivec4 x);"));
+        }
+
         s.append(TString("float floor(float x);"));
         s.append(TString("vec2  floor(vec2  x);"));
         s.append(TString("vec3  floor(vec3  x);"));
         s.append(TString("vec4  floor(vec4  x);"));
+
+        if (version >= 130) {
+            s.append(TString("float trunc(float x);"));
+            s.append(TString("vec2  trunc(vec2  x);"));
+            s.append(TString("vec3  trunc(vec3  x);"));
+            s.append(TString("vec4  trunc(vec4  x);"));
+
+            s.append(TString("float round(float x);"));
+            s.append(TString("vec2  round(vec2  x);"));
+            s.append(TString("vec3  round(vec3  x);"));
+            s.append(TString("vec4  round(vec4  x);"));
+
+            s.append(TString("float roundEven(float x);"));
+            s.append(TString("vec2  roundEven(vec2  x);"));
+            s.append(TString("vec3  roundEven(vec3  x);"));
+            s.append(TString("vec4  roundEven(vec4  x);"));
+        }
 
         s.append(TString("float ceil(float x);"));
         s.append(TString("vec2  ceil(vec2  x);"));
@@ -214,6 +246,13 @@ void TBuiltIns::initialize(int version, EProfile profile)
         s.append(TString("vec3  mod(vec3  x, vec3  y);"));
         s.append(TString("vec4  mod(vec4  x, vec4  y);"));
 
+        if (version >= 130) {
+            s.append(TString("float modf(float, out float);"));
+            s.append(TString("vec2  modf(vec2,  out vec2 );"));
+            s.append(TString("vec3  modf(vec3,  out vec3 );"));
+            s.append(TString("vec4  modf(vec4,  out vec4 );"));
+        }
+
         s.append(TString("float min(float x, float y);"));
         s.append(TString("vec2  min(vec2  x, float y);"));
         s.append(TString("vec3  min(vec3  x, float y);"));
@@ -221,6 +260,24 @@ void TBuiltIns::initialize(int version, EProfile profile)
         s.append(TString("vec2  min(vec2  x, vec2  y);"));
         s.append(TString("vec3  min(vec3  x, vec3  y);"));
         s.append(TString("vec4  min(vec4  x, vec4  y);"));
+
+        if (version >= 130) {
+            s.append(TString("  int min(int    x, int y);"));
+            s.append(TString("ivec2 min(ivec2  x, int y);"));
+            s.append(TString("ivec3 min(ivec3  x, int y);"));
+            s.append(TString("ivec4 min(ivec4  x, int y);"));
+            s.append(TString("ivec2 min(ivec2  x, ivec2  y);"));
+            s.append(TString("ivec3 min(ivec3  x, ivec3  y);"));
+            s.append(TString("ivec4 min(ivec4  x, ivec4  y);"));
+
+            s.append(TString(" uint min(uint   x, uint y);"));
+            s.append(TString("uvec2 min(uvec2  x, uint y);"));
+            s.append(TString("uvec3 min(uvec3  x, uint y);"));
+            s.append(TString("uvec4 min(uvec4  x, uint y);"));
+            s.append(TString("uvec2 min(uvec2  x, uvec2  y);"));
+            s.append(TString("uvec3 min(uvec3  x, uvec3  y);"));
+            s.append(TString("uvec4 min(uvec4  x, uvec4  y);"));
+        }
 
         s.append(TString("float max(float x, float y);"));
         s.append(TString("vec2  max(vec2  x, float y);"));
@@ -230,6 +287,24 @@ void TBuiltIns::initialize(int version, EProfile profile)
         s.append(TString("vec3  max(vec3  x, vec3  y);"));
         s.append(TString("vec4  max(vec4  x, vec4  y);"));
 
+        if (version >= 130) {
+            s.append(TString("  int max(int    x, int y);"));
+            s.append(TString("ivec2 max(ivec2  x, int y);"));
+            s.append(TString("ivec3 max(ivec3  x, int y);"));
+            s.append(TString("ivec4 max(ivec4  x, int y);"));
+            s.append(TString("ivec2 max(ivec2  x, ivec2  y);"));
+            s.append(TString("ivec3 max(ivec3  x, ivec3  y);"));
+            s.append(TString("ivec4 max(ivec4  x, ivec4  y);"));
+
+            s.append(TString(" uint max(uint   x, uint y);"));
+            s.append(TString("uvec2 max(uvec2  x, uint y);"));
+            s.append(TString("uvec3 max(uvec3  x, uint y);"));
+            s.append(TString("uvec4 max(uvec4  x, uint y);"));
+            s.append(TString("uvec2 max(uvec2  x, uvec2  y);"));
+            s.append(TString("uvec3 max(uvec3  x, uvec3  y);"));
+            s.append(TString("uvec4 max(uvec4  x, uvec4  y);"));
+        }
+
         s.append(TString("float clamp(float x, float minVal, float maxVal);"));
         s.append(TString("vec2  clamp(vec2  x, float minVal, float maxVal);"));
         s.append(TString("vec3  clamp(vec3  x, float minVal, float maxVal);"));
@@ -238,6 +313,24 @@ void TBuiltIns::initialize(int version, EProfile profile)
         s.append(TString("vec3  clamp(vec3  x, vec3  minVal, vec3  maxVal);"));
         s.append(TString("vec4  clamp(vec4  x, vec4  minVal, vec4  maxVal);"));
 
+        if (version >= 130) {
+            s.append(TString("int    clamp(int x, int minVal, int maxVal);"));
+            s.append(TString("ivec2  clamp(ivec2  x, int minVal, int maxVal);"));
+            s.append(TString("ivec3  clamp(ivec3  x, int minVal, int maxVal);"));
+            s.append(TString("ivec4  clamp(ivec4  x, int minVal, int maxVal);"));
+            s.append(TString("ivec2  clamp(ivec2  x, ivec2  minVal, ivec2  maxVal);"));
+            s.append(TString("ivec3  clamp(ivec3  x, ivec3  minVal, ivec3  maxVal);"));
+            s.append(TString("ivec4  clamp(ivec4  x, ivec4  minVal, ivec4  maxVal);"));
+
+            s.append(TString("uint   clamp(uint x, uint minVal, uint maxVal);"));
+            s.append(TString("uvec2  clamp(uvec2  x, uint minVal, uint maxVal);"));
+            s.append(TString("uvec3  clamp(uvec3  x, uint minVal, uint maxVal);"));
+            s.append(TString("uvec4  clamp(uvec4  x, uint minVal, uint maxVal);"));
+            s.append(TString("uvec2  clamp(uvec2  x, uvec2  minVal, uvec2  maxVal);"));
+            s.append(TString("uvec3  clamp(uvec3  x, uvec3  minVal, uvec3  maxVal);"));
+            s.append(TString("uvec4  clamp(uvec4  x, uvec4  minVal, uvec4  maxVal);"));
+        }
+
         s.append(TString("float mix(float x, float y, float a);"));
         s.append(TString("vec2  mix(vec2  x, vec2  y, float a);"));
         s.append(TString("vec3  mix(vec3  x, vec3  y, float a);"));
@@ -245,6 +338,13 @@ void TBuiltIns::initialize(int version, EProfile profile)
         s.append(TString("vec2  mix(vec2  x, vec2  y, vec2  a);"));
         s.append(TString("vec3  mix(vec3  x, vec3  y, vec3  a);"));
         s.append(TString("vec4  mix(vec4  x, vec4  y, vec4  a);"));
+
+        if (version >= 130) {
+            s.append(TString("float mix(float x, float y, bool  a);"));
+            s.append(TString("vec2  mix(vec2  x, vec2  y, bvec2 a);"));
+            s.append(TString("vec3  mix(vec3  x, vec3  y, bvec3 a);"));
+            s.append(TString("vec4  mix(vec4  x, vec4  y, bvec4 a);"));
+        }
 
         s.append(TString("float step(float edge, float x);"));
         s.append(TString("vec2  step(vec2  edge, vec2  x);"));
@@ -261,6 +361,51 @@ void TBuiltIns::initialize(int version, EProfile profile)
         s.append(TString("vec2  smoothstep(float edge0, float edge1, vec2  x);"));
         s.append(TString("vec3  smoothstep(float edge0, float edge1, vec3  x);"));
         s.append(TString("vec4  smoothstep(float edge0, float edge1, vec4  x);"));
+
+        if (version >= 130) {
+            s.append(TString("bool  isnan(float x);"));
+            s.append(TString("bvec2 isnan(vec2  x);"));
+            s.append(TString("bvec3 isnan(vec3  x);"));
+            s.append(TString("bvec4 isnan(vec4  x);"));
+
+            s.append(TString("bool  isinf(float x);"));
+            s.append(TString("bvec2 isinf(vec2  x);"));
+            s.append(TString("bvec3 isinf(vec3  x);"));
+            s.append(TString("bvec4 isinf(vec4  x);"));
+        }
+
+        if (profile == EEsProfile && version >= 300 ||
+            profile != EEsProfile && version >= 330) {
+            s.append(TString("int   floatBitsToInt(float value);"));
+            s.append(TString("ivec2 floatBitsToInt(vec2  value);"));
+            s.append(TString("ivec3 floatBitsToInt(vec3  value);"));
+            s.append(TString("ivec4 floatBitsToInt(vec4  value);"));
+
+            s.append(TString("uint  floatBitsToUint(float value);"));
+            s.append(TString("uvec2 floatBitsToUint(vec2  value);"));
+            s.append(TString("uvec3 floatBitsToUint(vec3  value);"));
+            s.append(TString("uvec4 floatBitsToUint(vec4  value);"));
+
+            s.append(TString("float intBitsToFloat(int   value);"));
+            s.append(TString("vec2  intBitsToFloat(ivec2 value);"));
+            s.append(TString("vec3  intBitsToFloat(ivec3 value);"));
+            s.append(TString("vec4  intBitsToFloat(ivec4 value);"));
+
+            s.append(TString("float uintBitsToFloat(uint  value);"));
+            s.append(TString("vec2  uintBitsToFloat(uvec2 value);"));
+            s.append(TString("vec3  uintBitsToFloat(uvec3 value);"));
+            s.append(TString("vec4  uintBitsToFloat(uvec4 value);"));
+        }
+
+        if (profile == EEsProfile && version >= 300 ||
+            profile != EEsProfile && version >= 400) {
+            s.append(TString(  "highp uint packSnorm2x16 (vec2);"));
+            s.append(TString(  "highp vec2 unpackSnorm2x16 (highp uint);"));
+            s.append(TString(  "highp uint packUnorm2x16 (vec2);"));
+            s.append(TString(  "highp vec2 unpackUnorm2x16 (highp uint);"));
+            s.append(TString(  "highp uint packHalf2x16(mediump vec2);"));
+            s.append(TString("mediump vec2 unpackHalf2x16(highp uint);"));
+        }
 
         //
         // Geometric Functions.
@@ -1343,6 +1488,7 @@ void IdentifyBuiltIns(int version, EProfile profile, EShLanguage language, TSymb
     }
 
     symbolTable.relateToOperator("mod",              EOpMod);
+    symbolTable.relateToOperator("modf",             EOpModf);
 
     symbolTable.relateToOperator("equal",            EOpVectorEqual);
     symbolTable.relateToOperator("notEqual",         EOpVectorNotEqual);
@@ -1371,6 +1517,9 @@ void IdentifyBuiltIns(int version, EProfile profile, EShLanguage language, TSymb
     symbolTable.relateToOperator("abs",          EOpAbs);
     symbolTable.relateToOperator("sign",         EOpSign);
     symbolTable.relateToOperator("floor",        EOpFloor);
+    symbolTable.relateToOperator("trunc",        EOpTrunc);
+    symbolTable.relateToOperator("round",        EOpRound);
+    symbolTable.relateToOperator("roundEven",    EOpRoundEven);
     symbolTable.relateToOperator("ceil",         EOpCeil);
     symbolTable.relateToOperator("fract",        EOpFract);
     symbolTable.relateToOperator("min",          EOpMin);
@@ -1379,6 +1528,20 @@ void IdentifyBuiltIns(int version, EProfile profile, EShLanguage language, TSymb
     symbolTable.relateToOperator("mix",          EOpMix);
     symbolTable.relateToOperator("step",         EOpStep);
     symbolTable.relateToOperator("smoothstep",   EOpSmoothStep);
+
+    symbolTable.relateToOperator("isnan",  EOpIsNan);
+    symbolTable.relateToOperator("isinf",  EOpIsInf);
+
+    symbolTable.relateToOperator("floatBitsToInt",  EOpFloatBitsToInt);
+    symbolTable.relateToOperator("floatBitsToUint", EOpFloatBitsToUint);
+    symbolTable.relateToOperator("intBitsToFloat",  EOpIntBitsToFloat);
+    symbolTable.relateToOperator("uintBitsToFloat", EOpUintBitsToFloat);
+    symbolTable.relateToOperator("packSnorm2x16",   EOpPackSnorm2x16);
+    symbolTable.relateToOperator("unpackSnorm2x16", EOpUnpackSnorm2x16);
+    symbolTable.relateToOperator("packUnorm2x16",   EOpPackUnorm2x16);
+    symbolTable.relateToOperator("unpackUnorm2x16", EOpUnpackUnorm2x16);
+    symbolTable.relateToOperator("packHalf2x16",    EOpPackHalf2x16);
+    symbolTable.relateToOperator("unpackHalf2x16",  EOpUnpackHalf2x16);
 
     symbolTable.relateToOperator("length",       EOpLength);
     symbolTable.relateToOperator("distance",     EOpDistance);
