@@ -38,6 +38,7 @@
 #include "Include/InitializeParseContext.h"
 #include "osinclude.h"
 #include <stdarg.h>
+#include <algorithm>
 
 TParseContext::TParseContext(TSymbolTable& symt, TIntermediate& interm, int v, EProfile p, EShLanguage L, TInfoSink& is,                             
                              bool fc, EShMessages m) : 
@@ -706,7 +707,7 @@ bool TParseContext::globalQualifierFixAndErrorCheck(int line, TQualifier& qualif
     }
 
     if (language == EShLangVertex && qualifier.storage == EvqVaryingIn && 
-        (qualifier.isAuxillary() || qualifier.isInterpolation() || qualifier.isMemory() || qualifier.buffer || qualifier.invariant)) {
+        (qualifier.isAuxillary() || qualifier.isInterpolation() || qualifier.isMemory() || qualifier.invariant)) {
         error(line, "vertex input cannot be further qualified", "", "");
 
         return true;
@@ -748,9 +749,11 @@ bool TParseContext::mergeQualifiersErrorCheck(int line, TPublicType& left, const
         bad = true;
     }
 
+    // Layout qualifiers
+    mergeLayoutQualifiers(line, left, right);
+
     // other qualifiers
     #define MERGE_SINGLETON(field) bad |= left.qualifier.field && right.qualifier.field; left.qualifier.field |= right.qualifier.field;
-    MERGE_SINGLETON(buffer);
     MERGE_SINGLETON(invariant);
     MERGE_SINGLETON(centroid);
     MERGE_SINGLETON(smooth);
@@ -1084,6 +1087,62 @@ bool TParseContext::paramErrorCheck(int line, TStorageQualifier qualifier, TType
         error(line, "qualifier not allowed on function parameter", getStorageQualifierString(qualifier), "");
         return true;
     }
+}
+
+//
+// Layout qualifier stuff.
+//
+
+// Put the id's layout qualification into the public type.
+void TParseContext::setLayoutQualifier(int line, TPublicType& publicType, TString& id)
+{
+    std::transform(id.begin(), id.end(), id.begin(), ::tolower);
+    if (id == TQualifier::getLayoutMatrixString(ElmColumnMajor))
+        publicType.qualifier.layoutMatrix = ElmColumnMajor;
+    else if (id == TQualifier::getLayoutMatrixString(ElmRowMajor))
+        publicType.qualifier.layoutMatrix = ElmRowMajor;
+    else if (id == TQualifier::getLayoutPackingString(ElpPacked))
+        publicType.qualifier.layoutPacking = ElpPacked;
+    else if (id == TQualifier::getLayoutPackingString(ElpShared))
+        publicType.qualifier.layoutPacking = ElpShared;
+    else if (id == TQualifier::getLayoutPackingString(ElpStd140))
+        publicType.qualifier.layoutPacking = ElpStd140;
+    else if (id == TQualifier::getLayoutPackingString(ElpStd430))
+        publicType.qualifier.layoutPacking = ElpStd430;
+    else if (id == "location")
+        error(line, "requires an integer assignment (e.g., location = 4)", "location", "");
+    else if (id == "binding")
+        error(line, "requires an integer assignment (e.g., binding = 4)", "binding", "");
+    else
+        error(line, "unrecognized layout identifier", id.c_str(), "");
+}
+
+// Put the id's layout qualifier value into the public type.
+void TParseContext::setLayoutQualifier(int line, TPublicType& publicType, TString& id, int value)
+{
+    std::transform(id.begin(), id.end(), id.begin(), ::tolower);
+    if (id == "location") {
+        if ((unsigned int)value >= TQualifier::layoutLocationEnd)
+            error(line, "value is too large", id.c_str(), "");
+        else
+            publicType.qualifier.layoutSlotLocation = value;
+    } else if (id == "binding")
+        error(line, "not supported", "binding", "");
+    else
+        error(line, "there is no such layout identifier taking an assigned value", id.c_str(), "");
+}
+
+// Merge any layout qualifier information from src into dst, leaving everything else in dst alone
+void TParseContext::mergeLayoutQualifiers(int line, TPublicType& dst, const TPublicType& src)
+{
+    if (src.qualifier.layoutMatrix != ElmNone)
+        dst.qualifier.layoutMatrix = src.qualifier.layoutMatrix;
+
+    if (src.qualifier.layoutPacking != ElpNone)
+        dst.qualifier.layoutPacking = src.qualifier.layoutPacking;
+
+    if (src.qualifier.hasLocation())
+        dst.qualifier.layoutSlotLocation = src.qualifier.layoutSlotLocation;
 }
 
 /////////////////////////////////////////////////////////////////////////////////

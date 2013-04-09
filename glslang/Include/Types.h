@@ -171,7 +171,8 @@ inline TArraySizes NewPoolTArraySizes()
 }
 
 //
-// TPublicType is a workaround for a problem with the yacc stack,  It can't have
+// TPublicType (coming up after some dependent declarations)
+// is a workaround for a problem with the yacc stack,  It can't have
 // types that it thinks have non-trivial constructors.  It should
 // just be used while recognizing the grammar, not anything else.  Pointers
 // could be used, but also trying to avoid lots of memory management overhead.
@@ -180,13 +181,26 @@ inline TArraySizes NewPoolTArraySizes()
 // match up or are named the same or anything like that.
 //
 
+enum TLayoutPacking {
+    ElpNone,
+    ElpShared,      // default, but different than saying nothing
+    ElpStd140,
+    ElpStd430,
+    ElpPacked       // see bitfield width below
+};
+
+enum TLayoutMatrix {
+    ElmNone,
+    ElmRowMajor,
+    ElmColumnMajor  // default, but different than saying nothing
+};  // see bitfield width below
+
 class TQualifier {
 public:
     void clear()
     {
         storage   = EvqTemporary;
         precision = EpqNone;
-        buffer    = false;
         invariant = false;
         centroid  = false;
         smooth    = false;
@@ -200,10 +214,10 @@ public:
         restrict  = false;
         readonly  = false;
         writeonly = false;
+        clearLayout();
     }
-	TStorageQualifier storage     : 7;
+	TStorageQualifier   storage   : 6;
     TPrecisionQualifier precision : 3;
-    bool buffer    : 1;
     bool invariant : 1;
     bool centroid  : 1;
     bool smooth    : 1;
@@ -217,6 +231,7 @@ public:
     bool restrict  : 1;
     bool readonly  : 1;
     bool writeonly : 1;
+
     bool isMemory()
     {
         return coherent || volatil || restrict || readonly || writeonly;
@@ -228,6 +243,46 @@ public:
     bool isAuxillary()
     {
         return centroid || patch || sample;
+    }
+
+    // Implementing an embedded layout-qualifier class here, since C++ can't have a real class bitfield
+    void clearLayout()
+    {
+        layoutMatrix = ElmNone;
+        layoutPacking = ElpNone;
+        layoutSlotLocation = layoutLocationEnd;
+    }
+    bool hasLayout() const
+    {
+        return layoutMatrix != ElmNone ||
+               layoutPacking != ElpNone ||
+               layoutSlotLocation != layoutLocationEnd;
+    }
+    TLayoutMatrix  layoutMatrix       : 3;
+    TLayoutPacking layoutPacking      : 4;
+    unsigned int   layoutSlotLocation : 7;  // ins/outs should have small numbers, buffer offsets could be large
+    static const unsigned int layoutLocationEnd = 0x3F;
+    bool hasLocation() const
+    {
+        return layoutSlotLocation != layoutLocationEnd;
+    }
+    static const char* getLayoutPackingString(TLayoutPacking packing)
+    {
+        switch (packing) {
+        case ElpPacked:   return "packed";
+        case ElpShared:   return "shared";
+        case ElpStd140:   return "std140";
+        case ElpStd430:   return "std430";
+        default:          return "none";
+        }
+    }
+    static const char* getLayoutMatrixString(TLayoutMatrix m)
+    {
+        switch (m) {
+        case ElmColumnMajor: return "column_major";
+        case ElmRowMajor:    return "row_major";
+        default:             return "none";
+        }
     }
 };
 
@@ -479,8 +534,17 @@ public:
         char *p = &buf[0];
 	    char *end = &buf[maxSize];
 
-        if (qualifier.buffer)
-            p += snprintf(p, end - p, "buffer ");
+        if (qualifier.hasLayout()) {
+            p += snprintf(p, end - p, "layout(");
+            if (qualifier.hasLocation())
+                p += snprintf(p, end - p, "location=%d ", qualifier.layoutSlotLocation);
+            if (qualifier.layoutMatrix != ElmNone)
+                p += snprintf(p, end - p, "%s ", TQualifier::getLayoutMatrixString(qualifier.layoutMatrix));
+            if (qualifier.layoutPacking != ElpNone)
+                p += snprintf(p, end - p, "%s ", TQualifier::getLayoutPackingString(qualifier.layoutPacking));
+            p += snprintf(p, end - p, ") ");
+        }
+
         if (qualifier.invariant)
             p += snprintf(p, end - p, "invariant ");
         if (qualifier.centroid)

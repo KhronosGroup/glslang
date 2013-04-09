@@ -129,6 +129,11 @@ struct TParseContext {
     bool nonInitConstErrorCheck(int line, TString& identifier, TPublicType& type);
     bool nonInitErrorCheck(int line, TString& identifier, TPublicType& type);
     bool paramErrorCheck(int line, TStorageQualifier qualifier, TType* type);
+
+    void setLayoutQualifier(int line, TPublicType&, TString&);
+    void setLayoutQualifier(int line, TPublicType&, TString&, int);
+    void mergeLayoutQualifiers(int line, TPublicType& dest, const TPublicType& src);
+
     const TFunction* findFunction(int line, TFunction* pfnCall, bool *builtIn = 0);
     bool executeInitializer(TSourceLoc line, TString& identifier, TPublicType& pType,
                             TIntermTyped* initializer, TIntermNode*& intermNode, TVariable* variable = 0);

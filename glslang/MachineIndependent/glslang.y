@@ -201,7 +201,7 @@ extern void yyerror(const char*);
 
 %type <interm> array_specifier
 %type <interm.type> precise_qualifier invariant_qualifier interpolation_qualifier storage_qualifier precision_qualifier
-%type <interm.type> layout_qualifier layout_qualifier_id_list
+%type <interm.type> layout_qualifier layout_qualifier_id_list layout_qualifier_id
 
 %type <interm.type> type_qualifier fully_specified_type type_specifier
 %type <interm.type> single_type_qualifier
@@ -1622,22 +1622,31 @@ interpolation_qualifier
 
 layout_qualifier
     : LAYOUT LEFT_PAREN layout_qualifier_id_list RIGHT_PAREN {
-        $$.init($1.line);
+        $$ = $3;
     }
     ;
 
 layout_qualifier_id_list
     : layout_qualifier_id {
+        $$ = $1;
     }
     | layout_qualifier_id_list COMMA layout_qualifier_id {
+        $$ = $1;
+        parseContext.mergeLayoutQualifiers($2.line, $$, $3);
     }
 
 layout_qualifier_id
     : IDENTIFIER {
+        $$.init($1.line);
+        parseContext.setLayoutQualifier($1.line, $$, *$1.string);
     }
     | IDENTIFIER EQUAL INTCONSTANT {
+        $$.init($1.line);
+        parseContext.setLayoutQualifier($1.line, $$, *$1.string, $3.i);
     }
-    | SHARED {
+    | SHARED { // because "shared" is both an identifier and a keyword
+        $$.init($1.line);
+        parseContext.setLayoutQualifier($1.line, $$, TString("shared"));
     }
     ;
 
@@ -1766,8 +1775,7 @@ storage_qualifier
         if (parseContext.globalErrorCheck($1.line, parseContext.symbolTable.atGlobalLevel(), "buffer"))
             parseContext.recover();
         $$.init($1.line);
-        $$.qualifier.storage = EvqUniform;
-        $$.qualifier.buffer = true;
+        $$.qualifier.storage = EvqUniform; // TODO: functionality: implement BUFFER
     }
     | SHARED {
         $$.init($1.line);

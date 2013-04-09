@@ -64,7 +64,8 @@ enum TStorageQualifier {
     EvqConst,         // User defined constants and non-output parameters in functions
     EvqVaryingIn,     // pipeline input, read only
     EvqVaryingOut,    // pipeline ouput, read/write
-    EvqUniform,       // Readonly, vertex and fragment
+    EvqUniform,       // read only, shader with app
+    EVqBuffer,        // read only, shader with app
 
     // parameters
     EvqIn,
@@ -102,8 +103,8 @@ __inline const char* getStorageQualifierString(TStorageQualifier q)
     case EvqGlobal:         return "global";         break;
     case EvqConst:          return "const";          break;
     case EvqConstReadOnly:  return "const (read only)"; break;
-    case EvqVaryingIn:      return "shader in";      break;
-    case EvqVaryingOut:     return "shader out";     break;
+    case EvqVaryingIn:      return "in";             break;
+    case EvqVaryingOut:     return "out";            break;
     case EvqUniform:        return "uniform";        break;
     case EvqIn:             return "in";             break;
     case EvqOut:            return "out";            break;
@@ -116,7 +117,7 @@ __inline const char* getStorageQualifierString(TStorageQualifier q)
     case EvqFace:           return "gl_FrontFacing"; break;
     case EvqFragCoord:      return "gl_FragCoord";   break;
     case EvqPointCoord:     return "gl_PointCoord";  break;
-    case EvqFragColor:      return "fragment out";   break;
+    case EvqFragColor:      return "fragColor";      break;
     case EvqFragDepth:      return "gl_FragDepth";   break;
     default:                return "unknown qualifier";
     }
