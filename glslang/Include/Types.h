@@ -398,7 +398,11 @@ public:
 	TType() {}
     virtual ~TType() {}
 
-	TType(const TType& type) { *this = type; }
+    // "dumb" copy, using built-in operator=(), not for use across pool pops.
+    // It will also cause multiple copies of TType to point to the same information.
+    // This only works if that information (like a structure's list of types) does not 
+    // change.
+	explicit TType(const TType& type) { *this = type; }
 
 	void copyType(const TType& copyOf, const TStructureMap& remapper)
 	{
@@ -680,7 +684,7 @@ protected:
     TArraySizes arraySizes;
 
     TTypeList* structure;      // 0 unless this is a struct
-    mutable int structureSize;
+    mutable int structureSize; // a cache, updated on first access
     int maxArraySize;
     TType* arrayInformationType;
 	TString *fieldName;         // for structure field names

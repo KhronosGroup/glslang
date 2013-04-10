@@ -58,7 +58,7 @@ protected:
 // is guaranteed written.  Not always possible to determine if
 // it is written conditionally.
 //
-// ?? It does not do this well yet, this is just a place holder
+// It does not do this well yet, this is just a place holder
 // that simply determines if it was reference at all, anywhere.
 //
 bool QualifierWritten(TIntermNode* node, TStorageQualifier qualifier)

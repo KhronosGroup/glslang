@@ -40,13 +40,13 @@
 //
 class TConstTraverser : public TIntermTraverser {
 public:
-    TConstTraverser(constUnion* cUnion, bool singleConstParam, TOperator constructType, TInfoSink& sink, TType& t) : unionArray(cUnion), type(t),
+    TConstTraverser(constUnion* cUnion, bool singleConstParam, TOperator constructType, TInfoSink& sink, const TType& t) : unionArray(cUnion), type(t),
         constructorType(constructType), singleConstantParam(singleConstParam), infoSink(sink), error(false), isMatrix(false), 
         matrixCols(0), matrixRows(0) {  index = 0; tOp = EOpNull;}
     int index ;
     constUnion *unionArray;
     TOperator tOp;
-    TType type;
+    const TType& type;
     TOperator constructorType;
     bool singleConstantParam;
     TInfoSink& infoSink;
@@ -255,7 +255,7 @@ bool ParseBranch(bool /* previsit*/, TIntermBranch* node, TIntermTraverser* it)
 // Individual functions can be initialized to 0 to skip processing of that
 // type of node.  It's children will still be processed.
 //
-bool TIntermediate::parseConstTree(TSourceLoc line, TIntermNode* root, constUnion* unionArray, TOperator constructorType, TType t, bool singleConstantParam)
+bool TIntermediate::parseConstTree(TSourceLoc line, TIntermNode* root, constUnion* unionArray, TOperator constructorType, const TType& t, bool singleConstantParam)
 {
     if (root == 0)
         return false;

@@ -74,7 +74,7 @@ public:
     TIntermTyped* addMethod(TIntermTyped*, const TType&, const TString*, TSourceLoc);
     TIntermConstantUnion* addConstantUnion(constUnion*, const TType&, TSourceLoc);
     TIntermTyped* promoteConstantUnion(TBasicType, TIntermConstantUnion*) ;
-    bool parseConstTree(TSourceLoc, TIntermNode*, constUnion*, TOperator, TType, bool singleConstantParam = false);        
+    bool parseConstTree(TSourceLoc, TIntermNode*, constUnion*, TOperator, const TType&, bool singleConstantParam = false);
     TIntermNode* addLoop(TIntermNode*, TIntermTyped*, TIntermTyped*, bool testFirst, TSourceLoc);
     TIntermBranch* addBranch(TOperator, TSourceLoc);
     TIntermBranch* addBranch(TOperator, TIntermTyped*, TSourceLoc);

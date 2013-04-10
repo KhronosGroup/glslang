@@ -68,16 +68,16 @@ layout(std140) uniform Transform2 { // layout of this block is std140
 };
 
 layout(column_major) uniform T3 {  // shared and column_major
-    mat4 M3;                       // column_major
-    layout(row_major) mat4 m4;     // row major
-    mat3 N2;                       // column_major
+    mat4 M13;                      // column_major
+    layout(row_major) mat4 m14;    // row major
+    mat3 N12;                      // column_major
 };
 
 // in one compilation unit...
-layout(binding=3) uniform sampler2D s; // s bound to unit 3
+layout(binding=3) uniform sampler2D s17; // s bound to unit 3
 
 // in another compilation unit...
-uniform sampler2D s;                   // okay, s still bound at 3
+uniform sampler2D s17;                   // okay, s still bound at 3
 
 // in another compilation unit...
 //layout(binding=4) uniform sampler2D s; // ERROR: contradictory bindings

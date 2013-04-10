@@ -141,9 +141,14 @@ void TVariable::dump(TInfoSink& infoSink) const
     infoSink.debug << "\n";
 }
 
-void TFunction::dump(TInfoSink &infoSink) const
+void TFunction::dump(TInfoSink& infoSink) const
 {
     infoSink.debug << getName().c_str() << ": " <<  returnType.getCompleteTypeString() << " " << getMangledName().c_str() << "\n";
+}
+
+void TAnonMember::dump(TInfoSink& TInfoSink) const
+{
+    TInfoSink.debug << "anonymous member " << getMemberNumber() << " of " << getAnonContainer().getName().c_str() << "\n";
 }
 
 void TSymbolTableLevel::dump(TInfoSink &infoSink) const
@@ -250,9 +255,18 @@ TFunction* TFunction::clone(TStructureMap& remapper)
 	return function;
 }
 
+TAnonMember* TAnonMember::clone(TStructureMap& remapper)
+{
+    // need to implement this once built-in symbols include interface blocks
+    assert(0);
+
+    return 0;
+}
+
 TSymbolTableLevel* TSymbolTableLevel::clone(TStructureMap& remapper)
 {
 	TSymbolTableLevel *symTableLevel = new TSymbolTableLevel();
+    symTableLevel->anonId = anonId;
 	tLevel::iterator iter;
 	for (iter = level.begin(); iter != level.end(); ++iter) {
 		symTableLevel->insert(*iter->second->clone(remapper));

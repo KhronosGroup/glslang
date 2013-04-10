@@ -1183,7 +1183,7 @@ const TFunction* TParseContext::findFunction(int line, TFunction* call, bool *bu
 bool TParseContext::executeInitializer(TSourceLoc line, TString& identifier, TPublicType& pType, 
                                        TIntermTyped* initializer, TIntermNode*& intermNode, TVariable* variable)
 {
-    TType type = TType(pType);
+    TType type(pType);
 
     if (variable == 0) {
         if (reservedErrorCheck(line, identifier))
@@ -1286,7 +1286,7 @@ TIntermTyped* TParseContext::addConstructor(TIntermNode* node, const TType& type
     if (op == EOpConstructStruct)
         memberTypes = type.getStruct()->begin();
     
-    TType elementType = type;
+    TType elementType(type);
     if (type.isArray())
         elementType.dereference();
 
@@ -1496,8 +1496,8 @@ void TParseContext::addBlock(int line, TPublicType& qualifier, const TString& bl
 
     // Build and add the interface block as a new type named blockName
 
-    TType* blockType = new TType(&typeList, blockName, qualifier.qualifier.storage);
-    TVariable* userTypeDef = new TVariable(&blockName, *blockType, true);
+    TType blockType(&typeList, blockName, qualifier.qualifier.storage);
+    TVariable* userTypeDef = new TVariable(&blockName, blockType, true);
     if (! symbolTable.insert(*userTypeDef)) {
         error(line, "redefinition", blockName.c_str(), "block name");
         recover();
@@ -1516,11 +1516,12 @@ void TParseContext::addBlock(int line, TPublicType& qualifier, const TString& bl
     if (! instanceName)
         instanceName = new TString("");
 
-    TVariable* variable = new TVariable(instanceName, *blockType);
-
+    TVariable* variable = new TVariable(instanceName, blockType);
     if (! symbolTable.insert(*variable)) {
-        error(line, "redefinition", variable->getName().c_str(), "");
-        delete variable;
+        if (*instanceName == "")
+            error(line, "nameless block contains a member that already has a name at global scope", blockName.c_str(), "");
+        else
+            error(line, "block instance name redefinition", variable->getName().c_str(), "");
         recover();
 
         return;
@@ -1616,7 +1617,7 @@ TIntermTyped* TParseContext::addConstArrayNode(int index, TIntermTyped* node, TS
     TIntermTyped* typedNode;
     TIntermConstantUnion* tempConstantNode = node->getAsConstantUnion();
     int arraySize = node->getType().getArraySize();
-    TType arrayElementType = node->getType();
+    TType arrayElementType(node->getType());
     arrayElementType.dereference();
 
     if (index >= node->getType().getArraySize() || index < 0) {

@@ -223,26 +223,41 @@ variable_identifier
         // if this is a new symbol, it won't find it, which is okay at this
         // point in the grammar.
         TSymbol* symbol = $1.symbol;
-        const TVariable* variable = symbol ? symbol->getAsVariable() : 0;
-        if (symbol && ! variable) {
-            parseContext.error($1.line, "variable name expected", $1.string->c_str(), "");
-            parseContext.recover();
+        TAnonMember* anon = symbol ? symbol->getAsAnonMember() : 0;
+        if (anon) {
+            // it was a member of an anonymous container, have to insert its dereference
+            TVariable* variable = anon->getAnonContainer().getAsVariable();
+            TIntermTyped* container = parseContext.intermediate.addSymbol(variable->getUniqueId(),
+                                                                          variable->getName(),
+                                                                          variable->getType(), $1.line);
+            constUnion* unionArray = new constUnion[1];
+            unionArray->setUConst(anon->getMemberNumber());
+            TIntermTyped* constNode = parseContext.intermediate.addConstantUnion(unionArray, TType(EbtUint, EvqConst), $1.line);
+
+            $$ = parseContext.intermediate.addIndex(EOpIndexDirect, container, constNode, $1.line);
+            $$->setType(*(*variable->getType().getStruct())[anon->getMemberNumber()].type);
+        } else {
+            const TVariable* variable = symbol ? symbol->getAsVariable() : 0;
+            if (symbol && ! variable) {
+                parseContext.error($1.line, "variable name expected", $1.string->c_str(), "");
+                parseContext.recover();
+            }
+
+            if (! variable)
+                variable = new TVariable($1.string, TType(EbtVoid));
+
+            // don't delete $1.string, it's used by error recovery, and the pool
+            // pop will reclaim the memory
+
+            if (variable->getType().getQualifier().storage == EvqConst ) {
+                constUnion* constArray = variable->getConstUnionPointer();
+                TType t(variable->getType());
+                $$ = parseContext.intermediate.addConstantUnion(constArray, t, $1.line);
+            } else
+                $$ = parseContext.intermediate.addSymbol(variable->getUniqueId(),
+                                                         variable->getName(),
+                                                         variable->getType(), $1.line);
         }
-
-        if (! variable)
-            variable = new TVariable($1.string, TType(EbtVoid));
-
-        // don't delete $1.string, it's used by error recovery, and the pool
-        // pop will reclaim the memory
-
-        if (variable->getType().getQualifier().storage == EvqConst ) {
-            constUnion* constArray = variable->getConstUnionPointer();
-            TType t(variable->getType());
-            $$ = parseContext.intermediate.addConstantUnion(constArray, t, $1.line);
-        } else
-            $$ = parseContext.intermediate.addSymbol(variable->getUniqueId(),
-                                                     variable->getName(),
-                                                     variable->getType(), $1.line);
     }
     ;
 
@@ -346,7 +361,7 @@ postfix_expression
             unionArray->setFConst(0.0f);
             $$ = parseContext.intermediate.addConstantUnion(unionArray, TType(EbtFloat, EvqConst), $2.line);
         } else {
-            TType newType = $1->getType();
+            TType newType($1->getType());
             newType.dereference();
             $$->setType(newType);
             // TODO: testing: write a set of dereference tests
@@ -400,7 +415,7 @@ postfix_expression
                     TString vectorString = *$3.string;
                     TIntermTyped* index = parseContext.intermediate.addSwizzle(fields, $3.line);
                     $$ = parseContext.intermediate.addIndex(EOpVectorSwizzle, $1, index, $2.line);
-                    $$->setType(TType($1->getBasicType(),EvqTemporary, (int) vectorString.size()));
+                    $$->setType(TType($1->getBasicType(), EvqTemporary, (int) vectorString.size()));
                 }
             }
         } else if ($1->isMatrix()) {

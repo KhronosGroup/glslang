@@ -48,7 +48,7 @@ bool CompareStruct(const TType& leftNodeType, constUnion* rightUnionArray, const
 bool CompareStructure(const TType& leftNodeType, constUnion* rightUnionArray, constUnion* leftUnionArray)
 {
     if (leftNodeType.isArray()) {
-        TType typeWithoutArrayness = leftNodeType;
+        TType typeWithoutArrayness(leftNodeType);
         typeWithoutArrayness.dereference();
 
         int arraySize = leftNodeType.getArraySize();
@@ -111,7 +111,7 @@ TIntermTyped* TIntermConstantUnion::fold(TOperator op, TIntermTyped* constantNod
 
     // For most cases, the return type matches the argument type, so set that
     // up and just code to exceptions below.
-    TType returnType = getType();
+    TType returnType(getType());
 
     //
     // A pair of nodes is to be folded together

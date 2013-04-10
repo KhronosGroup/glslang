@@ -42,6 +42,11 @@
 //   effort of creating and loading with the large numbers of built-in
 //   symbols.
 //
+// -->  This requires a copy mechanism, so initial pools used to create
+//   the shared information can be popped.  So, care is taken with
+//   copying pointers to point to new copies.  Done through "clone"
+//   methods.
+//
 // * Name mangling will be used to give each function a unique name
 //   so that symbol table lookups are never ambiguous.  This allows
 //   a simpler symbol table structure.
@@ -67,24 +72,30 @@
 //
 class TVariable;
 class TFunction;
+class TAnonMember;
 class TSymbol {
 public:
     POOL_ALLOCATOR_NEW_DELETE(GlobalPoolAllocator)
-    TSymbol(const TString *n) :  name(n) { }
-    virtual ~TSymbol() { /* don't delete name, it's from the pool */ }
+    explicit TSymbol(const TString *n) :  name(n) { }
+	virtual TSymbol* clone(TStructureMap& remapper) = 0;
+    virtual ~TSymbol() { }
+
     const TString& getName() const { return *name; }
+    void changeName(const char* buf) { name = new TString(buf); }
     virtual const TString& getMangledName() const { return getName(); }
     virtual TFunction* getAsFunction() { return 0; }
     virtual TVariable* getAsVariable() { return 0; }
+    virtual TAnonMember* getAsAnonMember() { return 0; }
     void setUniqueId(int id) { uniqueId = id; }
     int getUniqueId() const { return uniqueId; }
-    virtual void dump(TInfoSink &infoSink) const = 0;	
-	TSymbol(const TSymbol&);
-	virtual TSymbol* clone(TStructureMap& remapper) = 0;
+    virtual void dump(TInfoSink &infoSink) const = 0;
 
 protected:
+	explicit TSymbol(const TSymbol&);
+    TSymbol& operator=(const TSymbol&);
+
     const TString *name;
-    unsigned int uniqueId;      // For real comparing during code generation
+    unsigned int uniqueId;      // For cross-scope comparing during code generation
 };
 
 //
@@ -99,8 +110,10 @@ protected:
 //
 class TVariable : public TSymbol {
 public:
-    TVariable(const TString *name, const TType& t, bool uT = false ) : TSymbol(name), type(t), userType(uT), unionArray(0), arrayInformationType(0) { }
+    TVariable(const TString *name, const TType& t, bool uT = false ) : TSymbol(name), type(t), userType(uT), unionArray(0), arrayInformationType(0) { }    
+	virtual TVariable* clone(TStructureMap& remapper);
     virtual ~TVariable() { }
+
     virtual TVariable* getAsVariable() { return this; }
     TType& getType() { return type; }
     const TType& getType() const { return type; }
@@ -125,10 +138,12 @@ public:
         delete unionArray;
         unionArray = constArray;
     }
-	TVariable(const TVariable&, TStructureMap& remapper); // copy constructor
-	virtual TVariable* clone(TStructureMap& remapper);
 
 protected:
+	explicit TVariable(TVariable&);
+	TVariable(const TVariable&, TStructureMap& remapper);
+    TVariable& operator=(TVariable&);
+
     TType type;
     bool userType;
     // we are assuming that Pool Allocator will free the memory allocated to unionArray
@@ -159,7 +174,7 @@ struct TParameter {
 //
 class TFunction : public TSymbol {
 public:
-    TFunction(TOperator o) :
+    explicit TFunction(TOperator o) :
         TSymbol(0),
         returnType(TType(EbtVoid)),
         op(o),
@@ -169,9 +184,10 @@ public:
         returnType(retType),
         mangledName(*name + '('),
         op(tOp),
-        defined(false) { }
-	TFunction(const TFunction&, const TStructureMap& remapper);
+        defined(false) { }    
+	virtual TFunction* clone(TStructureMap& remapper);
 	virtual ~TFunction();
+
     virtual TFunction* getAsFunction() { return this; }
 
     void addParameter(TParameter& p)
@@ -192,9 +208,12 @@ public:
     const TParameter& operator [](int i) const { return parameters[i]; }
 
     virtual void dump(TInfoSink &infoSink) const;
-	virtual TFunction* clone(TStructureMap& remapper);
 
 protected:
+    explicit TFunction(TFunction&);
+	TFunction(const TFunction&, const TStructureMap& remapper);
+    TFunction& operator=(TFunction&);
+
     typedef TVector<TParameter> TParamList;
 	TParamList parameters;
     TType returnType;
@@ -203,11 +222,29 @@ protected:
     bool defined;
 };
 
+class TAnonMember : public TSymbol {
+public:
+    TAnonMember(const TString* n, unsigned int m, TSymbol& a) : TSymbol(n), anonContainer(a), memberNumber(m) { }
+	virtual TAnonMember* clone(TStructureMap& remapper);
+    virtual ~TAnonMember() { }
+
+    TAnonMember* getAsAnonMember() { return this; }
+    TSymbol& getAnonContainer() const { return anonContainer; }
+    unsigned int getMemberNumber() const { return memberNumber; }
+    virtual void dump(TInfoSink &infoSink) const;
+
+protected:
+    explicit TAnonMember(TAnonMember&);
+    TAnonMember& operator=(TAnonMember&);
+
+    TSymbol& anonContainer;
+    unsigned int memberNumber;
+};
 
 class TSymbolTableLevel {
 public:
     POOL_ALLOCATOR_NEW_DELETE(GlobalPoolAllocator)
-    TSymbolTableLevel() : defaultPrecision (0) { }
+    TSymbolTableLevel() : defaultPrecision (0), anonId(0) { }
 	~TSymbolTableLevel();
 
     bool insert(TSymbol& symbol)
@@ -216,15 +253,34 @@ public:
         // returning true means symbol was added to the table
         //
         tInsertResult result;
-        result = level.insert(tLevelPair(symbol.getMangledName(), &symbol));
+        if (symbol.getName() == "") {
+            // An empty name means an anonymous container, exposing its members to the external scope.
+            // Give it a name and insert its members in the symbol table, pointing to the container.
+            char buf[20];
+            snprintf(buf, 20, "__anon__%d", anonId++);
+            symbol.changeName(buf);
 
-        return result.second;
+            bool isOkay = true;
+            TTypeList& types = *symbol.getAsVariable()->getType().getStruct();
+            for (unsigned int m = 0; m < types.size(); ++m) {
+                TAnonMember* member = new TAnonMember(&types[m].type->getFieldName(), m, symbol);
+                result = level.insert(tLevelPair(member->getMangledName(), member));
+                if (! result.second)
+                    isOkay = false;
+            }
+
+            return isOkay;
+        } else {
+            result = level.insert(tLevelPair(symbol.getMangledName(), &symbol));
+
+            return result.second;
+        }
     }
 
     TSymbol* find(const TString& name) const
     {
         tLevel::const_iterator it = level.find(name);
-        if (it == level.end())
+        if (it == level.end()) 
             return 0;
         else
             return (*it).second;
@@ -262,12 +318,16 @@ public:
 	TSymbolTableLevel* clone(TStructureMap& remapper);
 
 protected:
+    explicit TSymbolTableLevel(TSymbolTableLevel&);
+    TSymbolTableLevel& operator=(TSymbolTableLevel&);
+
     typedef std::map<TString, TSymbol*, std::less<TString>, pool_allocator<std::pair<const TString, TSymbol*> > > tLevel;
     typedef const tLevel::value_type tLevelPair;
     typedef std::pair<tLevel::iterator, bool> tInsertResult;
 
-    tLevel level;
+    tLevel level;  // named mappings
     TPrecisionQualifier *defaultPrecision;
+    int anonId;
 };
 
 class TSymbolTable {
@@ -280,13 +340,11 @@ public:
         // that the symbol table has not been preloaded with built-ins.
         //
     }
-
-    TSymbolTable(TSymbolTable& symTable)
+    explicit TSymbolTable(TSymbolTable& symTable)
     {
         table.push_back(symTable.table[0]);
         uniqueId = symTable.uniqueId;
     }
-
     ~TSymbolTable()
     {
         // level 0 is always built In symbols, so we never pop that out
@@ -347,6 +405,8 @@ public:
     void setPreviousDefaultPrecisions(TPrecisionQualifier *p) { table[currentLevel()]->setPreviousDefaultPrecisions(p); }
 
 protected:
+    TSymbolTable& operator=(TSymbolTableLevel&);
+
     int currentLevel() const { return static_cast<int>(table.size()) - 1; }
     bool atDynamicBuiltInLevel() { return table.size() == 2; }
 

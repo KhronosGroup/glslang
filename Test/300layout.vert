@@ -5,7 +5,8 @@ layout(LocatioN = 3) in vec4 p;
 out vec4 pos;
 out vec3 color;
 
-layout(shared, column_major, row_major) uniform mat4 m4; // default is now shared and row_major
+layout(shared, column_major, row_major) uniform mat4 badm4; // ERROR
+layout(shared, column_major, row_major) uniform; // default is now shared and row_major
 
 layout(std140) uniform Transform { // layout of this block is std140
     mat4 M1; // row_major
@@ -13,18 +14,20 @@ layout(std140) uniform Transform { // layout of this block is std140
     mat3 N1; // row_major
 } tblock;
 
-//uniform T2 { // layout of this block is shared
-//...
-//};
-//
+uniform T2 { // layout of this block is shared
+    bool b;
+    mat4 t2m;
+};
+
 layout(column_major) uniform T3 { // shared and column_major
     mat4 M3; // column_major
-    layout(row_major) mat4 m4; // row major
+    layout(row_major) mat4 M4; // row major
     mat3 N2; // column_major
+    int b;  // ERROR, redefinition (needs to be last member of block for testing, following members are skipped)
 };
 
 void main()
 {
-    pos = p * (m4 + tblock.M1 + tblock.M2);
+    pos = p * (tblock.M1 + tblock.M2 + M4 + M3 + t2m);
     color = c * tblock.N1;
 }
