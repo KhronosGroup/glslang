@@ -1,7 +1,11 @@
 #version 300 es
 
+struct s { vec4 v; };
+
 layout(location = 7) in vec3 c;
 layout(LocatioN = 3) in vec4 p;
+layout(LocatioN = 9) in vec4 q[4]; // ERROR, no array
+layout(LocatioN = 10) in s r[4];   // ERROR, no struct
 out vec4 pos;
 out vec3 color;
 
@@ -31,6 +35,8 @@ layout(column_major) uniform T3 { // shared and column_major
 out badout {  // ERROR
     float f;
 };
+
+layout (location = 10) out vec4 badout;  // ERROR
 
 void main()
 {

@@ -886,6 +886,11 @@ bool TParseContext::arrayQualifierErrorCheck(int line, const TPublicType& type)
     if (type.qualifier.storage == EvqConst)
         profileRequires(line, ENoProfile, 120, "GL_3DL_array_objects", "const array");
 
+    if (type.qualifier.storage == EvqVaryingIn && language == EShLangVertex) {
+        requireProfile(line, (EProfileMask)~EEsProfileMask, "vertex input arrays");
+        profileRequires(line, ENoProfile, 150, 0, "vertex input arrays");
+    }
+
     return false;
 }
 
@@ -1135,6 +1140,10 @@ void TParseContext::setLayoutQualifier(int line, TPublicType& publicType, TStrin
         error(line, "not supported", "binding", "");
     else
         error(line, "there is no such layout identifier taking an assigned value", id.c_str(), "");
+
+    // TODO: error check: make sure locations are non-overlapping across the whole stage
+    // TODO: error check: if more than one fragment output, all must have a location
+    // TODO: error check: output arrays can only be indexed with a constant (es 300)
 }
 
 // Merge any layout qualifier information from src into dst, leaving everything else in dst alone
@@ -1568,6 +1577,14 @@ void TParseContext::updateDefaults(int line, const TPublicType& publicType, cons
         if (qualifier.layoutPacking != ElpNone) {
             cantHaveId = true;
             defaultGlobalQualification.layoutPacking = qualifier.layoutPacking;
+        }
+    } else if (qualifier.storage == EvqVaryingIn) {
+        if (qualifier.hasLayout() && language != EShLangVertex) {
+            error(line, "can only use location layout qualifier on a vertex input or fragment output", id->c_str(), "");
+        }
+    } else if (qualifier.storage == EvqVaryingOut) {
+        if (qualifier.hasLayout() && language != EShLangFragment) {
+            error(line, "can only use location layout qualifier on a vertex input or fragment output", id->c_str(), "");
         }
     }
 
