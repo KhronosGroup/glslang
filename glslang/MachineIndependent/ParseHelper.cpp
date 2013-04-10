@@ -70,6 +70,11 @@ TParseContext::TParseContext(TSymbolTable& symt, TIntermediate& interm, int v, E
             error(1, "INTERNAL ERROR", "unexpected language", "");
         }
     }
+
+    defaultGlobalQualification.clear();
+    defaultGlobalQualification.layoutMatrix = ElmColumnMajor;
+    defaultGlobalQualification.layoutPacking = ElpShared;
+    defaultGlobalQualification.layoutSlotLocation = 0;
 }
 
 ///////////////////////////////////////////////////////////////////////
@@ -750,7 +755,7 @@ bool TParseContext::mergeQualifiersErrorCheck(int line, TPublicType& dst, const 
         dst.qualifier.precision = src.qualifier.precision;
 
     // Layout qualifiers
-    mergeLayoutQualifiers(line, dst, src);
+    mergeLayoutQualifiers(line, dst.qualifier, src.qualifier);
 
     // other qualifiers
     #define MERGE_SINGLETON(field) bad |= dst.qualifier.field && src.qualifier.field; dst.qualifier.field |= src.qualifier.field;
@@ -1133,16 +1138,16 @@ void TParseContext::setLayoutQualifier(int line, TPublicType& publicType, TStrin
 }
 
 // Merge any layout qualifier information from src into dst, leaving everything else in dst alone
-void TParseContext::mergeLayoutQualifiers(int line, TPublicType& dst, const TPublicType& src)
+void TParseContext::mergeLayoutQualifiers(int line, TQualifier& dst, const TQualifier& src)
 {
-    if (src.qualifier.layoutMatrix != ElmNone)
-        dst.qualifier.layoutMatrix = src.qualifier.layoutMatrix;
+    if (src.layoutMatrix != ElmNone)
+        dst.layoutMatrix = src.layoutMatrix;
 
-    if (src.qualifier.layoutPacking != ElpNone)
-        dst.qualifier.layoutPacking = src.qualifier.layoutPacking;
+    if (src.layoutPacking != ElpNone)
+        dst.layoutPacking = src.layoutPacking;
 
-    if (src.qualifier.hasLocation())
-        dst.qualifier.layoutSlotLocation = src.qualifier.layoutSlotLocation;
+    if (src.hasLocation())
+        dst.layoutSlotLocation = src.layoutSlotLocation;
 }
 
 /////////////////////////////////////////////////////////////////////////////////
@@ -1464,7 +1469,7 @@ TIntermTyped* TParseContext::constructStruct(TIntermNode* node, const TType& typ
 //
 // Do everything needed to add an interface block.
 //
-void TParseContext::addBlock(int line, TPublicType& qualifier, const TString& blockName, TTypeList& typeList, const TString* instanceName, TArraySizes arraySizes)
+void TParseContext::addBlock(int line, TPublicType& publicType, const TString& blockName, TTypeList& typeList, const TString* instanceName, TArraySizes arraySizes)
 {
     // First, error checks
 
@@ -1478,13 +1483,13 @@ void TParseContext::addBlock(int line, TPublicType& qualifier, const TString& bl
 
         return;
     }
-    if (qualifier.basicType != EbtVoid) {
+    if (publicType.basicType != EbtVoid) {
         error(line, "interface blocks cannot be declared with a type", blockName.c_str(), "");
         recover();
 
         return;
     }
-    if (qualifier.qualifier.storage == EvqUniform) {
+    if (publicType.qualifier.storage == EvqUniform) {
         requireProfile(line, (EProfileMask)(~ENoProfileMask), "uniform block");
         profileRequires(line, EEsProfile, 300, 0, "uniform block");
     } else {
@@ -1494,20 +1499,42 @@ void TParseContext::addBlock(int line, TPublicType& qualifier, const TString& bl
         return;
     }
 
+    // check for qualifiers that don't belong within a block
+    for (unsigned int member = 0; member < typeList.size(); ++member) {
+        TQualifier memberQualifier = typeList[member].type->getQualifier();
+        if (memberQualifier.storage != EvqTemporary && memberQualifier.storage != EvqGlobal &&
+            memberQualifier.storage != publicType.qualifier.storage) {
+            error(line, "member storage qualifier cannot contradict block storage qualifier", typeList[member].type->getFieldName().c_str(), "");
+            recover();
+        }
+        if (publicType.qualifier.storage == EvqUniform) {
+            if (memberQualifier.isInterpolation() || memberQualifier.isAuxillary()) {
+                error(line, "member of uniform block cannot have an auxillary or interpolation qualifier", typeList[member].type->getFieldName().c_str(), "");
+                recover();
+            }
+        }
+    }
+
+    // Make default block qualification, and adjust the member qualifications
+
+    TQualifier defaultQualification = defaultGlobalQualification;
+    mergeLayoutQualifiers(line, defaultQualification, publicType.qualifier);
+    for (unsigned int member = 0; member < typeList.size(); ++member) {
+        TQualifier memberQualification = defaultQualification;
+        mergeLayoutQualifiers(line, memberQualification, typeList[member].type->getQualifier());
+        typeList[member].type->getQualifier() = memberQualification;
+    }
+
     // Build and add the interface block as a new type named blockName
 
-    TType blockType(&typeList, blockName, qualifier.qualifier.storage);
+    TType blockType(&typeList, blockName, publicType.qualifier.storage);
+    blockType.getQualifier().layoutPacking = defaultQualification.layoutPacking;
     TVariable* userTypeDef = new TVariable(&blockName, blockType, true);
     if (! symbolTable.insert(*userTypeDef)) {
         error(line, "redefinition", blockName.c_str(), "block name");
         recover();
 
         return;
-    }
-
-    // TODO: semantics: check for qualifiers that don't belong within a block
-    for (unsigned int member = 0; member < typeList.size(); ++member) {
-        //printf("%s: %s\n", typeList[member].type->getFieldName().c_str(), typeList[member].type->getCompleteString().c_str());
     }
 
     // Add the variable, as anonymous or named instanceName
@@ -1525,6 +1552,28 @@ void TParseContext::addBlock(int line, TPublicType& qualifier, const TString& bl
         recover();
 
         return;
+    }
+}
+
+void TParseContext::updateDefaults(int line, const TPublicType& publicType, const TString* id)
+{
+    bool cantHaveId = false;
+    TQualifier qualifier = publicType.qualifier;
+
+    if (qualifier.storage == EvqUniform) {
+        if (qualifier.layoutMatrix != ElmNone) {
+            cantHaveId = true;
+            defaultGlobalQualification.layoutMatrix = qualifier.layoutMatrix;
+        }
+        if (qualifier.layoutPacking != ElpNone) {
+            cantHaveId = true;
+            defaultGlobalQualification.layoutPacking = qualifier.layoutPacking;
+        }
+    }
+
+    if (cantHaveId && id) {
+        error(line, "cannot set global layout qualifiers on uniform variable, use just 'uniform' or a block", id->c_str(), "");
+        recover();
     }
 }
 

@@ -234,7 +234,7 @@ variable_identifier
             unionArray->setUConst(anon->getMemberNumber());
             TIntermTyped* constNode = parseContext.intermediate.addConstantUnion(unionArray, TType(EbtUint, EvqConst), $1.line);
 
-            $$ = parseContext.intermediate.addIndex(EOpIndexDirect, container, constNode, $1.line);
+            $$ = parseContext.intermediate.addIndex(EOpIndexDirectStruct, container, constNode, $1.line);
             $$->setType(*(*variable->getType().getStruct())[anon->getMemberNumber()].type);
         } else {
             const TVariable* variable = symbol ? symbol->getAsVariable() : 0;
@@ -1494,6 +1494,7 @@ single_declaration
     : fully_specified_type {
         $$.type = $1;
         $$.intermAggregate = 0;
+        parseContext.updateDefaults($1.line, $$.type, 0);
     }
     | fully_specified_type IDENTIFIER {
         $$.intermAggregate = 0;
@@ -1504,6 +1505,8 @@ single_declaration
 
         if (parseContext.nonInitErrorCheck($2.line, *$2.string, $$.type))
             parseContext.recover();
+        
+        parseContext.updateDefaults($2.line, $$.type, $2.string);
     }
     | fully_specified_type IDENTIFIER array_specifier {
         $$.intermAggregate = 0;
@@ -1520,6 +1523,7 @@ single_declaration
             if (parseContext.arrayErrorCheck($3.line, *$2.string, $1, variable))
                 parseContext.recover();
         }
+        parseContext.updateDefaults($2.line, $$.type, $2.string);
     }
     | fully_specified_type IDENTIFIER array_specifier EQUAL initializer {
         $$.intermAggregate = 0;
@@ -1647,7 +1651,7 @@ layout_qualifier_id_list
     }
     | layout_qualifier_id_list COMMA layout_qualifier_id {
         $$ = $1;
-        parseContext.mergeLayoutQualifiers($2.line, $$, $3);
+        parseContext.mergeLayoutQualifiers($2.line, $$.qualifier, $3.qualifier);
     }
 
 layout_qualifier_id

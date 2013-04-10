@@ -119,7 +119,9 @@ bool OutputBinary(bool /* preVisit */, TIntermBinary* node, TIntermTraverser* it
 
     case EOpIndexDirect:   out.debug << "direct index";   break;
     case EOpIndexIndirect: out.debug << "indirect index"; break;
-    case EOpIndexDirectStruct:   out.debug << "direct index for structure";   break;
+    case EOpIndexDirectStruct:
+        out.debug << (*node->getLeft()->getType().getStruct())[node->getRight()->getAsConstantUnion()->getUnionArrayPointer()->getIConst()].type->getFieldName();
+        out.debug << ": direct index for structure";      break;
     case EOpVectorSwizzle: out.debug << "vector swizzle"; break;
 
     case EOpAdd:    out.debug << "add";                     break;

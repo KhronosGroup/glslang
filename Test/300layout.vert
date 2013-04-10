@@ -12,6 +12,8 @@ layout(std140) uniform Transform { // layout of this block is std140
     mat4 M1; // row_major
     layout(column_major) mat4 M2; // column major
     mat3 N1; // row_major
+    centroid float badf;  // ERROR
+    in float badg;        // ERROR
 } tblock;
 
 uniform T2 { // layout of this block is shared
@@ -24,6 +26,10 @@ layout(column_major) uniform T3 { // shared and column_major
     layout(row_major) mat4 M4; // row major
     mat3 N2; // column_major
     int b;  // ERROR, redefinition (needs to be last member of block for testing, following members are skipped)
+};
+
+out badout {  // ERROR
+    float f;
 };
 
 void main()

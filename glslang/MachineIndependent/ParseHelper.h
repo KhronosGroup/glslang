@@ -91,6 +91,7 @@ struct TParseContext {
 
     struct TPragma contextPragma;
     TPrecisionQualifier defaultPrecision[EbtNumTypes];
+    TQualifier defaultGlobalQualification;
 	TString HashErrMsg;
     bool AfterEOF;
 
@@ -132,7 +133,7 @@ struct TParseContext {
 
     void setLayoutQualifier(int line, TPublicType&, TString&);
     void setLayoutQualifier(int line, TPublicType&, TString&, int);
-    void mergeLayoutQualifiers(int line, TPublicType& dest, const TPublicType& src);
+    void mergeLayoutQualifiers(int line, TQualifier& dest, const TQualifier& src);
 
     const TFunction* findFunction(int line, TFunction* pfnCall, bool *builtIn = 0);
     bool executeInitializer(TSourceLoc line, TString& identifier, TPublicType& pType,
@@ -141,6 +142,7 @@ struct TParseContext {
     TIntermTyped* constructStruct(TIntermNode*, const TType&, int, TSourceLoc);
     TIntermTyped* constructBuiltIn(const TType&, TOperator, TIntermNode*, TSourceLoc, bool subset);
     void addBlock(int line, TPublicType& qualifier, const TString& blockName, TTypeList& typeList, const TString* instanceName = 0, TArraySizes arraySizes = 0);
+    void updateDefaults(int line, const TPublicType&, const TString* id);
     TIntermTyped* addConstVectorNode(TVectorFields&, TIntermTyped*, TSourceLoc);
     TIntermTyped* addConstMatrixNode(int , TIntermTyped*, TSourceLoc);
     TIntermTyped* addConstArrayNode(int index, TIntermTyped* node, TSourceLoc line);
