@@ -122,7 +122,7 @@ struct TParseContext {
     bool samplerErrorCheck(int line, const TPublicType& pType, const char* reason);
     bool globalQualifierFixAndErrorCheck(int line, TQualifier&, const TPublicType&);
     bool structQualifierErrorCheck(int line, const TPublicType& pType);
-    bool mergeQualifiersErrorCheck(int line, TPublicType& left, const TPublicType& right);
+    bool mergeQualifiersErrorCheck(int line, TPublicType& dst, const TPublicType& src, bool force);
     void setDefaultPrecision(int line, TPublicType&, TPrecisionQualifier);
     bool parameterSamplerErrorCheck(int line, TStorageQualifier qualifier, const TType& type);
     bool containsSampler(const TType& type);
@@ -140,10 +140,12 @@ struct TParseContext {
     TIntermTyped* addConstructor(TIntermNode*, const TType&, TOperator, TFunction*, TSourceLoc);
     TIntermTyped* constructStruct(TIntermNode*, const TType&, int, TSourceLoc);
     TIntermTyped* constructBuiltIn(const TType&, TOperator, TIntermNode*, TSourceLoc, bool subset);
+    void addBlock(int line, TPublicType& qualifier, const TString& blockName, TTypeList& typeList, const TString* instanceName = 0, TArraySizes arraySizes = 0);
     TIntermTyped* addConstVectorNode(TVectorFields&, TIntermTyped*, TSourceLoc);
     TIntermTyped* addConstMatrixNode(int , TIntermTyped*, TSourceLoc);
     TIntermTyped* addConstArrayNode(int index, TIntermTyped* node, TSourceLoc line);
     TIntermTyped* addConstStruct(TString& , TIntermTyped*, TSourceLoc);
+
     bool arraySetMaxSize(TIntermSymbol*, TType*, int, bool, TSourceLoc);
     void requireProfile(int line, EProfileMask profileMask, const char *featureDesc);
     void requireStage(int line, EShLanguageMask languageMask, const char *featureDesc);

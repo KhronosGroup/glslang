@@ -406,7 +406,7 @@ postfix_expression
         } else if ($1->isMatrix()) {
             parseContext.error($2.line, "field selection not allowed on matrix", ".", "");
             parseContext.recover();
-        } else if ($1->getBasicType() == EbtStruct) {
+        } else if ($1->getBasicType() == EbtStruct || $1->getBasicType() == EbtBlock) {
             bool fieldFound = false;
             TTypeList* fields = $1->getType().getStruct();
             if (fields == 0) {
@@ -1184,15 +1184,15 @@ declaration
         $$ = 0;
     }
     | type_qualifier IDENTIFIER LEFT_BRACE struct_declaration_list RIGHT_BRACE SEMICOLON {
-        // block
+        parseContext.addBlock($2.line, $1, *$2.string, *$4);
         $$ = 0;
     }
     | type_qualifier IDENTIFIER LEFT_BRACE struct_declaration_list RIGHT_BRACE IDENTIFIER SEMICOLON {
-        // block
+        parseContext.addBlock($2.line, $1, *$2.string, *$4, $6.string);
         $$ = 0;
     }
     | type_qualifier IDENTIFIER LEFT_BRACE struct_declaration_list RIGHT_BRACE IDENTIFIER array_specifier SEMICOLON {
-        // block
+        parseContext.addBlock($2.line, $1, *$2.string, *$4, $6.string, $7.arraySizes);
         $$ = 0;
     }
     | type_qualifier SEMICOLON {
@@ -1665,7 +1665,7 @@ type_qualifier
         if ($$.type == EbtVoid)
             $$.type = $2.type;
 
-        if (parseContext.mergeQualifiersErrorCheck($$.line, $$, $2))
+        if (parseContext.mergeQualifiersErrorCheck($$.line, $$, $2, false))
             parseContext.recover();
     }
     ;
@@ -2530,6 +2530,7 @@ precision_qualifier
 
 struct_specifier
     : STRUCT IDENTIFIER LEFT_BRACE struct_declaration_list RIGHT_BRACE {
+        // TODO: semantics: check for qualifiers that don't belong in a struct
         TType* structure = new TType($4, *$2.string);
         TVariable* userTypeDef = new TVariable($2.string, *structure, true);
         if (! parseContext.symbolTable.insert(*userTypeDef)) {
@@ -2557,7 +2558,7 @@ struct_declaration_list
         for (unsigned int i = 0; i < $2->size(); ++i) {
             for (unsigned int j = 0; j < $$->size(); ++j) {
                 if ((*$$)[j].type->getFieldName() == (*$2)[i].type->getFieldName()) {
-                    parseContext.error((*$2)[i].line, "duplicate field name in structure:", "struct", (*$2)[i].type->getFieldName().c_str());
+                    parseContext.error((*$2)[i].line, "duplicate member name:", "", (*$2)[i].type->getFieldName().c_str());
                     parseContext.recover();
                 }
             }
@@ -2598,15 +2599,16 @@ struct_declaration
 
         $$ = $3;
 
-        if (parseContext.voidErrorCheck($2.line, (*$3)[0].type->getFieldName(), $2)) {
+        if (parseContext.voidErrorCheck($2.line, (*$3)[0].type->getFieldName(), $2))
             parseContext.recover();
-        }
+        if (parseContext.mergeQualifiersErrorCheck($2.line, $2, $1, true))
+            parseContext.recover();
         for (unsigned int i = 0; i < $$->size(); ++i) {
             //
             // Careful not to replace already know aspects of type, like array-ness
             //
             (*$$)[i].type->setElementType($2.type, $2.vectorSize, $2.matrixCols, $2.matrixRows, $2.userDef);
-
+            (*$$)[i].type->getQualifier() = $2.qualifier;
             if ($2.arraySizes)
                 (*$$)[i].type->setArraySizes($2.arraySizes);
             if ($2.userDef)

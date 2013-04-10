@@ -71,6 +71,9 @@ TIntermSymbol* TIntermediate::addSymbol(int id, const TString& name, const TType
 //
 TIntermTyped* TIntermediate::addBinaryMath(TOperator op, TIntermTyped* left, TIntermTyped* right, TSourceLoc line)
 {
+    if (left->getType().getBasicType() == EbtBlock || right->getType().getBasicType() == EbtBlock)
+        return 0;
+
     switch (op) {
     case EOpLessThan:
     case EOpGreaterThan:
@@ -198,6 +201,9 @@ TIntermTyped* TIntermediate::addIndex(TOperator op, TIntermTyped* base, TIntermT
 TIntermTyped* TIntermediate::addUnaryMath(TOperator op, TIntermNode* childNode, TSourceLoc line)
 {
     TIntermTyped* child = childNode->getAsTyped();
+
+    if (child->getType().getBasicType() == EbtBlock)
+        return 0;
 
     if (child == 0) {
         infoSink.info.message(EPrefixInternalError, "Bad type in AddUnaryMath", line);

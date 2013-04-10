@@ -61,7 +61,7 @@ layout(row_major, column_major)
 
 layout(shared, row_major) uniform; // default is now shared and row_major
 
-layout(std140) uniform Transform { // layout of this block is std140
+layout(std140) uniform Transform2 { // layout of this block is std140
     mat4 M1;                       // row_major
     layout(column_major) mat4 M2;  // column major
     mat3 N1;                       // row_major
@@ -124,7 +124,7 @@ coherent buffer Block {
     vec4 member2;
 };
 
-buffer Block {
+buffer Block2 {
     coherent readonly vec4 member1;
     coherent vec4 member2;
 };

@@ -717,43 +717,43 @@ bool TParseContext::globalQualifierFixAndErrorCheck(int line, TQualifier& qualif
 }
 
 //
-// Merge characteristics of the 'right' qualifier into the 'left'.
-// If there is duplication, issue error messages.
+// Merge characteristics of the 'src' qualifier into the 'dst'.
+// If there is duplication, issue error messages, unless 'force'
+// is specified, which means to just override default settings.
 // 
 // Return true if there was an error.
 //
-bool TParseContext::mergeQualifiersErrorCheck(int line, TPublicType& left, const TPublicType& right)
+bool TParseContext::mergeQualifiersErrorCheck(int line, TPublicType& dst, const TPublicType& src, bool force)
 {
     bool bad = false;
 
     // Storage qualification
-    if (left.qualifier.storage == EvqTemporary)
-        left.qualifier.storage = right.qualifier.storage;
-    else if (left.qualifier.storage == EvqIn  && right.qualifier.storage == EvqOut ||
-             left.qualifier.storage == EvqOut && right.qualifier.storage == EvqIn)
-        left.qualifier.storage = EvqInOut;
-    else if (left.qualifier.storage == EvqIn    && right.qualifier.storage == EvqConst ||
-             left.qualifier.storage == EvqConst && right.qualifier.storage == EvqIn)
-        left.qualifier.storage = EvqConstReadOnly;
-    else if ( left.qualifier.storage != EvqTemporary &&
-             right.qualifier.storage != EvqTemporary) {
-        error(line, "too many storage qualifiers", getStorageQualifierString(right.qualifier.storage), "");
+    if (dst.qualifier.storage == EvqTemporary || dst.qualifier.storage == EvqGlobal)
+        dst.qualifier.storage = src.qualifier.storage;
+    else if (dst.qualifier.storage == EvqIn  && src.qualifier.storage == EvqOut ||
+             dst.qualifier.storage == EvqOut && src.qualifier.storage == EvqIn)
+        dst.qualifier.storage = EvqInOut;
+    else if (dst.qualifier.storage == EvqIn    && src.qualifier.storage == EvqConst ||
+             dst.qualifier.storage == EvqConst && src.qualifier.storage == EvqIn)
+        dst.qualifier.storage = EvqConstReadOnly;
+    else if (src.qualifier.storage != EvqTemporary) {
+        error(line, "too many storage qualifiers", getStorageQualifierString(src.qualifier.storage), "");
         bad = true;
     }
 
     // Precision qualifiers
-    if (left.qualifier.precision == EpqNone)
-        left.qualifier.precision = right.qualifier.precision;
-    else if (right.qualifier.precision) {
-        error(line, "only one precision qualifier allowed", getPrecisionQualifierString(right.qualifier.precision), "");
+    if (! force && src.qualifier.precision != EpqNone && dst.qualifier.precision != EpqNone) {
+        error(line, "only one precision qualifier allowed", getPrecisionQualifierString(src.qualifier.precision), "");
         bad = true;
     }
+    if (dst.qualifier.precision == EpqNone || force && src.qualifier.precision != EpqNone)
+        dst.qualifier.precision = src.qualifier.precision;
 
     // Layout qualifiers
-    mergeLayoutQualifiers(line, left, right);
+    mergeLayoutQualifiers(line, dst, src);
 
     // other qualifiers
-    #define MERGE_SINGLETON(field) bad |= left.qualifier.field && right.qualifier.field; left.qualifier.field |= right.qualifier.field;
+    #define MERGE_SINGLETON(field) bad |= dst.qualifier.field && src.qualifier.field; dst.qualifier.field |= src.qualifier.field;
     MERGE_SINGLETON(invariant);
     MERGE_SINGLETON(centroid);
     MERGE_SINGLETON(smooth);
@@ -1459,6 +1459,72 @@ TIntermTyped* TParseContext::constructStruct(TIntermNode* node, const TType& typ
     }
 
     return converted;
+}
+
+//
+// Do everything needed to add an interface block.
+//
+void TParseContext::addBlock(int line, TPublicType& qualifier, const TString& blockName, TTypeList& typeList, const TString* instanceName, TArraySizes arraySizes)
+{
+    // First, error checks
+
+    if (reservedErrorCheck(line, blockName)) {
+        recover();
+
+        return;
+    }
+    if (instanceName && reservedErrorCheck(line, *instanceName)) {
+        recover();
+
+        return;
+    }
+    if (qualifier.type != EbtVoid) {
+        error(line, "interface blocks cannot be declared with a type", blockName.c_str(), "");
+        recover();
+
+        return;
+    }
+    if (qualifier.qualifier.storage == EvqUniform) {
+        requireProfile(line, (EProfileMask)(~ENoProfileMask), "uniform block");
+        profileRequires(line, EEsProfile, 300, 0, "uniform block");
+    } else {
+        error(line, "only uniform interface blocks are supported", blockName.c_str(), "");
+        recover();
+
+        return;
+    }
+
+    // Build and add the interface block as a new type named blockName
+
+    TType* blockType = new TType(&typeList, blockName, qualifier.qualifier.storage);
+    TVariable* userTypeDef = new TVariable(&blockName, *blockType, true);
+    if (! symbolTable.insert(*userTypeDef)) {
+        error(line, "redefinition", blockName.c_str(), "block name");
+        recover();
+
+        return;
+    }
+
+    // TODO: semantics: check for qualifiers that don't belong within a block
+    for (unsigned int member = 0; member < typeList.size(); ++member) {
+        //printf("%s: %s\n", typeList[member].type->getFieldName().c_str(), typeList[member].type->getCompleteString().c_str());
+    }
+
+    // Add the variable, as anonymous or named instanceName
+
+    // make an anonymous variable if no name was provided
+    if (! instanceName)
+        instanceName = new TString("");
+
+    TVariable* variable = new TVariable(instanceName, *blockType);
+
+    if (! symbolTable.insert(*variable)) {
+        error(line, "redefinition", variable->getName().c_str(), "");
+        delete variable;
+        recover();
+
+        return;
+    }
 }
 
 //

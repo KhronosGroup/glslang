@@ -351,7 +351,7 @@ typedef std::map<TTypeList*, TTypeList*>::const_iterator TStructureMapIterator;
 class TType {
 public:
     POOL_ALLOCATOR_NEW_DELETE(GlobalPoolAllocator)
-    explicit TType(TBasicType t, TStorageQualifier q = EvqTemporary, int vs = 1, int mc = 0, int mr = 0) :
+    TType(TBasicType t, TStorageQualifier q = EvqTemporary, int vs = 1, int mc = 0, int mr = 0) :
                             type(t), vectorSize(vs), matrixCols(mc), matrixRows(mr), arraySizes(0),
                             structure(0), structureSize(0), maxArraySize(0), arrayInformationType(0),
                             fieldName(0), mangled(0), typeName(0)
@@ -360,7 +360,7 @@ public:
                                 qualifier.clear();
                                 qualifier.storage = q;
                             }
-             TType(TBasicType t, TStorageQualifier q, TPrecisionQualifier p, int vs = 1, int mc = 0, int mr = 0) :
+    TType(TBasicType t, TStorageQualifier q, TPrecisionQualifier p, int vs = 1, int mc = 0, int mr = 0) :
                             type(t), vectorSize(vs), matrixCols(mc), matrixRows(mr), arraySizes(0),
                             structure(0), structureSize(0), maxArraySize(0), arrayInformationType(0),
                             fieldName(0), mangled(0), typeName(0)
@@ -382,15 +382,20 @@ public:
                                     typeName = NewPoolTString(p.userDef->getTypeName().c_str());
                                 }
                             }
-    explicit TType(TTypeList* userDef, const TString& n) :
+    TType(TTypeList* userDef, const TString& n, TStorageQualifier blockQualifier = EvqGlobal) :
                             type(EbtStruct), vectorSize(1), matrixCols(0), matrixRows(0), arraySizes(0),
                             structure(userDef), maxArraySize(0), arrayInformationType(0), fieldName(0), mangled(0)
                             {
                                 sampler.clear();
                                 qualifier.clear();
+                                // is it an interface block?
+                                if (blockQualifier != EvqGlobal) {
+                                    qualifier.storage = blockQualifier;
+                                    type = EbtBlock;
+                                }
 								typeName = NewPoolTString(n.c_str());
                             }
-	explicit TType() {}
+	TType() {}
     virtual ~TType() {}
 
 	TType(const TType& type) { *this = type; }
@@ -513,6 +518,9 @@ public:
     void setArrayInformationType(TType* t) { arrayInformationType = t; }
     TType* getArrayInformationType() { return arrayInformationType; }
     virtual bool isVector() const { return vectorSize > 1; }
+    const char* getBasicString() const {
+        return TType::getBasicString(type);
+    }
     static const char* getBasicString(TBasicType t) {
         switch (t) {
         case EbtVoid:              return "void";
@@ -523,6 +531,7 @@ public:
         case EbtBool:              return "bool";
         case EbtSampler:           return "sampler/image";
         case EbtStruct:            return "structure";
+        case EbtBlock:             return "block";
         default:                   return "unknown type";
         }
     }
@@ -598,10 +607,9 @@ public:
         if (type == EbtSampler)
             return sampler.getString();
         else
-            return getBasicString(type);
+            return getBasicString();
     }
 
-    const char* getBasicString() const { return TType::getBasicString(type); }
     const char* getStorageQualifierString() const { return ::getStorageQualifierString(qualifier.storage); }
     const char* getPrecisionQualifierString() const { return ::getPrecisionQualifierString(qualifier.precision); }
     TTypeList* getStruct() { return structure; }
@@ -610,7 +618,7 @@ public:
     {
         int totalSize;
 
-        if (getBasicType() == EbtStruct)
+        if (getBasicType() == EbtStruct || getBasicType() == EbtBlock)
             totalSize = getStructSize();
         else if (matrixCols)
             totalSize = matrixCols * matrixRows;

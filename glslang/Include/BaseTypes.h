@@ -49,6 +49,7 @@ enum TBasicType {
     EbtBool,
     EbtSampler,
     EbtStruct,
+    EbtBlock,
     EbtNumTypes
 };
 
