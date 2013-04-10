@@ -652,7 +652,7 @@ function_identifier
             $$.function = function;
         } else {
             TOperator op = EOpNull;
-            switch ($1.type) {
+            switch ($1.basicType) {
             case EbtFloat:
                 if ($1.matrixCols) {
                     switch ($1.matrixCols) {
@@ -760,9 +760,9 @@ function_identifier
             default: break; // some compilers want this
             }
             if (op == EOpNull) {
-                parseContext.error($1.line, "cannot construct this type", TType::getBasicString($1.type), "");
+                parseContext.error($1.line, "cannot construct this type", TType::getBasicString($1.basicType), "");
                 parseContext.recover();
-                $1.type = EbtFloat;
+                $1.basicType = EbtFloat;
                 op = EOpConstructFloat;
             }
             TString tempString = "";
@@ -1318,7 +1318,7 @@ parameter_declarator
             parseContext.profileRequires($1.line, ENoProfile, 120, "GL_3DL_array_objects", "arrayed type");
             parseContext.profileRequires($1.line, EEsProfile, 300, 0, "arrayed type");
         }
-        if ($1.type == EbtVoid) {
+        if ($1.basicType == EbtVoid) {
             parseContext.error($2.line, "illegal use of type 'void'", $2.string->c_str(), "");
             parseContext.recover();
         }
@@ -1662,8 +1662,8 @@ type_qualifier
     }
     | type_qualifier single_type_qualifier {
         $$ = $1;
-        if ($$.type == EbtVoid)
-            $$.type = $2.type;
+        if ($$.basicType == EbtVoid)
+            $$.basicType = $2.basicType;
 
         if (parseContext.mergeQualifiersErrorCheck($$.line, $$, $2, false))
             parseContext.recover();
@@ -1830,11 +1830,11 @@ type_name_list
 type_specifier
     : type_specifier_nonarray {
         $$ = $1;
-        $$.qualifier.precision = parseContext.defaultPrecision[$$.type];
+        $$.qualifier.precision = parseContext.defaultPrecision[$$.basicType];
     }
     | type_specifier_nonarray array_specifier {
         $$ = $1;
-        $$.qualifier.precision = parseContext.defaultPrecision[$$.type];
+        $$.qualifier.precision = parseContext.defaultPrecision[$$.basicType];
         $$.arraySizes = $2.arraySizes;
     }
     ;
@@ -1871,619 +1871,619 @@ array_specifier
 type_specifier_nonarray
     : VOID {
         $$.init($1.line, parseContext.symbolTable.atGlobalLevel());
-        $$.type = EbtVoid;
+        $$.basicType = EbtVoid;
     }
     | FLOAT {
         $$.init($1.line, parseContext.symbolTable.atGlobalLevel());
-        $$.type = EbtFloat;
+        $$.basicType = EbtFloat;
     }
     | DOUBLE {
         parseContext.doubleCheck($1.line, "double");
         $$.init($1.line, parseContext.symbolTable.atGlobalLevel());
-        $$.type = EbtDouble;
+        $$.basicType = EbtDouble;
     }
     | INT {
         $$.init($1.line, parseContext.symbolTable.atGlobalLevel());
-        $$.type = EbtInt;
+        $$.basicType = EbtInt;
     }
     | UINT {
         parseContext.fullIntegerCheck($1.line, "unsigned integer");
         $$.init($1.line, parseContext.symbolTable.atGlobalLevel());
-        $$.type = EbtUint;
+        $$.basicType = EbtUint;
     }
     | BOOL {
         $$.init($1.line, parseContext.symbolTable.atGlobalLevel());
-        $$.type = EbtBool;
+        $$.basicType = EbtBool;
     }
     | VEC2 {
         $$.init($1.line, parseContext.symbolTable.atGlobalLevel());
-        $$.type = EbtFloat;
+        $$.basicType = EbtFloat;
         $$.setVector(2);
     }
     | VEC3 {
         $$.init($1.line, parseContext.symbolTable.atGlobalLevel());
-        $$.type = EbtFloat;
+        $$.basicType = EbtFloat;
         $$.setVector(3);
     }
     | VEC4 {
         $$.init($1.line, parseContext.symbolTable.atGlobalLevel());
-        $$.type = EbtFloat;
+        $$.basicType = EbtFloat;
         $$.setVector(4);
     }
     | DVEC2 {
         parseContext.doubleCheck($1.line, "double vector");
         $$.init($1.line, parseContext.symbolTable.atGlobalLevel());
-        $$.type = EbtDouble;
+        $$.basicType = EbtDouble;
         $$.setVector(2);
     }
     | DVEC3 {
         parseContext.doubleCheck($1.line, "double vector");
         $$.init($1.line, parseContext.symbolTable.atGlobalLevel());
-        $$.type = EbtDouble;
+        $$.basicType = EbtDouble;
         $$.setVector(3);
     }
     | DVEC4 {
         parseContext.doubleCheck($1.line, "double vector");
         $$.init($1.line, parseContext.symbolTable.atGlobalLevel());
-        $$.type = EbtDouble;
+        $$.basicType = EbtDouble;
         $$.setVector(4);
     }
     | BVEC2 {
         $$.init($1.line, parseContext.symbolTable.atGlobalLevel());
-        $$.type = EbtBool;
+        $$.basicType = EbtBool;
         $$.setVector(2);
     }
     | BVEC3 {
         $$.init($1.line, parseContext.symbolTable.atGlobalLevel());
-        $$.type = EbtBool;
+        $$.basicType = EbtBool;
         $$.setVector(3);
     }
     | BVEC4 {
         $$.init($1.line, parseContext.symbolTable.atGlobalLevel());
-        $$.type = EbtBool;
+        $$.basicType = EbtBool;
         $$.setVector(4);
     }
     | IVEC2 {
         $$.init($1.line, parseContext.symbolTable.atGlobalLevel());
-        $$.type = EbtInt;
+        $$.basicType = EbtInt;
         $$.setVector(2);
     }
     | IVEC3 {
         $$.init($1.line, parseContext.symbolTable.atGlobalLevel());
-        $$.type = EbtInt;
+        $$.basicType = EbtInt;
         $$.setVector(3);
     }
     | IVEC4 {
         $$.init($1.line, parseContext.symbolTable.atGlobalLevel());
-        $$.type = EbtInt;
+        $$.basicType = EbtInt;
         $$.setVector(4);
     }
     | UVEC2 {
         parseContext.fullIntegerCheck($1.line, "unsigned integer vector");
         $$.init($1.line, parseContext.symbolTable.atGlobalLevel());
-        $$.type = EbtUint;
+        $$.basicType = EbtUint;
         $$.setVector(2);
     }
     | UVEC3 {
         parseContext.fullIntegerCheck($1.line, "unsigned integer vector");
         $$.init($1.line, parseContext.symbolTable.atGlobalLevel());
-        $$.type = EbtUint;
+        $$.basicType = EbtUint;
         $$.setVector(3);
     }
     | UVEC4 {
         parseContext.fullIntegerCheck($1.line, "unsigned integer vector");
         $$.init($1.line, parseContext.symbolTable.atGlobalLevel());
-        $$.type = EbtUint;
+        $$.basicType = EbtUint;
         $$.setVector(4);
     }
     | MAT2 {
         $$.init($1.line, parseContext.symbolTable.atGlobalLevel());
-        $$.type = EbtFloat;
+        $$.basicType = EbtFloat;
         $$.setMatrix(2, 2);
     }
     | MAT3 {
         $$.init($1.line, parseContext.symbolTable.atGlobalLevel());
-        $$.type = EbtFloat;
+        $$.basicType = EbtFloat;
         $$.setMatrix(3, 3);
     }
     | MAT4 {
         $$.init($1.line, parseContext.symbolTable.atGlobalLevel());
-        $$.type = EbtFloat;
+        $$.basicType = EbtFloat;
         $$.setMatrix(4, 4);
     }
     | MAT2X2 {
         $$.init($1.line, parseContext.symbolTable.atGlobalLevel());
-        $$.type = EbtFloat;
+        $$.basicType = EbtFloat;
         $$.setMatrix(2, 2);
     }
     | MAT2X3 {
         $$.init($1.line, parseContext.symbolTable.atGlobalLevel());
-        $$.type = EbtFloat;
+        $$.basicType = EbtFloat;
         $$.setMatrix(2, 3);
     }
     | MAT2X4 {
         $$.init($1.line, parseContext.symbolTable.atGlobalLevel());
-        $$.type = EbtFloat;
+        $$.basicType = EbtFloat;
         $$.setMatrix(2, 4);
     }
     | MAT3X2 {
         $$.init($1.line, parseContext.symbolTable.atGlobalLevel());
-        $$.type = EbtFloat;
+        $$.basicType = EbtFloat;
         $$.setMatrix(3, 2);
     }
     | MAT3X3 {
         $$.init($1.line, parseContext.symbolTable.atGlobalLevel());
-        $$.type = EbtFloat;
+        $$.basicType = EbtFloat;
         $$.setMatrix(3, 3);
     }
     | MAT3X4 {
         $$.init($1.line, parseContext.symbolTable.atGlobalLevel());
-        $$.type = EbtFloat;
+        $$.basicType = EbtFloat;
         $$.setMatrix(3, 4);
     }
     | MAT4X2 {
         $$.init($1.line, parseContext.symbolTable.atGlobalLevel());
-        $$.type = EbtFloat;
+        $$.basicType = EbtFloat;
         $$.setMatrix(4, 2);
     }
     | MAT4X3 {
         $$.init($1.line, parseContext.symbolTable.atGlobalLevel());
-        $$.type = EbtFloat;
+        $$.basicType = EbtFloat;
         $$.setMatrix(4, 3);
     }
     | MAT4X4 {
         $$.init($1.line, parseContext.symbolTable.atGlobalLevel());
-        $$.type = EbtFloat;
+        $$.basicType = EbtFloat;
         $$.setMatrix(4, 4);
     }
     | DMAT2 {
         parseContext.doubleCheck($1.line, "double matrix");
         $$.init($1.line, parseContext.symbolTable.atGlobalLevel());
-        $$.type = EbtDouble;
+        $$.basicType = EbtDouble;
         $$.setMatrix(2, 2);
     }
     | DMAT3 {
         parseContext.doubleCheck($1.line, "double matrix");
         $$.init($1.line, parseContext.symbolTable.atGlobalLevel());
-        $$.type = EbtDouble;
+        $$.basicType = EbtDouble;
         $$.setMatrix(3, 3);
     }
     | DMAT4 {
         parseContext.doubleCheck($1.line, "double matrix");
         $$.init($1.line, parseContext.symbolTable.atGlobalLevel());
-        $$.type = EbtDouble;
+        $$.basicType = EbtDouble;
         $$.setMatrix(4, 4);
     }
     | DMAT2X2 {
         parseContext.doubleCheck($1.line, "double matrix");
         $$.init($1.line, parseContext.symbolTable.atGlobalLevel());
-        $$.type = EbtDouble;
+        $$.basicType = EbtDouble;
         $$.setMatrix(2, 2);
     }
     | DMAT2X3 {
         parseContext.doubleCheck($1.line, "double matrix");
         $$.init($1.line, parseContext.symbolTable.atGlobalLevel());
-        $$.type = EbtDouble;
+        $$.basicType = EbtDouble;
         $$.setMatrix(2, 3);
     }
     | DMAT2X4 {
         parseContext.doubleCheck($1.line, "double matrix");
         $$.init($1.line, parseContext.symbolTable.atGlobalLevel());
-        $$.type = EbtDouble;
+        $$.basicType = EbtDouble;
         $$.setMatrix(2, 4);
     }
     | DMAT3X2 {
         parseContext.doubleCheck($1.line, "double matrix");
         $$.init($1.line, parseContext.symbolTable.atGlobalLevel());
-        $$.type = EbtDouble;
+        $$.basicType = EbtDouble;
         $$.setMatrix(3, 2);
     }
     | DMAT3X3 {
         parseContext.doubleCheck($1.line, "double matrix");
         $$.init($1.line, parseContext.symbolTable.atGlobalLevel());
-        $$.type = EbtDouble;
+        $$.basicType = EbtDouble;
         $$.setMatrix(3, 3);
     }
     | DMAT3X4 {
         parseContext.doubleCheck($1.line, "double matrix");
         $$.init($1.line, parseContext.symbolTable.atGlobalLevel());
-        $$.type = EbtDouble;
+        $$.basicType = EbtDouble;
         $$.setMatrix(3, 4);
     }
     | DMAT4X2 {
         parseContext.doubleCheck($1.line, "double matrix");
         $$.init($1.line, parseContext.symbolTable.atGlobalLevel());
-        $$.type = EbtDouble;
+        $$.basicType = EbtDouble;
         $$.setMatrix(4, 2);
     }
     | DMAT4X3 {
         parseContext.doubleCheck($1.line, "double matrix");
         $$.init($1.line, parseContext.symbolTable.atGlobalLevel());
-        $$.type = EbtDouble;
+        $$.basicType = EbtDouble;
         $$.setMatrix(4, 3);
     }
     | DMAT4X4 {
         parseContext.doubleCheck($1.line, "double matrix");
         $$.init($1.line, parseContext.symbolTable.atGlobalLevel());
-        $$.type = EbtDouble;
+        $$.basicType = EbtDouble;
         $$.setMatrix(4, 4);
     }
     | ATOMIC_UINT {
         // TODO: add type
         $$.init($1.line, parseContext.symbolTable.atGlobalLevel());
-        $$.type = EbtInt;
+        $$.basicType = EbtInt;
     }
     | SAMPLER1D {
         $$.init($1.line, parseContext.symbolTable.atGlobalLevel());
-        $$.type = EbtSampler;
+        $$.basicType = EbtSampler;
         $$.sampler.set(EbtFloat, Esd1D);
     }
     | SAMPLER2D {
         $$.init($1.line, parseContext.symbolTable.atGlobalLevel());
-        $$.type = EbtSampler;
+        $$.basicType = EbtSampler;
         $$.sampler.set(EbtFloat, Esd2D);
     }
     | SAMPLER3D {
         $$.init($1.line, parseContext.symbolTable.atGlobalLevel());
-        $$.type = EbtSampler;
+        $$.basicType = EbtSampler;
         $$.sampler.set(EbtFloat, Esd3D);
     }
     | SAMPLERCUBE {
         $$.init($1.line, parseContext.symbolTable.atGlobalLevel());
-        $$.type = EbtSampler;
+        $$.basicType = EbtSampler;
         $$.sampler.set(EbtFloat, EsdCube);
     }
     | SAMPLER1DSHADOW {
         $$.init($1.line, parseContext.symbolTable.atGlobalLevel());
-        $$.type = EbtSampler;
+        $$.basicType = EbtSampler;
         $$.sampler.set(EbtFloat, Esd1D, false, true);
     }
     | SAMPLER2DSHADOW {
         $$.init($1.line, parseContext.symbolTable.atGlobalLevel());
-        $$.type = EbtSampler;
+        $$.basicType = EbtSampler;
         $$.sampler.set(EbtFloat, Esd2D, false, true);
     }
     | SAMPLERCUBESHADOW {
         $$.init($1.line, parseContext.symbolTable.atGlobalLevel());
-        $$.type = EbtSampler;
+        $$.basicType = EbtSampler;
         $$.sampler.set(EbtFloat, EsdCube, false, true);
     }
     | SAMPLER1DARRAY {
         $$.init($1.line, parseContext.symbolTable.atGlobalLevel());
-        $$.type = EbtSampler;
+        $$.basicType = EbtSampler;
         $$.sampler.set(EbtFloat, Esd1D, true);
     }
     | SAMPLER2DARRAY {
         $$.init($1.line, parseContext.symbolTable.atGlobalLevel());
-        $$.type = EbtSampler;
+        $$.basicType = EbtSampler;
         $$.sampler.set(EbtFloat, Esd2D, true);
     }
     | SAMPLER1DARRAYSHADOW {
         $$.init($1.line, parseContext.symbolTable.atGlobalLevel());
-        $$.type = EbtSampler;
+        $$.basicType = EbtSampler;
         $$.sampler.set(EbtFloat, Esd1D, true, true);
     }
     | SAMPLER2DARRAYSHADOW {
         $$.init($1.line, parseContext.symbolTable.atGlobalLevel());
-        $$.type = EbtSampler;
+        $$.basicType = EbtSampler;
         $$.sampler.set(EbtFloat, Esd2D, true, true);
     }
     | SAMPLERCUBEARRAY {
         $$.init($1.line, parseContext.symbolTable.atGlobalLevel());
-        $$.type = EbtSampler;
+        $$.basicType = EbtSampler;
         $$.sampler.set(EbtFloat, EsdCube, true);
     }
     | SAMPLERCUBEARRAYSHADOW {
         $$.init($1.line, parseContext.symbolTable.atGlobalLevel());
-        $$.type = EbtSampler;
+        $$.basicType = EbtSampler;
         $$.sampler.set(EbtFloat, EsdCube, true, true);
     }
     | ISAMPLER1D {
         $$.init($1.line, parseContext.symbolTable.atGlobalLevel());
-        $$.type = EbtSampler;
+        $$.basicType = EbtSampler;
         $$.sampler.set(EbtInt, Esd1D);
     }
     | ISAMPLER2D {
         $$.init($1.line, parseContext.symbolTable.atGlobalLevel());
-        $$.type = EbtSampler;
+        $$.basicType = EbtSampler;
         $$.sampler.set(EbtInt, Esd2D);
     }
     | ISAMPLER3D {
         $$.init($1.line, parseContext.symbolTable.atGlobalLevel());
-        $$.type = EbtSampler;
+        $$.basicType = EbtSampler;
         $$.sampler.set(EbtInt, Esd3D);
     }
     | ISAMPLERCUBE {
         $$.init($1.line, parseContext.symbolTable.atGlobalLevel());
-        $$.type = EbtSampler;
+        $$.basicType = EbtSampler;
         $$.sampler.set(EbtInt, EsdCube);
     }
     | ISAMPLER1DARRAY {
         $$.init($1.line, parseContext.symbolTable.atGlobalLevel());
-        $$.type = EbtSampler;
+        $$.basicType = EbtSampler;
         $$.sampler.set(EbtInt, Esd1D, true);
     }
     | ISAMPLER2DARRAY {
         $$.init($1.line, parseContext.symbolTable.atGlobalLevel());
-        $$.type = EbtSampler;
+        $$.basicType = EbtSampler;
         $$.sampler.set(EbtInt, Esd2D, true);
     }
     | ISAMPLERCUBEARRAY {
         $$.init($1.line, parseContext.symbolTable.atGlobalLevel());
-        $$.type = EbtSampler;
+        $$.basicType = EbtSampler;
         $$.sampler.set(EbtInt, Esd3D, true);
     }
     | USAMPLER1D {
         $$.init($1.line, parseContext.symbolTable.atGlobalLevel());
-        $$.type = EbtSampler;
+        $$.basicType = EbtSampler;
         $$.sampler.set(EbtUint, Esd1D);
     }
     | USAMPLER2D {
         $$.init($1.line, parseContext.symbolTable.atGlobalLevel());
-        $$.type = EbtSampler;
+        $$.basicType = EbtSampler;
         $$.sampler.set(EbtUint, Esd2D);
     }
     | USAMPLER3D {
         $$.init($1.line, parseContext.symbolTable.atGlobalLevel());
-        $$.type = EbtSampler;
+        $$.basicType = EbtSampler;
         $$.sampler.set(EbtUint, Esd3D);
     }
     | USAMPLERCUBE {
         $$.init($1.line, parseContext.symbolTable.atGlobalLevel());
-        $$.type = EbtSampler;
+        $$.basicType = EbtSampler;
         $$.sampler.set(EbtUint, EsdCube);
     }
     | USAMPLER1DARRAY {
         $$.init($1.line, parseContext.symbolTable.atGlobalLevel());
-        $$.type = EbtSampler;
+        $$.basicType = EbtSampler;
         $$.sampler.set(EbtUint, Esd1D, true);
     }
     | USAMPLER2DARRAY {
         $$.init($1.line, parseContext.symbolTable.atGlobalLevel());
-        $$.type = EbtSampler;
+        $$.basicType = EbtSampler;
         $$.sampler.set(EbtUint, Esd2D, true);
     }
     | USAMPLERCUBEARRAY {
         $$.init($1.line, parseContext.symbolTable.atGlobalLevel());
-        $$.type = EbtSampler;
+        $$.basicType = EbtSampler;
         $$.sampler.set(EbtUint, EsdCube, true);
     }
     | SAMPLER2DRECT {
         parseContext.profileRequires($1.line, ENoProfile, 140, "GL_ARB_texture_rectangle", "rectangle texture");
 
         $$.init($1.line, parseContext.symbolTable.atGlobalLevel());
-        $$.type = EbtSampler;
+        $$.basicType = EbtSampler;
         $$.sampler.set(EbtFloat, EsdRect);
     }
     | SAMPLER2DRECTSHADOW {
         parseContext.profileRequires($1.line, ECoreProfile, 140, "GL_ARB_texture_rectangle", "rectangle texture");
 
         $$.init($1.line, parseContext.symbolTable.atGlobalLevel());
-        $$.type = EbtSampler;
+        $$.basicType = EbtSampler;
         $$.sampler.set(EbtFloat, EsdRect, false, true);
     }
     | ISAMPLER2DRECT {
         parseContext.profileRequires($1.line, ECoreProfile, 140, "GL_ARB_texture_rectangle", "rectangle texture");
 
         $$.init($1.line, parseContext.symbolTable.atGlobalLevel());
-        $$.type = EbtSampler;
+        $$.basicType = EbtSampler;
         $$.sampler.set(EbtInt, EsdRect);
     }
     | USAMPLER2DRECT {
         parseContext.profileRequires($1.line, ECoreProfile, 140, "GL_ARB_texture_rectangle", "rectangle texture");
 
         $$.init($1.line, parseContext.symbolTable.atGlobalLevel());
-        $$.type = EbtSampler;
+        $$.basicType = EbtSampler;
         $$.sampler.set(EbtUint, EsdRect);
     }
     | SAMPLERBUFFER {
         $$.init($1.line, parseContext.symbolTable.atGlobalLevel());
-        $$.type = EbtSampler;
+        $$.basicType = EbtSampler;
         $$.sampler.set(EbtFloat, EsdBuffer);
     }
     | ISAMPLERBUFFER {
         $$.init($1.line, parseContext.symbolTable.atGlobalLevel());
-        $$.type = EbtSampler;
+        $$.basicType = EbtSampler;
         $$.sampler.set(EbtInt, EsdBuffer);
     }
     | USAMPLERBUFFER {
         $$.init($1.line, parseContext.symbolTable.atGlobalLevel());
-        $$.type = EbtSampler;
+        $$.basicType = EbtSampler;
         $$.sampler.set(EbtUint, EsdBuffer);
     }
     | SAMPLER2DMS {
         $$.init($1.line, parseContext.symbolTable.atGlobalLevel());
-        $$.type = EbtSampler;
+        $$.basicType = EbtSampler;
         $$.sampler.set(EbtFloat, Esd2D, false, false, true);
     }
     | ISAMPLER2DMS {
         $$.init($1.line, parseContext.symbolTable.atGlobalLevel());
-        $$.type = EbtSampler;
+        $$.basicType = EbtSampler;
         $$.sampler.set(EbtInt, Esd2D, false, false, true);
     }
     | USAMPLER2DMS {
         $$.init($1.line, parseContext.symbolTable.atGlobalLevel());
-        $$.type = EbtSampler;
+        $$.basicType = EbtSampler;
         $$.sampler.set(EbtUint, Esd2D, false, false, true);
     }
     | SAMPLER2DMSARRAY {
         $$.init($1.line, parseContext.symbolTable.atGlobalLevel());
-        $$.type = EbtSampler;
+        $$.basicType = EbtSampler;
         $$.sampler.set(EbtFloat, Esd2D, true, false, true);
     }
     | ISAMPLER2DMSARRAY {
         $$.init($1.line, parseContext.symbolTable.atGlobalLevel());
-        $$.type = EbtSampler;
+        $$.basicType = EbtSampler;
         $$.sampler.set(EbtInt, Esd2D, true, false, true);
     }
     | USAMPLER2DMSARRAY {
         $$.init($1.line, parseContext.symbolTable.atGlobalLevel());
-        $$.type = EbtSampler;
+        $$.basicType = EbtSampler;
         $$.sampler.set(EbtUint, Esd2D, true, false, true);
     }
     | IMAGE1D {
         $$.init($1.line, parseContext.symbolTable.atGlobalLevel());
-        $$.type = EbtSampler;
+        $$.basicType = EbtSampler;
         $$.sampler.setImage(EbtFloat, Esd1D);
     }
     | IIMAGE1D {
         $$.init($1.line, parseContext.symbolTable.atGlobalLevel());
-        $$.type = EbtSampler;
+        $$.basicType = EbtSampler;
         $$.sampler.setImage(EbtInt, Esd1D);
     }
     | UIMAGE1D {
         $$.init($1.line, parseContext.symbolTable.atGlobalLevel());
-        $$.type = EbtSampler;
+        $$.basicType = EbtSampler;
         $$.sampler.setImage(EbtUint, Esd1D);
     }
     | IMAGE2D {
         $$.init($1.line, parseContext.symbolTable.atGlobalLevel());
-        $$.type = EbtSampler;
+        $$.basicType = EbtSampler;
         $$.sampler.setImage(EbtFloat, Esd2D);
     }
     | IIMAGE2D {
         $$.init($1.line, parseContext.symbolTable.atGlobalLevel());
-        $$.type = EbtSampler;
+        $$.basicType = EbtSampler;
         $$.sampler.setImage(EbtInt, Esd2D);
     }
     | UIMAGE2D {
         $$.init($1.line, parseContext.symbolTable.atGlobalLevel());
-        $$.type = EbtSampler;
+        $$.basicType = EbtSampler;
         $$.sampler.setImage(EbtUint, Esd2D);
     }
     | IMAGE3D {
         $$.init($1.line, parseContext.symbolTable.atGlobalLevel());
-        $$.type = EbtSampler;
+        $$.basicType = EbtSampler;
         $$.sampler.setImage(EbtFloat, Esd3D);
     }
     | IIMAGE3D {
         $$.init($1.line, parseContext.symbolTable.atGlobalLevel());
-        $$.type = EbtSampler;
+        $$.basicType = EbtSampler;
         $$.sampler.setImage(EbtInt, Esd3D);
     }
     | UIMAGE3D {
         $$.init($1.line, parseContext.symbolTable.atGlobalLevel());
-        $$.type = EbtSampler;
+        $$.basicType = EbtSampler;
         $$.sampler.setImage(EbtUint, Esd3D);
     }
     | IMAGE2DRECT {
         $$.init($1.line, parseContext.symbolTable.atGlobalLevel());
-        $$.type = EbtSampler;
+        $$.basicType = EbtSampler;
         $$.sampler.setImage(EbtFloat, EsdRect);
     }
     | IIMAGE2DRECT {
         $$.init($1.line, parseContext.symbolTable.atGlobalLevel());
-        $$.type = EbtSampler;
+        $$.basicType = EbtSampler;
         $$.sampler.setImage(EbtInt, EsdRect);
     }
     | UIMAGE2DRECT {
         $$.init($1.line, parseContext.symbolTable.atGlobalLevel());
-        $$.type = EbtSampler;
+        $$.basicType = EbtSampler;
         $$.sampler.setImage(EbtUint, EsdRect);
     }
     | IMAGECUBE {
         $$.init($1.line, parseContext.symbolTable.atGlobalLevel());
-        $$.type = EbtSampler;
+        $$.basicType = EbtSampler;
         $$.sampler.setImage(EbtFloat, EsdCube);
     }
     | IIMAGECUBE {
         $$.init($1.line, parseContext.symbolTable.atGlobalLevel());
-        $$.type = EbtSampler;
+        $$.basicType = EbtSampler;
         $$.sampler.setImage(EbtInt, EsdCube);
     }
     | UIMAGECUBE {
         $$.init($1.line, parseContext.symbolTable.atGlobalLevel());
-        $$.type = EbtSampler;
+        $$.basicType = EbtSampler;
         $$.sampler.setImage(EbtUint, EsdCube);
     }
     | IMAGEBUFFER {
         $$.init($1.line, parseContext.symbolTable.atGlobalLevel());
-        $$.type = EbtSampler;
+        $$.basicType = EbtSampler;
         $$.sampler.setImage(EbtFloat, EsdBuffer);
     }
     | IIMAGEBUFFER {
         $$.init($1.line, parseContext.symbolTable.atGlobalLevel());
-        $$.type = EbtSampler;
+        $$.basicType = EbtSampler;
         $$.sampler.setImage(EbtInt, EsdBuffer);
     }
     | UIMAGEBUFFER {
         $$.init($1.line, parseContext.symbolTable.atGlobalLevel());
-        $$.type = EbtSampler;
+        $$.basicType = EbtSampler;
         $$.sampler.setImage(EbtUint, EsdBuffer);
     }
     | IMAGE1DARRAY {
         $$.init($1.line, parseContext.symbolTable.atGlobalLevel());
-        $$.type = EbtSampler;
+        $$.basicType = EbtSampler;
         $$.sampler.setImage(EbtFloat, Esd1D, true);
     }
     | IIMAGE1DARRAY {
         $$.init($1.line, parseContext.symbolTable.atGlobalLevel());
-        $$.type = EbtSampler;
+        $$.basicType = EbtSampler;
         $$.sampler.setImage(EbtInt, Esd1D, true);
     }
     | UIMAGE1DARRAY {
         $$.init($1.line, parseContext.symbolTable.atGlobalLevel());
-        $$.type = EbtSampler;
+        $$.basicType = EbtSampler;
         $$.sampler.setImage(EbtUint, Esd1D, true);
     }
     | IMAGE2DARRAY {
         $$.init($1.line, parseContext.symbolTable.atGlobalLevel());
-        $$.type = EbtSampler;
+        $$.basicType = EbtSampler;
         $$.sampler.setImage(EbtFloat, Esd2D, true);
     }
     | IIMAGE2DARRAY {
         $$.init($1.line, parseContext.symbolTable.atGlobalLevel());
-        $$.type = EbtSampler;
+        $$.basicType = EbtSampler;
         $$.sampler.setImage(EbtInt, Esd2D, true);
     }
     | UIMAGE2DARRAY {
         $$.init($1.line, parseContext.symbolTable.atGlobalLevel());
-        $$.type = EbtSampler;
+        $$.basicType = EbtSampler;
         $$.sampler.setImage(EbtUint, Esd2D, true);
     }
     | IMAGECUBEARRAY {
         $$.init($1.line, parseContext.symbolTable.atGlobalLevel());
-        $$.type = EbtSampler;
+        $$.basicType = EbtSampler;
         $$.sampler.setImage(EbtFloat, EsdCube, true);
     }
     | IIMAGECUBEARRAY {
         $$.init($1.line, parseContext.symbolTable.atGlobalLevel());
-        $$.type = EbtSampler;
+        $$.basicType = EbtSampler;
         $$.sampler.setImage(EbtInt, EsdCube, true);
     }
     | UIMAGECUBEARRAY {
         $$.init($1.line, parseContext.symbolTable.atGlobalLevel());
-        $$.type = EbtSampler;
+        $$.basicType = EbtSampler;
         $$.sampler.setImage(EbtUint, EsdCube, true);
     }
     | IMAGE2DMS {
         $$.init($1.line, parseContext.symbolTable.atGlobalLevel());
-        $$.type = EbtSampler;
+        $$.basicType = EbtSampler;
         $$.sampler.setImage(EbtFloat, Esd2D, false, false, true);
     }
     | IIMAGE2DMS {
         $$.init($1.line, parseContext.symbolTable.atGlobalLevel());
-        $$.type = EbtSampler;
+        $$.basicType = EbtSampler;
         $$.sampler.setImage(EbtInt, Esd2D, false, false, true);
     }
     | UIMAGE2DMS {
         $$.init($1.line, parseContext.symbolTable.atGlobalLevel());
-        $$.type = EbtSampler;
+        $$.basicType = EbtSampler;
         $$.sampler.setImage(EbtUint, Esd2D, false, false, true);
     }
     | IMAGE2DMSARRAY {
         $$.init($1.line, parseContext.symbolTable.atGlobalLevel());
-        $$.type = EbtSampler;
+        $$.basicType = EbtSampler;
         $$.sampler.setImage(EbtFloat, Esd2D, true, false, true);
     }
     | IIMAGE2DMSARRAY {
         $$.init($1.line, parseContext.symbolTable.atGlobalLevel());
-        $$.type = EbtSampler;
+        $$.basicType = EbtSampler;
         $$.sampler.setImage(EbtInt, Esd2D, true, false, true);
     }
     | UIMAGE2DMSARRAY {
         $$.init($1.line, parseContext.symbolTable.atGlobalLevel());
-        $$.type = EbtSampler;
+        $$.basicType = EbtSampler;
         $$.sampler.setImage(EbtUint, Esd2D, true, false, true);
     }
     | struct_specifier {
@@ -2498,7 +2498,7 @@ type_specifier_nonarray
         if (TVariable* variable = ($1.symbol)->getAsVariable()) {
             const TType& structure = variable->getType();
             $$.init($1.line, parseContext.symbolTable.atGlobalLevel());
-            $$.type = EbtStruct;
+            $$.basicType = EbtStruct;
             $$.userDef = &structure;
         } else {
             parseContext.error($1.line, "expected type name", $1.string->c_str(), "");
@@ -2538,13 +2538,13 @@ struct_specifier
             parseContext.recover();
         }
         $$.init($1.line);
-        $$.type = EbtStruct;
+        $$.basicType = EbtStruct;
         $$.userDef = structure;
     }
     | STRUCT LEFT_BRACE struct_declaration_list RIGHT_BRACE {
         TType* structure = new TType($3, TString(""));
         $$.init($1.line);
-        $$.type = EbtStruct;
+        $$.basicType = EbtStruct;
         $$.userDef = structure;
     }
     ;
@@ -2583,7 +2583,7 @@ struct_declaration
             //
             // Careful not to replace already know aspects of type, like array-ness
             //
-            (*$$)[i].type->setElementType($1.type, $1.vectorSize, $1.matrixCols, $1.matrixRows, $1.userDef);
+            (*$$)[i].type->setElementType($1.basicType, $1.vectorSize, $1.matrixCols, $1.matrixRows, $1.userDef);
 
             if ($1.arraySizes)
                 (*$$)[i].type->setArraySizes($1.arraySizes);
@@ -2607,7 +2607,7 @@ struct_declaration
             //
             // Careful not to replace already know aspects of type, like array-ness
             //
-            (*$$)[i].type->setElementType($2.type, $2.vectorSize, $2.matrixCols, $2.matrixRows, $2.userDef);
+            (*$$)[i].type->setElementType($2.basicType, $2.vectorSize, $2.matrixCols, $2.matrixRows, $2.userDef);
             (*$$)[i].type->getQualifier() = $2.qualifier;
             if ($2.arraySizes)
                 (*$$)[i].type->setArraySizes($2.arraySizes);

@@ -288,7 +288,7 @@ public:
 
 class TPublicType {
 public:
-    TBasicType type;
+    TBasicType basicType;
     TSampler sampler;
     TQualifier qualifier;
     int vectorSize : 4;
@@ -300,7 +300,7 @@ public:
 
     void initType(int ln = 0)
     {
-        type = EbtVoid;
+        basicType = EbtVoid;
         vectorSize = 1;
         matrixRows = 0;
         matrixCols = 0;
@@ -352,7 +352,7 @@ class TType {
 public:
     POOL_ALLOCATOR_NEW_DELETE(GlobalPoolAllocator)
     TType(TBasicType t, TStorageQualifier q = EvqTemporary, int vs = 1, int mc = 0, int mr = 0) :
-                            type(t), vectorSize(vs), matrixCols(mc), matrixRows(mr), arraySizes(0),
+                            basicType(t), vectorSize(vs), matrixCols(mc), matrixRows(mr), arraySizes(0),
                             structure(0), structureSize(0), maxArraySize(0), arrayInformationType(0),
                             fieldName(0), mangled(0), typeName(0)
                             {
@@ -361,7 +361,7 @@ public:
                                 qualifier.storage = q;
                             }
     TType(TBasicType t, TStorageQualifier q, TPrecisionQualifier p, int vs = 1, int mc = 0, int mr = 0) :
-                            type(t), vectorSize(vs), matrixCols(mc), matrixRows(mr), arraySizes(0),
+                            basicType(t), vectorSize(vs), matrixCols(mc), matrixRows(mr), arraySizes(0),
                             structure(0), structureSize(0), maxArraySize(0), arrayInformationType(0),
                             fieldName(0), mangled(0), typeName(0)
                             {
@@ -372,7 +372,7 @@ public:
                                 assert(p >= 0 && p <= EpqHigh);
                             }
     explicit TType(const TPublicType &p) :
-                            type(p.type), vectorSize(p.vectorSize), matrixCols(p.matrixCols), matrixRows(p.matrixRows), arraySizes(p.arraySizes),
+                            basicType(p.basicType), vectorSize(p.vectorSize), matrixCols(p.matrixCols), matrixRows(p.matrixRows), arraySizes(p.arraySizes),
                             structure(0), structureSize(0), maxArraySize(0), arrayInformationType(0), fieldName(0), mangled(0), typeName(0)
                             {
                                 sampler = p.sampler;
@@ -383,7 +383,7 @@ public:
                                 }
                             }
     TType(TTypeList* userDef, const TString& n, TStorageQualifier blockQualifier = EvqGlobal) :
-                            type(EbtStruct), vectorSize(1), matrixCols(0), matrixRows(0), arraySizes(0),
+                            basicType(EbtStruct), vectorSize(1), matrixCols(0), matrixRows(0), arraySizes(0),
                             structure(userDef), maxArraySize(0), arrayInformationType(0), fieldName(0), mangled(0)
                             {
                                 sampler.clear();
@@ -391,7 +391,7 @@ public:
                                 // is it an interface block?
                                 if (blockQualifier != EvqGlobal) {
                                     qualifier.storage = blockQualifier;
-                                    type = EbtBlock;
+                                    basicType = EbtBlock;
                                 }
 								typeName = NewPoolTString(n.c_str());
                             }
@@ -402,7 +402,7 @@ public:
 
 	void copyType(const TType& copyOf, const TStructureMap& remapper)
 	{
-		type = copyOf.type;
+		basicType = copyOf.basicType;
         sampler = copyOf.sampler;
 		qualifier = copyOf.qualifier;
 		vectorSize = copyOf.vectorSize;
@@ -472,7 +472,7 @@ public:
 
     virtual void setElementType(TBasicType t, int s, int mc, int mr, const TType* userDef)
     {
-        type = t;
+        basicType = t;
         vectorSize = s;
         matrixCols = mc;
         matrixRows = mr;
@@ -494,7 +494,7 @@ public:
 		return *fieldName;
     }
 
-    virtual TBasicType getBasicType() const { return type; }
+    virtual TBasicType getBasicType() const { return basicType; }
     virtual const TSampler& getSampler() const { return sampler; }
     virtual TQualifier& getQualifier() { return qualifier; }
     virtual const TQualifier& getQualifier() const { return qualifier; }
@@ -519,7 +519,7 @@ public:
     TType* getArrayInformationType() { return arrayInformationType; }
     virtual bool isVector() const { return vectorSize > 1; }
     const char* getBasicString() const {
-        return TType::getBasicString(type);
+        return TType::getBasicString(basicType);
     }
     static const char* getBasicString(TBasicType t) {
         switch (t) {
@@ -604,7 +604,7 @@ public:
 
     TString getCompleteTypeString() const
     {
-        if (type == EbtSampler)
+        if (basicType == EbtSampler)
             return sampler.getString();
         else
             return getBasicString();
@@ -645,7 +645,7 @@ public:
 
     bool sameElementType(const TType& right) const
     {
-        return       type == right.type       &&
+        return  basicType == right.basicType  &&
                   sampler == right.sampler    &&
                vectorSize == right.vectorSize &&
                matrixCols == right.matrixCols &&
@@ -670,7 +670,7 @@ protected:
     void buildMangledName(TString&);
     int getStructSize() const;
 
-	TBasicType type      : 8;
+	TBasicType basicType : 8;
     int vectorSize       : 4;
     int matrixCols       : 4;
     int matrixRows       : 4;

@@ -55,7 +55,7 @@ void TType::buildMangledName(TString& mangledName)
     else if (isVector())
         mangledName += 'v';
 
-    switch (type) {
+    switch (basicType) {
     case EbtFloat:              mangledName += 'f';      break;
     case EbtDouble:             mangledName += 'd';      break;
     case EbtInt:                mangledName += 'i';      break;

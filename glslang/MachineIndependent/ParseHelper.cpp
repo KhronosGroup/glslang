@@ -577,7 +577,7 @@ bool TParseContext::constructorErrorCheck(int line, TIntermNode* node, TFunction
 //
 bool TParseContext::voidErrorCheck(int line, const TString& identifier, const TPublicType& pubType)
 {
-    if (pubType.type == EbtVoid) {
+    if (pubType.basicType == EbtVoid) {
         error(line, "illegal use of type 'void'", identifier.c_str(), "");
         return true;
     } 
@@ -605,7 +605,7 @@ bool TParseContext::boolErrorCheck(int line, const TIntermTyped* type)
 //
 bool TParseContext::boolErrorCheck(int line, const TPublicType& pType)
 {
-    if (pType.type != EbtBool || pType.arraySizes || pType.matrixCols > 1 || (pType.vectorSize > 1)) {
+    if (pType.basicType != EbtBool || pType.arraySizes || pType.matrixCols > 1 || (pType.vectorSize > 1)) {
         error(line, "boolean expression expected", "", "");
         return true;
     } 
@@ -615,16 +615,16 @@ bool TParseContext::boolErrorCheck(int line, const TPublicType& pType)
 
 bool TParseContext::samplerErrorCheck(int line, const TPublicType& pType, const char* reason)
 {
-    if (pType.type == EbtStruct) {
+    if (pType.basicType == EbtStruct) {
         if (containsSampler(*pType.userDef)) {
-            error(line, reason, TType::getBasicString(pType.type), "(structure cannot contain a sampler or image)");
+            error(line, reason, TType::getBasicString(pType.basicType), "(structure cannot contain a sampler or image)");
         
             return true;
         }
         
         return false;
-    } else if (pType.type == EbtSampler) {
-        error(line, reason, TType::getBasicString(pType.type), "");
+    } else if (pType.basicType == EbtSampler) {
+        error(line, reason, TType::getBasicString(pType.basicType), "");
 
         return true;
     }
@@ -672,13 +672,13 @@ bool TParseContext::globalQualifierFixAndErrorCheck(int line, TQualifier& qualif
 
     // now, knowing it is a shader in/out, do all the in/out semantic checks
 
-    if (publicType.type == EbtBool) {
+    if (publicType.basicType == EbtBool) {
         error(line, "cannot be bool",  getStorageQualifierString(qualifier.storage), "");
         return true;
     }
 
     if (language == EShLangVertex && qualifier.storage == EvqVaryingIn) {
-        if (publicType.type == EbtStruct) {
+        if (publicType.basicType == EbtStruct) {
             error(line, "cannot be a structure or array",  getStorageQualifierString(qualifier.storage), "");
             return true;
         }
@@ -690,17 +690,17 @@ bool TParseContext::globalQualifierFixAndErrorCheck(int line, TQualifier& qualif
 
     if (language == EShLangFragment && qualifier.storage == EvqVaryingOut) {
         profileRequires(line, EEsProfile, 300, 0, "fragment shader output");
-        if (publicType.type == EbtStruct) {
+        if (publicType.basicType == EbtStruct) {
             error(line, "cannot be a structure",  getStorageQualifierString(qualifier.storage), "");
             return true;
         }
     }
 
-    if (publicType.type == EbtInt || publicType.type == EbtUint || publicType.type == EbtDouble) {
+    if (publicType.basicType == EbtInt || publicType.basicType == EbtUint || publicType.basicType == EbtDouble) {
         profileRequires(line, EEsProfile, 300, 0, "shader input/output");
         if (language != EShLangVertex   && qualifier.storage == EvqVaryingIn  && ! qualifier.flat ||
             language != EShLangFragment && qualifier.storage == EvqVaryingOut && ! qualifier.flat) {
-            error(line, "must be qualified as 'flat'", getStorageQualifierString(qualifier.storage), TType::getBasicString(publicType.type));
+            error(line, "must be qualified as 'flat'", getStorageQualifierString(qualifier.storage), TType::getBasicString(publicType.basicType));
          
             return true;
         }
@@ -776,7 +776,7 @@ bool TParseContext::mergeQualifiersErrorCheck(int line, TPublicType& dst, const 
 
 void TParseContext::setDefaultPrecision(int line, TPublicType& publicType, TPrecisionQualifier qualifier)
 {
-    TBasicType basicType = publicType.type;
+    TBasicType basicType = publicType.basicType;
 
     if (basicType == EbtSampler || basicType == EbtInt || basicType == EbtFloat) {
         if (publicType.isScalar()) {
@@ -1478,7 +1478,7 @@ void TParseContext::addBlock(int line, TPublicType& qualifier, const TString& bl
 
         return;
     }
-    if (qualifier.type != EbtVoid) {
+    if (qualifier.basicType != EbtVoid) {
         error(line, "interface blocks cannot be declared with a type", blockName.c_str(), "");
         recover();
 
