@@ -1665,7 +1665,8 @@ layout_qualifier_id
     }
     | SHARED { // because "shared" is both an identifier and a keyword
         $$.init($1.line);
-        parseContext.setLayoutQualifier($1.line, $$, TString("shared"));
+        TString strShared("shared");
+        parseContext.setLayoutQualifier($1.line, $$, strShared);
     }
     ;
 
