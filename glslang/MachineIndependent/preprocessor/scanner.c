@@ -168,23 +168,26 @@ int FreeScanner(void)
  */
 static int str_getch(StringInputSrc *in)
 {
-	for(;;){
-	   if (*in->p){
+	for(;;) {
+	   if (*in->p) {
 	      if (*in->p == '\n') {
              in->base.line++;
              IncLineNumber();
           }
           return *in->p++;
 	   }
-	   if(++(cpp->PaWhichStr) < cpp->PaArgc){
+       if (cpp->PaWhichStr < 0) {
+           // we only parsed the built-in pre-amble; start with clean slate for user code
+            cpp->notAVersionToken = 0;
+       }
+	   if (++(cpp->PaWhichStr) < cpp->PaArgc) {
 		  free(in);
 		  SetStringNumber(cpp->PaWhichStr);
     	  SetLineNumber(1);
 		  ScanFromString(cpp->PaArgv[cpp->PaWhichStr]);
 		  in=(StringInputSrc*)cpp->currentInput;
 	      continue;             
-	   }
-	   else{
+	   } else {
 	      cpp->currentInput = in->base.prev;
 	      cpp->PaWhichStr=0;
           free(in);

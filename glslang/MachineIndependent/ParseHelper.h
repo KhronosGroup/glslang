@@ -96,6 +96,7 @@ struct TParseContext {
     bool AfterEOF;
 
     void initializeExtensionBehavior();
+    const char* getPreamble();
 
     void C_DECL error(TSourceLoc, const char *szReason, const char *szToken,
                       const char *szExtraInfoFormat, ...);
@@ -159,7 +160,7 @@ struct TParseContext {
     void doubleCheck(int line, const char* op);
 };
 
-int PaParseStrings(char* argv[], int strLen[], int argc, TParseContext&);
+int PaParseStrings(char* argv[], int strLen[], int argc, TParseContext&, const char* preamble);
 int PaParseComment(int &lineno, TParseContext&);
 void ResetFlex();
 

@@ -7,7 +7,7 @@ uniform mat4x4 m44;
 in vec3 v3;
 in vec2 v2;
 
-in vec4 bad[10];
+in vec4 bad[10];  // ERROR
 
 void main()
 {
@@ -30,4 +30,10 @@ void main()
     mat3x3 im = inverse(m33);
 
     mat3x2 op = outerProduct(v2, v3);
+
+#ifdef GL_ES
+#error GL_ES is set
+#else
+#error GL_ES is not set
+#endif
 }

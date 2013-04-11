@@ -89,7 +89,7 @@ int OutputMultipleStrings = 1;
 // Set up the per compile resources
 //
 void GenerateResources(TBuiltInResource& resources)
-{    
+{
     resources.maxLights = 32;
     resources.maxClipPlanes = 6;
     resources.maxTextureUnits = 32;

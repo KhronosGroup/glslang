@@ -8,3 +8,8 @@ out vec4 o;
 void main()
 {
 }
+#ifdef GL_ES
+#error GL_ES is set
+#else
+#error GL_ES is not set
+#endif

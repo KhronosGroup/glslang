@@ -77,6 +77,16 @@ TParseContext::TParseContext(TSymbolTable& symt, TIntermediate& interm, int v, E
     defaultGlobalQualification.layoutSlotLocation = 0;
 }
 
+// Get code that is not part of a shared symbol table, specific to this shader
+// or needed by CPP (which does not have a shared symbol table).
+const char* TParseContext::getPreamble()
+{
+    if (profile == EEsProfile)
+        return "#define GL_ES 1\n";
+    else
+        return 0;
+}
+
 ///////////////////////////////////////////////////////////////////////
 //
 // Sub- vector and matrix fields

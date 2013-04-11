@@ -470,15 +470,8 @@ int yy_input(char* buf, int max_size)
 //
 // Returns 0 for success, as per yyparse().
 //
-int PaParseStrings(char* argv[], int strLen[], int argc, TParseContext& parseContextLocal)
+int PaParseStrings(char* argv[], int strLen[], int argc, TParseContext& parseContextLocal, const char* preamble)
 {
-    int argv0len;
-
-    ScanFromString(argv[0]);
-
-    //Storing the Current Compiler Parse context into the cpp structure.
-	cpp->pC = (void*)&parseContextLocal;
-	
 	if (!argv || argc == 0)
         return 1;
 
@@ -490,13 +483,27 @@ int PaParseStrings(char* argv[], int strLen[], int argc, TParseContext& parseCon
         }
     }
 
+    // set up all the cpp fields...
+	cpp->pC = (void*)&parseContextLocal;
+    char *writeablePreamble = 0;
+    if (preamble) {
+        // preAmble could be a hard-coded string; make writable copy
+        // TODO: CPP: make it not need writable strings
+        int size = strlen(preamble) + 1;
+        writeablePreamble = new char[size];
+        memcpy(writeablePreamble, preamble, size);
+        ScanFromString(writeablePreamble);
+        cpp->PaWhichStr = -1;
+    } else {
+        ScanFromString(argv[0]);
+        cpp->PaWhichStr = 0;
+    }
     if (! strLen) {
-        argv0len = (int) strlen(argv[0]);
+        int argv0len = (int) strlen(argv[0]);
         strLen   = &argv0len;
     }
     yyrestart(0);
     (&parseContextLocal)->AfterEOF = false;
-    cpp->PaWhichStr = 0;
     cpp->PaArgv     = argv;
     cpp->PaArgc     = argc;
     cpp->PaStrLen   = strLen;
@@ -508,9 +515,10 @@ int PaParseStrings(char* argv[], int strLen[], int argc, TParseContext& parseCon
     while (argv[0][len] == ' '  ||
            argv[0][len] == '\t' ||
            argv[0][len] == '\n' ||
-           argv[0][len] == '\r')
+           argv[0][len] == '\r') {
         if (++len >= strLen[0])
             return 0;
+    }
 
     if (*cpp->PaStrLen > 0) {
         int ret;
@@ -519,12 +527,16 @@ int PaParseStrings(char* argv[], int strLen[], int argc, TParseContext& parseCon
         #else
             ret = yyparse((void*)(&parseContextLocal));
         #endif
+        delete writeablePreamble;
         if (cpp->CompileError == 1 || parseContextLocal.recoveredFromError || parseContextLocal.numErrors > 0)
              return 1;
         else
              return 0;
-    } else
-        return 0;
+    } 
+
+    delete writeablePreamble;
+
+    return 0;
 }
 
 void yyerror(const char *s)
