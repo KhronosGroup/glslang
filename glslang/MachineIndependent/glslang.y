@@ -188,9 +188,9 @@ extern void yyerror(const char*);
 
 %type <interm.intermNode> translation_unit function_definition
 %type <interm.intermNode> statement simple_statement
-%type <interm.intermAggregate>  statement_list compound_statement
+%type <interm.intermAggregate>  statement_list switch_statement_list compound_statement
 %type <interm.intermNode> declaration_statement selection_statement expression_statement
-%type <interm.intermNode> switch_statement case_label switch_statement_list
+%type <interm.intermNode> switch_statement case_label
 %type <interm.intermNode> declaration external_declaration
 %type <interm.intermNode> for_init_statement compound_statement_no_new_scope
 %type <interm.nodePair> selection_rest_statement for_rest_statement
@@ -2735,9 +2735,19 @@ compound_statement_no_new_scope
 statement_list
     : statement {
         $$ = parseContext.intermediate.makeAggregate($1, 0);
+        if ($1 && $1->getAsBranchNode() && ($1->getAsBranchNode()->getFlowOp() == EOpCase ||
+                                            $1->getAsBranchNode()->getFlowOp() == EOpDefault)) {
+            parseContext.wrapupSwitchSubsequence(0, $1);
+            $$ = 0;  // start a fresh subsequence for what's after this case
+        }
     }
     | statement_list statement {
-        $$ = parseContext.intermediate.growAggregate($1, $2, 0);
+        if ($2 && $2->getAsBranchNode() && ($2->getAsBranchNode()->getFlowOp() == EOpCase || 
+                                            $2->getAsBranchNode()->getFlowOp() == EOpDefault)) {
+            parseContext.wrapupSwitchSubsequence($1, $2);
+            $$ = 0;  // start a fresh subsequence for what's after this case
+        } else
+            $$ = parseContext.intermediate.growAggregate($1, $2, 0);
     }
     ;
 
@@ -2787,14 +2797,20 @@ condition
     ;
 
 switch_statement
-    : SWITCH LEFT_PAREN expression RIGHT_PAREN { ++parseContext.switchNestingLevel; } LEFT_BRACE switch_statement_list RIGHT_BRACE {
-        $$ = 0;
-        --parseContext.switchNestingLevel;
+    : SWITCH LEFT_PAREN expression RIGHT_PAREN {
+        // start new switch sequence on the switch stack
+        parseContext.switchSequenceStack.push_back(new TIntermSequence);
+    } 
+    LEFT_BRACE switch_statement_list RIGHT_BRACE {
+        $$ = parseContext.addSwitch($1.line, $3, $7);
+        delete parseContext.switchSequenceStack.back();
+        parseContext.switchSequenceStack.pop_back();
     }
     ;
 
 switch_statement_list
     : /* nothing */ {
+        $$ = 0;
     }
     | statement_list {
         $$ = $1;
@@ -2803,10 +2819,10 @@ switch_statement_list
 
 case_label
     : CASE expression COLON {
-        $$ = 0;
+        $$ = parseContext.intermediate.addBranch(EOpCase, $2, $1.line);
     }
     | DEFAULT COLON {
-        $$ = 0;
+        $$ = parseContext.intermediate.addBranch(EOpDefault, $1.line);
     }
     ;
 
@@ -2881,7 +2897,7 @@ jump_statement
         $$ = parseContext.intermediate.addBranch(EOpContinue, $1.line);
     }
     | BREAK SEMICOLON {
-        if (parseContext.loopNestingLevel + parseContext.switchNestingLevel <= 0) {
+        if (parseContext.loopNestingLevel + parseContext.switchSequenceStack.size() <= 0) {
             parseContext.error($1.line, "break statement only allowed in switch and loops", "", "");
             parseContext.recover();
         }

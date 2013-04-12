@@ -71,6 +71,13 @@ bool RemoveSelection(bool  /*preVisit*/ , TIntermSelection* node, TIntermTravers
 	return true;
 }
 
+bool RemoveSwitch(bool  /*preVisit*/ , TIntermSwitch* node, TIntermTraverser*)
+{
+	delete node;
+
+	return true;
+}
+
 void RemoveConstantUnion(TIntermConstantUnion* node, TIntermTraverser*)
 {
 	delete node;
@@ -89,6 +96,7 @@ void RemoveAllTreeNodes(TIntermNode* root)
     it.visitSelection     = RemoveSelection;
     it.visitSymbol        = RemoveSymbol;
     it.visitUnary         = RemoveUnary;
+    it.visitSwitch        = RemoveSwitch;
 
 	it.preVisit = false;
 	it.postVisit = true;

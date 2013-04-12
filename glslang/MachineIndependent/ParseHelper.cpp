@@ -44,7 +44,7 @@ TParseContext::TParseContext(TSymbolTable& symt, TIntermediate& interm, int v, E
                              bool fc, EShMessages m) : 
             intermediate(interm), symbolTable(symt), infoSink(is), language(L), treeRoot(0),
             recoveredFromError(false), numErrors(0), lexAfterType(false), loopNestingLevel(0),
-            switchNestingLevel(0), inTypeParen(false), 
+            inTypeParen(false),
             version(v), profile(p), forwardCompatible(fc), messages(m),
             contextPragma(true, false)
 {
@@ -1572,6 +1572,58 @@ void TParseContext::addBlock(int line, TPublicType& publicType, const TString& b
 
         return;
     }
+}
+
+void TParseContext::wrapupSwitchSubsequence(TIntermAggregate* statements, TIntermNode* branchNode)
+{
+    auto switchSequence = switchSequenceStack.back();
+
+    if (statements) {
+        if (switchSequence->size() == 0) {
+            error(statements->getLine(), "cannot have statements before first case/default label", "switch", "");
+            recover();
+        }
+        statements->setOperator(EOpSequence);
+        switchSequence->push_back(statements);
+    }
+    if (branchNode)
+        switchSequence->push_back(branchNode);
+}
+
+TIntermNode* TParseContext::addSwitch(int line, TIntermTyped* expression, TIntermAggregate* lastStatements)
+{
+    profileRequires(line, EEsProfile, 300, 0, "switch statements");
+    profileRequires(line, ENoProfile, 130, 0, "switch statements");
+
+    wrapupSwitchSubsequence(lastStatements, 0);
+
+    if (expression == 0 || 
+        expression->getBasicType() != EbtInt && expression->getBasicType() != EbtUint ||
+        expression->getType().isArray() || expression->getType().isMatrix() || expression->getType().isVector()) {
+            error(line, "condition must be a scalar integer expression", "switch", "");
+            recover();
+    }
+
+    // If there is nothing to do, drop the switch but still execute the expression
+    auto switchSequence = switchSequenceStack.back();
+    if (switchSequence->size() == 0)
+        return expression;
+
+    if (lastStatements == 0) {
+        error(line, "last case/default label must be followed by statements", "switch", "");
+        recover();
+
+        return expression;
+    }
+
+    TIntermAggregate* body = new TIntermAggregate(EOpSequence);
+    body->getSequence() = *switchSequenceStack.back();
+    body->setLine(line);
+
+    TIntermSwitch* switchNode = new TIntermSwitch(expression, body);
+    switchNode->setLine(line);
+
+    return switchNode;
 }
 
 void TParseContext::updateDefaults(int line, const TPublicType& publicType, const TString* id)

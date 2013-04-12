@@ -503,6 +503,8 @@ bool OutputBranch(bool /* previsit*/, TIntermBranch* node, TIntermTraverser* it)
     case EOpBreak:     out.debug << "Branch: Break";          break;
     case EOpContinue:  out.debug << "Branch: Continue";       break;
     case EOpReturn:    out.debug << "Branch: Return";         break;
+    case EOpCase:      out.debug << "case: ";                 break;
+    case EOpDefault:   out.debug << "default: ";              break;
     default:               out.debug << "Branch: Unknown Branch"; break;
     }
 
@@ -513,6 +515,30 @@ bool OutputBranch(bool /* previsit*/, TIntermBranch* node, TIntermTraverser* it)
         --oit->depth;
     } else
         out.debug << "\n";
+
+    return false;
+}
+
+bool OutputSwitch(bool /* preVisit */, TIntermSwitch* node, TIntermTraverser* it)
+{
+    TOutputTraverser* oit = static_cast<TOutputTraverser*>(it);
+    TInfoSink& out = oit->infoSink;
+
+    OutputTreeText(out, node, oit->depth);
+    out.debug << "switch\n";
+
+    OutputTreeText(out, node, oit->depth);
+    out.debug << "condition\n";
+    ++oit->depth;
+    node->getCondition()->traverse(it);
+
+    --oit->depth;
+    OutputTreeText(out, node, oit->depth);
+    out.debug << "body\n";
+    ++oit->depth;
+    node->getBody()->traverse(it);
+
+    --oit->depth;
 
     return false;
 }
@@ -537,6 +563,7 @@ void TIntermediate::outputTree(TIntermNode* root)
     it.visitUnary = OutputUnary;
     it.visitLoop = OutputLoop;
     it.visitBranch = OutputBranch;
+    it.visitSwitch = OutputSwitch;
 
     root->traverse(&it);
 }

@@ -217,6 +217,8 @@ enum TOperator {
     EOpReturn,
     EOpBreak,
     EOpContinue,
+    EOpCase,
+    EOpDefault,
 
     //
     // Constructors
@@ -297,6 +299,8 @@ class TIntermUnary;
 class TIntermBinary;
 class TIntermConstantUnion;
 class TIntermSelection;
+class TIntermSwitch;
+class TIntermBranch;
 class TIntermTyped;
 class TIntermMethod;
 class TIntermSymbol;
@@ -319,8 +323,10 @@ public:
     virtual TIntermUnary*     getAsUnaryNode()     { return 0; }
     virtual TIntermBinary*    getAsBinaryNode()    { return 0; }
     virtual TIntermSelection* getAsSelectionNode() { return 0; }
+    virtual TIntermSwitch*    getAsSwitchNode()    { return 0; }
     virtual TIntermMethod*    getAsMethodNode()    { return 0; }
     virtual TIntermSymbol*    getAsSymbolNode()    { return 0; }
+    virtual TIntermBranch*    getAsBranchNode()    { return 0; }
     virtual ~TIntermNode() { }
 protected:
     TSourceLoc line;
@@ -383,19 +389,20 @@ protected:
 };
 
 //
-// Handle break, continue, return, and kill.
+// Handle case, break, continue, return, and kill.
 //
 class TIntermBranch : public TIntermNode {
 public:
     TIntermBranch(TOperator op, TIntermTyped* e) :
         flowOp(op),
         expression(e) { }
+    virtual TIntermBranch* getAsBranchNode() { return this; }
     virtual void traverse(TIntermTraverser*);
     TOperator getFlowOp() { return flowOp; }
     TIntermTyped* getExpression() { return expression; }
 protected:
     TOperator flowOp;
-    TIntermTyped* expression;  // non-zero except for "return exp;" statements
+    TIntermTyped* expression;
 };
 
 //
@@ -534,7 +541,7 @@ protected:
 };
 
 //
-// For if tests.  Simplified since there is no switch statement.
+// For if tests.
 //
 class TIntermSelection : public TIntermTyped {
 public:
@@ -551,6 +558,24 @@ protected:
     TIntermTyped* condition;
     TIntermNode* trueBlock;
     TIntermNode* falseBlock;
+};
+
+//
+// For switch statements.  Designed use is that a switch will have sequence of nodes
+// that are either case/default nodes or a *single* node that represents all the code
+// in between (if any) consecutive case/defaults.  So, a traversal need only deal with
+// 0 or 1 nodes per case/default statement.
+//
+class TIntermSwitch : public TIntermAggregate {
+public:
+    TIntermSwitch(TIntermTyped* cond, TIntermAggregate* b) : condition(cond), body(b) { }
+    virtual void traverse(TIntermTraverser*);
+    virtual TIntermNode* getCondition() const { return condition; }
+    virtual TIntermAggregate* getBody() const { return body; }
+    virtual TIntermSwitch* getAsSwitchNode() { return this; }
+protected:
+    TIntermTyped* condition;
+    TIntermAggregate* body;
 };
 
 //
@@ -587,6 +612,7 @@ public:
     bool (*visitAggregate)(bool preVisit, TIntermAggregate*, TIntermTraverser*);
     bool (*visitLoop)(bool preVisit, TIntermLoop*, TIntermTraverser*);
     bool (*visitBranch)(bool preVisit, TIntermBranch*,  TIntermTraverser*);
+    bool (*visitSwitch)(bool preVisit, TIntermSwitch*,  TIntermTraverser*);
 
     int  depth;
     bool preVisit;

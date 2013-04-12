@@ -176,13 +176,13 @@ void TIntermSelection::traverse(TIntermTraverser* it)
         if (it->rightToLeft) {
             if (falseBlock)
                 falseBlock->traverse(it);
-			if (trueBlock)
-				trueBlock->traverse(it);
+            if (trueBlock)
+                trueBlock->traverse(it);
             condition->traverse(it);
         } else {
             condition->traverse(it);
-			if (trueBlock)
-				trueBlock->traverse(it);
+            if (trueBlock)
+                trueBlock->traverse(it);
             if (falseBlock)
                 falseBlock->traverse(it);
         }
@@ -210,11 +210,11 @@ void TIntermLoop::traverse(TIntermTraverser* it)
                 terminal->traverse(it);
             if (body)
                 body->traverse(it);
-			if (test)
-				test->traverse(it);
+            if (test)
+                test->traverse(it);
         } else {
-			if (test)
-				test->traverse(it);
+            if (test)
+                test->traverse(it);
             if (body)
                 body->traverse(it);
             if (terminal)
@@ -247,3 +247,28 @@ void TIntermBranch::traverse(TIntermTraverser* it)
         it->visitBranch(false, this, it);
 }
 
+//
+// Traverse a switch node.
+//
+void TIntermSwitch::traverse(TIntermTraverser* it)
+{
+    bool visit = true;
+
+    if (it->preVisit && it->visitSwitch)
+        visit = it->visitSwitch(true, this, it);
+    
+    if (visit) {
+        ++it->depth;
+        if (it->rightToLeft) {
+            body->traverse(it);
+            condition->traverse(it);
+        } else {
+            condition->traverse(it);
+            body->traverse(it);
+        }
+        --it->depth;
+    }
+
+    if (visit && it->postVisit && it->visitSwitch)
+        it->visitSwitch(false, this, it);
+}

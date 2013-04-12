@@ -78,7 +78,7 @@ struct TParseContext {
     int numErrors;
     bool lexAfterType;           // true if we've recognized a type, so can only be looking for an identifier
     int loopNestingLevel;        // 0 if outside all loops
-    int switchNestingLevel;      // 0 if outside all switch statements
+    TList<TIntermSequence*> switchSequenceStack;  // case, node, case, case, node, ...; ensure only one node between cases;   stack of them for nesting
     bool inTypeParen;            // true if in parentheses, looking only for an identifier
     const TType* currentFunctionType;  // the return type of the function that's currently being parsed
     bool functionReturnsValue;   // true if a non-void function has a return
@@ -143,6 +143,8 @@ struct TParseContext {
     TIntermTyped* constructStruct(TIntermNode*, const TType&, int, TSourceLoc);
     TIntermTyped* constructBuiltIn(const TType&, TOperator, TIntermNode*, TSourceLoc, bool subset);
     void addBlock(int line, TPublicType& qualifier, const TString& blockName, TTypeList& typeList, const TString* instanceName = 0, TArraySizes arraySizes = 0);
+    void wrapupSwitchSubsequence(TIntermAggregate* statements, TIntermNode* branchNode);
+    TIntermNode* addSwitch(int line, TIntermTyped* expression, TIntermAggregate* body);
     void updateDefaults(int line, const TPublicType&, const TString* id);
     TIntermTyped* addConstVectorNode(TVectorFields&, TIntermTyped*, TSourceLoc);
     TIntermTyped* addConstMatrixNode(int , TIntermTyped*, TSourceLoc);

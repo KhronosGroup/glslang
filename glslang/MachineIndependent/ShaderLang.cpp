@@ -131,9 +131,9 @@ bool InitializeSymbolTable(TBuiltInStrings* BuiltInStrings, int version, EProfil
 
         builtInShaders[0] = (*i).c_str();
         builtInLengths[0] = (int) (*i).size();
-
         if (PaParseStrings(const_cast<char**>(builtInShaders), builtInLengths, 1, parseContext, 0) != 0) {
             infoSink.info.message(EPrefixInternalError, "Unable to parse built-ins");
+            printf("Unable to parse built-ins\n");
 
             return false;
         }
