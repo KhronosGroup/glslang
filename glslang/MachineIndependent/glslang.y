@@ -378,7 +378,7 @@ postfix_expression
             // we later see the function calling syntax.  Save away the name for now.
             //
 
-            // TODO: if next token is not "(", then this is an error
+            // TODO: semantics: if next token is not "(", then this is an error
 
             if (*$3.string == "length") {
                 parseContext.profileRequires($3.line, ENoProfile, 120, "GL_3DL_array_objects", ".length");
@@ -505,7 +505,7 @@ function_call
         TFunction* fnCall = $1.function;
         TOperator op = fnCall->getBuiltInOp();
         if (op == EOpArrayLength) {
-            // TODO: check for no arguments to .length()
+            // TODO: semantics: check for no arguments to .length()
             int length;
             if ($1.intermNode->getAsTyped() == 0 || ! $1.intermNode->getAsTyped()->getType().isArray() || $1.intermNode->getAsTyped()->getType().getArraySize() == 0) {
                 parseContext.error($1.line, "", fnCall->getName().c_str(), "array must be declared with a size before using this method");
@@ -596,7 +596,7 @@ function_call
     }
     ;
 
-// TODO: can we eliminate function_call_or_method and function_call_generic?
+// TODO: clean up: can we eliminate function_call_or_method and function_call_generic?
 function_call_or_method
     : function_call_generic {
         $$ = $1;
@@ -1182,7 +1182,7 @@ constant_expression
 declaration
     : function_prototype SEMICOLON {
         $$ = 0;
-        // TODO: subroutines: make the identifier a user type for this signature
+        // TODO: 4.0 functionality: subroutines: make the identifier a user type for this signature
     }
     | init_declarator_list SEMICOLON {
         if ($1.intermAggregate)
@@ -1795,7 +1795,7 @@ storage_qualifier
         if (parseContext.globalErrorCheck($1.line, parseContext.symbolTable.atGlobalLevel(), "buffer"))
             parseContext.recover();
         $$.init($1.line);
-        $$.qualifier.storage = EvqUniform; // TODO: functionality: implement BUFFER
+        $$.qualifier.storage = EvqUniform; // TODO: 4.0 functionality: implement BUFFER
     }
     | SHARED {
         $$.init($1.line);
@@ -1832,7 +1832,7 @@ storage_qualifier
             parseContext.recover();
         $$.init($1.line);
         $$.qualifier.storage = EvqUniform;
-        // TODO: subroutine semantics
+        // TODO: 4.0 semantics: subroutines
         // 1) make sure each identifier is a type declared earlier with SUBROUTINE
         // 2) save all of the identifiers for future comparison with the declared function
     }
@@ -1840,10 +1840,9 @@ storage_qualifier
 
 type_name_list
     : TYPE_NAME {
-        // TODO: add subroutine type to list
+        // TODO: 4.0 functionality: subroutine type to list
     }
     | type_name_list COMMA TYPE_NAME {
-        // TODO: add subroutine type to list
     }
     ;
 
@@ -2129,7 +2128,7 @@ type_specifier_nonarray
         $$.setMatrix(4, 4);
     }
     | ATOMIC_UINT {
-        // TODO: add type
+        // TODO: 4.2 functionality: add type
         $$.init($1.line, parseContext.symbolTable.atGlobalLevel());
         $$.basicType = EbtInt;
     }
@@ -2678,7 +2677,7 @@ initializer_list
         $$ = $1;
     }
     | initializer_list COMMA initializer {
-        // TODO: implement the list
+        // TODO: 4.2 functionality: implement the initializer list
         $$ = $3;
     }
     ;

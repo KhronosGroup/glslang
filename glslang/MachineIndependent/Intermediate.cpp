@@ -1268,7 +1268,7 @@ void TIntermTyped::propagatePrecision(TPrecisionQualifier newPrecision)
         }
     }
 
-    // TODO: propagate precision for
+    // TODO: functionality: propagate precision for
     //    comma operator:  just through the last operand
     //    ":?" and ",": where is this triggered?
     //    built-in function calls: how much to propagate to arguments?

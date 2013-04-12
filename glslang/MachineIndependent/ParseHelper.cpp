@@ -64,7 +64,7 @@ TParseContext::TParseContext(TSymbolTable& symt, TIntermediate& interm, int v, E
             defaultPrecision[EbtInt] = EpqMedium;
             defaultPrecision[EbtUint] = EpqMedium;
             defaultPrecision[EbtSampler] = EpqLow;
-            // TODO: give error when using float in frag shader without default precision
+            // TODO: semantics: give error when using float in frag shader without default precision
             break;
         default:
             error(1, "INTERNAL ERROR", "unexpected language", "");
@@ -457,7 +457,7 @@ bool TParseContext::reservedErrorCheck(int line, const TString& identifier)
         if (identifier.find("__") != TString::npos) {
             //error(line, "Two consecutive underscores are reserved for future use.", identifier.c_str(), "", "");
             //return true;
-            // TODO: make this an error
+            // TODO: semantics: make this an error
             infoSink.info.message(EPrefixWarning, "Two consecutive underscores are reserved for future use.", line);
             return false;
         }
@@ -1151,9 +1151,9 @@ void TParseContext::setLayoutQualifier(int line, TPublicType& publicType, TStrin
     else
         error(line, "there is no such layout identifier taking an assigned value", id.c_str(), "");
 
-    // TODO: error check: make sure locations are non-overlapping across the whole stage
-    // TODO: error check: if more than one fragment output, all must have a location
-    // TODO: error check: output arrays can only be indexed with a constant (es 300)
+    // TODO: semantics: error check: make sure locations are non-overlapping across the whole stage
+    // TODO: semantics: error check: if more than one fragment output, all must have a location
+    // TODO: semantics: error check: output arrays can only be indexed with a constant (es 300)
 }
 
 // Merge any layout qualifier information from src into dst, leaving everything else in dst alone
@@ -1574,6 +1574,12 @@ void TParseContext::addBlock(int line, TPublicType& publicType, const TString& b
     }
 }
 
+//
+// Take the sequence of statements that has been built up since the last case/default,
+// put it on the list of top-level nodes for the current (inner-most) switch statement,
+// and follow that by the case/default we are on now.  (See switch topology comment on
+// TIntermSwitch.)
+//
 void TParseContext::wrapupSwitchSubsequence(TIntermAggregate* statements, TIntermNode* branchNode)
 {
     TIntermSequence* switchSequence = switchSequenceStack.back();
@@ -1590,6 +1596,10 @@ void TParseContext::wrapupSwitchSubsequence(TIntermAggregate* statements, TInter
         switchSequence->push_back(branchNode);
 }
 
+//
+// Turn the top-level node sequence built up of wrapupSwitchSubsequence9)
+// into a switch node.
+//
 TIntermNode* TParseContext::addSwitch(int line, TIntermTyped* expression, TIntermAggregate* lastStatements)
 {
     profileRequires(line, EEsProfile, 300, 0, "switch statements");

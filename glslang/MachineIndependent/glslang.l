@@ -59,9 +59,6 @@ U           [uU]
 F           [fF]
 LF          [lL][fF]
 
-/* TODO: double literals, which will likely require pre-processor rework */
-/* TODO: unsigned int literals, which will likely require pre-processor rework */
-
 %option nounput
 %{
 #include <stdio.h>
@@ -107,10 +104,10 @@ int yy_input(char* buf, int max_size);
 %%
 <*>"//"[^\n]*"\n"     { /* CPP should have taken care of this */ };
 
-"attribute"    {  pyylval->lex.line = yylineno; return(ATTRIBUTE); }  // TODO ES 30 reserved
+"attribute"    {  pyylval->lex.line = yylineno; return(ATTRIBUTE); }  // TODO: semantics: ES 30 reserved
 "const"        {  pyylval->lex.line = yylineno; return(CONST); }
 "uniform"      {  pyylval->lex.line = yylineno; return(UNIFORM); }
-"varying"      {  pyylval->lex.line = yylineno; return(VARYING); }    // TODO ES 30 reserved
+"varying"      {  pyylval->lex.line = yylineno; return(VARYING); }    // TODO: semantics: ES 30 reserved
 "buffer"       {  pyylval->lex.line = yylineno; return(BUFFER); }
 "shared"       {  pyylval->lex.line = yylineno; return(SHARED); }
 

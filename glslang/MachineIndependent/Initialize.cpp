@@ -1064,12 +1064,12 @@ void TBuiltIns::addQueryFunctions(TSampler sampler, TString& typeName, int versi
     builtInStrings[EShLangFragment].push_back(s);
     builtInStrings[EShLangVertex].push_back(s);
 
-    // TODO: Functionality: version 420 imaging functions
+    // TODO: 4.2 Functionality: imaging functions
 }
 
 void TBuiltIns::addImageFunctions(TSampler sampler, TString& typeName, int version, EProfile profile)
 {
-    // TODO: Functionality: version 420 imaging functions
+    // TODO: 4.2 Functionality: imaging functions
 }
 
 void TBuiltIns::addSamplingFunctions(TSampler sampler, TString& typeName, int version, EProfile profile)
@@ -1462,7 +1462,7 @@ void IdentifyBuiltIns(int version, EProfile profile, EShLanguage language, TSymb
     case EShLangTessControl:
     case EShLangTessEvaluation:
     case EShLangGeometry:
-        // TODO: support these stages
+        // TODO: desktop functionality: support new stages
     
     default:
         assert(false && "Language not supported");

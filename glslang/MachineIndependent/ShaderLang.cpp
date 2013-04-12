@@ -81,7 +81,7 @@ const int VersionCount = 12;
 // Each has a different set of built-ins, and we want to preserve that from
 // compile to compile.
 //
-// TODO: thread safety: ensure the built-in symbol table levels are reado only.
+// TODO: quality: thread safety: ensure the built-in symbol table levels are reado only.
 TSymbolTable* SharedSymbolTables[VersionCount][EProfileCount][EShLangCount] = {};
 
 TPoolAllocator* PerProcessGPA = 0;
@@ -278,7 +278,7 @@ void ScanVersion(const char* const shaderStrings[], int numStrings, int& version
 
     const char* s = &shaderStrings[0][0];
 
-    // TODO: ES error check: #version must be on first line
+    // TODO: semantics:  ES error check: #version must be on first line
 
     while (ConsumeWhitespaceComment(s))
         ;
@@ -390,7 +390,7 @@ int ShInitialize()
     if (! InitProcess())
         return 0;
 
-    // TODO: Thread safety:
+    // TODO: Quality: Thread safety:
     // This method should be called once per process. If it's called by multiple threads, then 
     // we need to have thread synchronization code around the initialization of per process
     // global pool allocator

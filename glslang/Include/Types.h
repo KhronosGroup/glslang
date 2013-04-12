@@ -153,7 +153,7 @@ inline TTypeList* NewPoolTTypeList()
 }
 
 //
-// TODO: TArraySizes memory: This could be replaced by something smaller.
+// TODO: memory: TArraySizes can be replaced by something smaller.
 // Almost all arrays could be handled by two sizes each fitting
 // in 16 bits, needing a real vector only in the cases where there
 // are more than 3 sizes or a size needing more than 16 bits.
