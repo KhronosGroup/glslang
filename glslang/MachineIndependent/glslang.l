@@ -516,8 +516,10 @@ int PaParseStrings(char* argv[], int strLen[], int argc, TParseContext& parseCon
            argv[0][len] == '\t' ||
            argv[0][len] == '\n' ||
            argv[0][len] == '\r') {
-        if (++len >= strLen[0])
+        if (++len >= strLen[0]) {
+            delete writeablePreamble;
             return 0;
+        }
     }
 
     if (*cpp->PaStrLen > 0) {

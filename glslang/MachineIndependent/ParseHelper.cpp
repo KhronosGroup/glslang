@@ -1576,7 +1576,7 @@ void TParseContext::addBlock(int line, TPublicType& publicType, const TString& b
 
 void TParseContext::wrapupSwitchSubsequence(TIntermAggregate* statements, TIntermNode* branchNode)
 {
-    auto switchSequence = switchSequenceStack.back();
+    TIntermSequence* switchSequence = switchSequenceStack.back();
 
     if (statements) {
         if (switchSequence->size() == 0) {
@@ -1605,7 +1605,7 @@ TIntermNode* TParseContext::addSwitch(int line, TIntermTyped* expression, TInter
     }
 
     // If there is nothing to do, drop the switch but still execute the expression
-    auto switchSequence = switchSequenceStack.back();
+    TIntermSequence* switchSequence = switchSequenceStack.back();
     if (switchSequence->size() == 0)
         return expression;
 
