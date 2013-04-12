@@ -1594,6 +1594,8 @@ void TParseContext::wrapupSwitchSubsequence(TIntermAggregate* statements, TInter
     }
     if (branchNode)
         switchSequence->push_back(branchNode);
+
+    // TODO: semantics: verify no duplicated case values
 }
 
 //

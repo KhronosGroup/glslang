@@ -566,7 +566,7 @@ protected:
 // in between (if any) consecutive case/defaults.  So, a traversal need only deal with
 // 0 or 1 nodes per case/default statement.
 //
-class TIntermSwitch : public TIntermAggregate {
+class TIntermSwitch : public TIntermNode {
 public:
     TIntermSwitch(TIntermTyped* cond, TIntermAggregate* b) : condition(cond), body(b) { }
     virtual void traverse(TIntermTraverser*);
