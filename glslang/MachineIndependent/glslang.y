@@ -1601,6 +1601,9 @@ fully_specified_type
         $$.qualifier = $1.qualifier;
         if ($$.qualifier.precision == EpqNone)
             $$.qualifier.precision = $2.qualifier.precision;
+
+        if (! $$.qualifier.isInterpolation() && parseContext.language == EShLangFragment)
+            $$.qualifier.smooth = true;
     }
     ;
 

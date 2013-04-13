@@ -8,6 +8,7 @@ LD_LIBRARY_PATH=`pwd`/glslang/MachineIndependent/lib:${LD_LIBRARY_PATH}
 export LD_LIBRARY_PATH
 
 # run using test data
-cd StandAlone
-./StandAlone -i sample.vert sample.frag
+cd Test
+../StandAlone/StandAlone -i sample.vert sample.frag
+
 
