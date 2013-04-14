@@ -48,8 +48,6 @@ extern "C" {
     SH_IMPORT_EXPORT void ShOutputHtml();
 }
 
-//#define MEASURE_MEMORY
-
 //
 // Return codes from main.
 //
@@ -81,7 +79,6 @@ void usage();
 void FreeFileData(char **data);
 char** ReadFileData(const char *fileName);
 void InfoLogMsg(const char* msg, const char* name, const int num);
-int ShOutputMultipleStrings(const char *);
 //Added to accomodate the multiple strings.
 int OutputMultipleStrings = 1;
 
@@ -134,21 +131,27 @@ int C_DECL main(int argc, char* argv[])
         for (; argc >= 1; argc--, argv++) {
             if (argv[0][0] == '-') {
                 switch (argv[0][1]) {
-                case 'd': delay    = true;                           break;
-
-#ifdef MEASURE_MEMORY
-                case 'i': break;
-                case 'a': break;
-                case 'h': break;
-#else
-                case 'i': debugOptions |= EDebugOpIntermediate;       break;
-                case 'a': debugOptions |= EDebugOpAssembly;           break;
-#endif
-                case 'c': if(!ShOutputMultipleStrings((++argv)[0]))
-                                                         return EFailUsage; 
-                          --argc;                                    break;
-                case 'm': debugOptions |= EDebugOpLinkMaps;           break;
-                default:  usage();                       return EFailUsage;
+                case 'd':
+                    delay = true;                        
+                    break;
+                case 'i': 
+                    debugOptions |= EDebugOpIntermediate;       
+                    break;
+                case 'a': 
+                    debugOptions |= EDebugOpAssembly;
+                    break;
+                case 'l':
+                    debugOptions |= EDebugOpMemoryLeakMode;
+                    break;
+                case 's':
+                    debugOptions |= EDebugOpSuppressInfolog;
+                    break;
+                case 't':
+                    debugOptions |= EDebugOpTexturePrototypes;
+                    break;                    
+                default:
+                    usage();
+                    return EFailUsage;
                 }
             } else {
                 compilers[numCompilers] = ShConstructCompiler(FindLanguage(argv[0]), debugOptions);
@@ -182,15 +185,17 @@ int C_DECL main(int argc, char* argv[])
                 linkFailed = true;
         }
 
-        for (i = 0; i < numCompilers; ++i) {
-            InfoLogMsg("BEGIN", "COMPILER", i);
-            puts(ShGetInfoLog(compilers[i]));
-            InfoLogMsg("END", "COMPILER", i);
-        }
+        if (! (debugOptions & EDebugOpSuppressInfolog)) {
+            for (i = 0; i < numCompilers; ++i) {
+                InfoLogMsg("BEGIN", "COMPILER", i);
+                puts(ShGetInfoLog(compilers[i]));
+                InfoLogMsg("END", "COMPILER", i);
+            }
 
-        InfoLogMsg("BEGIN", "LINKER", -1);
-        puts(ShGetInfoLog(linker));
-        InfoLogMsg("END", "LINKER", -1);
+            InfoLogMsg("BEGIN", "LINKER", -1);
+            puts(ShGetInfoLog(linker));
+            InfoLogMsg("END", "LINKER", -1);
+        }
     
 #ifdef _WIN32
     } __finally {    
@@ -248,25 +253,20 @@ bool CompileFile(const char *fileName, ShHandle compiler, int debugOptions, cons
 {
     int ret;
     char **data = ReadFileData(fileName);
-
-#ifdef MEASURE_MEMORY
-    PROCESS_MEMORY_COUNTERS counters;
-#endif
+    PROCESS_MEMORY_COUNTERS counters;  // just for memory leak testing
 
     if (!data)
         return false;
 
-#ifdef MEASURE_MEMORY
-    for (int i = 0; i < 10; ++i) {
-        for (int j = 0; j < 1000; ++j)
-#endif
+    for (int i = 0; i < ((debugOptions & EDebugOpMemoryLeakMode) ? 100 : 1); ++i) {
+        for (int j = 0; j < ((debugOptions & EDebugOpMemoryLeakMode) ? 100 : 1); ++j)
             ret = ShCompile(compiler, data, OutputMultipleStrings, EShOptNone, resources, debugOptions, 100, false, EShMsgDefault);
-#ifdef MEASURE_MEMORY
 
-        GetProcessMemoryInfo(GetCurrentProcess(), &counters, sizeof(counters));
-        printf("Working set size: %d\n", counters.WorkingSetSize);
+        if (debugOptions & EDebugOpMemoryLeakMode) {
+            GetProcessMemoryInfo(GetCurrentProcess(), &counters, sizeof(counters));
+            printf("Working set size: %d\n", counters.WorkingSetSize);
+        }
     }
-#endif
 
     FreeFileData(data);
 
@@ -279,10 +279,14 @@ bool CompileFile(const char *fileName, ShHandle compiler, int debugOptions, cons
 //
 void usage()
 {
-    printf("Usage: standalone [-i -a -c -m -d -h] file1 file2 ...\n"
-           "Where: filename = filename ending in .frag* or .vert*\n");
+    printf("Usage: standalone [ options ] filename\n"
+           "Where: filename = filename ending in .frag* or .vert*\n"
+           "-i: intermediate (glslang AST)\n"
+           "-a: assembly dump (LLVM IR)\n"
+           "-d: delay end (keeps output up in debugger, WIN32)\n"
+           "-l: memory leak mode\n"
+           "-s: silent mode (no info log)\n");
 }
-
 
 #ifndef _WIN32
 
@@ -388,15 +392,4 @@ void InfoLogMsg(const char* msg, const char* name, const int num)
 {
     printf(num >= 0 ? "#### %s %s %d INFO LOG ####\n" :
            "#### %s %s INFO LOG ####\n", msg, name, num);
-}
-
-int ShOutputMultipleStrings(const char *argv)
-{
-	if(!(abs(OutputMultipleStrings = atoi(argv)))||((OutputMultipleStrings >5 || OutputMultipleStrings < 1)? 1:0)){
-	   printf("Invalid Command Line Argument after -c option.\n"
-              "Usage: -c <integer> where integer =[1,5]\n"
-              "This option must be specified before the input file path\n");
-       return 0;
-	}
-    return 1;
 }
