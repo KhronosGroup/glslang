@@ -253,7 +253,10 @@ bool CompileFile(const char *fileName, ShHandle compiler, int debugOptions, cons
 {
     int ret;
     char **data = ReadFileData(fileName);
+
+#ifdef _WIN32
     PROCESS_MEMORY_COUNTERS counters;  // just for memory leak testing
+#endif
 
     if (!data)
         return false;
@@ -262,10 +265,12 @@ bool CompileFile(const char *fileName, ShHandle compiler, int debugOptions, cons
         for (int j = 0; j < ((debugOptions & EDebugOpMemoryLeakMode) ? 100 : 1); ++j)
             ret = ShCompile(compiler, data, OutputMultipleStrings, EShOptNone, resources, debugOptions, 100, false, EShMsgDefault);
 
+#ifdef _WIN32
         if (debugOptions & EDebugOpMemoryLeakMode) {
             GetProcessMemoryInfo(GetCurrentProcess(), &counters, sizeof(counters));
             printf("Working set size: %d\n", counters.WorkingSetSize);
         }
+#endif
     }
 
     FreeFileData(data);
