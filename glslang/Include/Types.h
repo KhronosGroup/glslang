@@ -232,17 +232,58 @@ public:
     bool readonly  : 1;
     bool writeonly : 1;
 
-    bool isMemory()
+    bool isMemory() const
     {
         return coherent || volatil || restrict || readonly || writeonly;
     }
-    bool isInterpolation()
+    bool isInterpolation() const
     {
         return flat || smooth || nopersp;
     }
-    bool isAuxillary()
+    bool isAuxillary() const
     {
         return centroid || patch || sample;
+    }
+
+    bool isPipeInput() const
+    {
+        switch (storage) {
+        case EvqVaryingIn:
+        case EvqFragCoord:
+        case EvqPointCoord:
+        case EvqFace:
+        case EvqVertexId:
+        case EvqInstanceId:
+            return true;
+        default:
+            return false;
+        }
+    }
+
+    bool isPipeOutput() const
+    {
+        switch (storage) {
+        case EvqPosition:
+        case EvqPointSize:
+        case EvqClipVertex:
+        case EvqVaryingOut:
+        case EvqFragColor:
+        case EvqFragDepth:
+            return true;
+        default:
+            return false;
+        }
+    }
+
+    bool isUniform() const
+    {
+        switch (storage) {
+        case EvqUniform:
+        case EVqBuffer:
+            return true;
+        default:
+            return false;
+        }
     }
 
     // Implementing an embedded layout-qualifier class here, since C++ can't have a real class bitfield
