@@ -66,13 +66,17 @@ LF          [lL][fF]
 #include "ParseHelper.h"
 #include "glslang_tab.cpp.h"
 
-int PaReservedWord();
-int PaIdentOrType(TString& id, TParseContext&, TSymbol*&);
+void PaReservedWord();
+void PaCompatibilityWord(TParseContext&);
+int PaIdentOrType(const char* yytext, TParseContext&, YYSTYPE* pyylval);
 int PaIdentOrReserved(bool reserved, TParseContext&, int line, const char* text, YYSTYPE* pyylval);
 int PaES30ReservedFromGLSL(int version, TParseContext& pc, int line, const char* text, YYSTYPE* pyylval, int keyword);
+int PaNonreservedKeyword(int esVersion, int nonEsVersion, TParseContext& pc, int line, const char* text, YYSTYPE* pyylval, int keyword);
 int PaPrecisionKeyword(TParseContext&, int line, const char* text, YYSTYPE* pyylval, int keyword);
 int PaMatNxM(TParseContext&, int line, const char* text, YYSTYPE* pyylval, int keyword);
 int PaDMat(TParseContext&, int line, const char* text, YYSTYPE* pyylval, int keyword);
+int Pa1stGenerationImage(TParseContext&, int line, const char* text, YYSTYPE* pyylval, int keyword);
+int Pa2ndGenerationImage(TParseContext&, int line, const char* text, YYSTYPE* pyylval, int keyword);
 
 /* windows only pragma */
 #ifdef _MSC_VER
@@ -100,326 +104,504 @@ int yy_input(char* buf, int max_size);
 %option outfile="gen_glslang.cpp"
 %x FIELDS
 
-
 %%
 <*>"//"[^\n]*"\n"     { /* CPP should have taken care of this */ };
 
-"attribute"    {  pyylval->lex.line = yylineno; return(ATTRIBUTE); }  // TODO: semantics: ES 30 reserved
-"const"        {  pyylval->lex.line = yylineno; return(CONST); }
-"uniform"      {  pyylval->lex.line = yylineno; return(UNIFORM); }
-"varying"      {  pyylval->lex.line = yylineno; return(VARYING); }    // TODO: semantics: ES 30 reserved
-"buffer"       {  pyylval->lex.line = yylineno; return(BUFFER); }
-"shared"       {  pyylval->lex.line = yylineno; return(SHARED); }
+"attribute"     {   pyylval->lex.line = yylineno;
+                    if (parseContext.profile == EEsProfile && parseContext.version >= 300)
+                        PaReservedWord();
+                    PaCompatibilityWord(parseContext);
+                    return ATTRIBUTE;
+                }
+"const"         {   pyylval->lex.line = yylineno;
+                    return CONST;
+                }
+"uniform"       {   pyylval->lex.line = yylineno;
+                    return UNIFORM;
+                }
+"varying"       {   pyylval->lex.line = yylineno;
+                    if (parseContext.profile == EEsProfile && parseContext.version >= 300)
+                        PaReservedWord();
+                    PaCompatibilityWord(parseContext);
+                    return VARYING;
+                }
+"buffer"        {   pyylval->lex.line = yylineno;
+                    if (parseContext.version < 430)
+                        return PaIdentOrType(yytext, parseContext, pyylval);
+                    return BUFFER;
+                }
+"shared"        {   pyylval->lex.line = yylineno;
+                    if (parseContext.profile == EEsProfile && parseContext.version < 300 ||
+                        parseContext.profile != EEsProfile && parseContext.version < 140)
+                        return PaIdentOrType(yytext, parseContext, pyylval);
+                    return SHARED;
+                }
+"coherent"      {   return PaES30ReservedFromGLSL(420, parseContext, yylineno, yytext, pyylval, COHERENT); }
+"volatile"      {   pyylval->lex.line = yylineno;
+                    if (parseContext.profile == EEsProfile || parseContext.version < 420)
+                        PaReservedWord();
+                    return VOLATILE;
+                }
+"restrict"      {   return PaES30ReservedFromGLSL(420, parseContext, yylineno, yytext, pyylval, RESTRICT); }
+"readonly"      {   return PaES30ReservedFromGLSL(420, parseContext, yylineno, yytext, pyylval, READONLY); }
+"writeonly"     {   return PaES30ReservedFromGLSL(420, parseContext, yylineno, yytext, pyylval, WRITEONLY); }
 
-"coherent"     {  return PaES30ReservedFromGLSL(420, parseContext, yylineno, yytext, pyylval, COHERENT); }
-"volatile"     {  if (parseContext.profile == EEsProfile || parseContext.version < 420) 
-                      return PaReservedWord();    
-                  else
-                       pyylval->lex.line = yylineno; return(VOLATILE); 
-               }
-"restrict"     {  return PaES30ReservedFromGLSL(420, parseContext, yylineno, yytext, pyylval, RESTRICT); }
-"readonly"     {  return PaES30ReservedFromGLSL(420, parseContext, yylineno, yytext, pyylval, READONLY); }
-"writeonly"    {  return PaES30ReservedFromGLSL(420, parseContext, yylineno, yytext, pyylval, WRITEONLY); }
+"layout"        {   pyylval->lex.line = yylineno;
+                    if (parseContext.profile == EEsProfile && parseContext.version < 300 ||
+                        parseContext.profile != EEsProfile && parseContext.version < 140)
+                        return PaIdentOrType(yytext, parseContext, pyylval);
+                    return LAYOUT;
+                }
+"centroid"      {   pyylval->lex.line = yylineno;
+                    if (parseContext.version < 120)
+                        return PaIdentOrType(yytext, parseContext, pyylval);
+                    return CENTROID;
+                }
+"flat"          {   pyylval->lex.line = yylineno;
+                    if (parseContext.profile == EEsProfile && parseContext.version < 300)
+                        PaReservedWord();
+                    else if (parseContext.profile != EEsProfile && parseContext.version < 130)
+                        return PaIdentOrType(yytext, parseContext, pyylval);
+                    return FLAT;
+                }
+"smooth"        {   pyylval->lex.line = yylineno;
+                    if (parseContext.profile == EEsProfile && parseContext.version < 300 ||
+                        parseContext.profile != EEsProfile && parseContext.version < 130)
+                        return PaIdentOrType(yytext, parseContext, pyylval);
+                    return SMOOTH;
+                }
+"noperspective" {   return PaES30ReservedFromGLSL(130, parseContext, yylineno, yytext, pyylval, NOPERSPECTIVE); }
+"patch"         {   return PaES30ReservedFromGLSL(400, parseContext, yylineno, yytext, pyylval, PATCH); }
+"sample"        {   return PaES30ReservedFromGLSL(400, parseContext, yylineno, yytext, pyylval, SAMPLE); }
 
-"layout"       {  pyylval->lex.line = yylineno; return(LAYOUT); }
+"break"         {   pyylval->lex.line = yylineno; return BREAK; }
+"continue"      {   pyylval->lex.line = yylineno; return CONTINUE; }
+"do"            {   pyylval->lex.line = yylineno; return DO; }
+"for"           {   pyylval->lex.line = yylineno; return FOR; }
+"while"         {   pyylval->lex.line = yylineno; return WHILE; }
+"switch"        {   pyylval->lex.line = yylineno; return SWITCH; }
+"case"          {   pyylval->lex.line = yylineno; return CASE; }
+"default"       {   pyylval->lex.line = yylineno; return DEFAULT; }
 
-"centroid"      {  pyylval->lex.line = yylineno; return(CENTROID); }
-"flat"          {  pyylval->lex.line = yylineno; return(FLAT); }
-"smooth"        {  pyylval->lex.line = yylineno; return(SMOOTH); }
-"noperspective" {  pyylval->lex.line = yylineno; return(NOPERSPECTIVE); }
+"if"            {   pyylval->lex.line = yylineno; return IF; }
+"else"          {   pyylval->lex.line = yylineno; return ELSE; }
 
-"patch"        {  return PaES30ReservedFromGLSL(400, parseContext, yylineno, yytext, pyylval, PATCH); }
-"sample"       {  return PaES30ReservedFromGLSL(400, parseContext, yylineno, yytext, pyylval, SAMPLE); }
+"subroutine"    {   return PaES30ReservedFromGLSL(400, parseContext, yylineno, yytext, pyylval, SUBROUTINE); }
 
-"break"        {  pyylval->lex.line = yylineno; return(BREAK); }
-"continue"     {  pyylval->lex.line = yylineno; return(CONTINUE); }
-"do"           {  pyylval->lex.line = yylineno; return(DO); }
-"for"          {  pyylval->lex.line = yylineno; return(FOR); }
-"while"        {  pyylval->lex.line = yylineno; return(WHILE); }
-"switch"       {  pyylval->lex.line = yylineno; return(SWITCH); }
-"case"         {  pyylval->lex.line = yylineno; return(CASE); }
-"default"      {  pyylval->lex.line = yylineno; return(DEFAULT); }
+"in"            {   pyylval->lex.line = yylineno; return IN; }
+"out"           {   pyylval->lex.line = yylineno; return OUT; }
+"inout"         {   pyylval->lex.line = yylineno; return INOUT; }
 
-"if"           {  pyylval->lex.line = yylineno; return(IF); }
-"else"         {  pyylval->lex.line = yylineno; return(ELSE); }
+"precise"       {   pyylval->lex.line = yylineno;
+                    if (parseContext.profile == EEsProfile ||
+                        parseContext.profile != EEsProfile && parseContext.version < 400)
+                        return PaIdentOrType(yytext, parseContext, pyylval);
+                    return PRECISE;
+                }
+"invariant"     {   pyylval->lex.line = yylineno;;
+                    if (parseContext.profile != EEsProfile && parseContext.version < 120)
+                        return PaIdentOrType(yytext, parseContext, pyylval);
+                    return INVARIANT;
+                }
 
-"subroutine"   {  return PaES30ReservedFromGLSL(400, parseContext, yylineno, yytext, pyylval, SUBROUTINE); }
+"highp"         {   return PaPrecisionKeyword(parseContext, yylineno, yytext, pyylval, HIGH_PRECISION); }
+"mediump"       {   return PaPrecisionKeyword(parseContext, yylineno, yytext, pyylval, MEDIUM_PRECISION); }
+"lowp"          {   return PaPrecisionKeyword(parseContext, yylineno, yytext, pyylval, LOW_PRECISION); }
+"precision"     {   return PaPrecisionKeyword(parseContext, yylineno, yytext, pyylval, PRECISION); }
 
-"in"           {  pyylval->lex.line = yylineno; return(IN); }
-"out"          {  pyylval->lex.line = yylineno; return(OUT); }
-"inout"        {  pyylval->lex.line = yylineno; return(INOUT); }
+"float"         {   pyylval->lex.line = yylineno; parseContext.lexAfterType = true; return FLOAT; }
+"double"        {   pyylval->lex.line = yylineno; parseContext.lexAfterType = true;
+                    if (parseContext.profile == EEsProfile || parseContext.version < 400)
+                        PaReservedWord();
+                    return DOUBLE;
+                }
+"int"           {   pyylval->lex.line = yylineno; parseContext.lexAfterType = true; return INT; }
+"uint"          {   parseContext.lexAfterType = true;
+                    return PaNonreservedKeyword(300, 130, parseContext, yylineno, yytext, pyylval, UINT);
+                }
+"void"          {   pyylval->lex.line = yylineno; parseContext.lexAfterType = true; return VOID; }
+"bool"          {   pyylval->lex.line = yylineno; parseContext.lexAfterType = true; return BOOL; }
+"true"          {   pyylval->lex.line = yylineno; pyylval->lex.b = true;  return BOOLCONSTANT; }
+"false"         {   pyylval->lex.line = yylineno; pyylval->lex.b = false; return BOOLCONSTANT; }
 
-"precise"      {  pyylval->lex.line = yylineno; return(PRECISE); }
-"invariant"    {  pyylval->lex.line = yylineno; return(INVARIANT); }
+"discard"       {   pyylval->lex.line = yylineno; return DISCARD; }
+"return"        {   pyylval->lex.line = yylineno; return RETURN; }
 
-"highp"        {  return PaPrecisionKeyword(parseContext, yylineno, yytext, pyylval, HIGH_PRECISION); }
-"mediump"      {  return PaPrecisionKeyword(parseContext, yylineno, yytext, pyylval, MEDIUM_PRECISION); }
-"lowp"         {  return PaPrecisionKeyword(parseContext, yylineno, yytext, pyylval, LOW_PRECISION); }
-"precision"    {  return PaPrecisionKeyword(parseContext, yylineno, yytext, pyylval, PRECISION); }
+"atomic_uint"   {   return PaES30ReservedFromGLSL(420, parseContext, yylineno, yytext, pyylval, ATOMIC_UINT); }
 
-"float"        {  pyylval->lex.line = yylineno; parseContext.lexAfterType = true; return(FLOAT); }
-"double"       {  pyylval->lex.line = yylineno; parseContext.lexAfterType = true; return(DOUBLE); }
-"int"          {  pyylval->lex.line = yylineno; parseContext.lexAfterType = true; return(INT); }
-"uint"         {  pyylval->lex.line = yylineno; parseContext.lexAfterType = true; return(UINT); }
-"void"         {  pyylval->lex.line = yylineno; parseContext.lexAfterType = true; return(VOID); }
-"bool"         {  pyylval->lex.line = yylineno; parseContext.lexAfterType = true; return(BOOL); }
-"true"         {  pyylval->lex.line = yylineno; pyylval->lex.b = true;  return(BOOLCONSTANT); }
-"false"        {  pyylval->lex.line = yylineno; pyylval->lex.b = false; return(BOOLCONSTANT); }
+"mat2"          {   pyylval->lex.line = yylineno; parseContext.lexAfterType = true; return MAT2; }
+"mat3"          {   pyylval->lex.line = yylineno; parseContext.lexAfterType = true; return MAT3; }
+"mat4"          {   pyylval->lex.line = yylineno; parseContext.lexAfterType = true; return MAT4; }
 
-"discard"      {  pyylval->lex.line = yylineno; return(DISCARD); }
-"return"       {  pyylval->lex.line = yylineno; return(RETURN); }
+"mat2x2"        {   return PaMatNxM(parseContext, yylineno, yytext, pyylval, MAT2X2); }
+"mat2x3"        {   return PaMatNxM(parseContext, yylineno, yytext, pyylval, MAT2X3); }
+"mat2x4"        {   return PaMatNxM(parseContext, yylineno, yytext, pyylval, MAT2X4); }
+"mat3x2"        {   return PaMatNxM(parseContext, yylineno, yytext, pyylval, MAT3X2); }
+"mat3x3"        {   return PaMatNxM(parseContext, yylineno, yytext, pyylval, MAT3X3); }
+"mat3x4"        {   return PaMatNxM(parseContext, yylineno, yytext, pyylval, MAT3X4); }
+"mat4x2"        {   return PaMatNxM(parseContext, yylineno, yytext, pyylval, MAT4X2); }
+"mat4x3"        {   return PaMatNxM(parseContext, yylineno, yytext, pyylval, MAT4X3); }
+"mat4x4"        {   return PaMatNxM(parseContext, yylineno, yytext, pyylval, MAT4X4); }
+"dmat2"         {   return   PaDMat(parseContext, yylineno, yytext, pyylval, DMAT2); }
+"dmat3"         {   return   PaDMat(parseContext, yylineno, yytext, pyylval, DMAT3); }
+"dmat4"         {   return   PaDMat(parseContext, yylineno, yytext, pyylval, DMAT4); }
+"dmat2x2"       {   return   PaDMat(parseContext, yylineno, yytext, pyylval, DMAT2X2); }
+"dmat2x3"       {   return   PaDMat(parseContext, yylineno, yytext, pyylval, DMAT2X3); }
+"dmat2x4"       {   return   PaDMat(parseContext, yylineno, yytext, pyylval, DMAT2X4); }
+"dmat3x2"       {   return   PaDMat(parseContext, yylineno, yytext, pyylval, DMAT3X2); }
+"dmat3x3"       {   return   PaDMat(parseContext, yylineno, yytext, pyylval, DMAT3X3); }
+"dmat3x4"       {   return   PaDMat(parseContext, yylineno, yytext, pyylval, DMAT3X4); }
+"dmat4x2"       {   return   PaDMat(parseContext, yylineno, yytext, pyylval, DMAT4X2); }
+"dmat4x3"       {   return   PaDMat(parseContext, yylineno, yytext, pyylval, DMAT4X3); }
+"dmat4x4"       {   return   PaDMat(parseContext, yylineno, yytext, pyylval, DMAT4X4); }
 
-"atomic_uint"  { return PaES30ReservedFromGLSL(420, parseContext, yylineno, yytext, pyylval, ATOMIC_UINT); }
+"vec2"          {   pyylval->lex.line = yylineno; parseContext.lexAfterType = true; return VEC2; }
+"vec3"          {   pyylval->lex.line = yylineno; parseContext.lexAfterType = true; return VEC3; }
+"vec4"          {   pyylval->lex.line = yylineno; parseContext.lexAfterType = true; return VEC4; }
+"dvec2"         {   pyylval->lex.line = yylineno; parseContext.lexAfterType = true;
+                    if (parseContext.profile == EEsProfile || parseContext.version < 400)
+                        PaReservedWord();
+                    return DVEC2;
+                }
+"dvec3"         {   pyylval->lex.line = yylineno; parseContext.lexAfterType = true;
+                    if (parseContext.profile == EEsProfile || parseContext.version < 400)
+                        PaReservedWord();
+                    return DVEC3;
+                }
+"dvec4"         {   pyylval->lex.line = yylineno; parseContext.lexAfterType = true;
+                    if (parseContext.profile == EEsProfile || parseContext.version < 400)
+                        PaReservedWord();
+                    return DVEC4;
+                }
+"ivec2"         {   pyylval->lex.line = yylineno; parseContext.lexAfterType = true; return IVEC2; }
+"ivec3"         {   pyylval->lex.line = yylineno; parseContext.lexAfterType = true; return IVEC3; }
+"ivec4"         {   pyylval->lex.line = yylineno; parseContext.lexAfterType = true; return IVEC4; }
+"uvec2"         {   parseContext.lexAfterType = true;
+                    return PaNonreservedKeyword(300, 130, parseContext, yylineno, yytext, pyylval, UVEC2);
+                }
+"uvec3"         {   parseContext.lexAfterType = true;
+                    return PaNonreservedKeyword(300, 130, parseContext, yylineno, yytext, pyylval, UVEC3);
+                }
+"uvec4"         {   parseContext.lexAfterType = true;
+                    return PaNonreservedKeyword(300, 130, parseContext, yylineno, yytext, pyylval, UVEC4);
+                }
+"bvec2"         {   pyylval->lex.line = yylineno; parseContext.lexAfterType = true; return BVEC2; }
+"bvec3"         {   pyylval->lex.line = yylineno; parseContext.lexAfterType = true; return BVEC3; }
+"bvec4"         {   pyylval->lex.line = yylineno; parseContext.lexAfterType = true; return BVEC4; }
 
-"mat2"         { pyylval->lex.line = yylineno; parseContext.lexAfterType = true; return(MAT2); }
-"mat3"         { pyylval->lex.line = yylineno; parseContext.lexAfterType = true; return(MAT3); }
-"mat4"         { pyylval->lex.line = yylineno; parseContext.lexAfterType = true; return(MAT4); }
+"sampler2D"             {   pyylval->lex.line = yylineno; parseContext.lexAfterType = true; return SAMPLER2D; }
+"samplerCube"           {   pyylval->lex.line = yylineno; parseContext.lexAfterType = true; return SAMPLERCUBE; }
 
-"mat2x2"       { return PaMatNxM(parseContext, yylineno, yytext, pyylval, MAT2X2); }
-"mat2x3"       { return PaMatNxM(parseContext, yylineno, yytext, pyylval, MAT2X3); }
-"mat2x4"       { return PaMatNxM(parseContext, yylineno, yytext, pyylval, MAT2X4); }
-"mat3x2"       { return PaMatNxM(parseContext, yylineno, yytext, pyylval, MAT3X2); }
-"mat3x3"       { return PaMatNxM(parseContext, yylineno, yytext, pyylval, MAT3X3); }
-"mat3x4"       { return PaMatNxM(parseContext, yylineno, yytext, pyylval, MAT3X4); }
-"mat4x2"       { return PaMatNxM(parseContext, yylineno, yytext, pyylval, MAT4X2); }
-"mat4x3"       { return PaMatNxM(parseContext, yylineno, yytext, pyylval, MAT4X3); }
-"mat4x4"       { return PaMatNxM(parseContext, yylineno, yytext, pyylval, MAT4X4); }
-"dmat2"        { return   PaDMat(parseContext, yylineno, yytext, pyylval, DMAT2);   }
-"dmat3"        { return   PaDMat(parseContext, yylineno, yytext, pyylval, DMAT3);   }
-"dmat4"        { return   PaDMat(parseContext, yylineno, yytext, pyylval, DMAT4);   }
-"dmat2x2"      { return   PaDMat(parseContext, yylineno, yytext, pyylval, DMAT2X2); }
-"dmat2x3"      { return   PaDMat(parseContext, yylineno, yytext, pyylval, DMAT2X3); }
-"dmat2x4"      { return   PaDMat(parseContext, yylineno, yytext, pyylval, DMAT2X4); }
-"dmat3x2"      { return   PaDMat(parseContext, yylineno, yytext, pyylval, DMAT3X2); }
-"dmat3x3"      { return   PaDMat(parseContext, yylineno, yytext, pyylval, DMAT3X3); }
-"dmat3x4"      { return   PaDMat(parseContext, yylineno, yytext, pyylval, DMAT3X4); }
-"dmat4x2"      { return   PaDMat(parseContext, yylineno, yytext, pyylval, DMAT4X2); }
-"dmat4x3"      { return   PaDMat(parseContext, yylineno, yytext, pyylval, DMAT4X3); }
-"dmat4x4"      { return   PaDMat(parseContext, yylineno, yytext, pyylval, DMAT4X4); }
+"sampler1D"             {   pyylval->lex.line = yylineno; parseContext.lexAfterType = true;
+                            if (parseContext.profile == EEsProfile)
+                                PaReservedWord();
+                            return SAMPLER1D;
+                        }
+"sampler3D"             {   pyylval->lex.line = yylineno; parseContext.lexAfterType = true;
+                            if (parseContext.profile == EEsProfile && parseContext.version < 300)
+                                PaReservedWord();
+                            return SAMPLER3D;
+                        }
+"sampler1DShadow"       {   pyylval->lex.line = yylineno; parseContext.lexAfterType = true;
+                            if (parseContext.profile == EEsProfile)
+                                PaReservedWord();
+                            return SAMPLER1DSHADOW;
+                        }
+"sampler2DShadow"       {   pyylval->lex.line = yylineno; parseContext.lexAfterType = true;
+                            if (parseContext.profile == EEsProfile && parseContext.version < 300)
+                                PaReservedWord();
+                            return SAMPLER2DSHADOW;
+                        }
+"sampler2DRect"         {   pyylval->lex.line = yylineno; parseContext.lexAfterType = true;
+                            if (parseContext.profile == EEsProfile ||
+                                parseContext.profile != EEsProfile && parseContext.version < 140)
+                                PaReservedWord();
+                            return SAMPLER2DRECT;
+                        }
+"sampler2DRectShadow"   {   pyylval->lex.line = yylineno; parseContext.lexAfterType = true;
+                            if (parseContext.profile == EEsProfile ||
+                                parseContext.profile != EEsProfile && parseContext.version < 140)
+                                PaReservedWord();
+                            return SAMPLER2DRECTSHADOW;
+                        }
+"samplerCubeShadow"     {   pyylval->lex.line = yylineno; parseContext.lexAfterType = true;
+                            return PaNonreservedKeyword(300, 130, parseContext, yylineno, yytext, pyylval, SAMPLERCUBESHADOW);
+                        }
+"sampler1DArray"        {   pyylval->lex.line = yylineno; parseContext.lexAfterType = true;
+                            if (parseContext.profile == EEsProfile && parseContext.version == 300)
+                                PaReservedWord();
+                            else if (parseContext.profile == EEsProfile && parseContext.version < 300 ||
+                                     parseContext.profile != EEsProfile && parseContext.version < 130)
+                                return PaIdentOrType(yytext, parseContext, pyylval);
+                            return SAMPLER1DARRAY;
+                        }
+"sampler2DArray"        {   pyylval->lex.line = yylineno; parseContext.lexAfterType = true;
+                            return PaNonreservedKeyword(300, 130, parseContext, yylineno, yytext, pyylval, SAMPLER2DARRAY);
+                        }
+"sampler2DArrayShadow"  {   pyylval->lex.line = yylineno; parseContext.lexAfterType = true;
+                            return PaNonreservedKeyword(300, 130, parseContext, yylineno, yytext, pyylval, SAMPLER2DARRAYSHADOW);
+                        }
+"samplerCubeArray"      {   pyylval->lex.line = yylineno; parseContext.lexAfterType = true;
+                            if (parseContext.profile == EEsProfile || parseContext.version < 400)
+                                return PaIdentOrType(yytext, parseContext, pyylval);
+                            return SAMPLERCUBEARRAY;
+                        }
+"sampler1DArrayShadow"  {   pyylval->lex.line = yylineno; parseContext.lexAfterType = true;
+                            return PaES30ReservedFromGLSL(130, parseContext, yylineno, yytext, pyylval, SAMPLER1DARRAYSHADOW);
+                        }
+"samplerCubeArrayShadow" {  pyylval->lex.line = yylineno; parseContext.lexAfterType = true;
+                            if (parseContext.profile == EEsProfile || parseContext.version < 400)
+                                return PaIdentOrType(yytext, parseContext, pyylval);
+                            return SAMPLERCUBEARRAYSHADOW;
+                        }
+"isampler1D"            {   pyylval->lex.line = yylineno; parseContext.lexAfterType = true;
+                            return PaES30ReservedFromGLSL(130, parseContext, yylineno, yytext, pyylval, ISAMPLER1D);
+                        }
+"isampler2D"            {   pyylval->lex.line = yylineno; parseContext.lexAfterType = true;
+                            return PaNonreservedKeyword(300, 130, parseContext, yylineno, yytext, pyylval, ISAMPLER2D);
+                        }
+"isampler3D"            {   pyylval->lex.line = yylineno; parseContext.lexAfterType = true;
+                            return PaNonreservedKeyword(300, 130, parseContext, yylineno, yytext, pyylval, ISAMPLER3D);
+                        }
+"isamplerCube"          {   pyylval->lex.line = yylineno; parseContext.lexAfterType = true;
+                            return PaNonreservedKeyword(300, 130, parseContext, yylineno, yytext, pyylval, ISAMPLERCUBE);
+                        }
+"isampler1DArray"       {   pyylval->lex.line = yylineno; parseContext.lexAfterType = true;
+                            return PaES30ReservedFromGLSL(130, parseContext, yylineno, yytext, pyylval, ISAMPLER1DARRAY);
+                        }
+"isampler2DArray"       {   pyylval->lex.line = yylineno; parseContext.lexAfterType = true;
+                            return PaNonreservedKeyword(300, 130, parseContext, yylineno, yytext, pyylval, ISAMPLER2DARRAY);
+                        }
+"usampler1D"            {   pyylval->lex.line = yylineno; parseContext.lexAfterType = true;
+                            return PaES30ReservedFromGLSL(130, parseContext, yylineno, yytext, pyylval,  USAMPLER1D);
+                        }
+"usampler2D"            {   pyylval->lex.line = yylineno; parseContext.lexAfterType = true;
+                            return PaNonreservedKeyword(300, 130, parseContext, yylineno, yytext, pyylval, USAMPLER2D);
+                        }
+"usampler3D"            {   pyylval->lex.line = yylineno; parseContext.lexAfterType = true;
+                            return PaNonreservedKeyword(300, 130, parseContext, yylineno, yytext, pyylval, USAMPLER3D);
+                        }
+"usamplerCube"          {   pyylval->lex.line = yylineno; parseContext.lexAfterType = true;
+                            return PaNonreservedKeyword(300, 130, parseContext, yylineno, yytext, pyylval, USAMPLERCUBE);
+                        }
+"usampler1DArray"       {   pyylval->lex.line = yylineno; parseContext.lexAfterType = true;
+                            return PaES30ReservedFromGLSL(130, parseContext, yylineno, yytext, pyylval,  USAMPLER1DARRAY);
+                        }
+"usampler2DArray"       {   pyylval->lex.line = yylineno; parseContext.lexAfterType = true;
+                            return PaNonreservedKeyword(300, 130, parseContext, yylineno, yytext, pyylval, USAMPLER2DARRAY);
+                        }
+"isampler2DRect"        {   pyylval->lex.line = yylineno; parseContext.lexAfterType = true;
+                            return PaES30ReservedFromGLSL(140, parseContext, yylineno, yytext, pyylval, ISAMPLER2DRECT);
+                        }
+"usampler2DRect"        {   pyylval->lex.line = yylineno; parseContext.lexAfterType = true;
+                            return PaES30ReservedFromGLSL(140, parseContext, yylineno, yytext, pyylval, USAMPLER2DRECT);
+                        }
+"isamplerCubeArray"     {   pyylval->lex.line = yylineno; parseContext.lexAfterType = true;
+                            if (parseContext.profile == EEsProfile || parseContext.version < 400)
+                                return PaIdentOrType(yytext, parseContext, pyylval);
+                            return ISAMPLERCUBEARRAY;
+                        }
+"usamplerCubeArray"     {   pyylval->lex.line = yylineno; parseContext.lexAfterType = true;
+                            if (parseContext.profile == EEsProfile || parseContext.version < 400)
+                                return PaIdentOrType(yytext, parseContext, pyylval);
+                            return USAMPLERCUBEARRAY;
+                        }
+"samplerBuffer"         {   pyylval->lex.line = yylineno; parseContext.lexAfterType = true;
+                            return PaES30ReservedFromGLSL(130, parseContext, yylineno, yytext, pyylval, SAMPLERBUFFER);
+                        }
+"isamplerBuffer"        {   pyylval->lex.line = yylineno; parseContext.lexAfterType = true;
+                            return PaES30ReservedFromGLSL(140, parseContext, yylineno, yytext, pyylval, ISAMPLERBUFFER);
+                        }
+"usamplerBuffer"        {   pyylval->lex.line = yylineno; parseContext.lexAfterType = true;
+                            return PaES30ReservedFromGLSL(140, parseContext, yylineno, yytext, pyylval, USAMPLERBUFFER);
+                        }
+"sampler2DMS"           {   pyylval->lex.line = yylineno; parseContext.lexAfterType = true;
+                            return PaES30ReservedFromGLSL(150, parseContext, yylineno, yytext, pyylval, SAMPLER2DMS);
+                        }
+"isampler2DMS"          {   pyylval->lex.line = yylineno; parseContext.lexAfterType = true;
+                            return PaES30ReservedFromGLSL(150, parseContext, yylineno, yytext, pyylval, ISAMPLER2DMS);
+                        }
+"usampler2DMS"          {   pyylval->lex.line = yylineno; parseContext.lexAfterType = true;
+                            return PaES30ReservedFromGLSL(150, parseContext, yylineno, yytext, pyylval, USAMPLER2DMS);
+                        }
+"sampler2DMSArray"      {   pyylval->lex.line = yylineno; parseContext.lexAfterType = true;
+                            return PaES30ReservedFromGLSL(150, parseContext, yylineno, yytext, pyylval, SAMPLER2DMSARRAY);
+                        }
+"isampler2DMSArray"     {   pyylval->lex.line = yylineno; parseContext.lexAfterType = true;
+                            return PaES30ReservedFromGLSL(150, parseContext, yylineno, yytext, pyylval, ISAMPLER2DMSARRAY);
+                        }
+"usampler2DMSArray"     {   pyylval->lex.line = yylineno; parseContext.lexAfterType = true;
+                            return PaES30ReservedFromGLSL(150, parseContext, yylineno, yytext, pyylval, USAMPLER2DMSARRAY);
+                        }
+"image1D"               {   return Pa1stGenerationImage(parseContext, yylineno, yytext, pyylval, IMAGE1D); }
+"iimage1D"              {   return Pa1stGenerationImage(parseContext, yylineno, yytext, pyylval, IIMAGE1D); }
+"uimage1D"              {   return Pa1stGenerationImage(parseContext, yylineno, yytext, pyylval, UIMAGE1D); }
+"image2D"               {   return Pa1stGenerationImage(parseContext, yylineno, yytext, pyylval, IMAGE2D); }
+"iimage2D"              {   return Pa1stGenerationImage(parseContext, yylineno, yytext, pyylval, IIMAGE2D); }
+"uimage2D"              {   return Pa1stGenerationImage(parseContext, yylineno, yytext, pyylval, UIMAGE2D); }
+"image3D"               {   return Pa1stGenerationImage(parseContext, yylineno, yytext, pyylval, IMAGE3D); }
+"iimage3D"              {   return Pa1stGenerationImage(parseContext, yylineno, yytext, pyylval, IIMAGE3D); }
+"uimage3D"              {   return Pa1stGenerationImage(parseContext, yylineno, yytext, pyylval, UIMAGE3D); }
+"image2DRect"           {   return Pa1stGenerationImage(parseContext, yylineno, yytext, pyylval, IMAGE2DRECT); }
+"iimage2DRect"          {   return Pa1stGenerationImage(parseContext, yylineno, yytext, pyylval, IIMAGE2DRECT); }
+"uimage2DRect"          {   return Pa1stGenerationImage(parseContext, yylineno, yytext, pyylval, UIMAGE2DRECT); }
+"imageCube"             {   return Pa1stGenerationImage(parseContext, yylineno, yytext, pyylval, IMAGECUBE); }
+"iimageCube"            {   return Pa1stGenerationImage(parseContext, yylineno, yytext, pyylval, IIMAGECUBE); }
+"uimageCube"            {   return Pa1stGenerationImage(parseContext, yylineno, yytext, pyylval, UIMAGECUBE); }
+"imageBuffer"           {   return Pa1stGenerationImage(parseContext, yylineno, yytext, pyylval, IMAGEBUFFER); }
+"iimageBuffer"          {   return Pa1stGenerationImage(parseContext, yylineno, yytext, pyylval, IIMAGEBUFFER); }
+"uimageBuffer"          {   return Pa1stGenerationImage(parseContext, yylineno, yytext, pyylval, UIMAGEBUFFER); }
+"image1DArray"          {   return Pa1stGenerationImage(parseContext, yylineno, yytext, pyylval, IMAGE1DARRAY); }
+"iimage1DArray"         {   return Pa1stGenerationImage(parseContext, yylineno, yytext, pyylval, IIMAGE1DARRAY); }
+"uimage1DArray"         {   return Pa1stGenerationImage(parseContext, yylineno, yytext, pyylval, UIMAGE1DARRAY); }
+"image2DArray"          {   return Pa1stGenerationImage(parseContext, yylineno, yytext, pyylval, IMAGE2DARRAY); }
+"iimage2DArray"         {   return Pa1stGenerationImage(parseContext, yylineno, yytext, pyylval, IIMAGE2DARRAY); }
+"uimage2DArray"         {   return Pa1stGenerationImage(parseContext, yylineno, yytext, pyylval, UIMAGE2DARRAY); }
 
-"vec2"         { pyylval->lex.line = yylineno; parseContext.lexAfterType = true; return (VEC2); }
-"vec3"         { pyylval->lex.line = yylineno; parseContext.lexAfterType = true; return (VEC3); }
-"vec4"         { pyylval->lex.line = yylineno; parseContext.lexAfterType = true; return (VEC4); }
-"dvec2"        { pyylval->lex.line = yylineno; parseContext.lexAfterType = true; return (DVEC2); }
-"dvec3"        { pyylval->lex.line = yylineno; parseContext.lexAfterType = true; return (DVEC3); }
-"dvec4"        { pyylval->lex.line = yylineno; parseContext.lexAfterType = true; return (DVEC4); }
-"ivec2"        { pyylval->lex.line = yylineno; parseContext.lexAfterType = true; return (IVEC2); }
-"ivec3"        { pyylval->lex.line = yylineno; parseContext.lexAfterType = true; return (IVEC3); }
-"ivec4"        { pyylval->lex.line = yylineno; parseContext.lexAfterType = true; return (IVEC4); }
-"uvec2"        { pyylval->lex.line = yylineno; parseContext.lexAfterType = true; return (UVEC2); }
-"uvec3"        { pyylval->lex.line = yylineno; parseContext.lexAfterType = true; return (UVEC3); }
-"uvec4"        { pyylval->lex.line = yylineno; parseContext.lexAfterType = true; return (UVEC4); }
-"bvec2"        { pyylval->lex.line = yylineno; parseContext.lexAfterType = true; return (BVEC2); }
-"bvec3"        { pyylval->lex.line = yylineno; parseContext.lexAfterType = true; return (BVEC3); }
-"bvec4"        { pyylval->lex.line = yylineno; parseContext.lexAfterType = true; return (BVEC4); }
+"imageCubeArray"        {   return Pa2ndGenerationImage(parseContext, yylineno, yytext, pyylval, IMAGECUBEARRAY); }
+"iimageCubeArray"       {   return Pa2ndGenerationImage(parseContext, yylineno, yytext, pyylval, IIMAGECUBEARRAY); }
+"uimageCubeArray"       {   return Pa2ndGenerationImage(parseContext, yylineno, yytext, pyylval, UIMAGECUBEARRAY); }
+"image2DMS"             {   return Pa2ndGenerationImage(parseContext, yylineno, yytext, pyylval, IMAGE2DMS); }
+"iimage2DMS"            {   return Pa2ndGenerationImage(parseContext, yylineno, yytext, pyylval, IIMAGE2DMS); }
+"uimage2DMS"            {   return Pa2ndGenerationImage(parseContext, yylineno, yytext, pyylval, UIMAGE2DMS); }
+"image2DMSArray"        {   return Pa2ndGenerationImage(parseContext, yylineno, yytext, pyylval, IMAGE2DMSARRAY); }
+"iimage2DMSArray"       {   return Pa2ndGenerationImage(parseContext, yylineno, yytext, pyylval, IIMAGE2DMSARRAY); }
+"uimage2DMSArray"       {   return Pa2ndGenerationImage(parseContext, yylineno, yytext, pyylval, UIMAGE2DMSARRAY); }
 
-"sampler1D"       {  pyylval->lex.line = yylineno; parseContext.lexAfterType = true; return SAMPLER1D; }
-"sampler2D"       {  pyylval->lex.line = yylineno; parseContext.lexAfterType = true; return SAMPLER2D; }
-"sampler3D"       {  pyylval->lex.line = yylineno; parseContext.lexAfterType = true; return SAMPLER3D; }
-"samplerCube"     {  pyylval->lex.line = yylineno; parseContext.lexAfterType = true; return SAMPLERCUBE; }
-"sampler1DShadow" {  pyylval->lex.line = yylineno; parseContext.lexAfterType = true; return SAMPLER1DSHADOW; }
-"sampler2DShadow" {  pyylval->lex.line = yylineno; parseContext.lexAfterType = true; return SAMPLER2DSHADOW; }
+"struct"        {   pyylval->lex.line = yylineno; return STRUCT; }
 
-"sampler2DRect"        { pyylval->lex.line = yylineno; parseContext.lexAfterType = true; return SAMPLER2DRECT; }
-"isampler2DRect"       { pyylval->lex.line = yylineno; parseContext.lexAfterType = true; return ISAMPLER2DRECT; }
-"usampler2DRect"       { pyylval->lex.line = yylineno; parseContext.lexAfterType = true; return USAMPLER2DRECT; }
-"sampler2DRectShadow"  { pyylval->lex.line = yylineno; parseContext.lexAfterType = true; return SAMPLER2DRECTSHADOW; }
+"asm"           {   PaReservedWord(); return 0; }
+"class"         {   PaReservedWord(); return 0; }
+"union"         {   PaReservedWord(); return 0; }
+"enum"          {   PaReservedWord(); return 0; }
+"typedef"       {   PaReservedWord(); return 0; }
+"template"      {   PaReservedWord(); return 0; }
+"this"          {   PaReservedWord(); return 0; }
 
-"samplerCubeShadow"    { pyylval->lex.line = yylineno; parseContext.lexAfterType = true; return SAMPLERCUBESHADOW; }
-"sampler1DArray"       { pyylval->lex.line = yylineno; parseContext.lexAfterType = true; return SAMPLER1DARRAY; }
-"sampler2DArray"       { pyylval->lex.line = yylineno; parseContext.lexAfterType = true; return SAMPLER2DARRAY; }
-"samplerCubeArray"     { pyylval->lex.line = yylineno; parseContext.lexAfterType = true; return SAMPLERCUBEARRAY; }
-"sampler1DArrayShadow" { pyylval->lex.line = yylineno; parseContext.lexAfterType = true; return SAMPLER1DARRAYSHADOW; }
-"sampler2DArrayShadow" { pyylval->lex.line = yylineno; parseContext.lexAfterType = true; return SAMPLER2DARRAYSHADOW; }
-"samplerCubeArrayShadow" { pyylval->lex.line = yylineno; parseContext.lexAfterType = true; return SAMPLERCUBEARRAYSHADOW; }
-"isampler1D"           { pyylval->lex.line = yylineno; parseContext.lexAfterType = true; return ISAMPLER1D; }
-"isampler2D"           { pyylval->lex.line = yylineno; parseContext.lexAfterType = true; return ISAMPLER2D; }
-"isampler3D"           { pyylval->lex.line = yylineno; parseContext.lexAfterType = true; return ISAMPLER3D; }
-"isamplerCube"         { pyylval->lex.line = yylineno; parseContext.lexAfterType = true; return ISAMPLERCUBE; }
-"isamplerCubeArray"    { pyylval->lex.line = yylineno; parseContext.lexAfterType = true; return ISAMPLERCUBEARRAY; }
-"isampler1DArray"      { pyylval->lex.line = yylineno; parseContext.lexAfterType = true; return ISAMPLER1DARRAY; }
-"isampler2DArray"      { pyylval->lex.line = yylineno; parseContext.lexAfterType = true; return ISAMPLER2DARRAY; }
-"usampler1D"           { pyylval->lex.line = yylineno; parseContext.lexAfterType = true; return USAMPLER1D; }
-"usampler2D"           { pyylval->lex.line = yylineno; parseContext.lexAfterType = true; return USAMPLER2D; }
-"usampler3D"           { pyylval->lex.line = yylineno; parseContext.lexAfterType = true; return USAMPLER3D; }
-"usamplerCube"         { pyylval->lex.line = yylineno; parseContext.lexAfterType = true; return USAMPLERCUBE; }
-"usamplerCubeArray"    { pyylval->lex.line = yylineno; parseContext.lexAfterType = true; return USAMPLERCUBEARRAY; }
-"usampler1DArray"      { pyylval->lex.line = yylineno; parseContext.lexAfterType = true; return USAMPLER1DARRAY; }
-"usampler2DArray"      { pyylval->lex.line = yylineno; parseContext.lexAfterType = true; return USAMPLER2DARRAY; }
+"packed"        {   pyylval->lex.line = yylineno;
+                    if (parseContext.profile == EEsProfile && parseContext.version < 300 ||
+                        parseContext.profile != EEsProfile && parseContext.version < 330) {
+                        PaReservedWord();
+                        return 0;
+                    } else
+                        return PaIdentOrType(yytext, parseContext, pyylval);
+                }
+"resource"      {   bool reserved = parseContext.profile == EEsProfile && parseContext.version >= 300 ||
+                                    parseContext.profile != EEsProfile && parseContext.version >= 420;
+                    return PaIdentOrReserved(reserved, parseContext, yylineno, yytext, pyylval);
+                }
+"goto"          {   PaReservedWord(); return 0; }
 
-"samplerBuffer"        { pyylval->lex.line = yylineno; parseContext.lexAfterType = true; return(SAMPLERBUFFER); }
-"isamplerBuffer"       { pyylval->lex.line = yylineno; parseContext.lexAfterType = true; return(ISAMPLERBUFFER); }
-"usamplerBuffer"       { pyylval->lex.line = yylineno; parseContext.lexAfterType = true; return(USAMPLERBUFFER); }
-"sampler2DMS"          { pyylval->lex.line = yylineno; parseContext.lexAfterType = true; return(SAMPLER2DMS); }
-"isampler2DMS"         { pyylval->lex.line = yylineno; parseContext.lexAfterType = true; return(ISAMPLER2DMS); }
-"usampler2DMS"         { pyylval->lex.line = yylineno; parseContext.lexAfterType = true; return(USAMPLER2DMS); }
-"sampler2DMSArray"     { pyylval->lex.line = yylineno; parseContext.lexAfterType = true; return(SAMPLER2DMSARRAY); }
-"isampler2DMSArray"    { pyylval->lex.line = yylineno; parseContext.lexAfterType = true; return(ISAMPLER2DMSARRAY); }
-"usampler2DMSArray"    { pyylval->lex.line = yylineno; parseContext.lexAfterType = true; return(USAMPLER2DMSARRAY); }
-"image1D"              { pyylval->lex.line = yylineno; parseContext.lexAfterType = true; return(IMAGE1D); }
-"iimage1D"             { pyylval->lex.line = yylineno; parseContext.lexAfterType = true; return(IIMAGE1D); }
-"uimage1D"             { pyylval->lex.line = yylineno; parseContext.lexAfterType = true; return(UIMAGE1D); }
-"image2D"              { pyylval->lex.line = yylineno; parseContext.lexAfterType = true; return(IMAGE2D); }
-"iimage2D"             { pyylval->lex.line = yylineno; parseContext.lexAfterType = true; return(IIMAGE2D); }
-"uimage2D"             { pyylval->lex.line = yylineno; parseContext.lexAfterType = true; return(UIMAGE2D); }
-"image3D"              { pyylval->lex.line = yylineno; parseContext.lexAfterType = true; return(IMAGE3D); }
-"iimage3D"             { pyylval->lex.line = yylineno; parseContext.lexAfterType = true; return(IIMAGE3D); }
-"uimage3D"             { pyylval->lex.line = yylineno; parseContext.lexAfterType = true; return(UIMAGE3D); }
-"image2DRect"          { pyylval->lex.line = yylineno; parseContext.lexAfterType = true; return(IMAGE2DRECT); }
-"iimage2DRect"         { pyylval->lex.line = yylineno; parseContext.lexAfterType = true; return(IIMAGE2DRECT); }
-"uimage2DRect"         { pyylval->lex.line = yylineno; parseContext.lexAfterType = true; return(UIMAGE2DRECT); }
-"imageCube"            { pyylval->lex.line = yylineno; parseContext.lexAfterType = true; return(IMAGECUBE); }
-"iimageCube"           { pyylval->lex.line = yylineno; parseContext.lexAfterType = true; return(IIMAGECUBE); }
-"uimageCube"           { pyylval->lex.line = yylineno; parseContext.lexAfterType = true; return(UIMAGECUBE); }
-"imageBuffer"          { pyylval->lex.line = yylineno; parseContext.lexAfterType = true; return(IMAGEBUFFER); }
-"iimageBuffer"         { pyylval->lex.line = yylineno; parseContext.lexAfterType = true; return(IIMAGEBUFFER); }
-"uimageBuffer"         { pyylval->lex.line = yylineno; parseContext.lexAfterType = true; return(UIMAGEBUFFER); }
-"image1DArray"         { pyylval->lex.line = yylineno; parseContext.lexAfterType = true; return(IMAGE1DARRAY); }
-"iimage1DArray"        { pyylval->lex.line = yylineno; parseContext.lexAfterType = true; return(IIMAGE1DARRAY); }
-"uimage1DArray"        { pyylval->lex.line = yylineno; parseContext.lexAfterType = true; return(UIMAGE1DARRAY); }
-"image2DArray"         { pyylval->lex.line = yylineno; parseContext.lexAfterType = true; return(IMAGE2DARRAY); }
-"iimage2DArray"        { pyylval->lex.line = yylineno; parseContext.lexAfterType = true; return(IIMAGE2DARRAY); }
-"uimage2DArray"        { pyylval->lex.line = yylineno; parseContext.lexAfterType = true; return(UIMAGE2DARRAY); }
-"imageCubeArray"       { pyylval->lex.line = yylineno; parseContext.lexAfterType = true; return(IMAGECUBEARRAY); }
-"iimageCubeArray"      { pyylval->lex.line = yylineno; parseContext.lexAfterType = true; return(IIMAGECUBEARRAY); }
-"uimageCubeArray"      { pyylval->lex.line = yylineno; parseContext.lexAfterType = true; return(UIMAGECUBEARRAY); }
-"image2DMS"            { pyylval->lex.line = yylineno; parseContext.lexAfterType = true; return(IMAGE2DMS); }
-"iimage2DMS"           { pyylval->lex.line = yylineno; parseContext.lexAfterType = true; return(IIMAGE2DMS); }
-"uimage2DMS"           { pyylval->lex.line = yylineno; parseContext.lexAfterType = true; return(UIMAGE2DMS); }
-"image2DMSArray"       { pyylval->lex.line = yylineno; parseContext.lexAfterType = true; return(IMAGE2DMSARRAY); }
-"iimage2DMSArray"      { pyylval->lex.line = yylineno; parseContext.lexAfterType = true; return(IIMAGE2DMSARRAY); }
-"uimage2DMSArray"      { pyylval->lex.line = yylineno; parseContext.lexAfterType = true; return(UIMAGE2DMSARRAY); }
+"inline"        {   PaReservedWord(); return 0; }
+"noinline"      {   PaReservedWord(); return 0; }
+"public"        {   PaReservedWord(); return 0; }
+"static"        {   PaReservedWord(); return 0; }
+"extern"        {   PaReservedWord(); return 0; }
+"external"      {   PaReservedWord(); return 0; }
+"interface"     {   PaReservedWord(); return 0; }
 
-"struct"       {  pyylval->lex.line = yylineno; return(STRUCT); }
+"long"          {   PaReservedWord(); return 0; }
+"short"         {   PaReservedWord(); return 0; }
+"half"          {   PaReservedWord(); return 0; }
+"fixed"         {   PaReservedWord(); return 0; }
+"unsigned"      {   PaReservedWord(); return 0; }
 
-"asm"          {  PaReservedWord(); return 0; }
+"superp"        {   bool reserved = parseContext.profile == EEsProfile || parseContext.version >= 130;
+                    return PaIdentOrReserved(reserved, parseContext, yylineno, yytext, pyylval);
+                }
+"input"         {   PaReservedWord(); return 0; }
+"output"        {   PaReservedWord(); return 0; }
 
-"class"        {  PaReservedWord(); return 0; }
-"union"        {  PaReservedWord(); return 0; }
-"enum"         {  PaReservedWord(); return 0; }
-"typedef"      {  PaReservedWord(); return 0; }
-"template"     {  PaReservedWord(); return 0; }
-"this"         {  PaReservedWord(); return 0; }
-"packed"       {  PaReservedWord(); return 0; }
+"hvec2"         {   PaReservedWord(); return 0; }
+"hvec3"         {   PaReservedWord(); return 0; }
+"hvec4"         {   PaReservedWord(); return 0; }
+"fvec2"         {   PaReservedWord(); return 0; }
+"fvec3"         {   PaReservedWord(); return 0; }
+"fvec4"         {   PaReservedWord(); return 0; }
 
-"resource"     {  if (parseContext.profile == EEsProfile && parseContext.version >= 300 ||
-                      parseContext.profile != EEsProfile && parseContext.version >= 420)    
-                          return PaReservedWord();
-               }
+"sampler3DRect" {   PaReservedWord(); return 0; }
 
-"goto"         {  PaReservedWord(); return 0; }
+"filter"        {   PaReservedWord(); return 0; }
 
-"inline"       {  PaReservedWord(); return 0; }
-"noinline"     {  PaReservedWord(); return 0; }
-"public"       {  PaReservedWord(); return 0; }
-"static"       {  PaReservedWord(); return 0; }
-"extern"       {  PaReservedWord(); return 0; }
-"external"     {  PaReservedWord(); return 0; }
-"interface"    {  PaReservedWord(); return 0; }
+"sizeof"        {   PaReservedWord(); return 0; }
+"cast"          {   PaReservedWord(); return 0; }
 
-"long"         {  PaReservedWord(); return 0; }
-"short"        {  PaReservedWord(); return 0; }
-"half"         {  PaReservedWord(); return 0; }
-"fixed"        {  PaReservedWord(); return 0; }
-"unsigned"     {  PaReservedWord(); return 0; }
-
-"superp"       {  bool reserved = (parseContext.profile == EEsProfile || parseContext.version >= 130);
-                  return PaIdentOrReserved(reserved, parseContext, yylineno, yytext, pyylval); }
-
-"input"        {  PaReservedWord(); return 0; }
-"output"       {  PaReservedWord(); return 0; }
-
-"hvec2"        {  PaReservedWord(); return 0; }
-"hvec3"        {  PaReservedWord(); return 0; }
-"hvec4"        {  PaReservedWord(); return 0; }
-"fvec2"        {  PaReservedWord(); return 0; }
-"fvec3"        {  PaReservedWord(); return 0; }
-"fvec4"        {  PaReservedWord(); return 0; }
-
-"sampler3DRect" { PaReservedWord(); return 0; }
-
-"filter"       {  PaReservedWord(); return 0; }
-
-"sizeof"       {  PaReservedWord(); return 0; }
-"cast"         {  PaReservedWord(); return 0; }
-
-"namespace"    {  PaReservedWord(); return 0; }
-"using"        {  PaReservedWord(); return 0; }
+"namespace"     {   PaReservedWord(); return 0; }
+"using"         {   PaReservedWord(); return 0; }
 
 {L}({L}|{D})*       {
    pyylval->lex.line = yylineno;
-   pyylval->lex.string = NewPoolTString(yytext);
-   return PaIdentOrType(*pyylval->lex.string, parseContext, pyylval->lex.symbol);
+   return PaIdentOrType(yytext, parseContext, pyylval);
 }
 
-0[xX]{H}+         { pyylval->lex.line = yylineno; pyylval->lex.i = strtoul(yytext, 0, 0); return(INTCONSTANT); }
-0{O}+             { pyylval->lex.line = yylineno; pyylval->lex.i = strtoul(yytext, 0, 0); return(INTCONSTANT); }
+0[xX]{H}+         { pyylval->lex.line = yylineno; pyylval->lex.i = strtoul(yytext, 0, 0); return INTCONSTANT; }
+0{O}+             { pyylval->lex.line = yylineno; pyylval->lex.i = strtoul(yytext, 0, 0); return INTCONSTANT; }
 0{D}+             { pyylval->lex.line = yylineno; parseContext.error(yylineno, "Invalid Octal number.", yytext, "", ""); parseContext.recover(); return 0;}
-{D}+              { pyylval->lex.line = yylineno; pyylval->lex.i = strtoul(yytext, 0, 0); return(INTCONSTANT); }
+{D}+              { pyylval->lex.line = yylineno; pyylval->lex.i = strtoul(yytext, 0, 0); return INTCONSTANT; }
 
-0[xX]{H}+{U}      { pyylval->lex.line = yylineno; pyylval->lex.u = strtoul(yytext, 0, 0); return(UINTCONSTANT); }
-0{O}+{U}          { pyylval->lex.line = yylineno; pyylval->lex.u = strtoul(yytext, 0, 0); return(UINTCONSTANT); }
+0[xX]{H}+{U}      { pyylval->lex.line = yylineno; pyylval->lex.u = strtoul(yytext, 0, 0); return UINTCONSTANT; }
+0{O}+{U}          { pyylval->lex.line = yylineno; pyylval->lex.u = strtoul(yytext, 0, 0); return UINTCONSTANT; }
 0{D}+{U}          { pyylval->lex.line = yylineno; parseContext.error(yylineno, "Invalid Octal number.", yytext, "", ""); parseContext.recover(); return 0;}
-{D}+{U}           { pyylval->lex.line = yylineno; pyylval->lex.u = strtoul(yytext, 0, 0); return(UINTCONSTANT); }
+{D}+{U}           { pyylval->lex.line = yylineno; pyylval->lex.u = strtoul(yytext, 0, 0); return UINTCONSTANT; }
 
-{D}+{F}               { pyylval->lex.line = yylineno; pyylval->lex.f = static_cast<float>(atof(yytext)); return(FLOATCONSTANT); }
-{D}+{E}{F}?           { pyylval->lex.line = yylineno; pyylval->lex.f = static_cast<float>(atof(yytext)); return(FLOATCONSTANT); }
-{D}+"."{D}*({E})?{F}? { pyylval->lex.line = yylineno; pyylval->lex.f = static_cast<float>(atof(yytext)); return(FLOATCONSTANT); }
-"."{D}+({E})?{F}?     { pyylval->lex.line = yylineno; pyylval->lex.f = static_cast<float>(atof(yytext)); return(FLOATCONSTANT); }
+{D}+{F}               { pyylval->lex.line = yylineno; pyylval->lex.f = static_cast<float>(atof(yytext)); return FLOATCONSTANT; }
+{D}+{E}{F}?           { pyylval->lex.line = yylineno; pyylval->lex.f = static_cast<float>(atof(yytext)); return FLOATCONSTANT; }
+{D}+"."{D}*({E})?{F}? { pyylval->lex.line = yylineno; pyylval->lex.f = static_cast<float>(atof(yytext)); return FLOATCONSTANT; }
+"."{D}+({E})?{F}?     { pyylval->lex.line = yylineno; pyylval->lex.f = static_cast<float>(atof(yytext)); return FLOATCONSTANT; }
 
-{D}+{LF}              { pyylval->lex.line = yylineno; pyylval->lex.d = atof(yytext); return(DOUBLECONSTANT); }
-{D}+{E}{LF}           { pyylval->lex.line = yylineno; pyylval->lex.d = atof(yytext); return(DOUBLECONSTANT); }
-{D}+"."{D}*({E})?{LF} { pyylval->lex.line = yylineno; pyylval->lex.d = atof(yytext); return(DOUBLECONSTANT); }
-"."{D}+({E})?{LF}     { pyylval->lex.line = yylineno; pyylval->lex.d = atof(yytext); return(DOUBLECONSTANT); }
+{D}+{LF}              { pyylval->lex.line = yylineno; pyylval->lex.d = atof(yytext); return DOUBLECONSTANT; }
+{D}+{E}{LF}           { pyylval->lex.line = yylineno; pyylval->lex.d = atof(yytext); return DOUBLECONSTANT; }
+{D}+"."{D}*({E})?{LF} { pyylval->lex.line = yylineno; pyylval->lex.d = atof(yytext); return DOUBLECONSTANT; }
+"."{D}+({E})?{LF}     { pyylval->lex.line = yylineno; pyylval->lex.d = atof(yytext); return DOUBLECONSTANT; }
 
 "/*"            {  int ret = PaParseComment(pyylval->lex.line, parseContext); if (!ret) return ret; }
 
-"+="            {  pyylval->lex.line = yylineno; return(ADD_ASSIGN); }
-"-="            {  pyylval->lex.line = yylineno; return(SUB_ASSIGN); }
-"*="            {  pyylval->lex.line = yylineno; return(MUL_ASSIGN); }
-"/="            {  pyylval->lex.line = yylineno; return(DIV_ASSIGN); }
-"%="            {  pyylval->lex.line = yylineno; return(MOD_ASSIGN); }
-"<<="           {  pyylval->lex.line = yylineno; return(LEFT_ASSIGN); }
-">>="           {  pyylval->lex.line = yylineno; return(RIGHT_ASSIGN); }
-"&="            {  pyylval->lex.line = yylineno; return(AND_ASSIGN); }
-"^="            {  pyylval->lex.line = yylineno; return(XOR_ASSIGN); }
-"|="            {  pyylval->lex.line = yylineno; return(OR_ASSIGN); }
+"+="            {  pyylval->lex.line = yylineno; return ADD_ASSIGN; }
+"-="            {  pyylval->lex.line = yylineno; return SUB_ASSIGN; }
+"*="            {  pyylval->lex.line = yylineno; return MUL_ASSIGN; }
+"/="            {  pyylval->lex.line = yylineno; return DIV_ASSIGN; }
+"%="            {  pyylval->lex.line = yylineno; return MOD_ASSIGN; }
+"<<="           {  pyylval->lex.line = yylineno; return LEFT_ASSIGN; }
+">>="           {  pyylval->lex.line = yylineno; return RIGHT_ASSIGN; }
+"&="            {  pyylval->lex.line = yylineno; return AND_ASSIGN; }
+"^="            {  pyylval->lex.line = yylineno; return XOR_ASSIGN; }
+"|="            {  pyylval->lex.line = yylineno; return OR_ASSIGN; }
 
-"++"            {  pyylval->lex.line = yylineno; return(INC_OP); }
-"--"            {  pyylval->lex.line = yylineno; return(DEC_OP); }
-"&&"            {  pyylval->lex.line = yylineno; return(AND_OP); }
-"||"            {  pyylval->lex.line = yylineno; return(OR_OP); }
-"^^"            {  pyylval->lex.line = yylineno; return(XOR_OP); }
-"<="            {  pyylval->lex.line = yylineno; return(LE_OP); }
-">="            {  pyylval->lex.line = yylineno; return(GE_OP); }
-"=="            {  pyylval->lex.line = yylineno; return(EQ_OP); }
-"!="            {  pyylval->lex.line = yylineno; return(NE_OP); }
-"<<"            {  pyylval->lex.line = yylineno; return(LEFT_OP); }
-">>"            {  pyylval->lex.line = yylineno; return(RIGHT_OP); }
-";"         {  pyylval->lex.line = yylineno; parseContext.lexAfterType = false; return(SEMICOLON); }
-("{"|"<%")      {  pyylval->lex.line = yylineno; parseContext.lexAfterType = false; return(LEFT_BRACE); }
-("}"|"%>")      {  pyylval->lex.line = yylineno; return(RIGHT_BRACE); }
-","         {  pyylval->lex.line = yylineno; if (parseContext.inTypeParen) parseContext.lexAfterType = false; return(COMMA); }
-":"         {  pyylval->lex.line = yylineno; return(COLON); }
-"="         {  pyylval->lex.line = yylineno; parseContext.lexAfterType = false; return(EQUAL); }
-"("         {  pyylval->lex.line = yylineno; parseContext.lexAfterType = false; parseContext.inTypeParen = true; return(LEFT_PAREN); }
-")"         {  pyylval->lex.line = yylineno; parseContext.inTypeParen = false; return(RIGHT_PAREN); }
-("["|"<:")      {  pyylval->lex.line = yylineno; return(LEFT_BRACKET); }
-("]"|":>")      {  pyylval->lex.line = yylineno; return(RIGHT_BRACKET); }
-"."         { BEGIN(FIELDS);  return(DOT); }
-"!"         {  pyylval->lex.line = yylineno; return(BANG); }
-"-"         {  pyylval->lex.line = yylineno; return(DASH); }
-"~"         {  pyylval->lex.line = yylineno; return(TILDE); }
-"+"         {  pyylval->lex.line = yylineno; return(PLUS); }
-"*"         {  pyylval->lex.line = yylineno; return(STAR); }
-"/"         {  pyylval->lex.line = yylineno; return(SLASH); }
-"%"         {  pyylval->lex.line = yylineno; return(PERCENT); }
-"<"         {  pyylval->lex.line = yylineno; return(LEFT_ANGLE); }
-">"         {  pyylval->lex.line = yylineno; return(RIGHT_ANGLE); }
-"|"         {  pyylval->lex.line = yylineno; return(VERTICAL_BAR); }
-"^"         {  pyylval->lex.line = yylineno; return(CARET); }
-"&"         {  pyylval->lex.line = yylineno; return(AMPERSAND); }
-"?"         {  pyylval->lex.line = yylineno; return(QUESTION); }
+"++"            {  pyylval->lex.line = yylineno; return INC_OP; }
+"--"            {  pyylval->lex.line = yylineno; return DEC_OP; }
+"&&"            {  pyylval->lex.line = yylineno; return AND_OP; }
+"||"            {  pyylval->lex.line = yylineno; return OR_OP; }
+"^^"            {  pyylval->lex.line = yylineno; return XOR_OP; }
+"<="            {  pyylval->lex.line = yylineno; return LE_OP; }
+">="            {  pyylval->lex.line = yylineno; return GE_OP; }
+"=="            {  pyylval->lex.line = yylineno; return EQ_OP; }
+"!="            {  pyylval->lex.line = yylineno; return NE_OP; }
+"<<"            {  pyylval->lex.line = yylineno; return LEFT_OP; }
+">>"            {  pyylval->lex.line = yylineno; return RIGHT_OP; }
+";"         {  pyylval->lex.line = yylineno; parseContext.lexAfterType = false; return SEMICOLON; }
+("{"|"<%")      {  pyylval->lex.line = yylineno; parseContext.lexAfterType = false; return LEFT_BRACE; }
+("}"|"%>")      {  pyylval->lex.line = yylineno; return RIGHT_BRACE; }
+","         {  pyylval->lex.line = yylineno; if (parseContext.inTypeParen) parseContext.lexAfterType = false; return COMMA; }
+":"         {  pyylval->lex.line = yylineno; return COLON; }
+"="         {  pyylval->lex.line = yylineno; parseContext.lexAfterType = false; return EQUAL; }
+"("         {  pyylval->lex.line = yylineno; parseContext.lexAfterType = false; parseContext.inTypeParen = true; return LEFT_PAREN; }
+")"         {  pyylval->lex.line = yylineno; parseContext.inTypeParen = false; return RIGHT_PAREN; }
+("["|"<:")      {  pyylval->lex.line = yylineno; return LEFT_BRACKET; }
+("]"|":>")      {  pyylval->lex.line = yylineno; return RIGHT_BRACKET; }
+"."         { BEGIN(FIELDS);  return DOT; }
+"!"         {  pyylval->lex.line = yylineno; return BANG; }
+"-"         {  pyylval->lex.line = yylineno; return DASH; }
+"~"         {  pyylval->lex.line = yylineno; return TILDE; }
+"+"         {  pyylval->lex.line = yylineno; return PLUS; }
+"*"         {  pyylval->lex.line = yylineno; return STAR; }
+"/"         {  pyylval->lex.line = yylineno; return SLASH; }
+"%"         {  pyylval->lex.line = yylineno; return PERCENT; }
+"<"         {  pyylval->lex.line = yylineno; return LEFT_ANGLE; }
+">"         {  pyylval->lex.line = yylineno; return RIGHT_ANGLE; }
+"|"         {  pyylval->lex.line = yylineno; return VERTICAL_BAR; }
+"^"         {  pyylval->lex.line = yylineno; return CARET; }
+"&"         {  pyylval->lex.line = yylineno; return AMPERSAND; }
+"?"         {  pyylval->lex.line = yylineno; return QUESTION; }
 
 <FIELDS>{L}({L}|{D})* {
 BEGIN(INITIAL);
@@ -457,7 +639,7 @@ int yy_input(char* buf, int max_size)
         YY_FATAL_ERROR( "input buffer overflow, can't enlarge buffer because scanner uses REJECT" );
 
     buf[len] = ' ';
-	return len+1;
+    return len+1;
 }
 
 
@@ -469,7 +651,7 @@ int yy_input(char* buf, int max_size)
 //
 int PaParseStrings(char* argv[], int strLen[], int argc, TParseContext& parseContextLocal, const char* preamble)
 {
-	if (!argv || argc == 0)
+    if (!argv || argc == 0)
         return 1;
 
     for (int i = 0; i < argc; ++i) {
@@ -481,7 +663,7 @@ int PaParseStrings(char* argv[], int strLen[], int argc, TParseContext& parseCon
     }
 
     // set up all the cpp fields...
-	cpp->pC = (void*)&parseContextLocal;
+    cpp->pC = (void*)&parseContextLocal;
     char *writeablePreamble = 0;
     if (preamble) {
         // preAmble could be a hard-coded string; make writable copy
@@ -531,7 +713,7 @@ int PaParseStrings(char* argv[], int strLen[], int argc, TParseContext& parseCon
              return 1;
         else
              return 0;
-    } 
+    }
 
     delete writeablePreamble;
 
@@ -553,21 +735,30 @@ void yyerror(const char *s)
     }
 }
 
-int PaReservedWord()
+void PaReservedWord()
 {
     GlobalParseContext->error(yylineno, "Reserved word.", yytext, "", "");
     GlobalParseContext->recover();
-
-    return 0;
 }
 
-int PaIdentOrType(TString& id, TParseContext& parseContextLocal, TSymbol*& symbol)
+void PaCompatibilityWord(TParseContext& parseContextlocal)
 {
-    symbol = parseContextLocal.symbolTable.find(id);
-    if (parseContextLocal.lexAfterType == false && symbol) {
-        if (TVariable* variable = symbol->getAsVariable()) {
+    if (parseContextlocal.profile != EEsProfile && parseContextlocal.profile != ECompatibilityProfile &&
+        parseContextlocal.version > 150) {
+        GlobalParseContext->error(yylineno, "Keyword requires compatibility profile.", yytext, "", "");
+        GlobalParseContext->recover();
+    }
+}
+
+int PaIdentOrType(const char* yytext, TParseContext& parseContextLocal, YYSTYPE* pyylval)
+{
+    pyylval->lex.string = NewPoolTString(yytext);
+    pyylval->lex.symbol = parseContextLocal.symbolTable.find(*pyylval->lex.string);
+    if (parseContextLocal.lexAfterType == false && pyylval->lex.symbol) {
+        if (TVariable* variable = pyylval->lex.symbol->getAsVariable()) {
             if (variable->isUserType()) {
                 parseContextLocal.lexAfterType = true;
+
                 return TYPE_NAME;
             }
         }
@@ -578,89 +769,151 @@ int PaIdentOrType(TString& id, TParseContext& parseContextLocal, TSymbol*& symbo
 
 int PaIdentOrReserved(bool reserved, TParseContext& pc, int line, const char* text, YYSTYPE* pyylval)
 {
-    if (reserved)
+    pyylval->lex.line = line;
+
+    if (reserved) {
         PaReservedWord();
 
-    pyylval->lex.line = line;
-    pyylval->lex.string = NewPoolTString(text);
+        return 0;
+    }
+
     if (pc.forwardCompatible && ! (pc.messages & EShMsgSuppressWarnings)) {
-        pc.infoSink.info.message(EPrefixWarning, pyylval->lex.string->c_str(), yylineno);
+        pc.infoSink.info.message(EPrefixWarning, yytext, yylineno);
         pc.infoSink.info.message(EPrefixWarning, "using future reserved keyword", yylineno);
     }
 
-    return PaIdentOrType(*pyylval->lex.string, pc, pyylval->lex.symbol);
+    return PaIdentOrType(text, pc, pyylval);
 }
 
+// For keywords that suddenly showed up on non-ES (not previously reserved)
+// but then got reserved by ES 3.0.
 int PaES30ReservedFromGLSL(int version, TParseContext& pc, int line, const char* text, YYSTYPE* pyylval, int keyword)
 {
+    pyylval->lex.line = line;
+
     if (pc.profile == EEsProfile && pc.version < 300 ||
         pc.profile != EEsProfile && pc.version < version) {
-            pyylval->lex.line = yylineno;
-            pyylval->lex.string = NewPoolTString(yytext);
             if (pc.forwardCompatible && ! (pc.messages & EShMsgSuppressWarnings)) {
-                pc.infoSink.info.message(EPrefixWarning, pyylval->lex.string->c_str(), yylineno);
+                pc.infoSink.info.message(EPrefixWarning, text, yylineno);
                 pc.infoSink.info.message(EPrefixWarning, "future reserved word in ES 300 and keyword in GLSL", yylineno);
             }
 
-            return PaIdentOrType(*pyylval->lex.string, pc, pyylval->lex.symbol);
+            return PaIdentOrType(text, pc, pyylval);
     } else if (pc.profile == EEsProfile && pc.version >= 300)
+        PaReservedWord();
 
-        return PaReservedWord();
-    else {
-        pyylval->lex.line = yylineno;
+    return keyword;
+}
 
-        return keyword;
+// For a keyword that was never reserved, until it suddenly
+// showed up, both in an es version and a non-ES version.
+int PaNonreservedKeyword(int esVersion, int nonEsVersion, TParseContext& pc, int line, const char* text, YYSTYPE* pyylval, int keyword)
+{
+    pyylval->lex.line = line;
+
+    if (pc.profile == EEsProfile && pc.version < esVersion ||
+        pc.profile != EEsProfile && pc.version < nonEsVersion) {
+        if (pc.forwardCompatible && ! (pc.messages & EShMsgSuppressWarnings)) {
+            pc.infoSink.info.message(EPrefixWarning, text, yylineno);
+            pc.infoSink.info.message(EPrefixWarning, "using future keyword", yylineno);
+        }
+
+        return PaIdentOrType(text, pc, pyylval);
     }
+
+    return keyword;
 }
 
 int PaPrecisionKeyword(TParseContext& pc, int line, const char* text, YYSTYPE* pyylval, int keyword)
 {
+    pyylval->lex.line = line;
+
     if (pc.profile == EEsProfile || pc.version >= 130)
         return keyword;
 
-    pyylval->lex.line = line;
-    pyylval->lex.string = NewPoolTString(text);
     if (pc.forwardCompatible && ! (pc.messages & EShMsgSuppressWarnings)) {
-        pc.infoSink.info.message(EPrefixWarning, pyylval->lex.string->c_str(), yylineno);
+        pc.infoSink.info.message(EPrefixWarning, text, yylineno);
         pc.infoSink.info.message(EPrefixWarning, "using ES precision qualifier keyword", yylineno);
     }
 
-    return PaIdentOrType(*pyylval->lex.string, pc, pyylval->lex.symbol);
+    return PaIdentOrType(text, pc, pyylval);
 }
 
 int PaMatNxM(TParseContext& pc, int line, const char* text, YYSTYPE* pyylval, int keyword)
 {
+    pyylval->lex.line = line;
+    pc.lexAfterType = true;
+
     if (pc.version > 110)
         return keyword;
 
-    pyylval->lex.line = line;
-    pyylval->lex.string = NewPoolTString(text);
     if (pc.forwardCompatible && ! (pc.messages & EShMsgSuppressWarnings)) {
-        pc.infoSink.info.message(EPrefixWarning, pyylval->lex.string->c_str(), yylineno);
+        pc.infoSink.info.message(EPrefixWarning, text, yylineno);
         pc.infoSink.info.message(EPrefixWarning, "using future non-square matrix type keyword", yylineno);
     }
 
-    return PaIdentOrType(*pyylval->lex.string, pc, pyylval->lex.symbol);
+    return PaIdentOrType(text, pc, pyylval);
 }
 
 int PaDMat(TParseContext& pc, int line, const char* text, YYSTYPE* pyylval, int keyword)
 {
+    pyylval->lex.line = line;
+    pc.lexAfterType = true;
+
     if (pc.profile == EEsProfile && pc.version >= 300) {
         PaReservedWord();
-        return 0;
+
+        return keyword;
     }
 
     if (pc.profile != EEsProfile && pc.version >= 400)
         return keyword;
 
-    pyylval->lex.line = line;
-    pyylval->lex.string = NewPoolTString(text);
     if (pc.forwardCompatible && ! (pc.messages & EShMsgSuppressWarnings)) {
-        pc.infoSink.info.message(EPrefixWarning, pyylval->lex.string->c_str(), yylineno);
+        pc.infoSink.info.message(EPrefixWarning, text, yylineno);
         pc.infoSink.info.message(EPrefixWarning, "using future type keyword", yylineno);
     }
 
-    return PaIdentOrType(*pyylval->lex.string, pc, pyylval->lex.symbol);
+    return PaIdentOrType(text, pc, pyylval);
+}
+
+int Pa1stGenerationImage(TParseContext& pc, int line, const char* text, YYSTYPE* pyylval, int keyword)
+{
+    pyylval->lex.line = line;
+    pc.lexAfterType = true;
+
+    if (pc.profile != EEsProfile && pc.version >= 420)
+        return keyword;
+
+    if (pc.profile == EEsProfile && pc.version >= 300 ||
+        pc.profile != EEsProfile && pc.version >= 130) {
+        PaReservedWord();
+
+        return keyword;
+    }
+
+    if (pc.forwardCompatible && ! (pc.messages & EShMsgSuppressWarnings)) {
+        pc.infoSink.info.message(EPrefixWarning, text, yylineno);
+        pc.infoSink.info.message(EPrefixWarning, "using future type keyword", yylineno);
+    }
+
+    return PaIdentOrType(text, pc, pyylval);
+}
+
+int Pa2ndGenerationImage(TParseContext& pc, int line, const char* text, YYSTYPE* pyylval, int keyword)
+{
+    pyylval->lex.line = line;
+    pc.lexAfterType = true;
+
+    if (pc.profile != EEsProfile && pc.version >= 420)
+        return keyword;
+
+    if (pc.forwardCompatible && ! (pc.messages & EShMsgSuppressWarnings)) {
+        pc.infoSink.info.message(EPrefixWarning, text, yylineno);
+        pc.infoSink.info.message(EPrefixWarning, "using future type keyword", yylineno);
+    }
+
+    return PaIdentOrType(text, pc, pyylval);
 }
 
 int PaParseComment(int& lineno, TParseContext& parseContextLocal)

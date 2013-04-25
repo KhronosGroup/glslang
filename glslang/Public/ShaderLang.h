@@ -77,6 +77,7 @@ typedef enum {
     EShLangTessEvaluation,
     EShLangGeometry,
 	EShLangFragment,
+    EShLangCompute,
     EShLangCount,
 } EShLanguage;
 
@@ -86,6 +87,7 @@ typedef enum {
     EShLangTessEvaluationMask = (1 << EShLangTessEvaluation),
     EShLangGeometryMask       = (1 << EShLangGeometry),
 	EShLangFragmentMask       = (1 << EShLangFragment),
+	EShLangComputeMask        = (1 << EShLangCompute),
 } EShLanguageMask;
 
 extern const char* StageName[EShLangCount];

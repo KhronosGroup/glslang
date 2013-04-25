@@ -1619,24 +1619,24 @@ interpolation_qualifier
     : SMOOTH {
         if (parseContext.globalErrorCheck($1.line, parseContext.symbolTable.atGlobalLevel(), "smooth"))
             parseContext.recover();
-        parseContext.profileRequires($$.line, ENoProfile, 130, 0, "smooth");
-        parseContext.profileRequires($$.line, EEsProfile, 300, 0, "smooth");
+        parseContext.profileRequires($1.line, ENoProfile, 130, 0, "smooth");
+        parseContext.profileRequires($1.line, EEsProfile, 300, 0, "smooth");
         $$.init($1.line);
         $$.qualifier.smooth = true;
     }
     | FLAT {
         if (parseContext.globalErrorCheck($1.line, parseContext.symbolTable.atGlobalLevel(), "flat"))
             parseContext.recover();
-        parseContext.profileRequires($$.line, ENoProfile, 130, 0, "flat");
-        parseContext.profileRequires($$.line, EEsProfile, 300, 0, "flat");
+        parseContext.profileRequires($1.line, ENoProfile, 130, 0, "flat");
+        parseContext.profileRequires($1.line, EEsProfile, 300, 0, "flat");
         $$.init($1.line);
         $$.qualifier.flat = true;
     }
     | NOPERSPECTIVE {
         if (parseContext.globalErrorCheck($1.line, parseContext.symbolTable.atGlobalLevel(), "noperspective"))
             parseContext.recover();
-        parseContext.requireProfile($$.line, static_cast<EProfileMask>(~EEsProfileMask), "noperspective");
-        parseContext.profileRequires($$.line, ENoProfile, 130, 0, "noperspective");
+        parseContext.requireProfile($1.line, static_cast<EProfileMask>(~EEsProfileMask), "noperspective");
+        parseContext.profileRequires($1.line, ENoProfile, 130, 0, "noperspective");
         $$.init($1.line);
         $$.qualifier.nopersp = true;
     }
@@ -1769,8 +1769,8 @@ storage_qualifier
         $$.qualifier.storage = EvqOut;
     }
     | CENTROID {
-        parseContext.profileRequires($$.line, ENoProfile, 120, 0, "centroid");
-        parseContext.profileRequires($$.line, EEsProfile, 300, 0, "centroid");
+        parseContext.profileRequires($1.line, ENoProfile, 120, 0, "centroid");
+        parseContext.profileRequires($1.line, EEsProfile, 300, 0, "centroid");
         if (parseContext.globalErrorCheck($1.line, parseContext.symbolTable.atGlobalLevel(), "centroid"))
             parseContext.recover();
         $$.init($1.line);
@@ -1801,6 +1801,9 @@ storage_qualifier
         $$.qualifier.storage = EvqUniform; // TODO: 4.0 functionality: implement BUFFER
     }
     | SHARED {
+        parseContext.requireProfile($1.line, static_cast<EProfileMask>(~EEsProfileMask), "shared");
+        parseContext.profileRequires($1.line, ECoreProfile, 430, 0, "shared");
+        parseContext.requireStage($1.line, EShLangComputeMask, "shared");
         $$.init($1.line);
         $$.qualifier.shared = true;
     }

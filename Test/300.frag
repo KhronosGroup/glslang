@@ -21,14 +21,15 @@ uniform usampler2DArray us2DArray;
 in float c1D;
 in vec2  c2D;
 in vec3  c3D;
-in vec4  c4D;
+smooth vec4  c4D;
 
 flat in int   ic1D;
 flat in ivec2 ic2D;
 flat in ivec3 ic3D;
 flat in ivec4 ic4D;
-
+noperspective in vec4 badv; // ERROR
 in sampler2D bads; // ERROR
+precision lowp uint;       // ERROR
 
 struct s {
     int i;
@@ -64,4 +65,13 @@ void main()
     iv = texelFetch(is2DArray, ic3D, ic1D);
 
     iv.xy = textureSize(sCubeShadow, 2);
+
+    float precise;
+    double boo;       // ERROR
+    dvec2 boo2;       // ERROR
+    dvec3 boo3;       // ERROR
+    dvec4 boo4;       // ERROR
 }
+
+float imageBuffer;    // ERROR, reserved
+float uimage2DRect;   // ERROR, reserved

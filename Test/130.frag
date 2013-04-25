@@ -9,6 +9,10 @@ precision highp float;
 in vec4 i;
 out vec4 o;
 
+in flat float fflat;
+in smooth float fsmooth;
+in noperspective float fnop;
+
 void main()
 {
 }

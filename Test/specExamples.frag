@@ -23,7 +23,7 @@ int  k = 0x80000000;  // k gets -2147483648 == 0x80000000
 int  l = 2147483648;  // l gets -2147483648 (the literal set the sign bit)
 
 float fa, fb = 1.5;     // single-precision floating-point
-//double fc, fd = 2.0LF;  // double-precision floating-point
+double fc, fd = 2.0LF;  // double-precision floating-point
 
 vec2 texcoord1, texcoord2;
 vec3 position;

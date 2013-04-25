@@ -63,4 +63,15 @@ void main()
     f |= b;            // ERROR
 
     gl_FragColor = texture2D(s2D, centTexCoord);
+
+    float flat;
+    float smooth;
+    float noperspective;
+    float uvec2;
+    float uvec3;
+    float uvec4;
+    //packed;     // ERROR, reserved word
 }
+
+float imageBuffer;
+float uimage2DRect;

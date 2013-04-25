@@ -5,7 +5,7 @@ uniform mat3x3 m33;
 uniform mat4x4 m44;
 
 in vec3 v3;
-in vec2 v2;
+varying vec2 v2;  // ERROR
 
 in vec4 bad[10];  // ERROR
 

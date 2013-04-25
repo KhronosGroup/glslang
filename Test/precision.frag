@@ -13,7 +13,7 @@ int global_medium;
 precision highp int; 
 precision highp ivec2;     // ERROR
 precision mediump int[2];  // ERROR
-precision lowp uint;       // ERROR
+vec4 uint;                 // okay
 precision mediump vec4;    // ERROR
 
 int global_high;

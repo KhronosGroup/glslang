@@ -562,7 +562,8 @@ void TBuiltIns::initialize(int version, EProfile profile)
         // Original-style texture Functions existing in both stages.
         // (Per-stage functions below.)
         //
-        if (profile != EEsProfile || version == 100) {
+        if (profile == EEsProfile && version == 100 ||
+            profile == ECompatibilityProfile || version < FirstProfileVersion) {
             s.append(TString("vec4 texture2D(sampler2D, vec2);"));
 
             s.append(TString("vec4 texture2DProj(sampler2D, vec3);"));
@@ -571,7 +572,8 @@ void TBuiltIns::initialize(int version, EProfile profile)
             s.append(TString("vec4 textureCube(samplerCube, vec3);"));
         }
 
-        if (profile != EEsProfile && version > 100) {
+        if (profile != EEsProfile && 
+            (profile == ECompatibilityProfile || version < FirstProfileVersion)) {
             s.append(TString("vec4 texture1D(sampler1D, float);"));
             
             s.append(TString("vec4 texture1DProj(sampler1D, vec2);"));
@@ -585,12 +587,7 @@ void TBuiltIns::initialize(int version, EProfile profile)
             s.append(TString("vec4 shadow1DProj(sampler1DShadow, vec4);"));
             s.append(TString("vec4 shadow2DProj(sampler2DShadow, vec4);"));
 
-            // ARB_texture_rectangle
-            s.append(TString("vec4 texture2DRect(sampler2DRect, vec2);"));
-            s.append(TString("vec4 texture2DRectProj(sampler2DRect, vec3);"));
-            s.append(TString("vec4 texture2DRectProj(sampler2DRect, vec4);"));
-            s.append(TString("vec4 shadow2DRect(sampler2DRectShadow, vec3);"));
-            s.append(TString("vec4 shadow2DRectProj(sampler2DRectShadow, vec4);"));
+            // TODO: functionality: non-ES legacy texuring for Lod, others?
         }
         s.append(TString("\n"));
 
@@ -987,6 +984,8 @@ void TBuiltIns::add2ndGenerationSamplingImaging(int version, EProfile profile)
                     for (int dim = Esd1D; dim < EsdNumDims; ++dim) { // 1D, 2D, ..., buffer
 
                         if ((dim == Esd1D || dim == EsdRect) && profile == EEsProfile)
+                            continue;
+                        if (dim == EsdRect && version < 140)
                             continue;
                         if (dim != Esd2D && ms)
                             continue;

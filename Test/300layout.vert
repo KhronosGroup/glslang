@@ -43,3 +43,7 @@ void main()
     pos = p * (tblock.M1 + tblock.M2 + M4 + M3 + t2m);
     color = c * tblock.N1;
 }
+
+shared vec4 compute_only;  // ERROR
+
+layout(packed) uniform;

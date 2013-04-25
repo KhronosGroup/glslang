@@ -36,7 +36,7 @@
 in vec3 color;
 out vec4 foo;
 
-uniform sampler2DRect bar;
+uniform sampler2DArrayShadow bar;
 
 void main()
 {

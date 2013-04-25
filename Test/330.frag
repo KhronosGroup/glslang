@@ -9,4 +9,5 @@ void main()
 {
     gl_FragColor = varyingVar;
     gl_FragData[1] = inVar;
+    int buffer = 4;
 }
