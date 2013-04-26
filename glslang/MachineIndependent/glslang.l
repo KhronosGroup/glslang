@@ -470,6 +470,9 @@ int yy_input(char* buf, int max_size);
 
 "struct"        {   pyylval->lex.line = yylineno; return STRUCT; }
 
+"common"        {   PaReservedWord(); return 0; }
+"partition"     {   PaReservedWord(); return 0; }
+"active"        {   PaReservedWord(); return 0; }
 "asm"           {   PaReservedWord(); return 0; }
 "class"         {   PaReservedWord(); return 0; }
 "union"         {   PaReservedWord(); return 0; }
