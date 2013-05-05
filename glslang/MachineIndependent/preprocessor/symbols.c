@@ -220,7 +220,7 @@ static void lAddToTree(Symbol **fSymbols, Symbol *fSymb)
         while (lSymb) {
             lrev = GetReversedAtom(atable, lSymb->name);
             if (lrev == frev) {
-                CPPErrorToInfoLog("GetAtomString(atable, fSymb->name)");
+                ShPpErrorToInfoLog("GetAtomString(atable, fSymb->name)");
                 break;
             } else {
                 if (lrev > frev) {

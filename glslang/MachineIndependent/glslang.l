@@ -951,14 +951,14 @@ int PaParseComment(int& lineno, TParseContext& parseContextLocal)
 
 extern "C" {
 
-void CPPDebugLogMsg(const char *msg)
+void ShPpDebugLogMsg(const char *msg)
 {
     TParseContext& pc = *((TParseContext *)cpp->pC);
 
     pc.infoSink.debug.message(EPrefixNone, msg);
 }
 
-void CPPWarningToInfoLog(const char *msg)
+void ShPpWarningToInfoLog(const char *msg)
 {
     TParseContext& pc = *((TParseContext *)cpp->pC);
 
@@ -966,20 +966,31 @@ void CPPWarningToInfoLog(const char *msg)
         pc.infoSink.info.message(EPrefixWarning, msg, yylineno);
 }
 
-void CPPShInfoLogMsg(const char *msg)
+void ShPpErrorToInfoLog(const char *msg)
 {
     TParseContext& pc = *((TParseContext *)cpp->pC);
 
-    pc.error(yylineno,"", "",msg,"");
+    pc.error(yylineno, "", "Preprocessor", msg, "");
     GlobalParseContext->recover();
 }
 
-void CPPErrorToInfoLog(const char *msg)
+// return 1 if error
+// return 0 if no error
+int ShPpMacrosMustBeDefinedError()
 {
     TParseContext& pc = *((TParseContext *)cpp->pC);
 
-    pc.error(yylineno, "CPP error:", "", msg, "");
-    GlobalParseContext->recover();
+    if (pc.profile == EEsProfile) {
+        if (pc.messages & EShMsgRelaxedErrors)
+            ShPpWarningToInfoLog("undefined macro in expression not allowed in es profile");
+        else {
+            ShPpErrorToInfoLog("undefined macro in expression");
+            
+            return 1;
+        }
+    }
+
+    return 0;
 }
 
 void SetLineNumber(int line)
@@ -1021,12 +1032,12 @@ void HandlePragma(const char **tokens, int numTokens)
 
     if (!strcmp(tokens[0], "optimize")) {
         if (numTokens != 4) {
-            CPPShInfoLogMsg("optimize pragma syntax is incorrect");
+            ShPpErrorToInfoLog("optimize pragma syntax is incorrect");
             return;
         }
 
         if (strcmp(tokens[1], "(")) {
-            CPPShInfoLogMsg("\"(\" expected after 'optimize' keyword");
+            ShPpErrorToInfoLog("\"(\" expected after 'optimize' keyword");
             return;
         }
 
@@ -1035,22 +1046,22 @@ void HandlePragma(const char **tokens, int numTokens)
         else if (!strcmp(tokens[2], "off"))
             pc.contextPragma.optimize = false;
         else {
-            CPPShInfoLogMsg("\"on\" or \"off\" expected after '(' for 'optimize' pragma");
+            ShPpErrorToInfoLog("\"on\" or \"off\" expected after '(' for 'optimize' pragma");
             return;
         }
 
         if (strcmp(tokens[3], ")")) {
-            CPPShInfoLogMsg("\")\" expected to end 'optimize' pragma");
+            ShPpErrorToInfoLog("\")\" expected to end 'optimize' pragma");
             return;
         }
     } else if (!strcmp(tokens[0], "debug")) {
         if (numTokens != 4) {
-            CPPShInfoLogMsg("debug pragma syntax is incorrect");
+            ShPpErrorToInfoLog("debug pragma syntax is incorrect");
             return;
         }
 
         if (strcmp(tokens[1], "(")) {
-            CPPShInfoLogMsg("\"(\" expected after 'debug' keyword");
+            ShPpErrorToInfoLog("\"(\" expected after 'debug' keyword");
             return;
         }
 
@@ -1059,12 +1070,12 @@ void HandlePragma(const char **tokens, int numTokens)
         else if (!strcmp(tokens[2], "off"))
             pc.contextPragma.debug = false;
         else {
-            CPPShInfoLogMsg("\"on\" or \"off\" expected after '(' for 'debug' pragma");
+            ShPpErrorToInfoLog("\"on\" or \"off\" expected after '(' for 'debug' pragma");
             return;
         }
 
         if (strcmp(tokens[3], ")")) {
-            CPPShInfoLogMsg("\")\" expected to end 'debug' pragma");
+            ShPpErrorToInfoLog("\")\" expected to end 'debug' pragma");
             return;
         }
     } else {
@@ -1153,7 +1164,7 @@ TBehavior GetBehavior(const char* behavior)
     else if (!strcmp("warn", behavior))
         return EBhWarn;
     else {
-        CPPShInfoLogMsg((TString("behavior '") + behavior + "' is not supported").c_str());
+        ShPpErrorToInfoLog((TString("behavior '") + behavior + "' is not supported").c_str());
         return EBhDisable;
     }
 }
@@ -1168,7 +1179,7 @@ void updateExtensionBehavior(const char* extName, const char* behavior)
     // special cased for all extension
     if (!strcmp(extName, "all")) {
         if (behaviorVal == EBhRequire || behaviorVal == EBhEnable) {
-            CPPShInfoLogMsg("extension 'all' cannot have 'require' or 'enable' behavior");
+            ShPpErrorToInfoLog("extension 'all' cannot have 'require' or 'enable' behavior");
             return;
         } else {
             for (iter = pc.extensionBehavior.begin(); iter != pc.extensionBehavior.end(); ++iter)
@@ -1179,7 +1190,7 @@ void updateExtensionBehavior(const char* extName, const char* behavior)
         if (iter == pc.extensionBehavior.end()) {
             switch (behaviorVal) {
             case EBhRequire:
-                CPPShInfoLogMsg((TString("extension '") + extName + "' is not supported").c_str());
+                ShPpErrorToInfoLog((TString("extension '") + extName + "' is not supported").c_str());
                 break;
             case EBhEnable:
             case EBhWarn:

@@ -102,9 +102,11 @@ int MacroExpand(int atom, yystypepp * yylvalpp);
 extern "C" {
 #endif
 
-void  CPPDebugLogMsg(const char *msg);      // Prints information into debug log
-void  CPPShInfoLogMsg(const char*);         // Store cpp Err Msg into Sh.Info.Log
-void  CPPWarningToInfoLog(const char *msg); // Prints warning messages into info log
+void  ShPpDebugLogMsg(const char *msg);      // Prints information into debug log
+void  ShPpErrorToInfoLog(const char*);       // Store cpp Err Msg into Sh.Info.Log
+void  ShPpWarningToInfoLog(const char *msg); // Prints warning messages into info log
+int ShPpMacrosMustBeDefinedError();
+
 void  HandlePragma(const char**, int numTokens);  // #pragma directive container.
 void  ResetTString(void);                   // #error Message as TString.
 void  StoreStr(const char*);                // Store the TString in Parse Context.

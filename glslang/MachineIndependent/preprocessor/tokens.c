@@ -470,7 +470,7 @@ void DumpTokenStream(FILE *fp, TokenStream *s, yystypepp * yylvalpp) {
                 snprintf(str, maxSize, "%c", token);
             break;
         }
-        CPPDebugLogMsg(str);
+        ShPpDebugLogMsg(str);
     }
 }
 

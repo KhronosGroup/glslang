@@ -74,7 +74,7 @@ ShBinding FixedAttributeBindings[] = {
 ShBindingTable FixedAttributeTable = { 3, FixedAttributeBindings };
 
 static EShLanguage FindLanguage(char *lang);
-bool CompileFile(const char *fileName, ShHandle, int, const TBuiltInResource*);
+bool CompileFile(const char *fileName, ShHandle, int options, const TBuiltInResource*);
 void usage();
 void FreeFileData(char **data);
 char** ReadFileData(const char *fileName);
@@ -142,6 +142,9 @@ int C_DECL main(int argc, char* argv[])
                     break;
                 case 'l':
                     debugOptions |= EDebugOpMemoryLeakMode;
+                    break;
+                case 'r':
+                    debugOptions |= EDebugOpRelaxedErrors;
                     break;
                 case 's':
                     debugOptions |= EDebugOpSuppressInfolog;
@@ -261,9 +264,12 @@ bool CompileFile(const char *fileName, ShHandle compiler, int debugOptions, cons
     if (!data)
         return false;
 
+    EShMessages messages = EShMsgDefault;
+    if (debugOptions & EDebugOpRelaxedErrors)
+        messages = (EShMessages)(messages | EShMsgRelaxedErrors);
     for (int i = 0; i < ((debugOptions & EDebugOpMemoryLeakMode) ? 100 : 1); ++i) {
         for (int j = 0; j < ((debugOptions & EDebugOpMemoryLeakMode) ? 100 : 1); ++j)
-            ret = ShCompile(compiler, data, OutputMultipleStrings, EShOptNone, resources, debugOptions, 100, false, EShMsgDefault);
+            ret = ShCompile(compiler, data, OutputMultipleStrings, EShOptNone, resources, debugOptions, 100, false, messages);
 
 #ifdef _WIN32
         if (debugOptions & EDebugOpMemoryLeakMode) {
@@ -290,7 +296,8 @@ void usage()
            "-a: assembly dump (LLVM IR)\n"
            "-d: delay end (keeps output up in debugger, WIN32)\n"
            "-l: memory leak mode\n"
-           "-s: silent mode (no info log)\n");
+           "-s: silent mode (no info log)\n"
+           "-r: relaxed semantic error checking mode\n");
 }
 
 #ifndef _WIN32

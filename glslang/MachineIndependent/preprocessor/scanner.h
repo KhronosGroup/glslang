@@ -111,7 +111,7 @@ typedef struct InputSrc {
 int InitScanner(CPPStruct *cpp);        // Intialise the cpp scanner. 
 int ScanFromString(char *);             // Start scanning the input from the string mentioned.
 int check_EOF(int);                     // check if we hit a EOF abruptly 
-void CPPErrorToInfoLog(const char *);   // sticking the msg,line into the Shader's.Info.log
+void ShPpErrorToInfoLog(const char *);   // sticking the msg,line into the Shader's.Info.log
 void SetLineNumber(int);
 void SetStringNumber(int);
 void IncLineNumber(void);

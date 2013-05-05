@@ -470,14 +470,14 @@ static int FindHashLoc(AtomTable *atable, const char *s)
                 char str[200];
                 sprintf(str, "*** Hash failed with more than %d collisions. Must increase hash table size. ***",
                        HASH_TABLE_MAX_COLLISIONS);
-                CPPShInfoLogMsg(str);
+                ShPpErrorToInfoLog(str);
 
                 sprintf(str, "*** New string \"%s\", hash=%04x, delta=%04x", s, collision[0], hashdelta);
-                CPPShInfoLogMsg(str);
+                ShPpErrorToInfoLog(str);
                 for (ii = 0; ii <= HASH_TABLE_MAX_COLLISIONS; ii++) {
                     sprintf(str, "*** Collides on try %d at hash entry %04x with \"%s\"",
                            ii + 1, collision[ii], GetAtomString(atable, atable->htable.entry[collision[ii]].value));
-                    CPPShInfoLogMsg(str);
+                    ShPpErrorToInfoLog(str);
                 }
             }
             return -1;
@@ -720,14 +720,14 @@ void PrintAtomTable(AtomTable *atable)
 
     for (ii = 0; ii < atable->nextFree; ii++) {
         sprintf(str, "%d: \"%s\"", ii, &atable->stable.strings[atable->amap[ii]]);
-        CPPDebugLogMsg(str);
+        ShPpDebugLogMsg(str);
     }
     sprintf(str, "Hash table: size=%d, entries=%d, collisions=",
            atable->htable.size, atable->htable.entries);
-    CPPDebugLogMsg(str);
+    ShPpDebugLogMsg(str);
     for (ii = 0; ii < HASH_TABLE_MAX_COLLISIONS; ii++) {
         sprintf(str, " %d", atable->htable.counts[ii]);
-        CPPDebugLogMsg(str);
+        ShPpDebugLogMsg(str);
     }
 
 } // PrintAtomTable

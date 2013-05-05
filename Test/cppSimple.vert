@@ -32,7 +32,7 @@ sum += 4000.0;
 sum += 50000.0;
 #endif
 
-#ifndef(OFF)
+#ifndef OFF
 //yes
 sum += 600000.0;
 #else
@@ -56,6 +56,13 @@ sum += 80000000.0;
 #if defined(OFF) || defined(ON)
 //yes
 sum += 900000000.0;
+#endif
+
+#if NEVER_DEFINED
+//no
+sum += 0.04;
+#else
+sum += 0.05;
 #endif
 
 // sum should be 987600301.7

@@ -186,7 +186,7 @@ int FreeCPP(void)
 int FinalCPP(void)
 {
 	if (cpp->ifdepth)
-		CPPErrorToInfoLog("#if mismatch");
+        ShPpErrorToInfoLog("missing #endif");
     return 1;
 }
 
@@ -200,7 +200,7 @@ static int CPPdefine(yystypepp * yylvalpp)
     memset(&mac, 0, sizeof(mac));
     token = cpp->currentInput->scan(cpp->currentInput, yylvalpp);
     if (token != CPP_IDENTIFIER) {
-        CPPErrorToInfoLog("#define");
+        ShPpErrorToInfoLog("#define not followed by macro name");
         return token;
     }
     name = yylvalpp->sc_ident;
@@ -210,9 +210,11 @@ static int CPPdefine(yystypepp * yylvalpp)
         argc = 0;
         do {
             token = cpp->currentInput->scan(cpp->currentInput, yylvalpp);
-            if (argc == 0 && token == ')') break;
+            if (argc == 0 && token == ')') 
+                break;
             if (token != CPP_IDENTIFIER) {
-				CPPErrorToInfoLog("#define");
+				ShPpErrorToInfoLog("#define: bad argument");
+
                 return token;
             }
             if (argc < MAX_MACRO_ARGS)
@@ -220,7 +222,8 @@ static int CPPdefine(yystypepp * yylvalpp)
             token = cpp->currentInput->scan(cpp->currentInput, yylvalpp);
         } while (token == ',');
         if (token != ')') {
-            CPPErrorToInfoLog("#define");
+            ShPpErrorToInfoLog("#define: missing parenthesis");
+
             return token;
         }
         mac.argc = argc;
@@ -245,7 +248,8 @@ static int CPPdefine(yystypepp * yylvalpp)
     if (symb) {
         if (!symb->details.mac.undef) {
             // already defined -- need to make sure they are identical
-            if (symb->details.mac.argc != mac.argc) goto error;
+            if (symb->details.mac.argc != mac.argc)
+                goto error;
             for (argc=0; argc < mac.argc; argc++)
                 if (symb->details.mac.args[argc] != mac.args[argc])
                     goto error;
@@ -259,13 +263,14 @@ static int CPPdefine(yystypepp * yylvalpp)
                 if (token != old_token || yylvalpp->sc_int != old_lval) { 
                 error:
                     StoreStr("Macro Redefined");
-                    StoreStr(GetStringOfAtom(atable,name));
-                    message=GetStrfromTStr();
+                    StoreStr(GetStringOfAtom(atable, name));
+                    message = GetStrfromTStr();
                     DecLineNumber();
-                    CPPShInfoLogMsg(message);
+                    ShPpErrorToInfoLog(message);
                     IncLineNumber();
                     ResetTString();
-                    break; }
+                    break; 
+                }
             } while (token > 0);
         }
         //FreeMacro(&symb->details.mac);
@@ -275,6 +280,7 @@ static int CPPdefine(yystypepp * yylvalpp)
         symb = AddSymbol(&dummyLoc, macros, name, MACRO_S);
     }
     symb->details.mac = mac;
+
     return '\n';
 } // CPPdefine
 
@@ -282,21 +288,26 @@ static int CPPundef(yystypepp * yylvalpp)
 {
     int token = cpp->currentInput->scan(cpp->currentInput, yylvalpp);
     Symbol *symb;
-	if(token == '\n'){
-		CPPErrorToInfoLog("#undef");
+	if (token == '\n') {
+		ShPpErrorToInfoLog("#undef must be followed by macro name");
+
 	    return token;
     }
-    if (token != CPP_IDENTIFIER)
-          goto error;
+    if (token != CPP_IDENTIFIER) {
+        ShPpErrorToInfoLog("#undef must be followed by macro name");
+
+        return token;
+    }
+
     symb = LookUpSymbol(macros, yylvalpp->sc_ident);
     if (symb) {
         symb->details.mac.undef = 1;
     }
     token = cpp->currentInput->scan(cpp->currentInput, yylvalpp);
     if (token != '\n') {
-    error:
-        CPPErrorToInfoLog("#undef");
+        ShPpErrorToInfoLog("#undef can only be followed by a single macro name");
     }
+
     return token;
 } // CPPundef
 
@@ -344,7 +355,7 @@ static int CPPelse(int matchelse, yystypepp * yylvalpp)
                 // found the #else we are looking for
                 token = cpp->currentInput->scan(cpp->currentInput, yylvalpp);
                 if (token != '\n') {
-                    CPPWarningToInfoLog("unexpected tokens following #else preprocessor directive - expected a newline");
+                    ShPpWarningToInfoLog("unexpected tokens following #else preprocessor directive - expected a newline");
                     while (token != '\n')
                         token = cpp->currentInput->scan(cpp->currentInput, yylvalpp);
                 } 
@@ -361,7 +372,7 @@ static int CPPelse(int matchelse, yystypepp * yylvalpp)
                 return CPPif(yylvalpp);
             }
         } else if((atom == elseAtom) && (!ChkCorrectElseNesting())) {
-            CPPErrorToInfoLog("#else after a #else");
+            ShPpErrorToInfoLog("#else after #else");
             cpp->CompileError = 1;
         }
     };  // end while
@@ -436,6 +447,7 @@ static int eval(int token, int prec, int *res, int *err, yystypepp * yylvalpp)
 {
     int         i, val;
     Symbol      *s;
+
     if (token == CPP_IDENTIFIER) {
         if (yylvalpp->sc_ident == definedAtom) {
             int needclose = 0;
@@ -444,21 +456,46 @@ static int eval(int token, int prec, int *res, int *err, yystypepp * yylvalpp)
                 needclose = 1;
                 token = cpp->currentInput->scan(cpp->currentInput, yylvalpp);
             }
-            if (token != CPP_IDENTIFIER)
-                goto error;
+            if (token != CPP_IDENTIFIER) {
+                ShPpErrorToInfoLog("incorrect preprocessor directive");
+                *err = 1;
+                *res = 0;
+
+                return token;
+            }
             *res = (s = LookUpSymbol(macros, yylvalpp->sc_ident))
                         ? !s->details.mac.undef : 0;
             token = cpp->currentInput->scan(cpp->currentInput, yylvalpp);
             if (needclose) {
-                if (token != ')')
-                    goto error;
+                if (token != ')') {
+                    ShPpErrorToInfoLog("missing ')'");
+                    *err = 1;
+                    *res = 0;
+
+                    return token;
+                }
                 token = cpp->currentInput->scan(cpp->currentInput, yylvalpp);
             }
-		} else if (MacroExpand(yylvalpp->sc_ident, yylvalpp)) {
-			token = cpp->currentInput->scan(cpp->currentInput, yylvalpp);
-            return eval(token, prec, res, err, yylvalpp);
-        } else {
-            goto error;
+		} else {
+            int macroReturn = MacroExpand(yylvalpp->sc_ident, yylvalpp);
+            if (macroReturn == 1) {
+			    token = cpp->currentInput->scan(cpp->currentInput, yylvalpp);
+
+                return eval(token, prec, res, err, yylvalpp);
+            } else if (macroReturn == -1) {
+                *res = 0;
+                token = cpp->currentInput->scan(cpp->currentInput, yylvalpp);
+                if (ShPpMacrosMustBeDefinedError())
+                    *err = 1;
+
+                return token;
+            } else {
+                ShPpErrorToInfoLog("can't evaluate expression");
+                *err = 1;
+                *res = 0;
+
+                return token;
+            }
         }
 	} else if (token == CPP_INTCONSTANT) {
         *res = yylvalpp->sc_int;
@@ -467,8 +504,13 @@ static int eval(int token, int prec, int *res, int *err, yystypepp * yylvalpp)
         token = cpp->currentInput->scan(cpp->currentInput, yylvalpp);
         token = eval(token, MIN_PREC, res, err, yylvalpp);
         if (!*err) {
-            if (token != ')')
-                goto error;
+            if (token != ')') {
+                ShPpErrorToInfoLog("expected ')'");
+                *err = 1;
+                *res = 0;
+
+                return token;
+            }
             token = cpp->currentInput->scan(cpp->currentInput, yylvalpp);
         }
     } else {
@@ -481,7 +523,11 @@ static int eval(int token, int prec, int *res, int *err, yystypepp * yylvalpp)
             token = eval(token, UNARY, res, err, yylvalpp);
             *res = unop[i].op(*res);
         } else {
-            goto error;
+            ShPpErrorToInfoLog("bad expression");
+            *err = 1;
+            *res = 0;
+
+            return token;
         }
     }
     while (!*err) {
@@ -497,11 +543,7 @@ static int eval(int token, int prec, int *res, int *err, yystypepp * yylvalpp)
         token = eval(token, binop[i].prec, res, err, yylvalpp);
         *res = binop[i].op(val, *res);
     }
-    return token;
-error:
-    CPPErrorToInfoLog("incorrect preprocessor directive");
-    *err = 1;
-    *res = 0;
+
     return token;
 } // eval
 
@@ -513,12 +555,12 @@ static int CPPif(yystypepp * yylvalpp)
     if (!cpp->ifdepth++)
         ifloc = *cpp->tokenLoc;
 	if (cpp->ifdepth > MAX_IF_NESTING){
-        CPPErrorToInfoLog("max #if nesting depth exceeded");
+        ShPpErrorToInfoLog("max #if nesting depth exceeded");
 		return 0;
 	}
 	token = eval(token, MIN_PREC, &res, &err, yylvalpp);
     if (token != '\n') {
-        CPPWarningToInfoLog("unexpected tokens following the preprocessor directive - expected a newline");
+        ShPpWarningToInfoLog("unexpected tokens following the preprocessor directive - expected a newline");
         while (token != '\n')
             token = cpp->currentInput->scan(cpp->currentInput, yylvalpp);
     } 
@@ -533,18 +575,18 @@ static int CPPifdef(int defined, yystypepp * yylvalpp)
 {
     int token = cpp->currentInput->scan(cpp->currentInput, yylvalpp);
     int name = yylvalpp->sc_ident;
-	if(++cpp->ifdepth >MAX_IF_NESTING){
-	    CPPErrorToInfoLog("max #if nesting depth exceeded");
+	if(++cpp->ifdepth > MAX_IF_NESTING){
+	    ShPpErrorToInfoLog("max #if nesting depth exceeded");
 		return 0;
 	}
 	cpp->elsetracker++;
     if (token != CPP_IDENTIFIER) {
-            defined ? CPPErrorToInfoLog("ifdef"):CPPErrorToInfoLog("ifndef");
+        defined ? ShPpErrorToInfoLog("#ifdef not followed by macro name") : ShPpErrorToInfoLog("#ifndef not followed by macro name");
     } else {
         Symbol *s = LookUpSymbol(macros, name);
         token = cpp->currentInput->scan(cpp->currentInput, yylvalpp);
         if (token != '\n') {
-            CPPWarningToInfoLog("unexpected tokens following #ifdef preprocessor directive - expected a newline");
+            ShPpWarningToInfoLog("unexpected tokens following #ifdef preprocessor directive - expected a newline");
             while (token != '\n')
                 token = cpp->currentInput->scan(cpp->currentInput, yylvalpp);
         }
@@ -557,9 +599,9 @@ static int CPPifdef(int defined, yystypepp * yylvalpp)
 static int CPPline(yystypepp * yylvalpp) 
 {
     int token = cpp->currentInput->scan(cpp->currentInput, yylvalpp);
-	if(token=='\n'){
+	if (token=='\n') {
 		DecLineNumber();
-        CPPErrorToInfoLog("#line");
+        ShPpErrorToInfoLog("#line must by followed by an integral literal");
         IncLineNumber();
 		return token;
 	}
@@ -573,23 +615,21 @@ static int CPPline(yystypepp * yylvalpp)
 			SetStringNumber(yylvalpp->sc_int);
             token = cpp->currentInput->scan(cpp->currentInput, yylvalpp);
 			if(token!='\n')
-				CPPErrorToInfoLog("#line");
+                ShPpErrorToInfoLog("#line cannot be followed by more than two integral literals");
         }
-		else if (token == '\n'){
+		else if (token == '\n')
+
 			return token;
-		}
-		else{
-            CPPErrorToInfoLog("#line");
-		}
-	}
-	else{
-          CPPErrorToInfoLog("#line");
-	}
+		else
+            ShPpErrorToInfoLog("#line second argument can only be an integral literal");
+	} else
+        ShPpErrorToInfoLog("#line first argument can only be an integral literal");
+
     return token;
 }
 
-static int CPPerror(yystypepp * yylvalpp) {
-
+static int CPPerror(yystypepp * yylvalpp) 
+{
 	int token = cpp->currentInput->scan(cpp->currentInput, yylvalpp);
     const char *message;
 	
@@ -597,16 +637,16 @@ static int CPPerror(yystypepp * yylvalpp) {
 		if (token == CPP_FLOATCONSTANT || token == CPP_INTCONSTANT){
             StoreStr(yylvalpp->symbol_name);
 		}else if(token == CPP_IDENTIFIER || token == CPP_STRCONSTANT){
-			StoreStr(GetStringOfAtom(atable,yylvalpp->sc_ident));
+			StoreStr(GetStringOfAtom(atable, yylvalpp->sc_ident));
 		}else {
-		    StoreStr(GetStringOfAtom(atable,token));
+		    StoreStr(GetStringOfAtom(atable, token));
 		}
 		token = cpp->currentInput->scan(cpp->currentInput, yylvalpp);
 	}
 	DecLineNumber();
 	//store this msg into the shader's information log..set the Compile Error flag!!!!
 	message=GetStrfromTStr();
-    CPPShInfoLogMsg(message);
+    ShPpErrorToInfoLog(message);
     ResetTString();
     cpp->CompileError=1;
     IncLineNumber();
@@ -626,7 +666,7 @@ static int CPPpragma(yystypepp * yylvalpp)
 	
 	if (token=='\n') {
 		DecLineNumber();
-        CPPErrorToInfoLog("#pragma");
+        ShPpErrorToInfoLog("#pragma must be followed by pragma arguments");
         IncLineNumber();
 	    return token;
 	}
@@ -656,7 +696,7 @@ static int CPPpragma(yystypepp * yylvalpp)
 			break;
 		case -1:
             // EOF
-            CPPShInfoLogMsg("#pragma directive must end with a newline");			
+            ShPpErrorToInfoLog("#pragma directive must end with a newline");			
 			return token;
 		default:
 			SrcStrName[0] = token;
@@ -685,16 +725,16 @@ static int CPPversion(yystypepp * yylvalpp)
     int token = cpp->currentInput->scan(cpp->currentInput, yylvalpp);
 
     if (cpp->notAVersionToken == 1)
-        CPPShInfoLogMsg("#version must occur before any other statement in the program");
+        ShPpErrorToInfoLog("#version must occur before any other statement in the program");
 
     if(token=='\n'){
 		DecLineNumber();
-        CPPErrorToInfoLog("#version");
+        ShPpErrorToInfoLog("#version");
         IncLineNumber();
 		return token;
 	}
     if (token != CPP_INTCONSTANT)
-        CPPErrorToInfoLog("#version");
+        ShPpErrorToInfoLog("#version");
 	
     yylvalpp->sc_int=atoi(yylvalpp->symbol_name);
 
@@ -714,14 +754,14 @@ static int CPPversion(yystypepp * yylvalpp)
         else if (yylvalpp->sc_ident == esAtom)
             SetProfile(EEsProfile);
         else 
-            CPPErrorToInfoLog("#version profile name");
+            ShPpErrorToInfoLog("#version profile name");
 
         token = cpp->currentInput->scan(cpp->currentInput, yylvalpp);
     
 	    if (token == '\n')
 		    return token;
         else
-            CPPErrorToInfoLog("#version");
+            ShPpErrorToInfoLog("#version");
 	}
 
     return token;
@@ -735,25 +775,25 @@ static int CPPextension(yystypepp * yylvalpp)
 
     if(token=='\n'){
 		DecLineNumber();
-        CPPShInfoLogMsg("extension name not specified");
+        ShPpErrorToInfoLog("extension name not specified");
         IncLineNumber();
 		return token;
 	}
 
     if (token != CPP_IDENTIFIER)
-        CPPErrorToInfoLog("#extension");
+        ShPpErrorToInfoLog("#extension");
     
     strcpy(extensionName, GetAtomString(atable, yylvalpp->sc_ident));
 	    
     token = cpp->currentInput->scan(cpp->currentInput, yylvalpp);
     if (token != ':') {
-        CPPShInfoLogMsg("':' missing after extension name");
+        ShPpErrorToInfoLog("':' missing after extension name");
         return token;
     }
     
     token = cpp->currentInput->scan(cpp->currentInput, yylvalpp);
     if (token != CPP_IDENTIFIER) {
-        CPPShInfoLogMsg("behavior for extension not specified");
+        ShPpErrorToInfoLog("behavior for extension not specified");
         return token;
     }
 
@@ -764,7 +804,7 @@ static int CPPextension(yystypepp * yylvalpp)
 		return token;
 	}
 	else{
-        CPPErrorToInfoLog("#extension");
+        ShPpErrorToInfoLog("#extension");
 	}
     return token;
 } // CPPextension
@@ -781,25 +821,25 @@ int readCPPline(yystypepp * yylvalpp)
         } else if (yylvalpp->sc_ident == elseAtom) {
 			 if (ChkCorrectElseNesting()) {
                  if (! cpp->ifdepth) {
-                     CPPErrorToInfoLog("#else mismatch");
+                     ShPpErrorToInfoLog("#else mismatch");
                      cpp->CompileError = 1;
                  }
                  token = cpp->currentInput->scan(cpp->currentInput, yylvalpp);
                  if (token != '\n') {
-                     CPPWarningToInfoLog("unexpected tokens following #else preprocessor directive - expected a newline");
+                     ShPpWarningToInfoLog("unexpected tokens following #else preprocessor directive - expected a newline");
                      while (token != '\n')
                          token = cpp->currentInput->scan(cpp->currentInput, yylvalpp);
                  }
 			     token = CPPelse(0, yylvalpp);
              } else {
-                 CPPErrorToInfoLog("#else after a #else");
+                 ShPpErrorToInfoLog("#else after a #else");
                  cpp->ifdepth = 0;
                  cpp->notAVersionToken = 1;
                  return 0;
              }
 		} else if (yylvalpp->sc_ident == elifAtom) {
             if (!cpp->ifdepth){
-                 CPPErrorToInfoLog("#elif mismatch");
+                 ShPpErrorToInfoLog("#elif mismatch");
                  cpp->CompileError=1;
             } 
             // this token is really a dont care, but we still need to eat the tokens
@@ -811,7 +851,7 @@ int readCPPline(yystypepp * yylvalpp)
 			 cpp->elsedepth[cpp->elsetracker] = 0;
 		     --cpp->elsetracker;
              if (!cpp->ifdepth){
-                 CPPErrorToInfoLog("#endif mismatch");
+                 ShPpErrorToInfoLog("#endif mismatch");
                  cpp->CompileError=1;
              }
              else
@@ -837,9 +877,9 @@ int readCPPline(yystypepp * yylvalpp)
             token = CPPextension(yylvalpp);
         } else {
             StoreStr("Invalid Directive");
-            StoreStr(GetStringOfAtom(atable,yylvalpp->sc_ident));
+            StoreStr(GetStringOfAtom(atable, yylvalpp->sc_ident));
             message=GetStrfromTStr();
-            CPPShInfoLogMsg(message);
+            ShPpErrorToInfoLog(message);
             ResetTString();
         }
     }
@@ -891,7 +931,7 @@ static TokenStream *PrescanMacroArg(TokenStream *a, yystypepp * yylvalpp) {
     PushEofSrc();
     ReadFromTokenStream(a, 0, 0);
     while ((token = cpp->currentInput->scan(cpp->currentInput, yylvalpp)) > 0) {
-        if (token == CPP_IDENTIFIER && MacroExpand(yylvalpp->sc_ident, yylvalpp))
+        if (token == CPP_IDENTIFIER && MacroExpand(yylvalpp->sc_ident, yylvalpp) == 1)
             continue;
         RecordToken(n, token, yylvalpp);
     }
@@ -907,7 +947,7 @@ typedef struct MacroInputSrc {
 } MacroInputSrc;
 
 /* macro_scan ---
-** return the next token for a macro expanion, handling macro args 
+** return the next token for a macro expansion, handling macro args 
 */
 static int macro_scan(InputSrc *inInput, yystypepp * yylvalpp) {
     MacroInputSrc* in = (MacroInputSrc*)inInput;
@@ -931,41 +971,58 @@ static int macro_scan(InputSrc *inInput, yystypepp * yylvalpp) {
         free(in->args);
     }
     free(in);
+
     return cpp->currentInput->scan(cpp->currentInput, yylvalpp);
 } // macro_scan
 
 /* MacroExpand
-** check an identifier (atom) to see if it a macro that should be expanded.
+** Check an identifier (atom) to see if it is a macro that should be expanded.
 ** If it is, push an InputSrc that will produce the appropriate expansion
-** and return TRUE.  If not, return FALSE.
+** and return 1.
+** If it is, but undefined, it should expand to 0, push an InputSrc that will 
+** expand to 0 and return -1.
+** Otherwise, return 0.
 */
-
 int MacroExpand(int atom, yystypepp * yylvalpp)
 {
-    Symbol              *sym = LookUpSymbol(macros, atom);
-    MacroInputSrc       *in;
-    int i,j, token, depth=0;
+    Symbol *sym = LookUpSymbol(macros, atom);
+    MacroInputSrc *in;
+    int i, j, token;
+    int depth = 0;
     const char *message;
+
 	if (atom == __LINE__Atom) {
         yylvalpp->sc_int = GetLineNumber();
-        sprintf(yylvalpp->symbol_name,"%d",yylvalpp->sc_int);
+        sprintf(yylvalpp->symbol_name, "%d", yylvalpp->sc_int);
         UngetToken(CPP_INTCONSTANT, yylvalpp);
+
         return 1;
     }
+
     if (atom == __FILE__Atom) {
         yylvalpp->sc_int = GetStringNumber();
-        sprintf(yylvalpp->symbol_name,"%d",yylvalpp->sc_int);
+        sprintf(yylvalpp->symbol_name, "%d", yylvalpp->sc_int);
         UngetToken(CPP_INTCONSTANT, yylvalpp);
+
         return 1;
     }
+
 	if (atom == __VERSION__Atom) {
-        strcpy(yylvalpp->symbol_name,"100");
+        strcpy(yylvalpp->symbol_name, "100");
         yylvalpp->sc_int = atoi(yylvalpp->symbol_name);
         UngetToken(CPP_INTCONSTANT, yylvalpp);
+
         return 1;
     }
-    if (!sym || sym->details.mac.undef) return 0;
-    if (sym->details.mac.busy) return 0;        // no recursive expansions
+
+    if (! sym || sym->details.mac.undef)
+
+        return -1;
+
+    else if (sym->details.mac.busy)
+
+        return 0;        // no recursive expansions
+
     in = (MacroInputSrc*)malloc(sizeof(*in));
     memset(in, 0, sizeof(*in));
     in->base.scan = macro_scan;
@@ -977,22 +1034,24 @@ int MacroExpand(int atom, yystypepp * yylvalpp)
 		if (token != '(') {
             UngetToken(token, yylvalpp);
             yylvalpp->sc_ident = atom;
+
             return 0;
         }
         in->args = (TokenStream**)malloc(in->mac->argc * sizeof(TokenStream *));
         for (i=0; i<in->mac->argc; i++)
             in->args[i] = NewTokenStream("macro arg", 0);
 		i=0;j=0;
-        do{
+        do {
             depth = 0;
-			while(1) {
+			while (1) {
                 token = cpp->currentInput->scan(cpp->currentInput, yylvalpp);
                 if (token <= 0) {
                     StoreStr("EOF in Macro ");
-                    StoreStr(GetStringOfAtom(atable,atom));
+                    StoreStr(GetStringOfAtom(atable, atom));
                     message=GetStrfromTStr();
-                    CPPShInfoLogMsg(message);
+                    ShPpErrorToInfoLog(message);
                     ResetTString();
+
                     return 1;
                 }
                 if((in->mac->argc==0) && (token!=')')) break;
@@ -1009,13 +1068,13 @@ int MacroExpand(int atom, yystypepp * yylvalpp)
                 break;
             }
             i++;
-		}while(i < in->mac->argc);
+		} while (i < in->mac->argc);
 
         if (i < in->mac->argc) {
             StoreStr("Too few args in Macro ");
-            StoreStr(GetStringOfAtom(atable,atom));
+            StoreStr(GetStringOfAtom(atable, atom));
             message=GetStrfromTStr();
-            CPPShInfoLogMsg(message);
+            ShPpErrorToInfoLog(message);
             ResetTString();
         } else if (token != ')') {
             depth=0;
@@ -1027,16 +1086,17 @@ int MacroExpand(int atom, yystypepp * yylvalpp)
 			
             if (token <= 0) {
                 StoreStr("EOF in Macro ");
-                StoreStr(GetStringOfAtom(atable,atom));
+                StoreStr(GetStringOfAtom(atable, atom));
                 message=GetStrfromTStr();
-                CPPShInfoLogMsg(message);
+                ShPpErrorToInfoLog(message);
                 ResetTString();
+
                 return 1;
             }
             StoreStr("Too many args in Macro ");
-            StoreStr(GetStringOfAtom(atable,atom));
+            StoreStr(GetStringOfAtom(atable, atom));
             message=GetStrfromTStr();
-            CPPShInfoLogMsg(message);
+            ShPpErrorToInfoLog(message);
             ResetTString();
 		}
 		for (i=0; i<in->mac->argc; i++) {
@@ -1057,6 +1117,7 @@ int MacroExpand(int atom, yystypepp * yylvalpp)
     sym->details.mac.busy = 1;
     RewindTokenStream(sym->details.mac.body);
     cpp->currentInput = &in->base;
+
     return 1;
 } // MacroExpand
 
