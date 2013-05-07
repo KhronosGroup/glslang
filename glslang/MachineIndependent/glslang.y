@@ -1724,8 +1724,8 @@ storage_qualifier
     }
     | ATTRIBUTE {
         parseContext.requireStage($1.line, EShLangVertexMask, "attribute");
-        parseContext.checkDeprecated($1.line, ECoreProfile, 150, "attribute");
-        parseContext.checkDeprecated($1.line, ENoProfile, 140, "attribute");
+        parseContext.checkDeprecated($1.line, ECoreProfile, 130, "attribute");
+        parseContext.checkDeprecated($1.line, ENoProfile, 130, "attribute");
         parseContext.requireNotRemoved($1.line, ECoreProfile, 420, "attribute");
         parseContext.requireNotRemoved($1.line, EEsProfile, 300, "attribute");
 
@@ -1736,8 +1736,8 @@ storage_qualifier
         $$.qualifier.storage = EvqVaryingIn;
     }
     | VARYING {
-        parseContext.checkDeprecated($1.line, ENoProfile, 140, "varying");
-        parseContext.checkDeprecated($1.line, ECoreProfile, 150, "varying");
+        parseContext.checkDeprecated($1.line, ENoProfile, 130, "varying");
+        parseContext.checkDeprecated($1.line, ECoreProfile, 130, "varying");
         parseContext.requireNotRemoved($1.line, ECoreProfile, 420, "varying");
         parseContext.requireNotRemoved($1.line, EEsProfile, 300, "varying");
 

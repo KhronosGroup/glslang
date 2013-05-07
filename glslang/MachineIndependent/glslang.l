@@ -67,7 +67,6 @@ LF          [lL][fF]
 #include "glslang_tab.cpp.h"
 
 void PaReservedWord();
-void PaCompatibilityWord(TParseContext&);
 int PaIdentOrType(const char* yytext, TParseContext&, YYSTYPE* pyylval);
 int PaIdentOrReserved(bool reserved, TParseContext&, int line, const char* text, YYSTYPE* pyylval);
 int PaES30ReservedFromGLSL(int version, TParseContext& pc, int line, const char* text, YYSTYPE* pyylval, int keyword);
@@ -110,7 +109,6 @@ int yy_input(char* buf, int max_size);
 "attribute"     {   pyylval->lex.line = yylineno;
                     if (parseContext.profile == EEsProfile && parseContext.version >= 300)
                         PaReservedWord();
-                    PaCompatibilityWord(parseContext);
                     return ATTRIBUTE;
                 }
 "const"         {   pyylval->lex.line = yylineno;
@@ -122,7 +120,6 @@ int yy_input(char* buf, int max_size);
 "varying"       {   pyylval->lex.line = yylineno;
                     if (parseContext.profile == EEsProfile && parseContext.version >= 300)
                         PaReservedWord();
-                    PaCompatibilityWord(parseContext);
                     return VARYING;
                 }
 "buffer"        {   pyylval->lex.line = yylineno;
@@ -742,15 +739,6 @@ void PaReservedWord()
 {
     GlobalParseContext->error(yylineno, "Reserved word.", yytext, "", "");
     GlobalParseContext->recover();
-}
-
-void PaCompatibilityWord(TParseContext& parseContextlocal)
-{
-    if (parseContextlocal.profile != EEsProfile && parseContextlocal.profile != ECompatibilityProfile &&
-        parseContextlocal.version > 150) {
-        GlobalParseContext->error(yylineno, "Keyword requires compatibility profile.", yytext, "", "");
-        GlobalParseContext->recover();
-    }
 }
 
 int PaIdentOrType(const char* yytext, TParseContext& parseContextLocal, YYSTYPE* pyylval)
