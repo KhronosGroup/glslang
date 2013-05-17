@@ -10,6 +10,10 @@ lowp vec2 foo(mediump vec3 mv3)
 
 int global_medium;
 
+uniform lowp sampler2D samplerLow;
+uniform mediump sampler2D samplerMed;
+uniform highp sampler2D samplerHigh;
+
 precision highp int; 
 precision highp ivec2;     // ERROR
 precision mediump int[2];  // ERROR
@@ -59,4 +63,8 @@ void main()
     sum += level1_low3;
 
     sum += 4 + ((ivec2(level1_low3) * ivec2(level1_high) + ivec2((/* comma operator */level1_low3, level1_high)))).x;
+    
+    texture2D(samplerLow, vec2(0.1, 0.2));
+    texture2D(samplerMed, vec2(0.1, 0.2));
+    texture2D(samplerHigh, vec2(0.1, 0.2));
 }

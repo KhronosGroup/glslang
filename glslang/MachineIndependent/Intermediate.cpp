@@ -126,6 +126,8 @@ TIntermTyped* TIntermediate::addBinaryMath(TOperator op, TIntermTyped* left, TIn
     node->setRight(right);
     if (! node->promote(infoSink))
         return 0;
+
+    node->updatePrecision();
         
     //
     // If they are both constants, they must be folded.
@@ -168,6 +170,8 @@ TIntermTyped* TIntermediate::addAssign(TOperator op, TIntermTyped* left, TInterm
     node->setRight(child);
     if (! node->promote(infoSink))
         return 0;
+
+    node->updatePrecision();
 
     return node;
 }
@@ -274,6 +278,8 @@ TIntermTyped* TIntermediate::addUnaryMath(TOperator op, TIntermNode* childNode, 
     if (! node->promote(infoSink))
         return 0;
 
+    node->updatePrecision();
+
     if (child->getAsConstantUnion())
         return child->getAsConstantUnion()->fold(op, node->getType(), infoSink);
 
@@ -309,31 +315,26 @@ TIntermTyped* TIntermediate::addBuiltInFunctionCall(TOperator op, bool unary, TI
             node->getQualifier().precision = child->getQualifier().precision;
 
         // propagate precision down to child
-        if (node->getQualifier().precision != EpqNone &&
-            child->getQualifier().precision == EpqNone)
-            child->getQualifier().precision = node->getQualifier().precision;
+        if (node->getQualifier().precision != EpqNone)
+            child->propagatePrecision(node->getQualifier().precision);
 
         return node;
     } else {
         // setAggregateOperater() calls fold() for constant folding
         TIntermTyped* node = setAggregateOperator(childNode, op, returnType, childNode->getLine());
-
-        if (returnType.getQualifier().precision == EpqNone && profile == EEsProfile) {
-            // get maximum precision from arguments, for the built-in's return precision
-
-            TIntermSequence& sequence = node->getAsAggregate()->getSequence();
-            TPrecisionQualifier maxPq = EpqNone;
-            for (unsigned int arg = 0; arg < sequence.size(); ++arg)
-                maxPq = std::max(maxPq, sequence[arg]->getAsTyped()->getQualifier().precision);
-            node->getQualifier().precision = maxPq;
-        }
-
-        if (node->getQualifier().precision != EpqNone) {
+        
+        TPrecisionQualifier correctPrecision = returnType.getQualifier().precision;
+        if (correctPrecision == EpqNone && profile == EEsProfile) {
+            // find the maximum precision from the arguments, for the built-in's return precision
             TIntermSequence& sequence = node->getAsAggregate()->getSequence();
             for (unsigned int arg = 0; arg < sequence.size(); ++arg)
-                if (sequence[arg]->getAsTyped()->getQualifier().precision == EpqNone)
-                    sequence[arg]->getAsTyped()->getQualifier().precision = node->getQualifier().precision;
+                correctPrecision = std::max(correctPrecision, sequence[arg]->getAsTyped()->getQualifier().precision);
         }
+        
+        // Propagate precision through this node and its children. That algorithm stops
+        // when a precision is found, so start by clearing this subroot precision
+        node->getQualifier().precision = EpqNone;
+        node->propagatePrecision(correctPrecision);
 
         return node;
     }
@@ -725,12 +726,15 @@ TIntermTyped* TIntermediate::addComma(TIntermTyped* left, TIntermTyped* right, T
 {
     if (left->getType().getQualifier().storage == EvqConst && 
         right->getType().getQualifier().storage == EvqConst) {
+
         return right;
     } else {
         TIntermTyped *commaAggregate = growAggregate(left, right, line);
         commaAggregate->getAsAggregate()->setOperator(EOpComma);
         commaAggregate->setType(right->getType());
         commaAggregate->getTypePointer()->getQualifier().storage = EvqTemporary;
+        commaAggregate->getTypePointer()->getQualifier().precision = right->getTypePointer()->getQualifier().precision;
+
         return commaAggregate;
     }
 }
@@ -782,6 +786,7 @@ TIntermTyped* TIntermediate::addSelection(TIntermTyped* cond, TIntermTyped* true
     //
     TIntermSelection* node = new TIntermSelection(cond, trueBlock, falseBlock, trueBlock->getType());
     node->setLine(line);
+    node->getQualifier().precision = std::max(trueBlock->getQualifier().precision, falseBlock->getQualifier().precision);
 
     return node;
 }
@@ -966,6 +971,14 @@ bool TIntermUnary::promote(TInfoSink&)
     return true;
 }
 
+void TIntermUnary::updatePrecision()
+{
+    if (getBasicType() == EbtInt || getBasicType() == EbtUint || getBasicType() == EbtFloat) {
+        if (operand->getQualifier().precision > getQualifier().precision)
+            getQualifier().precision = operand->getQualifier().precision;
+    }
+}
+
 //
 // Establishes the type of the resultant operation, as well as
 // makes the operator the correct one for the operands.
@@ -987,21 +1000,11 @@ bool TIntermBinary::promote(TInfoSink& infoSink)
     setType(left->getType());
     type.getQualifier().storage = EvqTemporary;
 
-    // Fix precision qualifiers
-    if (right->getQualifier().precision > getQualifier().precision)
-        getQualifier().precision = right->getQualifier().precision;
-    if (getQualifier().precision != EpqNone) {
-        left->propagatePrecision(getQualifier().precision);
-        right->propagatePrecision(getQualifier().precision);
-    }
-
     //
     // Array operations.
     //
     if (left->isArray()) {
-
         switch (op) {
-
         //
         // Promote to conditional
         //
@@ -1229,6 +1232,17 @@ bool TIntermBinary::promote(TInfoSink& infoSink)
     return true;
 }
 
+void TIntermBinary::updatePrecision()
+{
+    if (getBasicType() == EbtInt || getBasicType() == EbtUint || getBasicType() == EbtFloat) {
+        getQualifier().precision = std::max(right->getQualifier().precision, left->getQualifier().precision);
+        if (getQualifier().precision != EpqNone) {
+            left->propagatePrecision(getQualifier().precision);
+            right->propagatePrecision(getQualifier().precision);
+        }
+    }
+}
+
 void TIntermTyped::propagatePrecision(TPrecisionQualifier newPrecision)
 {
     if (getQualifier().precision != EpqNone || (getBasicType() != EbtInt && getBasicType() != EbtUint && getBasicType() != EbtFloat))
@@ -1240,11 +1254,16 @@ void TIntermTyped::propagatePrecision(TPrecisionQualifier newPrecision)
     if (binaryNode) {
         binaryNode->getLeft()->propagatePrecision(newPrecision);
         binaryNode->getRight()->propagatePrecision(newPrecision);
+
+        return;
     }
 
     TIntermUnary* unaryNode = getAsUnaryNode();
-    if (unaryNode)
+    if (unaryNode) {
         unaryNode->getOperand()->propagatePrecision(newPrecision);
+
+        return;
+    }
 
     TIntermAggregate* aggregateNode = getAsAggregate();
     if (aggregateNode) {
@@ -1255,6 +1274,8 @@ void TIntermTyped::propagatePrecision(TPrecisionQualifier newPrecision)
                 break;
             typedNode->propagatePrecision(newPrecision);
         }
+
+        return;
     }
 
     TIntermSelection* selectionNode = getAsSelectionNode();
@@ -1266,14 +1287,9 @@ void TIntermTyped::propagatePrecision(TPrecisionQualifier newPrecision)
             if (typedNode)
                 typedNode->propagatePrecision(newPrecision);
         }
-    }
 
-    // TODO: functionality: propagate precision for
-    //    comma operator:  just through the last operand
-    //    ":?" and ",": where is this triggered?
-    //    built-in function calls: how much to propagate to arguments?
-    //    length()?
-    //    indexing?
+        return;
+    }
 }
 
 TIntermTyped* TIntermediate::promoteConstantUnion(TBasicType promoteTo, TIntermConstantUnion* node) 

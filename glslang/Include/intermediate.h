@@ -482,6 +482,7 @@ public:
     virtual TIntermTyped* getRight() const { return right; }
     virtual TIntermBinary* getAsBinaryNode() { return this; }
     virtual bool promote(TInfoSink&);
+    virtual void updatePrecision();
 protected:
     TIntermTyped* left;
     TIntermTyped* right;
@@ -499,6 +500,7 @@ public:
     virtual TIntermTyped* getOperand() { return operand; }
     virtual TIntermUnary* getAsUnaryNode() { return this; }
     virtual bool promote(TInfoSink&);
+    virtual void updatePrecision();
 protected:
     TIntermTyped* operand;
 };

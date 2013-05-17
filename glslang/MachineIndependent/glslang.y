@@ -410,12 +410,12 @@ postfix_expression
                     unionArray->setIConst(fields.offsets[0]);
                     TIntermTyped* index = parseContext.intermediate.addConstantUnion(unionArray, TType(EbtInt, EvqConst), $3.line);
                     $$ = parseContext.intermediate.addIndex(EOpIndexDirect, $1, index, $2.line);
-                    $$->setType(TType($1->getBasicType()));
+                    $$->setType(TType($1->getBasicType(), EvqTemporary, $1->getType().getQualifier().precision));
                 } else {
                     TString vectorString = *$3.string;
                     TIntermTyped* index = parseContext.intermediate.addSwizzle(fields, $3.line);
                     $$ = parseContext.intermediate.addIndex(EOpVectorSwizzle, $1, index, $2.line);
-                    $$->setType(TType($1->getBasicType(), EvqTemporary, (int) vectorString.size()));
+                    $$->setType(TType($1->getBasicType(), EvqTemporary, $1->getType().getQualifier().precision, (int) vectorString.size()));
                 }
             }
         } else if ($1->isMatrix()) {
@@ -582,6 +582,11 @@ function_call
                         }
                         qualifierList.push_back(qual);
                     }
+
+                    // built-in texturing functions get their return value precision from the precision of the sampler
+                    if (builtIn && fnCandidate->getReturnType().getQualifier().precision == EpqNone &&
+                        fnCandidate->getParamCount() > 0 && (*fnCandidate)[0].type->getBasicType() == EbtSampler)
+                        $$->getQualifier().precision = $$->getAsAggregate()->getSequence()[0]->getAsTyped()->getQualifier().precision;
                 }
             } else {
                 // error message was put out by PaFindFunction()
