@@ -71,6 +71,13 @@ void main()
     float uvec3;
     float uvec4;
     //packed;     // ERROR, reserved word
+
+    {
+        mat4 m;
+        vec4 v;
+        bool b;
+        gl_FragColor += b ? v : m;  // ERROR, types don't match around ":"
+    }
 }
 
 float imageBuffer;

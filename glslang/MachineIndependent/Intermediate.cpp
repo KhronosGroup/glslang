@@ -769,6 +769,10 @@ TIntermTyped* TIntermediate::addSelection(TIntermTyped* cond, TIntermTyped* true
         else
             return 0;
     }
+    
+    // After conversion, types have to match.
+    if (falseBlock->getType() != trueBlock->getType())
+        return 0;
 
     //
     // See if all the operands are constant, then fold it otherwise not.
