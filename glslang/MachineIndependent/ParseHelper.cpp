@@ -452,14 +452,13 @@ bool TParseContext::reservedErrorCheck(int line, const TString& identifier)
     if (!symbolTable.atBuiltInLevel()) {
         if (identifier.substr(0, 3) == TString("gl_")) {
             error(line, "reserved built-in name", "gl_", "");
+
             return true;
         }
         if (identifier.find("__") != TString::npos) {
-            //error(line, "Two consecutive underscores are reserved for future use.", identifier.c_str(), "", "");
-            //return true;
-            // TODO: semantics: make this an error
-            infoSink.info.message(EPrefixWarning, "Two consecutive underscores are reserved for future use.", line);
-            return false;
+            error(line, "Two consecutive underscores are reserved for future use.", identifier.c_str(), "", "");
+
+            return true;
         }
     }
 

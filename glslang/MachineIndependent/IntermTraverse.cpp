@@ -55,8 +55,9 @@
 //
 void TIntermMethod::traverse(TIntermTraverser* it)
 {
-    // TODO: functionality: current tree should always resolve all methods as constants
-    // 4.3 will leave some length methods as methods
+    // Tree should always resolve all methods as constants
+
+    // TODO: 4.3 functionality: some .length() will stay as methods
 }
 
 void TIntermSymbol::traverse(TIntermTraverser* it)
