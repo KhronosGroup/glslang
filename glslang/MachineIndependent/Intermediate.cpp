@@ -1119,10 +1119,13 @@ bool TIntermBinary::promote(TInfoSink& infoSink)
         break;
     }
 
-    // Finish up handling the case where both operands are scalars.
-    if (!  left->isVector() && !  left->isMatrix() &&
-        ! right->isVector() && ! right->isMatrix())
+    // Finish handling the case, for all ops, where both operands are scalars.
+    if (left->isScalar() && right->isScalar())
         return true;
+
+    // Finish handling the case, for all ops, where there are two vectors of different sizes
+    if (left->isVector() && right->isVector() && left->getVectorSize() != right->getVectorSize())
+        return false;
 
     //
     // We now have a mix of scalars, vectors, or matrices, for non-relational operations.
@@ -1156,11 +1159,9 @@ bool TIntermBinary::promote(TInfoSink& infoSink)
                 return false;
             op = EOpMatrixTimesMatrix;
             setType(TType(basicType, EvqTemporary, 0, right->getMatrixCols(), left->getMatrixRows()));
-        } else if (!left->isMatrix() && !right->isMatrix()) {
+        } else if (! left->isMatrix() && ! right->isMatrix()) {
             if (left->isVector() && right->isVector()) {
-                if (left->getVectorSize() != right->getVectorSize())
-                    return false;
-                // leave as component product
+                ; // leave as component product
             } else if (left->isVector() || right->isVector()) {
                 op = EOpVectorTimesScalar;
                 if (right->isVector())
@@ -1172,7 +1173,7 @@ bool TIntermBinary::promote(TInfoSink& infoSink)
         }
         break;
     case EOpMulAssign:
-        if (!left->isMatrix() && right->isMatrix()) {
+        if (! left->isMatrix() && right->isMatrix()) {
             if (left->isVector()) {
                 if (left->getVectorSize() != right->getMatrixRows() || left->getVectorSize() != right->getMatrixCols())
                     return false;
