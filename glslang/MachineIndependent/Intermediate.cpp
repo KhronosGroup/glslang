@@ -71,37 +71,11 @@ TIntermSymbol* TIntermediate::addSymbol(int id, const TString& name, const TType
 //
 TIntermTyped* TIntermediate::addBinaryMath(TOperator op, TIntermTyped* left, TIntermTyped* right, TSourceLoc line)
 {
+    // No operations work on blocks
     if (left->getType().getBasicType() == EbtBlock || right->getType().getBasicType() == EbtBlock)
         return 0;
 
-    switch (op) {
-    case EOpLessThan:
-    case EOpGreaterThan:
-    case EOpLessThanEqual:
-    case EOpGreaterThanEqual:
-        if (left->getType().isMatrix() || left->getType().isArray() || left->getType().isVector() || left->getType().getBasicType() == EbtStruct) {
-            return 0;
-        }
-        break;
-    case EOpLogicalOr:
-    case EOpLogicalXor:
-    case EOpLogicalAnd:
-        if (left->getType().getBasicType() != EbtBool || left->getType().isMatrix() || left->getType().isArray() || left->getType().isVector()) {
-            return 0;
-        }
-        break;
-    case EOpAdd:
-    case EOpSub:
-    case EOpDiv:
-    case EOpMul:
-        if (left->getType().getBasicType() == EbtStruct || left->getType().getBasicType() == EbtBool || left->getType().isArray())
-            return 0;
-    default: break; // some compilers want this
-    }
-
-    // 
-    // First try converting the children to compatible types.
-    //
+    // Try converting the children's base types to compatible types.
     TIntermTyped* child = addConversion(op, left->getType(), right);
     if (child)
         right = child;
@@ -153,6 +127,10 @@ TIntermTyped* TIntermediate::addBinaryMath(TOperator op, TIntermTyped* left, TIn
 //
 TIntermTyped* TIntermediate::addAssign(TOperator op, TIntermTyped* left, TIntermTyped* right, TSourceLoc line)
 {
+    // No block assignment
+    if (left->getType().getBasicType() == EbtBlock || right->getType().getBasicType() == EbtBlock)
+        return 0;
+
     //
     // Like adding binary math, except the conversion can only go
     // from right to left.
@@ -991,111 +969,166 @@ void TIntermUnary::updatePrecision()
 //
 bool TIntermBinary::promote(TInfoSink& infoSink)
 {
-    //
-    // Arrays have to be exact matches.
-    //
-    if ((left->isArray() || right->isArray()) && (left->getType() != right->getType()))
+    // Arrays and structures have to be exact matches.
+    if ((left->isArray() || right->isArray() || left->getBasicType() == EbtStruct || right->getBasicType() == EbtStruct) 
+        && left->getType() != right->getType())
         return false;
 
-    //
     // Base assumption:  just make the type the same as the left
-    // operand.  Then only deviations from this need be coded.
-    //
+    // operand.  Only deviations from this will be coded.
     setType(left->getType());
-    type.getQualifier().storage = EvqTemporary;
+    type.getQualifier().clear();
 
-    //
-    // Array operations.
-    //
-    if (left->isArray()) {
+    // Finish all array and structure operations.
+    if (left->isArray() || left->getBasicType() == EbtStruct) {
         switch (op) {
-        //
-        // Promote to conditional
-        //
         case EOpEqual:
         case EOpNotEqual:
+            // Promote to conditional
             setType(TType(EbtBool));
-            break;
+
+            return true;
 
         case EOpAssign:
-            // array information was correctly set above
-            break;
+            // Keep type from above
+
+            return true;
 
         default:
             return false;
         }
+    }
 
-        return true;
+    //
+    // We now have only scalars, vectors, and matrices to worry about.
+    //
+
+    // Do general type checks against individual operands (comparing left and right is coming up, checking mixed shapes after that)
+    switch (op) {
+    case EOpLessThan:
+    case EOpGreaterThan:
+    case EOpLessThanEqual:
+    case EOpGreaterThanEqual:
+        // Relational comparisons need matching numeric types and will promote to scalar Boolean.
+        if (left->getBasicType() == EbtBool || left->getType().isMatrix())
+            return false;
+
+        // Fall through
+
+    case EOpEqual:
+    case EOpNotEqual:
+        // All the above comparisons result in a bool (but not the vector compares)
+        setType(TType(EbtBool));
+        break;
+
+    case EOpLogicalAnd:
+    case EOpLogicalOr:
+    case EOpLogicalXor:
+        // logical ops operate only on scalar Booleans and will promote to scalar Boolean.
+        if (left->getBasicType() != EbtBool || left->isVector() || left->isMatrix())
+            return false;
+
+        setType(TType(EbtBool));
+        break;
+
+    case EOpRightShift:
+    case EOpLeftShift:
+    case EOpRightShiftAssign:
+    case EOpLeftShiftAssign:
+
+    case EOpMod:
+    case EOpModAssign:
+
+    case EOpAnd:
+    case EOpInclusiveOr:
+    case EOpExclusiveOr:
+    case EOpAndAssign:
+    case EOpInclusiveOrAssign:
+    case EOpExclusiveOrAssign:
+        // Check for integer-only operands.
+        if ( left->getBasicType() != EbtInt &&  left->getBasicType() != EbtUint ||
+            right->getBasicType() != EbtInt && right->getBasicType() != EbtUint)
+            return false;
+        if (left->isMatrix() || right->isMatrix())
+            return false;
+
+        break;
+
+    case EOpAdd:
+    case EOpSub:
+    case EOpDiv:
+    case EOpMul:
+    case EOpAddAssign:
+    case EOpSubAssign:
+    case EOpMulAssign:
+    case EOpDivAssign:
+        // check for non-Boolean operands
+        if (left->getBasicType() == EbtBool || right->getBasicType() == EbtBool)
+            return false;
+
+    default:
+        break;
     }
     
-    //
-    // All scalars.  Code after this test assumes this case is removed!
-    //
-    if (left->getVectorSize() == 1 && right->getVectorSize() == 1) {
+    // Compare left and right, and finish with the cases where the operand types must match
+    switch (op) {
+    case EOpLessThan:
+    case EOpGreaterThan:
+    case EOpLessThanEqual:
+    case EOpGreaterThanEqual:
 
-        switch (op) {
+    case EOpEqual:
+    case EOpNotEqual:
 
-        //
-        // Promote to conditional
-        //
-        case EOpEqual:
-        case EOpNotEqual:
-        case EOpLessThan:
-        case EOpGreaterThan:
-        case EOpLessThanEqual:
-        case EOpGreaterThanEqual:
-            setType(TType(EbtBool));
-            break;
+    case EOpLogicalAnd:
+    case EOpLogicalOr:
+    case EOpLogicalXor:        
+        return left->getType() == right->getType();
 
-        //
-        // And and Or operate only on conditionals
-        //
-        case EOpLogicalAnd:
-        case EOpLogicalOr:
-            if (left->getBasicType() != EbtBool || right->getBasicType() != EbtBool)
-                return false;           
-            setType(TType(EbtBool));
-            break;
+    // no shifts: they can mix types (scalar int can shift a vector uint, etc.)
 
-        //
-        // Check for integer only operands.
-        //
-        case EOpMod:
-        case EOpRightShift:
-        case EOpLeftShift:
-        case EOpAnd:
-        case EOpInclusiveOr:
-        case EOpExclusiveOr:
-            if ( left->getBasicType() != EbtInt &&  left->getBasicType() != EbtUint ||
-                right->getBasicType() != EbtInt && right->getBasicType() != EbtUint)
-                return false;
-            break;
-        case EOpModAssign:
-        case EOpAndAssign:
-        case EOpInclusiveOrAssign:
-        case EOpExclusiveOrAssign:
-        case EOpLeftShiftAssign:
-        case EOpRightShiftAssign:
-            if ( left->getBasicType() != EbtInt &&  left->getBasicType() != EbtUint ||
-                right->getBasicType() != EbtInt && right->getBasicType() != EbtUint)
-                return false;
-            // fall through
+    case EOpMod:
+    case EOpModAssign:
 
-        //
-        // Everything else should have matching types
-        //
-        default:
-            if (left->getBasicType() != right->getBasicType() ||
-                left->isMatrix()     != right->isMatrix())
-                return false;
-        }
+    case EOpAnd:
+    case EOpInclusiveOr:
+    case EOpExclusiveOr:
+    case EOpAndAssign:
+    case EOpInclusiveOrAssign:
+    case EOpExclusiveOrAssign:
 
-        return true;
+    case EOpAdd:
+    case EOpSub:
+    case EOpDiv:
+    case EOpAddAssign:
+    case EOpSubAssign:
+    case EOpDivAssign:
+        // Quick out in case the types do match
+        if (left->getType() == right->getType())
+            return true;
+
+        // Fall through
+
+    case EOpMul:
+    case EOpMulAssign:
+        // At least the basic type has to match
+        if (left->getBasicType() != right->getBasicType())
+            return false;
+
+    default:
+        break;
     }
 
+    // Finish up handling the case where both operands are scalars.
+    if (!  left->isVector() && !  left->isMatrix() &&
+        ! right->isVector() && ! right->isMatrix())
+        return true;
+
     //
-    // Can these two operands be combined?
+    // We now have a mix of scalars, vectors, or matrices, for non-relational operations.
     //
+
+    // Can these two operands be combined, what is the resulting type?
     TBasicType basicType = left->getBasicType();
     switch (op) {
     case EOpMul:
@@ -1130,7 +1163,7 @@ bool TIntermBinary::promote(TInfoSink& infoSink)
                 // leave as component product
             } else if (left->isVector() || right->isVector()) {
                 op = EOpVectorTimesScalar;
-                if (right->getVectorSize() > 1)
+                if (right->isVector())
                     setType(TType(basicType, EvqTemporary, right->getVectorSize()));
             }
         } else {
@@ -1170,10 +1203,20 @@ bool TIntermBinary::promote(TInfoSink& infoSink)
             return false;
         }
         break;      
+
+    case EOpRightShift:
+    case EOpLeftShift:
+    case EOpRightShiftAssign:
+    case EOpLeftShiftAssign:
+        if (right->isVector() && (! left->isVector() || right->getVectorSize() != left->getVectorSize()))
+            return false;
+        break;
+
     case EOpAssign:
         if (left->getVectorSize() != right->getVectorSize() || left->getMatrixCols() != right->getMatrixCols() || left->getMatrixRows() != right->getMatrixRows())
             return false;
         // fall through
+
     case EOpAdd:
     case EOpSub:
     case EOpDiv:
@@ -1194,27 +1237,15 @@ bool TIntermBinary::promote(TInfoSink& infoSink)
             setType(TType(basicType, EvqTemporary, right->getVectorSize(), right->getMatrixCols(), right->getMatrixRows()));
         break;
         
-    case EOpEqual:
-    case EOpNotEqual:
-    case EOpLessThan:
-    case EOpGreaterThan:
-    case EOpLessThanEqual:
-    case EOpGreaterThanEqual:
-        if (left->isMatrix() && right->isVector() ||
-            left->isVector() && right->isMatrix() ||
-            left->getBasicType() != right->getBasicType())
-            return false;
-        setType(TType(EbtBool));
-        break;
-
     default:
         return false;
     }
 
     //
-    // One more check for assignment.  The Resulting type has to match the left operand.
+    // One more check for assignment.
     //
     switch (op) {
+    // The resulting type has to match the left operand.
     case EOpAssign:
     case EOpAddAssign:
     case EOpSubAssign:

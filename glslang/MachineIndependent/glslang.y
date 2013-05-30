@@ -601,7 +601,6 @@ function_call
     }
     ;
 
-// TODO: clean up: can we eliminate function_call_or_method and function_call_generic?
 function_call_or_method
     : function_call_generic {
         $$ = $1;

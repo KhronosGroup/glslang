@@ -360,6 +360,7 @@ public:
     virtual bool isMatrix() const { return type.isMatrix(); }
     virtual bool isArray()  const { return type.isArray(); }
     virtual bool isVector() const { return type.isVector(); }
+    virtual bool isScalar() const { return type.isScalar(); }
     TString getCompleteString() const { return type.getCompleteString(); }
 
 protected:

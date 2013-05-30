@@ -563,6 +563,7 @@ public:
     void setArrayInformationType(TType* t) { arrayInformationType = t; }
     TType* getArrayInformationType() { return arrayInformationType; }
     virtual bool isVector() const { return vectorSize > 1; }
+    virtual bool isScalar() const { return vectorSize == 1; }
     const char* getBasicString() const {
         return TType::getBasicString(basicType);
     }

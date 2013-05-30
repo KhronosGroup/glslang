@@ -416,7 +416,7 @@ bool TParseContext::constErrorCheck(TIntermTyped* node)
 //
 bool TParseContext::integerErrorCheck(TIntermTyped* node, const char* token)
 {
-    if ((node->getBasicType() == EbtInt || node->getBasicType() == EbtUint) && node->getVectorSize() == 1 && ! node->isArray())
+    if ((node->getBasicType() == EbtInt || node->getBasicType() == EbtUint) && node->isScalar() && ! node->isArray())
         return false;
 
     error(node->getLine(), "scalar integer expression required", token, "");
