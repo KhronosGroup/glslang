@@ -68,3 +68,55 @@ sum += 0.05;
 // sum should be 987600301.7
     gl_Position = vec4(sum);
 }
+
+#define A 0
+#define B 0
+#define C 0
+
+#if (A == B) || (A == C)
+#error good1
+#endif
+
+#if A == B || (A == C)
+#error good2
+#endif
+
+#if (A == B || (A == C))
+#error good3
+#endif
+
+#if (AA == BB) || (AA == CC)
+#error good4
+#endif
+
+#if AA == BB || (AA == CC)
+#error good5
+#endif
+
+#if ((AA == BB || (AA == CC)))
+#error good6
+#endif
+
+#if (A == B || (A == C)
+#error bad1
+#endif
+
+#if A == B || A == C)
+#error bad2
+#endif
+
+#if (A == B || (A == C)
+#error bad3
+#endif
+
+#if AA == BB) || (AA == CC)
+#error bad4
+#endif
+
+#if AA == BB || (AA == CC
+#error bad5
+#endif
+
+#if ((AA == BB || (AA == CC))))
+#error bad6
+#endif

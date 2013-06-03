@@ -477,24 +477,21 @@ static int eval(int token, int prec, int *res, int *err, yystypepp * yylvalpp)
                 token = cpp->currentInput->scan(cpp->currentInput, yylvalpp);
             }
 		} else {
-            int macroReturn = MacroExpand(yylvalpp->sc_ident, yylvalpp);
-            if (macroReturn == 1) {
-			    token = cpp->currentInput->scan(cpp->currentInput, yylvalpp);
-
-                return eval(token, prec, res, err, yylvalpp);
-            } else if (macroReturn == -1) {
-                *res = 0;
-                token = cpp->currentInput->scan(cpp->currentInput, yylvalpp);
-                if (ShPpMacrosMustBeDefinedError())
-                    *err = 1;
-
-                return token;
-            } else {
+            int macroReturn = MacroExpand(yylvalpp->sc_ident, yylvalpp, 1);
+            if (macroReturn == 0) {
                 ShPpErrorToInfoLog("can't evaluate expression");
                 *err = 1;
                 *res = 0;
 
                 return token;
+            } else {
+                if (macroReturn == -1) {
+                    if (ShPpMacrosMustBeDefinedError())
+                        *err = 1;
+                }
+			    token = cpp->currentInput->scan(cpp->currentInput, yylvalpp);
+
+                return eval(token, prec, res, err, yylvalpp);
             }
         }
 	} else if (token == CPP_INTCONSTANT) {
@@ -531,7 +528,8 @@ static int eval(int token, int prec, int *res, int *err, yystypepp * yylvalpp)
         }
     }
     while (!*err) {
-        if (token == ')' || token == '\n') break;
+        if (token == ')' || token == '\n') 
+            break;
         for (i = ALEN(binop) - 1; i >= 0; i--) {
             if (binop[i].token == token)
                 break;
@@ -931,7 +929,7 @@ static TokenStream *PrescanMacroArg(TokenStream *a, yystypepp * yylvalpp) {
     PushEofSrc();
     ReadFromTokenStream(a, 0, 0);
     while ((token = cpp->currentInput->scan(cpp->currentInput, yylvalpp)) > 0) {
-        if (token == CPP_IDENTIFIER && MacroExpand(yylvalpp->sc_ident, yylvalpp) == 1)
+        if (token == CPP_IDENTIFIER && MacroExpand(yylvalpp->sc_ident, yylvalpp, 0) == 1)
             continue;
         RecordToken(n, token, yylvalpp);
     }
@@ -949,20 +947,26 @@ typedef struct MacroInputSrc {
 /* macro_scan ---
 ** return the next token for a macro expansion, handling macro args 
 */
-static int macro_scan(InputSrc *inInput, yystypepp * yylvalpp) {
+static int macro_scan(InputSrc *inInput, yystypepp * yylvalpp) 
+{
     MacroInputSrc* in = (MacroInputSrc*)inInput;
 
     int i;
     int token = ReadToken(in->mac->body, yylvalpp);
     if (token == CPP_IDENTIFIER) {
         for (i = in->mac->argc-1; i>=0; i--)
-            if (in->mac->args[i] == yylvalpp->sc_ident) break;
+            if (in->mac->args[i] == yylvalpp->sc_ident) 
+                break;
         if (i >= 0) {
             ReadFromTokenStream(in->args[i], yylvalpp->sc_ident, 0);
+
             return cpp->currentInput->scan(cpp->currentInput, yylvalpp);
         }
     }
-    if (token > 0) return token;
+    
+    if (token > 0) 
+        return token;
+
     in->mac->busy = 0;
     cpp->currentInput = in->base.prev;
     if (in->args) {
@@ -975,6 +979,21 @@ static int macro_scan(InputSrc *inInput, yystypepp * yylvalpp) {
     return cpp->currentInput->scan(cpp->currentInput, yylvalpp);
 } // macro_scan
 
+// return a zero, for scanning a macro that was never defined
+static int zero_scan(InputSrc *inInput, yystypepp * yylvalpp) 
+{
+    MacroInputSrc* in = (MacroInputSrc*)inInput;  //?? need to free this?
+
+    strcpy(yylvalpp->symbol_name, "0");
+    yylvalpp->sc_int = 0;
+
+    // pop input
+    cpp->currentInput = in->base.prev;
+    free(in);
+
+    return CPP_INTCONSTANT;
+}
+
 /* MacroExpand
 ** Check an identifier (atom) to see if it is a macro that should be expanded.
 ** If it is, push an InputSrc that will produce the appropriate expansion
@@ -983,7 +1002,7 @@ static int macro_scan(InputSrc *inInput, yystypepp * yylvalpp) {
 ** expand to 0 and return -1.
 ** Otherwise, return 0.
 */
-int MacroExpand(int atom, yystypepp * yylvalpp)
+int MacroExpand(int atom, yystypepp* yylvalpp, int expandUndef)
 {
     Symbol *sym = LookUpSymbol(macros, atom);
     MacroInputSrc *in;
@@ -1015,19 +1034,27 @@ int MacroExpand(int atom, yystypepp * yylvalpp)
         return 1;
     }
 
-    if (! sym || sym->details.mac.undef)
-
-        return -1;
-
-    else if (sym->details.mac.busy)
-
+    if (sym && sym->details.mac.busy)
         return 0;        // no recursive expansions
 
     in = (MacroInputSrc*)malloc(sizeof(*in));
     memset(in, 0, sizeof(*in));
-    in->base.scan = macro_scan;
     in->base.line = cpp->currentInput->line;
     in->base.name = cpp->currentInput->name;
+
+    if ((! sym || sym->details.mac.undef)) {
+        if (expandUndef) {
+	        // push input
+            in->base.scan = zero_scan;
+            in->base.prev = cpp->currentInput;
+            cpp->currentInput = &in->base;
+
+            return -1;
+        } else
+            return 0;
+    }
+    
+    in->base.scan = macro_scan;
     in->mac = &sym->details.mac;
     if (sym->details.mac.args) {
         token = cpp->currentInput->scan(cpp->currentInput, yylvalpp);

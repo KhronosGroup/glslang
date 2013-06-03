@@ -96,7 +96,7 @@ typedef struct MacroSymbol {
 int InitCPP(void);
 int FinalCPP(void);
 int readCPPline(yystypepp * yylvalpp);
-int MacroExpand(int atom, yystypepp * yylvalpp);
+int MacroExpand(int atom, yystypepp * yylvalpp, int expandUndef);
 
 #ifdef __cplusplus
 extern "C" {

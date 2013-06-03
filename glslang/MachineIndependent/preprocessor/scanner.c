@@ -749,7 +749,7 @@ int yylex_CPP(char* buf, int maxSize)
         }
         cpp->previous_token = token;
         // expand macros
-        if (token == CPP_IDENTIFIER && MacroExpand(yylvalpp.sc_ident, &yylvalpp) == 1) {
+        if (token == CPP_IDENTIFIER && MacroExpand(yylvalpp.sc_ident, &yylvalpp, 0) == 1) {
             cpp->notAVersionToken = 1;
             continue;
         }
