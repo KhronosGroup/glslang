@@ -676,7 +676,7 @@ bool TParseContext::globalQualifierFixAndErrorCheck(int line, TQualifier& qualif
         break;
     }
 
-    // Do non in/out error checks
+    // Do non-in/out error checks
 
     if (qualifier.storage != EvqUniform && samplerErrorCheck(line, publicType, "samplers and images must be uniform"))
         return true;
@@ -1517,7 +1517,7 @@ void TParseContext::addBlock(int line, TPublicType& publicType, const TString& b
         return;
     }
 
-    // check for qualifiers that don't belong within a block
+    // check for qualifiers and types that don't belong within a block
     for (unsigned int member = 0; member < typeList.size(); ++member) {
         TQualifier memberQualifier = typeList[member].type->getQualifier();
         if (memberQualifier.storage != EvqTemporary && memberQualifier.storage != EvqGlobal &&
@@ -1530,6 +1530,12 @@ void TParseContext::addBlock(int line, TPublicType& publicType, const TString& b
                 error(line, "member of uniform block cannot have an auxillary or interpolation qualifier", typeList[member].type->getFieldName().c_str(), "");
                 recover();
             }
+        }
+
+        TBasicType basicType = typeList[member].type->getBasicType();
+        if (basicType == EbtSampler) {
+            error(line, "member of block cannot be a sampler type", typeList[member].type->getFieldName().c_str(), "");
+            recover();
         }
     }
 
@@ -1546,6 +1552,8 @@ void TParseContext::addBlock(int line, TPublicType& publicType, const TString& b
     // Build and add the interface block as a new type named blockName
 
     TType blockType(&typeList, blockName, publicType.qualifier.storage);
+    if (arraySizes)
+        blockType.setArraySizes(arraySizes);
     blockType.getQualifier().layoutPacking = defaultQualification.layoutPacking;
     TVariable* userTypeDef = new TVariable(&blockName, blockType, true);
     if (! symbolTable.insert(*userTypeDef)) {

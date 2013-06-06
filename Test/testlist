@@ -27,6 +27,7 @@ comment.frag
 300layout.vert
 300layout.frag
 300operations.frag
+300block.frag
 330.frag
 330comp.frag
 constErrors.frag

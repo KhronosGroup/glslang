@@ -1600,11 +1600,11 @@ fully_specified_type
             parseContext.recover();
             $2.arraySizes = 0;
         }
+        
+        if (parseContext.mergeQualifiersErrorCheck($2.line, $2, $1, true))
+            parseContext.recover();
 
         $$ = $2;
-        $$.qualifier = $1.qualifier;
-        if ($$.qualifier.precision == EpqNone)
-            $$.qualifier.precision = $2.qualifier.precision;
 
         if (! $$.qualifier.isInterpolation() && parseContext.language == EShLangFragment)
             $$.qualifier.smooth = true;
@@ -2560,6 +2560,10 @@ precision_qualifier
 struct_specifier
     : STRUCT IDENTIFIER LEFT_BRACE struct_declaration_list RIGHT_BRACE {
         // TODO: semantics: check for qualifiers that don't belong in a struct
+
+        // TODO: semantics: check that this is not nested inside a block or structure
+        //     parseContext.error($1.line, "cannot nest a block or structure definitions", $1.userDef->getTypeName().c_str(), "");
+
         TType* structure = new TType($4, *$2.string);
         TVariable* userTypeDef = new TVariable($2.string, *structure, true);
         if (! parseContext.symbolTable.insert(*userTypeDef)) {
@@ -2608,17 +2612,8 @@ struct_declaration
         if (parseContext.voidErrorCheck($1.line, (*$2)[0].type->getFieldName(), $1)) {
             parseContext.recover();
         }
-        for (unsigned int i = 0; i < $$->size(); ++i) {
-            //
-            // Careful not to replace already know aspects of type, like array-ness
-            //
-            (*$$)[i].type->setElementType($1.basicType, $1.vectorSize, $1.matrixCols, $1.matrixRows, $1.userDef);
-
-            if ($1.arraySizes)
-                (*$$)[i].type->setArraySizes($1.arraySizes);
-            if ($1.userDef)
-                (*$$)[i].type->setTypeName($1.userDef->getTypeName());
-        }
+        for (unsigned int i = 0; i < $$->size(); ++i)
+            (*$$)[i].type->mergeType($1);
     }
     | type_qualifier type_specifier struct_declarator_list SEMICOLON {
         if ($2.arraySizes) {
@@ -2632,17 +2627,8 @@ struct_declaration
             parseContext.recover();
         if (parseContext.mergeQualifiersErrorCheck($2.line, $2, $1, true))
             parseContext.recover();
-        for (unsigned int i = 0; i < $$->size(); ++i) {
-            //
-            // Careful not to replace already know aspects of type, like array-ness
-            //
-            (*$$)[i].type->setElementType($2.basicType, $2.vectorSize, $2.matrixCols, $2.matrixRows, $2.userDef);
-            (*$$)[i].type->getQualifier() = $2.qualifier;
-            if ($2.arraySizes)
-                (*$$)[i].type->setArraySizes($2.arraySizes);
-            if ($2.userDef)
-                (*$$)[i].type->setTypeName($2.userDef->getTypeName());
-        }
+        for (unsigned int i = 0; i < $$->size(); ++i)
+            (*$$)[i].type->mergeType($2);
     }
     ;
 

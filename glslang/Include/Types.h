@@ -392,7 +392,7 @@ typedef std::map<TTypeList*, TTypeList*>::const_iterator TStructureMapIterator;
 class TType {
 public:
     POOL_ALLOCATOR_NEW_DELETE(GlobalPoolAllocator)
-    TType(TBasicType t, TStorageQualifier q = EvqTemporary, int vs = 1, int mc = 0, int mr = 0) :
+    explicit TType(TBasicType t, TStorageQualifier q = EvqTemporary, int vs = 1, int mc = 0, int mr = 0) :
                             basicType(t), vectorSize(vs), matrixCols(mc), matrixRows(mr), arraySizes(0),
                             structure(0), structureSize(0), maxArraySize(0), arrayInformationType(0),
                             fieldName(0), mangled(0), typeName(0)
@@ -416,7 +416,10 @@ public:
                             basicType(p.basicType), vectorSize(p.vectorSize), matrixCols(p.matrixCols), matrixRows(p.matrixRows), arraySizes(p.arraySizes),
                             structure(0), structureSize(0), maxArraySize(0), arrayInformationType(0), fieldName(0), mangled(0), typeName(0)
                             {
-                                sampler = p.sampler;
+                                if (basicType == EbtSampler)
+                                    sampler = p.sampler;
+                                else
+                                    sampler.clear();
                                 qualifier = p.qualifier;
                                 if (p.userDef) {
                                     structure = p.userDef->getStruct();
@@ -493,6 +496,21 @@ public:
 		assert(copyOf.arrayInformationType == 0);
 		arrayInformationType = 0; // arrayInformationType should not be set for builtIn symbol table level
 	}
+
+    // Merge type from parent, where a parentType is at the beginning of a declaration,
+    // establishing some charastics for all subsequent names, while this type
+    // is on the individual names.
+    void mergeType(const TPublicType& parentType)
+    {
+        // arrayness is currently the only child aspect that has to be preserved
+        setElementType(parentType.basicType, parentType.vectorSize, parentType.matrixCols, parentType.matrixRows, parentType.userDef);
+        qualifier = parentType.qualifier;
+        sampler = parentType.sampler;
+        if (parentType.arraySizes)
+            setArraySizes(parentType.arraySizes);
+        if (parentType.userDef)
+            setTypeName(parentType.userDef->getTypeName());
+    }
 
 	TType* clone(const TStructureMap& remapper)
 	{

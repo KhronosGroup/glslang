@@ -982,7 +982,7 @@ static int macro_scan(InputSrc *inInput, yystypepp * yylvalpp)
 // return a zero, for scanning a macro that was never defined
 static int zero_scan(InputSrc *inInput, yystypepp * yylvalpp) 
 {
-    MacroInputSrc* in = (MacroInputSrc*)inInput;  //?? need to free this?
+    MacroInputSrc* in = (MacroInputSrc*)inInput;
 
     strcpy(yylvalpp->symbol_name, "0");
     yylvalpp->sc_int = 0;
