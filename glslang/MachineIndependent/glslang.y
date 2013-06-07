@@ -351,6 +351,8 @@ postfix_expression
                     parseContext.error($2.line, "", "[", "array must be redeclared with a size before being indexed with a variable");
                     parseContext.recover();
                 }
+                if ($1->getBasicType() == EbtBlock)
+                    parseContext.requireProfile($1->getLine(), static_cast<EProfileMask>(~EEsProfileMask), "variable indexing block array");
 
                 $$ = parseContext.intermediate.addIndex(EOpIndexIndirect, $1, $3, $2.line);
             }
