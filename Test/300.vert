@@ -31,6 +31,9 @@ void main()
 
     mat3x2 op = outerProduct(v2, v3);
 
+    gl_Position = m44[2];
+    gl_PointSize = v2.y;
+
 #ifdef GL_ES
 #error GL_ES is set
 #else

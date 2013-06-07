@@ -71,6 +71,9 @@ void main()
     dvec2 boo2;       // ERROR
     dvec3 boo3;       // ERROR
     dvec4 boo4;       // ERROR
+
+    f += gl_FragCoord.y;
+    gl_FragDepth = f;
 }
 
 float imageBuffer;    // ERROR, reserved
