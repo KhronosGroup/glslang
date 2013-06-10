@@ -8,8 +8,11 @@ const float e = float(d); // 2.0
 const float f = e * float(c); // 6.0
 const float g = f / float(d); // 3.0
 
+const vec2 pytho = vec2(3.0, 4.0);
+
 in vec4 inv;
 out vec4 FragColor;
+out vec2 out2;
 
 void main()
 {
@@ -26,4 +29,5 @@ void main()
     vec4 arrayMax[int(max(float(array2.length()), float(array3.length())))];
     vec4 arrayMin[int(min(float(array2.length()), float(array3.length())))];
     FragColor = vec4(arrayMax.length(), arrayMin.length(), sin(3.14), cos(3.14));  // 3, 2, .00159, -.999
+    out2 = length(pytho) + normalize(pytho) + dFdx(pytho) + dFdy(pytho) + fwidth(pytho); // 5+3/5, 5+4/5
 }

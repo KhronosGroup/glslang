@@ -377,10 +377,33 @@ TIntermTyped* TIntermConstantUnion::fold(TOperator op, const TType& returnType, 
     case EOpDeterminant:
     case EOpAny:
     case EOpAll:
+    case EOpLength:
         newConstArray = new constUnion[1];
-        break;
+        break;        
+    
     default:
         newConstArray = new constUnion[objectSize];
+    }
+
+    // Process non-component-wise operations
+    switch (op) {
+    case EOpLength:
+    case EOpNormalize:
+    {
+        double sum = 0;
+        for (int i = 0; i < objectSize; i++)
+            sum += double(unionArray[i].getFConst()) * unionArray[i].getFConst();
+        double length = sqrt(sum);
+        if (op == EOpLength)
+            newConstArray[0].setFConst(float(length));
+        else {
+            for (int i = 0; i < objectSize; i++)
+                newConstArray[i].setFConst(float(unionArray[i].getFConst() / length));
+        }
+        break;
+    }
+    default:
+        break;
     }
 
     // TODO: Functionality: constant folding: separate component-wise from non-component-wise
@@ -433,6 +456,18 @@ TIntermTyped* TIntermConstantUnion::fold(TOperator op, const TType& returnType, 
             newConstArray[i].setFConst(atan(unionArray[i].getFConst()));
             break;
 
+        case EOpLength:
+        case EOpNormalize:
+            // handled above as special case
+            break;
+
+        case EOpDPdx:
+        case EOpDPdy:
+        case EOpFwidth:
+            // The derivatives are all mandated to create a constant 0.
+            newConstArray[i].setFConst(0.0f);
+            break;
+
         // TODO: Functionality: constant folding: the rest of the ops have to be fleshed out
 
         case EOpExp:
@@ -465,13 +500,6 @@ TIntermTyped* TIntermConstantUnion::fold(TOperator op, const TType& returnType, 
         case EOpPackHalf2x16:
         case EOpUnpackHalf2x16:
 
-        case EOpLength:
-
-        case EOpDPdx:
-        case EOpDPdy:
-        case EOpFwidth:
-            // The derivatives are all mandated to create a constant 0.
-
         case EOpDeterminant:
         case EOpMatrixInverse:
         case EOpTranspose:
@@ -480,7 +508,7 @@ TIntermTyped* TIntermConstantUnion::fold(TOperator op, const TType& returnType, 
         case EOpAll:
 
         default:
-            infoSink.info.message(EPrefixInternalError, "Invalid operator for constant folding", getLine());
+            infoSink.info.message(EPrefixInternalError, "missing operator for unary constant folding", getLine());
             return 0;
         }
     }
@@ -521,7 +549,6 @@ TIntermTyped* TIntermediate::fold(TIntermAggregate* aggrNode)
     case EOpMix:
     case EOpDistance:
     case EOpCross:
-    case EOpNormalize:
         objectSize = children[0]->getAsConstantUnion()->getType().getObjectSize();
         break;
     case EOpDot:
@@ -574,7 +601,6 @@ TIntermTyped* TIntermediate::fold(TIntermAggregate* aggrNode)
     case EOpDistance:
     case EOpDot:
     case EOpCross:
-    case EOpNormalize:
     case EOpFaceForward:
     case EOpReflect:
     case EOpRefract:
