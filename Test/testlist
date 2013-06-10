@@ -1,4 +1,4 @@
-sample.frag
+.rsample.frag
 sample.vert
 specExamples.frag
 specExamples.vert
@@ -36,3 +36,4 @@ errors.frag
 forwardRef.frag
 uint.frag
 switch.frag
+tokenLength.vert

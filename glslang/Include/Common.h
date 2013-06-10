@@ -185,4 +185,6 @@ __inline TPersistString FormatSourceLoc(const TSourceLoc loc)
 typedef TMap<TString, TString> TPragmaTable;
 typedef TMap<TString, TString>::tAllocator TPragmaTableAllocator;
 
+const int GlslangMaxTokenLength = 1024;
+
 #endif // _COMMON_INCLUDED_

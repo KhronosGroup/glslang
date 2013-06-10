@@ -81,7 +81,7 @@ bool ParseBinary(bool /* preVisit */, TIntermBinary* node, TIntermTraverser* it)
     TStorageQualifier qualifier = node->getType().getQualifier().storage;
     
     if (qualifier != EvqConst) {
-		const int maxSize = 200;
+        const int maxSize = GlslangMaxTypeLength + 50;
         char buf[maxSize];
         snprintf(buf, maxSize, "'constructor' : assigning non-constant to %s", oit->type.getCompleteString().c_str());
         oit->infoSink.info.message(EPrefixError, buf, node->getLine());
@@ -99,7 +99,7 @@ bool ParseUnary(bool /* preVisit */, TIntermUnary* node, TIntermTraverser* it)
 {
     TConstTraverser* oit = static_cast<TConstTraverser*>(it);
 
-	const int maxSize = 200;
+    const int maxSize = GlslangMaxTypeLength + 50;
     char buf[maxSize];
     snprintf(buf, maxSize, "'constructor' : assigning non-constant to '%s'", oit->type.getCompleteString().c_str());
     oit->infoSink.info.message(EPrefixError, buf, node->getLine());
@@ -113,7 +113,7 @@ bool ParseAggregate(bool /* preVisit */, TIntermAggregate* node, TIntermTraverse
     TConstTraverser* oit = static_cast<TConstTraverser*>(it);
 
     if (!node->isConstructor() && node->getOp() != EOpComma) {
-		const int maxSize = 200;
+        const int maxSize = GlslangMaxTypeLength + 50;
         char buf[maxSize];
         snprintf(buf, maxSize, "'constructor' : assigning non-constant to '%s'", oit->type.getCompleteString().c_str());
         oit->infoSink.info.message(EPrefixError, buf, node->getLine());

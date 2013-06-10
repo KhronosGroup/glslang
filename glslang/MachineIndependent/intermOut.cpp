@@ -84,7 +84,7 @@ void OutputSymbol(TIntermSymbol* node, TIntermTraverser* it)
 
     OutputTreeText(oit->infoSink, node, oit->depth);
 
-	const int maxSize = 100;
+    const int maxSize = GlslangMaxTypeLength + GlslangMaxTokenLength;
     char buf[maxSize];
     snprintf(buf, maxSize, "'%s' (%s)\n",
            node->getSymbol().c_str(),

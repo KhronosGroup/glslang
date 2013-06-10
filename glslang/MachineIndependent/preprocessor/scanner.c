@@ -268,7 +268,7 @@ static int lFloatConst(char *str, int len, int ch, yystypepp * yylvalpp)
 
     if (ch == 'e' || ch == 'E') {
         if (len >= MAX_SYMBOL_NAME_LEN) {
-                ShPpErrorToInfoLog("floating-point literal too long");
+            ShPpErrorToInfoLog("floating-point literal too long");
             len = 1,str_len=1;
         } else {
             ExpSign = 1;
@@ -311,11 +311,11 @@ static int lFloatConst(char *str, int len, int ch, yystypepp * yylvalpp)
                 cpp->currentInput->ungetch(cpp->currentInput, ch2, yylvalpp);
                 cpp->currentInput->ungetch(cpp->currentInput, ch, yylvalpp);
             } else {
-                if (len < MAX_SYMBOL_NAME_LEN-1) {
+                if (len < MAX_SYMBOL_NAME_LEN) {
                     str[len++] = ch;
                     str[len++] = ch2;
                 } else {
-                ShPpErrorToInfoLog("floating-point literal too long");
+                    ShPpErrorToInfoLog("floating-point literal too long");
                     len = 1,str_len=1;
                 }
             }
@@ -348,7 +348,7 @@ static int byte_scan(InputSrc *in, yystypepp * yylvalpp)
 {
     char symbol_name[MAX_SYMBOL_NAME_LEN + 1];
     char string_val[MAX_STRING_LEN + 1];
-    int AlreadyComplained;
+    int AlreadyComplained = 0;
     int len, ch, ii;
     unsigned ival = 0;
 
@@ -387,14 +387,15 @@ static int byte_scan(InputSrc *in, yystypepp * yylvalpp)
                     len++;
                     ch = cpp->currentInput->getch(cpp->currentInput, yylvalpp);					
                 } else {
-                    ch = cpp->currentInput->getch(cpp->currentInput, yylvalpp);
+                    ShPpErrorToInfoLog("name too long");
+                    break;
                 }
             } while ((ch >= 'a' && ch <= 'z') ||
                      (ch >= 'A' && ch <= 'Z') ||
                      (ch >= '0' && ch <= '9') ||
                      ch == '_');
-            if (len >= MAX_SYMBOL_NAME_LEN)
-                len = MAX_SYMBOL_NAME_LEN - 1;
+            if (len > MAX_SYMBOL_NAME_LEN)
+                len = MAX_SYMBOL_NAME_LEN;
             symbol_name[len] = '\0';
             cpp->currentInput->ungetch(cpp->currentInput, ch, yylvalpp);
             yylvalpp->sc_ident = LookUpAddString(atable, symbol_name);
@@ -410,23 +411,26 @@ static int byte_scan(InputSrc *in, yystypepp * yylvalpp)
                     (ch >= 'A' && ch <= 'F') ||
                     (ch >= 'a' && ch <= 'f'))
                 {
-                    AlreadyComplained = 0;
                     ival = 0;
                     do {
+                        if (len >= MAX_SYMBOL_NAME_LEN)
+                            break;
 						yylvalpp->symbol_name[len++] = ch;
                         if (ival <= 0x0fffffff) {
                             if (ch >= '0' && ch <= '9') {
                                 ii = ch - '0';
                             } else if (ch >= 'A' && ch <= 'F') {
                                 ii = ch - 'A' + 10;
-                            } else {
+                            } else if (ch >= 'a' && ch <= 'f') {
                                 ii = ch - 'a' + 10;
-                            }
+                            } else
+                                ShPpErrorToInfoLog("bad digit in hexidecimal literal");
                             ival = (ival << 4) | ii;
                         } else {
-                            if (!AlreadyComplained)
+                            if (! AlreadyComplained) {
                                 ShPpErrorToInfoLog("hexidecimal literal too long");
-                            AlreadyComplained = 1;
+                                AlreadyComplained = 1;
+                            }
                         }
                         ch = cpp->currentInput->getch(cpp->currentInput, yylvalpp);
                     } while ((ch >= '0' && ch <= '9') ||
@@ -441,19 +445,22 @@ static int byte_scan(InputSrc *in, yystypepp * yylvalpp)
 				    cpp->currentInput->ungetch(cpp->currentInput, ch, yylvalpp);
                 yylvalpp->symbol_name[len] = '\0';
 				yylvalpp->sc_int = (int)ival;
+
                 return CPP_INTCONSTANT;
             } else if (ch >= '0' && ch <= '7') { // octal integer constants
-                AlreadyComplained = 0;
                 ival = 0;
                 do {
+                    if (len >= MAX_SYMBOL_NAME_LEN)
+                        break;
                     yylvalpp->symbol_name[len++] = ch;
                     if (ival <= 0x1fffffff) {
                         ii = ch - '0';
                         ival = (ival << 3) | ii;
                     } else {
-                        if (!AlreadyComplained)
-                           ShPpErrorToInfoLog("octal literal too long");
-                        AlreadyComplained = 1;
+                        if (!AlreadyComplained) {
+                            ShPpErrorToInfoLog("octal literal too long");
+                            AlreadyComplained = 1;
+                        }
                     }
                     ch = cpp->currentInput->getch(cpp->currentInput, yylvalpp);
                 } while (ch >= '0' && ch <= '7');
@@ -462,6 +469,7 @@ static int byte_scan(InputSrc *in, yystypepp * yylvalpp)
                 yylvalpp->symbol_name[len] = '\0';
 				cpp->currentInput->ungetch(cpp->currentInput, ch, yylvalpp);
 				yylvalpp->sc_int = (int)ival;
+
                 return CPP_INTCONSTANT;
             } else {
 				cpp->currentInput->ungetch(cpp->currentInput, ch, yylvalpp);
@@ -477,6 +485,9 @@ static int byte_scan(InputSrc *in, yystypepp * yylvalpp)
                         len++;
                     }
                     ch = cpp->currentInput->getch(cpp->currentInput, yylvalpp);
+                } else {
+                    ShPpErrorToInfoLog("token too long");
+                    break;
                 }
             } while (ch >= '0' && ch <= '9');
             if (ch == '.' || ch == 'e' || ch == 'f' || ch == 'h' || ch == 'x'|| ch == 'E' || ch == 'F' || ch == 'l' || ch == 'L') {
@@ -491,13 +502,13 @@ static int byte_scan(InputSrc *in, yystypepp * yylvalpp)
 
                 yylvalpp->symbol_name[len] = '\0';				
                 ival = 0;
-                AlreadyComplained = 0;
                 for (ii = 0; ii < numericLen; ii++) {
                     ch = yylvalpp->symbol_name[ii] - '0';
                     if ((ival > 429496729) || (ival == 429496729 && ch >= 6)) {
-                        if (! AlreadyComplained)
+                        if (! AlreadyComplained) {
                             ShPpErrorToInfoLog("integral literal too long");
-                        AlreadyComplained = 1;
+                            AlreadyComplained = 1;
+                        }
                     }
                     ival = ival * 10 + ch;
                 }
@@ -711,7 +722,8 @@ static int byte_scan(InputSrc *in, yystypepp * yylvalpp)
                     string_val[len] = ch;
                     len++;
                     ch = cpp->currentInput->getch(cpp->currentInput, yylvalpp);
-                }
+                } else
+                    break;
             };
             string_val[len] = '\0';
             if (ch == '"') {

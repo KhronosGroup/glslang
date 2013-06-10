@@ -40,6 +40,8 @@
 #include "../Include/Common.h"
 #include "../Include/BaseTypes.h"
 
+const int GlslangMaxTypeLength = 200;
+
 //
 // Details within a sampler type
 //
@@ -602,7 +604,7 @@ public:
 
     TString getCompleteString() const
     {
-	    const int maxSize = 200;
+        const int maxSize = GlslangMaxTypeLength;
         char buf[maxSize];
         char *p = &buf[0];
 	    char *end = &buf[maxSize];

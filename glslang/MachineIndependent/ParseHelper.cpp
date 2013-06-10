@@ -205,7 +205,7 @@ void TParseContext::recover()
 void C_DECL TParseContext::error(TSourceLoc nLine, const char *szReason, const char *szToken, 
                                  const char *szExtraInfoFormat, ...)
 {
-	const int maxSize = 400;
+    const int maxSize = GlslangMaxTokenLength + 200;
     char szExtraInfo[maxSize];
     va_list marker;
     

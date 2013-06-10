@@ -316,6 +316,9 @@ int ReadToken(TokenStream *pTok, yystypepp * yylvalpp)
                     symbol_name[len] = ch;
                     len++;
                     ch = lReadByte(pTok);
+                } else {
+                    ShPpErrorToInfoLog("token too long");
+                    break;
                 }
             }
             symbol_name[len] = '\0';
@@ -325,9 +328,13 @@ int ReadToken(TokenStream *pTok, yystypepp * yylvalpp)
             break;
         case CPP_STRCONSTANT:
             len = 0;
-            while ((ch = lReadByte(pTok)) != 0)
+            while ((ch = lReadByte(pTok)) != 0) {
                 if (len < MAX_STRING_LEN)
                     string_val[len++] = ch;
+                else
+                    break;
+            }
+
             string_val[len] = 0;
             yylvalpp->sc_ident = LookUpAddString(atable, string_val);
             break;
@@ -340,6 +347,9 @@ int ReadToken(TokenStream *pTok, yystypepp * yylvalpp)
                     symbol_name[len] = ch;
                     len++;
                     ch = lReadByte(pTok);
+                } else {
+                    ShPpErrorToInfoLog("token too long");
+                    break;
                 }
             }
             symbol_name[len] = '\0';
@@ -356,6 +366,9 @@ int ReadToken(TokenStream *pTok, yystypepp * yylvalpp)
                     symbol_name[len] = ch;
                     len++;
                     ch = lReadByte(pTok);
+                } else {
+                    ShPpErrorToInfoLog("token too long");
+                    break;
                 }
             }
             symbol_name[len] = '\0';
@@ -443,7 +456,7 @@ void UngetToken(int token, yystypepp * yylvalpp) {
 
 void DumpTokenStream(FILE *fp, TokenStream *s, yystypepp * yylvalpp) {
     int token;
-	const int maxSize = 100;
+    const int maxSize = MAX_SYMBOL_NAME_LEN + 5;
     char str[100];
 
     if (fp == 0) fp = stdout;
