@@ -410,19 +410,11 @@ void OutputConstantUnion(TIntermConstantUnion* node, TIntermTraverser* it)
             out.debug << "\n";
             break;
         case EbtFloat:
-            {
-				const int maxSize = 300;
-                char buf[maxSize];
-                snprintf(buf, maxSize, "%f (%s)", node->getUnionArrayPointer()[i].getFConst(), "const float");
-
-                out.debug << buf << "\n";
-            }
-            break;
         case EbtDouble:
             {
 				const int maxSize = 300;
                 char buf[maxSize];
-                snprintf(buf, maxSize, "%f (%s)", node->getUnionArrayPointer()[i].getDConst(), "const double");
+                snprintf(buf, maxSize, "%f", node->getUnionArrayPointer()[i].getDConst());
 
                 out.debug << buf << "\n";
             }

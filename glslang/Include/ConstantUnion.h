@@ -42,22 +42,34 @@ class constUnion {
 public:
 
     POOL_ALLOCATOR_NEW_DELETE(GlobalPoolAllocator)
-    void setIConst(int i) {iConst = i; type = EbtInt; }
-    void setUConst(unsigned int u) {uConst = u; type = EbtUint; }
-    void setFConst(float f) {fConst = f; type = EbtFloat; }
-    void setDConst(double d) {dConst = d; type = EbtDouble; }
-    void setBConst(bool b) {bConst = b; type = EbtBool; }
+    void setIConst(int i)
+    { 
+        iConst = i; 
+        type = EbtInt;
+    }
 
-    int getIConst() { return iConst; }
-    unsigned int getUConst() { return uConst; }
-    float getFConst() { return fConst; }
-    double getDConst() { return dConst; }
-    bool getBConst() { return bConst; }
-    int getIConst() const { return iConst; }
+    void setUConst(unsigned int u)
+    {
+        uConst = u; 
+        type = EbtUint;
+    }
+
+    void setDConst(double d)
+    {
+        dConst = d; 
+        type = EbtDouble;
+    }
+
+    void setBConst(bool b)
+    {
+        bConst = b; 
+        type = EbtBool;
+    }
+
+    int getIConst() const          { return iConst; }
     unsigned int getUConst() const { return uConst; }
-    float getFConst() const { return fConst; }
-    double getDConst() const { return dConst; }
-    bool getBConst() const { return bConst; }
+    double getDConst() const       { return dConst; }
+    bool getBConst() const         { return bConst; }
 
     bool operator==(const int i) const
     {
@@ -70,14 +82,6 @@ public:
     bool operator==(unsigned const int u) const
     {
         if (u == uConst)
-            return true;
-
-        return false;
-    }
-
-    bool operator==(const float f) const
-    {
-        if (f == fConst)
             return true;
 
         return false;
@@ -112,11 +116,6 @@ public:
             break;
         case EbtUint:
             if (constant.uConst == uConst)
-                return true;
-
-            break;
-        case EbtFloat:
-            if (constant.fConst == fConst)
                 return true;
 
             break;
@@ -176,11 +175,6 @@ public:
                 return true;
 
             return false;
-        case EbtFloat:
-            if (fConst > constant.fConst)
-                return true;
-
-            return false;
         case EbtDouble:
             if (dConst > constant.dConst)
                 return true;
@@ -208,11 +202,6 @@ public:
                 return true;
 
             return false;
-        case EbtFloat:
-            if (fConst < constant.fConst)
-                return true;
-
-            return false;
         case EbtDouble:
             if (dConst < constant.dConst)
                 return true;
@@ -233,7 +222,6 @@ public:
         switch (type) {
         case EbtInt: returnValue.setIConst(iConst + constant.iConst); break;
         case EbtUint: returnValue.setUConst(uConst + constant.uConst); break;
-        case EbtFloat: returnValue.setFConst(fConst + constant.fConst); break;
         case EbtDouble: returnValue.setDConst(dConst + constant.dConst); break;
         default: assert(false && "Default missing");
         }
@@ -248,7 +236,6 @@ public:
         switch (type) {
         case EbtInt: returnValue.setIConst(iConst - constant.iConst); break;
         case EbtUint: returnValue.setUConst(uConst - constant.uConst); break;
-        case EbtFloat: returnValue.setFConst(fConst - constant.fConst); break;
         case EbtDouble: returnValue.setDConst(dConst - constant.dConst); break;
         default: assert(false && "Default missing");
         }
@@ -263,7 +250,6 @@ public:
         switch (type) {
         case EbtInt: returnValue.setIConst(iConst * constant.iConst); break;
         case EbtUint: returnValue.setUConst(uConst * constant.uConst); break;
-        case EbtFloat: returnValue.setFConst(fConst * constant.fConst); break; 
         case EbtDouble: returnValue.setDConst(dConst * constant.dConst); break; 
         default: assert(false && "Default missing");
         }
@@ -414,8 +400,7 @@ private:
         int iConst;          // used for ivec, scalar ints
         unsigned int uConst; // used for uvec, scalar uints
         bool bConst;         // used for bvec, scalar bools
-        float fConst;        // used for vec, mat, scalar floats
-        double dConst;       // used for dvec, dmat, scalar doubles
+        double dConst;       // used for vec, dvec, mat, dmat, scalar floats and doubles
     } ;
 
     TBasicType type;

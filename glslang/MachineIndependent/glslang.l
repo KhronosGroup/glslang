@@ -544,10 +544,10 @@ int yy_input(char* buf, int max_size);
 0{D}+{U}          { pyylval->lex.line = yylineno; parseContext.error(yylineno, "Invalid Octal number.", yytext, "", ""); parseContext.recover(); return 0;}
 {D}+{U}           { pyylval->lex.line = yylineno; pyylval->lex.u = strtoul(yytext, 0, 0); return UINTCONSTANT; }
 
-{D}+{F}               { pyylval->lex.line = yylineno; pyylval->lex.f = static_cast<float>(atof(yytext)); return FLOATCONSTANT; }
-{D}+{E}{F}?           { pyylval->lex.line = yylineno; pyylval->lex.f = static_cast<float>(atof(yytext)); return FLOATCONSTANT; }
-{D}+"."{D}*({E})?{F}? { pyylval->lex.line = yylineno; pyylval->lex.f = static_cast<float>(atof(yytext)); return FLOATCONSTANT; }
-"."{D}+({E})?{F}?     { pyylval->lex.line = yylineno; pyylval->lex.f = static_cast<float>(atof(yytext)); return FLOATCONSTANT; }
+{D}+{F}               { pyylval->lex.line = yylineno; pyylval->lex.d = atof(yytext); return FLOATCONSTANT; }
+{D}+{E}{F}?           { pyylval->lex.line = yylineno; pyylval->lex.d = atof(yytext); return FLOATCONSTANT; }
+{D}+"."{D}*({E})?{F}? { pyylval->lex.line = yylineno; pyylval->lex.d = atof(yytext); return FLOATCONSTANT; }
+"."{D}+({E})?{F}?     { pyylval->lex.line = yylineno; pyylval->lex.d = atof(yytext); return FLOATCONSTANT; }
 
 {D}+{LF}              { pyylval->lex.line = yylineno; pyylval->lex.d = atof(yytext); return DOUBLECONSTANT; }
 {D}+{E}{LF}           { pyylval->lex.line = yylineno; pyylval->lex.d = atof(yytext); return DOUBLECONSTANT; }

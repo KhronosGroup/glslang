@@ -34,7 +34,7 @@
 //POSSIBILITY OF SUCH DAMAGE.
 //
 
-#include "float.h"
+//??#include "float.h"
 #include "localintermediate.h"
 
 namespace {
@@ -160,10 +160,10 @@ TIntermTyped* TIntermConstantUnion::fold(TOperator op, TIntermTyped* constantNod
         newConstArray = new constUnion[getMatrixRows() * node->getMatrixCols()];
         for (int row = 0; row < getMatrixRows(); row++) {
             for (int column = 0; column < node->getMatrixCols(); column++) {
-                float sum = 0.0f;
+                double sum = 0.0f;
                 for (int i = 0; i < node->getMatrixRows(); i++)
-                    sum += unionArray[i * getMatrixRows() + row].getFConst() * rightUnionArray[column * node->getMatrixRows() + i].getFConst();
-                newConstArray[column * getMatrixRows() + row].setFConst(sum);
+                    sum += unionArray[i * getMatrixRows() + row].getDConst() * rightUnionArray[column * node->getMatrixRows() + i].getDConst();
+                newConstArray[column * getMatrixRows() + row].setDConst(sum);
             }
         }
         returnType = TType(getType().getBasicType(), EvqConst, 0, getMatrixRows(), node->getMatrixCols());
@@ -174,9 +174,9 @@ TIntermTyped* TIntermConstantUnion::fold(TOperator op, TIntermTyped* constantNod
             switch (getType().getBasicType()) {
             case EbtFloat:
                 if (rightUnionArray[i] == 0.0f) {
-                    newConstArray[i].setFConst(FLT_MAX);
+                    newConstArray[i].setDConst(FLT_MAX);  // TODO: double support
                 } else
-                    newConstArray[i].setFConst(unionArray[i].getFConst() / rightUnionArray[i].getFConst());
+                    newConstArray[i].setDConst(unionArray[i].getDConst() / rightUnionArray[i].getDConst());
             break;
 
             case EbtInt:
@@ -202,11 +202,11 @@ TIntermTyped* TIntermConstantUnion::fold(TOperator op, TIntermTyped* constantNod
     case EOpMatrixTimesVector:
         newConstArray = new constUnion[getMatrixRows()];
         for (int i = 0; i < getMatrixRows(); i++) {
-            float sum = 0.0f;
+            double sum = 0.0f;
             for (int j = 0; j < node->getVectorSize(); j++) {
-                sum += unionArray[j*getMatrixRows() + i].getFConst() * rightUnionArray[j].getFConst();
+                sum += unionArray[j*getMatrixRows() + i].getDConst() * rightUnionArray[j].getDConst();
             }
-            newConstArray[i].setFConst(sum);
+            newConstArray[i].setDConst(sum);
         }
 
         returnType = TType(getBasicType(), EvqConst, getMatrixRows());
@@ -215,10 +215,10 @@ TIntermTyped* TIntermConstantUnion::fold(TOperator op, TIntermTyped* constantNod
     case EOpVectorTimesMatrix:
         newConstArray = new constUnion[node->getMatrixCols()];
         for (int i = 0; i < node->getMatrixCols(); i++) {
-            float sum = 0.0f;
+            double sum = 0.0f;
             for (int j = 0; j < getVectorSize(); j++)
-                sum += unionArray[j].getFConst() * rightUnionArray[i*node->getMatrixRows() + j].getFConst();
-            newConstArray[i].setFConst(sum);
+                sum += unionArray[j].getDConst() * rightUnionArray[i*node->getMatrixRows() + j].getDConst();
+            newConstArray[i].setDConst(sum);
         }
 
         returnType = TType(getBasicType(), EvqConst, node->getMatrixCols());
@@ -392,13 +392,13 @@ TIntermTyped* TIntermConstantUnion::fold(TOperator op, const TType& returnType, 
     {
         double sum = 0;
         for (int i = 0; i < objectSize; i++)
-            sum += double(unionArray[i].getFConst()) * unionArray[i].getFConst();
+            sum += double(unionArray[i].getDConst()) * unionArray[i].getDConst();
         double length = sqrt(sum);
         if (op == EOpLength)
-            newConstArray[0].setFConst(float(length));
+            newConstArray[0].setDConst(length);
         else {
             for (int i = 0; i < objectSize; i++)
-                newConstArray[i].setFConst(float(unionArray[i].getFConst() / length));
+                newConstArray[i].setDConst(unionArray[i].getDConst() / length);
         }
         break;
     }
@@ -406,12 +406,11 @@ TIntermTyped* TIntermConstantUnion::fold(TOperator op, const TType& returnType, 
         break;
     }
 
-    // TODO: Functionality: constant folding: separate component-wise from non-component-wise
     for (int i = 0; i < objectSize; i++) {
         switch (op) {
         case EOpNegative:
             switch (getType().getBasicType()) {
-            case EbtFloat: newConstArray[i].setFConst(-unionArray[i].getFConst()); break;
+            case EbtFloat: newConstArray[i].setDConst(-unionArray[i].getDConst()); break;
             case EbtInt:   newConstArray[i].setIConst(-unionArray[i].getIConst()); break;
             case EbtUint:  newConstArray[i].setUConst(static_cast<unsigned int>(-static_cast<int>(unionArray[i].getUConst())));  break;
             default:
@@ -432,28 +431,28 @@ TIntermTyped* TIntermConstantUnion::fold(TOperator op, const TType& returnType, 
             newConstArray[i] = ~unionArray[i];
             break;
         case EOpRadians:
-            newConstArray[i].setFConst(static_cast<float>(unionArray[i].getFConst() * pi / 180.0));
+            newConstArray[i].setDConst(unionArray[i].getDConst() * pi / 180.0);
             break;
         case EOpDegrees:
-            newConstArray[i].setFConst(static_cast<float>(unionArray[i].getFConst() * 180.0 / pi));
+            newConstArray[i].setDConst(unionArray[i].getDConst() * 180.0 / pi);
             break;
         case EOpSin:
-            newConstArray[i].setFConst(sin(unionArray[i].getFConst()));
+            newConstArray[i].setDConst(sin(unionArray[i].getDConst()));
             break;
         case EOpCos:
-            newConstArray[i].setFConst(cos(unionArray[i].getFConst()));
+            newConstArray[i].setDConst(cos(unionArray[i].getDConst()));
             break;
         case EOpTan:
-            newConstArray[i].setFConst(tan(unionArray[i].getFConst()));
+            newConstArray[i].setDConst(tan(unionArray[i].getDConst()));
             break;
         case EOpAsin:
-            newConstArray[i].setFConst(asin(unionArray[i].getFConst()));
+            newConstArray[i].setDConst(asin(unionArray[i].getDConst()));
             break;
         case EOpAcos:
-            newConstArray[i].setFConst(acos(unionArray[i].getFConst()));
+            newConstArray[i].setDConst(acos(unionArray[i].getDConst()));
             break;
         case EOpAtan:
-            newConstArray[i].setFConst(atan(unionArray[i].getFConst()));
+            newConstArray[i].setDConst(atan(unionArray[i].getDConst()));
             break;
 
         case EOpLength:
@@ -465,7 +464,7 @@ TIntermTyped* TIntermConstantUnion::fold(TOperator op, const TType& returnType, 
         case EOpDPdy:
         case EOpFwidth:
             // The derivatives are all mandated to create a constant 0.
-            newConstArray[i].setFConst(0.0f);
+            newConstArray[i].setDConst(0.0);
             break;
 
         // TODO: Functionality: constant folding: the rest of the ops have to be fleshed out
@@ -583,9 +582,9 @@ TIntermTyped* TIntermediate::fold(TIntermAggregate* aggrNode)
     case EOpMax:
         for (int i = 0; i < objectSize; i++) {
             if (aggrNode->getOp() == EOpMax)
-                newConstArray[i].setFConst(std::max(childConstUnions[0]->getFConst(), childConstUnions[1]->getFConst()));
+                newConstArray[i].setDConst(std::max(childConstUnions[0]->getDConst(), childConstUnions[1]->getDConst()));
             else
-                newConstArray[i].setFConst(std::min(childConstUnions[0]->getFConst(), childConstUnions[1]->getFConst()));
+                newConstArray[i].setDConst(std::min(childConstUnions[0]->getDConst(), childConstUnions[1]->getDConst()));
         }
         break;
 

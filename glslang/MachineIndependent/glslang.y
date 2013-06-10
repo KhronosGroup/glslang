@@ -80,7 +80,6 @@ extern void yyerror(const char*);
         TSourceLoc line;
         union {
             TString *string;
-            float f;
             int i;
             unsigned int u;
             bool b;
@@ -278,7 +277,7 @@ primary_expression
     }
     | FLOATCONSTANT {
         constUnion *unionArray = new constUnion[1];
-        unionArray->setFConst($1.f);
+        unionArray->setDConst($1.d);
         $$ = parseContext.intermediate.addConstantUnion(unionArray, TType(EbtFloat, EvqConst), $1.line);
     }
     | DOUBLECONSTANT {
@@ -360,7 +359,7 @@ postfix_expression
 
         if ($$ == 0) {
             constUnion *unionArray = new constUnion[1];
-            unionArray->setFConst(0.0f);
+            unionArray->setDConst(0.0);
             $$ = parseContext.intermediate.addConstantUnion(unionArray, TType(EbtFloat, EvqConst), $2.line);
         } else {
             TType newType($1->getType());
@@ -594,7 +593,7 @@ function_call
                 // error message was put out by PaFindFunction()
                 // Put on a dummy node for error recovery
                 constUnion *unionArray = new constUnion[1];
-                unionArray->setFConst(0.0f);
+                unionArray->setDConst(0.0);
                 $$ = parseContext.intermediate.addConstantUnion(unionArray, TType(EbtFloat, EvqConst), $1.line);
                 parseContext.recover();
             }

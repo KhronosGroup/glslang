@@ -1343,19 +1343,19 @@ TIntermTyped* TIntermediate::promoteConstantUnion(TBasicType promoteTo, TIntermC
         case EbtFloat:
             switch (node->getType().getBasicType()) {
             case EbtInt:
-                leftUnionArray[i].setFConst(static_cast<float>(rightUnionArray[i].getIConst()));
+                leftUnionArray[i].setDConst(static_cast<double>(rightUnionArray[i].getIConst()));
                 break;
             case EbtUint:
-                leftUnionArray[i].setFConst(static_cast<float>(rightUnionArray[i].getUConst()));
+                leftUnionArray[i].setDConst(static_cast<double>(rightUnionArray[i].getUConst()));
                 break;
             case EbtBool:
-                leftUnionArray[i].setFConst(static_cast<float>(rightUnionArray[i].getBConst()));
+                leftUnionArray[i].setDConst(static_cast<double>(rightUnionArray[i].getBConst()));
                 break;
             case EbtFloat:
                 leftUnionArray[i] = rightUnionArray[i];
                 break;
             case EbtDouble:
-                leftUnionArray[i].setFConst(static_cast<float>(rightUnionArray[i].getBConst()));
+                leftUnionArray[i].setDConst(static_cast<double>(rightUnionArray[i].getBConst()));
                 break;
             default: 
                 infoSink.info.message(EPrefixInternalError, "Cannot promote", node->getLine());
@@ -1365,17 +1365,15 @@ TIntermTyped* TIntermediate::promoteConstantUnion(TBasicType promoteTo, TIntermC
         case EbtDouble:
             switch (node->getType().getBasicType()) {
             case EbtInt:
-                leftUnionArray[i].setDConst(static_cast<float>(rightUnionArray[i].getIConst()));
+                leftUnionArray[i].setDConst(static_cast<double>(rightUnionArray[i].getIConst()));
                 break;
             case EbtUint:
-                leftUnionArray[i].setDConst(static_cast<float>(rightUnionArray[i].getUConst()));
+                leftUnionArray[i].setDConst(static_cast<double>(rightUnionArray[i].getUConst()));
                 break;
             case EbtBool:
-                leftUnionArray[i].setDConst(static_cast<float>(rightUnionArray[i].getBConst()));
+                leftUnionArray[i].setDConst(static_cast<double>(rightUnionArray[i].getBConst()));
                 break;
             case EbtFloat:
-                leftUnionArray[i].setDConst(static_cast<float>(rightUnionArray[i].getFConst()));
-                break;
             case EbtDouble:
                 leftUnionArray[i] = rightUnionArray[i];
                 break;
@@ -1396,8 +1394,6 @@ TIntermTyped* TIntermediate::promoteConstantUnion(TBasicType promoteTo, TIntermC
                 leftUnionArray[i].setIConst(static_cast<int>(rightUnionArray[i].getBConst()));
                 break;
             case EbtFloat:
-                leftUnionArray[i].setIConst(static_cast<int>(rightUnionArray[i].getFConst()));
-                break;
             case EbtDouble:
                 leftUnionArray[i].setIConst(static_cast<int>(rightUnionArray[i].getDConst()));
                 break;
@@ -1418,8 +1414,6 @@ TIntermTyped* TIntermediate::promoteConstantUnion(TBasicType promoteTo, TIntermC
                 leftUnionArray[i].setUConst(static_cast<unsigned int>(rightUnionArray[i].getBConst()));
                 break;
             case EbtFloat:
-                leftUnionArray[i].setUConst(static_cast<unsigned int>(rightUnionArray[i].getFConst()));
-                break;
             case EbtDouble:
                 leftUnionArray[i].setUConst(static_cast<unsigned int>(rightUnionArray[i].getDConst()));
                 break;
@@ -1440,10 +1434,8 @@ TIntermTyped* TIntermediate::promoteConstantUnion(TBasicType promoteTo, TIntermC
                 leftUnionArray[i] = rightUnionArray[i];
                 break;
             case EbtFloat:
-                leftUnionArray[i].setBConst(rightUnionArray[i].getFConst() != 0.0f);
-                break;
             case EbtDouble:
-                leftUnionArray[i].setBConst(rightUnionArray[i].getDConst() != 0.0f);
+                leftUnionArray[i].setBConst(rightUnionArray[i].getDConst() != 0.0);
                 break;
             default: 
                 infoSink.info.message(EPrefixInternalError, "Cannot promote", node->getLine());

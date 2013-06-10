@@ -221,7 +221,7 @@ void ParseConstantUnion(TIntermConstantUnion* node, TIntermTraverser* it)
                 if (index - i == 0 || (i - index) % (matrixRows + 1) == 0 )
                     leftUnionArray[i] = rightUnionArray[count];
                 else 
-                    leftUnionArray[i].setFConst(0.0f);
+                    leftUnionArray[i].setDConst(0.0);
 
                 (oit->index)++;
 
