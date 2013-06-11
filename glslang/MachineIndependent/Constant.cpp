@@ -36,6 +36,8 @@
 
 #include "localintermediate.h"
 #include "math.h"
+#include <cfloat>
+#include <cstdlib>
 
 namespace {
 
