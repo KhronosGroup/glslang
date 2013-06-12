@@ -223,6 +223,47 @@ void C_DECL TParseContext::error(TSourceLoc nLine, const char *szReason, const c
     ++numErrors;
 }
 
+TIntermTyped* TParseContext::handleVariable(int line, TSymbol* symbol, TString* string)
+{
+    TIntermTyped* node = 0;
+
+    TAnonMember* anon = symbol ? symbol->getAsAnonMember() : 0;
+    if (anon) {
+        // it was a member of an anonymous container, have to insert its dereference
+        TVariable* variable = anon->getAnonContainer().getAsVariable();
+        TIntermTyped* container = intermediate.addSymbol(variable->getUniqueId(), variable->getName(), variable->getType(), line);
+        constUnion* unionArray = new constUnion[1];
+        unionArray->setUConst(anon->getMemberNumber());
+        TIntermTyped* constNode = intermediate.addConstantUnion(unionArray, TType(EbtUint, EvqConst), line);
+
+        node = intermediate.addIndex(EOpIndexDirectStruct, container, constNode, line);
+        node->setType(*(*variable->getType().getStruct())[anon->getMemberNumber()].type);
+    } else {
+        // The symbol table search was done in the lexical phase, but
+        // if this is a new symbol, it wouldn't have found it.
+        const TVariable* variable = symbol ? symbol->getAsVariable() : 0;
+        if (symbol && ! variable) {
+            error(line, "variable name expected", string->c_str(), "");
+            recover();
+        }
+
+        if (! variable)
+            variable = new TVariable(string, TType(EbtVoid));
+
+        // don't delete $1.string, it's used by error recovery, and the pool
+        // pop will reclaim the memory
+
+        if (variable->getType().getQualifier().storage == EvqConst ) {
+            constUnion* constArray = variable->getConstUnionPointer();
+            TType t(variable->getType());
+            node = intermediate.addConstantUnion(constArray, t, line);
+        } else
+            node = intermediate.addSymbol(variable->getUniqueId(), variable->getName(), variable->getType(), line);
+    }
+
+    return node;
+}
+
 //
 // Same error message for all places assignments don't work.
 //
@@ -935,9 +976,8 @@ bool TParseContext::arrayErrorCheck(int line, TString& identifier, const TPublic
     // because reserved arrays can be redeclared.
     //
 
-    bool builtIn = false; 
     bool sameScope = false;
-    TSymbol* symbol = symbolTable.find(identifier, &builtIn, &sameScope);
+    TSymbol* symbol = symbolTable.find(identifier, 0, &sameScope);
     if (symbol == 0 || !sameScope) {
         if (reservedErrorCheck(line, identifier))
             return true;
@@ -992,8 +1032,7 @@ bool TParseContext::arrayErrorCheck(int line, TString& identifier, const TPublic
 
 bool TParseContext::arraySetMaxSize(TIntermSymbol *node, TType* type, int size, bool updateFlag, TSourceLoc line)
 {
-    bool builtIn = false;
-    TSymbol* symbol = symbolTable.find(node->getSymbol(), &builtIn);
+    TSymbol* symbol = symbolTable.find(node->getSymbol());
     if (symbol == 0) {
         error(line, " undeclared identifier", node->getSymbol().c_str(), "");
         return true;
@@ -1011,7 +1050,7 @@ bool TParseContext::arraySetMaxSize(TIntermSymbol *node, TType* type, int size, 
     // special casing to test index value of gl_TexCoord. If the accessed index is >= gl_MaxTextureCoords
     // its an error
     if (node->getSymbol() == "gl_TexCoord") {
-        TSymbol* texCoord = symbolTable.find("gl_MaxTextureCoords", &builtIn);
+        TSymbol* texCoord = symbolTable.find("gl_MaxTextureCoords");
         if (! texCoord || ! texCoord->getAsVariable()) {
             infoSink.info.message(EPrefixInternalError, "gl_MaxTextureCoords not defined", line);
             return true;

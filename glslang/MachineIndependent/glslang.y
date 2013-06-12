@@ -218,45 +218,7 @@ extern void yyerror(const char*);
 
 variable_identifier
     : IDENTIFIER {
-        // The symbol table search was done in the lexical phase, but
-        // if this is a new symbol, it won't find it, which is okay at this
-        // point in the grammar.
-        TSymbol* symbol = $1.symbol;
-        TAnonMember* anon = symbol ? symbol->getAsAnonMember() : 0;
-        if (anon) {
-            // it was a member of an anonymous container, have to insert its dereference
-            TVariable* variable = anon->getAnonContainer().getAsVariable();
-            TIntermTyped* container = parseContext.intermediate.addSymbol(variable->getUniqueId(),
-                                                                          variable->getName(),
-                                                                          variable->getType(), $1.line);
-            constUnion* unionArray = new constUnion[1];
-            unionArray->setUConst(anon->getMemberNumber());
-            TIntermTyped* constNode = parseContext.intermediate.addConstantUnion(unionArray, TType(EbtUint, EvqConst), $1.line);
-
-            $$ = parseContext.intermediate.addIndex(EOpIndexDirectStruct, container, constNode, $1.line);
-            $$->setType(*(*variable->getType().getStruct())[anon->getMemberNumber()].type);
-        } else {
-            const TVariable* variable = symbol ? symbol->getAsVariable() : 0;
-            if (symbol && ! variable) {
-                parseContext.error($1.line, "variable name expected", $1.string->c_str(), "");
-                parseContext.recover();
-            }
-
-            if (! variable)
-                variable = new TVariable($1.string, TType(EbtVoid));
-
-            // don't delete $1.string, it's used by error recovery, and the pool
-            // pop will reclaim the memory
-
-            if (variable->getType().getQualifier().storage == EvqConst ) {
-                constUnion* constArray = variable->getConstUnionPointer();
-                TType t(variable->getType());
-                $$ = parseContext.intermediate.addConstantUnion(constArray, t, $1.line);
-            } else
-                $$ = parseContext.intermediate.addSymbol(variable->getUniqueId(),
-                                                         variable->getName(),
-                                                         variable->getType(), $1.line);
-        }
+        $$ = parseContext.handleVariable($1.line, $1.symbol, $1.string);
     }
     ;
 
@@ -1240,15 +1202,24 @@ identifier_list
 
 function_prototype
     : function_declarator RIGHT_PAREN  {
+        // ES can't declare prototypes inside functions
+        if (! parseContext.symbolTable.atGlobalLevel())
+            parseContext.requireProfile($2.line, static_cast<EProfileMask>(~EEsProfileMask), "local function declaration");
+
         //
         // Multiple declarations of the same function are allowed.
         //
         // If this is a definition, the definition production code will check for redefinitions
         // (we don't know at this point if it's a definition or not).
         //
-        // Redeclarations are allowed.  But, return types and parameter qualifiers must match.
+        // Redeclarations (full prototype match) are allowed.  But, return types and parameter qualifiers must match.
         //
-        TSymbol* symbol = parseContext.symbolTable.find($1->getMangledName());
+        // ES does not allow redeclaring or hiding of built-in functions.
+        //
+        bool builtIn;
+        TSymbol* symbol = parseContext.symbolTable.find($1->getMangledName(), &builtIn);
+        if (symbol && symbol->getAsFunction() && builtIn)
+            parseContext.requireProfile($2.line, static_cast<EProfileMask>(~EEsProfileMask), "redeclaration of built-in function");
         TFunction* prevDec = symbol ? symbol->getAsFunction() : 0;
         if (prevDec) {
             if (prevDec->getReturnType() != $1->getReturnType()) {
@@ -1272,7 +1243,10 @@ function_prototype
         $$.function = $1;
         $$.line = $2.line;
 
-        parseContext.symbolTable.insert(*$$.function);
+        if (! parseContext.symbolTable.insert(*$$.function)) {
+            parseContext.error($2.line, "illegal redeclaration", $$.function->getName().c_str(), "");
+            parseContext.recover();
+        }
     }
     ;
 

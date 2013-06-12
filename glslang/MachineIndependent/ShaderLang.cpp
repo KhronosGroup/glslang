@@ -169,11 +169,6 @@ bool AddContextSpecificSymbols(const TBuiltInResource* resources, TInfoSink& inf
     return true;
 }
 
-//
-// Driver must call this first, once, before doing any other
-// compiler/linker operations.
-//
-
 void SetupBuiltinSymbolTable(int version, EProfile profile)
 {
     TInfoSink infoSink;
@@ -188,6 +183,11 @@ void SetupBuiltinSymbolTable(int version, EProfile profile)
     SetGlobalPoolAllocatorPtr(*builtInPoolAllocator);
 
     TSymbolTable symTables[EShLangCount];
+    if (profile == EEsProfile) {
+        for (int stage = 0; stage < EShLangCount; ++stage)
+            symTables[stage].setNoBuiltInRedeclarations();
+    }
+
     GenerateBuiltInSymbolTable(infoSink, symTables, version, profile);
 
     SetGlobalPoolAllocatorPtr(*PerProcessGPA);

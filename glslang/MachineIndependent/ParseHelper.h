@@ -103,6 +103,7 @@ struct TParseContext {
     bool reservedErrorCheck(int line, const TString& identifier);
     void recover();
 
+    TIntermTyped* handleVariable(int line, TSymbol* symbol, TString* string);
     bool parseVectorFields(const TString&, int vecSize, TVectorFields&, int line);
     void assignError(int line, const char* op, TString left, TString right);
     void unaryOpError(int line, const char* op, TString operand);

@@ -268,9 +268,8 @@ TSymbolTableLevel* TSymbolTableLevel::clone(TStructureMap& remapper)
 	TSymbolTableLevel *symTableLevel = new TSymbolTableLevel();
     symTableLevel->anonId = anonId;
 	tLevel::iterator iter;
-	for (iter = level.begin(); iter != level.end(); ++iter) {
+	for (iter = level.begin(); iter != level.end(); ++iter)
 		symTableLevel->insert(*iter->second->clone(remapper));
-	}
 
 	return symTableLevel;
 }
@@ -279,7 +278,7 @@ void TSymbolTable::copyTable(const TSymbolTable& copyOf)
 {
 	TStructureMap remapper;
 	uniqueId = copyOf.uniqueId;
-	for (unsigned int i = 0; i < copyOf.table.size(); ++i) {
+    noBuiltInRedeclarations = copyOf.noBuiltInRedeclarations;
+	for (unsigned int i = 0; i < copyOf.table.size(); ++i)
 		table.push_back(copyOf.table[i]->clone(remapper));
-	}
 }

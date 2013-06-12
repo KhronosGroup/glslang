@@ -252,10 +252,11 @@ public:
     bool insert(TSymbol& symbol)
     {
         //
-        // returning true means symbol was added to the table
+        // returning true means symbol was added to the table with no semantic errors
         //
         tInsertResult result;
-        if (symbol.getName() == "") {
+        const TString& name = symbol.getName();
+        if (name == "") {
             // An empty name means an anonymous container, exposing its members to the external scope.
             // Give it a name and insert its members in the symbol table, pointing to the container.
             char buf[20];
@@ -273,9 +274,25 @@ public:
 
             return isOkay;
         } else {
-            result = level.insert(tLevelPair(symbol.getMangledName(), &symbol));
+            // Check for redefinition errors:
+            // - STL itself will tell us if there is a direct name collision at this level
+            // - additionally, check for function/variable name collisions
+            // - for ES, for overriding or hiding built-in function
+            const TString& insertName = symbol.getMangledName();
+            if (symbol.getAsFunction()) {
+                // make sure there isn't a variable of this name
+                if (level.find(name) != level.end())
+                    return false;
 
-            return result.second;
+                // insert, and whatever happens is okay
+                level.insert(tLevelPair(insertName, &symbol));
+
+                return true;
+            } else {
+                result = level.insert(tLevelPair(insertName, &symbol));
+
+                return result.second;
+            }
         }
     }
 
@@ -286,6 +303,20 @@ public:
             return 0;
         else
             return (*it).second;
+    }
+
+    bool hasFunctionName(const TString& name) const
+    {
+        tLevel::const_iterator candidate = level.lower_bound(name);
+        if (candidate != level.end()) {
+            const TString& candidateName = (*candidate).first;
+            TString::size_type parenAt = candidateName.find_first_of('(');
+            if (parenAt != candidateName.npos && candidateName.substr(0, parenAt) == name)
+
+                return true;
+        }
+
+        return false;
     }
 
     // Use this to do a lazy 'push' of precision defaults the first time
@@ -334,7 +365,7 @@ protected:
 
 class TSymbolTable {
 public:
-    TSymbolTable() : uniqueId(0)
+    TSymbolTable() : uniqueId(0), noBuiltInRedeclarations(false)
     {
         //
         // The symbol table cannot be used until push() is called, but
@@ -346,23 +377,26 @@ public:
     {
         table.push_back(symTable.table[0]);
         uniqueId = symTable.uniqueId;
+        noBuiltInRedeclarations = symTable.noBuiltInRedeclarations;
     }
     ~TSymbolTable()
     {
-        // level 0 is always built In symbols, so we never pop that out
+        // level 0 is always built-in symbols, so we never pop that out
         while (table.size() > 1)
             pop(0);
     }
 
     //
     // When the symbol table is initialized with the built-ins, there should
-    // 'push' calls, so that built-ins are at level 0 and the shader
-    // globals are at level 1.
+    // 'push' calls, so that built-in shared across all compiles are at level 0 
+    // built-ins specific to a compile are at level 1 and the shader
+    // globals are at level 2.
     //
     bool isEmpty() { return table.size() == 0; }
     bool atBuiltInLevel() { return atSharedBuiltInLevel() || atDynamicBuiltInLevel(); }
     bool atSharedBuiltInLevel() { return table.size() == 1; }	
     bool atGlobalLevel() { return table.size() <= 3; }
+    void setNoBuiltInRedeclarations() { noBuiltInRedeclarations = true; }
     
     void push()
     {
@@ -379,6 +413,19 @@ public:
     bool insert(TSymbol& symbol)
     {
         symbol.setUniqueId(++uniqueId);
+
+        if (symbol.getAsVariable()) {
+            // make sure there isn't a function of this name
+            if (table[currentLevel()]->hasFunctionName(symbol.getName()))
+                return false;
+            if (atGlobalLevel() && currentLevel() > 0 && noBuiltInRedeclarations) {
+                if (table[0]->hasFunctionName(symbol.getName()))
+                    return false;
+                if (currentLevel() > 1 && table[1]->hasFunctionName(symbol.getName()))
+                    return false;
+            }
+        }
+
         return table[currentLevel()]->insert(symbol);
     }
 
@@ -392,7 +439,7 @@ public:
         } while (symbol == 0 && level >= 0);
         level++;
         if (builtIn)
-            *builtIn = level == 0;
+            *builtIn = level < 2;
         if (sameScope)
             *sameScope = level == currentLevel();
         return symbol;
@@ -414,6 +461,7 @@ protected:
 
     std::vector<TSymbolTableLevel*> table;
     int uniqueId;     // for unique identification in code generation
+    bool noBuiltInRedeclarations;
 };
 
 #endif // _SYMBOL_TABLE_INCLUDED_
