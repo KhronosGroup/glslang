@@ -536,12 +536,12 @@ int yy_input(char* buf, int max_size);
 
 0[xX]{H}+         { pyylval->lex.line = yylineno; pyylval->lex.i = strtoul(yytext, 0, 0); return INTCONSTANT; }
 0{O}+             { pyylval->lex.line = yylineno; pyylval->lex.i = strtoul(yytext, 0, 0); return INTCONSTANT; }
-0{D}+             { pyylval->lex.line = yylineno; parseContext.error(yylineno, "Invalid Octal number.", yytext, "", ""); parseContext.recover(); return 0;}
+0{D}+             { pyylval->lex.line = yylineno; parseContext.error(yylineno, "Invalid Octal number.", yytext, "", ""); return 0;}
 {D}+              { pyylval->lex.line = yylineno; pyylval->lex.i = strtoul(yytext, 0, 0); return INTCONSTANT; }
 
 0[xX]{H}+{U}      { pyylval->lex.line = yylineno; pyylval->lex.u = strtoul(yytext, 0, 0); return UINTCONSTANT; }
 0{O}+{U}          { pyylval->lex.line = yylineno; pyylval->lex.u = strtoul(yytext, 0, 0); return UINTCONSTANT; }
-0{D}+{U}          { pyylval->lex.line = yylineno; parseContext.error(yylineno, "Invalid Octal number.", yytext, "", ""); parseContext.recover(); return 0;}
+0{D}+{U}          { pyylval->lex.line = yylineno; parseContext.error(yylineno, "Invalid Octal number.", yytext, "", ""); return 0;}
 {D}+{U}           { pyylval->lex.line = yylineno; pyylval->lex.u = strtoul(yytext, 0, 0); return UINTCONSTANT; }
 
 {D}+{F}               { pyylval->lex.line = yylineno; pyylval->lex.d = atof(yytext); return FLOATCONSTANT; }
@@ -657,7 +657,7 @@ int PaParseStrings(char* argv[], int strLen[], int argc, TParseContext& parseCon
     for (int i = 0; i < argc; ++i) {
         if (! argv[i]) {
             parseContextLocal.error(0, "Null shader source string", "", "");
-            parseContextLocal.recover();
+
             return 1;
         }
     }
@@ -709,7 +709,7 @@ int PaParseStrings(char* argv[], int strLen[], int argc, TParseContext& parseCon
             ret = yyparse((void*)(&parseContextLocal));
         #endif
         delete writeablePreamble;
-        if (cpp->CompileError == 1 || parseContextLocal.recoveredFromError || parseContextLocal.numErrors > 0)
+        if (cpp->CompileError == 1 || parseContextLocal.numErrors > 0)
              return 1;
         else
              return 0;
@@ -725,20 +725,15 @@ void yyerror(const char *s)
     TParseContext& pc = *((TParseContext *)cpp->pC);
 
     if (pc.AfterEOF) {
-        if (cpp->tokensBeforeEOF == 1) {
+        if (cpp->tokensBeforeEOF == 1)
             GlobalParseContext->error(yylineno, "", "pre-mature EOF", s, "");
-            GlobalParseContext->recover();
-        }
-    } else {
+    } else
         GlobalParseContext->error(yylineno, "", yytext, s, "");
-        GlobalParseContext->recover();
-    }
 }
 
 void PaReservedWord()
 {
     GlobalParseContext->error(yylineno, "Reserved word.", yytext, "", "");
-    GlobalParseContext->recover();
 }
 
 int PaIdentOrType(const char* yytext, TParseContext& parseContextLocal, YYSTYPE* pyylval)
@@ -907,6 +902,7 @@ int Pa2ndGenerationImage(TParseContext& pc, int line, const char* text, YYSTYPE*
     return PaIdentOrType(text, pc, pyylval);
 }
 
+// TODO: CPP: is this dead code?  Combine with other comment parsers.
 int PaParseComment(int& lineno, TParseContext& parseContextLocal)
 {
     int transitionFlag = 0;
@@ -926,14 +922,14 @@ int PaParseComment(int& lineno, TParseContext& parseContextLocal)
             }
             break;
         case EOF :
-            /* Raise error message here */
             parseContextLocal.error(yylineno, "End of shader found before end of comment.", "", "", "");
-            GlobalParseContext->recover();
+
             return YY_NULL;
         default :  /* Any other character will be a part of the comment */
             transitionFlag = 0;
         }
     }
+
     return 1;
 }
 
@@ -959,7 +955,6 @@ void ShPpErrorToInfoLog(const char *msg)
     TParseContext& pc = *((TParseContext *)cpp->pC);
 
     pc.error(yylineno, "", "Preprocessor", msg, "");
-    GlobalParseContext->recover();
 }
 
 // return 1 if error

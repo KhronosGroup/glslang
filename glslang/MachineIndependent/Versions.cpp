@@ -66,10 +66,8 @@ const char* ProfileName[EProfileCount] = {
 //
 void TParseContext::requireProfile(int line, EProfileMask profileMask, const char *featureDesc)
 {
-    if (((1 << profile) & profileMask) == 0) {
+    if (((1 << profile) & profileMask) == 0)
         error(line, "not supported with this profile:", featureDesc, ProfileName[profile]);
-        recover();
-    }
 }
 
 //
@@ -79,10 +77,8 @@ void TParseContext::requireProfile(int line, EProfileMask profileMask, const cha
 //
 void TParseContext::requireStage(int line, EShLanguageMask languageMask, const char *featureDesc)
 {
-    if (((1 << language) & languageMask) == 0) {
+    if (((1 << language) & languageMask) == 0)
         error(line, "not supported in this stage:", featureDesc, StageName[language]);
-        recover();
-    }
 }
 
 //
@@ -112,10 +108,8 @@ void TParseContext::profileRequires(int line, EProfile callingProfile, int minVe
             }
         }
 
-        if (! okay) {
+        if (! okay)
             error(line, "not supported for this version or the enabled extensions", featureDesc, "");
-            recover();
-        }
     }
 }
 
@@ -133,13 +127,11 @@ void TParseContext::checkDeprecated(int line, EProfile callingProfile, int depVe
 {
     if (profile == callingProfile) {
         if (version >= depVersion) {
-            if (forwardCompatible) {
+            if (forwardCompatible)
                 error(line, "deprecated, may be removed in future release", featureDesc, "");
-                recover();
-            } else if (! (messages & EShMsgSuppressWarnings)) {
+            else if (! (messages & EShMsgSuppressWarnings))
                 infoSink.info.message(EPrefixWarning, (TString(featureDesc) + " deprecated in version " +
                                                        String(depVersion) + "; may be removed in future release").c_str(), line);
-            }
         }
     }
 }
@@ -156,7 +148,6 @@ void TParseContext::requireNotRemoved(int line, EProfile callingProfile, int rem
             char buf[maxSize];
             snprintf(buf, maxSize, "%s profile; removed in version %d", ProfileName[profile], removedVersion);
             error(line, "no longer supported in", featureDesc, buf);
-            recover();
         }
     }
 }

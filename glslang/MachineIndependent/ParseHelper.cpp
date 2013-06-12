@@ -43,7 +43,7 @@
 TParseContext::TParseContext(TSymbolTable& symt, TIntermediate& interm, int v, EProfile p, EShLanguage L, TInfoSink& is,                             
                              bool fc, EShMessages m) : 
             intermediate(interm), symbolTable(symt), infoSink(is), language(L), treeRoot(0),
-            recoveredFromError(false), numErrors(0), lexAfterType(false), loopNestingLevel(0),
+            numErrors(0), lexAfterType(false), loopNestingLevel(0),
             inTypeParen(false),
             version(v), profile(p), forwardCompatible(fc), messages(m),
             contextPragma(true, false)
@@ -96,6 +96,8 @@ const char* TParseContext::getPreamble()
 //
 // Look at a '.' field selector string and change it into offsets
 // for a vector.
+//
+// Returns true if there is no error.
 //
 bool TParseContext::parseVectorFields(const TString& compString, int vecSize, TVectorFields& fields, int line)
 {
@@ -192,15 +194,7 @@ bool TParseContext::parseVectorFields(const TString& compString, int vecSize, TV
 ////////////////////////////////////////////////////////////////////////
 
 //
-// Track whether errors have occurred.
-//
-void TParseContext::recover()
-{
-    recoveredFromError = true;
-}
-
-//
-// Used by flex/bison to output all syntax and parsing errors.
+// Used to output syntax, parsing, and semantic errors.
 //
 void C_DECL TParseContext::error(TSourceLoc nLine, const char *szReason, const char *szToken, 
                                  const char *szExtraInfoFormat, ...)
@@ -242,10 +236,8 @@ TIntermTyped* TParseContext::handleVariable(int line, TSymbol* symbol, TString* 
         // The symbol table search was done in the lexical phase, but
         // if this is a new symbol, it wouldn't have found it.
         const TVariable* variable = symbol ? symbol->getAsVariable() : 0;
-        if (symbol && ! variable) {
+        if (symbol && ! variable)
             error(line, "variable name expected", string->c_str(), "");
-            recover();
-        }
 
         if (! variable)
             variable = new TVariable(string, TType(EbtVoid));
@@ -299,7 +291,7 @@ void TParseContext::binaryOpError(int line, const char* op, TString left, TStrin
 // it was not found as a variable in the symbol table.  If so, give the error
 // message and insert a dummy variable in the symbol table to prevent future errors.
 //
-void TParseContext::variableErrorCheck(TIntermTyped*& nodePtr) 
+void TParseContext::variableCheck(TIntermTyped*& nodePtr) 
 {
     TIntermSymbol* symbol = nodePtr->getAsSymbolNode();
     if (! symbol)
@@ -307,7 +299,6 @@ void TParseContext::variableErrorCheck(TIntermTyped*& nodePtr)
 
     if (symbol->getType().getBasicType() == EbtVoid) {
         error(symbol->getLine(), "undeclared identifier", symbol->getSymbol().c_str(), "");
-        recover();
 
         // Add to symbol table to prevent future error messages on the same name
             
@@ -437,56 +428,38 @@ bool TParseContext::lValueErrorCheck(int line, const char* op, TIntermTyped* nod
 // Both test, and if necessary spit out an error, to see if the node is really
 // a constant.
 //
-// Returns true if the was an error.
-//
-bool TParseContext::constErrorCheck(TIntermTyped* node)
+void TParseContext::constCheck(TIntermTyped* node)
 {
-    if (node->getQualifier().storage == EvqConst)
-        return false;
-
-    error(node->getLine(), "constant expression required", "", "");
-
-    return true;
+    if (node->getQualifier().storage != EvqConst)
+        error(node->getLine(), "constant expression required", "", "");
 }
 
 //
 // Both test, and if necessary spit out an error, to see if the node is really
 // an integer.
 //
-// Returns true if the was an error.
-//
-bool TParseContext::integerErrorCheck(TIntermTyped* node, const char* token)
+void TParseContext::integerCheck(TIntermTyped* node, const char* token)
 {
     if ((node->getBasicType() == EbtInt || node->getBasicType() == EbtUint) && node->isScalar() && ! node->isArray())
-        return false;
+        return;
 
     error(node->getLine(), "scalar integer expression required", token, "");
-
-    return true;
 }
 
 //
 // Both test, and if necessary spit out an error, to see if we are currently
 // globally scoped.
 //
-// Returns true if the was an error.
-//
-bool TParseContext::globalErrorCheck(int line, bool global, const char* token)
+void TParseContext::globalCheck(int line, bool global, const char* token)
 {
-    if (global)
-        return false;
-
-    error(line, "only allowed at global scope", token, "");
-
-    return true;
+    if (! global)
+        error(line, "only allowed at global scope", token, "");
 }
 
 //
 // For now, keep it simple:  if it starts "gl_", it's reserved, independent
 // of scope.  Except, if the symbol table is at the built-in push-level,
 // which is when we are parsing built-ins.
-//
-// Returns true if there was an error.
 //
 bool TParseContext::reservedErrorCheck(int line, const TString& identifier)
 {
@@ -513,7 +486,7 @@ bool TParseContext::reservedErrorCheck(int line, const TString& identifier)
 //
 // Returns true if there was an error in construction.
 //
-bool TParseContext::constructorErrorCheck(int line, TIntermNode* node, TFunction& function, TOperator op, TType* type)
+bool TParseContext::constructorError(int line, TIntermNode* node, TFunction& function, TOperator op, TType* type)
 {
     *type = function.getReturnType();
 
@@ -640,32 +613,18 @@ bool TParseContext::voidErrorCheck(int line, const TString& identifier, const TP
     return false;
 }
 
-// This function checks to see if the node (for the expression) contains a scalar boolean expression or not
-//
-// returns true in case of an error
-//
-bool TParseContext::boolErrorCheck(int line, const TIntermTyped* type)
+// Checks to see if the node (for the expression) contains a scalar boolean expression or not
+void TParseContext::boolCheck(int line, const TIntermTyped* type)
 {
-    if (type->getBasicType() != EbtBool || type->isArray() || type->isMatrix() || type->isVector()) {
+    if (type->getBasicType() != EbtBool || type->isArray() || type->isMatrix() || type->isVector())
         error(line, "boolean expression expected", "", "");
-        return true;
-    } 
-
-    return false;
 }
 
 // This function checks to see if the node (for the expression) contains a scalar boolean expression or not
-//
-// returns true in case of an error
-//
-bool TParseContext::boolErrorCheck(int line, const TPublicType& pType)
+void TParseContext::boolCheck(int line, const TPublicType& pType)
 {
-    if (pType.basicType != EbtBool || pType.arraySizes || pType.matrixCols > 1 || (pType.vectorSize > 1)) {
+    if (pType.basicType != EbtBool || pType.arraySizes || pType.matrixCols > 1 || (pType.vectorSize > 1))
         error(line, "boolean expression expected", "", "");
-        return true;
-    } 
-
-    return false;
 }
 
 bool TParseContext::samplerErrorCheck(int line, const TPublicType& pType, const char* reason)
@@ -687,10 +646,10 @@ bool TParseContext::samplerErrorCheck(int line, const TPublicType& pType, const 
     return false;
 }
 
-bool TParseContext::globalQualifierFixAndErrorCheck(int line, TQualifier& qualifier, const TPublicType& publicType)
+void TParseContext::globalQualifierFix(int line, TQualifier& qualifier, const TPublicType& publicType)
 {
     if (! symbolTable.atGlobalLevel())
-        return false;
+        return;
 
     // First, move from parameter qualifiers to shader in/out qualifiers
 
@@ -712,7 +671,7 @@ bool TParseContext::globalQualifierFixAndErrorCheck(int line, TQualifier& qualif
         qualifier.storage = EvqVaryingIn;
         error(line, "cannot use 'inout' at global scope", "", "");
 
-        return true;
+        return;
     default:
         break;
     }
@@ -720,22 +679,24 @@ bool TParseContext::globalQualifierFixAndErrorCheck(int line, TQualifier& qualif
     // Do non-in/out error checks
 
     if (qualifier.storage != EvqUniform && samplerErrorCheck(line, publicType, "samplers and images must be uniform"))
-        return true;
+        return;
 
     if (qualifier.storage != EvqVaryingIn && qualifier.storage != EvqVaryingOut)
-        return false;
+        return;
 
     // now, knowing it is a shader in/out, do all the in/out semantic checks
 
     if (publicType.basicType == EbtBool) {
         error(line, "cannot be bool",  getStorageQualifierString(qualifier.storage), "");
-        return true;
+
+        return;
     }
 
     if (language == EShLangVertex && qualifier.storage == EvqVaryingIn) {
         if (publicType.basicType == EbtStruct) {
             error(line, "cannot be a structure or array",  getStorageQualifierString(qualifier.storage), "");
-            return true;
+
+            return;
         }
         if (publicType.arraySizes) {
             requireProfile(line, (EProfileMask)~EEsProfileMask, "vertex input arrays");
@@ -747,7 +708,8 @@ bool TParseContext::globalQualifierFixAndErrorCheck(int line, TQualifier& qualif
         profileRequires(line, EEsProfile, 300, 0, "fragment shader output");
         if (publicType.basicType == EbtStruct) {
             error(line, "cannot be a structure",  getStorageQualifierString(qualifier.storage), "");
-            return true;
+
+            return;
         }
     }
 
@@ -757,7 +719,7 @@ bool TParseContext::globalQualifierFixAndErrorCheck(int line, TQualifier& qualif
             language != EShLangFragment && qualifier.storage == EvqVaryingOut && ! qualifier.flat) {
             error(line, "must be qualified as 'flat'", getStorageQualifierString(qualifier.storage), TType::getBasicString(publicType.basicType));
          
-            return true;
+            return;
         }
     }
 
@@ -765,10 +727,8 @@ bool TParseContext::globalQualifierFixAndErrorCheck(int line, TQualifier& qualif
         (qualifier.isAuxillary() || qualifier.isInterpolation() || qualifier.isMemory() || qualifier.invariant)) {
         error(line, "vertex input cannot be further qualified", "", "");
 
-        return true;
+        return;
     }
-
-    return false;
 }
 
 //
@@ -776,9 +736,7 @@ bool TParseContext::globalQualifierFixAndErrorCheck(int line, TQualifier& qualif
 // If there is duplication, issue error messages, unless 'force'
 // is specified, which means to just override default settings.
 // 
-// Return true if there was an error.
-//
-bool TParseContext::mergeQualifiersErrorCheck(int line, TPublicType& dst, const TPublicType& src, bool force)
+void TParseContext::mergeQualifiers(int line, TPublicType& dst, const TPublicType& src, bool force)
 {
     bool bad = false;
 
@@ -825,8 +783,6 @@ bool TParseContext::mergeQualifiersErrorCheck(int line, TPublicType& dst, const 
 
     if (bad)
         error(line, "replicated qualifiers", "", "");
-
-    return bad;
 }
 
 void TParseContext::setDefaultPrecision(int line, TPublicType& publicType, TPrecisionQualifier qualifier)
@@ -844,18 +800,12 @@ void TParseContext::setDefaultPrecision(int line, TPublicType& publicType, TPrec
     }
 
     error(line, "cannot apply precision statement to this type; use 'float', 'int' or a sampler type", TType::getBasicString(basicType), "");
-    recover();
 }
 
-bool TParseContext::parameterSamplerErrorCheck(int line, TStorageQualifier qualifier, const TType& type)
+void TParseContext::parameterSamplerCheck(int line, TStorageQualifier qualifier, const TType& type)
 {
-    if ((qualifier == EvqOut || qualifier == EvqInOut) && 
-             type.getBasicType() != EbtStruct && type.getBasicType() == EbtSampler) {
+    if ((qualifier == EvqOut || qualifier == EvqInOut) && type.getBasicType() != EbtStruct && type.getBasicType() == EbtSampler)
         error(line, "samplers cannot be output parameters", type.getCompleteTypeString().c_str(), "");
-        return true;
-    }
-
-    return false;
 }
 
 bool TParseContext::containsSampler(const TType& type)
@@ -904,15 +854,14 @@ bool TParseContext::insertBuiltInArrayAtGlobalLevel()
 //
 // Do size checking for an array type's size.
 //
-// Returns true if there was an error.
-//
-bool TParseContext::arraySizeErrorCheck(int line, TIntermTyped* expr, int& size)
+void TParseContext::arraySizeCheck(int line, TIntermTyped* expr, int& size)
 {
     TIntermConstantUnion* constant = expr->getAsConstantUnion();
     if (constant == 0 || (constant->getBasicType() != EbtInt && constant->getBasicType() != EbtUint)) {
         error(line, "array size must be a constant integer expression", "", "");
         size = 1;
-        return true;
+
+        return;
     }
 
     size = constant->getUnionArrayPointer()->getIConst();
@@ -920,10 +869,9 @@ bool TParseContext::arraySizeErrorCheck(int line, TIntermTyped* expr, int& size)
     if (size <= 0) {
         error(line, "array size must be a positive integer", "", "");
         size = 1;
-        return true;
-    }
 
-    return false;
+        return;
+    }
 }
 
 //
@@ -931,7 +879,7 @@ bool TParseContext::arraySizeErrorCheck(int line, TIntermTyped* expr, int& size)
 //
 // Returns true if there is an error.
 //
-bool TParseContext::arrayQualifierErrorCheck(int line, const TPublicType& type)
+bool TParseContext::arrayQualifierError(int line, const TPublicType& type)
 {
     if (type.qualifier.storage == EvqConst)
         profileRequires(line, ENoProfile, 120, "GL_3DL_array_objects", "const array");
@@ -947,18 +895,12 @@ bool TParseContext::arrayQualifierErrorCheck(int line, const TPublicType& type)
 //
 // Require array to have size
 //
-// Returns true if there is an error.
-//
-bool TParseContext::arraySizeRequiredErrorCheck(int line, int& size)
+void TParseContext::arraySizeRequiredCheck(int line, int& size)
 {
     if (size == 0) {
         error(line, "array size required", "", "");
         size = 1;
-
-        return true;
     }
-
-    return false;
 }
 
 //
@@ -967,9 +909,7 @@ bool TParseContext::arraySizeRequiredErrorCheck(int line, int& size)
 //
 // size == 0 means no specified size.
 //
-// Returns true if there was an error.
-//
-bool TParseContext::arrayErrorCheck(int line, TString& identifier, const TPublicType& type, TVariable*& variable)
+void TParseContext::arrayCheck(int line, TString& identifier, const TPublicType& type, TVariable*& variable)
 {
     //
     // Don't check for reserved word use until after we know it's not in the symbol table,
@@ -980,42 +920,43 @@ bool TParseContext::arrayErrorCheck(int line, TString& identifier, const TPublic
     TSymbol* symbol = symbolTable.find(identifier, 0, &sameScope);
     if (symbol == 0 || !sameScope) {
         if (reservedErrorCheck(line, identifier))
-            return true;
+            return;
         
         variable = new TVariable(&identifier, TType(type));
 
         if (! symbolTable.insert(*variable)) {
             delete variable;
             error(line, "INTERNAL ERROR inserting new symbol", identifier.c_str(), "");
-            return true;
+
+            return;
         }
     } else {
         variable = symbol->getAsVariable();
 
         if (! variable) {
             error(line, "array variable name expected", identifier.c_str(), "");
-            return true;
+            return;
         }
 
         if (! variable->getType().isArray()) {
             error(line, "redeclaring non-array as array", identifier.c_str(), "");
-            return true;
+            return;
         }
         if (variable->getType().getArraySize() > 0) {
             error(line, "redeclaration of array with size", identifier.c_str(), "");
-            return true;
+            return;
         }
         
         if (! variable->getType().sameElementType(TType(type))) {
             error(line, "redeclaration of array with a different type", identifier.c_str(), "");
-            return true;
+            return;
         }
 
         TType* t = variable->getArrayInformationType();
         while (t != 0) {
             if (t->getMaxArraySize() > type.arraySizes->front()) {
                 error(line, "higher index value already used for the array", identifier.c_str(), "");
-                return true;
+                return;
             }
             t->setArraySizes(type.arraySizes);
             t = t->getArrayInformationType();
@@ -1024,10 +965,7 @@ bool TParseContext::arrayErrorCheck(int line, TString& identifier, const TPublic
         variable->getType().setArraySizes(type.arraySizes);
     } 
 
-    if (voidErrorCheck(line, identifier, type))
-        return true;
-
-    return false;
+    voidErrorCheck(line, identifier, type);
 }
 
 bool TParseContext::arraySetMaxSize(TIntermSymbol *node, TType* type, int size, bool updateFlag, TSourceLoc line)
@@ -1084,9 +1022,7 @@ bool TParseContext::arraySetMaxSize(TIntermSymbol *node, TType* type, int size, 
 //
 // Enforce non-initializer type/qualifier rules.
 //
-// Returns true if there was an error.
-//
-bool TParseContext::nonInitConstErrorCheck(int line, TString& identifier, TPublicType& type)
+void TParseContext::nonInitConstCheck(int line, TString& identifier, TPublicType& type)
 {
     //
     // Make the qualifier make sense.
@@ -1094,56 +1030,45 @@ bool TParseContext::nonInitConstErrorCheck(int line, TString& identifier, TPubli
     if (type.qualifier.storage  == EvqConst) {
         type.qualifier.storage = EvqTemporary;
         error(line, "variables with qualifier 'const' must be initialized", identifier.c_str(), "");
-        return true;
     }
-
-    return false;
 }
 
 //
 // Do semantic checking for a variable declaration that has no initializer,
 // and update the symbol table.
 //
-// Returns true if there was an error.
-//
-bool TParseContext::nonInitErrorCheck(int line, TString& identifier, TPublicType& type)
+void TParseContext::nonInitCheck(int line, TString& identifier, TPublicType& type)
 {
-    if (reservedErrorCheck(line, identifier))
-        recover();
+    reservedErrorCheck(line, identifier);
 
     TVariable* variable = new TVariable(&identifier, TType(type));
 
     if (! symbolTable.insert(*variable)) {
         error(line, "redefinition", variable->getName().c_str(), "");
         delete variable;
-        return true;
-    }
-
-    if (voidErrorCheck(line, identifier, type))
-        return true;
-
-    return false;
+    } else
+        voidErrorCheck(line, identifier, type);
 }
 
-bool TParseContext::paramErrorCheck(int line, TStorageQualifier qualifier, TType* type)
+void TParseContext::paramCheck(int line, TStorageQualifier qualifier, TType* type)
 {
     switch (qualifier) {
     case EvqConst:
     case EvqConstReadOnly:
         type->getQualifier().storage = EvqConstReadOnly;
-        return false;
+        break;
     case EvqIn:
     case EvqOut:
     case EvqInOut:
         type->getQualifier().storage = qualifier;
-        return false;
+        break;
     case EvqTemporary:
         type->getQualifier().storage = EvqIn;
-        return false;
+        break;
     default:
         type->getQualifier().storage = EvqIn;
         error(line, "qualifier not allowed on function parameter", getStorageQualifierString(qualifier), "");
-        return true;
+        break;
     }
 }
 
@@ -1242,8 +1167,8 @@ const TFunction* TParseContext::findFunction(int line, TFunction* call, bool *bu
 // Initializers show up in several places in the grammar.  Have one set of
 // code to handle them here.
 //
-bool TParseContext::executeInitializer(TSourceLoc line, TString& identifier, TPublicType& pType, 
-                                       TIntermTyped* initializer, TIntermNode*& intermNode, TVariable* variable)
+bool TParseContext::executeInitializerError(TSourceLoc line, TString& identifier, TPublicType& pType, 
+                                            TIntermTyped* initializer, TIntermNode*& intermNode, TVariable* variable)
 {
     TType type(pType);
 
@@ -1482,7 +1407,6 @@ TIntermTyped* TParseContext::constructBuiltIn(const TType& type, TOperator op, T
 
     default:
         error(line, "unsupported construction", "", "");
-        recover();
 
         return 0;
     }
@@ -1515,8 +1439,7 @@ TIntermTyped* TParseContext::constructStruct(TIntermNode* node, const TType& typ
     if (! converted || converted->getType() != type) {
         error(line, "", "constructor", "cannot convert parameter %d from '%s' to '%s'", paramCount,
                 node->getAsTyped()->getType().getCompleteTypeString().c_str(), type.getCompleteTypeString().c_str());
-        recover();
-
+        
         return 0;
     }
 
@@ -1530,19 +1453,14 @@ void TParseContext::addBlock(int line, TPublicType& publicType, const TString& b
 {
     // First, error checks
 
-    if (reservedErrorCheck(line, blockName)) {
-        recover();
-
+    if (reservedErrorCheck(line, blockName))
         return;
-    }
-    if (instanceName && reservedErrorCheck(line, *instanceName)) {
-        recover();
 
+    if (instanceName && reservedErrorCheck(line, *instanceName))
         return;
-    }
+
     if (publicType.basicType != EbtVoid) {
         error(line, "interface blocks cannot be declared with a type", blockName.c_str(), "");
-        recover();
 
         return;
     }
@@ -1551,7 +1469,6 @@ void TParseContext::addBlock(int line, TPublicType& publicType, const TString& b
         profileRequires(line, EEsProfile, 300, 0, "uniform block");
     } else {
         error(line, "only uniform interface blocks are supported", blockName.c_str(), "");
-        recover();
 
         return;
     }
@@ -1559,23 +1476,14 @@ void TParseContext::addBlock(int line, TPublicType& publicType, const TString& b
     // check for qualifiers and types that don't belong within a block
     for (unsigned int member = 0; member < typeList.size(); ++member) {
         TQualifier memberQualifier = typeList[member].type->getQualifier();
-        if (memberQualifier.storage != EvqTemporary && memberQualifier.storage != EvqGlobal &&
-            memberQualifier.storage != publicType.qualifier.storage) {
+        if (memberQualifier.storage != EvqTemporary && memberQualifier.storage != EvqGlobal && memberQualifier.storage != publicType.qualifier.storage)
             error(line, "member storage qualifier cannot contradict block storage qualifier", typeList[member].type->getFieldName().c_str(), "");
-            recover();
-        }
-        if (publicType.qualifier.storage == EvqUniform) {
-            if (memberQualifier.isInterpolation() || memberQualifier.isAuxillary()) {
-                error(line, "member of uniform block cannot have an auxillary or interpolation qualifier", typeList[member].type->getFieldName().c_str(), "");
-                recover();
-            }
-        }
+        if (publicType.qualifier.storage == EvqUniform && memberQualifier.isInterpolation() || memberQualifier.isAuxillary())
+            error(line, "member of uniform block cannot have an auxillary or interpolation qualifier", typeList[member].type->getFieldName().c_str(), "");
 
         TBasicType basicType = typeList[member].type->getBasicType();
-        if (basicType == EbtSampler) {
+        if (basicType == EbtSampler)
             error(line, "member of block cannot be a sampler type", typeList[member].type->getFieldName().c_str(), "");
-            recover();
-        }
     }
 
     // Make default block qualification, and adjust the member qualifications
@@ -1597,7 +1505,6 @@ void TParseContext::addBlock(int line, TPublicType& publicType, const TString& b
     TVariable* userTypeDef = new TVariable(&blockName, blockType, true);
     if (! symbolTable.insert(*userTypeDef)) {
         error(line, "redefinition", blockName.c_str(), "block name");
-        recover();
 
         return;
     }
@@ -1614,7 +1521,6 @@ void TParseContext::addBlock(int line, TPublicType& publicType, const TString& b
             error(line, "nameless block contains a member that already has a name at global scope", blockName.c_str(), "");
         else
             error(line, "block instance name redefinition", variable->getName().c_str(), "");
-        recover();
 
         return;
     }
@@ -1631,10 +1537,8 @@ void TParseContext::wrapupSwitchSubsequence(TIntermAggregate* statements, TInter
     TIntermSequence* switchSequence = switchSequenceStack.back();
 
     if (statements) {
-        if (switchSequence->size() == 0) {
+        if (switchSequence->size() == 0)
             error(statements->getLine(), "cannot have statements before first case/default label", "switch", "");
-            recover();
-        }
         statements->setOperator(EOpSequence);
         switchSequence->push_back(statements);
     }
@@ -1657,10 +1561,8 @@ TIntermNode* TParseContext::addSwitch(int line, TIntermTyped* expression, TInter
 
     if (expression == 0 || 
         expression->getBasicType() != EbtInt && expression->getBasicType() != EbtUint ||
-        expression->getType().isArray() || expression->getType().isMatrix() || expression->getType().isVector()) {
+        expression->getType().isArray() || expression->getType().isMatrix() || expression->getType().isVector())
             error(line, "condition must be a scalar integer expression", "switch", "");
-            recover();
-    }
 
     // If there is nothing to do, drop the switch but still execute the expression
     TIntermSequence* switchSequence = switchSequenceStack.back();
@@ -1669,7 +1571,6 @@ TIntermNode* TParseContext::addSwitch(int line, TIntermTyped* expression, TInter
 
     if (lastStatements == 0) {
         error(line, "last case/default label must be followed by statements", "switch", "");
-        recover();
 
         return expression;
     }
@@ -1708,10 +1609,8 @@ void TParseContext::updateDefaults(int line, const TPublicType& publicType, cons
         }
     }
 
-    if (cantHaveId && id) {
+    if (cantHaveId && id)
         error(line, "cannot set global layout qualifiers on uniform variable, use just 'uniform' or a block", id->c_str(), "");
-        recover();
-    }
 }
 
 //
@@ -1732,13 +1631,11 @@ TIntermTyped* TParseContext::addConstVectorNode(TVectorFields& fields, TIntermTy
 
         if (!unionArray) {  // this error message should never be raised
             infoSink.info.message(EPrefixInternalError, "constUnion not initialized in addConstVectorNode function", line);
-            recover();
 
             return node;
         }
     } else { // The node has to be either a symbol node or an aggregate node or a tempConstant node, else, its an error
         error(line, "Cannot offset into the vector", "Error", "");
-        recover();
 
         return 0;
     }
@@ -1748,14 +1645,13 @@ TIntermTyped* TParseContext::addConstVectorNode(TVectorFields& fields, TIntermTy
     for (int i = 0; i < fields.num; i++) {
         if (fields.offsets[i] >= node->getType().getObjectSize()) {
             error(line, "", "[", "vector index out of range '%d'", fields.offsets[i]);
-            recover();
             fields.offsets[i] = 0;
         }
         
         constArray[i] = unionArray[fields.offsets[i]];
-
     } 
     typedNode = intermediate.addConstantUnion(constArray, node->getType(), line);
+
     return typedNode;
 }
 
@@ -1772,7 +1668,6 @@ TIntermTyped* TParseContext::addConstMatrixNode(int index, TIntermTyped* node, T
 
     if (index >= node->getType().getMatrixCols()) {
         error(line, "", "[", "matrix field selection out of range '%d'", index);
-        recover();
         index = 0;
     }
 
@@ -1783,7 +1678,6 @@ TIntermTyped* TParseContext::addConstMatrixNode(int index, TIntermTyped* node, T
          typedNode = intermediate.addConstantUnion(&unionArray[size*index], tempConstantNode->getType(), line);
     } else {
         error(line, "Cannot offset into the matrix", "Error", "");
-        recover();
 
         return 0;
     }
@@ -1808,7 +1702,6 @@ TIntermTyped* TParseContext::addConstArrayNode(int index, TIntermTyped* node, TS
 
     if (index >= node->getType().getArraySize() || index < 0) {
         error(line, "", "[", "array index '%d' out of range", index);
-        recover();
         index = 0;
     }
 
@@ -1819,7 +1712,6 @@ TIntermTyped* TParseContext::addConstArrayNode(int index, TIntermTyped* node, TS
          typedNode = intermediate.addConstantUnion(&unionArray[arrayElementSize * index], tempConstantNode->getType(), line);
     } else {
         error(line, "Cannot offset into the array", "Error", "");
-        recover();
 
         return 0;
     }
@@ -1855,7 +1747,6 @@ TIntermTyped* TParseContext::addConstStruct(TString& identifier, TIntermTyped* n
          typedNode = intermediate.addConstantUnion(constArray+instanceSize, tempConstantNode->getType(), line); // type will be changed in the calling function
     } else {
         error(line, "Cannot offset into the structure", "Error", "");
-        recover();
 
         return 0;
     }
