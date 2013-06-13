@@ -1,6 +1,6 @@
 #version 100
 
-float gu[];
+float gu[];              // ERROR
 float g4[4];
 float g5[5];
 
@@ -21,11 +21,6 @@ void main()
         gu[2] = 4.0;  // ERROR, overflow
     }
 
-    gu[2] = 4.0; // okay
-
-    gu[3] = 3.0;
-    gu[a] = 5.0; // ERROR
-
     g4 = foo(g5);
     g5 = g4;  // ERROR
     gu = g4;  // ERROR
@@ -36,8 +31,6 @@ void main()
     if (float[4](1.0, 2.0, 3.0, 4.0) == g4)  // ERROR
         gu[0] = 2.0;
 
-    float u[];
-    u[2] = 3.0; // okay
     float u[5];
     u[5] = 5.0; // ERROR
     foo(u);     // okay

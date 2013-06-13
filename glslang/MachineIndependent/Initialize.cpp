@@ -594,27 +594,29 @@ void TBuiltIns::initialize(int version, EProfile profile)
         //
         // Noise functions.
         //
-        s.append(TString("float noise1(float x);"));
-        s.append(TString("float noise1(vec2  x);"));
-        s.append(TString("float noise1(vec3  x);"));
-        s.append(TString("float noise1(vec4  x);"));
+        if (profile != EEsProfile) {
+            s.append(TString("float noise1(float x);"));
+            s.append(TString("float noise1(vec2  x);"));
+            s.append(TString("float noise1(vec3  x);"));
+            s.append(TString("float noise1(vec4  x);"));
 
-        s.append(TString("vec2 noise2(float x);"));
-        s.append(TString("vec2 noise2(vec2  x);"));
-        s.append(TString("vec2 noise2(vec3  x);"));
-        s.append(TString("vec2 noise2(vec4  x);"));
+            s.append(TString("vec2 noise2(float x);"));
+            s.append(TString("vec2 noise2(vec2  x);"));
+            s.append(TString("vec2 noise2(vec3  x);"));
+            s.append(TString("vec2 noise2(vec4  x);"));
 
-        s.append(TString("vec3 noise3(float x);"));
-        s.append(TString("vec3 noise3(vec2  x);"));
-        s.append(TString("vec3 noise3(vec3  x);"));
-        s.append(TString("vec3 noise3(vec4  x);"));
+            s.append(TString("vec3 noise3(float x);"));
+            s.append(TString("vec3 noise3(vec2  x);"));
+            s.append(TString("vec3 noise3(vec3  x);"));
+            s.append(TString("vec3 noise3(vec4  x);"));
 
-        s.append(TString("vec4 noise4(float x);"));
-        s.append(TString("vec4 noise4(vec2  x);"));
-        s.append(TString("vec4 noise4(vec3  x);"));
-        s.append(TString("vec4 noise4(vec4  x);"));
+            s.append(TString("vec4 noise4(float x);"));
+            s.append(TString("vec4 noise4(vec2  x);"));
+            s.append(TString("vec4 noise4(vec3  x);"));
+            s.append(TString("vec4 noise4(vec4  x);"));
 
-        s.append(TString("\n"));
+            s.append(TString("\n"));
+        }
     }
     {
         //============================================================================

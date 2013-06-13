@@ -65,4 +65,7 @@ void main()
     vec2 v16 = unpackUnorm2x16(uy);
     uint u17 = packHalf2x16(v2b);
     vec2 v18 = unpackHalf2x16(uy);
+
+    // not present
+    noise2(v18);
 }

@@ -486,9 +486,9 @@ bool TParseContext::reservedErrorCheck(int line, const TString& identifier)
 //
 // Returns true if there was an error in construction.
 //
-bool TParseContext::constructorError(int line, TIntermNode* node, TFunction& function, TOperator op, TType* type)
+bool TParseContext::constructorError(int line, TIntermNode* node, TFunction& function, TOperator op, TType& type)
 {
-    *type = function.getReturnType();
+    type = function.getReturnType();
 
     bool constructingMatrix = false;
     switch(op) {
@@ -535,7 +535,7 @@ bool TParseContext::constructorError(int line, TIntermNode* node, TFunction& fun
             matrixInMatrix = true;
         if (full)
             overFull = true;
-        if (op != EOpConstructStruct && !type->isArray() && size >= type->getObjectSize())
+        if (op != EOpConstructStruct && ! type.isArray() && size >= type.getObjectSize())
             full = true;
         if (function[i].type->getQualifier().storage != EvqConst)
             constType = false;
@@ -544,13 +544,13 @@ bool TParseContext::constructorError(int line, TIntermNode* node, TFunction& fun
     }
     
     if (constType)
-        type->getQualifier().storage = EvqConst;
+        type.getQualifier().storage = EvqConst;
 
-    if (type->isArray()) {
-        if (type->getArraySize() == 0) {
+    if (type.isArray()) {
+        if (type.getArraySize() == 0) {
             // auto adapt the constructor type to the number of arguments
-            type->changeArraySize(function.getParamCount());
-        } else if (type->getArraySize() != function.getParamCount()) {
+            type.changeArraySize(function.getParamCount());
+        } else if (type.getArraySize() != function.getParamCount()) {
             error(line, "array constructor needs one argument per array element", "constructor", "");
             return true;
         }
@@ -561,7 +561,7 @@ bool TParseContext::constructorError(int line, TIntermNode* node, TFunction& fun
         return true;
     }
 
-    if (matrixInMatrix && !type->isArray()) {
+    if (matrixInMatrix && ! type.isArray()) {
         profileRequires(line, ENoProfile, 120, 0, "constructing matrix from matrix");
         return false;
     }
@@ -571,13 +571,13 @@ bool TParseContext::constructorError(int line, TIntermNode* node, TFunction& fun
         return true;
     }
     
-    if (op == EOpConstructStruct && !type->isArray() && type->getStruct()->size() != function.getParamCount()) {
+    if (op == EOpConstructStruct && ! type.isArray() && type.getStruct()->size() != function.getParamCount()) {
         error(line, "Number of constructor parameters does not match the number of structure fields", "constructor", "");
         return true;
     }
 
-    if ((op != EOpConstructStruct && size != 1 && size < type->getObjectSize()) ||
-        (op == EOpConstructStruct && size < type->getObjectSize())) {
+    if ((op != EOpConstructStruct && size != 1 && size < type.getObjectSize()) ||
+        (op == EOpConstructStruct && size < type.getObjectSize())) {
         error(line, "not enough data provided for construction", "constructor", "");
         return true;
     }
@@ -1472,6 +1472,9 @@ void TParseContext::addBlock(int line, TTypeList& typeList, const TString* insta
 
     if (instanceName && reservedErrorCheck(line, *instanceName))
         return;
+
+    if (profile == EEsProfile && arraySizes)
+        arraySizeRequiredCheck(line, arraySizes->front());        
 
     if (blockType.basicType != EbtVoid) {
         error(line, "interface blocks cannot be declared with a type", blockName->c_str(), "");

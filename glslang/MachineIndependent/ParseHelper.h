@@ -114,7 +114,7 @@ struct TParseContext {
     void constCheck(TIntermTyped* node);
     void integerCheck(TIntermTyped* node, const char* token);
     void globalCheck(int line, bool global, const char* token);
-    bool constructorError(int line, TIntermNode*, TFunction&, TOperator, TType*);
+    bool constructorError(int line, TIntermNode*, TFunction&, TOperator, TType&);
     void arraySizeCheck(int line, TIntermTyped* expr, int& size);
     bool arrayQualifierError(int line, const TPublicType&);
     void arraySizeRequiredCheck(int line, int& size);

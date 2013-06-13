@@ -120,3 +120,6 @@ sum += 0.05;
 #if ((AA == BB || (AA == CC))))
 #error bad6
 #endif
+
+#define PASTE(a,b) a ## b
+float PASTE(tod, ay) = 17;

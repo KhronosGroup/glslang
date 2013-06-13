@@ -40,3 +40,11 @@ void main()
 #error GL_ES is not set
 #endif
 }
+
+float badsize[];    // ERROR
+float[] badsize2;   // ERROR
+uniform ub {
+    int a[];        // ERROR
+} ubInst[];         // ERROR
+void foo(int a[]);  // ERROR
+float okayA[] = float[](3.0, 4.0);  // Okay

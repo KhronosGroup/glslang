@@ -464,7 +464,7 @@ function_call
             // Their parameters will be verified algorithmically.
             //
             TType type(EbtVoid);  // use this to get the type back
-            if (parseContext.constructorError($1.line, $1.intermNode, *fnCall, op, &type)) {
+            if (parseContext.constructorError($1.line, $1.intermNode, *fnCall, op, type)) {
                 $$ = 0;
             } else {
                 //
@@ -1120,11 +1120,13 @@ declaration
         $$ = 0;
     }
     | type_qualifier IDENTIFIER SEMICOLON {
+        // TODO: functionality: track what variables are declared with INVARIANT
         // precise foo;
         // invariant foo;
         $$ = 0;
     }
     | type_qualifier IDENTIFIER identifier_list SEMICOLON {
+        // TODO: functionality: track what variables are declared with INVARIANT
         // precise foo, bar;
         // invariant foo, bar;
         $$ = 0;
@@ -1250,6 +1252,7 @@ parameter_declarator
         if ($1.arraySizes) {
             parseContext.profileRequires($1.line, ENoProfile, 120, "GL_3DL_array_objects", "arrayed type");
             parseContext.profileRequires($1.line, EEsProfile, 300, 0, "arrayed type");
+            parseContext.arraySizeRequiredCheck($1.line, $1.arraySizes->front());
         }
         if ($1.basicType == EbtVoid) {
             parseContext.error($2.line, "illegal use of type 'void'", $2.string->c_str(), "");
@@ -1264,6 +1267,7 @@ parameter_declarator
         if ($1.arraySizes) {
             parseContext.profileRequires($1.line, ENoProfile, 120, "GL_3DL_array_objects", "arrayed type");
             parseContext.profileRequires($1.line, EEsProfile, 300, 0, "arrayed type");
+            parseContext.arraySizeRequiredCheck($1.line, $1.arraySizes->front());
         }
 
         parseContext.arraySizeRequiredCheck($3.line, $3.arraySizes->front());
@@ -1332,7 +1336,9 @@ init_declarator_list
     }
     | init_declarator_list COMMA IDENTIFIER array_specifier {
         parseContext.nonInitConstCheck($3.line, *$3.string, $1.type);
-
+        if (parseContext.profile == EEsProfile)
+            parseContext.arraySizeRequiredCheck($4.line, $4.arraySizes->front());
+        
         $$ = $1;
 
         if (! parseContext.arrayQualifierError($4.line, $1.type)) {
@@ -1398,7 +1404,9 @@ single_declaration
     }
     | fully_specified_type IDENTIFIER array_specifier {
         $$.intermAggregate = 0;
-        parseContext.nonInitConstCheck($2.line, *$2.string, $1);
+        parseContext.nonInitConstCheck($2.line, *$2.string, $1);        
+        if (parseContext.profile == EEsProfile)
+            parseContext.arraySizeRequiredCheck($3.line, $3.arraySizes->front());
 
         $$.type = $1;
 
@@ -1458,6 +1466,8 @@ fully_specified_type
         if ($1.arraySizes) {
             parseContext.profileRequires($1.line, ENoProfile, 120, "GL_3DL_array_objects", "arrayed type");
             parseContext.profileRequires($1.line, EEsProfile, 300, 0, "arrayed type");
+            if (parseContext.profile == EEsProfile)
+                parseContext.arraySizeRequiredCheck($1.line, $1.arraySizes->front());
         }
     }
     | type_qualifier type_specifier  {
@@ -1466,6 +1476,8 @@ fully_specified_type
         if ($2.arraySizes) {
             parseContext.profileRequires($2.line, ENoProfile, 120, "GL_3DL_array_objects", "arrayed type");
             parseContext.profileRequires($2.line, EEsProfile, 300, 0, "arrayed type");
+            if (parseContext.profile == EEsProfile)
+                parseContext.arraySizeRequiredCheck($2.line, $2.arraySizes->front());
         }
 
         if ($2.arraySizes && parseContext.arrayQualifierError($2.line, $1))
@@ -1714,7 +1726,7 @@ type_specifier
         $$ = $1;
         $$.qualifier.precision = parseContext.defaultPrecision[$$.basicType];
     }
-    | type_specifier_nonarray array_specifier {
+    | type_specifier_nonarray array_specifier {        
         $$ = $1;
         $$.qualifier.precision = parseContext.defaultPrecision[$$.basicType];
         $$.arraySizes = $2.arraySizes;
@@ -2447,6 +2459,8 @@ struct_declaration
         if ($1.arraySizes) {
             parseContext.profileRequires($1.line, ENoProfile, 120, "GL_3DL_array_objects", "arrayed type");
             parseContext.profileRequires($1.line, EEsProfile, 300, 0, "arrayed type");
+            if (parseContext.profile == EEsProfile)
+                parseContext.arraySizeRequiredCheck($1.line, $1.arraySizes->front());
         }
 
         $$ = $2;
@@ -2460,6 +2474,8 @@ struct_declaration
         if ($2.arraySizes) {
             parseContext.profileRequires($2.line, ENoProfile, 120, "GL_3DL_array_objects", "arrayed type");
             parseContext.profileRequires($2.line, EEsProfile, 300, 0, "arrayed type");
+            if (parseContext.profile == EEsProfile)
+                parseContext.arraySizeRequiredCheck($2.line, $2.arraySizes->front());
         }
 
         $$ = $3;
@@ -2488,7 +2504,9 @@ struct_declarator
         $$.line = $1.line;
         $$.type->setFieldName(*$1.string);
     }
-    | IDENTIFIER array_specifier {
+    | IDENTIFIER array_specifier {        
+        if (parseContext.profile == EEsProfile)
+            parseContext.arraySizeRequiredCheck($2.line, $2.arraySizes->front());
         $$.type = new TType(EbtVoid);
         $$.line = $1.line;
         $$.type->setFieldName(*$1.string);
