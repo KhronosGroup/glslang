@@ -44,7 +44,7 @@ TParseContext::TParseContext(TSymbolTable& symt, TIntermediate& interm, int v, E
                              bool fc, EShMessages m) : 
             intermediate(interm), symbolTable(symt), infoSink(is), language(L), treeRoot(0),
             numErrors(0), lexAfterType(false), loopNestingLevel(0),
-            inTypeParen(false),
+            structNestingLevel(0), inTypeParen(false),
             version(v), profile(p), forwardCompatible(fc), messages(m),
             contextPragma(true, false)
 {
@@ -1072,6 +1072,20 @@ void TParseContext::paramCheck(int line, TStorageQualifier qualifier, TType* typ
     }
 }
 
+void TParseContext::nestedBlockCheck(int line)
+{
+    if (structNestingLevel > 0)
+        error(line, "cannot nest a block definition inside a structure or block", "", "");
+    ++structNestingLevel;
+}
+
+void TParseContext::nestedStructCheck(int line)
+{
+    if (structNestingLevel > 0)
+        error(line, "cannot nest a structure definition inside a structure or block", "", "");
+    ++structNestingLevel;
+}
+
 //
 // Layout qualifier stuff.
 //
@@ -1449,26 +1463,26 @@ TIntermTyped* TParseContext::constructStruct(TIntermNode* node, const TType& typ
 //
 // Do everything needed to add an interface block.
 //
-void TParseContext::addBlock(int line, TPublicType& publicType, const TString& blockName, TTypeList& typeList, const TString* instanceName, TArraySizes arraySizes)
+void TParseContext::addBlock(int line, TTypeList& typeList, const TString* instanceName, TArraySizes arraySizes)
 {
     // First, error checks
 
-    if (reservedErrorCheck(line, blockName))
+    if (reservedErrorCheck(line, *blockName))
         return;
 
     if (instanceName && reservedErrorCheck(line, *instanceName))
         return;
 
-    if (publicType.basicType != EbtVoid) {
-        error(line, "interface blocks cannot be declared with a type", blockName.c_str(), "");
+    if (blockType.basicType != EbtVoid) {
+        error(line, "interface blocks cannot be declared with a type", blockName->c_str(), "");
 
         return;
     }
-    if (publicType.qualifier.storage == EvqUniform) {
+    if (blockType.qualifier.storage == EvqUniform) {
         requireProfile(line, (EProfileMask)(~ENoProfileMask), "uniform block");
         profileRequires(line, EEsProfile, 300, 0, "uniform block");
     } else {
-        error(line, "only uniform interface blocks are supported", blockName.c_str(), "");
+        error(line, "only uniform interface blocks are supported", blockName->c_str(), "");
 
         return;
     }
@@ -1476,9 +1490,9 @@ void TParseContext::addBlock(int line, TPublicType& publicType, const TString& b
     // check for qualifiers and types that don't belong within a block
     for (unsigned int member = 0; member < typeList.size(); ++member) {
         TQualifier memberQualifier = typeList[member].type->getQualifier();
-        if (memberQualifier.storage != EvqTemporary && memberQualifier.storage != EvqGlobal && memberQualifier.storage != publicType.qualifier.storage)
+        if (memberQualifier.storage != EvqTemporary && memberQualifier.storage != EvqGlobal && memberQualifier.storage != blockType.qualifier.storage)
             error(line, "member storage qualifier cannot contradict block storage qualifier", typeList[member].type->getFieldName().c_str(), "");
-        if (publicType.qualifier.storage == EvqUniform && memberQualifier.isInterpolation() || memberQualifier.isAuxillary())
+        if (blockType.qualifier.storage == EvqUniform && memberQualifier.isInterpolation() || memberQualifier.isAuxillary())
             error(line, "member of uniform block cannot have an auxillary or interpolation qualifier", typeList[member].type->getFieldName().c_str(), "");
 
         TBasicType basicType = typeList[member].type->getBasicType();
@@ -1489,7 +1503,7 @@ void TParseContext::addBlock(int line, TPublicType& publicType, const TString& b
     // Make default block qualification, and adjust the member qualifications
 
     TQualifier defaultQualification = defaultGlobalQualification;
-    mergeLayoutQualifiers(line, defaultQualification, publicType.qualifier);
+    mergeLayoutQualifiers(line, defaultQualification, blockType.qualifier);
     for (unsigned int member = 0; member < typeList.size(); ++member) {
         TQualifier memberQualification = defaultQualification;
         mergeLayoutQualifiers(line, memberQualification, typeList[member].type->getQualifier());
@@ -1498,13 +1512,13 @@ void TParseContext::addBlock(int line, TPublicType& publicType, const TString& b
 
     // Build and add the interface block as a new type named blockName
 
-    TType blockType(&typeList, blockName, publicType.qualifier.storage);
+    TType blockType(&typeList, *blockName, blockType.qualifier.storage);
     if (arraySizes)
         blockType.setArraySizes(arraySizes);
     blockType.getQualifier().layoutPacking = defaultQualification.layoutPacking;
-    TVariable* userTypeDef = new TVariable(&blockName, blockType, true);
+    TVariable* userTypeDef = new TVariable(blockName, blockType, true);
     if (! symbolTable.insert(*userTypeDef)) {
-        error(line, "redefinition", blockName.c_str(), "block name");
+        error(line, "redefinition", blockName->c_str(), "block name");
 
         return;
     }
@@ -1518,7 +1532,7 @@ void TParseContext::addBlock(int line, TPublicType& publicType, const TString& b
     TVariable* variable = new TVariable(instanceName, blockType);
     if (! symbolTable.insert(*variable)) {
         if (*instanceName == "")
-            error(line, "nameless block contains a member that already has a name at global scope", blockName.c_str(), "");
+            error(line, "nameless block contains a member that already has a name at global scope", blockName->c_str(), "");
         else
             error(line, "block instance name redefinition", variable->getName().c_str(), "");
 

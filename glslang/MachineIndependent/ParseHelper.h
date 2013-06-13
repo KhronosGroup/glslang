@@ -77,6 +77,7 @@ struct TParseContext {
     int numErrors;               // number of compile-time errors encountered
     bool lexAfterType;           // true if we've recognized a type, so can only be looking for an identifier
     int loopNestingLevel;        // 0 if outside all loops
+    int structNestingLevel;      // 0 if outside blocks and structures
     TList<TIntermSequence*> switchSequenceStack;  // case, node, case, case, node, ...; ensure only one node between cases;   stack of them for nesting
     bool inTypeParen;            // true if in parentheses, looking only for an identifier
     const TType* currentFunctionType;  // the return type of the function that's currently being parsed
@@ -93,6 +94,8 @@ struct TParseContext {
     TQualifier defaultGlobalQualification;
 	TString HashErrMsg;
     bool AfterEOF;
+    const TString* blockName;
+    TPublicType blockType;
 
     void initializeExtensionBehavior();
     const char* getPreamble();
@@ -130,6 +133,8 @@ struct TParseContext {
     void nonInitConstCheck(int line, TString& identifier, TPublicType& type);
     void nonInitCheck(int line, TString& identifier, TPublicType& type);
     void paramCheck(int line, TStorageQualifier qualifier, TType* type);
+    void nestedBlockCheck(int line);
+    void nestedStructCheck(int line);
 
     void setLayoutQualifier(int line, TPublicType&, TString&);
     void setLayoutQualifier(int line, TPublicType&, TString&, int);
@@ -141,7 +146,7 @@ struct TParseContext {
     TIntermTyped* addConstructor(TIntermNode*, const TType&, TOperator, TFunction*, TSourceLoc);
     TIntermTyped* constructStruct(TIntermNode*, const TType&, int, TSourceLoc);
     TIntermTyped* constructBuiltIn(const TType&, TOperator, TIntermNode*, TSourceLoc, bool subset);
-    void addBlock(int line, TPublicType& qualifier, const TString& blockName, TTypeList& typeList, const TString* instanceName = 0, TArraySizes arraySizes = 0);
+    void addBlock(int line, TTypeList& typeList, const TString* instanceName = 0, TArraySizes arraySizes = 0);
     void wrapupSwitchSubsequence(TIntermAggregate* statements, TIntermNode* branchNode);
     TIntermNode* addSwitch(int line, TIntermTyped* expression, TIntermAggregate* body);
     void updateDefaults(int line, const TPublicType&, const TString* id);

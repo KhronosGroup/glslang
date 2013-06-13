@@ -208,6 +208,7 @@ extern void yyerror(const char*);
 %type <interm.type> struct_specifier
 %type <interm.typeLine> struct_declarator
 %type <interm.typeList> struct_declarator_list struct_declaration struct_declaration_list type_name_list
+%type <interm> block_structure
 %type <interm.function> function_header function_declarator
 %type <interm.function> function_header_with_parameters
 %type <interm> function_call_header_with_parameters function_call_header_no_parameters function_call_generic function_prototype
@@ -1102,16 +1103,16 @@ declaration
 		parseContext.setDefaultPrecision($1.line, $3, $2.qualifier.precision);
         $$ = 0;
     }
-    | type_qualifier IDENTIFIER LEFT_BRACE struct_declaration_list RIGHT_BRACE SEMICOLON {
-        parseContext.addBlock($2.line, $1, *$2.string, *$4);
+    | block_structure SEMICOLON {
+        parseContext.addBlock($1.line, *$1.typeList);
         $$ = 0;
     }
-    | type_qualifier IDENTIFIER LEFT_BRACE struct_declaration_list RIGHT_BRACE IDENTIFIER SEMICOLON {
-        parseContext.addBlock($2.line, $1, *$2.string, *$4, $6.string);
+    | block_structure IDENTIFIER SEMICOLON {
+        parseContext.addBlock($1.line, *$1.typeList, $2.string);
         $$ = 0;
     }
-    | type_qualifier IDENTIFIER LEFT_BRACE struct_declaration_list RIGHT_BRACE IDENTIFIER array_specifier SEMICOLON {
-        parseContext.addBlock($2.line, $1, *$2.string, *$4, $6.string, $7.arraySizes);
+    | block_structure IDENTIFIER array_specifier SEMICOLON {
+        parseContext.addBlock($1.line, *$1.typeList, $2.string, $3.arraySizes);
         $$ = 0;
     }
     | type_qualifier SEMICOLON {
@@ -1129,6 +1130,15 @@ declaration
         $$ = 0;
     }
     ;
+
+block_structure
+    : type_qualifier IDENTIFIER LEFT_BRACE { parseContext.nestedBlockCheck($1.line); } struct_declaration_list RIGHT_BRACE {
+        --parseContext.structNestingLevel;
+        parseContext.blockName = $2.string;
+        parseContext.blockType = $1;
+        $$.line = $1.line;
+        $$.typeList = $5;
+    }
 
 identifier_list
     : COMMA IDENTIFIER {
@@ -2397,25 +2407,22 @@ precision_qualifier
     ;
 
 struct_specifier
-    : STRUCT IDENTIFIER LEFT_BRACE struct_declaration_list RIGHT_BRACE {
-        // TODO: semantics: check for qualifiers that don't belong in a struct
-
-        // TODO: semantics: check that this is not nested inside a block or structure
-        //     parseContext.error($1.line, "cannot nest a block or structure definitions", $1.userDef->getTypeName().c_str(), "");
-
-        TType* structure = new TType($4, *$2.string);
+    : STRUCT IDENTIFIER LEFT_BRACE { parseContext.nestedStructCheck($1.line); } struct_declaration_list RIGHT_BRACE {
+        TType* structure = new TType($5, *$2.string);
         TVariable* userTypeDef = new TVariable($2.string, *structure, true);
         if (! parseContext.symbolTable.insert(*userTypeDef))
             parseContext.error($2.line, "redefinition", $2.string->c_str(), "struct");
         $$.init($1.line);
         $$.basicType = EbtStruct;
         $$.userDef = structure;
+        --parseContext.structNestingLevel;
     }
-    | STRUCT LEFT_BRACE struct_declaration_list RIGHT_BRACE {
-        TType* structure = new TType($3, TString(""));
+    | STRUCT LEFT_BRACE { parseContext.nestedStructCheck($1.line); } struct_declaration_list RIGHT_BRACE {
+        TType* structure = new TType($4, TString(""));
         $$.init($1.line);
         $$.basicType = EbtStruct;
         $$.userDef = structure;
+        --parseContext.structNestingLevel;
     }
     ;
 
