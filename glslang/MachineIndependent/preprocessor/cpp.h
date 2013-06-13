@@ -117,6 +117,7 @@ int   GetStringNumber(void);                // Get the current String Number.
 const char* GetStrfromTStr(void);           // Convert TString to String.  
 void  SetVersion(int);
 void  SetProfile(EProfile);
+int   GetVersion(void*);
 void  updateExtensionBehavior(const char* extName, const char* behavior);
 int   FreeCPP(void);
 

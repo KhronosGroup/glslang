@@ -1027,8 +1027,8 @@ int MacroExpand(int atom, yystypepp* yylvalpp, int expandUndef)
     }
 
 	if (atom == __VERSION__Atom) {
-        strcpy(yylvalpp->symbol_name, "100");
-        yylvalpp->sc_int = atoi(yylvalpp->symbol_name);
+        yylvalpp->sc_int = GetVersion(cpp->pC);
+        sprintf(yylvalpp->symbol_name, "%d", yylvalpp->sc_int);
         UngetToken(CPP_INTCONSTANT, yylvalpp);
 
         return 1;

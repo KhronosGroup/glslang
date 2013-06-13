@@ -79,6 +79,7 @@ void main()
     f >> i;
     m4 >> i;
     a >> u;
+    iv3 >> iv4;
 
     i & u;
     u ^ uv3;
@@ -86,6 +87,7 @@ void main()
     u & f;
     m2 | m2;
     s ^ s;
+    (f = f) = f;
 
     // These are all okay:
     f * v4;
@@ -118,6 +120,7 @@ void main()
     uv3 <<= i;
     i >> i;
     u << u;
+    iv3 >> iv3;
 
     i & i;
     u | u;

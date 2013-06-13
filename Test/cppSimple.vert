@@ -121,5 +121,9 @@ sum += 0.05;
 #error bad6
 #endif
 
+int linenumber = __LINE__;
+int filenumber = __FILE__;
+int version = __VERSION__;
+
 #define PASTE(a,b) a ## b
 float PASTE(tod, ay) = 17;

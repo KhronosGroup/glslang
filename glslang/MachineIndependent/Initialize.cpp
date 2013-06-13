@@ -630,7 +630,8 @@ void TBuiltIns::initialize(int version, EProfile profile)
         //
         // Geometric Functions.
         //
-        s.append(TString("vec4 ftransform();"));
+        if (profile != EEsProfile)
+            s.append(TString("vec4 ftransform();"));
 
         //
         // Original-style texture Functions with lod.

@@ -1128,6 +1128,13 @@ void SetVersion(int version)
     // CPP should still report errors in semantics
 }
 
+int GetVersion(void* cppPc)
+{
+    TParseContext& pc = *((TParseContext *)cppPc);
+
+    return pc.version;
+}
+
 void SetProfile(EProfile profile)
 {
     // called by the CPP, but this functionality is currently
