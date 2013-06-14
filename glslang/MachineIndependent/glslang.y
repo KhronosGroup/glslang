@@ -1137,7 +1137,7 @@ block_structure
     : type_qualifier IDENTIFIER LEFT_BRACE { parseContext.nestedBlockCheck($1.line); } struct_declaration_list RIGHT_BRACE {
         --parseContext.structNestingLevel;
         parseContext.blockName = $2.string;
-        parseContext.blockType = $1;
+        parseContext.publicBlockType = $1;
         $$.line = $1.line;
         $$.typeList = $5;
     }

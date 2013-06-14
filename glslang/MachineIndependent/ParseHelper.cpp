@@ -1476,12 +1476,12 @@ void TParseContext::addBlock(int line, TTypeList& typeList, const TString* insta
     if (profile == EEsProfile && arraySizes)
         arraySizeRequiredCheck(line, arraySizes->front());        
 
-    if (blockType.basicType != EbtVoid) {
+    if (publicBlockType.basicType != EbtVoid) {
         error(line, "interface blocks cannot be declared with a type", blockName->c_str(), "");
 
         return;
     }
-    if (blockType.qualifier.storage == EvqUniform) {
+    if (publicBlockType.qualifier.storage == EvqUniform) {
         requireProfile(line, (EProfileMask)(~ENoProfileMask), "uniform block");
         profileRequires(line, EEsProfile, 300, 0, "uniform block");
     } else {
@@ -1493,9 +1493,9 @@ void TParseContext::addBlock(int line, TTypeList& typeList, const TString* insta
     // check for qualifiers and types that don't belong within a block
     for (unsigned int member = 0; member < typeList.size(); ++member) {
         TQualifier memberQualifier = typeList[member].type->getQualifier();
-        if (memberQualifier.storage != EvqTemporary && memberQualifier.storage != EvqGlobal && memberQualifier.storage != blockType.qualifier.storage)
+        if (memberQualifier.storage != EvqTemporary && memberQualifier.storage != EvqGlobal && memberQualifier.storage != publicBlockType.qualifier.storage)
             error(line, "member storage qualifier cannot contradict block storage qualifier", typeList[member].type->getFieldName().c_str(), "");
-        if (blockType.qualifier.storage == EvqUniform && memberQualifier.isInterpolation() || memberQualifier.isAuxillary())
+        if (publicBlockType.qualifier.storage == EvqUniform && memberQualifier.isInterpolation() || memberQualifier.isAuxillary())
             error(line, "member of uniform block cannot have an auxillary or interpolation qualifier", typeList[member].type->getFieldName().c_str(), "");
 
         TBasicType basicType = typeList[member].type->getBasicType();
@@ -1506,7 +1506,7 @@ void TParseContext::addBlock(int line, TTypeList& typeList, const TString* insta
     // Make default block qualification, and adjust the member qualifications
 
     TQualifier defaultQualification = defaultGlobalQualification;
-    mergeLayoutQualifiers(line, defaultQualification, blockType.qualifier);
+    mergeLayoutQualifiers(line, defaultQualification, publicBlockType.qualifier);
     for (unsigned int member = 0; member < typeList.size(); ++member) {
         TQualifier memberQualification = defaultQualification;
         mergeLayoutQualifiers(line, memberQualification, typeList[member].type->getQualifier());
@@ -1515,7 +1515,7 @@ void TParseContext::addBlock(int line, TTypeList& typeList, const TString* insta
 
     // Build and add the interface block as a new type named blockName
 
-    TType blockType(&typeList, *blockName, blockType.qualifier.storage);
+    TType blockType(&typeList, *blockName, publicBlockType.qualifier.storage);
     if (arraySizes)
         blockType.setArraySizes(arraySizes);
     blockType.getQualifier().layoutPacking = defaultQualification.layoutPacking;

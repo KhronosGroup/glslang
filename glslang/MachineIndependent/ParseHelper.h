@@ -95,7 +95,7 @@ struct TParseContext {
 	TString HashErrMsg;
     bool AfterEOF;
     const TString* blockName;
-    TPublicType blockType;
+    TPublicType publicBlockType;
 
     void initializeExtensionBehavior();
     const char* getPreamble();
