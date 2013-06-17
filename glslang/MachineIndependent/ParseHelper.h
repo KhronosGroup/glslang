@@ -99,8 +99,10 @@ struct TParseContext {
 
     void initializeExtensionBehavior();
     const char* getPreamble();
-
+    
     void C_DECL error(TSourceLoc, const char *szReason, const char *szToken,
+                      const char *szExtraInfoFormat, ...);
+    void C_DECL  warn(TSourceLoc, const char *szReason, const char *szToken,
                       const char *szExtraInfoFormat, ...);
     bool reservedErrorCheck(int line, const TString& identifier);
 

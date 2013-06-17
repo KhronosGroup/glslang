@@ -207,7 +207,6 @@ void C_DECL TParseContext::error(TSourceLoc nLine, const char *szReason, const c
     
     safe_vsprintf(szExtraInfo, maxSize, szExtraInfoFormat, marker);
     
-    /* VC++ format: file(linenum) : error #: 'token' : extrainfo */
     infoSink.info.prefix(EPrefixError);
     infoSink.info.location(nLine);
     infoSink.info << "'" << szToken <<  "' : " << szReason << " " << szExtraInfo << "\n";
@@ -215,6 +214,27 @@ void C_DECL TParseContext::error(TSourceLoc nLine, const char *szReason, const c
     va_end(marker);
 
     ++numErrors;
+}
+
+void C_DECL TParseContext::warn(TSourceLoc nLine, const char *szReason, const char *szToken, 
+                                 const char *szExtraInfoFormat, ...)
+{
+    if (messages & EShMsgSuppressWarnings)
+        return;
+
+    const int maxSize = GlslangMaxTokenLength + 200;
+    char szExtraInfo[maxSize];
+    va_list marker;
+    
+    va_start(marker, szExtraInfoFormat);
+    
+    safe_vsprintf(szExtraInfo, maxSize, szExtraInfoFormat, marker);
+    
+    infoSink.info.prefix(EPrefixWarning);
+    infoSink.info.location(nLine);
+    infoSink.info << "'" << szToken <<  "' : " << szReason << " " << szExtraInfo << "\n";
+    
+    va_end(marker);
 }
 
 TIntermTyped* TParseContext::handleVariable(int line, TSymbol* symbol, TString* string)

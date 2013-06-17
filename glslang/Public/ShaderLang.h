@@ -232,7 +232,8 @@ enum TDebugOptions {
 	EDebugOpSuppressInfolog    = 0x010,
 	EDebugOpMemoryLeakMode     = 0x020,
     EDebugOpTexturePrototypes  = 0x040,
-    EDebugOpRelaxedErrors      = 0x080
+    EDebugOpRelaxedErrors      = 0x080,
+    EDebugOpGiveWarnings       = 0x100,
 };
 #ifdef __cplusplus
     }

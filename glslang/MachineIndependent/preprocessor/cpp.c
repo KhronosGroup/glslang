@@ -355,7 +355,7 @@ static int CPPelse(int matchelse, yystypepp * yylvalpp)
                 // found the #else we are looking for
                 token = cpp->currentInput->scan(cpp->currentInput, yylvalpp);
                 if (token != '\n') {
-                    ShPpWarningToInfoLog("unexpected tokens following #else preprocessor directive - expected a newline");
+                    ShPpWarningToInfoLog("unexpected tokens following #else directive - expected a newline");
                     while (token != '\n')
                         token = cpp->currentInput->scan(cpp->currentInput, yylvalpp);
                 } 
@@ -558,7 +558,7 @@ static int CPPif(yystypepp * yylvalpp)
 	}
 	token = eval(token, MIN_PREC, &res, &err, yylvalpp);
     if (token != '\n') {
-        ShPpWarningToInfoLog("unexpected tokens following the preprocessor directive - expected a newline");
+        ShPpWarningToInfoLog("unexpected tokens following directive - expected a newline");
         while (token != '\n')
             token = cpp->currentInput->scan(cpp->currentInput, yylvalpp);
     } 
@@ -584,7 +584,7 @@ static int CPPifdef(int defined, yystypepp * yylvalpp)
         Symbol *s = LookUpSymbol(macros, name);
         token = cpp->currentInput->scan(cpp->currentInput, yylvalpp);
         if (token != '\n') {
-            ShPpWarningToInfoLog("unexpected tokens following #ifdef preprocessor directive - expected a newline");
+            ShPpWarningToInfoLog("unexpected tokens following #ifdef - expected a newline");
             while (token != '\n')
                 token = cpp->currentInput->scan(cpp->currentInput, yylvalpp);
         }
@@ -824,7 +824,7 @@ int readCPPline(yystypepp * yylvalpp)
                  }
                  token = cpp->currentInput->scan(cpp->currentInput, yylvalpp);
                  if (token != '\n') {
-                     ShPpWarningToInfoLog("unexpected tokens following #else preprocessor directive - expected a newline");
+                     ShPpWarningToInfoLog("unexpected tokens following #else - expected a newline");
                      while (token != '\n')
                          token = cpp->currentInput->scan(cpp->currentInput, yylvalpp);
                  }

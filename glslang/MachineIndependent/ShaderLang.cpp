@@ -506,9 +506,12 @@ int ShCompile(
 
     int version;
     EProfile profile;
+    bool versionStatementMissing = false;
     ScanVersion(shaderStrings, numStrings, version, profile);
-    if (version == 0)
+    if (version == 0) {
         version = defaultVersion;
+        versionStatementMissing = true;
+    }
     bool goodProfile = DeduceProfile(compiler->infoSink, version, profile);
 
     TIntermediate intermediate(compiler->infoSink, version, profile);
@@ -528,6 +531,8 @@ int ShCompile(
         parseContext.error(1, "incorrect", "#version", "");
 
     parseContext.initializeExtensionBehavior();
+    if (versionStatementMissing)
+        parseContext.warn(1, "statement missing: use #version on first line of shader", "#version", "");
 
     GlobalParseContext = &parseContext;
     

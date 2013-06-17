@@ -763,10 +763,8 @@ int PaIdentOrReserved(bool reserved, TParseContext& pc, int line, const char* te
         return 0;
     }
 
-    if (pc.forwardCompatible && ! (pc.messages & EShMsgSuppressWarnings)) {
-        pc.infoSink.info.message(EPrefixWarning, yytext, yylineno);
-        pc.infoSink.info.message(EPrefixWarning, "using future reserved keyword", yylineno);
-    }
+    if (pc.forwardCompatible)
+        pc.warn(yylineno, "using future reserved keyword", text, "");
 
     return PaIdentOrType(text, pc, pyylval);
 }
@@ -779,10 +777,8 @@ int PaES30ReservedFromGLSL(int version, TParseContext& pc, int line, const char*
 
     if (pc.profile == EEsProfile && pc.version < 300 ||
         pc.profile != EEsProfile && pc.version < version) {
-            if (pc.forwardCompatible && ! (pc.messages & EShMsgSuppressWarnings)) {
-                pc.infoSink.info.message(EPrefixWarning, text, yylineno);
-                pc.infoSink.info.message(EPrefixWarning, "future reserved word in ES 300 and keyword in GLSL", yylineno);
-            }
+            if (pc.forwardCompatible)
+                pc.warn(yylineno, "future reserved word in ES 300 and keyword in GLSL", text, "");
 
             return PaIdentOrType(text, pc, pyylval);
     } else if (pc.profile == EEsProfile && pc.version >= 300)
@@ -799,10 +795,8 @@ int PaNonreservedKeyword(int esVersion, int nonEsVersion, TParseContext& pc, int
 
     if (pc.profile == EEsProfile && pc.version < esVersion ||
         pc.profile != EEsProfile && pc.version < nonEsVersion) {
-        if (pc.forwardCompatible && ! (pc.messages & EShMsgSuppressWarnings)) {
-            pc.infoSink.info.message(EPrefixWarning, text, yylineno);
-            pc.infoSink.info.message(EPrefixWarning, "using future keyword", yylineno);
-        }
+        if (pc.forwardCompatible)
+            pc.warn(yylineno, "using future keyword", text, "");
 
         return PaIdentOrType(text, pc, pyylval);
     }
@@ -817,10 +811,8 @@ int PaPrecisionKeyword(TParseContext& pc, int line, const char* text, YYSTYPE* p
     if (pc.profile == EEsProfile || pc.version >= 130)
         return keyword;
 
-    if (pc.forwardCompatible && ! (pc.messages & EShMsgSuppressWarnings)) {
-        pc.infoSink.info.message(EPrefixWarning, text, yylineno);
-        pc.infoSink.info.message(EPrefixWarning, "using ES precision qualifier keyword", yylineno);
-    }
+    if (pc.forwardCompatible)
+        pc.warn(yylineno, "using ES precision qualifier keyword", text, "");
 
     return PaIdentOrType(text, pc, pyylval);
 }
@@ -833,10 +825,8 @@ int PaMatNxM(TParseContext& pc, int line, const char* text, YYSTYPE* pyylval, in
     if (pc.version > 110)
         return keyword;
 
-    if (pc.forwardCompatible && ! (pc.messages & EShMsgSuppressWarnings)) {
-        pc.infoSink.info.message(EPrefixWarning, text, yylineno);
-        pc.infoSink.info.message(EPrefixWarning, "using future non-square matrix type keyword", yylineno);
-    }
+    if (pc.forwardCompatible)
+        pc.warn(yylineno, "using future non-square matrix type keyword", text, "");
 
     return PaIdentOrType(text, pc, pyylval);
 }
@@ -855,10 +845,8 @@ int PaDMat(TParseContext& pc, int line, const char* text, YYSTYPE* pyylval, int 
     if (pc.profile != EEsProfile && pc.version >= 400)
         return keyword;
 
-    if (pc.forwardCompatible && ! (pc.messages & EShMsgSuppressWarnings)) {
-        pc.infoSink.info.message(EPrefixWarning, text, yylineno);
-        pc.infoSink.info.message(EPrefixWarning, "using future type keyword", yylineno);
-    }
+    if (pc.forwardCompatible)
+        pc.warn(yylineno, "using future type keyword", text, "");
 
     return PaIdentOrType(text, pc, pyylval);
 }
@@ -878,10 +866,8 @@ int Pa1stGenerationImage(TParseContext& pc, int line, const char* text, YYSTYPE*
         return keyword;
     }
 
-    if (pc.forwardCompatible && ! (pc.messages & EShMsgSuppressWarnings)) {
-        pc.infoSink.info.message(EPrefixWarning, text, yylineno);
-        pc.infoSink.info.message(EPrefixWarning, "using future type keyword", yylineno);
-    }
+    if (pc.forwardCompatible)
+        pc.warn(yylineno, "using future type keyword", text, "");
 
     return PaIdentOrType(text, pc, pyylval);
 }
@@ -894,10 +880,8 @@ int Pa2ndGenerationImage(TParseContext& pc, int line, const char* text, YYSTYPE*
     if (pc.profile != EEsProfile && pc.version >= 420)
         return keyword;
 
-    if (pc.forwardCompatible && ! (pc.messages & EShMsgSuppressWarnings)) {
-        pc.infoSink.info.message(EPrefixWarning, text, yylineno);
-        pc.infoSink.info.message(EPrefixWarning, "using future type keyword", yylineno);
-    }
+    if (pc.forwardCompatible)
+        pc.warn(yylineno, "using future type keyword", text, "");
 
     return PaIdentOrType(text, pc, pyylval);
 }
@@ -946,15 +930,14 @@ void ShPpWarningToInfoLog(const char *msg)
 {
     TParseContext& pc = *((TParseContext *)cpp->pC);
 
-    if (! (pc.messages & EShMsgSuppressWarnings))
-        pc.infoSink.info.message(EPrefixWarning, msg, yylineno);
+    pc.warn(yylineno, msg, "Preprocessor", "");
 }
 
 void ShPpErrorToInfoLog(const char *msg)
 {
     TParseContext& pc = *((TParseContext *)cpp->pC);
 
-    pc.error(yylineno, "", "Preprocessor", msg, "");
+    pc.error(yylineno, msg, "Preprocessor", "");
 }
 
 // return 1 if error
@@ -1185,8 +1168,7 @@ void updateExtensionBehavior(const char* extName, const char* behavior)
             case EBhEnable:
             case EBhWarn:
             case EBhDisable:
-                msg = TString("extension '") + extName + "' is not supported";
-                pc.infoSink.info.message(EPrefixWarning, msg.c_str(), yylineno);
+                pc.warn(yylineno, "extension not supported", extName, "");
                 break;
             default:
                 assert(0 && "unexpected behaviorVal");
