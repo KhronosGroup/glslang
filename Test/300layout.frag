@@ -1,5 +1,5 @@
 #version 300 es
-
+precision mediump float;
 in vec4 pos;
 layout (location = 2) in vec4 color;  // ERROR
 

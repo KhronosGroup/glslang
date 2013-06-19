@@ -1,9 +1,11 @@
 #version 300 es
 
+precision mediump float;
+
 struct S {
     vec4 u;
     uvec4 v;
-    isampler3D sampler;
+    lowp isampler3D sampler;
     vec3 w;
     struct T1 {           // ERROR
         int a;
@@ -15,7 +17,7 @@ uniform S s;
 uniform fooBlock {
     uvec4 bv;
     mat2 bm2;
-    isampler2D sampler;   // ERROR
+    lowp isampler2D sampler;   // ERROR
     struct T2 {           // ERROR
         int a;
     } t;
@@ -35,5 +37,5 @@ uniform barBlockArray {
 void main()
 {
     texture(s.sampler, vec3(inst.ni, bv.y, insts[2].nbv.z));
-    insts[s.v.x];  // ERROR
+    insts[s.v.x];         // ERROR
 }

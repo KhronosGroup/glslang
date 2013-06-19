@@ -91,6 +91,8 @@ struct TParseContext {
 
     struct TPragma contextPragma;
     TPrecisionQualifier defaultPrecision[EbtNumTypes];
+    static const int maxSamplerIndex = EsdNumDims * (EbtNumTypes * (2 * 2)); // see computeSamplerTypeIndex()
+    TPrecisionQualifier defaultSamplerPrecision[maxSamplerIndex];
     TQualifier defaultGlobalQualification;
 	TString HashErrMsg;
     bool AfterEOF;
@@ -130,6 +132,9 @@ struct TParseContext {
     bool structQualifierErrorCheck(int line, const TPublicType& pType);
     void mergeQualifiers(int line, TPublicType& dst, const TPublicType& src, bool force);
     void setDefaultPrecision(int line, TPublicType&, TPrecisionQualifier);
+    int computeSamplerTypeIndex(TSampler&);
+    TPrecisionQualifier getDefaultPrecision(TPublicType&);
+    void precisionQualifierCheck(int line, TPublicType&);
     void parameterSamplerCheck(int line, TStorageQualifier qualifier, const TType& type);
     bool containsSampler(const TType& type);
     void nonInitConstCheck(int line, TString& identifier, TPublicType& type);

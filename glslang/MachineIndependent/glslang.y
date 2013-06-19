@@ -1484,6 +1484,7 @@ fully_specified_type
             $2.arraySizes = 0;
         
         parseContext.mergeQualifiers($2.line, $2, $1, true);
+        parseContext.precisionQualifierCheck($2.line, $2);
 
         $$ = $2;
 
@@ -1724,11 +1725,11 @@ type_name_list
 type_specifier
     : type_specifier_nonarray {
         $$ = $1;
-        $$.qualifier.precision = parseContext.defaultPrecision[$$.basicType];
+        $$.qualifier.precision = parseContext.getDefaultPrecision($$);
     }
     | type_specifier_nonarray array_specifier {        
         $$ = $1;
-        $$.qualifier.precision = parseContext.defaultPrecision[$$.basicType];
+        $$.qualifier.precision = parseContext.getDefaultPrecision($$);
         $$.arraySizes = $2.arraySizes;
     }
     ;
@@ -2466,6 +2467,7 @@ struct_declaration
         $$ = $2;
 
         parseContext.voidErrorCheck($1.line, (*$2)[0].type->getFieldName(), $1);
+        parseContext.precisionQualifierCheck($1.line, $1);
 
         for (unsigned int i = 0; i < $$->size(); ++i)
             (*$$)[i].type->mergeType($1);
@@ -2482,6 +2484,7 @@ struct_declaration
 
         parseContext.voidErrorCheck($2.line, (*$3)[0].type->getFieldName(), $2);
         parseContext.mergeQualifiers($2.line, $2, $1, true);
+        parseContext.precisionQualifierCheck($2.line, $2);
 
         for (unsigned int i = 0; i < $$->size(); ++i)
             (*$$)[i].type->mergeType($2);

@@ -1,7 +1,7 @@
 #version 300 es
 
 uniform block {
-    float f;
+    mediump float f;
 } instanceName;
 
 struct S {

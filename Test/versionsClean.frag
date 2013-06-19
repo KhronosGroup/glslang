@@ -33,10 +33,10 @@
 //
 #version 300 es
 
-in vec3 color;
-out vec4 foo;
+in highp vec3 color;
+out highp vec4 foo;
 
-uniform sampler2DArrayShadow bar;
+uniform highp sampler2DArrayShadow bar;
 
 void main()
 {

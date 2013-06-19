@@ -11,6 +11,7 @@ versionsErrors.vert
 130.frag
 140.frag
 precision.frag
+precision.vert
 nonSquare.vert
 matrixError.vert
 cppSimple.vert

@@ -1,8 +1,8 @@
 #version 300 es
 in uvec2 badu;  // ERROR
 flat in uvec2 t;
-in float f;
-in vec2 tc;
+in highp float f;
+in highp vec2 tc;
 in bool bad;    // ERROR
 uniform uvec4 v;
 uniform int i;
@@ -10,7 +10,7 @@ uniform bool b;
 
 out uvec4 c;
 
-uniform usampler2D usampler;
+uniform lowp usampler2D usampler;
 
 void main()
 {

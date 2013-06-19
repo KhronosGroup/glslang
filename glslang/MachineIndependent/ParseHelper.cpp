@@ -51,7 +51,16 @@ TParseContext::TParseContext(TSymbolTable& symt, TIntermediate& interm, int v, E
     for (int type = 0; type < EbtNumTypes; ++type)
         defaultPrecision[type] = EpqNone;
 
+    for (int type = 0; type < maxSamplerIndex; ++type)
+        defaultSamplerPrecision[type] = EpqNone;
+
     if (profile == EEsProfile) {
+        TSampler sampler;
+        sampler.set(EbtFloat, Esd2D);
+        defaultSamplerPrecision[computeSamplerTypeIndex(sampler)] = EpqLow;
+        sampler.set(EbtFloat, EsdCube);
+        defaultSamplerPrecision[computeSamplerTypeIndex(sampler)] = EpqLow;
+
         switch (language) {
         case EShLangVertex:
             defaultPrecision[EbtInt] = EpqHigh;
@@ -809,7 +818,13 @@ void TParseContext::setDefaultPrecision(int line, TPublicType& publicType, TPrec
 {
     TBasicType basicType = publicType.basicType;
 
-    if (basicType == EbtSampler || basicType == EbtInt || basicType == EbtFloat) {
+    if (basicType == EbtSampler) {
+        defaultSamplerPrecision[computeSamplerTypeIndex(publicType.sampler)] = qualifier;
+
+        return;  // all is well
+    }
+
+    if (basicType == EbtInt || basicType == EbtFloat) {
         if (publicType.isScalar()) {
             defaultPrecision[basicType] = qualifier;
             if (basicType == EbtInt)
@@ -820,6 +835,35 @@ void TParseContext::setDefaultPrecision(int line, TPublicType& publicType, TPrec
     }
 
     error(line, "cannot apply precision statement to this type; use 'float', 'int' or a sampler type", TType::getBasicString(basicType), "");
+}
+
+// used to flatten the sampler type space into a single dimension
+// correlates with the declaration of defaultSamplerPrecision[]
+int TParseContext::computeSamplerTypeIndex(TSampler& sampler)
+{
+    int arrayIndex = sampler.arrayed ? 1 : 0;
+    int shadowIndex = sampler.shadow ? 1 : 0;
+
+    return EsdNumDims * (EbtNumTypes * (2 * arrayIndex + shadowIndex) + sampler.type) + sampler.dim;
+}
+
+TPrecisionQualifier TParseContext::getDefaultPrecision(TPublicType& publicType)
+{
+    if (publicType.basicType == EbtSampler)
+        return defaultSamplerPrecision[computeSamplerTypeIndex(publicType.sampler)];
+    else
+        return defaultPrecision[publicType.basicType];
+}
+
+void TParseContext::precisionQualifierCheck(int line, TPublicType& publicType)
+{
+    if (profile != EEsProfile)
+        return;
+
+    if (publicType.basicType == EbtFloat || publicType.basicType == EbtUint || publicType.basicType == EbtInt || publicType.basicType == EbtSampler) {
+        if (publicType.qualifier.precision == EpqNone)
+            error(line, "type requires declaration of default precision qualifier", TType::getBasicString(publicType.basicType), "");
+    }
 }
 
 void TParseContext::parameterSamplerCheck(int line, TStorageQualifier qualifier, const TType& type)

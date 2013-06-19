@@ -1,6 +1,6 @@
 #version 100
 
-varying vec3 color;
+varying vec3 color;       // ERRROR, there is no default qualifier for float
 
 lowp vec2 foo(mediump vec3 mv3)
 {
