@@ -103,6 +103,7 @@ extern void yyerror(const char*);
             TTypeLine typeLine;
             TTypeList* typeList;
             TArraySizes arraySizes;
+            TIdentifierList* identifierList;
         };
     } interm;
 }
@@ -213,6 +214,8 @@ extern void yyerror(const char*);
 %type <interm.function> function_header_with_parameters
 %type <interm> function_call_header_with_parameters function_call_header_no_parameters function_call_generic function_prototype
 %type <interm> function_call_or_method function_identifier function_call_header
+
+%type <interm.identifierList> identifier_list
 
 %start translation_unit
 %%
@@ -1120,15 +1123,12 @@ declaration
         $$ = 0;
     }
     | type_qualifier IDENTIFIER SEMICOLON {
-        // TODO: functionality: track what variables are declared with INVARIANT
-        // precise foo;
-        // invariant foo;
+        parseContext.addQualifierToExisting($1.line, $1.qualifier, *$2.string);
         $$ = 0;
     }
     | type_qualifier IDENTIFIER identifier_list SEMICOLON {
-        // TODO: functionality: track what variables are declared with INVARIANT
-        // precise foo, bar;
-        // invariant foo, bar;
+        $3->push_back($2.string);
+        parseContext.addQualifierToExisting($1.line, $1.qualifier, *$3);
         $$ = 0;
     }
     ;
@@ -1144,8 +1144,12 @@ block_structure
 
 identifier_list
     : COMMA IDENTIFIER {
+        $$ = NewPoolTIdentifierList();
+        $$->push_back($2.string);
     }
     | identifier_list COMMA IDENTIFIER {
+        $$ = $1;
+        $$->push_back($3.string);
     }
     ;
 

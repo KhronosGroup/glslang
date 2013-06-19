@@ -48,12 +48,15 @@ TParseContext::TParseContext(TSymbolTable& symt, TIntermediate& interm, int v, E
             version(v), profile(p), forwardCompatible(fc), messages(m),
             contextPragma(true, false)
 {
+    // set all precision defaults to EpqNone, which is correct for all desktop types
+    // and for ES types that don't have defaults (thus getting an error on use)
     for (int type = 0; type < EbtNumTypes; ++type)
         defaultPrecision[type] = EpqNone;
 
     for (int type = 0; type < maxSamplerIndex; ++type)
         defaultSamplerPrecision[type] = EpqNone;
 
+    // replace with real defaults for those that have them
     if (profile == EEsProfile) {
         TSampler sampler;
         sampler.set(EbtFloat, Esd2D);
@@ -67,13 +70,11 @@ TParseContext::TParseContext(TSymbolTable& symt, TIntermediate& interm, int v, E
             defaultPrecision[EbtUint] = EpqHigh;
             defaultPrecision[EbtFloat] = EpqHigh;
             defaultPrecision[EbtSampler] = EpqLow;
-            // TODO: functionality: need default precisions per sampler type
             break;
         case EShLangFragment:
             defaultPrecision[EbtInt] = EpqMedium;
             defaultPrecision[EbtUint] = EpqMedium;
             defaultPrecision[EbtSampler] = EpqLow;
-            // TODO: semantics: give error when using float in frag shader without default precision
             break;
         default:
             error(1, "INTERNAL ERROR", "unexpected language", "");
@@ -1605,6 +1606,36 @@ void TParseContext::addBlock(int line, TTypeList& typeList, const TString* insta
 
         return;
     }
+}
+
+// For an identifier that is already declared, add more qualification to it.
+void TParseContext::addQualifierToExisting(int line, TQualifier qualifier, const TString& identifier)
+{
+    TSymbol* existing = symbolTable.find(identifier);
+    TVariable* variable = existing ? existing->getAsVariable() : 0;
+    if (! variable) {
+        error(line, "identifier not previously declared", identifier.c_str(), "");
+
+        return;
+    }
+
+    if (qualifier.isAuxillary() || 
+        qualifier.isMemory() ||
+        qualifier.isInterpolation() ||
+        qualifier.storage != EvqTemporary ||
+        qualifier.precision != EpqNone) {
+        error(line, "cannot add this qualifier to an existing variable", identifier.c_str(), "");
+
+        return;
+    }
+
+    variable->getType().getQualifier().invariant = true;
+}
+
+void TParseContext::addQualifierToExisting(int line, TQualifier qualifier, TIdentifierList& identifiers)
+{
+    for (unsigned int i = 0; i < identifiers.size(); ++i)
+        addQualifierToExisting(line, qualifier, *identifiers[i]);
 }
 
 //

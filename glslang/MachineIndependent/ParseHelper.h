@@ -154,6 +154,8 @@ struct TParseContext {
     TIntermTyped* constructStruct(TIntermNode*, const TType&, int, TSourceLoc);
     TIntermTyped* constructBuiltIn(const TType&, TOperator, TIntermNode*, TSourceLoc, bool subset);
     void addBlock(int line, TTypeList& typeList, const TString* instanceName = 0, TArraySizes arraySizes = 0);
+    void addQualifierToExisting(int line, TQualifier, const TString& identifier);
+    void addQualifierToExisting(int line, TQualifier, TIdentifierList&);
     void wrapupSwitchSubsequence(TIntermAggregate* statements, TIntermNode* branchNode);
     TIntermNode* addSwitch(int line, TIntermTyped* expression, TIntermAggregate* body);
     void updateDefaults(int line, const TPublicType&, const TString* id);

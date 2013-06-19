@@ -97,8 +97,8 @@ layout (binding=3) uniform atomic_uint c2;           // offset = 8
 layout (binding=2) uniform atomic_uint d2;           // offset = 4
 
 //layout (offset=4)                // error, must include binding
-layout (binding=1, offset=0)  a; // okay
-layout (binding=2, offset=0)  b; // okay
+//layout (binding=1, offset=0)  a; // okay
+//layout (binding=2, offset=0)  b; // okay
 //layout (binding=1, offset=0)  c; // error, offsets must not be shared
 //                                 //        between a and c
 //layout (binding=1, offset=2)  d; // error, overlaps offset 0 of a

@@ -154,6 +154,14 @@ inline TTypeList* NewPoolTTypeList()
 	return new(memory) TTypeList;
 }
 
+typedef TVector<TString*> TIdentifierList;
+
+inline TIdentifierList* NewPoolTIdentifierList()
+{
+    void* memory = GlobalPoolAllocator.allocate(sizeof(TIdentifierList));
+    return new(memory) TIdentifierList;
+}
+
 //
 // TODO: memory: TArraySizes can be replaced by something smaller.
 // Almost all arrays could be handled by two sizes each fitting
@@ -236,7 +244,7 @@ public:
 
     bool isMemory() const
     {
-        return coherent || volatil || restrict || readonly || writeonly;
+        return shared || coherent || volatil || restrict || readonly || writeonly;
     }
     bool isInterpolation() const
     {
