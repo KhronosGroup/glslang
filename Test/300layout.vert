@@ -9,7 +9,7 @@ layout(LocatioN = 10) in s r[4];   // ERROR, no struct
 out vec4 pos;
 out vec3 color;
 
-layout(shared, column_major, row_major) uniform mat4 badm4; // ERROR
+layout(shared, column_major) uniform mat4 badm4; // ERROR
 layout(shared, column_major, row_major) uniform; // default is now shared and row_major
 
 layout(std140) uniform Transform { // layout of this block is std140

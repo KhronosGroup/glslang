@@ -1119,7 +1119,7 @@ declaration
         $$ = 0;
     }
     | type_qualifier SEMICOLON {
-        // setting defaults
+        parseContext.updateQualifierDefaults($1.line, $1.qualifier);
         $$ = 0;
     }
     | type_qualifier IDENTIFIER SEMICOLON {
@@ -1137,7 +1137,7 @@ block_structure
     : type_qualifier IDENTIFIER LEFT_BRACE { parseContext.nestedBlockCheck($1.line); } struct_declaration_list RIGHT_BRACE {
         --parseContext.structNestingLevel;
         parseContext.blockName = $2.string;
-        parseContext.publicBlockType = $1;
+        parseContext.currentBlockDefaults = $1.qualifier;
         $$.line = $1.line;
         $$.typeList = $5;
     }
@@ -1395,7 +1395,7 @@ single_declaration
     : fully_specified_type {
         $$.type = $1;
         $$.intermAggregate = 0;
-        parseContext.updateDefaults($1.line, $$.type, 0);
+        parseContext.updateTypedDefaults($1.line, $$.type.qualifier, 0);
     }
     | fully_specified_type IDENTIFIER {
         $$.intermAggregate = 0;
@@ -1404,7 +1404,7 @@ single_declaration
         parseContext.nonInitConstCheck($2.line, *$2.string, $$.type);
         parseContext.nonInitCheck($2.line, *$2.string, $$.type);
         
-        parseContext.updateDefaults($2.line, $$.type, $2.string);
+        parseContext.updateTypedDefaults($2.line, $$.type.qualifier, $2.string);
     }
     | fully_specified_type IDENTIFIER array_specifier {
         $$.intermAggregate = 0;
@@ -1419,7 +1419,7 @@ single_declaration
             TVariable* variable;
             parseContext.arrayCheck($3.line, *$2.string, $1, variable);
         }
-        parseContext.updateDefaults($2.line, $$.type, $2.string);
+        parseContext.updateTypedDefaults($2.line, $$.type.qualifier, $2.string);
     }
     | fully_specified_type IDENTIFIER array_specifier EQUAL initializer {
         $$.intermAggregate = 0;

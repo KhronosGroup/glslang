@@ -93,11 +93,13 @@ struct TParseContext {
     TPrecisionQualifier defaultPrecision[EbtNumTypes];
     static const int maxSamplerIndex = EsdNumDims * (EbtNumTypes * (2 * 2)); // see computeSamplerTypeIndex()
     TPrecisionQualifier defaultSamplerPrecision[maxSamplerIndex];
-    TQualifier defaultGlobalQualification;
 	TString HashErrMsg;
     bool AfterEOF;
     const TString* blockName;
-    TPublicType publicBlockType;
+    TQualifier globalUniformDefaults;
+    TQualifier globalInputDefaults;
+    TQualifier globalOutputDefaults;
+    TQualifier currentBlockDefaults;
 
     void initializeExtensionBehavior();
     const char* getPreamble();
@@ -156,9 +158,11 @@ struct TParseContext {
     void addBlock(int line, TTypeList& typeList, const TString* instanceName = 0, TArraySizes arraySizes = 0);
     void addQualifierToExisting(int line, TQualifier, const TString& identifier);
     void addQualifierToExisting(int line, TQualifier, TIdentifierList&);
+    void updateQualifierDefaults(TQualifier);
+    void updateQualifierDefaults(int line, TQualifier);
+    void updateTypedDefaults(int line, TQualifier, const TString* id);
     void wrapupSwitchSubsequence(TIntermAggregate* statements, TIntermNode* branchNode);
     TIntermNode* addSwitch(int line, TIntermTyped* expression, TIntermAggregate* body);
-    void updateDefaults(int line, const TPublicType&, const TString* id);
     TIntermTyped* addConstVectorNode(TVectorFields&, TIntermTyped*, TSourceLoc);
     TIntermTyped* addConstMatrixNode(int , TIntermTyped*, TSourceLoc);
     TIntermTyped* addConstArrayNode(int index, TIntermTyped* node, TSourceLoc line);
