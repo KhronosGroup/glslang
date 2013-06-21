@@ -38,6 +38,16 @@ struct s {
 
 out s badout;               // ERROR
 
+struct S2 {
+    vec3 c;
+    float f;
+};
+
+in S2 s2;
+
+out vec3 sc;
+out float sf;
+
 void main()
 {
     float f;
@@ -74,6 +84,9 @@ void main()
 
     f += gl_FragCoord.y;
     gl_FragDepth = f;
+
+    sc = s2.c;
+    sf = s2.f;
 }
 
 float imageBuffer;    // ERROR, reserved

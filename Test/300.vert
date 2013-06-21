@@ -9,6 +9,13 @@ varying vec2 v2;  // ERROR
 
 in vec4 bad[10];  // ERROR
 
+struct S {
+    vec3 c;
+    float f;
+};
+
+out S s;
+
 void main()
 {
     int id = gl_VertexID + gl_InstanceID;
@@ -33,6 +40,9 @@ void main()
 
     gl_Position = m44[2];
     gl_PointSize = v2.y;
+
+     s.c = v3;
+     s.f = dm;
 
 #ifdef GL_ES
 #error GL_ES is set

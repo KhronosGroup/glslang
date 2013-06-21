@@ -84,13 +84,10 @@ TParseContext::TParseContext(TSymbolTable& symt, TIntermediate& interm, int v, E
     globalUniformDefaults.clear();
     globalUniformDefaults.layoutMatrix = ElmColumnMajor;
     globalUniformDefaults.layoutPacking = ElpShared;
-    globalUniformDefaults.layoutSlotLocation = 0;
 
     globalInputDefaults.clear();
-    globalInputDefaults.layoutSlotLocation = 0;
     
     globalOutputDefaults.clear();
-    globalOutputDefaults.layoutSlotLocation = 0;
 }
 
 // Get code that is not part of a shared symbol table, specific to this shader

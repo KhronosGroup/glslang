@@ -687,6 +687,7 @@ public:
     const char* getStorageQualifierString() const { return ::getStorageQualifierString(qualifier.storage); }
     const char* getPrecisionQualifierString() const { return ::getPrecisionQualifierString(qualifier.precision); }
     TTypeList* getStruct() { return structure; }
+    TTypeList* getStruct() const { return structure; }
 
     int getObjectSize() const
     {
@@ -705,7 +706,6 @@ public:
         return totalSize;
     }
 
-    TTypeList* getStruct() const { return structure; }
     TString& getMangledName()
     {
         if (!mangled) {
