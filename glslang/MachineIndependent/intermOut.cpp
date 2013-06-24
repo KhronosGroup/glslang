@@ -207,6 +207,12 @@ bool OutputUnary(bool /* preVisit */, TIntermUnary* node, TIntermTraverser* it)
     case EOpAsin:           out.debug << "arc sine";             break;
     case EOpAcos:           out.debug << "arc cosine";           break;
     case EOpAtan:           out.debug << "arc tangent";          break;
+    case EOpSinh:           out.debug << "hyp. sine";            break;
+    case EOpCosh:           out.debug << "hyp. cosine";          break;
+    case EOpTanh:           out.debug << "hyp. tangent";         break;
+    case EOpAsinh:          out.debug << "arc hyp. sine";        break;
+    case EOpAcosh:          out.debug << "arc hyp. cosine";      break;
+    case EOpAtanh:          out.debug << "arc hyp. tangent";     break;
 
     case EOpExp:            out.debug << "exp";                  break;
     case EOpLog:            out.debug << "log";                  break;

@@ -541,6 +541,13 @@ TIntermTyped* TIntermConstantUnion::fold(TOperator op, const TType& returnType, 
 
         // TODO: Functionality: constant folding: the rest of the ops have to be fleshed out
 
+        case EOpSinh:
+        case EOpCosh:
+        case EOpTanh:
+        case EOpAsinh:
+        case EOpAcosh:
+        case EOpAtanh:
+
         case EOpIsNan:
         case EOpIsInf:
 

@@ -90,6 +90,11 @@ void main()
 
     sc = s2.c;
     sf = s2.f;
+
+    sinh(c1D) +
+    cosh(c1D) * tanh(c2D);
+    asinh(c4D) + acosh(c4D);
+    atanh(c3D);
 }
 
 float imageBuffer;    // ERROR, reserved

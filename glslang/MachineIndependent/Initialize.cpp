@@ -140,6 +140,36 @@ void TBuiltIns::initialize(int version, EProfile profile)
         s.append(TString("vec3  atan(vec3  y_over_x);"));
         s.append(TString("vec4  atan(vec4  y_over_x);"));
 
+        s.append(TString("float sinh(float angle);"));
+        s.append(TString("vec2  sinh(vec2  angle);"));
+        s.append(TString("vec3  sinh(vec3  angle);"));
+        s.append(TString("vec4  sinh(vec4  angle);"));
+
+        s.append(TString("float cosh(float angle);"));
+        s.append(TString("vec2  cosh(vec2  angle);"));
+        s.append(TString("vec3  cosh(vec3  angle);"));
+        s.append(TString("vec4  cosh(vec4  angle);"));
+
+        s.append(TString("float tanh(float angle);"));
+        s.append(TString("vec2  tanh(vec2  angle);"));
+        s.append(TString("vec3  tanh(vec3  angle);"));
+        s.append(TString("vec4  tanh(vec4  angle);"));
+
+        s.append(TString("float asinh(float x);"));
+        s.append(TString("vec2  asinh(vec2  x);"));
+        s.append(TString("vec3  asinh(vec3  x);"));
+        s.append(TString("vec4  asinh(vec4  x);"));
+
+        s.append(TString("float acosh(float x);"));
+        s.append(TString("vec2  acosh(vec2  x);"));
+        s.append(TString("vec3  acosh(vec3  x);"));
+        s.append(TString("vec4  acosh(vec4  x);"));
+
+        s.append(TString("float atanh(float y_over_x);"));
+        s.append(TString("vec2  atanh(vec2  y_over_x);"));
+        s.append(TString("vec3  atanh(vec3  y_over_x);"));
+        s.append(TString("vec4  atanh(vec4  y_over_x);"));
+
         //
         // Exponential Functions.
         //
@@ -1507,6 +1537,12 @@ void IdentifyBuiltIns(int version, EProfile profile, EShLanguage language, TSymb
     symbolTable.relateToOperator("asin",         EOpAsin);
     symbolTable.relateToOperator("acos",         EOpAcos);
     symbolTable.relateToOperator("atan",         EOpAtan);
+    symbolTable.relateToOperator("sinh",         EOpSinh);
+    symbolTable.relateToOperator("cosh",         EOpCosh);
+    symbolTable.relateToOperator("tanh",         EOpTanh);
+    symbolTable.relateToOperator("asinh",        EOpAsinh);
+    symbolTable.relateToOperator("acosh",        EOpAcosh);
+    symbolTable.relateToOperator("atanh",        EOpAtanh);
 
     symbolTable.relateToOperator("pow",          EOpPow);
     symbolTable.relateToOperator("exp2",         EOpExp2);

@@ -149,6 +149,12 @@ enum TOperator {
     EOpAsin,
     EOpAcos,
     EOpAtan,
+    EOpSinh,
+    EOpCosh,
+    EOpTanh,
+    EOpAsinh,
+    EOpAcosh,
+    EOpAtanh,
 
     EOpPow,
     EOpExp,
