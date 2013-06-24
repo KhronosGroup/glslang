@@ -1487,7 +1487,7 @@ fully_specified_type
         if ($2.arraySizes && parseContext.arrayQualifierError($2.line, $1))
             $2.arraySizes = 0;
         
-        parseContext.mergeQualifiers($2.line, $2, $1, true);
+        parseContext.mergeQualifiers($2.line, $2.qualifier, $1.qualifier, true);
         parseContext.precisionQualifierCheck($2.line, $2);
 
         $$ = $2;
@@ -1575,7 +1575,7 @@ type_qualifier
         if ($$.basicType == EbtVoid)
             $$.basicType = $2.basicType;
 
-        parseContext.mergeQualifiers($$.line, $$, $2, false);
+        parseContext.mergeQualifiers($$.line, $$.qualifier, $2.qualifier, false);
     }
     ;
 
@@ -2487,7 +2487,7 @@ struct_declaration
         $$ = $3;
 
         parseContext.voidErrorCheck($2.line, (*$3)[0].type->getFieldName(), $2);
-        parseContext.mergeQualifiers($2.line, $2, $1, true);
+        parseContext.mergeQualifiers($2.line, $2.qualifier, $1.qualifier, true);
         parseContext.precisionQualifierCheck($2.line, $2);
 
         for (unsigned int i = 0; i < $$->size(); ++i)

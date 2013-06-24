@@ -250,7 +250,7 @@ public:
     {
         return flat || smooth || nopersp;
     }
-    bool isAuxillary() const
+    bool isAuxiliary() const
     {
         return centroid || patch || sample;
     }

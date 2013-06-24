@@ -757,7 +757,7 @@ void TParseContext::globalQualifierFix(int line, TQualifier& qualifier, const TP
     }
 
     if (language == EShLangVertex && qualifier.storage == EvqVaryingIn && 
-        (qualifier.isAuxillary() || qualifier.isInterpolation() || qualifier.isMemory() || qualifier.invariant)) {
+        (qualifier.isAuxiliary() || qualifier.isInterpolation() || qualifier.isMemory() || qualifier.invariant)) {
         error(line, "vertex input cannot be further qualified", "", "");
 
         return;
@@ -768,38 +768,62 @@ void TParseContext::globalQualifierFix(int line, TQualifier& qualifier, const TP
 // Merge characteristics of the 'src' qualifier into the 'dst'.
 // If there is duplication, issue error messages, unless 'force'
 // is specified, which means to just override default settings.
+//
+// Also, when force is false, it will be assumed that 'src' follows
+// 'dst', for the purpose of error checking order for versions
+// that require specific orderings of qualifiers.
 // 
-void TParseContext::mergeQualifiers(int line, TPublicType& dst, const TPublicType& src, bool force)
+void TParseContext::mergeQualifiers(int line, TQualifier& dst, const TQualifier& src, bool force)
 {
-    bool bad = false;
+    // Multiple auxiliary qualifiers (mostly done later by 'individual qualifiers')
+    if (src.isAuxiliary() && dst.isAuxiliary())
+        error(line, "can only have one auxiliary qualifier (centroid, patch, and sample)", "", "");
+
+    // Multiple interpolation qualifiers (mostly done later by 'individual qualifiers')
+    if (src.isInterpolation() && dst.isInterpolation())
+        error(line, "can only have one interpolation qualifier (flat, smooth, noperspective)", "", "");
+
+    // Ordering
+    if (! force && version < 420) {
+        // non-function parameters
+        if (src.invariant && (dst.isInterpolation() || dst.isAuxiliary() || dst.storage != EvqTemporary || dst.precision != EpqNone))
+            error(line, "invariant qualifier must appear first", "", "");
+        else if (src.isInterpolation() && (dst.isAuxiliary() || dst.storage != EvqTemporary || dst.precision != EpqNone))
+            error(line, "interpolation qualifiers must appear before storage and precision qualifiers", "", "");
+        else if (src.isAuxiliary() && (dst.storage != EvqTemporary || dst.precision != EpqNone))
+            error(line, "Auxiliary qualifiers (centroid, patch, and sample) must appear before storage and precision qualifiers", "", "");
+        else if (src.storage != EvqTemporary && (dst.precision != EpqNone))
+            error(line, "precision qualifier must appear as last qualifier", "", "");
+
+        // function parameters
+        if (src.storage == EvqConst && (dst.storage == EvqIn || dst.storage == EvqOut))
+            error(line, "in/out must appear before const", "", "");
+    }
 
     // Storage qualification
-    if (dst.qualifier.storage == EvqTemporary || dst.qualifier.storage == EvqGlobal)
-        dst.qualifier.storage = src.qualifier.storage;
-    else if (dst.qualifier.storage == EvqIn  && src.qualifier.storage == EvqOut ||
-             dst.qualifier.storage == EvqOut && src.qualifier.storage == EvqIn)
-        dst.qualifier.storage = EvqInOut;
-    else if (dst.qualifier.storage == EvqIn    && src.qualifier.storage == EvqConst ||
-             dst.qualifier.storage == EvqConst && src.qualifier.storage == EvqIn)
-        dst.qualifier.storage = EvqConstReadOnly;
-    else if (src.qualifier.storage != EvqTemporary) {
-        error(line, "too many storage qualifiers", getStorageQualifierString(src.qualifier.storage), "");
-        bad = true;
-    }
+    if (dst.storage == EvqTemporary || dst.storage == EvqGlobal)
+        dst.storage = src.storage;
+    else if (dst.storage == EvqIn  && src.storage == EvqOut ||
+             dst.storage == EvqOut && src.storage == EvqIn)
+        dst.storage = EvqInOut;
+    else if (dst.storage == EvqIn    && src.storage == EvqConst ||
+             dst.storage == EvqConst && src.storage == EvqIn)
+        dst.storage = EvqConstReadOnly;
+    else if (src.storage != EvqTemporary)
+        error(line, "too many storage qualifiers", getStorageQualifierString(src.storage), "");
 
     // Precision qualifiers
-    if (! force && src.qualifier.precision != EpqNone && dst.qualifier.precision != EpqNone) {
-        error(line, "only one precision qualifier allowed", getPrecisionQualifierString(src.qualifier.precision), "");
-        bad = true;
-    }
-    if (dst.qualifier.precision == EpqNone || force && src.qualifier.precision != EpqNone)
-        dst.qualifier.precision = src.qualifier.precision;
+    if (! force && src.precision != EpqNone && dst.precision != EpqNone)
+        error(line, "only one precision qualifier allowed", getPrecisionQualifierString(src.precision), "");
+    if (dst.precision == EpqNone || force && src.precision != EpqNone)
+        dst.precision = src.precision;
 
     // Layout qualifiers
-    mergeLayoutQualifiers(line, dst.qualifier, src.qualifier);
+    mergeLayoutQualifiers(line, dst, src);
 
-    // other qualifiers
-    #define MERGE_SINGLETON(field) bad |= dst.qualifier.field && src.qualifier.field; dst.qualifier.field |= src.qualifier.field;
+    // individual qualifiers
+    bool repeated = false;
+    #define MERGE_SINGLETON(field) repeated |= dst.field && src.field; dst.field |= src.field;
     MERGE_SINGLETON(invariant);
     MERGE_SINGLETON(centroid);
     MERGE_SINGLETON(smooth);
@@ -814,7 +838,7 @@ void TParseContext::mergeQualifiers(int line, TPublicType& dst, const TPublicTyp
     MERGE_SINGLETON(readonly);
     MERGE_SINGLETON(writeonly);
 
-    if (bad)
+    if (repeated)
         error(line, "replicated qualifiers", "", "");
 }
 
@@ -1562,8 +1586,8 @@ void TParseContext::addBlock(int line, TTypeList& typeList, const TString* insta
         TQualifier memberQualifier = typeList[member].type->getQualifier();
         if (memberQualifier.storage != EvqTemporary && memberQualifier.storage != EvqGlobal && memberQualifier.storage != currentBlockDefaults.storage)
             error(line, "member storage qualifier cannot contradict block storage qualifier", typeList[member].type->getFieldName().c_str(), "");
-        if (currentBlockDefaults.storage == EvqUniform && memberQualifier.isInterpolation() || memberQualifier.isAuxillary())
-            error(line, "member of uniform block cannot have an auxillary or interpolation qualifier", typeList[member].type->getFieldName().c_str(), "");
+        if (currentBlockDefaults.storage == EvqUniform && memberQualifier.isInterpolation() || memberQualifier.isAuxiliary())
+            error(line, "member of uniform block cannot have an auxiliary or interpolation qualifier", typeList[member].type->getFieldName().c_str(), "");
 
         TBasicType basicType = typeList[member].type->getBasicType();
         if (basicType == EbtSampler)
@@ -1631,12 +1655,12 @@ void TParseContext::addQualifierToExisting(int line, TQualifier qualifier, const
         return;
     }
 
-    if (qualifier.isAuxillary() || 
+    if (qualifier.isAuxiliary() || 
         qualifier.isMemory() ||
         qualifier.isInterpolation() ||
         qualifier.storage != EvqTemporary ||
         qualifier.precision != EpqNone) {
-        error(line, "cannot add storage, auxillary, memory, interpolation, or precision qualifier to an existing variable", identifier.c_str(), "");
+        error(line, "cannot add storage, auxiliary, memory, interpolation, or precision qualifier to an existing variable", identifier.c_str(), "");
 
         return;
     }
@@ -1676,11 +1700,11 @@ void TParseContext::updateQualifierDefaults(TQualifier qualifier)
 
 void TParseContext::updateQualifierDefaults(int line, TQualifier qualifier)
 {
-    if (qualifier.isAuxillary() || 
+    if (qualifier.isAuxiliary() || 
         qualifier.isMemory() ||
         qualifier.isInterpolation() ||
         qualifier.precision != EpqNone)
-        error(line, "cannot use auxillary, memory, interpolation, or precision qualifier in a standalone qualifier", "", "");
+        error(line, "cannot use auxiliary, memory, interpolation, or precision qualifier in a standalone qualifier", "", "");
 
     switch (qualifier.storage) {
     case EvqUniform:

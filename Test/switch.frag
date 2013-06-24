@@ -1,7 +1,7 @@
 #version 300 es
 
 uniform int c, d;
-highp in float x;
+in highp float x;
 
 void main()
 {

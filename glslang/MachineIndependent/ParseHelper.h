@@ -128,7 +128,7 @@ struct TParseContext {
     bool samplerErrorCheck(int line, const TPublicType& pType, const char* reason);
     void globalQualifierFix(int line, TQualifier&, const TPublicType&);
     bool structQualifierErrorCheck(int line, const TPublicType& pType);
-    void mergeQualifiers(int line, TPublicType& dst, const TPublicType& src, bool force);
+    void mergeQualifiers(int line, TQualifier& dst, const TQualifier& src, bool force);
     void setDefaultPrecision(int line, TPublicType&, TPrecisionQualifier);
     int computeSamplerTypeIndex(TSampler&);
     TPrecisionQualifier getDefaultPrecision(TPublicType&);

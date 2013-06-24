@@ -5,9 +5,17 @@ uniform mat3x3 m33;
 uniform mat4x4 m44;
 
 in vec3 v3;
-varying vec2 v2;  // ERROR
-
-in vec4 bad[10];  // ERROR
+varying vec2 v2;               // ERROR, varying reserved
+in vec4 bad[10];               // ERROR, no arrayed inputs
+highp in vec4 badorder;        // ERROR, incorrect qualifier order
+out invariant vec4 badorder2;  // ERROR, incorrect qualifier order
+in centroid vec4 badorder4;    // ERROR, incorrect qualifier order
+out flat vec4 badorder3;       // ERROR, incorrect qualifier order
+void bar(in const float a);    // ERROR, incorrect qualifier order
+void bar2(highp in float b);   // ERROR, incorrect qualifier order
+smooth flat out vec4 rep;      // ERROR, replicating interpolation qualification
+centroid sample out vec4 rep2; // ERROR, replicating auxiliary qualification
+in uniform vec4 rep3;          // ERROR, replicating storage qualification
 
 struct S {
     vec3 c;
