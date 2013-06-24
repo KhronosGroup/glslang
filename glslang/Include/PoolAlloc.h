@@ -198,11 +198,11 @@ protected:
 #endif
         }
 
-        tHeader* nextPage;
-        size_t pageCount;
 #ifdef GUARD_BLOCKS
         TAllocation* lastAllocation;
 #endif
+        tHeader* nextPage;
+        size_t pageCount;
     };
 
     struct tAllocState {
