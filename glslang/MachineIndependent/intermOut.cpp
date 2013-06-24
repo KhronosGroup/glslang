@@ -87,7 +87,7 @@ void OutputSymbol(TIntermSymbol* node, TIntermTraverser* it)
     const int maxSize = GlslangMaxTypeLength + GlslangMaxTokenLength;
     char buf[maxSize];
     snprintf(buf, maxSize, "'%s' (%s)\n",
-           node->getSymbol().c_str(),
+           node->getName().c_str(),
            node->getCompleteString().c_str());
 
     oit->infoSink.debug << buf;
@@ -274,6 +274,7 @@ bool OutputAggregate(bool /* preVisit */, TIntermAggregate* node, TIntermTravers
 
     switch (node->getOp()) {
     case EOpSequence:      out.debug << "Sequence\n";       return true;
+    case EOpLinkerObjects: out.debug << "Linker Objects\n"; return true;
     case EOpComma:         out.debug << "Comma";            break;
     case EOpFunction:      out.debug << "Function Definition: " << node->getName(); break;
     case EOpFunctionCall:  out.debug << "Function Call: "       << node->getName(); break;

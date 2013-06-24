@@ -80,6 +80,9 @@ public:
     TIntermBranch* addBranch(TOperator, TIntermTyped*, TSourceLoc);
     TIntermTyped* addSwizzle(TVectorFields&, TSourceLoc);
     bool postProcess(TIntermNode*, EShLanguage);
+    void addSymbolLinkageNodes(TIntermNode* root, TIntermAggregate*& linkage, EShLanguage, TSymbolTable&);
+    void addSymbolLinkageNode(TIntermAggregate*& linkage, TSymbolTable&, const TString&);
+    void addSymbolLinkageNode(TIntermAggregate*& linkage, const TVariable&);
 	void remove(TIntermNode*);
     void outputTree(TIntermNode*);
     

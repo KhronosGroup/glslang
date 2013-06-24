@@ -556,6 +556,7 @@ int ShCompile(
     int ret = PaParseStrings(const_cast<char**>(shaderStrings), 0, numStrings, parseContext, parseContext.getPreamble());
     if (ret)
         success = false;
+    intermediate.addSymbolLinkageNodes(parseContext.treeRoot, parseContext.linkage, parseContext.language, symbolTable);
 
     if (success && parseContext.treeRoot) {
         if (optLevel == EShOptNoGeneration)
@@ -564,7 +565,6 @@ int ShCompile(
             success = intermediate.postProcess(parseContext.treeRoot, parseContext.language);
 
             if (success) {
-
                 if (debugOptions & EDebugOpIntermediate)
                     intermediate.outputTree(parseContext.treeRoot);
 

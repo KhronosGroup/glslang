@@ -42,7 +42,7 @@
 
 TParseContext::TParseContext(TSymbolTable& symt, TIntermediate& interm, int v, EProfile p, EShLanguage L, TInfoSink& is,                             
                              bool fc, EShMessages m) : 
-            intermediate(interm), symbolTable(symt), infoSink(is), language(L), treeRoot(0),
+            intermediate(interm), symbolTable(symt), infoSink(is), language(L), treeRoot(0), linkage(0),
             numErrors(0), lexAfterType(false), loopNestingLevel(0),
             structNestingLevel(0), inTypeParen(false),
             version(v), profile(p), forwardCompatible(fc), messages(m),
@@ -331,11 +331,11 @@ void TParseContext::variableCheck(TIntermTyped*& nodePtr)
         return;
 
     if (symbol->getType().getBasicType() == EbtVoid) {
-        error(symbol->getLine(), "undeclared identifier", symbol->getSymbol().c_str(), "");
+        error(symbol->getLine(), "undeclared identifier", symbol->getName().c_str(), "");
 
         // Add to symbol table to prevent future error messages on the same name
             
-        TVariable* fakeVariable = new TVariable(&symbol->getSymbol(), TType(EbtFloat));
+        TVariable* fakeVariable = new TVariable(&symbol->getName(), TType(EbtFloat));
         symbolTable.insert(*fakeVariable);
 
         // substitute a symbol node for this new variable
@@ -403,7 +403,7 @@ bool TParseContext::lValueErrorCheck(int line, const char* op, TIntermTyped* nod
 
     const char* symbol = 0;
     if (symNode != 0)
-        symbol = symNode->getSymbol().c_str();
+        symbol = symNode->getName().c_str();
 
     const char* message = 0;
     switch (node->getQualifier().storage) {
@@ -1038,15 +1038,15 @@ void TParseContext::arrayCheck(int line, TString& identifier, const TPublicType&
 
 bool TParseContext::arraySetMaxSize(TIntermSymbol *node, TType* type, int size, bool updateFlag, TSourceLoc line)
 {
-    TSymbol* symbol = symbolTable.find(node->getSymbol());
+    TSymbol* symbol = symbolTable.find(node->getName());
     if (symbol == 0) {
-        error(line, " undeclared identifier", node->getSymbol().c_str(), "");
+        error(line, " undeclared identifier", node->getName().c_str(), "");
         return true;
     }
 
     TVariable* variable = symbol->getAsVariable();
     if (! variable) {
-        error(0, "array variable name expected", node->getSymbol().c_str(), "");
+        error(0, "array variable name expected", node->getName().c_str(), "");
         return true;
     }
 
@@ -1055,7 +1055,7 @@ bool TParseContext::arraySetMaxSize(TIntermSymbol *node, TType* type, int size, 
 
     // special casing to test index value of gl_TexCoord. If the accessed index is >= gl_MaxTextureCoords
     // its an error
-    if (node->getSymbol() == "gl_TexCoord") {
+    if (node->getName() == "gl_TexCoord") {
         TSymbol* texCoord = symbolTable.find("gl_MaxTextureCoords");
         if (! texCoord || ! texCoord->getAsVariable()) {
             infoSink.info.message(EPrefixInternalError, "gl_MaxTextureCoords not defined", line);
@@ -1111,11 +1111,15 @@ void TParseContext::nonInitCheck(int line, TString& identifier, TPublicType& typ
 
     TVariable* variable = new TVariable(&identifier, TType(type));
 
-    if (! symbolTable.insert(*variable)) {
+    if (! symbolTable.insert(*variable))
         error(line, "redefinition", variable->getName().c_str(), "");
-        delete variable;
-    } else
+    else {
         voidErrorCheck(line, identifier, type);
+
+        // see if it's a linker-level object to track
+        if (type.qualifier.isUniform() || type.qualifier.isPipeInput() || type.qualifier.isPipeOutput())
+            intermediate.addSymbolLinkageNode(linkage, *variable);
+    }
 }
 
 void TParseContext::paramCheck(int line, TStorageQualifier qualifier, TType* type)
@@ -1311,12 +1315,12 @@ bool TParseContext::executeInitializerError(TSourceLoc line, TString& identifier
                 variable->shareConstPointer(initializer->getAsConstantUnion()->getUnionArrayPointer());
             }
         } else if (initializer->getAsSymbolNode()) {
-            TSymbol* symbol = symbolTable.find(initializer->getAsSymbolNode()->getSymbol());
+            TSymbol* symbol = symbolTable.find(initializer->getAsSymbolNode()->getName());
             if (TVariable* tVar = symbol->getAsVariable()) {
                 constUnion* constArray = tVar->getConstUnionPointer();
                 variable->shareConstPointer(constArray);
             } else {
-                error(line, "expected variable", initializer->getAsSymbolNode()->getSymbol().c_str(), "");
+                error(line, "expected variable", initializer->getAsSymbolNode()->getName().c_str(), "");
                 return true;
             }
         } else {
@@ -1575,7 +1579,7 @@ void TParseContext::addBlock(int line, TTypeList& typeList, const TString* insta
     case EvqOut:      defaultQualification = globalOutputDefaults;     break;
     default:          defaultQualification.clear();                    break;
     }
-    
+
     mergeLayoutQualifiers(line, defaultQualification, currentBlockDefaults);
     for (unsigned int member = 0; member < typeList.size(); ++member) {
         TQualifier memberQualification = defaultQualification;
@@ -1611,6 +1615,9 @@ void TParseContext::addBlock(int line, TTypeList& typeList, const TString* insta
 
         return;
     }
+
+    // save it in case there are no references in the AST, so the linker can error test against it
+    intermediate.addSymbolLinkageNode(linkage, *variable);
 }
 
 // For an identifier that is already declared, add more qualification to it.

@@ -835,7 +835,7 @@ TIntermBranch* TIntermediate::addBranch(TOperator branchOp, TIntermTyped* expres
 }
 
 //
-// This is to be executed once the final root is put on top by the parsing
+// This is to be executed after the final root is put on top by the parsing
 // process.
 //
 bool TIntermediate::postProcess(TIntermNode* root, EShLanguage language)
@@ -843,14 +843,64 @@ bool TIntermediate::postProcess(TIntermNode* root, EShLanguage language)
     if (root == 0)
         return true;
 
-    //
-    // First, finish off the top level sequence, if any
-    //
+    // Finish off the top-level sequence
     TIntermAggregate* aggRoot = root->getAsAggregate();
     if (aggRoot && aggRoot->getOp() == EOpNull)
         aggRoot->setOperator(EOpSequence);
 
     return true;
+}
+
+void TIntermediate::addSymbolLinkageNodes(TIntermNode* root, TIntermAggregate*& linkage, EShLanguage language, TSymbolTable& symbolTable)
+{
+    // Add top-level nodes for declarations that must be checked cross
+    // compilation unit by a linker, yet might not have been referenced
+    // by the AST.
+    //
+    // Almost entirely, translation of symbols is driven by what's present 
+    // in the AST traversal, not by translating the symbol table.  
+    //
+    // However, there are some special cases:
+    //  - From the specification: "Special built-in inputs gl_VertexID and 
+    //    gl_InstanceID are also considered active vertex attributes."
+    //  - Linker-based type mismatch error reporting needs to see all 
+    //    uniforms/ins/outs variables and blocks.
+    //  - ftransform() can make gl_Vertex and gl_ModelViewProjectionMatrix active.
+    //
+
+    //if (ftransformUsed) {
+        // TODO: desktop: track ftransform() usage
+    //    addSymbolLinkageNode(root, symbolTable, "gl_Vertex");
+    //    addSymbolLinkageNode(root, symbolTable, "gl_ModelViewProjectionMatrix");
+    //}
+
+    if (language == EShLangVertex) {
+        // the names won't be found in the symbol table unless the versions are right, 
+        // so version logic does not need to be repeated here
+        addSymbolLinkageNode(linkage, symbolTable, "gl_VertexID");
+        addSymbolLinkageNode(linkage, symbolTable, "gl_InstanceID");
+    }
+
+    if (linkage) {
+        // Finish off linkage sequence
+        linkage->setOperator(EOpLinkerObjects);
+
+        // Add a child to the root node for the linker objects
+        growAggregate(root, linkage, 0);
+    }
+}
+
+void TIntermediate::addSymbolLinkageNode(TIntermAggregate*& linkage, TSymbolTable& symbolTable, const TString& name)
+{
+    TSymbol* symbol = symbolTable.find(name);
+    if (symbol)
+        addSymbolLinkageNode(linkage, *symbol->getAsVariable());
+}
+
+void TIntermediate::addSymbolLinkageNode(TIntermAggregate*& linkage, const TVariable& variable)
+{
+    TIntermSymbol* node = new TIntermSymbol(variable.getUniqueId(), variable.getName(), variable.getType());
+    linkage = growAggregate(linkage, node, 0);
 }
 
 //

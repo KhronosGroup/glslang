@@ -442,6 +442,7 @@ public:
             *builtIn = level < 2;
         if (sameScope)
             *sameScope = level == currentLevel();
+
         return symbol;
     }
 

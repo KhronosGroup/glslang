@@ -34,6 +34,11 @@ uniform barBlockArray {
     int ni;
 } insts[4];
 
+uniform unreferenced {
+    float f;
+    uint u;
+};
+
 void main()
 {
     texture(s.sampler, vec3(inst.ni, bv.y, insts[2].nbv.z));

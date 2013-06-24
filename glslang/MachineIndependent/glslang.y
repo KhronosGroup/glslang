@@ -270,7 +270,7 @@ postfix_expression
         parseContext.variableCheck($1);
         if (!$1->isArray() && !$1->isMatrix() && !$1->isVector()) {
             if ($1->getAsSymbolNode())
-                parseContext.error($2.line, " left of '[' is not of type array, matrix, or vector ", $1->getAsSymbolNode()->getSymbol().c_str(), "");
+                parseContext.error($2.line, " left of '[' is not of type array, matrix, or vector ", $1->getAsSymbolNode()->getName().c_str(), "");
             else
                 parseContext.error($2.line, " left of '[' is not of type array, matrix, or vector ", "expression", "");
         }
@@ -746,8 +746,8 @@ function_identifier
         } else {
             TIntermSymbol* symbol = $1->getAsSymbolNode();
             if (symbol) {
-                parseContext.reservedErrorCheck(symbol->getLine(), symbol->getSymbol());
-                TFunction *function = new TFunction(&symbol->getSymbol(), TType(EbtVoid));
+                parseContext.reservedErrorCheck(symbol->getLine(), symbol->getName());
+                TFunction *function = new TFunction(&symbol->getName(), TType(EbtVoid));
                 $$.function = function;
             } else
                 parseContext.error($1->getLine(), "function call, method or subroutine call expected", "", "");

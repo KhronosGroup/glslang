@@ -56,6 +56,7 @@
 enum TOperator {
     EOpNull,            // if in a node, should only mean a node is still being built
     EOpSequence,        // denotes a list of statements, or parameters, etc.
+    EOpLinkerObjects,   // for aggregate node of objects the linker may need, if not reference by the rest of the AST
     EOpFunctionCall,    
     EOpFunction,        // For function definition
     EOpParameters,      // an aggregate listing the parameters to a function
@@ -353,6 +354,7 @@ public:
     
     virtual TBasicType getBasicType() const { return type.getBasicType(); }
     virtual TQualifier& getQualifier() { return type.getQualifier(); }
+    virtual const TQualifier& getQualifier() const { return type.getQualifier(); }
     virtual void propagatePrecision(TPrecisionQualifier);
     virtual int getVectorSize() const { return type.getVectorSize(); }
     virtual int getMatrixCols() const { return type.getMatrixCols(); }
@@ -431,15 +433,15 @@ public:
 	// if symbol is initialized as symbol(sym), the memory comes from the poolallocator of sym. If sym comes from
 	// per process globalpoolallocator, then it causes increased memory usage per compile
 	// it is essential to use "symbol = sym" to assign to symbol
-    TIntermSymbol(int i, const TString& sym, const TType& t) : 
-        TIntermTyped(t), id(i)  { symbol = sym;} 
+    TIntermSymbol(int i, const TString& n, const TType& t) : 
+        TIntermTyped(t), id(i)  { name = n;} 
     virtual int getId() const { return id; }
-    virtual const TString& getSymbol() const { return symbol;  }
+    virtual const TString& getName() const { return name; }
     virtual void traverse(TIntermTraverser*);
     virtual TIntermSymbol* getAsSymbolNode() { return this; }
 protected:
     int id;
-    TString symbol;
+    TString name;
 };
 
 class TIntermConstantUnion : public TIntermTyped {
@@ -519,12 +521,14 @@ public:
     virtual TIntermAggregate* getAsAggregate() { return this; }
     virtual void setOperator(TOperator o) { op = o; }
     virtual TIntermSequence& getSequence() { return sequence; }
+    virtual const TIntermSequence& getSequence() const { return sequence; }
 	virtual void setName(const TString& n) { name = n; }
     virtual const TString& getName() const { return name; }
     virtual void traverse(TIntermTraverser*);
     virtual void setUserDefined() { userDefined = true; }
     virtual bool isUserDefined() { return userDefined; }
     virtual TQualifierList& getQualifierList() { return qualifier; }
+    virtual const TQualifierList& getQualifierList() const { return qualifier; }
 	void setOptimize(bool o) { optimize = o; }
 	void setDebug(bool d) { debug = d; }
 	bool getOptimize() { return optimize; }

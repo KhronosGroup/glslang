@@ -41,13 +41,6 @@
 #include "SymbolTable.h"
 #include "localintermediate.h"
 
-struct TMatrixFields {
-    bool wholeRow;
-    bool wholeCol;
-    int row;
-    int col;
-};
-
 typedef enum {
     EBhRequire,
     EBhEnable,
@@ -62,6 +55,8 @@ struct TPragma {
 	TPragmaTable pragmaTable;
 };
 
+
+
 //
 // The following are extra variables needed during parsing, grouped together so
 // they can be passed to the parser without needing a global.
@@ -74,6 +69,7 @@ struct TParseContext {
     TInfoSink& infoSink;
     EShLanguage language;        // vertex or fragment language
     TIntermNode* treeRoot;       // root of parse tree being created
+    TIntermAggregate *linkage;   // aggregate node of objects the linker may need, if not reference by the rest of the AST
     int numErrors;               // number of compile-time errors encountered
     bool lexAfterType;           // true if we've recognized a type, so can only be looking for an identifier
     int loopNestingLevel;        // 0 if outside all loops
