@@ -48,6 +48,8 @@ in S2 s2;
 out vec3 sc;
 out float sf;
 
+uniform sampler2D arrayedSampler[5];
+
 void main()
 {
     float f;
@@ -57,13 +59,14 @@ void main()
     v = textureLod(s2DArray, c3D, 1.2);
     f = textureOffset(s2DShadow, c3D, ic2D, c1D);
     v = texelFetch(s3D, ic3D, ic1D);
-    v = texelFetchOffset(s2D, ic2D, 4, ic2D);
+    v = texelFetchOffset(arrayedSampler[2], ic2D, 4, ic2D);
     f = textureLodOffset(s2DShadow, c3D, c1D, ic2D);
     v = textureProjLodOffset(s2D, c3D, c1D, ic2D);
     v = textureGrad(sCube, c3D, c3D, c3D);
     f = textureGradOffset(s2DArrayShadow, c4D, c2D, c2D, ic2D);
     v = textureProjGrad(s3D, c4D, c3D, c3D);
     v = textureProjGradOffset(s2D, c3D, c2D, c2D, ic2D);
+    v = texture(arrayedSampler[ic1D], c2D);                 // ERROR
 
     ivec4 iv;
     iv = texture(is2D, c2D);
