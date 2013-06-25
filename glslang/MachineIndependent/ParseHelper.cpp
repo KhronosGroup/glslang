@@ -891,7 +891,8 @@ void TParseContext::precisionQualifierCheck(int line, TPublicType& publicType)
     if (publicType.basicType == EbtFloat || publicType.basicType == EbtUint || publicType.basicType == EbtInt || publicType.basicType == EbtSampler) {
         if (publicType.qualifier.precision == EpqNone)
             error(line, "type requires declaration of default precision qualifier", TType::getBasicString(publicType.basicType), "");
-    }
+    } else if (publicType.qualifier.precision != EpqNone)
+        error(line, "type cannot have precision qualifier", TType::getBasicString(publicType.basicType), "");
 }
 
 void TParseContext::parameterSamplerCheck(int line, TStorageQualifier qualifier, const TType& type)

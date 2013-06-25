@@ -68,3 +68,9 @@ void main()
     texture2D(samplerMed, vec2(0.1, 0.2));
     texture2D(samplerHigh, vec2(0.1, 0.2));
 }
+
+precision mediump bool;                 // ERROR
+//precision mediump struct { int a; } s;  // ERROR
+struct s {int a;};
+precision mediump s;                    // ERROR
+mediump bvec2 b2;                       // ERROR

@@ -54,4 +54,6 @@ void main()
     const int ca3[3] = int[](3, 2);  // ERROR
     int ica[] = int[](3, 2);
     int ica3[3] = int[](3, 2);       // ERROR
+    ica[3.1] = 3;                    // ERROR
+    ica[u[1]] = 4;                   // ERROR
 }

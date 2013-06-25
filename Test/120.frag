@@ -78,7 +78,23 @@ void main()
         bool b;
         gl_FragColor += b ? v : m;  // ERROR, types don't match around ":"
     }
+
+    gl_FragColor.xr;    // ERROR, swizzlers not from same field space
+    centTexCoord.z;     // ERROR, swizzler out of range
+    (a,b) = true;       // ERROR, not an l-value
 }
 
 float imageBuffer;
 float uimage2DRect;
+
+int main() {}           // ERROR
+void main(int a) {}     // ERROR
+
+const int a;            // ERROR
+
+int foo(in float a);
+int foo(out float a)    // ERROR
+{
+    return 3.2;         // ERROR
+    foo(a);             // ERROR
+}
