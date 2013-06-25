@@ -138,9 +138,6 @@ int C_DECL main(int argc, char* argv[])
                 case 'i': 
                     debugOptions |= EDebugOpIntermediate;       
                     break;
-                case 'a': 
-                    debugOptions |= EDebugOpAssembly;
-                    break;
                 case 'l':
                     debugOptions |= EDebugOpMemoryLeakMode;
                     break;
@@ -305,7 +302,6 @@ void usage()
     printf("Usage: standalone [ options ] filename\n"
            "Where: filename = filename ending in .frag* or .vert*\n"
            "-i: intermediate (glslang AST)\n"
-           "-a: assembly dump (LLVM IR)\n"
            "-d: delay end (keeps output up in debugger, WIN32)\n"
            "-l: memory leak mode\n"
            "-s: silent mode (no info log)\n"
