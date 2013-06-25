@@ -42,3 +42,4 @@ tokenLength.vert
 400.frag
 420.vert
 430scope.vert
+lineContinuation.vert

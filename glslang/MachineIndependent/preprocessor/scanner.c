@@ -382,7 +382,18 @@ static int byte_scan(InputSrc *in, yystypepp * yylvalpp)
         case 'u': case 'v': case 'w': case 'x': case 'y':
         case 'z':            
             do {
-                if (len < MAX_SYMBOL_NAME_LEN) {
+                if (ch == '\\') {
+                    // escaped character
+                    ch = cpp->currentInput->getch(cpp->currentInput, yylvalpp);
+                    if (ch == '\r' || ch == '\n') {
+                        int nextch = cpp->currentInput->getch(cpp->currentInput, yylvalpp);
+                        if (ch == '\r' && nextch == '\n')
+                            ch = cpp->currentInput->getch(cpp->currentInput, yylvalpp);
+                        else
+                            ch = nextch;
+                    } else
+                        ShPpErrorToInfoLog("can only escape newlines");
+                } else if (len < MAX_SYMBOL_NAME_LEN) {
                     symbol_name[len] = ch;
                     len++;
                     ch = cpp->currentInput->getch(cpp->currentInput, yylvalpp);					
@@ -393,7 +404,8 @@ static int byte_scan(InputSrc *in, yystypepp * yylvalpp)
             } while ((ch >= 'a' && ch <= 'z') ||
                      (ch >= 'A' && ch <= 'Z') ||
                      (ch >= '0' && ch <= '9') ||
-                     ch == '_');
+                     ch == '_' ||
+                     ch == '\\');
             if (len > MAX_SYMBOL_NAME_LEN)
                 len = MAX_SYMBOL_NAME_LEN;
             symbol_name[len] = '\0';
@@ -664,18 +676,25 @@ static int byte_scan(InputSrc *in, yystypepp * yylvalpp)
                 cpp->currentInput->ungetch(cpp->currentInput, ch, yylvalpp);
                 return lFloatConst(yylvalpp->symbol_name, 0, '.', yylvalpp);
             } else {
-                if (ch == '.') {
-                    return -1; // Special EOF hack
-                } else {
-                    cpp->currentInput->ungetch(cpp->currentInput, ch, yylvalpp);
-                    return '.';
-                }
+                cpp->currentInput->ungetch(cpp->currentInput, ch, yylvalpp);
+                return '.';
             }
         case '/':
             ch = cpp->currentInput->getch(cpp->currentInput, yylvalpp);
             if (ch == '/') {
                 do {
                     ch = cpp->currentInput->getch(cpp->currentInput, yylvalpp);
+                    if (ch == '\\') {
+                        // allow an escaped newline, otherwise escapes in comments are meaningless
+                        ch = cpp->currentInput->getch(cpp->currentInput, yylvalpp);
+                        if (ch == '\r' || ch == '\n') {
+                            int nextch = cpp->currentInput->getch(cpp->currentInput, yylvalpp);
+                            if (ch == '\r' && nextch == '\n')
+                                ch = cpp->currentInput->getch(cpp->currentInput, yylvalpp);
+                            else
+                                ch = nextch;
+                        }
+                    }
                 } while (ch != '\n' && ch != EOF);
                 if (ch == EOF)
                     return -1;

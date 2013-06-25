@@ -13,7 +13,7 @@ still in a comment
 
 // a different comment
 #version 430 core
-varying vec4 v;
+in vec4 v;
 void main() {}
 
 
