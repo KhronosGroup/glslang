@@ -79,8 +79,9 @@ void usage();
 void FreeFileData(char **data);
 char** ReadFileData(const char *fileName);
 void InfoLogMsg(const char* msg, const char* name, const int num);
-//Added to accomodate the multiple strings.
-int OutputMultipleStrings = 1;
+
+// Use to test breaking a single shader file into multiple strings.
+int NumShaderStrings = 1;
 
 //
 // Set up the per compile resources
@@ -255,21 +256,31 @@ static EShLanguage FindLanguage(char *name)
 bool CompileFile(const char *fileName, ShHandle compiler, int debugOptions, const TBuiltInResource *resources)
 {
     int ret;
-    char **data = ReadFileData(fileName);
+    char** shaderStrings = ReadFileData(fileName);
+    int* lengths = new int[NumShaderStrings];
+
+    // move to length-based strings, rather than null-terminated strings
+    for (int s = 0; s < NumShaderStrings; ++s)
+        lengths[s] = strlen(shaderStrings[s]);
 
 #ifdef _WIN32
     PROCESS_MEMORY_COUNTERS counters;  // just for memory leak testing
 #endif
 
-    if (!data)
+    if (! shaderStrings)
         return false;
 
     EShMessages messages = EShMsgDefault;
     if (debugOptions & EDebugOpRelaxedErrors)
         messages = (EShMessages)(messages | EShMsgRelaxedErrors);
     for (int i = 0; i < ((debugOptions & EDebugOpMemoryLeakMode) ? 100 : 1); ++i) {
-        for (int j = 0; j < ((debugOptions & EDebugOpMemoryLeakMode) ? 100 : 1); ++j)
-            ret = ShCompile(compiler, data, OutputMultipleStrings, EShOptNone, resources, debugOptions, 100, false, messages);
+        for (int j = 0; j < ((debugOptions & EDebugOpMemoryLeakMode) ? 100 : 1); ++j) {
+            //ret = ShCompile(compiler, shaderStrings, NumShaderStrings, lengths, EShOptNone, resources, debugOptions, 100, false, messages);
+            ret = ShCompile(compiler, shaderStrings, NumShaderStrings, 0, EShOptNone, resources, debugOptions, 100, false, messages);
+            //const char* multi[4] = { "# ve", "rsion", " 300 e", "s" };
+            //const char* multi[7] = { "/", "/", "\\", "\n", "\n", "#", "version 300 es" };
+            //ret = ShCompile(compiler, multi, 4, 0, EShOptNone, resources, debugOptions, 100, false, messages);
+        }
 
 #ifdef _WIN32
         if (debugOptions & EDebugOpMemoryLeakMode) {
@@ -279,7 +290,8 @@ bool CompileFile(const char *fileName, ShHandle compiler, int debugOptions, cons
 #endif
     }
 
-    FreeFileData(data);
+    delete [] lengths;
+    FreeFileData(shaderStrings);
 
     return ret ? true : false;
 }
@@ -366,11 +378,11 @@ char** ReadFileData(const char *fileName)
     if(count==0){
         return_data[0]=(char*)malloc(count+2);
         return_data[0][0]='\0';
-        OutputMultipleStrings=0;
+        NumShaderStrings=0;
         return return_data;       
     }
 
-	int len = (int)(ceil)((float)count/(float)OutputMultipleStrings);
+	int len = (int)(ceil)((float)count/(float)NumShaderStrings);
     int ptr_len=0,i=0;
 	while(count>0){
 		return_data[i]=(char*)malloc(len+2);
@@ -380,7 +392,7 @@ char** ReadFileData(const char *fileName)
 		ptr_len+=(len);
 		if(count<len){
             if(count==0){
-               OutputMultipleStrings=(i+1);
+               NumShaderStrings=(i+1);
                break;
             }
            len = count;
@@ -394,7 +406,7 @@ char** ReadFileData(const char *fileName)
 
 void FreeFileData(char **data)
 {
-    for(int i=0;i<OutputMultipleStrings;i++)
+    for(int i=0;i<NumShaderStrings;i++)
         free(data[i]);
 }
 

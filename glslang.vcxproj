@@ -154,6 +154,7 @@ xcopy /y $(IntDir)$(TargetName)$(TargetExt) Test</Command>
     <ClCompile Include="glslang\MachineIndependent\glslang_tab.cpp" />
     <ClCompile Include="glslang\MachineIndependent\InfoSink.cpp" />
     <ClCompile Include="glslang\MachineIndependent\Initialize.cpp" />
+    <ClCompile Include="glslang\MachineIndependent\Scan.cpp" />
     <ClCompile Include="glslang\MachineIndependent\Versions.cpp" />
     <ClCompile Include="OGLCompilersDLL\InitializeDll.cpp" />
     <ClCompile Include="glslang\MachineIndependent\IntermTraverse.cpp" />
@@ -204,6 +205,7 @@ xcopy /y $(IntDir)$(TargetName)$(TargetExt) Test</Command>
     <ClInclude Include="glslang\Include\Common.h" />
     <ClInclude Include="glslang\Include\ConstantUnion.h" />
     <ClInclude Include="glslang\Include\InfoSink.h" />
+    <ClInclude Include="glslang\MachineIndependent\Scan.h" />
     <ClInclude Include="glslang\MachineIndependent\Versions.h" />
     <ClInclude Include="OGLCompilersDLL\InitializeDll.h" />
     <ClInclude Include="glslang\Include\InitializeGlobals.h" />

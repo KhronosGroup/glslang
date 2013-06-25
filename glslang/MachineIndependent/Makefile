@@ -11,12 +11,12 @@ LIBCODEGEN=./../GenericCodeGen/libCodeGen.a
 OBJECTS= Initialize.o IntermTraverse.o \
 	Intermediate.o ParseHelper.o PoolAlloc.o QualifierAlive.o \
 	RemoveTree.o ShaderLang.o intermOut.o parseConst.o SymbolTable.o \
-	InfoSink.o Versions.o Constant.o
+	InfoSink.o Versions.o Constant.o Scan.o
 
 SRCS= gen_glslang.cpp gen_glslang_tab.cpp Initialize.cpp IntermTraverse.cpp \
 	Intermediate.cpp ParseHelper.cpp PoolAlloc.cp QualifierAlive.cpp \
 	RemoveTree.cpp ShaderLang.cpp SymbolTable.cpp intermOut.cpp \
-	parseConst.cpp InfoSink.cpp Versions.cpp Constant.cpp
+	parseConst.cpp InfoSink.cpp Versions.cpp Constant.cpp Scan.cpp
 CPPFLAGS=$(DEFINE) $(INCLUDE) -fPIC
 SHAREDOBJECT=./lib/libglslang.so
 
@@ -161,3 +161,4 @@ parseConst.o: ../Public/ShaderLang.h
 InfoSink.o: ../Include/InfoSink.h
 Versions.o: ParseHelper.h  Versions.h ../Include/ShHandle.h SymbolTable.h localintermediate.h
 Constant.o: localintermediate.h ../Include/intermediate.h ../Public/ShaderLang.h SymbolTable.h Versions.h
+Scan.o: Scan.h Versions.h

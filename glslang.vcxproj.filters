@@ -109,6 +109,9 @@
     <ClCompile Include="glslang\MachineIndependent\Constant.cpp">
       <Filter>Machine Independent</Filter>
     </ClCompile>
+    <ClCompile Include="glslang\MachineIndependent\Scan.cpp">
+      <Filter>Machine Independent</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="glslang\MachineIndependent\Initialize.h">
@@ -214,6 +217,9 @@
       <Filter>Machine Independent\Generated Source</Filter>
     </ClInclude>
     <ClInclude Include="glslang\MachineIndependent\Versions.h">
+      <Filter>Machine Independent</Filter>
+    </ClInclude>
+    <ClInclude Include="glslang\MachineIndependent\Scan.h">
       <Filter>Machine Independent</Filter>
     </ClInclude>
   </ItemGroup>

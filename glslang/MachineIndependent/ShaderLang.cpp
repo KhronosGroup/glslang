@@ -43,6 +43,7 @@
 #include <string.h>
 #include "SymbolTable.h"
 #include "ParseHelper.h"
+#include "Scan.h"
 
 #include "../Include/ShHandle.h"
 #include "InitializeDll.h"
@@ -206,132 +207,6 @@ void SetupBuiltinSymbolTable(int version, EProfile profile)
     SetGlobalPoolAllocatorPtr(savedGPA);
 }
 
-// returns true if something whas consumed
-bool ConsumeWhitespaceComment(const char*& s)
-{
-    const char* startPoint = s;
-
-    // first, skip white space    
-    while (*s == ' ' || *s == '\t' || *s == '\r' || *s == '\n') {
-        ++s;
-    }
-
-    // then, check for a comment
-    if (*s == '/') {
-        if (*(s+1) == '/') {
-
-            // a '//' style comment
-            s += 2;
-            do {
-                while (*s && *s != '\\' && *s != '\r' && *s != '\n')
-                    ++s;
-
-                if (*s == '\r' || *s == '\n' || *s == 0) {
-                    while (*s == '\r' || *s == '\n')
-                        ++s;
-
-                    // we reached the end of the comment
-                    break;
-                } else {
-                    // it's a '\', so we need to keep going, after skipping what's escaped
-                    ++s;
-                    if (*s == '\r' && *(s+1) == '\n')
-                        s += 2;
-                    else {
-                        // skip the escaped character
-                        if (*s)
-                            ++s;
-                    }
-                }
-            } while (true);
-
-        } else if (*(s+1) == '*') {
-
-            // a '/*' style comment
-            s += 2;
-            do {
-                while (*s && *s != '*')
-                    ++s;
-                if (*s == '*') {
-                    ++s;
-                    if (*s == '/') {
-                        ++s;
-                        break;
-                    } // else not end of comment, keep going
-                } else // end of string
-                    break;
-            } while (true);
-        } // else it's not a comment
-    } // else it's not a comment
-
-    return startPoint != s;
-}
-
-void ScanVersion(const char* const shaderStrings[], int numStrings, int& version, EProfile& profile)
-{
-    // This function doesn't have to get all the semantics correct, 
-    // just find the #version if there is a correct one present.
-    // The CPP will have the responsibility of getting all the semantics right.
-
-    version = 0;  // means not found
-    profile = ENoProfile;
-
-    const char* s = &shaderStrings[0][0];
-
-    // TODO: semantics:  ES error check: #version must be on first line
-
-    while (ConsumeWhitespaceComment(s))
-        ;
-
-    // #
-    if (*s != '#')
-        return;
-    ++s;
-
-    // whitespace
-    while (*s == ' ' || *s == '\t') {
-        ++s;
-    }
-
-    // version
-    if (strncmp(s, "version", 7) != 0)
-        return;
-
-    // whitespace
-    s += 7;
-    while (*s == ' ' || *s == '\t') {
-        ++s;
-    }
-
-    // version number
-    while (*s >= '0' && *s <= '9') {
-        version = 10 * version + (*s - '0');
-        ++s;
-    }
-    if (version == 0)
-        return;
-    
-    // whitespace
-    while (*s == ' ' || *s == '\t') {
-        ++s;
-    }
-
-    // profile
-    const char* end = s;
-    while (*end != ' ' && *end != '\t' && *end != '\n' && *end != '\r') {
-        if (*end == 0)
-            return;
-        ++end;
-    }
-    int profileLength = end - s;
-    if (profileLength == 2 && strncmp(s, "es", profileLength) == 0)
-        profile = EEsProfile;
-    else if (profileLength == 4 && strncmp(s, "core", profileLength) == 0)
-        profile = ECoreProfile;
-    else if (profileLength == 13 && strncmp(s, "compatibility", profileLength) == 0)
-        profile = ECompatibilityProfile;
-}
-
 bool DeduceProfile(TInfoSink& infoSink, int version, EProfile& profile)
 {
     const int FirstProfileVersion = 150;
@@ -381,7 +256,6 @@ bool DeduceProfile(TInfoSink& infoSink, int version, EProfile& profile)
 
     return true;
 }
-
 
 }; // end anonymous namespace for local functions
 
@@ -479,6 +353,7 @@ int ShCompile(
     const ShHandle handle,
     const char* const shaderStrings[],
     const int numStrings,
+    const int* inputLengths,
     const EShOptimizationLevel optLevel,
     const TBuiltInResource* resources,
     int debugOptions,
@@ -487,7 +362,7 @@ int ShCompile(
     EShMessages messages       // warnings/errors
     )
 {
-    if (!InitThread())
+    if (! InitThread())
         return 0;
 
     if (handle == 0)
@@ -497,17 +372,28 @@ int ShCompile(
     if (compiler == 0)
         return 0;
 
-    GlobalPoolAllocator.push();
     compiler->infoSink.info.erase();
     compiler->infoSink.debug.erase();
 
     if (numStrings == 0)
         return 1;
 
+    GlobalPoolAllocator.push();
+    
+    // move to length-based strings, rather than null-terminated strings
+    int* lengths = new int[numStrings];
+    for (int s = 0; s < numStrings; ++s) {
+        if (inputLengths == 0 || inputLengths[s] < 0)
+            lengths[s] = strlen(shaderStrings[s]);
+        else
+            lengths[s] = inputLengths[s];
+    }
+
     int version;
     EProfile profile;
     bool versionStatementMissing = false;
-    ScanVersion(shaderStrings, numStrings, version, profile);
+    glslang::TInputScanner input(numStrings, shaderStrings, lengths);
+    bool versionNotFirst = ScanVersion(input, version, profile);
     if (version == 0) {
         version = defaultVersion;
         versionStatementMissing = true;
@@ -533,6 +419,8 @@ int ShCompile(
     parseContext.initializeExtensionBehavior();
     if (versionStatementMissing)
         parseContext.warn(1, "statement missing: use #version on first line of shader", "#version", "");
+    else if (profile == EEsProfile && version >= 300 && versionNotFirst)
+        parseContext.error(1, "statement must appear first in ESSL shader; before comments or newlines", "#version", "");
 
     GlobalParseContext = &parseContext;
     
@@ -553,7 +441,7 @@ int ShCompile(
     if (parseContext.insertBuiltInArrayAtGlobalLevel())
         success = false;
 
-    int ret = PaParseStrings(const_cast<char**>(shaderStrings), 0, numStrings, parseContext, parseContext.getPreamble());
+    int ret = PaParseStrings(const_cast<char**>(shaderStrings), lengths, numStrings, parseContext, parseContext.getPreamble());
     if (ret)
         success = false;
     intermediate.addSymbolLinkageNodes(parseContext.treeRoot, parseContext.linkage, parseContext.language, symbolTable);
@@ -597,6 +485,7 @@ int ShCompile(
     // Throw away all the temporary memory used by the compilation process.
     //
     GlobalPoolAllocator.pop();
+    delete [] lengths;
 
     return success ? 1 : 0;
 }

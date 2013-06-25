@@ -164,6 +164,7 @@ SH_IMPORT_EXPORT int ShCompile(
     const ShHandle,
     const char* const shaderStrings[],
     const int numStrings,
+    const int* lengths,
     const EShOptimizationLevel,
     const TBuiltInResource *resources,
     int debugOptions,
