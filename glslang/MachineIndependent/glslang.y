@@ -326,7 +326,6 @@ postfix_expression
             TType newType($1->getType());
             newType.dereference();
             $$->setType(newType);
-            // TODO: testing: write a set of dereference tests
         }
     }
     | function_call {
@@ -339,8 +338,6 @@ postfix_expression
             // It can only be a method (e.g., length), which can't be resolved until
             // we later see the function calling syntax.  Save away the name for now.
             //
-
-            // TODO: semantics: if next token is not "(", then this is an error
 
             if (*$3.string == "length") {
                 parseContext.profileRequires($3.line, ENoProfile, 120, "GL_3DL_array_objects", ".length");
@@ -453,7 +450,8 @@ function_call
         TFunction* fnCall = $1.function;
         TOperator op = fnCall->getBuiltInOp();
         if (op == EOpArrayLength) {
-            // TODO: semantics: check for no arguments to .length()
+            if (fnCall->getParamCount() > 0)
+                parseContext.error($1.line, "method does not accept any arguments", fnCall->getName().c_str(), "");
             int length;
             if ($1.intermNode->getAsTyped() == 0 || ! $1.intermNode->getAsTyped()->getType().isArray() || $1.intermNode->getAsTyped()->getType().getArraySize() == 0) {
                 parseContext.error($1.line, "", fnCall->getName().c_str(), "array must be declared with a size before using this method");
@@ -502,8 +500,8 @@ function_call
                     $$ = parseContext.intermediate.addBuiltInFunctionCall(op, fnCandidate->getParamCount() == 1, $1.intermNode, fnCandidate->getReturnType());
                     if ($$ == 0)  {
                         parseContext.error($1.intermNode->getLine(), " wrong operand type", "Internal Error",
-                            "built in unary operator function.  Type: %s",
-                            static_cast<TIntermTyped*>($1.intermNode)->getCompleteString().c_str());
+                                           "built in unary operator function.  Type: %s",
+                                           static_cast<TIntermTyped*>($1.intermNode)->getCompleteString().c_str());
                         YYERROR;
                     }
                 } else {
@@ -754,7 +752,7 @@ function_identifier
                 TFunction *function = new TFunction(&symbol->getName(), TType(EbtVoid));
                 $$.function = function;
             } else
-                parseContext.error($1->getLine(), "function call, method or subroutine call expected", "", "");
+                parseContext.error($1->getLine(), "function call, method, or subroutine call expected", "", "");
         }
 
         if ($$.function == 0) {
@@ -769,6 +767,8 @@ unary_expression
     : postfix_expression {
         parseContext.variableCheck($1);
         $$ = $1;
+        if (TIntermMethod* method = $1->getAsMethodNode())
+            parseContext.error($1->getLine(), "incomplete method syntax", method->getMethodName().c_str(), "");
     }
     | INC_OP unary_expression {
         parseContext.lValueErrorCheck($1.line, "++", $2);
@@ -1086,7 +1086,7 @@ expression
 
 constant_expression
     : conditional_expression {
-        parseContext.constCheck($1);
+        parseContext.constCheck($1, "");
         $$ = $1;
     }
     ;
@@ -1277,6 +1277,7 @@ parameter_declarator
             parseContext.profileRequires($1.line, EEsProfile, 300, 0, "arrayed type");
             parseContext.arraySizeRequiredCheck($1.line, $1.arraySizes->front());
         }
+        parseContext.arrayDimCheck($2.line, $1.arraySizes, $3.arraySizes);
 
         parseContext.arraySizeRequiredCheck($3.line, $3.arraySizes->front());
         parseContext.reservedErrorCheck($2.line, *$2.string);
@@ -1346,7 +1347,8 @@ init_declarator_list
         parseContext.nonInitConstCheck($3.line, *$3.string, $1.type);
         if (parseContext.profile == EEsProfile)
             parseContext.arraySizeRequiredCheck($4.line, $4.arraySizes->front());
-        
+        parseContext.arrayDimCheck($3.line, $1.type.arraySizes, $4.arraySizes);
+
         $$ = $1;
 
         if (! parseContext.arrayQualifierError($4.line, $1.type)) {
@@ -1363,6 +1365,7 @@ init_declarator_list
             $1.type.arraySizes = $4.arraySizes;
             parseContext.arrayCheck($4.line, *$3.string, $1.type, variable);
         }
+        parseContext.arrayDimCheck($3.line, $1.type.arraySizes, $4.arraySizes);
 
         parseContext.profileRequires($5.line, ENoProfile, 120, "GL_3DL_array_objects", "initializer");
 
@@ -1414,7 +1417,8 @@ single_declaration
         $$.intermAggregate = 0;
         parseContext.nonInitConstCheck($2.line, *$2.string, $1);        
         if (parseContext.profile == EEsProfile)
-            parseContext.arraySizeRequiredCheck($3.line, $3.arraySizes->front());
+            parseContext.arraySizeRequiredCheck($3.line, $3.arraySizes->front());        
+        parseContext.arrayDimCheck($2.line, $1.arraySizes, $3.arraySizes);
 
         $$.type = $1;
 
@@ -1425,7 +1429,9 @@ single_declaration
         }
         parseContext.updateTypedDefaults($2.line, $$.type.qualifier, $2.string);
     }
-    | fully_specified_type IDENTIFIER array_specifier EQUAL initializer {
+    | fully_specified_type IDENTIFIER array_specifier EQUAL initializer {        
+        parseContext.arrayDimCheck($3.line, $1.arraySizes, $3.arraySizes);
+
         $$.intermAggregate = 0;
         $$.type = $1;
 
@@ -1736,6 +1742,7 @@ type_specifier
         $$.qualifier.precision = parseContext.getDefaultPrecision($$);
     }
     | type_specifier_nonarray array_specifier {        
+        parseContext.arrayDimCheck($2.line, $2.arraySizes, 0);
         $$ = $1;
         $$.qualifier.precision = parseContext.getDefaultPrecision($$);
         $$.arraySizes = $2.arraySizes;
@@ -2477,8 +2484,10 @@ struct_declaration
         parseContext.voidErrorCheck($1.line, (*$2)[0].type->getFieldName(), $1);
         parseContext.precisionQualifierCheck($1.line, $1);
 
-        for (unsigned int i = 0; i < $$->size(); ++i)
+        for (unsigned int i = 0; i < $$->size(); ++i) {
+            parseContext.arrayDimCheck($1.line, (*$$)[i].type, $1.arraySizes);
             (*$$)[i].type->mergeType($1);
+        }
     }
     | type_qualifier type_specifier struct_declarator_list SEMICOLON {
         if ($2.arraySizes) {
@@ -2494,8 +2503,10 @@ struct_declaration
         parseContext.mergeQualifiers($2.line, $2.qualifier, $1.qualifier, true);
         parseContext.precisionQualifierCheck($2.line, $2);
 
-        for (unsigned int i = 0; i < $$->size(); ++i)
+        for (unsigned int i = 0; i < $$->size(); ++i) {
+            parseContext.arrayDimCheck($1.line, (*$$)[i].type, $2.arraySizes);
             (*$$)[i].type->mergeType($2);
+        }
     }
     ;
 
@@ -2518,6 +2529,8 @@ struct_declarator
     | IDENTIFIER array_specifier {        
         if (parseContext.profile == EEsProfile)
             parseContext.arraySizeRequiredCheck($2.line, $2.arraySizes->front());
+        parseContext.arrayDimCheck($1.line, $2.arraySizes, 0);
+
         $$.type = new TType(EbtVoid);
         $$.line = $1.line;
         $$.type->setFieldName(*$1.string);
@@ -2678,6 +2691,8 @@ switch_statement_list
 
 case_label
     : CASE expression COLON {
+        parseContext.constCheck($2, "case");
+        parseContext.integerCheck($2, "case");
         $$ = parseContext.intermediate.addBranch(EOpCase, $2, $1.line);
     }
     | DEFAULT COLON {

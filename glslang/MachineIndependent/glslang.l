@@ -554,8 +554,6 @@ int yy_input(char* buf, int max_size);
 {D}+"."{D}*({E})?{LF} { pyylval->lex.line = yylineno; pyylval->lex.d = atof(yytext); return DOUBLECONSTANT; }
 "."{D}+({E})?{LF}     { pyylval->lex.line = yylineno; pyylval->lex.d = atof(yytext); return DOUBLECONSTANT; }
 
-"/*"            {  int ret = PaParseComment(pyylval->lex.line, parseContext); if (!ret) return ret; }
-
 "+="            {  pyylval->lex.line = yylineno; return ADD_ASSIGN; }
 "-="            {  pyylval->lex.line = yylineno; return SUB_ASSIGN; }
 "*="            {  pyylval->lex.line = yylineno; return MUL_ASSIGN; }
@@ -667,7 +665,7 @@ int PaParseStrings(char* argv[], int strLen[], int argc, TParseContext& parseCon
     char *writeablePreamble = 0;
     if (preamble) {
         // preAmble could be a hard-coded string; make writable copy
-        // TODO: CPP: make it not need writable strings
+        // TODO: efficiency PP: make it not need writable strings
         int size = strlen(preamble) + 1;
         writeablePreamble = new char[size];
         memcpy(writeablePreamble, preamble, size);
@@ -689,7 +687,7 @@ int PaParseStrings(char* argv[], int strLen[], int argc, TParseContext& parseCon
     cpp->notAVersionToken = 0;
     yylineno   = 1;
 
-    // TODO: CPP: a shader containing nothing but white space and comments is valid, even though it has no parse tokens
+    // TODO: desktop PP: a shader containing nothing but white space and comments is valid, even though it has no parse tokens
     int len = 0;
     while (argv[0][len] == ' '  ||
            argv[0][len] == '\t' ||
@@ -884,37 +882,6 @@ int Pa2ndGenerationImage(TParseContext& pc, int line, const char* text, YYSTYPE*
         pc.warn(yylineno, "using future type keyword", text, "");
 
     return PaIdentOrType(text, pc, pyylval);
-}
-
-// TODO: CPP: is this dead code?  Combine with other comment parsers.
-int PaParseComment(int& lineno, TParseContext& parseContextLocal)
-{
-    int transitionFlag = 0;
-    int nextChar;
-
-    while (transitionFlag != 2) {
-        nextChar = yyinput();
-        if (nextChar == '\n')
-             lineno++;
-        switch (nextChar) {
-        case '*' :
-            transitionFlag = 1;
-            break;
-        case '/' :  /* if star is the previous character, then it is the end of comment */
-            if (transitionFlag == 1) {
-                return 1 ;
-            }
-            break;
-        case EOF :
-            parseContextLocal.error(yylineno, "End of shader found before end of comment.", "", "", "");
-
-            return YY_NULL;
-        default :  /* Any other character will be a part of the comment */
-            transitionFlag = 0;
-        }
-    }
-
-    return 1;
 }
 
 extern "C" {

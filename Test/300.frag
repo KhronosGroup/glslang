@@ -97,5 +97,11 @@ void main()
     atanh(c3D);
 }
 
+uniform multi {
+    int[2] a[3];      // ERROR
+    int[2][3] b;      // ERROR
+    int c[2][3];      // ERROR
+} multiInst[2][3];    // ERROR
+
 float imageBuffer;    // ERROR, reserved
 float uimage2DRect;   // ERROR, reserved

@@ -78,8 +78,6 @@ NVIDIA HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 // cpp.c
 //
 
-// TODO: CPP handle escaped newlines in a // style comment, correctly done in ConsumeWhitespaceComment()
-
 #define _CRT_SECURE_NO_WARNINGS
 
 #include <stdarg.h>

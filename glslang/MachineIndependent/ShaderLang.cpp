@@ -82,7 +82,7 @@ const int VersionCount = 12;
 // Each has a different set of built-ins, and we want to preserve that from
 // compile to compile.
 //
-// TODO: quality: thread safety: ensure the built-in symbol table levels are reado only.
+// TODO: quality: thread safety: ensure the built-in symbol table levels are read only.
 TSymbolTable* SharedSymbolTables[VersionCount][EProfileCount][EShLangCount] = {};
 
 TPoolAllocator* PerProcessGPA = 0;

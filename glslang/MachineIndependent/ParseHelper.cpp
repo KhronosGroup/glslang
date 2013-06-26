@@ -461,10 +461,10 @@ bool TParseContext::lValueErrorCheck(int line, const char* op, TIntermTyped* nod
 // Both test, and if necessary spit out an error, to see if the node is really
 // a constant.
 //
-void TParseContext::constCheck(TIntermTyped* node)
+void TParseContext::constCheck(TIntermTyped* node, const char* token)
 {
     if (node->getQualifier().storage != EvqConst)
-        error(node->getLine(), "constant expression required", "", "");
+        error(node->getLine(), "constant expression required", token, "");
 }
 
 //
@@ -994,6 +994,28 @@ void TParseContext::arraySizeRequiredCheck(int line, int& size)
         error(line, "array size required", "", "");
         size = 1;
     }
+}
+
+void TParseContext::arrayDimError(int line)
+{
+    requireProfile(line, (EProfileMask)(ECoreProfileMask | ECompatibilityProfileMask), "arrays of arrays");
+    profileRequires(line, ECoreProfile, 430, 0, "arrays of arrays");
+    profileRequires(line, ECompatibilityProfile, 430, 0, "arrays of arrays");
+}
+
+void TParseContext::arrayDimCheck(int line, TArraySizes sizes1, TArraySizes sizes2)
+{
+    if (sizes1 && sizes2 ||
+        sizes1 && sizes1->size() > 1 ||
+        sizes2 && sizes2->size() > 1)
+        arrayDimError(line);
+}
+
+void TParseContext::arrayDimCheck(int line, const TType* type, TArraySizes sizes2)
+{
+    if (type && type->isArray() && sizes2 ||
+        sizes2 && sizes2->size() > 1)
+        arrayDimError(line);
 }
 
 //
@@ -1582,6 +1604,8 @@ void TParseContext::addBlock(int line, TTypeList& typeList, const TString* insta
         return;
     }
 
+    arrayDimCheck(line, arraySizes, 0);
+
     // check for qualifiers and types that don't belong within a block
     for (unsigned int member = 0; member < typeList.size(); ++member) {
         TQualifier memberQualifier = typeList[member].type->getQualifier();
@@ -1774,10 +1798,26 @@ void TParseContext::wrapupSwitchSubsequence(TIntermAggregate* statements, TInter
         statements->setOperator(EOpSequence);
         switchSequence->push_back(statements);
     }
-    if (branchNode)
+    if (branchNode) {
+        // check all previous cases for the same label (or both are 'default')
+        for (unsigned int s = 0; s < switchSequence->size(); ++s) {
+            TIntermBranch* prevBranch = (*switchSequence)[s]->getAsBranchNode();
+            if (prevBranch) {
+                TIntermTyped* prevExpression = prevBranch->getExpression();
+                TIntermTyped* newExpression = branchNode->getAsBranchNode()->getExpression();
+                if (prevExpression == 0 && newExpression == 0)
+                    error(branchNode->getLine(), "duplicate label", "default", "");
+                else if (prevExpression != 0 && 
+                          newExpression != 0 &&
+                         prevExpression->getAsConstantUnion() && 
+                          newExpression->getAsConstantUnion() &&
+                         prevExpression->getAsConstantUnion()->getUnionArrayPointer()->getIConst() == 
+                          newExpression->getAsConstantUnion()->getUnionArrayPointer()->getIConst())
+                    error(branchNode->getLine(), "duplicated value", "case", "");
+            }
+        }
         switchSequence->push_back(branchNode);
-
-    // TODO: semantics: verify no duplicated case values
+    }
 }
 
 //

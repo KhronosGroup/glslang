@@ -113,13 +113,16 @@ struct TParseContext {
     void binaryOpError(int line, const char* op, TString left, TString right);
     void variableCheck(TIntermTyped*& nodePtr);
     bool lValueErrorCheck(int line, const char* op, TIntermTyped*);
-    void constCheck(TIntermTyped* node);
+    void constCheck(TIntermTyped* node, const char* token);
     void integerCheck(TIntermTyped* node, const char* token);
     void globalCheck(int line, bool global, const char* token);
     bool constructorError(int line, TIntermNode*, TFunction&, TOperator, TType&);
     void arraySizeCheck(int line, TIntermTyped* expr, int& size);
     bool arrayQualifierError(int line, const TPublicType&);
     void arraySizeRequiredCheck(int line, int& size);
+    void arrayDimError(int line);
+    void arrayDimCheck(int line, TArraySizes sizes1, TArraySizes sizes2);
+    void arrayDimCheck(int line, const TType*, TArraySizes);
     void arrayCheck(int line, TString& identifier, const TPublicType&, TVariable*& variable);
     bool insertBuiltInArrayAtGlobalLevel();
     bool voidErrorCheck(int, const TString&, const TPublicType&);
