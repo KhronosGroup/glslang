@@ -1032,24 +1032,26 @@ int MacroExpand(int atom, yystypepp* yylvalpp, int expandUndef)
         return 1;
     }
 
+    // no recursive expansions
     if (sym && sym->details.mac.busy)
-        return 0;        // no recursive expansions
+        return 0;
+
+    // not expanding of undefined symbols
+    if ((! sym || sym->details.mac.undef) && ! expandUndef)
+        return 0;
 
     in = (MacroInputSrc*)malloc(sizeof(*in));
     memset(in, 0, sizeof(*in));
     in->base.line = cpp->currentInput->line;
     in->base.name = cpp->currentInput->name;
 
-    if ((! sym || sym->details.mac.undef)) {
-        if (expandUndef) {
-	        // push input
-            in->base.scan = zero_scan;
-            in->base.prev = cpp->currentInput;
-            cpp->currentInput = &in->base;
+    if ((! sym || sym->details.mac.undef) && expandUndef) {
+	    // push input
+        in->base.scan = zero_scan;
+        in->base.prev = cpp->currentInput;
+        cpp->currentInput = &in->base;
 
-            return -1;
-        } else
-            return 0;
+        return -1;
     }
     
     in->base.scan = macro_scan;
