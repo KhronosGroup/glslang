@@ -254,6 +254,11 @@ bool CompileFile(const char *fileName, ShHandle compiler, int debugOptions, cons
 {
     int ret;
     char** shaderStrings = ReadFileData(fileName);
+    if (! shaderStrings) {
+        usage();
+        return false;
+    }
+
     int* lengths = new int[NumShaderStrings];
 
     // move to length-based strings, rather than null-terminated strings
