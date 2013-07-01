@@ -289,7 +289,7 @@ TIntermTyped* TIntermediate::addBuiltInFunctionCall(TOperator op, bool unary, TI
         node->setType(returnType);
 
         // propagate precision up from child
-        if (returnType.getQualifier().precision == EpqNone && profile == EEsProfile)
+        if (profile == EEsProfile && returnType.getQualifier().precision == EpqNone && returnType.getBasicType() != EbtBool)
             node->getQualifier().precision = child->getQualifier().precision;
 
         // propagate precision down to child

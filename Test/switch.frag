@@ -1,5 +1,5 @@
 #version 300 es
-
+precision highp float;
 uniform int c, d;
 in highp float x;
 

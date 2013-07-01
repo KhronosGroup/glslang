@@ -98,7 +98,7 @@ bool InitializeSymbolTable(TBuiltInStrings* BuiltInStrings, int version, EProfil
 	else
 		symbolTable = &symbolTables[language];
 
-    TParseContext parseContext(*symbolTable, intermediate, version, profile, language, infoSink);
+    TParseContext parseContext(*symbolTable, intermediate, true, version, profile, language, infoSink);
 
     GlobalParseContext = &parseContext;
     
@@ -411,7 +411,7 @@ int ShCompile(
     // they get popped again further down.
     AddContextSpecificSymbols(resources, compiler->infoSink, &symbolTable, version, profile, compiler->getLanguage());
 
-    TParseContext parseContext(symbolTable, intermediate, version, profile, compiler->getLanguage(), compiler->infoSink, forwardCompatible, messages);
+    TParseContext parseContext(symbolTable, intermediate, false, version, profile, compiler->getLanguage(), compiler->infoSink, forwardCompatible, messages);
     
     if (! goodProfile)
         parseContext.error(1, "incorrect", "#version", "");

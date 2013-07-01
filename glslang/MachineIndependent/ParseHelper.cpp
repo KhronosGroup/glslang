@@ -40,11 +40,11 @@
 #include <stdarg.h>
 #include <algorithm>
 
-TParseContext::TParseContext(TSymbolTable& symt, TIntermediate& interm, int v, EProfile p, EShLanguage L, TInfoSink& is,                             
+TParseContext::TParseContext(TSymbolTable& symt, TIntermediate& interm, bool pb, int v, EProfile p, EShLanguage L, TInfoSink& is,                             
                              bool fc, EShMessages m) : 
             intermediate(interm), symbolTable(symt), infoSink(is), language(L), treeRoot(0), linkage(0),
             numErrors(0), lexAfterType(false), loopNestingLevel(0),
-            structNestingLevel(0), inTypeParen(false),
+            structNestingLevel(0), inTypeParen(false), parsingBuiltins(pb),
             version(v), profile(p), forwardCompatible(fc), messages(m),
             contextPragma(true, false)
 {
@@ -885,12 +885,17 @@ TPrecisionQualifier TParseContext::getDefaultPrecision(TPublicType& publicType)
 
 void TParseContext::precisionQualifierCheck(int line, TPublicType& publicType)
 {
-    if (profile != EEsProfile)
+    // Built-in symbols are allowed some ambiguous precisions, to be pinned down
+    // later by context.
+    if (profile != EEsProfile || parsingBuiltins)
         return;
 
     if (publicType.basicType == EbtFloat || publicType.basicType == EbtUint || publicType.basicType == EbtInt || publicType.basicType == EbtSampler) {
-        if (publicType.qualifier.precision == EpqNone)
+        if (publicType.qualifier.precision == EpqNone) {
             error(line, "type requires declaration of default precision qualifier", TType::getBasicString(publicType.basicType), "");
+            publicType.qualifier.precision = EpqMedium;
+            defaultPrecision[publicType.basicType] = EpqMedium;
+        }
     } else if (publicType.qualifier.precision != EpqNone)
         error(line, "type cannot have precision qualifier", TType::getBasicString(publicType.basicType), "");
 }

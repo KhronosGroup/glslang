@@ -1483,6 +1483,8 @@ fully_specified_type
             if (parseContext.profile == EEsProfile)
                 parseContext.arraySizeRequiredCheck($1.line, $1.arraySizes->front());
         }
+
+        parseContext.precisionQualifierCheck($$.line, $$);
     }
     | type_qualifier type_specifier  {
         parseContext.globalQualifierFix($1.line, $1.qualifier, $2);

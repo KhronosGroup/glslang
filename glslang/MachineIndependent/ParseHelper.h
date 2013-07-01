@@ -62,7 +62,7 @@ struct TPragma {
 // they can be passed to the parser without needing a global.
 //
 struct TParseContext {
-    TParseContext(TSymbolTable&, TIntermediate&, int version, EProfile, EShLanguage, TInfoSink&,
+    TParseContext(TSymbolTable&, TIntermediate&, bool parsingBuiltins, int version, EProfile, EShLanguage, TInfoSink&,
                   bool forwardCompatible = false, EShMessages messages = EShMsgDefault);
     TIntermediate& intermediate; // to hold and build a parse tree
     TSymbolTable& symbolTable;   // symbol table that goes with the current language, version, and profile
@@ -78,6 +78,7 @@ struct TParseContext {
     bool inTypeParen;            // true if in parentheses, looking only for an identifier
     const TType* currentFunctionType;  // the return type of the function that's currently being parsed
     bool functionReturnsValue;   // true if a non-void function has a return
+    bool parsingBuiltins;        // true if parsing built-in symbols/functions
 
     int version;                 // version, updated by #version in the shader
     EProfile profile;            // the declared profile in the shader (core by default)
