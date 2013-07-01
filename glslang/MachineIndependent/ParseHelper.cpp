@@ -1632,7 +1632,7 @@ void TParseContext::addBlock(int line, TTypeList& typeList, const TString* insta
     mergeLayoutQualifiers(line, defaultQualification, currentBlockDefaults);
     for (unsigned int member = 0; member < typeList.size(); ++member) {
         TQualifier memberQualification = defaultQualification;
-        mergeLayoutQualifiers(line, memberQualification, typeList[member].type->getQualifier());
+        mergeQualifiers(line, memberQualification, typeList[member].type->getQualifier(), false);
         typeList[member].type->getQualifier() = memberQualification;
     }
 
