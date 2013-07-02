@@ -724,14 +724,14 @@ void yyerror(const char *s)
 
     if (pc.AfterEOF) {
         if (cpp->tokensBeforeEOF == 1)
-            GlobalParseContext->error(yylineno, "", "pre-mature EOF", s, "");
+            ThreadLocalParseContext()->error(yylineno, "", "pre-mature EOF", s, "");
     } else
-        GlobalParseContext->error(yylineno, "", yytext, s, "");
+        ThreadLocalParseContext()->error(yylineno, "", yytext, s, "");
 }
 
 void PaReservedWord()
 {
-    GlobalParseContext->error(yylineno, "Reserved word.", yytext, "", "");
+    ThreadLocalParseContext()->error(yylineno, "Reserved word.", yytext, "", "");
 }
 
 int PaIdentOrType(const char* yytext, TParseContext& parseContextLocal, YYSTYPE* pyylval)

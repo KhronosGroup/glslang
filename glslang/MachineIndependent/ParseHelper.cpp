@@ -2038,10 +2038,10 @@ bool InitializeParseContextIndex()
     return true;
 }
 
-bool InitializeGlobalParseContext()
+bool InitializeThreadParseContext()
 {
     if (GlobalParseContextIndex == OS_INVALID_TLS_INDEX) {
-        assert(0 && "InitializeGlobalParseContext(): Parse Context index not initialized");
+        assert(0 && "InitializeThreadParseContext(): Parse Context index not initialized");
         return false;
     }
 
@@ -2053,7 +2053,7 @@ bool InitializeGlobalParseContext()
 
     TThreadParseContext *lpThreadData = new TThreadParseContext();
     if (lpThreadData == 0) {
-        assert(0 && "InitializeGlobalParseContext(): Unable to create thread parse context");
+        assert(0 && "InitializeThreadParseContext(): Unable to create thread parse context");
         return false;
     }
 
@@ -2063,7 +2063,7 @@ bool InitializeGlobalParseContext()
     return true;
 }
 
-TParseContextPointer& GetGlobalParseContext()
+TParseContextPointer& ThreadLocalParseContext()
 {
     //
     // Minimal error checking for speed

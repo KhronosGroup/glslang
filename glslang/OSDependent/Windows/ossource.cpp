@@ -34,7 +34,7 @@
 
 #include "osinclude.h"
 //
-// This file contains contains the window's specific functions
+// This file contains contains the Window-OS-specific functions
 //
 
 #if !(defined(_WIN32) || defined(_WIN64))

@@ -37,7 +37,7 @@
 #include "osinclude.h"
 
 bool InitializeParseContextIndex();
-bool InitializeGlobalParseContext();
+bool InitializeThreadParseContext();
 bool FreeParseContext();
 bool FreeParseContextIndex();
 

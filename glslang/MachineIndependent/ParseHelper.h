@@ -185,8 +185,7 @@ int PaParseComment(int &lineno, TParseContext&);
 void ResetFlex();
 
 typedef TParseContext* TParseContextPointer;
-extern TParseContextPointer& GetGlobalParseContext();
-#define GlobalParseContext GetGlobalParseContext()
+TParseContextPointer& ThreadLocalParseContext();
 
 typedef struct TThreadParseContextRec
 {

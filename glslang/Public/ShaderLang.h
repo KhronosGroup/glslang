@@ -58,13 +58,17 @@
 #ifdef __cplusplus
     extern "C" {
 #endif
+
 //
 // Driver must call this first, once, before doing any other
 // compiler/linker operations.
 //
-SH_IMPORT_EXPORT int ShInitialize();
+// (Call once per process, not once per thread.)
 //
-// Driver should call this at shutdown.
+SH_IMPORT_EXPORT int ShInitialize();
+
+//
+// Driver should call this at process shutdown.
 //
 SH_IMPORT_EXPORT int __fastcall ShFinalize();
 

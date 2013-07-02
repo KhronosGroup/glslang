@@ -33,7 +33,7 @@
 //
 
 //
-// This file contains the Linux specific functions
+// This file contains the Linux-specific functions
 //
 #include "osinclude.h"
 #include "InitializeDll.h"

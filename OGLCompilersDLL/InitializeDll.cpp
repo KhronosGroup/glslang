@@ -89,7 +89,7 @@ bool InitThread()
 
 	InitializeGlobalPools();
 
-	if (!InitializeGlobalParseContext())
+	if (!InitializeThreadParseContext())
         return false;
 
     if (!OS_SetTLSValue(ThreadInitializeIndex, (void *)1)) {

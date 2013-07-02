@@ -100,7 +100,7 @@ bool InitializeSymbolTable(TBuiltInStrings* BuiltInStrings, int version, EProfil
 
     TParseContext parseContext(*symbolTable, intermediate, true, version, profile, language, infoSink);
 
-    GlobalParseContext = &parseContext;
+    ThreadLocalParseContext() = &parseContext;
     
     assert(symbolTable->isEmpty() || symbolTable->atSharedBuiltInLevel());
        
@@ -259,15 +259,14 @@ bool DeduceProfile(TInfoSink& infoSink, int version, EProfile& profile)
 
 }; // end anonymous namespace for local functions
 
+//
+// ShInitialize() should be called exactly once per process, not per thread.
+//
 int ShInitialize()
 {
     if (! InitProcess())
         return 0;
 
-    // TODO: Quality: Thread safety:
-    // This method should be called once per process. If it's called by multiple threads, then 
-    // we need to have thread synchronization code around the initialization of per process
-    // global pool allocator
     if (! PerProcessGPA) { 
         PerProcessGPA = new TPoolAllocator(true);
     }
@@ -422,7 +421,7 @@ int ShCompile(
     else if (profile == EEsProfile && version >= 300 && versionNotFirst)
         parseContext.error(1, "statement must appear first in ESSL shader; before comments or newlines", "#version", "");
 
-    GlobalParseContext = &parseContext;
+    ThreadLocalParseContext() = &parseContext;
     
     ResetFlex();
     InitPreprocessor();
