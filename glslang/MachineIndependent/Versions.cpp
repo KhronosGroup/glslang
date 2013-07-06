@@ -64,10 +64,10 @@ const char* ProfileName[EProfileCount] = {
 // which subset allows the feature.  If the current profile is not present,
 // give an error message.
 //
-void TParseContext::requireProfile(int line, EProfileMask profileMask, const char *featureDesc)
+void TParseContext::requireProfile(TSourceLoc loc, EProfileMask profileMask, const char *featureDesc)
 {
     if (((1 << profile) & profileMask) == 0)
-        error(line, "not supported with this profile:", featureDesc, ProfileName[profile]);
+        error(loc, "not supported with this profile:", featureDesc, ProfileName[profile]);
 }
 
 //
@@ -75,10 +75,10 @@ void TParseContext::requireProfile(int line, EProfileMask profileMask, const cha
 // which subset allows the feature.  If the current stage is not present,
 // give an error message.
 //
-void TParseContext::requireStage(int line, EShLanguageMask languageMask, const char *featureDesc)
+void TParseContext::requireStage(TSourceLoc loc, EShLanguageMask languageMask, const char *featureDesc)
 {
     if (((1 << language) & languageMask) == 0)
-        error(line, "not supported in this stage:", featureDesc, StageName[language]);
+        error(loc, "not supported in this stage:", featureDesc, StageName[language]);
 }
 
 //
@@ -88,7 +88,7 @@ void TParseContext::requireStage(int line, EShLanguageMask languageMask, const c
 //
 
 // one that takes multiple extensions
-void TParseContext::profileRequires(int line, EProfile callingProfile, int minVersion, int numExtensions, const char* extensions[], const char *featureDesc)
+void TParseContext::profileRequires(TSourceLoc loc, EProfile callingProfile, int minVersion, int numExtensions, const char* extensions[], const char *featureDesc)
 {
     if (profile == callingProfile) {
         bool okay = false;
@@ -98,7 +98,7 @@ void TParseContext::profileRequires(int line, EProfile callingProfile, int minVe
             TBehavior behavior = extensionBehavior[extensions[i]];
             switch (behavior) {
             case EBhWarn:
-                infoSink.info.message(EPrefixWarning, ("extension " + TString(extensions[i]) + " is being used for " + featureDesc).c_str(), line);
+                infoSink.info.message(EPrefixWarning, ("extension " + TString(extensions[i]) + " is being used for " + featureDesc).c_str(), loc);
                 // fall through
             case EBhRequire:
             case EBhEnable:
@@ -109,29 +109,29 @@ void TParseContext::profileRequires(int line, EProfile callingProfile, int minVe
         }
 
         if (! okay)
-            error(line, "not supported for this version or the enabled extensions", featureDesc, "");
+            error(loc, "not supported for this version or the enabled extensions", featureDesc, "");
     }
 }
 
 // one that takes a single extension
-void TParseContext::profileRequires(int line, EProfile callingProfile, int minVersion, const char* extension, const char *featureDesc)
+void TParseContext::profileRequires(TSourceLoc loc, EProfile callingProfile, int minVersion, const char* extension, const char *featureDesc)
 {
-    profileRequires(line, callingProfile, minVersion, extension ? 1 : 0, &extension, featureDesc);
+    profileRequires(loc, callingProfile, minVersion, extension ? 1 : 0, &extension, featureDesc);
 }
 
 //
 // Within a profile, see if a feature is deprecated and error or warn based on whether
 // a future compatibility context is being use.
 //
-void TParseContext::checkDeprecated(int line, EProfile callingProfile, int depVersion, const char *featureDesc)
+void TParseContext::checkDeprecated(TSourceLoc loc, EProfile callingProfile, int depVersion, const char *featureDesc)
 {
     if (profile == callingProfile) {
         if (version >= depVersion) {
             if (forwardCompatible)
-                error(line, "deprecated, may be removed in future release", featureDesc, "");
+                error(loc, "deprecated, may be removed in future release", featureDesc, "");
             else if (! (messages & EShMsgSuppressWarnings))
                 infoSink.info.message(EPrefixWarning, (TString(featureDesc) + " deprecated in version " +
-                                                       String(depVersion) + "; may be removed in future release").c_str(), line);
+                                                       String(depVersion) + "; may be removed in future release").c_str(), loc);
         }
     }
 }
@@ -140,27 +140,27 @@ void TParseContext::checkDeprecated(int line, EProfile callingProfile, int depVe
 // Within a profile, see if a feature has now been removed and if so, give an error.
 // The version argument is the first version no longer having the feature.
 //
-void TParseContext::requireNotRemoved(int line, EProfile callingProfile, int removedVersion, const char *featureDesc)
+void TParseContext::requireNotRemoved(TSourceLoc loc, EProfile callingProfile, int removedVersion, const char *featureDesc)
 {
     if (profile == callingProfile) {
         if (version >= removedVersion) {
             const int maxSize = 60;
             char buf[maxSize];
             snprintf(buf, maxSize, "%s profile; removed in version %d", ProfileName[profile], removedVersion);
-            error(line, "no longer supported in", featureDesc, buf);
+            error(loc, "no longer supported in", featureDesc, buf);
         }
     }
 }
 
-void TParseContext::fullIntegerCheck(int line, const char* op)
+void TParseContext::fullIntegerCheck(TSourceLoc loc, const char* op)
 {   
-    profileRequires(line, ENoProfile, 130, 0, op); 
-    profileRequires(line, EEsProfile, 300, 0, op);
+    profileRequires(loc, ENoProfile, 130, 0, op); 
+    profileRequires(loc, EEsProfile, 300, 0, op);
 }
 
-void TParseContext::doubleCheck(int line, const char* op)
+void TParseContext::doubleCheck(TSourceLoc loc, const char* op)
 {   
-    requireProfile(line, (EProfileMask)(ECoreProfileMask | ECompatibilityProfileMask), op);
-    profileRequires(line, ECoreProfile, 400, 0, op);
-    profileRequires(line, ECompatibilityProfile, 400, 0, op);
+    requireProfile(loc, (EProfileMask)(ECoreProfileMask | ECompatibilityProfileMask), op);
+    profileRequires(loc, ECoreProfile, 400, 0, op);
+    profileRequires(loc, ECompatibilityProfile, 400, 0, op);
 }

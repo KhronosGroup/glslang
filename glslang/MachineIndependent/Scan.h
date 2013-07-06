@@ -105,7 +105,7 @@ protected:
     int currentChar;
 };
 
-// The location of these is still pending a grand design for going to a singular
+// TODO: The location of these is still pending a grand design for going to a singular
 // scanner for version finding, preprocessing, and tokenizing:
 void ConsumeWhiteSpace(TInputScanner& input, bool& foundNonSpaceTab);
 bool ConsumeComment(TInputScanner& input);

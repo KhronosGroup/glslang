@@ -81,7 +81,7 @@ NVIDIA HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #if !defined(__SLGLOBALS_H)
 #define __SLGLOBALS_H 1
 
-typedef struct CPPStruct_Rec CPPStruct;
+#include "preprocess.h"
 
 // TODO: threading: Multi-threading note: The existence of this global makes
 // this preprocessing single-threaded only.
@@ -101,7 +101,6 @@ extern CPPStruct *cpp;
 #include "cpp.h"
 #include "tokens.h"
 #include "symbols.h"
-#include "compile.h"
 #if !defined(NO_PARSER)
 #include "parser.h"
 #endif

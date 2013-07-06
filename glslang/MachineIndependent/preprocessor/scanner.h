@@ -81,9 +81,7 @@ NVIDIA HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #if !defined(__SCANNER_H)
 #define __SCANNER_H 1
 
-#define MAX_SYMBOL_NAME_LEN 1025
-#define MAX_STRING_LEN 1025
-
+#include "preprocess.h"
 #include "parser.h"
 
 // Not really atom table stuff but needed first...
@@ -91,22 +89,7 @@ NVIDIA HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 extern "C" {
 #endif
 
-typedef struct SourceLoc_Rec {
-    unsigned short file, line;
-} SourceLoc;
-
 int yyparse (void);
-
-int yylex_CPP(char* buf, int maxSize);
-
-typedef struct InputSrc {
-    struct InputSrc	*prev;
-    int			(*scan)(struct InputSrc *, yystypepp *);
-    int			(*getch)(struct InputSrc *, yystypepp *);
-    void		(*ungetch)(struct InputSrc *, int, yystypepp *);
-    int			name;  /* atom */
-    int			line;
-} InputSrc;
 
 int InitScanner(CPPStruct *cpp);        // Intialise the cpp scanner. 
 int ScanFromString(char *);             // Start scanning the input from the string mentioned.

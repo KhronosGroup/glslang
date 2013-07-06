@@ -116,8 +116,7 @@ int   GetLineNumber(void);                  // Get the current String Number.
 int   GetStringNumber(void);                // Get the current String Number. 
 const char* GetStrfromTStr(void);           // Convert TString to String.  
 void  SetVersion(int);
-void  SetProfile(EProfile);
-int   GetVersion(void*);
+int   GetShaderVersion(void*);
 void  updateExtensionBehavior(const char* extName, const char* behavior);
 int   FreeCPP(void);
 

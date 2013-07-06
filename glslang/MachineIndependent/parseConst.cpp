@@ -69,7 +69,7 @@ public:
 void ParseSymbol(TIntermSymbol* node, TIntermTraverser* it)
 {
     TConstTraverser* oit = static_cast<TConstTraverser*>(it);
-    oit->infoSink.info.message(EPrefixInternalError, "Symbol Node found in constant constructor", node->getLine());
+    oit->infoSink.info.message(EPrefixInternalError, "Symbol Node found in constant constructor", node->getLoc());
 
     return;
 }
@@ -84,13 +84,13 @@ bool ParseBinary(bool /* preVisit */, TIntermBinary* node, TIntermTraverser* it)
         const int maxSize = GlslangMaxTypeLength + 50;
         char buf[maxSize];
         snprintf(buf, maxSize, "'constructor' : assigning non-constant to %s", oit->type.getCompleteString().c_str());
-        oit->infoSink.info.message(EPrefixError, buf, node->getLine());
+        oit->infoSink.info.message(EPrefixError, buf, node->getLoc());
         oit->error = true;
 
         return false;  
     }
 
-   oit->infoSink.info.message(EPrefixInternalError, "Binary Node found in constant constructor", node->getLine());
+   oit->infoSink.info.message(EPrefixInternalError, "Binary Node found in constant constructor", node->getLoc());
     
     return false;
 }
@@ -102,7 +102,7 @@ bool ParseUnary(bool /* preVisit */, TIntermUnary* node, TIntermTraverser* it)
     const int maxSize = GlslangMaxTypeLength + 50;
     char buf[maxSize];
     snprintf(buf, maxSize, "'constructor' : assigning non-constant to '%s'", oit->type.getCompleteString().c_str());
-    oit->infoSink.info.message(EPrefixError, buf, node->getLine());
+    oit->infoSink.info.message(EPrefixError, buf, node->getLoc());
     oit->error = true;
 
     return false;  
@@ -116,7 +116,7 @@ bool ParseAggregate(bool /* preVisit */, TIntermAggregate* node, TIntermTraverse
         const int maxSize = GlslangMaxTypeLength + 50;
         char buf[maxSize];
         snprintf(buf, maxSize, "'constructor' : assigning non-constant to '%s'", oit->type.getCompleteString().c_str());
-        oit->infoSink.info.message(EPrefixError, buf, node->getLine());
+        oit->infoSink.info.message(EPrefixError, buf, node->getLoc());
         oit->error = true;
 
         return false;  
@@ -165,7 +165,7 @@ bool ParseAggregate(bool /* preVisit */, TIntermAggregate* node, TIntermTraverse
 bool ParseSelection(bool /* preVisit */, TIntermSelection* node, TIntermTraverser* it)
 {
     TConstTraverser* oit = static_cast<TConstTraverser*>(it);
-    oit->infoSink.info.message(EPrefixInternalError, "Selection Node found in constant constructor", node->getLine());
+    oit->infoSink.info.message(EPrefixInternalError, "Selection Node found in constant constructor", node->getLoc());
     oit->error = true;
     return false;
 }
@@ -235,7 +235,7 @@ void ParseConstantUnion(TIntermConstantUnion* node, TIntermTraverser* it)
 bool ParseLoop(bool /* preVisit */, TIntermLoop* node, TIntermTraverser* it)
 {
     TConstTraverser* oit = static_cast<TConstTraverser*>(it);
-    oit->infoSink.info.message(EPrefixInternalError, "Loop Node found in constant constructor", node->getLine());
+    oit->infoSink.info.message(EPrefixInternalError, "Loop Node found in constant constructor", node->getLoc());
     oit->error = true;
     
     return false;
@@ -244,7 +244,7 @@ bool ParseLoop(bool /* preVisit */, TIntermLoop* node, TIntermTraverser* it)
 bool ParseBranch(bool /* previsit*/, TIntermBranch* node, TIntermTraverser* it)
 {
     TConstTraverser* oit = static_cast<TConstTraverser*>(it);
-    oit->infoSink.info.message(EPrefixInternalError, "Branch Node found in constant constructor", node->getLine());
+    oit->infoSink.info.message(EPrefixInternalError, "Branch Node found in constant constructor", node->getLoc());
     oit->error = true;
     
     return false;

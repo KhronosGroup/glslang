@@ -195,7 +195,7 @@ TIntermTyped* TIntermConstantUnion::fold(TOperator op, TIntermTyped* constantNod
                     newConstArray[i].setUConst(unionArray[i].getUConst() / rightUnionArray[i].getUConst());
                 break;
             default:
-                infoSink.info.message(EPrefixInternalError, "Constant folding cannot be done for \"/\"", getLine());
+                infoSink.info.message(EPrefixInternalError, "Constant folding cannot be done for \"/\"", getLoc());
                 return 0;
             }
         }
@@ -352,13 +352,13 @@ TIntermTyped* TIntermConstantUnion::fold(TOperator op, TIntermTyped* constantNod
         break;
 
     default:
-        infoSink.info.message(EPrefixInternalError, "Invalid operator for constant folding", getLine());
+        infoSink.info.message(EPrefixInternalError, "Invalid operator for constant folding", getLoc());
 
         return 0;
     }
 
     TIntermConstantUnion *newNode = new TIntermConstantUnion(newConstArray, returnType);
-    newNode->setLine(getLine());
+    newNode->setLoc(getLoc());
 
     return newNode;
 }
@@ -416,7 +416,7 @@ TIntermTyped* TIntermConstantUnion::fold(TOperator op, const TType& returnType, 
             case EbtInt:   newConstArray[i].setIConst(-unionArray[i].getIConst()); break;
             case EbtUint:  newConstArray[i].setUConst(static_cast<unsigned int>(-static_cast<int>(unionArray[i].getUConst())));  break;
             default:
-                infoSink.info.message(EPrefixInternalError, "Unary operation not folded into constant", getLine());
+                infoSink.info.message(EPrefixInternalError, "Unary operation not folded into constant", getLoc());
                 return 0;
             }
             break;
@@ -425,7 +425,7 @@ TIntermTyped* TIntermConstantUnion::fold(TOperator op, const TType& returnType, 
             switch (getType().getBasicType()) {
             case EbtBool:  newConstArray[i].setBConst(!unionArray[i].getBConst()); break;
             default:
-                infoSink.info.message(EPrefixInternalError, "Unary operation not folded into constant", getLine());
+                infoSink.info.message(EPrefixInternalError, "Unary operation not folded into constant", getLoc());
                 return 0;
             }
             break;
@@ -570,14 +570,14 @@ TIntermTyped* TIntermConstantUnion::fold(TOperator op, const TType& returnType, 
         case EOpAll:
 
         default:
-            infoSink.info.message(EPrefixInternalError, "missing operator for unary constant folding", getLine());
+            infoSink.info.message(EPrefixInternalError, "missing operator for unary constant folding", getLoc());
             return 0;
         }
     }
 
     TIntermConstantUnion *newNode = new TIntermConstantUnion(newConstArray, returnType);
     newNode->getTypePointer()->getQualifier().storage = EvqConst;
-    newNode->setLine(getLine());
+    newNode->setLoc(getLoc());
 
     return newNode;
 }
@@ -667,7 +667,7 @@ TIntermTyped* TIntermediate::fold(TIntermAggregate* aggrNode)
     case EOpReflect:
     case EOpRefract:
     case EOpOuterProduct:
-        infoSink.info.message(EPrefixInternalError, "constant folding operation not implemented", aggrNode->getLine());
+        infoSink.info.message(EPrefixInternalError, "constant folding operation not implemented", aggrNode->getLoc());
         return aggrNode;
 
     default:
@@ -676,7 +676,7 @@ TIntermTyped* TIntermediate::fold(TIntermAggregate* aggrNode)
 
     TIntermConstantUnion *newNode = new TIntermConstantUnion(newConstArray, aggrNode->getType());
     newNode->getTypePointer()->getQualifier().storage = EvqConst;
-    newNode->setLine(aggrNode->getLine());
+    newNode->setLoc(aggrNode->getLoc());
 
     return newNode;
 }
@@ -705,12 +705,12 @@ TIntermTyped* TIntermediate::foldConstructor(TIntermAggregate* aggrNode)
 
     constUnion* unionArray = new constUnion[aggrNode->getType().getObjectSize()];
     if (aggrNode->getSequence().size() == 1)
-        returnVal = parseConstTree(aggrNode->getLine(), aggrNode, unionArray, aggrNode->getOp(), aggrNode->getType(), true);
+        returnVal = parseConstTree(aggrNode->getLoc(), aggrNode, unionArray, aggrNode->getOp(), aggrNode->getType(), true);
     else
-        returnVal = parseConstTree(aggrNode->getLine(), aggrNode, unionArray, aggrNode->getOp(), aggrNode->getType());
+        returnVal = parseConstTree(aggrNode->getLoc(), aggrNode, unionArray, aggrNode->getOp(), aggrNode->getType());
 
     if (returnVal)
         return aggrNode;
 
-    return addConstantUnion(unionArray, aggrNode->getType(), aggrNode->getLine());
+    return addConstantUnion(unionArray, aggrNode->getType(), aggrNode->getLoc());
 }

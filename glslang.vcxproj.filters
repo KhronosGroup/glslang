@@ -97,9 +97,6 @@
     <ClCompile Include="glslang\OSDependent\Linux\ossource.cpp">
       <Filter>OSDependent\Linux</Filter>
     </ClCompile>
-    <ClCompile Include="glslang\MachineIndependent\gen_glslang.cpp">
-      <Filter>Machine Independent\Generated Source</Filter>
-    </ClCompile>
     <ClCompile Include="glslang\MachineIndependent\glslang_tab.cpp">
       <Filter>Machine Independent\Generated Source</Filter>
     </ClCompile>
@@ -133,9 +130,6 @@
       <Filter>Machine Independent</Filter>
     </ClInclude>
     <ClInclude Include="glslang\MachineIndependent\preprocessor\atom.h">
-      <Filter>Machine Independent\CPP</Filter>
-    </ClInclude>
-    <ClInclude Include="glslang\MachineIndependent\preprocessor\compile.h">
       <Filter>Machine Independent\CPP</Filter>
     </ClInclude>
     <ClInclude Include="glslang\MachineIndependent\preprocessor\cpp.h">
@@ -222,12 +216,12 @@
     <ClInclude Include="glslang\MachineIndependent\Scan.h">
       <Filter>Machine Independent</Filter>
     </ClInclude>
+    <ClInclude Include="glslang\MachineIndependent\ScanContext.h">
+      <Filter>Machine Independent</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="glslang\MachineIndependent\glslang.y">
-      <Filter>Machine Independent</Filter>
-    </CustomBuild>
-    <CustomBuild Include="glslang\MachineIndependent\glslang.l">
       <Filter>Machine Independent</Filter>
     </CustomBuild>
   </ItemGroup>

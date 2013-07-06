@@ -94,7 +94,10 @@ public:
         }
     }
     void location(TSourceLoc loc) {
-        append(FormatSourceLoc(loc).c_str());
+	    const int maxSize = 24;
+        char locText[maxSize];
+        snprintf(locText, maxSize, "%d:%d", loc.string, loc.line);
+        append(locText);
         append(": ");
     }
     void message(TPrefixType message, const char* s) {

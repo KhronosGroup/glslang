@@ -125,5 +125,9 @@ int linenumber = __LINE__;
 int filenumber = __FILE__;
 int version = __VERSION__;
 
+#define PI (3.14)
+#define TWOPI (2.0 * PI)
+float twoPi = TWOPI;
+
 #define PASTE(a,b) a ## b
 float PASTE(tod, ay) = 17;

@@ -75,20 +75,9 @@ TORT (INCLUDING NEGLIGENCE), STRICT LIABILITY OR OTHERWISE, EVEN IF
 NVIDIA HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 \****************************************************************************/
 
-#ifndef BISON_PARSER_H
-# define BISON_PARSER_H
+#ifndef PARSER_H
+# define PARSER_H
 
-#ifndef yystypepp
-typedef struct {
-    int    sc_int;
-    float  sc_fval;
-    double sc_dval;
-    int    sc_ident;
-	char   symbol_name[MAX_SYMBOL_NAME_LEN+1];
-} yystypepp;
-
-# define YYSTYPE_IS_TRIVIAL 1
-#endif
 # define	CPP_AND_OP	        257
 # define	CPP_SUB_ASSIGN	    259
 # define	CPP_MOD_ASSIGN	    260
@@ -97,7 +86,7 @@ typedef struct {
 # define	CPP_MUL_ASSIGN	263
 # define	CPP_EQ_OP	        264
 # define    CPP_XOR_OP         265 
-# define	ERROR_SY	    266
+# define	CPP_ERROR_SY	    266
 # define	CPP_FLOATCONSTANT	267
 # define	CPP_GE_OP	        268
 # define	CPP_RIGHT_OP        269
@@ -111,9 +100,6 @@ typedef struct {
 # define	CPP_INC_OP	    277
 # define	CPP_STRCONSTANT	    278
 # define	CPP_TYPEIDENTIFIER	279
-
-# define	FIRST_USER_TOKEN_SY	289
-
 # define	CPP_RIGHT_ASSIGN	    280
 # define	CPP_LEFT_ASSIGN	    281
 # define	CPP_AND_ASSIGN	282
@@ -123,5 +109,8 @@ typedef struct {
 # define	CPP_RIGHT_BRACKET	286
 # define	CPP_LEFT_BRACE	287
 # define	CPP_RIGHT_BRACE	288
+# define    CPP_UINTCONSTANT 289
+# define    CPP_DOUBLECONSTANT 290
+# define	CPP_FIRST_USER_TOKEN_SY 291	
 
-#endif /* not BISON_PARSER_H */
+#endif /* not PARSER_H */

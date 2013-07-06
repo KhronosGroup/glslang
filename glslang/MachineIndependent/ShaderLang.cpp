@@ -44,9 +44,14 @@
 #include "SymbolTable.h"
 #include "ParseHelper.h"
 #include "Scan.h"
+#include "ScanContext.h"
 
 #include "../Include/ShHandle.h"
 #include "InitializeDll.h"
+
+extern "C" {
+#include "preprocessor/preprocess.h"
+}
 
 #define SH_EXPORTING
 #include "../Public/ShaderLang.h"
@@ -99,8 +104,9 @@ bool InitializeSymbolTable(TBuiltInStrings* BuiltInStrings, int version, EProfil
 		symbolTable = &symbolTables[language];
 
     TParseContext parseContext(*symbolTable, intermediate, true, version, profile, language, infoSink);
-
     ThreadLocalParseContext() = &parseContext;
+    glslang::TScanContext scanContext(parseContext);
+    parseContext.scanContext = &scanContext;
     
     assert(symbolTable->isEmpty() || symbolTable->atSharedBuiltInLevel());
        
@@ -123,8 +129,6 @@ bool InitializeSymbolTable(TBuiltInStrings* BuiltInStrings, int version, EProfil
         return false;
     }
 
-    ResetFlex();
-    
     for (TBuiltInStrings::iterator i  = BuiltInStrings[parseContext.language].begin();
                                    i != BuiltInStrings[parseContext.language].end();    ++i) {
         const char* builtInShaders[1];
@@ -132,7 +136,7 @@ bool InitializeSymbolTable(TBuiltInStrings* BuiltInStrings, int version, EProfil
 
         builtInShaders[0] = (*i).c_str();
         builtInLengths[0] = (int) (*i).size();
-        if (PaParseStrings(const_cast<char**>(builtInShaders), builtInLengths, 1, parseContext, 0) != 0) {
+        if (! parseContext.parseShaderStrings(const_cast<char**>(builtInShaders), builtInLengths, 1) != 0) {
             infoSink.info.message(EPrefixInternalError, "Unable to parse built-ins");
             printf("Unable to parse built-ins\n");
 
@@ -271,6 +275,8 @@ int ShInitialize()
         PerProcessGPA = new TPoolAllocator(true);
     }
     
+    glslang::TScanContext::fillInKeywordMap();
+
     return true;
 }
 
@@ -411,19 +417,24 @@ int ShCompile(
     AddContextSpecificSymbols(resources, compiler->infoSink, &symbolTable, version, profile, compiler->getLanguage());
 
     TParseContext parseContext(symbolTable, intermediate, false, version, profile, compiler->getLanguage(), compiler->infoSink, forwardCompatible, messages);
+    glslang::TScanContext scanContext(parseContext);
+    parseContext.scanContext = &scanContext;
+
+    TSourceLoc beginning;
+    beginning.line = 1;
+    beginning.string = 0;
     
     if (! goodProfile)
-        parseContext.error(1, "incorrect", "#version", "");
+        parseContext.error(beginning, "incorrect", "#version", "");
 
     parseContext.initializeExtensionBehavior();
     if (versionStatementMissing)
-        parseContext.warn(1, "statement missing: use #version on first line of shader", "#version", "");
+        parseContext.warn(beginning, "statement missing: use #version on first line of shader", "#version", "");
     else if (profile == EEsProfile && version >= 300 && versionNotFirst)
-        parseContext.error(1, "statement must appear first in ESSL shader; before comments or newlines", "#version", "");
+        parseContext.error(beginning, "statement must appear first in ESSL shader; before comments or newlines", "#version", "");
 
     ThreadLocalParseContext() = &parseContext;
     
-    ResetFlex();
     InitPreprocessor();
 
     //
@@ -440,8 +451,8 @@ int ShCompile(
     if (parseContext.insertBuiltInArrayAtGlobalLevel())
         success = false;
 
-    int ret = PaParseStrings(const_cast<char**>(shaderStrings), lengths, numStrings, parseContext, parseContext.getPreamble());
-    if (ret)
+    bool ret = parseContext.parseShaderStrings(const_cast<char**>(shaderStrings), lengths, numStrings);
+    if (! ret)
         success = false;
     intermediate.addSymbolLinkageNodes(parseContext.treeRoot, parseContext.linkage, parseContext.language, symbolTable);
 

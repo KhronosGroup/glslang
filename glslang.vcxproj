@@ -150,7 +150,6 @@ xcopy /y $(IntDir)$(TargetName)$(TargetExt) Test</Command>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="glslang\MachineIndependent\Constant.cpp" />
-    <ClCompile Include="glslang\MachineIndependent\gen_glslang.cpp" />
     <ClCompile Include="glslang\MachineIndependent\glslang_tab.cpp" />
     <ClCompile Include="glslang\MachineIndependent\InfoSink.cpp" />
     <ClCompile Include="glslang\MachineIndependent\Initialize.cpp" />
@@ -192,7 +191,6 @@ xcopy /y $(IntDir)$(TargetName)$(TargetExt) Test</Command>
     <ClInclude Include="glslang\MachineIndependent\RemoveTree.h" />
     <ClInclude Include="glslang\MachineIndependent\localintermediate.h" />
     <ClInclude Include="glslang\MachineIndependent\preprocessor\atom.h" />
-    <ClInclude Include="glslang\MachineIndependent\preprocessor\compile.h" />
     <ClInclude Include="glslang\MachineIndependent\preprocessor\cpp.h" />
     <ClInclude Include="glslang\MachineIndependent\preprocessor\memory.h" />
     <ClInclude Include="glslang\MachineIndependent\preprocessor\parser.h" />
@@ -206,6 +204,7 @@ xcopy /y $(IntDir)$(TargetName)$(TargetExt) Test</Command>
     <ClInclude Include="glslang\Include\ConstantUnion.h" />
     <ClInclude Include="glslang\Include\InfoSink.h" />
     <ClInclude Include="glslang\MachineIndependent\Scan.h" />
+    <ClInclude Include="glslang\MachineIndependent\ScanContext.h" />
     <ClInclude Include="glslang\MachineIndependent\Versions.h" />
     <ClInclude Include="OGLCompilersDLL\InitializeDll.h" />
     <ClInclude Include="glslang\Include\InitializeGlobals.h" />
@@ -236,23 +235,6 @@ SET BISON_HAIRY=%(RootDir)%(Directory)..\..\tools\bison.simple
 cd %(RootDir)%(Directory)
 %(RootDir)%(Directory)..\..\tools\bison.exe -d -t glslang.y -o glslang_tab.cpp</Command>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">%(RootDir)%(Directory)%(Filename)_tab.cpp;%(Outputs)</Outputs>
-    </CustomBuild>
-  </ItemGroup>
-  <ItemGroup>
-    <CustomBuild Include="glslang\MachineIndependent\glslang.l">
-      <FileType>Document</FileType>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">cd %(RootDir)%(Directory)
-%(RootDir)%(Directory)..\..\tools\flex.exe glslang.l
-</Command>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Executing flex on glslang.l</Message>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">%(RootDir)%(Directory)gen_glslang.cpp</Outputs>
-      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">%(RootDir)%(Directory)glslang_tab.cpp.h</AdditionalInputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">cd %(RootDir)%(Directory)
-%(RootDir)%(Directory)..\..\tools\flex.exe glslang.l
-</Command>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Executing flex on glslang.l</Message>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">%(RootDir)%(Directory)gen_glslang.cpp</Outputs>
-      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">%(RootDir)%(Directory)glslang_tab.cpp.h</AdditionalInputs>
     </CustomBuild>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

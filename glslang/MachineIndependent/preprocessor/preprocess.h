@@ -75,10 +75,84 @@ TORT (INCLUDING NEGLIGENCE), STRICT LIABILITY OR OTHERWISE, EVEN IF
 NVIDIA HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 \****************************************************************************/
 
-#include "slglobals.h"
+#ifndef PREPROCESS_H
+#define PREPROCESS_H
+
+typedef struct SourceLoc_Rec {
+    int file;
+    int line;
+} SourceLoc;
+
+typedef struct Options_Rec {
+    const char *profileString;
+    int ErrorMode;
+    int Quiet;
+	
+    // Debug The Compiler options:
+    int DumpAtomTable;
+} Options;
+
+#define MAX_TOKEN_LENGTH 1024
+
+typedef struct {
+    int    ppToken;
+    int    sc_int;
+    double sc_dval;
+    int    sc_ident;
+	char   symbol_name[MAX_TOKEN_LENGTH+1];
+} yystypepp;
+
+typedef struct InputSrc {
+    struct InputSrc	*prev;
+    int			(*scan)(struct InputSrc *, yystypepp *);
+    int			(*getch)(struct InputSrc *, yystypepp *);
+    void		(*ungetch)(struct InputSrc *, int, yystypepp *);
+    int			name;  /* atom */
+    int			line;
+} InputSrc;
+
+typedef struct CPPStruct {
+    // Public members
+    SourceLoc *pLastSourceLoc;  // Set at the start of each statement by the tree walkers
+    Options options;            // Compile options and parameters
+
+    // Private members
+    SourceLoc lastSourceLoc;
+
+    // Scanner data:
+
+    SourceLoc *tokenLoc;        // Source location of most recent token seen by the scanner
+    int mostRecentToken;        // Most recent token seen by the scanner
+    InputSrc *currentInput;
+    int previous_token;
+    int notAVersionToken;       // used to make sure that #version is the first token seen in the file, if present
+    
+	void *pC;                   // storing the parseContext of the compile object in cpp.  
+     
+    // Private members:
+    SourceLoc ltokenLoc;
+	int ifdepth;                //current #if-#else-#endif nesting in the cpp.c file (pre-processor)    
+    int elsedepth[64];          //Keep a track of #if depth..Max allowed is 64.   
+    int elsetracker;            //#if-#else and #endif constructs...Counter.
+    const char *ErrMsg;
+    int CompileError;           //Indicate compile error when #error, #else,#elif mismatch.
+
+    //
+    // Globals used to communicate between parseStrings() and yy_input()and 
+    // also across the files.(gen_glslang.cpp and scanner.c)
+    //
+    int    PaWhichStr;            // which string we're parsing
+    int*   PaStrLen;              // array of lengths of the PaArgv strings
+    int    PaArgc;                // count of strings in the array
+    char** PaArgv;                // our array of strings to parse    
+    unsigned int tokensBeforeEOF : 1;
+} CPPStruct;
+
 extern CPPStruct *cpp;
-int InitCPPStruct(void);
-int InitScanner(CPPStruct *cpp);
-int InitAtomTable(AtomTable *atable, int htsize);
+
+int InitPreprocessor(void);
+int FinalizePreprocessor(void);
 int ScanFromString(char *s);
-char* GetStringOfAtom(AtomTable *atable, int atom);
+const char* PpTokenize(yystypepp*);
+
+#endif

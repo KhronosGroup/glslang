@@ -86,10 +86,8 @@ NVIDIA HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 CPPStruct  *cpp      = NULL;
 static int  refCount = 0;
 
-int InitPreprocessor(void);
 int ResetPreprocessor(void);
 int FreeCPPStruct(void);
-int FinalizePreprocessor(void);
 
 /*
  * InitCPPStruct() - Initilaize the CPP structure.

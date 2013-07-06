@@ -56,10 +56,10 @@
 //
 // Returns the added node.
 //
-TIntermSymbol* TIntermediate::addSymbol(int id, const TString& name, const TType& type, TSourceLoc line)
+TIntermSymbol* TIntermediate::addSymbol(int id, const TString& name, const TType& type, TSourceLoc loc)
 {
     TIntermSymbol* node = new TIntermSymbol(id, name, type);
-    node->setLine(line);
+    node->setLoc(loc);
 
     return node;
 }
@@ -69,7 +69,7 @@ TIntermSymbol* TIntermediate::addSymbol(int id, const TString& name, const TType
 //
 // Returns the added node.
 //
-TIntermTyped* TIntermediate::addBinaryMath(TOperator op, TIntermTyped* left, TIntermTyped* right, TSourceLoc line)
+TIntermTyped* TIntermediate::addBinaryMath(TOperator op, TIntermTyped* left, TIntermTyped* right, TSourceLoc loc)
 {
     // No operations work on blocks
     if (left->getType().getBasicType() == EbtBlock || right->getType().getBasicType() == EbtBlock)
@@ -92,9 +92,9 @@ TIntermTyped* TIntermediate::addBinaryMath(TOperator op, TIntermTyped* left, TIn
     // one and promote it to the right type.
     //
     TIntermBinary* node = new TIntermBinary(op);
-    if (line == 0)
-        line = right->getLine();
-    node->setLine(line);
+    if (loc.line == 0)
+        loc = right->getLoc();
+    node->setLoc(loc);
 
     node->setLeft(left);
     node->setRight(right);
@@ -114,7 +114,7 @@ TIntermTyped* TIntermediate::addBinaryMath(TOperator op, TIntermTyped* left, TIn
         if (folded)
             return folded;
         else
-            infoSink.info.message(EPrefixInternalError, "Constant folding failed", line);
+            infoSink.info.message(EPrefixInternalError, "Constant folding failed", loc);
     }
 
     return node;
@@ -125,7 +125,7 @@ TIntermTyped* TIntermediate::addBinaryMath(TOperator op, TIntermTyped* left, TIn
 //
 // Returns the added node.
 //
-TIntermTyped* TIntermediate::addAssign(TOperator op, TIntermTyped* left, TIntermTyped* right, TSourceLoc line)
+TIntermTyped* TIntermediate::addAssign(TOperator op, TIntermTyped* left, TIntermTyped* right, TSourceLoc loc)
 {
     // No block assignment
     if (left->getType().getBasicType() == EbtBlock || right->getType().getBasicType() == EbtBlock)
@@ -136,9 +136,9 @@ TIntermTyped* TIntermediate::addAssign(TOperator op, TIntermTyped* left, TInterm
     // from right to left.
     //
     TIntermBinary* node = new TIntermBinary(op);
-    if (line == 0)
-        line = left->getLine();
-    node->setLine(line);
+    if (loc.line == 0)
+        loc = left->getLoc();
+    node->setLoc(loc);
 
     TIntermTyped* child = addConversion(op, left->getType(), right);
     if (child == 0)
@@ -161,12 +161,12 @@ TIntermTyped* TIntermediate::addAssign(TOperator op, TIntermTyped* left, TInterm
 // Returns the added node.
 // The caller should set the type of the returned node.
 //
-TIntermTyped* TIntermediate::addIndex(TOperator op, TIntermTyped* base, TIntermTyped* index, TSourceLoc line)
+TIntermTyped* TIntermediate::addIndex(TOperator op, TIntermTyped* base, TIntermTyped* index, TSourceLoc loc)
 {
     TIntermBinary* node = new TIntermBinary(op);
-    if (line == 0)
-        line = index->getLine();
-    node->setLine(line);
+    if (loc.line == 0)
+        loc = index->getLoc();
+    node->setLoc(loc);
     node->setLeft(base);
     node->setRight(index);
 
@@ -180,7 +180,7 @@ TIntermTyped* TIntermediate::addIndex(TOperator op, TIntermTyped* base, TIntermT
 //
 // Returns the added node.
 //
-TIntermTyped* TIntermediate::addUnaryMath(TOperator op, TIntermNode* childNode, TSourceLoc line)
+TIntermTyped* TIntermediate::addUnaryMath(TOperator op, TIntermNode* childNode, TSourceLoc loc)
 {
     TIntermTyped* child = childNode->getAsTyped();
 
@@ -188,7 +188,7 @@ TIntermTyped* TIntermediate::addUnaryMath(TOperator op, TIntermNode* childNode, 
         return 0;
 
     if (child == 0) {
-        infoSink.info.message(EPrefixInternalError, "Bad type in AddUnaryMath", line);
+        infoSink.info.message(EPrefixInternalError, "Bad type in AddUnaryMath", loc);
         return 0;
     }
 
@@ -248,9 +248,9 @@ TIntermTyped* TIntermediate::addUnaryMath(TOperator op, TIntermNode* childNode, 
     // Make a new node for the operator.
     //
     TIntermUnary* node = new TIntermUnary(op);
-    if (line == 0)
-        line = child->getLine();
-    node->setLine(line);
+    if (loc.line == 0)
+        loc = child->getLoc();
+    node->setLoc(loc);
     node->setOperand(child);
     
     if (! node->promote(infoSink))
@@ -274,7 +274,7 @@ TIntermTyped* TIntermediate::addBuiltInFunctionCall(TOperator op, bool unary, TI
         //        
         TIntermTyped* child = childNode->getAsTyped();
         if (child == 0) {
-            infoSink.info.message(EPrefixInternalError, "Bad type in AddUnaryMath", child->getLine());
+            infoSink.info.message(EPrefixInternalError, "Bad type in AddUnaryMath", child->getLoc());
 
             return 0;
         }
@@ -284,7 +284,7 @@ TIntermTyped* TIntermediate::addBuiltInFunctionCall(TOperator op, bool unary, TI
             return child->getAsConstantUnion()->fold(op, returnType, infoSink);
 
         TIntermUnary* node = new TIntermUnary(op);
-        node->setLine(child->getLine());
+        node->setLoc(child->getLoc());
         node->setOperand(child);
         node->setType(returnType);
 
@@ -299,7 +299,7 @@ TIntermTyped* TIntermediate::addBuiltInFunctionCall(TOperator op, bool unary, TI
         return node;
     } else {
         // setAggregateOperater() calls fold() for constant folding
-        TIntermTyped* node = setAggregateOperator(childNode, op, returnType, childNode->getLine());
+        TIntermTyped* node = setAggregateOperator(childNode, op, returnType, childNode->getLoc());
         
         TPrecisionQualifier correctPrecision = returnType.getQualifier().precision;
         if (correctPrecision == EpqNone && profile == EEsProfile) {
@@ -328,7 +328,7 @@ TIntermTyped* TIntermediate::addBuiltInFunctionCall(TOperator op, bool unary, TI
 // Returns an aggregate node, which could be the one passed in if
 // it was already an aggregate.
 //
-TIntermTyped* TIntermediate::setAggregateOperator(TIntermNode* node, TOperator op, const TType& type, TSourceLoc line)
+TIntermTyped* TIntermediate::setAggregateOperator(TIntermNode* node, TOperator op, const TType& type, TSourceLoc loc)
 {
     TIntermAggregate* aggNode;
 
@@ -343,8 +343,8 @@ TIntermTyped* TIntermediate::setAggregateOperator(TIntermNode* node, TOperator o
             //
             aggNode = new TIntermAggregate();
             aggNode->getSequence().push_back(node);
-            if (line == 0)
-                line = node->getLine();
+            if (loc.line == 0)
+                loc = node->getLoc();
         }
     } else
         aggNode = new TIntermAggregate();
@@ -353,8 +353,8 @@ TIntermTyped* TIntermediate::setAggregateOperator(TIntermNode* node, TOperator o
     // Set the operator.
     //
     aggNode->setOperator(op);
-    if (line != 0)
-        aggNode->setLine(line);
+    if (loc.line != 0)
+        aggNode->setLoc(loc);
 
     aggNode->setType(type);
 
@@ -510,7 +510,7 @@ TIntermTyped* TIntermediate::addConversion(TOperator op, const TType& type, TInt
             //case EbtBool:  newOp = EOpConvBoolToDouble;  break;
             //case EbtFloat: newOp = EOpConvFloatToDouble; break;
             //default:
-                infoSink.info.message(EPrefixInternalError, "Bad promotion node", node->getLine());
+                infoSink.info.message(EPrefixInternalError, "Bad promotion node", node->getLoc());
                 return 0;
             //}
             break;
@@ -521,7 +521,7 @@ TIntermTyped* TIntermediate::addConversion(TOperator op, const TType& type, TInt
             case EbtBool:   newOp = EOpConvBoolToFloat; break;
             case EbtDouble: newOp = EOpConvDoubleToFloat; break;
             default:
-                infoSink.info.message(EPrefixInternalError, "Bad promotion node", node->getLine());
+                infoSink.info.message(EPrefixInternalError, "Bad promotion node", node->getLoc());
                 return 0;
             }
             break;
@@ -532,7 +532,7 @@ TIntermTyped* TIntermediate::addConversion(TOperator op, const TType& type, TInt
             case EbtFloat:  newOp = EOpConvFloatToBool; break;
             case EbtDouble: newOp = EOpConvDoubleToBool; break;
             default:
-                infoSink.info.message(EPrefixInternalError, "Bad promotion node", node->getLine());
+                infoSink.info.message(EPrefixInternalError, "Bad promotion node", node->getLoc());
                 return 0;
             }
             break;
@@ -543,7 +543,7 @@ TIntermTyped* TIntermediate::addConversion(TOperator op, const TType& type, TInt
             case EbtFloat:  newOp = EOpConvFloatToInt; break;
             case EbtDouble: newOp = EOpConvDoubleToInt; break;
             default:
-                infoSink.info.message(EPrefixInternalError, "Bad promotion node", node->getLine());
+                infoSink.info.message(EPrefixInternalError, "Bad promotion node", node->getLoc());
                 return 0;
             }
             break;
@@ -554,18 +554,18 @@ TIntermTyped* TIntermediate::addConversion(TOperator op, const TType& type, TInt
             case EbtFloat:  newOp = EOpConvFloatToUint; break;
             case EbtDouble: newOp = EOpConvDoubleToUint; break;
             default:
-                infoSink.info.message(EPrefixInternalError, "Bad promotion node", node->getLine());
+                infoSink.info.message(EPrefixInternalError, "Bad promotion node", node->getLoc());
                 return 0;
             }
             break;
         default: 
-            infoSink.info.message(EPrefixInternalError, "Bad promotion type", node->getLine());
+            infoSink.info.message(EPrefixInternalError, "Bad promotion type", node->getLoc());
             return 0;
         }
 
         TType type(promoteTo, EvqTemporary, node->getVectorSize(), node->getMatrixCols(), node->getMatrixRows());
         newNode = new TIntermUnary(newOp, type);
-        newNode->setLine(node->getLine());
+        newNode->setLoc(node->getLoc());
         newNode->setOperand(node);
 
         return newNode;
@@ -628,7 +628,7 @@ bool TIntermediate::canImplicitlyPromote(TBasicType from, TBasicType to)
 // Returns the resulting aggregate, unless 0 was passed in for 
 // both existing nodes.
 //
-TIntermAggregate* TIntermediate::growAggregate(TIntermNode* left, TIntermNode* right, TSourceLoc line)
+TIntermAggregate* TIntermediate::growAggregate(TIntermNode* left, TIntermNode* right)
 {
     if (left == 0 && right == 0)
         return 0;
@@ -645,8 +645,13 @@ TIntermAggregate* TIntermediate::growAggregate(TIntermNode* left, TIntermNode* r
     if (right)
         aggNode->getSequence().push_back(right);
 
-    if (line != 0)
-        aggNode->setLine(line);
+    return aggNode;
+}
+
+TIntermAggregate* TIntermediate::growAggregate(TIntermNode* left, TIntermNode* right, TSourceLoc loc)
+{
+    TIntermAggregate* aggNode = growAggregate(left, right);
+    aggNode->setLoc(loc);
 
     return aggNode;
 }
@@ -656,18 +661,26 @@ TIntermAggregate* TIntermediate::growAggregate(TIntermNode* left, TIntermNode* r
 //
 // Returns an aggregate, unless 0 was passed in for the existing node.
 //
-TIntermAggregate* TIntermediate::makeAggregate(TIntermNode* node, TSourceLoc line)
+TIntermAggregate* TIntermediate::makeAggregate(TIntermNode* node)
 {
     if (node == 0)
         return 0;
 
     TIntermAggregate* aggNode = new TIntermAggregate;
     aggNode->getSequence().push_back(node);
+    aggNode->setLoc(node->getLoc());
 
-    if (line != 0)
-        aggNode->setLine(line);
-    else
-        aggNode->setLine(node->getLine());
+    return aggNode;
+}
+
+TIntermAggregate* TIntermediate::makeAggregate(TIntermNode* node, TSourceLoc loc)
+{
+    if (node == 0)
+        return 0;
+
+    TIntermAggregate* aggNode = new TIntermAggregate;
+    aggNode->getSequence().push_back(node);
+    aggNode->setLoc(loc);
 
     return aggNode;
 }
@@ -679,7 +692,7 @@ TIntermAggregate* TIntermediate::makeAggregate(TIntermNode* node, TSourceLoc lin
 //
 // Returns the selection node created.
 //
-TIntermNode* TIntermediate::addSelection(TIntermTyped* cond, TIntermNodePair nodePair, TSourceLoc line)
+TIntermNode* TIntermediate::addSelection(TIntermTyped* cond, TIntermNodePair nodePair, TSourceLoc loc)
 {
     //
     // For compile time constant selections, prune the code and 
@@ -694,20 +707,20 @@ TIntermNode* TIntermediate::addSelection(TIntermTyped* cond, TIntermNodePair nod
     }
 
     TIntermSelection* node = new TIntermSelection(cond, nodePair.node1, nodePair.node2);
-    node->setLine(line);
+    node->setLoc(loc);
 
     return node;
 }
 
 
-TIntermTyped* TIntermediate::addComma(TIntermTyped* left, TIntermTyped* right, TSourceLoc line)
+TIntermTyped* TIntermediate::addComma(TIntermTyped* left, TIntermTyped* right, TSourceLoc loc)
 {
     if (left->getType().getQualifier().storage == EvqConst && 
         right->getType().getQualifier().storage == EvqConst) {
 
         return right;
     } else {
-        TIntermTyped *commaAggregate = growAggregate(left, right, line);
+        TIntermTyped *commaAggregate = growAggregate(left, right, loc);
         commaAggregate->getAsAggregate()->setOperator(EOpComma);
         commaAggregate->setType(right->getType());
         commaAggregate->getTypePointer()->getQualifier().storage = EvqTemporary;
@@ -717,10 +730,10 @@ TIntermTyped* TIntermediate::addComma(TIntermTyped* left, TIntermTyped* right, T
     }
 }
 
-TIntermTyped* TIntermediate::addMethod(TIntermTyped* object, const TType& type, const TString* name, TSourceLoc line)
+TIntermTyped* TIntermediate::addMethod(TIntermTyped* object, const TType& type, const TString* name, TSourceLoc loc)
 {
     TIntermMethod* method = new TIntermMethod(object, type, *name);
-    method->setLine(line);
+    method->setLoc(loc);
 
     return method;
 }
@@ -732,7 +745,7 @@ TIntermTyped* TIntermediate::addMethod(TIntermTyped* object, const TType& type, 
 //
 // Returns the selection node created, or 0 if one could not be.
 //
-TIntermTyped* TIntermediate::addSelection(TIntermTyped* cond, TIntermTyped* trueBlock, TIntermTyped* falseBlock, TSourceLoc line)
+TIntermTyped* TIntermediate::addSelection(TIntermTyped* cond, TIntermTyped* trueBlock, TIntermTyped* falseBlock, TSourceLoc loc)
 {
     //
     // Get compatible types.
@@ -767,7 +780,7 @@ TIntermTyped* TIntermediate::addSelection(TIntermTyped* cond, TIntermTyped* true
     // Make a selection node.
     //
     TIntermSelection* node = new TIntermSelection(cond, trueBlock, falseBlock, trueBlock->getType());
-    node->setLine(line);
+    node->setLoc(loc);
     node->getQualifier().precision = std::max(trueBlock->getQualifier().precision, falseBlock->getQualifier().precision);
 
     return node;
@@ -779,20 +792,20 @@ TIntermTyped* TIntermediate::addSelection(TIntermTyped* cond, TIntermTyped* true
 // Returns the constant union node created.
 //
 
-TIntermConstantUnion* TIntermediate::addConstantUnion(constUnion* unionArrayPointer, const TType& t, TSourceLoc line)
+TIntermConstantUnion* TIntermediate::addConstantUnion(constUnion* unionArrayPointer, const TType& t, TSourceLoc loc)
 {
     TIntermConstantUnion* node = new TIntermConstantUnion(unionArrayPointer, t);
-    node->setLine(line);
+    node->setLoc(loc);
 
     return node;
 }
 
-TIntermTyped* TIntermediate::addSwizzle(TVectorFields& fields, TSourceLoc line)
+TIntermTyped* TIntermediate::addSwizzle(TVectorFields& fields, TSourceLoc loc)
 {
     
     TIntermAggregate* node = new TIntermAggregate(EOpSequence);
 
-    node->setLine(line);
+    node->setLoc(loc);
     TIntermConstantUnion* constIntNode;
     TIntermSequence &sequenceVector = node->getSequence();
     constUnion* unionArray;
@@ -800,7 +813,7 @@ TIntermTyped* TIntermediate::addSwizzle(TVectorFields& fields, TSourceLoc line)
     for (int i = 0; i < fields.num; i++) {
         unionArray = new constUnion[1];
         unionArray->setIConst(fields.offsets[i]);
-        constIntNode = addConstantUnion(unionArray, TType(EbtInt, EvqConst), line);
+        constIntNode = addConstantUnion(unionArray, TType(EbtInt, EvqConst), loc);
         sequenceVector.push_back(constIntNode);
     }
 
@@ -810,10 +823,10 @@ TIntermTyped* TIntermediate::addSwizzle(TVectorFields& fields, TSourceLoc line)
 //
 // Create loop nodes.
 //
-TIntermNode* TIntermediate::addLoop(TIntermNode* body, TIntermTyped* test, TIntermTyped* terminal, bool testFirst, TSourceLoc line)
+TIntermNode* TIntermediate::addLoop(TIntermNode* body, TIntermTyped* test, TIntermTyped* terminal, bool testFirst, TSourceLoc loc)
 {
     TIntermNode* node = new TIntermLoop(body, test, terminal, testFirst);
-    node->setLine(line);
+    node->setLoc(loc);
     
     return node;
 }
@@ -821,15 +834,15 @@ TIntermNode* TIntermediate::addLoop(TIntermNode* body, TIntermTyped* test, TInte
 //
 // Add branches.
 //
-TIntermBranch* TIntermediate::addBranch(TOperator branchOp, TSourceLoc line)
+TIntermBranch* TIntermediate::addBranch(TOperator branchOp, TSourceLoc loc)
 {
-    return addBranch(branchOp, 0, line);
+    return addBranch(branchOp, 0, loc);
 }
 
-TIntermBranch* TIntermediate::addBranch(TOperator branchOp, TIntermTyped* expression, TSourceLoc line)
+TIntermBranch* TIntermediate::addBranch(TOperator branchOp, TIntermTyped* expression, TSourceLoc loc)
 {
     TIntermBranch* node = new TIntermBranch(branchOp, expression);
-    node->setLine(line);
+    node->setLoc(loc);
 
     return node;
 }
@@ -886,7 +899,7 @@ void TIntermediate::addSymbolLinkageNodes(TIntermNode* root, TIntermAggregate*& 
         linkage->setOperator(EOpLinkerObjects);
 
         // Add a child to the root node for the linker objects
-        growAggregate(root, linkage, 0);
+        growAggregate(root, linkage);
     }
 }
 
@@ -900,7 +913,7 @@ void TIntermediate::addSymbolLinkageNode(TIntermAggregate*& linkage, TSymbolTabl
 void TIntermediate::addSymbolLinkageNode(TIntermAggregate*& linkage, const TVariable& variable)
 {
     TIntermSymbol* node = new TIntermSymbol(variable.getUniqueId(), variable.getName(), variable.getType());
-    linkage = growAggregate(linkage, node, 0);
+    linkage = growAggregate(linkage, node);
 }
 
 //
@@ -1218,7 +1231,7 @@ bool TIntermBinary::promote(TInfoSink& infoSink)
                     setType(TType(basicType, EvqTemporary, right->getVectorSize()));
             }
         } else {
-            infoSink.info.message(EPrefixInternalError, "Missing elses", getLine());
+            infoSink.info.message(EPrefixInternalError, "Missing elses", getLoc());
             return false;
         }
         break;
@@ -1250,7 +1263,7 @@ bool TIntermBinary::promote(TInfoSink& infoSink)
                 op = EOpVectorTimesScalarAssign;
             }
         } else {
-            infoSink.info.message(EPrefixInternalError, "Missing elses", getLine());
+            infoSink.info.message(EPrefixInternalError, "Missing elses", getLoc());
             return false;
         }
         break;      
@@ -1381,7 +1394,7 @@ void TIntermTyped::propagatePrecision(TPrecisionQualifier newPrecision)
 TIntermTyped* TIntermediate::promoteConstantUnion(TBasicType promoteTo, TIntermConstantUnion* node) 
 {
     if (node->getType().isArray())
-        infoSink.info.message(EPrefixInternalError, "Cannot promote array", node->getLine());
+        infoSink.info.message(EPrefixInternalError, "Cannot promote array", node->getLoc());
 
     constUnion *rightUnionArray = node->getUnionArrayPointer();
     int size = node->getType().getObjectSize();
@@ -1408,7 +1421,7 @@ TIntermTyped* TIntermediate::promoteConstantUnion(TBasicType promoteTo, TIntermC
                 leftUnionArray[i].setDConst(static_cast<double>(rightUnionArray[i].getBConst()));
                 break;
             default: 
-                infoSink.info.message(EPrefixInternalError, "Cannot promote", node->getLine());
+                infoSink.info.message(EPrefixInternalError, "Cannot promote", node->getLoc());
                 return 0;
             }                
             break;
@@ -1428,7 +1441,7 @@ TIntermTyped* TIntermediate::promoteConstantUnion(TBasicType promoteTo, TIntermC
                 leftUnionArray[i] = rightUnionArray[i];
                 break;
             default: 
-                infoSink.info.message(EPrefixInternalError, "Cannot promote", node->getLine());
+                infoSink.info.message(EPrefixInternalError, "Cannot promote", node->getLoc());
                 return 0;
             }                
             break;
@@ -1448,7 +1461,7 @@ TIntermTyped* TIntermediate::promoteConstantUnion(TBasicType promoteTo, TIntermC
                 leftUnionArray[i].setIConst(static_cast<int>(rightUnionArray[i].getDConst()));
                 break;
             default: 
-                infoSink.info.message(EPrefixInternalError, "Cannot promote", node->getLine());
+                infoSink.info.message(EPrefixInternalError, "Cannot promote", node->getLoc());
                 return 0;
             }                
             break;
@@ -1468,7 +1481,7 @@ TIntermTyped* TIntermediate::promoteConstantUnion(TBasicType promoteTo, TIntermC
                 leftUnionArray[i].setUConst(static_cast<unsigned int>(rightUnionArray[i].getDConst()));
                 break;
             default: 
-                infoSink.info.message(EPrefixInternalError, "Cannot promote", node->getLine());
+                infoSink.info.message(EPrefixInternalError, "Cannot promote", node->getLoc());
                 return 0;
             }                
             break;
@@ -1488,12 +1501,12 @@ TIntermTyped* TIntermediate::promoteConstantUnion(TBasicType promoteTo, TIntermC
                 leftUnionArray[i].setBConst(rightUnionArray[i].getDConst() != 0.0);
                 break;
             default: 
-                infoSink.info.message(EPrefixInternalError, "Cannot promote", node->getLine());
+                infoSink.info.message(EPrefixInternalError, "Cannot promote", node->getLoc());
                 return 0;
             }
             break;
         default:
-            infoSink.info.message(EPrefixInternalError, "Incorrect data type found", node->getLine());
+            infoSink.info.message(EPrefixInternalError, "Incorrect data type found", node->getLoc());
             return 0;
         }    
     }
@@ -1501,7 +1514,7 @@ TIntermTyped* TIntermediate::promoteConstantUnion(TBasicType promoteTo, TIntermC
     const TType& t = node->getType();
     
     return addConstantUnion(leftUnionArray, TType(promoteTo, t.getQualifier().storage, t.getVectorSize(), t.getMatrixCols(), t.getMatrixRows()), 
-                            node->getLine());
+                            node->getLoc());
 }
 
 void TIntermAggregate::addToPragmaTable(const TPragmaTable& pTable)

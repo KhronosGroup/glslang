@@ -107,29 +107,20 @@ static const struct {
     { CPP_ADD_ASSIGN,     "+=" },
     { CPP_DIV_ASSIGN,     "/=" },
     { CPP_MUL_ASSIGN,     "*=" },
-    { CPP_RIGHT_BRACKET,  ":>" },
     { CPP_EQ_OP,          "==" },
     { CPP_XOR_OP,         "^^" }, 
     { CPP_XOR_ASSIGN,     "^=" }, 
-    { CPP_FLOATCONSTANT,  "<float-const>" },
     { CPP_GE_OP,          ">=" },
     { CPP_RIGHT_OP,       ">>" },
-    { CPP_RIGHT_ASSIGN,   ">>=" }, 
-    { CPP_IDENTIFIER,     "<ident>" },
-    { CPP_INTCONSTANT,    "<int-const>" },
+    { CPP_RIGHT_ASSIGN,   ">>="}, 
     { CPP_LE_OP,          "<=" },
     { CPP_LEFT_OP,        "<<" },
-    { CPP_LEFT_ASSIGN,    "<<=" },
-    { CPP_LEFT_BRACKET,   "<:" },
-    { CPP_LEFT_BRACE,     "<%" }, 
+    { CPP_LEFT_ASSIGN,    "<<="},
     { CPP_DEC_OP,         "--" },
-    { CPP_RIGHT_BRACE,    "%>" }, 
     { CPP_NE_OP,          "!=" },
     { CPP_OR_OP,          "||" },
     { CPP_OR_ASSIGN,      "|=" }, 
     { CPP_INC_OP,         "++" },
-    { CPP_STRCONSTANT,    "<string-const>" },
-    { CPP_TYPEIDENTIFIER, "<type-ident>" },
 };
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
@@ -672,7 +663,7 @@ int InitAtomTable(AtomTable *atable, int htsize)
     // Initialize lower part of atom table to "<undefined>" atom:
 
     AddAtomFixed(atable, "<undefined>", 0);
-    for (ii = 0; ii < FIRST_USER_TOKEN_SY; ii++)
+    for (ii = 0; ii < CPP_FIRST_USER_TOKEN_SY; ii++)
         atable->amap[ii] = atable->amap[0];
 
     // Add single character tokens to the atom table:
@@ -697,7 +688,7 @@ int InitAtomTable(AtomTable *atable, int htsize)
     // Add error symbol if running in error mode:
 
     if (cpp->options.ErrorMode)
-        AddAtomFixed(atable, "error", ERROR_SY);
+        AddAtomFixed(atable, "error", CPP_ERROR_SY);
 
     AddAtom(atable, "<*** end fixed atoms ***>");
 

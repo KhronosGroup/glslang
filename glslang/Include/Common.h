@@ -66,8 +66,6 @@
 #include <stdio.h>
 #include <assert.h>
 
-typedef int TSourceLoc;
-
 #include "PoolAlloc.h"
 
 //
@@ -162,25 +160,10 @@ inline const TString String(const int i, const int base = 10)
     return text;
 }
 
-const unsigned int SourceLocLineMask = 0xffff;
-const unsigned int SourceLocStringShift = 16;
-
-__inline TPersistString FormatSourceLoc(const TSourceLoc loc)
-{
-	const int maxSize = 64;
-    char locText[maxSize];
-
-    int string = loc >> SourceLocStringShift;
-    int line = loc & SourceLocLineMask;
-
-    if (line)
-        snprintf(locText, maxSize, "%d:%d", string, line);
-    else
-        snprintf(locText, maxSize, "%d:? ", string);
-
-    return TPersistString(locText);
-}
-
+struct TSourceLoc {
+    int string;
+    int line;
+};
 
 typedef TMap<TString, TString> TPragmaTable;
 typedef TMap<TString, TString>::tAllocator TPragmaTableAllocator;

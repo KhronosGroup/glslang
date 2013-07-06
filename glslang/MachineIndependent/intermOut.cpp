@@ -63,7 +63,11 @@ void OutputTreeText(TInfoSink& infoSink, TIntermNode* node, const int depth)
 {
     int i;
 
-    infoSink.debug << FormatSourceLoc(node->getLine());
+    infoSink.debug << node->getLoc().string << ":";
+    if (node->getLoc().line)
+        infoSink.debug << node->getLoc().line;
+    else
+        infoSink.debug << "? ";
 
     for (i = 0; i < depth; ++i)
         infoSink.debug << "  ";
@@ -445,7 +449,7 @@ void OutputConstantUnion(TIntermConstantUnion* node, TIntermTraverser* it)
             }
             break;
         default:
-            out.info.message(EPrefixInternalError, "Unknown constant", node->getLine());
+            out.info.message(EPrefixInternalError, "Unknown constant", node->getLoc());
             break;
         }
     }

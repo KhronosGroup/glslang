@@ -142,11 +142,11 @@ struct TSampler {
 // Need to have association of line numbers to types in a list for building structs.
 //
 class TType;
-struct TTypeLine {
+struct TTypeLoc {
     TType* type;
-    int line;
+    TSourceLoc loc;
 };
-typedef TVector<TTypeLine> TTypeList;
+typedef TVector<TTypeLoc> TTypeList;
 
 inline TTypeList* NewPoolTTypeList()
 {
@@ -347,9 +347,9 @@ public:
     int matrixRows : 4;
     TArraySizes arraySizes;
     const TType* userDef;
-    int line;
+    TSourceLoc loc;
 
-    void initType(int ln = 0)
+    void initType(TSourceLoc l)
     {
         basicType = EbtVoid;
         vectorSize = 1;
@@ -357,7 +357,7 @@ public:
         matrixCols = 0;
         arraySizes = 0;
         userDef = 0;
-        line = ln;
+        loc = l;
     }
 
     void initQualifiers(bool global = false)
@@ -367,9 +367,9 @@ public:
             qualifier.storage = EvqGlobal;
     }
 
-    void init(int line = 0, bool global = false)
+    void init(TSourceLoc loc, bool global = false)
     {
-        initType(line);
+        initType(loc);
         sampler.clear();
         initQualifiers(global);
     }
@@ -479,10 +479,10 @@ public:
 				// create the new structure here
 				structure = NewPoolTTypeList();
 				for (unsigned int i = 0; i < copyOf.structure->size(); ++i) {
-					TTypeLine typeLine;
-					typeLine.line = (*copyOf.structure)[i].line;
-					typeLine.type = (*copyOf.structure)[i].type->clone(remapper);
-					structure->push_back(typeLine);
+					TTypeLoc typeLoc;
+					typeLoc.loc = (*copyOf.structure)[i].loc;
+					typeLoc.type = (*copyOf.structure)[i].type->clone(remapper);
+					structure->push_back(typeLoc);
 				}
 			} else {
 				structure = iter->second;

@@ -222,7 +222,7 @@ int ScanFromString(char *s)
     cpp->currentInput = &in->base;
 
     return 1;
-} // ScanFromString;
+}
 
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
@@ -239,6 +239,7 @@ static int lFloatConst(char *str, int len, int ch, yystypepp * yylvalpp)
 {
     int HasDecimal, declen, exp, ExpSign;
     int str_len;
+    int isDouble = 0;
     
     HasDecimal = 0;
     declen = 0;
@@ -250,7 +251,7 @@ static int lFloatConst(char *str, int len, int ch, yystypepp * yylvalpp)
         HasDecimal = 1;
         ch = cpp->currentInput->getch(cpp->currentInput, yylvalpp);
         while (ch >= '0' && ch <= '9') {
-            if (len < MAX_SYMBOL_NAME_LEN) {
+            if (len < MAX_TOKEN_LENGTH) {
                 declen++;
                 if (len > 0 || ch != '0') {
                     str[len] = ch;
@@ -267,7 +268,7 @@ static int lFloatConst(char *str, int len, int ch, yystypepp * yylvalpp)
     // Exponent:
 
     if (ch == 'e' || ch == 'E') {
-        if (len >= MAX_SYMBOL_NAME_LEN) {
+        if (len >= MAX_TOKEN_LENGTH) {
             ShPpErrorToInfoLog("floating-point literal too long");
             len = 1,str_len=1;
         } else {
@@ -284,7 +285,7 @@ static int lFloatConst(char *str, int len, int ch, yystypepp * yylvalpp)
             }
             if (ch >= '0' && ch <= '9') {
                 while (ch >= '0' && ch <= '9') {
-                    if (len < MAX_SYMBOL_NAME_LEN) {
+                    if (len < MAX_TOKEN_LENGTH) {
                         exp = exp*10 + ch - '0';
 				        str[len++]=ch;
                         ch = cpp->currentInput->getch(cpp->currentInput, yylvalpp);
@@ -301,7 +302,6 @@ static int lFloatConst(char *str, int len, int ch, yystypepp * yylvalpp)
     }
       
     if (len == 0) {
-        yylvalpp->sc_fval = 0.0f;
         yylvalpp->sc_dval = 0.0;
 		strcpy(str, "0.0");
     } else {
@@ -311,16 +311,17 @@ static int lFloatConst(char *str, int len, int ch, yystypepp * yylvalpp)
                 cpp->currentInput->ungetch(cpp->currentInput, ch2, yylvalpp);
                 cpp->currentInput->ungetch(cpp->currentInput, ch, yylvalpp);
             } else {
-                if (len < MAX_SYMBOL_NAME_LEN) {
+                if (len < MAX_TOKEN_LENGTH) {
                     str[len++] = ch;
                     str[len++] = ch2;
+                    isDouble = 1;
                 } else {
                     ShPpErrorToInfoLog("floating-point literal too long");
                     len = 1,str_len=1;
                 }
             }
         } else if (ch == 'f' || ch == 'F') {
-            if (len < MAX_SYMBOL_NAME_LEN)
+            if (len < MAX_TOKEN_LENGTH)
                 str[len++] = ch;
             else {
                 ShPpErrorToInfoLog("floating-point literal too long");
@@ -332,12 +333,14 @@ static int lFloatConst(char *str, int len, int ch, yystypepp * yylvalpp)
         str[len]='\0';      
         
         yylvalpp->sc_dval = strtod(str, 0);
-        yylvalpp->sc_fval = (float)yylvalpp->sc_dval;
     }
     // Suffix:
     strcpy(yylvalpp->symbol_name, str);
 
-    return CPP_FLOATCONSTANT;
+    if (isDouble)
+        return CPP_DOUBLECONSTANT;
+    else
+        return CPP_FLOATCONSTANT;
 } // lFloatConst
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
@@ -346,8 +349,7 @@ static int lFloatConst(char *str, int len, int ch, yystypepp * yylvalpp)
     
 static int byte_scan(InputSrc *in, yystypepp * yylvalpp)
 {
-    char symbol_name[MAX_SYMBOL_NAME_LEN + 1];
-    char string_val[MAX_STRING_LEN + 1];
+    char tokenText[MAX_TOKEN_LENGTH + 1];
     int AlreadyComplained = 0;
     int len, ch, ii;
     unsigned ival = 0;
@@ -368,7 +370,7 @@ static int byte_scan(InputSrc *in, yystypepp * yylvalpp)
         default:
 			return ch; // Single character token
         case EOF:
-            return -1;
+            return EOF;
 		case 'A': case 'B': case 'C': case 'D': case 'E':
         case 'F': case 'G': case 'H': case 'I': case 'J':
         case 'K': case 'L': case 'M': case 'N': case 'O':
@@ -393,30 +395,32 @@ static int byte_scan(InputSrc *in, yystypepp * yylvalpp)
                             ch = nextch;
                     } else
                         ShPpErrorToInfoLog("can only escape newlines");
-                } else if (len < MAX_SYMBOL_NAME_LEN) {
-                    symbol_name[len] = ch;
-                    len++;
+                } else if (len < MAX_TOKEN_LENGTH) {
+                    tokenText[len++] = ch;
                     ch = cpp->currentInput->getch(cpp->currentInput, yylvalpp);					
                 } else {
-                    ShPpErrorToInfoLog("name too long");
-                    break;
+                    if (! AlreadyComplained) {
+                        ShPpErrorToInfoLog("name too long");
+                        AlreadyComplained = 1;
+                    }
+                    ch = cpp->currentInput->getch(cpp->currentInput, yylvalpp);					
                 }
             } while ((ch >= 'a' && ch <= 'z') ||
                      (ch >= 'A' && ch <= 'Z') ||
                      (ch >= '0' && ch <= '9') ||
                      ch == '_' ||
                      ch == '\\');
-            if (len > MAX_SYMBOL_NAME_LEN)
-                len = MAX_SYMBOL_NAME_LEN;
-            symbol_name[len] = '\0';
+
+            tokenText[len] = '\0';
             cpp->currentInput->ungetch(cpp->currentInput, ch, yylvalpp);
-            yylvalpp->sc_ident = LookUpAddString(atable, symbol_name);
+            yylvalpp->sc_ident = LookUpAddString(atable, tokenText);
+
             return CPP_IDENTIFIER;
-            break;
         case '0':
             yylvalpp->symbol_name[len++] = ch;
             ch = cpp->currentInput->getch(cpp->currentInput, yylvalpp);
             if (ch == 'x' || ch == 'X') {
+                int uint = 0;
 				yylvalpp->symbol_name[len++] = ch;
                 ch = cpp->currentInput->getch(cpp->currentInput, yylvalpp);
                 if ((ch >= '0' && ch <= '9') ||
@@ -425,10 +429,8 @@ static int byte_scan(InputSrc *in, yystypepp * yylvalpp)
                 {
                     ival = 0;
                     do {
-                        if (len >= MAX_SYMBOL_NAME_LEN)
-                            break;
-						yylvalpp->symbol_name[len++] = ch;
                         if (ival <= 0x0fffffff) {
+						    yylvalpp->symbol_name[len++] = ch;
                             if (ch >= '0' && ch <= '9') {
                                 ii = ch - '0';
                             } else if (ch >= 'A' && ch <= 'F') {
@@ -440,9 +442,10 @@ static int byte_scan(InputSrc *in, yystypepp * yylvalpp)
                             ival = (ival << 4) | ii;
                         } else {
                             if (! AlreadyComplained) {
-                                ShPpErrorToInfoLog("hexidecimal literal too long");
+                                ShPpErrorToInfoLog("hexidecimal literal too big");
                                 AlreadyComplained = 1;
                             }
+                            ival = 0xffffffff;
                         }
                         ch = cpp->currentInput->getch(cpp->currentInput, yylvalpp);
                     } while ((ch >= '0' && ch <= '9') ||
@@ -451,38 +454,51 @@ static int byte_scan(InputSrc *in, yystypepp * yylvalpp)
                 } else {
                     ShPpErrorToInfoLog("bad digit in hexidecimal literal");
                 }
-                if (ch == 'u' || ch == 'U')
-                    yylvalpp->symbol_name[len++] = ch;
-                else
+                if (ch == 'u' || ch == 'U') {
+                    if (len < MAX_TOKEN_LENGTH)
+                        yylvalpp->symbol_name[len++] = ch;
+                    uint = 1;
+                } else
 				    cpp->currentInput->ungetch(cpp->currentInput, ch, yylvalpp);
                 yylvalpp->symbol_name[len] = '\0';
 				yylvalpp->sc_int = (int)ival;
 
-                return CPP_INTCONSTANT;
+                if (uint)
+                    return CPP_UINTCONSTANT;
+                else
+                    return CPP_INTCONSTANT;
             } else if (ch >= '0' && ch <= '7') { // octal integer constants
+                int uint = 0;
                 ival = 0;
                 do {
-                    if (len >= MAX_SYMBOL_NAME_LEN)
-                        break;
-                    yylvalpp->symbol_name[len++] = ch;
                     if (ival <= 0x1fffffff) {
+                        yylvalpp->symbol_name[len++] = ch;
                         ii = ch - '0';
                         ival = (ival << 3) | ii;
                     } else {
                         if (!AlreadyComplained) {
-                            ShPpErrorToInfoLog("octal literal too long");
+                            ShPpErrorToInfoLog("octal literal too big");
                             AlreadyComplained = 1;
                         }
+                        ival = 0xffffffff;
                     }
                     ch = cpp->currentInput->getch(cpp->currentInput, yylvalpp);
                 } while (ch >= '0' && ch <= '7');
                 if (ch == '.' || ch == 'e' || ch == 'f' || ch == 'h' || ch == 'x'|| ch == 'E' || ch == 'F' || ch == 'l' || ch == 'L') 
                      return lFloatConst(yylvalpp->symbol_name, len, ch, yylvalpp);
+                else  if (ch == 'u' || ch == 'U') {
+                    if (len < MAX_TOKEN_LENGTH)
+                        yylvalpp->symbol_name[len++] = ch;
+                    uint = 1;
+                } else
+                    cpp->currentInput->ungetch(cpp->currentInput, ch, yylvalpp);
                 yylvalpp->symbol_name[len] = '\0';
-				cpp->currentInput->ungetch(cpp->currentInput, ch, yylvalpp);
 				yylvalpp->sc_int = (int)ival;
 
-                return CPP_INTCONSTANT;
+                if (uint)
+                    return CPP_UINTCONSTANT;
+                else
+                    return CPP_INTCONSTANT;
             } else {
 				cpp->currentInput->ungetch(cpp->currentInput, ch, yylvalpp);
 				ch = '0';
@@ -491,25 +507,30 @@ static int byte_scan(InputSrc *in, yystypepp * yylvalpp)
         case '1': case '2': case '3': case '4':
         case '5': case '6': case '7': case '8': case '9':
             do {
-                if (len < MAX_SYMBOL_NAME_LEN) {
+                if (len < MAX_TOKEN_LENGTH) {
                     if (len > 0 || ch != '0') {
                         yylvalpp->symbol_name[len] = ch;
                         len++;
                     }
-                    ch = cpp->currentInput->getch(cpp->currentInput, yylvalpp);
                 } else {
-                    ShPpErrorToInfoLog("token too long");
-                    break;
+                    if (! AlreadyComplained) {
+                        ShPpErrorToInfoLog("integer literal too long");
+                        AlreadyComplained = 1;
+                    }
                 }
+                ch = cpp->currentInput->getch(cpp->currentInput, yylvalpp);
             } while (ch >= '0' && ch <= '9');
             if (ch == '.' || ch == 'e' || ch == 'f' || ch == 'h' || ch == 'x'|| ch == 'E' || ch == 'F' || ch == 'l' || ch == 'L') {
                 return lFloatConst(yylvalpp->symbol_name, len, ch, yylvalpp);
             } else {
                 // Finish handling signed and unsigned integers
                 int numericLen = len;
-                if (ch == 'u' || ch == 'U')
-                    yylvalpp->symbol_name[len++] = ch;
-                else
+                int uint = 0;
+                if (ch == 'u' || ch == 'U') {
+                    if (len < MAX_TOKEN_LENGTH)
+                        yylvalpp->symbol_name[len++] = ch;
+                    uint = 1;
+                } else
                     cpp->currentInput->ungetch(cpp->currentInput, ch, yylvalpp);
 
                 yylvalpp->symbol_name[len] = '\0';				
@@ -517,16 +538,18 @@ static int byte_scan(InputSrc *in, yystypepp * yylvalpp)
                 for (ii = 0; ii < numericLen; ii++) {
                     ch = yylvalpp->symbol_name[ii] - '0';
                     if ((ival > 429496729) || (ival == 429496729 && ch >= 6)) {
-                        if (! AlreadyComplained) {
-                            ShPpErrorToInfoLog("integral literal too long");
-                            AlreadyComplained = 1;
-                        }
-                    }
-                    ival = ival * 10 + ch;
+                        ShPpErrorToInfoLog("integral literal too big");
+                        ival = -1;
+                        break;
+                    } else
+                        ival = ival * 10 + ch;
                 }
                 yylvalpp->sc_int = (int)ival;
 
-                return CPP_INTCONSTANT;
+                if (uint)
+                    return CPP_UINTCONSTANT;
+                else
+                    return CPP_INTCONSTANT;
             }
             break;
         case '-':
@@ -737,39 +760,39 @@ static int byte_scan(InputSrc *in, yystypepp * yylvalpp)
                         break;
                     }
                 }
-                if (len < MAX_STRING_LEN) {
-                    string_val[len] = ch;
+                if (len < MAX_TOKEN_LENGTH) {
+                    tokenText[len] = ch;
                     len++;
                     ch = cpp->currentInput->getch(cpp->currentInput, yylvalpp);
                 } else
                     break;
             };
-            string_val[len] = '\0';
+            tokenText[len] = '\0';
             if (ch == '"') {
-                yylvalpp->sc_ident = LookUpAddString(atable, string_val);
+                yylvalpp->sc_ident = LookUpAddString(atable, tokenText);
                 return CPP_STRCONSTANT;
             } else {
                 ShPpErrorToInfoLog("end of line in string");
-                return ERROR_SY;
+                return CPP_ERROR_SY;
             }
         }
     }
 } // byte_scan
 
-int yylex_CPP(char* buf, int maxSize)
+const char* PpTokenize(yystypepp* yylvalpp)
 {    
-    yystypepp yylvalpp;
     int token = '\n';   
 
     for(;;) {
 
         char* tokenString = 0;
-        token = cpp->currentInput->scan(cpp->currentInput, &yylvalpp);
-        if(check_EOF(token))
+        token = cpp->currentInput->scan(cpp->currentInput, yylvalpp);
+        yylvalpp->ppToken = token;
+        if (check_EOF(token))
             return 0;
         if (token == '#') {
             if (cpp->previous_token == '\n'|| cpp->previous_token == 0) {
-                token = readCPPline(&yylvalpp);
+                token = readCPPline(yylvalpp);
                 if(check_EOF(token))
                     return 0;
                 continue;
@@ -779,42 +802,34 @@ int yylex_CPP(char* buf, int maxSize)
             }
         }
         cpp->previous_token = token;
-        // expand macros
-        if (token == CPP_IDENTIFIER && MacroExpand(yylvalpp.sc_ident, &yylvalpp, 0) == 1) {
-            cpp->notAVersionToken = 1;
-            continue;
-        }
 
         if (token == '\n')
             continue;
 
-        if (token == CPP_IDENTIFIER) {                
-            cpp->notAVersionToken = 1;
-            tokenString = GetStringOfAtom(atable,yylvalpp.sc_ident);
-        } else if (token == CPP_FLOATCONSTANT||token == CPP_INTCONSTANT){             
-            cpp->notAVersionToken = 1;            
-            tokenString = yylvalpp.symbol_name;
-        } else {            
-            cpp->notAVersionToken = 1;            
-            tokenString = GetStringOfAtom(atable,token);
-        }
+        cpp->notAVersionToken = 1;
+
+        // expand macros
+        if (token == CPP_IDENTIFIER && MacroExpand(yylvalpp->sc_ident, yylvalpp, 0) == 1)
+            continue;
+
+        if (token == CPP_IDENTIFIER)
+            tokenString = GetStringOfAtom(atable, yylvalpp->sc_ident);
+        else if (token == CPP_INTCONSTANT || token == CPP_UINTCONSTANT ||
+                 token == CPP_FLOATCONSTANT || token == CPP_DOUBLECONSTANT)
+            tokenString = yylvalpp->symbol_name;
+        else
+            tokenString = GetStringOfAtom(atable, token);
 
         if (tokenString) {
-            if ((signed)strlen(tokenString) >= maxSize) {
+            if (tokenString[0] != 0)
                 cpp->tokensBeforeEOF = 1;
-                return maxSize;               
-            } else  if (strlen(tokenString) > 0) {
-                strcpy(buf, tokenString);
-                cpp->tokensBeforeEOF = 1;
-                return (int)strlen(tokenString);
-            }  
 
-            return 0;
+            return tokenString;
         }
     }
 
     return 0;
-} // yylex
+} // PpTokenize
 
 //Checks if the token just read is EOF or not.
 int check_EOF(int token)

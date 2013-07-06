@@ -320,9 +320,9 @@ class TIntermNode {
 public:
     POOL_ALLOCATOR_NEW_DELETE(GlobalPoolAllocator)
 
-    TIntermNode() : line(0) {}
-    virtual TSourceLoc getLine() const { return line; }
-    virtual void setLine(TSourceLoc l) { line = l; }
+    TIntermNode() { loc.line = 0; loc.string = 0; }
+    virtual TSourceLoc getLoc() const { return loc; }
+    virtual void setLoc(TSourceLoc l) { loc = l; }
     virtual void traverse(TIntermTraverser*) = 0;
     virtual TIntermTyped*     getAsTyped()         { return 0; }
     virtual TIntermConstantUnion*     getAsConstantUnion()         { return 0; }
@@ -336,7 +336,7 @@ public:
     virtual TIntermBranch*    getAsBranchNode()    { return 0; }
     virtual ~TIntermNode() { }
 protected:
-    TSourceLoc line;
+    TSourceLoc loc;
 };
 
 //

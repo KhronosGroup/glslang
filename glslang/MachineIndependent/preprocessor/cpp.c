@@ -630,7 +630,8 @@ static int CPPerror(yystypepp * yylvalpp)
     const char *message;
 	
     while (token != '\n') {
-		if (token == CPP_FLOATCONSTANT || token == CPP_INTCONSTANT){
+		if (token == CPP_INTCONSTANT || token == CPP_UINTCONSTANT ||
+            token == CPP_FLOATCONSTANT || token == CPP_DOUBLECONSTANT) {
             StoreStr(yylvalpp->symbol_name);
 		}else if(token == CPP_IDENTIFIER || token == CPP_STRCONSTANT){
 			StoreStr(GetStringOfAtom(atable, yylvalpp->sc_ident));
@@ -681,11 +682,9 @@ static int CPPpragma(yystypepp * yylvalpp)
 			strcpy(allTokens[tokenCount++], SrcStr);
 			break;
 		case CPP_INTCONSTANT:
-			SrcStr = yylvalpp->symbol_name;
-			allTokens[tokenCount] = (char*)malloc(strlen(SrcStr) + 1);
-			strcpy(allTokens[tokenCount++], SrcStr);
-			break;
+        case CPP_UINTCONSTANT:
 		case CPP_FLOATCONSTANT:
+        case CPP_DOUBLECONSTANT:
 			SrcStr = yylvalpp->symbol_name;
 			allTokens[tokenCount] = (char*)malloc(strlen(SrcStr) + 1);
 			strcpy(allTokens[tokenCount++], SrcStr);
@@ -715,41 +714,35 @@ static int CPPpragma(yystypepp * yylvalpp)
 	return token;    
 } // CPPpragma
 
+// This is just for error checking: the version and profile are decided before preprocessing starts
 static int CPPversion(yystypepp * yylvalpp)
 {
-
     int token = cpp->currentInput->scan(cpp->currentInput, yylvalpp);
 
     if (cpp->notAVersionToken == 1)
         ShPpErrorToInfoLog("#version must occur before any other statement in the program");
 
-    if(token=='\n'){
+    if (token == '\n'){
 		DecLineNumber();
         ShPpErrorToInfoLog("#version");
         IncLineNumber();
+
 		return token;
 	}
+
     if (token != CPP_INTCONSTANT)
         ShPpErrorToInfoLog("#version");
 	
-    yylvalpp->sc_int=atoi(yylvalpp->symbol_name);
-
-    SetVersion(yylvalpp->sc_int);
+    yylvalpp->sc_int = atoi(yylvalpp->symbol_name);
 
     token = cpp->currentInput->scan(cpp->currentInput, yylvalpp);
     
-	if (token == '\n') {
-        SetProfile(ENoProfile);
+	if (token == '\n')
 		return token;
-	}
 	else {
-        if (yylvalpp->sc_ident == coreAtom)
-            SetProfile(ECoreProfile);
-        else if (yylvalpp->sc_ident == compatibilityAtom)
-            SetProfile(ECompatibilityProfile);
-        else if (yylvalpp->sc_ident == esAtom)
-            SetProfile(EEsProfile);
-        else 
+        if (yylvalpp->sc_ident != coreAtom &&
+            yylvalpp->sc_ident != compatibilityAtom &&
+            yylvalpp->sc_ident != esAtom)
             ShPpErrorToInfoLog("#version profile name");
 
         token = cpp->currentInput->scan(cpp->currentInput, yylvalpp);
@@ -1025,7 +1018,7 @@ int MacroExpand(int atom, yystypepp* yylvalpp, int expandUndef)
     }
 
 	if (atom == __VERSION__Atom) {
-        yylvalpp->sc_int = GetVersion(cpp->pC);
+        yylvalpp->sc_int = GetShaderVersion(cpp->pC);
         sprintf(yylvalpp->symbol_name, "%d", yylvalpp->sc_int);
         UngetToken(CPP_INTCONSTANT, yylvalpp);
 

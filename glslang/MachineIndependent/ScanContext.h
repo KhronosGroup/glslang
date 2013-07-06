@@ -1,5 +1,4 @@
 //
-//Copyright (C) 2002-2005  3Dlabs Inc. Ltd.
 //Copyright (C) 2013 LunarG, Inc.
 //
 //All rights reserved.
@@ -34,41 +33,48 @@
 //POSSIBILITY OF SUCH DAMAGE.
 //
 
-#ifndef _INITIALIZE_INCLUDED_
-#define _INITIALIZE_INCLUDED_
+//
+// This holds context specific to the GLSL scanner, which
+// sits between the preprocessor scanner and parser.
+//
 
-#include "Include/ResourceLimits.h"
-#include "../Include/Common.h"
-#include "../Include/ShHandle.h"
-#include "SymbolTable.h"
-#include "Versions.h"
+#include "ParseHelper.h"
 
-typedef TVector<TString> TBuiltInStrings;
+namespace glslang {
 
-class TBuiltIns {
+class TParserToken;
+class TPpToken;
+
+class TScanContext {
 public:
-    POOL_ALLOCATOR_NEW_DELETE(GlobalPoolAllocator)
-    TBuiltIns();
-    virtual ~TBuiltIns();
-    void initialize(int version, EProfile);
-	void initialize(const TBuiltInResource& resources, int version, EProfile, EShLanguage);
-    TBuiltInStrings* getBuiltInStrings() { return builtInStrings; }
+    explicit TScanContext(TParseContext& pc) : parseContext(pc), afterType(false), field(false) { }
+    virtual ~TScanContext() { }
+
+    static void fillInKeywordMap();
+    int tokenize(TParserToken&);
 
 protected:
-    void add2ndGenerationSamplingImaging(int version, EProfile profile);
-    void addQueryFunctions(TSampler, TString& typeName, int version, EProfile profile);
-    void addImageFunctions(TSampler, TString& typeName, int version, EProfile profile);
-    void addSamplingFunctions(TSampler, TString& typeName, int version, EProfile profile);
+    int tokenizeIdentifier();
+    int identifierOrType();
+    int reservedWord();
+    int identifierOrReserved(bool reserved);
+    int es30ReservedFromGLSL(int version);
+    int nonreservedKeyword(int esVersion, int nonEsVersion);
+    int precisionKeyword();
+    int matNxM();
+    int dMat();
+    int firstGenerationImage();
+    int secondGenerationImage();
 
-    TBuiltInStrings builtInStrings[EShLangCount];
+    TParseContext& parseContext;
+    bool afterType;           // true if we've recognized a type, so can only be looking for an identifier
+    bool field;               // true if we're on a field, right after a '.'
+    TSourceLoc loc;
+    TParserToken* parserToken;
+    TPpToken* ppToken;
 
-    // Helpers for making text
-    const char* postfixes[5];
-    const char* prefixes[EbtNumTypes];
-    int dimMap[EsdNumDims];
+    const char* tokenText;
+    int keyword;
 };
 
-void IdentifyBuiltIns(int version, EProfile profile, EShLanguage, TSymbolTable&);
-void IdentifyBuiltIns(int version, EProfile profile, EShLanguage, TSymbolTable&, const TBuiltInResource &resources);
-
-#endif // _INITIALIZE_INCLUDED_
+};

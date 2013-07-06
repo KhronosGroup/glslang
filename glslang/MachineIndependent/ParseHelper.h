@@ -55,7 +55,9 @@ struct TPragma {
 	TPragmaTable pragmaTable;
 };
 
-
+namespace glslang {
+    class TScanContext;
+};
 
 //
 // The following are extra variables needed during parsing, grouped together so
@@ -64,6 +66,7 @@ struct TPragma {
 struct TParseContext {
     TParseContext(TSymbolTable&, TIntermediate&, bool parsingBuiltins, int version, EProfile, EShLanguage, TInfoSink&,
                   bool forwardCompatible = false, EShMessages messages = EShMsgDefault);
+    glslang::TScanContext *scanContext;
     TIntermediate& intermediate; // to hold and build a parse tree
     TSymbolTable& symbolTable;   // symbol table that goes with the current language, version, and profile
     TInfoSink& infoSink;
@@ -71,7 +74,6 @@ struct TParseContext {
     TIntermNode* treeRoot;       // root of parse tree being created
     TIntermAggregate *linkage;   // aggregate node of objects the linker may need, if not reference by the rest of the AST
     int numErrors;               // number of compile-time errors encountered
-    bool lexAfterType;           // true if we've recognized a type, so can only be looking for an identifier
     int loopNestingLevel;        // 0 if outside all loops
     int structNestingLevel;      // 0 if outside blocks and structures
     TList<TIntermSequence*> switchSequenceStack;  // case, node, case, case, node, ...; ensure only one node between cases;   stack of them for nesting
@@ -91,7 +93,7 @@ struct TParseContext {
     static const int maxSamplerIndex = EsdNumDims * (EbtNumTypes * (2 * 2)); // see computeSamplerTypeIndex()
     TPrecisionQualifier defaultSamplerPrecision[maxSamplerIndex];
 	TString HashErrMsg;
-    bool AfterEOF;
+    bool afterEOF;
     const TString* blockName;
     TQualifier globalUniformDefaults;
     TQualifier globalInputDefaults;
@@ -100,93 +102,91 @@ struct TParseContext {
 
     void initializeExtensionBehavior();
     const char* getPreamble();
+    bool parseShaderStrings(char* strings[], int strLen[], int numStrings);
     
     void C_DECL error(TSourceLoc, const char *szReason, const char *szToken,
                       const char *szExtraInfoFormat, ...);
     void C_DECL  warn(TSourceLoc, const char *szReason, const char *szToken,
                       const char *szExtraInfoFormat, ...);
-    bool reservedErrorCheck(int line, const TString& identifier);
+    bool reservedErrorCheck(TSourceLoc, const TString& identifier);
 
-    TIntermTyped* handleVariable(int line, TSymbol* symbol, TString* string);
-    bool parseVectorFields(const TString&, int vecSize, TVectorFields&, int line);
-    void assignError(int line, const char* op, TString left, TString right);
-    void unaryOpError(int line, const char* op, TString operand);
-    void binaryOpError(int line, const char* op, TString left, TString right);
+    TIntermTyped* handleVariable(TSourceLoc, TSymbol* symbol, TString* string);
+    bool parseVectorFields(TSourceLoc, const TString&, int vecSize, TVectorFields&);
+    void assignError(TSourceLoc, const char* op, TString left, TString right);
+    void unaryOpError(TSourceLoc, const char* op, TString operand);
+    void binaryOpError(TSourceLoc, const char* op, TString left, TString right);
     void variableCheck(TIntermTyped*& nodePtr);
-    bool lValueErrorCheck(int line, const char* op, TIntermTyped*);
+    bool lValueErrorCheck(TSourceLoc, const char* op, TIntermTyped*);
     void constCheck(TIntermTyped* node, const char* token);
     void integerCheck(TIntermTyped* node, const char* token);
-    void globalCheck(int line, bool global, const char* token);
-    bool constructorError(int line, TIntermNode*, TFunction&, TOperator, TType&);
-    void arraySizeCheck(int line, TIntermTyped* expr, int& size);
-    bool arrayQualifierError(int line, const TPublicType&);
-    void arraySizeRequiredCheck(int line, int& size);
-    void arrayDimError(int line);
-    void arrayDimCheck(int line, TArraySizes sizes1, TArraySizes sizes2);
-    void arrayDimCheck(int line, const TType*, TArraySizes);
-    void arrayCheck(int line, TString& identifier, const TPublicType&, TVariable*& variable);
+    void globalCheck(TSourceLoc, bool global, const char* token);
+    bool constructorError(TSourceLoc, TIntermNode*, TFunction&, TOperator, TType&);
+    void arraySizeCheck(TSourceLoc, TIntermTyped* expr, int& size);
+    bool arrayQualifierError(TSourceLoc, const TPublicType&);
+    void arraySizeRequiredCheck(TSourceLoc, int& size);
+    void arrayDimError(TSourceLoc);
+    void arrayDimCheck(TSourceLoc, TArraySizes sizes1, TArraySizes sizes2);
+    void arrayDimCheck(TSourceLoc, const TType*, TArraySizes);
+    void arrayCheck(TSourceLoc, TString& identifier, const TPublicType&, TVariable*& variable);
     bool insertBuiltInArrayAtGlobalLevel();
-    bool voidErrorCheck(int, const TString&, const TPublicType&);
-    void boolCheck(int, const TIntermTyped*);
-    void boolCheck(int, const TPublicType&);
-    bool samplerErrorCheck(int line, const TPublicType& pType, const char* reason);
-    void globalQualifierFix(int line, TQualifier&, const TPublicType&);
-    bool structQualifierErrorCheck(int line, const TPublicType& pType);
-    void mergeQualifiers(int line, TQualifier& dst, const TQualifier& src, bool force);
-    void setDefaultPrecision(int line, TPublicType&, TPrecisionQualifier);
+    bool voidErrorCheck(TSourceLoc, const TString&, const TPublicType&);
+    void boolCheck(TSourceLoc, const TIntermTyped*);
+    void boolCheck(TSourceLoc, const TPublicType&);
+    bool samplerErrorCheck(TSourceLoc, const TPublicType& pType, const char* reason);
+    void globalQualifierFix(TSourceLoc, TQualifier&, const TPublicType&);
+    bool structQualifierErrorCheck(TSourceLoc, const TPublicType& pType);
+    void mergeQualifiers(TSourceLoc, TQualifier& dst, const TQualifier& src, bool force);
+    void setDefaultPrecision(TSourceLoc, TPublicType&, TPrecisionQualifier);
     int computeSamplerTypeIndex(TSampler&);
     TPrecisionQualifier getDefaultPrecision(TPublicType&);
-    void precisionQualifierCheck(int line, TPublicType&);
-    void parameterSamplerCheck(int line, TStorageQualifier qualifier, const TType& type);
+    void precisionQualifierCheck(TSourceLoc, TPublicType&);
+    void parameterSamplerCheck(TSourceLoc, TStorageQualifier qualifier, const TType& type);
     bool containsSampler(const TType& type);
-    void nonInitConstCheck(int line, TString& identifier, TPublicType& type);
-    void nonInitCheck(int line, TString& identifier, TPublicType& type);
-    void paramCheck(int line, TStorageQualifier qualifier, TType* type);
-    void nestedBlockCheck(int line);
-    void nestedStructCheck(int line);
+    void nonInitConstCheck(TSourceLoc, TString& identifier, TPublicType& type);
+    void nonInitCheck(TSourceLoc, TString& identifier, TPublicType& type);
+    void paramCheck(TSourceLoc, TStorageQualifier qualifier, TType* type);
+    void nestedBlockCheck(TSourceLoc);
+    void nestedStructCheck(TSourceLoc);
 
-    void setLayoutQualifier(int line, TPublicType&, TString&);
-    void setLayoutQualifier(int line, TPublicType&, TString&, int);
-    void mergeLayoutQualifiers(int line, TQualifier& dest, const TQualifier& src);
+    void setLayoutQualifier(TSourceLoc, TPublicType&, TString&);
+    void setLayoutQualifier(TSourceLoc, TPublicType&, TString&, int);
+    void mergeLayoutQualifiers(TSourceLoc, TQualifier& dest, const TQualifier& src);
 
-    const TFunction* findFunction(int line, TFunction* pfnCall, bool *builtIn = 0);
-    bool executeInitializerError(TSourceLoc line, TString& identifier, TPublicType& pType,
+    const TFunction* findFunction(TSourceLoc, TFunction* pfnCall, bool *builtIn = 0);
+    bool executeInitializerError(TSourceLoc, TString& identifier, TPublicType& pType,
                                  TIntermTyped* initializer, TIntermNode*& intermNode, TVariable* variable = 0);
     TIntermTyped* addConstructor(TIntermNode*, const TType&, TOperator, TFunction*, TSourceLoc);
     TIntermTyped* constructStruct(TIntermNode*, const TType&, int, TSourceLoc);
     TIntermTyped* constructBuiltIn(const TType&, TOperator, TIntermNode*, TSourceLoc, bool subset);
-    void addBlock(int line, TTypeList& typeList, const TString* instanceName = 0, TArraySizes arraySizes = 0);
-    void addQualifierToExisting(int line, TQualifier, const TString& identifier);
-    void addQualifierToExisting(int line, TQualifier, TIdentifierList&);
+    void addBlock(TSourceLoc, TTypeList& typeList, const TString* instanceName = 0, TArraySizes arraySizes = 0);
+    void addQualifierToExisting(TSourceLoc, TQualifier, const TString& identifier);
+    void addQualifierToExisting(TSourceLoc, TQualifier, TIdentifierList&);
     void updateQualifierDefaults(TQualifier);
-    void updateQualifierDefaults(int line, TQualifier);
-    void updateTypedDefaults(int line, TQualifier, const TString* id);
+    void updateQualifierDefaults(TSourceLoc, TQualifier);
+    void updateTypedDefaults(TSourceLoc, TQualifier, const TString* id);
     void wrapupSwitchSubsequence(TIntermAggregate* statements, TIntermNode* branchNode);
-    TIntermNode* addSwitch(int line, TIntermTyped* expression, TIntermAggregate* body);
+    TIntermNode* addSwitch(TSourceLoc, TIntermTyped* expression, TIntermAggregate* body);
     TIntermTyped* addConstVectorNode(TVectorFields&, TIntermTyped*, TSourceLoc);
     TIntermTyped* addConstMatrixNode(int , TIntermTyped*, TSourceLoc);
-    TIntermTyped* addConstArrayNode(int index, TIntermTyped* node, TSourceLoc line);
+    TIntermTyped* addConstArrayNode(int index, TIntermTyped* node, TSourceLoc);
     TIntermTyped* addConstStruct(TString& , TIntermTyped*, TSourceLoc);
 
     bool arraySetMaxSize(TIntermSymbol*, TType*, int, bool, TSourceLoc);
 
-    void requireProfile(int line, EProfileMask profileMask, const char *featureDesc);
-    void requireStage(int line, EShLanguageMask languageMask, const char *featureDesc);
-    void profileRequires(int line, EProfile callingProfile, int minVersion, int numExtensions, const char* extensions[], const char *featureDesc);
-    void profileRequires(int line, EProfile callingProfile, int minVersion, const char* extension, const char *featureDesc);
-    void checkDeprecated(int line, EProfile callingProfile, int depVersion, const char *featureDesc);
-    void requireNotRemoved(int line, EProfile callingProfile, int removedVersion, const char *featureDesc);
-    void fullIntegerCheck(int line, const char* op);
-    void doubleCheck(int line, const char* op);
+    void requireProfile(TSourceLoc, EProfileMask profileMask, const char *featureDesc);
+    void requireStage(TSourceLoc, EShLanguageMask languageMask, const char *featureDesc);
+    void profileRequires(TSourceLoc, EProfile callingProfile, int minVersion, int numExtensions, const char* extensions[], const char *featureDesc);
+    void profileRequires(TSourceLoc, EProfile callingProfile, int minVersion, const char* extension, const char *featureDesc);
+    void checkDeprecated(TSourceLoc, EProfile callingProfile, int depVersion, const char *featureDesc);
+    void requireNotRemoved(TSourceLoc, EProfile callingProfile, int removedVersion, const char *featureDesc);
+    void fullIntegerCheck(TSourceLoc, const char* op);
+    void doubleCheck(TSourceLoc, const char* op);
 };
-
-int PaParseStrings(char* argv[], int strLen[], int argc, TParseContext&, const char* preamble);
-int PaParseComment(int &lineno, TParseContext&);
-void ResetFlex();
 
 typedef TParseContext* TParseContextPointer;
 TParseContextPointer& ThreadLocalParseContext();
 
+// TODO: threading:
 typedef struct TThreadParseContextRec
 {
 	TParseContext *lpGlobalParseContext;
