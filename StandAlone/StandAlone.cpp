@@ -207,10 +207,12 @@ int C_DECL main(int argc, char* argv[])
         ShDestruct(linker);
         ShDestruct(uniformMap);
 
+#ifdef _WIN32
         if (delay)
             Sleep(1000000);
 
     }
+#endif
 
     if (compileFailed)
         return EFailCompile;

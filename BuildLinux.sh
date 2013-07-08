@@ -1,5 +1,7 @@
 #! /bin/bash
 
+rm StandAlone/StandAlone
+
 # build the StandAlone app and all it's dependencies
 make -C StandAlone
 
