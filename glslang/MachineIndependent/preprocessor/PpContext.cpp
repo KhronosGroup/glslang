@@ -1,5 +1,6 @@
 //
 //Copyright (C) 2002-2005  3Dlabs Inc. Ltd.
+//Copyright (C) 2013 LunarG, Inc.
 //All rights reserved.
 //
 //Redistribution and use in source and binary forms, with or without
@@ -75,84 +76,51 @@ TORT (INCLUDING NEGLIGENCE), STRICT LIABILITY OR OTHERWISE, EVEN IF
 NVIDIA HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 \****************************************************************************/
 
-#ifndef PREPROCESS_H
-#define PREPROCESS_H
+#include <stdio.h>
+#include <stdlib.h>
 
-typedef struct SourceLoc_Rec {
-    int file;
-    int line;
-} SourceLoc;
+#include "PpContext.h"
 
-typedef struct Options_Rec {
-    const char *profileString;
-    int ErrorMode;
-    int Quiet;
-	
-    // Debug The Compiler options:
-    int DumpAtomTable;
-} Options;
+TPpContext::TPpContext(TParseContext& pc) : 
+    parseContext(pc), preamble(0), strings(0), notAVersionToken(false),
+    ScopeList(0), CurrentScope(0), GlobalScope(0)
+{
+    InitAtomTable(&atomTable, 0);
+    InitScanner(this);
 
-#define MAX_TOKEN_LENGTH 1024
+    ifdepth = 0;
+    for (elsetracker = 0; elsetracker < maxIfNesting; elsetracker++)
+        elsedepth[elsetracker] = 0;
+    elsetracker = 0;
+}
 
-typedef struct {
-    int    ppToken;
-    int    sc_int;
-    double sc_dval;
-    int    sc_ident;
-	char   symbol_name[MAX_TOKEN_LENGTH+1];
-} yystypepp;
+TPpContext::~TPpContext()
+{
+    delete [] preamble;
+    FreeAtomTable(&atomTable);
+    FreeScanner();
+}
 
-typedef struct InputSrc {
-    struct InputSrc	*prev;
-    int			(*scan)(struct InputSrc *, yystypepp *);
-    int			(*getch)(struct InputSrc *, yystypepp *);
-    void		(*ungetch)(struct InputSrc *, int, yystypepp *);
-    int			name;  /* atom */
-    int			line;
-} InputSrc;
+void TPpContext::setPreamble(const char* p, int l)
+{
+    if (p && l > 0) {
+        // preAmble could be a hard-coded string; make writable copy
+        // TODO: efficiency PP: make it not need writable strings
+        preambleLength = l;
+        preamble = new char[preambleLength + 1];
+        memcpy(preamble, p, preambleLength + 1);  // TODO: PP: assuming nul-terminated strings
+        ScanFromString(preamble);
+        currentString = -1;
+    }
+}
 
-typedef struct CPPStruct {
-    // Public members
-    SourceLoc *pLastSourceLoc;  // Set at the start of each statement by the tree walkers
-    Options options;            // Compile options and parameters
-
-    // Private members
-    SourceLoc lastSourceLoc;
-
-    // Scanner data:
-
-    SourceLoc *tokenLoc;        // Source location of most recent token seen by the scanner
-    int mostRecentToken;        // Most recent token seen by the scanner
-    InputSrc *currentInput;
-    int previous_token;
-    int notAVersionToken;       // used to make sure that #version is the first token seen in the file, if present
-    
-	void *pC;                   // storing the parseContext of the compile object in cpp.  
-     
-    // Private members:
-    SourceLoc ltokenLoc;
-	int ifdepth;                //current #if-#else-#endif nesting in the cpp.c file (pre-processor)    
-    int elsedepth[64];          //Keep a track of #if depth..Max allowed is 64.   
-    int elsetracker;            //#if-#else and #endif constructs...Counter.
-    const char *ErrMsg;
-    int CompileError;           //Indicate compile error when #error, #else,#elif mismatch.
-
-    //
-    // Globals used to communicate between parseStrings() and yy_input()and 
-    // also across the files.(gen_glslang.cpp and scanner.c)
-    //
-    int    PaWhichStr;            // which string we're parsing
-    int*   PaStrLen;              // array of lengths of the PaArgv strings
-    int    PaArgc;                // count of strings in the array
-    char** PaArgv;                // our array of strings to parse    
-    unsigned int tokensBeforeEOF : 1;
-} CPPStruct;
-
-extern CPPStruct *cpp;
-
-int InitPreprocessor(void);
-int FinalizePreprocessor(void);
-int ScanFromString(char *s);
-const char* PpTokenize(yystypepp*);
-
-#endif
+void TPpContext::setShaderStrings(char* s[], int l[], int n)
+{
+    strings = s;
+    lengths = l;
+    numStrings = n;
+    if (! preamble) {
+        ScanFromString(strings[0]);
+        currentString = 0;
+    }
+}

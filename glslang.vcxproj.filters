@@ -8,9 +8,6 @@
     <Filter Include="Machine Independent\Generated Source">
       <UniqueIdentifier>{564543b5-6302-49ab-9d24-bd6bef91274a}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Machine Independent\CPP">
-      <UniqueIdentifier>{5d320e20-4d64-4db1-9d8c-e7fdc234be36}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Header Files">
       <UniqueIdentifier>{d4faa328-f693-4b77-9fcb-9629ca0d8ee8}</UniqueIdentifier>
     </Filter>
@@ -25,6 +22,9 @@
     </Filter>
     <Filter Include="OSDependent\Linux">
       <UniqueIdentifier>{0c27903f-6ef2-4725-9d9c-70f50aeaa7a1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Machine Independent\Preprocessor">
+      <UniqueIdentifier>{f25a01e9-79ce-49bf-b79a-d10de89a0fec}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -67,27 +67,6 @@
     <ClCompile Include="glslang\MachineIndependent\parseConst.cpp">
       <Filter>Machine Independent</Filter>
     </ClCompile>
-    <ClCompile Include="glslang\MachineIndependent\preprocessor\atom.c">
-      <Filter>Machine Independent\CPP</Filter>
-    </ClCompile>
-    <ClCompile Include="glslang\MachineIndependent\preprocessor\cpp.c">
-      <Filter>Machine Independent\CPP</Filter>
-    </ClCompile>
-    <ClCompile Include="glslang\MachineIndependent\preprocessor\cppstruct.c">
-      <Filter>Machine Independent\CPP</Filter>
-    </ClCompile>
-    <ClCompile Include="glslang\MachineIndependent\preprocessor\memory.c">
-      <Filter>Machine Independent\CPP</Filter>
-    </ClCompile>
-    <ClCompile Include="glslang\MachineIndependent\preprocessor\scanner.c">
-      <Filter>Machine Independent\CPP</Filter>
-    </ClCompile>
-    <ClCompile Include="glslang\MachineIndependent\preprocessor\symbols.c">
-      <Filter>Machine Independent\CPP</Filter>
-    </ClCompile>
-    <ClCompile Include="glslang\MachineIndependent\preprocessor\tokens.c">
-      <Filter>Machine Independent\CPP</Filter>
-    </ClCompile>
     <ClCompile Include="glslang\OSDependent\Windows\main.cpp">
       <Filter>OSDependent\Windows</Filter>
     </ClCompile>
@@ -109,6 +88,27 @@
     <ClCompile Include="glslang\MachineIndependent\Scan.cpp">
       <Filter>Machine Independent</Filter>
     </ClCompile>
+    <ClCompile Include="glslang\MachineIndependent\preprocessor\Pp.cpp">
+      <Filter>Machine Independent\Preprocessor</Filter>
+    </ClCompile>
+    <ClCompile Include="glslang\MachineIndependent\preprocessor\PpAtom.cpp">
+      <Filter>Machine Independent\Preprocessor</Filter>
+    </ClCompile>
+    <ClCompile Include="glslang\MachineIndependent\preprocessor\PpMemory.cpp">
+      <Filter>Machine Independent\Preprocessor</Filter>
+    </ClCompile>
+    <ClCompile Include="glslang\MachineIndependent\preprocessor\PpScanner.cpp">
+      <Filter>Machine Independent\Preprocessor</Filter>
+    </ClCompile>
+    <ClCompile Include="glslang\MachineIndependent\preprocessor\PpSymbols.cpp">
+      <Filter>Machine Independent\Preprocessor</Filter>
+    </ClCompile>
+    <ClCompile Include="glslang\MachineIndependent\preprocessor\PpTokens.cpp">
+      <Filter>Machine Independent\Preprocessor</Filter>
+    </ClCompile>
+    <ClCompile Include="glslang\MachineIndependent\preprocessor\PpContext.cpp">
+      <Filter>Machine Independent\Preprocessor</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="glslang\MachineIndependent\Initialize.h">
@@ -129,33 +129,6 @@
     <ClInclude Include="glslang\MachineIndependent\localintermediate.h">
       <Filter>Machine Independent</Filter>
     </ClInclude>
-    <ClInclude Include="glslang\MachineIndependent\preprocessor\atom.h">
-      <Filter>Machine Independent\CPP</Filter>
-    </ClInclude>
-    <ClInclude Include="glslang\MachineIndependent\preprocessor\cpp.h">
-      <Filter>Machine Independent\CPP</Filter>
-    </ClInclude>
-    <ClInclude Include="glslang\MachineIndependent\preprocessor\memory.h">
-      <Filter>Machine Independent\CPP</Filter>
-    </ClInclude>
-    <ClInclude Include="glslang\MachineIndependent\preprocessor\parser.h">
-      <Filter>Machine Independent\CPP</Filter>
-    </ClInclude>
-    <ClInclude Include="glslang\MachineIndependent\preprocessor\preprocess.h">
-      <Filter>Machine Independent\CPP</Filter>
-    </ClInclude>
-    <ClInclude Include="glslang\MachineIndependent\preprocessor\scanner.h">
-      <Filter>Machine Independent\CPP</Filter>
-    </ClInclude>
-    <ClInclude Include="glslang\MachineIndependent\preprocessor\slglobals.h">
-      <Filter>Machine Independent\CPP</Filter>
-    </ClInclude>
-    <ClInclude Include="glslang\MachineIndependent\preprocessor\symbols.h">
-      <Filter>Machine Independent\CPP</Filter>
-    </ClInclude>
-    <ClInclude Include="glslang\MachineIndependent\preprocessor\tokens.h">
-      <Filter>Machine Independent\CPP</Filter>
-    </ClInclude>
     <ClInclude Include="glslang\Include\BaseTypes.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -172,9 +145,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="glslang\Include\InitializeGlobals.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="glslang\Include\InitializeParseContext.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="glslang\Include\PoolAlloc.h">
@@ -218,6 +188,12 @@
     </ClInclude>
     <ClInclude Include="glslang\MachineIndependent\ScanContext.h">
       <Filter>Machine Independent</Filter>
+    </ClInclude>
+    <ClInclude Include="glslang\MachineIndependent\preprocessor\PpContext.h">
+      <Filter>Machine Independent\Preprocessor</Filter>
+    </ClInclude>
+    <ClInclude Include="glslang\MachineIndependent\preprocessor\PpTokens.h">
+      <Filter>Machine Independent\Preprocessor</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

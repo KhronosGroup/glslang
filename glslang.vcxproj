@@ -150,9 +150,18 @@ xcopy /y $(IntDir)$(TargetName)$(TargetExt) Test</Command>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="glslang\MachineIndependent\Constant.cpp" />
-    <ClCompile Include="glslang\MachineIndependent\glslang_tab.cpp" />
+    <ClCompile Include="glslang\MachineIndependent\glslang_tab.cpp">
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">4065</DisableSpecificWarnings>
+    </ClCompile>
     <ClCompile Include="glslang\MachineIndependent\InfoSink.cpp" />
     <ClCompile Include="glslang\MachineIndependent\Initialize.cpp" />
+    <ClCompile Include="glslang\MachineIndependent\preprocessor\Pp.cpp" />
+    <ClCompile Include="glslang\MachineIndependent\preprocessor\PpAtom.cpp" />
+    <ClCompile Include="glslang\MachineIndependent\preprocessor\PpMemory.cpp" />
+    <ClCompile Include="glslang\MachineIndependent\preprocessor\PpScanner.cpp" />
+    <ClCompile Include="glslang\MachineIndependent\preprocessor\PpContext.cpp" />
+    <ClCompile Include="glslang\MachineIndependent\preprocessor\PpSymbols.cpp" />
+    <ClCompile Include="glslang\MachineIndependent\preprocessor\PpTokens.cpp" />
     <ClCompile Include="glslang\MachineIndependent\Scan.cpp" />
     <ClCompile Include="glslang\MachineIndependent\Versions.cpp" />
     <ClCompile Include="OGLCompilersDLL\InitializeDll.cpp" />
@@ -166,13 +175,6 @@ xcopy /y $(IntDir)$(TargetName)$(TargetExt) Test</Command>
     <ClCompile Include="glslang\MachineIndependent\SymbolTable.cpp" />
     <ClCompile Include="glslang\MachineIndependent\intermOut.cpp" />
     <ClCompile Include="glslang\MachineIndependent\parseConst.cpp" />
-    <ClCompile Include="glslang\MachineIndependent\preprocessor\atom.c" />
-    <ClCompile Include="glslang\MachineIndependent\preprocessor\cpp.c" />
-    <ClCompile Include="glslang\MachineIndependent\preprocessor\cppstruct.c" />
-    <ClCompile Include="glslang\MachineIndependent\preprocessor\memory.c" />
-    <ClCompile Include="glslang\MachineIndependent\preprocessor\scanner.c" />
-    <ClCompile Include="glslang\MachineIndependent\preprocessor\symbols.c" />
-    <ClCompile Include="glslang\MachineIndependent\preprocessor\tokens.c" />
     <ClCompile Include="glslang\OSDependent\Windows\main.cpp" />
     <ClCompile Include="glslang\OSDependent\Windows\ossource.cpp" />
     <ClCompile Include="glslang\OSDependent\Linux\ossource.cpp">
@@ -187,18 +189,11 @@ xcopy /y $(IntDir)$(TargetName)$(TargetExt) Test</Command>
     <ClInclude Include="glslang\MachineIndependent\Initialize.h" />
     <ClInclude Include="glslang\MachineIndependent\MMap.h" />
     <ClInclude Include="glslang\MachineIndependent\ParseHelper.h" />
+    <ClInclude Include="glslang\MachineIndependent\preprocessor\PpContext.h" />
+    <ClInclude Include="glslang\MachineIndependent\preprocessor\PpTokens.h" />
     <ClInclude Include="glslang\MachineIndependent\QualifierAlive.h" />
     <ClInclude Include="glslang\MachineIndependent\RemoveTree.h" />
     <ClInclude Include="glslang\MachineIndependent\localintermediate.h" />
-    <ClInclude Include="glslang\MachineIndependent\preprocessor\atom.h" />
-    <ClInclude Include="glslang\MachineIndependent\preprocessor\cpp.h" />
-    <ClInclude Include="glslang\MachineIndependent\preprocessor\memory.h" />
-    <ClInclude Include="glslang\MachineIndependent\preprocessor\parser.h" />
-    <ClInclude Include="glslang\MachineIndependent\preprocessor\preprocess.h" />
-    <ClInclude Include="glslang\MachineIndependent\preprocessor\scanner.h" />
-    <ClInclude Include="glslang\MachineIndependent\preprocessor\slglobals.h" />
-    <ClInclude Include="glslang\MachineIndependent\preprocessor\symbols.h" />
-    <ClInclude Include="glslang\MachineIndependent\preprocessor\tokens.h" />
     <ClInclude Include="glslang\Include\BaseTypes.h" />
     <ClInclude Include="glslang\Include\Common.h" />
     <ClInclude Include="glslang\Include\ConstantUnion.h" />
@@ -208,7 +203,6 @@ xcopy /y $(IntDir)$(TargetName)$(TargetExt) Test</Command>
     <ClInclude Include="glslang\MachineIndependent\Versions.h" />
     <ClInclude Include="OGLCompilersDLL\InitializeDll.h" />
     <ClInclude Include="glslang\Include\InitializeGlobals.h" />
-    <ClInclude Include="glslang\Include\InitializeParseContext.h" />
     <ClInclude Include="glslang\Include\PoolAlloc.h" />
     <ClInclude Include="glslang\Include\ResourceLimits.h" />
     <ClInclude Include="glslang\Include\ShHandle.h" />

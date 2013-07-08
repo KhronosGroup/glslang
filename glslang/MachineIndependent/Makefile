@@ -13,7 +13,7 @@ OBJECTS= Initialize.o IntermTraverse.o \
 	RemoveTree.o ShaderLang.o intermOut.o parseConst.o SymbolTable.o \
 	InfoSink.o Versions.o Constant.o Scan.o
 
-SRCS= gen_glslang.cpp gen_glslang_tab.cpp Initialize.cpp IntermTraverse.cpp \
+SRCS= gen_glslang_tab.cpp Initialize.cpp IntermTraverse.cpp \
 	Intermediate.cpp ParseHelper.cpp PoolAlloc.cp QualifierAlive.cpp \
 	RemoveTree.cpp ShaderLang.cpp SymbolTable.cpp intermOut.cpp \
 	parseConst.cpp InfoSink.cpp Versions.cpp Constant.cpp Scan.cpp
@@ -24,20 +24,12 @@ default: all
 
 all: $(SHAREDOBJECT)
 
-$(SHAREDOBJECT): gen_glslang.o gen_glslang_tab.o $(OBJECTS) \
+$(SHAREDOBJECT): gen_glslang_tab.o $(OBJECTS) \
 	$(LIBPREPROCESSOR) $(LIBCODEGEN) $(LIBOSDEPENDENT) $(LIBINITIALISATION)
-	$(CC) -fPIC -shared -o $@ -rdynamic -Wl,-whole-archive $(OBJECTS) $(LIBPREPROCESSOR) $(LIBCODEGEN) $(LIBOSDEPENDENT) $(LIBINITIALISATION) gen_glslang.o gen_glslang_tab.o -Wl,-no-whole-archive
-
-gen_glslang.o : gen_glslang.cpp glslang_tab.h
-	$(CC) -fPIC -c $(INCLUDE) gen_glslang.cpp -o $@
+	$(CC) -fPIC -shared -o $@ -rdynamic -Wl,-whole-archive $(OBJECTS) $(LIBPREPROCESSOR) $(LIBCODEGEN) $(LIBOSDEPENDENT) $(LIBINITIALISATION) gen_glslang_tab.o -Wl,-no-whole-archive
 
 gen_glslang_tab.o : gen_glslang_tab.cpp 
 	$(CC) -fPIC -c $(INCLUDE) gen_glslang_tab.cpp -o $@
-
-gen_glslang.cpp: glslang.l
-	@echo Generating gen_glslang.cpp
-	@dos2unix glslang.l
-	flex glslang.l
 
 gen_glslang_tab.cpp glslang_tab.h: glslang.y
 	@echo Generating gen_glslang_tab.cpp
@@ -72,7 +64,7 @@ depend:
 #
 .PHONY : clean
 clean :
-	$(RM) *.o *.a gen_glslang_tab.cpp glslang_tab.cpp glslang_tab.cpp.h gen_glslang.cpp glslang_tab.h glslang.output
+	$(RM) *.o *.a gen_glslang_tab.cpp glslang_tab.cpp glslang_tab.cpp.h glslang_tab.h glslang.output
 	$(RM) ./lib/*.so
 	cd $(INCPREPROCESSOR); make clean
 	cd $(INCCODEGEN); make clean
@@ -81,19 +73,6 @@ clean :
 	
 # DO NOT DELETE
 
-gen_glslang.o: ParseHelper.h ../Include/ShHandle.h
-gen_glslang.o: ../Public/ShaderLang.h ../Include/InfoSink.h
-gen_glslang.o: ../Include/Common.h ../Include/PoolAlloc.h SymbolTable.h
-gen_glslang.o: ../Include/Common.h ../Include/intermediate.h
-gen_glslang.o: ../Include/Types.h ../Include/BaseTypes.h
-gen_glslang.o: ../Include/ConstantUnion.h ../Include/InfoSink.h
-gen_glslang.o: localintermediate.h ../Include/intermediate.h
-gen_glslang.o: ../Public/ShaderLang.h glslang_tab.h ./unistd.h
-gen_glslang.o: ./preprocessor/preprocess.h ./preprocessor/slglobals.h
-gen_glslang.o: ./preprocessor/memory.h ./preprocessor/atom.h
-gen_glslang.o: ./preprocessor/scanner.h ./preprocessor/parser.h
-gen_glslang.o: ./preprocessor/cpp.h ./preprocessor/tokens.h
-gen_glslang.o: ./preprocessor/symbols.h ./preprocessor/compile.h
 gen_glslang_tab.o: SymbolTable.h ../Include/Common.h
 gen_glslang_tab.o: ../Include/intermediate.h ../Include/Common.h
 gen_glslang_tab.o: ../Include/PoolAlloc.h ../Include/Types.h
@@ -126,10 +105,15 @@ ParseHelper.o: ../Include/Common.h ../Include/intermediate.h
 ParseHelper.o: ../Include/Types.h ../Include/BaseTypes.h
 ParseHelper.o: ../Include/ConstantUnion.h ../Include/InfoSink.h
 ParseHelper.o: localintermediate.h ../Include/intermediate.h
-ParseHelper.o: ../Public/ShaderLang.h ../Include/InitializeParseContext.h
+ParseHelper.o: ../Public/ShaderLang.h
 ParseHelper.o: ../OSDependent/Linux/osinclude.h
 ParseHelper.o: ../Include/InitializeGlobals.h ../Include/PoolAlloc.h
 QualifierAlive.o: ../Include/intermediate.h
+Scan.o: Scan.h
+Scan.o: ParseHelper.h SymbolTable.h
+Scan.o: glslang_tab.cpp.h
+Scan.o: ../Include/Types.h
+Scan.o: ScanContext.h preprocessor/PpContext.h preprocessor/PpTokens.h
 RemoveTree.o: ../Include/intermediate.h RemoveTree.h
 ShaderLang.o: SymbolTable.h ../Include/Common.h ../Include/intermediate.h
 ShaderLang.o: ../Include/Common.h ../Include/PoolAlloc.h ../Include/Types.h
@@ -161,4 +145,3 @@ parseConst.o: ../Public/ShaderLang.h
 InfoSink.o: ../Include/InfoSink.h
 Versions.o: ParseHelper.h  Versions.h ../Include/ShHandle.h SymbolTable.h localintermediate.h
 Constant.o: localintermediate.h ../Include/intermediate.h ../Public/ShaderLang.h SymbolTable.h Versions.h
-Scan.o: Scan.h Versions.h

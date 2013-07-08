@@ -1,5 +1,6 @@
 //
 //Copyright (C) 2002-2005  3Dlabs Inc. Ltd.
+//Copyright (C) 2013 LunarG, Inc.
 //All rights reserved.
 //
 //Redistribution and use in source and binary forms, with or without
@@ -75,69 +76,111 @@ TORT (INCLUDING NEGLIGENCE), STRICT LIABILITY OR OTHERWISE, EVEN IF
 NVIDIA HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 \****************************************************************************/
 //
-// symbols.h
-//
+#include <stddef.h>
+#include <stdlib.h>
+#include <string.h>
+#include <stdint.h>
 
-#if !defined(__SYMBOLS_H)
-#define __SYMBOLS_H 1
+#include "PpContext.h"
 
-#include "memory.h"
+// default alignment and chunksize, if called with 0 arguments
+#define CHUNKSIZE       (64*1024)
+#define ALIGN           8
 
-typedef enum symbolkind {
-   MACRO_S
-} symbolkind;
+// we need to call the `real' malloc and free, not our replacements
+#undef malloc
+#undef free
 
-// Typedefs for things defined here in "symbols.h":
-
-typedef struct Scope_Rec Scope;
-typedef struct Symbol_Rec Symbol;
-
-typedef struct SymbolList_Rec {
-    struct SymbolList_Rec *next;
-    Symbol *symb;
-} SymbolList;
-
-struct Scope_Rec {
-    Scope *next, *prev;     // doubly-linked list of all scopes
-    Scope *parent;
-    Scope *funScope;        // Points to base scope of enclosing function
-    MemoryPool *pool;       // pool used for allocation in this scope
-    Symbol *symbols;
-    
-	int level;              // 0 = super globals, 1 = globals, etc.
-
-    // Only used at global scope (level 1):
-    SymbolList *programs;   // List of programs for this compilation.
+struct chunk {
+    struct chunk        *next;
 };
 
-
-// Symbol table is a simple binary tree.
-
-#include "cpp.h"        // to get MacroSymbol def
-
-struct Symbol_Rec {
-    Symbol *left, *right;
-    Symbol *next;
-    int name;       // Name atom
-    SourceLoc loc;
-    symbolkind kind;
-    union {
-        MacroSymbol mac;
-    } details;
+struct cleanup {
+    struct cleanup      *next;
+    void                (*fn)(void *, void *);
+    void                *arg1;
+    void                *arg2;
 };
 
-extern Scope *CurrentScope;
-extern Scope *GlobalScope;
-extern Scope *ScopeList;
+TPpContext::MemoryPool* TPpContext::mem_CreatePool(size_t chunksize, unsigned int align)
+{
+    MemoryPool  *pool;
 
-Scope *NewScopeInPool(MemoryPool *);
-#define NewScope()      NewScopeInPool(CurrentScope->pool)
-void PushScope(Scope *fScope);
-Scope *PopScope(void);
-Symbol *NewSymbol(SourceLoc *loc, Scope *fScope, int name, symbolkind kind);
-Symbol *AddSymbol(SourceLoc *loc, Scope *fScope, int atom, symbolkind kind);
-Symbol *LookUpLocalSymbol(Scope *fScope, int atom);
-Symbol *LookUpSymbol(Scope *fScope, int atom);
+    if (align == 0)
+        align = ALIGN;
+    if (chunksize == 0)
+        chunksize = CHUNKSIZE;
+    if (align & (align-1))
+        return 0;
+    if (chunksize < sizeof(MemoryPool))
+        return 0;
+    if (chunksize & (align-1))
+        return 0;
+    if (!(pool = (MemoryPool*)malloc(chunksize)))
+        return 0;
 
-#endif // !defined(__SYMBOLS_H)
+    pool->next = 0;
+    pool->chunksize = chunksize;
+    pool->alignmask = (uintptr_t)(align)-1;  
+    pool->free = ((uintptr_t)(pool + 1) + pool->alignmask) & ~pool->alignmask;
+    pool->end = (uintptr_t)pool + chunksize;
+    pool->cleanup = 0;
+    return pool;
+}
 
+void TPpContext::mem_FreePool(MemoryPool *pool)
+{
+    struct cleanup      *cleanup;
+    struct chunk        *p, *next;
+
+    for (cleanup = pool->cleanup; cleanup; cleanup = cleanup->next) {
+        cleanup->fn(cleanup->arg1, cleanup->arg2);
+    }
+    for (p = (struct chunk *)pool; p; p = next) {
+        next = p->next;
+        free(p);
+    }
+}
+
+void* TPpContext::mem_Alloc(MemoryPool *pool, size_t size)
+{
+    struct chunk *ch;
+    void *rv = (void *)pool->free;
+    size = (size + pool->alignmask) & ~pool->alignmask;
+    if (size <= 0) size = pool->alignmask;
+    pool->free += size;
+    if (pool->free > pool->end || pool->free < (uintptr_t)rv) {
+        size_t minreq = (size + sizeof(struct chunk) + pool->alignmask) & ~pool->alignmask;
+        pool->free = (uintptr_t)rv;
+        if (minreq >= pool->chunksize) {
+            // request size is too big for the chunksize, so allocate it as
+            // a single chunk of the right size
+            ch = (struct chunk*)malloc(minreq);
+            if (!ch) return 0;
+        } else {
+            ch = (struct chunk*)malloc(pool->chunksize);
+            if (!ch) return 0;
+            pool->free = (uintptr_t)ch + minreq;
+            pool->end = (uintptr_t)ch + pool->chunksize;
+        }
+        ch->next = pool->next;
+        pool->next = ch;
+        rv = (void *)(((uintptr_t)(ch+1) + pool->alignmask) & ~pool->alignmask);
+    }
+    return rv;
+}
+
+int TPpContext::mem_AddCleanup(MemoryPool *pool, void (*fn)(void *, void*), void* arg1, void* arg2)
+{
+    struct cleanup *cleanup;
+
+    pool->free = (pool->free + sizeof(void *) - 1) & ~(sizeof(void *)-1);
+    cleanup = (struct cleanup *)(mem_Alloc(pool, sizeof(struct cleanup)));
+    if (!cleanup) return -1;
+    cleanup->next = pool->cleanup;
+    cleanup->fn = fn;
+    cleanup->arg1 = arg1;
+    cleanup->arg2 = arg2;
+    pool->cleanup = cleanup;
+    return 0;
+}

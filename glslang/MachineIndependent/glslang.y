@@ -59,20 +59,6 @@ Jutta Degener, 1995
 #include "ParseHelper.h"
 #include "../Public/ShaderLang.h"
 
-#ifdef _WIN32
-    #define YYPARSE_PARAM parseContext
-    #define YYPARSE_PARAM_DECL TParseContext&
-    #define YY_DECL int yylex(YYSTYPE* pyylval, TParseContext& parseContext)
-    #define YYLEX_PARAM parseContext
-#else
-    #define YYPARSE_PARAM parseContextLocal
-    #define parseContext (*((TParseContext*)(parseContextLocal)))
-    #define YY_DECL int yylex(YYSTYPE* pyylval, void* parseContextLocal)
-    #define YYLEX_PARAM (void*)(parseContextLocal)
-#endif
-
-extern void yyerror(const char*);
-
 %}
 
 %union {
@@ -109,13 +95,18 @@ extern void yyerror(const char*);
 }
 
 %{
-#ifndef _WIN32
-    extern int yylex(YYSTYPE*, void*);
-#endif
+
+#define YYPARSE_PARAM voidParseContext
+#define parseContext (*(TParseContext*)voidParseContext)
+#define YYLEX_PARAM parseContext
+#define yyerror(msg) parseContext.parserError(msg)
+
+extern int yylex(YYSTYPE*, TParseContext&);
+
 %}
 
-%pure_parser /* Just in case is called from multiple threads */
-%expect 1 /* One shift reduce conflict because of if | else */
+%pure_parser  // enable thread safety
+%expect 1     // One shift reduce conflict because of if | else
 
 %token <lex> ATTRIBUTE VARYING
 %token <lex> CONST BOOL FLOAT DOUBLE INT UINT

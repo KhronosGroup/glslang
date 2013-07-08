@@ -1,5 +1,6 @@
 //
 //Copyright (C) 2002-2005  3Dlabs Inc. Ltd.
+//Copyright (C) 2013 LunarG, Inc.
 //All rights reserved.
 //
 //Redistribution and use in source and binary forms, with or without
@@ -86,7 +87,8 @@ NVIDIA HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <stdio.h>
 #include <string.h>
 
-#include "slglobals.h"
+#include "PpContext.h"
+#include "PpTokens.h"
 
 #undef malloc
 #undef realloc
@@ -129,18 +131,12 @@ static const struct {
 
 #define INIT_STRING_TABLE_SIZE 16384
 
-typedef struct StringTable_Rec {
-    char *strings;
-    int nextFree;
-    int size;
-} StringTable;
-
 /*
- * InitStringTable() - Initialize the string table.
- *
- */
+* InitStringTable() - Initialize the string table.
+*
+*/
 
-static int InitStringTable(StringTable *stable)
+int InitStringTable(TPpContext::StringTable *stable)
 {
     stable->strings = (char *) malloc(INIT_STRING_TABLE_SIZE);
     if (!stable->strings)
@@ -152,11 +148,11 @@ static int InitStringTable(StringTable *stable)
 } // InitStringTable
 
 /*
- * FreeStringTable() - Free the string table.
- *
- */
+* FreeStringTable() - Free the string table.
+*
+*/
 
-static void FreeStringTable(StringTable *stable)
+void FreeStringTable(TPpContext::StringTable *stable)
 {
     if (stable->strings)
         free(stable->strings);
@@ -166,9 +162,9 @@ static void FreeStringTable(StringTable *stable)
 } // FreeStringTable
 
 /*
- * HashString() - Hash a string with the base hash function.
- *
- */
+* HashString() - Hash a string with the base hash function.
+*
+*/
 
 static int HashString(const char *s)
 {
@@ -182,9 +178,9 @@ static int HashString(const char *s)
 } // HashString
 
 /*
- * HashString2() - Hash a string with the incrimenting hash function.
- *
- */
+* HashString2() - Hash a string with the incrimenting hash function.
+*
+*/
 
 static int HashString2(const char *s)
 {
@@ -198,11 +194,11 @@ static int HashString2(const char *s)
 } // HashString2
 
 /*
- * AddString() - Add a string to a string table.  Return it's offset.
- *
- */
+* AddString() - Add a string to a string table.  Return it's offset.
+*
+*/
 
-static int AddString(StringTable *stable, const char *s)
+static int AddString(TPpContext::StringTable *stable, const char *s)
 {
     int len, loc;
     char *str;
@@ -226,31 +222,18 @@ static int AddString(StringTable *stable, const char *s)
 ///////////////////////////////////////////////////////////////////////////////////////////////
 
 #define INIT_HASH_TABLE_SIZE 2047
-#define HASH_TABLE_MAX_COLLISIONS 3
-
-typedef struct HashEntry_Rec {
-    int index;      // String table offset of string representation
-    int value;      // Atom (symbol) value
-} HashEntry;
-
-typedef struct HashTable_Rec {
-    HashEntry *entry;
-    int size;
-    int entries;
-    int counts[HASH_TABLE_MAX_COLLISIONS + 1];
-} HashTable;
 
 /*
- * InitHashTable() - Initialize the hash table.
- *
- */
+* InitHashTable() - Initialize the hash table.
+*
+*/
 
-static int InitHashTable(HashTable *htable, int fsize)
+static int InitHashTable(TPpContext::HashTable *htable, int fsize)
 {
     int ii;
 
-    htable->entry = (HashEntry *) malloc(sizeof(HashEntry)*fsize);
-    if (!htable->entry)
+    htable->entry = (TPpContext::HashEntry *) malloc(sizeof(TPpContext::HashEntry)*fsize);
+    if (! htable->entry)
         return 0;
     htable->size = fsize;
     for (ii = 0; ii < fsize; ii++) {
@@ -258,17 +241,17 @@ static int InitHashTable(HashTable *htable, int fsize)
         htable->entry[ii].value = 0;
     }
     htable->entries = 0;
-    for (ii = 0; ii <= HASH_TABLE_MAX_COLLISIONS; ii++)
+    for (ii = 0; ii <= TPpContext::hashTableMaxCollisions; ii++)
         htable->counts[ii] = 0;
     return 1;
 } // InitHashTable
 
 /*
- * FreeHashTable() - Free the hash table.
- *
- */
+* FreeHashTable() - Free the hash table.
+*
+*/
 
-static void FreeHashTable(HashTable *htable)
+static void FreeHashTable(TPpContext::HashTable *htable)
 {
     if (htable->entry)
         free(htable->entry);
@@ -278,11 +261,11 @@ static void FreeHashTable(HashTable *htable)
 } // FreeHashTable
 
 /*
- * Empty() - See if a hash table entry is empty.
- *
- */
+* Empty() - See if a hash table entry is empty.
+*
+*/
 
-static int Empty(HashTable *htable, int hashloc)
+static int Empty(TPpContext::HashTable *htable, int hashloc)
 {
     assert(hashloc >= 0 && hashloc < htable->size);
     if (htable->entry[hashloc].index == 0) {
@@ -293,11 +276,11 @@ static int Empty(HashTable *htable, int hashloc)
 } // Empty
 
 /*
- * Match() - See if a hash table entry is matches a string.
- *
- */
+* Match() - See if a hash table entry is matches a string.
+*
+*/
 
-static int Match(HashTable *htable, StringTable *stable, const char *s, int hashloc)
+static int Match(TPpContext::HashTable *htable, TPpContext::StringTable *stable, const char *s, int hashloc)
 {
     int strloc;
 
@@ -315,34 +298,12 @@ static int Match(HashTable *htable, StringTable *stable, const char *s, int hash
 
 #define INIT_ATOM_TABLE_SIZE 1024
 
-
-struct AtomTable_Rec {
-    StringTable stable; // String table.
-    HashTable htable;   // Hashes string to atom number and token value.  Multiple strings can
-                        // have the same token value but each unique string is a unique atom.
-    int *amap;          // Maps atom value to offset in string table.  Atoms all map to unique
-                        // strings except for some undefined values in the lower, fixed part
-                        // of the atom table that map to "<undefined>".  The lowest 256 atoms
-                        // correspond to single character ASCII values except for alphanumeric
-                        // characters and '_', which can be other tokens.  Next come the
-                        // language tokens with their atom values equal to the token value.
-                        // Then come predefined atoms, followed by user specified identifiers.
-    int *arev;          // Reversed atom for symbol table use.
-    int nextFree;
-    int size;
-};
-
-static AtomTable latable = { { 0 } };
-AtomTable *atable = &latable;
-
-static int AddAtomFixed(AtomTable *atable, const char *s, int atom);
-
 /*
- * GrowAtomTable() - Grow the atom table to at least "size" if it's smaller.
- *
- */
+* GrowAtomTable() - Grow the atom table to at least "size" if it's smaller.
+*
+*/
 
-static int GrowAtomTable(AtomTable *atable, int size)
+int GrowAtomTable(TPpContext::AtomTable *atable, int size)
 {
     int *newmap, *newrev;
 
@@ -373,9 +334,9 @@ static int GrowAtomTable(AtomTable *atable, int size)
 } // GrowAtomTable
 
 /*
- * lReverse() - Reverse the bottom 20 bits of a 32 bit int.
- *
- */
+* lReverse() - Reverse the bottom 20 bits of a 32 bit int.
+*
+*/
 
 static int lReverse(int fval)
 {
@@ -398,11 +359,11 @@ static int lReverse(int fval)
 } // lReverse
 
 /*
- * AllocateAtom() - Allocate a new atom.  Associated with the "undefined" value of -1.
- *
- */
+* AllocateAtom() - Allocate a new atom.  Associated with the "undefined" value of -1.
+*
+*/
 
-static int AllocateAtom(AtomTable *atable)
+int AllocateAtom(TPpContext::AtomTable *atable)
 {
     if (atable->nextFree >= atable->size)
         GrowAtomTable(atable, atable->nextFree*2);
@@ -413,26 +374,26 @@ static int AllocateAtom(AtomTable *atable)
 } // AllocateAtom
 
 /*
- * SetAtomValue() - Allocate a new atom associated with "hashindex".
- *
- */
+* SetAtomValue() - Allocate a new atom associated with "hashindex".
+*
+*/
 
-static void SetAtomValue(AtomTable *atable, int atomnumber, int hashindex)
+void SetAtomValue(TPpContext::AtomTable *atable, int atomnumber, int hashindex)
 {
     atable->amap[atomnumber] = atable->htable.entry[hashindex].index;
     atable->htable.entry[hashindex].value = atomnumber;
 } // SetAtomValue
 
 /*
- * FindHashLoc() - Find the hash location for this string.  Return -1 it hash table is full.
- *
- */
+* FindHashLoc() - Find the hash location for this string.  Return -1 it hash table is full.
+*
+*/
 
-static int FindHashLoc(AtomTable *atable, const char *s)
+int FindHashLoc(TPpContext::AtomTable *atable, const char *s)
 {
     int hashloc, hashdelta, count;
     int FoundEmptySlot = 0;
-    int collision[HASH_TABLE_MAX_COLLISIONS + 1];
+    int collision[TPpContext::hashTableMaxCollisions + 1];
 
     hashloc = HashString(s) % atable->htable.size;
     if (!Empty(&atable->htable, hashloc)) {
@@ -441,7 +402,7 @@ static int FindHashLoc(AtomTable *atable, const char *s)
         collision[0] = hashloc;
         hashdelta = HashString2(s);
         count = 0;
-        while (count < HASH_TABLE_MAX_COLLISIONS) {
+        while (count < TPpContext::hashTableMaxCollisions) {
             hashloc = ((hashloc + hashdelta) & 0x7fffffff) % atable->htable.size;
             if (!Empty(&atable->htable, hashloc)) {
                 if (Match(&atable->htable, &atable->stable, s, hashloc)) {
@@ -455,22 +416,20 @@ static int FindHashLoc(AtomTable *atable, const char *s)
             collision[count] = hashloc;
         }
 
-        if (!FoundEmptySlot) {
-            if (cpp->options.DumpAtomTable) {
+        if (! FoundEmptySlot) {
+#ifdef DUMP_TABLE
+            {
                 int ii;
                 char str[200];
-                sprintf(str, "*** Hash failed with more than %d collisions. Must increase hash table size. ***",
-                       HASH_TABLE_MAX_COLLISIONS);
-                ShPpErrorToInfoLog(str);
-
-                sprintf(str, "*** New string \"%s\", hash=%04x, delta=%04x", s, collision[0], hashdelta);
-                ShPpErrorToInfoLog(str);
-                for (ii = 0; ii <= HASH_TABLE_MAX_COLLISIONS; ii++) {
-                    sprintf(str, "*** Collides on try %d at hash entry %04x with \"%s\"",
-                           ii + 1, collision[ii], GetAtomString(atable, atable->htable.entry[collision[ii]].value));
-                    ShPpErrorToInfoLog(str);
+                printf(str, "*** Hash failed with more than %d collisions. Must increase hash table size. ***",
+                    hashTableMaxCollisions);
+                printf(str, "*** New string \"%s\", hash=%04x, delta=%04x", s, collision[0], hashdelta);
+                for (ii = 0; ii <= hashTableMaxCollisions; ii++) {
+                    printf(str, "*** Collides on try %d at hash entry %04x with \"%s\"",
+                        ii + 1, collision[ii], GetAtomString(atable, atable->htable.entry[collision[ii]].value));
                 }
             }
+#endif
             return -1;
         } else {
             atable->htable.counts[count]++;
@@ -480,11 +439,11 @@ static int FindHashLoc(AtomTable *atable, const char *s)
 } // FindHashLoc
 
 /*
- * IncreaseHashTableSize()
- *
- */
+* IncreaseHashTableSize()
+*
+*/
 
-static int IncreaseHashTableSize(AtomTable *atable)
+int TPpContext::IncreaseHashTableSize(AtomTable *atable)
 {
     int ii, strloc, oldhashloc, value, size;
     AtomTable oldtable;
@@ -494,7 +453,7 @@ static int IncreaseHashTableSize(AtomTable *atable)
 
     oldtable = *atable;
     size = oldtable.htable.size*2 + 1;
-    if (!InitAtomTable(atable, size))
+    if (! InitAtomTable(atable, size))
         return 0;
 
     // Add all the existing values to the new atom table preserving their atom values:
@@ -508,15 +467,16 @@ static int IncreaseHashTableSize(AtomTable *atable)
         AddAtomFixed(atable, s, value);
     }
     FreeAtomTable(&oldtable);
+
     return 1;
 } // IncreaseHashTableSize
 
 /*
- * LookUpAddStringHash() - Lookup a string in the hash table.  If it's not there, add it and
- *        initialize the atom value in the hash table to 0.  Return the hash table index.
- */
+* LookUpAddStringHash() - Lookup a string in the hash table.  If it's not there, add it and
+*        initialize the atom value in the hash table to 0.  Return the hash table index.
+*/
 
-static int LookUpAddStringHash(AtomTable *atable, const char *s)
+int TPpContext::LookUpAddStringHash(AtomTable *atable, const char *s)
 {
     int hashloc, strloc;
 
@@ -537,12 +497,12 @@ static int LookUpAddStringHash(AtomTable *atable, const char *s)
 } // LookUpAddStringHash
 
 /*
- * LookUpAddString() - Lookup a string in the hash table.  If it's not there, add it and
- *        initialize the atom value in the hash table to the next atom number.
- *        Return the atom value of string.
- */
+* LookUpAddString() - Lookup a string in the hash table.  If it's not there, add it and
+*        initialize the atom value in the hash table to the next atom number.
+*        Return the atom value of string.
+*/
 
-int LookUpAddString(AtomTable *atable, const char *s)
+int TPpContext::LookUpAddString(AtomTable *atable, const char *s)
 {
     int hashindex, atom;
 
@@ -556,11 +516,11 @@ int LookUpAddString(AtomTable *atable, const char *s)
 } // LookUpAddString
 
 /*
- * GetAtomString()
- *
- */
+* GetAtomString()
+*
+*/
 
-const  char *GetAtomString(AtomTable *atable, int atom)
+const char *TPpContext::GetAtomString(AtomTable *atable, int atom)
 {
     int soffset;
 
@@ -585,38 +545,35 @@ const  char *GetAtomString(AtomTable *atable, int atom)
 } // GetAtomString
 
 /*
- * GetReversedAtom()
- *
- */
+* GetReversedAtom()
+*
+*/
 
-int GetReversedAtom(AtomTable *atable, int atom)
+int TPpContext::GetReversedAtom(TPpContext::AtomTable *atable, int atom)
 {
-    if (atom > 0 && atom < atable->nextFree) {
+    if (atom > 0 && atom < atable->nextFree)
         return atable->arev[atom];
-    } else {
+    else
         return 0;
-    }
 } // GetReversedAtom
 
 /*
- * AddAtom() - Add a string to the atom, hash and string tables if it isn't already there.
- *         Return it's atom index.
- */
+* AddAtom() - Add a string to the atom, hash and string tables if it isn't already there.
+*         Return it's atom index.
+*/
 
-int AddAtom(AtomTable *atable, const char *s)
+int TPpContext::AddAtom(TPpContext::AtomTable *atable, const char *s)
 {
-    int atom;
-
-    atom = LookUpAddString(atable, s);
+    int atom = LookUpAddString(atable, s);
     return atom;
 } // AddAtom
 
 /*
- * AddAtomFixed() - Add an atom to the hash and string tables if it isn't already there.
- *         Assign it the atom value of "atom".
- */
+* AddAtomFixed() - Add an atom to the hash and string tables if it isn't already there.
+*         Assign it the atom value of "atom".
+*/
 
-static int AddAtomFixed(AtomTable *atable, const char *s, int atom)
+int TPpContext::AddAtomFixed(AtomTable *atable, const char *s, int atom)
 {
     int hashindex, lsize;
 
@@ -639,23 +596,24 @@ static int AddAtomFixed(AtomTable *atable, const char *s, int atom)
 } // AddAtomFixed
 
 /*
- * InitAtomTable() - Initialize the atom table.
- *
- */
+* InitAtomTable() - Initialize the atom table.
+*
+*/
 
-int InitAtomTable(AtomTable *atable, int htsize)
+int TPpContext::InitAtomTable(AtomTable *atable, int htsize)
 {
     int ii;
 
     htsize = htsize <= 0 ? INIT_HASH_TABLE_SIZE : htsize;
-    if (!InitStringTable(&atable->stable))
+    if (! InitStringTable(&atable->stable))
         return 0;
-    if (!InitHashTable(&atable->htable, htsize))
+    if (! InitHashTable(&atable->htable, htsize))
         return 0;
 
     atable->nextFree = 0;
     atable->amap = NULL;
     atable->size = 0;
+    atable->arev = 0;
     GrowAtomTable(atable, INIT_ATOM_TABLE_SIZE);
     if (!atable->amap)
         return 0;
@@ -669,7 +627,7 @@ int InitAtomTable(AtomTable *atable, int htsize)
     // Add single character tokens to the atom table:
 
     {
-		const char *s = "~!%^&*()-+=|,.<>/?;:[]{}#";
+        const char *s = "~!%^&*()-+=|,.<>/?;:[]{}#";
         char t[2];
 
         t[1] = '\0';
@@ -685,11 +643,6 @@ int InitAtomTable(AtomTable *atable, int htsize)
     for (ii = 0; ii < sizeof(tokens)/sizeof(tokens[0]); ii++)
         AddAtomFixed(atable, tokens[ii].str, tokens[ii].val);
 
-    // Add error symbol if running in error mode:
-
-    if (cpp->options.ErrorMode)
-        AddAtomFixed(atable, "error", CPP_ERROR_SY);
-
     AddAtom(atable, "<*** end fixed atoms ***>");
 
     return 1;
@@ -700,48 +653,45 @@ int InitAtomTable(AtomTable *atable, int htsize)
 ///////////////////////////////////////////////////////////////////////////////////////////////
 
 /*
- * PrintAtomTable()
- *
- */
+* PrintAtomTable()
+*
+*/
 
-void PrintAtomTable(AtomTable *atable)
+void TPpContext::PrintAtomTable(AtomTable *atable)
 {
     int ii;
     char str[200];
 
     for (ii = 0; ii < atable->nextFree; ii++) {
-        sprintf(str, "%d: \"%s\"", ii, &atable->stable.strings[atable->amap[ii]]);
-        ShPpDebugLogMsg(str);
+        printf(str, "%d: \"%s\"", ii, &atable->stable.strings[atable->amap[ii]]);
     }
-    sprintf(str, "Hash table: size=%d, entries=%d, collisions=",
-           atable->htable.size, atable->htable.entries);
-    ShPpDebugLogMsg(str);
-    for (ii = 0; ii < HASH_TABLE_MAX_COLLISIONS; ii++) {
-        sprintf(str, " %d", atable->htable.counts[ii]);
-        ShPpDebugLogMsg(str);
+    printf(str, "Hash table: size=%d, entries=%d, collisions=",
+        atable->htable.size, atable->htable.entries);
+    for (ii = 0; ii < hashTableMaxCollisions; ii++) {
+        printf(str, " %d", atable->htable.counts[ii]);
     }
 
 } // PrintAtomTable
 
 
 /*
- * GetStringOfAtom()
- *
- */
+* GetStringOfAtom()
+*
+*/
 
-char* GetStringOfAtom(AtomTable *atable, int atom)
+char* TPpContext::GetStringOfAtom(AtomTable *atable, int atom)
 {
-	 char* chr_str;
-	 chr_str=&atable->stable.strings[atable->amap[atom]];
-	 return chr_str;
+    char* chr_str;
+    chr_str=&atable->stable.strings[atable->amap[atom]];
+    return chr_str;
 } // GetStringOfAtom
 
 /*
- * FreeAtomTable() - Free the atom table and associated memory
- *
- */
+* FreeAtomTable() - Free the atom table and associated memory
+*
+*/
 
-void FreeAtomTable(AtomTable *atable)
+void TPpContext::FreeAtomTable(AtomTable *atable)
 {
     FreeStringTable(&atable->stable);
     FreeHashTable(&atable->htable);

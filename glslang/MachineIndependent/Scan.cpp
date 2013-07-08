@@ -48,10 +48,8 @@
 #include "ScanContext.h"
 
 // preprocessor includes
-extern "C" {
-    #include "preprocessor/parser.h"
-    #include "preprocessor/preprocess.h"
-}
+#include "preprocessor/PpContext.h"
+#include "preprocessor/PpTokens.h"
 
 namespace glslang {
     
@@ -236,12 +234,6 @@ bool ScanVersion(TInputScanner& input, int& version, EProfile& profile)
 
 namespace glslang {
 
-// This gets filled in by the preprocessor scanner.
-class TPpToken{
-public:
-    yystypepp lexer;
-};
-
 // Fill this in when doing glslang-level scanning, to hand back to the parser.
 class TParserToken {
 public:
@@ -257,7 +249,7 @@ int yylex(YYSTYPE* glslangTokenDesc, TParseContext& parseContext)
 {
     glslang::TParserToken token(*glslangTokenDesc);
 
-    return parseContext.scanContext->tokenize(token);
+    return parseContext.scanContext->tokenize(parseContext.ppContext, token);
 }
 
 namespace {
@@ -487,17 +479,15 @@ void TScanContext::fillInKeywordMap()
     ReservedSet->insert("using");
 }
 
-int TScanContext::tokenize(TParserToken& token)
+int TScanContext::tokenize(TPpContext* pp, TParserToken& token)
 {
     parserToken = &token;
-    TPpToken ppTokenStorage;
-    ppToken = &ppTokenStorage;
-    tokenText = PpTokenize(&ppToken->lexer);
+    TPpToken ppToken;
+    tokenText = pp->tokenize(&ppToken);
 
-    loc.string = cpp->tokenLoc->file;
-    loc.line = cpp->tokenLoc->line;
+    loc = ppToken.loc;
     parserToken->sType.lex.loc = loc;
-    switch (ppToken->lexer.ppToken) {
+    switch (ppToken.ppToken) {
     case ';':  afterType = false;   return SEMICOLON;
     case ',':  afterType = false;   return COMMA;
     case ':':                       return COLON;
@@ -545,10 +535,10 @@ int TScanContext::tokenize(TParserToken& token)
     case CPP_OR_ASSIGN:             return OR_ASSIGN;
     case CPP_XOR_ASSIGN:            return XOR_ASSIGN;
                                    
-    case CPP_INTCONSTANT:           parserToken->sType.lex.i = ppToken->lexer.sc_int;        return INTCONSTANT;
-    case CPP_UINTCONSTANT:          parserToken->sType.lex.i = ppToken->lexer.sc_int;        return UINTCONSTANT;
-    case CPP_FLOATCONSTANT:         parserToken->sType.lex.d = ppToken->lexer.sc_dval;       return FLOATCONSTANT;
-    case CPP_DOUBLECONSTANT:        parserToken->sType.lex.d = ppToken->lexer.sc_dval;       return DOUBLECONSTANT;
+    case CPP_INTCONSTANT:           parserToken->sType.lex.i = ppToken.ival;        return INTCONSTANT;
+    case CPP_UINTCONSTANT:          parserToken->sType.lex.i = ppToken.ival;        return UINTCONSTANT;
+    case CPP_FLOATCONSTANT:         parserToken->sType.lex.d = ppToken.dval;       return FLOATCONSTANT;
+    case CPP_DOUBLECONSTANT:        parserToken->sType.lex.d = ppToken.dval;       return DOUBLECONSTANT;
     case CPP_IDENTIFIER:            return tokenizeIdentifier();
 
     case EOF:                       return 0;
@@ -896,7 +886,7 @@ int TScanContext::identifierOrType()
 
 int TScanContext::reservedWord()
 {
-    ThreadLocalParseContext()->error(loc, "Reserved word.", tokenText, "", "");
+    parseContext.error(loc, "Reserved word.", tokenText, "", "");
 
     return 0;
 }

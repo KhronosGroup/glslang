@@ -3,9 +3,10 @@ CC = gcc
 
 CPPFLAGS=$(DEFINE) $(INCLUDE) -fPIC
 
-OBJECTS = atom.o cpp.o cppstruct.o memory.o scanner.o symbols.o tokens.o
+OBJECTS = PpAtom.o PpScanner.o PpTokens.o Pp.o PpContext.o PpMemory.o PpSymbols.o
 AR=ar
-SRCS=scanner.c atom.c memory.c tokens. cpp.c cppstruct.c symbols.c
+SRCS = PpAtom.cpp PpScanner.cpp PpTokens.cpp Pp.cpp PpContext.cpp PpMemory.cpp PpSymbols.cpp
+
 
 default: all
 all : libPreprocessor.a
@@ -28,14 +29,10 @@ depend:
 
 # DO NOT DELETE
 
-scanner.o: slglobals.h memory.h atom.h scanner.h parser.h cpp.h tokens.h
-scanner.o: symbols.h compile.h
-atom.o: slglobals.h memory.h atom.h scanner.h parser.h cpp.h tokens.h
-atom.o: symbols.h compile.h
-memory.o: memory.h
-cpp.o: slglobals.h memory.h atom.h scanner.h parser.h cpp.h tokens.h
-cpp.o: symbols.h compile.h
-cppstruct.o: slglobals.h memory.h atom.h scanner.h parser.h cpp.h tokens.h
-cppstruct.o: symbols.h compile.h
-symbols.o: slglobals.h memory.h atom.h scanner.h parser.h cpp.h tokens.h
-symbols.o: symbols.h compile.h
+PpAtom.o: PpContext.h PpToken.h
+PpScanner.o: PpContext.h PpToken.h
+PpTokens.o: PpContext.h PpToken.h
+Pp.o: PpContext.h PpToken.h
+PpContext.o: PpContext.h PpToken.h
+PpMemory.o: PpContext.h PpToken.h
+PpSymbols.o: PpContext.h PpToken.h

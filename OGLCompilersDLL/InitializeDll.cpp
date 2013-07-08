@@ -36,7 +36,6 @@
 
 #include "InitializeDll.h"
 #include "Include/InitializeGlobals.h"
-#include "Include/InitializeParseContext.h"
 
 #include "Public/ShaderLang.h"
 
@@ -58,18 +57,13 @@ bool InitProcess()
         return false;
 	}
 
-
-    if (!InitializePoolIndex()) {
+    if (! InitializePoolIndex()) {
         assert(0 && "InitProcess(): Failed to initalize global pool");
         return false;
 	}
 
-    if (!InitializeParseContextIndex()) {
-        assert(0 && "InitProcess(): Failed to initalize parse context");
-        return false;
-	}
-
 	InitThread();
+
     return true;
 }
 
@@ -89,10 +83,7 @@ bool InitThread()
 
 	InitializeGlobalPools();
 
-	if (!InitializeThreadParseContext())
-        return false;
-
-    if (!OS_SetTLSValue(ThreadInitializeIndex, (void *)1)) {
+    if (! OS_SetTLSValue(ThreadInitializeIndex, (void *)1)) {
 		assert(0 && "InitThread(): Unable to set init flag.");
         return false;
 	}
@@ -119,8 +110,6 @@ bool DetachThread()
 
 		FreeGlobalPools();
 
-		if (!FreeParseContext())
-            success = false;
 	}
 
     return success;
@@ -138,9 +127,6 @@ bool DetachProcess()
     success = DetachThread();
 
 	FreePoolIndex();
-
-	if (!FreeParseContextIndex())
-        success = false;
 
     OS_FreeTLSIndex(ThreadInitializeIndex);
     ThreadInitializeIndex = OS_INVALID_TLS_INDEX;

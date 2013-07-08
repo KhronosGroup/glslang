@@ -1,5 +1,6 @@
 //
 //Copyright (C) 2002-2005  3Dlabs Inc. Ltd.
+//Copyright (C) 2013 LunarG, Inc.
 //All rights reserved.
 //
 //Redistribution and use in source and binary forms, with or without
@@ -78,8 +79,8 @@ NVIDIA HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 // tokens.c
 //
 #ifdef _WIN32
-    #define _CRT_SECURE_NO_WARNINGS
-    #define snprintf sprintf_s
+#define _CRT_SECURE_NO_WARNINGS
+#define snprintf sprintf_s
 #endif
 
 #include <assert.h>
@@ -88,20 +89,21 @@ NVIDIA HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <string.h>
 #include <ctype.h>
 
-#include "slglobals.h"
+#include "PpContext.h"
+#include "PpTokens.h"
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////// Preprocessor and Token Recorder and Playback: ////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////
 
 /*
- * idstr()
- * Copy a string to a malloc'ed block and convert it into something suitable
- * for an ID
- *
- */
+* idstr()
+* Copy a string to a malloc'ed block and convert it into something suitable
+* for an ID
+*
+*/
 
-static char *idstr(const char *fstr, MemoryPool *pool)
+char* TPpContext::idstr(const char *fstr, MemoryPool *pool)
 {
     size_t len;
     char *str, *t;
@@ -112,7 +114,7 @@ static char *idstr(const char *fstr, MemoryPool *pool)
         str = (char *) malloc(len + 1);
     else
         str = (char *) mem_Alloc(pool, len + 1);
-    
+
     for (f=fstr, t=str; *f; f++) {
         if (isalnum(*f)) *t++ = *f;
         else if (*f == '.' || *f == '/') *t++ = '_';
@@ -123,11 +125,11 @@ static char *idstr(const char *fstr, MemoryPool *pool)
 
 
 /*
- * lNewBlock()
- *
- */
+* lNewBlock()
+*
+*/
 
-static TokenBlock *lNewBlock(TokenStream *fTok, MemoryPool *pool)
+TPpContext::TokenBlock* TPpContext::lNewBlock(TokenStream *fTok, MemoryPool *pool)
 {
     TokenBlock *lBlock;
 
@@ -146,15 +148,16 @@ static TokenBlock *lNewBlock(TokenStream *fTok, MemoryPool *pool)
         fTok->head = lBlock;
     }
     fTok->current = lBlock;
+
     return lBlock;
 } // lNewBlock
 
 /*
- * lAddByte()
- *
- */
+* lAddByte()
+*
+*/
 
-static void lAddByte(TokenStream *fTok, unsigned char fVal)
+void TPpContext::lAddByte(TokenStream *fTok, unsigned char fVal)
 {
     TokenBlock *lBlock;
     lBlock = fTok->current;
@@ -164,13 +167,12 @@ static void lAddByte(TokenStream *fTok, unsigned char fVal)
 } // lAddByte
 
 
-
 /*
- * lReadByte() - Get the next byte from a stream.
- *
- */
+* lReadByte() - Get the next byte from a stream.
+*
+*/
 
-static int lReadByte(TokenStream *pTok)
+int TPpContext::lReadByte(TokenStream *pTok)
 {
     TokenBlock *lBlock;
     int lval = -1;
@@ -192,11 +194,11 @@ static int lReadByte(TokenStream *pTok)
 /////////////////////////////////////// Global Functions://////////////////////////////////////
 
 /*
- * NewTokenStream()
- *
- */
+* NewTokenStream()
+*
+*/
 
-TokenStream *NewTokenStream(const char *name, MemoryPool *pool)
+TPpContext::TokenStream* TPpContext::NewTokenStream(const char *name, MemoryPool *pool)
 {
     TokenStream *pTok;
 
@@ -213,11 +215,11 @@ TokenStream *NewTokenStream(const char *name, MemoryPool *pool)
 } // NewTokenStream
 
 /*
- * DeleteTokenStream()
- *
- */
+* DeleteTokenStream()
+*
+*/
 
-void DeleteTokenStream(TokenStream *pTok)
+void TPpContext::DeleteTokenStream(TokenStream *pTok)
 {
     TokenBlock *pBlock, *nBlock;
 
@@ -235,11 +237,11 @@ void DeleteTokenStream(TokenStream *pTok)
 } // DeleteTokenStream
 
 /*
- * RecordToken() - Add a token to the end of a list for later playback or printout.
- *
- */
+* RecordToken() - Add a token to the end of a list for later playback or printout.
+*
+*/
 
-void RecordToken(TokenStream *pTok, int token, yystypepp * yylvalpp)
+void TPpContext::RecordToken(TokenStream *pTok, int token, TPpToken * yylvalpp)
 {
     const char *s;
     char *str = NULL;
@@ -252,7 +254,7 @@ void RecordToken(TokenStream *pTok, int token, yystypepp * yylvalpp)
     case CPP_IDENTIFIER:
     case CPP_TYPEIDENTIFIER:
     case CPP_STRCONSTANT:
-        s = GetAtomString(atable, yylvalpp->sc_ident);
+        s = GetAtomString(&atomTable, yylvalpp->atom);
         while (*s)
             lAddByte(pTok, (unsigned char) *s++);
         lAddByte(pTok, 0);
@@ -261,26 +263,26 @@ void RecordToken(TokenStream *pTok, int token, yystypepp * yylvalpp)
     case CPP_UINTCONSTANT:
     case CPP_FLOATCONSTANT:
     case CPP_DOUBLECONSTANT:
-         str = yylvalpp->symbol_name;
-         while (*str){
+        str = yylvalpp->name;
+        while (*str){
             lAddByte(pTok, (unsigned char) *str);
             str++;
-         }
-         lAddByte(pTok, 0);
-         break;
+        }
+        lAddByte(pTok, 0);
+        break;
     case '(':
-        lAddByte(pTok, (unsigned char)(yylvalpp->sc_int ? 1 : 0));
+        lAddByte(pTok, (unsigned char)(yylvalpp->ival ? 1 : 0));
     default:
         break;
     }
 } // RecordToken
 
 /*
- * RewindTokenStream() - Reset a token stream in preperation for reading.
- *
- */
+* RewindTokenStream() - Reset a token stream in preperation for reading.
+*
+*/
 
-void RewindTokenStream(TokenStream *pTok)
+void TPpContext::RewindTokenStream(TokenStream *pTok)
 {
     if (pTok->head) {
         pTok->current = pTok->head;
@@ -289,19 +291,20 @@ void RewindTokenStream(TokenStream *pTok)
 } // RewindTokenStream
 
 /*
- * ReadToken() - Read the next token from a stream.
- *
- */
+* ReadToken() - Read the next token from a stream.
+*
+*/
 
-int ReadToken(TokenStream *pTok, yystypepp * yylvalpp)
+int TPpContext::ReadToken(TokenStream *pTok, TPpToken * yylvalpp)
 {
     //TODO: PP: why is this different than byte_scan
 
-    char tokenText[MAX_TOKEN_LENGTH + 1];
+    char tokenText[TPpToken::maxTokenLength + 1];
     int ltoken, len;
     char ch;
 
     ltoken = lReadByte(pTok);
+    yylvalpp->loc = parseContext.currentLoc;
     if (ltoken >= 0) {
         if (ltoken > 127)
             ltoken += 128;
@@ -311,35 +314,35 @@ int ReadToken(TokenStream *pTok, yystypepp * yylvalpp)
             len = 0;
             ch = lReadByte(pTok);
             while ((ch >= 'a' && ch <= 'z') ||
-                     (ch >= 'A' && ch <= 'Z') ||
-                     (ch >= '0' && ch <= '9') ||
-                     ch == '_')
+                (ch >= 'A' && ch <= 'Z') ||
+                (ch >= '0' && ch <= '9') ||
+                ch == '_')
             {
-                if (len < MAX_TOKEN_LENGTH) {
+                if (len < TPpToken::maxTokenLength) {
                     tokenText[len] = ch;
                     len++;
                     ch = lReadByte(pTok);
                 } else {
-                    ShPpErrorToInfoLog("token too long");
+                    parseContext.error(yylvalpp->loc,"name too long", "", "");
                     break;
                 }
             }
             tokenText[len] = '\0';
             assert(ch == '\0');
-            yylvalpp->sc_ident = LookUpAddString(atable, tokenText);
+            yylvalpp->atom = LookUpAddString(&atomTable, tokenText);
             return CPP_IDENTIFIER;
             break;
         case CPP_STRCONSTANT:
             len = 0;
             while ((ch = lReadByte(pTok)) != 0) {
-                if (len < MAX_TOKEN_LENGTH)
+                if (len < TPpToken::maxTokenLength)
                     tokenText[len++] = ch;
                 else
                     break;
             }
 
             tokenText[len] = 0;
-            yylvalpp->sc_ident = LookUpAddString(atable, tokenText);
+            yylvalpp->atom = LookUpAddString(&atomTable, tokenText);
             break;
         case CPP_FLOATCONSTANT:
         case CPP_DOUBLECONSTANT:
@@ -347,19 +350,19 @@ int ReadToken(TokenStream *pTok, yystypepp * yylvalpp)
             ch = lReadByte(pTok);
             while ((ch >= '0' && ch <= '9') || ch=='e' || ch=='E' || ch=='.' || ch=='+' || ch=='-' || ch=='l' || ch=='L' || ch=='f'|| ch=='F')
             {
-                if (len < MAX_TOKEN_LENGTH) {
+                if (len < TPpToken::maxTokenLength) {
                     tokenText[len] = ch;
                     len++;
                     ch = lReadByte(pTok);
                 } else {
-                    ShPpErrorToInfoLog("token too long");
+                    parseContext.error(yylvalpp->loc,"float literal too long", "", "");
                     break;
                 }
             }
             tokenText[len] = '\0';
             assert(ch == '\0');
-            strcpy(yylvalpp->symbol_name, tokenText);
-            yylvalpp->sc_dval = atof(yylvalpp->symbol_name);
+            strcpy(yylvalpp->name, tokenText);
+            yylvalpp->dval = atof(yylvalpp->name);
             break;
         case CPP_INTCONSTANT:
         case CPP_UINTCONSTANT:
@@ -367,102 +370,94 @@ int ReadToken(TokenStream *pTok, yystypepp * yylvalpp)
             ch = lReadByte(pTok);
             while ((ch >= '0' && ch <= '9') || ch == 'u' || ch == 'U')
             {
-                if (len < MAX_TOKEN_LENGTH) {
+                if (len < TPpToken::maxTokenLength) {
                     tokenText[len] = ch;
                     len++;
                     ch = lReadByte(pTok);
                 } else {
-                    ShPpErrorToInfoLog("token too long");
+                    parseContext.error(yylvalpp->loc,"integer literal too long", "", "");
                     break;
                 }
             }
             tokenText[len] = '\0';
             assert(ch == '\0');
-            strcpy(yylvalpp->symbol_name,tokenText);
-            yylvalpp->sc_int = atoi(yylvalpp->symbol_name);
+            strcpy(yylvalpp->name,tokenText);
+            yylvalpp->ival = atoi(yylvalpp->name);
             break;
         case '(':
-            yylvalpp->sc_int = lReadByte(pTok);
+            yylvalpp->ival = lReadByte(pTok);
             break;
         }
         return ltoken;
     }
-    return EOF_SY;
+    return EOF;
 } // ReadToken
 
-typedef struct TokenInputSrc {
-    InputSrc            base;
-    TokenStream         *tokens;
-    int                 (*final)(CPPStruct *);
-} TokenInputSrc;
-
-static int scan_token(TokenInputSrc *in, yystypepp * yylvalpp)
+int TPpContext::scan_token(TPpContext* pp, TokenInputSrc *in, TPpToken * yylvalpp)
 {
-    int token = ReadToken(in->tokens, yylvalpp);
-    int (*final)(CPPStruct *);
-    cpp->tokenLoc->file = cpp->currentInput->name;
-    cpp->tokenLoc->line = cpp->currentInput->line;
+    int token = pp->ReadToken(in->tokens, yylvalpp);
+    int (*final)(TPpContext *);
+    yylvalpp->loc.string = pp->currentInput->name;
+    yylvalpp->loc.line = pp->currentInput->line;
     if (token == '\n') {
         in->base.line++;
         return token;
     }
-    if (token > 0) return token;
-    cpp->currentInput = in->base.prev;
+    if (token > 0)
+        return token;
+    pp->currentInput = in->base.prev;
     final = in->final;
     free(in);
-    if (final && !final(cpp)) return -1;
-    return cpp->currentInput->scan(cpp->currentInput, yylvalpp);
+    if (final && !final(pp))
+        return -1;
+
+    return pp->currentInput->scan(pp, pp->currentInput, yylvalpp);
 }
 
-int ReadFromTokenStream(TokenStream *ts, int name, int (*final)(CPPStruct *))
+int TPpContext::ReadFromTokenStream(TokenStream *ts, int name, int (*final)(TPpContext *))
 {
     TokenInputSrc *in = (TokenInputSrc *) malloc(sizeof(TokenInputSrc));
     memset(in, 0, sizeof(TokenInputSrc));
     in->base.name = name;
-    in->base.prev = cpp->currentInput;
-    in->base.scan = (int (*)(InputSrc *, yystypepp *))scan_token;
+    in->base.prev = currentInput;
+    in->base.scan = (int (*)(TPpContext*, InputSrc*, TPpToken*))scan_token;
     in->base.line = 1;
     in->tokens = ts;
     in->final = final;
     RewindTokenStream(ts);
-    cpp->currentInput = &in->base;
+    currentInput = &in->base;
+
     return 1;
 }
 
-typedef struct UngotToken {
-    InputSrc    base;
-    int         token;
-    yystypepp     lval;
-} UngotToken;
-
-static int reget_token(UngotToken *t, yystypepp * yylvalpp)
+int TPpContext::reget_token(TPpContext* pp, UngotToken *t, TPpToken * yylvalpp)
 {
     int token = t->token;
     *yylvalpp = t->lval;
-    cpp->currentInput = t->base.prev;
+    pp->currentInput = t->base.prev;
     free(t);
     return token;
 }
 
-typedef int (*scanFnPtr_t)(struct InputSrc *, yystypepp *);
+typedef int (*scanFnPtr_t);
 
-void UngetToken(int token, yystypepp * yylvalpp) {
+void TPpContext::UngetToken(int token, TPpToken * yylvalpp)
+{
     UngotToken *t = (UngotToken *) malloc(sizeof(UngotToken));
     memset(t, 0, sizeof(UngotToken));
     t->token = token;
     t->lval = *yylvalpp;
-    t->base.scan = (scanFnPtr_t)reget_token;
-    t->base.prev = cpp->currentInput;
-    t->base.name = cpp->currentInput->name;
-    t->base.line = cpp->currentInput->line;
-    cpp->currentInput = &t->base;
+    t->base.scan = (int(*)(TPpContext*, struct InputSrc *, TPpToken *))reget_token;
+    t->base.prev = currentInput;
+    t->base.name = currentInput->name;
+    t->base.line = currentInput->line;
+    currentInput = &t->base;
 }
 
 
-void DumpTokenStream(FILE *fp, TokenStream *s, yystypepp * yylvalpp) {
+void TPpContext::DumpTokenStream(FILE *fp, TokenStream *s, TPpToken * yylvalpp) 
+{
     int token;
-    const int maxSize = MAX_TOKEN_LENGTH + 5;
-    char str[100];
 
     if (fp == 0) fp = stdout;
     RewindTokenStream(s);
@@ -470,27 +465,26 @@ void DumpTokenStream(FILE *fp, TokenStream *s, yystypepp * yylvalpp) {
         switch (token) {
         case CPP_IDENTIFIER:
         case CPP_TYPEIDENTIFIER:
-            snprintf(str, maxSize, "%s ", GetAtomString(atable, yylvalpp->sc_ident));
+            printf("%s ", GetAtomString(&atomTable, yylvalpp->atom));
             break;
         case CPP_STRCONSTANT:
-            snprintf(str, maxSize, "\"%s\"", GetAtomString(atable, yylvalpp->sc_ident));
+            printf("\"%s\"", GetAtomString(&atomTable, yylvalpp->atom));
             break;
         case CPP_FLOATCONSTANT:
         case CPP_DOUBLECONSTANT:
-            printf("%g9.6 ", yylvalpp->sc_dval);
+            printf("%g9.6 ", yylvalpp->dval);
             break;
         case CPP_INTCONSTANT:
         case CPP_UINTCONSTANT:
-            printf("%d ", yylvalpp->sc_int);
+            printf("%d ", yylvalpp->ival);
             break;
         default:
             if (token >= 127)
-                snprintf(str, maxSize, "%s ", GetAtomString(atable, token));
+                printf("%s ", GetAtomString(&atomTable, token));
             else
-                snprintf(str, maxSize, "%c", token);
+                printf("%c", token);
             break;
         }
-        ShPpDebugLogMsg(str);
     }
 }
 

@@ -49,9 +49,7 @@
 #include "../Include/ShHandle.h"
 #include "InitializeDll.h"
 
-extern "C" {
-#include "preprocessor/preprocess.h"
-}
+#include "preprocessor/PpContext.h"
 
 #define SH_EXPORTING
 #include "../Public/ShaderLang.h"
@@ -87,7 +85,6 @@ const int VersionCount = 12;
 // Each has a different set of built-ins, and we want to preserve that from
 // compile to compile.
 //
-// TODO: quality: thread safety: ensure the built-in symbol table levels are read only.
 TSymbolTable* SharedSymbolTables[VersionCount][EProfileCount][EShLangCount] = {};
 
 TPoolAllocator* PerProcessGPA = 0;
@@ -104,9 +101,10 @@ bool InitializeSymbolTable(TBuiltInStrings* BuiltInStrings, int version, EProfil
 		symbolTable = &symbolTables[language];
 
     TParseContext parseContext(*symbolTable, intermediate, true, version, profile, language, infoSink);
-    ThreadLocalParseContext() = &parseContext;
+    TPpContext ppContext(parseContext);
     glslang::TScanContext scanContext(parseContext);
     parseContext.scanContext = &scanContext;
+    parseContext.ppContext = &ppContext;
     
     assert(symbolTable->isEmpty() || symbolTable->atSharedBuiltInLevel());
        
@@ -121,14 +119,6 @@ bool InitializeSymbolTable(TBuiltInStrings* BuiltInStrings, int version, EProfil
 
     symbolTable->push();
 
-    
-    //Initialize the Preprocessor
-    int ret = InitPreprocessor();
-    if (ret) {
-        infoSink.info.message(EPrefixInternalError,  "Unable to intialize the Preprocessor");
-        return false;
-    }
-
     for (TBuiltInStrings::iterator i  = BuiltInStrings[parseContext.language].begin();
                                    i != BuiltInStrings[parseContext.language].end();    ++i) {
         const char* builtInShaders[1];
@@ -136,14 +126,13 @@ bool InitializeSymbolTable(TBuiltInStrings* BuiltInStrings, int version, EProfil
 
         builtInShaders[0] = (*i).c_str();
         builtInLengths[0] = (int) (*i).size();
-        if (! parseContext.parseShaderStrings(const_cast<char**>(builtInShaders), builtInLengths, 1) != 0) {
+        if (! parseContext.parseShaderStrings(ppContext, const_cast<char**>(builtInShaders), builtInLengths, 1) != 0) {
             infoSink.info.message(EPrefixInternalError, "Unable to parse built-ins");
             printf("Unable to parse built-ins\n");
 
             return false;
         }
     }
-    FinalizePreprocessor();
 
 	if (resources) {
 		IdentifyBuiltIns(version, profile, parseContext.language, *symbolTable, *resources);
@@ -418,7 +407,9 @@ int ShCompile(
 
     TParseContext parseContext(symbolTable, intermediate, false, version, profile, compiler->getLanguage(), compiler->infoSink, forwardCompatible, messages);
     glslang::TScanContext scanContext(parseContext);
+    TPpContext ppContext(parseContext);
     parseContext.scanContext = &scanContext;
+    parseContext.ppContext = &ppContext;
 
     TSourceLoc beginning;
     beginning.line = 1;
@@ -432,10 +423,6 @@ int ShCompile(
         parseContext.warn(beginning, "statement missing: use #version on first line of shader", "#version", "");
     else if (profile == EEsProfile && version >= 300 && versionNotFirst)
         parseContext.error(beginning, "statement must appear first in ESSL shader; before comments or newlines", "#version", "");
-
-    ThreadLocalParseContext() = &parseContext;
-    
-    InitPreprocessor();
 
     //
     // Parse the application's shaders.  All the following symbol table
@@ -451,7 +438,7 @@ int ShCompile(
     if (parseContext.insertBuiltInArrayAtGlobalLevel())
         success = false;
 
-    bool ret = parseContext.parseShaderStrings(const_cast<char**>(shaderStrings), lengths, numStrings);
+    bool ret = parseContext.parseShaderStrings(ppContext, const_cast<char**>(shaderStrings), lengths, numStrings);
     if (! ret)
         success = false;
     intermediate.addSymbolLinkageNodes(parseContext.treeRoot, parseContext.linkage, parseContext.language, symbolTable);
@@ -490,7 +477,6 @@ int ShCompile(
     while (! symbolTable.atSharedBuiltInLevel())
         symbolTable.pop(0);
 
-    FinalizePreprocessor();
     //
     // Throw away all the temporary memory used by the compilation process.
     //

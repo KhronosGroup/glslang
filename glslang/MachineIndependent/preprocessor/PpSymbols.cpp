@@ -1,5 +1,6 @@
 //
 //Copyright (C) 2002-2005  3Dlabs Inc. Ltd.
+//Copyright (C) 2013 LunarG, Inc.
 //All rights reserved.
 //
 //Redistribution and use in source and binary forms, with or without
@@ -83,32 +84,29 @@ NVIDIA HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <stdio.h>
 #include <string.h>
 
-#include "slglobals.h"
+#include "PpContext.h"
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////// Symbol Table Variables: ///////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////
 
-Scope *ScopeList = NULL;
-Scope *CurrentScope = NULL;
-Scope *GlobalScope = NULL;
-
-static void unlinkScope(void *_scope) {
-    Scope *scope = (Scope*)_scope;
+static void unlinkScope(void *_scope, void* scopeList)
+{
+    TPpContext::Scope *scope = (TPpContext::Scope*)_scope;
 
     if (scope->next)
         scope->next->prev = scope->prev;
     if (scope->prev)
         scope->prev->next = scope->next;
     else
-        ScopeList = scope->next;
+        *(TPpContext::Scope**)scopeList = scope->next;
 }
 
 /*
- * NewScope()
- *
- */
-Scope *NewScopeInPool(MemoryPool *pool)
+* NewScope()
+*
+*/
+TPpContext::Scope* TPpContext::NewScopeInPool(MemoryPool *pool)
 {
     Scope *lScope;
 
@@ -117,7 +115,7 @@ Scope *NewScopeInPool(MemoryPool *pool)
     lScope->parent = NULL;
     lScope->funScope = NULL;
     lScope->symbols = NULL;
-    
+
     lScope->level = 0;
 
     lScope->programs = NULL;
@@ -125,16 +123,17 @@ Scope *NewScopeInPool(MemoryPool *pool)
         ScopeList->prev = lScope;
     lScope->prev = 0;
     ScopeList = lScope;
-    mem_AddCleanup(pool, unlinkScope, lScope);
+    mem_AddCleanup(pool, unlinkScope, lScope, &ScopeList);
+
     return lScope;
 } // NewScope
 
 /*
- * PushScope()
- *
- */
+* PushScope()
+*
+*/
 
-void PushScope(Scope *fScope)
+void TPpContext::PushScope(Scope *fScope)
 {
     Scope *lScope;
 
@@ -143,9 +142,9 @@ void PushScope(Scope *fScope)
         if (fScope->level == 1) {
             if (!GlobalScope) {
                 /* HACK - CTD -- if GlobalScope==NULL and level==1, we're
-                 * defining a function in the superglobal scope.  Things
-                 * will break if we leave the level as 1, so we arbitrarily
-                 * set it to 2 */
+                * defining a function in the superglobal scope.  Things
+                * will break if we leave the level as 1, so we arbitrarily
+                * set it to 2 */
                 fScope->level = 2;
             }
         }
@@ -163,11 +162,11 @@ void PushScope(Scope *fScope)
 } // PushScope
 
 /*
- * PopScope()
- *
- */
+* PopScope()
+*
+*/
 
-Scope *PopScope(void)
+TPpContext::Scope* TPpContext::PopScope(void)
 {
     Scope *lScope;
 
@@ -178,11 +177,11 @@ Scope *PopScope(void)
 } // PopScope
 
 /*
- * NewSymbol() - Allocate a new symbol node;
- *
- */
+* NewSymbol() - Allocate a new symbol node;
+*
+*/
 
-Symbol *NewSymbol(SourceLoc *loc, Scope *fScope, int name, symbolkind kind)
+TPpContext::Symbol* TPpContext::NewSymbol(TSourceLoc *loc, Scope *fScope, int name, symbolkind kind)
 {
     Symbol *lSymb;
     char *pch;
@@ -195,7 +194,7 @@ Symbol *NewSymbol(SourceLoc *loc, Scope *fScope, int name, symbolkind kind)
     lSymb->name = name;
     lSymb->loc = *loc;
     lSymb->kind = kind;
-    
+
     // Clear union area:
 
     pch = (char *) &lSymb->details;
@@ -205,13 +204,13 @@ Symbol *NewSymbol(SourceLoc *loc, Scope *fScope, int name, symbolkind kind)
 } // NewSymbol
 
 /*
- * lAddToTree() - Using a binary tree is not a good idea for basic atom values because they
- *         are generated in order.  We'll fix this later (by reversing the bit pattern).
- */
+* lAddToTree() - Using a binary tree is not a good idea for basic atom values because they
+*         are generated in order.  We'll fix this later (by reversing the bit pattern).
+*/
 
-static void lAddToTree(Symbol **fSymbols, Symbol *fSymb)
+void TPpContext::lAddToTree(Symbol **fSymbols, Symbol *fSymb, AtomTable *atable)
 {
-    Symbol *lSymb;
+    TPpContext::Symbol *lSymb;
     int lrev, frev;
 
     lSymb = *fSymbols;
@@ -220,7 +219,7 @@ static void lAddToTree(Symbol **fSymbols, Symbol *fSymb)
         while (lSymb) {
             lrev = GetReversedAtom(atable, lSymb->name);
             if (lrev == frev) {
-                ShPpErrorToInfoLog("GetAtomString(atable, fSymb->name)");
+                printf("GetAtomString(atable, fSymb->name)");
                 break;
             } else {
                 if (lrev > frev) {
@@ -247,18 +246,18 @@ static void lAddToTree(Symbol **fSymbols, Symbol *fSymb)
 
 
 /*
- * AddSymbol() - Add a variable, type, or function name to a scope.
- *
- */
+* AddSymbol() - Add a variable, type, or function name to a scope.
+*
+*/
 
-Symbol *AddSymbol(SourceLoc *loc, Scope *fScope, int atom, symbolkind kind)
+TPpContext::Symbol* TPpContext::AddSymbol(TSourceLoc *loc, Scope *fScope, int atom, symbolkind kind)
 {
     Symbol *lSymb;
 
     if (!fScope)
         fScope = CurrentScope;
     lSymb = NewSymbol(loc, fScope, atom, kind);
-    lAddToTree(&fScope->symbols, lSymb);
+    lAddToTree(&fScope->symbols, lSymb, &atomTable);
     return lSymb;
 } // AddSymbol
 
@@ -268,21 +267,21 @@ Symbol *AddSymbol(SourceLoc *loc, Scope *fScope, int atom, symbolkind kind)
 /*********************************************************************************************/
 
 /*
- * LookUpLocalSymbol()
- *
- */
+* LookUpLocalSymbol()
+*
+*/
 
-Symbol *LookUpLocalSymbol(Scope *fScope, int atom)
+TPpContext::Symbol* TPpContext::LookUpLocalSymbol(Scope *fScope, int atom)
 {
     Symbol *lSymb;
     int rname, ratom;
 
-    ratom = GetReversedAtom(atable, atom);
+    ratom = GetReversedAtom(&atomTable, atom);
     if (!fScope)
         fScope = CurrentScope;
     lSymb = fScope->symbols;
     while (lSymb) {
-        rname = GetReversedAtom(atable, lSymb->name);
+        rname = GetReversedAtom(&atomTable, lSymb->name);
         if (rname == ratom) {
             return lSymb;
         } else {
@@ -297,11 +296,11 @@ Symbol *LookUpLocalSymbol(Scope *fScope, int atom)
 } // LookUpLocalSymbol
 
 /*
- * LookUpSymbol()
- *
- */
+* LookUpSymbol()
+*
+*/
 
-Symbol *LookUpSymbol(Scope *fScope, int atom)
+TPpContext::Symbol* TPpContext::LookUpSymbol(Scope *fScope, int atom)
 {
     Symbol *lSymb;
 

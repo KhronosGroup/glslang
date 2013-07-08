@@ -55,6 +55,8 @@ struct TPragma {
 	TPragmaTable pragmaTable;
 };
 
+class TPpContext;
+
 namespace glslang {
     class TScanContext;
 };
@@ -63,10 +65,13 @@ namespace glslang {
 // The following are extra variables needed during parsing, grouped together so
 // they can be passed to the parser without needing a global.
 //
-struct TParseContext {
+class TParseContext {
+public:
     TParseContext(TSymbolTable&, TIntermediate&, bool parsingBuiltins, int version, EProfile, EShLanguage, TInfoSink&,
                   bool forwardCompatible = false, EShMessages messages = EShMsgDefault);
-    glslang::TScanContext *scanContext;
+
+    glslang::TScanContext* scanContext;
+    TPpContext* ppContext;
     TIntermediate& intermediate; // to hold and build a parse tree
     TSymbolTable& symbolTable;   // symbol table that goes with the current language, version, and profile
     TInfoSink& infoSink;
@@ -92,8 +97,9 @@ struct TParseContext {
     TPrecisionQualifier defaultPrecision[EbtNumTypes];
     static const int maxSamplerIndex = EsdNumDims * (EbtNumTypes * (2 * 2)); // see computeSamplerTypeIndex()
     TPrecisionQualifier defaultSamplerPrecision[maxSamplerIndex];
-	TString HashErrMsg;
     bool afterEOF;
+    bool tokensBeforeEOF;
+    TSourceLoc currentLoc;
     const TString* blockName;
     TQualifier globalUniformDefaults;
     TQualifier globalInputDefaults;
@@ -102,7 +108,12 @@ struct TParseContext {
 
     void initializeExtensionBehavior();
     const char* getPreamble();
-    bool parseShaderStrings(char* strings[], int strLen[], int numStrings);
+    bool parseShaderStrings(TPpContext&, char* strings[], int strLen[], int numStrings);
+    void parserError(const char *s);
+
+    void handlePragma(const char **tokens, int numTokens);
+    TBehavior getExtensionBehavior(const char* behavior);
+    void updateExtensionBehavior(const char* extName, const char* behavior);
     
     void C_DECL error(TSourceLoc, const char *szReason, const char *szToken,
                       const char *szExtraInfoFormat, ...);
@@ -182,14 +193,5 @@ struct TParseContext {
     void fullIntegerCheck(TSourceLoc, const char* op);
     void doubleCheck(TSourceLoc, const char* op);
 };
-
-typedef TParseContext* TParseContextPointer;
-TParseContextPointer& ThreadLocalParseContext();
-
-// TODO: threading:
-typedef struct TThreadParseContextRec
-{
-	TParseContext *lpGlobalParseContext;
-} TThreadParseContext;
 
 #endif // _PARSER_HELPER_INCLUDED_

@@ -35,14 +35,11 @@
 //
 
 #include "ParseHelper.h"
-#include "Include/InitializeParseContext.h"
 #include "osinclude.h"
 #include <stdarg.h>
 #include <algorithm>
 
-extern "C" {
-  #include "./preprocessor/preprocess.h"
-}
+#include "preprocessor/PpContext.h"
 
 TParseContext::TParseContext(TSymbolTable& symt, TIntermediate& interm, bool pb, int v, EProfile p, EShLanguage L, TInfoSink& is,                             
                              bool fc, EShMessages m) : 
@@ -50,8 +47,11 @@ TParseContext::TParseContext(TSymbolTable& symt, TIntermediate& interm, bool pb,
             numErrors(0), loopNestingLevel(0),
             structNestingLevel(0), inTypeParen(false), parsingBuiltins(pb),
             version(v), profile(p), forwardCompatible(fc), messages(m),
-            contextPragma(true, false)
+            contextPragma(true, false), afterEOF(false), tokensBeforeEOF(false)
 {
+    currentLoc.line = 1;
+    currentLoc.string = 0;
+
     // set all precision defaults to EpqNone, which is correct for all desktop types
     // and for ES types that don't have defaults (thus getting an error on use)
     for (int type = 0; type < EbtNumTypes; ++type)
@@ -104,24 +104,20 @@ const char* TParseContext::getPreamble()
         return 0;
 }
 
-TSourceLoc currentLine;  // TODO: thread: get this into the scan context, sort out with return from PP
-#ifdef _WIN32
-    extern int yyparse(TParseContext&);
-#else
-    extern int yyparse(void*);
-    #define parseContext (*((TParseContext*)(parseContextLocal)))		
-#endif
+extern int yyparse(void*);
 
 //
-// Parse an array of strings using yyparse.  We set up globals used by
-// yywrap.
+// Parse an array of strings using yyparse, going through the
+// preprocessor to tokenize the shader strings, then through
+// the GLSL scanner.
 //
-// Returns true for success, false for failure.
+// Returns true for successful acceptance of the shader, false if any errors.
 //
-bool TParseContext::parseShaderStrings(char* strings[], int strLen[], int numStrings)
+bool TParseContext::parseShaderStrings(TPpContext& ppContext, char* strings[], int lengths[], int numStrings)
 {
-    if (! strings || numStrings == 0)
-        return false;
+    // empty shaders are okay
+    if (! strings || numStrings == 0 || lengths[0] == 0)
+        return true;
 
     for (int i = 0; i < numStrings; ++i) {
         if (! strings[i]) {
@@ -134,36 +130,9 @@ bool TParseContext::parseShaderStrings(char* strings[], int strLen[], int numStr
         }
     }
 
-    // set up all the cpp fields...
-    // TODO: thread safety: don't move 'this' into the global
-    cpp->pC = (void*)this;
-    const char* preamble = getPreamble();
-    char *writeablePreamble = 0;
-    if (preamble) {
-        // preAmble could be a hard-coded string; make writable copy
-        // TODO: efficiency PP: make it not need writable strings
-        int size = strlen(preamble) + 1;
-        writeablePreamble = new char[size];
-        memcpy(writeablePreamble, preamble, size);
-        ScanFromString(writeablePreamble);
-        cpp->PaWhichStr = -1;
-    } else {
-        ScanFromString(strings[0]);
-        cpp->PaWhichStr = 0;
-    }
-
-    afterEOF = false;
-    cpp->PaArgv = strings;
-    cpp->PaArgc = numStrings;
-    int string0len;
-    if (! strLen) {
-        string0len = (int) strlen(strings[0]);
-        cpp->PaStrLen = &string0len;
-    } else
-        cpp->PaStrLen = strLen;
-    cpp->notAVersionToken = 0;
-    currentLine.string = 0;
-    currentLine.line = 1;
+    if (getPreamble())
+        ppContext.setPreamble(getPreamble(), strlen(getPreamble()));
+    ppContext.setShaderStrings(strings, lengths, numStrings);
 
     // TODO: desktop PP: a shader containing nothing but white space and comments is valid, even though it has no parse tokens
     int len = 0;
@@ -171,170 +140,73 @@ bool TParseContext::parseShaderStrings(char* strings[], int strLen[], int numStr
            strings[0][len] == '\t' ||
            strings[0][len] == '\n' ||
            strings[0][len] == '\r') {
-        if (++len >= strLen[0]) {
-            delete writeablePreamble;
+        if (++len >= lengths[0])
             return true;
-        }
     }
 
-    if (*cpp->PaStrLen > 0) {
-        int ret;
-        #ifdef _WIN32
-            ret = yyparse(*this);
-        #else
-            ret = yyparse((void*)this);
-        #endif
-        delete writeablePreamble;
-        if (cpp->CompileError == 1 || numErrors > 0)
-             return false;
-        else
-             return true;
-    }
+    yyparse((void*)this);
 
-    delete writeablePreamble;
-
-    return true;
+    return numErrors == 0;
 }
 
-// TODO: fix this for threads
-void yyerror(const char *s)
+// This is called from bison when it has a parse (syntax) error
+void TParseContext::parserError(const char *s)
 {
-    TParseContext& pc = *((TParseContext *)cpp->pC);
-
-    if (pc.afterEOF) {
-        if (cpp->tokensBeforeEOF == 1)
-            ThreadLocalParseContext()->error(currentLine, "", "pre-mature EOF", s, "");
+    if (afterEOF) {
+        if (tokensBeforeEOF == 1)
+            error(currentLoc, "", "pre-mature EOF", s, "");
     } else
-        ThreadLocalParseContext()->error(currentLine, "", "", s, "");
+        error(currentLoc, "", "", s, "");
 }
 
-
-extern "C" {
-
-// Communications with the preprocess.
-// TODO: threads: this all needs redoing for thread safety
-
-void ShPpDebugLogMsg(const char *msg)
+void TParseContext::handlePragma(const char **tokens, int numTokens)
 {
-    TParseContext& pc = *((TParseContext *)cpp->pC);
-
-    pc.infoSink.debug.message(EPrefixNone, msg);
-}
-
-void ShPpWarningToInfoLog(const char *msg)
-{
-    TParseContext& pc = *((TParseContext *)cpp->pC);
-
-    pc.warn(currentLine, msg, "Preprocessor", "");
-}
-
-void ShPpErrorToInfoLog(const char *msg)
-{
-    TParseContext& pc = *((TParseContext *)cpp->pC);
-
-    pc.error(currentLine, msg, "Preprocessor", "");
-}
-
-// return 1 if error
-// return 0 if no error
-int ShPpMacrosMustBeDefinedError()
-{
-    TParseContext& pc = *((TParseContext *)cpp->pC);
-
-    if (pc.profile == EEsProfile) {
-        if (pc.messages & EShMsgRelaxedErrors)
-            ShPpWarningToInfoLog("undefined macro in expression not allowed in es profile");
-        else {
-            ShPpErrorToInfoLog("undefined macro in expression");
-            
-            return 1;
-        }
-    }
-
-    return 0;
-}
-
-// TODO: PP/threads: integrate this with location from token
-void SetLineNumber(int line)
-{
-    currentLine.line = line;
-}
-
-void SetStringNumber(int string)
-{
-    currentLine.string = string;
-}
-
-int GetStringNumber(void)
-{
-    return currentLine.string;
-}
-
-int GetLineNumber(void)
-{
-    return currentLine.line;
-}
-
-void IncLineNumber(void)
-{
-    ++currentLine.line;
-}
-
-void DecLineNumber(void)
-{
-    --currentLine.line;
-}
-
-void HandlePragma(const char **tokens, int numTokens)
-{
-    TParseContext& pc = *((TParseContext *)cpp->pC);
-
     if (!strcmp(tokens[0], "optimize")) {
         if (numTokens != 4) {
-            ShPpErrorToInfoLog("optimize pragma syntax is incorrect");
+            error(currentLoc, "optimize pragma syntax is incorrect", "#pragma", "");
             return;
         }
 
         if (strcmp(tokens[1], "(")) {
-            ShPpErrorToInfoLog("\"(\" expected after 'optimize' keyword");
+            error(currentLoc, "\"(\" expected after 'optimize' keyword", "#pragma", "");
             return;
         }
 
         if (!strcmp(tokens[2], "on"))
-            pc.contextPragma.optimize = true;
+            contextPragma.optimize = true;
         else if (!strcmp(tokens[2], "off"))
-            pc.contextPragma.optimize = false;
+            contextPragma.optimize = false;
         else {
-            ShPpErrorToInfoLog("\"on\" or \"off\" expected after '(' for 'optimize' pragma");
+            error(currentLoc, "\"on\" or \"off\" expected after '(' for 'optimize' pragma", "#pragma", "");
             return;
         }
 
         if (strcmp(tokens[3], ")")) {
-            ShPpErrorToInfoLog("\")\" expected to end 'optimize' pragma");
+            error(currentLoc, "\")\" expected to end 'optimize' pragma", "#pragma", "");
             return;
         }
     } else if (!strcmp(tokens[0], "debug")) {
         if (numTokens != 4) {
-            ShPpErrorToInfoLog("debug pragma syntax is incorrect");
+            error(currentLoc, "debug pragma syntax is incorrect", "#pragma", "");
             return;
         }
 
         if (strcmp(tokens[1], "(")) {
-            ShPpErrorToInfoLog("\"(\" expected after 'debug' keyword");
+            error(currentLoc, "\"(\" expected after 'debug' keyword", "#pragma", "");
             return;
         }
 
         if (!strcmp(tokens[2], "on"))
-            pc.contextPragma.debug = true;
+            contextPragma.debug = true;
         else if (!strcmp(tokens[2], "off"))
-            pc.contextPragma.debug = false;
+            contextPragma.debug = false;
         else {
-            ShPpErrorToInfoLog("\"on\" or \"off\" expected after '(' for 'debug' pragma");
+            error(currentLoc, "\"on\" or \"off\" expected after '(' for 'debug' pragma", "#pragma", "");
             return;
         }
 
         if (strcmp(tokens[3], ")")) {
-            ShPpErrorToInfoLog("\")\" expected to end 'debug' pragma");
+            error(currentLoc, "\")\" expected to end 'debug' pragma", "#pragma", "");
             return;
         }
     } else {
@@ -371,47 +243,7 @@ void HandlePragma(const char **tokens, int numTokens)
     }
 }
 
-void StoreStr(const char *string)
-{
-    TParseContext& pc = *((TParseContext *)cpp->pC);
-
-    TString strSrc;
-    strSrc = TString(string);
-
-    pc.HashErrMsg = pc.HashErrMsg + " " + strSrc;
-}
-
-const char* GetStrfromTStr(void)
-{
-    TParseContext& pc = *((TParseContext *)cpp->pC);
-
-    cpp->ErrMsg = pc.HashErrMsg.c_str();
-    return cpp->ErrMsg;
-}
-
-void ResetTString(void)
-{
-    TParseContext& pc = *((TParseContext *)cpp->pC);
-
-    pc.HashErrMsg = "";
-}
-
-void SetVersion(int version)
-{
-    // called by the CPP, but this functionality is currently
-    // taken over by ScanVersion() before parsing starts
-
-    // CPP should still report errors in semantics
-}
-
-int GetShaderVersion(void* cppPc)
-{
-    TParseContext& pc = *((TParseContext *)cppPc);
-
-    return pc.version;
-}
-
-TBehavior GetBehavior(const char* behavior)
+TBehavior TParseContext::getExtensionBehavior(const char* behavior)
 {
     if (!strcmp("require", behavior))
         return EBhRequire;
@@ -422,38 +254,37 @@ TBehavior GetBehavior(const char* behavior)
     else if (!strcmp("warn", behavior))
         return EBhWarn;
     else {
-        ShPpErrorToInfoLog((TString("behavior '") + behavior + "' is not supported").c_str());
+        error(currentLoc, "behavior not supported", "#extension", behavior);
         return EBhDisable;
     }
 }
 
-void updateExtensionBehavior(const char* extName, const char* behavior)
+void TParseContext::updateExtensionBehavior(const char* extName, const char* behavior)
 {
-    TParseContext& pc = *((TParseContext *)cpp->pC);
-    TBehavior behaviorVal = GetBehavior(behavior);
+    TBehavior behaviorVal = getExtensionBehavior(behavior);
     TMap<TString, TBehavior>:: iterator iter;
     TString msg;
 
     // special cased for all extension
     if (!strcmp(extName, "all")) {
         if (behaviorVal == EBhRequire || behaviorVal == EBhEnable) {
-            ShPpErrorToInfoLog("extension 'all' cannot have 'require' or 'enable' behavior");
+            error(currentLoc, "extension 'all' cannot have 'require' or 'enable' behavior", "#extension", "");
             return;
         } else {
-            for (iter = pc.extensionBehavior.begin(); iter != pc.extensionBehavior.end(); ++iter)
+            for (iter = extensionBehavior.begin(); iter != extensionBehavior.end(); ++iter)
                 iter->second = behaviorVal;
         }
     } else {
-        iter = pc.extensionBehavior.find(TString(extName));
-        if (iter == pc.extensionBehavior.end()) {
+        iter = extensionBehavior.find(TString(extName));
+        if (iter == extensionBehavior.end()) {
             switch (behaviorVal) {
             case EBhRequire:
-                ShPpErrorToInfoLog((TString("extension '") + extName + "' is not supported").c_str());
+                error(currentLoc, "extension not supported", "#extension", extName);
                 break;
             case EBhEnable:
             case EBhWarn:
             case EBhDisable:
-                pc.warn(currentLine, "extension not supported", extName, "");
+                warn(currentLoc, "extension not supported", "#extension", extName);
                 break;
             default:
                 assert(0 && "unexpected behaviorVal");
@@ -464,9 +295,6 @@ void updateExtensionBehavior(const char* extName, const char* behavior)
             iter->second = behaviorVal;
     }
 }
-
-}  // extern "C"
-
 
 ///////////////////////////////////////////////////////////////////////
 //
@@ -707,8 +535,8 @@ void TParseContext::variableCheck(TIntermTyped*& nodePtr)
         symbolTable.insert(*fakeVariable);
 
         // substitute a symbol node for this new variable
-        nodePtr = intermediate.addSymbol(fakeVariable->getUniqueId(), 
-                                         fakeVariable->getName(), 
+        nodePtr = intermediate.addSymbol(fakeVariable->getUniqueId(),
+                                         fakeVariable->getName(),
                                          fakeVariable->getType(), symbol->getLoc());
     } else {
         switch (symbol->getQualifier().storage) {
@@ -2382,90 +2210,4 @@ void TParseContext::initializeExtensionBehavior()
     //
     extensionBehavior["GL_ARB_texture_rectangle"] = EBhDisable;
     extensionBehavior["GL_3DL_array_objects"] = EBhDisable;
-}
-
-OS_TLSIndex GlobalParseContextIndex = OS_INVALID_TLS_INDEX;
-
-bool InitializeParseContextIndex()
-{
-    if (GlobalParseContextIndex != OS_INVALID_TLS_INDEX) {
-        assert(0 && "InitializeParseContextIndex(): Parse Context already initialised");
-        return false;
-    }
-
-    //
-    // Allocate a TLS index.
-    //
-    GlobalParseContextIndex = OS_AllocTLSIndex();
-    
-    if (GlobalParseContextIndex == OS_INVALID_TLS_INDEX) {
-        assert(0 && "InitializeParseContextIndex(): Parse Context already initialised");
-        return false;
-    }
-
-    return true;
-}
-
-bool InitializeThreadParseContext()
-{
-    if (GlobalParseContextIndex == OS_INVALID_TLS_INDEX) {
-        assert(0 && "InitializeThreadParseContext(): Parse Context index not initialized");
-        return false;
-    }
-
-    TThreadParseContext *lpParseContext = static_cast<TThreadParseContext *>(OS_GetTLSValue(GlobalParseContextIndex));
-    if (lpParseContext != 0) {
-        assert(0 && "InitializeParseContextIndex(): Parse Context already initialized");
-        return false;
-    }
-
-    TThreadParseContext *lpThreadData = new TThreadParseContext();
-    if (lpThreadData == 0) {
-        assert(0 && "InitializeThreadParseContext(): Unable to create thread parse context");
-        return false;
-    }
-
-    lpThreadData->lpGlobalParseContext = 0;
-    OS_SetTLSValue(GlobalParseContextIndex, lpThreadData);
-
-    return true;
-}
-
-TParseContextPointer& ThreadLocalParseContext()
-{
-    //
-    // Minimal error checking for speed
-    //
-
-    TThreadParseContext *lpParseContext = static_cast<TThreadParseContext *>(OS_GetTLSValue(GlobalParseContextIndex));
-
-    return lpParseContext->lpGlobalParseContext;
-}
-
-bool FreeParseContext()
-{
-    if (GlobalParseContextIndex == OS_INVALID_TLS_INDEX) {
-        assert(0 && "FreeParseContext(): Parse Context index not initialized");
-        return false;
-    }
-
-    TThreadParseContext *lpParseContext = static_cast<TThreadParseContext *>(OS_GetTLSValue(GlobalParseContextIndex));
-    if (lpParseContext)
-        delete lpParseContext;
-
-    return true;
-}
-
-bool FreeParseContextIndex()
-{
-    OS_TLSIndex tlsiIndex = GlobalParseContextIndex;
-
-    if (GlobalParseContextIndex == OS_INVALID_TLS_INDEX) {
-        assert(0 && "FreeParseContextIndex(): Parse Context index not initialized");
-        return false;
-    }
-
-    GlobalParseContextIndex = OS_INVALID_TLS_INDEX;
-
-    return OS_FreeTLSIndex(tlsiIndex);
 }

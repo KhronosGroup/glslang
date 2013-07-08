@@ -40,10 +40,12 @@
 
 #include "ParseHelper.h"
 
+class TPpContext;
+class TPpToken;
+
 namespace glslang {
 
 class TParserToken;
-class TPpToken;
 
 class TScanContext {
 public:
@@ -51,7 +53,7 @@ public:
     virtual ~TScanContext() { }
 
     static void fillInKeywordMap();
-    int tokenize(TParserToken&);
+    int tokenize(TPpContext*, TParserToken&);
 
 protected:
     int tokenizeIdentifier();

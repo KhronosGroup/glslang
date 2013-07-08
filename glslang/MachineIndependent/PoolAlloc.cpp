@@ -42,7 +42,7 @@ OS_TLSIndex PoolIndex;
 
 void InitializeGlobalPools()
 {
-    TThreadGlobalPools* globalPools= static_cast<TThreadGlobalPools*>(OS_GetTLSValue(PoolIndex));    
+    TThreadGlobalPools* globalPools = static_cast<TThreadGlobalPools*>(OS_GetTLSValue(PoolIndex));    
     if (globalPools)
         return;
 
