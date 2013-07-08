@@ -145,19 +145,20 @@ public:
         int nextFree;
         int size;
     };
-    typedef struct HashEntry_Rec {
+    struct HashEntry {
         int index;      // String table offset of string representation
         int value;      // Atom (symbol) value
-    } HashEntry;
+    };
 
     static const int hashTableMaxCollisions = 3;
 
-    typedef struct HashTable_Rec {
+    struct HashTable {
         HashEntry *entry;
         int size;
         int entries;
         int counts[hashTableMaxCollisions + 1];
-    } HashTable;
+    };
+
     struct AtomTable {
         StringTable stable; // String table.
         HashTable htable;   // Hashes string to atom number and token value.  Multiple strings can
@@ -197,7 +198,7 @@ public:
         } details;
     };
 
-    typedef struct SymbolList {
+    struct SymbolList {
         struct SymbolList_Rec *next;
         Symbol *symb;
     };
@@ -237,11 +238,11 @@ protected:
     int elsetracker;             // #if-#else and #endif constructs...Counter.
     const char *ErrMsg;
 
-    typedef struct MacroInputSrc {
+    struct MacroInputSrc {
         InputSrc    base;
         MacroSymbol *mac;
         TokenStream **args;
-    } MacroInputSrc;
+    };
 
     InputSrc *currentInput;
 

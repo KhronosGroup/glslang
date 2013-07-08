@@ -29,10 +29,10 @@ depend:
 
 # DO NOT DELETE
 
-PpAtom.o: PpContext.h PpToken.h
-PpScanner.o: PpContext.h PpToken.h
-PpTokens.o: PpContext.h PpToken.h
-Pp.o: PpContext.h PpToken.h
-PpContext.o: PpContext.h PpToken.h
-PpMemory.o: PpContext.h PpToken.h
-PpSymbols.o: PpContext.h PpToken.h
+PpAtom.o: PpContext.h PpTokens.h
+PpScanner.o: PpContext.h PpTokens.h
+PpTokens.o: PpContext.h PpTokens.h
+Pp.o: PpContext.h PpTokens.h
+PpContext.o: PpContext.h PpTokens.h
+PpMemory.o: PpContext.h PpTokens.h
+PpSymbols.o: PpContext.h PpTokens.h

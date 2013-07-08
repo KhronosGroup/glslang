@@ -34,11 +34,7 @@
 
 #include "Include/InfoSink.h"
 
-#ifdef _WIN32
-    #include <windows.h>
-#else
-    #include <string.h>
-#endif
+#include <string.h>
 
 void TInfoSinkBase::append(const char *s)           
 {
@@ -47,10 +43,10 @@ void TInfoSinkBase::append(const char *s)
         sink.append(s); 
     }
 
-#ifdef _WIN32
-    if (outputStream & EDebugger)
-        OutputDebugString(s);
-#endif
+//#ifdef _WIN32
+//    if (outputStream & EDebugger)
+//        OutputDebugString(s);
+//#endif
 
     if (outputStream & EStdOut)
         fprintf(stdout, "%s", s);
@@ -63,14 +59,14 @@ void TInfoSinkBase::append(int count, char c)
         sink.append(count, c); 
     }
 
-#ifdef _WIN32
-    if (outputStream & EDebugger) {
-        char str[2];
-        str[0] = c;
-        str[1] = '\0';
-        OutputDebugString(str);
-    }
-#endif
+//#ifdef _WIN32
+//    if (outputStream & EDebugger) {
+//        char str[2];
+//        str[0] = c;
+//        str[1] = '\0';
+//        OutputDebugString(str);
+//    }
+//#endif
 
     if (outputStream & EStdOut)
         fprintf(stdout, "%c", c);
@@ -83,10 +79,10 @@ void TInfoSinkBase::append(const TPersistString& t)
         sink.append(t); 
     }
 
-#ifdef _WIN32
-    if (outputStream & EDebugger)
-        OutputDebugString(t.c_str());
-#endif
+//#ifdef _WIN32
+//    if (outputStream & EDebugger)
+//        OutputDebugString(t.c_str());
+//#endif
 
     if (outputStream & EStdOut)
         fprintf(stdout, "%s", t.c_str());
@@ -99,10 +95,10 @@ void TInfoSinkBase::append(const TString& t)
         sink.append(t.c_str()); 
     }
 
-#ifdef _WIN32
-    if (outputStream & EDebugger)
-        OutputDebugString(t.c_str());
-#endif
+//#ifdef _WIN32
+//    if (outputStream & EDebugger)
+//        OutputDebugString(t.c_str());
+//#endif
 
     if (outputStream & EStdOut)
         fprintf(stdout, "%s", t.c_str());
