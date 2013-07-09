@@ -152,6 +152,7 @@ xcopy /y $(IntDir)$(TargetName)$(TargetExt) Test</Command>
     <ClCompile Include="glslang\MachineIndependent\Constant.cpp" />
     <ClCompile Include="glslang\MachineIndependent\glslang_tab.cpp">
       <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">4065</DisableSpecificWarnings>
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">4065</DisableSpecificWarnings>
     </ClCompile>
     <ClCompile Include="glslang\MachineIndependent\InfoSink.cpp" />
     <ClCompile Include="glslang\MachineIndependent\Initialize.cpp" />
