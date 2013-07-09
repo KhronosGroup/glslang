@@ -1088,7 +1088,10 @@ void TParseContext::precisionQualifierCheck(TSourceLoc loc, TPublicType& publicT
 
     if (publicType.basicType == EbtFloat || publicType.basicType == EbtUint || publicType.basicType == EbtInt || publicType.basicType == EbtSampler) {
         if (publicType.qualifier.precision == EpqNone) {
-            error(loc, "type requires declaration of default precision qualifier", TType::getBasicString(publicType.basicType), "");
+            if (messages & EShMsgRelaxedErrors)
+                warn(loc, "type requires declaration of default precision qualifier", TType::getBasicString(publicType.basicType), "substituting 'mediump'");
+            else
+                error(loc, "type requires declaration of default precision qualifier", TType::getBasicString(publicType.basicType), "");
             publicType.qualifier.precision = EpqMedium;
             defaultPrecision[publicType.basicType] = EpqMedium;
         }
