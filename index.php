@@ -39,7 +39,7 @@ else
     </p>
 
     <p><tt>
-    svn checkout --username anonymous --password anonymous \
+    svn checkout --username anonymous --password anonymous
     https://cvs.khronos.org/svn/repos/ogl/trunk/ecosystem/public/sdk/tools/glslang/ glslang
     </tt></p>
 
