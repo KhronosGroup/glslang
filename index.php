@@ -34,8 +34,14 @@ else
     <p>
     You can download the source from the <a
     href="https://cvs.khronos.org/svn/repos/ogl/trunk/ecosystem/public/sdk/tools/glslang/">
-    Khronos public-access Subversion server</a>.
+    Khronos public-access Subversion server</a> . For example, using the Subversion
+    command-line client:
     </p>
+
+    <p><tt>
+    svn checkout --username anonymous --password anonymous \
+    https://cvs.khronos.org/svn/repos/ogl/trunk/ecosystem/public/sdk/tools/glslang/ glslang
+    </tt></p>
 
     <hr />
 
