@@ -79,7 +79,7 @@ int MapVersionToIndex(int version)
 const int VersionCount = 12;
 
 //
-// A symbol table per version per profile per language.  This will be sparsely
+// A process-global symbol table per version per profile per language.  This will be sparsely
 // populated, so they will only only be generated as needed.
 // 
 // Each has a different set of built-ins, and we want to preserve that from
@@ -163,41 +163,59 @@ bool AddContextSpecificSymbols(const TBuiltInResource* resources, TInfoSink& inf
     return true;
 }
 
+//
+// To do this on the fly, we want to leave the current state of our thread's 
+// pool allocator intact, so:
+//  - Switch to a new pool for parsing the built-ins
+//  - Do the parsing, which builds the symbol table, using the new pool
+//  - Switch to the process-global pool to save a copy the resulting symbol table
+//  - Free up the new pool used to parse the built-ins
+//  - Switch back to the original thread's pool
+//
+// This only gets done the first time any thread needs a particular symbol table
+// (lazy evaluation).
+//
 void SetupBuiltinSymbolTable(int version, EProfile profile)
 {
     TInfoSink infoSink;
 
-    // This function is for lazy setup.  See if already done.
+    // Make sure only one thread tries to do this at a time
+    glslang::GetGlobalLock();
+
+    // See if it's already been done.
     int versionIndex = MapVersionToIndex(version);
-    if (SharedSymbolTables[versionIndex][profile][EShLangVertex])
+    if (SharedSymbolTables[versionIndex][profile][EShLangVertex]) {
+        glslang::ReleaseGlobalLock();
+
         return;
+    }
 
-    TPoolAllocator& savedGPA = GetGlobalPoolAllocator();
-    TPoolAllocator *builtInPoolAllocator = new TPoolAllocator(true);
-    SetGlobalPoolAllocatorPtr(*builtInPoolAllocator);
+    // Switch to a new pool
+    TPoolAllocator& savedGPA = GetThreadPoolAllocator();
+    TPoolAllocator* builtInPoolAllocator = new TPoolAllocator();
+    SetThreadPoolAllocator(*builtInPoolAllocator);
 
+    // Generate the symbol table using the new pool
     TSymbolTable symTables[EShLangCount];
     if (profile == EEsProfile) {
         for (int stage = 0; stage < EShLangCount; ++stage)
             symTables[stage].setNoBuiltInRedeclarations();
     }
-
     GenerateBuiltInSymbolTable(infoSink, symTables, version, profile);
 
-    SetGlobalPoolAllocatorPtr(*PerProcessGPA);
+    // Switch to the process-global pool
+    SetThreadPoolAllocator(*PerProcessGPA);
 
+    // Copy the symbol table from the new pool to the process-global pool
     SharedSymbolTables[versionIndex][profile][EShLangVertex] = new TSymbolTable;
     SharedSymbolTables[versionIndex][profile][EShLangVertex]->copyTable(symTables[EShLangVertex]);
     SharedSymbolTables[versionIndex][profile][EShLangFragment] = new TSymbolTable;
     SharedSymbolTables[versionIndex][profile][EShLangFragment]->copyTable(symTables[EShLangFragment]);
-        
-    symTables[EShLangVertex].pop(0);
-    symTables[EShLangFragment].pop(0);
 
-    builtInPoolAllocator->popAll();
     delete builtInPoolAllocator;
+    SetThreadPoolAllocator(savedGPA);
 
-    SetGlobalPoolAllocatorPtr(savedGPA);
+    glslang::ReleaseGlobalLock();
 }
 
 bool DeduceProfile(TInfoSink& infoSink, int version, EProfile& profile)
@@ -261,7 +279,7 @@ int ShInitialize()
         return 0;
 
     if (! PerProcessGPA) { 
-        PerProcessGPA = new TPoolAllocator(true);
+        PerProcessGPA = new TPoolAllocator();
     }
     
     glslang::TScanContext::fillInKeywordMap();
@@ -333,6 +351,7 @@ int __fastcall ShFinalize()
         PerProcessGPA->popAll();
         delete PerProcessGPA;
     }
+
     return 1;
 }
 
@@ -361,6 +380,7 @@ int ShCompile(
 
     if (handle == 0)
         return 0;
+
     TShHandleBase* base = reinterpret_cast<TShHandleBase*>(handle);
     TCompiler* compiler = base->getAsCompiler();
     if (compiler == 0)
@@ -372,7 +392,7 @@ int ShCompile(
     if (numStrings == 0)
         return 1;
 
-    GlobalPoolAllocator.push();
+    GetThreadPoolAllocator().push();
     
     // move to length-based strings, rather than null-terminated strings
     int* lengths = new int[numStrings];
@@ -395,7 +415,6 @@ int ShCompile(
     bool goodProfile = DeduceProfile(compiler->infoSink, version, profile);
 
     TIntermediate intermediate(compiler->infoSink, version, profile);
-    
     SetupBuiltinSymbolTable(version, profile);
     TSymbolTable symbolTable(*SharedSymbolTables[MapVersionToIndex(version)]
                                                 [profile]
@@ -480,7 +499,7 @@ int ShCompile(
     //
     // Throw away all the temporary memory used by the compilation process.
     //
-    GlobalPoolAllocator.pop();
+    GetThreadPoolAllocator().pop();
     delete [] lengths;
 
     return success ? 1 : 0;
@@ -510,9 +529,9 @@ int ShLink(
         return 0;
 
     int returnValue;
-    GlobalPoolAllocator.push();
+    GetThreadPoolAllocator().push();
     returnValue = ShLinkExt(linkHandle, compHandles, numHandles);
-    GlobalPoolAllocator.pop();
+    GetThreadPoolAllocator().pop();
 
     if (returnValue)
         return 1;

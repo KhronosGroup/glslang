@@ -46,7 +46,7 @@ void InitializeGlobalPools()
     if (globalPools)
         return;
 
-    TPoolAllocator *globalPoolAllocator = new TPoolAllocator(true);
+    TPoolAllocator *globalPoolAllocator = new TPoolAllocator();
 
     TThreadGlobalPools* threadData = new TThreadGlobalPools();
     
@@ -58,12 +58,12 @@ void InitializeGlobalPools()
 void FreeGlobalPools()
 {
     // Release the allocated memory for this thread.
-    TThreadGlobalPools* globalPools= static_cast<TThreadGlobalPools*>(OS_GetTLSValue(PoolIndex));    
-    if (!globalPools)
+    TThreadGlobalPools* globalPools = static_cast<TThreadGlobalPools*>(OS_GetTLSValue(PoolIndex));    
+    if (! globalPools)
         return;
 	
-    GlobalPoolAllocator.popAll();
-    delete &GlobalPoolAllocator;       
+    GetThreadPoolAllocator().popAll();
+    delete &GetThreadPoolAllocator();       
     delete globalPools;
 }
 
@@ -82,14 +82,14 @@ void FreePoolIndex()
     OS_FreeTLSIndex(PoolIndex);
 }
 
-TPoolAllocator& GetGlobalPoolAllocator()
+TPoolAllocator& GetThreadPoolAllocator()
 {
     TThreadGlobalPools* threadData = static_cast<TThreadGlobalPools*>(OS_GetTLSValue(PoolIndex));
 
     return *threadData->globalPoolAllocator;
 }
 
-void SetGlobalPoolAllocatorPtr(TPoolAllocator& poolAllocator)
+void SetThreadPoolAllocator(TPoolAllocator& poolAllocator)
 {
     TThreadGlobalPools* threadData = static_cast<TThreadGlobalPools*>(OS_GetTLSValue(PoolIndex));
 
@@ -100,8 +100,7 @@ void SetGlobalPoolAllocatorPtr(TPoolAllocator& poolAllocator)
 // Implement the functionality of the TPoolAllocator class, which
 // is documented in PoolAlloc.h.
 //
-TPoolAllocator::TPoolAllocator(bool g, int growthIncrement, int allocationAlignment) : 
-    global(g),
+TPoolAllocator::TPoolAllocator(int growthIncrement, int allocationAlignment) : 
     pageSize(growthIncrement),
     alignment(allocationAlignment),
     freeList(0),
@@ -148,19 +147,12 @@ TPoolAllocator::TPoolAllocator(bool g, int growthIncrement, int allocationAlignm
 
 TPoolAllocator::~TPoolAllocator()
 {
-    if (!global) {
-        //
-        // Then we know that this object is not being 
-        // allocated after other, globally scoped objects
-        // that depend on it.  So we can delete the "in use" memory.
-        //
-	    while (inUseList) {
-	        tHeader* next = inUseList->nextPage;
-            inUseList->~tHeader();
-            delete [] reinterpret_cast<char*>(inUseList);
-	        inUseList = next;
-	    }
-    }
+	while (inUseList) {
+	    tHeader* next = inUseList->nextPage;
+        inUseList->~tHeader();
+        delete [] reinterpret_cast<char*>(inUseList);
+	    inUseList = next;
+	}
 
     //
     // Always delete the free list memory - it can't be being

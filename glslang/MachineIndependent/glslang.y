@@ -319,6 +319,7 @@ postfix_expression
             TType newType($1->getType());
             newType.dereference();
             $$->setType(newType);
+            // TODO: functionality: does this drop const qualification for const[const] ?
         }
     }
     | function_call {

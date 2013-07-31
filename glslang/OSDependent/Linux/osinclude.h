@@ -71,4 +71,18 @@ inline void * OS_GetTLSValue(OS_TLSIndex nIndex)
 	return pthread_getspecific(nIndex); 
 }
 
+namespace glslang {
+    void InitGlobalLock();
+    void GetGlobalLock();
+    void ReleaseGlobalLock();
+
+    typedef unsigned int (*TThreadEntrypoint)(void*);
+    void* OS_CreateThread(TThreadEntrypoint);
+    void OS_WaitForAllThreads(void* threads, int numThreads);
+
+    void OS_Sleep(int milliseconds);
+
+    void OS_DumpMemoryCounters();
+};
+
 #endif // __OSINCLUDE_H

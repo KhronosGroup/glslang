@@ -33,16 +33,14 @@
 //ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 //POSSIBILITY OF SUCH DAMAGE.
 //
+#include "Worklist.h"
 #include "./../glslang/Include/ShHandle.h"
 #include "./../glslang/Public/ShaderLang.h"
 #include <string.h>
 #include <stdlib.h>
 #include <math.h>
 
-#ifdef _WIN32
-    #include <windows.h>
-    #include <psapi.h>
-#endif
+#include "osinclude.h"
 
 extern "C" {
     SH_IMPORT_EXPORT void ShOutputHtml();
@@ -57,6 +55,7 @@ enum TFailCode {
     EFailCompile,
     EFailLink,
     EFailCompilerCreate,
+    EFailThreadCreate,
     EFailLinkerCreate
 };
 
@@ -73,7 +72,7 @@ ShBinding FixedAttributeBindings[] = {
 
 ShBindingTable FixedAttributeTable = { 3, FixedAttributeBindings };
 
-static EShLanguage FindLanguage(char *lang);
+static EShLanguage FindLanguage(const std::string& name);
 bool CompileFile(const char *fileName, ShHandle, int options, const TBuiltInResource*);
 void usage();
 void FreeFileData(char **data);
@@ -109,110 +108,103 @@ void GenerateResources(TBuiltInResource& resources)
     resources.maxProgramTexelOffset = 7;
 }
 
+glslang::TWorklist Worklist;
+int DebugOptions = 0;
+bool Delay = false;
+
+bool ProcessArguments(int argc, char* argv[])
+{
+    argc--;
+    argv++;    
+    for (; argc >= 1; argc--, argv++) {
+        if (argv[0][0] == '-') {
+            switch (argv[0][1]) {
+            case 'd':
+                Delay = true;                        
+                break;
+            case 'i': 
+                DebugOptions |= EDebugOpIntermediate;
+                break;
+            case 'l':
+                DebugOptions |= EDebugOpMemoryLeakMode;
+                break;
+            case 'r':
+                DebugOptions |= EDebugOpRelaxedErrors;
+                break;
+            case 's':
+                DebugOptions |= EDebugOpSuppressInfolog;
+                break;
+            case 't':
+                DebugOptions |= EDebugOpTexturePrototypes;
+                break;                    
+            default:
+                usage();
+                return false;
+            }
+        } else
+            Worklist.add(std::string(argv[0]));
+    }
+
+    return true;
+}
+
+// Thread entry point
+unsigned int __stdcall CompileShaders(void*)
+{
+    ShHandle compiler;
+
+    std::string shaderName;
+    while (Worklist.remove(shaderName)) {
+        compiler = ShConstructCompiler(FindLanguage(shaderName), DebugOptions);
+        if (compiler == 0)
+            return false;
+
+        TBuiltInResource resources;
+        GenerateResources(resources);
+        CompileFile(shaderName.c_str(), compiler, DebugOptions, &resources);
+
+        if (! (DebugOptions & EDebugOpSuppressInfolog))
+            puts(ShGetInfoLog(compiler));
+
+        ShDestruct(compiler);
+    }
+
+    return 0;
+}
+
 int C_DECL main(int argc, char* argv[])
 {
-    bool delay = false;
-    int numCompilers = 0;
     bool compileFailed = false;
     bool linkFailed = false;
-    int debugOptions = 0;
-    int i;
     
-    ShHandle    linker = 0;
-    ShHandle    uniformMap = 0;
-    ShHandle    compilers[EShLangCount];
-
+    // Init for front-end proper
     ShInitialize();
 
-#ifdef _WIN32
-    __try {
-#endif
-        argc--;
-        argv++;    
-        for (; argc >= 1; argc--, argv++) {
-            if (argv[0][0] == '-') {
-                switch (argv[0][1]) {
-                case 'd':
-                    delay = true;                        
-                    break;
-                case 'i': 
-                    debugOptions |= EDebugOpIntermediate;       
-                    break;
-                case 'l':
-                    debugOptions |= EDebugOpMemoryLeakMode;
-                    break;
-                case 'r':
-                    debugOptions |= EDebugOpRelaxedErrors;
-                    break;
-                case 's':
-                    debugOptions |= EDebugOpSuppressInfolog;
-                    break;
-                case 't':
-                    debugOptions |= EDebugOpTexturePrototypes;
-                    break;                    
-                default:
-                    usage();
-                    return EFailUsage;
-                }
-            } else {
-                compilers[numCompilers] = ShConstructCompiler(FindLanguage(argv[0]), debugOptions);
-                if (compilers[numCompilers] == 0)
-                    return EFailCompilerCreate;
-                ++numCompilers;
+    // Init for for standalone
+    glslang::InitGlobalLock();
 
-                TBuiltInResource resources;
-                GenerateResources(resources);
-                if (! CompileFile(argv[0], compilers[numCompilers-1], debugOptions, &resources))
-                    compileFailed = true;                
+    if (! ProcessArguments(argc, argv))
+        return EFailUsage;
+
+    // TODO: finish threading, allow external control over number of threads
+    const int NumThreads = 1;
+    if (NumThreads > 1) {
+        void* threads[NumThreads];
+        for (int t = 0; t < NumThreads; ++t) {
+            threads[t] = glslang::OS_CreateThread(&CompileShaders);
+            if (! threads[t]) {
+                printf("Failed to create thread\n");
+                return EFailThreadCreate;
             }
         }
-
-        if (!numCompilers) {
-            usage();
-            return EFailUsage;
-        }
-
-        linker = ShConstructLinker(EShExVertexFragment, debugOptions);
-        if (linker == 0)
-            return EFailLinkerCreate;
-
-        uniformMap = ShConstructUniformMap();
-        if (uniformMap == 0)
-            return EFailLinkerCreate;
-
-        if (numCompilers > 0) {
-            ShSetFixedAttributeBindings(linker, &FixedAttributeTable);
-            if (! ShLink(linker, compilers, numCompilers, uniformMap, 0, 0))
-                linkFailed = true;
-        }
-
-        if (! (debugOptions & EDebugOpSuppressInfolog)) {
-            for (i = 0; i < numCompilers; ++i) {
-                InfoLogMsg("BEGIN", "COMPILER", i);
-                puts(ShGetInfoLog(compilers[i]));
-                InfoLogMsg("END", "COMPILER", i);
-            }
-
-            InfoLogMsg("BEGIN", "LINKER", -1);
-            puts(ShGetInfoLog(linker));
-            InfoLogMsg("END", "LINKER", -1);
-        }
-    
-#ifdef _WIN32
-    } __finally {    
-#endif    
-        for (i = 0; i < numCompilers; ++i)
-            ShDestruct(compilers[i]);
-
-        ShDestruct(linker);
-        ShDestruct(uniformMap);
-
-#ifdef _WIN32
-        if (delay)
-            Sleep(1000000);
-
+        glslang::OS_WaitForAllThreads(threads, NumThreads);
+    } else {
+        if (! CompileShaders(0))
+            compileFailed = true;
     }
-#endif
+
+    if (Delay)
+        glslang::OS_Sleep(1000000);
 
     if (compileFailed)
         return EFailCompile;
@@ -226,26 +218,35 @@ int C_DECL main(int argc, char* argv[])
 //   Deduce the language from the filename.  Files must end in one of the
 //   following extensions:
 //
-//   .frag*    = fragment programs
-//   .vert*    = vertex programs
+//   .vert = vertex
+//   .tesc = tessellation control
+//   .tese = tessellation evaluation
+//   .geom = geometry
+//   .frag = fragment
 //
-static EShLanguage FindLanguage(char *name)
+static EShLanguage FindLanguage(const std::string& name)
 {
-    if (!name)
+    size_t ext = name.rfind('.');
+    if (ext == std::string::npos) {
+        usage();
         return EShLangVertex;
-
-    char *ext = strrchr(name, '.');
-
-    if (ext && strcmp(ext, ".sl") == 0)
-        for (; ext > name && ext[0] != '.'; ext--);
-    
-    if (ext = strrchr(name, '.')) {
-        if (strncmp(ext, ".frag", 4) == 0) return EShLangFragment;
     }
 
+    std::string suffix = name.substr(ext + 1, std::string::npos);
+    if (suffix == "vert")
+        return EShLangVertex;
+    else if (suffix == "tesc")
+        return EShLangTessControl;
+    else if (suffix == "tese")
+        return EShLangTessEvaluation;
+    else if (suffix == "geom")
+        return EShLangGeometry;
+    else if (suffix == "frag")
+        return EShLangFragment;
+
+    usage();
     return EShLangVertex;
 }
-
 
 //
 //   Read a file's data into a string, and compile it using ShCompile
@@ -265,10 +266,6 @@ bool CompileFile(const char *fileName, ShHandle compiler, int debugOptions, cons
     for (int s = 0; s < NumShaderStrings; ++s)
         lengths[s] = strlen(shaderStrings[s]);
 
-#ifdef _WIN32
-    PROCESS_MEMORY_COUNTERS counters;  // just for memory leak testing
-#endif
-
     if (! shaderStrings)
         return false;
 
@@ -284,12 +281,8 @@ bool CompileFile(const char *fileName, ShHandle compiler, int debugOptions, cons
             //ret = ShCompile(compiler, multi, 4, 0, EShOptNone, resources, debugOptions, 100, false, messages);
         }
 
-#ifdef _WIN32
-        if (debugOptions & EDebugOpMemoryLeakMode) {
-            GetProcessMemoryInfo(GetCurrentProcess(), &counters, sizeof(counters));
-            printf("Working set size: %d\n", counters.WorkingSetSize);
-        }
-#endif
+        if (debugOptions & EDebugOpMemoryLeakMode)
+            glslang::OS_DumpMemoryCounters();
     }
 
     delete [] lengths;

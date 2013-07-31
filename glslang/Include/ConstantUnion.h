@@ -41,7 +41,7 @@
 class constUnion {
 public:
 
-    POOL_ALLOCATOR_NEW_DELETE(GlobalPoolAllocator)
+    POOL_ALLOCATOR_NEW_DELETE(GetThreadPoolAllocator())
     void setIConst(int i)
     { 
         iConst = i; 

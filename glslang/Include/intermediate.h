@@ -318,7 +318,7 @@ class TInfoSink;
 //
 class TIntermNode {
 public:
-    POOL_ALLOCATOR_NEW_DELETE(GlobalPoolAllocator)
+    POOL_ALLOCATOR_NEW_DELETE(GetThreadPoolAllocator())
 
     TIntermNode() { loc.line = 0; loc.string = 0; }
     virtual TSourceLoc getLoc() const { return loc; }
@@ -601,7 +601,7 @@ protected:
 //
 class TIntermTraverser {
 public:
-    POOL_ALLOCATOR_NEW_DELETE(GlobalPoolAllocator)
+    POOL_ALLOCATOR_NEW_DELETE(GetThreadPoolAllocator())
 
     TIntermTraverser() : 
         visitSymbol(0), 

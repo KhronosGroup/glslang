@@ -33,6 +33,15 @@
 //
 
 #include "osinclude.h"
+
+#define STRICT
+#define VC_EXTRALEAN 1
+#include <windows.h>
+#include <assert.h>
+#include <process.h>
+#include <psapi.h>
+#include <stdio.h>
+
 //
 // This file contains contains the Window-OS-specific functions
 //
@@ -40,7 +49,6 @@
 #if !(defined(_WIN32) || defined(_WIN64))
 #error Trying to build a windows specific file in a non windows build.
 #endif
-
 
 //
 // Thread Local Storage Operations
@@ -70,6 +78,11 @@ bool OS_SetTLSValue(OS_TLSIndex nIndex, void *lpvValue)
 		return false;
 }
 
+void* OS_GetTLSValue(OS_TLSIndex nIndex)
+{
+	assert(nIndex != OS_INVALID_TLS_INDEX);
+	return TlsGetValue(nIndex);
+}
 
 bool OS_FreeTLSIndex(OS_TLSIndex nIndex)
 {
@@ -83,3 +96,45 @@ bool OS_FreeTLSIndex(OS_TLSIndex nIndex)
 	else
 		return false;
 }
+
+namespace glslang {
+    HANDLE GlobalLock;
+
+    void InitGlobalLock()
+    {
+        GlobalLock = CreateMutex(0, false, 0);
+    }
+
+    void GetGlobalLock()
+    {
+        WaitForSingleObject(GlobalLock, INFINITE);
+    }
+
+    void ReleaseGlobalLock()
+    {
+        ReleaseMutex(GlobalLock);
+    }
+
+    void* OS_CreateThread(TThreadEntrypoint entry)
+    {
+        return (void*)_beginthreadex(0, 0, entry, 0, 0, 0);
+        //return CreateThread(0, 0, entry, 0, 0, 0);
+    }
+
+    void OS_WaitForAllThreads(void* threads, int numThreads)
+    {
+        WaitForMultipleObjects(numThreads, (HANDLE*)threads, true, INFINITE);
+    }
+
+    void OS_Sleep(int milliseconds)
+    {
+        Sleep(milliseconds);
+    }
+
+    void OS_DumpMemoryCounters()
+    {
+        PROCESS_MEMORY_COUNTERS counters;
+        GetProcessMemoryInfo(GetCurrentProcess(), &counters, sizeof(counters));
+        printf("Working set size: %d\n", counters.WorkingSetSize);
+    }
+};

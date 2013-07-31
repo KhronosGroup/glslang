@@ -34,6 +34,8 @@
 
 #define SH_EXPORTING
 
+#include <assert.h>
+
 #include "InitializeDll.h"
 #include "Include/InitializeGlobals.h"
 
@@ -43,10 +45,14 @@ OS_TLSIndex ThreadInitializeIndex = OS_INVALID_TLS_INDEX;
 
 bool InitProcess()
 {
+    glslang::GetGlobalLock();
+
     if (ThreadInitializeIndex != OS_INVALID_TLS_INDEX) {
 		//
 		// Function is re-entrant.
 		//
+
+        glslang::ReleaseGlobalLock();
         return true;
 	}
 
@@ -54,16 +60,21 @@ bool InitProcess()
 
     if (ThreadInitializeIndex == OS_INVALID_TLS_INDEX) {
         assert(0 && "InitProcess(): Failed to allocate TLS area for init flag");
+
+        glslang::ReleaseGlobalLock();
         return false;
 	}
 
     if (! InitializePoolIndex()) {
         assert(0 && "InitProcess(): Failed to initalize global pool");
+
+        glslang::ReleaseGlobalLock();
         return false;
 	}
 
 	InitThread();
 
+    glslang::ReleaseGlobalLock();
     return true;
 }
 

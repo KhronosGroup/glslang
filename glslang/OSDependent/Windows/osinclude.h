@@ -44,26 +44,30 @@
 #error Trying to include a windows specific file in a non windows build.
 #endif
 
-#define STRICT
-#define VC_EXTRALEAN 1
-#include <windows.h>
-#include <assert.h>
-
-
 //
 // Thread Local Storage Operations
 //
-typedef DWORD OS_TLSIndex;
-#define OS_INVALID_TLS_INDEX (TLS_OUT_OF_INDEXES)
+typedef unsigned long OS_TLSIndex;
+#define OS_INVALID_TLS_INDEX ((unsigned long)0xFFFFFFFF)
 
 OS_TLSIndex OS_AllocTLSIndex();
 bool        OS_SetTLSValue(OS_TLSIndex nIndex, void *lpvValue);
 bool        OS_FreeTLSIndex(OS_TLSIndex nIndex);
 
-inline void* OS_GetTLSValue(OS_TLSIndex nIndex)
-{
-	assert(nIndex != OS_INVALID_TLS_INDEX);
-	return TlsGetValue(nIndex);
-}
+void* OS_GetTLSValue(OS_TLSIndex nIndex);
+
+namespace glslang {
+    void InitGlobalLock();
+    void GetGlobalLock();
+    void ReleaseGlobalLock();
+
+    typedef unsigned int (__stdcall *TThreadEntrypoint)(void*);
+    void* OS_CreateThread(TThreadEntrypoint);
+    void OS_WaitForAllThreads(void* threads, int numThreads);
+
+    void OS_Sleep(int milliseconds);
+
+    void OS_DumpMemoryCounters();
+};
 
 #endif // __OSINCLUDE_H

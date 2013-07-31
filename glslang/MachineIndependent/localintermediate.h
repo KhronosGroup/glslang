@@ -51,7 +51,7 @@ struct TVectorFields {
 class TInfoSink;
 class TIntermediate {
 public:    
-    POOL_ALLOCATOR_NEW_DELETE(GlobalPoolAllocator)
+    POOL_ALLOCATOR_NEW_DELETE(GetThreadPoolAllocator())
 
     TIntermediate(TInfoSink& i, int v, EProfile p) : infoSink(i), version(v), profile(p) { }
     TIntermSymbol* addSymbol(int Id, const TString&, const TType&, TSourceLoc);

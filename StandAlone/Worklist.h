@@ -1,5 +1,4 @@
 //
-//Copyright (C) 2002-2005  3Dlabs Inc. Ltd.
 //Copyright (C) 2013 LunarG, Inc.
 //
 //All rights reserved.
@@ -33,42 +32,46 @@
 //ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 //POSSIBILITY OF SUCH DAMAGE.
 //
+#ifndef WORKLIST_H_INCLUDED
+#define WORKLIST_H_INCLUDED
 
-#ifndef _INITIALIZE_INCLUDED_
-#define _INITIALIZE_INCLUDED_
+#include "osinclude.h"
+#include <list>
 
-#include "Include/ResourceLimits.h"
-#include "../Include/Common.h"
-#include "../Include/ShHandle.h"
-#include "SymbolTable.h"
-#include "Versions.h"
+namespace glslang {
 
-typedef TVector<TString> TBuiltInStrings;
+    class TWorklist {
+    public:
+        TWorklist() { }
+        virtual ~TWorklist() { }
 
-class TBuiltIns {
-public:
-    POOL_ALLOCATOR_NEW_DELETE(GetThreadPoolAllocator())
-    TBuiltIns();
-    virtual ~TBuiltIns();
-    void initialize(int version, EProfile);
-	void initialize(const TBuiltInResource& resources, int version, EProfile, EShLanguage);
-    TBuiltInStrings* getBuiltInStrings() { return builtInStrings; }
+        void add(const std::string& s)
+        {
+            GetGlobalLock();
+            
+            worklist.push_back(s);
+            
+            ReleaseGlobalLock();
+        }
+    
+        bool remove(std::string& s)
+        {
+            GetGlobalLock();
+            
+            if (worklist.empty())
+                return false;
+            s = worklist.front();
+            worklist.pop_front();
+            
+            ReleaseGlobalLock();
 
-protected:
-    void add2ndGenerationSamplingImaging(int version, EProfile profile);
-    void addQueryFunctions(TSampler, TString& typeName, int version, EProfile profile);
-    void addImageFunctions(TSampler, TString& typeName, int version, EProfile profile);
-    void addSamplingFunctions(TSampler, TString& typeName, int version, EProfile profile);
+            return true;
+        }
 
-    TBuiltInStrings builtInStrings[EShLangCount];
+    protected:
+        std::list<std::string> worklist;
+    };
 
-    // Helpers for making text
-    const char* postfixes[5];
-    const char* prefixes[EbtNumTypes];
-    int dimMap[EsdNumDims];
 };
 
-void IdentifyBuiltIns(int version, EProfile profile, EShLanguage, TSymbolTable&);
-void IdentifyBuiltIns(int version, EProfile profile, EShLanguage, TSymbolTable&, const TBuiltInResource &resources);
-
-#endif // _INITIALIZE_INCLUDED_
+#endif // WORKLIST_H_INCLUDED

@@ -134,3 +134,26 @@ bool OS_FreeTLSIndex(OS_TLSIndex nIndex)
 	else
 		return false;
 }
+
+namespace glslang {
+    // TODO: if we need these on linux, flesh them out
+    void InitGlobalLock() { }
+    void GetGlobalLock() { }
+    void ReleaseGlobalLock() { }
+
+    void* OS_CreateThread(TThreadEntrypoint entry)
+    {
+    }
+
+    void OS_WaitForAllThreads(void* threads, int numThreads)
+    {
+    }
+
+    void OS_Sleep(int milliseconds)
+    {
+    }
+
+    void OS_DumpMemoryCounters()
+    {
+    }
+};

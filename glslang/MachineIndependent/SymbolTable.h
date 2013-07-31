@@ -77,7 +77,7 @@ class TFunction;
 class TAnonMember;
 class TSymbol {
 public:
-    POOL_ALLOCATOR_NEW_DELETE(GlobalPoolAllocator)
+    POOL_ALLOCATOR_NEW_DELETE(GetThreadPoolAllocator())
     explicit TSymbol(const TString *n) :  name(n) { }
 	virtual TSymbol* clone(TStructureMap& remapper) = 0;
     virtual ~TSymbol() { }
@@ -245,7 +245,7 @@ protected:
 
 class TSymbolTableLevel {
 public:
-    POOL_ALLOCATOR_NEW_DELETE(GlobalPoolAllocator)
+    POOL_ALLOCATOR_NEW_DELETE(GetThreadPoolAllocator())
     TSymbolTableLevel() : defaultPrecision (0), anonId(0) { }
 	~TSymbolTableLevel();
 
@@ -365,24 +365,23 @@ protected:
 
 class TSymbolTable {
 public:
-    TSymbolTable() : uniqueId(0), noBuiltInRedeclarations(false)
+    TSymbolTable() : uniqueId(0), noBuiltInRedeclarations(false), adoptedLevels(1)  // TODO: memory: can we make adoptedLevels be 0 for symbol tables we don't keep?
     {
         //
-        // The symbol table cannot be used until push() is called, but
-        // the lack of an initial call to push() can be used to detect
-        // that the symbol table has not been preloaded with built-ins.
+        // This symbol table cannot be used until push() is called.
         //
     }
     explicit TSymbolTable(TSymbolTable& symTable)
     {
         table.push_back(symTable.table[0]);
+        adoptedLevels = 1;
         uniqueId = symTable.uniqueId;
         noBuiltInRedeclarations = symTable.noBuiltInRedeclarations;
     }
     ~TSymbolTable()
     {
-        // level 0 is always built-in symbols, so we never pop that out
-        while (table.size() > 1)
+        // don't deallocate levels passed in from elsewhere
+        while (table.size() > adoptedLevels)
             pop(0);
     }
 
@@ -463,6 +462,7 @@ protected:
     std::vector<TSymbolTableLevel*> table;
     int uniqueId;     // for unique identification in code generation
     bool noBuiltInRedeclarations;
+    unsigned int adoptedLevels;
 };
 
 #endif // _SYMBOL_TABLE_INCLUDED_

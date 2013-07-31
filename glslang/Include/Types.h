@@ -150,7 +150,7 @@ typedef TVector<TTypeLoc> TTypeList;
 
 inline TTypeList* NewPoolTTypeList()
 {
-	void* memory = GlobalPoolAllocator.allocate(sizeof(TTypeList));
+	void* memory = GetThreadPoolAllocator().allocate(sizeof(TTypeList));
 	return new(memory) TTypeList;
 }
 
@@ -158,7 +158,7 @@ typedef TVector<TString*> TIdentifierList;
 
 inline TIdentifierList* NewPoolTIdentifierList()
 {
-    void* memory = GlobalPoolAllocator.allocate(sizeof(TIdentifierList));
+    void* memory = GetThreadPoolAllocator().allocate(sizeof(TIdentifierList));
     return new(memory) TIdentifierList;
 }
 
@@ -176,7 +176,7 @@ typedef TVector<int>* TArraySizes;
 
 inline TArraySizes NewPoolTArraySizes()
 {
-    void* memory = GlobalPoolAllocator.allocate(sizeof(TVector<int>));
+    void* memory = GetThreadPoolAllocator().allocate(sizeof(TVector<int>));
     return new(memory) TVector<int>;
 }
 
@@ -401,7 +401,7 @@ typedef std::map<TTypeList*, TTypeList*>::const_iterator TStructureMapIterator;
 //
 class TType {
 public:
-    POOL_ALLOCATOR_NEW_DELETE(GlobalPoolAllocator)
+    POOL_ALLOCATOR_NEW_DELETE(GetThreadPoolAllocator())
     explicit TType(TBasicType t, TStorageQualifier q = EvqTemporary, int vs = 1, int mc = 0, int mr = 0) :
                             basicType(t), vectorSize(vs), matrixCols(mc), matrixRows(mr), arraySizes(0),
                             structure(0), structureSize(0), maxArraySize(0), arrayInformationType(0),

@@ -34,6 +34,11 @@
 
 #include "InitializeDll.h"
 
+#define STRICT
+#define VC_EXTRALEAN 1
+#include <windows.h>
+#include <assert.h>
+
 BOOL WINAPI DllMain(HINSTANCE hinstDLL, DWORD fdwReason, LPVOID lpvReserved)
 {
 	switch (fdwReason)

@@ -92,7 +92,7 @@ typedef pool_allocator<char> TStringAllocator;
 typedef std::basic_string <char, std::char_traits<char>, TStringAllocator > TString;
 inline TString* NewPoolTString(const char* s)
 {
-	void* memory = GlobalPoolAllocator.allocate(sizeof(TString));
+	void* memory = GetThreadPoolAllocator().allocate(sizeof(TString));
 	return new(memory) TString(s);
 }
 
