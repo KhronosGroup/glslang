@@ -36,6 +36,7 @@
 #define WORKLIST_H_INCLUDED
 
 #include "osinclude.h"
+#include <string>
 #include <list>
 
 namespace glslang {

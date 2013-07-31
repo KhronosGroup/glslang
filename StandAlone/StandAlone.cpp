@@ -149,7 +149,11 @@ bool ProcessArguments(int argc, char* argv[])
 }
 
 // Thread entry point
-unsigned int __stdcall CompileShaders(void*)
+unsigned int
+#ifdef _WIN32
+    __stdcall
+#endif
+    CompileShaders(void*)
 {
     ShHandle compiler;
 

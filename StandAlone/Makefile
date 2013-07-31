@@ -10,14 +10,13 @@ default: all
 all: StandAlone
 
 StandAlone: $(TARGETOBJECT) SHAREDOBJECT
-	$(CC) -g -o $@ $(TARGETOBJECT) -L $(LIBPATH) -lglslang -lpthread \
-	-lm -lstdc++
+	$(CC) -g -o $@ $(TARGETOBJECT) -L $(LIBPATH) -lglslang -lpthread -lm -lstdc++ 
 
 SHAREDOBJECT:
 	cd $(OBJECTPATH); make all
 
 %.o : %.cpp
-	$(CC) -g -c $<
+	$(CC) -g -c -I../glslang/OSDependent/Linux $<
 
 #
 # Cleanup
@@ -37,4 +36,4 @@ StandAlone.o: ./../glslang/Public/ShaderLang.h
 StandAlone.o: ./../glslang/Include/InfoSink.h ./../glslang/Include/Common.h
 StandAlone.o: ./../glslang/Include/PoolAlloc.h
 StandAlone.o: ./../glslang/Public/ShaderLang.h
-
+StandAlone.o: Worklist.h

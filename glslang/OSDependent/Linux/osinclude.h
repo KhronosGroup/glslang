@@ -43,8 +43,6 @@
 #include <semaphore.h>
 #include <assert.h>
 #include <errno.h>
-#include "Include/InitializeGlobals.h"
-#include "Include/PoolAlloc.h"
 
 #define _vsnprintf vsnprintf
 
