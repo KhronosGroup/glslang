@@ -222,14 +222,14 @@ xcopy /y $(IntDir)$(TargetName)$(TargetExt) Test</Command>
       <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">SET BISON_SIMPLE=%(RootDir)%(Directory)..\..\tools\bison.simple
 SET BISON_HAIRY=%(RootDir)%(Directory)..\..\tools\bison.simple
 cd %(RootDir)%(Directory)
-%(RootDir)%(Directory)..\..\tools\bison.exe -d -t glslang.y -o glslang_tab.cpp</Command>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">%(RootDir)%(Directory)%(Filename)_tab.cpp;%(Outputs)</Outputs>
+%(RootDir)%(Directory)..\..\tools\bison.exe --defines=glslang_tab.cpp.h -t glslang.y -o glslang_tab.cpp</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">%(RootDir)%(Directory)%(Filename)_tab.cpp.h;%(RootDir)%(Directory)%(Filename)_tab.cpp</Outputs>
       <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Executing Bison on glslang.y</Message>
       <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">SET BISON_SIMPLE=%(RootDir)%(Directory)..\..\tools\bison.simple
 SET BISON_HAIRY=%(RootDir)%(Directory)..\..\tools\bison.simple
 cd %(RootDir)%(Directory)
-%(RootDir)%(Directory)..\..\tools\bison.exe -d -t glslang.y -o glslang_tab.cpp</Command>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">%(RootDir)%(Directory)%(Filename)_tab.cpp;%(Outputs)</Outputs>
+%(RootDir)%(Directory)..\..\tools\bison.exe --defines=glslang_tab.cpp.h -t glslang.y -o glslang_tab.cpp</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">%(RootDir)%(Directory)%(Filename)_tab.cpp.h;%(RootDir)%(Directory)%(Filename)_tab.cpp</Outputs>
     </CustomBuild>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
