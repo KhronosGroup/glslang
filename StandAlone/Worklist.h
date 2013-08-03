@@ -69,6 +69,11 @@ namespace glslang {
             return true;
         }
 
+        bool empty()
+        {
+            return worklist.empty();
+        }
+
     protected:
         std::list<std::string> worklist;
     };

@@ -7,10 +7,12 @@ TARGETOBJECT=StandAlone.o
 
 default: all
 
-all: StandAlone
+all: glslangValidator
 
-StandAlone: $(TARGETOBJECT) SHAREDOBJECT
-	$(CC) -g -o $@ $(TARGETOBJECT) -L $(LIBPATH) -lglslang -lpthread -lm -lstdc++ 
+glslangValidator: $(TARGETOBJECT) SHAREDOBJECT
+	$(CC) -g -o $@ $(TARGETOBJECT) -L $(LIBPATH) -lglslang -lpthread -lm -lstdc++
+	cp $@ ../Test
+	cp $@ ../Install/Linux
 
 SHAREDOBJECT:
 	cd $(OBJECTPATH); make all
@@ -23,7 +25,7 @@ SHAREDOBJECT:
 #
 .PHONY : clean
 clean :
-	$(RM) *.o StandAlone
+	$(RM) *.o glslangValidator ../Install/Linux/glslangValidator
 	cd $(OBJECTPATH); make clean
 
 depend:

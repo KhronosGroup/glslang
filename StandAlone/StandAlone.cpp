@@ -138,12 +138,14 @@ bool ProcessArguments(int argc, char* argv[])
                 DebugOptions |= EDebugOpTexturePrototypes;
                 break;                    
             default:
-                usage();
                 return false;
             }
         } else
             Worklist.add(std::string(argv[0]));
     }
+
+    if (Worklist.empty())
+        return false;
 
     return true;
 }
@@ -187,8 +189,10 @@ int C_DECL main(int argc, char* argv[])
     // Init for for standalone
     glslang::InitGlobalLock();
 
-    if (! ProcessArguments(argc, argv))
+    if (! ProcessArguments(argc, argv)) {
+        usage();
         return EFailUsage;
+    }
 
     // TODO: finish threading, allow external control over number of threads
     const int NumThreads = 1;

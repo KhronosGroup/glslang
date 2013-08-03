@@ -45,6 +45,12 @@
     <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">StandAlone\UserM_Release\</IntDir>
     <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</LinkIncremental>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <TargetName>glslangValidator</TargetName>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <TargetName>glslangValidator</TargetName>
+  </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <Optimization>Disabled</Optimization>
@@ -77,8 +83,8 @@
       <TypeLibraryName>UserM_Debug/StandAlone.tlb</TypeLibraryName>
     </Midl>
     <PostBuildEvent>
-      <Message>move exe</Message>
-      <Command>xcopy /y StandAlone\UserM_Debug\StandAlone.exe Test</Command>
+      <Message>copy glslangValidator</Message>
+      <Command>xcopy /y StandAlone\UserM_Debug\glslangValidator.exe Test</Command>
     </PostBuildEvent>
     <ResourceCompile>
       <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -131,8 +137,10 @@
       <TypeLibraryName>UserM_Release/StandAlone.tlb</TypeLibraryName>
     </Midl>
     <PostBuildEvent>
-      <Message>move exe</Message>
-      <Command>xcopy /y StandAlone\UserM_Release\StandAlone.exe test</Command>
+      <Message>copy glslangValidator</Message>
+      <Command>xcopy /y StandAlone\UserM_Release\glslangValidator.exe Test
+xcopy /y StandAlone\UserM_Release\glslangValidator.exe Install\Windows
+</Command>
     </PostBuildEvent>
     <ResourceCompile>
       <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>

@@ -10,10 +10,11 @@ Testing
   - thread safety
 
 Interfacing
-  - Put glslang in a namespace
+  - finish putting into a glslang namespace
 
-Functionality
-    - "const" compile-time constant propagation in the front-end has to be complete, for all built-in functions
+Functionality to Implement/Finish
+    ESSL 3.0
+      - "const" compile-time constant propagation in the front-end has to be complete, for all built-in functions
     GLSL 1.2
       - Handle multiple compilation units per stage
       - Allow initializers on uniform declarations.  The value is set at link time.
