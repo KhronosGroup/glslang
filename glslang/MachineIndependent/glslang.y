@@ -1561,6 +1561,10 @@ layout_qualifier_id
         $$.init($1.loc);
         parseContext.setLayoutQualifier($1.loc, $$, *$1.string, $3.i);
     }
+    | IDENTIFIER EQUAL UINTCONSTANT {
+        $$.init($1.loc);
+        parseContext.setLayoutQualifier($1.loc, $$, *$1.string, (int)$3.u);
+    }
     | SHARED { // because "shared" is both an identifier and a keyword
         $$.init($1.loc);
         TString strShared("shared");

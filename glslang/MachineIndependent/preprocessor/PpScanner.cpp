@@ -190,23 +190,23 @@ int TPpContext::ScanFromString(char *s)
 /*
 * lFloatConst() - Scan a single- or double-precision floating point constant.  Assumes that the scanner
 *         has seen at least one digit, followed by either a decimal '.' or the
-*         letter 'e'.
+*         letter 'e', or a precision ending (e.g., F or LF).
 */
 
 int TPpContext::lFloatConst(char *str, int len, int ch, TPpToken * yylvalpp)
 {
-    int HasDecimal, declen, exp, ExpSign;
+    bool HasDecimalOrExponent = false;
+    int declen, exp, ExpSign;
     int str_len;
     int isDouble = 0;
 
-    HasDecimal = 0;
     declen = 0;
     exp = 0;
 
     str_len=len;
     if (ch == '.') {
+        HasDecimalOrExponent = true;
         str[len++]=ch;
-        HasDecimal = 1;
         ch = currentInput->getch(this, currentInput, yylvalpp);
         while (ch >= '0' && ch <= '9') {
             if (len < TPpToken::maxTokenLength) {
@@ -217,7 +217,7 @@ int TPpContext::lFloatConst(char *str, int len, int ch, TPpToken * yylvalpp)
                 }
                 ch = currentInput->getch(this, currentInput, yylvalpp);
             } else {
-                parseContext.error(yylvalpp->loc,"float literal too long", "", "");
+                parseContext.error(yylvalpp->loc, "float literal too long", "", "");
                 len = 1,str_len=1;
             }
         }
@@ -226,8 +226,9 @@ int TPpContext::lFloatConst(char *str, int len, int ch, TPpToken * yylvalpp)
     // Exponent:
 
     if (ch == 'e' || ch == 'E') {
+        HasDecimalOrExponent = true;
         if (len >= TPpToken::maxTokenLength) {
-            parseContext.error(yylvalpp->loc,"float literal too long", "", "");
+            parseContext.error(yylvalpp->loc, "float literal too long", "", "");
             len = 1,str_len=1;
         } else {
             ExpSign = 1;
@@ -248,12 +249,12 @@ int TPpContext::lFloatConst(char *str, int len, int ch, TPpToken * yylvalpp)
                         str[len++]=ch;
                         ch = currentInput->getch(this, currentInput, yylvalpp);
                     } else {
-                        parseContext.error(yylvalpp->loc,"float literal too long", "", "");
+                        parseContext.error(yylvalpp->loc, "float literal too long", "", "");
                         len = 1,str_len=1;
                     }
                 }
             } else {
-                parseContext.error(yylvalpp->loc,"bad character in float exponent", "", "");
+                parseContext.error(yylvalpp->loc, "bad character in float exponent", "", "");
             }
             exp *= ExpSign;
         }
@@ -264,6 +265,8 @@ int TPpContext::lFloatConst(char *str, int len, int ch, TPpToken * yylvalpp)
         strcpy(str, "0.0");
     } else {
         if (ch == 'l' || ch == 'L') {
+            if (! HasDecimalOrExponent)
+                parseContext.error(yylvalpp->loc, "float literal needs a decimal point or exponent", "", "");
             int ch2 = currentInput->getch(this, currentInput, yylvalpp);
             if (ch2 != 'f' && ch2 != 'F') {
                 currentInput->ungetch(this, currentInput, ch2, yylvalpp);
@@ -274,15 +277,17 @@ int TPpContext::lFloatConst(char *str, int len, int ch, TPpToken * yylvalpp)
                     str[len++] = ch2;
                     isDouble = 1;
                 } else {
-                    parseContext.error(yylvalpp->loc,"float literal too long", "", "");
+                    parseContext.error(yylvalpp->loc, "float literal too long", "", "");
                     len = 1,str_len=1;
                 }
             }
         } else if (ch == 'f' || ch == 'F') {
+            if (! HasDecimalOrExponent)
+                parseContext.error(yylvalpp->loc, "float literal needs a decimal point or exponent", "", "");
             if (len < TPpToken::maxTokenLength)
                 str[len++] = ch;
             else {
-                parseContext.error(yylvalpp->loc,"float literal too long", "", "");
+                parseContext.error(yylvalpp->loc, "float literal too long", "", "");
                 len = 1,str_len=1;
             }
         } else 
@@ -351,13 +356,13 @@ int TPpContext::byte_scan(TPpContext* pp, InputSrc *in, TPpToken * yylvalpp)
                         else
                             ch = nextch;
                     } else
-                        pp->parseContext.error(yylvalpp->loc,"can only escape newlines", "\\", "");
+                        pp->parseContext.error(yylvalpp->loc, "can only escape newlines", "\\", "");
                 } else if (len < TPpToken::maxTokenLength) {
                     tokenText[len++] = ch;
                     ch = pp->currentInput->getch(pp, pp->currentInput, yylvalpp);					
                 } else {
                     if (! AlreadyComplained) {
-                        pp->parseContext.error(yylvalpp->loc,"name too long", "", "");
+                        pp->parseContext.error(yylvalpp->loc, "name too long", "", "");
                         AlreadyComplained = 1;
                     }
                     ch = pp->currentInput->getch(pp, pp->currentInput, yylvalpp);					
@@ -377,7 +382,9 @@ int TPpContext::byte_scan(TPpContext* pp, InputSrc *in, TPpToken * yylvalpp)
             yylvalpp->name[len++] = ch;
             ch = pp->currentInput->getch(pp, pp->currentInput, yylvalpp);
             if (ch == 'x' || ch == 'X') {
-                int uint = 0;
+                // must be hexidecimal
+
+                bool isUnsigned = false;
                 yylvalpp->name[len++] = ch;
                 ch = pp->currentInput->getch(pp, pp->currentInput, yylvalpp);
                 if ((ch >= '0' && ch <= '9') ||
@@ -395,11 +402,11 @@ int TPpContext::byte_scan(TPpContext* pp, InputSrc *in, TPpToken * yylvalpp)
                             } else if (ch >= 'a' && ch <= 'f') {
                                 ii = ch - 'a' + 10;
                             } else
-                                pp->parseContext.error(yylvalpp->loc,"bad digit in hexidecimal literal", "", "");
+                                pp->parseContext.error(yylvalpp->loc, "bad digit in hexidecimal literal", "", "");
                             ival = (ival << 4) | ii;
                         } else {
                             if (! AlreadyComplained) {
-                                pp->parseContext.error(yylvalpp->loc,"hexidecimal literal too big literal", "", "");
+                                pp->parseContext.error(yylvalpp->loc, "hexidecimal literal too big", "", "");
                                 AlreadyComplained = 1;
                             }
                             ival = 0xffffffff;
@@ -409,75 +416,98 @@ int TPpContext::byte_scan(TPpContext* pp, InputSrc *in, TPpToken * yylvalpp)
                         (ch >= 'A' && ch <= 'F') ||
                         (ch >= 'a' && ch <= 'f'));
                 } else {
-                    pp->parseContext.error(yylvalpp->loc,"bad digit in hexidecimal literal", "", "");
+                    pp->parseContext.error(yylvalpp->loc, "bad digit in hexidecimal literal", "", "");
                 }
                 if (ch == 'u' || ch == 'U') {
                     if (len < TPpToken::maxTokenLength)
                         yylvalpp->name[len++] = ch;
-                    uint = 1;
+                    isUnsigned = true;
                 } else
                     pp->currentInput->ungetch(pp, pp->currentInput, ch, yylvalpp);
                 yylvalpp->name[len] = '\0';
                 yylvalpp->ival = (int)ival;
 
-                if (uint)
-                    return CPP_UINTCONSTANT;
-                else
-                    return CPP_INTCONSTANT;
-            } else if (ch >= '0' && ch <= '7') { // octal integer constants
-                int uint = 0;
-                ival = 0;
-                do {
-                    if (ival <= 0x1fffffff) {
-                        yylvalpp->name[len++] = ch;
-                        ii = ch - '0';
-                        ival = (ival << 3) | ii;
-                    } else {
-                        if (!AlreadyComplained) {
-                            pp->parseContext.error(yylvalpp->loc,"octal literal too big", "", "");
-                            AlreadyComplained = 1;
-                        }
-                        ival = 0xffffffff;
-                    }
-                    ch = pp->currentInput->getch(pp, pp->currentInput, yylvalpp);
-                } while (ch >= '0' && ch <= '7');
-                if (ch == '.' || ch == 'e' || ch == 'f' || ch == 'h' || ch == 'x'|| ch == 'E' || ch == 'F' || ch == 'l' || ch == 'L') 
-                    return pp->lFloatConst(yylvalpp->name, len, ch, yylvalpp);
-                else  if (ch == 'u' || ch == 'U') {
-                    if (len < TPpToken::maxTokenLength)
-                        yylvalpp->name[len++] = ch;
-                    uint = 1;
-                } else
-                    pp->currentInput->ungetch(pp, pp->currentInput, ch, yylvalpp);
-                yylvalpp->name[len] = '\0';
-                yylvalpp->ival = (int)ival;
-
-                if (uint)
+                if (isUnsigned)
                     return CPP_UINTCONSTANT;
                 else
                     return CPP_INTCONSTANT;
             } else {
-                pp->currentInput->ungetch(pp, pp->currentInput, ch, yylvalpp);
-                ch = '0';
-            }
-            // Fall through...
-        case '1': case '2': case '3': case '4':
-        case '5': case '6': case '7': case '8': case '9':
-            do {
-                if (len < TPpToken::maxTokenLength) {
-                    if (len > 0 || ch != '0') {
-                        yylvalpp->name[len] = ch;
-                        len++;
-                    }
-                } else {
-                    if (! AlreadyComplained) {
-                        pp->parseContext.error(yylvalpp->loc,"numeric literal too long", "", "");
+                // could be octal integer or floating point, speculative pursue octal until it must be floating point
+
+                bool isUnsigned = false;
+                bool octalOverflow = false;
+                bool nonOctal = false;
+                ival = 0;
+
+                // see how much octal-like stuff we can read
+                while (ch >= '0' && ch <= '7') {
+                    if (len < TPpToken::maxTokenLength)
+                        yylvalpp->name[len++] = ch;
+                    else if (! AlreadyComplained) {
+                        pp->parseContext.error(yylvalpp->loc, "numeric literal too long", "", "");
                         AlreadyComplained = 1;
                     }
+                    if (ival <= 0x1fffffff) {
+                        ii = ch - '0';
+                        ival = (ival << 3) | ii;
+                    } else
+                        octalOverflow = true;
+                    ch = pp->currentInput->getch(pp, pp->currentInput, yylvalpp);
+                }
+
+                // could be part of a float...
+                if (ch == '8' || ch == '9') {
+                    nonOctal = true;
+                    do {
+                        if (len < TPpToken::maxTokenLength)
+                            yylvalpp->name[len++] = ch;
+                        else if (! AlreadyComplained) {
+                            pp->parseContext.error(yylvalpp->loc, "numeric literal too long", "", "");
+                            AlreadyComplained = 1;
+                        }
+                        ch = pp->currentInput->getch(pp, pp->currentInput, yylvalpp);
+                    } while (ch >= '0' && ch <= '9');
+                }
+                if (ch == '.' || ch == 'e' || ch == 'f' || ch == 'E' || ch == 'F' || ch == 'l' || ch == 'L') 
+                    return pp->lFloatConst(yylvalpp->name, len, ch, yylvalpp);
+                
+                // wasn't a float, so must be octal...
+                if (nonOctal)
+                    pp->parseContext.error(yylvalpp->loc, "octal literal digit too large", "", "");
+
+                if (ch == 'u' || ch == 'U') {
+                    if (len < TPpToken::maxTokenLength)
+                        yylvalpp->name[len++] = ch;
+                    isUnsigned = true;
+                } else
+                    pp->currentInput->ungetch(pp, pp->currentInput, ch, yylvalpp);
+                yylvalpp->name[len] = '\0';
+
+                if (octalOverflow)
+                    pp->parseContext.error(yylvalpp->loc, "octal literal too big", "", "");
+
+                yylvalpp->ival = (int)ival;
+
+                if (isUnsigned)
+                    return CPP_UINTCONSTANT;
+                else
+                    return CPP_INTCONSTANT;
+            }
+            break;
+        case '1': case '2': case '3': case '4':
+        case '5': case '6': case '7': case '8': case '9':
+            // can't be hexidecimal or octal, is either decimal or floating point
+
+            do {
+                if (len < TPpToken::maxTokenLength)
+                    yylvalpp->name[len++] = ch;
+                else if (! AlreadyComplained) {
+                    pp->parseContext.error(yylvalpp->loc, "numeric literal too long", "", "");
+                    AlreadyComplained = 1;
                 }
                 ch = pp->currentInput->getch(pp, pp->currentInput, yylvalpp);
             } while (ch >= '0' && ch <= '9');
-            if (ch == '.' || ch == 'e' || ch == 'f' || ch == 'h' || ch == 'x'|| ch == 'E' || ch == 'F' || ch == 'l' || ch == 'L') {
+            if (ch == '.' || ch == 'e' || ch == 'f' || ch == 'E' || ch == 'F' || ch == 'l' || ch == 'L') {
                 return pp->lFloatConst(yylvalpp->name, len, ch, yylvalpp);
             } else {
                 // Finish handling signed and unsigned integers
@@ -495,7 +525,7 @@ int TPpContext::byte_scan(TPpContext* pp, InputSrc *in, TPpToken * yylvalpp)
                 for (ii = 0; ii < numericLen; ii++) {
                     ch = yylvalpp->name[ii] - '0';
                     if ((ival > 429496729) || (ival == 429496729 && ch >= 6)) {
-                        pp->parseContext.error(yylvalpp->loc,"numeric literal too big", "", "");
+                        pp->parseContext.error(yylvalpp->loc, "numeric literal too big", "", "");
                         ival = -1;
                         break;
                     } else
@@ -687,7 +717,7 @@ int TPpContext::byte_scan(TPpContext* pp, InputSrc *in, TPpToken * yylvalpp)
                         if (ch == '\n')
                             nlcount++;
                         if (ch == EOF) {
-                            pp->parseContext.error(yylvalpp->loc,"EOF in comment", "comment", "");
+                            pp->parseContext.error(yylvalpp->loc, "EOF in comment", "comment", "");
 
                             return EOF;
                         }
@@ -695,7 +725,7 @@ int TPpContext::byte_scan(TPpContext* pp, InputSrc *in, TPpToken * yylvalpp)
                     }
                     ch = pp->currentInput->getch(pp, pp->currentInput, yylvalpp);
                     if (ch == EOF) {
-                        pp->parseContext.error(yylvalpp->loc,"EOF in comment", "comment", "");
+                        pp->parseContext.error(yylvalpp->loc, "EOF in comment", "comment", "");
 
                         return EOF;
                     }
@@ -731,7 +761,7 @@ int TPpContext::byte_scan(TPpContext* pp, InputSrc *in, TPpToken * yylvalpp)
                 yylvalpp->atom = pp->LookUpAddString(&pp->atomTable, tokenText);
                 return CPP_STRCONSTANT;
             } else {
-                pp->parseContext.error(yylvalpp->loc,"end of line in string", "string", "");
+                pp->parseContext.error(yylvalpp->loc, "end of line in string", "string", "");
                 return CPP_ERROR_SY;
             }
         }
@@ -756,7 +786,7 @@ const char* TPpContext::tokenize(TPpToken* yylvalpp)
                     return 0;
                 continue;
             } else {
-                parseContext.error(yylvalpp->loc,"preprocessor directive cannot be preceded by another token", "#", "");
+                parseContext.error(yylvalpp->loc, "preprocessor directive cannot be preceded by another token", "#", "");
                 return 0;
             }
         }
