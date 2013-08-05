@@ -1,0 +1,34 @@
+0:? Sequence
+0:8  Function Definition: main( (void)
+0:8    Function Parameters: 
+0:10    Sequence
+0:10      Sequence
+0:10        move second child to first child (4-component vector of float)
+0:10          'color' (4-component vector of float)
+0:10          'BaseColor' (smooth in 4-component vector of float)
+0:12      Sequence
+0:12        Sequence
+0:12          move second child to first child (int)
+0:12            'i' (int)
+0:12            0 (const int)
+0:12        Loop with condition tested first
+0:12          Loop Condition
+0:12          Compare Less Than (bool)
+0:12            'i' (int)
+0:12            'Count' (uniform int)
+0:12          Loop Body
+0:13          Sequence
+0:13            add second child into first child (4-component vector of float)
+0:13              'color' (4-component vector of float)
+0:13              'bigColor' (uniform 4-component vector of float)
+0:12          Loop Terminal Expression
+0:12          Pre-Increment (int)
+0:12            'i' (int)
+0:16      move second child to first child (4-component vector of float)
+0:16        'gl_FragColor' (fragColor 4-component vector of float)
+0:16        'color' (4-component vector of float)
+0:?   Linker Objects
+0:?     'bigColor' (uniform 4-component vector of float)
+0:?     'BaseColor' (smooth in 4-component vector of float)
+0:?     'Count' (uniform int)
+

@@ -1,0 +1,184 @@
+ERROR: 0:6: 'float' : type requires declaration of default precision qualifier 
+ERROR: 0:70: 'noise2' : no matching overloaded function found 
+ERROR: 2 compilation errors.  No code generated.
+
+ERROR: node is still EOpNull!
+0:26  Function Definition: main( (void)
+0:26    Function Parameters: 
+0:29    Sequence
+0:29      Sequence
+0:29        move second child to first child (mediump 3-component vector of float)
+0:29          'v' (mediump 3-component vector of float)
+0:29          mix (mediump 3-component vector of float)
+0:29            'x' (mediump 3-component vector of float)
+0:29            'y' (mediump 3-component vector of float)
+0:29            'bv' (3-component vector of bool)
+0:30      Sequence
+0:30        move second child to first child (mediump 4-component vector of int)
+0:30          'iv10' (mediump 4-component vector of int)
+0:30          Absolute value (mediump 4-component vector of int)
+0:30            'iv4a' (mediump 4-component vector of int)
+0:31      Sequence
+0:31        move second child to first child (mediump 4-component vector of int)
+0:31          'iv11' (mediump 4-component vector of int)
+0:31          Sign (mediump 4-component vector of int)
+0:31            'iv4a' (mediump 4-component vector of int)
+0:32      Sequence
+0:32        move second child to first child (mediump 4-component vector of int)
+0:32          'iv12' (mediump 4-component vector of int)
+0:32          min (mediump 4-component vector of int)
+0:32            'iv4a' (mediump 4-component vector of int)
+0:32            'iv4b' (mediump 4-component vector of int)
+0:33      Sequence
+0:33        move second child to first child (mediump 4-component vector of int)
+0:33          'iv13' (mediump 4-component vector of int)
+0:33          min (mediump 4-component vector of int)
+0:33            'iv4a' (mediump 4-component vector of int)
+0:33            'imin' (mediump int)
+0:34      Sequence
+0:34        move second child to first child (mediump 2-component vector of uint)
+0:34          'u' (mediump 2-component vector of uint)
+0:34          min (mediump 2-component vector of uint)
+0:34            'uv2x' (mediump 2-component vector of uint)
+0:34            'uv2y' (mediump 2-component vector of uint)
+0:35      Sequence
+0:35        move second child to first child (mediump 4-component vector of uint)
+0:35          'uv' (mediump 4-component vector of uint)
+0:35          min (mediump 4-component vector of uint)
+0:35            'uv4y' (mediump 4-component vector of uint)
+0:35            'uy' (mediump uint)
+0:36      Sequence
+0:36        move second child to first child (mediump 3-component vector of int)
+0:36          'iv14' (mediump 3-component vector of int)
+0:36          max (mediump 3-component vector of int)
+0:36            'iv3a' (mediump 3-component vector of int)
+0:36            'iv3b' (mediump 3-component vector of int)
+0:37      Sequence
+0:37        move second child to first child (mediump 4-component vector of int)
+0:37          'iv15' (mediump 4-component vector of int)
+0:37          max (mediump 4-component vector of int)
+0:37            'iv4a' (mediump 4-component vector of int)
+0:37            'imax' (mediump int)
+0:38      Sequence
+0:38        move second child to first child (mediump 2-component vector of uint)
+0:38          'u10' (mediump 2-component vector of uint)
+0:38          max (mediump 2-component vector of uint)
+0:38            'uv2x' (mediump 2-component vector of uint)
+0:38            'uv2y' (mediump 2-component vector of uint)
+0:39      Sequence
+0:39        move second child to first child (mediump 2-component vector of uint)
+0:39          'u11' (mediump 2-component vector of uint)
+0:39          max (mediump 2-component vector of uint)
+0:39            'uv2x' (mediump 2-component vector of uint)
+0:39            'uy' (mediump uint)
+0:40      Sequence
+0:40        move second child to first child (mediump 4-component vector of int)
+0:40          'iv16' (mediump 4-component vector of int)
+0:40          clamp (mediump 4-component vector of int)
+0:40            'iv4a' (mediump 4-component vector of int)
+0:40            'iv4a' (mediump 4-component vector of int)
+0:40            'iv4b' (mediump 4-component vector of int)
+0:41      Sequence
+0:41        move second child to first child (mediump 4-component vector of int)
+0:41          'iv17' (mediump 4-component vector of int)
+0:41          clamp (mediump 4-component vector of int)
+0:41            'iv4a' (mediump 4-component vector of int)
+0:41            'imin' (mediump int)
+0:41            'imax' (mediump int)
+0:42      Sequence
+0:42        move second child to first child (mediump 2-component vector of uint)
+0:42          'u12' (mediump 2-component vector of uint)
+0:42          clamp (mediump 2-component vector of uint)
+0:42            'uv2x' (mediump 2-component vector of uint)
+0:42            'uv2y' (mediump 2-component vector of uint)
+0:42            'uv2c' (mediump 2-component vector of uint)
+0:43      Sequence
+0:43        move second child to first child (mediump 4-component vector of uint)
+0:43          'uv10' (mediump 4-component vector of uint)
+0:43          clamp (mediump 4-component vector of uint)
+0:43            'uv4y' (mediump 4-component vector of uint)
+0:43            'umin' (mediump uint)
+0:43            'umax' (mediump uint)
+0:47      Sequence
+0:47        move second child to first child (mediump 3-component vector of float)
+0:47          'v11' (mediump 3-component vector of float)
+0:47          modf (mediump 3-component vector of float)
+0:47            'x' (mediump 3-component vector of float)
+0:47            'modfOut' (mediump 3-component vector of float)
+0:49      Sequence
+0:49        move second child to first child (mediump float)
+0:49          't' (mediump float)
+0:49          trunc (mediump float)
+0:49            'f' (mediump float)
+0:50      Sequence
+0:50        move second child to first child (mediump 2-component vector of float)
+0:50          'v12' (mediump 2-component vector of float)
+0:50          round (mediump 2-component vector of float)
+0:50            'v2a' (mediump 2-component vector of float)
+0:51      Sequence
+0:51        move second child to first child (mediump 2-component vector of float)
+0:51          'v13' (mediump 2-component vector of float)
+0:51          roundEven (mediump 2-component vector of float)
+0:51            'v2a' (mediump 2-component vector of float)
+0:52      Sequence
+0:52        move second child to first child (2-component vector of bool)
+0:52          'b10' (2-component vector of bool)
+0:52          isnan (2-component vector of bool)
+0:52            'v2a' (mediump 2-component vector of float)
+0:53      Sequence
+0:53        move second child to first child (4-component vector of bool)
+0:53          'b11' (4-component vector of bool)
+0:53          isinf (4-component vector of bool)
+0:53            'v4' (mediump 4-component vector of float)
+0:56      Sequence
+0:56        move second child to first child (mediump int)
+0:56          'i' (mediump int)
+0:56          floatBitsToInt (mediump int)
+0:56            'f' (mediump float)
+0:57      Sequence
+0:57        move second child to first child (mediump 4-component vector of uint)
+0:57          'uv11' (mediump 4-component vector of uint)
+0:57          floatBitsToUint (mediump 4-component vector of uint)
+0:57            'v4' (mediump 4-component vector of float)
+0:58      Sequence
+0:58        move second child to first child (mediump 4-component vector of float)
+0:58          'v14' (mediump 4-component vector of float)
+0:58          intBitsToFloat (mediump 4-component vector of float)
+0:58            'iv4a' (mediump 4-component vector of int)
+0:59      Sequence
+0:59        move second child to first child (mediump 2-component vector of float)
+0:59          'v15' (mediump 2-component vector of float)
+0:59          uintBitsToFloat (mediump 2-component vector of float)
+0:59            'uv2c' (mediump 2-component vector of uint)
+0:62      Sequence
+0:62        move second child to first child (highp uint)
+0:62          'u19' (mediump uint)
+0:62          packSnorm2x16 (highp uint)
+0:62            'v2a' (mediump 2-component vector of float)
+0:63      Sequence
+0:63        move second child to first child (highp 2-component vector of float)
+0:63          'v20' (mediump 2-component vector of float)
+0:63          unpackSnorm2x16 (highp 2-component vector of float)
+0:63            'uy' (mediump uint)
+0:64      Sequence
+0:64        move second child to first child (highp uint)
+0:64          'u15' (mediump uint)
+0:64          packUnorm2x16 (highp uint)
+0:64            'v2a' (mediump 2-component vector of float)
+0:65      Sequence
+0:65        move second child to first child (highp 2-component vector of float)
+0:65          'v16' (mediump 2-component vector of float)
+0:65          unpackUnorm2x16 (highp 2-component vector of float)
+0:65            'uy' (mediump uint)
+0:66      Sequence
+0:66        move second child to first child (highp uint)
+0:66          'u17' (mediump uint)
+0:66          packHalf2x16 (highp uint)
+0:66            'v2b' (mediump 2-component vector of float)
+0:67      Sequence
+0:67        move second child to first child (mediump 2-component vector of float)
+0:67          'v18' (mediump 2-component vector of float)
+0:67          unpackHalf2x16 (mediump 2-component vector of float)
+0:67            'uy' (mediump uint)
+0:70      0.000000
+

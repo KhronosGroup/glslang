@@ -1,0 +1,181 @@
+ERROR: 0:11: 'switch' : condition must be a scalar integer expression 
+ERROR: 0:14: 'switch' : condition must be a scalar integer expression 
+ERROR: 0:21: 'switch' : last case/default label must be followed by statements 
+ERROR: 0:28: 'switch' : cannot have statements before first case/default label 
+ERROR: 0:43: 'default' : duplicate label 
+ERROR: 0:63: 'case' : duplicated value 
+ERROR: 0:65: 'case' : scalar integer expression required 
+ERROR: 0:67: 'case' : constant expression required 
+ERROR: 0:89: '' : break statement only allowed in switch and loops 
+ERROR: 9 compilation errors.  No code generated.
+
+ERROR: node is still EOpNull!
+0:6  Function Definition: main( (void)
+0:6    Function Parameters: 
+0:?     Sequence
+0:11      'f' (highp float)
+0:14      'a' (2-element array of mediump int)
+0:17      'c' (uniform mediump int)
+0:21      'c' (uniform mediump int)
+0:26      switch
+0:26      condition
+0:26        'c' (uniform mediump int)
+0:26      body
+0:26        Sequence
+0:28          Sequence
+0:28            move second child to first child (highp float)
+0:28              'f' (highp float)
+0:28              sine (highp float)
+0:28                'x' (smooth in highp float)
+0:29          case:  with expression
+0:29            2 (const int)
+0:?           Sequence
+0:30            move second child to first child (highp float)
+0:30              'f' (highp float)
+0:30              cosine (highp float)
+0:30                'x' (smooth in highp float)
+0:31            Branch: Break
+0:34      switch
+0:34      condition
+0:34        'c' (uniform mediump int)
+0:34      body
+0:34        Sequence
+0:35          default: 
+0:?           Sequence
+0:36            Branch: Break
+0:37          case:  with expression
+0:37            1 (const int)
+0:?           Sequence
+0:38            move second child to first child (highp float)
+0:38              'f' (highp float)
+0:38              sine (highp float)
+0:38                'x' (smooth in highp float)
+0:39            Branch: Break
+0:40          case:  with expression
+0:40            2 (const int)
+0:?           Sequence
+0:41            move second child to first child (highp float)
+0:41              'f' (highp float)
+0:41              cosine (highp float)
+0:41                'x' (smooth in highp float)
+0:42            Branch: Break
+0:43          default: 
+0:?           Sequence
+0:44            move second child to first child (highp float)
+0:44              'f' (highp float)
+0:44              tangent (highp float)
+0:44                'x' (smooth in highp float)
+0:47      switch
+0:47      condition
+0:47        'c' (uniform mediump int)
+0:47      body
+0:47        Sequence
+0:48          case:  with expression
+0:48            1 (const int)
+0:?           Sequence
+0:49            move second child to first child (highp float)
+0:49              'f' (highp float)
+0:49              sine (highp float)
+0:49                'x' (smooth in highp float)
+0:50            Branch: Break
+0:51          case:  with expression
+0:51            2 (const int)
+0:?           Sequence
+0:52            switch
+0:52            condition
+0:52              'd' (uniform mediump int)
+0:52            body
+0:52              Sequence
+0:53                case:  with expression
+0:53                  1 (const int)
+0:?                 Sequence
+0:54                  move second child to first child (highp float)
+0:54                    'f' (highp float)
+0:54                    component-wise multiply (highp float)
+0:54                      component-wise multiply (highp float)
+0:54                        'x' (smooth in highp float)
+0:54                        'x' (smooth in highp float)
+0:54                      'x' (smooth in highp float)
+0:55                  Branch: Break
+0:56                case:  with expression
+0:56                  2 (const int)
+0:?                 Sequence
+0:57                  move second child to first child (highp float)
+0:57                    'f' (highp float)
+0:57                    component-wise multiply (highp float)
+0:57                      'x' (smooth in highp float)
+0:57                      'x' (smooth in highp float)
+0:58                  Branch: Break
+0:60            Branch: Break
+0:61          default: 
+0:?           Sequence
+0:62            move second child to first child (highp float)
+0:62              'f' (highp float)
+0:62              tangent (highp float)
+0:62                'x' (smooth in highp float)
+0:63          case:  with expression
+0:63            1 (const int)
+0:?           Sequence
+0:64            Branch: Break
+0:65          case:  with expression
+0:65            3.800000
+0:?           Sequence
+0:66            Branch: Break
+0:67          case:  with expression
+0:67            'c' (uniform mediump int)
+0:?           Sequence
+0:68            Branch: Break
+0:71      switch
+0:71      condition
+0:71        'c' (uniform mediump int)
+0:71      body
+0:71        Sequence
+0:72          case:  with expression
+0:72            1 (const int)
+0:?           Sequence
+0:73            move second child to first child (highp float)
+0:73              'f' (highp float)
+0:73              sine (highp float)
+0:73                'x' (smooth in highp float)
+0:74            Branch: Break
+0:75          case:  with expression
+0:75            2 (const int)
+0:?           Sequence
+0:76            switch
+0:76            condition
+0:76              'd' (uniform mediump int)
+0:76            body
+0:76              Sequence
+0:77                case:  with expression
+0:77                  1 (const int)
+0:?                 Sequence
+0:78                  move second child to first child (highp float)
+0:78                    'f' (highp float)
+0:78                    component-wise multiply (highp float)
+0:78                      component-wise multiply (highp float)
+0:78                        'x' (smooth in highp float)
+0:78                        'x' (smooth in highp float)
+0:78                      'x' (smooth in highp float)
+0:79                  Branch: Break
+0:80                case:  with expression
+0:80                  2 (const int)
+0:?                 Sequence
+0:81                  move second child to first child (highp float)
+0:81                    'f' (highp float)
+0:81                    component-wise multiply (highp float)
+0:81                      'x' (smooth in highp float)
+0:81                      'x' (smooth in highp float)
+0:82                  Branch: Break
+0:84            Branch: Break
+0:85          default: 
+0:?           Sequence
+0:86            move second child to first child (highp float)
+0:86              'f' (highp float)
+0:86              tangent (highp float)
+0:86                'x' (smooth in highp float)
+0:89      Branch: Break
+0:?   Linker Objects
+0:?     'c' (uniform mediump int)
+0:?     'd' (uniform mediump int)
+0:?     'x' (smooth in highp float)
+

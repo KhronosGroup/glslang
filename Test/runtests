@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
-TARGETDIR=localout
-BASEDIR=localbase
+TARGETDIR=localResults
+BASEDIR=baseResults
 
 while read t; do
     echo Running $t...

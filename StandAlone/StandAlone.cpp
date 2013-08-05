@@ -306,12 +306,14 @@ bool CompileFile(const char *fileName, ShHandle compiler, int debugOptions, cons
 void usage()
 {
     printf("Usage: standalone [ options ] filename\n"
-           "Where: filename = filename ending in .frag* or .vert*\n"
-           "-i: intermediate (glslang AST)\n"
-           "-d: delay end (keeps output up in debugger, WIN32)\n"
+           "Where: filename is a name ending in .frag or .vert\n\n"
+           "Compilation warnings and errors will be printed to stdout.\n"
+           "To get other information, use one of the following options:\n"
+           "-i: intermediate tree (glslang AST) is printed out\n"
+           "-d: delay exit\n"
            "-l: memory leak mode\n"
-           "-s: silent mode (no info log)\n"
-           "-r: relaxed semantic error checking mode\n");
+           "-s: silent mode\n"
+           "-r: relaxed semantic error-checking mode\n");
 }
 
 #ifndef _WIN32

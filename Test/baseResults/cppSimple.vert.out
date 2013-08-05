@@ -1,0 +1,73 @@
+ERROR: 0:77: '#error' : good1  
+ERROR: 0:81: '#error' : good2  
+ERROR: 0:85: '#error' : good3  
+ERROR: 0:89: '#error' : good4  
+ERROR: 0:93: '#error' : good5  
+ERROR: 0:97: '#error' : good6  
+ERROR: 0:101: 'preprocessor' : expected ')' 
+ERROR: 0:101: '#error' : bad1  
+WARNING: 0:104: '#if' : unexpected tokens following #if directive - expected a newline 
+ERROR: 0:105: '#error' : bad2  
+ERROR: 0:109: 'preprocessor' : expected ')' 
+ERROR: 0:109: '#error' : bad3  
+WARNING: 0:112: '#if' : unexpected tokens following #if directive - expected a newline 
+ERROR: 0:113: '#error' : bad4  
+ERROR: 0:117: 'preprocessor' : expected ')' 
+ERROR: 0:117: '#error' : bad5  
+WARNING: 0:120: '#if' : unexpected tokens following #if directive - expected a newline 
+ERROR: 0:121: '#error' : bad6  
+ERROR: 0:133: '#' : preprocessor directive cannot be preceded by another token 
+INTERNAL ERROR: 0:133: Unknown PP token
+ERROR: 0:133: '' :  syntax error
+ERROR: 17 compilation errors.  No code generated.
+
+ERROR: node is still EOpNull!
+0:5  Sequence
+0:5    move second child to first child (float)
+0:5      'sum' (float)
+0:5      0.000000
+0:7  Function Definition: main( (void)
+0:7    Function Parameters: 
+0:12    Sequence
+0:12      add second child into first child (float)
+0:12        'sum' (float)
+0:12        1.000000
+0:22      add second child into first child (float)
+0:22        'sum' (float)
+0:22        300.000000
+0:37      add second child into first child (float)
+0:37        'sum' (float)
+0:37        600000.000000
+0:48      add second child into first child (float)
+0:48        'sum' (float)
+0:48        7000000.000000
+0:53      add second child into first child (float)
+0:53        'sum' (float)
+0:53        80000000.000000
+0:58      add second child into first child (float)
+0:58        'sum' (float)
+0:58        900000000.000000
+0:65      add second child into first child (float)
+0:65        'sum' (float)
+0:65        0.050000
+0:69      move second child to first child (4-component vector of float)
+0:69        'gl_Position' (gl_Position 4-component vector of float)
+0:69        Construct vec4 (4-component vector of float)
+0:69          'sum' (float)
+0:124  Sequence
+0:124    move second child to first child (int)
+0:124      'linenumber' (int)
+0:124      124 (const int)
+0:125  Sequence
+0:125    move second child to first child (int)
+0:125      'filenumber' (int)
+0:125      0 (const int)
+0:126  Sequence
+0:126    move second child to first child (int)
+0:126      'version' (int)
+0:126      110 (const int)
+0:130  Sequence
+0:130    move second child to first child (float)
+0:130      'twoPi' (float)
+0:130      6.280000
+

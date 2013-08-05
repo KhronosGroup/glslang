@@ -1,0 +1,21 @@
+ERROR: #version: versions before 150 do not allow a profile token
+ERROR: 0:1: '#version' : incorrect 
+ERROR: 0:38: 'attribute' : not supported in this stage: fragment
+ERROR: 0:40: 'sampler2DRect' : Reserved word. 
+ERROR: 0:40: 'rectangle texture' : not supported for this version or the enabled extensions 
+ERROR: 4 compilation errors.  No code generated.
+
+ERROR: node is still EOpNull!
+0:42  Function Definition: main( (void)
+0:42    Function Parameters: 
+0:44    Sequence
+0:44      move second child to first child (4-component vector of float)
+0:44        'gl_FragColor' (fragColor 4-component vector of float)
+0:44        Construct vec4 (4-component vector of float)
+0:44          'color' (smooth in 3-component vector of float)
+0:44          142.000000
+0:45      Branch: Kill
+0:?   Linker Objects
+0:?     'color' (smooth in 3-component vector of float)
+0:?     'foo' (uniform sampler2DRect)
+

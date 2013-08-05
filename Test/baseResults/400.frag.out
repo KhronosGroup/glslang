@@ -1,0 +1,18 @@
+ERROR: 0:11: 'variable indexing sampler array' : not supported for this version or the enabled extensions 
+ERROR: 1 compilation errors.  No code generated.
+
+ERROR: node is still EOpNull!
+0:8  Function Definition: main( (void)
+0:8    Function Parameters: 
+0:?     Sequence
+0:11      move second child to first child (4-component vector of float)
+0:11        'v' (4-component vector of float)
+0:11        Function Call: texture(s21;vf2; (4-component vector of float)
+0:11          indirect index (uniform sampler2D)
+0:11            'arrayedSampler' (uniform 5-element array of sampler2D)
+0:11            'i' (flat in int)
+0:11          'c2D' (smooth in 2-component vector of float)
+0:?   Linker Objects
+0:?     'c2D' (smooth in 2-component vector of float)
+0:?     'i' (flat in int)
+

@@ -1,0 +1,10 @@
+0:? Sequence
+0:16  Function Definition: main( (void)
+0:16    Function Parameters: 
+0:?   Linker Objects
+0:?     'i' (smooth in 4-component vector of float)
+0:?     'o' (out 4-component vector of float)
+0:?     'fflat' (flat in float)
+0:?     'fsmooth' (smooth in float)
+0:?     'fnop' (noperspective in float)
+

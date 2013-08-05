@@ -1,0 +1,17 @@
+ERROR: 0:14: '=' :  assigning non-constant to 'const int'
+ERROR: 0:17: '' : constant expression required 
+ERROR: 0:17: '' : array size must be a constant integer expression 
+ERROR: 0:18: '' : constant expression required 
+ERROR: 0:18: '' : array size must be a constant integer expression 
+ERROR: 0:19: '' : constant expression required 
+ERROR: 0:19: '' : array size must be a constant integer expression 
+ERROR: 7 compilation errors.  No code generated.
+
+ERROR: node is still EOpNull!
+0:10  Function Definition: main( (void)
+0:10    Function Parameters: 
+0:?   Linker Objects
+0:?     'inVar' (smooth in 4-component vector of float)
+0:?     'outVar' (out 4-component vector of float)
+0:?     'uniformInt' (uniform int)
+

@@ -1,0 +1,308 @@
+ERROR: 0:14: '' : octal literal digit too large 
+ERROR: 0:15: '' : octal literal digit too large 
+ERROR: 0:16: '' : octal literal digit too large 
+ERROR: 0:17: '' : octal literal too big 
+ERROR: 0:18: '' : octal literal too big 
+ERROR: 0:23: '' : octal literal digit too large 
+ERROR: 0:24: '' : octal literal digit too large 
+ERROR: 0:49: '' : bad digit in hexidecimal literal 
+ERROR: 0:50: '' : hexidecimal literal too big 
+ERROR: 0:88: '' : float literal needs a decimal point or exponent 
+ERROR: 10 compilation errors.  No code generated.
+
+ERROR: node is still EOpNull!
+0:3  Function Definition: main( (void)
+0:3    Function Parameters: 
+0:5    Sequence
+0:5      Sequence
+0:5        move second child to first child (int)
+0:5          'o00' (int)
+0:5          0 (const int)
+0:6      Sequence
+0:6        move second child to first child (int)
+0:6          'o000' (int)
+0:6          0 (const int)
+0:7      Sequence
+0:7        move second child to first child (int)
+0:7          'o0000' (int)
+0:7          0 (const int)
+0:8      Sequence
+0:8        move second child to first child (int)
+0:8          'o5' (int)
+0:8          5 (const int)
+0:9      Sequence
+0:9        move second child to first child (int)
+0:9          'o05' (int)
+0:9          5 (const int)
+0:10      Sequence
+0:10        move second child to first child (int)
+0:10          'o006' (int)
+0:10          6 (const int)
+0:11      Sequence
+0:11        move second child to first child (int)
+0:11          'o7' (int)
+0:11          7 (const int)
+0:12      Sequence
+0:12        move second child to first child (int)
+0:12          'o58' (int)
+0:12          58 (const int)
+0:13      Sequence
+0:13        move second child to first child (int)
+0:13          'omax' (int)
+0:13          -1 (const int)
+0:14      Sequence
+0:14        move second child to first child (int)
+0:14          'o8' (int)
+0:14          0 (const int)
+0:15      Sequence
+0:15        move second child to first child (int)
+0:15          'o08' (int)
+0:15          0 (const int)
+0:16      Sequence
+0:16        move second child to first child (int)
+0:16          'o009' (int)
+0:16          0 (const int)
+0:17      Sequence
+0:17        move second child to first child (int)
+0:17          'obig' (int)
+0:17          995208915 (const int)
+0:18      Sequence
+0:18        move second child to first child (int)
+0:18          'omax1' (int)
+0:18          536870912 (const int)
+0:20      Sequence
+0:20        move second child to first child (uint)
+0:20          'uo5' (uint)
+0:20          5 (const uint)
+0:21      Sequence
+0:21        move second child to first child (uint)
+0:21          'uo6' (uint)
+0:21          6 (const uint)
+0:22      Sequence
+0:22        move second child to first child (uint)
+0:22          'uo7' (uint)
+0:22          7 (const uint)
+0:23      Sequence
+0:23        move second child to first child (uint)
+0:23          'uo8' (uint)
+0:23          0 (const uint)
+0:24      Sequence
+0:24        move second child to first child (uint)
+0:24          'uo9' (uint)
+0:24          0 (const uint)
+0:26      Sequence
+0:26        move second child to first child (int)
+0:26          'h0' (int)
+0:26          0 (const int)
+0:27      Sequence
+0:27        move second child to first child (int)
+0:27          'h00' (int)
+0:27          0 (const int)
+0:28      Sequence
+0:28        move second child to first child (int)
+0:28          'h000' (int)
+0:28          0 (const int)
+0:29      Sequence
+0:29        move second child to first child (int)
+0:29          'h1' (int)
+0:29          1 (const int)
+0:30      Sequence
+0:30        move second child to first child (int)
+0:30          'h2' (int)
+0:30          2 (const int)
+0:31      Sequence
+0:31        move second child to first child (int)
+0:31          'h300' (int)
+0:31          768 (const int)
+0:32      Sequence
+0:32        move second child to first child (int)
+0:32          'hABCDEF' (int)
+0:32          11259375 (const int)
+0:33      Sequence
+0:33        move second child to first child (int)
+0:33          'hFFFFFFFF' (int)
+0:33          -1 (const int)
+0:34      Sequence
+0:34        move second child to first child (int)
+0:34          'h12345678' (int)
+0:34          12345678 (const int)
+0:35      Sequence
+0:35        move second child to first child (int)
+0:35          'hToBeOrNotToBe' (int)
+0:35          -1 (const int)
+0:37      Sequence
+0:37        move second child to first child (uint)
+0:37          'uh0' (uint)
+0:37          0 (const uint)
+0:38      Sequence
+0:38        move second child to first child (uint)
+0:38          'uhg' (uint)
+0:38          12 (const uint)
+0:39      Sequence
+0:39        move second child to first child (uint)
+0:39          'uh000' (uint)
+0:39          0 (const uint)
+0:40      Sequence
+0:40        move second child to first child (uint)
+0:40          'uh1' (uint)
+0:40          1 (const uint)
+0:41      Sequence
+0:41        move second child to first child (uint)
+0:41          'uh2' (uint)
+0:41          2 (const uint)
+0:42      Sequence
+0:42        move second child to first child (uint)
+0:42          'uh300' (uint)
+0:42          768 (const uint)
+0:43      Sequence
+0:43        move second child to first child (uint)
+0:43          'uhABCDEF' (uint)
+0:43          11259375 (const uint)
+0:44      Sequence
+0:44        move second child to first child (uint)
+0:44          'uhFFFFFFFF' (uint)
+0:44          4294967295 (const uint)
+0:45      Sequence
+0:45        move second child to first child (uint)
+0:45          'uh12345678' (uint)
+0:45          12345678 (const uint)
+0:46      Sequence
+0:46        move second child to first child (uint)
+0:46          'uhToBeOrNotToBe' (uint)
+0:46          4294967295 (const uint)
+0:49      Sequence
+0:49        move second child to first child (int)
+0:49          'he2' (int)
+0:49          0 (const int)
+0:50      Sequence
+0:50        move second child to first child (int)
+0:50          'hbig' (int)
+0:50          -1 (const int)
+0:52      Sequence
+0:52        move second child to first child (float)
+0:52          'f1' (float)
+0:52          1.000000
+0:53      Sequence
+0:53        move second child to first child (float)
+0:53          'f2' (float)
+0:53          2.000000
+0:54      Sequence
+0:54        move second child to first child (float)
+0:54          'f3' (float)
+0:54          3.000000
+0:55      Sequence
+0:55        move second child to first child (float)
+0:55          'f4' (float)
+0:55          4.000000
+0:56      Sequence
+0:56        move second child to first child (float)
+0:56          'f5' (float)
+0:56          5.000000
+0:57      Sequence
+0:57        move second child to first child (float)
+0:57          'f6' (float)
+0:57          6.000000
+0:58      Sequence
+0:58        move second child to first child (float)
+0:58          'f7' (float)
+0:58          7.000000
+0:59      Sequence
+0:59        move second child to first child (float)
+0:59          'f8' (float)
+0:59          8.000000
+0:60      Sequence
+0:60        move second child to first child (float)
+0:60          'f9' (float)
+0:60          9.000000
+0:61      Sequence
+0:61        move second child to first child (float)
+0:61          'f10' (float)
+0:61          10.000000
+0:62      Sequence
+0:62        move second child to first child (float)
+0:62          'f11' (float)
+0:62          11.000000
+0:63      Sequence
+0:63        move second child to first child (float)
+0:63          'f12' (float)
+0:63          12.000000
+0:64      Sequence
+0:64        move second child to first child (float)
+0:64          'f543' (float)
+0:64          543.000000
+0:65      Sequence
+0:65        move second child to first child (float)
+0:65          'f6789' (float)
+0:65          6789.000000
+0:66      Sequence
+0:66        move second child to first child (float)
+0:66          'f88' (float)
+0:66          88.000000
+0:68      Sequence
+0:68        move second child to first child (float)
+0:68          'g1' (float)
+0:68          53876.000000
+0:69      Sequence
+0:69        move second child to first child (float)
+0:69          'g2' (float)
+0:69          0.040000
+0:70      Sequence
+0:70        move second child to first child (float)
+0:70          'g3' (float)
+0:70          100000.000000
+0:71      Sequence
+0:71        move second child to first child (float)
+0:71          'g4' (float)
+0:71          0.007321
+0:72      Sequence
+0:72        move second child to first child (float)
+0:72          'g5' (float)
+0:72          32000.000000
+0:73      Sequence
+0:73        move second child to first child (float)
+0:73          'g6' (float)
+0:73          0.000005
+0:74      Sequence
+0:74        move second child to first child (float)
+0:74          'g7' (float)
+0:74          0.450000
+0:75      Sequence
+0:75        move second child to first child (float)
+0:75          'g8' (float)
+0:75          60000000000.000000
+0:77      Sequence
+0:77        move second child to first child (double)
+0:77          'gf1' (double)
+0:77          1.000000
+0:78      Sequence
+0:78        move second child to first child (double)
+0:78          'gf2' (double)
+0:78          2.000000
+0:79      Sequence
+0:79        move second child to first child (double)
+0:79          'gf3' (double)
+0:79          3.000000
+0:80      Sequence
+0:80        move second child to first child (double)
+0:80          'gf4' (double)
+0:80          4.000000
+0:81      Sequence
+0:81        move second child to first child (float)
+0:81          'gf5' (float)
+0:81          5.000000
+0:82      Sequence
+0:82        move second child to first child (float)
+0:82          'gf6' (float)
+0:82          6.000000
+0:88      Sequence
+0:88        move second child to first child (float)
+0:88          'e5' (float)
+0:88          5.000000
+0:?   Linker Objects
+0:?     'c2' (layout(location=2 ) out 4-component vector of float)
+0:?     'c3' (layout(location=3 ) out 4-component vector of float)
+0:?     'c4' (layout(location=4 ) out 4-component vector of float)
+0:?     'c5' (layout(location=5 ) out 4-component vector of float)
+0:?     'c6' (layout(location=6 ) out 4-component vector of float)
+0:?     'c7' (layout(location=7 ) out 4-component vector of float)
+

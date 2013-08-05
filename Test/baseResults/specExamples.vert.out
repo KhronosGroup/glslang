@@ -1,0 +1,253 @@
+ERROR: 0:5: 'Vertex' : only uniform interface blocks are supported 
+ERROR: 0:10: 'Vertex2' : only uniform interface blocks are supported 
+ERROR: 0:23: 'transforms' : redeclaration of array with size 
+ERROR: 0:29: 's' : location qualifiers only appy to uniform, in, or out storage qualifiers 
+ERROR: 0:31: 'triangles' : unrecognized layout identifier 
+ERROR: 0:31: 'invocations' : there is no such layout identifier taking an assigned value 
+ERROR: 0:33: 'lines' : unrecognized layout identifier 
+ERROR: 0:35: 'triangle_strip' : unrecognized layout identifier 
+ERROR: 0:35: 'max_vertices' : there is no such layout identifier taking an assigned value 
+ERROR: 0:36: 'max_vertices' : there is no such layout identifier taking an assigned value 
+ERROR: 0:37: 'triangle_strip' : unrecognized layout identifier 
+ERROR: 0:41: 'stream' : there is no such layout identifier taking an assigned value 
+ERROR: 0:43: 'stream' : there is no such layout identifier taking an assigned value 
+ERROR: 0:45: 'stream' : there is no such layout identifier taking an assigned value 
+ERROR: 0:46: 'stream' : there is no such layout identifier taking an assigned value 
+ERROR: 0:47: 'stream' : there is no such layout identifier taking an assigned value 
+ERROR: 0:45: 'Block1' : only uniform interface blocks are supported 
+ERROR: 0:50: 'stream' : there is no such layout identifier taking an assigned value 
+ERROR: 0:52: 'Block2' : only uniform interface blocks are supported 
+ERROR: 0:55: 'stream' : there is no such layout identifier taking an assigned value 
+ERROR: 0:77: 'binding' : not supported 
+ERROR: 0:80: 's17' : redefinition 
+ERROR: 0:85: 'binding' : not supported 
+ERROR: 0:85: 'offset' : there is no such layout identifier taking an assigned value 
+ERROR: 0:87: 'binding' : not supported 
+ERROR: 0:89: 'binding' : not supported 
+ERROR: 0:89: 'offset' : there is no such layout identifier taking an assigned value 
+ERROR: 0:91: 'binding' : not supported 
+ERROR: 0:91: 'bar' : redefinition 
+ERROR: 0:92: 'offset' : there is no such layout identifier taking an assigned value 
+ERROR: 0:92: 'bar' : redefinition 
+ERROR: 0:94: 'binding' : not supported 
+ERROR: 0:94: 'offset' : there is no such layout identifier taking an assigned value 
+ERROR: 0:95: 'binding' : not supported 
+ERROR: 0:96: 'binding' : not supported 
+ERROR: 0:97: 'binding' : not supported 
+ERROR: 0:106: '' : vertex input cannot be further qualified 
+ERROR: 0:106: 'gl_' : reserved built-in name 
+ERROR: 0:107: 'gl_' : reserved built-in name 
+ERROR: 0:107: 'gl_FrontColor' : redefinition 
+ERROR: 0:119: 'a' : redefinition 
+ERROR: 0:127: 'Block2' : nameless block contains a member that already has a name at global scope 
+ERROR: 0:132: 'shared' : not supported in this stage: vertex
+ERROR: 0:134: '' : function does not return a value: funcA
+ERROR: 0:136: '' : function does not return a value: funcB
+ERROR: 0:137: 'rgba32f' : unrecognized layout identifier 
+ERROR: 0:138: 'rgba32f' : unrecognized layout identifier 
+ERROR: 0:153: '' : function does not return a value: func3
+ERROR: 0:163: 'w' :  dot operator requires structure, array, vector, or matrix on left hand side 
+ERROR: 0:164: 'x' :  dot operator requires structure, array, vector, or matrix on left hand side 
+ERROR: 0:164: 'func' : no matching overloaded function found 
+ERROR: 0:166: 'x' :  dot operator requires structure, array, vector, or matrix on left hand side 
+ERROR: 0:166: 'func2' : no matching overloaded function found 
+ERROR: 0:167: 'x' :  dot operator requires structure, array, vector, or matrix on left hand side 
+ERROR: 0:191: '=' :  cannot convert from 'const 4-component vector of float' to '2-element array of 4-component vector of float'
+ERROR: 0:192: 'constructor' : constructing from a non-dereferenced array 
+ERROR: 0:193: 'constructor' : constructing from a non-dereferenced array 
+ERROR: 0:194: 'constructor' : constructing from a non-dereferenced array 
+ERROR: 58 compilation errors.  No code generated.
+
+ERROR: node is still EOpNull!
+0:134  Function Definition: funcA(I21; (4-component vector of float)
+0:134    Function Parameters: 
+0:134      'a' (in image2D)
+0:136  Function Definition: funcB(I21; (4-component vector of float)
+0:136    Function Parameters: 
+0:136      'a' (in image2D)
+0:140  Function Definition: func(f1;f1;f1;f1; (float)
+0:140    Function Parameters: 
+0:140      'e' (in float)
+0:140      'f' (in float)
+0:140      'g' (in float)
+0:140      'h' (in float)
+0:142    Sequence
+0:142      Branch: Return with expression
+0:142        add (float)
+0:142          component-wise multiply (float)
+0:142            'e' (in float)
+0:142            'f' (in float)
+0:142          component-wise multiply (float)
+0:142            'g' (in float)
+0:142            'h' (in float)
+0:146  Function Definition: func2(f1;f1;f1;f1; (float)
+0:146    Function Parameters: 
+0:146      'e' (in float)
+0:146      'f' (in float)
+0:146      'g' (in float)
+0:146      'h' (in float)
+0:148    Sequence
+0:148      Sequence
+0:148        move second child to first child (float)
+0:148          'result' (float)
+0:148          add (float)
+0:148            component-wise multiply (float)
+0:148              'e' (in float)
+0:148              'f' (in float)
+0:148            component-wise multiply (float)
+0:148              'g' (in float)
+0:148              'h' (in float)
+0:150      Branch: Return with expression
+0:150        'result' (float)
+0:153  Function Definition: func3(f1;f1;f1; (float)
+0:153    Function Parameters: 
+0:153      'i' (in float)
+0:153      'j' (in float)
+0:153      'k' (out float)
+0:155    Sequence
+0:155      move second child to first child (float)
+0:155        'k' (out float)
+0:155        add (float)
+0:155          component-wise multiply (float)
+0:155            'i' (in float)
+0:155            'i' (in float)
+0:155          'j' (in float)
+0:158  Function Definition: main( (void)
+0:158    Function Parameters: 
+0:160    Sequence
+0:160      Sequence
+0:160        move second child to first child (3-component vector of float)
+0:160          'r' (3-component vector of float)
+0:160          Construct vec3 (3-component vector of float)
+0:160            vector-scale (4-component vector of float)
+0:160              Convert int to float (float)
+0:160                'a' (uniform int)
+0:160              'b' (in 4-component vector of float)
+0:161      Sequence
+0:161        move second child to first child (3-component vector of float)
+0:161          's' (3-component vector of float)
+0:161          Construct vec3 (3-component vector of float)
+0:161            component-wise multiply (4-component vector of float)
+0:161              'c' (in 4-component vector of float)
+0:161              'd' (in 4-component vector of float)
+0:162      move second child to first child (3-component vector of float)
+0:162        vector swizzle (3-component vector of float)
+0:162          'v' (smooth out 4-component vector of float)
+0:162          Sequence
+0:162            0 (const int)
+0:162            1 (const int)
+0:162            2 (const int)
+0:162        add (3-component vector of float)
+0:162          'r' (3-component vector of float)
+0:162          's' (3-component vector of float)
+0:163      move second child to first child (float)
+0:163        direct index (float)
+0:163          'v' (smooth out 4-component vector of float)
+0:163          3 (const int)
+0:163        add (float)
+0:163          component-wise multiply (float)
+0:163            Convert int to float (float)
+0:163              'a' (uniform int)
+0:163            direct index (float)
+0:163              'b' (in 4-component vector of float)
+0:163              3 (const int)
+0:163          component-wise multiply (float)
+0:163            direct index (float)
+0:163              'c' (in 4-component vector of float)
+0:163              3 (const int)
+0:163            direct index (float)
+0:163              'd' (in 4-component vector of float)
+0:163              3 (const int)
+0:164      move second child to first child (float)
+0:164        direct index (float)
+0:164          'v' (smooth out 4-component vector of float)
+0:164          0 (const int)
+0:164        0.000000
+0:166      move second child to first child (float)
+0:166        direct index (float)
+0:166          'v' (smooth out 4-component vector of float)
+0:166          0 (const int)
+0:166        0.000000
+0:167      Function Call: func3(f1;f1;f1; (float)
+0:167        component-wise multiply (float)
+0:167          Convert int to float (float)
+0:167            'a' (uniform int)
+0:167          direct index (float)
+0:167            'b' (in 4-component vector of float)
+0:167            0 (const int)
+0:167        component-wise multiply (float)
+0:167          direct index (float)
+0:167            'c' (in 4-component vector of float)
+0:167            0 (const int)
+0:167          direct index (float)
+0:167            'd' (in 4-component vector of float)
+0:167            0 (const int)
+0:167        direct index (float)
+0:167          'v' (smooth out 4-component vector of float)
+0:167          0 (const int)
+0:169      Function Call: funcA(I21; (4-component vector of float)
+0:169        'img1' (uniform image2D)
+0:170      Function Call: funcB(I21; (4-component vector of float)
+0:170        'img2' (coherent uniform image2D)
+0:?       Sequence
+0:178        Sequence
+0:178          move second child to first child (structure)
+0:178            'lightVar' (structure)
+0:178            3.000000
+0:178            1.000000
+0:178            2.000000
+0:178            3.000000
+0:?       Sequence
+0:185        Sequence
+0:185          move second child to first child (5-element array of float)
+0:185            'a' (5-element array of float)
+0:185            Construct float (5-element array of float)
+0:185              'g' (float)
+0:185              1.000000
+0:185              'g' (float)
+0:185              2.300000
+0:185              'g' (float)
+0:188        move second child to first child (3-element array of float)
+0:188          'b' (3-element array of float)
+0:188          Construct float (3-element array of float)
+0:188            'g' (float)
+0:188            add (float)
+0:188              'g' (float)
+0:188              1.000000
+0:188            add (float)
+0:188              'g' (float)
+0:188              2.000000
+0:?       Sequence
+0:192        Construct vec4 (3-element array of 4-component vector of float)
+0:193        Construct vec4 (3-element array of 4-component vector of float)
+0:194        Construct vec4 (3-element array of 4-component vector of float)
+0:?   Linker Objects
+0:?     'transforms' (layout(shared ) uniform 4-element array of block)
+0:?     'normal' (layout(location=3 ) in 4-component vector of float)
+0:?     'var1' (smooth out 4-component vector of float)
+0:?     'var5' (smooth out 4-component vector of float)
+0:?     'var7' (smooth out 4-component vector of float)
+0:?     '__anon__0' (layout(std140 ) uniform block)
+0:?     '__anon__1' (layout(shared ) uniform block)
+0:?     's17' (uniform sampler2D)
+0:?     'a' (uniform int)
+0:?     'bar' (uniform int)
+0:?     'a2' (uniform int)
+0:?     'b2' (uniform int)
+0:?     'c2' (uniform int)
+0:?     'd2' (uniform int)
+0:?     'gl_FrontColor' (flat in 4-component vector of float)
+0:?     'Color' (smooth out 3-component vector of float)
+0:?     'Color4' (invariant centroid smooth out 3-component vector of float)
+0:?     'position' (smooth out 4-component vector of float)
+0:?     'Color5' (smooth out 3-component vector of float)
+0:?     'b' (in 4-component vector of float)
+0:?     'c' (in 4-component vector of float)
+0:?     'd' (in 4-component vector of float)
+0:?     'v' (smooth out 4-component vector of float)
+0:?     '__anon__2' (layout(shared ) uniform block)
+0:?     'img1' (uniform image2D)
+0:?     'img2' (coherent uniform image2D)
+0:?     'gl_VertexID' (gl_VertexId int)
+0:?     'gl_InstanceID' (gl_InstanceId int)
+

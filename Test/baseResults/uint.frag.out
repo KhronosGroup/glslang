@@ -1,0 +1,215 @@
+ERROR: 0:2: 'in' : must be qualified as 'flat' uint
+ERROR: 0:6: 'in' : cannot be bool 
+ERROR: 0:20: 'const' :  non-matching types for const initializer  
+ERROR: 0:24: 'const' :  non-matching types for const initializer  
+ERROR: 0:34: 'const' :  non-matching types for const initializer  
+ERROR: 0:37: 'const' :  non-matching types for const initializer  
+ERROR: 0:48: '=' :  cannot convert from 'const int' to 'mediump uint'
+ERROR: 0:51: '=' :  cannot convert from 'const int' to 'mediump uint'
+ERROR: 0:63: 'float' : type requires declaration of default precision qualifier 
+ERROR: 9 compilation errors.  No code generated.
+
+ERROR: node is still EOpNull!
+0:15  Function Definition: main( (void)
+0:15    Function Parameters: 
+0:17    Sequence
+0:17      Sequence
+0:17        move second child to first child (mediump int)
+0:17          'count' (mediump int)
+0:17          1 (const int)
+0:19      Sequence
+0:19        move second child to first child (mediump uint)
+0:19          'u' (mediump uint)
+0:19          add (mediump uint)
+0:19            direct index (mediump uint)
+0:19              't' (flat in mediump 2-component vector of uint)
+0:19              1 (const int)
+0:19            3 (const uint)
+0:28      multiply second child into first child (mediump int)
+0:28        'count' (mediump int)
+0:28        2 (const int)
+0:30      multiply second child into first child (mediump int)
+0:30        'count' (mediump int)
+0:30        3 (const int)
+0:42      multiply second child into first child (mediump int)
+0:42        'count' (mediump int)
+0:42        7 (const int)
+0:44      multiply second child into first child (mediump int)
+0:44        'count' (mediump int)
+0:44        11 (const int)
+0:49      Sequence
+0:49        move second child to first child (mediump int)
+0:49          'shiftedii' (mediump int)
+0:49          -1 (const int)
+0:50      Sequence
+0:50        move second child to first child (mediump uint)
+0:50          'shiftedui' (mediump uint)
+0:50          4194303 (const uint)
+0:52      Sequence
+0:52        move second child to first child (mediump int)
+0:52          'shiftediu' (mediump int)
+0:52          -1 (const int)
+0:53      Sequence
+0:53        move second child to first child (mediump uint)
+0:53          'shifteduu' (mediump uint)
+0:53          4194303 (const uint)
+0:55      Test condition and select (void)
+0:55        Condition
+0:55        Compare Equal (bool)
+0:55          'shiftedii' (mediump int)
+0:55          'shiftediu' (mediump int)
+0:55        true case
+0:56        move second child to first child (mediump 4-component vector of uint)
+0:56          'c' (out mediump 4-component vector of uint)
+0:56          Function Call: texture(us21;vf2; (mediump 4-component vector of uint)
+0:56            'usampler' (uniform lowp usampler2D)
+0:56            'tc' (smooth in highp 2-component vector of float)
+0:57      Test condition and select (void)
+0:57        Condition
+0:57        Compare Equal (bool)
+0:57          'shiftedui' (mediump uint)
+0:57          'shifteduu' (mediump uint)
+0:57        true case
+0:58        move second child to first child (mediump 4-component vector of uint)
+0:58          'c' (out mediump 4-component vector of uint)
+0:58          Function Call: texture(us21;vf2; (mediump 4-component vector of uint)
+0:58            'usampler' (uniform lowp usampler2D)
+0:58            add (highp 2-component vector of float)
+0:58              'tc' (smooth in highp 2-component vector of float)
+0:58              1.000000
+0:59      Test condition and select (void)
+0:59        Condition
+0:59        Compare Equal (bool)
+0:59          'shiftedii' (mediump int)
+0:59          Convert uint to int (int)
+0:59            'shiftedui' (mediump uint)
+0:59        true case
+0:60        move second child to first child (mediump 4-component vector of uint)
+0:60          'c' (out mediump 4-component vector of uint)
+0:60          Function Call: texture(us21;vf2; (mediump 4-component vector of uint)
+0:60            'usampler' (uniform lowp usampler2D)
+0:60            subtract (highp 2-component vector of float)
+0:60              'tc' (smooth in highp 2-component vector of float)
+0:60              2.000000
+0:60              2.000000
+0:62      Test condition and select (void)
+0:62        Condition
+0:62        Compare Greater Than (bool)
+0:62          direct index (mediump uint)
+0:62            't' (flat in mediump 2-component vector of uint)
+0:62            0 (const int)
+0:62          4 (const uint)
+0:62        true case
+0:63        Sequence
+0:63          Sequence
+0:63            move second child to first child (mediump float)
+0:63              'af' (mediump float)
+0:63              Convert uint to float (mediump float)
+0:63                'u' (mediump uint)
+0:64          Sequence
+0:64            move second child to first child (bool)
+0:64              'ab' (bool)
+0:64              Convert uint to bool (bool)
+0:64                'u' (mediump uint)
+0:65          Sequence
+0:65            move second child to first child (mediump int)
+0:65              'ai' (mediump int)
+0:65              Convert uint to int (mediump int)
+0:65                'u' (mediump uint)
+0:67          add second child into first child (mediump 4-component vector of uint)
+0:67            'c' (out mediump 4-component vector of uint)
+0:67            Construct uvec4 (mediump 4-component vector of uint)
+0:67              Convert float to uint (mediump uint)
+0:67                'af' (mediump float)
+0:67              Convert bool to uint (mediump uint)
+0:67                'ab' (bool)
+0:67              Convert int to uint (mediump uint)
+0:67                'ai' (mediump int)
+0:67              Convert int to uint (mediump uint)
+0:67                'count' (mediump int)
+0:76      multiply second child into first child (mediump int)
+0:76        'count' (mediump int)
+0:76        17 (const int)
+0:82      multiply second child into first child (mediump int)
+0:82        'count' (mediump int)
+0:82        23 (const int)
+0:85      multiply second child into first child (mediump int)
+0:85        'count' (mediump int)
+0:85        27 (const int)
+0:87      Sequence
+0:87        move second child to first child (mediump uint)
+0:87          'mask1' (mediump uint)
+0:87          161 (const uint)
+0:88      Sequence
+0:88        move second child to first child (mediump uint)
+0:88          'mask2' (mediump uint)
+0:88          2576 (const uint)
+0:89      Sequence
+0:89        move second child to first child (mediump uint)
+0:89          'mask3' (mediump uint)
+0:89          left-shift (mediump uint)
+0:89            'mask1' (mediump uint)
+0:89            4 (const int)
+0:90      Sequence
+0:90        move second child to first child (mediump uint)
+0:90          'mask4' (mediump uint)
+0:90          2737 (const uint)
+0:92      Test condition and select (void)
+0:92        Condition
+0:92        Compare Equal (bool)
+0:92          'mask3' (mediump uint)
+0:92          'mask2' (mediump uint)
+0:92        true case
+0:93        multiply second child into first child (mediump int)
+0:93          'count' (mediump int)
+0:93          100 (const int)
+0:95      Test condition and select (void)
+0:95        Condition
+0:95        Compare Not Equal (bool)
+0:95          bitwise and (mediump uint)
+0:95            'mask3' (mediump uint)
+0:95            'mask1' (mediump uint)
+0:95          0 (const uint)
+0:95        true case
+0:96        multiply second child into first child (mediump int)
+0:96          'count' (mediump int)
+0:96          101 (const int)
+0:98      Test condition and select (void)
+0:98        Condition
+0:98        Compare Equal (bool)
+0:98          inclusive-or (mediump uint)
+0:98            'mask1' (mediump uint)
+0:98            'mask3' (mediump uint)
+0:98          'mask4' (mediump uint)
+0:98        true case
+0:99        multiply second child into first child (mediump int)
+0:99          'count' (mediump int)
+0:99          102 (const int)
+0:101      Test condition and select (void)
+0:101        Condition
+0:101        Compare Equal (bool)
+0:101          exclusive-or (mediump uint)
+0:101            'mask1' (mediump uint)
+0:101            'mask4' (mediump uint)
+0:101          2576 (const uint)
+0:101        true case
+0:102        multiply second child into first child (mediump int)
+0:102          'count' (mediump int)
+0:102          103 (const int)
+0:104      add second child into first child (mediump 4-component vector of uint)
+0:104        'c' (out mediump 4-component vector of uint)
+0:104        Construct uvec4 (mediump 4-component vector of uint)
+0:104          Convert int to uint (mediump uint)
+0:104            'count' (mediump int)
+0:?   Linker Objects
+0:?     'badu' (smooth in mediump 2-component vector of uint)
+0:?     't' (flat in mediump 2-component vector of uint)
+0:?     'f' (smooth in highp float)
+0:?     'tc' (smooth in highp 2-component vector of float)
+0:?     'bad' (smooth in bool)
+0:?     'v' (uniform mediump 4-component vector of uint)
+0:?     'i' (uniform mediump int)
+0:?     'b' (uniform bool)
+0:?     'c' (out mediump 4-component vector of uint)
+0:?     'usampler' (uniform lowp usampler2D)
+

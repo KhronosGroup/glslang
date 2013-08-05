@@ -1,0 +1,229 @@
+ERROR: 0:6: '=' :  cannot convert from 'const uint' to 'int'
+ERROR: 0:20: '' : numeric literal too big 
+ERROR: 0:21: '' : hexidecimal literal too big 
+ERROR: 0:37: 'view' : redefinition 
+ERROR: 0:68: 'lightPosition' : redefinition 
+ERROR: 0:69: 'uniform' :  cannot initialize this type of qualifier  
+ERROR: 0:71: 'Material' : only uniform interface blocks are supported 
+ERROR: 0:79: 'Light' : only uniform interface blocks are supported 
+ERROR: 0:83: 'ColoredTexture' : only uniform interface blocks are supported 
+ERROR: 0:87: 'Color' : redefinition 
+ERROR: 0:89: 'gl_' : reserved built-in name 
+ERROR: 0:92: 'origin_upper_left' : unrecognized layout identifier 
+ERROR: 0:92: 'gl_' : reserved built-in name 
+ERROR: 0:92: 'gl_FragCoord' : redefinition 
+ERROR: 0:93: 'pixel_center_integer' : unrecognized layout identifier 
+ERROR: 0:93: 'gl_' : reserved built-in name 
+ERROR: 0:93: 'gl_FragCoord' : redefinition 
+ERROR: 0:94: 'origin_upper_left' : unrecognized layout identifier 
+ERROR: 0:94: 'pixel_center_integer' : unrecognized layout identifier 
+ERROR: 0:94: 'gl_' : reserved built-in name 
+ERROR: 0:94: 'gl_FragCoord' : redefinition 
+ERROR: 0:96: 'early_fragment_tests' : unrecognized layout identifier 
+ERROR: 0:99: 'local_size_x' : there is no such layout identifier taking an assigned value 
+ERROR: 0:99: 'local_size_y' : there is no such layout identifier taking an assigned value 
+ERROR: 0:100: 'local_size_x' : there is no such layout identifier taking an assigned value 
+ERROR: 0:102: 'color' : redefinition 
+ERROR: 0:103: 'index' : there is no such layout identifier taking an assigned value 
+ERROR: 0:106: 'depth_greater' : unrecognized layout identifier 
+ERROR: 0:106: 'gl_' : reserved built-in name 
+ERROR: 0:109: 'gl_' : reserved built-in name 
+ERROR: 0:109: 'gl_FragDepth' : redefinition 
+ERROR: 0:112: 'depth_any' : unrecognized layout identifier 
+ERROR: 0:112: 'gl_' : reserved built-in name 
+ERROR: 0:112: 'gl_FragDepth' : redefinition 
+ERROR: 0:115: 'depth_greater' : unrecognized layout identifier 
+ERROR: 0:115: 'gl_' : reserved built-in name 
+ERROR: 0:115: 'gl_FragDepth' : redefinition 
+ERROR: 0:118: 'depth_less' : unrecognized layout identifier 
+ERROR: 0:118: 'gl_' : reserved built-in name 
+ERROR: 0:118: 'gl_FragDepth' : redefinition 
+ERROR: 0:121: 'depth_unchanged' : unrecognized layout identifier 
+ERROR: 0:121: 'gl_' : reserved built-in name 
+ERROR: 0:121: 'gl_FragDepth' : redefinition 
+ERROR: 0:123: 'gl_' : reserved built-in name 
+ERROR: 0:124: 'gl_' : reserved built-in name 
+ERROR: 0:124: 'gl_Color' : redefinition 
+ERROR: 0:150: 'constructor' : constructing from a non-dereferenced array 
+ERROR: 0:152: '=' :  cannot convert from 'const 2-element array of 4-component vector of float' to '3-element array of 4-component vector of float'
+ERROR: 0:172: 'x' : undeclared identifier 
+ERROR: 0:172: '[]' : scalar integer expression required 
+ERROR: 0:172: 'length' : illegal vector field selection 
+ERROR: 0:172: '' : function call, method, or subroutine call expected 
+ERROR: 0:172: '' : no matching overloaded function found 
+ERROR: 0:175: 'x' : undeclared identifier 
+ERROR: 0:175: '[]' : scalar integer expression required 
+ERROR: 0:175: 'b' :  left of '[' is not of type array, matrix, or vector  
+ERROR: 0:175: 'a' :  dot operator requires structure, array, vector, or matrix on left hand side 
+ERROR: 0:175: 'length' :  dot operator requires structure, array, vector, or matrix on left hand side 
+ERROR: 0:175: '' : function call, method, or subroutine call expected 
+ERROR: 0:175: '' : no matching overloaded function found 
+ERROR: 0:178: '[]' : scalar integer expression required 
+ERROR: 0:178: 's' : undeclared identifier 
+ERROR: 0:178: 's' :  left of '[' is not of type array, matrix, or vector  
+ERROR: 0:178: 'a' :  dot operator requires structure, array, vector, or matrix on left hand side 
+ERROR: 0:178: 'length' :  dot operator requires structure, array, vector, or matrix on left hand side 
+ERROR: 0:178: '' : function call, method, or subroutine call expected 
+ERROR: 0:178: '' : no matching overloaded function found 
+ERROR: 0:193: '=' :  cannot convert from 'const int' to 'structure'
+ERROR: 0:198: 'e' : redefinition 
+ERROR: 0:217: '=' :  cannot convert from 'const float' to 'unsized array of float'
+ERROR: 0:219: '=' :  cannot convert from 'unsized array of float' to '5-element array of float'
+ERROR: 0:223: '=' :  assigning non-constant to 'const float'
+ERROR: 0:226: 'in' : only allowed at global scope 
+ERROR: 0:227: 'in' : only allowed at global scope 
+ERROR: 0:228: 'in' : only allowed at global scope 
+ERROR: 0:232: 'out' : only allowed at global scope 
+ERROR: 76 compilation errors.  No code generated.
+
+ERROR: node is still EOpNull!
+0:5  Sequence
+0:5    move second child to first child (int)
+0:5      'a' (int)
+0:5      -1 (const int)
+0:7  Sequence
+0:7    move second child to first child (uint)
+0:7      'c' (uint)
+0:7      4294967295 (const uint)
+0:8  Sequence
+0:8    move second child to first child (uint)
+0:8      'd' (uint)
+0:8      4294967295 (const uint)
+0:9  Sequence
+0:9    move second child to first child (int)
+0:9      'e' (int)
+0:9      -1 (const int)
+0:13  Sequence
+0:13    move second child to first child (uint)
+0:13      'f' (uint)
+0:13      4294967295 (const uint)
+0:17  Sequence
+0:17    move second child to first child (int)
+0:17      'g' (int)
+0:17      -1294967296 (const int)
+0:19  Sequence
+0:19    move second child to first child (int)
+0:19      'h' (int)
+0:19      -1610612736 (const int)
+0:20  Sequence
+0:20    move second child to first child (int)
+0:20      'i' (int)
+0:20      -1 (const int)
+0:21  Sequence
+0:21    move second child to first child (int)
+0:21      'j' (int)
+0:21      -1 (const int)
+0:22  Sequence
+0:22    move second child to first child (int)
+0:22      'k' (int)
+0:22      -2147483648 (const int)
+0:23  Sequence
+0:23    move second child to first child (int)
+0:23      'l' (int)
+0:23      -2147483648 (const int)
+0:25  Sequence
+0:25    move second child to first child (float)
+0:25      'fb' (float)
+0:25      1.500000
+0:26  Sequence
+0:26    move second child to first child (double)
+0:26      'fd' (double)
+0:26      2.000000
+0:127  Function Definition: foo(f1[5]; (5-element array of float)
+0:127    Function Parameters: 
+0:127      '' (in 5-element array of float)
+0:129    Sequence
+0:129      Branch: Return with expression
+0:129        3.400000
+0:129        4.200000
+0:129        5.000000
+0:129        5.200000
+0:129        1.100000
+0:137  Function Definition: main( (void)
+0:137    Function Parameters: 
+0:140    Sequence
+0:140      Sequence
+0:140        Sequence
+0:140          move second child to first child (5-element array of float)
+0:140            'a' (5-element array of float)
+0:140            3.400000
+0:140            4.200000
+0:140            5.000000
+0:140            5.200000
+0:140            1.100000
+0:143      Sequence
+0:143        Sequence
+0:143          move second child to first child (5-element array of float)
+0:143            'a' (5-element array of float)
+0:143            3.400000
+0:143            4.200000
+0:143            5.000000
+0:143            5.200000
+0:143            1.100000
+0:?       Sequence
+0:149        Sequence
+0:149          move second child to first child (2-element array of 4-component vector of float)
+0:149            'b' (2-element array of 4-component vector of float)
+0:149            0.000000
+0:149            0.000000
+0:149            0.000000
+0:149            0.000000
+0:149            0.100000
+0:149            0.100000
+0:149            0.100000
+0:149            0.100000
+0:150        Sequence
+0:150          move second child to first child (3-element array of 4-component vector of float)
+0:150            'a3' (3-element array of 4-component vector of float)
+0:150            Construct vec4 (3-element array of 4-component vector of float)
+0:?       Sequence
+0:159        Sequence
+0:159          Sequence
+0:159            move second child to first child (5-element array of float)
+0:159              'b' (5-element array of float)
+0:159              'a' (5-element array of float)
+0:162        Sequence
+0:162          Sequence
+0:162            move second child to first child (5-element array of float)
+0:162              'b' (5-element array of float)
+0:162              'a' (5-element array of float)
+0:165        Sequence
+0:165          Sequence
+0:165            move second child to first child (5-element array of float)
+0:165              'b' (5-element array of float)
+0:165              1.000000
+0:165              2.000000
+0:165              3.000000
+0:165              4.000000
+0:165              5.000000
+0:167        5 (const int)
+0:?       Sequence
+0:171        3 (const int)
+0:172        0.000000
+0:175      0.000000
+0:178      0.000000
+0:216      Sequence
+0:216        Sequence
+0:216          move second child to first child (5-element array of float)
+0:216            'a' (5-element array of float)
+0:216            3.400000
+0:216            4.200000
+0:216            5.000000
+0:216            5.200000
+0:216            1.100000
+0:218        Sequence
+0:218          move second child to first child (5-element array of float)
+0:218            'c' (5-element array of float)
+0:218            'a' (5-element array of float)
+0:?   Linker Objects
+0:?     'normal' (smooth in 3-component vector of float)
+0:?     'TexCoord' (centroid smooth in 2-component vector of float)
+0:?     'Color' (invariant centroid smooth in 4-component vector of float)
+0:?     'temperature' (noperspective in float)
+0:?     'myColor' (flat in 3-component vector of float)
+0:?     'myTexCoord' (centroid noperspective in 2-component vector of float)
+0:?     'gl_FragCoord' (smooth in 4-component vector of float)
+0:?     'factor' (layout(location=3 ) out 4-component vector of float)
+0:?     'gl_FragDepth' (out float)
+0:?     'gl_Color' (smooth in 4-component vector of float)
+

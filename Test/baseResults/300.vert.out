@@ -1,0 +1,140 @@
+ERROR: 0:8: 'varying' : Reserved word. 
+ERROR: 0:8: 'varying' : no longer supported in es profile; removed in version 300
+ERROR: 0:9: 'vertex input arrays' : not supported with this profile: es
+ERROR: 0:10: '' : precision qualifier must appear as last qualifier 
+ERROR: 0:11: '' : invariant qualifier must appear first 
+ERROR: 0:12: '' : Auxiliary qualifiers (centroid, patch, and sample) must appear before storage and precision qualifiers 
+ERROR: 0:12: '' : vertex input cannot be further qualified 
+ERROR: 0:13: '' : interpolation qualifiers must appear before storage and precision qualifiers 
+ERROR: 0:14: '' : in/out must appear before const 
+ERROR: 0:15: '' : precision qualifier must appear as last qualifier 
+ERROR: 0:16: '' : can only have one interpolation qualifier (flat, smooth, noperspective) 
+ERROR: 0:17: 'sample' : Reserved word. 
+ERROR: 0:17: '' : can only have one auxiliary qualifier (centroid, patch, and sample) 
+ERROR: 0:18: 'uniform' : too many storage qualifiers 
+ERROR: 0:56: '#error' : GL_ES is set  
+ERROR: 0:62: '' : array size required 
+ERROR: 0:63: '' : array size required 
+ERROR: 0:65: '' : array size required 
+ERROR: 0:64: '' : array size required 
+ERROR: 0:67: '' : array size required 
+ERROR: 20 compilation errors.  No code generated.
+
+ERROR: node is still EOpNull!
+0:27  Function Definition: main( (void)
+0:27    Function Parameters: 
+0:29    Sequence
+0:29      Sequence
+0:29        move second child to first child (highp int)
+0:29          'id' (highp int)
+0:29          add (highp int)
+0:29            'gl_VertexID' (gl_VertexId highp int)
+0:29            'gl_InstanceID' (gl_InstanceId highp int)
+0:31      Sequence
+0:31        move second child to first child (highp int)
+0:31          'c0' (highp int)
+0:31          64 (const int)
+0:32      Sequence
+0:32        move second child to first child (highp int)
+0:32          'c1' (highp int)
+0:32          128 (const int)
+0:33      Sequence
+0:33        move second child to first child (highp int)
+0:33          'c2' (highp int)
+0:33          16 (const int)
+0:34      Sequence
+0:34        move second child to first child (highp int)
+0:34          'c3' (highp int)
+0:34          15 (const int)
+0:35      Sequence
+0:35        move second child to first child (highp int)
+0:35          'c4' (highp int)
+0:35          32 (const int)
+0:36      Sequence
+0:36        move second child to first child (highp int)
+0:36          'c5' (highp int)
+0:36          32 (const int)
+0:37      Sequence
+0:37        move second child to first child (highp int)
+0:37          'c6' (highp int)
+0:37          32 (const int)
+0:38      Sequence
+0:38        move second child to first child (highp int)
+0:38          'c7' (highp int)
+0:38          16 (const int)
+0:39      Sequence
+0:39        move second child to first child (highp int)
+0:39          'c8' (highp int)
+0:39          32 (const int)
+0:40      Sequence
+0:40        move second child to first child (highp int)
+0:40          'c9' (highp int)
+0:40          -8 (const int)
+0:41      Sequence
+0:41        move second child to first child (highp int)
+0:41          'c10' (highp int)
+0:41          7 (const int)
+0:43      Sequence
+0:43        move second child to first child (highp 3X4 matrix of float)
+0:43          'tm' (highp 3X4 matrix of float)
+0:43          transpose (highp 3X4 matrix of float)
+0:43            'm43' (uniform highp 4X3 matrix of float)
+0:44      Sequence
+0:44        move second child to first child (highp float)
+0:44          'dm' (highp float)
+0:44          determinant (highp float)
+0:44            'm44' (uniform highp 4X4 matrix of float)
+0:45      Sequence
+0:45        move second child to first child (highp 3X3 matrix of float)
+0:45          'im' (highp 3X3 matrix of float)
+0:45          inverse (highp 3X3 matrix of float)
+0:45            'm33' (uniform highp 3X3 matrix of float)
+0:47      Sequence
+0:47        move second child to first child (highp 3X2 matrix of float)
+0:47          'op' (highp 3X2 matrix of float)
+0:47          outer product (highp 3X2 matrix of float)
+0:47            'v2' (smooth out highp 2-component vector of float)
+0:47            'v3' (in highp 3-component vector of float)
+0:49      move second child to first child (highp 4-component vector of float)
+0:49        'gl_Position' (gl_Position highp 4-component vector of float)
+0:49        direct index (uniform highp 4-component vector of float)
+0:49          'm44' (uniform highp 4X4 matrix of float)
+0:49          2 (const int)
+0:50      move second child to first child (highp float)
+0:50        'gl_PointSize' (gl_PointSize highp float)
+0:50        direct index (highp float)
+0:50          'v2' (smooth out highp 2-component vector of float)
+0:50          1 (const int)
+0:52      move second child to first child (highp 3-component vector of float)
+0:52        c: direct index for structure (highp 3-component vector of float)
+0:52          's' (smooth out structure)
+0:52          0 (const int)
+0:52        'v3' (in highp 3-component vector of float)
+0:53      move second child to first child (highp float)
+0:53        f: direct index for structure (highp float)
+0:53          's' (smooth out structure)
+0:53          1 (const int)
+0:53        'dm' (highp float)
+0:68  Sequence
+0:68    move second child to first child (2-element array of highp float)
+0:68      'okayA' (2-element array of highp float)
+0:68      3.000000
+0:68      4.000000
+0:?   Linker Objects
+0:?     'm43' (uniform highp 4X3 matrix of float)
+0:?     'm33' (uniform highp 3X3 matrix of float)
+0:?     'm44' (uniform highp 4X4 matrix of float)
+0:?     'v3' (in highp 3-component vector of float)
+0:?     'v2' (smooth out highp 2-component vector of float)
+0:?     'badorder' (in highp 4-component vector of float)
+0:?     'badorder2' (invariant smooth out highp 4-component vector of float)
+0:?     'badorder4' (centroid in highp 4-component vector of float)
+0:?     'badorder3' (flat out highp 4-component vector of float)
+0:?     'rep' (smooth flat out highp 4-component vector of float)
+0:?     'rep2' (centroid smooth sample out highp 4-component vector of float)
+0:?     'rep3' (in highp 4-component vector of float)
+0:?     's' (smooth out structure)
+0:?     'ubInst' (layout(shared ) uniform 1-element array of block)
+0:?     'gl_VertexID' (gl_VertexId highp int)
+0:?     'gl_InstanceID' (gl_InstanceId highp int)
+

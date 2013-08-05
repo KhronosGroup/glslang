@@ -55,8 +55,39 @@ shell.
 Note: Despite appearances, the use of a DLL is currently disabled; it
 simply makes a standalone executable from a statically linked library.
 
-Basic Operation
----------------
+Basic external programmatic interface
+-------------------------------------
+
+Another piece of software can programmatically translate shaders to an AST 
+using the C-style ShInitialize(), ShCompile(), et. al. interface.  The main() in 
+StandAlone/StandAlone.cpp shows an example way of using these.
+
+The Sh*() interface takes a "compiler" call-back object, which it calls after 
+building call back that is passed the AST and can then execute a backend on it.
+
+The following is a simplified resulting run-time call stack:
+
+    ShCompile(shader, compiler) -> compiler(AST) -> <back end>
+
+In practice, ShCompile() takes shader strings, default version, and
+warning/error and other options for controling compilation.
+
+Testing
+-------
+
+"Test" is an active test directory that contains test input and a
+subdirectory baseResults that contains the expected results of the
+tests.  Both the tests and baseResults are under source-code control.
+Executing the script ./runtests will generate current results in 
+the localResults directory and diff them against the baseResults.
+When you want to update the tracked test results, they need to be
+copied from localResults to baseResults
+
+There are some tests borrowed from LunarGLASS.  If LunarGLASS is
+missing, those tests just won't run.
+
+Basic Internal Operation
+------------------------
 
  -  Initial lexical analysis is done be the preprocessor in
     MachineIndependent/Preprocessor, and then refined by a GLSL scanner
