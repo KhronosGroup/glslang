@@ -91,25 +91,29 @@ Basic Internal Operation
 
  -  Initial lexical analysis is done be the preprocessor in
     MachineIndependent/Preprocessor, and then refined by a GLSL scanner
-	in MachineIndependent/Scan.cpp.  There is currently no use of flex.
+    in MachineIndependent/Scan.cpp.  There is currently no use of flex.
 
- -  Code is parsed using bison, with the aid of a symbol table and an AST 
-    intermediate representation.  The symbol table is not passed on to
+ -  Code is parsed using bison on MachineIndependent/glslang.y with the 
+    aid of a symbol table and an AST.  The symbol table is not passed on to
     the back-end; the intermediate representation stands on its own.
+    The tree is built by the grammar productions, many of which are 
+    offloaded into ParseHelper.cpp, and by Intermediate.cpp.
 
  -  The intermediate representation is very high-level, and represented
     as an in-memory tree.   This serves to lose no information from the
     original program, and to have efficient transfer of the result from
     parsing to the back-end.  In the AST, constants are propogated and 
-	folded, and a very small amount of dead code is eliminated.
+    folded, and a very small amount of dead code is eliminated.
 
-	To aid linking and reflection, the last top-level branch in the AST 
-	lists all global symbols.
+    To aid linking and reflection, the last top-level branch in the AST 
+    lists all global symbols.
 
  -  The primary algorithm of the back-end compiler is to traverse the 
     tree (high-level intermediate representation), and create an internal
     object code representation.  There is an example of how to do this
-	in MachineIndependent/intermOut.cpp.
+    in MachineIndependent/intermOut.cpp.
 
  -  Reduction of the tree to a linear byte-code style low-level intermediate
     representation is likely a good way to generate fully optimized code.
+
+ -  There is currently some dead linker-type code still lying around.
