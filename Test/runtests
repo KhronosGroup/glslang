@@ -7,5 +7,5 @@ while read t; do
     echo Running $t...
 	b=`basename $t`
     ./glslangValidator.exe -i $t > $TARGETDIR/$b.out
-    diff $BASEDIR/$b.out $TARGETDIR/$b.out
+    diff -b $BASEDIR/$b.out $TARGETDIR/$b.out
 done < testlist

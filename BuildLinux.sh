@@ -11,6 +11,4 @@ export LD_LIBRARY_PATH
 
 # run using test data
 cd Test
-../StandAlone/StandAlone -i sample.vert sample.frag
-
-
+../StandAlone/glslangValidator -i sample.vert sample.frag

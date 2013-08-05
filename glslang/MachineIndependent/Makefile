@@ -24,8 +24,7 @@ default: all
 
 all: $(SHAREDOBJECT)
 
-$(SHAREDOBJECT): gen_glslang_tab.o $(OBJECTS) \
-	$(LIBPREPROCESSOR) $(LIBCODEGEN) $(LIBOSDEPENDENT) $(LIBINITIALISATION)
+$(SHAREDOBJECT): gen_glslang_tab.o $(OBJECTS) $(LIBPREPROCESSOR) $(LIBCODEGEN) $(LIBOSDEPENDENT) $(LIBINITIALISATION)
 	$(CC) -fPIC -shared -o $@ -rdynamic -Wl,-whole-archive $(OBJECTS) $(LIBPREPROCESSOR) $(LIBCODEGEN) $(LIBOSDEPENDENT) $(LIBINITIALISATION) gen_glslang_tab.o -Wl,-no-whole-archive
 	cp $@ ../../Test
 	cp $@ ../../Install/Linux

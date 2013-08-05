@@ -496,7 +496,7 @@ TIntermTyped* TIntermConstantUnion::fold(TOperator op, const TType& returnType, 
 
         case EOpAbs:
             if (unionArray[i].getType() == EbtDouble)
-                newConstArray[i].setDConst(abs(unionArray[i].getDConst()));
+                newConstArray[i].setDConst(fabs(unionArray[i].getDConst()));
             else if (unionArray[i].getType() == EbtInt)
                 newConstArray[i].setIConst(abs(unionArray[i].getIConst()));
             else
