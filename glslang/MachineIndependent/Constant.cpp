@@ -35,9 +35,31 @@
 //
 
 #include "localintermediate.h"
-#include "math.h"
+#include <cmath>
 #include <cfloat>
 #include <cstdlib>
+
+namespace glslang {
+
+bool isNan(double x)
+{
+    // tough to find a platform independent library function, do it directly
+    int bitPatternL = *(int*)&x;
+    int bitPatternH = *((int*)&x + 1);
+    return (bitPatternH & 0x7ff80000) == 0x7ff80000 && 
+           ((bitPatternH & 0xFFFFF) != 0 || bitPatternL != 0);
+}
+
+bool isInf(double x)
+{
+    // tough to find a platform independent library function, do it directly
+    int bitPatternL = *(int*)&x;
+    int bitPatternH = *((int*)&x + 1);
+    return (bitPatternH & 0x7ff00000) == 0x7ff00000 && 
+           (bitPatternH & 0xFFFFF) == 0 && bitPatternL == 0;
+}
+
+};
 
 namespace {
 
@@ -175,10 +197,7 @@ TIntermTyped* TIntermConstantUnion::fold(TOperator op, TIntermTyped* constantNod
         for (int i = 0; i < objectSize; i++) {
             switch (getType().getBasicType()) {
             case EbtFloat:
-                if (rightUnionArray[i] == 0.0f) {
-                    newConstArray[i].setDConst(FLT_MAX);  // TODO: double support
-                } else
-                    newConstArray[i].setDConst(unionArray[i].getDConst() / rightUnionArray[i].getDConst());
+                newConstArray[i].setDConst(unionArray[i].getDConst() / rightUnionArray[i].getDConst());
             break;
 
             case EbtInt:
@@ -381,8 +400,8 @@ TIntermTyped* TIntermConstantUnion::fold(TOperator op, const TType& returnType, 
     case EOpAll:
     case EOpLength:
         newConstArray = new constUnion[1];
-        break;        
-    
+        break;
+
     default:
         newConstArray = new constUnion[objectSize];
     }
@@ -539,6 +558,17 @@ TIntermTyped* TIntermConstantUnion::fold(TOperator op, const TType& returnType, 
             break;
         }
 
+        case EOpIsNan:
+        {
+            newConstArray[i].setBConst(glslang::isNan(unionArray[i].getDConst()));
+            break;
+        }
+        case EOpIsInf:
+        {
+            newConstArray[i].setBConst(glslang::isInf(unionArray[i].getDConst()));
+            break;
+        }
+
         // TODO: Functionality: constant folding: the rest of the ops have to be fleshed out
 
         case EOpSinh:
@@ -548,13 +578,11 @@ TIntermTyped* TIntermConstantUnion::fold(TOperator op, const TType& returnType, 
         case EOpAcosh:
         case EOpAtanh:
 
-        case EOpIsNan:
-        case EOpIsInf:
-
         case EOpFloatBitsToInt:
         case EOpFloatBitsToUint:
         case EOpIntBitsToFloat:
         case EOpUintBitsToFloat:
+
         case EOpPackSnorm2x16:
         case EOpUnpackSnorm2x16:
         case EOpPackUnorm2x16:

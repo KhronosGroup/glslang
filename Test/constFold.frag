@@ -20,7 +20,9 @@ out vec3 out6;
 out vec4 out7;
 out vec4 out8;
 out vec4 out9;
-   
+out vec4 out10;
+out vec4 out11;
+
 void main()
 {
     vec4 dx = dFdx(inv);
@@ -44,4 +46,6 @@ void main()
     out7 = vec4(floor(4.2), ceil(-4.1), trunc(5.9), trunc(-5.9)); // 4, -4, 5, -5
     out8 = vec4(round(4.4), round(4.6), roundEven(4.5), roundEven(-5.5)); // 4, 5, 4, -6
     out9 = vec4(roundEven(7.5), roundEven(-4.5), fract(2.345), fract(-2.6)); // 8, -4, .345, 0.4
+    out10 = vec4(isinf(4.0/0.0), isinf(-3.0/0.0), isinf(0.0/0.0), isinf(-93048593405938405938405.0));  // true, true, false, false -> 1.0, 1.0, 0.0, 0.0
+    out11 = vec4(isnan(4.0/0.0), isnan(-3.0/0.0), isnan(0.0/0.0), isnan(-93048593405938405938405.0));  // false, false, true, false -> 0.0, 1.0, 0.0, 0.0
 }
