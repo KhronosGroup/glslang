@@ -195,7 +195,7 @@ public:
     void addParameter(TParameter& p)
     {
         parameters.push_back(p);
-        mangledName = mangledName + p.type->getMangledName();
+        p.type->appendMangledName(mangledName);
     }
 
     const TString& getMangledName() const { return mangledName; }

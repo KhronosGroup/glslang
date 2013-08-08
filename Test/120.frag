@@ -98,3 +98,9 @@ int foo(out float a)    // ERROR
     return 3.2;         // ERROR
     foo(a);             // ERROR
 }
+
+bool gen(vec3 v)
+{
+    if (abs(v[0]) < 1e-4 && abs(v[1]) < 1e-4)
+        return true;
+}

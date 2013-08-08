@@ -405,7 +405,7 @@ public:
     explicit TType(TBasicType t, TStorageQualifier q = EvqTemporary, int vs = 1, int mc = 0, int mr = 0) :
                             basicType(t), vectorSize(vs), matrixCols(mc), matrixRows(mr), arraySizes(0),
                             structure(0), structureSize(0), maxArraySize(0), arrayInformationType(0),
-                            fieldName(0), mangled(0), typeName(0)
+                            fieldName(0), typeName(0)
                             {
                                 sampler.clear();
                                 qualifier.clear();
@@ -414,7 +414,7 @@ public:
     TType(TBasicType t, TStorageQualifier q, TPrecisionQualifier p, int vs = 1, int mc = 0, int mr = 0) :
                             basicType(t), vectorSize(vs), matrixCols(mc), matrixRows(mr), arraySizes(0),
                             structure(0), structureSize(0), maxArraySize(0), arrayInformationType(0),
-                            fieldName(0), mangled(0), typeName(0)
+                            fieldName(0), typeName(0)
                             {
                                 sampler.clear();
                                 qualifier.clear();
@@ -424,7 +424,7 @@ public:
                             }
     explicit TType(const TPublicType &p) :
                             basicType(p.basicType), vectorSize(p.vectorSize), matrixCols(p.matrixCols), matrixRows(p.matrixRows), arraySizes(p.arraySizes),
-                            structure(0), structureSize(0), maxArraySize(0), arrayInformationType(0), fieldName(0), mangled(0), typeName(0)
+                            structure(0), structureSize(0), maxArraySize(0), arrayInformationType(0), fieldName(0), typeName(0)
                             {
                                 if (basicType == EbtSampler)
                                     sampler = p.sampler;
@@ -438,7 +438,7 @@ public:
                             }
     TType(TTypeList* userDef, const TString& n, TStorageQualifier blockQualifier = EvqGlobal) :
                             basicType(EbtStruct), vectorSize(1), matrixCols(0), matrixRows(0), arraySizes(0),
-                            structure(userDef), maxArraySize(0), arrayInformationType(0), fieldName(0), mangled(0)
+                            structure(userDef), maxArraySize(0), arrayInformationType(0), fieldName(0)
                             {
                                 sampler.clear();
                                 qualifier.clear();
@@ -497,10 +497,6 @@ public:
 		if (copyOf.typeName)
 			typeName = NewPoolTString(copyOf.typeName->c_str());
 		
-		mangled = 0;
-		if (copyOf.mangled)
-			mangled = NewPoolTString(copyOf.mangled->c_str());
-
 		structureSize = copyOf.structureSize;
 		maxArraySize = copyOf.maxArraySize;
 		assert(copyOf.arrayInformationType == 0);
@@ -706,15 +702,11 @@ public:
         return totalSize;
     }
 
-    TString& getMangledName()
+    // append this type's mangled name to the passed in 'name'
+    void appendMangledName(TString& name)
     {
-        if (!mangled) {
-			mangled = NewPoolTString("");
-            buildMangledName(*mangled);
-            *mangled += ';' ;
-        }
-
-        return *mangled;
+        buildMangledName(name);
+        name += ';' ;
     }
 
     bool sameElementType(const TType& right) const
@@ -758,7 +750,6 @@ protected:
     int maxArraySize;
     TType* arrayInformationType;
 	TString *fieldName;         // for structure field names
-    TString *mangled;
 	TString *typeName;          // for structure field type name
 };
 
