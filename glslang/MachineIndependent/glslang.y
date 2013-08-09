@@ -491,7 +491,7 @@ function_call
                 op = fnCandidate->getBuiltInOp();
                 if (builtIn && op != EOpNull) {
                     // A function call mapped to a built-in operation.
-                    $$ = parseContext.intermediate.addBuiltInFunctionCall(op, fnCandidate->getParamCount() == 1, $1.intermNode, fnCandidate->getReturnType());
+                    $$ = parseContext.intermediate.addBuiltInFunctionCall($1.loc, op, fnCandidate->getParamCount() == 1, $1.intermNode, fnCandidate->getReturnType());
                     if ($$ == 0)  {
                         parseContext.error($1.intermNode->getLoc(), " wrong operand type", "Internal Error",
                                            "built in unary operator function.  Type: %s",

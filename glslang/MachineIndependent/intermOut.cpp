@@ -260,6 +260,9 @@ bool OutputUnary(bool /* preVisit */, TIntermUnary* node, TIntermTraverser* it)
     case EOpAny:            out.debug << "any";                  break;
     case EOpAll:            out.debug << "all";                  break;
 
+    case EOpEmitStreamVertex:   out.debug << "EmitStreamVertex";   break;
+    case EOpEndStreamPrimitive: out.debug << "EndStreamPrimitive"; break;
+
     default: out.debug.message(EPrefixError, "Bad unary op");
     }
 
@@ -354,6 +357,17 @@ bool OutputAggregate(bool /* preVisit */, TIntermAggregate* node, TIntermTravers
     case EOpRefract:       out.debug << "refract";                 break;
     case EOpMul:           out.debug << "component-wise multiply"; break;
     case EOpOuterProduct:  out.debug << "outer product";           break;
+
+    case EOpEmitVertex:    out.debug << "EmitVertex";              break;
+    case EOpEndPrimitive:  out.debug << "EndPrimitive";            break;
+
+    case EOpBarrier:                    out.debug << "Barrier";                    break;
+    case EOpMemoryBarrier:              out.debug << "MemoryBarrier";              break;
+    case EOpMemoryBarrierAtomicCounter: out.debug << "MemoryBarrierAtomicCounter"; break;
+    case EOpMemoryBarrierBuffer:        out.debug << "MemoryBarrierBuffer";        break;
+    case EOpMemoryBarrierImage:         out.debug << "MemoryBarrierImage";         break;
+    case EOpMemoryBarrierShared:        out.debug << "MemoryBarrierShared";        break;
+    case EOpGroupMemoryBarrier:         out.debug << "GroupMemoryBarrier";         break;
 
     default: out.debug.message(EPrefixError, "Bad aggregation op");
     }

@@ -373,10 +373,12 @@ public:
     }
     explicit TSymbolTable(TSymbolTable& symTable)
     {
-        table.push_back(symTable.table[0]);
-        adoptedLevels = 1;
-        uniqueId = symTable.uniqueId;
-        noBuiltInRedeclarations = symTable.noBuiltInRedeclarations;
+        if (! symTable.isEmpty()) {
+            table.push_back(symTable.table[0]);
+            adoptedLevels = 1;
+            uniqueId = symTable.uniqueId;
+            noBuiltInRedeclarations = symTable.noBuiltInRedeclarations;
+        } // else should only be to handle error paths
     }
     ~TSymbolTable()
     {
@@ -390,6 +392,9 @@ public:
     // 'push' calls, so that built-in shared across all compiles are at level 0 
     // built-ins specific to a compile are at level 1 and the shader
     // globals are at level 2.
+    //
+    // TODO: compile-time memory: have an even earlier level for all built-ins
+    //       common to all stages.  Currently, each stage has copy.
     //
     bool isEmpty() { return table.size() == 0; }
     bool atBuiltInLevel() { return atSharedBuiltInLevel() || atDynamicBuiltInLevel(); }

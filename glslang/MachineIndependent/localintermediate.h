@@ -60,7 +60,7 @@ public:
     TIntermTyped* addAssign(TOperator op, TIntermTyped* left, TIntermTyped* right, TSourceLoc);
     TIntermTyped* addIndex(TOperator op, TIntermTyped* base, TIntermTyped* index, TSourceLoc);
     TIntermTyped* addUnaryMath(TOperator, TIntermNode* child, TSourceLoc);
-    TIntermTyped* addBuiltInFunctionCall(TOperator, bool unary, TIntermNode*, const TType& returnType);
+    TIntermTyped* addBuiltInFunctionCall(TSourceLoc line, TOperator, bool unary, TIntermNode*, const TType& returnType);
     bool canImplicitlyPromote(TBasicType from, TBasicType to);
     TIntermAggregate* growAggregate(TIntermNode* left, TIntermNode* right);
     TIntermAggregate* growAggregate(TIntermNode* left, TIntermNode* right, TSourceLoc);

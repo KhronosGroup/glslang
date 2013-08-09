@@ -251,6 +251,8 @@ static EShLanguage FindLanguage(const std::string& name)
         return EShLangGeometry;
     else if (suffix == "frag")
         return EShLangFragment;
+    else if (suffix == "comp")
+        return EShLangCompute;
 
     usage();
     return EShLangVertex;
@@ -306,7 +308,13 @@ bool CompileFile(const char *fileName, ShHandle compiler, int debugOptions, cons
 void usage()
 {
     printf("Usage: standalone [ options ] filename\n"
-           "Where: filename is a name ending in .frag or .vert\n\n"
+           "Where: filename is a name ending in\n"
+           "    .vert for a vertex shader\n"
+           "    .tesc for a tessellation control shader\n"
+           "    .tese for a tessellation evaluation shader\n"
+           "    .geom for a geometry shader\n"
+           "    .frag for a fragment shader\n"
+           "    .comp for a compute shader\n\n"
            "Compilation warnings and errors will be printed to stdout.\n"
            "To get other information, use one of the following options:\n"
            "-i: intermediate tree (glslang AST) is printed out\n"

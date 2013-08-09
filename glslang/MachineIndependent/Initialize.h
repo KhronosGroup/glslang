@@ -43,8 +43,6 @@
 #include "SymbolTable.h"
 #include "Versions.h"
 
-typedef TVector<TString> TBuiltInStrings;
-
 class TBuiltIns {
 public:
     POOL_ALLOCATOR_NEW_DELETE(GetThreadPoolAllocator())
@@ -52,7 +50,8 @@ public:
     virtual ~TBuiltIns();
     void initialize(int version, EProfile);
 	void initialize(const TBuiltInResource& resources, int version, EProfile, EShLanguage);
-    TBuiltInStrings* getBuiltInStrings() { return builtInStrings; }
+    const TString& getCommonString() const { return commonBuiltins; }
+    const TString& getStageString(EShLanguage language) const { return stageBuiltins[language]; }
 
 protected:
     void add2ndGenerationSamplingImaging(int version, EProfile profile);
@@ -60,7 +59,8 @@ protected:
     void addImageFunctions(TSampler, TString& typeName, int version, EProfile profile);
     void addSamplingFunctions(TSampler, TString& typeName, int version, EProfile profile);
 
-    TBuiltInStrings builtInStrings[EShLangCount];
+    TString commonBuiltins;
+    TString stageBuiltins[EShLangCount];
 
     // Helpers for making text
     const char* postfixes[5];

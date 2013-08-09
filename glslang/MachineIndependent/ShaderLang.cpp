@@ -89,7 +89,7 @@ TSymbolTable* SharedSymbolTables[VersionCount][EProfileCount][EShLangCount] = {}
 
 TPoolAllocator* PerProcessGPA = 0;
 
-bool InitializeSymbolTable(TBuiltInStrings* BuiltInStrings, int version, EProfile profile, EShLanguage language, TInfoSink& infoSink, 
+bool InitializeSymbolTable(const TBuiltIns& builtIns, int version, EProfile profile, EShLanguage language, TInfoSink& infoSink, 
                            const TBuiltInResource* resources, TSymbolTable* symbolTables)
 {
     TIntermediate intermediate(infoSink, version, profile);	
@@ -119,26 +119,25 @@ bool InitializeSymbolTable(TBuiltInStrings* BuiltInStrings, int version, EProfil
 
     symbolTable->push();
 
-    for (TBuiltInStrings::iterator i  = BuiltInStrings[parseContext.language].begin();
-                                   i != BuiltInStrings[parseContext.language].end();    ++i) {
-        const char* builtInShaders[1];
-        int builtInLengths[1];
+    const char* builtInShaders[2];
+    int builtInLengths[2];
+    builtInShaders[0] = builtIns.getCommonString().c_str();
+    builtInLengths[0] = builtIns.getCommonString().size();
+    builtInShaders[1] = builtIns.getStageString(language).c_str();
+    builtInLengths[1] = builtIns.getStageString(language).size();
 
-        builtInShaders[0] = (*i).c_str();
-        builtInLengths[0] = (int) (*i).size();
-        if (! parseContext.parseShaderStrings(ppContext, const_cast<char**>(builtInShaders), builtInLengths, 1) != 0) {
-            infoSink.info.message(EPrefixInternalError, "Unable to parse built-ins");
-            printf("Unable to parse built-ins\n");
+    if (! parseContext.parseShaderStrings(ppContext, const_cast<char**>(builtInShaders), builtInLengths, 2) != 0) {
+        infoSink.info.message(EPrefixInternalError, "Unable to parse built-ins");
+        printf("Unable to parse built-ins\n");
 
-            return false;
-        }
+        return false;
     }
 
-	if (resources) {
+	if (resources)
 		IdentifyBuiltIns(version, profile, parseContext.language, *symbolTable, *resources);
-	} else {
+    else
 		IdentifyBuiltIns(version, profile, parseContext.language, *symbolTable);
-	}
+
     return true;
 }
 
@@ -147,8 +146,16 @@ bool GenerateBuiltInSymbolTable(TInfoSink& infoSink, TSymbolTable* symbolTables,
     TBuiltIns builtIns;
     
 	builtIns.initialize(version, profile);
-	InitializeSymbolTable(builtIns.getBuiltInStrings(), version, profile, EShLangVertex, infoSink, 0, symbolTables);
-	InitializeSymbolTable(builtIns.getBuiltInStrings(), version, profile, EShLangFragment, infoSink, 0, symbolTables);
+    InitializeSymbolTable(builtIns, version, profile, EShLangVertex, infoSink, 0, symbolTables);
+    if (profile != EEsProfile && version >= 400) {
+        InitializeSymbolTable(builtIns, version, profile, EShLangTessControl, infoSink, 0, symbolTables);
+        InitializeSymbolTable(builtIns, version, profile, EShLangTessEvaluation, infoSink, 0, symbolTables);
+    }
+    if (profile != EEsProfile && version >= 150)
+        InitializeSymbolTable(builtIns, version, profile, EShLangGeometry, infoSink, 0, symbolTables);
+    InitializeSymbolTable(builtIns, version, profile, EShLangFragment, infoSink, 0, symbolTables);
+    if (profile != EEsProfile && version >= 430)
+        InitializeSymbolTable(builtIns, version, profile, EShLangCompute, infoSink, 0, symbolTables);
 
     return true;
 }
@@ -158,7 +165,7 @@ bool AddContextSpecificSymbols(const TBuiltInResource* resources, TInfoSink& inf
     TBuiltIns builtIns;
     
 	builtIns.initialize(*resources, version, profile, language);
-    InitializeSymbolTable(builtIns.getBuiltInStrings(), version, profile, language, infoSink, resources, symbolTables);
+    InitializeSymbolTable(builtIns, version, profile, language, infoSink, resources, symbolTables);
 
     return true;
 }
@@ -207,10 +214,12 @@ void SetupBuiltinSymbolTable(int version, EProfile profile)
     SetThreadPoolAllocator(*PerProcessGPA);
 
     // Copy the symbol table from the new pool to the process-global pool
-    SharedSymbolTables[versionIndex][profile][EShLangVertex] = new TSymbolTable;
-    SharedSymbolTables[versionIndex][profile][EShLangVertex]->copyTable(symTables[EShLangVertex]);
-    SharedSymbolTables[versionIndex][profile][EShLangFragment] = new TSymbolTable;
-    SharedSymbolTables[versionIndex][profile][EShLangFragment]->copyTable(symTables[EShLangFragment]);
+    for (int stage = 0; stage < EShLangCount; ++stage) {
+        if (! symTables[stage].isEmpty()) {
+            SharedSymbolTables[versionIndex][profile][stage] = new TSymbolTable;
+            SharedSymbolTables[versionIndex][profile][stage]->copyTable(symTables[stage]);
+        }    
+    }
 
     delete builtInPoolAllocator;
     SetThreadPoolAllocator(savedGPA);
@@ -416,9 +425,18 @@ int ShCompile(
 
     TIntermediate intermediate(compiler->infoSink, version, profile);
     SetupBuiltinSymbolTable(version, profile);
-    TSymbolTable symbolTable(*SharedSymbolTables[MapVersionToIndex(version)]
-                                                [profile]
-                                                [compiler->getLanguage()]); 
+    
+    TSymbolTable* cachedTable = SharedSymbolTables[MapVersionToIndex(version)]
+                                                  [profile]
+                                                  [compiler->getLanguage()];
+    TSymbolTable* errorTable = 0;
+    if (! cachedTable) {
+        errorTable = new TSymbolTable;
+        cachedTable = errorTable;
+    }
+    TSymbolTable symbolTable(*cachedTable);
+    if (errorTable)
+        delete errorTable;
     
     // Add built-in symbols that are potentially context dependent;
     // they get popped again further down.
@@ -436,12 +454,12 @@ int ShCompile(
     
     if (! goodProfile)
         parseContext.error(beginning, "incorrect", "#version", "");
-
-    parseContext.initializeExtensionBehavior();
     if (versionStatementMissing)
         parseContext.warn(beginning, "statement missing: use #version on first line of shader", "#version", "");
     else if (profile == EEsProfile && version >= 300 && versionNotFirst)
         parseContext.error(beginning, "statement must appear first in ESSL shader; before comments or newlines", "#version", "");
+
+    parseContext.initializeExtensionBehavior();
 
     //
     // Parse the application's shaders.  All the following symbol table

@@ -230,6 +230,28 @@ ERROR: node is still EOpNull!
 0:98        3.200000
 0:99      Function Call: foo(f1; (int)
 0:99        'a' (out float)
+0:102  Function Definition: gen(vf3; (bool)
+0:102    Function Parameters: 
+0:102      'v' (in 3-component vector of float)
+0:104    Sequence
+0:104      Test condition and select (void)
+0:104        Condition
+0:104        logical-and (bool)
+0:104          Compare Less Than (bool)
+0:104            Absolute value (float)
+0:104              direct index (in float)
+0:104                'v' (in 3-component vector of float)
+0:104                0 (const int)
+0:104            0.000100
+0:104          Compare Less Than (bool)
+0:104            Absolute value (float)
+0:104              direct index (in float)
+0:104                'v' (in 3-component vector of float)
+0:104                1 (const int)
+0:104            0.000100
+0:104        true case
+0:105        Branch: Return with expression
+0:105          true (const bool)
 0:?   Linker Objects
 0:?     'i' (smooth in 4-component vector of float)
 0:?     'o' (out 4-component vector of float)

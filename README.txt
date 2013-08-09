@@ -18,8 +18,13 @@ To use the standalone binary form, execute glslangValidator, and it will print
 a usage statement.  Basic operation is to give it a file containing a shader,
 and it will print out warnings/errors and optionally an AST.
 
-The applied stage-specific rules are based on the file extension.  Currently,
-either .frag or .vert, but soon to also include all stages.
+The applied stage-specific rules are based on the file extension:
+    .vert for a vertex shader
+    .tesc for a tessellation control shader
+    .tese for a tessellation evaluation shader
+    .geom for a geometry shader
+    .frag for a fragment shader
+    .comp for a compute shader
 
 Source: Build and run on linux
 -------------------------------

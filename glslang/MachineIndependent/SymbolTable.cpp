@@ -188,19 +188,20 @@ TSymbolTableLevel::~TSymbolTableLevel()
 
 //
 // Change all function entries in the table with the non-mangled name
-// to be related to the provided built-in operation.  This is a low
-// performance operation, and only intended for symbol tables that
-// live across a large number of compiles.
+// to be related to the provided built-in operation.
 //
 void TSymbolTableLevel::relateToOperator(const char* name, TOperator op)
 {
-    tLevel::iterator it;
-    for (it = level.begin(); it != level.end(); ++it) {
-        TFunction* function = (*it).second->getAsFunction();
-        if (function) {
-            if (function->getName() == name)
-                function->relateToOperator(op);
-        }
+    tLevel::const_iterator candidate = level.lower_bound(name);
+    while (candidate != level.end()) {
+        const TString& candidateName = (*candidate).first;
+        TString::size_type parenAt = candidateName.find_first_of('(');
+        if (parenAt != candidateName.npos && candidateName.substr(0, parenAt) == name) {
+            TFunction* function = (*candidate).second->getAsFunction();
+            function->relateToOperator(op);
+        } else
+            break;
+        ++candidate;
     }
 }
 

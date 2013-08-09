@@ -75,13 +75,6 @@ void TBuiltIns::initialize(int version, EProfile profile)
     //
     // Initialize all the built-in strings for parsing.
     //
-    TString BuiltInFunctions;
-    TString BuiltInFunctionsVertex;
-    TString BuiltInFunctionsFragment;
-    TString StandardVertexVaryings;
-    TString StandardFragmentVaryings;
-    TString StandardVertexAttributes;
-    TString StandardUniforms;
 
     {
         //============================================================================
@@ -90,7 +83,7 @@ void TBuiltIns::initialize(int version, EProfile profile)
         //
         //============================================================================
 
-        TString& s = BuiltInFunctions;
+        TString& s = commonBuiltins;
 
         //
         // Angle and Trigonometric Functions.
@@ -655,7 +648,7 @@ void TBuiltIns::initialize(int version, EProfile profile)
         //
         //============================================================================
 
-        TString& s = BuiltInFunctionsVertex;
+        TString& s = stageBuiltins[EShLangVertex];
 
         //
         // Geometric Functions.
@@ -685,6 +678,45 @@ void TBuiltIns::initialize(int version, EProfile profile)
         }
 		s.append(TString("\n"));
     }
+    if (profile != EEsProfile && version >= 150) {
+        //============================================================================
+        //
+        // Prototypes for built-in functions seen by geometry shaders only.
+        //
+        //============================================================================
+
+        TString& s = stageBuiltins[EShLangGeometry];
+
+        if (version >= 400) {
+            s.append(TString("void EmitStreamVertex(int);"));
+            s.append(TString("void EndStreamPrimitive(int);"));
+        }
+        s.append(TString("void EmitVertex();"));
+        s.append(TString("void EndPrimitive();"));
+		s.append(TString("\n"));
+    }
+    if (profile != EEsProfile) {
+        //============================================================================
+        //
+        // Prototypes for all control functions.
+        //
+        //============================================================================
+
+        if (version >= 400)
+            stageBuiltins[EShLangTessControl].append("void barrier();");
+        if (version >= 430)
+            stageBuiltins[EShLangCompute].append("void barrier();");
+
+        if (version >= 420)
+            commonBuiltins.append("void memoryBarrier();");
+        if (version >= 430) {
+            commonBuiltins.append("void memoryBarrierAtomicCounter();");
+            commonBuiltins.append("void memoryBarrierBuffer();");
+            commonBuiltins.append("void memoryBarrierImage();");
+            stageBuiltins[EShLangCompute].append("void memoryBarrierShared();");
+            stageBuiltins[EShLangCompute].append("void groupMemoryBarrier();");
+        }
+    }
     {
         //============================================================================
         //
@@ -692,7 +724,7 @@ void TBuiltIns::initialize(int version, EProfile profile)
         //
         //============================================================================
 
-        TString& s = BuiltInFunctionsFragment;
+        TString& s = stageBuiltins[EShLangFragment];
 
         //
         // Original-style texture Functions with bias.
@@ -739,7 +771,7 @@ void TBuiltIns::initialize(int version, EProfile profile)
         //
         //============================================================================
 
-        TString& s = StandardUniforms;
+        TString& s = commonBuiltins;
 
         //
         // Depth range in window coordinates, p. 33
@@ -884,7 +916,7 @@ void TBuiltIns::initialize(int version, EProfile profile)
     //============================================================================
 
     if (profile != EEsProfile) {
-        TString& s = StandardVertexAttributes;
+        TString& s = stageBuiltins[EShLangVertex];
 
         if (version < 130) {
             s.append(TString("attribute vec4  gl_Color;"));
@@ -925,7 +957,7 @@ void TBuiltIns::initialize(int version, EProfile profile)
     //============================================================================
 
     if (profile != EEsProfile) {
-        TString& s = StandardVertexVaryings;
+        TString& s = stageBuiltins[EShLangVertex];
 
         if (version < 130) {
             s.append(TString("varying vec4  gl_FrontColor;"));
@@ -953,7 +985,7 @@ void TBuiltIns::initialize(int version, EProfile profile)
         //============================================================================
 
         if (profile != EEsProfile) {
-            TString& s = StandardFragmentVaryings;
+            TString& s = stageBuiltins[EShLangFragment];
             if (version < 130) {
                 s.append(TString("varying vec4  gl_Color;"));
                 s.append(TString("varying vec4  gl_SecondaryColor;"));
@@ -970,29 +1002,8 @@ void TBuiltIns::initialize(int version, EProfile profile)
         }
     }
 
-    builtInStrings[EShLangFragment].push_back(BuiltInFunctions);
-    builtInStrings[EShLangFragment].push_back(BuiltInFunctionsFragment);
-    builtInStrings[EShLangFragment].push_back(StandardUniforms);
-    builtInStrings[EShLangFragment].push_back(StandardFragmentVaryings);
-
-    builtInStrings[EShLangVertex].push_back(BuiltInFunctions);
-    builtInStrings[EShLangVertex].push_back(BuiltInFunctionsVertex);
-    builtInStrings[EShLangVertex].push_back(StandardVertexVaryings);
-    builtInStrings[EShLangVertex].push_back(StandardVertexAttributes);
-    builtInStrings[EShLangVertex].push_back(StandardUniforms);
-
     if (version >= 130)
         add2ndGenerationSamplingImaging(version, profile);
-
-#ifdef TEST_MODE
-    printf("VERTEX SYMBOLS \n");
-    for (unsigned int i = 0; i < builtInStrings[EShLangVertex].size(); ++i)
-        printf("%s", builtInStrings[EShLangVertex][i].c_str());
-    
-    printf("FRAGMENT SYMBOLS \n");
-    for (unsigned int i = 0; i < builtInStrings[EShLangFragment].size(); ++i)
-        printf("%s", builtInStrings[EShLangFragment][i].c_str());
-#endif
 }
 
 void TBuiltIns::add2ndGenerationSamplingImaging(int version, EProfile profile)
@@ -1074,7 +1085,7 @@ void TBuiltIns::addQueryFunctions(TSampler sampler, TString& typeName, int versi
     if (version < 430 && sampler.image)
         return;
 
-    TString s;
+    TString& s = commonBuiltins;
     if (profile == EEsProfile)
         s.append("highp ");
     int dims = dimMap[sampler.dim] + (sampler.arrayed ? 1 : 0) - (sampler.dim == EsdCube ? 1 : 0);
@@ -1093,8 +1104,6 @@ void TBuiltIns::addQueryFunctions(TSampler sampler, TString& typeName, int versi
         s.append(",int);\n");
     else
         s.append(");\n");
-    builtInStrings[EShLangFragment].push_back(s);
-    builtInStrings[EShLangVertex].push_back(s);
 
     // TODO: 4.2 Functionality: imaging functions
 }
@@ -1268,9 +1277,12 @@ void TBuiltIns::addSamplingFunctions(TSampler sampler, TString& typeName, int ve
 
                                 if (! bias) {
                                     functions[EShLangVertex].append(s);
-                                    // all stages other than fragment get this here too
+                                    functions[EShLangGeometry].append(s);
+                                    functions[EShLangTessControl].append(s);
+                                    functions[EShLangTessEvaluation].append(s);
+                                    functions[EShLangCompute].append(s);
                                 }
-                                functions[EShLangFragment].append(s);
+                                commonBuiltins.append(s);
                             }
                         }
                     }
@@ -1278,9 +1290,6 @@ void TBuiltIns::addSamplingFunctions(TSampler sampler, TString& typeName, int ve
             }
         }
     }
-
-    builtInStrings[EShLangVertex].push_back(functions[EShLangVertex]);
-    builtInStrings[EShLangFragment].push_back(functions[EShLangFragment]);
 }
 
 void TBuiltIns::initialize(const TBuiltInResource &resources, int version, EProfile profile, EShLanguage language)
@@ -1288,8 +1297,6 @@ void TBuiltIns::initialize(const TBuiltInResource &resources, int version, EProf
     //
     // Initialize the context-dependent (resource-dependent) built-in strings for parsing.
     //
-    TString StandardUniforms;
-
     {
         //============================================================================
         //
@@ -1297,7 +1304,7 @@ void TBuiltIns::initialize(const TBuiltInResource &resources, int version, EProf
         //
         //============================================================================
 
-        TString& s = StandardUniforms;
+        TString& s = commonBuiltins;
 		const int maxSize = 80;
         char builtInConstant[maxSize];
 
@@ -1435,9 +1442,6 @@ void TBuiltIns::initialize(const TBuiltInResource &resources, int version, EProf
 
         s.append(TString("\n"));
     }
-
-    builtInStrings[EShLangFragment].push_back(StandardUniforms);
-    builtInStrings[EShLangVertex].push_back(StandardUniforms);
 }
 
 void IdentifyBuiltIns(int version, EProfile profile, EShLanguage language, TSymbolTable& symbolTable)
@@ -1448,6 +1452,30 @@ void IdentifyBuiltIns(int version, EProfile profile, EShLanguage language, TSymb
     // the built-in text strings.
     //
     switch(language) {
+    case EShLangVertex:
+        pq = profile == EEsProfile ? EpqHigh : EpqNone;
+        symbolTable.insert(*new TVariable(NewPoolTString("gl_Position"),    TType(EbtFloat, EvqPosition, pq, 4)));
+
+        pq = profile == EEsProfile ? (version > 100 ? EpqHigh : EpqMedium) : EpqNone;
+        symbolTable.insert(*new TVariable(NewPoolTString("gl_PointSize"),   TType(EbtFloat, EvqPointSize, pq, 1)));
+
+        if (profile != EEsProfile)
+            symbolTable.insert(*new TVariable(NewPoolTString("gl_ClipVertex"),  TType(EbtFloat, EvqClipVertex, 4)));
+
+        if (version >= 130) {
+            pq = profile == EEsProfile ? EpqHigh : EpqNone;
+            symbolTable.insert(*new TVariable(NewPoolTString("gl_VertexID"),    TType(EbtInt, EvqVertexId, pq, 1)));
+            if (version >= 140)
+                symbolTable.insert(*new TVariable(NewPoolTString("gl_InstanceID"),  TType(EbtInt, EvqInstanceId, pq, 1)));
+        }
+        break;
+
+    case EShLangTessControl:
+    case EShLangTessEvaluation:
+    case EShLangGeometry:
+        // TODO: desktop functionality: support new stages
+        break;
+
     case EShLangFragment:
         symbolTable.insert(*new TVariable(NewPoolTString("gl_FrontFacing"), TType(EbtBool,  EvqFace, 1)));
 
@@ -1473,28 +1501,9 @@ void IdentifyBuiltIns(int version, EProfile profile, EShLanguage language, TSymb
         }
         break;
 
-    case EShLangVertex:
-        pq = profile == EEsProfile ? EpqHigh : EpqNone;
-        symbolTable.insert(*new TVariable(NewPoolTString("gl_Position"),    TType(EbtFloat, EvqPosition, pq, 4)));
-
-        pq = profile == EEsProfile ? (version > 100 ? EpqHigh : EpqMedium) : EpqNone;
-        symbolTable.insert(*new TVariable(NewPoolTString("gl_PointSize"),   TType(EbtFloat, EvqPointSize, pq, 1)));
-
-        if (profile != EEsProfile)
-            symbolTable.insert(*new TVariable(NewPoolTString("gl_ClipVertex"),  TType(EbtFloat, EvqClipVertex, 4)));
-
-        if (version >= 130) {
-            pq = profile == EEsProfile ? EpqHigh : EpqNone;
-            symbolTable.insert(*new TVariable(NewPoolTString("gl_VertexID"),    TType(EbtInt, EvqVertexId, pq, 1)));
-            if (version >= 140)
-                symbolTable.insert(*new TVariable(NewPoolTString("gl_InstanceID"),  TType(EbtInt, EvqInstanceId, pq, 1)));
-        }
-        break;
-
-    case EShLangTessControl:
-    case EShLangTessEvaluation:
-    case EShLangGeometry:
+    case EShLangCompute:
         // TODO: desktop functionality: support new stages
+        break;
     
     default:
         assert(false && "Language not supported");
@@ -1593,19 +1602,40 @@ void IdentifyBuiltIns(int version, EProfile profile, EShLanguage language, TSymb
     symbolTable.relateToOperator("any",          EOpAny);
     symbolTable.relateToOperator("all",          EOpAll);
 
-    switch(language) {
+    symbolTable.relateToOperator("barrier",                    EOpBarrier);
+    symbolTable.relateToOperator("memoryBarrier",              EOpMemoryBarrier);
+    symbolTable.relateToOperator("memoryBarrierAtomicCounter", EOpMemoryBarrierAtomicCounter);
+    symbolTable.relateToOperator("memoryBarrierBuffer",        EOpMemoryBarrierBuffer);
+    symbolTable.relateToOperator("memoryBarrierImage",         EOpMemoryBarrierImage);
 
+    switch(language) {
     case EShLangVertex:
+        break;
+
+    case EShLangTessControl:
+    case EShLangTessEvaluation:
+        break;
+
+    case EShLangGeometry:
+        symbolTable.relateToOperator("EmitStreamVertex",   EOpEmitStreamVertex);
+        symbolTable.relateToOperator("EndStreamPrimitive", EOpEndStreamPrimitive);
+        symbolTable.relateToOperator("EmitVertex",         EOpEmitVertex);
+        symbolTable.relateToOperator("EndPrimitive",       EOpEndPrimitive);
         break;
 
     case EShLangFragment:
         symbolTable.relateToOperator("dFdx",         EOpDPdx);
         symbolTable.relateToOperator("dFdy",         EOpDPdy);
         symbolTable.relateToOperator("fwidth",       EOpFwidth);
-
         break;
 
-	default: assert(false && "Language not supported");
+    case EShLangCompute:
+        symbolTable.relateToOperator("memoryBarrierShared", EOpMemoryBarrierShared);
+        symbolTable.relateToOperator("groupMemoryBarrier",  EOpGroupMemoryBarrier);
+        break;
+
+	default: 
+        assert(false && "Language not supported");
     }
 }
 
@@ -1628,6 +1658,7 @@ void IdentifyBuiltIns(int version, EProfile profile, EShLanguage language, TSymb
         }
         break;
 
-	default: break;
+	default: 
+        break;
     }
 }

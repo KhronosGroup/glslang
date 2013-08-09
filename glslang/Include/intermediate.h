@@ -213,6 +213,19 @@ enum TOperator {
     EOpMatrixInverse,
     EOpTranspose,
 
+    EOpEmitVertex,           // geometry only
+    EOpEndPrimitive,         // geometry only
+    EOpEmitStreamVertex,     // geometry only
+    EOpEndStreamPrimitive,   // geometry only
+
+    EOpBarrier,
+    EOpMemoryBarrier,
+    EOpMemoryBarrierAtomicCounter,
+    EOpMemoryBarrierBuffer,
+    EOpMemoryBarrierImage,
+    EOpMemoryBarrierShared,  // compute only
+    EOpGroupMemoryBarrier,   // compute only
+
     EOpAny,
     EOpAll,
 

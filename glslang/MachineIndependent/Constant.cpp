@@ -402,6 +402,11 @@ TIntermTyped* TIntermConstantUnion::fold(TOperator op, const TType& returnType, 
         newConstArray = new constUnion[1];
         break;
 
+    case EOpEmitStreamVertex:
+    case EOpEndStreamPrimitive:
+        // These don't actually fold
+        return 0;
+
     default:
         newConstArray = new constUnion[objectSize];
     }

@@ -81,7 +81,7 @@ TParseContext::TParseContext(TSymbolTable& symt, TIntermediate& interm, bool pb,
             defaultPrecision[EbtSampler] = EpqLow;
             break;
         default:
-            infoSink.info.message(EPrefixError, "unexpected language");
+            infoSink.info.message(EPrefixError, "unexpected es-profile stage");
         }
     }
 
@@ -1965,13 +1965,11 @@ void TParseContext::updateTypedDefaults(TSourceLoc loc, TQualifier qualifier, co
         if (qualifier.layoutPacking != ElpNone)
             error(loc, "cannot specify packing on a variable declaration", id->c_str(), "");
     } else if (qualifier.storage == EvqVaryingIn) {
-        if (qualifier.hasLayout() && language != EShLangVertex) {
+        if (qualifier.hasLayout() && language != EShLangVertex)
             error(loc, "can only use location layout qualifier on a vertex input or fragment output", id->c_str(), "");
-        }
     } else if (qualifier.storage == EvqVaryingOut) {
-        if (qualifier.hasLayout() && language != EShLangFragment) {
+        if (qualifier.hasLayout() && language != EShLangFragment)
             error(loc, "can only use location layout qualifier on a vertex input or fragment output", id->c_str(), "");
-        }
     } else {
         if (qualifier.layoutMatrix != ElmNone ||
             qualifier.layoutPacking != ElpNone)

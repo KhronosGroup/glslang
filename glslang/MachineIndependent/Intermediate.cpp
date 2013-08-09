@@ -264,7 +264,7 @@ TIntermTyped* TIntermediate::addUnaryMath(TOperator op, TIntermNode* childNode, 
     return node;
 }
 
-TIntermTyped* TIntermediate::addBuiltInFunctionCall(TOperator op, bool unary, TIntermNode* childNode, const TType& returnType)
+TIntermTyped* TIntermediate::addBuiltInFunctionCall(TSourceLoc loc, TOperator op, bool unary, TIntermNode* childNode, const TType& returnType)
 {
     if (unary) {
         //
@@ -279,9 +279,11 @@ TIntermTyped* TIntermediate::addBuiltInFunctionCall(TOperator op, bool unary, TI
             return 0;
         }
 
-        if (child->getAsConstantUnion())
-
-            return child->getAsConstantUnion()->fold(op, returnType, infoSink);
+        if (child->getAsConstantUnion()) {
+            TIntermTyped* folded = child->getAsConstantUnion()->fold(op, returnType, infoSink);
+            if (folded)
+                return folded;
+        }
 
         TIntermUnary* node = new TIntermUnary(op);
         node->setLoc(child->getLoc());
@@ -299,7 +301,7 @@ TIntermTyped* TIntermediate::addBuiltInFunctionCall(TOperator op, bool unary, TI
         return node;
     } else {
         // setAggregateOperater() calls fold() for constant folding
-        TIntermTyped* node = setAggregateOperator(childNode, op, returnType, childNode->getLoc());
+        TIntermTyped* node = setAggregateOperator(childNode, op, returnType, loc);
         
         TPrecisionQualifier correctPrecision = returnType.getQualifier().precision;
         if (correctPrecision == EpqNone && profile == EEsProfile) {
