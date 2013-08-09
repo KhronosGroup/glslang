@@ -246,7 +246,7 @@ protected:
 class TSymbolTableLevel {
 public:
     POOL_ALLOCATOR_NEW_DELETE(GetThreadPoolAllocator())
-    TSymbolTableLevel() : defaultPrecision (0), anonId(0) { }
+    TSymbolTableLevel() : defaultPrecision(0), anonId(0) { }
 	~TSymbolTableLevel();
 
     bool insert(TSymbol& symbol)
@@ -365,20 +365,11 @@ protected:
 
 class TSymbolTable {
 public:
-    TSymbolTable() : uniqueId(0), noBuiltInRedeclarations(false), adoptedLevels(1)  // TODO: memory: can we make adoptedLevels be 0 for symbol tables we don't keep?
+    TSymbolTable() : uniqueId(0), noBuiltInRedeclarations(false), adoptedLevels(0)
     {
         //
         // This symbol table cannot be used until push() is called.
         //
-    }
-    explicit TSymbolTable(TSymbolTable& symTable)
-    {
-        if (! symTable.isEmpty()) {
-            table.push_back(symTable.table[0]);
-            adoptedLevels = 1;
-            uniqueId = symTable.uniqueId;
-            noBuiltInRedeclarations = symTable.noBuiltInRedeclarations;
-        } // else should only be to handle error paths
     }
     ~TSymbolTable()
     {
@@ -388,18 +379,28 @@ public:
     }
 
     //
-    // When the symbol table is initialized with the built-ins, there should
-    // 'push' calls, so that built-in shared across all compiles are at level 0 
-    // built-ins specific to a compile are at level 1 and the shader
-    // globals are at level 2.
+    // While level adopting is generic, the methods below enact a the following
+    // convention for levels:
+    //   0: common built-ins shared across all stages, all compiles, only one copy for all symbol tables
+    //   1: per-stage built-ins, shared across all compiles, but a different copy per stage
+    //   2: built-ins specific to a compile, like resources that are context-dependent
+    //   3: user-shader globals
     //
-    // TODO: compile-time memory: have an even earlier level for all built-ins
-    //       common to all stages.  Currently, each stage has copy.
-    //
+    void adoptLevels(TSymbolTable& symTable)
+    {
+        for (unsigned int level = 0; level < symTable.table.size(); ++level) {
+            table.push_back(symTable.table[level]);
+            ++adoptedLevels;
+        }
+        uniqueId = symTable.uniqueId;
+        noBuiltInRedeclarations = symTable.noBuiltInRedeclarations;
+    }
     bool isEmpty() { return table.size() == 0; }
     bool atBuiltInLevel() { return atSharedBuiltInLevel() || atDynamicBuiltInLevel(); }
-    bool atSharedBuiltInLevel() { return table.size() == 1; }	
-    bool atGlobalLevel() { return table.size() <= 3; }
+    bool atSharedBuiltInLevel() { return table.size() <= 2; }
+    bool atDynamicBuiltInLevel() { return table.size() == 3; }
+    bool atGlobalLevel() { return table.size() <= 4; }
+
     void setNoBuiltInRedeclarations() { noBuiltInRedeclarations = true; }
     
     void push()
@@ -450,8 +451,16 @@ public:
         return symbol;
     }
 
-    TSymbolTableLevel* getGlobalLevel() { assert(table.size() >= 3); return table[2]; }
-    void relateToOperator(const char* name, TOperator op) { table[0]->relateToOperator(name, op); }
+    void relateToOperator(const char* name, TOperator op)
+    {
+        for (unsigned int level = 0; level < table.size(); ++level) {
+            if (atSharedBuiltInLevel())
+                table[level]->relateToOperator(name, op);
+            else
+                break;
+        }
+    }
+
     int getMaxSymbolId() { return uniqueId; }
     void dump(TInfoSink &infoSink) const;
 	void copyTable(const TSymbolTable& copyOf);
@@ -459,10 +468,10 @@ public:
     void setPreviousDefaultPrecisions(TPrecisionQualifier *p) { table[currentLevel()]->setPreviousDefaultPrecisions(p); }
 
 protected:
+    TSymbolTable(TSymbolTable&);
     TSymbolTable& operator=(TSymbolTableLevel&);
 
     int currentLevel() const { return static_cast<int>(table.size()) - 1; }
-    bool atDynamicBuiltInLevel() { return table.size() == 2; }
 
     std::vector<TSymbolTableLevel*> table;
     int uniqueId;     // for unique identification in code generation

@@ -1098,7 +1098,7 @@ declaration
     | PRECISION precision_qualifier type_specifier SEMICOLON {
         parseContext.profileRequires($1.loc, ENoProfile, 130, 0, "precision statement");
 
-        // lazy setting of the previous scope's defaults, only takes on first one in a particular scope
+        // lazy setting of the previous scope's defaults, has effect only the first time it is called in a particular scope
         parseContext.symbolTable.setPreviousDefaultPrecisions(&parseContext.defaultPrecision[0]);
 
 		parseContext.setDefaultPrecision($1.loc, $3, $2.qualifier.precision);
