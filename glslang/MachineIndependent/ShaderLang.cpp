@@ -109,8 +109,6 @@ bool InitializeSymbolTable(const TString& builtIns, int version, EProfile profil
     parseContext.scanContext = &scanContext;
     parseContext.ppContext = &ppContext;
     
-    assert(symbolTable.isEmpty() || symbolTable.atSharedBuiltInLevel());
-       
     //
     // Parse the built-ins.  This should only happen once per
     // language symbol table when no 'resources' are passed in.
@@ -140,29 +138,29 @@ bool InitializeSymbolTable(const TString& builtIns, int version, EProfile profil
 //
 // To call for per-stage initialization, with the common table already complete.
 //
-void InitializeSymbolTable(TBuiltIns& builtIns, int version, EProfile profile, EShLanguage language, TInfoSink& infoSink, TSymbolTable* commonTable, TSymbolTable* symbolTables)
+void InitializeSymbolTable(TBuiltIns& builtIns, int version, EProfile profile, EShLanguage language, TInfoSink& infoSink, TSymbolTable** commonTable, TSymbolTable** symbolTables)
 {
     int commonIndex = EPcGeneral;
     if (profile == EEsProfile && language == EShLangFragment)
         commonIndex = EPcFragment;
 
-    symbolTables[language].adoptLevels(commonTable[commonIndex]);
-    InitializeSymbolTable(builtIns.getStageString(language), version, profile, language, infoSink, symbolTables[language]);
-    IdentifyBuiltIns(version, profile, language, symbolTables[language]);
+    (*symbolTables[language]).adoptLevels(*commonTable[commonIndex]);
+    InitializeSymbolTable(builtIns.getStageString(language), version, profile, language, infoSink, *symbolTables[language]);
+    IdentifyBuiltIns(version, profile, language, *symbolTables[language]);
     if (profile == EEsProfile)
-        symbolTables[language].setNoBuiltInRedeclarations();
+        (*symbolTables[language]).setNoBuiltInRedeclarations();
 }
 
-bool GenerateBuiltInSymbolTable(TInfoSink& infoSink, TSymbolTable* commonTable,  TSymbolTable* symbolTables, int version, EProfile profile)
+bool GenerateBuiltInSymbolTable(TInfoSink& infoSink, TSymbolTable** commonTable,  TSymbolTable** symbolTables, int version, EProfile profile)
 {
     TBuiltIns builtIns;
     
 	builtIns.initialize(version, profile);
 
     // do the common table
-    InitializeSymbolTable(builtIns.getCommonString(), version, profile, EShLangVertex, infoSink, commonTable[EPcGeneral]);
+    InitializeSymbolTable(builtIns.getCommonString(), version, profile, EShLangVertex, infoSink, *commonTable[EPcGeneral]);
     if (profile == EEsProfile)
-        InitializeSymbolTable(builtIns.getCommonString(), version, profile, EShLangFragment, infoSink, commonTable[EPcFragment]);
+        InitializeSymbolTable(builtIns.getCommonString(), version, profile, EShLangFragment, infoSink, *commonTable[EPcFragment]);
 
     // do the per-stage tables
     InitializeSymbolTable(builtIns, version, profile, EShLangVertex, infoSink, commonTable, symbolTables);
@@ -222,9 +220,15 @@ void SetupBuiltinSymbolTable(int version, EProfile profile)
     TPoolAllocator* builtInPoolAllocator = new TPoolAllocator();
     SetThreadPoolAllocator(*builtInPoolAllocator);
 
+    // Dynamically allocate the symbol tables so we can control when they are deallocated WRT the pool.
+    TSymbolTable* commonTable[EPcCount];
+    TSymbolTable* stageTables[EShLangCount];
+    for (int precClass = 0; precClass < EPcCount; ++precClass)
+        commonTable[precClass] = new TSymbolTable;
+    for (int stage = 0; stage < EShLangCount; ++stage)
+        stageTables[stage] = new TSymbolTable;
+
     // Generate the local symbol tables using the new pool
-    TSymbolTable commonTable[2];
-    TSymbolTable stageTables[EShLangCount];
     GenerateBuiltInSymbolTable(infoSink, commonTable, stageTables, version, profile);
 
     // Switch to the process-global pool
@@ -232,23 +236,23 @@ void SetupBuiltinSymbolTable(int version, EProfile profile)
 
     // Copy the local symbol tables from the new pool to the global tables using the process-global pool
     for (int precClass = 0; precClass < EPcCount; ++precClass) {
-        if (! commonTable[precClass].isEmpty()) {
+        if (! commonTable[precClass]->isEmpty()) {
             CommonSymbolTable[versionIndex][profile][precClass] = new TSymbolTable;
-            CommonSymbolTable[versionIndex][profile][precClass]->copyTable(commonTable[precClass]);
+            CommonSymbolTable[versionIndex][profile][precClass]->copyTable(*commonTable[precClass]);
         }
     }
     for (int stage = 0; stage < EShLangCount; ++stage) {
-        if (! stageTables[stage].isEmpty()) {
+        if (! stageTables[stage]->isEmpty()) {
             SharedSymbolTables[versionIndex][profile][stage] = new TSymbolTable;
-            SharedSymbolTables[versionIndex][profile][stage]->copyTable(stageTables[stage]);
+            SharedSymbolTables[versionIndex][profile][stage]->copyTable(*stageTables[stage]);
         }    
     }
 
-    // Explicitly clean up the local tables before deleting the pool they used and before releasing the lock.
+    // Clean up the local tables before deleting the pool they used.
     for (int precClass = 0; precClass < EPcCount; ++precClass)
-        commonTable[precClass].~TSymbolTable();
+        delete commonTable[precClass];
     for (int stage = 0; stage < EShLangCount; ++stage)
-        stageTables[stage].~TSymbolTable();
+        delete stageTables[stage];
 
     delete builtInPoolAllocator;
     SetThreadPoolAllocator(savedGPA);
@@ -458,7 +462,10 @@ int ShCompile(
     TSymbolTable* cachedTable = SharedSymbolTables[MapVersionToIndex(version)]
                                                   [profile]
                                                   [compiler->getLanguage()];
-    TSymbolTable symbolTable;
+    
+    // Dynamically allocate the symbol table so we can control when it is deallocated WRT the pool.
+    TSymbolTable* symbolTableMemory = new TSymbolTable;
+    TSymbolTable& symbolTable = *symbolTableMemory;
     if (cachedTable)
         symbolTable.adoptLevels(*cachedTable);
     
@@ -531,12 +538,8 @@ int ShCompile(
 
     intermediate.remove(parseContext.treeRoot);
 
-    //
-    // Ensure symbol table is returned to the built-in level,
-    // throwing away all but the built-ins.
-    //
-    while (! symbolTable.atSharedBuiltInLevel())
-        symbolTable.pop(0);
+    // Clean up the symbol table before deallocating the pool memory it used.
+    delete symbolTableMemory;
 
     //
     // Throw away all the temporary memory used by the compilation process.

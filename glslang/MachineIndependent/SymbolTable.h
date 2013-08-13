@@ -373,9 +373,21 @@ public:
     }
     ~TSymbolTable()
     {
+        // this can be called explicitly; safest to code it so it can be called multiple times
+
         // don't deallocate levels passed in from elsewhere
         while (table.size() > adoptedLevels)
             pop(0);
+    }
+
+    void adoptLevels(TSymbolTable& symTable)
+    {
+        for (unsigned int level = 0; level < symTable.table.size(); ++level) {
+            table.push_back(symTable.table[level]);
+            ++adoptedLevels;
+        }
+        uniqueId = symTable.uniqueId;
+        noBuiltInRedeclarations = symTable.noBuiltInRedeclarations;
     }
 
     //
@@ -386,20 +398,12 @@ public:
     //   2: built-ins specific to a compile, like resources that are context-dependent
     //   3: user-shader globals
     //
-    void adoptLevels(TSymbolTable& symTable)
-    {
-        for (unsigned int level = 0; level < symTable.table.size(); ++level) {
-            table.push_back(symTable.table[level]);
-            ++adoptedLevels;
-        }
-        uniqueId = symTable.uniqueId;
-        noBuiltInRedeclarations = symTable.noBuiltInRedeclarations;
-    }
+protected:
+    static const int globalLevel = 3;
+public:
     bool isEmpty() { return table.size() == 0; }
-    bool atBuiltInLevel() { return atSharedBuiltInLevel() || atDynamicBuiltInLevel(); }
-    bool atSharedBuiltInLevel() { return table.size() <= 2; }
-    bool atDynamicBuiltInLevel() { return table.size() == 3; }
-    bool atGlobalLevel() { return table.size() <= 4; }
+    bool atBuiltInLevel() { return table.size() <= globalLevel; }      // exclude user globals
+    bool atGlobalLevel()  { return table.size() <= globalLevel + 1; }  // include user globals
 
     void setNoBuiltInRedeclarations() { noBuiltInRedeclarations = true; }
     
@@ -411,7 +415,7 @@ public:
     void pop(TPrecisionQualifier *p)
     {
         table[currentLevel()]->getPreviousDefaultPrecisions(p);
-        delete table[currentLevel()];
+        delete table.back();
         table.pop_back();
     }
 
@@ -453,12 +457,8 @@ public:
 
     void relateToOperator(const char* name, TOperator op)
     {
-        for (unsigned int level = 0; level < table.size(); ++level) {
-            if (atSharedBuiltInLevel())
-                table[level]->relateToOperator(name, op);
-            else
-                break;
-        }
+        for (unsigned int level = 0; level < table.size(); ++level)
+            table[level]->relateToOperator(name, op);
     }
 
     int getMaxSymbolId() { return uniqueId; }
