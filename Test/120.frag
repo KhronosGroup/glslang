@@ -80,6 +80,7 @@ void main()
     }
 
     gl_FragColor.xr;    // ERROR, swizzlers not from same field space
+    gl_FragColor.xyxyx.xy; // ERROR, cannot make a vec5, even temporarily
     centTexCoord.z;     // ERROR, swizzler out of range
     (a,b) = true;       // ERROR, not an l-value
 }
@@ -103,4 +104,13 @@ bool gen(vec3 v)
 {
     if (abs(v[0]) < 1e-4 && abs(v[1]) < 1e-4)
         return true;
+}
+
+void v1()
+{
+}
+
+void v2()
+{
+    return v1();  // ERROR, no expression allowed, even though void
 }

@@ -15,16 +15,19 @@ ERROR: 0:63: 'assign' :  cannot convert from 'bool' to 'float'
 ERROR: 0:79: ':' :  wrong operand types: no operation ':' exists that takes a left-hand operand of type '4-component vector of float' and a right operand of type '4X4 matrix of float' (or there is no acceptable conversion)
 ERROR: 0:79: 'assign' :  cannot convert from '4X4 matrix of float' to 'fragColor 4-component vector of float'
 ERROR: 0:82: 'xr' : illegal - vector component fields not from the same set 
-ERROR: 0:83: 'z' : vector field selection out of range 
-ERROR: 0:84: 'assign' :  l-value required 
-ERROR: 0:90: 'int' : overloaded functions must have the same return type 
-ERROR: 0:90: 'main' : function already has a body 
-ERROR: 0:90: 'int' :  main function cannot return a value
-ERROR: 0:91: 'main' : function cannot take any parameter(s) 
-ERROR: 0:93: 'a' : variables with qualifier 'const' must be initialized 
-ERROR: 0:96: 'out' : overloaded functions must have the same parameter qualifiers 
-ERROR: 0:98: 'return' : function return is not matching type: 
-ERROR: 26 compilation errors.  No code generated.
+ERROR: 0:83: 'xyxyx' : illegal vector field selection 
+ERROR: 0:83: 'xy' :  dot operator requires structure, array, vector, or matrix on left hand side 
+ERROR: 0:84: 'z' : vector field selection out of range 
+ERROR: 0:85: 'assign' :  l-value required 
+ERROR: 0:91: 'int' : overloaded functions must have the same return type 
+ERROR: 0:91: 'main' : function already has a body 
+ERROR: 0:91: 'int' :  main function cannot return a value
+ERROR: 0:92: 'main' : function cannot take any parameter(s) 
+ERROR: 0:94: 'a' : variables with qualifier 'const' must be initialized 
+ERROR: 0:97: 'out' : overloaded functions must have the same parameter qualifiers 
+ERROR: 0:99: 'return' : function return is not matching type: 
+ERROR: 0:115: 'return' : void function cannot return a value 
+ERROR: 29 compilation errors.  No code generated.
 
 ERROR: node is still EOpNull!
 0:21  Function Definition: main( (void)
@@ -210,48 +213,58 @@ ERROR: node is still EOpNull!
 0:82        'gl_FragColor' (fragColor 4-component vector of float)
 0:82        0 (const int)
 0:83      direct index (float)
-0:83        'centTexCoord' (centroid smooth in 2-component vector of float)
+0:83        'gl_FragColor' (fragColor 4-component vector of float)
 0:83        0 (const int)
-0:84      move second child to first child (bool)
-0:84        Comma (bool)
-0:84          'a' (int)
-0:84          'b' (bool)
-0:84        true (const bool)
-0:90  Function Definition: main( (int)
-0:90    Function Parameters: 
-0:91  Function Definition: main(i1; (void)
+0:84      direct index (float)
+0:84        'centTexCoord' (centroid smooth in 2-component vector of float)
+0:84        0 (const int)
+0:85      move second child to first child (bool)
+0:85        Comma (bool)
+0:85          'a' (int)
+0:85          'b' (bool)
+0:85        true (const bool)
+0:91  Function Definition: main( (int)
 0:91    Function Parameters: 
-0:91      'a' (in int)
-0:96  Function Definition: foo(f1; (int)
-0:96    Function Parameters: 
-0:96      'a' (out float)
-0:98    Sequence
-0:98      Branch: Return with expression
-0:98        3.200000
-0:99      Function Call: foo(f1; (int)
-0:99        'a' (out float)
-0:102  Function Definition: gen(vf3; (bool)
-0:102    Function Parameters: 
-0:102      'v' (in 3-component vector of float)
-0:104    Sequence
-0:104      Test condition and select (void)
-0:104        Condition
-0:104        logical-and (bool)
-0:104          Compare Less Than (bool)
-0:104            Absolute value (float)
-0:104              direct index (in float)
-0:104                'v' (in 3-component vector of float)
-0:104                0 (const int)
-0:104            0.000100
-0:104          Compare Less Than (bool)
-0:104            Absolute value (float)
-0:104              direct index (in float)
-0:104                'v' (in 3-component vector of float)
-0:104                1 (const int)
-0:104            0.000100
-0:104        true case
-0:105        Branch: Return with expression
-0:105          true (const bool)
+0:92  Function Definition: main(i1; (void)
+0:92    Function Parameters: 
+0:92      'a' (in int)
+0:97  Function Definition: foo(f1; (int)
+0:97    Function Parameters: 
+0:97      'a' (out float)
+0:99    Sequence
+0:99      Branch: Return with expression
+0:99        3.200000
+0:100      Function Call: foo(f1; (int)
+0:100        'a' (out float)
+0:103  Function Definition: gen(vf3; (bool)
+0:103    Function Parameters: 
+0:103      'v' (in 3-component vector of float)
+0:105    Sequence
+0:105      Test condition and select (void)
+0:105        Condition
+0:105        logical-and (bool)
+0:105          Compare Less Than (bool)
+0:105            Absolute value (float)
+0:105              direct index (in float)
+0:105                'v' (in 3-component vector of float)
+0:105                0 (const int)
+0:105            0.000100
+0:105          Compare Less Than (bool)
+0:105            Absolute value (float)
+0:105              direct index (in float)
+0:105                'v' (in 3-component vector of float)
+0:105                1 (const int)
+0:105            0.000100
+0:105        true case
+0:106        Branch: Return with expression
+0:106          true (const bool)
+0:109  Function Definition: v1( (void)
+0:109    Function Parameters: 
+0:113  Function Definition: v2( (void)
+0:113    Function Parameters: 
+0:115    Sequence
+0:115      Branch: Return with expression
+0:115        Function Call: v1( (void)
 0:?   Linker Objects
 0:?     'i' (smooth in 4-component vector of float)
 0:?     'o' (out 4-component vector of float)

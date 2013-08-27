@@ -187,7 +187,7 @@ extern int yylex(YYSTYPE*, TParseContext&);
 %type <interm.intermNode> declaration external_declaration
 %type <interm.intermNode> for_init_statement compound_statement_no_new_scope
 %type <interm.nodePair> selection_rest_statement for_rest_statement
-%type <interm.intermNode> iteration_statement jump_statement statement_no_new_scope
+%type <interm.intermNode> iteration_statement jump_statement statement_no_new_scope statement_scoped
 %type <interm> single_declaration init_declarator_list
 
 %type <interm> parameter_declaration parameter_declarator parameter_type_specifier
@@ -2599,6 +2599,10 @@ statement_no_new_scope
     | simple_statement                { $$ = $1; }
     ;
 
+statement_scoped
+    : compound_statement  { $$ = $1; }
+    | { parseContext.symbolTable.push(); } simple_statement { parseContext.symbolTable.pop(&parseContext.defaultPrecision[0]); } { $$ = $2; }
+
 compound_statement_no_new_scope
     // Statement that doesn't create a new scope, for selection_statement, iteration_statement
     : LEFT_BRACE RIGHT_BRACE {
@@ -2643,11 +2647,11 @@ selection_statement
     ;
 
 selection_rest_statement
-    : statement ELSE statement {
+    : statement_scoped ELSE statement_scoped {
         $$.node1 = $1;
         $$.node2 = $3;
     }
-    | statement {
+    | statement_scoped {
         $$.node1 = $1;
         $$.node2 = 0;
     }

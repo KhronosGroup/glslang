@@ -75,7 +75,6 @@ numeral.frag
 ../../LunarGLASS/test/Operations.frag
 ../../LunarGLASS/test/prepost.frag
 ../../LunarGLASS/test/simpleFunctionCall.frag
-../../LunarGLASS/test/solidworks.frag
 ../../LunarGLASS/test/structAssignment.frag
 ../../LunarGLASS/test/structDeref.frag
 ../../LunarGLASS/test/structure.frag
