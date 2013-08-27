@@ -4,6 +4,46 @@ ERROR: 0:7: '' : vertex input cannot be further qualified
 ERROR: 0:11: '' : can only have one interpolation qualifier (flat, smooth, noperspective) 
 ERROR: 0:12: '' : can only have one auxiliary qualifier (centroid, patch, and sample) 
 ERROR: 0:13: 'uniform' : too many storage qualifiers 
-ERROR: 5 compilation errors.  No code generated.
+ERROR: 0:21: 'j' : undeclared identifier 
+ERROR: 0:21: '=' :  cannot convert from 'float' to 'int'
+ERROR: 0:22: 'k' : undeclared identifier 
+ERROR: 0:22: '=' :  cannot convert from 'float' to 'int'
+ERROR: 0:23: 'j' : undeclared identifier 
+ERROR: 0:23: '=' :  cannot convert from 'float' to 'int'
+ERROR: 0:27: 'jj' : undeclared identifier 
+ERROR: 0:27: '=' :  cannot convert from 'float' to 'int'
+ERROR: 13 compilation errors.  No code generated.
 
+ERROR: node is still EOpNull!
+0:15  Function Definition: main( (void)
+0:15    Function Parameters: 
+0:?     Sequence
+0:18      Test condition and select (void)
+0:18        Condition
+0:18        Compare Equal (bool)
+0:18          'i' (int)
+0:18          3 (const int)
+0:18        true case
+0:19        Sequence
+0:19          move second child to first child (int)
+0:19            'j' (int)
+0:19            'i' (int)
+0:25      Loop with condition tested first
+0:25        Loop Condition
+0:25        true (const bool)
+0:25        No loop body
+0:30  Function Definition: bar(vf4; (void)
+0:30    Function Parameters: 
+0:30      'v' (in 4-component vector of float)
+0:?   Linker Objects
+0:?     'v2' (smooth out 2-component vector of float)
+0:?     'badorder' (in 4-component vector of float)
+0:?     'badorder2' (invariant smooth out 4-component vector of float)
+0:?     'badorder4' (centroid in 4-component vector of float)
+0:?     'badorder3' (flat out 4-component vector of float)
+0:?     'rep' (smooth flat out 4-component vector of float)
+0:?     'rep2' (centroid smooth sample out 4-component vector of float)
+0:?     'rep3' (in 4-component vector of float)
+0:?     'gl_VertexID' (gl_VertexId int)
+0:?     'gl_InstanceID' (gl_InstanceId int)
 

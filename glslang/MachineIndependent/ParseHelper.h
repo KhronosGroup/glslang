@@ -122,6 +122,12 @@ public:
     bool reservedErrorCheck(TSourceLoc, const TString& identifier);
 
     TIntermTyped* handleVariable(TSourceLoc, TSymbol* symbol, TString* string);
+    TIntermTyped* handleBracketDereference(TSourceLoc, TIntermTyped* base, TIntermTyped* index);
+    TIntermTyped* handleDotDereference(TSourceLoc, TIntermTyped* base, TString& field);
+    TIntermAggregate* handleFunctionPrototype(TSourceLoc, TFunction&);
+    TIntermTyped* handleFunctionCall(TSourceLoc, TFunction*, TIntermNode*, TIntermAggregate*);
+    TFunction* handleConstructorCall(TSourceLoc, TPublicType&);
+
     bool parseVectorFields(TSourceLoc, const TString&, int vecSize, TVectorFields&);
     void assignError(TSourceLoc, const char* op, TString left, TString right);
     void unaryOpError(TSourceLoc, const char* op, TString operand);

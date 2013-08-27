@@ -446,6 +446,9 @@ void C_DECL TParseContext::warn(TSourceLoc loc, const char *szReason, const char
     va_end(marker);
 }
 
+//
+// Handle seeing a variable identifier in the grammar.
+//
 TIntermTyped* TParseContext::handleVariable(TSourceLoc loc, TSymbol* symbol, TString* string)
 {
     TIntermTyped* node = 0;
@@ -483,6 +486,495 @@ TIntermTyped* TParseContext::handleVariable(TSourceLoc loc, TSymbol* symbol, TSt
     }
 
     return node;
+}
+
+//
+// Handle seeing a base[index] dereference in the grammar.
+//
+TIntermTyped* TParseContext::handleBracketDereference(TSourceLoc loc, TIntermTyped* base, TIntermTyped* index)
+{
+    TIntermTyped* result = 0;
+
+    variableCheck(base);
+    if (! base->isArray() && ! base->isMatrix() && ! base->isVector()) {
+        if (base->getAsSymbolNode())
+            error(loc, " left of '[' is not of type array, matrix, or vector ", base->getAsSymbolNode()->getName().c_str(), "");
+        else
+            error(loc, " left of '[' is not of type array, matrix, or vector ", "expression", "");
+    } else if (base->getType().getQualifier().storage == EvqConst && index->getQualifier().storage == EvqConst) {
+        if (base->isArray()) {
+            // constant folding for arrays
+            result = addConstArrayNode(index->getAsConstantUnion()->getUnionArrayPointer()->getIConst(), base, loc);
+        } else if (base->isVector()) {
+            // constant folding for vectors
+            TVectorFields fields;
+            fields.num = 1;
+            fields.offsets[0] = index->getAsConstantUnion()->getUnionArrayPointer()->getIConst(); // need to do it this way because v.xy sends fields integer array
+            result = addConstVectorNode(fields, base, loc);
+        } else if (base->isMatrix()) {
+            // constant folding for matrices
+            result = addConstMatrixNode(index->getAsConstantUnion()->getUnionArrayPointer()->getIConst(), base, loc);
+        }
+    } else {
+        if (index->getQualifier().storage == EvqConst) {
+            int indexValue = index->getAsConstantUnion()->getUnionArrayPointer()->getIConst();
+            if (! base->isArray() && (base->isVector() && base->getType().getVectorSize() <= indexValue ||
+                                      base->isMatrix() && base->getType().getMatrixCols() <= indexValue))
+                error(loc, "", "[", "index out of range '%d'", index->getAsConstantUnion()->getUnionArrayPointer()->getIConst());
+            if (base->isArray()) {
+                if (base->getType().getArraySize() == 0) {
+                    if (base->getType().getMaxArraySize() <= index->getAsConstantUnion()->getUnionArrayPointer()->getIConst())
+                        arraySetMaxSize(base->getAsSymbolNode(), base->getTypePointer(), index->getAsConstantUnion()->getUnionArrayPointer()->getIConst(), true, loc);
+                    else
+                        arraySetMaxSize(base->getAsSymbolNode(), base->getTypePointer(), 0, false, loc);
+                } else if ( index->getAsConstantUnion()->getUnionArrayPointer()->getIConst() >= base->getType().getArraySize() ||
+                            index->getAsConstantUnion()->getUnionArrayPointer()->getIConst() < 0)
+                    error(loc, "", "[", "array index out of range '%d'", index->getAsConstantUnion()->getUnionArrayPointer()->getIConst());
+            }
+            result = intermediate.addIndex(EOpIndexDirect, base, index, loc);
+        } else {
+            if (base->isArray() && base->getType().getArraySize() == 0)
+                error(loc, "", "[", "array must be redeclared with a size before being indexed with a variable");
+            if (base->getBasicType() == EbtBlock)
+                requireProfile(base->getLoc(), static_cast<EProfileMask>(~EEsProfileMask), "variable indexing block array");
+            if (base->getBasicType() == EbtSampler) {
+                requireProfile(base->getLoc(), static_cast<EProfileMask>(ECoreProfileMask | ECompatibilityProfileMask), "variable indexing sampler array");
+                profileRequires(base->getLoc(), ECoreProfile, 400, 0, "variable indexing sampler array");
+            }
+
+            result = intermediate.addIndex(EOpIndexIndirect, base, index, loc);
+        }
+    }
+
+    if (result == 0) {
+        constUnion *unionArray = new constUnion[1];
+        unionArray->setDConst(0.0);
+        result = intermediate.addConstantUnion(unionArray, TType(EbtFloat, EvqConst), loc);
+    } else {
+        TType newType(base->getType());
+        if (base->getType().getQualifier().storage == EvqConst && index->getQualifier().storage == EvqConst)
+            newType.getQualifier().storage = EvqConst;
+        newType.dereference();
+        result->setType(newType);
+    }
+
+    return result;
+}
+
+//
+// Handle seeing a base.field dereference in the grammar.
+//
+TIntermTyped* TParseContext::handleDotDereference(TSourceLoc loc, TIntermTyped* base, TString& field)
+{
+    TIntermTyped* result = base;
+
+    variableCheck(base);
+    if (base->isArray()) {
+        //
+        // It can only be a method (e.g., length), which can't be resolved until
+        // we later see the function calling syntax.  Save away the name for now.
+        //
+
+        if (field == "length") {
+            profileRequires(loc, ENoProfile, 120, "GL_3DL_array_objects", ".length");
+            result = intermediate.addMethod(base, TType(EbtInt), &field, loc);
+        } else
+            error(loc, "only the length method is supported for array", field.c_str(), "");
+    } else if (base->isVector()) {
+        TVectorFields fields;
+        if (! parseVectorFields(loc, field, base->getVectorSize(), fields)) {
+            fields.num = 1;
+            fields.offsets[0] = 0;
+        }
+
+        if (base->getType().getQualifier().storage == EvqConst) { // constant folding for vector fields
+            result = addConstVectorNode(fields, base, loc);
+            if (result == 0)
+                result = base;
+            else
+                result->setType(TType(base->getBasicType(), EvqConst, (int) (field).size()));
+        } else {
+            if (fields.num == 1) {
+                constUnion *unionArray = new constUnion[1];
+                unionArray->setIConst(fields.offsets[0]);
+                TIntermTyped* index = intermediate.addConstantUnion(unionArray, TType(EbtInt, EvqConst), loc);
+                result = intermediate.addIndex(EOpIndexDirect, base, index, loc);
+                result->setType(TType(base->getBasicType(), EvqTemporary, base->getType().getQualifier().precision));
+            } else {
+                TString vectorString = field;
+                TIntermTyped* index = intermediate.addSwizzle(fields, loc);
+                result = intermediate.addIndex(EOpVectorSwizzle, base, index, loc);
+                result->setType(TType(base->getBasicType(), EvqTemporary, base->getType().getQualifier().precision, (int) vectorString.size()));
+            }
+        }
+    } else if (base->isMatrix())
+        error(loc, "field selection not allowed on matrix", ".", "");
+    else if (base->getBasicType() == EbtStruct || base->getBasicType() == EbtBlock) {
+        bool fieldFound = false;
+        TTypeList* fields = base->getType().getStruct();
+        if (fields == 0)
+            error(loc, "structure has no fields", "Internal Error", "");
+        else {
+            unsigned int i;
+            for (i = 0; i < fields->size(); ++i) {
+                if ((*fields)[i].type->getFieldName() == field) {
+                    fieldFound = true;
+                    break;
+                }
+            }
+            if (fieldFound) {
+                if (base->getType().getQualifier().storage == EvqConst) {
+                    result = addConstStruct(field, base, loc);
+                    if (result == 0)
+                        result = base;
+                    else {
+                        result->setType(*(*fields)[i].type);
+                        // change the qualifier of the return type, not of the structure field
+                        // as the structure definition is shared between various structures.
+                        result->getTypePointer()->getQualifier().storage = EvqConst;
+                    }
+                } else {
+                    constUnion *unionArray = new constUnion[1];
+                    unionArray->setIConst(i);
+                    TIntermTyped* index = intermediate.addConstantUnion(unionArray, TType(EbtInt, EvqConst), loc);
+                    result = intermediate.addIndex(EOpIndexDirectStruct, base, index, loc);
+                    result->setType(*(*fields)[i].type);
+                }
+            } else
+                error(loc, " no such field in structure", field.c_str(), "");
+        }
+    } else
+        error(loc, " dot operator requires structure, array, vector, or matrix on left hand side", field.c_str(), "");
+
+    return result;
+}
+
+//
+// Handle seeing a function prototype in the grammar.
+//
+TIntermAggregate* TParseContext::handleFunctionPrototype(TSourceLoc loc, TFunction& function)
+{
+    TSymbol* symbol = symbolTable.find(function.getMangledName());
+    TFunction* prevDec = symbol ? symbol->getAsFunction() : 0;
+
+    if (! prevDec)
+        error(loc, "can't find function name", function.getName().c_str(), "");
+
+    //
+    // Note:  'prevDec' could be 'function' if this is the first time we've seen function
+    // as it would have just been put in the symbol table.  Otherwise, we're looking up
+    // an earlier occurance.
+    //
+    if (prevDec && prevDec->isDefined()) {
+        //
+        // Then this function already has a body.
+        //
+        error(loc, "function already has a body", function.getName().c_str(), "");
+    }
+    if (prevDec) {
+        prevDec->setDefined();
+        //
+        // Remember the return type for later checking for RETURN statements.
+        //
+        currentFunctionType = &(prevDec->getReturnType());
+    } else
+        currentFunctionType = new TType(EbtVoid);
+    functionReturnsValue = false;
+
+    //
+    // Raise error message if main function takes any parameters or return anything other than void
+    //
+    if (function.getName() == "main") {
+        if (function.getParamCount() > 0)
+            error(loc, "function cannot take any parameter(s)", function.getName().c_str(), "");
+        if (function.getReturnType().getBasicType() != EbtVoid)
+            error(loc, "", function.getReturnType().getCompleteTypeString().c_str(), "main function cannot return a value");
+    }
+
+    //
+    // New symbol table scope for body of function plus its arguments
+    //
+    symbolTable.push();
+
+    //
+    // Insert parameters into the symbol table.
+    // If the parameter has no name, it's not an error, just don't insert it
+    // (could be used for unused args).
+    //
+    // Also, accumulate the list of parameters into the HIL, so lower level code
+    // knows where to find parameters.
+    //
+    TIntermAggregate* paramNodes = new TIntermAggregate;
+    for (int i = 0; i < function.getParamCount(); i++) {
+        TParameter& param = function[i];
+        if (param.name != 0) {
+            TVariable *variable = new TVariable(param.name, *param.type);
+            //
+            // Insert the parameters with name in the symbol table.
+            //
+            if (! symbolTable.insert(*variable)) {
+                error(loc, "redefinition", variable->getName().c_str(), "");
+                delete variable;
+            }
+            //
+            // Transfer ownership of name pointer to symbol table.
+            //
+            param.name = 0;
+
+            //
+            // Add the parameter to the HIL
+            //
+            paramNodes = intermediate.growAggregate(paramNodes,
+                                                    intermediate.addSymbol(variable->getUniqueId(),
+                                                                            variable->getName(),
+                                                                            variable->getType(), loc),
+                                                    loc);
+        } else
+            paramNodes = intermediate.growAggregate(paramNodes, intermediate.addSymbol(0, "", *param.type, loc), loc);
+    }
+    intermediate.setAggregateOperator(paramNodes, EOpParameters, TType(EbtVoid), loc);
+    loopNestingLevel = 0;
+
+    return paramNodes;
+}
+
+//
+// Handle seeing a function call in the grammar.
+//
+TIntermTyped* TParseContext::handleFunctionCall(TSourceLoc loc, TFunction* fnCall, TIntermNode* intermNode, TIntermAggregate* intermAggregate)
+{
+    TIntermTyped* result = 0;
+
+    TOperator op = fnCall->getBuiltInOp();
+    if (op == EOpArrayLength) {
+        if (fnCall->getParamCount() > 0)
+            error(loc, "method does not accept any arguments", fnCall->getName().c_str(), "");
+        int length;
+        if (intermNode->getAsTyped() == 0 || ! intermNode->getAsTyped()->getType().isArray() || intermNode->getAsTyped()->getType().getArraySize() == 0) {
+            error(loc, "", fnCall->getName().c_str(), "array must be declared with a size before using this method");
+            length = 1;
+        } else
+            length = intermNode->getAsTyped()->getType().getArraySize();
+
+        constUnion *unionArray = new constUnion[1];
+        unionArray->setIConst(length);
+        result = intermediate.addConstantUnion(unionArray, TType(EbtInt, EvqConst), loc);
+    } else if (op != EOpNull) {
+        //
+        // Then this should be a constructor.
+        // Don't go through the symbol table for constructors.
+        // Their parameters will be verified algorithmically.
+        //
+        TType type(EbtVoid);  // use this to get the type back
+        if (constructorError(loc, intermNode, *fnCall, op, type)) {
+            result = 0;
+        } else {
+            //
+            // It's a constructor, of type 'type'.
+            //
+            result = addConstructor(intermNode, type, op, fnCall, loc);
+            if (result == 0)
+                error(loc, "cannot construct with these arguments", type.getCompleteString().c_str(), "");
+        }
+
+        if (result == 0)
+            result = intermediate.setAggregateOperator(0, op, type, loc);
+    } else {
+        //
+        // Not a constructor.  Find it in the symbol table.
+        //
+        const TFunction* fnCandidate;
+        bool builtIn;
+        fnCandidate = findFunction(loc, fnCall, &builtIn);
+        if (fnCandidate) {
+            //
+            // A declared function.  But, it might still map to a built-in
+            // operation.
+            //
+            op = fnCandidate->getBuiltInOp();
+            if (builtIn && op != EOpNull) {
+                // A function call mapped to a built-in operation.
+                result = intermediate.addBuiltInFunctionCall(loc, op, fnCandidate->getParamCount() == 1, intermNode, fnCandidate->getReturnType());
+                if (result == 0)  {
+                    error(intermNode->getLoc(), " wrong operand type", "Internal Error",
+                                        "built in unary operator function.  Type: %s",
+                                        static_cast<TIntermTyped*>(intermNode)->getCompleteString().c_str());
+                    return 0;
+                }
+            } else {
+                // This is a real function call
+                result = intermediate.setAggregateOperator(intermAggregate, EOpFunctionCall, fnCandidate->getReturnType(), loc);
+
+                // this is how we know whether the given function is a builtIn function or a user defined function
+                // if builtIn == false, it's a userDefined -> could be an overloaded builtIn function also
+                // if builtIn == true, it's definitely a builtIn function with EOpNull
+                if (!builtIn)
+                    result->getAsAggregate()->setUserDefined();
+                result->getAsAggregate()->setName(fnCandidate->getMangledName());
+
+                TStorageQualifier qual;
+                TQualifierList& qualifierList = result->getAsAggregate()->getQualifierList();
+                for (int i = 0; i < fnCandidate->getParamCount(); ++i) {
+                    qual = (*fnCandidate)[i].type->getQualifier().storage;
+                    if (qual == EvqOut || qual == EvqInOut) {
+                        if (lValueErrorCheck(result->getLoc(), "assign", result->getAsAggregate()->getSequence()[i]->getAsTyped()))
+                            error(intermNode->getLoc(), "Constant value cannot be passed for 'out' or 'inout' parameters.", "Error", "");
+                    }
+                    qualifierList.push_back(qual);
+                }
+
+                // built-in texturing functions get their return value precision from the precision of the sampler
+                if (builtIn && fnCandidate->getReturnType().getQualifier().precision == EpqNone &&
+                    fnCandidate->getParamCount() > 0 && (*fnCandidate)[0].type->getBasicType() == EbtSampler)
+                    result->getQualifier().precision = result->getAsAggregate()->getSequence()[0]->getAsTyped()->getQualifier().precision;
+            }
+        } else {
+            // error message was put out by PaFindFunction()
+            // Put on a dummy node for error recovery
+            constUnion *unionArray = new constUnion[1];
+            unionArray->setDConst(0.0);
+            result = intermediate.addConstantUnion(unionArray, TType(EbtFloat, EvqConst), loc);
+        }
+    }
+
+    return result;
+}
+
+//
+// Handle seeing a built-in-type constructor call in the grammar.
+//
+TFunction* TParseContext::handleConstructorCall(TSourceLoc loc, TPublicType& publicType)
+{
+    if (publicType.arraySizes) {
+        profileRequires(loc, ENoProfile, 120, "GL_3DL_array_objects", "arrayed constructor");
+        profileRequires(loc, EEsProfile, 300, "GL_3DL_array_objects", "arrayed constructor");
+    }
+
+    publicType.qualifier.precision = EpqNone;
+    if (publicType.userDef) {
+        TString tempString = "";
+        TType type(publicType);
+
+        return new TFunction(&tempString, type, EOpConstructStruct);
+    } 
+    
+    TOperator op = EOpNull;
+    switch (publicType.basicType) {
+    case EbtFloat:
+        if (publicType.matrixCols) {
+            switch (publicType.matrixCols) {
+            case 2:
+                switch (publicType.matrixRows) {
+                case 2: op = EOpConstructMat2x2; break;
+                case 3: op = EOpConstructMat2x3; break;
+                case 4: op = EOpConstructMat2x4; break;
+                default: break; // some compilers want this
+                }
+                break;
+            case 3:
+                switch (publicType.matrixRows) {
+                case 2: op = EOpConstructMat3x2; break;
+                case 3: op = EOpConstructMat3x3; break;
+                case 4: op = EOpConstructMat3x4; break;
+                default: break; // some compilers want this
+                }
+                break;
+            case 4:
+                switch (publicType.matrixRows) {
+                case 2: op = EOpConstructMat4x2; break;
+                case 3: op = EOpConstructMat4x3; break;
+                case 4: op = EOpConstructMat4x4; break;
+                default: break; // some compilers want this
+                }
+                break;
+            default: break; // some compilers want this
+            }
+        } else {
+            switch(publicType.vectorSize) {
+            case 1: op = EOpConstructFloat; break;
+            case 2: op = EOpConstructVec2;  break;
+            case 3: op = EOpConstructVec3;  break;
+            case 4: op = EOpConstructVec4;  break;
+            default: break; // some compilers want this
+            }
+        }
+        break;
+    case EbtDouble:
+        if (publicType.matrixCols) {
+            switch (publicType.matrixCols) {
+            case 2:
+                switch (publicType.matrixRows) {
+                case 2: op = EOpConstructDMat2x2; break;
+                case 3: op = EOpConstructDMat2x3; break;
+                case 4: op = EOpConstructDMat2x4; break;
+                default: break; // some compilers want this
+                }
+                break;
+            case 3:
+                switch (publicType.matrixRows) {
+                case 2: op = EOpConstructDMat3x2; break;
+                case 3: op = EOpConstructDMat3x3; break;
+                case 4: op = EOpConstructDMat3x4; break;
+                default: break; // some compilers want this
+                }
+                break;
+            case 4:
+                switch (publicType.matrixRows) {
+                case 2: op = EOpConstructDMat4x2; break;
+                case 3: op = EOpConstructDMat4x3; break;
+                case 4: op = EOpConstructDMat4x4; break;
+                default: break; // some compilers want this
+                }
+                break;
+            }
+        } else {
+            switch(publicType.vectorSize) {
+            case 1: op = EOpConstructDouble; break;
+            case 2: op = EOpConstructDVec2;  break;
+            case 3: op = EOpConstructDVec3;  break;
+            case 4: op = EOpConstructDVec4;  break;
+            default: break; // some compilers want this
+            }
+        }
+        break;
+    case EbtInt:
+        switch(publicType.vectorSize) {
+        case 1: op = EOpConstructInt;   break;
+        case 2: op = EOpConstructIVec2; break;
+        case 3: op = EOpConstructIVec3; break;
+        case 4: op = EOpConstructIVec4; break;
+        default: break; // some compilers want this
+        }
+        break;
+    case EbtUint:
+        switch(publicType.vectorSize) {
+        case 1: op = EOpConstructUint;  break;
+        case 2: op = EOpConstructUVec2; break;
+        case 3: op = EOpConstructUVec3; break;
+        case 4: op = EOpConstructUVec4; break;
+        default: break; // some compilers want this
+        }
+        break;
+    case EbtBool:
+        switch(publicType.vectorSize) {
+        case 1:  op = EOpConstructBool;  break;
+        case 2:  op = EOpConstructBVec2; break;
+        case 3:  op = EOpConstructBVec3; break;
+        case 4:  op = EOpConstructBVec4; break;
+        default: break; // some compilers want this
+        }
+        break;
+    default: break; // some compilers want this
+    }
+    if (op == EOpNull) {
+        error(loc, "cannot construct this type", TType::getBasicString(publicType.basicType), "");
+        publicType.basicType = EbtFloat;
+        op = EOpConstructFloat;
+    }
+    TString tempString = "";
+    TType type(publicType);
+
+    return new TFunction(&tempString, type, op);
 }
 
 //

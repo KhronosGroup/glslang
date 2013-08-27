@@ -22,7 +22,11 @@ ERROR: node is still EOpNull!
 0:21              'm23' (2X3 matrix of float)
 0:21              'm32' (uniform 3X2 matrix of float)
 0:21            'v3' (in 3-component vector of float)
-0:21          'm24' (float)
+0:21          direct index (float)
+0:21            direct index (4-component vector of float)
+0:21              'm24' (2X4 matrix of float)
+0:21              2 (const int)
+0:21            4 (const int)
 0:?   Linker Objects
 0:?     'v3' (in 3-component vector of float)
 0:?     'm32' (uniform 3X2 matrix of float)
