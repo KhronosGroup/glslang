@@ -46,6 +46,7 @@
 
 #define _vsnprintf vsnprintf
 
+namespace glslang {
 
 void DetachThreadLinux(void *);
 
@@ -60,7 +61,7 @@ bool        OS_SetTLSValue(OS_TLSIndex nIndex, void *lpvValue);
 bool        OS_FreeTLSIndex(OS_TLSIndex nIndex); 
 
 
-inline void * OS_GetTLSValue(OS_TLSIndex nIndex)
+inline void* OS_GetTLSValue(OS_TLSIndex nIndex)
 {
 	//
 	// This function should return 0 if nIndex is invalid.
@@ -69,18 +70,18 @@ inline void * OS_GetTLSValue(OS_TLSIndex nIndex)
 	return pthread_getspecific(nIndex); 
 }
 
-namespace glslang {
-    void InitGlobalLock();
-    void GetGlobalLock();
-    void ReleaseGlobalLock();
+void InitGlobalLock();
+void GetGlobalLock();
+void ReleaseGlobalLock();
 
-    typedef unsigned int (*TThreadEntrypoint)(void*);
-    void* OS_CreateThread(TThreadEntrypoint);
-    void OS_WaitForAllThreads(void* threads, int numThreads);
+typedef unsigned int (*TThreadEntrypoint)(void*);
+void* OS_CreateThread(TThreadEntrypoint);
+void OS_WaitForAllThreads(void* threads, int numThreads);
 
-    void OS_Sleep(int milliseconds);
+void OS_Sleep(int milliseconds);
 
-    void OS_DumpMemoryCounters();
-};
+void OS_DumpMemoryCounters();
+
+} // end namespace glslang
 
 #endif // __OSINCLUDE_H

@@ -43,6 +43,8 @@
 #include "RemoveTree.h"
 #include <float.h>
 
+namespace glslang {
+
 ////////////////////////////////////////////////////////////////////////////
 //
 // First set of functions are to help build the intermediate representation.
@@ -794,7 +796,7 @@ TIntermTyped* TIntermediate::addSelection(TIntermTyped* cond, TIntermTyped* true
 // Returns the constant union node created.
 //
 
-TIntermConstantUnion* TIntermediate::addConstantUnion(constUnion* unionArrayPointer, const TType& t, TSourceLoc loc)
+TIntermConstantUnion* TIntermediate::addConstantUnion(TConstUnion* unionArrayPointer, const TType& t, TSourceLoc loc)
 {
     TIntermConstantUnion* node = new TIntermConstantUnion(unionArrayPointer, t);
     node->setLoc(loc);
@@ -810,10 +812,10 @@ TIntermTyped* TIntermediate::addSwizzle(TVectorFields& fields, TSourceLoc loc)
     node->setLoc(loc);
     TIntermConstantUnion* constIntNode;
     TIntermSequence &sequenceVector = node->getSequence();
-    constUnion* unionArray;
+    TConstUnion* unionArray;
 
     for (int i = 0; i < fields.num; i++) {
-        unionArray = new constUnion[1];
+        unionArray = new TConstUnion[1];
         unionArray->setIConst(fields.offsets[i]);
         constIntNode = addConstantUnion(unionArray, TType(EbtInt, EvqConst), loc);
         sequenceVector.push_back(constIntNode);
@@ -1398,10 +1400,10 @@ TIntermTyped* TIntermediate::promoteConstantUnion(TBasicType promoteTo, TIntermC
     if (node->getType().isArray())
         infoSink.info.message(EPrefixInternalError, "Cannot promote array", node->getLoc());
 
-    constUnion *rightUnionArray = node->getUnionArrayPointer();
+    TConstUnion *rightUnionArray = node->getUnionArrayPointer();
     int size = node->getType().getObjectSize();
 
-    constUnion *leftUnionArray = new constUnion[size];
+    TConstUnion *leftUnionArray = new TConstUnion[size];
 
     for (int i=0; i < size; i++) {        
         switch (promoteTo) {
@@ -1526,3 +1528,4 @@ void TIntermAggregate::addToPragmaTable(const TPragmaTable& pTable)
     *pragmaTable = pTable;
 }
 
+} // end namespace glslang

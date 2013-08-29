@@ -89,13 +89,24 @@ NVIDIA HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "PpContext.h"
 #include "PpTokens.h"
 
-static int eof_scan(TPpContext*, TPpContext::InputSrc*, TPpToken*)
+namespace {
+
+using namespace glslang;
+
+int eof_scan(TPpContext*, TPpContext::InputSrc*, TPpToken*)
 {
     return EOF;
-} // eof_scan
+}
 
-static void noop(TPpContext*, TPpContext::InputSrc *in, int ch, TPpToken * yylvalpp) {}
-static TPpContext::InputSrc eof_inputsrc = { 0, &eof_scan, &eof_scan, &noop };
+void noop(TPpContext*, TPpContext::InputSrc *in, int ch, TPpToken * yylvalpp)
+{
+}
+
+TPpContext::InputSrc eof_inputsrc = { 0, &eof_scan, &eof_scan, &noop };
+
+} // end anonymous namespace
+
+namespace glslang {
 
 int TPpContext::InitScanner(TPpContext *cpp)
 {
@@ -831,7 +842,4 @@ int TPpContext::check_EOF(int token)
     return 0;
 }
 
-///////////////////////////////////////////////////////////////////////////////////////////////
-/////////////////////////////////////// End of scanner.c //////////////////////////////////////
-///////////////////////////////////////////////////////////////////////////////////////////////
-
+} // end namespace glslang

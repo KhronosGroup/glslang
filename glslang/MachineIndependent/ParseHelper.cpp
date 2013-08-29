@@ -41,6 +41,10 @@
 
 #include "preprocessor/PpContext.h"
 
+extern int yyparse(void*);
+
+namespace glslang {
+
 TParseContext::TParseContext(TSymbolTable& symt, TIntermediate& interm, bool pb, int v, EProfile p, EShLanguage L, TInfoSink& is,                             
                              bool fc, EShMessages m) : 
             intermediate(interm), symbolTable(symt), infoSink(is), language(L), treeRoot(0), linkage(0),
@@ -103,8 +107,6 @@ const char* TParseContext::getPreamble()
     else
         return 0;
 }
-
-extern int yyparse(void*);
 
 //
 // Parse an array of strings using yyparse, going through the
@@ -458,7 +460,7 @@ TIntermTyped* TParseContext::handleVariable(TSourceLoc loc, TSymbol* symbol, TSt
         // it was a member of an anonymous container, have to insert its dereference
         TVariable* variable = anon->getAnonContainer().getAsVariable();
         TIntermTyped* container = intermediate.addSymbol(variable->getUniqueId(), variable->getName(), variable->getType(), loc);
-        constUnion* unionArray = new constUnion[1];
+        TConstUnion* unionArray = new TConstUnion[1];
         unionArray->setUConst(anon->getMemberNumber());
         TIntermTyped* constNode = intermediate.addConstantUnion(unionArray, TType(EbtUint, EvqConst), loc);
 
@@ -478,7 +480,7 @@ TIntermTyped* TParseContext::handleVariable(TSourceLoc loc, TSymbol* symbol, TSt
         // pop will reclaim the memory
 
         if (variable->getType().getQualifier().storage == EvqConst ) {
-            constUnion* constArray = variable->getConstUnionPointer();
+            TConstUnion* constArray = variable->getConstUnionPointer();
             TType t(variable->getType());
             node = intermediate.addConstantUnion(constArray, t, loc);
         } else
@@ -547,7 +549,7 @@ TIntermTyped* TParseContext::handleBracketDereference(TSourceLoc loc, TIntermTyp
     }
 
     if (result == 0) {
-        constUnion *unionArray = new constUnion[1];
+        TConstUnion *unionArray = new TConstUnion[1];
         unionArray->setDConst(0.0);
         result = intermediate.addConstantUnion(unionArray, TType(EbtFloat, EvqConst), loc);
     } else {
@@ -595,7 +597,7 @@ TIntermTyped* TParseContext::handleDotDereference(TSourceLoc loc, TIntermTyped* 
                 result->setType(TType(base->getBasicType(), EvqConst, (int) (field).size()));
         } else {
             if (fields.num == 1) {
-                constUnion *unionArray = new constUnion[1];
+                TConstUnion *unionArray = new TConstUnion[1];
                 unionArray->setIConst(fields.offsets[0]);
                 TIntermTyped* index = intermediate.addConstantUnion(unionArray, TType(EbtInt, EvqConst), loc);
                 result = intermediate.addIndex(EOpIndexDirect, base, index, loc);
@@ -634,7 +636,7 @@ TIntermTyped* TParseContext::handleDotDereference(TSourceLoc loc, TIntermTyped* 
                         result->getTypePointer()->getQualifier().storage = EvqConst;
                     }
                 } else {
-                    constUnion *unionArray = new constUnion[1];
+                    TConstUnion *unionArray = new TConstUnion[1];
                     unionArray->setIConst(i);
                     TIntermTyped* index = intermediate.addConstantUnion(unionArray, TType(EbtInt, EvqConst), loc);
                     result = intermediate.addIndex(EOpIndexDirectStruct, base, index, loc);
@@ -756,7 +758,7 @@ TIntermTyped* TParseContext::handleFunctionCall(TSourceLoc loc, TFunction* fnCal
         } else
             length = intermNode->getAsTyped()->getType().getArraySize();
 
-        constUnion *unionArray = new constUnion[1];
+        TConstUnion *unionArray = new TConstUnion[1];
         unionArray->setIConst(length);
         result = intermediate.addConstantUnion(unionArray, TType(EbtInt, EvqConst), loc);
     } else if (op != EOpNull) {
@@ -831,7 +833,7 @@ TIntermTyped* TParseContext::handleFunctionCall(TSourceLoc loc, TFunction* fnCal
         } else {
             // error message was put out by PaFindFunction()
             // Put on a dummy node for error recovery
-            constUnion *unionArray = new constUnion[1];
+            TConstUnion *unionArray = new TConstUnion[1];
             unionArray->setDConst(0.0);
             result = intermediate.addConstantUnion(unionArray, TType(EbtFloat, EvqConst), loc);
         }
@@ -1408,14 +1410,14 @@ void TParseContext::globalQualifierFix(TSourceLoc loc, TQualifier& qualifier, co
     // now, knowing it is a shader in/out, do all the in/out semantic checks
 
     if (publicType.basicType == EbtBool) {
-        error(loc, "cannot be bool",  getStorageQualifierString(qualifier.storage), "");
+        error(loc, "cannot be bool", GetStorageQualifierString(qualifier.storage), "");
 
         return;
     }
 
     if (language == EShLangVertex && qualifier.storage == EvqVaryingIn) {
         if (publicType.basicType == EbtStruct) {
-            error(loc, "cannot be a structure or array",  getStorageQualifierString(qualifier.storage), "");
+            error(loc, "cannot be a structure or array", GetStorageQualifierString(qualifier.storage), "");
 
             return;
         }
@@ -1428,7 +1430,7 @@ void TParseContext::globalQualifierFix(TSourceLoc loc, TQualifier& qualifier, co
     if (language == EShLangFragment && qualifier.storage == EvqVaryingOut) {
         profileRequires(loc, EEsProfile, 300, 0, "fragment shader output");
         if (publicType.basicType == EbtStruct) {
-            error(loc, "cannot be a structure",  getStorageQualifierString(qualifier.storage), "");
+            error(loc, "cannot be a structure", GetStorageQualifierString(qualifier.storage), "");
 
             return;
         }
@@ -1438,7 +1440,7 @@ void TParseContext::globalQualifierFix(TSourceLoc loc, TQualifier& qualifier, co
         profileRequires(loc, EEsProfile, 300, 0, "shader input/output");
         if (language != EShLangVertex   && qualifier.storage == EvqVaryingIn  && ! qualifier.flat ||
             language != EShLangFragment && qualifier.storage == EvqVaryingOut && ! qualifier.flat) {
-            error(loc, "must be qualified as 'flat'", getStorageQualifierString(qualifier.storage), TType::getBasicString(publicType.basicType));
+            error(loc, "must be qualified as 'flat'", GetStorageQualifierString(qualifier.storage), TType::getBasicString(publicType.basicType));
          
             return;
         }
@@ -1498,11 +1500,11 @@ void TParseContext::mergeQualifiers(TSourceLoc loc, TQualifier& dst, const TQual
              dst.storage == EvqConst && src.storage == EvqIn)
         dst.storage = EvqConstReadOnly;
     else if (src.storage != EvqTemporary)
-        error(loc, "too many storage qualifiers", getStorageQualifierString(src.storage), "");
+        error(loc, "too many storage qualifiers", GetStorageQualifierString(src.storage), "");
 
     // Precision qualifiers
     if (! force && src.precision != EpqNone && dst.precision != EpqNone)
-        error(loc, "only one precision qualifier allowed", getPrecisionQualifierString(src.precision), "");
+        error(loc, "only one precision qualifier allowed", GetPrecisionQualifierString(src.precision), "");
     if (dst.precision == EpqNone || force && src.precision != EpqNone)
         dst.precision = src.precision;
 
@@ -1882,7 +1884,7 @@ void TParseContext::paramCheck(TSourceLoc loc, TStorageQualifier qualifier, TTyp
         break;
     default:
         type->getQualifier().storage = EvqIn;
-        error(loc, "qualifier not allowed on function parameter", getStorageQualifierString(qualifier), "");
+        error(loc, "qualifier not allowed on function parameter", GetStorageQualifierString(qualifier), "");
         break;
     }
 }
@@ -2050,7 +2052,7 @@ bool TParseContext::executeInitializerError(TSourceLoc loc, TString& identifier,
             return true;
         }
         if (initializer->getAsConstantUnion()) { 
-            constUnion* unionArray = variable->getConstUnionPointer();
+            TConstUnion* unionArray = variable->getConstUnionPointer();
 
             if (type.getObjectSize() == 1 && type.getBasicType() != EbtStruct) {
 	            *unionArray = (initializer->getAsConstantUnion()->getUnionArrayPointer())[0];
@@ -2060,7 +2062,7 @@ bool TParseContext::executeInitializerError(TSourceLoc loc, TString& identifier,
         } else if (initializer->getAsSymbolNode()) {
             TSymbol* symbol = symbolTable.find(initializer->getAsSymbolNode()->getName());
             if (TVariable* tVar = symbol->getAsVariable()) {
-                constUnion* constArray = tVar->getConstUnionPointer();
+                TConstUnion* constArray = tVar->getConstUnionPointer();
                 variable->shareConstPointer(constArray);
             } else {
                 error(loc, "expected variable", initializer->getAsSymbolNode()->getName().c_str(), "");
@@ -2563,12 +2565,12 @@ TIntermTyped* TParseContext::addConstVectorNode(TVectorFields& fields, TIntermTy
     TIntermTyped* typedNode;
     TIntermConstantUnion* tempConstantNode = node->getAsConstantUnion();
 
-    constUnion *unionArray;
+    TConstUnion *unionArray;
     if (tempConstantNode) {
         unionArray = tempConstantNode->getUnionArrayPointer();
 
         if (!unionArray) {  // this error message should never be raised
-            infoSink.info.message(EPrefixInternalError, "constUnion not initialized in addConstVectorNode function", loc);
+            infoSink.info.message(EPrefixInternalError, "TConstUnion not initialized in addConstVectorNode function", loc);
 
             return node;
         }
@@ -2578,7 +2580,7 @@ TIntermTyped* TParseContext::addConstVectorNode(TVectorFields& fields, TIntermTy
         return 0;
     }
 
-    constUnion* constArray = new constUnion[fields.num];
+    TConstUnion* constArray = new TConstUnion[fields.num];
 
     for (int i = 0; i < fields.num; i++) {
         if (fields.offsets[i] >= node->getType().getObjectSize()) {
@@ -2610,7 +2612,7 @@ TIntermTyped* TParseContext::addConstMatrixNode(int index, TIntermTyped* node, T
     }
 
     if (tempConstantNode) {
-         constUnion* unionArray = tempConstantNode->getUnionArrayPointer();
+         TConstUnion* unionArray = tempConstantNode->getUnionArrayPointer();
          int size = tempConstantNode->getType().getMatrixRows();
          // Note: the type is corrected (dereferenced) by the caller
          typedNode = intermediate.addConstantUnion(&unionArray[size*index], tempConstantNode->getType(), loc);
@@ -2646,7 +2648,7 @@ TIntermTyped* TParseContext::addConstArrayNode(int index, TIntermTyped* node, TS
     int arrayElementSize = arrayElementType.getObjectSize();
 
     if (tempConstantNode) {
-         constUnion* unionArray = tempConstantNode->getUnionArrayPointer();
+         TConstUnion* unionArray = tempConstantNode->getUnionArrayPointer();
          typedNode = intermediate.addConstantUnion(&unionArray[arrayElementSize * index], tempConstantNode->getType(), loc);
     } else {
         error(loc, "Cannot offset into the array", "Error", "");
@@ -2680,7 +2682,7 @@ TIntermTyped* TParseContext::addConstStruct(TString& identifier, TIntermTyped* n
     }
 
     if (tempConstantNode) {
-         constUnion* constArray = tempConstantNode->getUnionArrayPointer();
+         TConstUnion* constArray = tempConstantNode->getUnionArrayPointer();
 
          typedNode = intermediate.addConstantUnion(constArray+instanceSize, tempConstantNode->getType(), loc); // type will be changed in the calling function
     } else {
@@ -2704,3 +2706,5 @@ void TParseContext::initializeExtensionBehavior()
     extensionBehavior["GL_ARB_texture_rectangle"] = EBhDisable;
     extensionBehavior["GL_3DL_array_objects"] = EBhDisable;
 }
+
+} // end namespace glslang

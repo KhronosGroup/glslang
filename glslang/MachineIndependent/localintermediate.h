@@ -40,6 +40,8 @@
 #include "SymbolTable.h"
 #include "Versions.h"
 
+namespace glslang {
+
 struct TVectorFields {
     int offsets[4];
     int num;
@@ -48,7 +50,6 @@ struct TVectorFields {
 //
 // Set of helper functions to help parse and build the tree.
 //
-class TInfoSink;
 class TIntermediate {
 public:    
     POOL_ALLOCATOR_NEW_DELETE(GetThreadPoolAllocator())
@@ -74,9 +75,9 @@ public:
     TIntermTyped* addSelection(TIntermTyped* cond, TIntermTyped* trueBlock, TIntermTyped* falseBlock, TSourceLoc);
     TIntermTyped* addComma(TIntermTyped* left, TIntermTyped* right, TSourceLoc);
     TIntermTyped* addMethod(TIntermTyped*, const TType&, const TString*, TSourceLoc);
-    TIntermConstantUnion* addConstantUnion(constUnion*, const TType&, TSourceLoc);
+    TIntermConstantUnion* addConstantUnion(TConstUnion*, const TType&, TSourceLoc);
     TIntermTyped* promoteConstantUnion(TBasicType, TIntermConstantUnion*) ;
-    bool parseConstTree(TSourceLoc, TIntermNode*, constUnion*, TOperator, const TType&, bool singleConstantParam = false);
+    bool parseConstTree(TSourceLoc, TIntermNode*, TConstUnion*, TOperator, const TType&, bool singleConstantParam = false);
     TIntermNode* addLoop(TIntermNode*, TIntermTyped*, TIntermTyped*, bool testFirst, TSourceLoc);
     TIntermBranch* addBranch(TOperator, TSourceLoc);
     TIntermBranch* addBranch(TOperator, TIntermTyped*, TSourceLoc);
@@ -96,5 +97,7 @@ protected:
 private:
     void operator=(TIntermediate&); // prevent assignments
 };
+
+} // end namespace glslang
 
 #endif // _LOCAL_INTERMEDIATE_INCLUDED_

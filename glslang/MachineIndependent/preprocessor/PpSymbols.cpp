@@ -90,7 +90,11 @@ NVIDIA HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 /////////////////////////////////// Symbol Table Variables: ///////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////
 
-static void unlinkScope(void *_scope, void* scopeList)
+namespace {
+
+using namespace glslang;
+
+void unlinkScope(void *_scope, void* scopeList)
 {
     TPpContext::Scope *scope = (TPpContext::Scope*)_scope;
 
@@ -101,6 +105,10 @@ static void unlinkScope(void *_scope, void* scopeList)
     else
         *(TPpContext::Scope**)scopeList = scope->next;
 }
+
+} // end anonymous namespace
+
+namespace glslang {
 
 /*
 * NewScope()
@@ -315,3 +323,4 @@ TPpContext::Symbol* TPpContext::LookUpSymbol(Scope *fScope, int atom)
     return NULL;
 } // LookUpSymbol
 
+} // end namespace glslang

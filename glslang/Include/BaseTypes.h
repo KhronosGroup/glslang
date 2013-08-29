@@ -37,6 +37,8 @@
 #ifndef _BASICTYPES_INCLUDED_
 #define _BASICTYPES_INCLUDED_
 
+namespace glslang {
+
 //
 // Basic type.  Arrays, vectors, sampler details, etc., are orthogonal to this.
 //
@@ -97,7 +99,7 @@ enum TStorageQualifier {
 };
 
 // These will show up in error messages
-__inline const char* getStorageQualifierString(TStorageQualifier q) 
+__inline const char* GetStorageQualifierString(TStorageQualifier q) 
 {
     switch (q) {
     case EvqTemporary:      return "temporary";      break;
@@ -133,7 +135,7 @@ enum TPrecisionQualifier {
     EpqHigh
 };
 
-__inline const char* getPrecisionQualifierString(TPrecisionQualifier p)
+__inline const char* GetPrecisionQualifierString(TPrecisionQualifier p)
 {
     switch(p) {
     case EpqNone:   return "";        break;
@@ -143,5 +145,7 @@ __inline const char* getPrecisionQualifierString(TPrecisionQualifier p)
     default:        return "unknown precision qualifier";
     }
 }
+
+} // end namespace glslang
 
 #endif // _BASICTYPES_INCLUDED_

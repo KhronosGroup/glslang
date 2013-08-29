@@ -188,7 +188,6 @@ xcopy /y $(IntDir)$(TargetName)$(TargetExt) Test</Command>
   <ItemGroup>
     <ClInclude Include="glslang\MachineIndependent\glslang_tab.cpp.h" />
     <ClInclude Include="glslang\MachineIndependent\Initialize.h" />
-    <ClInclude Include="glslang\MachineIndependent\MMap.h" />
     <ClInclude Include="glslang\MachineIndependent\ParseHelper.h" />
     <ClInclude Include="glslang\MachineIndependent\preprocessor\PpContext.h" />
     <ClInclude Include="glslang\MachineIndependent\preprocessor\PpTokens.h" />

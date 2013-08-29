@@ -50,6 +50,8 @@
 #include "../Include/Types.h"
 #include "../Include/ConstantUnion.h"
 
+namespace glslang {
+
 //
 // Operators used by the high-level (parse tree) representation.
 //
@@ -324,33 +326,40 @@ class TIntermBranch;
 class TIntermTyped;
 class TIntermMethod;
 class TIntermSymbol;
-class TInfoSink;
+
+} // end namespace glslang
 
 //
 // Base class for the tree nodes
 //
+// (Put outside the glslang namespace, as it's used as part of the external interface.)
+//
 class TIntermNode {
 public:
-    POOL_ALLOCATOR_NEW_DELETE(GetThreadPoolAllocator())
+    POOL_ALLOCATOR_NEW_DELETE(glslang::GetThreadPoolAllocator())
 
     TIntermNode() { loc.line = 0; loc.string = 0; }
-    virtual TSourceLoc getLoc() const { return loc; }
-    virtual void setLoc(TSourceLoc l) { loc = l; }
-    virtual void traverse(TIntermTraverser*) = 0;
-    virtual TIntermTyped*     getAsTyped()         { return 0; }
-    virtual TIntermConstantUnion*     getAsConstantUnion()         { return 0; }
-    virtual TIntermAggregate* getAsAggregate()     { return 0; }
-    virtual TIntermUnary*     getAsUnaryNode()     { return 0; }
-    virtual TIntermBinary*    getAsBinaryNode()    { return 0; }
-    virtual TIntermSelection* getAsSelectionNode() { return 0; }
-    virtual TIntermSwitch*    getAsSwitchNode()    { return 0; }
-    virtual TIntermMethod*    getAsMethodNode()    { return 0; }
-    virtual TIntermSymbol*    getAsSymbolNode()    { return 0; }
-    virtual TIntermBranch*    getAsBranchNode()    { return 0; }
+    virtual glslang::TSourceLoc getLoc() const { return loc; }
+    virtual void setLoc(glslang::TSourceLoc l) { loc = l; }
+    virtual void traverse(glslang::TIntermTraverser*) = 0;
+    virtual glslang::TIntermTyped*     getAsTyped()         { return 0; }
+    virtual glslang::TIntermConstantUnion*     getAsConstantUnion()         { return 0; }
+    virtual glslang::TIntermAggregate* getAsAggregate()     { return 0; }
+    virtual glslang::TIntermUnary*     getAsUnaryNode()     { return 0; }
+    virtual glslang::TIntermBinary*    getAsBinaryNode()    { return 0; }
+    virtual glslang::TIntermSelection* getAsSelectionNode() { return 0; }
+    virtual glslang::TIntermSwitch*    getAsSwitchNode()    { return 0; }
+    virtual glslang::TIntermMethod*    getAsMethodNode()    { return 0; }
+    virtual glslang::TIntermSymbol*    getAsSymbolNode()    { return 0; }
+    virtual glslang::TIntermBranch*    getAsBranchNode()    { return 0; }
     virtual ~TIntermNode() { }
 protected:
-    TSourceLoc loc;
+    glslang::TSourceLoc loc;
 };
+
+class TInfoSink;
+
+namespace glslang {
 
 //
 // This is just to help yacc.
@@ -465,15 +474,15 @@ protected:
 
 class TIntermConstantUnion : public TIntermTyped {
 public:
-    TIntermConstantUnion(constUnion *unionPointer, const TType& t) : TIntermTyped(t), unionArrayPointer(unionPointer) { }
-    constUnion* getUnionArrayPointer() const { return unionArrayPointer; }
-    void setUnionArrayPointer(constUnion *c) { unionArrayPointer = c; }
+    TIntermConstantUnion(TConstUnion *unionPointer, const TType& t) : TIntermTyped(t), unionArrayPointer(unionPointer) { }
+    TConstUnion* getUnionArrayPointer() const { return unionArrayPointer; }
+    void setUnionArrayPointer(TConstUnion *c) { unionArrayPointer = c; }
     virtual TIntermConstantUnion* getAsConstantUnion()  { return this; }
     virtual void traverse(TIntermTraverser* );
     virtual TIntermTyped* fold(TOperator, TIntermTyped*, TInfoSink&);
     virtual TIntermTyped* fold(TOperator, const TType&, TInfoSink&);
 protected:
-    constUnion *unionArrayPointer;
+    TConstUnion *unionArrayPointer;
 };
 
 //
@@ -645,5 +654,7 @@ public:
     bool postVisit;
     bool rightToLeft;
 };
+
+} // end namespace glslang
 
 #endif // __INTERMEDIATE_H

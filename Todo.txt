@@ -9,40 +9,43 @@ Performance
 Testing
   - thread safety
 
-Interfacing
-  - finish putting into a glslang namespace
-
-Shader Linking Validation
+Link Validation
     - ensure no static references thrown away
-	Cross-stage linking
-	  - type consistency check of uniform and ins <-> outs, both variables and blocks, stage-specific arrayness matching
-	  - location/binding/index check
-	  - matching initializers for uniforms
-	  - mixed es/non-es profiles
-	  - statically consumed input not produced by previous stage
-	  - matching between gl_PerVertex blocks and gl_PerFragment blocks
-	  - compute shader not with other stages
-	Intra-stage linking
-	  - exactly one main
-	  - type consistency check of uniforms, globals, ins, and outs, both variables and blocks
-	  - location/component/binding/index/offset match check
-	  - location/component aliasing (except desktop vertex shader inputs)
-	  - geometry shader input array sizes and input layout qualifier declaration
-	  - compute shader layout(local_size_*) matching
-	  - mixed es/non-es profiles
-	  - matching initializers for globals
-	  - recursion for both functions and subroutines
-	  - matching redeclarations of interface blocks
-	  - read or write to both gl_ClipVertex and gl_ClipDistance
-	  - write to only one of gl_FragColor, gl_FragData, or user-declared
-	  - 4.4: overlapping transform/feedback offsets, offset/stride overflow checks, and stride matching
+    Cross-stage linking
+      - type consistency check of uniform and ins <-> outs, both variables and blocks, stage-specific arrayness matching
+      - location/binding/index check
+      - matching initializers for uniforms
+      - mixed es/non-es profiles
+      - statically consumed input not produced by previous stage
+      - matching between gl_PerVertex blocks and gl_PerFragment blocks
+      - compute shader not with other stages
+      - 1.3: deprecated mixing fixed vertex/fragment stage with programmable fragment/vertex stage.
+      - 4.3: remove cross-version linking restrictions.
+      - 4.3: Allow mismatches in interpolation and auxiliary qualification across stages.
+    Intra-stage linking
+      - exactly one main
+      - type consistency check of uniforms, globals, ins, and outs, both variables and blocks
+      - location/component/binding/index/offset match check
+      - location/component aliasing (except desktop vertex shader inputs)
+      - geometry shader input array sizes and input layout qualifier declaration
+      - compute shader layout(local_size_*) matching
+      - mixed es/non-es profiles
+      - matching initializers for globals
+      - recursion for both functions and subroutines
+          - Even the potential for recursion through subroutine uniforms is an error.
+      - matching redeclarations of interface blocks
+      - read or write to both gl_ClipVertex and gl_ClipDistance
+      - write to only one of gl_FragColor, gl_FragData, or user-declared
+      - 4.3: Be clear that early_fragment_tests is only needed in one fragment-stage compilation unit.
+      - 4.3: Be clear that implicit array sizing is only within a stage, not cross stage.
+      - 4.4: overlapping transform/feedback offsets, offset/stride overflow checks, and stride matching
 
-Functionality to Implement/Finish
+Shader Functionality to Implement/Finish
     ESSL 3.0
       - "const" compile-time constant propagation in the front-end has to be complete, for all built-in functions
     GLSL 1.2
       - Handle multiple compilation units per stage
-      - Allow initializers on uniform declarations.  The value is set at link time.
+      - Allow initializers on uniform declarations
       - signature matching takes type conversions into account, ambiguity is an error
     GLSL 1.3
       . flat is for both user and predeclared built-in in/out variables
@@ -51,7 +54,6 @@ Functionality to Implement/Finish
       - non-perspective (linear) interpolation (noperspective)
       - add gl_ClipDistance[] to both vertex and fragment shaders
       - only statically used built-ins have to be redeclared as flat
-      - Link: Deprecated mixing fixed vertex/fragment stage with programmable fragment/vertex stage.
       - Deprecated gl_ClipVertex
       - deprecate almost all built-in state
       - ftransform() is deprecated
@@ -71,14 +73,13 @@ Functionality to Implement/Finish
                 rather than relying on gl_MaxVaryingComponents.  Also, corrected gl_MaxVaryingComponents to be 60 instead of 64.
       - Added gl_PrimitiveID as an input to fragment shaders.
       - Added gl_FragCoord qualifiers origin_upper_left, and pixel_center_integer to modify the values returned by gl_FragCoord (and have no affect on any other aspect of the pipeline or language).
-	    - including redeclaration of gl_FragCoord that adds nothing
+        - including redeclaration of gl_FragCoord that adds nothing
       - Added support for multi-sample textures through sampler2DMS and sampler2DMSArray support in texelFetch() and textureSize().
       - Broadened interface blocks from just uniforms to in and out interfaces as well.
       - Broaden array usage to include vertex shader inputs (vertex in).
       - Added geometry shaders.  This includes targeting layers in FBO rendering.
       - geometry shader layouts: they must be declared, telling the system the primitive input and output types and maximum number of vertices.
       - Added geometry shader constants.
-      - gl_FragCoord qualifiers use the layout(): origin_upper_left and pixel_center_integer.
       - Broaden structure usage to include geometry inputs and geometry outputs.
     GLSL 4.0
       - tessellation control stage and tessellation evaluation stage. Includes barrier() built-in for synchronization.
@@ -93,7 +94,7 @@ Functionality to Implement/Finish
       - Sampler arrays can take a variable index now, as long as it's value is uniform for all uses.
       - Per-sample shading. Including sample input mask gl_SampleMaskIn[] and per-sample interpolation, with explicit interpolation built-ins interpolateAtCentroid(), interpolateAtSample(), and interpolateAtOffset().
       - New precise qualifier to disallow optimizations that re-order operations or treat different instances of the same operator with different precision.
-      - Add a fused multiply andadd built-in, fma(), in relation to the new precise qualifier. (Because “a * b + c” will require two operations under new rules for precise.)
+      - Add a fused multiply and add built-in, fma(), in relation to the new precise qualifier. (Because “a * b + c” will require two operations under new rules for precise.)
       - Added new built-in floating-point functions 
          - frexp() and ldexp()
          - packUnorm2x16(), packUnorm4x8(),packSnorm4x8(), and packDouble2x32()
@@ -115,13 +116,13 @@ Functionality to Implement/Finish
     GLSL 4.1
       - Support for partitioning shaders into multiple programs to provide light-weight mixing of different shader stages.
             (GL_ARB_separate_shader_objects)
-		- layout qualifiers
-		- redeclaration of input/output blocks
-		- ...
+        - layout qualifiers
+        - redeclaration of input/output blocks
+        - ...
       - Add 64-bit floating-point attributes for vertex shader inputs.
       - Support viewport arrays so where the geometry shader selects which viewport array will transform its output.
     GLSL 4.2
-	  - Add 420-style function signature matching rules
+      - Add 420-style function signature matching rules (or did this start in 4.0?)
       + Move these previously deprecated features to be only in the compatibility profile:
         + The keyword attribute for vertex shader inputs. (Use in instead.)
         + The keyword varying for inputs and outputs. (Use in and out instead.)
@@ -129,7 +130,7 @@ Functionality to Implement/Finish
         + The built-in variables gl_FragColor and gl_FragData. (Use out instead.)
         + Built-in constants related to these.
       + Change from ASCII to UTF-8 for the language character set and also allow any characters inside comments (except the byte value 0), 
-	    including '\'.
+        including '\'.
       + Add line-continuation using '\', as in C++.
       + ES convergence
         + Clarify that .xyzwxy.xy is illegal, as it temporarily makes a “vec6”.
@@ -140,7 +141,7 @@ Functionality to Implement/Finish
         - can read/write/modify images from a shader, through new built-in functions
         - qualifiers can act independently on the opaque shader variable and the backing image, so extra qualifiers can be used to separately qualify these
       + Variables declared in if and else statements are scoped only to the end of those statements, especially for non-compound statements
-	    Note, this is not backward compatible, it may depend on #version.
+        Note, this is not backward compatible, it may depend on #version.
       - Allow implicit conversions of return values to the declared type of the function.
       - The const keyword can be used to declare variables within a function body with initializer expressions that are not constant expressions.
       + Qualifiers on variable declarations no longer have to follow a strict order. The layout qualifier can be used multiple times, and multiple parameter qualifiers can be used.
@@ -156,7 +157,6 @@ Functionality to Implement/Finish
       - Allow .length() to be applied to vectors and matrices, returning the number of components or columns.
       + Clarify that .length() returns an int type and can be used as a constant integer expression.
       - Allow swizzle operations on scalars.
-      - Even the potential for recursion through subroutine uniforms is an error.
       - Positive signed decimal literals, as well as octal and hexadecimal, can set all 32 bits. This includes setting the sign bit to create a negative value.
       - Make GLSL consistent with the API regarding user clipping, by no longer referring to gl_Positionwhen gl_ClipVertex is not written. Rather, user clipping becomes undefined.
       - Minor consistency fixes, corrections
@@ -188,38 +188,29 @@ Functionality to Implement/Finish
         GL_ARB_explicit_uniform_location extension.
       - Accept ES GLSL shader #version statements, which will request ES functionality for ES GLSL 
         versions 100 and 300, as per the GL_ARB_ES3_compatibility extension.
-      - Clarified about 90 errors as being either compile time, link time, or either.
       - Clarify and correct scoping rules to what would normally be expected and what was intended. 
         (Function parameters and body nest inside global space. Loop variables and body nest inside 
         loop scope.)
       - There are no digraphs (trigraphs were already disallowed).
       - Remove the CPP difference that it is a compile-time error to use #if or #elif on expressions 
         containing undefined macro names. This reverts back to following expected CPP behavior.
-      - Set both gl_MaxFragmentImageUniformsand gl_MaxCombinedImageUniformsto 8.
+      - Set both gl_MaxFragmentImageUniformsand gl_MaxCombinedImageUniforms to 8.
       - Clarify textureSize() for cube map arrays.
       - For layout qualifiers,
             - make negative output locations a compile-time error, and
             - make indexes outside the range [0,1] a compile-time error.
-      - Allow mismatches in interpolation and auxiliary qualification across stages.
-      - Remove cross-version linking restrictions.
       - Add textureQueryLevels() built-ins to query the number of mipmap levels, as per the 
         GL_ARB_texture_query_levels extension.
       - Make gl_Layer and gl_ViewportIndex also be inputs to the fragment shader, as per the 
         GL_ARB_fragment_layer_viewport extension.
-      - Be explicit that compile-time constant expressions evaluating on the host may get a different 
-        value than the same expression on the target. Also reinforce that compile-time constant 
-        expressions are evaluated as if precise and invariantwere used.
       - Add more examples and rules to be more specific about the required behavior of the precise 
         qualifier.
       - Clarify fragment output variables cannot be double precision.
-      - Clarify that “floating-point” generally means both single- and double-precision and be more 
-        consistent with that.
-      - Be clear that early_fragment_tests is only needed in one fragment-stage compilation unit.
       - Allow the new shared keyword to be in layout-qualifier-id, allowing backward compatibility 
         with the shared identifier that was previously used.
       + Added overlooked texture function float textureOffset (sampler2DArrayShadow sampler, vec4 P, vec2 offset [, float bias] ).
       + Add missing type in grammar, ATOMIC_UINT, and missing qualifiers COHERENT, VOLATILE, RESTRICT, READONLY, and WRITEONLY.
-	  - do version checking for the above
+      - do version checking for the above
       + Add missing initializer lists to grammar.
     GLSL 4.4
       - Incorporate the ARB_enhanced_layouts extension, which adds

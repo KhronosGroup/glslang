@@ -41,6 +41,8 @@
 
 #include "SymbolTable.h"
 
+namespace glslang {
+
 //
 // TType helper function needs a place to live.
 //
@@ -222,7 +224,7 @@ TVariable::TVariable(const TVariable& copyOf, TStructureMap& remapper) : TSymbol
 	if (copyOf.unionArray) {		
 		assert(!copyOf.type.getStruct());
 		assert(copyOf.type.getObjectSize() == 1);
-		unionArray = new constUnion[1];
+		unionArray = new TConstUnion[1];
         unionArray[0] = copyOf.unionArray[0];
 	} else
 		unionArray = 0;
@@ -283,3 +285,5 @@ void TSymbolTable::copyTable(const TSymbolTable& copyOf)
 	for (unsigned int i = 0; i < copyOf.table.size(); ++i)
 		table.push_back(copyOf.table[i]->clone(remapper));
 }
+
+} // end namespace glslang

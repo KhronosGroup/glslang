@@ -43,6 +43,8 @@
 #include "../Include/intermediate.h"
 #include "Initialize.h"
 
+namespace glslang {
+
 const int FirstProfileVersion = 150;
 const bool ForwardCompatibility = false;
 
@@ -1663,3 +1665,5 @@ void IdentifyBuiltIns(int version, EProfile profile, EShLanguage language, TSymb
         break;
     }
 }
+
+} // end namespace glslang

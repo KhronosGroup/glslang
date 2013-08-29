@@ -41,6 +41,8 @@
 #include "SymbolTable.h"
 #include "localintermediate.h"
 
+namespace glslang {
+
 typedef enum {
     EBhRequire,
     EBhEnable,
@@ -55,11 +57,8 @@ struct TPragma {
 	TPragmaTable pragmaTable;
 };
 
+class TScanContext;
 class TPpContext;
-
-namespace glslang {
-    class TScanContext;
-};
 
 //
 // The following are extra variables needed during parsing, grouped together so
@@ -70,7 +69,7 @@ public:
     TParseContext(TSymbolTable&, TIntermediate&, bool parsingBuiltins, int version, EProfile, EShLanguage, TInfoSink&,
                   bool forwardCompatible = false, EShMessages messages = EShMsgDefault);
 
-    glslang::TScanContext* scanContext;
+    TScanContext* scanContext;
     TPpContext* ppContext;
     TIntermediate& intermediate; // to hold and build a parse tree
     TSymbolTable& symbolTable;   // symbol table that goes with the current language, version, and profile
@@ -199,5 +198,7 @@ public:
     void fullIntegerCheck(TSourceLoc, const char* op);
     void doubleCheck(TSourceLoc, const char* op);
 };
+
+} // end namespace glslang
 
 #endif // _PARSER_HELPER_INCLUDED_

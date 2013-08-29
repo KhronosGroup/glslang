@@ -41,6 +41,8 @@
 
 #include "Public/ShaderLang.h"
 
+namespace glslang {
+
 OS_TLSIndex ThreadInitializeIndex = OS_INVALID_TLS_INDEX;
 
 bool InitProcess()
@@ -144,3 +146,5 @@ bool DetachProcess()
 
     return success;
 }
+
+} // end namespace glslang

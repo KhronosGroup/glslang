@@ -80,6 +80,8 @@ NVIDIA HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "../ParseHelper.h"
 
+namespace glslang {
+
 class TPpToken {
 public:
     static const int maxTokenLength = 1024;
@@ -386,5 +388,6 @@ protected:
     int mem_AddCleanup(MemoryPool *p, void (*fn)(void *, void*), void *arg1, void* arg2);
 };
 
-#endif  // PPCONTEXT_H
+} // end namespace glslang
 
+#endif  // PPCONTEXT_H

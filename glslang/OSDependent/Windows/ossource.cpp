@@ -50,6 +50,8 @@
 #error Trying to build a windows specific file in a non windows build.
 #endif
 
+namespace glslang {
+
 //
 // Thread Local Storage Operations
 //
@@ -97,44 +99,44 @@ bool OS_FreeTLSIndex(OS_TLSIndex nIndex)
 		return false;
 }
 
-namespace glslang {
-    HANDLE GlobalLock;
+HANDLE GlobalLock;
 
-    void InitGlobalLock()
-    {
-        GlobalLock = CreateMutex(0, false, 0);
-    }
+void InitGlobalLock()
+{
+    GlobalLock = CreateMutex(0, false, 0);
+}
 
-    void GetGlobalLock()
-    {
-        WaitForSingleObject(GlobalLock, INFINITE);
-    }
+void GetGlobalLock()
+{
+    WaitForSingleObject(GlobalLock, INFINITE);
+}
 
-    void ReleaseGlobalLock()
-    {
-        ReleaseMutex(GlobalLock);
-    }
+void ReleaseGlobalLock()
+{
+    ReleaseMutex(GlobalLock);
+}
 
-    void* OS_CreateThread(TThreadEntrypoint entry)
-    {
-        return (void*)_beginthreadex(0, 0, entry, 0, 0, 0);
-        //return CreateThread(0, 0, entry, 0, 0, 0);
-    }
+void* OS_CreateThread(TThreadEntrypoint entry)
+{
+    return (void*)_beginthreadex(0, 0, entry, 0, 0, 0);
+    //return CreateThread(0, 0, entry, 0, 0, 0);
+}
 
-    void OS_WaitForAllThreads(void* threads, int numThreads)
-    {
-        WaitForMultipleObjects(numThreads, (HANDLE*)threads, true, INFINITE);
-    }
+void OS_WaitForAllThreads(void* threads, int numThreads)
+{
+    WaitForMultipleObjects(numThreads, (HANDLE*)threads, true, INFINITE);
+}
 
-    void OS_Sleep(int milliseconds)
-    {
-        Sleep(milliseconds);
-    }
+void OS_Sleep(int milliseconds)
+{
+    Sleep(milliseconds);
+}
 
-    void OS_DumpMemoryCounters()
-    {
-        PROCESS_MEMORY_COUNTERS counters;
-        GetProcessMemoryInfo(GetCurrentProcess(), &counters, sizeof(counters));
-        printf("Working set size: %d\n", counters.WorkingSetSize);
-    }
-};
+void OS_DumpMemoryCounters()
+{
+    PROCESS_MEMORY_COUNTERS counters;
+    GetProcessMemoryInfo(GetCurrentProcess(), &counters, sizeof(counters));
+    printf("Working set size: %d\n", counters.WorkingSetSize);
+}
+
+} // namespace glslang

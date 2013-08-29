@@ -44,6 +44,8 @@
 
 #include "ParseHelper.h"
 
+namespace glslang {
+
 const char* StageName[EShLangCount] = {
     "vertex",
     "tessellation control",
@@ -164,3 +166,5 @@ void TParseContext::doubleCheck(TSourceLoc loc, const char* op)
     profileRequires(loc, ECoreProfile, 400, 0, op);
     profileRequires(loc, ECompatibilityProfile, 400, 0, op);
 }
+
+} // end namespace glslang

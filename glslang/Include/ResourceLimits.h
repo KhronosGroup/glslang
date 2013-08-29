@@ -58,4 +58,5 @@ struct TBuiltInResource {
     int minProgramTexelOffset;
     int maxProgramTexelOffset;
 };
+
 #endif // _RESOURCE_LIMITS_INCLUDED_

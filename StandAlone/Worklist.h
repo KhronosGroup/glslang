@@ -78,6 +78,6 @@ namespace glslang {
         std::list<std::string> worklist;
     };
 
-};
+} // end namespace glslang
 
 #endif // WORKLIST_H_INCLUDED

@@ -45,24 +45,24 @@ BOOL WINAPI DllMain(HINSTANCE hinstDLL, DWORD fdwReason, LPVOID lpvReserved)
 	{
 		case DLL_PROCESS_ATTACH:
 
-            if (!InitProcess())
+            if (! glslang::InitProcess())
                 return FALSE;
             break;
 		case DLL_THREAD_ATTACH:
 
-            if (!InitThread())
+            if (! glslang::InitThread())
                 return FALSE;
             break;
 
 		case DLL_THREAD_DETACH:
 
-			if (!DetachThread())
+			if (! glslang::DetachThread())
 				return FALSE;
 			break;
 
 		case DLL_PROCESS_DETACH:
 
-			DetachProcess();
+			glslang::DetachProcess();
 			break;
 
 		default:

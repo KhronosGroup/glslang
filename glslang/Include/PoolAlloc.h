@@ -65,6 +65,8 @@
 #include <string.h>
 #include <vector>
 
+namespace glslang {
+
 // If we are using guard blocks, we must track each indivual
 // allocation.  If we aren't using guard blocks, these
 // never get instantiated, so won't have any impact.
@@ -315,5 +317,7 @@ protected:
     pool_allocator& operator=(const pool_allocator& rhs) { return *this; }
     TPoolAllocator& allocator;
 };
+
+} // end namespace glslang
 
 #endif // _POOLALLOC_INCLUDED_

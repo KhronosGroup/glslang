@@ -34,17 +34,19 @@
 
 #include "ParseHelper.h"
 
+namespace glslang {
+
 //
 // Use this class to carry along data from node to node in 
 // the traversal
 //
 class TConstTraverser : public TIntermTraverser {
 public:
-    TConstTraverser(constUnion* cUnion, bool singleConstParam, TOperator constructType, TInfoSink& sink, const TType& t) : unionArray(cUnion), type(t),
+    TConstTraverser(TConstUnion* cUnion, bool singleConstParam, TOperator constructType, TInfoSink& sink, const TType& t) : unionArray(cUnion), type(t),
         constructorType(constructType), singleConstantParam(singleConstParam), infoSink(sink), error(false), isMatrix(false), 
         matrixCols(0), matrixRows(0) {  index = 0; tOp = EOpNull;}
     int index ;
-    constUnion *unionArray;
+    TConstUnion *unionArray;
     TOperator tOp;
     const TType& type;
     TOperator constructorType;
@@ -173,7 +175,7 @@ bool ParseSelection(bool /* preVisit */, TIntermSelection* node, TIntermTraverse
 void ParseConstantUnion(TIntermConstantUnion* node, TIntermTraverser* it)
 {
     TConstTraverser* oit = static_cast<TConstTraverser*>(it);
-    constUnion* leftUnionArray = oit->unionArray;
+    TConstUnion* leftUnionArray = oit->unionArray;
     int instanceSize = oit->type.getObjectSize();
 
     if (oit->index >= instanceSize)
@@ -182,7 +184,7 @@ void ParseConstantUnion(TIntermConstantUnion* node, TIntermTraverser* it)
     if (!oit->singleConstantParam) {
         int size = node->getType().getObjectSize();
     
-        constUnion *rightUnionArray = node->getUnionArrayPointer();
+        TConstUnion *rightUnionArray = node->getUnionArrayPointer();
         for (int i=0; i < size; i++) {
             if (oit->index >= instanceSize)
                 return;
@@ -198,7 +200,7 @@ void ParseConstantUnion(TIntermConstantUnion* node, TIntermTraverser* it)
         matrixRows = oit->matrixRows;
         isMatrix = oit->isMatrix;
         totalSize = oit->index + size;
-        constUnion *rightUnionArray = node->getUnionArrayPointer();
+        TConstUnion *rightUnionArray = node->getUnionArrayPointer();
         if (!isMatrix) {
             int count = 0;
             for (int i = oit->index; i < totalSize; i++) {
@@ -255,7 +257,7 @@ bool ParseBranch(bool /* previsit*/, TIntermBranch* node, TIntermTraverser* it)
 // Individual functions can be initialized to 0 to skip processing of that
 // type of node.  It's children will still be processed.
 //
-bool TIntermediate::parseConstTree(TSourceLoc line, TIntermNode* root, constUnion* unionArray, TOperator constructorType, const TType& t, bool singleConstantParam)
+bool TIntermediate::parseConstTree(TSourceLoc line, TIntermNode* root, TConstUnion* unionArray, TOperator constructorType, const TType& t, bool singleConstantParam)
 {
     if (root == 0)
         return false;
@@ -277,3 +279,5 @@ bool TIntermediate::parseConstTree(TSourceLoc line, TIntermNode* root, constUnio
     else
         return false;
 }
+
+} // end namespace glslang

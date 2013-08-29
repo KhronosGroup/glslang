@@ -40,11 +40,10 @@
 
 #include "ParseHelper.h"
 
-class TPpContext;
-class TPpToken;
-
 namespace glslang {
 
+class TPpContext;
+class TPpToken;
 class TParserToken;
 
 class TScanContext {
@@ -79,4 +78,4 @@ protected:
     int keyword;
 };
 
-};
+} // end namespace glslang

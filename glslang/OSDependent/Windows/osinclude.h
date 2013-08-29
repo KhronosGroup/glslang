@@ -44,6 +44,8 @@
 #error Trying to include a windows specific file in a non windows build.
 #endif
 
+namespace glslang {
+
 //
 // Thread Local Storage Operations
 //
@@ -56,18 +58,18 @@ bool        OS_FreeTLSIndex(OS_TLSIndex nIndex);
 
 void* OS_GetTLSValue(OS_TLSIndex nIndex);
 
-namespace glslang {
-    void InitGlobalLock();
-    void GetGlobalLock();
-    void ReleaseGlobalLock();
+void InitGlobalLock();
+void GetGlobalLock();
+void ReleaseGlobalLock();
 
-    typedef unsigned int (__stdcall *TThreadEntrypoint)(void*);
-    void* OS_CreateThread(TThreadEntrypoint);
-    void OS_WaitForAllThreads(void* threads, int numThreads);
+typedef unsigned int (__stdcall *TThreadEntrypoint)(void*);
+void* OS_CreateThread(TThreadEntrypoint);
+void OS_WaitForAllThreads(void* threads, int numThreads);
 
-    void OS_Sleep(int milliseconds);
+void OS_Sleep(int milliseconds);
 
-    void OS_DumpMemoryCounters();
-};
+void OS_DumpMemoryCounters();
+
+} // end namespace glslang
 
 #endif // __OSINCLUDE_H

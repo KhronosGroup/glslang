@@ -52,7 +52,6 @@ class TCompiler;
 class TLinker;
 class TUniformMap;
 
-
 //
 // The base class used to back handles returned to the driver.
 //
@@ -78,6 +77,7 @@ public:
     virtual TInfoSink& getInfoSink() { return infoSink; }
     TInfoSink infoSink;
 };
+
 class TIntermNode;
 
 //
@@ -105,8 +105,8 @@ protected:
 //
 // Link operations are base on a list of compile results...
 //
-typedef TVector<TCompiler*> TCompilerList;
-typedef TVector<TShHandleBase*> THandleList;
+typedef glslang::TVector<TCompiler*> TCompilerList;
+typedef glslang::TVector<TShHandleBase*> THandleList;
 
 //
 // The base class for the machine dependent linker to derive from

@@ -230,10 +230,6 @@ bool ScanVersion(TInputScanner& input, int& version, EProfile& profile)
     return foundNonSpaceTab;
 }
 
-}; // end glslang namespace
-
-namespace glslang {
-
 // Fill this in when doing glslang-level scanning, to hand back to the parser.
 class TParserToken {
 public:
@@ -242,10 +238,10 @@ public:
     YYSTYPE& sType;
 };
 
-};  // end namespace glslang
+} // end namespace glslang
 
 // This is the function the glslang parser (i.e., bison) calls to get its next token
-int yylex(YYSTYPE* glslangTokenDesc, TParseContext& parseContext)
+int yylex(YYSTYPE* glslangTokenDesc, glslang::TParseContext& parseContext)
 {
     glslang::TParserToken token(*glslangTokenDesc);
 
@@ -1012,4 +1008,4 @@ int TScanContext::secondGenerationImage()
     return identifierOrType();
 }
 
-};
+} // end namespace glslang

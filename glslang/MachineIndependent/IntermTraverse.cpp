@@ -36,6 +36,8 @@
 
 #include "../Include/intermediate.h"
 
+namespace glslang {
+
 //
 // Traverse the intermediate representation tree, and
 // call a node type specific function for each node.
@@ -275,3 +277,5 @@ void TIntermSwitch::traverse(TIntermTraverser* it)
     if (visit && it->postVisit && it->visitSwitch)
         it->visitSwitch(false, this, it);
 }
+
+} // end namespace glslang

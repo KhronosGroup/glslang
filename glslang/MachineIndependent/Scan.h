@@ -112,4 +112,4 @@ bool ConsumeComment(TInputScanner& input);
 void ConsumeWhitespaceComment(TInputScanner& input, bool& foundNonSpaceTab);
 bool ScanVersion(TInputScanner& input, int& version, EProfile& profile);
 
-}; // end glslang namespace
+} // end namespace glslang

@@ -36,6 +36,8 @@
 
 #include <string.h>
 
+namespace glslang {
+
 void TInfoSinkBase::append(const char *s)           
 {
     if (outputStream & EString) {
@@ -103,3 +105,5 @@ void TInfoSinkBase::append(const TString& t)
     if (outputStream & EStdOut)
         fprintf(stdout, "%s", t.c_str());
 }
+
+} // end namespace glslang

@@ -114,9 +114,6 @@
     <ClInclude Include="glslang\MachineIndependent\Initialize.h">
       <Filter>Machine Independent</Filter>
     </ClInclude>
-    <ClInclude Include="glslang\MachineIndependent\MMap.h">
-      <Filter>Machine Independent</Filter>
-    </ClInclude>
     <ClInclude Include="glslang\MachineIndependent\ParseHelper.h">
       <Filter>Machine Independent</Filter>
     </ClInclude>

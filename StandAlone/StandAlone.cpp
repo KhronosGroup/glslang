@@ -72,7 +72,7 @@ ShBinding FixedAttributeBindings[] = {
 
 ShBindingTable FixedAttributeTable = { 3, FixedAttributeBindings };
 
-static EShLanguage FindLanguage(const std::string& name);
+EShLanguage FindLanguage(const std::string& name);
 bool CompileFile(const char *fileName, ShHandle, int options, const TBuiltInResource*);
 void usage();
 void FreeFileData(char **data);
@@ -232,7 +232,7 @@ int C_DECL main(int argc, char* argv[])
 //   .geom = geometry
 //   .frag = fragment
 //
-static EShLanguage FindLanguage(const std::string& name)
+EShLanguage FindLanguage(const std::string& name)
 {
     size_t ext = name.rfind('.');
     if (ext == std::string::npos) {

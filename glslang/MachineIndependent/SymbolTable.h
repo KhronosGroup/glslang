@@ -69,6 +69,8 @@
 #include "../Include/intermediate.h"
 #include "../Include/InfoSink.h"
 
+namespace glslang {
+
 //
 // Symbol base class.  (Can build functions or variables out of these...)
 //
@@ -126,16 +128,16 @@ public:
 
     virtual void dump(TInfoSink &infoSink) const;
 
-    constUnion* getConstUnionPointer() {
+    TConstUnion* getConstUnionPointer() {
         if (!unionArray)
-            unionArray = new constUnion[type.getObjectSize()];
+            unionArray = new TConstUnion[type.getObjectSize()];
 
         return unionArray;
     }
 
-    constUnion* getConstUnionPointer() const { return unionArray; }
+    TConstUnion* getConstUnionPointer() const { return unionArray; }
 
-    void shareConstPointer( constUnion *constArray)
+    void shareConstPointer( TConstUnion *constArray)
     {
         delete unionArray;
         unionArray = constArray;
@@ -150,7 +152,7 @@ protected:
     bool userType;
     // we are assuming that Pool Allocator will free the memory allocated to unionArray
     // when this object is destroyed
-    constUnion *unionArray;
+    TConstUnion *unionArray;
     TType *arrayInformationType;  // this is used for updating maxArraySize in all the references to a given symbol
 };
 
@@ -478,5 +480,7 @@ protected:
     bool noBuiltInRedeclarations;
     unsigned int adoptedLevels;
 };
+
+} // end namespace glslang
 
 #endif // _SYMBOL_TABLE_INCLUDED_

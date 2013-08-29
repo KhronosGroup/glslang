@@ -57,6 +57,8 @@
 
 namespace { // anonymous namespace for file-local functions and symbols
 
+using namespace glslang;
+
 int MapVersionToIndex(int version)
 {
         switch(version) {
@@ -105,7 +107,7 @@ bool InitializeSymbolTable(const TString& builtIns, int version, EProfile profil
 	
     TParseContext parseContext(symbolTable, intermediate, true, version, profile, language, infoSink);
     TPpContext ppContext(parseContext);
-    glslang::TScanContext scanContext(parseContext);
+    TScanContext scanContext(parseContext);
     parseContext.scanContext = &scanContext;
     parseContext.ppContext = &ppContext;
     
@@ -310,7 +312,7 @@ bool DeduceProfile(TInfoSink& infoSink, int version, EProfile& profile)
     return true;
 }
 
-}; // end anonymous namespace for local functions
+} // end anonymous namespace for local functions
 
 //
 // ShInitialize() should be called exactly once per process, not per thread.

@@ -81,6 +81,8 @@ NVIDIA HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "PpContext.h"
 
+namespace glslang {
+
 TPpContext::TPpContext(TParseContext& pc) : 
     parseContext(pc), preamble(0), strings(0), notAVersionToken(false),
     ScopeList(0), CurrentScope(0), GlobalScope(0)
@@ -124,3 +126,5 @@ void TPpContext::setShaderStrings(char* s[], int l[], int n)
         currentString = 0;
     }
 }
+
+} // end namespace glslang

@@ -36,6 +36,8 @@
 
 #include "localintermediate.h"
 
+namespace glslang {
+
 //
 // Two purposes:
 // 1.  Show an example of how to iterate tree.  Functions can
@@ -584,3 +586,5 @@ void TIntermediate::outputTree(TIntermNode* root)
 
     root->traverse(&it);
 }
+
+} // end namespace glslang

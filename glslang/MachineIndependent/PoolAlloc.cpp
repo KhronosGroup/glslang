@@ -38,6 +38,8 @@
 #include "Include/InitializeGlobals.h"
 #include "osinclude.h"
 
+namespace glslang {
+
 OS_TLSIndex PoolIndex;
 
 void InitializeGlobalPools()
@@ -333,3 +335,5 @@ void TAllocation::checkAllocList() const
     for (const TAllocation* alloc = this; alloc != 0; alloc = alloc->prevAlloc)
         alloc->check();
 }
+
+} // end namespace glslang

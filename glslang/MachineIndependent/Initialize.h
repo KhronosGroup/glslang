@@ -43,6 +43,8 @@
 #include "SymbolTable.h"
 #include "Versions.h"
 
+namespace glslang {
+
 class TBuiltIns {
 public:
     POOL_ALLOCATOR_NEW_DELETE(GetThreadPoolAllocator())
@@ -70,5 +72,7 @@ protected:
 
 void IdentifyBuiltIns(int version, EProfile profile, EShLanguage, TSymbolTable&);
 void IdentifyBuiltIns(int version, EProfile profile, EShLanguage, TSymbolTable&, const TBuiltInResource &resources);
+
+} // end namespace glslang
 
 #endif // _INITIALIZE_INCLUDED_

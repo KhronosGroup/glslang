@@ -35,8 +35,8 @@
 //
 
 /**
- * This is bison grammar and production code for parsing the OpenGL 2.0 shading
- * languages.
+ * This is bison grammar and productions for parsing all versions of the 
+ * GLSL shading languages.
  */
 %{
 
@@ -59,37 +59,39 @@ Jutta Degener, 1995
 #include "ParseHelper.h"
 #include "../Public/ShaderLang.h"
 
+using namespace glslang;
+
 %}
 
 %union {
     struct {
-        TSourceLoc loc;
+        glslang::TSourceLoc loc;
         union {
-            TString *string;
+            glslang::TString *string;
             int i;
             unsigned int u;
             bool b;
             double d;
         };
-        TSymbol* symbol;
+        glslang::TSymbol* symbol;
     } lex;
     struct {
-        TSourceLoc loc;
-        TOperator op;
+        glslang::TSourceLoc loc;
+        glslang::TOperator op;
         union {
             TIntermNode* intermNode;
-            TIntermNodePair nodePair;
-            TIntermTyped* intermTypedNode;
-            TIntermAggregate* intermAggregate;
+            glslang::TIntermNodePair nodePair;
+            glslang::TIntermTyped* intermTypedNode;
+            glslang::TIntermAggregate* intermAggregate;
         };
         union {
-            TPublicType type;
-            TFunction* function;
-            TParameter param;
-            TTypeLoc typeLine;
-            TTypeList* typeList;
-            TArraySizes arraySizes;
-            TIdentifierList* identifierList;
+            glslang::TPublicType type;
+            glslang::TFunction* function;
+            glslang::TParameter param;
+            glslang::TTypeLoc typeLine;
+            glslang::TTypeList* typeList;
+            glslang::TArraySizes arraySizes;
+            glslang::TIdentifierList* identifierList;
         };
     } interm;
 }
@@ -224,29 +226,29 @@ primary_expression
         $$ = $1;
     }
     | INTCONSTANT {
-        constUnion *unionArray = new constUnion[1];
+        TConstUnion *unionArray = new TConstUnion[1];
         unionArray->setIConst($1.i);
         $$ = parseContext.intermediate.addConstantUnion(unionArray, TType(EbtInt, EvqConst), $1.loc);
     }
     | UINTCONSTANT {        
         parseContext.fullIntegerCheck($1.loc, "unsigned literal");
-        constUnion *unionArray = new constUnion[1];
+        TConstUnion *unionArray = new TConstUnion[1];
         unionArray->setUConst($1.u);
         $$ = parseContext.intermediate.addConstantUnion(unionArray, TType(EbtUint, EvqConst), $1.loc);
     }
     | FLOATCONSTANT {
-        constUnion *unionArray = new constUnion[1];
+        TConstUnion *unionArray = new TConstUnion[1];
         unionArray->setDConst($1.d);
         $$ = parseContext.intermediate.addConstantUnion(unionArray, TType(EbtFloat, EvqConst), $1.loc);
     }
     | DOUBLECONSTANT {
         parseContext.doubleCheck($1.loc, "double literal");
-        constUnion *unionArray = new constUnion[1];
+        TConstUnion *unionArray = new TConstUnion[1];
         unionArray->setDConst($1.d);
         $$ = parseContext.intermediate.addConstantUnion(unionArray, TType(EbtDouble, EvqConst), $1.loc);
     }
     | BOOLCONSTANT {
-        constUnion *unionArray = new constUnion[1];
+        TConstUnion *unionArray = new TConstUnion[1];
         unionArray->setBConst($1.b);
         $$ = parseContext.intermediate.addConstantUnion(unionArray, TType(EbtBool, EvqConst), $1.loc);
     }
@@ -511,7 +513,7 @@ relational_expression
         $$ = parseContext.intermediate.addBinaryMath(EOpLessThan, $1, $3, $2.loc);
         if ($$ == 0) {
             parseContext.binaryOpError($2.loc, "<", $1->getCompleteString(), $3->getCompleteString());
-            constUnion *unionArray = new constUnion[1];
+            TConstUnion *unionArray = new TConstUnion[1];
             unionArray->setBConst(false);
             $$ = parseContext.intermediate.addConstantUnion(unionArray, TType(EbtBool, EvqConst), $2.loc);
         }
@@ -520,7 +522,7 @@ relational_expression
         $$ = parseContext.intermediate.addBinaryMath(EOpGreaterThan, $1, $3, $2.loc);
         if ($$ == 0) {
             parseContext.binaryOpError($2.loc, ">", $1->getCompleteString(), $3->getCompleteString());
-            constUnion *unionArray = new constUnion[1];
+            TConstUnion *unionArray = new TConstUnion[1];
             unionArray->setBConst(false);
             $$ = parseContext.intermediate.addConstantUnion(unionArray, TType(EbtBool, EvqConst), $2.loc);
         }
@@ -529,7 +531,7 @@ relational_expression
         $$ = parseContext.intermediate.addBinaryMath(EOpLessThanEqual, $1, $3, $2.loc);
         if ($$ == 0) {
             parseContext.binaryOpError($2.loc, "<=", $1->getCompleteString(), $3->getCompleteString());
-            constUnion *unionArray = new constUnion[1];
+            TConstUnion *unionArray = new TConstUnion[1];
             unionArray->setBConst(false);
             $$ = parseContext.intermediate.addConstantUnion(unionArray, TType(EbtBool, EvqConst), $2.loc);
         }
@@ -538,7 +540,7 @@ relational_expression
         $$ = parseContext.intermediate.addBinaryMath(EOpGreaterThanEqual, $1, $3, $2.loc);
         if ($$ == 0) {
             parseContext.binaryOpError($2.loc, ">=", $1->getCompleteString(), $3->getCompleteString());
-            constUnion *unionArray = new constUnion[1];
+            TConstUnion *unionArray = new TConstUnion[1];
             unionArray->setBConst(false);
             $$ = parseContext.intermediate.addConstantUnion(unionArray, TType(EbtBool, EvqConst), $2.loc);
         }
@@ -551,7 +553,7 @@ equality_expression
         $$ = parseContext.intermediate.addBinaryMath(EOpEqual, $1, $3, $2.loc);
         if ($$ == 0) {
             parseContext.binaryOpError($2.loc, "==", $1->getCompleteString(), $3->getCompleteString());
-            constUnion *unionArray = new constUnion[1];
+            TConstUnion *unionArray = new TConstUnion[1];
             unionArray->setBConst(false);
             $$ = parseContext.intermediate.addConstantUnion(unionArray, TType(EbtBool, EvqConst), $2.loc);
         } else if (($1->isArray() || $3->isArray()))
@@ -561,7 +563,7 @@ equality_expression
         $$ = parseContext.intermediate.addBinaryMath(EOpNotEqual, $1, $3, $2.loc);
         if ($$ == 0) {
             parseContext.binaryOpError($2.loc, "!=", $1->getCompleteString(), $3->getCompleteString());
-            constUnion *unionArray = new constUnion[1];
+            TConstUnion *unionArray = new TConstUnion[1];
             unionArray->setBConst(false);
             $$ = parseContext.intermediate.addConstantUnion(unionArray, TType(EbtBool, EvqConst), $2.loc);
         } else if (($1->isArray() || $3->isArray()))
@@ -611,7 +613,7 @@ logical_and_expression
         $$ = parseContext.intermediate.addBinaryMath(EOpLogicalAnd, $1, $3, $2.loc);
         if ($$ == 0) {
             parseContext.binaryOpError($2.loc, "&&", $1->getCompleteString(), $3->getCompleteString());
-            constUnion *unionArray = new constUnion[1];
+            TConstUnion *unionArray = new TConstUnion[1];
             unionArray->setBConst(false);
             $$ = parseContext.intermediate.addConstantUnion(unionArray, TType(EbtBool, EvqConst), $2.loc);
         }
@@ -624,7 +626,7 @@ logical_xor_expression
         $$ = parseContext.intermediate.addBinaryMath(EOpLogicalXor, $1, $3, $2.loc);
         if ($$ == 0) {
             parseContext.binaryOpError($2.loc, "^^", $1->getCompleteString(), $3->getCompleteString());
-            constUnion *unionArray = new constUnion[1];
+            TConstUnion *unionArray = new TConstUnion[1];
             unionArray->setBConst(false);
             $$ = parseContext.intermediate.addConstantUnion(unionArray, TType(EbtBool, EvqConst), $2.loc);
         }
@@ -637,7 +639,7 @@ logical_or_expression
         $$ = parseContext.intermediate.addBinaryMath(EOpLogicalOr, $1, $3, $2.loc);
         if ($$ == 0) {
             parseContext.binaryOpError($2.loc, "||", $1->getCompleteString(), $3->getCompleteString());
-            constUnion *unionArray = new constUnion[1];
+            TConstUnion *unionArray = new TConstUnion[1];
             unionArray->setBConst(false);
             $$ = parseContext.intermediate.addConstantUnion(unionArray, TType(EbtBool, EvqConst), $2.loc);
         }
@@ -871,7 +873,7 @@ function_header
     : fully_specified_type IDENTIFIER LEFT_PAREN {
         if ($1.qualifier.storage != EvqGlobal && $1.qualifier.storage != EvqTemporary) {
             parseContext.error($2.loc, "no qualifiers allowed for function return",
-                               getStorageQualifierString($1.qualifier.storage), "");
+                               GetStorageQualifierString($1.qualifier.storage), "");
         }
 
         // Add the function as a prototype after parsing it (we do not support recursion)

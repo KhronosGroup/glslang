@@ -91,6 +91,8 @@ NVIDIA HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #undef malloc
 #undef free
 
+namespace glslang {
+
 struct chunk {
     struct chunk        *next;
 };
@@ -184,3 +186,5 @@ int TPpContext::mem_AddCleanup(MemoryPool *pool, void (*fn)(void *, void*), void
     pool->cleanup = cleanup;
     return 0;
 }
+
+} // end namespace glslang

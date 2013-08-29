@@ -94,11 +94,15 @@ NVIDIA HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #undef realloc
 #undef free
 
+namespace {
+
+using namespace glslang;
+
 ///////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////// String table: //////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////
 
-static const struct {
+const struct {
     int val;
     const char *str;
 } tokens[] = {
@@ -135,7 +139,6 @@ static const struct {
 * InitStringTable() - Initialize the string table.
 *
 */
-
 int InitStringTable(TPpContext::StringTable *stable)
 {
     stable->strings = (char *) malloc(INIT_STRING_TABLE_SIZE);
@@ -151,7 +154,6 @@ int InitStringTable(TPpContext::StringTable *stable)
 * FreeStringTable() - Free the string table.
 *
 */
-
 void FreeStringTable(TPpContext::StringTable *stable)
 {
     if (stable->strings)
@@ -165,8 +167,7 @@ void FreeStringTable(TPpContext::StringTable *stable)
 * HashString() - Hash a string with the base hash function.
 *
 */
-
-static int HashString(const char *s)
+int HashString(const char *s)
 {
     int hval = 0;
 
@@ -181,8 +182,7 @@ static int HashString(const char *s)
 * HashString2() - Hash a string with the incrimenting hash function.
 *
 */
-
-static int HashString2(const char *s)
+int HashString2(const char *s)
 {
     int hval = 0;
 
@@ -197,8 +197,7 @@ static int HashString2(const char *s)
 * AddString() - Add a string to a string table.  Return it's offset.
 *
 */
-
-static int AddString(TPpContext::StringTable *stable, const char *s)
+int AddString(TPpContext::StringTable *stable, const char *s)
 {
     int len, loc;
     char *str;
@@ -227,8 +226,7 @@ static int AddString(TPpContext::StringTable *stable, const char *s)
 * InitHashTable() - Initialize the hash table.
 *
 */
-
-static int InitHashTable(TPpContext::HashTable *htable, int fsize)
+int InitHashTable(TPpContext::HashTable *htable, int fsize)
 {
     int ii;
 
@@ -250,8 +248,7 @@ static int InitHashTable(TPpContext::HashTable *htable, int fsize)
 * FreeHashTable() - Free the hash table.
 *
 */
-
-static void FreeHashTable(TPpContext::HashTable *htable)
+void FreeHashTable(TPpContext::HashTable *htable)
 {
     if (htable->entry)
         free(htable->entry);
@@ -264,8 +261,7 @@ static void FreeHashTable(TPpContext::HashTable *htable)
 * Empty() - See if a hash table entry is empty.
 *
 */
-
-static int Empty(TPpContext::HashTable *htable, int hashloc)
+int Empty(TPpContext::HashTable *htable, int hashloc)
 {
     assert(hashloc >= 0 && hashloc < htable->size);
     if (htable->entry[hashloc].index == 0) {
@@ -279,8 +275,7 @@ static int Empty(TPpContext::HashTable *htable, int hashloc)
 * Match() - See if a hash table entry is matches a string.
 *
 */
-
-static int Match(TPpContext::HashTable *htable, TPpContext::StringTable *stable, const char *s, int hashloc)
+int Match(TPpContext::HashTable *htable, TPpContext::StringTable *stable, const char *s, int hashloc)
 {
     int strloc;
 
@@ -302,7 +297,6 @@ static int Match(TPpContext::HashTable *htable, TPpContext::StringTable *stable,
 * GrowAtomTable() - Grow the atom table to at least "size" if it's smaller.
 *
 */
-
 int GrowAtomTable(TPpContext::AtomTable *atable, int size)
 {
     int *newmap, *newrev;
@@ -337,8 +331,7 @@ int GrowAtomTable(TPpContext::AtomTable *atable, int size)
 * lReverse() - Reverse the bottom 20 bits of a 32 bit int.
 *
 */
-
-static int lReverse(int fval)
+int lReverse(int fval)
 {
     unsigned int in = fval;
     int result = 0, cnt = 0;
@@ -362,7 +355,6 @@ static int lReverse(int fval)
 * AllocateAtom() - Allocate a new atom.  Associated with the "undefined" value of -1.
 *
 */
-
 int AllocateAtom(TPpContext::AtomTable *atable)
 {
     if (atable->nextFree >= atable->size)
@@ -377,7 +369,6 @@ int AllocateAtom(TPpContext::AtomTable *atable)
 * SetAtomValue() - Allocate a new atom associated with "hashindex".
 *
 */
-
 void SetAtomValue(TPpContext::AtomTable *atable, int atomnumber, int hashindex)
 {
     atable->amap[atomnumber] = atable->htable.entry[hashindex].index;
@@ -388,7 +379,6 @@ void SetAtomValue(TPpContext::AtomTable *atable, int atomnumber, int hashindex)
 * FindHashLoc() - Find the hash location for this string.  Return -1 it hash table is full.
 *
 */
-
 int FindHashLoc(TPpContext::AtomTable *atable, const char *s)
 {
     int hashloc, hashdelta, count;
@@ -438,11 +428,14 @@ int FindHashLoc(TPpContext::AtomTable *atable, const char *s)
     return hashloc;
 } // FindHashLoc
 
+} // end anonymous namespace
+
+namespace glslang {
+
 /*
 * IncreaseHashTableSize()
 *
 */
-
 int TPpContext::IncreaseHashTableSize(AtomTable *atable)
 {
     int ii, strloc, oldhashloc, value, size;
@@ -705,7 +698,4 @@ void TPpContext::FreeAtomTable(AtomTable *atable)
     atable->size = 0;
 } // FreeAtomTable
 
-///////////////////////////////////////////////////////////////////////////////////////////////
-///////////////////////////////////////// End of atom.c ///////////////////////////////////////
-///////////////////////////////////////////////////////////////////////////////////////////////
-
+} // end namespace glslang

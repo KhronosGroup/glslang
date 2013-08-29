@@ -36,6 +36,8 @@
 
 #include "../Include/intermediate.h"
 
+namespace glslang {
+
 class TAliveTraverser : public TIntermTraverser {
 public:
     TAliveTraverser(TStorageQualifier q) : TIntermTraverser(), found(false), qualifier(q)
@@ -91,5 +93,7 @@ bool AliveSelection(bool preVisit, TIntermSelection* node, TIntermTraverser* it)
 
     return true;
 }
+
+} // end namespace glslang
 
 #endif

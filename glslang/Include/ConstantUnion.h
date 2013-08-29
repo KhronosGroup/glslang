@@ -37,8 +37,9 @@
 #ifndef _CONSTANT_UNION_INCLUDED_
 #define _CONSTANT_UNION_INCLUDED_
 
+namespace glslang {
 
-class constUnion {
+class TConstUnion {
 public:
 
     POOL_ALLOCATOR_NEW_DELETE(GetThreadPoolAllocator())
@@ -103,7 +104,7 @@ public:
         return false;
     }
 
-    bool operator==(const constUnion& constant) const
+    bool operator==(const TConstUnion& constant) const
     {
         if (constant.type != type)
             return false;
@@ -156,12 +157,12 @@ public:
         return !operator==(b);
     }
 
-    bool operator!=(const constUnion& constant) const
+    bool operator!=(const TConstUnion& constant) const
     {
         return !operator==(constant);
     }
 
-    bool operator>(const constUnion& constant) const
+    bool operator>(const TConstUnion& constant) const
     { 
         assert(type == constant.type);
         switch (type) {
@@ -188,7 +189,7 @@ public:
         return false;
     }
 
-    bool operator<(const constUnion& constant) const
+    bool operator<(const TConstUnion& constant) const
     { 
         assert(type == constant.type);
         switch (type) {
@@ -215,9 +216,9 @@ public:
         return false;
     }
 
-    constUnion operator+(const constUnion& constant) const
+    TConstUnion operator+(const TConstUnion& constant) const
     { 
-        constUnion returnValue;
+        TConstUnion returnValue;
         assert(type == constant.type);
         switch (type) {
         case EbtInt: returnValue.setIConst(iConst + constant.iConst); break;
@@ -229,9 +230,9 @@ public:
         return returnValue;
     }
 
-    constUnion operator-(const constUnion& constant) const
+    TConstUnion operator-(const TConstUnion& constant) const
     { 
-        constUnion returnValue;
+        TConstUnion returnValue;
         assert(type == constant.type);
         switch (type) {
         case EbtInt: returnValue.setIConst(iConst - constant.iConst); break;
@@ -243,9 +244,9 @@ public:
         return returnValue;
     }
 
-    constUnion operator*(const constUnion& constant) const
+    TConstUnion operator*(const TConstUnion& constant) const
     { 
-        constUnion returnValue;
+        TConstUnion returnValue;
         assert(type == constant.type);
         switch (type) {
         case EbtInt: returnValue.setIConst(iConst * constant.iConst); break;
@@ -257,9 +258,9 @@ public:
         return returnValue;
     }
 
-    constUnion operator%(const constUnion& constant) const
+    TConstUnion operator%(const TConstUnion& constant) const
     { 
-        constUnion returnValue;
+        TConstUnion returnValue;
         assert(type == constant.type);
         switch (type) {
         case EbtInt:  returnValue.setIConst(iConst % constant.iConst); break;
@@ -270,9 +271,9 @@ public:
         return returnValue;
     }
 
-    constUnion operator>>(const constUnion& constant) const
+    TConstUnion operator>>(const TConstUnion& constant) const
     { 
-        constUnion returnValue;
+        TConstUnion returnValue;
         switch (type) {
         case EbtInt:
             switch (constant.type) {
@@ -294,9 +295,9 @@ public:
         return returnValue;
     }
 
-    constUnion operator<<(const constUnion& constant) const
+    TConstUnion operator<<(const TConstUnion& constant) const
     { 
-        constUnion returnValue;
+        TConstUnion returnValue;
         switch (type) {
         case EbtInt:
             switch (constant.type) {
@@ -318,9 +319,9 @@ public:
         return returnValue;
     }
 
-    constUnion operator&(const constUnion& constant) const
+    TConstUnion operator&(const TConstUnion& constant) const
     { 
-        constUnion returnValue;
+        TConstUnion returnValue;
         assert(type == constant.type);
         switch (type) {
         case EbtInt:  returnValue.setIConst(iConst & constant.iConst); break;
@@ -331,9 +332,9 @@ public:
         return returnValue;
     }
 
-    constUnion operator|(const constUnion& constant) const
+    TConstUnion operator|(const TConstUnion& constant) const
     { 
-        constUnion returnValue;
+        TConstUnion returnValue;
         assert(type == constant.type);
         switch (type) {
         case EbtInt:  returnValue.setIConst(iConst | constant.iConst); break;
@@ -344,9 +345,9 @@ public:
         return returnValue;
     }
 
-    constUnion operator^(const constUnion& constant) const
+    TConstUnion operator^(const TConstUnion& constant) const
     { 
-        constUnion returnValue;
+        TConstUnion returnValue;
         assert(type == constant.type);
         switch (type) {
         case EbtInt:  returnValue.setIConst(iConst ^ constant.iConst); break;
@@ -357,9 +358,9 @@ public:
         return returnValue;
     }
 
-    constUnion operator~() const
+    TConstUnion operator~() const
     { 
-        constUnion returnValue;
+        TConstUnion returnValue;
         switch (type) {
         case EbtInt:  returnValue.setIConst(~iConst); break;
         case EbtUint: returnValue.setUConst(~uConst); break;
@@ -369,9 +370,9 @@ public:
         return returnValue;
     }
 
-    constUnion operator&&(const constUnion& constant) const
+    TConstUnion operator&&(const TConstUnion& constant) const
     { 
-        constUnion returnValue;
+        TConstUnion returnValue;
         assert(type == constant.type);
         switch (type) {
         case EbtBool: returnValue.setBConst(bConst && constant.bConst); break;
@@ -381,9 +382,9 @@ public:
         return returnValue;
     }
 
-    constUnion operator||(const constUnion& constant) const
+    TConstUnion operator||(const TConstUnion& constant) const
     { 
-        constUnion returnValue;
+        TConstUnion returnValue;
         assert(type == constant.type);
         switch (type) {
         case EbtBool: returnValue.setBConst(bConst || constant.bConst); break;
@@ -405,5 +406,7 @@ private:
 
     TBasicType type;
 };
+
+} // end namespace glslang
 
 #endif // _CONSTANT_UNION_INCLUDED_

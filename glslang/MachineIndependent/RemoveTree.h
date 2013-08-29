@@ -32,4 +32,8 @@
 //POSSIBILITY OF SUCH DAMAGE.
 //
 
+namespace glslang {
+
 void RemoveAllTreeNodes(TIntermNode*);
+
+} // end namespace glslang

@@ -40,6 +40,8 @@
 #include "../Include/Common.h"
 #include "../Include/BaseTypes.h"
 
+namespace glslang {
+
 const int GlslangMaxTypeLength = 200;
 
 //
@@ -680,8 +682,8 @@ public:
             return getBasicString();
     }
 
-    const char* getStorageQualifierString() const { return ::getStorageQualifierString(qualifier.storage); }
-    const char* getPrecisionQualifierString() const { return ::getPrecisionQualifierString(qualifier.precision); }
+    const char* getStorageQualifierString() const { return GetStorageQualifierString(qualifier.storage); }
+    const char* getPrecisionQualifierString() const { return GetPrecisionQualifierString(qualifier.precision); }
     TTypeList* getStruct() { return structure; }
     TTypeList* getStruct() const { return structure; }
 
@@ -752,5 +754,7 @@ protected:
 	TString *fieldName;         // for structure field names
 	TString *typeName;          // for structure field type name
 };
+
+} // end namespace glslang
 
 #endif // _TYPES_INCLUDED_

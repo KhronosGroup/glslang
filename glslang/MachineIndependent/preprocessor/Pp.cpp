@@ -94,6 +94,8 @@ NVIDIA HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #undef malloc
 #undef free
 
+namespace glslang {
+
 int TPpContext::InitCPP()
 {
     TPpContext::AtomTable* atable = &atomTable;
@@ -821,8 +823,8 @@ void TPpContext::FreeMacro(MacroSymbol *s) {
     DeleteTokenStream(s->body);
 }
 
-static int eof_scan(TPpContext*, TPpContext::InputSrc* in, TPpToken* yylvalpp) { return -1; }
-static void noop(TPpContext*, TPpContext::InputSrc* in, int ch, TPpToken* yylvalpp) { }
+int eof_scan(TPpContext*, TPpContext::InputSrc* in, TPpToken* yylvalpp) { return -1; }
+void noop(TPpContext*, TPpContext::InputSrc* in, int ch, TPpToken* yylvalpp) { }
 
 void TPpContext::PushEofSrc()
 {
@@ -1074,3 +1076,5 @@ int TPpContext::ChkCorrectElseNesting()
 
     return 0;
 }
+
+} // end namespace glslang

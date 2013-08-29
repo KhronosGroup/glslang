@@ -85,6 +85,8 @@
 #define TBaseList std::list
 #define TBaseSet std::set
 
+namespace glslang {
+
 //
 // Pool version of string.
 //
@@ -169,5 +171,7 @@ typedef TMap<TString, TString> TPragmaTable;
 typedef TMap<TString, TString>::tAllocator TPragmaTableAllocator;
 
 const int GlslangMaxTokenLength = 1024;
+
+} // end namespace glslang
 
 #endif // _COMMON_INCLUDED_

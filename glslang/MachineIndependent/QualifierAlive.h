@@ -32,4 +32,8 @@
 //POSSIBILITY OF SUCH DAMAGE.
 //
 
+namespace glslang {
+
 bool QualifierWritten(TIntermNode* root, TStorageQualifier);
+
+} // end namespace glslang

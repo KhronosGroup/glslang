@@ -37,11 +37,14 @@
 
 #include "osinclude.h"
 
+namespace glslang {
 
 bool InitProcess();
 bool InitThread();
 bool DetachThread();
 bool DetachProcess();
+
+} // end namespace glslang
 
 #endif // __INITIALIZEDLL_H
 
