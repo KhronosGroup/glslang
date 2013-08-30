@@ -1,81 +1,134 @@
 0:? Sequence
-0:26  Function Definition: main( (void)
-0:26    Function Parameters: 
-0:28    Sequence
-0:28      Sequence
-0:28        move second child to first child (4-component vector of float)
-0:28          'dx' (4-component vector of float)
-0:28          dPdx (4-component vector of float)
-0:28            'inv' (smooth in 4-component vector of float)
-0:35      move second child to first child (4-component vector of float)
-0:35        'FragColor' (out 4-component vector of float)
-0:35        2.000000
-0:35        6.000000
-0:35        3.000000
-0:35        171.887339
-0:40      move second child to first child (4-component vector of float)
-0:40        'FragColor' (out 4-component vector of float)
-0:40        3.000000
-0:40        2.000000
-0:40        0.001593
-0:40        -0.999999
-0:41      move second child to first child (2-component vector of float)
-0:41        'out2' (out 2-component vector of float)
-0:41        5.600000
-0:41        5.800000
+0:28  Function Definition: main( (void)
+0:28    Function Parameters: 
+0:30    Sequence
+0:30      Sequence
+0:30        move second child to first child (4-component vector of float)
+0:30          'dx' (4-component vector of float)
+0:30          dPdx (4-component vector of float)
+0:30            'inv' (smooth in 4-component vector of float)
+0:37      move second child to first child (4-component vector of float)
+0:37        'FragColor' (out 4-component vector of float)
+0:37        2.000000
+0:37        6.000000
+0:37        3.000000
+0:37        171.887339
 0:42      move second child to first child (4-component vector of float)
-0:42        'out3' (out 4-component vector of float)
-0:42        20.085537
-0:42        2.302585
-0:42        16.000000
-0:42        8.000000
-0:43      move second child to first child (4-component vector of float)
-0:43        'out4' (out 4-component vector of float)
-0:43        10.000000
-0:43        0.100000
-0:43        4.700000
-0:43        10.900000
-0:44      move second child to first child (4-component vector of int)
-0:44        'out5' (out 4-component vector of int)
-0:44        8 (const int)
-0:44        17 (const int)
-0:44        -1 (const int)
-0:44        1 (const int)
-0:45      move second child to first child (3-component vector of float)
-0:45        'out6' (out 3-component vector of float)
-0:45        -1.000000
-0:45        1.000000
-0:45        0.000000
-0:46      move second child to first child (4-component vector of float)
-0:46        'out7' (out 4-component vector of float)
-0:46        4.000000
-0:46        -4.000000
-0:46        5.000000
-0:46        -5.000000
-0:47      move second child to first child (4-component vector of float)
-0:47        'out8' (out 4-component vector of float)
-0:47        4.000000
-0:47        5.000000
-0:47        4.000000
-0:47        -6.000000
+0:42        'FragColor' (out 4-component vector of float)
+0:42        3.000000
+0:42        2.000000
+0:42        0.001593
+0:42        -0.999999
+0:43      move second child to first child (2-component vector of float)
+0:43        'out2' (out 2-component vector of float)
+0:43        5.600000
+0:43        5.800000
+0:44      move second child to first child (4-component vector of float)
+0:44        'out3' (out 4-component vector of float)
+0:44        20.085537
+0:44        2.302585
+0:44        16.000000
+0:44        8.000000
+0:45      move second child to first child (4-component vector of float)
+0:45        'out4' (out 4-component vector of float)
+0:45        10.000000
+0:45        0.100000
+0:45        4.700000
+0:45        10.900000
+0:46      move second child to first child (4-component vector of int)
+0:46        'out5' (out 4-component vector of int)
+0:46        8 (const int)
+0:46        17 (const int)
+0:46        -1 (const int)
+0:46        1 (const int)
+0:47      move second child to first child (3-component vector of float)
+0:47        'out6' (out 3-component vector of float)
+0:47        -1.000000
+0:47        1.000000
+0:47        0.000000
 0:48      move second child to first child (4-component vector of float)
-0:48        'out9' (out 4-component vector of float)
-0:48        8.000000
+0:48        'out7' (out 4-component vector of float)
+0:48        4.000000
 0:48        -4.000000
-0:48        0.345000
-0:48        0.400000
+0:48        5.000000
+0:48        -5.000000
 0:49      move second child to first child (4-component vector of float)
-0:49        'out10' (out 4-component vector of float)
-0:49        1.000000
-0:49        1.000000
-0:49        0.000000
-0:49        0.000000
+0:49        'out8' (out 4-component vector of float)
+0:49        4.000000
+0:49        5.000000
+0:49        4.000000
+0:49        -6.000000
 0:50      move second child to first child (4-component vector of float)
-0:50        'out11' (out 4-component vector of float)
-0:50        0.000000
-0:50        0.000000
-0:50        1.000000
-0:50        0.000000
+0:50        'out9' (out 4-component vector of float)
+0:50        8.000000
+0:50        -4.000000
+0:50        0.345000
+0:50        0.400000
+0:51      move second child to first child (4-component vector of float)
+0:51        'out10' (out 4-component vector of float)
+0:51        1.000000
+0:51        1.000000
+0:51        0.000000
+0:51        0.000000
+0:52      move second child to first child (4-component vector of float)
+0:52        'out11' (out 4-component vector of float)
+0:52        0.000000
+0:52        0.000000
+0:52        1.000000
+0:52        0.000000
+0:53      move second child to first child (4-component vector of float)
+0:53        'out11' (out 4-component vector of float)
+0:53        1.029639
+0:53        0.799690
+0:53        0.674741
+0:53        1.570696
+0:54      move second child to first child (4-component vector of float)
+0:54        'out11' (out 4-component vector of float)
+0:54        0.000000
+0:54        0.523599
+0:54        1.570796
+0:54        1.047198
+0:58      move second child to first child (4-component vector of float)
+0:58        'out11' (out 4-component vector of float)
+0:58        1.373401
+0:58        0.000000
+0:58        0.896055
+0:58        -0.380506
+0:62      move second child to first child (2-component vector of int)
+0:62        'out12' (out 2-component vector of int)
+0:62        15 (const int)
+0:62        16 (const int)
+0:63      move second child to first child (2-component vector of int)
+0:63        'out12' (out 2-component vector of int)
+0:63        17 (const int)
+0:63        17 (const int)
+0:64      move second child to first child (2-component vector of float)
+0:64        'out2' (out 2-component vector of float)
+0:64        871.421253
+0:64        4913.000000
+0:65      move second child to first child (3-component vector of uint)
+0:65        'out13' (out 3-component vector of uint)
+0:65        10 (const uint)
+0:65        20 (const uint)
+0:65        30 (const uint)
+0:66      move second child to first child (2-component vector of float)
+0:66        'out2' (out 2-component vector of float)
+0:66        3.000000
+0:66        6.000000
+0:67      move second child to first child (2-component vector of float)
+0:67        'out2' (out 2-component vector of float)
+0:67        3.500000
+0:67        4.500000
+0:68      move second child to first child (2-component vector of float)
+0:68        'out2' (out 2-component vector of float)
+0:68        0.000000
+0:68        1.000000
+0:69      move second child to first child (4-component vector of float)
+0:69        'out11' (out 4-component vector of float)
+0:69        0.000000
+0:69        0.028000
+0:69        0.500000
+0:69        1.000000
 0:?   Linker Objects
 0:?     'inv' (smooth in 4-component vector of float)
 0:?     'FragColor' (out 4-component vector of float)
@@ -89,4 +142,6 @@
 0:?     'out9' (out 4-component vector of float)
 0:?     'out10' (out 4-component vector of float)
 0:?     'out11' (out 4-component vector of float)
+0:?     'out12' (out 2-component vector of int)
+0:?     'out13' (out 3-component vector of uint)
 

@@ -373,7 +373,7 @@ TIntermTyped* TIntermConstantUnion::fold(TOperator op, TIntermTyped* constantNod
         break;
 
     default:
-        infoSink.info.message(EPrefixInternalError, "Invalid operator for constant folding", getLoc());
+        infoSink.info.message(EPrefixInternalError, "Invalid binary operator for constant folding", getLoc());
 
         return 0;
     }
@@ -633,21 +633,26 @@ TIntermTyped* TIntermediate::fold(TIntermAggregate* aggrNode)
 
     // First, see if this is an operation to constant fold, kick out if not,
     // see what size the result is if so.
+
+    bool componentwise = false;  // will also say componentwise if a scalar argument gets repeated to make per-component results
     int objectSize;
     switch (aggrNode->getOp()) {
+    case EOpAtan:
+    case EOpPow:
     case EOpMin:
     case EOpMax:
+    case EOpMix:
+    case EOpClamp:
+        componentwise = true;
+        objectSize = children[0]->getAsConstantUnion()->getType().getObjectSize();
+        break;
+    case EOpCross:
     case EOpReflect:
     case EOpRefract:
     case EOpFaceForward:
-    case EOpAtan:
-    case EOpPow:
-    case EOpClamp:
-    case EOpMix:
-    case EOpDistance:
-    case EOpCross:
         objectSize = children[0]->getAsConstantUnion()->getType().getObjectSize();
         break;
+    case EOpDistance:
     case EOpDot:
         objectSize = 1;
         break;
@@ -656,10 +661,12 @@ TIntermTyped* TIntermediate::fold(TIntermAggregate* aggrNode)
                      children[1]->getAsTyped()->getType().getVectorSize();
         break;
     case EOpStep:
+        componentwise = true;
         objectSize = std::max(children[0]->getAsTyped()->getType().getVectorSize(),
                               children[1]->getAsTyped()->getType().getVectorSize());
         break;
     case EOpSmoothStep:
+        componentwise = true;
         objectSize = std::max(children[0]->getAsTyped()->getType().getVectorSize(),
                               children[2]->getAsTyped()->getType().getVectorSize());
         break;
@@ -669,44 +676,108 @@ TIntermTyped* TIntermediate::fold(TIntermAggregate* aggrNode)
     TConstUnion* newConstArray = new TConstUnion[objectSize];
 
     TVector<TConstUnion*> childConstUnions;
-    for (unsigned int i = 0; i < children.size(); ++i)
-        childConstUnions.push_back(children[i]->getAsConstantUnion()->getUnionArrayPointer());
+    for (unsigned int arg = 0; arg < children.size(); ++arg)
+        childConstUnions.push_back(children[arg]->getAsConstantUnion()->getUnionArrayPointer());
 
     // Second, do the actual folding
 
-    // TODO: Functionality: constant folding: separate component-wise from non-component-wise
-    switch (aggrNode->getOp()) {
-    case EOpMin:
-    case EOpMax:
-        for (int i = 0; i < objectSize; i++) {
-            if (aggrNode->getOp() == EOpMax)
-                newConstArray[i].setDConst(std::max(childConstUnions[0]->getDConst(), childConstUnions[1]->getDConst()));
-            else
-                newConstArray[i].setDConst(std::min(childConstUnions[0]->getDConst(), childConstUnions[1]->getDConst()));
+    bool isFloatingPoint = children[0]->getAsTyped()->getBasicType() == EbtFloat ||
+                           children[0]->getAsTyped()->getBasicType() == EbtDouble;
+    bool isSigned = children[0]->getAsTyped()->getBasicType() == EbtInt;
+    if (componentwise) {
+        for (int comp = 0; comp < objectSize; comp++) {
+
+            // some arguments are scalars instead of matching vectors; simulate a smear
+            int arg0comp = std::min(comp, children[0]->getAsTyped()->getType().getVectorSize() - 1);
+            int arg1comp;
+            if (children.size() > 1)
+                arg1comp = std::min(comp, children[1]->getAsTyped()->getType().getVectorSize() - 1);
+            int arg2comp;
+            if (children.size() > 2)
+                arg2comp = std::min(comp, children[2]->getAsTyped()->getType().getVectorSize() - 1);
+
+            switch (aggrNode->getOp()) {
+            case EOpAtan:
+                newConstArray[comp].setDConst(atan2(childConstUnions[0][arg0comp].getDConst(), childConstUnions[1][arg1comp].getDConst()));
+                break;
+            case EOpPow:
+                newConstArray[comp].setDConst(pow(childConstUnions[0][arg0comp].getDConst(), childConstUnions[1][arg1comp].getDConst()));
+                break;
+            case EOpMin:
+                if (isFloatingPoint)
+                    newConstArray[comp].setDConst(std::min(childConstUnions[0][arg0comp].getDConst(), childConstUnions[1][arg1comp].getDConst()));
+                else if (isSigned)
+                    newConstArray[comp].setIConst(std::min(childConstUnions[0][arg0comp].getIConst(), childConstUnions[1][arg1comp].getIConst()));
+                else
+                    newConstArray[comp].setUConst(std::min(childConstUnions[0][arg0comp].getUConst(), childConstUnions[1][arg1comp].getUConst()));
+                break;
+            case EOpMax:
+                if (isFloatingPoint)
+                    newConstArray[comp].setDConst(std::max(childConstUnions[0][arg0comp].getDConst(), childConstUnions[1][arg1comp].getDConst()));
+                else if (isSigned)
+                    newConstArray[comp].setIConst(std::max(childConstUnions[0][arg0comp].getIConst(), childConstUnions[1][arg1comp].getIConst()));
+                else
+                    newConstArray[comp].setUConst(std::max(childConstUnions[0][arg0comp].getUConst(), childConstUnions[1][arg1comp].getUConst()));
+                break;
+            case EOpClamp:
+                if (isFloatingPoint)
+                    newConstArray[comp].setDConst(std::min(std::max(childConstUnions[0][arg0comp].getDConst(), childConstUnions[1][arg1comp].getDConst()), 
+                                                                                                               childConstUnions[2][arg2comp].getDConst()));
+                else if (isSigned)
+                    newConstArray[comp].setIConst(std::min(std::max(childConstUnions[0][arg0comp].getIConst(), childConstUnions[1][arg1comp].getIConst()), 
+                                                                                                               childConstUnions[2][arg2comp].getIConst()));
+                else
+                    newConstArray[comp].setUConst(std::min(std::max(childConstUnions[0][arg0comp].getUConst(), childConstUnions[1][arg1comp].getUConst()), 
+                                                                                                               childConstUnions[2][arg2comp].getUConst()));
+                break;
+            case EOpMix:
+                if (children[2]->getAsTyped()->getBasicType() == EbtBool)
+                    newConstArray[comp].setDConst(childConstUnions[2][arg2comp].getBConst() ? childConstUnions[1][arg1comp].getDConst() :
+                                                                                              childConstUnions[0][arg0comp].getDConst());
+                else
+                    newConstArray[comp].setDConst(childConstUnions[0][arg0comp].getDConst() * (1.0 - childConstUnions[2][arg2comp].getDConst()) +
+                                                  childConstUnions[1][arg1comp].getDConst() *        childConstUnions[2][arg2comp].getDConst());
+                break;
+            case EOpStep:
+                newConstArray[comp].setDConst(childConstUnions[1][arg1comp].getDConst() < childConstUnions[0][arg0comp].getDConst() ? 0.0 : 1.0);
+                break;
+            case EOpSmoothStep:
+            {
+                double t = (childConstUnions[2][arg2comp].getDConst() - childConstUnions[0][arg0comp].getDConst()) / 
+                           (childConstUnions[1][arg1comp].getDConst() - childConstUnions[0][arg0comp].getDConst());
+                if (t < 0.0)
+                    t = 0.0;
+                if (t > 1.0)
+                    t = 1.0;
+                newConstArray[comp].setDConst(t * t * (3.0 - 2.0 * t));
+                break;
+            }
+            default:
+                infoSink.info.message(EPrefixInternalError, "componentwise constant folding operation not implemented", aggrNode->getLoc());
+                return aggrNode;
+            }
         }
-        break;
+    } else {
+        // Non-componentwise...
 
-    // TODO: Functionality: constant folding: the rest of the ops have to be fleshed out
+        switch (aggrNode->getOp()) {
 
-    case EOpAtan:
-    case EOpPow:
-    case EOpModf:
-    case EOpClamp:
-    case EOpMix:
-    case EOpStep:
-    case EOpSmoothStep:
-    case EOpDistance:
-    case EOpDot:
-    case EOpCross:
-    case EOpFaceForward:
-    case EOpReflect:
-    case EOpRefract:
-    case EOpOuterProduct:
-        infoSink.info.message(EPrefixInternalError, "constant folding operation not implemented", aggrNode->getLoc());
-        return aggrNode;
+        // TODO: Functionality: constant folding: the rest of the ops have to be fleshed out
 
-    default:
-        return aggrNode;
+        case EOpModf:
+        case EOpDistance:
+        case EOpDot:
+        case EOpCross:
+        case EOpFaceForward:
+        case EOpReflect:
+        case EOpRefract:
+        case EOpOuterProduct:
+            infoSink.info.message(EPrefixInternalError, "constant folding operation not implemented", aggrNode->getLoc());
+            return aggrNode;
+
+        default:
+            return aggrNode;
+        }
     }
 
     TIntermConstantUnion *newNode = new TIntermConstantUnion(newConstArray, aggrNode->getType());

@@ -21,7 +21,9 @@ out vec4 out7;
 out vec4 out8;
 out vec4 out9;
 out vec4 out10;
-out vec4 out11;
+out vec4 out11; 
+out ivec2 out12;
+out uvec3 out13;
 
 void main()
 {
@@ -48,4 +50,21 @@ void main()
     out9 = vec4(roundEven(7.5), roundEven(-4.5), fract(2.345), fract(-2.6)); // 8, -4, .345, 0.4
     out10 = vec4(isinf(4.0/0.0), isinf(-3.0/0.0), isinf(0.0/0.0), isinf(-93048593405938405938405.0));  // true, true, false, false -> 1.0, 1.0, 0.0, 0.0
     out11 = vec4(isnan(4.0/0.0), isnan(-3.0/0.0), isnan(0.0/0.0), isnan(-93048593405938405938405.0));  // false, false, true, false -> 0.0, 1.0, 0.0, 0.0
+    out11 = vec4(tan(0.8), atan(1.029), atan(8.0, 10.0), atan(10000.0));                               // 1.029, 0.8, 0.6747, 1.57
+    out11 = vec4(asin(0.0), asin(0.5), acos(0.0), acos(0.5));                                          // 0.0, .523599, 1.57, 1.047
+
+    const vec4 v1 = vec4(1.0, 0.0, 0.5, -0.2);
+    const vec4 v2 = vec4(0.2, 0.3, 0.4, 0.5);
+    out11 = atan(v1, v2);                      // 1.373401, 0.0, 0.896055, -0.380506
+
+    const ivec2 v3 = ivec2(15.0, 17.0);
+    const ivec2 v4 = ivec2(17.0, 15.0);
+    out12 = min(v3, 16);                      // 15, 16
+    out12 = max(v3, v4);                      // 17, 17
+    out2 = pow(vec2(v3), vec2(2.5, 3.0));     // 871.4, 4913
+    out13 = clamp(uvec3(1, 20, 50), 10u, 30u);  // 10, 20, 30
+    out2 = mix(vec2(3.0, 4.0), vec2(5.0, 6.0), bvec2(false, true));  // 3.0, 6.0
+    out2 = mix(vec2(3.0, 4.0), vec2(5.0, 6.0), 0.25);  // 3.5, 4.5
+    out2 = step(0.5, vec2(0.2, 0.6));                  // 0.0, 1.0
+    out11 = smoothstep(50.0, 60.0, vec4(40.0, 51.0, 55.0, 70.0)); // 0.0, 0.028, 0.5, 1.0
 }
