@@ -572,7 +572,7 @@ protected:
     bool userDefined; // used for user defined function names
 	bool optimize;
 	bool debug;
-	TPragmaTable *pragmaTable;
+	TPragmaTable* pragmaTable;
 };
 
 //
@@ -634,6 +634,7 @@ public:
         visitAggregate(0),
         visitLoop(0),
         visitBranch(0),
+        visitSwitch(0),
         depth(0),
         preVisit(true),
         postVisit(false),

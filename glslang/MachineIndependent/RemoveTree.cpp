@@ -88,6 +88,20 @@ void RemoveConstantUnion(TIntermConstantUnion* node, TIntermTraverser*)
 	delete node;
 }
 
+bool RemoveLoop(bool  /*preVisit*/ , TIntermLoop* node, TIntermTraverser*)
+{
+	delete node;
+
+    return true;
+}
+
+bool RemoveBranch(bool  /*preVisit*/ , TIntermBranch* node, TIntermTraverser*)
+{
+	delete node;
+
+    return true;
+}
+
 //
 // Entry point.
 //
@@ -95,12 +109,14 @@ void RemoveAllTreeNodes(TIntermNode* root)
 {
     TIntermTraverser it;
 
-    it.visitAggregate     = RemoveAggregate;
-    it.visitBinary        = RemoveBinary;
-    it.visitConstantUnion = RemoveConstantUnion;
-    it.visitSelection     = RemoveSelection;
     it.visitSymbol        = RemoveSymbol;
+    it.visitConstantUnion = RemoveConstantUnion;
+    it.visitBinary        = RemoveBinary;
     it.visitUnary         = RemoveUnary;
+    it.visitAggregate     = RemoveAggregate;
+    it.visitSelection     = RemoveSelection;
+    it.visitLoop          = RemoveLoop;
+    it.visitBranch        = RemoveBranch;
     it.visitSwitch        = RemoveSwitch;
 
 	it.preVisit = false;

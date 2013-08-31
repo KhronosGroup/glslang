@@ -1,8 +1,4 @@
-Current functionality level:  ESSL 3.0
-
-Error checking
-  - compile-time check for static recursion
-  - location layout range/overlap semantics
+Current functionality level: ESSL 3.0
 
 Performance
 
@@ -27,6 +23,7 @@ Link Validation
       - type consistency check of uniforms, globals, ins, and outs, both variables and blocks
       - location/component/binding/index/offset match check
       - location/component aliasing (except desktop vertex shader inputs)
+      - location layout range/overlap semantics
       - geometry shader input array sizes and input layout qualifier declaration
       - compute shader layout(local_size_*) matching
       - mixed es/non-es profiles

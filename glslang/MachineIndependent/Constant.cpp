@@ -198,9 +198,10 @@ TIntermTyped* TIntermConstantUnion::fold(TOperator op, TIntermTyped* constantNod
         newConstArray = new TConstUnion[objectSize];
         for (int i = 0; i < objectSize; i++) {
             switch (getType().getBasicType()) {
+            case EbtDouble:
             case EbtFloat:
                 newConstArray[i].setDConst(unionArray[i].getDConst() / rightUnionArray[i].getDConst());
-            break;
+                break;
 
             case EbtInt:
                 if (rightUnionArray[i] == 0) {
@@ -438,6 +439,7 @@ TIntermTyped* TIntermConstantUnion::fold(TOperator op, const TType& returnType, 
         switch (op) {
         case EOpNegative:
             switch (getType().getBasicType()) {
+            case EbtDouble:
             case EbtFloat: newConstArray[i].setDConst(-unionArray[i].getDConst()); break;
             case EbtInt:   newConstArray[i].setIConst(-unionArray[i].getIConst()); break;
             case EbtUint:  newConstArray[i].setUConst(static_cast<unsigned int>(-static_cast<int>(unionArray[i].getUConst())));  break;

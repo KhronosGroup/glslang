@@ -46,6 +46,17 @@ extern "C" {
     SH_IMPORT_EXPORT void ShOutputHtml();
 }
 
+// Command-line options
+enum TOptions {
+	EOptionNone               = 0x000,
+	EOptionIntermediate       = 0x001,
+	EOptionSuppressInfolog    = 0x002,
+	EOptionMemoryLeakMode     = 0x004,
+    EOptionRelaxedErrors      = 0x008,
+    EOptionGiveWarnings       = 0x010,
+    EOptionsLinkProgram       = 0x020,
+};
+
 //
 // Return codes from main.
 //
@@ -109,7 +120,7 @@ void GenerateResources(TBuiltInResource& resources)
 }
 
 glslang::TWorklist Worklist;
-int DebugOptions = 0;
+int Options = 0;
 bool Delay = false;
 
 bool ProcessArguments(int argc, char* argv[])
@@ -123,20 +134,20 @@ bool ProcessArguments(int argc, char* argv[])
                 Delay = true;                        
                 break;
             case 'i': 
-                DebugOptions |= EDebugOpIntermediate;
+                Options |= EOptionIntermediate;
                 break;
             case 'l':
-                DebugOptions |= EDebugOpMemoryLeakMode;
+                Options |= EOptionsLinkProgram;
+                break;
+            case 'm':
+                Options |= EOptionMemoryLeakMode;
                 break;
             case 'r':
-                DebugOptions |= EDebugOpRelaxedErrors;
+                Options |= EOptionRelaxedErrors;
                 break;
             case 's':
-                DebugOptions |= EDebugOpSuppressInfolog;
+                Options |= EOptionSuppressInfolog;
                 break;
-            case 't':
-                DebugOptions |= EDebugOpTexturePrototypes;
-                break;                    
             default:
                 return false;
             }
@@ -155,21 +166,21 @@ unsigned int
 #ifdef _WIN32
     __stdcall
 #endif
-    CompileShaders(void*)
+CompileShaders(void*)
 {
     ShHandle compiler;
 
     std::string shaderName;
     while (Worklist.remove(shaderName)) {
-        compiler = ShConstructCompiler(FindLanguage(shaderName), DebugOptions);
+        compiler = ShConstructCompiler(FindLanguage(shaderName), Options);
         if (compiler == 0)
             return false;
 
         TBuiltInResource resources;
         GenerateResources(resources);
-        CompileFile(shaderName.c_str(), compiler, DebugOptions, &resources);
+        CompileFile(shaderName.c_str(), compiler, Options, &resources);
 
-        if (! (DebugOptions & EDebugOpSuppressInfolog))
+        if (! (Options & EOptionSuppressInfolog))
             puts(ShGetInfoLog(compiler));
 
         ShDestruct(compiler);
@@ -231,6 +242,7 @@ int C_DECL main(int argc, char* argv[])
 //   .tese = tessellation evaluation
 //   .geom = geometry
 //   .frag = fragment
+//   .comp = compute
 //
 EShLanguage FindLanguage(const std::string& name)
 {
@@ -261,7 +273,7 @@ EShLanguage FindLanguage(const std::string& name)
 //
 //   Read a file's data into a string, and compile it using ShCompile
 //
-bool CompileFile(const char *fileName, ShHandle compiler, int debugOptions, const TBuiltInResource *resources)
+bool CompileFile(const char *fileName, ShHandle compiler, int Options, const TBuiltInResource *resources)
 {
     int ret;
     char** shaderStrings = ReadFileData(fileName);
@@ -280,18 +292,20 @@ bool CompileFile(const char *fileName, ShHandle compiler, int debugOptions, cons
         return false;
 
     EShMessages messages = EShMsgDefault;
-    if (debugOptions & EDebugOpRelaxedErrors)
+    if (Options & EOptionRelaxedErrors)
         messages = (EShMessages)(messages | EShMsgRelaxedErrors);
-    for (int i = 0; i < ((debugOptions & EDebugOpMemoryLeakMode) ? 100 : 1); ++i) {
-        for (int j = 0; j < ((debugOptions & EDebugOpMemoryLeakMode) ? 100 : 1); ++j) {
-            //ret = ShCompile(compiler, shaderStrings, NumShaderStrings, lengths, EShOptNone, resources, debugOptions, 100, false, messages);
-            ret = ShCompile(compiler, shaderStrings, NumShaderStrings, 0, EShOptNone, resources, debugOptions, 100, false, messages);
+    if (Options & EOptionIntermediate)
+        messages = (EShMessages)(messages | EShMsgAST);
+    for (int i = 0; i < ((Options & EOptionMemoryLeakMode) ? 100 : 1); ++i) {
+        for (int j = 0; j < ((Options & EOptionMemoryLeakMode) ? 100 : 1); ++j) {
+            //ret = ShCompile(compiler, shaderStrings, NumShaderStrings, lengths, EShOptNone, resources, Options, 100, false, messages);
+            ret = ShCompile(compiler, shaderStrings, NumShaderStrings, 0, EShOptNone, resources, Options, 100, false, messages);
             //const char* multi[4] = { "# ve", "rsion", " 300 e", "s" };
             //const char* multi[7] = { "/", "/", "\\", "\n", "\n", "#", "version 300 es" };
-            //ret = ShCompile(compiler, multi, 4, 0, EShOptNone, resources, debugOptions, 100, false, messages);
+            //ret = ShCompile(compiler, multi, 4, 0, EShOptNone, resources, Options, 100, false, messages);
         }
 
-        if (debugOptions & EDebugOpMemoryLeakMode)
+        if (Options & EOptionMemoryLeakMode)
             glslang::OS_DumpMemoryCounters();
     }
 
@@ -319,7 +333,8 @@ void usage()
            "To get other information, use one of the following options:\n"
            "-i: intermediate tree (glslang AST) is printed out\n"
            "-d: delay exit\n"
-           "-l: memory leak mode\n"
+           "-l: link validation of all input files\n"
+           "-m: memory leak mode\n"
            "-s: silent mode\n"
            "-r: relaxed semantic error-checking mode\n");
 }

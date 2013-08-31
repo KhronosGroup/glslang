@@ -120,7 +120,8 @@ typedef enum {
 enum EShMessages {
     EShMsgDefault          = 0,         // default is to give all required errors and extra warnings
     EShMsgRelaxedErrors    = (1 << 0),  // be liberal in accepting input
-    EShMsgSuppressWarnings = (1 << 1)   // suppress all warnings, except those required by the specification
+    EShMsgSuppressWarnings = (1 << 1),  // suppress all warnings, except those required by the specification
+    EShMsgAST              = (1 << 2),  // print the AST intermediate representation
 };
 
 //
@@ -177,18 +178,6 @@ SH_IMPORT_EXPORT int ShCompile(
     EShMessages messages = EShMsgDefault // warnings and errors
     );
 
-
-//
-// Similar to ShCompile, but accepts an opaque handle to an
-// intermediate language structure.
-//
-SH_IMPORT_EXPORT int ShCompileIntermediate(
-    ShHandle compiler,
-    ShHandle intermediate,
-    const EShOptimizationLevel,
-    int debuggable           // boolean
-    );
-
 SH_IMPORT_EXPORT int ShLink(
     const ShHandle,               // linker object
     const ShHandle h[],           // compiler objects to link together
@@ -228,20 +217,8 @@ SH_IMPORT_EXPORT int ShExcludeAttributes(const ShHandle, int *attributes, int co
 //
 SH_IMPORT_EXPORT int ShGetUniformLocation(const ShHandle uniformMap, const char* name);
 
-enum TDebugOptions {
-	EDebugOpNone               = 0x000,
-	EDebugOpIntermediate       = 0x001,
-	EDebugOpAssembly           = 0x002,
-    EDebugOpObjectCode         = 0x004,
-	EDebugOpLinkMaps           = 0x008,
-	EDebugOpSuppressInfolog    = 0x010,
-	EDebugOpMemoryLeakMode     = 0x020,
-    EDebugOpTexturePrototypes  = 0x040,
-    EDebugOpRelaxedErrors      = 0x080,
-    EDebugOpGiveWarnings       = 0x100,
-};
 #ifdef __cplusplus
-    }
+    }  // end extern "C"
 #endif
 
 #endif // _COMPILER_INTERFACE_INCLUDED_

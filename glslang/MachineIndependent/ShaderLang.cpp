@@ -413,10 +413,10 @@ int ShCompile(
     const int* inputLengths,
     const EShOptimizationLevel optLevel,
     const TBuiltInResource* resources,
-    int debugOptions,
+    int debugOptions,          // currently unused
     int defaultVersion,        // use 100 for ES environment, 110 for desktop
     bool forwardCompatible,    // give errors for use of deprecated features
-    EShMessages messages       // warnings/errors
+    EShMessages messages       // warnings/errors/AST; things to print out
     )
 {
     if (! InitThread())
@@ -513,6 +513,10 @@ int ShCompile(
         success = false;
     intermediate.addSymbolLinkageNodes(parseContext.treeRoot, parseContext.linkage, parseContext.language, symbolTable);
 
+    // Clean up the symbol table before deallocating the pool memory it used.
+    // The AST is self-sufficient now, so it can be done before the rest of compilation/linking.
+    delete symbolTableMemory;
+
     if (success && parseContext.treeRoot) {
         if (optLevel == EShOptNoGeneration)
             parseContext.infoSink.info.message(EPrefixNone, "No errors.  No code generation or linking was requested.");
@@ -520,7 +524,7 @@ int ShCompile(
             success = intermediate.postProcess(parseContext.treeRoot, parseContext.language);
 
             if (success) {
-                if (debugOptions & EDebugOpIntermediate)
+                if (messages & EShMsgAST)
                     intermediate.outputTree(parseContext.treeRoot);
 
                 //
@@ -534,15 +538,11 @@ int ShCompile(
         parseContext.infoSink.info.prefix(EPrefixError);
         parseContext.infoSink.info << parseContext.numErrors << " compilation errors.  No code generated.\n\n";
         success = false;
-        if (debugOptions & EDebugOpIntermediate)
+        if (messages & EShMsgAST)
             intermediate.outputTree(parseContext.treeRoot);
     }
 
     intermediate.remove(parseContext.treeRoot);
-
-    // Clean up the symbol table before deallocating the pool memory it used.
-    delete symbolTableMemory;
-
     //
     // Throw away all the temporary memory used by the compilation process.
     //
