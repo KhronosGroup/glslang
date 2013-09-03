@@ -54,7 +54,7 @@ class TIntermediate {
 public:    
     POOL_ALLOCATOR_NEW_DELETE(GetThreadPoolAllocator())
 
-    TIntermediate(TInfoSink& i, int v, EProfile p) : infoSink(i), version(v), profile(p) { }
+    TIntermediate(int v, EProfile p) : version(v), profile(p) { }
     TIntermSymbol* addSymbol(int Id, const TString&, const TType&, TSourceLoc);
     TIntermTyped* addConversion(TOperator, const TType&, TIntermTyped*);
     TIntermTyped* addBinaryMath(TOperator, TIntermTyped* left, TIntermTyped* right, TSourceLoc);
@@ -87,10 +87,9 @@ public:
     void addSymbolLinkageNode(TIntermAggregate*& linkage, TSymbolTable&, const TString&);
     void addSymbolLinkageNode(TIntermAggregate*& linkage, const TVariable&);
 	void remove(TIntermNode*);
-    void outputTree(TIntermNode*);
+    void outputTree(TIntermNode*, TInfoSink&);
     
 protected:
-    TInfoSink& infoSink;
     EProfile profile;
     int version;
 

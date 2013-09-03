@@ -5,7 +5,9 @@ ERROR: 0:18: '' : constant expression required
 ERROR: 0:18: '' : array size must be a constant integer expression 
 ERROR: 0:19: '' : constant expression required 
 ERROR: 0:19: '' : array size must be a constant integer expression 
-ERROR: 7 compilation errors.  No code generated.
+ERROR: 0:27: '=' :  assigning non-constant to 'const structure'
+ERROR: 0:33: '=' :  assigning non-constant to 'const structure'
+ERROR: 9 compilation errors.  No code generated.
 
 ERROR: node is still EOpNull!
 0:10  Function Definition: main( (void)

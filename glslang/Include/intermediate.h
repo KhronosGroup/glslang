@@ -357,8 +357,6 @@ protected:
     glslang::TSourceLoc loc;
 };
 
-class TInfoSink;
-
 namespace glslang {
 
 //
@@ -479,8 +477,8 @@ public:
     void setUnionArrayPointer(TConstUnion *c) { unionArrayPointer = c; }
     virtual TIntermConstantUnion* getAsConstantUnion()  { return this; }
     virtual void traverse(TIntermTraverser* );
-    virtual TIntermTyped* fold(TOperator, TIntermTyped*, TInfoSink&);
-    virtual TIntermTyped* fold(TOperator, const TType&, TInfoSink&);
+    virtual TIntermTyped* fold(TOperator, TIntermTyped*);
+    virtual TIntermTyped* fold(TOperator, const TType&);
 protected:
     TConstUnion *unionArrayPointer;
 };
@@ -493,7 +491,7 @@ public:
     TOperator getOp() { return op; }
     bool modifiesState() const;
     bool isConstructor() const;
-    virtual bool promote(TInfoSink&) { return true; }
+    virtual bool promote() { return true; }
 protected:
     TIntermOperator(TOperator o) : TIntermTyped(TType(EbtFloat)), op(o) {}
     TIntermOperator(TOperator o, TType& t) : TIntermTyped(t), op(o) {}   
@@ -512,7 +510,7 @@ public:
     virtual TIntermTyped* getLeft() const { return left; }
     virtual TIntermTyped* getRight() const { return right; }
     virtual TIntermBinary* getAsBinaryNode() { return this; }
-    virtual bool promote(TInfoSink&);
+    virtual bool promote();
     virtual void updatePrecision();
 protected:
     TIntermTyped* left;
@@ -530,7 +528,7 @@ public:
     virtual void setOperand(TIntermTyped* o) { operand = o; }
     virtual TIntermTyped* getOperand() { return operand; }
     virtual TIntermUnary* getAsUnaryNode() { return this; }
-    virtual bool promote(TInfoSink&);
+    virtual bool promote();
     virtual void updatePrecision();
 protected:
     TIntermTyped* operand;

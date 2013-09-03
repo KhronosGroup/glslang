@@ -32,18 +32,19 @@
 //POSSIBILITY OF SUCH DAMAGE.
 //
 
+//
+// Travarse a tree of constants to create a single folded constant.
+// It should only be used when the whole tree is known to be constant.
+//
+
 #include "ParseHelper.h"
 
 namespace glslang {
 
-//
-// Use this class to carry along data from node to node in 
-// the traversal
-//
 class TConstTraverser : public TIntermTraverser {
 public:
-    TConstTraverser(TConstUnion* cUnion, bool singleConstParam, TOperator constructType, TInfoSink& sink, const TType& t) : unionArray(cUnion), type(t),
-        constructorType(constructType), singleConstantParam(singleConstParam), infoSink(sink), error(false), isMatrix(false), 
+    TConstTraverser(TConstUnion* cUnion, bool singleConstParam, TOperator constructType, const TType& t) : unionArray(cUnion), type(t),
+        constructorType(constructType), singleConstantParam(singleConstParam), error(false), isMatrix(false), 
         matrixCols(0), matrixRows(0) {  index = 0; tOp = EOpNull;}
     int index ;
     TConstUnion *unionArray;
@@ -51,7 +52,6 @@ public:
     const TType& type;
     TOperator constructorType;
     bool singleConstantParam;
-    TInfoSink& infoSink;
     bool error;
     int size; // size of the constructor ( 4 for vec4)
     bool isMatrix;
@@ -59,66 +59,11 @@ public:
     int matrixRows;
 };
 
-//
-// The rest of the file are the traversal functions.  The last one
-// is the one that starts the traversal.
-//
-// Return true from interior nodes to have the external traversal
-// continue on to children.  If you process children yourself,
-// return false.
-//
-
-void ParseSymbol(TIntermSymbol* node, TIntermTraverser* it)
-{
-    TConstTraverser* oit = static_cast<TConstTraverser*>(it);
-    oit->infoSink.info.message(EPrefixInternalError, "Symbol Node found in constant constructor", node->getLoc());
-
-    return;
-}
-
-bool ParseBinary(bool /* preVisit */, TIntermBinary* node, TIntermTraverser* it)
-{
-    TConstTraverser* oit = static_cast<TConstTraverser*>(it);
-    
-    TStorageQualifier qualifier = node->getType().getQualifier().storage;
-    
-    if (qualifier != EvqConst) {
-        const int maxSize = GlslangMaxTypeLength + 50;
-        char buf[maxSize];
-        snprintf(buf, maxSize, "'constructor' : assigning non-constant to %s", oit->type.getCompleteString().c_str());
-        oit->infoSink.info.message(EPrefixError, buf, node->getLoc());
-        oit->error = true;
-
-        return false;  
-    }
-
-   oit->infoSink.info.message(EPrefixInternalError, "Binary Node found in constant constructor", node->getLoc());
-    
-    return false;
-}
-
-bool ParseUnary(bool /* preVisit */, TIntermUnary* node, TIntermTraverser* it)
-{
-    TConstTraverser* oit = static_cast<TConstTraverser*>(it);
-
-    const int maxSize = GlslangMaxTypeLength + 50;
-    char buf[maxSize];
-    snprintf(buf, maxSize, "'constructor' : assigning non-constant to '%s'", oit->type.getCompleteString().c_str());
-    oit->infoSink.info.message(EPrefixError, buf, node->getLoc());
-    oit->error = true;
-
-    return false;  
-}
-
 bool ParseAggregate(bool /* preVisit */, TIntermAggregate* node, TIntermTraverser* it)
 {
     TConstTraverser* oit = static_cast<TConstTraverser*>(it);
 
-    if (!node->isConstructor() && node->getOp() != EOpComma) {
-        const int maxSize = GlslangMaxTypeLength + 50;
-        char buf[maxSize];
-        snprintf(buf, maxSize, "'constructor' : assigning non-constant to '%s'", oit->type.getCompleteString().c_str());
-        oit->infoSink.info.message(EPrefixError, buf, node->getLoc());
+    if (! node->isConstructor() && node->getOp() != EOpComma) {
         oit->error = true;
 
         return false;  
@@ -164,14 +109,6 @@ bool ParseAggregate(bool /* preVisit */, TIntermAggregate* node, TIntermTraverse
     return false;
 }
 
-bool ParseSelection(bool /* preVisit */, TIntermSelection* node, TIntermTraverser* it)
-{
-    TConstTraverser* oit = static_cast<TConstTraverser*>(it);
-    oit->infoSink.info.message(EPrefixInternalError, "Selection Node found in constant constructor", node->getLoc());
-    oit->error = true;
-    return false;
-}
-
 void ParseConstantUnion(TIntermConstantUnion* node, TIntermTraverser* it)
 {
     TConstTraverser* oit = static_cast<TConstTraverser*>(it);
@@ -201,7 +138,7 @@ void ParseConstantUnion(TIntermConstantUnion* node, TIntermTraverser* it)
         isMatrix = oit->isMatrix;
         totalSize = oit->index + size;
         TConstUnion *rightUnionArray = node->getUnionArrayPointer();
-        if (!isMatrix) {
+        if (! isMatrix) {
             int count = 0;
             for (int i = oit->index; i < totalSize; i++) {
                 if (i >= instanceSize)
@@ -234,44 +171,15 @@ void ParseConstantUnion(TIntermConstantUnion* node, TIntermTraverser* it)
     }
 }
 
-bool ParseLoop(bool /* preVisit */, TIntermLoop* node, TIntermTraverser* it)
-{
-    TConstTraverser* oit = static_cast<TConstTraverser*>(it);
-    oit->infoSink.info.message(EPrefixInternalError, "Loop Node found in constant constructor", node->getLoc());
-    oit->error = true;
-    
-    return false;
-}
-
-bool ParseBranch(bool /* previsit*/, TIntermBranch* node, TIntermTraverser* it)
-{
-    TConstTraverser* oit = static_cast<TConstTraverser*>(it);
-    oit->infoSink.info.message(EPrefixInternalError, "Branch Node found in constant constructor", node->getLoc());
-    oit->error = true;
-    
-    return false;
-}
-
-//
-// This function is the one to call externally to start the traversal.
-// Individual functions can be initialized to 0 to skip processing of that
-// type of node.  It's children will still be processed.
-//
 bool TIntermediate::parseConstTree(TSourceLoc line, TIntermNode* root, TConstUnion* unionArray, TOperator constructorType, const TType& t, bool singleConstantParam)
 {
     if (root == 0)
         return false;
 
-    TConstTraverser it(unionArray, singleConstantParam, constructorType, infoSink, t);
+    TConstTraverser it(unionArray, singleConstantParam, constructorType, t);
     
     it.visitAggregate = ParseAggregate;
-    it.visitBinary = ParseBinary;
     it.visitConstantUnion = ParseConstantUnion;
-    it.visitSelection = ParseSelection;
-    it.visitSymbol = ParseSymbol;
-    it.visitUnary = ParseUnary;
-    it.visitLoop = ParseLoop;
-    it.visitBranch = ParseBranch;
 
     root->traverse(&it);
     if (it.error)

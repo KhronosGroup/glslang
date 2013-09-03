@@ -68,3 +68,15 @@ void main()
     out2 = step(0.5, vec2(0.2, 0.6));                  // 0.0, 1.0
     out11 = smoothstep(50.0, 60.0, vec4(40.0, 51.0, 55.0, 70.0)); // 0.0, 0.028, 0.5, 1.0
 }
+
+const struct S {
+    vec3 v3;
+    ivec2 iv2;
+    mat2x4 m;
+} s = S(vec3(3.0), ivec2(3, a + b), mat2x4(1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0));
+
+void foo()
+{
+    float a[s.iv2.y];  // 3 element array
+    a[0] = s.m[1].z;     // 7.0
+}

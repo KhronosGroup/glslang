@@ -129,6 +129,14 @@
 0:69        0.028000
 0:69        0.500000
 0:69        1.000000
+0:78  Function Definition: foo( (void)
+0:78    Function Parameters: 
+0:?     Sequence
+0:81      move second child to first child (float)
+0:81        direct index (float)
+0:81          'a' (3-element array of float)
+0:81          0 (const int)
+0:81        7.000000
 0:?   Linker Objects
 0:?     'inv' (smooth in 4-component vector of float)
 0:?     'FragColor' (out 4-component vector of float)

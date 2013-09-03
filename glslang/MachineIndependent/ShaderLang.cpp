@@ -103,7 +103,7 @@ TPoolAllocator* PerProcessGPA = 0;
 bool InitializeSymbolTable(const TString& builtIns, int version, EProfile profile, EShLanguage language, TInfoSink& infoSink, 
                            TSymbolTable& symbolTable)
 {
-    TIntermediate intermediate(infoSink, version, profile);	
+    TIntermediate intermediate(version, profile);	
 	
     TParseContext parseContext(symbolTable, intermediate, true, version, profile, language, infoSink);
     TPpContext ppContext(parseContext);
@@ -458,7 +458,7 @@ int ShCompile(
     }
     bool goodProfile = DeduceProfile(compiler->infoSink, version, profile);
 
-    TIntermediate intermediate(compiler->infoSink, version, profile);
+    TIntermediate intermediate(version, profile);
     SetupBuiltinSymbolTable(version, profile);
     
     TSymbolTable* cachedTable = SharedSymbolTables[MapVersionToIndex(version)]
@@ -525,7 +525,7 @@ int ShCompile(
 
             if (success) {
                 if (messages & EShMsgAST)
-                    intermediate.outputTree(parseContext.treeRoot);
+                    intermediate.outputTree(parseContext.treeRoot, parseContext.infoSink);
 
                 //
                 // Call the machine dependent compiler
@@ -539,7 +539,7 @@ int ShCompile(
         parseContext.infoSink.info << parseContext.numErrors << " compilation errors.  No code generated.\n\n";
         success = false;
         if (messages & EShMsgAST)
-            intermediate.outputTree(parseContext.treeRoot);
+            intermediate.outputTree(parseContext.treeRoot, parseContext.infoSink);
     }
 
     intermediate.remove(parseContext.treeRoot);

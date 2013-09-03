@@ -567,7 +567,7 @@ bool OutputSwitch(bool /* preVisit */, TIntermSwitch* node, TIntermTraverser* it
 // Individual functions can be initialized to 0 to skip processing of that
 // type of node.  It's children will still be processed.
 //
-void TIntermediate::outputTree(TIntermNode* root)
+void TIntermediate::outputTree(TIntermNode* root, TInfoSink& infoSink)
 {
     if (root == 0)
         return;

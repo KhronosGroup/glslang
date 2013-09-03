@@ -100,7 +100,7 @@ TIntermTyped* TIntermediate::addBinaryMath(TOperator op, TIntermTyped* left, TIn
 
     node->setLeft(left);
     node->setRight(right);
-    if (! node->promote(infoSink))
+    if (! node->promote())
         return 0;
 
     node->updatePrecision();
@@ -112,11 +112,9 @@ TIntermTyped* TIntermediate::addBinaryMath(TOperator op, TIntermTyped* left, TIn
     TIntermConstantUnion *leftTempConstant = left->getAsConstantUnion();
     TIntermConstantUnion *rightTempConstant = right->getAsConstantUnion();
     if (leftTempConstant && rightTempConstant) {
-        TIntermTyped* folded = leftTempConstant->fold(node->getOp(), rightTempConstant, infoSink);
+        TIntermTyped* folded = leftTempConstant->fold(node->getOp(), rightTempConstant);
         if (folded)
             return folded;
-        else
-            infoSink.info.message(EPrefixInternalError, "Constant folding failed", loc);
     }
 
     return node;
@@ -148,7 +146,7 @@ TIntermTyped* TIntermediate::addAssign(TOperator op, TIntermTyped* left, TInterm
 
     node->setLeft(left);
     node->setRight(child);
-    if (! node->promote(infoSink))
+    if (! node->promote())
         return 0;
 
     node->updatePrecision();
@@ -189,10 +187,8 @@ TIntermTyped* TIntermediate::addUnaryMath(TOperator op, TIntermNode* childNode, 
     if (child->getType().getBasicType() == EbtBlock)
         return 0;
 
-    if (child == 0) {
-        infoSink.info.message(EPrefixInternalError, "Bad type in AddUnaryMath", loc);
+    if (child == 0)
         return 0;
-    }
 
     switch (op) {
     case EOpLogicalNot:
@@ -255,13 +251,13 @@ TIntermTyped* TIntermediate::addUnaryMath(TOperator op, TIntermNode* childNode, 
     node->setLoc(loc);
     node->setOperand(child);
     
-    if (! node->promote(infoSink))
+    if (! node->promote())
         return 0;
 
     node->updatePrecision();
 
     if (child->getAsConstantUnion())
-        return child->getAsConstantUnion()->fold(op, node->getType(), infoSink);
+        return child->getAsConstantUnion()->fold(op, node->getType());
 
     return node;
 }
@@ -275,14 +271,11 @@ TIntermTyped* TIntermediate::addBuiltInFunctionCall(TSourceLoc loc, TOperator op
         // including constness (which would differ from the prototype).
         //        
         TIntermTyped* child = childNode->getAsTyped();
-        if (child == 0) {
-            infoSink.info.message(EPrefixInternalError, "Bad type in AddUnaryMath", child->getLoc());
-
+        if (child == 0)
             return 0;
-        }
 
         if (child->getAsConstantUnion()) {
-            TIntermTyped* folded = child->getAsConstantUnion()->fold(op, returnType, infoSink);
+            TIntermTyped* folded = child->getAsConstantUnion()->fold(op, returnType);
             if (folded)
                 return folded;
         }
@@ -514,7 +507,6 @@ TIntermTyped* TIntermediate::addConversion(TOperator op, const TType& type, TInt
             //case EbtBool:  newOp = EOpConvBoolToDouble;  break;
             //case EbtFloat: newOp = EOpConvFloatToDouble; break;
             //default:
-                infoSink.info.message(EPrefixInternalError, "Bad promotion node", node->getLoc());
                 return 0;
             //}
             break;
@@ -525,7 +517,6 @@ TIntermTyped* TIntermediate::addConversion(TOperator op, const TType& type, TInt
             case EbtBool:   newOp = EOpConvBoolToFloat; break;
             case EbtDouble: newOp = EOpConvDoubleToFloat; break;
             default:
-                infoSink.info.message(EPrefixInternalError, "Bad promotion node", node->getLoc());
                 return 0;
             }
             break;
@@ -536,7 +527,6 @@ TIntermTyped* TIntermediate::addConversion(TOperator op, const TType& type, TInt
             case EbtFloat:  newOp = EOpConvFloatToBool; break;
             case EbtDouble: newOp = EOpConvDoubleToBool; break;
             default:
-                infoSink.info.message(EPrefixInternalError, "Bad promotion node", node->getLoc());
                 return 0;
             }
             break;
@@ -547,7 +537,6 @@ TIntermTyped* TIntermediate::addConversion(TOperator op, const TType& type, TInt
             case EbtFloat:  newOp = EOpConvFloatToInt; break;
             case EbtDouble: newOp = EOpConvDoubleToInt; break;
             default:
-                infoSink.info.message(EPrefixInternalError, "Bad promotion node", node->getLoc());
                 return 0;
             }
             break;
@@ -558,12 +547,10 @@ TIntermTyped* TIntermediate::addConversion(TOperator op, const TType& type, TInt
             case EbtFloat:  newOp = EOpConvFloatToUint; break;
             case EbtDouble: newOp = EOpConvDoubleToUint; break;
             default:
-                infoSink.info.message(EPrefixInternalError, "Bad promotion node", node->getLoc());
                 return 0;
             }
             break;
         default: 
-            infoSink.info.message(EPrefixInternalError, "Bad promotion type", node->getLoc());
             return 0;
         }
 
@@ -982,7 +969,7 @@ bool TIntermOperator::isConstructor() const
 //
 // Returns false in nothing makes sense.
 //
-bool TIntermUnary::promote(TInfoSink&)
+bool TIntermUnary::promote()
 {
     switch (op) {
     case EOpLogicalNot:
@@ -1034,7 +1021,7 @@ void TIntermUnary::updatePrecision()
 //
 // Returns false if operator can't work on operands.
 //
-bool TIntermBinary::promote(TInfoSink& infoSink)
+bool TIntermBinary::promote()
 {
     // Arrays and structures have to be exact matches.
     if ((left->isArray() || right->isArray() || left->getBasicType() == EbtStruct || right->getBasicType() == EbtStruct) 
@@ -1235,7 +1222,6 @@ bool TIntermBinary::promote(TInfoSink& infoSink)
                     setType(TType(basicType, EvqTemporary, right->getVectorSize()));
             }
         } else {
-            infoSink.info.message(EPrefixInternalError, "Missing elses", getLoc());
             return false;
         }
         break;
@@ -1267,7 +1253,6 @@ bool TIntermBinary::promote(TInfoSink& infoSink)
                 op = EOpVectorTimesScalarAssign;
             }
         } else {
-            infoSink.info.message(EPrefixInternalError, "Missing elses", getLoc());
             return false;
         }
         break;      
@@ -1397,9 +1382,6 @@ void TIntermTyped::propagatePrecision(TPrecisionQualifier newPrecision)
 
 TIntermTyped* TIntermediate::promoteConstantUnion(TBasicType promoteTo, TIntermConstantUnion* node) 
 {
-    if (node->getType().isArray())
-        infoSink.info.message(EPrefixInternalError, "Cannot promote array", node->getLoc());
-
     TConstUnion *rightUnionArray = node->getUnionArrayPointer();
     int size = node->getType().getObjectSize();
 
@@ -1424,9 +1406,8 @@ TIntermTyped* TIntermediate::promoteConstantUnion(TBasicType promoteTo, TIntermC
             case EbtDouble:
                 leftUnionArray[i].setDConst(static_cast<double>(rightUnionArray[i].getBConst()));
                 break;
-            default: 
-                infoSink.info.message(EPrefixInternalError, "Cannot promote", node->getLoc());
-                return 0;
+            default:
+                return node;
             }                
             break;
         case EbtDouble:
@@ -1445,8 +1426,7 @@ TIntermTyped* TIntermediate::promoteConstantUnion(TBasicType promoteTo, TIntermC
                 leftUnionArray[i] = rightUnionArray[i];
                 break;
             default: 
-                infoSink.info.message(EPrefixInternalError, "Cannot promote", node->getLoc());
-                return 0;
+                return node;
             }                
             break;
         case EbtInt:
@@ -1465,8 +1445,7 @@ TIntermTyped* TIntermediate::promoteConstantUnion(TBasicType promoteTo, TIntermC
                 leftUnionArray[i].setIConst(static_cast<int>(rightUnionArray[i].getDConst()));
                 break;
             default: 
-                infoSink.info.message(EPrefixInternalError, "Cannot promote", node->getLoc());
-                return 0;
+                return node;
             }                
             break;
         case EbtUint:
@@ -1485,8 +1464,7 @@ TIntermTyped* TIntermediate::promoteConstantUnion(TBasicType promoteTo, TIntermC
                 leftUnionArray[i].setUConst(static_cast<unsigned int>(rightUnionArray[i].getDConst()));
                 break;
             default: 
-                infoSink.info.message(EPrefixInternalError, "Cannot promote", node->getLoc());
-                return 0;
+                return node;
             }                
             break;
         case EbtBool:
@@ -1505,13 +1483,11 @@ TIntermTyped* TIntermediate::promoteConstantUnion(TBasicType promoteTo, TIntermC
                 leftUnionArray[i].setBConst(rightUnionArray[i].getDConst() != 0.0);
                 break;
             default: 
-                infoSink.info.message(EPrefixInternalError, "Cannot promote", node->getLoc());
-                return 0;
+                return node;
             }
             break;
         default:
-            infoSink.info.message(EPrefixInternalError, "Incorrect data type found", node->getLoc());
-            return 0;
+            return node;
         }    
     }
     
