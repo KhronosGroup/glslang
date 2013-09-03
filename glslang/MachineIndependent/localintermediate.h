@@ -37,8 +37,9 @@
 
 #include "../Include/intermediate.h"
 #include "../Public/ShaderLang.h"
-#include "SymbolTable.h"
 #include "Versions.h"
+
+class TInfoSink;
 
 namespace glslang {
 
@@ -47,14 +48,19 @@ struct TVectorFields {
     int num;
 };
 
+class TSymbolTable;
+class TVariable;
+
 //
 // Set of helper functions to help parse and build the tree.
 //
 class TIntermediate {
-public:    
-    POOL_ALLOCATOR_NEW_DELETE(GetThreadPoolAllocator())
+public:
+    TIntermediate(int v, EProfile p) : treeRoot(0), profile(p), version(v) { }
 
-    TIntermediate(int v, EProfile p) : version(v), profile(p) { }
+    void setTreeRoot(TIntermNode* r) { treeRoot = r; }
+    TIntermNode* getTreeRoot() const { return treeRoot; }
+    
     TIntermSymbol* addSymbol(int Id, const TString&, const TType&, TSourceLoc);
     TIntermTyped* addConversion(TOperator, const TType&, TIntermTyped*);
     TIntermTyped* addBinaryMath(TOperator, TIntermTyped* left, TIntermTyped* right, TSourceLoc);
@@ -86,10 +92,12 @@ public:
     void addSymbolLinkageNodes(TIntermNode* root, TIntermAggregate*& linkage, EShLanguage, TSymbolTable&);
     void addSymbolLinkageNode(TIntermAggregate*& linkage, TSymbolTable&, const TString&);
     void addSymbolLinkageNode(TIntermAggregate*& linkage, const TVariable&);
-	void remove(TIntermNode*);
-    void outputTree(TIntermNode*, TInfoSink&);
-    
+
+    void outputTree(TInfoSink& infoSink);
+	void removeTree();
+
 protected:
+    TIntermNode* treeRoot;
     EProfile profile;
     int version;
 

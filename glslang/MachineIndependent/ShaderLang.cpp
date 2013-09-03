@@ -108,8 +108,8 @@ bool InitializeSymbolTable(const TString& builtIns, int version, EProfile profil
     TParseContext parseContext(symbolTable, intermediate, true, version, profile, language, infoSink);
     TPpContext ppContext(parseContext);
     TScanContext scanContext(parseContext);
-    parseContext.scanContext = &scanContext;
-    parseContext.ppContext = &ppContext;
+    parseContext.setScanContext(&scanContext);
+    parseContext.setPpContext(&ppContext);
     
     //
     // Parse the built-ins.  This should only happen once per
@@ -403,8 +403,8 @@ int __fastcall ShFinalize()
 // Do an actual compile on the given strings.  The result is left 
 // in the given compile object.
 //
-// Return:  The return value of ShCompile is really boolean, indicating
-// success or failure.
+// Return:  The return value is really boolean, indicating
+// success (1) or failure (0).
 //
 int ShCompile(
     const ShHandle handle,
@@ -478,8 +478,8 @@ int ShCompile(
     TParseContext parseContext(symbolTable, intermediate, false, version, profile, compiler->getLanguage(), compiler->infoSink, forwardCompatible, messages);
     glslang::TScanContext scanContext(parseContext);
     TPpContext ppContext(parseContext);
-    parseContext.scanContext = &scanContext;
-    parseContext.ppContext = &ppContext;
+    parseContext.setScanContext(&scanContext);
+    parseContext.setPpContext(&ppContext);
 
     TSourceLoc beginning;
     beginning.line = 1;
@@ -511,38 +511,36 @@ int ShCompile(
     bool ret = parseContext.parseShaderStrings(ppContext, const_cast<char**>(shaderStrings), lengths, numStrings);
     if (! ret)
         success = false;
-    intermediate.addSymbolLinkageNodes(parseContext.treeRoot, parseContext.linkage, parseContext.language, symbolTable);
+    intermediate.addSymbolLinkageNodes(intermediate.getTreeRoot(), parseContext.linkage, parseContext.language, symbolTable);
 
     // Clean up the symbol table before deallocating the pool memory it used.
     // The AST is self-sufficient now, so it can be done before the rest of compilation/linking.
     delete symbolTableMemory;
 
-    if (success && parseContext.treeRoot) {
+    if (success && intermediate.getTreeRoot()) {
         if (optLevel == EShOptNoGeneration)
             parseContext.infoSink.info.message(EPrefixNone, "No errors.  No code generation or linking was requested.");
         else {
-            success = intermediate.postProcess(parseContext.treeRoot, parseContext.language);
+            success = intermediate.postProcess(intermediate.getTreeRoot(), parseContext.language);
 
             if (success) {
-                if (messages & EShMsgAST)
-                    intermediate.outputTree(parseContext.treeRoot, parseContext.infoSink);
-
                 //
                 // Call the machine dependent compiler
                 //
-                if (! compiler->compile(parseContext.treeRoot, parseContext.version, parseContext.profile))
+                if (! compiler->compile(intermediate.getTreeRoot(), parseContext.version, parseContext.profile))
                     success = false;
             }
         }
     } else if (! success) {
         parseContext.infoSink.info.prefix(EPrefixError);
-        parseContext.infoSink.info << parseContext.numErrors << " compilation errors.  No code generated.\n\n";
+        parseContext.infoSink.info << parseContext.getNumErrors() << " compilation errors.  No code generated.\n\n";
         success = false;
-        if (messages & EShMsgAST)
-            intermediate.outputTree(parseContext.treeRoot, parseContext.infoSink);
     }
 
-    intermediate.remove(parseContext.treeRoot);
+    if (messages & EShMsgAST)
+        intermediate.outputTree(parseContext.infoSink);
+
+    intermediate.removeTree();
     //
     // Throw away all the temporary memory used by the compilation process.
     //

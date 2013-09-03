@@ -2438,11 +2438,11 @@ jump_statement
 translation_unit
     : external_declaration {
         $$ = $1;
-        parseContext.treeRoot = $$;
+        parseContext.intermediate.setTreeRoot($$);
     }
     | translation_unit external_declaration {
         $$ = parseContext.intermediate.growAggregate($1, $2);
-        parseContext.treeRoot = $$;
+        parseContext.intermediate.setTreeRoot($$);
     }
     ;
 

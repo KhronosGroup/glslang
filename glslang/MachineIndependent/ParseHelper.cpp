@@ -35,6 +35,7 @@
 //
 
 #include "ParseHelper.h"
+
 #include "osinclude.h"
 #include <stdarg.h>
 #include <algorithm>
@@ -47,11 +48,11 @@ namespace glslang {
 
 TParseContext::TParseContext(TSymbolTable& symt, TIntermediate& interm, bool pb, int v, EProfile p, EShLanguage L, TInfoSink& is,                             
                              bool fc, EShMessages m) : 
-            intermediate(interm), symbolTable(symt), infoSink(is), language(L), treeRoot(0), linkage(0),
-            numErrors(0), loopNestingLevel(0),
-            structNestingLevel(0), inTypeParen(false), parsingBuiltins(pb),
-            version(v), profile(p), forwardCompatible(fc), messages(m),
-            contextPragma(true, false), afterEOF(false), tokensBeforeEOF(false)
+            intermediate(interm), symbolTable(symt), infoSink(is), language(L),
+            version(v), profile(p), forwardCompatible(fc), messages(m),    
+            contextPragma(true, false), loopNestingLevel(0), structNestingLevel(0),
+            linkage(0), tokensBeforeEOF(false),
+            parsingBuiltins(pb), numErrors(0), afterEOF(false)
 {
     currentLoc.line = 1;
     currentLoc.string = 0;

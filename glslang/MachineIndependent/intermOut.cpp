@@ -35,6 +35,7 @@
 //
 
 #include "localintermediate.h"
+#include "../Include/InfoSink.h"
 
 namespace glslang {
 
@@ -567,9 +568,9 @@ bool OutputSwitch(bool /* preVisit */, TIntermSwitch* node, TIntermTraverser* it
 // Individual functions can be initialized to 0 to skip processing of that
 // type of node.  It's children will still be processed.
 //
-void TIntermediate::outputTree(TIntermNode* root, TInfoSink& infoSink)
+void TIntermediate::outputTree(TInfoSink& infoSink)
 {
-    if (root == 0)
+    if (treeRoot == 0)
         return;
 
     TOutputTraverser it(infoSink);
@@ -584,7 +585,7 @@ void TIntermediate::outputTree(TIntermNode* root, TInfoSink& infoSink)
     it.visitBranch = OutputBranch;
     it.visitSwitch = OutputSwitch;
 
-    root->traverse(&it);
+    treeRoot->traverse(&it);
 }
 
 } // end namespace glslang

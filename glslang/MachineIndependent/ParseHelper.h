@@ -69,57 +69,19 @@ public:
     TParseContext(TSymbolTable&, TIntermediate&, bool parsingBuiltins, int version, EProfile, EShLanguage, TInfoSink&,
                   bool forwardCompatible = false, EShMessages messages = EShMsgDefault);
 
-    TScanContext* scanContext;
-    TPpContext* ppContext;
-    TIntermediate& intermediate; // to hold and build a parse tree
-    TSymbolTable& symbolTable;   // symbol table that goes with the current language, version, and profile
-    TInfoSink& infoSink;
-    EShLanguage language;        // vertex or fragment language
-    TIntermNode* treeRoot;       // root of parse tree being created
-    TIntermAggregate *linkage;   // aggregate node of objects the linker may need, if not reference by the rest of the AST
-    int numErrors;               // number of compile-time errors encountered
-    int loopNestingLevel;        // 0 if outside all loops
-    int structNestingLevel;      // 0 if outside blocks and structures
-    TList<TIntermSequence*> switchSequenceStack;  // case, node, case, case, node, ...; ensure only one node between cases;   stack of them for nesting
-    bool inTypeParen;            // true if in parentheses, looking only for an identifier
-    const TType* currentFunctionType;  // the return type of the function that's currently being parsed
-    bool functionReturnsValue;   // true if a non-void function has a return
-    bool parsingBuiltins;        // true if parsing built-in symbols/functions
-
-    int version;                 // version, updated by #version in the shader
-    EProfile profile;            // the declared profile in the shader (core by default)
-    bool forwardCompatible;      // true if errors are to be given for use of deprecated features
-    EShMessages messages;        // errors/warnings
-    TMap<TString, TBehavior> extensionBehavior;    // for each extension string, what it's current enablement is
-
-    struct TPragma contextPragma;
-    TPrecisionQualifier defaultPrecision[EbtNumTypes];
-    static const int maxSamplerIndex = EsdNumDims * (EbtNumTypes * (2 * 2)); // see computeSamplerTypeIndex()
-    TPrecisionQualifier defaultSamplerPrecision[maxSamplerIndex];
-    bool afterEOF;
-    bool tokensBeforeEOF;
-    TSourceLoc currentLoc;
-    const TString* blockName;
-    TQualifier globalUniformDefaults;
-    TQualifier globalInputDefaults;
-    TQualifier globalOutputDefaults;
-    TQualifier currentBlockDefaults;
-
-    void initializeExtensionBehavior();
-    const char* getPreamble();
+public:
     bool parseShaderStrings(TPpContext&, char* strings[], int strLen[], int numStrings);
-    void parserError(const char *s);
+    void initializeExtensionBehavior();
+    void parserError(const char *s);     // for bison's yyerror
 
-    void handlePragma(const char **tokens, int numTokens);
-    TBehavior getExtensionBehavior(const char* behavior);
-    void updateExtensionBehavior(const char* extName, const char* behavior);
-    
     void C_DECL error(TSourceLoc, const char *szReason, const char *szToken,
                       const char *szExtraInfoFormat, ...);
     void C_DECL  warn(TSourceLoc, const char *szReason, const char *szToken,
                       const char *szExtraInfoFormat, ...);
     bool reservedErrorCheck(TSourceLoc, const TString& identifier);
 
+    void updateExtensionBehavior(const char* extName, const char* behavior);
+    void handlePragma(const char **tokens, int numTokens);
     TIntermTyped* handleVariable(TSourceLoc, TSymbol* symbol, TString* string);
     TIntermTyped* handleBracketDereference(TSourceLoc, TIntermTyped* base, TIntermTyped* index);
     TIntermTyped* handleDotDereference(TSourceLoc, TIntermTyped* base, TString& field);
@@ -197,6 +159,59 @@ public:
     void requireNotRemoved(TSourceLoc, EProfile callingProfile, int removedVersion, const char *featureDesc);
     void fullIntegerCheck(TSourceLoc, const char* op);
     void doubleCheck(TSourceLoc, const char* op);
+
+    void setScanContext(TScanContext* c) { scanContext = c; }
+    TScanContext* getScanContext() const { return scanContext; }
+    void setPpContext(TPpContext* c) { ppContext = c; }
+    TPpContext* getPpContext() const { return ppContext; }
+    int getNumErrors() const { return numErrors; }
+
+protected:
+    const char* getPreamble();
+    TBehavior getExtensionBehavior(const char* behavior);
+
+public:
+    //
+    // Generally, bison productions, the scanner, and the PP need read/write access to these; just give them direct access
+    //
+
+    TIntermediate& intermediate; // helper for making and hooking up pieces of the parse tree
+    TSymbolTable& symbolTable;   // symbol table that goes with the current language, version, and profile
+    TInfoSink& infoSink;
+
+    // compilation mode
+    EShLanguage language;        // vertex or fragment language
+    int version;                 // version, updated by #version in the shader
+    EProfile profile;            // the declared profile in the shader (core by default)
+    bool forwardCompatible;      // true if errors are to be given for use of deprecated features
+    EShMessages messages;        // errors/warnings
+
+    // Current state of parsing
+    struct TPragma contextPragma;
+    int loopNestingLevel;        // 0 if outside all loops
+    int structNestingLevel;      // 0 if outside blocks and structures
+    TList<TIntermSequence*> switchSequenceStack;  // case, node, case, case, node, ...; ensure only one node between cases;   stack of them for nesting
+    const TType* currentFunctionType;  // the return type of the function that's currently being parsed
+    bool functionReturnsValue;   // true if a non-void function has a return
+    const TString* blockName;
+    TQualifier currentBlockDefaults;
+    TIntermAggregate *linkage;   // aggregate node of objects the linker may need, if not referenced by the rest of the AST
+    TPrecisionQualifier defaultPrecision[EbtNumTypes];
+    TSourceLoc currentLoc;
+    bool tokensBeforeEOF;
+
+protected:
+    TScanContext* scanContext;
+    TPpContext* ppContext;
+    int numErrors;               // number of compile-time errors encountered
+    bool parsingBuiltins;        // true if parsing built-in symbols/functions
+    TMap<TString, TBehavior> extensionBehavior;    // for each extension string, what it's current enablement is
+    static const int maxSamplerIndex = EsdNumDims * (EbtNumTypes * (2 * 2)); // see computeSamplerTypeIndex()
+    TPrecisionQualifier defaultSamplerPrecision[maxSamplerIndex];
+    bool afterEOF;
+    TQualifier globalUniformDefaults;
+    TQualifier globalInputDefaults;
+    TQualifier globalOutputDefaults;
 };
 
 } // end namespace glslang

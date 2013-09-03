@@ -245,7 +245,7 @@ int yylex(YYSTYPE* glslangTokenDesc, glslang::TParseContext& parseContext)
 {
     glslang::TParserToken token(*glslangTokenDesc);
 
-    return parseContext.scanContext->tokenize(parseContext.ppContext, token);
+    return parseContext.getScanContext()->tokenize(parseContext.getPpContext(), token);
 }
 
 namespace {

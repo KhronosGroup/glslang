@@ -41,6 +41,8 @@
 #include "localintermediate.h"
 #include "QualifierAlive.h"
 #include "RemoveTree.h"
+#include "SymbolTable.h"
+
 #include <float.h>
 
 namespace glslang {
@@ -910,10 +912,10 @@ void TIntermediate::addSymbolLinkageNode(TIntermAggregate*& linkage, const TVari
 //
 // This deletes the tree.
 //
-void TIntermediate::remove(TIntermNode* root)
+void TIntermediate::removeTree()
 {
-    if (root)
-        RemoveAllTreeNodes(root);
+    if (treeRoot)
+        RemoveAllTreeNodes(treeRoot);
 }
 
 ////////////////////////////////////////////////////////////////
@@ -1406,7 +1408,7 @@ TIntermTyped* TIntermediate::promoteConstantUnion(TBasicType promoteTo, TIntermC
             case EbtDouble:
                 leftUnionArray[i].setDConst(static_cast<double>(rightUnionArray[i].getBConst()));
                 break;
-            default:
+            default: 
                 return node;
             }                
             break;
