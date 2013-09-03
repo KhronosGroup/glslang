@@ -217,6 +217,21 @@ SH_IMPORT_EXPORT int ShExcludeAttributes(const ShHandle, int *attributes, int co
 //
 SH_IMPORT_EXPORT int ShGetUniformLocation(const ShHandle uniformMap, const char* name);
 
+// These are currently unused in the front end, but consumers of the front-end still 
+// be rely on them:
+enum TDebugOptions {
+	EDebugOpNone               = 0x000,
+	EDebugOpIntermediate       = 0x001,
+	EDebugOpAssembly           = 0x002,
+    EDebugOpObjectCode         = 0x004,
+	EDebugOpLinkMaps           = 0x008,
+	EDebugOpSuppressInfolog    = 0x010,
+	EDebugOpMemoryLeakMode     = 0x020,
+    EDebugOpTexturePrototypes  = 0x040,
+    EDebugOpRelaxedErrors      = 0x080,
+    EDebugOpGiveWarnings       = 0x100,
+};
+
 #ifdef __cplusplus
     }  // end extern "C"
 #endif
