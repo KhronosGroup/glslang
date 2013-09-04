@@ -51,7 +51,8 @@ const char* StageName[EShLangCount] = {
     "tessellation control",
     "tessellation evaluation",
     "geometry",
-    "fragment"
+    "fragment",
+    "compute"
 };
 
 const char* ProfileName[EProfileCount] = {

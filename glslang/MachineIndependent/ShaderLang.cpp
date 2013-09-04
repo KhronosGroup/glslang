@@ -103,7 +103,7 @@ TPoolAllocator* PerProcessGPA = 0;
 bool InitializeSymbolTable(const TString& builtIns, int version, EProfile profile, EShLanguage language, TInfoSink& infoSink, 
                            TSymbolTable& symbolTable)
 {
-    TIntermediate intermediate(version, profile);	
+    TIntermediate intermediate(version, profile);
 	
     TParseContext parseContext(symbolTable, intermediate, true, version, profile, language, infoSink);
     TPpContext ppContext(parseContext);
@@ -262,16 +262,23 @@ void SetupBuiltinSymbolTable(int version, EProfile profile)
     glslang::ReleaseGlobalLock();
 }
 
-bool DeduceProfile(TInfoSink& infoSink, int version, EProfile& profile)
+bool DeduceVersionProfile(TInfoSink& infoSink, EShLanguage stage, bool versionNotFirst, int defaultVersion, int& version, EProfile& profile)
 {
     const int FirstProfileVersion = 150;
+    bool correct = true;
 
+    // Get a good version...
+    if (version == 0) {
+        version = defaultVersion;
+        infoSink.info.message(EPrefixWarning, "#version: statement missing; use #version on first line of shader");
+    }
+
+    // Get a good profile...
     if (profile == ENoProfile) {
         if (version == 300) {
+            correct = false;
             infoSink.info.message(EPrefixError, "#version: version 300 requires specifying the 'es' profile");
             profile = EEsProfile;
-            
-            return false;
         } else if (version == 100)
             profile = EEsProfile;
         else if (version >= FirstProfileVersion)
@@ -281,38 +288,191 @@ bool DeduceProfile(TInfoSink& infoSink, int version, EProfile& profile)
     } else {
         // a profile was provided...
         if (version < 150) {
+            correct = false;
             infoSink.info.message(EPrefixError, "#version: versions before 150 do not allow a profile token");
             if (version == 100)
                 profile = EEsProfile;
             else
                 profile = ENoProfile;
-
-            return false;
         } else if (version == 300) {
             if (profile != EEsProfile) {
+                correct = false;
                 infoSink.info.message(EPrefixError, "#version: version 300 supports only the es profile");
-
-                return false;
             }
             profile = EEsProfile;
         } else {
             if (profile == EEsProfile) {
+                correct = false;
                 infoSink.info.message(EPrefixError, "#version: only version 300 supports the es profile");
                 if (version >= FirstProfileVersion)
                     profile = ECoreProfile;
                 else
                     profile = ENoProfile;
-
-                return false;
             } 
             // else: typical desktop case... e.g., "#version 410 core"
         }
     }
 
-    return true;
+    // Correct for stage type...
+    switch (stage) {
+    case EShLangGeometry:
+        if (version < 150 || profile == EEsProfile) {
+            correct = false;
+            infoSink.info.message(EPrefixError, "#version: geometry shaders require non-es profile and version 150 or above");
+            version = 150;
+            if (profile == EEsProfile)
+                profile = ECoreProfile;
+        }
+        break;
+    case EShLangTessControl:
+    case EShLangTessEvaluation:
+        if (version < 400 || profile == EEsProfile) {
+            correct = false;
+            infoSink.info.message(EPrefixError, "#version: tessellation shaders require non-es profile and version 400 or above");
+            version = 400;
+            if (profile == EEsProfile)
+                profile = ECoreProfile;
+        }
+        break;
+    case EShLangCompute:
+        if (version < 430 || profile == EEsProfile) {
+            correct = false;
+            infoSink.info.message(EPrefixError, "#version: compute shaders require non-es profile and version 430 or above");
+            version = 430;
+            if (profile == EEsProfile)
+                profile = ECoreProfile;
+        }
+        break;
+    default:
+        break;
+    }
+
+    if (profile == EEsProfile && version >= 300 && versionNotFirst) {
+        correct = false;
+        infoSink.info.message(EPrefixError, "#version: statement must appear first in es-profile shader; before comments or newlines");
+    }
+
+    return correct;
+}
+
+//
+// Do a partial compile on the given strings for a single compilation unit
+// for a potential deferred link into a single stage (and deferred full compile of that
+// stage through machine-dependent compilation).
+//
+// All preprocessing, parsing, semantic checks, etc. for a single compilation unit
+// are done here.
+//
+// Return:  The tree and other information is filled into the intermediate argument, 
+//          and true is returned by the function for success.
+//
+bool CompileDeferred(
+    TCompiler* compiler,
+    const char* const shaderStrings[],
+    const int numStrings,
+    const int* inputLengths,
+    const EShOptimizationLevel optLevel,
+    const TBuiltInResource* resources,
+    int defaultVersion,         // use 100 for ES environment, 110 for desktop
+    bool forwardCompatible,     // give errors for use of deprecated features
+    EShMessages messages,       // warnings/errors/AST; things to print out
+    TIntermediate& intermediate // returned tree, etc.
+    )
+{
+    if (! InitThread())
+        return false;
+
+    if (numStrings == 0)
+        return true;
+
+    // This must be undone (.pop()) by the caller, after it finishes consuming the created tree.
+    GetThreadPoolAllocator().push();
+    
+    // move to length-based strings, rather than null-terminated strings
+    int* lengths = new int[numStrings];
+    for (int s = 0; s < numStrings; ++s) {
+        if (inputLengths == 0 || inputLengths[s] < 0)
+            lengths[s] = strlen(shaderStrings[s]);
+        else
+            lengths[s] = inputLengths[s];
+    }
+
+    int version;
+    EProfile profile;
+    glslang::TInputScanner input(numStrings, shaderStrings, lengths);
+    bool versionNotFirst = ScanVersion(input, version, profile);
+    bool goodVersion = DeduceVersionProfile(compiler->infoSink, compiler->getLanguage(), versionNotFirst, defaultVersion, version, profile);
+
+    intermediate.setVersion(version);
+    intermediate.setProfile(profile);
+    SetupBuiltinSymbolTable(version, profile);
+    
+    TSymbolTable* cachedTable = SharedSymbolTables[MapVersionToIndex(version)]
+                                                  [profile]
+                                                  [compiler->getLanguage()];
+    
+    // Dynamically allocate the symbol table so we can control when it is deallocated WRT the pool.
+    TSymbolTable* symbolTableMemory = new TSymbolTable;
+    TSymbolTable& symbolTable = *symbolTableMemory;
+    if (cachedTable)
+        symbolTable.adoptLevels(*cachedTable);
+    
+    // Add built-in symbols that are potentially context dependent;
+    // they get popped again further down.
+    AddContextSpecificSymbols(resources, compiler->infoSink, symbolTable, version, profile, compiler->getLanguage());
+
+    TParseContext parseContext(symbolTable, intermediate, false, version, profile, compiler->getLanguage(), compiler->infoSink, forwardCompatible, messages);
+    glslang::TScanContext scanContext(parseContext);
+    TPpContext ppContext(parseContext);
+    parseContext.setScanContext(&scanContext);
+    parseContext.setPpContext(&ppContext);
+    if (! goodVersion)
+        parseContext.addError();
+
+    parseContext.initializeExtensionBehavior();
+
+    //
+    // Parse the application's shaders.  All the following symbol table
+    // work will be throw-away, so push a new allocation scope that can
+    // be thrown away, then push a scope for the current shader's globals.
+    //
+    bool success = true;
+    
+    symbolTable.push();
+    if (! symbolTable.atGlobalLevel())
+        parseContext.infoSink.info.message(EPrefixInternalError, "Wrong symbol table level");
+
+    if (parseContext.insertBuiltInArrayAtGlobalLevel())
+        success = false;
+
+    bool ret = parseContext.parseShaderStrings(ppContext, const_cast<char**>(shaderStrings), lengths, numStrings);
+    if (! ret)
+        success = false;
+    intermediate.addSymbolLinkageNodes(intermediate.getTreeRoot(), parseContext.linkage, parseContext.language, symbolTable);
+
+    // Clean up the symbol table. The AST is self-sufficient now.
+    delete symbolTableMemory;
+
+    if (success && intermediate.getTreeRoot()) {
+        if (optLevel == EShOptNoGeneration)
+            parseContext.infoSink.info.message(EPrefixNone, "No errors.  No code generation or linking was requested.");
+        else
+            success = intermediate.postProcess(intermediate.getTreeRoot(), parseContext.language);
+    } else if (! success) {
+        parseContext.infoSink.info.prefix(EPrefixError);
+        parseContext.infoSink.info << parseContext.getNumErrors() << " compilation errors.  No code generated.\n\n";
+    }
+
+    if (messages & EShMsgAST)
+        intermediate.outputTree(parseContext.infoSink);
+
+    delete [] lengths;
+
+    return success;
 }
 
 } // end anonymous namespace for local functions
+
 
 //
 // ShInitialize() should be called exactly once per process, not per thread.
@@ -322,9 +482,8 @@ int ShInitialize()
     if (! InitProcess())
         return 0;
 
-    if (! PerProcessGPA) { 
+    if (! PerProcessGPA)
         PerProcessGPA = new TPoolAllocator();
-    }
     
     glslang::TScanContext::fillInKeywordMap();
 
@@ -400,8 +559,9 @@ int __fastcall ShFinalize()
 }
 
 //
-// Do an actual compile on the given strings.  The result is left 
-// in the given compile object.
+// Do a full compile on the given strings for a single compilation unit
+// forming a complete stage.  The result of the machine dependent compilation
+// is left in the provided compile object.
 //
 // Return:  The return value is really boolean, indicating
 // success (1) or failure (0).
@@ -419,9 +579,7 @@ int ShCompile(
     EShMessages messages       // warnings/errors/AST; things to print out
     )
 {
-    if (! InitThread())
-        return 0;
-
+    // Map the generic handle to the C++ object
     if (handle == 0)
         return 0;
 
@@ -433,125 +591,26 @@ int ShCompile(
     compiler->infoSink.info.erase();
     compiler->infoSink.debug.erase();
 
-    if (numStrings == 0)
-        return 1;
-
-    GetThreadPoolAllocator().push();
-    
-    // move to length-based strings, rather than null-terminated strings
-    int* lengths = new int[numStrings];
-    for (int s = 0; s < numStrings; ++s) {
-        if (inputLengths == 0 || inputLengths[s] < 0)
-            lengths[s] = strlen(shaderStrings[s]);
-        else
-            lengths[s] = inputLengths[s];
-    }
-
-    int version;
-    EProfile profile;
-    bool versionStatementMissing = false;
-    glslang::TInputScanner input(numStrings, shaderStrings, lengths);
-    bool versionNotFirst = ScanVersion(input, version, profile);
-    if (version == 0) {
-        version = defaultVersion;
-        versionStatementMissing = true;
-    }
-    bool goodProfile = DeduceProfile(compiler->infoSink, version, profile);
-
-    TIntermediate intermediate(version, profile);
-    SetupBuiltinSymbolTable(version, profile);
-    
-    TSymbolTable* cachedTable = SharedSymbolTables[MapVersionToIndex(version)]
-                                                  [profile]
-                                                  [compiler->getLanguage()];
-    
-    // Dynamically allocate the symbol table so we can control when it is deallocated WRT the pool.
-    TSymbolTable* symbolTableMemory = new TSymbolTable;
-    TSymbolTable& symbolTable = *symbolTableMemory;
-    if (cachedTable)
-        symbolTable.adoptLevels(*cachedTable);
-    
-    // Add built-in symbols that are potentially context dependent;
-    // they get popped again further down.
-    AddContextSpecificSymbols(resources, compiler->infoSink, symbolTable, version, profile, compiler->getLanguage());
-
-    TParseContext parseContext(symbolTable, intermediate, false, version, profile, compiler->getLanguage(), compiler->infoSink, forwardCompatible, messages);
-    glslang::TScanContext scanContext(parseContext);
-    TPpContext ppContext(parseContext);
-    parseContext.setScanContext(&scanContext);
-    parseContext.setPpContext(&ppContext);
-
-    TSourceLoc beginning;
-    beginning.line = 1;
-    beginning.string = 0;
-    
-    if (! goodProfile)
-        parseContext.error(beginning, "incorrect", "#version", "");
-    if (versionStatementMissing)
-        parseContext.warn(beginning, "statement missing: use #version on first line of shader", "#version", "");
-    else if (profile == EEsProfile && version >= 300 && versionNotFirst)
-        parseContext.error(beginning, "statement must appear first in ESSL shader; before comments or newlines", "#version", "");
-
-    parseContext.initializeExtensionBehavior();
+    TIntermediate intermediate;
+    bool success = CompileDeferred(compiler, shaderStrings, numStrings, inputLengths, optLevel, resources, defaultVersion, forwardCompatible, messages, intermediate);
 
     //
-    // Parse the application's shaders.  All the following symbol table
-    // work will be throw-away, so push a new allocation scope that can
-    // be thrown away, then push a scope for the current shader's globals.
+    // Call the machine dependent compiler
     //
-    bool success = true;
-    
-    symbolTable.push();
-    if (! symbolTable.atGlobalLevel())
-        parseContext.infoSink.info.message(EPrefixInternalError, "Wrong symbol table level");
-
-    if (parseContext.insertBuiltInArrayAtGlobalLevel())
-        success = false;
-
-    bool ret = parseContext.parseShaderStrings(ppContext, const_cast<char**>(shaderStrings), lengths, numStrings);
-    if (! ret)
-        success = false;
-    intermediate.addSymbolLinkageNodes(intermediate.getTreeRoot(), parseContext.linkage, parseContext.language, symbolTable);
-
-    // Clean up the symbol table before deallocating the pool memory it used.
-    // The AST is self-sufficient now, so it can be done before the rest of compilation/linking.
-    delete symbolTableMemory;
-
-    if (success && intermediate.getTreeRoot()) {
-        if (optLevel == EShOptNoGeneration)
-            parseContext.infoSink.info.message(EPrefixNone, "No errors.  No code generation or linking was requested.");
-        else {
-            success = intermediate.postProcess(intermediate.getTreeRoot(), parseContext.language);
-
-            if (success) {
-                //
-                // Call the machine dependent compiler
-                //
-                if (! compiler->compile(intermediate.getTreeRoot(), parseContext.version, parseContext.profile))
-                    success = false;
-            }
-        }
-    } else if (! success) {
-        parseContext.infoSink.info.prefix(EPrefixError);
-        parseContext.infoSink.info << parseContext.getNumErrors() << " compilation errors.  No code generated.\n\n";
-        success = false;
-    }
-
-    if (messages & EShMsgAST)
-        intermediate.outputTree(parseContext.infoSink);
+    if (success && intermediate.getTreeRoot() && optLevel != EShOptNoGeneration)
+        success = compiler->compile(intermediate.getTreeRoot(), intermediate.getVersion(), intermediate.getProfile());
 
     intermediate.removeTree();
-    //
+
     // Throw away all the temporary memory used by the compilation process.
-    //
+    // The push was done in the CompileDeferred() call above.
     GetThreadPoolAllocator().pop();
-    delete [] lengths;
 
     return success ? 1 : 0;
 }
 
 //
-// Do an actual link on the given compile objects.
+// Link the given compile objects.
 //
 // Return:  The return value of is really boolean, indicating
 // success or failure.
@@ -777,3 +836,135 @@ int ShGetUniformLocation(const ShHandle handle, const char* name)
 
     return uniformMap->getLocation(name);
 }
+
+////////////////////////////////////////////////////////////////////////////////////////////
+//
+// Deferred-Lowering C++ Interface
+// -----------------------------------
+//
+// Below is a new alternate C++ interface that might potentially replace the above
+// opaque handle-based interface.
+//    
+// See more detailed comment in ShaderLang.h
+//
+
+namespace glslang {
+
+class TDeferredCompiler : public TCompiler {
+public:
+    TDeferredCompiler(EShLanguage s, TInfoSink& i) : TCompiler(s, i) { }
+    virtual bool compile(TIntermNode* root, int version = 0, EProfile profile = ENoProfile) { return true; }
+};
+
+
+TShader::TShader(EShLanguage s) 
+    : stage(s)
+{
+    infoSink = new TInfoSink;
+    compiler = new TDeferredCompiler(stage, *infoSink);
+    intermediate = new TIntermediate;
+}
+
+TShader::~TShader()
+{
+    delete infoSink;
+    delete compiler;
+    delete intermediate;
+}
+
+//
+// Turn the shader strings into a parse tree in the TIntermediate.
+//
+bool TShader::parse(const TBuiltInResource* builtInResources, int defaultVersion, bool forwardCompatible, EShMessages messages)
+{
+    return CompileDeferred(compiler, strings, numStrings, 0, EShOptNone, builtInResources, defaultVersion, forwardCompatible, messages, *intermediate);
+
+    // TODO: memory: pool needs to be popped
+}
+
+const char* TShader::getInfoLog()
+{
+    return infoSink->info.c_str();
+}
+
+const char* TShader::getInfoDebugLog()
+{
+    return infoSink->debug.c_str();
+}
+
+TProgram::TProgram()
+{
+    infoSink = new TInfoSink;
+    for (int s = 0; s < EShLangCount; ++s)
+        intermediate[s] = 0;
+}
+
+TProgram::~TProgram()
+{
+    delete infoSink;
+    for (int s = 0; s < EShLangCount; ++s)
+        delete intermediate[s];
+}
+
+//
+// Merge the compilation units within each stage into a single TIntermediate.
+// All starting compilation units need to be the result of calling TShader::parse().
+//
+bool TProgram::link(EShMessages messages)
+{
+    bool error = false;
+
+    for (int s = 0; s < EShLangCount; ++s) {
+        if (! linkStage((EShLanguage)s, messages))
+            error = true;
+    }
+
+    // TODO: Link: cross-stage error checking
+
+    return error;
+}
+
+bool TProgram::linkStage(EShLanguage stage, EShMessages messages)
+{
+    if (stages[stage].size() == 0)
+        return true;
+
+    //
+    // Be efficient for the common single compilation unit per stage case,
+    // reusing it's TIntermediate instead of merging into a new one.
+    //
+    TIntermediate* merged;
+    if (stages[stage].size() == 1)
+        merged = stages[stage].front()->intermediate;    
+    else {
+        intermediate[stage] = new TIntermediate();
+        merged = intermediate[stage];
+    }
+
+    infoSink->info << "\nLinked " << StageName[stage] << " stage:\n\n";
+
+    if (stages[stage].size() > 1) {
+        std::list<TShader*>::const_iterator it;
+        for (it = stages[stage].begin(); it != stages[stage].end(); ++it)
+            merged->merge(*(*it)->intermediate);
+
+        if (messages & EShMsgAST)
+            merged->outputTree(*infoSink);
+    }
+
+    merged->errorCheck(*infoSink);
+
+    return merged->getNumErrors() > 0;
+}
+
+const char* TProgram::getInfoLog()
+{
+    return infoSink->info.c_str();
+}
+
+const char* TProgram::getInfoDebugLog()
+{
+    return infoSink->debug.c_str();
+}
+
+} // end namespace glslang

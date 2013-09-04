@@ -2,10 +2,28 @@
 
 TARGETDIR=localResults
 BASEDIR=baseResults
+EXE=./glslangValidator.exe
+
+#
+# isolated compilation tests
+#
 
 while read t; do
     echo Running $t...
-	b=`basename $t`
-    ./glslangValidator.exe -i $t > $TARGETDIR/$b.out
+    b=`basename $t`
+    $EXE -i $t > $TARGETDIR/$b.out
     diff -b $BASEDIR/$b.out $TARGETDIR/$b.out
 done < testlist
+
+#
+# grouped shaders for link tests
+#
+
+function runLinkTest {
+    echo Running $*...
+    $EXE -i -l $* > $TARGETDIR/$1.out
+	diff -b $BASEDIR/$1.out $TARGETDIR/$1.out
+}
+
+runLinkTest mains1.frag mains2.frag noMain1.geom noMain2.geom
+runLinkTest noMain.vert mains.frag 

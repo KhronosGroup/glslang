@@ -56,10 +56,16 @@ class TVariable;
 //
 class TIntermediate {
 public:
-    TIntermediate(int v, EProfile p) : treeRoot(0), profile(p), version(v) { }
+    explicit TIntermediate(int v = 0, EProfile p = ENoProfile) : treeRoot(0), profile(p), version(v), numMains(0), numErrors(0) { }
 
+    void setVersion(int v) { version = v; }
+    int getVersion() const { return version; }
+    void setProfile(EProfile p) { profile = p; }
+    EProfile getProfile() const { return profile; }
     void setTreeRoot(TIntermNode* r) { treeRoot = r; }
     TIntermNode* getTreeRoot() const { return treeRoot; }
+    void addMainCount() { ++numMains; }
+    int getNumErrors() const { return numErrors; }
     
     TIntermSymbol* addSymbol(int Id, const TString&, const TType&, TSourceLoc);
     TIntermTyped* addConversion(TOperator, const TType&, TIntermTyped*);
@@ -93,13 +99,21 @@ public:
     void addSymbolLinkageNode(TIntermAggregate*& linkage, TSymbolTable&, const TString&);
     void addSymbolLinkageNode(TIntermAggregate*& linkage, const TVariable&);
 
+    void merge(TIntermediate&);
+    void errorCheck(TInfoSink& infoSink);
+
     void outputTree(TInfoSink& infoSink);
 	void removeTree();
+
+protected:
+    void error(TInfoSink& infoSink, const char*);
 
 protected:
     TIntermNode* treeRoot;
     EProfile profile;
     int version;
+    int numMains;
+    int numErrors;
 
 private:
     void operator=(TIntermediate&); // prevent assignments

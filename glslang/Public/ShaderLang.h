@@ -76,25 +76,29 @@ SH_IMPORT_EXPORT int __fastcall ShFinalize();
 // Types of languages the compiler can consume.
 //
 typedef enum {
-	EShLangVertex,
+    EShLangVertex,
     EShLangTessControl,
     EShLangTessEvaluation,
     EShLangGeometry,
-	EShLangFragment,
+    EShLangFragment,
     EShLangCompute,
     EShLangCount,
 } EShLanguage;
 
 typedef enum {
-	EShLangVertexMask         = (1 << EShLangVertex),
+    EShLangVertexMask         = (1 << EShLangVertex),
     EShLangTessControlMask    = (1 << EShLangTessControl),
     EShLangTessEvaluationMask = (1 << EShLangTessEvaluation),
     EShLangGeometryMask       = (1 << EShLangGeometry),
-	EShLangFragmentMask       = (1 << EShLangFragment),
-	EShLangComputeMask        = (1 << EShLangCompute),
+    EShLangFragmentMask       = (1 << EShLangFragment),
+    EShLangComputeMask        = (1 << EShLangCompute),
 } EShLanguageMask;
 
+namespace glslang {
+
 extern const char* StageName[EShLangCount];
+
+} // end namespace glslang
 
 //
 // Types of output the linker will create.
@@ -135,7 +139,7 @@ typedef struct {
 
 typedef struct {
     int numBindings;
-	ShBinding* bindings;  // array of bindings
+    ShBinding* bindings;  // array of bindings
 } ShBindingTable;
 
 //
@@ -220,13 +224,13 @@ SH_IMPORT_EXPORT int ShGetUniformLocation(const ShHandle uniformMap, const char*
 // These are currently unused in the front end, but consumers of the front-end still 
 // be rely on them:
 enum TDebugOptions {
-	EDebugOpNone               = 0x000,
-	EDebugOpIntermediate       = 0x001,
-	EDebugOpAssembly           = 0x002,
+    EDebugOpNone               = 0x000,
+    EDebugOpIntermediate       = 0x001,
+    EDebugOpAssembly           = 0x002,
     EDebugOpObjectCode         = 0x004,
-	EDebugOpLinkMaps           = 0x008,
-	EDebugOpSuppressInfolog    = 0x010,
-	EDebugOpMemoryLeakMode     = 0x020,
+    EDebugOpLinkMaps           = 0x008,
+    EDebugOpSuppressInfolog    = 0x010,
+    EDebugOpMemoryLeakMode     = 0x020,
     EDebugOpTexturePrototypes  = 0x040,
     EDebugOpRelaxedErrors      = 0x080,
     EDebugOpGiveWarnings       = 0x100,
@@ -235,5 +239,77 @@ enum TDebugOptions {
 #ifdef __cplusplus
     }  // end extern "C"
 #endif
+
+////////////////////////////////////////////////////////////////////////////////////////////
+//
+// Deferred-Lowering C++ Interface
+// -----------------------------------
+//
+// Below is a new alternate C++ interface that might potentially replace the above
+// opaque handle-based interface.  
+//    
+// The below is further designed to handle multiple compilation units per stage, where
+// the intermediate results, including the parse tree, are preserved until link time,
+// rather than the above interface which is designed to have each compilation unit
+// lowered at compile time.  In above model, linking occurs on the lowered results,
+// whereas in this model intra-stage linking can occur at the parse tree
+// (treeRoot in TIntermediate) level, and then a full stage can be lowered.
+//
+
+#include <list>
+
+class TCompiler;
+class TInfoSink;
+
+namespace glslang {
+
+class TIntermediate;
+class TProgram;
+
+class TShader {
+public:
+    explicit TShader(EShLanguage);
+    virtual ~TShader();
+    void setStrings(char** s, int n) { strings = s; numStrings = n; }
+    bool parse(const TBuiltInResource*, int defaultVersion, bool forwardCompatible, EShMessages);
+    const char* getInfoLog();
+    const char* getInfoDebugLog();
+
+protected:
+    EShLanguage stage;
+    TCompiler* compiler;
+    TIntermediate* intermediate;
+    TInfoSink* infoSink;
+    char** strings;
+    int numStrings;
+
+    friend class TProgram;
+
+private:
+    void operator=(TShader&);
+};
+
+class TProgram {
+public:
+    TProgram();
+    virtual ~TProgram();
+    void addShader(TShader* shader) { stages[shader->stage].push_back(shader); }
+    bool link(EShMessages);
+    const char* getInfoLog();
+    const char* getInfoDebugLog();
+protected:
+    bool linkStage(EShLanguage, EShMessages);
+
+protected:
+    std::list<TShader*> stages[EShLangCount];
+    TIntermediate* intermediate[EShLangCount];
+    TInfoSink* infoSink;
+
+private:
+    void operator=(TProgram&);
+};
+
+} // end namespace glslang
+
 
 #endif // _COMPILER_INTERFACE_INCLUDED_

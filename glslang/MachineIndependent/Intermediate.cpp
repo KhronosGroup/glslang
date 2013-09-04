@@ -910,6 +910,30 @@ void TIntermediate::addSymbolLinkageNode(TIntermAggregate*& linkage, const TVari
 }
 
 //
+// Merge the information in 'unit' into 'this'
+//
+void TIntermediate::merge(TIntermediate& unit)
+{
+    numMains += unit.numMains;
+}
+
+void TIntermediate::errorCheck(TInfoSink& infoSink)
+{   
+    if (numMains < 1)
+        error(infoSink, "Missing entry point: Each stage requires one \"void main()\" entry point");
+    if (numMains > 1)
+        error(infoSink, "Too many entry points: Each stage can have at most one \"void main()\" entry point.");
+}
+
+void TIntermediate::error(TInfoSink& infoSink, const char* message)
+{
+    infoSink.info.prefix(EPrefixError);
+    infoSink.info << message << "\n";
+
+    ++numErrors;
+}
+
+//
 // This deletes the tree.
 //
 void TIntermediate::removeTree()

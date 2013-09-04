@@ -1,0 +1,33 @@
+mains1.frag
+
+0:3Function Definition: main( (void)
+0:3  Function Parameters: 
+
+mains2.frag
+
+0:3Function Definition: main( (void)
+0:3  Function Parameters: 
+
+noMain1.geom
+ERROR: #version: geometry shaders require non-es profile and version 150 or above
+ERROR: 1 compilation errors.  No code generated.
+
+
+0:3Function Definition: foo( (void)
+0:3  Function Parameters: 
+
+noMain2.geom
+
+0:3Function Definition: bar( (void)
+0:3  Function Parameters: 
+
+
+Linked geometry stage:
+
+ERROR: Missing entry point: Each stage requires one "void main()" entry point
+
+Linked fragment stage:
+
+ERROR: Too many entry points: Each stage can have at most one "void main()" entry point.
+
+

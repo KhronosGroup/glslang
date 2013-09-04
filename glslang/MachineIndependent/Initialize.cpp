@@ -1429,7 +1429,7 @@ void TBuiltIns::initialize(const TBuiltInResource &resources, int version, EProf
                 s.append("uniform gl_LightProducts gl_BackLightProduct[gl_MaxLights];");
 
                 //
-                // Textureg Environment and Generation, p. 152, p. 40-42.
+                // Texture Environment and Generation, p. 152, p. 40-42.
                 //
                 s.append("uniform vec4  gl_TextureEnvColor[gl_MaxTextureImageUnits];");
                 s.append("uniform vec4  gl_EyePlaneS[gl_MaxTextureCoords];");

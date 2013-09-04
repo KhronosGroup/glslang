@@ -164,6 +164,7 @@ public:
     TScanContext* getScanContext() const { return scanContext; }
     void setPpContext(TPpContext* c) { ppContext = c; }
     TPpContext* getPpContext() const { return ppContext; }
+    void addError() { ++numErrors; }
     int getNumErrors() const { return numErrors; }
 
 protected:

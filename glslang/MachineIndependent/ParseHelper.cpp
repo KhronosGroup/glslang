@@ -692,6 +692,7 @@ TIntermAggregate* TParseContext::handleFunctionPrototype(TSourceLoc loc, TFuncti
             error(loc, "function cannot take any parameter(s)", function.getName().c_str(), "");
         if (function.getReturnType().getBasicType() != EbtVoid)
             error(loc, "", function.getReturnType().getCompleteTypeString().c_str(), "main function cannot return a value");
+        intermediate.addMainCount();
     }
 
     //

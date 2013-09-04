@@ -1,4 +1,4 @@
-WARNING: 0:1: '#version' : statement missing: use #version on first line of shader 
+WARNING: #version: statement missing; use #version on first line of shader
 0:? Sequence
 0:4  Sequence
 0:4    move second child to first child (highp float)

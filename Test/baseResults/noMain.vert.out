@@ -1,0 +1,26 @@
+noMain.vert
+
+0:3Function Definition: foo( (void)
+0:3  Function Parameters: 
+
+mains.frag
+ERROR: 0:7: 'main' : function already has a body 
+ERROR: 1 compilation errors.  No code generated.
+
+
+ERROR: node is still EOpNull!
+0:3  Function Definition: main( (void)
+0:3    Function Parameters: 
+0:7  Function Definition: main( (void)
+0:7    Function Parameters: 
+
+
+Linked vertex stage:
+
+ERROR: Missing entry point: Each stage requires one "void main()" entry point
+
+Linked fragment stage:
+
+ERROR: Too many entry points: Each stage can have at most one "void main()" entry point.
+
+

@@ -103,7 +103,7 @@ protected:
 };
 
 //
-// Link operations are base on a list of compile results...
+// Link operations are based on a list of compile results...
 //
 typedef glslang::TVector<TCompiler*> TCompilerList;
 typedef glslang::TVector<TShHandleBase*> THandleList;

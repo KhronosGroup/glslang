@@ -161,18 +161,16 @@ bool ProcessArguments(int argc, char* argv[])
     return true;
 }
 
-// Thread entry point
+// Thread entry point, for non-linking asynchronous mode.
 unsigned int
 #ifdef _WIN32
     __stdcall
 #endif
 CompileShaders(void*)
 {
-    ShHandle compiler;
-
     std::string shaderName;
     while (Worklist.remove(shaderName)) {
-        compiler = ShConstructCompiler(FindLanguage(shaderName), Options);
+        ShHandle compiler = ShConstructCompiler(FindLanguage(shaderName), Options);
         if (compiler == 0)
             return false;
 
@@ -187,6 +185,77 @@ CompileShaders(void*)
     }
 
     return 0;
+}
+
+//
+// For linking mode: Will independently parse each item in the worklist, but then put them
+// in the same program and link them together.
+//
+// Uses the new C++ interface instead of the old handle-based interface.
+//
+void CompileAndLinkShaders()
+{
+    // keep track of what to free
+    std::list<glslang::TShader*> shaders;
+
+    EShMessages messages = EShMsgDefault;
+    if (Options & EOptionRelaxedErrors)
+        messages = (EShMessages)(messages | EShMsgRelaxedErrors);
+    if (Options & EOptionIntermediate)
+        messages = (EShMessages)(messages | EShMsgAST);
+
+    TBuiltInResource resources;
+    GenerateResources(resources);
+
+    //
+    // Per-shader processing...
+    //
+
+    glslang::TProgram program;
+    std::string shaderName;
+    while (Worklist.remove(shaderName)) {
+        EShLanguage stage = FindLanguage(shaderName);
+        glslang::TShader* shader = new glslang::TShader(stage);
+        shaders.push_back(shader);
+    
+        char** shaderStrings = ReadFileData(shaderName.c_str());
+        if (! shaderStrings) {
+            usage();
+            return;
+        }
+
+        shader->setStrings(shaderStrings, 1);
+
+        shader->parse(&resources, 100, false, messages);
+        
+        program.addShader(shader);
+
+        if (! (Options & EOptionSuppressInfolog)) {
+            puts(shaderName.c_str());
+            puts(shader->getInfoLog());
+            puts(shader->getInfoDebugLog());
+        }
+
+        FreeFileData(shaderStrings);
+    }
+
+    //
+    // Program-level processing...
+    //
+
+    program.link(messages);
+    if (! (Options & EOptionSuppressInfolog)) {
+        puts(program.getInfoLog());
+        puts(program.getInfoDebugLog());
+    }
+
+    // free everything up
+    while (shaders.size() > 0) {
+        delete shaders.back();
+        shaders.pop_back();
+    }
+
+    // TODO: memory: for each compile, need a GetThreadPoolAllocator().pop();
 }
 
 int C_DECL main(int argc, char* argv[])
@@ -205,6 +274,12 @@ int C_DECL main(int argc, char* argv[])
         return EFailUsage;
     }
 
+    //
+    // Two modes:
+    // 1) linking all arguments together, single-threaded
+    // 2) independent arguments, can be tackled by multiple asynchronous threads, for testing thread safety
+    //
+
     // TODO: finish threading, allow external control over number of threads
     const int NumThreads = 1;
     if (NumThreads > 1) {
@@ -218,8 +293,12 @@ int C_DECL main(int argc, char* argv[])
         }
         glslang::OS_WaitForAllThreads(threads, NumThreads);
     } else {
-        if (! CompileShaders(0))
-            compileFailed = true;
+        if (Options & EOptionsLinkProgram) {
+            CompileAndLinkShaders();
+        } else {
+            if (! CompileShaders(0))
+                compileFailed = true;
+        }
     }
 
     if (Delay)
@@ -271,9 +350,10 @@ EShLanguage FindLanguage(const std::string& name)
 }
 
 //
-//   Read a file's data into a string, and compile it using ShCompile
+// Read a file's data into a string, and compile it using the old interface ShCompile, 
+// for non-linkable results.
 //
-bool CompileFile(const char *fileName, ShHandle compiler, int Options, const TBuiltInResource *resources)
+bool CompileFile(const char *fileName, ShHandle compiler, int Options, const TBuiltInResource* resources)
 {
     int ret;
     char** shaderStrings = ReadFileData(fileName);
@@ -296,6 +376,7 @@ bool CompileFile(const char *fileName, ShHandle compiler, int Options, const TBu
         messages = (EShMessages)(messages | EShMsgRelaxedErrors);
     if (Options & EOptionIntermediate)
         messages = (EShMessages)(messages | EShMsgAST);
+    
     for (int i = 0; i < ((Options & EOptionMemoryLeakMode) ? 100 : 1); ++i) {
         for (int j = 0; j < ((Options & EOptionMemoryLeakMode) ? 100 : 1); ++j) {
             //ret = ShCompile(compiler, shaderStrings, NumShaderStrings, lengths, EShOptNone, resources, Options, 100, false, messages);
@@ -314,7 +395,6 @@ bool CompileFile(const char *fileName, ShHandle compiler, int Options, const TBu
 
     return ret ? true : false;
 }
-
 
 //
 //   print usage to stdout
@@ -429,15 +509,11 @@ char** ReadFileData(const char *fileName)
     return return_data;
 }
 
-
-
 void FreeFileData(char **data)
 {
     for(int i=0;i<NumShaderStrings;i++)
         free(data[i]);
 }
-
-
 
 void InfoLogMsg(const char* msg, const char* name, const int num)
 {
