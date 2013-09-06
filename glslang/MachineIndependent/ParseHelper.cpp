@@ -456,10 +456,10 @@ TIntermTyped* TParseContext::handleVariable(TSourceLoc loc, TSymbol* symbol, TSt
 {
     TIntermTyped* node = 0;
 
-    TAnonMember* anon = symbol ? symbol->getAsAnonMember() : 0;
+    const TAnonMember* anon = symbol ? symbol->getAsAnonMember() : 0;
     if (anon) {
         // it was a member of an anonymous container, have to insert its dereference
-        TVariable* variable = anon->getAnonContainer().getAsVariable();
+        const TVariable* variable = anon->getAnonContainer().getAsVariable();
         TIntermTyped* container = intermediate.addSymbol(variable->getUniqueId(), variable->getName(), variable->getType(), loc);
         TConstUnion* unionArray = new TConstUnion[1];
         unionArray->setUConst(anon->getMemberNumber());
@@ -1084,7 +1084,7 @@ bool TParseContext::lValueErrorCheck(TSourceLoc loc, const char* op, TIntermType
             } 
 
             return errorReturn;
-        default: 
+        default:
             break;
         }
         error(loc, " l-value required", op, "", "");
@@ -1120,7 +1120,7 @@ bool TParseContext::lValueErrorCheck(TSourceLoc loc, const char* op, TIntermType
         case EbtVoid:
             message = "can't modify void";
             break;
-        default: 
+        default:
             break;
         }
     }
@@ -1237,7 +1237,7 @@ bool TParseContext::constructorError(TSourceLoc loc, TIntermNode* node, TFunctio
     case EOpConstructDMat4x4:
         constructingMatrix = true;
         break;
-    default: 
+    default:
         break;
     }
 
@@ -1626,7 +1626,7 @@ bool TParseContext::insertBuiltInArrayAtGlobalLevel()
 
         return false;
     }
-    TVariable* variable = symbol->getAsVariable();
+    const TVariable* variable = symbol->getAsVariable();
 
     if (! variable) {
         infoSink.info.message(EPrefixInternalError, "variable expected");
@@ -1730,21 +1730,18 @@ void TParseContext::arrayCheck(TSourceLoc loc, TString& identifier, const TPubli
     // Don't check for reserved word use until after we know it's not in the symbol table,
     // because reserved arrays can be redeclared.
     //
+    // However, reserved arrays cannot be modified in a shared symbol table, so add a new
+    // one at a non-shared level in the table.
+    //
 
-    bool sameScope = false;
-    TSymbol* symbol = symbolTable.find(identifier, 0, &sameScope);
-    if (symbol == 0 || !sameScope) {
+    bool currentScope;
+    TSymbol* symbol = symbolTable.find(identifier, 0, &currentScope);
+    if (symbol == 0 || ! currentScope) {
         if (reservedErrorCheck(loc, identifier))
             return;
-        
+
         variable = new TVariable(&identifier, TType(type));
-
-        if (! symbolTable.insert(*variable)) {
-            delete variable;
-            error(loc, "INTERNAL ERROR inserting new symbol", identifier.c_str(), "");
-
-            return;
-        }
+        symbolTable.insert(*variable);
     } else {
         variable = symbol->getAsVariable();
 
@@ -1777,7 +1774,7 @@ void TParseContext::arrayCheck(TSourceLoc loc, TString& identifier, const TPubli
             t = t->getArrayInformationType();
         }
 
-        variable->getType().setArraySizes(type.arraySizes);
+        variable->getWritableType().setArraySizes(type.arraySizes);
     } 
 
     voidErrorCheck(loc, identifier, type);
@@ -1797,6 +1794,8 @@ bool TParseContext::arraySetMaxSize(TIntermSymbol *node, TType* type, int size, 
         return true;
     }
 
+    // There are multiple copies of the array type tagging results of operations.
+    // Chain these together, so they can all reflect the final size.
     type->setArrayInformationType(variable->getArrayInformationType());
     variable->updateArrayInformationType(type);
 
@@ -1816,13 +1815,13 @@ bool TParseContext::arraySetMaxSize(TIntermSymbol *node, TType* type, int size, 
         }
     }
 
-    // we dont want to update the maxArraySize when this flag is not set, we just want to include this 
-    // node type in the chain of node types so that its updated when a higher maxArraySize comes in.
-    if (!updateFlag)
+    // We don't want to update the maxArraySize when this flag is not set, we just want to include this 
+    // node type in the chain of node types so that it's updated when a higher maxArraySize comes in.
+    if (! updateFlag)
         return false;
 
     size++;
-    variable->getType().setMaxArraySize(size);
+    variable->getWritableType().setMaxArraySize(size);
     type->setMaxArraySize(size);
     TType* tt = type;
 
@@ -1997,8 +1996,7 @@ const TFunction* TParseContext::findFunction(TSourceLoc loc, TFunction* call, bo
 }
 
 //
-// Initializers show up in several places in the grammar.  Have one set of
-// code to handle them here.
+// Handle all types of initializers from the grammar.
 //
 bool TParseContext::executeInitializerError(TSourceLoc loc, TString& identifier, TPublicType& pType, 
                                             TIntermTyped* initializer, TIntermNode*& intermNode, TVariable* variable)
@@ -2044,13 +2042,13 @@ bool TParseContext::executeInitializerError(TSourceLoc loc, TString& identifier,
     if (qualifier == EvqConst) {
         if (qualifier != initializer->getType().getQualifier().storage) {
             error(loc, " assigning non-constant to", "=", "'%s'", variable->getType().getCompleteString().c_str());
-            variable->getType().getQualifier().storage = EvqTemporary;
+            variable->getWritableType().getQualifier().storage = EvqTemporary;
             return true;
         }
         if (type != initializer->getType()) {
             error(loc, " non-matching types for const initializer ", 
                 variable->getType().getStorageQualifierString(), "");
-            variable->getType().getQualifier().storage = EvqTemporary;
+            variable->getWritableType().getQualifier().storage = EvqTemporary;
             return true;
         }
         if (initializer->getAsConstantUnion()) { 
@@ -2063,7 +2061,7 @@ bool TParseContext::executeInitializerError(TSourceLoc loc, TString& identifier,
             }
         } else if (initializer->getAsSymbolNode()) {
             TSymbol* symbol = symbolTable.find(initializer->getAsSymbolNode()->getName());
-            if (TVariable* tVar = symbol->getAsVariable()) {
+            if (const TVariable* tVar = symbol->getAsVariable()) {
                 TConstUnion* constArray = tVar->getConstUnionPointer();
                 variable->shareConstPointer(constArray);
             } else {
@@ -2072,7 +2070,7 @@ bool TParseContext::executeInitializerError(TSourceLoc loc, TString& identifier,
             }
         } else {
             error(loc, " cannot assign to", "=", "'%s'", variable->getType().getCompleteString().c_str());
-            variable->getType().getQualifier().storage = EvqTemporary;
+            variable->getWritableType().getQualifier().storage = EvqTemporary;
             return true;
         }
     }
@@ -2372,7 +2370,8 @@ void TParseContext::addBlock(TSourceLoc loc, TTypeList& typeList, const TString*
 // For an identifier that is already declared, add more qualification to it.
 void TParseContext::addQualifierToExisting(TSourceLoc loc, TQualifier qualifier, const TString& identifier)
 {
-    TSymbol* existing = symbolTable.find(identifier);
+    bool sharedLevel;
+    TSymbol* existing = symbolTable.find(identifier, 0, 0, &sharedLevel);
     TVariable* variable = existing ? existing->getAsVariable() : 0;
     if (! variable) {
         error(loc, "identifier not previously declared", identifier.c_str(), "");
@@ -2390,8 +2389,16 @@ void TParseContext::addQualifierToExisting(TSourceLoc loc, TQualifier qualifier,
         return;
     }
 
+    //
+    // Don't change a shared variable; rather add a new one at the current scope.
+    //
+    if (sharedLevel) {
+        variable = new TVariable(&variable->getName(), variable->getType());
+        symbolTable.insert(*variable);
+    }
+
     if (qualifier.invariant)
-        variable->getType().getQualifier().invariant = true;
+        variable->getWritableType().getQualifier().invariant = true;
 }
 
 void TParseContext::addQualifierToExisting(TSourceLoc loc, TQualifier qualifier, TIdentifierList& identifiers)

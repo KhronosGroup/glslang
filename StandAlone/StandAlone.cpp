@@ -55,6 +55,7 @@ enum TOptions {
     EOptionRelaxedErrors      = 0x008,
     EOptionGiveWarnings       = 0x010,
     EOptionsLinkProgram       = 0x020,
+    EOptionMultiThreaded      = 0x040,
 };
 
 //
@@ -119,16 +120,29 @@ void GenerateResources(TBuiltInResource& resources)
     resources.maxProgramTexelOffset = 7;
 }
 
+// thread-safe list of shaders to asynchronously grab and compile
 glslang::TWorklist Worklist;
+
+// array of unique places to leave the shader names and infologs for the asynchronous compiles
+glslang::TWorkItem **Work = 0;
+int NumWorkItems = 0;
+
 int Options = 0;
 bool Delay = false;
+const char* ExecutableName;
 
 bool ProcessArguments(int argc, char* argv[])
 {
+    ExecutableName = argv[0];
+    NumWorkItems = argc;  // will include some empties where the '-' options were, but it doesn't matter, they'll be 0
+    Work = new glslang::TWorkItem*[NumWorkItems];    
+    Work[0] = 0;
+
     argc--;
     argv++;    
     for (; argc >= 1; argc--, argv++) {
         if (argv[0][0] == '-') {
+            Work[argc] = 0;
             switch (argv[0][1]) {
             case 'd':
                 Delay = true;                        
@@ -148,11 +162,18 @@ bool ProcessArguments(int argc, char* argv[])
             case 's':
                 Options |= EOptionSuppressInfolog;
                 break;
+            case 't':
+                #ifdef _WIN32
+                Options |= EOptionMultiThreaded;
+                #endif
+                break;
             default:
                 return false;
             }
-        } else
-            Worklist.add(std::string(argv[0]));
+        } else {
+            Work[argc] = new glslang::TWorkItem(std::string(argv[0]));
+            Worklist.add(Work[argc]);
+        }
     }
 
     if (Worklist.empty())
@@ -168,18 +189,18 @@ unsigned int
 #endif
 CompileShaders(void*)
 {
-    std::string shaderName;
-    while (Worklist.remove(shaderName)) {
-        ShHandle compiler = ShConstructCompiler(FindLanguage(shaderName), Options);
+    glslang::TWorkItem* workItem;
+    while (Worklist.remove(workItem)) {
+        ShHandle compiler = ShConstructCompiler(FindLanguage(workItem->name), Options);
         if (compiler == 0)
             return false;
 
         TBuiltInResource resources;
         GenerateResources(resources);
-        CompileFile(shaderName.c_str(), compiler, Options, &resources);
+        CompileFile(workItem->name.c_str(), compiler, Options, &resources);
 
         if (! (Options & EOptionSuppressInfolog))
-            puts(ShGetInfoLog(compiler));
+            workItem->results = ShGetInfoLog(compiler);
 
         ShDestruct(compiler);
     }
@@ -212,13 +233,13 @@ void CompileAndLinkShaders()
     //
 
     glslang::TProgram program;
-    std::string shaderName;
-    while (Worklist.remove(shaderName)) {
-        EShLanguage stage = FindLanguage(shaderName);
+    glslang::TWorkItem* workItem;
+    while (Worklist.remove(workItem)) {
+        EShLanguage stage = FindLanguage(workItem->name);
         glslang::TShader* shader = new glslang::TShader(stage);
         shaders.push_back(shader);
     
-        char** shaderStrings = ReadFileData(shaderName.c_str());
+        char** shaderStrings = ReadFileData(workItem->name.c_str());
         if (! shaderStrings) {
             usage();
             return;
@@ -231,7 +252,7 @@ void CompileAndLinkShaders()
         program.addShader(shader);
 
         if (! (Options & EOptionSuppressInfolog)) {
-            puts(shaderName.c_str());
+            puts(workItem->name.c_str());
             puts(shader->getInfoLog());
             puts(shader->getInfoDebugLog());
         }
@@ -266,7 +287,7 @@ int C_DECL main(int argc, char* argv[])
     // Init for front-end proper
     ShInitialize();
 
-    // Init for for standalone
+    // Init for standalone
     glslang::InitGlobalLock();
 
     if (! ProcessArguments(argc, argv)) {
@@ -276,28 +297,38 @@ int C_DECL main(int argc, char* argv[])
 
     //
     // Two modes:
-    // 1) linking all arguments together, single-threaded
-    // 2) independent arguments, can be tackled by multiple asynchronous threads, for testing thread safety
+    // 1) linking all arguments together, single-threaded, new C++ interface
+    // 2) independent arguments, can be tackled by multiple asynchronous threads, for testing thread safety, using the old handle interface
     //
+    if (Options & EOptionsLinkProgram)
+        CompileAndLinkShaders();
+    else {
+        bool printShaderNames = Worklist.size() > 1;
 
-    // TODO: finish threading, allow external control over number of threads
-    const int NumThreads = 1;
-    if (NumThreads > 1) {
-        void* threads[NumThreads];
-        for (int t = 0; t < NumThreads; ++t) {
-            threads[t] = glslang::OS_CreateThread(&CompileShaders);
-            if (! threads[t]) {
-                printf("Failed to create thread\n");
-                return EFailThreadCreate;
+        if (Options & EOptionMultiThreaded) {
+            const int NumThreads = 16;
+            void* threads[NumThreads];
+            for (int t = 0; t < NumThreads; ++t) {
+                threads[t] = glslang::OS_CreateThread(&CompileShaders);
+                if (! threads[t]) {
+                    printf("Failed to create thread\n");
+                    return EFailThreadCreate;
+                }
             }
-        }
-        glslang::OS_WaitForAllThreads(threads, NumThreads);
-    } else {
-        if (Options & EOptionsLinkProgram) {
-            CompileAndLinkShaders();
+            glslang::OS_WaitForAllThreads(threads, NumThreads);
         } else {
             if (! CompileShaders(0))
                 compileFailed = true;
+        }
+
+        // Print out all the resulting infologs
+        for (int w = 0; w < NumWorkItems; ++w) {
+            if (Work[w]) {
+                if (printShaderNames)
+                    puts(Work[w]->name.c_str());
+                puts(Work[w]->results.c_str());
+                delete Work[w];
+            }
         }
     }
 
@@ -401,7 +432,7 @@ bool CompileFile(const char *fileName, ShHandle compiler, int Options, const TBu
 //
 void usage()
 {
-    printf("Usage: standalone [ options ] filename\n"
+    printf("Usage: glslangValidator [ options ] filename\n"
            "Where: filename is a name ending in\n"
            "    .vert for a vertex shader\n"
            "    .tesc for a tessellation control shader\n"
@@ -415,8 +446,9 @@ void usage()
            "-d: delay exit\n"
            "-l: link validation of all input files\n"
            "-m: memory leak mode\n"
+           "-r: relaxed semantic error-checking mode\n"
            "-s: silent mode\n"
-           "-r: relaxed semantic error-checking mode\n");
+           "-t: multi-threaded mode\n");
 }
 
 #ifndef _WIN32

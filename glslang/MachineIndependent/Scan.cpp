@@ -851,7 +851,7 @@ int TScanContext::tokenizeIdentifier()
         return identifierOrReserved(reserved);
     }
     
-    default:        
+    default:
         parseContext.infoSink.info.message(EPrefixInternalError, "Unknown glslang keyword", loc);
         return 0;
     }
@@ -868,7 +868,7 @@ int TScanContext::identifierOrType()
 
     parserToken->sType.lex.symbol = parseContext.symbolTable.find(*parserToken->sType.lex.string);
     if (afterType == false && parserToken->sType.lex.symbol) {
-        if (TVariable* variable = parserToken->sType.lex.symbol->getAsVariable()) {
+        if (const TVariable* variable = parserToken->sType.lex.symbol->getAsVariable()) {
             if (variable->isUserType()) {
                 afterType = true;
 

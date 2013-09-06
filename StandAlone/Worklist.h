@@ -41,32 +41,46 @@
 
 namespace glslang {
 
+    class TWorkItem {
+    public:
+        TWorkItem() { }
+        explicit TWorkItem(const std::string& s) :
+            name(s) { }
+        std::string name;
+        std::string results;
+    };
+
     class TWorklist {
     public:
         TWorklist() { }
         virtual ~TWorklist() { }
 
-        void add(const std::string& s)
+        void add(TWorkItem* item)
         {
             GetGlobalLock();
             
-            worklist.push_back(s);
+            worklist.push_back(item);
             
             ReleaseGlobalLock();
         }
     
-        bool remove(std::string& s)
+        bool remove(TWorkItem*& item)
         {
             GetGlobalLock();
             
             if (worklist.empty())
                 return false;
-            s = worklist.front();
+            item = worklist.front();
             worklist.pop_front();
             
             ReleaseGlobalLock();
 
             return true;
+        }
+
+        int size()
+        {
+            return worklist.size();
         }
 
         bool empty()
@@ -75,7 +89,7 @@ namespace glslang {
         }
 
     protected:
-        std::list<std::string> worklist;
+        std::list<TWorkItem*> worklist;
     };
 
 } // end namespace glslang

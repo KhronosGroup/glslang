@@ -577,12 +577,14 @@ public:
 	virtual bool isMatrix() const { return matrixCols ? true : false; }
     virtual bool isArray() const  { return arraySizes != 0; }
     int getArraySize() const { return arraySizes->front(); }
-    void setArraySizes(TArraySizes s) {
+    void setArraySizes(TArraySizes s) 
+    {
         // copy; we don't want distinct types sharing the same descriptor
         if (! arraySizes)
             arraySizes = NewPoolTArraySizes();
         *arraySizes = *s;
     }
+    
     void changeArraySize(int s) { arraySizes->front() = s; }
     void setMaxArraySize (int s) { maxArraySize = s; }
     int getMaxArraySize () const { return maxArraySize; }
@@ -590,10 +592,13 @@ public:
     TType* getArrayInformationType() { return arrayInformationType; }
     virtual bool isVector() const { return vectorSize > 1; }
     virtual bool isScalar() const { return vectorSize == 1; }
-    const char* getBasicString() const {
+    const char* getBasicString() const 
+    {
         return TType::getBasicString(basicType);
     }
-    static const char* getBasicString(TBasicType t) {
+    
+    static const char* getBasicString(TBasicType t)
+    {
         switch (t) {
         case EbtVoid:              return "void";
         case EbtFloat:             return "float";

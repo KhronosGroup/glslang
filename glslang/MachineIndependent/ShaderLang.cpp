@@ -100,6 +100,9 @@ TSymbolTable* SharedSymbolTables[VersionCount][EProfileCount][EShLangCount] = {}
 
 TPoolAllocator* PerProcessGPA = 0;
 
+//
+// Parse and add to the given symbol table the content of the given shader string.
+//
 bool InitializeSymbolTable(const TString& builtIns, int version, EProfile profile, EShLanguage language, TInfoSink& infoSink, 
                            TSymbolTable& symbolTable)
 {
@@ -111,9 +114,6 @@ bool InitializeSymbolTable(const TString& builtIns, int version, EProfile profil
     parseContext.setScanContext(&scanContext);
     parseContext.setPpContext(&ppContext);
     
-    //
-    // Parse the built-ins.  This should only happen once per
-    // language symbol table when no 'resources' are passed in.
     //
     // Push the symbol table to give it an initial scope.  This
     // push should not have a corresponding pop, so that built-ins
@@ -137,44 +137,48 @@ bool InitializeSymbolTable(const TString& builtIns, int version, EProfile profil
     return true;
 }
 
-//
-// To call for per-stage initialization, with the common table already complete.
-//
-void InitializeSymbolTable(TBuiltIns& builtIns, int version, EProfile profile, EShLanguage language, TInfoSink& infoSink, TSymbolTable** commonTable, TSymbolTable** symbolTables)
+int CommonIndex(EProfile profile, EShLanguage language)
 {
-    int commonIndex = EPcGeneral;
-    if (profile == EEsProfile && language == EShLangFragment)
-        commonIndex = EPcFragment;
+    return (profile == EEsProfile && language == EShLangFragment) ? EPcFragment : EPcGeneral;
+}
 
-    (*symbolTables[language]).adoptLevels(*commonTable[commonIndex]);
+//
+// To initialize per-stage shared tables, with the common table already complete.
+//
+void InitializeStageSymbolTable(TBuiltIns& builtIns, int version, EProfile profile, EShLanguage language, TInfoSink& infoSink, TSymbolTable** commonTable, TSymbolTable** symbolTables)
+{
+    (*symbolTables[language]).adoptLevels(*commonTable[CommonIndex(profile, language)]);
     InitializeSymbolTable(builtIns.getStageString(language), version, profile, language, infoSink, *symbolTables[language]);
     IdentifyBuiltIns(version, profile, language, *symbolTables[language]);
     if (profile == EEsProfile)
         (*symbolTables[language]).setNoBuiltInRedeclarations();
 }
 
-bool GenerateBuiltInSymbolTable(TInfoSink& infoSink, TSymbolTable** commonTable,  TSymbolTable** symbolTables, int version, EProfile profile)
+//
+// Initialize the full set of shareable symbol tables;
+// The common (cross-stage) and those sharable per-stage.
+//
+bool InitializeSymbolTables(TInfoSink& infoSink, TSymbolTable** commonTable,  TSymbolTable** symbolTables, int version, EProfile profile)
 {
     TBuiltIns builtIns;
-    
 	builtIns.initialize(version, profile);
 
-    // do the common table
+    // do the common tables
     InitializeSymbolTable(builtIns.getCommonString(), version, profile, EShLangVertex, infoSink, *commonTable[EPcGeneral]);
     if (profile == EEsProfile)
         InitializeSymbolTable(builtIns.getCommonString(), version, profile, EShLangFragment, infoSink, *commonTable[EPcFragment]);
 
     // do the per-stage tables
-    InitializeSymbolTable(builtIns, version, profile, EShLangVertex, infoSink, commonTable, symbolTables);
-    InitializeSymbolTable(builtIns, version, profile, EShLangFragment, infoSink, commonTable, symbolTables);
+    InitializeStageSymbolTable(builtIns, version, profile, EShLangVertex, infoSink, commonTable, symbolTables);
+    InitializeStageSymbolTable(builtIns, version, profile, EShLangFragment, infoSink, commonTable, symbolTables);
     if (profile != EEsProfile && version >= 400) {
-        InitializeSymbolTable(builtIns, version, profile, EShLangTessControl, infoSink, commonTable, symbolTables);
-        InitializeSymbolTable(builtIns, version, profile, EShLangTessEvaluation, infoSink, commonTable, symbolTables);
+        InitializeStageSymbolTable(builtIns, version, profile, EShLangTessControl, infoSink, commonTable, symbolTables);
+        InitializeStageSymbolTable(builtIns, version, profile, EShLangTessEvaluation, infoSink, commonTable, symbolTables);
     }
     if (profile != EEsProfile && version >= 150)
-        InitializeSymbolTable(builtIns, version, profile, EShLangGeometry, infoSink, commonTable, symbolTables);
+        InitializeStageSymbolTable(builtIns, version, profile, EShLangGeometry, infoSink, commonTable, symbolTables);
     if (profile != EEsProfile && version >= 430)
-        InitializeSymbolTable(builtIns, version, profile, EShLangCompute, infoSink, commonTable, symbolTables);
+        InitializeStageSymbolTable(builtIns, version, profile, EShLangCompute, infoSink, commonTable, symbolTables);
 
     return true;
 }
@@ -222,7 +226,7 @@ void SetupBuiltinSymbolTable(int version, EProfile profile)
     TPoolAllocator* builtInPoolAllocator = new TPoolAllocator();
     SetThreadPoolAllocator(*builtInPoolAllocator);
 
-    // Dynamically allocate the symbol tables so we can control when they are deallocated WRT the pool.
+    // Dynamically allocate the local symbol tables so we can control when they are deallocated WRT when the pool is popped.
     TSymbolTable* commonTable[EPcCount];
     TSymbolTable* stageTables[EShLangCount];
     for (int precClass = 0; precClass < EPcCount; ++precClass)
@@ -231,7 +235,7 @@ void SetupBuiltinSymbolTable(int version, EProfile profile)
         stageTables[stage] = new TSymbolTable;
 
     // Generate the local symbol tables using the new pool
-    GenerateBuiltInSymbolTable(infoSink, commonTable, stageTables, version, profile);
+    InitializeSymbolTables(infoSink, commonTable, stageTables, version, profile);
 
     // Switch to the process-global pool
     SetThreadPoolAllocator(*PerProcessGPA);
@@ -241,12 +245,15 @@ void SetupBuiltinSymbolTable(int version, EProfile profile)
         if (! commonTable[precClass]->isEmpty()) {
             CommonSymbolTable[versionIndex][profile][precClass] = new TSymbolTable;
             CommonSymbolTable[versionIndex][profile][precClass]->copyTable(*commonTable[precClass]);
+            CommonSymbolTable[versionIndex][profile][precClass]->readOnly();
         }
     }
     for (int stage = 0; stage < EShLangCount; ++stage) {
         if (! stageTables[stage]->isEmpty()) {
             SharedSymbolTables[versionIndex][profile][stage] = new TSymbolTable;
+            SharedSymbolTables[versionIndex][profile][stage]->adoptLevels(*CommonSymbolTable[versionIndex][profile][CommonIndex(profile, (EShLanguage)stage)]);
             SharedSymbolTables[versionIndex][profile][stage]->copyTable(*stageTables[stage]);
+            SharedSymbolTables[versionIndex][profile][stage]->readOnly();
         }    
     }
 

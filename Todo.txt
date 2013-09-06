@@ -1,10 +1,5 @@
 Current functionality level: ESSL 3.0
 
-Performance
-
-Testing
-  - thread safety
-
 Link Validation
     - ensure no static references thrown away
     Cross-stage linking
@@ -21,6 +16,8 @@ Link Validation
     Intra-stage linking
       - exactly one main
       - type consistency check of uniforms, globals, ins, and outs, both variables and blocks
+      - value checking of global const initializers
+      - value checking of uniform initializers
       - location/component/binding/index/offset match check
       - location/component aliasing (except desktop vertex shader inputs)
       - location layout range/overlap semantics

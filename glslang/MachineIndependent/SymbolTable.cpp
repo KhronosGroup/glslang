@@ -207,6 +207,15 @@ void TSymbolTableLevel::relateToOperator(const char* name, TOperator op)
     }
 }
 
+//
+// Make all symbols in this table level read only.
+//
+void TSymbolTableLevel::readOnly()
+{
+    for (tLevel::iterator it = level.begin(); it != level.end(); ++it)
+        (*it).second->readOnly();
+}
+
 TSymbol::TSymbol(const TSymbol& copyOf)
 {
 	name = NewPoolTString(copyOf.name->c_str());
@@ -279,10 +288,12 @@ TSymbolTableLevel* TSymbolTableLevel::clone(TStructureMap& remapper)
 
 void TSymbolTable::copyTable(const TSymbolTable& copyOf)
 {
+    assert(adoptedLevels == copyOf.adoptedLevels);
+
 	TStructureMap remapper;
 	uniqueId = copyOf.uniqueId;
     noBuiltInRedeclarations = copyOf.noBuiltInRedeclarations;
-	for (unsigned int i = 0; i < copyOf.table.size(); ++i)
+    for (unsigned int i = copyOf.adoptedLevels; i < copyOf.table.size(); ++i)
 		table.push_back(copyOf.table[i]->clone(remapper));
 }
 

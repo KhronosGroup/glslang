@@ -1657,11 +1657,11 @@ void IdentifyBuiltIns(int version, EProfile profile, EShLanguage language, TSymb
             TArraySizes arraySizes = NewPoolTArraySizes();
             arraySizes->push_back(resources.maxDrawBuffers);
             fragData.setArraySizes(arraySizes);
-            symbolTable.insert(*new TVariable(NewPoolTString("gl_FragData"),    fragData));
+            symbolTable.insert(*new TVariable(NewPoolTString("gl_FragData"), fragData));
         }
         break;
 
-	default: 
+	default:
         break;
     }
 }

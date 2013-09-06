@@ -807,7 +807,7 @@ function_prototype
         TSymbol* symbol = parseContext.symbolTable.find($1->getMangledName(), &builtIn);
         if (symbol && symbol->getAsFunction() && builtIn)
             parseContext.requireProfile($2.loc, static_cast<EProfileMask>(~EEsProfileMask), "redeclaration of built-in function");
-        TFunction* prevDec = symbol ? symbol->getAsFunction() : 0;
+        const TFunction* prevDec = symbol ? symbol->getAsFunction() : 0;
         if (prevDec) {
             if (prevDec->getReturnType() != $1->getReturnType()) {
                 parseContext.error($2.loc, "overloaded functions must have the same return type", $1->getReturnType().getCompleteTypeString().c_str(), "");
@@ -2041,7 +2041,7 @@ type_specifier_nonarray
         // This is for user defined type names.  The lexical phase looked up the
         // type.
         //
-        if (TVariable* variable = ($1.symbol)->getAsVariable()) {
+        if (const TVariable* variable = ($1.symbol)->getAsVariable()) {
             const TType& structure = variable->getType();
             $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
             $$.basicType = EbtStruct;

@@ -286,7 +286,7 @@ protected:
     friend class TProgram;
 
 private:
-    void operator=(TShader&);
+    TShader& operator=(TShader&);
 };
 
 class TProgram {
@@ -306,7 +306,7 @@ protected:
     TInfoSink* infoSink;
 
 private:
-    void operator=(TProgram&);
+    TProgram& operator=(TProgram&);
 };
 
 } // end namespace glslang
