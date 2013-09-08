@@ -101,12 +101,11 @@ public:
     bool constructorError(TSourceLoc, TIntermNode*, TFunction&, TOperator, TType&);
     void arraySizeCheck(TSourceLoc, TIntermTyped* expr, int& size);
     bool arrayQualifierError(TSourceLoc, const TPublicType&);
-    void arraySizeRequiredCheck(TSourceLoc, int& size);
+    void arraySizeRequiredCheck(TSourceLoc, int size);
     void arrayDimError(TSourceLoc);
-    void arrayDimCheck(TSourceLoc, TArraySizes sizes1, TArraySizes sizes2);
-    void arrayDimCheck(TSourceLoc, const TType*, TArraySizes);
+    void arrayDimCheck(TSourceLoc, TArraySizes* sizes1, TArraySizes* sizes2);
+    void arrayDimCheck(TSourceLoc, const TType*, TArraySizes*);
     void arrayCheck(TSourceLoc, TString& identifier, const TPublicType&, TVariable*& variable);
-    bool insertBuiltInArrayAtGlobalLevel();
     bool voidErrorCheck(TSourceLoc, const TString&, const TPublicType&);
     void boolCheck(TSourceLoc, const TIntermTyped*);
     void boolCheck(TSourceLoc, const TPublicType&);
@@ -136,7 +135,7 @@ public:
     TIntermTyped* addConstructor(TIntermNode*, const TType&, TOperator, TFunction*, TSourceLoc);
     TIntermTyped* constructStruct(TIntermNode*, const TType&, int, TSourceLoc);
     TIntermTyped* constructBuiltIn(const TType&, TOperator, TIntermNode*, TSourceLoc, bool subset);
-    void addBlock(TSourceLoc, TTypeList& typeList, const TString* instanceName = 0, TArraySizes arraySizes = 0);
+    void addBlock(TSourceLoc, TTypeList& typeList, const TString* instanceName = 0, TArraySizes* arraySizes = 0);
     void addQualifierToExisting(TSourceLoc, TQualifier, const TString& identifier);
     void addQualifierToExisting(TSourceLoc, TQualifier, TIdentifierList&);
     void updateQualifierDefaults(TQualifier);
@@ -149,7 +148,7 @@ public:
     TIntermTyped* addConstArrayNode(int index, TIntermTyped* node, TSourceLoc);
     TIntermTyped* addConstStruct(TString& , TIntermTyped*, TSourceLoc);
 
-    bool arraySetMaxSize(TIntermSymbol*, TType*, int, bool, TSourceLoc);
+    bool arraySetMaxSize(TSourceLoc, TIntermSymbol*, int);
 
     void requireProfile(TSourceLoc, EProfileMask profileMask, const char *featureDesc);
     void requireStage(TSourceLoc, EShLanguageMask languageMask, const char *featureDesc);

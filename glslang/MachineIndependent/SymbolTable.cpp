@@ -90,7 +90,7 @@ void TType::buildMangledName(TString& mangledName)
     case EbtStruct:
         mangledName += "struct-";
         if (typeName)
-        	mangledName += *typeName;
+            mangledName += *typeName;
         for (unsigned int i = 0; i < structure->size(); ++i) {
             mangledName += '-';
             (*structure)[i].type->buildMangledName(mangledName);
@@ -107,9 +107,9 @@ void TType::buildMangledName(TString& mangledName)
     }
 
     if (arraySizes) {
-		const int maxSize = 11;
+        const int maxSize = 11;
         char buf[maxSize];
-        snprintf(buf, maxSize, "%d", arraySizes->front());
+        snprintf(buf, maxSize, "%d", arraySizes->sizes.front());
         mangledName += '[';
         mangledName += buf;
         mangledName += ']';
@@ -173,8 +173,8 @@ void TSymbolTable::dump(TInfoSink &infoSink) const
 //
 TFunction::~TFunction()
 {
-	for (TParamList::iterator i = parameters.begin(); i != parameters.end(); ++i)
-		delete (*i).type;
+    for (TParamList::iterator i = parameters.begin(); i != parameters.end(); ++i)
+        delete (*i).type;
 }
 
 //
@@ -182,8 +182,8 @@ TFunction::~TFunction()
 //
 TSymbolTableLevel::~TSymbolTableLevel()
 {
-	for (tLevel::iterator it = level.begin(); it != level.end(); ++it)
-		delete (*it).second;
+    for (tLevel::iterator it = level.begin(); it != level.end(); ++it)
+        delete (*it).second;
 
     delete [] defaultPrecision;
 }
@@ -213,58 +213,59 @@ void TSymbolTableLevel::relateToOperator(const char* name, TOperator op)
 void TSymbolTableLevel::readOnly()
 {
     for (tLevel::iterator it = level.begin(); it != level.end(); ++it)
-        (*it).second->readOnly();
+        (*it).second->makeReadOnly();
 }
 
+//
+// Copy a symbol, but the copy is writable; call readOnly() afterward if that's not desired.
+//
 TSymbol::TSymbol(const TSymbol& copyOf)
 {
-	name = NewPoolTString(copyOf.name->c_str());
-	uniqueId = copyOf.uniqueId;
+    name = NewPoolTString(copyOf.name->c_str());
+    uniqueId = copyOf.uniqueId;
+    writable = true;
 }
 
 TVariable::TVariable(const TVariable& copyOf, TStructureMap& remapper) : TSymbol(copyOf)
 {	
-	type.copyType(copyOf.type, remapper);
-	userType = copyOf.userType;
-	// for builtIn symbol table level, unionArray and arrayInformation pointers should be NULL
-	assert(copyOf.arrayInformationType == 0);
-	arrayInformationType = 0;
+    type.deepCopy(copyOf.type, remapper);
+    userType = copyOf.userType;
 
-	if (copyOf.unionArray) {		
-		assert(!copyOf.type.getStruct());
-		assert(copyOf.type.getObjectSize() == 1);
-		unionArray = new TConstUnion[1];
+    if (copyOf.unionArray) {
+        assert(!copyOf.type.getStruct());
+        assert(copyOf.type.getObjectSize() == 1);
+        unionArray = new TConstUnion[1];
         unionArray[0] = copyOf.unionArray[0];
-	} else
-		unionArray = 0;
+    } else
+        unionArray = 0;
 }
 
 TVariable* TVariable::clone(TStructureMap& remapper)
 {
-	TVariable *variable = new TVariable(*this, remapper);
+    TVariable *variable = new TVariable(*this, remapper);
 
-	return variable;
+    return variable;
 }
 
 TFunction::TFunction(const TFunction& copyOf, const TStructureMap& remapper) : TSymbol(copyOf)
 {	
-	for (unsigned int i = 0; i < copyOf.parameters.size(); ++i) {
-		TParameter param;
-		parameters.push_back(param);
-		parameters.back().copyParam(copyOf.parameters[i], remapper);
-	}
+    for (unsigned int i = 0; i < copyOf.parameters.size(); ++i) {
+        TParameter param;
+        parameters.push_back(param);
+        parameters.back().copyParam(copyOf.parameters[i], remapper);
+    }
 
-	returnType.copyType(copyOf.returnType, remapper);
-	mangledName = copyOf.mangledName;
-	op = copyOf.op;
-	defined = copyOf.defined;
+    returnType.deepCopy(copyOf.returnType, remapper);
+    mangledName = copyOf.mangledName;
+    op = copyOf.op;
+    defined = copyOf.defined;
 }
 
 TFunction* TFunction::clone(TStructureMap& remapper)
 {
-	TFunction *function = new TFunction(*this, remapper);
+    TFunction *function = new TFunction(*this, remapper);
 
-	return function;
+    return function;
 }
 
 TAnonMember* TAnonMember::clone(TStructureMap& remapper)
@@ -277,24 +278,24 @@ TAnonMember* TAnonMember::clone(TStructureMap& remapper)
 
 TSymbolTableLevel* TSymbolTableLevel::clone(TStructureMap& remapper)
 {
-	TSymbolTableLevel *symTableLevel = new TSymbolTableLevel();
+    TSymbolTableLevel *symTableLevel = new TSymbolTableLevel();
     symTableLevel->anonId = anonId;
-	tLevel::iterator iter;
-	for (iter = level.begin(); iter != level.end(); ++iter)
-		symTableLevel->insert(*iter->second->clone(remapper));
+    tLevel::iterator iter;
+    for (iter = level.begin(); iter != level.end(); ++iter)
+        symTableLevel->insert(*iter->second->clone(remapper));
 
-	return symTableLevel;
+    return symTableLevel;
 }
 
 void TSymbolTable::copyTable(const TSymbolTable& copyOf)
 {
     assert(adoptedLevels == copyOf.adoptedLevels);
 
-	TStructureMap remapper;
-	uniqueId = copyOf.uniqueId;
+    TStructureMap remapper;
+    uniqueId = copyOf.uniqueId;
     noBuiltInRedeclarations = copyOf.noBuiltInRedeclarations;
     for (unsigned int i = copyOf.adoptedLevels; i < copyOf.table.size(); ++i)
-		table.push_back(copyOf.table[i]->clone(remapper));
+        table.push_back(copyOf.table[i]->clone(remapper));
 }
 
 } // end namespace glslang

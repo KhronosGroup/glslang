@@ -482,8 +482,7 @@ TIntermTyped* TParseContext::handleVariable(TSourceLoc loc, TSymbol* symbol, TSt
 
         if (variable->getType().getQualifier().storage == EvqConst ) {
             TConstUnion* constArray = variable->getConstUnionPointer();
-            TType t(variable->getType());
-            node = intermediate.addConstantUnion(constArray, t, loc);
+            node = intermediate.addConstantUnion(constArray, variable->getType(), loc);
         } else
             node = intermediate.addSymbol(variable->getUniqueId(), variable->getName(), variable->getType(), loc);
     }
@@ -527,9 +526,7 @@ TIntermTyped* TParseContext::handleBracketDereference(TSourceLoc loc, TIntermTyp
             if (base->isArray()) {
                 if (base->getType().getArraySize() == 0) {
                     if (base->getType().getMaxArraySize() <= index->getAsConstantUnion()->getUnionArrayPointer()->getIConst())
-                        arraySetMaxSize(base->getAsSymbolNode(), base->getTypePointer(), index->getAsConstantUnion()->getUnionArrayPointer()->getIConst(), true, loc);
-                    else
-                        arraySetMaxSize(base->getAsSymbolNode(), base->getTypePointer(), 0, false, loc);
+                        arraySetMaxSize(loc, base->getAsSymbolNode(), index->getAsConstantUnion()->getUnionArrayPointer()->getIConst() + 1);
                 } else if ( index->getAsConstantUnion()->getUnionArrayPointer()->getIConst() >= base->getType().getArraySize() ||
                             index->getAsConstantUnion()->getUnionArrayPointer()->getIConst() < 0)
                     error(loc, "", "[", "array index out of range '%d'", index->getAsConstantUnion()->getUnionArrayPointer()->getIConst());
@@ -554,7 +551,8 @@ TIntermTyped* TParseContext::handleBracketDereference(TSourceLoc loc, TIntermTyp
         unionArray->setDConst(0.0);
         result = intermediate.addConstantUnion(unionArray, TType(EbtFloat, EvqConst), loc);
     } else {
-        TType newType(base->getType());
+        TType newType;
+        newType.shallowCopy(base->getType());
         if (base->getType().getQualifier().storage == EvqConst && index->getQualifier().storage == EvqConst)
             newType.getQualifier().storage = EvqConst;
         newType.dereference();
@@ -634,7 +632,7 @@ TIntermTyped* TParseContext::handleDotDereference(TSourceLoc loc, TIntermTyped* 
                         result->setType(*(*fields)[i].type);
                         // change the qualifier of the return type, not of the structure field
                         // as the structure definition is shared between various structures.
-                        result->getTypePointer()->getQualifier().storage = EvqConst;
+                        result->getWritableType().getQualifier().storage = EvqConst;
                     }
                 } else {
                     TConstUnion *unionArray = new TConstUnion[1];
@@ -1213,7 +1211,7 @@ bool TParseContext::reservedErrorCheck(TSourceLoc loc, const TString& identifier
 //
 bool TParseContext::constructorError(TSourceLoc loc, TIntermNode* node, TFunction& function, TOperator op, TType& type)
 {
-    type = function.getReturnType();
+    type.shallowCopy(function.getReturnType());
 
     bool constructingMatrix = false;
     switch(op) {
@@ -1617,33 +1615,6 @@ bool TParseContext::containsSampler(const TType& type)
     return false;
 }
 
-bool TParseContext::insertBuiltInArrayAtGlobalLevel()
-{
-    TString *name = NewPoolTString("gl_TexCoord");
-    TSymbol* symbol = symbolTable.find(*name);
-    if (! symbol) {
-        // assume it was not added due to version/profile
-
-        return false;
-    }
-    const TVariable* variable = symbol->getAsVariable();
-
-    if (! variable) {
-        infoSink.info.message(EPrefixInternalError, "variable expected");
-        return true;
-    }
-
-    TVariable* newVariable = new TVariable(name, variable->getType());
-
-    if (! symbolTable.insert(*newVariable)) {
-        delete newVariable;
-        infoSink.info.message(EPrefixInternalError, "inserting new symbol");
-        return true;
-    }
-
-    return false;
-}
-
 //
 // Do size checking for an array type's size.
 //
@@ -1688,7 +1659,7 @@ bool TParseContext::arrayQualifierError(TSourceLoc loc, const TPublicType& type)
 //
 // Require array to have size
 //
-void TParseContext::arraySizeRequiredCheck(TSourceLoc loc, int& size)
+void TParseContext::arraySizeRequiredCheck(TSourceLoc loc, int size)
 {
     if (size == 0) {
         error(loc, "array size required", "", "");
@@ -1703,18 +1674,18 @@ void TParseContext::arrayDimError(TSourceLoc loc)
     profileRequires(loc, ECompatibilityProfile, 430, 0, "arrays of arrays");
 }
 
-void TParseContext::arrayDimCheck(TSourceLoc loc, TArraySizes sizes1, TArraySizes sizes2)
+void TParseContext::arrayDimCheck(TSourceLoc loc, TArraySizes* sizes1, TArraySizes* sizes2)
 {
     if (sizes1 && sizes2 ||
-        sizes1 && sizes1->size() > 1 ||
-        sizes2 && sizes2->size() > 1)
+        sizes1 && sizes1->isArrayOfArrays() ||
+        sizes2 && sizes2->isArrayOfArrays())
         arrayDimError(loc);
 }
 
-void TParseContext::arrayDimCheck(TSourceLoc loc, const TType* type, TArraySizes sizes2)
+void TParseContext::arrayDimCheck(TSourceLoc loc, const TType* type, TArraySizes* sizes2)
 {
     if (type && type->isArray() && sizes2 ||
-        sizes2 && sizes2->size() > 1)
+        sizes2 && sizes2->isArrayOfArrays())
         arrayDimError(loc);
 }
 
@@ -1732,6 +1703,8 @@ void TParseContext::arrayCheck(TSourceLoc loc, TString& identifier, const TPubli
     //
     // However, reserved arrays cannot be modified in a shared symbol table, so add a new
     // one at a non-shared level in the table.
+    //
+    // Redeclarations have to take place at the same scope; otherwise they are hiding declarations
     //
 
     bool currentScope;
@@ -1764,23 +1737,19 @@ void TParseContext::arrayCheck(TSourceLoc loc, TString& identifier, const TPubli
             return;
         }
 
-        TType* t = variable->getArrayInformationType();
-        while (t != 0) {
-            if (t->getMaxArraySize() > type.arraySizes->front()) {
-                error(loc, "higher index value already used for the array", identifier.c_str(), "");
-                return;
-            }
-            t->setArraySizes(type.arraySizes);
-            t = t->getArrayInformationType();
-        }
+        // For read-only built-ins, add a new variable for holding the declared array size of an implicitly-sized shared array.
+        if (variable->isReadOnly())
+            variable = symbolTable.copyUp(variable);
 
+        // TODO: desktop unsized arrays: include modified built-in arrays (gl_TexCoord) in the linker objects subtree
+        
         variable->getWritableType().setArraySizes(type.arraySizes);
     } 
 
     voidErrorCheck(loc, identifier, type);
 }
 
-bool TParseContext::arraySetMaxSize(TIntermSymbol *node, TType* type, int size, bool updateFlag, TSourceLoc loc)
+bool TParseContext::arraySetMaxSize(TSourceLoc loc, TIntermSymbol *node, int size)
 {
     TSymbol* symbol = symbolTable.find(node->getName());
     if (symbol == 0) {
@@ -1794,41 +1763,26 @@ bool TParseContext::arraySetMaxSize(TIntermSymbol *node, TType* type, int size, 
         return true;
     }
 
-    // There are multiple copies of the array type tagging results of operations.
-    // Chain these together, so they can all reflect the final size.
-    type->setArrayInformationType(variable->getArrayInformationType());
-    variable->updateArrayInformationType(type);
+    // TODO: desktop linker: make this a link-time check (note if it's here, an explicit declaration skips it)
+    //if (node->getName() == "gl_TexCoord") {
+    //    TSymbol* texCoord = symbolTable.find("gl_MaxTextureCoords");
+    //    if (! texCoord || ! texCoord->getAsVariable()) {
+    //        infoSink.info.message(EPrefixInternalError, "gl_MaxTextureCoords not defined", loc);
+    //        return true;
+    //    }
 
-    // special casing to test index value of gl_TexCoord. If the accessed index is >= gl_MaxTextureCoords
-    // its an error
-    if (node->getName() == "gl_TexCoord") {
-        TSymbol* texCoord = symbolTable.find("gl_MaxTextureCoords");
-        if (! texCoord || ! texCoord->getAsVariable()) {
-            infoSink.info.message(EPrefixInternalError, "gl_MaxTextureCoords not defined", loc);
-            return true;
-        }
+    //    int texCoordValue = texCoord->getAsVariable()->getConstUnionPointer()[0].getIConst();
+    //    if (texCoordValue <= size) {
+    //        error(loc, "", "[", "gl_TexCoord can only have a max array size of up to gl_MaxTextureCoords", "");
+    //        return true;
+    //    }
+    //}
 
-        int texCoordValue = texCoord->getAsVariable()->getConstUnionPointer()[0].getIConst();
-        if (texCoordValue <= size) {
-            error(loc, "", "[", "gl_TexCoord can only have a max array size of up to gl_MaxTextureCoords", "");
-            return true;
-        }
-    }
+    // For read-only built-ins, add a new variable for holding the maximum array size of an implicitly-sized shared array.
+    if (variable->isReadOnly())
+        variable = symbolTable.copyUp(variable);
 
-    // We don't want to update the maxArraySize when this flag is not set, we just want to include this 
-    // node type in the chain of node types so that it's updated when a higher maxArraySize comes in.
-    if (! updateFlag)
-        return false;
-
-    size++;
     variable->getWritableType().setMaxArraySize(size);
-    type->setMaxArraySize(size);
-    TType* tt = type;
-
-    while(tt->getArrayInformationType() != 0) {
-        tt = tt->getArrayInformationType();
-        tt->setMaxArraySize(size);
-    }
 
     return false;
 }
@@ -2104,9 +2058,10 @@ TIntermTyped* TParseContext::addConstructor(TIntermNode* node, const TType& type
     if (op == EOpConstructStruct)
         memberTypes = type.getStruct()->begin();
     
-    TType elementType(type);
+    TType elementType;
+    elementType.shallowCopy(type);
     if (type.isArray())
-        elementType.dereference();
+        elementType.dereference();  // TODO: arrays of arrays: shallow copy won't work if sharing same array structure and then doing a dereference
 
     bool singleArg;
     if (aggrNode) {
@@ -2280,7 +2235,7 @@ TIntermTyped* TParseContext::constructStruct(TIntermNode* node, const TType& typ
 //
 // Do everything needed to add an interface block.
 //
-void TParseContext::addBlock(TSourceLoc loc, TTypeList& typeList, const TString* instanceName, TArraySizes arraySizes)
+void TParseContext::addBlock(TSourceLoc loc, TTypeList& typeList, const TString* instanceName, TArraySizes* arraySizes)
 {
     // First, error checks
 
@@ -2291,7 +2246,7 @@ void TParseContext::addBlock(TSourceLoc loc, TTypeList& typeList, const TString*
         return;
 
     if (profile == EEsProfile && arraySizes)
-        arraySizeRequiredCheck(loc, arraySizes->front());        
+        arraySizeRequiredCheck(loc, arraySizes->getSize());        
 
     if (currentBlockDefaults.storage == EvqUniform) {
         requireProfile(loc, (EProfileMask)(~ENoProfileMask), "uniform block");
@@ -2370,8 +2325,7 @@ void TParseContext::addBlock(TSourceLoc loc, TTypeList& typeList, const TString*
 // For an identifier that is already declared, add more qualification to it.
 void TParseContext::addQualifierToExisting(TSourceLoc loc, TQualifier qualifier, const TString& identifier)
 {
-    bool sharedLevel;
-    TSymbol* existing = symbolTable.find(identifier, 0, 0, &sharedLevel);
+    TSymbol* existing = symbolTable.find(identifier);
     TVariable* variable = existing ? existing->getAsVariable() : 0;
     if (! variable) {
         error(loc, "identifier not previously declared", identifier.c_str(), "");
@@ -2389,13 +2343,9 @@ void TParseContext::addQualifierToExisting(TSourceLoc loc, TQualifier qualifier,
         return;
     }
 
-    //
-    // Don't change a shared variable; rather add a new one at the current scope.
-    //
-    if (sharedLevel) {
-        variable = new TVariable(&variable->getName(), variable->getType());
-        symbolTable.insert(*variable);
-    }
+    // For read-only built-ins, add a new variable for holding the modified qualifier.
+    if (variable->isReadOnly())
+        variable = symbolTable.copyUp(variable);
 
     if (qualifier.invariant)
         variable->getWritableType().getQualifier().invariant = true;
@@ -2646,8 +2596,9 @@ TIntermTyped* TParseContext::addConstArrayNode(int index, TIntermTyped* node, TS
     TIntermTyped* typedNode;
     TIntermConstantUnion* tempConstantNode = node->getAsConstantUnion();
     int arraySize = node->getType().getArraySize();
-    TType arrayElementType(node->getType());
-    arrayElementType.dereference();
+    TType arrayElementType;
+    arrayElementType.shallowCopy(node->getType());
+    arrayElementType.dereference();   // TODO: arrays of arrays: shallow copy won't work if sharing same array structure and then doing a dereference
 
     if (index >= node->getType().getArraySize() || index < 0) {
         error(loc, "", "[", "array index '%d' out of range", index);

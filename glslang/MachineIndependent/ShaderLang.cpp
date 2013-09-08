@@ -449,9 +449,6 @@ bool CompileDeferred(
     if (! symbolTable.atGlobalLevel())
         parseContext.infoSink.info.message(EPrefixInternalError, "Wrong symbol table level");
 
-    if (parseContext.insertBuiltInArrayAtGlobalLevel())
-        success = false;
-
     bool ret = parseContext.parseShaderStrings(ppContext, const_cast<char**>(shaderStrings), lengths, numStrings);
     if (! ret)
         success = false;

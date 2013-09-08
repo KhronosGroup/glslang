@@ -96,7 +96,8 @@ public:
     int getUniqueId() const { return uniqueId; }
     virtual void dump(TInfoSink &infoSink) const = 0;
 
-    void readOnly() { writable = false; }
+    bool isReadOnly() { return ! writable; }
+    void makeReadOnly() { writable = false; }
 
 protected:
 	explicit TSymbol(const TSymbol&);
@@ -124,7 +125,7 @@ protected:
 //
 class TVariable : public TSymbol {
 public:
-    TVariable(const TString *name, const TType& t, bool uT = false ) : TSymbol(name), type(t), userType(uT), unionArray(0), arrayInformationType(0) { }    
+    TVariable(const TString *name, const TType& t, bool uT = false ) : TSymbol(name), userType(uT), unionArray(0) { type.shallowCopy(t); }
 	virtual TVariable* clone(TStructureMap& remapper);
     virtual ~TVariable() { }
 
@@ -133,12 +134,11 @@ public:
     TType& getWritableType() { assert(writable); return type; }
     const TType& getType() const { return type; }
     bool isUserType() const { return userType; }
-    void updateArrayInformationType(TType *t) { assert(writable); arrayInformationType = t; }
-    TType* getArrayInformationType() { assert(writable); return arrayInformationType; }
 
     virtual void dump(TInfoSink &infoSink) const;
 
-    TConstUnion* getConstUnionPointer() {
+    TConstUnion* getConstUnionPointer()
+    {
         if (!unionArray)
             unionArray = new TConstUnion[type.getObjectSize()];
 
@@ -154,16 +154,15 @@ public:
     }
 
 protected:
-	explicit TVariable(TVariable&);
-	TVariable(const TVariable&, TStructureMap& remapper);
-    TVariable& operator=(TVariable&);
+    explicit TVariable(const TVariable&);
+    TVariable(const TVariable&, TStructureMap& remapper);
+    TVariable& operator=(const TVariable&);
 
     TType type;
     bool userType;
     // we are assuming that Pool Allocator will free the memory allocated to unionArray
     // when this object is destroyed
     TConstUnion *unionArray;
-    TType *arrayInformationType;  // this is used for updating maxArraySize in all the references to a given symbol
 };
 
 //
@@ -190,15 +189,13 @@ class TFunction : public TSymbol {
 public:
     explicit TFunction(TOperator o) :
         TSymbol(0),
-        returnType(TType(EbtVoid)),
         op(o),
         defined(false) { }
     TFunction(const TString *name, const TType& retType, TOperator tOp = EOpNull) :
         TSymbol(name),
-        returnType(retType),
         mangledName(*name + '('),
         op(tOp),
-        defined(false) { }    
+        defined(false) { returnType.shallowCopy(retType); }    
 	virtual TFunction* clone(TStructureMap& remapper);
 	virtual ~TFunction();
 
@@ -455,7 +452,20 @@ public:
         return table[currentLevel()]->insert(symbol);
     }
 
-    TSymbol* find(const TString& name, bool* builtIn = 0, bool *currentScope = 0, bool *sharedLevel = 0)
+    //
+    // To copy a variable from a shared level up to the current level, so it can be 
+    // modified without impacting other users of the shared table.
+    //
+    TVariable* copyUp(TVariable* shared)
+    {        
+        TVariable* variable = shared->clone(remapper);
+        variable->setUniqueId(shared->getUniqueId());
+        table[currentLevel()]->insert(*variable);
+
+        return variable;
+    }
+
+    TSymbol* find(const TString& name, bool* builtIn = 0, bool *currentScope = 0)
     {
         int level = currentLevel();
         TSymbol* symbol;
@@ -467,9 +477,7 @@ public:
         if (builtIn)
             *builtIn = isBuiltInLevel(level);
         if (currentScope)
-            *currentScope = level == currentLevel();
-        if (sharedLevel)
-            *sharedLevel = isSharedLevel(level);
+            *currentScope = isGlobalLevel(currentLevel()) || level == currentLevel();  // consider shared levels as "current scope" WRT user globals
 
         return symbol;
     }
@@ -502,6 +510,7 @@ protected:
     int uniqueId;     // for unique identification in code generation
     bool noBuiltInRedeclarations;
     unsigned int adoptedLevels;
+    TStructureMap remapper;  // for now, dummy for copyUp(), which is not yet used for structures
 };
 
 } // end namespace glslang

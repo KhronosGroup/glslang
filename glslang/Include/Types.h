@@ -174,12 +174,21 @@ inline TIdentifierList* NewPoolTIdentifierList()
 // for the vast majority of non-array types.  Note that means if it
 // is used, it will be containing at least one size.
 
-typedef TVector<int>* TArraySizes;
+struct TArraySizes {
+    TArraySizes() : maxArraySize(0) { }
+    int getSize() { return sizes.front(); }  // TArraySizes only exists if there is at least one dimension
+    void setSize(int s) { sizes.push_back(s); }
+    bool isArrayOfArrays() { return sizes.size() > 1; }
+protected:
+    TVector<int> sizes;
+    friend class TType;
+    int maxArraySize; // for tracking maximum referenced index, before an explicit size is given
+};
 
-inline TArraySizes NewPoolTArraySizes()
+inline TArraySizes* NewPoolTArraySizes()
 {
-    void* memory = GetThreadPoolAllocator().allocate(sizeof(TVector<int>));
-    return new(memory) TVector<int>;
+    void* memory = GetThreadPoolAllocator().allocate(sizeof(TArraySizes));
+    return new(memory) TArraySizes;
 }
 
 //
@@ -347,7 +356,7 @@ public:
     int vectorSize : 4;
     int matrixCols : 4;
     int matrixRows : 4;
-    TArraySizes arraySizes;
+    TArraySizes* arraySizes;
     const TType* userDef;
     TSourceLoc loc;
 
@@ -398,16 +407,16 @@ public:
 
 typedef std::map<TTypeList*, TTypeList*> TStructureMap;
 typedef std::map<TTypeList*, TTypeList*>::const_iterator TStructureMapIterator;
+
 //
 // Base class for things that have a type.
 //
 class TType {
 public:
     POOL_ALLOCATOR_NEW_DELETE(GetThreadPoolAllocator())
-    explicit TType(TBasicType t, TStorageQualifier q = EvqTemporary, int vs = 1, int mc = 0, int mr = 0) :
+    explicit TType(TBasicType t = EbtVoid, TStorageQualifier q = EvqTemporary, int vs = 1, int mc = 0, int mr = 0) :
                             basicType(t), vectorSize(vs), matrixCols(mc), matrixRows(mr), arraySizes(0),
-                            structure(0), structureSize(0), maxArraySize(0), arrayInformationType(0),
-                            fieldName(0), typeName(0)
+                            structure(0), structureSize(0), fieldName(0), typeName(0)
                             {
                                 sampler.clear();
                                 qualifier.clear();
@@ -415,8 +424,7 @@ public:
                             }
     TType(TBasicType t, TStorageQualifier q, TPrecisionQualifier p, int vs = 1, int mc = 0, int mr = 0) :
                             basicType(t), vectorSize(vs), matrixCols(mc), matrixRows(mr), arraySizes(0),
-                            structure(0), structureSize(0), maxArraySize(0), arrayInformationType(0),
-                            fieldName(0), typeName(0)
+                            structure(0), structureSize(0), fieldName(0), typeName(0)
                             {
                                 sampler.clear();
                                 qualifier.clear();
@@ -426,7 +434,7 @@ public:
                             }
     explicit TType(const TPublicType &p) :
                             basicType(p.basicType), vectorSize(p.vectorSize), matrixCols(p.matrixCols), matrixRows(p.matrixRows), arraySizes(p.arraySizes),
-                            structure(0), structureSize(0), maxArraySize(0), arrayInformationType(0), fieldName(0), typeName(0)
+                            structure(0), structureSize(0), fieldName(0), typeName(0)
                             {
                                 if (basicType == EbtSampler)
                                     sampler = p.sampler;
@@ -440,7 +448,7 @@ public:
                             }
     TType(TTypeList* userDef, const TString& n, TStorageQualifier blockQualifier = EvqGlobal) :
                             basicType(EbtStruct), vectorSize(1), matrixCols(0), matrixRows(0), arraySizes(0),
-                            structure(userDef), maxArraySize(0), arrayInformationType(0), fieldName(0)
+                            structure(userDef), fieldName(0)
                             {
                                 sampler.clear();
                                 qualifier.clear();
@@ -451,32 +459,37 @@ public:
                                 }
 								typeName = NewPoolTString(n.c_str());
                             }
-	TType() {}
     virtual ~TType() {}
-
-    // "dumb" copy, using built-in operator=(), not for use across pool pops.
-    // It will also cause multiple copies of TType to point to the same information.
-    // This only works if that information (like a structure's list of types) does not 
-    // change.
-	explicit TType(const TType& type) { *this = type; }
-
-	void copyType(const TType& copyOf, const TStructureMap& remapper)
-	{
+    
+    // Not for use across pool pops; it will cause multiple instances of TType to point to the same information.
+    // This only works if that information (like a structure's list of types) does not change and 
+    // the instances are sharing the same pool. 
+    void shallowCopy(const TType& copyOf)
+    {
 		basicType = copyOf.basicType;
         sampler = copyOf.sampler;
 		qualifier = copyOf.qualifier;
 		vectorSize = copyOf.vectorSize;
 		matrixCols = copyOf.matrixCols;
 		matrixRows = copyOf.matrixRows;
+        arraySizes = copyOf.arraySizes;
+        structure = copyOf.structure;
+        structureSize = copyOf.structureSize;
+	    fieldName = copyOf.fieldName;
+	    typeName = copyOf.typeName;
+    }
 
-        if (copyOf.arraySizes) {
+	void deepCopy(const TType& copyOf, const TStructureMap& remapper)
+	{
+        shallowCopy(copyOf);
+
+        if (arraySizes) {
             arraySizes = NewPoolTArraySizes();
             *arraySizes = *copyOf.arraySizes;
-        } else
-            arraySizes = 0;
+        }
 
-		TStructureMapIterator iter;
-		if (copyOf.structure) {
+		if (structure) {
+    		TStructureMapIterator iter;
 	        if ((iter = remapper.find(structure)) == remapper.end()) {
 				// create the new structure here
 				structure = NewPoolTTypeList();
@@ -489,20 +502,12 @@ public:
 			} else {
 				structure = iter->second;
 			}
-		} else
-			structure = 0;
+		}
 
-		fieldName = 0;
-		if (copyOf.fieldName)
+		if (fieldName)
 			fieldName = NewPoolTString(copyOf.fieldName->c_str());
-		typeName = 0;
-		if (copyOf.typeName)
+		if (typeName)
 			typeName = NewPoolTString(copyOf.typeName->c_str());
-		
-		structureSize = copyOf.structureSize;
-		maxArraySize = copyOf.maxArraySize;
-		assert(copyOf.arrayInformationType == 0);
-		arrayInformationType = 0; // arrayInformationType should not be set for builtIn symbol table level
 	}
 
     // Merge type from parent, where a parentType is at the beginning of a declaration,
@@ -523,17 +528,16 @@ public:
 	TType* clone(const TStructureMap& remapper)
 	{
 		TType *newType = new TType();
-		newType->copyType(*this, remapper);
+		newType->deepCopy(*this, remapper);
 
 		return newType;
 	}
 
     virtual void dereference()
     {
-        if (arraySizes) {
+        if (arraySizes)
             arraySizes = 0;
-            maxArraySize = 0;
-        } else if (matrixCols > 0) {
+        else if (matrixCols > 0) {
             vectorSize = matrixRows;
             matrixCols = 0;
             matrixRows = 0;
@@ -576,8 +580,8 @@ public:
 
 	virtual bool isMatrix() const { return matrixCols ? true : false; }
     virtual bool isArray() const  { return arraySizes != 0; }
-    int getArraySize() const { return arraySizes->front(); }
-    void setArraySizes(TArraySizes s) 
+    int getArraySize() const { return arraySizes->sizes.front(); }
+    void setArraySizes(TArraySizes* s) 
     {
         // copy; we don't want distinct types sharing the same descriptor
         if (! arraySizes)
@@ -585,11 +589,9 @@ public:
         *arraySizes = *s;
     }
     
-    void changeArraySize(int s) { arraySizes->front() = s; }
-    void setMaxArraySize (int s) { maxArraySize = s; }
-    int getMaxArraySize () const { return maxArraySize; }
-    void setArrayInformationType(TType* t) { arrayInformationType = t; }
-    TType* getArrayInformationType() { return arrayInformationType; }
+    void changeArraySize(int s) { arraySizes->sizes.front() = s; }
+    void setMaxArraySize (int s) { arraySizes->maxArraySize = s; }
+    int getMaxArraySize () const { return arraySizes->maxArraySize; }
     virtual bool isVector() const { return vectorSize > 1; }
     virtual bool isScalar() const { return vectorSize == 1; }
     const char* getBasicString() const 
@@ -660,10 +662,10 @@ public:
         if (qualifier.storage != EvqTemporary && qualifier.storage != EvqGlobal)
             p += snprintf(p, end - p, "%s ", getStorageQualifierString());
         if (arraySizes) {
-            if (arraySizes->front() == 0)
+            if (arraySizes->sizes.front() == 0)
                 p += snprintf(p, end - p, "unsized array of ");
             else
-                p += snprintf(p, end - p, "%d-element array of ", arraySizes->front());
+                p += snprintf(p, end - p, "%d-element array of ", arraySizes->sizes.front());
         }
         if (qualifier.precision != EpqNone)
             p += snprintf(p, end - p, "%s ", getPrecisionQualifierString());
@@ -706,6 +708,8 @@ public:
         if (isArray())
             totalSize *= Max(getArraySize(), getMaxArraySize());
 
+        // TODO: desktop arrays: it should be ill-defined to get object size if the array is not sized, so the max() above maybe should be an assert
+
         return totalSize;
     }
 
@@ -730,7 +734,7 @@ public:
     {
         return sameElementType(right) &&
                (arraySizes == 0 && right.arraySizes == 0 ||
-                (arraySizes && right.arraySizes && *arraySizes == *right.arraySizes));
+                (arraySizes && right.arraySizes && arraySizes->sizes == right.arraySizes->sizes));
         // don't check the qualifier, it's not ever what's being sought after
     }
 
@@ -740,6 +744,10 @@ public:
     }
 
 protected:
+    // Require consumer to pick between deep copy and shallow copy.
+    TType(const TType& type);
+    TType& operator=(const TType& type);
+
     void buildMangledName(TString&);
     int getStructSize() const;
 
@@ -750,12 +758,10 @@ protected:
     TSampler sampler;
     TQualifier qualifier;
 
-    TArraySizes arraySizes;
+    TArraySizes* arraySizes;
 
-    TTypeList* structure;      // 0 unless this is a struct
-    mutable int structureSize; // a cache, updated on first access
-    int maxArraySize;
-    TType* arrayInformationType;
+    TTypeList* structure;       // 0 unless this is a struct
+    mutable int structureSize;  // a cache, updated on first access
 	TString *fieldName;         // for structure field names
 	TString *typeName;          // for structure field type name
 };

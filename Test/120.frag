@@ -114,3 +114,12 @@ void v2()
 {
     return v1();  // ERROR, no expression allowed, even though void
 }
+
+void atest()
+{
+    vec4 v = gl_TexCoord[1];
+    v += gl_TexCoord[3];
+}
+
+varying vec4 gl_TexCoord[6];  // okay, assigning a size
+varying vec4 gl_TexCoord[5];  // ERROR, changing size

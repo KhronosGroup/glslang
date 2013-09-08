@@ -90,7 +90,7 @@ using namespace glslang;
             glslang::TParameter param;
             glslang::TTypeLoc typeLine;
             glslang::TTypeList* typeList;
-            glslang::TArraySizes arraySizes;
+            glslang::TArraySizes* arraySizes;
             glslang::TIdentifierList* identifierList;
         };
     } interm;
@@ -334,13 +334,15 @@ function_call_header_no_parameters
 
 function_call_header_with_parameters
     : function_call_header assignment_expression {
-        TParameter param = { 0, new TType($2->getType()) };
+        TParameter param = { 0, new TType };
+        param.type->shallowCopy($2->getType());
         $1.function->addParameter(param);
         $$.function = $1.function;
         $$.intermNode = $2;
     }
     | function_call_header_with_parameters COMMA assignment_expression {
-        TParameter param = { 0, new TType($3->getType()) };
+        TParameter param = { 0, new TType };
+        param.type->shallowCopy($3->getType());
         $1.function->addParameter(param);
         $$.function = $1.function;
         $$.intermNode = parseContext.intermediate.growAggregate($1.intermNode, $3, $2.loc);
@@ -890,7 +892,7 @@ parameter_declarator
         if ($1.arraySizes) {
             parseContext.profileRequires($1.loc, ENoProfile, 120, "GL_3DL_array_objects", "arrayed type");
             parseContext.profileRequires($1.loc, EEsProfile, 300, 0, "arrayed type");
-            parseContext.arraySizeRequiredCheck($1.loc, $1.arraySizes->front());
+            parseContext.arraySizeRequiredCheck($1.loc, $1.arraySizes->getSize());
         }
         if ($1.basicType == EbtVoid) {
             parseContext.error($2.loc, "illegal use of type 'void'", $2.string->c_str(), "");
@@ -905,11 +907,11 @@ parameter_declarator
         if ($1.arraySizes) {
             parseContext.profileRequires($1.loc, ENoProfile, 120, "GL_3DL_array_objects", "arrayed type");
             parseContext.profileRequires($1.loc, EEsProfile, 300, 0, "arrayed type");
-            parseContext.arraySizeRequiredCheck($1.loc, $1.arraySizes->front());
+            parseContext.arraySizeRequiredCheck($1.loc, $1.arraySizes->getSize());
         }
         parseContext.arrayDimCheck($2.loc, $1.arraySizes, $3.arraySizes);
 
-        parseContext.arraySizeRequiredCheck($3.loc, $3.arraySizes->front());
+        parseContext.arraySizeRequiredCheck($3.loc, $3.arraySizes->getSize());
         parseContext.reservedErrorCheck($2.loc, *$2.string);
 
         $1.arraySizes = $3.arraySizes;
@@ -976,7 +978,7 @@ init_declarator_list
     | init_declarator_list COMMA IDENTIFIER array_specifier {
         parseContext.nonInitConstCheck($3.loc, *$3.string, $1.type);
         if (parseContext.profile == EEsProfile)
-            parseContext.arraySizeRequiredCheck($4.loc, $4.arraySizes->front());
+            parseContext.arraySizeRequiredCheck($4.loc, $4.arraySizes->getSize());
         parseContext.arrayDimCheck($3.loc, $1.type.arraySizes, $4.arraySizes);
 
         $$ = $1;
@@ -1047,7 +1049,7 @@ single_declaration
         $$.intermAggregate = 0;
         parseContext.nonInitConstCheck($2.loc, *$2.string, $1);        
         if (parseContext.profile == EEsProfile)
-            parseContext.arraySizeRequiredCheck($3.loc, $3.arraySizes->front());        
+            parseContext.arraySizeRequiredCheck($3.loc, $3.arraySizes->getSize());        
         parseContext.arrayDimCheck($2.loc, $1.arraySizes, $3.arraySizes);
 
         $$.type = $1;
@@ -1111,7 +1113,7 @@ fully_specified_type
             parseContext.profileRequires($1.loc, ENoProfile, 120, "GL_3DL_array_objects", "arrayed type");
             parseContext.profileRequires($1.loc, EEsProfile, 300, 0, "arrayed type");
             if (parseContext.profile == EEsProfile)
-                parseContext.arraySizeRequiredCheck($1.loc, $1.arraySizes->front());
+                parseContext.arraySizeRequiredCheck($1.loc, $1.arraySizes->getSize());
         }
 
         parseContext.precisionQualifierCheck($$.loc, $$);
@@ -1123,7 +1125,7 @@ fully_specified_type
             parseContext.profileRequires($2.loc, ENoProfile, 120, "GL_3DL_array_objects", "arrayed type");
             parseContext.profileRequires($2.loc, EEsProfile, 300, 0, "arrayed type");
             if (parseContext.profile == EEsProfile)
-                parseContext.arraySizeRequiredCheck($2.loc, $2.arraySizes->front());
+                parseContext.arraySizeRequiredCheck($2.loc, $2.arraySizes->getSize());
         }
 
         if ($2.arraySizes && parseContext.arrayQualifierError($2.loc, $1))
@@ -1391,7 +1393,7 @@ array_specifier
     : LEFT_BRACKET RIGHT_BRACKET {
         $$.loc = $1.loc;
         $$.arraySizes = NewPoolTArraySizes();
-        $$.arraySizes->push_back(0);
+        $$.arraySizes->setSize(0);
     }
     | LEFT_BRACKET constant_expression RIGHT_BRACKET {
         $$.loc = $1.loc;
@@ -1399,18 +1401,18 @@ array_specifier
 
         int size;
         parseContext.arraySizeCheck($2->getLoc(), $2, size);
-        $$.arraySizes->push_back(size);
+        $$.arraySizes->setSize(size);
     }
     | array_specifier LEFT_BRACKET RIGHT_BRACKET {
         $$ = $1;
-        $$.arraySizes->push_back(0);
+        $$.arraySizes->setSize(0);
     }
     | array_specifier LEFT_BRACKET constant_expression RIGHT_BRACKET {
         $$ = $1;
 
         int size;
         parseContext.arraySizeCheck($3->getLoc(), $3, size);
-        $$.arraySizes->push_back(size);
+        $$.arraySizes->setSize(size);
     }
     ;
 
@@ -2114,7 +2116,7 @@ struct_declaration
             parseContext.profileRequires($1.loc, ENoProfile, 120, "GL_3DL_array_objects", "arrayed type");
             parseContext.profileRequires($1.loc, EEsProfile, 300, 0, "arrayed type");
             if (parseContext.profile == EEsProfile)
-                parseContext.arraySizeRequiredCheck($1.loc, $1.arraySizes->front());
+                parseContext.arraySizeRequiredCheck($1.loc, $1.arraySizes->getSize());
         }
 
         $$ = $2;
@@ -2132,7 +2134,7 @@ struct_declaration
             parseContext.profileRequires($2.loc, ENoProfile, 120, "GL_3DL_array_objects", "arrayed type");
             parseContext.profileRequires($2.loc, EEsProfile, 300, 0, "arrayed type");
             if (parseContext.profile == EEsProfile)
-                parseContext.arraySizeRequiredCheck($2.loc, $2.arraySizes->front());
+                parseContext.arraySizeRequiredCheck($2.loc, $2.arraySizes->getSize());
         }
 
         $$ = $3;
@@ -2166,7 +2168,7 @@ struct_declarator
     }
     | IDENTIFIER array_specifier {        
         if (parseContext.profile == EEsProfile)
-            parseContext.arraySizeRequiredCheck($2.loc, $2.arraySizes->front());
+            parseContext.arraySizeRequiredCheck($2.loc, $2.arraySizes->getSize());
         parseContext.arrayDimCheck($1.loc, $2.arraySizes, 0);
 
         $$.type = new TType(EbtVoid);

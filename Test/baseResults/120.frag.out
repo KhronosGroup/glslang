@@ -27,7 +27,8 @@ ERROR: 0:94: 'a' : variables with qualifier 'const' must be initialized
 ERROR: 0:97: 'out' : overloaded functions must have the same parameter qualifiers 
 ERROR: 0:99: 'return' : function return is not matching type: 
 ERROR: 0:115: 'return' : void function cannot return a value 
-ERROR: 29 compilation errors.  No code generated.
+ERROR: 0:125: 'gl_TexCoord' : redeclaration of array with size 
+ERROR: 30 compilation errors.  No code generated.
 
 ERROR: node is still EOpNull!
 0:21  Function Definition: main( (void)
@@ -265,6 +266,20 @@ ERROR: node is still EOpNull!
 0:115    Sequence
 0:115      Branch: Return with expression
 0:115        Function Call: v1( (void)
+0:118  Function Definition: atest( (void)
+0:118    Function Parameters: 
+0:120    Sequence
+0:120      Sequence
+0:120        move second child to first child (4-component vector of float)
+0:120          'v' (4-component vector of float)
+0:120          direct index (smooth in 4-component vector of float)
+0:120            'gl_TexCoord' (smooth in unsized array of 4-component vector of float)
+0:120            1 (const int)
+0:121      add second child into first child (4-component vector of float)
+0:121        'v' (4-component vector of float)
+0:121        direct index (smooth in 4-component vector of float)
+0:121          'gl_TexCoord' (smooth in unsized array of 4-component vector of float)
+0:121          3 (const int)
 0:?   Linker Objects
 0:?     'i' (smooth in 4-component vector of float)
 0:?     'o' (out 4-component vector of float)

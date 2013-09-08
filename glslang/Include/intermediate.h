@@ -372,11 +372,11 @@ struct TIntermNodePair {
 //
 class TIntermTyped : public TIntermNode {
 public:
-	TIntermTyped(const TType& t) : type(t)  { }
+	TIntermTyped(const TType& t) { type.shallowCopy(t); }
     virtual TIntermTyped* getAsTyped()         { return this; }
-    virtual void setType(const TType& t) { type = t; }
+    virtual void setType(const TType& t) { type.shallowCopy(t); }
     virtual const TType& getType() const { return type; }
-    virtual TType* getTypePointer() { return &type; }
+    virtual TType& getWritableType() { return type; }
     
     virtual TBasicType getBasicType() const { return type.getBasicType(); }
     virtual TQualifier& getQualifier() { return type.getQualifier(); }

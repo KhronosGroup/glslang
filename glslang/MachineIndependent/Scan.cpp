@@ -550,11 +550,12 @@ int TScanContext::tokenizeIdentifier()
     if (ReservedSet->find(tokenText) != ReservedSet->end())
         return reservedWord();
 
-    keyword = (*KeywordMap)[tokenText];
-    if (keyword == 0) {
+    std::map<std::string, int>::const_iterator it = KeywordMap->find(tokenText);
+    if (it == KeywordMap->end()) {
         // Should have an identifier of some sort
         return identifierOrType();
     }
+    keyword = it->second;
     field = false;
 
     switch (keyword) {

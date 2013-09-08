@@ -716,8 +716,8 @@ TIntermTyped* TIntermediate::addComma(TIntermTyped* left, TIntermTyped* right, T
         TIntermTyped *commaAggregate = growAggregate(left, right, loc);
         commaAggregate->getAsAggregate()->setOperator(EOpComma);
         commaAggregate->setType(right->getType());
-        commaAggregate->getTypePointer()->getQualifier().storage = EvqTemporary;
-        commaAggregate->getTypePointer()->getQualifier().precision = right->getTypePointer()->getQualifier().precision;
+        commaAggregate->getWritableType().getQualifier().storage = EvqTemporary;
+        commaAggregate->getWritableType().getQualifier().precision = right->getType().getQualifier().precision;
 
         return commaAggregate;
     }
@@ -1028,7 +1028,7 @@ bool TIntermUnary::promote()
     }
 
     setType(operand->getType());
-    getTypePointer()->getQualifier().storage = EvqTemporary;
+    getWritableType().getQualifier().storage = EvqTemporary;
 
     return true;
 }

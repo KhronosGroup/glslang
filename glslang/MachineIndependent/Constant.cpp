@@ -71,7 +71,8 @@ bool CompareStruct(const TType& leftNodeType, TConstUnion* rightUnionArray, TCon
 bool CompareStructure(const TType& leftNodeType, TConstUnion* rightUnionArray, TConstUnion* leftUnionArray)
 {
     if (leftNodeType.isArray()) {
-        TType typeWithoutArrayness(leftNodeType);
+        TType typeWithoutArrayness;
+        typeWithoutArrayness.shallowCopy(leftNodeType);  // TODO: arrays of arrays: the shallow copy won't work if arrays are shared and dereferenced
         typeWithoutArrayness.dereference();
 
         int arraySize = leftNodeType.getArraySize();
@@ -137,7 +138,8 @@ TIntermTyped* TIntermConstantUnion::fold(TOperator op, TIntermTyped* constantNod
 
     // For most cases, the return type matches the argument type, so set that
     // up and just code to exceptions below.
-    TType returnType(getType());
+    TType returnType;
+    returnType.shallowCopy(getType());
 
     //
     // A pair of nodes is to be folded together
@@ -157,7 +159,7 @@ TIntermTyped* TIntermConstantUnion::fold(TOperator op, TIntermTyped* constantNod
         unionArray = new TConstUnion[constantNode->getType().getObjectSize()];
         for (int i = 0; i < constantNode->getType().getObjectSize(); ++i)
             unionArray[i] = *getUnionArrayPointer();
-        returnType = node->getType();
+        returnType.shallowCopy(node->getType());
         objectSize = constantNode->getType().getObjectSize();
     }
 
@@ -192,7 +194,7 @@ TIntermTyped* TIntermConstantUnion::fold(TOperator op, TIntermTyped* constantNod
                 newConstArray[column * getMatrixRows() + row].setDConst(sum);
             }
         }
-        returnType = TType(getType().getBasicType(), EvqConst, 0, getMatrixRows(), node->getMatrixCols());
+        returnType.shallowCopy(TType(getType().getBasicType(), EvqConst, 0, getMatrixRows(), node->getMatrixCols()));
         break;
     case EOpDiv:
         newConstArray = new TConstUnion[objectSize];
@@ -232,7 +234,7 @@ TIntermTyped* TIntermConstantUnion::fold(TOperator op, TIntermTyped* constantNod
             newConstArray[i].setDConst(sum);
         }
 
-        returnType = TType(getBasicType(), EvqConst, getMatrixRows());
+        returnType.shallowCopy(TType(getBasicType(), EvqConst, getMatrixRows()));
         break;
 
     case EOpVectorTimesMatrix:
@@ -244,7 +246,7 @@ TIntermTyped* TIntermConstantUnion::fold(TOperator op, TIntermTyped* constantNod
             newConstArray[i].setDConst(sum);
         }
 
-        returnType = TType(getBasicType(), EvqConst, node->getMatrixCols());
+        returnType.shallowCopy(TType(getBasicType(), EvqConst, node->getMatrixCols()));
         break;
 
     case EOpMod:
@@ -307,13 +309,13 @@ TIntermTyped* TIntermConstantUnion::fold(TOperator op, TIntermTyped* constantNod
         assert(objectSize == 1);
         newConstArray = new TConstUnion[1];
         newConstArray->setBConst(*unionArray < *rightUnionArray);
-        returnType = TType(EbtBool, EvqConst);
+        returnType.shallowCopy(TType(EbtBool, EvqConst));
         break;
     case EOpGreaterThan:
         assert(objectSize == 1);
         newConstArray = new TConstUnion[1];
         newConstArray->setBConst(*unionArray > *rightUnionArray);
-        returnType = TType(EbtBool, EvqConst);
+        returnType.shallowCopy(TType(EbtBool, EvqConst));
         break;
     case EOpLessThanEqual:
     {
@@ -322,7 +324,7 @@ TIntermTyped* TIntermConstantUnion::fold(TOperator op, TIntermTyped* constantNod
         constant.setBConst(*unionArray > *rightUnionArray);
         newConstArray = new TConstUnion[1];
         newConstArray->setBConst(!constant.getBConst());
-        returnType = TType(EbtBool, EvqConst);
+        returnType.shallowCopy(TType(EbtBool, EvqConst));
         break;
     }
     case EOpGreaterThanEqual:
@@ -332,7 +334,7 @@ TIntermTyped* TIntermConstantUnion::fold(TOperator op, TIntermTyped* constantNod
         constant.setBConst(*unionArray < *rightUnionArray);
         newConstArray = new TConstUnion[1];
         newConstArray->setBConst(!constant.getBConst());
-        returnType = TType(EbtBool, EvqConst);
+        returnType.shallowCopy(TType(EbtBool, EvqConst));
         break;
     }
 
@@ -351,7 +353,7 @@ TIntermTyped* TIntermConstantUnion::fold(TOperator op, TIntermTyped* constantNod
 
         newConstArray = new TConstUnion[1];
         newConstArray->setBConst(! boolNodeFlag);
-        returnType = TType(EbtBool, EvqConst);
+        returnType.shallowCopy(TType(EbtBool, EvqConst));
         break;
 
     case EOpNotEqual:
@@ -369,7 +371,7 @@ TIntermTyped* TIntermConstantUnion::fold(TOperator op, TIntermTyped* constantNod
 
         newConstArray = new TConstUnion[1];
         newConstArray->setBConst(! boolNodeFlag);
-        returnType = TType(EbtBool, EvqConst);
+        returnType.shallowCopy(TType(EbtBool, EvqConst));
         break;
 
     default:
@@ -607,7 +609,7 @@ TIntermTyped* TIntermConstantUnion::fold(TOperator op, const TType& returnType)
     }
 
     TIntermConstantUnion *newNode = new TIntermConstantUnion(newConstArray, returnType);
-    newNode->getTypePointer()->getQualifier().storage = EvqConst;
+    newNode->getWritableType().getQualifier().storage = EvqConst;
     newNode->setLoc(getLoc());
 
     return newNode;
@@ -775,7 +777,7 @@ TIntermTyped* TIntermediate::fold(TIntermAggregate* aggrNode)
     }
 
     TIntermConstantUnion *newNode = new TIntermConstantUnion(newConstArray, aggrNode->getType());
-    newNode->getTypePointer()->getQualifier().storage = EvqConst;
+    newNode->getWritableType().getQualifier().storage = EvqConst;
     newNode->setLoc(aggrNode->getLoc());
 
     return newNode;

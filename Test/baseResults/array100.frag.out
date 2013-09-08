@@ -5,7 +5,7 @@ ERROR: 0:9: 'arrayed type' : not supported for this version or the enabled exten
 ERROR: 0:11: 'arrayed constructor' : not supported for this version or the enabled extensions 
 ERROR: 0:21: '[' :  array index out of range '2'
 ERROR: 0:25: 'assign' :  cannot convert from '4-element array of mediump float' to '5-element array of mediump float'
-ERROR: 0:26: 'assign' :  cannot convert from '4-element array of mediump float' to '1-element array of mediump float'
+ERROR: 0:26: 'assign' :  cannot convert from '4-element array of mediump float' to 'unsized array of mediump float'
 ERROR: 0:28: 'foo' : no matching overloaded function found 
 ERROR: 0:31: 'arrayed constructor' : not supported for this version or the enabled extensions 
 ERROR: 0:35: '[' :  array index out of range '5'
@@ -49,7 +49,7 @@ ERROR: node is still EOpNull!
 0:24        Function Call: foo(f1[5]; (4-element array of mediump float)
 0:24          'g5' (5-element array of mediump float)
 0:25      'g5' (5-element array of mediump float)
-0:26      'gu' (1-element array of mediump float)
+0:26      'gu' (unsized array of mediump float)
 0:28      0.000000
 0:29      Function Call: bar(f1[5]; (void)
 0:29        'g5' (5-element array of mediump float)
@@ -64,7 +64,7 @@ ERROR: node is still EOpNull!
 0:31        true case
 0:32        move second child to first child (mediump float)
 0:32          direct index (mediump float)
-0:32            'gu' (1-element array of mediump float)
+0:32            'gu' (unsized array of mediump float)
 0:32            0 (const int)
 0:32          2.000000
 0:35      move second child to first child (mediump float)
