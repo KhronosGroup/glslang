@@ -1,6 +1,8 @@
 Current functionality level: ESSL 3.0
 
 Link Validation
+    + provide input config file for setting limits
+	  - also consider spitting out measures of complexity
     - ensure no static references thrown away
     Cross-stage linking
       - type consistency check of uniform and ins <-> outs, both variables and blocks, stage-specific arrayness matching
@@ -13,6 +15,7 @@ Link Validation
       - 1.3: deprecated mixing fixed vertex/fragment stage with programmable fragment/vertex stage.
       - 4.3: remove cross-version linking restrictions.
       - 4.3: Allow mismatches in interpolation and auxiliary qualification across stages.
+	  - 4.4: A stage contains two different blocks, each with no instance name, where the blocks contain a member with the same name.
     Intra-stage linking
       - exactly one main
       - type consistency check of uniforms, globals, ins, and outs, both variables and blocks
@@ -33,6 +36,8 @@ Link Validation
       - 4.3: Be clear that early_fragment_tests is only needed in one fragment-stage compilation unit.
       - 4.3: Be clear that implicit array sizing is only within a stage, not cross stage.
       - 4.4: overlapping transform/feedback offsets, offset/stride overflow checks, and stride matching
+	  - 4.4: If gl_FragCoord is redeclared in any fragment shader in a program, it must be redeclared in all the fragment shaders in that program that have a static use gl_FragCoord
+	  - 4.4: An interface contains two different blocks, each with no instance name, where the blocks contain a member with the same name.
 
 Shader Functionality to Implement/Finish
     ESSL 3.0
@@ -116,7 +121,6 @@ Shader Functionality to Implement/Finish
       - Add 64-bit floating-point attributes for vertex shader inputs.
       - Support viewport arrays so where the geometry shader selects which viewport array will transform its output.
     GLSL 4.2
-      - Add 420-style function signature matching rules (or did this start in 4.0?)
       + Move these previously deprecated features to be only in the compatibility profile:
         + The keyword attribute for vertex shader inputs. (Use in instead.)
         + The keyword varying for inputs and outputs. (Use in and out instead.)
@@ -153,12 +157,9 @@ Shader Functionality to Implement/Finish
       - Allow swizzle operations on scalars.
       - Positive signed decimal literals, as well as octal and hexadecimal, can set all 32 bits. This includes setting the sign bit to create a negative value.
       - Make GLSL consistent with the API regarding user clipping, by no longer referring to gl_Positionwhen gl_ClipVertex is not written. Rather, user clipping becomes undefined.
-      - Minor consistency fixes, corrections
-        - Consistently state structures have members not fields. The period ( . ) is still called the field selector, for all its multiple uses.
-        - Remove comment that there is no communication between instantiations of a shader.
-        - Clarified that a comma sequence-operator expression cannot be a constant expression. E.g., “(2,3)” is not allowed, semantically, as a valid constant expression 3, even though it is an expression that will evaluate to 3.
-        - Use vec2instead of vec3for coordinate in textureGather*(sampler2DRect,...).
-        - Clarify that textureGatherOffset() can take non-constants for the offsets.
+      - Clarified that a comma sequence-operator expression cannot be a constant expression. E.g., “(2,3)” is not allowed, semantically, as a valid constant expression 3, even though it is an expression that will evaluate to 3.
+      - Use vec2 instead of vec3 for coordinate in textureGather*(sampler2DRect,...).
+      - Clarify that textureGatherOffset() can take non-constants for the offsets.
     GLSL 4.3
       - Add shader storage bufferobjects, as per the ARB_shader_storage_buffer_object extension. 
         This includes 1) allowing the last member of a storage buffer block to be an array that does not 

@@ -33,6 +33,10 @@
 //ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 //POSSIBILITY OF SUCH DAMAGE.
 //
+
+// this only applies to the standalone wrapper, not the front end in general
+#define _CRT_SECURE_NO_WARNINGS
+
 #include "Worklist.h"
 #include "./../glslang/Include/ShHandle.h"
 #include "./../glslang/Public/ShaderLang.h"
@@ -56,6 +60,7 @@ enum TOptions {
     EOptionGiveWarnings       = 0x010,
     EOptionsLinkProgram       = 0x020,
     EOptionMultiThreaded      = 0x040,
+    EOptionDumpConfig         = 0x080,
 };
 
 //
@@ -85,39 +90,122 @@ ShBinding FixedAttributeBindings[] = {
 ShBindingTable FixedAttributeTable = { 3, FixedAttributeBindings };
 
 EShLanguage FindLanguage(const std::string& name);
-bool CompileFile(const char *fileName, ShHandle, int options, const TBuiltInResource*);
+bool CompileFile(const char *fileName, ShHandle, int options);
 void usage();
 void FreeFileData(char **data);
 char** ReadFileData(const char *fileName);
 void InfoLogMsg(const char* msg, const char* name, const int num);
 
-// Use to test breaking a single shader file into multiple strings.
+// Use to test breaking up a single shader file into multiple strings.
 int NumShaderStrings = 1;
 
+TBuiltInResource Resources;
+std::string ConfigFile;
+
 //
-// Set up the per compile resources
+// These are the default resources for TBuiltInResources, used for both
+//  - parsing this string for the case where the user didn't supply one
+//  - dumping out a template for user construction of a config file
 //
-void GenerateResources(TBuiltInResource& resources)
+const char* DefaultConfig = 
+"MaxLights 32\n"
+"MaxClipPlanes 6\n"
+"MaxTextureUnits 32\n"
+"MaxTextureCoords 32\n"
+"MaxVertexAttribs 64\n"
+"MaxVertexUniformComponents 4096\n"
+"MaxVaryingFloats 64\n"
+"MaxVertexTextureImageUnits 32\n"
+"MaxCombinedTextureImageUnits 32\n"
+"MaxTextureImageUnits 32\n"
+"MaxFragmentUniformComponents 4096\n"
+"MaxDrawBuffers 32\n"
+"MaxVertexUniformVectors 128\n"
+"MaxVaryingVectors 8\n"
+"MaxFragmentUniformVectors 16\n"
+"MaxVertexOutputVectors 16\n"
+"MaxFragmentInputVectors 15\n"
+"MinProgramTexelOffset -8\n"
+"MaxProgramTexelOffset 7\n"
+;
+
+//
+// Parse either a .conf file provided by the user or the default string above.
+//
+void ProcessConfigFile()
 {
-    resources.maxLights = 32;
-    resources.maxClipPlanes = 6;
-    resources.maxTextureUnits = 32;
-    resources.maxTextureCoords = 32;
-    resources.maxVertexAttribs = 64;
-    resources.maxVertexUniformComponents = 4096;
-    resources.maxVaryingFloats = 64;
-    resources.maxVertexTextureImageUnits = 32;
-    resources.maxCombinedTextureImageUnits = 32;
-    resources.maxTextureImageUnits = 32;
-    resources.maxFragmentUniformComponents = 4096;
-    resources.maxDrawBuffers = 32;
-    resources.maxVertexUniformVectors = 128;
-    resources.maxVaryingVectors = 8;
-    resources.maxFragmentUniformVectors = 16;
-    resources.maxVertexOutputVectors = 16;
-    resources.maxFragmentInputVectors = 15;
-    resources.minProgramTexelOffset = -8;
-    resources.maxProgramTexelOffset = 7;
+    char** configStrings = 0;
+    char *config = 0;
+    if (ConfigFile.size() > 0) {
+        char** configStrings = ReadFileData(ConfigFile.c_str());
+        if (configStrings)
+            config = *configStrings;
+        else {
+            printf("Error opening configuration file; will instead use the default configuration\n");
+            usage();
+        }
+    }
+
+    if (config == 0) {
+        config = new char[strlen(DefaultConfig)];
+        strcpy(config, DefaultConfig);
+    }
+
+    const char* delims = " \t\n\r";
+    const char* token = strtok(config, delims);
+    while (token) {
+        const char* valueStr = strtok(0, delims);
+        if (valueStr == 0 || ! (valueStr[0] == '-' || (valueStr[0] >= '0' && valueStr[0] <= '9'))) {
+            printf("Error: '%s' bad .conf file.  Each name must be followed by one number.\n", valueStr ? valueStr : "");
+            return;
+        }
+        int value = atoi(valueStr);
+
+        if (strcmp(token, "MaxLights") == 0)
+            Resources.maxLights = value;
+        else if (strcmp(token, "MaxClipPlanes") == 0)
+            Resources.maxClipPlanes = value;
+        else if (strcmp(token, "MaxTextureUnits") == 0)
+            Resources.maxTextureUnits = value;
+        else if (strcmp(token, "MaxTextureCoords") == 0)
+            Resources.maxTextureCoords = value;
+        else if (strcmp(token, "MaxVertexAttribs") == 0)
+            Resources.maxVertexAttribs = value;
+        else if (strcmp(token, "MaxVertexUniformComponents") == 0)
+            Resources.maxVertexUniformComponents = value;
+        else if (strcmp(token, "MaxVaryingFloats") == 0)
+            Resources.maxVaryingFloats = value;
+        else if (strcmp(token, "MaxVertexTextureImageUnits") == 0)
+            Resources.maxVertexTextureImageUnits = value;
+        else if (strcmp(token, "MaxCombinedTextureImageUnits") == 0)
+            Resources.maxCombinedTextureImageUnits = value;
+        else if (strcmp(token, "MaxTextureImageUnits") == 0)
+            Resources.maxTextureImageUnits = value;
+        else if (strcmp(token, "MaxFragmentUniformComponents") == 0)
+            Resources.maxFragmentUniformComponents = value;
+        else if (strcmp(token, "MaxDrawBuffers") == 0)
+            Resources.maxDrawBuffers = value;
+        else if (strcmp(token, "MaxVertexUniformVectors") == 0)
+            Resources.maxVertexUniformVectors = value;
+        else if (strcmp(token, "MaxVaryingVectors") == 0)
+            Resources.maxVaryingVectors = value;
+        else if (strcmp(token, "MaxFragmentUniformVectors") == 0)
+            Resources.maxFragmentUniformVectors = value;
+        else if (strcmp(token, "MaxVertexOutputVectors") == 0)
+            Resources.maxVertexOutputVectors = value;
+        else if (strcmp(token, "MaxFragmentInputVectors") == 0)
+            Resources.maxFragmentInputVectors = value;
+        else if (strcmp(token, "MinProgramTexelOffset") == 0)
+            Resources.minProgramTexelOffset = value;
+        else if (strcmp(token, "MaxProgramTexelOffset") == 0)
+            Resources.maxProgramTexelOffset = value;
+        else
+            printf("Warning: unrecognized limit (%s) in configuration file.\n", token);
+
+        token = strtok(0, delims);
+    }
+    if (configStrings)
+        FreeFileData(configStrings);
 }
 
 // thread-safe list of shaders to asynchronously grab and compile
@@ -131,6 +219,22 @@ int Options = 0;
 bool Delay = false;
 const char* ExecutableName;
 
+//
+// *.conf => this is a config file that can set limits/resources
+//
+bool SetConfigFile(const std::string& name)
+{
+    if (name.size() < 5)
+        return false;
+
+    if (name.substr(name.size() - 5, std::string::npos) == ".conf") {
+        ConfigFile = name;
+        return true;
+    }
+
+    return false;
+}
+
 bool ProcessArguments(int argc, char* argv[])
 {
     ExecutableName = argv[0];
@@ -141,13 +245,16 @@ bool ProcessArguments(int argc, char* argv[])
     argc--;
     argv++;    
     for (; argc >= 1; argc--, argv++) {
+        Work[argc] = 0;
         if (argv[0][0] == '-') {
-            Work[argc] = 0;
             switch (argv[0][1]) {
+            case 'c':
+                Options |= EOptionDumpConfig;
+                break;
             case 'd':
                 Delay = true;                        
                 break;
-            case 'i': 
+            case 'i':
                 Options |= EOptionIntermediate;
                 break;
             case 'l':
@@ -171,13 +278,13 @@ bool ProcessArguments(int argc, char* argv[])
                 return false;
             }
         } else {
-            Work[argc] = new glslang::TWorkItem(std::string(argv[0]));
-            Worklist.add(Work[argc]);
+            std::string name(argv[0]);
+            if (! SetConfigFile(name)) {
+                Work[argc] = new glslang::TWorkItem(name);
+                Worklist.add(Work[argc]);
+            }
         }
     }
-
-    if (Worklist.empty())
-        return false;
 
     return true;
 }
@@ -195,9 +302,7 @@ CompileShaders(void*)
         if (compiler == 0)
             return false;
 
-        TBuiltInResource resources;
-        GenerateResources(resources);
-        CompileFile(workItem->name.c_str(), compiler, Options, &resources);
+        CompileFile(workItem->name.c_str(), compiler, Options);
 
         if (! (Options & EOptionSuppressInfolog))
             workItem->results = ShGetInfoLog(compiler);
@@ -225,9 +330,6 @@ void CompileAndLinkShaders()
     if (Options & EOptionIntermediate)
         messages = (EShMessages)(messages | EShMsgAST);
 
-    TBuiltInResource resources;
-    GenerateResources(resources);
-
     //
     // Per-shader processing...
     //
@@ -247,7 +349,7 @@ void CompileAndLinkShaders()
 
         shader->setStrings(shaderStrings, 1);
 
-        shader->parse(&resources, 100, false, messages);
+        shader->parse(&Resources, 100, false, messages);
         
         program.addShader(shader);
 
@@ -294,6 +396,20 @@ int C_DECL main(int argc, char* argv[])
         usage();
         return EFailUsage;
     }
+
+    if (Options & EOptionDumpConfig) {
+        printf("%s", DefaultConfig);
+        if (Worklist.empty())
+            return ESuccess;
+    }
+
+    if (Worklist.empty()) {
+        usage();
+        return EFailUsage;
+    }
+
+    ProcessConfigFile();
+
 
     //
     // Two modes:
@@ -384,7 +500,7 @@ EShLanguage FindLanguage(const std::string& name)
 // Read a file's data into a string, and compile it using the old interface ShCompile, 
 // for non-linkable results.
 //
-bool CompileFile(const char *fileName, ShHandle compiler, int Options, const TBuiltInResource* resources)
+bool CompileFile(const char *fileName, ShHandle compiler, int Options)
 {
     int ret;
     char** shaderStrings = ReadFileData(fileName);
@@ -410,11 +526,11 @@ bool CompileFile(const char *fileName, ShHandle compiler, int Options, const TBu
     
     for (int i = 0; i < ((Options & EOptionMemoryLeakMode) ? 100 : 1); ++i) {
         for (int j = 0; j < ((Options & EOptionMemoryLeakMode) ? 100 : 1); ++j) {
-            //ret = ShCompile(compiler, shaderStrings, NumShaderStrings, lengths, EShOptNone, resources, Options, 100, false, messages);
-            ret = ShCompile(compiler, shaderStrings, NumShaderStrings, 0, EShOptNone, resources, Options, 100, false, messages);
+            //ret = ShCompile(compiler, shaderStrings, NumShaderStrings, lengths, EShOptNone, &Resources, Options, 100, false, messages);
+            ret = ShCompile(compiler, shaderStrings, NumShaderStrings, 0, EShOptNone, &Resources, Options, 100, false, messages);
             //const char* multi[4] = { "# ve", "rsion", " 300 e", "s" };
             //const char* multi[7] = { "/", "/", "\\", "\n", "\n", "#", "version 300 es" };
-            //ret = ShCompile(compiler, multi, 4, 0, EShOptNone, resources, Options, 100, false, messages);
+            //ret = ShCompile(compiler, multi, 4, 0, EShOptNone, &Resources, Options, 100, false, messages);
         }
 
         if (Options & EOptionMemoryLeakMode)
@@ -434,6 +550,8 @@ void usage()
 {
     printf("Usage: glslangValidator [ options ] filename\n"
            "Where: filename is a name ending in\n"
+           "    .conf provides an optional config file that replaces the default configuration\n"
+           "          (see -c option below for generating a template)\n"
            "    .vert for a vertex shader\n"
            "    .tesc for a tessellation control shader\n"
            "    .tese for a tessellation evaluation shader\n"
@@ -442,6 +560,7 @@ void usage()
            "    .comp for a compute shader\n\n"
            "Compilation warnings and errors will be printed to stdout.\n"
            "To get other information, use one of the following options:\n"
+           "-c: configuration dump; use to create default configuration file (redirect to a .conf file)\n"
            "-i: intermediate tree (glslang AST) is printed out\n"
            "-d: delay exit\n"
            "-l: link validation of all input files\n"
