@@ -121,6 +121,7 @@ public:
     bool containsSampler(const TType& type);
     void nonInitConstCheck(TSourceLoc, TString& identifier, TPublicType& type);
     void nonInitCheck(TSourceLoc, TString& identifier, TPublicType& type);
+    TVariable* redeclare(TSourceLoc, const TString&, const TType&, bool& newDeclaration);
     void paramCheck(TSourceLoc, TStorageQualifier qualifier, TType* type);
     void nestedBlockCheck(TSourceLoc);
     void nestedStructCheck(TSourceLoc);
@@ -212,6 +213,7 @@ protected:
     TQualifier globalUniformDefaults;
     TQualifier globalInputDefaults;
     TQualifier globalOutputDefaults;
+    // TODO: desktop functionality: track use of gl_FragDepth before redeclaration
 };
 
 } // end namespace glslang

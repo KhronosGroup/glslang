@@ -1180,13 +1180,13 @@ void TParseContext::globalCheck(TSourceLoc loc, bool global, const char* token)
 }
 
 //
-// For now, keep it simple:  if it starts "gl_", it's reserved, independent
-// of scope.  Except, if the symbol table is at the built-in push-level,
+// If it starts "gl_" or has double underscore, it's a reserved name.
+// Except, if the symbol table is at a built-in level,
 // which is when we are parsing built-ins.
 //
 bool TParseContext::reservedErrorCheck(TSourceLoc loc, const TString& identifier)
 {
-    if (!symbolTable.atBuiltInLevel()) {
+    if (! symbolTable.atBuiltInLevel()) {
         if (identifier.substr(0, 3) == TString("gl_")) {
             error(loc, "reserved built-in name", "gl_", "");
 
@@ -1805,21 +1805,79 @@ void TParseContext::nonInitConstCheck(TSourceLoc loc, TString& identifier, TPubl
 // Do semantic checking for a variable declaration that has no initializer,
 // and update the symbol table.
 //
-void TParseContext::nonInitCheck(TSourceLoc loc, TString& identifier, TPublicType& type)
+void TParseContext::nonInitCheck(TSourceLoc loc, TString& identifier, TPublicType& publicType)
 {
-    reservedErrorCheck(loc, identifier);
+    TType type(publicType);
+    bool newDeclaration;
+    TVariable* variable = redeclare(loc, identifier, type, newDeclaration);
+    if (! variable) {
+        reservedErrorCheck(loc, identifier);
+        variable = new TVariable(&identifier, type);
+        if (! symbolTable.insert(*variable))
+            error(loc, "redefinition", variable->getName().c_str(), "");
+        else
+            newDeclaration = true;
+    }
 
-    TVariable* variable = new TVariable(&identifier, TType(type));
-
-    if (! symbolTable.insert(*variable))
-        error(loc, "redefinition", variable->getName().c_str(), "");
-    else {
-        voidErrorCheck(loc, identifier, type);
+    if (newDeclaration) {
+        voidErrorCheck(loc, identifier, publicType);
 
         // see if it's a linker-level object to track
-        if (type.qualifier.isUniform() || type.qualifier.isPipeInput() || type.qualifier.isPipeOutput())
-            intermediate.addSymbolLinkageNode(linkage, *variable);
+        if (type.getQualifier().isUniform() || type.getQualifier().isPipeInput() || type.getQualifier().isPipeOutput())
+                intermediate.addSymbolLinkageNode(linkage, *variable);
     }
+}
+
+//
+// See if the identifier is a built-in symbol that can be redeclared,
+// and if so, copy of the symbol table's read-only built-in to the current
+// globol level, so it can be modified.
+//
+TVariable* TParseContext::redeclare(TSourceLoc loc, const TString& identifier, const TType& type, bool& newDeclaration)
+{
+    newDeclaration = false;
+
+    if (profile == EEsProfile || identifier.substr(0, 3) != TString("gl_") || symbolTable.atBuiltInLevel())
+        return 0;
+
+    // Potentially redeclaring a built-in variable...
+    
+    if (identifier == "gl_FragDepth"           && version >= 420 ||
+        identifier == "gl_PerVertex"           && version >= 410 ||
+        identifier == "gl_PerFragment"         && version >= 410 ||
+        identifier == "gl_FragCoord"           && version >= 150 ||
+        identifier == "gl_ClipDistance"        && version >= 130 ||
+        identifier == "gl_FrontColor"          && version >= 130 ||
+        identifier == "gl_BackColor"           && version >= 130 ||
+        identifier == "gl_FrontSecondaryColor" && version >= 130 ||
+        identifier == "gl_BackSecondaryColor"  && version >= 130 ||
+        identifier == "gl_SecondaryColor"      && version >= 130 ||
+        identifier == "gl_Color"               && version >= 130 && language == EShLangFragment ||
+        identifier == "gl_TexCoord") {
+
+        // Find the existing symbol, if any.
+        bool builtIn;
+        TSymbol* symbol = symbolTable.find(identifier, &builtIn);
+
+        // If the symbol was not found, this must be a version/profile/stage 
+        // that doesn't have it.
+        if (! symbol)
+            return 0;
+
+        TVariable* variable = symbol->getAsVariable();
+
+        // If it wasn't at a built-in level, then it's already been redeclared
+        if (! builtIn)
+            return variable;
+
+        // Otherwise, time to copy the symbol up to make a writable version
+        newDeclaration = true;
+        variable = symbolTable.copyUp(variable);
+        return variable;
+    }
+    
+    error(loc, "cannot redeclare this built-in variable", identifier.c_str(), "");
+    return 0;
 }
 
 void TParseContext::paramCheck(TSourceLoc loc, TStorageQualifier qualifier, TType* type)

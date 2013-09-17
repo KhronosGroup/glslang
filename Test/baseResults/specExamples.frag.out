@@ -8,17 +8,10 @@ ERROR: 0:71: 'Material' : only uniform interface blocks are supported
 ERROR: 0:79: 'Light' : only uniform interface blocks are supported 
 ERROR: 0:83: 'ColoredTexture' : only uniform interface blocks are supported 
 ERROR: 0:87: 'Color' : redefinition 
-ERROR: 0:89: 'gl_' : reserved built-in name 
 ERROR: 0:92: 'origin_upper_left' : unrecognized layout identifier 
-ERROR: 0:92: 'gl_' : reserved built-in name 
-ERROR: 0:92: 'gl_FragCoord' : redefinition 
 ERROR: 0:93: 'pixel_center_integer' : unrecognized layout identifier 
-ERROR: 0:93: 'gl_' : reserved built-in name 
-ERROR: 0:93: 'gl_FragCoord' : redefinition 
 ERROR: 0:94: 'origin_upper_left' : unrecognized layout identifier 
 ERROR: 0:94: 'pixel_center_integer' : unrecognized layout identifier 
-ERROR: 0:94: 'gl_' : reserved built-in name 
-ERROR: 0:94: 'gl_FragCoord' : redefinition 
 ERROR: 0:96: 'early_fragment_tests' : unrecognized layout identifier 
 ERROR: 0:99: 'local_size_x' : there is no such layout identifier taking an assigned value 
 ERROR: 0:99: 'local_size_y' : there is no such layout identifier taking an assigned value 
@@ -26,24 +19,11 @@ ERROR: 0:100: 'local_size_x' : there is no such layout identifier taking an assi
 ERROR: 0:102: 'color' : redefinition 
 ERROR: 0:103: 'index' : there is no such layout identifier taking an assigned value 
 ERROR: 0:106: 'depth_greater' : unrecognized layout identifier 
-ERROR: 0:106: 'gl_' : reserved built-in name 
-ERROR: 0:109: 'gl_' : reserved built-in name 
-ERROR: 0:109: 'gl_FragDepth' : redefinition 
 ERROR: 0:112: 'depth_any' : unrecognized layout identifier 
-ERROR: 0:112: 'gl_' : reserved built-in name 
-ERROR: 0:112: 'gl_FragDepth' : redefinition 
 ERROR: 0:115: 'depth_greater' : unrecognized layout identifier 
-ERROR: 0:115: 'gl_' : reserved built-in name 
-ERROR: 0:115: 'gl_FragDepth' : redefinition 
 ERROR: 0:118: 'depth_less' : unrecognized layout identifier 
-ERROR: 0:118: 'gl_' : reserved built-in name 
-ERROR: 0:118: 'gl_FragDepth' : redefinition 
 ERROR: 0:121: 'depth_unchanged' : unrecognized layout identifier 
-ERROR: 0:121: 'gl_' : reserved built-in name 
-ERROR: 0:121: 'gl_FragDepth' : redefinition 
 ERROR: 0:123: 'gl_' : reserved built-in name 
-ERROR: 0:124: 'gl_' : reserved built-in name 
-ERROR: 0:124: 'gl_Color' : redefinition 
 ERROR: 0:150: 'constructor' : constructing from a non-dereferenced array 
 ERROR: 0:152: '=' :  cannot convert from 'const 2-element array of 4-component vector of float' to '3-element array of 4-component vector of float'
 ERROR: 0:172: 'x' : undeclared identifier 
@@ -74,7 +54,7 @@ ERROR: 0:226: 'in' : only allowed at global scope
 ERROR: 0:227: 'in' : only allowed at global scope 
 ERROR: 0:228: 'in' : only allowed at global scope 
 ERROR: 0:232: 'out' : only allowed at global scope 
-ERROR: 76 compilation errors.  No code generated.
+ERROR: 56 compilation errors.  No code generated.
 
 ERROR: node is still EOpNull!
 0:5  Sequence
@@ -222,8 +202,8 @@ ERROR: node is still EOpNull!
 0:?     'temperature' (noperspective in float)
 0:?     'myColor' (flat in 3-component vector of float)
 0:?     'myTexCoord' (centroid noperspective in 2-component vector of float)
-0:?     'gl_FragCoord' (smooth in 4-component vector of float)
+0:?     'gl_FragCoord' (gl_FragCoord 4-component vector of float)
 0:?     'factor' (layout(location=3 ) out 4-component vector of float)
-0:?     'gl_FragDepth' (out float)
+0:?     'gl_FragDepth' (gl_FragDepth float)
 0:?     'gl_Color' (smooth in 4-component vector of float)
 
