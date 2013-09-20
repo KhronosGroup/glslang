@@ -55,11 +55,15 @@ ERROR: node is still EOpNull!
 0:58          Loop Condition
 0:58          true (const bool)
 0:58          Loop Body
-0:?           Sequence
-0:?             Sequence
-0:54              add second child into first child (mediump int)
-0:54                'sum' (lowp int)
-0:54                'level4_medium' (mediump int)
+0:51          Sequence
+0:51            Test condition and select (void)
+0:51              Condition
+0:51              true (const bool)
+0:51              true case
+0:?               Sequence
+0:54                add second child into first child (mediump int)
+0:54                  'sum' (lowp int)
+0:54                  'level4_medium' (mediump int)
 0:57            add second child into first child (highp int)
 0:57              'sum' (lowp int)
 0:57              'level3_high' (highp int)

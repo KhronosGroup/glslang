@@ -688,16 +688,9 @@ TIntermAggregate* TIntermediate::makeAggregate(TIntermNode* node, TSourceLoc loc
 TIntermNode* TIntermediate::addSelection(TIntermTyped* cond, TIntermNodePair nodePair, TSourceLoc loc)
 {
     //
-    // For compile time constant selections, prune the code and 
-    // test now.
+    // Don't prune the false path for compile-time constants; it's needed
+    // for static access analysis.
     //
-    
-    if (cond->getAsTyped() && cond->getAsTyped()->getAsConstantUnion()) {
-        if (cond->getAsTyped()->getAsConstantUnion()->getUnionArrayPointer()->getBConst())
-            return nodePair.node1;
-        else
-            return nodePair.node2;
-    }
 
     TIntermSelection* node = new TIntermSelection(cond, nodePair.node1, nodePair.node2);
     node->setLoc(loc);

@@ -49,6 +49,7 @@ numeral.frag
 400.tese
 420.tese
 430.comp
+dce.frag
 ../../LunarGLASS/test/aggOps.frag
 ../../LunarGLASS/test/always-discard.frag
 ../../LunarGLASS/test/always-discard2.frag

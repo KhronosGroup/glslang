@@ -3,7 +3,7 @@ Current functionality level: ESSL 3.0
 Link Validation
     + provide input config file for setting limits
 	  - also consider spitting out measures of complexity
-    - ensure no static references thrown away
+    + ensure no static references thrown away
     Cross-stage linking
       - type consistency check of uniform and ins <-> outs, both variables and blocks, stage-specific arrayness matching
       - location/binding/index check

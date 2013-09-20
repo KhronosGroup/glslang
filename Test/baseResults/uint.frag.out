@@ -25,18 +25,48 @@ ERROR: node is still EOpNull!
 0:19              't' (flat in mediump 2-component vector of uint)
 0:19              1 (const int)
 0:19            3 (const uint)
-0:28      multiply second child into first child (mediump int)
-0:28        'count' (mediump int)
-0:28        2 (const int)
-0:30      multiply second child into first child (mediump int)
-0:30        'count' (mediump int)
-0:30        3 (const int)
-0:42      multiply second child into first child (mediump int)
-0:42        'count' (mediump int)
-0:42        7 (const int)
-0:44      multiply second child into first child (mediump int)
-0:44        'count' (mediump int)
-0:44        11 (const int)
+0:27      Test condition and select (void)
+0:27        Condition
+0:27        true (const bool)
+0:27        true case
+0:28        multiply second child into first child (mediump int)
+0:28          'count' (mediump int)
+0:28          2 (const int)
+0:29      Test condition and select (void)
+0:29        Condition
+0:29        true (const bool)
+0:29        true case
+0:30        multiply second child into first child (mediump int)
+0:30          'count' (mediump int)
+0:30          3 (const int)
+0:31      Test condition and select (void)
+0:31        Condition
+0:31        false (const bool)
+0:31        true case
+0:32        multiply second child into first child (mediump int)
+0:32          'count' (mediump int)
+0:32          5 (const int)
+0:41      Test condition and select (void)
+0:41        Condition
+0:41        true (const bool)
+0:41        true case
+0:42        multiply second child into first child (mediump int)
+0:42          'count' (mediump int)
+0:42          7 (const int)
+0:43      Test condition and select (void)
+0:43        Condition
+0:43        true (const bool)
+0:43        true case
+0:44        multiply second child into first child (mediump int)
+0:44          'count' (mediump int)
+0:44          11 (const int)
+0:45      Test condition and select (void)
+0:45        Condition
+0:45        false (const bool)
+0:45        true case
+0:46        multiply second child into first child (mediump int)
+0:46          'count' (mediump int)
+0:46          13 (const int)
 0:49      Sequence
 0:49        move second child to first child (mediump int)
 0:49          'shiftedii' (mediump int)
@@ -127,15 +157,34 @@ ERROR: node is still EOpNull!
 0:67                'ai' (mediump int)
 0:67              Convert int to uint (mediump uint)
 0:67                'count' (mediump int)
-0:76      multiply second child into first child (mediump int)
-0:76        'count' (mediump int)
-0:76        17 (const int)
-0:82      multiply second child into first child (mediump int)
-0:82        'count' (mediump int)
-0:82        23 (const int)
-0:85      multiply second child into first child (mediump int)
-0:85        'count' (mediump int)
-0:85        27 (const int)
+0:75      Test condition and select (void)
+0:75        Condition
+0:75        true (const bool)
+0:75        true case
+0:76        multiply second child into first child (mediump int)
+0:76          'count' (mediump int)
+0:76          17 (const int)
+0:78      Test condition and select (void)
+0:78        Condition
+0:78        false (const bool)
+0:78        true case
+0:79        multiply second child into first child (mediump int)
+0:79          'count' (mediump int)
+0:79          19 (const int)
+0:81      Test condition and select (void)
+0:81        Condition
+0:81        true (const bool)
+0:81        true case
+0:82        multiply second child into first child (mediump int)
+0:82          'count' (mediump int)
+0:82          23 (const int)
+0:84      Test condition and select (void)
+0:84        Condition
+0:84        true (const bool)
+0:84        true case
+0:85        multiply second child into first child (mediump int)
+0:85          'count' (mediump int)
+0:85          27 (const int)
 0:87      Sequence
 0:87        move second child to first child (mediump uint)
 0:87          'mask1' (mediump uint)
