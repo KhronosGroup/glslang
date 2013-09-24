@@ -56,7 +56,7 @@ class TVariable;
 //
 class TIntermediate {
 public:
-    explicit TIntermediate(int v = 0, EProfile p = ENoProfile) : treeRoot(0), profile(p), version(v), numMains(0), numErrors(0) { }
+    explicit TIntermediate(EShLanguage l, int v = 0, EProfile p = ENoProfile) : language(l), treeRoot(0), profile(p), version(v), numMains(0), numErrors(0) { }
 
     void setVersion(int v) { version = v; }
     int getVersion() const { return version; }
@@ -95,20 +95,24 @@ public:
     TIntermBranch* addBranch(TOperator, TIntermTyped*, TSourceLoc);
     TIntermTyped* addSwizzle(TVectorFields&, TSourceLoc);
     bool postProcess(TIntermNode*, EShLanguage);
-    void addSymbolLinkageNodes(TIntermNode* root, TIntermAggregate*& linkage, EShLanguage, TSymbolTable&);
+    void addSymbolLinkageNodes(TIntermAggregate*& linkage, EShLanguage, TSymbolTable&);
     void addSymbolLinkageNode(TIntermAggregate*& linkage, TSymbolTable&, const TString&);
     void addSymbolLinkageNode(TIntermAggregate*& linkage, const TVariable&);
 
-    void merge(TIntermediate&);
-    void errorCheck(TInfoSink& infoSink);
+    void merge(TInfoSink&, TIntermediate&);
+    void errorCheck(TInfoSink&);
 
-    void outputTree(TInfoSink& infoSink);
+    void outputTree(TInfoSink&);
 	void removeTree();
 
 protected:
+    void mergeBodies(TInfoSink&, TIntermSequence& globals, const TIntermSequence& unitGlobals);
+    void mergeLinkerObjects(TInfoSink&, TIntermSequence& linkerObjects, const TIntermSequence& unitLinkerObjects);
     void error(TInfoSink& infoSink, const char*);
+    void linkErrorCheck(TInfoSink&, const TIntermSymbol&, const TIntermSymbol&, bool crossStage);
 
 protected:
+    EShLanguage language;
     TIntermNode* treeRoot;
     EProfile profile;
     int version;

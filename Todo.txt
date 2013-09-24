@@ -11,26 +11,29 @@ Link Validation
       - mixed es/non-es profiles
       - statically consumed input not produced by previous stage
       - matching between gl_PerVertex blocks and gl_PerFragment blocks
-      - compute shader not with other stages
+      - compute shader not combined with any other stages
+      - give error for sharing a packed block
       - 1.3: deprecated mixing fixed vertex/fragment stage with programmable fragment/vertex stage.
       - 4.3: remove cross-version linking restrictions.
       - 4.3: Allow mismatches in interpolation and auxiliary qualification across stages.
 	  - 4.4: A stage contains two different blocks, each with no instance name, where the blocks contain a member with the same name.
     Intra-stage linking
-      - exactly one main
-      - type consistency check of uniforms, globals, ins, and outs, both variables and blocks
+      + exactly one main
+      + type consistency check of uniforms, globals, ins, and outs
+        - still need to cover arrays and the combinations of this rule with redeclarations of built-ins
       - value checking of global const initializers
       - value checking of uniform initializers
-      - location/component/binding/index/offset match check
+      + location match
+      - component/binding/index/offset match check
       - location/component aliasing (except desktop vertex shader inputs)
       - location layout range/overlap semantics
       - geometry shader input array sizes and input layout qualifier declaration
       - compute shader layout(local_size_*) matching
-      - mixed es/non-es profiles
-      - matching initializers for globals
+      + mixed es/non-es profiles
       - recursion for both functions and subroutines
-          - Even the potential for recursion through subroutine uniforms is an error.
-      - matching redeclarations of interface blocks
+        - Even the potential for recursion through subroutine uniforms is an error.
+      - block matching
+        - matching redeclarations of interface blocks
       - read or write to both gl_ClipVertex and gl_ClipDistance
       - write to only one of gl_FragColor, gl_FragData, or user-declared
       - 4.3: Be clear that early_fragment_tests is only needed in one fragment-stage compilation unit.

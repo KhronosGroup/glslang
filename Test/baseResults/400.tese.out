@@ -1,8 +1,10 @@
 ERROR: 0:5: 'barrier' : no matching overloaded function found 
 ERROR: 1 compilation errors.  No code generated.
 
-0:3Function Definition: main( (void)
-0:3  Function Parameters: 
-0:5  Sequence
-0:5    0.000000
+ERROR: node is still EOpNull!
+0:3  Function Definition: main( (void)
+0:3    Function Parameters: 
+0:5    Sequence
+0:5      0.000000
+0:?   Linker Objects
 

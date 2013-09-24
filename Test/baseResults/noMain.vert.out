@@ -1,7 +1,11 @@
 noMain.vert
 
-0:3Function Definition: foo( (void)
-0:3  Function Parameters: 
+0:? Sequence
+0:3  Function Definition: foo( (void)
+0:3    Function Parameters: 
+0:?   Linker Objects
+0:?     'gl_VertexID' (gl_VertexId highp int)
+0:?     'gl_InstanceID' (gl_InstanceId highp int)
 
 mains.frag
 ERROR: 0:7: 'main' : function already has a body 
@@ -13,14 +17,14 @@ ERROR: node is still EOpNull!
 0:3    Function Parameters: 
 0:7  Function Definition: main( (void)
 0:7    Function Parameters: 
+0:?   Linker Objects
 
 
 Linked vertex stage:
 
-ERROR: Missing entry point: Each stage requires one "void main()" entry point
+ERROR: Linking vertex stage: Missing entry point: Each stage requires one "void main()" entry point
 
 Linked fragment stage:
 
-ERROR: Too many entry points: Each stage can have at most one "void main()" entry point.
 
 

@@ -281,9 +281,15 @@ ERROR: node is still EOpNull!
 0:121          'gl_TexCoord' (smooth in unsized array of 4-component vector of float)
 0:121          3 (const int)
 0:?   Linker Objects
+0:?     'lowp' (float)
+0:?     'mediump' (float)
+0:?     'highp' (float)
+0:?     'precision' (float)
 0:?     'i' (smooth in 4-component vector of float)
 0:?     'o' (out 4-component vector of float)
 0:?     's2D' (uniform sampler2D)
 0:?     'centTexCoord' (centroid smooth in 2-component vector of float)
 0:?     'm' (uniform 4X2 matrix of float)
+0:?     'imageBuffer' (float)
+0:?     'uimage2DRect' (float)
 

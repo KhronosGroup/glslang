@@ -850,7 +850,7 @@ bool TIntermediate::postProcess(TIntermNode* root, EShLanguage language)
     return true;
 }
 
-void TIntermediate::addSymbolLinkageNodes(TIntermNode* root, TIntermAggregate*& linkage, EShLanguage language, TSymbolTable& symbolTable)
+void TIntermediate::addSymbolLinkageNodes(TIntermAggregate*& linkage, EShLanguage language, TSymbolTable& symbolTable)
 {
     // Add top-level nodes for declarations that must be checked cross
     // compilation unit by a linker, yet might not have been referenced
@@ -880,13 +880,9 @@ void TIntermediate::addSymbolLinkageNodes(TIntermNode* root, TIntermAggregate*& 
         addSymbolLinkageNode(linkage, symbolTable, "gl_InstanceID");
     }
 
-    if (linkage) {
-        // Finish off linkage sequence
-        linkage->setOperator(EOpLinkerObjects);
-
-        // Add a child to the root node for the linker objects
-        growAggregate(root, linkage);
-    }
+    // Add a child to the root node for the linker objects    
+    linkage->setOperator(EOpLinkerObjects);
+    treeRoot = growAggregate(treeRoot, linkage);
 }
 
 void TIntermediate::addSymbolLinkageNode(TIntermAggregate*& linkage, TSymbolTable& symbolTable, const TString& name)
@@ -903,27 +899,176 @@ void TIntermediate::addSymbolLinkageNode(TIntermAggregate*& linkage, const TVari
 }
 
 //
-// Merge the information in 'unit' into 'this'
+// Merge the information from 'unit' into 'this'
 //
-void TIntermediate::merge(TIntermediate& unit)
+void TIntermediate::merge(TInfoSink& infoSink, TIntermediate& unit)
 {
     numMains += unit.numMains;
+
+    if (profile != EEsProfile && unit.profile == EEsProfile ||
+        profile == EEsProfile && unit.profile != EEsProfile)
+        error(infoSink, "Cannot mix ES profile with non-ES profile shaders\n");
+
+    if (unit.treeRoot == 0)
+        return;
+
+    if (treeRoot == 0) {
+        version = unit.version;
+        treeRoot = unit.treeRoot;
+        return;
+    } else
+        version = std::max(version, unit.version);
+
+    // Get the top-level globals of each level
+    TIntermSequence& globals = treeRoot->getAsAggregate()->getSequence();
+    TIntermSequence& unitGlobals = unit.treeRoot->getAsAggregate()->getSequence();
+
+    // Get the last members of the sequences, expected to be the linker-object lists
+    assert(globals.back()->getAsAggregate()->getOp() == EOpLinkerObjects);
+    assert(unitGlobals.back()->getAsAggregate()->getOp() == EOpLinkerObjects);
+    TIntermSequence& linkerObjects = globals.back()->getAsAggregate()->getSequence();
+    TIntermSequence& unitLinkerObjects = unitGlobals.back()->getAsAggregate()->getSequence();
+
+    mergeBodies(infoSink, globals, unitGlobals);
+    mergeLinkerObjects(infoSink, linkerObjects, unitLinkerObjects);
+}
+
+//
+// Merge the function bodies and global-level initalizers from unitGlobals into globals.
+// Will error check duplication of function bodies for the same signature.
+//
+void TIntermediate::mergeBodies(TInfoSink& infoSink, TIntermSequence& globals, const TIntermSequence& unitGlobals)
+{
+    // TODO: Performance: Processing in alphabetical order will be faster
+
+    // Error check the global objects, not including the linker objects
+    for (unsigned int child = 0; child < globals.size() - 1; ++child) {
+        for (unsigned int unitChild = 0; unitChild < unitGlobals.size() - 1; ++unitChild) {
+            TIntermAggregate* body = globals[child]->getAsAggregate();
+            TIntermAggregate* unitBody = unitGlobals[unitChild]->getAsAggregate();
+            if (body && unitBody && body->getOp() == EOpFunction && unitBody->getOp() == EOpFunction && body->getName() == unitBody->getName()) {
+                error(infoSink, "Multiple function bodies in multiple compilation units for the same signature in the same stage:");
+                infoSink.info << "    " << globals[child]->getAsAggregate()->getName() << "\n";
+            }
+        }
+    }
+
+    // Merge the global objects, just in front of the linker objects
+    globals.insert(globals.end() - 1, unitGlobals.begin(), unitGlobals.end() - 1);
+}
+
+//
+// Merge the linker objects from unitLinkerObjects into linkerObjects.
+// Duplication is expected and filtered out, but contradictions are an error.
+//
+void TIntermediate::mergeLinkerObjects(TInfoSink& infoSink, TIntermSequence& linkerObjects, const TIntermSequence& unitLinkerObjects)
+{
+    // Error check and merge the linker objects (duplicates should not be merged)
+    unsigned int initialNumLinkerObjects = linkerObjects.size();
+    for (unsigned int unitLinkObj = 0; unitLinkObj < unitLinkerObjects.size(); ++unitLinkObj) {
+        bool merge = true;
+        for (unsigned int linkObj = 0; linkObj < initialNumLinkerObjects; ++linkObj) {
+            TIntermSymbol* symbol = linkerObjects[linkObj]->getAsSymbolNode();
+            TIntermSymbol* unitSymbol = unitLinkerObjects[unitLinkObj]->getAsSymbolNode();
+            assert(symbol && unitSymbol);
+            if (symbol->getName() == unitSymbol->getName()) {
+                // filter out copy
+                merge = false;
+                
+                // Check for consistent types/qualification/etc.
+                linkErrorCheck(infoSink, *symbol, *unitSymbol, false);
+            }
+        }
+        if (merge)
+            linkerObjects.push_back(unitLinkerObjects[unitLinkObj]);
+    }
 }
 
 void TIntermediate::errorCheck(TInfoSink& infoSink)
 {   
     if (numMains < 1)
         error(infoSink, "Missing entry point: Each stage requires one \"void main()\" entry point");
-    if (numMains > 1)
-        error(infoSink, "Too many entry points: Each stage can have at most one \"void main()\" entry point.");
 }
 
 void TIntermediate::error(TInfoSink& infoSink, const char* message)
 {
     infoSink.info.prefix(EPrefixError);
-    infoSink.info << message << "\n";
+    infoSink.info << "Linking " << StageName[language] << " stage: " << message << "\n";
 
     ++numErrors;
+}
+
+//
+// Compare two global objects from two compilation units and see if they match
+// well enough.  Rules can be different for intra- vs. cross-stage matching.
+//
+// This function only does one of intra- or cross-stage matching per call.
+//
+// TODO: Linker Functionality: this function is under active development
+//
+void TIntermediate::linkErrorCheck(TInfoSink& infoSink, const TIntermSymbol& symbol, const TIntermSymbol& unitSymbol, bool crossStage)
+{
+    bool writeTypeComparison = false;
+
+    // Types have to match
+    if (symbol.getType() != unitSymbol.getType()) {
+        error(infoSink, "Types must match:");
+        writeTypeComparison = true;
+    }
+
+    // Qualifiers have to (almost) match
+
+    // Storage...
+    if (symbol.getQualifier().storage != unitSymbol.getQualifier().storage) {
+        error(infoSink, "Storage qualifiers must match:");
+        writeTypeComparison = true;
+    }
+
+    // Precision...
+    if (symbol.getQualifier().precision != unitSymbol.getQualifier().precision) {
+        error(infoSink, "Precision qualifiers must match:");
+        writeTypeComparison = true;
+    }
+
+    // Invariance...
+    if (! crossStage && symbol.getQualifier().invariant != unitSymbol.getQualifier().invariant) {
+        error(infoSink, "Presence of invariant qualifier must match:");
+        writeTypeComparison = true;
+    }
+
+    // Auxiliary and interpolation...
+    if (symbol.getQualifier().centroid  != unitSymbol.getQualifier().centroid ||
+        symbol.getQualifier().smooth    != unitSymbol.getQualifier().smooth ||
+        symbol.getQualifier().flat      != unitSymbol.getQualifier().flat ||
+        symbol.getQualifier().sample    != unitSymbol.getQualifier().sample ||
+        symbol.getQualifier().patch     != unitSymbol.getQualifier().patch ||
+        symbol.getQualifier().nopersp   != unitSymbol.getQualifier().nopersp) {
+        error(infoSink, "Interpolation and auxiliary storage qualifiers must match:");
+        writeTypeComparison = true;
+    }
+
+    // Memory...
+    if (symbol.getQualifier().shared    != unitSymbol.getQualifier().shared ||
+        symbol.getQualifier().coherent  != unitSymbol.getQualifier().coherent ||
+        symbol.getQualifier().volatil   != unitSymbol.getQualifier().volatil ||
+        symbol.getQualifier().restrict  != unitSymbol.getQualifier().restrict ||
+        symbol.getQualifier().readonly  != unitSymbol.getQualifier().readonly ||
+        symbol.getQualifier().writeonly != unitSymbol.getQualifier().writeonly) {
+        error(infoSink, "Memory qualifiers must match:");
+        writeTypeComparison = true;
+    }
+
+    // Layouts...
+    if (symbol.getQualifier().layoutMatrix       != unitSymbol.getQualifier().layoutMatrix ||
+        symbol.getQualifier().layoutPacking      != unitSymbol.getQualifier().layoutPacking ||
+        symbol.getQualifier().layoutSlotLocation != unitSymbol.getQualifier().layoutSlotLocation) {
+        error(infoSink, "Layout qualification must match:");
+        writeTypeComparison = true;
+    }
+
+    if (writeTypeComparison)
+        infoSink.info << "    " << symbol.getName() << ": \"" << symbol.getType().getCompleteString() << "\" versus \"" <<
+                                                             unitSymbol.getType().getCompleteString() << "\"\n";
 }
 
 //

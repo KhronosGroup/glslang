@@ -106,7 +106,7 @@ TPoolAllocator* PerProcessGPA = 0;
 bool InitializeSymbolTable(const TString& builtIns, int version, EProfile profile, EShLanguage language, TInfoSink& infoSink, 
                            TSymbolTable& symbolTable)
 {
-    TIntermediate intermediate(version, profile);
+    TIntermediate intermediate(language, version, profile);
 	
     TParseContext parseContext(symbolTable, intermediate, true, version, profile, language, infoSink);
     TPpContext ppContext(parseContext);
@@ -452,7 +452,7 @@ bool CompileDeferred(
     bool ret = parseContext.parseShaderStrings(ppContext, const_cast<char**>(shaderStrings), lengths, numStrings);
     if (! ret)
         success = false;
-    intermediate.addSymbolLinkageNodes(intermediate.getTreeRoot(), parseContext.linkage, parseContext.language, symbolTable);
+    intermediate.addSymbolLinkageNodes(parseContext.linkage, parseContext.language, symbolTable);
 
     // Clean up the symbol table. The AST is self-sufficient now.
     delete symbolTableMemory;
@@ -595,7 +595,7 @@ int ShCompile(
     compiler->infoSink.info.erase();
     compiler->infoSink.debug.erase();
 
-    TIntermediate intermediate;
+    TIntermediate intermediate(compiler->getLanguage());
     bool success = CompileDeferred(compiler, shaderStrings, numStrings, inputLengths, optLevel, resources, defaultVersion, forwardCompatible, messages, intermediate);
 
     //
@@ -866,7 +866,7 @@ TShader::TShader(EShLanguage s)
 {
     infoSink = new TInfoSink;
     compiler = new TDeferredCompiler(stage, *infoSink);
-    intermediate = new TIntermediate;
+    intermediate = new TIntermediate(s);
 }
 
 TShader::~TShader()
@@ -941,7 +941,7 @@ bool TProgram::linkStage(EShLanguage stage, EShMessages messages)
     if (stages[stage].size() == 1)
         merged = stages[stage].front()->intermediate;    
     else {
-        intermediate[stage] = new TIntermediate();
+        intermediate[stage] = new TIntermediate(stage);
         merged = intermediate[stage];
     }
 
@@ -950,7 +950,7 @@ bool TProgram::linkStage(EShLanguage stage, EShMessages messages)
     if (stages[stage].size() > 1) {
         std::list<TShader*>::const_iterator it;
         for (it = stages[stage].begin(); it != stages[stage].end(); ++it)
-            merged->merge(*(*it)->intermediate);
+            merged->merge(*infoSink, *(*it)->intermediate);
 
         if (messages & EShMsgAST)
             merged->outputTree(*infoSink);

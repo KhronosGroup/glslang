@@ -86,6 +86,8 @@ ERROR: node is still EOpNull!
 0:62          'S' (structure)
 0:62          0 (const int)
 0:?   Linker Objects
+0:?     'b' (bool)
+0:?     'tan' (float)
 0:?     'gl_VertexID' (gl_VertexId int)
 0:?     'gl_InstanceID' (gl_InstanceId int)
 

@@ -199,4 +199,5 @@ ERROR: node is still EOpNull!
 0:127        'iv3' (mediump 3-component vector of int)
 0:?   Linker Objects
 0:?     'instanceName' (layout(shared ) uniform block)
+0:?     's' (structure)
 

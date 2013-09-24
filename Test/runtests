@@ -33,7 +33,8 @@ function runLinkTest {
 }
 
 runLinkTest mains1.frag mains2.frag noMain1.geom noMain2.geom
-runLinkTest noMain.vert mains.frag 
+runLinkTest noMain.vert mains.frag
+runLinkTest link1.frag link2.frag link3.frag
 
 #
 # multi-threaded test
@@ -42,4 +43,3 @@ echo Comparing single thread to multithread for all tests in current directory..
 $EXE -i *.vert *.geom *.frag *.tes* *.comp > singleThread.out
 $EXE -i *.vert *.geom *.frag *.tes* *.comp -t > multiThread.out
 diff singleThread.out multiThread.out
-

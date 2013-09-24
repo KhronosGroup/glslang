@@ -51,11 +51,14 @@ TParseContext::TParseContext(TSymbolTable& symt, TIntermediate& interm, bool pb,
             intermediate(interm), symbolTable(symt), infoSink(is), language(L),
             version(v), profile(p), forwardCompatible(fc), messages(m),    
             contextPragma(true, false), loopNestingLevel(0), structNestingLevel(0),
-            linkage(0), tokensBeforeEOF(false),
+            tokensBeforeEOF(false),
             parsingBuiltins(pb), numErrors(0), afterEOF(false)
 {
     currentLoc.line = 1;
     currentLoc.string = 0;
+
+    // ensure we always have a linkage node, even if empty, to simplify tree topology algorithms
+    linkage = new TIntermAggregate;
 
     // set all precision defaults to EpqNone, which is correct for all desktop types
     // and for ES types that don't have defaults (thus getting an error on use)
@@ -1795,7 +1798,7 @@ void TParseContext::nonInitConstCheck(TSourceLoc loc, TString& identifier, TPubl
     //
     // Make the qualifier make sense.
     //
-    if (type.qualifier.storage  == EvqConst) {
+    if (type.qualifier.storage == EvqConst) {
         type.qualifier.storage = EvqTemporary;
         error(loc, "variables with qualifier 'const' must be initialized", identifier.c_str(), "");
     }
@@ -1808,8 +1811,10 @@ void TParseContext::nonInitConstCheck(TSourceLoc loc, TString& identifier, TPubl
 void TParseContext::nonInitCheck(TSourceLoc loc, TString& identifier, TPublicType& publicType)
 {
     TType type(publicType);
-    bool newDeclaration;
+
+    bool newDeclaration;    // true if a new entry gets added to the symbol table
     TVariable* variable = redeclare(loc, identifier, type, newDeclaration);
+    
     if (! variable) {
         reservedErrorCheck(loc, identifier);
         variable = new TVariable(&identifier, type);
@@ -1823,19 +1828,19 @@ void TParseContext::nonInitCheck(TSourceLoc loc, TString& identifier, TPublicTyp
         voidErrorCheck(loc, identifier, publicType);
 
         // see if it's a linker-level object to track
-        if (type.getQualifier().isUniform() || type.getQualifier().isPipeInput() || type.getQualifier().isPipeOutput())
-                intermediate.addSymbolLinkageNode(linkage, *variable);
+        if (type.getQualifier().isUniform() || type.getQualifier().isPipeInput() || type.getQualifier().isPipeOutput() || type.getQualifier().storage == EvqGlobal)
+            intermediate.addSymbolLinkageNode(linkage, *variable);
     }
 }
 
 //
 // See if the identifier is a built-in symbol that can be redeclared,
 // and if so, copy of the symbol table's read-only built-in to the current
-// globol level, so it can be modified.
+// global level, so it can be modified.
 //
 TVariable* TParseContext::redeclare(TSourceLoc loc, const TString& identifier, const TType& type, bool& newDeclaration)
 {
-    newDeclaration = false;
+    newDeclaration = false;  // true if a new entry gets added to the symbol table
 
     if (profile == EEsProfile || identifier.substr(0, 3) != TString("gl_") || symbolTable.atBuiltInLevel())
         return 0;

@@ -97,4 +97,5 @@
 0:35        Construct vec4 (mediump 4-component vector of float)
 0:35          Convert int to float (mediump float)
 0:35            'color' (mediump int)
+0:?   Linker Objects
 

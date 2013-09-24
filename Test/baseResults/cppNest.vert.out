@@ -28,4 +28,5 @@
 0:86        'gl_Position' (gl_Position 4-component vector of float)
 0:86        Construct vec4 (4-component vector of float)
 0:86          'sum' (float)
+0:?   Linker Objects
 

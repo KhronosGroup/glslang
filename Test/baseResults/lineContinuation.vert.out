@@ -12,6 +12,7 @@ ERROR: node is still EOpNull!
 0:20        Construct vec4 (highp 4-component vector of float)
 0:20          'foo' (highp float)
 0:?   Linker Objects
+0:?     'foo' (highp float)
 0:?     'gl_VertexID' (gl_VertexId highp int)
 0:?     'gl_InstanceID' (gl_InstanceId highp int)
 

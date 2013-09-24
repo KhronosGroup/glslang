@@ -103,7 +103,10 @@ ERROR: node is still EOpNull!
 0:69        0.200000
 0:?   Linker Objects
 0:?     'color' (smooth in mediump 3-component vector of float)
+0:?     'global_medium' (mediump int)
 0:?     'samplerLow' (uniform lowp sampler2D)
 0:?     'samplerMed' (uniform mediump sampler2D)
 0:?     'samplerHigh' (uniform highp sampler2D)
+0:?     'uint' (mediump 4-component vector of float)
+0:?     'global_high' (highp int)
 
