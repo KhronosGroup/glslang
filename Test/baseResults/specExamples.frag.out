@@ -3,7 +3,6 @@ ERROR: 0:20: '' : numeric literal too big
 ERROR: 0:21: '' : hexidecimal literal too big 
 ERROR: 0:37: 'view' : redefinition 
 ERROR: 0:68: 'lightPosition' : redefinition 
-ERROR: 0:69: 'uniform' :  cannot initialize this type of qualifier  
 ERROR: 0:71: 'Material' : only uniform interface blocks are supported 
 ERROR: 0:79: 'Light' : only uniform interface blocks are supported 
 ERROR: 0:83: 'ColoredTexture' : only uniform interface blocks are supported 
@@ -54,7 +53,7 @@ ERROR: 0:226: 'in' : only allowed at global scope
 ERROR: 0:227: 'in' : only allowed at global scope 
 ERROR: 0:228: 'in' : only allowed at global scope 
 ERROR: 0:232: 'out' : only allowed at global scope 
-ERROR: 56 compilation errors.  No code generated.
+ERROR: 55 compilation errors.  No code generated.
 
 ERROR: node is still EOpNull!
 0:5  Sequence
@@ -109,6 +108,12 @@ ERROR: node is still EOpNull!
 0:26    move second child to first child (double)
 0:26      'fd' (double)
 0:26      2.000000
+0:69  Sequence
+0:69    move second child to first child (3-component vector of float)
+0:69      'color' (uniform 3-component vector of float)
+0:69      0.700000
+0:69      0.700000
+0:69      0.200000
 0:127  Function Definition: foo(f1[5]; (5-element array of float)
 0:127    Function Parameters: 
 0:127      '' (in 5-element array of float)
@@ -196,8 +201,22 @@ ERROR: node is still EOpNull!
 0:218            'c' (5-element array of float)
 0:218            'a' (5-element array of float)
 0:?   Linker Objects
+0:?     'a' (int)
+0:?     'b' (int)
+0:?     'c' (uint)
+0:?     'd' (uint)
+0:?     'e' (int)
+0:?     'f' (uint)
+0:?     'g' (int)
+0:?     'h' (int)
+0:?     'i' (int)
+0:?     'j' (int)
+0:?     'k' (int)
+0:?     'l' (int)
 0:?     'fa' (float)
+0:?     'fb' (float)
 0:?     'fc' (double)
+0:?     'fd' (double)
 0:?     'texcoord1' (2-component vector of float)
 0:?     'texcoord2' (2-component vector of float)
 0:?     'position' (3-component vector of float)
@@ -212,14 +231,20 @@ ERROR: node is still EOpNull!
 0:?     'highPrecisionMVP' (4X4 matrix of double)
 0:?     'dm' (2X4 matrix of double)
 0:?     'lightVar' (structure)
+0:?     'frequencies' (3-element array of float)
+0:?     'lightPosition' (uniform 4-element array of 4-component vector of float)
+0:?     'lights' (2-element array of structure)
+0:?     'numLights' (const int)
 0:?     'normal' (smooth in 3-component vector of float)
 0:?     'TexCoord' (centroid smooth in 2-component vector of float)
 0:?     'Color' (invariant centroid smooth in 4-component vector of float)
 0:?     'temperature' (noperspective in float)
 0:?     'myColor' (flat in 3-component vector of float)
 0:?     'myTexCoord' (centroid noperspective in 2-component vector of float)
+0:?     'color' (uniform 3-component vector of float)
 0:?     'gl_FragCoord' (gl_FragCoord 4-component vector of float)
 0:?     'factor' (layout(location=3 ) out 4-component vector of float)
+0:?     'colors' (layout(location=2 ) out 3-element array of 4-component vector of float)
 0:?     'gl_FragDepth' (gl_FragDepth float)
 0:?     'gl_Color' (smooth in 4-component vector of float)
 

@@ -147,5 +147,8 @@ ERROR: node is still EOpNull!
 0:58            1 (const int)
 0:58        4 (const int)
 0:?   Linker Objects
+0:?     'gu' (unsized array of float)
+0:?     'g4' (4-element array of float)
+0:?     'g5' (5-element array of float)
 0:?     'a' (uniform int)
 

@@ -30,4 +30,5 @@ ERROR: node is still EOpNull!
 0:?   Linker Objects
 0:?     'v3' (in 3-component vector of float)
 0:?     'm32' (uniform 3X2 matrix of float)
+0:?     'm24' (2X4 matrix of float)
 

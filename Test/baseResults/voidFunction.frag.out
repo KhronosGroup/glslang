@@ -36,4 +36,5 @@
 0:?     'bigColor' (uniform 4-component vector of float)
 0:?     'BaseColor' (smooth in 4-component vector of float)
 0:?     'd' (uniform float)
+0:?     'bar' (float)
 

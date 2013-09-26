@@ -37,6 +37,7 @@ ERROR: node is still EOpNull!
 0:30      'v' (in 4-component vector of float)
 0:?   Linker Objects
 0:?     'v2' (smooth out 2-component vector of float)
+0:?     'bad' (in 10-element array of 4-component vector of float)
 0:?     'badorder' (in 4-component vector of float)
 0:?     'badorder2' (invariant smooth out 4-component vector of float)
 0:?     'badorder4' (centroid in 4-component vector of float)

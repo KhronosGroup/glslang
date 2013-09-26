@@ -217,6 +217,7 @@ ERROR: node is still EOpNull!
 0:?     'c1D' (smooth in lowp float)
 0:?     'c2D' (smooth in lowp 2-component vector of float)
 0:?     'c3D' (smooth in lowp 3-component vector of float)
+0:?     'c4D' (smooth lowp 4-component vector of float)
 0:?     'ic1D' (flat in mediump int)
 0:?     'ic2D' (flat in mediump 2-component vector of int)
 0:?     'ic3D' (flat in mediump 3-component vector of int)
@@ -227,5 +228,6 @@ ERROR: node is still EOpNull!
 0:?     's2' (smooth in structure)
 0:?     'sc' (out lowp 3-component vector of float)
 0:?     'sf' (out lowp float)
+0:?     'arrayedSampler' (uniform 5-element array of lowp sampler2D)
 0:?     'multiInst' (layout(shared ) uniform 2-element array of block)
 

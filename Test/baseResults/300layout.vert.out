@@ -49,12 +49,15 @@ ERROR: node is still EOpNull!
 0:?   Linker Objects
 0:?     'c' (layout(location=7 ) in highp 3-component vector of float)
 0:?     'p' (layout(location=3 ) in highp 4-component vector of float)
+0:?     'q' (layout(location=9 ) in 4-element array of highp 4-component vector of float)
+0:?     'r' (layout(location=10 ) in 4-element array of structure)
 0:?     'pos' (smooth out highp 4-component vector of float)
 0:?     'color' (smooth out highp 3-component vector of float)
 0:?     'badm4' (layout(column_major shared ) uniform highp 4X4 matrix of float)
 0:?     'tblock' (layout(std140 ) uniform block)
 0:?     '__anon__0' (layout(shared ) uniform block)
 0:?     'badout' (layout(location=10 ) smooth out highp 4-component vector of float)
+0:?     'compute_only' (shared highp 4-component vector of float)
 0:?     'gl_VertexID' (gl_VertexId highp int)
 0:?     'gl_InstanceID' (gl_InstanceId highp int)
 

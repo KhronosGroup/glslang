@@ -19,4 +19,6 @@
 0:17        30.000000
 0:17        30.000000
 0:?   Linker Objects
+0:?     'u' (uniform 3-element array of 4-component vector of float)
+0:?     'v' (smooth in 2-element array of 2-component vector of float)
 

@@ -200,4 +200,5 @@ ERROR: node is still EOpNull!
 0:?   Linker Objects
 0:?     'instanceName' (layout(shared ) uniform block)
 0:?     's' (structure)
+0:?     'a' (5-element array of mediump float)
 

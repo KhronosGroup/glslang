@@ -33,4 +33,6 @@
 0:?   Linker Objects
 0:?     'texSampler2D' (uniform sampler2D)
 0:?     'inColor' (uniform 3-component vector of float)
+0:?     'color' (uniform 6-element array of 4-component vector of float)
+0:?     'alpha' (uniform 16-element array of float)
 

@@ -138,6 +138,14 @@
 0:81          0 (const int)
 0:81        7.000000
 0:?   Linker Objects
+0:?     'a' (const int)
+0:?     'b' (const int)
+0:?     'c' (const int)
+0:?     'd' (const int)
+0:?     'e' (const float)
+0:?     'f' (const float)
+0:?     'g' (const float)
+0:?     'pytho' (const 2-component vector of float)
 0:?     'inv' (smooth in 4-component vector of float)
 0:?     'FragColor' (out 4-component vector of float)
 0:?     'out2' (out 2-component vector of float)
@@ -152,4 +160,5 @@
 0:?     'out11' (out 4-component vector of float)
 0:?     'out12' (out 2-component vector of int)
 0:?     'out13' (out 3-component vector of uint)
+0:?     's' (const structure)
 

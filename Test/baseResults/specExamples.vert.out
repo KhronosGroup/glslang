@@ -222,6 +222,8 @@ ERROR: node is still EOpNull!
 0:?   Linker Objects
 0:?     'transforms' (layout(shared ) uniform 4-element array of block)
 0:?     'normal' (layout(location=3 ) in 4-component vector of float)
+0:?     'colors' (layout(location=6 ) in 3-element array of 4-component vector of float)
+0:?     's' (layout(location=3 ) structure)
 0:?     'var1' (smooth out 4-component vector of float)
 0:?     'var5' (smooth out 4-component vector of float)
 0:?     'var7' (smooth out 4-component vector of float)
@@ -244,6 +246,7 @@ ERROR: node is still EOpNull!
 0:?     'd' (in 4-component vector of float)
 0:?     'v' (smooth out 4-component vector of float)
 0:?     '__anon__2' (layout(shared ) uniform block)
+0:?     'shv' (shared 4-component vector of float)
 0:?     'img1' (uniform image2D)
 0:?     'img2' (coherent uniform image2D)
 0:?     'gl_VertexID' (gl_VertexId int)

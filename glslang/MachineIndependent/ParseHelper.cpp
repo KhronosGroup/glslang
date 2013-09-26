@@ -1325,13 +1325,13 @@ bool TParseContext::constructorError(TSourceLoc loc, TIntermNode* node, TFunctio
     return false;
 }
 
-// This function checks to see if a void variable has been declared and raise an error message for such a case
+// Checks to see if a void variable has been declared and raise an error message for such a case
 //
 // returns true in case of an error
 //
-bool TParseContext::voidErrorCheck(TSourceLoc loc, const TString& identifier, const TPublicType& pubType)
+bool TParseContext::voidErrorCheck(TSourceLoc loc, const TString& identifier, const TBasicType basicType)
 {
-    if (pubType.basicType == EbtVoid) {
+    if (basicType == EbtVoid) {
         error(loc, "illegal use of type 'void'", identifier.c_str(), "");
         return true;
     } 
@@ -1646,12 +1646,12 @@ void TParseContext::arraySizeCheck(TSourceLoc loc, TIntermTyped* expr, int& size
 //
 // Returns true if there is an error.
 //
-bool TParseContext::arrayQualifierError(TSourceLoc loc, const TPublicType& type)
+bool TParseContext::arrayQualifierError(TSourceLoc loc, const TQualifier& qualifier)
 {
-    if (type.qualifier.storage == EvqConst)
+    if (qualifier.storage == EvqConst)
         profileRequires(loc, ENoProfile, 120, "GL_3DL_array_objects", "const array");
 
-    if (type.qualifier.storage == EvqVaryingIn && language == EShLangVertex) {
+    if (qualifier.storage == EvqVaryingIn && language == EShLangVertex) {
         requireProfile(loc, (EProfileMask)~EEsProfileMask, "vertex input arrays");
         profileRequires(loc, ENoProfile, 150, 0, "vertex input arrays");
     }
@@ -1698,7 +1698,7 @@ void TParseContext::arrayDimCheck(TSourceLoc loc, const TType* type, TArraySizes
 //
 // size == 0 means no specified size.
 //
-void TParseContext::arrayCheck(TSourceLoc loc, TString& identifier, const TPublicType& type, TVariable*& variable)
+void TParseContext::declareArray(TSourceLoc loc, TString& identifier, const TType& type, TVariable*& variable, bool& newDeclaration)
 {
     //
     // Don't check for reserved word use until after we know it's not in the symbol table,
@@ -1710,46 +1710,39 @@ void TParseContext::arrayCheck(TSourceLoc loc, TString& identifier, const TPubli
     // Redeclarations have to take place at the same scope; otherwise they are hiding declarations
     //
 
-    bool currentScope;
-    TSymbol* symbol = symbolTable.find(identifier, 0, &currentScope);
-    if (symbol == 0 || ! currentScope) {
-        if (reservedErrorCheck(loc, identifier))
-            return;
+    if (! variable) {
+        bool currentScope;
+        TSymbol* symbol = symbolTable.find(identifier, 0, &currentScope);
+        if (symbol == 0 || ! currentScope) {
+            variable = new TVariable(&identifier, type);
+            symbolTable.insert(*variable);
+            newDeclaration = true;
 
-        variable = new TVariable(&identifier, TType(type));
-        symbolTable.insert(*variable);
-    } else {
+            return;
+        }
         variable = symbol->getAsVariable();
+    }
 
-        if (! variable) {
-            error(loc, "array variable name expected", identifier.c_str(), "");
-            return;
-        }
+    if (! variable) {
+        error(loc, "array variable name expected", identifier.c_str(), "");
+        return;
+    }
 
-        if (! variable->getType().isArray()) {
-            error(loc, "redeclaring non-array as array", identifier.c_str(), "");
-            return;
-        }
-        if (variable->getType().getArraySize() > 0) {
-            error(loc, "redeclaration of array with size", identifier.c_str(), "");
-            return;
-        }
+    if (! variable->getType().isArray()) {
+        error(loc, "redeclaring non-array as array", identifier.c_str(), "");
+        return;
+    }
+    if (variable->getType().getArraySize() > 0) {
+        error(loc, "redeclaration of array with size", identifier.c_str(), "");
+        return;
+    }
         
-        if (! variable->getType().sameElementType(TType(type))) {
-            error(loc, "redeclaration of array with a different type", identifier.c_str(), "");
-            return;
-        }
-
-        // For read-only built-ins, add a new variable for holding the declared array size of an implicitly-sized shared array.
-        if (variable->isReadOnly())
-            variable = symbolTable.copyUp(variable);
-
-        // TODO: desktop unsized arrays: include modified built-in arrays (gl_TexCoord) in the linker objects subtree
-        
-        variable->getWritableType().setArraySizes(type.arraySizes);
-    } 
-
-    voidErrorCheck(loc, identifier, type);
+    if (! variable->getType().sameElementType(type)) {
+        error(loc, "redeclaration of array with a different type", identifier.c_str(), "");
+        return;
+    }
+    
+    variable->getWritableType().setArraySizes(type);
 }
 
 bool TParseContext::arraySetMaxSize(TSourceLoc loc, TIntermSymbol *node, int size)
@@ -1793,55 +1786,31 @@ bool TParseContext::arraySetMaxSize(TSourceLoc loc, TIntermSymbol *node, int siz
 //
 // Enforce non-initializer type/qualifier rules.
 //
-void TParseContext::nonInitConstCheck(TSourceLoc loc, TString& identifier, TPublicType& type)
+void TParseContext::nonInitConstCheck(TSourceLoc loc, TString& identifier, TType& type)
 {
     //
     // Make the qualifier make sense.
     //
-    if (type.qualifier.storage == EvqConst) {
-        type.qualifier.storage = EvqTemporary;
+    if (type.getQualifier().storage == EvqConst) {
+        type.getQualifier().storage = EvqTemporary;
         error(loc, "variables with qualifier 'const' must be initialized", identifier.c_str(), "");
     }
 }
 
 //
-// Do semantic checking for a variable declaration that has no initializer,
-// and update the symbol table.
+// See if the identifier is a built-in symbol that can be redeclared, and if so,
+// copy the symbol table's read-only built-in variable to the current
+// global level, where it can be modified based on the passed in type.
 //
-void TParseContext::nonInitCheck(TSourceLoc loc, TString& identifier, TPublicType& publicType)
+// Returns 0 if no redeclaration took place; meaning a normal declaration still
+// needs to occur for it, not necessarily an error.
+//
+// Returns a redeclared and type-modified variable if a redeclarated occurred.
+//
+// Will emit
+//
+TVariable* TParseContext::redeclareBuiltin(TSourceLoc loc, const TString& identifier, const TType& type, bool& newDeclaration)
 {
-    TType type(publicType);
-
-    bool newDeclaration;    // true if a new entry gets added to the symbol table
-    TVariable* variable = redeclare(loc, identifier, type, newDeclaration);
-    
-    if (! variable) {
-        reservedErrorCheck(loc, identifier);
-        variable = new TVariable(&identifier, type);
-        if (! symbolTable.insert(*variable))
-            error(loc, "redefinition", variable->getName().c_str(), "");
-        else
-            newDeclaration = true;
-    }
-
-    if (newDeclaration) {
-        voidErrorCheck(loc, identifier, publicType);
-
-        // see if it's a linker-level object to track
-        if (type.getQualifier().isUniform() || type.getQualifier().isPipeInput() || type.getQualifier().isPipeOutput() || type.getQualifier().storage == EvqGlobal)
-            intermediate.addSymbolLinkageNode(linkage, *variable);
-    }
-}
-
-//
-// See if the identifier is a built-in symbol that can be redeclared,
-// and if so, copy of the symbol table's read-only built-in to the current
-// global level, so it can be modified.
-//
-TVariable* TParseContext::redeclare(TSourceLoc loc, const TString& identifier, const TType& type, bool& newDeclaration)
-{
-    newDeclaration = false;  // true if a new entry gets added to the symbol table
-
     if (profile == EEsProfile || identifier.substr(0, 3) != TString("gl_") || symbolTable.atBuiltInLevel())
         return 0;
 
@@ -1864,24 +1833,28 @@ TVariable* TParseContext::redeclare(TSourceLoc loc, const TString& identifier, c
         bool builtIn;
         TSymbol* symbol = symbolTable.find(identifier, &builtIn);
 
-        // If the symbol was not found, this must be a version/profile/stage 
+        // If the symbol was not found, this must be a version/profile/stage
         // that doesn't have it.
         if (! symbol)
             return 0;
 
         TVariable* variable = symbol->getAsVariable();
 
-        // If it wasn't at a built-in level, then it's already been redeclared
-        if (! builtIn)
-            return variable;
+        // If it wasn't at a built-in level, then it's already been redeclared;
+        // that is, this is a redeclaration of a redeclaration, reuse that initial
+        // redeclaration.  Otherwise, make the new one.
+        if (builtIn) {
+            // Copy the symbol up to make a writable version
+            newDeclaration = true;
+            variable = symbolTable.copyUp(variable);
+        }
 
-        // Otherwise, time to copy the symbol up to make a writable version
-        newDeclaration = true;
-        variable = symbolTable.copyUp(variable);
+        // Now, modify the type of the copy, as per the type of the current redeclaration.
+        // TODO: functionality: verify type change is allowed and make the change in type
+        
         return variable;
     }
     
-    error(loc, "cannot redeclare this built-in variable", identifier.c_str(), "");
     return 0;
 }
 
@@ -2013,44 +1986,102 @@ const TFunction* TParseContext::findFunction(TSourceLoc loc, TFunction* call, bo
 }
 
 //
-// Handle all types of initializers from the grammar.
+// Do everything necessary to handle a variable (non-block) declaration.
+// Either redeclaring a variable, or making a new one, updating the symbol
+// table, and all error checking.
 //
-bool TParseContext::executeInitializerError(TSourceLoc loc, TString& identifier, TPublicType& pType, 
-                                            TIntermTyped* initializer, TIntermNode*& intermNode, TVariable* variable)
+// Returns a subtree node that computes an initializer, if needed.
+// Returns 0 if there is no code to execute for initialization.
+//
+TIntermNode* TParseContext::declareVariable(TSourceLoc loc, TString& identifier, TPublicType& publicType, TArraySizes* arraySizes, TIntermTyped* initializer)
 {
-    TType type(pType);
+    TType type(publicType);
 
-    if (variable == 0) {
-        if (reservedErrorCheck(loc, identifier))
-            return true;
+    if (voidErrorCheck(loc, identifier, type.getBasicType()))
+        return 0;
 
-        if (voidErrorCheck(loc, identifier, pType))
-            return true;
+    if (! initializer)
+        nonInitConstCheck(loc, identifier, type);
 
-        //
-        // add variable to symbol table
-        //
-        variable = new TVariable(&identifier, type);
-        if (! symbolTable.insert(*variable)) {
-            error(loc, "redefinition", variable->getName().c_str(), "");
-            return true;
-            // don't delete variable, it's used by error recovery, and the pool 
-            // pop will take care of the memory
+    // Check for redeclaration of built-ins and/or attempting to declare a reserved name
+    bool newDeclaration = false;    // true if a new entry gets added to the symbol table
+    TVariable* variable = redeclareBuiltin(loc, identifier, type, newDeclaration);    
+    if (! variable)
+        reservedErrorCheck(loc, identifier);
+
+    // Declare the variable
+    if (arraySizes) {
+        // for ES, since size isn't coming from an initializer, it has to be explicitly declared now
+        if (profile == EEsProfile && ! initializer)            
+            arraySizeRequiredCheck(loc, arraySizes->getSize());
+
+        arrayDimCheck(loc, &type, arraySizes);
+        if (! arrayQualifierError(loc, type.getQualifier())) {
+            type.setArraySizes(arraySizes);
+            declareArray(loc, identifier, type, variable, newDeclaration);
         }
+
+        if (initializer)
+            profileRequires(loc, ENoProfile, 120, "GL_3DL_array_objects", "initializer");
+    } else {
+        // non-array case
+        if (! variable)
+            variable = declareNonArray(loc, identifier, type, newDeclaration);
     }
 
+    // Deal with initializer
+    TIntermNode* initNode = 0;
+    if (variable && initializer)
+        initNode = executeInitializer(loc, identifier, type, initializer, variable);
+
+    // see if it's a linker-level object to track
+    if (newDeclaration && symbolTable.atGlobalLevel())        
+        intermediate.addSymbolLinkageNode(linkage, *variable);
+
+    return initNode;
+}
+
+//
+// Declare a non-array variable, the main point being there is no redeclaration 
+// for resizing allowed.
+//
+// Return the successfully declared variable.
+//
+TVariable* TParseContext::declareNonArray(TSourceLoc loc, TString& identifier, TType& type, bool& newDeclaration)
+{
+    // make a new variable
+    TVariable* variable = new TVariable(&identifier, type);
+
+    // add variable to symbol table
+    if (! symbolTable.insert(*variable)) {
+        error(loc, "redefinition", variable->getName().c_str(), "");
+        return 0;
+    } else {
+        newDeclaration = true;
+        return variable;
+    }
+}
+
+//
+// Handle all types of initializers from the grammar.
+//
+TIntermNode* TParseContext::executeInitializer(TSourceLoc loc, TString& identifier, TType& type, 
+                                               TIntermTyped* initializer, TVariable* variable)
+{
     //
-    // identifier must be of type constant, a global, or a temporary
+    // Identifier must be of type constant, a global, or a temporary, and
+    // starting at version 120, desktop allows uniforms to have initializers.
     //
     TStorageQualifier qualifier = variable->getType().getQualifier().storage;
-    if ((qualifier != EvqTemporary) && (qualifier != EvqGlobal) && (qualifier != EvqConst)) {
+    if (! (qualifier == EvqTemporary || qualifier == EvqGlobal || qualifier == EvqConst ||
+           qualifier == EvqUniform && profile != EEsProfile && version >= 120)) {
         error(loc, " cannot initialize this type of qualifier ", variable->getType().getStorageQualifierString(), "");
-        return true;
+        return 0;
     }
 
     // Fix arrayness if variable is unsized, getting size for initializer    
     if (initializer->getType().isArray() && initializer->getType().getArraySize() > 0 && 
-                            type.isArray() &&                   type.getArraySize() == 0)
+                          type.isArray() &&                   type.getArraySize() == 0)
         type.changeArraySize(initializer->getType().getArraySize());
 
     //
@@ -2060,13 +2091,13 @@ bool TParseContext::executeInitializerError(TSourceLoc loc, TString& identifier,
         if (qualifier != initializer->getType().getQualifier().storage) {
             error(loc, " assigning non-constant to", "=", "'%s'", variable->getType().getCompleteString().c_str());
             variable->getWritableType().getQualifier().storage = EvqTemporary;
-            return true;
+            return 0;
         }
         if (type != initializer->getType()) {
             error(loc, " non-matching types for const initializer ", 
                 variable->getType().getStorageQualifierString(), "");
             variable->getWritableType().getQualifier().storage = EvqTemporary;
-            return true;
+            return 0;
         }
         if (initializer->getAsConstantUnion()) { 
             TConstUnion* unionArray = variable->getConstUnionPointer();
@@ -2083,26 +2114,25 @@ bool TParseContext::executeInitializerError(TSourceLoc loc, TString& identifier,
                 variable->shareConstPointer(constArray);
             } else {
                 error(loc, "expected variable", initializer->getAsSymbolNode()->getName().c_str(), "");
-                return true;
+                return 0;
             }
         } else {
             error(loc, " cannot assign to", "=", "'%s'", variable->getType().getCompleteString().c_str());
             variable->getWritableType().getQualifier().storage = EvqTemporary;
-            return true;
+            return 0;
         }
     }
  
     if (qualifier != EvqConst) {
         TIntermSymbol* intermSymbol = intermediate.addSymbol(variable->getUniqueId(), variable->getName(), variable->getType(), loc);
-        intermNode = intermediate.addAssign(EOpAssign, intermSymbol, initializer, loc);
-        if (intermNode == 0) {
+        TIntermNode* initNode = intermediate.addAssign(EOpAssign, intermSymbol, initializer, loc);
+        if (! initNode)
             assignError(loc, "=", intermSymbol->getCompleteString(), initializer->getCompleteString());
-            return true;
-        }
-    } else 
-        intermNode = 0;
 
-    return false;
+        return initNode;
+    } 
+
+    return 0;
 }
 
 // This function is used to test for the correctness of the parameters passed to various constructor functions

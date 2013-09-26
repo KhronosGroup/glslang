@@ -115,4 +115,8 @@
 0:35          'i' (float)
 0:?   Linker Objects
 0:?     'sampler' (uniform sampler2D)
+0:?     'v1' (4-component vector of float)
+0:?     'v2' (4-component vector of float)
+0:?     'v3' (4-component vector of float)
+0:?     'v4' (4-component vector of float)
 

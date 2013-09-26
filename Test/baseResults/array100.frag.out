@@ -99,5 +99,8 @@ ERROR: node is still EOpNull!
 0:40        1.000000
 0:40        1.000000
 0:?   Linker Objects
+0:?     'gu' (unsized array of mediump float)
+0:?     'g4' (4-element array of mediump float)
+0:?     'g5' (5-element array of mediump float)
 0:?     'a' (uniform mediump int)
 

@@ -588,6 +588,7 @@ public:
             arraySizes = NewPoolTArraySizes();
         *arraySizes = *s;
     }
+    void setArraySizes(const TType& type) { setArraySizes(type.arraySizes); }
     
     void changeArraySize(int s) { arraySizes->sizes.front() = s; }
     void setMaxArraySize (int s) { arraySizes->maxArraySize = s; }

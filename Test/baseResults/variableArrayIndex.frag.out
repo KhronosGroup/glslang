@@ -86,6 +86,7 @@ WARNING: 0:3: varying deprecated in version 130; may be removed in future releas
 0:?     'sampler' (uniform sampler2D)
 0:?     'coord' (smooth in 2-component vector of float)
 0:?     'foo' (uniform structure)
+0:?     'foo2' (uniform 5-element array of structure)
 0:?     'foo3' (uniform structure)
 0:?     'Count' (uniform int)
 

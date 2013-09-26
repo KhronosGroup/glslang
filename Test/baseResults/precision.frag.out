@@ -109,4 +109,5 @@ ERROR: node is still EOpNull!
 0:?     'samplerHigh' (uniform highp sampler2D)
 0:?     'uint' (mediump 4-component vector of float)
 0:?     'global_high' (highp int)
+0:?     'b2' (mediump 2-component vector of bool)
 

@@ -126,6 +126,7 @@ ERROR: node is still EOpNull!
 0:?     'm44' (uniform highp 4X4 matrix of float)
 0:?     'v3' (in highp 3-component vector of float)
 0:?     'v2' (smooth out highp 2-component vector of float)
+0:?     'bad' (in 10-element array of highp 4-component vector of float)
 0:?     'badorder' (in highp 4-component vector of float)
 0:?     'badorder2' (invariant smooth out highp 4-component vector of float)
 0:?     'badorder4' (centroid in highp 4-component vector of float)
@@ -134,8 +135,10 @@ ERROR: node is still EOpNull!
 0:?     'rep2' (centroid smooth sample out highp 4-component vector of float)
 0:?     'rep3' (in highp 4-component vector of float)
 0:?     's' (smooth out structure)
+0:?     'badsize' (unsized array of highp float)
 0:?     'badsize2' (unsized array of highp float)
 0:?     'ubInst' (layout(shared ) uniform unsized array of block)
+0:?     'okayA' (2-element array of highp float)
 0:?     'gl_VertexID' (gl_VertexId highp int)
 0:?     'gl_InstanceID' (gl_InstanceId highp int)
 

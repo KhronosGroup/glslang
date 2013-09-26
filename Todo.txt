@@ -4,6 +4,7 @@ Link Validation
     + provide input config file for setting limits
 	  - also consider spitting out measures of complexity
     + ensure no static references thrown away
+    - generate static use of object even if the only use is to access the length of its array
     Cross-stage linking
       - type consistency check of uniform and ins <-> outs, both variables and blocks, stage-specific arrayness matching
       - location/binding/index check
@@ -20,7 +21,6 @@ Link Validation
     Intra-stage linking
       + exactly one main
       + type consistency check of uniforms, globals, ins, and outs
-        - still need to cover arrays and the combinations of this rule with redeclarations of built-ins
       - value checking of global const initializers
       - value checking of uniform initializers
       + location match

@@ -15,5 +15,8 @@ ERROR: node is still EOpNull!
 0:?   Linker Objects
 0:?     'inVar' (smooth in 4-component vector of float)
 0:?     'outVar' (out 4-component vector of float)
+0:?     'constInt' (const int)
 0:?     'uniformInt' (uniform int)
+0:?     's' (structure)
+0:?     's2' (structure)
 

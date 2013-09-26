@@ -15,4 +15,5 @@ ERROR: node is still EOpNull!
 0:?   Linker Objects
 0:?     'c2D' (smooth in 2-component vector of float)
 0:?     'i' (flat in int)
+0:?     'arrayedSampler' (uniform 5-element array of sampler2D)
 

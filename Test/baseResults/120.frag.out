@@ -292,4 +292,6 @@ ERROR: node is still EOpNull!
 0:?     'm' (uniform 4X2 matrix of float)
 0:?     'imageBuffer' (float)
 0:?     'uimage2DRect' (float)
+0:?     'a' (int)
+0:?     'gl_TexCoord' (smooth in 6-element array of 4-component vector of float)
 

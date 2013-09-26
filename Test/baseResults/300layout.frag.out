@@ -21,4 +21,5 @@ ERROR: node is still EOpNull!
 0:?     'color' (layout(location=2 ) smooth in mediump 4-component vector of float)
 0:?     'c' (layout(location=1 ) out mediump 4-component vector of float)
 0:?     'p' (layout(location=3 ) out mediump 4-component vector of float)
+0:?     'q' (layout(location=4 ) out 2-element array of mediump 4-component vector of float)
 

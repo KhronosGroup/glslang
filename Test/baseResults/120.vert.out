@@ -23,12 +23,11 @@ ERROR: 0:37: 'arrays of arrays' : not supported with this profile: none
 ERROR: 0:38: 'arrays of arrays' : not supported with this profile: none
 ERROR: 0:38: 'constructor' : array constructor needs one argument per array element 
 ERROR: 0:38: 'arrays of arrays' : not supported with this profile: none
-ERROR: 0:43: 'uniform' :  cannot initialize this type of qualifier  
 ERROR: 0:47: 'arrays of arrays' : not supported with this profile: none
 ERROR: 0:48: 'arrays of arrays' : not supported with this profile: none
 ERROR: 0:49: 'arrays of arrays' : not supported with this profile: none
 ERROR: 0:50: 'arrays of arrays' : not supported with this profile: none
-ERROR: 30 compilation errors.  No code generated.
+ERROR: 29 compilation errors.  No code generated.
 
 ERROR: node is still EOpNull!
 0:15  Function Definition: main( (void)
@@ -71,6 +70,10 @@ ERROR: node is still EOpNull!
 0:40      move second child to first child (float)
 0:40        'gl_PointSize' (invariant gl_PointSize float)
 0:40        3.800000
+0:43  Sequence
+0:43    move second child to first child (float)
+0:43      'initted' (uniform float)
+0:43      3.400000
 0:?   Linker Objects
 0:?     'i' (in 4-component vector of float)
 0:?     'o' (smooth out 4-component vector of float)
@@ -78,4 +81,6 @@ ERROR: node is still EOpNull!
 0:?     'attv4' (in 4-component vector of float)
 0:?     's2D' (uniform sampler2D)
 0:?     'centTexCoord' (invariant smooth out 2-component vector of float)
+0:?     'initted' (uniform float)
+0:?     'concall' (const float)
 

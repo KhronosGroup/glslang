@@ -59,4 +59,7 @@
 0:?     'v3' (in 3-component vector of float)
 0:?     'v4' (in 4-component vector of float)
 0:?     'm32' (uniform 3X2 matrix of float)
+0:?     'cv2' (const 2-component vector of float)
+0:?     'm24' (const 2X4 matrix of float)
+0:?     'm42' (const 4X2 matrix of float)
 

@@ -71,5 +71,10 @@ ERROR: node is still EOpNull!
 0:130      'twoPi' (float)
 0:130      6.280000
 0:?   Linker Objects
+0:?     'sum' (float)
+0:?     'linenumber' (int)
+0:?     'filenumber' (int)
+0:?     'version' (int)
+0:?     'twoPi' (float)
 0:?     'tod' (float)
 

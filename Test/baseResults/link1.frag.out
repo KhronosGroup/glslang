@@ -33,8 +33,12 @@ link1.frag
 0:?   Linker Objects
 0:?     'uv4' (uniform 4-component vector of float)
 0:?     'glass' (uniform 3-component vector of float)
+0:?     'ci' (const int)
+0:?     'a' (4-component vector of float)
 0:?     'iv3' (smooth in 3-component vector of float)
 0:?     'cup' (smooth in 4-component vector of float)
+0:?     'b' (4-component vector of float)
+0:?     'c' (4-component vector of float)
 
 link2.frag
 
@@ -66,8 +70,12 @@ link2.frag
 0:?   Linker Objects
 0:?     'uv4' (uniform 4-component vector of float)
 0:?     'glass' (uniform 2-component vector of float)
+0:?     'ci' (const int)
+0:?     'd' (4-component vector of float)
 0:?     'iv3' (smooth in 3-component vector of float)
 0:?     'cup' (flat in 4-component vector of float)
+0:?     'e' (4-component vector of float)
+0:?     'f' (4-component vector of float)
 
 link3.frag
 
@@ -145,6 +153,13 @@ ERROR: Linking fragment stage: Precision qualifiers must match:
 0:?   Linker Objects
 0:?     'uv4' (uniform 4-component vector of float)
 0:?     'glass' (uniform 3-component vector of float)
+0:?     'ci' (const int)
+0:?     'a' (4-component vector of float)
 0:?     'iv3' (smooth in 3-component vector of float)
 0:?     'cup' (smooth in 4-component vector of float)
+0:?     'b' (4-component vector of float)
+0:?     'c' (4-component vector of float)
+0:?     'd' (4-component vector of float)
+0:?     'e' (4-component vector of float)
+0:?     'f' (4-component vector of float)
 
