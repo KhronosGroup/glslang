@@ -167,7 +167,7 @@ protected:
     const char* getPreamble();
     TBehavior getExtensionBehavior(const char* behavior);
     void nonInitConstCheck(TSourceLoc, TString& identifier, TType& type);
-    TVariable* TParseContext::declareNonArray(TSourceLoc, TString& identifier, TType&, bool& newDeclaration);
+    TVariable* declareNonArray(TSourceLoc, TString& identifier, TType&, bool& newDeclaration);
     void declareArray(TSourceLoc, TString& identifier, const TType&, TVariable*&, bool& newDeclaration);
     TIntermNode* executeInitializer(TSourceLoc, TString& identifier, TType&, TIntermTyped* initializer, TVariable* variable);
 
