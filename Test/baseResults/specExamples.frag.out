@@ -59,71 +59,79 @@ ERROR: node is still EOpNull!
 0:5  Sequence
 0:5    move second child to first child (int)
 0:5      'a' (int)
-0:5      -1 (const int)
+0:5      Constant:
+0:5        -1 (const int)
 0:7  Sequence
 0:7    move second child to first child (uint)
 0:7      'c' (uint)
-0:7      4294967295 (const uint)
+0:7      Constant:
+0:7        4294967295 (const uint)
 0:8  Sequence
 0:8    move second child to first child (uint)
 0:8      'd' (uint)
-0:8      4294967295 (const uint)
+0:8      Constant:
+0:8        4294967295 (const uint)
 0:9  Sequence
 0:9    move second child to first child (int)
 0:9      'e' (int)
-0:9      -1 (const int)
+0:9      Constant:
+0:9        -1 (const int)
 0:13  Sequence
 0:13    move second child to first child (uint)
 0:13      'f' (uint)
-0:13      4294967295 (const uint)
+0:13      Constant:
+0:13        4294967295 (const uint)
 0:17  Sequence
 0:17    move second child to first child (int)
 0:17      'g' (int)
-0:17      -1294967296 (const int)
+0:17      Constant:
+0:17        -1294967296 (const int)
 0:19  Sequence
 0:19    move second child to first child (int)
 0:19      'h' (int)
-0:19      -1610612736 (const int)
+0:19      Constant:
+0:19        -1610612736 (const int)
 0:20  Sequence
 0:20    move second child to first child (int)
 0:20      'i' (int)
-0:20      -1 (const int)
+0:20      Constant:
+0:20        -1 (const int)
 0:21  Sequence
 0:21    move second child to first child (int)
 0:21      'j' (int)
-0:21      -1 (const int)
+0:21      Constant:
+0:21        -1 (const int)
 0:22  Sequence
 0:22    move second child to first child (int)
 0:22      'k' (int)
-0:22      -2147483648 (const int)
+0:22      Constant:
+0:22        -2147483648 (const int)
 0:23  Sequence
 0:23    move second child to first child (int)
 0:23      'l' (int)
-0:23      -2147483648 (const int)
+0:23      Constant:
+0:23        -2147483648 (const int)
 0:25  Sequence
 0:25    move second child to first child (float)
 0:25      'fb' (float)
-0:25      1.500000
+0:25      Constant:
+0:25        1.500000
 0:26  Sequence
 0:26    move second child to first child (double)
 0:26      'fd' (double)
-0:26      2.000000
-0:69  Sequence
-0:69    move second child to first child (3-component vector of float)
-0:69      'color' (uniform 3-component vector of float)
-0:69      0.700000
-0:69      0.700000
-0:69      0.200000
+0:26      Constant:
+0:26        2.000000
 0:127  Function Definition: foo(f1[5]; (5-element array of float)
 0:127    Function Parameters: 
 0:127      '' (in 5-element array of float)
 0:129    Sequence
 0:129      Branch: Return with expression
-0:129        3.400000
-0:129        4.200000
-0:129        5.000000
-0:129        5.200000
-0:129        1.100000
+0:129        Constant:
+0:129          3.400000
+0:129          4.200000
+0:129          5.000000
+0:129          5.200000
+0:129          1.100000
 0:137  Function Definition: main( (void)
 0:137    Function Parameters: 
 0:140    Sequence
@@ -131,32 +139,35 @@ ERROR: node is still EOpNull!
 0:140        Sequence
 0:140          move second child to first child (5-element array of float)
 0:140            'a' (5-element array of float)
-0:140            3.400000
-0:140            4.200000
-0:140            5.000000
-0:140            5.200000
-0:140            1.100000
+0:140            Constant:
+0:140              3.400000
+0:140              4.200000
+0:140              5.000000
+0:140              5.200000
+0:140              1.100000
 0:143      Sequence
 0:143        Sequence
 0:143          move second child to first child (5-element array of float)
 0:143            'a' (5-element array of float)
-0:143            3.400000
-0:143            4.200000
-0:143            5.000000
-0:143            5.200000
-0:143            1.100000
+0:143            Constant:
+0:143              3.400000
+0:143              4.200000
+0:143              5.000000
+0:143              5.200000
+0:143              1.100000
 0:?       Sequence
 0:149        Sequence
 0:149          move second child to first child (2-element array of 4-component vector of float)
 0:149            'b' (2-element array of 4-component vector of float)
-0:149            0.000000
-0:149            0.000000
-0:149            0.000000
-0:149            0.000000
-0:149            0.100000
-0:149            0.100000
-0:149            0.100000
-0:149            0.100000
+0:149            Constant:
+0:149              0.000000
+0:149              0.000000
+0:149              0.000000
+0:149              0.000000
+0:149              0.100000
+0:149              0.100000
+0:149              0.100000
+0:149              0.100000
 0:150        Sequence
 0:150          move second child to first child (3-element array of 4-component vector of float)
 0:150            'a3' (3-element array of 4-component vector of float)
@@ -176,26 +187,33 @@ ERROR: node is still EOpNull!
 0:165          Sequence
 0:165            move second child to first child (5-element array of float)
 0:165              'b' (5-element array of float)
-0:165              1.000000
-0:165              2.000000
-0:165              3.000000
-0:165              4.000000
-0:165              5.000000
-0:167        5 (const int)
+0:165              Constant:
+0:165                1.000000
+0:165                2.000000
+0:165                3.000000
+0:165                4.000000
+0:165                5.000000
+0:167        Constant:
+0:167          5 (const int)
 0:?       Sequence
-0:171        3 (const int)
-0:172        0.000000
-0:175      0.000000
-0:178      0.000000
+0:171        Constant:
+0:171          3 (const int)
+0:172        Constant:
+0:172          0.000000
+0:175      Constant:
+0:175        0.000000
+0:178      Constant:
+0:178        0.000000
 0:216      Sequence
 0:216        Sequence
 0:216          move second child to first child (5-element array of float)
 0:216            'a' (5-element array of float)
-0:216            3.400000
-0:216            4.200000
-0:216            5.000000
-0:216            5.200000
-0:216            1.100000
+0:216            Constant:
+0:216              3.400000
+0:216              4.200000
+0:216              5.000000
+0:216              5.200000
+0:216              1.100000
 0:218        Sequence
 0:218          move second child to first child (5-element array of float)
 0:218            'c' (5-element array of float)
@@ -235,6 +253,7 @@ ERROR: node is still EOpNull!
 0:?     'lightPosition' (uniform 4-element array of 4-component vector of float)
 0:?     'lights' (2-element array of structure)
 0:?     'numLights' (const int)
+0:?       2 (const int)
 0:?     'normal' (smooth in 3-component vector of float)
 0:?     'TexCoord' (centroid smooth in 2-component vector of float)
 0:?     'Color' (invariant centroid smooth in 4-component vector of float)
@@ -242,6 +261,9 @@ ERROR: node is still EOpNull!
 0:?     'myColor' (flat in 3-component vector of float)
 0:?     'myTexCoord' (centroid noperspective in 2-component vector of float)
 0:?     'color' (uniform 3-component vector of float)
+0:?       0.700000
+0:?       0.700000
+0:?       0.200000
 0:?     'gl_FragCoord' (gl_FragCoord 4-component vector of float)
 0:?     'factor' (layout(location=3 ) out 4-component vector of float)
 0:?     'colors' (layout(location=2 ) out 3-element array of 4-component vector of float)

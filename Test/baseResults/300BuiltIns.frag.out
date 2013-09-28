@@ -180,7 +180,8 @@ ERROR: node is still EOpNull!
 0:67          'v18' (mediump 2-component vector of float)
 0:67          unpackHalf2x16 (mediump 2-component vector of float)
 0:67            'uy' (mediump uint)
-0:70      0.000000
+0:70      Constant:
+0:70        0.000000
 0:?   Linker Objects
 0:?     'imax' (mediump int)
 0:?     'imin' (mediump int)

@@ -5,29 +5,36 @@
 0:10      Sequence
 0:10        move second child to first child (int)
 0:10          'index' (int)
-0:10          5 (const int)
+0:10          Constant:
+0:10            5 (const int)
 0:12      move second child to first child (float)
 0:12        direct index (float)
 0:12          y: direct index for structure (5-element array of float)
 0:12            'str' (structure)
-0:12            0 (const int)
-0:12          4 (const int)
-0:12        2.000000
+0:12            Constant:
+0:12              0 (const int)
+0:12          Constant:
+0:12            4 (const int)
+0:12        Constant:
+0:12          2.000000
 0:13      move second child to first child (float)
 0:13        't' (float)
 0:13        Pre-Increment (float)
 0:13          indirect index (float)
 0:13            y: direct index for structure (5-element array of float)
 0:13              'str' (structure)
-0:13              0 (const int)
+0:13              Constant:
+0:13                0 (const int)
 0:13            Pre-Decrement (int)
 0:13              'index' (int)
 0:14      add second child into first child (float)
 0:14        direct index (float)
 0:14          y: direct index for structure (5-element array of float)
 0:14            'str' (structure)
-0:14            0 (const int)
-0:14          4 (const int)
+0:14            Constant:
+0:14              0 (const int)
+0:14          Constant:
+0:14            4 (const int)
 0:14        't' (float)
 0:15      move second child to first child (float)
 0:15        't' (float)
@@ -35,13 +42,16 @@
 0:15          direct index (float)
 0:15            y: direct index for structure (5-element array of float)
 0:15              'str' (structure)
-0:15              0 (const int)
-0:15            4 (const int)
+0:15              Constant:
+0:15                0 (const int)
+0:15            Constant:
+0:15              4 (const int)
 0:16      add second child into first child (float)
 0:16        indirect index (float)
 0:16          y: direct index for structure (5-element array of float)
 0:16            'str' (structure)
-0:16            0 (const int)
+0:16            Constant:
+0:16              0 (const int)
 0:16          Post-Increment (int)
 0:16            'index' (int)
 0:16        't' (float)
@@ -49,7 +59,8 @@
 0:17        indirect index (float)
 0:17          y: direct index for structure (5-element array of float)
 0:17            'str' (structure)
-0:17            0 (const int)
+0:17            Constant:
+0:17              0 (const int)
 0:17          Pre-Decrement (int)
 0:17            'index' (int)
 0:19      Sequence
@@ -58,8 +69,10 @@
 0:19          direct index (float)
 0:19            y: direct index for structure (5-element array of float)
 0:19              'str' (structure)
-0:19              0 (const int)
-0:19            4 (const int)
+0:19              Constant:
+0:19                0 (const int)
+0:19            Constant:
+0:19              4 (const int)
 0:20      Pre-Increment (float)
 0:20        'x' (float)
 0:21      Pre-Decrement (float)
@@ -85,26 +98,31 @@
 0:33      Sequence
 0:33        move second child to first child (4-component vector of float)
 0:33          'v' (4-component vector of float)
-0:33          1.000000
-0:33          2.000000
-0:33          3.000000
-0:33          4.000000
+0:33          Constant:
+0:33            1.000000
+0:33            2.000000
+0:33            3.000000
+0:33            4.000000
 0:34      move second child to first child (float)
 0:34        direct index (float)
 0:34          'v' (4-component vector of float)
-0:34          1 (const int)
+0:34          Constant:
+0:34            1 (const int)
 0:34        Post-Decrement (float)
 0:34          direct index (float)
 0:34            'v' (4-component vector of float)
-0:34            2 (const int)
+0:34            Constant:
+0:34              2 (const int)
 0:35      move second child to first child (float)
 0:35        direct index (float)
 0:35          'v' (4-component vector of float)
-0:35          0 (const int)
+0:35          Constant:
+0:35            0 (const int)
 0:35        Pre-Decrement (float)
 0:35          direct index (float)
 0:35            'v' (4-component vector of float)
-0:35            3 (const int)
+0:35            Constant:
+0:35              3 (const int)
 0:37      move second child to first child (4-component vector of float)
 0:37        'gl_FragColor' (fragColor 4-component vector of float)
 0:37        vector-scale (4-component vector of float)

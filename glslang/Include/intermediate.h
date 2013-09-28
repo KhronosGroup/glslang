@@ -460,27 +460,29 @@ public:
 	// per process globalpoolallocator, then it causes increased memory usage per compile
 	// it is essential to use "symbol = sym" to assign to symbol
     TIntermSymbol(int i, const TString& n, const TType& t) : 
-        TIntermTyped(t), id(i)  { name = n;} 
+        TIntermTyped(t), id(i) { name = n;} 
     virtual int getId() const { return id; }
     virtual const TString& getName() const { return name; }
     virtual void traverse(TIntermTraverser*);
     virtual TIntermSymbol* getAsSymbolNode() { return this; }
+    void setConstArray(const TConstUnionArray& c) { unionArray = c; }
+    const TConstUnionArray& getConstArray() const { return unionArray; }
 protected:
     int id;
     TString name;
+    TConstUnionArray unionArray;
 };
 
 class TIntermConstantUnion : public TIntermTyped {
 public:
-    TIntermConstantUnion(TConstUnion *unionPointer, const TType& t) : TIntermTyped(t), unionArrayPointer(unionPointer) { }
-    TConstUnion* getUnionArrayPointer() const { return unionArrayPointer; }
-    void setUnionArrayPointer(TConstUnion *c) { unionArrayPointer = c; }
+    TIntermConstantUnion(const TConstUnionArray& ua, const TType& t) : TIntermTyped(t), unionArray(ua) { }
+    const TConstUnionArray& getConstArray() const { return unionArray; }
     virtual TIntermConstantUnion* getAsConstantUnion()  { return this; }
     virtual void traverse(TIntermTraverser* );
     virtual TIntermTyped* fold(TOperator, TIntermTyped*);
     virtual TIntermTyped* fold(TOperator, const TType&);
 protected:
-    TConstUnion *unionArrayPointer;
+    const TConstUnionArray unionArray;
 };
 
 //

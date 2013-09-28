@@ -125,7 +125,7 @@ protected:
 //
 class TVariable : public TSymbol {
 public:
-    TVariable(const TString *name, const TType& t, bool uT = false ) : TSymbol(name), userType(uT), unionArray(0) { type.shallowCopy(t); }
+    TVariable(const TString *name, const TType& t, bool uT = false ) : TSymbol(name), userType(uT) { type.shallowCopy(t); }
 	virtual TVariable* clone(TStructureMap& remapper);
     virtual ~TVariable() { }
 
@@ -137,21 +137,8 @@ public:
 
     virtual void dump(TInfoSink &infoSink) const;
 
-    TConstUnion* getConstUnionPointer()
-    {
-        if (!unionArray)
-            unionArray = new TConstUnion[type.getObjectSize()];
-
-        return unionArray;
-    }
-
-    TConstUnion* getConstUnionPointer() const { return unionArray; }
-
-    void shareConstPointer( TConstUnion *constArray)
-    {
-        delete unionArray;
-        unionArray = constArray;
-    }
+    const TConstUnionArray& getConstArray() const { return unionArray; }
+    void setConstArray(const TConstUnionArray& constArray) { unionArray = constArray; }
 
 protected:
     explicit TVariable(const TVariable&);
@@ -162,7 +149,7 @@ protected:
     bool userType;
     // we are assuming that Pool Allocator will free the memory allocated to unionArray
     // when this object is destroyed
-    TConstUnion *unionArray;
+    TConstUnionArray unionArray;
 };
 
 //

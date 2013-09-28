@@ -14,10 +14,14 @@ WARNING: 0:3: varying deprecated in version 130; may be removed in future releas
 0:34            direct index (structure)
 0:34              s2_1: direct index for structure (3-element array of structure)
 0:34                'foo3' (uniform structure)
-0:34                0 (const int)
-0:34              1 (const int)
+0:34                Constant:
+0:34                  0 (const int)
+0:34              Constant:
+0:34                1 (const int)
+0:34            Constant:
+0:34              0 (const int)
+0:34          Constant:
 0:34            0 (const int)
-0:34          0 (const int)
 0:34        true case
 0:35        move second child to first child (float)
 0:35          'scale' (float)
@@ -31,16 +35,22 @@ WARNING: 0:3: varying deprecated in version 130; may be removed in future releas
 0:35                      indirect index (structure)
 0:35                        s2_1: direct index for structure (3-element array of structure)
 0:35                          'foo3' (uniform structure)
-0:35                          0 (const int)
+0:35                          Constant:
+0:35                            0 (const int)
 0:35                        i: direct index for structure (int)
 0:35                          'foo' (uniform structure)
-0:35                          0 (const int)
-0:35                      0 (const int)
-0:35                    2 (const int)
+0:35                          Constant:
+0:35                            0 (const int)
+0:35                      Constant:
+0:35                        0 (const int)
+0:35                    Constant:
+0:35                      2 (const int)
 0:35                  Pre-Increment (int)
 0:35                    'iLocal' (int)
-0:35              2 (const int)
-0:35            1 (const int)
+0:35              Constant:
+0:35                2 (const int)
+0:35            Constant:
+0:35              1 (const int)
 0:34        false case
 0:37        move second child to first child (float)
 0:37          'scale' (float)
@@ -49,10 +59,14 @@ WARNING: 0:3: varying deprecated in version 130; may be removed in future releas
 0:37              direct index (structure)
 0:37                s2_1: direct index for structure (3-element array of structure)
 0:37                  'foo3' (uniform structure)
+0:37                  Constant:
+0:37                    0 (const int)
+0:37                Constant:
 0:37                  0 (const int)
-0:37                0 (const int)
-0:37              2 (const int)
-0:37            1 (const int)
+0:37              Constant:
+0:37                2 (const int)
+0:37            Constant:
+0:37              1 (const int)
 0:43      move second child to first child (4-component vector of float)
 0:43        'gl_FragColor' (fragColor 4-component vector of float)
 0:43        vector-scale (4-component vector of float)
@@ -67,8 +81,9 @@ WARNING: 0:3: varying deprecated in version 130; may be removed in future releas
 0:45            'coord' (smooth in 2-component vector of float)
 0:45            Construct vec2 (2-component vector of float)
 0:45              'scale' (float)
-0:45            1.000000
-0:45            2.000000
+0:45            Constant:
+0:45              1.000000
+0:45              2.000000
 0:46      add second child into first child (4-component vector of float)
 0:46        'gl_FragColor' (fragColor 4-component vector of float)
 0:46        Construct vec4 (4-component vector of float)
@@ -76,12 +91,14 @@ WARNING: 0:3: varying deprecated in version 130; may be removed in future releas
 0:46            'constructed' (3-element array of 2-component vector of float)
 0:46            i: direct index for structure (int)
 0:46              'foo' (uniform structure)
-0:46              0 (const int)
+0:46              Constant:
+0:46                0 (const int)
 0:46          indirect index (2-component vector of float)
 0:46            'constructed' (3-element array of 2-component vector of float)
 0:46            i: direct index for structure (int)
 0:46              'foo' (uniform structure)
-0:46              0 (const int)
+0:46              Constant:
+0:46                0 (const int)
 0:?   Linker Objects
 0:?     'sampler' (uniform sampler2D)
 0:?     'coord' (smooth in 2-component vector of float)

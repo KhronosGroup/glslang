@@ -124,7 +124,8 @@
 0:63          'v' (4-component vector of float)
 0:63          direct index (float)
 0:63            'v' (4-component vector of float)
-0:63            0 (const int)
+0:63            Constant:
+0:63              0 (const int)
 0:69      add second child into first child (4-component vector of float)
 0:69        'v' (4-component vector of float)
 0:69        min (4-component vector of float)
@@ -299,7 +300,8 @@
 0:142                'ui' (uniform int)
 0:142            Compare Not Equal (bool)
 0:142              'i' (int)
-0:142              2 (const int)
+0:142              Constant:
+0:142                2 (const int)
 0:142        true case
 0:143        Pre-Increment (int)
 0:143          'i' (int)
@@ -340,16 +342,23 @@
 0:151            vector swizzle (3-component vector of float)
 0:151              'v' (4-component vector of float)
 0:151              Sequence
-0:151                0 (const int)
-0:151                1 (const int)
-0:151                2 (const int)
+0:151                Constant:
+0:151                  0 (const int)
+0:151                Constant:
+0:151                  1 (const int)
+0:151                Constant:
+0:151                  2 (const int)
 0:151            vector swizzle (3-component vector of float)
 0:151              'v' (4-component vector of float)
 0:151              Sequence
-0:151                0 (const int)
-0:151                1 (const int)
-0:151                2 (const int)
-0:151          0 (const int)
+0:151                Constant:
+0:151                  0 (const int)
+0:151                Constant:
+0:151                  1 (const int)
+0:151                Constant:
+0:151                  2 (const int)
+0:151          Constant:
+0:151            0 (const int)
 0:153      Test condition and select (void)
 0:153        Condition
 0:153        logical-or (bool)
@@ -362,7 +371,8 @@
 0:153              'uf' (uniform float)
 0:153            Compare Not Equal (bool)
 0:153              'f' (float)
-0:153              2.000000
+0:153              Constant:
+0:153                2.000000
 0:153        true case
 0:154        Pre-Increment (float)
 0:154          'f' (float)
@@ -371,16 +381,19 @@
 0:156        'ui' (uniform int)
 0:157      or second child into first child (int)
 0:157        'i' (int)
-0:157        66 (const int)
+0:157        Constant:
+0:157          66 (const int)
 0:158      exclusive or second child into first child (int)
 0:158        'i' (int)
 0:158        'ui' (uniform int)
 0:159      mod second child into first child (int)
 0:159        'i' (int)
-0:159        17 (const int)
+0:159        Constant:
+0:159          17 (const int)
 0:160      right shift second child into first child (int)
 0:160        'i' (int)
-0:160        2 (const int)
+0:160        Constant:
+0:160          2 (const int)
 0:161      left shift second child into first child (int)
 0:161        'i' (int)
 0:161        'ui' (uniform int)

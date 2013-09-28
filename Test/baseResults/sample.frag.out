@@ -6,7 +6,8 @@
 0:40        'gl_FragColor' (fragColor 4-component vector of float)
 0:40        Construct vec4 (4-component vector of float)
 0:40          'color' (smooth in 3-component vector of float)
-0:40          1.000000
+0:40          Constant:
+0:40            1.000000
 0:?   Linker Objects
 0:?     'color' (smooth in 3-component vector of float)
 

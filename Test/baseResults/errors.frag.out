@@ -9,6 +9,7 @@ ERROR: node is still EOpNull!
 0:1      'foo' (in mediump int)
 0:3    Sequence
 0:3      Branch: Return with expression
-0:3        1 (const int)
+0:3        Constant:
+0:3          1 (const int)
 0:?   Linker Objects
 

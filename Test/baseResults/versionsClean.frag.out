@@ -9,7 +9,8 @@ ERROR: node is still EOpNull!
 0:43        'foo' (out highp 4-component vector of float)
 0:43        Construct vec4 (highp 4-component vector of float)
 0:43          'color' (smooth in highp 3-component vector of float)
-0:43          142.000000
+0:43          Constant:
+0:43            142.000000
 0:44      Branch: Kill
 0:?   Linker Objects
 0:?     'color' (smooth in highp 3-component vector of float)

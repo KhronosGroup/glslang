@@ -17,16 +17,20 @@
 0:36                logical-and (bool)
 0:36                  direct index (bool)
 0:36                    'u_b2' (uniform 2-component vector of bool)
-0:36                    0 (const int)
+0:36                    Constant:
+0:36                      0 (const int)
 0:36                  direct index (bool)
 0:36                    'i_b2' (uniform 2-component vector of bool)
-0:36                    0 (const int)
+0:36                    Constant:
+0:36                      0 (const int)
 0:36                direct index (bool)
 0:36                  'u_b2' (uniform 2-component vector of bool)
-0:36                  1 (const int)
+0:36                  Constant:
+0:36                    1 (const int)
 0:36              direct index (bool)
 0:36                'i_b2' (uniform 2-component vector of bool)
-0:36                1 (const int)
+0:36                Constant:
+0:36                  1 (const int)
 0:37      Sequence
 0:37        move second child to first child (3-component vector of bool)
 0:37          'b3' (3-component vector of bool)
@@ -38,22 +42,28 @@
 0:37                    logical-and (bool)
 0:37                      direct index (bool)
 0:37                        'u_b3' (uniform 3-component vector of bool)
-0:37                        0 (const int)
+0:37                        Constant:
+0:37                          0 (const int)
 0:37                      direct index (bool)
 0:37                        'i_b3' (uniform 3-component vector of bool)
-0:37                        0 (const int)
+0:37                        Constant:
+0:37                          0 (const int)
 0:37                    direct index (bool)
 0:37                      'u_b3' (uniform 3-component vector of bool)
-0:37                      1 (const int)
+0:37                      Constant:
+0:37                        1 (const int)
 0:37                  direct index (bool)
 0:37                    'i_b3' (uniform 3-component vector of bool)
-0:37                    1 (const int)
+0:37                    Constant:
+0:37                      1 (const int)
 0:37                direct index (bool)
 0:37                  'u_b3' (uniform 3-component vector of bool)
-0:37                  2 (const int)
+0:37                  Constant:
+0:37                    2 (const int)
 0:37              direct index (bool)
 0:37                'i_b3' (uniform 3-component vector of bool)
-0:37                2 (const int)
+0:37                Constant:
+0:37                  2 (const int)
 0:38      Sequence
 0:38        move second child to first child (4-component vector of bool)
 0:38          'b4' (4-component vector of bool)
@@ -67,28 +77,36 @@
 0:38                        logical-and (bool)
 0:38                          direct index (bool)
 0:38                            'u_b4' (uniform 4-component vector of bool)
-0:38                            0 (const int)
+0:38                            Constant:
+0:38                              0 (const int)
 0:38                          direct index (bool)
 0:38                            'i_b4' (uniform 4-component vector of bool)
-0:38                            0 (const int)
+0:38                            Constant:
+0:38                              0 (const int)
 0:38                        direct index (bool)
 0:38                          'u_b4' (uniform 4-component vector of bool)
-0:38                          1 (const int)
+0:38                          Constant:
+0:38                            1 (const int)
 0:38                      direct index (bool)
 0:38                        'i_b4' (uniform 4-component vector of bool)
-0:38                        1 (const int)
+0:38                        Constant:
+0:38                          1 (const int)
 0:38                    direct index (bool)
 0:38                      'u_b4' (uniform 4-component vector of bool)
-0:38                      2 (const int)
+0:38                      Constant:
+0:38                        2 (const int)
 0:38                  direct index (bool)
 0:38                    'i_b4' (uniform 4-component vector of bool)
-0:38                    2 (const int)
+0:38                    Constant:
+0:38                      2 (const int)
 0:38                direct index (bool)
 0:38                  'u_b4' (uniform 4-component vector of bool)
-0:38                  3 (const int)
+0:38                  Constant:
+0:38                    3 (const int)
 0:38              direct index (bool)
 0:38                'i_b4' (uniform 4-component vector of bool)
-0:38                3 (const int)
+0:38                Constant:
+0:38                  3 (const int)
 0:40      Sequence
 0:40        move second child to first child (int)
 0:40          'i' (int)
@@ -153,31 +171,40 @@
 0:51                            'b' (bool)
 0:52                            direct index (bool)
 0:52                              'b2' (2-component vector of bool)
-0:52                              0 (const int)
+0:52                              Constant:
+0:52                                0 (const int)
 0:53                          direct index (bool)
 0:53                            'b2' (2-component vector of bool)
-0:53                            1 (const int)
+0:53                            Constant:
+0:53                              1 (const int)
 0:54                        direct index (bool)
 0:54                          'b3' (3-component vector of bool)
-0:54                          0 (const int)
+0:54                          Constant:
+0:54                            0 (const int)
 0:55                      direct index (bool)
 0:55                        'b3' (3-component vector of bool)
-0:55                        1 (const int)
+0:55                        Constant:
+0:55                          1 (const int)
 0:56                    direct index (bool)
 0:56                      'b3' (3-component vector of bool)
-0:56                      2 (const int)
+0:56                      Constant:
+0:56                        2 (const int)
 0:57                  direct index (bool)
 0:57                    'b4' (4-component vector of bool)
-0:57                    0 (const int)
+0:57                    Constant:
+0:57                      0 (const int)
 0:58                direct index (bool)
 0:58                  'b4' (4-component vector of bool)
-0:58                  1 (const int)
+0:58                  Constant:
+0:58                    1 (const int)
 0:59              direct index (bool)
 0:59                'b4' (4-component vector of bool)
-0:59                2 (const int)
+0:59                Constant:
+0:59                  2 (const int)
 0:60            direct index (bool)
 0:60              'b4' (4-component vector of bool)
-0:60              3 (const int)
+0:60              Constant:
+0:60                3 (const int)
 0:60          true case
 0:79          Construct vec4 (4-component vector of float)
 0:79            add (float)
@@ -203,64 +230,83 @@
 0:61                                                    'i' (int)
 0:62                                                    direct index (int)
 0:62                                                      'i2' (2-component vector of int)
-0:62                                                      0 (const int)
+0:62                                                      Constant:
+0:62                                                        0 (const int)
 0:63                                                  direct index (int)
 0:63                                                    'i2' (2-component vector of int)
-0:63                                                    1 (const int)
+0:63                                                    Constant:
+0:63                                                      1 (const int)
 0:64                                                direct index (int)
 0:64                                                  'i3' (3-component vector of int)
-0:64                                                  0 (const int)
+0:64                                                  Constant:
+0:64                                                    0 (const int)
 0:65                                              direct index (int)
 0:65                                                'i3' (3-component vector of int)
-0:65                                                1 (const int)
+0:65                                                Constant:
+0:65                                                  1 (const int)
 0:66                                            direct index (int)
 0:66                                              'i3' (3-component vector of int)
-0:66                                              2 (const int)
+0:66                                              Constant:
+0:66                                                2 (const int)
 0:67                                          direct index (int)
 0:67                                            'i4' (4-component vector of int)
-0:67                                            0 (const int)
+0:67                                            Constant:
+0:67                                              0 (const int)
 0:68                                        direct index (int)
 0:68                                          'i4' (4-component vector of int)
-0:68                                          1 (const int)
+0:68                                          Constant:
+0:68                                            1 (const int)
 0:69                                      direct index (int)
 0:69                                        'i4' (4-component vector of int)
-0:69                                        2 (const int)
+0:69                                        Constant:
+0:69                                          2 (const int)
 0:70                                    direct index (int)
 0:70                                      'i4' (4-component vector of int)
-0:70                                      3 (const int)
+0:70                                      Constant:
+0:70                                        3 (const int)
 0:71                                'f' (float)
 0:72                              direct index (float)
 0:72                                'f2' (2-component vector of float)
-0:72                                0 (const int)
+0:72                                Constant:
+0:72                                  0 (const int)
 0:73                            direct index (float)
 0:73                              'f2' (2-component vector of float)
-0:73                              1 (const int)
+0:73                              Constant:
+0:73                                1 (const int)
 0:74                          direct index (float)
 0:74                            'f3' (3-component vector of float)
-0:74                            0 (const int)
+0:74                            Constant:
+0:74                              0 (const int)
 0:75                        direct index (float)
 0:75                          'f3' (3-component vector of float)
-0:75                          1 (const int)
+0:75                          Constant:
+0:75                            1 (const int)
 0:76                      direct index (float)
 0:76                        'f3' (3-component vector of float)
-0:76                        2 (const int)
+0:76                        Constant:
+0:76                          2 (const int)
 0:77                    direct index (float)
 0:77                      'f4' (4-component vector of float)
-0:77                      0 (const int)
+0:77                      Constant:
+0:77                        0 (const int)
 0:78                  direct index (float)
 0:78                    'f4' (4-component vector of float)
-0:78                    1 (const int)
+0:78                    Constant:
+0:78                      1 (const int)
 0:79                direct index (float)
 0:79                  'f4' (4-component vector of float)
-0:79                  2 (const int)
+0:79                  Constant:
+0:79                    2 (const int)
 0:80              direct index (float)
 0:80                'f4' (4-component vector of float)
-0:80                3 (const int)
+0:80                Constant:
+0:80                  3 (const int)
 0:60          false case
-0:80          1.000000
-0:80          1.000000
-0:80          1.000000
-0:80          1.000000
+0:80          Constant:
+0:80            1.000000
+0:80            1.000000
+0:80            1.000000
+0:80            1.000000
 0:?   Linker Objects
 0:?     'u_b' (uniform bool)
 0:?     'u_b2' (uniform 2-component vector of bool)

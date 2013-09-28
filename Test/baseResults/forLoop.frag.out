@@ -10,7 +10,8 @@
 0:12        Sequence
 0:12          move second child to first child (int)
 0:12            'i' (int)
-0:12            0 (const int)
+0:12            Constant:
+0:12              0 (const int)
 0:12        Loop with condition tested first
 0:12          Loop Condition
 0:12          Compare Less Than (bool)

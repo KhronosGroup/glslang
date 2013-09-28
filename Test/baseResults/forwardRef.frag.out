@@ -28,13 +28,16 @@
 0:28        Condition
 0:28        Compare Less Than (bool)
 0:28          'd' (uniform float)
-0:28          4.200000
+0:28          Constant:
+0:28            4.200000
 0:28        true case
 0:29        Branch: Return with expression
-0:29          1.200000
+0:29          Constant:
+0:29            1.200000
 0:28        false case
 0:31        Branch: Return with expression
-0:31          4.500000
+0:31          Constant:
+0:31            4.500000
 0:34  Function Definition: foo(vf4; (float)
 0:34    Function Parameters: 
 0:34      'bar' (in 4-component vector of float)
@@ -43,10 +46,12 @@
 0:36        add (float)
 0:36          direct index (float)
 0:36            'bar' (in 4-component vector of float)
-0:36            0 (const int)
+0:36            Constant:
+0:36              0 (const int)
 0:36          direct index (float)
 0:36            'bar' (in 4-component vector of float)
-0:36            1 (const int)
+0:36            Constant:
+0:36              1 (const int)
 0:?   Linker Objects
 0:?     'bigColor' (uniform 4-component vector of float)
 0:?     'BaseColor' (smooth in 4-component vector of float)

@@ -12,10 +12,11 @@
 0:10        Condition
 0:10        Compare Equal (bool)
 0:10          'v' (4-component vector of float)
-0:10          0.100000
-0:10          0.200000
-0:10          0.300000
-0:10          0.400000
+0:10          Constant:
+0:10            0.100000
+0:10            0.200000
+0:10            0.300000
+0:10            0.400000
 0:10        true case
 0:11        Branch: Kill
 0:13      move second child to first child (4-component vector of float)

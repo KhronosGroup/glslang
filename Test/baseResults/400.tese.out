@@ -5,6 +5,7 @@ ERROR: node is still EOpNull!
 0:3  Function Definition: main( (void)
 0:3    Function Parameters: 
 0:5    Sequence
-0:5      0.000000
+0:5      Constant:
+0:5        0.000000
 0:?   Linker Objects
 

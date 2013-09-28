@@ -5,119 +5,134 @@ ERROR: 0:21: 'vm2' : illegal use of type 'void'
 ERROR: 0:21: 'vm3' : illegal use of type 'void' 
 ERROR: 0:22: 'vn8' : illegal use of type 'void' 
 ERROR: 0:22: 'vp' : illegal use of type 'void' 
-ERROR: 0:24: 'gl_' : reserved built-in name 
-ERROR: 0:25: 'gl_' : reserved built-in name 
-ERROR: 0:25: 'gl_' : reserved built-in name 
-ERROR: 0:26: 'gl_' : reserved built-in name 
-ERROR: 0:26: 'gl_' : reserved built-in name 
-ERROR: 0:27: 'gl_' : reserved built-in name 
-ERROR: 0:27: 'gl_' : reserved built-in name 
-ERROR: 0:32: '' : boolean expression expected 
-ERROR: 0:33: 'gl_' : reserved built-in name 
-ERROR: 16 compilation errors.  No code generated.
+ERROR: 0:25: 'cij' : variables with qualifier 'const' must be initialized 
+ERROR: 0:27: 'cip' : variables with qualifier 'const' must be initialized 
+ERROR: 0:34: 'gl_' : reserved built-in name 
+ERROR: 0:35: 'gl_' : reserved built-in name 
+ERROR: 0:35: 'gl_' : reserved built-in name 
+ERROR: 0:36: 'gl_' : reserved built-in name 
+ERROR: 0:36: 'gl_' : reserved built-in name 
+ERROR: 0:37: 'gl_' : reserved built-in name 
+ERROR: 0:37: 'gl_' : reserved built-in name 
+ERROR: 0:42: '' : boolean expression expected 
+ERROR: 0:43: 'gl_' : reserved built-in name 
+ERROR: 18 compilation errors.  No code generated.
 
 ERROR: node is still EOpNull!
 0:5  Sequence
 0:5    move second child to first child (int)
 0:5      'd1' (int)
-0:5      1 (const int)
+0:5      Constant:
+0:5        1 (const int)
 0:6  Sequence
 0:6    move second child to first child (int)
 0:6      'e2' (int)
-0:6      2 (const int)
+0:6      Constant:
+0:6        2 (const int)
 0:7  Sequence
 0:7    move second child to first child (int)
 0:7      'h3' (int)
-0:7      3 (const int)
+0:7      Constant:
+0:7        3 (const int)
 0:14  Sequence
 0:14    move second child to first child (4-element array of int)
 0:14      'ii4' (4-element array of int)
-0:14      1 (const int)
-0:14      2 (const int)
-0:14      3 (const int)
-0:14      4 (const int)
+0:14      Constant:
+0:14        1 (const int)
+0:14        2 (const int)
+0:14        3 (const int)
+0:14        4 (const int)
 0:15  Sequence
 0:15    move second child to first child (5-element array of int)
 0:15      'ik5' (5-element array of int)
-0:15      5 (const int)
-0:15      6 (const int)
-0:15      7 (const int)
-0:15      8 (const int)
-0:15      9 (const int)
+0:15      Constant:
+0:15        5 (const int)
+0:15        6 (const int)
+0:15        7 (const int)
+0:15        8 (const int)
+0:15        9 (const int)
 0:16  Sequence
 0:16    move second child to first child (2-element array of int)
 0:16      'im2' (2-element array of int)
-0:16      10 (const int)
-0:16      11 (const int)
+0:16      Constant:
+0:16        10 (const int)
+0:16        11 (const int)
 0:16    move second child to first child (3-element array of int)
 0:16      'im3' (3-element array of int)
-0:16      12 (const int)
-0:16      13 (const int)
-0:16      14 (const int)
+0:16      Constant:
+0:16        12 (const int)
+0:16        13 (const int)
+0:16        14 (const int)
 0:17  Sequence
 0:17    move second child to first child (4-element array of int)
 0:17      'in8' (4-element array of int)
-0:17      21 (const int)
-0:17      22 (const int)
-0:17      23 (const int)
-0:17      24 (const int)
-0:24  Sequence
-0:24    move second child to first child (4-element array of int)
-0:24      'gl_vi4' (4-element array of int)
-0:24      1 (const int)
-0:24      2 (const int)
-0:24      3 (const int)
-0:24      4 (const int)
-0:25  Sequence
-0:25    move second child to first child (5-element array of int)
-0:25      'gl_vk5' (5-element array of int)
-0:25      5 (const int)
-0:25      6 (const int)
-0:25      7 (const int)
-0:25      8 (const int)
-0:25      9 (const int)
-0:26  Sequence
-0:26    move second child to first child (2-element array of int)
-0:26      'gl_vm2' (2-element array of int)
-0:26      10 (const int)
-0:26      11 (const int)
-0:26    move second child to first child (3-element array of int)
-0:26      'gl_vm3' (3-element array of int)
-0:26      12 (const int)
-0:26      13 (const int)
-0:26      14 (const int)
-0:27  Sequence
-0:27    move second child to first child (4-element array of int)
-0:27      'gl_vn8' (4-element array of int)
-0:27      21 (const int)
-0:27      22 (const int)
-0:27      23 (const int)
-0:27      24 (const int)
-0:29  Function Definition: main( (void)
-0:29    Function Parameters: 
-0:31    Sequence
-0:31      Loop with condition tested first
-0:31        Loop Condition
-0:31        move second child to first child (bool)
-0:31          'cond' (bool)
-0:31          Compare Less Than (bool)
-0:31            'b' (int)
-0:31            'c' (int)
-0:31        No loop body
-0:32      Loop with condition tested first
-0:32        Loop Condition
-0:32        move second child to first child (int)
-0:32          'icond' (int)
-0:32          'b' (int)
-0:32        No loop body
-0:33      Loop with condition tested first
-0:33        Loop Condition
-0:33        move second child to first child (bool)
-0:33          'gl_cond' (bool)
-0:33          Compare Less Than (bool)
-0:33            'b' (int)
-0:33            'c' (int)
-0:33        No loop body
+0:17      Constant:
+0:17        21 (const int)
+0:17        22 (const int)
+0:17        23 (const int)
+0:17        24 (const int)
+0:34  Sequence
+0:34    move second child to first child (4-element array of int)
+0:34      'gl_vi4' (4-element array of int)
+0:34      Constant:
+0:34        1 (const int)
+0:34        2 (const int)
+0:34        3 (const int)
+0:34        4 (const int)
+0:35  Sequence
+0:35    move second child to first child (5-element array of int)
+0:35      'gl_vk5' (5-element array of int)
+0:35      Constant:
+0:35        5 (const int)
+0:35        6 (const int)
+0:35        7 (const int)
+0:35        8 (const int)
+0:35        9 (const int)
+0:36  Sequence
+0:36    move second child to first child (2-element array of int)
+0:36      'gl_vm2' (2-element array of int)
+0:36      Constant:
+0:36        10 (const int)
+0:36        11 (const int)
+0:36    move second child to first child (3-element array of int)
+0:36      'gl_vm3' (3-element array of int)
+0:36      Constant:
+0:36        12 (const int)
+0:36        13 (const int)
+0:36        14 (const int)
+0:37  Sequence
+0:37    move second child to first child (4-element array of int)
+0:37      'gl_vn8' (4-element array of int)
+0:37      Constant:
+0:37        21 (const int)
+0:37        22 (const int)
+0:37        23 (const int)
+0:37        24 (const int)
+0:39  Function Definition: main( (void)
+0:39    Function Parameters: 
+0:41    Sequence
+0:41      Loop with condition tested first
+0:41        Loop Condition
+0:41        move second child to first child (bool)
+0:41          'cond' (bool)
+0:41          Compare Less Than (bool)
+0:41            'b' (int)
+0:41            'c' (int)
+0:41        No loop body
+0:42      Loop with condition tested first
+0:42        Loop Condition
+0:42        move second child to first child (int)
+0:42          'icond' (int)
+0:42          'b' (int)
+0:42        No loop body
+0:43      Loop with condition tested first
+0:43        Loop Condition
+0:43        move second child to first child (bool)
+0:43          'gl_cond' (bool)
+0:43          Compare Less Than (bool)
+0:43            'b' (int)
+0:43            'c' (int)
+0:43        No loop body
 0:?   Linker Objects
 0:?     'a' (int)
 0:?     'b' (int)
@@ -141,6 +156,56 @@ ERROR: node is still EOpNull!
 0:?     'im3' (3-element array of int)
 0:?     'in8' (4-element array of int)
 0:?     'ip' (int)
+0:?     'cii4' (const 4-element array of int)
+0:?       1 (const int)
+0:?       2 (const int)
+0:?       3 (const int)
+0:?       4 (const int)
+0:?     'cij' (int)
+0:?     'cik5' (const 5-element array of int)
+0:?       5 (const int)
+0:?       6 (const int)
+0:?       7 (const int)
+0:?       8 (const int)
+0:?       9 (const int)
+0:?     'cim2' (const 2-element array of int)
+0:?       10 (const int)
+0:?       11 (const int)
+0:?     'cim3' (const 3-element array of int)
+0:?       12 (const int)
+0:?       13 (const int)
+0:?       14 (const int)
+0:?     'cin8' (const 4-element array of int)
+0:?       21 (const int)
+0:?       22 (const int)
+0:?       23 (const int)
+0:?       24 (const int)
+0:?     'cip' (int)
+0:?     'uii4' (uniform 4-element array of int)
+0:?       1 (const int)
+0:?       2 (const int)
+0:?       3 (const int)
+0:?       4 (const int)
+0:?     'uij' (uniform int)
+0:?     'uik5' (uniform 5-element array of int)
+0:?       5 (const int)
+0:?       6 (const int)
+0:?       7 (const int)
+0:?       8 (const int)
+0:?       9 (const int)
+0:?     'uim2' (uniform 2-element array of int)
+0:?       10 (const int)
+0:?       11 (const int)
+0:?     'uim3' (uniform 3-element array of int)
+0:?       12 (const int)
+0:?       13 (const int)
+0:?       14 (const int)
+0:?     'uin8' (uniform 4-element array of int)
+0:?       21 (const int)
+0:?       22 (const int)
+0:?       23 (const int)
+0:?       24 (const int)
+0:?     'uip' (uniform int)
 0:?     'gl_vi4' (4-element array of int)
 0:?     'gl_vj' (int)
 0:?     'gl_vk5' (5-element array of int)

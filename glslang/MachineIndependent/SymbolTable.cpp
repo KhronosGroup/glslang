@@ -231,13 +231,13 @@ TVariable::TVariable(const TVariable& copyOf, TStructureMap& remapper) : TSymbol
     type.deepCopy(copyOf.type, remapper);
     userType = copyOf.userType;
 
-    if (copyOf.unionArray) {
+    if (! copyOf.unionArray.empty()) {
         assert(!copyOf.type.getStruct());
         assert(copyOf.type.getObjectSize() == 1);
-        unionArray = new TConstUnion[1];
-        unionArray[0] = copyOf.unionArray[0];
-    } else
-        unionArray = 0;
+        TConstUnionArray newArray(1);
+        newArray[0] = copyOf.unionArray[0];
+        unionArray = newArray;
+    }
 }
 
 TVariable* TVariable::clone(TStructureMap& remapper)

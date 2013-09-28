@@ -62,7 +62,7 @@ public:
 // Helper functions for printing, not part of traversing.
 //
 
-void OutputTreeText(TInfoSink& infoSink, TIntermNode* node, const int depth)
+void OutputTreeText(TInfoSink& infoSink, const TIntermNode* node, const int depth)
 {
     int i;
 
@@ -84,21 +84,6 @@ void OutputTreeText(TInfoSink& infoSink, TIntermNode* node, const int depth)
 // continue on to children.  If you process children yourself,
 // return false.
 //
-
-void OutputSymbol(TIntermSymbol* node, TIntermTraverser* it)
-{
-    TOutputTraverser* oit = static_cast<TOutputTraverser*>(it);
-
-    OutputTreeText(oit->infoSink, node, oit->depth);
-
-    const int maxSize = GlslangMaxTypeLength + GlslangMaxTokenLength;
-    char buf[maxSize];
-    snprintf(buf, maxSize, "'%s' (%s)\n",
-           node->getName().c_str(),
-           node->getCompleteString().c_str());
-
-    oit->infoSink.debug << buf;
-}
 
 bool OutputBinary(bool /* preVisit */, TIntermBinary* node, TIntermTraverser* it)
 {
@@ -127,7 +112,7 @@ bool OutputBinary(bool /* preVisit */, TIntermBinary* node, TIntermTraverser* it
     case EOpIndexDirect:   out.debug << "direct index";   break;
     case EOpIndexIndirect: out.debug << "indirect index"; break;
     case EOpIndexDirectStruct:
-        out.debug << (*node->getLeft()->getType().getStruct())[node->getRight()->getAsConstantUnion()->getUnionArrayPointer()->getIConst()].type->getFieldName();
+        out.debug << (*node->getLeft()->getType().getStruct())[node->getRight()->getAsConstantUnion()->getConstArray()[0].getIConst()].type->getFieldName();
         out.debug << ": direct index for structure";      break;
     case EOpVectorSwizzle: out.debug << "vector swizzle"; break;
 
@@ -417,18 +402,15 @@ bool OutputSelection(bool /* preVisit */, TIntermSelection* node, TIntermTravers
     return false;
 }
 
-void OutputConstantUnion(TIntermConstantUnion* node, TIntermTraverser* it)
+void OutputConstantUnion(TInfoSink& out, const TIntermTyped* node, const TConstUnionArray& constUnion, int depth)
 {
-    TOutputTraverser* oit = static_cast<TOutputTraverser*>(it);
-    TInfoSink& out = oit->infoSink;
-
     int size = node->getType().getObjectSize();
 
     for (int i = 0; i < size; i++) {
-        OutputTreeText(out, node, oit->depth);
-        switch (node->getUnionArrayPointer()[i].getType()) {
+        OutputTreeText(out, node, depth);
+        switch (constUnion[i].getType()) {
         case EbtBool:
-            if (node->getUnionArrayPointer()[i].getBConst())
+            if (constUnion[i].getBConst())
                 out.debug << "true";
             else
                 out.debug << "false";
@@ -442,7 +424,7 @@ void OutputConstantUnion(TIntermConstantUnion* node, TIntermTraverser* it)
             {
 				const int maxSize = 300;
                 char buf[maxSize];
-                snprintf(buf, maxSize, "%f", node->getUnionArrayPointer()[i].getDConst());
+                snprintf(buf, maxSize, "%f", constUnion[i].getDConst());
 
                 out.debug << buf << "\n";
             }
@@ -451,7 +433,7 @@ void OutputConstantUnion(TIntermConstantUnion* node, TIntermTraverser* it)
             {
 				const int maxSize = 300;
                 char buf[maxSize];
-                snprintf(buf, maxSize, "%d (%s)", node->getUnionArrayPointer()[i].getIConst(), "const int");
+                snprintf(buf, maxSize, "%d (%s)", constUnion[i].getIConst(), "const int");
 
                 out.debug << buf << "\n";
             }
@@ -460,7 +442,7 @@ void OutputConstantUnion(TIntermConstantUnion* node, TIntermTraverser* it)
             {
 				const int maxSize = 300;
                 char buf[maxSize];
-                snprintf(buf, maxSize, "%u (%s)", node->getUnionArrayPointer()[i].getUConst(), "const uint");
+                snprintf(buf, maxSize, "%u (%s)", constUnion[i].getUConst(), "const uint");
 
                 out.debug << buf << "\n";
             }
@@ -470,6 +452,34 @@ void OutputConstantUnion(TIntermConstantUnion* node, TIntermTraverser* it)
             break;
         }
     }
+}
+
+void OutputConstantUnion(TIntermConstantUnion* node, TIntermTraverser* it)
+{
+    TOutputTraverser* oit = static_cast<TOutputTraverser*>(it);
+    TInfoSink& out = oit->infoSink;
+
+    OutputTreeText(oit->infoSink, node, oit->depth);
+    oit->infoSink.debug << "Constant:\n";
+
+    OutputConstantUnion(oit->infoSink, node, node->getConstArray(), oit->depth + 1);
+}
+
+void OutputSymbol(TIntermSymbol* node, TIntermTraverser* it)
+{
+    TOutputTraverser* oit = static_cast<TOutputTraverser*>(it);
+
+    OutputTreeText(oit->infoSink, node, oit->depth);
+
+    const int maxSize = GlslangMaxTypeLength + GlslangMaxTokenLength;
+    char buf[maxSize];
+    snprintf(buf, maxSize, "'%s' (%s)\n",
+             node->getName().c_str(),
+             node->getCompleteString().c_str());
+    oit->infoSink.debug << buf;
+
+    if (! node->getConstArray().empty())
+        OutputConstantUnion(oit->infoSink, node, node->getConstArray(), oit->depth + 1);
 }
 
 bool OutputLoop(bool /* preVisit */, TIntermLoop* node, TIntermTraverser* it)

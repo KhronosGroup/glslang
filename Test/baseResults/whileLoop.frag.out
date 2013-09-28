@@ -11,7 +11,8 @@
 0:11        Compare Less Than (bool)
 0:11          direct index (float)
 0:11            'color' (4-component vector of float)
-0:11            0 (const int)
+0:11            Constant:
+0:11              0 (const int)
 0:11          'd' (uniform float)
 0:11        Loop Body
 0:12        Sequence

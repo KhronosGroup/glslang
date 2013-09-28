@@ -757,7 +757,7 @@ TIntermTyped* TIntermediate::addSelection(TIntermTyped* cond, TIntermTyped* true
     //
 
     if (cond->getAsConstantUnion() && trueBlock->getAsConstantUnion() && falseBlock->getAsConstantUnion()) {
-        if (cond->getAsConstantUnion()->getUnionArrayPointer()->getBConst())
+        if (cond->getAsConstantUnion()->getConstArray()[0].getBConst())
             return trueBlock;
         else
             return falseBlock;
@@ -779,9 +779,9 @@ TIntermTyped* TIntermediate::addSelection(TIntermTyped* cond, TIntermTyped* true
 // Returns the constant union node created.
 //
 
-TIntermConstantUnion* TIntermediate::addConstantUnion(TConstUnion* unionArrayPointer, const TType& t, TSourceLoc loc)
+TIntermConstantUnion* TIntermediate::addConstantUnion(const TConstUnionArray& unionArray, const TType& t, TSourceLoc loc)
 {
-    TIntermConstantUnion* node = new TIntermConstantUnion(unionArrayPointer, t);
+    TIntermConstantUnion* node = new TIntermConstantUnion(unionArray, t);
     node->setLoc(loc);
 
     return node;
@@ -795,11 +795,10 @@ TIntermTyped* TIntermediate::addSwizzle(TVectorFields& fields, TSourceLoc loc)
     node->setLoc(loc);
     TIntermConstantUnion* constIntNode;
     TIntermSequence &sequenceVector = node->getSequence();
-    TConstUnion* unionArray;
 
     for (int i = 0; i < fields.num; i++) {
-        unionArray = new TConstUnion[1];
-        unionArray->setIConst(fields.offsets[i]);
+        TConstUnionArray unionArray(1);
+        unionArray[0].setIConst(fields.offsets[i]);
         constIntNode = addConstantUnion(unionArray, TType(EbtInt, EvqConst), loc);
         sequenceVector.push_back(constIntNode);
     }
@@ -896,6 +895,7 @@ void TIntermediate::addSymbolLinkageNode(TIntermAggregate*& linkage, TSymbolTabl
 void TIntermediate::addSymbolLinkageNode(TIntermAggregate*& linkage, const TVariable& variable)
 {
     TIntermSymbol* node = new TIntermSymbol(variable.getUniqueId(), variable.getName(), variable.getType());
+    node->setConstArray(variable.getConstArray());
     linkage = growAggregate(linkage, node);
 }
 
@@ -975,8 +975,13 @@ void TIntermediate::mergeLinkerObjects(TInfoSink& infoSink, TIntermSequence& lin
             if (symbol->getName() == unitSymbol->getName()) {
                 // filter out copy
                 merge = false;
+
+                // but if one has an initializer and the other does not, update
+                // the initializer
+                if (symbol->getConstArray().empty() && ! unitSymbol->getConstArray().empty())
+                    symbol->setConstArray(unitSymbol->getConstArray());
                 
-                // Check for consistent types/qualification/etc.
+                // Check for consistent types/qualification/initializers etc.
                 linkErrorCheck(infoSink, *symbol, *unitSymbol, false);
             }
         }
@@ -1065,6 +1070,16 @@ void TIntermediate::linkErrorCheck(TInfoSink& infoSink, const TIntermSymbol& sym
         symbol.getQualifier().layoutSlotLocation != unitSymbol.getQualifier().layoutSlotLocation) {
         error(infoSink, "Layout qualification must match:");
         writeTypeComparison = true;
+    }
+
+    // Initializers have to match, if both are present, and if we don't already know the types don't match
+    if (! writeTypeComparison) {
+        if (! symbol.getConstArray().empty() && ! unitSymbol.getConstArray().empty()) {
+            if (symbol.getConstArray() != unitSymbol.getConstArray()) {
+                error(infoSink, "Initializers must match:");
+                infoSink.info << "    " << symbol.getName() << "\n";
+            }
+        }
     }
 
     if (writeTypeComparison)
@@ -1547,12 +1562,12 @@ void TIntermTyped::propagatePrecision(TPrecisionQualifier newPrecision)
 
 TIntermTyped* TIntermediate::promoteConstantUnion(TBasicType promoteTo, TIntermConstantUnion* node) 
 {
-    TConstUnion *rightUnionArray = node->getUnionArrayPointer();
+    const TConstUnionArray& rightUnionArray = node->getConstArray();
     int size = node->getType().getObjectSize();
 
-    TConstUnion *leftUnionArray = new TConstUnion[size];
+    TConstUnionArray leftUnionArray(size);
 
-    for (int i=0; i < size; i++) {        
+    for (int i=0; i < size; i++) {
         switch (promoteTo) {
         case EbtFloat:
             switch (node->getType().getBasicType()) {

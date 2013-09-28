@@ -18,11 +18,13 @@
 0:38        Function Call: textureLod(sA21;vf3;f1; (4-component vector of float)
 0:38          's2DArray' (uniform sampler2DArray)
 0:38          'c3D' (smooth in 3-component vector of float)
-0:38          1.200000
+0:38          Constant:
+0:38            1.200000
 0:39      add second child into first child (float)
 0:39        direct index (float)
 0:39          'v' (4-component vector of float)
-0:39          1 (const int)
+0:39          Constant:
+0:39            1 (const int)
 0:39        Function Call: textureOffset(sS21;vf3;vi2;f1; (float)
 0:39          's2DShadow' (uniform sampler2DShadow)
 0:39          'c3D' (smooth in 3-component vector of float)
@@ -39,12 +41,14 @@
 0:41        Function Call: texelFetchOffset(s21;vi2;i1;vi2; (4-component vector of float)
 0:41          's2D' (uniform sampler2D)
 0:41          'ic2D' (flat in 2-component vector of int)
-0:41          4 (const int)
+0:41          Constant:
+0:41            4 (const int)
 0:41          'ic2D' (flat in 2-component vector of int)
 0:42      add second child into first child (float)
 0:42        direct index (float)
 0:42          'v' (4-component vector of float)
-0:42          1 (const int)
+0:42          Constant:
+0:42            1 (const int)
 0:42        Function Call: textureLodOffset(sS21;vf3;f1;vi2; (float)
 0:42          's2DShadow' (uniform sampler2DShadow)
 0:42          'c3D' (smooth in 3-component vector of float)
@@ -67,7 +71,8 @@
 0:45      add second child into first child (float)
 0:45        direct index (float)
 0:45          'v' (4-component vector of float)
-0:45          0 (const int)
+0:45          Constant:
+0:45            0 (const int)
 0:45        Function Call: textureGradOffset(sAS21;vf4;vf2;vf2;vi2; (float)
 0:45          's2DArrayShadow' (uniform sampler2DArrayShadow)
 0:45          'c4D' (smooth in 4-component vector of float)
@@ -135,7 +140,8 @@
 0:57        Function Call: texture(is31;vf3;f1; (4-component vector of int)
 0:57          'is3D' (uniform isampler3D)
 0:57          'c3D' (smooth in 3-component vector of float)
-0:57          4.200000
+0:57          Constant:
+0:57            4.200000
 0:58      add second child into first child (4-component vector of float)
 0:58        'v' (4-component vector of float)
 0:58        Convert int to float (4-component vector of float)
@@ -165,7 +171,8 @@
 0:64          'iv2' (2-component vector of int)
 0:64          Function Call: textureSize(sSC1;i1; (2-component vector of int)
 0:64            'sCubeShadow' (uniform samplerCubeShadow)
-0:64            2 (const int)
+0:64            Constant:
+0:64              2 (const int)
 0:67      move second child to first child (4-component vector of float)
 0:67        'FragData' (out 4-component vector of float)
 0:67        add (4-component vector of float)
@@ -173,8 +180,10 @@
 0:67          Construct vec4 (4-component vector of float)
 0:67            Convert int to float (2-component vector of float)
 0:67              'iv2' (2-component vector of int)
-0:67            0.000000
-0:67            0.000000
+0:67            Constant:
+0:67              0.000000
+0:67            Constant:
+0:67              0.000000
 0:?   Linker Objects
 0:?     's2D' (uniform sampler2D)
 0:?     's3D' (uniform sampler3D)

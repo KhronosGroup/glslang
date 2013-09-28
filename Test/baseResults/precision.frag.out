@@ -16,8 +16,10 @@ ERROR: node is still EOpNull!
 0:8        vector swizzle (highp 2-component vector of float)
 0:8          'hv4' (highp 4-component vector of float)
 0:8          Sequence
-0:8            0 (const int)
-0:8            1 (const int)
+0:8            Constant:
+0:8              0 (const int)
+0:8            Constant:
+0:8              1 (const int)
 0:25  Function Definition: main( (void)
 0:25    Function Parameters: 
 0:27    Sequence
@@ -31,7 +33,8 @@ ERROR: node is still EOpNull!
 0:29        'gl_FragColor' (fragColor mediump 4-component vector of float)
 0:29        Construct vec4 (mediump 4-component vector of float)
 0:29          'color' (smooth in mediump 3-component vector of float)
-0:29          1.000000
+0:29          Constant:
+0:29            1.000000
 0:32      add second child into first child (highp int)
 0:32        'sum' (lowp int)
 0:32        'level1_high' (highp int)
@@ -53,12 +56,14 @@ ERROR: node is still EOpNull!
 0:49          'level2_high' (highp int)
 0:58        Loop with condition not tested first
 0:58          Loop Condition
-0:58          true (const bool)
+0:58          Constant:
+0:58            true (const bool)
 0:58          Loop Body
 0:51          Sequence
 0:51            Test condition and select (void)
 0:51              Condition
-0:51              true (const bool)
+0:51              Constant:
+0:51                true (const bool)
 0:51              true case
 0:?               Sequence
 0:54                add second child into first child (mediump int)
@@ -76,7 +81,8 @@ ERROR: node is still EOpNull!
 0:65      add second child into first child (lowp int)
 0:65        'sum' (lowp int)
 0:65        add (lowp int)
-0:65          4 (const int)
+0:65          Constant:
+0:65            4 (const int)
 0:65          direct index (lowp int)
 0:65            add (lowp 2-component vector of int)
 0:65              component-wise multiply (lowp 2-component vector of int)
@@ -88,19 +94,23 @@ ERROR: node is still EOpNull!
 0:65                Comma (highp int)
 0:65                  'level1_low3' (lowp int)
 0:65                  'level1_high' (highp int)
-0:65            0 (const int)
+0:65            Constant:
+0:65              0 (const int)
 0:67      Function Call: texture2D(s21;vf2; (lowp 4-component vector of float)
 0:67        'samplerLow' (uniform lowp sampler2D)
-0:67        0.100000
-0:67        0.200000
+0:67        Constant:
+0:67          0.100000
+0:67          0.200000
 0:68      Function Call: texture2D(s21;vf2; (mediump 4-component vector of float)
 0:68        'samplerMed' (uniform mediump sampler2D)
-0:68        0.100000
-0:68        0.200000
+0:68        Constant:
+0:68          0.100000
+0:68          0.200000
 0:69      Function Call: texture2D(s21;vf2; (highp 4-component vector of float)
 0:69        'samplerHigh' (uniform highp sampler2D)
-0:69        0.100000
-0:69        0.200000
+0:69        Constant:
+0:69          0.100000
+0:69          0.200000
 0:?   Linker Objects
 0:?     'color' (smooth in mediump 3-component vector of float)
 0:?     'global_medium' (mediump int)

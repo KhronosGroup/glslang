@@ -3,19 +3,23 @@ WARNING: #version: statement missing; use #version on first line of shader
 0:4  Sequence
 0:4    move second child to first child (highp float)
 0:4      'sum' (highp float)
-0:4      0.000000
+0:4      Constant:
+0:4        0.000000
 0:6  Function Definition: main( (void)
 0:6    Function Parameters: 
 0:10    Sequence
 0:10      add second child into first child (highp float)
 0:10        'sum' (highp float)
-0:10        1.000000
+0:10        Constant:
+0:10          1.000000
 0:15      add second child into first child (highp float)
 0:15        'sum' (highp float)
-0:15        20.000000
+0:15        Constant:
+0:15          20.000000
 0:30      add second child into first child (highp float)
 0:30        'sum' (highp float)
-0:30        300.000000
+0:30        Constant:
+0:30          300.000000
 0:39      move second child to first child (highp 4-component vector of float)
 0:39        'gl_Position' (gl_Position highp 4-component vector of float)
 0:39        Construct vec4 (highp 4-component vector of float)

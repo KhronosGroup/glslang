@@ -8,7 +8,8 @@
 0:11      move second child to first child (4-component vector of float)
 0:11        direct index (fragColor 4-component vector of float)
 0:11          'gl_FragData' (fragColor 32-element array of 4-component vector of float)
-0:11          1 (const int)
+0:11          Constant:
+0:11            1 (const int)
 0:11        vector-times-matrix (4-component vector of float)
 0:11          'inVar' (smooth in 4-component vector of float)
 0:11          'gl_ModelViewMatrix' (uniform 4X4 matrix of float)

@@ -9,12 +9,14 @@ WARNING: 0:6: varying deprecated in version 130; may be removed in future releas
 0:11      move second child to first child (4-component vector of float)
 0:11        direct index (fragColor 4-component vector of float)
 0:11          'gl_FragData' (fragColor 32-element array of 4-component vector of float)
-0:11          1 (const int)
+0:11          Constant:
+0:11            1 (const int)
 0:11        'inVar' (smooth in 4-component vector of float)
 0:12      Sequence
 0:12        move second child to first child (int)
 0:12          'buffer' (int)
-0:12          4 (const int)
+0:12          Constant:
+0:12            4 (const int)
 0:?   Linker Objects
 0:?     'inVar' (smooth in 4-component vector of float)
 0:?     'outVar' (out 4-component vector of float)

@@ -13,35 +13,39 @@ WARNING: 0:15: varying deprecated in version 130; may be removed in future relea
 0:21            'u' (smooth in 3-component vector of float)
 0:23      add second child into first child (3X4 matrix of float)
 0:23        'm34' (3X4 matrix of float)
-0:23        4.300000
-0:23        0.000000
-0:23        0.000000
-0:23        0.000000
-0:23        0.000000
-0:23        4.300000
-0:23        0.000000
-0:23        0.000000
-0:23        0.000000
-0:23        0.000000
-0:23        4.300000
-0:23        0.000000
+0:23        Constant:
+0:23          4.300000
+0:23          0.000000
+0:23          0.000000
+0:23          0.000000
+0:23          0.000000
+0:23          4.300000
+0:23          0.000000
+0:23          0.000000
+0:23          0.000000
+0:23          0.000000
+0:23          4.300000
+0:23          0.000000
 0:25      move second child to first child (4-component vector of float)
 0:25        'FragColor' (out 4-component vector of float)
 0:25        Construct vec4 (4-component vector of float)
 0:25          'Color' (smooth in 3-component vector of float)
-0:25          1.000000
+0:25          Constant:
+0:25            1.000000
 0:26      multiply second child into first child (4-component vector of float)
 0:26        'FragColor' (out 4-component vector of float)
 0:26        Construct vec4 (4-component vector of float)
 0:26          vector-times-matrix (3-component vector of float)
 0:26            'FragColor' (out 4-component vector of float)
 0:26            'm34' (3X4 matrix of float)
-0:26          1.000000
+0:26          Constant:
+0:26            1.000000
 0:28      matrix scale second child into first child (3X4 matrix of float)
 0:28        'm34' (3X4 matrix of float)
 0:28        direct index (float)
 0:28          'v' (smooth in 4-component vector of float)
-0:28          0 (const int)
+0:28          Constant:
+0:28            0 (const int)
 0:30      Sequence
 0:30        move second child to first child (4X4 matrix of float)
 0:30          'm44' (4X4 matrix of float)
@@ -73,7 +77,8 @@ WARNING: 0:15: varying deprecated in version 130; may be removed in future relea
 0:39          vector-times-matrix (3-component vector of float)
 0:39            'FragColor' (out 4-component vector of float)
 0:39            'm34' (3X4 matrix of float)
-0:39          1.000000
+0:39          Constant:
+0:39            1.000000
 0:40      multiply second child into first child (4-component vector of float)
 0:40        'FragColor' (out 4-component vector of float)
 0:40        Construct vec4 (4-component vector of float)
@@ -90,23 +95,31 @@ WARNING: 0:15: varying deprecated in version 130; may be removed in future relea
 0:42          direct index (float)
 0:42            direct index (2-component vector of float)
 0:42              'inv' (2X2 matrix of float)
+0:42              Constant:
+0:42                0 (const int)
+0:42            Constant:
 0:42              0 (const int)
-0:42            0 (const int)
 0:42          direct index (float)
 0:42            direct index (2-component vector of float)
 0:42              'inv' (2X2 matrix of float)
-0:42              1 (const int)
-0:42            0 (const int)
-0:42          direct index (float)
-0:42            direct index (2-component vector of float)
-0:42              'inv' (2X2 matrix of float)
+0:42              Constant:
+0:42                1 (const int)
+0:42            Constant:
 0:42              0 (const int)
-0:42            1 (const int)
 0:42          direct index (float)
 0:42            direct index (2-component vector of float)
 0:42              'inv' (2X2 matrix of float)
+0:42              Constant:
+0:42                0 (const int)
+0:42            Constant:
 0:42              1 (const int)
-0:42            1 (const int)
+0:42          direct index (float)
+0:42            direct index (2-component vector of float)
+0:42              'inv' (2X2 matrix of float)
+0:42              Constant:
+0:42                1 (const int)
+0:42            Constant:
+0:42              1 (const int)
 0:43      Sequence
 0:43        move second child to first child (3X3 matrix of float)
 0:43          'inv3' (3X3 matrix of float)
@@ -118,8 +131,10 @@ WARNING: 0:15: varying deprecated in version 130; may be removed in future relea
 0:44          direct index (float)
 0:44            direct index (3-component vector of float)
 0:44              'inv3' (3X3 matrix of float)
-0:44              2 (const int)
-0:44            1 (const int)
+0:44              Constant:
+0:44                2 (const int)
+0:44            Constant:
+0:44              1 (const int)
 0:46      Sequence
 0:46        move second child to first child (4X4 matrix of float)
 0:46          'inv4' (4X4 matrix of float)

@@ -43,11 +43,11 @@ namespace glslang {
 
 class TConstTraverser : public TIntermTraverser {
 public:
-    TConstTraverser(TConstUnion* cUnion, bool singleConstParam, TOperator constructType, const TType& t) : unionArray(cUnion), type(t),
+    TConstTraverser(const TConstUnionArray& cUnion, bool singleConstParam, TOperator constructType, const TType& t) : unionArray(cUnion), type(t),
         constructorType(constructType), singleConstantParam(singleConstParam), error(false), isMatrix(false), 
         matrixCols(0), matrixRows(0) {  index = 0; tOp = EOpNull;}
-    int index ;
-    TConstUnion *unionArray;
+    int index;
+    TConstUnionArray unionArray;
     TOperator tOp;
     const TType& type;
     TOperator constructorType;
@@ -112,7 +112,7 @@ bool ParseAggregate(bool /* preVisit */, TIntermAggregate* node, TIntermTraverse
 void ParseConstantUnion(TIntermConstantUnion* node, TIntermTraverser* it)
 {
     TConstTraverser* oit = static_cast<TConstTraverser*>(it);
-    TConstUnion* leftUnionArray = oit->unionArray;
+    TConstUnionArray leftUnionArray(oit->unionArray);
     int instanceSize = oit->type.getObjectSize();
 
     if (oit->index >= instanceSize)
@@ -121,7 +121,7 @@ void ParseConstantUnion(TIntermConstantUnion* node, TIntermTraverser* it)
     if (!oit->singleConstantParam) {
         int size = node->getType().getObjectSize();
     
-        TConstUnion *rightUnionArray = node->getUnionArrayPointer();
+        const TConstUnionArray& rightUnionArray = node->getConstArray();
         for (int i=0; i < size; i++) {
             if (oit->index >= instanceSize)
                 return;
@@ -137,7 +137,7 @@ void ParseConstantUnion(TIntermConstantUnion* node, TIntermTraverser* it)
         matrixRows = oit->matrixRows;
         isMatrix = oit->isMatrix;
         totalSize = oit->index + size;
-        TConstUnion *rightUnionArray = node->getUnionArrayPointer();
+        const TConstUnionArray& rightUnionArray = node->getConstArray();
         if (! isMatrix) {
             int count = 0;
             for (int i = oit->index; i < totalSize; i++) {
@@ -171,7 +171,7 @@ void ParseConstantUnion(TIntermConstantUnion* node, TIntermTraverser* it)
     }
 }
 
-bool TIntermediate::parseConstTree(TSourceLoc line, TIntermNode* root, TConstUnion* unionArray, TOperator constructorType, const TType& t, bool singleConstantParam)
+bool TIntermediate::parseConstTree(TSourceLoc line, TIntermNode* root, TConstUnionArray unionArray, TOperator constructorType, const TType& t, bool singleConstantParam)
 {
     if (root == 0)
         return false;

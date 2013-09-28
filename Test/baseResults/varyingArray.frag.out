@@ -15,17 +15,20 @@ WARNING: 0:8: varying deprecated in version 130; may be removed in future releas
 0:12              add (4-component vector of float)
 0:12                direct index (smooth in 4-component vector of float)
 0:12                  'gl_TexCoord' (smooth in 6-element array of 4-component vector of float)
-0:12                  4 (const int)
+0:12                  Constant:
+0:12                    4 (const int)
 0:12                direct index (smooth in 4-component vector of float)
 0:12                  'gl_TexCoord' (smooth in 6-element array of 4-component vector of float)
-0:12                  5 (const int)
+0:12                  Constant:
+0:12                    5 (const int)
 0:14      add second child into first child (4-component vector of float)
 0:14        'texColor' (4-component vector of float)
 0:14        'color' (smooth in 4-component vector of float)
 0:16      move second child to first child (float)
 0:16        direct index (float)
 0:16          'texColor' (4-component vector of float)
-0:16          3 (const int)
+0:16          Constant:
+0:16            3 (const int)
 0:16        'alpha' (smooth in float)
 0:18      move second child to first child (4-component vector of float)
 0:18        'gl_FragColor' (fragColor 4-component vector of float)
@@ -34,13 +37,16 @@ WARNING: 0:8: varying deprecated in version 130; may be removed in future releas
 0:18            add (4-component vector of float)
 0:18              direct index (smooth in 4-component vector of float)
 0:18                'foo' (smooth in 3-element array of 4-component vector of float)
-0:18                1 (const int)
+0:18                Constant:
+0:18                  1 (const int)
 0:18              direct index (smooth in 4-component vector of float)
 0:18                'gl_TexCoord' (smooth in 6-element array of 4-component vector of float)
-0:18                0 (const int)
+0:18                Constant:
+0:18                  0 (const int)
 0:18            direct index (smooth in 4-component vector of float)
 0:18              'gl_TexCoord' (smooth in 6-element array of 4-component vector of float)
-0:18              4 (const int)
+0:18              Constant:
+0:18                4 (const int)
 0:18          'texColor' (4-component vector of float)
 0:?   Linker Objects
 0:?     'texSampler2D' (uniform sampler2D)

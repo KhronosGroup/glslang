@@ -49,14 +49,17 @@ ERROR: node is still EOpNull!
 0:28        move second child to first child (2-element array of float)
 0:28          'ia' (2-element array of float)
 0:28          Construct float (2-element array of float)
-0:28            3.000000
+0:28            Constant:
+0:28              3.000000
 0:28            direct index (float)
 0:28              'i' (smooth in 4-component vector of float)
-0:28              1 (const int)
+0:28              Constant:
+0:28                1 (const int)
 0:29      Sequence
 0:29        move second child to first child (float)
 0:29          'f1' (float)
-0:29          1.000000
+0:29          Constant:
+0:29            1.000000
 0:30      Sequence
 0:30        move second child to first child (float)
 0:30          'f' (float)
@@ -102,23 +105,27 @@ ERROR: node is still EOpNull!
 0:39        divide (3-component vector of float)
 0:39          Convert int to float (3-component vector of float)
 0:39            'iv3' (3-component vector of int)
-0:39          2.000000
+0:39          Constant:
+0:39            2.000000
 0:40      move second child to first child (3-component vector of float)
 0:40        'v3' (3-component vector of float)
 0:40        vector-scale (3-component vector of float)
-0:40          3.000000
+0:40          Constant:
+0:40            3.000000
 0:40          Convert int to float (3-component vector of float)
 0:40            'iv3' (3-component vector of int)
 0:41      move second child to first child (3-component vector of float)
 0:41        'v3' (3-component vector of float)
 0:41        vector-scale (3-component vector of float)
-0:41          2.000000
+0:41          Constant:
+0:41            2.000000
 0:41          'v3' (3-component vector of float)
 0:42      move second child to first child (3-component vector of float)
 0:42        'v3' (3-component vector of float)
 0:42        subtract (3-component vector of float)
 0:42          'v3' (3-component vector of float)
-0:42          2.000000
+0:42          Constant:
+0:42            2.000000
 0:43      Test condition and select (void)
 0:43        Condition
 0:47        logical-or (bool)
@@ -188,8 +195,10 @@ ERROR: node is still EOpNull!
 0:54      vector swizzle (2-component vector of float)
 0:54        'i' (smooth in 4-component vector of float)
 0:54        Sequence
-0:54          0 (const int)
-0:54          1 (const int)
+0:54          Constant:
+0:54            0 (const int)
+0:54          Constant:
+0:54            1 (const int)
 0:55      'm' (uniform 4X2 matrix of float)
 0:56      'm' (uniform 4X2 matrix of float)
 0:58      'f' (float)
@@ -212,18 +221,22 @@ ERROR: node is still EOpNull!
 0:79        'gl_FragColor' (fragColor 4-component vector of float)
 0:82      direct index (float)
 0:82        'gl_FragColor' (fragColor 4-component vector of float)
-0:82        0 (const int)
+0:82        Constant:
+0:82          0 (const int)
 0:83      direct index (float)
 0:83        'gl_FragColor' (fragColor 4-component vector of float)
-0:83        0 (const int)
+0:83        Constant:
+0:83          0 (const int)
 0:84      direct index (float)
 0:84        'centTexCoord' (centroid smooth in 2-component vector of float)
-0:84        0 (const int)
+0:84        Constant:
+0:84          0 (const int)
 0:85      move second child to first child (bool)
 0:85        Comma (bool)
 0:85          'a' (int)
 0:85          'b' (bool)
-0:85        true (const bool)
+0:85        Constant:
+0:85          true (const bool)
 0:91  Function Definition: main( (int)
 0:91    Function Parameters: 
 0:92  Function Definition: main(i1; (void)
@@ -234,7 +247,8 @@ ERROR: node is still EOpNull!
 0:97      'a' (out float)
 0:99    Sequence
 0:99      Branch: Return with expression
-0:99        3.200000
+0:99        Constant:
+0:99          3.200000
 0:100      Function Call: foo(f1; (int)
 0:100        'a' (out float)
 0:103  Function Definition: gen(vf3; (bool)
@@ -248,17 +262,22 @@ ERROR: node is still EOpNull!
 0:105            Absolute value (float)
 0:105              direct index (in float)
 0:105                'v' (in 3-component vector of float)
-0:105                0 (const int)
-0:105            0.000100
+0:105                Constant:
+0:105                  0 (const int)
+0:105            Constant:
+0:105              0.000100
 0:105          Compare Less Than (bool)
 0:105            Absolute value (float)
 0:105              direct index (in float)
 0:105                'v' (in 3-component vector of float)
-0:105                1 (const int)
-0:105            0.000100
+0:105                Constant:
+0:105                  1 (const int)
+0:105            Constant:
+0:105              0.000100
 0:105        true case
 0:106        Branch: Return with expression
-0:106          true (const bool)
+0:106          Constant:
+0:106            true (const bool)
 0:109  Function Definition: v1( (void)
 0:109    Function Parameters: 
 0:113  Function Definition: v2( (void)
@@ -274,12 +293,14 @@ ERROR: node is still EOpNull!
 0:120          'v' (4-component vector of float)
 0:120          direct index (smooth in 4-component vector of float)
 0:120            'gl_TexCoord' (smooth in unsized array of 4-component vector of float)
-0:120            1 (const int)
+0:120            Constant:
+0:120              1 (const int)
 0:121      add second child into first child (4-component vector of float)
 0:121        'v' (4-component vector of float)
 0:121        direct index (smooth in 4-component vector of float)
 0:121          'gl_TexCoord' (smooth in unsized array of 4-component vector of float)
-0:121          3 (const int)
+0:121          Constant:
+0:121            3 (const int)
 0:?   Linker Objects
 0:?     'lowp' (float)
 0:?     'mediump' (float)

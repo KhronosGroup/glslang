@@ -8,25 +8,32 @@
 0:9          add (4-component vector of float)
 0:9            direct index (uniform 4-component vector of float)
 0:9              'color' (uniform 6-element array of 4-component vector of float)
-0:9              1 (const int)
+0:9              Constant:
+0:9                1 (const int)
 0:9            direct index (uniform 4-component vector of float)
 0:9              'color' (uniform 6-element array of 4-component vector of float)
-0:9              1 (const int)
+0:9              Constant:
+0:9                1 (const int)
 0:11      add second child into first child (3-component vector of float)
 0:11        vector swizzle (3-component vector of float)
 0:11          'texColor' (4-component vector of float)
 0:11          Sequence
-0:11            0 (const int)
-0:11            1 (const int)
-0:11            2 (const int)
+0:11            Constant:
+0:11              0 (const int)
+0:11            Constant:
+0:11              1 (const int)
+0:11            Constant:
+0:11              2 (const int)
 0:11        'inColor' (uniform 3-component vector of float)
 0:13      add second child into first child (float)
 0:13        direct index (float)
 0:13          'texColor' (4-component vector of float)
-0:13          3 (const int)
+0:13          Constant:
+0:13            3 (const int)
 0:13        direct index (uniform float)
 0:13          'alpha' (uniform 16-element array of float)
-0:13          12 (const int)
+0:13          Constant:
+0:13            12 (const int)
 0:15      move second child to first child (4-component vector of float)
 0:15        'gl_FragColor' (fragColor 4-component vector of float)
 0:15        'texColor' (4-component vector of float)

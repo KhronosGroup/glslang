@@ -721,6 +721,42 @@ public:
         name += ';' ;
     }
 
+    // Do two structure types match?  They could be declared independently,
+    // in different places, but still might satisfy the definition of matching.
+    // From the spec:
+    //
+    // "Structures must have the same name, sequence of type names, and 
+    //  type definitions, and member names to be considered the same type. 
+    //  This rule applies recursively for nested or embedded types."
+    //
+    bool sameStructType(const TType& right) const
+    {
+        // Most commonly, they are both 0, or the same pointer to the same actual structure
+        if (structure == right.structure)
+            return true;
+
+        // Both being 0 was caught above, now they both have to be structures of the same number of elements
+        if (structure == 0 || right.structure == 0 ||
+            structure->size() != right.structure->size())
+            return false;
+
+        // Structure names have to match
+        if (*typeName != *right.typeName)
+            return false;
+
+        // Compare the names and types of all the members, which have to match
+        for (unsigned int i = 0; i < structure->size(); ++i) {
+            if ((*structure)[i].type->getFieldName() != (*right.structure)[i].type->getFieldName())
+                return false;
+
+            if (*(*structure)[i].type != *(*right.structure)[i].type)
+                return false;
+        }
+
+        return true;
+    }
+
+    // See if two types match, in all aspects except arrayness
     bool sameElementType(const TType& right) const
     {
         return  basicType == right.basicType  &&
@@ -728,20 +764,20 @@ public:
                vectorSize == right.vectorSize &&
                matrixCols == right.matrixCols &&
                matrixRows == right.matrixRows &&
-                structure == right.structure;
+               sameStructType(right);
     }
 
+    // See if two types match in all ways (just the actual type, not qualification
     bool operator==(const TType& right) const
     {
         return sameElementType(right) &&
                (arraySizes == 0 && right.arraySizes == 0 ||
                 (arraySizes && right.arraySizes && arraySizes->sizes == right.arraySizes->sizes));
-        // don't check the qualifier, it's not ever what's being sought after
     }
 
     bool operator!=(const TType& right) const
     {
-        return !operator==(right);
+        return ! operator==(right);
     }
 
 protected:
@@ -764,7 +800,7 @@ protected:
     TTypeList* structure;       // 0 unless this is a struct
     mutable int structureSize;  // a cache, updated on first access
 	TString *fieldName;         // for structure field names
-	TString *typeName;          // for structure field type name
+	TString *typeName;          // for structure type name
 };
 
 } // end namespace glslang

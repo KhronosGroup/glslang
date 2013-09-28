@@ -106,7 +106,8 @@ public:
     typedef typename std::vector<T, pool_allocator<T> >::size_type size_type;
     TVector() : std::vector<T, pool_allocator<T> >() {}
     TVector(const pool_allocator<T>& a) : std::vector<T, pool_allocator<T> >(a) {}
-    TVector(size_type i): std::vector<T, pool_allocator<T> >(i) {}
+    TVector(size_type i) : std::vector<T, pool_allocator<T> >(i) {}
+    TVector(size_type i, const T& val) : std::vector<T, pool_allocator<T> >(i, val) {}
 };
 
 template <class T> class TList   : public TBaseList  <T, pool_allocator<T> > {

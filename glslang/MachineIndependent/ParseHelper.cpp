@@ -464,8 +464,8 @@ TIntermTyped* TParseContext::handleVariable(TSourceLoc loc, TSymbol* symbol, TSt
         // it was a member of an anonymous container, have to insert its dereference
         const TVariable* variable = anon->getAnonContainer().getAsVariable();
         TIntermTyped* container = intermediate.addSymbol(variable->getUniqueId(), variable->getName(), variable->getType(), loc);
-        TConstUnion* unionArray = new TConstUnion[1];
-        unionArray->setUConst(anon->getMemberNumber());
+        TConstUnionArray unionArray(1);
+        unionArray[0].setUConst(anon->getMemberNumber());
         TIntermTyped* constNode = intermediate.addConstantUnion(unionArray, TType(EbtUint, EvqConst), loc);
 
         node = intermediate.addIndex(EOpIndexDirectStruct, container, constNode, loc);
@@ -483,10 +483,9 @@ TIntermTyped* TParseContext::handleVariable(TSourceLoc loc, TSymbol* symbol, TSt
         // don't delete $1.string, it's used by error recovery, and the pool
         // pop will reclaim the memory
 
-        if (variable->getType().getQualifier().storage == EvqConst ) {
-            TConstUnion* constArray = variable->getConstUnionPointer();
-            node = intermediate.addConstantUnion(constArray, variable->getType(), loc);
-        } else
+        if (variable->getType().getQualifier().storage == EvqConst)
+            node = intermediate.addConstantUnion(variable->getConstArray(), variable->getType(), loc);
+        else
             node = intermediate.addSymbol(variable->getUniqueId(), variable->getName(), variable->getType(), loc);
     }
 
@@ -509,30 +508,30 @@ TIntermTyped* TParseContext::handleBracketDereference(TSourceLoc loc, TIntermTyp
     } else if (base->getType().getQualifier().storage == EvqConst && index->getQualifier().storage == EvqConst) {
         if (base->isArray()) {
             // constant folding for arrays
-            result = addConstArrayNode(index->getAsConstantUnion()->getUnionArrayPointer()->getIConst(), base, loc);
+            result = addConstArrayNode(index->getAsConstantUnion()->getConstArray()[0].getIConst(), base, loc);
         } else if (base->isVector()) {
             // constant folding for vectors
             TVectorFields fields;
             fields.num = 1;
-            fields.offsets[0] = index->getAsConstantUnion()->getUnionArrayPointer()->getIConst(); // need to do it this way because v.xy sends fields integer array
+            fields.offsets[0] = index->getAsConstantUnion()->getConstArray()[0].getIConst(); // need to do it this way because v.xy sends fields integer array
             result = addConstVectorNode(fields, base, loc);
         } else if (base->isMatrix()) {
             // constant folding for matrices
-            result = addConstMatrixNode(index->getAsConstantUnion()->getUnionArrayPointer()->getIConst(), base, loc);
+            result = addConstMatrixNode(index->getAsConstantUnion()->getConstArray()[0].getIConst(), base, loc);
         }
     } else {
         if (index->getQualifier().storage == EvqConst) {
-            int indexValue = index->getAsConstantUnion()->getUnionArrayPointer()->getIConst();
+            int indexValue = index->getAsConstantUnion()->getConstArray()[0].getIConst();
             if (! base->isArray() && (base->isVector() && base->getType().getVectorSize() <= indexValue ||
                                       base->isMatrix() && base->getType().getMatrixCols() <= indexValue))
-                error(loc, "", "[", "index out of range '%d'", index->getAsConstantUnion()->getUnionArrayPointer()->getIConst());
+                error(loc, "", "[", "index out of range '%d'", index->getAsConstantUnion()->getConstArray()[0].getIConst());
             if (base->isArray()) {
                 if (base->getType().getArraySize() == 0) {
-                    if (base->getType().getMaxArraySize() <= index->getAsConstantUnion()->getUnionArrayPointer()->getIConst())
-                        arraySetMaxSize(loc, base->getAsSymbolNode(), index->getAsConstantUnion()->getUnionArrayPointer()->getIConst() + 1);
-                } else if ( index->getAsConstantUnion()->getUnionArrayPointer()->getIConst() >= base->getType().getArraySize() ||
-                            index->getAsConstantUnion()->getUnionArrayPointer()->getIConst() < 0)
-                    error(loc, "", "[", "array index out of range '%d'", index->getAsConstantUnion()->getUnionArrayPointer()->getIConst());
+                    if (base->getType().getMaxArraySize() <= index->getAsConstantUnion()->getConstArray()[0].getIConst())
+                        arraySetMaxSize(loc, base->getAsSymbolNode(), index->getAsConstantUnion()->getConstArray()[0].getIConst() + 1);
+                } else if ( index->getAsConstantUnion()->getConstArray()[0].getIConst() >= base->getType().getArraySize() ||
+                            index->getAsConstantUnion()->getConstArray()[0].getIConst() < 0)
+                    error(loc, "", "[", "array index out of range '%d'", index->getAsConstantUnion()->getConstArray()[0].getIConst());
             }
             result = intermediate.addIndex(EOpIndexDirect, base, index, loc);
         } else {
@@ -550,8 +549,8 @@ TIntermTyped* TParseContext::handleBracketDereference(TSourceLoc loc, TIntermTyp
     }
 
     if (result == 0) {
-        TConstUnion *unionArray = new TConstUnion[1];
-        unionArray->setDConst(0.0);
+        TConstUnionArray unionArray(1);
+        unionArray[0].setDConst(0.0);
         result = intermediate.addConstantUnion(unionArray, TType(EbtFloat, EvqConst), loc);
     } else {
         TType newType;
@@ -599,8 +598,8 @@ TIntermTyped* TParseContext::handleDotDereference(TSourceLoc loc, TIntermTyped* 
                 result->setType(TType(base->getBasicType(), EvqConst, (int) (field).size()));
         } else {
             if (fields.num == 1) {
-                TConstUnion *unionArray = new TConstUnion[1];
-                unionArray->setIConst(fields.offsets[0]);
+                TConstUnionArray unionArray(1);
+                unionArray[0].setIConst(fields.offsets[0]);
                 TIntermTyped* index = intermediate.addConstantUnion(unionArray, TType(EbtInt, EvqConst), loc);
                 result = intermediate.addIndex(EOpIndexDirect, base, index, loc);
                 result->setType(TType(base->getBasicType(), EvqTemporary, base->getType().getQualifier().precision));
@@ -638,8 +637,8 @@ TIntermTyped* TParseContext::handleDotDereference(TSourceLoc loc, TIntermTyped* 
                         result->getWritableType().getQualifier().storage = EvqConst;
                     }
                 } else {
-                    TConstUnion *unionArray = new TConstUnion[1];
-                    unionArray->setIConst(i);
+                    TConstUnionArray unionArray(1);
+                    unionArray[0].setIConst(i);
                     TIntermTyped* index = intermediate.addConstantUnion(unionArray, TType(EbtInt, EvqConst), loc);
                     result = intermediate.addIndex(EOpIndexDirectStruct, base, index, loc);
                     result->setType(*(*fields)[i].type);
@@ -761,8 +760,8 @@ TIntermTyped* TParseContext::handleFunctionCall(TSourceLoc loc, TFunction* fnCal
         } else
             length = intermNode->getAsTyped()->getType().getArraySize();
 
-        TConstUnion *unionArray = new TConstUnion[1];
-        unionArray->setIConst(length);
+        TConstUnionArray unionArray(1);
+        unionArray[0].setIConst(length);
         result = intermediate.addConstantUnion(unionArray, TType(EbtInt, EvqConst), loc);
     } else if (op != EOpNull) {
         //
@@ -836,8 +835,8 @@ TIntermTyped* TParseContext::handleFunctionCall(TSourceLoc loc, TFunction* fnCal
         } else {
             // error message was put out by PaFindFunction()
             // Put on a dummy node for error recovery
-            TConstUnion *unionArray = new TConstUnion[1];
-            unionArray->setDConst(0.0);
+            TConstUnionArray unionArray(1);
+            unionArray[0].setDConst(0.0);
             result = intermediate.addConstantUnion(unionArray, TType(EbtFloat, EvqConst), loc);
         }
     }
@@ -1074,7 +1073,7 @@ bool TParseContext::lValueErrorCheck(TSourceLoc loc, const char* op, TIntermType
                 
                 for (TIntermSequence::iterator p = aggrNode->getSequence().begin(); 
                                                p != aggrNode->getSequence().end(); p++) {
-                    int value = (*p)->getAsTyped()->getAsConstantUnion()->getUnionArrayPointer()->getIConst();
+                    int value = (*p)->getAsTyped()->getAsConstantUnion()->getConstArray()[0].getIConst();
                     offset[value]++;     
                     if (offset[value] > 1) {
                         error(loc, " l-value of swizzle cannot have duplicate components", op, "", "");
@@ -1631,7 +1630,7 @@ void TParseContext::arraySizeCheck(TSourceLoc loc, TIntermTyped* expr, int& size
         return;
     }
 
-    size = constant->getUnionArrayPointer()->getIConst();
+    size = constant->getConstArray()[0].getIConst();
 
     if (size <= 0) {
         error(loc, "array size must be a positive integer", "", "");
@@ -1767,7 +1766,7 @@ bool TParseContext::arraySetMaxSize(TSourceLoc loc, TIntermSymbol *node, int siz
     //        return true;
     //    }
 
-    //    int texCoordValue = texCoord->getAsVariable()->getConstUnionPointer()[0].getIConst();
+    //    int texCoordValue = texCoord->getAsVariable()->getConstArray()[0].getIConst();
     //    if (texCoordValue <= size) {
     //        error(loc, "", "[", "gl_TexCoord can only have a max array size of up to gl_MaxTextureCoords", "");
     //        return true;
@@ -2087,8 +2086,8 @@ TIntermNode* TParseContext::executeInitializer(TSourceLoc loc, TString& identifi
     //
     // test for and propagate constant
     //
-    if (qualifier == EvqConst) {
-        if (qualifier != initializer->getType().getQualifier().storage) {
+    if (qualifier == EvqConst || qualifier == EvqUniform) {
+        if (initializer->getType().getQualifier().storage != EvqConst) {
             error(loc, " assigning non-constant to", "=", "'%s'", variable->getType().getCompleteString().c_str());
             variable->getWritableType().getQualifier().storage = EvqTemporary;
             return 0;
@@ -2099,20 +2098,13 @@ TIntermNode* TParseContext::executeInitializer(TSourceLoc loc, TString& identifi
             variable->getWritableType().getQualifier().storage = EvqTemporary;
             return 0;
         }
-        if (initializer->getAsConstantUnion()) { 
-            TConstUnion* unionArray = variable->getConstUnionPointer();
-
-            if (type.getObjectSize() == 1 && type.getBasicType() != EbtStruct) {
-	            *unionArray = (initializer->getAsConstantUnion()->getUnionArrayPointer())[0];
-            } else {
-                variable->shareConstPointer(initializer->getAsConstantUnion()->getUnionArrayPointer());
-            }
-        } else if (initializer->getAsSymbolNode()) {
+        if (initializer->getAsConstantUnion())
+            variable->setConstArray(initializer->getAsConstantUnion()->getConstArray());
+        else if (initializer->getAsSymbolNode()) {
             TSymbol* symbol = symbolTable.find(initializer->getAsSymbolNode()->getName());
-            if (const TVariable* tVar = symbol->getAsVariable()) {
-                TConstUnion* constArray = tVar->getConstUnionPointer();
-                variable->shareConstPointer(constArray);
-            } else {
+            if (const TVariable* tVar = symbol->getAsVariable())
+                variable->setConstArray(tVar->getConstArray());
+            else {
                 error(loc, "expected variable", initializer->getAsSymbolNode()->getName().c_str(), "");
                 return 0;
             }
@@ -2121,16 +2113,14 @@ TIntermNode* TParseContext::executeInitializer(TSourceLoc loc, TString& identifi
             variable->getWritableType().getQualifier().storage = EvqTemporary;
             return 0;
         }
-    }
- 
-    if (qualifier != EvqConst) {
+    } else {
         TIntermSymbol* intermSymbol = intermediate.addSymbol(variable->getUniqueId(), variable->getName(), variable->getType(), loc);
         TIntermNode* initNode = intermediate.addAssign(EOpAssign, intermSymbol, initializer, loc);
         if (! initNode)
             assignError(loc, "=", intermSymbol->getCompleteString(), initializer->getCompleteString());
 
         return initNode;
-    } 
+    }
 
     return 0;
 }
@@ -2559,8 +2549,8 @@ void TParseContext::wrapupSwitchSubsequence(TIntermAggregate* statements, TInter
                           newExpression != 0 &&
                          prevExpression->getAsConstantUnion() && 
                           newExpression->getAsConstantUnion() &&
-                         prevExpression->getAsConstantUnion()->getUnionArrayPointer()->getIConst() == 
-                          newExpression->getAsConstantUnion()->getUnionArrayPointer()->getIConst())
+                         prevExpression->getAsConstantUnion()->getConstArray()[0].getIConst() == 
+                          newExpression->getAsConstantUnion()->getConstArray()[0].getIConst())
                     error(branchNode->getLoc(), "duplicated value", "case", "");
             }
         }
@@ -2617,22 +2607,16 @@ TIntermTyped* TParseContext::addConstVectorNode(TVectorFields& fields, TIntermTy
     TIntermTyped* typedNode;
     TIntermConstantUnion* tempConstantNode = node->getAsConstantUnion();
 
-    TConstUnion *unionArray;
-    if (tempConstantNode) {
-        unionArray = tempConstantNode->getUnionArrayPointer();
-
-        if (!unionArray) {  // this error message should never be raised
-            infoSink.info.message(EPrefixInternalError, "TConstUnion not initialized in addConstVectorNode function", loc);
-
-            return node;
-        }
-    } else { // The node has to be either a symbol node or an aggregate node or a tempConstant node, else, its an error
+    TConstUnionArray unionArray;
+    if (tempConstantNode)
+        unionArray = tempConstantNode->getConstArray();
+    else { // The node has to be either a symbol node or an aggregate node or a tempConstant node, else, its an error
         error(loc, "Cannot offset into the vector", "Error", "");
 
         return 0;
     }
 
-    TConstUnion* constArray = new TConstUnion[fields.num];
+    TConstUnionArray constArray(fields.num);
 
     for (int i = 0; i < fields.num; i++) {
         if (fields.offsets[i] >= node->getType().getObjectSize()) {
@@ -2664,10 +2648,10 @@ TIntermTyped* TParseContext::addConstMatrixNode(int index, TIntermTyped* node, T
     }
 
     if (tempConstantNode) {
-         TConstUnion* unionArray = tempConstantNode->getUnionArrayPointer();
-         int size = tempConstantNode->getType().getMatrixRows();
-         // Note: the type is corrected (dereferenced) by the caller
-         typedNode = intermediate.addConstantUnion(&unionArray[size*index], tempConstantNode->getType(), loc);
+        const TConstUnionArray& unionArray = tempConstantNode->getConstArray();
+        int size = tempConstantNode->getType().getMatrixRows();
+        // Note: the type is corrected (dereferenced) by the caller
+        typedNode = intermediate.addConstantUnion(TConstUnionArray(unionArray, size * index, size), tempConstantNode->getType(), loc);
     } else {
         error(loc, "Cannot offset into the matrix", "Error", "");
 
@@ -2701,8 +2685,8 @@ TIntermTyped* TParseContext::addConstArrayNode(int index, TIntermTyped* node, TS
     int arrayElementSize = arrayElementType.getObjectSize();
 
     if (tempConstantNode) {
-         TConstUnion* unionArray = tempConstantNode->getUnionArrayPointer();
-         typedNode = intermediate.addConstantUnion(&unionArray[arrayElementSize * index], tempConstantNode->getType(), loc);
+         typedNode = intermediate.addConstantUnion(TConstUnionArray(tempConstantNode->getConstArray(), arrayElementSize * index, arrayElementSize), 
+                                                   tempConstantNode->getType(), loc);
     } else {
         error(loc, "Cannot offset into the array", "Error", "");
 
@@ -2722,22 +2706,24 @@ TIntermTyped* TParseContext::addConstStruct(TString& identifier, TIntermTyped* n
 {
     TTypeList* fields = node->getType().getStruct();
     TIntermTyped *typedNode;
-    int instanceSize = 0;
+    int instanceOffset = 0;
+    int instanceSize;
     unsigned int index = 0;
     TIntermConstantUnion *tempConstantNode = node->getAsConstantUnion();
 
     for ( index = 0; index < fields->size(); ++index) {
-        if ((*fields)[index].type->getFieldName() == identifier) {
+        instanceSize = (*fields)[index].type->getObjectSize();
+        
+        if ((*fields)[index].type->getFieldName() == identifier)
             break;
-        } else {
-            instanceSize += (*fields)[index].type->getObjectSize();
-        }
+        
+        instanceOffset += instanceSize;
     }
 
     if (tempConstantNode) {
-         TConstUnion* constArray = tempConstantNode->getUnionArrayPointer();
-
-         typedNode = intermediate.addConstantUnion(constArray+instanceSize, tempConstantNode->getType(), loc); // type will be changed in the calling function
+         typedNode = intermediate.addConstantUnion(TConstUnionArray(tempConstantNode->getConstArray(), instanceOffset, instanceSize), 
+                                                   tempConstantNode->getType(), loc);
+         // type will be changed in the calling function
     } else {
         error(loc, "Cannot offset into the structure", "Error", "");
 

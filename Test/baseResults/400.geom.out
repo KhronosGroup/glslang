@@ -3,9 +3,11 @@
 0:3    Function Parameters: 
 0:5    Sequence
 0:5      EmitStreamVertex (void)
-0:5        1 (const int)
+0:5        Constant:
+0:5          1 (const int)
 0:6      EndStreamPrimitive (void)
-0:6        0 (const int)
+0:6        Constant:
+0:6          0 (const int)
 0:7      EmitVertex (void)
 0:8      EndPrimitive (void)
 0:?   Linker Objects

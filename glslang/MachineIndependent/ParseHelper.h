@@ -171,7 +171,6 @@ protected:
     void declareArray(TSourceLoc, TString& identifier, const TType&, TVariable*&, bool& newDeclaration);
     TIntermNode* executeInitializer(TSourceLoc, TString& identifier, TType&, TIntermTyped* initializer, TVariable* variable);
 
-
 public:
     //
     // Generally, bison productions, the scanner, and the PP need read/write access to these; just give them direct access

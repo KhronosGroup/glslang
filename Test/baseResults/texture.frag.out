@@ -7,43 +7,51 @@ WARNING: 0:15: varying deprecated in version 130; may be removed in future relea
 0:19      Sequence
 0:19        move second child to first child (float)
 0:19          'blendscale' (float)
-0:19          1.789000
+0:19          Constant:
+0:19            1.789000
 0:20      Sequence
 0:20        move second child to first child (float)
 0:20          'bias' (float)
-0:20          2.000000
+0:20          Constant:
+0:20            2.000000
 0:21      Sequence
 0:21        move second child to first child (float)
 0:21          'lod' (float)
-0:21          3.000000
+0:21          Constant:
+0:21            3.000000
 0:22      Sequence
 0:22        move second child to first child (float)
 0:22          'proj' (float)
-0:22          2.000000
+0:22          Constant:
+0:22            2.000000
 0:23      Sequence
 0:23        move second child to first child (float)
 0:23          'coords1D' (float)
-0:23          1.789000
+0:23          Constant:
+0:23            1.789000
 0:24      Sequence
 0:24        move second child to first child (3-component vector of float)
 0:24          'coords3D' (3-component vector of float)
-0:24          1.789000
-0:24          2.718000
-0:24          3.453000
+0:24          Constant:
+0:24            1.789000
+0:24            2.718000
+0:24            3.453000
 0:25      Sequence
 0:25        move second child to first child (4-component vector of float)
 0:25          'coords4D' (4-component vector of float)
-0:25          1.789000
-0:25          2.718000
-0:25          3.453000
-0:25          2.000000
+0:25          Constant:
+0:25            1.789000
+0:25            2.718000
+0:25            3.453000
+0:25            2.000000
 0:26      Sequence
 0:26        move second child to first child (4-component vector of float)
 0:26          'color' (4-component vector of float)
-0:26          0.000000
-0:26          0.000000
-0:26          0.000000
-0:26          0.000000
+0:26          Constant:
+0:26            0.000000
+0:26            0.000000
+0:26            0.000000
+0:26            0.000000
 0:28      add second child into first child (4-component vector of float)
 0:28        'color' (4-component vector of float)
 0:28        Function Call: texture1D(s11;f1; (4-component vector of float)
@@ -179,12 +187,14 @@ WARNING: 0:15: varying deprecated in version 130; may be removed in future relea
 0:57      Sequence
 0:57        move second child to first child (2-component vector of int)
 0:57          'iCoords2D' (2-component vector of int)
-0:57          0 (const int)
-0:57          5 (const int)
+0:57          Constant:
+0:57            0 (const int)
+0:57            5 (const int)
 0:58      Sequence
 0:58        move second child to first child (int)
 0:58          'iLod' (int)
-0:58          1 (const int)
+0:58          Constant:
+0:58            1 (const int)
 0:60      add second child into first child (4-component vector of float)
 0:60        'color' (4-component vector of float)
 0:60        Function Call: texelFetch(s21;vi2;i1; (4-component vector of float)
@@ -204,8 +214,9 @@ WARNING: 0:15: varying deprecated in version 130; may be removed in future relea
 0:64      Sequence
 0:64        move second child to first child (2-component vector of int)
 0:64          'offset' (2-component vector of int)
-0:64          3 (const int)
-0:64          -7 (const int)
+0:64          Constant:
+0:64            3 (const int)
+0:64            -7 (const int)
 0:66      add second child into first child (4-component vector of float)
 0:66        'color' (4-component vector of float)
 0:66        Function Call: textureGrad(s21;vf2;vf2;vf2; (4-component vector of float)

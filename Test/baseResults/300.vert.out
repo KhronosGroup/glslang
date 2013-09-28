@@ -33,47 +33,58 @@ ERROR: node is still EOpNull!
 0:31      Sequence
 0:31        move second child to first child (highp int)
 0:31          'c0' (highp int)
-0:31          64 (const int)
+0:31          Constant:
+0:31            64 (const int)
 0:32      Sequence
 0:32        move second child to first child (highp int)
 0:32          'c1' (highp int)
-0:32          128 (const int)
+0:32          Constant:
+0:32            128 (const int)
 0:33      Sequence
 0:33        move second child to first child (highp int)
 0:33          'c2' (highp int)
-0:33          16 (const int)
+0:33          Constant:
+0:33            16 (const int)
 0:34      Sequence
 0:34        move second child to first child (highp int)
 0:34          'c3' (highp int)
-0:34          15 (const int)
+0:34          Constant:
+0:34            15 (const int)
 0:35      Sequence
 0:35        move second child to first child (highp int)
 0:35          'c4' (highp int)
-0:35          32 (const int)
+0:35          Constant:
+0:35            32 (const int)
 0:36      Sequence
 0:36        move second child to first child (highp int)
 0:36          'c5' (highp int)
-0:36          32 (const int)
+0:36          Constant:
+0:36            32 (const int)
 0:37      Sequence
 0:37        move second child to first child (highp int)
 0:37          'c6' (highp int)
-0:37          32 (const int)
+0:37          Constant:
+0:37            32 (const int)
 0:38      Sequence
 0:38        move second child to first child (highp int)
 0:38          'c7' (highp int)
-0:38          16 (const int)
+0:38          Constant:
+0:38            16 (const int)
 0:39      Sequence
 0:39        move second child to first child (highp int)
 0:39          'c8' (highp int)
-0:39          32 (const int)
+0:39          Constant:
+0:39            32 (const int)
 0:40      Sequence
 0:40        move second child to first child (highp int)
 0:40          'c9' (highp int)
-0:40          -8 (const int)
+0:40          Constant:
+0:40            -8 (const int)
 0:41      Sequence
 0:41        move second child to first child (highp int)
 0:41          'c10' (highp int)
-0:41          7 (const int)
+0:41          Constant:
+0:41            7 (const int)
 0:43      Sequence
 0:43        move second child to first child (highp 3X4 matrix of float)
 0:43          'tm' (highp 3X4 matrix of float)
@@ -99,27 +110,32 @@ ERROR: node is still EOpNull!
 0:49        'gl_Position' (gl_Position highp 4-component vector of float)
 0:49        direct index (uniform highp 4-component vector of float)
 0:49          'm44' (uniform highp 4X4 matrix of float)
-0:49          2 (const int)
+0:49          Constant:
+0:49            2 (const int)
 0:50      move second child to first child (highp float)
 0:50        'gl_PointSize' (gl_PointSize highp float)
 0:50        direct index (highp float)
 0:50          'v2' (smooth out highp 2-component vector of float)
-0:50          1 (const int)
+0:50          Constant:
+0:50            1 (const int)
 0:52      move second child to first child (highp 3-component vector of float)
 0:52        c: direct index for structure (highp 3-component vector of float)
 0:52          's' (smooth out structure)
-0:52          0 (const int)
+0:52          Constant:
+0:52            0 (const int)
 0:52        'v3' (in highp 3-component vector of float)
 0:53      move second child to first child (highp float)
 0:53        f: direct index for structure (highp float)
 0:53          's' (smooth out structure)
-0:53          1 (const int)
+0:53          Constant:
+0:53            1 (const int)
 0:53        'dm' (highp float)
 0:68  Sequence
 0:68    move second child to first child (2-element array of highp float)
 0:68      'okayA' (2-element array of highp float)
-0:68      3.000000
-0:68      4.000000
+0:68      Constant:
+0:68        3.000000
+0:68        4.000000
 0:?   Linker Objects
 0:?     'm43' (uniform highp 4X3 matrix of float)
 0:?     'm33' (uniform highp 3X3 matrix of float)

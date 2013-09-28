@@ -21,6 +21,16 @@ void vj, vk5[5] = int[](5, 6, 7, 8, 9);
 void vm2[2] = int[](10, 11), vm3[3] = int[](12, 13, 14);
 void vn8[4] = int[](21, 22, 23, 24), vp;
 
+const int cii4[4] = int[](1, 2, 3, 4);
+const int cij, cik5[5] = int[](5, 6, 7, 8, 9);
+const int cim2[2] = int[](10, 11), cim3[3] = int[](12, 13, 14);
+const int cin8[4] = int[](21, 22, 23, 24), cip;
+
+uniform int uii4[4] = int[](1, 2, 3, 4);
+uniform int uij, uik5[5] = int[](5, 6, 7, 8, 9);
+uniform int uim2[2] = int[](10, 11), uim3[3] = int[](12, 13, 14);
+uniform int uin8[4] = int[](21, 22, 23, 24), uip;
+
 int gl_vi4[4] = int[](1, 2, 3, 4);
 int gl_vj, gl_vk5[5] = int[](5, 6, 7, 8, 9);
 int gl_vm2[2] = int[](10, 11), gl_vm3[3] = int[](12, 13, 14);

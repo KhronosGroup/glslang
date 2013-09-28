@@ -40,7 +40,8 @@ ERROR: node is still EOpNull!
 0:59        Function Call: textureLod(sA21;vf3;f1; (lowp 4-component vector of float)
 0:59          's2DArray' (uniform lowp sampler2DArray)
 0:59          'c3D' (smooth in lowp 3-component vector of float)
-0:59          1.200000
+0:59          Constant:
+0:59            1.200000
 0:60      move second child to first child (lowp float)
 0:60        'f' (lowp float)
 0:60        Function Call: textureOffset(sS21;vf3;vi2;f1; (lowp float)
@@ -59,9 +60,11 @@ ERROR: node is still EOpNull!
 0:62        Function Call: texelFetchOffset(s21;vi2;i1;vi2; (lowp 4-component vector of float)
 0:62          direct index (uniform lowp sampler2D)
 0:62            'arrayedSampler' (uniform 5-element array of lowp sampler2D)
-0:62            2 (const int)
+0:62            Constant:
+0:62              2 (const int)
 0:62          'ic2D' (flat in mediump 2-component vector of int)
-0:62          4 (const int)
+0:62          Constant:
+0:62            4 (const int)
 0:62          'ic2D' (flat in mediump 2-component vector of int)
 0:63      move second child to first child (lowp float)
 0:63        'f' (lowp float)
@@ -143,7 +146,8 @@ ERROR: node is still EOpNull!
 0:76        Function Call: texture(is31;vf3;f1; (mediump 4-component vector of int)
 0:76          'is3D' (uniform lowp isampler3D)
 0:76          'c3D' (smooth in lowp 3-component vector of float)
-0:76          4.200000
+0:76          Constant:
+0:76            4.200000
 0:77      move second child to first child (mediump 4-component vector of int)
 0:77        'iv' (mediump 4-component vector of int)
 0:77        Function Call: textureLod(isC1;vf3;f1; (mediump 4-component vector of int)
@@ -160,16 +164,20 @@ ERROR: node is still EOpNull!
 0:80        vector swizzle (mediump 2-component vector of int)
 0:80          'iv' (mediump 4-component vector of int)
 0:80          Sequence
-0:80            0 (const int)
-0:80            1 (const int)
+0:80            Constant:
+0:80              0 (const int)
+0:80            Constant:
+0:80              1 (const int)
 0:80        Function Call: textureSize(sSC1;i1; (highp 2-component vector of int)
 0:80          'sCubeShadow' (uniform lowp samplerCubeShadow)
-0:80          2 (const int)
+0:80          Constant:
+0:80            2 (const int)
 0:88      add second child into first child (highp float)
 0:88        'f' (lowp float)
 0:88        direct index (highp float)
 0:88          'gl_FragCoord' (gl_FragCoord highp 4-component vector of float)
-0:88          1 (const int)
+0:88          Constant:
+0:88            1 (const int)
 0:89      move second child to first child (highp float)
 0:89        'gl_FragDepth' (gl_FragDepth highp float)
 0:89        'f' (lowp float)
@@ -177,12 +185,14 @@ ERROR: node is still EOpNull!
 0:91        'sc' (out lowp 3-component vector of float)
 0:91        c: direct index for structure (lowp 3-component vector of float)
 0:91          's2' (smooth in structure)
-0:91          0 (const int)
+0:91          Constant:
+0:91            0 (const int)
 0:92      move second child to first child (lowp float)
 0:92        'sf' (out lowp float)
 0:92        f: direct index for structure (lowp float)
 0:92          's2' (smooth in structure)
-0:92          1 (const int)
+0:92          Constant:
+0:92            1 (const int)
 0:94      add (lowp 2-component vector of float)
 0:94        hyp. sine (lowp float)
 0:94          'c1D' (smooth in lowp float)

@@ -22,16 +22,20 @@ ERROR: node is still EOpNull!
 0:11        Construct float (4-element array of float)
 0:11          direct index (in mediump float)
 0:11            'a' (in 5-element array of mediump float)
-0:11            0 (const int)
+0:11            Constant:
+0:11              0 (const int)
 0:11          direct index (in mediump float)
 0:11            'a' (in 5-element array of mediump float)
-0:11            1 (const int)
+0:11            Constant:
+0:11              1 (const int)
 0:11          direct index (in mediump float)
 0:11            'a' (in 5-element array of mediump float)
-0:11            2 (const int)
+0:11            Constant:
+0:11              2 (const int)
 0:11          direct index (in mediump float)
 0:11            'a' (in 5-element array of mediump float)
-0:11            3 (const int)
+0:11            Constant:
+0:11              3 (const int)
 0:14  Function Definition: bar(f1[5]; (void)
 0:14    Function Parameters: 
 0:14      '' (in 5-element array of mediump float)
@@ -42,62 +46,76 @@ ERROR: node is still EOpNull!
 0:21        move second child to first child (mediump float)
 0:21          direct index (mediump float)
 0:21            'gu' (2-element array of mediump float)
-0:21            2 (const int)
-0:21          4.000000
+0:21            Constant:
+0:21              2 (const int)
+0:21          Constant:
+0:21            4.000000
 0:24      move second child to first child (4-element array of mediump float)
 0:24        'g4' (4-element array of mediump float)
 0:24        Function Call: foo(f1[5]; (4-element array of mediump float)
 0:24          'g5' (5-element array of mediump float)
 0:25      'g5' (5-element array of mediump float)
 0:26      'gu' (unsized array of mediump float)
-0:28      0.000000
+0:28      Constant:
+0:28        0.000000
 0:29      Function Call: bar(f1[5]; (void)
 0:29        'g5' (5-element array of mediump float)
 0:31      Test condition and select (void)
 0:31        Condition
 0:31        Compare Equal (bool)
-0:31          1.000000
-0:31          2.000000
-0:31          3.000000
-0:31          4.000000
+0:31          Constant:
+0:31            1.000000
+0:31            2.000000
+0:31            3.000000
+0:31            4.000000
 0:31          'g4' (4-element array of mediump float)
 0:31        true case
 0:32        move second child to first child (mediump float)
 0:32          direct index (mediump float)
 0:32            'gu' (unsized array of mediump float)
-0:32            0 (const int)
-0:32          2.000000
+0:32            Constant:
+0:32              0 (const int)
+0:32          Constant:
+0:32            2.000000
 0:35      move second child to first child (mediump float)
 0:35        direct index (mediump float)
 0:35          'u' (5-element array of mediump float)
-0:35          5 (const int)
-0:35        5.000000
+0:35          Constant:
+0:35            5 (const int)
+0:35        Constant:
+0:35          5.000000
 0:36      Function Call: foo(f1[5]; (4-element array of mediump float)
 0:36        'u' (5-element array of mediump float)
 0:38      move second child to first child (4-component vector of float)
 0:38        direct index (fragColor 4-component vector of float)
 0:38          'gl_FragData' (fragColor 32-element array of 4-component vector of float)
-0:38          1000 (const int)
-0:38        1.000000
-0:38        1.000000
-0:38        1.000000
-0:38        1.000000
+0:38          Constant:
+0:38            1000 (const int)
+0:38        Constant:
+0:38          1.000000
+0:38          1.000000
+0:38          1.000000
+0:38          1.000000
 0:39      move second child to first child (4-component vector of float)
 0:39        direct index (fragColor 4-component vector of float)
 0:39          'gl_FragData' (fragColor 32-element array of 4-component vector of float)
-0:39          -1 (const int)
-0:39        1.000000
-0:39        1.000000
-0:39        1.000000
-0:39        1.000000
+0:39          Constant:
+0:39            -1 (const int)
+0:39        Constant:
+0:39          1.000000
+0:39          1.000000
+0:39          1.000000
+0:39          1.000000
 0:40      move second child to first child (4-component vector of float)
 0:40        direct index (fragColor 4-component vector of float)
 0:40          'gl_FragData' (fragColor 32-element array of 4-component vector of float)
-0:40          3 (const int)
-0:40        1.000000
-0:40        1.000000
-0:40        1.000000
-0:40        1.000000
+0:40          Constant:
+0:40            3 (const int)
+0:40        Constant:
+0:40          1.000000
+0:40          1.000000
+0:40          1.000000
+0:40          1.000000
 0:?   Linker Objects
 0:?     'gu' (unsized array of mediump float)
 0:?     'g4' (4-element array of mediump float)

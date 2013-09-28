@@ -78,18 +78,30 @@ ERROR: node is still EOpNull!
 0:46      's' (structure)
 0:47      'a' (5-element array of mediump float)
 0:48      'b3' (3-component vector of bool)
-0:50      false (const bool)
-0:51      false (const bool)
-0:52      false (const bool)
-0:53      false (const bool)
-0:54      false (const bool)
-0:55      false (const bool)
-0:57      false (const bool)
-0:58      false (const bool)
-0:59      false (const bool)
-0:60      false (const bool)
-0:61      false (const bool)
-0:62      false (const bool)
+0:50      Constant:
+0:50        false (const bool)
+0:51      Constant:
+0:51        false (const bool)
+0:52      Constant:
+0:52        false (const bool)
+0:53      Constant:
+0:53        false (const bool)
+0:54      Constant:
+0:54        false (const bool)
+0:55      Constant:
+0:55        false (const bool)
+0:57      Constant:
+0:57        false (const bool)
+0:58      Constant:
+0:58        false (const bool)
+0:59      Constant:
+0:59        false (const bool)
+0:60      Constant:
+0:60        false (const bool)
+0:61      Constant:
+0:61        false (const bool)
+0:62      Constant:
+0:62        false (const bool)
 0:64      'u' (mediump uint)
 0:65      'i' (mediump int)
 0:66      'm2' (mediump 2X2 matrix of float)
@@ -132,10 +144,12 @@ ERROR: node is still EOpNull!
 0:96        'iv3' (mediump 3-component vector of int)
 0:98      mod second child into first child (mediump int)
 0:98        'i' (mediump int)
-0:98        3 (const int)
+0:98        Constant:
+0:98          3 (const int)
 0:99      mod (mediump 3-component vector of uint)
 0:99        'uv3' (mediump 3-component vector of uint)
-0:99        4 (const uint)
+0:99        Constant:
+0:99          4 (const uint)
 0:100      Pre-Decrement (mediump 2X2 matrix of float)
 0:100        'm2' (mediump 2X2 matrix of float)
 0:101      Post-Increment (mediump 4-component vector of int)

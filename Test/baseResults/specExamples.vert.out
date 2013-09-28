@@ -132,57 +132,72 @@ ERROR: node is still EOpNull!
 0:162        vector swizzle (3-component vector of float)
 0:162          'v' (smooth out 4-component vector of float)
 0:162          Sequence
-0:162            0 (const int)
-0:162            1 (const int)
-0:162            2 (const int)
+0:162            Constant:
+0:162              0 (const int)
+0:162            Constant:
+0:162              1 (const int)
+0:162            Constant:
+0:162              2 (const int)
 0:162        add (3-component vector of float)
 0:162          'r' (3-component vector of float)
 0:162          's' (3-component vector of float)
 0:163      move second child to first child (float)
 0:163        direct index (float)
 0:163          'v' (smooth out 4-component vector of float)
-0:163          3 (const int)
+0:163          Constant:
+0:163            3 (const int)
 0:163        add (float)
 0:163          component-wise multiply (float)
 0:163            Convert int to float (float)
 0:163              'a' (uniform int)
 0:163            direct index (float)
 0:163              'b' (in 4-component vector of float)
-0:163              3 (const int)
+0:163              Constant:
+0:163                3 (const int)
 0:163          component-wise multiply (float)
 0:163            direct index (float)
 0:163              'c' (in 4-component vector of float)
-0:163              3 (const int)
+0:163              Constant:
+0:163                3 (const int)
 0:163            direct index (float)
 0:163              'd' (in 4-component vector of float)
-0:163              3 (const int)
+0:163              Constant:
+0:163                3 (const int)
 0:164      move second child to first child (float)
 0:164        direct index (float)
 0:164          'v' (smooth out 4-component vector of float)
-0:164          0 (const int)
-0:164        0.000000
+0:164          Constant:
+0:164            0 (const int)
+0:164        Constant:
+0:164          0.000000
 0:166      move second child to first child (float)
 0:166        direct index (float)
 0:166          'v' (smooth out 4-component vector of float)
-0:166          0 (const int)
-0:166        0.000000
+0:166          Constant:
+0:166            0 (const int)
+0:166        Constant:
+0:166          0.000000
 0:167      Function Call: func3(f1;f1;f1; (float)
 0:167        component-wise multiply (float)
 0:167          Convert int to float (float)
 0:167            'a' (uniform int)
 0:167          direct index (float)
 0:167            'b' (in 4-component vector of float)
-0:167            0 (const int)
+0:167            Constant:
+0:167              0 (const int)
 0:167        component-wise multiply (float)
 0:167          direct index (float)
 0:167            'c' (in 4-component vector of float)
-0:167            0 (const int)
+0:167            Constant:
+0:167              0 (const int)
 0:167          direct index (float)
 0:167            'd' (in 4-component vector of float)
-0:167            0 (const int)
+0:167            Constant:
+0:167              0 (const int)
 0:167        direct index (float)
 0:167          'v' (smooth out 4-component vector of float)
-0:167          0 (const int)
+0:167          Constant:
+0:167            0 (const int)
 0:169      Function Call: funcA(I21; (4-component vector of float)
 0:169        'img1' (uniform image2D)
 0:170      Function Call: funcB(I21; (4-component vector of float)
@@ -191,19 +206,22 @@ ERROR: node is still EOpNull!
 0:178        Sequence
 0:178          move second child to first child (structure)
 0:178            'lightVar' (structure)
-0:178            3.000000
-0:178            1.000000
-0:178            2.000000
-0:178            3.000000
+0:178            Constant:
+0:178              3.000000
+0:178              1.000000
+0:178              2.000000
+0:178              3.000000
 0:?       Sequence
 0:185        Sequence
 0:185          move second child to first child (5-element array of float)
 0:185            'a' (5-element array of float)
 0:185            Construct float (5-element array of float)
 0:185              'g' (float)
-0:185              1.000000
+0:185              Constant:
+0:185                1.000000
 0:185              'g' (float)
-0:185              2.300000
+0:185              Constant:
+0:185                2.300000
 0:185              'g' (float)
 0:188        move second child to first child (3-element array of float)
 0:188          'b' (3-element array of float)
@@ -211,10 +229,12 @@ ERROR: node is still EOpNull!
 0:188            'g' (float)
 0:188            add (float)
 0:188              'g' (float)
-0:188              1.000000
+0:188              Constant:
+0:188                1.000000
 0:188            add (float)
 0:188              'g' (float)
-0:188              2.000000
+0:188              Constant:
+0:188                2.000000
 0:?       Sequence
 0:192        Construct vec4 (3-element array of 4-component vector of float)
 0:193        Construct vec4 (3-element array of 4-component vector of float)
