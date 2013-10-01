@@ -1,3 +1,4 @@
+Warning, version 120 is not yet complete; most features are present, but a few are missing.
 ERROR: 0:3: 'in for stage inputs' : not supported for this version or the enabled extensions 
 ERROR: 0:4: 'out for stage outputs' : not supported for this version or the enabled extensions 
 ERROR: 0:11: 'gl_Position' : cannot add storage, auxiliary, memory, interpolation, or precision qualifier to an existing variable 

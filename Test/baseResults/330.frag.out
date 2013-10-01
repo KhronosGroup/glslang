@@ -1,3 +1,4 @@
+Warning, version 330 is not yet complete; some version-specific are present, but many are missing.
 WARNING: 0:6: varying deprecated in version 130; may be removed in future release
 0:? Sequence
 0:8  Function Definition: main( (void)

@@ -1,4 +1,5 @@
 ERROR: #version: versions before 150 do not allow a profile token
+Warning, version 110 is not yet complete; most features are present, but a few are missing.
 ERROR: 0:38: 'attribute' : not supported in this stage: fragment
 ERROR: 0:40: 'sampler2DRect' : Reserved word. 
 ERROR: 0:40: 'rectangle texture' : not supported for this version or the enabled extensions 

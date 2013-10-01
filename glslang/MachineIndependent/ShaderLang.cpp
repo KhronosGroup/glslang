@@ -74,11 +74,12 @@ int MapVersionToIndex(int version)
         case 410: return  9;
         case 420: return 10;
         case 430: return 11;
-        default:  //      |
+        case 440: return 12;
+        default:       // |
             return  0; // |
-        }         //      |
-}                 //      V
-const int VersionCount = 12;
+        }              // |
+}                      // V
+const int VersionCount = 13;  // number of case statements above
 
 // only one of these needed for non-ES; ES needs 2 for different precision defaults of built-ins
 enum EPrecisionClass {
@@ -357,6 +358,23 @@ bool DeduceVersionProfile(TInfoSink& infoSink, EShLanguage stage, bool versionNo
     if (profile == EEsProfile && version >= 300 && versionNotFirst) {
         correct = false;
         infoSink.info.message(EPrefixError, "#version: statement must appear first in es-profile shader; before comments or newlines");
+    }
+
+    // A metecheck on the condition the compiler itself...
+    switch(version) {
+    case 100:
+    case 300:
+        // versions are complete
+        break;
+    case 110:
+    case 120:
+    case 130:
+    case 140:
+        infoSink.info << "Warning, version " << version << " is not yet complete; most features are present, but a few are missing.\n";
+        break;
+    default:
+        infoSink.info << "Warning, version " << version << " is not yet complete; some version-specific are present, but many are missing.\n";
+        break;
     }
 
     return correct;

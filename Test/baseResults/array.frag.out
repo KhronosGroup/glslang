@@ -1,3 +1,4 @@
+Warning, version 130 is not yet complete; most features are present, but a few are missing.
 ERROR: 0:21: '[' :  array index out of range '2'
 ERROR: 0:27: '[' :  array must be redeclared with a size before being indexed with a variable
 ERROR: 0:30: 'assign' :  cannot convert from '4-element array of float' to '5-element array of float'

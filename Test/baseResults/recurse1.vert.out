@@ -1,4 +1,5 @@
 recurse1.vert
+Warning, version 330 is not yet complete; some version-specific are present, but many are missing.
 
 0:? Sequence
 0:3  Function Definition: main( (void)
@@ -68,6 +69,7 @@ recurse1.vert
 0:?     'gl_InstanceID' (gl_InstanceId int)
 
 recurse1.frag
+Warning, version 330 is not yet complete; some version-specific are present, but many are missing.
 
 0:? Sequence
 0:5  Function Definition: main( (void)
@@ -102,6 +104,7 @@ recurse1.frag
 0:?   Linker Objects
 
 recurse2.frag
+Warning, version 330 is not yet complete; some version-specific are present, but many are missing.
 
 0:? Sequence
 0:9  Function Definition: cbar(i1; (float)

@@ -1,3 +1,4 @@
+Warning, version 120 is not yet complete; most features are present, but a few are missing.
 ERROR: 0:9: 'in for stage inputs' : not supported for this version or the enabled extensions 
 ERROR: 0:10: 'out for stage outputs' : not supported for this version or the enabled extensions 
 ERROR: 0:54: '+' :  wrong operand types: no operation '+' exists that takes a left-hand operand of type '2-component vector of float' and a right operand of type '3-component vector of float' (or there is no acceptable conversion)

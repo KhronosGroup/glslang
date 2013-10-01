@@ -1,3 +1,4 @@
+Warning, version 330 is not yet complete; some version-specific are present, but many are missing.
 ERROR: 0:14: '=' :  assigning non-constant to 'const int'
 ERROR: 0:17: '' : constant expression required 
 ERROR: 0:17: '' : array size must be a constant integer expression 
