@@ -35,6 +35,7 @@ function runLinkTest {
 runLinkTest mains1.frag mains2.frag noMain1.geom noMain2.geom
 runLinkTest noMain.vert mains.frag
 runLinkTest link1.frag link2.frag link3.frag
+runLinkTest recurse1.vert recurse1.frag recurse2.frag
 
 #
 # multi-threaded test

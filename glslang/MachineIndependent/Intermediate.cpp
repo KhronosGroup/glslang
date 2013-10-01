@@ -900,11 +900,31 @@ void TIntermediate::addSymbolLinkageNode(TIntermAggregate*& linkage, const TVari
 }
 
 //
+// Add a caller->callee relationship to the call graph.
+// Assumes the strings are unique per signature.
+//
+void TIntermediate::addToCallGraph(TInfoSink& infoSink, const TString& caller, const TString& callee)
+{
+    // Duplicates are okay, but faster to not keep them, and they come grouped by caller,
+    // as long as new ones are push on the same end we check on for duplicates
+    for (TGraph::const_iterator call = callGraph.begin(); call != callGraph.end(); ++call) {
+        if (call->caller != caller)
+            break;
+        if (call->callee == callee)
+            return;
+    }
+
+    callGraph.push_front(TCall(caller, callee));
+}
+
+//
 // Merge the information from 'unit' into 'this'
 //
 void TIntermediate::merge(TInfoSink& infoSink, TIntermediate& unit)
 {
     numMains += unit.numMains;
+    numErrors += unit.numErrors;
+    callGraph.insert(callGraph.end(), unit.callGraph.begin(), unit.callGraph.end());
 
     if (profile != EEsProfile && unit.profile == EEsProfile ||
         profile == EEsProfile && unit.profile != EEsProfile)
@@ -990,10 +1010,89 @@ void TIntermediate::mergeLinkerObjects(TInfoSink& infoSink, TIntermSequence& lin
     }
 }
 
+//
+// Do final link-time error checking of a complete (merged) intermediate representation.
+// (Most error checking was done during merging).
+//
 void TIntermediate::errorCheck(TInfoSink& infoSink)
 {   
     if (numMains < 1)
         error(infoSink, "Missing entry point: Each stage requires one \"void main()\" entry point");
+
+    checkCallGraphCycles(infoSink);
+}
+
+//
+// See if the call graph contains any static recursion, which is disallowed
+// by the specification.
+//
+void TIntermediate::checkCallGraphCycles(TInfoSink& infoSink)
+{
+    // Reset everything, once.
+    for (TGraph::iterator call = callGraph.begin(); call != callGraph.end(); ++call) {
+        call->visited = false;
+        call->subGraph = false;
+        call->errorGiven = false;
+    }
+
+    //
+    // Loop, looking for a new connected subgraph.  One subgraph is handled per loop iteration.
+    //
+
+    TCall* newRoot;
+    do {
+        // See if we have unvisited parts of the graph.
+        newRoot = 0;
+        for (TGraph::iterator call = callGraph.begin(); call != callGraph.end(); ++call) {
+            if (! call->visited) {
+                newRoot = &(*call);
+                break;
+            }
+        }
+
+        // If not, we are done.
+        if (! newRoot)
+            break;
+
+        // Otherwise, we found a new subgraph, process it:
+        // See what all can be reached by this new root, and if any of 
+        // that is recursive.  This is done by marking processed calls as active,
+        // and if a new call is found that is already active, we looped, 
+        // thereby detecting recursion.
+        std::list<TCall*> stack;
+        stack.push_back(newRoot);
+        newRoot->subGraph = true;
+        while (! stack.empty()) {
+            // get a caller
+            TCall* call = stack.back();
+            stack.pop_back();
+
+            // Add to the stack all the callees of the last subgraph node popped from the stack.
+            // This algorithm  always terminates, because only subGraph == false causes a push
+            // and all pushes change subGraph to true, and nothing changes subGraph to false.
+            for (TGraph::iterator child = callGraph.begin(); child != callGraph.end(); ++child) {
+                if (call->callee == child->caller) {
+                    if (child->subGraph) {
+                        if (! child->errorGiven) {
+                            error(infoSink, "Recursion detected:");
+                            infoSink.info << "    " << call->callee << " calling " << child->callee << "\n";
+                            child->errorGiven = true;
+                        }
+                    } else {
+                        child->subGraph = true;
+                        stack.push_back(&(*child));
+                    }
+                }
+            }
+        }  // end while, meaning nothing left to process in this subtree
+
+        // Mark all the subGraph nodes as visited, closing out this subgraph.
+        for (TGraph::iterator call = callGraph.begin(); call != callGraph.end(); ++call) {
+            if (call->subGraph)
+                call->visited = true;
+        }
+
+    } while (newRoot);  // redundant loop check; should always exit via the 'break' above
 }
 
 void TIntermediate::error(TInfoSink& infoSink, const char* message)

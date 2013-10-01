@@ -99,6 +99,7 @@ public:
     void addSymbolLinkageNode(TIntermAggregate*& linkage, TSymbolTable&, const TString&);
     void addSymbolLinkageNode(TIntermAggregate*& linkage, const TVariable&);
 
+    void addToCallGraph(TInfoSink&, const TString& caller, const TString& callee);
     void merge(TInfoSink&, TIntermediate&);
     void errorCheck(TInfoSink&);
 
@@ -110,6 +111,7 @@ protected:
     void mergeLinkerObjects(TInfoSink&, TIntermSequence& linkerObjects, const TIntermSequence& unitLinkerObjects);
     void error(TInfoSink& infoSink, const char*);
     void linkErrorCheck(TInfoSink&, const TIntermSymbol&, const TIntermSymbol&, bool crossStage);
+    void checkCallGraphCycles(TInfoSink&);
 
 protected:
     EShLanguage language;
@@ -118,6 +120,18 @@ protected:
     int version;
     int numMains;
     int numErrors;
+
+    // for detecting recursion:  pair is <caller, callee>
+    struct TCall {
+        TCall(const TString& pCaller, const TString& pCallee) : caller(pCaller), callee(pCallee) { }
+        TString caller;
+        TString callee;
+        bool visited;
+        bool subGraph;
+        bool errorGiven;
+    };
+    typedef std::list<TCall> TGraph;
+    TGraph callGraph;
 
 private:
     void operator=(TIntermediate&); // prevent assignments

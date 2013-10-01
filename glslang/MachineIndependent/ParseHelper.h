@@ -213,6 +213,7 @@ protected:
     TQualifier globalUniformDefaults;
     TQualifier globalInputDefaults;
     TQualifier globalOutputDefaults;
+    TString currentCaller;
     // TODO: desktop functionality: track use of gl_FragDepth before redeclaration
 };
 

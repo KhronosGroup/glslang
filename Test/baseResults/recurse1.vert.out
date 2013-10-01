@@ -1,0 +1,223 @@
+recurse1.vert
+
+0:? Sequence
+0:3  Function Definition: main( (void)
+0:3    Function Parameters: 
+0:9  Function Definition: self( (void)
+0:9    Function Parameters: 
+0:11    Sequence
+0:11      Function Call: self( (void)
+0:16  Function Definition: foo(f1; (void)
+0:16    Function Parameters: 
+0:16      '' (in float)
+0:18    Sequence
+0:18      Function Call: bar(i1; (float)
+0:18        Constant:
+0:18          2 (const int)
+0:21  Function Definition: bar(i1; (float)
+0:21    Function Parameters: 
+0:21      '' (in int)
+0:23    Sequence
+0:23      Function Call: foo(f1; (void)
+0:23        Constant:
+0:23          4.200000
+0:25      Branch: Return with expression
+0:25        Constant:
+0:25          3.200000
+0:32  Function Definition: A( (void)
+0:32    Function Parameters: 
+0:32    Sequence
+0:32      Function Call: B( (void)
+0:33  Function Definition: C( (void)
+0:33    Function Parameters: 
+0:33    Sequence
+0:33      Function Call: D( (void)
+0:34  Function Definition: B( (void)
+0:34    Function Parameters: 
+0:34    Sequence
+0:34      Function Call: C( (void)
+0:35  Function Definition: D( (void)
+0:35    Function Parameters: 
+0:35    Sequence
+0:35      Function Call: A( (void)
+0:41  Function Definition: AT( (void)
+0:41    Function Parameters: 
+0:41    Sequence
+0:41      Function Call: BT( (void)
+0:41      Function Call: BT( (void)
+0:41      Function Call: BT( (void)
+0:42  Function Definition: CT( (void)
+0:42    Function Parameters: 
+0:42    Sequence
+0:42      Function Call: DT( (void)
+0:42      Function Call: AT( (void)
+0:42      Function Call: DT( (void)
+0:42      Function Call: BT( (void)
+0:43  Function Definition: BT( (void)
+0:43    Function Parameters: 
+0:43    Sequence
+0:43      Function Call: CT( (void)
+0:43      Function Call: CT( (void)
+0:43      Function Call: CT( (void)
+0:44  Function Definition: DT( (void)
+0:44    Function Parameters: 
+0:44    Sequence
+0:44      Function Call: AT( (void)
+0:?   Linker Objects
+0:?     'gl_VertexID' (gl_VertexId int)
+0:?     'gl_InstanceID' (gl_InstanceId int)
+
+recurse1.frag
+
+0:? Sequence
+0:5  Function Definition: main( (void)
+0:5    Function Parameters: 
+0:11  Function Definition: cfoo(f1; (void)
+0:11    Function Parameters: 
+0:11      '' (in float)
+0:13    Sequence
+0:13      Function Call: cbar(i1; (float)
+0:13        Constant:
+0:13          2 (const int)
+0:20  Function Definition: CA( (void)
+0:20    Function Parameters: 
+0:20    Sequence
+0:20      Function Call: CB( (void)
+0:21  Function Definition: CC( (void)
+0:21    Function Parameters: 
+0:21    Sequence
+0:21      Function Call: CD( (void)
+0:27  Function Definition: CAT( (void)
+0:27    Function Parameters: 
+0:27    Sequence
+0:27      Function Call: CBT( (void)
+0:27      Function Call: CBT( (void)
+0:27      Function Call: CBT( (void)
+0:28  Function Definition: CCT( (void)
+0:28    Function Parameters: 
+0:28    Sequence
+0:28      Function Call: CDT( (void)
+0:28      Function Call: CDT( (void)
+0:28      Function Call: CBT( (void)
+0:?   Linker Objects
+
+recurse2.frag
+
+0:? Sequence
+0:9  Function Definition: cbar(i1; (float)
+0:9    Function Parameters: 
+0:9      '' (in int)
+0:11    Sequence
+0:11      Function Call: cfoo(f1; (void)
+0:11        Constant:
+0:11          4.200000
+0:13      Branch: Return with expression
+0:13        Constant:
+0:13          3.200000
+0:20  Function Definition: CB( (void)
+0:20    Function Parameters: 
+0:20    Sequence
+0:20      Function Call: CC( (void)
+0:21  Function Definition: CD( (void)
+0:21    Function Parameters: 
+0:21    Sequence
+0:21      Function Call: CA( (void)
+0:27  Function Definition: CBT( (void)
+0:27    Function Parameters: 
+0:27    Sequence
+0:27      Function Call: CCT( (void)
+0:27      Function Call: CCT( (void)
+0:27      Function Call: CCT( (void)
+0:28  Function Definition: CDT( (void)
+0:28    Function Parameters: 
+0:28    Sequence
+0:28      Function Call: CAT( (void)
+0:?   Linker Objects
+
+
+Linked vertex stage:
+
+ERROR: Linking vertex stage: Recursion detected:
+    DT( calling AT(
+ERROR: Linking vertex stage: Recursion detected:
+    AT( calling BT(
+ERROR: Linking vertex stage: Recursion detected:
+    BT( calling CT(
+ERROR: Linking vertex stage: Recursion detected:
+    D( calling A(
+ERROR: Linking vertex stage: Recursion detected:
+    bar(i1; calling foo(f1;
+ERROR: Linking vertex stage: Recursion detected:
+    self( calling self(
+
+Linked fragment stage:
+
+ERROR: Linking fragment stage: Recursion detected:
+    CCT( calling CBT(
+ERROR: Linking fragment stage: Recursion detected:
+    CBT( calling CCT(
+ERROR: Linking fragment stage: Recursion detected:
+    CC( calling CD(
+ERROR: Linking fragment stage: Recursion detected:
+    cfoo(f1; calling cbar(i1;
+
+0:? Sequence
+0:5  Function Definition: main( (void)
+0:5    Function Parameters: 
+0:11  Function Definition: cfoo(f1; (void)
+0:11    Function Parameters: 
+0:11      '' (in float)
+0:13    Sequence
+0:13      Function Call: cbar(i1; (float)
+0:13        Constant:
+0:13          2 (const int)
+0:20  Function Definition: CA( (void)
+0:20    Function Parameters: 
+0:20    Sequence
+0:20      Function Call: CB( (void)
+0:21  Function Definition: CC( (void)
+0:21    Function Parameters: 
+0:21    Sequence
+0:21      Function Call: CD( (void)
+0:27  Function Definition: CAT( (void)
+0:27    Function Parameters: 
+0:27    Sequence
+0:27      Function Call: CBT( (void)
+0:27      Function Call: CBT( (void)
+0:27      Function Call: CBT( (void)
+0:28  Function Definition: CCT( (void)
+0:28    Function Parameters: 
+0:28    Sequence
+0:28      Function Call: CDT( (void)
+0:28      Function Call: CDT( (void)
+0:28      Function Call: CBT( (void)
+0:9  Function Definition: cbar(i1; (float)
+0:9    Function Parameters: 
+0:9      '' (in int)
+0:11    Sequence
+0:11      Function Call: cfoo(f1; (void)
+0:11        Constant:
+0:11          4.200000
+0:13      Branch: Return with expression
+0:13        Constant:
+0:13          3.200000
+0:20  Function Definition: CB( (void)
+0:20    Function Parameters: 
+0:20    Sequence
+0:20      Function Call: CC( (void)
+0:21  Function Definition: CD( (void)
+0:21    Function Parameters: 
+0:21    Sequence
+0:21      Function Call: CA( (void)
+0:27  Function Definition: CBT( (void)
+0:27    Function Parameters: 
+0:27    Sequence
+0:27      Function Call: CCT( (void)
+0:27      Function Call: CCT( (void)
+0:27      Function Call: CCT( (void)
+0:28  Function Definition: CDT( (void)
+0:28    Function Parameters: 
+0:28    Sequence
+0:28      Function Call: CAT( (void)
+0:?   Linker Objects
+

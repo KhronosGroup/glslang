@@ -653,10 +653,14 @@ TIntermTyped* TParseContext::handleDotDereference(TSourceLoc loc, TIntermTyped* 
 }
 
 //
-// Handle seeing a function prototype in the grammar.
+// Handle seeing a function prototype in the grammar.  This includes what may
+// become a full definition, as a full definition looks like a prototype 
+// followed by a body.  The body is handled after this function
+// returns, when present.
 //
 TIntermAggregate* TParseContext::handleFunctionPrototype(TSourceLoc loc, TFunction& function)
 {
+    currentCaller = function.getMangledName();
     TSymbol* symbol = symbolTable.find(function.getMangledName());
     TFunction* prevDec = symbol ? symbol->getAsFunction() : 0;
 
@@ -685,7 +689,7 @@ TIntermAggregate* TParseContext::handleFunctionPrototype(TSourceLoc loc, TFuncti
     functionReturnsValue = false;
 
     //
-    // Raise error message if main function takes any parameters or return anything other than void
+    // Raise error message if main function takes any parameters or returns anything other than void
     //
     if (function.getName() == "main") {
         if (function.getParamCount() > 0)
@@ -806,16 +810,18 @@ TIntermTyped* TParseContext::handleFunctionCall(TSourceLoc loc, TFunction* fnCal
                     return 0;
                 }
             } else {
-                // This is a real function call
+                // This is a function call not mapped to built-in operation
                 result = intermediate.setAggregateOperator(intermAggregate, EOpFunctionCall, fnCandidate->getReturnType(), loc);
-
-                // this is how we know whether the given function is a builtIn function or a user defined function
-                // if builtIn == false, it's a userDefined -> could be an overloaded builtIn function also
-                // if builtIn == true, it's definitely a builtIn function with EOpNull
-                if (!builtIn)
-                    result->getAsAggregate()->setUserDefined();
                 result->getAsAggregate()->setName(fnCandidate->getMangledName());
 
+                // this is how we know whether the given function is a built-in function or a user-defined function
+                // if builtIn == false, it's a userDefined -> could be an overloaded built-in function also
+                // if builtIn == true, it's definitely a built-in function with EOpNull
+                if (! builtIn) {
+                    result->getAsAggregate()->setUserDefined();
+                    intermediate.addToCallGraph(infoSink, currentCaller, fnCandidate->getMangledName());
+                }
+                
                 TStorageQualifier qual;
                 TQualifierList& qualifierList = result->getAsAggregate()->getQualifierList();
                 for (int i = 0; i < fnCandidate->getParamCount(); ++i) {
