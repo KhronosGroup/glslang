@@ -201,6 +201,7 @@ public:
     TPrecisionQualifier defaultPrecision[EbtNumTypes];
     TSourceLoc currentLoc;
     bool tokensBeforeEOF;
+    TLimits limits;
 
 protected:
     TScanContext* scanContext;

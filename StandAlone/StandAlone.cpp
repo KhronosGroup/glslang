@@ -126,7 +126,16 @@ const char* DefaultConfig =
 "MaxVertexOutputVectors 16\n"
 "MaxFragmentInputVectors 15\n"
 "MinProgramTexelOffset -8\n"
-"MaxProgramTexelOffset 7\n"
+"MaxProgramTexelOffset 7\n"    
+"nonInductiveForLoops 1\n"
+"whileLoops 1\n"
+"doWhileLoops 1\n"
+"generalUniformIndexing 1\n"
+"generalAttributeMatrixVectorIndexing 1\n"
+"generalVaryingIndexing 1\n"
+"generalSamplerIndexing 1\n"
+"generalVariableIndexing 1\n"
+"generalConstantMatrixVectorIndexing 1\n"
 ;
 
 //
@@ -199,6 +208,24 @@ void ProcessConfigFile()
             Resources.minProgramTexelOffset = value;
         else if (strcmp(token, "MaxProgramTexelOffset") == 0)
             Resources.maxProgramTexelOffset = value;
+        else if (strcmp(token, "nonInductiveForLoops") == 0)
+            Resources.limits.nonInductiveForLoops = (value != 0);
+        else if (strcmp(token, "whileLoops") == 0)
+            Resources.limits.whileLoops = (value != 0);
+        else if (strcmp(token, "doWhileLoops") == 0)
+            Resources.limits.doWhileLoops = (value != 0);
+        else if (strcmp(token, "generalUniformIndexing") == 0)
+            Resources.limits.generalUniformIndexing = (value != 0);
+        else if (strcmp(token, "generalAttributeMatrixVectorIndexing") == 0)
+            Resources.limits.generalAttributeMatrixVectorIndexing = (value != 0);
+        else if (strcmp(token, "generalVaryingIndexing") == 0)
+            Resources.limits.generalVaryingIndexing = (value != 0);
+        else if (strcmp(token, "generalSamplerIndexing") == 0)
+            Resources.limits.generalSamplerIndexing = (value != 0);
+        else if (strcmp(token, "generalVariableIndexing") == 0)
+            Resources.limits.generalVariableIndexing = (value != 0);
+        else if (strcmp(token, "generalConstantMatrixVectorIndexing") == 0)
+            Resources.limits.generalConstantMatrixVectorIndexing = (value != 0);
         else
             printf("Warning: unrecognized limit (%s) in configuration file.\n", token);
 

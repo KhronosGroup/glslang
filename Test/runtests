@@ -5,13 +5,15 @@ BASEDIR=baseResults
 EXE=./glslangValidator.exe
 
 #
-# configuration file test
+# configuration file tests
 #
 echo running configuration file test
 $EXE -c > $TARGETDIR/test.conf
 diff -b $BASEDIR/test.conf $TARGETDIR/test.conf
 $EXE -i $TARGETDIR/test.conf specExamples.vert > $TARGETDIR/specExamples.vert.out
 diff -b $BASEDIR/specExamples.vert.out $TARGETDIR
+$EXE 100Limits.vert 100.conf >  $TARGETDIR/100LimitsConf.vert.out
+diff -b $BASEDIR/100LimitsConf.vert.out $TARGETDIR/100LimitsConf.vert.out
 
 #
 # isolated compilation tests

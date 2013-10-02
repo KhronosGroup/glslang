@@ -1,5 +1,7 @@
 Current functionality level: ESSL 3.0
 
+- extension adding process
+
 Link Validation
     + provide input config file for setting limits
 	  - also consider spitting out measures of complexity
@@ -25,6 +27,7 @@ Link Validation
       + Non ES: value checking of uniform initializers
       + Non ES: location match
       - location aliasing/overlap (except desktop vertex shader inputs)
+      - 1.0: count the number of uniforms and varyings, compare against limits
       + recursion for functions
       - Non ES: block matching
       - Non ES: component/binding/index/offset match check
@@ -43,11 +46,14 @@ Link Validation
 	  - 4.4: component aliasing (except desktop vertex shader inputs)
 
 Shader Functionality to Implement/Finish
+    ESSL 2.0 (#version 100)
+      - implement non-inductive loop limitation detection
+      - implement non-inductive array accesses limitation detection
     ESSL 3.0
       - "const" compile-time constant propagation in the front-end has to be complete, for all built-in functions
     GLSL 1.2
-      - Handle multiple compilation units per stage
-      - Allow initializers on uniform declarations
+      + Handle multiple compilation units per stage
+      + Allow initializers on uniform declarations
       - signature matching takes type conversions into account, ambiguity is an error
     GLSL 1.3
       . flat is for both user and predeclared built-in in/out variables

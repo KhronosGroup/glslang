@@ -2226,6 +2226,8 @@ case_label
 
 iteration_statement
     : WHILE LEFT_PAREN {
+        if (! parseContext.limits.whileLoops)
+            parseContext.error($1.loc, "while loops not available", "limitation", "");
         parseContext.symbolTable.push();
         ++parseContext.loopNestingLevel;
     }
@@ -2235,6 +2237,9 @@ iteration_statement
         --parseContext.loopNestingLevel;
     }
     | DO { ++parseContext.loopNestingLevel; } statement WHILE LEFT_PAREN expression RIGHT_PAREN SEMICOLON {
+        if (! parseContext.limits.whileLoops)
+            parseContext.error($1.loc, "do-while loops not available", "limitation", "");
+
         parseContext.boolCheck($8.loc, $6);
 
         $$ = parseContext.intermediate.addLoop($3, $6, 0, false, $4.loc);

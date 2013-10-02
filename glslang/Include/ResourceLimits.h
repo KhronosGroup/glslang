@@ -37,6 +37,18 @@
 #ifndef _RESOURCE_LIMITS_INCLUDED_
 #define _RESOURCE_LIMITS_INCLUDED_
 
+struct TLimits {
+    bool nonInductiveForLoops;
+    bool whileLoops;
+    bool doWhileLoops;
+    bool generalUniformIndexing;
+    bool generalAttributeMatrixVectorIndexing;
+    bool generalVaryingIndexing;
+    bool generalSamplerIndexing;
+    bool generalVariableIndexing;
+    bool generalConstantMatrixVectorIndexing;
+};
+
 struct TBuiltInResource {
     int maxLights;
     int maxClipPlanes;
@@ -57,6 +69,7 @@ struct TBuiltInResource {
     int maxFragmentInputVectors;
     int minProgramTexelOffset;
     int maxProgramTexelOffset;
+    TLimits limits;
 };
 
 #endif // _RESOURCE_LIMITS_INCLUDED_

@@ -539,9 +539,11 @@ TIntermTyped* TParseContext::handleBracketDereference(TSourceLoc loc, TIntermTyp
                 error(loc, "", "[", "array must be redeclared with a size before being indexed with a variable");
             if (base->getBasicType() == EbtBlock)
                 requireProfile(base->getLoc(), static_cast<EProfileMask>(~EEsProfileMask), "variable indexing block array");
-            if (base->getBasicType() == EbtSampler) {
-                requireProfile(base->getLoc(), static_cast<EProfileMask>(ECoreProfileMask | ECompatibilityProfileMask), "variable indexing sampler array");
-                profileRequires(base->getLoc(), ECoreProfile, 400, 0, "variable indexing sampler array");
+            if (base->getBasicType() == EbtSampler && version >= 130) {
+                const char* explanation = "variable indexing sampler array";
+                requireProfile(base->getLoc(), static_cast<EProfileMask>(ECoreProfileMask | ECompatibilityProfileMask), explanation);
+                profileRequires(base->getLoc(), ECoreProfile, 400, 0, explanation);
+                profileRequires(base->getLoc(), ECompatibilityProfile, 400, 0, explanation);
             }
 
             result = intermediate.addIndex(EOpIndexIndirect, base, index, loc);
