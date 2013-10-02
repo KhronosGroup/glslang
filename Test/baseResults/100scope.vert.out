@@ -2,12 +2,10 @@ ERROR: 0:5: 'a' : redefinition
 ERROR: 0:17: 'b' : illegal redeclaration 
 ERROR: 0:19: 'f' : redefinition 
 ERROR: 0:20: 'tan' : redefinition 
-ERROR: 0:21: 'redeclaration of built-in function' : no longer supported in es profile; removed in version 300
-ERROR: 0:22: 'redeclaration of built-in function' : no longer supported in es profile; removed in version 300
 ERROR: 0:31: 'local function declaration' : not supported with this profile: es
 ERROR: 0:50: 'z' : undeclared identifier 
 ERROR: 0:50: 'z' : redefinition 
-ERROR: 9 compilation errors.  No code generated.
+ERROR: 7 compilation errors.  No code generated.
 
 ERROR: node is still EOpNull!
 0:3  Function Definition: f(i1;i1;i1; (highp int)
@@ -103,6 +101,4 @@ ERROR: node is still EOpNull!
 0:62            0 (const int)
 0:?   Linker Objects
 0:?     'b' (bool)
-0:?     'gl_VertexID' (gl_VertexId highp int)
-0:?     'gl_InstanceID' (gl_InstanceId highp int)
 

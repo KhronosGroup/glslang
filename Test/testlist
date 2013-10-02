@@ -39,6 +39,7 @@ forwardRef.frag
 uint.frag
 switch.frag
 tokenLength.vert
+100scope.vert
 300scope.vert
 400.frag
 420.vert

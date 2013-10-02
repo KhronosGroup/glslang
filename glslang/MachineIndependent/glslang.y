@@ -791,45 +791,8 @@ identifier_list
 
 function_prototype
     : function_declarator RIGHT_PAREN  {
-        // ES can't declare prototypes inside functions
-        if (! parseContext.symbolTable.atGlobalLevel())
-            parseContext.requireProfile($2.loc, static_cast<EProfileMask>(~EEsProfileMask), "local function declaration");
-
-        //
-        // Multiple declarations of the same function are allowed.
-        //
-        // If this is a definition, the definition production code will check for redefinitions
-        // (we don't know at this point if it's a definition or not).
-        //
-        // Redeclarations (full prototype match) are allowed.  But, return types and parameter qualifiers must match.
-        //
-        // ES does not allow redeclaring or hiding of built-in functions.
-        //
-        bool builtIn;
-        TSymbol* symbol = parseContext.symbolTable.find($1->getMangledName(), &builtIn);
-        if (symbol && symbol->getAsFunction() && builtIn)
-            parseContext.requireProfile($2.loc, static_cast<EProfileMask>(~EEsProfileMask), "redeclaration of built-in function");
-        const TFunction* prevDec = symbol ? symbol->getAsFunction() : 0;
-        if (prevDec) {
-            if (prevDec->getReturnType() != $1->getReturnType()) {
-                parseContext.error($2.loc, "overloaded functions must have the same return type", $1->getReturnType().getCompleteTypeString().c_str(), "");
-            }
-            for (int i = 0; i < prevDec->getParamCount(); ++i) {
-                if ((*prevDec)[i].type->getQualifier().storage != (*$1)[i].type->getQualifier().storage)
-                    parseContext.error($2.loc, "overloaded functions must have the same parameter qualifiers", (*$1)[i].type->getStorageQualifierString(), "");
-            }
-        }
-
-        //
-        // If this is a redeclaration, it could also be a definition,
-        // in which case, we want to use the variable names from this one, and not the one that's
-        // being redeclared.  So, pass back up this declaration, not the one in the symbol table.
-        //
-        $$.function = $1;
+        $$.function = parseContext.handleFunctionDeclarator($2.loc, *$1);
         $$.loc = $2.loc;
-
-        if (! parseContext.symbolTable.insert(*$$.function))
-            parseContext.error($2.loc, "illegal redeclaration", $$.function->getName().c_str(), "");
     }
     ;
 

@@ -85,6 +85,7 @@ public:
     TIntermTyped* handleVariable(TSourceLoc, TSymbol* symbol, TString* string);
     TIntermTyped* handleBracketDereference(TSourceLoc, TIntermTyped* base, TIntermTyped* index);
     TIntermTyped* handleDotDereference(TSourceLoc, TIntermTyped* base, TString& field);
+    TFunction* handleFunctionDeclarator(TSourceLoc loc, TFunction& function);
     TIntermAggregate* handleFunctionPrototype(TSourceLoc, TFunction&);
     TIntermTyped* handleFunctionCall(TSourceLoc, TFunction*, TIntermNode*, TIntermAggregate*);
     TFunction* handleConstructorCall(TSourceLoc, TPublicType&);
