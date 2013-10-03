@@ -59,9 +59,11 @@ namespace { // anonymous namespace for file-local functions and symbols
 
 using namespace glslang;
 
+// Local mapping functions for making arrays of symbol tables....
+
 int MapVersionToIndex(int version)
 {
-        switch(version) {
+        switch (version) {
         case 100: return  0;
         case 110: return  1;
         case 120: return  2;
@@ -81,6 +83,19 @@ int MapVersionToIndex(int version)
 }                      // V
 const int VersionCount = 13;  // number of case statements above
 
+int MapProfileToIndex(EProfile profile)
+{
+    switch (profile) {
+    case ENoProfile:             return 0;
+    case ECoreProfile:           return 1;
+    case ECompatibilityProfile:  return 2;
+    case EEsProfile:             return 3;
+    default:                         // |
+        return 0;                    // |
+    }                                // |
+}                                    // V
+const int ProfileCount                = 4;   // number of case statements above
+
 // only one of these needed for non-ES; ES needs 2 for different precision defaults of built-ins
 enum EPrecisionClass {
     EPcGeneral,
@@ -96,8 +111,8 @@ enum EPrecisionClass {
 // Each has a different set of built-ins, and we want to preserve that from
 // compile to compile.
 //
-TSymbolTable* CommonSymbolTable[VersionCount][EProfileCount][EPcCount] = {};
-TSymbolTable* SharedSymbolTables[VersionCount][EProfileCount][EShLangCount] = {};
+TSymbolTable* CommonSymbolTable[VersionCount][ProfileCount][EPcCount] = {};
+TSymbolTable* SharedSymbolTables[VersionCount][ProfileCount][EShLangCount] = {};
 
 TPoolAllocator* PerProcessGPA = 0;
 
@@ -216,7 +231,8 @@ void SetupBuiltinSymbolTable(int version, EProfile profile)
 
     // See if it's already been done for this version/profile combination
     int versionIndex = MapVersionToIndex(version);
-    if (CommonSymbolTable[versionIndex][profile][EPcGeneral]) {
+    int profileIndex = MapProfileToIndex(profile);
+    if (CommonSymbolTable[versionIndex][profileIndex][EPcGeneral]) {
         glslang::ReleaseGlobalLock();
 
         return;
@@ -244,17 +260,17 @@ void SetupBuiltinSymbolTable(int version, EProfile profile)
     // Copy the local symbol tables from the new pool to the global tables using the process-global pool
     for (int precClass = 0; precClass < EPcCount; ++precClass) {
         if (! commonTable[precClass]->isEmpty()) {
-            CommonSymbolTable[versionIndex][profile][precClass] = new TSymbolTable;
-            CommonSymbolTable[versionIndex][profile][precClass]->copyTable(*commonTable[precClass]);
-            CommonSymbolTable[versionIndex][profile][precClass]->readOnly();
+            CommonSymbolTable[versionIndex][profileIndex][precClass] = new TSymbolTable;
+            CommonSymbolTable[versionIndex][profileIndex][precClass]->copyTable(*commonTable[precClass]);
+            CommonSymbolTable[versionIndex][profileIndex][precClass]->readOnly();
         }
     }
     for (int stage = 0; stage < EShLangCount; ++stage) {
         if (! stageTables[stage]->isEmpty()) {
-            SharedSymbolTables[versionIndex][profile][stage] = new TSymbolTable;
-            SharedSymbolTables[versionIndex][profile][stage]->adoptLevels(*CommonSymbolTable[versionIndex][profile][CommonIndex(profile, (EShLanguage)stage)]);
-            SharedSymbolTables[versionIndex][profile][stage]->copyTable(*stageTables[stage]);
-            SharedSymbolTables[versionIndex][profile][stage]->readOnly();
+            SharedSymbolTables[versionIndex][profileIndex][stage] = new TSymbolTable;
+            SharedSymbolTables[versionIndex][profileIndex][stage]->adoptLevels(*CommonSymbolTable[versionIndex][profileIndex][CommonIndex(profile, (EShLanguage)stage)]);
+            SharedSymbolTables[versionIndex][profileIndex][stage]->copyTable(*stageTables[stage]);
+            SharedSymbolTables[versionIndex][profileIndex][stage]->readOnly();
         }    
     }
 
@@ -433,7 +449,7 @@ bool CompileDeferred(
     SetupBuiltinSymbolTable(version, profile);
     
     TSymbolTable* cachedTable = SharedSymbolTables[MapVersionToIndex(version)]
-                                                  [profile]
+                                                  [MapProfileToIndex(profile)]
                                                   [compiler->getLanguage()];
     
     // Dynamically allocate the symbol table so we can control when it is deallocated WRT the pool.
@@ -569,7 +585,7 @@ void ShDestruct(ShHandle handle)
 int __fastcall ShFinalize()
 {
     for (int version = 0; version < VersionCount; ++version)
-        for (int p = 0; p < EProfileCount; ++p)
+        for (int p = 0; p < ProfileCount; ++p)
             for (int lang = 0; lang < EShLangCount; ++lang)
                 delete SharedSymbolTables[version][p][lang];
 
@@ -964,7 +980,7 @@ bool TProgram::linkStage(EShLanguage stage, EShMessages messages)
         merged = intermediate[stage];
     }
 
-    infoSink->info << "\nLinked " << StageName[stage] << " stage:\n\n";
+    infoSink->info << "\nLinked " << StageName(stage) << " stage:\n\n";
 
     if (stages[stage].size() > 1) {
         std::list<TShader*>::const_iterator it;

@@ -1047,7 +1047,7 @@ interpolation_qualifier
     }
     | NOPERSPECTIVE {
         parseContext.globalCheck($1.loc, parseContext.symbolTable.atGlobalLevel(), "noperspective");
-        parseContext.requireProfile($1.loc, static_cast<EProfileMask>(~EEsProfileMask), "noperspective");
+        parseContext.requireProfile($1.loc, ~EEsProfile, "noperspective");
         parseContext.profileRequires($1.loc, ENoProfile, 130, 0, "noperspective");
         $$.init($1.loc);
         $$.qualifier.nopersp = true;
@@ -1138,7 +1138,7 @@ storage_qualifier
         $$.qualifier.storage = EvqConst;
     }
     | ATTRIBUTE {
-        parseContext.requireStage($1.loc, EShLangVertexMask, "attribute");
+        parseContext.requireStage($1.loc, EShLangVertex, "attribute");
         parseContext.checkDeprecated($1.loc, ECoreProfile, 130, "attribute");
         parseContext.checkDeprecated($1.loc, ENoProfile, 130, "attribute");
         parseContext.requireNotRemoved($1.loc, ECoreProfile, 420, "attribute");
@@ -1206,9 +1206,9 @@ storage_qualifier
         $$.qualifier.storage = EvqUniform; // TODO: 4.0 functionality: implement BUFFER
     }
     | SHARED {
-        parseContext.requireProfile($1.loc, static_cast<EProfileMask>(~EEsProfileMask), "shared");
+        parseContext.requireProfile($1.loc, ~EEsProfile, "shared");
         parseContext.profileRequires($1.loc, ECoreProfile, 430, 0, "shared");
-        parseContext.requireStage($1.loc, EShLangComputeMask, "shared");
+        parseContext.requireStage($1.loc, EShLangCompute, "shared");
         $$.init($1.loc);
         $$.qualifier.shared = true;
     }
@@ -2315,7 +2315,7 @@ jump_statement
             parseContext.error($1.loc, "function return is not matching type:", "return", "");
     }
     | DISCARD SEMICOLON {
-        parseContext.requireStage($1.loc, EShLangFragmentMask, "discard");
+        parseContext.requireStage($1.loc, EShLangFragment, "discard");
         $$ = parseContext.intermediate.addBranch(EOpKill, $1.loc);
     }
     ;

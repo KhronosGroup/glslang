@@ -96,7 +96,7 @@ typedef enum {
 
 namespace glslang {
 
-extern const char* StageName[EShLangCount];
+const char* StageName(EShLanguage);
 
 } // end namespace glslang
 

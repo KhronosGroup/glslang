@@ -1,7 +1,5 @@
 Current functionality level: ESSL 3.0
 
-- extension adding process
-
 Link Validation
     + provide input config file for setting limits
 	  - also consider spitting out measures of complexity
@@ -166,22 +164,24 @@ Shader Functionality to Implement/Finish
       - Allow swizzle operations on scalars.
       - Positive signed decimal literals, as well as octal and hexadecimal, can set all 32 bits. This includes setting the sign bit to create a negative value.
       - Make GLSL consistent with the API regarding user clipping, by no longer referring to gl_Positionwhen gl_ClipVertex is not written. Rather, user clipping becomes undefined.
-      - Clarified that a comma sequence-operator expression cannot be a constant expression. E.g., “(2,3)” is not allowed, semantically, as a valid constant expression 3, even though it is an expression that will evaluate to 3.
+      - Clarified that a comma sequence-operator expression cannot be a constant expression. E.g., “(2,3)” is not allowed, semantically, 
+            as a valid constant expression 3, even though it is an expression that will evaluate to 3.
       - Use vec2 instead of vec3 for coordinate in textureGather*(sampler2DRect,...).
       - Clarify that textureGatherOffset() can take non-constants for the offsets.
     GLSL 4.3
-      - Add shader storage bufferobjects, as per the ARB_shader_storage_buffer_object extension. 
-        This includes 1) allowing the last member of a storage buffer block to be an array that does not 
-        know its size until render time, and 2) read/write memory shared with the application and other 
-        shader invocations. It also adds the std430layout qualifier for shader storage blocks.
+      - Add shader storage buffer objects, as per the ARB_shader_storage_buffer_object extension. This includes 
+            - allowing the last member of a storage buffer block to be an array that does not know its size until render time
+            - read/write memory shared with the application and other shader invocations
+            - adding the std430 layout qualifier for shader storage blocks
       - Allow .length() on all arrays; returning a compile-time constant or not, depending on how the 
         array is sized, as per the ARB_shader_storage_buffer_object extension.
       - Be clear that implicit array sizing is only within a stage, not cross stage.
-      - Array clarifications: 1) All arrays are inherently homogeneous, except for arrays of the new 
-        shader storage buffer objects. 2) Arrays of shader storage buffer objects will be dereferenced 
-        when the .length() method is used on an unsized array member, so that must a have valid index. 
-        3) Arrays of other objects (uniform blocks) containing implicitly sized arrays will have the same 
-        implicit size for all elements of the array.
+      - Array clarifications: 
+            - All arrays are inherently homogeneous, except for arrays of the new shader storage buffer objects
+            - Arrays of shader storage buffer objects will be dereferenced when the .length() method is used on an unsized array 
+                member, so that must a have valid index. 
+            - Arrays of other objects (uniform blocks) containing implicitly sized arrays will have the same implicit size for all 
+                elements of the array.
       - Arrays of arrays are now supported, as per the GL_ARB_arrays_of_arraysextension.
       - Compute shaders are now supported, as per the GL_ARB_compute_shader extension.
       - Added imageSize() built-ins to query the dimensions of an image.

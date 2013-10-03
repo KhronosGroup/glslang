@@ -584,7 +584,7 @@ void TBuiltIns::initialize(int version, EProfile profile)
         s.append("\n");
 
         //
-        // Original-style texture Functions existing in both stages.
+        // Original-style texture functions existing in both stages.
         // (Per-stage functions below.)
         //
         if (profile == EEsProfile && version == 100 ||

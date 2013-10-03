@@ -249,59 +249,6 @@ void TParseContext::handlePragma(const char **tokens, int numTokens)
     }
 }
 
-TBehavior TParseContext::getExtensionBehavior(const char* behavior)
-{
-    if (!strcmp("require", behavior))
-        return EBhRequire;
-    else if (!strcmp("enable", behavior))
-        return EBhEnable;
-    else if (!strcmp("disable", behavior))
-        return EBhDisable;
-    else if (!strcmp("warn", behavior))
-        return EBhWarn;
-    else {
-        error(currentLoc, "behavior not supported", "#extension", behavior);
-        return EBhDisable;
-    }
-}
-
-void TParseContext::updateExtensionBehavior(const char* extName, const char* behavior)
-{
-    TBehavior behaviorVal = getExtensionBehavior(behavior);
-    TMap<TString, TBehavior>:: iterator iter;
-    TString msg;
-
-    // special cased for all extension
-    if (!strcmp(extName, "all")) {
-        if (behaviorVal == EBhRequire || behaviorVal == EBhEnable) {
-            error(currentLoc, "extension 'all' cannot have 'require' or 'enable' behavior", "#extension", "");
-            return;
-        } else {
-            for (iter = extensionBehavior.begin(); iter != extensionBehavior.end(); ++iter)
-                iter->second = behaviorVal;
-        }
-    } else {
-        iter = extensionBehavior.find(TString(extName));
-        if (iter == extensionBehavior.end()) {
-            switch (behaviorVal) {
-            case EBhRequire:
-                error(currentLoc, "extension not supported", "#extension", extName);
-                break;
-            case EBhEnable:
-            case EBhWarn:
-            case EBhDisable:
-                warn(currentLoc, "extension not supported", "#extension", extName);
-                break;
-            default:
-                assert(0 && "unexpected behaviorVal");
-            }
-
-            return;
-        } else
-            iter->second = behaviorVal;
-    }
-}
-
 ///////////////////////////////////////////////////////////////////////
 //
 // Sub- vector and matrix fields
@@ -538,12 +485,11 @@ TIntermTyped* TParseContext::handleBracketDereference(TSourceLoc loc, TIntermTyp
             if (base->isArray() && base->getType().getArraySize() == 0)
                 error(loc, "", "[", "array must be redeclared with a size before being indexed with a variable");
             if (base->getBasicType() == EbtBlock)
-                requireProfile(base->getLoc(), static_cast<EProfileMask>(~EEsProfileMask), "variable indexing block array");
+                requireProfile(base->getLoc(), ~EEsProfile, "variable indexing block array");
             if (base->getBasicType() == EbtSampler && version >= 130) {
                 const char* explanation = "variable indexing sampler array";
-                requireProfile(base->getLoc(), static_cast<EProfileMask>(ECoreProfileMask | ECompatibilityProfileMask), explanation);
-                profileRequires(base->getLoc(), ECoreProfile, 400, 0, explanation);
-                profileRequires(base->getLoc(), ECompatibilityProfile, 400, 0, explanation);
+                requireProfile(base->getLoc(), ECoreProfile | ECompatibilityProfile, explanation);
+                profileRequires(base->getLoc(), ECoreProfile | ECompatibilityProfile, 400, 0, explanation);
             }
 
             result = intermediate.addIndex(EOpIndexIndirect, base, index, loc);
@@ -662,7 +608,7 @@ TFunction* TParseContext::handleFunctionDeclarator(TSourceLoc loc, TFunction& fu
 {
     // ES can't declare prototypes inside functions
     if (! symbolTable.atGlobalLevel())
-        requireProfile(loc, static_cast<EProfileMask>(~EEsProfileMask), "local function declaration");
+        requireProfile(loc, ~EEsProfile, "local function declaration");
 
     //
     // Multiple declarations of the same function are allowed.
@@ -1479,7 +1425,7 @@ void TParseContext::globalQualifierFix(TSourceLoc loc, TQualifier& qualifier, co
             return;
         }
         if (publicType.arraySizes) {
-            requireProfile(loc, (EProfileMask)~EEsProfileMask, "vertex input arrays");
+            requireProfile(loc, ~EEsProfile, "vertex input arrays");
             profileRequires(loc, ENoProfile, 150, 0, "vertex input arrays");
         }
     }
@@ -1706,7 +1652,7 @@ bool TParseContext::arrayQualifierError(TSourceLoc loc, const TQualifier& qualif
         profileRequires(loc, ENoProfile, 120, "GL_3DL_array_objects", "const array");
 
     if (qualifier.storage == EvqVaryingIn && language == EShLangVertex) {
-        requireProfile(loc, (EProfileMask)~EEsProfileMask, "vertex input arrays");
+        requireProfile(loc, ~EEsProfile, "vertex input arrays");
         profileRequires(loc, ENoProfile, 150, 0, "vertex input arrays");
     }
 
@@ -1726,9 +1672,8 @@ void TParseContext::arraySizeRequiredCheck(TSourceLoc loc, int size)
 
 void TParseContext::arrayDimError(TSourceLoc loc)
 {
-    requireProfile(loc, (EProfileMask)(ECoreProfileMask | ECompatibilityProfileMask), "arrays of arrays");
-    profileRequires(loc, ECoreProfile, 430, 0, "arrays of arrays");
-    profileRequires(loc, ECompatibilityProfile, 430, 0, "arrays of arrays");
+    requireProfile(loc, ECoreProfile | ECompatibilityProfile, "arrays of arrays");
+    profileRequires(loc, ECoreProfile | ECompatibilityProfile, 430, 0, "arrays of arrays");
 }
 
 void TParseContext::arrayDimCheck(TSourceLoc loc, TArraySizes* sizes1, TArraySizes* sizes2)
@@ -2387,7 +2332,7 @@ void TParseContext::addBlock(TSourceLoc loc, TTypeList& typeList, const TString*
         arraySizeRequiredCheck(loc, arraySizes->getSize());        
 
     if (currentBlockDefaults.storage == EvqUniform) {
-        requireProfile(loc, (EProfileMask)(~ENoProfileMask), "uniform block");
+        requireProfile(loc, ~ENoProfile, "uniform block");
         profileRequires(loc, EEsProfile, 300, 0, "uniform block");
     } else {
         error(loc, "only uniform interface blocks are supported", blockName->c_str(), "");
@@ -2786,19 +2731,6 @@ TIntermTyped* TParseContext::addConstStruct(TString& identifier, TIntermTyped* n
     }
 
     return typedNode;
-}
-
-//
-// Initialize all supported extensions to disable
-//
-void TParseContext::initializeExtensionBehavior()
-{
-    //
-    // example code: extensionBehavior["test"] = EBhDisable; // where "test" is the name of 
-    // supported extension
-    //
-    extensionBehavior["GL_ARB_texture_rectangle"] = EBhDisable;
-    extensionBehavior["GL_3DL_array_objects"] = EBhDisable;
 }
 
 } // end namespace glslang

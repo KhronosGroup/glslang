@@ -529,7 +529,7 @@ int TPpContext::CPPifdef(int defined, TPpToken * yylvalpp)
     int token = currentInput->scan(this, currentInput, yylvalpp);
     int name = yylvalpp->atom;
     if (++ifdepth > maxIfNesting) {
-        parseContext.error(yylvalpp->loc, "maximum nesting depth exceededextension name not specified", "#ifdef", "");
+        parseContext.error(yylvalpp->loc, "maximum nesting depth exceeded", "#ifdef", "");
         return 0;
     }
     elsetracker++;

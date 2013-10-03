@@ -1098,7 +1098,7 @@ void TIntermediate::checkCallGraphCycles(TInfoSink& infoSink)
 void TIntermediate::error(TInfoSink& infoSink, const char* message)
 {
     infoSink.info.prefix(EPrefixError);
-    infoSink.info << "Linking " << StageName[language] << " stage: " << message << "\n";
+    infoSink.info << "Linking " << StageName(language) << " stage: " << message << "\n";
 
     ++numErrors;
 }

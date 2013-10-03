@@ -43,13 +43,6 @@
 
 namespace glslang {
 
-typedef enum {
-    EBhRequire,
-    EBhEnable,
-    EBhWarn,
-    EBhDisable
-} TBehavior;
-
 struct TPragma {
 	TPragma(bool o, bool d) : optimize(o), debug(d) { }
 	bool optimize;
@@ -71,7 +64,6 @@ public:
 
 public:
     bool parseShaderStrings(TPpContext&, char* strings[], int strLen[], int numStrings);
-    void initializeExtensionBehavior();
     void parserError(const char *s);     // for bison's yyerror
 
     void C_DECL error(TSourceLoc, const char *szReason, const char *szToken,
@@ -148,15 +140,6 @@ public:
 
     bool arraySetMaxSize(TSourceLoc, TIntermSymbol*, int);
 
-    void requireProfile(TSourceLoc, EProfileMask profileMask, const char *featureDesc);
-    void requireStage(TSourceLoc, EShLanguageMask languageMask, const char *featureDesc);
-    void profileRequires(TSourceLoc, EProfile callingProfile, int minVersion, int numExtensions, const char* extensions[], const char *featureDesc);
-    void profileRequires(TSourceLoc, EProfile callingProfile, int minVersion, const char* extension, const char *featureDesc);
-    void checkDeprecated(TSourceLoc, EProfile callingProfile, int depVersion, const char *featureDesc);
-    void requireNotRemoved(TSourceLoc, EProfile callingProfile, int removedVersion, const char *featureDesc);
-    void fullIntegerCheck(TSourceLoc, const char* op);
-    void doubleCheck(TSourceLoc, const char* op);
-
     void setScanContext(TScanContext* c) { scanContext = c; }
     TScanContext* getScanContext() const { return scanContext; }
     void setPpContext(TPpContext* c) { ppContext = c; }
@@ -164,9 +147,21 @@ public:
     void addError() { ++numErrors; }
     int getNumErrors() const { return numErrors; }
 
+    // The following are implemented in Versions.cpp to localize version/profile/stage/extensions control
+    void initializeExtensionBehavior();
+    void requireProfile(TSourceLoc, int queryProfiles, const char *featureDesc);
+    void profileRequires(TSourceLoc, int queryProfiles, int minVersion, int numExtensions, const char* extensions[], const char *featureDesc);
+    void profileRequires(TSourceLoc, int queryProfiles, int minVersion, const char* extension, const char *featureDesc);
+    void requireStage(TSourceLoc, EShLanguageMask, const char *featureDesc);
+    void requireStage(TSourceLoc, EShLanguage, const char *featureDesc);
+    void checkDeprecated(TSourceLoc, int queryProfiles, int depVersion, const char *featureDesc);
+    void requireNotRemoved(TSourceLoc, int queryProfiles, int removedVersion, const char *featureDesc);
+    void fullIntegerCheck(TSourceLoc, const char* op);
+    void doubleCheck(TSourceLoc, const char* op);
+
 protected:
     const char* getPreamble();
-    TBehavior getExtensionBehavior(const char* behavior);
+    TExtensionBehavior getExtensionBehavior(const char* behavior);
     void nonInitConstCheck(TSourceLoc, TString& identifier, TType& type);
     TVariable* declareNonArray(TSourceLoc, TString& identifier, TType&, bool& newDeclaration);
     void declareArray(TSourceLoc, TString& identifier, const TType&, TVariable*&, bool& newDeclaration);
@@ -208,7 +203,7 @@ protected:
     TPpContext* ppContext;
     int numErrors;               // number of compile-time errors encountered
     bool parsingBuiltins;        // true if parsing built-in symbols/functions
-    TMap<TString, TBehavior> extensionBehavior;    // for each extension string, what it's current enablement is
+    TMap<TString, TExtensionBehavior> extensionBehavior;    // for each extension string, what it's current behavior is set to
     static const int maxSamplerIndex = EsdNumDims * (EbtNumTypes * (2 * 2)); // see computeSamplerTypeIndex()
     TPrecisionQualifier defaultSamplerPrecision[maxSamplerIndex];
     bool afterEOF;

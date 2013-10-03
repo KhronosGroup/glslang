@@ -40,19 +40,29 @@
 // Help manage multiple profiles, versions, extensions etc.
 //
 
+//
+// The behaviors from "#extension extension_name : behavior"
+//
 typedef enum {
-    ENoProfile,              // only for desktop, before profiles showed up
-    ECoreProfile,
-    ECompatibilityProfile,
-    EEsProfile,
-    EProfileCount,
-} EProfile;
+    EBhRequire,
+    EBhEnable,
+    EBhWarn,
+    EBhDisable
+} TExtensionBehavior;
 
+//
+// Profiles are set up for masking operations, so queries can be done on multiple
+// profiles at the same time.
+//
+// Don't maintain an ordinal set of enums (0,1,2,3...) to avoid all possible
+// defects from mixing the two different forms.
+//
 typedef enum {
-    ENoProfileMask            = (1 << ENoProfile),
-    ECoreProfileMask          = (1 << ECoreProfile),
-    ECompatibilityProfileMask = (1 << ECompatibilityProfile),
-    EEsProfileMask            = (1 << EEsProfile)
-} EProfileMask;
+    EBadProfile           = 0,
+    ENoProfile            = (1 << 0), // only for desktop, before profiles showed up
+    ECoreProfile          = (1 << 1),
+    ECompatibilityProfile = (1 << 2),
+    EEsProfile            = (1 << 3)
+} EProfile;
 
 #endif // _VERSIONS_INCLUDED_

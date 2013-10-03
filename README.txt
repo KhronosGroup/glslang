@@ -7,10 +7,13 @@ There are two components:
 2) A standalone wrapper, glslangValidator, that can be used as a shader 
    validation tool. 
 
+How to add a feature protected by a version/extension/stage/profile:  See the
+comment in glslang/MachineIndependent/Versions.cpp.
+
 Things left to do:  See Todo.txt
 
-Execution
----------
+Execution of Standalone Wrapper
+-------------------------------
 
 There are binaries in the Install/Windows and Install/Linux directories.
 
@@ -26,7 +29,10 @@ The applied stage-specific rules are based on the file extension:
     .frag for a fragment shader
     .comp for a compute shader
 
-Source: Build and run on linux
+There is also a non-shader extension
+    .conf for a configuration file of limits, see usage statement for example
+
+Source: Build and run on Linux
 -------------------------------
 
 A simple bash script "BuildLinux.sh" is provided at the root directory
