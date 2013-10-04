@@ -102,8 +102,8 @@ public:
     TPpContext(TParseContext&);
     virtual ~TPpContext();
 
-    void setPreamble(const char* preamble, int length);
-    void setShaderStrings(char* strings[], int lengths[], int numStrings);
+    void setPreamble(const char* preamble, size_t length);
+    void setShaderStrings(char* strings[], size_t lengths[], int numStrings);
 
     const char* tokenize(TPpToken* yylvalpp);
 
@@ -219,12 +219,12 @@ public:
     };
 
 protected:
-    char*  preamble;               // string to parse, all before line 1 of string 0, it is 0 if no preamble
-    int    preambleLength;
-    char** strings;                // official strings of shader, starting a string 0 line 1
-    int*   lengths;
-    int    numStrings;             // how many official strings there are
-    int    currentString;          // which string we're currently parsing  (-1 for preamble)
+    char*   preamble;               // string to parse, all before line 1 of string 0, it is 0 if no preamble
+    int     preambleLength;
+    char**  strings;                // official strings of shader, starting a string 0 line 1
+    size_t* lengths;
+    int     numStrings;             // how many official strings there are
+    int     currentString;          // which string we're currently parsing  (-1 for preamble)
 
     // Scanner data:
     int mostRecentToken;        // Most recent token seen by the scanner

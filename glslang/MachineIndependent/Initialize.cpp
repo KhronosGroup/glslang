@@ -53,7 +53,7 @@ TBuiltIns::TBuiltIns()
     prefixes[EbtFloat] =  "";
     prefixes[EbtInt]   = "i";
     prefixes[EbtUint]  = "u";
-    
+
     postfixes[2] = "2";
     postfixes[3] = "3";
     postfixes[4] = "4";
@@ -399,8 +399,8 @@ void TBuiltIns::initialize(int version, EProfile profile)
             s.append("bvec4 isinf(vec4  x);");
         }
 
-        if (profile == EEsProfile && version >= 300 ||
-            profile != EEsProfile && version >= 330) {
+        if ((profile == EEsProfile && version >= 300) ||
+            (profile != EEsProfile && version >= 330)) {
             s.append("int   floatBitsToInt(float value);");
             s.append("ivec2 floatBitsToInt(vec2  value);");
             s.append("ivec3 floatBitsToInt(vec3  value);");
@@ -422,8 +422,8 @@ void TBuiltIns::initialize(int version, EProfile profile)
             s.append("vec4  uintBitsToFloat(uvec4 value);");
         }
 
-        if (profile == EEsProfile && version >= 300 ||
-            profile != EEsProfile && version >= 400) {
+        if ((profile == EEsProfile && version >= 300) ||
+            (profile != EEsProfile && version >= 400)) {
             s.append(  "highp uint packSnorm2x16 (vec2);");
             s.append(  "highp vec2 unpackSnorm2x16 (highp uint);");
             s.append(  "highp uint packUnorm2x16 (vec2);");
@@ -503,7 +503,7 @@ void TBuiltIns::initialize(int version, EProfile profile)
                 s.append("float determinant(mat2 m);");
                 s.append("float determinant(mat3 m);");
                 s.append("float determinant(mat4 m);");
-                
+
                 s.append("mat2 inverse(mat2 m);");
                 s.append("mat3 inverse(mat3 m);");
                 s.append("mat4 inverse(mat4 m);");
@@ -587,8 +587,9 @@ void TBuiltIns::initialize(int version, EProfile profile)
         // Original-style texture functions existing in both stages.
         // (Per-stage functions below.)
         //
-        if (profile == EEsProfile && version == 100 ||
-            profile == ECompatibilityProfile || version < FirstProfileVersion) {
+        if ((profile == EEsProfile && version == 100) ||
+            profile == ECompatibilityProfile ||
+            version < FirstProfileVersion) {
             s.append("vec4 texture2D(sampler2D, vec2);");
 
             s.append("vec4 texture2DProj(sampler2D, vec3);");
@@ -597,13 +598,13 @@ void TBuiltIns::initialize(int version, EProfile profile)
             s.append("vec4 textureCube(samplerCube, vec3);");
         }
 
-        if (profile != EEsProfile && 
+        if (profile != EEsProfile &&
             (profile == ECompatibilityProfile || version < FirstProfileVersion)) {
             s.append("vec4 texture1D(sampler1D, float);");
-            
+
             s.append("vec4 texture1DProj(sampler1D, vec2);");
             s.append("vec4 texture1DProj(sampler1D, vec4);");
-            
+
             s.append("vec4 texture3D(sampler3D, vec3);");
             s.append("vec4 texture3DProj(sampler3D, vec4);");
 
@@ -1016,7 +1017,7 @@ void TBuiltIns::add2ndGenerationSamplingImaging(int version, EProfile profile)
 
     // enumerate all the types
     for (int image = 0; image <= 1; ++image) { // loop over "bool" image vs sampler
-            
+
         if (image > 0 && version < 420)
             continue;
 
@@ -1055,11 +1056,11 @@ void TBuiltIns::add2ndGenerationSamplingImaging(int version, EProfile profile)
 
                             //
                             // Now, make all the function prototypes for the type we just built...
-                            // 
+                            //
 
                             TSampler sampler;
-                            sampler.set(bTypes[bType], (TSamplerDim)dim, arrayed ? true : false, 
-                                                                         shadow  ? true : false, 
+                            sampler.set(bTypes[bType], (TSamplerDim)dim, arrayed ? true : false,
+                                                                         shadow  ? true : false,
                                                                          ms      ? true : false);
                             if (image)
                                 sampler.image = true;
@@ -1067,10 +1068,10 @@ void TBuiltIns::add2ndGenerationSamplingImaging(int version, EProfile profile)
                             TString typeName = sampler.getString();
 
                             addQueryFunctions(sampler, typeName, version, profile);
-                                                        
+
                             if (image)
                                 addImageFunctions(sampler, typeName, version, profile);
-                            else                                
+                            else
                                 addSamplingFunctions(sampler, typeName, version, profile);
                         }
                     }
@@ -1192,7 +1193,7 @@ void TBuiltIns::addSamplingFunctions(TSampler sampler, TString& typeName, int ve
                                     continue;
                                 if (extraProj && (sampler.dim == Esd3D || sampler.shadow))
                                     continue;
-                                
+
                                 TString s;
 
                                 // return type
@@ -1229,14 +1230,14 @@ void TBuiltIns::addSamplingFunctions(TSampler sampler, TString& typeName, int ve
                                 else {
                                     s.append(",");
                                     TBasicType t = fetch ? EbtInt : EbtFloat;
-                                    if (totalDims == 1) 
+                                    if (totalDims == 1)
                                         s.append(TType::getBasicString(t));
                                     else {
                                         s.append(prefixes[t]);
                                         s.append("vec");
                                         s.append(postfixes[totalDims]);
                                     }
-                                }                                
+                                }
 
                                 if (bias && compare)
                                     continue;
@@ -1331,7 +1332,7 @@ void TBuiltIns::initialize(const TBuiltInResource &resources, int version, EProf
 
             snprintf(builtInConstant, maxSize, "const mediump int  gl_MaxTextureImageUnits = %d;", resources.maxTextureImageUnits);
             s.append(builtInConstant);
-            
+
             snprintf(builtInConstant, maxSize, "const mediump int  gl_MaxFragmentUniformVectors = %d;", resources.maxFragmentUniformVectors);
             s.append(builtInConstant);
 
@@ -1350,7 +1351,7 @@ void TBuiltIns::initialize(const TBuiltInResource &resources, int version, EProf
 
                 snprintf(builtInConstant, maxSize, "const mediump int  gl_MinProgramTexelOffset = %d;", resources.minProgramTexelOffset);
                 s.append(builtInConstant);
-                
+
                 snprintf(builtInConstant, maxSize, "const mediump int  gl_MaxProgramTexelOffset = %d;", resources.maxProgramTexelOffset);
                 s.append(builtInConstant);
             }
@@ -1507,7 +1508,7 @@ void IdentifyBuiltIns(int version, EProfile profile, EShLanguage language, TSymb
     case EShLangCompute:
         // TODO: desktop functionality: support new stages
         break;
-    
+
     default:
         assert(false && "Language not supported");
         break;
@@ -1526,7 +1527,7 @@ void IdentifyBuiltIns(int version, EProfile profile, EShLanguage language, TSymb
         symbolTable.relateToOperator("outerProduct", EOpOuterProduct);
         symbolTable.relateToOperator("transpose", EOpTranspose);
         if (version >= 150) {
-            symbolTable.relateToOperator("determinant", EOpDeterminant);                
+            symbolTable.relateToOperator("determinant", EOpDeterminant);
             symbolTable.relateToOperator("inverse", EOpMatrixInverse);
         }
     }
@@ -1637,7 +1638,7 @@ void IdentifyBuiltIns(int version, EProfile profile, EShLanguage language, TSymb
         symbolTable.relateToOperator("groupMemoryBarrier",  EOpGroupMemoryBarrier);
         break;
 
-	default: 
+	default:
         assert(false && "Language not supported");
     }
 }

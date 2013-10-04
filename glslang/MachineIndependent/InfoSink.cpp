@@ -32,7 +32,7 @@
 //POSSIBILITY OF SUCH DAMAGE.
 //
 
-#include "Include/InfoSink.h"
+#include "../Include/InfoSink.h"
 
 #include <string.h>
 

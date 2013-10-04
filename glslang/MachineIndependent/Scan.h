@@ -37,14 +37,14 @@
 #include "Versions.h"
 
 namespace glslang {
-    
+
 //
 // A character scanner that seamlessly, on read-only strings, reads across an
 // array of strings without assuming null termination.
 //
 class TInputScanner {
 public:
-    TInputScanner(int n, const char* const i[], int L[]) : numSources(n), sources(i), lengths(L), currentSource(0), currentChar(0) { }
+    TInputScanner(int n, const char* const i[], size_t L[]) : numSources(n), sources(i), lengths(L), currentSource(0), currentChar(0) { }
 
     // return of -1 means end of strings,
     // anything else is the next character
@@ -65,7 +65,7 @@ public:
     void advance()
     {
         ++currentChar;
-        if (currentChar >= lengths[currentSource]) {
+        if (currentChar >= static_cast<int>(lengths[currentSource])) {
             ++currentSource;
             currentChar = 0;
             while (currentSource < numSources && lengths[currentSource] == 0)
@@ -100,7 +100,7 @@ public:
 protected:
     int numSources;             // number of strings in source
     const char* const *sources; // array of strings
-    const int *lengths;         // length of each string
+    const size_t *lengths;      // length of each string
     int currentSource;
     int currentChar;
 };

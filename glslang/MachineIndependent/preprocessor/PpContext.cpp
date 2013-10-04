@@ -103,7 +103,7 @@ TPpContext::~TPpContext()
     FreeScanner();
 }
 
-void TPpContext::setPreamble(const char* p, int l)
+void TPpContext::setPreamble(const char* p, size_t l)
 {
     if (p && l > 0) {
         // preAmble could be a hard-coded string; make writable copy
@@ -116,7 +116,7 @@ void TPpContext::setPreamble(const char* p, int l)
     }
 }
 
-void TPpContext::setShaderStrings(char* s[], int l[], int n)
+void TPpContext::setShaderStrings(char* s[], size_t l[], int n)
 {
     strings = s;
     lengths = l;

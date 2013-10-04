@@ -37,7 +37,7 @@
 #ifndef _INITIALIZE_INCLUDED_
 #define _INITIALIZE_INCLUDED_
 
-#include "Include/ResourceLimits.h"
+#include "../Include/ResourceLimits.h"
 #include "../Include/Common.h"
 #include "../Include/ShHandle.h"
 #include "SymbolTable.h"

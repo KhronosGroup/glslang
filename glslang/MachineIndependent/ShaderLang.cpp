@@ -139,7 +139,7 @@ bool InitializeSymbolTable(const TString& builtIns, int version, EProfile profil
     symbolTable.push();
 
     const char* builtInShaders[2];
-    int builtInLengths[2];
+    size_t builtInLengths[2];
     builtInShaders[0] = builtIns.c_str();
     builtInLengths[0] = builtIns.size();
 
@@ -430,7 +430,7 @@ bool CompileDeferred(
     GetThreadPoolAllocator().push();
     
     // move to length-based strings, rather than null-terminated strings
-    int* lengths = new int[numStrings];
+    size_t* lengths = new size_t[numStrings];
     for (int s = 0; s < numStrings; ++s) {
         if (inputLengths == 0 || inputLengths[s] < 0)
             lengths[s] = strlen(shaderStrings[s]);

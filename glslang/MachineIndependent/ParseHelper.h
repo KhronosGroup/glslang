@@ -63,7 +63,7 @@ public:
                   bool forwardCompatible = false, EShMessages messages = EShMsgDefault);
 
 public:
-    bool parseShaderStrings(TPpContext&, char* strings[], int strLen[], int numStrings);
+    bool parseShaderStrings(TPpContext&, char* strings[], size_t strLen[], int numStrings);
     void parserError(const char *s);     // for bison's yyerror
 
     void C_DECL error(TSourceLoc, const char *szReason, const char *szToken,

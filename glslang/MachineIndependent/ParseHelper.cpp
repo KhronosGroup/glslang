@@ -119,7 +119,7 @@ const char* TParseContext::getPreamble()
 //
 // Returns true for successful acceptance of the shader, false if any errors.
 //
-bool TParseContext::parseShaderStrings(TPpContext& ppContext, char* strings[], int lengths[], int numStrings)
+bool TParseContext::parseShaderStrings(TPpContext& ppContext, char* strings[], size_t lengths[], int numStrings)
 {
     // empty shaders are okay
     if (! strings || numStrings == 0 || lengths[0] == 0)
@@ -141,7 +141,7 @@ bool TParseContext::parseShaderStrings(TPpContext& ppContext, char* strings[], i
     ppContext.setShaderStrings(strings, lengths, numStrings);
 
     // TODO: desktop PP: a shader containing nothing but white space and comments is valid, even though it has no parse tokens
-    int len = 0;
+    size_t len = 0;
     while (strings[0][len] == ' '  ||
            strings[0][len] == '\t' ||
            strings[0][len] == '\n' ||
@@ -469,8 +469,8 @@ TIntermTyped* TParseContext::handleBracketDereference(TSourceLoc loc, TIntermTyp
     } else {
         if (index->getQualifier().storage == EvqConst) {
             int indexValue = index->getAsConstantUnion()->getConstArray()[0].getIConst();
-            if (! base->isArray() && (base->isVector() && base->getType().getVectorSize() <= indexValue ||
-                                      base->isMatrix() && base->getType().getMatrixCols() <= indexValue))
+            if (! base->isArray() && ((base->isVector() && base->getType().getVectorSize() <= indexValue) ||
+                                      (base->isMatrix() && base->getType().getMatrixCols() <= indexValue)))
                 error(loc, "", "[", "index out of range '%d'", index->getAsConstantUnion()->getConstArray()[0].getIConst());
             if (base->isArray()) {
                 if (base->getType().getArraySize() == 0) {
@@ -1441,8 +1441,8 @@ void TParseContext::globalQualifierFix(TSourceLoc loc, TQualifier& qualifier, co
 
     if (publicType.basicType == EbtInt || publicType.basicType == EbtUint || publicType.basicType == EbtDouble) {
         profileRequires(loc, EEsProfile, 300, 0, "shader input/output");
-        if (language != EShLangVertex   && qualifier.storage == EvqVaryingIn  && ! qualifier.flat ||
-            language != EShLangFragment && qualifier.storage == EvqVaryingOut && ! qualifier.flat) {
+        if ((language != EShLangVertex   && qualifier.storage == EvqVaryingIn  && ! qualifier.flat) ||
+            (language != EShLangFragment && qualifier.storage == EvqVaryingOut && ! qualifier.flat)) {
             error(loc, "must be qualified as 'flat'", GetStorageQualifierString(qualifier.storage), TType::getBasicString(publicType.basicType));
          
             return;
@@ -1496,11 +1496,11 @@ void TParseContext::mergeQualifiers(TSourceLoc loc, TQualifier& dst, const TQual
     // Storage qualification
     if (dst.storage == EvqTemporary || dst.storage == EvqGlobal)
         dst.storage = src.storage;
-    else if (dst.storage == EvqIn  && src.storage == EvqOut ||
-             dst.storage == EvqOut && src.storage == EvqIn)
+    else if ((dst.storage == EvqIn  && src.storage == EvqOut) ||
+             (dst.storage == EvqOut && src.storage == EvqIn))
         dst.storage = EvqInOut;
-    else if (dst.storage == EvqIn    && src.storage == EvqConst ||
-             dst.storage == EvqConst && src.storage == EvqIn)
+    else if ((dst.storage == EvqIn    && src.storage == EvqConst) ||
+             (dst.storage == EvqConst && src.storage == EvqIn))
         dst.storage = EvqConstReadOnly;
     else if (src.storage != EvqTemporary)
         error(loc, "too many storage qualifiers", GetStorageQualifierString(src.storage), "");
@@ -1508,7 +1508,7 @@ void TParseContext::mergeQualifiers(TSourceLoc loc, TQualifier& dst, const TQual
     // Precision qualifiers
     if (! force && src.precision != EpqNone && dst.precision != EpqNone)
         error(loc, "only one precision qualifier allowed", GetPrecisionQualifierString(src.precision), "");
-    if (dst.precision == EpqNone || force && src.precision != EpqNone)
+    if (dst.precision == EpqNone || (force && src.precision != EpqNone))
         dst.precision = src.precision;
 
     // Layout qualifiers
@@ -1678,16 +1678,16 @@ void TParseContext::arrayDimError(TSourceLoc loc)
 
 void TParseContext::arrayDimCheck(TSourceLoc loc, TArraySizes* sizes1, TArraySizes* sizes2)
 {
-    if (sizes1 && sizes2 ||
-        sizes1 && sizes1->isArrayOfArrays() ||
-        sizes2 && sizes2->isArrayOfArrays())
+    if ((sizes1 && sizes2) ||
+        (sizes1 && sizes1->isArrayOfArrays()) ||
+        (sizes2 && sizes2->isArrayOfArrays()))
         arrayDimError(loc);
 }
 
 void TParseContext::arrayDimCheck(TSourceLoc loc, const TType* type, TArraySizes* sizes2)
 {
-    if (type && type->isArray() && sizes2 ||
-        sizes2 && sizes2->isArrayOfArrays())
+    if ((type && type->isArray() && sizes2) ||
+        (sizes2 && sizes2->isArrayOfArrays()))
         arrayDimError(loc);
 }
 
@@ -1815,18 +1815,18 @@ TVariable* TParseContext::redeclareBuiltin(TSourceLoc loc, const TString& identi
 
     // Potentially redeclaring a built-in variable...
     
-    if (identifier == "gl_FragDepth"           && version >= 420 ||
-        identifier == "gl_PerVertex"           && version >= 410 ||
-        identifier == "gl_PerFragment"         && version >= 410 ||
-        identifier == "gl_FragCoord"           && version >= 150 ||
-        identifier == "gl_ClipDistance"        && version >= 130 ||
-        identifier == "gl_FrontColor"          && version >= 130 ||
-        identifier == "gl_BackColor"           && version >= 130 ||
-        identifier == "gl_FrontSecondaryColor" && version >= 130 ||
-        identifier == "gl_BackSecondaryColor"  && version >= 130 ||
-        identifier == "gl_SecondaryColor"      && version >= 130 ||
-        identifier == "gl_Color"               && version >= 130 && language == EShLangFragment ||
-        identifier == "gl_TexCoord") {
+    if ((identifier == "gl_FragDepth"           && version >= 420) ||
+        (identifier == "gl_PerVertex"           && version >= 410) ||
+        (identifier == "gl_PerFragment"         && version >= 410) ||
+        (identifier == "gl_FragCoord"           && version >= 150) ||
+        (identifier == "gl_ClipDistance"        && version >= 130) ||
+        (identifier == "gl_FrontColor"          && version >= 130) ||
+        (identifier == "gl_BackColor"           && version >= 130) ||
+        (identifier == "gl_FrontSecondaryColor" && version >= 130) ||
+        (identifier == "gl_BackSecondaryColor"  && version >= 130) ||
+        (identifier == "gl_SecondaryColor"      && version >= 130) ||
+        (identifier == "gl_Color"               && version >= 130 && language == EShLangFragment) ||
+         identifier == "gl_TexCoord") {
 
         // Find the existing symbol, if any.
         bool builtIn;
@@ -2347,7 +2347,7 @@ void TParseContext::addBlock(TSourceLoc loc, TTypeList& typeList, const TString*
         TQualifier memberQualifier = typeList[member].type->getQualifier();
         if (memberQualifier.storage != EvqTemporary && memberQualifier.storage != EvqGlobal && memberQualifier.storage != currentBlockDefaults.storage)
             error(loc, "member storage qualifier cannot contradict block storage qualifier", typeList[member].type->getFieldName().c_str(), "");
-        if (currentBlockDefaults.storage == EvqUniform && memberQualifier.isInterpolation() || memberQualifier.isAuxiliary())
+        if ((currentBlockDefaults.storage == EvqUniform && memberQualifier.isInterpolation()) || memberQualifier.isAuxiliary())
             error(loc, "member of uniform block cannot have an auxiliary or interpolation qualifier", typeList[member].type->getFieldName().c_str(), "");
 
         TBasicType basicType = typeList[member].type->getBasicType();
@@ -2570,7 +2570,7 @@ TIntermNode* TParseContext::addSwitch(TSourceLoc loc, TIntermTyped* expression, 
     wrapupSwitchSubsequence(lastStatements, 0);
 
     if (expression == 0 || 
-        expression->getBasicType() != EbtInt && expression->getBasicType() != EbtUint ||
+        (expression->getBasicType() != EbtInt && expression->getBasicType() != EbtUint) ||
         expression->getType().isArray() || expression->getType().isMatrix() || expression->getType().isVector())
             error(loc, "condition must be a scalar integer expression", "switch", "");
 

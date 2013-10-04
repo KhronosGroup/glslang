@@ -645,7 +645,7 @@ TIntermAggregate* TIntermediate::growAggregate(TIntermNode* left, TIntermNode* r
 {
     TIntermAggregate* aggNode = growAggregate(left, right);
     if (aggNode)
-        aggNode->setLoc(loc);
+    aggNode->setLoc(loc);
 
     return aggNode;
 }
@@ -926,8 +926,8 @@ void TIntermediate::merge(TInfoSink& infoSink, TIntermediate& unit)
     numErrors += unit.numErrors;
     callGraph.insert(callGraph.end(), unit.callGraph.begin(), unit.callGraph.end());
 
-    if (profile != EEsProfile && unit.profile == EEsProfile ||
-        profile == EEsProfile && unit.profile != EEsProfile)
+    if ((profile != EEsProfile && unit.profile == EEsProfile) ||
+        (profile == EEsProfile && unit.profile != EEsProfile))
         error(infoSink, "Cannot mix ES profile with non-ES profile shaders\n");
 
     if (unit.treeRoot == 0)
@@ -985,10 +985,10 @@ void TIntermediate::mergeBodies(TInfoSink& infoSink, TIntermSequence& globals, c
 void TIntermediate::mergeLinkerObjects(TInfoSink& infoSink, TIntermSequence& linkerObjects, const TIntermSequence& unitLinkerObjects)
 {
     // Error check and merge the linker objects (duplicates should not be merged)
-    unsigned int initialNumLinkerObjects = linkerObjects.size();
+    std::size_t initialNumLinkerObjects = linkerObjects.size();
     for (unsigned int unitLinkObj = 0; unitLinkObj < unitLinkerObjects.size(); ++unitLinkObj) {
         bool merge = true;
-        for (unsigned int linkObj = 0; linkObj < initialNumLinkerObjects; ++linkObj) {
+        for (std::size_t linkObj = 0; linkObj < initialNumLinkerObjects; ++linkObj) {
             TIntermSymbol* symbol = linkerObjects[linkObj]->getAsSymbolNode();
             TIntermSymbol* unitSymbol = unitLinkerObjects[unitLinkObj]->getAsSymbolNode();
             assert(symbol && unitSymbol);
@@ -1379,8 +1379,8 @@ bool TIntermBinary::promote()
     case EOpInclusiveOrAssign:
     case EOpExclusiveOrAssign:
         // Check for integer-only operands.
-        if ( left->getBasicType() != EbtInt &&  left->getBasicType() != EbtUint ||
-            right->getBasicType() != EbtInt && right->getBasicType() != EbtUint)
+        if (( left->getBasicType() != EbtInt &&  left->getBasicType() != EbtUint) ||
+            (right->getBasicType() != EbtInt && right->getBasicType() != EbtUint))
             return false;
         if (left->isMatrix() || right->isMatrix())
             return false;
@@ -1557,8 +1557,8 @@ bool TIntermBinary::promote()
     case EOpSubAssign:
     case EOpDivAssign:
     case EOpModAssign:
-        if (left->isMatrix() && right->isVector() ||
-            left->isVector() && right->isMatrix() ||
+        if ((left->isMatrix() && right->isVector()) ||
+            (left->isVector() && right->isMatrix()) ||
             left->getBasicType() != right->getBasicType())
             return false;
         if (left->isMatrix() && right->isMatrix() && (left->getMatrixCols() != right->getMatrixCols() || left->getMatrixRows() != right->getMatrixRows()))

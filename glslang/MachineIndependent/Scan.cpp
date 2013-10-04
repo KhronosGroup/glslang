@@ -41,7 +41,7 @@
 #include <string.h>
 
 #include "Scan.h"
-#include "Include/Types.h"
+#include "../Include/Types.h"
 #include "SymbolTable.h"
 #include "glslang_tab.cpp.h"
 #include "ParseHelper.h"
@@ -579,8 +579,8 @@ int TScanContext::tokenizeIdentifier()
 
     case SWITCH:
     case DEFAULT:
-        if (parseContext.profile == EEsProfile && parseContext.version < 300 ||
-            parseContext.profile != EEsProfile && parseContext.version < 130)
+        if ((parseContext.profile == EEsProfile && parseContext.version < 300) ||
+            (parseContext.profile != EEsProfile && parseContext.version < 130))
             reservedWord();
         return keyword;
 
@@ -637,8 +637,8 @@ int TScanContext::tokenizeIdentifier()
 
     case LAYOUT:
     case SHARED:
-        if (parseContext.profile == EEsProfile && parseContext.version < 300 ||
-            parseContext.profile != EEsProfile && parseContext.version < 140)
+        if ((parseContext.profile == EEsProfile && parseContext.version < 300) ||
+            (parseContext.profile != EEsProfile && parseContext.version < 140))
             return identifierOrType();
         return keyword;
 
@@ -789,7 +789,7 @@ int TScanContext::tokenizeIdentifier()
     case SAMPLER2DRECTSHADOW:
         afterType = true;
         if (parseContext.profile == EEsProfile ||
-            parseContext.profile != EEsProfile && parseContext.version < 140)
+            (parseContext.profile != EEsProfile && parseContext.version < 140))
             reservedWord();
         return keyword;
 
@@ -797,8 +797,8 @@ int TScanContext::tokenizeIdentifier()
         afterType = true;
         if (parseContext.profile == EEsProfile && parseContext.version == 300)
             reservedWord();
-        else if (parseContext.profile == EEsProfile && parseContext.version < 300 ||
-                 parseContext.profile != EEsProfile && parseContext.version < 130)
+        else if ((parseContext.profile == EEsProfile && parseContext.version < 300) ||
+                 (parseContext.profile != EEsProfile && parseContext.version < 130))
             return identifierOrType();
         return keyword;
 
@@ -806,8 +806,8 @@ int TScanContext::tokenizeIdentifier()
         return es30ReservedFromGLSL(130);
         
     case SMOOTH:
-        if (parseContext.profile == EEsProfile && parseContext.version < 300 ||
-            parseContext.profile != EEsProfile && parseContext.version < 130)
+        if ((parseContext.profile == EEsProfile && parseContext.version < 300) ||
+            (parseContext.profile != EEsProfile && parseContext.version < 130))
             return identifierOrType();
         return keyword;
 
@@ -825,7 +825,7 @@ int TScanContext::tokenizeIdentifier()
 
     case PRECISE:
         if (parseContext.profile == EEsProfile ||
-            parseContext.profile != EEsProfile && parseContext.version < 400)
+            (parseContext.profile != EEsProfile && parseContext.version < 400))
             return identifierOrType();
         return keyword;
 
@@ -835,15 +835,15 @@ int TScanContext::tokenizeIdentifier()
         return keyword;
 
     case PACKED:
-        if (parseContext.profile == EEsProfile && parseContext.version < 300 ||
-            parseContext.profile != EEsProfile && parseContext.version < 330)
+        if ((parseContext.profile == EEsProfile && parseContext.version < 300) ||
+            (parseContext.profile != EEsProfile && parseContext.version < 330))
             return reservedWord();
         return identifierOrType();
 
     case RESOURCE:
     {
-        bool reserved = parseContext.profile == EEsProfile && parseContext.version >= 300 ||
-                        parseContext.profile != EEsProfile && parseContext.version >= 420;
+        bool reserved = (parseContext.profile == EEsProfile && parseContext.version >= 300) ||
+                        (parseContext.profile != EEsProfile && parseContext.version >= 420);
         return identifierOrReserved(reserved);
     }
     case SUPERP:
@@ -906,8 +906,8 @@ int TScanContext::identifierOrReserved(bool reserved)
 // but then got reserved by ES 3.0.
 int TScanContext::es30ReservedFromGLSL(int version)
 {
-    if (parseContext.profile == EEsProfile && parseContext.version < 300 ||
-        parseContext.profile != EEsProfile && parseContext.version < version) {
+    if ((parseContext.profile == EEsProfile && parseContext.version < 300) ||
+        (parseContext.profile != EEsProfile && parseContext.version < version)) {
             if (parseContext.forwardCompatible)
                 parseContext.warn(loc, "future reserved word in ES 300 and keyword in GLSL", tokenText, "");
 
@@ -922,8 +922,8 @@ int TScanContext::es30ReservedFromGLSL(int version)
 // showed up, both in an es version and a non-ES version.
 int TScanContext::nonreservedKeyword(int esVersion, int nonEsVersion)
 {
-    if (parseContext.profile == EEsProfile && parseContext.version < esVersion ||
-        parseContext.profile != EEsProfile && parseContext.version < nonEsVersion) {
+    if ((parseContext.profile == EEsProfile && parseContext.version < esVersion) ||
+        (parseContext.profile != EEsProfile && parseContext.version < nonEsVersion)) {
         if (parseContext.forwardCompatible)
             parseContext.warn(loc, "using future keyword", tokenText, "");
 
@@ -983,8 +983,8 @@ int TScanContext::firstGenerationImage()
     if (parseContext.profile != EEsProfile && parseContext.version >= 420)
         return keyword;
 
-    if (parseContext.profile == EEsProfile && parseContext.version >= 300 ||
-        parseContext.profile != EEsProfile && parseContext.version >= 130) {
+    if ((parseContext.profile == EEsProfile && parseContext.version >= 300) ||
+        (parseContext.profile != EEsProfile && parseContext.version >= 130)) {
         reservedWord();
 
         return keyword;
