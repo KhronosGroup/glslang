@@ -115,6 +115,7 @@ public:
     void paramCheck(TSourceLoc, TStorageQualifier qualifier, TType* type);
     void nestedBlockCheck(TSourceLoc);
     void nestedStructCheck(TSourceLoc);
+    void arrayObjectCheck(TSourceLoc, const TType&, const char* op);
 
     void setLayoutQualifier(TSourceLoc, TPublicType&, TString&);
     void setLayoutQualifier(TSourceLoc, TPublicType&, TString&, int);
@@ -161,7 +162,6 @@ public:
 
 protected:
     const char* getPreamble();
-    TExtensionBehavior getExtensionBehavior(const char* behavior);
     void nonInitConstCheck(TSourceLoc, TString& identifier, TType& type);
     TVariable* declareNonArray(TSourceLoc, TString& identifier, TType&, bool& newDeclaration);
     void declareArray(TSourceLoc, TString& identifier, const TType&, TVariable*&, bool& newDeclaration);

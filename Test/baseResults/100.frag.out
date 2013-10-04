@@ -1,0 +1,100 @@
+ERROR: 0:3: '{ } style initializers' : not supported with this profile: es
+ERROR: 0:3: 'initializer' : not supported for this version or the enabled extensions 
+ERROR: 0:3: '=' :  cannot convert from 'const int' to '3-element array of mediump int'
+ERROR: 0:7: 'attribute' : not supported in this stage: fragment
+ERROR: 0:7: 'float' : type requires declaration of default precision qualifier 
+ERROR: 0:9: '=' :  cannot convert from 'const int' to 'mediump float'
+ERROR: 0:11: 'uniform block' : not supported for this version or the enabled extensions 
+ERROR: 0:19: 'foo' : no matching overloaded function found 
+ERROR: 0:20: 'bit shift left' : not supported for this version or the enabled extensions 
+ERROR: 0:21: 'bit shift right' : not supported for this version or the enabled extensions 
+ERROR: 0:22: 'array comparison' : not supported for this version or the enabled extensions 
+ERROR: 0:24: 'bitwise and' : not supported for this version or the enabled extensions 
+ERROR: 0:25: '%' : not supported for this version or the enabled extensions 
+ERROR: 0:26: 'bitwise inclusive or' : not supported for this version or the enabled extensions 
+ERROR: 0:27: 'bit-shift right assign' : not supported for this version or the enabled extensions 
+ERROR: 0:28: 'bit-shift left assign' : not supported for this version or the enabled extensions 
+ERROR: 0:29: '%=' : not supported for this version or the enabled extensions 
+ERROR: 0:36: 'array assignment' : not supported for this version or the enabled extensions 
+ERROR: 0:37: 'array comparison' : not supported for this version or the enabled extensions 
+ERROR: 0:38: 'array comparison' : not supported for this version or the enabled extensions 
+ERROR: 0:40: 'switch' : Reserved word. 
+ERROR: 0:40: 'switch statements' : not supported for this version or the enabled extensions 
+ERROR: 0:45: '' : array size required 
+ERROR: 23 compilation errors.  No code generated.
+
+ERROR: node is still EOpNull!
+0:17  Function Definition: main( (void)
+0:17    Function Parameters: 
+0:19    Sequence
+0:19      Constant:
+0:19        0.000000
+0:20      Sequence
+0:20        move second child to first child (mediump int)
+0:20          's' (mediump int)
+0:20          Constant:
+0:20            16 (const int)
+0:21      move second child to first child (mediump int)
+0:21        's' (mediump int)
+0:21        Constant:
+0:21          4 (const int)
+0:22      Test condition and select (void)
+0:22        Condition
+0:22        Compare Equal (bool)
+0:22          'a' (3-element array of mediump int)
+0:22          'a' (3-element array of mediump int)
+0:22        true case is null
+0:24      move second child to first child (mediump int)
+0:24        'b' (mediump int)
+0:24        bitwise and (mediump int)
+0:24          'c' (mediump int)
+0:24          Constant:
+0:24            4 (const int)
+0:25      move second child to first child (mediump int)
+0:25        'b' (mediump int)
+0:25        mod (mediump int)
+0:25          'c' (mediump int)
+0:25          Constant:
+0:25            4 (const int)
+0:26      move second child to first child (mediump int)
+0:26        'b' (mediump int)
+0:26        inclusive-or (mediump int)
+0:26          'c' (mediump int)
+0:26          Constant:
+0:26            4 (const int)
+0:27      right shift second child into first child (mediump int)
+0:27        'b' (mediump int)
+0:27        Constant:
+0:27          2 (const int)
+0:28      left shift second child into first child (mediump int)
+0:28        'b' (mediump int)
+0:28        Constant:
+0:28          2 (const int)
+0:29      mod second child into first child (mediump int)
+0:29        'b' (mediump int)
+0:29        Constant:
+0:29          3 (const int)
+0:36      move second child to first child (structure)
+0:36        's1' (structure)
+0:36        's2' (structure)
+0:37      Test condition and select (void)
+0:37        Condition
+0:37        Compare Equal (bool)
+0:37          's1' (structure)
+0:37          's2' (structure)
+0:37        true case is null
+0:38      Test condition and select (void)
+0:38        Condition
+0:38        Compare Not Equal (bool)
+0:38          's1' (structure)
+0:38          's2' (structure)
+0:38        true case is null
+0:40      'b' (mediump int)
+0:?   Linker Objects
+0:?     'a' (3-element array of mediump int)
+0:?     'uint' (mediump int)
+0:?     'v' (smooth in 3-element array of mediump 4-component vector of float)
+0:?     'f' (mediump float)
+0:?     '__anon__0' (layout(shared ) uniform block)
+0:?     'fa' (unsized array of mediump float)
+

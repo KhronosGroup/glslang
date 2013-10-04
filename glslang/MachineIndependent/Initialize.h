@@ -45,6 +45,15 @@
 
 namespace glslang {
 
+//
+// This is made to hold parseable strings for almost all the built-in
+// functions and variables for one specific combination of version
+// and profile.  (Some still need to be added programmatically.)
+//
+// The strings are organized by
+//    commonBuiltins:  intersection of all stages' built-ins, processed just once
+//    stageBuiltins[]: anything a stage needs that's not in commonBuiltins
+//
 class TBuiltIns {
 public:
     POOL_ALLOCATOR_NEW_DELETE(GetThreadPoolAllocator())
@@ -64,7 +73,8 @@ protected:
     TString commonBuiltins;
     TString stageBuiltins[EShLangCount];
 
-    // Helpers for making text
+    // Helpers for making textual representations of the permutations
+    // of texturing/imaging functions.
     const char* postfixes[5];
     const char* prefixes[EbtNumTypes];
     int dimMap[EsdNumDims];

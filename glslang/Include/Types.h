@@ -580,6 +580,18 @@ public:
 
 	virtual bool isMatrix() const { return matrixCols ? true : false; }
     virtual bool isArray() const  { return arraySizes != 0; }
+    virtual bool containsArray() const
+    {
+        if (isArray())
+            return true;
+		if (! structure)
+            return false;
+		for (unsigned int i = 0; i < structure->size(); ++i) {
+            if ((*structure)[i].type->containsArray())
+                return true;
+        }
+        return false;
+    }
     int getArraySize() const { return arraySizes->sizes.front(); }
     void setArraySizes(TArraySizes* s) 
     {

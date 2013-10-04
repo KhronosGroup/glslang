@@ -21,7 +21,7 @@ void main()
         gu[2] = 4.0;  // ERROR, overflow
     }
 
-    g4 = foo(g5);
+    g4 = foo(g5);  // ERROR
     g5 = g4;  // ERROR
     gu = g4;  // ERROR
 

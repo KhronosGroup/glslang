@@ -463,6 +463,7 @@ multiplicative_expression
         }
     }
     | multiplicative_expression PERCENT unary_expression {
+        parseContext.fullIntegerCheck($2.loc, "%");
         $$ = parseContext.intermediate.addBinaryMath(EOpMod, $1, $3, $2.loc);
         if ($$ == 0) {
             parseContext.binaryOpError($2.loc, "%", $1->getCompleteString(), $3->getCompleteString());
@@ -552,24 +553,24 @@ relational_expression
 equality_expression
     : relational_expression { $$ = $1; }
     | equality_expression EQ_OP relational_expression  {
+        parseContext.arrayObjectCheck($2.loc, $1->getType(), "array comparison");
         $$ = parseContext.intermediate.addBinaryMath(EOpEqual, $1, $3, $2.loc);
         if ($$ == 0) {
             parseContext.binaryOpError($2.loc, "==", $1->getCompleteString(), $3->getCompleteString());
             TConstUnionArray unionArray(1);
             unionArray[0].setBConst(false);
             $$ = parseContext.intermediate.addConstantUnion(unionArray, TType(EbtBool, EvqConst), $2.loc);
-        } else if (($1->isArray() || $3->isArray()))
-            parseContext.profileRequires($2.loc, ENoProfile, 120, "GL_3DL_array_objects", "==");
+        }
     }
     | equality_expression NE_OP relational_expression {
+        parseContext.arrayObjectCheck($2.loc, $1->getType(), "array comparison");
         $$ = parseContext.intermediate.addBinaryMath(EOpNotEqual, $1, $3, $2.loc);
         if ($$ == 0) {
             parseContext.binaryOpError($2.loc, "!=", $1->getCompleteString(), $3->getCompleteString());
             TConstUnionArray unionArray(1);
             unionArray[0].setBConst(false);
             $$ = parseContext.intermediate.addConstantUnion(unionArray, TType(EbtBool, EvqConst), $2.loc);
-        } else if (($1->isArray() || $3->isArray()))
-            parseContext.profileRequires($2.loc, ENoProfile, 120, "GL_3DL_array_objects", "!=");
+        }
     }
     ;
 
@@ -664,23 +665,42 @@ conditional_expression
 assignment_expression
     : conditional_expression { $$ = $1; }
     | unary_expression assignment_operator assignment_expression {
+        parseContext.arrayObjectCheck($2.loc, $1->getType(), "array assignment");
         parseContext.lValueErrorCheck($2.loc, "assign", $1);
         $$ = parseContext.intermediate.addAssign($2.op, $1, $3, $2.loc);
         if ($$ == 0) {
             parseContext.assignError($2.loc, "assign", $1->getCompleteString(), $3->getCompleteString());
             $$ = $1;
-        } else if (($1->isArray() || $3->isArray()))
-            parseContext.profileRequires($2.loc, ENoProfile, 120, "GL_3DL_array_objects", "=");
+        }
     }
     ;
 
 assignment_operator
-    : EQUAL        { $$.loc = $1.loc; $$.op = EOpAssign; }
-    | MUL_ASSIGN   { $$.loc = $1.loc; $$.op = EOpMulAssign; }
-    | DIV_ASSIGN   { $$.loc = $1.loc; $$.op = EOpDivAssign; }
-    | MOD_ASSIGN   { $$.loc = $1.loc; $$.op = EOpModAssign; }
-    | ADD_ASSIGN   { $$.loc = $1.loc; $$.op = EOpAddAssign; }
-    | SUB_ASSIGN   { $$.loc = $1.loc; $$.op = EOpSubAssign; }
+    : EQUAL {
+        $$.loc = $1.loc;
+        $$.op = EOpAssign;
+    }
+    | MUL_ASSIGN {
+        $$.loc = $1.loc; 
+        $$.op = EOpMulAssign;
+    }
+    | DIV_ASSIGN {
+        $$.loc = $1.loc; 
+        $$.op = EOpDivAssign;
+    }
+    | MOD_ASSIGN   {        
+        parseContext.fullIntegerCheck($1.loc, "%=");
+        $$.loc = $1.loc; 
+        $$.op = EOpModAssign;
+    }
+    | ADD_ASSIGN {
+        $$.loc = $1.loc; 
+        $$.op = EOpAddAssign;
+    }
+    | SUB_ASSIGN {
+        $$.loc = $1.loc;
+        $$.op = EOpSubAssign;
+    }
     | LEFT_ASSIGN  {
         parseContext.fullIntegerCheck($1.loc, "bit-shift left assign");
         $$.loc = $1.loc; $$.op = EOpLeftShiftAssign;
@@ -853,7 +873,7 @@ parameter_declarator
     // Type + name
     : type_specifier IDENTIFIER {
         if ($1.arraySizes) {
-            parseContext.profileRequires($1.loc, ENoProfile, 120, "GL_3DL_array_objects", "arrayed type");
+            parseContext.profileRequires($1.loc, ENoProfile, 120, GL_3DL_array_objects, "arrayed type");
             parseContext.profileRequires($1.loc, EEsProfile, 300, 0, "arrayed type");
             parseContext.arraySizeRequiredCheck($1.loc, $1.arraySizes->getSize());
         }
@@ -868,7 +888,7 @@ parameter_declarator
     }
     | type_specifier IDENTIFIER array_specifier {
         if ($1.arraySizes) {
-            parseContext.profileRequires($1.loc, ENoProfile, 120, "GL_3DL_array_objects", "arrayed type");
+            parseContext.profileRequires($1.loc, ENoProfile, 120, GL_3DL_array_objects, "arrayed type");
             parseContext.profileRequires($1.loc, EEsProfile, 300, 0, "arrayed type");
             parseContext.arraySizeRequiredCheck($1.loc, $1.arraySizes->getSize());
         }
@@ -989,7 +1009,7 @@ fully_specified_type
         $$ = $1;
 
         if ($1.arraySizes) {
-            parseContext.profileRequires($1.loc, ENoProfile, 120, "GL_3DL_array_objects", "arrayed type");
+            parseContext.profileRequires($1.loc, ENoProfile, 120, GL_3DL_array_objects, "arrayed type");
             parseContext.profileRequires($1.loc, EEsProfile, 300, 0, "arrayed type");
             if (parseContext.profile == EEsProfile)
                 parseContext.arraySizeRequiredCheck($1.loc, $1.arraySizes->getSize());
@@ -1001,7 +1021,7 @@ fully_specified_type
         parseContext.globalQualifierFix($1.loc, $1.qualifier, $2);
 
         if ($2.arraySizes) {
-            parseContext.profileRequires($2.loc, ENoProfile, 120, "GL_3DL_array_objects", "arrayed type");
+            parseContext.profileRequires($2.loc, ENoProfile, 120, GL_3DL_array_objects, "arrayed type");
             parseContext.profileRequires($2.loc, EEsProfile, 300, 0, "arrayed type");
             if (parseContext.profile == EEsProfile)
                 parseContext.arraySizeRequiredCheck($2.loc, $2.arraySizes->getSize());
@@ -1676,28 +1696,28 @@ type_specifier_nonarray
         $$.sampler.set(EbtUint, EsdCube, true);
     }
     | SAMPLER2DRECT {
-        parseContext.profileRequires($1.loc, ENoProfile, 140, "GL_ARB_texture_rectangle", "rectangle texture");
+        parseContext.profileRequires($1.loc, ENoProfile, 140, GL_ARB_texture_rectangle, "rectangle texture");
 
         $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
         $$.basicType = EbtSampler;
         $$.sampler.set(EbtFloat, EsdRect);
     }
     | SAMPLER2DRECTSHADOW {
-        parseContext.profileRequires($1.loc, ECoreProfile, 140, "GL_ARB_texture_rectangle", "rectangle texture");
+        parseContext.profileRequires($1.loc, ECoreProfile, 140, GL_ARB_texture_rectangle, "rectangle texture");
 
         $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
         $$.basicType = EbtSampler;
         $$.sampler.set(EbtFloat, EsdRect, false, true);
     }
     | ISAMPLER2DRECT {
-        parseContext.profileRequires($1.loc, ECoreProfile, 140, "GL_ARB_texture_rectangle", "rectangle texture");
+        parseContext.profileRequires($1.loc, ECoreProfile, 140, GL_ARB_texture_rectangle, "rectangle texture");
 
         $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
         $$.basicType = EbtSampler;
         $$.sampler.set(EbtInt, EsdRect);
     }
     | USAMPLER2DRECT {
-        parseContext.profileRequires($1.loc, ECoreProfile, 140, "GL_ARB_texture_rectangle", "rectangle texture");
+        parseContext.profileRequires($1.loc, ECoreProfile, 140, GL_ARB_texture_rectangle, "rectangle texture");
 
         $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
         $$.basicType = EbtSampler;
@@ -1992,7 +2012,7 @@ struct_declaration_list
 struct_declaration
     : type_specifier struct_declarator_list SEMICOLON {
         if ($1.arraySizes) {
-            parseContext.profileRequires($1.loc, ENoProfile, 120, "GL_3DL_array_objects", "arrayed type");
+            parseContext.profileRequires($1.loc, ENoProfile, 120, GL_3DL_array_objects, "arrayed type");
             parseContext.profileRequires($1.loc, EEsProfile, 300, 0, "arrayed type");
             if (parseContext.profile == EEsProfile)
                 parseContext.arraySizeRequiredCheck($1.loc, $1.arraySizes->getSize());
@@ -2010,7 +2030,7 @@ struct_declaration
     }
     | type_qualifier type_specifier struct_declarator_list SEMICOLON {
         if ($2.arraySizes) {
-            parseContext.profileRequires($2.loc, ENoProfile, 120, "GL_3DL_array_objects", "arrayed type");
+            parseContext.profileRequires($2.loc, ENoProfile, 120, GL_3DL_array_objects, "arrayed type");
             parseContext.profileRequires($2.loc, EEsProfile, 300, 0, "arrayed type");
             if (parseContext.profile == EEsProfile)
                 parseContext.arraySizeRequiredCheck($2.loc, $2.arraySizes->getSize());
@@ -2062,9 +2082,15 @@ initializer
         $$ = $1;
     }
     | LEFT_BRACE initializer_list RIGHT_BRACE {
+        const char* initFeature = "{ } style initializers";
+        parseContext.requireProfile($1.loc, ECoreProfile | ECompatibilityProfile, initFeature);
+        parseContext.profileRequires($1.loc, ECoreProfile | ECompatibilityProfile, 420, GL_ARB_shading_language_420pack, initFeature);
         $$ = $2;
     }
     | LEFT_BRACE initializer_list COMMA RIGHT_BRACE {
+        const char* initFeature = "{ } style initializers";
+        parseContext.requireProfile($1.loc, ECoreProfile | ECompatibilityProfile, initFeature);
+        parseContext.profileRequires($1.loc, ECoreProfile | ECompatibilityProfile, 420, GL_ARB_shading_language_420pack, initFeature);
         $$ = $2;
     }
     ;

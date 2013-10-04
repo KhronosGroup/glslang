@@ -41,16 +41,6 @@
 //
 
 //
-// The behaviors from "#extension extension_name : behavior"
-//
-typedef enum {
-    EBhRequire,
-    EBhEnable,
-    EBhWarn,
-    EBhDisable
-} TExtensionBehavior;
-
-//
 // Profiles are set up for masking operations, so queries can be done on multiple
 // profiles at the same time.
 //
@@ -64,5 +54,27 @@ typedef enum {
     ECompatibilityProfile = (1 << 2),
     EEsProfile            = (1 << 3)
 } EProfile;
+
+namespace glslang {
+
+//
+// The behaviors from the GLSL "#extension extension_name : behavior"
+//
+typedef enum {
+    EBhRequire,
+    EBhEnable,
+    EBhWarn,
+    EBhDisable
+} TExtensionBehavior;
+
+//
+// Symbolic names for extensions.  Strings may be directly used when calling the
+// functions, but better to have the compiler do spelling checks.
+//
+const char* const GL_ARB_texture_rectangle        = "GL_ARB_texture_rectangle";
+const char* const GL_3DL_array_objects            = "GL_3DL_array_objects";
+const char* const GL_ARB_shading_language_420pack = "GL_ARB_shading_language_420pack";
+
+} // end namespace glslang
 
 #endif // _VERSIONS_INCLUDED_

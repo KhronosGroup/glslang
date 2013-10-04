@@ -48,7 +48,7 @@
 // To add a new hypothetical "Feature F" to the front end, where an extension
 // "XXX_extension_X" can be used to enable the feature, do the following.
 // 
-// 1) Understand that specific features are what are error-checked for, not
+// OVERVIEW: Specific features are what are error-checked for, not
 //    extensions:  A specific Feature F might be enabled by an extension, or a 
 //    particular version in a particular profile, or a stage, or combinations, etc.
 //    
@@ -66,11 +66,17 @@
 //    will then always continue as if the tested feature was enabled.
 //    
 //    There is typically no if-testing or conditional parsing, just insertion of requirements.
+//    However, if symbols specific to the extension are added (step 5), they will
+//    only be added under tests that the minimum version and profile are present.
+//
+// 1) Add a symbol name for the extension string at the bottom of Versions.h:
+//
+//     const char* const XXX_extension_X = "XXX_extension_X";
 // 
 // 2) Add extension initialization to TParseContext::initializeExtensionBehavior(),
 //    the first function below:
 // 
-//     extensionBehavior["XXX_extension_X"] = EBhDisable;
+//     extensionBehavior[XXX_extension_X] = EBhDisable;
 // 
 // 3) Insert a profile check in the feature's path (unless all profiles support the feature,
 //    for some version level).  That is, call requireProfile() to constrain the profiles, e.g.:
@@ -90,7 +96,7 @@
 //        profileRequires(loc, 
 //                        ECoreProfile | ECompatibilityProfile,
 //                        420, // 0 if no version incorporated the feature into the core spec.
-//                        "XXX_extension_X", // can be a list of extensions that all add the feature
+//                        XXX_extension_X, // can be a list of extensions that all add the feature
 //                        "Feature F");
 // 
 //    This allows the feature if either A) one of the extensions is enabled or
@@ -117,6 +123,9 @@
 // 
 //        ~EEsProfile
 //
+// 5) If built-in symbols are added by the extension, add them in Initialize.cpp; see
+//    the comment at the top of that file for where to put them.
+//
 
 #include "ParseHelper.h"
 
@@ -129,10 +138,14 @@ namespace glslang {
 //
 void TParseContext::initializeExtensionBehavior()
 {
-    extensionBehavior["GL_ARB_texture_rectangle"] = EBhDisable;
-    extensionBehavior["GL_3DL_array_objects"] = EBhDisable;
+    extensionBehavior[GL_ARB_texture_rectangle] = EBhDisable;
+    extensionBehavior[GL_3DL_array_objects] = EBhDisable;
+    extensionBehavior[GL_ARB_shading_language_420pack] = EBhDisable;
 }
 
+//
+// Map from profile enum to externally readable text name.
+//
 const char* ProfileName(EProfile profile)
 {
     switch (profile) {
@@ -159,6 +172,9 @@ void TParseContext::requireProfile(TSourceLoc loc, int profileMask, const char *
         error(loc, "not supported with this profile:", featureDesc, ProfileName(profile));
 }
 
+//
+// Map from stage enum to externally readable text name.
+//
 const char* StageName(EShLanguage stage) 
 {
     switch(stage) {
@@ -274,32 +290,27 @@ void TParseContext::requireNotRemoved(TSourceLoc loc, int profileMask, int remov
 }
 
 //
-// Translate from text string of extension's behavior to enum.
+// Change the current state of an extension's behavior.
 //
-TExtensionBehavior TParseContext::getExtensionBehavior(const char* behavior)
-{
-    if (! strcmp("require", behavior))
-        return EBhRequire;
-    else if (! strcmp("enable", behavior))
-        return EBhEnable;
-    else if (! strcmp("disable", behavior))
-        return EBhDisable;
-    else if (! strcmp("warn", behavior))
-        return EBhWarn;
-    else {
-        error(currentLoc, "behavior not supported", "#extension", behavior);
-        return EBhDisable;
-    }
-}
-
 void TParseContext::updateExtensionBehavior(const char* extName, const char* behaviorString)
 {
-    TExtensionBehavior behavior = getExtensionBehavior(behaviorString);
-    TMap<TString, TExtensionBehavior>:: iterator iter;
-    TString msg;
+    // Translate from text string of extension's behavior to an enum.
+    TExtensionBehavior behavior = EBhDisable;
+    if (! strcmp("require", behaviorString))
+        behavior = EBhRequire;
+    else if (! strcmp("enable", behaviorString))
+        behavior = EBhEnable;
+    else if (! strcmp("disable", behaviorString))
+        behavior = EBhDisable;
+    else if (! strcmp("warn", behaviorString))
+        behavior = EBhWarn;
+    else
+        error(currentLoc, "behavior not supported", "#extension", behaviorString);
 
-    // special case for the 'all' extension
+    // Update the current behavior
+    TMap<TString, TExtensionBehavior>::iterator iter;
     if (! strcmp(extName, "all")) {
+        // special case for the 'all' extension; apply it to every extension present
         if (behavior == EBhRequire || behavior == EBhEnable) {
             error(currentLoc, "extension 'all' cannot have 'require' or 'enable' behavior", "#extension", "");
             return;
@@ -308,6 +319,7 @@ void TParseContext::updateExtensionBehavior(const char* extName, const char* beh
                 iter->second = behavior;
         }
     } else {
+        // Do the update for this single extension
         iter = extensionBehavior.find(TString(extName));
         if (iter == extensionBehavior.end()) {
             switch (behavior) {

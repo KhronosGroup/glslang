@@ -35,9 +35,15 @@
 //
 
 //
-// Create strings that declare built-in definitions, add built-ins that
-// cannot be expressed in the files, and establish mappings between
+// Create strings that declare built-in definitions, add built-ins programmatically 
+// that cannot be expressed in the strings, and establish mappings between
 // built-in functions and operators.
+//
+// Where to put a built-in:
+//   TBuiltIns::initialize(version,profile)       context-independent textual built-ins; add them to the right string
+//   TBuiltIns::initialize(resources,...)         context-dependent textual built-ins; add them to the right string
+//   IdentifyBuiltIns(...,symbolTable)            context-independent programmatic additions/mappings to the symbol table
+//   IdentifyBuiltIns(...,symbolTable, resources) context-dependent programmatic additions/mappings to the symbol table
 //
 
 #include "../Include/intermediate.h"
@@ -50,14 +56,16 @@ const bool ForwardCompatibility = false;
 
 TBuiltIns::TBuiltIns()
 {
+    // Set up textual representations for making all the permutations
+    // of texturing/imaging functions.
     prefixes[EbtFloat] =  "";
     prefixes[EbtInt]   = "i";
     prefixes[EbtUint]  = "u";
-
     postfixes[2] = "2";
     postfixes[3] = "3";
     postfixes[4] = "4";
 
+    // Map from symbolic class of texturing dimension to numeric dimensions.
     dimMap[Esd1D] = 1;
     dimMap[Esd2D] = 2;
     dimMap[EsdRect] = 2;
@@ -70,14 +78,16 @@ TBuiltIns::~TBuiltIns()
 {
 }
 
+//
+// Add all context-independent built-in functions and variables that are present
+// for the given version and profile.  Share common ones across stages, otherwise
+// make stage-specific entries.
+//
+// Most built-ins variables can be added as simple text strings.  Some need to
+// be added programmatically, which is done later in IdentifyBuiltIns() below.
+//
 void TBuiltIns::initialize(int version, EProfile profile)
 {
-    // TODO: Performance/Memory: consider an extra outer scope for built-ins common across all stages
-
-    //
-    // Initialize all the built-in strings for parsing.
-    //
-
     {
         //============================================================================
         //
@@ -1011,6 +1021,10 @@ void TBuiltIns::initialize(int version, EProfile profile)
     //printf("%s\n", commonBuiltins.c_str();
 }
 
+//
+// Helper function for initialize(), to add the second set of names for texturing, 
+// when adding context-independent built-in functions.
+//
 void TBuiltIns::add2ndGenerationSamplingImaging(int version, EProfile profile)
 {
     TBasicType bTypes[3] = { EbtFloat, EbtInt, EbtUint };
@@ -1081,6 +1095,10 @@ void TBuiltIns::add2ndGenerationSamplingImaging(int version, EProfile profile)
     }
 }
 
+//
+// Helper function for add2ndGenerationSamplingImaging(), 
+// when adding context-independent built-in functions.
+//
 void TBuiltIns::addQueryFunctions(TSampler sampler, TString& typeName, int version, EProfile profile)
 {
     //
@@ -1109,15 +1127,21 @@ void TBuiltIns::addQueryFunctions(TSampler sampler, TString& typeName, int versi
         s.append(",int);\n");
     else
         s.append(");\n");
-
-    // TODO: 4.2 Functionality: imaging functions
 }
 
+//
+// Helper function for add2ndGenerationSamplingImaging(), 
+// when adding context-independent built-in functions.
+//
 void TBuiltIns::addImageFunctions(TSampler sampler, TString& typeName, int version, EProfile profile)
 {
     // TODO: 4.2 Functionality: imaging functions
 }
 
+//
+// Helper function for add2ndGenerationSamplingImaging(), 
+// when adding context-independent built-in functions.
+//
 void TBuiltIns::addSamplingFunctions(TSampler sampler, TString& typeName, int version, EProfile profile)
 {
     // make one string per stage to contain all functions of the passed-in type for that stage
@@ -1297,6 +1321,11 @@ void TBuiltIns::addSamplingFunctions(TSampler sampler, TString& typeName, int ve
     }
 }
 
+//
+// Add context-dependent built-in functions and variables that are present
+// for the given version and profile.  Share common ones across stages, otherwise
+// make stage-specific entries.
+//
 void TBuiltIns::initialize(const TBuiltInResource &resources, int version, EProfile profile, EShLanguage language)
 {
     //
@@ -1448,6 +1477,12 @@ void TBuiltIns::initialize(const TBuiltInResource &resources, int version, EProf
     }
 }
 
+//
+// Finish adding/processing context-independent built-in symbols.
+// 1) Programmatically add symbols that could not be added by simple text strings above.
+// 2) Map built-in functions to operators, for those that will turn into an operation node
+//    instead of remaining a function call.
+//
 void IdentifyBuiltIns(int version, EProfile profile, EShLanguage language, TSymbolTable& symbolTable)
 {
     TPrecisionQualifier pq;
@@ -1643,11 +1678,13 @@ void IdentifyBuiltIns(int version, EProfile profile, EShLanguage language, TSymb
     }
 }
 
+//
+// Add context-dependent (resource-specific) built-ins not yet handled.  These
+// would be ones that need to be programmatically added because they cannot 
+// be added by simple text strings.
+//
 void IdentifyBuiltIns(int version, EProfile profile, EShLanguage language, TSymbolTable& symbolTable, const TBuiltInResource &resources)
 {
-    //
-    // Set resource-specific built-ins not yet handled.
-    //
     switch(language) {
 
     case EShLangFragment:

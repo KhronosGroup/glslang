@@ -527,7 +527,8 @@ TIntermTyped* TParseContext::handleDotDereference(TSourceLoc loc, TIntermTyped* 
         //
 
         if (field == "length") {
-            profileRequires(loc, ENoProfile, 120, "GL_3DL_array_objects", ".length");
+            profileRequires(loc, ENoProfile, 120, GL_3DL_array_objects, ".length");
+            profileRequires(loc, EEsProfile, 300, 0, ".length");
             result = intermediate.addMethod(base, TType(EbtInt), &field, loc);
         } else
             error(loc, "only the length method is supported for array", field.c_str(), "");
@@ -851,8 +852,8 @@ TIntermTyped* TParseContext::handleFunctionCall(TSourceLoc loc, TFunction* fnCal
 TFunction* TParseContext::handleConstructorCall(TSourceLoc loc, TPublicType& publicType)
 {
     if (publicType.arraySizes) {
-        profileRequires(loc, ENoProfile, 120, "GL_3DL_array_objects", "arrayed constructor");
-        profileRequires(loc, EEsProfile, 300, "GL_3DL_array_objects", "arrayed constructor");
+        profileRequires(loc, ENoProfile, 120, GL_3DL_array_objects, "arrayed constructor");
+        profileRequires(loc, EEsProfile, 300, 0, "arrayed constructor");
     }
 
     publicType.qualifier.precision = EpqNone;
@@ -1648,8 +1649,10 @@ void TParseContext::arraySizeCheck(TSourceLoc loc, TIntermTyped* expr, int& size
 //
 bool TParseContext::arrayQualifierError(TSourceLoc loc, const TQualifier& qualifier)
 {
-    if (qualifier.storage == EvqConst)
-        profileRequires(loc, ENoProfile, 120, "GL_3DL_array_objects", "const array");
+    if (qualifier.storage == EvqConst) {
+        profileRequires(loc, ENoProfile, 120, GL_3DL_array_objects, "const array");
+        profileRequires(loc, EEsProfile, 300, 0, "const array");
+    }
 
     if (qualifier.storage == EvqVaryingIn && language == EShLangVertex) {
         requireProfile(loc, ~EEsProfile, "vertex input arrays");
@@ -1893,6 +1896,15 @@ void TParseContext::nestedStructCheck(TSourceLoc loc)
     ++structNestingLevel;
 }
 
+void TParseContext::arrayObjectCheck(TSourceLoc loc, const TType& type, const char* op)
+{
+    // Some versions don't allow comparing arrays or structures containing arrays
+    if (type.containsArray()) {
+        profileRequires(loc, ENoProfile, 120, GL_3DL_array_objects, op);
+        profileRequires(loc, EEsProfile, 300, 0, op);
+    }
+}
+
 //
 // Layout qualifier stuff.
 //
@@ -2020,8 +2032,10 @@ TIntermNode* TParseContext::declareVariable(TSourceLoc loc, TString& identifier,
             declareArray(loc, identifier, type, variable, newDeclaration);
         }
 
-        if (initializer)
-            profileRequires(loc, ENoProfile, 120, "GL_3DL_array_objects", "initializer");
+        if (initializer) {
+            profileRequires(loc, ENoProfile, 120, GL_3DL_array_objects, "initializer");
+            profileRequires(loc, EEsProfile, 300, 0, "initializer");
+        }
     } else {
         // non-array case
         if (! variable)
