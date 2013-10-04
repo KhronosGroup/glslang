@@ -771,7 +771,7 @@ public:
     bool operator==(const TType& right) const
     {
         return sameElementType(right) &&
-               (arraySizes == 0 && right.arraySizes == 0 ||
+               ((arraySizes == 0 && right.arraySizes == 0) ||
                 (arraySizes && right.arraySizes && arraySizes->sizes == right.arraySizes->sizes));
     }
 

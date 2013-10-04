@@ -144,6 +144,7 @@ void ReleaseGlobalLock() { }
 
 void* OS_CreateThread(TThreadEntrypoint entry)
 {
+    return 0;
 }
 
 void OS_WaitForAllThreads(void* threads, int numThreads)

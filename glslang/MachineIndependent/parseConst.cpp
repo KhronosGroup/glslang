@@ -130,10 +130,9 @@ void ParseConstantUnion(TIntermConstantUnion* node, TIntermTraverser* it)
             (oit->index)++;
         }
     } else {
-        int size, totalSize, matrixCols, matrixRows;
+        int size, totalSize, matrixRows;
         bool isMatrix = false;
         size = oit->size;
-        matrixCols = oit->matrixCols;
         matrixRows = oit->matrixRows;
         isMatrix = oit->isMatrix;
         totalSize = oit->index + size;

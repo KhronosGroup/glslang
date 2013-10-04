@@ -52,7 +52,7 @@ TParseContext::TParseContext(TSymbolTable& symt, TIntermediate& interm, bool pb,
             version(v), profile(p), forwardCompatible(fc), messages(m),    
             contextPragma(true, false), loopNestingLevel(0), structNestingLevel(0),
             tokensBeforeEOF(false),
-            parsingBuiltins(pb), numErrors(0), afterEOF(false)
+            numErrors(0), parsingBuiltins(pb), afterEOF(false)
 {
     currentLoc.line = 1;
     currentLoc.string = 0;
@@ -2073,7 +2073,7 @@ TIntermNode* TParseContext::executeInitializer(TSourceLoc loc, TString& identifi
     //
     TStorageQualifier qualifier = variable->getType().getQualifier().storage;
     if (! (qualifier == EvqTemporary || qualifier == EvqGlobal || qualifier == EvqConst ||
-           qualifier == EvqUniform && profile != EEsProfile && version >= 120)) {
+           (qualifier == EvqUniform && profile != EEsProfile && version >= 120))) {
         error(loc, " cannot initialize this type of qualifier ", variable->getType().getStorageQualifierString(), "");
         return 0;
     }
@@ -2290,7 +2290,7 @@ TIntermTyped* TParseContext::constructBuiltIn(const TType& type, TOperator op, T
     //
     
     // Otherwise, skip out early.
-    if (subset || newNode != node && newNode->getType() == type)
+    if (subset || (newNode != node && newNode->getType() == type))
         return newNode;
 
     // setAggregateOperator will insert a new node for the constructor, as needed.
@@ -2672,7 +2672,6 @@ TIntermTyped* TParseContext::addConstArrayNode(int index, TIntermTyped* node, TS
 {
     TIntermTyped* typedNode;
     TIntermConstantUnion* tempConstantNode = node->getAsConstantUnion();
-    int arraySize = node->getType().getArraySize();
     TType arrayElementType;
     arrayElementType.shallowCopy(node->getType());
     arrayElementType.dereference();   // TODO: arrays of arrays: shallow copy won't work if sharing same array structure and then doing a dereference

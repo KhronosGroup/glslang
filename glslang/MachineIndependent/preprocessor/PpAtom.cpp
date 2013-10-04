@@ -383,13 +383,17 @@ int FindHashLoc(TPpContext::AtomTable *atable, const char *s)
 {
     int hashloc, hashdelta, count;
     int FoundEmptySlot = 0;
+#ifdef DUMP_TABLE
     int collision[TPpContext::hashTableMaxCollisions + 1];
+#endif
 
     hashloc = HashString(s) % atable->htable.size;
     if (!Empty(&atable->htable, hashloc)) {
         if (Match(&atable->htable, &atable->stable, s, hashloc))
             return hashloc;
+#ifdef DUMP_TABLE
         collision[0] = hashloc;
+#endif
         hashdelta = HashString2(s);
         count = 0;
         while (count < TPpContext::hashTableMaxCollisions) {
@@ -403,7 +407,9 @@ int FindHashLoc(TPpContext::AtomTable *atable, const char *s)
                 break;
             }
             count++;
+#ifdef DUMP_TABLE
             collision[count] = hashloc;
+#endif
         }
 
         if (! FoundEmptySlot) {

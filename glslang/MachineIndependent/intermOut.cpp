@@ -457,7 +457,6 @@ void OutputConstantUnion(TInfoSink& out, const TIntermTyped* node, const TConstU
 void OutputConstantUnion(TIntermConstantUnion* node, TIntermTraverser* it)
 {
     TOutputTraverser* oit = static_cast<TOutputTraverser*>(it);
-    TInfoSink& out = oit->infoSink;
 
     OutputTreeText(oit->infoSink, node, oit->depth);
     oit->infoSink.debug << "Constant:\n";

@@ -1654,7 +1654,7 @@ void IdentifyBuiltIns(int version, EProfile profile, EShLanguage language, TSymb
         // Set up gl_FragData based on current array size.
         if (version < FirstProfileVersion || profile == ECompatibilityProfile || (! ForwardCompatibility && profile != EEsProfile && version < 420)) {
             TPrecisionQualifier pq = profile == EEsProfile ? EpqMedium : EpqNone;
-            TType fragData(EbtFloat, EvqFragColor, 4);
+            TType fragData(EbtFloat, EvqFragColor, pq, 4);
             TArraySizes* arraySizes = NewPoolTArraySizes();
             arraySizes->setSize(resources.maxDrawBuffers);
             fragData.setArraySizes(arraySizes);

@@ -1016,8 +1016,8 @@ fully_specified_type
         $$ = $2;
 
         if (! $$.qualifier.isInterpolation() && 
-            (parseContext.language == EShLangVertex   && $$.qualifier.storage == EvqVaryingOut ||
-             parseContext.language == EShLangFragment && $$.qualifier.storage == EvqVaryingIn))
+            ((parseContext.language == EShLangVertex   && $$.qualifier.storage == EvqVaryingOut) ||
+             (parseContext.language == EShLangFragment && $$.qualifier.storage == EvqVaryingIn)))
             $$.qualifier.smooth = true;
     }
     ;
