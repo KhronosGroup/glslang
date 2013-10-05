@@ -111,7 +111,7 @@ public:
     void precisionQualifierCheck(TSourceLoc, TPublicType&);
     void parameterSamplerCheck(TSourceLoc, TStorageQualifier qualifier, const TType& type);
     bool containsSampler(const TType& type);
-    TVariable* redeclareBuiltin(TSourceLoc, const TString&, const TType&, bool& newDeclaration);
+    TVariable* redeclareBuiltin(TSourceLoc, const TString&, bool& newDeclaration);
     void paramCheck(TSourceLoc, TStorageQualifier qualifier, TType* type);
     void nestedBlockCheck(TSourceLoc);
     void nestedStructCheck(TSourceLoc);
@@ -165,7 +165,8 @@ protected:
     void nonInitConstCheck(TSourceLoc, TString& identifier, TType& type);
     TVariable* declareNonArray(TSourceLoc, TString& identifier, TType&, bool& newDeclaration);
     void declareArray(TSourceLoc, TString& identifier, const TType&, TVariable*&, bool& newDeclaration);
-    TIntermNode* executeInitializer(TSourceLoc, TString& identifier, TType&, TIntermTyped* initializer, TVariable* variable);
+    TIntermNode* executeInitializer(TSourceLoc, TString& identifier, TIntermTyped* initializer, TVariable* variable);
+    TOperator mapTypeToConstructorOp(const TType&);
 
 public:
     //

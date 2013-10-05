@@ -1,4 +1,4 @@
-Warning, version 400 is not yet complete; some version-specific are present, but many are missing.
+Warning, version 400 is not yet complete; some version-specific features are present, but many are missing.
 ERROR: 0:14: '' : octal literal digit too large 
 ERROR: 0:15: '' : octal literal digit too large 
 ERROR: 0:16: '' : octal literal digit too large 

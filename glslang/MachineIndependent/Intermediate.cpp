@@ -321,7 +321,7 @@ TIntermTyped* TIntermediate::addBuiltInFunctionCall(TSourceLoc loc, TOperator op
 // This is the safe way to change the operator on an aggregate, as it
 // does lots of error checking and fixing.  Especially for establishing
 // a function call's operation on it's set of parameters.  Sequences
-// of instructions are also aggregates, but they just direnctly set
+// of instructions are also aggregates, but they just directly set
 // their operator to EOpSequence.
 //
 // Returns an aggregate node, which could be the one passed in if
@@ -629,7 +629,7 @@ TIntermAggregate* TIntermediate::growAggregate(TIntermNode* left, TIntermNode* r
     TIntermAggregate* aggNode = 0;
     if (left)
         aggNode = left->getAsAggregate();
-    if (!aggNode || aggNode->getOp() != EOpNull) {
+    if (! aggNode || aggNode->getOp() != EOpNull) {
         aggNode = new TIntermAggregate;
         if (left)
             aggNode->getSequence().push_back(left);
@@ -645,7 +645,7 @@ TIntermAggregate* TIntermediate::growAggregate(TIntermNode* left, TIntermNode* r
 {
     TIntermAggregate* aggNode = growAggregate(left, right);
     if (aggNode)
-    aggNode->setLoc(loc);
+        aggNode->setLoc(loc);
 
     return aggNode;
 }

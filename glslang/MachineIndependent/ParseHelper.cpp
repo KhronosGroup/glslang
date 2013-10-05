@@ -46,10 +46,10 @@ extern int yyparse(void*);
 
 namespace glslang {
 
-TParseContext::TParseContext(TSymbolTable& symt, TIntermediate& interm, bool pb, int v, EProfile p, EShLanguage L, TInfoSink& is,                             
-                             bool fc, EShMessages m) : 
+TParseContext::TParseContext(TSymbolTable& symt, TIntermediate& interm, bool pb, int v, EProfile p, EShLanguage L, TInfoSink& is,
+                             bool fc, EShMessages m) :
             intermediate(interm), symbolTable(symt), infoSink(is), language(L),
-            version(v), profile(p), forwardCompatible(fc), messages(m),    
+            version(v), profile(p), forwardCompatible(fc), messages(m),
             contextPragma(true, false), loopNestingLevel(0), structNestingLevel(0),
             tokensBeforeEOF(false),
             numErrors(0), parsingBuiltins(pb), afterEOF(false)
@@ -98,7 +98,7 @@ TParseContext::TParseContext(TSymbolTable& symt, TIntermediate& interm, bool pb,
     globalUniformDefaults.layoutPacking = ElpShared;
 
     globalInputDefaults.clear();
-    
+
     globalOutputDefaults.clear();
 }
 
@@ -277,11 +277,11 @@ bool TParseContext::parseVectorFields(TSourceLoc loc, const TString& compString,
 
     for (int i = 0; i < fields.num; ++i) {
         switch (compString[i])  {
-        case 'x': 
+        case 'x':
             fields.offsets[i] = 0;
             fieldSet[i] = exyzw;
             break;
-        case 'r': 
+        case 'r':
             fields.offsets[i] = 0;
             fieldSet[i] = ergba;
             break;
@@ -289,11 +289,11 @@ bool TParseContext::parseVectorFields(TSourceLoc loc, const TString& compString,
             fields.offsets[i] = 0;
             fieldSet[i] = estpq;
             break;
-        case 'y': 
+        case 'y':
             fields.offsets[i] = 1;
             fieldSet[i] = exyzw;
             break;
-        case 'g': 
+        case 'g':
             fields.offsets[i] = 1;
             fieldSet[i] = ergba;
             break;
@@ -301,11 +301,11 @@ bool TParseContext::parseVectorFields(TSourceLoc loc, const TString& compString,
             fields.offsets[i] = 1;
             fieldSet[i] = estpq;
             break;
-        case 'z': 
+        case 'z':
             fields.offsets[i] = 2;
             fieldSet[i] = exyzw;
             break;
-        case 'b': 
+        case 'b':
             fields.offsets[i] = 2;
             fieldSet[i] = ergba;
             break;
@@ -313,12 +313,12 @@ bool TParseContext::parseVectorFields(TSourceLoc loc, const TString& compString,
             fields.offsets[i] = 2;
             fieldSet[i] = estpq;
             break;
-        
-        case 'w': 
+
+        case 'w':
             fields.offsets[i] = 3;
             fieldSet[i] = exyzw;
             break;
-        case 'a': 
+        case 'a':
             fields.offsets[i] = 3;
             fieldSet[i] = ergba;
             break;
@@ -358,27 +358,27 @@ bool TParseContext::parseVectorFields(TSourceLoc loc, const TString& compString,
 //
 // Used to output syntax, parsing, and semantic errors.
 //
-void C_DECL TParseContext::error(TSourceLoc loc, const char *szReason, const char *szToken, 
+void C_DECL TParseContext::error(TSourceLoc loc, const char *szReason, const char *szToken,
                                  const char *szExtraInfoFormat, ...)
 {
     const int maxSize = GlslangMaxTokenLength + 200;
     char szExtraInfo[maxSize];
     va_list marker;
-    
+
     va_start(marker, szExtraInfoFormat);
-    
+
     safe_vsprintf(szExtraInfo, maxSize, szExtraInfoFormat, marker);
-    
+
     infoSink.info.prefix(EPrefixError);
     infoSink.info.location(loc);
     infoSink.info << "'" << szToken <<  "' : " << szReason << " " << szExtraInfo << "\n";
-    
+
     va_end(marker);
 
     ++numErrors;
 }
 
-void C_DECL TParseContext::warn(TSourceLoc loc, const char *szReason, const char *szToken, 
+void C_DECL TParseContext::warn(TSourceLoc loc, const char *szReason, const char *szToken,
                                  const char *szExtraInfoFormat, ...)
 {
     if (messages & EShMsgSuppressWarnings)
@@ -387,15 +387,15 @@ void C_DECL TParseContext::warn(TSourceLoc loc, const char *szReason, const char
     const int maxSize = GlslangMaxTokenLength + 200;
     char szExtraInfo[maxSize];
     va_list marker;
-    
+
     va_start(marker, szExtraInfoFormat);
-    
+
     safe_vsprintf(szExtraInfo, maxSize, szExtraInfoFormat, marker);
-    
+
     infoSink.info.prefix(EPrefixWarning);
     infoSink.info.location(loc);
     infoSink.info << "'" << szToken <<  "' : " << szReason << " " << szExtraInfo << "\n";
-    
+
     va_end(marker);
 }
 
@@ -650,7 +650,7 @@ TFunction* TParseContext::handleFunctionDeclarator(TSourceLoc loc, TFunction& fu
 
 //
 // Handle seeing a function prototype in the grammar.  This includes what may
-// become a full definition, as a full definition looks like a prototype 
+// become a full definition, as a full definition looks like a prototype
 // followed by a body.  The body is handled after this function
 // returns, when present.
 //
@@ -817,7 +817,7 @@ TIntermTyped* TParseContext::handleFunctionCall(TSourceLoc loc, TFunction* fnCal
                     result->getAsAggregate()->setUserDefined();
                     intermediate.addToCallGraph(infoSink, currentCaller, fnCandidate->getMangledName());
                 }
-                
+
                 TStorageQualifier qual;
                 TQualifierList& qualifierList = result->getAsAggregate()->getQualifierList();
                 for (int i = 0; i < fnCandidate->getParamCount(); ++i) {
@@ -851,26 +851,42 @@ TIntermTyped* TParseContext::handleFunctionCall(TSourceLoc loc, TFunction* fnCal
 //
 TFunction* TParseContext::handleConstructorCall(TSourceLoc loc, TPublicType& publicType)
 {
-    if (publicType.arraySizes) {
+    publicType.qualifier.precision = EpqNone;
+    TType type(publicType);
+
+    if (type.isArray()) {
         profileRequires(loc, ENoProfile, 120, GL_3DL_array_objects, "arrayed constructor");
         profileRequires(loc, EEsProfile, 300, 0, "arrayed constructor");
     }
 
-    publicType.qualifier.precision = EpqNone;
-    if (publicType.userDef) {
-        TString tempString = "";
-        TType type(publicType);
+    TOperator op = mapTypeToConstructorOp(type);
 
-        return new TFunction(&tempString, type, EOpConstructStruct);
-    } 
-    
-    TOperator op = EOpNull;
-    switch (publicType.basicType) {
+    if (op == EOpNull) {
+        error(loc, "cannot construct this type", TType::getBasicString(publicType.basicType), "");
+        op = EOpConstructFloat;
+        publicType.basicType = EbtFloat;
+        TType errorType(publicType);
+        type.shallowCopy(errorType);
+    }
+
+    return new TFunction(&TString(""), type, op);
+}
+
+//
+// Given a type, find what operation would construct it.
+//
+TOperator TParseContext::mapTypeToConstructorOp(const TType& type)
+{
+    if (type.getStruct())
+        return EOpConstructStruct;
+
+    TOperator op;
+    switch (type.getBasicType()) {
     case EbtFloat:
-        if (publicType.matrixCols) {
-            switch (publicType.matrixCols) {
+        if (type.isMatrix()) {
+            switch (type.getMatrixCols()) {
             case 2:
-                switch (publicType.matrixRows) {
+                switch (type.getMatrixRows()) {
                 case 2: op = EOpConstructMat2x2; break;
                 case 3: op = EOpConstructMat2x3; break;
                 case 4: op = EOpConstructMat2x4; break;
@@ -878,7 +894,7 @@ TFunction* TParseContext::handleConstructorCall(TSourceLoc loc, TPublicType& pub
                 }
                 break;
             case 3:
-                switch (publicType.matrixRows) {
+                switch (type.getMatrixRows()) {
                 case 2: op = EOpConstructMat3x2; break;
                 case 3: op = EOpConstructMat3x3; break;
                 case 4: op = EOpConstructMat3x4; break;
@@ -886,7 +902,7 @@ TFunction* TParseContext::handleConstructorCall(TSourceLoc loc, TPublicType& pub
                 }
                 break;
             case 4:
-                switch (publicType.matrixRows) {
+                switch (type.getMatrixRows()) {
                 case 2: op = EOpConstructMat4x2; break;
                 case 3: op = EOpConstructMat4x3; break;
                 case 4: op = EOpConstructMat4x4; break;
@@ -896,7 +912,7 @@ TFunction* TParseContext::handleConstructorCall(TSourceLoc loc, TPublicType& pub
             default: break; // some compilers want this
             }
         } else {
-            switch(publicType.vectorSize) {
+            switch(type.getVectorSize()) {
             case 1: op = EOpConstructFloat; break;
             case 2: op = EOpConstructVec2;  break;
             case 3: op = EOpConstructVec3;  break;
@@ -906,10 +922,10 @@ TFunction* TParseContext::handleConstructorCall(TSourceLoc loc, TPublicType& pub
         }
         break;
     case EbtDouble:
-        if (publicType.matrixCols) {
-            switch (publicType.matrixCols) {
+        if (type.getMatrixCols()) {
+            switch (type.getMatrixCols()) {
             case 2:
-                switch (publicType.matrixRows) {
+                switch (type.getMatrixRows()) {
                 case 2: op = EOpConstructDMat2x2; break;
                 case 3: op = EOpConstructDMat2x3; break;
                 case 4: op = EOpConstructDMat2x4; break;
@@ -917,7 +933,7 @@ TFunction* TParseContext::handleConstructorCall(TSourceLoc loc, TPublicType& pub
                 }
                 break;
             case 3:
-                switch (publicType.matrixRows) {
+                switch (type.getMatrixRows()) {
                 case 2: op = EOpConstructDMat3x2; break;
                 case 3: op = EOpConstructDMat3x3; break;
                 case 4: op = EOpConstructDMat3x4; break;
@@ -925,7 +941,7 @@ TFunction* TParseContext::handleConstructorCall(TSourceLoc loc, TPublicType& pub
                 }
                 break;
             case 4:
-                switch (publicType.matrixRows) {
+                switch (type.getMatrixRows()) {
                 case 2: op = EOpConstructDMat4x2; break;
                 case 3: op = EOpConstructDMat4x3; break;
                 case 4: op = EOpConstructDMat4x4; break;
@@ -934,7 +950,7 @@ TFunction* TParseContext::handleConstructorCall(TSourceLoc loc, TPublicType& pub
                 break;
             }
         } else {
-            switch(publicType.vectorSize) {
+            switch(type.getVectorSize()) {
             case 1: op = EOpConstructDouble; break;
             case 2: op = EOpConstructDVec2;  break;
             case 3: op = EOpConstructDVec3;  break;
@@ -944,7 +960,7 @@ TFunction* TParseContext::handleConstructorCall(TSourceLoc loc, TPublicType& pub
         }
         break;
     case EbtInt:
-        switch(publicType.vectorSize) {
+        switch(type.getVectorSize()) {
         case 1: op = EOpConstructInt;   break;
         case 2: op = EOpConstructIVec2; break;
         case 3: op = EOpConstructIVec3; break;
@@ -953,7 +969,7 @@ TFunction* TParseContext::handleConstructorCall(TSourceLoc loc, TPublicType& pub
         }
         break;
     case EbtUint:
-        switch(publicType.vectorSize) {
+        switch(type.getVectorSize()) {
         case 1: op = EOpConstructUint;  break;
         case 2: op = EOpConstructUVec2; break;
         case 3: op = EOpConstructUVec3; break;
@@ -962,7 +978,7 @@ TFunction* TParseContext::handleConstructorCall(TSourceLoc loc, TPublicType& pub
         }
         break;
     case EbtBool:
-        switch(publicType.vectorSize) {
+        switch(type.getVectorSize()) {
         case 1:  op = EOpConstructBool;  break;
         case 2:  op = EOpConstructBVec2; break;
         case 3:  op = EOpConstructBVec3; break;
@@ -970,17 +986,12 @@ TFunction* TParseContext::handleConstructorCall(TSourceLoc loc, TPublicType& pub
         default: break; // some compilers want this
         }
         break;
-    default: break; // some compilers want this
+    default: 
+        op = EOpNull;
+        break;
     }
-    if (op == EOpNull) {
-        error(loc, "cannot construct this type", TType::getBasicString(publicType.basicType), "");
-        publicType.basicType = EbtFloat;
-        op = EOpConstructFloat;
-    }
-    TString tempString = "";
-    TType type(publicType);
 
-    return new TFunction(&tempString, type, op);
+    return op;
 }
 
 //
@@ -997,7 +1008,7 @@ void TParseContext::assignError(TSourceLoc loc, const char* op, TString left, TS
 //
 void TParseContext::unaryOpError(TSourceLoc loc, const char* op, TString operand)
 {
-   error(loc, " wrong operand type", op, 
+   error(loc, " wrong operand type", op,
           "no operation '%s' exists that takes an operand of type %s (or there is no acceptable conversion)",
           op, operand.c_str());
 }
@@ -1009,7 +1020,7 @@ void TParseContext::binaryOpError(TSourceLoc loc, const char* op, TString left, 
 {
     error(loc, " wrong operand types:", op,
             "no operation '%s' exists that takes a left-hand operand of type '%s' and "
-            "a right operand of type '%s' (or there is no acceptable conversion)", 
+            "a right operand of type '%s' (or there is no acceptable conversion)",
             op, left.c_str(), right.c_str());
 }
 
@@ -1018,7 +1029,7 @@ void TParseContext::binaryOpError(TSourceLoc loc, const char* op, TString left, 
 // it was not found as a variable in the symbol table.  If so, give the error
 // message and insert a dummy variable in the symbol table to prevent future errors.
 //
-void TParseContext::variableCheck(TIntermTyped*& nodePtr) 
+void TParseContext::variableCheck(TIntermTyped*& nodePtr)
 {
     TIntermSymbol* symbol = nodePtr->getAsSymbolNode();
     if (! symbol)
@@ -1028,7 +1039,7 @@ void TParseContext::variableCheck(TIntermTyped*& nodePtr)
         error(symbol->getLoc(), "undeclared identifier", symbol->getName().c_str(), "");
 
         // Add to symbol table to prevent future error messages on the same name
-            
+
         TVariable* fakeVariable = new TVariable(&symbol->getName(), TType(EbtFloat));
         symbolTable.insert(*fakeVariable);
 
@@ -1072,18 +1083,18 @@ bool TParseContext::lValueErrorCheck(TSourceLoc loc, const char* op, TIntermType
 
                 TIntermTyped* rightNode = binaryNode->getRight();
                 TIntermAggregate *aggrNode = rightNode->getAsAggregate();
-                
-                for (TIntermSequence::iterator p = aggrNode->getSequence().begin(); 
+
+                for (TIntermSequence::iterator p = aggrNode->getSequence().begin();
                                                p != aggrNode->getSequence().end(); p++) {
                     int value = (*p)->getAsTyped()->getAsConstantUnion()->getConstArray()[0].getIConst();
-                    offset[value]++;     
+                    offset[value]++;
                     if (offset[value] > 1) {
                         error(loc, " l-value of swizzle cannot have duplicate components", op, "", "");
 
                         return true;
                     }
                 }
-            } 
+            }
 
             return errorReturn;
         default:
@@ -1257,7 +1268,7 @@ bool TParseContext::constructorError(TSourceLoc loc, TIntermNode* node, TFunctio
     bool arrayArg = false;
     for (int i = 0; i < function.getParamCount(); ++i) {
         size += function[i].type->getObjectSize();
-        
+
         if (constructingMatrix && function[i].type->isMatrix())
             matrixInMatrix = true;
         if (full)
@@ -1269,7 +1280,7 @@ bool TParseContext::constructorError(TSourceLoc loc, TIntermNode* node, TFunctio
         if (function[i].type->isArray())
             arrayArg = true;
     }
-    
+
     if (constType)
         type.getQualifier().storage = EvqConst;
 
@@ -1297,7 +1308,7 @@ bool TParseContext::constructorError(TSourceLoc loc, TIntermNode* node, TFunctio
         error(loc, "too many arguments", "constructor", "");
         return true;
     }
-    
+
     if (op == EOpConstructStruct && ! type.isArray() && type.getStruct()->size() != function.getParamCount()) {
         error(loc, "Number of constructor parameters does not match the number of structure fields", "constructor", "");
         return true;
@@ -1335,7 +1346,7 @@ bool TParseContext::voidErrorCheck(TSourceLoc loc, const TString& identifier, co
     if (basicType == EbtVoid) {
         error(loc, "illegal use of type 'void'", identifier.c_str(), "");
         return true;
-    } 
+    }
 
     return false;
 }
@@ -1359,10 +1370,10 @@ bool TParseContext::samplerErrorCheck(TSourceLoc loc, const TPublicType& pType, 
     if (pType.basicType == EbtStruct) {
         if (containsSampler(*pType.userDef)) {
             error(loc, reason, TType::getBasicString(pType.basicType), "(structure cannot contain a sampler or image)");
-        
+
             return true;
         }
-        
+
         return false;
     } else if (pType.basicType == EbtSampler) {
         error(loc, reason, TType::getBasicString(pType.basicType), "");
@@ -1445,12 +1456,12 @@ void TParseContext::globalQualifierFix(TSourceLoc loc, TQualifier& qualifier, co
         if ((language != EShLangVertex   && qualifier.storage == EvqVaryingIn  && ! qualifier.flat) ||
             (language != EShLangFragment && qualifier.storage == EvqVaryingOut && ! qualifier.flat)) {
             error(loc, "must be qualified as 'flat'", GetStorageQualifierString(qualifier.storage), TType::getBasicString(publicType.basicType));
-         
+
             return;
         }
     }
 
-    if (language == EShLangVertex && qualifier.storage == EvqVaryingIn && 
+    if (language == EShLangVertex && qualifier.storage == EvqVaryingIn &&
         (qualifier.isAuxiliary() || qualifier.isInterpolation() || qualifier.isMemory() || qualifier.invariant)) {
         error(loc, "vertex input cannot be further qualified", "", "");
 
@@ -1466,7 +1477,7 @@ void TParseContext::globalQualifierFix(TSourceLoc loc, TQualifier& qualifier, co
 // Also, when force is false, it will be assumed that 'src' follows
 // 'dst', for the purpose of error checking order for versions
 // that require specific orderings of qualifiers.
-// 
+//
 void TParseContext::mergeQualifiers(TSourceLoc loc, TQualifier& dst, const TQualifier& src, bool force)
 {
     // Multiple auxiliary qualifiers (mostly done later by 'individual qualifiers')
@@ -1551,7 +1562,7 @@ void TParseContext::setDefaultPrecision(TSourceLoc loc, TPublicType& publicType,
             defaultPrecision[basicType] = qualifier;
             if (basicType == EbtInt)
                 defaultPrecision[EbtUint] = qualifier;
-            
+
             return;  // all is well
         }
     }
@@ -1695,7 +1706,7 @@ void TParseContext::arrayDimCheck(TSourceLoc loc, const TType* type, TArraySizes
 }
 
 //
-// Do all the semantic checking for declaring an array, with and 
+// Do all the semantic checking for declaring an array, with and
 // without a size, and make the right changes to the symbol table.
 //
 // size == 0 means no specified size.
@@ -1738,12 +1749,12 @@ void TParseContext::declareArray(TSourceLoc loc, TString& identifier, const TTyp
         error(loc, "redeclaration of array with size", identifier.c_str(), "");
         return;
     }
-        
+
     if (! variable->getType().sameElementType(type)) {
         error(loc, "redeclaration of array with a different type", identifier.c_str(), "");
         return;
     }
-    
+
     variable->getWritableType().setArraySizes(type);
 }
 
@@ -1811,13 +1822,13 @@ void TParseContext::nonInitConstCheck(TSourceLoc loc, TString& identifier, TType
 //
 // Will emit
 //
-TVariable* TParseContext::redeclareBuiltin(TSourceLoc loc, const TString& identifier, const TType& type, bool& newDeclaration)
+TVariable* TParseContext::redeclareBuiltin(TSourceLoc loc, const TString& identifier, bool& newDeclaration)
 {
     if (profile == EEsProfile || identifier.substr(0, 3) != TString("gl_") || symbolTable.atBuiltInLevel())
         return 0;
 
     // Potentially redeclaring a built-in variable...
-    
+
     if ((identifier == "gl_FragDepth"           && version >= 420) ||
         (identifier == "gl_PerVertex"           && version >= 410) ||
         (identifier == "gl_PerFragment"         && version >= 410) ||
@@ -1853,10 +1864,10 @@ TVariable* TParseContext::redeclareBuiltin(TSourceLoc loc, const TString& identi
 
         // Now, modify the type of the copy, as per the type of the current redeclaration.
         // TODO: functionality: verify type change is allowed and make the change in type
-        
+
         return variable;
     }
-    
+
     return 0;
 }
 
@@ -1980,19 +1991,19 @@ const TFunction* TParseContext::findFunction(TSourceLoc loc, TFunction* call, bo
 {
     TSymbol* symbol = symbolTable.find(call->getMangledName(), builtIn);
 
-    if (symbol == 0) {        
+    if (symbol == 0) {
         error(loc, "no matching overloaded function found", call->getName().c_str(), "");
 
         return 0;
     }
-    
+
     const TFunction* function = symbol->getAsFunction();
     if (! function) {
         error(loc, "function name expected", call->getName().c_str(), "");
 
         return 0;
     }
-    
+
     return function;
 }
 
@@ -2016,14 +2027,14 @@ TIntermNode* TParseContext::declareVariable(TSourceLoc loc, TString& identifier,
 
     // Check for redeclaration of built-ins and/or attempting to declare a reserved name
     bool newDeclaration = false;    // true if a new entry gets added to the symbol table
-    TVariable* variable = redeclareBuiltin(loc, identifier, type, newDeclaration);    
+    TVariable* variable = redeclareBuiltin(loc, identifier, newDeclaration);
     if (! variable)
         reservedErrorCheck(loc, identifier);
 
     // Declare the variable
     if (arraySizes) {
         // for ES, since size isn't coming from an initializer, it has to be explicitly declared now
-        if (profile == EEsProfile && ! initializer)            
+        if (profile == EEsProfile && ! initializer)
             arraySizeRequiredCheck(loc, arraySizes->getSize());
 
         arrayDimCheck(loc, &type, arraySizes);
@@ -2045,17 +2056,17 @@ TIntermNode* TParseContext::declareVariable(TSourceLoc loc, TString& identifier,
     // Deal with initializer
     TIntermNode* initNode = 0;
     if (variable && initializer)
-        initNode = executeInitializer(loc, identifier, type, initializer, variable);
+        initNode = executeInitializer(loc, identifier, initializer, variable);
 
     // see if it's a linker-level object to track
-    if (newDeclaration && symbolTable.atGlobalLevel())        
+    if (newDeclaration && symbolTable.atGlobalLevel())
         intermediate.addSymbolLinkageNode(linkage, *variable);
 
     return initNode;
 }
 
 //
-// Declare a non-array variable, the main point being there is no redeclaration 
+// Declare a non-array variable, the main point being there is no redeclaration
 // for resizing allowed.
 //
 // Return the successfully declared variable.
@@ -2078,7 +2089,7 @@ TVariable* TParseContext::declareNonArray(TSourceLoc loc, TString& identifier, T
 //
 // Handle all types of initializers from the grammar.
 //
-TIntermNode* TParseContext::executeInitializer(TSourceLoc loc, TString& identifier, TType& type, 
+TIntermNode* TParseContext::executeInitializer(TSourceLoc loc, TString& identifier,
                                                TIntermTyped* initializer, TVariable* variable)
 {
     //
@@ -2092,10 +2103,10 @@ TIntermNode* TParseContext::executeInitializer(TSourceLoc loc, TString& identifi
         return 0;
     }
 
-    // Fix arrayness if variable is unsized, getting size for initializer    
-    if (initializer->getType().isArray() && initializer->getType().getArraySize() > 0 && 
-                          type.isArray() &&                   type.getArraySize() == 0)
-        type.changeArraySize(initializer->getType().getArraySize());
+    // Fix arrayness if variable is unsized, getting size for initializer
+    if (initializer->getType().isArray() && initializer->getType().getArraySize() > 0 &&
+        variable->getType().isArray() && variable->getType().getArraySize() == 0)
+        variable->getWritableType().changeArraySize(initializer->getType().getArraySize());
 
     //
     // test for and propagate constant
@@ -2106,8 +2117,8 @@ TIntermNode* TParseContext::executeInitializer(TSourceLoc loc, TString& identifi
             variable->getWritableType().getQualifier().storage = EvqTemporary;
             return 0;
         }
-        if (type != initializer->getType()) {
-            error(loc, " non-matching types for const initializer ", 
+        if (variable->getType() != initializer->getType()) {
+            error(loc, " non-matching types for const initializer ",
                 variable->getType().getStorageQualifierString(), "");
             variable->getWritableType().getQualifier().storage = EvqTemporary;
             return 0;
@@ -2139,8 +2150,8 @@ TIntermNode* TParseContext::executeInitializer(TSourceLoc loc, TString& identifi
     return 0;
 }
 
-// This function is used to test for the correctness of the parameters passed to various constructor functions
-// and also convert them to the right datatype if it is allowed and required. 
+// Test for the correctness of the parameters passed to various constructor functions
+// and also convert them to the right datatype if it is allowed and required.
 //
 // Returns 0 for an error or the constructed node (aggregate or typed) for no error.
 //
@@ -2150,11 +2161,11 @@ TIntermTyped* TParseContext::addConstructor(TIntermNode* node, const TType& type
         return 0;
 
     TIntermAggregate* aggrNode = node->getAsAggregate();
-    
+
     TTypeList::iterator memberTypes;
     if (op == EOpConstructStruct)
         memberTypes = type.getStruct()->begin();
-    
+
     TType elementType;
     elementType.shallowCopy(type);
     if (type.isArray())
@@ -2171,7 +2182,7 @@ TIntermTyped* TParseContext::addConstructor(TIntermNode* node, const TType& type
 
     TIntermTyped *newNode;
     if (singleArg) {
-        // If structure constructor or array constructor is being called 
+        // If structure constructor or array constructor is being called
         // for only one parameter inside the structure, we need to call constructStruct function once.
         if (type.isArray())
             newNode = constructStruct(node, elementType, 1, node->getLoc());
@@ -2185,21 +2196,21 @@ TIntermTyped* TParseContext::addConstructor(TIntermNode* node, const TType& type
 
         return newNode;
     }
-    
+
     //
     // Handle list of arguments.
     //
     TIntermSequence &sequenceVector = aggrNode->getSequence() ;    // Stores the information about the parameter to the constructor
     // if the structure constructor contains more than one parameter, then construct
     // each parameter
-    
-    int paramCount = 0;  // keeps a track of the constructor parameter number being checked    
-    
-    // for each parameter to the constructor call, check to see if the right type is passed or convert them 
+
+    int paramCount = 0;  // keeps a track of the constructor parameter number being checked
+
+    // for each parameter to the constructor call, check to see if the right type is passed or convert them
     // to the right type if possible (and allowed).
     // for structure constructors, just check if the right type is passed, no conversion is allowed.
-    
-    for (TIntermSequence::iterator p = sequenceVector.begin(); 
+
+    for (TIntermSequence::iterator p = sequenceVector.begin();
                                    p != sequenceVector.end(); p++, paramCount++) {
         if (type.isArray())
             newNode = constructStruct(*p, elementType, paramCount+1, node->getLoc());
@@ -2207,9 +2218,9 @@ TIntermTyped* TParseContext::addConstructor(TIntermNode* node, const TType& type
             newNode = constructStruct(*p, *(memberTypes[paramCount]).type, paramCount+1, node->getLoc());
         else
             newNode = constructBuiltIn(type, op, *p, node->getLoc(), true);
-        
+
         if (newNode) {
-            p = sequenceVector.erase(p); 
+            p = sequenceVector.erase(p);
             p = sequenceVector.insert(p, newNode);
         }
     }
@@ -2221,7 +2232,7 @@ TIntermTyped* TParseContext::addConstructor(TIntermNode* node, const TType& type
 
 // Function for constructor implementation. Calls addUnaryMath with appropriate EOp value
 // for the parameter to the constructor (passed to this function). Essentially, it converts
-// the parameter types correctly. If a constructor expects an int (like ivec2) and is passed a 
+// the parameter types correctly. If a constructor expects an int (like ivec2) and is passed a
 // float, then float is converted to int.
 //
 // Returns 0 for an error or the constructed node.
@@ -2302,7 +2313,7 @@ TIntermTyped* TParseContext::constructBuiltIn(const TType& type, TOperator op, T
     //
     // Now, if there still isn't an operation to do the construction, and we need one, add one.
     //
-    
+
     // Otherwise, skip out early.
     if (subset || (newNode != node && newNode->getType() == type))
         return newNode;
@@ -2321,8 +2332,8 @@ TIntermTyped* TParseContext::constructStruct(TIntermNode* node, const TType& typ
     TIntermTyped* converted = intermediate.addConversion(EOpConstructStruct, type, node->getAsTyped());
     if (! converted || converted->getType() != type) {
         error(loc, "", "constructor", "cannot convert parameter %d from '%s' to '%s'", paramCount,
-                node->getAsTyped()->getType().getCompleteTypeString().c_str(), type.getCompleteTypeString().c_str());
-        
+              node->getAsTyped()->getType().getCompleteTypeString().c_str(), type.getCompleteTypeString().c_str());
+
         return 0;
     }
 
@@ -2343,7 +2354,7 @@ void TParseContext::addBlock(TSourceLoc loc, TTypeList& typeList, const TString*
         return;
 
     if (profile == EEsProfile && arraySizes)
-        arraySizeRequiredCheck(loc, arraySizes->getSize());        
+        arraySizeRequiredCheck(loc, arraySizes->getSize());
 
     if (currentBlockDefaults.storage == EvqUniform) {
         requireProfile(loc, ~ENoProfile, "uniform block");
@@ -2430,7 +2441,7 @@ void TParseContext::addQualifierToExisting(TSourceLoc loc, TQualifier qualifier,
         return;
     }
 
-    if (qualifier.isAuxiliary() || 
+    if (qualifier.isAuxiliary() ||
         qualifier.isMemory() ||
         qualifier.isInterpolation() ||
         qualifier.storage != EvqTemporary ||
@@ -2479,7 +2490,7 @@ void TParseContext::updateQualifierDefaults(TQualifier qualifier)
 
 void TParseContext::updateQualifierDefaults(TSourceLoc loc, TQualifier qualifier)
 {
-    if (qualifier.isAuxiliary() || 
+    if (qualifier.isAuxiliary() ||
         qualifier.isMemory() ||
         qualifier.isInterpolation() ||
         qualifier.precision != EpqNone)
@@ -2505,7 +2516,7 @@ void TParseContext::updateTypedDefaults(TSourceLoc loc, TQualifier qualifier, co
     if (! id) {
         if (qualifier.hasLayout())
             warn(loc, "cannot set qualifier defaults when using a type and no identifier", "", "");
-        
+
         return;
     }
 
@@ -2559,11 +2570,11 @@ void TParseContext::wrapupSwitchSubsequence(TIntermAggregate* statements, TInter
                 TIntermTyped* newExpression = branchNode->getAsBranchNode()->getExpression();
                 if (prevExpression == 0 && newExpression == 0)
                     error(branchNode->getLoc(), "duplicate label", "default", "");
-                else if (prevExpression != 0 && 
+                else if (prevExpression != 0 &&
                           newExpression != 0 &&
-                         prevExpression->getAsConstantUnion() && 
+                         prevExpression->getAsConstantUnion() &&
                           newExpression->getAsConstantUnion() &&
-                         prevExpression->getAsConstantUnion()->getConstArray()[0].getIConst() == 
+                         prevExpression->getAsConstantUnion()->getConstArray()[0].getIConst() ==
                           newExpression->getAsConstantUnion()->getConstArray()[0].getIConst())
                     error(branchNode->getLoc(), "duplicated value", "case", "");
             }
@@ -2583,7 +2594,7 @@ TIntermNode* TParseContext::addSwitch(TSourceLoc loc, TIntermTyped* expression, 
 
     wrapupSwitchSubsequence(lastStatements, 0);
 
-    if (expression == 0 || 
+    if (expression == 0 ||
         (expression->getBasicType() != EbtInt && expression->getBasicType() != EbtUint) ||
         expression->getType().isArray() || expression->getType().isMatrix() || expression->getType().isVector())
             error(loc, "condition must be a scalar integer expression", "switch", "");
@@ -2613,7 +2624,7 @@ TIntermNode* TParseContext::addSwitch(TSourceLoc loc, TIntermTyped* expression, 
 // This function returns the tree representation for the vector field(s) being accessed from contant vector.
 // If only one component of vector is accessed (v.x or v[0] where v is a contant vector), then a contant node is
 // returned, else an aggregate node is returned (for v.xy). The input to this function could either be the symbol
-// node or it could be the intermediate tree representation of accessing fields in a constant structure or column of 
+// node or it could be the intermediate tree representation of accessing fields in a constant structure or column of
 // a constant matrix.
 //
 TIntermTyped* TParseContext::addConstVectorNode(TVectorFields& fields, TIntermTyped* node, TSourceLoc loc)
@@ -2637,9 +2648,9 @@ TIntermTyped* TParseContext::addConstVectorNode(TVectorFields& fields, TIntermTy
             error(loc, "", "[", "vector index out of range '%d'", fields.offsets[i]);
             fields.offsets[i] = 0;
         }
-        
+
         constArray[i] = unionArray[fields.offsets[i]];
-    } 
+    }
     typedNode = intermediate.addConstantUnion(constArray, node->getType(), loc);
 
     return typedNode;
@@ -2647,8 +2658,8 @@ TIntermTyped* TParseContext::addConstVectorNode(TVectorFields& fields, TIntermTy
 
 //
 // This function returns the column being accessed from a constant matrix. The values are retrieved from
-// the symbol table and parse-tree is built for a vector (each column of a matrix is a vector). The input 
-// to the function could either be a symbol node (m[0] where m is a constant matrix)that represents a 
+// the symbol table and parse-tree is built for a vector (each column of a matrix is a vector). The input
+// to the function could either be a symbol node (m[0] where m is a constant matrix)that represents a
 // constant matrix or it could be the tree representation of the constant matrix (s.m1[0] where s is a constant structure)
 //
 TIntermTyped* TParseContext::addConstMatrixNode(int index, TIntermTyped* node, TSourceLoc loc)
@@ -2678,8 +2689,8 @@ TIntermTyped* TParseContext::addConstMatrixNode(int index, TIntermTyped* node, T
 
 //
 // This function returns an element of an array accessed from a constant array. The values are retrieved from
-// the symbol table and parse-tree is built for the type of the element. The input 
-// to the function could either be a symbol node (a[0] where a is a constant array)that represents a 
+// the symbol table and parse-tree is built for the type of the element. The input
+// to the function could either be a symbol node (a[0] where a is a constant array)that represents a
 // constant array or it could be the tree representation of the constant array (s.a1[0] where s is a constant structure)
 //
 TIntermTyped* TParseContext::addConstArrayNode(int index, TIntermTyped* node, TSourceLoc loc)
@@ -2698,7 +2709,7 @@ TIntermTyped* TParseContext::addConstArrayNode(int index, TIntermTyped* node, TS
     int arrayElementSize = arrayElementType.getObjectSize();
 
     if (tempConstantNode) {
-         typedNode = intermediate.addConstantUnion(TConstUnionArray(tempConstantNode->getConstArray(), arrayElementSize * index, arrayElementSize), 
+         typedNode = intermediate.addConstantUnion(TConstUnionArray(tempConstantNode->getConstArray(), arrayElementSize * index, arrayElementSize),
                                                    tempConstantNode->getType(), loc);
     } else {
         error(loc, "Cannot offset into the array", "Error", "");
@@ -2711,7 +2722,7 @@ TIntermTyped* TParseContext::addConstArrayNode(int index, TIntermTyped* node, TS
 
 
 //
-// This function returns the value of a particular field inside a constant structure from the symbol table. 
+// This function returns the value of a particular field inside a constant structure from the symbol table.
 // If there is an embedded/nested struct, it appropriately calls addConstStructNested or addConstStructFromAggr
 // function and returns the parse-tree with the values of the embedded/nested struct.
 //
@@ -2726,15 +2737,15 @@ TIntermTyped* TParseContext::addConstStruct(TString& identifier, TIntermTyped* n
 
     for ( index = 0; index < fields->size(); ++index) {
         instanceSize = (*fields)[index].type->getObjectSize();
-        
+
         if ((*fields)[index].type->getFieldName() == identifier)
             break;
-        
+
         instanceOffset += instanceSize;
     }
 
     if (tempConstantNode) {
-         typedNode = intermediate.addConstantUnion(TConstUnionArray(tempConstantNode->getConstArray(), instanceOffset, instanceSize), 
+         typedNode = intermediate.addConstantUnion(TConstUnionArray(tempConstantNode->getConstArray(), instanceOffset, instanceSize),
                                                    tempConstantNode->getType(), loc);
          // type will be changed in the calling function
     } else {

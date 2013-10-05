@@ -389,7 +389,7 @@ bool DeduceVersionProfile(TInfoSink& infoSink, EShLanguage stage, bool versionNo
         infoSink.info << "Warning, version " << version << " is not yet complete; most features are present, but a few are missing.\n";
         break;
     default:
-        infoSink.info << "Warning, version " << version << " is not yet complete; some version-specific are present, but many are missing.\n";
+        infoSink.info << "Warning, version " << version << " is not yet complete; some version-specific features are present, but many are missing.\n";
         break;
     }
 
