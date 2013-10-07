@@ -869,7 +869,9 @@ TFunction* TParseContext::handleConstructorCall(TSourceLoc loc, TPublicType& pub
         type.shallowCopy(errorType);
     }
 
-    return new TFunction(&TString(""), type, op);
+    TString empty("");
+
+    return new TFunction(&empty, type, op);
 }
 
 //
