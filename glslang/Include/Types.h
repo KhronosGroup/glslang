@@ -300,7 +300,7 @@ public:
     {
         switch (storage) {
         case EvqUniform:
-        case EVqBuffer:
+        case EvqBuffer:
             return true;
         default:
             return false;
@@ -479,7 +479,7 @@ public:
 	    typeName = copyOf.typeName;
     }
 
-	void deepCopy(const TType& copyOf, const TStructureMap& remapper)
+	void deepCopy(const TType& copyOf)
 	{
         shallowCopy(copyOf);
 
@@ -489,18 +489,14 @@ public:
         }
 
 		if (structure) {
+			structure = NewPoolTTypeList();
     		TStructureMapIterator iter;
-	        if ((iter = remapper.find(structure)) == remapper.end()) {
-				// create the new structure here
-				structure = NewPoolTTypeList();
-				for (unsigned int i = 0; i < copyOf.structure->size(); ++i) {
-					TTypeLoc typeLoc;
-					typeLoc.loc = (*copyOf.structure)[i].loc;
-					typeLoc.type = (*copyOf.structure)[i].type->clone(remapper);
-					structure->push_back(typeLoc);
-				}
-			} else {
-				structure = iter->second;
+			for (unsigned int i = 0; i < copyOf.structure->size(); ++i) {
+				TTypeLoc typeLoc;
+				typeLoc.loc = (*copyOf.structure)[i].loc;
+				typeLoc.type = new TType();
+		        typeLoc.type->deepCopy(*(*copyOf.structure)[i].type);
+				structure->push_back(typeLoc);
 			}
 		}
 
@@ -508,6 +504,14 @@ public:
 			fieldName = NewPoolTString(copyOf.fieldName->c_str());
 		if (typeName)
 			typeName = NewPoolTString(copyOf.typeName->c_str());
+	}
+    
+    TType* clone()
+	{
+		TType *newType = new TType();
+		newType->deepCopy(*this);
+
+		return newType;
 	}
 
     // Merge type from parent, where a parentType is at the beginning of a declaration,
@@ -524,14 +528,6 @@ public:
         if (parentType.userDef)
             setTypeName(parentType.userDef->getTypeName());
     }
-
-	TType* clone(const TStructureMap& remapper)
-	{
-		TType *newType = new TType();
-		newType->deepCopy(*this, remapper);
-
-		return newType;
-	}
 
     virtual void dereference()
     {
@@ -578,8 +574,12 @@ public:
     virtual int getMatrixCols() const { return matrixCols; }
     virtual int getMatrixRows() const { return matrixRows; }
 
+    virtual bool isScalar() const { return vectorSize == 1 && ! getStruct() && ! isArray(); }
+    virtual bool isVector() const { return vectorSize > 1; }
 	virtual bool isMatrix() const { return matrixCols ? true : false; }
-    virtual bool isArray() const  { return arraySizes != 0; }
+    virtual bool isArray()  const { return arraySizes != 0; }
+
+    // Recursively check the structure for any arrays, needed for some error checks
     virtual bool containsArray() const
     {
         if (isArray())
@@ -593,11 +593,18 @@ public:
         return false;
     }
     int getArraySize() const { return arraySizes->sizes.front(); }
-    void setArraySizes(TArraySizes* s) 
+    void shareArraySizes(const TType& type)
     {
-        // copy; we don't want distinct types sharing the same descriptor
-        if (! arraySizes)
-            arraySizes = NewPoolTArraySizes();
+        // For when we are sharing existing array descriptors.
+        // This allows all references to the same unsized array
+        // to be updated at once, by having all of them share the
+        // array description.
+        *arraySizes = *type.arraySizes;
+    }
+    void setArraySizes(TArraySizes* s)
+    {
+        // For when we don't want distinct types sharing the same descriptor.
+        arraySizes = NewPoolTArraySizes();
         *arraySizes = *s;
     }
     void setArraySizes(const TType& type) { setArraySizes(type.arraySizes); }
@@ -605,8 +612,6 @@ public:
     void changeArraySize(int s) { arraySizes->sizes.front() = s; }
     void setMaxArraySize (int s) { arraySizes->maxArraySize = s; }
     int getMaxArraySize () const { return arraySizes->maxArraySize; }
-    virtual bool isVector() const { return vectorSize > 1; }
-    virtual bool isScalar() const { return vectorSize == 1; }
     const char* getBasicString() const 
     {
         return TType::getBasicString(basicType);

@@ -226,9 +226,9 @@ TSymbol::TSymbol(const TSymbol& copyOf)
     writable = true;
 }
 
-TVariable::TVariable(const TVariable& copyOf, TStructureMap& remapper) : TSymbol(copyOf)
+TVariable::TVariable(const TVariable& copyOf) : TSymbol(copyOf)
 {	
-    type.deepCopy(copyOf.type, remapper);
+    type.deepCopy(copyOf.type);
     userType = copyOf.userType;
 
     if (! copyOf.unionArray.empty()) {
@@ -240,35 +240,35 @@ TVariable::TVariable(const TVariable& copyOf, TStructureMap& remapper) : TSymbol
     }
 }
 
-TVariable* TVariable::clone(TStructureMap& remapper)
+TVariable* TVariable::clone()
 {
-    TVariable *variable = new TVariable(*this, remapper);
+    TVariable *variable = new TVariable(*this);
 
     return variable;
 }
 
-TFunction::TFunction(const TFunction& copyOf, const TStructureMap& remapper) : TSymbol(copyOf)
+TFunction::TFunction(const TFunction& copyOf) : TSymbol(copyOf)
 {	
     for (unsigned int i = 0; i < copyOf.parameters.size(); ++i) {
         TParameter param;
         parameters.push_back(param);
-        parameters.back().copyParam(copyOf.parameters[i], remapper);
+        parameters.back().copyParam(copyOf.parameters[i]);
     }
 
-    returnType.deepCopy(copyOf.returnType, remapper);
+    returnType.deepCopy(copyOf.returnType);
     mangledName = copyOf.mangledName;
     op = copyOf.op;
     defined = copyOf.defined;
 }
 
-TFunction* TFunction::clone(TStructureMap& remapper)
+TFunction* TFunction::clone()
 {
-    TFunction *function = new TFunction(*this, remapper);
+    TFunction *function = new TFunction(*this);
 
     return function;
 }
 
-TAnonMember* TAnonMember::clone(TStructureMap& remapper)
+TAnonMember* TAnonMember::clone()
 {
     // need to implement this once built-in symbols include interface blocks
     assert(0);
@@ -276,13 +276,13 @@ TAnonMember* TAnonMember::clone(TStructureMap& remapper)
     return 0;
 }
 
-TSymbolTableLevel* TSymbolTableLevel::clone(TStructureMap& remapper)
+TSymbolTableLevel* TSymbolTableLevel::clone()
 {
     TSymbolTableLevel *symTableLevel = new TSymbolTableLevel();
     symTableLevel->anonId = anonId;
     tLevel::iterator iter;
     for (iter = level.begin(); iter != level.end(); ++iter)
-        symTableLevel->insert(*iter->second->clone(remapper));
+        symTableLevel->insert(*iter->second->clone());
 
     return symTableLevel;
 }
@@ -291,11 +291,10 @@ void TSymbolTable::copyTable(const TSymbolTable& copyOf)
 {
     assert(adoptedLevels == copyOf.adoptedLevels);
 
-    TStructureMap remapper;
     uniqueId = copyOf.uniqueId;
     noBuiltInRedeclarations = copyOf.noBuiltInRedeclarations;
     for (unsigned int i = copyOf.adoptedLevels; i < copyOf.table.size(); ++i)
-        table.push_back(copyOf.table[i]->clone(remapper));
+        table.push_back(copyOf.table[i]->clone());
 }
 
 } // end namespace glslang

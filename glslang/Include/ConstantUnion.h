@@ -452,6 +452,9 @@ public:
         if (unionArray == rhs.unionArray)
             return true;
 
+        if (! unionArray || ! rhs.unionArray)
+            return false;
+
         return *unionArray == *rhs.unionArray;
     }
     bool operator!=(const TConstUnionArray& rhs) const { return ! operator==(rhs); }

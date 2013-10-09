@@ -68,7 +68,7 @@ enum TStorageQualifier {
     EvqVaryingIn,     // pipeline input, read only
     EvqVaryingOut,    // pipeline ouput, read/write
     EvqUniform,       // read only, shader with app
-    EVqBuffer,        // read only, shader with app
+    EvqBuffer,        // read only, shader with app
 
     // parameters
     EvqIn,

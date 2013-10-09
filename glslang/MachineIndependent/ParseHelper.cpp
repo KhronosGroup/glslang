@@ -1757,7 +1757,7 @@ void TParseContext::declareArray(TSourceLoc loc, TString& identifier, const TTyp
         return;
     }
 
-    variable->getWritableType().setArraySizes(type);
+    variable->getWritableType().shareArraySizes(type);
 }
 
 bool TParseContext::arraySetMaxSize(TSourceLoc loc, TIntermSymbol *node, int size)
@@ -2171,7 +2171,7 @@ TIntermTyped* TParseContext::addConstructor(TIntermNode* node, const TType& type
     TType elementType;
     elementType.shallowCopy(type);
     if (type.isArray())
-        elementType.dereference();  // TODO: arrays of arrays: shallow copy won't work if sharing same array structure and then doing a dereference
+        elementType.dereference();    // TODO: arrays of arrays: combine this with shallowCopy
 
     bool singleArg;
     if (aggrNode) {
@@ -2202,7 +2202,7 @@ TIntermTyped* TParseContext::addConstructor(TIntermNode* node, const TType& type
     //
     // Handle list of arguments.
     //
-    TIntermSequence &sequenceVector = aggrNode->getSequence() ;    // Stores the information about the parameter to the constructor
+    TIntermSequence &sequenceVector = aggrNode->getSequence();    // Stores the information about the parameter to the constructor
     // if the structure constructor contains more than one parameter, then construct
     // each parameter
 
@@ -2221,10 +2221,10 @@ TIntermTyped* TParseContext::addConstructor(TIntermNode* node, const TType& type
         else
             newNode = constructBuiltIn(type, op, *p, node->getLoc(), true);
 
-        if (newNode) {
-            p = sequenceVector.erase(p);
-            p = sequenceVector.insert(p, newNode);
-        }
+        if (newNode)
+            *p = newNode;
+        else
+            return 0;
     }
 
     TIntermTyped* constructor = intermediate.setAggregateOperator(aggrNode, op, type, loc);
@@ -2700,8 +2700,8 @@ TIntermTyped* TParseContext::addConstArrayNode(int index, TIntermTyped* node, TS
     TIntermTyped* typedNode;
     TIntermConstantUnion* tempConstantNode = node->getAsConstantUnion();
     TType arrayElementType;
-    arrayElementType.shallowCopy(node->getType());
-    arrayElementType.dereference();   // TODO: arrays of arrays: shallow copy won't work if sharing same array structure and then doing a dereference
+    arrayElementType.shallowCopy(node->getType());  // TODO: arrays of arrays: combine this with deref.
+    arrayElementType.dereference();
 
     if (index >= node->getType().getArraySize() || index < 0) {
         error(loc, "", "[", "array index '%d' out of range", index);

@@ -81,7 +81,7 @@ class TSymbol {
 public:
     POOL_ALLOCATOR_NEW_DELETE(GetThreadPoolAllocator())
     explicit TSymbol(const TString *n) :  name(n), writable(true) { }
-	virtual TSymbol* clone(TStructureMap& remapper) = 0;
+	virtual TSymbol* clone() = 0;
     virtual ~TSymbol() { }
 
     const TString& getName() const { return *name; }
@@ -126,7 +126,7 @@ protected:
 class TVariable : public TSymbol {
 public:
     TVariable(const TString *name, const TType& t, bool uT = false ) : TSymbol(name), userType(uT) { type.shallowCopy(t); }
-	virtual TVariable* clone(TStructureMap& remapper);
+	virtual TVariable* clone();
     virtual ~TVariable() { }
 
     virtual TVariable* getAsVariable() { return this; }
@@ -142,7 +142,6 @@ public:
 
 protected:
     explicit TVariable(const TVariable&);
-    TVariable(const TVariable&, TStructureMap& remapper);
     TVariable& operator=(const TVariable&);
 
     TType type;
@@ -159,13 +158,13 @@ protected:
 struct TParameter {
     TString *name;
     TType* type;
-	void copyParam(const TParameter& param, const TStructureMap& remapper) 
+	void copyParam(const TParameter& param) 
     {
 		if (param.name)
             name = NewPoolTString(param.name->c_str());
         else
             name = 0;
-		type = param.type->clone(remapper);
+		type = param.type->clone();
 	}
 };
 
@@ -183,7 +182,7 @@ public:
         mangledName(*name + '('),
         op(tOp),
         defined(false) { returnType.shallowCopy(retType); }    
-	virtual TFunction* clone(TStructureMap& remapper);
+	virtual TFunction* clone();
 	virtual ~TFunction();
 
     virtual TFunction* getAsFunction() { return this; }
@@ -210,8 +209,7 @@ public:
     virtual void dump(TInfoSink &infoSink) const;
 
 protected:
-    explicit TFunction(TFunction&);
-	TFunction(const TFunction&, const TStructureMap& remapper);
+    explicit TFunction(const TFunction&);
     TFunction& operator=(TFunction&);
 
     typedef TVector<TParameter> TParamList;
@@ -225,7 +223,7 @@ protected:
 class TAnonMember : public TSymbol {
 public:
     TAnonMember(const TString* n, unsigned int m, TSymbol& a) : TSymbol(n), anonContainer(a), memberNumber(m) { }
-	virtual TAnonMember* clone(TStructureMap& remapper);
+	virtual TAnonMember* clone();
     virtual ~TAnonMember() { }
 
     const TAnonMember* getAsAnonMember() const { return this; }
@@ -346,7 +344,7 @@ public:
 
     void relateToOperator(const char* name, TOperator op);
     void dump(TInfoSink &infoSink) const;
-	TSymbolTableLevel* clone(TStructureMap& remapper);
+	TSymbolTableLevel* clone();
     void readOnly();
 
 protected:
@@ -445,7 +443,7 @@ public:
     //
     TVariable* copyUp(TVariable* shared)
     {        
-        TVariable* variable = shared->clone(remapper);
+        TVariable* variable = shared->clone();
         variable->setUniqueId(shared->getUniqueId());
         table[currentLevel()]->insert(*variable);
 
@@ -497,7 +495,6 @@ protected:
     int uniqueId;     // for unique identification in code generation
     bool noBuiltInRedeclarations;
     unsigned int adoptedLevels;
-    TStructureMap remapper;  // for now, dummy for copyUp(), which is not yet used for structures
 };
 
 } // end namespace glslang
