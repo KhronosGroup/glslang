@@ -885,6 +885,11 @@ void TIntermediate::addSymbolLinkageNodes(TIntermAggregate*& linkage, EShLanguag
     treeRoot = growAggregate(treeRoot, linkage);
 }
 
+//
+// Add the given name or symbol to the list of nodes at the end of the tree used
+// for link-time checking and external linkage.
+//
+
 void TIntermediate::addSymbolLinkageNode(TIntermAggregate*& linkage, TSymbolTable& symbolTable, const TString& name)
 {
     TSymbol* symbol = symbolTable.find(name);
@@ -892,10 +897,16 @@ void TIntermediate::addSymbolLinkageNode(TIntermAggregate*& linkage, TSymbolTabl
         addSymbolLinkageNode(linkage, *symbol->getAsVariable());
 }
 
-void TIntermediate::addSymbolLinkageNode(TIntermAggregate*& linkage, const TVariable& variable)
+void TIntermediate::addSymbolLinkageNode(TIntermAggregate*& linkage, const TSymbol& symbol)
 {
-    TIntermSymbol* node = new TIntermSymbol(variable.getUniqueId(), variable.getName(), variable.getType());
-    node->setConstArray(variable.getConstArray());
+    const TVariable* variable = symbol.getAsVariable();
+    if (! variable) {
+        // This must be a member of an anonymous block, and we need to add the whole block
+        const TAnonMember* anon = symbol.getAsAnonMember();
+        variable = &anon->getAnonContainer();
+    }
+    TIntermSymbol* node = new TIntermSymbol(variable->getUniqueId(), variable->getName(), variable->getType());
+    node->setConstArray(variable->getConstArray());
     linkage = growAggregate(linkage, node);
 }
 

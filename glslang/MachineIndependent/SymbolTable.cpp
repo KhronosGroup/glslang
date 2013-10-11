@@ -240,7 +240,7 @@ TVariable::TVariable(const TVariable& copyOf) : TSymbol(copyOf)
     }
 }
 
-TVariable* TVariable::clone()
+TVariable* TVariable::clone() const
 {
     TVariable *variable = new TVariable(*this);
 
@@ -261,28 +261,45 @@ TFunction::TFunction(const TFunction& copyOf) : TSymbol(copyOf)
     defined = copyOf.defined;
 }
 
-TFunction* TFunction::clone()
+TFunction* TFunction::clone() const
 {
     TFunction *function = new TFunction(*this);
 
     return function;
 }
 
-TAnonMember* TAnonMember::clone()
+TAnonMember* TAnonMember::clone() const
 {
-    // need to implement this once built-in symbols include interface blocks
+    // Anonymous members of a given block should be cloned at a higher level,
+    // where they can all be assured to still end up pointing to a single
+    // copy of the original container.
     assert(0);
 
     return 0;
 }
 
-TSymbolTableLevel* TSymbolTableLevel::clone()
+TSymbolTableLevel* TSymbolTableLevel::clone() const
 {
     TSymbolTableLevel *symTableLevel = new TSymbolTableLevel();
     symTableLevel->anonId = anonId;
-    tLevel::iterator iter;
-    for (iter = level.begin(); iter != level.end(); ++iter)
-        symTableLevel->insert(*iter->second->clone());
+    std::vector<bool> containerCopied(anonId, false);
+    tLevel::const_iterator iter;
+    for (iter = level.begin(); iter != level.end(); ++iter) {
+        const TAnonMember* anon = iter->second->getAsAnonMember();
+        if (anon) {
+            // Insert all the anonymous members of this same container at once,
+            // avoid inserting the other members in the future, once this has been done,
+            // allowing them to all be part of the same new container.
+            if (! containerCopied[anon->getAnonId()]) {
+                TVariable* container = anon->getAnonContainer().clone();
+                container->changeName(NewPoolTString(""));
+                // insert the whole container
+                symTableLevel->insert(*container);
+                containerCopied[anon->getAnonId()] = true;
+            }
+        } else
+            symTableLevel->insert(*iter->second->clone());
+    }
 
     return symTableLevel;
 }

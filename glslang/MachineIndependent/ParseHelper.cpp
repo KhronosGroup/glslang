@@ -473,11 +473,10 @@ TIntermTyped* TParseContext::handleBracketDereference(TSourceLoc loc, TIntermTyp
                                       (base->isMatrix() && base->getType().getMatrixCols() <= indexValue)))
                 error(loc, "", "[", "index out of range '%d'", index->getAsConstantUnion()->getConstArray()[0].getIConst());
             if (base->isArray()) {
-                if (base->getType().getArraySize() == 0) {
-                    if (base->getType().getMaxArraySize() <= index->getAsConstantUnion()->getConstArray()[0].getIConst())
-                        arraySetMaxSize(loc, base->getAsSymbolNode(), index->getAsConstantUnion()->getConstArray()[0].getIConst() + 1);
-                } else if ( index->getAsConstantUnion()->getConstArray()[0].getIConst() >= base->getType().getArraySize() ||
-                            index->getAsConstantUnion()->getConstArray()[0].getIConst() < 0)
+                if (base->getType().getArraySize() == 0)
+                    updateMaxArraySize(loc, base, index->getAsConstantUnion()->getConstArray()[0].getIConst());
+                else if (index->getAsConstantUnion()->getConstArray()[0].getIConst() >= base->getType().getArraySize() ||
+                           index->getAsConstantUnion()->getConstArray()[0].getIConst() < 0)
                     error(loc, "", "[", "array index out of range '%d'", index->getAsConstantUnion()->getConstArray()[0].getIConst());
             }
             result = intermediate.addIndex(EOpIndexDirect, base, index, loc);
@@ -627,8 +626,8 @@ TFunction* TParseContext::handleFunctionDeclarator(TSourceLoc loc, TFunction& fu
         requireNotRemoved(loc, EEsProfile, 300, "redeclaration of built-in function");
     const TFunction* prevDec = symbol ? symbol->getAsFunction() : 0;
     if (prevDec) {
-        if (prevDec->getReturnType() != function.getReturnType()) {
-            error(loc, "overloaded functions must have the same return type", function.getReturnType().getCompleteTypeString().c_str(), "");
+        if (prevDec->getType() != function.getType()) {
+            error(loc, "overloaded functions must have the same return type", function.getType().getCompleteTypeString().c_str(), "");
         }
         for (int i = 0; i < prevDec->getParamCount(); ++i) {
             if ((*prevDec)[i].type->getQualifier().storage != function[i].type->getQualifier().storage)
@@ -679,7 +678,7 @@ TIntermAggregate* TParseContext::handleFunctionPrototype(TSourceLoc loc, TFuncti
         //
         // Remember the return type for later checking for RETURN statements.
         //
-        currentFunctionType = &(prevDec->getReturnType());
+        currentFunctionType = &(prevDec->getType());
     } else
         currentFunctionType = new TType(EbtVoid);
     functionReturnsValue = false;
@@ -690,8 +689,8 @@ TIntermAggregate* TParseContext::handleFunctionPrototype(TSourceLoc loc, TFuncti
     if (function.getName() == "main") {
         if (function.getParamCount() > 0)
             error(loc, "function cannot take any parameter(s)", function.getName().c_str(), "");
-        if (function.getReturnType().getBasicType() != EbtVoid)
-            error(loc, "", function.getReturnType().getCompleteTypeString().c_str(), "main function cannot return a value");
+        if (function.getType().getBasicType() != EbtVoid)
+            error(loc, "", function.getType().getCompleteTypeString().c_str(), "main function cannot return a value");
         intermediate.addMainCount();
     }
 
@@ -798,7 +797,7 @@ TIntermTyped* TParseContext::handleFunctionCall(TSourceLoc loc, TFunction* fnCal
             op = fnCandidate->getBuiltInOp();
             if (builtIn && op != EOpNull) {
                 // A function call mapped to a built-in operation.
-                result = intermediate.addBuiltInFunctionCall(loc, op, fnCandidate->getParamCount() == 1, intermNode, fnCandidate->getReturnType());
+                result = intermediate.addBuiltInFunctionCall(loc, op, fnCandidate->getParamCount() == 1, intermNode, fnCandidate->getType());
                 if (result == 0)  {
                     error(intermNode->getLoc(), " wrong operand type", "Internal Error",
                                         "built in unary operator function.  Type: %s",
@@ -807,7 +806,7 @@ TIntermTyped* TParseContext::handleFunctionCall(TSourceLoc loc, TFunction* fnCal
                 }
             } else {
                 // This is a function call not mapped to built-in operation
-                result = intermediate.setAggregateOperator(intermAggregate, EOpFunctionCall, fnCandidate->getReturnType(), loc);
+                result = intermediate.setAggregateOperator(intermAggregate, EOpFunctionCall, fnCandidate->getType(), loc);
                 result->getAsAggregate()->setName(fnCandidate->getMangledName());
 
                 // this is how we know whether the given function is a built-in function or a user-defined function
@@ -830,7 +829,7 @@ TIntermTyped* TParseContext::handleFunctionCall(TSourceLoc loc, TFunction* fnCal
                 }
 
                 // built-in texturing functions get their return value precision from the precision of the sampler
-                if (builtIn && fnCandidate->getReturnType().getQualifier().precision == EpqNone &&
+                if (builtIn && fnCandidate->getType().getQualifier().precision == EpqNone &&
                     fnCandidate->getParamCount() > 0 && (*fnCandidate)[0].type->getBasicType() == EbtSampler)
                     result->getQualifier().precision = result->getAsAggregate()->getSequence()[0]->getAsTyped()->getQualifier().precision;
             }
@@ -1228,7 +1227,7 @@ bool TParseContext::reservedErrorCheck(TSourceLoc loc, const TString& identifier
 //
 bool TParseContext::constructorError(TSourceLoc loc, TIntermNode* node, TFunction& function, TOperator op, TType& type)
 {
-    type.shallowCopy(function.getReturnType());
+    type.shallowCopy(function.getType());
 
     bool constructingMatrix = false;
     switch(op) {
@@ -1713,89 +1712,86 @@ void TParseContext::arrayDimCheck(TSourceLoc loc, const TType* type, TArraySizes
 //
 // size == 0 means no specified size.
 //
-void TParseContext::declareArray(TSourceLoc loc, TString& identifier, const TType& type, TVariable*& variable, bool& newDeclaration)
+void TParseContext::declareArray(TSourceLoc loc, TString& identifier, const TType& type, TSymbol*& symbol, bool& newDeclaration)
 {
-    //
-    // Don't check for reserved word use until after we know it's not in the symbol table,
-    // because reserved arrays can be redeclared.
-    //
-    // However, reserved arrays cannot be modified in a shared symbol table, so add a new
-    // one at a non-shared level in the table.
-    //
-    // Redeclarations have to take place at the same scope; otherwise they are hiding declarations
-    //
-
-    if (! variable) {
+    if (! symbol) {
         bool currentScope;
-        TSymbol* symbol = symbolTable.find(identifier, 0, &currentScope);
+        symbol = symbolTable.find(identifier, 0, &currentScope);
         if (symbol == 0 || ! currentScope) {
-            variable = new TVariable(&identifier, type);
-            symbolTable.insert(*variable);
+            //
+            // Successfully process a new definition.
+            // (Redeclarations have to take place at the same scope; otherwise they are hiding declarations)
+            //
+            symbol = new TVariable(&identifier, type);
+            symbolTable.insert(*symbol);
             newDeclaration = true;
-
             return;
         }
-        variable = symbol->getAsVariable();
+        if (symbol->getAsAnonMember()) {
+            error(loc, "cannot redeclare a user-block member array", identifier.c_str(), "");
+            return;
+        }
     }
 
-    if (! variable) {
+    //
+    // Process a redeclaration.
+    //
+
+    if (! symbol) {
         error(loc, "array variable name expected", identifier.c_str(), "");
         return;
     }
 
-    if (! variable->getType().isArray()) {
+    TType& newType = symbol->getWritableType();
+
+    if (! newType.isArray()) {
         error(loc, "redeclaring non-array as array", identifier.c_str(), "");
         return;
     }
-    if (variable->getType().getArraySize() > 0) {
+    if (newType.getArraySize() > 0) {
         error(loc, "redeclaration of array with size", identifier.c_str(), "");
         return;
     }
 
-    if (! variable->getType().sameElementType(type)) {
-        error(loc, "redeclaration of array with a different type", identifier.c_str(), "");
+    if (! newType.sameElementType(type)) {
+        error(loc, "redeclaration of array with a different newType", identifier.c_str(), "");
         return;
     }
 
-    variable->getWritableType().shareArraySizes(type);
+    newType.shareArraySizes(type);
 }
 
-bool TParseContext::arraySetMaxSize(TSourceLoc loc, TIntermSymbol *node, int size)
+void TParseContext::updateMaxArraySize(TSourceLoc loc, TIntermNode *node, int index)
 {
-    TSymbol* symbol = symbolTable.find(node->getName());
-    if (symbol == 0) {
-        error(loc, " undeclared identifier", node->getName().c_str(), "");
-        return true;
+    TIntermSymbol* symbolNode = node->getAsSymbolNode();
+    if (! symbolNode) {
+        // TODO: functionality: unsized arrays: handle members of blocks
+        return;
     }
 
-    TVariable* variable = symbol->getAsVariable();
-    if (! variable) {
-        error(loc, "array variable name expected", node->getName().c_str(), "");
-        return true;
+    // maybe there is nothing to do...
+    // TODO: functionality: unsized arrays: is the node sharing the array type with the symbol table?
+    if (symbolNode->getType().getMaxArraySize() > index)
+        return;
+
+    // something to do...
+
+    TSymbol* symbol = symbolTable.find(symbolNode->getName());
+    assert(symbol);
+    if (symbol == 0)
+        return;
+
+    if (symbol->getAsFunction()) {
+        error(loc, "array variable name expected", symbolNode->getName().c_str(), "");
+        return;
     }
-
-    // TODO: desktop linker: make this a link-time check (note if it's here, an explicit declaration skips it)
-    //if (node->getName() == "gl_TexCoord") {
-    //    TSymbol* texCoord = symbolTable.find("gl_MaxTextureCoords");
-    //    if (! texCoord || ! texCoord->getAsVariable()) {
-    //        infoSink.info.message(EPrefixInternalError, "gl_MaxTextureCoords not defined", loc);
-    //        return true;
-    //    }
-
-    //    int texCoordValue = texCoord->getAsVariable()->getConstArray()[0].getIConst();
-    //    if (texCoordValue <= size) {
-    //        error(loc, "", "[", "gl_TexCoord can only have a max array size of up to gl_MaxTextureCoords", "");
-    //        return true;
-    //    }
-    //}
 
     // For read-only built-ins, add a new variable for holding the maximum array size of an implicitly-sized shared array.
-    if (variable->isReadOnly())
-        variable = symbolTable.copyUp(variable);
+    // TODO: functionality: unsized arrays: is this new array type shared with the node?
+    if (symbol->isReadOnly())
+        symbol = symbolTable.copyUp(symbol);
 
-    variable->getWritableType().setMaxArraySize(size);
-
-    return false;
+    symbol->getWritableType().setMaxArraySize(index + 1);
 }
 
 //
@@ -1822,9 +1818,7 @@ void TParseContext::nonInitConstCheck(TSourceLoc loc, TString& identifier, TType
 //
 // Returns a redeclared and type-modified variable if a redeclarated occurred.
 //
-// Will emit
-//
-TVariable* TParseContext::redeclareBuiltin(TSourceLoc loc, const TString& identifier, bool& newDeclaration)
+TSymbol* TParseContext::redeclareBuiltin(TSourceLoc loc, const TString& identifier, bool& newDeclaration)
 {
     if (profile == EEsProfile || identifier.compare(0, 3, "gl_") != 0 || symbolTable.atBuiltInLevel())
         return 0;
@@ -1853,21 +1847,19 @@ TVariable* TParseContext::redeclareBuiltin(TSourceLoc loc, const TString& identi
         if (! symbol)
             return 0;
 
-        TVariable* variable = symbol->getAsVariable();
-
         // If it wasn't at a built-in level, then it's already been redeclared;
         // that is, this is a redeclaration of a redeclaration, reuse that initial
         // redeclaration.  Otherwise, make the new one.
         if (builtIn) {
             // Copy the symbol up to make a writable version
             newDeclaration = true;
-            variable = symbolTable.copyUp(variable);
+            symbol = symbolTable.copyUp(symbol)->getAsVariable();
         }
 
         // Now, modify the type of the copy, as per the type of the current redeclaration.
         // TODO: functionality: verify type change is allowed and make the change in type
 
-        return variable;
+        return symbol;
     }
 
     return 0;
@@ -2029,8 +2021,8 @@ TIntermNode* TParseContext::declareVariable(TSourceLoc loc, TString& identifier,
 
     // Check for redeclaration of built-ins and/or attempting to declare a reserved name
     bool newDeclaration = false;    // true if a new entry gets added to the symbol table
-    TVariable* variable = redeclareBuiltin(loc, identifier, newDeclaration);
-    if (! variable)
+    TSymbol* symbol = redeclareBuiltin(loc, identifier, newDeclaration);
+    if (! symbol)
         reservedErrorCheck(loc, identifier);
 
     // Declare the variable
@@ -2042,7 +2034,7 @@ TIntermNode* TParseContext::declareVariable(TSourceLoc loc, TString& identifier,
         arrayDimCheck(loc, &type, arraySizes);
         if (! arrayQualifierError(loc, type.getQualifier())) {
             type.setArraySizes(arraySizes);
-            declareArray(loc, identifier, type, variable, newDeclaration);
+            declareArray(loc, identifier, type, symbol, newDeclaration);
         }
 
         if (initializer) {
@@ -2051,18 +2043,24 @@ TIntermNode* TParseContext::declareVariable(TSourceLoc loc, TString& identifier,
         }
     } else {
         // non-array case
-        if (! variable)
-            variable = declareNonArray(loc, identifier, type, newDeclaration);
+        if (! symbol)
+            symbol = declareNonArray(loc, identifier, type, newDeclaration);
     }
 
     // Deal with initializer
     TIntermNode* initNode = 0;
-    if (variable && initializer)
+    if (symbol && initializer) {
+        TVariable* variable = symbol->getAsVariable();
+        if (! variable) {
+            error(loc, "initializer requires a variable, not a member", identifier.c_str(), "");
+            return 0;
+        }
         initNode = executeInitializer(loc, identifier, initializer, variable);
+    }
 
     // see if it's a linker-level object to track
-    if (newDeclaration && symbolTable.atGlobalLevel())
-        intermediate.addSymbolLinkageNode(linkage, *variable);
+    if (symbol && newDeclaration && symbolTable.atGlobalLevel())
+        intermediate.addSymbolLinkageNode(linkage, *symbol);
 
     return initNode;
 }
@@ -2435,11 +2433,13 @@ void TParseContext::addBlock(TSourceLoc loc, TTypeList& typeList, const TString*
 // For an identifier that is already declared, add more qualification to it.
 void TParseContext::addQualifierToExisting(TSourceLoc loc, TQualifier qualifier, const TString& identifier)
 {
-    TSymbol* existing = symbolTable.find(identifier);
-    TVariable* variable = existing ? existing->getAsVariable() : 0;
-    if (! variable) {
+    TSymbol* symbol = symbolTable.find(identifier);
+    if (! symbol) {
         error(loc, "identifier not previously declared", identifier.c_str(), "");
-
+        return;
+    }
+    if (symbol->getAsFunction()) {
+        error(loc, "cannot re-qualify a function name", identifier.c_str(), "");
         return;
     }
 
@@ -2453,12 +2453,13 @@ void TParseContext::addQualifierToExisting(TSourceLoc loc, TQualifier qualifier,
         return;
     }
 
-    // For read-only built-ins, add a new variable for holding the modified qualifier.
-    if (variable->isReadOnly())
-        variable = symbolTable.copyUp(variable);
+    // For read-only built-ins, add a new symbol for holding the modified qualifier.
+    // This will bring up an entire block, if a block type has to be modified (e.g., gl_Position inside a block)
+    if (symbol->isReadOnly())
+        symbol = symbolTable.copyUp(symbol);
 
     if (qualifier.invariant)
-        variable->getWritableType().getQualifier().invariant = true;
+        symbol->getWritableType().getQualifier().invariant = true;
 }
 
 void TParseContext::addQualifierToExisting(TSourceLoc loc, TQualifier qualifier, TIdentifierList& identifiers)

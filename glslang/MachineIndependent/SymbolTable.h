@@ -45,8 +45,7 @@
 //   symbols.
 //
 // -->  This requires a copy mechanism, so initial pools used to create
-//   the shared information can be popped.  So, care is taken with
-//   copying pointers to point to new copies.  Done through "clone"
+//   the shared information can be popped.  Done through "clone"
 //   methods.
 //
 // * Name mangling will be used to give each function a unique name
@@ -74,30 +73,34 @@ namespace glslang {
 //
 // Symbol base class.  (Can build functions or variables out of these...)
 //
+
 class TVariable;
 class TFunction;
 class TAnonMember;
+
 class TSymbol {
 public:
     POOL_ALLOCATOR_NEW_DELETE(GetThreadPoolAllocator())
     explicit TSymbol(const TString *n) :  name(n), writable(true) { }
-	virtual TSymbol* clone() = 0;
+	virtual TSymbol* clone() const = 0;
     virtual ~TSymbol() { }
 
-    const TString& getName() const { return *name; }
-    void changeName(const TString* newName) { name = newName; }
+    virtual const TString& getName() const { return *name; }
+    virtual void changeName(const TString* newName) { name = newName; }
     virtual const TString& getMangledName() const { return getName(); }
     virtual TFunction* getAsFunction() { return 0; }
     virtual const TFunction* getAsFunction() const { return 0; }
     virtual TVariable* getAsVariable() { return 0; }
     virtual const TVariable* getAsVariable() const { return 0; }
     virtual const TAnonMember* getAsAnonMember() const { return 0; }
-    void setUniqueId(int id) { uniqueId = id; }
-    int getUniqueId() const { return uniqueId; }
+    virtual const TType& getType() const = 0;
+    virtual TType& getWritableType() = 0;
+    virtual void setUniqueId(int id) { uniqueId = id; }
+    virtual int getUniqueId() const { return uniqueId; }
     virtual void dump(TInfoSink &infoSink) const = 0;
 
-    bool isReadOnly() { return ! writable; }
-    void makeReadOnly() { writable = false; }
+    virtual bool isReadOnly() { return ! writable; }
+    virtual void makeReadOnly() { writable = false; }
 
 protected:
 	explicit TSymbol(const TSymbol&);
@@ -126,19 +129,18 @@ protected:
 class TVariable : public TSymbol {
 public:
     TVariable(const TString *name, const TType& t, bool uT = false ) : TSymbol(name), userType(uT) { type.shallowCopy(t); }
-	virtual TVariable* clone();
+	virtual TVariable* clone() const;
     virtual ~TVariable() { }
 
     virtual TVariable* getAsVariable() { return this; }
     virtual const TVariable* getAsVariable() const { return this; }
-    TType& getWritableType() { assert(writable); return type; }
-    const TType& getType() const { return type; }
-    bool isUserType() const { return userType; }
+    virtual const TType& getType() const { return type; }
+    virtual TType& getWritableType() { assert(writable); return type; }
+    virtual bool isUserType() const { return userType; }
+    virtual const TConstUnionArray& getConstArray() const { return unionArray; }
+    virtual void setConstArray(const TConstUnionArray& constArray) { unionArray = constArray; }
 
     virtual void dump(TInfoSink &infoSink) const;
-
-    const TConstUnionArray& getConstArray() const { return unionArray; }
-    void setConstArray(const TConstUnionArray& constArray) { unionArray = constArray; }
 
 protected:
     explicit TVariable(const TVariable&);
@@ -182,35 +184,36 @@ public:
         mangledName(*name + '('),
         op(tOp),
         defined(false) { returnType.shallowCopy(retType); }    
-	virtual TFunction* clone();
+	virtual TFunction* clone() const;
 	virtual ~TFunction();
 
     virtual TFunction* getAsFunction() { return this; }
     virtual const TFunction* getAsFunction() const { return this; }
 
-    void addParameter(TParameter& p)
+    virtual void addParameter(TParameter& p)
     {
         assert(writable);
         parameters.push_back(p);
         p.type->appendMangledName(mangledName);
     }
 
-    const TString& getMangledName() const { return mangledName; }
-    const TType& getReturnType() const { return returnType; }
-    void relateToOperator(TOperator o) { assert(writable); op = o; }
-    TOperator getBuiltInOp() const { return op; }
-    void setDefined() { assert(writable); defined = true; }
-    bool isDefined() const { return defined; }
+    virtual const TString& getMangledName() const { return mangledName; }
+    virtual const TType& getType() const { return returnType; }
+    virtual TType& getWritableType() { return returnType; }
+    virtual void relateToOperator(TOperator o) { assert(writable); op = o; }
+    virtual TOperator getBuiltInOp() const { return op; }
+    virtual void setDefined() { assert(writable); defined = true; }
+    virtual bool isDefined() const { return defined; }
 
-    int getParamCount() const { return static_cast<int>(parameters.size()); }
-    TParameter& operator [](int i) { assert(writable); return parameters[i]; }
-    const TParameter& operator [](int i) const { return parameters[i]; }
+    virtual int getParamCount() const { return static_cast<int>(parameters.size()); }
+    virtual TParameter& operator[](int i) { assert(writable); return parameters[i]; }
+    virtual const TParameter& operator[](int i) const { return parameters[i]; }
 
     virtual void dump(TInfoSink &infoSink) const;
 
 protected:
     explicit TFunction(const TFunction&);
-    TFunction& operator=(TFunction&);
+    TFunction& operator=(const TFunction&);
 
     typedef TVector<TParameter> TParamList;
 	TParamList parameters;
@@ -222,21 +225,37 @@ protected:
 
 class TAnonMember : public TSymbol {
 public:
-    TAnonMember(const TString* n, unsigned int m, TSymbol& a) : TSymbol(n), anonContainer(a), memberNumber(m) { }
-	virtual TAnonMember* clone();
+    TAnonMember(const TString* n, unsigned int m, const TVariable& a, int an) : TSymbol(n), anonContainer(a), memberNumber(m), anonId(an) { }
+	virtual TAnonMember* clone() const;
     virtual ~TAnonMember() { }
 
-    const TAnonMember* getAsAnonMember() const { return this; }
-    TSymbol& getAnonContainer() const { return anonContainer; }
-    unsigned int getMemberNumber() const { return memberNumber; }
+    virtual const TAnonMember* getAsAnonMember() const { return this; }
+    virtual const TVariable& getAnonContainer() const { return anonContainer; }
+    virtual unsigned int getMemberNumber() const { return memberNumber; }    
+    
+    virtual const TType& getType() const
+    {
+        TTypeList& types = *anonContainer.getType().getStruct();
+        return *types[memberNumber].type;
+    }
+
+    virtual TType& getWritableType()
+    {
+        assert(writable);
+        TTypeList& types = *anonContainer.getType().getStruct();
+        return *types[memberNumber].type;
+    }
+    
+    virtual int getAnonId() const { return anonId; }
     virtual void dump(TInfoSink &infoSink) const;
 
 protected:
-    explicit TAnonMember(TAnonMember&);
-    TAnonMember& operator=(TAnonMember&);
+    explicit TAnonMember(const TAnonMember&);
+    TAnonMember& operator=(const TAnonMember&);
 
-    TSymbol& anonContainer;
+    const TVariable& anonContainer;
     unsigned int memberNumber;
+    int anonId;
 };
 
 class TSymbolTableLevel {
@@ -256,17 +275,19 @@ public:
             // An empty name means an anonymous container, exposing its members to the external scope.
             // Give it a name and insert its members in the symbol table, pointing to the container.
             char buf[20];
-            snprintf(buf, 20, "__anon__%d", anonId++);
+            snprintf(buf, 20, "__anon__%d", anonId);
             symbol.changeName(NewPoolTString(buf));
 
             bool isOkay = true;
             const TTypeList& types = *symbol.getAsVariable()->getType().getStruct();
             for (unsigned int m = 0; m < types.size(); ++m) {
-                TAnonMember* member = new TAnonMember(&types[m].type->getFieldName(), m, symbol);
+                TAnonMember* member = new TAnonMember(&types[m].type->getFieldName(), m, *symbol.getAsVariable(), anonId);
                 result = level.insert(tLevelPair(member->getMangledName(), member));
                 if (! result.second)
                     isOkay = false;
             }
+
+            ++anonId;
 
             return isOkay;
         } else {
@@ -344,7 +365,7 @@ public:
 
     void relateToOperator(const char* name, TOperator op);
     void dump(TInfoSink &infoSink) const;
-	TSymbolTableLevel* clone();
+	TSymbolTableLevel* clone() const;
     void readOnly();
 
 protected:
@@ -422,7 +443,7 @@ public:
     {
         symbol.setUniqueId(++uniqueId);
 
-        if (symbol.getAsVariable()) {
+        if (! symbol.getAsFunction()) {
             // make sure there isn't a function of this name
             if (table[currentLevel()]->hasFunctionName(symbol.getName()))
                 return false;
@@ -438,16 +459,27 @@ public:
     }
 
     //
-    // To copy a variable from a shared level up to the current level, so it can be 
-    // modified without impacting other users of the shared table.
+    // Copy a variable or anonymous member's structure from a shared level up 
+    // to the current level, so it can be modified without impacting other users 
+    // of the shared table.
     //
-    TVariable* copyUp(TVariable* shared)
-    {        
-        TVariable* variable = shared->clone();
-        variable->setUniqueId(shared->getUniqueId());
-        table[currentLevel()]->insert(*variable);
-
-        return variable;
+    TSymbol* copyUp(TSymbol* shared)
+    {
+        TSymbol* copy;
+        if (shared->getAsVariable()) {
+            copy = shared->clone();
+            copy->setUniqueId(shared->getUniqueId());
+            table[currentLevel()]->insert(*copy);
+            return copy;
+        } else {
+            const TAnonMember* anon = shared->getAsAnonMember();
+            assert(anon);
+            TVariable* container = anon->getAnonContainer().clone();
+            container->changeName(NewPoolTString(""));
+            container->setUniqueId(anon->getAnonContainer().getUniqueId());
+            table[currentLevel()]->insert(*container);
+            return table[currentLevel()]->find(shared->getName());
+        }
     }
 
     TSymbol* find(const TString& name, bool* builtIn = 0, bool *currentScope = 0)

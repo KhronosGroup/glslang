@@ -24,6 +24,7 @@ Link Validation
       + Non ES: value checking of global const initializers
       + Non ES: value checking of uniform initializers
       + Non ES: location match
+      - gl_TexCoord can only have a max array size of up to gl_MaxTextureCoords
       - location aliasing/overlap (except desktop vertex shader inputs)
       - 1.0: count the number of uniforms and varyings, compare against limits
       + recursion for functions

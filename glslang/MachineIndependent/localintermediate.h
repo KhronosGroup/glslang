@@ -49,7 +49,7 @@ struct TVectorFields {
 };
 
 class TSymbolTable;
-class TVariable;
+class TSymbol;
 
 //
 // Set of helper functions to help parse and build the tree.
@@ -97,7 +97,7 @@ public:
     bool postProcess(TIntermNode*, EShLanguage);
     void addSymbolLinkageNodes(TIntermAggregate*& linkage, EShLanguage, TSymbolTable&);
     void addSymbolLinkageNode(TIntermAggregate*& linkage, TSymbolTable&, const TString&);
-    void addSymbolLinkageNode(TIntermAggregate*& linkage, const TVariable&);
+    void addSymbolLinkageNode(TIntermAggregate*& linkage, const TSymbol&);
 
     void addToCallGraph(TInfoSink&, const TString& caller, const TString& callee);
     void merge(TInfoSink&, TIntermediate&);

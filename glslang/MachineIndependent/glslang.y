@@ -2378,7 +2378,7 @@ function_definition
             parseContext.error($1.loc, "function does not return a value:", "", $1.function->getName().c_str());
         parseContext.symbolTable.pop(&parseContext.defaultPrecision[0]);
         $$ = parseContext.intermediate.growAggregate($1.intermAggregate, $3);
-        parseContext.intermediate.setAggregateOperator($$, EOpFunction, $1.function->getReturnType(), $1.loc);
+        parseContext.intermediate.setAggregateOperator($$, EOpFunction, $1.function->getType(), $1.loc);
         $$->getAsAggregate()->setName($1.function->getMangledName().c_str());
 
         // store the pragma information for debug and optimize and other vendor specific
