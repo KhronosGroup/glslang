@@ -127,4 +127,20 @@ Basic Internal Operation
  -  Reduction of the tree to a linear byte-code style low-level intermediate
     representation is likely a good way to generate fully optimized code.
 
- -  There is currently some dead linker-type code still lying around.
+ -  There is currently some dead old-style linker-type code still lying around.
+
+ - Memory pool: parsing uses types derived from C++ std types, using a 
+   custom allocator that puts them in a memory pool.  This makes allocation
+   of individual container/contents just few cycles and deallocation free.
+   This pool is popped after the AST is made and processed.
+
+   The use is simple: if you are going to call "new", there are three cases:
+
+    - the object comes from the pool (its base class has the macro
+      POOL_ALLOCATOR_NEW_DELETE in it) and you do not have to call delete
+
+    - it is a TString, in which case call NewPoolTString(), which gets 
+      it from the pool, and there is no corresponding delete
+
+    - the object does not come from the pool, and you have to do normal
+      C++ memory management of what you 'new'

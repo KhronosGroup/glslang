@@ -91,7 +91,7 @@ namespace glslang {
 // Pool version of string.
 //
 typedef pool_allocator<char> TStringAllocator;
-typedef std::basic_string <char, std::char_traits<char>, TStringAllocator > TString;
+typedef std::basic_string <char, std::char_traits<char>, TStringAllocator> TString;
 inline TString* NewPoolTString(const char* s)
 {
 	void* memory = GetThreadPoolAllocator().allocate(sizeof(TString));
@@ -103,6 +103,8 @@ inline TString* NewPoolTString(const char* s)
 //
 template <class T> class TVector : public std::vector<T, pool_allocator<T> > {
 public:
+    POOL_ALLOCATOR_NEW_DELETE(GetThreadPoolAllocator())
+
     typedef typename std::vector<T, pool_allocator<T> >::size_type size_type;
     TVector() : std::vector<T, pool_allocator<T> >() {}
     TVector(const pool_allocator<T>& a) : std::vector<T, pool_allocator<T> >(a) {}

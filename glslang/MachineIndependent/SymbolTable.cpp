@@ -198,7 +198,7 @@ void TSymbolTableLevel::relateToOperator(const char* name, TOperator op)
     while (candidate != level.end()) {
         const TString& candidateName = (*candidate).first;
         TString::size_type parenAt = candidateName.find_first_of('(');
-        if (parenAt != candidateName.npos && candidateName.substr(0, parenAt) == name) {
+        if (parenAt != candidateName.npos && candidateName.compare(0, parenAt, name) == 0) {
             TFunction* function = (*candidate).second->getAsFunction();
             function->relateToOperator(op);
         } else

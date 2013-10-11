@@ -421,19 +421,20 @@ class TConstUnionArray {
 public:
     POOL_ALLOCATOR_NEW_DELETE(GetThreadPoolAllocator())
 
-    TConstUnionArray() { unionArray = 0; }
+    TConstUnionArray() : unionArray(0) { }
+    virtual ~TConstUnionArray() { }
 
     explicit TConstUnionArray(int size)
     {
         if (size == 0)
             unionArray = 0;
         else
-            unionArray = new TVector<TConstUnion>(size);
+            unionArray =  new TConstUnionVector(size);
     }
     TConstUnionArray(const TConstUnionArray& a) : unionArray(a.unionArray) { }
     TConstUnionArray(const TConstUnionArray& a, int start, int size)
     {
-        unionArray = new TVector<TConstUnion>(size);
+        unionArray = new TConstUnionVector(size);
         for (int i = 0; i < size; ++i)
             (*unionArray)[i] = a[start + i];
     }
@@ -441,7 +442,7 @@ public:
     // Use this constructor for a smear operation
     TConstUnionArray(int size, const TConstUnion& val)
     {
-        unionArray = new TVector<TConstUnion>(size, val);
+        unionArray = new TConstUnionVector(size, val);
     }
 
     TConstUnion& operator[](int index) { return (*unionArray)[index]; }
@@ -462,7 +463,8 @@ public:
     bool empty() const { return unionArray == 0; }
 
 protected:
-    TVector<TConstUnion>* unionArray;
+    typedef TVector<TConstUnion> TConstUnionVector;
+    TConstUnionVector* unionArray;
 };
 
 } // end namespace glslang

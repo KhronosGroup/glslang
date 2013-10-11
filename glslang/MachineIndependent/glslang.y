@@ -800,7 +800,7 @@ block_structure
 
 identifier_list
     : COMMA IDENTIFIER {
-        $$ = NewPoolTIdentifierList();
+        $$ = new TIdentifierList;
         $$->push_back($2.string);
     }
     | identifier_list COMMA IDENTIFIER {
@@ -1291,12 +1291,12 @@ type_specifier
 array_specifier
     : LEFT_BRACKET RIGHT_BRACKET {
         $$.loc = $1.loc;
-        $$.arraySizes = NewPoolTArraySizes();
+        $$.arraySizes = new TArraySizes;
         $$.arraySizes->setSize(0);
     }
     | LEFT_BRACKET constant_expression RIGHT_BRACKET {
         $$.loc = $1.loc;
-        $$.arraySizes = NewPoolTArraySizes();
+        $$.arraySizes = new TArraySizes;
 
         int size;
         parseContext.arraySizeCheck($2->getLoc(), $2, size);
@@ -2051,7 +2051,7 @@ struct_declaration
 
 struct_declarator_list
     : struct_declarator {
-        $$ = NewPoolTTypeList();
+        $$ = new TTypeList;
         $$->push_back($1);
     }
     | struct_declarator_list COMMA struct_declarator {

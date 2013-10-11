@@ -254,7 +254,7 @@ bool SetConfigFile(const std::string& name)
     if (name.size() < 5)
         return false;
 
-    if (name.substr(name.size() - 5, std::string::npos) == ".conf") {
+    if (name.compare(name.size() - 5, 5, ".conf") == 0) {
         ConfigFile = name;
         return true;
     }

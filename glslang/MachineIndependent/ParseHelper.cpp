@@ -1204,7 +1204,7 @@ void TParseContext::globalCheck(TSourceLoc loc, bool global, const char* token)
 bool TParseContext::reservedErrorCheck(TSourceLoc loc, const TString& identifier)
 {
     if (! symbolTable.atBuiltInLevel()) {
-        if (identifier.substr(0, 3) == TString("gl_")) {
+        if (identifier.compare(0, 3, "gl_") == 0) {
             error(loc, "reserved built-in name", "gl_", "");
 
             return true;
@@ -1826,7 +1826,7 @@ void TParseContext::nonInitConstCheck(TSourceLoc loc, TString& identifier, TType
 //
 TVariable* TParseContext::redeclareBuiltin(TSourceLoc loc, const TString& identifier, bool& newDeclaration)
 {
-    if (profile == EEsProfile || identifier.substr(0, 3) != TString("gl_") || symbolTable.atBuiltInLevel())
+    if (profile == EEsProfile || identifier.compare(0, 3, "gl_") != 0 || symbolTable.atBuiltInLevel())
         return 0;
 
     // Potentially redeclaring a built-in variable...
@@ -2416,7 +2416,7 @@ void TParseContext::addBlock(TSourceLoc loc, TTypeList& typeList, const TString*
 
     // make an anonymous variable if no name was provided
     if (! instanceName)
-        instanceName = new TString("");
+        instanceName = NewPoolTString("");
 
     TVariable* variable = new TVariable(instanceName, blockType);
     if (! symbolTable.insert(*variable)) {

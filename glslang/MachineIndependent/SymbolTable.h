@@ -85,7 +85,7 @@ public:
     virtual ~TSymbol() { }
 
     const TString& getName() const { return *name; }
-    void changeName(const char* buf) { name = new TString(buf); }
+    void changeName(const TString* newName) { name = newName; }
     virtual const TString& getMangledName() const { return getName(); }
     virtual TFunction* getAsFunction() { return 0; }
     virtual const TFunction* getAsFunction() const { return 0; }
@@ -257,7 +257,7 @@ public:
             // Give it a name and insert its members in the symbol table, pointing to the container.
             char buf[20];
             snprintf(buf, 20, "__anon__%d", anonId++);
-            symbol.changeName(buf);
+            symbol.changeName(NewPoolTString(buf));
 
             bool isOkay = true;
             const TTypeList& types = *symbol.getAsVariable()->getType().getStruct();
@@ -307,7 +307,7 @@ public:
         if (candidate != level.end()) {
             const TString& candidateName = (*candidate).first;
             TString::size_type parenAt = candidateName.find_first_of('(');
-            if (parenAt != candidateName.npos && candidateName.substr(0, parenAt) == name)
+            if (parenAt != candidateName.npos && candidateName.compare(0, parenAt, name) == 0)
 
                 return true;
         }

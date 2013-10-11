@@ -150,19 +150,7 @@ struct TTypeLoc {
 };
 typedef TVector<TTypeLoc> TTypeList;
 
-inline TTypeList* NewPoolTTypeList()
-{
-	void* memory = GetThreadPoolAllocator().allocate(sizeof(TTypeList));
-	return new(memory) TTypeList;
-}
-
 typedef TVector<TString*> TIdentifierList;
-
-inline TIdentifierList* NewPoolTIdentifierList()
-{
-    void* memory = GetThreadPoolAllocator().allocate(sizeof(TIdentifierList));
-    return new(memory) TIdentifierList;
-}
 
 //
 // TODO: memory: TArraySizes can be replaced by something smaller.
@@ -175,6 +163,8 @@ inline TIdentifierList* NewPoolTIdentifierList()
 // is used, it will be containing at least one size.
 
 struct TArraySizes {
+    POOL_ALLOCATOR_NEW_DELETE(GetThreadPoolAllocator())
+
     TArraySizes() : maxArraySize(0) { }
     int getSize() { return sizes.front(); }  // TArraySizes only exists if there is at least one dimension
     void setSize(int s) { sizes.push_back(s); }
@@ -184,12 +174,6 @@ protected:
     friend class TType;
     int maxArraySize; // for tracking maximum referenced index, before an explicit size is given
 };
-
-inline TArraySizes* NewPoolTArraySizes()
-{
-    void* memory = GetThreadPoolAllocator().allocate(sizeof(TArraySizes));
-    return new(memory) TArraySizes;
-}
 
 //
 // TPublicType (coming up after some dependent declarations)
@@ -484,12 +468,12 @@ public:
         shallowCopy(copyOf);
 
         if (arraySizes) {
-            arraySizes = NewPoolTArraySizes();
+            arraySizes = new TArraySizes;
             *arraySizes = *copyOf.arraySizes;
         }
 
 		if (structure) {
-			structure = NewPoolTTypeList();
+			structure = new TTypeList;
     		TStructureMapIterator iter;
 			for (unsigned int i = 0; i < copyOf.structure->size(); ++i) {
 				TTypeLoc typeLoc;
@@ -604,7 +588,7 @@ public:
     void setArraySizes(TArraySizes* s)
     {
         // For when we don't want distinct types sharing the same descriptor.
-        arraySizes = NewPoolTArraySizes();
+        arraySizes = new TArraySizes;
         *arraySizes = *s;
     }
     void setArraySizes(const TType& type) { setArraySizes(type.arraySizes); }
