@@ -208,6 +208,7 @@ protected:
     static const int maxSamplerIndex = EsdNumDims * (EbtNumTypes * (2 * 2)); // see computeSamplerTypeIndex()
     TPrecisionQualifier defaultSamplerPrecision[maxSamplerIndex];
     bool afterEOF;
+    TQualifier globalBufferDefaults;
     TQualifier globalUniformDefaults;
     TQualifier globalInputDefaults;
     TQualifier globalOutputDefaults;

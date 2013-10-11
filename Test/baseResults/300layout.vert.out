@@ -6,8 +6,8 @@ ERROR: 0:12: 'badm4' : cannot specify packing on a variable declaration
 ERROR: 0:15: 'badf' : member of uniform block cannot have an auxiliary or interpolation qualifier 
 ERROR: 0:15: 'badg' : member storage qualifier cannot contradict block storage qualifier 
 ERROR: 0:28: 'T3' : nameless block contains a member that already has a name at global scope 
-ERROR: 0:35: 'badout' : only uniform interface blocks are supported 
-ERROR: 0:39: 'badout' : can only use location layout qualifier on a vertex input or fragment output 
+ERROR: 0:35: 'in/out block' : not supported with this profile: es
+ERROR: 0:39: 'badoutA' : can only use location layout qualifier on a vertex input or fragment output 
 ERROR: 0:47: 'shared' : not supported with this profile: es
 ERROR: 0:47: 'shared' : not supported in this stage: vertex
 ERROR: 12 compilation errors.  No code generated.
@@ -62,7 +62,8 @@ ERROR: node is still EOpNull!
 0:?     'badm4' (layout(column_major shared ) uniform highp 4X4 matrix of float)
 0:?     'tblock' (layout(std140 ) uniform block)
 0:?     '__anon__0' (layout(shared ) uniform block)
-0:?     'badout' (layout(location=10 ) smooth out highp 4-component vector of float)
+0:?     '__anon__2' (out block)
+0:?     'badoutA' (layout(location=10 ) smooth out highp 4-component vector of float)
 0:?     'compute_only' (shared highp 4-component vector of float)
 0:?     'gl_VertexID' (gl_VertexId highp int)
 0:?     'gl_InstanceID' (gl_InstanceId highp int)

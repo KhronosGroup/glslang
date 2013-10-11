@@ -340,31 +340,28 @@ bool DeduceVersionProfile(TInfoSink& infoSink, EShLanguage stage, bool versionNo
     // Correct for stage type...
     switch (stage) {
     case EShLangGeometry:
-        if (version < 150 || profile == EEsProfile) {
+        if (version < 150 || (profile != ECoreProfile && profile != ECompatibilityProfile)) {
             correct = false;
             infoSink.info.message(EPrefixError, "#version: geometry shaders require non-es profile and version 150 or above");
             version = 150;
-            if (profile == EEsProfile)
-                profile = ECoreProfile;
+            profile = ECoreProfile;
         }
         break;
     case EShLangTessControl:
     case EShLangTessEvaluation:
-        if (version < 400 || profile == EEsProfile) {
+        if (version < 400 || (profile != ECoreProfile && profile != ECompatibilityProfile)) {
             correct = false;
             infoSink.info.message(EPrefixError, "#version: tessellation shaders require non-es profile and version 400 or above");
             version = 400;
-            if (profile == EEsProfile)
-                profile = ECoreProfile;
+            profile = ECoreProfile;
         }
         break;
     case EShLangCompute:
-        if (version < 430 || profile == EEsProfile) {
+        if (version < 430 || (profile != ECoreProfile && profile != ECompatibilityProfile)) {
             correct = false;
             infoSink.info.message(EPrefixError, "#version: compute shaders require non-es profile and version 430 or above");
             version = 430;
-            if (profile == EEsProfile)
-                profile = ECoreProfile;
+            profile = ECoreProfile;
         }
         break;
     default:

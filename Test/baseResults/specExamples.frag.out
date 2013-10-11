@@ -4,9 +4,7 @@ ERROR: 0:20: '' : numeric literal too big
 ERROR: 0:21: '' : hexidecimal literal too big 
 ERROR: 0:37: 'view' : redefinition 
 ERROR: 0:68: 'lightPosition' : redefinition 
-ERROR: 0:71: 'Material' : only uniform interface blocks are supported 
-ERROR: 0:79: 'Light' : only uniform interface blocks are supported 
-ERROR: 0:83: 'ColoredTexture' : only uniform interface blocks are supported 
+ERROR: 0:71: 'Atten' : member storage qualifier cannot contradict block storage qualifier 
 ERROR: 0:87: 'Color' : redefinition 
 ERROR: 0:92: 'origin_upper_left' : unrecognized layout identifier 
 ERROR: 0:93: 'pixel_center_integer' : unrecognized layout identifier 
@@ -54,7 +52,7 @@ ERROR: 0:226: 'in' : only allowed at global scope
 ERROR: 0:227: 'in' : only allowed at global scope 
 ERROR: 0:228: 'in' : only allowed at global scope 
 ERROR: 0:232: 'out' : only allowed at global scope 
-ERROR: 55 compilation errors.  No code generated.
+ERROR: 53 compilation errors.  No code generated.
 
 ERROR: node is still EOpNull!
 0:5  Sequence
@@ -265,6 +263,9 @@ ERROR: node is still EOpNull!
 0:?       0.700000
 0:?       0.700000
 0:?       0.200000
+0:?     '__anon__0' (in block)
+0:?     '__anon__1' (in block)
+0:?     'Materiala' (in block)
 0:?     'gl_FragCoord' (gl_FragCoord 4-component vector of float)
 0:?     'factor' (layout(location=3 ) out 4-component vector of float)
 0:?     'colors' (layout(location=2 ) out 3-element array of 4-component vector of float)

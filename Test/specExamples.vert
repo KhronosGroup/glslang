@@ -108,8 +108,8 @@ flat out vec4 gl_FrontColor;  // output from geometry shader
 
 invariant gl_Position;   // make existing gl_Position be invariant
 
-out vec3 Color;
-invariant Color;         // make existing Color be invariant
+out vec3 ColorInv;
+invariant ColorIvn;      // make existing Color be invariant
 
 invariant centroid out vec3 Color4;
 precise out vec4 position;
@@ -124,9 +124,9 @@ coherent buffer Block {
     vec4 member2;
 };
 
-buffer Block2 {
-    coherent readonly vec4 member1;
-    coherent vec4 member2;
+buffer Block2a {
+    coherent readonly vec4 member1A;
+    coherent vec4 member2A;
 };
 
 shared vec4 shv;

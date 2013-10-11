@@ -71,7 +71,7 @@ uniform vec3 color = vec3(0.7, 0.7, 0.2);  // value assigned at link time
 in Material {
     smooth in vec4 Color1; // legal, input inside in block
     smooth vec4 Color2;    // legal, 'in' inherited from 'in Material'
-    vec2 TexCoord;         // legal, TexCoord is an input
+    vec2 TexCoordA;        // legal, TexCoord is an input
     uniform float Atten;   // illegal, mismatched  storage qualifier
 
 };
@@ -83,7 +83,7 @@ in Light {
 in ColoredTexture {
     vec4 Color;
     vec2 TexCoord;        
-} Material;            // instance name
+} Materiala;           // instance name
 vec3 Color;            // different Color than Material.Color
 
 in vec4 gl_FragCoord;     // redeclaration that changes nothing is allowed

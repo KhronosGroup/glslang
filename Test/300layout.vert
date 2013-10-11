@@ -36,7 +36,7 @@ out badout {  // ERROR
     float f;
 };
 
-layout (location = 10) out vec4 badout;  // ERROR
+layout (location = 10) out vec4 badoutA;  // ERROR
 
 void main()
 {

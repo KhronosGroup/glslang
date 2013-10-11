@@ -97,6 +97,10 @@ TParseContext::TParseContext(TSymbolTable& symt, TIntermediate& interm, bool pb,
     globalUniformDefaults.layoutMatrix = ElmColumnMajor;
     globalUniformDefaults.layoutPacking = ElpShared;
 
+    globalBufferDefaults.clear();
+    globalBufferDefaults.layoutMatrix = ElmColumnMajor;
+    globalBufferDefaults.layoutPacking = ElpShared;
+
     globalInputDefaults.clear();
 
     globalOutputDefaults.clear();
@@ -2356,12 +2360,21 @@ void TParseContext::addBlock(TSourceLoc loc, TTypeList& typeList, const TString*
     if (profile == EEsProfile && arraySizes)
         arraySizeRequiredCheck(loc, arraySizes->getSize());
 
-    if (currentBlockDefaults.storage == EvqUniform) {
-        requireProfile(loc, ~ENoProfile, "uniform block");
+    switch (currentBlockDefaults.storage) {
+    case EvqBuffer:
+        requireProfile(loc, ECoreProfile | ECompatibilityProfile, "buffer block");
+        profileRequires(loc, ECoreProfile | ECompatibilityProfile, 430, 0, "buffer block");
+        break;
+    case EvqUniform:
         profileRequires(loc, EEsProfile, 300, 0, "uniform block");
-    } else {
-        error(loc, "only uniform interface blocks are supported", blockName->c_str(), "");
-
+        profileRequires(loc, ENoProfile, 140, 0, "uniform block");
+        break;
+    case EvqIn:
+    case EvqOut:
+        requireProfile(loc, ECoreProfile | ECompatibilityProfile, "in/out block");
+        break;
+    default:
+        error(loc, "only uniform, in, or out interface blocks are supported", blockName->c_str(), "");
         return;
     }
 
@@ -2384,6 +2397,7 @@ void TParseContext::addBlock(TSourceLoc loc, TTypeList& typeList, const TString*
 
     TQualifier defaultQualification;
     switch (currentBlockDefaults.storage) {
+    case EvqBuffer:   defaultQualification = globalBufferDefaults;     break;
     case EvqUniform:  defaultQualification = globalUniformDefaults;    break;
     case EvqIn:       defaultQualification = globalInputDefaults;      break;
     case EvqOut:      defaultQualification = globalOutputDefaults;     break;
@@ -2471,6 +2485,12 @@ void TParseContext::addQualifierToExisting(TSourceLoc loc, TQualifier qualifier,
 void TParseContext::updateQualifierDefaults(TQualifier qualifier)
 {
     switch (qualifier.storage) {
+    case EvqBuffer:
+        if (qualifier.layoutMatrix != ElmNone)
+            globalBufferDefaults.layoutMatrix = qualifier.layoutMatrix;
+        if (qualifier.layoutPacking != ElpNone)
+            globalBufferDefaults.layoutPacking = qualifier.layoutPacking;
+        break;
     case EvqUniform:
         if (qualifier.layoutMatrix != ElmNone)
             globalUniformDefaults.layoutMatrix = qualifier.layoutMatrix;
