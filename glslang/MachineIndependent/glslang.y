@@ -2278,10 +2278,10 @@ iteration_statement
       for_init_statement for_rest_statement RIGHT_PAREN statement_no_new_scope {
         parseContext.symbolTable.pop(&parseContext.defaultPrecision[0]);
         $$ = parseContext.intermediate.makeAggregate($4, $2.loc);
-        $$ = parseContext.intermediate.growAggregate(
-                $$,
-                parseContext.intermediate.addLoop($7, reinterpret_cast<TIntermTyped*>($5.node1), reinterpret_cast<TIntermTyped*>($5.node2), true, $1.loc),
-                $1.loc);
+        TIntermLoop* forLoop = parseContext.intermediate.addLoop($7, reinterpret_cast<TIntermTyped*>($5.node1), reinterpret_cast<TIntermTyped*>($5.node2), true, $1.loc);
+        if (! parseContext.limits.nonInductiveForLoops)
+            parseContext.inductiveLoopCheck($1.loc, $4, forLoop);
+        $$ = parseContext.intermediate.growAggregate($$, forLoop, $1.loc);
         $$->getAsAggregate()->setOperator(EOpSequence);
         --parseContext.loopNestingLevel;
     }

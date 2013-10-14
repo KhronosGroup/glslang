@@ -154,7 +154,16 @@ bool TParseContext::parseShaderStrings(TPpContext& ppContext, char* strings[], s
             return true;
     }
 
+    anyIndexLimits = ! limits.generalAttributeMatrixVectorIndexing ||
+                     ! limits.generalConstantMatrixVectorIndexing ||
+                     ! limits.generalSamplerIndexing ||
+                     ! limits.generalUniformIndexing ||
+                     ! limits.generalVariableIndexing ||
+                     ! limits.generalVaryingIndexing;
+
     yyparse((void*)this);
+
+    finalize();
 
     return numErrors == 0;
 }
@@ -510,6 +519,23 @@ TIntermTyped* TParseContext::handleBracketDereference(TSourceLoc loc, TIntermTyp
             newType.getQualifier().storage = EvqConst;
         newType.dereference();
         result->setType(newType);
+
+        if (anyIndexLimits) {
+            // for ES 2.0 (version 100) limitations for almost all index operations except vertex-shader uniforms
+            if ((! limits.generalSamplerIndexing && base->getBasicType() == EbtSampler) ||
+                (! limits.generalUniformIndexing && base->getQualifier().isUniform() && language != EShLangVertex) ||
+                (! limits.generalAttributeMatrixVectorIndexing && base->getQualifier().isPipeInput() && language == EShLangVertex && (base->getType().isMatrix() || base->getType().isVector())) ||
+                (! limits.generalConstantMatrixVectorIndexing && base->getAsConstantUnion()) ||
+                (! limits.generalVariableIndexing && ! base->getType().getQualifier().isUniform() && 
+                                                     ! base->getType().getQualifier().isPipeInput() && 
+                                                     ! base->getType().getQualifier().isPipeOutput() &&
+                                                       base->getType().getQualifier().storage != EvqConst) ||
+                (! limits.generalVaryingIndexing && (base->getType().getQualifier().isPipeInput() || 
+                                                     base->getType().getQualifier().isPipeOutput()))) {            
+                // it's too early to know what the inductive variables are, save it for post processing
+                needsIndexLimitationChecking.push_back(index);
+            }
+        }
     }
 
     return result;
@@ -1912,6 +1938,133 @@ void TParseContext::arrayObjectCheck(TSourceLoc loc, const TType& type, const ch
         profileRequires(loc, ENoProfile, 120, GL_3DL_array_objects, op);
         profileRequires(loc, EEsProfile, 300, 0, op);
     }
+}
+
+//
+// See if this loop satisfies the limitations for ES 2.0 (version 100) for loops in Appendex A:
+//
+// "The loop index has type int or float.
+//
+// "The for statement has the form:
+//     for ( init-declaration ; condition ; expression ) 
+//     init-declaration has the form: type-specifier identifier = constant-expression
+//     condition has the form:  loop-index relational_operator constant-expression
+//         where relational_operator is one of: > >= < <= == or !=
+//     expression [sic] has one of the following forms:
+//         loop-index++
+//         loop-index--
+//         loop-index += constant-expression
+//         loop-index -= constant-expression
+//
+// The body is handled in an AST traversal.
+//
+void TParseContext::inductiveLoopCheck(TSourceLoc loc, TIntermNode* init, TIntermLoop* loop)
+{
+    // loop index init must exist and be a declaration, which shows up in the AST as an aggregate of size 1 of the declaration
+    bool badInit = false;
+    if (! init || ! init->getAsAggregate() || ! init->getAsAggregate()->getSequence().size() == 1)
+        badInit = true;
+    TIntermBinary* binaryInit;
+    if (! badInit) {
+        // get the declaration assignment
+        binaryInit = init->getAsAggregate()->getSequence()[0]->getAsBinaryNode();
+        if (! binaryInit)
+            badInit = true;
+    }
+    if (badInit) {
+        error(loc, "inductive-loop init-declaration requires the form \"type-specifier loop-index = constant-expression\"", "limitations", "");
+        return;
+    }
+
+    // loop index must be type int or float
+    if (! binaryInit->getType().isScalar() || (binaryInit->getBasicType() != EbtInt && binaryInit->getBasicType() != EbtFloat)) {
+        error(loc, "inductive loop requires a scalar 'int' or 'float' loop index", "limitations", "");
+        return;
+    }
+
+    // init is the form "loop-index = constant"
+    if (binaryInit->getOp() != EOpAssign || ! binaryInit->getLeft()->getAsSymbolNode() || ! binaryInit->getRight()->getAsConstantUnion()) {
+        error(loc, "inductive-loop init-declaration requires the form \"type-specifier loop-index = constant-expression\"", "limitations", "");
+        return;
+    }
+    
+    // get the unique id of the loop index
+    int loopIndex = binaryInit->getLeft()->getAsSymbolNode()->getId();
+    inductiveLoopIds.insert(loopIndex);
+    
+    // condition's form must be "loop-index relational-operator constant-expression"
+    bool badCond = ! loop->getTest();
+    if (! badCond) {
+        TIntermBinary* binaryCond = loop->getTest()->getAsBinaryNode();
+        badCond = ! binaryCond;
+        if (! badCond) {
+            switch (binaryCond->getOp()) {
+            case EOpGreaterThan:
+            case EOpGreaterThanEqual:
+            case EOpLessThan:
+            case EOpLessThanEqual:
+            case EOpEqual:
+            case EOpNotEqual:
+                break;
+            default:
+                badCond = true;
+            }
+        }
+        if (binaryCond && (! binaryCond->getLeft()->getAsSymbolNode() ||
+                           binaryCond->getLeft()->getAsSymbolNode()->getId() != loopIndex ||
+                           ! binaryCond->getRight()->getAsConstantUnion()))
+            badCond = true;
+    }
+    if (badCond) {
+        error(loc, "inductive-loop condition requires the form \"loop-index <comparison-op> constant-expression\"", "limitations", "");
+        return;
+    }
+
+    // loop-index++
+    // loop-index--
+    // loop-index += constant-expression
+    // loop-index -= constant-expression
+    bool badTerminal = ! loop->getTerminal();
+    if (! badTerminal) {
+        TIntermUnary* unaryTerminal = loop->getTerminal()->getAsUnaryNode();
+        TIntermBinary* binaryTerminal = loop->getTerminal()->getAsBinaryNode();
+        if (unaryTerminal || binaryTerminal) {
+            switch(loop->getTerminal()->getAsOperator()->getOp()) {
+            case EOpPostDecrement:
+            case EOpPostIncrement:
+            case EOpAddAssign:
+            case EOpSubAssign:
+                break;
+            default:
+                badTerminal = true;
+            }
+        } else
+            badTerminal = true;
+        if (binaryTerminal && (! binaryTerminal->getLeft()->getAsSymbolNode() ||
+                               binaryTerminal->getLeft()->getAsSymbolNode()->getId() != loopIndex ||
+                               ! binaryTerminal->getRight()->getAsConstantUnion()))
+            badTerminal = true;
+        if (unaryTerminal && (! unaryTerminal->getOperand()->getAsSymbolNode() ||
+                              unaryTerminal->getOperand()->getAsSymbolNode()->getId() != loopIndex))
+            badTerminal = true;
+    }
+    if (badTerminal) {
+        error(loc, "inductive-loop termination requires the form \"loop-index++, loop-index--, loop-index += constant-expression, or loop-index -= constant-expression\"", "limitations", "");
+        return;
+    }
+
+    // the body
+    inductiveLoopBodyCheck(loop->getBody(), loopIndex, symbolTable);
+}
+
+//
+// Do any additional error checking, etc., once we know the parsing is done.
+//
+void TParseContext::finalize()
+{
+    // Check on array indexes for ES 2.0 (version 100) limitations.
+    for (size_t i = 0; i < needsIndexLimitationChecking.size(); ++i)
+        constantIndexExpressionCheck(needsIndexLimitationChecking[i]);
 }
 
 //

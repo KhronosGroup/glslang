@@ -316,6 +316,7 @@ enum TOperator {
 };
 
 class TIntermTraverser;
+class TIntermOperator;
 class TIntermAggregate;
 class TIntermUnary;
 class TIntermBinary;
@@ -342,16 +343,17 @@ public:
     virtual glslang::TSourceLoc getLoc() const { return loc; }
     virtual void setLoc(glslang::TSourceLoc l) { loc = l; }
     virtual void traverse(glslang::TIntermTraverser*) = 0;
-    virtual glslang::TIntermTyped*     getAsTyped()         { return 0; }
-    virtual glslang::TIntermConstantUnion*     getAsConstantUnion()         { return 0; }
-    virtual glslang::TIntermAggregate* getAsAggregate()     { return 0; }
-    virtual glslang::TIntermUnary*     getAsUnaryNode()     { return 0; }
-    virtual glslang::TIntermBinary*    getAsBinaryNode()    { return 0; }
-    virtual glslang::TIntermSelection* getAsSelectionNode() { return 0; }
-    virtual glslang::TIntermSwitch*    getAsSwitchNode()    { return 0; }
-    virtual glslang::TIntermMethod*    getAsMethodNode()    { return 0; }
-    virtual glslang::TIntermSymbol*    getAsSymbolNode()    { return 0; }
-    virtual glslang::TIntermBranch*    getAsBranchNode()    { return 0; }
+    virtual glslang::TIntermTyped*         getAsTyped()         { return 0; }
+    virtual glslang::TIntermOperator*      getAsOperator()      { return 0; }
+    virtual glslang::TIntermConstantUnion* getAsConstantUnion() { return 0; }
+    virtual glslang::TIntermAggregate*     getAsAggregate()     { return 0; }
+    virtual glslang::TIntermUnary*         getAsUnaryNode()     { return 0; }
+    virtual glslang::TIntermBinary*        getAsBinaryNode()    { return 0; }
+    virtual glslang::TIntermSelection*     getAsSelectionNode() { return 0; }
+    virtual glslang::TIntermSwitch*        getAsSwitchNode()    { return 0; }
+    virtual glslang::TIntermMethod*        getAsMethodNode()    { return 0; }
+    virtual glslang::TIntermSymbol*        getAsSymbolNode()    { return 0; }
+    virtual glslang::TIntermBranch*        getAsBranchNode()    { return 0; }
     virtual ~TIntermNode() { }
 protected:
     glslang::TSourceLoc loc;
@@ -478,7 +480,7 @@ public:
     TIntermConstantUnion(const TConstUnionArray& ua, const TType& t) : TIntermTyped(t), unionArray(ua) { }
     const TConstUnionArray& getConstArray() const { return unionArray; }
     virtual TIntermConstantUnion* getAsConstantUnion()  { return this; }
-    virtual void traverse(TIntermTraverser* );
+    virtual void traverse(TIntermTraverser*);
     virtual TIntermTyped* fold(TOperator, TIntermTyped*);
     virtual TIntermTyped* fold(TOperator, const TType&);
 protected:
@@ -490,6 +492,7 @@ protected:
 //
 class TIntermOperator : public TIntermTyped {
 public:
+    TIntermOperator* getAsOperator() { return this; }
     TOperator getOp() { return op; }
     bool modifiesState() const;
     bool isConstructor() const;

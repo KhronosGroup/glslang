@@ -53,6 +53,8 @@ struct TPragma {
 class TScanContext;
 class TPpContext;
 
+typedef std::set<int> TIdSetType;
+
 //
 // The following are extra variables needed during parsing, grouped together so
 // they can be passed to the parser without needing a global.
@@ -116,6 +118,9 @@ public:
     void nestedBlockCheck(TSourceLoc);
     void nestedStructCheck(TSourceLoc);
     void arrayObjectCheck(TSourceLoc, const TType&, const char* op);
+    void inductiveLoopCheck(TSourceLoc, TIntermNode* init, TIntermLoop* loop);
+    void inductiveLoopBodyCheck(TIntermNode*, int loopIndexId, TSymbolTable&);
+    void constantIndexExpressionCheck(TIntermNode*);
 
     void setLayoutQualifier(TSourceLoc, TPublicType&, TString&);
     void setLayoutQualifier(TSourceLoc, TPublicType&, TString&, int);
@@ -167,6 +172,7 @@ protected:
     void declareArray(TSourceLoc, TString& identifier, const TType&, TSymbol*&, bool& newDeclaration);
     TIntermNode* executeInitializer(TSourceLoc, TString& identifier, TIntermTyped* initializer, TVariable* variable);
     TOperator mapTypeToConstructorOp(const TType&);
+    void finalize();
 
 public:
     //
@@ -213,6 +219,9 @@ protected:
     TQualifier globalInputDefaults;
     TQualifier globalOutputDefaults;
     TString currentCaller;
+    TIdSetType inductiveLoopIds;
+    bool anyIndexLimits;
+    TVector<TIntermTyped*> needsIndexLimitationChecking;
     // TODO: desktop functionality: track use of gl_FragDepth before redeclaration
 };
 

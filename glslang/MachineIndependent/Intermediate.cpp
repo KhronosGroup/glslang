@@ -809,11 +809,11 @@ TIntermTyped* TIntermediate::addSwizzle(TVectorFields& fields, TSourceLoc loc)
 //
 // Create loop nodes.
 //
-TIntermNode* TIntermediate::addLoop(TIntermNode* body, TIntermTyped* test, TIntermTyped* terminal, bool testFirst, TSourceLoc loc)
+TIntermLoop* TIntermediate::addLoop(TIntermNode* body, TIntermTyped* test, TIntermTyped* terminal, bool testFirst, TSourceLoc loc)
 {
-    TIntermNode* node = new TIntermLoop(body, test, terminal, testFirst);
+    TIntermLoop* node = new TIntermLoop(body, test, terminal, testFirst);
     node->setLoc(loc);
-    
+
     return node;
 }
 

@@ -156,6 +156,7 @@ xcopy /y $(IntDir)$(TargetName)$(TargetExt) Test</Command>
     </ClCompile>
     <ClCompile Include="glslang\MachineIndependent\InfoSink.cpp" />
     <ClCompile Include="glslang\MachineIndependent\Initialize.cpp" />
+    <ClCompile Include="glslang\MachineIndependent\limits.cpp" />
     <ClCompile Include="glslang\MachineIndependent\preprocessor\Pp.cpp" />
     <ClCompile Include="glslang\MachineIndependent\preprocessor\PpAtom.cpp" />
     <ClCompile Include="glslang\MachineIndependent\preprocessor\PpMemory.cpp" />

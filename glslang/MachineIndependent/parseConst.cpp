@@ -45,7 +45,7 @@ class TConstTraverser : public TIntermTraverser {
 public:
     TConstTraverser(const TConstUnionArray& cUnion, bool singleConstParam, TOperator constructType, const TType& t) : unionArray(cUnion), type(t),
         constructorType(constructType), singleConstantParam(singleConstParam), error(false), isMatrix(false), 
-        matrixCols(0), matrixRows(0) {  index = 0; tOp = EOpNull;}
+        matrixCols(0), matrixRows(0) {  index = 0; tOp = EOpNull; }
     int index;
     TConstUnionArray unionArray;
     TOperator tOp;
@@ -170,7 +170,7 @@ void ParseConstantUnion(TIntermConstantUnion* node, TIntermTraverser* it)
     }
 }
 
-bool TIntermediate::parseConstTree(TSourceLoc line, TIntermNode* root, TConstUnionArray unionArray, TOperator constructorType, const TType& t, bool singleConstantParam)
+bool TIntermediate::parseConstTree(TIntermNode* root, TConstUnionArray unionArray, TOperator constructorType, const TType& t, bool singleConstantParam)
 {
     if (root == 0)
         return false;

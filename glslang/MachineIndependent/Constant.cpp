@@ -713,9 +713,9 @@ TIntermTyped* TIntermediate::foldConstructor(TIntermAggregate* aggrNode)
 
     TConstUnionArray unionArray(aggrNode->getType().getObjectSize());
     if (aggrNode->getSequence().size() == 1)
-        error = parseConstTree(aggrNode->getLoc(), aggrNode, unionArray, aggrNode->getOp(), aggrNode->getType(), true);
+        error = parseConstTree(aggrNode, unionArray, aggrNode->getOp(), aggrNode->getType(), true);
     else
-        error = parseConstTree(aggrNode->getLoc(), aggrNode, unionArray, aggrNode->getOp(), aggrNode->getType());
+        error = parseConstTree(aggrNode, unionArray, aggrNode->getOp(), aggrNode->getType());
 
     if (error)
         return aggrNode;

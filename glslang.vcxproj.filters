@@ -109,6 +109,9 @@
     <ClCompile Include="glslang\MachineIndependent\preprocessor\PpContext.cpp">
       <Filter>Machine Independent\Preprocessor</Filter>
     </ClCompile>
+    <ClCompile Include="glslang\MachineIndependent\limits.cpp">
+      <Filter>Machine Independent</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="glslang\MachineIndependent\Initialize.h">
