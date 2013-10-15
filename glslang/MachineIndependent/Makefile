@@ -9,12 +9,12 @@ LIBOSDEPENDENT=./../OSDependent/Linux/libOssource.a
 LIBINITIALISATION=./../../OGLCompilersDLL/libInitializeDll.a
 LIBCODEGEN=./../GenericCodeGen/libCodeGen.a
 OBJECTS= Initialize.o IntermTraverse.o \
-	Intermediate.o ParseHelper.o PoolAlloc.o QualifierAlive.o \
+	Intermediate.o ParseHelper.o PoolAlloc.o \
 	RemoveTree.o ShaderLang.o intermOut.o parseConst.o SymbolTable.o \
-	InfoSink.o Versions.o Constant.o Scan.o limits.o
+	InfoSink.o Versions.o Constant.o Scan.o limits.o linkValidate.o
 
 SRCS= gen_glslang_tab.cpp Initialize.cpp IntermTraverse.cpp \
-	Intermediate.cpp ParseHelper.cpp PoolAlloc.cp QualifierAlive.cpp \
+	Intermediate.cpp ParseHelper.cpp PoolAlloc.cp \
 	RemoveTree.cpp ShaderLang.cpp SymbolTable.cpp intermOut.cpp \
 	parseConst.cpp InfoSink.cpp Versions.cpp Constant.cpp Scan.cpp
 CPPFLAGS=$(DEFINE) $(INCLUDE) -fPIC
@@ -98,7 +98,7 @@ Intermediate.o: localintermediate.h ../Include/intermediate.h
 Intermediate.o: ../Public/ShaderLang.h SymbolTable.h ../Include/Common.h
 Intermediate.o: ../Include/intermediate.h ../Include/Types.h
 Intermediate.o: ../Include/BaseTypes.h ../Include/ConstantUnion.h
-Intermediate.o: ../Include/InfoSink.h QualifierAlive.h RemoveTree.h
+Intermediate.o: ../Include/InfoSink.h RemoveTree.h
 ParseHelper.o: ParseHelper.h ../Include/ShHandle.h
 ParseHelper.o: ../Public/ShaderLang.h ../Include/InfoSink.h
 ParseHelper.o: ../Include/Common.h ../Include/PoolAlloc.h SymbolTable.h
@@ -109,7 +109,6 @@ ParseHelper.o: localintermediate.h ../Include/intermediate.h
 ParseHelper.o: ../Public/ShaderLang.h
 ParseHelper.o: ../OSDependent/Linux/osinclude.h
 ParseHelper.o: ../Include/InitializeGlobals.h ../Include/PoolAlloc.h
-QualifierAlive.o: ../Include/intermediate.h
 Scan.o: Scan.h
 Scan.o: ParseHelper.h SymbolTable.h
 Scan.o: glslang_tab.cpp.h
@@ -147,3 +146,4 @@ InfoSink.o: ../Include/InfoSink.h
 Versions.o: ParseHelper.h  Versions.h ../Include/ShHandle.h SymbolTable.h localintermediate.h
 Constant.o: localintermediate.h ../Include/intermediate.h ../Public/ShaderLang.h SymbolTable.h Versions.h
 limits.o:  ParseHelper.h
+linkValidate.o: localintermediate.h

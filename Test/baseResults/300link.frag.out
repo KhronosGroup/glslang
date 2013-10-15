@@ -1,0 +1,15 @@
+300link.frag
+
+0:? Sequence
+0:8  Function Definition: main( (void)
+0:8    Function Parameters: 
+0:?   Linker Objects
+0:?     'color1' (out highp 4-component vector of float)
+0:?     'color2' (out highp 4-component vector of float)
+
+
+Linked fragment stage:
+
+ERROR: Linking fragment stage: when more than one fragment shader output, all must have location qualifiers
+
+

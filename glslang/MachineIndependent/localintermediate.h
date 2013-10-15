@@ -107,14 +107,16 @@ public:
 	void removeTree();
 
 protected:
+    void error(TInfoSink& infoSink, const char*);
     void mergeBodies(TInfoSink&, TIntermSequence& globals, const TIntermSequence& unitGlobals);
     void mergeLinkerObjects(TInfoSink&, TIntermSequence& linkerObjects, const TIntermSequence& unitLinkerObjects);
-    void error(TInfoSink& infoSink, const char*);
-    void linkErrorCheck(TInfoSink&, const TIntermSymbol&, const TIntermSymbol&, bool crossStage);
+    void mergeErrorCheck(TInfoSink&, const TIntermSymbol&, const TIntermSymbol&, bool crossStage);
     void checkCallGraphCycles(TInfoSink&);
+    void inOutLocationCheck(TInfoSink&);
+    TIntermSequence& findLinkerObjects();
 
 protected:
-    EShLanguage language;
+    const EShLanguage language;
     TIntermNode* treeRoot;
     EProfile profile;
     int version;

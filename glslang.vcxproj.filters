@@ -49,9 +49,6 @@
     <ClCompile Include="glslang\MachineIndependent\PoolAlloc.cpp">
       <Filter>Machine Independent</Filter>
     </ClCompile>
-    <ClCompile Include="glslang\MachineIndependent\QualifierAlive.cpp">
-      <Filter>Machine Independent</Filter>
-    </ClCompile>
     <ClCompile Include="glslang\MachineIndependent\RemoveTree.cpp">
       <Filter>Machine Independent</Filter>
     </ClCompile>
@@ -112,15 +109,15 @@
     <ClCompile Include="glslang\MachineIndependent\limits.cpp">
       <Filter>Machine Independent</Filter>
     </ClCompile>
+    <ClCompile Include="glslang\MachineIndependent\linkValidate.cpp">
+      <Filter>Machine Independent</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="glslang\MachineIndependent\Initialize.h">
       <Filter>Machine Independent</Filter>
     </ClInclude>
     <ClInclude Include="glslang\MachineIndependent\ParseHelper.h">
-      <Filter>Machine Independent</Filter>
-    </ClInclude>
-    <ClInclude Include="glslang\MachineIndependent\QualifierAlive.h">
       <Filter>Machine Independent</Filter>
     </ClInclude>
     <ClInclude Include="glslang\MachineIndependent\RemoveTree.h">

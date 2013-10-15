@@ -1,0 +1,13 @@
+300link3.frag
+
+0:? Sequence
+0:7  Function Definition: main( (void)
+0:7    Function Parameters: 
+0:?   Linker Objects
+0:?     'color1' (out highp 4-component vector of float)
+
+
+Linked fragment stage:
+
+
+

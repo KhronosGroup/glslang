@@ -145,7 +145,7 @@ bool InitializeSymbolTable(const TString& builtIns, int version, EProfile profil
 
     if (! parseContext.parseShaderStrings(ppContext, const_cast<char**>(builtInShaders), builtInLengths, 1) != 0) {
         infoSink.info.message(EPrefixInternalError, "Unable to parse built-ins");
-        printf("Unable to parse built-ins\n");
+        printf("Unable to parse built-ins\n%s\n", infoSink.info.c_str());
 
         return false;
     }

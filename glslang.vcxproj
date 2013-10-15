@@ -157,6 +157,7 @@ xcopy /y $(IntDir)$(TargetName)$(TargetExt) Test</Command>
     <ClCompile Include="glslang\MachineIndependent\InfoSink.cpp" />
     <ClCompile Include="glslang\MachineIndependent\Initialize.cpp" />
     <ClCompile Include="glslang\MachineIndependent\limits.cpp" />
+    <ClCompile Include="glslang\MachineIndependent\linkValidate.cpp" />
     <ClCompile Include="glslang\MachineIndependent\preprocessor\Pp.cpp" />
     <ClCompile Include="glslang\MachineIndependent\preprocessor\PpAtom.cpp" />
     <ClCompile Include="glslang\MachineIndependent\preprocessor\PpMemory.cpp" />
@@ -171,7 +172,6 @@ xcopy /y $(IntDir)$(TargetName)$(TargetExt) Test</Command>
     <ClCompile Include="glslang\MachineIndependent\Intermediate.cpp" />
     <ClCompile Include="glslang\MachineIndependent\ParseHelper.cpp" />
     <ClCompile Include="glslang\MachineIndependent\PoolAlloc.cpp" />
-    <ClCompile Include="glslang\MachineIndependent\QualifierAlive.cpp" />
     <ClCompile Include="glslang\MachineIndependent\RemoveTree.cpp" />
     <ClCompile Include="glslang\MachineIndependent\ShaderLang.cpp" />
     <ClCompile Include="glslang\MachineIndependent\SymbolTable.cpp" />
@@ -192,7 +192,6 @@ xcopy /y $(IntDir)$(TargetName)$(TargetExt) Test</Command>
     <ClInclude Include="glslang\MachineIndependent\ParseHelper.h" />
     <ClInclude Include="glslang\MachineIndependent\preprocessor\PpContext.h" />
     <ClInclude Include="glslang\MachineIndependent\preprocessor\PpTokens.h" />
-    <ClInclude Include="glslang\MachineIndependent\QualifierAlive.h" />
     <ClInclude Include="glslang\MachineIndependent\RemoveTree.h" />
     <ClInclude Include="glslang\MachineIndependent\localintermediate.h" />
     <ClInclude Include="glslang\Include\BaseTypes.h" />
