@@ -51,8 +51,15 @@
 
 namespace glslang {
 
-const int FirstProfileVersion = 150;
+// TODO: ARB_Compatability: do full extension support
+bool ARBCompatibility = true;
+
 const bool ForwardCompatibility = false;
+
+inline bool IncludeLegacy(int version, EProfile profile)
+{
+    return profile != EEsProfile && (version <= 130 || ARBCompatibility || profile == ECompatibilityProfile);
+}
 
 TBuiltIns::TBuiltIns()
 {
@@ -88,609 +95,633 @@ TBuiltIns::~TBuiltIns()
 //
 void TBuiltIns::initialize(int version, EProfile profile)
 {
-    {
-        //============================================================================
-        //
-        // Prototypes for built-in functions seen by both vertex and fragment shaders.
-        //
-        //============================================================================
-
-        TString& s = commonBuiltins;
-
-        //
-        // Angle and Trigonometric Functions.
-        //
-        s.append("float radians(float degrees);");
-        s.append("vec2  radians(vec2  degrees);");
-        s.append("vec3  radians(vec3  degrees);");
-        s.append("vec4  radians(vec4  degrees);");
-
-        s.append("float degrees(float radians);");
-        s.append("vec2  degrees(vec2  radians);");
-        s.append("vec3  degrees(vec3  radians);");
-        s.append("vec4  degrees(vec4  radians);");
-
-        s.append("float sin(float angle);");
-        s.append("vec2  sin(vec2  angle);");
-        s.append("vec3  sin(vec3  angle);");
-        s.append("vec4  sin(vec4  angle);");
-
-        s.append("float cos(float angle);");
-        s.append("vec2  cos(vec2  angle);");
-        s.append("vec3  cos(vec3  angle);");
-        s.append("vec4  cos(vec4  angle);");
-
-        s.append("float tan(float angle);");
-        s.append("vec2  tan(vec2  angle);");
-        s.append("vec3  tan(vec3  angle);");
-        s.append("vec4  tan(vec4  angle);");
-
-        s.append("float asin(float x);");
-        s.append("vec2  asin(vec2  x);");
-        s.append("vec3  asin(vec3  x);");
-        s.append("vec4  asin(vec4  x);");
-
-        s.append("float acos(float x);");
-        s.append("vec2  acos(vec2  x);");
-        s.append("vec3  acos(vec3  x);");
-        s.append("vec4  acos(vec4  x);");
-
-        s.append("float atan(float y, float x);");
-        s.append("vec2  atan(vec2  y, vec2  x);");
-        s.append("vec3  atan(vec3  y, vec3  x);");
-        s.append("vec4  atan(vec4  y, vec4  x);");
-
-        s.append("float atan(float y_over_x);");
-        s.append("vec2  atan(vec2  y_over_x);");
-        s.append("vec3  atan(vec3  y_over_x);");
-        s.append("vec4  atan(vec4  y_over_x);");
-
-        s.append("float sinh(float angle);");
-        s.append("vec2  sinh(vec2  angle);");
-        s.append("vec3  sinh(vec3  angle);");
-        s.append("vec4  sinh(vec4  angle);");
-
-        s.append("float cosh(float angle);");
-        s.append("vec2  cosh(vec2  angle);");
-        s.append("vec3  cosh(vec3  angle);");
-        s.append("vec4  cosh(vec4  angle);");
-
-        s.append("float tanh(float angle);");
-        s.append("vec2  tanh(vec2  angle);");
-        s.append("vec3  tanh(vec3  angle);");
-        s.append("vec4  tanh(vec4  angle);");
-
-        s.append("float asinh(float x);");
-        s.append("vec2  asinh(vec2  x);");
-        s.append("vec3  asinh(vec3  x);");
-        s.append("vec4  asinh(vec4  x);");
-
-        s.append("float acosh(float x);");
-        s.append("vec2  acosh(vec2  x);");
-        s.append("vec3  acosh(vec3  x);");
-        s.append("vec4  acosh(vec4  x);");
-
-        s.append("float atanh(float y_over_x);");
-        s.append("vec2  atanh(vec2  y_over_x);");
-        s.append("vec3  atanh(vec3  y_over_x);");
-        s.append("vec4  atanh(vec4  y_over_x);");
-
-        //
-        // Exponential Functions.
-        //
-        s.append("float pow(float x, float y);");
-        s.append("vec2  pow(vec2  x, vec2  y);");
-        s.append("vec3  pow(vec3  x, vec3  y);");
-        s.append("vec4  pow(vec4  x, vec4  y);");
-
-        s.append("float exp(float x);");
-        s.append("vec2  exp(vec2  x);");
-        s.append("vec3  exp(vec3  x);");
-        s.append("vec4  exp(vec4  x);");
-
-        s.append("float log(float x);");
-        s.append("vec2  log(vec2  x);");
-        s.append("vec3  log(vec3  x);");
-        s.append("vec4  log(vec4  x);");
-
-        s.append("float exp2(float x);");
-        s.append("vec2  exp2(vec2  x);");
-        s.append("vec3  exp2(vec3  x);");
-        s.append("vec4  exp2(vec4  x);");
-
-        s.append("float log2(float x);");
-        s.append("vec2  log2(vec2  x);");
-        s.append("vec3  log2(vec3  x);");
-        s.append("vec4  log2(vec4  x);");
-
-        s.append("float sqrt(float x);");
-        s.append("vec2  sqrt(vec2  x);");
-        s.append("vec3  sqrt(vec3  x);");
-        s.append("vec4  sqrt(vec4  x);");
-
-        s.append("float inversesqrt(float x);");
-        s.append("vec2  inversesqrt(vec2  x);");
-        s.append("vec3  inversesqrt(vec3  x);");
-        s.append("vec4  inversesqrt(vec4  x);");
-
-        //
-        // Common Functions.
-        //
-        s.append("float abs(float x);");
-        s.append("vec2  abs(vec2  x);");
-        s.append("vec3  abs(vec3  x);");
-        s.append("vec4  abs(vec4  x);");
-
-        if (version >= 130) {
-            s.append("  int abs(  int x);");
-            s.append("ivec2 abs(ivec2 x);");
-            s.append("ivec3 abs(ivec3 x);");
-            s.append("ivec4 abs(ivec4 x);");
-        }
-
-
-        s.append("float sign(float x);");
-        s.append("vec2  sign(vec2  x);");
-        s.append("vec3  sign(vec3  x);");
-        s.append("vec4  sign(vec4  x);");
-
-        if (version >= 130) {
-            s.append("  int sign(  int x);");
-            s.append("ivec2 sign(ivec2 x);");
-            s.append("ivec3 sign(ivec3 x);");
-            s.append("ivec4 sign(ivec4 x);");
-        }
-
-        s.append("float floor(float x);");
-        s.append("vec2  floor(vec2  x);");
-        s.append("vec3  floor(vec3  x);");
-        s.append("vec4  floor(vec4  x);");
-
-        if (version >= 130) {
-            s.append("float trunc(float x);");
-            s.append("vec2  trunc(vec2  x);");
-            s.append("vec3  trunc(vec3  x);");
-            s.append("vec4  trunc(vec4  x);");
-
-            s.append("float round(float x);");
-            s.append("vec2  round(vec2  x);");
-            s.append("vec3  round(vec3  x);");
-            s.append("vec4  round(vec4  x);");
-
-            s.append("float roundEven(float x);");
-            s.append("vec2  roundEven(vec2  x);");
-            s.append("vec3  roundEven(vec3  x);");
-            s.append("vec4  roundEven(vec4  x);");
-        }
-
-        s.append("float ceil(float x);");
-        s.append("vec2  ceil(vec2  x);");
-        s.append("vec3  ceil(vec3  x);");
-        s.append("vec4  ceil(vec4  x);");
-
-        s.append("float fract(float x);");
-        s.append("vec2  fract(vec2  x);");
-        s.append("vec3  fract(vec3  x);");
-        s.append("vec4  fract(vec4  x);");
-
-        s.append("float mod(float x, float y);");
-        s.append("vec2  mod(vec2  x, float y);");
-        s.append("vec3  mod(vec3  x, float y);");
-        s.append("vec4  mod(vec4  x, float y);");
-        s.append("vec2  mod(vec2  x, vec2  y);");
-        s.append("vec3  mod(vec3  x, vec3  y);");
-        s.append("vec4  mod(vec4  x, vec4  y);");
-
-        if (version >= 130) {
-            s.append("float modf(float, out float);");
-            s.append("vec2  modf(vec2,  out vec2 );");
-            s.append("vec3  modf(vec3,  out vec3 );");
-            s.append("vec4  modf(vec4,  out vec4 );");
-        }
-
-        s.append("float min(float x, float y);");
-        s.append("vec2  min(vec2  x, float y);");
-        s.append("vec3  min(vec3  x, float y);");
-        s.append("vec4  min(vec4  x, float y);");
-        s.append("vec2  min(vec2  x, vec2  y);");
-        s.append("vec3  min(vec3  x, vec3  y);");
-        s.append("vec4  min(vec4  x, vec4  y);");
-
-        if (version >= 130) {
-            s.append("  int min(int    x, int y);");
-            s.append("ivec2 min(ivec2  x, int y);");
-            s.append("ivec3 min(ivec3  x, int y);");
-            s.append("ivec4 min(ivec4  x, int y);");
-            s.append("ivec2 min(ivec2  x, ivec2  y);");
-            s.append("ivec3 min(ivec3  x, ivec3  y);");
-            s.append("ivec4 min(ivec4  x, ivec4  y);");
-
-            s.append(" uint min(uint   x, uint y);");
-            s.append("uvec2 min(uvec2  x, uint y);");
-            s.append("uvec3 min(uvec3  x, uint y);");
-            s.append("uvec4 min(uvec4  x, uint y);");
-            s.append("uvec2 min(uvec2  x, uvec2  y);");
-            s.append("uvec3 min(uvec3  x, uvec3  y);");
-            s.append("uvec4 min(uvec4  x, uvec4  y);");
-        }
-
-        s.append("float max(float x, float y);");
-        s.append("vec2  max(vec2  x, float y);");
-        s.append("vec3  max(vec3  x, float y);");
-        s.append("vec4  max(vec4  x, float y);");
-        s.append("vec2  max(vec2  x, vec2  y);");
-        s.append("vec3  max(vec3  x, vec3  y);");
-        s.append("vec4  max(vec4  x, vec4  y);");
-
-        if (version >= 130) {
-            s.append("  int max(int    x, int y);");
-            s.append("ivec2 max(ivec2  x, int y);");
-            s.append("ivec3 max(ivec3  x, int y);");
-            s.append("ivec4 max(ivec4  x, int y);");
-            s.append("ivec2 max(ivec2  x, ivec2  y);");
-            s.append("ivec3 max(ivec3  x, ivec3  y);");
-            s.append("ivec4 max(ivec4  x, ivec4  y);");
-
-            s.append(" uint max(uint   x, uint y);");
-            s.append("uvec2 max(uvec2  x, uint y);");
-            s.append("uvec3 max(uvec3  x, uint y);");
-            s.append("uvec4 max(uvec4  x, uint y);");
-            s.append("uvec2 max(uvec2  x, uvec2  y);");
-            s.append("uvec3 max(uvec3  x, uvec3  y);");
-            s.append("uvec4 max(uvec4  x, uvec4  y);");
-        }
-
-        s.append("float clamp(float x, float minVal, float maxVal);");
-        s.append("vec2  clamp(vec2  x, float minVal, float maxVal);");
-        s.append("vec3  clamp(vec3  x, float minVal, float maxVal);");
-        s.append("vec4  clamp(vec4  x, float minVal, float maxVal);");
-        s.append("vec2  clamp(vec2  x, vec2  minVal, vec2  maxVal);");
-        s.append("vec3  clamp(vec3  x, vec3  minVal, vec3  maxVal);");
-        s.append("vec4  clamp(vec4  x, vec4  minVal, vec4  maxVal);");
-
-        if (version >= 130) {
-            s.append("int    clamp(int x, int minVal, int maxVal);");
-            s.append("ivec2  clamp(ivec2  x, int minVal, int maxVal);");
-            s.append("ivec3  clamp(ivec3  x, int minVal, int maxVal);");
-            s.append("ivec4  clamp(ivec4  x, int minVal, int maxVal);");
-            s.append("ivec2  clamp(ivec2  x, ivec2  minVal, ivec2  maxVal);");
-            s.append("ivec3  clamp(ivec3  x, ivec3  minVal, ivec3  maxVal);");
-            s.append("ivec4  clamp(ivec4  x, ivec4  minVal, ivec4  maxVal);");
-
-            s.append("uint   clamp(uint x, uint minVal, uint maxVal);");
-            s.append("uvec2  clamp(uvec2  x, uint minVal, uint maxVal);");
-            s.append("uvec3  clamp(uvec3  x, uint minVal, uint maxVal);");
-            s.append("uvec4  clamp(uvec4  x, uint minVal, uint maxVal);");
-            s.append("uvec2  clamp(uvec2  x, uvec2  minVal, uvec2  maxVal);");
-            s.append("uvec3  clamp(uvec3  x, uvec3  minVal, uvec3  maxVal);");
-            s.append("uvec4  clamp(uvec4  x, uvec4  minVal, uvec4  maxVal);");
-        }
-
-        s.append("float mix(float x, float y, float a);");
-        s.append("vec2  mix(vec2  x, vec2  y, float a);");
-        s.append("vec3  mix(vec3  x, vec3  y, float a);");
-        s.append("vec4  mix(vec4  x, vec4  y, float a);");
-        s.append("vec2  mix(vec2  x, vec2  y, vec2  a);");
-        s.append("vec3  mix(vec3  x, vec3  y, vec3  a);");
-        s.append("vec4  mix(vec4  x, vec4  y, vec4  a);");
-
-        if (version >= 130) {
-            s.append("float mix(float x, float y, bool  a);");
-            s.append("vec2  mix(vec2  x, vec2  y, bvec2 a);");
-            s.append("vec3  mix(vec3  x, vec3  y, bvec3 a);");
-            s.append("vec4  mix(vec4  x, vec4  y, bvec4 a);");
-        }
-
-        s.append("float step(float edge, float x);");
-        s.append("vec2  step(vec2  edge, vec2  x);");
-        s.append("vec3  step(vec3  edge, vec3  x);");
-        s.append("vec4  step(vec4  edge, vec4  x);");
-        s.append("vec2  step(float edge, vec2  x);");
-        s.append("vec3  step(float edge, vec3  x);");
-        s.append("vec4  step(float edge, vec4  x);");
-
-        s.append("float smoothstep(float edge0, float edge1, float x);");
-        s.append("vec2  smoothstep(vec2  edge0, vec2  edge1, vec2  x);");
-        s.append("vec3  smoothstep(vec3  edge0, vec3  edge1, vec3  x);");
-        s.append("vec4  smoothstep(vec4  edge0, vec4  edge1, vec4  x);");
-        s.append("vec2  smoothstep(float edge0, float edge1, vec2  x);");
-        s.append("vec3  smoothstep(float edge0, float edge1, vec3  x);");
-        s.append("vec4  smoothstep(float edge0, float edge1, vec4  x);");
-
-        if (version >= 130) {
-            s.append("bool  isnan(float x);");
-            s.append("bvec2 isnan(vec2  x);");
-            s.append("bvec3 isnan(vec3  x);");
-            s.append("bvec4 isnan(vec4  x);");
-
-            s.append("bool  isinf(float x);");
-            s.append("bvec2 isinf(vec2  x);");
-            s.append("bvec3 isinf(vec3  x);");
-            s.append("bvec4 isinf(vec4  x);");
-        }
-
-        if ((profile == EEsProfile && version >= 300) ||
-            (profile != EEsProfile && version >= 330)) {
-            s.append("int   floatBitsToInt(float value);");
-            s.append("ivec2 floatBitsToInt(vec2  value);");
-            s.append("ivec3 floatBitsToInt(vec3  value);");
-            s.append("ivec4 floatBitsToInt(vec4  value);");
-
-            s.append("uint  floatBitsToUint(float value);");
-            s.append("uvec2 floatBitsToUint(vec2  value);");
-            s.append("uvec3 floatBitsToUint(vec3  value);");
-            s.append("uvec4 floatBitsToUint(vec4  value);");
-
-            s.append("float intBitsToFloat(int   value);");
-            s.append("vec2  intBitsToFloat(ivec2 value);");
-            s.append("vec3  intBitsToFloat(ivec3 value);");
-            s.append("vec4  intBitsToFloat(ivec4 value);");
-
-            s.append("float uintBitsToFloat(uint  value);");
-            s.append("vec2  uintBitsToFloat(uvec2 value);");
-            s.append("vec3  uintBitsToFloat(uvec3 value);");
-            s.append("vec4  uintBitsToFloat(uvec4 value);");
-        }
-
-        if ((profile == EEsProfile && version >= 300) ||
-            (profile != EEsProfile && version >= 400)) {
-            s.append(  "highp uint packSnorm2x16 (vec2);");
-            s.append(  "highp vec2 unpackSnorm2x16 (highp uint);");
-            s.append(  "highp uint packUnorm2x16 (vec2);");
-            s.append(  "highp vec2 unpackUnorm2x16 (highp uint);");
-            s.append(  "highp uint packHalf2x16(mediump vec2);");
-            s.append("mediump vec2 unpackHalf2x16(highp uint);");
-        }
-
-        //
-        // Geometric Functions.
-        //
-        s.append("float length(float x);");
-        s.append("float length(vec2  x);");
-        s.append("float length(vec3  x);");
-        s.append("float length(vec4  x);");
-
-        s.append("float distance(float p0, float p1);");
-        s.append("float distance(vec2  p0, vec2  p1);");
-        s.append("float distance(vec3  p0, vec3  p1);");
-        s.append("float distance(vec4  p0, vec4  p1);");
-
-        s.append("float dot(float x, float y);");
-        s.append("float dot(vec2  x, vec2  y);");
-        s.append("float dot(vec3  x, vec3  y);");
-        s.append("float dot(vec4  x, vec4  y);");
-
-        s.append("vec3 cross(vec3 x, vec3 y);");
-        s.append("float normalize(float x);");
-        s.append("vec2  normalize(vec2  x);");
-        s.append("vec3  normalize(vec3  x);");
-        s.append("vec4  normalize(vec4  x);");
-
-        s.append("float faceforward(float N, float I, float Nref);");
-        s.append("vec2  faceforward(vec2  N, vec2  I, vec2  Nref);");
-        s.append("vec3  faceforward(vec3  N, vec3  I, vec3  Nref);");
-        s.append("vec4  faceforward(vec4  N, vec4  I, vec4  Nref);");
-
-        s.append("float reflect(float I, float N);");
-        s.append("vec2  reflect(vec2  I, vec2  N);");
-        s.append("vec3  reflect(vec3  I, vec3  N);");
-        s.append("vec4  reflect(vec4  I, vec4  N);");
-
-        s.append("float refract(float I, float N, float eta);");
-        s.append("vec2  refract(vec2  I, vec2  N, float eta);");
-        s.append("vec3  refract(vec3  I, vec3  N, float eta);");
-        s.append("vec4  refract(vec4  I, vec4  N, float eta);");
-
-        //
-        // Matrix Functions.
-        //
-        s.append("mat2 matrixCompMult(mat2 x, mat2 y);");
-        s.append("mat3 matrixCompMult(mat3 x, mat3 y);");
-        s.append("mat4 matrixCompMult(mat4 x, mat4 y);");
-
-        if (version >= 120) {
-            s.append("mat2   outerProduct(vec2 c, vec2 r);");
-            s.append("mat3   outerProduct(vec3 c, vec3 r);");
-            s.append("mat4   outerProduct(vec4 c, vec4 r);");
-            s.append("mat2x3 outerProduct(vec3 c, vec2 r);");
-            s.append("mat3x2 outerProduct(vec2 c, vec3 r);");
-            s.append("mat2x4 outerProduct(vec4 c, vec2 r);");
-            s.append("mat4x2 outerProduct(vec2 c, vec4 r);");
-            s.append("mat3x4 outerProduct(vec4 c, vec3 r);");
-            s.append("mat4x3 outerProduct(vec3 c, vec4 r);");
-
-            s.append("mat2   transpose(mat2   m);");
-            s.append("mat3   transpose(mat3   m);");
-            s.append("mat4   transpose(mat4   m);");
-            s.append("mat2x3 transpose(mat3x2 m);");
-            s.append("mat3x2 transpose(mat2x3 m);");
-            s.append("mat2x4 transpose(mat4x2 m);");
-            s.append("mat4x2 transpose(mat2x4 m);");
-            s.append("mat3x4 transpose(mat4x3 m);");
-            s.append("mat4x3 transpose(mat3x4 m);");
-
-            if (version >= 150) {
-                s.append("float determinant(mat2 m);");
-                s.append("float determinant(mat3 m);");
-                s.append("float determinant(mat4 m);");
-
-                s.append("mat2 inverse(mat2 m);");
-                s.append("mat3 inverse(mat3 m);");
-                s.append("mat4 inverse(mat4 m);");
-            }
-        }
-
-        //
-        // Vector relational functions.
-        //
-        s.append("bvec2 lessThan(vec2 x, vec2 y);");
-        s.append("bvec3 lessThan(vec3 x, vec3 y);");
-        s.append("bvec4 lessThan(vec4 x, vec4 y);");
-
-        s.append("bvec2 lessThan(ivec2 x, ivec2 y);");
-        s.append("bvec3 lessThan(ivec3 x, ivec3 y);");
-        s.append("bvec4 lessThan(ivec4 x, ivec4 y);");
-
-        s.append("bvec2 lessThanEqual(vec2 x, vec2 y);");
-        s.append("bvec3 lessThanEqual(vec3 x, vec3 y);");
-        s.append("bvec4 lessThanEqual(vec4 x, vec4 y);");
-
-        s.append("bvec2 lessThanEqual(ivec2 x, ivec2 y);");
-        s.append("bvec3 lessThanEqual(ivec3 x, ivec3 y);");
-        s.append("bvec4 lessThanEqual(ivec4 x, ivec4 y);");
-
-        s.append("bvec2 greaterThan(vec2 x, vec2 y);");
-        s.append("bvec3 greaterThan(vec3 x, vec3 y);");
-        s.append("bvec4 greaterThan(vec4 x, vec4 y);");
-
-        s.append("bvec2 greaterThan(ivec2 x, ivec2 y);");
-        s.append("bvec3 greaterThan(ivec3 x, ivec3 y);");
-        s.append("bvec4 greaterThan(ivec4 x, ivec4 y);");
-
-        s.append("bvec2 greaterThanEqual(vec2 x, vec2 y);");
-        s.append("bvec3 greaterThanEqual(vec3 x, vec3 y);");
-        s.append("bvec4 greaterThanEqual(vec4 x, vec4 y);");
-
-        s.append("bvec2 greaterThanEqual(ivec2 x, ivec2 y);");
-        s.append("bvec3 greaterThanEqual(ivec3 x, ivec3 y);");
-        s.append("bvec4 greaterThanEqual(ivec4 x, ivec4 y);");
-
-        s.append("bvec2 equal(vec2 x, vec2 y);");
-        s.append("bvec3 equal(vec3 x, vec3 y);");
-        s.append("bvec4 equal(vec4 x, vec4 y);");
-
-        s.append("bvec2 equal(ivec2 x, ivec2 y);");
-        s.append("bvec3 equal(ivec3 x, ivec3 y);");
-        s.append("bvec4 equal(ivec4 x, ivec4 y);");
-
-        s.append("bvec2 equal(bvec2 x, bvec2 y);");
-        s.append("bvec3 equal(bvec3 x, bvec3 y);");
-        s.append("bvec4 equal(bvec4 x, bvec4 y);");
-
-        s.append("bvec2 notEqual(vec2 x, vec2 y);");
-        s.append("bvec3 notEqual(vec3 x, vec3 y);");
-        s.append("bvec4 notEqual(vec4 x, vec4 y);");
-
-        s.append("bvec2 notEqual(ivec2 x, ivec2 y);");
-        s.append("bvec3 notEqual(ivec3 x, ivec3 y);");
-        s.append("bvec4 notEqual(ivec4 x, ivec4 y);");
-
-        s.append("bvec2 notEqual(bvec2 x, bvec2 y);");
-        s.append("bvec3 notEqual(bvec3 x, bvec3 y);");
-        s.append("bvec4 notEqual(bvec4 x, bvec4 y);");
-
-        s.append("bool any(bvec2 x);");
-        s.append("bool any(bvec3 x);");
-        s.append("bool any(bvec4 x);");
-
-        s.append("bool all(bvec2 x);");
-        s.append("bool all(bvec3 x);");
-        s.append("bool all(bvec4 x);");
-
-        s.append("bvec2 not(bvec2 x);");
-        s.append("bvec3 not(bvec3 x);");
-        s.append("bvec4 not(bvec4 x);");
-
-        s.append("\n");
-
-        //
-        // Original-style texture functions existing in both stages.
-        // (Per-stage functions below.)
-        //
-        if ((profile == EEsProfile && version == 100) ||
-            profile == ECompatibilityProfile ||
-            version < FirstProfileVersion) {
-            s.append("vec4 texture2D(sampler2D, vec2);");
-
-            s.append("vec4 texture2DProj(sampler2D, vec3);");
-            s.append("vec4 texture2DProj(sampler2D, vec4);");
-
-            s.append("vec4 textureCube(samplerCube, vec3);");
-        }
-
-        if (profile != EEsProfile &&
-            (profile == ECompatibilityProfile || version < FirstProfileVersion)) {
-            s.append("vec4 texture1D(sampler1D, float);");
-
-            s.append("vec4 texture1DProj(sampler1D, vec2);");
-            s.append("vec4 texture1DProj(sampler1D, vec4);");
-
-            s.append("vec4 texture3D(sampler3D, vec3);");
-            s.append("vec4 texture3DProj(sampler3D, vec4);");
-
-            s.append("vec4 shadow1D(sampler1DShadow, vec3);");
-            s.append("vec4 shadow2D(sampler2DShadow, vec3);");
-            s.append("vec4 shadow1DProj(sampler1DShadow, vec4);");
-            s.append("vec4 shadow2DProj(sampler2DShadow, vec4);");
-
-            // TODO: functionality: non-ES legacy texuring for Lod, others?
-        }
-        s.append("\n");
-
-        //
-        // Noise functions.
-        //
-        if (profile != EEsProfile) {
-            s.append("float noise1(float x);");
-            s.append("float noise1(vec2  x);");
-            s.append("float noise1(vec3  x);");
-            s.append("float noise1(vec4  x);");
-
-            s.append("vec2 noise2(float x);");
-            s.append("vec2 noise2(vec2  x);");
-            s.append("vec2 noise2(vec3  x);");
-            s.append("vec2 noise2(vec4  x);");
-
-            s.append("vec3 noise3(float x);");
-            s.append("vec3 noise3(vec2  x);");
-            s.append("vec3 noise3(vec3  x);");
-            s.append("vec3 noise3(vec4  x);");
-
-            s.append("vec4 noise4(float x);");
-            s.append("vec4 noise4(vec2  x);");
-            s.append("vec4 noise4(vec3  x);");
-            s.append("vec4 noise4(vec4  x);");
-
-            s.append("\n");
+    //============================================================================
+    //
+    // Prototypes for built-in functions seen by both vertex and fragment shaders.
+    //
+    //============================================================================
+
+    //
+    // Angle and Trigonometric Functions.
+    //
+    commonBuiltins.append(
+        "float radians(float degrees);"
+        "vec2  radians(vec2  degrees);"
+        "vec3  radians(vec3  degrees);"
+        "vec4  radians(vec4  degrees);"
+                 
+        "float degrees(float radians);"
+        "vec2  degrees(vec2  radians);"
+        "vec3  degrees(vec3  radians);"
+        "vec4  degrees(vec4  radians);"
+                 
+        "float sin(float angle);"
+        "vec2  sin(vec2  angle);"
+        "vec3  sin(vec3  angle);"
+        "vec4  sin(vec4  angle);"
+                 
+        "float cos(float angle);"
+        "vec2  cos(vec2  angle);"
+        "vec3  cos(vec3  angle);"
+        "vec4  cos(vec4  angle);"
+                 
+        "float tan(float angle);"
+        "vec2  tan(vec2  angle);"
+        "vec3  tan(vec3  angle);"
+        "vec4  tan(vec4  angle);"
+                 
+        "float asin(float x);"
+        "vec2  asin(vec2  x);"
+        "vec3  asin(vec3  x);"
+        "vec4  asin(vec4  x);"
+                 
+        "float acos(float x);"
+        "vec2  acos(vec2  x);"
+        "vec3  acos(vec3  x);"
+        "vec4  acos(vec4  x);"
+                 
+        "float atan(float y, float x);"
+        "vec2  atan(vec2  y, vec2  x);"
+        "vec3  atan(vec3  y, vec3  x);"
+        "vec4  atan(vec4  y, vec4  x);"
+                 
+        "float atan(float y_over_x);"
+        "vec2  atan(vec2  y_over_x);"
+        "vec3  atan(vec3  y_over_x);"
+        "vec4  atan(vec4  y_over_x);"
+            
+        "\n");
+
+    if (version >= 130) {
+        commonBuiltins.append(
+            "float sinh(float angle);"
+            "vec2  sinh(vec2  angle);"
+            "vec3  sinh(vec3  angle);"
+            "vec4  sinh(vec4  angle);"
+                 
+            "float cosh(float angle);"
+            "vec2  cosh(vec2  angle);"
+            "vec3  cosh(vec3  angle);"
+            "vec4  cosh(vec4  angle);"
+                 
+            "float tanh(float angle);"
+            "vec2  tanh(vec2  angle);"
+            "vec3  tanh(vec3  angle);"
+            "vec4  tanh(vec4  angle);"
+                 
+            "float asinh(float x);"
+            "vec2  asinh(vec2  x);"
+            "vec3  asinh(vec3  x);"
+            "vec4  asinh(vec4  x);"
+                 
+            "float acosh(float x);"
+            "vec2  acosh(vec2  x);"
+            "vec3  acosh(vec3  x);"
+            "vec4  acosh(vec4  x);"
+                 
+            "float atanh(float y_over_x);"
+            "vec2  atanh(vec2  y_over_x);"
+            "vec3  atanh(vec3  y_over_x);"
+            "vec4  atanh(vec4  y_over_x);"
+            
+            "\n");
+    }
+
+    //
+    // Exponential Functions.
+    //
+    commonBuiltins.append(
+        "float pow(float x, float y);"
+        "vec2  pow(vec2  x, vec2  y);"
+        "vec3  pow(vec3  x, vec3  y);"
+        "vec4  pow(vec4  x, vec4  y);"
+                 
+        "float exp(float x);"
+        "vec2  exp(vec2  x);"
+        "vec3  exp(vec3  x);"
+        "vec4  exp(vec4  x);"
+                 
+        "float log(float x);"
+        "vec2  log(vec2  x);"
+        "vec3  log(vec3  x);"
+        "vec4  log(vec4  x);"
+                 
+        "float exp2(float x);"
+        "vec2  exp2(vec2  x);"
+        "vec3  exp2(vec3  x);"
+        "vec4  exp2(vec4  x);"
+                 
+        "float log2(float x);"
+        "vec2  log2(vec2  x);"
+        "vec3  log2(vec3  x);"
+        "vec4  log2(vec4  x);"
+                 
+        "float sqrt(float x);"
+        "vec2  sqrt(vec2  x);"
+        "vec3  sqrt(vec3  x);"
+        "vec4  sqrt(vec4  x);"
+                 
+        "float inversesqrt(float x);"
+        "vec2  inversesqrt(vec2  x);"
+        "vec3  inversesqrt(vec3  x);"
+        "vec4  inversesqrt(vec4  x);"
+            
+        "\n");
+
+    //
+    // Common Functions.
+    //
+    commonBuiltins.append(
+        "float abs(float x);"
+        "vec2  abs(vec2  x);"
+        "vec3  abs(vec3  x);"
+        "vec4  abs(vec4  x);"
+                 
+        "float sign(float x);"
+        "vec2  sign(vec2  x);"
+        "vec3  sign(vec3  x);"
+        "vec4  sign(vec4  x);"
+                 
+        "float floor(float x);"
+        "vec2  floor(vec2  x);"
+        "vec3  floor(vec3  x);"
+        "vec4  floor(vec4  x);"
+                 
+        "float ceil(float x);"
+        "vec2  ceil(vec2  x);"
+        "vec3  ceil(vec3  x);"
+        "vec4  ceil(vec4  x);"
+                 
+        "float fract(float x);"
+        "vec2  fract(vec2  x);"
+        "vec3  fract(vec3  x);"
+        "vec4  fract(vec4  x);"
+                 
+        "float mod(float x, float y);"
+        "vec2  mod(vec2  x, float y);"
+        "vec3  mod(vec3  x, float y);"
+        "vec4  mod(vec4  x, float y);"
+        "vec2  mod(vec2  x, vec2  y);"
+        "vec3  mod(vec3  x, vec3  y);"
+        "vec4  mod(vec4  x, vec4  y);"
+                 
+        "float min(float x, float y);"
+        "vec2  min(vec2  x, float y);"
+        "vec3  min(vec3  x, float y);"
+        "vec4  min(vec4  x, float y);"
+        "vec2  min(vec2  x, vec2  y);"
+        "vec3  min(vec3  x, vec3  y);"
+        "vec4  min(vec4  x, vec4  y);"
+                 
+        "float max(float x, float y);"
+        "vec2  max(vec2  x, float y);"
+        "vec3  max(vec3  x, float y);"
+        "vec4  max(vec4  x, float y);"
+        "vec2  max(vec2  x, vec2  y);"
+        "vec3  max(vec3  x, vec3  y);"
+        "vec4  max(vec4  x, vec4  y);"
+                 
+        "float clamp(float x, float minVal, float maxVal);"
+        "vec2  clamp(vec2  x, float minVal, float maxVal);"
+        "vec3  clamp(vec3  x, float minVal, float maxVal);"
+        "vec4  clamp(vec4  x, float minVal, float maxVal);"
+        "vec2  clamp(vec2  x, vec2  minVal, vec2  maxVal);"
+        "vec3  clamp(vec3  x, vec3  minVal, vec3  maxVal);"
+        "vec4  clamp(vec4  x, vec4  minVal, vec4  maxVal);"
+                 
+        "float mix(float x, float y, float a);"
+        "vec2  mix(vec2  x, vec2  y, float a);"
+        "vec3  mix(vec3  x, vec3  y, float a);"
+        "vec4  mix(vec4  x, vec4  y, float a);"
+        "vec2  mix(vec2  x, vec2  y, vec2  a);"
+        "vec3  mix(vec3  x, vec3  y, vec3  a);"
+        "vec4  mix(vec4  x, vec4  y, vec4  a);"
+
+        "float step(float edge, float x);"
+        "vec2  step(vec2  edge, vec2  x);"
+        "vec3  step(vec3  edge, vec3  x);"
+        "vec4  step(vec4  edge, vec4  x);"
+        "vec2  step(float edge, vec2  x);"
+        "vec3  step(float edge, vec3  x);"
+        "vec4  step(float edge, vec4  x);"
+                 
+        "float smoothstep(float edge0, float edge1, float x);"
+        "vec2  smoothstep(vec2  edge0, vec2  edge1, vec2  x);"
+        "vec3  smoothstep(vec3  edge0, vec3  edge1, vec3  x);"
+        "vec4  smoothstep(vec4  edge0, vec4  edge1, vec4  x);"
+        "vec2  smoothstep(float edge0, float edge1, vec2  x);"
+        "vec3  smoothstep(float edge0, float edge1, vec3  x);"
+        "vec4  smoothstep(float edge0, float edge1, vec4  x);"
+            
+        "\n");
+
+    if (version >= 130) {
+        commonBuiltins.append(
+            "  int abs(  int x);"
+            "ivec2 abs(ivec2 x);"
+            "ivec3 abs(ivec3 x);"
+            "ivec4 abs(ivec4 x);"
+
+            "  int sign(  int x);"
+            "ivec2 sign(ivec2 x);"
+            "ivec3 sign(ivec3 x);"
+            "ivec4 sign(ivec4 x);"
+
+            "float trunc(float x);"
+            "vec2  trunc(vec2  x);"
+            "vec3  trunc(vec3  x);"
+            "vec4  trunc(vec4  x);"
+                     
+            "float round(float x);"
+            "vec2  round(vec2  x);"
+            "vec3  round(vec3  x);"
+            "vec4  round(vec4  x);"
+                     
+            "float roundEven(float x);"
+            "vec2  roundEven(vec2  x);"
+            "vec3  roundEven(vec3  x);"
+            "vec4  roundEven(vec4  x);"
+                     
+            "float modf(float, out float);"
+            "vec2  modf(vec2,  out vec2 );"
+            "vec3  modf(vec3,  out vec3 );"
+            "vec4  modf(vec4,  out vec4 );"
+                     
+            "  int min(int    x, int y);"
+            "ivec2 min(ivec2  x, int y);"
+            "ivec3 min(ivec3  x, int y);"
+            "ivec4 min(ivec4  x, int y);"
+            "ivec2 min(ivec2  x, ivec2  y);"
+            "ivec3 min(ivec3  x, ivec3  y);"
+            "ivec4 min(ivec4  x, ivec4  y);"
+                     
+            " uint min(uint   x, uint y);"
+            "uvec2 min(uvec2  x, uint y);"
+            "uvec3 min(uvec3  x, uint y);"
+            "uvec4 min(uvec4  x, uint y);"
+            "uvec2 min(uvec2  x, uvec2  y);"
+            "uvec3 min(uvec3  x, uvec3  y);"
+            "uvec4 min(uvec4  x, uvec4  y);"
+                     
+            "  int max(int    x, int y);"
+            "ivec2 max(ivec2  x, int y);"
+            "ivec3 max(ivec3  x, int y);"
+            "ivec4 max(ivec4  x, int y);"
+            "ivec2 max(ivec2  x, ivec2  y);"
+            "ivec3 max(ivec3  x, ivec3  y);"
+            "ivec4 max(ivec4  x, ivec4  y);"
+                     
+            " uint max(uint   x, uint y);"
+            "uvec2 max(uvec2  x, uint y);"
+            "uvec3 max(uvec3  x, uint y);"
+            "uvec4 max(uvec4  x, uint y);"
+            "uvec2 max(uvec2  x, uvec2  y);"
+            "uvec3 max(uvec3  x, uvec3  y);"
+            "uvec4 max(uvec4  x, uvec4  y);"
+                     
+            "int    clamp(int x, int minVal, int maxVal);"
+            "ivec2  clamp(ivec2  x, int minVal, int maxVal);"
+            "ivec3  clamp(ivec3  x, int minVal, int maxVal);"
+            "ivec4  clamp(ivec4  x, int minVal, int maxVal);"
+            "ivec2  clamp(ivec2  x, ivec2  minVal, ivec2  maxVal);"
+            "ivec3  clamp(ivec3  x, ivec3  minVal, ivec3  maxVal);"
+            "ivec4  clamp(ivec4  x, ivec4  minVal, ivec4  maxVal);"
+                     
+            "uint   clamp(uint x, uint minVal, uint maxVal);"
+            "uvec2  clamp(uvec2  x, uint minVal, uint maxVal);"
+            "uvec3  clamp(uvec3  x, uint minVal, uint maxVal);"
+            "uvec4  clamp(uvec4  x, uint minVal, uint maxVal);"
+            "uvec2  clamp(uvec2  x, uvec2  minVal, uvec2  maxVal);"
+            "uvec3  clamp(uvec3  x, uvec3  minVal, uvec3  maxVal);"
+            "uvec4  clamp(uvec4  x, uvec4  minVal, uvec4  maxVal);"
+                     
+            "float mix(float x, float y, bool  a);"
+            "vec2  mix(vec2  x, vec2  y, bvec2 a);"
+            "vec3  mix(vec3  x, vec3  y, bvec3 a);"
+            "vec4  mix(vec4  x, vec4  y, bvec4 a);"
+                     
+            "bool  isnan(float x);"
+            "bvec2 isnan(vec2  x);"
+            "bvec3 isnan(vec3  x);"
+            "bvec4 isnan(vec4  x);"
+                     
+            "bool  isinf(float x);"
+            "bvec2 isinf(vec2  x);"
+            "bvec3 isinf(vec3  x);"
+            "bvec4 isinf(vec4  x);"
+            
+            "\n");
+    }
+
+    if ((profile == EEsProfile && version >= 300) ||
+        (profile != EEsProfile && version >= 330)) {
+        commonBuiltins.append(
+            "int   floatBitsToInt(float value);"
+            "ivec2 floatBitsToInt(vec2  value);"
+            "ivec3 floatBitsToInt(vec3  value);"
+            "ivec4 floatBitsToInt(vec4  value);"
+                     
+            "uint  floatBitsToUint(float value);"
+            "uvec2 floatBitsToUint(vec2  value);"
+            "uvec3 floatBitsToUint(vec3  value);"
+            "uvec4 floatBitsToUint(vec4  value);"
+                     
+            "float intBitsToFloat(int   value);"
+            "vec2  intBitsToFloat(ivec2 value);"
+            "vec3  intBitsToFloat(ivec3 value);"
+            "vec4  intBitsToFloat(ivec4 value);"
+                     
+            "float uintBitsToFloat(uint  value);"
+            "vec2  uintBitsToFloat(uvec2 value);"
+            "vec3  uintBitsToFloat(uvec3 value);"
+            "vec4  uintBitsToFloat(uvec4 value);"
+            
+            "\n");
+    }
+
+    if ((profile == EEsProfile && version >= 300) ||
+        (profile != EEsProfile && version >= 400)) {
+        commonBuiltins.append(
+            "highp uint packSnorm2x16 (vec2);"
+            "highp vec2 unpackSnorm2x16 (highp uint);"
+            "highp uint packUnorm2x16 (vec2);"
+            "highp vec2 unpackUnorm2x16 (highp uint);"
+            "highp uint packHalf2x16(mediump vec2);"
+            "mediump vec2 unpackHalf2x16(highp uint);"
+            
+            "\n");
+    }
+
+    //
+    // Geometric Functions.
+    //
+    commonBuiltins.append(
+        "float length(float x);"
+        "float length(vec2  x);"
+        "float length(vec3  x);"
+        "float length(vec4  x);"
+                 
+        "float distance(float p0, float p1);"
+        "float distance(vec2  p0, vec2  p1);"
+        "float distance(vec3  p0, vec3  p1);"
+        "float distance(vec4  p0, vec4  p1);"
+                 
+        "float dot(float x, float y);"
+        "float dot(vec2  x, vec2  y);"
+        "float dot(vec3  x, vec3  y);"
+        "float dot(vec4  x, vec4  y);"
+                 
+        "vec3 cross(vec3 x, vec3 y);"
+        "float normalize(float x);"
+        "vec2  normalize(vec2  x);"
+        "vec3  normalize(vec3  x);"
+        "vec4  normalize(vec4  x);"
+                 
+        "float faceforward(float N, float I, float Nref);"
+        "vec2  faceforward(vec2  N, vec2  I, vec2  Nref);"
+        "vec3  faceforward(vec3  N, vec3  I, vec3  Nref);"
+        "vec4  faceforward(vec4  N, vec4  I, vec4  Nref);"
+                 
+        "float reflect(float I, float N);"
+        "vec2  reflect(vec2  I, vec2  N);"
+        "vec3  reflect(vec3  I, vec3  N);"
+        "vec4  reflect(vec4  I, vec4  N);"
+                 
+        "float refract(float I, float N, float eta);"
+        "vec2  refract(vec2  I, vec2  N, float eta);"
+        "vec3  refract(vec3  I, vec3  N, float eta);"
+        "vec4  refract(vec4  I, vec4  N, float eta);"
+            
+        "\n");
+
+    //
+    // Matrix Functions.
+    //
+    commonBuiltins.append(
+        "mat2 matrixCompMult(mat2 x, mat2 y);"
+        "mat3 matrixCompMult(mat3 x, mat3 y);"
+        "mat4 matrixCompMult(mat4 x, mat4 y);"
+            
+        "\n");
+
+    if (version >= 120) {
+        commonBuiltins.append(
+            "mat2   outerProduct(vec2 c, vec2 r);"
+            "mat3   outerProduct(vec3 c, vec3 r);"
+            "mat4   outerProduct(vec4 c, vec4 r);"
+            "mat2x3 outerProduct(vec3 c, vec2 r);"
+            "mat3x2 outerProduct(vec2 c, vec3 r);"
+            "mat2x4 outerProduct(vec4 c, vec2 r);"
+            "mat4x2 outerProduct(vec2 c, vec4 r);"
+            "mat3x4 outerProduct(vec4 c, vec3 r);"
+            "mat4x3 outerProduct(vec3 c, vec4 r);"
+                     
+            "mat2   transpose(mat2   m);"
+            "mat3   transpose(mat3   m);"
+            "mat4   transpose(mat4   m);"
+            "mat2x3 transpose(mat3x2 m);"
+            "mat3x2 transpose(mat2x3 m);"
+            "mat2x4 transpose(mat4x2 m);"
+            "mat4x2 transpose(mat2x4 m);"
+            "mat3x4 transpose(mat4x3 m);"
+            "mat4x3 transpose(mat3x4 m);"
+            
+            "\n");
+
+        if (version >= 150) {
+            commonBuiltins.append(
+                "float determinant(mat2 m);"
+                "float determinant(mat3 m);"
+                "float determinant(mat4 m);"
+                         
+                "mat2 inverse(mat2 m);"
+                "mat3 inverse(mat3 m);"
+                "mat4 inverse(mat4 m);"
+            
+                "\n");
         }
     }
-    {
-        //============================================================================
-        //
-        // Prototypes for built-in functions seen by vertex shaders only.
-        //
-        //============================================================================
 
-        TString& s = stageBuiltins[EShLangVertex];
+    //
+    // Vector relational functions.
+    //
+    commonBuiltins.append(
+        "bvec2 lessThan(vec2 x, vec2 y);"
+        "bvec3 lessThan(vec3 x, vec3 y);"
+        "bvec4 lessThan(vec4 x, vec4 y);"
+                 
+        "bvec2 lessThan(ivec2 x, ivec2 y);"
+        "bvec3 lessThan(ivec3 x, ivec3 y);"
+        "bvec4 lessThan(ivec4 x, ivec4 y);"
+                 
+        "bvec2 lessThanEqual(vec2 x, vec2 y);"
+        "bvec3 lessThanEqual(vec3 x, vec3 y);"
+        "bvec4 lessThanEqual(vec4 x, vec4 y);"
+                 
+        "bvec2 lessThanEqual(ivec2 x, ivec2 y);"
+        "bvec3 lessThanEqual(ivec3 x, ivec3 y);"
+        "bvec4 lessThanEqual(ivec4 x, ivec4 y);"
+                 
+        "bvec2 greaterThan(vec2 x, vec2 y);"
+        "bvec3 greaterThan(vec3 x, vec3 y);"
+        "bvec4 greaterThan(vec4 x, vec4 y);"
+                 
+        "bvec2 greaterThan(ivec2 x, ivec2 y);"
+        "bvec3 greaterThan(ivec3 x, ivec3 y);"
+        "bvec4 greaterThan(ivec4 x, ivec4 y);"
+                 
+        "bvec2 greaterThanEqual(vec2 x, vec2 y);"
+        "bvec3 greaterThanEqual(vec3 x, vec3 y);"
+        "bvec4 greaterThanEqual(vec4 x, vec4 y);"
+                 
+        "bvec2 greaterThanEqual(ivec2 x, ivec2 y);"
+        "bvec3 greaterThanEqual(ivec3 x, ivec3 y);"
+        "bvec4 greaterThanEqual(ivec4 x, ivec4 y);"
+                 
+        "bvec2 equal(vec2 x, vec2 y);"
+        "bvec3 equal(vec3 x, vec3 y);"
+        "bvec4 equal(vec4 x, vec4 y);"
+                 
+        "bvec2 equal(ivec2 x, ivec2 y);"
+        "bvec3 equal(ivec3 x, ivec3 y);"
+        "bvec4 equal(ivec4 x, ivec4 y);"
+                 
+        "bvec2 equal(bvec2 x, bvec2 y);"
+        "bvec3 equal(bvec3 x, bvec3 y);"
+        "bvec4 equal(bvec4 x, bvec4 y);"
+                 
+        "bvec2 notEqual(vec2 x, vec2 y);"
+        "bvec3 notEqual(vec3 x, vec3 y);"
+        "bvec4 notEqual(vec4 x, vec4 y);"
+                 
+        "bvec2 notEqual(ivec2 x, ivec2 y);"
+        "bvec3 notEqual(ivec3 x, ivec3 y);"
+        "bvec4 notEqual(ivec4 x, ivec4 y);"
+                 
+        "bvec2 notEqual(bvec2 x, bvec2 y);"
+        "bvec3 notEqual(bvec3 x, bvec3 y);"
+        "bvec4 notEqual(bvec4 x, bvec4 y);"
+                 
+        "bool any(bvec2 x);"
+        "bool any(bvec3 x);"
+        "bool any(bvec4 x);"
+                 
+        "bool all(bvec2 x);"
+        "bool all(bvec3 x);"
+        "bool all(bvec4 x);"
+                 
+        "bvec2 not(bvec2 x);"
+        "bvec3 not(bvec3 x);"
+        "bvec4 not(bvec4 x);"
+                 
+        "\n");
 
-        //
-        // Geometric Functions.
-        //
-        if (profile != EEsProfile)
-            s.append("vec4 ftransform();");
+    //
+    // Original-style texture functions existing in both stages.
+    // (Per-stage functions below.)
+    //
+    if ((profile == EEsProfile && version == 100) ||
+        profile == ECompatibilityProfile ||
+        version < 150) {
+        commonBuiltins.append(
+            "vec4 texture2D(sampler2D, vec2);"
 
-        //
-        // Original-style texture Functions with lod.
-        //
-        if (profile != EEsProfile || version == 100) {
-            s.append("vec4 texture2DLod(sampler2D, vec2, float);");
-            s.append("vec4 texture2DProjLod(sampler2D, vec3, float);");
-            s.append("vec4 texture2DProjLod(sampler2D, vec4, float);");
-            s.append("vec4 textureCubeLod(samplerCube, vec3, float);");
-        }
-        if (profile != EEsProfile && version > 100) {
-            s.append("vec4 texture1DLod(sampler1D, float, float);");
-            s.append("vec4 texture1DProjLod(sampler1D, vec2, float);");
-            s.append("vec4 texture1DProjLod(sampler1D, vec4, float);");
-            s.append("vec4 texture3DLod(sampler3D, vec3, float);");
-            s.append("vec4 texture3DProjLod(sampler3D, vec4, float);");
-            s.append("vec4 shadow1DLod(sampler1DShadow, vec3, float);");
-            s.append("vec4 shadow2DLod(sampler2DShadow, vec3, float);");
-            s.append("vec4 shadow1DProjLod(sampler1DShadow, vec4, float);");
-            s.append("vec4 shadow2DProjLod(sampler2DShadow, vec4, float);");
-        }
-		s.append("\n");
+            "vec4 texture2DProj(sampler2D, vec3);"
+            "vec4 texture2DProj(sampler2D, vec4);"
+
+            "vec4 textureCube(samplerCube, vec3);"
+            
+            "\n");
     }
+
+    if (profile != EEsProfile &&
+        (profile == ECompatibilityProfile || version < 150)) {
+        commonBuiltins.append(
+            "vec4 texture1D(sampler1D, float);"
+
+            "vec4 texture1DProj(sampler1D, vec2);"
+            "vec4 texture1DProj(sampler1D, vec4);"
+                     
+            "vec4 texture3D(sampler3D, vec3);"
+            "vec4 texture3DProj(sampler3D, vec4);"
+                     
+            "vec4 shadow1D(sampler1DShadow, vec3);"
+            "vec4 shadow2D(sampler2DShadow, vec3);"
+            "vec4 shadow1DProj(sampler1DShadow, vec4);"
+            "vec4 shadow2DProj(sampler2DShadow, vec4);"
+            
+            "\n");
+
+        // TODO: functionality: non-ES legacy texturing for Lod, others?
+    }
+
+    //
+    // Noise functions.
+    //
+    if (profile != EEsProfile) {
+        commonBuiltins.append(
+            "float noise1(float x);"
+            "float noise1(vec2  x);"
+            "float noise1(vec3  x);"
+            "float noise1(vec4  x);"
+                     
+            "vec2 noise2(float x);"
+            "vec2 noise2(vec2  x);"
+            "vec2 noise2(vec3  x);"
+            "vec2 noise2(vec4  x);"
+                     
+            "vec3 noise3(float x);"
+            "vec3 noise3(vec2  x);"
+            "vec3 noise3(vec3  x);"
+            "vec3 noise3(vec4  x);"
+                     
+            "vec4 noise4(float x);"
+            "vec4 noise4(vec2  x);"
+            "vec4 noise4(vec3  x);"
+            "vec4 noise4(vec4  x);"
+                     
+            "\n");
+    }
+
+    //============================================================================
+    //
+    // Prototypes for built-in functions seen by vertex shaders only.
+    //
+    //============================================================================
+
+    //
+    // Geometric Functions.
+    //
+    if (IncludeLegacy(version, profile))
+        stageBuiltins[EShLangVertex].append("vec4 ftransform();");
+
+    //
+    // Original-style texture Functions with lod.
+    //
+    if (profile != EEsProfile || version == 100) {
+        stageBuiltins[EShLangVertex].append(
+            "vec4 texture2DLod(sampler2D, vec2, float);"
+            "vec4 texture2DProjLod(sampler2D, vec3, float);"
+            "vec4 texture2DProjLod(sampler2D, vec4, float);"
+            "vec4 textureCubeLod(samplerCube, vec3, float);"
+            
+            "\n");
+    }
+    if (profile != EEsProfile && version > 100) {
+        stageBuiltins[EShLangVertex].append(
+            "vec4 texture1DLod(sampler1D, float, float);"
+            "vec4 texture1DProjLod(sampler1D, vec2, float);"
+            "vec4 texture1DProjLod(sampler1D, vec4, float);"
+            "vec4 texture3DLod(sampler3D, vec3, float);"
+            "vec4 texture3DProjLod(sampler3D, vec4, float);"
+            "vec4 shadow1DLod(sampler1DShadow, vec3, float);"
+            "vec4 shadow2DLod(sampler2DShadow, vec3, float);"
+            "vec4 shadow1DProjLod(sampler1DShadow, vec4, float);"
+            "vec4 shadow2DProjLod(sampler2DShadow, vec4, float);"
+            
+            "\n");
+    }
+
     if (profile != EEsProfile && version >= 150) {
         //============================================================================
         //
@@ -698,15 +729,17 @@ void TBuiltIns::initialize(int version, EProfile profile)
         //
         //============================================================================
 
-        TString& s = stageBuiltins[EShLangGeometry];
-
         if (version >= 400) {
-            s.append("void EmitStreamVertex(int);");
-            s.append("void EndStreamPrimitive(int);");
+            stageBuiltins[EShLangGeometry].append(
+                "void EmitStreamVertex(int);"
+                "void EndStreamPrimitive(int);"
+                );
         }
-        s.append("void EmitVertex();");
-        s.append("void EndPrimitive();");
-		s.append("\n");
+        stageBuiltins[EShLangGeometry].append(
+            "void EmitVertex();"
+            "void EndPrimitive();"
+            
+            "\n");
     }
     if (profile != EEsProfile) {
         //============================================================================
@@ -716,304 +749,641 @@ void TBuiltIns::initialize(int version, EProfile profile)
         //============================================================================
 
         if (version >= 400)
-            stageBuiltins[EShLangTessControl].append("void barrier();");
+            stageBuiltins[EShLangTessControl].append(
+                "void barrier();"
+                );
         if (version >= 430)
-            stageBuiltins[EShLangCompute].append("void barrier();");
+            stageBuiltins[EShLangCompute].append(
+                "void barrier();"
+                );
 
         if (version >= 420)
-            commonBuiltins.append("void memoryBarrier();");
+            commonBuiltins.append(
+                "void memoryBarrier();"
+                );
         if (version >= 430) {
-            commonBuiltins.append("void memoryBarrierAtomicCounter();");
-            commonBuiltins.append("void memoryBarrierBuffer();");
-            commonBuiltins.append("void memoryBarrierImage();");
-            stageBuiltins[EShLangCompute].append("void memoryBarrierShared();");
-            stageBuiltins[EShLangCompute].append("void groupMemoryBarrier();");
+            commonBuiltins.append(
+                "void memoryBarrierAtomicCounter();"
+                "void memoryBarrierBuffer();"
+                "void memoryBarrierImage();"
+                );
+            stageBuiltins[EShLangCompute].append(
+                "void memoryBarrierShared();"
+                "void groupMemoryBarrier();"
+                );
         }
     }
-    {
-        //============================================================================
-        //
-        // Prototypes for built-in functions seen by fragment shaders only.
-        //
-        //============================================================================
+    //============================================================================
+    //
+    // Prototypes for built-in functions seen by fragment shaders only.
+    //
+    //============================================================================
 
-        TString& s = stageBuiltins[EShLangFragment];
-
-        //
-        // Original-style texture Functions with bias.
-        //
-        if (profile != EEsProfile || version == 100) {
-            s.append("vec4 texture2D(sampler2D, vec2, float);");
-            s.append("vec4 texture2DProj(sampler2D, vec3, float);");
-            s.append("vec4 texture2DProj(sampler2D, vec4, float);");
-            s.append("vec4 textureCube(samplerCube, vec3, float);");
-        }
-        if (profile != EEsProfile && version > 100) {
-            s.append("vec4 texture1D(sampler1D, float, float);");
-            s.append("vec4 texture1DProj(sampler1D, vec2, float);");
-            s.append("vec4 texture1DProj(sampler1D, vec4, float);");
-            s.append("vec4 texture3D(sampler3D, vec3, float);");
-            s.append("vec4 texture3DProj(sampler3D, vec4, float);");
-            s.append("vec4 shadow1D(sampler1DShadow, vec3, float);");
-            s.append("vec4 shadow2D(sampler2DShadow, vec3, float);");
-            s.append("vec4 shadow1DProj(sampler1DShadow, vec4, float);");
-            s.append("vec4 shadow2DProj(sampler2DShadow, vec4, float);");
-        }
-
-		s.append("float dFdx(float p);");
-        s.append("vec2  dFdx(vec2  p);");
-        s.append("vec3  dFdx(vec3  p);");
-        s.append("vec4  dFdx(vec4  p);");
-
-        s.append("float dFdy(float p);");
-        s.append("vec2  dFdy(vec2  p);");
-        s.append("vec3  dFdy(vec3  p);");
-        s.append("vec4  dFdy(vec4  p);");
-
-        s.append("float fwidth(float p);");
-        s.append("vec2  fwidth(vec2  p);");
-        s.append("vec3  fwidth(vec3  p);");
-        s.append("vec4  fwidth(vec4  p);");
-
-		s.append("\n");
+    //
+    // Original-style texture Functions with bias.
+    //
+    if (profile != EEsProfile || version == 100) {
+        stageBuiltins[EShLangFragment].append(
+            "vec4 texture2D(sampler2D, vec2, float);"
+            "vec4 texture2DProj(sampler2D, vec3, float);"
+            "vec4 texture2DProj(sampler2D, vec4, float);"
+            "vec4 textureCube(samplerCube, vec3, float);"
+            
+            "\n");
     }
-    {
-        //============================================================================
-        //
-        // Standard Uniforms
-        //
-        //============================================================================
+    if (profile != EEsProfile && version > 100) {
+        stageBuiltins[EShLangFragment].append(
+            "vec4 texture1D(sampler1D, float, float);"
+            "vec4 texture1DProj(sampler1D, vec2, float);"
+            "vec4 texture1DProj(sampler1D, vec4, float);"
+            "vec4 texture3D(sampler3D, vec3, float);"
+            "vec4 texture3DProj(sampler3D, vec4, float);"
+            "vec4 shadow1D(sampler1DShadow, vec3, float);"
+            "vec4 shadow2D(sampler2DShadow, vec3, float);"
+            "vec4 shadow1DProj(sampler1DShadow, vec4, float);"
+            "vec4 shadow2DProj(sampler2DShadow, vec4, float);"
+            
+            "\n");
+    }
 
-        TString& s = commonBuiltins;
+	stageBuiltins[EShLangFragment].append(
+        "float dFdx(float p);"
+        "vec2  dFdx(vec2  p);"
+        "vec3  dFdx(vec3  p);"
+        "vec4  dFdx(vec4  p);"
+                 
+        "float dFdy(float p);"
+        "vec2  dFdy(vec2  p);"
+        "vec3  dFdy(vec3  p);"
+        "vec4  dFdy(vec4  p);"
+                 
+        "float fwidth(float p);"
+        "vec2  fwidth(vec2  p);"
+        "vec3  fwidth(vec3  p);"
+        "vec4  fwidth(vec4  p);"
+            
+        "\n");
 
-        //
-        // Depth range in window coordinates, p. 33
-        //
-        s.append("struct gl_DepthRangeParameters {");
-        if (profile == EEsProfile) {
-            s.append("    highp float near;");        // n
-            s.append("    highp float far;");         // f
-            s.append("    highp float diff;");        // f - n
-        } else {
-            s.append("    float near;");        // n
-            s.append("    float far;");         // f
-            s.append("    float diff;");        // f - n
-        }
-        s.append("};");
-        s.append("uniform gl_DepthRangeParameters gl_DepthRange;");
+    //============================================================================
+    //
+    // Standard Uniforms
+    //
+    //============================================================================
 
-        if (profile != EEsProfile && (version < FirstProfileVersion || profile == ECompatibilityProfile)) {
-            //
-            // Matrix state. p. 31, 32, 37, 39, 40.
-            //
-            s.append("uniform mat4  gl_ModelViewMatrix;");
-            s.append("uniform mat4  gl_ProjectionMatrix;");
-            s.append("uniform mat4  gl_ModelViewProjectionMatrix;");
+    //
+    // Depth range in window coordinates, p. 33
+    //
+    commonBuiltins.append(
+        "struct gl_DepthRangeParameters {"
+        );
+    if (profile == EEsProfile) {
+        commonBuiltins.append(
+            "highp float near;"   // n
+            "highp float far;"    // f
+            "highp float diff;"   // f - n
+            );
+    } else {
+        commonBuiltins.append(
+            "float near;"  // n
+            "float far;"   // f
+            "float diff;"  // f - n
+            );
+    }
+    commonBuiltins.append(
+        "};"
+        "uniform gl_DepthRangeParameters gl_DepthRange;"            
+        "\n");
+
+    if (IncludeLegacy(version, profile)) {
+        //
+        // Matrix state. p. 31, 32, 37, 39, 40.
+        //
+        commonBuiltins.append(
+            "uniform mat4  gl_ModelViewMatrix;"
+            "uniform mat4  gl_ProjectionMatrix;"
+            "uniform mat4  gl_ModelViewProjectionMatrix;"
 
             //
             // Derived matrix state that provides inverse and transposed versions
             // of the matrices above.
             //
-            s.append("uniform mat3  gl_NormalMatrix;");
+            "uniform mat3  gl_NormalMatrix;"
 
-            s.append("uniform mat4  gl_ModelViewMatrixInverse;");
-            s.append("uniform mat4  gl_ProjectionMatrixInverse;");
-            s.append("uniform mat4  gl_ModelViewProjectionMatrixInverse;");
-
-            s.append("uniform mat4  gl_ModelViewMatrixTranspose;");
-            s.append("uniform mat4  gl_ProjectionMatrixTranspose;");
-            s.append("uniform mat4  gl_ModelViewProjectionMatrixTranspose;");
-
-            s.append("uniform mat4  gl_ModelViewMatrixInverseTranspose;");
-            s.append("uniform mat4  gl_ProjectionMatrixInverseTranspose;");
-            s.append("uniform mat4  gl_ModelViewProjectionMatrixInverseTranspose;");
+            "uniform mat4  gl_ModelViewMatrixInverse;"
+            "uniform mat4  gl_ProjectionMatrixInverse;"
+            "uniform mat4  gl_ModelViewProjectionMatrixInverse;"
+                     
+            "uniform mat4  gl_ModelViewMatrixTranspose;"
+            "uniform mat4  gl_ProjectionMatrixTranspose;"
+            "uniform mat4  gl_ModelViewProjectionMatrixTranspose;"
+                     
+            "uniform mat4  gl_ModelViewMatrixInverseTranspose;"
+            "uniform mat4  gl_ProjectionMatrixInverseTranspose;"
+            "uniform mat4  gl_ModelViewProjectionMatrixInverseTranspose;"
 
             //
             // Normal scaling p. 39.
             //
-            s.append("uniform float gl_NormalScale;");
+            "uniform float gl_NormalScale;"
 
             //
             // Point Size, p. 66, 67.
             //
-            s.append("struct gl_PointParameters {");
-            s.append("    float size;");
-            s.append("    float sizeMin;");
-            s.append("    float sizeMax;");
-            s.append("    float fadeThresholdSize;");
-            s.append("    float distanceConstantAttenuation;");
-            s.append("    float distanceLinearAttenuation;");
-            s.append("    float distanceQuadraticAttenuation;");
-            s.append("};");
+            "struct gl_PointParameters {"
+                "float size;"
+                "float sizeMin;"
+                "float sizeMax;"
+                "float fadeThresholdSize;"
+                "float distanceConstantAttenuation;"
+                "float distanceLinearAttenuation;"
+                "float distanceQuadraticAttenuation;"
+            "};"
 
-            s.append("uniform gl_PointParameters gl_Point;");
+            "uniform gl_PointParameters gl_Point;"
 
             //
             // Material State p. 50, 55.
             //
-            s.append("struct gl_MaterialParameters {");
-            s.append("    vec4  emission;");    // Ecm
-            s.append("    vec4  ambient;");     // Acm
-            s.append("    vec4  diffuse;");     // Dcm
-            s.append("    vec4  specular;");    // Scm
-            s.append("    float shininess;");   // Srm
-            s.append("};");
-            s.append("uniform gl_MaterialParameters  gl_FrontMaterial;");
-            s.append("uniform gl_MaterialParameters  gl_BackMaterial;");
+            "struct gl_MaterialParameters {"
+                "vec4  emission;"    // Ecm
+                "vec4  ambient;"     // Acm
+                "vec4  diffuse;"     // Dcm
+                "vec4  specular;"    // Scm
+                "float shininess;"   // Srm
+            "};"
+            "uniform gl_MaterialParameters  gl_FrontMaterial;"
+            "uniform gl_MaterialParameters  gl_BackMaterial;"
 
             //
             // Light State p 50, 53, 55.
             //
+            "struct gl_LightSourceParameters {"
+                "vec4  ambient;"             // Acli
+                "vec4  diffuse;"             // Dcli
+                "vec4  specular;"            // Scli
+                "vec4  position;"            // Ppli
+                "vec4  halfVector;"          // Derived: Hi
+                "vec3  spotDirection;"       // Sdli
+                "float spotExponent;"        // Srli
+                "float spotCutoff;"          // Crli
+                                                        // (range: [0.0,90.0], 180.0)
+                "float spotCosCutoff;"       // Derived: cos(Crli)
+                                                        // (range: [1.0,0.0],-1.0)
+                "float constantAttenuation;" // K0
+                "float linearAttenuation;"   // K1
+                "float quadraticAttenuation;"// K2
+            "};"
 
-            s.append("struct gl_LightSourceParameters {");
-            s.append("    vec4  ambient;");             // Acli
-            s.append("    vec4  diffuse;");             // Dcli
-            s.append("    vec4  specular;");            // Scli
-            s.append("    vec4  position;");            // Ppli
-            s.append("    vec4  halfVector;");          // Derived: Hi
-            s.append("    vec3  spotDirection;");       // Sdli
-            s.append("    float spotExponent;");        // Srli
-            s.append("    float spotCutoff;");          // Crli
-                                                                 // (range: [0.0,90.0], 180.0)
-            s.append("    float spotCosCutoff;");       // Derived: cos(Crli)
-                                                                 // (range: [1.0,0.0],-1.0)
-            s.append("    float constantAttenuation;"); // K0
-            s.append("    float linearAttenuation;");   // K1
-            s.append("    float quadraticAttenuation;");// K2
-            s.append("};");
 
+            "struct gl_LightModelParameters {"
+                "vec4  ambient;"       // Acs
+            "};"
 
-            s.append("struct gl_LightModelParameters {");
-            s.append("    vec4  ambient;");       // Acs
-            s.append("};");
-
-            s.append("uniform gl_LightModelParameters  gl_LightModel;");
+            "uniform gl_LightModelParameters  gl_LightModel;"
 
             //
             // Derived state from products of light and material.
             //
+            "struct gl_LightModelProducts {"
+                "vec4  sceneColor;"     // Derived. Ecm + Acm * Acs
+            "};"
 
-            s.append("struct gl_LightModelProducts {");
-            s.append("    vec4  sceneColor;");     // Derived. Ecm + Acm * Acs
-            s.append("};");
+            "uniform gl_LightModelProducts gl_FrontLightModelProduct;"
+            "uniform gl_LightModelProducts gl_BackLightModelProduct;"
 
-            s.append("uniform gl_LightModelProducts gl_FrontLightModelProduct;");
-            s.append("uniform gl_LightModelProducts gl_BackLightModelProduct;");
-
-            s.append("struct gl_LightProducts {");
-            s.append("    vec4  ambient;");        // Acm * Acli
-            s.append("    vec4  diffuse;");        // Dcm * Dcli
-            s.append("    vec4  specular;");       // Scm * Scli
-            s.append("};");
+            "struct gl_LightProducts {"
+                "vec4  ambient;"        // Acm * Acli
+                "vec4  diffuse;"        // Dcm * Dcli
+                "vec4  specular;"       // Scm * Scli
+            "};"
 
             //
             // Fog p. 161
             //
-            s.append("struct gl_FogParameters {");
-            s.append("    vec4  color;");
-            s.append("    float density;");
-            s.append("    float start;");
-            s.append("    float end;");
-            s.append("    float scale;");   //  1 / (gl_FogEnd - gl_FogStart)
-            s.append("};");
+            "struct gl_FogParameters {"
+                "vec4  color;"
+                "float density;"
+                "float start;"
+                "float end;"
+                "float scale;"   //  1 / (gl_FogEnd - gl_FogStart)
+            "};"
 
-            s.append("uniform gl_FogParameters gl_Fog;");
-        }
-
-        s.append("\n");
+            "uniform gl_FogParameters gl_Fog;"
+            
+            "\n");
     }
+
     //============================================================================
     //
-    // Vertex attributes, p. 19.
+    // Define the interface to the compute shader.
     //
     //============================================================================
 
+    if (version >= 430) {
+        stageBuiltins[EShLangCompute].append(
+            "in uvec3 gl_NumWorkGroups;"
+            // TODO: compute shader: constant with no initializer                "const uvec3 gl_WorkGroupSize;"
+
+            "in uvec3 gl_WorkGroupID;"
+            "in uvec3 gl_LocalInvocationID;"
+
+            "in uvec3 gl_GlobalInvocationID;"
+            "in uint gl_LocalInvocationIndex;"
+            
+            "\n");
+    }
+
+    //============================================================================
+    //
+    // Define the interface to the vertex shader.
+    //
+    //============================================================================
+    
     if (profile != EEsProfile) {
-        TString& s = stageBuiltins[EShLangVertex];
-
         if (version < 130) {
-            s.append("attribute vec4  gl_Color;");
-            s.append("attribute vec4  gl_SecondaryColor;");
-            s.append("attribute vec3  gl_Normal;");
-            s.append("attribute vec4  gl_Vertex;");
-            s.append("attribute vec4  gl_MultiTexCoord0;");
-            s.append("attribute vec4  gl_MultiTexCoord1;");
-            s.append("attribute vec4  gl_MultiTexCoord2;");
-            s.append("attribute vec4  gl_MultiTexCoord3;");
-            s.append("attribute vec4  gl_MultiTexCoord4;");
-            s.append("attribute vec4  gl_MultiTexCoord5;");
-            s.append("attribute vec4  gl_MultiTexCoord6;");
-            s.append("attribute vec4  gl_MultiTexCoord7;");
-            s.append("attribute float gl_FogCoord;");
-        } else if (version < FirstProfileVersion || profile == ECompatibilityProfile) {
-            s.append("in vec4  gl_Color;");
-            s.append("in vec4  gl_SecondaryColor;");
-            s.append("in vec3  gl_Normal;");
-            s.append("in vec4  gl_Vertex;");
-            s.append("in vec4  gl_MultiTexCoord0;");
-            s.append("in vec4  gl_MultiTexCoord1;");
-            s.append("in vec4  gl_MultiTexCoord2;");
-            s.append("in vec4  gl_MultiTexCoord3;");
-            s.append("in vec4  gl_MultiTexCoord4;");
-            s.append("in vec4  gl_MultiTexCoord5;");
-            s.append("in vec4  gl_MultiTexCoord6;");
-            s.append("in vec4  gl_MultiTexCoord7;");
-            s.append("in float gl_FogCoord;");
+            stageBuiltins[EShLangVertex].append(
+                "attribute vec4  gl_Color;"
+                "attribute vec4  gl_SecondaryColor;"
+                "attribute vec3  gl_Normal;"
+                "attribute vec4  gl_Vertex;"
+                "attribute vec4  gl_MultiTexCoord0;"
+                "attribute vec4  gl_MultiTexCoord1;"
+                "attribute vec4  gl_MultiTexCoord2;"
+                "attribute vec4  gl_MultiTexCoord3;"
+                "attribute vec4  gl_MultiTexCoord4;"
+                "attribute vec4  gl_MultiTexCoord5;"
+                "attribute vec4  gl_MultiTexCoord6;"
+                "attribute vec4  gl_MultiTexCoord7;"
+                "attribute float gl_FogCoord;"            
+                "\n");
+        } else if (IncludeLegacy(version, profile)) {
+            stageBuiltins[EShLangVertex].append(
+                "in vec4  gl_Color;"
+                "in vec4  gl_SecondaryColor;"
+                "in vec3  gl_Normal;"
+                "in vec4  gl_Vertex;"
+                "in vec4  gl_MultiTexCoord0;"
+                "in vec4  gl_MultiTexCoord1;"
+                "in vec4  gl_MultiTexCoord2;"
+                "in vec4  gl_MultiTexCoord3;"
+                "in vec4  gl_MultiTexCoord4;"
+                "in vec4  gl_MultiTexCoord5;"
+                "in vec4  gl_MultiTexCoord6;"
+                "in vec4  gl_MultiTexCoord7;"
+                "in float gl_FogCoord;"            
+                "\n");
         }
 
-        s.append("\n");
-    }
-    //============================================================================
-    //
-    // Define the output varying interface from the vertex shader.
-    //
-    //============================================================================
-
-    if (profile != EEsProfile) {
-        TString& s = stageBuiltins[EShLangVertex];
-
-        if (version < 130) {
-            s.append("varying vec4  gl_FrontColor;");
-            s.append("varying vec4  gl_BackColor;");
-            s.append("varying vec4  gl_FrontSecondaryColor;");
-            s.append("varying vec4  gl_BackSecondaryColor;");
-            s.append("varying vec4  gl_TexCoord[];");
-            s.append("varying float gl_FogFragCoord;");
-        } else if (version < FirstProfileVersion || profile == ECompatibilityProfile) {
-            s.append("out vec4  gl_FrontColor;");
-            s.append("out vec4  gl_BackColor;");
-            s.append("out vec4  gl_FrontSecondaryColor;");
-            s.append("out vec4  gl_BackSecondaryColor;");
-            s.append("out vec4  gl_TexCoord[];");
-            s.append("out float gl_FogFragCoord;");
-        }
-
-        s.append("\n");
-    }
-    {
-        //============================================================================
-        //
-        // Define the input varying interface to the fragment shader.
-        //
-        //============================================================================
-
-        if (profile != EEsProfile) {
-            TString& s = stageBuiltins[EShLangFragment];
+        if (version < 150) {
             if (version < 130) {
-                s.append("varying vec4  gl_Color;");
-                s.append("varying vec4  gl_SecondaryColor;");
-                s.append("varying vec4  gl_TexCoord[];");
-                s.append("varying float gl_FogFragCoord;");
-            } else if (version < FirstProfileVersion || profile == ECompatibilityProfile) {
-                s.append("in vec4  gl_Color;");
-                s.append("in vec4  gl_SecondaryColor;");
-                s.append("in vec4  gl_TexCoord[];");
-                s.append("in float gl_FogFragCoord;");
+                stageBuiltins[EShLangVertex].append(
+                    "        vec4  gl_ClipVertex;"       // needs qualifier fixed later
+                    "varying vec4  gl_FrontColor;"
+                    "varying vec4  gl_BackColor;"
+                    "varying vec4  gl_FrontSecondaryColor;"
+                    "varying vec4  gl_BackSecondaryColor;"
+                    "varying vec4  gl_TexCoord[];"
+                    "varying float gl_FogFragCoord;"
+                    "\n");
+            } else if (IncludeLegacy(version, profile)) {
+                stageBuiltins[EShLangVertex].append(
+                    "    vec4  gl_ClipVertex;"       // needs qualifier fixed later
+                    "out vec4  gl_FrontColor;"
+                    "out vec4  gl_BackColor;"
+                    "out vec4  gl_FrontSecondaryColor;"
+                    "out vec4  gl_BackSecondaryColor;"
+                    "out vec4  gl_TexCoord[];"
+                    "out float gl_FogFragCoord;"
+                    "\n");
             }
+            stageBuiltins[EShLangVertex].append(
+                "vec4 gl_Position;"   // needs qualifier fixed later
+                "float gl_PointSize;" // needs qualifier fixed later
+                );
 
-            s.append("\n");
+            if (version == 130 || version == 140)
+                stageBuiltins[EShLangVertex].append(
+                    "out float gl_ClipDistance[];"
+                    );
+        } else {
+            // version >= 150
+            stageBuiltins[EShLangVertex].append(
+                "out gl_PerVertex {"
+                    "vec4 gl_Position;"     // needs qualifier fixed later
+                    "float gl_PointSize;"   // needs qualifier fixed later
+                    "float gl_ClipDistance[];"
+                    );
+            if (IncludeLegacy(version, profile))
+                stageBuiltins[EShLangVertex].append(
+                    "vec4 gl_ClipVertex;"   // needs qualifier fixed later
+                    "vec4 gl_FrontColor;"
+                    "vec4 gl_BackColor;"
+                    "vec4 gl_FrontSecondaryColor;"
+                    "vec4 gl_BackSecondaryColor;"
+                    "vec4 gl_TexCoord[];"
+                    "float gl_FogFragCoord;"
+                    );
+            stageBuiltins[EShLangVertex].append(
+                "};"
+                "\n");
+        }
+        if (version >= 130)
+            stageBuiltins[EShLangVertex].append(
+                "int gl_VertexID;"     // needs qualifier fixed later
+                );
+        if (version >= 140)
+            stageBuiltins[EShLangVertex].append(
+                "int gl_InstanceID;"   // needs qualifier fixed later
+                );
+    } else {
+        // ES profile
+        if (version == 100) {
+            stageBuiltins[EShLangVertex].append(
+                "highp   vec4  gl_Position;"  // needs qualifier fixed later
+                "mediump float gl_PointSize;" // needs qualifier fixed later
+                );
+        } else {
+            stageBuiltins[EShLangVertex].append(
+                "highp int gl_VertexID;"     // needs qualifier fixed later
+                "highp int gl_InstanceID;"   // needs qualifier fixed later
+
+                "highp vec4  gl_Position;"   // needs qualifier fixed later
+                "highp float gl_PointSize;"  // needs qualifier fixed later
+                );
         }
     }
+
+    //============================================================================
+    //
+    // Define the interface to the geometry shader.
+    //
+    //============================================================================
+
+    if (profile == ECoreProfile || profile == ECompatibilityProfile) {
+        stageBuiltins[EShLangGeometry].append(
+            "in gl_PerVertex {"
+                "vec4 gl_Position;"
+                "float gl_PointSize;"
+                "float gl_ClipDistance[];"
+                );
+        if (profile == ECompatibilityProfile)
+            stageBuiltins[EShLangGeometry].append(
+                "vec4 gl_ClipVertex;"
+                "vec4 gl_FrontColor;"
+                "vec4 gl_BackColor;"
+                "vec4 gl_FrontSecondaryColor;"
+                "vec4 gl_BackSecondaryColor;"
+                "vec4 gl_TexCoord[];"
+                "float gl_FogFragCoord;"
+                );
+        stageBuiltins[EShLangGeometry].append(
+            "} gl_in[];"
+
+            "in int gl_PrimitiveIDIn;"
+            "out gl_PerVertex {"
+                "vec4 gl_Position;"
+                "float gl_PointSize;"
+                "float gl_ClipDistance[];"
+                "\n");
+        if (version >= 400 && profile == ECompatibilityProfile)
+            stageBuiltins[EShLangGeometry].append(
+                "vec4 gl_ClipVertex;"
+                "vec4 gl_FrontColor;"
+                "vec4 gl_BackColor;"
+                "vec4 gl_FrontSecondaryColor;"
+                "vec4 gl_BackSecondaryColor;"
+                "vec4 gl_TexCoord[];"
+                "float gl_FogFragCoord;"
+                );
+        stageBuiltins[EShLangGeometry].append(
+            "};"
+
+            "out int gl_PrimitiveID;"
+            "out int gl_Layer;"
+            "\n");
+
+        if (version < 400 && profile == ECompatibilityProfile)
+            stageBuiltins[EShLangGeometry].append(
+            "out vec4 gl_ClipVertex;"
+            );
+
+        if (version >= 400)
+            stageBuiltins[EShLangGeometry].append(
+            "in int gl_InvocationID;"
+            );
+        if (version >= 410)
+            stageBuiltins[EShLangGeometry].append(
+            "out int gl_ViewportIndex;"
+            );
+    }
+
+    //============================================================================
+    //
+    // Define the interface to the tessellation control shader.
+    //
+    //============================================================================
+
+    if (version >= 400) {
+        // TODO: tessellation: gl_MaxPatchVertices below needs to move to resources mechanism
+        stageBuiltins[EShLangTessControl].append(
+            "const int gl_MaxPatchVertices = 32;"
+            );
+
+        stageBuiltins[EShLangTessControl].append(
+            "in gl_PerVertex {"
+                "vec4 gl_Position;"
+                "float gl_PointSize;"
+                "float gl_ClipDistance[];"
+                );
+        if (profile == ECompatibilityProfile)
+            stageBuiltins[EShLangTessControl].append(
+                "vec4 gl_ClipVertex;"
+                "vec4 gl_FrontColor;"
+                "vec4 gl_BackColor;"
+                "vec4 gl_FrontSecondaryColor;"
+                "vec4 gl_BackSecondaryColor;"
+                "vec4 gl_TexCoord[];"
+                "float gl_FogFragCoord;"
+                );
+        stageBuiltins[EShLangTessControl].append(
+            "} gl_in[gl_MaxPatchVertices];"
+
+            "in int gl_PatchVerticesIn;"
+            "in int gl_PrimitiveID;"
+            "in int gl_InvocationID;"
+
+            "out gl_PerVertex {"
+                "vec4 gl_Position;"
+                "float gl_PointSize;"
+                "float gl_ClipDistance[];"
+                );
+        if (profile == ECompatibilityProfile)
+            stageBuiltins[EShLangTessControl].append(
+                "vec4 gl_ClipVertex;"
+                "vec4 gl_FrontColor;"
+                "vec4 gl_BackColor;"
+                "vec4 gl_FrontSecondaryColor;"
+                "vec4 gl_BackSecondaryColor;"
+                "vec4 gl_TexCoord[];"
+                "float gl_FogFragCoord;"
+                );
+        stageBuiltins[EShLangTessControl].append(
+            "} gl_out[];"
+
+            "patch out float gl_TessLevelOuter[4];"
+            "patch out float gl_TessLevelInner[2];"
+            "\n");
+    }
+
+    //============================================================================
+    //
+    // Define the interface to the tessellation evaluation shader.
+    //
+    //============================================================================
+
+    if (version >= 400) {
+        // TODO: tessellation: gl_MaxPatchVertices below needs to move to resources mechanism
+        stageBuiltins[EShLangTessEvaluation].append(
+            "const int gl_MaxPatchVertices = 32;"
+            );
+
+        stageBuiltins[EShLangTessEvaluation].append(
+            "in gl_PerVertex {"
+                "vec4 gl_Position;"
+                "float gl_PointSize;"
+                "float gl_ClipDistance[];"
+            );
+        if (version >= 400 && profile == ECompatibilityProfile)
+            stageBuiltins[EShLangTessEvaluation].append(
+                "vec4 gl_ClipVertex;"
+                "vec4 gl_FrontColor;"
+                "vec4 gl_BackColor;"
+                "vec4 gl_FrontSecondaryColor;"
+                "vec4 gl_BackSecondaryColor;"
+                "vec4 gl_TexCoord[];"
+                "float gl_FogFragCoord;"
+                );
+        stageBuiltins[EShLangTessEvaluation].append(
+            "} gl_in[gl_MaxPatchVertices];"
+     
+            "in int gl_PatchVerticesIn;"
+            "in int gl_PrimitiveID;"
+            "in vec3 gl_TessCoord;"
+
+            "patch in float gl_TessLevelOuter[4];"
+            "patch in float gl_TessLevelInner[2];"
+                
+            "out gl_PerVertex {"
+                "vec4 gl_Position;"
+                "float gl_PointSize;"
+                "float gl_ClipDistance[];"
+            );
+        if (version >= 400 && profile == ECompatibilityProfile)
+            stageBuiltins[EShLangTessEvaluation].append(
+                "vec4 gl_ClipVertex;"
+                "vec4 gl_FrontColor;"
+                "vec4 gl_BackColor;"
+                "vec4 gl_FrontSecondaryColor;"
+                "vec4 gl_BackSecondaryColor;"
+                "vec4 gl_TexCoord[];"
+                "float gl_FogFragCoord;"
+                );
+        stageBuiltins[EShLangTessEvaluation].append(
+            "};"
+            "\n");
+    }
+
+    //============================================================================
+    //
+    // Define the interface to the fragment shader.
+    //
+    //============================================================================
+
+    if (profile != EEsProfile) {
+
+        stageBuiltins[EShLangFragment].append(
+            "vec4  gl_FragCoord;"   // needs qualifier fixed later
+            "bool  gl_FrontFacing;" // needs qualifier fixed later
+            "float gl_FragDepth;"   // needs qualifier fixed later
+            );
+        if (version >= 120)
+            stageBuiltins[EShLangFragment].append(
+                "vec2 gl_PointCoord;"  // needs qualifier fixed later
+                );
+        if (IncludeLegacy(version, profile) || (! ForwardCompatibility && version < 420))
+            stageBuiltins[EShLangFragment].append(
+                "vec4 gl_FragColor;"   // needs qualifier fixed later
+                );
+
+        if (version < 130) {
+            stageBuiltins[EShLangFragment].append(
+                "varying vec4  gl_Color;"
+                "varying vec4  gl_SecondaryColor;"
+                "varying vec4  gl_TexCoord[];"
+                "varying float gl_FogFragCoord;"
+                );
+        } else {
+            stageBuiltins[EShLangFragment].append(
+                "in float gl_ClipDistance[];"
+                );
+
+            if (IncludeLegacy(version, profile)) {
+                if (version < 410)
+                    stageBuiltins[EShLangFragment].append(
+                        "in float gl_FogFragCoord;"
+                        "in vec4  gl_TexCoord[];"
+                        "in vec4  gl_Color;"
+                        "in vec4  gl_SecondaryColor;"
+                        );
+                else
+                    stageBuiltins[EShLangFragment].append(
+                        "in gl_PerFragment {"
+                            "in float gl_FogFragCoord;"
+                            "in vec4  gl_TexCoord[];"
+                            "in vec4  gl_Color;"
+                            "in vec4  gl_SecondaryColor;"
+                        "};"
+                        );
+            }
+        }
+
+        if (version >= 150)
+            stageBuiltins[EShLangFragment].append(
+                "flat in int gl_PrimitiveID;"
+                );
+
+        if (version >= 400)
+            stageBuiltins[EShLangFragment].append(
+                "flat in  int  gl_SampleID;"
+                "     in  vec2 gl_SamplePosition;"
+                "flat in  int  gl_SampleMaskIn[];"
+                "     out int  gl_SampleMask[];"
+                );
+
+        if (version >= 430)
+            stageBuiltins[EShLangFragment].append(
+                "flat in int gl_Layer;"
+                "flat in int gl_ViewportIndex;"
+                );
+    } else {
+        // ES profile
+
+        if (version == 100)
+            stageBuiltins[EShLangFragment].append(
+                "mediump vec4 gl_FragCoord;"    // needs qualifier fixed later
+                "        bool gl_FrontFacing;"  // needs qualifier fixed later
+                "mediump vec4 gl_FragColor;"    // needs qualifier fixed later
+                "mediump vec2 gl_PointCoord;"   // needs qualifier fixed later
+                );
+        else if (version == 300)
+            stageBuiltins[EShLangFragment].append(
+                "highp   vec4  gl_FragCoord;"    // needs qualifier fixed later
+                "        bool  gl_FrontFacing;"  // needs qualifier fixed later
+                "mediump vec2  gl_PointCoord;"   // needs qualifier fixed later
+                "highp   float gl_FragDepth;"    // needs qualifier fixed later
+                );
+    }
+    stageBuiltins[EShLangFragment].append("\n");
 
     if (version >= 130)
         add2ndGenerationSamplingImaging(version, profile);
@@ -1108,25 +1478,24 @@ void TBuiltIns::addQueryFunctions(TSampler sampler, TString& typeName, int versi
     if (version < 430 && sampler.image)
         return;
 
-    TString& s = commonBuiltins;
     if (profile == EEsProfile)
-        s.append("highp ");
+        commonBuiltins.append("highp ");
     int dims = dimMap[sampler.dim] + (sampler.arrayed ? 1 : 0) - (sampler.dim == EsdCube ? 1 : 0);
     if (dims == 1)
-        s.append("int");
+        commonBuiltins.append("int");
     else {
-        s.append("ivec");
-        s.append(postfixes[dims]);
+        commonBuiltins.append("ivec");
+        commonBuiltins.append(postfixes[dims]);
     }
     if (sampler.image)
-        s.append(" imageSize(");
+        commonBuiltins.append(" imageSize(");
     else
-        s.append(" textureSize(");
-    s.append(typeName);
+        commonBuiltins.append(" textureSize(");
+    commonBuiltins.append(typeName);
     if (! sampler.image && sampler.dim != EsdRect && sampler.dim != EsdBuffer && ! sampler.ms)
-        s.append(",int);\n");
+        commonBuiltins.append(",int);\n");
     else
-        s.append(");\n");
+        commonBuiltins.append(");\n");
 }
 
 //
@@ -1421,7 +1790,7 @@ void TBuiltIns::initialize(const TBuiltInResource &resources, int version, EProf
             snprintf(builtInConstant, maxSize, "const int  gl_MaxFragmentUniformComponents = %d;", resources.maxFragmentUniformComponents);
             s.append(builtInConstant);
 
-            if (version < FirstProfileVersion || profile == ECompatibilityProfile) {
+            if (IncludeLegacy(version, profile)) {
                 //
                 // OpenGL'uniform' state.  Page numbers are in reference to version
                 // 1.4 of the OpenGL specification.
@@ -1430,51 +1799,76 @@ void TBuiltIns::initialize(const TBuiltInResource &resources, int version, EProf
                 //
                 // Matrix state. p. 31, 32, 37, 39, 40.
                 //
-                s.append("uniform mat4  gl_TextureMatrix[gl_MaxTextureCoords];");
+                s.append("uniform mat4  gl_TextureMatrix[gl_MaxTextureCoords];"
 
                 //
                 // Derived matrix state that provides inverse and transposed versions
                 // of the matrices above.
                 //
-                s.append("uniform mat4  gl_TextureMatrixInverse[gl_MaxTextureCoords];");
+                         "uniform mat4  gl_TextureMatrixInverse[gl_MaxTextureCoords];"
 
-                s.append("uniform mat4  gl_TextureMatrixTranspose[gl_MaxTextureCoords];");
+                         "uniform mat4  gl_TextureMatrixTranspose[gl_MaxTextureCoords];"
 
-                s.append("uniform mat4  gl_TextureMatrixInverseTranspose[gl_MaxTextureCoords];");
+                         "uniform mat4  gl_TextureMatrixInverseTranspose[gl_MaxTextureCoords];"
 
                 //
                 // Clip planes p. 42.
                 //
-                s.append("uniform vec4  gl_ClipPlane[gl_MaxClipPlanes];");
+                         "uniform vec4  gl_ClipPlane[gl_MaxClipPlanes];"
 
                 //
                 // Light State p 50, 53, 55.
                 //
-                s.append("uniform gl_LightSourceParameters  gl_LightSource[gl_MaxLights];");
+                         "uniform gl_LightSourceParameters  gl_LightSource[gl_MaxLights];"
 
                 //
                 // Derived state from products of light.
                 //
-                s.append("uniform gl_LightProducts gl_FrontLightProduct[gl_MaxLights];");
-                s.append("uniform gl_LightProducts gl_BackLightProduct[gl_MaxLights];");
+                         "uniform gl_LightProducts gl_FrontLightProduct[gl_MaxLights];"
+                         "uniform gl_LightProducts gl_BackLightProduct[gl_MaxLights];"
 
                 //
                 // Texture Environment and Generation, p. 152, p. 40-42.
                 //
-                s.append("uniform vec4  gl_TextureEnvColor[gl_MaxTextureImageUnits];");
-                s.append("uniform vec4  gl_EyePlaneS[gl_MaxTextureCoords];");
-                s.append("uniform vec4  gl_EyePlaneT[gl_MaxTextureCoords];");
-                s.append("uniform vec4  gl_EyePlaneR[gl_MaxTextureCoords];");
-                s.append("uniform vec4  gl_EyePlaneQ[gl_MaxTextureCoords];");
-                s.append("uniform vec4  gl_ObjectPlaneS[gl_MaxTextureCoords];");
-                s.append("uniform vec4  gl_ObjectPlaneT[gl_MaxTextureCoords];");
-                s.append("uniform vec4  gl_ObjectPlaneR[gl_MaxTextureCoords];");
-                s.append("uniform vec4  gl_ObjectPlaneQ[gl_MaxTextureCoords];");
+                         "uniform vec4  gl_TextureEnvColor[gl_MaxTextureImageUnits];"
+                         "uniform vec4  gl_EyePlaneS[gl_MaxTextureCoords];"
+                         "uniform vec4  gl_EyePlaneT[gl_MaxTextureCoords];"
+                         "uniform vec4  gl_EyePlaneR[gl_MaxTextureCoords];"
+                         "uniform vec4  gl_EyePlaneQ[gl_MaxTextureCoords];"
+                         "uniform vec4  gl_ObjectPlaneS[gl_MaxTextureCoords];"
+                         "uniform vec4  gl_ObjectPlaneT[gl_MaxTextureCoords];"
+                         "uniform vec4  gl_ObjectPlaneR[gl_MaxTextureCoords];"
+                         "uniform vec4  gl_ObjectPlaneQ[gl_MaxTextureCoords];");
             }
+
+            if (version >= 130) {
+                snprintf(builtInConstant, maxSize, "const int gl_MaxClipDistances = %d;", resources.maxClipDistances);
+                s.append(builtInConstant);
+            }
+            
         }
 
         s.append("\n");
     }
+}
+
+//
+// To support special built-ins that have a special qualifier that cannot be declared textually
+// in a shader, like gl_Position.
+//
+// This lets the type of the built-in be declared textually, and then have just its qualifier be
+// updated afterward.
+//
+// Safe to call even if name is not present.
+//
+// N.B.: longer term, having special qualifiers is probably not the way to go, but this is keeping
+// in place the legacy ones.
+//
+void SpecialQualifier(const char* name, TStorageQualifier qualifier, TSymbolTable& symbolTable)
+{
+    TSymbol* symbol = symbolTable.find(name);
+    if (symbol)
+        symbol->getWritableType().getQualifier().storage = qualifier;
 }
 
 //
@@ -1485,59 +1879,31 @@ void TBuiltIns::initialize(const TBuiltInResource &resources, int version, EProf
 //
 void IdentifyBuiltIns(int version, EProfile profile, EShLanguage language, TSymbolTable& symbolTable)
 {
-    TPrecisionQualifier pq;
     //
     // First, insert some special built-in variables that are not in
     // the built-in text strings.
     //
     switch(language) {
     case EShLangVertex:
-        pq = profile == EEsProfile ? EpqHigh : EpqNone;
-        symbolTable.insert(*new TVariable(NewPoolTString("gl_Position"),    TType(EbtFloat, EvqPosition, pq, 4)));
-
-        pq = profile == EEsProfile ? (version > 100 ? EpqHigh : EpqMedium) : EpqNone;
-        symbolTable.insert(*new TVariable(NewPoolTString("gl_PointSize"),   TType(EbtFloat, EvqPointSize, pq, 1)));
-
-        if (profile != EEsProfile)
-            symbolTable.insert(*new TVariable(NewPoolTString("gl_ClipVertex"),  TType(EbtFloat, EvqClipVertex, 4)));
-
-        if (version >= 130) {
-            pq = profile == EEsProfile ? EpqHigh : EpqNone;
-            symbolTable.insert(*new TVariable(NewPoolTString("gl_VertexID"),    TType(EbtInt, EvqVertexId, pq, 1)));
-            if (version >= 140)
-                symbolTable.insert(*new TVariable(NewPoolTString("gl_InstanceID"),  TType(EbtInt, EvqInstanceId, pq, 1)));
-        }
+        SpecialQualifier("gl_Position",   EvqPosition, symbolTable);
+        SpecialQualifier("gl_PointSize",  EvqPointSize, symbolTable);
+        SpecialQualifier("gl_ClipVertex", EvqClipVertex, symbolTable);
+        SpecialQualifier("gl_VertexID",   EvqVertexId, symbolTable);
+        SpecialQualifier("gl_InstanceID", EvqInstanceId, symbolTable);
         break;
 
     case EShLangTessControl:
     case EShLangTessEvaluation:
     case EShLangGeometry:
-        // TODO: desktop functionality: support new stages
+        // TODO: desktop functionality: support new stages: note it is probably best to stop adding/using special qualifiers, given the passthrough nature of these stages
         break;
 
     case EShLangFragment:
-        symbolTable.insert(*new TVariable(NewPoolTString("gl_FrontFacing"), TType(EbtBool,  EvqFace, 1)));
-
-        if (profile == EEsProfile)
-            pq = version == 100 ? EpqMedium : EpqHigh;
-        else
-            pq = EpqNone;
-        symbolTable.insert(*new TVariable(NewPoolTString("gl_FragCoord"),   TType(EbtFloat, EvqFragCoord, pq, 4)));
-
-        if (profile == EEsProfile || version >= 120) {
-            pq = profile == EEsProfile ? EpqMedium : EpqNone;
-            symbolTable.insert(*new TVariable(NewPoolTString("gl_PointCoord"),  TType(EbtFloat, EvqPointCoord, pq, 2)));
-        }
-
-        if (version < FirstProfileVersion || profile == ECompatibilityProfile || (! ForwardCompatibility && profile != EEsProfile && version < 420)) {
-            pq = profile == EEsProfile ? EpqMedium : EpqNone;
-            symbolTable.insert(*new TVariable(NewPoolTString("gl_FragColor"),   TType(EbtFloat, EvqFragColor, pq, 4)));
-        }
-
-        if (profile != EEsProfile || version > 100) {
-            pq = profile == EEsProfile ? EpqHigh : EpqNone;
-            symbolTable.insert(*new TVariable(NewPoolTString("gl_FragDepth"),   TType(EbtFloat, EvqFragDepth, pq, 1)));
-        }
+        SpecialQualifier("gl_FrontFacing", EvqFace, symbolTable);
+        SpecialQualifier("gl_FragCoord",   EvqFragCoord, symbolTable);
+        SpecialQualifier("gl_PointCoord",  EvqPointCoord, symbolTable);
+        SpecialQualifier("gl_FragColor",   EvqFragColor, symbolTable);
+        SpecialQualifier("gl_FragDepth",   EvqFragDepth, symbolTable);
         break;
 
     case EShLangCompute:
@@ -1689,7 +2055,7 @@ void IdentifyBuiltIns(int version, EProfile profile, EShLanguage language, TSymb
 
     case EShLangFragment:
         // Set up gl_FragData based on current array size.
-        if (version < FirstProfileVersion || profile == ECompatibilityProfile || (! ForwardCompatibility && profile != EEsProfile && version < 420)) {
+        if (version == 100 || IncludeLegacy(version, profile) || (! ForwardCompatibility && profile != EEsProfile && version < 420)) {
             TPrecisionQualifier pq = profile == EEsProfile ? EpqMedium : EpqNone;
             TType fragData(EbtFloat, EvqFragColor, pq, 4);
             TArraySizes* arraySizes = new TArraySizes;

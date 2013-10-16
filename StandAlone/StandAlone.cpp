@@ -126,7 +126,8 @@ const char* DefaultConfig =
 "MaxVertexOutputVectors 16\n"
 "MaxFragmentInputVectors 15\n"
 "MinProgramTexelOffset -8\n"
-"MaxProgramTexelOffset 7\n"    
+"MaxProgramTexelOffset 7\n"
+"MaxClipDistances 8\n"
 "nonInductiveForLoops 1\n"
 "whileLoops 1\n"
 "doWhileLoops 1\n"
@@ -208,6 +209,8 @@ void ProcessConfigFile()
             Resources.minProgramTexelOffset = value;
         else if (strcmp(token, "MaxProgramTexelOffset") == 0)
             Resources.maxProgramTexelOffset = value;
+        else if (strcmp(token, "MaxClipDistances") == 0)
+            Resources.maxClipDistances = value;
         else if (strcmp(token, "nonInductiveForLoops") == 0)
             Resources.limits.nonInductiveForLoops = (value != 0);
         else if (strcmp(token, "whileLoops") == 0)

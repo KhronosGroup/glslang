@@ -11,5 +11,9 @@ Warning, version 400 is not yet complete; some version-specific features are pre
 0:6          0 (const int)
 0:7      EmitVertex (void)
 0:8      EndPrimitive (void)
+0:10      Sequence
+0:10        move second child to first child (int)
+0:10          'id' (int)
+0:10          'gl_InvocationID' (in int)
 0:?   Linker Objects
 

@@ -1,4 +1,4 @@
-ERROR: 0:2: 'in' : must be qualified as 'flat' uint
+ERROR: 0:2: 'uint' : must be qualified as flat in
 ERROR: 0:6: 'in' : cannot be bool 
 ERROR: 0:20: 'const' :  non-matching types for const initializer  
 ERROR: 0:24: 'const' :  non-matching types for const initializer  

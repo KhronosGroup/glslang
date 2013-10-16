@@ -21,7 +21,6 @@ ERROR: 0:112: 'depth_any' : unrecognized layout identifier
 ERROR: 0:115: 'depth_greater' : unrecognized layout identifier 
 ERROR: 0:118: 'depth_less' : unrecognized layout identifier 
 ERROR: 0:121: 'depth_unchanged' : unrecognized layout identifier 
-ERROR: 0:123: 'gl_' : reserved built-in name 
 ERROR: 0:150: 'constructor' : constructing from a non-dereferenced array 
 ERROR: 0:152: '=' :  cannot convert from 'const 2-element array of 4-component vector of float' to '3-element array of 4-component vector of float'
 ERROR: 0:172: 'x' : undeclared identifier 
@@ -52,7 +51,7 @@ ERROR: 0:226: 'in' : not allowed in nested scope
 ERROR: 0:227: 'in' : not allowed in nested scope 
 ERROR: 0:228: 'in' : not allowed in nested scope 
 ERROR: 0:232: 'out' : not allowed in nested scope 
-ERROR: 53 compilation errors.  No code generated.
+ERROR: 52 compilation errors.  No code generated.
 
 ERROR: node is still EOpNull!
 0:5  Sequence
@@ -270,5 +269,5 @@ ERROR: node is still EOpNull!
 0:?     'factor' (layout(location=3 ) out 4-component vector of float)
 0:?     'colors' (layout(location=2 ) out 3-element array of 4-component vector of float)
 0:?     'gl_FragDepth' (gl_FragDepth float)
-0:?     'gl_Color' (smooth in 4-component vector of float)
+0:?     '__anon__2' (in block)
 

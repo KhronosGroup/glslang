@@ -13,8 +13,18 @@ ERROR: node is still EOpNull!
 0:11            'arrayedSampler' (uniform 5-element array of sampler2D)
 0:11            'i' (flat in int)
 0:11          'c2D' (smooth in 2-component vector of float)
+0:12      move second child to first child (float)
+0:12        direct index (float)
+0:12          'outp' (out 4-component vector of float)
+0:12          Constant:
+0:12            0 (const int)
+0:12        direct index (smooth in float)
+0:12          'gl_ClipDistance' (smooth in unsized array of float)
+0:12          Constant:
+0:12            1 (const int)
 0:?   Linker Objects
 0:?     'c2D' (smooth in 2-component vector of float)
 0:?     'i' (flat in int)
+0:?     'outp' (out 4-component vector of float)
 0:?     'arrayedSampler' (uniform 5-element array of sampler2D)
 

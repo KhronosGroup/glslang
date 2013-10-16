@@ -6,4 +6,6 @@ void main()
     EndStreamPrimitive(0);
     EmitVertex();
     EndPrimitive();
+
+    int id = gl_InvocationID;
 }

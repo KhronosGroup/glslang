@@ -5,30 +5,33 @@ ERROR: 0:11: 'gl_Position' : cannot add storage, auxiliary, memory, interpolatio
 ERROR: 0:12: '' : can only have one auxiliary qualifier (centroid, patch, and sample) 
 ERROR: 0:12: '' : replicated qualifiers 
 ERROR: 0:12: 'foo' : identifier not previously declared 
-ERROR: 0:25: 'length' :  array must be declared with a size before using this method
-ERROR: 0:28: 'length' : incomplete method syntax 
-ERROR: 0:29: 'length' : method does not accept any arguments 
-ERROR: 0:30: 'flizbit' : only the length method is supported for array 
-ERROR: 0:30: '=' :  cannot convert from '7-element array of float' to 'int'
-ERROR: 0:31: 'flizbit' : only the length method is supported for array 
-ERROR: 0:31: 'f' : no matching overloaded function found 
-ERROR: 0:31: 'a4' : redefinition 
-ERROR: 0:32: 'arrays of arrays' : not supported with this profile: none
-ERROR: 0:33: 'arrays of arrays' : not supported with this profile: none
-ERROR: 0:34: 'arrays of arrays' : not supported with this profile: none
+ERROR: 0:21: 'gl_ClipDistance' : undeclared identifier 
+ERROR: 0:21: 'gl_ClipDistance' :  left of '[' is not of type array, matrix, or vector  
+ERROR: 0:21: 'assign' :  l-value required (can't modify a const)
+ERROR: 0:28: 'length' :  array must be declared with a size before using this method
+ERROR: 0:31: 'length' : incomplete method syntax 
+ERROR: 0:32: 'length' : method does not accept any arguments 
+ERROR: 0:33: 'flizbit' : only the length method is supported for array 
+ERROR: 0:33: '=' :  cannot convert from '7-element array of float' to 'int'
+ERROR: 0:34: 'flizbit' : only the length method is supported for array 
+ERROR: 0:34: 'f' : no matching overloaded function found 
+ERROR: 0:34: 'a4' : redefinition 
 ERROR: 0:35: 'arrays of arrays' : not supported with this profile: none
 ERROR: 0:36: 'arrays of arrays' : not supported with this profile: none
 ERROR: 0:37: 'arrays of arrays' : not supported with this profile: none
-ERROR: 0:37: 'constructor' : array constructor needs one argument per array element 
-ERROR: 0:37: 'arrays of arrays' : not supported with this profile: none
 ERROR: 0:38: 'arrays of arrays' : not supported with this profile: none
-ERROR: 0:38: 'constructor' : array constructor needs one argument per array element 
-ERROR: 0:38: 'arrays of arrays' : not supported with this profile: none
-ERROR: 0:47: 'arrays of arrays' : not supported with this profile: none
-ERROR: 0:48: 'arrays of arrays' : not supported with this profile: none
-ERROR: 0:49: 'arrays of arrays' : not supported with this profile: none
+ERROR: 0:39: 'arrays of arrays' : not supported with this profile: none
+ERROR: 0:40: 'arrays of arrays' : not supported with this profile: none
+ERROR: 0:40: 'constructor' : array constructor needs one argument per array element 
+ERROR: 0:40: 'arrays of arrays' : not supported with this profile: none
+ERROR: 0:41: 'arrays of arrays' : not supported with this profile: none
+ERROR: 0:41: 'constructor' : array constructor needs one argument per array element 
+ERROR: 0:41: 'arrays of arrays' : not supported with this profile: none
 ERROR: 0:50: 'arrays of arrays' : not supported with this profile: none
-ERROR: 29 compilation errors.  No code generated.
+ERROR: 0:51: 'arrays of arrays' : not supported with this profile: none
+ERROR: 0:52: 'arrays of arrays' : not supported with this profile: none
+ERROR: 0:53: 'arrays of arrays' : not supported with this profile: none
+ERROR: 32 compilation errors.  No code generated.
 
 ERROR: node is still EOpNull!
 0:15  Function Definition: main( (void)
@@ -40,42 +43,50 @@ ERROR: node is still EOpNull!
 0:18      move second child to first child (4-component vector of float)
 0:18        'gl_Position' (invariant gl_Position 4-component vector of float)
 0:18        'attv4' (in 4-component vector of float)
-0:22      move second child to first child (4-component vector of float)
-0:22        'gl_Position' (invariant gl_Position 4-component vector of float)
-0:22        direct index (4-component vector of float)
-0:22          'b' (12-element array of 4-component vector of float)
-0:22          Constant:
-0:22            11 (const int)
-0:25      Sequence
-0:25        move second child to first child (int)
-0:25          'a1' (int)
+0:20      move second child to first child (4-component vector of float)
+0:20        'gl_ClipVertex' (gl_ClipVertex 4-component vector of float)
+0:20        'attv4' (in 4-component vector of float)
+0:21      move second child to first child (float)
+0:21        Constant:
+0:21          0.000000
+0:21        Constant:
+0:21          0.200000
+0:25      move second child to first child (4-component vector of float)
+0:25        'gl_Position' (invariant gl_Position 4-component vector of float)
+0:25        direct index (4-component vector of float)
+0:25          'b' (12-element array of 4-component vector of float)
 0:25          Constant:
-0:25            1 (const int)
-0:27      Sequence
-0:27        move second child to first child (int)
-0:27          'aa' (int)
-0:27          Constant:
-0:27            7 (const int)
+0:25            11 (const int)
 0:28      Sequence
 0:28        move second child to first child (int)
-0:28          'a2' (int)
-0:29      Sequence
-0:29        move second child to first child (int)
-0:29          'a3' (int)
-0:29          Constant:
-0:29            12 (const int)
-0:37      Sequence
-0:37        move second child to first child (2-element array of float)
-0:37          'md9' (2-element array of float)
-0:37          Construct float (const 2-element array of float)
-0:38      Sequence
-0:38        move second child to first child (2-element array of float)
-0:38          'md11' (2-element array of float)
-0:38          Construct float (const 2-element array of float)
-0:40      move second child to first child (float)
-0:40        'gl_PointSize' (invariant gl_PointSize float)
-0:40        Constant:
-0:40          3.800000
+0:28          'a1' (int)
+0:28          Constant:
+0:28            1 (const int)
+0:30      Sequence
+0:30        move second child to first child (int)
+0:30          'aa' (int)
+0:30          Constant:
+0:30            7 (const int)
+0:31      Sequence
+0:31        move second child to first child (int)
+0:31          'a2' (int)
+0:32      Sequence
+0:32        move second child to first child (int)
+0:32          'a3' (int)
+0:32          Constant:
+0:32            12 (const int)
+0:40      Sequence
+0:40        move second child to first child (2-element array of float)
+0:40          'md9' (2-element array of float)
+0:40          Construct float (const 2-element array of float)
+0:41      Sequence
+0:41        move second child to first child (2-element array of float)
+0:41          'md11' (2-element array of float)
+0:41          Construct float (const 2-element array of float)
+0:43      move second child to first child (float)
+0:43        'gl_PointSize' (invariant gl_PointSize float)
+0:43        Constant:
+0:43          3.800000
 0:?   Linker Objects
 0:?     'i' (in 4-component vector of float)
 0:?     'o' (smooth out 4-component vector of float)

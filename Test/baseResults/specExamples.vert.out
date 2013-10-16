@@ -32,7 +32,6 @@ ERROR: 0:95: 'binding' : not supported
 ERROR: 0:96: 'binding' : not supported 
 ERROR: 0:97: 'binding' : not supported 
 ERROR: 0:106: '' : vertex input cannot be further qualified 
-ERROR: 0:106: 'gl_' : reserved built-in name 
 ERROR: 0:112: 'ColorIvn' : identifier not previously declared 
 ERROR: 0:119: 'a' : redefinition 
 ERROR: 0:132: 'shared' : not supported in this stage: vertex
@@ -51,7 +50,7 @@ ERROR: 0:191: '=' :  cannot convert from 'const 4-component vector of float' to 
 ERROR: 0:192: 'constructor' : constructing from a non-dereferenced array 
 ERROR: 0:193: 'constructor' : constructing from a non-dereferenced array 
 ERROR: 0:194: 'constructor' : constructing from a non-dereferenced array 
-ERROR: 52 compilation errors.  No code generated.
+ERROR: 51 compilation errors.  No code generated.
 
 ERROR: node is still EOpNull!
 0:134  Function Definition: funcA(I21; (4-component vector of float)
@@ -257,7 +256,7 @@ ERROR: node is still EOpNull!
 0:?     'b2' (uniform int)
 0:?     'c2' (uniform int)
 0:?     'd2' (uniform int)
-0:?     'gl_FrontColor' (flat in 4-component vector of float)
+0:?     '__anon__5' (out block)
 0:?     'ColorInv' (smooth out 3-component vector of float)
 0:?     'Color4' (invariant centroid smooth out 3-component vector of float)
 0:?     'position' (smooth out 4-component vector of float)
@@ -266,8 +265,8 @@ ERROR: node is still EOpNull!
 0:?     'c' (in 4-component vector of float)
 0:?     'd' (in 4-component vector of float)
 0:?     'v' (smooth out 4-component vector of float)
-0:?     '__anon__5' (layout(shared ) uniform block)
 0:?     '__anon__6' (layout(shared ) uniform block)
+0:?     '__anon__7' (layout(shared ) uniform block)
 0:?     'shv' (shared 4-component vector of float)
 0:?     'img1' (uniform image2D)
 0:?     'img2' (coherent uniform image2D)

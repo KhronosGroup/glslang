@@ -17,6 +17,9 @@ void main()
     centTexCoord = attv2; 
     gl_Position = attv4;
 
+    gl_ClipVertex = attv4;
+    gl_ClipDistance[1] = 0.2;  // ERROR
+
     vec3[12] a;
     vec4[a.length()] b;
     gl_Position = b[b.length()-1];

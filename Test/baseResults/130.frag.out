@@ -2,6 +2,14 @@ Warning, version 130 is not yet complete; most features are present, but a few a
 0:? Sequence
 0:16  Function Definition: main( (void)
 0:16    Function Parameters: 
+0:18    Sequence
+0:18      Sequence
+0:18        move second child to first child (float)
+0:18          'clip' (float)
+0:18          direct index (smooth in float)
+0:18            'gl_ClipDistance' (smooth in unsized array of float)
+0:18            Constant:
+0:18              3 (const int)
 0:?   Linker Objects
 0:?     'a' (3-component vector of float)
 0:?     'b' (float)

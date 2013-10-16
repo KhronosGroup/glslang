@@ -15,4 +15,5 @@ noperspective in float fnop;
 
 void main()
 {
+    float clip = gl_ClipDistance[3];
 }

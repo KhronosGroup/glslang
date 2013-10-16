@@ -4,7 +4,10 @@ Warning, version 420 is not yet complete; some version-specific features are pre
 0:40    Function Parameters: 
 0:42    Sequence
 0:42      move second child to first child (4-component vector of float)
-0:42        'gl_Position' (gl_Position 4-component vector of float)
+0:42        gl_Position: direct index for structure (gl_Position 4-component vector of float)
+0:42          '__anon__1' (out block)
+0:42          Constant:
+0:42            0 (const uint)
 0:42        Construct vec4 (4-component vector of float)
 0:42          'color' (in 3-component vector of float)
 0:42          Constant:

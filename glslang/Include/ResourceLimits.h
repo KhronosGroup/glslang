@@ -69,6 +69,7 @@ struct TBuiltInResource {
     int maxFragmentInputVectors;
     int minProgramTexelOffset;
     int maxProgramTexelOffset;
+    int maxClipDistances;
     TLimits limits;
 };
 

@@ -48,7 +48,10 @@ ERROR: node is still EOpNull!
 0:40        Constant:
 0:40          3.000000
 0:42      move second child to first child (4-component vector of float)
-0:42        'gl_Position' (invariant gl_Position 4-component vector of float)
+0:42        gl_Position: direct index for structure (invariant gl_Position 4-component vector of float)
+0:42          '__anon__0' (out block)
+0:42          Constant:
+0:42            0 (const uint)
 0:42        Construct vec4 (4-component vector of float)
 0:42          'f' (float)
 0:44      Sequence

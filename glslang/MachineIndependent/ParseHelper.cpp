@@ -1484,20 +1484,17 @@ void TParseContext::globalQualifierCheck(TSourceLoc loc, const TQualifier& quali
 
     if (publicType.basicType == EbtInt || publicType.basicType == EbtUint || publicType.basicType == EbtDouble) {
         profileRequires(loc, EEsProfile, 300, 0, "shader input/output");
-        if ((language != EShLangVertex   && qualifier.storage == EvqVaryingIn  && ! qualifier.flat) ||
-            (language != EShLangFragment && qualifier.storage == EvqVaryingOut && ! qualifier.flat)) {
-            error(loc, "must be qualified as 'flat'", GetStorageQualifierString(qualifier.storage), TType::getBasicString(publicType.basicType));
-
-            return;
+        if (! qualifier.flat) {
+            if (qualifier.storage == EvqVaryingIn && language == EShLangFragment)
+                error(loc, "must be qualified as flat", TType::getBasicString(publicType.basicType), GetStorageQualifierString(qualifier.storage));
+            else if (qualifier.storage == EvqVaryingOut && language == EShLangVertex && version == 300)
+                error(loc, "must be qualified as flat", TType::getBasicString(publicType.basicType), GetStorageQualifierString(qualifier.storage));
         }
     }
 
     if (language == EShLangVertex && qualifier.storage == EvqVaryingIn &&
-        (qualifier.isAuxiliary() || qualifier.isInterpolation() || qualifier.isMemory() || qualifier.invariant)) {
+        (qualifier.isAuxiliary() || qualifier.isInterpolation() || qualifier.isMemory() || qualifier.invariant))
         error(loc, "vertex input cannot be further qualified", "", "");
-
-        return;
-    }
 }
 
 //
@@ -1883,7 +1880,7 @@ TSymbol* TParseContext::redeclareBuiltin(TSourceLoc loc, const TString& identifi
         if (builtIn) {
             // Copy the symbol up to make a writable version
             newDeclaration = true;
-            symbol = symbolTable.copyUp(symbol)->getAsVariable();
+            symbol = symbolTable.copyUp(symbol);
         }
 
         // Now, modify the type of the copy, as per the type of the current redeclaration.
@@ -2573,16 +2570,33 @@ void TParseContext::addBlock(TSourceLoc loc, TTypeList& typeList, const TString*
     if (arraySizes)
         blockType.setArraySizes(arraySizes);
     blockType.getQualifier().layoutPacking = defaultQualification.layoutPacking;
-    TVariable* userTypeDef = new TVariable(blockName, blockType, true);
-    if (! symbolTable.insert(*userTypeDef)) {
-        error(loc, "redefinition", blockName->c_str(), "block name");
 
-        return;
+    //
+    // Don't make a user-defined type out of block name; that will cause an error
+    // if the same block name gets reused in a different interface.
+    //
+    // "Block names have no other use within a shader 
+    // beyond interface matching; it is a compile-time error to use a block name at global scope for anything 
+    // other than as a block name (e.g., use of a block name for a global variable name or function name is 
+    // currently reserved)."
+    //
+    // Use the symbol table to prevent normal reuse of the block's name, as a variable entry,
+    // whose type is EbtBlock, but without all the structure; that will come from the type
+    // the instances point to.
+    //
+    TType blockNameType(EbtBlock);
+    TVariable* blockNameVar = new TVariable(blockName, blockNameType);
+    if (! symbolTable.insert(*blockNameVar)) {
+        TSymbol* existingName = symbolTable.find(*blockName);
+        if (existingName->getType().getBasicType() != EbtBlock) {
+            error(loc, "block name cannot redefine a non-block name", blockName->c_str(), "");
+
+            return;
+        }
     }
 
-    // Add the variable, as anonymous or named instanceName
-
-    // make an anonymous variable if no name was provided
+    // Add the variable, as anonymous or named instanceName.
+    // Make an anonymous variable if no name was provided.
     if (! instanceName)
         instanceName = NewPoolTString("");
 
@@ -2596,7 +2610,7 @@ void TParseContext::addBlock(TSourceLoc loc, TTypeList& typeList, const TString*
         return;
     }
 
-    // save it in case there are no references in the AST, so the linker can error test against it
+    // Save it in the AST for linker use.
     intermediate.addSymbolLinkageNode(linkage, *variable);
 }
 
