@@ -775,14 +775,17 @@ declaration
         $$ = 0;
     }
     | type_qualifier SEMICOLON {
+        parseContext.pipeInOutFix($1.loc, $1.qualifier);
         parseContext.updateQualifierDefaults($1.loc, $1.qualifier);
         $$ = 0;
     }
     | type_qualifier IDENTIFIER SEMICOLON {
+        parseContext.pipeInOutFix($1.loc, $1.qualifier);
         parseContext.addQualifierToExisting($1.loc, $1.qualifier, *$2.string);
         $$ = 0;
     }
     | type_qualifier IDENTIFIER identifier_list SEMICOLON {
+        parseContext.pipeInOutFix($1.loc, $1.qualifier);
         $3->push_back($2.string);
         parseContext.addQualifierToExisting($1.loc, $1.qualifier, *$3);
         $$ = 0;
@@ -793,6 +796,7 @@ block_structure
     : type_qualifier IDENTIFIER LEFT_BRACE { parseContext.nestedBlockCheck($1.loc); } struct_declaration_list RIGHT_BRACE {
         --parseContext.structNestingLevel;
         parseContext.blockName = $2.string;
+        parseContext.pipeInOutFix($1.loc, $1.qualifier);
         parseContext.currentBlockDefaults = $1.qualifier;
         $$.loc = $1.loc;
         $$.typeList = $5;
@@ -1018,7 +1022,8 @@ fully_specified_type
         parseContext.precisionQualifierCheck($$.loc, $$);
     }
     | type_qualifier type_specifier  {
-        parseContext.globalQualifierFix($1.loc, $1.qualifier, $2);
+        parseContext.pipeInOutFix($1.loc, $1.qualifier);
+        parseContext.globalQualifierCheck($1.loc, $1.qualifier, $2);
 
         if ($2.arraySizes) {
             parseContext.profileRequires($2.loc, ENoProfile, 120, GL_3DL_array_objects, "arrayed type");
@@ -1052,21 +1057,21 @@ invariant_qualifier
 
 interpolation_qualifier
     : SMOOTH {
-        parseContext.globalCheck($1.loc, parseContext.symbolTable.atGlobalLevel(), "smooth");
+        parseContext.globalCheck($1.loc, "smooth");
         parseContext.profileRequires($1.loc, ENoProfile, 130, 0, "smooth");
         parseContext.profileRequires($1.loc, EEsProfile, 300, 0, "smooth");
         $$.init($1.loc);
         $$.qualifier.smooth = true;
     }
     | FLAT {
-        parseContext.globalCheck($1.loc, parseContext.symbolTable.atGlobalLevel(), "flat");
+        parseContext.globalCheck($1.loc, "flat");
         parseContext.profileRequires($1.loc, ENoProfile, 130, 0, "flat");
         parseContext.profileRequires($1.loc, EEsProfile, 300, 0, "flat");
         $$.init($1.loc);
         $$.qualifier.flat = true;
     }
     | NOPERSPECTIVE {
-        parseContext.globalCheck($1.loc, parseContext.symbolTable.atGlobalLevel(), "noperspective");
+        parseContext.globalCheck($1.loc, "noperspective");
         parseContext.requireProfile($1.loc, ~EEsProfile, "noperspective");
         parseContext.profileRequires($1.loc, ENoProfile, 130, 0, "noperspective");
         $$.init($1.loc);
@@ -1164,7 +1169,7 @@ storage_qualifier
         parseContext.requireNotRemoved($1.loc, ECoreProfile, 420, "attribute");
         parseContext.requireNotRemoved($1.loc, EEsProfile, 300, "attribute");
 
-        parseContext.globalCheck($1.loc, parseContext.symbolTable.atGlobalLevel(), "attribute");
+        parseContext.globalCheck($1.loc, "attribute");
 
         $$.init($1.loc);
         $$.qualifier.storage = EvqVaryingIn;
@@ -1175,7 +1180,7 @@ storage_qualifier
         parseContext.requireNotRemoved($1.loc, ECoreProfile, 420, "varying");
         parseContext.requireNotRemoved($1.loc, EEsProfile, 300, "varying");
 
-        parseContext.globalCheck($1.loc, parseContext.symbolTable.atGlobalLevel(), "varying");
+        parseContext.globalCheck($1.loc, "varying");
 
         $$.init($1.loc);
         if (parseContext.language == EShLangVertex)
@@ -1184,44 +1189,46 @@ storage_qualifier
             $$.qualifier.storage = EvqVaryingIn;
     }
     | INOUT {
-        parseContext.globalCheck($1.loc, parseContext.symbolTable.atGlobalLevel(), "out");
+        parseContext.globalCheck($1.loc, "inout");
         $$.init($1.loc);
         $$.qualifier.storage = EvqInOut;
     }
     | IN {
-        parseContext.globalCheck($1.loc, parseContext.symbolTable.atGlobalLevel(), "in");
+        parseContext.globalCheck($1.loc, "in");
         $$.init($1.loc);
+        // whether this is a parameter "in" or a pipeline "in" will get sorted out a bit later
         $$.qualifier.storage = EvqIn;
     }
     | OUT {
-        parseContext.globalCheck($1.loc, parseContext.symbolTable.atGlobalLevel(), "out");
+        parseContext.globalCheck($1.loc, "out");
         $$.init($1.loc);
+        // whether this is a parameter "out" or a pipeline "out" will get sorted out a bit later
         $$.qualifier.storage = EvqOut;
     }
     | CENTROID {
         parseContext.profileRequires($1.loc, ENoProfile, 120, 0, "centroid");
         parseContext.profileRequires($1.loc, EEsProfile, 300, 0, "centroid");
-        parseContext.globalCheck($1.loc, parseContext.symbolTable.atGlobalLevel(), "centroid");
+        parseContext.globalCheck($1.loc, "centroid");
         $$.init($1.loc);
         $$.qualifier.centroid = true;
     }
     | PATCH {
-        parseContext.globalCheck($1.loc, parseContext.symbolTable.atGlobalLevel(), "patch");
+        parseContext.globalCheck($1.loc, "patch");
         $$.init($1.loc);
         $$.qualifier.patch = true;
     }
     | SAMPLE {
-        parseContext.globalCheck($1.loc, parseContext.symbolTable.atGlobalLevel(), "sample");
+        parseContext.globalCheck($1.loc, "sample");
         $$.init($1.loc);
         $$.qualifier.sample = true;
     }
     | UNIFORM {
-        parseContext.globalCheck($1.loc, parseContext.symbolTable.atGlobalLevel(), "uniform");
+        parseContext.globalCheck($1.loc, "uniform");
         $$.init($1.loc);
         $$.qualifier.storage = EvqUniform;
     }
     | BUFFER {
-        parseContext.globalCheck($1.loc, parseContext.symbolTable.atGlobalLevel(), "buffer");
+        parseContext.globalCheck($1.loc, "buffer");
         $$.init($1.loc);
         $$.qualifier.storage = EvqUniform; // TODO: 4.0 functionality: implement BUFFER
     }
@@ -1253,12 +1260,12 @@ storage_qualifier
         $$.qualifier.writeonly = true;
     }
     | SUBROUTINE {
-        parseContext.globalCheck($1.loc, parseContext.symbolTable.atGlobalLevel(), "subroutine");
+        parseContext.globalCheck($1.loc, "subroutine");
         $$.init($1.loc);
         $$.qualifier.storage = EvqUniform;
     }
     | SUBROUTINE LEFT_PAREN type_name_list RIGHT_PAREN {
-        parseContext.globalCheck($1.loc, parseContext.symbolTable.atGlobalLevel(), "subroutine");
+        parseContext.globalCheck($1.loc, "subroutine");
         $$.init($1.loc);
         $$.qualifier.storage = EvqUniform;
         // TODO: 4.0 semantics: subroutines

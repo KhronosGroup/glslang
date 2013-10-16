@@ -3,10 +3,10 @@ ERROR: 0:8: 'in' : cannot be a structure or array
 ERROR: 0:8: 'vertex input arrays' : not supported with this profile: es
 ERROR: 0:12: 'badm4' : cannot specify matrix layout on a variable declaration 
 ERROR: 0:12: 'badm4' : cannot specify packing on a variable declaration 
-ERROR: 0:15: 'badf' : member of uniform block cannot have an auxiliary or interpolation qualifier 
-ERROR: 0:15: 'badg' : member storage qualifier cannot contradict block storage qualifier 
+ERROR: 0:19: 'badf' : member of uniform block cannot have an auxiliary or interpolation qualifier 
+ERROR: 0:20: 'badg' : member storage qualifier cannot contradict block storage qualifier 
 ERROR: 0:28: 'T3' : nameless block contains a member that already has a name at global scope 
-ERROR: 0:35: 'in/out block' : not supported with this profile: es
+ERROR: 0:35: 'output block' : not supported with this profile: es
 ERROR: 0:39: 'badoutA' : can only use location layout qualifier on a vertex input or fragment output 
 ERROR: 0:47: 'shared' : not supported with this profile: es
 ERROR: 0:47: 'shared' : not supported in this stage: vertex

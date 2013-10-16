@@ -1219,10 +1219,10 @@ void TParseContext::integerCheck(TIntermTyped* node, const char* token)
 // Both test, and if necessary spit out an error, to see if we are currently
 // globally scoped.
 //
-void TParseContext::globalCheck(TSourceLoc loc, bool global, const char* token)
+void TParseContext::globalCheck(TSourceLoc loc, const char* token)
 {
-    if (! global)
-        error(loc, "only allowed at global scope", token, "");
+    if (! symbolTable.atGlobalLevel())
+        error(loc, "not allowed in nested scope", token, "");
 }
 
 //
@@ -1415,13 +1415,11 @@ bool TParseContext::samplerErrorCheck(TSourceLoc loc, const TPublicType& pType, 
     return false;
 }
 
-void TParseContext::globalQualifierFix(TSourceLoc loc, TQualifier& qualifier, const TPublicType& publicType)
+//
+// move from parameter/unknown qualifiers to pipeline in/out qualifiers
+//
+void TParseContext::pipeInOutFix(TSourceLoc loc, TQualifier& qualifier)
 {
-    if (! symbolTable.atGlobalLevel())
-        return;
-
-    // First, move from parameter qualifiers to shader in/out qualifiers
-
     switch (qualifier.storage) {
     case EvqIn:
         profileRequires(loc, ENoProfile, 130, 0, "in for stage inputs");
@@ -1433,17 +1431,19 @@ void TParseContext::globalQualifierFix(TSourceLoc loc, TQualifier& qualifier, co
         profileRequires(loc, EEsProfile, 300, 0, "out for stage outputs");
         qualifier.storage = EvqVaryingOut;
         break;
-    case EvqVaryingIn:
-    case EvqVaryingOut:
-        break;
     case EvqInOut:
         qualifier.storage = EvqVaryingIn;
         error(loc, "cannot use 'inout' at global scope", "", "");
-
-        return;
+        break;
     default:
         break;
     }
+}
+
+void TParseContext::globalQualifierCheck(TSourceLoc loc, const TQualifier& qualifier, const TPublicType& publicType)
+{
+    if (! symbolTable.atGlobalLevel())
+        return;
 
     // Do non-in/out error checks
 
@@ -1895,7 +1895,7 @@ TSymbol* TParseContext::redeclareBuiltin(TSourceLoc loc, const TString& identifi
     return 0;
 }
 
-void TParseContext::paramCheck(TSourceLoc loc, TStorageQualifier qualifier, TType* type)
+void TParseContext::paramCheck(TSourceLoc loc, const TStorageQualifier& qualifier, TType* type)
 {
     switch (qualifier) {
     case EvqConst:
@@ -2110,7 +2110,6 @@ void TParseContext::setLayoutQualifier(TSourceLoc loc, TPublicType& publicType, 
         error(loc, "there is no such layout identifier taking an assigned value", id.c_str(), "");
 
     // TODO: semantics: error check: make sure locations are non-overlapping across the whole stage
-    // TODO: semantics: error check: if more than one fragment output, all must have a location
     // TODO: semantics: error check: output arrays can only be indexed with a constant (es 300)
 }
 
@@ -2522,9 +2521,11 @@ void TParseContext::addBlock(TSourceLoc loc, TTypeList& typeList, const TString*
         profileRequires(loc, EEsProfile, 300, 0, "uniform block");
         profileRequires(loc, ENoProfile, 140, 0, "uniform block");
         break;
-    case EvqIn:
-    case EvqOut:
-        requireProfile(loc, ECoreProfile | ECompatibilityProfile, "in/out block");
+    case EvqVaryingIn:
+        requireProfile(loc, ECoreProfile | ECompatibilityProfile, "input block");
+        break;
+    case EvqVaryingOut:
+        requireProfile(loc, ECoreProfile | ECompatibilityProfile, "output block");
         break;
     default:
         error(loc, "only uniform, in, or out interface blocks are supported", blockName->c_str(), "");
@@ -2533,28 +2534,30 @@ void TParseContext::addBlock(TSourceLoc loc, TTypeList& typeList, const TString*
 
     arrayDimCheck(loc, arraySizes, 0);
 
-    // check for qualifiers and types that don't belong within a block
+    // fix and check for qualifiers and types that don't belong within a block
     for (unsigned int member = 0; member < typeList.size(); ++member) {
-        TQualifier memberQualifier = typeList[member].type->getQualifier();
+        TQualifier& memberQualifier = typeList[member].type->getQualifier();
+        TSourceLoc memberLoc = typeList[member].loc;
+        pipeInOutFix(memberLoc, memberQualifier);
         if (memberQualifier.storage != EvqTemporary && memberQualifier.storage != EvqGlobal && memberQualifier.storage != currentBlockDefaults.storage)
-            error(loc, "member storage qualifier cannot contradict block storage qualifier", typeList[member].type->getFieldName().c_str(), "");
+            error(memberLoc, "member storage qualifier cannot contradict block storage qualifier", typeList[member].type->getFieldName().c_str(), "");
         if ((currentBlockDefaults.storage == EvqUniform && memberQualifier.isInterpolation()) || memberQualifier.isAuxiliary())
-            error(loc, "member of uniform block cannot have an auxiliary or interpolation qualifier", typeList[member].type->getFieldName().c_str(), "");
+            error(memberLoc, "member of uniform block cannot have an auxiliary or interpolation qualifier", typeList[member].type->getFieldName().c_str(), "");
 
         TBasicType basicType = typeList[member].type->getBasicType();
         if (basicType == EbtSampler)
-            error(loc, "member of block cannot be a sampler type", typeList[member].type->getFieldName().c_str(), "");
+            error(memberLoc, "member of block cannot be a sampler type", typeList[member].type->getFieldName().c_str(), "");
     }
 
     // Make default block qualification, and adjust the member qualifications
 
     TQualifier defaultQualification;
     switch (currentBlockDefaults.storage) {
-    case EvqBuffer:   defaultQualification = globalBufferDefaults;     break;
-    case EvqUniform:  defaultQualification = globalUniformDefaults;    break;
-    case EvqIn:       defaultQualification = globalInputDefaults;      break;
-    case EvqOut:      defaultQualification = globalOutputDefaults;     break;
-    default:          defaultQualification.clear();                    break;
+    case EvqBuffer:     defaultQualification = globalBufferDefaults;     break;
+    case EvqUniform:    defaultQualification = globalUniformDefaults;    break;
+    case EvqVaryingIn:  defaultQualification = globalInputDefaults;      break;
+    case EvqVaryingOut: defaultQualification = globalOutputDefaults;     break;
+    default:            defaultQualification.clear();                    break;
     }
 
     mergeLayoutQualifiers(loc, defaultQualification, currentBlockDefaults);
@@ -2650,11 +2653,11 @@ void TParseContext::updateQualifierDefaults(TQualifier qualifier)
         if (qualifier.layoutPacking != ElpNone)
             globalUniformDefaults.layoutPacking = qualifier.layoutPacking;
         break;
-    case EvqIn:
+    case EvqVaryingIn:
         if (qualifier.hasLocation())
             globalInputDefaults.layoutSlotLocation = qualifier.layoutSlotLocation;
         break;
-    case EvqOut:
+    case EvqVaryingOut:
         if (qualifier.hasLocation())
             globalOutputDefaults.layoutSlotLocation = qualifier.layoutSlotLocation;
         break;
@@ -2674,8 +2677,8 @@ void TParseContext::updateQualifierDefaults(TSourceLoc loc, TQualifier qualifier
 
     switch (qualifier.storage) {
     case EvqUniform:
-    case EvqIn:
-    case EvqOut:
+    case EvqVaryingIn:
+    case EvqVaryingOut:
         break;
     default:
         error(loc, "standalone qualifier requires 'uniform', 'in', or 'out' storage qualification", "", "");

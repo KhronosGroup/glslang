@@ -1,6 +1,6 @@
 ERROR: 0:10: '' : cannot nest a structure definition inside a structure or block 
 ERROR: 0:21: '' : cannot nest a structure definition inside a structure or block 
-ERROR: 0:17: 'sampler' : member of block cannot be a sampler type 
+ERROR: 0:20: 'sampler' : member of block cannot be a sampler type 
 ERROR: 0:45: 'variable indexing block array' : not supported with this profile: es
 ERROR: 4 compilation errors.  No code generated.
 

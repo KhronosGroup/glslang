@@ -92,7 +92,7 @@ public:
     bool lValueErrorCheck(TSourceLoc, const char* op, TIntermTyped*);
     void constCheck(TIntermTyped* node, const char* token);
     void integerCheck(TIntermTyped* node, const char* token);
-    void globalCheck(TSourceLoc, bool global, const char* token);
+    void globalCheck(TSourceLoc, const char* token);
     bool constructorError(TSourceLoc, TIntermNode*, TFunction&, TOperator, TType&);
     void arraySizeCheck(TSourceLoc, TIntermTyped* expr, int& size);
     bool arrayQualifierError(TSourceLoc, const TQualifier&);
@@ -104,7 +104,8 @@ public:
     void boolCheck(TSourceLoc, const TIntermTyped*);
     void boolCheck(TSourceLoc, const TPublicType&);
     bool samplerErrorCheck(TSourceLoc, const TPublicType& pType, const char* reason);
-    void globalQualifierFix(TSourceLoc, TQualifier&, const TPublicType&);
+    void pipeInOutFix(TSourceLoc, TQualifier&);
+    void globalQualifierCheck(TSourceLoc, const TQualifier&, const TPublicType&);
     bool structQualifierErrorCheck(TSourceLoc, const TPublicType& pType);
     void mergeQualifiers(TSourceLoc, TQualifier& dst, const TQualifier& src, bool force);
     void setDefaultPrecision(TSourceLoc, TPublicType&, TPrecisionQualifier);
@@ -114,7 +115,7 @@ public:
     void parameterSamplerCheck(TSourceLoc, TStorageQualifier qualifier, const TType& type);
     bool containsSampler(const TType& type);
     TSymbol* redeclareBuiltin(TSourceLoc, const TString&, bool& newDeclaration);
-    void paramCheck(TSourceLoc, TStorageQualifier qualifier, TType* type);
+    void paramCheck(TSourceLoc, const TStorageQualifier&, TType* type);
     void nestedBlockCheck(TSourceLoc);
     void nestedStructCheck(TSourceLoc);
     void arrayObjectCheck(TSourceLoc, const TType&, const char* op);
