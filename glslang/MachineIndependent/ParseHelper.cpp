@@ -805,7 +805,7 @@ TIntermTyped* TParseContext::handleFunctionCall(TSourceLoc loc, TFunction* fnCal
             //
             // It's a constructor, of type 'type'.
             //
-            result = addConstructor(intermNode, type, op, fnCall, loc);
+            result = addConstructor(loc, intermNode, type, op);
             if (result == 0)
                 error(loc, "cannot construct with these arguments", type.getCompleteString().c_str(), "");
         }
@@ -2256,7 +2256,20 @@ TIntermNode* TParseContext::executeInitializer(TSourceLoc loc, TString& identifi
         return 0;
     }
 
-    // Fix arrayness if variable is unsized, getting size for initializer
+    //
+    // If the initializer was from braces { ... }, we convert the whole subtree to a
+    // constructor-style subtree, allowing the rest of the code to operate
+    // identically for both kinds of initializers.
+    //
+    initializer = convertInitializerList(loc, variable->getType(), initializer);
+    if (! initializer) {
+        // error recovery; don't leave const without constant values
+        if (qualifier == EvqConst)            
+            variable->getWritableType().getQualifier().storage = EvqTemporary;
+        return 0;
+    }
+
+    // Fix arrayness if variable is unsized, getting size from the initializer
     if (initializer->getType().isArray() && initializer->getType().getArraySize() > 0 &&
         variable->getType().isArray() && variable->getType().getArraySize() == 0)
         variable->getWritableType().changeArraySize(initializer->getType().getArraySize());
@@ -2303,12 +2316,89 @@ TIntermNode* TParseContext::executeInitializer(TSourceLoc loc, TString& identifi
     return 0;
 }
 
+//
+// Reprocess any initalizer-list { ... } parts of the initializer.
+// Need to heirarchically assign correct types and implicit
+// conversions. Will do this mimicking the same process used for
+// creating a constructor-style initializer, ensuring we get the
+// same form.
+//
+TIntermTyped* TParseContext::convertInitializerList(TSourceLoc loc, const TType& type, TIntermTyped* initializer)
+{
+    // Will operate recursively.  Once a subtree is found that is constructor style,
+    // everything below it is already good: Only the "top part" of the initializer
+    // can be an initializer list, where "top part" can extend for several (or all) levels.
+    
+    // see if we have bottomed out in the tree within the initializer-list part
+    TIntermAggregate* initList = initializer->getAsAggregate();
+    if (! initList || initList->getOp() != EOpNull)
+        return initializer;
+
+    // Of the initializer-list set of nodes, need to process bottom up, 
+    // so recurse deep, then process on the way up.
+
+    // Go down the tree here...
+    if (type.isArray()) {
+        // The type's array might be unsized, which could be okay, so base sizes on the size of the aggregate.
+        // Later on, initializer execution code will deal with array size logic.
+        TType arrayType;
+        arrayType.shallowCopy(type);
+        arrayType.setArraySizes(type);
+        arrayType.changeArraySize(initList->getSequence().size());
+        TType elementType;
+        elementType.shallowCopy(arrayType);  // TODO: arrays of arrays: combine this with deref.
+        elementType.dereference();
+        for (size_t i = 0; i < initList->getSequence().size(); ++i) {
+            initList->getSequence()[i] = convertInitializerList(loc, elementType, initList->getSequence()[i]->getAsTyped());
+            if (initList->getSequence()[i] == 0)
+                return 0;
+        }
+
+        return addConstructor(loc, initList, arrayType, mapTypeToConstructorOp(arrayType));
+    } else if (type.getStruct()) {
+        if (type.getStruct()->size() != initList->getSequence().size()) {
+            error(loc, "wrong number of structure members", "initializer list", "");
+            return 0;
+        }
+        for (size_t i = 0; i < type.getStruct()->size(); ++i) {
+            initList->getSequence()[i] = convertInitializerList(loc, *(*type.getStruct())[i].type, initList->getSequence()[i]->getAsTyped());
+            if (initList->getSequence()[i] == 0)
+                return 0;
+        }
+    } else if (type.isMatrix()) {
+        if (type.getMatrixCols() != initList->getSequence().size()) {
+            error(loc, "wrong number of matrix columns:", "initializer list", type.getCompleteString().c_str());
+            return 0;
+        }
+        TType vectorType;
+        vectorType.shallowCopy(type);  // TODO: arrays of arrays: combine this with deref.
+        vectorType.dereference();
+        for (int i = 0; i < type.getMatrixCols(); ++i) {
+            initList->getSequence()[i] = convertInitializerList(loc, vectorType, initList->getSequence()[i]->getAsTyped());
+            if (initList->getSequence()[i] == 0)
+                return 0;
+        }
+    } else if (type.isVector()) {
+        if (type.getVectorSize() != initList->getSequence().size()) {
+            error(loc, "wrong vector size (or rows in a matrix column):", "initializer list", type.getCompleteString().c_str());
+            return 0;
+        }
+    } else {
+        error(loc, "unexpected initializer-list type:", "initializer list", type.getCompleteString().c_str());
+        return 0;
+    }
+
+    // now that the subtree is processed, process this node
+    return addConstructor(loc, initList, type, mapTypeToConstructorOp(type));
+}
+
+//
 // Test for the correctness of the parameters passed to various constructor functions
-// and also convert them to the right datatype if it is allowed and required.
+// and also convert them to the right data type, if allowed and required.
 //
 // Returns 0 for an error or the constructed node (aggregate or typed) for no error.
 //
-TIntermTyped* TParseContext::addConstructor(TIntermNode* node, const TType& type, TOperator op, TFunction* fnCall, TSourceLoc loc)
+TIntermTyped* TParseContext::addConstructor(TSourceLoc loc, TIntermNode* node, const TType& type, TOperator op)
 {
     if (node == 0)
         return 0;
@@ -2485,7 +2575,7 @@ TIntermTyped* TParseContext::constructStruct(TIntermNode* node, const TType& typ
     TIntermTyped* converted = intermediate.addConversion(EOpConstructStruct, type, node->getAsTyped());
     if (! converted || converted->getType() != type) {
         error(loc, "", "constructor", "cannot convert parameter %d from '%s' to '%s'", paramCount,
-              node->getAsTyped()->getType().getCompleteTypeString().c_str(), type.getCompleteTypeString().c_str());
+              node->getAsTyped()->getType().getCompleteString().c_str(), type.getCompleteString().c_str());
 
         return 0;
     }

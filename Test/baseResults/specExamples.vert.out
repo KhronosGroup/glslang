@@ -231,7 +231,19 @@ ERROR: node is still EOpNull!
 0:188              'g' (float)
 0:188              Constant:
 0:188                2.000000
-0:?       Sequence
+0:191      Sequence
+0:191        Sequence
+0:191          move second child to first child (2-element array of 4-component vector of float)
+0:191            'b' (2-element array of 4-component vector of float)
+0:191            Constant:
+0:191              1.000000
+0:191              1.000000
+0:191              1.000000
+0:191              1.000000
+0:191              1.000000
+0:191              1.000000
+0:191              1.000000
+0:191              1.000000
 0:192        Construct vec4 (3-element array of 4-component vector of float)
 0:193        Construct vec4 (3-element array of 4-component vector of float)
 0:194        Construct vec4 (3-element array of 4-component vector of float)

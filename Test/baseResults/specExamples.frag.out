@@ -22,7 +22,7 @@ ERROR: 0:115: 'depth_greater' : unrecognized layout identifier
 ERROR: 0:118: 'depth_less' : unrecognized layout identifier 
 ERROR: 0:121: 'depth_unchanged' : unrecognized layout identifier 
 ERROR: 0:150: 'constructor' : constructing from a non-dereferenced array 
-ERROR: 0:152: '=' :  cannot convert from 'const 2-element array of 4-component vector of float' to '3-element array of 4-component vector of float'
+ERROR: 0:152: 'constructor' :  cannot convert parameter 1 from 'const 2-element array of 4-component vector of float' to '4-component vector of float'
 ERROR: 0:172: 'x' : undeclared identifier 
 ERROR: 0:172: '[]' : scalar integer expression required 
 ERROR: 0:172: 'length' : illegal vector field selection 
@@ -202,6 +202,12 @@ ERROR: node is still EOpNull!
 0:175        0.000000
 0:178      Constant:
 0:178        0.000000
+0:193      Sequence
+0:193        move second child to first child (structure)
+0:193          'e' (structure)
+0:193          Constant:
+0:193            1.200000
+0:193            2 (const int)
 0:216      Sequence
 0:216        Sequence
 0:216          move second child to first child (5-element array of float)
@@ -212,10 +218,23 @@ ERROR: node is still EOpNull!
 0:216              5.000000
 0:216              5.200000
 0:216              1.100000
+0:217        Sequence
+0:217          move second child to first child (5-element array of float)
+0:217            'b' (5-element array of float)
+0:217            Constant:
+0:217              3.400000
+0:217              4.200000
+0:217              5.000000
+0:217              5.200000
+0:217              1.100000
 0:218        Sequence
 0:218          move second child to first child (5-element array of float)
 0:218            'c' (5-element array of float)
 0:218            'a' (5-element array of float)
+0:219        Sequence
+0:219          move second child to first child (5-element array of float)
+0:219            'd' (5-element array of float)
+0:219            'b' (5-element array of float)
 0:?   Linker Objects
 0:?     'a' (int)
 0:?     'b' (int)

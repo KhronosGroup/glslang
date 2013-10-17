@@ -2104,11 +2104,10 @@ initializer
 
 initializer_list
     : initializer {
-        $$ = $1;
+        $$ = parseContext.intermediate.growAggregate(0, $1, $1->getLoc());
     }
     | initializer_list COMMA initializer {
-        // TODO: 4.2 functionality: implement the initializer list
-        $$ = $3;
+        $$ = parseContext.intermediate.growAggregate($1, $3);
     }
     ;
 
