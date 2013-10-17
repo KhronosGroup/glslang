@@ -799,9 +799,7 @@ TIntermTyped* TParseContext::handleFunctionCall(TSourceLoc loc, TFunction* fnCal
         // Their parameters will be verified algorithmically.
         //
         TType type(EbtVoid);  // use this to get the type back
-        if (constructorError(loc, intermNode, *fnCall, op, type)) {
-            result = 0;
-        } else {
+        if (! constructorError(loc, intermNode, *fnCall, op, type)) {
             //
             // It's a constructor, of type 'type'.
             //
@@ -809,9 +807,6 @@ TIntermTyped* TParseContext::handleFunctionCall(TSourceLoc loc, TFunction* fnCal
             if (result == 0)
                 error(loc, "cannot construct with these arguments", type.getCompleteString().c_str(), "");
         }
-
-        if (result == 0)
-            result = intermediate.setAggregateOperator(0, op, type, loc);
     } else {
         //
         // Not a constructor.  Find it in the symbol table.
@@ -832,7 +827,6 @@ TIntermTyped* TParseContext::handleFunctionCall(TSourceLoc loc, TFunction* fnCal
                     error(intermNode->getLoc(), " wrong operand type", "Internal Error",
                                         "built in unary operator function.  Type: %s",
                                         static_cast<TIntermTyped*>(intermNode)->getCompleteString().c_str());
-                    return 0;
                 }
             } else {
                 // This is a function call not mapped to built-in operation
@@ -870,6 +864,14 @@ TIntermTyped* TParseContext::handleFunctionCall(TSourceLoc loc, TFunction* fnCal
             unionArray[0].setDConst(0.0);
             result = intermediate.addConstantUnion(unionArray, TType(EbtFloat, EvqConst), loc);
         }
+    }
+
+    // generic error recovery
+    // TODO: coding: localize all the error recoveries that look like this
+    if (result == 0) {
+        TConstUnionArray unionArray(1);
+        unionArray[0].setDConst(0.0);
+        result = intermediate.addConstantUnion(unionArray, TType(EbtFloat, EvqConst), loc);
     }
 
     return result;
@@ -1197,7 +1199,7 @@ bool TParseContext::lValueErrorCheck(TSourceLoc loc, const char* op, TIntermType
 // Both test, and if necessary spit out an error, to see if the node is really
 // a constant.
 //
-void TParseContext::constCheck(TIntermTyped* node, const char* token)
+void TParseContext::constantValueCheck(TIntermTyped* node, const char* token)
 {
     if (node->getQualifier().storage != EvqConst)
         error(node->getLoc(), "constant expression required", token, "");
@@ -1827,9 +1829,10 @@ void TParseContext::updateMaxArraySize(TSourceLoc loc, TIntermNode *node, int in
 void TParseContext::nonInitConstCheck(TSourceLoc loc, TString& identifier, TType& type)
 {
     //
-    // Make the qualifier make sense.
+    // Make the qualifier make sense, given that there is an initializer.
     //
-    if (type.getQualifier().storage == EvqConst) {
+    if (type.getQualifier().storage == EvqConst || 
+        type.getQualifier().storage == EvqConstReadOnly) {
         type.getQualifier().storage = EvqTemporary;
         error(loc, "variables with qualifier 'const' must be initialized", identifier.c_str(), "");
     }
@@ -2242,6 +2245,9 @@ TVariable* TParseContext::declareNonArray(TSourceLoc loc, TString& identifier, T
 //
 // Handle all types of initializers from the grammar.
 //
+// Returning 0 just means there is no code to execute to handle the
+// initializer, which will, for example, be the case for constant initalizers.
+//
 TIntermNode* TParseContext::executeInitializer(TSourceLoc loc, TString& identifier,
                                                TIntermTyped* initializer, TVariable* variable)
 {
@@ -2274,37 +2280,43 @@ TIntermNode* TParseContext::executeInitializer(TSourceLoc loc, TString& identifi
         variable->getType().isArray() && variable->getType().getArraySize() == 0)
         variable->getWritableType().changeArraySize(initializer->getType().getArraySize());
 
-    //
-    // test for and propagate constant
-    //
-    if (qualifier == EvqConst || qualifier == EvqUniform) {
+    // Uniform and global consts require a constant initializer
+    if (qualifier == EvqUniform && initializer->getType().getQualifier().storage != EvqConst) {
+        error(loc, "uniform initializers must be constant", "=", "'%s'", variable->getType().getCompleteString().c_str());
+        variable->getWritableType().getQualifier().storage = EvqTemporary;
+        return 0;
+    }
+    if (qualifier == EvqConst && symbolTable.atGlobalLevel() && initializer->getType().getQualifier().storage != EvqConst) {
+        error(loc, "global const initializers must be constant", "=", "'%s'", variable->getType().getCompleteString().c_str());
+        variable->getWritableType().getQualifier().storage = EvqTemporary;
+        return 0;
+    }
+
+    // Const variables require a constant initializer, depending on version
+    if (qualifier == EvqConst) {
         if (initializer->getType().getQualifier().storage != EvqConst) {
-            error(loc, " assigning non-constant to", "=", "'%s'", variable->getType().getCompleteString().c_str());
+            const char* initFeature = "non-constant initializer";
+            requireProfile(loc, ECoreProfile | ECompatibilityProfile, initFeature);
+            profileRequires(loc, ECoreProfile | ECompatibilityProfile, 420, GL_ARB_shading_language_420pack, initFeature);
+            variable->getWritableType().getQualifier().storage = EvqConstReadOnly;
+            qualifier = EvqConstReadOnly;
+        }
+    }
+
+    if (qualifier == EvqConst || qualifier == EvqUniform) {
+        // Compile-time tagging of the variable with it's constant value...
+
+        initializer = intermediate.addConversion(EOpAssign, variable->getType(), initializer);
+        if (! initializer || ! initializer->getAsConstantUnion() || variable->getType() != initializer->getType()) {
+            error(loc, "non-matching or non-convertible constant type for const initializer",
+                  variable->getType().getStorageQualifierString(), "");
             variable->getWritableType().getQualifier().storage = EvqTemporary;
             return 0;
         }
-        if (variable->getType() != initializer->getType()) {
-            error(loc, " non-matching types for const initializer ",
-                variable->getType().getStorageQualifierString(), "");
-            variable->getWritableType().getQualifier().storage = EvqTemporary;
-            return 0;
-        }
-        if (initializer->getAsConstantUnion())
-            variable->setConstArray(initializer->getAsConstantUnion()->getConstArray());
-        else if (initializer->getAsSymbolNode()) {
-            TSymbol* symbol = symbolTable.find(initializer->getAsSymbolNode()->getName());
-            if (const TVariable* tVar = symbol->getAsVariable())
-                variable->setConstArray(tVar->getConstArray());
-            else {
-                error(loc, "expected variable", initializer->getAsSymbolNode()->getName().c_str(), "");
-                return 0;
-            }
-        } else {
-            error(loc, " cannot assign to", "=", "'%s'", variable->getType().getCompleteString().c_str());
-            variable->getWritableType().getQualifier().storage = EvqTemporary;
-            return 0;
-        }
+
+        variable->setConstArray(initializer->getAsConstantUnion()->getConstArray());
     } else {
+        // normal assigning of a value to a variable...
         TIntermSymbol* intermSymbol = intermediate.addSymbol(variable->getUniqueId(), variable->getName(), variable->getType(), loc);
         TIntermNode* initNode = intermediate.addAssign(EOpAssign, intermSymbol, initializer, loc);
         if (! initNode)

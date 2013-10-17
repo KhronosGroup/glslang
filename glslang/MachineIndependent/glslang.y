@@ -300,8 +300,6 @@ integer_expression
 function_call
     : function_call_or_method {
         $$ = parseContext.handleFunctionCall($1.loc, $1.function, $1.intermNode, $1.intermAggregate);
-        if ($$ == 0)
-            YYERROR;
         delete $1.function;
     }
     ;
@@ -738,7 +736,7 @@ expression
 
 constant_expression
     : conditional_expression {
-        parseContext.constCheck($1, "");
+        parseContext.constantValueCheck($1, "");
         $$ = $1;
     }
     ;
@@ -1160,7 +1158,7 @@ single_type_qualifier
 storage_qualifier
     : CONST {
         $$.init($1.loc);
-        $$.qualifier.storage = EvqConst;
+        $$.qualifier.storage = EvqConst;  // will later turn into EvqConstReadOnly, if the initializer is not constant
     }
     | ATTRIBUTE {
         parseContext.requireStage($1.loc, EShLangVertex, "attribute");
@@ -2247,7 +2245,7 @@ switch_statement_list
 
 case_label
     : CASE expression COLON {
-        parseContext.constCheck($2, "case");
+        parseContext.constantValueCheck($2, "case");
         parseContext.integerCheck($2, "case");
         $$ = parseContext.intermediate.addBranch(EOpCase, $2, $1.loc);
     }

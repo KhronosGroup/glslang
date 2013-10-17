@@ -22,6 +22,7 @@ ERROR: 0:115: 'depth_greater' : unrecognized layout identifier
 ERROR: 0:118: 'depth_less' : unrecognized layout identifier 
 ERROR: 0:121: 'depth_unchanged' : unrecognized layout identifier 
 ERROR: 0:150: 'constructor' : constructing from a non-dereferenced array 
+ERROR: 0:150: '=' :  cannot convert from 'const float' to '3-element array of 4-component vector of float'
 ERROR: 0:152: 'constructor' :  cannot convert parameter 1 from 'const 2-element array of 4-component vector of float' to '4-component vector of float'
 ERROR: 0:172: 'x' : undeclared identifier 
 ERROR: 0:172: '[]' : scalar integer expression required 
@@ -42,16 +43,12 @@ ERROR: 0:178: 'a' :  dot operator requires structure, array, vector, or matrix o
 ERROR: 0:178: 'length' :  dot operator requires structure, array, vector, or matrix on left hand side 
 ERROR: 0:178: '' : function call, method, or subroutine call expected 
 ERROR: 0:178: '' : no matching overloaded function found 
-ERROR: 0:193: '=' :  cannot convert from 'const int' to 'structure'
 ERROR: 0:198: 'e' : redefinition 
-ERROR: 0:217: '=' :  cannot convert from 'const float' to 'unsized array of float'
-ERROR: 0:219: '=' :  cannot convert from 'unsized array of float' to '5-element array of float'
-ERROR: 0:223: '=' :  assigning non-constant to 'const float'
 ERROR: 0:226: 'in' : not allowed in nested scope 
 ERROR: 0:227: 'in' : not allowed in nested scope 
 ERROR: 0:228: 'in' : not allowed in nested scope 
 ERROR: 0:232: 'out' : not allowed in nested scope 
-ERROR: 52 compilation errors.  No code generated.
+ERROR: 49 compilation errors.  No code generated.
 
 ERROR: node is still EOpNull!
 0:5  Sequence
@@ -166,10 +163,6 @@ ERROR: node is still EOpNull!
 0:149              0.100000
 0:149              0.100000
 0:149              0.100000
-0:150        Sequence
-0:150          move second child to first child (3-element array of 4-component vector of float)
-0:150            'a3' (3-element array of 4-component vector of float)
-0:150            Construct vec4 (3-element array of 4-component vector of float)
 0:?       Sequence
 0:159        Sequence
 0:159          Sequence
@@ -235,6 +228,14 @@ ERROR: node is still EOpNull!
 0:219          move second child to first child (5-element array of float)
 0:219            'd' (5-element array of float)
 0:219            'b' (5-element array of float)
+0:?       Sequence
+0:223        Sequence
+0:223          move second child to first child (float)
+0:223            'ceiling' (const (read only) float)
+0:223            Convert int to float (float)
+0:223              add (int)
+0:223                'a' (int)
+0:223                'b' (int)
 0:?   Linker Objects
 0:?     'a' (int)
 0:?     'b' (int)

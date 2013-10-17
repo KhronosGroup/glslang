@@ -90,7 +90,7 @@ public:
     void binaryOpError(TSourceLoc, const char* op, TString left, TString right);
     void variableCheck(TIntermTyped*& nodePtr);
     bool lValueErrorCheck(TSourceLoc, const char* op, TIntermTyped*);
-    void constCheck(TIntermTyped* node, const char* token);
+    void constantValueCheck(TIntermTyped* node, const char* token);
     void integerCheck(TIntermTyped* node, const char* token);
     void globalCheck(TSourceLoc, const char* token);
     bool constructorError(TSourceLoc, TIntermNode*, TFunction&, TOperator, TType&);

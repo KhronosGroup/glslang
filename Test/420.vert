@@ -12,6 +12,23 @@ smooth flat out vec4 rep;      // ERROR, replicating interpolation qualification
 centroid sample out vec4 rep2; // ERROR, replicating auxiliary qualification
 in uniform vec4 rep3;          // ERROR, replicating storage qualification
 
+int anonconst;
+const int aconst = 5;
+const int a = aconst;
+const int b = anonconst;       // ERROR at global scope
+
+const int foo()                // ERROR, no const functions
+{
+    const int a = aconst;
+    const int b = anonconst;
+    const int c = a;          // still compile-time const
+    const int d = b;          // not a compile-time const
+    float x[c];               // okay
+    float y[d];               // ERROR
+
+    return b;
+}
+
 void main()
 {
     int i;

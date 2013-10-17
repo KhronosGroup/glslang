@@ -46,11 +46,10 @@ ERROR: 0:164: 'func' : no matching overloaded function found
 ERROR: 0:166: 'x' :  dot operator requires structure, array, vector, or matrix on left hand side 
 ERROR: 0:166: 'func2' : no matching overloaded function found 
 ERROR: 0:167: 'x' :  dot operator requires structure, array, vector, or matrix on left hand side 
-ERROR: 0:191: '=' :  cannot convert from 'const 4-component vector of float' to '2-element array of 4-component vector of float'
 ERROR: 0:192: 'constructor' : constructing from a non-dereferenced array 
 ERROR: 0:193: 'constructor' : constructing from a non-dereferenced array 
 ERROR: 0:194: 'constructor' : constructing from a non-dereferenced array 
-ERROR: 51 compilation errors.  No code generated.
+ERROR: 50 compilation errors.  No code generated.
 
 ERROR: node is still EOpNull!
 0:134  Function Definition: funcA(I21; (4-component vector of float)
@@ -244,9 +243,12 @@ ERROR: node is still EOpNull!
 0:191              1.000000
 0:191              1.000000
 0:191              1.000000
-0:192        Construct vec4 (3-element array of 4-component vector of float)
-0:193        Construct vec4 (3-element array of 4-component vector of float)
-0:194        Construct vec4 (3-element array of 4-component vector of float)
+0:192        Constant:
+0:192          0.000000
+0:193        Constant:
+0:193          0.000000
+0:194        Constant:
+0:194          0.000000
 0:?   Linker Objects
 0:?     'Coords' (out block)
 0:?     '__anon__0' (out block)

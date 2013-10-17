@@ -31,3 +31,5 @@ const struct S2 {
     ivec2 iv2;
     mat2x4 m;
 } s2 = S2(vec3(3.0), ivec2(3, constInt), mat2x4(1.0, 2.0, 3.0, inVar.x, 5.0, 6.0, 7.0, 8.0));  // ERROR, non-constant matrix
+
+const float f = 3; // okay, type conversion

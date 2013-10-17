@@ -8,7 +8,7 @@ ERROR: 0:42: '[' :  array index out of range '5'
 ERROR: 0:45: '[' :  array index out of range '1000'
 ERROR: 0:46: '[' :  array index out of range '-1'
 ERROR: 0:52: '[' :  array index '2' out of range
-ERROR: 0:54: 'const' :  non-matching types for const initializer  
+ERROR: 0:54: 'const' : non-matching or non-convertible constant type for const initializer 
 ERROR: 0:56: '=' :  cannot convert from 'const 2-element array of int' to '3-element array of int'
 ERROR: 0:57: '[]' : scalar integer expression required 
 ERROR: 0:57: '[' :  array index out of range '-858993459'

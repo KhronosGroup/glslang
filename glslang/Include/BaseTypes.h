@@ -64,7 +64,7 @@ enum TBasicType {
 enum TStorageQualifier {
     EvqTemporary,     // For temporaries (within a function), read/write
     EvqGlobal,        // For globals read/write
-    EvqConst,         // User defined constants and non-output parameters in functions
+    EvqConst,         // User-defined constant values, will be semantically constant and constant folded
     EvqVaryingIn,     // pipeline input, read only
     EvqVaryingOut,    // pipeline ouput, read/write
     EvqUniform,       // read only, shader with app
@@ -74,7 +74,8 @@ enum TStorageQualifier {
     EvqIn,            // also, for 'in' in the grammar before we know if it's a pipeline input or an 'in' parameter
     EvqOut,           // also, for 'out' in the grammar before we know if it's a pipeline output or an 'out' parameter
     EvqInOut,
-    EvqConstReadOnly,
+
+    EvqConstReadOnly, // read-only types, not having a constant value or constant-value semantics
 
     // built-ins read by vertex shader
     EvqVertexId,
