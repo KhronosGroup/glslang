@@ -17,7 +17,10 @@ ERROR: 0:40: 'j' : undeclared identifier
 ERROR: 0:40: '=' :  cannot convert from 'float' to 'int'
 ERROR: 0:44: 'jj' : undeclared identifier 
 ERROR: 0:44: '=' :  cannot convert from 'float' to 'int'
-ERROR: 17 compilation errors.  No code generated.
+ERROR: 0:54: 'y' : vector field selection out of range 
+ERROR: 0:62: 'xxxxx' : illegal vector field selection 
+ERROR: 0:63: 'xxy' : vector field selection out of range 
+ERROR: 20 compilation errors.  No code generated.
 
 ERROR: node is still EOpNull!
 0:20  Function Definition: foo( (const int)
@@ -52,9 +55,43 @@ ERROR: node is still EOpNull!
 0:42        Constant:
 0:42          true (const bool)
 0:42        No loop body
-0:47  Function Definition: bar(vf4; (void)
-0:47    Function Parameters: 
-0:47      'v' (in 4-component vector of float)
+0:50  Function Definition: bar(vf4; (void)
+0:50    Function Parameters: 
+0:50      'v' (in 4-component vector of float)
+0:?     Sequence
+0:53      's' (int)
+0:54      's' (int)
+0:55      Test condition and select (void)
+0:55        Condition
+0:55        Compare Equal (bool)
+0:55          direct index (float)
+0:55            direct index (in 4-component vector of float)
+0:55              'bad' (in 10-element array of 4-component vector of float)
+0:55              Constant:
+0:55                0 (const int)
+0:55            Constant:
+0:55              0 (const int)
+0:55          Constant:
+0:55            4.200000
+0:55        true case is null
+0:57      Test condition and select (void)
+0:57        Condition
+0:57        Constant:
+0:57          true (const bool)
+0:57        true case
+0:58        move second child to first child (4-component vector of float)
+0:58          'badorder3' (flat out 4-component vector of float)
+0:58          direct index (in 4-component vector of float)
+0:58            'bad' (in 10-element array of 4-component vector of float)
+0:58            Constant:
+0:58              0 (const int)
+0:61      Sequence
+0:61        move second child to first child (3-component vector of float)
+0:61          'smeared' (3-component vector of float)
+0:61          Construct vec3 (3-component vector of float)
+0:61            'f' (float)
+0:62      'f' (float)
+0:63      'f' (float)
 0:?   Linker Objects
 0:?     'v2' (smooth out 2-component vector of float)
 0:?     'bad' (in 10-element array of 4-component vector of float)
@@ -71,6 +108,10 @@ ERROR: node is still EOpNull!
 0:?     'a' (const int)
 0:?       5 (const int)
 0:?     'b' (int)
+0:?     'cx' (const float)
+0:?       4.200000
+0:?     'dx' (const float)
+0:?       4.200000
 0:?     'gl_VertexID' (gl_VertexId int)
 0:?     'gl_InstanceID' (gl_InstanceId int)
 

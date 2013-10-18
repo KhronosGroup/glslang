@@ -28,28 +28,22 @@ ERROR: 0:92: 'offset' : there is no such layout identifier taking an assigned va
 ERROR: 0:92: 'bar' : redefinition 
 ERROR: 0:94: 'binding' : not supported 
 ERROR: 0:94: 'offset' : there is no such layout identifier taking an assigned value 
+ERROR: 0:94: 'a2' : redefinition 
 ERROR: 0:95: 'binding' : not supported 
 ERROR: 0:96: 'binding' : not supported 
 ERROR: 0:97: 'binding' : not supported 
 ERROR: 0:106: '' : vertex input cannot be further qualified 
 ERROR: 0:112: 'ColorIvn' : identifier not previously declared 
-ERROR: 0:119: 'a' : redefinition 
 ERROR: 0:132: 'shared' : not supported in this stage: vertex
 ERROR: 0:134: '' : function does not return a value: funcA
 ERROR: 0:136: '' : function does not return a value: funcB
 ERROR: 0:137: 'rgba32f' : unrecognized layout identifier 
 ERROR: 0:138: 'rgba32f' : unrecognized layout identifier 
 ERROR: 0:153: '' : function does not return a value: func3
-ERROR: 0:163: 'w' :  dot operator requires structure, array, vector, or matrix on left hand side 
-ERROR: 0:164: 'x' :  dot operator requires structure, array, vector, or matrix on left hand side 
-ERROR: 0:164: 'func' : no matching overloaded function found 
-ERROR: 0:166: 'x' :  dot operator requires structure, array, vector, or matrix on left hand side 
-ERROR: 0:166: 'func2' : no matching overloaded function found 
-ERROR: 0:167: 'x' :  dot operator requires structure, array, vector, or matrix on left hand side 
 ERROR: 0:192: 'constructor' : constructing from a non-dereferenced array 
 ERROR: 0:193: 'constructor' : constructing from a non-dereferenced array 
 ERROR: 0:194: 'constructor' : constructing from a non-dereferenced array 
-ERROR: 50 compilation errors.  No code generated.
+ERROR: 44 compilation errors.  No code generated.
 
 ERROR: node is still EOpNull!
 0:134  Function Definition: funcA(I21; (4-component vector of float)
@@ -112,9 +106,8 @@ ERROR: node is still EOpNull!
 0:160        move second child to first child (3-component vector of float)
 0:160          'r' (3-component vector of float)
 0:160          Construct vec3 (3-component vector of float)
-0:160            vector-scale (4-component vector of float)
-0:160              Convert int to float (float)
-0:160                'a' (uniform int)
+0:160            component-wise multiply (4-component vector of float)
+0:160              'a' (in 4-component vector of float)
 0:160              'b' (in 4-component vector of float)
 0:161      Sequence
 0:161        move second child to first child (3-component vector of float)
@@ -143,8 +136,10 @@ ERROR: node is still EOpNull!
 0:163            3 (const int)
 0:163        add (float)
 0:163          component-wise multiply (float)
-0:163            Convert int to float (float)
-0:163              'a' (uniform int)
+0:163            direct index (float)
+0:163              'a' (in 4-component vector of float)
+0:163              Constant:
+0:163                3 (const int)
 0:163            direct index (float)
 0:163              'b' (in 4-component vector of float)
 0:163              Constant:
@@ -163,19 +158,51 @@ ERROR: node is still EOpNull!
 0:164          'v' (smooth out 4-component vector of float)
 0:164          Constant:
 0:164            0 (const int)
-0:164        Constant:
-0:164          0.000000
+0:164        Function Call: func(f1;f1;f1;f1; (float)
+0:164          direct index (float)
+0:164            'a' (in 4-component vector of float)
+0:164            Constant:
+0:164              0 (const int)
+0:164          direct index (float)
+0:164            'b' (in 4-component vector of float)
+0:164            Constant:
+0:164              0 (const int)
+0:164          direct index (float)
+0:164            'c' (in 4-component vector of float)
+0:164            Constant:
+0:164              0 (const int)
+0:164          direct index (float)
+0:164            'd' (in 4-component vector of float)
+0:164            Constant:
+0:164              0 (const int)
 0:166      move second child to first child (float)
 0:166        direct index (float)
 0:166          'v' (smooth out 4-component vector of float)
 0:166          Constant:
 0:166            0 (const int)
-0:166        Constant:
-0:166          0.000000
+0:166        Function Call: func2(f1;f1;f1;f1; (float)
+0:166          direct index (float)
+0:166            'a' (in 4-component vector of float)
+0:166            Constant:
+0:166              0 (const int)
+0:166          direct index (float)
+0:166            'b' (in 4-component vector of float)
+0:166            Constant:
+0:166              0 (const int)
+0:166          direct index (float)
+0:166            'c' (in 4-component vector of float)
+0:166            Constant:
+0:166              0 (const int)
+0:166          direct index (float)
+0:166            'd' (in 4-component vector of float)
+0:166            Constant:
+0:166              0 (const int)
 0:167      Function Call: func3(f1;f1;f1; (float)
 0:167        component-wise multiply (float)
-0:167          Convert int to float (float)
-0:167            'a' (uniform int)
+0:167          direct index (float)
+0:167            'a' (in 4-component vector of float)
+0:167            Constant:
+0:167              0 (const int)
 0:167          direct index (float)
 0:167            'b' (in 4-component vector of float)
 0:167            Constant:
@@ -264,9 +291,8 @@ ERROR: node is still EOpNull!
 0:?     '__anon__3' (layout(std140 ) uniform block)
 0:?     '__anon__4' (layout(shared ) uniform block)
 0:?     's17' (uniform sampler2D)
-0:?     'a' (uniform int)
-0:?     'bar' (uniform int)
 0:?     'a2' (uniform int)
+0:?     'bar' (uniform int)
 0:?     'b2' (uniform int)
 0:?     'c2' (uniform int)
 0:?     'd2' (uniform int)
@@ -275,6 +301,7 @@ ERROR: node is still EOpNull!
 0:?     'Color4' (invariant centroid smooth out 3-component vector of float)
 0:?     'position' (smooth out 4-component vector of float)
 0:?     'Color5' (smooth out 3-component vector of float)
+0:?     'a' (in 4-component vector of float)
 0:?     'b' (in 4-component vector of float)
 0:?     'c' (in 4-component vector of float)
 0:?     'd' (in 4-component vector of float)

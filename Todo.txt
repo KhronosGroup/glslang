@@ -60,31 +60,31 @@ Shader Functionality to Implement/Finish
     GLSL 1.3 (Non-ES)
       - Preprocessor token pasting (##), ## does macro expansion after pasting not before
       - non-perspective (linear) interpolation (noperspective)
-      - add gl_ClipDistance[] to both vertex and fragment shaders
+      + add gl_ClipDistance[] to both vertex and fragment shaders
       - only statically used built-ins have to be redeclared as flat
-      - Deprecated gl_ClipVertex
-      - deprecate almost all built-in state
-      - ftransform() is deprecated
-      - Deprecated built-in vertex inputs (attributes) and some outputs (varyings).
+      + Deprecated gl_ClipVertex
+      + deprecate almost all built-in state
+      + ftransform() is deprecated
+      + Deprecated built-in vertex inputs (attributes) and some outputs (varyings).
     GLSL 1.4 (Non-ES)
-      - track as removed in this release, but present in others:
-        - Use of gl_ClipVertex.  Use gl_ClipDistance instead.
-        - Built-in vertex shader inputs.
-        - Built-in uniforms except for depth range parameters
-        - Built-in interface between vertex and fragment:  gl_TexCoord, gl_FogFragCoord, and all the color values.
-        - Built-in two-sided coloring.
-        - Fixed functionality for a programmable stage. 
-        - ftransform().  Use invariant outputs instead.
+      + track as removed in this release, but present in others:
+        + Use of gl_ClipVertex.  Use gl_ClipDistance instead.
+        + Built-in vertex shader inputs.
+        + Built-in uniforms except for depth range parameters
+        + Built-in interface between vertex and fragment:  gl_TexCoord, gl_FogFragCoord, and all the color values.
+        + Built-in two-sided coloring.
+        + Fixed functionality for a programmable stage. 
+        + ftransform().  Use invariant outputs instead.
     GLSL 1.5 (Non-ES)
       - Deprecated gl_MaxVaryingComponents
       - Add new minimum maximums for gl_MaxVertexOutputComponents, gl_MaxGeometryInputComponents, gl_MaxGeometryOutputComponents, and gl_MaxFragmentInputComponents, 
                 rather than relying on gl_MaxVaryingComponents.  Also, corrected gl_MaxVaryingComponents to be 60 instead of 64.
-      - Added gl_PrimitiveID as an input to fragment shaders.
+      + Added gl_PrimitiveID as an input to fragment shaders.
       - Added gl_FragCoord qualifiers origin_upper_left, and pixel_center_integer to modify the values returned by gl_FragCoord (and have no affect on any other aspect of the pipeline or language).
         - including redeclaration of gl_FragCoord that adds nothing
       - Added support for multi-sample textures through sampler2DMS and sampler2DMSArray support in texelFetch() and textureSize().
-      - Broadened interface blocks from just uniforms to in and out interfaces as well.
-      - Broaden array usage to include vertex shader inputs (vertex in).
+      + Broadened interface blocks from just uniforms to in and out interfaces as well.
+      + Broaden array usage to include vertex shader inputs (vertex in).
       - Added geometry shaders.  This includes targeting layers in FBO rendering.
       - geometry shader layouts: they must be declared, telling the system the primitive input and output types and maximum number of vertices.
       - Added geometry shader constants.
@@ -119,8 +119,8 @@ Shader Functionality to Implement/Finish
          - textureGather()
          - textureGatherOffset()
          - textureGatherOffsets()
-      - Add streams out from geometry shader. Output can be directed to streams through
-         - EmitStreamVertex() and EndStreamPrimitive().
+      + Add streams out from geometry shader. Output can be directed to streams through
+         + EmitStreamVertex() and EndStreamPrimitive().
     GLSL 4.1
       - Support for partitioning shaders into multiple programs to provide light-weight mixing of different shader stages.
             (GL_ARB_separate_shader_objects)
@@ -150,7 +150,7 @@ Shader Functionality to Implement/Finish
       + Variables declared in if and else statements are scoped only to the end of those statements, especially for non-compound statements
         Note, this is not backward compatible, it may depend on #version.
       - Allow implicit conversions of return values to the declared type of the function.
-      - The const keyword can be used to declare variables within a function body with initializer expressions that are not constant expressions.
+      + The const keyword can be used to declare variables within a function body with initializer expressions that are not constant expressions.
       + Qualifiers on variable declarations no longer have to follow a strict order. The layout qualifier can be used multiple times, and multiple parameter qualifiers can be used.
       + Parameter qualifiers can include precision and memory qualifiers.
       - Add a new atomic_uint type to support atomic counters. Also, add built-in functions for manipulating atomic counters.
@@ -160,12 +160,12 @@ Shader Functionality to Implement/Finish
         - packHalf2x16 and unpackHalf2x16
         - packSnorm2x16and unpackSnorm2x16
       - Add gl_FragDepthlayout qualifiers to communicate what kind of changes will be made to gl_FragDepth(GL_AMD_conservative depth).
-      - Add C-style curly brace initializer lists syntax for initializers. Full initialization of aggregates is required when these are used.
+      + Add C-style curly brace initializer lists syntax for initializers. Full initialization of aggregates is required when these are used.
       - Allow .length() to be applied to vectors and matrices, returning the number of components or columns.
       + Clarify that .length() returns an int type and can be used as a constant integer expression.
-      - Allow swizzle operations on scalars.
+      + Allow swizzle operations on scalars.
       - Positive signed decimal literals, as well as octal and hexadecimal, can set all 32 bits. This includes setting the sign bit to create a negative value.
-      - Make GLSL consistent with the API regarding user clipping, by no longer referring to gl_Positionwhen gl_ClipVertex is not written. Rather, user clipping becomes undefined.
+      - Make GLSL consistent with the API regarding user clipping, by no longer referring to gl_Position when gl_ClipVertex is not written. Rather, user clipping becomes undefined.
       - Clarified that a comma sequence-operator expression cannot be a constant expression. E.g., “(2,3)” is not allowed, semantically, 
             as a valid constant expression 3, even though it is an expression that will evaluate to 3.
       - Use vec2 instead of vec3 for coordinate in textureGather*(sampler2DRect,...).

@@ -44,6 +44,21 @@ void main()
     int kk = jj;                // ERROR, jj is undeclared
 }
 
+const float cx = 4.20;
+const float dx = 4.20;
+
 void bar(in highp volatile vec4 v)
 {
+    int s;
+    s.x;       // okay
+    s.y;       // ERROR
+    if (bad[0].x == cx.x)
+        ;
+    if (cx.x == dx.x)
+        badorder3 = bad[0];
+
+    float f;
+    vec3 smeared = f.xxx;
+    f.xxxxx;   // ERROR
+    f.xxy;     // ERROR
 }

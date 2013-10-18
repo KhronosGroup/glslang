@@ -270,7 +270,7 @@ void TParseContext::handlePragma(const char **tokens, int numTokens)
 
 //
 // Look at a '.' field selector string and change it into offsets
-// for a vector.
+// for a vector or scalar
 //
 // Returns true if there is no error.
 //
@@ -561,11 +561,26 @@ TIntermTyped* TParseContext::handleDotDereference(TSourceLoc loc, TIntermTyped* 
             result = intermediate.addMethod(base, TType(EbtInt), &field, loc);
         } else
             error(loc, "only the length method is supported for array", field.c_str(), "");
-    } else if (base->isVector()) {
+    } else if (base->isVector() || base->isScalar()) {
+        if (base->isScalar()) {
+            const char* dotFeature = "scalar swizzle";
+            requireProfile(loc, ECoreProfile | ECompatibilityProfile, dotFeature);
+            profileRequires(loc, ECoreProfile | ECompatibilityProfile, 420, GL_ARB_shading_language_420pack, dotFeature);
+        }
+
         TVectorFields fields;
         if (! parseVectorFields(loc, field, base->getVectorSize(), fields)) {
             fields.num = 1;
             fields.offsets[0] = 0;
+        }
+
+        if (base->isScalar()) {
+            if (fields.num == 1)
+                return result;
+            else {
+                TType type(base->getBasicType(), EvqTemporary, fields.num);
+                return addConstructor(loc, base, type, mapTypeToConstructorOp(type));
+            }
         }
 
         if (base->getType().getQualifier().storage == EvqConst) { // constant folding for vector fields
@@ -625,7 +640,7 @@ TIntermTyped* TParseContext::handleDotDereference(TSourceLoc loc, TIntermTyped* 
                 error(loc, " no such field in structure", field.c_str(), "");
         }
     } else
-        error(loc, " dot operator requires structure, array, vector, or matrix on left hand side", field.c_str(), "");
+        error(loc, " dot operator does not operater on this type:", field.c_str(), base->getType().getCompleteString().c_str());
 
     return result;
 }
@@ -1211,7 +1226,7 @@ void TParseContext::constantValueCheck(TIntermTyped* node, const char* token)
 //
 void TParseContext::integerCheck(TIntermTyped* node, const char* token)
 {
-    if ((node->getBasicType() == EbtInt || node->getBasicType() == EbtUint) && node->isScalar() && ! node->isArray())
+    if ((node->getBasicType() == EbtInt || node->getBasicType() == EbtUint) && node->isScalar())
         return;
 
     error(node->getLoc(), "scalar integer expression required", token, "");

@@ -17,7 +17,8 @@ ERROR: 0:79: ':' :  wrong operand types: no operation ':' exists that takes a le
 ERROR: 0:79: 'assign' :  cannot convert from '4X4 matrix of float' to 'fragColor 4-component vector of float'
 ERROR: 0:82: 'xr' : illegal - vector component fields not from the same set 
 ERROR: 0:83: 'xyxyx' : illegal vector field selection 
-ERROR: 0:83: 'xy' :  dot operator requires structure, array, vector, or matrix on left hand side 
+ERROR: 0:83: 'scalar swizzle' : not supported with this profile: none
+ERROR: 0:83: 'xy' : vector field selection out of range 
 ERROR: 0:84: 'z' : vector field selection out of range 
 ERROR: 0:85: 'assign' :  l-value required 
 ERROR: 0:91: 'int' : overloaded functions must have the same return type 
@@ -29,7 +30,7 @@ ERROR: 0:97: 'out' : overloaded functions must have the same parameter qualifier
 ERROR: 0:99: 'return' : function return is not matching type: 
 ERROR: 0:115: 'return' : void function cannot return a value 
 ERROR: 0:125: 'gl_TexCoord' : redeclaration of array with size 
-ERROR: 30 compilation errors.  No code generated.
+ERROR: 31 compilation errors.  No code generated.
 
 ERROR: node is still EOpNull!
 0:21  Function Definition: main( (void)

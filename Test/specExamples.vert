@@ -23,7 +23,7 @@ layout(location = 6) in vec4 colors[3];
 layout(location = 9) in mat4 transforms[2];
 
 layout(location = 3) struct S {
-    vec3 a;
+    vec3 a1;
     mat2 b;
     vec4 c[2];
 } s;
@@ -82,7 +82,7 @@ uniform sampler2D s17;                   // okay, s still bound at 3
 // in another compilation unit...
 //layout(binding=4) uniform sampler2D s; // ERROR: contradictory bindings
 
-layout (binding = 2, offset = 4) uniform atomic_uint a;
+layout (binding = 2, offset = 4) uniform atomic_uint a2;
 
 layout (binding = 2) uniform atomic_uint bar;
 
