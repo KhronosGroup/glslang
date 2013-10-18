@@ -62,3 +62,12 @@ void bar(in highp volatile vec4 v)
     f.xxxxx;   // ERROR
     f.xxy;     // ERROR
 }
+
+layout(binding = 3) uniform;  // ERROR
+layout(binding = 3) uniform boundblock { int aoeu; } boundInst;
+layout(binding = 7) uniform anonblock { int aoeu; } ;
+layout(location = 1) in;      // ERROR
+layout(binding = 1) in inblock { int aoeua; };       // ERROR
+layout(binding = 100000) uniform anonblock2 { int aooeu; } ;
+layout(binding = 4) uniform sampler2D sampb1;
+layout(binding = 5) uniform sampler2D sampb2[10];

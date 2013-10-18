@@ -20,7 +20,11 @@ ERROR: 0:44: '=' :  cannot convert from 'float' to 'int'
 ERROR: 0:54: 'y' : vector field selection out of range 
 ERROR: 0:62: 'xxxxx' : illegal vector field selection 
 ERROR: 0:63: 'xxy' : vector field selection out of range 
-ERROR: 20 compilation errors.  No code generated.
+ERROR: 0:66: 'binding' : cannot declare a default, include a type or full declaration 
+ERROR: 0:69: 'location' : cannot declare a default, use a full declaration 
+ERROR: 0:70: 'binding' : requires uniform or buffer storage qualifier 
+ERROR: 0:71: 'binding' : binding is too large 
+ERROR: 24 compilation errors.  No code generated.
 
 ERROR: node is still EOpNull!
 0:20  Function Definition: foo( (const int)
@@ -112,6 +116,12 @@ ERROR: node is still EOpNull!
 0:?       4.200000
 0:?     'dx' (const float)
 0:?       4.200000
+0:?     'boundInst' (layout(binding=3 shared ) uniform block)
+0:?     '__anon__0' (layout(binding=7 shared ) uniform block)
+0:?     '__anon__1' (layout(binding=1 ) in block)
+0:?     '__anon__2' (layout(shared ) uniform block)
+0:?     'sampb1' (layout(binding=4 ) uniform sampler2D)
+0:?     'sampb2' (layout(binding=5 ) uniform 10-element array of sampler2D)
 0:?     'gl_VertexID' (gl_VertexId int)
 0:?     'gl_InstanceID' (gl_InstanceId int)
 

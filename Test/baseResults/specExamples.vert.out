@@ -15,23 +15,20 @@ ERROR: 0:46: 'stream' : there is no such layout identifier taking an assigned va
 ERROR: 0:47: 'stream' : there is no such layout identifier taking an assigned value 
 ERROR: 0:50: 'stream' : there is no such layout identifier taking an assigned value 
 ERROR: 0:55: 'stream' : there is no such layout identifier taking an assigned value 
-ERROR: 0:77: 'binding' : not supported 
 ERROR: 0:80: 's17' : redefinition 
-ERROR: 0:85: 'binding' : not supported 
 ERROR: 0:85: 'offset' : there is no such layout identifier taking an assigned value 
-ERROR: 0:87: 'binding' : not supported 
-ERROR: 0:89: 'binding' : not supported 
+ERROR: 0:85: 'binding' : requires block, or sampler/image, or atomic-counter type 
+ERROR: 0:87: 'binding' : requires block, or sampler/image, or atomic-counter type 
 ERROR: 0:89: 'offset' : there is no such layout identifier taking an assigned value 
-ERROR: 0:91: 'binding' : not supported 
+WARNING: 0:89: '' : cannot set qualifier defaults when using a type and no identifier 
 ERROR: 0:91: 'bar' : redefinition 
 ERROR: 0:92: 'offset' : there is no such layout identifier taking an assigned value 
 ERROR: 0:92: 'bar' : redefinition 
-ERROR: 0:94: 'binding' : not supported 
 ERROR: 0:94: 'offset' : there is no such layout identifier taking an assigned value 
 ERROR: 0:94: 'a2' : redefinition 
-ERROR: 0:95: 'binding' : not supported 
-ERROR: 0:96: 'binding' : not supported 
-ERROR: 0:97: 'binding' : not supported 
+ERROR: 0:95: 'binding' : requires block, or sampler/image, or atomic-counter type 
+ERROR: 0:96: 'binding' : requires block, or sampler/image, or atomic-counter type 
+ERROR: 0:97: 'binding' : requires block, or sampler/image, or atomic-counter type 
 ERROR: 0:106: '' : vertex input cannot be further qualified 
 ERROR: 0:112: 'ColorIvn' : identifier not previously declared 
 ERROR: 0:132: 'shared' : not supported in this stage: vertex
@@ -43,7 +40,7 @@ ERROR: 0:153: '' : function does not return a value: func3
 ERROR: 0:192: 'constructor' : constructing from a non-dereferenced array 
 ERROR: 0:193: 'constructor' : constructing from a non-dereferenced array 
 ERROR: 0:194: 'constructor' : constructing from a non-dereferenced array 
-ERROR: 44 compilation errors.  No code generated.
+ERROR: 40 compilation errors.  No code generated.
 
 ERROR: node is still EOpNull!
 0:134  Function Definition: funcA(I21; (4-component vector of float)
@@ -289,13 +286,13 @@ ERROR: node is still EOpNull!
 0:?     '__anon__2' (out block)
 0:?     'var7' (smooth out 4-component vector of float)
 0:?     '__anon__3' (layout(std140 ) uniform block)
-0:?     '__anon__4' (layout(shared ) uniform block)
-0:?     's17' (uniform sampler2D)
-0:?     'a2' (uniform int)
-0:?     'bar' (uniform int)
-0:?     'b2' (uniform int)
-0:?     'c2' (uniform int)
-0:?     'd2' (uniform int)
+0:?     '__anon__4' (layout(column_major shared ) uniform block)
+0:?     's17' (layout(binding=3 ) uniform sampler2D)
+0:?     'a2' (layout(binding=2 ) uniform int)
+0:?     'bar' (layout(binding=2 ) uniform int)
+0:?     'b2' (layout(binding=2 ) uniform int)
+0:?     'c2' (layout(binding=3 ) uniform int)
+0:?     'd2' (layout(binding=2 ) uniform int)
 0:?     '__anon__5' (out block)
 0:?     'ColorInv' (smooth out 3-component vector of float)
 0:?     'Color4' (invariant centroid smooth out 3-component vector of float)
@@ -306,7 +303,7 @@ ERROR: node is still EOpNull!
 0:?     'c' (in 4-component vector of float)
 0:?     'd' (in 4-component vector of float)
 0:?     'v' (smooth out 4-component vector of float)
-0:?     '__anon__6' (layout(shared ) uniform block)
+0:?     '__anon__6' (layout(shared ) coherent uniform block)
 0:?     '__anon__7' (layout(shared ) uniform block)
 0:?     'shv' (shared 4-component vector of float)
 0:?     'img1' (uniform image2D)

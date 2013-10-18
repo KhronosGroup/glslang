@@ -1,4 +1,4 @@
-ERROR: 0:4: 'color' : can only use location layout qualifier on a vertex input or fragment output 
+ERROR: 0:4: 'input location layout qualifier' : not supported in this stage: fragment
 ERROR: 1 compilation errors.  No code generated.
 
 ERROR: node is still EOpNull!

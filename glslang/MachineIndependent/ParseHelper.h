@@ -126,6 +126,7 @@ public:
     void setLayoutQualifier(TSourceLoc, TPublicType&, TString&);
     void setLayoutQualifier(TSourceLoc, TPublicType&, TString&, int);
     void mergeLayoutQualifiers(TSourceLoc, TQualifier& dest, const TQualifier& src);
+    void layoutCheck(TSourceLoc, const TSymbol&);
 
     const TFunction* findFunction(TSourceLoc, TFunction* pfnCall, bool *builtIn = 0);
     TIntermNode* declareVariable(TSourceLoc, TString& identifier, TPublicType&, TArraySizes* typeArray = 0, TIntermTyped* initializer = 0);

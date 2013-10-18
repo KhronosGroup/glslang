@@ -7,7 +7,7 @@ ERROR: 0:19: 'badf' : member of uniform block cannot have an auxiliary or interp
 ERROR: 0:20: 'badg' : member storage qualifier cannot contradict block storage qualifier 
 ERROR: 0:28: 'T3' : nameless block contains a member that already has a name at global scope 
 ERROR: 0:35: 'output block' : not supported with this profile: es
-ERROR: 0:39: 'badoutA' : can only use location layout qualifier on a vertex input or fragment output 
+ERROR: 0:39: 'output location layout qualifier' : not supported in this stage: vertex
 ERROR: 0:47: 'shared' : not supported with this profile: es
 ERROR: 0:47: 'shared' : not supported in this stage: vertex
 ERROR: 12 compilation errors.  No code generated.
@@ -33,11 +33,11 @@ ERROR: node is still EOpNull!
 0:43                    Constant:
 0:43                      1 (const int)
 0:43                M4: direct index for structure (layout(row_major shared ) highp 4X4 matrix of float)
-0:43                  '__anon__1' (layout(shared ) uniform block)
+0:43                  '__anon__1' (layout(column_major shared ) uniform block)
 0:43                  Constant:
 0:43                    1 (const uint)
 0:43              M3: direct index for structure (layout(column_major shared ) highp 4X4 matrix of float)
-0:43                '__anon__1' (layout(shared ) uniform block)
+0:43                '__anon__1' (layout(column_major shared ) uniform block)
 0:43                Constant:
 0:43                  0 (const uint)
 0:43            t2m: direct index for structure (layout(row_major shared ) highp 4X4 matrix of float)

@@ -297,20 +297,28 @@ public:
         layoutMatrix = ElmNone;
         layoutPacking = ElpNone;
         layoutSlotLocation = layoutLocationEnd;
+        layoutBinding = layoutBindingEnd;
     }
     bool hasLayout() const
     {
         return layoutMatrix != ElmNone ||
                layoutPacking != ElpNone ||
-               layoutSlotLocation != layoutLocationEnd;
+               hasLocation() ||
+               hasBinding();
     }
     TLayoutMatrix  layoutMatrix       : 3;
     TLayoutPacking layoutPacking      : 4;
     unsigned int   layoutSlotLocation : 7;  // ins/outs should have small numbers, buffer offsets could be large
     static const unsigned int layoutLocationEnd = 0x3F;
+    unsigned int layoutBinding        : 8;
+    static const unsigned int layoutBindingEnd = 0xFF;
     bool hasLocation() const
     {
         return layoutSlotLocation != layoutLocationEnd;
+    }
+    bool hasBinding() const
+    {
+        return layoutBinding != layoutBindingEnd;
     }
     static const char* getLayoutPackingString(TLayoutPacking packing)
     {
@@ -430,17 +438,20 @@ public:
                                     typeName = NewPoolTString(p.userDef->getTypeName().c_str());
                                 }
                             }
-    TType(TTypeList* userDef, const TString& n, TStorageQualifier blockQualifier = EvqGlobal) :
-                            basicType(EbtStruct), vectorSize(1), matrixCols(0), matrixRows(0), arraySizes(0),
-                            structure(userDef), fieldName(0)
+    TType(TTypeList* userDef, const TString& n) :
+                            basicType(EbtStruct), vectorSize(1), matrixCols(0), matrixRows(0),
+                            arraySizes(0), structure(userDef), fieldName(0)
                             {
                                 sampler.clear();
                                 qualifier.clear();
-                                // is it an interface block?
-                                if (blockQualifier != EvqGlobal) {
-                                    qualifier.storage = blockQualifier;
-                                    basicType = EbtBlock;
-                                }
+								typeName = NewPoolTString(n.c_str());
+                            }
+    // For interface blocks
+    TType(TTypeList* userDef, const TString& n, const TQualifier& q) : 
+                            basicType(EbtBlock), vectorSize(1), matrixCols(0), matrixRows(0),
+                            qualifier(q), arraySizes(0), structure(userDef), fieldName(0)
+                            {
+                                sampler.clear();
 								typeName = NewPoolTString(n.c_str());
                             }
     virtual ~TType() {}
@@ -628,6 +639,8 @@ public:
             p += snprintf(p, end - p, "layout(");
             if (qualifier.hasLocation())
                 p += snprintf(p, end - p, "location=%d ", qualifier.layoutSlotLocation);
+            if (qualifier.hasBinding())
+                p += snprintf(p, end - p, "binding=%d ", qualifier.layoutBinding);
             if (qualifier.layoutMatrix != ElmNone)
                 p += snprintf(p, end - p, "%s ", TQualifier::getLayoutMatrixString(qualifier.layoutMatrix));
             if (qualifier.layoutPacking != ElpNone)
