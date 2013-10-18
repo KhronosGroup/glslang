@@ -38,3 +38,11 @@ void main()
 // sum should be 321.0
     gl_Position = vec4(sum);
 }
+
+#define ADD(a, b) a + b + ((a) + ((b)));
+
+float foo()
+{
+    return ADD(gl_Position.xyxwx, 3.0)  // ERROR, should be this line number
+    return ADD(gl_Position.y, 3.0)
+}

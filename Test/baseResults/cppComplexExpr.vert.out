@@ -1,5 +1,9 @@
 WARNING: #version: statement missing; use #version on first line of shader
-0:? Sequence
+ERROR: 0:46: 'xyxwx' : illegal vector field selection 
+ERROR: 0:46: 'xyxwx' : illegal vector field selection 
+ERROR: 2 compilation errors.  No code generated.
+
+ERROR: node is still EOpNull!
 0:4  Sequence
 0:4    move second child to first child (highp float)
 0:4      'sum' (highp float)
@@ -24,6 +28,41 @@ WARNING: #version: statement missing; use #version on first line of shader
 0:39        'gl_Position' (gl_Position highp 4-component vector of float)
 0:39        Construct vec4 (highp 4-component vector of float)
 0:39          'sum' (highp float)
+0:44  Function Definition: foo( (highp float)
+0:44    Function Parameters: 
+0:46    Sequence
+0:46      Branch: Return with expression
+0:46        add (highp float)
+0:46          add (highp float)
+0:46            direct index (highp float)
+0:46              'gl_Position' (gl_Position highp 4-component vector of float)
+0:46              Constant:
+0:46                0 (const int)
+0:46            Constant:
+0:46              3.000000
+0:46          add (highp float)
+0:46            direct index (highp float)
+0:46              'gl_Position' (gl_Position highp 4-component vector of float)
+0:46              Constant:
+0:46                0 (const int)
+0:46            Constant:
+0:46              3.000000
+0:47      Branch: Return with expression
+0:47        add (highp float)
+0:47          add (highp float)
+0:47            direct index (highp float)
+0:47              'gl_Position' (gl_Position highp 4-component vector of float)
+0:47              Constant:
+0:47                1 (const int)
+0:47            Constant:
+0:47              3.000000
+0:47          add (highp float)
+0:47            direct index (highp float)
+0:47              'gl_Position' (gl_Position highp 4-component vector of float)
+0:47              Constant:
+0:47                1 (const int)
+0:47            Constant:
+0:47              3.000000
 0:?   Linker Objects
 0:?     'sum' (highp float)
 

@@ -297,7 +297,7 @@ void TPpContext::RewindTokenStream(TokenStream *pTok)
 *
 */
 
-int TPpContext::ReadToken(TokenStream *pTok, TPpToken * yylvalpp)
+int TPpContext::ReadToken(TokenStream *pTok, TPpToken *yylvalpp)
 {
     //TODO: PP: why is this different than byte_scan
 
@@ -399,8 +399,6 @@ int TPpContext::scan_token(TPpContext* pp, TokenInputSrc *in, TPpToken * yylvalp
 {
     int token = pp->ReadToken(in->tokens, yylvalpp);
     int (*final)(TPpContext *);
-    yylvalpp->loc.string = pp->currentInput->name;
-    yylvalpp->loc.line = pp->currentInput->line;
     if (token == '\n') {
         in->base.line++;
         return token;

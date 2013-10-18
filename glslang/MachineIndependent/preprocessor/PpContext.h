@@ -84,6 +84,7 @@ namespace glslang {
 
 class TPpToken {
 public:
+    TPpToken() { loc.line = 0; loc.string = 0; name[0] = 0; }
     static const int maxTokenLength = 1024;
 
     TSourceLoc loc;
