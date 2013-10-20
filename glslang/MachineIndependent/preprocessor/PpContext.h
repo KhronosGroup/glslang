@@ -80,6 +80,8 @@ NVIDIA HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "../ParseHelper.h"
 
+#include <hash_map>
+
 namespace glslang {
 
 class TPpToken {
@@ -141,42 +143,8 @@ public:
     };
 
     //
-    // From PpAtom.cpp
+    // From Pp.cpp
     //
-    struct StringTable {
-        char *strings;
-        int nextFree;
-        int size;
-    };
-    struct HashEntry {
-        int index;      // String table offset of string representation
-        int value;      // Atom (symbol) value
-    };
-
-    static const int hashTableMaxCollisions = 3;
-
-    struct HashTable {
-        HashEntry *entry;
-        int size;
-        int entries;
-        int counts[hashTableMaxCollisions + 1];
-    };
-
-    struct AtomTable {
-        StringTable stable; // String table.
-        HashTable htable;   // Hashes string to atom number and token value.  Multiple strings can
-        // have the same token value but each unique string is a unique atom.
-        int *amap;          // Maps atom value to offset in string table.  Atoms all map to unique
-        // strings except for some undefined values in the lower, fixed part
-        // of the atom table that map to "<undefined>".  The lowest 256 atoms
-        // correspond to single character ASCII values except for alphanumeric
-        // characters and '_', which can be other tokens.  Next come the
-        // language tokens with their atom values equal to the token value.
-        // Then come predefined atoms, followed by user specified identifiers.
-        int *arev;          // Reversed atom for symbol table use.
-        int nextFree;
-        int size;
-    };
 
     struct MacroSymbol {
         int argc;
@@ -186,19 +154,9 @@ public:
         unsigned undef:1;
     };
 
-    typedef enum symbolkind {
-        MACRO_S
-    } symbolkind;
-
     struct Symbol {
-        Symbol *left, *right;
-        Symbol *next;
-        int name;       // Name atom
-        TSourceLoc loc;
-        symbolkind kind;
-        union {
-            MacroSymbol mac;
-        } details;
+        int atom;
+        MacroSymbol mac;
     };
 
     struct SymbolList {
@@ -206,18 +164,9 @@ public:
         Symbol *symb;
     };
 
-    struct Scope {
-        Scope *next, *prev;     // doubly-linked list of all scopes
-        Scope *parent;
-        Scope *funScope;        // Points to base scope of enclosing function
-        MemoryPool *pool;       // pool used for allocation in this scope
-        Symbol *symbols;
-
-        int level;              // 0 = super globals, 1 = globals, etc.
-
-        // Only used at global scope (level 1):
-        SymbolList *programs;   // List of programs for this compilation.
-    };
+    MemoryPool *pool;
+    typedef std::hash_map<int, Symbol*> TSymbol;
+    TSymbol symbols; // this has light use... just defined macros
 
 protected:
     char*   preamble;               // string to parse, all before line 1 of string 0, it is 0 if no preamble
@@ -277,11 +226,9 @@ protected:
     int compatibilityAtom;
     int esAtom;
     int extensionAtom;
-    Scope *macros;
     TSourceLoc ifloc; /* outermost #if */
 
     int InitCPP();
-    int FreeCPP();
     int FinalCPP();
     int CPPdefine(TPpToken * yylvalpp);
     int CPPundef(TPpToken * yylvalpp);
@@ -307,18 +254,9 @@ protected:
     //
     // from PpSymbols.cpp
     //
-    Scope *ScopeList;
-    Scope *CurrentScope;
-    Scope *GlobalScope;
-
-    Scope *NewScopeInPool(MemoryPool *pool);
-    void PushScope(Scope *fScope);
-    Scope *PopScope(void);
-    Symbol *NewSymbol(TSourceLoc *loc, Scope *fScope, int name, symbolkind kind);
-    void lAddToTree(Symbol **fSymbols, Symbol *fSymb, AtomTable *atable);
-    Symbol *AddSymbol(TSourceLoc *loc, Scope *fScope, int atom, symbolkind kind);
-    Symbol *LookUpLocalSymbol(Scope *fScope, int atom);
-    Symbol *LookUpSymbol(Scope *fScope, int atom);
+    Symbol *NewSymbol(int name);
+    Symbol *AddSymbol(int atom);
+    Symbol *LookUpSymbol(int atom);
 
     //
     // From PpTokens.cpp
@@ -356,7 +294,6 @@ protected:
         char *p;
     };
     int InitScanner(TPpContext *cpp);
-    int FreeScanner(void);
     static int str_getch(TPpContext*, StringInputSrc *in);
     static void str_ungetch(TPpContext*, StringInputSrc *in, int ch, TPpToken *type);
     int ScanFromString(char *s);
@@ -367,18 +304,15 @@ protected:
     //
     // From PpAtom.cpp
     //
-    AtomTable atomTable;
-    int InitAtomTable(AtomTable *atable, int htsize);
-    void FreeAtomTable(AtomTable *atable);
-    int AddAtom(AtomTable *atable, const char *s);
-    int AddAtomFixed(AtomTable *atable, const char *s, int atom);
-    void PrintAtomTable(AtomTable *atable);
-    int IncreaseHashTableSize(TPpContext::AtomTable *atable);
-    int LookUpAddStringHash(AtomTable *atable, const char *s);
-    int LookUpAddString(AtomTable *atable, const char *s);
-    const char *GetAtomString(AtomTable *atable, int atom);
-    int GetReversedAtom(AtomTable *atable, int atom);
-    char* GetStringOfAtom(AtomTable *atable, int atom);
+    typedef std::hash_map<const TString, int> TAtomMap;
+    typedef TVector<const TString*> TStringMap;
+    TAtomMap atomMap;
+    TStringMap stringMap;
+    int nextAtom;
+    void InitAtomTable();
+    int AddAtomFixed(const char *s, int atom);
+    int LookUpAddString(const char *s);
+    const char *GetAtomString(int atom);
 
     //
     // From PpMemory.cpp

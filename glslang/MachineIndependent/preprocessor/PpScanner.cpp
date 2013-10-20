@@ -122,11 +122,6 @@ int TPpContext::InitScanner(TPpContext *cpp)
     return 1;
 } // InitScanner
 
-int TPpContext::FreeScanner(void)
-{
-    return (FreeCPP());
-}
-
 /*
 * str_getch()
 * takes care of reading from multiple strings.
@@ -386,7 +381,7 @@ int TPpContext::byte_scan(TPpContext* pp, InputSrc *in, TPpToken * yylvalpp)
 
             tokenText[len] = '\0';
             pp->currentInput->ungetch(pp, pp->currentInput, ch, yylvalpp);
-            yylvalpp->atom = pp->LookUpAddString(&pp->atomTable, tokenText);
+            yylvalpp->atom = pp->LookUpAddString(tokenText);
 
             return CPP_IDENTIFIER;
         case '0':
@@ -769,7 +764,7 @@ int TPpContext::byte_scan(TPpContext* pp, InputSrc *in, TPpToken * yylvalpp)
             };
             tokenText[len] = '\0';
             if (ch == '"') {
-                yylvalpp->atom = pp->LookUpAddString(&pp->atomTable, tokenText);
+                yylvalpp->atom = pp->LookUpAddString(tokenText);
                 return CPP_STRCONSTANT;
             } else {
                 pp->parseContext.error(yylvalpp->loc, "end of line in string", "string", "");
@@ -785,7 +780,7 @@ const char* TPpContext::tokenize(TPpToken* yylvalpp)
 
     for(;;) {
 
-        char* tokenString = 0;
+        const char* tokenString = 0;
         token = currentInput->scan(this, currentInput, yylvalpp);
         yylvalpp->ppToken = token;
         if (check_EOF(token))
@@ -813,12 +808,12 @@ const char* TPpContext::tokenize(TPpToken* yylvalpp)
             continue;
 
         if (token == CPP_IDENTIFIER)
-            tokenString = GetStringOfAtom(&atomTable, yylvalpp->atom);
+            tokenString = GetAtomString(yylvalpp->atom);
         else if (token == CPP_INTCONSTANT || token == CPP_UINTCONSTANT ||
                  token == CPP_FLOATCONSTANT || token == CPP_DOUBLECONSTANT)
             tokenString = yylvalpp->name;
         else
-            tokenString = GetStringOfAtom(&atomTable, token);
+            tokenString = GetAtomString(token);
 
         if (tokenString) {
             if (tokenString[0] != 0)

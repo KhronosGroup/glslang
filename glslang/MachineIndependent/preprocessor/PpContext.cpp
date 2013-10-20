@@ -84,10 +84,9 @@ NVIDIA HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 namespace glslang {
 
 TPpContext::TPpContext(TParseContext& pc) : 
-    preamble(0), strings(0), notAVersionToken(false), parseContext(pc),
-    ScopeList(0), CurrentScope(0), GlobalScope(0)
+    preamble(0), strings(0), notAVersionToken(false), parseContext(pc)
 {
-    InitAtomTable(&atomTable, 0);
+    InitAtomTable();
     InitScanner(this);
 
     ifdepth = 0;
@@ -98,9 +97,8 @@ TPpContext::TPpContext(TParseContext& pc) :
 
 TPpContext::~TPpContext()
 {
+    FinalCPP();
     delete [] preamble;
-    FreeAtomTable(&atomTable);
-    FreeScanner();
 }
 
 void TPpContext::setPreamble(const char* p, size_t l)

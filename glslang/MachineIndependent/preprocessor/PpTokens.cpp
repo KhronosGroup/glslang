@@ -256,7 +256,7 @@ void TPpContext::RecordToken(TokenStream *pTok, int token, TPpToken * yylvalpp)
     case CPP_IDENTIFIER:
     case CPP_TYPEIDENTIFIER:
     case CPP_STRCONSTANT:
-        s = GetAtomString(&atomTable, yylvalpp->atom);
+        s = GetAtomString(yylvalpp->atom);
         while (*s)
             lAddByte(pTok, (unsigned char) *s++);
         lAddByte(pTok, 0);
@@ -331,7 +331,7 @@ int TPpContext::ReadToken(TokenStream *pTok, TPpToken *yylvalpp)
             }
             tokenText[len] = '\0';
             assert(ch == '\0');
-            yylvalpp->atom = LookUpAddString(&atomTable, tokenText);
+            yylvalpp->atom = LookUpAddString(tokenText);
             return CPP_IDENTIFIER;
             break;
         case CPP_STRCONSTANT:
@@ -344,7 +344,7 @@ int TPpContext::ReadToken(TokenStream *pTok, TPpToken *yylvalpp)
             }
 
             tokenText[len] = 0;
-            yylvalpp->atom = LookUpAddString(&atomTable, tokenText);
+            yylvalpp->atom = LookUpAddString(tokenText);
             break;
         case CPP_FLOATCONSTANT:
         case CPP_DOUBLECONSTANT:
@@ -465,10 +465,10 @@ void TPpContext::DumpTokenStream(FILE *fp, TokenStream *s, TPpToken * yylvalpp)
         switch (token) {
         case CPP_IDENTIFIER:
         case CPP_TYPEIDENTIFIER:
-            printf("%s ", GetAtomString(&atomTable, yylvalpp->atom));
+            printf("%s ", GetAtomString(yylvalpp->atom));
             break;
         case CPP_STRCONSTANT:
-            printf("\"%s\"", GetAtomString(&atomTable, yylvalpp->atom));
+            printf("\"%s\"", GetAtomString(yylvalpp->atom));
             break;
         case CPP_FLOATCONSTANT:
         case CPP_DOUBLECONSTANT:
@@ -480,7 +480,7 @@ void TPpContext::DumpTokenStream(FILE *fp, TokenStream *s, TPpToken * yylvalpp)
             break;
         default:
             if (token >= 127)
-                printf("%s ", GetAtomString(&atomTable, token));
+                printf("%s ", GetAtomString(token));
             else
                 printf("%c", token);
             break;

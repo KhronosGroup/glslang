@@ -98,67 +98,59 @@ namespace glslang {
 
 int TPpContext::InitCPP()
 {
-    TPpContext::AtomTable* atable = &atomTable;
     // Add various atoms needed by the CPP line scanner:
-    bindAtom = LookUpAddString(atable, "bind");
-    constAtom = LookUpAddString(atable, "const");
-    defaultAtom = LookUpAddString(atable, "default");
-    defineAtom = LookUpAddString(atable, "define");
-    definedAtom = LookUpAddString(atable, "defined");
-    elifAtom = LookUpAddString(atable, "elif");
-    elseAtom = LookUpAddString(atable, "else");
-    endifAtom = LookUpAddString(atable, "endif");
-    ifAtom = LookUpAddString(atable, "if");
-    ifdefAtom = LookUpAddString(atable, "ifdef");
-    ifndefAtom = LookUpAddString(atable, "ifndef");
-    includeAtom = LookUpAddString(atable, "include");
-    lineAtom = LookUpAddString(atable, "line");
-    pragmaAtom = LookUpAddString(atable, "pragma");
-    texunitAtom = LookUpAddString(atable, "texunit");
-    undefAtom = LookUpAddString(atable, "undef");
-    errorAtom = LookUpAddString(atable, "error");
-    __LINE__Atom = LookUpAddString(atable, "__LINE__");
-    __FILE__Atom = LookUpAddString(atable, "__FILE__");
-    __VERSION__Atom = LookUpAddString(atable, "__VERSION__");
-    versionAtom = LookUpAddString(atable, "version");
-    coreAtom = LookUpAddString(atable, "core");
-    compatibilityAtom = LookUpAddString(atable, "compatibility");
-    esAtom = LookUpAddString(atable, "es");
-    extensionAtom = LookUpAddString(atable, "extension");
-    macros = NewScopeInPool(mem_CreatePool(0, 0));
-
-    return 1;
-} // InitCPP
-
-int TPpContext::FreeCPP()
-{
-    if (macros) {
-        mem_FreePool(macros->pool);
-        macros = 0;
-    }
+    bindAtom = LookUpAddString("bind");
+    constAtom = LookUpAddString("const");
+    defaultAtom = LookUpAddString("default");
+    defineAtom = LookUpAddString("define");
+    definedAtom = LookUpAddString("defined");
+    elifAtom = LookUpAddString("elif");
+    elseAtom = LookUpAddString("else");
+    endifAtom = LookUpAddString("endif");
+    ifAtom = LookUpAddString("if");
+    ifdefAtom = LookUpAddString("ifdef");
+    ifndefAtom = LookUpAddString("ifndef");
+    includeAtom = LookUpAddString("include");
+    lineAtom = LookUpAddString("line");
+    pragmaAtom = LookUpAddString("pragma");
+    texunitAtom = LookUpAddString("texunit");
+    undefAtom = LookUpAddString("undef");
+    errorAtom = LookUpAddString("error");
+    __LINE__Atom = LookUpAddString("__LINE__");
+    __FILE__Atom = LookUpAddString("__FILE__");
+    __VERSION__Atom = LookUpAddString("__VERSION__");
+    versionAtom = LookUpAddString("version");
+    coreAtom = LookUpAddString("core");
+    compatibilityAtom = LookUpAddString("compatibility");
+    esAtom = LookUpAddString("es");
+    extensionAtom = LookUpAddString("extension");
+    pool = mem_CreatePool(0, 0);
 
     return 1;
 }
 
 int TPpContext::FinalCPP()
 {
+    mem_FreePool(pool);
+
     if (ifdepth)
         parseContext.error(parseContext.currentLoc, "missing #endif", "#if", "");
+
     return 1;
 }
 
 int TPpContext::CPPdefine(TPpToken * yylvalpp)
 {
-    int token, name, args[maxMacroArgs], argc;
+    int token, atom, args[maxMacroArgs], argc;
     MacroSymbol mac;
     Symbol *symb;
     memset(&mac, 0, sizeof(mac));
     token = currentInput->scan(this, currentInput, yylvalpp);
     if (token != CPP_IDENTIFIER) {
-        parseContext.error(yylvalpp->loc, "must be followed by macro name", "#define", "");
+        parseContext.error(yylvalpp->loc, "must be followed by macro atom", "#define", "");
         return token;
     }
-    name = yylvalpp->atom;
+    atom = yylvalpp->atom;
     token = currentInput->scan(this, currentInput, yylvalpp);
     if (token == '(' && !yylvalpp->ival) {
         // gather arguments
@@ -182,11 +174,11 @@ int TPpContext::CPPdefine(TPpToken * yylvalpp)
             return token;
         }
         mac.argc = argc;
-        mac.args = (int*)mem_Alloc(macros->pool, argc * sizeof(int));
+        mac.args = (int*)mem_Alloc(pool, argc * sizeof(int));
         memcpy(mac.args, args, argc * sizeof(int));
         token = currentInput->scan(this, currentInput, yylvalpp);
     }
-    mac.body = NewTokenStream(GetAtomString(&atomTable, name), macros->pool);
+    mac.body = NewTokenStream(GetAtomString(atom), pool);
     while (token != '\n') {
         while (token == '\\') {
             token = currentInput->scan(this, currentInput, yylvalpp);
@@ -199,34 +191,33 @@ int TPpContext::CPPdefine(TPpToken * yylvalpp)
         token = currentInput->scan(this, currentInput, yylvalpp);
     };
 
-    symb = LookUpSymbol(macros, name);
+    symb = LookUpSymbol(atom);
     if (symb) {
-        if (!symb->details.mac.undef) {
+        if (!symb->mac.undef) {
             // already defined -- need to make sure they are identical
-            if (symb->details.mac.argc != mac.argc)
+            if (symb->mac.argc != mac.argc)
                 goto error;
             for (argc=0; argc < mac.argc; argc++)
-                if (symb->details.mac.args[argc] != mac.args[argc])
+                if (symb->mac.args[argc] != mac.args[argc])
                     goto error;
-            RewindTokenStream(symb->details.mac.body);
+            RewindTokenStream(symb->mac.body);
             RewindTokenStream(mac.body);
             do {
                 int old_lval, old_token;
-                old_token = ReadToken(symb->details.mac.body, yylvalpp);
+                old_token = ReadToken(symb->mac.body, yylvalpp);
                 old_lval = yylvalpp->ival;
                 token = ReadToken(mac.body, yylvalpp);
                 if (token != old_token || yylvalpp->ival != old_lval) { 
 error:
-                    parseContext.error(yylvalpp->loc, "Macro Redefined", "#define", GetStringOfAtom(&atomTable, name));
+                    parseContext.error(yylvalpp->loc, "Macro Redefined", "#define", GetAtomString(atom));
                     break; 
                 }
             } while (token > 0);
         }
-        //FreeMacro(&symb->details.mac);
     } else {
-        symb = AddSymbol(&yylvalpp->loc, macros, name, MACRO_S);
+        symb = AddSymbol(atom);
     }
-    symb->details.mac = mac;
+    symb->mac = mac;
 
     return '\n';
 } // CPPdefine
@@ -246,9 +237,9 @@ int TPpContext::CPPundef(TPpToken * yylvalpp)
         return token;
     }
 
-    symb = LookUpSymbol(macros, yylvalpp->atom);
+    symb = LookUpSymbol(yylvalpp->atom);
     if (symb) {
-        symb->details.mac.undef = 1;
+        symb->mac.undef = 1;
     }
     token = currentInput->scan(this, currentInput, yylvalpp);
     if (token != '\n')
@@ -411,8 +402,8 @@ int TPpContext::eval(int token, int prec, int *res, int *err, TPpToken * yylvalp
 
                 return token;
             }
-            *res = (s = LookUpSymbol(macros, yylvalpp->atom))
-                ? !s->details.mac.undef : 0;
+            *res = (s = LookUpSymbol(yylvalpp->atom))
+                ? !s->mac.undef : 0;
             token = currentInput->scan(this, currentInput, yylvalpp);
             if (needclose) {
                 if (token != ')') {
@@ -539,14 +530,14 @@ int TPpContext::CPPifdef(int defined, TPpToken * yylvalpp)
         else 
             parseContext.error(yylvalpp->loc, "must be followed by macro name", "#ifndef", "");
     } else {
-        Symbol *s = LookUpSymbol(macros, name);
+        Symbol *s = LookUpSymbol(name);
         token = currentInput->scan(this, currentInput, yylvalpp);
         if (token != '\n') {
             parseContext.error(yylvalpp->loc, "unexpected tokens following #ifdef directive - expected a newline", "#ifdef", "");
             while (token != '\n')
                 token = currentInput->scan(this, currentInput, yylvalpp);
         }
-        if (((s && !s->details.mac.undef) ? 1 : 0) != defined)
+        if (((s && !s->mac.undef) ? 1 : 0) != defined)
             token = CPPelse(1, yylvalpp);
     }
     return token;
@@ -592,9 +583,9 @@ int TPpContext::CPPerror(TPpToken * yylvalpp)
             token == CPP_FLOATCONSTANT || token == CPP_DOUBLECONSTANT) {
                 message.append(yylvalpp->name);
         } else if (token == CPP_IDENTIFIER || token == CPP_STRCONSTANT) {
-            message.append(GetStringOfAtom(&atomTable, yylvalpp->atom));
+            message.append(GetAtomString(yylvalpp->atom));
         } else {
-            message.append(GetStringOfAtom(&atomTable, token));
+            message.append(GetAtomString(token));
         }
         message.append(" ");
         token = currentInput->scan(this, currentInput, yylvalpp);
@@ -630,7 +621,7 @@ int TPpContext::CPPpragma(TPpToken * yylvalpp)
         }
         switch (token) {
         case CPP_IDENTIFIER:
-            SrcStr = GetAtomString(&atomTable, yylvalpp->atom);
+            SrcStr = GetAtomString(yylvalpp->atom);
             allTokens[tokenCount] = (char*)malloc(strlen(SrcStr) + 1);
             strcpy(allTokens[tokenCount++], SrcStr);
             break;
@@ -720,7 +711,7 @@ int TPpContext::CPPextension(TPpToken * yylvalpp)
     if (token != CPP_IDENTIFIER)
         parseContext.error(yylvalpp->loc, "extension name expected", "#extension", "");
 
-    strcpy(extensionName, GetAtomString(&atomTable, yylvalpp->atom));
+    strcpy(extensionName, GetAtomString(yylvalpp->atom));
 
     token = currentInput->scan(this, currentInput, yylvalpp);
     if (token != ':') {
@@ -734,7 +725,7 @@ int TPpContext::CPPextension(TPpToken * yylvalpp)
         return token;
     }
 
-    parseContext.updateExtensionBehavior(extensionName, GetAtomString(&atomTable, yylvalpp->atom));
+    parseContext.updateExtensionBehavior(extensionName, GetAtomString(yylvalpp->atom));
 
     token = currentInput->scan(this, currentInput, yylvalpp);
     if (token == '\n')
@@ -807,7 +798,7 @@ int TPpContext::readCPPline(TPpToken * yylvalpp)
         } else if (yylvalpp->atom == extensionAtom) {
             token = CPPextension(yylvalpp);
         } else {
-            parseContext.error(yylvalpp->loc, "Invalid Directive", "#", GetStringOfAtom(&atomTable, yylvalpp->atom));
+            parseContext.error(yylvalpp->loc, "Invalid Directive", "#", GetAtomString(yylvalpp->atom));
         }
     }
     while (token != '\n' && token != 0 && token != EOF) {
@@ -853,7 +844,7 @@ TPpContext::TokenStream* TPpContext::PrescanMacroArg(TokenStream *a, TPpToken * 
     RewindTokenStream(a);
     do {
         token = ReadToken(a, yylvalpp);
-        if (token == CPP_IDENTIFIER && LookUpSymbol(macros, yylvalpp->atom))
+        if (token == CPP_IDENTIFIER && LookUpSymbol(yylvalpp->atom))
             break;
     } while (token > 0);
     if (token <= 0) return a;
@@ -934,7 +925,7 @@ int TPpContext::zero_scan(TPpContext* pp, InputSrc *inInput, TPpToken* yylvalpp)
 */
 int TPpContext::MacroExpand(int atom, TPpToken* yylvalpp, int expandUndef)
 {
-    Symbol *sym = LookUpSymbol(macros, atom);
+    Symbol *sym = LookUpSymbol(atom);
     MacroInputSrc *in;
     int i, j, token;
     int depth = 0;
@@ -964,11 +955,11 @@ int TPpContext::MacroExpand(int atom, TPpToken* yylvalpp, int expandUndef)
     }
 
     // no recursive expansions
-    if (sym && sym->details.mac.busy)
+    if (sym && sym->mac.busy)
         return 0;
 
     // not expanding of undefined symbols
-    if ((! sym || sym->details.mac.undef) && ! expandUndef)
+    if ((! sym || sym->mac.undef) && ! expandUndef)
         return 0;
 
     in = (MacroInputSrc*)malloc(sizeof(*in));
@@ -976,7 +967,7 @@ int TPpContext::MacroExpand(int atom, TPpToken* yylvalpp, int expandUndef)
     in->base.line = currentInput->line;
     in->base.name = currentInput->name;
 
-    if ((! sym || sym->details.mac.undef) && expandUndef) {
+    if ((! sym || sym->mac.undef) && expandUndef) {
         // push input
         in->base.scan = zero_scan;
         in->base.prev = currentInput;
@@ -986,8 +977,8 @@ int TPpContext::MacroExpand(int atom, TPpToken* yylvalpp, int expandUndef)
     }
 
     in->base.scan = macro_scan;
-    in->mac = &sym->details.mac;
-    if (sym->details.mac.args) {
+    in->mac = &sym->mac;
+    if (sym->mac.args) {
         token = currentInput->scan(this, currentInput, yylvalpp);
         if (token != '(') {
             UngetToken(token, yylvalpp);
@@ -1005,7 +996,7 @@ int TPpContext::MacroExpand(int atom, TPpToken* yylvalpp, int expandUndef)
             while (1) {
                 token = currentInput->scan(this, currentInput, yylvalpp);
                 if (token <= 0) {
-                    parseContext.error(yylvalpp->loc, "EOF in macro", "preprocessor", GetStringOfAtom(&atomTable, atom));
+                    parseContext.error(yylvalpp->loc, "EOF in macro", "preprocessor", GetAtomString(atom));
 
                     return 1;
                 }
@@ -1026,7 +1017,7 @@ int TPpContext::MacroExpand(int atom, TPpToken* yylvalpp, int expandUndef)
         } while (i < in->mac->argc);
 
         if (i < in->mac->argc)
-            parseContext.error(yylvalpp->loc, "Too few args in Macro", "preprocessor", GetStringOfAtom(&atomTable, atom));
+            parseContext.error(yylvalpp->loc, "Too few args in Macro", "preprocessor", GetAtomString(atom));
         else if (token != ')') {
             depth=0;
             while (token >= 0 && (depth > 0 || token != ')')) {
@@ -1038,11 +1029,11 @@ int TPpContext::MacroExpand(int atom, TPpToken* yylvalpp, int expandUndef)
             }
 
             if (token <= 0) {
-                parseContext.error(yylvalpp->loc, "EOF in macro", "preprocessor", GetStringOfAtom(&atomTable, atom));
+                parseContext.error(yylvalpp->loc, "EOF in macro", "preprocessor", GetAtomString(atom));
 
                 return 1;
             }
-            parseContext.error(yylvalpp->loc, "Too many args in Macro", "preprocessor", GetStringOfAtom(&atomTable, atom));
+            parseContext.error(yylvalpp->loc, "Too many args in Macro", "preprocessor", GetAtomString(atom));
         }
         for (i = 0; i<in->mac->argc; i++) {
             in->args[i] = PrescanMacroArg(in->args[i], yylvalpp);
@@ -1059,8 +1050,8 @@ int TPpContext::MacroExpand(int atom, TPpToken* yylvalpp, int expandUndef)
 #endif
     /*retain the input source*/
     in->base.prev = currentInput;
-    sym->details.mac.busy = 1;
-    RewindTokenStream(sym->details.mac.body);
+    sym->mac.busy = 1;
+    RewindTokenStream(sym->mac.body);
     currentInput = &in->base;
 
     return 1;
