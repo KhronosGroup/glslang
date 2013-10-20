@@ -90,7 +90,7 @@ public:
     static const int maxTokenLength = 1024;
 
     TSourceLoc loc;
-    int    ppToken;
+    int    token;
     int    ival;
     double dval;
     int    atom;
@@ -108,7 +108,7 @@ public:
     void setPreamble(const char* preamble, size_t length);
     void setShaderStrings(char* strings[], size_t lengths[], int numStrings);
 
-    const char* tokenize(TPpToken* yylvalpp);
+    const char* tokenize(TPpToken* ppToken);
 
     struct InputSrc {
         struct InputSrc	*prev;
@@ -230,25 +230,25 @@ protected:
 
     int InitCPP();
     int FinalCPP();
-    int CPPdefine(TPpToken * yylvalpp);
-    int CPPundef(TPpToken * yylvalpp);
-    int CPPelse(int matchelse, TPpToken * yylvalpp);
-    int eval(int token, int prec, int *res, int *err, TPpToken * yylvalpp);
-    int CPPif (TPpToken * yylvalpp); 
-    int CPPifdef(int defined, TPpToken * yylvalpp);
-    int CPPline(TPpToken * yylvalpp); 
-    int CPPerror(TPpToken * yylvalpp); 
-    int CPPpragma(TPpToken * yylvalpp);
-    int CPPversion(TPpToken * yylvalpp);
-    int CPPextension(TPpToken * yylvalpp);
-    int readCPPline(TPpToken * yylvalpp);
+    int CPPdefine(TPpToken * ppToken);
+    int CPPundef(TPpToken * ppToken);
+    int CPPelse(int matchelse, TPpToken * ppToken);
+    int eval(int token, int prec, int *res, int *err, TPpToken * ppToken);
+    int CPPif (TPpToken * ppToken); 
+    int CPPifdef(int defined, TPpToken * ppToken);
+    int CPPline(TPpToken * ppToken); 
+    int CPPerror(TPpToken * ppToken); 
+    int CPPpragma(TPpToken * ppToken);
+    int CPPversion(TPpToken * ppToken);
+    int CPPextension(TPpToken * ppToken);
+    int readCPPline(TPpToken * ppToken);
     void FreeMacro(MacroSymbol *s);
     void PushEofSrc();
     void PopEofSrc();
-    TokenStream* PrescanMacroArg(TokenStream *a, TPpToken * yylvalpp);
-    static int macro_scan(TPpContext* pp, InputSrc *inInput, TPpToken * yylvalpp); 
-    static int zero_scan(TPpContext* pp, InputSrc *inInput, TPpToken * yylvalpp); 
-    int MacroExpand(int atom, TPpToken* yylvalpp, int expandUndef);
+    TokenStream* PrescanMacroArg(TokenStream *a, TPpToken * ppToken);
+    static int macro_scan(TPpContext* pp, InputSrc *inInput, TPpToken * ppToken); 
+    static int zero_scan(TPpContext* pp, InputSrc *inInput, TPpToken * ppToken); 
+    int MacroExpand(int atom, TPpToken* ppToken, int expandUndef);
     int ChkCorrectElseNesting();
 
     //
@@ -267,24 +267,24 @@ protected:
     int lReadByte(TokenStream *pTok);
     TokenStream *NewTokenStream(const char *name, MemoryPool *pool);
     void DeleteTokenStream(TokenStream *pTok);
-    void RecordToken(TokenStream *pTok, int token, TPpToken * yylvalpp);
+    void RecordToken(TokenStream *pTok, int token, TPpToken * ppToken);
     void RewindTokenStream(TokenStream *pTok);
-    int ReadToken(TokenStream *pTok, TPpToken * yylvalpp);
+    int ReadToken(TokenStream *pTok, TPpToken * ppToken);
     int ReadFromTokenStream(TokenStream *ts, int name, int (*final)(TPpContext *));
-    void UngetToken(int token, TPpToken * yylvalpp);
-    void DumpTokenStream(FILE *fp, TokenStream *s, TPpToken * yylvalpp);
+    void UngetToken(int token, TPpToken * ppToken);
+    void DumpTokenStream(FILE *fp, TokenStream *s, TPpToken * ppToken);
     struct TokenInputSrc {
         InputSrc            base;
         TokenStream         *tokens;
         int                 (*final)(TPpContext *);
     };
-    static int scan_token(TPpContext*, TokenInputSrc *in, TPpToken * yylvalpp);
+    static int scan_token(TPpContext*, TokenInputSrc *in, TPpToken * ppToken);
     struct UngotToken {
         InputSrc    base;
         int         token;
         TPpToken     lval;
     };
-    static int reget_token(TPpContext *, UngotToken *t, TPpToken * yylvalpp);
+    static int reget_token(TPpContext *, UngotToken *t, TPpToken * ppToken);
 
     //
     // From PpScanner.cpp
@@ -298,8 +298,8 @@ protected:
     static void str_ungetch(TPpContext*, StringInputSrc *in, int ch, TPpToken *type);
     int ScanFromString(char *s);
     int check_EOF(int token);
-    int lFloatConst(char *str, int len, int ch, TPpToken * yylvalpp);
-    static int byte_scan(TPpContext*, InputSrc *in, TPpToken * yylvalpp);
+    int lFloatConst(char *str, int len, int ch, TPpToken * ppToken);
+    static int byte_scan(TPpContext*, InputSrc *in, TPpToken * ppToken);
 
     //
     // From PpAtom.cpp

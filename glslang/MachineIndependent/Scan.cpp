@@ -483,7 +483,7 @@ int TScanContext::tokenize(TPpContext* pp, TParserToken& token)
 
     loc = ppToken.loc;
     parserToken->sType.lex.loc = loc;
-    switch (ppToken.ppToken) {
+    switch (ppToken.token) {
     case ';':  afterType = false;   return SEMICOLON;
     case ',':  afterType = false;   return COMMA;
     case ':':                       return COLON;
