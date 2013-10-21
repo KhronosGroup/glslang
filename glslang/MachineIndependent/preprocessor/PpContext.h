@@ -80,8 +80,6 @@ NVIDIA HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "../ParseHelper.h"
 
-#include <hash_map>
-
 namespace glslang {
 
 class TPpToken {
@@ -165,8 +163,8 @@ public:
     };
 
     MemoryPool *pool;
-    typedef std::hash_map<int, Symbol*> TSymbol;
-    TSymbol symbols; // this has light use... just defined macros
+    typedef std::map<int, Symbol*> TSymbolMap;
+    TSymbolMap symbols; // this has light use... just defined macros
 
 protected:
     char*   preamble;               // string to parse, all before line 1 of string 0, it is 0 if no preamble
@@ -304,7 +302,7 @@ protected:
     //
     // From PpAtom.cpp
     //
-    typedef std::hash_map<const TString, int> TAtomMap;
+    typedef std::map<const TString, int> TAtomMap;
     typedef TVector<const TString*> TStringMap;
     TAtomMap atomMap;
     TStringMap stringMap;
