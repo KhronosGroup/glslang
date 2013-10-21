@@ -17,3 +17,17 @@ void main()
 {
     float clip = gl_ClipDistance[3];
 }
+
+uniform samplerCube sampC;
+
+void foo()
+{
+    vec4 s = textureGather(sampC, vec3(0.2));
+}
+
+#extension GL_ARB_texture_gather : enable
+
+void bar()
+{
+    vec4 s = textureGather(sampC, vec3(0.2));
+}

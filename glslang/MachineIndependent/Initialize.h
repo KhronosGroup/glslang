@@ -69,6 +69,7 @@ protected:
     void addQueryFunctions(TSampler, TString& typeName, int version, EProfile profile);
     void addImageFunctions(TSampler, TString& typeName, int version, EProfile profile);
     void addSamplingFunctions(TSampler, TString& typeName, int version, EProfile profile);
+    void addGatherFunctions(TSampler, TString& typeName, int version, EProfile profile);
 
     TString commonBuiltins;
     TString stageBuiltins[EShLangCount];

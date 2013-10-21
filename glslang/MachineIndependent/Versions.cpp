@@ -138,9 +138,10 @@ namespace glslang {
 //
 void TParseContext::initializeExtensionBehavior()
 {
-    extensionBehavior[GL_ARB_texture_rectangle] = EBhDisable;
-    extensionBehavior[GL_3DL_array_objects] = EBhDisable;
+    extensionBehavior[GL_ARB_texture_rectangle]        = EBhDisable;
+    extensionBehavior[GL_3DL_array_objects]            = EBhDisable;
     extensionBehavior[GL_ARB_shading_language_420pack] = EBhDisable;
+    extensionBehavior[GL_ARB_texture_gather]           = EBhDisable;
 }
 
 //

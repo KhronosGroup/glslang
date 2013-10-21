@@ -1,5 +1,8 @@
 Warning, version 130 is not yet complete; most features are present, but a few are missing.
-0:? Sequence
+ERROR: 0:25: 'texture gather function' : not supported for this version or the enabled extensions 
+ERROR: 1 compilation errors.  No code generated.
+
+ERROR: node is still EOpNull!
 0:16  Function Definition: main( (void)
 0:16    Function Parameters: 
 0:18    Sequence
@@ -10,6 +13,30 @@ Warning, version 130 is not yet complete; most features are present, but a few a
 0:18            'gl_ClipDistance' (smooth in unsized array of float)
 0:18            Constant:
 0:18              3 (const int)
+0:23  Function Definition: foo( (void)
+0:23    Function Parameters: 
+0:25    Sequence
+0:25      Sequence
+0:25        move second child to first child (4-component vector of float)
+0:25          's' (4-component vector of float)
+0:25          Function Call: textureGather(sC1;vf3; (4-component vector of float)
+0:25            'sampC' (uniform samplerCube)
+0:25            Constant:
+0:25              0.200000
+0:25              0.200000
+0:25              0.200000
+0:30  Function Definition: bar( (void)
+0:30    Function Parameters: 
+0:32    Sequence
+0:32      Sequence
+0:32        move second child to first child (4-component vector of float)
+0:32          's' (4-component vector of float)
+0:32          Function Call: textureGather(sC1;vf3; (4-component vector of float)
+0:32            'sampC' (uniform samplerCube)
+0:32            Constant:
+0:32              0.200000
+0:32              0.200000
+0:32              0.200000
 0:?   Linker Objects
 0:?     'a' (3-component vector of float)
 0:?     'b' (float)
@@ -19,4 +46,5 @@ Warning, version 130 is not yet complete; most features are present, but a few a
 0:?     'fflat' (flat in float)
 0:?     'fsmooth' (smooth in float)
 0:?     'fnop' (noperspective in float)
+0:?     'sampC' (uniform samplerCube)
 

@@ -867,10 +867,8 @@ TIntermTyped* TParseContext::handleFunctionCall(TSourceLoc loc, TFunction* fnCal
                     qualifierList.push_back(qual);
                 }
 
-                // built-in texturing functions get their return value precision from the precision of the sampler
-                if (builtIn && fnCandidate->getType().getQualifier().precision == EpqNone &&
-                    fnCandidate->getParamCount() > 0 && (*fnCandidate)[0].type->getBasicType() == EbtSampler)
-                    result->getQualifier().precision = result->getAsAggregate()->getSequence()[0]->getAsTyped()->getQualifier().precision;
+                if (builtIn)
+                    nonOpBuiltInCheck(loc, *fnCandidate, result->getAsAggregate());
             }
         } else {
             // error message was put out by PaFindFunction()
@@ -890,6 +888,36 @@ TIntermTyped* TParseContext::handleFunctionCall(TSourceLoc loc, TFunction* fnCal
     }
 
     return result;
+}
+
+//
+// Do additional checking of built-in function calls that were not mapped
+// to built-in operations (e.g., texturing functions).
+//
+// Assumes there has been a semantically correct match to a built-in function.
+//
+void TParseContext::nonOpBuiltInCheck(TSourceLoc loc, const TFunction& fnCandidate, TIntermAggregate* callNode)
+{
+    // built-in texturing functions get their return value precision from the precision of the sampler
+    if (fnCandidate.getType().getQualifier().precision == EpqNone &&
+        fnCandidate.getParamCount() > 0 && fnCandidate[0].type->getBasicType() == EbtSampler)
+        callNode->getQualifier().precision = callNode->getAsAggregate()->getSequence()[0]->getAsTyped()->getQualifier().precision;
+
+    if (fnCandidate.getName().compare(0, 13, "textureGather") == 0) {
+        const char* feature = "texture gather function";
+        requireProfile(loc, ~EEsProfile, feature);
+        profileRequires(loc, ~EEsProfile, 400, GL_ARB_texture_gather, feature);
+        int lastArgIndex = fnCandidate.getParamCount() - 1;
+        if (fnCandidate[lastArgIndex].type->getBasicType() == EbtInt && fnCandidate[lastArgIndex].type->isScalar()) {
+            // the last integral argument to a texture gather must be a constant int between 0 and 3
+            if (callNode->getSequence()[lastArgIndex]->getAsConstantUnion()) {
+                int value = callNode->getSequence()[lastArgIndex]->getAsConstantUnion()->getConstArray()[0].getIConst();
+                if (value < 0 || value > 3)
+                    error(loc, "must be 0, 1, 2, or 3", "texture gather component", "");
+            } else
+                error(loc, "must be a constant", "texture gather component", "");
+        }
+    }
 }
 
 //

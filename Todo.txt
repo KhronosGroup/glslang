@@ -115,10 +115,10 @@ Shader Functionality to Implement/Finish
          - bitCount(),findLSB(), andfindMSB()
       - New built-in to query LOD, textureQueryLod().
       - New overloaded function matching algorithm, handling selection from many valid multiple choices.
-      - Texture gather functions that return four texels with a single call.
-         - textureGather()
-         - textureGatherOffset()
-         - textureGatherOffsets()
+      + Texture gather functions that return four texels with a single call.
+         + textureGather()
+         + textureGatherOffset()
+         + textureGatherOffsets()
       + Add streams out from geometry shader. Output can be directed to streams through
          + EmitStreamVertex() and EndStreamPrimitive().
     GLSL 4.1
@@ -168,8 +168,8 @@ Shader Functionality to Implement/Finish
       - Make GLSL consistent with the API regarding user clipping, by no longer referring to gl_Position when gl_ClipVertex is not written. Rather, user clipping becomes undefined.
       - Clarified that a comma sequence-operator expression cannot be a constant expression. E.g., “(2,3)” is not allowed, semantically, 
             as a valid constant expression 3, even though it is an expression that will evaluate to 3.
-      - Use vec2 instead of vec3 for coordinate in textureGather*(sampler2DRect,...).
-      - Clarify that textureGatherOffset() can take non-constants for the offsets.
+      + Use vec2 instead of vec3 for coordinate in textureGather*(sampler2DRect,...).
+      + Clarify that textureGatherOffset() can take non-constants for the offsets.
     GLSL 4.3
       - Add shader storage buffer objects, as per the ARB_shader_storage_buffer_object extension. This includes 
             - allowing the last member of a storage buffer block to be an array that does not know its size until render time

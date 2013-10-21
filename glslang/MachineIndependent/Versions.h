@@ -74,6 +74,7 @@ typedef enum {
 const char* const GL_ARB_texture_rectangle        = "GL_ARB_texture_rectangle";
 const char* const GL_3DL_array_objects            = "GL_3DL_array_objects";
 const char* const GL_ARB_shading_language_420pack = "GL_ARB_shading_language_420pack";
+const char* const GL_ARB_texture_gather           = "GL_ARB_texture_gather";
 
 } // end namespace glslang
 

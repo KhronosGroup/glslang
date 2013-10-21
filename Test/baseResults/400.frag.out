@@ -1,30 +1,113 @@
-Warning, version 330 is not yet complete; some version-specific features are present, but many are missing.
-ERROR: 0:11: 'variable indexing sampler array' : not supported for this version or the enabled extensions 
-ERROR: 1 compilation errors.  No code generated.
+Warning, version 400 is not yet complete; some version-specific features are present, but many are missing.
+ERROR: 0:20: 'texture gather component' : must be a constant 
+ERROR: 0:21: 'texture gather component' : must be 0, 1, 2, or 3 
+ERROR: 2 compilation errors.  No code generated.
 
 ERROR: node is still EOpNull!
-0:8  Function Definition: main( (void)
-0:8    Function Parameters: 
+0:10  Function Definition: main( (void)
+0:10    Function Parameters: 
 0:?     Sequence
-0:11      move second child to first child (4-component vector of float)
-0:11        'v' (4-component vector of float)
-0:11        Function Call: texture(s21;vf2; (4-component vector of float)
-0:11          indirect index (uniform sampler2D)
-0:11            'arrayedSampler' (uniform 5-element array of sampler2D)
-0:11            'i' (flat in int)
-0:11          'c2D' (smooth in 2-component vector of float)
-0:12      move second child to first child (float)
-0:12        direct index (float)
-0:12          'outp' (out 4-component vector of float)
-0:12          Constant:
-0:12            0 (const int)
-0:12        direct index (smooth in float)
-0:12          'gl_ClipDistance' (smooth in unsized array of float)
-0:12          Constant:
-0:12            1 (const int)
+0:13      move second child to first child (4-component vector of float)
+0:13        'v' (4-component vector of float)
+0:13        Function Call: texture(s21;vf2; (4-component vector of float)
+0:13          indirect index (uniform sampler2D)
+0:13            'arrayedSampler' (uniform 5-element array of sampler2D)
+0:13            'i' (flat in int)
+0:13          'c2D' (smooth in 2-component vector of float)
+0:14      move second child to first child (float)
+0:14        direct index (float)
+0:14          'outp' (out 4-component vector of float)
+0:14          Constant:
+0:14            0 (const int)
+0:14        direct index (smooth in float)
+0:14          'gl_ClipDistance' (smooth in unsized array of float)
+0:14          Constant:
+0:14            1 (const int)
+0:17      Sequence
+0:17        move second child to first child (4-component vector of uint)
+0:17          'uv4' (4-component vector of uint)
+0:17          Function Call: textureGatherOffsets(usR21;vf2;vi2[4];i1; (4-component vector of uint)
+0:17            'samp2dr' (uniform usampler2DRect)
+0:17            'c2D' (smooth in 2-component vector of float)
+0:17            'offsets' (4-element array of 2-component vector of int)
+0:17            Constant:
+0:17              2 (const int)
+0:18      Sequence
+0:18        move second child to first child (4-component vector of float)
+0:18          'v4' (4-component vector of float)
+0:18          Function Call: textureGather(s21;vf2; (4-component vector of float)
+0:18            direct index (uniform sampler2D)
+0:18              'arrayedSampler' (uniform 5-element array of sampler2D)
+0:18              Constant:
+0:18                0 (const int)
+0:18            'c2D' (smooth in 2-component vector of float)
+0:19      Sequence
+0:19        move second child to first child (4-component vector of int)
+0:19          'iv4' (4-component vector of int)
+0:19          Function Call: textureGatherOffset(isA21;vf3;vi2;i1; (4-component vector of int)
+0:19            'isamp2DA' (uniform isampler2DArray)
+0:19            Constant:
+0:19              0.100000
+0:19              0.100000
+0:19              0.100000
+0:19            Constant:
+0:19              1 (const int)
+0:19              1 (const int)
+0:19            Constant:
+0:19              3 (const int)
+0:20      move second child to first child (4-component vector of int)
+0:20        'iv4' (4-component vector of int)
+0:20        Function Call: textureGatherOffset(isA21;vf3;vi2;i1; (4-component vector of int)
+0:20          'isamp2DA' (uniform isampler2DArray)
+0:20          Constant:
+0:20            0.100000
+0:20            0.100000
+0:20            0.100000
+0:20          Constant:
+0:20            1 (const int)
+0:20            1 (const int)
+0:20          'i' (flat in int)
+0:21      move second child to first child (4-component vector of int)
+0:21        'iv4' (4-component vector of int)
+0:21        Function Call: textureGatherOffset(isA21;vf3;vi2;i1; (4-component vector of int)
+0:21          'isamp2DA' (uniform isampler2DArray)
+0:21          Constant:
+0:21            0.100000
+0:21            0.100000
+0:21            0.100000
+0:21          Constant:
+0:21            1 (const int)
+0:21            1 (const int)
+0:21          Constant:
+0:21            4 (const int)
+0:22      move second child to first child (4-component vector of int)
+0:22        'iv4' (4-component vector of int)
+0:22        Function Call: textureGatherOffset(isA21;vf3;vi2;i1; (4-component vector of int)
+0:22          'isamp2DA' (uniform isampler2DArray)
+0:22          Constant:
+0:22            0.100000
+0:22            0.100000
+0:22            0.100000
+0:22          Constant:
+0:22            1 (const int)
+0:22            1 (const int)
+0:22          Constant:
+0:22            3 (const int)
+0:23      move second child to first child (4-component vector of int)
+0:23        'iv4' (4-component vector of int)
+0:23        Function Call: textureGatherOffset(isA21;vf3;vi2; (4-component vector of int)
+0:23          'isamp2DA' (uniform isampler2DArray)
+0:23          Constant:
+0:23            0.100000
+0:23            0.100000
+0:23            0.100000
+0:23          Construct ivec2 (2-component vector of int)
+0:23            'i' (flat in int)
 0:?   Linker Objects
 0:?     'c2D' (smooth in 2-component vector of float)
 0:?     'i' (flat in int)
 0:?     'outp' (out 4-component vector of float)
 0:?     'arrayedSampler' (uniform 5-element array of sampler2D)
+0:?     'samp2dr' (uniform usampler2DRect)
+0:?     'isamp2DA' (uniform isampler2DArray)
 

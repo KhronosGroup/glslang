@@ -1397,6 +1397,11 @@ void TBuiltIns::initialize(int version, EProfile profile)
 //
 void TBuiltIns::add2ndGenerationSamplingImaging(int version, EProfile profile)
 {
+    //
+    // In this function proper, enumerate the types, then calls the next set of functions
+    // to enumerate all the uses for that type.
+    //
+
     TBasicType bTypes[3] = { EbtFloat, EbtInt, EbtUint };
 
     // enumerate all the types
@@ -1455,8 +1460,11 @@ void TBuiltIns::add2ndGenerationSamplingImaging(int version, EProfile profile)
 
                             if (image)
                                 addImageFunctions(sampler, typeName, version, profile);
-                            else
+                            else {
                                 addSamplingFunctions(sampler, typeName, version, profile);
+                                if (version >= 130)
+                                    addGatherFunctions(sampler, typeName, version, profile);
+                            }
                         }
                     }
                 }
@@ -1468,6 +1476,8 @@ void TBuiltIns::add2ndGenerationSamplingImaging(int version, EProfile profile)
 //
 // Helper function for add2ndGenerationSamplingImaging(), 
 // when adding context-independent built-in functions.
+//
+// Add all the query functions for the given type.
 //
 void TBuiltIns::addQueryFunctions(TSampler sampler, TString& typeName, int version, EProfile profile)
 {
@@ -1502,6 +1512,8 @@ void TBuiltIns::addQueryFunctions(TSampler sampler, TString& typeName, int versi
 // Helper function for add2ndGenerationSamplingImaging(), 
 // when adding context-independent built-in functions.
 //
+// Add all the image access functions for the given type.
+//
 void TBuiltIns::addImageFunctions(TSampler sampler, TString& typeName, int version, EProfile profile)
 {
     // TODO: 4.2 Functionality: imaging functions
@@ -1510,6 +1522,8 @@ void TBuiltIns::addImageFunctions(TSampler sampler, TString& typeName, int versi
 //
 // Helper function for add2ndGenerationSamplingImaging(), 
 // when adding context-independent built-in functions.
+//
+// Add all the texture lookup functions for the given type.
 //
 void TBuiltIns::addSamplingFunctions(TSampler sampler, TString& typeName, int version, EProfile profile)
 {
@@ -1686,6 +1700,89 @@ void TBuiltIns::addSamplingFunctions(TSampler sampler, TString& typeName, int ve
                     }
                 }
             }
+        }
+    }
+}
+
+
+//
+// Helper function for add2ndGenerationSamplingImaging(), 
+// when adding context-independent built-in functions.
+//
+// Add all the texture gather functions for the given type.
+//
+void TBuiltIns::addGatherFunctions(TSampler sampler, TString& typeName, int version, EProfile profile)
+{
+    switch (sampler.dim) {
+    case Esd2D:
+    case EsdRect:
+    case EsdCube:
+        break;
+    default:
+        return;
+    }
+
+    if (sampler.ms)
+        return;
+
+    // make one string per stage to contain all functions of the passed-in type for that stage
+    TString functions[EShLangCount];
+
+    for (int offset = 0; offset < 3; ++offset) { // loop over three forms of offset in the call name:  none, Offset, and Offsets
+
+        for (int comp = 0; comp < 2; ++comp) { // loop over presence of comp argument
+
+            if (comp > 0 && sampler.shadow)
+                continue;
+
+            if (offset > 0 && sampler.dim == EsdCube)
+                continue;
+
+            TString s;
+
+            // return type
+            s.append(prefixes[sampler.type]);
+            s.append("vec4 ");
+
+            // name
+            s.append("textureGather");
+            switch (offset) {
+            case 1:
+                s.append("Offset");
+                break;
+            case 2:
+                s.append("Offsets");
+            default:
+                break;
+            }
+            s.append("(");
+
+            // sampler type argument
+            s.append(typeName);
+
+            // P coordinate argument
+            s.append(",vec");
+            int totalDims = dimMap[sampler.dim] + (sampler.arrayed ? 1 : 0);
+            s.append(postfixes[totalDims]);
+
+            // refZ argument
+            if (sampler.shadow)
+                s.append(",float");
+
+            // offset argument
+            if (offset > 0) {
+                s.append(",ivec2");
+                if (offset == 2)
+                    s.append("[4]");
+            }
+
+            // comp argument
+            if (comp)
+                s.append(",int");
+
+            s.append(");\n");
+            commonBuiltins.append(s);
+            //printf("%s", s.c_str());
         }
     }
 }

@@ -82,6 +82,7 @@ public:
     TFunction* handleFunctionDeclarator(TSourceLoc loc, TFunction& function);
     TIntermAggregate* handleFunctionPrototype(TSourceLoc, TFunction&);
     TIntermTyped* handleFunctionCall(TSourceLoc, TFunction*, TIntermNode*, TIntermAggregate*);
+    void nonOpBuiltInCheck(TSourceLoc, const TFunction&, TIntermAggregate*);
     TFunction* handleConstructorCall(TSourceLoc, TPublicType&);
 
     bool parseVectorFields(TSourceLoc, const TString&, int vecSize, TVectorFields&);
