@@ -1941,8 +1941,110 @@ void TBuiltIns::initialize(const TBuiltInResource &resources, int version, EProf
             if (version >= 130) {
                 snprintf(builtInConstant, maxSize, "const int gl_MaxClipDistances = %d;", resources.maxClipDistances);
                 s.append(builtInConstant);
+                snprintf(builtInConstant, maxSize, "const int gl_MaxVaryingComponents = %d;", resources.maxVaryingComponents);
+                s.append(builtInConstant);
             }
-            
+
+            // geometry
+            if (version >= 150) {
+                snprintf(builtInConstant, maxSize, "const int gl_MaxGeometryInputComponents = %d;", resources.maxGeometryInputComponents);
+                s.append(builtInConstant);
+                snprintf(builtInConstant, maxSize, "const int gl_MaxGeometryOutputComponents = %d;", resources.maxGeometryOutputComponents);
+                s.append(builtInConstant);
+                snprintf(builtInConstant, maxSize, "const int gl_MaxGeometryOutputVertices = %d;", resources.maxGeometryOutputVertices);
+                s.append(builtInConstant);
+                snprintf(builtInConstant, maxSize, "const int gl_MaxGeometryTotalOutputComponents = %d;", resources.maxGeometryTotalOutputComponents);
+                s.append(builtInConstant);
+                snprintf(builtInConstant, maxSize, "const int gl_MaxGeometryUniformComponents = %d;", resources.maxGeometryUniformComponents);
+                s.append(builtInConstant);
+                snprintf(builtInConstant, maxSize, "const int gl_MaxGeometryVaryingComponents = %d;", resources.maxGeometryVaryingComponents);
+                s.append(builtInConstant);
+
+            }
+
+            if (version >= 150) {
+                snprintf(builtInConstant, maxSize, "const int gl_MaxVertexOutputComponents = %d;", resources.maxVertexOutputComponents);
+                s.append(builtInConstant);
+                snprintf(builtInConstant, maxSize, "const int gl_MaxFragmentInputComponents = %d;", resources.maxFragmentInputComponents);
+                s.append(builtInConstant);
+            }
+
+            // tessellation
+            if (version >= 400) {
+                //snprintf(builtInConstant, maxSize, "const int gl_MaxTessControlInputComponents = %d;", resources.);
+                //snprintf(builtInConstant, maxSize, "const int gl_MaxTessControlOutputComponents = %d;", resources.);
+                //snprintf(builtInConstant, maxSize, "const int gl_MaxTessControlUniformComponents = %d;", resources.);
+                //snprintf(builtInConstant, maxSize, "const int gl_MaxTessControlTotalOutputComponents = %d;", resources.);
+                //snprintf(builtInConstant, maxSize, "const int gl_MaxTessEvaluationInputComponents = %d;", resources.);
+                //snprintf(builtInConstant, maxSize, "const int gl_MaxTessEvaluationOutputComponents = %d;", resources.);
+                //snprintf(builtInConstant, maxSize, "const int gl_MaxTessEvaluationUniformComponents = %d;", resources.);
+                //snprintf(builtInConstant, maxSize, "const int gl_MaxTessPatchComponents = %d;", resources.);
+                //snprintf(builtInConstant, maxSize, "const int gl_MaxTessGenLevel = %d;", resources.);
+                //snprintf(builtInConstant, maxSize, "const int gl_MaxPatchVertices = %d;", resources.);
+
+            }
+
+            if (version >= 410) {
+                snprintf(builtInConstant, maxSize, "const int gl_MaxViewports = %d;", resources.maxViewports);
+                s.append(builtInConstant);
+            }
+
+            // atomic counters
+            if (version >= 420) {
+                //snprintf(builtInConstant, maxSize, "const int gl_MaxVertexAtomicCounters = %d;", resources.);
+                //snprintf(builtInConstant, maxSize, "const int gl_MaxTessControlAtomicCounters = %d;", resources.);
+                //snprintf(builtInConstant, maxSize, "const int gl_MaxTessEvaluationAtomicCounters = %d;", resources.);
+                //snprintf(builtInConstant, maxSize, "const int gl_MaxGeometryAtomicCounters = %d;", resources.);
+                //snprintf(builtInConstant, maxSize, "const int gl_MaxFragmentAtomicCounters = %d;", resources.);
+                //snprintf(builtInConstant, maxSize, "const int gl_MaxCombinedAtomicCounters = %d;", resources.);
+                //snprintf(builtInConstant, maxSize, "const int gl_MaxAtomicCounterBindings = %d;", resources.);
+                //snprintf(builtInConstant, maxSize, "const int gl_MaxVertexAtomicCounterBuffers = %d;", resources.);
+                //snprintf(builtInConstant, maxSize, "const int gl_MaxTessControlAtomicCounterBuffers = %d;", resources.);
+                //snprintf(builtInConstant, maxSize, "const int gl_MaxTessEvaluationAtomicCounterBuffers = %d;", resources.);
+                //snprintf(builtInConstant, maxSize, "const int gl_MaxGeometryAtomicCounterBuffers = %d;", resources.);
+                //snprintf(builtInConstant, maxSize, "const int gl_MaxFragmentAtomicCounterBuffers = %d;", resources.);
+                //snprintf(builtInConstant, maxSize, "const int gl_MaxCombinedAtomicCounterBuffers = %d;", resources.);
+                //snprintf(builtInConstant, maxSize, "const int gl_MaxAtomicCounterBufferSize = %d;", resources.);
+            }
+
+            // images
+            if (version >= 420) {
+                //snprintf(builtInConstant, maxSize, "const int gl_MaxGeometryImageUniforms = %d;", resources.);
+                //snprintf(builtInConstant, maxSize, "const int gl_MaxGeometryTextureImageUnits = %d;", resources.);
+                //snprintf(builtInConstant, maxSize, "const int gl_MaxTessControlImageUniforms = %d;", resources.);
+                //snprintf(builtInConstant, maxSize, "const int gl_MaxTessEvaluationImageUniforms = %d;", resources.);
+                //snprintf(builtInConstant, maxSize, "const int gl_MaxTessControlTextureImageUnits = %d;", resources.);
+                //snprintf(builtInConstant, maxSize, "const int gl_MaxTessEvaluationTextureImageUnits = %d;", resources.);
+                //snprintf(builtInConstant, maxSize, "const int gl_MaxImageUnits = %d;", resources.);
+                //snprintf(builtInConstant, maxSize, "const int gl_MaxCombinedImageUnitsAndFragmentOutputs = %d;", resources.);
+                //snprintf(builtInConstant, maxSize, "const int gl_MaxImageSamples = %d;", resources.);
+                //snprintf(builtInConstant, maxSize, "const int gl_MaxVertexImageUniforms = %d;", resources.);
+                //snprintf(builtInConstant, maxSize, "const int gl_MaxFragmentImageUniforms = %d;", resources.);
+                //snprintf(builtInConstant, maxSize, "const int gl_MaxCombinedImageUniforms = %d;", resources.);
+            }
+
+            // compute
+            if (version >= 430) {
+                snprintf(builtInConstant, maxSize, "const ivec3 gl_MaxComputeWorkGroupCount = {%d,%d,%d};", resources.maxComputeWorkGroupCountX,
+                                                                                                            resources.maxComputeWorkGroupCountY,
+                                                                                                            resources.maxComputeWorkGroupCountZ);                
+                s.append(builtInConstant);
+                snprintf(builtInConstant, maxSize, "const ivec3 gl_MaxComputeWorkGroupSize = {%d,%d,%d};", resources.maxComputeWorkGroupSizeX,
+                                                                                                           resources.maxComputeWorkGroupSizeY,
+                                                                                                           resources.maxComputeWorkGroupSizeZ);
+                s.append(builtInConstant);
+
+                snprintf(builtInConstant, maxSize, "const int gl_MaxComputeUniformComponents = %d;", resources.maxComputeUniformComponents);
+                s.append(builtInConstant);
+                snprintf(builtInConstant, maxSize, "const int gl_MaxComputeTextureImageUnits = %d;", resources.maxComputeTextureImageUnits);
+                s.append(builtInConstant);
+                snprintf(builtInConstant, maxSize, "const int gl_MaxComputeImageUniforms = %d;", resources.maxComputeImageUniforms);
+                s.append(builtInConstant);
+                snprintf(builtInConstant, maxSize, "const int gl_MaxComputeAtomicCounters = %d;", resources.maxComputeAtomicCounters);
+                s.append(builtInConstant);
+                snprintf(builtInConstant, maxSize, "const int gl_MaxComputeAtomicCounterBuffers = %d;", resources.maxComputeAtomicCounterBuffers);
+                s.append(builtInConstant);
+            }
         }
 
         s.append("\n");
