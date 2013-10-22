@@ -55,6 +55,7 @@ numeral.frag
 400.tese
 410.geom
 420.tese
+430.vert
 430.comp
 dce.frag
 ../../LunarGLASS/test/aggOps.frag

@@ -1,6 +1,6 @@
 Warning, version 430 is not yet complete; some version-specific features are present, but many are missing.
 ERROR: 0:23: 'transforms' : redeclaration of array with size 
-ERROR: 0:29: 's' : location qualifiers only appy to uniform, in, or out storage qualifiers 
+ERROR: 0:29: 's' : location qualifiers only appy to uniform, buffer, in, or out storage qualifiers 
 ERROR: 0:31: 'triangles' : unrecognized layout identifier 
 ERROR: 0:31: 'invocations' : there is no such layout identifier taking an assigned value 
 ERROR: 0:33: 'lines' : unrecognized layout identifier 

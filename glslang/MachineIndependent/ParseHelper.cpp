@@ -106,16 +106,6 @@ TParseContext::TParseContext(TSymbolTable& symt, TIntermediate& interm, bool pb,
     globalOutputDefaults.clear();
 }
 
-// Get code that is not part of a shared symbol table, is specific to this shader,
-// or needed by CPP (which does not use a shared symbol table).
-const char* TParseContext::getPreamble()
-{
-    if (profile == EEsProfile)
-        return "#define GL_ES 1\n";
-    else
-        return 0;
-}
-
 //
 // Parse an array of strings using yyparse, going through the
 // preprocessor to tokenize the shader strings, then through
@@ -2190,8 +2180,50 @@ void TParseContext::layoutCheck(TSourceLoc loc, const TSymbol& symbol)
     const TQualifier& qualifier = type.getQualifier();
     
     if (qualifier.hasLocation()) {
-        // TODO: location = functionality, when is it allowed?
+        switch (qualifier.storage) {
+        case EvqVaryingIn:
+        {
+            const char* feature = "location qualifier on input";
+            if (profile == EEsProfile)
+                requireStage(loc, EShLangVertex, feature);
+            requireStage(loc, (EShLanguageMask)~EShLangComputeMask, feature);
+            if (language == EShLangVertex)
+                profileRequires(loc, ECoreProfile | ECompatibilityProfile, 330, 0, feature);
+            else
+                profileRequires(loc, ECoreProfile | ECompatibilityProfile, 410, GL_ARB_separate_shader_objects, feature);
+            if (type.getBasicType() == EbtBlock)
+                profileRequires(loc, ECoreProfile | ECompatibilityProfile, 440, 0 /* TODO ARB_enhanced_layouts*/, "location qualifier on input block");
+            break;
+        }
+        case EvqVaryingOut:
+        {
+            const char* feature = "location qualifier on output";
+            if (profile == EEsProfile)
+                requireStage(loc, EShLangFragment, feature);
+            requireStage(loc, (EShLanguageMask)~EShLangComputeMask, feature);
+            if (language == EShLangFragment)
+                profileRequires(loc, ECoreProfile | ECompatibilityProfile, 330, 0, feature);
+            else
+                profileRequires(loc, ECoreProfile | ECompatibilityProfile, 410, GL_ARB_separate_shader_objects, feature);
+            if (type.getBasicType() == EbtBlock)
+                profileRequires(loc, ECoreProfile | ECompatibilityProfile, 440, 0 /* TODO ARB_enhanced_layouts*/, "location qualifier on output block");
+            break;
+        }
+        case EvqUniform:
+        case EvqBuffer:
+        {
+            const char* feature = "location qualifier on uniform or buffer";
+            requireProfile(loc, ECoreProfile | ECompatibilityProfile, feature);
+            profileRequires(loc, ECoreProfile | ECompatibilityProfile, 430, 0, feature);
+            if (symbol.getAsVariable() == 0)
+                error(loc, "can only be used on variable declaration", feature, "");
+            break;
+        }
+        default:
+            break;
+        }
     }
+
     if (qualifier.hasBinding()) {
         // Binding checking, from the spec:
         //
@@ -2716,7 +2748,7 @@ void TParseContext::addBlock(TSourceLoc loc, TTypeList& typeList, const TString*
         requireProfile(loc, ECoreProfile | ECompatibilityProfile, "output block");
         break;
     default:
-        error(loc, "only uniform, in, or out interface blocks are supported", blockName->c_str(), "");
+        error(loc, "only uniform, buffer, in, or out blocks are supported", blockName->c_str(), "");
         return;
     }
 
@@ -2911,8 +2943,8 @@ void TParseContext::updateQualifierDefaults(TSourceLoc loc, TQualifier qualifier
 }
 
 //
-// Update defaults for qualifiers when declared with a type, and optionally an id.
-// (But, not the case of just a qualifier; this is called when a type is present.)
+// Update defaults for qualifiers when declared with a type, and optionally an identifier.
+// (But, not the case of just a qualifier; only when a type is present.)
 //
 void TParseContext::updateTypedDefaults(TSourceLoc loc, TQualifier qualifier, const TString* id)
 {
@@ -2925,27 +2957,24 @@ void TParseContext::updateTypedDefaults(TSourceLoc loc, TQualifier qualifier, co
         return;
     }
 
-    if (qualifier.storage == EvqUniform) {
+    switch (qualifier.storage) {
+    case EvqBuffer:
+    case EvqUniform:
         if (qualifier.layoutMatrix != ElmNone)
             error(loc, "cannot specify matrix layout on a variable declaration", id->c_str(), "");
         if (qualifier.layoutPacking != ElpNone)
             error(loc, "cannot specify packing on a variable declaration", id->c_str(), "");
-    } else if (qualifier.storage == EvqVaryingIn) {
-        if (qualifier.hasLocation()) {
-            if (profile == EEsProfile)
-                requireStage(loc, EShLangVertex, "input location layout qualifier");
-        }
-    } else if (qualifier.storage == EvqVaryingOut) {
-        if (qualifier.hasLocation()) {
-            if (profile == EEsProfile)
-                requireStage(loc, EShLangFragment, "output location layout qualifier");
-        }
-    } else {
+        break;
+    case EvqVaryingIn:
+        break;
+    case EvqVaryingOut:
+        break;
+    default:
         if (qualifier.layoutMatrix != ElmNone ||
             qualifier.layoutPacking != ElpNone)
-            error(loc, "layout qualifiers for matrix layout and packing only apply to uniform blocks", id->c_str(), "");
+            error(loc, "layout qualifiers for matrix layout and packing only apply to uniform or buffer blocks", id->c_str(), "");
         else if (qualifier.hasLocation())
-            error(loc, "location qualifiers only appy to uniform, in, or out storage qualifiers", id->c_str(), "");
+            error(loc, "location qualifiers only appy to uniform, buffer, in, or out storage qualifiers", id->c_str(), "");
     }
 
     if (cantHaveId)

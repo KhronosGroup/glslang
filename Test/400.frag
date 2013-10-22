@@ -22,3 +22,13 @@ void main()
     iv4 = textureGatherOffset(isamp2DA, vec3(0.1), ivec2(1), 1+2);
     iv4 = textureGatherOffset(isamp2DA, vec3(0.1), ivec2(i));
 }
+
+layout(location = 4) in vec4 vl; // ERROR, not supported
+
+#ifdef GL_ARB_separate_shader_objects
+#extension GL_ARB_separate_shader_objects : enable
+#endif
+
+layout(location = 4) in vec4 vl2;
+
+layout(location = 3) uniform vec3 uv3;

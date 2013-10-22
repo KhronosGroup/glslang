@@ -8,3 +8,5 @@ void main()
 	memoryBarrierImage();
 	groupMemoryBarrier();
 }
+
+layout(location = 2) in vec3 v3;

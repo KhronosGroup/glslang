@@ -7,7 +7,7 @@ ERROR: 0:19: 'badf' : member of uniform block cannot have an auxiliary or interp
 ERROR: 0:20: 'badg' : member storage qualifier cannot contradict block storage qualifier 
 ERROR: 0:28: 'T3' : nameless block contains a member that already has a name at global scope 
 ERROR: 0:35: 'output block' : not supported with this profile: es
-ERROR: 0:39: 'output location layout qualifier' : not supported in this stage: vertex
+ERROR: 0:39: 'location qualifier on output' : not supported in this stage: vertex
 ERROR: 0:47: 'shared' : not supported with this profile: es
 ERROR: 0:47: 'shared' : not supported in this stage: vertex
 ERROR: 12 compilation errors.  No code generated.

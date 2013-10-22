@@ -1,4 +1,4 @@
-ERROR: 0:4: 'input location layout qualifier' : not supported in this stage: fragment
+ERROR: 0:4: 'location qualifier on input' : not supported in this stage: fragment
 ERROR: 1 compilation errors.  No code generated.
 
 ERROR: node is still EOpNull!

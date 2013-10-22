@@ -77,8 +77,14 @@
 //    the first function below:
 // 
 //     extensionBehavior[XXX_extension_X] = EBhDisable;
+//
+// 3) Add any preprocessor directives etc. in the next function, TParseContext::getPreamble():
+//
+//           "#define XXX_extension_X 1\n"
+//
+//    The new-line is important, as that ends preprocess tokens.
 // 
-// 3) Insert a profile check in the feature's path (unless all profiles support the feature,
+// 4) Insert a profile check in the feature's path (unless all profiles support the feature,
 //    for some version level).  That is, call requireProfile() to constrain the profiles, e.g.:
 // 
 //         // ... in a path specific to Feature F...
@@ -86,7 +92,7 @@
 //                        ECoreProfile | ECompatibilityProfile,
 //                        "Feature F");
 // 
-// 4) For each profile that supports the feature, insert version/extension checks:
+// 5) For each profile that supports the feature, insert version/extension checks:
 // 
 //    The mostly likely scenario is that Feature F can only be used with a
 //    particular profile if XXX_extension_X is present or the version is
@@ -123,7 +129,7 @@
 // 
 //        ~EEsProfile
 //
-// 5) If built-in symbols are added by the extension, add them in Initialize.cpp; see
+// 6) If built-in symbols are added by the extension, add them in Initialize.cpp; see
 //    the comment at the top of that file for where to put them.
 //
 
@@ -142,6 +148,23 @@ void TParseContext::initializeExtensionBehavior()
     extensionBehavior[GL_3DL_array_objects]            = EBhDisable;
     extensionBehavior[GL_ARB_shading_language_420pack] = EBhDisable;
     extensionBehavior[GL_ARB_texture_gather]           = EBhDisable;
+    extensionBehavior[GL_ARB_separate_shader_objects]  = EBhDisable;
+}
+
+// Get code that is not part of a shared symbol table, is specific to this shader,
+// or needed by the preprocessor (which does not use a shared symbol table).
+const char* TParseContext::getPreamble()
+{
+    if (profile == EEsProfile) {
+        return 
+            "#define GL_ES 1\n";
+    } else {
+        return 
+            "#define GL_ARB_texture_rectangle 1\n"
+            "#define GL_ARB_shading_language_420pack 1\n"
+            "#define GL_ARB_texture_gather 1\n"
+            "#define GL_ARB_separate_shader_objects 1\n";
+    }
 }
 
 //

@@ -1,0 +1,15 @@
+Warning, version 430 is not yet complete; some version-specific features are present, but many are missing.
+ERROR: 0:3: 'v4' : location qualifiers only appy to uniform, buffer, in, or out storage qualifiers 
+ERROR: 0:7: 'location qualifier on input block' : not supported for this version or the enabled extensions 
+ERROR: 0:8: 'location qualifier on output block' : not supported for this version or the enabled extensions 
+ERROR: 3 compilation errors.  No code generated.
+
+ERROR: node is still EOpNull!
+0:?   Linker Objects
+0:?     'v4' (layout(location=3 ) 4-component vector of float)
+0:?     'uv4' (layout(location=3 ) uniform 4-component vector of float)
+0:?     'b1' (layout(location=2 ) in block)
+0:?     'b2' (layout(location=2 ) out block)
+0:?     'gl_VertexID' (gl_VertexId int)
+0:?     'gl_InstanceID' (gl_InstanceId int)
+
