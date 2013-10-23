@@ -1,30 +1,30 @@
 Warning, version 430 is not yet complete; some version-specific features are present, but many are missing.
 ERROR: 0:23: 'transforms' : redeclaration of array with size 
 ERROR: 0:29: 's' : location qualifiers only appy to uniform, buffer, in, or out storage qualifiers 
-ERROR: 0:31: 'triangles' : unrecognized layout identifier 
-ERROR: 0:31: 'invocations' : there is no such layout identifier taking an assigned value 
-ERROR: 0:33: 'lines' : unrecognized layout identifier 
-ERROR: 0:35: 'triangle_strip' : unrecognized layout identifier 
-ERROR: 0:35: 'max_vertices' : there is no such layout identifier taking an assigned value 
-ERROR: 0:36: 'max_vertices' : there is no such layout identifier taking an assigned value 
-ERROR: 0:37: 'triangle_strip' : unrecognized layout identifier 
-ERROR: 0:41: 'stream' : there is no such layout identifier taking an assigned value 
-ERROR: 0:43: 'stream' : there is no such layout identifier taking an assigned value 
-ERROR: 0:45: 'stream' : there is no such layout identifier taking an assigned value 
-ERROR: 0:46: 'stream' : there is no such layout identifier taking an assigned value 
-ERROR: 0:47: 'stream' : there is no such layout identifier taking an assigned value 
-ERROR: 0:50: 'stream' : there is no such layout identifier taking an assigned value 
-ERROR: 0:55: 'stream' : there is no such layout identifier taking an assigned value 
+ERROR: 0:31: 'triangles' : unrecognized layout identifier, or qualifier requires assignemnt (e.g., binding = 4) 
+ERROR: 0:31: 'invocations' : there is no such layout identifier for this stage taking an assigned value 
+ERROR: 0:33: 'lines' : unrecognized layout identifier, or qualifier requires assignemnt (e.g., binding = 4) 
+ERROR: 0:35: 'triangle_strip' : unrecognized layout identifier, or qualifier requires assignemnt (e.g., binding = 4) 
+ERROR: 0:35: 'max_vertices' : there is no such layout identifier for this stage taking an assigned value 
+ERROR: 0:36: 'max_vertices' : there is no such layout identifier for this stage taking an assigned value 
+ERROR: 0:37: 'triangle_strip' : unrecognized layout identifier, or qualifier requires assignemnt (e.g., binding = 4) 
+ERROR: 0:41: 'stream' : there is no such layout identifier for this stage taking an assigned value 
+ERROR: 0:43: 'stream' : there is no such layout identifier for this stage taking an assigned value 
+ERROR: 0:45: 'stream' : there is no such layout identifier for this stage taking an assigned value 
+ERROR: 0:46: 'stream' : there is no such layout identifier for this stage taking an assigned value 
+ERROR: 0:47: 'stream' : there is no such layout identifier for this stage taking an assigned value 
+ERROR: 0:50: 'stream' : there is no such layout identifier for this stage taking an assigned value 
+ERROR: 0:55: 'stream' : there is no such layout identifier for this stage taking an assigned value 
 ERROR: 0:80: 's17' : redefinition 
-ERROR: 0:85: 'offset' : there is no such layout identifier taking an assigned value 
+ERROR: 0:85: 'offset' : there is no such layout identifier for this stage taking an assigned value 
 ERROR: 0:85: 'binding' : requires block, or sampler/image, or atomic-counter type 
 ERROR: 0:87: 'binding' : requires block, or sampler/image, or atomic-counter type 
-ERROR: 0:89: 'offset' : there is no such layout identifier taking an assigned value 
+ERROR: 0:89: 'offset' : there is no such layout identifier for this stage taking an assigned value 
 WARNING: 0:89: '' : cannot set qualifier defaults when using a type and no identifier 
 ERROR: 0:91: 'bar' : redefinition 
-ERROR: 0:92: 'offset' : there is no such layout identifier taking an assigned value 
+ERROR: 0:92: 'offset' : there is no such layout identifier for this stage taking an assigned value 
 ERROR: 0:92: 'bar' : redefinition 
-ERROR: 0:94: 'offset' : there is no such layout identifier taking an assigned value 
+ERROR: 0:94: 'offset' : there is no such layout identifier for this stage taking an assigned value 
 ERROR: 0:94: 'a2' : redefinition 
 ERROR: 0:95: 'binding' : requires block, or sampler/image, or atomic-counter type 
 ERROR: 0:96: 'binding' : requires block, or sampler/image, or atomic-counter type 
@@ -34,8 +34,8 @@ ERROR: 0:112: 'ColorIvn' : identifier not previously declared
 ERROR: 0:132: 'shared' : not supported in this stage: vertex
 ERROR: 0:134: '' : function does not return a value: funcA
 ERROR: 0:136: '' : function does not return a value: funcB
-ERROR: 0:137: 'rgba32f' : unrecognized layout identifier 
-ERROR: 0:138: 'rgba32f' : unrecognized layout identifier 
+ERROR: 0:137: 'rgba32f' : unrecognized layout identifier, or qualifier requires assignemnt (e.g., binding = 4) 
+ERROR: 0:138: 'rgba32f' : unrecognized layout identifier, or qualifier requires assignemnt (e.g., binding = 4) 
 ERROR: 0:153: '' : function does not return a value: func3
 ERROR: 0:192: 'constructor' : constructing from a non-dereferenced array 
 ERROR: 0:193: 'constructor' : constructing from a non-dereferenced array 
@@ -276,7 +276,7 @@ ERROR: node is still EOpNull!
 0:?   Linker Objects
 0:?     'Coords' (out block)
 0:?     '__anon__0' (out block)
-0:?     'transforms' (layout(shared ) uniform 4-element array of block)
+0:?     'transforms' (layout(column_major shared ) uniform 4-element array of block)
 0:?     'normal' (layout(location=3 ) in 4-component vector of float)
 0:?     'colors' (layout(location=6 ) in 3-element array of 4-component vector of float)
 0:?     's' (layout(location=3 ) structure)
@@ -285,7 +285,7 @@ ERROR: node is still EOpNull!
 0:?     'var5' (smooth out 4-component vector of float)
 0:?     '__anon__2' (out block)
 0:?     'var7' (smooth out 4-component vector of float)
-0:?     '__anon__3' (layout(std140 ) uniform block)
+0:?     '__anon__3' (layout(row_major std140 ) uniform block)
 0:?     '__anon__4' (layout(column_major shared ) uniform block)
 0:?     's17' (layout(binding=3 ) uniform sampler2D)
 0:?     'a2' (layout(binding=2 ) uniform int)
@@ -303,8 +303,8 @@ ERROR: node is still EOpNull!
 0:?     'c' (in 4-component vector of float)
 0:?     'd' (in 4-component vector of float)
 0:?     'v' (smooth out 4-component vector of float)
-0:?     '__anon__6' (layout(shared ) coherent uniform block)
-0:?     '__anon__7' (layout(shared ) uniform block)
+0:?     '__anon__6' (layout(row_major shared ) coherent uniform block)
+0:?     '__anon__7' (layout(row_major shared ) uniform block)
 0:?     'shv' (shared 4-component vector of float)
 0:?     'img1' (uniform image2D)
 0:?     'img2' (coherent uniform image2D)

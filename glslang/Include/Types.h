@@ -176,14 +176,8 @@ protected:
 };
 
 //
-// TPublicType (coming up after some dependent declarations)
-// is a workaround for a problem with the yacc stack,  It can't have
-// types that it thinks have non-trivial constructors.  It should
-// just be used while recognizing the grammar, not anything else.  Pointers
-// could be used, but also trying to avoid lots of memory management overhead.
-//
-// Not as bad as it looks, there is no actual assumption that the fields
-// match up or are named the same or anything like that.
+// Following are a series of helper enums for managing layouts and qualifiers,
+// used for TPublicType, TType, others.
 //
 
 enum TLayoutPacking {
@@ -191,14 +185,32 @@ enum TLayoutPacking {
     ElpShared,      // default, but different than saying nothing
     ElpStd140,
     ElpStd430,
-    ElpPacked       // see bitfield width below
+    ElpPacked
+    // If expanding, see bitfield width below
 };
 
 enum TLayoutMatrix {
     ElmNone,
     ElmRowMajor,
     ElmColumnMajor  // default, but different than saying nothing
-};  // see bitfield width below
+    // If expanding, see bitfield width below
+};
+
+// Union of geometry shader and tessellation shader geometry types.
+// They don't go into TType, but rather have current state per shader or
+// active parser type (TPublicType).
+enum TLayoutGeometry {
+    ElgNone,
+    ElgPoints,
+    ElgLines,
+    ElgLinesAdjacency,
+    ElgLineStrip,
+    ElgTriangles,
+    ElgTrianglesAdjacency,
+    ElgTriangleStrip,
+    ElgQuads,
+    ElgIsolines,
+};
 
 class TQualifier {
 public:
@@ -298,13 +310,15 @@ public:
         layoutPacking = ElpNone;
         layoutSlotLocation = layoutLocationEnd;
         layoutBinding = layoutBindingEnd;
+        layoutStream = layoutStreamEnd;
     }
     bool hasLayout() const
     {
         return layoutMatrix != ElmNone ||
                layoutPacking != ElpNone ||
                hasLocation() ||
-               hasBinding();
+               hasBinding() ||
+               hasStream();
     }
     TLayoutMatrix  layoutMatrix       : 3;
     TLayoutPacking layoutPacking      : 4;
@@ -312,6 +326,8 @@ public:
     static const unsigned int layoutLocationEnd = 0x3F;
     unsigned int layoutBinding        : 8;
     static const unsigned int layoutBindingEnd = 0xFF;
+    unsigned int layoutStream          : 8;
+    static const unsigned int layoutStreamEnd = 0xFF;
     bool hasLocation() const
     {
         return layoutSlotLocation != layoutLocationEnd;
@@ -319,6 +335,10 @@ public:
     bool hasBinding() const
     {
         return layoutBinding != layoutBindingEnd;
+    }
+    bool hasStream() const
+    {
+        return layoutStream != layoutStreamEnd;
     }
     static const char* getLayoutPackingString(TLayoutPacking packing)
     {
@@ -338,13 +358,50 @@ public:
         default:             return "none";
         }
     }
+    static const char* getGeometryString(TLayoutGeometry geometry)
+    {
+        switch (geometry) {
+        case ElgPoints:             return "points";
+        case ElgLines:              return "lines";
+        case ElgLinesAdjacency:     return "lines_adjancency";
+        case ElgLineStrip:          return "line_strip";
+        case ElgTriangles:          return "triangles";
+        case ElgTrianglesAdjacency: return "triangles_adjacency";
+        case ElgTriangleStrip:      return "triangle_strip";
+        case ElgQuads:              return "quads";
+        case ElgIsolines:           return "isolines";
+        default:                    return "none";
+        }
+    }
+    static int mapGeometryToSize(TLayoutGeometry geometry)
+    {
+        switch (geometry) {
+        case ElgPoints:             return 1;
+        case ElgLines:              return 2;
+        case ElgLinesAdjacency:     return 4;
+        case ElgTriangles:          return 3;
+        case ElgTrianglesAdjacency: return 6;
+        default:                    return 0;
+        }
+    }
 };
 
+//
+// TPublicType is just temporarily used while parsing and not quite the same
+// information kept per node in TType.  Due to the bison stack, it can't have
+// types that it thinks have non-trivial constructors.  It should
+// just be used while recognizing the grammar, not anything else.
+// Once enough is known about the situation, the proper information
+// moved into a TType, or the parse context, etc.
+//
 class TPublicType {
 public:
     TBasicType basicType;
     TSampler sampler;
     TQualifier qualifier;
+    TLayoutGeometry geometry; // don't keep this in the qualifier; it's more a per shader than per type
+    int invocations;          // 0 means no declaration
+    int maxVertices;
     int vectorSize : 4;
     int matrixCols : 4;
     int matrixRows : 4;
@@ -375,6 +432,9 @@ public:
         initType(loc);
         sampler.clear();
         initQualifiers(global);
+        geometry = ElgNone;
+        invocations = 0;        // 0 means no declaration
+        maxVertices = 0;
     }
 
     void setVector(int s)
@@ -641,6 +701,8 @@ public:
                 p += snprintf(p, end - p, "location=%d ", qualifier.layoutSlotLocation);
             if (qualifier.hasBinding())
                 p += snprintf(p, end - p, "binding=%d ", qualifier.layoutBinding);
+            if (qualifier.hasStream())
+                p += snprintf(p, end - p, "stream=%d ", qualifier.layoutStream);
             if (qualifier.layoutMatrix != ElmNone)
                 p += snprintf(p, end - p, "%s ", TQualifier::getLayoutMatrixString(qualifier.layoutMatrix));
             if (qualifier.layoutPacking != ElpNone)

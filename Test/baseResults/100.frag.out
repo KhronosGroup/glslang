@@ -101,6 +101,6 @@ ERROR: node is still EOpNull!
 0:?     'uint' (mediump int)
 0:?     'v' (smooth in 3-element array of mediump 4-component vector of float)
 0:?     'f' (mediump float)
-0:?     '__anon__0' (layout(shared ) uniform block)
+0:?     '__anon__0' (layout(column_major shared ) uniform block)
 0:?     'fa' (unsized array of mediump float)
 

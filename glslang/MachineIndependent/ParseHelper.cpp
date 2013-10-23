@@ -77,19 +77,17 @@ TParseContext::TParseContext(TSymbolTable& symt, TIntermediate& interm, bool pb,
         defaultSamplerPrecision[computeSamplerTypeIndex(sampler)] = EpqLow;
 
         switch (language) {
-        case EShLangVertex:
-            defaultPrecision[EbtInt] = EpqHigh;
-            defaultPrecision[EbtUint] = EpqHigh;
-            defaultPrecision[EbtFloat] = EpqHigh;
-            defaultPrecision[EbtSampler] = EpqLow;
-            break;
         case EShLangFragment:
             defaultPrecision[EbtInt] = EpqMedium;
             defaultPrecision[EbtUint] = EpqMedium;
             defaultPrecision[EbtSampler] = EpqLow;
             break;
         default:
-            infoSink.info.message(EPrefixError, "unexpected es-profile stage");
+            defaultPrecision[EbtInt] = EpqHigh;
+            defaultPrecision[EbtUint] = EpqHigh;
+            defaultPrecision[EbtFloat] = EpqHigh;
+            defaultPrecision[EbtSampler] = EpqLow;
+            break;
         }
     }
 
@@ -104,6 +102,8 @@ TParseContext::TParseContext(TSymbolTable& symt, TIntermediate& interm, bool pb,
     globalInputDefaults.clear();
 
     globalOutputDefaults.clear();
+    if (language == EShLangGeometry)
+        globalOutputDefaults.layoutStream = 0;
 }
 
 //
@@ -1587,7 +1587,7 @@ void TParseContext::mergeQualifiers(TSourceLoc loc, TQualifier& dst, const TQual
         dst.precision = src.precision;
 
     // Layout qualifiers
-    mergeLayoutQualifiers(loc, dst, src);
+    mergeObjectLayoutQualifiers(loc, dst, src);
 
     // individual qualifiers
     bool repeated = false;
@@ -2109,26 +2109,68 @@ void TParseContext::finalize()
 void TParseContext::setLayoutQualifier(TSourceLoc loc, TPublicType& publicType, TString& id)
 {
     std::transform(id.begin(), id.end(), id.begin(), ::tolower);
-    if (id == TQualifier::getLayoutMatrixString(ElmColumnMajor))
+
+    if (id == TQualifier::getLayoutMatrixString(ElmColumnMajor)) {
         publicType.qualifier.layoutMatrix = ElmColumnMajor;
-    else if (id == TQualifier::getLayoutMatrixString(ElmRowMajor))
+        return;
+    }
+    if (id == TQualifier::getLayoutMatrixString(ElmRowMajor)) {
         publicType.qualifier.layoutMatrix = ElmRowMajor;
-    else if (id == TQualifier::getLayoutPackingString(ElpPacked))
+        return;
+    }
+    if (id == TQualifier::getLayoutPackingString(ElpPacked)) {
         publicType.qualifier.layoutPacking = ElpPacked;
-    else if (id == TQualifier::getLayoutPackingString(ElpShared))
+        return;
+    }
+    if (id == TQualifier::getLayoutPackingString(ElpShared)) {
         publicType.qualifier.layoutPacking = ElpShared;
-    else if (id == TQualifier::getLayoutPackingString(ElpStd140))
+        return;
+    }
+    if (id == TQualifier::getLayoutPackingString(ElpStd140)) {
         publicType.qualifier.layoutPacking = ElpStd140;
-    else if (id == TQualifier::getLayoutPackingString(ElpStd430)) {
+        return;
+    }
+    if (id == TQualifier::getLayoutPackingString(ElpStd430)) {
         requireProfile(loc, ECoreProfile | ECompatibilityProfile, "std430");
         profileRequires(loc, ECoreProfile | ECompatibilityProfile, 430, 0, "std430");
         publicType.qualifier.layoutPacking = ElpStd430;
-    } else if (id == "location")
-        error(loc, "requires an integer assignment (e.g., location = 4)", "location", "");
-    else if (id == "binding") {
-        error(loc, "requires an integer assignment (e.g., binding = 4)", "binding", "");
-    } else
-        error(loc, "unrecognized layout identifier", id.c_str(), "");
+        return;
+    }
+    if (language == EShLangGeometry || language == EShLangTessEvaluation) {
+        if (id == TQualifier::getGeometryString(ElgTriangles)) {
+            publicType.geometry = ElgTriangles;
+            return;
+        }
+        if (language == EShLangGeometry) {
+            if (id == TQualifier::getGeometryString(ElgPoints)) {
+                publicType.geometry = ElgPoints;
+                return;
+            }
+            if (id == TQualifier::getGeometryString(ElgLineStrip)) {
+                publicType.geometry = ElgLineStrip;
+                return;
+            }
+            if (id == TQualifier::getGeometryString(ElgLines)) {
+                publicType.geometry = ElgLines;
+                return;
+            }
+            if (id == TQualifier::getGeometryString(ElgLinesAdjacency)) {
+                publicType.geometry = ElgLinesAdjacency;
+                return;
+            }
+            if (id == TQualifier::getGeometryString(ElgTrianglesAdjacency)) {
+                publicType.geometry = ElgTrianglesAdjacency;
+                return;
+            }
+            if (id == TQualifier::getGeometryString(ElgTriangleStrip)) {
+                publicType.geometry = ElgTriangleStrip;
+                return;
+            }
+        } else {
+            // TODO: tessellation evaluation
+        }
+    }
+    error(loc, "unrecognized layout identifier, or qualifier requires assignemnt (e.g., binding = 4)", id.c_str(), "");
 }
 
 // Put the id's layout qualifier value into the public type.  This is before we know any
@@ -2143,22 +2185,54 @@ void TParseContext::setLayoutQualifier(TSourceLoc loc, TPublicType& publicType, 
             error(loc, "location is too large", id.c_str(), "");
         else
             publicType.qualifier.layoutSlotLocation = value;
-    } else if (id == "binding") {
+        return;
+    }
+    if (id == "binding") {
         requireProfile(loc, ECoreProfile | ECompatibilityProfile, "binding");
         profileRequires(loc, ECoreProfile | ECompatibilityProfile, 420, GL_ARB_shading_language_420pack, "binding");
         if ((unsigned int)value >= TQualifier::layoutBindingEnd)
             error(loc, "binding is too large", id.c_str(), "");
         else
             publicType.qualifier.layoutBinding = value;
-    } else
-        error(loc, "there is no such layout identifier taking an assigned value", id.c_str(), "");
+        return;
+    }
+    if (language == EShLangGeometry) {
+        if (id == "invocations") {
+            profileRequires(loc, ECompatibilityProfile | ECoreProfile, 400, 0, "invocations");
+            publicType.invocations = value;
+            return;
+        }
+        if (id == "max_vertices") {
+            publicType.maxVertices = value;
+            return;
+        }
+        if (id == "stream") {
+            publicType.qualifier.layoutStream = value;
+            return;
+        }
+    }
+    error(loc, "there is no such layout identifier for this stage taking an assigned value", id.c_str(), "");
 
     // TODO: semantics: error check: make sure locations are non-overlapping across the whole stage
     // TODO: semantics: error check: output arrays can only be indexed with a constant (es 300)
 }
 
+//
+// Merge characteristics of the 'src' qualifier into the 'dst', at the TPublicType level,
+// which means for layout-qualifier information not kept per qualifier.
+//
+void TParseContext::mergeShaderLayoutQualifiers(TSourceLoc loc, TPublicType& dst, const TPublicType& src)
+{
+    if (src.geometry != ElgNone)
+        dst.geometry = src.geometry;
+    if (src.invocations != 0)
+        dst.invocations = src.invocations;
+    if (src.maxVertices != 0)
+        dst.maxVertices = src.maxVertices;
+}
+
 // Merge any layout qualifier information from src into dst, leaving everything else in dst alone
-void TParseContext::mergeLayoutQualifiers(TSourceLoc loc, TQualifier& dst, const TQualifier& src)
+void TParseContext::mergeObjectLayoutQualifiers(TSourceLoc loc, TQualifier& dst, const TQualifier& src)
 {
     if (src.layoutMatrix != ElmNone)
         dst.layoutMatrix = src.layoutMatrix;
@@ -2171,40 +2245,31 @@ void TParseContext::mergeLayoutQualifiers(TSourceLoc loc, TQualifier& dst, const
 
     if (src.hasBinding())
         dst.layoutBinding = src.layoutBinding;
+
+    if (src.hasStream())
+        dst.layoutStream = src.layoutStream;
 }
 
 // Do error layout error checking given a full variable/block declaration.
-void TParseContext::layoutCheck(TSourceLoc loc, const TSymbol& symbol)
+void TParseContext::layoutTypeCheck(TSourceLoc loc, const TSymbol& symbol)
 {
     const TType& type = symbol.getType();
     const TQualifier& qualifier = type.getQualifier();
+
+    // first, qualifier only error checking
+    layoutQualifierCheck(loc, qualifier);
     
+    // now, error checking combining type and qualifier
     if (qualifier.hasLocation()) {
         switch (qualifier.storage) {
         case EvqVaryingIn:
         {
-            const char* feature = "location qualifier on input";
-            if (profile == EEsProfile)
-                requireStage(loc, EShLangVertex, feature);
-            requireStage(loc, (EShLanguageMask)~EShLangComputeMask, feature);
-            if (language == EShLangVertex)
-                profileRequires(loc, ECoreProfile | ECompatibilityProfile, 330, 0, feature);
-            else
-                profileRequires(loc, ECoreProfile | ECompatibilityProfile, 410, GL_ARB_separate_shader_objects, feature);
             if (type.getBasicType() == EbtBlock)
                 profileRequires(loc, ECoreProfile | ECompatibilityProfile, 440, 0 /* TODO ARB_enhanced_layouts*/, "location qualifier on input block");
             break;
         }
         case EvqVaryingOut:
         {
-            const char* feature = "location qualifier on output";
-            if (profile == EEsProfile)
-                requireStage(loc, EShLangFragment, feature);
-            requireStage(loc, (EShLanguageMask)~EShLangComputeMask, feature);
-            if (language == EShLangFragment)
-                profileRequires(loc, ECoreProfile | ECompatibilityProfile, 330, 0, feature);
-            else
-                profileRequires(loc, ECoreProfile | ECompatibilityProfile, 410, GL_ARB_separate_shader_objects, feature);
             if (type.getBasicType() == EbtBlock)
                 profileRequires(loc, ECoreProfile | ECompatibilityProfile, 440, 0 /* TODO ARB_enhanced_layouts*/, "location qualifier on output block");
             break;
@@ -2213,8 +2278,6 @@ void TParseContext::layoutCheck(TSourceLoc loc, const TSymbol& symbol)
         case EvqBuffer:
         {
             const char* feature = "location qualifier on uniform or buffer";
-            requireProfile(loc, ECoreProfile | ECompatibilityProfile, feature);
-            profileRequires(loc, ECoreProfile | ECompatibilityProfile, 430, 0, feature);
             if (symbol.getAsVariable() == 0)
                 error(loc, "can only be used on variable declaration", feature, "");
             break;
@@ -2235,19 +2298,78 @@ void TParseContext::layoutCheck(TSourceLoc loc, const TSymbol& symbol)
         //
         // TODO:  binding error checking against limits, arrays
         //
-        if (qualifier.storage != EvqUniform && qualifier.storage != EvqBuffer)
-            error(loc, "requires uniform or buffer storage qualifier", "binding", "");
         if (type.getBasicType() != EbtSampler && type.getBasicType() != EbtBlock)
             error(loc, "requires block, or sampler/image, or atomic-counter type", "binding", "");
             // TODO: atomic counter functionality: include in test above
     }
 }
 
-/////////////////////////////////////////////////////////////////////////////////
-//
-// Non-Errors.
-//
-/////////////////////////////////////////////////////////////////////////////////
+// Do layout error checking that can be done within a qualifier proper, not needing to know
+// if there are blocks, atomic counters, variables, etc.
+void TParseContext::layoutQualifierCheck(TSourceLoc loc, const TQualifier& qualifier)
+{
+    if (qualifier.hasLocation()) {
+        switch (qualifier.storage) {
+        case EvqVaryingIn:
+        {
+            const char* feature = "location qualifier on input";
+            if (profile == EEsProfile)
+                requireStage(loc, EShLangVertex, feature);
+            requireStage(loc, (EShLanguageMask)~EShLangComputeMask, feature);
+            if (language == EShLangVertex)
+                profileRequires(loc, ECoreProfile | ECompatibilityProfile, 330, 0, feature);
+            else
+                profileRequires(loc, ECoreProfile | ECompatibilityProfile, 410, GL_ARB_separate_shader_objects, feature);
+            break;
+        }
+        case EvqVaryingOut:
+        {
+            const char* feature = "location qualifier on output";
+            if (profile == EEsProfile)
+                requireStage(loc, EShLangFragment, feature);
+            requireStage(loc, (EShLanguageMask)~EShLangComputeMask, feature);
+            if (language == EShLangFragment)
+                profileRequires(loc, ECoreProfile | ECompatibilityProfile, 330, 0, feature);
+            else
+                profileRequires(loc, ECoreProfile | ECompatibilityProfile, 410, GL_ARB_separate_shader_objects, feature);
+            break;
+        }
+        case EvqUniform:
+        case EvqBuffer:
+        {
+            const char* feature = "location qualifier on uniform or buffer";
+            requireProfile(loc, ECoreProfile | ECompatibilityProfile, feature);
+            profileRequires(loc, ECoreProfile | ECompatibilityProfile, 430, 0, feature);
+            break;
+        }
+        default:
+            break;
+        }
+    }
+
+    if (qualifier.hasBinding()) {
+        if (qualifier.storage != EvqUniform && qualifier.storage != EvqBuffer)
+            error(loc, "requires uniform or buffer storage qualifier", "binding", "");
+    }
+
+    if (qualifier.hasStream()) {
+        if (qualifier.storage != EvqVaryingOut)
+            error(loc, "can only be used on an output", "stream", "");
+    }
+}
+
+// For places that can't have shader-level layout qualifiers
+void TParseContext::checkNoShaderLayouts(TSourceLoc loc, const TPublicType& publicType)
+{
+    const char* message = "can only apply to a standalone qualifier";
+
+    if (publicType.geometry != ElgNone)
+        error(loc, message, TQualifier::getGeometryString(publicType.geometry), "");
+    if (publicType.invocations > 0)
+        error(loc, message, "invocations", "");
+    if (publicType.maxVertices > 0)
+        error(loc, message, "max_vertices", "");
+}
 
 //
 // Look up a function name in the symbol table, and make sure it is a function.
@@ -2292,6 +2414,13 @@ TIntermNode* TParseContext::declareVariable(TSourceLoc loc, TString& identifier,
     if (! initializer)
         nonInitConstCheck(loc, identifier, type);
 
+    // Pick up defaults
+    if (! type.getQualifier().hasStream() && language == EShLangGeometry && type.getQualifier().storage == EvqVaryingOut)
+        type.getQualifier().layoutStream = globalOutputDefaults.layoutStream;
+
+    if (publicType.geometry != ElgNone)
+        error(loc, "geometry primitive qualifier cannot be applied to a variable declaration", TQualifier::getGeometryString(publicType.geometry), "");
+
     // Check for redeclaration of built-ins and/or attempting to declare a reserved name
     bool newDeclaration = false;    // true if a new entry gets added to the symbol table
     TSymbol* symbol = redeclareBuiltin(loc, identifier, newDeclaration);
@@ -2331,9 +2460,9 @@ TIntermNode* TParseContext::declareVariable(TSourceLoc loc, TString& identifier,
         initNode = executeInitializer(loc, identifier, initializer, variable);
     }
 
-    // look for errors in layout qualifier use
+    // look for errors/adjustments in layout qualifier use
     if (symbol)
-        layoutCheck(loc, *symbol);
+        layoutTypeCheck(loc, *symbol);
 
     // see if it's a linker-level object to track
     if (symbol && newDeclaration && symbolTable.atGlobalLevel())
@@ -2732,7 +2861,7 @@ void TParseContext::addBlock(TSourceLoc loc, TTypeList& typeList, const TString*
     if (profile == EEsProfile && arraySizes)
         arraySizeRequiredCheck(loc, arraySizes->getSize());
 
-    switch (currentBlockDefaults.storage) {
+    switch (currentBlockQualifier.storage) {
     case EvqBuffer:
         requireProfile(loc, ECoreProfile | ECompatibilityProfile, "buffer block");
         profileRequires(loc, ECoreProfile | ECompatibilityProfile, 430, 0, "buffer block");
@@ -2754,14 +2883,14 @@ void TParseContext::addBlock(TSourceLoc loc, TTypeList& typeList, const TString*
 
     arrayDimCheck(loc, arraySizes, 0);
 
-    // fix and check for member qualifiers and types that don't belong within a block
+    // fix and check for member storage qualifiers and types that don't belong within a block
     for (unsigned int member = 0; member < typeList.size(); ++member) {
         TQualifier& memberQualifier = typeList[member].type->getQualifier();
         TSourceLoc memberLoc = typeList[member].loc;
         pipeInOutFix(memberLoc, memberQualifier);
-        if (memberQualifier.storage != EvqTemporary && memberQualifier.storage != EvqGlobal && memberQualifier.storage != currentBlockDefaults.storage)
+        if (memberQualifier.storage != EvqTemporary && memberQualifier.storage != EvqGlobal && memberQualifier.storage != currentBlockQualifier.storage)
             error(memberLoc, "member storage qualifier cannot contradict block storage qualifier", typeList[member].type->getFieldName().c_str(), "");
-        if ((currentBlockDefaults.storage == EvqUniform && memberQualifier.isInterpolation()) || memberQualifier.isAuxiliary())
+        if ((currentBlockQualifier.storage == EvqUniform && memberQualifier.isInterpolation()) || memberQualifier.isAuxiliary())
             error(memberLoc, "member of uniform block cannot have an auxiliary or interpolation qualifier", typeList[member].type->getFieldName().c_str(), "");
 
         TBasicType basicType = typeList[member].type->getBasicType();
@@ -2772,7 +2901,7 @@ void TParseContext::addBlock(TSourceLoc loc, TTypeList& typeList, const TString*
     // Make default block qualification, and adjust the member qualifications
 
     TQualifier defaultQualification;
-    switch (currentBlockDefaults.storage) {
+    switch (currentBlockQualifier.storage) {
     case EvqBuffer:     defaultQualification = globalBufferDefaults;     break;
     case EvqUniform:    defaultQualification = globalUniformDefaults;    break;
     case EvqVaryingIn:  defaultQualification = globalInputDefaults;      break;
@@ -2780,19 +2909,31 @@ void TParseContext::addBlock(TSourceLoc loc, TTypeList& typeList, const TString*
     default:            defaultQualification.clear();                    break;
     }
 
-    mergeLayoutQualifiers(loc, defaultQualification, currentBlockDefaults);
+    // fix and check for member layout qualifiers
+    mergeObjectLayoutQualifiers(loc, defaultQualification, currentBlockQualifier);
     for (unsigned int member = 0; member < typeList.size(); ++member) {
-        TQualifier memberQualification = defaultQualification;
-        mergeQualifiers(loc, memberQualification, typeList[member].type->getQualifier(), false);
-        typeList[member].type->getQualifier() = memberQualification;
+        TQualifier& memberQualifier = typeList[member].type->getQualifier();
+        TSourceLoc memberLoc = typeList[member].loc;
+        if (memberQualifier.hasStream()) {
+            if (defaultQualification.layoutStream != memberQualifier.layoutStream)
+                error(memberLoc, "member cannot contradict block", "stream", "");
+        }
+        TQualifier newMemberQualification = defaultQualification;
+        mergeQualifiers(memberLoc, newMemberQualification, memberQualifier, false);
+        memberQualifier = newMemberQualification;
     }
 
+    //
     // Build and add the interface block as a new type named blockName
+    //
 
-    TType blockType(&typeList, *blockName, currentBlockDefaults);
+    // reverse merge, so that currentBlockQualifier now has all layout information
+    // (can't use defaultQualification directly, it's missing other non-layout-default-class qualifiers)
+    mergeObjectLayoutQualifiers(loc, currentBlockQualifier, defaultQualification);
+    
+    TType blockType(&typeList, *blockName, currentBlockQualifier);
     if (arraySizes)
         blockType.setArraySizes(arraySizes);
-    blockType.getQualifier().layoutPacking = defaultQualification.layoutPacking;
 
     //
     // Don't make a user-defined type out of block name; that will cause an error
@@ -2834,7 +2975,7 @@ void TParseContext::addBlock(TSourceLoc loc, TTypeList& typeList, const TString*
     }
 
     // Check for general layout qualifier errors
-    layoutCheck(loc, variable);
+    layoutTypeCheck(loc, variable);
 
     // Save it in the AST for linker use.
     intermediate.addSymbolLinkageNode(linkage, variable);
@@ -2879,55 +3020,76 @@ void TParseContext::addQualifierToExisting(TSourceLoc loc, TQualifier qualifier,
 }
 
 //
-// Update qualifier defaults for all forms of declarations, which 
-// must error check for their form before calling here.
+// Updating default qualifier for the case of a declaration with just a qualifier,
+// no type, block, or identifier.
 //
-void TParseContext::updateQualifierDefaults(TQualifier qualifier)
+void TParseContext::updateStandaloneQualifierDefaults(TSourceLoc loc, const TPublicType& publicType)
 {
-    switch (qualifier.storage) {
-    case EvqBuffer:
-        if (qualifier.layoutMatrix != ElmNone)
-            globalBufferDefaults.layoutMatrix = qualifier.layoutMatrix;
-        if (qualifier.layoutPacking != ElpNone)
-            globalBufferDefaults.layoutPacking = qualifier.layoutPacking;
-        break;
-    case EvqUniform:
-        if (qualifier.layoutMatrix != ElmNone)
-            globalUniformDefaults.layoutMatrix = qualifier.layoutMatrix;
-        if (qualifier.layoutPacking != ElpNone)
-            globalUniformDefaults.layoutPacking = qualifier.layoutPacking;
-        break;
-    case EvqVaryingIn:
-        if (qualifier.hasLocation())
-            globalInputDefaults.layoutSlotLocation = qualifier.layoutSlotLocation;
-        break;
-    case EvqVaryingOut:
-        if (qualifier.hasLocation())
-            globalOutputDefaults.layoutSlotLocation = qualifier.layoutSlotLocation;
-        break;
-    default:
-        // error handling should be done by callers of this function
-        break;
+    if (publicType.maxVertices) {
+        if (! intermediate.setMaxVertices(publicType.maxVertices))
+            error(loc, "cannot change previously set layout value", "max_vertices", "");
     }
-}
+    if (publicType.invocations) {
+        if (! intermediate.setInvocations(publicType.invocations))
+            error(loc, "cannot change previously set layout value", "invocations", "");
+    }
+    if (publicType.geometry != ElgNone) {
+        if (publicType.qualifier.storage == EvqVaryingIn) {
+            switch (publicType.geometry) {
+            case ElgPoints:
+            case ElgLines:
+            case ElgLinesAdjacency:
+            case ElgTriangles:
+            case ElgTrianglesAdjacency:
+                if (! intermediate.setInputPrimitive(publicType.geometry))
+                    error(loc, "cannot change previously set input primitive", TQualifier::getGeometryString(publicType.geometry), "");
+                break;
+            default:
+                error(loc, "does not apply to input", TQualifier::getGeometryString(publicType.geometry), "");
+            }
+        } else if (publicType.qualifier.storage == EvqVaryingOut) {
+            switch (publicType.geometry) {
+            case ElgPoints:
+            case ElgLineStrip:
+            case ElgTriangleStrip:
+                if (! intermediate.setOutputPrimitive(publicType.geometry))
+                    error(loc, "cannot change previously set output primitive", TQualifier::getGeometryString(publicType.geometry), "");
+                break;
+            default:
+                error(loc, "does not only apply to output", TQualifier::getGeometryString(publicType.geometry), "");
+            }
+        } else
+            error(loc, "cannot be used here", TQualifier::getGeometryString(publicType.geometry), "");
+    }
 
-//
-// Update defaults for qualifiers.  This is called directly for the case
-// of a declaration with just a qualifier.
-//
-void TParseContext::updateQualifierDefaults(TSourceLoc loc, TQualifier qualifier)
-{
+    const TQualifier& qualifier = publicType.qualifier;
+
     if (qualifier.isAuxiliary() ||
         qualifier.isMemory() ||
         qualifier.isInterpolation() ||
         qualifier.precision != EpqNone)
         error(loc, "cannot use auxiliary, memory, interpolation, or precision qualifier in a default qualifier declaration (declaration with no type)", "", "");
 
+    layoutQualifierCheck(loc, qualifier);
+
     switch (qualifier.storage) {
     case EvqUniform:
+        if (qualifier.layoutMatrix != ElmNone)
+            globalUniformDefaults.layoutMatrix = qualifier.layoutMatrix;
+        if (qualifier.layoutPacking != ElpNone)
+            globalUniformDefaults.layoutPacking = qualifier.layoutPacking;
+        break;
     case EvqBuffer:
+        if (qualifier.layoutMatrix != ElmNone)
+            globalBufferDefaults.layoutMatrix = qualifier.layoutMatrix;
+        if (qualifier.layoutPacking != ElpNone)
+            globalBufferDefaults.layoutPacking = qualifier.layoutPacking;
+        break;
     case EvqVaryingIn:
+        break;
     case EvqVaryingOut:
+        if (qualifier.hasStream())
+            globalOutputDefaults.layoutStream = qualifier.layoutStream;
         break;
     default:
         error(loc, "default qualifier requires 'uniform', 'buffer', 'in', or 'out' storage qualification", "", "");
@@ -2938,18 +3100,14 @@ void TParseContext::updateQualifierDefaults(TSourceLoc loc, TQualifier qualifier
         error(loc, "cannot declare a default, include a type or full declaration", "binding", "");
     if (qualifier.hasLocation())
         error(loc, "cannot declare a default, use a full declaration", "location", "");
-
-    updateQualifierDefaults(qualifier);
 }
 
 //
 // Update defaults for qualifiers when declared with a type, and optionally an identifier.
-// (But, not the case of just a qualifier; only when a type is present.)
+// (But, not the case of just a qualifier.)
 //
-void TParseContext::updateTypedDefaults(TSourceLoc loc, TQualifier qualifier, const TString* id)
+void TParseContext::updateTypedDefaults(TSourceLoc loc, const TQualifier& qualifier, const TString* id)
 {
-    bool cantHaveId = false;
-
     if (! id) {
         if (qualifier.hasLayout())
             warn(loc, "cannot set qualifier defaults when using a type and no identifier", "", "");
@@ -2966,8 +3124,12 @@ void TParseContext::updateTypedDefaults(TSourceLoc loc, TQualifier qualifier, co
             error(loc, "cannot specify packing on a variable declaration", id->c_str(), "");
         break;
     case EvqVaryingIn:
+        if (qualifier.hasLocation())
+            globalInputDefaults.layoutSlotLocation = qualifier.layoutSlotLocation;
         break;
     case EvqVaryingOut:
+        if (qualifier.hasLocation())
+            globalOutputDefaults.layoutSlotLocation = qualifier.layoutSlotLocation;
         break;
     default:
         if (qualifier.layoutMatrix != ElmNone ||
@@ -2976,11 +3138,6 @@ void TParseContext::updateTypedDefaults(TSourceLoc loc, TQualifier qualifier, co
         else if (qualifier.hasLocation())
             error(loc, "location qualifiers only appy to uniform, buffer, in, or out storage qualifiers", id->c_str(), "");
     }
-
-    if (cantHaveId)
-        error(loc, "cannot set global layout qualifiers on uniform variable, use just 'uniform' or a block", id->c_str(), "");
-
-    updateQualifierDefaults(qualifier);
 }
 
 //

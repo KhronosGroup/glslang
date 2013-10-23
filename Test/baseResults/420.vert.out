@@ -116,10 +116,10 @@ ERROR: node is still EOpNull!
 0:?       4.200000
 0:?     'dx' (const float)
 0:?       4.200000
-0:?     'boundInst' (layout(binding=3 shared ) uniform block)
-0:?     '__anon__0' (layout(binding=7 shared ) uniform block)
+0:?     'boundInst' (layout(binding=3 column_major shared ) uniform block)
+0:?     '__anon__0' (layout(binding=7 column_major shared ) uniform block)
 0:?     '__anon__1' (layout(binding=1 ) in block)
-0:?     '__anon__2' (layout(shared ) uniform block)
+0:?     '__anon__2' (layout(column_major shared ) uniform block)
 0:?     'sampb1' (layout(binding=4 ) uniform sampler2D)
 0:?     'sampb2' (layout(binding=5 ) uniform 10-element array of sampler2D)
 0:?     'gl_VertexID' (gl_VertexId int)

@@ -159,7 +159,8 @@ const char* TParseContext::getPreamble()
         return 
             "#define GL_ES 1\n";
     } else {
-        return 
+        return
+            "#define GL_FRAGMENT_PRECISION_HIGH 1\n"
             "#define GL_ARB_texture_rectangle 1\n"
             "#define GL_ARB_shading_language_420pack 1\n"
             "#define GL_ARB_texture_gather 1\n"

@@ -4,8 +4,35 @@ ERROR: 0:19: 'fromVertex' : redefinition
 ERROR: 0:21: 'fooC' : block instance name redefinition 
 ERROR: 0:29: 'EmitStreamVertex' : no matching overloaded function found 
 ERROR: 0:30: 'EndStreamPrimitive' : no matching overloaded function found 
-ERROR: 5 compilation errors.  No code generated.
+ERROR: 0:44: 'stream' : can only be used on an output 
+ERROR: 0:45: 'stream' : can only be used on an output 
+ERROR: 0:46: 'stream' : can only be used on an output 
+ERROR: 0:47: 'stream' : can only be used on an output 
+ERROR: 0:60: 'stream' : member cannot contradict block 
+ERROR: 0:65: 'max_vertices' : can only apply to a standalone qualifier 
+ERROR: 0:70: 'points' : cannot change previously set output primitive 
+ERROR: 0:71: 'points' : cannot change previously set output primitive 
+ERROR: 0:72: 'triangle_strip' : does not apply to input 
+ERROR: 0:73: 'triangle_strip' : cannot be used here 
+ERROR: 0:74: 'triangle_strip' : can only apply to a standalone qualifier 
+ERROR: 0:75: 'triangle_strip' : can only apply to a standalone qualifier 
+ERROR: 0:76: 'invocations' : not supported for this version or the enabled extensions 
+ERROR: 0:76: 'invocations' : can only apply to a standalone qualifier 
+ERROR: 0:78: 'invocations' : not supported for this version or the enabled extensions 
+ERROR: 0:78: 'invocations' : can only apply to a standalone qualifier 
+ERROR: 0:79: 'max_vertices' : can only apply to a standalone qualifier 
+ERROR: 0:80: 'triangle_strip' : can only apply to a standalone qualifier 
+ERROR: 0:83: 'lines' : does not only apply to output 
+ERROR: 0:85: 'triangles' : cannot change previously set input primitive 
+ERROR: 0:86: 'triangles_adjacency' : cannot change previously set input primitive 
+ERROR: 0:88: 'invocations' : not supported for this version or the enabled extensions 
+ERROR: 0:91: 'stream' : member cannot contradict block 
+ERROR: 28 compilation errors.  No code generated.
 
+invocations = 4
+max_vertices = 127
+input primitive = lines_adjancency
+output primitive = triangle_strip
 ERROR: node is still EOpNull!
 0:25  Function Definition: main( (void)
 0:25    Function Parameters: 
@@ -17,8 +44,8 @@ ERROR: node is still EOpNull!
 0:30      Constant:
 0:30        0.000000
 0:32      move second child to first child (3-component vector of float)
-0:32        color: direct index for structure (3-component vector of float)
-0:32          '__anon__0' (out block)
+0:32        color: direct index for structure (layout(stream=0 ) 3-component vector of float)
+0:32          '__anon__0' (layout(stream=0 ) out block)
 0:32          Constant:
 0:32            0 (const uint)
 0:32        color: direct index for structure (3-component vector of float)
@@ -26,9 +53,9 @@ ERROR: node is still EOpNull!
 0:32          Constant:
 0:32            0 (const int)
 0:33      move second child to first child (float)
-0:33        direct index (float)
-0:33          gl_ClipDistance: direct index for structure (unsized array of float)
-0:33            '__anon__1' (out block)
+0:33        direct index (layout(stream=0 ) float)
+0:33          gl_ClipDistance: direct index for structure (layout(stream=0 ) unsized array of float)
+0:33            '__anon__1' (layout(stream=0 ) out block)
 0:33            Constant:
 0:33              2 (const uint)
 0:33          Constant:
@@ -44,8 +71,8 @@ ERROR: node is still EOpNull!
 0:33          Constant:
 0:33            2 (const int)
 0:34      move second child to first child (4-component vector of float)
-0:34        gl_Position: direct index for structure (4-component vector of float)
-0:34          '__anon__1' (out block)
+0:34        gl_Position: direct index for structure (layout(stream=0 ) 4-component vector of float)
+0:34          '__anon__1' (layout(stream=0 ) out block)
 0:34          Constant:
 0:34            0 (const uint)
 0:34        gl_Position: direct index for structure (4-component vector of float)
@@ -56,8 +83,8 @@ ERROR: node is still EOpNull!
 0:34          Constant:
 0:34            0 (const int)
 0:35      move second child to first child (float)
-0:35        gl_PointSize: direct index for structure (float)
-0:35          '__anon__1' (out block)
+0:35        gl_PointSize: direct index for structure (layout(stream=0 ) float)
+0:35          '__anon__1' (layout(stream=0 ) out block)
 0:35          Constant:
 0:35            1 (const uint)
 0:35        gl_PointSize: direct index for structure (float)
@@ -68,14 +95,43 @@ ERROR: node is still EOpNull!
 0:35          Constant:
 0:35            1 (const int)
 0:36      move second child to first child (int)
-0:36        'gl_PrimitiveID' (out int)
+0:36        'gl_PrimitiveID' (layout(stream=0 ) out int)
 0:36        'gl_PrimitiveIDIn' (in int)
 0:37      move second child to first child (int)
-0:37        'gl_Layer' (out int)
+0:37        'gl_Layer' (layout(stream=0 ) out int)
 0:37        Constant:
 0:37          2 (const int)
+0:65  Function Definition: foo(i1; (void)
+0:65    Function Parameters: 
+0:65      'a' (in int)
+0:67    Sequence
+0:67      move second child to first child (4-component vector of float)
+0:67        a: direct index for structure (layout(stream=6 ) 4-component vector of float)
+0:67          'ouuaa6' (layout(stream=6 ) out block)
+0:67          Constant:
+0:67            0 (const int)
+0:67        Constant:
+0:67          1.000000
+0:67          1.000000
+0:67          1.000000
+0:67          1.000000
 0:?   Linker Objects
 0:?     'fromV' (in block)
-0:?     'toF' (out block)
-0:?     '__anon__0' (out block)
+0:?     'toF' (layout(stream=0 ) out block)
+0:?     '__anon__0' (layout(stream=0 ) out block)
+0:?     'ov0' (layout(stream=0 ) out 4-component vector of float)
+0:?     'ov4' (layout(stream=4 ) out 4-component vector of float)
+0:?     'o1v0' (layout(stream=0 ) out 4-component vector of float)
+0:?     'ua' (layout(stream=3 ) uniform int)
+0:?     'ibb' (layout(stream=3 column_major shared ) uniform block)
+0:?     'ov3' (layout(stream=3 ) out 4-component vector of float)
+0:?     'ouuaa6' (layout(stream=6 ) out block)
+0:?     'ouua6' (layout(stream=6 ) out block)
+0:?     'ouua7' (layout(stream=7 ) out block)
+0:?     'ov2s3' (layout(stream=3 ) out 4-component vector of float)
+0:?     'badv4' (layout(stream=3 ) out 4-component vector of float)
+0:?     'bad2v4' (in 4-component vector of float)
+0:?     '__anon__1' (layout(stream=3 ) out block)
+0:?     'outbi' (layout(stream=3 ) out block)
+0:?     'inbi' (in block)
 

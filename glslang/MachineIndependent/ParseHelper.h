@@ -126,8 +126,11 @@ public:
 
     void setLayoutQualifier(TSourceLoc, TPublicType&, TString&);
     void setLayoutQualifier(TSourceLoc, TPublicType&, TString&, int);
-    void mergeLayoutQualifiers(TSourceLoc, TQualifier& dest, const TQualifier& src);
-    void layoutCheck(TSourceLoc, const TSymbol&);
+    void mergeShaderLayoutQualifiers(TSourceLoc, TPublicType& dst, const TPublicType& src);
+    void mergeObjectLayoutQualifiers(TSourceLoc, TQualifier& dest, const TQualifier& src);
+    void layoutTypeCheck(TSourceLoc, const TSymbol&);
+    void layoutQualifierCheck(TSourceLoc, const TQualifier&);
+    void checkNoShaderLayouts(TSourceLoc, const TPublicType&);
 
     const TFunction* findFunction(TSourceLoc, TFunction* pfnCall, bool *builtIn = 0);
     TIntermNode* declareVariable(TSourceLoc, TString& identifier, TPublicType&, TArraySizes* typeArray = 0, TIntermTyped* initializer = 0);
@@ -137,9 +140,8 @@ public:
     void addBlock(TSourceLoc, TTypeList& typeList, const TString* instanceName = 0, TArraySizes* arraySizes = 0);
     void addQualifierToExisting(TSourceLoc, TQualifier, const TString& identifier);
     void addQualifierToExisting(TSourceLoc, TQualifier, TIdentifierList&);
-    void updateQualifierDefaults(TQualifier);
-    void updateQualifierDefaults(TSourceLoc, TQualifier);
-    void updateTypedDefaults(TSourceLoc, TQualifier, const TString* id);
+    void updateStandaloneQualifierDefaults(TSourceLoc, const TPublicType&);
+    void updateTypedDefaults(TSourceLoc, const TQualifier&, const TString* id);
     void wrapupSwitchSubsequence(TIntermAggregate* statements, TIntermNode* branchNode);
     TIntermNode* addSwitch(TSourceLoc, TIntermTyped* expression, TIntermAggregate* body);
     TIntermTyped* addConstVectorNode(TVectorFields&, TIntermTyped*, TSourceLoc);
@@ -202,7 +204,7 @@ public:
     const TType* currentFunctionType;  // the return type of the function that's currently being parsed
     bool functionReturnsValue;   // true if a non-void function has a return
     const TString* blockName;
-    TQualifier currentBlockDefaults;
+    TQualifier currentBlockQualifier;
     TIntermAggregate *linkage;   // aggregate node of objects the linker may need, if not referenced by the rest of the AST
     TPrecisionQualifier defaultPrecision[EbtNumTypes];
     TSourceLoc currentLoc;
@@ -214,7 +216,7 @@ protected:
     TPpContext* ppContext;
     int numErrors;               // number of compile-time errors encountered
     bool parsingBuiltins;        // true if parsing built-in symbols/functions
-    TMap<TString, TExtensionBehavior> extensionBehavior;    // for each extension string, what it's current behavior is set to
+    TMap<TString, TExtensionBehavior> extensionBehavior;    // for each extension string, what its current behavior is set to
     static const int maxSamplerIndex = EsdNumDims * (EbtNumTypes * (2 * 2)); // see computeSamplerTypeIndex()
     TPrecisionQualifier defaultSamplerPrecision[maxSamplerIndex];
     bool afterEOF;

@@ -33,7 +33,7 @@ ERROR: node is still EOpNull!
 0:?   Linker Objects
 0:?     'iv4' (in 4-component vector of float)
 0:?     'ps' (uniform float)
-0:?     '__anon__1' (layout(shared ) uniform block)
+0:?     '__anon__1' (layout(column_major shared ) uniform block)
 0:?     'gl_VertexID' (gl_VertexId int)
 0:?     'gl_InstanceID' (gl_InstanceId int)
 

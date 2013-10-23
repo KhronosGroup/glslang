@@ -56,7 +56,8 @@ class TSymbol;
 //
 class TIntermediate {
 public:
-    explicit TIntermediate(EShLanguage l, int v = 0, EProfile p = ENoProfile) : language(l), treeRoot(0), profile(p), version(v), numMains(0), numErrors(0) { }
+    explicit TIntermediate(EShLanguage l, int v = 0, EProfile p = ENoProfile) : language(l), treeRoot(0), profile(p), version(v), numMains(0), numErrors(0),
+        invocations(0), maxVertices(0), inputPrimitive(ElgNone), outputPrimitive(ElgNone) { }
 
     void setVersion(int v) { version = v; }
     int getVersion() const { return version; }
@@ -99,6 +100,36 @@ public:
     void addSymbolLinkageNode(TIntermAggregate*& linkage, TSymbolTable&, const TString&);
     void addSymbolLinkageNode(TIntermAggregate*& linkage, const TSymbol&);
 
+    bool setInvocations(int i) 
+    {
+        if (invocations > 0)
+            return false;
+        invocations = i;
+        return true;
+    }
+    bool setMaxVertices(int m)
+    {
+        if (maxVertices > 0)
+            return maxVertices == m;
+        maxVertices = m;
+        return true;
+    }
+    bool setInputPrimitive(TLayoutGeometry p)
+    {
+        if (inputPrimitive != ElgNone)
+            return inputPrimitive == p;
+        inputPrimitive = p;
+        return true;
+    }
+    TLayoutGeometry getInputPrimitive() { return inputPrimitive; }
+    bool setOutputPrimitive(TLayoutGeometry p)
+    {
+        if (outputPrimitive != ElgNone)
+            return outputPrimitive == p;
+        outputPrimitive = p;
+        return true;
+    }
+
     void addToCallGraph(TInfoSink&, const TString& caller, const TString& callee);
     void merge(TInfoSink&, TIntermediate&);
     void errorCheck(TInfoSink&);
@@ -122,6 +153,10 @@ protected:
     int version;
     int numMains;
     int numErrors;
+    int invocations;
+    int maxVertices;
+    TLayoutGeometry inputPrimitive;
+    TLayoutGeometry outputPrimitive;
 
     // for detecting recursion:  pair is <caller, callee>
     struct TCall {

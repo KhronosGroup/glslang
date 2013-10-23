@@ -579,6 +579,13 @@ bool OutputSwitch(bool /* preVisit */, TIntermSwitch* node, TIntermTraverser* it
 //
 void TIntermediate::outputTree(TInfoSink& infoSink)
 {
+    if (language == EShLangGeometry) {
+        infoSink.debug << "invocations = " << invocations << "\n";
+        infoSink.debug << "max_vertices = " << maxVertices << "\n";
+        infoSink.debug << "input primitive = " << TQualifier::getGeometryString(inputPrimitive) << "\n";
+        infoSink.debug << "output primitive = " << TQualifier::getGeometryString(outputPrimitive) << "\n";
+    }
+
     if (treeRoot == 0)
         return;
 
