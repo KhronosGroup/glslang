@@ -112,6 +112,7 @@ ERROR: node is still EOpNull!
 0:?     'arrayedSampler' (uniform 5-element array of sampler2D)
 0:?     'samp2dr' (uniform usampler2DRect)
 0:?     'isamp2DA' (uniform isampler2DArray)
+0:?     'gl_ClipDistance' (smooth in unsized array of float)
 0:?     'vl' (layout(location=4 ) smooth in 4-component vector of float)
 0:?     'vl2' (layout(location=4 ) smooth in 4-component vector of float)
 0:?     'uv3' (layout(location=3 ) uniform 3-component vector of float)

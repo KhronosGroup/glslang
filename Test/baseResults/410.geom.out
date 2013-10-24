@@ -2,7 +2,7 @@ Warning, version 410 is not yet complete; some version-specific features are pre
 ERROR: 0:8: 'myIn' : cannot redeclare a built-in block with a user name 
 ERROR: 0:8: 'gl_' : reserved built-in name 
 ERROR: 0:12: 'gl_' : reserved built-in name 
-ERROR: 0:20: 'gl_PerVertex' : can only redeclare a built-in block once 
+ERROR: 0:20: 'gl_PerVertex' : can only redeclare a built-in block once, and before any use 
 ERROR: 0:20: 'gl_' : reserved built-in name 
 ERROR: 5 compilation errors.  No code generated.
 

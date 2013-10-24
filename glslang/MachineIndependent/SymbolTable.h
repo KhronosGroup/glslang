@@ -99,7 +99,7 @@ public:
     virtual int getUniqueId() const { return uniqueId; }
     virtual void dump(TInfoSink &infoSink) const = 0;
 
-    virtual bool isReadOnly() { return ! writable; }
+    virtual bool isReadOnly() const { return ! writable; }
     virtual void makeReadOnly() { writable = false; }
 
 protected:
@@ -417,9 +417,10 @@ public:
     //   3: user-shader globals
     //
 protected:
+    static const int globalLevel = 3;
     bool isSharedLevel(int level)  { return level <= 1; }    // exclude all per-compile levels
     bool isBuiltInLevel(int level) { return level <= 2; }    // exclude user globals
-    bool isGlobalLevel(int level)  { return level <= 3; }    // include user globals
+    bool isGlobalLevel(int level)  { return level <= globalLevel; }    // include user globals
 public:
     bool isEmpty() { return table.size() == 0; }
     bool atBuiltInLevel() { return isBuiltInLevel(currentLevel()); }
@@ -482,7 +483,7 @@ public:
     TSymbol* copyUp(TSymbol* shared)
     {
         TSymbol* copy = copyUpDeferredInsert(shared);
-        table[currentLevel()]->insert(*copy);
+        table[globalLevel]->insert(*copy);
         if (shared->getAsVariable())
             return copy;
         else {

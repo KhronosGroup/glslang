@@ -300,7 +300,7 @@ ERROR: node is still EOpNull!
 0:121      add second child into first child (4-component vector of float)
 0:121        'v' (4-component vector of float)
 0:121        direct index (smooth in 4-component vector of float)
-0:121          'gl_TexCoord' (smooth in unsized array of 4-component vector of float)
+0:121          'gl_TexCoord' (smooth in 6-element array of 4-component vector of float)
 0:121          Constant:
 0:121            3 (const int)
 0:?   Linker Objects

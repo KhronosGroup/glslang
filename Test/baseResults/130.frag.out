@@ -46,5 +46,6 @@ ERROR: node is still EOpNull!
 0:?     'fflat' (flat in float)
 0:?     'fsmooth' (smooth in float)
 0:?     'fnop' (noperspective in float)
+0:?     'gl_ClipDistance' (smooth in unsized array of float)
 0:?     'sampC' (uniform samplerCube)
 

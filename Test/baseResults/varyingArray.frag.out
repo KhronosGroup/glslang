@@ -54,5 +54,6 @@ WARNING: 0:8: varying deprecated in version 130; may be removed in future releas
 0:?     'color' (smooth in 4-component vector of float)
 0:?     'alpha' (smooth in float)
 0:?     'gl_TexCoord' (smooth in 6-element array of 4-component vector of float)
+0:?     'gl_TexCoord' (smooth in 6-element array of 4-component vector of float)
 0:?     'foo' (smooth in 3-element array of 4-component vector of float)
 

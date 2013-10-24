@@ -19,4 +19,5 @@ ERROR: node is still EOpNull!
 0:?     'i' (smooth in 4-component vector of float)
 0:?     'o' (out 4-component vector of float)
 0:?     'gl_ClipDistance' (smooth in 5-element array of float)
+0:?     'gl_ClipDistance' (smooth in 5-element array of float)
 

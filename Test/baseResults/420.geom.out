@@ -1,0 +1,46 @@
+Warning, version 150 is not yet complete; some version-specific features are present, but many are missing.
+ERROR: 0:9: 'length' :  array must be declared with a size before using this method
+ERROR: 0:11: '[' :  array must be redeclared with a size before being indexed with a variable
+ERROR: 2 compilation errors.  No code generated.
+
+invocations = 0
+max_vertices = 0
+input primitive = triangles
+output primitive = none
+ERROR: node is still EOpNull!
+0:7  Function Definition: foo( (void)
+0:7    Function Parameters: 
+0:9    Sequence
+0:9      Constant:
+0:9        1 (const int)
+0:10      gl_Position: direct index for structure (4-component vector of float)
+0:10        direct index (in block{gl_Position,gl_PointSize,gl_ClipDistance})
+0:10          'gl_in' (in 3-element array of block{gl_Position,gl_PointSize,gl_ClipDistance})
+0:10          Constant:
+0:10            1 (const int)
+0:10        Constant:
+0:10          0 (const int)
+0:11      gl_Position: direct index for structure (4-component vector of float)
+0:11        indirect index (in block{gl_Position,gl_PointSize,gl_ClipDistance})
+0:11          'gl_in' (in 3-element array of block{gl_Position,gl_PointSize,gl_ClipDistance})
+0:11          'i' (int)
+0:11        Constant:
+0:11          0 (const int)
+0:18  Function Definition: foo3( (void)
+0:18    Function Parameters: 
+0:20    Sequence
+0:20      Constant:
+0:20        3 (const int)
+0:21      gl_Position: direct index for structure (4-component vector of float)
+0:21        indirect index (in block{gl_Position,gl_PointSize,gl_ClipDistance})
+0:21          'gl_in' (in 3-element array of block{gl_Position,gl_PointSize,gl_ClipDistance})
+0:21          'i' (int)
+0:21        Constant:
+0:21          0 (const int)
+0:22      Constant:
+0:22        3 (const int)
+0:?   Linker Objects
+0:?     'i' (int)
+0:?     'gl_in' (in 3-element array of block{gl_Position,gl_PointSize,gl_ClipDistance})
+0:?     'color3' (in 3-element array of 4-component vector of float)
+

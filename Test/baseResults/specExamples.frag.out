@@ -286,8 +286,11 @@ ERROR: node is still EOpNull!
 0:?     '__anon__1' (in block{LightPos,LightColor})
 0:?     'Materiala' (in block{Color,TexCoord})
 0:?     'gl_FragCoord' (gl_FragCoord 4-component vector of float)
+0:?     'gl_FragCoord' (gl_FragCoord 4-component vector of float)
 0:?     'factor' (layout(location=3 ) out 4-component vector of float)
 0:?     'colors' (layout(location=2 ) out 3-element array of 4-component vector of float)
 0:?     'gl_FragDepth' (gl_FragDepth float)
+0:?     'gl_FragDepth' (gl_FragDepth float)
+0:?     '__anon__2' (in block{gl_FogFragCoord,gl_TexCoord,gl_Color,gl_SecondaryColor})
 0:?     '__anon__2' (in block{gl_FogFragCoord,gl_TexCoord,gl_Color,gl_SecondaryColor})
 

@@ -294,6 +294,7 @@ ERROR: node is still EOpNull!
 0:?     'c2' (layout(binding=3 ) uniform int)
 0:?     'd2' (layout(binding=2 ) uniform int)
 0:?     '__anon__5' (out block{gl_Position,gl_PointSize,gl_ClipDistance,gl_ClipVertex,gl_FrontColor,gl_BackColor,gl_FrontSecondaryColor,gl_BackSecondaryColor,gl_TexCoord,gl_FogFragCoord})
+0:?     '__anon__5' (out block{gl_Position,gl_PointSize,gl_ClipDistance,gl_ClipVertex,gl_FrontColor,gl_BackColor,gl_FrontSecondaryColor,gl_BackSecondaryColor,gl_TexCoord,gl_FogFragCoord})
 0:?     'ColorInv' (smooth out 3-component vector of float)
 0:?     'Color4' (invariant centroid smooth out 3-component vector of float)
 0:?     'position' (smooth out 4-component vector of float)

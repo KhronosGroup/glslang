@@ -423,7 +423,7 @@ TIntermTyped* TParseContext::handleVariable(TSourceLoc loc, TSymbol* symbol, TSt
     } else {
         // The symbol table search was done in the lexical phase, but
         // if this is a new symbol, it wouldn't have found it.
-        const TVariable* variable = symbol ? symbol->getAsVariable() : 0;
+        TVariable* variable = symbol ? symbol->getAsVariable() : 0;
         if (symbol && ! variable)
             error(loc, "variable name expected", string->c_str(), "");
 
@@ -435,8 +435,16 @@ TIntermTyped* TParseContext::handleVariable(TSourceLoc loc, TSymbol* symbol, TSt
 
         if (variable->getType().getQualifier().storage == EvqConst)
             node = intermediate.addConstantUnion(variable->getConstArray(), variable->getType(), loc);
-        else
-            node = intermediate.addSymbol(variable->getUniqueId(), variable->getName(), variable->getType(), loc);
+        else {
+            // break sharing with built-ins
+            TType* type;
+            if (variable->isReadOnly()) {
+                type = new TType;
+                type->deepCopy(variable->getType());
+            } else
+                type = &variable->getWritableType();
+            node = intermediate.addSymbol(variable->getUniqueId(), variable->getName(), *type, loc);
+        }
     }
 
     return node;
@@ -470,6 +478,7 @@ TIntermTyped* TParseContext::handleBracketDereference(TSourceLoc loc, TIntermTyp
             result = addConstMatrixNode(index->getAsConstantUnion()->getConstArray()[0].getIConst(), base, loc);
         }
     } else {
+        // at least one of base and index is variable...
         if (index->getQualifier().storage == EvqConst) {
             int indexValue = index->getAsConstantUnion()->getConstArray()[0].getIConst();
             if (! base->isArray() && ((base->isVector() && base->getType().getVectorSize() <= indexValue) ||
@@ -488,7 +497,7 @@ TIntermTyped* TParseContext::handleBracketDereference(TSourceLoc loc, TIntermTyp
                 error(loc, "", "[", "array must be redeclared with a size before being indexed with a variable");
             if (base->getBasicType() == EbtBlock)
                 requireProfile(base->getLoc(), ~EEsProfile, "variable indexing block array");
-            if (base->getBasicType() == EbtSampler && version >= 130) {
+            else if (base->getBasicType() == EbtSampler && version >= 130) {
                 const char* explanation = "variable indexing sampler array";
                 requireProfile(base->getLoc(), ECoreProfile | ECompatibilityProfile, explanation);
                 profileRequires(base->getLoc(), ECoreProfile | ECompatibilityProfile, 400, 0, explanation);
@@ -510,25 +519,90 @@ TIntermTyped* TParseContext::handleBracketDereference(TSourceLoc loc, TIntermTyp
         newType.dereference();
         result->setType(newType);
 
-        if (anyIndexLimits) {
-            // for ES 2.0 (version 100) limitations for almost all index operations except vertex-shader uniforms
-            if ((! limits.generalSamplerIndexing && base->getBasicType() == EbtSampler) ||
-                (! limits.generalUniformIndexing && base->getQualifier().isUniform() && language != EShLangVertex) ||
-                (! limits.generalAttributeMatrixVectorIndexing && base->getQualifier().isPipeInput() && language == EShLangVertex && (base->getType().isMatrix() || base->getType().isVector())) ||
-                (! limits.generalConstantMatrixVectorIndexing && base->getAsConstantUnion()) ||
-                (! limits.generalVariableIndexing && ! base->getType().getQualifier().isUniform() && 
-                                                     ! base->getType().getQualifier().isPipeInput() && 
-                                                     ! base->getType().getQualifier().isPipeOutput() &&
-                                                       base->getType().getQualifier().storage != EvqConst) ||
-                (! limits.generalVaryingIndexing && (base->getType().getQualifier().isPipeInput() || 
-                                                     base->getType().getQualifier().isPipeOutput()))) {            
-                // it's too early to know what the inductive variables are, save it for post processing
-                needsIndexLimitationChecking.push_back(index);
-            }
-        }
+        if (anyIndexLimits)
+            handleIndexLimits(loc, base, index);
+
+        if (language == EShLangGeometry && base->isArray())
+            handleInputArrayAccess(loc, base);
     }
 
     return result;
+}
+
+// for ES 2.0 (version 100) limitations for almost all index operations except vertex-shader uniforms
+void TParseContext::handleIndexLimits(TSourceLoc loc, TIntermTyped* base, TIntermTyped* index)
+{
+    if ((! limits.generalSamplerIndexing && base->getBasicType() == EbtSampler) ||
+        (! limits.generalUniformIndexing && base->getQualifier().isUniform() && language != EShLangVertex) ||
+        (! limits.generalAttributeMatrixVectorIndexing && base->getQualifier().isPipeInput() && language == EShLangVertex && (base->getType().isMatrix() || base->getType().isVector())) ||
+        (! limits.generalConstantMatrixVectorIndexing && base->getAsConstantUnion()) ||
+        (! limits.generalVariableIndexing && ! base->getType().getQualifier().isUniform() &&
+                                                ! base->getType().getQualifier().isPipeInput() &&
+                                                ! base->getType().getQualifier().isPipeOutput() &&
+                                                base->getType().getQualifier().storage != EvqConst) ||
+        (! limits.generalVaryingIndexing && (base->getType().getQualifier().isPipeInput() ||
+                                                base->getType().getQualifier().isPipeOutput()))) {
+        // it's too early to know what the inductive variables are, save it for post processing
+        needsIndexLimitationChecking.push_back(index);
+    }
+}
+
+// Handle a dereference of a geometry shader input arrays.
+// See inputArrayNodeResizeList comment in ParseHelper.h.
+//
+void TParseContext::handleInputArrayAccess(TSourceLoc loc, TIntermTyped* base)
+{
+    if (base->getType().getQualifier().storage == EvqVaryingIn) {
+        TIntermSymbol* symbol = base->getAsSymbolNode();
+        assert(symbol);
+        inputArrayNodeResizeList.push_back(symbol);
+        if (symbol && builtInName(symbol->getName())) {
+            // make sure we have a user-modifiable copy of this built-in input array
+            TSymbol* input = symbolTable.find(symbol->getName());
+            if (input->isReadOnly()) {
+                input = symbolTable.copyUp(input);
+                inputArraySymbolResizeList.push_back(input);
+
+                // Save it in the AST for linker use.
+                intermediate.addSymbolLinkageNode(linkage, *input);
+            }
+        }
+    }
+}
+
+// If there has been an input primitive declaration, make sure all input array types
+// match it in size.  Types come either from nodes in the AST or symbols in the 
+// symbol table.
+//
+// Types without an array size will be given one.
+// Types already having a size that is wrong will get an error.
+//
+void TParseContext::checkInputArrayConsistency(TSourceLoc loc, bool tailOnly)
+{
+    TLayoutGeometry primitive = intermediate.getInputPrimitive();
+    if (primitive == ElgNone)
+        return;
+
+    if (tailOnly) {
+        checkInputArrayConsistency(loc, primitive, inputArraySymbolResizeList.back()->getWritableType(), inputArraySymbolResizeList.back()->getName());
+        return;
+    }
+
+    for (size_t i = 0; i < inputArrayNodeResizeList.size(); ++i)
+        checkInputArrayConsistency(loc, primitive, inputArrayNodeResizeList[i]->getWritableType(), inputArrayNodeResizeList[i]->getName());
+
+    for (size_t i = 0; i < inputArraySymbolResizeList.size(); ++i)
+        checkInputArrayConsistency(loc, primitive, inputArraySymbolResizeList[i]->getWritableType(), inputArraySymbolResizeList[i]->getName());
+}
+
+void TParseContext::checkInputArrayConsistency(TSourceLoc loc, TLayoutGeometry primitive, TType& type, const TString& name)
+{
+    int requiredSize = TQualifier::mapGeometryToSize(primitive);
+
+    if (type.getArraySize() == 0)
+        type.changeArraySize(requiredSize);
+    else if (type.getArraySize() != requiredSize)
+        error(loc, "inconsistent input primitive for array size", TQualifier::getGeometryString(primitive), name.c_str());
 }
 
 //
@@ -1052,7 +1126,7 @@ TOperator TParseContext::mapTypeToConstructorOp(const TType& type)
         default: break; // some compilers want this
         }
         break;
-    default: 
+    default:
         op = EOpNull;
         break;
     }
@@ -1268,7 +1342,7 @@ void TParseContext::globalCheck(TSourceLoc loc, const char* token)
 bool TParseContext::reservedErrorCheck(TSourceLoc loc, const TString& identifier)
 {
     if (! symbolTable.atBuiltInLevel()) {
-        if (identifier.compare(0, 3, "gl_") == 0) {
+        if (builtInName(identifier)) {
             error(loc, "reserved built-in name", "gl_", "");
 
             return true;
@@ -1281,6 +1355,11 @@ bool TParseContext::reservedErrorCheck(TSourceLoc loc, const TString& identifier
     }
 
     return false;
+}
+
+bool TParseContext::builtInName(const TString& identifier)
+{
+    return identifier.compare(0, 3, "gl_") == 0;
 }
 
 //
@@ -1787,6 +1866,13 @@ void TParseContext::declareArray(TSourceLoc loc, TString& identifier, const TTyp
             symbol = new TVariable(&identifier, type);
             symbolTable.insert(*symbol);
             newDeclaration = true;
+
+            // Handle user geometry shader input arrays: see inputArrayNodeResizeList comment in ParseHelper.h
+            if (language == EShLangGeometry && type.getQualifier().storage == EvqVaryingIn && ! symbolTable.atBuiltInLevel()) {
+                inputArraySymbolResizeList.push_back(symbol);
+                checkInputArrayConsistency(loc, true);
+            }
+
             return;
         }
         if (symbol->getAsAnonMember()) {
@@ -1811,16 +1897,21 @@ void TParseContext::declareArray(TSourceLoc loc, TString& identifier, const TTyp
         return;
     }
     if (newType.getArraySize() > 0) {
-        error(loc, "redeclaration of array with size", identifier.c_str(), "");
+        // be more leniant for input arrays to geometry shaders, where the redeclaration is the same size
+        if (! (language == EShLangGeometry && type.getQualifier().storage == EvqVaryingIn && newType.getArraySize() == type.getArraySize()))
+            error(loc, "redeclaration of array with size", identifier.c_str(), "");
         return;
     }
 
     if (! newType.sameElementType(type)) {
-        error(loc, "redeclaration of array with a different newType", identifier.c_str(), "");
+        error(loc, "redeclaration of array with a different type", identifier.c_str(), "");
         return;
     }
 
     newType.shareArraySizes(type);
+
+    if (language == EShLangGeometry && type.getQualifier().storage == EvqVaryingIn)
+        checkInputArrayConsistency(loc);
 }
 
 void TParseContext::updateMaxArraySize(TSourceLoc loc, TIntermNode *node, int index)
@@ -1850,8 +1941,16 @@ void TParseContext::updateMaxArraySize(TSourceLoc loc, TIntermNode *node, int in
 
     // For read-only built-ins, add a new variable for holding the maximum array size of an implicitly-sized shared array.
     // TODO: functionality: unsized arrays: is this new array type shared with the node?
-    if (symbol->isReadOnly())
+    if (symbol->isReadOnly()) {
         symbol = symbolTable.copyUp(symbol);
+        
+        // Handle geometry shader input arrays: see inputArrayNodeResizeList comment in ParseHelper.h
+        if (language == EShLangGeometry && symbol->getType().getQualifier().storage == EvqVaryingIn)
+            inputArraySymbolResizeList.push_back(symbol);
+
+        // Save it in the AST for linker use.
+        intermediate.addSymbolLinkageNode(linkage, *symbol);
+    }
 
     symbol->getWritableType().setMaxArraySize(index + 1);
 }
@@ -1864,7 +1963,7 @@ void TParseContext::nonInitConstCheck(TSourceLoc loc, TString& identifier, TType
     //
     // Make the qualifier make sense, given that there is an initializer.
     //
-    if (type.getQualifier().storage == EvqConst || 
+    if (type.getQualifier().storage == EvqConst ||
         type.getQualifier().storage == EvqConstReadOnly) {
         type.getQualifier().storage = EvqTemporary;
         error(loc, "variables with qualifier 'const' must be initialized", identifier.c_str(), "");
@@ -1883,7 +1982,7 @@ void TParseContext::nonInitConstCheck(TSourceLoc loc, TString& identifier, TType
 //
 TSymbol* TParseContext::redeclareBuiltinVariable(TSourceLoc loc, const TString& identifier, bool& newDeclaration)
 {
-    if (profile == EEsProfile || identifier.compare(0, 3, "gl_") != 0 || symbolTable.atBuiltInLevel())
+    if (profile == EEsProfile || ! builtInName(identifier) || symbolTable.atBuiltInLevel())
         return 0;
 
     // Potentially redeclaring a built-in variable...
@@ -1915,6 +2014,13 @@ TSymbol* TParseContext::redeclareBuiltinVariable(TSourceLoc loc, const TString& 
             // Copy the symbol up to make a writable version
             newDeclaration = true;
             symbol = symbolTable.copyUp(symbol);
+
+            // Handle geometry shader input arrays: see inputArrayNodeResizeList comment in ParseHelper.h
+            if (language == EShLangGeometry && symbol->getType().getQualifier().storage == EvqVaryingIn && symbol->getType().isArray())
+                inputArraySymbolResizeList.push_back(symbol);
+
+            // Save it in the AST for linker use.
+            intermediate.addSymbolLinkageNode(linkage, *symbol);
         }
 
         // Now, modify the type of the copy, as per the type of the current redeclaration.
@@ -1929,10 +2035,10 @@ TSymbol* TParseContext::redeclareBuiltinVariable(TSourceLoc loc, const TString& 
 bool TParseContext::redeclareBuiltinBlock(TSourceLoc loc, TTypeList& typeList, const TString& blockName, const TString* instanceName, TArraySizes* arraySizes)
 {
     // just a quick out, not everything that must be checked:
-    if (symbolTable.atBuiltInLevel() || profile == EEsProfile || blockName.compare(0, 3, "gl_") != 0)
+    if (symbolTable.atBuiltInLevel() || profile == EEsProfile || ! builtInName(blockName))
         return false;
 
-    if (instanceName && instanceName->compare(0, 3, "gl_") != 0) {
+    if (instanceName && ! builtInName(*instanceName)) {
         error(loc, "cannot redeclare a built-in block with a user name", instanceName->c_str(), "");
         return false;
     }
@@ -1944,11 +2050,8 @@ bool TParseContext::redeclareBuiltinBlock(TSourceLoc loc, TTypeList& typeList, c
     if (blockName != "gl_PerVertex" && blockName != "gl_PerFragment")
         return false;
 
-
     // Blocks with instance names are easy to find, lookup the instance name,
-    // Anonymous blocks need to be found via a member.  copyUp()?? will work 
-    // just fine for either find.
-
+    // Anonymous blocks need to be found via a member.
     bool builtIn;
     TSymbol* block;
     if (instanceName)
@@ -1964,7 +2067,7 @@ bool TParseContext::redeclareBuiltinBlock(TSourceLoc loc, TTypeList& typeList, c
     // Built-in blocks cannot be redeclared more than once, which if happened,
     // we'd be finding the already redeclared one here, rather than the built in.
     if (! builtIn) {
-        error(loc, "can only redeclare a built-in block once", blockName.c_str(), "");
+        error(loc, "can only redeclare a built-in block once, and before any use", blockName.c_str(), "");
         return false;
     }
 
@@ -1975,6 +2078,10 @@ bool TParseContext::redeclareBuiltinBlock(TSourceLoc loc, TTypeList& typeList, c
         error(loc, "cannot redeclare a non block as a block", blockName.c_str(), "");
         return false;
     }
+
+    // Handle geometry shader input arrays: see inputArrayNodeResizeList comment in ParseHelper.h
+    if (language == EShLangGeometry && block->getType().isArray() && block->getType().getQualifier().storage == EvqVaryingIn)
+        inputArraySymbolResizeList.push_back(block);
 
     // TODO: semantics: block redeclaration: instance array size matching?
 
@@ -2061,7 +2168,7 @@ void TParseContext::arrayObjectCheck(TSourceLoc loc, const TType& type, const ch
 // "The loop index has type int or float.
 //
 // "The for statement has the form:
-//     for ( init-declaration ; condition ; expression ) 
+//     for ( init-declaration ; condition ; expression )
 //     init-declaration has the form: type-specifier identifier = constant-expression
 //     condition has the form:  loop-index relational_operator constant-expression
 //         where relational_operator is one of: > >= < <= == or !=
@@ -2102,11 +2209,11 @@ void TParseContext::inductiveLoopCheck(TSourceLoc loc, TIntermNode* init, TInter
         error(loc, "inductive-loop init-declaration requires the form \"type-specifier loop-index = constant-expression\"", "limitations", "");
         return;
     }
-    
+
     // get the unique id of the loop index
     int loopIndex = binaryInit->getLeft()->getAsSymbolNode()->getId();
     inductiveLoopIds.insert(loopIndex);
-    
+
     // condition's form must be "loop-index relational-operator constant-expression"
     bool badCond = ! loop->getTest();
     if (! badCond) {
@@ -2340,7 +2447,7 @@ void TParseContext::layoutTypeCheck(TSourceLoc loc, const TSymbol& symbol)
 
     // first, qualifier only error checking
     layoutQualifierCheck(loc, qualifier);
-    
+
     // now, error checking combining type and qualifier
     if (qualifier.hasLocation()) {
         switch (qualifier.storage) {
@@ -2372,10 +2479,10 @@ void TParseContext::layoutTypeCheck(TSourceLoc loc, const TSymbol& symbol)
     if (qualifier.hasBinding()) {
         // Binding checking, from the spec:
         //
-        // "If the binding point for any uniform or shader storage block instance is less than zero, or greater than or 
-        // equal to the implementation-dependent maximum number of uniform buffer bindings, a compile-time 
-        // error will occur. When the binding identifier is used with a uniform or shader storage block instanced as 
-        // an array of size N, all elements of the array from binding through binding + N – 1 must be within this 
+        // "If the binding point for any uniform or shader storage block instance is less than zero, or greater than or
+        // equal to the implementation-dependent maximum number of uniform buffer bindings, a compile-time
+        // error will occur. When the binding identifier is used with a uniform or shader storage block instanced as
+        // an array of size N, all elements of the array from binding through binding + N – 1 must be within this
         // range."
         //
         // TODO:  binding error checking against limits, arrays
@@ -2599,7 +2706,7 @@ TIntermNode* TParseContext::executeInitializer(TSourceLoc loc, TString& identifi
     initializer = convertInitializerList(loc, variable->getType(), initializer);
     if (! initializer) {
         // error recovery; don't leave const without constant values
-        if (qualifier == EvqConst)            
+        if (qualifier == EvqConst)
             variable->getWritableType().getQualifier().storage = EvqTemporary;
         return 0;
     }
@@ -2669,13 +2776,13 @@ TIntermTyped* TParseContext::convertInitializerList(TSourceLoc loc, const TType&
     // Will operate recursively.  Once a subtree is found that is constructor style,
     // everything below it is already good: Only the "top part" of the initializer
     // can be an initializer list, where "top part" can extend for several (or all) levels.
-    
+
     // see if we have bottomed out in the tree within the initializer-list part
     TIntermAggregate* initList = initializer->getAsAggregate();
     if (! initList || initList->getOp() != EOpNull)
         return initializer;
 
-    // Of the initializer-list set of nodes, need to process bottom up, 
+    // Of the initializer-list set of nodes, need to process bottom up,
     // so recurse deep, then process on the way up.
 
     // Go down the tree here...
@@ -2929,7 +3036,7 @@ TIntermTyped* TParseContext::constructStruct(TIntermNode* node, const TType& typ
 //
 void TParseContext::declareBlock(TSourceLoc loc, TTypeList& typeList, const TString* instanceName, TArraySizes* arraySizes)
 {
-    // This might be a redeclaration of a built-in block, find out, and get 
+    // This might be a redeclaration of a built-in block, find out, and get
     // a modifiable copy if so.
     if (redeclareBuiltinBlock(loc, typeList, *blockName, instanceName, arraySizes))
         return;
@@ -3013,7 +3120,7 @@ void TParseContext::declareBlock(TSourceLoc loc, TTypeList& typeList, const TStr
     // reverse merge, so that currentBlockQualifier now has all layout information
     // (can't use defaultQualification directly, it's missing other non-layout-default-class qualifiers)
     mergeObjectLayoutQualifiers(loc, currentBlockQualifier, defaultQualification);
-    
+
     TType blockType(&typeList, *blockName, currentBlockQualifier);
     if (arraySizes)
         blockType.setArraySizes(arraySizes);
@@ -3022,9 +3129,9 @@ void TParseContext::declareBlock(TSourceLoc loc, TTypeList& typeList, const TStr
     // Don't make a user-defined type out of block name; that will cause an error
     // if the same block name gets reused in a different interface.
     //
-    // "Block names have no other use within a shader 
-    // beyond interface matching; it is a compile-time error to use a block name at global scope for anything 
-    // other than as a block name (e.g., use of a block name for a global variable name or function name is 
+    // "Block names have no other use within a shader
+    // beyond interface matching; it is a compile-time error to use a block name at global scope for anything
+    // other than as a block name (e.g., use of a block name for a global variable name or function name is
     // currently reserved)."
     //
     // Use the symbol table to prevent normal reuse of the block's name, as a variable entry,
@@ -3124,7 +3231,9 @@ void TParseContext::updateStandaloneQualifierDefaults(TSourceLoc loc, const TPub
             case ElgLinesAdjacency:
             case ElgTriangles:
             case ElgTrianglesAdjacency:
-                if (! intermediate.setInputPrimitive(publicType.geometry))
+                if (intermediate.setInputPrimitive(publicType.geometry))
+                    checkInputArrayConsistency(loc);
+                else
                     error(loc, "cannot change previously set input primitive", TQualifier::getGeometryString(publicType.geometry), "");
                 break;
             default:
@@ -3178,7 +3287,7 @@ void TParseContext::updateStandaloneQualifierDefaults(TSourceLoc loc, const TPub
         error(loc, "default qualifier requires 'uniform', 'buffer', 'in', or 'out' storage qualification", "", "");
         return;
     }
-    
+
     if (qualifier.hasBinding())
         error(loc, "cannot declare a default, include a type or full declaration", "binding", "");
     if (qualifier.hasLocation())

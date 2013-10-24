@@ -72,12 +72,17 @@ public:
                       const char *szExtraInfoFormat, ...);
     void C_DECL  warn(TSourceLoc, const char *szReason, const char *szToken,
                       const char *szExtraInfoFormat, ...);
-    bool reservedErrorCheck(TSourceLoc, const TString& identifier);
+    bool reservedErrorCheck(TSourceLoc, const TString&);
+    bool builtInName(const TString&);
 
     void updateExtensionBehavior(const char* extName, const char* behavior);
     void handlePragma(const char **tokens, int numTokens);
     TIntermTyped* handleVariable(TSourceLoc, TSymbol* symbol, TString* string);
     TIntermTyped* handleBracketDereference(TSourceLoc, TIntermTyped* base, TIntermTyped* index);
+    void handleIndexLimits(TSourceLoc, TIntermTyped* base, TIntermTyped* index);
+    void handleInputArrayAccess(TSourceLoc, TIntermTyped* base);
+    void checkInputArrayConsistency(TSourceLoc, bool tailOnly = false);
+    void checkInputArrayConsistency(TSourceLoc, TLayoutGeometry, TType&, const TString&);
     TIntermTyped* handleDotDereference(TSourceLoc, TIntermTyped* base, TString& field);
     TFunction* handleFunctionDeclarator(TSourceLoc loc, TFunction& function);
     TIntermAggregate* handleFunctionPrototype(TSourceLoc, TFunction&);
@@ -230,6 +235,40 @@ protected:
     bool anyIndexLimits;
     TVector<TIntermTyped*> needsIndexLimitationChecking;
     // TODO: desktop functionality: track use of gl_FragDepth before redeclaration
+
+    //
+    // Geometry shader input arrays:
+    //  - array sizing is based on input primitive and/or explicit size
+    //  - array sizing is retroactive
+    //  - built-in block redeclarations interact with this
+    //
+    // Design:
+    //  - use a per-context "resize-list", a list of entities whose array sizes
+    //    can be fixed; this is logically one list, but physically two:
+    //     * a list for nodes in the AST
+    //     * a list for symbols in the symbol table
+    //    this could be done a bit more simply, but this allows better error messages.
+    //
+    //  - the resize-list starts empty at beginning of user-shader compilation, it does
+    //    not have built-ins in it
+    //
+    //  - on built-in input array use: copy-up symbol and add both the symbol and
+    //    its use to resize-list
+    //
+    //  - on user-input array declaration: add it to the resize-list
+    //
+    //  - on block redeclaration: copy-up symbol and add it to the resize-list
+    //     * note, that appropriately gives an error if redeclaring a block that
+    //       was already used and hence already copied-up
+    //
+    //  - on seeing an input primitive-layout declaration, fix everything in the resize-list,
+    //    giving errors for mismatch
+    //
+    //  - on seeing an array size declaration, give errors on mismatch between it and previous
+    //    input primitive declarations
+    //
+    TVector<TIntermSymbol*> inputArrayNodeResizeList;
+    TVector<TSymbol*> inputArraySymbolResizeList;
 };
 
 } // end namespace glslang
