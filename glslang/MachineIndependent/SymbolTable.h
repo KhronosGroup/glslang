@@ -463,13 +463,11 @@ public:
     // to the current level, so it can be modified without impacting other users 
     // of the shared table.
     //
-    TSymbol* copyUp(TSymbol* shared)
+    TSymbol* copyUpDeferredInsert(TSymbol* shared)
     {
-        TSymbol* copy;
         if (shared->getAsVariable()) {
-            copy = shared->clone();
+            TSymbol* copy = shared->clone();
             copy->setUniqueId(shared->getUniqueId());
-            table[currentLevel()]->insert(*copy);
             return copy;
         } else {
             const TAnonMember* anon = shared->getAsAnonMember();
@@ -477,7 +475,20 @@ public:
             TVariable* container = anon->getAnonContainer().clone();
             container->changeName(NewPoolTString(""));
             container->setUniqueId(anon->getAnonContainer().getUniqueId());
-            table[currentLevel()]->insert(*container);
+            return container;
+        }
+    }
+
+    TSymbol* copyUp(TSymbol* shared)
+    {
+        TSymbol* copy = copyUpDeferredInsert(shared);
+        table[currentLevel()]->insert(*copy);
+        if (shared->getAsVariable())
+            return copy;
+        else {
+            // get copy of an anonymous member's container
+            table[currentLevel()]->insert(*copy);
+            // return the copy of the anonymous member
             return table[currentLevel()]->find(shared->getName());
         }
     }

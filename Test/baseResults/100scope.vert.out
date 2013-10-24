@@ -91,12 +91,12 @@ ERROR: node is still EOpNull!
 0:53            'x' (highp int)
 0:61      Sequence
 0:61        Sequence
-0:61          move second child to first child (structure)
-0:61            'S' (structure)
+0:61          move second child to first child (structure{x})
+0:61            'S' (structure{x})
 0:61            Constant:
 0:61              0 (const int)
 0:62        x: direct index for structure (highp int)
-0:62          'S' (structure)
+0:62          'S' (structure{x})
 0:62          Constant:
 0:62            0 (const int)
 0:?   Linker Objects

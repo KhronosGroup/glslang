@@ -80,20 +80,20 @@ ERROR: node is still EOpNull!
 0:29        'b' (mediump int)
 0:29        Constant:
 0:29          3 (const int)
-0:36      move second child to first child (structure)
-0:36        's1' (structure)
-0:36        's2' (structure)
+0:36      move second child to first child (structure{f,a})
+0:36        's1' (structure{f,a})
+0:36        's2' (structure{f,a})
 0:37      Test condition and select (void)
 0:37        Condition
 0:37        Compare Equal (bool)
-0:37          's1' (structure)
-0:37          's2' (structure)
+0:37          's1' (structure{f,a})
+0:37          's2' (structure{f,a})
 0:37        true case is null
 0:38      Test condition and select (void)
 0:38        Condition
 0:38        Compare Not Equal (bool)
-0:38          's1' (structure)
-0:38          's2' (structure)
+0:38          's1' (structure{f,a})
+0:38          's2' (structure{f,a})
 0:38        true case is null
 0:40      'b' (mediump int)
 0:?   Linker Objects
@@ -101,6 +101,6 @@ ERROR: node is still EOpNull!
 0:?     'uint' (mediump int)
 0:?     'v' (smooth in 3-element array of mediump 4-component vector of float)
 0:?     'f' (mediump float)
-0:?     '__anon__0' (layout(column_major shared ) uniform block)
+0:?     '__anon__0' (layout(column_major shared ) uniform block{x})
 0:?     'fa' (unsized array of mediump float)
 

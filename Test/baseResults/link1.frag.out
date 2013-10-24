@@ -71,11 +71,11 @@ Warning, version 130 is not yet complete; most features are present, but a few a
 0:?       0.000000
 0:?       0.000000
 0:?       4.000000
-0:?     's' (uniform structure)
+0:?     's' (uniform structure{a,b})
 0:?       82 (const int)
 0:?       3.900000
-0:?     'sn' (uniform structure)
-0:?     'se' (uniform structure)
+0:?     'sn' (uniform structure{a,b})
+0:?     'se' (uniform structure{a,b})
 0:?       82 (const int)
 0:?       3.900000
 
@@ -139,13 +139,13 @@ Warning, version 130 is not yet complete; most features are present, but a few a
 0:?       0.000000
 0:?       0.000000
 0:?       3.000000
-0:?     's' (uniform structure)
+0:?     's' (uniform structure{a,b})
 0:?       82 (const int)
 0:?       3.900000
-0:?     'sn' (uniform structure)
+0:?     'sn' (uniform structure{a,b})
 0:?       82 (const int)
 0:?       3.900000
-0:?     'se' (uniform structure)
+0:?     'se' (uniform structure{a,b})
 0:?       81 (const int)
 0:?       3.900000
 
@@ -271,13 +271,13 @@ ERROR: Linking fragment stage: Precision qualifiers must match:
 0:?       0.000000
 0:?       0.000000
 0:?       4.000000
-0:?     's' (uniform structure)
+0:?     's' (uniform structure{a,b})
 0:?       82 (const int)
 0:?       3.900000
-0:?     'sn' (uniform structure)
+0:?     'sn' (uniform structure{a,b})
 0:?       82 (const int)
 0:?       3.900000
-0:?     'se' (uniform structure)
+0:?     'se' (uniform structure{a,b})
 0:?       82 (const int)
 0:?       3.900000
 0:?     'd' (4-component vector of float)

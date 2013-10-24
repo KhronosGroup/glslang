@@ -1328,7 +1328,7 @@ void TBuiltIns::initialize(int version, EProfile profile)
                 );
 
             if (IncludeLegacy(version, profile)) {
-                if (version < 410)
+                if (version < 150)
                     stageBuiltins[EShLangFragment].append(
                         "in float gl_FogFragCoord;"
                         "in vec4  gl_TexCoord[];"

@@ -1881,7 +1881,7 @@ void TParseContext::nonInitConstCheck(TSourceLoc loc, TString& identifier, TType
 //
 // Returns a redeclared and type-modified variable if a redeclarated occurred.
 //
-TSymbol* TParseContext::redeclareBuiltin(TSourceLoc loc, const TString& identifier, bool& newDeclaration)
+TSymbol* TParseContext::redeclareBuiltinVariable(TSourceLoc loc, const TString& identifier, bool& newDeclaration)
 {
     if (profile == EEsProfile || identifier.compare(0, 3, "gl_") != 0 || symbolTable.atBuiltInLevel())
         return 0;
@@ -1889,8 +1889,6 @@ TSymbol* TParseContext::redeclareBuiltin(TSourceLoc loc, const TString& identifi
     // Potentially redeclaring a built-in variable...
 
     if ((identifier == "gl_FragDepth"           && version >= 420) ||
-        (identifier == "gl_PerVertex"           && version >= 410) ||
-        (identifier == "gl_PerFragment"         && version >= 410) ||
         (identifier == "gl_FragCoord"           && version >= 150) ||
         (identifier == "gl_ClipDistance"        && version >= 130) ||
         (identifier == "gl_FrontColor"          && version >= 130) ||
@@ -1926,6 +1924,90 @@ TSymbol* TParseContext::redeclareBuiltin(TSourceLoc loc, const TString& identifi
     }
 
     return 0;
+}
+
+bool TParseContext::redeclareBuiltinBlock(TSourceLoc loc, TTypeList& typeList, const TString& blockName, const TString* instanceName, TArraySizes* arraySizes)
+{
+    // just a quick out, not everything that must be checked:
+    if (symbolTable.atBuiltInLevel() || profile == EEsProfile || blockName.compare(0, 3, "gl_") != 0)
+        return false;
+
+    if (instanceName && instanceName->compare(0, 3, "gl_") != 0) {
+        error(loc, "cannot redeclare a built-in block with a user name", instanceName->c_str(), "");
+        return false;
+    }
+
+    profileRequires(loc, ECoreProfile | ECompatibilityProfile, 410, GL_ARB_separate_shader_objects, "built-in block redeclaration");
+
+    // Potentially redeclaring a built-in block...
+
+    if (blockName != "gl_PerVertex" && blockName != "gl_PerFragment")
+        return false;
+
+
+    // Blocks with instance names are easy to find, lookup the instance name,
+    // Anonymous blocks need to be found via a member.  copyUp()?? will work 
+    // just fine for either find.
+
+    bool builtIn;
+    TSymbol* block;
+    if (instanceName)
+        block = symbolTable.find(*instanceName, &builtIn);
+    else
+        block = symbolTable.find(typeList.front().type->getFieldName(), &builtIn);
+
+    // If the block was not found, this must be a version/profile/stage
+    // that doesn't have it.
+    if (! block)
+        return false;
+
+    // Built-in blocks cannot be redeclared more than once, which if happened,
+    // we'd be finding the already redeclared one here, rather than the built in.
+    if (! builtIn) {
+        error(loc, "can only redeclare a built-in block once", blockName.c_str(), "");
+        return false;
+    }
+
+    // Copy the to make a writable version, to insert into the block table after editing
+    block = symbolTable.copyUpDeferredInsert(block);
+
+    if (block->getType().getBasicType() != EbtBlock) {
+        error(loc, "cannot redeclare a non block as a block", blockName.c_str(), "");
+        return false;
+    }
+
+    // TODO: semantics: block redeclaration: instance array size matching?
+
+    // Edit and error check the container against the redeclaration
+    //  - remove unused members
+    //  - ensure remaining qualifiers match
+    TType& type = block->getWritableType();
+    TTypeList::iterator member = type.getStruct()->begin();
+    while (member != type.getStruct()->end()) {
+        // look for match
+        bool found = false;
+        for (TTypeList::iterator newMember = typeList.begin(); newMember != typeList.end(); ++newMember) {
+            if (member->type->getFieldName() == newMember->type->getFieldName()) {
+                found = true;
+                break;
+            }
+        }
+
+        // remove non-redeclared members
+        if (found)
+            ++member;
+        else
+            member = type.getStruct()->erase(member);
+
+        // TODO: semantics: block redeclaration: member type/qualifier matching
+    }
+
+    symbolTable.insert(*block);
+
+    // Save it in the AST for linker use.
+    intermediate.addSymbolLinkageNode(linkage, *block);
+
+    return true;
 }
 
 void TParseContext::paramCheck(TSourceLoc loc, const TStorageQualifier& qualifier, TType* type)
@@ -2418,12 +2500,9 @@ TIntermNode* TParseContext::declareVariable(TSourceLoc loc, TString& identifier,
     if (! type.getQualifier().hasStream() && language == EShLangGeometry && type.getQualifier().storage == EvqVaryingOut)
         type.getQualifier().layoutStream = globalOutputDefaults.layoutStream;
 
-    if (publicType.geometry != ElgNone)
-        error(loc, "geometry primitive qualifier cannot be applied to a variable declaration", TQualifier::getGeometryString(publicType.geometry), "");
-
     // Check for redeclaration of built-ins and/or attempting to declare a reserved name
     bool newDeclaration = false;    // true if a new entry gets added to the symbol table
-    TSymbol* symbol = redeclareBuiltin(loc, identifier, newDeclaration);
+    TSymbol* symbol = redeclareBuiltinVariable(loc, identifier, newDeclaration);
     if (! symbol)
         reservedErrorCheck(loc, identifier);
 
@@ -2848,10 +2927,14 @@ TIntermTyped* TParseContext::constructStruct(TIntermNode* node, const TType& typ
 //
 // Do everything needed to add an interface block.
 //
-void TParseContext::addBlock(TSourceLoc loc, TTypeList& typeList, const TString* instanceName, TArraySizes* arraySizes)
+void TParseContext::declareBlock(TSourceLoc loc, TTypeList& typeList, const TString* instanceName, TArraySizes* arraySizes)
 {
-    // First, error checks
+    // This might be a redeclaration of a built-in block, find out, and get 
+    // a modifiable copy if so.
+    if (redeclareBuiltinBlock(loc, typeList, *blockName, instanceName, arraySizes))
+        return;
 
+    // Basic error checks
     if (reservedErrorCheck(loc, *blockName))
         return;
 

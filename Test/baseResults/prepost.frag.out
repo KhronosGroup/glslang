@@ -11,7 +11,7 @@ Warning, version 140 is not yet complete; most features are present, but a few a
 0:12      move second child to first child (float)
 0:12        direct index (float)
 0:12          y: direct index for structure (5-element array of float)
-0:12            'str' (structure)
+0:12            'str' (structure{y})
 0:12            Constant:
 0:12              0 (const int)
 0:12          Constant:
@@ -23,7 +23,7 @@ Warning, version 140 is not yet complete; most features are present, but a few a
 0:13        Pre-Increment (float)
 0:13          indirect index (float)
 0:13            y: direct index for structure (5-element array of float)
-0:13              'str' (structure)
+0:13              'str' (structure{y})
 0:13              Constant:
 0:13                0 (const int)
 0:13            Pre-Decrement (int)
@@ -31,7 +31,7 @@ Warning, version 140 is not yet complete; most features are present, but a few a
 0:14      add second child into first child (float)
 0:14        direct index (float)
 0:14          y: direct index for structure (5-element array of float)
-0:14            'str' (structure)
+0:14            'str' (structure{y})
 0:14            Constant:
 0:14              0 (const int)
 0:14          Constant:
@@ -42,7 +42,7 @@ Warning, version 140 is not yet complete; most features are present, but a few a
 0:15        Post-Decrement (float)
 0:15          direct index (float)
 0:15            y: direct index for structure (5-element array of float)
-0:15              'str' (structure)
+0:15              'str' (structure{y})
 0:15              Constant:
 0:15                0 (const int)
 0:15            Constant:
@@ -50,7 +50,7 @@ Warning, version 140 is not yet complete; most features are present, but a few a
 0:16      add second child into first child (float)
 0:16        indirect index (float)
 0:16          y: direct index for structure (5-element array of float)
-0:16            'str' (structure)
+0:16            'str' (structure{y})
 0:16            Constant:
 0:16              0 (const int)
 0:16          Post-Increment (int)
@@ -59,7 +59,7 @@ Warning, version 140 is not yet complete; most features are present, but a few a
 0:17      Pre-Decrement (float)
 0:17        indirect index (float)
 0:17          y: direct index for structure (5-element array of float)
-0:17            'str' (structure)
+0:17            'str' (structure{y})
 0:17            Constant:
 0:17              0 (const int)
 0:17          Pre-Decrement (int)
@@ -69,7 +69,7 @@ Warning, version 140 is not yet complete; most features are present, but a few a
 0:19          'x' (float)
 0:19          direct index (float)
 0:19            y: direct index for structure (5-element array of float)
-0:19              'str' (structure)
+0:19              'str' (structure{y})
 0:19              Constant:
 0:19                0 (const int)
 0:19            Constant:

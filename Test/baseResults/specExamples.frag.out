@@ -196,8 +196,8 @@ ERROR: node is still EOpNull!
 0:178      Constant:
 0:178        0.000000
 0:193      Sequence
-0:193        move second child to first child (structure)
-0:193          'e' (structure)
+0:193        move second child to first child (structure{a,b})
+0:193          'e' (structure{a,b})
 0:193          Constant:
 0:193            1.200000
 0:193            2 (const int)
@@ -266,10 +266,10 @@ ERROR: node is still EOpNull!
 0:?     'm' (3X2 matrix of float)
 0:?     'highPrecisionMVP' (4X4 matrix of double)
 0:?     'dm' (2X4 matrix of double)
-0:?     'lightVar' (structure)
+0:?     'lightVar' (structure{intensity,position})
 0:?     'frequencies' (3-element array of float)
 0:?     'lightPosition' (uniform 4-element array of 4-component vector of float)
-0:?     'lights' (2-element array of structure)
+0:?     'lights' (2-element array of structure{intensity,position})
 0:?     'numLights' (const int)
 0:?       2 (const int)
 0:?     'normal' (smooth in 3-component vector of float)
@@ -282,12 +282,12 @@ ERROR: node is still EOpNull!
 0:?       0.700000
 0:?       0.700000
 0:?       0.200000
-0:?     '__anon__0' (in block)
-0:?     '__anon__1' (in block)
-0:?     'Materiala' (in block)
+0:?     '__anon__0' (in block{Color1,Color2,TexCoordA,Atten})
+0:?     '__anon__1' (in block{LightPos,LightColor})
+0:?     'Materiala' (in block{Color,TexCoord})
 0:?     'gl_FragCoord' (gl_FragCoord 4-component vector of float)
 0:?     'factor' (layout(location=3 ) out 4-component vector of float)
 0:?     'colors' (layout(location=2 ) out 3-element array of 4-component vector of float)
 0:?     'gl_FragDepth' (gl_FragDepth float)
-0:?     '__anon__2' (in block)
+0:?     '__anon__2' (in block{gl_FogFragCoord,gl_TexCoord,gl_Color,gl_SecondaryColor})
 

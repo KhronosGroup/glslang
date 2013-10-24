@@ -42,9 +42,9 @@ ERROR: node is still EOpNull!
 0:23          Construct mat2x3 (2X3 matrix of float)
 0:23            'm' (uniform 4X2 matrix of float)
 0:27      Sequence
-0:27        move second child to first child (structure)
-0:27          'sv' (structure)
-0:27          Construct structure (structure)
+0:27        move second child to first child (structure{f})
+0:27          'sv' (structure{f})
+0:27          Construct structure (structure{f})
 0:27            Convert int to float (float)
 0:27              'a' (int)
 0:28      Sequence
@@ -191,9 +191,9 @@ ERROR: node is still EOpNull!
 0:51            false case
 0:51            'a' (int)
 0:52      Sequence
-0:52        move second child to first child (structure)
-0:52          'news' (structure)
-0:52          'sv' (structure)
+0:52        move second child to first child (structure{f})
+0:52          'news' (structure{f})
+0:52          'sv' (structure{f})
 0:54      vector swizzle (2-component vector of float)
 0:54        'i' (smooth in 4-component vector of float)
 0:54        Sequence

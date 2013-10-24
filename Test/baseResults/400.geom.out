@@ -23,5 +23,5 @@ ERROR: node is still EOpNull!
 0:10          'id' (int)
 0:10          'gl_InvocationID' (in int)
 0:?   Linker Objects
-0:?     '__anon__0' (layout(stream=0 ) out block)
+0:?     '__anon__0' (layout(stream=0 ) out block{a})
 

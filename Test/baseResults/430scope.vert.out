@@ -49,7 +49,7 @@ ERROR: node is still EOpNull!
 0:40          3.000000
 0:42      move second child to first child (4-component vector of float)
 0:42        gl_Position: direct index for structure (invariant gl_Position 4-component vector of float)
-0:42          '__anon__0' (out block)
+0:42          '__anon__0' (out block{gl_Position,gl_PointSize,gl_ClipDistance,gl_ClipVertex,gl_FrontColor,gl_BackColor,gl_FrontSecondaryColor,gl_BackSecondaryColor,gl_TexCoord,gl_FogFragCoord})
 0:42          Constant:
 0:42            0 (const uint)
 0:42        Construct vec4 (4-component vector of float)
@@ -93,12 +93,12 @@ ERROR: node is still EOpNull!
 0:53            'x' (int)
 0:61      Sequence
 0:61        Sequence
-0:61          move second child to first child (structure)
-0:61            'S' (structure)
+0:61          move second child to first child (structure{x})
+0:61            'S' (structure{x})
 0:61            Constant:
 0:61              0 (const int)
 0:62        x: direct index for structure (int)
-0:62          'S' (structure)
+0:62          'S' (structure{x})
 0:62          Constant:
 0:62            0 (const int)
 0:?   Linker Objects

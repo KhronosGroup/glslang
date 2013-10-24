@@ -6,8 +6,8 @@ ERROR: 0:18: '' : constant expression required
 ERROR: 0:18: '' : array size must be a constant integer expression 
 ERROR: 0:19: '' : constant expression required 
 ERROR: 0:19: '' : array size must be a constant integer expression 
-ERROR: 0:27: '=' : global const initializers must be constant 'const structure'
-ERROR: 0:33: '=' : global const initializers must be constant 'const structure'
+ERROR: 0:27: '=' : global const initializers must be constant 'const structure{v3,iv2}'
+ERROR: 0:33: '=' : global const initializers must be constant 'const structure{v3,iv2,m}'
 ERROR: 9 compilation errors.  No code generated.
 
 ERROR: node is still EOpNull!
@@ -24,8 +24,8 @@ ERROR: node is still EOpNull!
 0:?     'constInt' (const int)
 0:?       3 (const int)
 0:?     'uniformInt' (uniform int)
-0:?     's' (structure)
-0:?     's2' (structure)
+0:?     's' (structure{v3,iv2})
+0:?     's2' (structure{v3,iv2,m})
 0:?     'f' (const float)
 0:?       3.000000
 

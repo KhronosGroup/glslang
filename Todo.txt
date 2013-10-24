@@ -132,7 +132,7 @@ Shader Functionality to Implement/Finish
         - redeclaration of input/output blocks
         - ...
       - Add 64-bit floating-point attributes for vertex shader inputs.
-      - Support viewport arrays so where the geometry shader selects which viewport array will transform its output.
+      + Support viewport arrays so where the geometry shader selects which viewport array will transform its output.
     GLSL 4.2
       + Move these previously deprecated features to be only in the compatibility profile:
         + The keyword attribute for vertex shader inputs. (Use in instead.)
@@ -211,7 +211,7 @@ Shader Functionality to Implement/Finish
             - make indexes outside the range [0,1] a compile-time error.
       - Add textureQueryLevels() built-ins to query the number of mipmap levels, as per the 
         GL_ARB_texture_query_levels extension.
-      - Make gl_Layer and gl_ViewportIndex also be inputs to the fragment shader, as per the 
+      + Make gl_Layer and gl_ViewportIndex also be inputs to the fragment shader, as per the 
         GL_ARB_fragment_layer_viewport extension.
       - Add more examples and rules to be more specific about the required behavior of the precise 
         qualifier.

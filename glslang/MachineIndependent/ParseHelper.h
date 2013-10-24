@@ -115,7 +115,8 @@ public:
     void precisionQualifierCheck(TSourceLoc, TPublicType&);
     void parameterSamplerCheck(TSourceLoc, TStorageQualifier qualifier, const TType& type);
     bool containsSampler(const TType& type);
-    TSymbol* redeclareBuiltin(TSourceLoc, const TString&, bool& newDeclaration);
+    TSymbol* redeclareBuiltinVariable(TSourceLoc, const TString&, bool& newDeclaration);
+    bool redeclareBuiltinBlock(TSourceLoc, TTypeList& typeList, const TString& blockName, const TString* instanceName, TArraySizes* arraySizes);
     void paramCheck(TSourceLoc, const TStorageQualifier&, TType* type);
     void nestedBlockCheck(TSourceLoc);
     void nestedStructCheck(TSourceLoc);
@@ -137,7 +138,7 @@ public:
     TIntermTyped* addConstructor(TSourceLoc, TIntermNode*, const TType&, TOperator);
     TIntermTyped* constructStruct(TIntermNode*, const TType&, int, TSourceLoc);
     TIntermTyped* constructBuiltIn(const TType&, TOperator, TIntermNode*, TSourceLoc, bool subset);
-    void addBlock(TSourceLoc, TTypeList& typeList, const TString* instanceName = 0, TArraySizes* arraySizes = 0);
+    void declareBlock(TSourceLoc, TTypeList& typeList, const TString* instanceName = 0, TArraySizes* arraySizes = 0);
     void addQualifierToExisting(TSourceLoc, TQualifier, const TString& identifier);
     void addQualifierToExisting(TSourceLoc, TQualifier, TIdentifierList&);
     void updateStandaloneQualifierDefaults(TSourceLoc, const TPublicType&);

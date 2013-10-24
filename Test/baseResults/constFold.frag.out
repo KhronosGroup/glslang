@@ -195,7 +195,7 @@ Warning, version 430 is not yet complete; some version-specific features are pre
 0:?     'out11' (out 4-component vector of float)
 0:?     'out12' (out 2-component vector of int)
 0:?     'out13' (out 3-component vector of uint)
-0:?     's' (const structure)
+0:?     's' (const structure{v3,iv2,m})
 0:?       3.000000
 0:?       3.000000
 0:?       3.000000

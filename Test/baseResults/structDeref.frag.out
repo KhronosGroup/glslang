@@ -8,9 +8,9 @@ WARNING: 0:4: varying deprecated in version 130; may be removed in future releas
 0:51        Condition
 0:51        Compare Greater Than (bool)
 0:51          i: direct index for structure (int)
-0:51            direct index (structure)
-0:51              s2_1: direct index for structure (12-element array of structure)
-0:51                'foo3' (uniform structure)
+0:51            direct index (structure{i,f,s1_1})
+0:51              s2_1: direct index for structure (12-element array of structure{i,f,s1_1})
+0:51                'foo3' (uniform structure{s2_1,i,f,s1_1})
 0:51                Constant:
 0:51                  0 (const int)
 0:51              Constant:
@@ -23,14 +23,14 @@ WARNING: 0:4: varying deprecated in version 130; may be removed in future releas
 0:52        Sequence
 0:52          move second child to first child (float)
 0:52            f: direct index for structure (float)
-0:52              'locals2' (structure)
+0:52              'locals2' (structure{i,f,s1_1})
 0:52              Constant:
 0:52                1 (const int)
 0:52            Constant:
 0:52              1.000000
-0:53          move second child to first child (structure)
-0:53            s1_1: direct index for structure (structure)
-0:53              'locals2' (structure)
+0:53          move second child to first child (structure{i,f,s0_1})
+0:53            s1_1: direct index for structure (structure{i,f,s0_1})
+0:53              'locals2' (structure{i,f,s1_1})
 0:53              Constant:
 0:53                2 (const int)
 0:53            Constant:
@@ -46,44 +46,44 @@ WARNING: 0:4: varying deprecated in version 130; may be removed in future releas
 0:54              0.000000
 0:54              0.000000
 0:54              0.000000
-0:55          move second child to first child (structure)
-0:55            direct index (structure)
-0:55              'locals1Array' (10-element array of structure)
+0:55          move second child to first child (structure{i,f,s0_1})
+0:55            direct index (structure{i,f,s0_1})
+0:55              'locals1Array' (10-element array of structure{i,f,s0_1})
 0:55              Constant:
 0:55                6 (const int)
-0:55            'foo1' (uniform structure)
-0:56          move second child to first child (structure)
-0:56            'locals0' (structure)
+0:55            'foo1' (uniform structure{i,f,s0_1})
+0:56          move second child to first child (structure{i})
+0:56            'locals0' (structure{i})
 0:56            Constant:
 0:56              0 (const int)
-0:57          move second child to first child (structure)
-0:57            'locals00' (structure)
+0:57          move second child to first child (structure{s0_0})
+0:57            'locals00' (structure{s0_0})
 0:57            Constant:
 0:57              0 (const int)
 0:51        false case
 0:59        Sequence
 0:59          move second child to first child (float)
 0:59            f: direct index for structure (float)
-0:59              'locals2' (structure)
+0:59              'locals2' (structure{i,f,s1_1})
 0:59              Constant:
 0:59                1 (const int)
 0:59            direct index (float)
 0:59              'coord' (smooth in 2-component vector of float)
 0:59              Constant:
 0:59                0 (const int)
-0:60          move second child to first child (structure)
-0:60            s1_1: direct index for structure (structure)
-0:60              'locals2' (structure)
+0:60          move second child to first child (structure{i,f,s0_1})
+0:60            s1_1: direct index for structure (structure{i,f,s0_1})
+0:60              'locals2' (structure{i,f,s1_1})
 0:60              Constant:
 0:60                2 (const int)
-0:60            Construct structure (structure)
+0:60            Construct structure (structure{i,f,s0_1})
 0:60              Constant:
 0:60                1 (const int)
 0:60              direct index (float)
 0:60                'coord' (smooth in 2-component vector of float)
 0:60                Constant:
 0:60                  1 (const int)
-0:60              'foo0' (uniform structure)
+0:60              'foo0' (uniform structure{i})
 0:61          move second child to first child (6-element array of float)
 0:61            'fArray' (6-element array of float)
 0:61            Constant:
@@ -93,38 +93,38 @@ WARNING: 0:4: varying deprecated in version 130; may be removed in future releas
 0:61              3.000000
 0:61              4.000000
 0:61              5.000000
-0:62          move second child to first child (structure)
-0:62            direct index (structure)
-0:62              'locals1Array' (10-element array of structure)
+0:62          move second child to first child (structure{i,f,s0_1})
+0:62            direct index (structure{i,f,s0_1})
+0:62              'locals1Array' (10-element array of structure{i,f,s0_1})
 0:62              Constant:
 0:62                6 (const int)
-0:62            s1_1: direct index for structure (structure)
-0:62              'locals2' (structure)
+0:62            s1_1: direct index for structure (structure{i,f,s0_1})
+0:62              'locals2' (structure{i,f,s1_1})
 0:62              Constant:
 0:62                2 (const int)
-0:63          move second child to first child (structure)
-0:63            'locals0' (structure)
-0:63            s0_1: direct index for structure (structure)
-0:63              'foo1' (uniform structure)
+0:63          move second child to first child (structure{i})
+0:63            'locals0' (structure{i})
+0:63            s0_1: direct index for structure (structure{i})
+0:63              'foo1' (uniform structure{i,f,s0_1})
 0:63              Constant:
 0:63                2 (const int)
-0:64          move second child to first child (structure)
-0:64            'locals00' (structure)
-0:64            'foo00' (uniform structure)
+0:64          move second child to first child (structure{s0_0})
+0:64            'locals00' (structure{s0_0})
+0:64            'foo00' (uniform structure{s0_0})
 0:67      Test condition and select (void)
 0:67        Condition
 0:67        Compare Greater Than (bool)
 0:67          i: direct index for structure (int)
-0:67            'locals0' (structure)
+0:67            'locals0' (structure{i})
 0:67            Constant:
 0:67              0 (const int)
 0:67          Constant:
 0:67            5 (const int)
 0:67        true case
-0:68        move second child to first child (structure)
-0:68          'locals0' (structure)
-0:68          s0_0: direct index for structure (structure)
-0:68            'locals00' (structure)
+0:68        move second child to first child (structure{i})
+0:68          'locals0' (structure{i})
+0:68          s0_0: direct index for structure (structure{i})
+0:68            'locals00' (structure{s0_0})
 0:68            Constant:
 0:68              0 (const int)
 0:70      move second child to first child (4-component vector of float)
@@ -135,12 +135,12 @@ WARNING: 0:4: varying deprecated in version 130; may be removed in future releas
 0:70              add (float)
 0:70                Convert int to float (float)
 0:70                  i: direct index for structure (int)
-0:70                    'locals0' (structure)
+0:70                    'locals0' (structure{i})
 0:70                    Constant:
 0:70                      0 (const int)
 0:70                f: direct index for structure (float)
-0:70                  direct index (structure)
-0:70                    'locals1Array' (10-element array of structure)
+0:70                  direct index (structure{i,f,s0_1})
+0:70                    'locals1Array' (10-element array of structure{i,f,s0_1})
 0:70                    Constant:
 0:70                      6 (const int)
 0:70                  Constant:
@@ -150,8 +150,8 @@ WARNING: 0:4: varying deprecated in version 130; may be removed in future releas
 0:70                Constant:
 0:70                  3 (const int)
 0:70            f: direct index for structure (float)
-0:70              s1_1: direct index for structure (structure)
-0:70                'locals2' (structure)
+0:70              s1_1: direct index for structure (structure{i,f,s0_1})
+0:70                'locals2' (structure{i,f,s1_1})
 0:70                Constant:
 0:70                  2 (const int)
 0:70              Constant:
@@ -162,9 +162,9 @@ WARNING: 0:4: varying deprecated in version 130; may be removed in future releas
 0:?   Linker Objects
 0:?     'sampler' (uniform sampler2D)
 0:?     'coord' (smooth in 2-component vector of float)
-0:?     'foo0' (uniform structure)
-0:?     'foo1' (uniform structure)
-0:?     'foo2' (uniform structure)
-0:?     'foo3' (uniform structure)
-0:?     'foo00' (uniform structure)
+0:?     'foo0' (uniform structure{i})
+0:?     'foo1' (uniform structure{i,f,s0_1})
+0:?     'foo2' (uniform structure{i,f,s1_1})
+0:?     'foo3' (uniform structure{s2_1,i,f,s1_1})
+0:?     'foo00' (uniform structure{s0_0})
 

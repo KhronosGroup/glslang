@@ -107,8 +107,8 @@ Warning, version 120 is not yet complete; most features are present, but a few a
 0:33        direct index (float)
 0:33          direct index (2-component vector of float)
 0:33            b: direct index for structure (3-element array of 2-component vector of float)
-0:33              move second child to first child (structure)
-0:33                't' (structure)
+0:33              move second child to first child (structure{a,b,c})
+0:33                't' (structure{a,b,c})
 0:33                Constant:
 0:33                  1 (const int)
 0:33                  2.000000

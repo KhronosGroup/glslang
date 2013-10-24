@@ -1,6 +1,6 @@
 ERROR: 0:11: 'float' : type requires declaration of default precision qualifier 
-ERROR: 0:30: '+' :  wrong operand types: no operation '+' exists that takes a left-hand operand of type 'layout(column_major shared ) uniform block' and a right operand of type 'layout(column_major shared ) uniform block' (or there is no acceptable conversion)
-ERROR: 0:31: '+' :  wrong operand types: no operation '+' exists that takes a left-hand operand of type 'structure' and a right operand of type 'structure' (or there is no acceptable conversion)
+ERROR: 0:30: '+' :  wrong operand types: no operation '+' exists that takes a left-hand operand of type 'layout(column_major shared ) uniform block{f}' and a right operand of type 'layout(column_major shared ) uniform block{f}' (or there is no acceptable conversion)
+ERROR: 0:31: '+' :  wrong operand types: no operation '+' exists that takes a left-hand operand of type 'structure{i}' and a right operand of type 'structure{i}' (or there is no acceptable conversion)
 ERROR: 0:32: '+' :  wrong operand types: no operation '+' exists that takes a left-hand operand of type 'mediump int' and a right operand of type 'mediump float' (or there is no acceptable conversion)
 ERROR: 0:33: '+' :  wrong operand types: no operation '+' exists that takes a left-hand operand of type 'mediump uint' and a right operand of type 'mediump float' (or there is no acceptable conversion)
 ERROR: 0:34: '+' :  wrong operand types: no operation '+' exists that takes a left-hand operand of type 'mediump uint' and a right operand of type 'mediump int' (or there is no acceptable conversion)
@@ -14,8 +14,8 @@ ERROR: 0:42: '%' :  wrong operand types: no operation '%' exists that takes a le
 ERROR: 0:43: '%' :  wrong operand types: no operation '%' exists that takes a left-hand operand of type 'mediump int' and a right operand of type 'mediump float' (or there is no acceptable conversion)
 ERROR: 0:44: '%' :  wrong operand types: no operation '%' exists that takes a left-hand operand of type 'mediump float' and a right operand of type 'mediump uint' (or there is no acceptable conversion)
 ERROR: 0:45: '++' :  l-value required "instanceName" (can't modify a uniform)
-ERROR: 0:45: '++' :  wrong operand type no operation '++' exists that takes an operand of type layout(column_major shared ) uniform block (or there is no acceptable conversion)
-ERROR: 0:46: '++' :  wrong operand type no operation '++' exists that takes an operand of type structure (or there is no acceptable conversion)
+ERROR: 0:45: '++' :  wrong operand type no operation '++' exists that takes an operand of type layout(column_major shared ) uniform block{f} (or there is no acceptable conversion)
+ERROR: 0:46: '++' :  wrong operand type no operation '++' exists that takes an operand of type structure{i} (or there is no acceptable conversion)
 ERROR: 0:47: '--' :  wrong operand type no operation '--' exists that takes an operand of type 5-element array of mediump float (or there is no acceptable conversion)
 ERROR: 0:48: '++' :  wrong operand type no operation '++' exists that takes an operand of type 3-component vector of bool (or there is no acceptable conversion)
 ERROR: 0:50: '<' :  wrong operand types: no operation '<' exists that takes a left-hand operand of type 'mediump 3-component vector of int' and a right operand of type 'mediump 3-component vector of uint' (or there is no acceptable conversion)
@@ -39,7 +39,7 @@ ERROR: 0:70: '~' :  wrong operand type no operation '~' exists that takes an ope
 ERROR: 0:71: '~' :  wrong operand type no operation '~' exists that takes an operand of type mediump 4X4 matrix of float (or there is no acceptable conversion)
 ERROR: 0:72: '~' :  wrong operand type no operation '~' exists that takes an operand of type mediump 3-component vector of float (or there is no acceptable conversion)
 ERROR: 0:73: '~' :  wrong operand type no operation '~' exists that takes an operand of type 5-element array of mediump float (or there is no acceptable conversion)
-ERROR: 0:74: '~' :  wrong operand type no operation '~' exists that takes an operand of type layout(column_major shared ) uniform block (or there is no acceptable conversion)
+ERROR: 0:74: '~' :  wrong operand type no operation '~' exists that takes an operand of type layout(column_major shared ) uniform block{f} (or there is no acceptable conversion)
 ERROR: 0:76: '<<' :  wrong operand types: no operation '<<' exists that takes a left-hand operand of type 'mediump int' and a right operand of type 'mediump 3-component vector of int' (or there is no acceptable conversion)
 ERROR: 0:77: '<<' :  wrong operand types: no operation '<<' exists that takes a left-hand operand of type 'mediump uint' and a right operand of type 'mediump 3-component vector of uint' (or there is no acceptable conversion)
 ERROR: 0:78: '>>' :  wrong operand types: no operation '>>' exists that takes a left-hand operand of type 'mediump int' and a right operand of type 'mediump float' (or there is no acceptable conversion)
@@ -52,7 +52,7 @@ ERROR: 0:85: '^' :  wrong operand types: no operation '^' exists that takes a le
 ERROR: 0:86: '|' :  wrong operand types: no operation '|' exists that takes a left-hand operand of type 'mediump int' and a right operand of type 'mediump 3-component vector of uint' (or there is no acceptable conversion)
 ERROR: 0:87: '&' :  wrong operand types: no operation '&' exists that takes a left-hand operand of type 'mediump uint' and a right operand of type 'mediump float' (or there is no acceptable conversion)
 ERROR: 0:88: '|' :  wrong operand types: no operation '|' exists that takes a left-hand operand of type 'mediump 2X2 matrix of float' and a right operand of type 'mediump 2X2 matrix of float' (or there is no acceptable conversion)
-ERROR: 0:89: '^' :  wrong operand types: no operation '^' exists that takes a left-hand operand of type 'structure' and a right operand of type 'structure' (or there is no acceptable conversion)
+ERROR: 0:89: '^' :  wrong operand types: no operation '^' exists that takes a left-hand operand of type 'structure{i}' and a right operand of type 'structure{i}' (or there is no acceptable conversion)
 ERROR: 0:90: 'assign' :  l-value required 
 ERROR: 56 compilation errors.  No code generated.
 
@@ -60,8 +60,8 @@ ERROR: node is still EOpNull!
 0:13  Function Definition: main( (void)
 0:13    Function Parameters: 
 0:?     Sequence
-0:30      'instanceName' (layout(column_major shared ) uniform block)
-0:31      's' (structure)
+0:30      'instanceName' (layout(column_major shared ) uniform block{f})
+0:31      's' (structure{i})
 0:32      'i' (mediump int)
 0:33      'u' (mediump uint)
 0:34      'u' (mediump uint)
@@ -74,8 +74,8 @@ ERROR: node is still EOpNull!
 0:42      'f' (mediump float)
 0:43      'i' (mediump int)
 0:44      'f' (mediump float)
-0:45      'instanceName' (layout(column_major shared ) uniform block)
-0:46      's' (structure)
+0:45      'instanceName' (layout(column_major shared ) uniform block{f})
+0:46      's' (structure{i})
 0:47      'a' (5-element array of mediump float)
 0:48      'b3' (3-component vector of bool)
 0:50      Constant:
@@ -111,7 +111,7 @@ ERROR: node is still EOpNull!
 0:71      'm4' (mediump 4X4 matrix of float)
 0:72      'v3' (mediump 3-component vector of float)
 0:73      'a' (5-element array of mediump float)
-0:74      'instanceName' (layout(column_major shared ) uniform block)
+0:74      'instanceName' (layout(column_major shared ) uniform block{f})
 0:76      'i' (mediump int)
 0:77      'u' (mediump uint)
 0:78      'i' (mediump int)
@@ -124,7 +124,7 @@ ERROR: node is still EOpNull!
 0:86      'i' (mediump int)
 0:87      'u' (mediump uint)
 0:88      'm2' (mediump 2X2 matrix of float)
-0:89      's' (structure)
+0:89      's' (structure{i})
 0:90      move second child to first child (mediump float)
 0:90        move second child to first child (mediump float)
 0:90          'f' (mediump float)
@@ -167,8 +167,8 @@ ERROR: node is still EOpNull!
 0:106        'a' (5-element array of mediump float)
 0:106        'a' (5-element array of mediump float)
 0:107      Compare Not Equal (bool)
-0:107        's' (structure)
-0:107        's' (structure)
+0:107        's' (structure{i})
+0:107        's' (structure{i})
 0:109      logical-and (bool)
 0:109        'b' (bool)
 0:109        'b' (bool)
@@ -212,7 +212,7 @@ ERROR: node is still EOpNull!
 0:127        'iv3' (mediump 3-component vector of int)
 0:127        'iv3' (mediump 3-component vector of int)
 0:?   Linker Objects
-0:?     'instanceName' (layout(column_major shared ) uniform block)
-0:?     's' (structure)
+0:?     'instanceName' (layout(column_major shared ) uniform block{f})
+0:?     's' (structure{i})
 0:?     'a' (5-element array of mediump float)
 

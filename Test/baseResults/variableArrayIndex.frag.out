@@ -12,9 +12,9 @@ WARNING: 0:3: varying deprecated in version 130; may be removed in future releas
 0:34        Condition
 0:34        Compare Greater Than (bool)
 0:34          i: direct index for structure (int)
-0:34            direct index (structure)
-0:34              s2_1: direct index for structure (3-element array of structure)
-0:34                'foo3' (uniform structure)
+0:34            direct index (structure{i,f,s1_1})
+0:34              s2_1: direct index for structure (3-element array of structure{i,f,s1_1})
+0:34                'foo3' (uniform structure{s2_1,i,f,s1_1})
 0:34                Constant:
 0:34                  0 (const int)
 0:34              Constant:
@@ -27,19 +27,19 @@ WARNING: 0:3: varying deprecated in version 130; may be removed in future releas
 0:35        move second child to first child (float)
 0:35          'scale' (float)
 0:35          f: direct index for structure (float)
-0:35            s1_1: direct index for structure (structure)
-0:35              indirect index (uniform structure)
-0:35                'foo2' (uniform 5-element array of structure)
+0:35            s1_1: direct index for structure (structure{i,f})
+0:35              indirect index (uniform structure{i,f,s1_1})
+0:35                'foo2' (uniform 5-element array of structure{i,f,s1_1})
 0:35                add (int)
 0:35                  add (int)
 0:35                    i: direct index for structure (int)
-0:35                      indirect index (structure)
-0:35                        s2_1: direct index for structure (3-element array of structure)
-0:35                          'foo3' (uniform structure)
+0:35                      indirect index (structure{i,f,s1_1})
+0:35                        s2_1: direct index for structure (3-element array of structure{i,f,s1_1})
+0:35                          'foo3' (uniform structure{s2_1,i,f,s1_1})
 0:35                          Constant:
 0:35                            0 (const int)
 0:35                        i: direct index for structure (int)
-0:35                          'foo' (uniform structure)
+0:35                          'foo' (uniform structure{i,f})
 0:35                          Constant:
 0:35                            0 (const int)
 0:35                      Constant:
@@ -56,10 +56,10 @@ WARNING: 0:3: varying deprecated in version 130; may be removed in future releas
 0:37        move second child to first child (float)
 0:37          'scale' (float)
 0:37          f: direct index for structure (float)
-0:37            s1_1: direct index for structure (structure)
-0:37              direct index (structure)
-0:37                s2_1: direct index for structure (3-element array of structure)
-0:37                  'foo3' (uniform structure)
+0:37            s1_1: direct index for structure (structure{i,f})
+0:37              direct index (structure{i,f,s1_1})
+0:37                s2_1: direct index for structure (3-element array of structure{i,f,s1_1})
+0:37                  'foo3' (uniform structure{s2_1,i,f,s1_1})
 0:37                  Constant:
 0:37                    0 (const int)
 0:37                Constant:
@@ -91,20 +91,20 @@ WARNING: 0:3: varying deprecated in version 130; may be removed in future releas
 0:46          indirect index (2-component vector of float)
 0:46            'constructed' (3-element array of 2-component vector of float)
 0:46            i: direct index for structure (int)
-0:46              'foo' (uniform structure)
+0:46              'foo' (uniform structure{i,f})
 0:46              Constant:
 0:46                0 (const int)
 0:46          indirect index (2-component vector of float)
 0:46            'constructed' (3-element array of 2-component vector of float)
 0:46            i: direct index for structure (int)
-0:46              'foo' (uniform structure)
+0:46              'foo' (uniform structure{i,f})
 0:46              Constant:
 0:46                0 (const int)
 0:?   Linker Objects
 0:?     'sampler' (uniform sampler2D)
 0:?     'coord' (smooth in 2-component vector of float)
-0:?     'foo' (uniform structure)
-0:?     'foo2' (uniform 5-element array of structure)
-0:?     'foo3' (uniform structure)
+0:?     'foo' (uniform structure{i,f})
+0:?     'foo2' (uniform 5-element array of structure{i,f,s1_1})
+0:?     'foo3' (uniform structure{s2_1,i,f,s1_1})
 0:?     'Count' (uniform int)
 

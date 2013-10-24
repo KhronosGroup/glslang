@@ -761,15 +761,15 @@ declaration
         $$ = 0;
     }
     | block_structure SEMICOLON {
-        parseContext.addBlock($1.loc, *$1.typeList);
+        parseContext.declareBlock($1.loc, *$1.typeList);
         $$ = 0;
     }
     | block_structure IDENTIFIER SEMICOLON {
-        parseContext.addBlock($1.loc, *$1.typeList, $2.string);
+        parseContext.declareBlock($1.loc, *$1.typeList, $2.string);
         $$ = 0;
     }
     | block_structure IDENTIFIER array_specifier SEMICOLON {
-        parseContext.addBlock($1.loc, *$1.typeList, $2.string, $3.arraySizes);
+        parseContext.declareBlock($1.loc, *$1.typeList, $2.string, $3.arraySizes);
         $$ = 0;
     }
     | type_qualifier SEMICOLON {
