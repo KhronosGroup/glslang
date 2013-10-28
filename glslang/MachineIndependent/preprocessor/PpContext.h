@@ -95,6 +95,8 @@ public:
     char   name[maxTokenLength+1];
 };
 
+class TInputScanner;
+
 // This class is the result of turning a huge pile of C code communicating through globals
 // into a class.  This was done to allowing instancing to attain thread safety.
 // Don't expect too much in terms of OO design.
@@ -104,7 +106,7 @@ public:
     virtual ~TPpContext();
 
     void setPreamble(const char* preamble, size_t length);
-    void setShaderStrings(char* strings[], size_t lengths[], int numStrings);
+    void setInput(TInputScanner& input, bool versionWillBeError);
 
     const char* tokenize(TPpToken* ppToken);
 
@@ -113,8 +115,6 @@ public:
         int			(*scan)(TPpContext*, struct InputSrc *, TPpToken *);
         int			(*getch)(TPpContext*, struct InputSrc *, TPpToken *);
         void		(*ungetch)(TPpContext*, struct InputSrc *, int, TPpToken *);
-        int			name;  /* atom */
-        int			line;
     };
 
     struct TokenBlock {
@@ -177,7 +177,6 @@ protected:
     // Scanner data:
     int mostRecentToken;        // Most recent token seen by the scanner
     int previous_token;
-    bool notAVersionToken;      // used to make sure that #version is the first token seen in the file, if present
     TParseContext& parseContext;
 
     static const int maxMacroArgs = 64;
@@ -195,6 +194,7 @@ protected:
     };
 
     InputSrc *currentInput;
+    bool errorOnVersion;
 
     //
     // from Pp.cpp
@@ -289,7 +289,7 @@ protected:
     //
     struct StringInputSrc {
         InputSrc base;
-        char *p;
+        TInputScanner* input;
     };
     int InitScanner(TPpContext *cpp);
     static int str_getch(TPpContext*, StringInputSrc *in);

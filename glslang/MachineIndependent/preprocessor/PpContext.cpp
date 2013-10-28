@@ -84,7 +84,7 @@ NVIDIA HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 namespace glslang {
 
 TPpContext::TPpContext(TParseContext& pc) : 
-    preamble(0), strings(0), notAVersionToken(false), parseContext(pc)
+    preamble(0), strings(0), parseContext(pc)
 {
     InitAtomTable();
     InitScanner(this);
@@ -101,28 +101,17 @@ TPpContext::~TPpContext()
     delete [] preamble;
 }
 
-void TPpContext::setPreamble(const char* p, size_t l)
+void TPpContext::setInput(TInputScanner& input, bool versionWillBeError)
 {
-    if (p && l > 0) {
-        // preAmble could be a hard-coded string; make writable copy
-        // TODO: efficiency PP: make it not need writable strings
-        preambleLength = l;
-        preamble = new char[preambleLength + 1];
-        memcpy(preamble, p, preambleLength + 1);  // TODO: PP: assuming nul-terminated strings
-        ScanFromString(preamble);
-        currentString = -1;
-    }
-}
-
-void TPpContext::setShaderStrings(char* s[], size_t l[], int n)
-{
-    strings = s;
-    lengths = l;
-    numStrings = n;
-    if (! preamble) {
-        ScanFromString(strings[0]);
-        currentString = 0;
-    }
+    StringInputSrc *in = (StringInputSrc *)malloc(sizeof(StringInputSrc));
+    memset(in, 0, sizeof(StringInputSrc));
+    in->input = &input;
+    in->base.scan = byte_scan;
+    in->base.getch = (int (*)(TPpContext*, InputSrc *, TPpToken *))str_getch;
+    in->base.ungetch = (void (*)(TPpContext*, InputSrc *, int, TPpToken *))str_ungetch;
+    in->base.prev = currentInput;
+    currentInput = &in->base;
+    errorOnVersion = versionWillBeError;
 }
 
 } // end namespace glslang

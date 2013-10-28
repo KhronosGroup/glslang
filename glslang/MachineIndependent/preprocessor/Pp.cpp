@@ -134,7 +134,7 @@ int TPpContext::FinalCPP()
     mem_FreePool(pool);
 
     if (ifdepth)
-        parseContext.error(parseContext.currentLoc, "missing #endif", "#if", "");
+        parseContext.error(parseContext.getCurrentLoc(), "missing #endif", "#if", "");
 
     return 1;
 }
@@ -552,21 +552,21 @@ int TPpContext::CPPline(TPpToken * ppToken)
         return token;
     }
     else if (token == CPP_INTCONSTANT) {
-        parseContext.currentLoc.line = atoi(ppToken->name);
+        parseContext.setCurrentLine(atoi(ppToken->name));
         token = currentInput->scan(this, currentInput, ppToken);
 
         if (token == CPP_INTCONSTANT) {
-            parseContext.currentLoc.string = atoi(ppToken->name);
+            parseContext.setCurrentString(atoi(ppToken->name));
             token = currentInput->scan(this, currentInput, ppToken);
             if (token != '\n')
-                parseContext.error(parseContext.currentLoc, "cannot be followed by more than two integral literals", "#line", "");
+                parseContext.error(parseContext.getCurrentLoc(), "cannot be followed by more than two integral literals", "#line", "");
         } else if (token == '\n')
 
             return token;
         else
-            parseContext.error(parseContext.currentLoc, "second argument can only be an integral literal", "#line", "");
+            parseContext.error(parseContext.getCurrentLoc(), "second argument can only be an integral literal", "#line", "");
     } else
-        parseContext.error(parseContext.currentLoc, "first argument can only be an integral literal", "#line", "");
+        parseContext.error(parseContext.getCurrentLoc(), "first argument can only be an integral literal", "#line", "");
 
     return token;
 }
@@ -662,8 +662,8 @@ int TPpContext::CPPversion(TPpToken * ppToken)
 {
     int token = currentInput->scan(this, currentInput, ppToken);
 
-    if (notAVersionToken)
-        parseContext.error(ppToken->loc, "must occur before any other statement in the program", "#version", "");
+    if (errorOnVersion)
+        parseContext.error(ppToken->loc, "must occur first in shader", "#version", "");
 
     if (token == '\n') {
         parseContext.error(ppToken->loc, "must be followed by version number", "#version", "");
@@ -759,7 +759,6 @@ int TPpContext::readCPPline(TPpToken * ppToken)
             } else {
                 parseContext.error(ppToken->loc, "#else after a #else", "#else", "");
                 ifdepth = 0;
-                notAVersionToken = true;
                 return 0;
             }
         } else if (ppToken->atom == elifAtom) {
@@ -804,8 +803,6 @@ int TPpContext::readCPPline(TPpToken * ppToken)
     while (token != '\n' && token != 0 && token != EOF) {
         token = currentInput->scan(this, currentInput, ppToken);
     }
-
-    notAVersionToken = ! isVersion;
 
     return token;
 } // readCPPline
@@ -931,7 +928,7 @@ int TPpContext::MacroExpand(int atom, TPpToken* ppToken, int expandUndef)
     int depth = 0;
 
     if (atom == __LINE__Atom) {
-        ppToken->ival = parseContext.currentLoc.line;
+        ppToken->ival = parseContext.getCurrentLoc().line;
         sprintf(ppToken->name, "%d", ppToken->ival);
         UngetToken(CPP_INTCONSTANT, ppToken);
 
@@ -939,7 +936,7 @@ int TPpContext::MacroExpand(int atom, TPpToken* ppToken, int expandUndef)
     }
 
     if (atom == __FILE__Atom) {
-        ppToken->ival = parseContext.currentLoc.string;
+        ppToken->ival = parseContext.getCurrentLoc().string;
         sprintf(ppToken->name, "%d", ppToken->ival);
         UngetToken(CPP_INTCONSTANT, ppToken);
 
@@ -964,8 +961,6 @@ int TPpContext::MacroExpand(int atom, TPpToken* ppToken, int expandUndef)
 
     in = (MacroInputSrc*)malloc(sizeof(*in));
     memset(in, 0, sizeof(*in));
-    in->base.line = currentInput->line;
-    in->base.name = currentInput->name;
 
     if ((! sym || sym->mac.undef) && expandUndef) {
         // push input

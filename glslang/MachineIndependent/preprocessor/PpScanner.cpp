@@ -88,23 +88,7 @@ NVIDIA HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "PpContext.h"
 #include "PpTokens.h"
-
-namespace {
-
-using namespace glslang;
-
-int eof_scan(TPpContext*, TPpContext::InputSrc*, TPpToken*)
-{
-    return EOF;
-}
-
-void noop(TPpContext*, TPpContext::InputSrc *in, int ch, TPpToken * ppToken)
-{
-}
-
-TPpContext::InputSrc eof_inputsrc = { 0, &eof_scan, &eof_scan, &noop };
-
-} // end anonymous namespace
+#include "Scan.h"
 
 namespace glslang {
 
@@ -115,79 +99,26 @@ int TPpContext::InitScanner(TPpContext *cpp)
         return 0;
 
     mostRecentToken = 0;
-    currentInput = &eof_inputsrc;
+    currentInput = 0;
     previous_token = '\n';
-    notAVersionToken = false;
-
-    return 1;
-} // InitScanner
-
-/*
-* str_getch()
-* takes care of reading from multiple strings.
-* returns the next-char from the input stream.
-* returns EOF when the complete shader is parsed.
-*/
-int TPpContext::str_getch(TPpContext* pp, StringInputSrc *in)
-{
-    for(;;) {
-        if (*in->p) {
-            if (*in->p == '\n') {
-                in->base.line++;
-                ++pp->parseContext.currentLoc.line;
-            }
-            return *in->p++;
-        }
-        if (pp->currentString < 0) {
-            // we only parsed the built-in pre-amble; start with clean slate for user code
-            pp->notAVersionToken = false;
-        }
-        if (++(pp->currentString) < pp->numStrings) {
-            free(in);
-            pp->parseContext.currentLoc.string = pp->currentString;
-            pp->parseContext.currentLoc.line = 1;
-            pp->ScanFromString(pp->strings[pp->currentString]);
-            in=(StringInputSrc*)pp->currentInput;
-            continue;             
-        } else {
-            pp->currentInput = in->base.prev;
-            pp->currentString = 0;
-            free(in);
-            return EOF;
-        }  
-    }
-} // str_getch
-
-void TPpContext::str_ungetch(TPpContext* pp, StringInputSrc *in, int ch, TPpToken *type)
-{
-    if (in->p[-1] == ch)in->p--;
-    else {
-        *(in->p)='\0'; //this would take care of shifting to the previous string.
-        pp->currentString--;
-        pp->parseContext.currentLoc.string = pp->currentString;
-    }  
-    if (ch == '\n') {
-        in->base.line--;
-        --pp->parseContext.currentLoc.line;
-    }
-} // str_ungetch
-
-int TPpContext::ScanFromString(char *s)
-{
-
-    StringInputSrc *in = (StringInputSrc *)malloc(sizeof(StringInputSrc));
-    memset(in, 0, sizeof(StringInputSrc));
-    in->p = s;
-    in->base.line = 1;
-    in->base.scan = byte_scan;
-    in->base.getch = (int (*)(TPpContext*, InputSrc *, TPpToken *))str_getch;
-    in->base.ungetch = (void (*)(TPpContext*, InputSrc *, int, TPpToken *))str_ungetch;
-    in->base.prev = currentInput;
-    currentInput = &in->base;
 
     return 1;
 }
 
+int TPpContext::str_getch(TPpContext* pp, StringInputSrc *in)
+{
+    int ch = in->input->get();
+
+    if (ch == EOF)
+        free(in);
+
+    return ch;
+}
+
+void TPpContext::str_ungetch(TPpContext* pp, StringInputSrc *in, int ch, TPpToken *type)
+{
+    in->input->unget();
+}
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////// Floating point constants: /////////////////////////////////
@@ -332,7 +263,7 @@ int TPpContext::byte_scan(TPpContext* pp, InputSrc *in, TPpToken * ppToken)
             ch = pp->currentInput->getch(pp, pp->currentInput, ppToken);
         }
 
-        ppToken->loc = pp->parseContext.currentLoc;
+        ppToken->loc = pp->parseContext.getCurrentLoc();
         len = 0;
         switch (ch) {
         default:
@@ -696,6 +627,7 @@ int TPpContext::byte_scan(TPpContext* pp, InputSrc *in, TPpToken * ppToken)
                 return '.';
             }
         case '/':
+            // TODO: preprocessor: use the Scan.cpp comment scanner
             ch = pp->currentInput->getch(pp, pp->currentInput, ppToken);
             if (ch == '/') {
                 do {
@@ -801,8 +733,6 @@ const char* TPpContext::tokenize(TPpToken* ppToken)
         if (token == '\n')
             continue;
 
-        notAVersionToken = true;
-
         // expand macros
         if (token == CPP_IDENTIFIER && MacroExpand(ppToken->atom, ppToken, 0) == 1)
             continue;
@@ -831,7 +761,7 @@ int TPpContext::check_EOF(int token)
 {
     if (token == EOF) {
         if (ifdepth > 0)
-            parseContext.error(parseContext.currentLoc, "missing #endif", "#if", "");
+            parseContext.error(parseContext.getCurrentLoc(), "missing #endif", "#if", "");
         return 1;
     }
     return 0;

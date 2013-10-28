@@ -92,12 +92,12 @@ ShBindingTable FixedAttributeTable = { 3, FixedAttributeBindings };
 EShLanguage FindLanguage(const std::string& name);
 bool CompileFile(const char *fileName, ShHandle, int options);
 void usage();
-void FreeFileData(char **data);
-char** ReadFileData(const char *fileName);
+void FreeFileData(char** data);
+char** ReadFileData(const char* fileName);
 void InfoLogMsg(const char* msg, const char* name, const int num);
 
 // Use to test breaking up a single shader file into multiple strings.
-int NumShaderStrings = 1;
+int NumShaderStrings;
 
 TBuiltInResource Resources;
 std::string ConfigFile;
@@ -205,7 +205,7 @@ void ProcessConfigFile()
     char** configStrings = 0;
     char *config = 0;
     if (ConfigFile.size() > 0) {
-        char** configStrings = ReadFileData(ConfigFile.c_str());
+        configStrings = ReadFileData(ConfigFile.c_str());
         if (configStrings)
             config = *configStrings;
         else {
@@ -731,9 +731,11 @@ bool CompileFile(const char *fileName, ShHandle compiler, int Options)
         for (int j = 0; j < ((Options & EOptionMemoryLeakMode) ? 100 : 1); ++j) {
             //ret = ShCompile(compiler, shaderStrings, NumShaderStrings, lengths, EShOptNone, &Resources, Options, 100, false, messages);
             ret = ShCompile(compiler, shaderStrings, NumShaderStrings, 0, EShOptNone, &Resources, Options, 100, false, messages);
-            //const char* multi[4] = { "# ve", "rsion", " 300 e", "s" };
+            //const char* multi[12] = { "# ve", "rsion", " 300 e", "s", "\n#err", 
+            //                         "or should be l", "ine 1", "string 5\n", "float glo", "bal", 
+            //                         ";\n#error should be line 2\n void main() {", "global = 2.3;}" };
             //const char* multi[7] = { "/", "/", "\\", "\n", "\n", "#", "version 300 es" };
-            //ret = ShCompile(compiler, multi, 4, 0, EShOptNone, &Resources, Options, 100, false, messages);
+            //ret = ShCompile(compiler, multi, 7, 0, EShOptNone, &Resources, Options, 100, false, messages);
         }
 
         if (Options & EOptionMemoryLeakMode)
@@ -836,12 +838,13 @@ char** ReadFileData(const char *fileName)
     }
     fdata[count] = '\0';
     fclose(in);
-    if(count==0){
+    if (count == 0) {
         return_data[0]=(char*)malloc(count+2);
         return_data[0][0]='\0';
-        NumShaderStrings=0;
+        NumShaderStrings = 0;
         return return_data;       
-    }
+    } else
+        NumShaderStrings = 1;
 
 	int len = (int)(ceil)((float)count/(float)NumShaderStrings);
     int ptr_len=0,i=0;

@@ -41,6 +41,7 @@ runLinkTest recurse1.vert recurse1.frag recurse2.frag
 runLinkTest 300link.frag
 runLinkTest 300link2.frag
 runLinkTest 300link3.frag
+runLinkTest empty.frag empty2.frag empty3.frag
 
 #
 # multi-threaded test

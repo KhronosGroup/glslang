@@ -33,6 +33,8 @@
 //ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 //POSSIBILITY OF SUCH DAMAGE.
 //
+#ifndef _GLSLANG_SCAN_INCLUDED_
+#define _GLSLANG_SCAN_INCLUDED_
 
 #include "Versions.h"
 
@@ -44,7 +46,17 @@ namespace glslang {
 //
 class TInputScanner {
 public:
-    TInputScanner(int n, const char* const i[], size_t L[]) : numSources(n), sources(i), lengths(L), currentSource(0), currentChar(0) { }
+    TInputScanner(int n, const char* const s[], size_t L[], int b = 0) : 
+        numSources(n), sources(s), lengths(L), currentSource(0), currentChar(0), stringBias(b)
+    {
+        loc = new TSourceLoc[numSources];
+        loc[currentSource].string = -stringBias;
+        loc[currentSource].line = 1;
+    }
+    virtual ~TInputScanner()
+    {
+        delete [] loc;
+    }
 
     // return of -1 means end of strings,
     // anything else is the next character
@@ -56,21 +68,11 @@ public:
             return -1;
 
         char ret = sources[currentSource][currentChar];
+        if (ret == '\n')
+            ++loc[currentSource].line;
         advance();
 
         return ret;
-    }
-
-    // advance one character
-    void advance()
-    {
-        ++currentChar;
-        if (currentChar >= static_cast<int>(lengths[currentSource])) {
-            ++currentSource;
-            currentChar = 0;
-            while (currentSource < numSources && lengths[currentSource] == 0)
-                ++currentSource;
-        }
     }
 
     // retrieve the next character, no advance
@@ -95,21 +97,58 @@ public:
             if (currentChar < 0)
                 currentChar = 0;
         }
+        if (peek() == '\n')
+            --loc[currentSource].line;
     }
 
+    // for #line override
+    void setLine(int newLine) { loc[currentSource].line = newLine; }
+    void setString(int newString) { loc[currentSource].string = newString; }
+
+    const TSourceLoc& getSourceLoc() const { return loc[currentSource]; }
+
+    void consumeWhiteSpace(bool& foundNonSpaceTab);
+    bool consumeComment();
+    void consumeWhitespaceComment(bool& foundNonSpaceTab);
+    bool scanVersion(int& version, EProfile& profile);
+
 protected:
+
+    // advance one character
+    void advance()
+    {
+        ++currentChar;
+        if (currentChar >= static_cast<int>(lengths[currentSource])) {
+            ++currentSource;
+            if (currentSource < numSources) {
+                loc[currentSource].string = loc[currentSource - 1].string + 1;
+                loc[currentSource].line = 1;
+            }
+            while (currentSource < numSources && lengths[currentSource] == 0) {
+                ++currentSource;
+                if (currentSource < numSources) {
+                    loc[currentSource].string = loc[currentSource - 1].string + 1;
+                    loc[currentSource].line = 1;
+                }
+            }
+            currentChar = 0;
+        }
+    }
+
     int numSources;             // number of strings in source
     const char* const *sources; // array of strings
     const size_t *lengths;      // length of each string
     int currentSource;
     int currentChar;
+
+    // This is for reporting what string/line an error occurred on, and can be overridden by #line.
+    // It remembers the last state of each source string as it is left for the next one, so unget() 
+    // can restore that state.
+    TSourceLoc* loc;  // an array
+
+    int stringBias;   // the first string that is the user's string number 0
 };
 
-// TODO: The location of these is still pending a grand design for going to a singular
-// scanner for version finding, preprocessing, and tokenizing:
-void ConsumeWhiteSpace(TInputScanner& input, bool& foundNonSpaceTab);
-bool ConsumeComment(TInputScanner& input);
-void ConsumeWhitespaceComment(TInputScanner& input, bool& foundNonSpaceTab);
-bool ScanVersion(TInputScanner& input, int& version, EProfile& profile);
-
 } // end namespace glslang
+
+#endif // _GLSLANG_SCAN_INCLUDED_

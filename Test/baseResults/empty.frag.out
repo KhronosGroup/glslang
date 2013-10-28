@@ -1,0 +1,30 @@
+empty.frag
+WARNING: #version: statement missing; use #version on first line of shader
+
+0:? Sequence
+0:?   Linker Objects
+
+empty2.frag
+WARNING: #version: statement missing; use #version on first line of shader
+
+0:? Sequence
+0:?   Linker Objects
+
+empty3.frag
+Warning, version 110 is not yet complete; most features are present, but a few are missing.
+
+0:? Sequence
+0:?   Linker Objects
+
+
+Linked fragment stage:
+
+ERROR: Linking fragment stage: Cannot mix ES profile with non-ES profile shaders
+
+ERROR: Linking fragment stage: Cannot mix ES profile with non-ES profile shaders
+
+ERROR: Linking fragment stage: Missing entry point: Each stage requires one "void main()" entry point
+
+0:? Sequence
+0:?   Linker Objects
+

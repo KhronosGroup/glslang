@@ -270,7 +270,7 @@ class TShader {
 public:
     explicit TShader(EShLanguage);
     virtual ~TShader();
-    void setStrings(char** s, int n) { strings = s; numStrings = n; }
+    void setStrings(const char* const* s, int n) { strings = s; numStrings = n; }
     bool parse(const TBuiltInResource*, int defaultVersion, bool forwardCompatible, EShMessages);
     const char* getInfoLog();
     const char* getInfoDebugLog();
@@ -280,7 +280,7 @@ protected:
     TCompiler* compiler;
     TIntermediate* intermediate;
     TInfoSink* infoSink;
-    char** strings;
+    const char* const* strings;
     int numStrings;
 
     friend class TProgram;

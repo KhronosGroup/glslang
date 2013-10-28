@@ -330,14 +330,14 @@ void TParseContext::updateExtensionBehavior(const char* extName, const char* beh
     else if (! strcmp("warn", behaviorString))
         behavior = EBhWarn;
     else
-        error(currentLoc, "behavior not supported", "#extension", behaviorString);
+        error(getCurrentLoc(), "behavior not supported", "#extension", behaviorString);
 
     // Update the current behavior
     TMap<TString, TExtensionBehavior>::iterator iter;
     if (! strcmp(extName, "all")) {
         // special case for the 'all' extension; apply it to every extension present
         if (behavior == EBhRequire || behavior == EBhEnable) {
-            error(currentLoc, "extension 'all' cannot have 'require' or 'enable' behavior", "#extension", "");
+            error(getCurrentLoc(), "extension 'all' cannot have 'require' or 'enable' behavior", "#extension", "");
             return;
         } else {
             for (iter = extensionBehavior.begin(); iter != extensionBehavior.end(); ++iter)
@@ -349,12 +349,12 @@ void TParseContext::updateExtensionBehavior(const char* extName, const char* beh
         if (iter == extensionBehavior.end()) {
             switch (behavior) {
             case EBhRequire:
-                error(currentLoc, "extension not supported", "#extension", extName);
+                error(getCurrentLoc(), "extension not supported", "#extension", extName);
                 break;
             case EBhEnable:
             case EBhWarn:
             case EBhDisable:
-                warn(currentLoc, "extension not supported", "#extension", extName);
+                warn(getCurrentLoc(), "extension not supported", "#extension", extName);
                 break;
             default:
                 assert(0 && "unexpected behavior");

@@ -306,7 +306,7 @@ int TPpContext::ReadToken(TokenStream *pTok, TPpToken *ppToken)
     char ch;
 
     ltoken = lReadByte(pTok);
-    ppToken->loc = parseContext.currentLoc;
+    ppToken->loc = parseContext.getCurrentLoc();
     if (ltoken >= 0) {
         if (ltoken > 127)
             ltoken += 128;
@@ -399,12 +399,9 @@ int TPpContext::scan_token(TPpContext* pp, TokenInputSrc *in, TPpToken * ppToken
 {
     int token = pp->ReadToken(in->tokens, ppToken);
     int (*final)(TPpContext *);
-    if (token == '\n') {
-        in->base.line++;
-        return token;
-    }
     if (token > 0)
         return token;
+    
     pp->currentInput = in->base.prev;
     final = in->final;
     free(in);
@@ -418,10 +415,8 @@ int TPpContext::ReadFromTokenStream(TokenStream *ts, int name, int (*final)(TPpC
 {
     TokenInputSrc *in = (TokenInputSrc *) malloc(sizeof(TokenInputSrc));
     memset(in, 0, sizeof(TokenInputSrc));
-    in->base.name = name;
     in->base.prev = currentInput;
     in->base.scan = (int (*)(TPpContext*, InputSrc*, TPpToken*))scan_token;
-    in->base.line = 1;
     in->tokens = ts;
     in->final = final;
     RewindTokenStream(ts);
@@ -449,8 +444,6 @@ void TPpContext::UngetToken(int token, TPpToken * ppToken)
     t->lval = *ppToken;
     t->base.scan = (int(*)(TPpContext*, struct InputSrc *, TPpToken *))reget_token;
     t->base.prev = currentInput;
-    t->base.name = currentInput->name;
-    t->base.line = currentInput->line;
     currentInput = &t->base;
 }
 

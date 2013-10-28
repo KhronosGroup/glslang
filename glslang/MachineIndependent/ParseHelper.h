@@ -40,6 +40,7 @@
 #include "../Include/ShHandle.h"
 #include "SymbolTable.h"
 #include "localintermediate.h"
+#include "Scan.h"
 
 namespace glslang {
 
@@ -64,9 +65,10 @@ public:
     TParseContext(TSymbolTable&, TIntermediate&, bool parsingBuiltins, int version, EProfile, EShLanguage, TInfoSink&,
                   bool forwardCompatible = false, EShMessages messages = EShMsgDefault);
 
-public:
-    bool parseShaderStrings(TPpContext&, char* strings[], size_t strLen[], int numStrings);
+    void setLimits(const TLimits&);
+    bool parseShaderStrings(TPpContext&, TInputScanner& input, bool versionWillBeError = false);
     void parserError(const char *s);     // for bison's yyerror
+    const char* getPreamble();
 
     void C_DECL error(TSourceLoc, const char *szReason, const char *szToken,
                       const char *szExtraInfoFormat, ...);
@@ -163,6 +165,9 @@ public:
     TPpContext* getPpContext() const { return ppContext; }
     void addError() { ++numErrors; }
     int getNumErrors() const { return numErrors; }
+    const TSourceLoc& getCurrentLoc() const { return currentScanner->getSourceLoc(); }
+    void setCurrentLine(int line) { currentScanner->setLine(line); }
+    void setCurrentString(int string) { currentScanner->setString(string); }
 
     // The following are implemented in Versions.cpp to localize version/profile/stage/extensions control
     void initializeExtensionBehavior();
@@ -177,14 +182,13 @@ public:
     void doubleCheck(TSourceLoc, const char* op);
 
 protected:
-    const char* getPreamble();
     void nonInitConstCheck(TSourceLoc, TString& identifier, TType& type);
     TVariable* declareNonArray(TSourceLoc, TString& identifier, TType&, bool& newDeclaration);
     void declareArray(TSourceLoc, TString& identifier, const TType&, TSymbol*&, bool& newDeclaration);
     TIntermNode* executeInitializer(TSourceLoc, TString& identifier, TIntermTyped* initializer, TVariable* variable);
     TIntermTyped* convertInitializerList(TSourceLoc, const TType&, TIntermTyped* initializer);
     TOperator mapTypeToConstructorOp(const TType&);
-    void finalize();
+    void finalErrorCheck();
 
 public:
     //
@@ -213,13 +217,13 @@ public:
     TQualifier currentBlockQualifier;
     TIntermAggregate *linkage;   // aggregate node of objects the linker may need, if not referenced by the rest of the AST
     TPrecisionQualifier defaultPrecision[EbtNumTypes];
-    TSourceLoc currentLoc;
     bool tokensBeforeEOF;
     TLimits limits;
 
 protected:
     TScanContext* scanContext;
     TPpContext* ppContext;
+    TInputScanner* currentScanner;
     int numErrors;               // number of compile-time errors encountered
     bool parsingBuiltins;        // true if parsing built-in symbols/functions
     TMap<TString, TExtensionBehavior> extensionBehavior;    // for each extension string, what its current behavior is set to

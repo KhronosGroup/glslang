@@ -143,7 +143,8 @@ bool InitializeSymbolTable(const TString& builtIns, int version, EProfile profil
     builtInShaders[0] = builtIns.c_str();
     builtInLengths[0] = builtIns.size();
 
-    if (! parseContext.parseShaderStrings(ppContext, const_cast<char**>(builtInShaders), builtInLengths, 1) != 0) {
+    TInputScanner input(1, builtInShaders, builtInLengths);
+    if (! parseContext.parseShaderStrings(ppContext, input) != 0) {
         infoSink.info.message(EPrefixInternalError, "Unable to parse built-ins");
         printf("Unable to parse built-ins\n%s\n", infoSink.info.c_str());
 
@@ -420,27 +421,42 @@ bool CompileDeferred(
     if (! InitThread())
         return false;
 
-    if (numStrings == 0)
-        return true;
-
     // This must be undone (.pop()) by the caller, after it finishes consuming the created tree.
     GetThreadPoolAllocator().push();
+
+    if (numStrings == 0)
+        return true;
     
-    // move to length-based strings, rather than null-terminated strings
-    size_t* lengths = new size_t[numStrings];
+    // Move to length-based strings, rather than null-terminated strings.
+    // Also, add strings to include the preamble and to ensure the shader is not null,
+    // which lets the grammar accept what was a null (post preprocessing) shader.
+    //
+    // Shader will look like
+    //   string 0:                preamble
+    //   string 1...numStrings:   user's shader
+    //   string numStrings+1:     "int;"
+    //
+    size_t* lengths = new size_t[numStrings + 2];
+    const char** strings = new const char*[numStrings + 2];
     for (int s = 0; s < numStrings; ++s) {
+        strings[s + 1] = shaderStrings[s];
         if (inputLengths == 0 || inputLengths[s] < 0)
-            lengths[s] = strlen(shaderStrings[s]);
+            lengths[s + 1] = strlen(shaderStrings[s]);
         else
-            lengths[s] = inputLengths[s];
+            lengths[s + 1] = inputLengths[s];
     }
 
+    // First, without using the preprocessor or parser, find the #version, so we know what
+    // symbol tables, processing rules, etc. to set up.  This does not need the extra strings
+    // outlined above, just the user shader.
     int version;
     EProfile profile;
-    glslang::TInputScanner input(numStrings, shaderStrings, lengths);
-    bool versionNotFirst = ScanVersion(input, version, profile);
+    glslang::TInputScanner userInput(numStrings, &strings[1], &lengths[1]);  // no preamble
+    bool versionNotFirst = userInput.scanVersion(version, profile);
+    bool versionNotFound = version == 0;
     bool goodVersion = DeduceVersionProfile(compiler->infoSink, compiler->getLanguage(), versionNotFirst, defaultVersion, version, profile);
-
+    bool versionWillBeError = (versionNotFound || (profile == EEsProfile && versionNotFirst));
+    
     intermediate.setVersion(version);
     intermediate.setProfile(profile);
     SetupBuiltinSymbolTable(version, profile);
@@ -458,31 +474,36 @@ bool CompileDeferred(
     // Add built-in symbols that are potentially context dependent;
     // they get popped again further down.
     AddContextSpecificSymbols(resources, compiler->infoSink, symbolTable, version, profile, compiler->getLanguage());
+    
+    //
+    // Now we can process the full shader under proper symbols and rules.
+    //
 
     TParseContext parseContext(symbolTable, intermediate, false, version, profile, compiler->getLanguage(), compiler->infoSink, forwardCompatible, messages);
     glslang::TScanContext scanContext(parseContext);
     TPpContext ppContext(parseContext);
     parseContext.setScanContext(&scanContext);
     parseContext.setPpContext(&ppContext);
-    parseContext.limits = resources->limits;
+    parseContext.setLimits(resources->limits);
     if (! goodVersion)
         parseContext.addError();
 
     parseContext.initializeExtensionBehavior();
 
-    //
-    // Parse the application's shaders.  All the following symbol table
-    // work will be throw-away, so push a new allocation scope that can
-    // be thrown away, then push a scope for the current shader's globals.
-    //
     bool success = true;
     
-    symbolTable.push();
-    if (! symbolTable.atGlobalLevel())
-        parseContext.infoSink.info.message(EPrefixInternalError, "Wrong symbol table level");
+    // Fill in the strings as outlined above.
+    strings[0] = parseContext.getPreamble();
+    lengths[0] = strlen(strings[0]);
+    strings[numStrings + 1] = "\n int;";
+    lengths[numStrings + 1] = strlen(strings[numStrings + 1]);
+    TInputScanner fullInput(numStrings + 2, strings, lengths, 1);
 
-    bool ret = parseContext.parseShaderStrings(ppContext, const_cast<char**>(shaderStrings), lengths, numStrings);
-    if (! ret)
+    // Push a new symbol allocation scope that can for the shader's globals.
+    symbolTable.push();
+
+    // Parse the full shader.
+    if (! parseContext.parseShaderStrings(ppContext, fullInput, versionWillBeError))
         success = false;
     intermediate.addSymbolLinkageNodes(parseContext.linkage, parseContext.language, symbolTable);
 
@@ -503,6 +524,7 @@ bool CompileDeferred(
         intermediate.outputTree(parseContext.infoSink);
 
     delete [] lengths;
+    delete [] strings;
 
     return success;
 }

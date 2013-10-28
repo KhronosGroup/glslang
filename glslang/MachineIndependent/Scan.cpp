@@ -40,12 +40,12 @@
 
 #include <string.h>
 
-#include "Scan.h"
 #include "../Include/Types.h"
 #include "SymbolTable.h"
 #include "glslang_tab.cpp.h"
 #include "ParseHelper.h"
 #include "ScanContext.h"
+#include "Scan.h"
 
 // preprocessor includes
 #include "preprocessor/PpContext.h"
@@ -54,37 +54,37 @@
 namespace glslang {
     
 // read past any white space
-void ConsumeWhiteSpace(TInputScanner& input, bool& foundNonSpaceTab)
+void TInputScanner::consumeWhiteSpace(bool& foundNonSpaceTab)
 {
-    char c = input.peek();  // don't accidentally consume anything other than whitespace
+    char c = peek();  // don't accidentally consume anything other than whitespace
     while (c == ' ' || c == '\t' || c == '\r' || c == '\n') {
         if (c == '\r' || c == '\n')
             foundNonSpaceTab = true;
-        input.get();
-        c = input.peek();
+        get();
+        c = peek();
     }
 }
 
 // return true if a comment was actually consumed
-bool ConsumeComment(TInputScanner& input)
+bool TInputScanner::consumeComment()
 {
-    if (input.peek() != '/')
+    if (peek() != '/')
         return false;
 
-    input.get();  // consume the '/'
-    char c = input.peek();
+    get();  // consume the '/'
+    char c = peek();
     if (c == '/') {
 
         // a '//' style comment
-        input.get();  // consume the second '/'
-        c = input.get();
+        get();  // consume the second '/'
+        c = get();
         do {
             while (c > 0 && c != '\\' && c != '\r' && c != '\n')
-                c = input.get();
+                c = get();
 
             if (c <= 0 || c == '\r' || c == '\n') {
                 while (c == '\r' || c == '\n')
-                    c = input.get();
+                    c = get();
 
                 // we reached the end of the comment
                 break;
@@ -92,30 +92,30 @@ bool ConsumeComment(TInputScanner& input)
                 // it's a '\', so we need to keep going, after skipping what's escaped
                     
                 // read the skipped character
-                c = input.get();
+                c = get();
 
                 // if it's a two-character newline, skip both characters
-                if (c == '\r' && input.peek() == '\n')
-                    input.get();
-                c = input.get();
+                if (c == '\r' && peek() == '\n')
+                    get();
+                c = get();
             }
         } while (true);
 
         // put back the last non-comment character
         if (c > 0)
-            input.unget();
+            unget();
 
         return true;
     } else if (c == '*') {
 
         // a '/*' style comment
-        input.get();  // consume the '*'
-        c = input.get();
+        get();  // consume the '*'
+        c = get();
         do {
             while (c > 0 && c != '*')
-                c = input.get();
+                c = get();
             if (c == '*') {
-                c = input.get();
+                c = get();
                 if (c == '/')
                     break;  // end of comment
                 // not end of comment
@@ -126,26 +126,26 @@ bool ConsumeComment(TInputScanner& input)
         return true;
     } else {
         // it's not a comment, put the '/' back
-        input.unget();
+        unget();
 
         return false;
     }
 }
 
 // skip whitespace, then skip a comment, rinse, repeat
-void ConsumeWhitespaceComment(TInputScanner& input, bool& foundNonSpaceTab)
+void TInputScanner::consumeWhitespaceComment(bool& foundNonSpaceTab)
 {
     do {
-        ConsumeWhiteSpace(input, foundNonSpaceTab);
+        consumeWhiteSpace(foundNonSpaceTab);
  
         // if not starting a comment now, then done
-        char c = input.peek();
+        char c = peek();
         if (c != '/' || c < 0)
             return;
 
         // skip potential comment 
         foundNonSpaceTab = true;
-        if (! ConsumeComment(input))
+        if (! consumeComment())
             return;
 
     } while (true);
@@ -159,9 +159,9 @@ void ConsumeWhitespaceComment(TInputScanner& input, bool& foundNonSpaceTab)
 // is that scanning will start anew, following the rules for the chosen version/profile,
 // and with a corresponding parsing context.
 //
-bool ScanVersion(TInputScanner& input, int& version, EProfile& profile)
+bool TInputScanner::scanVersion(int& version, EProfile& profile)
 {
-    // This function doesn't have to get all the semantics correct, 
+    // This function doesn't have to get all the semantics correct,
     // just find the #version if there is a correct one present.
     // The preprocessor will have the responsibility of getting all the semantics right.
 
@@ -169,43 +169,43 @@ bool ScanVersion(TInputScanner& input, int& version, EProfile& profile)
     profile = ENoProfile;
 
     bool foundNonSpaceTab = false;
-    ConsumeWhitespaceComment(input, foundNonSpaceTab);
+    consumeWhitespaceComment(foundNonSpaceTab);
 
     // #
-    if (input.get() != '#')
+    if (get() != '#')
         return true;
 
     // whitespace
     char c;
     do {
-        c = input.get();
+        c = get();
     } while (c == ' ' || c == '\t');
 
-    if (          c != 'v' ||
-        input.get() != 'e' ||
-        input.get() != 'r' ||
-        input.get() != 's' ||
-        input.get() != 'i' ||
-        input.get() != 'o' ||
-        input.get() != 'n')
+    if (    c != 'v' ||
+        get() != 'e' ||
+        get() != 'r' ||
+        get() != 's' ||
+        get() != 'i' ||
+        get() != 'o' ||
+        get() != 'n')
         return true;
 
     // whitespace
     do {
-        c = input.get();
+        c = get();
     } while (c == ' ' || c == '\t');
 
     // version number
     while (c >= '0' && c <= '9') {
         version = 10 * version + (c - '0');
-        c = input.get();
+        c = get();
     }
     if (version == 0)
         return true;
     
     // whitespace
     while (c == ' ' || c == '\t')
-        c = input.get();
+        c = get();
 
     // profile
     const int maxProfileLength = 13;  // not including any 0
@@ -215,7 +215,7 @@ bool ScanVersion(TInputScanner& input, int& version, EProfile& profile)
         if (c < 0 || c == ' ' || c == '\t' || c == '\n' || c == '\r')
             break;
         profileString[profileLength] = c;
-        c = input.get();
+        c = get();
     }
     if (c > 0 && c != ' ' && c != '\t' && c != '\n' && c != '\r')
         return true;

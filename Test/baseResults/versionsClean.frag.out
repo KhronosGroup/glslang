@@ -1,5 +1,6 @@
 ERROR: #version: statement must appear first in es-profile shader; before comments or newlines
-ERROR: 1 compilation errors.  No code generated.
+ERROR: 0:34: '#version' : must occur first in shader 
+ERROR: 2 compilation errors.  No code generated.
 
 ERROR: node is still EOpNull!
 0:41  Function Definition: main( (void)

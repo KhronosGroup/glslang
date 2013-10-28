@@ -35,6 +35,7 @@
 //
 
 #include "ParseHelper.h"
+#include "Scan.h"
 
 #include "osinclude.h"
 #include <stdarg.h>
@@ -51,12 +52,10 @@ TParseContext::TParseContext(TSymbolTable& symt, TIntermediate& interm, bool pb,
             intermediate(interm), symbolTable(symt), infoSink(is), language(L),
             version(v), profile(p), forwardCompatible(fc), messages(m),
             contextPragma(true, false), loopNestingLevel(0), structNestingLevel(0),
-            tokensBeforeEOF(false),
-            numErrors(0), parsingBuiltins(pb), afterEOF(false)
+            tokensBeforeEOF(false), currentScanner(0),
+            numErrors(0), parsingBuiltins(pb), afterEOF(false),
+            anyIndexLimits(false)
 {
-    currentLoc.line = 1;
-    currentLoc.string = 0;
-
     // ensure we always have a linkage node, even if empty, to simplify tree topology algorithms
     linkage = new TIntermAggregate;
 
@@ -106,43 +105,9 @@ TParseContext::TParseContext(TSymbolTable& symt, TIntermediate& interm, bool pb,
         globalOutputDefaults.layoutStream = 0;
 }
 
-//
-// Parse an array of strings using yyparse, going through the
-// preprocessor to tokenize the shader strings, then through
-// the GLSL scanner.
-//
-// Returns true for successful acceptance of the shader, false if any errors.
-//
-bool TParseContext::parseShaderStrings(TPpContext& ppContext, char* strings[], size_t lengths[], int numStrings)
+void TParseContext::setLimits(const TLimits& L)
 {
-    // empty shaders are okay
-    if (! strings || numStrings == 0 || lengths[0] == 0)
-        return true;
-
-    for (int i = 0; i < numStrings; ++i) {
-        if (! strings[i]) {
-            TSourceLoc loc;
-            loc.string = i;
-            loc.line = 1;
-            error(loc, "Null shader source string", "", "");
-
-            return false;
-        }
-    }
-
-    if (getPreamble())
-        ppContext.setPreamble(getPreamble(), strlen(getPreamble()));
-    ppContext.setShaderStrings(strings, lengths, numStrings);
-
-    // TODO: desktop PP: a shader containing nothing but white space and comments is valid, even though it has no parse tokens
-    size_t len = 0;
-    while (strings[0][len] == ' '  ||
-           strings[0][len] == '\t' ||
-           strings[0][len] == '\n' ||
-           strings[0][len] == '\r') {
-        if (++len >= lengths[0])
-            return true;
-    }
+    limits = L;
 
     anyIndexLimits = ! limits.generalAttributeMatrixVectorIndexing ||
                      ! limits.generalConstantMatrixVectorIndexing ||
@@ -150,10 +115,21 @@ bool TParseContext::parseShaderStrings(TPpContext& ppContext, char* strings[], s
                      ! limits.generalUniformIndexing ||
                      ! limits.generalVariableIndexing ||
                      ! limits.generalVaryingIndexing;
+}
 
+//
+// Parse an array of strings using yyparse, going through the
+// preprocessor to tokenize the shader strings, then through
+// the GLSL scanner.
+//
+// Returns true for successful acceptance of the shader, false if any errors.
+//
+bool TParseContext::parseShaderStrings(TPpContext& ppContext, TInputScanner& input, bool versionWillBeError)
+{
+    currentScanner = &input;
+    ppContext.setInput(input, versionWillBeError);
     yyparse((void*)this);
-
-    finalize();
+    finalErrorCheck();
 
     return numErrors == 0;
 }
@@ -163,21 +139,21 @@ void TParseContext::parserError(const char *s)
 {
     if (afterEOF) {
         if (tokensBeforeEOF == 1)
-            error(currentLoc, "", "pre-mature EOF", s, "");
+            error(getCurrentLoc(), "", "pre-mature EOF", s, "");
     } else
-        error(currentLoc, "", "", s, "");
+        error(getCurrentLoc(), "", "", s, "");
 }
 
 void TParseContext::handlePragma(const char **tokens, int numTokens)
 {
     if (!strcmp(tokens[0], "optimize")) {
         if (numTokens != 4) {
-            error(currentLoc, "optimize pragma syntax is incorrect", "#pragma", "");
+            error(getCurrentLoc(), "optimize pragma syntax is incorrect", "#pragma", "");
             return;
         }
 
         if (strcmp(tokens[1], "(")) {
-            error(currentLoc, "\"(\" expected after 'optimize' keyword", "#pragma", "");
+            error(getCurrentLoc(), "\"(\" expected after 'optimize' keyword", "#pragma", "");
             return;
         }
 
@@ -186,22 +162,22 @@ void TParseContext::handlePragma(const char **tokens, int numTokens)
         else if (!strcmp(tokens[2], "off"))
             contextPragma.optimize = false;
         else {
-            error(currentLoc, "\"on\" or \"off\" expected after '(' for 'optimize' pragma", "#pragma", "");
+            error(getCurrentLoc(), "\"on\" or \"off\" expected after '(' for 'optimize' pragma", "#pragma", "");
             return;
         }
 
         if (strcmp(tokens[3], ")")) {
-            error(currentLoc, "\")\" expected to end 'optimize' pragma", "#pragma", "");
+            error(getCurrentLoc(), "\")\" expected to end 'optimize' pragma", "#pragma", "");
             return;
         }
     } else if (!strcmp(tokens[0], "debug")) {
         if (numTokens != 4) {
-            error(currentLoc, "debug pragma syntax is incorrect", "#pragma", "");
+            error(getCurrentLoc(), "debug pragma syntax is incorrect", "#pragma", "");
             return;
         }
 
         if (strcmp(tokens[1], "(")) {
-            error(currentLoc, "\"(\" expected after 'debug' keyword", "#pragma", "");
+            error(getCurrentLoc(), "\"(\" expected after 'debug' keyword", "#pragma", "");
             return;
         }
 
@@ -210,12 +186,12 @@ void TParseContext::handlePragma(const char **tokens, int numTokens)
         else if (!strcmp(tokens[2], "off"))
             contextPragma.debug = false;
         else {
-            error(currentLoc, "\"on\" or \"off\" expected after '(' for 'debug' pragma", "#pragma", "");
+            error(getCurrentLoc(), "\"on\" or \"off\" expected after '(' for 'debug' pragma", "#pragma", "");
             return;
         }
 
         if (strcmp(tokens[3], ")")) {
-            error(currentLoc, "\")\" expected to end 'debug' pragma", "#pragma", "");
+            error(getCurrentLoc(), "\")\" expected to end 'debug' pragma", "#pragma", "");
             return;
         }
     } else {
@@ -2282,7 +2258,7 @@ void TParseContext::inductiveLoopCheck(TSourceLoc loc, TIntermNode* init, TInter
 //
 // Do any additional error checking, etc., once we know the parsing is done.
 //
-void TParseContext::finalize()
+void TParseContext::finalErrorCheck()
 {
     // Check on array indexes for ES 2.0 (version 100) limitations.
     for (size_t i = 0; i < needsIndexLimitationChecking.size(); ++i)
