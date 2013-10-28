@@ -262,7 +262,7 @@ ERROR: node is still EOpNull!
 0:105        logical-and (bool)
 0:105          Compare Less Than (bool)
 0:105            Absolute value (float)
-0:105              direct index (in float)
+0:105              direct index (float)
 0:105                'v' (in 3-component vector of float)
 0:105                Constant:
 0:105                  0 (const int)
@@ -270,7 +270,7 @@ ERROR: node is still EOpNull!
 0:105              0.000100
 0:105          Compare Less Than (bool)
 0:105            Absolute value (float)
-0:105              direct index (in float)
+0:105              direct index (float)
 0:105                'v' (in 3-component vector of float)
 0:105                Constant:
 0:105                  1 (const int)
@@ -293,13 +293,13 @@ ERROR: node is still EOpNull!
 0:120      Sequence
 0:120        move second child to first child (4-component vector of float)
 0:120          'v' (4-component vector of float)
-0:120          direct index (smooth in 4-component vector of float)
+0:120          direct index (smooth 4-component vector of float)
 0:120            'gl_TexCoord' (smooth in unsized array of 4-component vector of float)
 0:120            Constant:
 0:120              1 (const int)
 0:121      add second child into first child (4-component vector of float)
 0:121        'v' (4-component vector of float)
-0:121        direct index (smooth in 4-component vector of float)
+0:121        direct index (smooth 4-component vector of float)
 0:121          'gl_TexCoord' (smooth in 6-element array of 4-component vector of float)
 0:121          Constant:
 0:121            3 (const int)

@@ -25,7 +25,7 @@ ERROR: node is still EOpNull!
 0:30        move second child to first child (float)
 0:30          'p' (float)
 0:30          gl_PointSize: direct index for structure (float)
-0:30            direct index (in block{gl_PointSize})
+0:30            direct index (block{gl_PointSize})
 0:30              'gl_in' (in unsized array of block{gl_PointSize})
 0:30              Constant:
 0:30                1 (const int)

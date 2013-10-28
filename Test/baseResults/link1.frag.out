@@ -24,7 +24,7 @@ Warning, version 130 is not yet complete; most features are present, but a few a
 0:21    Sequence
 0:21      Branch: Return with expression
 0:21        Convert float to int (2-component vector of int)
-0:21          direct index (in 2-component vector of float)
+0:21          direct index (2-component vector of float)
 0:21            'm' (in 2X2 matrix of float)
 0:21            Constant:
 0:21              0 (const int)
@@ -197,7 +197,7 @@ ERROR: Linking fragment stage: Precision qualifiers must match:
 0:21    Sequence
 0:21      Branch: Return with expression
 0:21        Convert float to int (2-component vector of int)
-0:21          direct index (in 2-component vector of float)
+0:21          direct index (2-component vector of float)
 0:21            'm' (in 2X2 matrix of float)
 0:21            Constant:
 0:21              0 (const int)

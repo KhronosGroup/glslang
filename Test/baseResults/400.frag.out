@@ -12,7 +12,7 @@ ERROR: node is still EOpNull!
 0:13      move second child to first child (4-component vector of float)
 0:13        'v' (4-component vector of float)
 0:13        Function Call: texture(s21;vf2; (4-component vector of float)
-0:13          indirect index (uniform sampler2D)
+0:13          indirect index (sampler2D)
 0:13            'arrayedSampler' (uniform 5-element array of sampler2D)
 0:13            'i' (flat in int)
 0:13          'c2D' (smooth in 2-component vector of float)
@@ -21,7 +21,7 @@ ERROR: node is still EOpNull!
 0:14          'outp' (out 4-component vector of float)
 0:14          Constant:
 0:14            0 (const int)
-0:14        direct index (smooth in float)
+0:14        direct index (smooth float)
 0:14          'gl_ClipDistance' (smooth in unsized array of float)
 0:14          Constant:
 0:14            1 (const int)
@@ -38,7 +38,7 @@ ERROR: node is still EOpNull!
 0:18        move second child to first child (4-component vector of float)
 0:18          'v4' (4-component vector of float)
 0:18          Function Call: textureGather(s21;vf2; (4-component vector of float)
-0:18            direct index (uniform sampler2D)
+0:18            direct index (sampler2D)
 0:18              'arrayedSampler' (uniform 5-element array of sampler2D)
 0:18              Constant:
 0:18                0 (const int)

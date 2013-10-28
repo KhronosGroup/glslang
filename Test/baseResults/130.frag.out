@@ -9,7 +9,7 @@ ERROR: node is still EOpNull!
 0:18      Sequence
 0:18        move second child to first child (float)
 0:18          'clip' (float)
-0:18          direct index (smooth in float)
+0:18          direct index (smooth float)
 0:18            'gl_ClipDistance' (smooth in unsized array of float)
 0:18            Constant:
 0:18              3 (const int)

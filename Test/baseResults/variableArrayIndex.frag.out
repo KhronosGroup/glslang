@@ -28,7 +28,7 @@ WARNING: 0:3: varying deprecated in version 130; may be removed in future releas
 0:35          'scale' (float)
 0:35          f: direct index for structure (float)
 0:35            s1_1: direct index for structure (structure{i,f})
-0:35              indirect index (uniform structure{i,f,s1_1})
+0:35              indirect index (structure{i,f,s1_1})
 0:35                'foo2' (uniform 5-element array of structure{i,f,s1_1})
 0:35                add (int)
 0:35                  add (int)

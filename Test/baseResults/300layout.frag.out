@@ -12,7 +12,7 @@ ERROR: node is still EOpNull!
 0:13        'p' (layout(location=3 ) out mediump 4-component vector of float)
 0:13        'pos' (smooth in mediump 4-component vector of float)
 0:14      move second child to first child (mediump 4-component vector of float)
-0:14        direct index (layout(location=4 ) out mediump 4-component vector of float)
+0:14        direct index (layout(location=4 ) mediump 4-component vector of float)
 0:14          'q' (layout(location=4 ) out 2-element array of mediump 4-component vector of float)
 0:14          Constant:
 0:14            1 (const int)

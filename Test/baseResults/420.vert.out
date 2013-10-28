@@ -69,7 +69,7 @@ ERROR: node is still EOpNull!
 0:55        Condition
 0:55        Compare Equal (bool)
 0:55          direct index (float)
-0:55            direct index (in 4-component vector of float)
+0:55            direct index (4-component vector of float)
 0:55              'bad' (in 10-element array of 4-component vector of float)
 0:55              Constant:
 0:55                0 (const int)
@@ -85,7 +85,7 @@ ERROR: node is still EOpNull!
 0:57        true case
 0:58        move second child to first child (4-component vector of float)
 0:58          'badorder3' (flat out 4-component vector of float)
-0:58          direct index (in 4-component vector of float)
+0:58          direct index (4-component vector of float)
 0:58            'bad' (in 10-element array of 4-component vector of float)
 0:58            Constant:
 0:58              0 (const int)

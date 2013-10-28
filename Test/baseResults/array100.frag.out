@@ -24,19 +24,19 @@ ERROR: node is still EOpNull!
 0:11    Sequence
 0:11      Branch: Return with expression
 0:11        Construct float (4-element array of float)
-0:11          direct index (in mediump float)
+0:11          direct index (mediump float)
 0:11            'a' (in 5-element array of mediump float)
 0:11            Constant:
 0:11              0 (const int)
-0:11          direct index (in mediump float)
+0:11          direct index (mediump float)
 0:11            'a' (in 5-element array of mediump float)
 0:11            Constant:
 0:11              1 (const int)
-0:11          direct index (in mediump float)
+0:11          direct index (mediump float)
 0:11            'a' (in 5-element array of mediump float)
 0:11            Constant:
 0:11              2 (const int)
-0:11          direct index (in mediump float)
+0:11          direct index (mediump float)
 0:11            'a' (in 5-element array of mediump float)
 0:11            Constant:
 0:11              3 (const int)
@@ -91,7 +91,7 @@ ERROR: node is still EOpNull!
 0:36      Function Call: foo(f1[5]; (4-element array of mediump float)
 0:36        'u' (5-element array of mediump float)
 0:38      move second child to first child (mediump 4-component vector of float)
-0:38        direct index (fragColor mediump 4-component vector of float)
+0:38        direct index (mediump 4-component vector of float)
 0:38          'gl_FragData' (fragColor 32-element array of mediump 4-component vector of float)
 0:38          Constant:
 0:38            1000 (const int)
@@ -101,7 +101,7 @@ ERROR: node is still EOpNull!
 0:38          1.000000
 0:38          1.000000
 0:39      move second child to first child (mediump 4-component vector of float)
-0:39        direct index (fragColor mediump 4-component vector of float)
+0:39        direct index (mediump 4-component vector of float)
 0:39          'gl_FragData' (fragColor 32-element array of mediump 4-component vector of float)
 0:39          Constant:
 0:39            -1 (const int)
@@ -111,7 +111,7 @@ ERROR: node is still EOpNull!
 0:39          1.000000
 0:39          1.000000
 0:40      move second child to first child (mediump 4-component vector of float)
-0:40        direct index (fragColor mediump 4-component vector of float)
+0:40        direct index (mediump 4-component vector of float)
 0:40          'gl_FragData' (fragColor 32-element array of mediump 4-component vector of float)
 0:40          Constant:
 0:40            3 (const int)

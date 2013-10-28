@@ -1,4 +1,4 @@
-#version 150 core
+#version 420 core
 
 // testing input arrays without a gl_in[] block redeclaration, see 400.geom for with
 
@@ -20,4 +20,26 @@ void foo3()
     gl_in.length();
     gl_in[i].gl_Position;
     color3.length();
+}
+
+uniform sampler2D s2D;
+in vec2 coord;
+uniform vec4 v4;
+
+void foo4()
+{
+    const ivec2 offsets[5] =
+    {
+        ivec2(0,1),
+        ivec2(1,-2),
+        ivec2(0,3),
+        ivec2(-3,0),
+        ivec2(2,1)
+    };
+
+    vec4 v = textureGatherOffset(s2D, coord, offsets[i].xy);
+
+    offsets[i].xy = ivec2(3);  // ERROR
+    v4.x = 3.2;                // ERROR
+    v4.xy;   // should have non-uniform type
 }

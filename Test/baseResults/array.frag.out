@@ -22,19 +22,19 @@ ERROR: node is still EOpNull!
 0:11    Sequence
 0:11      Branch: Return with expression
 0:11        Construct float (4-element array of float)
-0:11          direct index (in float)
+0:11          direct index (float)
 0:11            'a' (in 5-element array of float)
 0:11            Constant:
 0:11              0 (const int)
-0:11          direct index (in float)
+0:11          direct index (float)
 0:11            'a' (in 5-element array of float)
 0:11            Constant:
 0:11              1 (const int)
-0:11          direct index (in float)
+0:11          direct index (float)
 0:11            'a' (in 5-element array of float)
 0:11            Constant:
 0:11              2 (const int)
-0:11          direct index (in float)
+0:11          direct index (float)
 0:11            'a' (in 5-element array of float)
 0:11            Constant:
 0:11              3 (const int)
@@ -116,7 +116,7 @@ ERROR: node is still EOpNull!
 0:43      Function Call: foo(f1[5]; (4-element array of float)
 0:43        'u' (5-element array of float)
 0:45      move second child to first child (4-component vector of float)
-0:45        direct index (fragColor 4-component vector of float)
+0:45        direct index (4-component vector of float)
 0:45          'gl_FragData' (fragColor 32-element array of 4-component vector of float)
 0:45          Constant:
 0:45            1000 (const int)
@@ -126,7 +126,7 @@ ERROR: node is still EOpNull!
 0:45          1.000000
 0:45          1.000000
 0:46      move second child to first child (4-component vector of float)
-0:46        direct index (fragColor 4-component vector of float)
+0:46        direct index (4-component vector of float)
 0:46          'gl_FragData' (fragColor 32-element array of 4-component vector of float)
 0:46          Constant:
 0:46            -1 (const int)
@@ -136,7 +136,7 @@ ERROR: node is still EOpNull!
 0:46          1.000000
 0:46          1.000000
 0:47      move second child to first child (4-component vector of float)
-0:47        direct index (fragColor 4-component vector of float)
+0:47        direct index (4-component vector of float)
 0:47          'gl_FragData' (fragColor 32-element array of 4-component vector of float)
 0:47          Constant:
 0:47            3 (const int)

@@ -7,11 +7,11 @@ Warning, version 120 is not yet complete; most features are present, but a few a
 0:15        move second child to first child (2-component vector of float)
 0:15          't' (2-component vector of float)
 0:15          add (2-component vector of float)
-0:15            direct index (smooth in 2-component vector of float)
+0:15            direct index (smooth 2-component vector of float)
 0:15              'v' (smooth in 2-element array of 2-component vector of float)
 0:15              Constant:
 0:15                0 (const int)
-0:15            direct index (smooth in 2-component vector of float)
+0:15            direct index (smooth 2-component vector of float)
 0:15              'v' (smooth in 2-element array of 2-component vector of float)
 0:15              Constant:
 0:15                1 (const int)

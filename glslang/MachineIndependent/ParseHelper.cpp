@@ -492,6 +492,8 @@ TIntermTyped* TParseContext::handleBracketDereference(TSourceLoc loc, TIntermTyp
         newType.shallowCopy(base->getType());
         if (base->getType().getQualifier().storage == EvqConst && index->getQualifier().storage == EvqConst)
             newType.getQualifier().storage = EvqConst;
+        else
+            newType.getQualifier().storage = EvqTemporary;
         newType.dereference();
         result->setType(newType);
 
@@ -3383,8 +3385,10 @@ TIntermNode* TParseContext::addSwitch(TSourceLoc loc, TIntermTyped* expression, 
     return switchNode;
 }
 
+// TODO: constant folding: these should use a follow a fully folded model now, and probably move to Constant.cpp scheme.
+
 //
-// This function returns the tree representation for the vector field(s) being accessed from contant vector.
+// This function returns the tree representation for the vector field(s) being accessed from a constant vector.
 // If only one component of vector is accessed (v.x or v[0] where v is a contant vector), then a contant node is
 // returned, else an aggregate node is returned (for v.xy). The input to this function could either be the symbol
 // node or it could be the intermediate tree representation of accessing fields in a constant structure or column of

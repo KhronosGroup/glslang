@@ -14,11 +14,11 @@ WARNING: 0:8: varying deprecated in version 130; may be removed in future releas
 0:12            'texSampler2D' (uniform sampler2D)
 0:12            Construct vec2 (2-component vector of float)
 0:12              add (4-component vector of float)
-0:12                direct index (smooth in 4-component vector of float)
+0:12                direct index (smooth 4-component vector of float)
 0:12                  'gl_TexCoord' (smooth in 6-element array of 4-component vector of float)
 0:12                  Constant:
 0:12                    4 (const int)
-0:12                direct index (smooth in 4-component vector of float)
+0:12                direct index (smooth 4-component vector of float)
 0:12                  'gl_TexCoord' (smooth in 6-element array of 4-component vector of float)
 0:12                  Constant:
 0:12                    5 (const int)
@@ -36,15 +36,15 @@ WARNING: 0:8: varying deprecated in version 130; may be removed in future releas
 0:18        add (4-component vector of float)
 0:18          add (4-component vector of float)
 0:18            add (4-component vector of float)
-0:18              direct index (smooth in 4-component vector of float)
+0:18              direct index (smooth 4-component vector of float)
 0:18                'foo' (smooth in 3-element array of 4-component vector of float)
 0:18                Constant:
 0:18                  1 (const int)
-0:18              direct index (smooth in 4-component vector of float)
+0:18              direct index (smooth 4-component vector of float)
 0:18                'gl_TexCoord' (smooth in 6-element array of 4-component vector of float)
 0:18                Constant:
 0:18                  0 (const int)
-0:18            direct index (smooth in 4-component vector of float)
+0:18            direct index (smooth 4-component vector of float)
 0:18              'gl_TexCoord' (smooth in 6-element array of 4-component vector of float)
 0:18              Constant:
 0:18                4 (const int)

@@ -30,7 +30,7 @@ ERROR: node is still EOpNull!
 0:44          Convert uint to float (float)
 0:44            direct index (mediump uint)
 0:44              nbv: direct index for structure (layout(column_major shared ) mediump 4-component vector of uint)
-0:44                direct index (layout(column_major shared ) uniform block{nbv,ni})
+0:44                direct index (layout(column_major shared ) block{nbv,ni})
 0:44                  'insts' (layout(column_major shared ) uniform 4-element array of block{nbv,ni})
 0:44                  Constant:
 0:44                    2 (const int)
@@ -38,7 +38,7 @@ ERROR: node is still EOpNull!
 0:44                  0 (const int)
 0:44              Constant:
 0:44                2 (const int)
-0:45      indirect index (layout(column_major shared ) uniform block{nbv,ni})
+0:45      indirect index (layout(column_major shared ) block{nbv,ni})
 0:45        'insts' (layout(column_major shared ) uniform 4-element array of block{nbv,ni})
 0:45        direct index (mediump uint)
 0:45          v: direct index for structure (mediump 4-component vector of uint)

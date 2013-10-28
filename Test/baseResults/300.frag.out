@@ -58,7 +58,7 @@ ERROR: node is still EOpNull!
 0:62      move second child to first child (lowp 4-component vector of float)
 0:62        'v' (lowp 4-component vector of float)
 0:62        Function Call: texelFetchOffset(s21;vi2;i1;vi2; (lowp 4-component vector of float)
-0:62          direct index (uniform lowp sampler2D)
+0:62          direct index (lowp sampler2D)
 0:62            'arrayedSampler' (uniform 5-element array of lowp sampler2D)
 0:62            Constant:
 0:62              2 (const int)
@@ -113,7 +113,7 @@ ERROR: node is still EOpNull!
 0:69      move second child to first child (lowp 4-component vector of float)
 0:69        'v' (lowp 4-component vector of float)
 0:69        Function Call: texture(s21;vf2; (lowp 4-component vector of float)
-0:69          indirect index (uniform lowp sampler2D)
+0:69          indirect index (lowp sampler2D)
 0:69            'arrayedSampler' (uniform 5-element array of lowp sampler2D)
 0:69            'ic1D' (flat in mediump int)
 0:69          'c2D' (smooth in lowp 2-component vector of float)

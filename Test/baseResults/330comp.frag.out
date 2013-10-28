@@ -7,7 +7,7 @@ Warning, version 330 is not yet complete; some version-specific features are pre
 0:10        'gl_FragColor' (fragColor 4-component vector of float)
 0:10        'varyingVar' (smooth in 4-component vector of float)
 0:11      move second child to first child (4-component vector of float)
-0:11        direct index (fragColor 4-component vector of float)
+0:11        direct index (4-component vector of float)
 0:11          'gl_FragData' (fragColor 32-element array of 4-component vector of float)
 0:11          Constant:
 0:11            1 (const int)

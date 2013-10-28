@@ -32,7 +32,7 @@ ERROR: node is still EOpNull!
 0:24      Constant:
 0:24        1 (const int)
 0:25      gl_Position: direct index for structure (4-component vector of float)
-0:25        direct index (in block{gl_Position})
+0:25        direct index (block{gl_Position})
 0:25          'gl_in' (in 3-element array of block{gl_Position})
 0:25          Constant:
 0:25            1 (const int)

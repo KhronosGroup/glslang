@@ -7,11 +7,11 @@ Warning, version 130 is not yet complete; most features are present, but a few a
 0:9        move second child to first child (4-component vector of float)
 0:9          'texColor' (4-component vector of float)
 0:9          add (4-component vector of float)
-0:9            direct index (uniform 4-component vector of float)
+0:9            direct index (4-component vector of float)
 0:9              'color' (uniform 6-element array of 4-component vector of float)
 0:9              Constant:
 0:9                1 (const int)
-0:9            direct index (uniform 4-component vector of float)
+0:9            direct index (4-component vector of float)
 0:9              'color' (uniform 6-element array of 4-component vector of float)
 0:9              Constant:
 0:9                1 (const int)
@@ -31,7 +31,7 @@ Warning, version 130 is not yet complete; most features are present, but a few a
 0:13          'texColor' (4-component vector of float)
 0:13          Constant:
 0:13            3 (const int)
-0:13        direct index (uniform float)
+0:13        direct index (float)
 0:13          'alpha' (uniform 16-element array of float)
 0:13          Constant:
 0:13            12 (const int)

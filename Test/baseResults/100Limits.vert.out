@@ -288,32 +288,32 @@
 0:43            'a' (highp float)
 0:43            Constant:
 0:43              2.000000
-0:47      indirect index (uniform lowp sampler2D)
+0:47      indirect index (lowp sampler2D)
 0:47        'fsa' (uniform 3-element array of lowp sampler2D)
 0:47        'ga' (highp int)
-0:48      indirect index (uniform highp float)
+0:48      indirect index (highp float)
 0:48        'fua' (uniform 10-element array of highp float)
 0:48        'ga' (highp int)
-0:49      indirect index (in highp 3-component vector of float)
+0:49      indirect index (highp 3-component vector of float)
 0:49        'am3' (in highp 3X3 matrix of float)
 0:49        'ga' (highp int)
-0:50      indirect index (in highp float)
+0:50      indirect index (highp float)
 0:50        'av2' (in highp 2-component vector of float)
 0:50        'ga' (highp int)
-0:51      indirect index (smooth out highp 4-component vector of float)
+0:51      indirect index (smooth highp 4-component vector of float)
 0:51        'va' (smooth out 4-element array of highp 4-component vector of float)
 0:51        add (highp int)
 0:51          Constant:
 0:51            2 (const int)
 0:51          'ga' (highp int)
-0:52      indirect index (const highp 2-component vector of float)
+0:52      indirect index (highp 2-component vector of float)
 0:52        Constant:
 0:52          1.000000
 0:52          0.000000
 0:52          0.000000
 0:52          1.000000
 0:52        'ga' (highp int)
-0:53      indirect index (const highp float)
+0:53      indirect index (highp float)
 0:53        Constant:
 0:53          2.000000
 0:53          2.000000
@@ -339,34 +339,34 @@
 0:56              0 (const int)
 0:56          Loop Body
 0:57          Sequence
-0:57            indirect index (uniform lowp sampler2D)
+0:57            indirect index (lowp sampler2D)
 0:57              'fsa' (uniform 3-element array of lowp sampler2D)
 0:57              'a' (highp int)
-0:58            indirect index (uniform highp float)
+0:58            indirect index (highp float)
 0:58              'fua' (uniform 10-element array of highp float)
 0:58              add (highp int)
 0:58                'a' (highp int)
 0:58                Constant:
 0:58                  2 (const int)
-0:59            indirect index (in highp 3-component vector of float)
+0:59            indirect index (highp 3-component vector of float)
 0:59              'am3' (in highp 3X3 matrix of float)
 0:59              component-wise multiply (highp int)
 0:59                Constant:
 0:59                  3 (const int)
 0:59                'a' (highp int)
-0:60            indirect index (in highp float)
+0:60            indirect index (highp float)
 0:60              'av2' (in highp 2-component vector of float)
 0:60              component-wise multiply (highp int)
 0:60                Constant:
 0:60                  3 (const int)
 0:60                'a' (highp int)
-0:61            indirect index (smooth out highp 4-component vector of float)
+0:61            indirect index (smooth highp 4-component vector of float)
 0:61              'va' (smooth out 4-element array of highp 4-component vector of float)
 0:61              subtract (highp int)
 0:61                'a' (highp int)
 0:61                Constant:
 0:61                  1 (const int)
-0:62            indirect index (const highp 2-component vector of float)
+0:62            indirect index (highp 2-component vector of float)
 0:62              Constant:
 0:62                1.000000
 0:62                0.000000
@@ -376,7 +376,7 @@
 0:62                'a' (highp int)
 0:62                Constant:
 0:62                  2 (const int)
-0:63            indirect index (const highp float)
+0:63            indirect index (highp float)
 0:63              Constant:
 0:63                2.000000
 0:63                2.000000
@@ -391,23 +391,23 @@
 0:56          Loop Terminal Expression
 0:56          Post-Decrement (highp int)
 0:56            'a' (highp int)
-0:68      direct index (uniform lowp sampler2D)
+0:68      direct index (lowp sampler2D)
 0:68        'fsa' (uniform 3-element array of lowp sampler2D)
 0:68        Constant:
 0:68          2 (const int)
-0:69      direct index (uniform highp float)
+0:69      direct index (highp float)
 0:69        'fua' (uniform 10-element array of highp float)
 0:69        Constant:
 0:69          3 (const int)
-0:70      direct index (in highp 3-component vector of float)
+0:70      direct index (highp 3-component vector of float)
 0:70        'am3' (in highp 3X3 matrix of float)
 0:70        Constant:
 0:70          2 (const int)
-0:71      direct index (in highp float)
+0:71      direct index (highp float)
 0:71        'av2' (in highp 2-component vector of float)
 0:71        Constant:
 0:71          1 (const int)
-0:72      direct index (smooth out highp 4-component vector of float)
+0:72      direct index (smooth highp 4-component vector of float)
 0:72        'va' (smooth out 4-element array of highp 4-component vector of float)
 0:72        Constant:
 0:72          1 (const int)

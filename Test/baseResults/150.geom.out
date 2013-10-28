@@ -62,7 +62,7 @@ ERROR: node is still EOpNull!
 0:33            3 (const int)
 0:33        direct index (float)
 0:33          gl_ClipDistance: direct index for structure (unsized array of float)
-0:33            direct index (in block{gl_Position,gl_PointSize,gl_ClipDistance})
+0:33            direct index (block{gl_Position,gl_PointSize,gl_ClipDistance})
 0:33              'gl_in' (in 4-element array of block{gl_Position,gl_PointSize,gl_ClipDistance})
 0:33              Constant:
 0:33                1 (const int)
@@ -76,7 +76,7 @@ ERROR: node is still EOpNull!
 0:34          Constant:
 0:34            0 (const uint)
 0:34        gl_Position: direct index for structure (4-component vector of float)
-0:34          direct index (in block{gl_Position,gl_PointSize,gl_ClipDistance})
+0:34          direct index (block{gl_Position,gl_PointSize,gl_ClipDistance})
 0:34            'gl_in' (in 4-element array of block{gl_Position,gl_PointSize,gl_ClipDistance})
 0:34            Constant:
 0:34              0 (const int)
@@ -88,7 +88,7 @@ ERROR: node is still EOpNull!
 0:35          Constant:
 0:35            1 (const uint)
 0:35        gl_PointSize: direct index for structure (float)
-0:35          direct index (in block{gl_Position,gl_PointSize,gl_ClipDistance})
+0:35          direct index (block{gl_Position,gl_PointSize,gl_ClipDistance})
 0:35            'gl_in' (in 4-element array of block{gl_Position,gl_PointSize,gl_ClipDistance})
 0:35            Constant:
 0:35              3 (const int)
