@@ -164,7 +164,7 @@ protected:
         TString caller;
         TString callee;
         bool visited;
-        bool subGraph;
+        bool currentPath;
         bool errorGiven;
     };
     typedef std::list<TCall> TGraph;

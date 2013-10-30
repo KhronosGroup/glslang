@@ -259,7 +259,7 @@ void TIntermediate::checkCallGraphCycles(TInfoSink& infoSink)
     // Reset everything, once.
     for (TGraph::iterator call = callGraph.begin(); call != callGraph.end(); ++call) {
         call->visited = false;
-        call->subGraph = false;
+        call->currentPath = false;
         call->errorGiven = false;
     }
 
@@ -284,41 +284,48 @@ void TIntermediate::checkCallGraphCycles(TInfoSink& infoSink)
 
         // Otherwise, we found a new subgraph, process it:
         // See what all can be reached by this new root, and if any of 
-        // that is recursive.  This is done by marking processed calls as active,
-        // and if a new call is found that is already active, we looped, 
+        // that is recursive.  This is done by depth-first traversals, seeing
+        // if a new call is found that was already in the currentPath (a back edge),
         // thereby detecting recursion.
         std::list<TCall*> stack;
+        newRoot->currentPath = true; // currentPath will be true iff it is on the stack
         stack.push_back(newRoot);
-        newRoot->subGraph = true;
         while (! stack.empty()) {
             // get a caller
             TCall* call = stack.back();
-            stack.pop_back();
 
-            // Add to the stack all the callees of the last subgraph node popped from the stack.
-            // This algorithm  always terminates, because only subGraph == false causes a push
-            // and all pushes change subGraph to true, and nothing changes subGraph to false.
-            for (TGraph::iterator child = callGraph.begin(); child != callGraph.end(); ++child) {
+            // Add to the stack just one callee.
+            // This algorithm always terminates, because only ! visited and ! currentPath causes a push
+            // and all pushes change currentPath to true, and all pops change visited to true.
+            TGraph::iterator child = callGraph.begin();
+            for (; child != callGraph.end(); ++child) {
+
+                // If we already visited this node, its whole subgraph has already been processed, so skip it.
+                if (child->visited)
+                    continue;
+
                 if (call->callee == child->caller) {
-                    if (child->subGraph) {
+                    if (child->currentPath) {
+                        // Then, we found a back edge
                         if (! child->errorGiven) {
                             error(infoSink, "Recursion detected:");
                             infoSink.info << "    " << call->callee << " calling " << child->callee << "\n";
                             child->errorGiven = true;
                         }
                     } else {
-                        child->subGraph = true;
+                        child->currentPath = true;
                         stack.push_back(&(*child));
+                        break;
                     }
                 }
             }
+            if (child == callGraph.end()) {
+                // no more callees, we bottomed out, never look at this node again
+                stack.back()->currentPath = false;
+                stack.back()->visited = true;
+                stack.pop_back();
+            }
         }  // end while, meaning nothing left to process in this subtree
-
-        // Mark all the subGraph nodes as visited, closing out this subgraph.
-        for (TGraph::iterator call = callGraph.begin(); call != callGraph.end(); ++call) {
-            if (call->subGraph)
-                call->visited = true;
-        }
 
     } while (newRoot);  // redundant loop check; should always exit via the 'break' above
 }

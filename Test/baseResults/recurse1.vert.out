@@ -101,6 +101,59 @@ Warning, version 330 is not yet complete; some version-specific features are pre
 0:28      Function Call: CDT( (void)
 0:28      Function Call: CDT( (void)
 0:28      Function Call: CBT( (void)
+0:32  Function Definition: norA( (void)
+0:32    Function Parameters: 
+0:33  Function Definition: norB( (void)
+0:33    Function Parameters: 
+0:33    Sequence
+0:33      Function Call: norA( (void)
+0:34  Function Definition: norC( (void)
+0:34    Function Parameters: 
+0:34    Sequence
+0:34      Function Call: norA( (void)
+0:35  Function Definition: norD( (void)
+0:35    Function Parameters: 
+0:35    Sequence
+0:35      Function Call: norA( (void)
+0:36  Function Definition: norE( (void)
+0:36    Function Parameters: 
+0:36    Sequence
+0:36      Function Call: norB( (void)
+0:37  Function Definition: norF( (void)
+0:37    Function Parameters: 
+0:37    Sequence
+0:37      Function Call: norB( (void)
+0:38  Function Definition: norG( (void)
+0:38    Function Parameters: 
+0:38    Sequence
+0:38      Function Call: norE( (void)
+0:39  Function Definition: norH( (void)
+0:39    Function Parameters: 
+0:39    Sequence
+0:39      Function Call: norE( (void)
+0:40  Function Definition: norI( (void)
+0:40    Function Parameters: 
+0:40    Sequence
+0:40      Function Call: norE( (void)
+0:44  Function Definition: norcA( (void)
+0:44    Function Parameters: 
+0:45  Function Definition: norcB( (void)
+0:45    Function Parameters: 
+0:45    Sequence
+0:45      Function Call: norcA( (void)
+0:46  Function Definition: norcC( (void)
+0:46    Function Parameters: 
+0:46    Sequence
+0:46      Function Call: norcB( (void)
+0:47  Function Definition: norcD( (void)
+0:47    Function Parameters: 
+0:47    Sequence
+0:47      Function Call: norcC( (void)
+0:47      Function Call: norcB( (void)
+0:48  Function Definition: norcE( (void)
+0:48    Function Parameters: 
+0:48    Sequence
+0:48      Function Call: norcD( (void)
 0:?   Linker Objects
 
 recurse2.frag
@@ -141,11 +194,11 @@ Warning, version 330 is not yet complete; some version-specific features are pre
 Linked vertex stage:
 
 ERROR: Linking vertex stage: Recursion detected:
-    DT( calling AT(
+    BT( calling CT(
 ERROR: Linking vertex stage: Recursion detected:
     AT( calling BT(
 ERROR: Linking vertex stage: Recursion detected:
-    BT( calling CT(
+    DT( calling AT(
 ERROR: Linking vertex stage: Recursion detected:
     D( calling A(
 ERROR: Linking vertex stage: Recursion detected:
@@ -194,6 +247,59 @@ ERROR: Linking fragment stage: Recursion detected:
 0:28      Function Call: CDT( (void)
 0:28      Function Call: CDT( (void)
 0:28      Function Call: CBT( (void)
+0:32  Function Definition: norA( (void)
+0:32    Function Parameters: 
+0:33  Function Definition: norB( (void)
+0:33    Function Parameters: 
+0:33    Sequence
+0:33      Function Call: norA( (void)
+0:34  Function Definition: norC( (void)
+0:34    Function Parameters: 
+0:34    Sequence
+0:34      Function Call: norA( (void)
+0:35  Function Definition: norD( (void)
+0:35    Function Parameters: 
+0:35    Sequence
+0:35      Function Call: norA( (void)
+0:36  Function Definition: norE( (void)
+0:36    Function Parameters: 
+0:36    Sequence
+0:36      Function Call: norB( (void)
+0:37  Function Definition: norF( (void)
+0:37    Function Parameters: 
+0:37    Sequence
+0:37      Function Call: norB( (void)
+0:38  Function Definition: norG( (void)
+0:38    Function Parameters: 
+0:38    Sequence
+0:38      Function Call: norE( (void)
+0:39  Function Definition: norH( (void)
+0:39    Function Parameters: 
+0:39    Sequence
+0:39      Function Call: norE( (void)
+0:40  Function Definition: norI( (void)
+0:40    Function Parameters: 
+0:40    Sequence
+0:40      Function Call: norE( (void)
+0:44  Function Definition: norcA( (void)
+0:44    Function Parameters: 
+0:45  Function Definition: norcB( (void)
+0:45    Function Parameters: 
+0:45    Sequence
+0:45      Function Call: norcA( (void)
+0:46  Function Definition: norcC( (void)
+0:46    Function Parameters: 
+0:46    Sequence
+0:46      Function Call: norcB( (void)
+0:47  Function Definition: norcD( (void)
+0:47    Function Parameters: 
+0:47    Sequence
+0:47      Function Call: norcC( (void)
+0:47      Function Call: norcB( (void)
+0:48  Function Definition: norcE( (void)
+0:48    Function Parameters: 
+0:48    Sequence
+0:48      Function Call: norcD( (void)
 0:9  Function Definition: cbar(i1; (float)
 0:9    Function Parameters: 
 0:9      '' (in int)
