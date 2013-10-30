@@ -322,6 +322,19 @@ public:
             return (*it).second;
     }
 
+    void findFunctionNameList(const TString& name, TVector<TFunction*>& list)
+    {
+        size_t parenAt = name.find_first_of('(');
+        TString base(name, 0, parenAt + 1);
+
+        tLevel::const_iterator begin = level.lower_bound(base);
+        base[parenAt] = ')';  // assume ')' is lexically after '('
+        tLevel::const_iterator end = level.upper_bound(base);
+        for (tLevel::const_iterator it = begin; it != end; ++it)
+            list.push_back(it->second->getAsFunction());
+    }
+
+    // See if there is already a function in the table having the given non-function-style name.
     bool hasFunctionName(const TString& name) const
     {
         tLevel::const_iterator candidate = level.lower_bound(name);
@@ -397,7 +410,7 @@ public:
         while (table.size() > adoptedLevels)
             pop(0);
     }
-
+    
     void adoptLevels(TSymbolTable& symTable)
     {
         for (unsigned int level = 0; level < symTable.table.size(); ++level) {
@@ -509,6 +522,27 @@ public:
             *currentScope = isGlobalLevel(currentLevel()) || level == currentLevel();  // consider shared levels as "current scope" WRT user globals
 
         return symbol;
+    }
+
+    void findFunctionNameList(const TString& name, TVector<TFunction*>& list, bool& builtIn)
+    {
+        // For user levels, return the set found in the first scope with a match
+        builtIn = false;
+        int level = currentLevel();
+        do {
+            table[level]->findFunctionNameList(name, list);
+            --level;
+        } while (list.empty() && level >= globalLevel);
+
+        if (! list.empty())
+            return;
+
+        // Gather across all built-in levels; they don't hide each other
+        builtIn = true;
+        do {
+            table[level]->findFunctionNameList(name, list);
+            --level;
+        } while (level >= 0);
     }
 
     void relateToOperator(const char* name, TOperator op)

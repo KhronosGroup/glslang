@@ -378,10 +378,11 @@ bool DeduceVersionProfile(TInfoSink& infoSink, EShLanguage stage, bool versionNo
     switch(version) {
     case 100:
     case 300:
-        // versions are complete
-        break;
+
     case 110:
     case 120:
+        // versions are complete
+        break;
     case 130:
     case 140:
         infoSink.info << "Warning, version " << version << " is not yet complete; most features are present, but a few are missing.\n";

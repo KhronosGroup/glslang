@@ -51,3 +51,62 @@ int[2][3] foo(                 // ERROR
               float[2][3] a,   // ERROR
               float[2] b[3],   // ERROR
               float c[2][3]);  // ERROR
+
+int overloadA(in float f);
+int overloadA(out float f);        // ERROR, different qualifiers
+float overloadA(float);            // ERROR, different return value for same signature
+float overloadA(out float f, int);
+float overloadA(int i);
+
+vec2 overloadB(float, float);
+
+vec2 overloadC(int, int);
+vec2 overloadC(int, float);
+vec2 overloadC(float, int);
+vec2 overloadC(vec2, vec2);
+
+vec3 overloadD(int, float);
+vec3 overloadD(float, int);
+
+vec3 overloadE(float[2]);
+vec3 overloadE(mat2 m);
+vec3 overloadE(vec2 v);
+
+void foo()
+{
+    float f;
+    int i;
+
+    overloadB(f, f);
+    overloadB(f, 2);
+    overloadB(1, i);
+
+    overloadC(1, i);
+    overloadC(vec2(1), vec2(2));
+    overloadC(f, 3.0);           // ERROR, no way
+    overloadC(ivec2(1), vec2(2));
+
+    overloadD(i, f);
+    overloadD(f, i);
+    overloadD(i, i);   // ERROR, ambiguous
+
+    int overloadB;     // hiding
+    overloadB(1, i);   // ERROR
+
+    sin(1);
+    texture2D(s2D, ivec2(0));
+    clamp(attv4, 0, 1);
+    clamp(ivec4(attv4), 0, 1);
+
+    int a[2];
+    overloadC(a, 3); // ERROR
+    overloadE(a);    // ERROR
+    overloadE(3.3);  // ERROR
+    overloadE(vec2(3.3));
+    overloadE(mat2(0.5));
+    overloadE(ivec4(1)); // ERROR
+    overloadE(ivec2(1));
+
+    float b[2];
+    overloadE(b);
+}

@@ -1,4 +1,3 @@
-Warning, version 120 is not yet complete; most features are present, but a few are missing.
 ERROR: 0:19: 'vi4' : illegal use of type 'void' 
 ERROR: 0:20: 'vj' : illegal use of type 'void' 
 ERROR: 0:20: 'vk5' : illegal use of type 'void' 

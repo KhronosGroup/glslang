@@ -829,7 +829,13 @@ TIntermAggregate* TParseContext::handleFunctionPrototype(TSourceLoc loc, TFuncti
 }
 
 //
-// Handle seeing a function call in the grammar.
+// Handle seeing function call syntax in the grammar, which could be any of
+//  - .length() method
+//  - constructor
+//  - a call to a built-in function mapped to an operator
+//  - a call to a built-in function that will remain a function call (e.g., texturing)
+//  - user function
+//  - subroutine call (not implemented yet)
 //
 TIntermTyped* TParseContext::handleFunctionCall(TSourceLoc loc, TFunction* fnCall, TIntermNode* intermNode, TIntermAggregate* intermAggregate)
 {
@@ -866,11 +872,11 @@ TIntermTyped* TParseContext::handleFunctionCall(TSourceLoc loc, TFunction* fnCal
         }
     } else {
         //
-        // Not a constructor.  Find it in the symbol table.
+        // Find it in the symbol table.
         //
         const TFunction* fnCandidate;
         bool builtIn;
-        fnCandidate = findFunction(loc, fnCall, &builtIn);
+        fnCandidate = findFunction(loc, *fnCall, builtIn);
         if (fnCandidate) {
             //
             // A declared function.  But, it might still map to a built-in
@@ -898,6 +904,7 @@ TIntermTyped* TParseContext::handleFunctionCall(TSourceLoc loc, TFunction* fnCal
                     intermediate.addToCallGraph(infoSink, currentCaller, fnCandidate->getMangledName());
                 }
 
+                // Make sure storage qualifications work for these arguments.
                 TStorageQualifier qual;
                 TQualifierList& qualifierList = result->getAsAggregate()->getQualifierList();
                 for (int i = 0; i < fnCandidate->getParamCount(); ++i) {
@@ -912,12 +919,6 @@ TIntermTyped* TParseContext::handleFunctionCall(TSourceLoc loc, TFunction* fnCal
                 if (builtIn)
                     nonOpBuiltInCheck(loc, *fnCandidate, result->getAsAggregate());
             }
-        } else {
-            // error message was put out by PaFindFunction()
-            // Put on a dummy node for error recovery
-            TConstUnionArray unionArray(1);
-            unionArray[0].setDConst(0.0);
-            result = intermediate.addConstantUnion(unionArray, TType(EbtFloat, EvqConst), loc);
         }
     }
 
@@ -2543,24 +2544,105 @@ void TParseContext::checkNoShaderLayouts(TSourceLoc loc, const TPublicType& publ
 //
 // Return the function symbol if found, otherwise 0.
 //
-const TFunction* TParseContext::findFunction(TSourceLoc loc, TFunction* call, bool *builtIn)
+const TFunction* TParseContext::findFunction(TSourceLoc loc, const TFunction& call, bool& builtIn)
 {
-    TSymbol* symbol = symbolTable.find(call->getMangledName(), builtIn);
+    const TFunction* function = 0;
 
-    if (symbol == 0) {
-        error(loc, "no matching overloaded function found", call->getName().c_str(), "");
-
-        return 0;
-    }
-
-    const TFunction* function = symbol->getAsFunction();
-    if (! function) {
-        error(loc, "function name expected", call->getName().c_str(), "");
-
-        return 0;
-    }
+    if (profile == EEsProfile || version < 120)
+        function = findFunctionExact(loc, call, builtIn);
+    else if (version < 400)
+        function = findFunction120(loc, call, builtIn);
+    else
+        function = findFunction400(loc, call, builtIn);
 
     return function;
+}
+
+// Function finding algorithm for ES and desktop 110.
+const TFunction* TParseContext::findFunctionExact(TSourceLoc loc, const TFunction& call, bool& builtIn)
+{
+    const TFunction* function = 0;
+
+    TSymbol* symbol = symbolTable.find(call.getMangledName(), &builtIn);
+    if (symbol == 0) {
+        error(loc, "no matching overloaded function found", call.getName().c_str(), "");
+
+        return 0;
+    }
+
+    return symbol->getAsFunction();
+}
+
+// Function finding algorithm for desktop versions 120 through 330.
+const TFunction* TParseContext::findFunction120(TSourceLoc loc, const TFunction& call, bool& builtIn)
+{
+    // first, look for an exact match
+    TSymbol* symbol = symbolTable.find(call.getMangledName(), &builtIn);
+    if (symbol)
+        return symbol->getAsFunction();
+
+    // exact match not found, look through a list of overloaded functions of the same name
+
+    // "If no exact match is found, then [implicit conversions] will be applied to find a match. Mismatched types
+    // on input parameters (in or inout or default) must have a conversion from the calling argument type to the
+    // formal parameter type. Mismatched types on output parameters (out or inout) must have a conversion
+    // from the formal parameter type to the calling argument type.  When argument conversions are used to find
+    // a match, it is a semantic error if there are multiple ways to apply these conversions to make the call match
+    // more than one function."
+
+    const TFunction* candidate = 0;
+    TVector<TFunction*> candidateList;
+    symbolTable.findFunctionNameList(call.getMangledName(), candidateList, builtIn);
+
+    int numPossibleMatches = 0;
+    for (TVector<TFunction*>::const_iterator it = candidateList.begin(); it != candidateList.end(); ++it) {
+        bool possibleMatch = true;
+        const TFunction& function = *(*it);
+        for (int i = 0; i < function.getParamCount(); ++i) {
+            // same types is easy
+            if (*function[i].type == *call[i].type)
+                continue;
+
+            // We have a mismatch in type, see if it is implicitly convertible
+
+            if (function[i].type->isArray() || call[i].type->isArray() ||
+                ! function[i].type->sameElementShape(*call[i].type))
+                possibleMatch = false;
+            else {
+                // do direction-specific checks for conversion of basic type
+                TStorageQualifier qualifier = function[i].type->getQualifier().storage;
+                if (qualifier == EvqIn || qualifier == EvqInOut) {
+                    if (! intermediate.canImplicitlyPromote(call[i].type->getBasicType(), function[i].type->getBasicType()))
+                        possibleMatch = false;
+                }
+                if (qualifier == EvqOut || qualifier == EvqInOut) {
+                    if (! intermediate.canImplicitlyPromote(function[i].type->getBasicType(), call[i].type->getBasicType()))
+                        possibleMatch = false;
+                }
+            }
+            if (! possibleMatch)
+                break;
+        }
+        if (possibleMatch) {
+            if (candidate) {
+                // our second match, meaning ambiguity
+                error(loc, "ambiguous function signature match: multiple signatures match under implicit type conversion", call.getName().c_str(), "");
+            } else
+                candidate = &function;
+        }
+    }
+
+    if (candidate == 0)
+        error(loc, "no matching overloaded function found", call.getName().c_str(), "");
+
+    return candidate;
+}
+
+// Function finding algorithm for desktop version 400 and above.
+const TFunction* TParseContext::findFunction400(TSourceLoc loc, const TFunction& call, bool& builtIn)
+{
+    // TODO: 4.00 functionality: findFunction400()
+    return findFunction120(loc, call, builtIn);
 }
 
 //

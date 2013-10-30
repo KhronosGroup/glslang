@@ -57,7 +57,7 @@ Shader Functionality to Implement/Finish
     GLSL 1.2
       + Handle multiple compilation units per stage
       + Allow initializers on uniform declarations
-      - signature matching takes type conversions into account, ambiguity is an error
+      + signature matching takes type conversions into account, ambiguity is an error
       - allow constructors to contain non-dereferenced arrays?
     GLSL 1.3
       . flat is for both user and predeclared built-in in/out variables

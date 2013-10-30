@@ -140,7 +140,10 @@ public:
     void layoutQualifierCheck(TSourceLoc, const TQualifier&);
     void checkNoShaderLayouts(TSourceLoc, const TPublicType&);
 
-    const TFunction* findFunction(TSourceLoc, TFunction* pfnCall, bool *builtIn = 0);
+    const TFunction* findFunction(TSourceLoc loc, const TFunction& call, bool& builtIn);
+    const TFunction* findFunctionExact(TSourceLoc loc, const TFunction& call, bool& builtIn);
+    const TFunction* findFunction120(TSourceLoc loc, const TFunction& call, bool& builtIn);
+    const TFunction* findFunction400(TSourceLoc loc, const TFunction& call, bool& builtIn);
     TIntermNode* declareVariable(TSourceLoc, TString& identifier, TPublicType&, TArraySizes* typeArray = 0, TIntermTyped* initializer = 0);
     TIntermTyped* addConstructor(TSourceLoc, TIntermNode*, const TType&, TOperator);
     TIntermTyped* constructStruct(TIntermNode*, const TType&, int, TSourceLoc);

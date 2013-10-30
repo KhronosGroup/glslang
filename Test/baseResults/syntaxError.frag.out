@@ -1,4 +1,3 @@
-Warning, version 120 is not yet complete; most features are present, but a few are missing.
 ERROR: 0:9: 'vec5' : undeclared identifier 
 ERROR: 0:9: '' :  syntax error
 ERROR: 2 compilation errors.  No code generated.

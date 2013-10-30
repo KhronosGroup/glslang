@@ -846,20 +846,30 @@ public:
     // See if two types match, in all aspects except arrayness
     bool sameElementType(const TType& right) const
     {
-        return  basicType == right.basicType  &&
-                  sampler == right.sampler    &&
+        return basicType == right.basicType && sameElementShape(right);
+    }
+
+    // See if two type's arrayness match
+    bool sameArrayness(const TType& right) const
+    {
+        return ((arraySizes == 0 && right.arraySizes == 0) ||
+                (arraySizes && right.arraySizes && arraySizes->sizes == right.arraySizes->sizes));
+    }
+
+    // See if two type's elements match in all ways except basic type
+    bool sameElementShape(const TType& right) const
+    {
+        return    sampler == right.sampler    &&
                vectorSize == right.vectorSize &&
                matrixCols == right.matrixCols &&
                matrixRows == right.matrixRows &&
                sameStructType(right);
     }
 
-    // See if two types match in all ways (just the actual type, not qualification
+    // See if two types match in all ways (just the actual type, not qualification)
     bool operator==(const TType& right) const
     {
-        return sameElementType(right) &&
-               ((arraySizes == 0 && right.arraySizes == 0) ||
-                (arraySizes && right.arraySizes && arraySizes->sizes == right.arraySizes->sizes));
+        return sameElementType(right) && sameArrayness(right);
     }
 
     bool operator!=(const TType& right) const
