@@ -2596,8 +2596,13 @@ const TFunction* TParseContext::findFunction120(TSourceLoc loc, const TFunction&
 
     int numPossibleMatches = 0;
     for (TVector<TFunction*>::const_iterator it = candidateList.begin(); it != candidateList.end(); ++it) {
-        bool possibleMatch = true;
         const TFunction& function = *(*it);
+
+        // to even be a potential match, number of arguments has to match
+        if (call.getParamCount() != function.getParamCount())
+            continue;
+
+        bool possibleMatch = true;
         for (int i = 0; i < function.getParamCount(); ++i) {
             // same types is easy
             if (*function[i].type == *call[i].type)

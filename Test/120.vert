@@ -72,6 +72,9 @@ vec3 overloadE(float[2]);
 vec3 overloadE(mat2 m);
 vec3 overloadE(vec2 v);
 
+vec3 overloadF(int);
+vec3 overloadF(float);
+
 void foo()
 {
     float f;
@@ -81,6 +84,7 @@ void foo()
     overloadB(f, 2);
     overloadB(1, i);
 
+    overloadC(1);    // ERROR
     overloadC(1, i);
     overloadC(vec2(1), vec2(2));
     overloadC(f, 3.0);           // ERROR, no way
@@ -109,4 +113,7 @@ void foo()
 
     float b[2];
     overloadE(b);
+    
+    overloadF(1, 1); // ERROR
+    overloadF(1);
 }
