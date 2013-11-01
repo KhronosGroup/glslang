@@ -240,7 +240,7 @@ void SetupBuiltinSymbolTable(int version, EProfile profile)
     }
 
     // Switch to a new pool
-    TPoolAllocator& savedGPA = GetThreadPoolAllocator();
+    TPoolAllocator& previousAllocator = GetThreadPoolAllocator();
     TPoolAllocator* builtInPoolAllocator = new TPoolAllocator();
     SetThreadPoolAllocator(*builtInPoolAllocator);
 
@@ -282,7 +282,7 @@ void SetupBuiltinSymbolTable(int version, EProfile profile)
         delete stageTables[stage];
 
     delete builtInPoolAllocator;
-    SetThreadPoolAllocator(savedGPA);
+    SetThreadPoolAllocator(previousAllocator);
 
     glslang::ReleaseGlobalLock();
 }
@@ -915,9 +915,8 @@ public:
     virtual bool compile(TIntermNode* root, int version = 0, EProfile profile = ENoProfile) { return true; }
 };
 
-
 TShader::TShader(EShLanguage s) 
-    : stage(s)
+    : pool(0), stage(s)
 {
     infoSink = new TInfoSink;
     compiler = new TDeferredCompiler(stage, *infoSink);
@@ -929,6 +928,7 @@ TShader::~TShader()
     delete infoSink;
     delete compiler;
     delete intermediate;
+    delete pool;
 }
 
 //
@@ -936,9 +936,13 @@ TShader::~TShader()
 //
 bool TShader::parse(const TBuiltInResource* builtInResources, int defaultVersion, bool forwardCompatible, EShMessages messages)
 {
-    return CompileDeferred(compiler, strings, numStrings, 0, EShOptNone, builtInResources, defaultVersion, forwardCompatible, messages, *intermediate);
+    if (! InitThread())
+        return false;
+    
+    pool = new TPoolAllocator();
+    SetThreadPoolAllocator(*pool);
 
-    // TODO: memory: pool needs to be popped
+    return CompileDeferred(compiler, strings, numStrings, 0, EShOptNone, builtInResources, defaultVersion, forwardCompatible, messages, *intermediate);
 }
 
 const char* TShader::getInfoLog()
@@ -951,7 +955,7 @@ const char* TShader::getInfoDebugLog()
     return infoSink->debug.c_str();
 }
 
-TProgram::TProgram()
+TProgram::TProgram() : pool(0)
 {
     infoSink = new TInfoSink;
     for (int s = 0; s < EShLangCount; ++s)
@@ -963,6 +967,8 @@ TProgram::~TProgram()
     delete infoSink;
     for (int s = 0; s < EShLangCount; ++s)
         delete intermediate[s];
+
+    delete pool;
 }
 
 //
@@ -972,6 +978,9 @@ TProgram::~TProgram()
 bool TProgram::link(EShMessages messages)
 {
     bool error = false;
+
+    pool = new TPoolAllocator();
+    SetThreadPoolAllocator(*pool);
 
     for (int s = 0; s < EShLangCount; ++s) {
         if (! linkStage((EShLanguage)s, messages))

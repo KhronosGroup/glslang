@@ -265,6 +265,7 @@ namespace glslang {
 
 class TIntermediate;
 class TProgram;
+class TPoolAllocator;
 
 class TShader {
 public:
@@ -276,6 +277,7 @@ public:
     const char* getInfoDebugLog();
 
 protected:
+    TPoolAllocator* pool;
     EShLanguage stage;
     TCompiler* compiler;
     TIntermediate* intermediate;
@@ -301,6 +303,7 @@ protected:
     bool linkStage(EShLanguage, EShMessages);
 
 protected:
+    TPoolAllocator* pool;
     std::list<TShader*> stages[EShLangCount];
     TIntermediate* intermediate[EShLangCount];
     TInfoSink* infoSink;

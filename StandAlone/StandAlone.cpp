@@ -537,7 +537,7 @@ void CompileAndLinkShaders()
     // Per-shader processing...
     //
 
-    glslang::TProgram program;
+    glslang::TProgram& program = *new glslang::TProgram;
     glslang::TWorkItem* workItem;
     while (Worklist.remove(workItem)) {
         EShLanguage stage = FindLanguage(workItem->name);
@@ -575,13 +575,15 @@ void CompileAndLinkShaders()
         puts(program.getInfoDebugLog());
     }
 
-    // free everything up
+    // Free everything up, program has to go before the shaders
+    // because it might have merged stuff from the shaders, and
+    // the stuff from the shaders has to have its destructors called
+    // before the pools holding the memory in the shaders is freed.
+    delete &program;
     while (shaders.size() > 0) {
         delete shaders.back();
         shaders.pop_back();
     }
-
-    // TODO: memory: for each compile, need a GetThreadPoolAllocator().pop();
 }
 
 int C_DECL main(int argc, char* argv[])
@@ -612,7 +614,6 @@ int C_DECL main(int argc, char* argv[])
     }
 
     ProcessConfigFile();
-
 
     //
     // Two modes:
