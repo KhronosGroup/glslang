@@ -459,7 +459,7 @@ protected:
 class TIntermSymbol : public TIntermTyped {
 public:
 	// if symbol is initialized as symbol(sym), the memory comes from the poolallocator of sym. If sym comes from
-	// per process globalpoolallocator, then it causes increased memory usage per compile
+	// per process threadPoolAllocator, then it causes increased memory usage per compile
 	// it is essential to use "symbol = sym" to assign to symbol
     TIntermSymbol(int i, const TString& n, const TType& t) : 
         TIntermTyped(t), id(i) { name = n;} 

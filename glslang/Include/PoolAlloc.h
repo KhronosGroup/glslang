@@ -252,9 +252,9 @@ private:
 typedef TPoolAllocator* PoolAllocatorPointer;
 extern TPoolAllocator& GetThreadPoolAllocator();
 
-struct TThreadGlobalPools
+struct TThreadMemoryPools
 {
-        TPoolAllocator* globalPoolAllocator;
+        TPoolAllocator* threadPoolAllocator;
 };
 
 void SetThreadPoolAllocator(TPoolAllocator& poolAllocator);

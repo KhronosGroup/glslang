@@ -538,6 +538,8 @@ bool CompileDeferred(
 //
 int ShInitialize()
 {
+    glslang::InitGlobalLock();
+
     if (! InitProcess())
         return 0;
 
@@ -546,7 +548,7 @@ int ShInitialize()
     
     glslang::TScanContext::fillInKeywordMap();
 
-    return true;
+    return 1;
 }
 
 //
@@ -908,6 +910,16 @@ int ShGetUniformLocation(const ShHandle handle, const char* name)
 //
 
 namespace glslang {
+
+bool InitializeProcess()
+{
+    return ShInitialize() != 0;
+}
+
+void FinalizeProcess()
+{
+    ShFinalize();
+}
 
 class TDeferredCompiler : public TCompiler {
 public:

@@ -591,12 +591,6 @@ int C_DECL main(int argc, char* argv[])
     bool compileFailed = false;
     bool linkFailed = false;
     
-    // Init for front-end proper
-    ShInitialize();
-
-    // Init for standalone
-    glslang::InitGlobalLock();
-
     if (! ProcessArguments(argc, argv)) {
         usage();
         return EFailUsage;
@@ -620,9 +614,13 @@ int C_DECL main(int argc, char* argv[])
     // 1) linking all arguments together, single-threaded, new C++ interface
     // 2) independent arguments, can be tackled by multiple asynchronous threads, for testing thread safety, using the old handle interface
     //
-    if (Options & EOptionsLinkProgram)
+    if (Options & EOptionsLinkProgram) {
+        glslang::InitializeProcess();
         CompileAndLinkShaders();
-    else {
+        glslang::FinalizeProcess();
+    } else {
+        ShInitialize();
+
         bool printShaderNames = Worklist.size() > 1;
 
         if (Options & EOptionMultiThreaded) {
@@ -650,6 +648,8 @@ int C_DECL main(int argc, char* argv[])
                 delete Work[w];
             }
         }
+
+        ShFinalize();
     }
 
     if (Delay)

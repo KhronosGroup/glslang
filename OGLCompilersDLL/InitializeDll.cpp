@@ -94,7 +94,7 @@ bool InitThread()
     if (OS_GetTLSValue(ThreadInitializeIndex) != 0)
         return true;
 
-	InitializeGlobalPools();
+	InitializeMemoryPools();
 
     if (! OS_SetTLSValue(ThreadInitializeIndex, (void *)1)) {
 		assert(0 && "InitThread(): Unable to set init flag.");

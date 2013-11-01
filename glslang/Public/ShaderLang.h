@@ -267,6 +267,20 @@ class TIntermediate;
 class TProgram;
 class TPoolAllocator;
 
+// Call this exactly once per process before using anything else
+bool InitializeProcess();
+
+// Call once per process to tear down everything
+void FinalizeProcess();
+
+// Make one TShader per shader that you will link into a program.  Then
+// provide the shader through setStrings(), then call parse(), then query
+// the info logs.
+//
+// N.B.: Does not yet support having the same TShader instance being linked multiple programs.
+//
+// N.B.: Destruct a linked program *before* destructing the shaders linked into it.
+//
 class TShader {
 public:
     explicit TShader(EShLanguage);
@@ -291,6 +305,12 @@ private:
     TShader& operator=(TShader&);
 };
 
+// Make one TProgram per set of shaders that will get linked together.  Add all 
+// the shaders that are to be linked together.  After calling shader.parse()
+// for all shaders, call link().
+//
+// N.B.: Destruct a linked program *before* destructing the shaders linked into it.
+//
 class TProgram {
 public:
     TProgram();
@@ -313,6 +333,5 @@ private:
 };
 
 } // end namespace glslang
-
 
 #endif // _COMPILER_INTERFACE_INCLUDED_

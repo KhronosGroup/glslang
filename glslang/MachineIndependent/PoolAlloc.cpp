@@ -42,17 +42,17 @@ namespace glslang {
 
 OS_TLSIndex PoolIndex;
 
-void InitializeGlobalPools()
+void InitializeMemoryPools()
 {
-    TThreadGlobalPools* globalPools = static_cast<TThreadGlobalPools*>(OS_GetTLSValue(PoolIndex));    
-    if (globalPools)
+    TThreadMemoryPools* pools = static_cast<TThreadMemoryPools*>(OS_GetTLSValue(PoolIndex));    
+    if (pools)
         return;
 
-    TPoolAllocator *globalPoolAllocator = new TPoolAllocator();
+    TPoolAllocator *threadPoolAllocator = new TPoolAllocator();
 
-    TThreadGlobalPools* threadData = new TThreadGlobalPools();
+    TThreadMemoryPools* threadData = new TThreadMemoryPools();
     
-    threadData->globalPoolAllocator = globalPoolAllocator;
+    threadData->threadPoolAllocator = threadPoolAllocator;
     	
     OS_SetTLSValue(PoolIndex, threadData);
 }
@@ -60,7 +60,7 @@ void InitializeGlobalPools()
 void FreeGlobalPools()
 {
     // Release the allocated memory for this thread.
-    TThreadGlobalPools* globalPools = static_cast<TThreadGlobalPools*>(OS_GetTLSValue(PoolIndex));    
+    TThreadMemoryPools* globalPools = static_cast<TThreadMemoryPools*>(OS_GetTLSValue(PoolIndex));    
     if (! globalPools)
         return;
 	
@@ -86,16 +86,16 @@ void FreePoolIndex()
 
 TPoolAllocator& GetThreadPoolAllocator()
 {
-    TThreadGlobalPools* threadData = static_cast<TThreadGlobalPools*>(OS_GetTLSValue(PoolIndex));
+    TThreadMemoryPools* threadData = static_cast<TThreadMemoryPools*>(OS_GetTLSValue(PoolIndex));
 
-    return *threadData->globalPoolAllocator;
+    return *threadData->threadPoolAllocator;
 }
 
 void SetThreadPoolAllocator(TPoolAllocator& poolAllocator)
 {
-    TThreadGlobalPools* threadData = static_cast<TThreadGlobalPools*>(OS_GetTLSValue(PoolIndex));
+    TThreadMemoryPools* threadData = static_cast<TThreadMemoryPools*>(OS_GetTLSValue(PoolIndex));
 
-    threadData->globalPoolAllocator = &poolAllocator;
+    threadData->threadPoolAllocator = &poolAllocator;
 }
 
 //
