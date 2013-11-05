@@ -779,13 +779,13 @@ declaration
     }
     | type_qualifier IDENTIFIER SEMICOLON {
         parseContext.pipeInOutFix($1.loc, $1.qualifier);
-        parseContext.checkNoShaderLayouts($1.loc, $1);
+        parseContext.checkNoShaderLayouts($1.loc, $1.shaderQualifiers);
         parseContext.addQualifierToExisting($1.loc, $1.qualifier, *$2.string);
         $$ = 0;
     }
     | type_qualifier IDENTIFIER identifier_list SEMICOLON {
         parseContext.pipeInOutFix($1.loc, $1.qualifier);
-        parseContext.checkNoShaderLayouts($1.loc, $1);
+        parseContext.checkNoShaderLayouts($1.loc, $1.shaderQualifiers);
         $3->push_back($2.string);
         parseContext.addQualifierToExisting($1.loc, $1.qualifier, *$3);
         $$ = 0;
@@ -797,7 +797,7 @@ block_structure
         --parseContext.structNestingLevel;
         parseContext.blockName = $2.string;
         parseContext.pipeInOutFix($1.loc, $1.qualifier);
-        parseContext.checkNoShaderLayouts($1.loc, $1);
+        parseContext.checkNoShaderLayouts($1.loc, $1.shaderQualifiers);
         parseContext.currentBlockQualifier = $1.qualifier;
         $$.loc = $1.loc;
         $$.typeList = $5;
@@ -919,7 +919,7 @@ parameter_declaration
         if ($1.qualifier.precision != EpqNone)
             $$.param.type->getQualifier().precision = $1.qualifier.precision;
         
-        parseContext.checkNoShaderLayouts($1.loc, $1);
+        parseContext.checkNoShaderLayouts($1.loc, $1.shaderQualifiers);
         parseContext.parameterSamplerCheck($2.loc, $1.qualifier.storage, *$$.param.type);
         parseContext.paramCheck($1.loc, $1.qualifier.storage, $$.param.type);
     }
@@ -937,7 +937,7 @@ parameter_declaration
         if ($1.qualifier.precision != EpqNone)
             $$.param.type->getQualifier().precision = $1.qualifier.precision;
         
-        parseContext.checkNoShaderLayouts($1.loc, $1);
+        parseContext.checkNoShaderLayouts($1.loc, $1.shaderQualifiers);
         parseContext.parameterSamplerCheck($2.loc, $1.qualifier.storage, *$$.param.type);
         parseContext.paramCheck($1.loc, $1.qualifier.storage, $$.param.type);
     }
@@ -1038,7 +1038,8 @@ fully_specified_type
         if ($2.arraySizes && parseContext.arrayQualifierError($2.loc, $1.qualifier))
             $2.arraySizes = 0;
         
-        parseContext.checkNoShaderLayouts($2.loc, $1);
+        parseContext.checkNoShaderLayouts($2.loc, $1.shaderQualifiers);
+        parseContext.mergeShaderLayoutQualifiers($2.loc, $2.shaderQualifiers, $1.shaderQualifiers);
         parseContext.mergeQualifiers($2.loc, $2.qualifier, $1.qualifier, true);
         parseContext.precisionQualifierCheck($2.loc, $2);
 
@@ -1095,7 +1096,7 @@ layout_qualifier_id_list
     }
     | layout_qualifier_id_list COMMA layout_qualifier_id {
         $$ = $1;
-        parseContext.mergeShaderLayoutQualifiers($2.loc, $$, $3);
+        parseContext.mergeShaderLayoutQualifiers($2.loc, $$.shaderQualifiers, $3.shaderQualifiers);
         parseContext.mergeObjectLayoutQualifiers($2.loc, $$.qualifier, $3.qualifier);
     }
 
@@ -1134,7 +1135,7 @@ type_qualifier
         if ($$.basicType == EbtVoid)
             $$.basicType = $2.basicType;
 
-        parseContext.mergeShaderLayoutQualifiers($$.loc, $$, $2);
+        parseContext.mergeShaderLayoutQualifiers($$.loc, $$.shaderQualifiers, $2.shaderQualifiers);
         parseContext.mergeQualifiers($$.loc, $$.qualifier, $2.qualifier, false);
     }
     ;
@@ -1569,7 +1570,7 @@ type_specifier_nonarray
         $$.setMatrix(4, 4);
     }
     | ATOMIC_UINT {
-        // TODO: 4.2 functionality: add type
+        // TODO: 4.2 functionality: add atomic_uint type
         $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
         $$.basicType = EbtInt;
     }
@@ -2051,7 +2052,7 @@ struct_declaration
 
         $$ = $3;
 
-        parseContext.checkNoShaderLayouts($1.loc, $1);
+        parseContext.checkNoShaderLayouts($1.loc, $1.shaderQualifiers);
         parseContext.voidErrorCheck($2.loc, (*$3)[0].type->getFieldName(), $2.basicType);
         parseContext.mergeQualifiers($2.loc, $2.qualifier, $1.qualifier, true);
         parseContext.precisionQualifierCheck($2.loc, $2);

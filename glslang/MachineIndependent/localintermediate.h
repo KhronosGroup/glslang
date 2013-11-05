@@ -57,7 +57,7 @@ class TSymbol;
 class TIntermediate {
 public:
     explicit TIntermediate(EShLanguage l, int v = 0, EProfile p = ENoProfile) : language(l), treeRoot(0), profile(p), version(v), numMains(0), numErrors(0),
-        invocations(0), maxVertices(0), inputPrimitive(ElgNone), outputPrimitive(ElgNone) { }
+        invocations(0), maxVertices(0), inputPrimitive(ElgNone), outputPrimitive(ElgNone), pixelCenterInteger(false), originUpperLeft(false) { }
 
     void setVersion(int v) { version = v; }
     int getVersion() const { return version; }
@@ -129,6 +129,10 @@ public:
         outputPrimitive = p;
         return true;
     }
+    void setOriginUpperLeft() { originUpperLeft = true; }
+    bool getOriginUpperLeft() const { return originUpperLeft; }
+    void setPixelCenterInteger() { pixelCenterInteger = true; }
+    bool getPixelCenterInteger() const { return pixelCenterInteger; }
 
     void addToCallGraph(TInfoSink&, const TString& caller, const TString& callee);
     void merge(TInfoSink&, TIntermediate&);
@@ -157,6 +161,8 @@ protected:
     int maxVertices;
     TLayoutGeometry inputPrimitive;
     TLayoutGeometry outputPrimitive;
+    bool pixelCenterInteger;
+    bool originUpperLeft;
 
     // for detecting recursion:  pair is <caller, callee>
     struct TCall {

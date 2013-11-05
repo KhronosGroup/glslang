@@ -627,7 +627,7 @@ int TPpContext::byte_scan(TPpContext* pp, InputSrc *in, TPpToken * ppToken)
                 return '.';
             }
         case '/':
-            // TODO: preprocessor: use the Scan.cpp comment scanner
+            // TODO: preprocessor simplification: use the Scan.cpp comment scanner
             ch = pp->currentInput->getch(pp, pp->currentInput, ppToken);
             if (ch == '/') {
                 do {

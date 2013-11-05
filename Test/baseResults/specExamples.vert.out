@@ -30,6 +30,8 @@ ERROR: 0:95: 'binding' : requires block, or sampler/image, or atomic-counter typ
 ERROR: 0:96: 'binding' : requires block, or sampler/image, or atomic-counter type 
 ERROR: 0:97: 'binding' : requires block, or sampler/image, or atomic-counter type 
 ERROR: 0:106: '' : vertex input cannot be further qualified 
+ERROR: 0:106: 'redeclaration' : cannot change storage, memory, or auxiliary qualification of gl_FrontColor
+ERROR: 0:107: 'redeclaration' : cannot change storage, memory, or auxiliary qualification of gl_FrontColor
 ERROR: 0:112: 'ColorIvn' : identifier not previously declared 
 ERROR: 0:132: 'shared' : not supported in this stage: vertex
 ERROR: 0:134: '' : function does not return a value: funcA
@@ -40,7 +42,7 @@ ERROR: 0:153: '' : function does not return a value: func3
 ERROR: 0:192: 'constructor' : constructing from a non-dereferenced array 
 ERROR: 0:193: 'constructor' : constructing from a non-dereferenced array 
 ERROR: 0:194: 'constructor' : constructing from a non-dereferenced array 
-ERROR: 40 compilation errors.  No code generated.
+ERROR: 42 compilation errors.  No code generated.
 
 ERROR: node is still EOpNull!
 0:134  Function Definition: funcA(I21; (4-component vector of float)

@@ -103,5 +103,13 @@ uniform multi {
     int c[2][3];      // ERROR
 } multiInst[2][3];    // ERROR
 
+out vec4 colors[4];
+
+void foo()
+{
+    colors[2] = c4D;
+    colors[ic1D] = c4D;
+}
+
 float imageBuffer;    // ERROR, reserved
 float uimage2DRect;   // ERROR, reserved

@@ -621,8 +621,9 @@ void TBuiltIns::initialize(int version, EProfile profile)
     // (Per-stage functions below.)
     //
     if ((profile == EEsProfile && version == 100) ||
-        profile == ECompatibilityProfile ||
-        version < 150) {
+         profile == ECompatibilityProfile ||
+        (profile == ECoreProfile && version < 420) ||
+         profile == ENoProfile) {
         commonBuiltins.append(
             "vec4 texture2D(sampler2D, vec2);"
 
@@ -634,8 +635,9 @@ void TBuiltIns::initialize(int version, EProfile profile)
             "\n");
     }
 
-    if (profile != EEsProfile &&
-        (profile == ECompatibilityProfile || version < 150)) {
+    if ( profile == ECompatibilityProfile ||
+        (profile == ECoreProfile && version < 420) ||
+         profile == ENoProfile) {
         commonBuiltins.append(
             "vec4 texture1D(sampler1D, float);"
 
@@ -651,8 +653,6 @@ void TBuiltIns::initialize(int version, EProfile profile)
             "vec4 shadow2DProj(sampler2DShadow, vec4);"
             
             "\n");
-
-        // TODO: functionality: non-ES legacy texturing for Lod, others?
     }
 
     //
@@ -686,6 +686,8 @@ void TBuiltIns::initialize(int version, EProfile profile)
     //============================================================================
     //
     // Prototypes for built-in functions seen by vertex shaders only.
+    // (Except legacy lod functions, where it depends which release they are
+    // vertex only.)
     //
     //============================================================================
 
@@ -698,8 +700,16 @@ void TBuiltIns::initialize(int version, EProfile profile)
     //
     // Original-style texture Functions with lod.
     //
-    if (profile != EEsProfile || version == 100) {
-        stageBuiltins[EShLangVertex].append(
+    TString* s;
+    if (version < 130)
+        s = &stageBuiltins[EShLangVertex];
+    else
+        s = &commonBuiltins;
+    if ((profile == EEsProfile && version == 100) ||
+         profile == ECompatibilityProfile ||
+        (profile == ECoreProfile && version < 420) ||
+         profile == ENoProfile) {             
+        s->append(
             "vec4 texture2DLod(sampler2D, vec2, float);"
             "vec4 texture2DProjLod(sampler2D, vec3, float);"
             "vec4 texture2DProjLod(sampler2D, vec4, float);"
@@ -707,8 +717,10 @@ void TBuiltIns::initialize(int version, EProfile profile)
             
             "\n");
     }
-    if (profile != EEsProfile && version > 100) {
-        stageBuiltins[EShLangVertex].append(
+    if ( profile == ECompatibilityProfile ||
+        (profile == ECoreProfile && version < 420) ||
+         profile == ENoProfile) {
+        s->append(
             "vec4 texture1DLod(sampler1D, float, float);"
             "vec4 texture1DProjLod(sampler1D, vec2, float);"
             "vec4 texture1DProjLod(sampler1D, vec4, float);"
@@ -982,7 +994,7 @@ void TBuiltIns::initialize(int version, EProfile profile)
     if (version >= 430) {
         stageBuiltins[EShLangCompute].append(
             "in uvec3 gl_NumWorkGroups;"
-            // TODO: compute shader: constant with no initializer                "const uvec3 gl_WorkGroupSize;"
+            // TODO: 4.3 functionality: compute shader: constant with no initializer                "const uvec3 gl_WorkGroupSize;"
 
             "in uvec3 gl_WorkGroupID;"
             "in uvec3 gl_LocalInvocationID;"
@@ -1184,7 +1196,7 @@ void TBuiltIns::initialize(int version, EProfile profile)
     //============================================================================
 
     if (version >= 400) {
-        // TODO: tessellation: gl_MaxPatchVertices below needs to move to resources mechanism
+        // TODO: 4.0 tessellation: gl_MaxPatchVertices below needs to move to resources mechanism
         stageBuiltins[EShLangTessControl].append(
             "const int gl_MaxPatchVertices = 32;"
             );
@@ -1242,7 +1254,7 @@ void TBuiltIns::initialize(int version, EProfile profile)
     //============================================================================
 
     if (version >= 400) {
-        // TODO: tessellation: gl_MaxPatchVertices below needs to move to resources mechanism
+        // TODO: 4.0 tessellation: gl_MaxPatchVertices below needs to move to resources mechanism
         stageBuiltins[EShLangTessEvaluation].append(
             "const int gl_MaxPatchVertices = 32;"
             );
@@ -2084,17 +2096,14 @@ void IdentifyBuiltIns(int version, EProfile profile, EShLanguage language, TSymb
     //
     switch(language) {
     case EShLangVertex:
+    case EShLangTessControl:
+    case EShLangTessEvaluation:
+    case EShLangGeometry:
         SpecialQualifier("gl_Position",   EvqPosition, symbolTable);
         SpecialQualifier("gl_PointSize",  EvqPointSize, symbolTable);
         SpecialQualifier("gl_ClipVertex", EvqClipVertex, symbolTable);
         SpecialQualifier("gl_VertexID",   EvqVertexId, symbolTable);
         SpecialQualifier("gl_InstanceID", EvqInstanceId, symbolTable);
-        break;
-
-    case EShLangTessControl:
-    case EShLangTessEvaluation:
-    case EShLangGeometry:
-        // TODO: desktop functionality: support new stages: note it is probably best to stop adding/using special qualifiers, given the passthrough nature of these stages
         break;
 
     case EShLangFragment:
@@ -2106,7 +2115,7 @@ void IdentifyBuiltIns(int version, EProfile profile, EShLanguage language, TSymb
         break;
 
     case EShLangCompute:
-        // TODO: desktop functionality: support new stages
+        // TODO: 4.3 desktop functionality: compute special variables
         break;
 
     default:

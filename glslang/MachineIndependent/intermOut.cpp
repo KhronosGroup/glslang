@@ -585,6 +585,12 @@ void TIntermediate::outputTree(TInfoSink& infoSink)
         infoSink.debug << "input primitive = " << TQualifier::getGeometryString(inputPrimitive) << "\n";
         infoSink.debug << "output primitive = " << TQualifier::getGeometryString(outputPrimitive) << "\n";
     }
+    if (language == EShLangFragment) {
+        if (pixelCenterInteger)
+            infoSink.debug << "gl_FragCoord pixel center is integer\n";
+        if (originUpperLeft)
+            infoSink.debug << "gl_FragCoord origin is upper left\n";
+    }
 
     if (treeRoot == 0)
         return;

@@ -73,6 +73,9 @@ void TIntermediate::merge(TInfoSink& infoSink, TIntermediate& unit)
         (profile == EEsProfile && unit.profile != EEsProfile))
         error(infoSink, "Cannot mix ES profile with non-ES profile shaders\n");
 
+    if (originUpperLeft != unit.originUpperLeft || pixelCenterInteger != unit.pixelCenterInteger)
+        error(infoSink, "gl_FragCoord redeclarations must match across shaders\n");
+
     if (unit.treeRoot == 0)
         return;
 
@@ -101,7 +104,7 @@ void TIntermediate::merge(TInfoSink& infoSink, TIntermediate& unit)
 //
 void TIntermediate::mergeBodies(TInfoSink& infoSink, TIntermSequence& globals, const TIntermSequence& unitGlobals)
 {
-    // TODO: Performance: Processing in alphabetical order will be faster
+    // TODO: link-time performance: Processing in alphabetical order will be faster
 
     // Error check the global objects, not including the linker objects
     for (unsigned int child = 0; child < globals.size() - 1; ++child) {
@@ -156,8 +159,6 @@ void TIntermediate::mergeLinkerObjects(TInfoSink& infoSink, TIntermSequence& lin
 // well enough.  Rules can be different for intra- vs. cross-stage matching.
 //
 // This function only does one of intra- or cross-stage matching per call.
-//
-// TODO: Linker Functionality: this function is under active development
 //
 void TIntermediate::mergeErrorCheck(TInfoSink& infoSink, const TIntermSymbol& symbol, const TIntermSymbol& unitSymbol, bool crossStage)
 {
@@ -340,7 +341,7 @@ void TIntermediate::inOutLocationCheck(TInfoSink& infoSink)
     bool fragOutWithNoLocation = false;
     int numFragOut = 0;
 
-    // TODO: maps for location collision checking
+    // TODO: linker functionality: location collision checking
 
     TIntermSequence& linkObjects = findLinkerObjects();
     for (size_t i = 0; i < linkObjects.size(); ++i) {

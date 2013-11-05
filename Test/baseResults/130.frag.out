@@ -1,6 +1,9 @@
 Warning, version 130 is not yet complete; most features are present, but a few are missing.
 ERROR: 0:25: 'texture gather function' : not supported for this version or the enabled extensions 
-ERROR: 1 compilation errors.  No code generated.
+ERROR: 0:35: 'redeclaration' : cannot change the type of gl_Color
+ERROR: 0:38: 'gl_Color' : redeclaring non-array as array 
+ERROR: 0:39: 'redeclaration' : cannot change storage, memory, or auxiliary qualification of gl_Color
+ERROR: 4 compilation errors.  No code generated.
 
 ERROR: node is still EOpNull!
 0:16  Function Definition: main( (void)
@@ -48,4 +51,6 @@ ERROR: node is still EOpNull!
 0:?     'fnop' (noperspective in float)
 0:?     'gl_ClipDistance' (smooth in unsized array of float)
 0:?     'sampC' (uniform samplerCube)
+0:?     'gl_Color' (smooth in 4-component vector of float)
+0:?     'gl_Color' (flat in 4-component vector of float)
 

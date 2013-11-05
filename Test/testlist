@@ -14,6 +14,7 @@ versionsErrors.vert
 140.frag
 150.vert
 150.geom
+150.frag
 precision.frag
 precision.vert
 nonSquare.vert

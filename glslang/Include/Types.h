@@ -386,6 +386,25 @@ public:
     }
 };
 
+// Qualifiers that don't need to be keep per object.  They have shader scope, not object scope.
+// So, they will not be part of TType, TQualifier, etc.
+struct TShaderQualifiers {
+    TLayoutGeometry geometry; // geometry shader in/out primitives
+    bool pixelCenterInteger;  // fragment shader
+    bool originUpperLeft;     // fragment shader
+    int invocations;          // 0 means no declaration
+    int maxVertices;
+
+    void init()
+    {
+        geometry = ElgNone;
+        originUpperLeft = false;
+        pixelCenterInteger = false;
+        invocations = 0;        // 0 means no declaration
+        maxVertices = 0;
+    }
+};
+
 //
 // TPublicType is just temporarily used while parsing and not quite the same
 // information kept per node in TType.  Due to the bison stack, it can't have
@@ -399,9 +418,7 @@ public:
     TBasicType basicType;
     TSampler sampler;
     TQualifier qualifier;
-    TLayoutGeometry geometry; // don't keep this in the qualifier; it's more a per shader than per type
-    int invocations;          // 0 means no declaration
-    int maxVertices;
+    TShaderQualifiers shaderQualifiers;
     int vectorSize : 4;
     int matrixCols : 4;
     int matrixRows : 4;
@@ -432,9 +449,7 @@ public:
         initType(loc);
         sampler.clear();
         initQualifiers(global);
-        geometry = ElgNone;
-        invocations = 0;        // 0 means no declaration
-        maxVertices = 0;
+        shaderQualifiers.init();
     }
 
     void setVector(int s)
@@ -793,10 +808,11 @@ public:
         else
             totalSize = vectorSize;
 
-        if (isArray())
-            totalSize *= Max(getArraySize(), getMaxArraySize());
-
-        // TODO: desktop arrays: it should be ill-defined to get object size if the array is not sized, so the max() above maybe should be an assert
+        if (isArray()) {
+            // this function can only be used in paths that don't allow unsized arrays
+            assert(getArraySize() > 0);
+            totalSize *= getArraySize();
+        }
 
         return totalSize;
     }

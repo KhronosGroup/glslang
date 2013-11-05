@@ -137,7 +137,7 @@ bool OS_FreeTLSIndex(OS_TLSIndex nIndex)
 		return false;
 }
 
-// TODO: if we need these on linux, flesh them out
+// TODO: non-windows: if we need these on linux, flesh them out
 void InitGlobalLock() { }
 void GetGlobalLock() { }
 void ReleaseGlobalLock() { }

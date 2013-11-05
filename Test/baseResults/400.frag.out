@@ -1,10 +1,15 @@
 Warning, version 400 is not yet complete; some version-specific features are present, but many are missing.
 ERROR: 0:20: 'texture gather component' : must be a constant 
 ERROR: 0:21: 'texture gather component' : must be 0, 1, 2, or 3 
-ERROR: 0:26: 'location qualifier on input' : not supported for this version or the enabled extensions 
-ERROR: 0:34: 'location qualifier on uniform or buffer' : not supported for this version or the enabled extensions 
-ERROR: 4 compilation errors.  No code generated.
+ERROR: 0:28: 'location qualifier on input' : not supported for this version or the enabled extensions 
+ERROR: 0:36: 'location qualifier on uniform or buffer' : not supported for this version or the enabled extensions 
+ERROR: 0:38: 'redeclaration' : cannot apply layout qualifier to gl_Color
+ERROR: 0:39: 'redeclaration' : cannot change qualification of gl_ClipDistance
+ERROR: 0:41: 'gl_FragCoord' : cannot redeclare after use 
+ERROR: 7 compilation errors.  No code generated.
 
+gl_FragCoord pixel center is integer
+gl_FragCoord origin is upper left
 ERROR: node is still EOpNull!
 0:10  Function Definition: main( (void)
 0:10    Function Parameters: 
@@ -105,6 +110,10 @@ ERROR: node is still EOpNull!
 0:23            0.100000
 0:23          Construct ivec2 (2-component vector of int)
 0:23            'i' (flat in int)
+0:25      Sequence
+0:25        move second child to first child (4-component vector of float)
+0:25          'c' (4-component vector of float)
+0:25          'gl_FragCoord' (gl_FragCoord 4-component vector of float)
 0:?   Linker Objects
 0:?     'c2D' (smooth in 2-component vector of float)
 0:?     'i' (flat in int)
@@ -112,8 +121,12 @@ ERROR: node is still EOpNull!
 0:?     'arrayedSampler' (uniform 5-element array of sampler2D)
 0:?     'samp2dr' (uniform usampler2DRect)
 0:?     'isamp2DA' (uniform isampler2DArray)
-0:?     'gl_ClipDistance' (smooth in unsized array of float)
+0:?     'gl_ClipDistance' (smooth in 4-element array of float)
 0:?     'vl' (layout(location=4 ) smooth in 4-component vector of float)
 0:?     'vl2' (layout(location=4 ) smooth in 4-component vector of float)
 0:?     'uv3' (layout(location=3 ) uniform 3-component vector of float)
+0:?     '__anon__0' (in block{gl_FogFragCoord,gl_TexCoord,gl_Color,gl_SecondaryColor})
+0:?     '__anon__0' (in block{gl_FogFragCoord,gl_TexCoord,gl_Color,gl_SecondaryColor})
+0:?     'gl_FragCoord' (gl_FragCoord 4-component vector of float)
+0:?     'gl_FragCoord' (gl_FragCoord 4-component vector of float)
 

@@ -17,9 +17,10 @@ ERROR: 0:102: 'arrays of arrays' : not supported with this profile: es
 ERROR: 0:102: 'arrays of arrays' : not supported with this profile: es
 ERROR: 0:103: 'arrays of arrays' : not supported with this profile: es
 ERROR: 0:100: 'arrays of arrays' : not supported with this profile: es
-ERROR: 0:106: 'imageBuffer' : Reserved word. 
-ERROR: 0:106: '' :  syntax error
-ERROR: 21 compilation errors.  No code generated.
+ERROR: 0:111: 'variable indexing fragment shader ouput array' : not supported with this profile: es
+ERROR: 0:114: 'imageBuffer' : Reserved word. 
+ERROR: 0:114: '' :  syntax error
+ERROR: 22 compilation errors.  No code generated.
 
 ERROR: node is still EOpNull!
 0:53  Function Definition: main( (void)
@@ -208,6 +209,20 @@ ERROR: node is still EOpNull!
 0:96          'c4D' (smooth lowp 4-component vector of float)
 0:97      arc hyp. tangent (lowp 3-component vector of float)
 0:97        'c3D' (smooth in lowp 3-component vector of float)
+0:108  Function Definition: foo( (void)
+0:108    Function Parameters: 
+0:110    Sequence
+0:110      move second child to first child (lowp 4-component vector of float)
+0:110        direct index (lowp 4-component vector of float)
+0:110          'colors' (out 4-element array of lowp 4-component vector of float)
+0:110          Constant:
+0:110            2 (const int)
+0:110        'c4D' (smooth lowp 4-component vector of float)
+0:111      move second child to first child (lowp 4-component vector of float)
+0:111        indirect index (lowp 4-component vector of float)
+0:111          'colors' (out 4-element array of lowp 4-component vector of float)
+0:111          'ic1D' (flat in mediump int)
+0:111        'c4D' (smooth lowp 4-component vector of float)
 0:?   Linker Objects
 0:?     's2D' (uniform lowp sampler2D)
 0:?     's3D' (uniform lowp sampler3D)
@@ -240,4 +255,5 @@ ERROR: node is still EOpNull!
 0:?     'sf' (out lowp float)
 0:?     'arrayedSampler' (uniform 5-element array of lowp sampler2D)
 0:?     'multiInst' (layout(column_major shared ) uniform 2-element array of block{a,b,c})
+0:?     'colors' (out 4-element array of lowp 4-component vector of float)
 

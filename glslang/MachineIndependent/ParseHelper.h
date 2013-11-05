@@ -122,7 +122,7 @@ public:
     void precisionQualifierCheck(TSourceLoc, TPublicType&);
     void parameterSamplerCheck(TSourceLoc, TStorageQualifier qualifier, const TType& type);
     bool containsSampler(const TType& type);
-    TSymbol* redeclareBuiltinVariable(TSourceLoc, const TString&, bool& newDeclaration);
+    TSymbol* redeclareBuiltinVariable(TSourceLoc, const TString&, const TQualifier&, const TShaderQualifiers&, bool& newDeclaration);
     bool redeclareBuiltinBlock(TSourceLoc, TTypeList& typeList, const TString& blockName, const TString* instanceName, TArraySizes* arraySizes);
     void paramCheck(TSourceLoc, const TStorageQualifier&, TType* type);
     void nestedBlockCheck(TSourceLoc);
@@ -134,17 +134,17 @@ public:
 
     void setLayoutQualifier(TSourceLoc, TPublicType&, TString&);
     void setLayoutQualifier(TSourceLoc, TPublicType&, TString&, int);
-    void mergeShaderLayoutQualifiers(TSourceLoc, TPublicType& dst, const TPublicType& src);
+    void mergeShaderLayoutQualifiers(TSourceLoc, TShaderQualifiers& dst, const TShaderQualifiers& src);
     void mergeObjectLayoutQualifiers(TSourceLoc, TQualifier& dest, const TQualifier& src);
     void layoutTypeCheck(TSourceLoc, const TSymbol&);
     void layoutQualifierCheck(TSourceLoc, const TQualifier&);
-    void checkNoShaderLayouts(TSourceLoc, const TPublicType&);
+    void checkNoShaderLayouts(TSourceLoc, const TShaderQualifiers&);
 
     const TFunction* findFunction(TSourceLoc loc, const TFunction& call, bool& builtIn);
     const TFunction* findFunctionExact(TSourceLoc loc, const TFunction& call, bool& builtIn);
     const TFunction* findFunction120(TSourceLoc loc, const TFunction& call, bool& builtIn);
     const TFunction* findFunction400(TSourceLoc loc, const TFunction& call, bool& builtIn);
-    TIntermNode* declareVariable(TSourceLoc, TString& identifier, TPublicType&, TArraySizes* typeArray = 0, TIntermTyped* initializer = 0);
+    TIntermNode* declareVariable(TSourceLoc, TString& identifier, const TPublicType&, TArraySizes* typeArray = 0, TIntermTyped* initializer = 0);
     TIntermTyped* addConstructor(TSourceLoc, TIntermNode*, const TType&, TOperator);
     TIntermTyped* constructStruct(TIntermNode*, const TType&, int, TSourceLoc);
     TIntermTyped* constructBuiltIn(const TType&, TOperator, TIntermNode*, TSourceLoc, bool subset);
@@ -241,7 +241,7 @@ protected:
     TIdSetType inductiveLoopIds;
     bool anyIndexLimits;
     TVector<TIntermTyped*> needsIndexLimitationChecking;
-    // TODO: desktop functionality: track use of gl_FragDepth before redeclaration
+    bool fragCoordUsedBeforeRedeclaration;
 
     //
     // Geometry shader input arrays:

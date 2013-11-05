@@ -12,40 +12,49 @@ Link Validation
       - statically consumed input not produced by previous stage
       - give error for sharing a packed block
       - 1.2: matching initializers for uniforms
+      - 1.3: only statically used built-ins have to be redeclared as flat
       - 1.5: matching between gl_PerVertex blocks and gl_PerFragment blocks
       - 1.3: deprecated mixing fixed vertex/fragment stage with programmable fragment/vertex stage.
       - 4.3: compute shader not combined with any other stages
       - 4.3: remove cross-version linking restrictions.
       - 4.3: Allow mismatches in interpolation and auxiliary qualification across stages.
 	  - 4.4: A stage contains two different blocks, each with no instance name, where the blocks contain a member with the same name.
-    Intra-stage linking
-      - ES 3.0: location aliasing/overlap (except desktop vertex shader inputs)
-      + ES 3.0: fragment outputs all have locations, if more than one
+    Intra-stage linking, single shader
+      - limits checking:
+          - number of texture image units
+          - texel offsets (or compile-time?)
+          - number of input/output compononents
+          - tessellation limits
+          - ...
       + exactly one main
-      + Non ES: type consistency check of uniforms, globals, ins, and outs
-      + Non ES: value checking of global const initializers
-      + Non ES: value checking of uniform initializers
-      + Non ES: location match
+      + ES 3.0: fragment outputs all have locations, if more than one
+      - ES 3.0: location aliasing/overlap (except desktop vertex shader inputs)
+      - Non ES: binding overlap?
       - Non ES: gl_TexCoord can only have a max array size of up to gl_MaxTextureCoords
-      + recursion for functions
-      - Non ES: block matching
-      - Non ES: component/binding/index/offset match check
-      - Non ES: geometry shader input array sizes and input layout qualifier declaration
-      - Non ES: compute shader layout(local_size_*) matching
-      + mixed es/non-es profiles are an error
-      - Non ES: Even the potential for recursion through subroutine uniforms is an error.
-      - Non ES: matching redeclarations of interface blocks
+      + Non ES: geometry shader input array sizes and input layout qualifier declaration
       - Non ES: read or write to both gl_ClipVertex and gl_ClipDistance
       - Non ES: write to only one of gl_FragColor, gl_FragData, or user-declared
       - 1.50: at least one geometry shader says input primitive and at least one says output primitive...
       - 1.50: at least one geometry shader says max_vertices...
-      - 1.50: match between all explicit input array sizes and input primitive
-      - 4.3: Be clear that early_fragment_tests is only needed in one fragment-stage compilation unit.
-      - 4.3: Be clear that implicit array sizing is only within a stage, not cross stage.
-      - 4.4: overlapping transform/feedback offsets, offset/stride overflow checks, and stride matching
-	  - 4.4: If gl_FragCoord is redeclared in any fragment shader in a program, it must be redeclared in all the fragment shaders in that program that have a static use gl_FragCoord
 	  - 4.4: An interface contains two different blocks, each with no instance name, where the blocks contain a member with the same name.
 	  - 4.4: component aliasing (except desktop vertex shader inputs)
+    Intra-stage linking, multiple shader
+      + Non ES: type consistency check of uniforms, globals, ins, and outs
+      + Non ES: value checking of global const initializers
+      + Non ES: value checking of uniform initializers
+      + Non ES: location match
+      + recursion for functions
+      - Non ES: block matching
+      - Non ES: component/binding/index/offset match check
+      - Non ES: compute shader layout(local_size_*) matching
+      + mixed es/non-es profiles are an error
+      - Non ES: Even the potential for recursion through subroutine uniforms is an error.
+      - Non ES: matching redeclarations of interface blocks
+      - 1.50: match between all explicit input array sizes and input primitive
+      - 4.3: early_fragment_tests contradictions
+      - 4.3: implicit array sizing is cross shader within a stage
+      - 4.4: overlapping transform/feedback offsets, offset/stride overflow checks, and stride matching
+	  - 4.4: If gl_FragCoord is redeclared in any fragment shader in a program, it must be redeclared in all the fragment shaders in that program that have a static use gl_FragCoord
 
 Shader Functionality to Implement/Finish
     ESSL 2.0 (#version 100)
@@ -53,19 +62,16 @@ Shader Functionality to Implement/Finish
       + implement non-inductive array accesses limitation detection
     ESSL 3.0
       - "const" compile-time constant propagation in the front-end has to be complete, for all built-in functions
-      - add limitation around #define GL_FRAGMENT_PRECISION_HIGH 1 ?
     GLSL 1.2
       + Handle multiple compilation units per stage
       + Allow initializers on uniform declarations
       + signature matching takes type conversions into account, ambiguity is an error
-      - allow constructors to contain non-dereferenced arrays?
+      - bug: allow constructors to contain non-dereferenced arrays?
     GLSL 1.3
-      . flat is for both user and predeclared built-in in/out variables
-    GLSL 1.3 (Non-ES)
+      + flat redeclaration of built-in variables
       - Preprocessor token pasting (##), ## does macro expansion after pasting not before
-      - non-perspective (linear) interpolation (noperspective)
+      + non-perspective (linear) interpolation (noperspective)
       + add gl_ClipDistance[] to both vertex and fragment shaders
-      - only statically used built-ins have to be redeclared as flat
       + Deprecated gl_ClipVertex
       + deprecate almost all built-in state
       + ftransform() is deprecated
@@ -163,7 +169,7 @@ Shader Functionality to Implement/Finish
       - Add built-in functions to pack/unpack 16 bit floating-point numbers (ARB_shading_language_pack2f).
         - packHalf2x16 and unpackHalf2x16
         - packSnorm2x16and unpackSnorm2x16
-      - Add gl_FragDepthlayout qualifiers to communicate what kind of changes will be made to gl_FragDepth(GL_AMD_conservative depth).
+      - Add gl_FragDepth layout qualifiers to communicate what kind of changes will be made to gl_FragDepth (GL_AMD_conservative depth).
       + Add C-style curly brace initializer lists syntax for initializers. Full initialization of aggregates is required when these are used.
       - Allow .length() to be applied to vectors and matrices, returning the number of components or columns.
       + Clarify that .length() returns an int type and can be used as a constant integer expression.
@@ -188,7 +194,7 @@ Shader Functionality to Implement/Finish
                 member, so that must a have valid index. 
             - Arrays of other objects (uniform blocks) containing implicitly sized arrays will have the same implicit size for all 
                 elements of the array.
-      - Arrays of arrays are now supported, as per the GL_ARB_arrays_of_arraysextension.
+      - Arrays of arrays are now supported, as per the GL_ARB_arrays_of_arrays extension.
       - Compute shaders are now supported, as per the GL_ARB_compute_shader extension.
       - Added imageSize() built-ins to query the dimensions of an image.
       - Define robust out-of-bounds access behavior when enabled, as per the GL_ARB_robust_buffer_access_behavior extension.
@@ -232,3 +238,4 @@ Shader Functionality to Implement/Finish
           transform feedback buffering.
       + Bug 10530: To be consistent with ES, include sample types as valid in a precision statement. 
         Note the defaults are irrelevant, as precision qualifiers are not required or have any meaning.
+

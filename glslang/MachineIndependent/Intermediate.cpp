@@ -867,7 +867,7 @@ void TIntermediate::addSymbolLinkageNodes(TIntermAggregate*& linkage, EShLanguag
     //
 
     //if (ftransformUsed) {
-        // TODO: desktop: track ftransform() usage
+        // TODO: 1.1 lowering functionality: track ftransform() usage
     //    addSymbolLinkageNode(root, symbolTable, "gl_Vertex");
     //    addSymbolLinkageNode(root, symbolTable, "gl_ModelViewProjectionMatrix");
     //}

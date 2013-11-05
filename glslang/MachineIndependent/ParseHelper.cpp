@@ -54,7 +54,7 @@ TParseContext::TParseContext(TSymbolTable& symt, TIntermediate& interm, bool pb,
             contextPragma(true, false), loopNestingLevel(0), structNestingLevel(0),
             tokensBeforeEOF(false), currentScanner(0),
             numErrors(0), parsingBuiltins(pb), afterEOF(false),
-            anyIndexLimits(false)
+            anyIndexLimits(false), fragCoordUsedBeforeRedeclaration(false)
 {
     // ensure we always have a linkage node, even if empty, to simplify tree topology algorithms
     linkage = new TIntermAggregate;
@@ -412,11 +412,15 @@ TIntermTyped* TParseContext::handleVariable(TSourceLoc loc, TSymbol* symbol, TSt
         if (variable->getType().getQualifier().storage == EvqConst)
             node = intermediate.addConstantUnion(variable->getConstArray(), variable->getType(), loc);
         else {
-            // break sharing with built-ins
             TType* type;
             if (variable->isReadOnly()) {
                 type = new TType;
+                // break sharing with built-ins
                 type->deepCopy(variable->getType());
+
+                // track use of unredeclared gl_FragCoord
+                if (variable->getName() == "gl_FragCoord")
+                    fragCoordUsedBeforeRedeclaration = true;
             } else
                 type = &variable->getWritableType();
             node = intermediate.addSymbol(variable->getUniqueId(), variable->getName(), *type, loc);
@@ -473,6 +477,8 @@ TIntermTyped* TParseContext::handleBracketDereference(TSourceLoc loc, TIntermTyp
                 error(loc, "", "[", "array must be redeclared with a size before being indexed with a variable");
             if (base->getBasicType() == EbtBlock)
                 requireProfile(base->getLoc(), ~EEsProfile, "variable indexing block array");
+            else if (language == EShLangFragment && base->getQualifier().storage == EvqVaryingOut)
+                requireProfile(base->getLoc(), ~EEsProfile, "variable indexing fragment shader ouput array");
             else if (base->getBasicType() == EbtSampler && version >= 130) {
                 const char* explanation = "variable indexing sampler array";
                 requireProfile(base->getLoc(), ECoreProfile | ECompatibilityProfile, explanation);
@@ -923,7 +929,7 @@ TIntermTyped* TParseContext::handleFunctionCall(TSourceLoc loc, TFunction* fnCal
     }
 
     // generic error recovery
-    // TODO: coding: localize all the error recoveries that look like this
+    // TODO: simplification: localize all the error recoveries that look like this, and taking type into account to reduce cascades
     if (result == 0) {
         TConstUnionArray unionArray(1);
         unionArray[0].setDConst(0.0);
@@ -1895,18 +1901,17 @@ void TParseContext::declareArray(TSourceLoc loc, TString& identifier, const TTyp
 
 void TParseContext::updateMaxArraySize(TSourceLoc loc, TIntermNode *node, int index)
 {
-    TIntermSymbol* symbolNode = node->getAsSymbolNode();
-    if (! symbolNode) {
-        // TODO: functionality: unsized arrays: handle members of blocks
-        return;
-    }
-
     // maybe there is nothing to do...
-    // TODO: functionality: unsized arrays: is the node sharing the array type with the symbol table?
-    if (symbolNode->getType().getMaxArraySize() > index)
+    TIntermTyped* typedNode = node->getAsTyped();
+    if (typedNode->getType().getMaxArraySize() > index)
         return;
 
     // something to do...
+
+    // TODO: 1.50 linker: unsized block member array: 'node' could be an expression for a dereference
+    TIntermSymbol* symbolNode = node->getAsSymbolNode();
+    if (! symbolNode)
+        return;
 
     TSymbol* symbol = symbolTable.find(symbolNode->getName());
     assert(symbol);
@@ -1919,7 +1924,7 @@ void TParseContext::updateMaxArraySize(TSourceLoc loc, TIntermNode *node, int in
     }
 
     // For read-only built-ins, add a new variable for holding the maximum array size of an implicitly-sized shared array.
-    // TODO: functionality: unsized arrays: is this new array type shared with the node?
+    // TODO: desktop linker: unsized arrays: is this new array type shared with the node?
     if (symbol->isReadOnly()) {
         symbol = symbolTable.copyUp(symbol);
         
@@ -1959,7 +1964,7 @@ void TParseContext::nonInitConstCheck(TSourceLoc loc, TString& identifier, TType
 //
 // Returns a redeclared and type-modified variable if a redeclarated occurred.
 //
-TSymbol* TParseContext::redeclareBuiltinVariable(TSourceLoc loc, const TString& identifier, bool& newDeclaration)
+TSymbol* TParseContext::redeclareBuiltinVariable(TSourceLoc loc, const TString& identifier, const TQualifier& qualifier, const TShaderQualifiers& publicType, bool& newDeclaration)
 {
     if (profile == EEsProfile || ! builtInName(identifier) || symbolTable.atBuiltInLevel())
         return 0;
@@ -2003,7 +2008,53 @@ TSymbol* TParseContext::redeclareBuiltinVariable(TSourceLoc loc, const TString& 
         }
 
         // Now, modify the type of the copy, as per the type of the current redeclaration.
-        // TODO: functionality: verify type change is allowed and make the change in type
+
+        TQualifier& symbolQualifier = symbol->getWritableType().getQualifier();
+        if (identifier == "gl_FrontColor"          ||
+            identifier == "gl_BackColor"           ||
+            identifier == "gl_FrontSecondaryColor" ||
+            identifier == "gl_BackSecondaryColor"  ||
+            identifier == "gl_SecondaryColor"      ||
+            identifier == "gl_Color") {
+            symbolQualifier.flat = qualifier.flat;
+            symbolQualifier.smooth = qualifier.smooth;
+            symbolQualifier.nopersp = qualifier.nopersp;
+            if (qualifier.hasLayout())
+                error(loc, "cannot apply layout qualifier to", "redeclaration", symbol->getName().c_str());
+            if (qualifier.isMemory() || qualifier.isAuxiliary() || symbol->getType().getQualifier().storage != qualifier.storage)
+                error(loc, "cannot change storage, memory, or auxiliary qualification of", "redeclaration", symbol->getName().c_str());
+        } else if (identifier == "gl_TexCoord" ||
+                   identifier == "gl_ClipDistance") {
+            if (qualifier.hasLayout() || qualifier.isMemory() || qualifier.isAuxiliary() ||
+                qualifier.nopersp != symbolQualifier.nopersp || qualifier.flat != symbolQualifier.flat ||
+                symbolQualifier.storage != qualifier.storage)
+                error(loc, "cannot change qualification of", "redeclaration", symbol->getName().c_str());
+        } else if (identifier == "gl_FragCoord") {
+            if (fragCoordUsedBeforeRedeclaration)
+                error(loc, "cannot redeclare after use", "gl_FragCoord", "");
+                // Note: this did not catch the case of 1) declare, 2) use, 3) declare again, because the "use" was of a redeclaration, and so didn't set fragCoordUsedBeforeRedeclaration.
+                // (and that's what the rules are too, as long as #3 matches #1)
+            if (qualifier.nopersp != symbolQualifier.nopersp || qualifier.flat != symbolQualifier.flat ||
+                qualifier.isMemory() || qualifier.isAuxiliary())
+                error(loc, "can only change layout qualification of", "redeclaration", symbol->getName().c_str());
+            if (identifier == "gl_FragCoord" && qualifier.storage != EvqVaryingIn)
+                error(loc, "cannot change input storage qualification of", "redeclaration", symbol->getName().c_str());
+            if (! builtIn && (publicType.pixelCenterInteger != intermediate.getPixelCenterInteger() || 
+                              publicType.originUpperLeft != intermediate.getOriginUpperLeft()))
+                error(loc, "cannot redeclare with different qualification:", "redeclaration", symbol->getName().c_str());
+            if (publicType.pixelCenterInteger)
+                intermediate.setPixelCenterInteger();
+            if (publicType.originUpperLeft)
+                intermediate.setOriginUpperLeft();
+        } else if (identifier == "gl_FragDepth") {
+            if (qualifier.nopersp != symbolQualifier.nopersp || qualifier.flat != symbolQualifier.flat ||
+                qualifier.isMemory() || qualifier.isAuxiliary())
+                error(loc, "can only change layout qualification of", "redeclaration", symbol->getName().c_str());
+            if (qualifier.storage != EvqVaryingOut)
+                error(loc, "cannot change output storage qualification of", "redeclaration", symbol->getName().c_str());
+            // TODO 4.2: gl_FragDepth redeclaration
+        }        
+        // TODO: semantics quality: separate smooth from nothing declared, then use IsInterpolation for several tests above
 
         return symbol;
     }
@@ -2062,7 +2113,7 @@ bool TParseContext::redeclareBuiltinBlock(TSourceLoc loc, TTypeList& typeList, c
     if (language == EShLangGeometry && block->getType().isArray() && block->getType().getQualifier().storage == EvqVaryingIn)
         inputArraySymbolResizeList.push_back(block);
 
-    // TODO: semantics: block redeclaration: instance array size matching?
+    // TODO: SSO/4.10 semantics: block redeclaration: instance array size matching
 
     // Edit and error check the container against the redeclaration
     //  - remove unused members
@@ -2085,7 +2136,7 @@ bool TParseContext::redeclareBuiltinBlock(TSourceLoc loc, TTypeList& typeList, c
         else
             member = type.getStruct()->erase(member);
 
-        // TODO: semantics: block redeclaration: member type/qualifier matching
+        // TODO: SSO/4.10 semantics: block redeclaration: member type/qualifier matching
     }
 
     symbolTable.insert(*block);
@@ -2306,36 +2357,48 @@ void TParseContext::setLayoutQualifier(TSourceLoc loc, TPublicType& publicType, 
     }
     if (language == EShLangGeometry || language == EShLangTessEvaluation) {
         if (id == TQualifier::getGeometryString(ElgTriangles)) {
-            publicType.geometry = ElgTriangles;
+            publicType.shaderQualifiers.geometry = ElgTriangles;
             return;
         }
         if (language == EShLangGeometry) {
             if (id == TQualifier::getGeometryString(ElgPoints)) {
-                publicType.geometry = ElgPoints;
+                publicType.shaderQualifiers.geometry = ElgPoints;
                 return;
             }
             if (id == TQualifier::getGeometryString(ElgLineStrip)) {
-                publicType.geometry = ElgLineStrip;
+                publicType.shaderQualifiers.geometry = ElgLineStrip;
                 return;
             }
             if (id == TQualifier::getGeometryString(ElgLines)) {
-                publicType.geometry = ElgLines;
+                publicType.shaderQualifiers.geometry = ElgLines;
                 return;
             }
             if (id == TQualifier::getGeometryString(ElgLinesAdjacency)) {
-                publicType.geometry = ElgLinesAdjacency;
+                publicType.shaderQualifiers.geometry = ElgLinesAdjacency;
                 return;
             }
             if (id == TQualifier::getGeometryString(ElgTrianglesAdjacency)) {
-                publicType.geometry = ElgTrianglesAdjacency;
+                publicType.shaderQualifiers.geometry = ElgTrianglesAdjacency;
                 return;
             }
             if (id == TQualifier::getGeometryString(ElgTriangleStrip)) {
-                publicType.geometry = ElgTriangleStrip;
+                publicType.shaderQualifiers.geometry = ElgTriangleStrip;
                 return;
             }
         } else {
-            // TODO: tessellation evaluation
+            // TODO: 4.0 tessellation evaluation
+        }
+    }
+    if (language == EShLangFragment) {
+        if (id == "origin_upper_left") {
+            requireProfile(loc, ECoreProfile | ECompatibilityProfile, "origin_upper_left");
+            publicType.shaderQualifiers.originUpperLeft = true;
+            return;
+        }
+        if (id == "pixel_center_integer") {
+            requireProfile(loc, ECoreProfile | ECompatibilityProfile, "pixel_center_integer");
+            publicType.shaderQualifiers.pixelCenterInteger = true;
+            return;
         }
     }
     error(loc, "unrecognized layout identifier, or qualifier requires assignemnt (e.g., binding = 4)", id.c_str(), "");
@@ -2345,6 +2408,12 @@ void TParseContext::setLayoutQualifier(TSourceLoc loc, TPublicType& publicType, 
 // type information for error checking.
 void TParseContext::setLayoutQualifier(TSourceLoc loc, TPublicType& publicType, TString& id, int value)
 {
+    if (value < 0) {
+        error(loc, "cannot be negative", "layout qualifier value", "");
+        return;
+        // TODO: 4.4: test the above, once expressions are allowed; until then, can't even express a negative location
+    }
+
     std::transform(id.begin(), id.end(), id.begin(), ::tolower);
     if (id == "location") {
         requireProfile(loc, EEsProfile | ECoreProfile | ECompatibilityProfile, "location");
@@ -2367,11 +2436,11 @@ void TParseContext::setLayoutQualifier(TSourceLoc loc, TPublicType& publicType, 
     if (language == EShLangGeometry) {
         if (id == "invocations") {
             profileRequires(loc, ECompatibilityProfile | ECoreProfile, 400, 0, "invocations");
-            publicType.invocations = value;
+            publicType.shaderQualifiers.invocations = value;
             return;
         }
         if (id == "max_vertices") {
-            publicType.maxVertices = value;
+            publicType.shaderQualifiers.maxVertices = value;
             return;
         }
         if (id == "stream") {
@@ -2380,16 +2449,13 @@ void TParseContext::setLayoutQualifier(TSourceLoc loc, TPublicType& publicType, 
         }
     }
     error(loc, "there is no such layout identifier for this stage taking an assigned value", id.c_str(), "");
-
-    // TODO: semantics: error check: make sure locations are non-overlapping across the whole stage
-    // TODO: semantics: error check: output arrays can only be indexed with a constant (es 300)
 }
 
 //
 // Merge characteristics of the 'src' qualifier into the 'dst', at the TPublicType level,
 // which means for layout-qualifier information not kept per qualifier.
 //
-void TParseContext::mergeShaderLayoutQualifiers(TSourceLoc loc, TPublicType& dst, const TPublicType& src)
+void TParseContext::mergeShaderLayoutQualifiers(TSourceLoc loc, TShaderQualifiers& dst, const TShaderQualifiers& src)
 {
     if (src.geometry != ElgNone)
         dst.geometry = src.geometry;
@@ -2397,6 +2463,10 @@ void TParseContext::mergeShaderLayoutQualifiers(TSourceLoc loc, TPublicType& dst
         dst.invocations = src.invocations;
     if (src.maxVertices != 0)
         dst.maxVertices = src.maxVertices;
+    if (src.pixelCenterInteger)
+        dst.pixelCenterInteger = src.pixelCenterInteger;
+    if (src.originUpperLeft)
+        dst.originUpperLeft = src.originUpperLeft;
 }
 
 // Merge any layout qualifier information from src into dst, leaving everything else in dst alone
@@ -2464,11 +2534,11 @@ void TParseContext::layoutTypeCheck(TSourceLoc loc, const TSymbol& symbol)
         // an array of size N, all elements of the array from binding through binding + N – 1 must be within this
         // range."
         //
-        // TODO:  binding error checking against limits, arrays
+        // TODO: 4.2 binding limits: binding error checking against limits, arrays
         //
         if (type.getBasicType() != EbtSampler && type.getBasicType() != EbtBlock)
             error(loc, "requires block, or sampler/image, or atomic-counter type", "binding", "");
-            // TODO: atomic counter functionality: include in test above
+            // TODO: 4.2 functionality: atomic counter: include in test above
     }
 }
 
@@ -2527,15 +2597,15 @@ void TParseContext::layoutQualifierCheck(TSourceLoc loc, const TQualifier& quali
 }
 
 // For places that can't have shader-level layout qualifiers
-void TParseContext::checkNoShaderLayouts(TSourceLoc loc, const TPublicType& publicType)
+void TParseContext::checkNoShaderLayouts(TSourceLoc loc, const TShaderQualifiers& shaderQualifiers)
 {
     const char* message = "can only apply to a standalone qualifier";
 
-    if (publicType.geometry != ElgNone)
-        error(loc, message, TQualifier::getGeometryString(publicType.geometry), "");
-    if (publicType.invocations > 0)
+    if (shaderQualifiers.geometry != ElgNone)
+        error(loc, message, TQualifier::getGeometryString(shaderQualifiers.geometry), "");
+    if (shaderQualifiers.invocations > 0)
         error(loc, message, "invocations", "");
-    if (publicType.maxVertices > 0)
+    if (shaderQualifiers.maxVertices > 0)
         error(loc, message, "max_vertices", "");
 }
 
@@ -2658,7 +2728,7 @@ const TFunction* TParseContext::findFunction400(TSourceLoc loc, const TFunction&
 // Returns a subtree node that computes an initializer, if needed.
 // Returns 0 if there is no code to execute for initialization.
 //
-TIntermNode* TParseContext::declareVariable(TSourceLoc loc, TString& identifier, TPublicType& publicType, TArraySizes* arraySizes, TIntermTyped* initializer)
+TIntermNode* TParseContext::declareVariable(TSourceLoc loc, TString& identifier, const TPublicType& publicType, TArraySizes* arraySizes, TIntermTyped* initializer)
 {
     TType type(publicType);
 
@@ -2672,9 +2742,12 @@ TIntermNode* TParseContext::declareVariable(TSourceLoc loc, TString& identifier,
     if (! type.getQualifier().hasStream() && language == EShLangGeometry && type.getQualifier().storage == EvqVaryingOut)
         type.getQualifier().layoutStream = globalOutputDefaults.layoutStream;
 
+    if (identifier != "gl_FragCoord" && (publicType.shaderQualifiers.originUpperLeft || publicType.shaderQualifiers.pixelCenterInteger))
+        error(loc, "can only apply origin_upper_left and pixel_center_origin to gl_FragCoord", "layout qualifier", "");
+
     // Check for redeclaration of built-ins and/or attempting to declare a reserved name
     bool newDeclaration = false;    // true if a new entry gets added to the symbol table
-    TSymbol* symbol = redeclareBuiltinVariable(loc, identifier, newDeclaration);
+    TSymbol* symbol = redeclareBuiltinVariable(loc, identifier, type.getQualifier(), publicType.shaderQualifiers, newDeclaration);
     if (! symbol)
         reservedErrorCheck(loc, identifier);
 
@@ -2698,6 +2771,8 @@ TIntermNode* TParseContext::declareVariable(TSourceLoc loc, TString& identifier,
         // non-array case
         if (! symbol)
             symbol = declareNonArray(loc, identifier, type, newDeclaration);
+        else if (type != symbol->getType())
+            error(loc, "cannot change the type of", "redeclaration", symbol->getName().c_str());
     }
 
     // Deal with initializer
@@ -2859,7 +2934,7 @@ TIntermTyped* TParseContext::convertInitializerList(TSourceLoc loc, const TType&
         arrayType.setArraySizes(type);
         arrayType.changeArraySize(initList->getSequence().size());
         TType elementType;
-        elementType.shallowCopy(arrayType);  // TODO: arrays of arrays: combine this with deref.
+        elementType.shallowCopy(arrayType);  // TODO: 4.3 simplification: arrays of arrays: combine this with deref.
         elementType.dereference();
         for (size_t i = 0; i < initList->getSequence().size(); ++i) {
             initList->getSequence()[i] = convertInitializerList(loc, elementType, initList->getSequence()[i]->getAsTyped());
@@ -2884,7 +2959,7 @@ TIntermTyped* TParseContext::convertInitializerList(TSourceLoc loc, const TType&
             return 0;
         }
         TType vectorType;
-        vectorType.shallowCopy(type);  // TODO: arrays of arrays: combine this with deref.
+        vectorType.shallowCopy(type);  // TODO: 4.3 simplification: arrays of arrays: combine this with deref.
         vectorType.dereference();
         for (int i = 0; i < type.getMatrixCols(); ++i) {
             initList->getSequence()[i] = convertInitializerList(loc, vectorType, initList->getSequence()[i]->getAsTyped());
@@ -2925,7 +3000,7 @@ TIntermTyped* TParseContext::addConstructor(TSourceLoc loc, TIntermNode* node, c
     TType elementType;
     elementType.shallowCopy(type);
     if (type.isArray())
-        elementType.dereference();    // TODO: arrays of arrays: combine this with shallowCopy
+        elementType.dereference();    // TODO: 4.3 simplification: arrays of arrays: combine this with deref.
 
     bool singleArg;
     if (aggrNode) {
@@ -3280,43 +3355,43 @@ void TParseContext::addQualifierToExisting(TSourceLoc loc, TQualifier qualifier,
 //
 void TParseContext::updateStandaloneQualifierDefaults(TSourceLoc loc, const TPublicType& publicType)
 {
-    if (publicType.maxVertices) {
-        if (! intermediate.setMaxVertices(publicType.maxVertices))
+    if (publicType.shaderQualifiers.maxVertices) {
+        if (! intermediate.setMaxVertices(publicType.shaderQualifiers.maxVertices))
             error(loc, "cannot change previously set layout value", "max_vertices", "");
     }
-    if (publicType.invocations) {
-        if (! intermediate.setInvocations(publicType.invocations))
+    if (publicType.shaderQualifiers.invocations) {
+        if (! intermediate.setInvocations(publicType.shaderQualifiers.invocations))
             error(loc, "cannot change previously set layout value", "invocations", "");
     }
-    if (publicType.geometry != ElgNone) {
+    if (publicType.shaderQualifiers.geometry != ElgNone) {
         if (publicType.qualifier.storage == EvqVaryingIn) {
-            switch (publicType.geometry) {
+            switch (publicType.shaderQualifiers.geometry) {
             case ElgPoints:
             case ElgLines:
             case ElgLinesAdjacency:
             case ElgTriangles:
             case ElgTrianglesAdjacency:
-                if (intermediate.setInputPrimitive(publicType.geometry))
+                if (intermediate.setInputPrimitive(publicType.shaderQualifiers.geometry))
                     checkInputArrayConsistency(loc);
                 else
-                    error(loc, "cannot change previously set input primitive", TQualifier::getGeometryString(publicType.geometry), "");
+                    error(loc, "cannot change previously set input primitive", TQualifier::getGeometryString(publicType.shaderQualifiers.geometry), "");
                 break;
             default:
-                error(loc, "does not apply to input", TQualifier::getGeometryString(publicType.geometry), "");
+                error(loc, "does not apply to input", TQualifier::getGeometryString(publicType.shaderQualifiers.geometry), "");
             }
         } else if (publicType.qualifier.storage == EvqVaryingOut) {
-            switch (publicType.geometry) {
+            switch (publicType.shaderQualifiers.geometry) {
             case ElgPoints:
             case ElgLineStrip:
             case ElgTriangleStrip:
-                if (! intermediate.setOutputPrimitive(publicType.geometry))
-                    error(loc, "cannot change previously set output primitive", TQualifier::getGeometryString(publicType.geometry), "");
+                if (! intermediate.setOutputPrimitive(publicType.shaderQualifiers.geometry))
+                    error(loc, "cannot change previously set output primitive", TQualifier::getGeometryString(publicType.shaderQualifiers.geometry), "");
                 break;
             default:
-                error(loc, "does not only apply to output", TQualifier::getGeometryString(publicType.geometry), "");
+                error(loc, "does not only apply to output", TQualifier::getGeometryString(publicType.shaderQualifiers.geometry), "");
             }
         } else
-            error(loc, "cannot be used here", TQualifier::getGeometryString(publicType.geometry), "");
+            error(loc, "cannot be used here", TQualifier::getGeometryString(publicType.shaderQualifiers.geometry), "");
     }
 
     const TQualifier& qualifier = publicType.qualifier;
@@ -3472,7 +3547,7 @@ TIntermNode* TParseContext::addSwitch(TSourceLoc loc, TIntermTyped* expression, 
     return switchNode;
 }
 
-// TODO: constant folding: these should use a follow a fully folded model now, and probably move to Constant.cpp scheme.
+// TODO: simplification: constant folding: these should use a follow a fully folded model now, and probably move to Constant.cpp scheme.
 
 //
 // This function returns the tree representation for the vector field(s) being accessed from a constant vector.
@@ -3552,7 +3627,7 @@ TIntermTyped* TParseContext::addConstArrayNode(int index, TIntermTyped* node, TS
     TIntermTyped* typedNode;
     TIntermConstantUnion* tempConstantNode = node->getAsConstantUnion();
     TType arrayElementType;
-    arrayElementType.shallowCopy(node->getType());  // TODO: arrays of arrays: combine this with deref.
+    arrayElementType.shallowCopy(node->getType());  // TODO: 4.3 simplification: arrays of arrays: combine this with deref.
     arrayElementType.dereference();
 
     if (index >= node->getType().getArraySize() || index < 0) {

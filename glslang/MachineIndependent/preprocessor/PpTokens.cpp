@@ -299,7 +299,7 @@ void TPpContext::RewindTokenStream(TokenStream *pTok)
 
 int TPpContext::ReadToken(TokenStream *pTok, TPpToken *ppToken)
 {
-    //TODO: PP: why is this different than byte_scan
+    //TODO: preprocessor simplification: why is this different than byte_scan
 
     char tokenText[TPpToken::maxTokenLength + 1];
     int ltoken, len;

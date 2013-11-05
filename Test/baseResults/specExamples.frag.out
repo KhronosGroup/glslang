@@ -6,10 +6,8 @@ ERROR: 0:37: 'view' : redefinition
 ERROR: 0:68: 'lightPosition' : redefinition 
 ERROR: 0:75: 'Atten' : member storage qualifier cannot contradict block storage qualifier 
 ERROR: 0:87: 'Color' : redefinition 
-ERROR: 0:92: 'origin_upper_left' : unrecognized layout identifier, or qualifier requires assignemnt (e.g., binding = 4) 
-ERROR: 0:93: 'pixel_center_integer' : unrecognized layout identifier, or qualifier requires assignemnt (e.g., binding = 4) 
-ERROR: 0:94: 'origin_upper_left' : unrecognized layout identifier, or qualifier requires assignemnt (e.g., binding = 4) 
-ERROR: 0:94: 'pixel_center_integer' : unrecognized layout identifier, or qualifier requires assignemnt (e.g., binding = 4) 
+ERROR: 0:92: 'redeclaration' : cannot redeclare with different qualification: gl_FragCoord
+ERROR: 0:93: 'redeclaration' : cannot redeclare with different qualification: gl_FragCoord
 ERROR: 0:96: 'early_fragment_tests' : unrecognized layout identifier, or qualifier requires assignemnt (e.g., binding = 4) 
 ERROR: 0:99: 'local_size_x' : there is no such layout identifier for this stage taking an assigned value 
 ERROR: 0:99: 'local_size_y' : there is no such layout identifier for this stage taking an assigned value 
@@ -48,8 +46,10 @@ ERROR: 0:226: 'in' : not allowed in nested scope
 ERROR: 0:227: 'in' : not allowed in nested scope 
 ERROR: 0:228: 'in' : not allowed in nested scope 
 ERROR: 0:232: 'out' : not allowed in nested scope 
-ERROR: 49 compilation errors.  No code generated.
+ERROR: 47 compilation errors.  No code generated.
 
+gl_FragCoord pixel center is integer
+gl_FragCoord origin is upper left
 ERROR: node is still EOpNull!
 0:5  Sequence
 0:5    move second child to first child (int)

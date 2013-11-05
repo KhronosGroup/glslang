@@ -31,3 +31,9 @@ void bar()
 {
     vec4 s = textureGather(sampC, vec3(0.2));
 }
+
+flat in vec3 gl_Color;     // ERROR, type
+in vec4 gl_Color;
+flat in vec4 gl_Color;
+flat in vec4 gl_Color[2];  // ERROR, array 
+vec4 gl_Color;             // ERROR, storage

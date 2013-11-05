@@ -1,0 +1,21 @@
+Warning, version 150 is not yet complete; some version-specific features are present, but many are missing.
+ERROR: 0:4: 'redeclaration' : cannot redeclare with different qualification: gl_FragCoord
+ERROR: 0:5: 'redeclaration' : cannot redeclare with different qualification: gl_FragCoord
+ERROR: 0:6: 'layout qualifier' : can only apply origin_upper_left and pixel_center_origin to gl_FragCoord 
+ERROR: 3 compilation errors.  No code generated.
+
+gl_FragCoord pixel center is integer
+gl_FragCoord origin is upper left
+ERROR: node is still EOpNull!
+0:9  Function Definition: main( (void)
+0:9    Function Parameters: 
+0:11    Sequence
+0:11      Sequence
+0:11        move second child to first child (4-component vector of float)
+0:11          'c' (4-component vector of float)
+0:11          'gl_FragCoord' (gl_FragCoord 4-component vector of float)
+0:?   Linker Objects
+0:?     'gl_FragCoord' (gl_FragCoord 4-component vector of float)
+0:?     'gl_FragCoord' (gl_FragCoord 4-component vector of float)
+0:?     'foo' (smooth in 4-component vector of float)
+

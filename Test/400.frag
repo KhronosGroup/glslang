@@ -21,6 +21,8 @@ void main()
     iv4 = textureGatherOffset(isamp2DA, vec3(0.1), ivec2(1), 4);  // ERROR, last argument out of range
     iv4 = textureGatherOffset(isamp2DA, vec3(0.1), ivec2(1), 1+2);
     iv4 = textureGatherOffset(isamp2DA, vec3(0.1), ivec2(i));
+
+    vec4 c = gl_FragCoord;
 }
 
 layout(location = 4) in vec4 vl; // ERROR, not supported
@@ -32,3 +34,8 @@ layout(location = 4) in vec4 vl; // ERROR, not supported
 layout(location = 4) in vec4 vl2;
 
 layout(location = 3) uniform vec3 uv3;
+
+layout(location = 5) in vec4 gl_Color;      // ERROR, layout
+noperspective in float gl_ClipDistance[4];  // ERROR, can't change qualifier
+
+layout(origin_upper_left, pixel_center_integer) in vec4 gl_FragCoord;

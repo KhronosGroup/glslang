@@ -297,7 +297,7 @@ TIntermTyped* TIntermConstantUnion::fold(TOperator op, const TType& returnType)
     // but not always.
     int resultSize;
     switch (op) {
-    // TODO: functionality: constant folding: finish listing exceptions to size here
+    // TODO: 3.0 functionality: constant folding: finish listing exceptions to size here
     case EOpDeterminant:
     case EOpAny:
     case EOpAll:
@@ -481,7 +481,7 @@ TIntermTyped* TIntermConstantUnion::fold(TOperator op, const TType& returnType)
             break;
         }
 
-        // TODO: Functionality: constant folding: the rest of the ops have to be fleshed out
+        // TODO: 3.0 Functionality: constant folding: the rest of the ops have to be fleshed out
 
         case EOpSinh:
         case EOpCosh:
@@ -665,7 +665,7 @@ TIntermTyped* TIntermediate::fold(TIntermAggregate* aggrNode)
 
         switch (aggrNode->getOp()) {
 
-        // TODO: Functionality: constant folding: the rest of the ops have to be fleshed out
+        // TODO: 3.0 Functionality: constant folding: the rest of the ops have to be fleshed out
 
         case EOpModf:
         case EOpDistance:
