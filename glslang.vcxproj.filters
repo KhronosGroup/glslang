@@ -112,6 +112,9 @@
     <ClCompile Include="glslang\MachineIndependent\linkValidate.cpp">
       <Filter>Machine Independent</Filter>
     </ClCompile>
+    <ClCompile Include="glslang\MachineIndependent\reflection.cpp">
+      <Filter>Machine Independent</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="glslang\MachineIndependent\Initialize.h">
@@ -191,6 +194,9 @@
     </ClInclude>
     <ClInclude Include="glslang\MachineIndependent\preprocessor\PpTokens.h">
       <Filter>Machine Independent\Preprocessor</Filter>
+    </ClInclude>
+    <ClInclude Include="glslang\MachineIndependent\reflection.h">
+      <Filter>Machine Independent</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

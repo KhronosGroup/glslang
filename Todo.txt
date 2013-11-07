@@ -36,6 +36,8 @@ Link Validation
       - Non ES: write to only one of gl_FragColor, gl_FragData, or user-declared
       - 1.50: at least one geometry shader says input primitive and at least one says output primitive...
       - 1.50: at least one geometry shader says max_vertices...
+      - 1.50: geometry shaders: max_vertices must be checked against gl_MaxGeometryOutputVertices (maybe at compile time)
+      + 1.50: origin_upper_left and pixel_center_integer have to match
 	  - 4.4: An interface contains two different blocks, each with no instance name, where the blocks contain a member with the same name.
 	  - 4.4: component aliasing (except desktop vertex shader inputs)
     Intra-stage linking, multiple shader
@@ -90,8 +92,8 @@ Shader Functionality to Implement/Finish
       + Add new minimum maximums for gl_MaxVertexOutputComponents, gl_MaxGeometryInputComponents, gl_MaxGeometryOutputComponents, and gl_MaxFragmentInputComponents, 
                 rather than relying on gl_MaxVaryingComponents.  Also, corrected gl_MaxVaryingComponents to be 60 instead of 64.
       + Added gl_PrimitiveID as an input to fragment shaders.
-      - Added gl_FragCoord qualifiers origin_upper_left, and pixel_center_integer to modify the values returned by gl_FragCoord (and have no affect on any other aspect of the pipeline or language).
-        - including redeclaration of gl_FragCoord that adds nothing
+      + Added gl_FragCoord qualifiers origin_upper_left, and pixel_center_integer to modify the values returned by gl_FragCoord (and have no affect on any other aspect of the pipeline or language).
+        + including redeclaration of gl_FragCoord that adds nothing
       - Added support for multi-sample textures through sampler2DMS and sampler2DMSArray support in texelFetch() and textureSize().
       + Broadened interface blocks from just uniforms to in and out interfaces as well.
       + Broaden array usage to include vertex shader inputs (vertex in).

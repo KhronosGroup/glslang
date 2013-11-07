@@ -11,7 +11,7 @@ LIBCODEGEN=./../GenericCodeGen/libCodeGen.a
 OBJECTS= Initialize.o IntermTraverse.o \
 	Intermediate.o ParseHelper.o PoolAlloc.o \
 	RemoveTree.o ShaderLang.o intermOut.o parseConst.o SymbolTable.o \
-	InfoSink.o Versions.o Constant.o Scan.o limits.o linkValidate.o
+	InfoSink.o Versions.o Constant.o Scan.o limits.o linkValidate.o reflection.o
 
 SRCS= gen_glslang_tab.cpp Initialize.cpp IntermTraverse.cpp \
 	Intermediate.cpp ParseHelper.cpp PoolAlloc.cp \
@@ -147,3 +147,4 @@ Versions.o: ParseHelper.h  Versions.h ../Include/ShHandle.h SymbolTable.h locali
 Constant.o: localintermediate.h ../Include/intermediate.h ../Public/ShaderLang.h SymbolTable.h Versions.h
 limits.o:  ParseHelper.h
 linkValidate.o: localintermediate.h
+reflection.o: ../Include/Common.h reflection.h localintermediate.h

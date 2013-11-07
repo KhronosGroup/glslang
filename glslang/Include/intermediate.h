@@ -588,7 +588,7 @@ public:
     TIntermSelection(TIntermTyped* cond, TIntermNode* trueB, TIntermNode* falseB, const TType& type) :
         TIntermTyped(type), condition(cond), trueBlock(trueB), falseBlock(falseB) {}
     virtual void traverse(TIntermTraverser*);
-    virtual TIntermNode* getCondition() const { return condition; }
+    virtual TIntermTyped* getCondition() const { return condition; }
     virtual TIntermNode* getTrueBlock() const { return trueBlock; }
     virtual TIntermNode* getFalseBlock() const { return falseBlock; }
     virtual TIntermSelection* getAsSelectionNode() { return this; }
@@ -623,6 +623,12 @@ protected:
 //
 // When using this, just fill in the methods for nodes you want visited.
 // Return false from a pre-visit to skip visiting that node's subtree.
+//
+// Explicitly set postVisit to true if you want post visiting, otherwise,
+// filled in methods will only be called at pre-visit time (before processing
+// the subtree).
+//
+// If you only want post-visits, explicitly turn off preVisit and turn on postVisit.
 //
 class TIntermTraverser {
 public:

@@ -61,6 +61,7 @@ enum TOptions {
     EOptionsLinkProgram       = 0x020,
     EOptionMultiThreaded      = 0x040,
     EOptionDumpConfig         = 0x080,
+    EOptionDumpReflection     = 0x100,
 };
 
 //
@@ -466,6 +467,9 @@ bool ProcessArguments(int argc, char* argv[])
             case 'm':
                 Options |= EOptionMemoryLeakMode;
                 break;
+            case 'q':
+                Options |= EOptionDumpReflection;
+                break;
             case 'r':
                 Options |= EOptionRelaxedErrors;
                 break;
@@ -573,6 +577,11 @@ void CompileAndLinkShaders()
     if (! (Options & EOptionSuppressInfolog)) {
         puts(program.getInfoLog());
         puts(program.getInfoDebugLog());
+    }
+
+    if (Options & EOptionDumpReflection) {
+        program.buildReflection();
+        program.dumpReflection();
     }
 
     // Free everything up, program has to go before the shaders
@@ -771,6 +780,7 @@ void usage()
            "-d: delay exit\n"
            "-l: link validation of all input files\n"
            "-m: memory leak mode\n"
+           "-q: dump reflection query database\n"
            "-r: relaxed semantic error-checking mode\n"
            "-s: silent mode\n"
            "-t: multi-threaded mode\n");

@@ -296,7 +296,7 @@ void TIntermediate::checkCallGraphCycles(TInfoSink& infoSink)
             TCall* call = stack.back();
 
             // Add to the stack just one callee.
-            // This algorithm always terminates, because only ! visited and ! currentPath causes a push
+            // This algorithm always terminates, because only !visited and !currentPath causes a push
             // and all pushes change currentPath to true, and all pops change visited to true.
             TGraph::iterator child = callGraph.begin();
             for (; child != callGraph.end(); ++child) {
@@ -312,6 +312,7 @@ void TIntermediate::checkCallGraphCycles(TInfoSink& infoSink)
                             error(infoSink, "Recursion detected:");
                             infoSink.info << "    " << call->callee << " calling " << child->callee << "\n";
                             child->errorGiven = true;
+                            recursive = true;
                         }
                     } else {
                         child->currentPath = true;

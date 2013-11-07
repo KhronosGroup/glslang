@@ -53,6 +53,7 @@
 
 #define SH_EXPORTING
 #include "../Public/ShaderLang.h"
+#include "reflection.h"
 #include "Initialize.h"
 
 namespace { // anonymous namespace for file-local functions and symbols
@@ -967,18 +968,23 @@ const char* TShader::getInfoDebugLog()
     return infoSink->debug.c_str();
 }
 
-TProgram::TProgram() : pool(0)
+TProgram::TProgram() : pool(0), reflection(0), linked(false)
 {
     infoSink = new TInfoSink;
-    for (int s = 0; s < EShLangCount; ++s)
+    for (int s = 0; s < EShLangCount; ++s) {
         intermediate[s] = 0;
+        newedIntermediate[s] = false;
+    }
 }
 
 TProgram::~TProgram()
 {
     delete infoSink;
+    delete reflection;
+
     for (int s = 0; s < EShLangCount; ++s)
-        delete intermediate[s];
+        if (newedIntermediate[s])
+            delete intermediate[s];
 
     delete pool;
 }
@@ -989,8 +995,12 @@ TProgram::~TProgram()
 //
 bool TProgram::link(EShMessages messages)
 {
-    bool error = false;
+    if (linked)
+        return false;
+    linked = true;
 
+    bool error = false;
+    
     pool = new TPoolAllocator();
     SetThreadPoolAllocator(*pool);
 
@@ -1013,12 +1023,11 @@ bool TProgram::linkStage(EShLanguage stage, EShMessages messages)
     // Be efficient for the common single compilation unit per stage case,
     // reusing it's TIntermediate instead of merging into a new one.
     //
-    TIntermediate* merged;
     if (stages[stage].size() == 1)
-        merged = stages[stage].front()->intermediate;    
+        intermediate[stage] = stages[stage].front()->intermediate;
     else {
         intermediate[stage] = new TIntermediate(stage);
-        merged = intermediate[stage];
+        newedIntermediate[stage] = true;
     }
 
     infoSink->info << "\nLinked " << StageName(stage) << " stage:\n\n";
@@ -1026,15 +1035,15 @@ bool TProgram::linkStage(EShLanguage stage, EShMessages messages)
     if (stages[stage].size() > 1) {
         std::list<TShader*>::const_iterator it;
         for (it = stages[stage].begin(); it != stages[stage].end(); ++it)
-            merged->merge(*infoSink, *(*it)->intermediate);
+            intermediate[stage]->merge(*infoSink, *(*it)->intermediate);
 
         if (messages & EShMsgAST)
-            merged->outputTree(*infoSink);
+            intermediate[stage]->outputTree(*infoSink);
     }
 
-    merged->errorCheck(*infoSink);
+    intermediate[stage]->errorCheck(*infoSink);
 
-    return merged->getNumErrors() > 0;
+    return intermediate[stage]->getNumErrors() > 0;
 }
 
 const char* TProgram::getInfoLog()
@@ -1046,5 +1055,39 @@ const char* TProgram::getInfoDebugLog()
 {
     return infoSink->debug.c_str();
 }
+
+//
+// Reflection implementation.
+//
+
+bool TProgram::buildReflection()
+{    
+    if (! linked || reflection)
+        return false;
+
+    reflection = new TReflection;
+
+    for (int s = 0; s < EShLangCount; ++s) {
+        if (intermediate[s]) {
+            if (! reflection->addStage((EShLanguage)s, *intermediate[s]))
+                return false;
+        }
+    }
+
+    return true;
+}
+
+int TProgram::getNumLiveUniformVariables()           { return reflection->getNumUniforms(); }
+int TProgram::getNumLiveUniformBlocks()              { return reflection->getNumUniformBlocks(); }
+const char* TProgram::getUniformName(int index)      { return reflection->getUniform(index).name.c_str(); }
+const char* TProgram::getUniformBlockName(int index) { return reflection->getUniformBlock(index).name.c_str(); }
+int TProgram::getUniformBlockSize(int index)         { return reflection->getUniformBlock(index).size; }
+int TProgram::getUniformIndex(const char* name)      { return reflection->getIndex(name); }
+int TProgram::getUniformBlockIndex(int index)        { return reflection->getUniform(index).index; }
+int TProgram::getUniformType(int index)              { return reflection->getUniform(index).glDefineType; }
+int TProgram::getUniformBufferOffset(int index)      { return reflection->getUniform(index).offset; }
+int TProgram::getUniformArraySize(int index)         { return reflection->getUniform(index).size; }
+
+void TProgram::dumpReflection()                      { reflection->dump(); }
 
 } // end namespace glslang

@@ -44,6 +44,13 @@ runLinkTest 300link3.frag
 runLinkTest empty.frag empty2.frag empty3.frag
 
 #
+# reflection tests
+#
+echo Running reflection...
+$EXE -l -q reflection.vert > $TARGETDIR/reflection.vert.out
+diff -b $BASEDIR/reflection.vert.out $TARGETDIR/reflection.vert.out
+
+#
 # multi-threaded test
 #
 echo Comparing single thread to multithread for all tests in current directory...

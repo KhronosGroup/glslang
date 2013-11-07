@@ -56,7 +56,8 @@ class TSymbol;
 //
 class TIntermediate {
 public:
-    explicit TIntermediate(EShLanguage l, int v = 0, EProfile p = ENoProfile) : language(l), treeRoot(0), profile(p), version(v), numMains(0), numErrors(0),
+    explicit TIntermediate(EShLanguage l, int v = 0, EProfile p = ENoProfile) : language(l), treeRoot(0), profile(p), version(v), 
+        numMains(0), numErrors(0), recursive(false),
         invocations(0), maxVertices(0), inputPrimitive(ElgNone), outputPrimitive(ElgNone), pixelCenterInteger(false), originUpperLeft(false) { }
 
     void setVersion(int v) { version = v; }
@@ -66,7 +67,9 @@ public:
     void setTreeRoot(TIntermNode* r) { treeRoot = r; }
     TIntermNode* getTreeRoot() const { return treeRoot; }
     void addMainCount() { ++numMains; }
+    int getNumMains() const { return numMains; }
     int getNumErrors() const { return numErrors; }
+    bool isRecursive() const { return recursive; }
     
     TIntermSymbol* addSymbol(int Id, const TString&, const TType&, TSourceLoc);
     TIntermTyped* addConversion(TOperator, const TType&, TIntermTyped*);
@@ -157,6 +160,7 @@ protected:
     int version;
     int numMains;
     int numErrors;
+    bool recursive;
     int invocations;
     int maxVertices;
     TLayoutGeometry inputPrimitive;

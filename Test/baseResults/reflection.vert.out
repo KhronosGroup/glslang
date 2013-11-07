@@ -1,0 +1,33 @@
+reflection.vert
+Warning, version 440 is not yet complete; some version-specific features are present, but many are missing.
+
+
+
+Linked vertex stage:
+
+
+
+Uniform reflection:
+0:anonMember3: offset 32, type 35666, arraySize 1, index 0
+1:s.a: offset -1, type 35666, arraySize 1, index -1
+2:anonMember1: offset 0, type 35666, arraySize 1, index 0
+3:uf1: offset -1, type 35666, arraySize 1, index -1
+4:uf2: offset -1, type 35666, arraySize 1, index -1
+5:ablock.member3: offset 32, type 35666, arraySize 1, index 1
+
+Uniform block reflection:
+0: nameless: offset -1, type -1, arraySize 1, index -1
+1: ablock: offset -1, type -1, arraySize 1, index -1
+
+Live names
+ablock: 1
+ablock.member3: 5
+anonMember1: 2
+anonMember3: 0
+liveFunction1(: -1
+liveFunction2(: -1
+nameless: 0
+s.a: 1
+uf1: 3
+uf2: 4
+

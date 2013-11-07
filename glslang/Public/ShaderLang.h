@@ -305,6 +305,8 @@ private:
     TShader& operator=(TShader&);
 };
 
+class TReflection;
+
 // Make one TProgram per set of shaders that will get linked together.  Add all 
 // the shaders that are to be linked together.  After calling shader.parse()
 // for all shaders, call link().
@@ -316,17 +318,36 @@ public:
     TProgram();
     virtual ~TProgram();
     void addShader(TShader* shader) { stages[shader->stage].push_back(shader); }
+
+    // Link Validation interface
     bool link(EShMessages);
     const char* getInfoLog();
     const char* getInfoDebugLog();
+
+    // Reflection Interface
+    bool buildReflection();                     // call first, to do liveness analysis, index mapping, etc.; returns false on failure
+    int getNumLiveUniformVariables();           // can be used for glGetProgramiv(GL_ACTIVE_UNIFORMS)
+    int getNumLiveUniformBlocks();              // can be used for glGetProgramiv(GL_ACTIVE_UNIFORM_BLOCKS)
+    const char* getUniformName(int index);      // can be used for "name" part of glGetActiveUniform()
+    const char* getUniformBlockName(int index); // can be used for glGetActiveUniformBlockName()
+    int getUniformBlockSize(int index);         // can be used for glGetActiveUniformBlockiv(UNIFORM_BLOCK_DATA_SIZE)
+    int getUniformIndex(const char* name);      // can be used for glGetUniformIndices()
+    int getUniformBlockIndex(int index);        // can be used for glGetActiveUniformsiv(GL_UNIFORM_BLOCK_INDEX)
+    int getUniformType(int index);              // can be used for glGetActiveUniformsiv(GL_UNIFORM_TYPE)
+    int getUniformBufferOffset(int index);      // can be used for glGetActiveUniformsiv(GL_UNIFORM_OFFSET)
+    int getUniformArraySize(int index);         // can be used for glGetActiveUniformsiv(GL_UNIFORM_SIZE)
+    void dumpReflection();
+
 protected:
     bool linkStage(EShLanguage, EShMessages);
 
-protected:
     TPoolAllocator* pool;
     std::list<TShader*> stages[EShLangCount];
     TIntermediate* intermediate[EShLangCount];
+    bool newedIntermediate[EShLangCount];      // track which intermediate were "new" versus reusing a singleton unit in a stage
     TInfoSink* infoSink;
+    TReflection* reflection;
+    bool linked;
 
 private:
     TProgram& operator=(TProgram&);

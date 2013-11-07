@@ -165,6 +165,7 @@ xcopy /y $(IntDir)$(TargetName)$(TargetExt) Test</Command>
     <ClCompile Include="glslang\MachineIndependent\preprocessor\PpContext.cpp" />
     <ClCompile Include="glslang\MachineIndependent\preprocessor\PpSymbols.cpp" />
     <ClCompile Include="glslang\MachineIndependent\preprocessor\PpTokens.cpp" />
+    <ClCompile Include="glslang\MachineIndependent\reflection.cpp" />
     <ClCompile Include="glslang\MachineIndependent\Scan.cpp" />
     <ClCompile Include="glslang\MachineIndependent\Versions.cpp" />
     <ClCompile Include="OGLCompilersDLL\InitializeDll.cpp" />
@@ -192,6 +193,7 @@ xcopy /y $(IntDir)$(TargetName)$(TargetExt) Test</Command>
     <ClInclude Include="glslang\MachineIndependent\ParseHelper.h" />
     <ClInclude Include="glslang\MachineIndependent\preprocessor\PpContext.h" />
     <ClInclude Include="glslang\MachineIndependent\preprocessor\PpTokens.h" />
+    <ClInclude Include="glslang\MachineIndependent\reflection.h" />
     <ClInclude Include="glslang\MachineIndependent\RemoveTree.h" />
     <ClInclude Include="glslang\MachineIndependent\localintermediate.h" />
     <ClInclude Include="glslang\Include\BaseTypes.h" />
