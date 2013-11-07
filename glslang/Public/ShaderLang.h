@@ -163,8 +163,8 @@ SH_IMPORT_EXPORT ShHandle ShConstructUniformMap();                 // one per un
 SH_IMPORT_EXPORT void ShDestruct(ShHandle);
 
 //
-// The return value of ShCompile is boolean, indicating
-// success or failure.
+// The return value of ShCompile is boolean, non-zero indicating
+// success.
 //
 // The info-log should be written by ShCompile into 
 // ShHandle, so it can answer future queries.

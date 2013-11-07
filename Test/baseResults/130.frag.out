@@ -3,9 +3,8 @@ ERROR: 0:25: 'texture gather function' : not supported for this version or the e
 ERROR: 0:35: 'redeclaration' : cannot change the type of gl_Color
 ERROR: 0:38: 'gl_Color' : redeclaring non-array as array 
 ERROR: 0:39: 'redeclaration' : cannot change storage, memory, or auxiliary qualification of gl_Color
-ERROR: 0:43: 'bar' : function already has a body 
 WARNING: 0:45: extension GL_ARB_texture_gather is being used for texture gather function
-ERROR: 5 compilation errors.  No code generated.
+ERROR: 4 compilation errors.  No code generated.
 
 ERROR: node is still EOpNull!
 0:16  Function Definition: main( (void)
@@ -42,7 +41,7 @@ ERROR: node is still EOpNull!
 0:32              0.200000
 0:32              0.200000
 0:32              0.200000
-0:43  Function Definition: bar( (void)
+0:43  Function Definition: bar2( (void)
 0:43    Function Parameters: 
 0:45    Sequence
 0:45      Sequence

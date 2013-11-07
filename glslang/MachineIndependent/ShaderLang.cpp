@@ -947,6 +947,8 @@ TShader::~TShader()
 //
 // Turn the shader strings into a parse tree in the TIntermediate.
 //
+// Returns true for success.
+//
 bool TShader::parse(const TBuiltInResource* builtInResources, int defaultVersion, bool forwardCompatible, EShMessages messages)
 {
     if (! InitThread())
@@ -993,6 +995,8 @@ TProgram::~TProgram()
 // Merge the compilation units within each stage into a single TIntermediate.
 // All starting compilation units need to be the result of calling TShader::parse().
 //
+// Return true for success.
+//
 bool TProgram::link(EShMessages messages)
 {
     if (linked)
@@ -1011,9 +1015,14 @@ bool TProgram::link(EShMessages messages)
 
     // TODO: Link: cross-stage error checking
 
-    return error;
+    return ! error;
 }
 
+//
+// Merge the compilation units within the given stage into a single TIntermediate.
+//
+// Return true for success.
+//
 bool TProgram::linkStage(EShLanguage stage, EShMessages messages)
 {
     if (stages[stage].size() == 0)
@@ -1043,7 +1052,7 @@ bool TProgram::linkStage(EShLanguage stage, EShMessages messages)
 
     intermediate[stage]->errorCheck(*infoSink);
 
-    return intermediate[stage]->getNumErrors() > 0;
+    return intermediate[stage]->getNumErrors() == 0;
 }
 
 const char* TProgram::getInfoLog()

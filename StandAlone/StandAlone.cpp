@@ -92,11 +92,15 @@ ShBinding FixedAttributeBindings[] = {
 ShBindingTable FixedAttributeTable = { 3, FixedAttributeBindings };
 
 EShLanguage FindLanguage(const std::string& name);
-bool CompileFile(const char *fileName, ShHandle);
+void CompileFile(const char *fileName, ShHandle);
 void usage();
 void FreeFileData(char** data);
 char** ReadFileData(const char* fileName);
 void InfoLogMsg(const char* msg, const char* name, const int num);
+
+// Globally track if any compile or link failure.
+bool CompileFailed = false;
+bool LinkFailed = false;
 
 // Use to test breaking up a single shader file into multiple strings.
 int NumShaderStrings;
@@ -511,6 +515,9 @@ void SetMessageOptions(EShMessages& messages)
 }
 
 // Thread entry point, for non-linking asynchronous mode.
+//
+// Return 0 for failure, 1 for success.
+//
 unsigned int
 #ifdef _WIN32
     __stdcall
@@ -521,7 +528,7 @@ CompileShaders(void*)
     while (Worklist.remove(workItem)) {
         ShHandle compiler = ShConstructCompiler(FindLanguage(workItem->name), Options);
         if (compiler == 0)
-            return false;
+            return 0;
 
         CompileFile(workItem->name.c_str(), compiler);
 
@@ -567,7 +574,8 @@ void CompileAndLinkShaders()
 
         shader->setStrings(shaderStrings, 1);
 
-        shader->parse(&Resources, 100, false, messages);
+        if (! shader->parse(&Resources, 100, false, messages))
+            CompileFailed = true;
         
         program.addShader(shader);
 
@@ -584,7 +592,9 @@ void CompileAndLinkShaders()
     // Program-level processing...
     //
 
-    program.link(messages);
+    if (! program.link(messages))
+        LinkFailed = true;
+
     if (! (Options & EOptionSuppressInfolog)) {
         puts(program.getInfoLog());
         puts(program.getInfoDebugLog());
@@ -608,9 +618,6 @@ void CompileAndLinkShaders()
 
 int C_DECL main(int argc, char* argv[])
 {
-    bool compileFailed = false;
-    bool linkFailed = false;
-    
     if (! ProcessArguments(argc, argv)) {
         usage();
         return EFailUsage;
@@ -654,10 +661,8 @@ int C_DECL main(int argc, char* argv[])
                 }
             }
             glslang::OS_WaitForAllThreads(threads, NumThreads);
-        } else {
-            if (! CompileShaders(0))
-                compileFailed = true;
-        }
+        } else
+            CompileShaders(0);
 
         // Print out all the resulting infologs
         for (int w = 0; w < NumWorkItems; ++w) {
@@ -675,9 +680,9 @@ int C_DECL main(int argc, char* argv[])
     if (Delay)
         glslang::OS_Sleep(1000000);
 
-    if (compileFailed)
+    if (CompileFailed)
         return EFailCompile;
-    if (linkFailed)
+    if (LinkFailed)
         return EFailLink;
 
     return 0;
@@ -724,13 +729,14 @@ EShLanguage FindLanguage(const std::string& name)
 // Read a file's data into a string, and compile it using the old interface ShCompile, 
 // for non-linkable results.
 //
-bool CompileFile(const char *fileName, ShHandle compiler)
+void CompileFile(const char *fileName, ShHandle compiler)
 {
     int ret;
     char** shaderStrings = ReadFileData(fileName);
     if (! shaderStrings) {
         usage();
-        return false;
+        CompileFailed = true;
+        return;
     }
 
     int* lengths = new int[NumShaderStrings];
@@ -739,8 +745,10 @@ bool CompileFile(const char *fileName, ShHandle compiler)
     for (int s = 0; s < NumShaderStrings; ++s)
         lengths[s] = strlen(shaderStrings[s]);
 
-    if (! shaderStrings)
-        return false;
+    if (! shaderStrings) {
+        CompileFailed = true;
+        return;
+    }
 
     EShMessages messages = EShMsgDefault;
     SetMessageOptions(messages);
@@ -763,7 +771,8 @@ bool CompileFile(const char *fileName, ShHandle compiler)
     delete [] lengths;
     FreeFileData(shaderStrings);
 
-    return ret ? true : false;
+    if (ret == 0)
+        CompileFailed = true;
 }
 
 //
