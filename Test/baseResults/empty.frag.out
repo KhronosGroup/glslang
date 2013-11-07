@@ -1,11 +1,9 @@
 empty.frag
-WARNING: #version: statement missing; use #version on first line of shader
 
 0:? Sequence
 0:?   Linker Objects
 
 empty2.frag
-WARNING: #version: statement missing; use #version on first line of shader
 
 0:? Sequence
 0:?   Linker Objects

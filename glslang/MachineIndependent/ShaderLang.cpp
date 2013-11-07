@@ -296,7 +296,7 @@ bool DeduceVersionProfile(TInfoSink& infoSink, EShLanguage stage, bool versionNo
     // Get a good version...
     if (version == 0) {
         version = defaultVersion;
-        infoSink.info.message(EPrefixWarning, "#version: statement missing; use #version on first line of shader");
+        // infoSink.info.message(EPrefixWarning, "#version: statement missing; use #version on first line of shader");
     }
 
     // Get a good profile...

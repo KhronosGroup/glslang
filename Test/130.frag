@@ -37,3 +37,10 @@ in vec4 gl_Color;
 flat in vec4 gl_Color;
 flat in vec4 gl_Color[2];  // ERROR, array 
 vec4 gl_Color;             // ERROR, storage
+
+#extension GL_ARB_texture_gather : warn
+
+void bar()
+{
+    vec4 s = textureGather(sampC, vec3(0.2));
+}

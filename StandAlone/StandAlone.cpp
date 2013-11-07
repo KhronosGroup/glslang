@@ -62,6 +62,7 @@ enum TOptions {
     EOptionMultiThreaded      = 0x040,
     EOptionDumpConfig         = 0x080,
     EOptionDumpReflection     = 0x100,
+    EOptionSuppressWarnings   = 0x200,
 };
 
 //
@@ -91,7 +92,7 @@ ShBinding FixedAttributeBindings[] = {
 ShBindingTable FixedAttributeTable = { 3, FixedAttributeBindings };
 
 EShLanguage FindLanguage(const std::string& name);
-bool CompileFile(const char *fileName, ShHandle, int options);
+bool CompileFile(const char *fileName, ShHandle);
 void usage();
 void FreeFileData(char** data);
 char** ReadFileData(const char* fileName);
@@ -478,8 +479,11 @@ bool ProcessArguments(int argc, char* argv[])
                 break;
             case 't':
                 #ifdef _WIN32
-                Options |= EOptionMultiThreaded;
+                    Options |= EOptionMultiThreaded;
                 #endif
+                break;
+            case 'w':
+                Options |= EOptionSuppressWarnings;
                 break;
             default:
                 return false;
@@ -496,6 +500,16 @@ bool ProcessArguments(int argc, char* argv[])
     return true;
 }
 
+void SetMessageOptions(EShMessages& messages)
+{
+    if (Options & EOptionRelaxedErrors)
+        messages = (EShMessages)(messages | EShMsgRelaxedErrors);
+    if (Options & EOptionIntermediate)
+        messages = (EShMessages)(messages | EShMsgAST);
+    if (Options & EOptionSuppressWarnings)
+        messages = (EShMessages)(messages | EShMsgSuppressWarnings);
+}
+
 // Thread entry point, for non-linking asynchronous mode.
 unsigned int
 #ifdef _WIN32
@@ -509,7 +523,7 @@ CompileShaders(void*)
         if (compiler == 0)
             return false;
 
-        CompileFile(workItem->name.c_str(), compiler, Options);
+        CompileFile(workItem->name.c_str(), compiler);
 
         if (! (Options & EOptionSuppressInfolog))
             workItem->results = ShGetInfoLog(compiler);
@@ -532,10 +546,7 @@ void CompileAndLinkShaders()
     std::list<glslang::TShader*> shaders;
 
     EShMessages messages = EShMsgDefault;
-    if (Options & EOptionRelaxedErrors)
-        messages = (EShMessages)(messages | EShMsgRelaxedErrors);
-    if (Options & EOptionIntermediate)
-        messages = (EShMessages)(messages | EShMsgAST);
+    SetMessageOptions(messages);
 
     //
     // Per-shader processing...
@@ -713,7 +724,7 @@ EShLanguage FindLanguage(const std::string& name)
 // Read a file's data into a string, and compile it using the old interface ShCompile, 
 // for non-linkable results.
 //
-bool CompileFile(const char *fileName, ShHandle compiler, int Options)
+bool CompileFile(const char *fileName, ShHandle compiler)
 {
     int ret;
     char** shaderStrings = ReadFileData(fileName);
@@ -732,10 +743,7 @@ bool CompileFile(const char *fileName, ShHandle compiler, int Options)
         return false;
 
     EShMessages messages = EShMsgDefault;
-    if (Options & EOptionRelaxedErrors)
-        messages = (EShMessages)(messages | EShMsgRelaxedErrors);
-    if (Options & EOptionIntermediate)
-        messages = (EShMessages)(messages | EShMsgAST);
+    SetMessageOptions(messages);
     
     for (int i = 0; i < ((Options & EOptionMemoryLeakMode) ? 100 : 1); ++i) {
         for (int j = 0; j < ((Options & EOptionMemoryLeakMode) ? 100 : 1); ++j) {
@@ -777,13 +785,14 @@ void usage()
            "To get other information, use one of the following options:\n"
            "-c: configuration dump; use to create default configuration file (redirect to a .conf file)\n"
            "-i: intermediate tree (glslang AST) is printed out\n"
-           "-d: delay exit\n"
            "-l: link validation of all input files\n"
            "-m: memory leak mode\n"
            "-q: dump reflection query database\n"
            "-r: relaxed semantic error-checking mode\n"
            "-s: silent mode\n"
-           "-t: multi-threaded mode\n");
+           "-t: multi-threaded mode\n"
+           "-w: suppress warnings (except as required by #extension : warn)\n"
+           );
 }
 
 #ifndef _WIN32

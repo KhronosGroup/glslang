@@ -1,4 +1,3 @@
-WARNING: #version: statement missing; use #version on first line of shader
 ERROR: 0:1: 'main' : function cannot take any parameter(s) 
 ERROR: 0:1: 'int' :  main function cannot return a value
 ERROR: 2 compilation errors.  No code generated.
