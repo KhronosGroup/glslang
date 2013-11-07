@@ -312,14 +312,14 @@ void TReflection::dump()
 {
     printf("Uniform reflection:\n");
     for (size_t i = 0; i < indexToUniform.size(); ++i) {
-        printf("%d:", i);
+        printf("%d:", (int)i);
         indexToUniform[i].dump();
     }
     printf("\n");
 
     printf("Uniform block reflection:\n");
     for (size_t i = 0; i < indexToUniformBlock.size(); ++i) {
-        printf("%d: ", i);
+        printf("%d: ", (int)i);
         indexToUniformBlock[i].dump();
     }
     printf("\n");

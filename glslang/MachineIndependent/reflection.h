@@ -54,10 +54,10 @@ class TLiveTraverser;
 // Data needed for just a single object at the granularity exchanged by the reflection API
 class TObjectReflection {
 public:
-    TObjectReflection(const TString pName, int pOffset, int pGLDefineType, int pSize, int pIndex) : 
+    TObjectReflection(const TString& pName, int pOffset, int pGLDefineType, int pSize, int pIndex) : 
         name(pName), offset(pOffset), glDefineType(pGLDefineType), size(pSize), index(pIndex) { }
     void dump() const { printf("%s: offset %d, type %d, arraySize %d, index %d\n", name.c_str(), offset, glDefineType, size, index); }
-    const TString name;
+    TString name;
     int offset;
     int glDefineType;
     int size;         // data size in bytes for a block, array size for a (non-block) object that's an array
@@ -119,4 +119,4 @@ protected:
 
 } // end namespace glslang
 
-#endif _REFLECTION_INCLUDED
+#endif // _REFLECTION_INCLUDED
