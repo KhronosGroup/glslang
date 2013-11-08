@@ -79,4 +79,37 @@ void foo()
 {
     float a[s.iv2.y];  // 3 element array
     a[0] = s.m[1].z;     // 7.0
+    b % 0;  // int
+    b / 0;
+    e / 0;
+    const uint ua = 5;
+    const uvec2 ub = uvec2(6, 7);
+    const uint uc = 8;
+    ub % 4u;
+    0u % uc;
+    ub % 0u;
+}
+
+const mat2 m2 = mat2(2, 3, 4, 5);
+const mat3 m3 = mat3(m2);
+const int mc = int(m3[2][2]);
+float a1[mc];
+float a2[int(m3[2][1]) + 2];  // size 2
+float a3[int(m3[1][0])];  // size 4
+const vec2 v2 = vec2(1, 2);
+const vec3 v3 = vec3(3, 4, 5);
+float a4[uint(mat3(v2, v3, v2, v2)[2][2])];  // size 2
+
+void foo2()
+{
+    a1[0]; // array size 1
+    a2[0]; // array size 2
+    a3[0]; // array size 4
+    a4[0]; // array size 2
+    v2[-1]; // ERROR
+    v3[4];  // ERROR
+    m3[0][-2];  // ERROR
+    m2[-1][1];  // ERROR
+    m3[1][3];   // ERROR
+    m3[3][1];   // ERROR
 }

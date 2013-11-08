@@ -14,7 +14,7 @@ ERROR: 0:31: 'arrayed constructor' : not supported for this version or the enabl
 ERROR: 0:31: 'array comparison' : not supported for this version or the enabled extensions 
 ERROR: 0:35: '[' :  array index out of range '5'
 ERROR: 0:38: '[' :  array index out of range '1000'
-ERROR: 0:39: '[' :  array index out of range '-1'
+ERROR: 0:39: '[' :  index out of range '-1'
 ERROR: 17 compilation errors.  No code generated.
 
 ERROR: node is still EOpNull!

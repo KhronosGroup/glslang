@@ -6,12 +6,12 @@ ERROR: 0:31: 'assign' :  cannot convert from '4-element array of float' to 'unsi
 ERROR: 0:33: 'foo' : no matching overloaded function found 
 ERROR: 0:42: '[' :  array index out of range '5'
 ERROR: 0:45: '[' :  array index out of range '1000'
-ERROR: 0:46: '[' :  array index out of range '-1'
-ERROR: 0:52: '[' :  array index '2' out of range
+ERROR: 0:46: '[' :  index out of range '-1'
+ERROR: 0:52: '[' :  array index out of range '2'
 ERROR: 0:54: 'const' : non-matching or non-convertible constant type for const initializer 
 ERROR: 0:56: '=' :  cannot convert from 'const 2-element array of int' to '3-element array of int'
 ERROR: 0:57: '[]' : scalar integer expression required 
-ERROR: 0:57: '[' :  array index out of range '-858993459'
+ERROR: 0:57: '[' :  index out of range '-858993459'
 ERROR: 0:58: '[]' : scalar integer expression required 
 ERROR: 14 compilation errors.  No code generated.
 
@@ -157,7 +157,7 @@ ERROR: node is still EOpNull!
 0:52      add second child into first child (int)
 0:52        'sum' (int)
 0:52        Constant:
-0:52          3 (const int)
+0:52          2 (const int)
 0:55      Sequence
 0:55        move second child to first child (2-element array of int)
 0:55          'ica' (2-element array of int)

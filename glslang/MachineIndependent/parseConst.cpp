@@ -118,28 +118,23 @@ void ParseConstantUnion(TIntermConstantUnion* node, TIntermTraverser* it)
     if (oit->index >= instanceSize)
         return;
 
-    if (!oit->singleConstantParam) {
+    if (! oit->singleConstantParam) {
         int size = node->getType().getObjectSize();
     
         const TConstUnionArray& rightUnionArray = node->getConstArray();
-        for (int i=0; i < size; i++) {
+        for (int i = 0; i < size; i++) {
             if (oit->index >= instanceSize)
                 return;
             leftUnionArray[oit->index] = rightUnionArray[i];
 
-            (oit->index)++;
+            oit->index++;
         }
     } else {
-        int size, totalSize, matrixRows;
-        bool isMatrix = false;
-        size = oit->size;
-        matrixRows = oit->matrixRows;
-        isMatrix = oit->isMatrix;
-        totalSize = oit->index + size;
+        int endIndex = oit->index + oit->size;
         const TConstUnionArray& rightUnionArray = node->getConstArray();
-        if (! isMatrix) {
+        if (! oit->isMatrix) {
             int count = 0;
-            for (int i = oit->index; i < totalSize; i++) {
+            for (int i = oit->index; i < endIndex; i++) {
                 if (i >= instanceSize)
                     return;
 
@@ -150,21 +145,41 @@ void ParseConstantUnion(TIntermConstantUnion* node, TIntermTraverser* it)
                 if (node->getType().getObjectSize() > 1)
                     count++;
             }
-        } else {  // for matrix constructors
-            int count = 0;
-            int index = oit->index;
-            for (int i = index; i < totalSize; i++) {
-                if (i >= instanceSize)
-                    return;
-                if (index - i == 0 || (i - index) % (matrixRows + 1) == 0 )
-                    leftUnionArray[i] = rightUnionArray[count];
-                else 
-                    leftUnionArray[i].setDConst(0.0);
+        } else {
+            // constructing a matrix, but from what?
+            if (node->isMatrix()) {
+                // Matrix from a matrix; oit has the outer matrix, node is the argument matrix.
+                // Traverse the outer, potentially bigger matrix, fill in missing pieces with the
+                // identity matrix.
+                for (int c = 0; c < oit->matrixCols; ++c) {
+                    for (int r = 0; r < oit->matrixRows; ++r) {
+                        int targetOffset = oit->index + c * oit->matrixRows + r;
+                        if (r < node->getType().getMatrixRows() && c < node->getType().getMatrixCols()) {
+                            int srcOffset = c * node->getType().getMatrixRows() + r;
+                            leftUnionArray[targetOffset] = rightUnionArray[srcOffset];
+                        } else if (r == c)
+                            leftUnionArray[targetOffset].setDConst(1.0);
+                        else
+                            leftUnionArray[targetOffset].setDConst(0.0);
+                    }
+                }
+            } else {
+                // matrix from vector
+                int count = 0;
+                int index = oit->index;
+                for (int i = index; i < endIndex; i++) {
+                    if (i >= instanceSize)
+                        return;
+                    if (i == index || (i - index) % (oit->matrixRows + 1) == 0 )
+                        leftUnionArray[i] = rightUnionArray[count];
+                    else 
+                        leftUnionArray[i].setDConst(0.0);
 
-                (oit->index)++;
+                    oit->index++;
 
-                if (node->getType().getObjectSize() > 1)
-                    count++;                
+                    if (node->getType().getObjectSize() > 1)
+                        count++;                
+                }
             }
         }
     }

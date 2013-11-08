@@ -1,5 +1,13 @@
 Warning, version 430 is not yet complete; some version-specific features are present, but many are missing.
-0:? Sequence
+ERROR: 0:109: '[' :  index out of range '-1'
+ERROR: 0:110: '[' :  vector index out of range '4'
+ERROR: 0:111: '[' :  index out of range '-2'
+ERROR: 0:112: '[' :  index out of range '-1'
+ERROR: 0:113: '[' :  vector index out of range '3'
+ERROR: 0:114: '[' :  matrix index out of range '3'
+ERROR: 6 compilation errors.  No code generated.
+
+ERROR: node is still EOpNull!
 0:28  Function Definition: main( (void)
 0:28    Function Parameters: 
 0:30    Sequence
@@ -163,6 +171,51 @@ Warning, version 430 is not yet complete; some version-specific features are pre
 0:81            0 (const int)
 0:81        Constant:
 0:81          7.000000
+0:82      Constant:
+0:82        2 (const int)
+0:83      Constant:
+0:83        2147483647 (const int)
+0:84      Constant:
+0:84        1.#INF00
+0:88      Constant:
+0:88        2 (const uint)
+0:88        3 (const uint)
+0:89      Constant:
+0:89        0 (const uint)
+0:90      Constant:
+0:90        6 (const uint)
+0:90        7 (const uint)
+0:103  Function Definition: foo2( (void)
+0:103    Function Parameters: 
+0:105    Sequence
+0:105      direct index (float)
+0:105        'a1' (1-element array of float)
+0:105        Constant:
+0:105          0 (const int)
+0:106      direct index (float)
+0:106        'a2' (2-element array of float)
+0:106        Constant:
+0:106          0 (const int)
+0:107      direct index (float)
+0:107        'a3' (4-element array of float)
+0:107        Constant:
+0:107          0 (const int)
+0:108      direct index (float)
+0:108        'a4' (2-element array of float)
+0:108        Constant:
+0:108          0 (const int)
+0:109      Constant:
+0:109        1.000000
+0:110      Constant:
+0:110        5.000000
+0:111      Constant:
+0:111        2.000000
+0:112      Constant:
+0:112        3.000000
+0:113      Constant:
+0:113        0.000000
+0:114      Constant:
+0:114        0.000000
 0:?   Linker Objects
 0:?     'a' (const int)
 0:?       1 (const int)
@@ -209,4 +262,32 @@ Warning, version 430 is not yet complete; some version-specific features are pre
 0:?       6.000000
 0:?       7.000000
 0:?       8.000000
+0:?     'm2' (const 2X2 matrix of float)
+0:?       2.000000
+0:?       3.000000
+0:?       4.000000
+0:?       5.000000
+0:?     'm3' (const 3X3 matrix of float)
+0:?       2.000000
+0:?       3.000000
+0:?       0.000000
+0:?       4.000000
+0:?       5.000000
+0:?       0.000000
+0:?       0.000000
+0:?       0.000000
+0:?       1.000000
+0:?     'mc' (const int)
+0:?       1 (const int)
+0:?     'a1' (1-element array of float)
+0:?     'a2' (2-element array of float)
+0:?     'a3' (4-element array of float)
+0:?     'v2' (const 2-component vector of float)
+0:?       1.000000
+0:?       2.000000
+0:?     'v3' (const 3-component vector of float)
+0:?       3.000000
+0:?       4.000000
+0:?       5.000000
+0:?     'a4' (2-element array of float)
 

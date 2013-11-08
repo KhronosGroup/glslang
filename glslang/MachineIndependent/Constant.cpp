@@ -166,7 +166,7 @@ TIntermTyped* TIntermConstantUnion::fold(TOperator op, TIntermTyped* constantNod
 
             case EbtInt:
                 if (rightUnionArray[i] == 0) {
-                    newConstArray[i].setIConst(0xEFFFFFFF);
+                    newConstArray[i].setIConst(0x7FFFFFFF);
                 } else
                     newConstArray[i].setIConst(unionArray[i].getIConst() / rightUnionArray[i].getIConst());
                 break;
@@ -207,8 +207,12 @@ TIntermTyped* TIntermConstantUnion::fold(TOperator op, TIntermTyped* constantNod
         break;
 
     case EOpMod:
-        for (int i = 0; i < objectSize; i++)
-            newConstArray[i] = unionArray[i] % rightUnionArray[i];
+        for (int i = 0; i < objectSize; i++) {
+            if (rightUnionArray[i] == 0)
+                newConstArray[i] = unionArray[i];
+            else
+                newConstArray[i] = unionArray[i] % rightUnionArray[i];
+        }
         break;
 
     case EOpRightShift:

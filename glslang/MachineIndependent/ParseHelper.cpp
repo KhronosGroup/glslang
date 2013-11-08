@@ -437,6 +437,12 @@ TIntermTyped* TParseContext::handleBracketDereference(TSourceLoc loc, TIntermTyp
 {
     TIntermTyped* result = 0;
 
+    int indexValue = 0;
+    if (index->getQualifier().storage == EvqConst) {
+        indexValue = index->getAsConstantUnion()->getConstArray()[0].getIConst();
+        checkIndex(loc, base->getType(), indexValue);
+    }
+
     variableCheck(base);
     if (! base->isArray() && ! base->isMatrix() && ! base->isVector()) {
         if (base->getAsSymbolNode())
@@ -446,31 +452,22 @@ TIntermTyped* TParseContext::handleBracketDereference(TSourceLoc loc, TIntermTyp
     } else if (base->getType().getQualifier().storage == EvqConst && index->getQualifier().storage == EvqConst) {
         if (base->isArray()) {
             // constant folding for arrays
-            result = addConstArrayNode(index->getAsConstantUnion()->getConstArray()[0].getIConst(), base, loc);
+            result = addConstArrayNode(loc, indexValue, base);
         } else if (base->isVector()) {
             // constant folding for vectors
-            TVectorFields fields;
+            TVectorFields fields; // need to do it this way because v.xy sends fields integer array
             fields.num = 1;
-            fields.offsets[0] = index->getAsConstantUnion()->getConstArray()[0].getIConst(); // need to do it this way because v.xy sends fields integer array
-            result = addConstVectorNode(fields, base, loc);
+            fields.offsets[0] = indexValue;
+            result = addConstVectorNode(loc, fields, base);
         } else if (base->isMatrix()) {
             // constant folding for matrices
-            result = addConstMatrixNode(index->getAsConstantUnion()->getConstArray()[0].getIConst(), base, loc);
+            result = addConstMatrixNode(loc, indexValue, base);
         }
     } else {
         // at least one of base and index is variable...
         if (index->getQualifier().storage == EvqConst) {
-            int indexValue = index->getAsConstantUnion()->getConstArray()[0].getIConst();
-            if (! base->isArray() && ((base->isVector() && base->getType().getVectorSize() <= indexValue) ||
-                                      (base->isMatrix() && base->getType().getMatrixCols() <= indexValue)))
-                error(loc, "", "[", "index out of range '%d'", index->getAsConstantUnion()->getConstArray()[0].getIConst());
-            if (base->isArray()) {
-                if (base->getType().getArraySize() == 0)
-                    updateMaxArraySize(loc, base, index->getAsConstantUnion()->getConstArray()[0].getIConst());
-                else if (index->getAsConstantUnion()->getConstArray()[0].getIConst() >= base->getType().getArraySize() ||
-                           index->getAsConstantUnion()->getConstArray()[0].getIConst() < 0)
-                    error(loc, "", "[", "array index out of range '%d'", index->getAsConstantUnion()->getConstArray()[0].getIConst());
-            }
+            if (base->isArray() && base->getType().getArraySize() == 0)
+                updateMaxArraySize(loc, base, indexValue);
             result = intermediate.addIndex(EOpIndexDirect, base, index, loc);
         } else {
             if (base->isArray() && base->getType().getArraySize() == 0)
@@ -490,10 +487,12 @@ TIntermTyped* TParseContext::handleBracketDereference(TSourceLoc loc, TIntermTyp
     }
 
     if (result == 0) {
+        // Insert dummy error-recovery result
         TConstUnionArray unionArray(1);
         unionArray[0].setDConst(0.0);
         result = intermediate.addConstantUnion(unionArray, TType(EbtFloat, EvqConst), loc);
     } else {
+        // Insert valid dereferenced result
         TType newType;
         newType.shallowCopy(base->getType());
         if (base->getType().getQualifier().storage == EvqConst && index->getQualifier().storage == EvqConst)
@@ -511,6 +510,29 @@ TIntermTyped* TParseContext::handleBracketDereference(TSourceLoc loc, TIntermTyp
     }
 
     return result;
+}
+
+void TParseContext::checkIndex(TSourceLoc loc, const TType& type, int& index)
+{
+    if (index < 0) {
+        error(loc, "", "[", "index out of range '%d'", index);
+        index = 0;
+    } else if (type.isArray()) {
+        if (type.getArraySize() != 0 && index >= type.getArraySize()) {
+            error(loc, "", "[", "array index out of range '%d'", index);
+            index = type.getArraySize() - 1;
+        }
+    } else if (type.isVector()) {
+        if (index >= type.getVectorSize()) {
+            error(loc, "", "[", "vector index out of range '%d'", index);
+            index = type.getVectorSize() - 1;
+        }
+    } else if (type.isMatrix()) {
+        if (index >= type.getMatrixCols()) {
+            error(loc, "", "[", "matrix index out of range '%d'", index);
+            index = type.getMatrixCols() - 1;
+        }
+    }           
 }
 
 // for ES 2.0 (version 100) limitations for almost all index operations except vertex-shader uniforms
@@ -632,7 +654,7 @@ TIntermTyped* TParseContext::handleDotDereference(TSourceLoc loc, TIntermTyped* 
         }
 
         if (base->getType().getQualifier().storage == EvqConst) { // constant folding for vector fields
-            result = addConstVectorNode(fields, base, loc);
+            result = addConstVectorNode(loc, fields, base);
             if (result == 0)
                 result = base;
             else
@@ -668,7 +690,7 @@ TIntermTyped* TParseContext::handleDotDereference(TSourceLoc loc, TIntermTyped* 
             }
             if (fieldFound) {
                 if (base->getType().getQualifier().storage == EvqConst) {
-                    result = addConstStruct(field, base, loc);
+                    result = addConstStruct(loc, field, base);
                     if (result == 0)
                         result = base;
                     else {
@@ -3600,26 +3622,18 @@ TIntermNode* TParseContext::addSwitch(TSourceLoc loc, TIntermTyped* expression, 
 // TODO: simplification: constant folding: these should use a follow a fully folded model now, and probably move to Constant.cpp scheme.
 
 //
-// This function returns the tree representation for the vector field(s) being accessed from a constant vector.
-// If only one component of vector is accessed (v.x or v[0] where v is a contant vector), then a contant node is
-// returned, else an aggregate node is returned (for v.xy). The input to this function could either be the symbol
-// node or it could be the intermediate tree representation of accessing fields in a constant structure or column of
-// a constant matrix.
+// Make a constant scalar or vector node, representing a given constant vector and constant swizzle into it.
 //
-TIntermTyped* TParseContext::addConstVectorNode(TVectorFields& fields, TIntermTyped* node, TSourceLoc loc)
+// The type of the returned node is still the original vector type; it needs to be corrected by the caller.
+//
+TIntermTyped* TParseContext::addConstVectorNode(TSourceLoc loc, TVectorFields& fields, TIntermTyped* node)
 {
-    TIntermTyped* typedNode;
-    TIntermConstantUnion* tempConstantNode = node->getAsConstantUnion();
-
-    TConstUnionArray unionArray;
-    if (tempConstantNode)
-        unionArray = tempConstantNode->getConstArray();
-    else { // The node has to be either a symbol node or an aggregate node or a tempConstant node, else, its an error
+    if (! node->getAsConstantUnion()) {
         error(loc, "Cannot offset into the vector", "Error", "");
-
         return 0;
     }
 
+    const TConstUnionArray& unionArray = node->getAsConstantUnion()->getConstArray();
     TConstUnionArray constArray(fields.num);
 
     for (int i = 0; i < fields.num; i++) {
@@ -3630,52 +3644,45 @@ TIntermTyped* TParseContext::addConstVectorNode(TVectorFields& fields, TIntermTy
 
         constArray[i] = unionArray[fields.offsets[i]];
     }
-    typedNode = intermediate.addConstantUnion(constArray, node->getType(), loc);
 
-    return typedNode;
+    return intermediate.addConstantUnion(constArray, node->getType(), loc);
 }
 
 //
-// This function returns the column being accessed from a constant matrix. The values are retrieved from
-// the symbol table and parse-tree is built for a vector (each column of a matrix is a vector). The input
-// to the function could either be a symbol node (m[0] where m is a constant matrix)that represents a
-// constant matrix or it could be the tree representation of the constant matrix (s.m1[0] where s is a constant structure)
+// Make a constant vector node, representing a given constant column 
+// from the given constant matrix.
 //
-TIntermTyped* TParseContext::addConstMatrixNode(int index, TIntermTyped* node, TSourceLoc loc)
+// The type of the returned node is still the original matrix type; 
+// which needs to be corrected (dereferenced) by the caller.
+//
+TIntermTyped* TParseContext::addConstMatrixNode(TSourceLoc loc, int index, TIntermTyped* node)
 {
-    TIntermTyped* typedNode;
-    TIntermConstantUnion* tempConstantNode = node->getAsConstantUnion();
+    TIntermConstantUnion* constNode = node->getAsConstantUnion();
 
     if (index >= node->getType().getMatrixCols()) {
         error(loc, "", "[", "matrix field selection out of range '%d'", index);
         index = 0;
     }
 
-    if (tempConstantNode) {
-        const TConstUnionArray& unionArray = tempConstantNode->getConstArray();
-        int size = tempConstantNode->getType().getMatrixRows();
-        // Note: the type is corrected (dereferenced) by the caller
-        typedNode = intermediate.addConstantUnion(TConstUnionArray(unionArray, size * index, size), tempConstantNode->getType(), loc);
+    if (constNode) {
+        const TConstUnionArray& unionArray = constNode->getConstArray();
+        int size = constNode->getType().getMatrixRows();
+        return intermediate.addConstantUnion(TConstUnionArray(unionArray, size * index, size), constNode->getType(), loc);
     } else {
         error(loc, "Cannot offset into the matrix", "Error", "");
-
         return 0;
     }
-
-    return typedNode;
 }
 
 
 //
-// This function returns an element of an array accessed from a constant array. The values are retrieved from
-// the symbol table and parse-tree is built for the type of the element. The input
-// to the function could either be a symbol node (a[0] where a is a constant array)that represents a
-// constant array or it could be the tree representation of the constant array (s.a1[0] where s is a constant structure)
+// Make a constant node, representing the constant element of the constant array.
 //
-TIntermTyped* TParseContext::addConstArrayNode(int index, TIntermTyped* node, TSourceLoc loc)
+// The type of the returned node is still the original array type;
+// which needs to be corrected (dereferenced) by the caller.
+//
+TIntermTyped* TParseContext::addConstArrayNode(TSourceLoc loc, int index, TIntermTyped* node)
 {
-    TIntermTyped* typedNode;
-    TIntermConstantUnion* tempConstantNode = node->getAsConstantUnion();
     TType arrayElementType;
     arrayElementType.shallowCopy(node->getType());  // TODO: 4.3 simplification: arrays of arrays: combine this with deref.
     arrayElementType.dereference();
@@ -3685,18 +3692,14 @@ TIntermTyped* TParseContext::addConstArrayNode(int index, TIntermTyped* node, TS
         index = 0;
     }
 
-    int arrayElementSize = arrayElementType.getObjectSize();
-
-    if (tempConstantNode) {
-         typedNode = intermediate.addConstantUnion(TConstUnionArray(tempConstantNode->getConstArray(), arrayElementSize * index, arrayElementSize),
-                                                   tempConstantNode->getType(), loc);
+    if (node->getAsConstantUnion()) {
+        int arrayElementSize = arrayElementType.getObjectSize();
+        return intermediate.addConstantUnion(TConstUnionArray(node->getAsConstantUnion()->getConstArray(), arrayElementSize * index, arrayElementSize),
+                                             node->getType(), loc);
     } else {
         error(loc, "Cannot offset into the array", "Error", "");
-
         return 0;
     }
-
-    return typedNode;
 }
 
 
@@ -3705,16 +3708,13 @@ TIntermTyped* TParseContext::addConstArrayNode(int index, TIntermTyped* node, TS
 // If there is an embedded/nested struct, it appropriately calls addConstStructNested or addConstStructFromAggr
 // function and returns the parse-tree with the values of the embedded/nested struct.
 //
-TIntermTyped* TParseContext::addConstStruct(TString& identifier, TIntermTyped* node, TSourceLoc loc)
+TIntermTyped* TParseContext::addConstStruct(TSourceLoc loc, TString& identifier, TIntermTyped* node)
 {
     TTypeList* fields = node->getType().getStruct();
-    TIntermTyped *typedNode;
     int instanceOffset = 0;
     int instanceSize;
-    unsigned int index = 0;
-    TIntermConstantUnion *tempConstantNode = node->getAsConstantUnion();
 
-    for ( index = 0; index < fields->size(); ++index) {
+    for (size_t index = 0; index < fields->size(); ++index) {
         instanceSize = (*fields)[index].type->getObjectSize();
 
         if ((*fields)[index].type->getFieldName() == identifier)
@@ -3723,17 +3723,14 @@ TIntermTyped* TParseContext::addConstStruct(TString& identifier, TIntermTyped* n
         instanceOffset += instanceSize;
     }
 
-    if (tempConstantNode) {
-         typedNode = intermediate.addConstantUnion(TConstUnionArray(tempConstantNode->getConstArray(), instanceOffset, instanceSize),
-                                                   tempConstantNode->getType(), loc);
+    if (node->getAsConstantUnion()) {
+         return intermediate.addConstantUnion(TConstUnionArray(node->getAsConstantUnion()->getConstArray(), instanceOffset, instanceSize),
+                                              node->getType(), loc);
          // type will be changed in the calling function
     } else {
         error(loc, "Cannot offset into the structure", "Error", "");
-
         return 0;
     }
-
-    return typedNode;
 }
 
 } // end namespace glslang

@@ -81,6 +81,7 @@ public:
     void handlePragma(const char **tokens, int numTokens);
     TIntermTyped* handleVariable(TSourceLoc, TSymbol* symbol, TString* string);
     TIntermTyped* handleBracketDereference(TSourceLoc, TIntermTyped* base, TIntermTyped* index);
+    void checkIndex(TSourceLoc, const TType&, int& index);
     void handleIndexLimits(TSourceLoc, TIntermTyped* base, TIntermTyped* index);
     void handleInputArrayAccess(TSourceLoc, TIntermTyped* base);
     void checkInputArrayConsistency(TSourceLoc, bool tailOnly = false);
@@ -159,10 +160,10 @@ public:
     void updateTypedDefaults(TSourceLoc, const TQualifier&, const TString* id);
     void wrapupSwitchSubsequence(TIntermAggregate* statements, TIntermNode* branchNode);
     TIntermNode* addSwitch(TSourceLoc, TIntermTyped* expression, TIntermAggregate* body);
-    TIntermTyped* addConstVectorNode(TVectorFields&, TIntermTyped*, TSourceLoc);
-    TIntermTyped* addConstMatrixNode(int , TIntermTyped*, TSourceLoc);
-    TIntermTyped* addConstArrayNode(int index, TIntermTyped* node, TSourceLoc);
-    TIntermTyped* addConstStruct(TString& , TIntermTyped*, TSourceLoc);
+    TIntermTyped* addConstVectorNode(TSourceLoc, TVectorFields&, TIntermTyped*);
+    TIntermTyped* addConstMatrixNode(TSourceLoc, int index, TIntermTyped*);
+    TIntermTyped* addConstArrayNode(TSourceLoc, int index, TIntermTyped* node);
+    TIntermTyped* addConstStruct(TSourceLoc, TString& , TIntermTyped*);
 
     void updateMaxArraySize(TSourceLoc, TIntermNode*, int index);
 
