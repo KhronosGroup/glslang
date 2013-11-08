@@ -136,7 +136,7 @@ int TType::getStructSize() const
 
 void TVariable::dump(TInfoSink& infoSink) const
 {
-    infoSink.debug << getName().c_str() << ": " << type.getStorageQualifierString() << " " << type.getCompleteTypeString();
+    infoSink.debug << getName().c_str() << ": " << type.getStorageQualifierString() << " " << type.getBasicTypeString();
     if (type.isArray()) {
         infoSink.debug << "[0]";
     }
@@ -145,7 +145,7 @@ void TVariable::dump(TInfoSink& infoSink) const
 
 void TFunction::dump(TInfoSink& infoSink) const
 {
-    infoSink.debug << getName().c_str() << ": " <<  returnType.getCompleteTypeString() << " " << getMangledName().c_str() << "\n";
+    infoSink.debug << getName().c_str() << ": " <<  returnType.getBasicTypeString() << " " << getMangledName().c_str() << "\n";
 }
 
 void TAnonMember::dump(TInfoSink& TInfoSink) const

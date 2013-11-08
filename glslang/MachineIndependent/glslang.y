@@ -552,6 +552,7 @@ equality_expression
     : relational_expression { $$ = $1; }
     | equality_expression EQ_OP relational_expression  {
         parseContext.arrayObjectCheck($2.loc, $1->getType(), "array comparison");
+        parseContext.opaqueCheck($2.loc, $1->getType(), "==");
         $$ = parseContext.intermediate.addBinaryMath(EOpEqual, $1, $3, $2.loc);
         if ($$ == 0) {
             parseContext.binaryOpError($2.loc, "==", $1->getCompleteString(), $3->getCompleteString());
@@ -562,6 +563,7 @@ equality_expression
     }
     | equality_expression NE_OP relational_expression {
         parseContext.arrayObjectCheck($2.loc, $1->getType(), "array comparison");
+        parseContext.opaqueCheck($2.loc, $1->getType(), "!=");
         $$ = parseContext.intermediate.addBinaryMath(EOpNotEqual, $1, $3, $2.loc);
         if ($$ == 0) {
             parseContext.binaryOpError($2.loc, "!=", $1->getCompleteString(), $3->getCompleteString());
@@ -664,6 +666,7 @@ assignment_expression
     : conditional_expression { $$ = $1; }
     | unary_expression assignment_operator assignment_expression {
         parseContext.arrayObjectCheck($2.loc, $1->getType(), "array assignment");
+        parseContext.opaqueCheck($2.loc, $1->getType(), "=");
         parseContext.lValueErrorCheck($2.loc, "assign", $1);
         $$ = parseContext.intermediate.addAssign($2.op, $1, $3, $2.loc);
         if ($$ == 0) {
@@ -921,13 +924,13 @@ parameter_declaration
         
         parseContext.checkNoShaderLayouts($1.loc, $1.shaderQualifiers);
         parseContext.parameterSamplerCheck($2.loc, $1.qualifier.storage, *$$.param.type);
-        parseContext.paramCheck($1.loc, $1.qualifier.storage, $$.param.type);
+        parseContext.paramCheckFix($1.loc, $1.qualifier, *$$.param.type);
     }
     | parameter_declarator {
         $$ = $1;
 
         parseContext.parameterSamplerCheck($1.loc, EvqIn, *$1.param.type);
-        parseContext.paramCheck($1.loc, EvqTemporary, $$.param.type);
+        parseContext.paramCheckFix($1.loc, EvqTemporary, *$$.param.type);
     }
     //
     // Without name
@@ -939,13 +942,13 @@ parameter_declaration
         
         parseContext.checkNoShaderLayouts($1.loc, $1.shaderQualifiers);
         parseContext.parameterSamplerCheck($2.loc, $1.qualifier.storage, *$$.param.type);
-        parseContext.paramCheck($1.loc, $1.qualifier.storage, $$.param.type);
+        parseContext.paramCheckFix($1.loc, $1.qualifier, *$$.param.type);
     }
     | parameter_type_specifier {
         $$ = $1;
 
         parseContext.parameterSamplerCheck($1.loc, EvqIn, *$1.param.type);
-        parseContext.paramCheck($1.loc, EvqTemporary, $$.param.type);
+        parseContext.paramCheckFix($1.loc, EvqTemporary, *$$.param.type);
     }
     ;
 
@@ -1015,6 +1018,7 @@ fully_specified_type
     : type_specifier {
         $$ = $1;
 
+        parseContext.globalQualifierCheck($1.loc, $1.qualifier, $$);
         if ($1.arraySizes) {
             parseContext.profileRequires($1.loc, ENoProfile, 120, GL_3DL_array_objects, "arrayed type");
             parseContext.profileRequires($1.loc, EEsProfile, 300, 0, "arrayed type");
@@ -1950,6 +1954,7 @@ type_specifier_nonarray
     | struct_specifier {
         $$ = $1;
         $$.qualifier.storage = parseContext.symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
+        parseContext.structTypeCheck($$.loc, $$);
     }
     | TYPE_NAME {
         //

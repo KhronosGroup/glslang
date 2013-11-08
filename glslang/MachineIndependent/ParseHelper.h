@@ -111,7 +111,7 @@ public:
     bool voidErrorCheck(TSourceLoc, const TString&, TBasicType);
     void boolCheck(TSourceLoc, const TIntermTyped*);
     void boolCheck(TSourceLoc, const TPublicType&);
-    bool samplerErrorCheck(TSourceLoc, const TPublicType& pType, const char* reason);
+    void samplerCheck(TSourceLoc, const TType&, const TString& identifier);
     void pipeInOutFix(TSourceLoc, TQualifier&);
     void globalQualifierCheck(TSourceLoc, const TQualifier&, const TPublicType&);
     bool structQualifierErrorCheck(TSourceLoc, const TPublicType& pType);
@@ -124,10 +124,13 @@ public:
     bool containsSampler(const TType& type);
     TSymbol* redeclareBuiltinVariable(TSourceLoc, const TString&, const TQualifier&, const TShaderQualifiers&, bool& newDeclaration);
     bool redeclareBuiltinBlock(TSourceLoc, TTypeList& typeList, const TString& blockName, const TString* instanceName, TArraySizes* arraySizes);
-    void paramCheck(TSourceLoc, const TStorageQualifier&, TType* type);
+    void paramCheckFix(TSourceLoc, const TStorageQualifier&, TType& type);
+    void paramCheckFix(TSourceLoc, const TQualifier&, TType& type);
     void nestedBlockCheck(TSourceLoc);
     void nestedStructCheck(TSourceLoc);
     void arrayObjectCheck(TSourceLoc, const TType&, const char* op);
+    void opaqueCheck(TSourceLoc, const TType&, const char* op);
+    void structTypeCheck(TSourceLoc, TPublicType&);
     void inductiveLoopCheck(TSourceLoc, TIntermNode* init, TIntermLoop* loop);
     void inductiveLoopBodyCheck(TIntermNode*, int loopIndexId, TSymbolTable&);
     void constantIndexExpressionCheck(TIntermNode*);
@@ -151,6 +154,7 @@ public:
     void declareBlock(TSourceLoc, TTypeList& typeList, const TString* instanceName = 0, TArraySizes* arraySizes = 0);
     void addQualifierToExisting(TSourceLoc, TQualifier, const TString& identifier);
     void addQualifierToExisting(TSourceLoc, TQualifier, TIdentifierList&);
+    void invariantCheck(TSourceLoc, const TType&, const TString& identifier);
     void updateStandaloneQualifierDefaults(TSourceLoc, const TPublicType&);
     void updateTypedDefaults(TSourceLoc, const TQualifier&, const TString* id);
     void wrapupSwitchSubsequence(TIntermAggregate* statements, TIntermNode* branchNode);

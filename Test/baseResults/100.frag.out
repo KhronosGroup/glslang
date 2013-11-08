@@ -20,7 +20,27 @@ ERROR: 0:38: 'array comparison' : not supported for this version or the enabled 
 ERROR: 0:40: 'switch' : Reserved word. 
 ERROR: 0:40: 'switch statements' : not supported for this version or the enabled extensions 
 ERROR: 0:45: '' : array size required 
-ERROR: 22 compilation errors.  No code generated.
+ERROR: 0:47: 'invariant' : can only apply to an output or an input in a non-vertex stage
+ 
+ERROR: 0:50: 'invariant' : can only apply to an output or an input in a non-vertex stage
+ 
+ERROR: 0:56: 'invariant' : can only apply to an output or an input in a non-vertex stage
+ 
+ERROR: 0:57: 'invariant' : can only apply to an output or an input in a non-vertex stage
+ 
+ERROR: 0:59: 'invariant' : can only apply to an output or an input in a non-vertex stage
+ 
+ERROR: 0:63: 'invariant' : can only apply to an output or an input in a non-vertex stage
+ 
+ERROR: 0:64: 'invariant' : can only apply to an output or an input in a non-vertex stage
+ 
+ERROR: 0:66: 'sampler2D' : sampler/image types can only be used in uniform variables or function parameters: glob2D
+ERROR: 0:69: 'sampler2D' : sampler/image types can only be used in uniform variables or function parameters: v2D
+ERROR: 0:71: 'sampler2D' : sampler/image types can only be used in uniform variables or function parameters: vary2D
+ERROR: 0:75: 'g' : cannot use storage or interpolation qualifiers on structure members 
+ERROR: 0:76: 'h' : cannot use storage or interpolation qualifiers on structure members 
+ERROR: 0:77: 'i' : cannot use invariant qualifier on structure members 
+ERROR: 35 compilation errors.  No code generated.
 
 ERROR: node is still EOpNull!
 0:3  Sequence
@@ -96,6 +116,11 @@ ERROR: node is still EOpNull!
 0:38          's2' (structure{f,a})
 0:38        true case is null
 0:40      'b' (mediump int)
+0:54  Function Definition: foo10( (void)
+0:54    Function Parameters: 
+0:67  Function Definition: f11(s21; (void)
+0:67    Function Parameters: 
+0:67      'p2d' (in lowp sampler2D)
 0:?   Linker Objects
 0:?     'a' (3-element array of mediump int)
 0:?     'uint' (mediump int)
@@ -103,4 +128,11 @@ ERROR: node is still EOpNull!
 0:?     'f' (mediump float)
 0:?     '__anon__0' (layout(column_major shared ) uniform block{x})
 0:?     'fa' (unsized array of mediump float)
+0:?     'f13' (mediump float)
+0:?     'fi' (invariant mediump float)
+0:?     'av' (smooth in mediump 4-component vector of float)
+0:?     'uv2' (uniform mediump 2-component vector of float)
+0:?     'uv3' (invariant uniform mediump 3-component vector of float)
+0:?     'glob2D' (lowp sampler2D)
+0:?     'vary2D' (smooth in lowp sampler2D)
 

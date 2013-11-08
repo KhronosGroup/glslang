@@ -2,7 +2,15 @@ Warning, version 430 is not yet complete; some version-specific features are pre
 ERROR: 0:3: 'v4' : location qualifiers only appy to uniform, buffer, in, or out storage qualifiers 
 ERROR: 0:7: 'location qualifier on input block' : not supported for this version or the enabled extensions 
 ERROR: 0:8: 'location qualifier on output block' : not supported for this version or the enabled extensions 
-ERROR: 3 compilation errors.  No code generated.
+ERROR: 0:21: 'g' : cannot use storage or interpolation qualifiers on structure members 
+ERROR: 0:22: 'h' : cannot use storage or interpolation qualifiers on structure members 
+ERROR: 0:23: 'i' : cannot use invariant qualifier on structure members 
+ERROR: 0:24: 'j' : cannot use memory qualifiers on structure members 
+ERROR: 0:25: 'm3' : cannot use layout qualifiers on structure members 
+ERROR: 0:28: '' : cannot use invariant qualifier on a function parameter 
+ERROR: 0:30: '' : cannot use layout qualifiers on a function parameter 
+ERROR: 0:31: '' : cannot use auxiliary or interpolation qualifiers on a function parameter 
+ERROR: 11 compilation errors.  No code generated.
 
 ERROR: node is still EOpNull!
 0:14  Function Definition: foo( (void)
@@ -18,6 +26,12 @@ ERROR: node is still EOpNull!
 0:16            2 (const int)
 0:16        Constant:
 0:16          3.700000
+0:31  Function Definition: foo3(vf4;vf3;vf2;vf3; (void)
+0:31    Function Parameters: 
+0:31      'v4' (in 4-component vector of float)
+0:31      'v3' (in 3-component vector of float)
+0:31      'v2' (in 2-component vector of float)
+0:31      'cv3' (in 3-component vector of float)
 0:?   Linker Objects
 0:?     'v4' (layout(location=3 ) 4-component vector of float)
 0:?     'uv4' (layout(location=3 ) uniform 4-component vector of float)

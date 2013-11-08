@@ -768,7 +768,7 @@ public:
 
         *p = 0;
         TString s(buf);
-        s.append(getCompleteTypeString());
+        s.append(getBasicTypeString());
 
         // Add struct/block members
         if (structure) {
@@ -784,7 +784,7 @@ public:
         return s;
     }
 
-    TString getCompleteTypeString() const
+    TString getBasicTypeString() const
     {
         if (basicType == EbtSampler)
             return sampler.getString();

@@ -15,3 +15,19 @@ void foo()
 {
     gl_ClipDistance[2] = 3.7;
 }
+
+struct sp {
+    highp float f;
+    in float g;             // ERROR
+    uniform float h;        // ERROR
+    invariant float i;      // ERROR
+    volatile float j;       // ERROR
+    layout(row_major) mat3 m3; // ERROR
+};
+
+void foo3(invariant vec4 v4,                 // ERROR
+          volatile vec3 v3,
+          layout(location = 3) vec2 v2,      // ERROR
+          centroid vec3 cv3)                 // ERROR
+{
+}

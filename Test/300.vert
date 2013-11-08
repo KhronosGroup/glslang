@@ -66,3 +66,17 @@ uniform ub {
 } ubInst[];         // ERROR
 void foo(int a[]);  // ERROR
 float okayA[] = float[](3.0, 4.0);  // Okay
+
+out vec3 newV;
+void newVFun()
+{
+    newV = v3;
+}
+
+invariant newV;  // ERROR, variable already used
+in vec4 invIn;
+invariant invIn; // ERROR, in v300
+out S s2;
+invariant s2;
+invariant out S s3;
+flat out int;

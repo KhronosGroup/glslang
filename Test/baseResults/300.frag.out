@@ -1,8 +1,8 @@
 ERROR: 0:30: 'noperspective' : Reserved word. 
 ERROR: 0:30: 'noperspective' : not supported with this profile: es
-ERROR: 0:31: 'sampler/image' : samplers and images must be uniform 
+ERROR: 0:31: 'sampler2D' : sampler/image types can only be used in uniform variables or function parameters: bads
 ERROR: 0:32: 'uint' : cannot apply precision statement to this type; use 'float', 'int' or a sampler type 
-ERROR: 0:39: 'structure' : samplers and images must be uniform (structure cannot contain a sampler or image)
+ERROR: 0:39: 'structure' : non-uniform struct contains a sampler or image: badout
 ERROR: 0:69: 'variable indexing sampler array' : not supported with this profile: es
 ERROR: 0:83: 'double' : Reserved word. 
 ERROR: 0:83: 'double' : not supported with this profile: es
@@ -18,9 +18,15 @@ ERROR: 0:102: 'arrays of arrays' : not supported with this profile: es
 ERROR: 0:103: 'arrays of arrays' : not supported with this profile: es
 ERROR: 0:100: 'arrays of arrays' : not supported with this profile: es
 ERROR: 0:111: 'variable indexing fragment shader ouput array' : not supported with this profile: es
-ERROR: 0:114: 'imageBuffer' : Reserved word. 
-ERROR: 0:114: '' :  syntax error
-ERROR: 22 compilation errors.  No code generated.
+ERROR: 0:119: '==' : can't use with samplers or structs containing samplers 
+ERROR: 0:120: '!=' : can't use with samplers or structs containing samplers 
+ERROR: 0:121: '==' : can't use with samplers or structs containing samplers 
+ERROR: 0:121: '==' :  wrong operand types: no operation '==' exists that takes a left-hand operand of type 'lowp sampler2D' and a right operand of type 'lowp sampler2D' (or there is no acceptable conversion)
+ERROR: 0:122: '=' : can't use with samplers or structs containing samplers 
+ERROR: 0:123: '==' : can't use with samplers or structs containing samplers 
+ERROR: 0:126: 'imageBuffer' : Reserved word. 
+ERROR: 0:126: '' :  syntax error
+ERROR: 28 compilation errors.  No code generated.
 
 ERROR: node is still EOpNull!
 0:53  Function Definition: main( (void)
@@ -223,6 +229,30 @@ ERROR: node is still EOpNull!
 0:111          'colors' (out 4-element array of lowp 4-component vector of float)
 0:111          'ic1D' (flat in mediump int)
 0:111        'c4D' (smooth lowp 4-component vector of float)
+0:117  Function Definition: foo13(struct-s-i1-s211; (void)
+0:117    Function Parameters: 
+0:117      'inSt2' (in structure{i,s})
+0:119    Sequence
+0:119      Test condition and select (void)
+0:119        Condition
+0:119        Compare Equal (bool)
+0:119          'st1' (uniform structure{i,s})
+0:119          'st2' (uniform structure{i,s})
+0:119        true case is null
+0:120      Test condition and select (void)
+0:120        Condition
+0:120        Compare Not Equal (bool)
+0:120          'st1' (uniform structure{i,s})
+0:120          'st2' (uniform structure{i,s})
+0:120        true case is null
+0:121      Constant:
+0:121        false (const bool)
+0:122      move second child to first child (structure{i,s})
+0:122        'inSt2' (in structure{i,s})
+0:122        'st1' (uniform structure{i,s})
+0:123      Compare Equal (bool)
+0:123        'inSt2' (in structure{i,s})
+0:123        'st1' (uniform structure{i,s})
 0:?   Linker Objects
 0:?     's2D' (uniform lowp sampler2D)
 0:?     's3D' (uniform lowp sampler3D)
@@ -249,11 +279,13 @@ ERROR: node is still EOpNull!
 0:?     'ic4D' (flat in mediump 4-component vector of int)
 0:?     'badv' (noperspective in lowp 4-component vector of float)
 0:?     'bads' (smooth in lowp sampler2D)
-0:?     'badout' (out structure{i,s})
+0:?     'badout' (smooth in structure{i,s})
 0:?     's2' (smooth in structure{c,f})
 0:?     'sc' (out lowp 3-component vector of float)
 0:?     'sf' (out lowp float)
 0:?     'arrayedSampler' (uniform 5-element array of lowp sampler2D)
 0:?     'multiInst' (layout(column_major shared ) uniform 2-element array of block{a,b,c})
 0:?     'colors' (out 4-element array of lowp 4-component vector of float)
+0:?     'st1' (uniform structure{i,s})
+0:?     'st2' (uniform structure{i,s})
 

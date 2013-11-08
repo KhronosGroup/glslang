@@ -36,7 +36,7 @@ struct s {
     sampler2D s;
 };
 
-out s badout;               // ERROR
+in s badout;               // ERROR, can't contain a sampler
 
 struct S2 {
     vec3 c;
@@ -108,7 +108,19 @@ out vec4 colors[4];
 void foo()
 {
     colors[2] = c4D;
-    colors[ic1D] = c4D;
+    colors[ic1D] = c4D;  // ERROR
+}
+
+uniform s st1;
+uniform s st2;
+
+void foo13(s inSt2)
+{
+    if (st1 == st2);  // ERROR
+    if (st1 != st2);  // ERROR
+    st1.s == st2.s;   // ERROR
+    inSt2 = st1;      // ERROR
+    inSt2 == st1;     // ERROR
 }
 
 float imageBuffer;    // ERROR, reserved

@@ -415,7 +415,7 @@ TIntermTyped* TParseContext::handleVariable(TSourceLoc loc, TSymbol* symbol, TSt
             TType* type;
             if (variable->isReadOnly()) {
                 type = new TType;
-                // break sharing with built-ins
+                // break type sharing with built-ins
                 type->deepCopy(variable->getType());
 
                 // track use of unredeclared gl_FragCoord
@@ -477,7 +477,7 @@ TIntermTyped* TParseContext::handleBracketDereference(TSourceLoc loc, TIntermTyp
                 error(loc, "", "[", "array must be redeclared with a size before being indexed with a variable");
             if (base->getBasicType() == EbtBlock)
                 requireProfile(base->getLoc(), ~EEsProfile, "variable indexing block array");
-            else if (language == EShLangFragment && base->getQualifier().storage == EvqVaryingOut)
+            else if (language == EShLangFragment && base->getQualifier().isPipeOutput())
                 requireProfile(base->getLoc(), ~EEsProfile, "variable indexing fragment shader ouput array");
             else if (base->getBasicType() == EbtSampler && version >= 130) {
                 const char* explanation = "variable indexing sampler array";
@@ -720,7 +720,7 @@ TFunction* TParseContext::handleFunctionDeclarator(TSourceLoc loc, TFunction& fu
     const TFunction* prevDec = symbol ? symbol->getAsFunction() : 0;
     if (prevDec) {
         if (prevDec->getType() != function.getType()) {
-            error(loc, "overloaded functions must have the same return type", function.getType().getCompleteTypeString().c_str(), "");
+            error(loc, "overloaded functions must have the same return type", function.getType().getBasicTypeString().c_str(), "");
         }
         for (int i = 0; i < prevDec->getParamCount(); ++i) {
             if ((*prevDec)[i].type->getQualifier().storage != function[i].type->getQualifier().storage)
@@ -783,7 +783,7 @@ TIntermAggregate* TParseContext::handleFunctionPrototype(TSourceLoc loc, TFuncti
         if (function.getParamCount() > 0)
             error(loc, "function cannot take any parameter(s)", function.getName().c_str(), "");
         if (function.getType().getBasicType() != EbtVoid)
-            error(loc, "", function.getType().getCompleteTypeString().c_str(), "main function cannot return a value");
+            error(loc, "", function.getType().getBasicTypeString().c_str(), "main function cannot return a value");
         intermediate.addMainCount();
     }
 
@@ -1495,23 +1495,15 @@ void TParseContext::boolCheck(TSourceLoc loc, const TPublicType& pType)
         error(loc, "boolean expression expected", "", "");
 }
 
-bool TParseContext::samplerErrorCheck(TSourceLoc loc, const TPublicType& pType, const char* reason)
+void TParseContext::samplerCheck(TSourceLoc loc, const TType& type, const TString& identifier)
 {
-    if (pType.basicType == EbtStruct) {
-        if (containsSampler(*pType.userDef)) {
-            error(loc, reason, TType::getBasicString(pType.basicType), "(structure cannot contain a sampler or image)");
+    if (type.getQualifier().storage == EvqUniform)
+        return;
 
-            return true;
-        }
-
-        return false;
-    } else if (pType.basicType == EbtSampler) {
-        error(loc, reason, TType::getBasicString(pType.basicType), "");
-
-        return true;
-    }
-
-    return false;
+    if (type.getBasicType() == EbtStruct && containsSampler(type))
+        error(loc, "non-uniform struct contains a sampler or image:", type.getBasicTypeString().c_str(), identifier.c_str());
+    else if (type.getBasicType() == EbtSampler && type.getQualifier().storage != EvqUniform)
+        error(loc, "sampler/image types can only be used in uniform variables or function parameters:", type.getBasicTypeString().c_str(), identifier.c_str());
 }
 
 //
@@ -1542,11 +1534,6 @@ void TParseContext::pipeInOutFix(TSourceLoc loc, TQualifier& qualifier)
 void TParseContext::globalQualifierCheck(TSourceLoc loc, const TQualifier& qualifier, const TPublicType& publicType)
 {
     if (! symbolTable.atGlobalLevel())
-        return;
-
-    // Do non-in/out error checks
-
-    if (qualifier.storage != EvqUniform && samplerErrorCheck(loc, publicType, "samplers and images must be uniform"))
         return;
 
     if (qualifier.storage != EvqVaryingIn && qualifier.storage != EvqVaryingOut)
@@ -1738,7 +1725,7 @@ void TParseContext::precisionQualifierCheck(TSourceLoc loc, TPublicType& publicT
 void TParseContext::parameterSamplerCheck(TSourceLoc loc, TStorageQualifier qualifier, const TType& type)
 {
     if ((qualifier == EvqOut || qualifier == EvqInOut) && type.getBasicType() != EbtStruct && type.getBasicType() == EbtSampler)
-        error(loc, "samplers cannot be output parameters", type.getCompleteTypeString().c_str(), "");
+        error(loc, "samplers cannot be output parameters", type.getBasicTypeString().c_str(), "");
 }
 
 bool TParseContext::containsSampler(const TType& type)
@@ -2147,26 +2134,39 @@ bool TParseContext::redeclareBuiltinBlock(TSourceLoc loc, TTypeList& typeList, c
     return true;
 }
 
-void TParseContext::paramCheck(TSourceLoc loc, const TStorageQualifier& qualifier, TType* type)
+void TParseContext::paramCheckFix(TSourceLoc loc, const TStorageQualifier& qualifier, TType& type)
 {
     switch (qualifier) {
     case EvqConst:
     case EvqConstReadOnly:
-        type->getQualifier().storage = EvqConstReadOnly;
+        type.getQualifier().storage = EvqConstReadOnly;
         break;
     case EvqIn:
     case EvqOut:
     case EvqInOut:
-        type->getQualifier().storage = qualifier;
+        type.getQualifier().storage = qualifier;
         break;
     case EvqTemporary:
-        type->getQualifier().storage = EvqIn;
+        type.getQualifier().storage = EvqIn;
         break;
     default:
-        type->getQualifier().storage = EvqIn;
-        error(loc, "qualifier not allowed on function parameter", GetStorageQualifierString(qualifier), "");
+        type.getQualifier().storage = EvqIn;
+        error(loc, "storage qualifier not allowed on function parameter", GetStorageQualifierString(qualifier), "");
         break;
     }
+}
+
+void TParseContext::paramCheckFix(TSourceLoc loc, const TQualifier& qualifier, TType& type)
+{
+    if (qualifier.isAuxiliary() ||
+        qualifier.isInterpolation())
+        error(loc, "cannot use auxiliary or interpolation qualifiers on a function parameter", "", "");
+    if (qualifier.hasLayout())
+        error(loc, "cannot use layout qualifiers on a function parameter", "", "");
+    if (qualifier.invariant)
+        error(loc, "cannot use invariant qualifier on a function parameter", "", "");    
+
+    paramCheckFix(loc, qualifier.storage, type);
 }
 
 void TParseContext::nestedBlockCheck(TSourceLoc loc)
@@ -2189,6 +2189,33 @@ void TParseContext::arrayObjectCheck(TSourceLoc loc, const TType& type, const ch
     if (type.containsArray()) {
         profileRequires(loc, ENoProfile, 120, GL_3DL_array_objects, op);
         profileRequires(loc, EEsProfile, 300, 0, op);
+    }
+}
+
+void TParseContext::opaqueCheck(TSourceLoc loc, const TType& type, const char* op)
+{
+    if (containsSampler(type))
+        error(loc, "can't use with samplers or structs containing samplers", op, "");
+}
+
+void TParseContext::structTypeCheck(TSourceLoc loc, TPublicType& publicType)
+{
+    TTypeList& typeList = *publicType.userDef->getStruct();
+
+    // fix and check for member storage qualifiers and types that don't belong within a structure
+    for (unsigned int member = 0; member < typeList.size(); ++member) {
+        TQualifier& memberQualifier = typeList[member].type->getQualifier();        
+        TSourceLoc memberLoc = typeList[member].loc;
+        if (memberQualifier.isAuxiliary() ||
+            memberQualifier.isInterpolation() ||
+            (memberQualifier.storage != EvqTemporary && memberQualifier.storage != EvqGlobal))
+            error(memberLoc, "cannot use storage or interpolation qualifiers on structure members", typeList[member].type->getFieldName().c_str(), "");
+        if (memberQualifier.isMemory())
+            error(memberLoc, "cannot use memory qualifiers on structure members", typeList[member].type->getFieldName().c_str(), "");
+        if (memberQualifier.hasLayout())
+            error(memberLoc, "cannot use layout qualifiers on structure members", typeList[member].type->getFieldName().c_str(), "");
+        if (memberQualifier.invariant)
+            error(memberLoc, "cannot use invariant qualifier on structure members", typeList[member].type->getFieldName().c_str(), "");
     }
 }
 
@@ -2738,6 +2765,9 @@ TIntermNode* TParseContext::declareVariable(TSourceLoc loc, TString& identifier,
     if (! initializer)
         nonInitConstCheck(loc, identifier, type);
 
+    invariantCheck(loc, type, identifier);
+    samplerCheck(loc, type, identifier);
+
     // Pick up defaults
     if (! type.getQualifier().hasStream() && language == EShLangGeometry && type.getQualifier().storage == EvqVaryingOut)
         type.getQualifier().layoutStream = globalOutputDefaults.layoutStream;
@@ -2775,6 +2805,9 @@ TIntermNode* TParseContext::declareVariable(TSourceLoc loc, TString& identifier,
             error(loc, "cannot change the type of", "redeclaration", symbol->getName().c_str());
     }
 
+    if (! symbol)
+        return 0;
+
     // Deal with initializer
     TIntermNode* initNode = 0;
     if (symbol && initializer) {
@@ -2787,11 +2820,10 @@ TIntermNode* TParseContext::declareVariable(TSourceLoc loc, TString& identifier,
     }
 
     // look for errors/adjustments in layout qualifier use
-    if (symbol)
-        layoutTypeCheck(loc, *symbol);
+    layoutTypeCheck(loc, *symbol);
 
     // see if it's a linker-level object to track
-    if (symbol && newDeclaration && symbolTable.atGlobalLevel())
+    if (newDeclaration && symbolTable.atGlobalLevel())
         intermediate.addSymbolLinkageNode(linkage, *symbol);
 
     return initNode;
@@ -3339,14 +3371,32 @@ void TParseContext::addQualifierToExisting(TSourceLoc loc, TQualifier qualifier,
     if (symbol->isReadOnly())
         symbol = symbolTable.copyUp(symbol);
 
-    if (qualifier.invariant)
+    if (qualifier.invariant) {
         symbol->getWritableType().getQualifier().invariant = true;
+        invariantCheck(loc, symbol->getType(), identifier);
+    }
 }
 
 void TParseContext::addQualifierToExisting(TSourceLoc loc, TQualifier qualifier, TIdentifierList& identifiers)
 {
     for (unsigned int i = 0; i < identifiers.size(); ++i)
         addQualifierToExisting(loc, qualifier, *identifiers[i]);
+}
+
+void TParseContext::invariantCheck(TSourceLoc loc, const TType& type, const TString& identifier)
+{
+    if (! type.getQualifier().invariant)
+        return;
+
+    bool pipeOut = type.getQualifier().isPipeOutput();
+    bool pipeIn = type.getQualifier().isPipeInput();
+    if (version >= 300 || profile != EEsProfile && version >= 420) {
+        if (! pipeOut)
+            error(loc, "can only apply to an output\n", "invariant", identifier.c_str());
+    } else {
+        if ((language == EShLangVertex && pipeIn) || (! pipeOut && ! pipeIn))
+            error(loc, "can only apply to an output or an input in a non-vertex stage\n", "invariant", "");
+    }
 }
 
 //
