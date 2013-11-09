@@ -457,7 +457,7 @@ bool CompileDeferred(
     bool versionNotFirst = userInput.scanVersion(version, profile);
     bool versionNotFound = version == 0;
     bool goodVersion = DeduceVersionProfile(compiler->infoSink, compiler->getLanguage(), versionNotFirst, defaultVersion, version, profile);
-    bool versionWillBeError = (versionNotFound || (profile == EEsProfile && versionNotFirst));
+    bool versionWillBeError = (versionNotFound || (profile == EEsProfile && version >= 300 && versionNotFirst));
     
     intermediate.setVersion(version);
     intermediate.setProfile(profile);

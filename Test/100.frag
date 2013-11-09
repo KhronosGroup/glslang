@@ -1,5 +1,5 @@
+// okay
 #version 100
-
 int a[3] = { 2, 3, 4, };  // ERROR
 
 int uint;

@@ -4,7 +4,10 @@ ERROR: 0:35: 'redeclaration' : cannot change the type of gl_Color
 ERROR: 0:38: 'gl_Color' : redeclaring non-array as array 
 ERROR: 0:39: 'redeclaration' : cannot change storage, memory, or auxiliary qualification of gl_Color
 WARNING: 0:45: extension GL_ARB_texture_gather is being used for texture gather function
-ERROR: 4 compilation errors.  No code generated.
+ERROR: 0:62: '<' :  wrong operand types: no operation '<' exists that takes a left-hand operand of type '3-component vector of bool' and a right operand of type '3-component vector of bool' (or there is no acceptable conversion)
+ERROR: 0:63: '>' :  wrong operand types: no operation '>' exists that takes a left-hand operand of type '3-component vector of uint' and a right operand of type '3-component vector of uint' (or there is no acceptable conversion)
+ERROR: 0:64: '>=' :  wrong operand types: no operation '>=' exists that takes a left-hand operand of type 'const 2-component vector of uint' and a right operand of type 'const 2-component vector of uint' (or there is no acceptable conversion)
+ERROR: 7 compilation errors.  No code generated.
 
 ERROR: node is still EOpNull!
 0:16  Function Definition: main( (void)
@@ -53,6 +56,41 @@ ERROR: node is still EOpNull!
 0:45              0.200000
 0:45              0.200000
 0:45              0.200000
+0:49      move second child to first child (3-component vector of bool)
+0:49        'b3' (3-component vector of bool)
+0:49        Compare Less Than (3-component vector of bool)
+0:49          'uv3' (3-component vector of uint)
+0:49          'uv3' (3-component vector of uint)
+0:50      move second child to first child (3-component vector of bool)
+0:50        'b3' (3-component vector of bool)
+0:50        Equal (3-component vector of bool)
+0:50          'uv3' (3-component vector of uint)
+0:50          'uv3' (3-component vector of uint)
+0:56      direct index (int)
+0:56        'a1' (1-element array of int)
+0:56        Constant:
+0:56          0 (const int)
+0:57      direct index (int)
+0:57        'a2' (1-element array of int)
+0:57        Constant:
+0:57          0 (const int)
+0:60      direct index (int)
+0:60        'a3' (4-element array of int)
+0:60        Constant:
+0:60          3 (const int)
+0:61      Compare Not Equal (bool)
+0:61        'b3' (3-component vector of bool)
+0:61        'b3' (3-component vector of bool)
+0:62      Constant:
+0:62        false (const bool)
+0:63      Constant:
+0:63        false (const bool)
+0:64      Constant:
+0:64        false (const bool)
+0:65      Constant:
+0:65        true (const bool)
+0:66      Constant:
+0:66        false (const bool)
 0:?   Linker Objects
 0:?     'a' (3-component vector of float)
 0:?     'b' (float)

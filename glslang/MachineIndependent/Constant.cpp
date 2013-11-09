@@ -551,6 +551,12 @@ TIntermTyped* TIntermediate::fold(TIntermAggregate* aggrNode)
     case EOpMax:
     case EOpMix:
     case EOpClamp:
+    case EOpLessThan:
+    case EOpGreaterThan:
+    case EOpLessThanEqual:
+    case EOpGreaterThanEqual:
+    case EOpVectorEqual:
+    case EOpVectorNotEqual:
         componentwise = true;
         objectSize = children[0]->getAsConstantUnion()->getType().getObjectSize();
         break;
@@ -637,6 +643,24 @@ TIntermTyped* TIntermediate::fold(TIntermAggregate* aggrNode)
                 else
                     newConstArray[comp].setUConst(std::min(std::max(childConstUnions[0][arg0comp].getUConst(), childConstUnions[1][arg1comp].getUConst()), 
                                                                                                                childConstUnions[2][arg2comp].getUConst()));
+                break;
+            case EOpLessThan:
+                newConstArray[comp].setBConst(childConstUnions[0][arg0comp] < childConstUnions[1][arg1comp]);
+                break;
+            case EOpGreaterThan:
+                newConstArray[comp].setBConst(childConstUnions[0][arg0comp] > childConstUnions[1][arg1comp]);
+                break;
+            case EOpLessThanEqual:
+                newConstArray[comp].setBConst(! (childConstUnions[0][arg0comp] > childConstUnions[1][arg1comp]));
+                break;
+            case EOpGreaterThanEqual:
+                newConstArray[comp].setBConst(! (childConstUnions[0][arg0comp] < childConstUnions[1][arg1comp]));
+                break;
+            case EOpVectorEqual:
+                newConstArray[comp].setBConst(childConstUnions[0][arg0comp] == childConstUnions[1][arg1comp]);
+                break;
+            case EOpVectorNotEqual:
+                newConstArray[comp].setBConst(childConstUnions[0][arg0comp] != childConstUnions[1][arg1comp]);
                 break;
             case EOpMix:
                 if (children[2]->getAsTyped()->getBasicType() == EbtBool)

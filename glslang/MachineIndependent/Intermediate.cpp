@@ -571,7 +571,7 @@ TIntermTyped* TIntermediate::addConversion(TOperator op, const TType& type, TInt
 bool TIntermediate::canImplicitlyPromote(TBasicType from, TBasicType to)
 {
     if (profile == EEsProfile || version == 110)
-        return 0;
+        return false;
 
     switch (to) {
     case EbtDouble:
@@ -596,6 +596,7 @@ bool TIntermediate::canImplicitlyPromote(TBasicType from, TBasicType to)
     case EbtUint:
         switch (from) {
         case EbtInt:
+            return version >= 400;
         case EbtUint:
             return true;
         default:
@@ -1084,7 +1085,7 @@ bool TIntermBinary::promote()
     case EOpLessThanEqual:
     case EOpGreaterThanEqual:
         // Relational comparisons need matching numeric types and will promote to scalar Boolean.
-        if (left->getBasicType() == EbtBool || left->getType().isMatrix())
+        if (left->getBasicType() == EbtBool || left->getType().isVector() || left->getType().isMatrix())
             return false;
 
         // Fall through
@@ -1294,10 +1295,16 @@ bool TIntermBinary::promote()
     case EOpSub:
     case EOpDiv:
     case EOpMod:
+    case EOpAnd:
+    case EOpInclusiveOr:
+    case EOpExclusiveOr:
     case EOpAddAssign:
     case EOpSubAssign:
     case EOpDivAssign:
     case EOpModAssign:
+    case EOpAndAssign:
+    case EOpInclusiveOrAssign:
+    case EOpExclusiveOrAssign:
         if ((left->isMatrix() && right->isVector()) ||
             (left->isVector() && right->isMatrix()) ||
             left->getBasicType() != right->getBasicType())

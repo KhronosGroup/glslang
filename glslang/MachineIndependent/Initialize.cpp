@@ -616,6 +616,35 @@ void TBuiltIns::initialize(int version, EProfile profile)
                  
         "\n");
 
+    if (version >= 130) {
+        commonBuiltins.append(
+            "bvec2 lessThan(uvec2 x, uvec2 y);"
+            "bvec3 lessThan(uvec3 x, uvec3 y);"
+            "bvec4 lessThan(uvec4 x, uvec4 y);"
+                 
+            "bvec2 lessThanEqual(uvec2 x, uvec2 y);"
+            "bvec3 lessThanEqual(uvec3 x, uvec3 y);"
+            "bvec4 lessThanEqual(uvec4 x, uvec4 y);"
+                 
+            "bvec2 greaterThan(uvec2 x, uvec2 y);"
+            "bvec3 greaterThan(uvec3 x, uvec3 y);"
+            "bvec4 greaterThan(uvec4 x, uvec4 y);"
+                 
+            "bvec2 greaterThanEqual(uvec2 x, uvec2 y);"
+            "bvec3 greaterThanEqual(uvec3 x, uvec3 y);"
+            "bvec4 greaterThanEqual(uvec4 x, uvec4 y);"
+                 
+            "bvec2 equal(uvec2 x, uvec2 y);"
+            "bvec3 equal(uvec3 x, uvec3 y);"
+            "bvec4 equal(uvec4 x, uvec4 y);"
+
+            "bvec2 notEqual(uvec2 x, uvec2 y);"
+            "bvec3 notEqual(uvec3 x, uvec3 y);"
+            "bvec4 notEqual(uvec4 x, uvec4 y);"                 
+            
+            "\n");
+    }
+
     //
     // Original-style texture functions existing in both stages.
     // (Per-stage functions below.)

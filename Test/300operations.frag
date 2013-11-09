@@ -81,8 +81,8 @@ void main()
     a >> u;
     iv3 >> iv4;
 
-    i & u;
-    u ^ uv3;
+    i & u;    
+    u &= uv3;
     i | uv3;
     u & f;
     m2 | m2;
@@ -125,5 +125,11 @@ void main()
     i & i;
     u | u;
     iv3 ^ iv3;
-
+    u & uv3;
+    uv3 | u;
+    uv3 &= u;
+    int arr[0x222 & 0xf];
+    arr[1]; // size 2
+    int arr2[(uvec2(0, 0x2) | 0x1u).y];
+    arr2[2]; // size 3
 }

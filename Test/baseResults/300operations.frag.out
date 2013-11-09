@@ -48,7 +48,7 @@ ERROR: 0:80: '>>' :  wrong operand types: no operation '>>' exists that takes a 
 ERROR: 0:81: '>>' :  wrong operand types: no operation '>>' exists that takes a left-hand operand of type '5-element array of mediump float' and a right operand of type 'mediump uint' (or there is no acceptable conversion)
 ERROR: 0:82: '>>' :  wrong operand types: no operation '>>' exists that takes a left-hand operand of type 'mediump 3-component vector of int' and a right operand of type 'mediump 4-component vector of int' (or there is no acceptable conversion)
 ERROR: 0:84: '&' :  wrong operand types: no operation '&' exists that takes a left-hand operand of type 'mediump int' and a right operand of type 'mediump uint' (or there is no acceptable conversion)
-ERROR: 0:85: '^' :  wrong operand types: no operation '^' exists that takes a left-hand operand of type 'mediump uint' and a right operand of type 'mediump 3-component vector of uint' (or there is no acceptable conversion)
+ERROR: 0:85: 'assign' :  cannot convert from 'mediump 3-component vector of uint' to 'mediump uint'
 ERROR: 0:86: '|' :  wrong operand types: no operation '|' exists that takes a left-hand operand of type 'mediump int' and a right operand of type 'mediump 3-component vector of uint' (or there is no acceptable conversion)
 ERROR: 0:87: '&' :  wrong operand types: no operation '&' exists that takes a left-hand operand of type 'mediump uint' and a right operand of type 'mediump float' (or there is no acceptable conversion)
 ERROR: 0:88: '|' :  wrong operand types: no operation '|' exists that takes a left-hand operand of type 'mediump 2X2 matrix of float' and a right operand of type 'mediump 2X2 matrix of float' (or there is no acceptable conversion)
@@ -211,6 +211,23 @@ ERROR: node is still EOpNull!
 0:127      exclusive-or (mediump 3-component vector of int)
 0:127        'iv3' (mediump 3-component vector of int)
 0:127        'iv3' (mediump 3-component vector of int)
+0:128      bitwise and (mediump 3-component vector of uint)
+0:128        'u' (mediump uint)
+0:128        'uv3' (mediump 3-component vector of uint)
+0:129      inclusive-or (mediump 3-component vector of uint)
+0:129        'uv3' (mediump 3-component vector of uint)
+0:129        'u' (mediump uint)
+0:130      and second child into first child (mediump 3-component vector of uint)
+0:130        'uv3' (mediump 3-component vector of uint)
+0:130        'u' (mediump uint)
+0:132      direct index (mediump int)
+0:132        'arr' (2-element array of mediump int)
+0:132        Constant:
+0:132          1 (const int)
+0:134      direct index (mediump int)
+0:134        'arr2' (3-element array of mediump int)
+0:134        Constant:
+0:134          2 (const int)
 0:?   Linker Objects
 0:?     'instanceName' (layout(column_major shared ) uniform block{f})
 0:?     's' (structure{i})
