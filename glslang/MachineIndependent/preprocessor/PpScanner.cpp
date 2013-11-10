@@ -105,7 +105,7 @@ int TPpContext::InitScanner(TPpContext *cpp)
     return 1;
 }
 
-int TPpContext::str_getch(TPpContext* pp, StringInputSrc *in)
+int TPpContext::sourceGetCh(TPpContext* pp, StringInputSrc *in)
 {
     int ch = in->input->get();
 
@@ -115,7 +115,7 @@ int TPpContext::str_getch(TPpContext* pp, StringInputSrc *in)
     return ch;
 }
 
-void TPpContext::str_ungetch(TPpContext* pp, StringInputSrc *in, int ch, TPpToken *type)
+void TPpContext::sourceUngetCh(TPpContext* pp, StringInputSrc *in, int ch, TPpToken *type)
 {
     in->input->unget();
 }
@@ -130,7 +130,7 @@ void TPpContext::str_ungetch(TPpContext* pp, StringInputSrc *in, int ch, TPpToke
 *         letter 'e', or a precision ending (e.g., F or LF).
 */
 
-int TPpContext::lFloatConst(char *str, int len, int ch, TPpToken * ppToken)
+int TPpContext::lFloatConst(char* str, int len, int ch, TPpToken* ppToken)
 {
     bool HasDecimalOrExponent = false;
     int declen, exp, ExpSign;
@@ -241,13 +241,12 @@ int TPpContext::lFloatConst(char *str, int len, int ch, TPpToken * ppToken)
         return CPP_DOUBLECONSTANT;
     else
         return CPP_FLOATCONSTANT;
-} // lFloatConst
+}
 
-///////////////////////////////////////////////////////////////////////////////////////////////
-///////////////////////////////////////// Normal Scanner //////////////////////////////////////
-///////////////////////////////////////////////////////////////////////////////////////////////
-
-int TPpContext::byte_scan(TPpContext* pp, InputSrc *in, TPpToken * ppToken)
+//
+// Scanner used to tokenize source stream.
+//
+int TPpContext::sourceScan(TPpContext* pp, InputSrc*, TPpToken* ppToken)
 {
     char tokenText[TPpToken::maxTokenLength + 1];
     int AlreadyComplained = 0;
@@ -268,8 +267,6 @@ int TPpContext::byte_scan(TPpContext* pp, InputSrc *in, TPpToken * ppToken)
         switch (ch) {
         default:
             return ch; // Single character token
-        case EOF:
-            return EOF;
         case 'A': case 'B': case 'C': case 'D': case 'E':
         case 'F': case 'G': case 'H': case 'I': case 'J':
         case 'K': case 'L': case 'M': case 'N': case 'O':
@@ -704,14 +701,17 @@ int TPpContext::byte_scan(TPpContext* pp, InputSrc *in, TPpToken * ppToken)
             }
         }
     }
-} // byte_scan
+}
 
+//
+// Return string pointer to next token.
+// Return 0 when no more tokens.
+//
 const char* TPpContext::tokenize(TPpToken* ppToken)
 {    
     int token = '\n';
 
     for(;;) {
-
         const char* tokenString = 0;
         token = currentInput->scan(this, currentInput, ppToken);
         ppToken->token = token;
@@ -742,7 +742,13 @@ const char* TPpContext::tokenize(TPpToken* ppToken)
         else if (token == CPP_INTCONSTANT || token == CPP_UINTCONSTANT ||
                  token == CPP_FLOATCONSTANT || token == CPP_DOUBLECONSTANT)
             tokenString = ppToken->name;
-        else
+        else if (token == CPP_STRCONSTANT) {
+            parseContext.error(ppToken->loc, "string literals not supported", "\"\"", "");
+            tokenString = 0;
+        } else if (token == '\'') {
+            parseContext.error(ppToken->loc, "character literals not supported", "\'", "");
+            tokenString = 0;
+        } else
             tokenString = GetAtomString(token);
 
         if (tokenString) {
@@ -752,19 +758,19 @@ const char* TPpContext::tokenize(TPpToken* ppToken)
             return tokenString;
         }
     }
-
-    return 0;
-} // PpTokenize
+}
 
 //Checks if the token just read is EOF or not.
-int TPpContext::check_EOF(int token)
+bool TPpContext::check_EOF(int token)
 {
     if (token == EOF) {
         if (ifdepth > 0)
-            parseContext.error(parseContext.getCurrentLoc(), "missing #endif", "#if", "");
-        return 1;
+            parseContext.error(parseContext.getCurrentLoc(), "missing #endif", "", "");
+
+        return true;
     }
-    return 0;
+
+    return false;
 }
 
 } // end namespace glslang

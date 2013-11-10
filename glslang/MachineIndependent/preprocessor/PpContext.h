@@ -84,7 +84,21 @@ namespace glslang {
 
 class TPpToken {
 public:
-    TPpToken() { loc.line = 0; loc.string = 0; name[0] = 0; }
+    TPpToken() : token(0), ival(0), dval(0.0), atom(0)
+    { 
+        loc.line = 0; 
+        loc.string = 0; 
+        name[0] = 0;
+    }
+
+    bool operator==(const TPpToken& right)
+    {
+        return token == right.token && atom == right.atom &&
+               ival == right.ival && dval == right.dval &&
+               strcmp(name, right.name) == 0;
+    }
+    bool operator!=(const TPpToken& right) { return ! operator==(right); }
+
     static const int maxTokenLength = 1024;
 
     TSourceLoc loc;
@@ -110,6 +124,7 @@ public:
 
     const char* tokenize(TPpToken* ppToken);
 
+    // TODO: preprocessor simplification: this should be a base class, not a set of function pointers
     struct InputSrc {
         struct InputSrc	*prev;
         int			(*scan)(TPpContext*, struct InputSrc *, TPpToken *);
@@ -127,7 +142,6 @@ public:
 
     struct TokenStream {
         TokenStream *next;
-        char *name;
         TokenBlock *head;
         TokenBlock *current;
     };
@@ -231,6 +245,7 @@ protected:
     int CPPdefine(TPpToken * ppToken);
     int CPPundef(TPpToken * ppToken);
     int CPPelse(int matchelse, TPpToken * ppToken);
+    int extraTokenCheck(int atom, TPpToken* ppToken, int token);
     int eval(int token, int prec, int *res, int *err, TPpToken * ppToken);
     int CPPif (TPpToken * ppToken); 
     int CPPifdef(int defined, TPpToken * ppToken);
@@ -259,28 +274,26 @@ protected:
     //
     // From PpTokens.cpp
     //
-    char* idstr(const char *fstr, MemoryPool *pool);
     TPpContext::TokenBlock* lNewBlock(TokenStream *fTok, MemoryPool *pool);
     void lAddByte(TokenStream *fTok, unsigned char fVal);
     int lReadByte(TokenStream *pTok);
-    TokenStream *NewTokenStream(const char *name, MemoryPool *pool);
+    TokenStream *NewTokenStream(MemoryPool *pool);
     void DeleteTokenStream(TokenStream *pTok);
-    void RecordToken(TokenStream *pTok, int token, TPpToken * ppToken);
+    void RecordToken(TokenStream* pTok, int token, TPpToken* ppToken);
     void RewindTokenStream(TokenStream *pTok);
-    int ReadToken(TokenStream *pTok, TPpToken * ppToken);
+    int ReadToken(TokenStream* pTok, TPpToken* ppToken);
     int ReadFromTokenStream(TokenStream *ts, int name, int (*final)(TPpContext *));
-    void UngetToken(int token, TPpToken * ppToken);
-    void DumpTokenStream(FILE *fp, TokenStream *s, TPpToken * ppToken);
+    void UngetToken(int token, TPpToken* ppToken);
     struct TokenInputSrc {
         InputSrc            base;
-        TokenStream         *tokens;
-        int                 (*final)(TPpContext *);
+        TokenStream *tokens;
+        int (*final)(TPpContext *);
     };
     static int scan_token(TPpContext*, TokenInputSrc *in, TPpToken * ppToken);
     struct UngotToken {
         InputSrc    base;
-        int         token;
-        TPpToken     lval;
+        int token;
+        TPpToken lval;
     };
     static int reget_token(TPpContext *, UngotToken *t, TPpToken * ppToken);
 
@@ -292,12 +305,12 @@ protected:
         TInputScanner* input;
     };
     int InitScanner(TPpContext *cpp);
-    static int str_getch(TPpContext*, StringInputSrc *in);
-    static void str_ungetch(TPpContext*, StringInputSrc *in, int ch, TPpToken *type);
+    static int sourceGetCh(TPpContext*, StringInputSrc *in);
+    static void sourceUngetCh(TPpContext*, StringInputSrc *in, int ch, TPpToken *type);
     int ScanFromString(char *s);
-    int check_EOF(int token);
+    bool check_EOF(int token);
     int lFloatConst(char *str, int len, int ch, TPpToken * ppToken);
-    static int byte_scan(TPpContext*, InputSrc *in, TPpToken * ppToken);
+    static int sourceScan(TPpContext*, InputSrc *in, TPpToken * ppToken);
 
     //
     // From PpAtom.cpp

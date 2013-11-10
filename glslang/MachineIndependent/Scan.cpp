@@ -480,6 +480,8 @@ int TScanContext::tokenize(TPpContext* pp, TParserToken& token)
     parserToken = &token;
     TPpToken ppToken;
     tokenText = pp->tokenize(&ppToken);
+    if (tokenText == 0)
+        return 0;
 
     loc = ppToken.loc;
     parserToken->sType.lex.loc = loc;
@@ -531,8 +533,8 @@ int TScanContext::tokenize(TPpContext* pp, TParserToken& token)
     case CPP_OR_ASSIGN:             return OR_ASSIGN;
     case CPP_XOR_ASSIGN:            return XOR_ASSIGN;
                                    
-    case CPP_INTCONSTANT:           parserToken->sType.lex.i = ppToken.ival;        return INTCONSTANT;
-    case CPP_UINTCONSTANT:          parserToken->sType.lex.i = ppToken.ival;        return UINTCONSTANT;
+    case CPP_INTCONSTANT:           parserToken->sType.lex.i = ppToken.ival;       return INTCONSTANT;
+    case CPP_UINTCONSTANT:          parserToken->sType.lex.i = ppToken.ival;       return UINTCONSTANT;
     case CPP_FLOATCONSTANT:         parserToken->sType.lex.d = ppToken.dval;       return FLOATCONSTANT;
     case CPP_DOUBLECONSTANT:        parserToken->sType.lex.d = ppToken.dval;       return DOUBLECONSTANT;
     case CPP_IDENTIFIER:            return tokenizeIdentifier();

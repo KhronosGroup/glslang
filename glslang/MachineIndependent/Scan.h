@@ -46,8 +46,8 @@ namespace glslang {
 //
 class TInputScanner {
 public:
-    TInputScanner(int n, const char* const s[], size_t L[], int b = 0) : 
-        numSources(n), sources(s), lengths(L), currentSource(0), currentChar(0), stringBias(b)
+    TInputScanner(int n, const char* const s[], size_t L[], int b = 0, int f = 0) : 
+        numSources(n), sources(s), lengths(L), currentSource(0), currentChar(0), stringBias(b), finale(f)
     {
         loc = new TSourceLoc[numSources];
         loc[currentSource].string = -stringBias;
@@ -105,7 +105,7 @@ public:
     void setLine(int newLine) { loc[currentSource].line = newLine; }
     void setString(int newString) { loc[currentSource].string = newString; }
 
-    const TSourceLoc& getSourceLoc() const { return loc[currentSource]; }
+    const TSourceLoc& getSourceLoc() const { return loc[std::max(0, std::min(currentSource, numSources - finale - 1))]; }
 
     void consumeWhiteSpace(bool& foundNonSpaceTab);
     bool consumeComment();
@@ -147,6 +147,7 @@ protected:
     TSourceLoc* loc;  // an array
 
     int stringBias;   // the first string that is the user's string number 0
+    int finale;       // number of internal strings after user's last string
 };
 
 } // end namespace glslang

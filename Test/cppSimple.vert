@@ -1,4 +1,4 @@
-#version 110
+#version 400
 
 #define ON
 
@@ -119,7 +119,7 @@ sum += 0.05;
 
 #if ((AA == BB || (AA == CC))))
 #error bad6
-#endif
+#endif extra tokens
 
 int linenumber = __LINE__;
 int filenumber = __FILE__;
@@ -129,5 +129,78 @@ int version = __VERSION__;
 #define TWOPI (2.0 * PI)
 float twoPi = TWOPI;
 
-#define PASTE(a,b) a ## b
-float PASTE(tod, ay) = 17;
+//#define PASTE(a,b) a ## b
+//float PASTE(tod, ay) = 17;
+
+"boo" // ERROR
+int a = length("aoenatuh");  // ERROR
+
+'int';  // ERROR
+
+// ERROR: all the following are reserved
+#define GL_
+#define GL_Macro 1
+#define __M 
+#define M__
+#define ABC__DE abc
+
+#if 4
+#else extra
+#elif
+// ERROR elif after else
+#endif
+
+#if blah
+  #if 0
+  #else extra
+    #ifdef M
+    #else
+    #else
+    // ERROR else after else
+    #endif  extra
+  #endif
+#endif
+
+#define m1(a,a)  // ERROR
+#define m2(a,b)
+
+// okay
+#define m3 (a)
+#define m3 (a)
+
+// ERROR
+#define m4(b)
+#define m4 (b)
+
+// ERROR
+#define m5 (b)
+#define m5(b)
+
+// ERROR
+#define m6(a)
+#define m6
+
+// ERROR (whitespace)
+#define m7 (a)
+#define m7 ( a)
+
+#define m80(a,b) is + exactly m3 the same
+#define m80(a,b) is + exactly m3 the same
+
+// ERROR
+#define m8(a,b) almost + exactly m3 the same
+#define m8(a,b) almost + exactly m3 thee same
+
+// ERROR
+#define m9(a,b,c) aoe
+#define m9(a,d,c) aoe
+
+#define n1 0xf
+int n = n1;
+
+#define f1 .08e-2Lf
+double f = f1;
+
+#if 1
+#else
+// ERROR, missing #endif

@@ -46,3 +46,6 @@ float foo()
     return ADD(gl_Position.xyxwx, 3.0)  // ERROR, should be this line number
     return ADD(gl_Position.y, 3.0)
 }
+
+#if 0
+// ERROR, EOF

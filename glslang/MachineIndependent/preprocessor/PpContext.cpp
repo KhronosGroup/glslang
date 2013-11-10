@@ -106,9 +106,9 @@ void TPpContext::setInput(TInputScanner& input, bool versionWillBeError)
     StringInputSrc *in = (StringInputSrc *)malloc(sizeof(StringInputSrc));
     memset(in, 0, sizeof(StringInputSrc));
     in->input = &input;
-    in->base.scan = byte_scan;
-    in->base.getch = (int (*)(TPpContext*, InputSrc *, TPpToken *))str_getch;
-    in->base.ungetch = (void (*)(TPpContext*, InputSrc *, int, TPpToken *))str_ungetch;
+    in->base.scan = sourceScan;
+    in->base.getch = (int (*)(TPpContext*, InputSrc *, TPpToken *))sourceGetCh;
+    in->base.ungetch = (void (*)(TPpContext*, InputSrc *, int, TPpToken *))sourceUngetCh;
     in->base.prev = currentInput;
     currentInput = &in->base;
     errorOnVersion = versionWillBeError;

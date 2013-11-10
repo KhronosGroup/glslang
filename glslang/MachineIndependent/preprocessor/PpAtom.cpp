@@ -150,8 +150,12 @@ const char *TPpContext::GetAtomString(int atom)
         return "<null atom>";
     if (atom < 0)
         return "<EOF>";
-    if ((size_t)atom < stringMap.size())
-        return stringMap[atom]->c_str();
+    if ((size_t)atom < stringMap.size()) {
+        if (stringMap[atom] == 0)
+            return "<invalid atom>";
+        else
+            return stringMap[atom]->c_str();
+    }
 
     return "<invalid atom>";
 }
@@ -163,7 +167,7 @@ int TPpContext::AddAtomFixed(const char *s, int atom)
 {
     TAtomMap::const_iterator it = atomMap.insert(std::pair<TString, int>(s, atom)).first;
     if (stringMap.size() < (size_t)atom + 1)
-        stringMap.resize(atom + 100);
+        stringMap.resize(atom + 100, 0);
     stringMap[atom] = &it->first;
 
     return atom;

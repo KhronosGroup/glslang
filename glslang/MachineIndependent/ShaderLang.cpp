@@ -499,7 +499,7 @@ bool CompileDeferred(
     lengths[0] = strlen(strings[0]);
     strings[numStrings + 1] = "\n int;";
     lengths[numStrings + 1] = strlen(strings[numStrings + 1]);
-    TInputScanner fullInput(numStrings + 2, strings, lengths, 1);
+    TInputScanner fullInput(numStrings + 2, strings, lengths, 1, 1);
 
     // Push a new symbol allocation scope that can for the shader's globals.
     symbolTable.push();

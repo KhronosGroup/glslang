@@ -1,6 +1,7 @@
 ERROR: 0:46: 'xyxwx' : illegal vector field selection 
 ERROR: 0:46: 'xyxwx' : illegal vector field selection 
-ERROR: 2 compilation errors.  No code generated.
+ERROR: 0:51: '' : missing #endif 
+ERROR: 3 compilation errors.  No code generated.
 
 ERROR: node is still EOpNull!
 0:4  Sequence
