@@ -100,4 +100,14 @@ void foo236()
     dFdx(v[0]);
     dFdy(3.2);
     fwidth(f13);
+    gl_FragDepth = f13;    // ERROR
+    gl_FragDepthEXT = f13; // ERROR
+}
+
+#extension GL_EXT_frag_depth : enable
+
+void foo239()
+{
+    gl_FragDepth = f13;    // ERROR
+    gl_FragDepthEXT = f13;
 }

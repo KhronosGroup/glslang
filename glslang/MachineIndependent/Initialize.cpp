@@ -1425,6 +1425,9 @@ void TBuiltIns::initialize(int version, EProfile profile)
                 "mediump vec2  gl_PointCoord;"   // needs qualifier fixed later
                 "highp   float gl_FragDepth;"    // needs qualifier fixed later
                 );
+        stageBuiltins[EShLangFragment].append(
+            "highp float gl_FragDepthEXT;"       // GL_EXT_frag_depth
+            );
     }
     stageBuiltins[EShLangFragment].append("\n");
 
@@ -2138,16 +2141,18 @@ void IdentifyBuiltIns(int version, EProfile profile, EShLanguage language, TSymb
         break;
 
     case EShLangFragment:
-        SpecialQualifier("gl_FrontFacing", EvqFace, symbolTable);
-        SpecialQualifier("gl_FragCoord",   EvqFragCoord, symbolTable);
-        SpecialQualifier("gl_PointCoord",  EvqPointCoord, symbolTable);
-        SpecialQualifier("gl_FragColor",   EvqFragColor, symbolTable);
-        SpecialQualifier("gl_FragDepth",   EvqFragDepth, symbolTable);
+        SpecialQualifier("gl_FrontFacing",  EvqFace, symbolTable);
+        SpecialQualifier("gl_FragCoord",    EvqFragCoord, symbolTable);
+        SpecialQualifier("gl_PointCoord",   EvqPointCoord, symbolTable);
+        SpecialQualifier("gl_FragColor",    EvqFragColor, symbolTable);
+        SpecialQualifier("gl_FragDepth",    EvqFragDepth, symbolTable);
+        SpecialQualifier("gl_FragDepthEXT", EvqFragDepth, symbolTable);
         if (version == 100) {
             symbolTable.setFunctionExtensions("dFdx",   1, &GL_OES_standard_derivatives);
             symbolTable.setFunctionExtensions("dFdy",   1, &GL_OES_standard_derivatives);
             symbolTable.setFunctionExtensions("fwidth", 1, &GL_OES_standard_derivatives);
         }
+        symbolTable.setVariableExtensions("gl_FragDepthEXT", 1, &GL_EXT_frag_depth);
         break;
 
     case EShLangCompute:

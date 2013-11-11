@@ -574,6 +574,13 @@ public:
             table[level]->setFunctionExtensions(name, num, extensions);
     }
 
+    void setVariableExtensions(const char* name, int num, const char* const extensions[])
+    {
+        TSymbol* symbol = find(TString(name));
+        if (symbol)
+            symbol->setExtensions(num, extensions);
+    }
+
     int getMaxSymbolId() { return uniqueId; }
     void dump(TInfoSink &infoSink) const;
 	void copyTable(const TSymbolTable& copyOf);
