@@ -65,7 +65,7 @@
 //    implements Feature F, and will log the proper error/warning messages.  Parsing 
 //    will then always continue as if the tested feature was enabled.
 //    
-//    There is typically no if-testing or conditional parsing, just insertion of requirements.
+//    There is typically no if-testing or conditional parsing, just insertion of the calls above.
 //    However, if symbols specific to the extension are added (step 5), they will
 //    only be added under tests that the minimum version and profile are present.
 //
@@ -101,9 +101,9 @@
 //        // following the requireProfile() call...
 //        profileRequires(loc, 
 //                        ECoreProfile | ECompatibilityProfile,
-//                        420, // 0 if no version incorporated the feature into the core spec.
+//                        420,             // 0 if no version incorporated the feature into the core spec.
 //                        XXX_extension_X, // can be a list of extensions that all add the feature
-//                        "Feature F");
+//                        "Feature F Description");
 // 
 //    This allows the feature if either A) one of the extensions is enabled or
 //    B) the version is high enough.  If no version yet incorporates the feature
@@ -144,6 +144,8 @@ namespace glslang {
 //
 void TParseContext::initializeExtensionBehavior()
 {
+    extensionBehavior[GL_OES_texture_3D]               = EBhDisable;
+
     extensionBehavior[GL_ARB_texture_rectangle]        = EBhDisable;
     extensionBehavior[GL_3DL_array_objects]            = EBhDisable;
     extensionBehavior[GL_ARB_shading_language_420pack] = EBhDisable;
@@ -156,7 +158,8 @@ void TParseContext::initializeExtensionBehavior()
 const char* TParseContext::getPreamble()
 {
     if (profile == EEsProfile) {
-        return 
+        return
+            "#define GL_OES_texture_3D 1\n"
             "#define GL_ES 1\n";
     } else {
         return
@@ -185,7 +188,7 @@ const char* ProfileName(EProfile profile)
 //
 // When to use requireProfile():
 //
-//     If only some profiles support a feature.  However, if within a profile the feature 
+//     Use if only some profiles support a feature.  However, if within a profile the feature 
 //     is version or extension specific, follow this call with calls to profileRequires().
 //
 // Operation:  If the current profile is not one of the profileMask,
@@ -230,15 +233,14 @@ const char* StageName(EShLanguage stage)
 //
 
 // entry point that takes multiple extensions
-void TParseContext::profileRequires(TSourceLoc loc, int profileMask, int minVersion, int numExtensions, const char* extensions[], const char *featureDesc)
+void TParseContext::profileRequires(TSourceLoc loc, int profileMask, int minVersion, int numExtensions, const char* const extensions[], const char *featureDesc)
 {
     if (profile & profileMask) {
         bool okay = false;
         if (minVersion > 0 && version >= minVersion)
             okay = true;
         for (int i = 0; i < numExtensions; ++i) {
-            TExtensionBehavior behavior = extensionBehavior[extensions[i]];
-            switch (behavior) {
+            switch (getExtensionBehavior(extensions[i])) {
             case EBhWarn:
                 infoSink.info.message(EPrefixWarning, ("extension " + TString(extensions[i]) + " is being used for " + featureDesc).c_str(), loc);
                 // fall through
@@ -314,10 +316,34 @@ void TParseContext::requireNotRemoved(TSourceLoc loc, int profileMask, int remov
     }
 }
 
+TExtensionBehavior TParseContext::getExtensionBehavior(const char* extension)
+{
+    TMap<TString, TExtensionBehavior>::iterator iter = extensionBehavior.find(TString(extension));
+    if (iter == extensionBehavior.end())
+        return EBhMissing;
+    else
+        return iter->second;
+}
+
+// See if any of the extensions are set to enable, require, or warn.
+bool TParseContext::extensionsTurnedOn(int numExtensions, const char* const extensions[])
+{
+    for (int i = 0; i < numExtensions; ++i) {
+        switch (getExtensionBehavior(extensions[i])) {
+        case EBhEnable:
+        case EBhRequire:
+        case EBhWarn:
+            return true;
+        }
+    }
+
+    return false;
+}
+
 //
 // Change the current state of an extension's behavior.
 //
-void TParseContext::updateExtensionBehavior(const char* extName, const char* behaviorString)
+void TParseContext::updateExtensionBehavior(const char* extension, const char* behaviorString)
 {
     // Translate from text string of extension's behavior to an enum.
     TExtensionBehavior behavior = EBhDisable;
@@ -334,7 +360,7 @@ void TParseContext::updateExtensionBehavior(const char* extName, const char* beh
 
     // Update the current behavior
     TMap<TString, TExtensionBehavior>::iterator iter;
-    if (! strcmp(extName, "all")) {
+    if (! strcmp(extension, "all")) {
         // special case for the 'all' extension; apply it to every extension present
         if (behavior == EBhRequire || behavior == EBhEnable) {
             error(getCurrentLoc(), "extension 'all' cannot have 'require' or 'enable' behavior", "#extension", "");
@@ -345,16 +371,16 @@ void TParseContext::updateExtensionBehavior(const char* extName, const char* beh
         }
     } else {
         // Do the update for this single extension
-        iter = extensionBehavior.find(TString(extName));
+        iter = extensionBehavior.find(TString(extension));
         if (iter == extensionBehavior.end()) {
             switch (behavior) {
             case EBhRequire:
-                error(getCurrentLoc(), "extension not supported", "#extension", extName);
+                error(getCurrentLoc(), "extension not supported", "#extension", extension);
                 break;
             case EBhEnable:
             case EBhWarn:
             case EBhDisable:
-                warn(getCurrentLoc(), "extension not supported", "#extension", extName);
+                warn(getCurrentLoc(), "extension not supported", "#extension", extension);
                 break;
             default:
                 assert(0 && "unexpected behavior");

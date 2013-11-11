@@ -974,7 +974,7 @@ void TParseContext::nonOpBuiltInCheck(TSourceLoc loc, const TFunction& fnCandida
     if (fnCandidate.getName().compare(0, 13, "textureGather") == 0) {
         const char* feature = "texture gather function";
         requireProfile(loc, ~EEsProfile, feature);
-        profileRequires(loc, ~EEsProfile, 400, GL_ARB_texture_gather, feature);
+        profileRequires(loc, ~EEsProfile, 400, GL_ARB_texture_gather, feature); // TODO: GL_ARB_gpu_shader5
         int lastArgIndex = fnCandidate.getParamCount() - 1;
         if (fnCandidate[lastArgIndex].type->getBasicType() == EbtInt && fnCandidate[lastArgIndex].type->isScalar()) {
             // the last integral argument to a texture gather must be a constant int between 0 and 3

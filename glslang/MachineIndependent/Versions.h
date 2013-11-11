@@ -61,6 +61,7 @@ namespace glslang {
 // The behaviors from the GLSL "#extension extension_name : behavior"
 //
 typedef enum {
+    EBhMissing = 0,
     EBhRequire,
     EBhEnable,
     EBhWarn,
@@ -71,6 +72,9 @@ typedef enum {
 // Symbolic names for extensions.  Strings may be directly used when calling the
 // functions, but better to have the compiler do spelling checks.
 //
+const char* const GL_OES_texture_3D               = "GL_OES_texture_3D";
+
+
 const char* const GL_ARB_texture_rectangle        = "GL_ARB_texture_rectangle";
 const char* const GL_3DL_array_objects            = "GL_3DL_array_objects";
 const char* const GL_ARB_shading_language_420pack = "GL_ARB_shading_language_420pack";

@@ -76,3 +76,16 @@ struct sp {
     uniform float h;        // ERROR
     invariant float i;      // ERROR
 };
+
+uniform sampler3D s3D;      // ERROR
+
+#extension GL_OES_texture_3D : enable
+
+precision highp sampler3D;
+uniform sampler3D s3D2;
+
+void foo234()
+{
+    texture3D(s3D2, vec3(0.2), 0.2);
+    texture3DProj(s3D2, v[1], 0.4);
+}

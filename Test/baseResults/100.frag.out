@@ -40,7 +40,9 @@ ERROR: 0:71: 'sampler2D' : sampler/image types can only be used in uniform varia
 ERROR: 0:75: 'g' : cannot use storage or interpolation qualifiers on structure members 
 ERROR: 0:76: 'h' : cannot use storage or interpolation qualifiers on structure members 
 ERROR: 0:77: 'i' : cannot use invariant qualifier on structure members 
-ERROR: 35 compilation errors.  No code generated.
+ERROR: 0:80: 'sampler3D' : Reserved word. 
+ERROR: 0:80: 'sampler/image' : type requires declaration of default precision qualifier 
+ERROR: 37 compilation errors.  No code generated.
 
 ERROR: node is still EOpNull!
 0:3  Sequence
@@ -121,6 +123,25 @@ ERROR: node is still EOpNull!
 0:67  Function Definition: f11(s21; (void)
 0:67    Function Parameters: 
 0:67      'p2d' (in lowp sampler2D)
+0:87  Function Definition: foo234( (void)
+0:87    Function Parameters: 
+0:89    Sequence
+0:89      Function Call: texture3D(s31;vf3;f1; (highp 4-component vector of float)
+0:89        's3D2' (uniform highp sampler3D)
+0:89        Constant:
+0:89          0.200000
+0:89          0.200000
+0:89          0.200000
+0:89        Constant:
+0:89          0.200000
+0:90      Function Call: texture3DProj(s31;vf4;f1; (highp 4-component vector of float)
+0:90        's3D2' (uniform highp sampler3D)
+0:90        direct index (smooth mediump 4-component vector of float)
+0:90          'v' (smooth in 3-element array of mediump 4-component vector of float)
+0:90          Constant:
+0:90            1 (const int)
+0:90        Constant:
+0:90          0.400000
 0:?   Linker Objects
 0:?     'a' (3-element array of mediump int)
 0:?     'uint' (mediump int)
@@ -135,4 +156,6 @@ ERROR: node is still EOpNull!
 0:?     'uv3' (invariant uniform mediump 3-component vector of float)
 0:?     'glob2D' (lowp sampler2D)
 0:?     'vary2D' (smooth in lowp sampler2D)
+0:?     's3D' (uniform mediump sampler3D)
+0:?     's3D2' (uniform highp sampler3D)
 

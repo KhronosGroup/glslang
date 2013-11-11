@@ -781,6 +781,13 @@ int TScanContext::tokenizeIdentifier()
         return keyword;
 
     case SAMPLER3D:
+        afterType = true;
+        if (parseContext.profile == EEsProfile && parseContext.version < 300) {
+            if (! parseContext.extensionsTurnedOn(1, &GL_OES_texture_3D))
+                reservedWord();
+        }
+        return keyword;
+
     case SAMPLER2DSHADOW:
         afterType = true;
         if (parseContext.profile == EEsProfile && parseContext.version < 300)
@@ -883,9 +890,13 @@ int TScanContext::identifierOrType()
     return IDENTIFIER;
 }
 
+// Give an error for use of a reserved symbol.
+// However, allow built-in declarations to use reserved words, to allow
+// extension support before the extension is enabled.
 int TScanContext::reservedWord()
 {
-    parseContext.error(loc, "Reserved word.", tokenText, "", "");
+    if (! parseContext.symbolTable.atBuiltInLevel())
+        parseContext.error(loc, "Reserved word.", tokenText, "", "");
 
     return 0;
 }

@@ -77,7 +77,6 @@ public:
     bool reservedErrorCheck(TSourceLoc, const TString&);
     bool builtInName(const TString&);
 
-    void updateExtensionBehavior(const char* extName, const char* behavior);
     void handlePragma(const char **tokens, int numTokens);
     TIntermTyped* handleVariable(TSourceLoc, TSymbol* symbol, TString* string);
     TIntermTyped* handleBracketDereference(TSourceLoc, TIntermTyped* base, TIntermTyped* index);
@@ -180,12 +179,15 @@ public:
     // The following are implemented in Versions.cpp to localize version/profile/stage/extensions control
     void initializeExtensionBehavior();
     void requireProfile(TSourceLoc, int queryProfiles, const char *featureDesc);
-    void profileRequires(TSourceLoc, int queryProfiles, int minVersion, int numExtensions, const char* extensions[], const char *featureDesc);
-    void profileRequires(TSourceLoc, int queryProfiles, int minVersion, const char* extension, const char *featureDesc);
+    void profileRequires(TSourceLoc, int queryProfiles, int minVersion, int numExtensions, const char* const extensions[], const char *featureDesc);
+    void profileRequires(TSourceLoc, int queryProfiles, int minVersion, const char* const extension, const char *featureDesc);
     void requireStage(TSourceLoc, EShLanguageMask, const char *featureDesc);
     void requireStage(TSourceLoc, EShLanguage, const char *featureDesc);
     void checkDeprecated(TSourceLoc, int queryProfiles, int depVersion, const char *featureDesc);
     void requireNotRemoved(TSourceLoc, int queryProfiles, int removedVersion, const char *featureDesc);
+    TExtensionBehavior getExtensionBehavior(const char*);
+    bool extensionsTurnedOn(int numExtensions, const char* const extensions[]);
+    void updateExtensionBehavior(const char* const extension, const char* behavior);
     void fullIntegerCheck(TSourceLoc, const char* op);
     void doubleCheck(TSourceLoc, const char* op);
 

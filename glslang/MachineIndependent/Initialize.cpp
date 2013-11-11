@@ -659,6 +659,9 @@ void TBuiltIns::initialize(int version, EProfile profile)
             "vec4 texture2DProj(sampler2D, vec3);"
             "vec4 texture2DProj(sampler2D, vec4);"
 
+            "vec4 texture3D(sampler3D, vec3);"     // OES_texture_3D, but caught by keyword check
+            "vec4 texture3DProj(sampler3D, vec4);" // OES_texture_3D, but caught by keyword check
+
             "vec4 textureCube(samplerCube, vec3);"
             
             "\n");
@@ -672,9 +675,6 @@ void TBuiltIns::initialize(int version, EProfile profile)
 
             "vec4 texture1DProj(sampler1D, vec2);"
             "vec4 texture1DProj(sampler1D, vec4);"
-                     
-            "vec4 texture3D(sampler3D, vec3);"
-            "vec4 texture3DProj(sampler3D, vec4);"
                      
             "vec4 shadow1D(sampler1DShadow, vec3);"
             "vec4 shadow2D(sampler2DShadow, vec3);"
@@ -742,6 +742,8 @@ void TBuiltIns::initialize(int version, EProfile profile)
             "vec4 texture2DLod(sampler2D, vec2, float);"
             "vec4 texture2DProjLod(sampler2D, vec3, float);"
             "vec4 texture2DProjLod(sampler2D, vec4, float);"
+            "vec4 texture3DLod(sampler3D, vec3, float);"         // OES_texture_3D, but caught by keyword check
+            "vec4 texture3DProjLod(sampler3D, vec4, float);"     // OES_texture_3D, but caught by keyword check
             "vec4 textureCubeLod(samplerCube, vec3, float);"
             
             "\n");
@@ -753,8 +755,6 @@ void TBuiltIns::initialize(int version, EProfile profile)
             "vec4 texture1DLod(sampler1D, float, float);"
             "vec4 texture1DProjLod(sampler1D, vec2, float);"
             "vec4 texture1DProjLod(sampler1D, vec4, float);"
-            "vec4 texture3DLod(sampler3D, vec3, float);"
-            "vec4 texture3DProjLod(sampler3D, vec4, float);"
             "vec4 shadow1DLod(sampler1DShadow, vec3, float);"
             "vec4 shadow2DLod(sampler2DShadow, vec3, float);"
             "vec4 shadow1DProjLod(sampler1DShadow, vec4, float);"
@@ -828,6 +828,8 @@ void TBuiltIns::initialize(int version, EProfile profile)
             "vec4 texture2D(sampler2D, vec2, float);"
             "vec4 texture2DProj(sampler2D, vec3, float);"
             "vec4 texture2DProj(sampler2D, vec4, float);"
+            "vec4 texture3D(sampler3D, vec3, float);"        // OES_texture_3D
+            "vec4 texture3DProj(sampler3D, vec4, float);"    // OES_texture_3D
             "vec4 textureCube(samplerCube, vec3, float);"
             
             "\n");
@@ -837,8 +839,6 @@ void TBuiltIns::initialize(int version, EProfile profile)
             "vec4 texture1D(sampler1D, float, float);"
             "vec4 texture1DProj(sampler1D, vec2, float);"
             "vec4 texture1DProj(sampler1D, vec4, float);"
-            "vec4 texture3D(sampler3D, vec3, float);"
-            "vec4 texture3DProj(sampler3D, vec4, float);"
             "vec4 shadow1D(sampler1DShadow, vec3, float);"
             "vec4 shadow2D(sampler2DShadow, vec3, float);"
             "vec4 shadow1DProj(sampler1DShadow, vec4, float);"
