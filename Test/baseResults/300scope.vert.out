@@ -6,13 +6,15 @@ ERROR: 0:21: 'redefinition of built-in function' : not supported with this profi
 ERROR: 0:21: 'sin' : redeclaration of existing name 
 ERROR: 0:22: 'redefinition of built-in function' : not supported with this profile: es
 ERROR: 0:22: 'cos' : redeclaration of existing name 
+ERROR: 0:22: 'cos' : function already has a body 
+ERROR: 0:24: 'return' : void function cannot return a value 
 ERROR: 0:26: 'radians' : redeclaration of existing name 
 ERROR: 0:26: 'radians' : can't find function 
 ERROR: 0:28: 'return' : void function cannot return a value 
 ERROR: 0:35: 'local function declaration' : not supported with this profile: es
 ERROR: 0:54: 'z' : undeclared identifier 
 ERROR: 0:54: 'z' : redefinition 
-ERROR: 14 compilation errors.  No code generated.
+ERROR: 16 compilation errors.  No code generated.
 
 ERROR: node is still EOpNull!
 0:3  Function Definition: f(i1;i1;i1; (highp int)

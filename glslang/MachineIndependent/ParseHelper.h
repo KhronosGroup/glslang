@@ -88,7 +88,7 @@ public:
     void checkInputArrayConsistency(TSourceLoc, TLayoutGeometry, TType&, const TString&);
     TIntermTyped* handleDotDereference(TSourceLoc, TIntermTyped* base, TString& field);
     TFunction* handleFunctionDeclarator(TSourceLoc loc, TFunction& function);
-    TIntermAggregate* handleFunctionPrototype(TSourceLoc, TFunction&);
+    TIntermAggregate* handleFunctionDefinition(TSourceLoc, TFunction&);
     TIntermTyped* handleFunctionCall(TSourceLoc, TFunction*, TIntermNode*, TIntermAggregate*);
     void nonOpBuiltInCheck(TSourceLoc, const TFunction&, TIntermAggregate*);
     TFunction* handleConstructorCall(TSourceLoc, TPublicType&);

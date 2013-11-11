@@ -751,6 +751,9 @@ TFunction* TParseContext::handleFunctionDeclarator(TSourceLoc loc, TFunction& fu
         }
     }
 
+    // All built-in functions are defined, even though they don't have a body.
+    if (symbolTable.atBuiltInLevel())
+        function.setDefined();
 
     if (! symbolTable.insert(function))
         error(loc, "redeclaration of existing name", function.getName().c_str(), "");
@@ -764,12 +767,10 @@ TFunction* TParseContext::handleFunctionDeclarator(TSourceLoc loc, TFunction& fu
 }
 
 //
-// Handle seeing a function prototype in the grammar.  This includes what may
-// become a full definition, as a full definition looks like a prototype
-// followed by a body.  The body is handled after this function
-// returns, when present.
+// Handle seeing the function prototype in front of a function definition in the grammar.  
+// The body is handled after this function returns.
 //
-TIntermAggregate* TParseContext::handleFunctionPrototype(TSourceLoc loc, TFunction& function)
+TIntermAggregate* TParseContext::handleFunctionDefinition(TSourceLoc loc, TFunction& function)
 {
     currentCaller = function.getMangledName();
     TSymbol* symbol = symbolTable.find(function.getMangledName());
@@ -777,23 +778,18 @@ TIntermAggregate* TParseContext::handleFunctionPrototype(TSourceLoc loc, TFuncti
 
     if (! prevDec)
         error(loc, "can't find function", function.getName().c_str(), "");
-
-    //
     // Note:  'prevDec' could be 'function' if this is the first time we've seen function
     // as it would have just been put in the symbol table.  Otherwise, we're looking up
     // an earlier occurance.
-    //
+
     if (prevDec && prevDec->isDefined()) {
-        //
         // Then this function already has a body.
-        //
         error(loc, "function already has a body", function.getName().c_str(), "");
     }
-    if (prevDec) {
+    if (prevDec && ! prevDec->isDefined()) {
         prevDec->setDefined();
-        //
+
         // Remember the return type for later checking for RETURN statements.
-        //
         currentFunctionType = &(prevDec->getType());
     } else
         currentFunctionType = new TType(EbtVoid);

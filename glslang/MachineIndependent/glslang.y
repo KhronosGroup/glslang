@@ -2389,7 +2389,7 @@ external_declaration
 
 function_definition
     : function_prototype {
-        $1.intermAggregate = parseContext.handleFunctionPrototype($1.loc, *$1.function);
+        $1.intermAggregate = parseContext.handleFunctionDefinition($1.loc, *$1.function);
     }
     compound_statement_no_new_scope {
         //   May be best done as post process phase on intermediate code
