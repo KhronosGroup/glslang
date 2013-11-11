@@ -24,10 +24,13 @@ ERROR: 0:47: 'invariant' : can only apply to an output or an input in a non-vert
  
 ERROR: 0:50: 'invariant' : can only apply to an output or an input in a non-vertex stage
  
+ERROR: 0:56: 'invariant' : not allowed in nested scope 
 ERROR: 0:56: 'invariant' : can only apply to an output or an input in a non-vertex stage
  
+ERROR: 0:57: 'invariant' : not allowed in nested scope 
 ERROR: 0:57: 'invariant' : can only apply to an output or an input in a non-vertex stage
  
+ERROR: 0:59: 'invariant' : not allowed in nested scope 
 ERROR: 0:59: 'invariant' : can only apply to an output or an input in a non-vertex stage
  
 ERROR: 0:63: 'invariant' : can only apply to an output or an input in a non-vertex stage
@@ -51,7 +54,7 @@ ERROR: 0:111: 'gl_FragDepth' : undeclared identifier
 ERROR: 0:134: 'texture3D' : no matching overloaded function found 
 ERROR: 0:135: 'texture2DProjLod' : no matching overloaded function found 
 ERROR: 0:140: '' :  syntax error
-ERROR: 46 compilation errors.  No code generated.
+ERROR: 49 compilation errors.  No code generated.
 
 ERROR: node is still EOpNull!
 0:3  Sequence

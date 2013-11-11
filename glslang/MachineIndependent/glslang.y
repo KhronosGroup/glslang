@@ -1059,6 +1059,7 @@ fully_specified_type
 
 invariant_qualifier
     : INVARIANT {
+        parseContext.globalCheck($1.loc, "invariant");
         parseContext.profileRequires($$.loc, ENoProfile, 120, 0, "invariant");
         $$.init($1.loc);
         $$.qualifier.invariant = true;
