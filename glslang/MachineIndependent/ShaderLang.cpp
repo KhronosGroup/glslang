@@ -168,7 +168,7 @@ void InitializeStageSymbolTable(TBuiltIns& builtIns, int version, EProfile profi
     (*symbolTables[language]).adoptLevels(*commonTable[CommonIndex(profile, language)]);
     InitializeSymbolTable(builtIns.getStageString(language), version, profile, language, infoSink, *symbolTables[language]);
     IdentifyBuiltIns(version, profile, language, *symbolTables[language]);
-    if (profile == EEsProfile)
+    if (profile == EEsProfile && version >= 300)
         (*symbolTables[language]).setNoBuiltInRedeclarations();
 }
 

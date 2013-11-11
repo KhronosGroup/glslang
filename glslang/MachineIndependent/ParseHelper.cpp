@@ -733,12 +733,13 @@ TFunction* TParseContext::handleFunctionDeclarator(TSourceLoc loc, TFunction& fu
     //
     // Redeclarations (full prototype match) are allowed.  But, return types and parameter qualifiers must match.
     //
-    // ES does not allow redeclaring or hiding of built-in functions.
+    // ES 100 does not allow redefining, but does allow overloading of built-in functions.
+    // ES 300 does not allow redefining or overloading of built-in functions.
     //
     bool builtIn;
     TSymbol* symbol = symbolTable.find(function.getMangledName(), &builtIn);
     if (symbol && symbol->getAsFunction() && builtIn)
-        requireNotRemoved(loc, EEsProfile, 300, "redeclaration of built-in function");
+        requireProfile(loc, ~EEsProfile, "redefinition of built-in function");
     const TFunction* prevDec = symbol ? symbol->getAsFunction() : 0;
     if (prevDec) {
         if (prevDec->getType() != function.getType()) {
@@ -752,7 +753,7 @@ TFunction* TParseContext::handleFunctionDeclarator(TSourceLoc loc, TFunction& fu
 
 
     if (! symbolTable.insert(function))
-        error(loc, "illegal redeclaration", function.getName().c_str(), "");
+        error(loc, "redeclaration of existing name", function.getName().c_str(), "");
 
     //
     // If this is a redeclaration, it could also be a definition,
@@ -775,7 +776,7 @@ TIntermAggregate* TParseContext::handleFunctionPrototype(TSourceLoc loc, TFuncti
     TFunction* prevDec = symbol ? symbol->getAsFunction() : 0;
 
     if (! prevDec)
-        error(loc, "can't find function name", function.getName().c_str(), "");
+        error(loc, "can't find function", function.getName().c_str(), "");
 
     //
     // Note:  'prevDec' could be 'function' if this is the first time we've seen function
@@ -3332,13 +3333,17 @@ void TParseContext::declareBlock(TSourceLoc loc, TTypeList& typeList, const TStr
     // whose type is EbtBlock, but without all the structure; that will come from the type
     // the instances point to.
     //
-    TType blockNameType(EbtBlock);
+    TType blockNameType(EbtBlock, blockType.getQualifier().storage);
     TVariable* blockNameVar = new TVariable(blockName, blockNameType);
     if (! symbolTable.insert(*blockNameVar)) {
         TSymbol* existingName = symbolTable.find(*blockName);
-        if (existingName->getType().getBasicType() != EbtBlock) {
+        if (existingName->getType().getBasicType() == EbtBlock) {
+            if (existingName->getType().getQualifier().storage == blockType.getQualifier().storage) {
+                error(loc, "Cannot reuse block name within the same interface:", blockName->c_str(), blockType.getStorageQualifierString());
+                return;
+            }
+        } else {
             error(loc, "block name cannot redefine a non-block name", blockName->c_str(), "");
-
             return;
         }
     }
@@ -3414,7 +3419,7 @@ void TParseContext::invariantCheck(TSourceLoc loc, const TType& type, const TStr
     bool pipeIn = type.getQualifier().isPipeInput();
     if (version >= 300 || profile != EEsProfile && version >= 420) {
         if (! pipeOut)
-            error(loc, "can only apply to an output\n", "invariant", identifier.c_str());
+            error(loc, "can only apply to an output:", "invariant", identifier.c_str());
     } else {
         if ((language == EShLangVertex && pipeIn) || (! pipeOut && ! pipeIn))
             error(loc, "can only apply to an output or an input in a non-vertex stage\n", "invariant", "");

@@ -18,9 +18,12 @@ ERROR: 0:63: '' : array size required
 ERROR: 0:65: '' : array size required 
 ERROR: 0:64: '' : array size required 
 ERROR: 0:67: '' : array size required 
-ERROR: 0:78: 'invariant' : can only apply to an output
- invIn
-ERROR: 21 compilation errors.  No code generated.
+ERROR: 0:78: 'invariant' : can only apply to an output: invIn
+ERROR: 0:88: 'ub2' : Cannot reuse block name within the same interface: uniform
+ERROR: 0:92: 'ub2' : Cannot reuse block name within the same interface: uniform
+ERROR: 0:96: 'ub2' : Cannot reuse block name within the same interface: uniform
+ERROR: 0:104: 'ub3' : Cannot reuse block name within the same interface: uniform
+ERROR: 25 compilation errors.  No code generated.
 
 ERROR: node is still EOpNull!
 0:27  Function Definition: main( (void)
@@ -167,6 +170,8 @@ ERROR: node is still EOpNull!
 0:?     'invIn' (in highp 4-component vector of float)
 0:?     's2' (smooth out structure{c,f})
 0:?     's3' (invariant smooth out structure{c,f})
+0:?     'a' (layout(column_major shared ) uniform block{f})
+0:?     '__anon__0' (layout(column_major shared ) uniform block{b23})
 0:?     'gl_VertexID' (gl_VertexId highp int)
 0:?     'gl_InstanceID' (gl_InstanceId highp int)
 

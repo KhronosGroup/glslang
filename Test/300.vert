@@ -80,3 +80,27 @@ out S s2;
 invariant s2;
 invariant out S s3;
 flat out int;
+
+uniform ub2 {
+    float f;
+} a;
+
+uniform ub2 {  // ERROR redeclaration of block name (same instance name)
+    float g;
+} a;
+
+uniform ub2 {  // ERROR redeclaration of block name (different instance name)
+    float f;
+} c;
+
+uniform ub2 {  // ERROR redeclaration of block name (no instance name)
+    float f123;
+};
+
+uniform ub3 {
+    bool b23;
+};
+
+uniform ub3 {  // ERROR redeclaration of block name (no instance name in first or declared)
+    bool b234;
+};

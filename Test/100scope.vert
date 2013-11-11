@@ -17,11 +17,15 @@ bool b;
 float b(int a);      // ERROR: redefinition
 
 float f;             // ERROR: redefinition
-float tan;           // ERROR: redefines built-in function
-float sin(float x);  // ERROR: can't overload built-in functions
-float cos(float x)   // ERROR: can't overload built-in functions
+float tan;           // okay, built-in is in an outer scope
+float sin(float x);  // ERROR: can't redefine built-in functions
+float cos(float x)   // ERROR: can't redefine built-in functions
 {
 	return 1.0;
+}
+bool radians(bool x) // okay, can overload built-in functions
+{
+    return true;
 }
 
 invariant gl_Position;

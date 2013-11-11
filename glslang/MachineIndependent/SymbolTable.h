@@ -292,9 +292,8 @@ public:
             return isOkay;
         } else {
             // Check for redefinition errors:
-            // - STL itself will tell us if there is a direct name collision at this level
-            // - additionally, check for function/variable name collisions
-            // - for ES, for overriding or hiding built-in function
+            // - STL itself will tell us if there is a direct name collision, with name mangling, at this level
+            // - additionally, check for function-redefining-variable name collisions
             const TString& insertName = symbol.getMangledName();
             if (symbol.getAsFunction()) {
                 // make sure there isn't a variable of this name
@@ -457,11 +456,13 @@ public:
     {
         symbol.setUniqueId(++uniqueId);
 
-        if (! symbol.getAsFunction()) {
-            // make sure there isn't a function of this name
-            if (table[currentLevel()]->hasFunctionName(symbol.getName()))
-                return false;
-            if (atGlobalLevel() && currentLevel() > 0 && noBuiltInRedeclarations) {
+        // make sure there isn't a function of this variable name
+        if (! symbol.getAsFunction() && table[currentLevel()]->hasFunctionName(symbol.getName()))
+            return false;
+            
+        // check for not overloading or redefining a built-in function
+        if (noBuiltInRedeclarations) {
+            if (atGlobalLevel() && currentLevel() > 0) {
                 if (table[0]->hasFunctionName(symbol.getName()))
                     return false;
                 if (currentLevel() > 1 && table[1]->hasFunctionName(symbol.getName()))

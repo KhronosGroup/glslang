@@ -135,4 +135,7 @@ ERROR: node is still EOpNull!
 0:?     '__anon__1' (layout(stream=3 ) out block{a})
 0:?     'outbi' (layout(stream=3 ) out block{a,b,c})
 0:?     'inbi' (in block{a})
+0:?     '__anon__2' (in block{a15})
+0:?     '__anon__3' (layout(stream=3 ) out block{f15})
+0:?     '__anon__4' (layout(column_major shared ) uniform block{b15})
 

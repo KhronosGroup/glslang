@@ -52,11 +52,11 @@ out vec4 ov3;  // stream should be 3
 
 layout(stream = 6) out ooutb { vec4 a; } ouuaa6;
 
-layout(stream = 6) out ooutb {
+layout(stream = 6) out ooutb2 {
     layout(stream = 6) vec4 a;
 } ouua6;
 
-layout(stream = 7) out ooutb {
+layout(stream = 7) out ooutb3 {
     layout(stream = 6) vec4 a;  // ERROR
 } ouua7;
 
@@ -74,7 +74,7 @@ layout(triangle_strip) uniform; // ERROR
 layout(triangle_strip) out vec4 badv4;  // ERROR, not on a variable
 layout(triangle_strip) in vec4 bad2v4;  // ERROR, not on a variable or input
 layout(invocations = 3) out outbn { int a; }; // ERROR, not on a block
-out outbn {
+out outbn2 {
     layout(invocations = 3)  int a; // ERROR, not on a block member
     layout(max_vertices = 3) int b; // ERROR, not on a block member
     layout(triangle_strip)   int c; // ERROR, not on a block member
@@ -90,3 +90,15 @@ layout(invocations = 4, max_vertices = 127) out;
 in inbn {
     layout(stream = 2) int a;     // ERROR, stream on input
 } inbi;
+
+in sameName {
+    int a15;
+};
+
+out sameName {
+    float f15;
+};
+
+uniform sameName {
+    bool b15;
+};
