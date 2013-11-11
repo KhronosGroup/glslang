@@ -424,6 +424,7 @@ void TScanContext::fillInKeywordMap()
     (*KeywordMap)["sampler2DRect"] =           SAMPLER2DRECT;
     (*KeywordMap)["sampler2DRectShadow"] =     SAMPLER2DRECTSHADOW;
     (*KeywordMap)["sampler1DArray"] =          SAMPLER1DARRAY;
+    (*KeywordMap)["samplerExternalOES"] =      SAMPLEREXTERNALOES; // GL_OES_EGL_image_external
     (*KeywordMap)["noperspective"] =           NOPERSPECTIVE;
     (*KeywordMap)["smooth"] =                  SMOOTH;
     (*KeywordMap)["flat"] =                    FLAT;
@@ -810,6 +811,12 @@ int TScanContext::tokenizeIdentifier()
                  (parseContext.profile != EEsProfile && parseContext.version < 130))
             return identifierOrType();
         return keyword;
+
+    case SAMPLEREXTERNALOES:
+        afterType = true;
+        if (parseContext.symbolTable.atBuiltInLevel() || parseContext.extensionsTurnedOn(1, &GL_OES_EGL_image_external))
+            return keyword;
+        return identifierOrType();
 
     case NOPERSPECTIVE:
         return es30ReservedFromGLSL(130);

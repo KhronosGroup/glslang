@@ -77,6 +77,8 @@ void TType::buildMangledName(TString& mangledName)
             mangledName += "A";
         if (sampler.shadow)
             mangledName += "S";
+        if (sampler.external)
+            mangledName += "E";
         switch (sampler.dim) {
         case Esd1D:       mangledName += "1";  break;
         case Esd2D:       mangledName += "2";  break;

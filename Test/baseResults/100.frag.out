@@ -48,7 +48,10 @@ ERROR: 0:93: 'fwidth' : required extension not requested: GL_OES_standard_deriva
 ERROR: 0:103: 'gl_FragDepth' : undeclared identifier 
 ERROR: 0:104: 'gl_FragDepthEXT' : required extension not requested: GL_EXT_frag_depth
 ERROR: 0:111: 'gl_FragDepth' : undeclared identifier 
-ERROR: 43 compilation errors.  No code generated.
+ERROR: 0:134: 'texture3D' : no matching overloaded function found 
+ERROR: 0:135: 'texture2DProjLod' : no matching overloaded function found 
+ERROR: 0:140: '' :  syntax error
+ERROR: 46 compilation errors.  No code generated.
 
 ERROR: node is still EOpNull!
 0:3  Sequence
@@ -184,6 +187,42 @@ ERROR: node is still EOpNull!
 0:112      move second child to first child (highp float)
 0:112        'gl_FragDepthEXT' (gl_FragDepth highp float)
 0:112        'f13' (invariant mediump float)
+0:119  Function Definition: foo245( (void)
+0:119    Function Parameters: 
+0:121    Sequence
+0:121      Function Call: texture2D(sE21;vf2; (lowp 4-component vector of float)
+0:121        'sExt' (uniform lowp samplerExternalOES)
+0:121        Constant:
+0:121          0.200000
+0:121          0.200000
+0:122      Function Call: texture2DProj(sE21;vf3; (lowp 4-component vector of float)
+0:122        'sExt' (uniform lowp samplerExternalOES)
+0:122        Construct vec3 (3-component vector of float)
+0:122          'f13' (invariant mediump float)
+0:123      Function Call: texture2DProj(sE21;vf4; (lowp 4-component vector of float)
+0:123        'sExt' (uniform lowp samplerExternalOES)
+0:123        direct index (smooth mediump 4-component vector of float)
+0:123          'v' (smooth in 3-element array of mediump 4-component vector of float)
+0:123          Constant:
+0:123            2 (const int)
+0:130  Function Definition: foo246( (void)
+0:130    Function Parameters: 
+0:132    Sequence
+0:132      Function Call: texture2D(sE21;vf2; (mediump 4-component vector of float)
+0:132        'mediumExt' (uniform mediump samplerExternalOES)
+0:132        Constant:
+0:132          0.200000
+0:132          0.200000
+0:133      Function Call: texture2DProj(sE21;vf4; (highp 4-component vector of float)
+0:133        'highExt' (uniform highp samplerExternalOES)
+0:133        direct index (smooth mediump 4-component vector of float)
+0:133          'v' (smooth in 3-element array of mediump 4-component vector of float)
+0:133          Constant:
+0:133            2 (const int)
+0:134      Constant:
+0:134        0.000000
+0:135      Constant:
+0:135        0.000000
 0:?   Linker Objects
 0:?     'a' (3-element array of mediump int)
 0:?     'uint' (mediump int)
@@ -200,4 +239,7 @@ ERROR: node is still EOpNull!
 0:?     'vary2D' (smooth in lowp sampler2D)
 0:?     's3D' (uniform mediump sampler3D)
 0:?     's3D2' (uniform highp sampler3D)
+0:?     'sExt' (uniform lowp samplerExternalOES)
+0:?     'mediumExt' (uniform mediump samplerExternalOES)
+0:?     'highExt' (uniform highp samplerExternalOES)
 

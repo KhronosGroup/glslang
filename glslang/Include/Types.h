@@ -65,6 +65,7 @@ struct TSampler {
     bool     shadow : 1;
     bool         ms : 1;
     bool      image : 1;
+    bool   external : 1;  // GL_OES_EGL_image_external
 
     void clear()
     {
@@ -74,6 +75,7 @@ struct TSampler {
         shadow = false;
         ms = false;
         image = false;
+        external = false;
     }
 
     void set(TBasicType t, TSamplerDim d, bool a = false, bool s = false, bool m = false)
@@ -84,6 +86,7 @@ struct TSampler {
         shadow = s;
         ms = m;
         image = false;
+        external = false;
     }
 
     void setImage(TBasicType t, TSamplerDim d, bool a = false, bool s = false, bool m = false)
@@ -94,6 +97,7 @@ struct TSampler {
         shadow = s;
         ms = m;
         image = true;
+        external = false;
     }
 
     bool operator==(const TSampler& right) const
@@ -103,7 +107,8 @@ struct TSampler {
             arrayed == right.arrayed &&
              shadow == right.shadow &&
                  ms == right.ms &&
-              image == right.image;
+              image == right.image &&
+           external == right.external;
     }
 
     TString getString() const
@@ -120,6 +125,10 @@ struct TSampler {
             s.append("image");
         else
             s.append("sampler");
+        if (external) {
+            s.append("ExternalOES");
+            return s;
+        }
         switch (dim) {
         case Esd1D:      s.append("1D");     break;
         case Esd2D:      s.append("2D");     break;

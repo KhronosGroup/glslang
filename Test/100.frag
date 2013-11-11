@@ -111,3 +111,30 @@ void foo239()
     gl_FragDepth = f13;    // ERROR
     gl_FragDepthEXT = f13;
 }
+
+#extension GL_OES_EGL_image_external : enable
+
+uniform samplerExternalOES sExt;
+
+void foo245()
+{
+    texture2D(sExt, vec2(0.2));
+    texture2DProj(sExt, vec3(f13));
+    texture2DProj(sExt, v[2]);
+}
+
+precision mediump samplerExternalOES;
+uniform samplerExternalOES mediumExt;
+uniform highp samplerExternalOES highExt;
+
+void foo246()
+{
+    texture2D(mediumExt, vec2(0.2));
+    texture2DProj(highExt, v[2]);
+    texture3D(sExt, vec3(f13));   // ERROR
+    texture2DProjLod(sExt, vec3(f13), f13);  // ERROR
+}
+
+#extension GL_OES_EGL_image_external : disable
+
+uniform samplerExternalOES badExt;  // syntax ERROR

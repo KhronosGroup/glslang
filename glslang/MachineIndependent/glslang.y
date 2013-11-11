@@ -139,6 +139,7 @@ extern int yylex(YYSTYPE*, TParseContext&);
 %token <lex> ISAMPLERCUBEARRAY USAMPLERCUBEARRAY
 %token <lex> SAMPLER2DMS ISAMPLER2DMS USAMPLER2DMS
 %token <lex> SAMPLER2DMSARRAY ISAMPLER2DMSARRAY USAMPLER2DMSARRAY
+%token <lex> SAMPLEREXTERNALOES
 
 %token <lex> IMAGE1D IIMAGE1D UIMAGE1D IMAGE2D IIMAGE2D
 %token <lex> UIMAGE2D IMAGE3D IIMAGE3D UIMAGE3D
@@ -1950,6 +1951,12 @@ type_specifier_nonarray
         $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
         $$.basicType = EbtSampler;
         $$.sampler.setImage(EbtUint, Esd2D, true, false, true);
+    }
+    | SAMPLEREXTERNALOES {  // GL_OES_EGL_image_external
+        $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
+        $$.basicType = EbtSampler;
+        $$.sampler.set(EbtFloat, Esd2D);
+        $$.sampler.external = true;
     }
     | struct_specifier {
         $$ = $1;

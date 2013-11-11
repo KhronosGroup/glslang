@@ -686,6 +686,15 @@ void TBuiltIns::initialize(int version, EProfile profile)
             "\n");
     }
 
+    if (profile == EEsProfile) {
+        // GL_OES_EGL_image_external, caught by keyword check
+        commonBuiltins.append(
+            "vec4 texture2D(samplerExternalOES, vec2 coord);"
+            "vec4 texture2DProj(samplerExternalOES, vec3);"
+            "vec4 texture2DProj(samplerExternalOES, vec4);"
+            "\n");
+    }
+
     //
     // Noise functions.
     //
