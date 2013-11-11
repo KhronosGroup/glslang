@@ -185,6 +185,7 @@ public:
     void requireStage(TSourceLoc, EShLanguage, const char *featureDesc);
     void checkDeprecated(TSourceLoc, int queryProfiles, int depVersion, const char *featureDesc);
     void requireNotRemoved(TSourceLoc, int queryProfiles, int removedVersion, const char *featureDesc);
+    void requireExtensions(TSourceLoc, int numExtensions, const char* const extensions[], const char *featureDesc);
     TExtensionBehavior getExtensionBehavior(const char*);
     bool extensionsTurnedOn(int numExtensions, const char* const extensions[]);
     void updateExtensionBehavior(const char* const extension, const char* behavior);

@@ -81,9 +81,9 @@ class TAnonMember;
 class TSymbol {
 public:
     POOL_ALLOCATOR_NEW_DELETE(GetThreadPoolAllocator())
-    explicit TSymbol(const TString *n) :  name(n), writable(true) { }
+    explicit TSymbol(const TString *n) :  name(n), writable(true), numExtensions(0), extensions(0) { }
 	virtual TSymbol* clone() const = 0;
-    virtual ~TSymbol() { }
+    virtual ~TSymbol() { delete [] extensions; }
 
     virtual const TString& getName() const { return *name; }
     virtual void changeName(const TString* newName) { name = newName; }
@@ -97,6 +97,16 @@ public:
     virtual TType& getWritableType() = 0;
     virtual void setUniqueId(int id) { uniqueId = id; }
     virtual int getUniqueId() const { return uniqueId; }
+    virtual void setExtensions(int num, const char* const exts[])
+    {
+        assert(extensions == 0);
+        numExtensions = num;
+        extensions = new const char*[numExtensions];
+        for (int e = 0; e < num; ++e)
+            extensions[e] = exts[e];
+    }
+    virtual int getNumExtensions() const { return numExtensions; }
+    virtual const char** getExtensions() const { return extensions; }
     virtual void dump(TInfoSink &infoSink) const = 0;
 
     virtual bool isReadOnly() const { return ! writable; }
@@ -108,6 +118,11 @@ protected:
 
     const TString *name;
     unsigned int uniqueId;      // For cross-scope comparing during code generation
+
+    // For tracking what extensions must be present 
+    // (don't use if correct version/profile is present).
+    int numExtensions;
+    const char** extensions; // an array of pointers to existing constant char strings
 
     //
     // N.B.: Non-const functions that will be generally used should assert an this,
@@ -376,6 +391,7 @@ public:
     }
 
     void relateToOperator(const char* name, TOperator op);
+    void setFunctionExtensions(const char* name, int num, const char* const extensions[]);
     void dump(TInfoSink &infoSink) const;
 	TSymbolTableLevel* clone() const;
     void readOnly();
@@ -550,6 +566,12 @@ public:
     {
         for (unsigned int level = 0; level < table.size(); ++level)
             table[level]->relateToOperator(name, op);
+    }
+    
+    void setFunctionExtensions(const char* name, int num, const char* const extensions[])
+    {
+        for (unsigned int level = 0; level < table.size(); ++level)
+            table[level]->setFunctionExtensions(name, num, extensions);
     }
 
     int getMaxSymbolId() { return uniqueId; }

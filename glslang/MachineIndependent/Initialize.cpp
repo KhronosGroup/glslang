@@ -42,8 +42,10 @@
 // Where to put a built-in:
 //   TBuiltIns::initialize(version,profile)       context-independent textual built-ins; add them to the right string
 //   TBuiltIns::initialize(resources,...)         context-dependent textual built-ins; add them to the right string
-//   IdentifyBuiltIns(...,symbolTable)            context-independent programmatic additions/mappings to the symbol table
-//   IdentifyBuiltIns(...,symbolTable, resources) context-dependent programmatic additions/mappings to the symbol table
+//   IdentifyBuiltIns(...,symbolTable)            context-independent programmatic additions/mappings to the symbol table,
+//                                                including identify what extensions are needed if a version does not allow a symbol
+//   IdentifyBuiltIns(...,symbolTable, resources) context-dependent programmatic additions/mappings to the symbol table,
+//                                                including identify what extensions are needed if a version does not allow a symbol
 //
 
 #include "../Include/intermediate.h"
@@ -2120,8 +2122,8 @@ void SpecialQualifier(const char* name, TStorageQualifier qualifier, TSymbolTabl
 void IdentifyBuiltIns(int version, EProfile profile, EShLanguage language, TSymbolTable& symbolTable)
 {
     //
-    // First, insert some special built-in variables that are not in
-    // the built-in text strings.
+    // Tag built-in variables and functions with additional qualifier and extension information
+    // that cannot be declared with the text strings.
     //
     switch(language) {
     case EShLangVertex:
@@ -2141,6 +2143,11 @@ void IdentifyBuiltIns(int version, EProfile profile, EShLanguage language, TSymb
         SpecialQualifier("gl_PointCoord",  EvqPointCoord, symbolTable);
         SpecialQualifier("gl_FragColor",   EvqFragColor, symbolTable);
         SpecialQualifier("gl_FragDepth",   EvqFragDepth, symbolTable);
+        if (version == 100) {
+            symbolTable.setFunctionExtensions("dFdx",   1, &GL_OES_standard_derivatives);
+            symbolTable.setFunctionExtensions("dFdy",   1, &GL_OES_standard_derivatives);
+            symbolTable.setFunctionExtensions("fwidth", 1, &GL_OES_standard_derivatives);
+        }
         break;
 
     case EShLangCompute:

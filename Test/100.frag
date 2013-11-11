@@ -88,4 +88,16 @@ void foo234()
 {
     texture3D(s3D2, vec3(0.2), 0.2);
     texture3DProj(s3D2, v[1], 0.4);
+    dFdx(v[0]);    // ERROR
+    dFdy(3.2);     // ERROR
+    fwidth(f13);   // ERROR
+}
+
+#extension GL_OES_standard_derivatives : enable
+
+void foo236()
+{
+    dFdx(v[0]);
+    dFdy(3.2);
+    fwidth(f13);
 }

@@ -385,6 +385,10 @@ TIntermTyped* TParseContext::handleVariable(TSourceLoc loc, TSymbol* symbol, TSt
 {
     TIntermTyped* node = 0;
 
+    // Error check for function requiring specific extensions present.
+    if (symbol && symbol->getNumExtensions())
+        requireExtensions(loc, symbol->getNumExtensions(), symbol->getExtensions(), symbol->getName().c_str());
+
     const TAnonMember* anon = symbol ? symbol->getAsAnonMember() : 0;
     if (anon) {
         // it was a member of an anonymous container, have to insert its dereference
@@ -903,6 +907,10 @@ TIntermTyped* TParseContext::handleFunctionCall(TSourceLoc loc, TFunction* fnCal
         bool builtIn;
         fnCandidate = findFunction(loc, *fnCall, builtIn);
         if (fnCandidate) {
+            // Error check for function requiring specific extensions present.
+            if (builtIn && fnCandidate->getNumExtensions())
+                requireExtensions(loc, fnCandidate->getNumExtensions(), fnCandidate->getExtensions(), fnCandidate->getName().c_str());
+
             //
             // A declared function.  But, it might still map to a built-in
             // operation.

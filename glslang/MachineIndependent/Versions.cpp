@@ -60,6 +60,7 @@
 //        requireStage()
 //        checkDeprecated()
 //        requireNotRemoved()
+//        requireExtensions()
 //    
 //    Typically, only the first two calls are needed.  They go into a code path that 
 //    implements Feature F, and will log the proper error/warning messages.  Parsing 
@@ -129,8 +130,12 @@
 // 
 //        ~EEsProfile
 //
-// 6) If built-in symbols are added by the extension, add them in Initialize.cpp; see
-//    the comment at the top of that file for where to put them.
+// 6) If built-in symbols are added by the extension, add them in Initialize.cpp:  Their use
+//    will be automatically error checked against the extensions enabled at that moment.
+//    see the comment at the top of Initialize.cpp for where to put them.  Establish them at
+//    the earliest release that supports the extension.  Then, tag them with the
+//    set of extensions that both enable them and are necessary, given the version of the symbol
+//    table. (There is a different symbol table for each version.)
 //
 
 #include "ParseHelper.h"
@@ -145,6 +150,7 @@ namespace glslang {
 void TParseContext::initializeExtensionBehavior()
 {
     extensionBehavior[GL_OES_texture_3D]               = EBhDisable;
+    extensionBehavior[GL_OES_standard_derivatives]     = EBhDisable;
 
     extensionBehavior[GL_ARB_texture_rectangle]        = EBhDisable;
     extensionBehavior[GL_3DL_array_objects]            = EBhDisable;
@@ -159,8 +165,9 @@ const char* TParseContext::getPreamble()
 {
     if (profile == EEsProfile) {
         return
+            "#define GL_ES 1\n"
             "#define GL_OES_texture_3D 1\n"
-            "#define GL_ES 1\n";
+            "#define GL_OES_standard_derivatives 1\n";
     } else {
         return
             "#define GL_FRAGMENT_PRECISION_HIGH 1\n"
@@ -316,6 +323,41 @@ void TParseContext::requireNotRemoved(TSourceLoc loc, int profileMask, int remov
     }
 }
 
+//
+// Use when there are no profile/version to check, it's just an error if one of the
+// extensions is not present.
+//
+void TParseContext::requireExtensions(TSourceLoc loc, int numExtensions, const char* const extensions[], const char *featureDesc)
+{
+    // First, see if any of the extensions are enabled
+    for (int i = 0; i < numExtensions; ++i) {
+        TExtensionBehavior behavior = getExtensionBehavior(extensions[i]);
+        if (behavior == EBhEnable || behavior == EBhRequire)
+            return;
+    }
+
+    // See if any extensions want to give a warning on use; give warnings for all such extensions
+    bool warned = false;
+    for (int i = 0; i < numExtensions; ++i) {
+        TExtensionBehavior behavior = getExtensionBehavior(extensions[i]);
+        if (behavior == EBhWarn) {
+            infoSink.info.message(EPrefixWarning, ("extension " + TString(extensions[i]) + " is being used for " + featureDesc).c_str(), loc);
+            warned = true;
+        }
+    }
+    if (warned)
+        return;
+
+    // If we get this far, give errors explaining what extensions are needed
+    if (numExtensions == 1)
+        error(loc, "required extension not requested:", featureDesc, extensions[0]);
+    else {
+        error(loc, "required extension not requested:", featureDesc, "Possible extensions include:");
+        for (int i = 0; i < numExtensions; ++i)
+            infoSink.info.message(EPrefixNone, extensions[i]);
+    }
+}
+
 TExtensionBehavior TParseContext::getExtensionBehavior(const char* extension)
 {
     TMap<TString, TExtensionBehavior>::iterator iter = extensionBehavior.find(TString(extension));
@@ -375,12 +417,12 @@ void TParseContext::updateExtensionBehavior(const char* extension, const char* b
         if (iter == extensionBehavior.end()) {
             switch (behavior) {
             case EBhRequire:
-                error(getCurrentLoc(), "extension not supported", "#extension", extension);
+                error(getCurrentLoc(), "extension not supported:", "#extension", extension);
                 break;
             case EBhEnable:
             case EBhWarn:
             case EBhDisable:
-                warn(getCurrentLoc(), "extension not supported", "#extension", extension);
+                warn(getCurrentLoc(), "extension not supported:", "#extension", extension);
                 break;
             default:
                 assert(0 && "unexpected behavior");

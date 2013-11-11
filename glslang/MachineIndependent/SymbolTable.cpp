@@ -207,6 +207,23 @@ void TSymbolTableLevel::relateToOperator(const char* name, TOperator op)
     }
 }
 
+// Make all function overloads of the given name require an extension(s).
+// Should only be used for a version/profile that actually needs the extension(s).
+void TSymbolTableLevel::setFunctionExtensions(const char* name, int num, const char* const extensions[])
+{
+    tLevel::const_iterator candidate = level.lower_bound(name);
+    while (candidate != level.end()) {
+        const TString& candidateName = (*candidate).first;
+        TString::size_type parenAt = candidateName.find_first_of('(');
+        if (parenAt != candidateName.npos && candidateName.compare(0, parenAt, name) == 0) {
+            TSymbol* symbol = candidate->second;
+            symbol->setExtensions(num, extensions);
+        } else
+            break;
+        ++candidate;
+    }
+}
+
 //
 // Make all symbols in this table level read only.
 //
@@ -230,6 +247,8 @@ TVariable::TVariable(const TVariable& copyOf) : TSymbol(copyOf)
 {	
     type.deepCopy(copyOf.type);
     userType = copyOf.userType;
+    extensions = 0;
+    setExtensions(copyOf.numExtensions, copyOf.extensions);
 
     if (! copyOf.unionArray.empty()) {
         assert(!copyOf.type.getStruct());
@@ -255,6 +274,8 @@ TFunction::TFunction(const TFunction& copyOf) : TSymbol(copyOf)
         parameters.back().copyParam(copyOf.parameters[i]);
     }
 
+    extensions = 0;    
+    setExtensions(copyOf.numExtensions, copyOf.extensions);
     returnType.deepCopy(copyOf.returnType);
     mangledName = copyOf.mangledName;
     op = copyOf.op;
