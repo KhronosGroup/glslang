@@ -66,4 +66,5 @@ void bar11()
     s1 = s2;   // ERROR
     bar10(s1);
     s2 = bar9(); // ERROR
+    SB initSb = s1;  // ERROR
 }

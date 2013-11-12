@@ -2927,6 +2927,7 @@ TIntermNode* TParseContext::executeInitializer(TSourceLoc loc, TString& identifi
         error(loc, " cannot initialize this type of qualifier ", variable->getType().getStorageQualifierString(), "");
         return 0;
     }
+    arrayObjectCheck(loc, variable->getType(), "array initializer");
 
     //
     // If the initializer was from braces { ... }, we convert the whole subtree to a

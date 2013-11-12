@@ -19,7 +19,8 @@ ERROR: 0:39: '[' :  index out of range '-1'
 ERROR: 0:53: 'array in function return type' : not supported for this version or the enabled extensions 
 ERROR: 0:66: 'array assignment' : not supported for this version or the enabled extensions 
 ERROR: 0:68: 'array assignment' : not supported for this version or the enabled extensions 
-ERROR: 21 compilation errors.  No code generated.
+ERROR: 0:69: 'array initializer' : not supported for this version or the enabled extensions 
+ERROR: 22 compilation errors.  No code generated.
 
 ERROR: node is still EOpNull!
 0:9  Function Definition: foo(f1[5]; (4-element array of mediump float)
@@ -143,6 +144,10 @@ ERROR: node is still EOpNull!
 0:68      move second child to first child (structure{v4,sa})
 0:68        's2' (structure{v4,sa})
 0:68        Function Call: bar9( (structure{v4,sa})
+0:69      Sequence
+0:69        move second child to first child (structure{v4,sa})
+0:69          'initSb' (structure{v4,sa})
+0:69          's1' (structure{v4,sa})
 0:?   Linker Objects
 0:?     'gu' (unsized array of mediump float)
 0:?     'g4' (4-element array of mediump float)

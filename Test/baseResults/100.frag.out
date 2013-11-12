@@ -1,5 +1,6 @@
 ERROR: 0:3: '{ } style initializers' : not supported with this profile: es
 ERROR: 0:3: 'initializer' : not supported for this version or the enabled extensions 
+ERROR: 0:3: 'array initializer' : not supported for this version or the enabled extensions 
 ERROR: 0:7: 'attribute' : not supported in this stage: fragment
 ERROR: 0:7: 'float' : type requires declaration of default precision qualifier 
 ERROR: 0:9: '=' :  cannot convert from 'const int' to 'mediump float'
@@ -60,7 +61,7 @@ ERROR: 0:144: 'a' : redefinition
 ERROR: 0:149: 'floating-point suffix' : not supported for this version or the enabled extensions 
 ERROR: 0:150: 'floating-point suffix' : not supported for this version or the enabled extensions 
 ERROR: 0:152: '' :  syntax error
-ERROR: 55 compilation errors.  No code generated.
+ERROR: 56 compilation errors.  No code generated.
 
 ERROR: node is still EOpNull!
 0:3  Sequence
