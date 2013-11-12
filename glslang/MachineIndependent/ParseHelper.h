@@ -75,6 +75,8 @@ public:
     void C_DECL  warn(TSourceLoc, const char *szReason, const char *szToken,
                       const char *szExtraInfoFormat, ...);
     bool reservedErrorCheck(TSourceLoc, const TString&);
+    void reservedPpErrorCheck(TSourceLoc, const char* name, const char* op);
+    void lineContinuationCheck(TSourceLoc);
     bool builtInName(const TString&);
 
     void handlePragma(const char **tokens, int numTokens);

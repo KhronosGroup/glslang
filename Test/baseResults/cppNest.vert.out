@@ -35,6 +35,24 @@
 0:86        'gl_Position' (gl_Position 4-component vector of float)
 0:86        Construct vec4 (4-component vector of float)
 0:86          'sum' (float)
+0:103  Sequence
+0:103    move second child to first child (int)
+0:103      'selected4' (int)
+0:103      Constant:
+0:103        4 (const int)
+0:115  Sequence
+0:115    move second child to first child (int)
+0:115      'selected2' (int)
+0:115      Constant:
+0:115        2 (const int)
+0:133  Sequence
+0:133    move second child to first child (int)
+0:133      'selected3' (int)
+0:133      Constant:
+0:133        3 (const int)
 0:?   Linker Objects
 0:?     'sum' (float)
+0:?     'selected4' (int)
+0:?     'selected2' (int)
+0:?     'selected3' (int)
 

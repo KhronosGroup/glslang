@@ -26,7 +26,7 @@ void main()
 {
     lowp int sum = global_medium + global_high;
 
-    gl_FragColor = vec4(color, 1.0f);
+    gl_FragColor = vec4(color, 1.0);
 
     int level1_high;
     sum += level1_high;

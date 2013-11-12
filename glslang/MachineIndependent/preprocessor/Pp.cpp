@@ -151,13 +151,7 @@ int TPpContext::CPPdefine(TPpToken* ppToken)
     const char* definedName = GetAtomString(atom);
     if (ppToken->loc.string >= 0) {
         // We are in user code; check for reserved name use:
-        // "All macro names containing two consecutive underscores ( __ ) are reserved for future use as predefined 
-        // macro names. All macro names prefixed with "GL_" ("GL" followed by a single underscore) are also 
-        // reserved."
-        if (strncmp(definedName, "GL_", 3) == 0)
-            parseContext.error(ppToken->loc, "reserved built-in name prefix:", "#define", "GL_");
-        else if (strstr(definedName, "__") != 0)
-            parseContext.error(ppToken->loc, "names containing consecutive underscores are reserved", "#define", "");
+        parseContext.reservedPpErrorCheck(ppToken->loc, definedName, "#define");
     }
     token = currentInput->scan(this, currentInput, ppToken);
     if (token == '(' && !ppToken->ival) {
@@ -203,6 +197,7 @@ int TPpContext::CPPdefine(TPpToken* ppToken)
     mac.body = NewTokenStream(pool);
     while (token != '\n') {
         if (token == '\\') {
+            parseContext.lineContinuationCheck(ppToken->loc);
             token = currentInput->scan(this, currentInput, ppToken);
             if (token == '\n')
                 token = currentInput->scan(this, currentInput, ppToken);
@@ -253,20 +248,18 @@ int TPpContext::CPPdefine(TPpToken* ppToken)
     return '\n';
 }
 
-int TPpContext::CPPundef(TPpToken * ppToken)
+int TPpContext::CPPundef(TPpToken* ppToken)
 {
     int token = currentInput->scan(this, currentInput, ppToken);
     Symbol *symb;
-    if (token == '\n') {
-        parseContext.error(ppToken->loc, "must be followed by macro name", "#undef", "");
-
-        return token;
-    }
     if (token != CPP_IDENTIFIER) {
         parseContext.error(ppToken->loc, "must be followed by macro name", "#undef", "");
 
         return token;
     }
+
+    const char* name = GetAtomString(ppToken->atom); // TODO preprocessor simplification: the token text should have been built into the ppToken during currentInput->scan()
+    parseContext.reservedPpErrorCheck(ppToken->loc, name, "#undef");
 
     symb = LookUpSymbol(ppToken->atom);
     if (symb) {
@@ -311,7 +304,7 @@ int TPpContext::CPPelse(int matchelse, TPpToken* ppToken)
             elsetracker++;
         } else if (atom == endifAtom) {
             token = extraTokenCheck(atom, ppToken, currentInput->scan(this, currentInput, ppToken));
-            elsedepth[elsetracker] = 0;
+            elseSeen[elsetracker] = false;
             --elsetracker;
             if (depth == 0) {
                 // found the #endif we are looking for
@@ -331,21 +324,21 @@ int TPpContext::CPPelse(int matchelse, TPpToken* ppToken)
                 * it and we really want to leave it alone */
                 if (ifdepth) {
                     --ifdepth;
-                    elsedepth[elsetracker] = 0;
+                    elseSeen[elsetracker] = false;
                     --elsetracker;
                 }
 
                 return CPPif(ppToken);
             }
-        } else if (atom == elseAtom || atom == elifAtom) {
-            if (! ChkCorrectElseNesting()) {
-                if (atom == elseAtom)
-                    parseContext.error(ppToken->loc, "#else after #else", "#else", "");
-                else
-                    parseContext.error(ppToken->loc, "#elif after #else", "#else", "");
-            }
-            if (atom == elseAtom)
-                token = extraTokenCheck(atom, ppToken, currentInput->scan(this, currentInput, ppToken));
+        } else if (atom == elseAtom) {
+            if (elseSeen[elsetracker])
+                parseContext.error(ppToken->loc, "#else after #else", "#else", "");
+            else
+                elseSeen[elsetracker] = true;
+            token = extraTokenCheck(atom, ppToken, currentInput->scan(this, currentInput, ppToken));
+        } else if (atom == elifAtom) {
+            if (elseSeen[elsetracker])
+                parseContext.error(ppToken->loc, "#elif after #else", "#else", "");
         }
     }
 
@@ -807,7 +800,8 @@ int TPpContext::readCPPline(TPpToken * ppToken)
         if (ppToken->atom == defineAtom) {
             token = CPPdefine(ppToken);
         } else if (ppToken->atom == elseAtom) {
-            if (ChkCorrectElseNesting()) {
+            if (! elsetracker[elseSeen]) {
+                elsetracker[elseSeen] = true;
                 if (! ifdepth)
                     parseContext.error(ppToken->loc, "mismatched statements", "#else", "");
                 token = extraTokenCheck(elseAtom, ppToken, currentInput->scan(this, currentInput, ppToken));
@@ -826,7 +820,7 @@ int TPpContext::readCPPline(TPpToken * ppToken)
                 token = currentInput->scan(this, currentInput, ppToken);
             token = CPPelse(0, ppToken);
         } else if (ppToken->atom == endifAtom) {
-            elsedepth[elsetracker] = 0;
+            elseSeen[elsetracker] = false;
             --elsetracker;
             if (! ifdepth)
                 parseContext.error(ppToken->loc, "mismatched statements", "#endif", "");
@@ -1104,17 +1098,6 @@ int TPpContext::MacroExpand(int atom, TPpToken* ppToken, int expandUndef)
     currentInput = &in->base;
 
     return 1;
-}
-
-int TPpContext::ChkCorrectElseNesting()
-{
-    if (elsedepth[elsetracker] == 0) {
-        elsedepth[elsetracker] = 1;
-
-        return 1;
-    }
-
-    return 0;
 }
 
 } // end namespace glslang

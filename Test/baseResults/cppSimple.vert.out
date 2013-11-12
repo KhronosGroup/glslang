@@ -24,11 +24,11 @@ ERROR: 0:136: 'length' : no matching overloaded function found
 ERROR: 0:136: '=' :  cannot convert from 'const float' to 'int'
 ERROR: 0:138: ''' : character literals not supported 
 ERROR: 0:138: ''' : character literals not supported 
-ERROR: 0:141: '#define' : reserved built-in name prefix: GL_
-ERROR: 0:142: '#define' : reserved built-in name prefix: GL_
-ERROR: 0:143: '#define' : names containing consecutive underscores are reserved 
-ERROR: 0:144: '#define' : names containing consecutive underscores are reserved 
-ERROR: 0:145: '#define' : names containing consecutive underscores are reserved 
+ERROR: 0:141: '#define' : can't use with built-in names ("GL_" prefix) 
+ERROR: 0:142: '#define' : can't use with built-in names ("GL_" prefix) 
+ERROR: 0:143: '#define' : can't use with built-in names (containing consecutive underscores) 
+ERROR: 0:144: '#define' : can't use with built-in names (containing consecutive underscores) 
+ERROR: 0:145: '#define' : can't use with built-in names (containing consecutive underscores) 
 ERROR: 0:148: '#else' : unexpected tokens following directive 
 ERROR: 0:149: '#else' : #elif after #else 
 ERROR: 0:155: '#else' : unexpected tokens following directive 
@@ -41,8 +41,10 @@ ERROR: 0:182: '#define' : Macro redefined; different number of arguments: m6
 ERROR: 0:185: '#define' : Macro redefined; different substitutions: m7
 ERROR: 0:192: '#define' : Macro redefined; different substitutions: m8
 ERROR: 0:196: '#define' : Macro redefined; different argument names: m9
-ERROR: 0:206: '' : missing #endif 
-ERROR: 43 compilation errors.  No code generated.
+ERROR: 0:204: '#undef' : can't use with built-in names (containing consecutive underscores) 
+ERROR: 0:205: '#undef' : can't use with built-in names ("GL_" prefix) 
+ERROR: 0:209: '' : missing #endif 
+ERROR: 45 compilation errors.  No code generated.
 
 ERROR: node is still EOpNull!
 0:5  Sequence

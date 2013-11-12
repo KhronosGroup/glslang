@@ -196,9 +196,9 @@ protected:
     static const int maxMacroArgs = 64;
     static const int maxIfNesting = 64;
 
-    int ifdepth;                 // current #if-#else-#endif nesting in the cpp.c file (pre-processor)    
-    int elsedepth[maxIfNesting]; // Keep a track of #if depth..Max allowed is 64.   
-    int elsetracker;             // #if-#else and #endif constructs...Counter.
+    int ifdepth;                  // current #if-#else-#endif nesting in the cpp.c file (pre-processor)    
+    bool elseSeen[maxIfNesting];  // Keep a track of whether an else has been seen at a particular depth
+    int elsetracker;              // #if-#else and #endif constructs...Counter.
     const char *ErrMsg;
 
     struct MacroInputSrc {
@@ -262,7 +262,6 @@ protected:
     static int macro_scan(TPpContext* pp, InputSrc *inInput, TPpToken * ppToken); 
     static int zero_scan(TPpContext* pp, InputSrc *inInput, TPpToken * ppToken); 
     int MacroExpand(int atom, TPpToken* ppToken, int expandUndef);
-    int ChkCorrectElseNesting();
 
     //
     // from PpSymbols.cpp

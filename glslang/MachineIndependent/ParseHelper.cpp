@@ -1370,6 +1370,35 @@ bool TParseContext::reservedErrorCheck(TSourceLoc loc, const TString& identifier
     return false;
 }
 
+//
+// Reserved errors for the preprocessor.
+//
+void TParseContext::reservedPpErrorCheck(TSourceLoc loc, const char* identifier, const char* op)
+{
+    // "All macro names containing two consecutive underscores ( __ ) are reserved for future use as predefined 
+    // macro names. All macro names prefixed with "GL_" ("GL" followed by a single underscore) are also 
+    // reserved."
+    if (strncmp(identifier, "GL_", 3) == 0)
+        error(loc, "can't use with built-in names (\"GL_\" prefix)", op, "");
+    else if (strstr(identifier, "__") != 0)
+        error(loc, "can't use with built-in names (containing consecutive underscores)", op, "");
+}
+
+//
+// See if this version/profile allows use of the line-continuation character '\'.
+//
+void TParseContext::lineContinuationCheck(TSourceLoc loc)
+{
+    const char* message = "line continuation";
+    if (messages & EShMsgRelaxedErrors) {
+        warn(loc, "not allowed in this version", message, "");
+    } else {
+        requireProfile(loc, EEsProfile | ECoreProfile | ECompatibilityProfile, message);
+        profileRequires(loc, EEsProfile, 300, 0, message);
+        profileRequires(loc, ECoreProfile | ECompatibilityProfile, 420, 0, message);
+    }
+}
+
 bool TParseContext::builtInName(const TString& identifier)
 {
     return identifier.compare(0, 3, "gl_") == 0;

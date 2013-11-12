@@ -36,7 +36,7 @@ void main()
     f += a;
     f = a - f;
     v3 *= iv3;
-    v3 = iv3 / 2.0;
+    v3 = iv3 / 2.0f;
     v3 = 3.0 * iv3;
     v3 = 2 * v3;
     v3 = v3 - 2;
@@ -102,7 +102,7 @@ int foo(out float a)    // ERROR
 
 bool gen(vec3 v)
 {
-    if (abs(v[0]) < 1e-4 && abs(v[1]) < 1e-4)
+    if (abs(v[0]) < 1e-4F && abs(v[1]) < 1e-4)
         return true;
 }
 

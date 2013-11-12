@@ -91,7 +91,7 @@ TPpContext::TPpContext(TParseContext& pc) :
 
     ifdepth = 0;
     for (elsetracker = 0; elsetracker < maxIfNesting; elsetracker++)
-        elsedepth[elsetracker] = 0;
+        elseSeen[elsetracker] = false;
     elsetracker = 0;
 }
 

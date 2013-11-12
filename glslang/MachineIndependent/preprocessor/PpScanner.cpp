@@ -202,6 +202,7 @@ int TPpContext::lFloatConst(char* str, int len, int ch, TPpToken* ppToken)
         strcpy(str, "0.0");
     } else {
         if (ch == 'l' || ch == 'L') {
+            parseContext.doubleCheck(ppToken->loc, "double floating-point suffix");
             if (! HasDecimalOrExponent)
                 parseContext.error(ppToken->loc, "float literal needs a decimal point or exponent", "", "");
             int ch2 = currentInput->getch(this, currentInput, ppToken);
@@ -219,6 +220,8 @@ int TPpContext::lFloatConst(char* str, int len, int ch, TPpToken* ppToken)
                 }
             }
         } else if (ch == 'f' || ch == 'F') {
+            parseContext.profileRequires(ppToken->loc,  EEsProfile, 300, 0, "floating-point suffix");
+            parseContext.profileRequires(ppToken->loc, ~EEsProfile, 120, 0, "floating-point suffix");
             if (! HasDecimalOrExponent)
                 parseContext.error(ppToken->loc, "float literal needs a decimal point or exponent", "", "");
             if (len < TPpToken::maxTokenLength)
@@ -230,7 +233,7 @@ int TPpContext::lFloatConst(char* str, int len, int ch, TPpToken* ppToken)
         } else 
             currentInput->ungetch(this, currentInput, ch, ppToken);
 
-        str[len]='\0';      
+        str[len]='\0';
 
         ppToken->dval = strtod(str, 0);
     }
@@ -282,6 +285,7 @@ int TPpContext::sourceScan(TPpContext* pp, InputSrc*, TPpToken* ppToken)
             do {
                 if (ch == '\\') {
                     // escaped character
+                    pp->parseContext.lineContinuationCheck(ppToken->loc);
                     ch = pp->currentInput->getch(pp, pp->currentInput, ppToken);
                     if (ch == '\r' || ch == '\n') {
                         int nextch = pp->currentInput->getch(pp, pp->currentInput, ppToken);
@@ -631,6 +635,7 @@ int TPpContext::sourceScan(TPpContext* pp, InputSrc*, TPpToken* ppToken)
                     ch = pp->currentInput->getch(pp, pp->currentInput, ppToken);
                     if (ch == '\\') {
                         // allow an escaped newline, otherwise escapes in comments are meaningless
+                        pp->parseContext.lineContinuationCheck(ppToken->loc);
                         ch = pp->currentInput->getch(pp, pp->currentInput, ppToken);
                         if (ch == '\r' || ch == '\n') {
                             int nextch = pp->currentInput->getch(pp, pp->currentInput, ppToken);
@@ -678,7 +683,8 @@ int TPpContext::sourceScan(TPpContext* pp, InputSrc*, TPpToken* ppToken)
         case '"':
             ch = pp->currentInput->getch(pp, pp->currentInput, ppToken);
             while (ch != '"' && ch != '\n' && ch != EOF) {
-                if (ch == '\\') {
+                if (ch == '\\') {                    
+                    pp->parseContext.lineContinuationCheck(ppToken->loc);
                     ch = pp->currentInput->getch(pp, pp->currentInput, ppToken);
                     if (ch == '\n' || ch == EOF) {
                         break;

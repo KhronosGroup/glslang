@@ -57,8 +57,10 @@ ERROR: 0:137: 'bitwise not' : not supported for this version or the enabled exte
 ERROR: 0:138: 'bitwise inclusive or' : not supported for this version or the enabled extensions 
 ERROR: 0:139: 'bitwise and' : not supported for this version or the enabled extensions 
 ERROR: 0:144: 'a' : redefinition 
-ERROR: 0:149: '' :  syntax error
-ERROR: 53 compilation errors.  No code generated.
+ERROR: 0:149: 'floating-point suffix' : not supported for this version or the enabled extensions 
+ERROR: 0:150: 'floating-point suffix' : not supported for this version or the enabled extensions 
+ERROR: 0:152: '' :  syntax error
+ERROR: 55 compilation errors.  No code generated.
 
 ERROR: node is still EOpNull!
 0:3  Sequence
@@ -245,6 +247,16 @@ ERROR: node is still EOpNull!
 0:146    Sequence
 0:146      Branch: Return with expression
 0:146        'a' (in mediump int)
+0:149  Sequence
+0:149    move second child to first child (mediump float)
+0:149      'f123' (mediump float)
+0:149      Constant:
+0:149        4.000000
+0:150  Sequence
+0:150    move second child to first child (mediump float)
+0:150      'f124' (mediump float)
+0:150      Constant:
+0:150        50000000000.000000
 0:?   Linker Objects
 0:?     'a' (3-element array of mediump int)
 0:?     'uint' (mediump int)
@@ -264,4 +276,6 @@ ERROR: node is still EOpNull!
 0:?     'sExt' (uniform lowp samplerExternalOES)
 0:?     'mediumExt' (uniform mediump samplerExternalOES)
 0:?     'highExt' (uniform highp samplerExternalOES)
+0:?     'f123' (mediump float)
+0:?     'f124' (mediump float)
 

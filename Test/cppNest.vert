@@ -85,3 +85,52 @@ sum += 600000.0;
 // sum should be 987600301.0
     gl_Position = vec4(sum);
 }
+
+#define  A 1
+#define  C 0
+#define  E 0
+#define  F 1
+#if A
+    #if C
+        #if E
+            int selected4 = 1;
+        #elif F
+            int selected4 = 2;
+        #else
+            int selected4 = 3;
+        #endif
+    #endif
+    int selected4 = 4;
+#endif
+
+#define  ZA 1
+#define  ZC 1
+#define  ZE 0
+#define  ZF 1
+#if ZA
+    #if ZC
+        #if ZE
+            int selected2 = 1;
+        #elif ZF
+            int selected2 = 2;
+        #else
+            int selected2 = 3;
+        #endif
+    #endif
+#endif
+
+#define  AZA 1
+#define  AZC 1
+#define  AZE 0
+#define  AZF 0
+#if AZA
+    #if AZC
+        #if AZE
+            int selected3 = 1;
+        #elif AZF
+            int selected3 = 2;
+        #else
+            int selected3 = 3;
+        #endif
+    #endif
+#endif

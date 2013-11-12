@@ -146,4 +146,7 @@ int foo203940(int a, float b, float a)  // ERROR, a redefined
     return a;
 }
 
+float f123 = 4.0f;   // ERROR
+float f124 = 5e10F;  // ERROR
+
 uniform samplerExternalOES badExt;  // syntax ERROR

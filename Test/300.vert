@@ -65,7 +65,7 @@ uniform ub {
     int a[];        // ERROR
 } ubInst[];         // ERROR
 void foo(int a[]);  // ERROR
-float okayA[] = float[](3.0, 4.0);  // Okay
+float okayA[] = float[](3.0f, 4.0F);  // Okay
 
 out vec3 newV;
 void newVFun()

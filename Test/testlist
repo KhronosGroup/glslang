@@ -50,6 +50,7 @@ tokenLength.vert
 420.vert
 420.geom
 430scope.vert
+lineContinuation100.vert
 lineContinuation.vert
 numeral.frag
 400.geom

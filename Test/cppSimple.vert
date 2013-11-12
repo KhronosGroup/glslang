@@ -201,6 +201,9 @@ int n = n1;
 #define f1 .08e-2Lf
 double f = f1;
 
+#undef __VERSION__
+#undef GL_ARB_texture_rectangle
+
 #if 1
 #else
 // ERROR, missing #endif
