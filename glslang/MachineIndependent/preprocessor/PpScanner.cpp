@@ -256,10 +256,9 @@ int TPpContext::sourceScan(TPpContext* pp, InputSrc*, TPpToken* ppToken)
     int len, ch, ii;
     unsigned ival = 0;
 
+    ppToken->ival = 0;
+    ch = pp->currentInput->getch(pp, pp->currentInput, ppToken);
     for (;;) {
-        ppToken->ival = 0;
-        ch = pp->currentInput->getch(pp, pp->currentInput, ppToken);
-
         while (ch == ' ' || ch == '\t' || ch == '\r') {
             ppToken->ival = 1;
             ch = pp->currentInput->getch(pp, pp->currentInput, ppToken);
@@ -281,7 +280,7 @@ int TPpContext::sourceScan(TPpContext* pp, InputSrc*, TPpToken* ppToken)
         case 'k': case 'l': case 'm': case 'n': case 'o':
         case 'p': case 'q': case 'r': case 's': case 't':
         case 'u': case 'v': case 'w': case 'x': case 'y':
-        case 'z':            
+        case 'z': case '\\' :
             do {
                 if (ch == '\\') {
                     // escaped character
@@ -310,6 +309,10 @@ int TPpContext::sourceScan(TPpContext* pp, InputSrc*, TPpToken* ppToken)
                 (ch >= '0' && ch <= '9') ||
                 ch == '_' ||
                 ch == '\\');
+
+            // line continuation with no token before or after makes len == 0, and need to start over skipping white space, etc.
+            if (len == 0)
+                continue;
 
             tokenText[len] = '\0';
             pp->currentInput->ungetch(pp, pp->currentInput, ch, ppToken);
@@ -706,6 +709,9 @@ int TPpContext::sourceScan(TPpContext* pp, InputSrc*, TPpToken* ppToken)
                 return CPP_ERROR_SY;
             }
         }
+
+        ppToken->ival = 0;
+        ch = pp->currentInput->getch(pp, pp->currentInput, ppToken);
     }
 }
 

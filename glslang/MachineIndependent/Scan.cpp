@@ -90,7 +90,7 @@ bool TInputScanner::consumeComment()
                 break;
             } else {
                 // it's a '\', so we need to keep going, after skipping what's escaped
-                    
+
                 // read the skipped character
                 c = get();
 
