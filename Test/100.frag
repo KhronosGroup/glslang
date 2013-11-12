@@ -133,8 +133,17 @@ void foo246()
     texture2DProj(highExt, v[2]);
     texture3D(sExt, vec3(f13));   // ERROR
     texture2DProjLod(sExt, vec3(f13), f13);  // ERROR
+    int a;
+    ~a;    // ERROR
+    a | a; // ERROR
+    a & a; // ERROR
 }
 
 #extension GL_OES_EGL_image_external : disable
+
+int foo203940(int a, float b, float a)  // ERROR, a redefined
+{
+    return a;
+}
 
 uniform samplerExternalOES badExt;  // syntax ERROR

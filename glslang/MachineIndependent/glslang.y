@@ -441,7 +441,8 @@ unary_operator
     : PLUS  { $$.loc = $1.loc; $$.op = EOpNull; }
     | DASH  { $$.loc = $1.loc; $$.op = EOpNegative; }
     | BANG  { $$.loc = $1.loc; $$.op = EOpLogicalNot; }
-    | TILDE { $$.loc = $1.loc; $$.op = EOpBitwiseNot; }
+    | TILDE { $$.loc = $1.loc; $$.op = EOpBitwiseNot;
+              parseContext.fullIntegerCheck($1.loc, "bitwise not"); }
     ;
 // Grammar Note:  No '*' or '&' unary ops.  Pointers are not supported.
 

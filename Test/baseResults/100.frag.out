@@ -53,8 +53,12 @@ ERROR: 0:104: 'gl_FragDepthEXT' : required extension not requested: GL_EXT_frag_
 ERROR: 0:111: 'gl_FragDepth' : undeclared identifier 
 ERROR: 0:134: 'texture3D' : no matching overloaded function found 
 ERROR: 0:135: 'texture2DProjLod' : no matching overloaded function found 
-ERROR: 0:140: '' :  syntax error
-ERROR: 49 compilation errors.  No code generated.
+ERROR: 0:137: 'bitwise not' : not supported for this version or the enabled extensions 
+ERROR: 0:138: 'bitwise inclusive or' : not supported for this version or the enabled extensions 
+ERROR: 0:139: 'bitwise and' : not supported for this version or the enabled extensions 
+ERROR: 0:144: 'a' : redefinition 
+ERROR: 0:149: '' :  syntax error
+ERROR: 53 compilation errors.  No code generated.
 
 ERROR: node is still EOpNull!
 0:3  Sequence
@@ -226,6 +230,21 @@ ERROR: node is still EOpNull!
 0:134        0.000000
 0:135      Constant:
 0:135        0.000000
+0:137      Bitwise not (mediump int)
+0:137        'a' (mediump int)
+0:138      inclusive-or (mediump int)
+0:138        'a' (mediump int)
+0:138        'a' (mediump int)
+0:139      bitwise and (mediump int)
+0:139        'a' (mediump int)
+0:139        'a' (mediump int)
+0:144  Function Definition: foo203940(i1;f1;f1; (mediump int)
+0:144    Function Parameters: 
+0:144      'a' (in mediump int)
+0:144      'b' (in mediump float)
+0:146    Sequence
+0:146      Branch: Return with expression
+0:146        'a' (in mediump int)
 0:?   Linker Objects
 0:?     'a' (3-element array of mediump int)
 0:?     'uint' (mediump int)

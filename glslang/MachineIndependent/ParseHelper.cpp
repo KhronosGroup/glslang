@@ -758,6 +758,8 @@ TFunction* TParseContext::handleFunctionDeclarator(TSourceLoc loc, TFunction& fu
         }
     }
 
+    arrayObjectCheck(loc, function.getType(), "array in function return type");
+
     // All built-in functions are defined, even though they don't have a body.
     if (symbolTable.atBuiltInLevel())
         function.setDefined();
@@ -831,26 +833,22 @@ TIntermAggregate* TParseContext::handleFunctionDefinition(TSourceLoc loc, TFunct
         TParameter& param = function[i];
         if (param.name != 0) {
             TVariable *variable = new TVariable(param.name, *param.type);
-            //
+
             // Insert the parameters with name in the symbol table.
-            //
             if (! symbolTable.insert(*variable)) {
                 error(loc, "redefinition", variable->getName().c_str(), "");
                 delete variable;
-            }
-            //
-            // Transfer ownership of name pointer to symbol table.
-            //
-            param.name = 0;
+            } else {
+                // Transfer ownership of name pointer to symbol table.
+                param.name = 0;
 
-            //
-            // Add the parameter to the HIL
-            //
-            paramNodes = intermediate.growAggregate(paramNodes,
-                                                    intermediate.addSymbol(variable->getUniqueId(),
-                                                                            variable->getName(),
-                                                                            variable->getType(), loc),
-                                                    loc);
+                // Add the parameter to the HIL
+                paramNodes = intermediate.growAggregate(paramNodes,
+                                                        intermediate.addSymbol(variable->getUniqueId(),
+                                                                               variable->getName(),
+                                                                               variable->getType(), loc),
+                                                        loc);
+            }
         } else
             paramNodes = intermediate.growAggregate(paramNodes, intermediate.addSymbol(0, "", *param.type, loc), loc);
     }

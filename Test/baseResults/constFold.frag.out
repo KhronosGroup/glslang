@@ -216,6 +216,18 @@ ERROR: node is still EOpNull!
 0:113        0.000000
 0:114      Constant:
 0:114        0.000000
+0:116      move second child to first child (int)
+0:116        'p' (int)
+0:116        Constant:
+0:116          2147483647 (const int)
+0:117      move second child to first child (int)
+0:117        'p' (int)
+0:117        Constant:
+0:117          -2147483648 (const int)
+0:118      move second child to first child (int)
+0:118        'p' (int)
+0:118        Constant:
+0:118          -2147483647 (const int)
 0:?   Linker Objects
 0:?     'a' (const int)
 0:?       1 (const int)

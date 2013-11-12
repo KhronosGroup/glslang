@@ -165,9 +165,11 @@ TIntermTyped* TIntermConstantUnion::fold(TOperator op, TIntermTyped* constantNod
                 break;
 
             case EbtInt:
-                if (rightUnionArray[i] == 0) {
+                if (rightUnionArray[i] == 0)
                     newConstArray[i].setIConst(0x7FFFFFFF);
-                } else
+                else if (rightUnionArray[i].getIConst() == -1 && unionArray[i].getIConst() == 0x80000000)
+                    newConstArray[i].setIConst(0x80000000);
+                else
                     newConstArray[i].setIConst(unionArray[i].getIConst() / rightUnionArray[i].getIConst());
                 break;
 
