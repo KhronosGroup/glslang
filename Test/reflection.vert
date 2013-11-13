@@ -51,6 +51,10 @@ uniform float uf2;
 uniform float ufDead3;
 uniform float ufDead4;
 
+uniform uimage2D image_ui2D;
+uniform sampler2D sampler_2D;
+uniform sampler2DMSArray sampler_2DMSArray;
+
 const bool control = true;
 
 void deadFunction()
@@ -66,7 +70,8 @@ void liveFunction2()
     float f = uf1;
 }
 
-void liveFunction1()
+void liveFunction1(uimage2D p_ui2D, sampler2D p_2D, sampler2DMSArray p_2DMSArray)
+
 {
     liveFunction2();
     float f = uf2;
@@ -75,7 +80,7 @@ void liveFunction1()
 
 void main()
 {
-    liveFunction1();
+    liveFunction1(image_ui2D, sampler_2D, sampler_2DMSArray);
     liveFunction2();
 
     if (! control)

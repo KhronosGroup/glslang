@@ -56,7 +56,7 @@ class TObjectReflection {
 public:
     TObjectReflection(const TString& pName, int pOffset, int pGLDefineType, int pSize, int pIndex) : 
         name(pName), offset(pOffset), glDefineType(pGLDefineType), size(pSize), index(pIndex) { }
-    void dump() const { printf("%s: offset %d, type %d, arraySize %d, index %d\n", name.c_str(), offset, glDefineType, size, index); }
+    void dump() const { printf("%s: offset %d, type %x, arraySize %d, index %d\n", name.c_str(), offset, glDefineType, size, index); }
     TString name;
     int offset;
     int glDefineType;

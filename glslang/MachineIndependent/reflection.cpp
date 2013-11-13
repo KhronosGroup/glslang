@@ -37,6 +37,8 @@
 #include "reflection.h"
 #include "localintermediate.h"
 
+#include "gl_types.h"
+
 //
 // Grow the reflection database through a friend traverser class of TReflection and a 
 // collection of functions to do a liveness traversal that note what uniforms are used
@@ -93,7 +95,7 @@ public:
         if (reflection.nameToIndex.find(symbol.getName()) == reflection.nameToIndex.end()) {
             if (isReflectionGranularity(symbol.getType())) {
                 reflection.nameToIndex[symbol.getName()] = reflection.indexToUniform.size();
-                reflection.indexToUniform.push_back(TObjectReflection(symbol.getName(), -1, MapToGlType(symbol.getType()), MapToGlArraySize(symbol.getType()), -1));
+                reflection.indexToUniform.push_back(TObjectReflection(symbol.getName(), -1, mapToGlType(symbol.getType()), mapToGlArraySize(symbol.getType()), -1));
             }
         }
     }
@@ -265,7 +267,7 @@ public:
         if (name.size() > 0) {
             if (reflection.nameToIndex.find(name) == reflection.nameToIndex.end()) {
                 reflection.nameToIndex[name] = reflection.indexToUniform.size();                        
-                reflection.indexToUniform.push_back(TObjectReflection(name, offset, MapToGlType(node->getType()), MapToGlArraySize(node->getType()), blockIndex));
+                reflection.indexToUniform.push_back(TObjectReflection(name, offset, mapToGlType(node->getType()), mapToGlArraySize(node->getType()), blockIndex));
             }
         }
     }
@@ -306,15 +308,241 @@ public:
         return findBase(left);
     }
 
-    int MapToGlType(const TType& type)
+    //
+    // Translate a glslang sampler type into the GL API #define number.
+    //
+    int mapSamplerToGlType(TSampler sampler)
     {
-        // TODO: reflection: flesh out all GL types
-        #define GL_FLOAT_VEC4 0x8B52
-
-        return GL_FLOAT_VEC4;
+        if (! sampler.image) {
+            // a sampler...
+            switch (sampler.type) {
+            case EbtFloat:
+                switch (sampler.dim) {
+                case Esd1D:
+                    switch (sampler.shadow) {
+                    case false: return sampler.arrayed ? GL_SAMPLER_1D_ARRAY : GL_SAMPLER_1D;
+                    case true:  return sampler.arrayed ? GL_SAMPLER_1D_ARRAY_SHADOW : GL_SAMPLER_1D_SHADOW;
+                    }
+                case Esd2D:
+                    switch (sampler.ms) {
+                    case false:
+                        switch (sampler.shadow) {
+                        case false: return sampler.arrayed ? GL_SAMPLER_2D_ARRAY : GL_SAMPLER_2D;
+                        case true:  return sampler.arrayed ? GL_SAMPLER_2D_ARRAY_SHADOW : GL_SAMPLER_2D_SHADOW;
+                        }
+                    case true:      return sampler.arrayed ? GL_SAMPLER_2D_MULTISAMPLE_ARRAY : GL_SAMPLER_2D_MULTISAMPLE;
+                    }
+                case Esd3D:
+                    return GL_SAMPLER_3D;
+                case EsdCube:
+                    switch (sampler.shadow) {
+                    case false: return sampler.arrayed ? GL_SAMPLER_CUBE_MAP_ARRAY : GL_SAMPLER_CUBE;
+                    case true:  return sampler.arrayed ? GL_SAMPLER_CUBE_MAP_ARRAY_SHADOW : GL_SAMPLER_CUBE_SHADOW;
+                    }
+                case EsdRect:
+                    return sampler.shadow ? GL_SAMPLER_2D_RECT_SHADOW : GL_SAMPLER_2D_RECT;
+                case EsdBuffer:
+                    return GL_SAMPLER_BUFFER;
+                }
+            case EbtInt:
+                switch (sampler.dim) {
+                case Esd1D:
+                    return sampler.arrayed ? GL_INT_SAMPLER_1D_ARRAY : GL_INT_SAMPLER_1D;
+                case Esd2D:
+                    switch (sampler.ms) {
+                    case false:  return sampler.arrayed ? GL_INT_SAMPLER_2D_ARRAY : GL_INT_SAMPLER_2D;
+                    case true:   return sampler.arrayed ? GL_INT_SAMPLER_2D_MULTISAMPLE_ARRAY : GL_INT_SAMPLER_2D_MULTISAMPLE;
+                    }
+                case Esd3D:
+                    return GL_INT_SAMPLER_3D;
+                case EsdCube:
+                    return sampler.arrayed ? GL_INT_SAMPLER_CUBE_MAP_ARRAY : GL_INT_SAMPLER_CUBE;
+                case EsdRect:
+                    return GL_INT_SAMPLER_2D_RECT;
+                case EsdBuffer:
+                    return GL_INT_SAMPLER_BUFFER;
+                }
+            case EbtUint:
+                switch (sampler.dim) {
+                case Esd1D:
+                    return sampler.arrayed ? GL_UNSIGNED_INT_SAMPLER_1D_ARRAY : GL_UNSIGNED_INT_SAMPLER_1D;
+                case Esd2D:
+                    switch (sampler.ms) {
+                    case false:  return sampler.arrayed ? GL_UNSIGNED_INT_SAMPLER_2D_ARRAY : GL_UNSIGNED_INT_SAMPLER_2D;
+                    case true:   return sampler.arrayed ? GL_UNSIGNED_INT_SAMPLER_2D_MULTISAMPLE_ARRAY : GL_UNSIGNED_INT_SAMPLER_2D_MULTISAMPLE;
+                    }
+                case Esd3D:
+                    return GL_UNSIGNED_INT_SAMPLER_3D;
+                case EsdCube:
+                    return sampler.arrayed ? GL_UNSIGNED_INT_SAMPLER_CUBE_MAP_ARRAY : GL_UNSIGNED_INT_SAMPLER_CUBE;
+                case EsdRect:
+                    return GL_UNSIGNED_INT_SAMPLER_2D_RECT;
+                case EsdBuffer:
+                    return GL_UNSIGNED_INT_SAMPLER_BUFFER;
+                }
+            default:
+                return 0;
+            }
+        } else { 
+            // an image...
+            switch (sampler.type) {
+            case EbtFloat:
+                switch (sampler.dim) {
+                case Esd1D:
+                    return sampler.arrayed ? GL_IMAGE_1D_ARRAY : GL_IMAGE_1D;
+                case Esd2D:
+                    switch (sampler.ms) {
+                    case false:     return sampler.arrayed ? GL_IMAGE_2D_ARRAY : GL_IMAGE_2D;
+                    case true:      return sampler.arrayed ? GL_IMAGE_2D_MULTISAMPLE_ARRAY : GL_IMAGE_2D_MULTISAMPLE;
+                    }
+                case Esd3D:
+                    return GL_IMAGE_3D;
+                case EsdCube:
+                    return sampler.arrayed ? GL_IMAGE_CUBE_MAP_ARRAY : GL_IMAGE_CUBE;
+                case EsdRect:
+                    return GL_IMAGE_2D_RECT;
+                case EsdBuffer:
+                    return GL_IMAGE_BUFFER;
+                }
+            case EbtInt:
+                switch (sampler.dim) {
+                case Esd1D:
+                    return sampler.arrayed ? GL_INT_IMAGE_1D_ARRAY : GL_INT_IMAGE_1D;
+                case Esd2D:
+                    switch (sampler.ms) {
+                    case false:  return sampler.arrayed ? GL_INT_IMAGE_2D_ARRAY : GL_INT_IMAGE_2D;
+                    case true:   return sampler.arrayed ? GL_INT_IMAGE_2D_MULTISAMPLE_ARRAY : GL_INT_IMAGE_2D_MULTISAMPLE;
+                    }
+                case Esd3D:
+                    return GL_INT_IMAGE_3D;
+                case EsdCube:
+                    return sampler.arrayed ? GL_INT_IMAGE_CUBE_MAP_ARRAY : GL_INT_IMAGE_CUBE;
+                case EsdRect:
+                    return GL_INT_IMAGE_2D_RECT;
+                case EsdBuffer:
+                    return GL_INT_IMAGE_BUFFER;
+                }
+            case EbtUint:
+                switch (sampler.dim) {
+                case Esd1D:
+                    return sampler.arrayed ? GL_UNSIGNED_INT_IMAGE_1D_ARRAY : GL_UNSIGNED_INT_IMAGE_1D;
+                case Esd2D:
+                    switch (sampler.ms) {
+                    case false:  return sampler.arrayed ? GL_UNSIGNED_INT_IMAGE_2D_ARRAY : GL_UNSIGNED_INT_IMAGE_2D;
+                    case true:   return sampler.arrayed ? GL_UNSIGNED_INT_IMAGE_2D_MULTISAMPLE_ARRAY : GL_UNSIGNED_INT_IMAGE_2D_MULTISAMPLE;
+                    }
+                case Esd3D:
+                    return GL_UNSIGNED_INT_IMAGE_3D;
+                case EsdCube:
+                    return sampler.arrayed ? GL_UNSIGNED_INT_IMAGE_CUBE_MAP_ARRAY : GL_UNSIGNED_INT_IMAGE_CUBE;
+                case EsdRect:
+                    return GL_UNSIGNED_INT_IMAGE_2D_RECT;
+                case EsdBuffer:
+                    return GL_UNSIGNED_INT_IMAGE_BUFFER;
+                }
+            default:
+                return 0;
+            }
+        }
     }
 
-    int MapToGlArraySize(const TType& type)
+    //
+    // Translate a glslang type into the GL API #define number.
+    // Ignores arrayness.
+    //
+    int mapToGlType(const TType& type)
+    {
+        switch (type.getBasicType()) {
+        case EbtSampler:
+            return mapSamplerToGlType(type.getSampler());
+        case EbtStruct:
+        case EbtBlock:
+        case EbtVoid:
+            return 0;
+        default:
+            break;
+        }
+
+        if (type.isVector()) {
+            int offset = type.getVectorSize() - 2;
+            switch (type.getBasicType()) {
+            case EbtFloat:     return GL_FLOAT_VEC2        + offset;
+            case EbtDouble:    return GL_DOUBLE_VEC2       + offset;
+            case EbtInt:       return GL_INT_VEC2          + offset;
+            case EbtUint:      return GL_UNSIGNED_INT_VEC2 + offset;
+            case EbtBool:      return GL_BOOL_VEC2         + offset;
+            default:           return 0;
+            }
+        }
+        if (type.isMatrix()) {
+            switch (type.getBasicType()) {
+            case EbtFloat:
+                switch (type.getMatrixCols()) {
+                case 2:
+                    switch (type.getMatrixRows()) {
+                    case 2:    return GL_FLOAT_MAT2;
+                    case 3:    return GL_FLOAT_MAT2x3;
+                    case 4:    return GL_FLOAT_MAT2x4;
+                    default:   return 0;
+                    }
+                case 3:
+                    switch (type.getMatrixRows()) {
+                    case 2:    return GL_FLOAT_MAT3x2;
+                    case 3:    return GL_FLOAT_MAT3;
+                    case 4:    return GL_FLOAT_MAT3x4;
+                    default:   return 0;
+                    }
+                case 4:
+                    switch (type.getMatrixRows()) {
+                    case 2:    return GL_FLOAT_MAT4x2;
+                    case 3:    return GL_FLOAT_MAT4x3;
+                    case 4:    return GL_FLOAT_MAT4;
+                    default:   return 0;
+                    }
+                }
+            case EbtDouble:
+                switch (type.getMatrixCols()) {
+                case 2:
+                    switch (type.getMatrixRows()) {
+                    case 2:    return GL_DOUBLE_MAT2;
+                    case 3:    return GL_DOUBLE_MAT2x3;
+                    case 4:    return GL_DOUBLE_MAT2x4;
+                    default:   return 0;
+                    }
+                case 3:
+                    switch (type.getMatrixRows()) {
+                    case 2:    return GL_DOUBLE_MAT3x2;
+                    case 3:    return GL_DOUBLE_MAT3;
+                    case 4:    return GL_DOUBLE_MAT3x4;
+                    default:   return 0;
+                    }
+                case 4:
+                    switch (type.getMatrixRows()) {
+                    case 2:    return GL_DOUBLE_MAT4x2;
+                    case 3:    return GL_DOUBLE_MAT4x3;
+                    case 4:    return GL_DOUBLE_MAT4;
+                    default:   return 0;
+                    }
+                }
+            default:
+                return 0;
+            }
+        }
+        if (type.getVectorSize() == 1) {
+            switch (type.getBasicType()) {
+            case EbtFloat:     return GL_FLOAT;
+            case EbtDouble:    return GL_DOUBLE;
+            case EbtInt:       return GL_INT;
+            case EbtUint:      return GL_UNSIGNED_INT;
+            case EbtBool:      return GL_BOOL;
+            default:           return 0;
+            }
+        }
+
+        return 0;
+    }
+
+    int mapToGlArraySize(const TType& type)
     {
         return type.isArray() ? type.getArraySize() : 1;
     }
