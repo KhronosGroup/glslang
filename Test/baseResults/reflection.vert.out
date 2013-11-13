@@ -8,26 +8,54 @@ Linked vertex stage:
 
 
 Uniform reflection:
-0:anonMember3: offset 32, type 35666, arraySize 1, index 0
-1:s.a: offset -1, type 35666, arraySize 1, index -1
-2:anonMember1: offset 0, type 35666, arraySize 1, index 0
-3:uf1: offset -1, type 35666, arraySize 1, index -1
-4:uf2: offset -1, type 35666, arraySize 1, index -1
-5:ablock.member3: offset 32, type 35666, arraySize 1, index 1
+0: anonMember3: offset 80, type 35666, arraySize 1, index 0
+1: s.a: offset -1, type 35666, arraySize 1, index -1
+2: ablock.scalar: offset 12, type 35666, arraySize 1, index 1
+3: m23: offset 16, type 35666, arraySize 1, index 0
+4: scalarAfterm23: offset 48, type 35666, arraySize 1, index 0
+5: c_m23: offset 16, type 35666, arraySize 1, index 2
+6: c_scalarAfterm23: offset 64, type 35666, arraySize 1, index 2
+7: scalarBeforeArray: offset 96, type 35666, arraySize 1, index 0
+8: floatArray: offset 112, type 35666, arraySize 5, index 0
+9: scalarAfterArray: offset 192, type 35666, arraySize 1, index 0
+10: ablock.memvec2: offset 48, type 35666, arraySize 1, index 1
+11: ablock.memf1: offset 56, type 35666, arraySize 1, index 1
+12: ablock.memf2: offset 60, type 35666, arraySize 1, index 1
+13: ablock.memf3: offset 64, type 35666, arraySize 1, index 1
+14: ablock.memvec2a: offset 72, type 35666, arraySize 1, index 1
+15: anonMember1: offset 0, type 35666, arraySize 1, index 0
+16: uf1: offset -1, type 35666, arraySize 1, index -1
+17: uf2: offset -1, type 35666, arraySize 1, index -1
+18: ablock.member3: offset 32, type 35666, arraySize 1, index 1
 
 Uniform block reflection:
 0: nameless: offset -1, type -1, arraySize 1, index -1
 1: ablock: offset -1, type -1, arraySize 1, index -1
+2: c_nameless: offset -1, type -1, arraySize 1, index -1
 
 Live names
 ablock: 1
-ablock.member3: 5
-anonMember1: 2
+ablock.member3: 18
+ablock.memf1: 11
+ablock.memf2: 12
+ablock.memf3: 13
+ablock.memvec2: 10
+ablock.memvec2a: 14
+ablock.scalar: 2
+anonMember1: 15
 anonMember3: 0
+c_m23: 5
+c_nameless: 2
+c_scalarAfterm23: 6
+floatArray: 8
 liveFunction1(: -1
 liveFunction2(: -1
+m23: 3
 nameless: 0
 s.a: 1
-uf1: 3
-uf2: 4
+scalarAfterArray: 9
+scalarAfterm23: 4
+scalarBeforeArray: 7
+uf1: 16
+uf2: 17
 

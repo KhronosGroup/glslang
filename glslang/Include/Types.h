@@ -490,6 +490,8 @@ typedef std::map<TTypeList*, TTypeList*>::const_iterator TStructureMapIterator;
 class TType {
 public:
     POOL_ALLOCATOR_NEW_DELETE(GetThreadPoolAllocator())
+
+    // for "empty" type (no args) or simple scalar/vector/matrix
     explicit TType(TBasicType t = EbtVoid, TStorageQualifier q = EvqTemporary, int vs = 1, int mc = 0, int mr = 0) :
                             basicType(t), vectorSize(vs), matrixCols(mc), matrixRows(mr), arraySizes(0),
                             structure(0), structureSize(0), fieldName(0), typeName(0)
@@ -498,6 +500,7 @@ public:
                                 qualifier.clear();
                                 qualifier.storage = q;
                             }
+    // for explicit precision qualifier
     TType(TBasicType t, TStorageQualifier q, TPrecisionQualifier p, int vs = 1, int mc = 0, int mr = 0) :
                             basicType(t), vectorSize(vs), matrixCols(mc), matrixRows(mr), arraySizes(0),
                             structure(0), structureSize(0), fieldName(0), typeName(0)
@@ -508,7 +511,8 @@ public:
                                 qualifier.precision = p;
                                 assert(p >= 0 && p <= EpqHigh);
                             }
-    explicit TType(const TPublicType &p) :
+    // for turning a TPublicType into a TType
+    explicit TType(const TPublicType& p) :
                             basicType(p.basicType), vectorSize(p.vectorSize), matrixCols(p.matrixCols), matrixRows(p.matrixRows), arraySizes(p.arraySizes),
                             structure(0), structureSize(0), fieldName(0), typeName(0)
                             {
@@ -522,6 +526,23 @@ public:
                                     typeName = NewPoolTString(p.userDef->getTypeName().c_str());
                                 }
                             }
+    // to efficiently make a dereferenced type
+    // without ever duplicating the outer structure that will be thrown away
+    // and using only shallow copy
+    TType(const TType& type, int derefIndex)
+                            {
+                                if (! type.isArray() && (type.basicType == EbtStruct || type.basicType == EbtBlock)) {
+                                    // do a structure dereference
+                                    const TTypeList& memberList = *type.getStruct();
+                                    shallowCopy(*memberList[derefIndex].type);
+                                    return;
+                                } else {
+                                    // do an array/vector/matrix dereference
+                                    shallowCopy(type);
+                                    dereference();
+                                }
+                            }
+    // for making structures, ...
     TType(TTypeList* userDef, const TString& n) :
                             basicType(EbtStruct), vectorSize(1), matrixCols(0), matrixRows(0),
                             arraySizes(0), structure(userDef), fieldName(0)

@@ -65,7 +65,7 @@ namespace glslang {
 //
 // The traverser: mostly pass through, except 
 //  - processing function-call nodes to push live functions onto the stack of functions to process
-//  - processing binary nodes to see if they are dereferences of aggregates to track
+//  - processing binary nodes to see if they are dereferences of an aggregates to track
 //  - processing symbol nodes to see if they are non-aggregate objects to track
 //  - processing selection nodes to trim semantically dead code
 //
@@ -87,7 +87,7 @@ public:
         }
     }
 
-    // Add a simple uniform variable reference to the uniform database, no derefence involved.
+    // Add a simple uniform variable reference to the uniform database, no dereference involved.
     void addUniform(const TIntermSymbol& symbol)
     {
         if (reflection.nameToIndex.find(symbol.getName()) == reflection.nameToIndex.end()) {
@@ -98,7 +98,126 @@ public:
         }
     }
 
-    // Add a complex uniform reference where blocks/struct/arrays are involved in tha access.
+    static const int baseAlignmentVec4Std140 = 16;
+
+    // align a value:  if 'value' is not aligned to 'alignment', move it up to a multiple of alignment
+    void align(int& value, int alignment)
+    {
+        int error = value % alignment;
+        if (error)
+            value += alignment - error;
+    }
+
+    // return the size and alignment of a scalar
+    int getBaseAlignmentScalar(const TType& type, int& size)
+    {
+        switch (type.getBasicType()) {
+        case EbtDouble:  size = 8; return 8;
+        default:         size = 4; return 4;
+        }
+    }
+
+    // Implement base-alignment and size rules from section 7.6.2.2 Standard Uniform Block Layout
+    // Operates recursively.
+    // If std140 is true, it does the rounding up to vec4 size required by std140, 
+    // otherwise it does not, yielding std430 rules.
+    //
+    // Returns the size of the type.
+    int getBaseAlignment(const TType& type, int& size, bool std140)
+    {
+        int alignment;
+
+        // rules 4, 6, and 8
+        if (type.isArray()) {
+            TType derefType(type, 0);
+            alignment = getBaseAlignment(derefType, size, std140);
+            if (std140)
+                alignment = std::max(baseAlignmentVec4Std140, alignment);
+            align(size, alignment);
+            size *= type.getArraySize();
+            return alignment;
+        }
+
+        // rule 9
+        if (type.getBasicType() == EbtStruct) {
+            const TTypeList& memberList = *type.getStruct();
+
+            int size = 0;
+            int maxAlignment = std140 ? baseAlignmentVec4Std140 : 0;
+            for (size_t m = 0; m < memberList.size(); ++m) {
+                int memberSize;
+                int memberAlignment = getBaseAlignment(*memberList[m].type, memberSize, std140);
+                maxAlignment = std::max(maxAlignment, memberAlignment);
+                align(size, memberAlignment);         
+                size += memberSize;
+            }
+
+            return maxAlignment;
+        }
+
+        // rule 1
+        if (type.isScalar())
+            return getBaseAlignmentScalar(type, size);
+
+        // rules 2 and 3
+        if (type.isVector()) {
+            int scalarAlign = getBaseAlignmentScalar(type, size);
+            switch (type.getVectorSize()) {
+            case 2:
+                size *= 2;
+                return 2 * scalarAlign;
+            default: 
+                size *= type.getVectorSize();
+                return 4 * scalarAlign;
+            }
+        }
+
+        // rules 5 and 7
+        if (type.isMatrix()) {
+            TType derefType(type, 0);
+            
+            // rule 5: deref to row, not to column, meaning the size of vector is num columns instead of num rows
+            if (type.getQualifier().layoutMatrix == ElmRowMajor)
+                derefType.setElementType(derefType.getBasicType(), type.getMatrixCols(), 0, 0, 0);
+            
+            alignment = getBaseAlignment(derefType, size, std140);
+            if (std140)
+                alignment = std::max(baseAlignmentVec4Std140, alignment);
+            align(size, alignment);
+            if (type.getQualifier().layoutMatrix == ElmRowMajor)
+                size *= type.getMatrixRows();
+            else
+                size *= type.getMatrixCols();
+
+            return alignment;
+        }
+
+        assert(0);  // all cases should be covered above
+        size = baseAlignmentVec4Std140;
+        return baseAlignmentVec4Std140;
+    }
+
+    // Calculate the offset of a block member, using the recursively defined
+    // block offset rules.
+    int getBlockMemberOffset(const TType& blockType, int index)
+    {
+        // TODO: reflection performance: cache these results instead of recomputing them
+
+        int offset = 0;
+        const TTypeList& memberList = *blockType.getStruct();        
+        int memberSize;
+        for (int m = 0; m < index; ++m) {
+            int memberAlignment = getBaseAlignment(*memberList[m].type, memberSize, blockType.getQualifier().layoutPacking == ElpStd140);
+            align(offset, memberAlignment);
+            offset += memberSize;
+        }
+        int memberAlignment = getBaseAlignment(*memberList[index].type, memberSize, blockType.getQualifier().layoutPacking == ElpStd140);
+        align(offset, memberAlignment);
+
+        return offset;
+    }
+
+    // Add a complex uniform reference where blocks/struct/arrays are involved in the access.
     void addDereferencedUniform(TIntermSymbol* base, TIntermBinary* node)
     {
         bool block = base->getBasicType() == EbtBlock;
@@ -133,7 +252,7 @@ public:
             }
             int structIndex = node->getRight()->getAsConstantUnion()->getConstArray()[0].getIConst();
             if (block)
-                offset = structIndex * 16; // TODO: reflection: compute std140 offsets
+                offset = getBlockMemberOffset(base->getType(), structIndex);
             name.append((*base->getType().getStruct())[structIndex].type->getFieldName().c_str());
             break;
         }
@@ -312,7 +431,7 @@ void TReflection::dump()
 {
     printf("Uniform reflection:\n");
     for (size_t i = 0; i < indexToUniform.size(); ++i) {
-        printf("%d:", (int)i);
+        printf("%d: ", (int)i);
         indexToUniform[i].dump();
     }
     printf("\n");

@@ -500,13 +500,11 @@ TIntermTyped* TParseContext::handleBracketDereference(TSourceLoc loc, TIntermTyp
         result = intermediate.addConstantUnion(unionArray, TType(EbtFloat, EvqConst), loc);
     } else {
         // Insert valid dereferenced result
-        TType newType;
-        newType.shallowCopy(base->getType());
+        TType newType(base->getType(), 0);  // dereferenced type
         if (base->getType().getQualifier().storage == EvqConst && index->getQualifier().storage == EvqConst)
             newType.getQualifier().storage = EvqConst;
         else
             newType.getQualifier().storage = EvqTemporary;
-        newType.dereference();
         result->setType(newType);
 
         if (anyIndexLimits)
@@ -3024,9 +3022,7 @@ TIntermTyped* TParseContext::convertInitializerList(TSourceLoc loc, const TType&
         arrayType.shallowCopy(type);
         arrayType.setArraySizes(type);
         arrayType.changeArraySize(initList->getSequence().size());
-        TType elementType;
-        elementType.shallowCopy(arrayType);  // TODO: 4.3 simplification: arrays of arrays: combine this with deref.
-        elementType.dereference();
+        TType elementType(arrayType, 0); // dereferenced type
         for (size_t i = 0; i < initList->getSequence().size(); ++i) {
             initList->getSequence()[i] = convertInitializerList(loc, elementType, initList->getSequence()[i]->getAsTyped());
             if (initList->getSequence()[i] == 0)
@@ -3049,9 +3045,7 @@ TIntermTyped* TParseContext::convertInitializerList(TSourceLoc loc, const TType&
             error(loc, "wrong number of matrix columns:", "initializer list", type.getCompleteString().c_str());
             return 0;
         }
-        TType vectorType;
-        vectorType.shallowCopy(type);  // TODO: 4.3 simplification: arrays of arrays: combine this with deref.
-        vectorType.dereference();
+        TType vectorType(type, 0); // dereferenced type
         for (int i = 0; i < type.getMatrixCols(); ++i) {
             initList->getSequence()[i] = convertInitializerList(loc, vectorType, initList->getSequence()[i]->getAsTyped());
             if (initList->getSequence()[i] == 0)
@@ -3088,10 +3082,11 @@ TIntermTyped* TParseContext::addConstructor(TSourceLoc loc, TIntermNode* node, c
     if (op == EOpConstructStruct)
         memberTypes = type.getStruct()->begin();
 
-    TType elementType;
-    elementType.shallowCopy(type);
+    const TType* elementType;
     if (type.isArray())
-        elementType.dereference();    // TODO: 4.3 simplification: arrays of arrays: combine this with deref.
+        elementType = &TType(type, 0);  // dereferenced type
+    else
+        elementType = &type;
 
     bool singleArg;
     if (aggrNode) {
@@ -3107,7 +3102,7 @@ TIntermTyped* TParseContext::addConstructor(TSourceLoc loc, TIntermNode* node, c
         // If structure constructor or array constructor is being called
         // for only one parameter inside the structure, we need to call constructStruct function once.
         if (type.isArray())
-            newNode = constructStruct(node, elementType, 1, node->getLoc());
+            newNode = constructStruct(node, *elementType, 1, node->getLoc());
         else if (op == EOpConstructStruct)
             newNode = constructStruct(node, *(*memberTypes).type, 1, node->getLoc());
         else
@@ -3135,7 +3130,7 @@ TIntermTyped* TParseContext::addConstructor(TSourceLoc loc, TIntermNode* node, c
     for (TIntermSequence::iterator p = sequenceVector.begin();
                                    p != sequenceVector.end(); p++, paramCount++) {
         if (type.isArray())
-            newNode = constructStruct(*p, elementType, paramCount+1, node->getLoc());
+            newNode = constructStruct(*p, *elementType, paramCount+1, node->getLoc());
         else if (op == EOpConstructStruct)
             newNode = constructStruct(*p, *(memberTypes[paramCount]).type, paramCount+1, node->getLoc());
         else
@@ -3724,9 +3719,7 @@ TIntermTyped* TParseContext::addConstMatrixNode(TSourceLoc loc, int index, TInte
 //
 TIntermTyped* TParseContext::addConstArrayNode(TSourceLoc loc, int index, TIntermTyped* node)
 {
-    TType arrayElementType;
-    arrayElementType.shallowCopy(node->getType());  // TODO: 4.3 simplification: arrays of arrays: combine this with deref.
-    arrayElementType.dereference();
+    TType arrayElementType(node->getType(), 0);  // dereferenced type
 
     if (index >= node->getType().getArraySize() || index < 0) {
         error(loc, "", "[", "array index '%d' out of range", index);
