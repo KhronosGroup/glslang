@@ -100,7 +100,7 @@ public:
         }
     }
 
-    static const int baseAlignmentVec4Std140 = 16;
+    static const int baseAlignmentVec4Std140;
 
     // align a value:  if 'value' is not aligned to 'alignment', move it up to a multiple of alignment
     void align(int& value, int alignment)
@@ -552,6 +552,8 @@ public:
     const TIntermediate& intermediate;
     TReflection& reflection;
 };
+
+const int TLiveTraverser::baseAlignmentVec4Std140 = 16;
 
 namespace {
 

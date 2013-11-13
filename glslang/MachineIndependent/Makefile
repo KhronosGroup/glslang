@@ -147,4 +147,4 @@ Versions.o: ParseHelper.h  Versions.h ../Include/ShHandle.h SymbolTable.h locali
 Constant.o: localintermediate.h ../Include/intermediate.h ../Public/ShaderLang.h SymbolTable.h Versions.h
 limits.o:  ParseHelper.h
 linkValidate.o: localintermediate.h
-reflection.o: ../Include/Common.h reflection.h localintermediate.h
+reflection.o: ../Include/Common.h reflection.h localintermediate.h gl_types.h

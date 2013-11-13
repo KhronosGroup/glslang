@@ -3082,11 +3082,10 @@ TIntermTyped* TParseContext::addConstructor(TSourceLoc loc, TIntermNode* node, c
     if (op == EOpConstructStruct)
         memberTypes = type.getStruct()->begin();
 
-    const TType* elementType;
+    TType elementType;
+    elementType.shallowCopy(type);
     if (type.isArray())
-        elementType = &TType(type, 0);  // dereferenced type
-    else
-        elementType = &type;
+        elementType.dereference();
 
     bool singleArg;
     if (aggrNode) {
@@ -3102,7 +3101,7 @@ TIntermTyped* TParseContext::addConstructor(TSourceLoc loc, TIntermNode* node, c
         // If structure constructor or array constructor is being called
         // for only one parameter inside the structure, we need to call constructStruct function once.
         if (type.isArray())
-            newNode = constructStruct(node, *elementType, 1, node->getLoc());
+            newNode = constructStruct(node, elementType, 1, node->getLoc());
         else if (op == EOpConstructStruct)
             newNode = constructStruct(node, *(*memberTypes).type, 1, node->getLoc());
         else
@@ -3130,7 +3129,7 @@ TIntermTyped* TParseContext::addConstructor(TSourceLoc loc, TIntermNode* node, c
     for (TIntermSequence::iterator p = sequenceVector.begin();
                                    p != sequenceVector.end(); p++, paramCount++) {
         if (type.isArray())
-            newNode = constructStruct(*p, *elementType, paramCount+1, node->getLoc());
+            newNode = constructStruct(*p, elementType, paramCount+1, node->getLoc());
         else if (op == EOpConstructStruct)
             newNode = constructStruct(*p, *(memberTypes[paramCount]).type, paramCount+1, node->getLoc());
         else
