@@ -912,6 +912,16 @@ int ShGetUniformLocation(const ShHandle handle, const char* name)
 
 namespace glslang {
 
+const char* GetEsslVersionString()
+{
+    return "OpenGL ES GLSL 3.00 glslang";
+}
+
+const char* GetGlslVersionString()
+{
+    return "4.20 glslang";
+}
+
 bool InitializeProcess()
 {
     return ShInitialize() != 0;

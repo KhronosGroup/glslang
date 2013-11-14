@@ -551,6 +551,9 @@ void CompileAndLinkShaders()
 {
     // keep track of what to free
     std::list<glslang::TShader*> shaders;
+    
+    //printf("%s\n", glslang::GetEsslVersionString());
+    //printf("%s\n", glslang::GetGlslVersionString());
 
     EShMessages messages = EShMsgDefault;
     SetMessageOptions(messages);

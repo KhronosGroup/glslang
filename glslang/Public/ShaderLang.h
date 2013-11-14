@@ -263,6 +263,9 @@ class TInfoSink;
 
 namespace glslang {
 
+const char* GetEsslVersionString();
+const char* GetGlslVersionString();
+
 class TIntermediate;
 class TProgram;
 class TPoolAllocator;
