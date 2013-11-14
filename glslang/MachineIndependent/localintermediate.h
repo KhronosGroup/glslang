@@ -39,6 +39,8 @@
 #include "../Public/ShaderLang.h"
 #include "Versions.h"
 
+#include <algorithm>
+
 class TInfoSink;
 
 namespace glslang {
