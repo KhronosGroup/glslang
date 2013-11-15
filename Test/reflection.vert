@@ -78,6 +78,24 @@ uniform sampler2DMSArray sampler_2DMSArray;
 
 uniform mat2 dm22[10];
 
+struct deep1 {
+    vec2 va[3];
+    bool b;
+};
+
+struct deep2 {
+    int i;
+    deep1 d1[4];
+};
+
+struct deep3 {
+    vec4 iv4;
+    deep2 d2;
+    ivec3 v3;
+};
+
+uniform deep3 deepA[2], deepB[2], deepC[3], deepD[2];
+
 const bool control = true;
 
 void deadFunction()
@@ -120,6 +138,7 @@ void main()
         f = c_m23[1].y + c_scalarAfterm23;
         f += scalarBeforeArray;
         f += floatArray[2];
+        f += floatArray[4];
         f += scalarAfterArray;
         f += ablock.memvec2.x;
         f += ablock.memf1;
@@ -130,6 +149,11 @@ void main()
         f += dm22[3][0][1];
         f += m22[2][1].y;
         f += nest.foo.n1.a + nest.foo.n2.b + nest.foo.n2.c + nest.foo.n2.d;
+        f += deepA[i].d2.d1[2].va[1].x;
+        f += deepB[1].d2.d1[i].va[1].x;
+        f += deepB[i].d2.d1[i].va[1].x;
+        deep3 d = deepC[1];
+        deep3 da[2] = deepD;
     } else
         f = ufDead3;
 }

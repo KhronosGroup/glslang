@@ -89,14 +89,17 @@ public:
         }
     }
 
-    // Add a simple uniform variable reference to the uniform database, no dereference involved.
-    void addUniform(const TIntermSymbol& symbol)
+    // Add a simple reference to a uniform variable to the uniform database, no dereference involved.
+    // However, no dereference doesn't mean simple... it could be a complex aggregate.
+    void addUniform(const TIntermSymbol& base)
     {
-        if (reflection.nameToIndex.find(symbol.getName()) == reflection.nameToIndex.end()) {
-            if (isReflectionGranularity(symbol.getType())) {
-                reflection.nameToIndex[symbol.getName()] = reflection.indexToUniform.size();
-                reflection.indexToUniform.push_back(TObjectReflection(symbol.getName(), -1, mapToGlType(symbol.getType()), mapToGlArraySize(symbol.getType()), -1));
-            }
+        if (processedDerefs.find(&base) == processedDerefs.end()) {
+            processedDerefs.insert(&base);
+
+            // Use a degenerate (empty) set of dereferences to immediately put as at the end of
+            // the dereference change expected by blowUpActiveAggregate.
+            TList<TIntermBinary*> derefs;
+            blowUpActiveAggregate(base.getType(), base.getName(), derefs, derefs.end(), -1, -1, 0);
         }
     }
 
@@ -235,6 +238,97 @@ public:
         return size;
     }
 
+    // Traverse the provided deref chain, including the base, and
+    // - build a full reflection-granularity name, array size, etc. entry out of it, if it goes down to that granularity
+    // - recursively expand any variable array index in the middle of that traversal
+    // - recursively expand what's left at the end if the deref chain did not reach down to reflection granularity
+    //
+    // arraySize tracks, just for the final dereference in the chain, if there was a specific known size.
+    // A value of 0 for arraySize will mean to use the full array's size.
+    void blowUpActiveAggregate(const TType& baseType, const TString& baseName, const TList<TIntermBinary*>& derefs, 
+                               TList<TIntermBinary*>::const_iterator deref, int offset, int blockIndex, int arraySize)
+    {
+        TString name = baseName;
+        const TType* terminalType = &baseType;
+        for (; deref != derefs.end(); ++deref) {
+            TIntermBinary* visitNode = *deref;
+            terminalType = &visitNode->getType();
+            int index;
+            switch (visitNode->getOp()) {
+            case EOpIndexIndirect:
+                // Visit all the indices of this array, and for each one, then add on the remaining dereferencing
+                for (int i = 0; i < visitNode->getLeft()->getType().getArraySize(); ++i) {
+                    TString newBaseName = name;
+                    newBaseName.append(TString("[") + String(i) + "]");
+                    TList<TIntermBinary*>::const_iterator nextDeref = deref;
+                    ++nextDeref;
+                    TType derefType(*terminalType, 0);
+                    blowUpActiveAggregate(derefType, newBaseName, derefs, nextDeref, offset, blockIndex, arraySize);
+                }
+
+                // it was all completed in the recursive calls above
+                return;
+            case EOpIndexDirect:
+                index = visitNode->getRight()->getAsConstantUnion()->getConstArray()[0].getIConst();
+                name.append(TString("[") + String(index) + "]");
+                break;
+            case EOpIndexDirectStruct:
+                index = visitNode->getRight()->getAsConstantUnion()->getConstArray()[0].getIConst();
+                if (offset >= 0)
+                    offset += getBlockMemberOffset(visitNode->getLeft()->getType(), index);
+                if (name.size() > 0)
+                    name.append(".");
+                name.append((*visitNode->getLeft()->getType().getStruct())[index].type->getFieldName());
+                break;
+            default:
+                break;
+            }
+        }
+        
+        // if the terminalType is still too coarse a granularity, this is still an aggregate to expand, expand it...
+        if (! isReflectionGranularity(*terminalType)) {
+            if (terminalType->isArray()) {
+                // Visit all the indices of this array, and for each one, 
+                // fully explode the remaining aggregate to dereference
+                for (int i = 0; i < terminalType->getArraySize(); ++i) {
+                    TString newBaseName = name;
+                    newBaseName.append(TString("[") + String(i) + "]");
+                    TType derefType(*terminalType, 0);
+                    blowUpActiveAggregate(derefType, newBaseName, derefs, derefs.end(), offset, blockIndex, 0);
+                }
+            } else {
+                // Visit all members of this aggregate, and for each one, 
+                // fully explode the remaining aggregate to dereference
+                const TTypeList& typeList = *terminalType->getStruct();
+                for (size_t i = 0; i < typeList.size(); ++i) {
+                    TString newBaseName = name;
+                    newBaseName.append(TString(".") + typeList[i].type->getFieldName());
+                    TType derefType(*terminalType, i);
+                    blowUpActiveAggregate(derefType, newBaseName, derefs, derefs.end(), offset, blockIndex, 0);
+                }
+            }
+
+            // it was all completed in the recursive calls above
+            return;
+        }
+
+        // Finally, add a full string to the reflection database, and update the array size if necessary.
+        // If the derefenced entity to record is an array, compute the size and update the maximum size.
+
+        // there might not be a final array dereference, it could have been copied as an array object
+        if (arraySize == 0)
+            arraySize = mapToGlArraySize(*terminalType);
+
+        TReflection::TNameToIndex::const_iterator it = reflection.nameToIndex.find(name);
+        if (it == reflection.nameToIndex.end()) {
+            reflection.nameToIndex[name] = reflection.indexToUniform.size();                        
+            reflection.indexToUniform.push_back(TObjectReflection(name, offset, mapToGlType(*terminalType), arraySize, blockIndex));
+        } else if (arraySize > 1) {
+            int& reflectedArraySize = reflection.indexToUniform[it->second].size;
+            reflectedArraySize = std::max(arraySize, reflectedArraySize);
+        }
+    }
+
     // Add a uniform dereference where blocks/struct/arrays are involved in the access.
     // Handles the situation where the left node is at the correct or too coarse a
     // granularity for reflection.  (That is, further dereferences up the tree will be 
@@ -279,7 +373,7 @@ public:
         if (block) {
             // TODO: how is an array of blocks handled differently?
             anonymous = base->getName().compare(0, 6, "__anon") == 0;
-            const TString& blockName = anonymous ? base->getType().getTypeName() : base->getName();
+            const TString& blockName = anonymous ? base->getType().getTypeName() : base->getType().getTypeName();
             TReflection::TNameToIndex::const_iterator it = reflection.nameToIndex.find(blockName);
             if (it == reflection.nameToIndex.end()) {
                 blockIndex = reflection.indexToUniformBlock.size();
@@ -287,81 +381,33 @@ public:
                 reflection.indexToUniformBlock.push_back(TObjectReflection(blockName, offset,  -1, getBlockSize(base->getType()), -1));
             } else
                 blockIndex = it->second;
-        }
-
-        // If the derefenced entity to record is an array, note the maximum array size.
-        int maxArraySize;
-        const TType* reflectionType;
-        if (isReflectionGranularity(topNode->getLeft()->getType()) && topNode->getLeft()->isArray()) {
-            reflectionType = &topNode->getLeft()->getType();
-            switch (topNode->getOp()) {
-            case EOpIndexIndirect:
-                maxArraySize = topNode->getLeft()->getType().getArraySize();
-                break;
-            case EOpIndexDirect:
-                maxArraySize = topNode->getRight()->getAsConstantUnion()->getConstArray()[0].getIConst() + 1;
-                break;
-            default:
-                assert(0);
-                maxArraySize = 1;
-                break;
-            }
-        } else {
-            reflectionType = &topNode->getType();
-            maxArraySize = 1;
-        }
-
-        // TODO: fully expand a partially dereferenced aggregate
-
-        // Process the dereference chain, backward, accumulating the pieces on a stack.
-        // If the topNode is a simple array dereference, don't include that.
-        if (block)
             offset = 0;
-        std::list<TString> derefs;
+        }
+
+        // Process the dereference chain, backward, accumulating the pieces for later forward traversal.
+        // If the topNode is a reflection-granularity-array dereference, don't include that last dereference.
+        TList<TIntermBinary*> derefs;
         for (TIntermBinary* visitNode = topNode; visitNode; visitNode = visitNode->getLeft()->getAsBinaryNode()) {
+            if (isReflectionGranularity(visitNode->getLeft()->getType()))
+                continue;
+
+            derefs.push_front(visitNode);
             processedDerefs.insert(visitNode);
-            int index;
-            switch (visitNode->getOp()) {
-            case EOpIndexIndirect:
-                // TODO handle indirect references in mid-chain: enumerate all possibilities?
-                if (! isReflectionGranularity(visitNode->getLeft()->getType()))
-                    derefs.push_back(TString("[") + String(0) + "]");
-                break;
-            case EOpIndexDirect:
-                if (! isReflectionGranularity(visitNode->getLeft()->getType())) {
-                    index = visitNode->getRight()->getAsConstantUnion()->getConstArray()[0].getIConst();
-                    derefs.push_back(TString("[") + String(index) + "]");
-                }
-                break;
-            case EOpIndexDirectStruct:
-                index = visitNode->getRight()->getAsConstantUnion()->getConstArray()[0].getIConst();
-                if (block)
-                    offset += getBlockMemberOffset(visitNode->getLeft()->getType(), index);
-                derefs.push_back(TString(""));
-                if (visitNode->getLeft()->getAsSymbolNode() != base || ! anonymous)
-                    derefs.back().append(".");
-                derefs.back().append((*visitNode->getLeft()->getType().getStruct())[index].type->getFieldName().c_str());
-                break;
-            default:
-                break;
-            }
+        }
+        processedDerefs.insert(base);
+
+        // See if we have a specific array size to stick to while enumerating the explosion of the aggregate
+        int arraySize = 0;
+        if (isReflectionGranularity(topNode->getLeft()->getType()) && topNode->getLeft()->isArray()) {
+            if (topNode->getOp() == EOpIndexDirect)
+                arraySize = topNode->getRight()->getAsConstantUnion()->getConstArray()[0].getIConst() + 1;
         }
 
-        // Put the dereference chain together, forward (reversing the stack)
-        TString name;
+        // Put the dereference chain together, forward
+        TString baseName;
         if (! anonymous)
-            name = base->getName();
-        while (! derefs.empty()) {
-            name += derefs.back();
-            derefs.pop_back();
-        }
-
-        if (name.size() > 0) {
-            if (reflection.nameToIndex.find(name) == reflection.nameToIndex.end()) {
-                reflection.nameToIndex[name] = reflection.indexToUniform.size();                        
-                reflection.indexToUniform.push_back(TObjectReflection(name, offset, mapToGlType(*reflectionType), maxArraySize, blockIndex));
-            }
-        }
+            baseName = base->getName();
+        blowUpActiveAggregate(base->getType(), baseName, derefs, derefs.begin(), offset, blockIndex, arraySize);
     }
 
     //
@@ -390,9 +436,9 @@ public:
     // Return 0 if the topology does not fit this situation.
     TIntermSymbol* findBase(const TIntermBinary* node)
     {
-        TIntermSymbol *symbol = node->getLeft()->getAsSymbolNode();
-        if (symbol)
-            return symbol;
+        TIntermSymbol *base = node->getLeft()->getAsSymbolNode();
+        if (base)
+            return base;
         TIntermBinary* left = node->getLeft()->getAsBinaryNode();
         if (! left)
             return 0;
@@ -643,7 +689,7 @@ public:
     TFunctionStack functions;
     const TIntermediate& intermediate;
     TReflection& reflection;
-    std::set<TIntermNode*> processedDerefs;
+    std::set<const TIntermNode*> processedDerefs;
 };
 
 const int TLiveTraverser::baseAlignmentVec4Std140 = 16;
@@ -687,12 +733,12 @@ bool LiveBinary(bool /* preVisit */, TIntermBinary* node, TIntermTraverser* it)
 }
 
 // To reflect non-dereferenced objects.
-void LiveSymbol(TIntermSymbol* symbol, TIntermTraverser* it)
+void LiveSymbol(TIntermSymbol* base, TIntermTraverser* it)
 {
     TLiveTraverser* oit = static_cast<TLiveTraverser*>(it);
 
-    if (symbol->getQualifier().storage == EvqUniform)
-        oit->addUniform(*symbol);
+    if (base->getQualifier().storage == EvqUniform)
+        oit->addUniform(*base);
 }
 
 // To prune semantically dead paths.
