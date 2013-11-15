@@ -144,7 +144,7 @@ public:
         if (type.getBasicType() == EbtStruct) {
             const TTypeList& memberList = *type.getStruct();
 
-            int size = 0;
+            size = 0;
             int maxAlignment = std140 ? baseAlignmentVec4Std140 : 0;
             for (size_t m = 0; m < memberList.size(); ++m) {
                 int memberSize;
@@ -203,7 +203,7 @@ public:
     // block offset rules.
     int getBlockMemberOffset(const TType& blockType, int index)
     {
-        // TODO: reflection performance: cache these results instead of recomputing them
+        // TODO: reflection performance: cache intermediate results instead of recomputing them
 
         int offset = 0;
         const TTypeList& memberList = *blockType.getStruct();        
@@ -219,55 +219,99 @@ public:
         return offset;
     }
 
-    // Add a complex uniform reference where blocks/struct/arrays are involved in the access.
-    void addDereferencedUniform(TIntermSymbol* base, TIntermBinary* node)
+    // Calculate the block data size.
+    // Arrayness is not taken into account, each element is backed by a separate buffer.
+    int getBlockSize(const TType& blockType)
     {
-        bool block = base->getBasicType() == EbtBlock;
+        int size = 0;
+        const TTypeList& memberList = *blockType.getStruct();        
+        int memberSize;
+        for (size_t m = 0; m < memberList.size(); ++m) {
+            int memberAlignment = getBaseAlignment(*memberList[m].type, memberSize, blockType.getQualifier().layoutPacking == ElpStd140);
+            align(size, memberAlignment);
+            size += memberSize;
+        }
+
+        return size;
+    }
+
+    // Add a complex uniform reference where blocks/struct/arrays are involved in the access.
+    // Handles the situation where the left node is at too coarse a granularity to be a single 
+    // uniform, while the result of the operation at 'node' is at the right granuarity.
+    //
+    // Note: Simpler things like the following are already handled elsewhere:
+    //  - a simple non-array, non-struct variable
+    //  - a variable that's an array of non-struct
+    //
+    // So, this code is for cases like 
+    //   - a struct/block holding a member (member is array or not)
+    //   - an array of struct
+    //   - structs/arrays containing the above
+    //
+    void addDereferencedUniform(TIntermSymbol* base, TIntermBinary* topNode)
+    {
         int offset = -1;
         int blockIndex = -1;
         bool anonymous = false;
+
+        // See if we need to record the block itself
+        bool block = base->getBasicType() == EbtBlock;
         if (block) {
+            // TODO: how is an array of blocks handled differently?
             anonymous = base->getName().compare(0, 6, "__anon") == 0;
             const TString& blockName = anonymous ? base->getType().getTypeName() : base->getName();
             TReflection::TNameToIndex::const_iterator it = reflection.nameToIndex.find(blockName);
             if (it == reflection.nameToIndex.end()) {
                 blockIndex = reflection.indexToUniformBlock.size();
                 reflection.nameToIndex[blockName] = blockIndex;
-                reflection.indexToUniformBlock.push_back(TObjectReflection(blockName, -1,  -1, 1, -1));
+                reflection.indexToUniformBlock.push_back(TObjectReflection(blockName, offset,  -1, getBlockSize(base->getType()), -1));
             } else
                 blockIndex = it->second;
         }
-        TString name;
 
-        switch (node->getOp()) {
-        case EOpIndexDirect:
-        case EOpIndexIndirect:
-            // TODO: reflection: handle array dereferences
-            //name = base->getName();
-            //name.append("[]");
-            break;
-        case EOpIndexDirectStruct:
-        {
-            if (! anonymous) {
-                name = base->getName();
-                name.append(".");
+        // Process the dereference chain, backward, accumulating the pieces on a stack
+        if (block)
+            offset = 0;
+        std::list<TString> derefs;
+        for (TIntermBinary* visitNode = topNode; visitNode; visitNode = visitNode->getLeft()->getAsBinaryNode()) {
+            int index;
+            switch (visitNode->getOp()) {
+            case EOpIndexIndirect:
+                // TODO handle indirect references in mid-chain: enumerate all possibilities?
+                derefs.push_back(TString("[") + String(0) + "]");
+                break;
+            case EOpIndexDirect:
+                // TODO: reflection: track the highest used index for an array, to reduce the array's size
+                index = visitNode->getRight()->getAsConstantUnion()->getConstArray()[0].getIConst();
+                derefs.push_back(TString("[") + String(index) + "]");
+                break;
+            case EOpIndexDirectStruct:
+                index = visitNode->getRight()->getAsConstantUnion()->getConstArray()[0].getIConst();
+                if (block)
+                    offset += getBlockMemberOffset(visitNode->getLeft()->getType(), index);
+                derefs.push_back(TString(""));
+                if (visitNode->getLeft()->getAsSymbolNode() != base || ! anonymous)
+                    derefs.back().append(".");
+                derefs.back().append((*visitNode->getLeft()->getType().getStruct())[index].type->getFieldName().c_str());
+                break;
+            default:
+                break;
             }
-            int structIndex = node->getRight()->getAsConstantUnion()->getConstArray()[0].getIConst();
-            if (block)
-                offset = getBlockMemberOffset(base->getType(), structIndex);
-            name.append((*base->getType().getStruct())[structIndex].type->getFieldName().c_str());
-            break;
-        }
-        default:
-            break;
         }
 
-        // TODO: reflection: handle deeper dereference chains than just one dereference
+        // Put the dereference chain together, forward (reversing the stack)
+        TString name;
+        if (! anonymous)
+            name = base->getName();
+        while (! derefs.empty()) {
+            name += derefs.back();
+            derefs.pop_back();
+        }
 
         if (name.size() > 0) {
             if (reflection.nameToIndex.find(name) == reflection.nameToIndex.end()) {
                 reflection.nameToIndex[name] = reflection.indexToUniform.size();                        
-                reflection.indexToUniform.push_back(TObjectReflection(name, offset, mapToGlType(node->getType()), mapToGlArraySize(node->getType()), blockIndex));
+                reflection.indexToUniform.push_back(TObjectReflection(name, offset, mapToGlType(topNode->getType()), mapToGlArraySize(topNode->getType()), blockIndex));
             }
         }
     }
@@ -585,7 +629,8 @@ bool LiveBinary(bool /* preVisit */, TIntermBinary* node, TIntermTraverser* it)
         // this operation, and pick it up when the left side is visited.
         if (! oit->isReflectionGranularity(node->getLeft()->getType()) &&
             oit->isReflectionGranularity(node->getType())) {            
-            // right granularity; see if this really is a uniform-based dereference
+            // right granularity; see if this really is a uniform-based dereference,
+            // and if so, process it
             TIntermSymbol* base = oit->findBase(node);
             if (base && base->getQualifier().storage == EvqUniform)
                 oit->addDereferencedUniform(base, node);
@@ -660,23 +705,19 @@ bool TReflection::addStage(EShLanguage, const TIntermediate& intermediate)
 void TReflection::dump()
 {
     printf("Uniform reflection:\n");
-    for (size_t i = 0; i < indexToUniform.size(); ++i) {
-        printf("%d: ", (int)i);
+    for (size_t i = 0; i < indexToUniform.size(); ++i)
         indexToUniform[i].dump();
-    }
     printf("\n");
 
     printf("Uniform block reflection:\n");
-    for (size_t i = 0; i < indexToUniformBlock.size(); ++i) {
-        printf("%d: ", (int)i);
+    for (size_t i = 0; i < indexToUniformBlock.size(); ++i)
         indexToUniformBlock[i].dump();
-    }
     printf("\n");
 
-    printf("Live names\n");
-    for (TNameToIndex::const_iterator it = nameToIndex.begin(); it != nameToIndex.end(); ++it)
-        printf("%s: %d\n", it->first.c_str(), it->second);
-    printf("\n");
+    //printf("Live names\n");
+    //for (TNameToIndex::const_iterator it = nameToIndex.begin(); it != nameToIndex.end(); ++it)
+    //    printf("%s: %d\n", it->first.c_str(), it->second);
+    //printf("\n");
 }
 
 } // end namespace glslang

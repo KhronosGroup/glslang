@@ -8,60 +8,39 @@ Linked vertex stage:
 
 
 Uniform reflection:
-0: image_ui2D: offset -1, type 9063, arraySize 1, index -1
-1: sampler_2D: offset -1, type 8b5e, arraySize 1, index -1
-2: sampler_2DMSArray: offset -1, type 910b, arraySize 1, index -1
-3: anonMember3: offset 80, type 8b52, arraySize 1, index 0
-4: s.a: offset -1, type 1404, arraySize 1, index -1
-5: ablock.scalar: offset 12, type 1404, arraySize 1, index 1
-6: m23: offset 16, type 8b67, arraySize 1, index 0
-7: scalarAfterm23: offset 48, type 1404, arraySize 1, index 0
-8: c_m23: offset 16, type 8b67, arraySize 1, index 2
-9: c_scalarAfterm23: offset 64, type 1404, arraySize 1, index 2
-10: scalarBeforeArray: offset 96, type 1404, arraySize 1, index 0
-11: floatArray: offset 112, type 1406, arraySize 5, index 0
-12: scalarAfterArray: offset 192, type 1404, arraySize 1, index 0
-13: ablock.memvec2: offset 48, type 8b50, arraySize 1, index 1
-14: ablock.memf1: offset 56, type 1406, arraySize 1, index 1
-15: ablock.memf2: offset 60, type 8b56, arraySize 1, index 1
-16: ablock.memf3: offset 64, type 1404, arraySize 1, index 1
-17: ablock.memvec2a: offset 72, type 8b50, arraySize 1, index 1
-18: anonMember1: offset 0, type 8b51, arraySize 1, index 0
-19: uf1: offset -1, type 1406, arraySize 1, index -1
-20: uf2: offset -1, type 1406, arraySize 1, index -1
-21: ablock.member3: offset 32, type 8b52, arraySize 1, index 1
+image_ui2D: offset -1, type 9063, size 1, index -1
+sampler_2D: offset -1, type 8b5e, size 1, index -1
+sampler_2DMSArray: offset -1, type 910b, size 1, index -1
+anonMember3: offset 80, type 8b52, size 1, index 0
+s.a: offset -1, type 1404, size 1, index -1
+ablock.scalar: offset 12, type 1404, size 1, index 1
+m23: offset 16, type 8b67, size 1, index 0
+scalarAfterm23: offset 48, type 1404, size 1, index 0
+c_m23: offset 16, type 8b67, size 1, index 2
+c_scalarAfterm23: offset 64, type 1404, size 1, index 2
+scalarBeforeArray: offset 96, type 1404, size 1, index 0
+floatArray: offset 112, type 1406, size 5, index 0
+scalarAfterArray: offset 192, type 1404, size 1, index 0
+ablock.memvec2: offset 48, type 8b50, size 1, index 1
+ablock.memf1: offset 56, type 1406, size 1, index 1
+ablock.memf2: offset 60, type 8b56, size 1, index 1
+ablock.memf3: offset 64, type 1404, size 1, index 1
+ablock.memvec2a: offset 72, type 8b50, size 1, index 1
+ablock.m22: offset 80, type 8b5a, size 7, index 1
+dm22: offset -1, type 8b5a, size 10, index -1
+m22: offset 208, type 8b5a, size 9, index 0
+nest.foo.n1.a: offset 0, type 1406, size 1, index 3
+nest.foo.n2.b: offset 16, type 1406, size 1, index 3
+nest.foo.n2.c: offset 20, type 1406, size 1, index 3
+nest.foo.n2.d: offset 24, type 1406, size 1, index 3
+anonMember1: offset 0, type 8b51, size 1, index 0
+uf1: offset -1, type 1406, size 1, index -1
+uf2: offset -1, type 1406, size 1, index -1
+ablock.member3: offset 32, type 8b52, size 1, index 1
 
 Uniform block reflection:
-0: nameless: offset -1, type ffffffff, arraySize 1, index -1
-1: ablock: offset -1, type ffffffff, arraySize 1, index -1
-2: c_nameless: offset -1, type ffffffff, arraySize 1, index -1
-
-Live names
-ablock: 1
-ablock.member3: 21
-ablock.memf1: 14
-ablock.memf2: 15
-ablock.memf3: 16
-ablock.memvec2: 13
-ablock.memvec2a: 17
-ablock.scalar: 5
-anonMember1: 18
-anonMember3: 3
-c_m23: 8
-c_nameless: 2
-c_scalarAfterm23: 9
-floatArray: 11
-image_ui2D: 0
-liveFunction1(uI21;s21;sA21;: -1
-liveFunction2(: -1
-m23: 6
-nameless: 0
-s.a: 4
-sampler_2D: 1
-sampler_2DMSArray: 2
-scalarAfterArray: 12
-scalarAfterm23: 7
-scalarBeforeArray: 10
-uf1: 19
-uf2: 20
+nameless: offset -1, type ffffffff, size 496, index -1
+ablock: offset -1, type ffffffff, size 304, index -1
+c_nameless: offset -1, type ffffffff, size 112, index -1
+nest: offset -1, type ffffffff, size 28, index -1
 

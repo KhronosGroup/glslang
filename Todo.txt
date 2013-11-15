@@ -20,6 +20,7 @@ Link Validation
       - 4.3: Allow mismatches in interpolation and auxiliary qualification across stages.
 	  - 4.4: A stage contains two different blocks, each with no instance name, where the blocks contain a member with the same name.
     Intra-stage linking, single shader
+      + recursion for functions
       - limits checking:
           - number of texture image units
           - texel offsets (or compile-time?)
@@ -34,28 +35,27 @@ Link Validation
       + Non ES: geometry shader input array sizes and input layout qualifier declaration
       - Non ES: read or write to both gl_ClipVertex and gl_ClipDistance
       - Non ES: write to only one of gl_FragColor, gl_FragData, or user-declared
+      + 1.50: match between all explicit input array sizes and input primitive
       - 1.50: at least one geometry shader says input primitive and at least one says output primitive...
       - 1.50: at least one geometry shader says max_vertices...
       - 1.50: geometry shaders: max_vertices must be checked against gl_MaxGeometryOutputVertices (maybe at compile time)
       + 1.50: origin_upper_left and pixel_center_integer have to match
+      - Even the potential for recursion through subroutine uniforms is an error.
 	  - 4.4: An interface contains two different blocks, each with no instance name, where the blocks contain a member with the same name.
 	  - 4.4: component aliasing (except desktop vertex shader inputs)
-    Intra-stage linking, multiple shader
-      + Non ES: type consistency check of uniforms, globals, ins, and outs
-      + Non ES: value checking of global const initializers
-      + Non ES: value checking of uniform initializers
-      + Non ES: location match
-      + recursion for functions
-      - Non ES: block matching
-      - Non ES: component/binding/index/offset match check
-      - Non ES: compute shader layout(local_size_*) matching
+      - 4.4: overlapping transform/feedback offsets, offset/stride overflow checks, and stride matching
+    Intra-stage linking, multiple shader (Non-ES)
+      + type consistency check of uniforms, globals, ins, and outs
+      + value checking of global const initializers
+      + value checking of uniform initializers
+      + location match
+      - block matching
+      - component/binding/index/offset match check
+      - compute shader layout(local_size_*) matching
       + mixed es/non-es profiles are an error
-      - Non ES: Even the potential for recursion through subroutine uniforms is an error.
-      - Non ES: matching redeclarations of interface blocks
-      - 1.50: match between all explicit input array sizes and input primitive
+      - matching redeclarations of interface blocks
       - 4.3: early_fragment_tests contradictions
       - 4.3: implicit array sizing is cross shader within a stage
-      - 4.4: overlapping transform/feedback offsets, offset/stride overflow checks, and stride matching
 	  - 4.4: If gl_FragCoord is redeclared in any fragment shader in a program, it must be redeclared in all the fragment shaders in that program that have a static use gl_FragCoord
 
 Shader Functionality to Implement/Finish
