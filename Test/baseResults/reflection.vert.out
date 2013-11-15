@@ -19,7 +19,7 @@ scalarAfterm23: offset 48, type 1404, size 1, index 0
 c_m23: offset 16, type 8b67, size 1, index 2
 c_scalarAfterm23: offset 64, type 1404, size 1, index 2
 scalarBeforeArray: offset 96, type 1404, size 1, index 0
-floatArray: offset 112, type 1406, size 5, index 0
+floatArray: offset 112, type 1406, size 3, index 0
 scalarAfterArray: offset 192, type 1404, size 1, index 0
 ablock.memvec2: offset 48, type 8b50, size 1, index 1
 ablock.memf1: offset 56, type 1406, size 1, index 1
@@ -27,8 +27,8 @@ ablock.memf2: offset 60, type 8b56, size 1, index 1
 ablock.memf3: offset 64, type 1404, size 1, index 1
 ablock.memvec2a: offset 72, type 8b50, size 1, index 1
 ablock.m22: offset 80, type 8b5a, size 7, index 1
-dm22: offset -1, type 8b5a, size 10, index -1
-m22: offset 208, type 8b5a, size 9, index 0
+dm22: offset -1, type 8b5a, size 4, index -1
+m22: offset 208, type 8b5a, size 3, index 0
 nest.foo.n1.a: offset 0, type 1406, size 1, index 3
 nest.foo.n2.b: offset 16, type 1406, size 1, index 3
 nest.foo.n2.c: offset 20, type 1406, size 1, index 3

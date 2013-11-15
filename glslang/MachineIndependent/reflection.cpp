@@ -235,21 +235,41 @@ public:
         return size;
     }
 
-    // Add a complex uniform reference where blocks/struct/arrays are involved in the access.
-    // Handles the situation where the left node is at too coarse a granularity to be a single 
-    // uniform, while the result of the operation at 'node' is at the right granuarity.
+    // Add a uniform dereference where blocks/struct/arrays are involved in the access.
+    // Handles the situation where the left node is at the correct or too coarse a
+    // granularity for reflection.  (That is, further dereferences up the tree will be 
+    // skipped.) Earlier dereferences, down the tree, will be handled
+    // at the same time, and logged to prevent reprocessing as the tree is traversed.
     //
-    // Note: Simpler things like the following are already handled elsewhere:
-    //  - a simple non-array, non-struct variable
-    //  - a variable that's an array of non-struct
+    // Note: Other things like the following must be caught elsewhere:
+    //  - a simple non-array, non-struct variable (no dereference even conceivable)
+    //  - an aggregrate consumed en masse, without a dereference
     //
     // So, this code is for cases like 
-    //   - a struct/block holding a member (member is array or not)
+    //   - a struct/block dereferencing a member (whether the member is array or not)
     //   - an array of struct
     //   - structs/arrays containing the above
     //
-    void addDereferencedUniform(TIntermSymbol* base, TIntermBinary* topNode)
+    void addDereferencedUniform(TIntermBinary* topNode)
     {
+        // See if too fine-grained to process (wait to get further down the tree)
+        const TType& leftType = topNode->getLeft()->getType();
+        if ((leftType.isVector() || leftType.isMatrix()) && ! leftType.isArray())
+            return;
+
+        // We have an array or structure or block dereference, see if it's a uniform 
+        // based dereference (if not, skip it).
+        TIntermSymbol* base = findBase(topNode);
+        if (! base || base->getQualifier().storage != EvqUniform)
+            return;
+            
+        // See if we've already processed this (e.g., in the middle of something 
+        // we did earlier), and if so skip it
+        if (processedDerefs.find(topNode) != processedDerefs.end())
+            return;
+
+        // Process this uniform dereference
+
         int offset = -1;
         int blockIndex = -1;
         bool anonymous = false;
@@ -269,21 +289,49 @@ public:
                 blockIndex = it->second;
         }
 
-        // Process the dereference chain, backward, accumulating the pieces on a stack
+        // If the derefenced entity to record is an array, note the maximum array size.
+        int maxArraySize;
+        const TType* reflectionType;
+        if (isReflectionGranularity(topNode->getLeft()->getType()) && topNode->getLeft()->isArray()) {
+            reflectionType = &topNode->getLeft()->getType();
+            switch (topNode->getOp()) {
+            case EOpIndexIndirect:
+                maxArraySize = topNode->getLeft()->getType().getArraySize();
+                break;
+            case EOpIndexDirect:
+                maxArraySize = topNode->getRight()->getAsConstantUnion()->getConstArray()[0].getIConst() + 1;
+                break;
+            default:
+                assert(0);
+                maxArraySize = 1;
+                break;
+            }
+        } else {
+            reflectionType = &topNode->getType();
+            maxArraySize = 1;
+        }
+
+        // TODO: fully expand a partially dereferenced aggregate
+
+        // Process the dereference chain, backward, accumulating the pieces on a stack.
+        // If the topNode is a simple array dereference, don't include that.
         if (block)
             offset = 0;
         std::list<TString> derefs;
         for (TIntermBinary* visitNode = topNode; visitNode; visitNode = visitNode->getLeft()->getAsBinaryNode()) {
+            processedDerefs.insert(visitNode);
             int index;
             switch (visitNode->getOp()) {
             case EOpIndexIndirect:
                 // TODO handle indirect references in mid-chain: enumerate all possibilities?
-                derefs.push_back(TString("[") + String(0) + "]");
+                if (! isReflectionGranularity(visitNode->getLeft()->getType()))
+                    derefs.push_back(TString("[") + String(0) + "]");
                 break;
             case EOpIndexDirect:
-                // TODO: reflection: track the highest used index for an array, to reduce the array's size
-                index = visitNode->getRight()->getAsConstantUnion()->getConstArray()[0].getIConst();
-                derefs.push_back(TString("[") + String(index) + "]");
+                if (! isReflectionGranularity(visitNode->getLeft()->getType())) {
+                    index = visitNode->getRight()->getAsConstantUnion()->getConstArray()[0].getIConst();
+                    derefs.push_back(TString("[") + String(index) + "]");
+                }
                 break;
             case EOpIndexDirectStruct:
                 index = visitNode->getRight()->getAsConstantUnion()->getConstArray()[0].getIConst();
@@ -311,7 +359,7 @@ public:
         if (name.size() > 0) {
             if (reflection.nameToIndex.find(name) == reflection.nameToIndex.end()) {
                 reflection.nameToIndex[name] = reflection.indexToUniform.size();                        
-                reflection.indexToUniform.push_back(TObjectReflection(name, offset, mapToGlType(topNode->getType()), mapToGlArraySize(topNode->getType()), blockIndex));
+                reflection.indexToUniform.push_back(TObjectReflection(name, offset, mapToGlType(*reflectionType), maxArraySize, blockIndex));
             }
         }
     }
@@ -595,6 +643,7 @@ public:
     TFunctionStack functions;
     const TIntermediate& intermediate;
     TReflection& reflection;
+    std::set<TIntermNode*> processedDerefs;
 };
 
 const int TLiveTraverser::baseAlignmentVec4Std140 = 16;
@@ -617,6 +666,7 @@ bool LiveAggregate(bool /* preVisit */, TIntermAggregate* node, TIntermTraverser
 }
 
 // To catch dereferenced aggregates that must be reflected.
+// This catches them at the highest level possible in the tree.
 bool LiveBinary(bool /* preVisit */, TIntermBinary* node, TIntermTraverser* it)
 {
     TLiveTraverser* oit = static_cast<TLiveTraverser*>(it);
@@ -625,24 +675,18 @@ bool LiveBinary(bool /* preVisit */, TIntermBinary* node, TIntermTraverser* it)
     case EOpIndexDirect:
     case EOpIndexIndirect:
     case EOpIndexDirectStruct:
-        // If the left side is already small enough granularity to report, ignore
-        // this operation, and pick it up when the left side is visited.
-        if (! oit->isReflectionGranularity(node->getLeft()->getType()) &&
-            oit->isReflectionGranularity(node->getType())) {            
-            // right granularity; see if this really is a uniform-based dereference,
-            // and if so, process it
-            TIntermSymbol* base = oit->findBase(node);
-            if (base && base->getQualifier().storage == EvqUniform)
-                oit->addDereferencedUniform(base, node);
-        }
+        oit->addDereferencedUniform(node);
+        break;
     default:
         break;
     }
 
-    return true;  // still need to visit everything below
+    // still need to visit everything below, which could contain sub-expressions 
+    // containing different uniforms
+    return true;
 }
 
-// To catch non-dereferenced objects that must be reflected.
+// To reflect non-dereferenced objects.
 void LiveSymbol(TIntermSymbol* symbol, TIntermTraverser* it)
 {
     TLiveTraverser* oit = static_cast<TLiveTraverser*>(it);
