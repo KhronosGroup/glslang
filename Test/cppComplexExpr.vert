@@ -1,6 +1,6 @@
+#version 300 es
 #define ON1
 #define ON2
-
 float sum = 0.0;
 
 void main()
@@ -46,6 +46,34 @@ float foo()
     return ADD(gl_Position.xyxwx, 3.0)  // ERROR, should be this line number
     return ADD(gl_Position.y, 3.0)
 }
+
+#define BIG aonetuhanoethuanoenaoethu snaoetuhs onethausoentuas hnoethaueohnatuoeh santuoehsantouhe snathoensuta hsnoethuasntoe hsnuathoesnuathoenstuh nsoethantseuh toae ua \
+    antoeh uantheount oentahoent uahnsoethasnutoehansteuo santhu sneoathu snoethasnut oesanthoesna thusenotha nsthasunoeth ausntehsunathoensuathoesnta uhnsoetha usntoeh uanhs unosethu \
+    antoehunatoehu natoehua oentha neotuhan toehu natoehu ntahoe nutah eu natoheunathoen uasoenuasoent asntoehsan tuosnthnu aohenuath eontha untoh eunth unth anth unth nth nth nt \
+    a ntoehanu tunth nsont uhansoethausn oehsanthnt heauo eanthuo sh nahnoethansu tohe sanuthoe snathuoesntha snuothe anthusonehtasuntoeh asnuthonsa teauhntoeha onetuha nth \
+    anoethuan toentauh noethauntohe anuthoe nathu noethaun oethanuthoe nathuoe ntahu enotha unetha ntuhenaothu enotahun eotha ntoehu aoehuntha enotuh aonethau noethu anoethuna toheua \
+    ontehanutoe hnuathoena aoteha aonetuha 
+
+// identical
+#define BIG aonetuhanoethuanoenaoethu snaoetuhs onethausoentuas hnoethaueohnatuoeh santuoehsantouhe snathoensuta hsnoethuasntoe hsnuathoesnuathoenstuh nsoethantseuh toae ua \
+    antoeh uantheount oentahoent uahnsoethasnutoehansteuo santhu sneoathu snoethasnut oesanthoesna thusenotha nsthasunoeth ausntehsunathoensuathoesnta uhnsoetha usntoeh uanhs unosethu \
+    antoehunatoehu natoehua oentha neotuhan toehu natoehu ntahoe nutah eu natoheunathoen uasoenuasoent asntoehsan tuosnthnu aohenuath eontha untoh eunth unth anth unth nth nth nt \
+    a ntoehanu tunth nsont uhansoethausn oehsanthnt heauo eanthuo sh nahnoethansu tohe sanuthoe snathuoesntha snuothe anthusonehtasuntoeh asnuthonsa teauhntoeha onetuha nth \
+    anoethuan toentauh noethauntohe anuthoe nathu noethaun oethanuthoe nathuoe ntahu enotha unetha ntuhenaothu enotahun eotha ntoehu aoehuntha enotuh aonethau noethu anoethuna toheua \
+    ontehanutoe hnuathoena aoteha aonetuha 
+
+// ERROR, one character different
+#define BIG aonetuhanoethuanoenaoethu snaoetuhs onethausoentuas hnoethaueohnatuoeh santuoehsantouhe snathoensuta hsnoethuasntoe hsnuathoesnuathoenstuh nsoethantseuh toae ua \
+    antoeh uantheount oentahoent uahnsoethasnutoehansteuo santhu sneoathu snoethasnut oesanthoesna thusenotha nsthasunoeth ausntehsunathoensuathoesnta uhnsoetha usntoeh uanhs unosethu \
+    antoehunatoehu natoehua oentha neotuhan toehu natoehu ntahoe nutah eu natoheunathoen uasoenuasoent asntoehsan tuosnthnu aohenuath eontha untoh eunth unth anth unth nth nth nt \
+    a ntoehanu tunth nsont uhansoethasn oehsanthnt heauo eanthuo sh nahnoethansu tohe sanuthoe snathuoesntha snuothe anthusonehtasuntoeh asnuthonsa teauhntoeha onetuha nth \
+    anoethuan toentauh noethauntohe anuthoe nathu noethaun oethanuthoe nathuoe ntahu enotha unetha ntuhenaothu enotahun eotha ntoehu aoehuntha enotuh aonethau noethu anoethuna toheua \
+    ontehanutoe hnuathoena aoteha aonetuha 
+
+#define BIGARGS1(aonthanotehu, bonthanotehu, conthanotehu, donthanotehu, eonthanotehu, fonthanotehu, gonthanotehu, honthanotehu, ionthanotehu, jonthanotehu, konthanotehu) jonthanotehu
+#define BIGARGS2(aonthanotehu, bonthanotehu, conthanotehu, donthanotehu, eonthanotehu, fonthanotehu, gonthanotehu, honthanotehu, ionthanotehu, jonthanotehu, konthanotehu) jonthanotehu
+#define BIGARGS3(aonthanotehu, bonthanotehu, conthanotehu, donthanotehu, eonthanotehu, fonthanotehu, gonthanotehu, honthanotehu, ionthanotehu, jonthanotehu, konthanotehu) jonthanotehu
+#define BIGARGS4(aonthanotehu, bonthanotehu, conthanotehu, donthanotehu, eonthanotehu, fonthanotehu, gonthanotehu, honthanotehu, ionthanotehu, jonthanotehu, konthanotehu) jonthanotehu
 
 #if 0
 // ERROR, EOF

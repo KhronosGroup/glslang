@@ -90,10 +90,6 @@ NVIDIA HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "PpContext.h"
 #include "PpTokens.h"
 
-/* Don't use memory.c's replacements, as we clean up properly here */
-#undef malloc
-#undef free
-
 namespace glslang {
 
 int TPpContext::InitCPP()
@@ -129,19 +125,11 @@ int TPpContext::InitCPP()
     return 1;
 }
 
-int TPpContext::FinalCPP()
-{
-    mem_FreePool(pool);
-
-    return 1;
-}
-
 int TPpContext::CPPdefine(TPpToken* ppToken)
 {
     int token, atom, args[maxMacroArgs], argc;
     MacroSymbol mac;
     Symbol *symb;
-    memset(&mac, 0, sizeof(mac));
     token = currentInput->scan(this, currentInput, ppToken);
     if (token != CPP_IDENTIFIER) {
         parseContext.error(ppToken->loc, "must be followed by macro name", "#define", "");
@@ -194,7 +182,7 @@ int TPpContext::CPPdefine(TPpToken* ppToken)
         token = currentInput->scan(this, currentInput, ppToken);
     }
     TSourceLoc defineLoc = ppToken->loc; // because ppToken is going to go to the next line before we report errors
-    mac.body = NewTokenStream(pool);
+    mac.body = new TokenStream;
     while (token != '\n') {
         if (token == '\\') {
             parseContext.lineContinuationCheck(ppToken->loc);
@@ -243,6 +231,7 @@ int TPpContext::CPPdefine(TPpToken* ppToken)
     } else {
         symb = AddSymbol(atom);
     }
+    delete symb->mac.body;
     symb->mac = mac;
 
     return '\n';
@@ -857,17 +846,12 @@ int TPpContext::readCPPline(TPpToken * ppToken)
     return token;
 }
 
-void TPpContext::FreeMacro(MacroSymbol *s) {
-    DeleteTokenStream(s->body);
-}
-
 int eof_scan(TPpContext*, TPpContext::InputSrc* in, TPpToken* ppToken) { return -1; }
 void noop(TPpContext*, TPpContext::InputSrc* in, int ch, TPpToken* ppToken) { }
 
 void TPpContext::PushEofSrc()
 {
-    InputSrc *in = (InputSrc*)malloc(sizeof(InputSrc));
-    memset(in, 0, sizeof(InputSrc));
+    InputSrc *in = new InputSrc;
     in->scan = eof_scan;
     in->getch = eof_scan;
     in->ungetch = noop;
@@ -880,7 +864,7 @@ void TPpContext::PopEofSrc()
     if (currentInput->scan == eof_scan) {
         InputSrc *in = currentInput;
         currentInput = in->prev;
-        free(in);
+        delete in;
     }
 }
 
@@ -896,7 +880,7 @@ TPpContext::TokenStream* TPpContext::PrescanMacroArg(TokenStream *a, TPpToken * 
     } while (token != EOF);
     if (token == EOF)
         return a;
-    n = NewTokenStream(0);
+    n = new TokenStream;
     PushEofSrc();
     ReadFromTokenStream(a, 0, 0);
     while ((token = currentInput->scan(this, currentInput, ppToken)) > 0) {
@@ -905,7 +889,7 @@ TPpContext::TokenStream* TPpContext::PrescanMacroArg(TokenStream *a, TPpToken * 
         RecordToken(n, token, ppToken);
     }
     PopEofSrc();
-    DeleteTokenStream(a);
+    delete a;
 
     return n;
 }
@@ -917,9 +901,9 @@ TPpContext::TokenStream* TPpContext::PrescanMacroArg(TokenStream *a, TPpToken * 
 /* 
 ** return the next token for a macro expansion, handling macro args 
 */
-int TPpContext::macro_scan(TPpContext* pp, TPpContext::InputSrc* inInput, TPpToken* ppToken) 
+int TPpContext::macro_scan(TPpContext* pp, InputSrc* inInput, TPpToken* ppToken) 
 {
-    TPpContext::MacroInputSrc* in = (TPpContext::MacroInputSrc*)inInput;
+    MacroInputSrc* in = (TPpContext::MacroInputSrc*)inInput;
 
     int i;
     int token;
@@ -942,13 +926,8 @@ int TPpContext::macro_scan(TPpContext* pp, TPpContext::InputSrc* inInput, TPpTok
         return token;
 
     in->mac->busy = 0;
-    pp->currentInput = in->base.prev;
-    if (in->args) {
-        for (i=in->mac->argc-1; i>=0; i--)
-            pp->DeleteTokenStream(in->args[i]);
-        free(in->args);
-    }
-    free(in);
+    pp->currentInput = in->prev;
+    delete in;
 
     return pp->currentInput->scan(pp, pp->currentInput, ppToken);
 }
@@ -962,8 +941,8 @@ int TPpContext::zero_scan(TPpContext* pp, InputSrc *inInput, TPpToken* ppToken)
     ppToken->ival = 0;
 
     // pop input
-    pp->currentInput = in->base.prev;
-    free(in);
+    pp->currentInput = in->prev;
+    delete in;
 
     return CPP_INTCONSTANT;
 }
@@ -1015,19 +994,18 @@ int TPpContext::MacroExpand(int atom, TPpToken* ppToken, int expandUndef)
     if ((! sym || sym->mac.undef) && ! expandUndef)
         return 0;
 
-    in = (MacroInputSrc*)malloc(sizeof(*in));
-    memset(in, 0, sizeof(*in));
+    in = new MacroInputSrc;
 
     if ((! sym || sym->mac.undef) && expandUndef) {
         // push input
-        in->base.scan = zero_scan;
-        in->base.prev = currentInput;
-        currentInput = &in->base;
+        in->scan = zero_scan;
+        in->prev = currentInput;
+        currentInput = in;
 
         return -1;
     }
 
-    in->base.scan = macro_scan;
+    in->scan = macro_scan;
     in->mac = &sym->mac;
     if (sym->mac.args) {
         token = currentInput->scan(this, currentInput, ppToken);
@@ -1037,9 +1015,9 @@ int TPpContext::MacroExpand(int atom, TPpToken* ppToken, int expandUndef)
 
             return 0;
         }
-        in->args = (TokenStream**)malloc(in->mac->argc * sizeof(TokenStream *));
+        in->args.resize(in->mac->argc);
         for (i = 0; i < in->mac->argc; i++)
-            in->args[i] = NewTokenStream(0);
+            in->args[i] = new TokenStream;
         i = 0;
         j = 0;
         do {
@@ -1086,16 +1064,15 @@ int TPpContext::MacroExpand(int atom, TPpToken* ppToken, int expandUndef)
             }
             parseContext.error(ppToken->loc, "Too many args in Macro", "preprocessor", GetAtomString(atom));
         }
-        for (i = 0; i<in->mac->argc; i++) {
+        for (i = 0; i < in->mac->argc; i++)
             in->args[i] = PrescanMacroArg(in->args[i], ppToken);
-        }
     }
 
     /*retain the input source*/
-    in->base.prev = currentInput;
+    in->prev = currentInput;
     sym->mac.busy = 1;
     RewindTokenStream(sym->mac.body);
-    currentInput = &in->base;
+    currentInput = in;
 
     return 1;
 }

@@ -96,36 +96,9 @@ NVIDIA HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 namespace glslang {
 
-TPpContext::TokenBlock* TPpContext::lNewBlock(TokenStream *fTok, MemoryPool *pool)
-{
-    TokenBlock *lBlock;
-
-    if (!pool)
-        lBlock = (TokenBlock *) malloc(sizeof(TokenBlock) + 256);
-    else
-        lBlock = (TokenBlock *) mem_Alloc(pool, sizeof(TokenBlock) + 256);
-    lBlock->count = 0;
-    lBlock->current = 0;
-    lBlock->data = (unsigned char *) lBlock + sizeof(TokenBlock);
-    lBlock->max = 256;
-    lBlock->next = NULL;
-    if (fTok->head) {
-        fTok->current->next = lBlock;
-    } else {
-        fTok->head = lBlock;
-    }
-    fTok->current = lBlock;
-
-    return lBlock;
-}
-
 void TPpContext::lAddByte(TokenStream *fTok, unsigned char fVal)
 {
-    TokenBlock *lBlock;
-    lBlock = fTok->current;
-    if (lBlock->count >= lBlock->max)
-        lBlock = lNewBlock(fTok, 0);
-    lBlock->data[lBlock->count++] = fVal;
+    fTok->data.push_back(fVal);
 }
 
 /*
@@ -133,54 +106,10 @@ void TPpContext::lAddByte(TokenStream *fTok, unsigned char fVal)
 */
 int TPpContext::lReadByte(TokenStream *pTok)
 {
-    TokenBlock *lBlock;
-    int lval = -1;
-
-    lBlock = pTok->current;
-    if (lBlock) {
-        if (lBlock->current >= lBlock->count) {
-            lBlock = lBlock->next;
-            if (lBlock)
-                lBlock->current = 0;
-            pTok->current = lBlock;
-        }
-        if (lBlock)
-            lval = lBlock->data[lBlock->current++];
-    }
-    return lval;
-}
-
-//
-// Make a token stream (used for reprocessing macros).
-//
-TPpContext::TokenStream* TPpContext::NewTokenStream(MemoryPool *pool)
-{
-    TokenStream *pTok;
-
-    if (!pool)
-        pTok = (TokenStream *) malloc(sizeof(TokenStream));
+    if (pTok->current < pTok->data.size())
+        return pTok->data[pTok->current++];
     else
-        pTok = (TokenStream*)mem_Alloc(pool, sizeof(TokenStream));
-    pTok->next = NULL;
-    pTok->head = NULL;
-    pTok->current = NULL;
-    lNewBlock(pTok, pool);
-    return pTok;
-}
-
-void TPpContext::DeleteTokenStream(TokenStream *pTok)
-{
-    TokenBlock *pBlock, *nBlock;
-
-    if (pTok) {
-        pBlock = pTok->head;
-        while (pBlock) {
-            nBlock = pBlock->next;
-            free(pBlock);
-            pBlock = nBlock;
-        }
-        free(pTok);
-    }
+        return -1;
 }
 
 /*
@@ -227,10 +156,12 @@ void TPpContext::RecordToken(TokenStream *pTok, int token, TPpToken* ppToken)
 */
 void TPpContext::RewindTokenStream(TokenStream *pTok)
 {
-    if (pTok->head) {
-        pTok->current = pTok->head;
-        pTok->current->current = 0;
-    }
+    pTok->current = 0;
+
+    //if (pTok->head) {
+    //    pTok->current = pTok->head;
+    //    pTok->current->current = 0;
+    //}
 }
 
 /*
@@ -306,9 +237,9 @@ int TPpContext::scan_token(TPpContext* pp, TokenInputSrc *in, TPpToken * ppToken
     if (token > 0)
         return token;
     
-    pp->currentInput = in->base.prev;
+    pp->currentInput = in->prev;
     final = in->final;
-    free(in);
+    delete in;
     if (final && !final(pp))
         return -1;
 
@@ -317,14 +248,13 @@ int TPpContext::scan_token(TPpContext* pp, TokenInputSrc *in, TPpToken * ppToken
 
 int TPpContext::ReadFromTokenStream(TokenStream *ts, int name, int (*final)(TPpContext *))
 {
-    TokenInputSrc *in = (TokenInputSrc *) malloc(sizeof(TokenInputSrc));
-    memset(in, 0, sizeof(TokenInputSrc));
-    in->base.prev = currentInput;
-    in->base.scan = (int (*)(TPpContext*, InputSrc*, TPpToken*))scan_token;
+    TokenInputSrc* in = new TokenInputSrc;
+    in->prev = currentInput;
+    in->scan = (int (*)(TPpContext*, InputSrc*, TPpToken*))scan_token;
     in->tokens = ts;
     in->final = final;
     RewindTokenStream(ts);
-    currentInput = &in->base;
+    currentInput = in;
 
     return 1;
 }
@@ -333,20 +263,20 @@ int TPpContext::reget_token(TPpContext* pp, UngotToken *t, TPpToken * ppToken)
 {
     int token = t->token;
     *ppToken = t->lval;
-    pp->currentInput = t->base.prev;
-    free(t);
+    pp->currentInput = t->prev;
+    delete t;
+
     return token;
 }
 
 void TPpContext::UngetToken(int token, TPpToken* ppToken)
 {
-    UngotToken *t = (UngotToken *) malloc(sizeof(UngotToken));
-    memset(t, 0, sizeof(UngotToken));
+    UngotToken *t = new UngotToken;
     t->token = token;
     t->lval = *ppToken;
-    t->base.scan = (int(*)(TPpContext*, struct InputSrc *, TPpToken *))reget_token;
-    t->base.prev = currentInput;
-    currentInput = &t->base;
+    t->scan = (int(*)(TPpContext*, struct InputSrc *, TPpToken *))reget_token;
+    t->prev = currentInput;
+    currentInput = t;
 }
 
 } // end namespace glslang

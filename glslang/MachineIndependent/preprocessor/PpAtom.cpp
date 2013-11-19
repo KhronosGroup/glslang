@@ -90,10 +90,6 @@ NVIDIA HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "PpContext.h"
 #include "PpTokens.h"
 
-#undef malloc
-#undef realloc
-#undef free
-
 namespace {
 
 using namespace glslang;

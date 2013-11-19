@@ -87,10 +87,6 @@ NVIDIA HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define CHUNKSIZE       (64*1024)
 #define ALIGN           8
 
-// we need to call the `real' malloc and free, not our replacements
-#undef malloc
-#undef free
-
 namespace glslang {
 
 struct chunk {

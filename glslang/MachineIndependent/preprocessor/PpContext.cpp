@@ -97,20 +97,21 @@ TPpContext::TPpContext(TParseContext& pc) :
 
 TPpContext::~TPpContext()
 {
-    FinalCPP();
+    for (TSymbolMap::iterator it = symbols.begin(); it != symbols.end(); ++it)
+        delete it->second->mac.body;
+    mem_FreePool(pool);
     delete [] preamble;
 }
 
 void TPpContext::setInput(TInputScanner& input, bool versionWillBeError)
 {
-    StringInputSrc *in = (StringInputSrc *)malloc(sizeof(StringInputSrc));
-    memset(in, 0, sizeof(StringInputSrc));
+    StringInputSrc* in = new StringInputSrc;
     in->input = &input;
-    in->base.scan = sourceScan;
-    in->base.getch = (int (*)(TPpContext*, InputSrc *, TPpToken *))sourceGetCh;
-    in->base.ungetch = (void (*)(TPpContext*, InputSrc *, int, TPpToken *))sourceUngetCh;
-    in->base.prev = currentInput;
-    currentInput = &in->base;
+    in->scan = sourceScan;
+    in->getch = (int (*)(TPpContext*, InputSrc *, TPpToken *))sourceGetCh;
+    in->ungetch = (void (*)(TPpContext*, InputSrc *, int, TPpToken *))sourceUngetCh;
+    in->prev = currentInput;
+    currentInput = in;
     errorOnVersion = versionWillBeError;
 }
 

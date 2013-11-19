@@ -1,7 +1,8 @@
 ERROR: 0:46: 'xyxwx' : illegal vector field selection 
 ERROR: 0:46: 'xyxwx' : illegal vector field selection 
-ERROR: 0:51: '' : missing #endif 
-ERROR: 3 compilation errors.  No code generated.
+ERROR: 0:66: '#define' : Macro redefined; different substitutions: BIG
+ERROR: 0:79: '' : missing #endif 
+ERROR: 4 compilation errors.  No code generated.
 
 ERROR: node is still EOpNull!
 0:4  Sequence
@@ -65,4 +66,6 @@ ERROR: node is still EOpNull!
 0:47              3.000000
 0:?   Linker Objects
 0:?     'sum' (highp float)
+0:?     'gl_VertexID' (gl_VertexId highp int)
+0:?     'gl_InstanceID' (gl_InstanceId highp int)
 

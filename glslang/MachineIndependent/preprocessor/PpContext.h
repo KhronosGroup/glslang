@@ -126,24 +126,17 @@ public:
 
     // TODO: preprocessor simplification: this should be a base class, not a set of function pointers
     struct InputSrc {
+        InputSrc() : prev(0), scan(0), getch(0), ungetch(0) { }
         struct InputSrc	*prev;
         int			(*scan)(TPpContext*, struct InputSrc *, TPpToken *);
         int			(*getch)(TPpContext*, struct InputSrc *, TPpToken *);
         void		(*ungetch)(TPpContext*, struct InputSrc *, int, TPpToken *);
     };
 
-    struct TokenBlock {
-        TokenBlock *next;
-        int current;
-        int count;
-        int max;
-        unsigned char *data;
-    };
-
     struct TokenStream {
-        TokenStream *next;
-        TokenBlock *head;
-        TokenBlock *current;
+        TokenStream() : current(0) { }
+        TVector<unsigned char> data;
+        size_t current;
     };
 
     struct MemoryPool {
@@ -159,6 +152,7 @@ public:
     //
 
     struct MacroSymbol {
+        MacroSymbol() : argc(0), args(0), body(0), busy(0), undef(0) { }
         int argc;
         int *args;
         TokenStream *body;
@@ -201,10 +195,15 @@ protected:
     int elsetracker;              // #if-#else and #endif constructs...Counter.
     const char *ErrMsg;
 
-    struct MacroInputSrc {
-        InputSrc    base;
+    struct MacroInputSrc : public InputSrc {
+        MacroInputSrc() : mac(0) { }
+        virtual ~MacroInputSrc()
+        {
+            for (size_t i = 0; i < args.size(); ++i)
+                delete args[i];
+        }
         MacroSymbol *mac;
-        TokenStream **args;
+        TVector<TokenStream*> args;
     };
 
     InputSrc *currentInput;
@@ -241,7 +240,6 @@ protected:
     TSourceLoc ifloc; /* outermost #if */
 
     int InitCPP();
-    int FinalCPP();
     int CPPdefine(TPpToken * ppToken);
     int CPPundef(TPpToken * ppToken);
     int CPPelse(int matchelse, TPpToken * ppToken);
@@ -255,7 +253,6 @@ protected:
     int CPPversion(TPpToken * ppToken);
     int CPPextension(TPpToken * ppToken);
     int readCPPline(TPpToken * ppToken);
-    void FreeMacro(MacroSymbol *s);
     void PushEofSrc();
     void PopEofSrc();
     TokenStream* PrescanMacroArg(TokenStream *a, TPpToken * ppToken);
@@ -273,24 +270,19 @@ protected:
     //
     // From PpTokens.cpp
     //
-    TPpContext::TokenBlock* lNewBlock(TokenStream *fTok, MemoryPool *pool);
     void lAddByte(TokenStream *fTok, unsigned char fVal);
     int lReadByte(TokenStream *pTok);
-    TokenStream *NewTokenStream(MemoryPool *pool);
-    void DeleteTokenStream(TokenStream *pTok);
     void RecordToken(TokenStream* pTok, int token, TPpToken* ppToken);
     void RewindTokenStream(TokenStream *pTok);
     int ReadToken(TokenStream* pTok, TPpToken* ppToken);
     int ReadFromTokenStream(TokenStream *ts, int name, int (*final)(TPpContext *));
     void UngetToken(int token, TPpToken* ppToken);
-    struct TokenInputSrc {
-        InputSrc            base;
+    struct TokenInputSrc : public InputSrc {
         TokenStream *tokens;
         int (*final)(TPpContext *);
     };
     static int scan_token(TPpContext*, TokenInputSrc *in, TPpToken * ppToken);
-    struct UngotToken {
-        InputSrc    base;
+    struct UngotToken : public InputSrc {
         int token;
         TPpToken lval;
     };
@@ -299,8 +291,7 @@ protected:
     //
     // From PpScanner.cpp
     //
-    struct StringInputSrc {
-        InputSrc base;
+    struct StringInputSrc : public InputSrc {
         TInputScanner* input;
     };
     int InitScanner(TPpContext *cpp);

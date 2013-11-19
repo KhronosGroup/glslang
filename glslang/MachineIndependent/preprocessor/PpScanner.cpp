@@ -110,7 +110,7 @@ int TPpContext::sourceGetCh(TPpContext* pp, StringInputSrc *in)
     int ch = in->input->get();
 
     if (ch == EOF)
-        free(in);
+        delete in;
 
     return ch;
 }
