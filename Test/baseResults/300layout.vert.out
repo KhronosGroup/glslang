@@ -1,3 +1,4 @@
+300layout.vert
 ERROR: 0:7: 'vertex input arrays' : not supported with this profile: es
 ERROR: 0:8: 'in' : cannot be a structure or array 
 ERROR: 0:8: 'vertex input arrays' : not supported with this profile: es
@@ -11,6 +12,7 @@ ERROR: 0:39: 'location qualifier on output' : not supported in this stage: verte
 ERROR: 0:47: 'shared' : not supported with this profile: es
 ERROR: 0:47: 'shared' : not supported in this stage: vertex
 ERROR: 12 compilation errors.  No code generated.
+
 
 ERROR: node is still EOpNull!
 0:41  Function Definition: main( (void)
@@ -67,4 +69,9 @@ ERROR: node is still EOpNull!
 0:?     'compute_only' (shared highp 4-component vector of float)
 0:?     'gl_VertexID' (gl_VertexId highp int)
 0:?     'gl_InstanceID' (gl_InstanceId highp int)
+
+
+Linked vertex stage:
+
+
 

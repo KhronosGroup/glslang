@@ -312,6 +312,29 @@ public:
         }
     }
 
+    bool isIo() const
+    {
+        switch (storage) {
+        case EvqUniform:
+        case EvqBuffer:
+        case EvqVaryingIn:
+        case EvqFragCoord:
+        case EvqPointCoord:
+        case EvqFace:
+        case EvqVertexId:
+        case EvqInstanceId:
+        case EvqPosition:
+        case EvqPointSize:
+        case EvqClipVertex:
+        case EvqVaryingOut:
+        case EvqFragColor:
+        case EvqFragDepth:
+            return true;
+        default:
+            return false;
+        }
+    }
+
     // Implementing an embedded layout-qualifier class here, since C++ can't have a real class bitfield
     void clearLayout()
     {

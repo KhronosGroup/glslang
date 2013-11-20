@@ -1,5 +1,7 @@
+../../LunarGLASS/test/structure.frag
 Warning, version 130 is not yet complete; most features are present, but a few are missing.
 WARNING: 0:3: varying deprecated in version 130; may be removed in future release
+
 0:? Sequence
 0:20  Function Definition: main( (void)
 0:20    Function Parameters: 
@@ -77,4 +79,9 @@ WARNING: 0:3: varying deprecated in version 130; may be removed in future releas
 0:?     'coord' (smooth in 2-component vector of float)
 0:?     'foo' (uniform structure{i,f,color})
 0:?     'foo2' (uniform 5-element array of structure{i,f,s1_1})
+
+
+Linked fragment stage:
+
+
 

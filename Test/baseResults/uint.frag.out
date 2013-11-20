@@ -1,3 +1,4 @@
+uint.frag
 ERROR: 0:2: 'uint' : must be qualified as flat in
 ERROR: 0:6: 'in' : cannot be bool 
 ERROR: 0:20: 'const' : non-matching or non-convertible constant type for const initializer 
@@ -8,6 +9,7 @@ ERROR: 0:48: '=' :  cannot convert from 'const int' to 'mediump uint'
 ERROR: 0:51: '=' :  cannot convert from 'const int' to 'mediump uint'
 ERROR: 0:63: 'float' : type requires declaration of default precision qualifier 
 ERROR: 9 compilation errors.  No code generated.
+
 
 ERROR: node is still EOpNull!
 0:15  Function Definition: main( (void)
@@ -302,4 +304,9 @@ ERROR: node is still EOpNull!
 0:?     'b' (uniform bool)
 0:?     'c' (out mediump 4-component vector of uint)
 0:?     'usampler' (uniform lowp usampler2D)
+
+
+Linked fragment stage:
+
+
 

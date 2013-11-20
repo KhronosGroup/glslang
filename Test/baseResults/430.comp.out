@@ -1,6 +1,8 @@
+430.comp
 Warning, version 430 is not yet complete; some version-specific features are present, but many are missing.
 ERROR: 0:12: 'location qualifier on input' : not supported in this stage: compute
 ERROR: 1 compilation errors.  No code generated.
+
 
 ERROR: node is still EOpNull!
 0:3  Function Definition: main( (void)
@@ -13,4 +15,9 @@ ERROR: node is still EOpNull!
 0:9      GroupMemoryBarrier (void)
 0:?   Linker Objects
 0:?     'v3' (layout(location=2 ) in 3-component vector of float)
+
+
+Linked compute stage:
+
+
 

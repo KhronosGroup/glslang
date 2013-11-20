@@ -1,8 +1,10 @@
+cppComplexExpr.vert
 ERROR: 0:46: 'xyxwx' : illegal vector field selection 
 ERROR: 0:46: 'xyxwx' : illegal vector field selection 
 ERROR: 0:66: '#define' : Macro redefined; different substitutions: BIG
 ERROR: 0:79: '' : missing #endif 
 ERROR: 4 compilation errors.  No code generated.
+
 
 ERROR: node is still EOpNull!
 0:4  Sequence
@@ -68,4 +70,9 @@ ERROR: node is still EOpNull!
 0:?     'sum' (highp float)
 0:?     'gl_VertexID' (gl_VertexId highp int)
 0:?     'gl_InstanceID' (gl_InstanceId highp int)
+
+
+Linked vertex stage:
+
+
 

@@ -1,3 +1,4 @@
+100.frag
 ERROR: 0:3: '{ } style initializers' : not supported with this profile: es
 ERROR: 0:3: 'initializer' : not supported for this version or the enabled extensions 
 ERROR: 0:3: 'array initializer' : not supported for this version or the enabled extensions 
@@ -62,6 +63,7 @@ ERROR: 0:149: 'floating-point suffix' : not supported for this version or the en
 ERROR: 0:150: 'floating-point suffix' : not supported for this version or the enabled extensions 
 ERROR: 0:152: '' :  syntax error
 ERROR: 56 compilation errors.  No code generated.
+
 
 ERROR: node is still EOpNull!
 0:3  Sequence
@@ -279,4 +281,9 @@ ERROR: node is still EOpNull!
 0:?     'highExt' (uniform highp samplerExternalOES)
 0:?     'f123' (mediump float)
 0:?     'f124' (mediump float)
+
+
+Linked fragment stage:
+
+
 

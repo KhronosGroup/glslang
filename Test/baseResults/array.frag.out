@@ -1,3 +1,4 @@
+array.frag
 Warning, version 130 is not yet complete; most features are present, but a few are missing.
 ERROR: 0:21: '[' :  array index out of range '2'
 ERROR: 0:27: '[' :  array must be redeclared with a size before being indexed with a variable
@@ -14,6 +15,7 @@ ERROR: 0:57: '[]' : scalar integer expression required
 ERROR: 0:57: '[' :  index out of range '-858993459'
 ERROR: 0:58: '[]' : scalar integer expression required 
 ERROR: 14 compilation errors.  No code generated.
+
 
 ERROR: node is still EOpNull!
 0:9  Function Definition: foo(f1[5]; (4-element array of float)
@@ -185,4 +187,9 @@ ERROR: node is still EOpNull!
 0:?     'g4' (4-element array of float)
 0:?     'g5' (5-element array of float)
 0:?     'a' (uniform int)
+
+
+Linked fragment stage:
+
+
 

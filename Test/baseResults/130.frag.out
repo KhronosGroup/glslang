@@ -1,3 +1,4 @@
+130.frag
 Warning, version 130 is not yet complete; most features are present, but a few are missing.
 ERROR: 0:25: 'texture gather function' : not supported for this version or the enabled extensions 
 ERROR: 0:35: 'redeclaration' : cannot change the type of gl_Color
@@ -8,6 +9,7 @@ ERROR: 0:62: '<' :  wrong operand types: no operation '<' exists that takes a le
 ERROR: 0:63: '>' :  wrong operand types: no operation '>' exists that takes a left-hand operand of type '3-component vector of uint' and a right operand of type '3-component vector of uint' (or there is no acceptable conversion)
 ERROR: 0:64: '>=' :  wrong operand types: no operation '>=' exists that takes a left-hand operand of type 'const 2-component vector of uint' and a right operand of type 'const 2-component vector of uint' (or there is no acceptable conversion)
 ERROR: 7 compilation errors.  No code generated.
+
 
 ERROR: node is still EOpNull!
 0:16  Function Definition: main( (void)
@@ -104,4 +106,9 @@ ERROR: node is still EOpNull!
 0:?     'sampC' (uniform samplerCube)
 0:?     'gl_Color' (smooth in 4-component vector of float)
 0:?     'gl_Color' (flat in 4-component vector of float)
+
+
+Linked fragment stage:
+
+
 

@@ -1,3 +1,4 @@
+specExamples.vert
 Warning, version 430 is not yet complete; some version-specific features are present, but many are missing.
 ERROR: 0:23: 'transforms' : redeclaration of array with size 
 ERROR: 0:29: 's' : location qualifiers only appy to uniform, buffer, in, or out storage qualifiers 
@@ -43,6 +44,7 @@ ERROR: 0:192: 'constructor' : constructing from a non-dereferenced array
 ERROR: 0:193: 'constructor' : constructing from a non-dereferenced array 
 ERROR: 0:194: 'constructor' : constructing from a non-dereferenced array 
 ERROR: 42 compilation errors.  No code generated.
+
 
 ERROR: node is still EOpNull!
 0:134  Function Definition: funcA(I21; (4-component vector of float)
@@ -313,4 +315,9 @@ ERROR: node is still EOpNull!
 0:?     'img2' (coherent uniform image2D)
 0:?     'gl_VertexID' (gl_VertexId int)
 0:?     'gl_InstanceID' (gl_InstanceId int)
+
+
+Linked vertex stage:
+
+
 

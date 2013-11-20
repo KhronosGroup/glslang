@@ -10,7 +10,7 @@ EXE=./glslangValidator.exe
 echo running configuration file test
 $EXE -c > $TARGETDIR/test.conf
 diff -b $BASEDIR/test.conf $TARGETDIR/test.conf
-$EXE -i $TARGETDIR/test.conf specExamples.vert > $TARGETDIR/specExamples.vert.out
+$EXE -i -l $TARGETDIR/test.conf specExamples.vert > $TARGETDIR/specExamples.vert.out
 diff -b $BASEDIR/specExamples.vert.out $TARGETDIR
 $EXE 100Limits.vert 100.conf >  $TARGETDIR/100LimitsConf.vert.out
 diff -b $BASEDIR/100LimitsConf.vert.out $TARGETDIR/100LimitsConf.vert.out
@@ -21,7 +21,7 @@ diff -b $BASEDIR/100LimitsConf.vert.out $TARGETDIR/100LimitsConf.vert.out
 while read t; do
     echo Running $t...
     b=`basename $t`
-    $EXE -i $t > $TARGETDIR/$b.out
+    $EXE -i -l $t > $TARGETDIR/$b.out
     diff -b $BASEDIR/$b.out $TARGETDIR/$b.out
 done < testlist
 

@@ -1,3 +1,5 @@
+../../LunarGLASS/test/always-discard2.frag
+
 0:? Sequence
 0:4  Function Definition: main( (void)
 0:4    Function Parameters: 
@@ -54,4 +56,9 @@
 0:17        'color' (4-component vector of float)
 0:?   Linker Objects
 0:?     'tex_coord' (smooth in 2-component vector of float)
+
+
+Linked fragment stage:
+
+
 

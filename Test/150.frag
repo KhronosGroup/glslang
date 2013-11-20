@@ -11,4 +11,4 @@ void main()
     vec4 c = gl_FragCoord;
 }
 
-layout(origin_upper_left, pixel_center_integer) in vec4 gl_FragCoord;
+layout(origin_upper_left, pixel_center_integer) in vec4 gl_FragCoord;  // ERROR, declared after use

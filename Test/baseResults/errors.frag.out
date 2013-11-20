@@ -1,6 +1,8 @@
+errors.frag
 ERROR: 0:1: 'main' : function cannot take any parameter(s) 
 ERROR: 0:1: 'int' :  main function cannot return a value
 ERROR: 2 compilation errors.  No code generated.
+
 
 ERROR: node is still EOpNull!
 0:1  Function Definition: main(i1; (mediump int)
@@ -11,4 +13,9 @@ ERROR: node is still EOpNull!
 0:3        Constant:
 0:3          1 (const int)
 0:?   Linker Objects
+
+
+Linked fragment stage:
+
+
 

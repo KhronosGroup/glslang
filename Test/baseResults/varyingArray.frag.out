@@ -1,8 +1,10 @@
+../../LunarGLASS/test/varyingArray.frag
 Warning, version 130 is not yet complete; most features are present, but a few are missing.
 WARNING: 0:3: varying deprecated in version 130; may be removed in future release
 WARNING: 0:4: varying deprecated in version 130; may be removed in future release
 WARNING: 0:6: varying deprecated in version 130; may be removed in future release
 WARNING: 0:8: varying deprecated in version 130; may be removed in future release
+
 0:? Sequence
 0:10  Function Definition: main( (void)
 0:10    Function Parameters: 
@@ -56,4 +58,9 @@ WARNING: 0:8: varying deprecated in version 130; may be removed in future releas
 0:?     'gl_TexCoord' (smooth in 6-element array of 4-component vector of float)
 0:?     'gl_TexCoord' (smooth in 6-element array of 4-component vector of float)
 0:?     'foo' (smooth in 3-element array of 4-component vector of float)
+
+
+Linked fragment stage:
+
+
 

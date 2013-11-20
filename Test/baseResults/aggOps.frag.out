@@ -1,6 +1,8 @@
+../../LunarGLASS/test/aggOps.frag
 Warning, version 130 is not yet complete; most features are present, but a few are missing.
 WARNING: 0:4: varying deprecated in version 130; may be removed in future release
 WARNING: 0:6: varying deprecated in version 130; may be removed in future release
+
 0:? Sequence
 0:23  Function Definition: main( (void)
 0:23    Function Parameters: 
@@ -144,4 +146,9 @@ WARNING: 0:6: varying deprecated in version 130; may be removed in future releas
 0:?     'foo1' (uniform structure{i,f})
 0:?     'foo2a' (uniform structure{i,f,s1_1})
 0:?     'foo2b' (uniform structure{i,f,s1_1})
+
+
+Linked fragment stage:
+
+
 

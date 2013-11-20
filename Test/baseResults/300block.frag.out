@@ -1,8 +1,10 @@
+300block.frag
 ERROR: 0:10: '' : cannot nest a structure definition inside a structure or block 
 ERROR: 0:21: '' : cannot nest a structure definition inside a structure or block 
 ERROR: 0:20: 'sampler' : member of block cannot be a sampler type 
 ERROR: 0:45: 'variable indexing block array' : not supported with this profile: es
 ERROR: 4 compilation errors.  No code generated.
+
 
 ERROR: node is still EOpNull!
 0:42  Function Definition: main( (void)
@@ -53,4 +55,9 @@ ERROR: node is still EOpNull!
 0:?     'inst' (layout(column_major shared ) uniform block{nbv,ni})
 0:?     'insts' (layout(column_major shared ) uniform 4-element array of block{nbv,ni})
 0:?     '__anon__1' (layout(column_major shared ) uniform block{f,u})
+
+
+Linked fragment stage:
+
+
 

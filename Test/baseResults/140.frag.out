@@ -1,7 +1,9 @@
+140.frag
 Warning, version 140 is not yet complete; most features are present, but a few are missing.
 WARNING: 0:3: varying deprecated in version 130; may be removed in future release
 ERROR: 0:17: '#error' : GL_ES is not set  
 ERROR: 1 compilation errors.  No code generated.
+
 
 ERROR: node is still EOpNull!
 0:10  Function Definition: main( (void)
@@ -20,4 +22,9 @@ ERROR: node is still EOpNull!
 0:?     'o' (out 4-component vector of float)
 0:?     'gl_ClipDistance' (smooth in 5-element array of float)
 0:?     'gl_ClipDistance' (smooth in 5-element array of float)
+
+
+Linked fragment stage:
+
+
 

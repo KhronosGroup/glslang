@@ -11,6 +11,7 @@ void main()
     gl_Position = iv4;
     gl_PointSize = ps;
     gl_ClipDistance[2] = iv4.x;
+    gl_ClipVertex = iv4;
 }
 
 float gl_ClipDistance[4];

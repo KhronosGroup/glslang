@@ -1,5 +1,7 @@
+../../LunarGLASS/test/structAssignment.frag
 Warning, version 130 is not yet complete; most features are present, but a few are missing.
 WARNING: 0:4: varying deprecated in version 130; may be removed in future release
+
 0:? Sequence
 0:29  Function Definition: main( (void)
 0:29    Function Parameters: 
@@ -46,4 +48,9 @@ WARNING: 0:4: varying deprecated in version 130; may be removed in future releas
 0:?     'foo' (uniform structure{i,f})
 0:?     'foo2' (uniform structure{i,f,s1_1})
 0:?     'foo3' (uniform structure{s2_1,i,f,s1_1})
+
+
+Linked fragment stage:
+
+
 

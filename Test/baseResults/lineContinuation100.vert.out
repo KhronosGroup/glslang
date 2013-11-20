@@ -1,3 +1,4 @@
+lineContinuation100.vert
 ERROR: 0:3: 'line continuation' : not supported for this version or the enabled extensions 
 ERROR: 0:6: '#error' : e1  
 ERROR: 0:8: 'line continuation' : not supported for this version or the enabled extensions 
@@ -8,6 +9,7 @@ ERROR: 0:15: 'line continuation' : not supported for this version or the enabled
 ERROR: 0:18: '#error' : e3  
 ERROR: 0:24: 'line continuation' : not supported for this version or the enabled extensions 
 ERROR: 9 compilation errors.  No code generated.
+
 
 ERROR: node is still EOpNull!
 0:20  Function Definition: main( (void)
@@ -29,4 +31,9 @@ ERROR: node is still EOpNull!
 0:25        'b' (highp 4-component vector of float)
 0:?   Linker Objects
 0:?     'foo' (highp float)
+
+
+Linked vertex stage:
+
+
 

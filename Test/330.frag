@@ -7,8 +7,8 @@ varying vec4 varyingVar;
 
 void main()
 {
-    gl_FragColor = varyingVar;
-    gl_FragData[1] = inVar;
+    gl_FragColor = varyingVar;  // link ERROR: user output was used
+    gl_FragData[1] = inVar;     // link ERROR: user output was used
     int buffer = 4;
 }
 
@@ -21,4 +21,5 @@ in gl_PerFragment {
 void foo()
 {
     vec4 c = gl_Color;
+    outVar = inVar;
 }

@@ -1,3 +1,4 @@
+switch.frag
 ERROR: 0:11: 'switch' : condition must be a scalar integer expression 
 ERROR: 0:14: 'switch' : condition must be a scalar integer expression 
 ERROR: 0:21: 'switch' : last case/default label must be followed by statements 
@@ -8,6 +9,7 @@ ERROR: 0:65: 'case' : scalar integer expression required
 ERROR: 0:67: 'case' : constant expression required 
 ERROR: 0:89: '' : break statement only allowed in switch and loops 
 ERROR: 9 compilation errors.  No code generated.
+
 
 ERROR: node is still EOpNull!
 0:6  Function Definition: main( (void)
@@ -191,4 +193,9 @@ ERROR: node is still EOpNull!
 0:?     'c' (uniform mediump int)
 0:?     'd' (uniform mediump int)
 0:?     'x' (smooth in highp float)
+
+
+Linked fragment stage:
+
+
 

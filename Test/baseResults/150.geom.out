@@ -1,3 +1,4 @@
+150.geom
 Warning, version 150 is not yet complete; some version-specific features are present, but many are missing.
 ERROR: 0:15: 'fromVertex' : block instance name redefinition 
 ERROR: 0:19: 'fromVertex' : redefinition 
@@ -28,6 +29,7 @@ ERROR: 0:86: 'triangles_adjacency' : cannot change previously set input primitiv
 ERROR: 0:88: 'invocations' : not supported for this version or the enabled extensions 
 ERROR: 0:91: 'stream' : member cannot contradict block 
 ERROR: 28 compilation errors.  No code generated.
+
 
 invocations = 4
 max_vertices = 127
@@ -138,4 +140,9 @@ ERROR: node is still EOpNull!
 0:?     '__anon__2' (in block{a15})
 0:?     '__anon__3' (layout(stream=3 ) out block{f15})
 0:?     '__anon__4' (layout(column_major shared ) uniform block{b15})
+
+
+Linked geometry stage:
+
+
 

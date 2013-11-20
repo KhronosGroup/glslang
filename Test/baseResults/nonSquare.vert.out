@@ -1,3 +1,5 @@
+nonSquare.vert
+
 0:? Sequence
 0:15  Function Definition: main( (void)
 0:15    Function Parameters: 
@@ -85,4 +87,9 @@
 0:?       6.000000
 0:?       7.000000
 0:?       8.000000
+
+
+Linked vertex stage:
+
+
 

@@ -1,3 +1,5 @@
+../../LunarGLASS/test/functionSemantics.frag
+
 0:? Sequence
 0:3  Function Definition: foo(i1;i1;i1;i1;i1;i1; (mediump int)
 0:3    Function Parameters: 
@@ -116,4 +118,9 @@
 0:35          Convert int to float (mediump float)
 0:35            'color' (mediump int)
 0:?   Linker Objects
+
+
+Linked fragment stage:
+
+
 

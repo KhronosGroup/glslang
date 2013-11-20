@@ -1,3 +1,4 @@
+cppSimple.vert
 Warning, version 400 is not yet complete; some version-specific features are present, but many are missing.
 ERROR: 0:77: '#error' : good1  
 ERROR: 0:81: '#error' : good2  
@@ -45,6 +46,7 @@ ERROR: 0:204: '#undef' : can't use with built-in names (containing consecutive u
 ERROR: 0:205: '#undef' : can't use with built-in names ("GL_" prefix) 
 ERROR: 0:209: '' : missing #endif 
 ERROR: 45 compilation errors.  No code generated.
+
 
 ERROR: node is still EOpNull!
 0:5  Sequence
@@ -131,4 +133,9 @@ ERROR: node is still EOpNull!
 0:?     'f' (double)
 0:?     'gl_VertexID' (gl_VertexId int)
 0:?     'gl_InstanceID' (gl_InstanceId int)
+
+
+Linked vertex stage:
+
+
 

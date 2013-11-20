@@ -1,3 +1,5 @@
+../../LunarGLASS/test/length.frag
+
 0:? Sequence
 0:11  Function Definition: main( (void)
 0:11    Function Parameters: 
@@ -24,4 +26,9 @@
 0:?   Linker Objects
 0:?     'u' (uniform 3-element array of 4-component vector of float)
 0:?     'v' (smooth in 2-element array of 2-component vector of float)
+
+
+Linked fragment stage:
+
+
 

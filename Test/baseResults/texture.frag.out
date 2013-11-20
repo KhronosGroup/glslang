@@ -1,6 +1,8 @@
+../../LunarGLASS/test/texture.frag
 Warning, version 130 is not yet complete; most features are present, but a few are missing.
 WARNING: 0:14: varying deprecated in version 130; may be removed in future release
 WARNING: 0:15: varying deprecated in version 130; may be removed in future release
+
 0:? Sequence
 0:17  Function Definition: main( (void)
 0:17    Function Parameters: 
@@ -279,4 +281,9 @@ WARNING: 0:15: varying deprecated in version 130; may be removed in future relea
 0:?     'u' (uniform 4-component vector of float)
 0:?     't' (smooth in 2-component vector of float)
 0:?     'coords2D' (smooth in 2-component vector of float)
+
+
+Linked fragment stage:
+
+
 

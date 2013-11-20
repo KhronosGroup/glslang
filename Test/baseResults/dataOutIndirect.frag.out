@@ -1,5 +1,7 @@
+../../LunarGLASS/test/dataOutIndirect.frag
 Warning, version 130 is not yet complete; most features are present, but a few are missing.
 WARNING: 0:3: varying deprecated in version 130; may be removed in future release
+
 0:? Sequence
 0:7  Function Definition: main( (void)
 0:7    Function Parameters: 
@@ -12,4 +14,9 @@ WARNING: 0:3: varying deprecated in version 130; may be removed in future releas
 0:?   Linker Objects
 0:?     'Color' (smooth in 4-component vector of float)
 0:?     'i' (uniform int)
+
+
+Linked fragment stage:
+
+
 

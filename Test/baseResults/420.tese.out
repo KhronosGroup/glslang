@@ -1,3 +1,4 @@
+420.tese
 Warning, version 420 is not yet complete; some version-specific features are present, but many are missing.
 ERROR: 0:7: '=' :  cannot convert from '3-element array of float' to '2-element array of float'
 ERROR: 0:8: 'initializer list' : wrong vector size (or rows in a matrix column): 2-component vector of float
@@ -13,6 +14,7 @@ ERROR: 0:30: 'initializer list' : wrong number of matrix columns: 4X2 matrix of 
 ERROR: 0:40: 'constructor' :  cannot convert parameter 1 from 'float' to 'structure{s,t}'
 ERROR: 0:58: 'initializer list' : wrong number of structure members 
 ERROR: 13 compilation errors.  No code generated.
+
 
 ERROR: node is still EOpNull!
 0:4  Sequence
@@ -154,4 +156,9 @@ ERROR: node is still EOpNull!
 0:?     'vc3' (float)
 0:?     'av3' (3-component vector of float)
 0:?     'bv3' (3-component vector of float)
+
+
+Linked tessellation evaluation stage:
+
+
 

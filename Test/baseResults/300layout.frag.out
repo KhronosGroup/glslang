@@ -1,5 +1,7 @@
+300layout.frag
 ERROR: 0:4: 'location qualifier on input' : not supported in this stage: fragment
 ERROR: 1 compilation errors.  No code generated.
+
 
 ERROR: node is still EOpNull!
 0:10  Function Definition: main( (void)
@@ -23,4 +25,9 @@ ERROR: node is still EOpNull!
 0:?     'c' (layout(location=1 ) out mediump 4-component vector of float)
 0:?     'p' (layout(location=3 ) out mediump 4-component vector of float)
 0:?     'q' (layout(location=4 ) out 2-element array of mediump 4-component vector of float)
+
+
+Linked fragment stage:
+
+
 

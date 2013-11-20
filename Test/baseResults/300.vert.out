@@ -1,3 +1,4 @@
+300.vert
 ERROR: 0:8: 'varying' : Reserved word. 
 ERROR: 0:8: 'varying' : no longer supported in es profile; removed in version 300
 ERROR: 0:9: 'vertex input arrays' : not supported with this profile: es
@@ -18,12 +19,14 @@ ERROR: 0:63: '' : array size required
 ERROR: 0:65: '' : array size required 
 ERROR: 0:64: '' : array size required 
 ERROR: 0:67: '' : array size required 
+ERROR: 0:76: 'invariant' : cannot change qualification after use 
 ERROR: 0:78: 'invariant' : can only apply to an output: invIn
 ERROR: 0:88: 'ub2' : Cannot reuse block name within the same interface: uniform
 ERROR: 0:92: 'ub2' : Cannot reuse block name within the same interface: uniform
 ERROR: 0:96: 'ub2' : Cannot reuse block name within the same interface: uniform
 ERROR: 0:104: 'ub3' : Cannot reuse block name within the same interface: uniform
-ERROR: 25 compilation errors.  No code generated.
+ERROR: 26 compilation errors.  No code generated.
+
 
 ERROR: node is still EOpNull!
 0:27  Function Definition: main( (void)
@@ -174,4 +177,9 @@ ERROR: node is still EOpNull!
 0:?     '__anon__0' (layout(column_major shared ) uniform block{b23})
 0:?     'gl_VertexID' (gl_VertexId highp int)
 0:?     'gl_InstanceID' (gl_InstanceId highp int)
+
+
+Linked vertex stage:
+
+
 

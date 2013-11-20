@@ -1,3 +1,4 @@
+300.frag
 ERROR: 0:30: 'noperspective' : Reserved word. 
 ERROR: 0:30: 'noperspective' : not supported with this profile: es
 ERROR: 0:31: 'sampler2D' : sampler/image types can only be used in uniform variables or function parameters: bads
@@ -27,6 +28,7 @@ ERROR: 0:123: '==' : can't use with samplers or structs containing samplers
 ERROR: 0:126: 'imageBuffer' : Reserved word. 
 ERROR: 0:126: '' :  syntax error
 ERROR: 28 compilation errors.  No code generated.
+
 
 ERROR: node is still EOpNull!
 0:53  Function Definition: main( (void)
@@ -288,4 +290,10 @@ ERROR: node is still EOpNull!
 0:?     'colors' (out 4-element array of lowp 4-component vector of float)
 0:?     'st1' (uniform structure{i,s})
 0:?     'st2' (uniform structure{i,s})
+
+
+Linked fragment stage:
+
+ERROR: Linking fragment stage: when more than one fragment shader output, all must have location qualifiers
+
 

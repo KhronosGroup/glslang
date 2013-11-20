@@ -38,4 +38,4 @@ layout(location = 3) uniform vec3 uv3;
 layout(location = 5) in vec4 gl_Color;      // ERROR, layout
 noperspective in float gl_ClipDistance[4];  // ERROR, can't change qualifier
 
-layout(origin_upper_left, pixel_center_integer) in vec4 gl_FragCoord;
+layout(origin_upper_left, pixel_center_integer) in vec4 gl_FragCoord;  // ERROR, declared after use

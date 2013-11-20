@@ -1,3 +1,4 @@
+120.frag
 ERROR: 0:9: 'in for stage inputs' : not supported for this version or the enabled extensions 
 ERROR: 0:10: 'out for stage outputs' : not supported for this version or the enabled extensions 
 ERROR: 0:54: '+' :  wrong operand types: no operation '+' exists that takes a left-hand operand of type '2-component vector of float' and a right operand of type '3-component vector of float' (or there is no acceptable conversion)
@@ -30,6 +31,7 @@ ERROR: 0:99: 'return' : function return is not matching type:
 ERROR: 0:115: 'return' : void function cannot return a value 
 ERROR: 0:125: 'gl_TexCoord' : redeclaration of array with size 
 ERROR: 31 compilation errors.  No code generated.
+
 
 ERROR: node is still EOpNull!
 0:21  Function Definition: main( (void)
@@ -316,4 +318,11 @@ ERROR: node is still EOpNull!
 0:?     'uimage2DRect' (float)
 0:?     'a' (int)
 0:?     'gl_TexCoord' (smooth in 6-element array of 4-component vector of float)
+
+
+Linked fragment stage:
+
+ERROR: Linking fragment stage: Recursion detected:
+    foo(f1; calling foo(f1;
+
 

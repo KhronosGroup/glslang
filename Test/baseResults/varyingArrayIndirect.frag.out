@@ -1,8 +1,10 @@
+../../LunarGLASS/test/varyingArrayIndirect.frag
 Warning, version 130 is not yet complete; most features are present, but a few are missing.
 WARNING: 0:3: varying deprecated in version 130; may be removed in future release
 WARNING: 0:4: varying deprecated in version 130; may be removed in future release
 WARNING: 0:6: varying deprecated in version 130; may be removed in future release
 WARNING: 0:8: varying deprecated in version 130; may be removed in future release
+
 0:? Sequence
 0:12  Function Definition: main( (void)
 0:12    Function Parameters: 
@@ -59,4 +61,9 @@ WARNING: 0:8: varying deprecated in version 130; may be removed in future releas
 0:?     'userIn' (smooth in 2-element array of 4-component vector of float)
 0:?     'a' (uniform int)
 0:?     'b' (uniform int)
+
+
+Linked fragment stage:
+
+
 

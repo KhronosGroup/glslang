@@ -96,6 +96,8 @@ void TIntermediate::merge(TInfoSink& infoSink, TIntermediate& unit)
 
     mergeBodies(infoSink, globals, unitGlobals);
     mergeLinkerObjects(infoSink, linkerObjects, unitLinkerObjects);
+
+    ioAccessed.insert(unit.ioAccessed.begin(), unit.ioAccessed.end());
 }
 
 //
@@ -249,6 +251,14 @@ void TIntermediate::errorCheck(TInfoSink& infoSink)
 
     // overlap/alias/missing I/O, etc.
     inOutLocationCheck(infoSink);
+
+    if (inIoAccessed("gl_ClipDistance") && inIoAccessed("gl_ClipVertex"))
+        error(infoSink, "Can only use one of gl_ClipDistance or gl_ClipVertex (gl_ClipDistance is preferred)");
+
+    if (userOutputUsed() && (inIoAccessed("gl_FragColor") || inIoAccessed("gl_FragData")))
+        error(infoSink, "Cannot use gl_FragColor or gl_FragData when using user-defined outputs");
+    if (inIoAccessed("gl_FragColor") && inIoAccessed("gl_FragData"))
+        error(infoSink, "Cannot use both gl_FragColor and gl_FragData");
 }
 
 //
@@ -365,7 +375,7 @@ void TIntermediate::inOutLocationCheck(TInfoSink& infoSink)
     }        
 }
 
-TIntermSequence& TIntermediate::findLinkerObjects()
+TIntermSequence& TIntermediate::findLinkerObjects() const
 {
     // Get the top-level globals
     TIntermSequence& globals = treeRoot->getAsAggregate()->getSequence();
@@ -374,6 +384,27 @@ TIntermSequence& TIntermediate::findLinkerObjects()
     assert(globals.back()->getAsAggregate()->getOp() == EOpLinkerObjects);
 
     return globals.back()->getAsAggregate()->getSequence();
+}
+
+// See if a variable was both a user-declared output and used.
+// Note: the spec discusses writing to one, but this looks at read or write, which 
+// is more useful, and perhaps the spec should be changed to reflect that.
+bool TIntermediate::userOutputUsed() const
+{
+    const TIntermSequence& linkerObjects = findLinkerObjects();
+
+    bool found = false;
+    for (size_t i = 0; i < linkerObjects.size(); ++i) {
+        const TIntermSymbol& symbolNode = *linkerObjects[i]->getAsSymbolNode();
+        if (symbolNode.getQualifier().storage == EvqVaryingOut &&
+            symbolNode.getName().compare(0, 3, "gl_") != 0 &&
+            inIoAccessed(symbolNode.getName())) {            
+            found = true;
+            break;
+        }
+    }
+
+    return found;
 }
 
 } // end namespace glslang

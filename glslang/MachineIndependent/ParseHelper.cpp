@@ -54,7 +54,7 @@ TParseContext::TParseContext(TSymbolTable& symt, TIntermediate& interm, bool pb,
             contextPragma(true, false), loopNestingLevel(0), structNestingLevel(0),
             tokensBeforeEOF(false), currentScanner(0),
             numErrors(0), parsingBuiltins(pb), afterEOF(false),
-            anyIndexLimits(false), fragCoordUsedBeforeRedeclaration(false)
+            anyIndexLimits(false)
 {
     // ensure we always have a linkage node, even if empty, to simplify tree topology algorithms
     linkage = new TIntermAggregate;
@@ -387,6 +387,7 @@ void C_DECL TParseContext::warn(TSourceLoc loc, const char *szReason, const char
 TIntermTyped* TParseContext::handleVariable(TSourceLoc loc, TSymbol* symbol, TString* string)
 {
     TIntermTyped* node = 0;
+    bool noteAccess = false;
 
     // Error check for function requiring specific extensions present.
     if (symbol && symbol->getNumExtensions())
@@ -403,6 +404,10 @@ TIntermTyped* TParseContext::handleVariable(TSourceLoc loc, TSymbol* symbol, TSt
 
         node = intermediate.addIndex(EOpIndexDirectStruct, container, constNode, loc);
         node->setType(*(*variable->getType().getStruct())[anon->getMemberNumber()].type);
+        if (variable->getType().getQualifier().isIo())
+            noteAccess = true;
+
+        // TODO: does this create any accidental type sharing with the built-in level?
     } else {
         // The symbol table search was done in the lexical phase, but
         // if this is a new symbol, it wouldn't have found it.
@@ -419,17 +424,18 @@ TIntermTyped* TParseContext::handleVariable(TSourceLoc loc, TSymbol* symbol, TSt
             TType* type;
             if (variable->isReadOnly()) {
                 type = new TType;
-                // break type sharing with built-ins
+                // break type sharing with built-ins; only costs if there are arrays or structures
                 type->deepCopy(variable->getType());
-
-                // track use of unredeclared gl_FragCoord
-                if (variable->getName() == "gl_FragCoord")
-                    fragCoordUsedBeforeRedeclaration = true;
             } else
                 type = &variable->getWritableType();
             node = intermediate.addSymbol(variable->getUniqueId(), variable->getName(), *type, loc);
+            if (type->getQualifier().isIo())
+                noteAccess = true;
         }
     }
+
+    if (noteAccess)
+        intermediate.addIoAccessed(*string);
 
     return node;
 }
@@ -2069,10 +2075,8 @@ TSymbol* TParseContext::redeclareBuiltinVariable(TSourceLoc loc, const TString& 
                 symbolQualifier.storage != qualifier.storage)
                 error(loc, "cannot change qualification of", "redeclaration", symbol->getName().c_str());
         } else if (identifier == "gl_FragCoord") {
-            if (fragCoordUsedBeforeRedeclaration)
+            if (intermediate.inIoAccessed("gl_FragCoord"))
                 error(loc, "cannot redeclare after use", "gl_FragCoord", "");
-                // Note: this did not catch the case of 1) declare, 2) use, 3) declare again, because the "use" was of a redeclaration, and so didn't set fragCoordUsedBeforeRedeclaration.
-                // (and that's what the rules are too, as long as #3 matches #1)
             if (qualifier.nopersp != symbolQualifier.nopersp || qualifier.flat != symbolQualifier.flat ||
                 qualifier.isMemory() || qualifier.isAuxiliary())
                 error(loc, "can only change layout qualification of", "redeclaration", symbol->getName().c_str());
@@ -3425,6 +3429,8 @@ void TParseContext::addQualifierToExisting(TSourceLoc loc, TQualifier qualifier,
         symbol = symbolTable.copyUp(symbol);
 
     if (qualifier.invariant) {
+        if (intermediate.inIoAccessed(identifier))
+            error(loc, "cannot change qualification after use", "invariant", "");
         symbol->getWritableType().getQualifier().invariant = true;
         invariantCheck(loc, symbol->getType(), identifier);
     }

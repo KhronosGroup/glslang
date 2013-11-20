@@ -1,3 +1,5 @@
+../../LunarGLASS/test/flowControl.frag
+
 0:? Sequence
 0:10  Function Definition: main( (void)
 0:10    Function Parameters: 
@@ -34,4 +36,9 @@
 0:?     'otherColor' (uniform 4-component vector of float)
 0:?     'c' (smooth in float)
 0:?     'BaseColor' (smooth in 4-component vector of float)
+
+
+Linked fragment stage:
+
+
 

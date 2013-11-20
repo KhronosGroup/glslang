@@ -1,3 +1,4 @@
+decls.frag
 ERROR: 0:19: 'vi4' : illegal use of type 'void' 
 ERROR: 0:20: 'vj' : illegal use of type 'void' 
 ERROR: 0:20: 'vk5' : illegal use of type 'void' 
@@ -17,6 +18,7 @@ ERROR: 0:37: 'gl_' : reserved built-in name
 ERROR: 0:42: '' : boolean expression expected 
 ERROR: 0:43: 'gl_' : reserved built-in name 
 ERROR: 18 compilation errors.  No code generated.
+
 
 ERROR: node is still EOpNull!
 0:5  Sequence
@@ -213,4 +215,9 @@ ERROR: node is still EOpNull!
 0:?     'gl_vm3' (3-element array of int)
 0:?     'gl_vn8' (4-element array of int)
 0:?     'gl_vp' (int)
+
+
+Linked fragment stage:
+
+
 

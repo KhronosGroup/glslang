@@ -1,3 +1,5 @@
+../../LunarGLASS/test/deepRvalue.frag
+
 0:? Sequence
 0:5  Sequence
 0:5    move second child to first child (4-component vector of float)
@@ -136,4 +138,9 @@
 0:?     'v2' (4-component vector of float)
 0:?     'v3' (4-component vector of float)
 0:?     'v4' (4-component vector of float)
+
+
+Linked fragment stage:
+
+
 

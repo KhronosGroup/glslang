@@ -1,4 +1,6 @@
+../../LunarGLASS/test/uniformArray.frag
 Warning, version 130 is not yet complete; most features are present, but a few are missing.
+
 0:? Sequence
 0:7  Function Definition: main( (void)
 0:7    Function Parameters: 
@@ -43,4 +45,9 @@ Warning, version 130 is not yet complete; most features are present, but a few a
 0:?     'inColor' (uniform 3-component vector of float)
 0:?     'color' (uniform 6-element array of 4-component vector of float)
 0:?     'alpha' (uniform 16-element array of float)
+
+
+Linked fragment stage:
+
+
 

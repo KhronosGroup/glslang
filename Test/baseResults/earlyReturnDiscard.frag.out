@@ -1,3 +1,5 @@
+../../LunarGLASS/test/earlyReturnDiscard.frag
+
 0:? Sequence
 0:19  Function Definition: main( (void)
 0:19    Function Parameters: 
@@ -122,4 +124,9 @@
 0:?     'minimum' (uniform float)
 0:?     'BaseColor' (smooth in 4-component vector of float)
 0:?     'b' (uniform bool)
+
+
+Linked fragment stage:
+
+
 

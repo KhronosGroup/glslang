@@ -251,7 +251,6 @@ protected:
     TIdSetType inductiveLoopIds;
     bool anyIndexLimits;
     TVector<TIntermTyped*> needsIndexLimitationChecking;
-    bool fragCoordUsedBeforeRedeclaration;
 
     //
     // Geometry shader input arrays:

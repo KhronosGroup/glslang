@@ -1,3 +1,5 @@
+../../LunarGLASS/test/conditionalDiscard.frag
+
 0:? Sequence
 0:6  Function Definition: main( (void)
 0:6    Function Parameters: 
@@ -25,4 +27,9 @@
 0:?   Linker Objects
 0:?     'tex' (uniform sampler2D)
 0:?     'coord' (smooth in 2-component vector of float)
+
+
+Linked fragment stage:
+
+
 

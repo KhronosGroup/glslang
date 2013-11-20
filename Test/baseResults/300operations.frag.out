@@ -1,3 +1,4 @@
+300operations.frag
 ERROR: 0:11: 'float' : type requires declaration of default precision qualifier 
 ERROR: 0:30: '+' :  wrong operand types: no operation '+' exists that takes a left-hand operand of type 'layout(column_major shared ) uniform block{f}' and a right operand of type 'layout(column_major shared ) uniform block{f}' (or there is no acceptable conversion)
 ERROR: 0:31: '+' :  wrong operand types: no operation '+' exists that takes a left-hand operand of type 'structure{i}' and a right operand of type 'structure{i}' (or there is no acceptable conversion)
@@ -55,6 +56,7 @@ ERROR: 0:88: '|' :  wrong operand types: no operation '|' exists that takes a le
 ERROR: 0:89: '^' :  wrong operand types: no operation '^' exists that takes a left-hand operand of type 'structure{i}' and a right operand of type 'structure{i}' (or there is no acceptable conversion)
 ERROR: 0:90: 'assign' :  l-value required 
 ERROR: 56 compilation errors.  No code generated.
+
 
 ERROR: node is still EOpNull!
 0:13  Function Definition: main( (void)
@@ -232,4 +234,9 @@ ERROR: node is still EOpNull!
 0:?     'instanceName' (layout(column_major shared ) uniform block{f})
 0:?     's' (structure{i})
 0:?     'a' (5-element array of mediump float)
+
+
+Linked fragment stage:
+
+
 

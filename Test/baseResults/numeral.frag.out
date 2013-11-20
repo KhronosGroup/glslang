@@ -1,3 +1,4 @@
+numeral.frag
 Warning, version 400 is not yet complete; some version-specific features are present, but many are missing.
 ERROR: 0:14: '' : octal literal digit too large 
 ERROR: 0:15: '' : octal literal digit too large 
@@ -10,6 +11,7 @@ ERROR: 0:49: '' : bad digit in hexidecimal literal
 ERROR: 0:50: '' : hexidecimal literal too big 
 ERROR: 0:88: '' : float literal needs a decimal point or exponent 
 ERROR: 10 compilation errors.  No code generated.
+
 
 ERROR: node is still EOpNull!
 0:3  Function Definition: main( (void)
@@ -377,4 +379,9 @@ ERROR: node is still EOpNull!
 0:?     'c5' (layout(location=5 ) out 4-component vector of float)
 0:?     'c6' (layout(location=6 ) out 4-component vector of float)
 0:?     'c7' (layout(location=7 ) out 4-component vector of float)
+
+
+Linked fragment stage:
+
+
 

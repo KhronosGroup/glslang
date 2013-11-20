@@ -40,6 +40,7 @@
 #include "Versions.h"
 
 #include <algorithm>
+#include <set>
 
 class TInfoSink;
 
@@ -143,6 +144,9 @@ public:
     void merge(TInfoSink&, TIntermediate&);
     void errorCheck(TInfoSink&);
 
+    void addIoAccessed(const TString& name) { ioAccessed.insert(name); }
+    bool inIoAccessed(const TString& name) const { return ioAccessed.find(name) != ioAccessed.end(); }
+
     void outputTree(TInfoSink&);
 	void removeTree();
 
@@ -153,7 +157,8 @@ protected:
     void mergeErrorCheck(TInfoSink&, const TIntermSymbol&, const TIntermSymbol&, bool crossStage);
     void checkCallGraphCycles(TInfoSink&);
     void inOutLocationCheck(TInfoSink&);
-    TIntermSequence& findLinkerObjects();
+    TIntermSequence& findLinkerObjects() const;
+    bool userOutputUsed() const;
 
 protected:
     const EShLanguage language;
@@ -179,8 +184,10 @@ protected:
         bool currentPath;
         bool errorGiven;
     };
-    typedef std::list<TCall> TGraph;
+    typedef TList<TCall> TGraph;
     TGraph callGraph;
+
+    std::set<TString> ioAccessed;  // set of names of statically read/written I/O that might need extra checking
 
 private:
     void operator=(TIntermediate&); // prevent assignments

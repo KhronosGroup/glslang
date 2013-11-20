@@ -1,4 +1,6 @@
+../../LunarGLASS/test/prepost.frag
 Warning, version 140 is not yet complete; most features are present, but a few are missing.
+
 0:? Sequence
 0:3  Function Definition: main( (void)
 0:3    Function Parameters: 
@@ -130,4 +132,9 @@ Warning, version 140 is not yet complete; most features are present, but a few a
 0:37          'z' (float)
 0:37          'v' (4-component vector of float)
 0:?   Linker Objects
+
+
+Linked fragment stage:
+
+
 

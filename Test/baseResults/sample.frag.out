@@ -1,3 +1,5 @@
+sample.frag
+
 0:? Sequence
 0:38  Function Definition: main( (void)
 0:38    Function Parameters: 
@@ -10,4 +12,9 @@
 0:40            1.000000
 0:?   Linker Objects
 0:?     'color' (smooth in 3-component vector of float)
+
+
+Linked fragment stage:
+
+
 

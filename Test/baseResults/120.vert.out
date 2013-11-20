@@ -1,3 +1,4 @@
+120.vert
 ERROR: 0:3: 'in for stage inputs' : not supported for this version or the enabled extensions 
 ERROR: 0:4: 'out for stage outputs' : not supported for this version or the enabled extensions 
 ERROR: 0:11: 'gl_Position' : cannot add storage, auxiliary, memory, interpolation, or precision qualifier to an existing variable 
@@ -43,6 +44,7 @@ ERROR: 0:108: 'overloadE' : no matching overloaded function found
 ERROR: 0:111: 'overloadE' : no matching overloaded function found 
 ERROR: 0:117: 'overloadF' : no matching overloaded function found 
 ERROR: 44 compilation errors.  No code generated.
+
 
 ERROR: node is still EOpNull!
 0:15  Function Definition: main( (void)
@@ -199,4 +201,9 @@ ERROR: node is still EOpNull!
 0:?       3.400000
 0:?     'concall' (const float)
 0:?       0.295520
+
+
+Linked vertex stage:
+
+
 

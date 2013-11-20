@@ -1,3 +1,5 @@
+pointCoord.frag
+
 0:? Sequence
 0:5  Function Definition: main( (void)
 0:5    Function Parameters: 
@@ -28,4 +30,9 @@
 0:14        'color' (highp 4-component vector of float)
 0:?   Linker Objects
 0:?     'sampler' (uniform lowp sampler2D)
+
+
+Linked fragment stage:
+
+
 

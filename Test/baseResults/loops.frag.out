@@ -1,5 +1,7 @@
+../../LunarGLASS/test/loops.frag
 Warning, version 130 is not yet complete; most features are present, but a few are missing.
 WARNING: 0:14: varying deprecated in version 130; may be removed in future release
+
 0:? Sequence
 0:53  Function Definition: main( (void)
 0:53    Function Parameters: 
@@ -962,4 +964,9 @@ WARNING: 0:14: varying deprecated in version 130; may be removed in future relea
 0:?     'd33' (uniform float)
 0:?     'd34' (uniform float)
 0:?     'Count' (uniform int)
+
+
+Linked fragment stage:
+
+
 

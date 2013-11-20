@@ -1,6 +1,8 @@
+300BuiltIns.frag
 ERROR: 0:6: 'float' : type requires declaration of default precision qualifier 
 ERROR: 0:70: 'noise2' : no matching overloaded function found 
 ERROR: 2 compilation errors.  No code generated.
+
 
 ERROR: node is still EOpNull!
 0:26  Function Definition: main( (void)
@@ -203,4 +205,9 @@ ERROR: node is still EOpNull!
 0:?     'v2a' (mediump 2-component vector of float)
 0:?     'v2b' (mediump 2-component vector of float)
 0:?     'v4' (mediump 4-component vector of float)
+
+
+Linked fragment stage:
+
+
 

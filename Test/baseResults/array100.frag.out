@@ -1,3 +1,4 @@
+array100.frag
 ERROR: 0:3: 'float' : type requires declaration of default precision qualifier 
 ERROR: 0:3: '' : array size required 
 ERROR: 0:9: 'arrayed type' : not supported for this version or the enabled extensions 
@@ -21,6 +22,7 @@ ERROR: 0:66: 'array assignment' : not supported for this version or the enabled 
 ERROR: 0:68: 'array assignment' : not supported for this version or the enabled extensions 
 ERROR: 0:69: 'array initializer' : not supported for this version or the enabled extensions 
 ERROR: 22 compilation errors.  No code generated.
+
 
 ERROR: node is still EOpNull!
 0:9  Function Definition: foo(f1[5]; (4-element array of mediump float)
@@ -153,4 +155,9 @@ ERROR: node is still EOpNull!
 0:?     'g4' (4-element array of mediump float)
 0:?     'g5' (5-element array of mediump float)
 0:?     'a' (uniform mediump int)
+
+
+Linked fragment stage:
+
+
 

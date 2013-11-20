@@ -1,3 +1,5 @@
+forwardRef.frag
+
 0:? Sequence
 0:11  Function Definition: main( (void)
 0:11    Function Parameters: 
@@ -56,4 +58,9 @@
 0:?     'bigColor' (uniform 4-component vector of float)
 0:?     'BaseColor' (smooth in 4-component vector of float)
 0:?     'd' (uniform float)
+
+
+Linked fragment stage:
+
+
 

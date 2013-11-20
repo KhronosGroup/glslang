@@ -1,7 +1,9 @@
+lineContinuation.vert
 ERROR: 0:6: '#error' : e1  
 ERROR: 0:11: '#error' : e2  
 ERROR: 0:18: '#error' : e3  
 ERROR: 3 compilation errors.  No code generated.
+
 
 ERROR: node is still EOpNull!
 0:20  Function Definition: main( (void)
@@ -25,4 +27,9 @@ ERROR: node is still EOpNull!
 0:?     'foo' (highp float)
 0:?     'gl_VertexID' (gl_VertexId highp int)
 0:?     'gl_InstanceID' (gl_InstanceId highp int)
+
+
+Linked vertex stage:
+
+
 
