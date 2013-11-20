@@ -413,9 +413,6 @@ TIntermTyped* TParseContext::handleVariable(TSourceLoc loc, TSymbol* symbol, TSt
         if (! variable)
             variable = new TVariable(string, TType(EbtVoid));
 
-        // don't delete $1.string, it's used by error recovery, and the pool
-        // pop will reclaim the memory
-
         if (variable->getType().getQualifier().storage == EvqConst)
             node = intermediate.addConstantUnion(variable->getConstArray(), variable->getType(), loc);
         else {
@@ -833,10 +830,9 @@ TIntermAggregate* TParseContext::handleFunctionDefinition(TSourceLoc loc, TFunct
             TVariable *variable = new TVariable(param.name, *param.type);
 
             // Insert the parameters with name in the symbol table.
-            if (! symbolTable.insert(*variable)) {
+            if (! symbolTable.insert(*variable))
                 error(loc, "redefinition", variable->getName().c_str(), "");
-                delete variable;
-            } else {
+            else {
                 // Transfer ownership of name pointer to symbol table.
                 param.name = 0;
 
@@ -2144,7 +2140,7 @@ bool TParseContext::redeclareBuiltinBlock(TSourceLoc loc, TTypeList& typeList, c
         return false;
     }
 
-    // Copy the to make a writable version, to insert into the block table after editing
+    // Copy the block to make a writable version, to insert into the block table after editing.
     block = symbolTable.copyUpDeferredInsert(block);
 
     if (block->getType().getBasicType() != EbtBlock) {

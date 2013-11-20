@@ -83,7 +83,7 @@ public:
     POOL_ALLOCATOR_NEW_DELETE(GetThreadPoolAllocator())
     explicit TSymbol(const TString *n) :  name(n), writable(true), numExtensions(0), extensions(0) { }
 	virtual TSymbol* clone() const = 0;
-    virtual ~TSymbol() { delete [] extensions; }
+    virtual ~TSymbol() { }  // rely on all symbol owned memory coming from the pool
 
     virtual const TString& getName() const { return *name; }
     virtual void changeName(const TString* newName) { name = newName; }
@@ -100,8 +100,9 @@ public:
     virtual void setExtensions(int num, const char* const exts[])
     {
         assert(extensions == 0);
+        assert(num > 0);
         numExtensions = num;
-        extensions = new const char*[numExtensions];
+        extensions = NewPoolObject(exts[0], num);
         for (int e = 0; e < num; ++e)
             extensions[e] = exts[e];
     }

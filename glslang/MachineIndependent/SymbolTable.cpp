@@ -249,8 +249,10 @@ TVariable::TVariable(const TVariable& copyOf) : TSymbol(copyOf)
 {	
     type.deepCopy(copyOf.type);
     userType = copyOf.userType;
+    numExtensions = 0;
     extensions = 0;
-    setExtensions(copyOf.numExtensions, copyOf.extensions);
+    if (copyOf.numExtensions > 0)
+        setExtensions(copyOf.numExtensions, copyOf.extensions);
 
     if (! copyOf.unionArray.empty()) {
         assert(!copyOf.type.getStruct());
@@ -276,8 +278,10 @@ TFunction::TFunction(const TFunction& copyOf) : TSymbol(copyOf)
         parameters.back().copyParam(copyOf.parameters[i]);
     }
 
-    extensions = 0;    
-    setExtensions(copyOf.numExtensions, copyOf.extensions);
+    numExtensions = 0;
+    extensions = 0;
+    if (copyOf.extensions > 0)
+        setExtensions(copyOf.numExtensions, copyOf.extensions);
     returnType.deepCopy(copyOf.returnType);
     mangledName = copyOf.mangledName;
     op = copyOf.op;

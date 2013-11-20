@@ -98,6 +98,16 @@ inline TString* NewPoolTString(const char* s)
 	return new(memory) TString(s);
 }
 
+template<class T> inline T* NewPoolObject(T)
+{
+    return new(GetThreadPoolAllocator().allocate(sizeof(T))) T;
+}
+
+template<class T> inline T* NewPoolObject(T, int instances)
+{
+    return new(GetThreadPoolAllocator().allocate(instances * sizeof(T))) T[instances];
+}
+
 //
 // Pool allocator versions of vectors, lists, and maps
 //
