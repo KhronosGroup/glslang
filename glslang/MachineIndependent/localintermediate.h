@@ -184,7 +184,7 @@ protected:
         bool currentPath;
         bool errorGiven;
     };
-    typedef TList<TCall> TGraph;
+    typedef std::list<TCall> TGraph;
     TGraph callGraph;
 
     std::set<TString> ioAccessed;  // set of names of statically read/written I/O that might need extra checking

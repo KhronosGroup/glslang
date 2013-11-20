@@ -3,3 +3,5 @@
 void bar()
 {
 }
+
+layout(line_strip) out;

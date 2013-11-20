@@ -70,5 +70,6 @@ ERROR: node is still EOpNull!
 
 Linked geometry stage:
 
+ERROR: Linking geometry stage: At least one geometry shader must specify an output layout primitive
 
 

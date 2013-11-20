@@ -21,7 +21,7 @@ ERROR: 1 compilation errors.  No code generated.
 invocations = 0
 max_vertices = 0
 input primitive = none
-output primitive = none
+output primitive = points
 ERROR: node is still EOpNull!
 0:3  Function Definition: foo( (void)
 0:3    Function Parameters: 
@@ -33,7 +33,7 @@ Warning, version 150 is not yet complete; some version-specific features are pre
 invocations = 0
 max_vertices = 0
 input primitive = none
-output primitive = none
+output primitive = line_strip
 0:? Sequence
 0:3  Function Definition: bar( (void)
 0:3    Function Parameters: 
@@ -42,7 +42,10 @@ output primitive = none
 
 Linked geometry stage:
 
+ERROR: Linking geometry stage: Contradictory output layout primitives
 ERROR: Linking geometry stage: Missing entry point: Each stage requires one "void main()" entry point
+ERROR: Linking geometry stage: At least one geometry shader must specify an input layout primitive
+ERROR: Linking geometry stage: At least one geometry shader must specify a layout(max_vertices = value)
 
 Linked fragment stage:
 
@@ -52,7 +55,7 @@ ERROR: Linking fragment stage: Multiple function bodies in multiple compilation 
 invocations = 0
 max_vertices = 0
 input primitive = none
-output primitive = none
+output primitive = points
 ERROR: node is still EOpNull!
 0:3  Function Definition: foo( (void)
 0:3    Function Parameters: 

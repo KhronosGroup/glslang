@@ -46,5 +46,8 @@ ERROR: node is still EOpNull!
 
 Linked geometry stage:
 
+ERROR: Linking geometry stage: At least one geometry shader must specify an input layout primitive
+ERROR: Linking geometry stage: At least one geometry shader must specify an output layout primitive
+ERROR: Linking geometry stage: At least one geometry shader must specify a layout(max_vertices = value)
 
 

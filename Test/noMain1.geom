@@ -3,3 +3,5 @@
 void foo()
 {
 }
+
+layout(points) out;

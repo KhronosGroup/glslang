@@ -76,6 +76,19 @@ void TIntermediate::merge(TInfoSink& infoSink, TIntermediate& unit)
     if (originUpperLeft != unit.originUpperLeft || pixelCenterInteger != unit.pixelCenterInteger)
         error(infoSink, "gl_FragCoord redeclarations must match across shaders\n");
 
+    if (inputPrimitive == ElgNone)
+        inputPrimitive = unit.inputPrimitive;
+    else if (inputPrimitive != unit.inputPrimitive)
+        error(infoSink, "Contradictory input layout primitives");
+    if (outputPrimitive == ElgNone)
+        outputPrimitive = unit.outputPrimitive;
+    else if (outputPrimitive != unit.outputPrimitive)
+        error(infoSink, "Contradictory output layout primitives");
+    if (maxVertices == 0)
+        maxVertices = unit.maxVertices;
+    else if (maxVertices != unit.maxVertices)
+        error(infoSink, "Contradictory layout max_vertices values");
+
     if (unit.treeRoot == 0)
         return;
 
@@ -259,6 +272,24 @@ void TIntermediate::errorCheck(TInfoSink& infoSink)
         error(infoSink, "Cannot use gl_FragColor or gl_FragData when using user-defined outputs");
     if (inIoAccessed("gl_FragColor") && inIoAccessed("gl_FragData"))
         error(infoSink, "Cannot use both gl_FragColor and gl_FragData");
+
+    switch (language) {
+    case EShLangVertex:
+    case EShLangTessControl:
+    case EShLangTessEvaluation:
+        break;
+    case EShLangGeometry:
+        if (inputPrimitive == ElgNone)
+            error(infoSink, "At least one geometry shader must specify an input layout primitive");
+        if (outputPrimitive == ElgNone)
+            error(infoSink, "At least one geometry shader must specify an output layout primitive");
+        if (maxVertices == 0)
+            error(infoSink, "At least one geometry shader must specify a layout(max_vertices = value)");
+        break;
+    case EShLangFragment:
+    case EShLangCompute:
+        break;
+    }
 }
 
 //
