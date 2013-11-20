@@ -85,7 +85,7 @@ layout(lines_adjancency) in;
 layout(triangles) in;             // ERROR, can't change it
 layout(triangles_adjacency) in;   // ERROR, can't change it
 
-layout(invocations = 4, max_vertices = 127) out;
+layout(invocations = 4, max_vertices = 300) out;
 
 in inbn {
     layout(stream = 2) int a;     // ERROR, stream on input

@@ -57,7 +57,7 @@ void main()
     v = texture(s2D, c2D);
     v = textureProj(s3D, c4D);
     v = textureLod(s2DArray, c3D, 1.2);
-    f = textureOffset(s2DShadow, c3D, ic2D, c1D);
+    f = textureOffset(s2DShadow, c3D, ic2D, c1D);  // ERROR, offset argument not constant
     v = texelFetch(s3D, ic3D, ic1D);
     v = texelFetchOffset(arrayedSampler[2], ic2D, 4, ic2D);
     f = textureLodOffset(s2DShadow, c3D, c1D, ic2D);
@@ -121,6 +121,12 @@ void foo13(s inSt2)
     st1.s == st2.s;   // ERROR
     inSt2 = st1;      // ERROR
     inSt2 == st1;     // ERROR
+}
+
+void foo23()
+{
+    textureOffset(s2DShadow, c3D, ivec2(-8, 7), c1D);
+    textureOffset(s2DShadow, c3D, ivec2(-9, 8), c1D);
 }
 
 float imageBuffer;    // ERROR, reserved

@@ -4,7 +4,13 @@ ERROR: 0:30: 'noperspective' : not supported with this profile: es
 ERROR: 0:31: 'sampler2D' : sampler/image types can only be used in uniform variables or function parameters: bads
 ERROR: 0:32: 'uint' : cannot apply precision statement to this type; use 'float', 'int' or a sampler type 
 ERROR: 0:39: 'structure' : non-uniform struct contains a sampler or image: badout
+ERROR: 0:60: 'texel offset' : argument must be compile-time constant 
+ERROR: 0:63: 'texel offset' : argument must be compile-time constant 
+ERROR: 0:64: 'texel offset' : argument must be compile-time constant 
+ERROR: 0:66: 'texel offset' : argument must be compile-time constant 
+ERROR: 0:68: 'texel offset' : argument must be compile-time constant 
 ERROR: 0:69: 'variable indexing sampler array' : not supported with this profile: es
+ERROR: 0:73: 'texel offset' : argument must be compile-time constant 
 ERROR: 0:83: 'double' : Reserved word. 
 ERROR: 0:83: 'double' : not supported with this profile: es
 ERROR: 0:84: 'dvec2' : Reserved word. 
@@ -25,9 +31,11 @@ ERROR: 0:121: '==' : can't use with samplers or structs containing samplers
 ERROR: 0:121: '==' :  wrong operand types: no operation '==' exists that takes a left-hand operand of type 'lowp sampler2D' and a right operand of type 'lowp sampler2D' (or there is no acceptable conversion)
 ERROR: 0:122: '=' : can't use with samplers or structs containing samplers 
 ERROR: 0:123: '==' : can't use with samplers or structs containing samplers 
-ERROR: 0:126: 'imageBuffer' : Reserved word. 
-ERROR: 0:126: '' :  syntax error
-ERROR: 28 compilation errors.  No code generated.
+ERROR: 0:129: 'texel offset' : value is out of range: [gl_MinProgramTexelOffset, gl_MaxProgramTexelOffset]
+ERROR: 0:129: 'texel offset' : value is out of range: [gl_MinProgramTexelOffset, gl_MaxProgramTexelOffset]
+ERROR: 0:132: 'imageBuffer' : Reserved word. 
+ERROR: 0:132: '' :  syntax error
+ERROR: 36 compilation errors.  No code generated.
 
 
 ERROR: node is still EOpNull!
@@ -255,6 +263,23 @@ ERROR: node is still EOpNull!
 0:123      Compare Equal (bool)
 0:123        'inSt2' (in structure{i,s})
 0:123        'st1' (uniform structure{i,s})
+0:126  Function Definition: foo23( (void)
+0:126    Function Parameters: 
+0:128    Sequence
+0:128      Function Call: textureOffset(sS21;vf3;vi2;f1; (lowp float)
+0:128        's2DShadow' (uniform lowp sampler2DShadow)
+0:128        'c3D' (smooth in lowp 3-component vector of float)
+0:128        Constant:
+0:128          -8 (const int)
+0:128          7 (const int)
+0:128        'c1D' (smooth in lowp float)
+0:129      Function Call: textureOffset(sS21;vf3;vi2;f1; (lowp float)
+0:129        's2DShadow' (uniform lowp sampler2DShadow)
+0:129        'c3D' (smooth in lowp 3-component vector of float)
+0:129        Constant:
+0:129          -9 (const int)
+0:129          8 (const int)
+0:129        'c1D' (smooth in lowp float)
 0:?   Linker Objects
 0:?     's2D' (uniform lowp sampler2D)
 0:?     's3D' (uniform lowp sampler3D)

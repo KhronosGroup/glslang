@@ -52,7 +52,7 @@ TParseContext::TParseContext(TSymbolTable& symt, TIntermediate& interm, bool pb,
             intermediate(interm), symbolTable(symt), infoSink(is), language(L),
             version(v), profile(p), forwardCompatible(fc), messages(m),
             contextPragma(true, false), loopNestingLevel(0), structNestingLevel(0),
-            tokensBeforeEOF(false), currentScanner(0),
+            tokensBeforeEOF(false), limits(resources.limits), currentScanner(0),
             numErrors(0), parsingBuiltins(pb), afterEOF(false),
             anyIndexLimits(false)
 {
@@ -108,9 +108,9 @@ TParseContext::TParseContext(TSymbolTable& symt, TIntermediate& interm, bool pb,
         globalOutputDefaults.layoutStream = 0;
 }
 
-void TParseContext::setLimits(const TLimits& L)
+void TParseContext::setLimits(const TBuiltInResource& r)
 {
-    limits = L;
+    resources = r;
 
     anyIndexLimits = ! limits.generalAttributeMatrixVectorIndexing ||
                      ! limits.generalConstantMatrixVectorIndexing ||
@@ -951,7 +951,7 @@ TIntermTyped* TParseContext::handleFunctionCall(TSourceLoc loc, TFunction* fnCal
                 }
 
                 if (builtIn)
-                    nonOpBuiltInCheck(loc, *fnCandidate, result->getAsAggregate());
+                    nonOpBuiltInCheck(loc, *fnCandidate, *result->getAsAggregate());
             }
         }
     }
@@ -973,26 +973,62 @@ TIntermTyped* TParseContext::handleFunctionCall(TSourceLoc loc, TFunction* fnCal
 //
 // Assumes there has been a semantically correct match to a built-in function.
 //
-void TParseContext::nonOpBuiltInCheck(TSourceLoc loc, const TFunction& fnCandidate, TIntermAggregate* callNode)
+void TParseContext::nonOpBuiltInCheck(TSourceLoc loc, const TFunction& fnCandidate, TIntermAggregate& callNode)
 {
     // built-in texturing functions get their return value precision from the precision of the sampler
     if (fnCandidate.getType().getQualifier().precision == EpqNone &&
         fnCandidate.getParamCount() > 0 && fnCandidate[0].type->getBasicType() == EbtSampler)
-        callNode->getQualifier().precision = callNode->getAsAggregate()->getSequence()[0]->getAsTyped()->getQualifier().precision;
+        callNode.getQualifier().precision = callNode.getAsAggregate()->getSequence()[0]->getAsTyped()->getQualifier().precision;
 
-    if (fnCandidate.getName().compare(0, 13, "textureGather") == 0) {
-        const char* feature = "texture gather function";
-        requireProfile(loc, ~EEsProfile, feature);
-        profileRequires(loc, ~EEsProfile, 400, GL_ARB_texture_gather, feature); // TODO: GL_ARB_gpu_shader5
-        int lastArgIndex = fnCandidate.getParamCount() - 1;
-        if (fnCandidate[lastArgIndex].type->getBasicType() == EbtInt && fnCandidate[lastArgIndex].type->isScalar()) {
-            // the last integral argument to a texture gather must be a constant int between 0 and 3
-            if (callNode->getSequence()[lastArgIndex]->getAsConstantUnion()) {
-                int value = callNode->getSequence()[lastArgIndex]->getAsConstantUnion()->getConstArray()[0].getIConst();
-                if (value < 0 || value > 3)
-                    error(loc, "must be 0, 1, 2, or 3", "texture gather component", "");
-            } else
-                error(loc, "must be a constant", "texture gather component", "");
+    if (fnCandidate.getName().compare(0, 7, "texture") == 0) {
+        if (fnCandidate.getName().compare(0, 13, "textureGather") == 0) {
+            const char* feature = "texture gather function";
+            requireProfile(loc, ~EEsProfile, feature);
+            profileRequires(loc, ~EEsProfile, 400, GL_ARB_texture_gather, feature); // TODO: GL_ARB_gpu_shader5
+            int lastArgIndex = fnCandidate.getParamCount() - 1;
+            if (fnCandidate[lastArgIndex].type->getBasicType() == EbtInt && fnCandidate[lastArgIndex].type->isScalar()) {
+                // the last integral argument to a texture gather must be a constant int between 0 and 3
+                if (callNode.getSequence()[lastArgIndex]->getAsConstantUnion()) {
+                    int value = callNode.getSequence()[lastArgIndex]->getAsConstantUnion()->getConstArray()[0].getIConst();
+                    if (value < 0 || value > 3)
+                        error(loc, "must be 0, 1, 2, or 3", "texture gather component", "");
+                } else
+                    error(loc, "must be a constant", "texture gather component", "");
+            }
+        } else {
+            // this is only for functions not starting "textureGather"...
+            if (fnCandidate.getName().find("Offset") != TString::npos) {
+
+                // Handle texture-offset limits checking
+                int arg = -1;
+                if (fnCandidate.getName().compare("textureOffset") == 0)
+                    arg = 2;
+                else if (fnCandidate.getName().compare("texelFetchOffset") == 0)
+                    arg = 3;
+                else if (fnCandidate.getName().compare("textureProjOffset") == 0)
+                    arg = 2;
+                else if (fnCandidate.getName().compare("textureLodOffset") == 0)
+                    arg = 3;
+                else if (fnCandidate.getName().compare("textureProjLodOffset") == 0)
+                    arg = 3;
+                else if (fnCandidate.getName().compare("textureGradOffset") == 0)
+                    arg = 4;
+                else if (fnCandidate.getName().compare("textureProjGradOffset") == 0)
+                    arg = 4;
+
+                if (arg > 0) {
+                    if (! callNode.getSequence()[arg]->getAsConstantUnion())
+                        error(loc, "argument must be compile-time constant", "texel offset", "");
+                    else {
+                        const TType& type = callNode.getSequence()[arg]->getAsTyped()->getType();
+                        for (int c = 0; c < type.getVectorSize(); ++c) {
+                            int offset = callNode.getSequence()[arg]->getAsConstantUnion()->getConstArray()[c].getIConst();
+                            if (offset > resources.maxProgramTexelOffset || offset < resources.minProgramTexelOffset)
+                                error(loc, "value is out of range:", "texel offset", "[gl_MinProgramTexelOffset, gl_MaxProgramTexelOffset]");
+                        }
+                    }
+                }
+            }
         }
     }
 }
@@ -2524,6 +2560,8 @@ void TParseContext::setLayoutQualifier(TSourceLoc loc, TPublicType& publicType, 
         }
         if (id == "max_vertices") {
             publicType.shaderQualifiers.maxVertices = value;
+            if (value > resources.maxGeometryOutputVertices)
+                error(loc, "too large, must be less than gl_MaxGeometryOutputVertices", "max_vertices", "");
             return;
         }
         if (id == "stream") {

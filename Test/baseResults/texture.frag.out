@@ -214,12 +214,6 @@ WARNING: 0:15: varying deprecated in version 130; may be removed in future relea
 0:63          'gradY' (2-component vector of float)
 0:63          dPdy (2-component vector of float)
 0:63            'coords2D' (smooth in 2-component vector of float)
-0:64      Sequence
-0:64        move second child to first child (2-component vector of int)
-0:64          'offset' (2-component vector of int)
-0:64          Constant:
-0:64            3 (const int)
-0:64            -7 (const int)
 0:66      add second child into first child (4-component vector of float)
 0:66        'color' (4-component vector of float)
 0:66        Function Call: textureGrad(s21;vf2;vf2;vf2; (4-component vector of float)
@@ -243,7 +237,9 @@ WARNING: 0:15: varying deprecated in version 130; may be removed in future relea
 0:68          'coords2D' (smooth in 2-component vector of float)
 0:68          'gradX' (2-component vector of float)
 0:68          'gradY' (2-component vector of float)
-0:68          'offset' (2-component vector of int)
+0:68          Constant:
+0:68            3 (const int)
+0:68            -7 (const int)
 0:69      add second child into first child (4-component vector of float)
 0:69        'color' (4-component vector of float)
 0:69        Function Call: textureProjGradOffset(s21;vf3;vf2;vf2;vi2; (4-component vector of float)
@@ -251,7 +247,9 @@ WARNING: 0:15: varying deprecated in version 130; may be removed in future relea
 0:69          'coords3D' (3-component vector of float)
 0:69          'gradX' (2-component vector of float)
 0:69          'gradY' (2-component vector of float)
-0:69          'offset' (2-component vector of int)
+0:69          Constant:
+0:69            3 (const int)
+0:69            -7 (const int)
 0:70      add second child into first child (4-component vector of float)
 0:70        'color' (4-component vector of float)
 0:70        Function Call: textureGrad(sS21;vf3;vf2;vf2; (float)

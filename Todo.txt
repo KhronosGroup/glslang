@@ -22,11 +22,8 @@ Link Validation
     Intra-stage linking, single shader
       + recursion for functions
       - limits checking:
-          - number of texture image units
-          - texel offsets (or compile-time?)
           - number of input/output compononents
           - 4.x tessellation limits
-          - 1.50: geometry shaders: max_vertices must be checked against gl_MaxGeometryOutputVertices (maybe at compile time)
           - Non ES: gl_TexCoord can only have a max array size of up to gl_MaxTextureCoords
           - ...
       + exactly one main
@@ -101,6 +98,8 @@ Shader Functionality to Implement/Finish
       + geometry shader layouts: they must be declared, telling the system the primitive input and output types and maximum number of vertices.
       + Added geometry shader constants.
       + Broaden structure usage to include geometry inputs and geometry outputs.
+      + texel offset limit checking
+      + 1.50: geometry shaders: max_vertices must be checked against gl_MaxGeometryOutputVertices (maybe at compile time)
     GLSL 4.0
       - tessellation control stage and tessellation evaluation stage. Includes barrier() built-in for synchronization.
       - Polymorphic functions: Run-time selection of what function gets called, through the new keyword subroutine.

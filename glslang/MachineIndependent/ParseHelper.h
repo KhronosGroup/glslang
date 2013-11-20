@@ -65,7 +65,7 @@ public:
     TParseContext(TSymbolTable&, TIntermediate&, bool parsingBuiltins, int version, EProfile, EShLanguage, TInfoSink&,
                   bool forwardCompatible = false, EShMessages messages = EShMsgDefault);
 
-    void setLimits(const TLimits&);
+    void setLimits(const TBuiltInResource&);
     bool parseShaderStrings(TPpContext&, TInputScanner& input, bool versionWillBeError = false);
     void parserError(const char *s);     // for bison's yyerror
     const char* getPreamble();
@@ -91,7 +91,7 @@ public:
     TFunction* handleFunctionDeclarator(TSourceLoc loc, TFunction& function);
     TIntermAggregate* handleFunctionDefinition(TSourceLoc, TFunction&);
     TIntermTyped* handleFunctionCall(TSourceLoc, TFunction*, TIntermNode*, TIntermAggregate*);
-    void nonOpBuiltInCheck(TSourceLoc, const TFunction&, TIntermAggregate*);
+    void nonOpBuiltInCheck(TSourceLoc, const TFunction&, TIntermAggregate&);
     TFunction* handleConstructorCall(TSourceLoc, TPublicType&);
 
     bool parseVectorFields(TSourceLoc, const TString&, int vecSize, TVectorFields&);
@@ -231,7 +231,8 @@ public:
     TIntermAggregate *linkage;   // aggregate node of objects the linker may need, if not referenced by the rest of the AST
     TPrecisionQualifier defaultPrecision[EbtNumTypes];
     bool tokensBeforeEOF;
-    TLimits limits;
+    TBuiltInResource resources;
+    TLimits& limits;
 
 protected:
     TScanContext* scanContext;

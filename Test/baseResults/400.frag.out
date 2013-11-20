@@ -7,7 +7,12 @@ ERROR: 0:36: 'location qualifier on uniform or buffer' : not supported for this 
 ERROR: 0:38: 'redeclaration' : cannot apply layout qualifier to gl_Color
 ERROR: 0:39: 'redeclaration' : cannot change qualification of gl_ClipDistance
 ERROR: 0:41: 'gl_FragCoord' : cannot redeclare after use 
-ERROR: 7 compilation errors.  No code generated.
+ERROR: 0:49: 'texel offset' : argument must be compile-time constant 
+ERROR: 0:51: 'texel offset' : value is out of range: [gl_MinProgramTexelOffset, gl_MaxProgramTexelOffset]
+ERROR: 0:51: 'texel offset' : value is out of range: [gl_MinProgramTexelOffset, gl_MaxProgramTexelOffset]
+ERROR: 0:52: 'texel offset' : value is out of range: [gl_MinProgramTexelOffset, gl_MaxProgramTexelOffset]
+ERROR: 0:52: 'texel offset' : value is out of range: [gl_MinProgramTexelOffset, gl_MaxProgramTexelOffset]
+ERROR: 12 compilation errors.  No code generated.
 
 
 gl_FragCoord pixel center is integer
@@ -116,6 +121,56 @@ ERROR: node is still EOpNull!
 0:25        move second child to first child (4-component vector of float)
 0:25          'c' (4-component vector of float)
 0:25          'gl_FragCoord' (gl_FragCoord 4-component vector of float)
+0:45  Function Definition: foo23( (void)
+0:45    Function Parameters: 
+0:?     Sequence
+0:49      Function Call: textureProjGradOffset(sSR21;vf4;vf2;vf2;vi2; (float)
+0:49        'u2drs' (uniform sampler2DRectShadow)
+0:49        'outp' (out 4-component vector of float)
+0:49        Constant:
+0:49          0.000000
+0:49          0.000000
+0:49        Constant:
+0:49          0.000000
+0:49          0.000000
+0:49        Convert float to int (2-component vector of int)
+0:49          'c2D' (smooth in 2-component vector of float)
+0:50      Function Call: textureProjGradOffset(sSR21;vf4;vf2;vf2;vi2; (float)
+0:50        'u2drs' (uniform sampler2DRectShadow)
+0:50        'outp' (out 4-component vector of float)
+0:50        Constant:
+0:50          0.000000
+0:50          0.000000
+0:50        Constant:
+0:50          0.000000
+0:50          0.000000
+0:50        Constant:
+0:50          3 (const int)
+0:50          4 (const int)
+0:51      Function Call: textureProjGradOffset(sSR21;vf4;vf2;vf2;vi2; (float)
+0:51        'u2drs' (uniform sampler2DRectShadow)
+0:51        'outp' (out 4-component vector of float)
+0:51        Constant:
+0:51          0.000000
+0:51          0.000000
+0:51        Constant:
+0:51          0.000000
+0:51          0.000000
+0:51        Constant:
+0:51          15 (const int)
+0:51          16 (const int)
+0:52      Function Call: textureProjGradOffset(sSR21;vf4;vf2;vf2;vi2; (float)
+0:52        'u2drs' (uniform sampler2DRectShadow)
+0:52        'outp' (out 4-component vector of float)
+0:52        Constant:
+0:52          0.000000
+0:52          0.000000
+0:52        Constant:
+0:52          0.000000
+0:52          0.000000
+0:52        Constant:
+0:52          -10 (const int)
+0:52          20 (const int)
 0:?   Linker Objects
 0:?     'c2D' (smooth in 2-component vector of float)
 0:?     'i' (flat in int)
@@ -131,6 +186,7 @@ ERROR: node is still EOpNull!
 0:?     '__anon__0' (in block{gl_FogFragCoord,gl_TexCoord,gl_Color,gl_SecondaryColor})
 0:?     'gl_FragCoord' (gl_FragCoord 4-component vector of float)
 0:?     'gl_FragCoord' (gl_FragCoord 4-component vector of float)
+0:?     'u2drs' (uniform sampler2DRectShadow)
 
 
 Linked fragment stage:

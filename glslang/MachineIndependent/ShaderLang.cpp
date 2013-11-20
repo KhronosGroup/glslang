@@ -486,7 +486,7 @@ bool CompileDeferred(
     TPpContext ppContext(parseContext);
     parseContext.setScanContext(&scanContext);
     parseContext.setPpContext(&ppContext);
-    parseContext.setLimits(resources->limits);
+    parseContext.setLimits(*resources);
     if (! goodVersion)
         parseContext.addError();
 

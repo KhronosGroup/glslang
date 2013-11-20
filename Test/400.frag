@@ -39,3 +39,15 @@ layout(location = 5) in vec4 gl_Color;      // ERROR, layout
 noperspective in float gl_ClipDistance[4];  // ERROR, can't change qualifier
 
 layout(origin_upper_left, pixel_center_integer) in vec4 gl_FragCoord;  // ERROR, declared after use
+
+uniform sampler2DRectShadow u2drs;
+
+void foo23()
+{
+    const ivec2[3] offsets = ivec2[3](ivec2(1,2), ivec2(3,4), ivec2(15,16));
+
+    textureProjGradOffset(u2drs, outp, vec2(0.0), vec2(0.0), ivec2(c2D)); // ERROR, offset not constant
+    textureProjGradOffset(u2drs, outp, vec2(0.0), vec2(0.0), offsets[1]);
+    textureProjGradOffset(u2drs, outp, vec2(0.0), vec2(0.0), offsets[2]);
+    textureProjGradOffset(u2drs, outp, vec2(0.0), vec2(0.0), ivec2(-10, 20)); // ERROR, offset out of range
+}
