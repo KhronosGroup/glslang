@@ -27,12 +27,13 @@ ERROR: 0:83: 'lines' : does not only apply to output
 ERROR: 0:85: 'triangles' : cannot change previously set input primitive 
 ERROR: 0:86: 'triangles_adjacency' : cannot change previously set input primitive 
 ERROR: 0:88: 'invocations' : not supported for this version or the enabled extensions 
+ERROR: 0:88: 'max_vertices' : too large, must be less than gl_MaxGeometryOutputVertices 
 ERROR: 0:91: 'stream' : member cannot contradict block 
-ERROR: 28 compilation errors.  No code generated.
+ERROR: 29 compilation errors.  No code generated.
 
 
 invocations = 4
-max_vertices = 127
+max_vertices = 300
 input primitive = lines_adjancency
 output primitive = triangle_strip
 ERROR: node is still EOpNull!

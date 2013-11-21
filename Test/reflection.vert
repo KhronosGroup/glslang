@@ -119,6 +119,10 @@ void liveFunction1(uimage2D p_ui2D, sampler2D p_2D, sampler2DMSArray p_2DMSArray
     vec4 v = ablock.member3;
 }
 
+uniform abl {
+    float foo;
+} arrBl[4];
+
 void main()
 {
     liveFunction1(image_ui2D, sampler_2D, sampler_2DMSArray);
@@ -156,4 +160,6 @@ void main()
         deep3 da[2] = deepD;
     } else
         f = ufDead3;
+
+    f += arrBl[2].foo;
 }

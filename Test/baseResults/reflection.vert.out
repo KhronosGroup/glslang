@@ -76,6 +76,7 @@ deepD[1].d2.d1[2].b: offset -1, type 8b56, size 1, index -1
 deepD[1].d2.d1[3].va: offset -1, type 8b50, size 3, index -1
 deepD[1].d2.d1[3].b: offset -1, type 8b56, size 1, index -1
 deepD[1].v3: offset -1, type 8b54, size 1, index -1
+arrBl[2].foo: offset 0, type 1406, size 1, index 7
 anonMember1: offset 0, type 8b51, size 1, index 0
 uf1: offset -1, type 1406, size 1, index -1
 uf2: offset -1, type 1406, size 1, index -1
@@ -86,4 +87,8 @@ nameless: offset -1, type ffffffff, size 496, index -1
 named: offset -1, type ffffffff, size 304, index -1
 c_nameless: offset -1, type ffffffff, size 112, index -1
 nested: offset -1, type ffffffff, size 28, index -1
+abl[0]: offset -1, type ffffffff, size 4, index -1
+abl[1]: offset -1, type ffffffff, size 4, index -1
+abl[2]: offset -1, type ffffffff, size 4, index -1
+abl[3]: offset -1, type ffffffff, size 4, index -1
 

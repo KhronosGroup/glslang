@@ -376,9 +376,19 @@ public:
             const TString& blockName = anonymous ? base->getType().getTypeName() : base->getType().getTypeName();
             TReflection::TNameToIndex::const_iterator it = reflection.nameToIndex.find(blockName);
             if (it == reflection.nameToIndex.end()) {
-                blockIndex = reflection.indexToUniformBlock.size();
-                reflection.nameToIndex[blockName] = blockIndex;
-                reflection.indexToUniformBlock.push_back(TObjectReflection(blockName, offset,  -1, getBlockSize(base->getType()), -1));
+                if (base->getType().isArray()) {
+                    assert(! anonymous);
+                    for (int e = 0; e < base->getType().getArraySize(); ++e) {
+                        TString elementName = blockName + "[" + String(e) + "]";
+                        blockIndex = reflection.indexToUniformBlock.size();
+                        reflection.nameToIndex[elementName] = blockIndex;
+                        reflection.indexToUniformBlock.push_back(TObjectReflection(elementName, offset, -1, getBlockSize(base->getType()), -1));
+                    }
+                } else {
+                    blockIndex = reflection.indexToUniformBlock.size();
+                    reflection.nameToIndex[blockName] = blockIndex;
+                    reflection.indexToUniformBlock.push_back(TObjectReflection(blockName, offset, -1, getBlockSize(base->getType()), -1));
+                }
             } else
                 blockIndex = it->second;
             offset = 0;
