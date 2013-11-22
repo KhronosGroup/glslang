@@ -58,11 +58,12 @@ ERROR: 0:135: 'texture2DProjLod' : no matching overloaded function found
 ERROR: 0:137: 'bitwise not' : not supported for this version or the enabled extensions 
 ERROR: 0:138: 'bitwise inclusive or' : not supported for this version or the enabled extensions 
 ERROR: 0:139: 'bitwise and' : not supported for this version or the enabled extensions 
-ERROR: 0:144: 'a' : redefinition 
-ERROR: 0:149: 'floating-point suffix' : not supported for this version or the enabled extensions 
-ERROR: 0:150: 'floating-point suffix' : not supported for this version or the enabled extensions 
-ERROR: 0:152: '' :  syntax error
-ERROR: 56 compilation errors.  No code generated.
+ERROR: 0:145: 'a' : redefinition 
+ERROR: 0:147: 'texture2DProjGradEXT' : required extension not requested: GL_EXT_shader_texture_lod
+ERROR: 0:151: 'floating-point suffix' : not supported for this version or the enabled extensions 
+ERROR: 0:152: 'floating-point suffix' : not supported for this version or the enabled extensions 
+ERROR: 0:166: '' :  syntax error
+ERROR: 57 compilation errors.  No code generated.
 
 
 ERROR: node is still EOpNull!
@@ -243,23 +244,55 @@ ERROR: node is still EOpNull!
 0:139      bitwise and (mediump int)
 0:139        'a' (mediump int)
 0:139        'a' (mediump int)
-0:144  Function Definition: foo203940(i1;f1;f1; (mediump int)
-0:144    Function Parameters: 
-0:144      'a' (in mediump int)
-0:144      'b' (in mediump float)
-0:146    Sequence
-0:146      Branch: Return with expression
-0:146        'a' (in mediump int)
-0:149  Sequence
-0:149    move second child to first child (mediump float)
-0:149      'f123' (mediump float)
-0:149      Constant:
-0:149        4.000000
-0:150  Sequence
-0:150    move second child to first child (mediump float)
-0:150      'f124' (mediump float)
-0:150      Constant:
-0:150        50000000000.000000
+0:145  Function Definition: foo203940(i1;f1;f1; (mediump int)
+0:145    Function Parameters: 
+0:145      'a' (in mediump int)
+0:145      'b' (in mediump float)
+0:147    Sequence
+0:147      Function Call: texture2DProjGradEXT(s21;vf3;vf2;vf2; (lowp 4-component vector of float)
+0:147        's2Dg' (uniform lowp sampler2D)
+0:147        Construct vec3 (3-component vector of float)
+0:147          'f13' (invariant mediump float)
+0:147        'uv2' (invariant uniform mediump 2-component vector of float)
+0:147        'uv2' (invariant uniform mediump 2-component vector of float)
+0:148      Branch: Return with expression
+0:148        'a' (in mediump int)
+0:151  Sequence
+0:151    move second child to first child (mediump float)
+0:151      'f123' (mediump float)
+0:151      Constant:
+0:151        4.000000
+0:152  Sequence
+0:152    move second child to first child (mediump float)
+0:152      'f124' (mediump float)
+0:152      Constant:
+0:152        50000000000.000000
+0:158  Function Definition: foo323433( (void)
+0:158    Function Parameters: 
+0:160    Sequence
+0:160      Function Call: texture2DLodEXT(s21;vf2;f1; (lowp 4-component vector of float)
+0:160        's2Dg' (uniform lowp sampler2D)
+0:160        'uv2' (invariant uniform mediump 2-component vector of float)
+0:160        'f13' (invariant mediump float)
+0:161      Function Call: texture2DProjGradEXT(s21;vf3;vf2;vf2; (lowp 4-component vector of float)
+0:161        's2Dg' (uniform lowp sampler2D)
+0:161        Construct vec3 (3-component vector of float)
+0:161          'f13' (invariant mediump float)
+0:161        'uv2' (invariant uniform mediump 2-component vector of float)
+0:161        'uv2' (invariant uniform mediump 2-component vector of float)
+0:162      Function Call: texture2DGradEXT(s21;vf2;vf2;vf2; (lowp 4-component vector of float)
+0:162        's2Dg' (uniform lowp sampler2D)
+0:162        'uv2' (invariant uniform mediump 2-component vector of float)
+0:162        'uv2' (invariant uniform mediump 2-component vector of float)
+0:162        'uv2' (invariant uniform mediump 2-component vector of float)
+0:163      Function Call: textureCubeGradEXT(sC1;vf3;vf3;vf3; (lowp 4-component vector of float)
+0:163        'sCube' (uniform lowp samplerCube)
+0:163        Construct vec3 (3-component vector of float)
+0:163          'f13' (invariant mediump float)
+0:163        Construct vec3 (3-component vector of float)
+0:163          'f13' (invariant mediump float)
+0:163        Construct vec3 (3-component vector of float)
+0:163          'f13' (invariant mediump float)
 0:?   Linker Objects
 0:?     'a' (3-element array of mediump int)
 0:?     'uint' (mediump int)
@@ -279,8 +312,10 @@ ERROR: node is still EOpNull!
 0:?     'sExt' (uniform lowp samplerExternalOES)
 0:?     'mediumExt' (uniform mediump samplerExternalOES)
 0:?     'highExt' (uniform highp samplerExternalOES)
+0:?     's2Dg' (uniform lowp sampler2D)
 0:?     'f123' (mediump float)
 0:?     'f124' (mediump float)
+0:?     'sCube' (uniform lowp samplerCube)
 
 
 Linked fragment stage:

@@ -527,6 +527,13 @@ void TBuiltIns::initialize(int version, EProfile profile)
             "mat4x2 transpose(mat2x4 m);"
             "mat3x4 transpose(mat4x3 m);"
             "mat4x3 transpose(mat3x4 m);"
+
+            "mat2x3 matrixCompMult(mat2x3, mat2x3);"
+            "mat2x4 matrixCompMult(mat2x4, mat2x4);"
+            "mat3x2 matrixCompMult(mat3x2, mat3x2);"
+            "mat3x4 matrixCompMult(mat3x4, mat3x4);"
+            "mat4x2 matrixCompMult(mat4x2, mat4x2);"
+            "mat4x3 matrixCompMult(mat4x3, mat4x3);"          
             
             "\n");
 

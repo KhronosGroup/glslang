@@ -123,3 +123,32 @@ void atest()
 
 varying vec4 gl_TexCoord[6];  // okay, assigning a size
 varying vec4 gl_TexCoord[5];  // ERROR, changing size
+
+mat2x2 m22;
+mat2x3 m23;
+mat2x4 m24;
+
+mat3x2 m32;
+mat3x3 m33;
+mat3x4 m34;
+
+mat4x2 m42;
+mat4x3 m43;
+mat4x4 m44;
+
+void foo123()
+{
+    mat2 r2 = matrixCompMult(m22, m22);
+    mat3 r3 = matrixCompMult(m33, m33);
+    mat4 r4 = matrixCompMult(m44, m44);
+
+    mat2x3 r23 = matrixCompMult(m23, m23);
+    mat2x4 r24 = matrixCompMult(m24, m24);
+    mat3x2 r32 = matrixCompMult(m32, m32);
+    mat3x4 r34 = matrixCompMult(m34, m34);
+    mat4x2 r42 = matrixCompMult(m42, m42);
+    mat4x3 r43 = matrixCompMult(m43, m43);
+
+    mat3x2 rfoo1 = matrixCompMult(m23, m32);  // ERROR
+    mat3x4 rfoo2 = matrixCompMult(m34, m44);  // ERROR    
+}
