@@ -153,6 +153,7 @@ void TParseContext::initializeExtensionBehavior()
     extensionBehavior[GL_OES_standard_derivatives]     = EBhDisable;
     extensionBehavior[GL_EXT_frag_depth]               = EBhDisable;
     extensionBehavior[GL_OES_EGL_image_external]       = EBhDisable;
+    extensionBehavior[GL_EXT_shader_texture_lod]       = EBhDisable;
 
     extensionBehavior[GL_ARB_texture_rectangle]        = EBhDisable;
     extensionBehavior[GL_3DL_array_objects]            = EBhDisable;
@@ -171,7 +172,8 @@ const char* TParseContext::getPreamble()
             "#define GL_OES_texture_3D 1\n"
             "#define GL_OES_standard_derivatives 1\n"
             "#define GL_EXT_frag_depth 1\n"
-            "#define GL_OES_EGL_image_external 1\n";
+            "#define GL_OES_EGL_image_external 1\n"
+            "#define GL_EXT_shader_texture_lod 1\n";
     } else {
         return
             "#define GL_FRAGMENT_PRECISION_HIGH 1\n"

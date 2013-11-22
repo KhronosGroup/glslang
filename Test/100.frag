@@ -140,13 +140,27 @@ void foo246()
 }
 
 #extension GL_OES_EGL_image_external : disable
+uniform sampler2D s2Dg;
 
 int foo203940(int a, float b, float a)  // ERROR, a redefined
 {
+    texture2DProjGradEXT(s2Dg, vec3(f13), uv2, uv2);  // ERROR, extension not enabled
     return a;
 }
 
 float f123 = 4.0f;   // ERROR
 float f124 = 5e10F;  // ERROR
+
+#extension GL_EXT_shader_texture_lod : enable
+
+uniform samplerCube sCube;
+
+void foo323433()
+{
+    texture2DLodEXT(s2Dg, uv2, f13);
+    texture2DProjGradEXT(s2Dg, vec3(f13), uv2, uv2);
+    texture2DGradEXT(s2Dg, uv2, uv2, uv2);
+    textureCubeGradEXT(sCube, vec3(f13), vec3(f13), vec3(f13));
+}
 
 uniform samplerExternalOES badExt;  // syntax ERROR

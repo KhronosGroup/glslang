@@ -76,6 +76,7 @@ const char* const GL_OES_texture_3D               = "GL_OES_texture_3D";
 const char* const GL_OES_standard_derivatives     = "GL_OES_standard_derivatives";
 const char* const GL_EXT_frag_depth               = "GL_EXT_frag_depth";
 const char* const GL_OES_EGL_image_external       = "GL_OES_EGL_image_external";
+const char* const GL_EXT_shader_texture_lod       = "GL_EXT_shader_texture_lod";
 
 const char* const GL_ARB_texture_rectangle        = "GL_ARB_texture_rectangle";
 const char* const GL_3DL_array_objects            = "GL_3DL_array_objects";

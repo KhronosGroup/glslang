@@ -43,9 +43,9 @@
 //   TBuiltIns::initialize(version,profile)       context-independent textual built-ins; add them to the right string
 //   TBuiltIns::initialize(resources,...)         context-dependent textual built-ins; add them to the right string
 //   IdentifyBuiltIns(...,symbolTable)            context-independent programmatic additions/mappings to the symbol table,
-//                                                including identify what extensions are needed if a version does not allow a symbol
+//                                                including identifying what extensions are needed if a version does not allow a symbol
 //   IdentifyBuiltIns(...,symbolTable, resources) context-dependent programmatic additions/mappings to the symbol table,
-//                                                including identify what extensions are needed if a version does not allow a symbol
+//                                                including identifying what extensions are needed if a version does not allow a symbol
 //
 
 #include "../Include/intermediate.h"
@@ -648,7 +648,7 @@ void TBuiltIns::initialize(int version, EProfile profile)
     }
 
     //
-    // Original-style texture functions existing in both stages.
+    // Original-style texture functions existing in all stages.
     // (Per-stage functions below.)
     //
     if ((profile == EEsProfile && version == 100) ||
@@ -686,12 +686,16 @@ void TBuiltIns::initialize(int version, EProfile profile)
             "\n");
     }
 
-    if (profile == EEsProfile) {
-        // GL_OES_EGL_image_external, caught by keyword check
+    if (profile == EEsProfile) {        
         commonBuiltins.append(
-            "vec4 texture2D(samplerExternalOES, vec2 coord);"
-            "vec4 texture2DProj(samplerExternalOES, vec3);"
-            "vec4 texture2DProj(samplerExternalOES, vec4);"
+            "vec4 texture2D(samplerExternalOES, vec2 coord);"  // GL_OES_EGL_image_external, caught by keyword check
+            "vec4 texture2DProj(samplerExternalOES, vec3);"    // GL_OES_EGL_image_external, caught by keyword check
+            "vec4 texture2DProj(samplerExternalOES, vec4);"    // GL_OES_EGL_image_external, caught by keyword check
+            "vec4 texture2DGradEXT(sampler2D, vec2, vec2, vec2);"      // GL_EXT_shader_texture_lod
+            "vec4 texture2DProjGradEXT(sampler2D, vec3, vec2, vec2);"  // GL_EXT_shader_texture_lod
+            "vec4 texture2DProjGradEXT(sampler2D, vec4, vec2, vec2);"  // GL_EXT_shader_texture_lod
+            "vec4 textureCubeGradEXT(samplerCube, vec3, vec3, vec3);"  // GL_EXT_shader_texture_lod
+
             "\n");
     }
 
@@ -854,6 +858,15 @@ void TBuiltIns::initialize(int version, EProfile profile)
             "vec4 shadow2D(sampler2DShadow, vec3, float);"
             "vec4 shadow1DProj(sampler1DShadow, vec4, float);"
             "vec4 shadow2DProj(sampler2DShadow, vec4, float);"
+            
+            "\n");
+    }
+    if (profile == EEsProfile) {
+        stageBuiltins[EShLangFragment].append(
+            "vec4 texture2DLodEXT(sampler2D, vec2, float);"      // GL_EXT_shader_texture_lod
+            "vec4 texture2DProjLodEXT(sampler2D, vec3, float);"  // GL_EXT_shader_texture_lod
+            "vec4 texture2DProjLodEXT(sampler2D, vec4, float);"  // GL_EXT_shader_texture_lod
+            "vec4 textureCubeLodEXT(samplerCube, vec3, float);"  // GL_EXT_shader_texture_lod
             
             "\n");
     }
@@ -2161,6 +2174,11 @@ void IdentifyBuiltIns(int version, EProfile profile, EShLanguage language, TSymb
             symbolTable.setFunctionExtensions("dFdy",   1, &GL_OES_standard_derivatives);
             symbolTable.setFunctionExtensions("fwidth", 1, &GL_OES_standard_derivatives);
         }
+        if (profile == EEsProfile) {
+            symbolTable.setFunctionExtensions("texture2DLodEXT",     1, &GL_EXT_shader_texture_lod);
+            symbolTable.setFunctionExtensions("texture2DProjLodEXT", 1, &GL_EXT_shader_texture_lod);
+            symbolTable.setFunctionExtensions("textureCubeLodEXT",   1, &GL_EXT_shader_texture_lod);
+        }
         symbolTable.setVariableExtensions("gl_FragDepthEXT", 1, &GL_EXT_frag_depth);
         break;
 
@@ -2173,9 +2191,15 @@ void IdentifyBuiltIns(int version, EProfile profile, EShLanguage language, TSymb
         break;
     }
 
+    if (profile == EEsProfile) {
+        symbolTable.setFunctionExtensions("texture2DGradEXT",     1, &GL_EXT_shader_texture_lod);
+        symbolTable.setFunctionExtensions("texture2DProjGradEXT", 1, &GL_EXT_shader_texture_lod);
+        symbolTable.setFunctionExtensions("textureCubeGradEXT",   1, &GL_EXT_shader_texture_lod);
+    }
+
     //
-    // Next, identify which built-ins from the already loaded headers have
-    // a mapping to an operator.  Those that are not identified as such are
+    // Next, identify which built-ins have a mapping to an operator.
+    // Those that are not identified as such are
     // expected to be resolved through a library of functions, versus as
     // operations.
     //
