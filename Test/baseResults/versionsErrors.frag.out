@@ -2,9 +2,8 @@ versionsErrors.frag
 ERROR: #version: versions before 150 do not allow a profile token
 ERROR: 0:38: 'attribute' : not supported in this stage: fragment
 ERROR: 0:40: 'sampler2DRect' : Reserved word. 
-ERROR: 0:40: 'rectangle texture' : not supported for this version or the enabled extensions 
 ERROR: 0:44: 'floating-point suffix' : not supported for this version or the enabled extensions 
-ERROR: 5 compilation errors.  No code generated.
+ERROR: 4 compilation errors.  No code generated.
 
 
 ERROR: node is still EOpNull!

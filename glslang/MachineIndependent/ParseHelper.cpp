@@ -982,18 +982,45 @@ void TParseContext::nonOpBuiltInCheck(TSourceLoc loc, const TFunction& fnCandida
 
     if (fnCandidate.getName().compare(0, 7, "texture") == 0) {
         if (fnCandidate.getName().compare(0, 13, "textureGather") == 0) {
-            const char* feature = "texture gather function";
+            TString featureString = fnCandidate.getName() + "(...)";
+            const char* feature = featureString.c_str();
             requireProfile(loc, ~EEsProfile, feature);
-            profileRequires(loc, ~EEsProfile, 400, GL_ARB_texture_gather, feature); // TODO: GL_ARB_gpu_shader5
-            int lastArgIndex = fnCandidate.getParamCount() - 1;
-            if (fnCandidate[lastArgIndex].type->getBasicType() == EbtInt && fnCandidate[lastArgIndex].type->isScalar()) {
-                // the last integral argument to a texture gather must be a constant int between 0 and 3
-                if (callNode.getSequence()[lastArgIndex]->getAsConstantUnion()) {
-                    int value = callNode.getSequence()[lastArgIndex]->getAsConstantUnion()->getConstArray()[0].getIConst();
-                    if (value < 0 || value > 3)
-                        error(loc, "must be 0, 1, 2, or 3", "texture gather component", "");
+
+            int compArg = -1;  // track which argument, if any, is the constant component argument
+            if (fnCandidate.getName().compare("textureGatherOffset") == 0) {
+                // GL_ARB_texture_gather is good enough for 2D non-shadow textures with no component argument
+                if (fnCandidate[0].type->getSampler().dim == Esd2D && ! fnCandidate[0].type->getSampler().shadow && fnCandidate.getParamCount() == 3)
+                    profileRequires(loc, ~EEsProfile, 400, GL_ARB_texture_gather, feature);
+                else
+                    profileRequires(loc, ~EEsProfile, 400, GL_ARB_gpu_shader5, feature);
+                if (! fnCandidate[0].type->getSampler().shadow)
+                    compArg = 3;
+            } else if (fnCandidate.getName().compare("textureGatherOffsets") == 0) {
+                profileRequires(loc, ~EEsProfile, 400, GL_ARB_gpu_shader5, feature);
+                if (! fnCandidate[0].type->getSampler().shadow)
+                    compArg = 3;
+                // check for constant offsets
+                int offsetArg = fnCandidate[0].type->getSampler().shadow ? 3 : 2;
+                if (! callNode.getSequence()[offsetArg]->getAsConstantUnion())
+                    error(loc, "must be a compile-time constant:", feature, "offsets argument");
+            } else if (fnCandidate.getName().compare("textureGather") == 0) {
+                // More than two arguments needs gpu_shader5, and rectangular or shadow needs gpu_shader5,
+                // otherwise, need GL_ARB_texture_gather.
+                if (fnCandidate.getParamCount() > 2 || fnCandidate[0].type->getSampler().dim == EsdRect || fnCandidate[0].type->getSampler().shadow) {
+                    profileRequires(loc, ~EEsProfile, 400, GL_ARB_gpu_shader5, feature);
+                    if (! fnCandidate[0].type->getSampler().shadow)
+                        compArg = 2;
                 } else
-                    error(loc, "must be a constant", "texture gather component", "");
+                    profileRequires(loc, ~EEsProfile, 400, GL_ARB_texture_gather, feature);
+            }
+
+            if (compArg > 0 && compArg < fnCandidate.getParamCount()) {
+                if (callNode.getSequence()[compArg]->getAsConstantUnion()) {
+                    int value = callNode.getSequence()[compArg]->getAsConstantUnion()->getConstArray()[0].getIConst();
+                    if (value < 0 || value > 3)
+                        error(loc, "must be 0, 1, 2, or 3:", feature, "component argument");
+                } else
+                    error(loc, "must be a compile-time constant:", feature, "component argument");
             }
         } else {
             // this is only for functions not starting "textureGather"...

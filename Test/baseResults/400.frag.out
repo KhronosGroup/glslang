@@ -1,18 +1,19 @@
 400.frag
 Warning, version 400 is not yet complete; some version-specific features are present, but many are missing.
-ERROR: 0:20: 'texture gather component' : must be a constant 
-ERROR: 0:21: 'texture gather component' : must be 0, 1, 2, or 3 
-ERROR: 0:28: 'location qualifier on input' : not supported for this version or the enabled extensions 
-ERROR: 0:36: 'location qualifier on uniform or buffer' : not supported for this version or the enabled extensions 
-ERROR: 0:38: 'redeclaration' : cannot apply layout qualifier to gl_Color
-ERROR: 0:39: 'redeclaration' : cannot change qualification of gl_ClipDistance
-ERROR: 0:41: 'gl_FragCoord' : cannot redeclare after use 
-ERROR: 0:49: 'texel offset' : argument must be compile-time constant 
-ERROR: 0:51: 'texel offset' : value is out of range: [gl_MinProgramTexelOffset, gl_MaxProgramTexelOffset]
-ERROR: 0:51: 'texel offset' : value is out of range: [gl_MinProgramTexelOffset, gl_MaxProgramTexelOffset]
-ERROR: 0:52: 'texel offset' : value is out of range: [gl_MinProgramTexelOffset, gl_MaxProgramTexelOffset]
-ERROR: 0:52: 'texel offset' : value is out of range: [gl_MinProgramTexelOffset, gl_MaxProgramTexelOffset]
-ERROR: 12 compilation errors.  No code generated.
+ERROR: 0:18: 'textureGatherOffsets(...)' : must be a compile-time constant: offsets argument
+ERROR: 0:22: 'textureGatherOffset(...)' : must be a compile-time constant: component argument
+ERROR: 0:23: 'textureGatherOffset(...)' : must be 0, 1, 2, or 3: component argument
+ERROR: 0:30: 'location qualifier on input' : not supported for this version or the enabled extensions 
+ERROR: 0:38: 'location qualifier on uniform or buffer' : not supported for this version or the enabled extensions 
+ERROR: 0:40: 'redeclaration' : cannot apply layout qualifier to gl_Color
+ERROR: 0:41: 'redeclaration' : cannot change qualification of gl_ClipDistance
+ERROR: 0:43: 'gl_FragCoord' : cannot redeclare after use 
+ERROR: 0:51: 'texel offset' : argument must be compile-time constant 
+ERROR: 0:53: 'texel offset' : value is out of range: [gl_MinProgramTexelOffset, gl_MaxProgramTexelOffset]
+ERROR: 0:53: 'texel offset' : value is out of range: [gl_MinProgramTexelOffset, gl_MaxProgramTexelOffset]
+ERROR: 0:54: 'texel offset' : value is out of range: [gl_MinProgramTexelOffset, gl_MaxProgramTexelOffset]
+ERROR: 0:54: 'texel offset' : value is out of range: [gl_MinProgramTexelOffset, gl_MaxProgramTexelOffset]
+ERROR: 13 compilation errors.  No code generated.
 
 
 gl_FragCoord pixel center is integer
@@ -37,63 +38,54 @@ ERROR: node is still EOpNull!
 0:14          'gl_ClipDistance' (smooth in unsized array of float)
 0:14          Constant:
 0:14            1 (const int)
-0:17      Sequence
-0:17        move second child to first child (4-component vector of uint)
-0:17          'uv4' (4-component vector of uint)
-0:17          Function Call: textureGatherOffsets(usR21;vf2;vi2[4];i1; (4-component vector of uint)
-0:17            'samp2dr' (uniform usampler2DRect)
-0:17            'c2D' (smooth in 2-component vector of float)
-0:17            'offsets' (4-element array of 2-component vector of int)
-0:17            Constant:
-0:17              2 (const int)
 0:18      Sequence
-0:18        move second child to first child (4-component vector of float)
-0:18          'v4' (4-component vector of float)
-0:18          Function Call: textureGather(s21;vf2; (4-component vector of float)
-0:18            direct index (sampler2D)
-0:18              'arrayedSampler' (uniform 5-element array of sampler2D)
-0:18              Constant:
-0:18                0 (const int)
+0:18        move second child to first child (4-component vector of uint)
+0:18          'uv4' (4-component vector of uint)
+0:18          Function Call: textureGatherOffsets(usR21;vf2;vi2[4];i1; (4-component vector of uint)
+0:18            'samp2dr' (uniform usampler2DRect)
 0:18            'c2D' (smooth in 2-component vector of float)
-0:19      Sequence
-0:19        move second child to first child (4-component vector of int)
-0:19          'iv4' (4-component vector of int)
-0:19          Function Call: textureGatherOffset(isA21;vf3;vi2;i1; (4-component vector of int)
-0:19            'isamp2DA' (uniform isampler2DArray)
-0:19            Constant:
-0:19              0.100000
-0:19              0.100000
-0:19              0.100000
-0:19            Constant:
-0:19              1 (const int)
-0:19              1 (const int)
-0:19            Constant:
-0:19              3 (const int)
-0:20      move second child to first child (4-component vector of int)
-0:20        'iv4' (4-component vector of int)
-0:20        Function Call: textureGatherOffset(isA21;vf3;vi2;i1; (4-component vector of int)
-0:20          'isamp2DA' (uniform isampler2DArray)
-0:20          Constant:
-0:20            0.100000
-0:20            0.100000
-0:20            0.100000
-0:20          Constant:
-0:20            1 (const int)
-0:20            1 (const int)
-0:20          'i' (flat in int)
-0:21      move second child to first child (4-component vector of int)
-0:21        'iv4' (4-component vector of int)
-0:21        Function Call: textureGatherOffset(isA21;vf3;vi2;i1; (4-component vector of int)
-0:21          'isamp2DA' (uniform isampler2DArray)
-0:21          Constant:
-0:21            0.100000
-0:21            0.100000
-0:21            0.100000
-0:21          Constant:
-0:21            1 (const int)
-0:21            1 (const int)
-0:21          Constant:
-0:21            4 (const int)
+0:18            'offsets' (4-element array of 2-component vector of int)
+0:18            Constant:
+0:18              2 (const int)
+0:19      move second child to first child (4-component vector of uint)
+0:19        'uv4' (4-component vector of uint)
+0:19        Function Call: textureGatherOffsets(usR21;vf2;vi2[4];i1; (4-component vector of uint)
+0:19          'samp2dr' (uniform usampler2DRect)
+0:19          'c2D' (smooth in 2-component vector of float)
+0:19          Constant:
+0:19            1 (const int)
+0:19            2 (const int)
+0:19            3 (const int)
+0:19            4 (const int)
+0:19            15 (const int)
+0:19            16 (const int)
+0:19            -2 (const int)
+0:19            0 (const int)
+0:19          Constant:
+0:19            2 (const int)
+0:20      Sequence
+0:20        move second child to first child (4-component vector of float)
+0:20          'v4' (4-component vector of float)
+0:20          Function Call: textureGather(s21;vf2; (4-component vector of float)
+0:20            direct index (sampler2D)
+0:20              'arrayedSampler' (uniform 5-element array of sampler2D)
+0:20              Constant:
+0:20                0 (const int)
+0:20            'c2D' (smooth in 2-component vector of float)
+0:21      Sequence
+0:21        move second child to first child (4-component vector of int)
+0:21          'iv4' (4-component vector of int)
+0:21          Function Call: textureGatherOffset(isA21;vf3;vi2;i1; (4-component vector of int)
+0:21            'isamp2DA' (uniform isampler2DArray)
+0:21            Constant:
+0:21              0.100000
+0:21              0.100000
+0:21              0.100000
+0:21            Constant:
+0:21              1 (const int)
+0:21              1 (const int)
+0:21            Constant:
+0:21              3 (const int)
 0:22      move second child to first child (4-component vector of int)
 0:22        'iv4' (4-component vector of int)
 0:22        Function Call: textureGatherOffset(isA21;vf3;vi2;i1; (4-component vector of int)
@@ -105,48 +97,50 @@ ERROR: node is still EOpNull!
 0:22          Constant:
 0:22            1 (const int)
 0:22            1 (const int)
-0:22          Constant:
-0:22            3 (const int)
+0:22          'i' (flat in int)
 0:23      move second child to first child (4-component vector of int)
 0:23        'iv4' (4-component vector of int)
-0:23        Function Call: textureGatherOffset(isA21;vf3;vi2; (4-component vector of int)
+0:23        Function Call: textureGatherOffset(isA21;vf3;vi2;i1; (4-component vector of int)
 0:23          'isamp2DA' (uniform isampler2DArray)
 0:23          Constant:
 0:23            0.100000
 0:23            0.100000
 0:23            0.100000
-0:23          Construct ivec2 (2-component vector of int)
-0:23            'i' (flat in int)
-0:25      Sequence
-0:25        move second child to first child (4-component vector of float)
-0:25          'c' (4-component vector of float)
-0:25          'gl_FragCoord' (gl_FragCoord 4-component vector of float)
-0:45  Function Definition: foo23( (void)
-0:45    Function Parameters: 
+0:23          Constant:
+0:23            1 (const int)
+0:23            1 (const int)
+0:23          Constant:
+0:23            4 (const int)
+0:24      move second child to first child (4-component vector of int)
+0:24        'iv4' (4-component vector of int)
+0:24        Function Call: textureGatherOffset(isA21;vf3;vi2;i1; (4-component vector of int)
+0:24          'isamp2DA' (uniform isampler2DArray)
+0:24          Constant:
+0:24            0.100000
+0:24            0.100000
+0:24            0.100000
+0:24          Constant:
+0:24            1 (const int)
+0:24            1 (const int)
+0:24          Constant:
+0:24            3 (const int)
+0:25      move second child to first child (4-component vector of int)
+0:25        'iv4' (4-component vector of int)
+0:25        Function Call: textureGatherOffset(isA21;vf3;vi2; (4-component vector of int)
+0:25          'isamp2DA' (uniform isampler2DArray)
+0:25          Constant:
+0:25            0.100000
+0:25            0.100000
+0:25            0.100000
+0:25          Construct ivec2 (2-component vector of int)
+0:25            'i' (flat in int)
+0:27      Sequence
+0:27        move second child to first child (4-component vector of float)
+0:27          'c' (4-component vector of float)
+0:27          'gl_FragCoord' (gl_FragCoord 4-component vector of float)
+0:47  Function Definition: foo23( (void)
+0:47    Function Parameters: 
 0:?     Sequence
-0:49      Function Call: textureProjGradOffset(sSR21;vf4;vf2;vf2;vi2; (float)
-0:49        'u2drs' (uniform sampler2DRectShadow)
-0:49        'outp' (out 4-component vector of float)
-0:49        Constant:
-0:49          0.000000
-0:49          0.000000
-0:49        Constant:
-0:49          0.000000
-0:49          0.000000
-0:49        Convert float to int (2-component vector of int)
-0:49          'c2D' (smooth in 2-component vector of float)
-0:50      Function Call: textureProjGradOffset(sSR21;vf4;vf2;vf2;vi2; (float)
-0:50        'u2drs' (uniform sampler2DRectShadow)
-0:50        'outp' (out 4-component vector of float)
-0:50        Constant:
-0:50          0.000000
-0:50          0.000000
-0:50        Constant:
-0:50          0.000000
-0:50          0.000000
-0:50        Constant:
-0:50          3 (const int)
-0:50          4 (const int)
 0:51      Function Call: textureProjGradOffset(sSR21;vf4;vf2;vf2;vi2; (float)
 0:51        'u2drs' (uniform sampler2DRectShadow)
 0:51        'outp' (out 4-component vector of float)
@@ -156,9 +150,8 @@ ERROR: node is still EOpNull!
 0:51        Constant:
 0:51          0.000000
 0:51          0.000000
-0:51        Constant:
-0:51          15 (const int)
-0:51          16 (const int)
+0:51        Convert float to int (2-component vector of int)
+0:51          'c2D' (smooth in 2-component vector of float)
 0:52      Function Call: textureProjGradOffset(sSR21;vf4;vf2;vf2;vi2; (float)
 0:52        'u2drs' (uniform sampler2DRectShadow)
 0:52        'outp' (out 4-component vector of float)
@@ -169,8 +162,32 @@ ERROR: node is still EOpNull!
 0:52          0.000000
 0:52          0.000000
 0:52        Constant:
-0:52          -10 (const int)
-0:52          20 (const int)
+0:52          3 (const int)
+0:52          4 (const int)
+0:53      Function Call: textureProjGradOffset(sSR21;vf4;vf2;vf2;vi2; (float)
+0:53        'u2drs' (uniform sampler2DRectShadow)
+0:53        'outp' (out 4-component vector of float)
+0:53        Constant:
+0:53          0.000000
+0:53          0.000000
+0:53        Constant:
+0:53          0.000000
+0:53          0.000000
+0:53        Constant:
+0:53          15 (const int)
+0:53          16 (const int)
+0:54      Function Call: textureProjGradOffset(sSR21;vf4;vf2;vf2;vi2; (float)
+0:54        'u2drs' (uniform sampler2DRectShadow)
+0:54        'outp' (out 4-component vector of float)
+0:54        Constant:
+0:54          0.000000
+0:54          0.000000
+0:54        Constant:
+0:54          0.000000
+0:54          0.000000
+0:54        Constant:
+0:54          -10 (const int)
+0:54          20 (const int)
 0:?   Linker Objects
 0:?     'c2D' (smooth in 2-component vector of float)
 0:?     'i' (flat in int)

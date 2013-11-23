@@ -798,8 +798,9 @@ int TScanContext::tokenizeIdentifier()
     case SAMPLER2DRECT:
     case SAMPLER2DRECTSHADOW:
         afterType = true;
-        if (parseContext.profile == EEsProfile ||
-            (parseContext.profile != EEsProfile && parseContext.version < 140))
+        if (parseContext.profile == EEsProfile)
+            reservedWord();
+        else if (parseContext.version < 140 && ! parseContext.symbolTable.atBuiltInLevel() && ! parseContext.extensionsTurnedOn(1, &GL_ARB_texture_rectangle))
             reservedWord();
         return keyword;
 

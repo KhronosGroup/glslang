@@ -157,8 +157,9 @@ void TParseContext::initializeExtensionBehavior()
 
     extensionBehavior[GL_ARB_texture_rectangle]        = EBhDisable;
     extensionBehavior[GL_3DL_array_objects]            = EBhDisable;
-    extensionBehavior[GL_ARB_shading_language_420pack] = EBhDisable;
+    extensionBehavior[GL_ARB_shading_language_420pack] = EBhDisablePartial;
     extensionBehavior[GL_ARB_texture_gather]           = EBhDisable;
+    extensionBehavior[GL_ARB_gpu_shader5]              = EBhDisablePartial;
     extensionBehavior[GL_ARB_separate_shader_objects]  = EBhDisable;
 }
 
@@ -180,6 +181,7 @@ const char* TParseContext::getPreamble()
             "#define GL_ARB_texture_rectangle 1\n"
             "#define GL_ARB_shading_language_420pack 1\n"
             "#define GL_ARB_texture_gather 1\n"
+            "#define GL_ARB_gpu_shader5 1\n"
             "#define GL_ARB_separate_shader_objects 1\n";
     }
 }
@@ -435,8 +437,11 @@ void TParseContext::updateExtensionBehavior(const char* extension, const char* b
             }
 
             return;
-        } else
+        } else {
+            if (iter->second == EBhDisablePartial)
+                warn(getCurrentLoc(), "extension is only partially supported:", "#extension", extension);
             iter->second = behavior;
+        }
     }
 }
 

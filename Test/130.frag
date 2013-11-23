@@ -65,3 +65,34 @@ void bar2()
     int(bl4) <= int(bl4);      // true
     int(bl4.x) > int(bl4.y);   // false
 }
+
+#extension GL_ARB_texture_gather : enable
+#extension GL_ARB_texture_rectangle : enable
+
+uniform sampler2D samp2D;
+uniform sampler2DShadow samp2DS;
+uniform sampler2DRect samp2DR;
+uniform sampler2DArray samp2DA;
+
+void bar23()
+{
+    vec4 s;
+    s = textureGatherOffset(sampC, vec3(0.3), ivec2(1));        // ERROR
+    s = textureGatherOffset(samp2DR, vec2(0.3), ivec2(1));      // ERROR
+    s = textureGatherOffset(samp2D, vec2(0.3), ivec2(1));
+    s = textureGatherOffset(samp2DA, vec3(0.3), ivec2(1));
+    s = textureGatherOffset(samp2DS, vec2(0.3), 1.3, ivec2(1)); // ERROR
+    s = textureGatherOffset(samp2D, vec2(0.3), ivec2(1), 2);    // ERROR
+}
+
+#extension GL_ARB_gpu_shader5 : enable
+
+void bar234()
+{
+    vec4 s;
+    s = textureGatherOffset(samp2D, vec2(0.3), ivec2(1));
+    s = textureGatherOffset(samp2DA, vec3(0.3), ivec2(1));
+    s = textureGatherOffset(samp2DR, vec2(0.3), ivec2(1));
+    s = textureGatherOffset(samp2DS, vec2(0.3), 1.3, ivec2(1));
+    s = textureGatherOffset(samp2D, vec2(0.3), ivec2(1), 2);
+}

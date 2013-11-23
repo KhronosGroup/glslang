@@ -1717,29 +1717,21 @@ type_specifier_nonarray
         $$.sampler.set(EbtUint, EsdCube, true);
     }
     | SAMPLER2DRECT {
-        parseContext.profileRequires($1.loc, ENoProfile, 140, GL_ARB_texture_rectangle, "rectangle texture");
-
         $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
         $$.basicType = EbtSampler;
         $$.sampler.set(EbtFloat, EsdRect);
     }
     | SAMPLER2DRECTSHADOW {
-        parseContext.profileRequires($1.loc, ECoreProfile, 140, GL_ARB_texture_rectangle, "rectangle texture");
-
         $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
         $$.basicType = EbtSampler;
         $$.sampler.set(EbtFloat, EsdRect, false, true);
     }
     | ISAMPLER2DRECT {
-        parseContext.profileRequires($1.loc, ECoreProfile, 140, GL_ARB_texture_rectangle, "rectangle texture");
-
         $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
         $$.basicType = EbtSampler;
         $$.sampler.set(EbtInt, EsdRect);
     }
     | USAMPLER2DRECT {
-        parseContext.profileRequires($1.loc, ECoreProfile, 140, GL_ARB_texture_rectangle, "rectangle texture");
-
         $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
         $$.basicType = EbtSampler;
         $$.sampler.set(EbtUint, EsdRect);

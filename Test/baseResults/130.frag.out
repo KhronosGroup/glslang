@@ -1,14 +1,20 @@
 130.frag
 Warning, version 130 is not yet complete; most features are present, but a few are missing.
-ERROR: 0:25: 'texture gather function' : not supported for this version or the enabled extensions 
+ERROR: 0:25: 'textureGather(...)' : not supported for this version or the enabled extensions 
 ERROR: 0:35: 'redeclaration' : cannot change the type of gl_Color
 ERROR: 0:38: 'gl_Color' : redeclaring non-array as array 
 ERROR: 0:39: 'redeclaration' : cannot change storage, memory, or auxiliary qualification of gl_Color
-WARNING: 0:45: extension GL_ARB_texture_gather is being used for texture gather function
+WARNING: 0:45: extension GL_ARB_texture_gather is being used for textureGather(...)
 ERROR: 0:62: '<' :  wrong operand types: no operation '<' exists that takes a left-hand operand of type '3-component vector of bool' and a right operand of type '3-component vector of bool' (or there is no acceptable conversion)
 ERROR: 0:63: '>' :  wrong operand types: no operation '>' exists that takes a left-hand operand of type '3-component vector of uint' and a right operand of type '3-component vector of uint' (or there is no acceptable conversion)
 ERROR: 0:64: '>=' :  wrong operand types: no operation '>=' exists that takes a left-hand operand of type 'const 2-component vector of uint' and a right operand of type 'const 2-component vector of uint' (or there is no acceptable conversion)
-ERROR: 7 compilation errors.  No code generated.
+ERROR: 0:80: 'textureGatherOffset' : no matching overloaded function found 
+ERROR: 0:80: 'assign' :  cannot convert from 'const float' to '4-component vector of float'
+ERROR: 0:81: 'textureGatherOffset(...)' : not supported for this version or the enabled extensions 
+ERROR: 0:84: 'textureGatherOffset(...)' : not supported for this version or the enabled extensions 
+ERROR: 0:85: 'textureGatherOffset(...)' : not supported for this version or the enabled extensions 
+WARNING: 0:88: '#extension' : extension is only partially supported: GL_ARB_gpu_shader5
+ERROR: 12 compilation errors.  No code generated.
 
 
 ERROR: node is still EOpNull!
@@ -93,6 +99,123 @@ ERROR: node is still EOpNull!
 0:65        true (const bool)
 0:66      Constant:
 0:66        false (const bool)
+0:77  Function Definition: bar23( (void)
+0:77    Function Parameters: 
+0:?     Sequence
+0:80      's' (4-component vector of float)
+0:81      move second child to first child (4-component vector of float)
+0:81        's' (4-component vector of float)
+0:81        Function Call: textureGatherOffset(sR21;vf2;vi2; (4-component vector of float)
+0:81          'samp2DR' (uniform sampler2DRect)
+0:81          Constant:
+0:81            0.300000
+0:81            0.300000
+0:81          Constant:
+0:81            1 (const int)
+0:81            1 (const int)
+0:82      move second child to first child (4-component vector of float)
+0:82        's' (4-component vector of float)
+0:82        Function Call: textureGatherOffset(s21;vf2;vi2; (4-component vector of float)
+0:82          'samp2D' (uniform sampler2D)
+0:82          Constant:
+0:82            0.300000
+0:82            0.300000
+0:82          Constant:
+0:82            1 (const int)
+0:82            1 (const int)
+0:83      move second child to first child (4-component vector of float)
+0:83        's' (4-component vector of float)
+0:83        Function Call: textureGatherOffset(sA21;vf3;vi2; (4-component vector of float)
+0:83          'samp2DA' (uniform sampler2DArray)
+0:83          Constant:
+0:83            0.300000
+0:83            0.300000
+0:83            0.300000
+0:83          Constant:
+0:83            1 (const int)
+0:83            1 (const int)
+0:84      move second child to first child (4-component vector of float)
+0:84        's' (4-component vector of float)
+0:84        Function Call: textureGatherOffset(sS21;vf2;f1;vi2; (4-component vector of float)
+0:84          'samp2DS' (uniform sampler2DShadow)
+0:84          Constant:
+0:84            0.300000
+0:84            0.300000
+0:84          Constant:
+0:84            1.300000
+0:84          Constant:
+0:84            1 (const int)
+0:84            1 (const int)
+0:85      move second child to first child (4-component vector of float)
+0:85        's' (4-component vector of float)
+0:85        Function Call: textureGatherOffset(s21;vf2;vi2;i1; (4-component vector of float)
+0:85          'samp2D' (uniform sampler2D)
+0:85          Constant:
+0:85            0.300000
+0:85            0.300000
+0:85          Constant:
+0:85            1 (const int)
+0:85            1 (const int)
+0:85          Constant:
+0:85            2 (const int)
+0:90  Function Definition: bar234( (void)
+0:90    Function Parameters: 
+0:?     Sequence
+0:93      move second child to first child (4-component vector of float)
+0:93        's' (4-component vector of float)
+0:93        Function Call: textureGatherOffset(s21;vf2;vi2; (4-component vector of float)
+0:93          'samp2D' (uniform sampler2D)
+0:93          Constant:
+0:93            0.300000
+0:93            0.300000
+0:93          Constant:
+0:93            1 (const int)
+0:93            1 (const int)
+0:94      move second child to first child (4-component vector of float)
+0:94        's' (4-component vector of float)
+0:94        Function Call: textureGatherOffset(sA21;vf3;vi2; (4-component vector of float)
+0:94          'samp2DA' (uniform sampler2DArray)
+0:94          Constant:
+0:94            0.300000
+0:94            0.300000
+0:94            0.300000
+0:94          Constant:
+0:94            1 (const int)
+0:94            1 (const int)
+0:95      move second child to first child (4-component vector of float)
+0:95        's' (4-component vector of float)
+0:95        Function Call: textureGatherOffset(sR21;vf2;vi2; (4-component vector of float)
+0:95          'samp2DR' (uniform sampler2DRect)
+0:95          Constant:
+0:95            0.300000
+0:95            0.300000
+0:95          Constant:
+0:95            1 (const int)
+0:95            1 (const int)
+0:96      move second child to first child (4-component vector of float)
+0:96        's' (4-component vector of float)
+0:96        Function Call: textureGatherOffset(sS21;vf2;f1;vi2; (4-component vector of float)
+0:96          'samp2DS' (uniform sampler2DShadow)
+0:96          Constant:
+0:96            0.300000
+0:96            0.300000
+0:96          Constant:
+0:96            1.300000
+0:96          Constant:
+0:96            1 (const int)
+0:96            1 (const int)
+0:97      move second child to first child (4-component vector of float)
+0:97        's' (4-component vector of float)
+0:97        Function Call: textureGatherOffset(s21;vf2;vi2;i1; (4-component vector of float)
+0:97          'samp2D' (uniform sampler2D)
+0:97          Constant:
+0:97            0.300000
+0:97            0.300000
+0:97          Constant:
+0:97            1 (const int)
+0:97            1 (const int)
+0:97          Constant:
+0:97            2 (const int)
 0:?   Linker Objects
 0:?     'a' (3-component vector of float)
 0:?     'b' (float)
@@ -106,6 +229,10 @@ ERROR: node is still EOpNull!
 0:?     'sampC' (uniform samplerCube)
 0:?     'gl_Color' (smooth in 4-component vector of float)
 0:?     'gl_Color' (flat in 4-component vector of float)
+0:?     'samp2D' (uniform sampler2D)
+0:?     'samp2DS' (uniform sampler2DShadow)
+0:?     'samp2DR' (uniform sampler2DRect)
+0:?     'samp2DA' (uniform sampler2DArray)
 
 
 Linked fragment stage:

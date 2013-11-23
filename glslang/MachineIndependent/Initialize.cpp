@@ -1498,8 +1498,6 @@ void TBuiltIns::add2ndGenerationSamplingImaging(int version, EProfile profile)
 
                         if ((dim == Esd1D || dim == EsdRect) && profile == EEsProfile)
                             continue;
-                        if (dim == EsdRect && version < 140)
-                            continue;
                         if (dim != Esd2D && ms)
                             continue;
                         if ((dim == Esd3D || dim == EsdRect) && arrayed)
@@ -1516,6 +1514,9 @@ void TBuiltIns::add2ndGenerationSamplingImaging(int version, EProfile profile)
                         for (int bType = 0; bType < 3; ++bType) { // float, int, uint results
 
                             if (shadow && bType > 0)
+                                continue;
+
+                            if (dim == EsdRect && version < 140 && bType > 0)
                                 continue;
 
                             //
@@ -1798,6 +1799,9 @@ void TBuiltIns::addGatherFunctions(TSampler sampler, TString& typeName, int vers
     }
 
     if (sampler.ms)
+        return;
+
+    if (version < 140 && sampler.dim == EsdRect && sampler.type != EbtFloat)
         return;
 
     // make one string per stage to contain all functions of the passed-in type for that stage
