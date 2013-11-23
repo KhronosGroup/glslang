@@ -123,6 +123,10 @@ uniform abl {
     float foo;
 } arrBl[4];
 
+uniform abl2 {
+    float foo;
+} arrBl2[4];
+
 void main()
 {
     liveFunction1(image_ui2D, sampler_2D, sampler_2DMSArray);
@@ -161,5 +165,6 @@ void main()
     } else
         f = ufDead3;
 
-    f += arrBl[2].foo;
+    f += arrBl[2].foo + arrBl[0].foo;
+    f += arrBl2[i].foo;
 }

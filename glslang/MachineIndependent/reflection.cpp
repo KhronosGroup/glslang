@@ -248,6 +248,7 @@ public:
     void blowUpActiveAggregate(const TType& baseType, const TString& baseName, const TList<TIntermBinary*>& derefs, 
                                TList<TIntermBinary*>::const_iterator deref, int offset, int blockIndex, int arraySize)
     {
+        // process the part of the derefence chain that was explicit in the shader
         TString name = baseName;
         const TType* terminalType = &baseType;
         for (; deref != derefs.end(); ++deref) {
@@ -256,10 +257,11 @@ public:
             int index;
             switch (visitNode->getOp()) {
             case EOpIndexIndirect:
-                // Visit all the indices of this array, and for each one, then add on the remaining dereferencing
+                // Visit all the indices of this array, and for each one add on the remaining dereferencing
                 for (int i = 0; i < visitNode->getLeft()->getType().getArraySize(); ++i) {
                     TString newBaseName = name;
-                    newBaseName.append(TString("[") + String(i) + "]");
+                    if (baseType.getBasicType() != EbtBlock)
+                        newBaseName.append(TString("[") + String(i) + "]");
                     TList<TIntermBinary*>::const_iterator nextDeref = deref;
                     ++nextDeref;
                     TType derefType(*terminalType, 0);
@@ -270,7 +272,8 @@ public:
                 return;
             case EOpIndexDirect:
                 index = visitNode->getRight()->getAsConstantUnion()->getConstArray()[0].getIConst();
-                name.append(TString("[") + String(index) + "]");
+                if (baseType.getBasicType() != EbtBlock)
+                    name.append(TString("[") + String(index) + "]");
                 break;
             case EOpIndexDirectStruct:
                 index = visitNode->getRight()->getAsConstantUnion()->getConstArray()[0].getIConst();
@@ -371,27 +374,14 @@ public:
         // See if we need to record the block itself
         bool block = base->getBasicType() == EbtBlock;
         if (block) {
-            // TODO: how is an array of blocks handled differently?
-            anonymous = base->getName().compare(0, 6, "__anon") == 0;
-            const TString& blockName = anonymous ? base->getType().getTypeName() : base->getType().getTypeName();
-            TReflection::TNameToIndex::const_iterator it = reflection.nameToIndex.find(blockName);
-            if (it == reflection.nameToIndex.end()) {
-                if (base->getType().isArray()) {
-                    assert(! anonymous);
-                    for (int e = 0; e < base->getType().getArraySize(); ++e) {
-                        TString elementName = blockName + "[" + String(e) + "]";
-                        blockIndex = reflection.indexToUniformBlock.size();
-                        reflection.nameToIndex[elementName] = blockIndex;
-                        reflection.indexToUniformBlock.push_back(TObjectReflection(elementName, offset, -1, getBlockSize(base->getType()), -1));
-                    }
-                } else {
-                    blockIndex = reflection.indexToUniformBlock.size();
-                    reflection.nameToIndex[blockName] = blockIndex;
-                    reflection.indexToUniformBlock.push_back(TObjectReflection(blockName, offset, -1, getBlockSize(base->getType()), -1));
-                }
-            } else
-                blockIndex = it->second;
             offset = 0;
+            anonymous = base->getName().compare(0, 6, "__anon") == 0;
+            if (base->getType().isArray()) {
+                assert(! anonymous);
+                for (int e = 0; e < base->getType().getArraySize(); ++e)
+                    blockIndex = addBlockName(base->getType().getTypeName() + "[" + String(e) + "]", getBlockSize(base->getType()));
+            } else
+                blockIndex = addBlockName(base->getType().getTypeName(), getBlockSize(base->getType()));
         }
 
         // Process the dereference chain, backward, accumulating the pieces for later forward traversal.
@@ -415,9 +405,27 @@ public:
 
         // Put the dereference chain together, forward
         TString baseName;
-        if (! anonymous)
-            baseName = base->getName();
+        if (! anonymous) {
+            if (block)
+                baseName = base->getType().getTypeName();
+            else
+                baseName = base->getName();
+        }
         blowUpActiveAggregate(base->getType(), baseName, derefs, derefs.begin(), offset, blockIndex, arraySize);
+    }
+
+    int addBlockName(const TString& name, int size)
+    {
+        int blockIndex;
+        TReflection::TNameToIndex::const_iterator it = reflection.nameToIndex.find(name);
+        if (reflection.nameToIndex.find(name) == reflection.nameToIndex.end()) {
+            blockIndex = reflection.indexToUniformBlock.size();
+            reflection.nameToIndex[name] = blockIndex;
+            reflection.indexToUniformBlock.push_back(TObjectReflection(name, -1, -1, size, -1));
+        } else
+            blockIndex = it->second;
+
+        return blockIndex;
     }
 
     //
