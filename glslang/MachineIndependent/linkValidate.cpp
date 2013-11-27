@@ -159,6 +159,10 @@ void TIntermediate::mergeLinkerObjects(TInfoSink& infoSink, TIntermSequence& lin
                 // the initializer
                 if (symbol->getConstArray().empty() && ! unitSymbol->getConstArray().empty())
                     symbol->setConstArray(unitSymbol->getConstArray());
+
+                // Similarly for binding
+                if (! symbol->getQualifier().hasBinding() && unitSymbol->getQualifier().hasBinding())
+                    symbol->getQualifier().layoutBinding = unitSymbol->getQualifier().layoutBinding;
                 
                 // Check for consistent types/qualification/initializers etc.
                 mergeErrorCheck(infoSink, *symbol, *unitSymbol, false);
@@ -230,7 +234,8 @@ void TIntermediate::mergeErrorCheck(TInfoSink& infoSink, const TIntermSymbol& sy
     // Layouts...
     if (symbol.getQualifier().layoutMatrix       != unitSymbol.getQualifier().layoutMatrix ||
         symbol.getQualifier().layoutPacking      != unitSymbol.getQualifier().layoutPacking ||
-        symbol.getQualifier().layoutSlotLocation != unitSymbol.getQualifier().layoutSlotLocation) {
+        symbol.getQualifier().layoutSlotLocation != unitSymbol.getQualifier().layoutSlotLocation ||
+        symbol.getQualifier().layoutBinding      != unitSymbol.getQualifier().layoutBinding) {
         error(infoSink, "Layout qualification must match:");
         writeTypeComparison = true;
     }

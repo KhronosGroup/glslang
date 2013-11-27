@@ -25,7 +25,9 @@ ERROR: 0:66: 'binding' : cannot declare a default, include a type or full declar
 ERROR: 0:69: 'location' : cannot declare a default, use a full declaration 
 ERROR: 0:70: 'binding' : requires uniform or buffer storage qualifier 
 ERROR: 0:71: 'binding' : binding is too large 
-ERROR: 24 compilation errors.  No code generated.
+ERROR: 0:74: 'binding' : sampler binding not less than gl_MaxCombinedTextureImageUnits 
+ERROR: 0:76: 'binding' : sampler binding not less than gl_MaxCombinedTextureImageUnits (using array)
+ERROR: 26 compilation errors.  No code generated.
 
 
 ERROR: node is still EOpNull!
@@ -124,6 +126,9 @@ ERROR: node is still EOpNull!
 0:?     '__anon__2' (layout(column_major shared ) uniform block{aooeu})
 0:?     'sampb1' (layout(binding=4 ) uniform sampler2D)
 0:?     'sampb2' (layout(binding=5 ) uniform 10-element array of sampler2D)
+0:?     'sampb3' (layout(binding=32 ) uniform sampler2D)
+0:?     'sampb4' (layout(binding=31 ) uniform sampler2D)
+0:?     'sampb5' (layout(binding=31 ) uniform 2-element array of sampler2D)
 0:?     'gl_VertexID' (gl_VertexId int)
 0:?     'gl_InstanceID' (gl_InstanceId int)
 

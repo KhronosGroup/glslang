@@ -71,3 +71,6 @@ layout(binding = 1) in inblock { int aoeua; };       // ERROR
 layout(binding = 100000) uniform anonblock2 { int aooeu; } ;
 layout(binding = 4) uniform sampler2D sampb1;
 layout(binding = 5) uniform sampler2D sampb2[10];
+layout(binding = 32) uniform sampler2D sampb3; // ERROR, binding too big
+layout(binding = 31) uniform sampler2D sampb4;
+layout(binding = 31) uniform sampler2D sampb5[2]; // ERROR, binding too big

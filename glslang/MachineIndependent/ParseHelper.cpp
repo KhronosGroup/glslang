@@ -2687,6 +2687,13 @@ void TParseContext::layoutTypeCheck(TSourceLoc loc, const TSymbol& symbol)
         if (type.getBasicType() != EbtSampler && type.getBasicType() != EbtBlock)
             error(loc, "requires block, or sampler/image, or atomic-counter type", "binding", "");
             // TODO: 4.2 functionality: atomic counter: include in test above
+        if (type.getBasicType() == EbtSampler) {
+            int lastBinding = qualifier.layoutBinding;
+            if (type.isArray())
+                lastBinding += type.getArraySize();
+            if (lastBinding >= resources.maxCombinedTextureImageUnits)
+                error(loc, "sampler binding not less than gl_MaxCombinedTextureImageUnits", "binding", type.isArray() ? "(using array)" : "");
+        }
     }
 }
 
@@ -3721,7 +3728,7 @@ TIntermNode* TParseContext::addSwitch(TSourceLoc loc, TIntermTyped* expression, 
     return switchNode;
 }
 
-// TODO: simplification: constant folding: these should use a follow a fully folded model now, and probably move to Constant.cpp scheme.
+// TODO: simplification: constant folding: these should use a fully folded model now, and probably move to Constant.cpp scheme.
 
 //
 // Make a constant scalar or vector node, representing a given constant vector and constant swizzle into it.

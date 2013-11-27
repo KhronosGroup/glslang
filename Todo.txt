@@ -1,5 +1,7 @@
 Current functionality level: ESSL 3.0
 
+- create version system
+
 Link Validation
     + provide input config file for setting limits
 	  - also consider spitting out measures of complexity
@@ -22,14 +24,17 @@ Link Validation
     Intra-stage linking, single shader
       + recursion for functions
       - limits checking:
+          + bindings
           - number of input/output compononents
-          - 4.x tessellation limits
+          - tessellation limits
+          - tessellation primitive array sizing consistency
           - Non ES: gl_TexCoord can only have a max array size of up to gl_MaxTextureCoords
           - ...
       + exactly one main
       + ES 3.0: fragment outputs all have locations, if more than one
       - ES 3.0: location aliasing/overlap (except desktop vertex shader inputs)
-      - Non ES: binding overlap?
+      - Non ES: binding overlap
+      - location overlap
       + Non ES: geometry shader input array sizes and input layout qualifier declaration
       + Non ES: read or write to both gl_ClipVertex and gl_ClipDistance
       + Non ES: write to only one of gl_FragColor, gl_FragData, or user-declared
@@ -102,6 +107,11 @@ Shader Functionality to Implement/Finish
       + 1.50: geometry shaders: max_vertices must be checked against gl_MaxGeometryOutputVertices (maybe at compile time)
     GLSL 4.0
       - tessellation control stage and tessellation evaluation stage. Includes barrier() built-in for synchronization.
+        - patch in, patch out
+        - input/output arrays
+          - unsized array sizing to gl_MaxPatchVertices, including gl_in/gl_out
+        - built-in variables, functions, and constants verification
+        - layout qualifiers for primitive types
       - Polymorphic functions: Run-time selection of what function gets called, through the new keyword subroutine.
       - 64bit floating point numbers with the new type keyword double.  Built-in functions extended for doubles, and new function matching rules are added to both allow implicit conversions when calling a function and preserve most existing function matching once doubles are included. 
       + More implicit conversions
