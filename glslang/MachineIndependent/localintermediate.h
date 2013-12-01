@@ -62,6 +62,9 @@ public:
     explicit TIntermediate(EShLanguage l, int v = 0, EProfile p = ENoProfile) : language(l), treeRoot(0), profile(p), version(v), 
         numMains(0), numErrors(0), recursive(false),
         invocations(0), maxVertices(0), inputPrimitive(ElgNone), outputPrimitive(ElgNone), pixelCenterInteger(false), originUpperLeft(false) { }
+    bool postProcess(TIntermNode*, EShLanguage);
+    void outputTree(TInfoSink&);
+	void removeTree();
 
     void setVersion(int v) { version = v; }
     int getVersion() const { return version; }
@@ -88,8 +91,6 @@ public:
     TIntermAggregate* makeAggregate(TIntermNode* node, TSourceLoc);
     TIntermTyped* setAggregateOperator(TIntermNode*, TOperator, const TType& type, TSourceLoc);
     bool areAllChildConst(TIntermAggregate* aggrNode);
-    TIntermTyped* fold(TIntermAggregate* aggrNode);
-    TIntermTyped* foldConstructor(TIntermAggregate* aggrNode);
     TIntermNode*  addSelection(TIntermTyped* cond, TIntermNodePair code, TSourceLoc);
     TIntermTyped* addSelection(TIntermTyped* cond, TIntermTyped* trueBlock, TIntermTyped* falseBlock, TSourceLoc);
     TIntermTyped* addComma(TIntermTyped* left, TIntermTyped* right, TSourceLoc);
@@ -101,7 +102,14 @@ public:
     TIntermBranch* addBranch(TOperator, TSourceLoc);
     TIntermBranch* addBranch(TOperator, TIntermTyped*, TSourceLoc);
     TIntermTyped* addSwizzle(TVectorFields&, TSourceLoc);
-    bool postProcess(TIntermNode*, EShLanguage);
+
+    // Constant folding (in Constant.cpp)
+    TIntermTyped* fold(TIntermAggregate* aggrNode);
+    TIntermTyped* foldConstructor(TIntermAggregate* aggrNode);
+    TIntermTyped* foldDereference(TIntermTyped* node, int index, TSourceLoc);
+    TIntermTyped* foldSwizzle(TIntermTyped* node, TVectorFields& fields, TSourceLoc);
+
+    // Linkage related
     void addSymbolLinkageNodes(TIntermAggregate*& linkage, EShLanguage, TSymbolTable&);
     void addSymbolLinkageNode(TIntermAggregate*& linkage, TSymbolTable&, const TString&);
     void addSymbolLinkageNode(TIntermAggregate*& linkage, const TSymbol&);
@@ -146,9 +154,6 @@ public:
 
     void addIoAccessed(const TString& name) { ioAccessed.insert(name); }
     bool inIoAccessed(const TString& name) const { return ioAccessed.find(name) != ioAccessed.end(); }
-
-    void outputTree(TInfoSink&);
-	void removeTree();
 
 protected:
     void error(TInfoSink& infoSink, const char*);

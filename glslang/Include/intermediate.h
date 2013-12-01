@@ -391,6 +391,7 @@ public:
     virtual bool isArray()  const { return type.isArray(); }
     virtual bool isVector() const { return type.isVector(); }
     virtual bool isScalar() const { return type.isScalar(); }
+    virtual bool isStruct() const { return type.isStruct(); }
     TString getCompleteString() const { return type.getCompleteString(); }
 
 protected:

@@ -697,10 +697,11 @@ public:
     virtual int getMatrixCols() const { return matrixCols; }
     virtual int getMatrixRows() const { return matrixRows; }
 
-    virtual bool isScalar() const { return vectorSize == 1 && ! getStruct() && ! isArray(); }
+    virtual bool isScalar() const { return vectorSize == 1 && ! isStruct() && ! isArray(); }
     virtual bool isVector() const { return vectorSize > 1; }
 	virtual bool isMatrix() const { return matrixCols ? true : false; }
     virtual bool isArray()  const { return arraySizes != 0; }
+    virtual bool isStruct() const { return structure != 0; }
 
     // Recursively check the structure for any arrays, needed for some error checks
     virtual bool containsArray() const

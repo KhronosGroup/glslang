@@ -753,4 +753,56 @@ TIntermTyped* TIntermediate::foldConstructor(TIntermAggregate* aggrNode)
     return addConstantUnion(unionArray, aggrNode->getType(), aggrNode->getLoc());
 }
 
+//
+// Constant folding of a bracket (array-style) dereference or struct-like dot
+// dereference.  Can handle any thing except a multi-character swizzle, though
+// all swizzles may go to foldSwizzle().
+//
+TIntermTyped* TIntermediate::foldDereference(TIntermTyped* node, int index, TSourceLoc loc)
+{
+    TType dereferencedType(node->getType(), index);
+    dereferencedType.getQualifier().storage = EvqConst;
+    TIntermTyped* result = 0;
+    int size = dereferencedType.getObjectSize();
+    
+    int start;
+    if (node->isStruct()) {
+        start = 0;
+        for (int i = 0; i < index; ++i)
+            start += (*node->getType().getStruct())[i].type->getObjectSize();
+    } else
+        start = size * index;
+
+    result = addConstantUnion(TConstUnionArray(node->getAsConstantUnion()->getConstArray(), start, size), node->getType(), loc);
+
+    if (result == 0)
+        result = node;
+    else
+        result->setType(dereferencedType);
+
+    return result;
+}
+
+//
+// Make a constant vector node or constant scalar node, representing a given 
+// constant vector and constant swizzle into it.
+//
+TIntermTyped* TIntermediate::foldSwizzle(TIntermTyped* node, TVectorFields& fields, TSourceLoc loc)
+{
+    const TConstUnionArray& unionArray = node->getAsConstantUnion()->getConstArray();
+    TConstUnionArray constArray(fields.num);
+
+    for (int i = 0; i < fields.num; i++)
+        constArray[i] = unionArray[fields.offsets[i]];
+
+    TIntermTyped* result = addConstantUnion(constArray, node->getType(), loc);
+
+    if (result == 0)
+        result = node;
+    else
+        result->setType(TType(node->getBasicType(), EvqConst, fields.num));
+
+    return result;
+}
+
 } // end namespace glslang

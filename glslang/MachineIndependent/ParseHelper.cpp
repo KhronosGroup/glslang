@@ -459,21 +459,9 @@ TIntermTyped* TParseContext::handleBracketDereference(TSourceLoc loc, TIntermTyp
             error(loc, " left of '[' is not of type array, matrix, or vector ", base->getAsSymbolNode()->getName().c_str(), "");
         else
             error(loc, " left of '[' is not of type array, matrix, or vector ", "expression", "");
-    } else if (base->getType().getQualifier().storage == EvqConst && index->getQualifier().storage == EvqConst) {
-        if (base->isArray()) {
-            // constant folding for arrays
-            result = addConstArrayNode(loc, indexValue, base);
-        } else if (base->isVector()) {
-            // constant folding for vectors
-            TVectorFields fields; // need to do it this way because v.xy sends fields integer array
-            fields.num = 1;
-            fields.offsets[0] = indexValue;
-            result = addConstVectorNode(loc, fields, base);
-        } else if (base->isMatrix()) {
-            // constant folding for matrices
-            result = addConstMatrixNode(loc, indexValue, base);
-        }
-    } else {
+    } else if (base->getType().getQualifier().storage == EvqConst && index->getQualifier().storage == EvqConst)
+        return intermediate.foldDereference(base, indexValue, loc);
+    else {
         // at least one of base and index is variable...
         if (index->getQualifier().storage == EvqConst) {
             if (base->isArray() && base->getType().getArraySize() == 0)
@@ -661,13 +649,9 @@ TIntermTyped* TParseContext::handleDotDereference(TSourceLoc loc, TIntermTyped* 
             }
         }
 
-        if (base->getType().getQualifier().storage == EvqConst) { // constant folding for vector fields
-            result = addConstVectorNode(loc, fields, base);
-            if (result == 0)
-                result = base;
-            else
-                result->setType(TType(base->getBasicType(), EvqConst, (int) (field).size()));
-        } else {
+        if (base->getType().getQualifier().storage == EvqConst)
+            result = intermediate.foldSwizzle(base, fields, loc);
+        else {
             if (fields.num == 1) {
                 TConstUnionArray unionArray(1);
                 unionArray[0].setIConst(fields.offsets[0]);
@@ -684,39 +668,27 @@ TIntermTyped* TParseContext::handleDotDereference(TSourceLoc loc, TIntermTyped* 
     } else if (base->isMatrix())
         error(loc, "field selection not allowed on matrix", ".", "");
     else if (base->getBasicType() == EbtStruct || base->getBasicType() == EbtBlock) {
-        bool fieldFound = false;
         TTypeList* fields = base->getType().getStruct();
-        if (fields == 0)
-            error(loc, "structure has no fields", "Internal Error", "");
-        else {
-            unsigned int i;
-            for (i = 0; i < fields->size(); ++i) {
-                if ((*fields)[i].type->getFieldName() == field) {
-                    fieldFound = true;
-                    break;
-                }
+        bool fieldFound = false;
+        unsigned int member;
+        for (member = 0; member < fields->size(); ++member) {
+            if ((*fields)[member].type->getFieldName() == field) {
+                fieldFound = true;
+                break;
             }
-            if (fieldFound) {
-                if (base->getType().getQualifier().storage == EvqConst) {
-                    result = addConstStruct(loc, field, base);
-                    if (result == 0)
-                        result = base;
-                    else {
-                        result->setType(*(*fields)[i].type);
-                        // change the qualifier of the return type, not of the structure field
-                        // as the structure definition is shared between various structures.
-                        result->getWritableType().getQualifier().storage = EvqConst;
-                    }
-                } else {
-                    TConstUnionArray unionArray(1);
-                    unionArray[0].setIConst(i);
-                    TIntermTyped* index = intermediate.addConstantUnion(unionArray, TType(EbtInt, EvqConst), loc);
-                    result = intermediate.addIndex(EOpIndexDirectStruct, base, index, loc);
-                    result->setType(*(*fields)[i].type);
-                }
-            } else
-                error(loc, " no such field in structure", field.c_str(), "");
         }
+        if (fieldFound) {
+            if (base->getType().getQualifier().storage == EvqConst)
+                result = intermediate.foldDereference(base, member, loc);
+            else {
+                TConstUnionArray unionArray(1);
+                unionArray[0].setIConst(member);
+                TIntermTyped* index = intermediate.addConstantUnion(unionArray, TType(EbtInt, EvqConst), loc);
+                result = intermediate.addIndex(EOpIndexDirectStruct, base, index, loc);
+                result->setType(*(*fields)[member].type);
+            }
+        } else
+            error(loc, " no such field in structure", field.c_str(), "");
     } else
         error(loc, " dot operator does not operater on this type:", field.c_str(), base->getType().getCompleteString().c_str());
 
@@ -1093,7 +1065,7 @@ TFunction* TParseContext::handleConstructorCall(TSourceLoc loc, TPublicType& pub
 //
 TOperator TParseContext::mapTypeToConstructorOp(const TType& type)
 {
-    if (type.getStruct())
+    if (type.isStruct())
         return EOpConstructStruct;
 
     TOperator op;
@@ -3102,7 +3074,7 @@ TIntermTyped* TParseContext::convertInitializerList(TSourceLoc loc, const TType&
         }
 
         return addConstructor(loc, initList, arrayType, mapTypeToConstructorOp(arrayType));
-    } else if (type.getStruct()) {
+    } else if (type.isStruct()) {
         if (type.getStruct()->size() != initList->getSequence().size()) {
             error(loc, "wrong number of structure members", "initializer list", "");
             return 0;
@@ -3726,118 +3698,6 @@ TIntermNode* TParseContext::addSwitch(TSourceLoc loc, TIntermTyped* expression, 
     switchNode->setLoc(loc);
 
     return switchNode;
-}
-
-// TODO: simplification: constant folding: these should use a fully folded model now, and probably move to Constant.cpp scheme.
-
-//
-// Make a constant scalar or vector node, representing a given constant vector and constant swizzle into it.
-//
-// The type of the returned node is still the original vector type; it needs to be corrected by the caller.
-//
-TIntermTyped* TParseContext::addConstVectorNode(TSourceLoc loc, TVectorFields& fields, TIntermTyped* node)
-{
-    if (! node->getAsConstantUnion()) {
-        error(loc, "Cannot offset into the vector", "Error", "");
-        return 0;
-    }
-
-    const TConstUnionArray& unionArray = node->getAsConstantUnion()->getConstArray();
-    TConstUnionArray constArray(fields.num);
-
-    for (int i = 0; i < fields.num; i++) {
-        if (fields.offsets[i] >= node->getType().getObjectSize()) {
-            error(loc, "", "[", "vector index out of range '%d'", fields.offsets[i]);
-            fields.offsets[i] = 0;
-        }
-
-        constArray[i] = unionArray[fields.offsets[i]];
-    }
-
-    return intermediate.addConstantUnion(constArray, node->getType(), loc);
-}
-
-//
-// Make a constant vector node, representing a given constant column 
-// from the given constant matrix.
-//
-// The type of the returned node is still the original matrix type; 
-// which needs to be corrected (dereferenced) by the caller.
-//
-TIntermTyped* TParseContext::addConstMatrixNode(TSourceLoc loc, int index, TIntermTyped* node)
-{
-    TIntermConstantUnion* constNode = node->getAsConstantUnion();
-
-    if (index >= node->getType().getMatrixCols()) {
-        error(loc, "", "[", "matrix field selection out of range '%d'", index);
-        index = 0;
-    }
-
-    if (constNode) {
-        const TConstUnionArray& unionArray = constNode->getConstArray();
-        int size = constNode->getType().getMatrixRows();
-        return intermediate.addConstantUnion(TConstUnionArray(unionArray, size * index, size), constNode->getType(), loc);
-    } else {
-        error(loc, "Cannot offset into the matrix", "Error", "");
-        return 0;
-    }
-}
-
-
-//
-// Make a constant node, representing the constant element of the constant array.
-//
-// The type of the returned node is still the original array type;
-// which needs to be corrected (dereferenced) by the caller.
-//
-TIntermTyped* TParseContext::addConstArrayNode(TSourceLoc loc, int index, TIntermTyped* node)
-{
-    TType arrayElementType(node->getType(), 0);  // dereferenced type
-
-    if (index >= node->getType().getArraySize() || index < 0) {
-        error(loc, "", "[", "array index '%d' out of range", index);
-        index = 0;
-    }
-
-    if (node->getAsConstantUnion()) {
-        int arrayElementSize = arrayElementType.getObjectSize();
-        return intermediate.addConstantUnion(TConstUnionArray(node->getAsConstantUnion()->getConstArray(), arrayElementSize * index, arrayElementSize),
-                                             node->getType(), loc);
-    } else {
-        error(loc, "Cannot offset into the array", "Error", "");
-        return 0;
-    }
-}
-
-
-//
-// This function returns the value of a particular field inside a constant structure from the symbol table.
-// If there is an embedded/nested struct, it appropriately calls addConstStructNested or addConstStructFromAggr
-// function and returns the parse-tree with the values of the embedded/nested struct.
-//
-TIntermTyped* TParseContext::addConstStruct(TSourceLoc loc, TString& identifier, TIntermTyped* node)
-{
-    TTypeList* fields = node->getType().getStruct();
-    int instanceOffset = 0;
-    int instanceSize;
-
-    for (size_t index = 0; index < fields->size(); ++index) {
-        instanceSize = (*fields)[index].type->getObjectSize();
-
-        if ((*fields)[index].type->getFieldName() == identifier)
-            break;
-
-        instanceOffset += instanceSize;
-    }
-
-    if (node->getAsConstantUnion()) {
-         return intermediate.addConstantUnion(TConstUnionArray(node->getAsConstantUnion()->getConstArray(), instanceOffset, instanceSize),
-                                              node->getType(), loc);
-         // type will be changed in the calling function
-    } else {
-        error(loc, "Cannot offset into the structure", "Error", "");
-        return 0;
-    }
 }
 
 } // end namespace glslang

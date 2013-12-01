@@ -161,10 +161,6 @@ public:
     void updateTypedDefaults(TSourceLoc, const TQualifier&, const TString* id);
     void wrapupSwitchSubsequence(TIntermAggregate* statements, TIntermNode* branchNode);
     TIntermNode* addSwitch(TSourceLoc, TIntermTyped* expression, TIntermAggregate* body);
-    TIntermTyped* addConstVectorNode(TSourceLoc, TVectorFields&, TIntermTyped*);
-    TIntermTyped* addConstMatrixNode(TSourceLoc, int index, TIntermTyped*);
-    TIntermTyped* addConstArrayNode(TSourceLoc, int index, TIntermTyped* node);
-    TIntermTyped* addConstStruct(TSourceLoc, TString& , TIntermTyped*);
 
     void updateMaxArraySize(TSourceLoc, TIntermNode*, int index);
 

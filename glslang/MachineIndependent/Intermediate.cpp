@@ -388,7 +388,7 @@ TIntermTyped* TIntermediate::addConversion(TOperator op, const TType& type, TInt
     //
     // If one's a structure, then no conversions.
     //
-    if (type.getStruct() || node->getType().getStruct())
+    if (type.isStruct() || node->isStruct())
         return 0;
 
     //
