@@ -129,5 +129,11 @@ void foo23()
     textureOffset(s2DShadow, c3D, ivec2(-9, 8), c1D);
 }
 
+void foo324(void)
+{
+    float p = pow(3.2, 4.6);
+    p += sin(0.4);
+}
+
 float imageBuffer;    // ERROR, reserved
 float uimage2DRect;   // ERROR, reserved
