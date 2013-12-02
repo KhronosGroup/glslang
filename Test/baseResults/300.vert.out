@@ -25,7 +25,11 @@ ERROR: 0:88: 'ub2' : Cannot reuse block name within the same interface: uniform
 ERROR: 0:92: 'ub2' : Cannot reuse block name within the same interface: uniform
 ERROR: 0:96: 'ub2' : Cannot reuse block name within the same interface: uniform
 ERROR: 0:104: 'ub3' : Cannot reuse block name within the same interface: uniform
-ERROR: 26 compilation errors.  No code generated.
+ERROR: 0:121: 'textureSize' : no matching overloaded function found 
+ERROR: 0:123: 'textureSize' : no matching overloaded function found 
+ERROR: 0:125: 'texture' : no matching overloaded function found 
+ERROR: 0:127: 'textureProjOffset' : no matching overloaded function found 
+ERROR: 30 compilation errors.  No code generated.
 
 
 ERROR: node is still EOpNull!
@@ -150,6 +154,66 @@ ERROR: node is still EOpNull!
 0:73      move second child to first child (highp 3-component vector of float)
 0:73        'newV' (smooth out highp 3-component vector of float)
 0:73        'v3' (in highp 3-component vector of float)
+0:118  Function Definition: foo23( (void)
+0:118    Function Parameters: 
+0:120    Sequence
+0:120      Sequence
+0:120        move second child to first child (highp 2-component vector of int)
+0:120          'x1' (highp 2-component vector of int)
+0:120          Function Call: textureSize(s21;i1; (highp 2-component vector of int)
+0:120            's2D' (uniform lowp sampler2D)
+0:120            Constant:
+0:120              2 (const int)
+0:121      Constant:
+0:121        0.000000
+0:122      Sequence
+0:122        move second child to first child (highp 3-component vector of int)
+0:122          'x3' (highp 3-component vector of int)
+0:122          Function Call: textureSize(sAS21;i1; (highp 3-component vector of int)
+0:122            's2DAS' (uniform lowp sampler2DArrayShadow)
+0:122            Constant:
+0:122              -1 (const int)
+0:123      Constant:
+0:123        0.000000
+0:124      Sequence
+0:124        move second child to first child (highp 4-component vector of float)
+0:124          'x4' (highp 4-component vector of float)
+0:124          Function Call: texture(s21;vf2; (highp 4-component vector of float)
+0:124            's2D' (uniform lowp sampler2D)
+0:124            'c2D' (in highp 2-component vector of float)
+0:125      Constant:
+0:125        0.000000
+0:126      Sequence
+0:126        move second child to first child (highp 4-component vector of float)
+0:126          'x5' (highp 4-component vector of float)
+0:126          Function Call: textureProjOffset(s31;vf4;vi3; (highp 4-component vector of float)
+0:126            's3D' (uniform lowp sampler3D)
+0:126            Constant:
+0:126              0.200000
+0:126              0.200000
+0:126              0.200000
+0:126              0.200000
+0:126            Constant:
+0:126              1 (const int)
+0:126              1 (const int)
+0:126              1 (const int)
+0:127      Constant:
+0:127        0.000000
+0:128      Sequence
+0:128        move second child to first child (highp float)
+0:128          'x6' (highp float)
+0:128          Function Call: textureProjGradOffset(sS21;vf4;vf2;vf2;vi2; (highp float)
+0:128            's2DS' (uniform lowp sampler2DShadow)
+0:128            'invIn' (invariant in highp 4-component vector of float)
+0:128            Constant:
+0:128              4.200000
+0:128              4.200000
+0:128            Constant:
+0:128              5.300000
+0:128              5.300000
+0:128            Constant:
+0:128              1 (const int)
+0:128              1 (const int)
 0:?   Linker Objects
 0:?     'm43' (uniform highp 4X3 matrix of float)
 0:?     'm33' (uniform highp 3X3 matrix of float)
@@ -175,6 +239,11 @@ ERROR: node is still EOpNull!
 0:?     's3' (invariant smooth out structure{c,f})
 0:?     'a' (layout(column_major shared ) uniform block{f})
 0:?     '__anon__0' (layout(column_major shared ) uniform block{b23})
+0:?     's2D' (uniform lowp sampler2D)
+0:?     's3D' (uniform lowp sampler3D)
+0:?     's2DS' (uniform lowp sampler2DShadow)
+0:?     's2DAS' (uniform lowp sampler2DArrayShadow)
+0:?     'c2D' (in highp 2-component vector of float)
 0:?     'gl_VertexID' (gl_VertexId highp int)
 0:?     'gl_InstanceID' (gl_InstanceId highp int)
 

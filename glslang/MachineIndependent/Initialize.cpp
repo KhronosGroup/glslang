@@ -1603,9 +1603,6 @@ void TBuiltIns::addImageFunctions(TSampler sampler, TString& typeName, int versi
 //
 void TBuiltIns::addSamplingFunctions(TSampler sampler, TString& typeName, int version, EProfile profile)
 {
-    // make one string per stage to contain all functions of the passed-in type for that stage
-    TString functions[EShLangCount];
-
     //
     // texturing
     //
@@ -1763,14 +1760,10 @@ void TBuiltIns::addSamplingFunctions(TSampler sampler, TString& typeName, int ve
 
                                 // Add to the per-language set of built-ins
 
-                                if (! bias) {
-                                    functions[EShLangVertex].append(s);
-                                    functions[EShLangGeometry].append(s);
-                                    functions[EShLangTessControl].append(s);
-                                    functions[EShLangTessEvaluation].append(s);
-                                    functions[EShLangCompute].append(s);
-                                }
-                                commonBuiltins.append(s);
+                                if (bias)
+                                    stageBuiltins[EShLangFragment].append(s);
+                                else
+                                    commonBuiltins.append(s);
                             }
                         }
                     }
@@ -1803,9 +1796,6 @@ void TBuiltIns::addGatherFunctions(TSampler sampler, TString& typeName, int vers
 
     if (version < 140 && sampler.dim == EsdRect && sampler.type != EbtFloat)
         return;
-
-    // make one string per stage to contain all functions of the passed-in type for that stage
-    TString functions[EShLangCount];
 
     for (int offset = 0; offset < 3; ++offset) { // loop over three forms of offset in the call name:  none, Offset, and Offsets
 

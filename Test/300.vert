@@ -104,3 +104,26 @@ uniform ub3 {
 uniform ub3 {  // ERROR redeclaration of block name (no instance name in first or declared)
     bool b234;
 };
+
+precision lowp sampler3D;
+precision lowp sampler2DShadow;
+precision lowp sampler2DArrayShadow;
+
+uniform sampler2D s2D;
+uniform sampler3D s3D;
+uniform sampler2DShadow s2DS;
+uniform sampler2DArrayShadow s2DAS;
+in vec2 c2D;
+
+void foo23()
+{
+    ivec2 x1 = textureSize(s2D, 2);
+    textureSize(s2D);        // ERROR, no lod
+    ivec3 x3 = textureSize(s2DAS, -1);
+    textureSize(s2DAS);      // ERROR, no lod
+    vec4 x4 = texture(s2D, c2D);
+    texture(s2D, c2D, 0.2);  // ERROR, bias
+    vec4 x5 = textureProjOffset(s3D, vec4(0.2), ivec3(1));
+    textureProjOffset(s3D, vec4(0.2), ivec3(1), .03);  // ERROR, bias
+    float x6 = textureProjGradOffset(s2DS, invIn, vec2(4.2), vec2(5.3), ivec2(1));
+}
