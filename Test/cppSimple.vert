@@ -70,8 +70,8 @@ sum += 0.05;
 }
 
 #define A 0
-#define B 0
-#define C 0
+# define B 0
+ #   define C 0
 
 #if (A == B) || (A == C)
 #error good1
@@ -203,6 +203,43 @@ double f = f1;
 
 #undef __VERSION__
 #undef GL_ARB_texture_rectangle
+
+#
+ # 
+		#	
+##
+# # 
+# 0x25
+####
+####ff
+#########ff fg 0x25
+#pragma
+#pragma(aoent)
+	#	pragma
+#pragma STDGL
+#pragma	 optimize(	on)
+#pragma  optimize(off)
+#pragma debug( on)
+#pragma debug(off	)
+#pragma	 optimize(	on) anoteun
+#pragma  optimize(off
+#pragma debug( on) (
+#pragma debug(off	aoeua)
+#pragma	 optimize(	on)
+#pragma  optimize(off,)
+#pragma debug( on, aoeu)
+#pragma debugoff	)
+#pragma aontheu natoeh uantheo uasotea noeahuonea uonethau onethuanoeth aunotehau noeth anthoeua  anoethuantoeh uantoehu natoehu naoteh unotaehu noethua onetuh aou
+# \
+
+# \
+ error good continuation
+
+#flizbit
+
+#define directive error
+
+#directive directive was expanded
 
 #if 1
 #else

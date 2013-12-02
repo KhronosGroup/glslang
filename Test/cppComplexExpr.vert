@@ -75,5 +75,30 @@ float foo()
 #define BIGARGS3(aonthanotehu, bonthanotehu, conthanotehu, donthanotehu, eonthanotehu, fonthanotehu, gonthanotehu, honthanotehu, ionthanotehu, jonthanotehu, konthanotehu) jonthanotehu
 #define BIGARGS4(aonthanotehu, bonthanotehu, conthanotehu, donthanotehu, eonthanotehu, fonthanotehu, gonthanotehu, honthanotehu, ionthanotehu, jonthanotehu, konthanotehu) jonthanotehu
 
+
+#define foobar(a, b) a + b
+
+#if foobar(1.1, 2.2)
+#error good macro
+#else
+#error bad macro
+#endif
+
+#if foobar(1
+;
+#
+#
+#endif
+#if foobar(1,
+;
+#
+#
+#endif
+float c = foobar(1.1, 2.2
+       );
+#if foobar(1.1, 2.2
+)
+#if foobar(1.1, 2.2
+
 #if 0
 // ERROR, EOF

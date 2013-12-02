@@ -147,87 +147,59 @@ void TParseContext::parserError(const char *s)
         error(getCurrentLoc(), "", "", s, "");
 }
 
-void TParseContext::handlePragma(const char **tokens, int numTokens)
+void TParseContext::handlePragma(TSourceLoc loc, const TVector<TString>& tokens)
 {
-    if (!strcmp(tokens[0], "optimize")) {
-        if (numTokens != 4) {
-            error(getCurrentLoc(), "optimize pragma syntax is incorrect", "#pragma", "");
+    if (tokens.size() == 0)
+        return;
+
+    if (tokens[0].compare("optimize") == 0) {
+        if (tokens.size() != 4) {
+            error(loc, "optimize pragma syntax is incorrect", "#pragma", "");
             return;
         }
 
-        if (strcmp(tokens[1], "(")) {
-            error(getCurrentLoc(), "\"(\" expected after 'optimize' keyword", "#pragma", "");
+        if (tokens[1].compare("(") != 0) {
+            error(loc, "\"(\" expected after 'optimize' keyword", "#pragma", "");
             return;
         }
 
-        if (!strcmp(tokens[2], "on"))
+        if (tokens[2].compare("on") == 0)
             contextPragma.optimize = true;
-        else if (!strcmp(tokens[2], "off"))
+        else if (tokens[2].compare("off") == 0)
             contextPragma.optimize = false;
         else {
-            error(getCurrentLoc(), "\"on\" or \"off\" expected after '(' for 'optimize' pragma", "#pragma", "");
+            error(loc, "\"on\" or \"off\" expected after '(' for 'optimize' pragma", "#pragma", "");
             return;
         }
 
-        if (strcmp(tokens[3], ")")) {
-            error(getCurrentLoc(), "\")\" expected to end 'optimize' pragma", "#pragma", "");
+        if (tokens[3].compare(")") != 0) {
+            error(loc, "\")\" expected to end 'optimize' pragma", "#pragma", "");
             return;
         }
-    } else if (!strcmp(tokens[0], "debug")) {
-        if (numTokens != 4) {
-            error(getCurrentLoc(), "debug pragma syntax is incorrect", "#pragma", "");
-            return;
-        }
-
-        if (strcmp(tokens[1], "(")) {
-            error(getCurrentLoc(), "\"(\" expected after 'debug' keyword", "#pragma", "");
+    } else if (tokens[0].compare("debug") == 0) {
+        if (tokens.size() != 4) {
+            error(loc, "debug pragma syntax is incorrect", "#pragma", "");
             return;
         }
 
-        if (!strcmp(tokens[2], "on"))
+        if (tokens[1].compare("(") != 0) {
+            error(loc, "\"(\" expected after 'debug' keyword", "#pragma", "");
+            return;
+        }
+
+        if (tokens[2].compare("on") == 0)
             contextPragma.debug = true;
-        else if (!strcmp(tokens[2], "off"))
+        else if (tokens[2].compare("off") == 0)
             contextPragma.debug = false;
         else {
-            error(getCurrentLoc(), "\"on\" or \"off\" expected after '(' for 'debug' pragma", "#pragma", "");
+            error(loc, "\"on\" or \"off\" expected after '(' for 'debug' pragma", "#pragma", "");
             return;
         }
 
-        if (strcmp(tokens[3], ")")) {
-            error(getCurrentLoc(), "\")\" expected to end 'debug' pragma", "#pragma", "");
+        if (tokens[3].compare(")") != 0) {
+            error(loc, "\")\" expected to end 'debug' pragma", "#pragma", "");
             return;
         }
-    } else {
-
-#ifdef PRAGMA_TABLE
-        //
-        // implementation specific pragma
-        // use parseContext.contextPragma.pragmaTable to store the information about pragma
-        // For now, just ignore the pragma that the implementation cannot recognize
-        // An Example of one such implementation for a pragma that has a syntax like
-        // #pragma pragmaname(pragmavalue)
-        // This implementation stores the current pragmavalue against the pragma name in pragmaTable.
-        //
-        if (numTokens == 4 && !strcmp(tokens[1], "(") && !strcmp(tokens[3], ")")) {
-            TPragmaTable& pragmaTable = parseContext.contextPragma.pragmaTable;
-            TPragmaTable::iterator iter;
-            iter = pragmaTable.find(TString(tokens[0]));
-            if (iter != pragmaTable.end()) {
-                iter->second = tokens[2];
-            } else {
-                pragmaTable[tokens[0]] = tokens[2];
-            }
-        } else if (numTokens >= 2) {
-            TPragmaTable& pragmaTable = parseContext.contextPragma.pragmaTable;
-            TPragmaTable::iterator iter;
-            iter = pragmaTable.find(TString(tokens[0]));
-            if (iter != pragmaTable.end()) {
-                iter->second = tokens[1];
-            } else {
-                pragmaTable[tokens[0]] = tokens[1];
-            }
-        }
-#endif // PRAGMA_TABLE
     }
 }
 

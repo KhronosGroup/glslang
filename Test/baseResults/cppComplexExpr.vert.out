@@ -2,8 +2,20 @@ cppComplexExpr.vert
 ERROR: 0:46: 'xyxwx' : illegal vector field selection 
 ERROR: 0:46: 'xyxwx' : illegal vector field selection 
 ERROR: 0:66: '#define' : Macro redefined; different substitutions: BIG
-ERROR: 0:79: '' : missing #endif 
-ERROR: 4 compilation errors.  No code generated.
+ERROR: 0:81: 'preprocessor evaluation' : bad expression 
+ERROR: 0:81: '#if' : unexpected tokens following directive 
+ERROR: 0:82: '#error' : good macro  
+ERROR: 0:89: 'macro expansion' : unexpected '#' foobar
+ERROR: 0:90: 'preprocessor evaluation' : bad expression 
+ERROR: 0:94: 'macro expansion' : unexpected '#' foobar
+ERROR: 0:95: 'preprocessor evaluation' : bad expression 
+ERROR: 0:100: 'preprocessor evaluation' : bad expression 
+ERROR: 0:100: '#if' : unexpected tokens following directive 
+ERROR: 0:103: 'macro expansion' : unexpected '#' foobar
+ERROR: 0:103: 'preprocessor evaluation' : undefined macro in expression 
+ERROR: 0:103: '#if' : unexpected tokens following directive 
+ERROR: 0:104: '' : missing #endif 
+ERROR: 16 compilation errors.  No code generated.
 
 
 ERROR: node is still EOpNull!
@@ -66,8 +78,14 @@ ERROR: node is still EOpNull!
 0:47                1 (const int)
 0:47            Constant:
 0:47              3.000000
+0:97  Sequence
+0:97    move second child to first child (highp float)
+0:97      'c' (highp float)
+0:98      Constant:
+0:98        3.300000
 0:?   Linker Objects
 0:?     'sum' (highp float)
+0:?     'c' (highp float)
 0:?     'gl_VertexID' (gl_VertexId highp int)
 0:?     'gl_InstanceID' (gl_InstanceId highp int)
 

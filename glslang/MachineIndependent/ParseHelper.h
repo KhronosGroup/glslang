@@ -79,7 +79,7 @@ public:
     void lineContinuationCheck(TSourceLoc);
     bool builtInName(const TString&);
 
-    void handlePragma(const char **tokens, int numTokens);
+    void handlePragma(TSourceLoc, const TVector<TString>&);
     TIntermTyped* handleVariable(TSourceLoc, TSymbol* symbol, TString* string);
     TIntermTyped* handleBracketDereference(TSourceLoc, TIntermTyped* base, TIntermTyped* index);
     void checkIndex(TSourceLoc, const TType&, int& index);

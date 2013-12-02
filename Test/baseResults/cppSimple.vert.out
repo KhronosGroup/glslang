@@ -6,15 +6,15 @@ ERROR: 0:85: '#error' : good3
 ERROR: 0:89: '#error' : good4  
 ERROR: 0:93: '#error' : good5  
 ERROR: 0:97: '#error' : good6  
-ERROR: 0:101: 'preprocessor' : expected ')' 
+ERROR: 0:101: 'preprocessor evaluation' : expected ')' 
 ERROR: 0:101: '#error' : bad1  
 ERROR: 0:104: '#if' : unexpected tokens following directive 
 ERROR: 0:105: '#error' : bad2  
-ERROR: 0:109: 'preprocessor' : expected ')' 
+ERROR: 0:109: 'preprocessor evaluation' : expected ')' 
 ERROR: 0:109: '#error' : bad3  
 ERROR: 0:112: '#if' : unexpected tokens following directive 
 ERROR: 0:113: '#error' : bad4  
-ERROR: 0:117: 'preprocessor' : expected ')' 
+ERROR: 0:117: 'preprocessor evaluation' : expected ')' 
 ERROR: 0:117: '#error' : bad5  
 ERROR: 0:120: '#if' : unexpected tokens following directive 
 ERROR: 0:121: '#error' : bad6  
@@ -44,8 +44,25 @@ ERROR: 0:192: '#define' : Macro redefined; different substitutions: m8
 ERROR: 0:196: '#define' : Macro redefined; different argument names: m9
 ERROR: 0:204: '#undef' : can't use with built-in names (containing consecutive underscores) 
 ERROR: 0:205: '#undef' : can't use with built-in names ("GL_" prefix) 
-ERROR: 0:209: '' : missing #endif 
-ERROR: 45 compilation errors.  No code generated.
+ERROR: 0:210: '#' : invalid directive 
+ERROR: 0:211: '#' : invalid directive 
+ERROR: 0:212: '#' : invalid directive 
+ERROR: 0:213: '#' : invalid directive 
+ERROR: 0:214: '#' : invalid directive 
+ERROR: 0:215: '#' : invalid directive 
+ERROR: 0:224: '#pragma' : optimize pragma syntax is incorrect 
+ERROR: 0:225: '#pragma' : optimize pragma syntax is incorrect 
+ERROR: 0:226: '#pragma' : debug pragma syntax is incorrect 
+ERROR: 0:227: '#pragma' : debug pragma syntax is incorrect 
+ERROR: 0:229: '#pragma' : optimize pragma syntax is incorrect 
+ERROR: 0:230: '#pragma' : debug pragma syntax is incorrect 
+ERROR: 0:233: 'line continuation' : not supported for this version or the enabled extensions 
+ERROR: 0:235: 'line continuation' : not supported for this version or the enabled extensions 
+ERROR: 0:236: '#error' : good continuation  
+ERROR: 0:238: '#' : invalid directive: flizbit
+ERROR: 0:242: '#' : invalid directive: directive
+ERROR: 0:246: '' : missing #endif 
+ERROR: 62 compilation errors.  No code generated.
 
 
 ERROR: node is still EOpNull!
