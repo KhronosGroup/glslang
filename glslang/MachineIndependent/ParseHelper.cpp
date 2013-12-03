@@ -699,7 +699,10 @@ TFunction* TParseContext::handleFunctionDeclarator(TSourceLoc loc, TFunction& fu
         }
         for (int i = 0; i < prevDec->getParamCount(); ++i) {
             if ((*prevDec)[i].type->getQualifier().storage != function[i].type->getQualifier().storage)
-                error(loc, "overloaded functions must have the same parameter qualifiers", function[i].type->getStorageQualifierString(), "");
+                error(loc, "overloaded functions must have the same parameter storage qualifiers for argument", function[i].type->getStorageQualifierString(), "%d", i+1);
+
+            if ((*prevDec)[i].type->getQualifier().precision != function[i].type->getQualifier().precision)
+                error(loc, "overloaded functions must have the same parameter precision qualifiers for argument", function[i].type->getPrecisionQualifierString(), "%d", i+1);
         }
     }
 

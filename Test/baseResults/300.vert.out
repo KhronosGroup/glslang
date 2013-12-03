@@ -29,7 +29,9 @@ ERROR: 0:121: 'textureSize' : no matching overloaded function found
 ERROR: 0:123: 'textureSize' : no matching overloaded function found 
 ERROR: 0:125: 'texture' : no matching overloaded function found 
 ERROR: 0:127: 'textureProjOffset' : no matching overloaded function found 
-ERROR: 30 compilation errors.  No code generated.
+ERROR: 0:132: 'highp' : overloaded functions must have the same parameter precision qualifiers 
+ERROR: 0:135: 'in' : overloaded functions must have the same parameter storage qualifiers 
+ERROR: 32 compilation errors.  No code generated.
 
 
 ERROR: node is still EOpNull!

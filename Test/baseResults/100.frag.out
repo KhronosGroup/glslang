@@ -62,8 +62,9 @@ ERROR: 0:145: 'a' : redefinition
 ERROR: 0:147: 'texture2DProjGradEXT' : required extension not requested: GL_EXT_shader_texture_lod
 ERROR: 0:151: 'floating-point suffix' : not supported for this version or the enabled extensions 
 ERROR: 0:152: 'floating-point suffix' : not supported for this version or the enabled extensions 
-ERROR: 0:166: '' :  syntax error
-ERROR: 57 compilation errors.  No code generated.
+ERROR: 0:167: 'highp' : overloaded functions must have the same parameter precision qualifiers 
+ERROR: 0:169: '' :  syntax error
+ERROR: 58 compilation errors.  No code generated.
 
 
 ERROR: node is still EOpNull!

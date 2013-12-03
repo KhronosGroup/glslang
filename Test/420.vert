@@ -74,3 +74,6 @@ layout(binding = 5) uniform sampler2D sampb2[10];
 layout(binding = 32) uniform sampler2D sampb3; // ERROR, binding too big
 layout(binding = 31) uniform sampler2D sampb4;
 layout(binding = 31) uniform sampler2D sampb5[2]; // ERROR, binding too big
+
+int fgfg(float f, mediump int i);
+int fgfg(float f, highp int i);

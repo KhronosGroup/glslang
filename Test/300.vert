@@ -127,3 +127,9 @@ void foo23()
     textureProjOffset(s3D, vec4(0.2), ivec3(1), .03);  // ERROR, bias
     float x6 = textureProjGradOffset(s2DS, invIn, vec2(4.2), vec2(5.3), ivec2(1));
 }
+
+int fgfg(float f, mediump int i);
+int fgfg(float f, highp int i);   // ERROR, precision qualifier difference
+
+int fgfgh(float f, const in mediump int i);
+int fgfgh(float f, in mediump int i);   // ERROR, precision qualifier difference

@@ -163,4 +163,7 @@ void foo323433()
     textureCubeGradEXT(sCube, vec3(f13), vec3(f13), vec3(f13));
 }
 
+int fgfg(float f, mediump int i);
+int fgfg(float f, highp int i);   // ERROR, precision qualifier difference
+
 uniform samplerExternalOES badExt;  // syntax ERROR
