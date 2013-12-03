@@ -300,13 +300,17 @@ TIntermTyped* TIntermConstantUnion::fold(TOperator op, TIntermTyped* constantNod
 TIntermTyped* TIntermConstantUnion::fold(TOperator op, const TType& returnType)
 {
     // First, size the result, which is mostly the same as the argument's size,
-    // but not always.
+    // but not always, and classify what is componentwise.
+    // Also, eliminate cases that can't be compile-time constant.
     int resultSize;
+    bool componentWise = true;
+
     switch (op) {
     case EOpDeterminant:
     case EOpAny:
     case EOpAll:
     case EOpLength:
+        componentWise = false;
         resultSize = 1;
         break;
 
@@ -318,25 +322,33 @@ TIntermTyped* TIntermConstantUnion::fold(TOperator op, const TType& returnType)
     case EOpPackSnorm2x16:
     case EOpPackUnorm2x16:
     case EOpPackHalf2x16:
+        componentWise = false;
         resultSize = 1;
         break;
 
     case EOpUnpackSnorm2x16:
     case EOpUnpackUnorm2x16:
     case EOpUnpackHalf2x16:
+        componentWise = false;
         resultSize = 2;
+        break;
+
+    case EOpNormalize:
+        componentWise = false;
+        resultSize = getType().getObjectSize();
         break;
 
     default:
         resultSize = getType().getObjectSize();
         break;
     }
-    TConstUnionArray newConstArray(resultSize);
 
-    const TConstUnionArray unionArray = getConstArray();
+    // Set up for processing
+    TConstUnionArray newConstArray(resultSize);
+    const TConstUnionArray& unionArray = getConstArray();
+    int objectSize = getType().getObjectSize();
 
     // Process non-component-wise operations
-    int objectSize = getType().getObjectSize();
     switch (op) {
     case EOpLength:
     case EOpNormalize:
@@ -353,10 +365,35 @@ TIntermTyped* TIntermConstantUnion::fold(TOperator op, const TType& returnType)
         }
         break;
     }
+
+    // TODO: 3.0 Functionality: unary constant folding: the rest of the ops have to be fleshed out
+
+    case EOpPackSnorm2x16:
+    case EOpPackUnorm2x16:
+    case EOpPackHalf2x16:
+
+    case EOpUnpackSnorm2x16:
+    case EOpUnpackUnorm2x16:
+    case EOpUnpackHalf2x16:
+
+    case EOpDeterminant:
+    case EOpMatrixInverse:
+    case EOpTranspose:
+
+    case EOpAny:
+    case EOpAll:
+        return 0;
+    
     default:
+        assert(componentWise);
         break;
     }
 
+    // Turn off the componentwise loop
+    if (! componentWise)
+        objectSize = 0;
+
+    // Process component-wise operations
     for (int i = 0; i < objectSize; i++) {
         switch (op) {
         case EOpNegative:
@@ -403,11 +440,6 @@ TIntermTyped* TIntermConstantUnion::fold(TOperator op, const TType& returnType)
             break;
         case EOpAtan:
             newConstArray[i].setDConst(atan(unionArray[i].getDConst()));
-            break;
-
-        case EOpLength:
-        case EOpNormalize:
-            // handled above as special case
             break;
 
         case EOpDPdx:
@@ -511,20 +543,6 @@ TIntermTyped* TIntermConstantUnion::fold(TOperator op, const TType& returnType)
         case EOpFloatBitsToUint:
         case EOpIntBitsToFloat:
         case EOpUintBitsToFloat:
-
-        case EOpPackSnorm2x16:
-        case EOpUnpackSnorm2x16:
-        case EOpPackUnorm2x16:
-        case EOpUnpackUnorm2x16:
-        case EOpPackHalf2x16:
-        case EOpUnpackHalf2x16:
-
-        case EOpDeterminant:
-        case EOpMatrixInverse:
-        case EOpTranspose:
-
-        case EOpAny:
-        case EOpAll:
 
         default:
             return 0;
