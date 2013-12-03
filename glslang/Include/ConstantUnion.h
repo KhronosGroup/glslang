@@ -463,6 +463,17 @@ public:
     }
     bool operator!=(const TConstUnionArray& rhs) const { return ! operator==(rhs); }
 
+    double dot(const TConstUnionArray& rhs)
+    {
+        assert(rhs.unionArray->size() == unionArray->size());
+        double sum = 0.0;
+
+        for (size_t comp = 0; comp < unionArray->size(); ++comp)
+            sum += (*this)[comp].getDConst() * rhs[comp].getDConst();
+
+        return sum;
+    }
+
     bool empty() const { return unionArray == 0; }
 
 protected:

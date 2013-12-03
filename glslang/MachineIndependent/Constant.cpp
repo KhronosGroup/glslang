@@ -303,7 +303,6 @@ TIntermTyped* TIntermConstantUnion::fold(TOperator op, const TType& returnType)
     // but not always.
     int resultSize;
     switch (op) {
-    // TODO: 3.0 functionality: constant folding: finish listing exceptions to size here
     case EOpDeterminant:
     case EOpAny:
     case EOpAll:
@@ -315,6 +314,18 @@ TIntermTyped* TIntermConstantUnion::fold(TOperator op, const TType& returnType)
     case EOpEndStreamPrimitive:
         // These don't actually fold
         return 0;
+
+    case EOpPackSnorm2x16:
+    case EOpPackUnorm2x16:
+    case EOpPackHalf2x16:
+        resultSize = 1;
+        break;
+
+    case EOpUnpackSnorm2x16:
+    case EOpUnpackUnorm2x16:
+    case EOpUnpackHalf2x16:
+        resultSize = 2;
+        break;
 
     default:
         resultSize = getType().getObjectSize();
@@ -332,7 +343,7 @@ TIntermTyped* TIntermConstantUnion::fold(TOperator op, const TType& returnType)
     {
         double sum = 0;
         for (int i = 0; i < objectSize; i++)
-            sum += double(unionArray[i].getDConst()) * unionArray[i].getDConst();
+            sum += unionArray[i].getDConst() * unionArray[i].getDConst();
         double length = sqrt(sum);
         if (op == EOpLength)
             newConstArray[0].setDConst(length);
@@ -487,7 +498,7 @@ TIntermTyped* TIntermConstantUnion::fold(TOperator op, const TType& returnType)
             break;
         }
 
-        // TODO: 3.0 Functionality: constant folding: the rest of the ops have to be fleshed out
+        // TODO: 3.0 Functionality: unary constant folding: the rest of the ops have to be fleshed out
 
         case EOpSinh:
         case EOpCosh:
@@ -693,20 +704,74 @@ TIntermTyped* TIntermediate::fold(TIntermAggregate* aggrNode)
     } else {
         // Non-componentwise...
 
+        int numComps = children[0]->getAsConstantUnion()->getType().getObjectSize();
+        double dot;
+
         switch (aggrNode->getOp()) {
-
-        // TODO: 3.0 Functionality: constant folding: the rest of the ops have to be fleshed out
-
-        case EOpModf:
         case EOpDistance:
+        {
+            double sum = 0.0;
+            for (int comp = 0; comp < numComps; ++comp) {
+                double diff = childConstUnions[1][comp].getDConst() - childConstUnions[0][comp].getDConst();
+                sum += diff * diff;
+            }
+            newConstArray[0].setDConst(sqrt(sum));
+            break;
+        }
         case EOpDot:
+            newConstArray[0].setDConst(childConstUnions[0].dot(childConstUnions[1]));
+            break;
         case EOpCross:
+            newConstArray[0] = childConstUnions[0][1] * childConstUnions[1][2] - childConstUnions[0][2] * childConstUnions[1][1];
+            newConstArray[1] = childConstUnions[0][2] * childConstUnions[1][0] - childConstUnions[0][0] * childConstUnions[1][2];
+            newConstArray[2] = childConstUnions[0][0] * childConstUnions[1][1] - childConstUnions[0][1] * childConstUnions[1][0];
+            break;
         case EOpFaceForward:
+            // If dot(Nref, I) < 0 return N, otherwise return –N:  Arguments are (N, I, Nref).
+            dot = childConstUnions[1].dot(childConstUnions[2]);
+            for (int comp = 0; comp < numComps; ++comp) {
+                if (dot < 0.0)
+                    newConstArray[comp] = childConstUnions[0][comp];
+                else
+                    newConstArray[comp].setDConst(-childConstUnions[0][comp].getDConst());
+            }
+            break;
         case EOpReflect:
+            // I – 2 * dot(N, I) * N:  Arguments are (I, N).
+            dot = childConstUnions[0].dot(childConstUnions[1]);
+            dot *= 2.0;
+            for (int comp = 0; comp < numComps; ++comp)
+                newConstArray[comp].setDConst(childConstUnions[0][comp].getDConst() - dot * childConstUnions[1][comp].getDConst());
+            break;
         case EOpRefract:
+        {
+            // Arguments are (I, N, eta).
+            // k = 1.0 - eta * eta * (1.0 - dot(N, I) * dot(N, I))
+            // if (k < 0.0)
+            //     return dvec(0.0)
+            // else
+            //     return eta * I - (eta * dot(N, I) + sqrt(k)) * N
+            dot = childConstUnions[0].dot(childConstUnions[1]);
+            double eta = childConstUnions[2][0].getDConst();
+            double k = 1.0 - eta * eta * (1.0 - dot * dot);
+            if (k < 0.0) {
+                for (int comp = 0; comp < numComps; ++comp)
+                    newConstArray[comp].setDConst(0.0);
+            } else {
+                for (int comp = 0; comp < numComps; ++comp)
+                    newConstArray[comp].setDConst(eta * childConstUnions[0][comp].getDConst() - (eta * dot + sqrt(k)) * childConstUnions[1][comp].getDConst());
+            }
+            break;
+        }
         case EOpOuterProduct:
-            return aggrNode;
-
+        {
+            int numRows = numComps;
+            int numCols = children[1]->getAsConstantUnion()->getType().getObjectSize();
+            for (int row = 0; row < numRows; ++row)
+                for (int col = 0; col < numCols; ++col)
+                    newConstArray[col * numRows + row] = childConstUnions[0][row] * childConstUnions[1][col];
+            break;
+        }
         default:
             return aggrNode;
         }

@@ -133,6 +133,16 @@ void foo324(void)
 {
     float p = pow(3.2, 4.6);
     p += sin(0.4);
+    p += distance(vec2(10.0, 11.0), vec2(13.0, 15.0)); // 5
+    p += dot(vec3(2,3,5), vec3(-2,-1,4));              // 13
+    vec3 c3 = cross(vec3(3,-3,1), vec3(4,9,2));        // (-15, -2, 39)
+    c3 += faceforward(vec3(1,2,3), vec3(2,3,5), vec3(-2,-1,4));     // (-1,-2,-3)
+    c3 += faceforward(vec3(1,2,3), vec3(-2,-3,-5), vec3(-2,-1,4));  // (1,2,3)
+    vec2 c2 = reflect(vec2(1,3), vec2(0,1));           // (1,-3)
+    c2 += refract(vec2(1,3), vec2(0,1), 1.0);          // (1,-3)
+    c2 += refract(vec2(1,3), vec2(0,1), 3.0);
+    c2 += refract(vec2(1,0.1), vec2(0,1), 5.0);        // (0,0)
+    mat3x2 m32 = outerProduct(vec2(2,3), vec3(5,7,11));// rows: (10, 14, 22), (15, 21, 33)
 }
 
 float imageBuffer;    // ERROR, reserved
