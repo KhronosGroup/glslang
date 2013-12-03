@@ -26,7 +26,7 @@ ERROR: 0:91: 'main' : function already has a body
 ERROR: 0:91: 'int' :  main function cannot return a value
 ERROR: 0:92: 'main' : function cannot take any parameter(s) 
 ERROR: 0:94: 'a' : variables with qualifier 'const' must be initialized 
-ERROR: 0:97: 'out' : overloaded functions must have the same parameter storage qualifiers 
+ERROR: 0:97: 'out' : overloaded functions must have the same parameter storage qualifiers for argument 1
 ERROR: 0:99: 'return' : function return is not matching type: 
 ERROR: 0:115: 'return' : void function cannot return a value 
 ERROR: 0:125: 'gl_TexCoord' : redeclaration of array with size 
