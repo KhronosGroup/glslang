@@ -209,6 +209,8 @@ protected:
     InputSrc *currentInput;
     bool errorOnVersion;
 
+    bool languageCharacters[256];
+
     //
     // from Pp.cpp
     //

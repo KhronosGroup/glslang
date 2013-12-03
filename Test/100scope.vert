@@ -18,8 +18,8 @@ float b(int a);      // ERROR: redefinition
 
 float f;             // ERROR: redefinition
 float tan;           // okay, built-in is in an outer scope
-float sin(float x);  // ERROR: can't redefine built-in functions
-float cos(float x)   // ERROR: can't redefine built-in functions
+float sin(float x);  // ERROR: cant redefine built-in functions
+float cos(float x)   // ERROR: cant redefine built-in functions
 {
 	return 1.0;
 }
@@ -54,7 +54,7 @@ void main()
         int z = z; // ERROR: z not previously defined.
     }
     {
-        int x = x; // x is initialized to '1'
+        int x = x; // x is initialized to 1
     }
 
     struct S 
@@ -62,7 +62,7 @@ void main()
         int x; 
     };
     {
-        S S = S(0); // 'S' is only visible as a struct and constructor 
-        S.x;        // 'S' is now visible as a variable
+        S S = S(0); // S is only visible as a struct and constructor 
+        S.x;        // S is now visible as a variable
     }
 }
