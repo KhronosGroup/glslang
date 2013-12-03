@@ -61,8 +61,17 @@ ERROR: 0:235: 'line continuation' : not supported for this version or the enable
 ERROR: 0:236: '#error' : good continuation  
 ERROR: 0:238: '#' : invalid directive: flizbit
 ERROR: 0:242: '#' : invalid directive: directive
-ERROR: 0:246: '' : missing #endif 
-ERROR: 62 compilation errors.  No code generated.
+ERROR: 0:12001: '#error' : line should be 12001  
+ERROR: 7:13001: '#error' : line should be 13001 , string 7  
+ERROR: 7:14014: '#error' : line should be 14014 , string 7  
+ERROR: 12:14014: '#error' : line should be 14014 , string 12  
+ERROR: 12:14026: '#error' : line should be 14026 , string 12  
+ERROR: 12:1234: '#line' : unexpected tokens following directive 
+ERROR: 12:20001: '#error' : line should be 20001  
+ERROR: 12:20011: '#error' : line should be 20011  
+ERROR: 12:20021: '#error' : line should be 20021  
+ERROR: 12:10003: '' : missing #endif 
+ERROR: 71 compilation errors.  No code generated.
 
 
 ERROR: node is still EOpNull!

@@ -125,6 +125,7 @@ int TPpContext::InitCPP()
     return 1;
 }
 
+// Handle #define
 int TPpContext::CPPdefine(TPpToken* ppToken)
 {
     int token, atom, args[maxMacroArgs], argc;
@@ -237,6 +238,7 @@ int TPpContext::CPPdefine(TPpToken* ppToken)
     return '\n';
 }
 
+// Handle #undef
 int TPpContext::CPPundef(TPpToken* ppToken)
 {
     int token = currentInput->scan(this, currentInput, ppToken);
@@ -261,6 +263,7 @@ int TPpContext::CPPundef(TPpToken* ppToken)
     return token;
 }
 
+// Handle #else
 /* Skip forward to appropriate spot.  This is used both
 ** to skip to a #endif after seeing an #else, AND to skip to a #else,
 ** #elif, or #endif after a #if/#ifdef/#ifndef/#elif test was false.
@@ -334,6 +337,7 @@ int TPpContext::CPPelse(int matchelse, TPpToken* ppToken)
     return token;
 }
 
+// Call when there should be no more tokens left on a line.
 int TPpContext::extraTokenCheck(int atom, TPpToken* ppToken, int token)
 {
     if (token != '\n') {
@@ -348,6 +352,8 @@ int TPpContext::extraTokenCheck(int atom, TPpToken* ppToken, int token)
             label = "#endif";
         else if (atom == ifAtom)
             label = "#if";
+        else if (atom == lineAtom)
+            label = "#line";
         else
             label = "";
 
@@ -364,9 +370,9 @@ int TPpContext::extraTokenCheck(int atom, TPpToken* ppToken, int token)
 }
 
 enum eval_prec {
-    MIN_PREC,
+    MIN_PRECEDENCE,
     COND, LOGOR, LOGAND, OR, XOR, AND, EQUAL, RELATION, SHIFT, ADD, MUL, UNARY,
-    MAX_PREC
+    MAX_PRECEDENCE
 };
 
 namespace {
@@ -397,7 +403,7 @@ namespace {
 };
 
 struct Tbinops {
-    int token, prec, (*op)(int, int);
+    int token, precedence, (*op)(int, int);
 } binop[] = {
     { CPP_OR_OP, LOGOR, op_logor },
     { CPP_AND_OP, LOGAND, op_logand },
@@ -430,7 +436,7 @@ struct tunops {
 
 #define ALEN(A) (sizeof(A)/sizeof(A[0]))
 
-int TPpContext::eval(int token, int prec, int *res, int *err, TPpToken* ppToken)
+int TPpContext::eval(int token, int precedence, int& res, bool& err, TPpToken* ppToken)
 {
     int         i, val;
     Symbol      *s;
@@ -445,19 +451,18 @@ int TPpContext::eval(int token, int prec, int *res, int *err, TPpToken* ppToken)
             }
             if (token != CPP_IDENTIFIER) {
                 parseContext.error(ppToken->loc, "incorrect directive, expected identifier", "preprocessor evaluation", "");
-                *err = 1;
-                *res = 0;
+                err = true;
+                res = 0;
 
                 return token;
             }
-            *res = (s = LookUpSymbol(ppToken->atom))
-                ? !s->mac.undef : 0;
+            res = (s = LookUpSymbol(ppToken->atom)) ? !s->mac.undef : 0;
             token = currentInput->scan(this, currentInput, ppToken);
             if (needclose) {
                 if (token != ')') {
                     parseContext.error(ppToken->loc, "#else after #else", "preprocessor evaluation", "");
-                    *err = 1;
-                    *res = 0;
+                    err = true;
+                    res = 0;
 
                     return token;
                 }
@@ -467,8 +472,8 @@ int TPpContext::eval(int token, int prec, int *res, int *err, TPpToken* ppToken)
             int macroReturn = MacroExpand(ppToken->atom, ppToken, 1);
             if (macroReturn == 0) {
                 parseContext.error(ppToken->loc, "can't evaluate expression", "preprocessor evaluation", "");
-                *err = 1;
-                *res = 0;
+                err = true;
+                res = 0;
 
                 return token;
             } else {
@@ -479,26 +484,26 @@ int TPpContext::eval(int token, int prec, int *res, int *err, TPpToken* ppToken)
                         else {
                             parseContext.error(ppToken->loc, "undefined macro in expression", "preprocessor evaluation", "");
 
-                            *err = 1;
+                            err = true;
                         }
                     }
                 }
                 token = currentInput->scan(this, currentInput, ppToken);
 
-                return eval(token, prec, res, err, ppToken);
+                return eval(token, precedence, res, err, ppToken);
             }
         }
     } else if (token == CPP_INTCONSTANT) {
-        *res = ppToken->ival;
+        res = ppToken->ival;
         token = currentInput->scan(this, currentInput, ppToken);
     } else if (token == '(') {
         token = currentInput->scan(this, currentInput, ppToken);
-        token = eval(token, MIN_PREC, res, err, ppToken);
-        if (!*err) {
+        token = eval(token, MIN_PRECEDENCE, res, err, ppToken);
+        if (! err) {
             if (token != ')') {
                 parseContext.error(ppToken->loc, "expected ')'", "preprocessor evaluation", "");
-                *err = 1;
-                *res = 0;
+                err = true;
+                res = 0;
 
                 return token;
             }
@@ -512,37 +517,37 @@ int TPpContext::eval(int token, int prec, int *res, int *err, TPpToken* ppToken)
         if (i >= 0) {
             token = currentInput->scan(this, currentInput, ppToken);
             token = eval(token, UNARY, res, err, ppToken);
-            *res = unop[i].op(*res);
+            res = unop[i].op(res);
         } else {
             parseContext.error(ppToken->loc, "bad expression", "preprocessor evaluation", "");
-            *err = 1;
-            *res = 0;
+            err = true;
+            res = 0;
 
             return token;
         }
     }
-    while (!*err) {
+    while (! err) {
         if (token == ')' || token == '\n') 
             break;
         for (i = ALEN(binop) - 1; i >= 0; i--) {
             if (binop[i].token == token)
                 break;
         }
-        if (i < 0 || binop[i].prec <= prec)
+        if (i < 0 || binop[i].precedence <= precedence)
             break;
-        val = *res;
+        val = res;
         token = currentInput->scan(this, currentInput, ppToken);
-        token = eval(token, binop[i].prec, res, err, ppToken);
-        *res = binop[i].op(val, *res);
+        token = eval(token, binop[i].precedence, res, err, ppToken);
+        res = binop[i].op(val, res);
     }
 
     return token;
-} // eval
+}
 
+// Handle #if
 int TPpContext::CPPif(TPpToken* ppToken) 
 {
     int token = currentInput->scan(this, currentInput, ppToken);
-    int res = 0, err = 0;
     elsetracker++;
     if (! ifdepth++)
         ifloc = ppToken->loc;
@@ -550,7 +555,9 @@ int TPpContext::CPPif(TPpToken* ppToken)
         parseContext.error(ppToken->loc, "maximum nesting depth exceeded", "#if", "");
         return 0;
     }
-    token = eval(token, MIN_PREC, &res, &err, ppToken);
+    int res = 0;
+    bool err = false;
+    token = eval(token, MIN_PRECEDENCE, res, err, ppToken);
     token = extraTokenCheck(ifAtom, ppToken, token);
     if (!res && !err)
         token = CPPelse(1, ppToken);
@@ -558,7 +565,8 @@ int TPpContext::CPPif(TPpToken* ppToken)
     return token;
 }
 
-int TPpContext::CPPifdef(int defined, TPpToken * ppToken)
+// Handle #ifdef
+int TPpContext::CPPifdef(int defined, TPpToken* ppToken)
 {
     int token = currentInput->scan(this, currentInput, ppToken);
     int name = ppToken->atom;
@@ -588,35 +596,36 @@ int TPpContext::CPPifdef(int defined, TPpToken * ppToken)
 }
 
 // Handle #line
-int TPpContext::CPPline(TPpToken * ppToken) 
+int TPpContext::CPPline(TPpToken* ppToken) 
 {
     int token = currentInput->scan(this, currentInput, ppToken);
     if (token == '\n') {
         parseContext.error(ppToken->loc, "must by followed by an integral literal", "#line", "");
         return token;
     }
-    else if (token == CPP_INTCONSTANT) {
-        parseContext.setCurrentLine(atoi(ppToken->name));
-        token = currentInput->scan(this, currentInput, ppToken);
 
-        if (token == CPP_INTCONSTANT) {
-            parseContext.setCurrentString(atoi(ppToken->name));
-            token = currentInput->scan(this, currentInput, ppToken);
-            if (token != '\n')
-                parseContext.error(parseContext.getCurrentLoc(), "cannot be followed by more than two integral literals", "#line", "");
-        } else if (token == '\n')
-
-            return token;
-        else
-            parseContext.error(parseContext.getCurrentLoc(), "second argument can only be an integral literal", "#line", "");
-    } else
-        parseContext.error(parseContext.getCurrentLoc(), "first argument can only be an integral literal", "#line", "");
+    int lineRes = 0;
+    bool lineErr = false;
+    token = eval(token, MIN_PRECEDENCE, lineRes, lineErr, ppToken);
+    if (! lineErr) {
+        if (token == '\n')
+            ++lineRes;
+        parseContext.setCurrentLine(lineRes);
+        if (token != '\n') {
+            int fileRes = 0;
+            bool fileErr = false;
+            token = eval(token, MIN_PRECEDENCE, fileRes, fileErr, ppToken);
+            if (! fileErr)
+                parseContext.setCurrentString(fileRes);
+        }
+    }
+    token = extraTokenCheck(lineAtom, ppToken, token);
 
     return token;
 }
 
 // Handle #error
-int TPpContext::CPPerror(TPpToken * ppToken) 
+int TPpContext::CPPerror(TPpToken* ppToken) 
 {
     int token = currentInput->scan(this, currentInput, ppToken);
     std::string message;
@@ -640,6 +649,7 @@ int TPpContext::CPPerror(TPpToken * ppToken)
     return '\n';
 }
 
+// Handle #pragma
 int TPpContext::CPPpragma(TPpToken* ppToken)
 {
     char SrcStrName[2];
@@ -679,8 +689,8 @@ int TPpContext::CPPpragma(TPpToken* ppToken)
     return token;    
 }
 
-// This is just for error checking: the version and profile are decided before preprocessing starts
-int TPpContext::CPPversion(TPpToken * ppToken)
+// #version: This is just for error checking: the version and profile are decided before preprocessing starts
+int TPpContext::CPPversion(TPpToken* ppToken)
 {
     int token = currentInput->scan(this, currentInput, ppToken);
 
@@ -717,11 +727,11 @@ int TPpContext::CPPversion(TPpToken * ppToken)
     }
 
     return token;
-} // CPPversion
+}
 
-int TPpContext::CPPextension(TPpToken * ppToken)
+// Handle #extension
+int TPpContext::CPPextension(TPpToken* ppToken)
 {
-
     int token = currentInput->scan(this, currentInput, ppToken);
     char extensionName[80];
 
@@ -756,9 +766,9 @@ int TPpContext::CPPextension(TPpToken * ppToken)
         parseContext.error(ppToken->loc,  "extra tokens -- expected newline", "#extension","");
 
     return token;
-} // CPPextension
+}
 
-int TPpContext::readCPPline(TPpToken * ppToken)
+int TPpContext::readCPPline(TPpToken* ppToken)
 {
     int token = currentInput->scan(this, currentInput, ppToken);
     bool isVersion = false;
@@ -847,7 +857,7 @@ void TPpContext::PopEofSrc()
     }
 }
 
-TPpContext::TokenStream* TPpContext::PrescanMacroArg(TokenStream *a, TPpToken * ppToken)
+TPpContext::TokenStream* TPpContext::PrescanMacroArg(TokenStream *a, TPpToken* ppToken)
 {
     int token;
     TokenStream *n;

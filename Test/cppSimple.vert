@@ -241,6 +241,29 @@ double f = f1;
 
 #directive directive was expanded
 
+#line 12000
+#error line should be 12001
+#line 13000 7
+#error line should be 13001, string 7
+#define L1 14000
+#define L2 13
+#define F1 5
+#define F2 7
+#line L1 + L2
+#error line should be 14014, string 7
+#line L1 + L2 F1 + F2
+#error line should be 14014, string 12
+#line L1 + L2 + F1 + F2
+#error line should be 14026, string 12
+#line 1234 F1 + F2 extra
+#line (20000)
+#error line should be 20001
+#line (20000+10)
+#error line should be 20011
+#line +20020
+#error line should be 20021
+
+#line 10000
 #if 1
 #else
 // ERROR, missing #endif
