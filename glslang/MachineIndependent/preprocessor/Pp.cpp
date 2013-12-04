@@ -188,7 +188,7 @@ int TPpContext::CPPdefine(TPpToken* ppToken)
         if (token == '\\') {
             parseContext.lineContinuationCheck(ppToken->loc);
             token = currentInput->scan(this, currentInput, ppToken);
-            if (token == '\n')
+            if (token == '\n' || token == '\r')
                 token = currentInput->scan(this, currentInput, ppToken);
         }
         RecordToken(mac.body, token, ppToken);

@@ -6,7 +6,7 @@ ains no errors other than the #error which are there to see if line numbering fo
 #error e1
 
 float f\
-oo;  // same as float foo;
+oo;  // same as 'float foo;'
 
 #error e2
 

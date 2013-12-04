@@ -638,17 +638,16 @@ int TPpContext::sourceScan(TPpContext* pp, InputSrc*, TPpToken* ppToken)
                     ch = pp->currentInput->getch(pp, pp->currentInput, ppToken);
                     if (ch == '\\') {
                         // allow an escaped newline, otherwise escapes in comments are meaningless
-                        pp->parseContext.lineContinuationCheck(ppToken->loc);
                         ch = pp->currentInput->getch(pp, pp->currentInput, ppToken);
                         if (ch == '\r' || ch == '\n') {
+                            pp->parseContext.lineContinuationCheck(ppToken->loc);
                             int nextch = pp->currentInput->getch(pp, pp->currentInput, ppToken);
                             if (ch == '\r' && nextch == '\n')
                                 ch = pp->currentInput->getch(pp, pp->currentInput, ppToken);
                             else
                                 ch = nextch;
                         }
-                    } else if (ch > 0 && ! pp->languageCharacters[ch])
-                        pp->parseContext.commentCharacterCheck(ppToken->loc, ch);
+                    }
                 } while (ch != '\n' && ch != EOF);
                 if (ch == EOF)
                     return EOF;
@@ -664,8 +663,7 @@ int TPpContext::sourceScan(TPpContext* pp, InputSrc*, TPpToken* ppToken)
                             pp->parseContext.error(ppToken->loc, "EOF in comment", "comment", "");
 
                             return EOF;
-                        } else if (! pp->languageCharacters[ch])
-                            pp->parseContext.commentCharacterCheck(ppToken->loc, ch);
+                        }
                         ch = pp->currentInput->getch(pp, pp->currentInput, ppToken);
                     }
                     ch = pp->currentInput->getch(pp, pp->currentInput, ppToken);
@@ -673,8 +671,7 @@ int TPpContext::sourceScan(TPpContext* pp, InputSrc*, TPpToken* ppToken)
                         pp->parseContext.error(ppToken->loc, "EOF in comment", "comment", "");
 
                         return EOF;
-                    } else if (! pp->languageCharacters[ch])
-                        pp->parseContext.commentCharacterCheck(ppToken->loc, ch);
+                    }
                 } while (ch != '/');
                 if (nlcount)
                     return '\n';
@@ -692,9 +689,8 @@ int TPpContext::sourceScan(TPpContext* pp, InputSrc*, TPpToken* ppToken)
                 if (ch == '\\') {                    
                     pp->parseContext.lineContinuationCheck(ppToken->loc);
                     ch = pp->currentInput->getch(pp, pp->currentInput, ppToken);
-                    if (ch == '\n' || ch == EOF) {
+                    if (ch == '\n' || ch == '\r' || ch == EOF)
                         break;
-                    }
                 }
                 if (len < TPpToken::maxTokenLength) {
                     tokenText[len] = ch;

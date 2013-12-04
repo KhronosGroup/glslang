@@ -36,7 +36,7 @@ void main()
     for (  int a = 0;       a <= 20;      a++)  { if (ga==0) a = 4; } // ERROR
     for (float a = 0.0;   a <= 20.0; a += 2.0);
     for (float a = 0.0;   a != 20.0; a -= 2.0)  { if (ga==0) ga = 4; }
-    for (float a = 0.0;   a == 20.0;      a--) for (float a = 0.0;   a == 20.0;      a--);  // two different a, everything okay
+    for (float a = 0.0;   a == 20.0;      a--) for (float a = 0.0;   a == 20.0;      a--);  // two different 'a's, everything okay
     for (float a = 0.0;   a <= 20.0; a += 2.0);
     for (float a = 0.0;   a <= 20.0; a += 2.0);
     for (float a = 0.0;   a > 2.0 * 20.0; a += v3.y);

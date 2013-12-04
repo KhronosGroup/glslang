@@ -8,15 +8,7 @@ ERROR: 0:14: 'line continuation' : not supported for this version or the enabled
 ERROR: 0:15: 'line continuation' : not supported for this version or the enabled extensions 
 ERROR: 0:18: '#error' : e3  
 ERROR: 0:24: 'line continuation' : not supported for this version or the enabled extensions 
-ERROR: 0:28: 'line continuation' : not supported for this version or the enabled extensions 
-ERROR: 0:29: 'non-language character ($) in comment' : not supported for this version or the enabled extensions 
-ERROR: 0:29: 'non-language character (") in comment' : not supported for this version or the enabled extensions 
-ERROR: 0:29: 'non-language character (') in comment' : not supported for this version or the enabled extensions 
-ERROR: 0:31: 'non-language character (@) in comment' : not supported for this version or the enabled extensions 
-ERROR: 0:32: 'non-language character (@) in comment' : not supported for this version or the enabled extensions 
-ERROR: 0:32: 'non-language character (@) in comment' : not supported for this version or the enabled extensions 
-ERROR: 0:33: 'non-language character (@) in comment' : not supported for this version or the enabled extensions 
-ERROR: 17 compilation errors.  No code generated.
+ERROR: 9 compilation errors.  No code generated.
 
 
 ERROR: node is still EOpNull!

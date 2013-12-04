@@ -1413,28 +1413,6 @@ void TParseContext::lineContinuationCheck(TSourceLoc loc)
     }
 }
 
-//
-// See if this version/profile allows use the given character in a comment.
-//
-void TParseContext::commentCharacterCheck(TSourceLoc loc, int ch)
-{
-    if ((profile == EEsProfile && version >= 300) ||
-        (profile != EEsProfile))
-        return;
-
-    TString message("non-language character (");
-    if (ch > 32 && ch <= 126)
-        message.push_back(ch);
-    message.append(") in comment");
-    if (messages & EShMsgRelaxedErrors) {
-        warn(loc, "not allowed in this version", message.c_str(), "");
-    } else {
-        requireProfile(loc, EEsProfile | ECoreProfile | ECompatibilityProfile, message.c_str());
-        profileRequires(loc, EEsProfile, 300, 0, message.c_str());
-        profileRequires(loc, ECoreProfile | ECompatibilityProfile, 420, 0, message.c_str());
-    }
-}
-
 bool TParseContext::builtInName(const TString& identifier)
 {
     return identifier.compare(0, 3, "gl_") == 0;
