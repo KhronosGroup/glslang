@@ -18,6 +18,9 @@ layout(std140) uniform Transform { // layout of this block is std140
     mat3 N1; // row_major
     centroid float badf;  // ERROR
     in float badg;        // ERROR
+    layout(std140) float bad1;
+    layout(shared) float bad2;
+    layout(packed) float bad3;
 } tblock;
 
 uniform T2 { // layout of this block is shared
@@ -47,3 +50,5 @@ void main()
 shared vec4 compute_only;  // ERROR
 
 layout(packed) uniform;
+
+layout(packed) float aoeuntaoeu;

@@ -6,54 +6,58 @@ ERROR: 0:12: 'badm4' : cannot specify matrix layout on a variable declaration
 ERROR: 0:12: 'badm4' : cannot specify packing on a variable declaration 
 ERROR: 0:19: 'badf' : member of uniform block cannot have an auxiliary or interpolation qualifier 
 ERROR: 0:20: 'badg' : member storage qualifier cannot contradict block storage qualifier 
-ERROR: 0:28: 'T3' : nameless block contains a member that already has a name at global scope 
-ERROR: 0:35: 'output block' : not supported with this profile: es
-ERROR: 0:39: 'location qualifier on output' : not supported in this stage: vertex
-ERROR: 0:47: 'shared' : not supported with this profile: es
-ERROR: 0:47: 'shared' : not supported in this stage: vertex
-ERROR: 12 compilation errors.  No code generated.
+ERROR: 0:21: 'bad1' : member of block cannot have a packing layout qualifier 
+ERROR: 0:22: 'bad2' : member of block cannot have a packing layout qualifier 
+ERROR: 0:23: 'bad3' : member of block cannot have a packing layout qualifier 
+ERROR: 0:31: 'T3' : nameless block contains a member that already has a name at global scope 
+ERROR: 0:38: 'output block' : not supported with this profile: es
+ERROR: 0:42: 'location qualifier on output' : not supported in this stage: vertex
+ERROR: 0:50: 'shared' : not supported with this profile: es
+ERROR: 0:50: 'shared' : not supported in this stage: vertex
+ERROR: 0:54: 'aoeuntaoeu' : layout qualifiers for matrix layout and packing only apply to uniform or buffer blocks 
+ERROR: 16 compilation errors.  No code generated.
 
 
 ERROR: node is still EOpNull!
-0:41  Function Definition: main( (void)
-0:41    Function Parameters: 
-0:43    Sequence
-0:43      move second child to first child (highp 4-component vector of float)
-0:43        'pos' (smooth out highp 4-component vector of float)
-0:43        vector-times-matrix (highp 4-component vector of float)
-0:43          'p' (layout(location=3 ) in highp 4-component vector of float)
-0:43          add (highp 4X4 matrix of float)
-0:43            add (highp 4X4 matrix of float)
-0:43              add (highp 4X4 matrix of float)
-0:43                add (highp 4X4 matrix of float)
-0:43                  M1: direct index for structure (layout(row_major std140 ) highp 4X4 matrix of float)
-0:43                    'tblock' (layout(row_major std140 ) uniform block{M1,M2,N1,badf,badg})
-0:43                    Constant:
-0:43                      0 (const int)
-0:43                  M2: direct index for structure (layout(column_major std140 ) highp 4X4 matrix of float)
-0:43                    'tblock' (layout(row_major std140 ) uniform block{M1,M2,N1,badf,badg})
-0:43                    Constant:
-0:43                      1 (const int)
-0:43                M4: direct index for structure (layout(row_major shared ) highp 4X4 matrix of float)
-0:43                  '__anon__1' (layout(column_major shared ) uniform block{M3,M4,N2,b})
-0:43                  Constant:
-0:43                    1 (const uint)
-0:43              M3: direct index for structure (layout(column_major shared ) highp 4X4 matrix of float)
-0:43                '__anon__1' (layout(column_major shared ) uniform block{M3,M4,N2,b})
-0:43                Constant:
-0:43                  0 (const uint)
-0:43            t2m: direct index for structure (layout(row_major shared ) highp 4X4 matrix of float)
-0:43              '__anon__0' (layout(row_major shared ) uniform block{b,t2m})
-0:43              Constant:
-0:43                1 (const uint)
-0:44      move second child to first child (highp 3-component vector of float)
-0:44        'color' (smooth out highp 3-component vector of float)
-0:44        vector-times-matrix (highp 3-component vector of float)
-0:44          'c' (layout(location=7 ) in highp 3-component vector of float)
-0:44          N1: direct index for structure (layout(row_major std140 ) highp 3X3 matrix of float)
-0:44            'tblock' (layout(row_major std140 ) uniform block{M1,M2,N1,badf,badg})
-0:44            Constant:
-0:44              2 (const int)
+0:44  Function Definition: main( (void)
+0:44    Function Parameters: 
+0:46    Sequence
+0:46      move second child to first child (highp 4-component vector of float)
+0:46        'pos' (smooth out highp 4-component vector of float)
+0:46        vector-times-matrix (highp 4-component vector of float)
+0:46          'p' (layout(location=3 ) in highp 4-component vector of float)
+0:46          add (highp 4X4 matrix of float)
+0:46            add (highp 4X4 matrix of float)
+0:46              add (highp 4X4 matrix of float)
+0:46                add (highp 4X4 matrix of float)
+0:46                  M1: direct index for structure (layout(row_major std140 ) highp 4X4 matrix of float)
+0:46                    'tblock' (layout(row_major std140 ) uniform block{M1,M2,N1,badf,badg,bad1,bad2,bad3})
+0:46                    Constant:
+0:46                      0 (const int)
+0:46                  M2: direct index for structure (layout(column_major std140 ) highp 4X4 matrix of float)
+0:46                    'tblock' (layout(row_major std140 ) uniform block{M1,M2,N1,badf,badg,bad1,bad2,bad3})
+0:46                    Constant:
+0:46                      1 (const int)
+0:46                M4: direct index for structure (layout(row_major shared ) highp 4X4 matrix of float)
+0:46                  '__anon__1' (layout(column_major shared ) uniform block{M3,M4,N2,b})
+0:46                  Constant:
+0:46                    1 (const uint)
+0:46              M3: direct index for structure (layout(column_major shared ) highp 4X4 matrix of float)
+0:46                '__anon__1' (layout(column_major shared ) uniform block{M3,M4,N2,b})
+0:46                Constant:
+0:46                  0 (const uint)
+0:46            t2m: direct index for structure (layout(row_major shared ) highp 4X4 matrix of float)
+0:46              '__anon__0' (layout(row_major shared ) uniform block{b,t2m})
+0:46              Constant:
+0:46                1 (const uint)
+0:47      move second child to first child (highp 3-component vector of float)
+0:47        'color' (smooth out highp 3-component vector of float)
+0:47        vector-times-matrix (highp 3-component vector of float)
+0:47          'c' (layout(location=7 ) in highp 3-component vector of float)
+0:47          N1: direct index for structure (layout(row_major std140 ) highp 3X3 matrix of float)
+0:47            'tblock' (layout(row_major std140 ) uniform block{M1,M2,N1,badf,badg,bad1,bad2,bad3})
+0:47            Constant:
+0:47              2 (const int)
 0:?   Linker Objects
 0:?     'c' (layout(location=7 ) in highp 3-component vector of float)
 0:?     'p' (layout(location=3 ) in highp 4-component vector of float)
@@ -62,11 +66,12 @@ ERROR: node is still EOpNull!
 0:?     'pos' (smooth out highp 4-component vector of float)
 0:?     'color' (smooth out highp 3-component vector of float)
 0:?     'badm4' (layout(column_major shared ) uniform highp 4X4 matrix of float)
-0:?     'tblock' (layout(row_major std140 ) uniform block{M1,M2,N1,badf,badg})
+0:?     'tblock' (layout(row_major std140 ) uniform block{M1,M2,N1,badf,badg,bad1,bad2,bad3})
 0:?     '__anon__0' (layout(row_major shared ) uniform block{b,t2m})
 0:?     '__anon__2' (out block{f})
 0:?     'badoutA' (layout(location=10 ) smooth out highp 4-component vector of float)
 0:?     'compute_only' (shared highp 4-component vector of float)
+0:?     'aoeuntaoeu' (layout(packed ) highp float)
 0:?     'gl_VertexID' (gl_VertexId highp int)
 0:?     'gl_InstanceID' (gl_InstanceId highp int)
 

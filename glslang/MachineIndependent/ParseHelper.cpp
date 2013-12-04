@@ -3387,6 +3387,8 @@ void TParseContext::declareBlock(TSourceLoc loc, TTypeList& typeList, const TStr
             if (defaultQualification.layoutStream != memberQualifier.layoutStream)
                 error(memberLoc, "member cannot contradict block", "stream", "");
         }
+        if (memberQualifier.layoutPacking != ElpNone)
+            error(memberLoc, "member of block cannot have a packing layout qualifier", typeList[member].type->getFieldName().c_str(), "");
         TQualifier newMemberQualification = defaultQualification;
         mergeQualifiers(memberLoc, newMemberQualification, memberQualifier, false);
         memberQualifier = newMemberQualification;
