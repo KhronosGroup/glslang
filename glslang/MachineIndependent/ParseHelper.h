@@ -219,7 +219,9 @@ public:
     struct TPragma contextPragma;
     int loopNestingLevel;        // 0 if outside all loops
     int structNestingLevel;      // 0 if outside blocks and structures
+    int controlFlowNestingLevel; // 0 if outside all flow control or compound statements; also counts compound statements
     TList<TIntermSequence*> switchSequenceStack;  // case, node, case, case, node, ...; ensure only one node between cases;   stack of them for nesting
+    TList<int> switchLevel;      // the controlFlowNestingLevel the current switch statement is at, which must match the level of its case statements
     const TType* currentFunctionType;  // the return type of the function that's currently being parsed
     bool functionReturnsValue;   // true if a non-void function has a return
     const TString* blockName;

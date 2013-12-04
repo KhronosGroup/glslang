@@ -87,4 +87,30 @@ void main()
     }
 
     break;            // ERROR
+
+    switch (c) {
+    case 1:
+        f = sin(x);
+        break;
+    case 2:
+        switch (d) {
+        case 1:
+            {
+                case 4:        // ERROR
+                    break;
+            }
+            f = x * x * x;
+            if (c < d) {
+                case 2:         // ERROR
+                    f = x * x;
+            }
+            if (d < c)
+                case 3:         // ERROR
+            break;
+        }
+        break;
+    default:
+        f = tan(x);
+    }
+
 }

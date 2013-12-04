@@ -51,7 +51,7 @@ TParseContext::TParseContext(TSymbolTable& symt, TIntermediate& interm, bool pb,
                              bool fc, EShMessages m) :
             intermediate(interm), symbolTable(symt), infoSink(is), language(L),
             version(v), profile(p), forwardCompatible(fc), messages(m),
-            contextPragma(true, false), loopNestingLevel(0), structNestingLevel(0),
+            contextPragma(true, false), loopNestingLevel(0), controlFlowNestingLevel(0), structNestingLevel(0),
             tokensBeforeEOF(false), limits(resources.limits), currentScanner(0),
             numErrors(0), parsingBuiltins(pb), afterEOF(false),
             anyIndexLimits(false)
@@ -813,6 +813,7 @@ TIntermAggregate* TParseContext::handleFunctionDefinition(TSourceLoc loc, TFunct
     }
     intermediate.setAggregateOperator(paramNodes, EOpParameters, TType(EbtVoid), loc);
     loopNestingLevel = 0;
+    controlFlowNestingLevel = 0;
 
     return paramNodes;
 }

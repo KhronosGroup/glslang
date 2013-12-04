@@ -8,7 +8,10 @@ ERROR: 0:63: 'case' : duplicated value
 ERROR: 0:65: 'case' : scalar integer expression required 
 ERROR: 0:67: 'case' : constant expression required 
 ERROR: 0:89: '' : break statement only allowed in switch and loops 
-ERROR: 9 compilation errors.  No code generated.
+ERROR: 0:99: 'case' : cannot be nested inside control flow 
+ERROR: 0:104: 'case' : cannot be nested inside control flow 
+ERROR: 0:108: 'case' : cannot be nested inside control flow 
+ERROR: 12 compilation errors.  No code generated.
 
 
 ERROR: node is still EOpNull!
@@ -189,6 +192,77 @@ ERROR: node is still EOpNull!
 0:86              tangent (highp float)
 0:86                'x' (smooth in highp float)
 0:89      Branch: Break
+0:91      switch
+0:91      condition
+0:91        'c' (uniform mediump int)
+0:91      body
+0:91        Sequence
+0:92          case:  with expression
+0:92            Constant:
+0:92              1 (const int)
+0:?           Sequence
+0:93            move second child to first child (highp float)
+0:93              'f' (highp float)
+0:93              sine (highp float)
+0:93                'x' (smooth in highp float)
+0:94            Branch: Break
+0:95          case:  with expression
+0:95            Constant:
+0:95              2 (const int)
+0:?           Sequence
+0:96            switch
+0:96            condition
+0:96              'd' (uniform mediump int)
+0:96            body
+0:96              Sequence
+0:97                case:  with expression
+0:97                  Constant:
+0:97                    1 (const int)
+0:99                case:  with expression
+0:99                  Constant:
+0:99                    4 (const int)
+0:104                case:  with expression
+0:104                  Constant:
+0:104                    2 (const int)
+0:?                 Sequence
+0:?                   Sequence
+0:100                    Branch: Break
+0:102                  move second child to first child (highp float)
+0:102                    'f' (highp float)
+0:102                    component-wise multiply (highp float)
+0:102                      component-wise multiply (highp float)
+0:102                        'x' (smooth in highp float)
+0:102                        'x' (smooth in highp float)
+0:102                      'x' (smooth in highp float)
+0:103                  Test condition and select (void)
+0:103                    Condition
+0:103                    Compare Less Than (bool)
+0:103                      'c' (uniform mediump int)
+0:103                      'd' (uniform mediump int)
+0:103                    true case
+0:?                     Sequence
+0:105                      move second child to first child (highp float)
+0:105                        'f' (highp float)
+0:105                        component-wise multiply (highp float)
+0:105                          'x' (smooth in highp float)
+0:105                          'x' (smooth in highp float)
+0:107                  Test condition and select (void)
+0:107                    Condition
+0:107                    Compare Less Than (bool)
+0:107                      'd' (uniform mediump int)
+0:107                      'c' (uniform mediump int)
+0:107                    true case
+0:108                    case:  with expression
+0:108                      Constant:
+0:108                        3 (const int)
+0:109                  Branch: Break
+0:111            Branch: Break
+0:112          default: 
+0:?           Sequence
+0:113            move second child to first child (highp float)
+0:113              'f' (highp float)
+0:113              tangent (highp float)
+0:113                'x' (smooth in highp float)
 0:?   Linker Objects
 0:?     'c' (uniform mediump int)
 0:?     'd' (uniform mediump int)
