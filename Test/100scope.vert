@@ -66,3 +66,5 @@ void main()
         S.x;        // 'S' is now visible as a variable
     }
 }
+
+varying struct SSS { float f; } s; // ERROR

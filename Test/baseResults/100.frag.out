@@ -66,8 +66,9 @@ ERROR: 0:152: 'floating-point suffix' : not supported for this version or the en
 ERROR: 0:167: 'highp' : overloaded functions must have the same parameter precision qualifiers for argument 2
 ERROR: 0:170: 'multiple prototypes for same function' : not supported for this version or the enabled extensions 
 ERROR: 0:177: 'multiple prototypes for same function' : not supported for this version or the enabled extensions 
-ERROR: 0:179: '' :  syntax error
-ERROR: 61 compilation errors.  No code generated.
+ERROR: 0:179: 'fragment-shader struct input' : not supported for this version or the enabled extensions 
+ERROR: 0:181: '' :  syntax error
+ERROR: 62 compilation errors.  No code generated.
 
 
 ERROR: node is still EOpNull!
@@ -342,6 +343,7 @@ ERROR: node is still EOpNull!
 0:?     'f123' (mediump float)
 0:?     'f124' (mediump float)
 0:?     'sCube' (uniform lowp samplerCube)
+0:?     's' (smooth in structure{f})
 
 
 Linked fragment stage:

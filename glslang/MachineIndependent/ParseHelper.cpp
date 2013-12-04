@@ -1651,6 +1651,20 @@ void TParseContext::globalQualifierCheck(TSourceLoc loc, const TQualifier& quali
         }
     }
 
+    if (language == EShLangVertex && qualifier.storage == EvqVaryingOut) {
+        if (publicType.userDef) {
+            profileRequires(loc, EEsProfile, 300, 0, "vertex-shader struct output");
+            profileRequires(loc, ~EEsProfile, 150, 0, "vertex-shader struct output");
+        }
+    }
+
+    if (language == EShLangFragment && qualifier.storage == EvqVaryingIn) {
+        if (publicType.userDef) {
+            profileRequires(loc, EEsProfile, 300, 0, "fragment-shader struct input");
+            profileRequires(loc, ~EEsProfile, 150, 0, "fragment-shader struct input");
+        }
+    }
+
     if (publicType.basicType == EbtInt || publicType.basicType == EbtUint || publicType.basicType == EbtDouble) {
         profileRequires(loc, EEsProfile, 300, 0, "shader input/output");
         if (! qualifier.flat) {

@@ -285,6 +285,7 @@ ERROR: node is still EOpNull!
 0:?     's2DS' (uniform lowp sampler2DShadow)
 0:?     's2DAS' (uniform lowp sampler2DArrayShadow)
 0:?     'c2D' (in highp 2-component vector of float)
+0:?     'ssss' (smooth out structure{f})
 0:?     'gl_VertexID' (gl_VertexId highp int)
 0:?     'gl_InstanceID' (gl_InstanceId highp int)
 

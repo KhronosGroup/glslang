@@ -16,3 +16,5 @@ void main()
 #else
 #error GL_ES is not set
 #endif
+
+in struct S { float f; } s; // ERROR

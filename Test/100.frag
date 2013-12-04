@@ -176,4 +176,6 @@ int agggf(float f) { return 2; }
 int agggf(float f);
 int agggf(float f);  // ERROR, second prototype
 
+varying struct SSS { float f; } s; // ERROR
+
 uniform samplerExternalOES badExt;  // syntax ERROR

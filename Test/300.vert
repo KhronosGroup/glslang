@@ -157,3 +157,5 @@ int gggf(float f);
 
 int agggf(float f) { return 2; }
 int agggf(float f);
+
+out struct Ssss { float f; } ssss;

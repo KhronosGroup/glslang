@@ -7,7 +7,8 @@ ERROR: 0:22: 'redefinition of built-in function' : not supported with this profi
 ERROR: 0:35: 'local function declaration' : not supported with this profile: es
 ERROR: 0:54: 'z' : undeclared identifier 
 ERROR: 0:54: 'z' : redefinition 
-ERROR: 8 compilation errors.  No code generated.
+ERROR: 0:70: 'vertex-shader struct output' : not supported for this version or the enabled extensions 
+ERROR: 9 compilation errors.  No code generated.
 
 
 ERROR: node is still EOpNull!
@@ -112,6 +113,7 @@ ERROR: node is still EOpNull!
 0:?   Linker Objects
 0:?     'b' (bool)
 0:?     'tan' (highp float)
+0:?     's' (smooth out structure{f})
 
 
 Linked vertex stage:
