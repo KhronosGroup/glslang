@@ -94,6 +94,9 @@ xcopy /y $(IntDir)$(TargetName)$(TargetExt) Test</Command>
       <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <Culture>0x0809</Culture>
     </ResourceCompile>
+    <PreBuildEvent>
+      <Command>SubWCRev . glslang/Include/revision.template glslang/Include/revision.h -q</Command>
+    </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -147,6 +150,9 @@ xcopy /y $(IntDir)$(TargetName)$(TargetExt) Test</Command>
       <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <Culture>0x0809</Culture>
     </ResourceCompile>
+    <PreBuildEvent>
+      <Command>SubWCRev . glslang/Include/revision.template glslang/Include/revision.h -q</Command>
+    </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="glslang\MachineIndependent\Constant.cpp" />

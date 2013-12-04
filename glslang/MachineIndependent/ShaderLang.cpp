@@ -912,14 +912,16 @@ int ShGetUniformLocation(const ShHandle handle, const char* name)
 
 namespace glslang {
 
+#include "../Include/revision.h"
+
 const char* GetEsslVersionString()
 {
-    return "OpenGL ES GLSL 3.00 glslang";
+    return "OpenGL ES GLSL 3.00 glslang LunarG Khronos." GLSLANG_REVISION " " GLSLANG_DATE;
 }
 
 const char* GetGlslVersionString()
 {
-    return "4.20 glslang";
+    return "4.20 glslang LunarG Khronos." GLSLANG_REVISION " " GLSLANG_DATE;
 }
 
 bool InitializeProcess()

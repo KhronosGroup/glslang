@@ -63,6 +63,7 @@ enum TOptions {
     EOptionDumpConfig         = 0x080,
     EOptionDumpReflection     = 0x100,
     EOptionSuppressWarnings   = 0x200,
+    EOptionDumpVersions       = 0x400,
 };
 
 //
@@ -486,6 +487,9 @@ bool ProcessArguments(int argc, char* argv[])
                     Options |= EOptionMultiThreaded;
                 #endif
                 break;
+            case 'v':
+                Options |= EOptionDumpVersions;
+                break;
             case 'w':
                 Options |= EOptionSuppressWarnings;
                 break;
@@ -552,9 +556,6 @@ void CompileAndLinkShaders()
     // keep track of what to free
     std::list<glslang::TShader*> shaders;
     
-    //printf("%s\n", glslang::GetEsslVersionString());
-    //printf("%s\n", glslang::GetGlslVersionString());
-
     EShMessages messages = EShMsgDefault;
     SetMessageOptions(messages);
 
@@ -628,6 +629,13 @@ int C_DECL main(int argc, char* argv[])
 
     if (Options & EOptionDumpConfig) {
         printf("%s", DefaultConfig);
+        if (Worklist.empty())
+            return ESuccess;
+    }
+
+    if (Options & EOptionDumpVersions) {        
+        printf("ESSL Version: %s\n", glslang::GetEsslVersionString());
+        printf("GLSL Version: %s\n", glslang::GetGlslVersionString());
         if (Worklist.empty())
             return ESuccess;
     }
@@ -783,27 +791,32 @@ void CompileFile(const char *fileName, ShHandle compiler)
 //
 void usage()
 {
-    printf("Usage: glslangValidator [ options ] filename\n"
-           "Where: filename is a name ending in\n"
-           "    .conf provides an optional config file that replaces the default configuration\n"
+    printf("Usage: glslangValidator [option]... [file]...\n"
+           "\n"
+           "Where: each 'file' ends in\n"
+           "    .conf to provide an optional config file that replaces the default configuration\n"
            "          (see -c option below for generating a template)\n"
            "    .vert for a vertex shader\n"
            "    .tesc for a tessellation control shader\n"
            "    .tese for a tessellation evaluation shader\n"
            "    .geom for a geometry shader\n"
            "    .frag for a fragment shader\n"
-           "    .comp for a compute shader\n\n"
+           "    .comp for a compute shader\n"
+           "\n"
            "Compilation warnings and errors will be printed to stdout.\n"
+           "\n"
            "To get other information, use one of the following options:\n"
-           "-c: configuration dump; use to create default configuration file (redirect to a .conf file)\n"
-           "-i: intermediate tree (glslang AST) is printed out\n"
-           "-l: link validation of all input files\n"
-           "-m: memory leak mode\n"
-           "-q: dump reflection query database\n"
-           "-r: relaxed semantic error-checking mode\n"
-           "-s: silent mode\n"
-           "-t: multi-threaded mode\n"
-           "-w: suppress warnings (except as required by #extension : warn)\n"
+           "(Each option must be specified separately, but can go anywhere in the command line.)\n"
+           "  -c  configuration dump; use to create default configuration file (redirect to a .conf file)\n"
+           "  -i  intermediate tree (glslang AST) is printed out\n"
+           "  -l  link validation of all input files\n"
+           "  -m  memory leak mode\n"
+           "  -q  dump reflection query database\n"
+           "  -r  relaxed semantic error-checking mode\n"
+           "  -s  silent mode\n"
+           "  -t  multi-threaded mode\n"
+           "  -v  print version strings\n"
+           "  -w  suppress warnings (except as required by #extension : warn)\n"
            );
 }
 
