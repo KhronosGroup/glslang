@@ -241,6 +241,20 @@ ERROR: node is still EOpNull!
 0:143      move second child to first child (3-element array of highp float)
 0:143        'w' (3-element array of highp float)
 0:143        'y' (3-element array of highp float)
+0:155  Function Definition: gggf(f1; (highp int)
+0:155    Function Parameters: 
+0:155      'f' (in highp float)
+0:155    Sequence
+0:155      Branch: Return with expression
+0:155        Constant:
+0:155          2 (const int)
+0:158  Function Definition: agggf(f1; (highp int)
+0:158    Function Parameters: 
+0:158      'f' (in highp float)
+0:158    Sequence
+0:158      Branch: Return with expression
+0:158        Constant:
+0:158          2 (const int)
 0:?   Linker Objects
 0:?     'm43' (uniform highp 4X3 matrix of float)
 0:?     'm33' (uniform highp 3X3 matrix of float)

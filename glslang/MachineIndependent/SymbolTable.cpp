@@ -286,6 +286,7 @@ TFunction::TFunction(const TFunction& copyOf) : TSymbol(copyOf)
     mangledName = copyOf.mangledName;
     op = copyOf.op;
     defined = copyOf.defined;
+    prototyped = copyOf.prototyped;
 }
 
 TFunction* TFunction::clone() const

@@ -164,6 +164,16 @@ void foo323433()
 }
 
 int fgfg(float f, mediump int i);
-int fgfg(float f, highp int i);   // ERROR, precision qualifier difference
+int fgfg(float f, highp int i) { return 2; }   // ERROR, precision qualifier difference
+
+int fffg(float f);
+int fffg(float f);  // ERROR, can't have multiple prototypes 
+
+int gggf(float f);
+int gggf(float f) { return 2; }
+
+int agggf(float f) { return 2; }
+int agggf(float f);
+int agggf(float f);  // ERROR, second prototype
 
 uniform samplerExternalOES badExt;  // syntax ERROR

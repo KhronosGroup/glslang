@@ -88,7 +88,7 @@ public:
     void checkInputArrayConsistency(TSourceLoc, bool tailOnly = false);
     void checkInputArrayConsistency(TSourceLoc, TLayoutGeometry, TType&, const TString&);
     TIntermTyped* handleDotDereference(TSourceLoc, TIntermTyped* base, TString& field);
-    TFunction* handleFunctionDeclarator(TSourceLoc loc, TFunction& function);
+    TFunction* handleFunctionDeclarator(TSourceLoc loc, TFunction& function, bool prototype);
     TIntermAggregate* handleFunctionDefinition(TSourceLoc, TFunction&);
     TIntermTyped* handleFunctionCall(TSourceLoc, TFunction*, TIntermNode*, TIntermAggregate*);
     void nonOpBuiltInCheck(TSourceLoc, const TFunction&, TIntermAggregate&);

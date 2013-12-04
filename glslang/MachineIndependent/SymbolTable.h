@@ -194,12 +194,12 @@ public:
     explicit TFunction(TOperator o) :
         TSymbol(0),
         op(o),
-        defined(false) { }
+        defined(false), prototyped(false) { }
     TFunction(const TString *name, const TType& retType, TOperator tOp = EOpNull) :
         TSymbol(name),
         mangledName(*name + '('),
         op(tOp),
-        defined(false) { returnType.shallowCopy(retType); }    
+        defined(false), prototyped(false) { returnType.shallowCopy(retType); }    
 	virtual TFunction* clone() const;
 	virtual ~TFunction();
 
@@ -220,6 +220,8 @@ public:
     virtual TOperator getBuiltInOp() const { return op; }
     virtual void setDefined() { assert(writable); defined = true; }
     virtual bool isDefined() const { return defined; }
+    virtual void setPrototyped() { assert(writable); prototyped = true; }
+    virtual bool isPrototyped() const { return prototyped; }
 
     virtual int getParamCount() const { return static_cast<int>(parameters.size()); }
     virtual TParameter& operator[](int i) { assert(writable); return parameters[i]; }
@@ -237,6 +239,7 @@ protected:
     TString mangledName;
     TOperator op;
     bool defined;
+    bool prototyped;
 };
 
 class TAnonMember : public TSymbol {

@@ -63,8 +63,10 @@ ERROR: 0:147: 'texture2DProjGradEXT' : required extension not requested: GL_EXT_
 ERROR: 0:151: 'floating-point suffix' : not supported for this version or the enabled extensions 
 ERROR: 0:152: 'floating-point suffix' : not supported for this version or the enabled extensions 
 ERROR: 0:167: 'highp' : overloaded functions must have the same parameter precision qualifiers for argument 2
-ERROR: 0:169: '' :  syntax error
-ERROR: 58 compilation errors.  No code generated.
+ERROR: 0:170: 'multiple prototypes for same function' : not supported for this version or the enabled extensions 
+ERROR: 0:177: 'multiple prototypes for same function' : not supported for this version or the enabled extensions 
+ERROR: 0:179: '' :  syntax error
+ERROR: 60 compilation errors.  No code generated.
 
 
 ERROR: node is still EOpNull!
@@ -294,6 +296,28 @@ ERROR: node is still EOpNull!
 0:163          'f13' (invariant mediump float)
 0:163        Construct vec3 (3-component vector of float)
 0:163          'f13' (invariant mediump float)
+0:167  Function Definition: fgfg(f1;i1; (mediump int)
+0:167    Function Parameters: 
+0:167      'f' (in mediump float)
+0:167      'i' (in highp int)
+0:167    Sequence
+0:167      Branch: Return with expression
+0:167        Constant:
+0:167          2 (const int)
+0:173  Function Definition: gggf(f1; (mediump int)
+0:173    Function Parameters: 
+0:173      'f' (in mediump float)
+0:173    Sequence
+0:173      Branch: Return with expression
+0:173        Constant:
+0:173          2 (const int)
+0:175  Function Definition: agggf(f1; (mediump int)
+0:175    Function Parameters: 
+0:175      'f' (in mediump float)
+0:175    Sequence
+0:175      Branch: Return with expression
+0:175        Constant:
+0:175          2 (const int)
 0:?   Linker Objects
 0:?     'a' (3-element array of mediump int)
 0:?     'uint' (mediump int)

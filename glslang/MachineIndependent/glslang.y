@@ -748,6 +748,7 @@ constant_expression
 
 declaration
     : function_prototype SEMICOLON {
+        parseContext.handleFunctionDeclarator($1.loc, *$1.function, true /* prototype */);
         $$ = 0;
         // TODO: 4.0 functionality: subroutines: make the identifier a user type for this signature
     }
@@ -820,7 +821,7 @@ identifier_list
 
 function_prototype
     : function_declarator RIGHT_PAREN  {
-        $$.function = parseContext.handleFunctionDeclarator($2.loc, *$1);
+        $$.function = $1;
         $$.loc = $2.loc;
     }
     ;
@@ -2389,6 +2390,7 @@ external_declaration
 
 function_definition
     : function_prototype {
+        $1.function = parseContext.handleFunctionDeclarator($1.loc, *$1.function, false /* not prototype */);
         $1.intermAggregate = parseContext.handleFunctionDefinition($1.loc, *$1.function);
     }
     compound_statement_no_new_scope {

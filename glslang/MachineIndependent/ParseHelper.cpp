@@ -671,19 +671,20 @@ TIntermTyped* TParseContext::handleDotDereference(TSourceLoc loc, TIntermTyped* 
 // Handle seeing a function declarator in the grammar.  This is the precursor
 // to recognizing a function prototype or function definition.
 //
-TFunction* TParseContext::handleFunctionDeclarator(TSourceLoc loc, TFunction& function)
+TFunction* TParseContext::handleFunctionDeclarator(TSourceLoc loc, TFunction& function, bool prototype)
 {
     // ES can't declare prototypes inside functions
     if (! symbolTable.atGlobalLevel())
         requireProfile(loc, ~EEsProfile, "local function declaration");
 
     //
-    // Multiple declarations of the same function are allowed.
+    // Multiple declarations of the same function name are allowed.
     //
     // If this is a definition, the definition production code will check for redefinitions
     // (we don't know at this point if it's a definition or not).
     //
-    // Redeclarations (full prototype match) are allowed.  But, return types and parameter qualifiers must match.
+    // Redeclarations (full signature match) are allowed.  But, return types and parameter qualifiers must also match.
+    //  - except ES 100, which only allows a single prototype
     //
     // ES 100 does not allow redefining, but does allow overloading of built-in functions.
     // ES 300 does not allow redefining or overloading of built-in functions.
@@ -694,9 +695,10 @@ TFunction* TParseContext::handleFunctionDeclarator(TSourceLoc loc, TFunction& fu
         requireProfile(loc, ~EEsProfile, "redefinition of built-in function");
     const TFunction* prevDec = symbol ? symbol->getAsFunction() : 0;
     if (prevDec) {
-        if (prevDec->getType() != function.getType()) {
+        if (prevDec->isPrototyped() && prototype)
+            profileRequires(loc, EEsProfile, 300, 0, "multiple prototypes for same function");
+        if (prevDec->getType() != function.getType())
             error(loc, "overloaded functions must have the same return type", function.getType().getBasicTypeString().c_str(), "");
-        }
         for (int i = 0; i < prevDec->getParamCount(); ++i) {
             if ((*prevDec)[i].type->getQualifier().storage != function[i].type->getQualifier().storage)
                 error(loc, "overloaded functions must have the same parameter storage qualifiers for argument", function[i].type->getStorageQualifierString(), "%d", i+1);
@@ -708,16 +710,26 @@ TFunction* TParseContext::handleFunctionDeclarator(TSourceLoc loc, TFunction& fu
 
     arrayObjectCheck(loc, function.getType(), "array in function return type");
 
-    // All built-in functions are defined, even though they don't have a body.
-    if (symbolTable.atBuiltInLevel())
-        function.setDefined();
+    if (prototype) {
+        // All built-in functions are defined, even though they don't have a body.
+        // Count their prototype as a definition instead.
+        if (symbolTable.atBuiltInLevel())
+            function.setDefined();
+        else {
+            if (prevDec && ! builtIn)                
+                symbol->getAsFunction()->setPrototyped();  // need a writable one, but like having prevDec as a const
+            function.setPrototyped();
+        }
+    }
 
+    // This insert won't actually insert it if it's a duplicate signature, but it will still check for
+    // other forms of name collisions.
     if (! symbolTable.insert(function))
-        error(loc, "redeclaration of existing name", function.getName().c_str(), "");
+        error(loc, "function name is redeclaration of existing name", function.getName().c_str(), "");
 
     //
     // If this is a redeclaration, it could also be a definition,
-    // in which case, we want to use the variable names from this one, and not the one that's
+    // in which case, we need to use the parameter names from this one, and not the one that's
     // being redeclared.  So, pass back this declaration, not the one in the symbol table.
     //
     return &function;

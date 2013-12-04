@@ -1,15 +1,15 @@
 300scope.vert
 ERROR: 0:5: 'a' : redefinition 
-ERROR: 0:17: 'b' : redeclaration of existing name 
+ERROR: 0:17: 'b' : function name is redeclaration of existing name 
 ERROR: 0:19: 'f' : redefinition 
 ERROR: 0:20: 'tan' : redefinition 
 ERROR: 0:21: 'redefinition of built-in function' : not supported with this profile: es
-ERROR: 0:21: 'sin' : redeclaration of existing name 
+ERROR: 0:21: 'sin' : function name is redeclaration of existing name 
 ERROR: 0:22: 'redefinition of built-in function' : not supported with this profile: es
-ERROR: 0:22: 'cos' : redeclaration of existing name 
+ERROR: 0:22: 'cos' : function name is redeclaration of existing name 
 ERROR: 0:22: 'cos' : function already has a body 
 ERROR: 0:24: 'return' : void function cannot return a value 
-ERROR: 0:26: 'radians' : redeclaration of existing name 
+ERROR: 0:26: 'radians' : function name is redeclaration of existing name 
 ERROR: 0:26: 'radians' : can't find function 
 ERROR: 0:28: 'return' : void function cannot return a value 
 ERROR: 0:35: 'local function declaration' : not supported with this profile: es

@@ -147,3 +147,13 @@ int[] foo213234();        // ERROR
 int foo234234(float[]);   // ERROR
 int foo234235(vec2[] v);  // ERROR
 precision highp float[2]; // ERROR
+
+int fffg(float f);
+int fffg(float f);
+
+int gggf(float f);
+int gggf(float f) { return 2; }
+int gggf(float f);
+
+int agggf(float f) { return 2; }
+int agggf(float f);
