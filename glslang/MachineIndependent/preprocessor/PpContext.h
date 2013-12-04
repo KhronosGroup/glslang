@@ -208,6 +208,7 @@ protected:
 
     InputSrc *currentInput;
     bool errorOnVersion;
+    bool versionSeen;
 
     //
     // from Pp.cpp

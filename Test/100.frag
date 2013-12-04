@@ -1,7 +1,7 @@
 // okay
 #version 100
 int a[3] = { 2, 3, 4, };  // ERROR
-
+#version 100
 int uint;
 
 attribute vec4 v[3];     // ERROR

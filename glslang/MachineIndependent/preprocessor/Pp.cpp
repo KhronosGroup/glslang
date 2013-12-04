@@ -694,8 +694,9 @@ int TPpContext::CPPversion(TPpToken* ppToken)
 {
     int token = currentInput->scan(this, currentInput, ppToken);
 
-    if (errorOnVersion)
+    if (errorOnVersion || versionSeen)
         parseContext.error(ppToken->loc, "must occur first in shader", "#version", "");
+    versionSeen = true;
 
     if (token == '\n') {
         parseContext.error(ppToken->loc, "must be followed by version number", "#version", "");

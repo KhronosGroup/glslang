@@ -1,5 +1,5 @@
 #version 420 core
-
+#version 420 core
 varying vec2 v2;               // ERROR, varying reserved
 in vec4 bad[10];
 highp in vec4 badorder;

@@ -155,6 +155,7 @@ void TPpContext::setInput(TInputScanner& input, bool versionWillBeError)
     in->prev = currentInput;
     currentInput = in;
     errorOnVersion = versionWillBeError;
+    versionSeen = false;
 }
 
 } // end namespace glslang
