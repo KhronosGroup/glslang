@@ -2883,16 +2883,21 @@ TIntermNode* TParseContext::declareVariable(TSourceLoc loc, TString& identifier,
         reservedErrorCheck(loc, identifier);
 
     // Declare the variable
-    if (arraySizes) {
-        // for ES, since size isn't coming from an initializer, it has to be explicitly declared now
-        if (profile == EEsProfile && ! initializer)
-            arraySizeRequiredCheck(loc, arraySizes->getSize());
-
+    if (arraySizes || type.isArray()) {
+        // Arrayness is potentially coming both from the type and from the 
+        // variable: "int[] a[];" or just one or the other.
+        // For now, arrays of arrays aren't supported, so it's just one or the
+        // other.  Move it to the type, so all arrayness is part of the type.
         arrayDimCheck(loc, &type, arraySizes);
-        if (! arrayQualifierError(loc, type.getQualifier())) {
+        if (arraySizes)
             type.setArraySizes(arraySizes);
+
+        // for ES, if size isn't coming from an initializer, it has to be explicitly declared now
+        if (profile == EEsProfile && ! initializer)
+            arraySizeRequiredCheck(loc, type.getArraySize());
+
+        if (! arrayQualifierError(loc, type.getQualifier()))
             declareArray(loc, identifier, type, symbol, newDeclaration);
-        }
 
         if (initializer) {
             profileRequires(loc, ENoProfile, 120, GL_3DL_array_objects, "initializer");

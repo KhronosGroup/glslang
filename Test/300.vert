@@ -133,3 +133,17 @@ int fgfg(float f, highp int i);   // ERROR, precision qualifier difference
 
 int fgfgh(float f, const in mediump int i);
 int fgfgh(float f, in mediump int i);   // ERROR, precision qualifier difference
+
+void foo2349()
+{
+    float[] x = float[] (1.0, 2.0, 3.0);
+	float[] y = x;
+    float[3] z = x;
+    float[3] w;
+    w = y;
+}
+
+int[] foo213234();        // ERROR
+int foo234234(float[]);   // ERROR
+int foo234235(vec2[] v);  // ERROR
+precision highp float[2]; // ERROR

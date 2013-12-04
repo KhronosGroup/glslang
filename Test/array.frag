@@ -57,3 +57,7 @@ void main()
     ica[3.1] = 3;                    // ERROR
     ica[u[1]] = 4;                   // ERROR
 }
+
+int[] foo213234();        // ERROR
+int foo234234(float[]);   // ERROR
+int foo234235(vec2[] v);  // ERROR

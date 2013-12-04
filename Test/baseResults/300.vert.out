@@ -31,7 +31,11 @@ ERROR: 0:125: 'texture' : no matching overloaded function found
 ERROR: 0:127: 'textureProjOffset' : no matching overloaded function found 
 ERROR: 0:132: 'highp' : overloaded functions must have the same parameter precision qualifiers for argument 2
 ERROR: 0:135: 'in' : overloaded functions must have the same parameter storage qualifiers for argument 2
-ERROR: 32 compilation errors.  No code generated.
+ERROR: 0:146: '' : array size required 
+ERROR: 0:147: '' : array size required 
+ERROR: 0:148: '' : array size required 
+ERROR: 0:149: 'float' : cannot apply precision statement to this type; use 'float', 'int' or a sampler type 
+ERROR: 36 compilation errors.  No code generated.
 
 
 ERROR: node is still EOpNull!
@@ -216,6 +220,27 @@ ERROR: node is still EOpNull!
 0:128            Constant:
 0:128              1 (const int)
 0:128              1 (const int)
+0:137  Function Definition: foo2349( (void)
+0:137    Function Parameters: 
+0:139    Sequence
+0:139      Sequence
+0:139        move second child to first child (3-element array of highp float)
+0:139          'x' (3-element array of highp float)
+0:139          Constant:
+0:139            1.000000
+0:139            2.000000
+0:139            3.000000
+0:140      Sequence
+0:140        move second child to first child (3-element array of highp float)
+0:140          'y' (3-element array of highp float)
+0:140          'x' (3-element array of highp float)
+0:141      Sequence
+0:141        move second child to first child (3-element array of highp float)
+0:141          'z' (3-element array of highp float)
+0:141          'x' (3-element array of highp float)
+0:143      move second child to first child (3-element array of highp float)
+0:143        'w' (3-element array of highp float)
+0:143        'y' (3-element array of highp float)
 0:?   Linker Objects
 0:?     'm43' (uniform highp 4X3 matrix of float)
 0:?     'm33' (uniform highp 3X3 matrix of float)

@@ -14,7 +14,10 @@ ERROR: 0:56: '=' :  cannot convert from 'const 2-element array of int' to '3-ele
 ERROR: 0:57: '[]' : scalar integer expression required 
 ERROR: 0:57: '[' :  index out of range '-858993459'
 ERROR: 0:58: '[]' : scalar integer expression required 
-ERROR: 14 compilation errors.  No code generated.
+ERROR: 0:61: '' : array size required 
+ERROR: 0:62: '' : array size required 
+ERROR: 0:63: '' : array size required 
+ERROR: 17 compilation errors.  No code generated.
 
 
 ERROR: node is still EOpNull!

@@ -761,7 +761,6 @@ declaration
 
         // lazy setting of the previous scope's defaults, has effect only the first time it is called in a particular scope
         parseContext.symbolTable.setPreviousDefaultPrecisions(&parseContext.defaultPrecision[0]);
-
 		parseContext.setDefaultPrecision($1.loc, $3, $2.qualifier.precision);
         $$ = 0;
     }
@@ -870,6 +869,8 @@ function_header
             parseContext.error($2.loc, "no qualifiers allowed for function return",
                                GetStorageQualifierString($1.qualifier.storage), "");
         }
+        if ($1.arraySizes)
+            parseContext.arraySizeRequiredCheck($1.loc, $1.arraySizes->getSize());
 
         // Add the function as a prototype after parsing it (we do not support recursion)
         TFunction *function;
@@ -958,6 +959,8 @@ parameter_type_specifier
     : type_specifier {
         TParameter param = { 0, new TType($1) };
         $$.param = param;
+        if ($1.arraySizes)
+            parseContext.arraySizeRequiredCheck($1.loc, $1.arraySizes->getSize());
     }
     ;
 
@@ -1024,8 +1027,6 @@ fully_specified_type
         if ($1.arraySizes) {
             parseContext.profileRequires($1.loc, ENoProfile, 120, GL_3DL_array_objects, "arrayed type");
             parseContext.profileRequires($1.loc, EEsProfile, 300, 0, "arrayed type");
-            if (parseContext.profile == EEsProfile)
-                parseContext.arraySizeRequiredCheck($1.loc, $1.arraySizes->getSize());
         }
 
         parseContext.precisionQualifierCheck($$.loc, $$);
@@ -1037,8 +1038,6 @@ fully_specified_type
         if ($2.arraySizes) {
             parseContext.profileRequires($2.loc, ENoProfile, 120, GL_3DL_array_objects, "arrayed type");
             parseContext.profileRequires($2.loc, EEsProfile, 300, 0, "arrayed type");
-            if (parseContext.profile == EEsProfile)
-                parseContext.arraySizeRequiredCheck($2.loc, $2.arraySizes->getSize());
         }
 
         if ($2.arraySizes && parseContext.arrayQualifierError($2.loc, $1.qualifier))
