@@ -307,11 +307,14 @@ int TPpContext::CPPelse(int matchelse, TPpToken* ppToken)
             --depth;
             --ifdepth;
         } else if (matchelse && depth == 0) {
-            if (atom == elseAtom ) {
+            if (atom == elseAtom) {
+                elseSeen[elsetracker] = true;
                 token = extraTokenCheck(atom, ppToken, currentInput->scan(this, currentInput, ppToken));
                 // found the #else we are looking for
                 break;
             } else if (atom == elifAtom) {
+                if (elseSeen[elsetracker])
+                    parseContext.error(ppToken->loc, "#elif after #else", "#elif", "");
                 /* we decrement ifdepth here, because CPPif will increment
                 * it and we really want to leave it alone */
                 if (ifdepth) {
@@ -330,7 +333,7 @@ int TPpContext::CPPelse(int matchelse, TPpToken* ppToken)
             token = extraTokenCheck(atom, ppToken, currentInput->scan(this, currentInput, ppToken));
         } else if (atom == elifAtom) {
             if (elseSeen[elsetracker])
-                parseContext.error(ppToken->loc, "#elif after #else", "#else", "");
+                parseContext.error(ppToken->loc, "#elif after #else", "#elif", "");
         }
     }
 
@@ -778,20 +781,18 @@ int TPpContext::readCPPline(TPpToken* ppToken)
         if (ppToken->atom == defineAtom) {
             token = CPPdefine(ppToken);
         } else if (ppToken->atom == elseAtom) {
-            if (! elsetracker[elseSeen]) {
-                elsetracker[elseSeen] = true;
-                if (! ifdepth)
-                    parseContext.error(ppToken->loc, "mismatched statements", "#else", "");
-                token = extraTokenCheck(elseAtom, ppToken, currentInput->scan(this, currentInput, ppToken));
-                token = CPPelse(0, ppToken);
-            } else {
-                parseContext.error(ppToken->loc, "#else after a #else", "#else", "");
-                ifdepth = 0;
-                return 0;
-            }
+            if (elsetracker[elseSeen])
+                parseContext.error(ppToken->loc, "#else after #else", "#else", "");
+            elsetracker[elseSeen] = true;
+            if (! ifdepth)
+                parseContext.error(ppToken->loc, "mismatched statements", "#else", "");
+            token = extraTokenCheck(elseAtom, ppToken, currentInput->scan(this, currentInput, ppToken));
+            token = CPPelse(0, ppToken);
         } else if (ppToken->atom == elifAtom) {
             if (! ifdepth)
                 parseContext.error(ppToken->loc, "mismatched statements", "#elif", "");
+            if (elseSeen[elsetracker])
+                parseContext.error(ppToken->loc, "#elif after #else", "#elif", "");
             // this token is really a dont care, but we still need to eat the tokens
             token = currentInput->scan(this, currentInput, ppToken); 
             while (token != '\n')

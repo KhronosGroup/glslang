@@ -134,3 +134,39 @@ sum += 600000.0;
         #endif
     #endif
 #endif
+
+// ERROR cases...
+
+#if 0
+int;
+#else
+int;
+#elif 1
+int;
+#endif
+
+#if 0
+int;
+#else
+int;
+#else
+int;
+#endif
+
+#if 0
+    #if 0
+    int;
+    #else
+    int;
+    #elif 1
+    int;
+    #endif
+
+    #if 0
+    int;
+    #else
+    int;
+    #else
+    int;
+    #endif
+#endif

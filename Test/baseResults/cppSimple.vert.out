@@ -31,7 +31,7 @@ ERROR: 0:143: '#define' : can't use with built-in names (containing consecutive 
 ERROR: 0:144: '#define' : can't use with built-in names (containing consecutive underscores) 
 ERROR: 0:145: '#define' : can't use with built-in names (containing consecutive underscores) 
 ERROR: 0:148: '#else' : unexpected tokens following directive 
-ERROR: 0:149: '#else' : #elif after #else 
+ERROR: 0:149: '#elif' : #elif after #else 
 ERROR: 0:155: '#else' : unexpected tokens following directive 
 ERROR: 0:158: '#else' : #else after #else 
 ERROR: 0:160: '#endif' : unexpected tokens following directive 
