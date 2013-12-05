@@ -5,7 +5,7 @@ struct s { vec4 v; };
 layout(location = 7) in vec3 c;
 layout(LocatioN = 3) in vec4 p;
 layout(LocatioN = 9) in vec4 q[4]; // ERROR, no array
-layout(LocatioN = 10) in s r[4];   // ERROR, no struct
+layout(LocatioN = 10) in s r[4];   // ERROR, no struct, ERROR, location overlap
 out vec4 pos;
 out vec3 color;
 
@@ -52,3 +52,6 @@ shared vec4 compute_only;  // ERROR
 layout(packed) uniform;
 
 layout(packed) float aoeuntaoeu;
+
+layout(location = 40) in float cd;
+layout(location = 37) in mat4x3 ce; // ERROR, overlap

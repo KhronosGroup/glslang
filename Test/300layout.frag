@@ -13,3 +13,7 @@ void main()
     p = pos;
     q[1] = pos;
 }
+
+layout(location = 40) out float ca[4];
+layout(location = 41) out float cb[2];  // ERROR, overlap
+layout(location = 39) out float cc[6];  // ERROR, overlap

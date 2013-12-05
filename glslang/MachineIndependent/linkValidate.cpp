@@ -443,4 +443,95 @@ bool TIntermediate::userOutputUsed() const
     return found;
 }
 
+// Accumulate locations used for inputs, outputs, and uniforms, and check for collisions
+// as the accumulation is done.
+//
+// Returns < 0 if no collision, >= 0 if collision and the value returned is a colliding value.
+int TIntermediate::addUsedLocation(const TQualifier& qualifier, const TType& type)
+{
+    int set;
+    if (qualifier.isPipeInput())
+        set = 0;
+    else if (qualifier.isPipeOutput())
+        set = 1;
+    else if (qualifier.isUniform())
+        set = 2;
+    else
+        return -1;
+
+    int size;
+    if (qualifier.isUniform()) {
+        if (type.isArray())
+            size = type.getArraySize();
+        else
+            size = 1;
+    } else
+        size = computeTypeLocationSize(type);
+
+    TRange range = { qualifier.layoutSlotLocation, qualifier.layoutSlotLocation + size - 1 };
+
+    // check for collisions
+    for (size_t r = 0; r < usedLocations[set].size(); ++r) {
+        if (range.last  >= usedLocations[set][r].start &&
+            range.start <= usedLocations[set][r].last) {
+            // there is a collision; pick one
+            return std::max(range.start, usedLocations[set][r].start);
+        }
+    }
+
+    usedLocations[set].push_back(range);
+
+    return -1;
+}
+
+// Recursively figure out how many locations are used up by an input or output type.
+// Return the size of type, as measured by "locations".
+int TIntermediate::computeTypeLocationSize(const TType& type)
+{
+    // "If the declared input is an array of size n and each element takes m locations, it will be assigned m * n 
+    // consecutive locations..."
+    if (type.isArray()) {
+        TType elementType(type, 0);
+        return type.getArraySize() * computeTypeLocationSize(elementType);
+    }
+
+    // "The locations consumed by block and structure members are determined by applying the rules above 
+    // recursively..."    
+    if (type.isStruct()) {
+        // TODO: 440 functionality: input/output block locations when members also have locations
+        int size = 0;
+        for (size_t member = 0; member < type.getStruct()->size(); ++member) {
+            TType memberType(type, member);
+            size += computeTypeLocationSize(memberType);
+        }
+        return size;
+    }
+
+    // "If a vertex shader input is any scalar or vector type, it will consume a single location. If a non-vertex 
+    // shader input is a scalar or vector type other than dvec3 or dvec4, it will consume a single location, while 
+    // types dvec3 or dvec4 will consume two consecutive locations. Inputs of type double and dvec2 will 
+    // consume only a single location, in all stages."
+    if (type.isScalar())
+        return 1;
+    if (type.isVector()) {
+        if (language == EShLangVertex && type.getQualifier().isPipeInput())
+            return 1;
+        if (type.getBasicType() == EbtDouble && type.getVectorSize() > 2)
+            return 2;
+        else
+            return 1;
+    }
+
+    // "If the declared input is an n x m single- or double-precision matrix, ...
+    // The number of locations assigned for each matrix will be the same as 
+    // for an n-element array of m-component vectors..."
+    if (type.isMatrix()) {
+        TType columnType(type, 0);
+        return type.getMatrixCols() * computeTypeLocationSize(columnType);
+    }
+
+    assert(0);
+    return 1;
+}
+
 } // end namespace glslang

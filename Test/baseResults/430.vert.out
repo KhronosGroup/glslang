@@ -11,7 +11,8 @@ ERROR: 0:25: 'm3' : cannot use layout qualifiers on structure members
 ERROR: 0:28: '' : cannot use invariant qualifier on a function parameter 
 ERROR: 0:30: '' : cannot use layout qualifiers on a function parameter 
 ERROR: 0:31: '' : cannot use auxiliary or interpolation qualifiers on a function parameter 
-ERROR: 11 compilation errors.  No code generated.
+ERROR: 0:42: 'location' : repeated use of location 53
+ERROR: 12 compilation errors.  No code generated.
 
 
 ERROR: node is still EOpNull!
@@ -36,10 +37,13 @@ ERROR: node is still EOpNull!
 0:31      'cv3' (in 3-component vector of float)
 0:?   Linker Objects
 0:?     'v4' (layout(location=3 ) 4-component vector of float)
-0:?     'uv4' (layout(location=3 ) uniform 4-component vector of float)
+0:?     'uv4' (layout(location=4 ) uniform 4-component vector of float)
 0:?     'b1' (layout(location=2 ) in block{v})
 0:?     'b2' (layout(location=2 ) out block{v})
 0:?     '__anon__0' (out block{gl_ClipDistance})
+0:?     'cs' (layout(location=10 ) smooth out 2-element array of structure{m,f})
+0:?     'cf' (layout(location=54 ) smooth out float)
+0:?     'cg' (layout(location=53 ) smooth out float)
 0:?     'gl_VertexID' (gl_VertexId int)
 0:?     'gl_InstanceID' (gl_InstanceId int)
 

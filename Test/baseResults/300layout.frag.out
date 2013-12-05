@@ -1,6 +1,8 @@
 300layout.frag
 ERROR: 0:4: 'location qualifier on input' : not supported in this stage: fragment
-ERROR: 1 compilation errors.  No code generated.
+ERROR: 0:18: 'location' : repeated use of location 41
+ERROR: 0:19: 'location' : repeated use of location 40
+ERROR: 3 compilation errors.  No code generated.
 
 
 ERROR: node is still EOpNull!
@@ -25,6 +27,9 @@ ERROR: node is still EOpNull!
 0:?     'c' (layout(location=1 ) out mediump 4-component vector of float)
 0:?     'p' (layout(location=3 ) out mediump 4-component vector of float)
 0:?     'q' (layout(location=4 ) out 2-element array of mediump 4-component vector of float)
+0:?     'ca' (layout(location=40 ) out 4-element array of mediump float)
+0:?     'cb' (layout(location=41 ) out 2-element array of mediump float)
+0:?     'cc' (layout(location=39 ) out 6-element array of mediump float)
 
 
 Linked fragment stage:

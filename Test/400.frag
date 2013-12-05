@@ -33,7 +33,7 @@ layout(location = 4) in vec4 vl; // ERROR, not supported
 #extension GL_ARB_separate_shader_objects : enable
 #endif
 
-layout(location = 4) in vec4 vl2;
+layout(location = 6) in vec4 vl2;
 
 layout(location = 3) uniform vec3 uv3;
 

@@ -155,6 +155,8 @@ public:
     void addIoAccessed(const TString& name) { ioAccessed.insert(name); }
     bool inIoAccessed(const TString& name) const { return ioAccessed.find(name) != ioAccessed.end(); }
 
+    int addUsedLocation(const TQualifier&, const TType&);
+
 protected:
     void error(TInfoSink& infoSink, const char*);
     void mergeBodies(TInfoSink&, TIntermSequence& globals, const TIntermSequence& unitGlobals);
@@ -164,6 +166,7 @@ protected:
     void inOutLocationCheck(TInfoSink&);
     TIntermSequence& findLinkerObjects() const;
     bool userOutputUsed() const;
+    int computeTypeLocationSize(const TType&);
 
 protected:
     const EShLanguage language;
@@ -193,6 +196,12 @@ protected:
     TGraph callGraph;
 
     std::set<TString> ioAccessed;  // set of names of statically read/written I/O that might need extra checking
+
+    struct TRange {
+        int start;
+        int last;
+    };
+    std::vector<TRange> usedLocations[3];    // sets of used locations, one for each of in, out, and uniform
 
 private:
     void operator=(TIntermediate&); // prevent assignments

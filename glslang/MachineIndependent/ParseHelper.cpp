@@ -2649,6 +2649,10 @@ void TParseContext::layoutTypeCheck(TSourceLoc loc, const TSymbol& symbol)
         default:
             break;
         }
+
+        int repeated = intermediate.addUsedLocation(qualifier, type);
+        if (repeated >= 0)
+            error(loc, "repeated use of location", "location", "%d", repeated);
     }
 
     if (qualifier.hasBinding()) {

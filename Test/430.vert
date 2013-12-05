@@ -2,7 +2,7 @@
 
 layout(location = 3) vec4 v4;  // ERROR
 
-layout(location = 3) uniform vec4 uv4;
+layout(location = 4) uniform vec4 uv4;
 
 layout(location = 2) in   inb1 { vec4 v; } b1;  // ERROR
 layout(location = 2) out outb1 { vec4 v; } b2;  // ERROR
@@ -31,3 +31,12 @@ void foo3(invariant vec4 v4,                 // ERROR
           centroid vec3 cv3)                 // ERROR
 {
 }
+
+struct S {
+    mat3x2 m[7];  // needs 7*3 locations
+    float f;      // needs 1 location
+};                // needs 22 locations
+
+layout(location = 10) out S cs[2];     // 10 through 10 + 2 * 22 - 1 = 53
+layout(location = 54) out float cf;
+layout(location = 53) out float cg; // ERROR, collision at 31
