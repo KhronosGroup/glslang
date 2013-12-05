@@ -5,7 +5,8 @@ ERROR: 0:24: 'length' :  array must be declared with a size before using this me
 ERROR: 0:35: 'length' :  array must be declared with a size before using this method
 ERROR: 0:39: 'triangles' : inconsistent input primitive for array size colorBad
 ERROR: 0:43: 'triangles' : inconsistent input primitive for array size colorbad2
-ERROR: 5 compilation errors.  No code generated.
+ERROR: 0:55: 'location' : repeated use of location 4
+ERROR: 6 compilation errors.  No code generated.
 
 
 invocations = 4
@@ -66,6 +67,9 @@ ERROR: node is still EOpNull!
 0:?     'colorS' (in 3-element array of 4-component vector of float)
 0:?     'colorBad' (in 4-element array of 4-component vector of float)
 0:?     'colorbad2' (in 2-element array of 4-component vector of float)
+0:?     'cva' (layout(location=4 ) in 3-element array of 4-component vector of float)
+0:?     'cvb' (layout(location=5 ) in 3-element array of 4-component vector of float)
+0:?     'cmc' (layout(location=2 ) in 3-element array of 3X3 matrix of float)
 
 
 Linked geometry stage:

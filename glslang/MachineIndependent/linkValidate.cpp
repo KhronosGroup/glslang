@@ -465,8 +465,14 @@ int TIntermediate::addUsedLocation(const TQualifier& qualifier, const TType& typ
             size = type.getArraySize();
         else
             size = 1;
-    } else
-        size = computeTypeLocationSize(type);
+    } else {
+        if (language == EShLangGeometry && qualifier.isPipeInput()) {
+            assert(type.isArray());
+            TType elementType(type, 0);
+            size = computeTypeLocationSize(elementType);
+        } else
+            size = computeTypeLocationSize(type);
+    }
 
     TRange range = { qualifier.layoutSlotLocation, qualifier.layoutSlotLocation + size - 1 };
 
