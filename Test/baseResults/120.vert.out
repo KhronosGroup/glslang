@@ -43,7 +43,8 @@ ERROR: 0:107: 'overloadE' : no matching overloaded function found
 ERROR: 0:108: 'overloadE' : no matching overloaded function found 
 ERROR: 0:111: 'overloadE' : no matching overloaded function found 
 ERROR: 0:117: 'overloadF' : no matching overloaded function found 
-ERROR: 44 compilation errors.  No code generated.
+ERROR: 0:121: 'gl_TexCoord array size' : must be less than gl_MaxTextureCoords (32)
+ERROR: 45 compilation errors.  No code generated.
 
 
 ERROR: node is still EOpNull!
@@ -201,6 +202,8 @@ ERROR: node is still EOpNull!
 0:?       3.400000
 0:?     'concall' (const float)
 0:?       0.295520
+0:?     'gl_TexCoord' (smooth out 35-element array of 4-component vector of float)
+0:?     'gl_TexCoord' (smooth out 35-element array of 4-component vector of float)
 
 
 Linked vertex stage:

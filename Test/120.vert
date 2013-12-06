@@ -117,3 +117,5 @@ void foo()
     overloadF(1, 1); // ERROR
     overloadF(1);
 }
+
+varying vec4 gl_TexCoord[35]; // ERROR, size too big

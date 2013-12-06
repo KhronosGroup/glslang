@@ -1,6 +1,6 @@
 Current functionality level: ESSL 3.0
 
-- create version system
++ create version system
 
 Link Validation
     + provide input config file for setting limits
@@ -28,13 +28,14 @@ Link Validation
           - number of input/output compononents
           - tessellation limits
           - tessellation primitive array sizing consistency
-          - Non ES: gl_TexCoord can only have a max array size of up to gl_MaxTextureCoords
+          + Non ES: gl_TexCoord can only have a max array size of up to gl_MaxTextureCoords
+          + Non ES: gl_ClipDistance ...
           - ...
       + exactly one main
       + ES 3.0: fragment outputs all have locations, if more than one
       - ES 3.0: location aliasing/overlap (except desktop vertex shader inputs)
       - Non ES: binding overlap
-      - location overlap
+      + location overlap
       + Non ES: geometry shader input array sizes and input layout qualifier declaration
       + Non ES: read or write to both gl_ClipVertex and gl_ClipDistance
       + Non ES: write to only one of gl_FragColor, gl_FragData, or user-declared

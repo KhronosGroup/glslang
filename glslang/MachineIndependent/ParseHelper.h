@@ -134,6 +134,8 @@ public:
     void opaqueCheck(TSourceLoc, const TType&, const char* op);
     void structTypeCheck(TSourceLoc, TPublicType&);
     void inductiveLoopCheck(TSourceLoc, TIntermNode* init, TIntermLoop* loop);
+    void limitCheck(TSourceLoc, int value, const char* limit, const char* feature);
+
     void inductiveLoopBodyCheck(TIntermNode*, int loopIndexId, TSymbolTable&);
     void constantIndexExpressionCheck(TIntermNode*);
 

@@ -1410,6 +1410,8 @@ void TParseContext::reservedPpErrorCheck(TSourceLoc loc, const char* identifier,
 //
 // See if this version/profile allows use of the line-continuation character '\'.
 //
+// Returns true if a line continuation should be done.
+//
 bool TParseContext::lineContinuationCheck(TSourceLoc loc, bool endOfComment)
 {
     const char* message = "line continuation";
@@ -1433,6 +1435,8 @@ bool TParseContext::lineContinuationCheck(TSourceLoc loc, bool endOfComment)
         profileRequires(loc, EEsProfile, 300, 0, message);
         profileRequires(loc, ECoreProfile | ECompatibilityProfile, 420, 0, message);
     }
+
+    return lineContinuationAllowed;
 }
 
 bool TParseContext::builtInName(const TString& identifier)
@@ -1988,6 +1992,11 @@ void TParseContext::declareArray(TSourceLoc loc, TString& identifier, const TTyp
         return;
     }
 
+    if (identifier.compare("gl_TexCoord") == 0)
+        limitCheck(loc, type.getArraySize(), "gl_MaxTextureCoords", "gl_TexCoord array size");
+    else if (identifier.compare("gl_ClipDistance") == 0)
+        limitCheck(loc, type.getArraySize(), "gl_MaxClipDistances", "gl_ClipDistance array size");
+
     newType.shareArraySizes(type);
 
     if (language == EShLangGeometry && type.getQualifier().storage == EvqVaryingIn)
@@ -2440,6 +2449,18 @@ void TParseContext::inductiveLoopCheck(TSourceLoc loc, TIntermNode* init, TInter
 
     // the body
     inductiveLoopBodyCheck(loop->getBody(), loopIndex, symbolTable);
+}
+
+// See if the provide value is less than the symbol indicated by limit,
+// which should be a constant in the symbol table.
+void TParseContext::limitCheck(TSourceLoc loc, int value, const char* limit, const char* feature)
+{
+    TSymbol* symbol = symbolTable.find(limit);
+    assert(symbol->getAsVariable());
+    const TConstUnionArray& constArray = symbol->getAsVariable()->getConstArray();
+    assert(! constArray.empty());
+    if (value >= constArray[0].getIConst())
+        error(loc, "must be less than", feature, "%s (%d)", limit, constArray[0].getIConst());
 }
 
 //
