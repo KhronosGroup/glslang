@@ -246,7 +246,7 @@ protected:
     int CPPundef(TPpToken * ppToken);
     int CPPelse(int matchelse, TPpToken * ppToken);
     int extraTokenCheck(int atom, TPpToken* ppToken, int token);
-    int eval(int token, int precedence, int& res, bool& err, TPpToken * ppToken);
+    int eval(int token, int precedence, bool shortCircuit, int& res, bool& err, TPpToken * ppToken);
     int CPPif (TPpToken * ppToken); 
     int CPPifdef(int defined, TPpToken * ppToken);
     int CPPline(TPpToken * ppToken); 

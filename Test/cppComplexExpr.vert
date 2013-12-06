@@ -99,6 +99,66 @@ float c = foobar(1.1, 2.2
 #if foobar(1.1, 2.2
 )
 #if foobar(1.1, 2.2
+#endif
+#endif
 
+#define VAL0 0
+#define VAL1 1
+
+#if UNDEF
+#error bad 0
+#else
+#error good 0
+#endif
+
+#if VAL1 || UNDEF
+#error good 1
+#else
+#error bad 1
+#endif
+
+#if VAL1 && UNDEF // UNDEF ERROR
+#endif
+
+#if VAL0 || UNDEF // UNDEF ERROR
+#endif
+
+#if VAL0 && UNDEF
+#error bad 2
+#else
+#error good 1
+#endif
+
+#if VAL1 || (VAL1 && UNDEF)
+#error good 3
+#else
+#error bad 3
+#endif
+
+#if VAL1 && (VAL1 || UNDEF)
+#error good 4
+#else
+#error bad 4
+#endif
+
+#if VAL1 < VAL1 || VAL1 > VAL1 || UNDEF // UNDEF ERROR
+#endif
+
+#if VAL1 < VAL1 || VAL1 > VAL1 && UNDEF
+#endif
+
+#if VAL1 || UNDEF && UNDEF2
+#endif
+
+#if VAL0 || UNDEF && UNDEF2  // UNDEF ERROR
+#endif
+
+#if (VAL1 || UNDEF) && UNDEF2 // UNDEF2 ERROR
+#endif
+
+#if (VAL0 && UNDEF) || UNDEF2 // UNDEF2 ERROR
+#endif
+
+#line 10000
 #if 0
 // ERROR, EOF

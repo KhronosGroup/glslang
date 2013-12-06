@@ -11,11 +11,22 @@ ERROR: 0:94: 'macro expansion' : unexpected '#' foobar
 ERROR: 0:95: 'preprocessor evaluation' : bad expression 
 ERROR: 0:100: 'preprocessor evaluation' : bad expression 
 ERROR: 0:100: '#if' : unexpected tokens following directive 
-ERROR: 0:103: 'macro expansion' : unexpected '#' foobar
-ERROR: 0:103: 'preprocessor evaluation' : undefined macro in expression 
-ERROR: 0:103: '#if' : unexpected tokens following directive 
-ERROR: 0:104: '' : missing #endif 
-ERROR: 16 compilation errors.  No code generated.
+ERROR: 0:102: 'macro expansion' : unexpected '#' foobar
+ERROR: 0:102: 'preprocessor evaluation' : undefined macro in expression not allowed in es profile endif
+ERROR: 0:108: 'preprocessor evaluation' : undefined macro in expression not allowed in es profile UNDEF
+ERROR: 0:111: '#error' : good 0  
+ERROR: 0:115: '#error' : good 1  
+ERROR: 0:120: 'preprocessor evaluation' : undefined macro in expression not allowed in es profile UNDEF
+ERROR: 0:123: 'preprocessor evaluation' : undefined macro in expression not allowed in es profile UNDEF
+ERROR: 0:129: '#error' : good 1  
+ERROR: 0:133: '#error' : good 3  
+ERROR: 0:139: '#error' : good 4  
+ERROR: 0:144: 'preprocessor evaluation' : undefined macro in expression not allowed in es profile UNDEF
+ERROR: 0:153: 'preprocessor evaluation' : undefined macro in expression not allowed in es profile UNDEF
+ERROR: 0:156: 'preprocessor evaluation' : undefined macro in expression not allowed in es profile UNDEF2
+ERROR: 0:159: 'preprocessor evaluation' : undefined macro in expression not allowed in es profile UNDEF2
+ERROR: 0:10002: '' : missing #endif 
+ERROR: 27 compilation errors.  No code generated.
 
 
 ERROR: node is still EOpNull!

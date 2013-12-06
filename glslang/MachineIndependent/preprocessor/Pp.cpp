@@ -408,7 +408,7 @@ namespace {
 
 };
 
-struct Tbinops {
+struct {
     int token, precedence, (*op)(int, int);
 } binop[] = {
     { CPP_OR_OP, LOGOR, op_logor },
@@ -431,7 +431,7 @@ struct Tbinops {
     { '%', MUL, op_mod },
 };
 
-struct tunops {
+struct {
     int token, (*op)(int);
 } unop[] = {
     { '+', op_pos },
@@ -440,13 +440,10 @@ struct tunops {
     { '!', op_not },
 };
 
-#define ALEN(A) (sizeof(A)/sizeof(A[0]))
+#define NUM_ELEMENTS(A) (sizeof(A) / sizeof(A[0]))
 
-int TPpContext::eval(int token, int precedence, int& res, bool& err, TPpToken* ppToken)
+int TPpContext::eval(int token, int precedence, bool shortCircuit, int& res, bool& err, TPpToken* ppToken)
 {
-    int         i, val;
-    Symbol      *s;
-
     if (token == CPP_IDENTIFIER) {
         if (ppToken->atom == definedAtom) {
             bool needclose = 0;
@@ -462,6 +459,7 @@ int TPpContext::eval(int token, int precedence, int& res, bool& err, TPpToken* p
 
                 return token;
             }
+            Symbol* s;
             res = (s = LookUpSymbol(ppToken->atom)) ? !s->mac.undef : 0;
             token = currentInput->scan(this, currentInput, ppToken);
             if (needclose) {
@@ -484,19 +482,18 @@ int TPpContext::eval(int token, int precedence, int& res, bool& err, TPpToken* p
                 return token;
             } else {
                 if (macroReturn == -1) {
-                    if (parseContext.profile == EEsProfile) {
+                    if (! shortCircuit && parseContext.profile == EEsProfile) {
+                        const char* message = "undefined macro in expression not allowed in es profile";
+                        const char* name = GetAtomString(ppToken->atom);
                         if (parseContext.messages & EShMsgRelaxedErrors)
-                            parseContext.warn(ppToken->loc, "undefined macro in expression not allowed in es profile", "preprocessor evaluation", "");
-                        else {
-                            parseContext.error(ppToken->loc, "undefined macro in expression", "preprocessor evaluation", "");
-
-                            err = true;
-                        }
+                            parseContext.warn(ppToken->loc, message, "preprocessor evaluation", name);
+                        else
+                            parseContext.error(ppToken->loc, message, "preprocessor evaluation", name);
                     }
                 }
                 token = currentInput->scan(this, currentInput, ppToken);
 
-                return eval(token, precedence, res, err, ppToken);
+                return eval(token, precedence, shortCircuit, res, err, ppToken);
             }
         }
     } else if (token == CPP_INTCONSTANT) {
@@ -504,7 +501,7 @@ int TPpContext::eval(int token, int precedence, int& res, bool& err, TPpToken* p
         token = currentInput->scan(this, currentInput, ppToken);
     } else if (token == '(') {
         token = currentInput->scan(this, currentInput, ppToken);
-        token = eval(token, MIN_PRECEDENCE, res, err, ppToken);
+        token = eval(token, MIN_PRECEDENCE, shortCircuit, res, err, ppToken);
         if (! err) {
             if (token != ')') {
                 parseContext.error(ppToken->loc, "expected ')'", "preprocessor evaluation", "");
@@ -516,14 +513,15 @@ int TPpContext::eval(int token, int precedence, int& res, bool& err, TPpToken* p
             token = currentInput->scan(this, currentInput, ppToken);
         }
     } else {
-        for (i = ALEN(unop) - 1; i >= 0; i--) {
-            if (unop[i].token == token)
+        int op;
+        for (op = NUM_ELEMENTS(unop) - 1; op >= 0; op--) {
+            if (unop[op].token == token)
                 break;
         }
-        if (i >= 0) {
+        if (op >= 0) {
             token = currentInput->scan(this, currentInput, ppToken);
-            token = eval(token, UNARY, res, err, ppToken);
-            res = unop[i].op(res);
+            token = eval(token, UNARY, shortCircuit, res, err, ppToken);
+            res = unop[op].op(res);
         } else {
             parseContext.error(ppToken->loc, "bad expression", "preprocessor evaluation", "");
             err = true;
@@ -535,16 +533,26 @@ int TPpContext::eval(int token, int precedence, int& res, bool& err, TPpToken* p
     while (! err) {
         if (token == ')' || token == '\n') 
             break;
-        for (i = ALEN(binop) - 1; i >= 0; i--) {
-            if (binop[i].token == token)
+        int op;
+        for (op = NUM_ELEMENTS(binop) - 1; op >= 0; op--) {
+            if (binop[op].token == token)
                 break;
         }
-        if (i < 0 || binop[i].precedence <= precedence)
+        if (op < 0 || binop[op].precedence <= precedence)
             break;
-        val = res;
+        int leftSide = res;
+        
+        // Setup short-circuiting, needed for ES, unless already in a short circuit.
+        // (Once in a short-circuit, can't turn off again, until that whole subexpression is done.
+        if (! shortCircuit) {
+            if ((token == CPP_OR_OP  && leftSide == 1) ||
+                (token == CPP_AND_OP && leftSide == 0))
+                shortCircuit = true;
+        }
+
         token = currentInput->scan(this, currentInput, ppToken);
-        token = eval(token, binop[i].precedence, res, err, ppToken);
-        res = binop[i].op(val, res);
+        token = eval(token, binop[op].precedence, shortCircuit, res, err, ppToken);
+        res = binop[op].op(leftSide, res);
     }
 
     return token;
@@ -563,7 +571,7 @@ int TPpContext::CPPif(TPpToken* ppToken)
     }
     int res = 0;
     bool err = false;
-    token = eval(token, MIN_PRECEDENCE, res, err, ppToken);
+    token = eval(token, MIN_PRECEDENCE, false, res, err, ppToken);
     token = extraTokenCheck(ifAtom, ppToken, token);
     if (!res && !err)
         token = CPPelse(1, ppToken);
@@ -612,7 +620,7 @@ int TPpContext::CPPline(TPpToken* ppToken)
 
     int lineRes = 0;
     bool lineErr = false;
-    token = eval(token, MIN_PRECEDENCE, lineRes, lineErr, ppToken);
+    token = eval(token, MIN_PRECEDENCE, false, lineRes, lineErr, ppToken);
     if (! lineErr) {
         if (token == '\n')
             ++lineRes;
@@ -620,7 +628,7 @@ int TPpContext::CPPline(TPpToken* ppToken)
         if (token != '\n') {
             int fileRes = 0;
             bool fileErr = false;
-            token = eval(token, MIN_PRECEDENCE, fileRes, fileErr, ppToken);
+            token = eval(token, MIN_PRECEDENCE, false, fileRes, fileErr, ppToken);
             if (! fileErr)
                 parseContext.setCurrentString(fileRes);
         }
