@@ -128,24 +128,27 @@ int TPpContext::InitCPP()
 // Handle #define
 int TPpContext::CPPdefine(TPpToken* ppToken)
 {
-    int token, atom, args[maxMacroArgs], argc;
     MacroSymbol mac;
     Symbol *symb;
-    token = currentInput->scan(this, currentInput, ppToken);
+
+    // get macro name
+    int token = currentInput->scan(this, currentInput, ppToken);
     if (token != CPP_IDENTIFIER) {
         parseContext.error(ppToken->loc, "must be followed by macro name", "#define", "");
         return token;
     }
-    atom = ppToken->atom;
+    int atom = ppToken->atom;
     const char* definedName = GetAtomString(atom);
     if (ppToken->loc.string >= 0) {
         // We are in user code; check for reserved name use:
         parseContext.reservedPpErrorCheck(ppToken->loc, definedName, "#define");
     }
+
+    // gather parameters to the macro, between (...)
     token = currentInput->scan(this, currentInput, ppToken);
-    if (token == '(' && !ppToken->ival) {
-        // gather arguments
-        argc = 0;
+    if (token == '(' && ! ppToken->space) {
+        int argc = 0;
+        int args[maxMacroArgs];
         do {
             token = currentInput->scan(this, currentInput, ppToken);
             if (argc == 0 && token == ')') 
@@ -155,7 +158,7 @@ int TPpContext::CPPdefine(TPpToken* ppToken)
 
                 return token;
             }
-            // check for duplication
+            // check for duplication of parameter name
             bool duplicate = false;
             for (int a = 0; a < argc; ++a) {
                 if (args[a] == ppToken->atom) {
@@ -182,6 +185,8 @@ int TPpContext::CPPdefine(TPpToken* ppToken)
         memcpy(mac.args, args, argc * sizeof(int));
         token = currentInput->scan(this, currentInput, ppToken);
     }
+
+    // record the definition of the macro
     TSourceLoc defineLoc = ppToken->loc; // because ppToken is going to go to the next line before we report errors
     mac.body = new TokenStream;
     while (token != '\n') {
@@ -192,14 +197,12 @@ int TPpContext::CPPdefine(TPpToken* ppToken)
                 token = currentInput->scan(this, currentInput, ppToken);
         }
         RecordToken(mac.body, token, ppToken);
-        int spaceCandidate = currentInput->getch(this, currentInput, ppToken);
-        if (spaceCandidate == ' ' || spaceCandidate == '\t')
-            RecordToken(mac.body, ' ', 0);
-        else
-            currentInput->ungetch(this, currentInput, spaceCandidate, ppToken);
         token = currentInput->scan(this, currentInput, ppToken);
+        if (token != '\n' && ppToken->space)
+            RecordToken(mac.body, ' ', ppToken);
     }
 
+    // check for duplicate definition
     symb = LookUpSymbol(atom);
     if (symb) {
         if (! symb->mac.undef) {
@@ -209,7 +212,7 @@ int TPpContext::CPPdefine(TPpToken* ppToken)
             if (symb->mac.argc != mac.argc)
                 parseContext.error(defineLoc, "Macro redefined; different number of arguments:", "#define", GetAtomString(atom));
             else {
-                for (argc=0; argc < mac.argc; argc++) {
+                for (int argc = 0; argc < mac.argc; argc++) {
                     if (symb->mac.args[argc] != mac.args[argc])
                         parseContext.error(defineLoc, "Macro redefined; different argument names:", "#define", GetAtomString(atom));
                 }
@@ -229,9 +232,9 @@ int TPpContext::CPPdefine(TPpToken* ppToken)
                 } while (newToken > 0);
             }
         }
-    } else {
+    } else
         symb = AddSymbol(atom);
-    }
+
     delete symb->mac.body;
     symb->mac = mac;
 
@@ -930,6 +933,7 @@ int TPpContext::zero_scan(TPpContext* pp, InputSrc *inInput, TPpToken* ppToken)
 
     strcpy(ppToken->name, "0");
     ppToken->ival = 0;
+    ppToken->space = false;
 
     // pop input
     pp->currentInput = in->prev;
@@ -953,6 +957,7 @@ int TPpContext::MacroExpand(int atom, TPpToken* ppToken, int expandUndef)
     int token;
     int depth = 0;
 
+    ppToken->space = false;
     if (atom == __LINE__Atom) {
         ppToken->ival = parseContext.getCurrentLoc().line;
         sprintf(ppToken->name, "%d", ppToken->ival);

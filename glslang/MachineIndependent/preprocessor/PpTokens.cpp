@@ -143,9 +143,6 @@ void TPpContext::RecordToken(TokenStream *pTok, int token, TPpToken* ppToken)
         }
         lAddByte(pTok, 0);
         break;
-    case '(':
-        lAddByte(pTok, (unsigned char)(ppToken->ival ? 1 : 0));
-        break;
     default:
         break;
     }
@@ -179,9 +176,6 @@ int TPpContext::ReadToken(TokenStream *pTok, TPpToken *ppToken)
         if (ltoken > 127)
             ltoken += 128;
         switch (ltoken) {
-        case '(':
-            ppToken->ival = lReadByte(pTok);
-            break;
         case CPP_STRCONSTANT:
         case CPP_IDENTIFIER:
         case CPP_FLOATCONSTANT:

@@ -263,6 +263,31 @@ double f = f1;
 #line +20020
 #error line should be 20021
 
+#define VAL1 1.0
+#define VAL2 2.0
+
+#define RES2 /* test a multiline
+                comment in a macro definition */ (RES1 * VAL2)
+#define RES1    (VAL2 / VAL1) 
+#define RES2    /* comment */(RES1 * VAL2)
+#define /* */SUM_VALUES   (RES2 + RES1)
+
+void foo234()
+{
+    gl_Position = vec4(SUM_VALUES);
+}
+
+// more whitespace recording tests
+#define SPACE_AT_END(a,b) spaceAtEndIsOkay
+#define SPACE_AT_END(a,b) spaceAtEndIsOkay // space at end
+
+#define SPACE_AT_BEGIN(a,b)spaceAtBeginIsOkay
+#define SPACE_AT_BEGIN(a,b) spaceAtBeginIsOkay
+
+// space in middle is an error
+#define SPACE_IN_MIDDLE(a,b) space +in middle
+#define SPACE_IN_MIDDLE(a,b) space + in middle
+
 #line 10000
 #if 1
 #else

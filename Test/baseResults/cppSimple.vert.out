@@ -70,8 +70,9 @@ ERROR: 12:1234: '#line' : unexpected tokens following directive
 ERROR: 12:20001: '#error' : line should be 20001  
 ERROR: 12:20011: '#error' : line should be 20011  
 ERROR: 12:20021: '#error' : line should be 20021  
+ERROR: 12:20046: '#define' : Macro redefined; different substitutions: SPACE_IN_MIDDLE
 ERROR: 12:10003: '' : missing #endif 
-ERROR: 71 compilation errors.  No code generated.
+ERROR: 72 compilation errors.  No code generated.
 
 
 ERROR: node is still EOpNull!
@@ -148,6 +149,19 @@ ERROR: node is still EOpNull!
 0:202      'f' (double)
 0:202      Constant:
 0:202        0.000800
+12:20032  Function Definition: foo234( (void)
+12:20032    Function Parameters: 
+12:20034    Sequence
+12:20034      move second child to first child (4-component vector of float)
+12:20034        gl_Position: direct index for structure (gl_Position 4-component vector of float)
+12:20034          '__anon__1' (out block{gl_Position,gl_PointSize,gl_ClipDistance,gl_ClipVertex,gl_FrontColor,gl_BackColor,gl_FrontSecondaryColor,gl_BackSecondaryColor,gl_TexCoord,gl_FogFragCoord})
+12:20034          Constant:
+12:20034            0 (const uint)
+12:20034        Constant:
+12:20034          6.000000
+12:20034          6.000000
+12:20034          6.000000
+12:20034          6.000000
 0:?   Linker Objects
 0:?     'sum' (float)
 0:?     'linenumber' (int)

@@ -257,10 +257,11 @@ int TPpContext::sourceScan(TPpContext* pp, InputSrc*, TPpToken* ppToken)
     unsigned ival = 0;
 
     ppToken->ival = 0;
+    ppToken->space = false;
     ch = pp->currentInput->getch(pp, pp->currentInput, ppToken);
     for (;;) {
         while (ch == ' ' || ch == '\t' || ch == '\r') {
-            ppToken->ival = 1;
+            ppToken->space = true;
             ch = pp->currentInput->getch(pp, pp->currentInput, ppToken);
         }
 
@@ -649,17 +650,13 @@ int TPpContext::sourceScan(TPpContext* pp, InputSrc*, TPpToken* ppToken)
                         }
                     }
                 } while (ch != '\n' && ch != EOF);
-                if (ch == EOF)
-                    return EOF;
-                return '\n';
+                ppToken->space = true;
+                return ch;
             } else if (ch == '*') {
-                int nlcount = 0;
                 ch = pp->currentInput->getch(pp, pp->currentInput, ppToken);
                 do {
                     while (ch != '*') {
-                        if (ch == '\n')
-                            nlcount++;
-                        else if (ch == EOF) {
+                        if (ch == EOF) {
                             pp->parseContext.error(ppToken->loc, "EOF in comment", "comment", "");
 
                             return EOF;
@@ -673,9 +670,9 @@ int TPpContext::sourceScan(TPpContext* pp, InputSrc*, TPpToken* ppToken)
                         return EOF;
                     }
                 } while (ch != '/');
-                if (nlcount)
-                    return '\n';
-                // Go try it again...
+                ppToken->space = true;
+                // loop again to get the next token...
+                break;
             } else if (ch == '=') {
                 return CPP_DIV_ASSIGN;
             } else {
@@ -709,7 +706,6 @@ int TPpContext::sourceScan(TPpContext* pp, InputSrc*, TPpToken* ppToken)
             }
         }
 
-        ppToken->ival = 0;
         ch = pp->currentInput->getch(pp, pp->currentInput, ppToken);
     }
 }

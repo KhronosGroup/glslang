@@ -84,7 +84,7 @@ namespace glslang {
 
 class TPpToken {
 public:
-    TPpToken() : token(0), ival(0), dval(0.0), atom(0)
+    TPpToken() : token(0), ival(0), space(false), dval(0.0), atom(0)
     { 
         loc.line = 0; 
         loc.string = 0; 
@@ -103,6 +103,7 @@ public:
 
     TSourceLoc loc;
     int    token;
+    bool   space;  // true if a space (for white space or a removed comment) should also be recognized, in front of the token returned
     int    ival;
     double dval;
     int    atom;
