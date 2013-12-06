@@ -408,7 +408,7 @@ namespace {
 
 };
 
-struct {
+struct TBinop {
     int token, precedence, (*op)(int, int);
 } binop[] = {
     { CPP_OR_OP, LOGOR, op_logor },
@@ -431,7 +431,7 @@ struct {
     { '%', MUL, op_mod },
 };
 
-struct {
+struct TUnop {
     int token, (*op)(int);
 } unop[] = {
     { '+', op_pos },
