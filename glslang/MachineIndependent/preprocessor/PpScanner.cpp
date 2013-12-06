@@ -285,7 +285,7 @@ int TPpContext::sourceScan(TPpContext* pp, InputSrc*, TPpToken* ppToken)
             do {
                 if (ch == '\\') {
                     // escaped character
-                    pp->parseContext.lineContinuationCheck(ppToken->loc);
+                    pp->parseContext.lineContinuationCheck(ppToken->loc, false);
                     ch = pp->currentInput->getch(pp, pp->currentInput, ppToken);
                     if (ch == '\r' || ch == '\n') {
                         int nextch = pp->currentInput->getch(pp, pp->currentInput, ppToken);
@@ -641,12 +641,15 @@ int TPpContext::sourceScan(TPpContext* pp, InputSrc*, TPpToken* ppToken)
                         // allow an escaped newline, otherwise escapes in comments are meaningless
                         ch = pp->currentInput->getch(pp, pp->currentInput, ppToken);
                         if (ch == '\r' || ch == '\n') {
-                            pp->parseContext.lineContinuationCheck(ppToken->loc);
-                            int nextch = pp->currentInput->getch(pp, pp->currentInput, ppToken);
-                            if (ch == '\r' && nextch == '\n')
-                                ch = pp->currentInput->getch(pp, pp->currentInput, ppToken);
-                            else
-                                ch = nextch;
+                            if (! pp->parseContext.lineContinuationCheck(ppToken->loc, true))
+                                pp->currentInput->ungetch(pp, pp->currentInput, ch, ppToken);
+                            else {
+                                int nextch = pp->currentInput->getch(pp, pp->currentInput, ppToken);
+                                if (ch == '\r' && nextch == '\n')
+                                    ch = pp->currentInput->getch(pp, pp->currentInput, ppToken);
+                                else
+                                    ch = nextch;
+                            }
                         }
                     }
                 } while (ch != '\n' && ch != EOF);
@@ -684,7 +687,7 @@ int TPpContext::sourceScan(TPpContext* pp, InputSrc*, TPpToken* ppToken)
             ch = pp->currentInput->getch(pp, pp->currentInput, ppToken);
             while (ch != '"' && ch != '\n' && ch != EOF) {
                 if (ch == '\\') {                    
-                    pp->parseContext.lineContinuationCheck(ppToken->loc);
+                    pp->parseContext.lineContinuationCheck(ppToken->loc, false);
                     ch = pp->currentInput->getch(pp, pp->currentInput, ppToken);
                     if (ch == '\n' || ch == '\r' || ch == EOF)
                         break;

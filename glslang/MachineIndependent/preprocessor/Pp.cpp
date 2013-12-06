@@ -191,7 +191,7 @@ int TPpContext::CPPdefine(TPpToken* ppToken)
     mac.body = new TokenStream;
     while (token != '\n') {
         if (token == '\\') {
-            parseContext.lineContinuationCheck(ppToken->loc);
+            parseContext.lineContinuationCheck(ppToken->loc, false);
             token = currentInput->scan(this, currentInput, ppToken);
             if (token == '\n' || token == '\r')
                 token = currentInput->scan(this, currentInput, ppToken);

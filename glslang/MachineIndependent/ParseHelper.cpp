@@ -1410,13 +1410,22 @@ void TParseContext::reservedPpErrorCheck(TSourceLoc loc, const char* identifier,
 //
 // See if this version/profile allows use of the line-continuation character '\'.
 //
-void TParseContext::lineContinuationCheck(TSourceLoc loc)
+bool TParseContext::lineContinuationCheck(TSourceLoc loc, bool endOfComment)
 {
-    if ((profile == EEsProfile && version >= 300) ||
-        (profile != EEsProfile && version >= 420))
-        return;
-
     const char* message = "line continuation";
+
+    bool lineContinuationAllowed = (profile == EEsProfile && version >= 300) ||
+                                   (profile != EEsProfile && version >= 420);
+
+    if (endOfComment) {
+        if (lineContinuationAllowed)
+            warn(loc, "used at end of comment; the following line is still part of the comment", message, "");
+        else
+            warn(loc, "used at end of comment, but this version does not provide line continuation", message, "");
+
+        return lineContinuationAllowed;
+    }
+
     if (messages & EShMsgRelaxedErrors) {
         warn(loc, "not allowed in this version", message, "");
     } else {

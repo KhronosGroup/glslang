@@ -76,7 +76,7 @@ public:
                       const char *szExtraInfoFormat, ...);
     bool reservedErrorCheck(TSourceLoc, const TString&);
     void reservedPpErrorCheck(TSourceLoc, const char* name, const char* op);
-    void lineContinuationCheck(TSourceLoc);
+    bool lineContinuationCheck(TSourceLoc, bool endOfComment);
     bool builtInName(const TString&);
 
     void handlePragma(TSourceLoc, const TVector<TString>&);

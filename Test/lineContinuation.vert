@@ -28,3 +28,9 @@ vec4 foo2(vec4 a)
 // aoeuntheo unatehutna \ antaehnathe 
 // anteonuth $ natohe " '
 // anteonuth     natohe
+
+#define FOO int /* \
+*/ goodDecl;
+
+FOO
+

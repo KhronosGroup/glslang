@@ -1,4 +1,5 @@
 lineContinuation.vert
+WARNING: 0:3: 'line continuation' : used at end of comment; the following line is still part of the comment 
 ERROR: 0:6: '#error' : e1  
 ERROR: 0:11: '#error' : e2  
 ERROR: 0:18: '#error' : e3  
@@ -25,6 +26,7 @@ ERROR: node is still EOpNull!
 0:25        'b' (highp 4-component vector of float)
 0:?   Linker Objects
 0:?     'foo' (highp float)
+0:?     'goodDecl' (highp int)
 0:?     'gl_VertexID' (gl_VertexId highp int)
 0:?     'gl_InstanceID' (gl_InstanceId highp int)
 

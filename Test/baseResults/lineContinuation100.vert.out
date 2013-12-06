@@ -1,6 +1,6 @@
 lineContinuation100.vert
-ERROR: 0:3: 'line continuation' : not supported for this version or the enabled extensions 
-ERROR: 0:6: '#error' : e1  
+WARNING: 0:3: 'line continuation' : used at end of comment, but this version does not provide line continuation 
+ERROR: 0:4: '#error' : good error  
 ERROR: 0:8: 'line continuation' : not supported for this version or the enabled extensions 
 ERROR: 0:11: '#error' : e2  
 ERROR: 0:13: 'line continuation' : not supported for this version or the enabled extensions 
@@ -8,7 +8,7 @@ ERROR: 0:14: 'line continuation' : not supported for this version or the enabled
 ERROR: 0:15: 'line continuation' : not supported for this version or the enabled extensions 
 ERROR: 0:18: '#error' : e3  
 ERROR: 0:24: 'line continuation' : not supported for this version or the enabled extensions 
-ERROR: 9 compilation errors.  No code generated.
+ERROR: 8 compilation errors.  No code generated.
 
 
 ERROR: node is still EOpNull!
