@@ -33,9 +33,8 @@ Link Validation
           - ...
       + exactly one main
       + ES 3.0: fragment outputs all have locations, if more than one
-      - ES 3.0: location aliasing/overlap (except desktop vertex shader inputs)
-      - Non ES: binding overlap
-      + location overlap
+      + location aliasing/overlap (except desktop vertex shader inputs)
+      - Non ES: binding overlap for atomic counters
       + Non ES: geometry shader input array sizes and input layout qualifier declaration
       + Non ES: read or write to both gl_ClipVertex and gl_ClipDistance
       + Non ES: write to only one of gl_FragColor, gl_FragData, or user-declared

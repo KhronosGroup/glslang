@@ -2694,8 +2694,6 @@ void TParseContext::layoutTypeCheck(TSourceLoc loc, const TSymbol& symbol)
         // an array of size N, all elements of the array from binding through binding + N – 1 must be within this
         // range."
         //
-        // TODO: 4.2 binding limits: binding error checking against limits, arrays
-        //
         if (type.getBasicType() != EbtSampler && type.getBasicType() != EbtBlock)
             error(loc, "requires block, or sampler/image, or atomic-counter type", "binding", "");
             // TODO: 4.2 functionality: atomic counter: include in test above

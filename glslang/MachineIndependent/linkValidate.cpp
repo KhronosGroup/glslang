@@ -476,12 +476,14 @@ int TIntermediate::addUsedLocation(const TQualifier& qualifier, const TType& typ
 
     TRange range = { qualifier.layoutSlotLocation, qualifier.layoutSlotLocation + size - 1 };
 
-    // check for collisions
-    for (size_t r = 0; r < usedLocations[set].size(); ++r) {
-        if (range.last  >= usedLocations[set][r].start &&
-            range.start <= usedLocations[set][r].last) {
-            // there is a collision; pick one
-            return std::max(range.start, usedLocations[set][r].start);
+    // check for collisions, except for vertex inputs on desktop
+    if (! (profile != EEsProfile && language == EShLangVertex && qualifier.isPipeInput())) {
+        for (size_t r = 0; r < usedLocations[set].size(); ++r) {
+            if (range.last  >= usedLocations[set][r].start &&
+                range.start <= usedLocations[set][r].last) {
+                // there is a collision; pick one
+                return std::max(range.start, usedLocations[set][r].start);
+            }
         }
     }
 

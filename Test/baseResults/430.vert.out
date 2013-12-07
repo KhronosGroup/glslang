@@ -12,7 +12,7 @@ ERROR: 0:28: '' : cannot use invariant qualifier on a function parameter
 ERROR: 0:30: '' : cannot use layout qualifiers on a function parameter 
 ERROR: 0:31: '' : cannot use auxiliary or interpolation qualifiers on a function parameter 
 ERROR: 0:42: 'location' : repeated use of location 53
-ERROR: 0:44: 'gl_ClipDistance array size' : must be less than gl_MaxClipDistances (8)
+ERROR: 0:47: 'gl_ClipDistance array size' : must be less than gl_MaxClipDistances (8)
 ERROR: 13 compilation errors.  No code generated.
 
 
@@ -45,6 +45,8 @@ ERROR: node is still EOpNull!
 0:?     'cs' (layout(location=10 ) smooth out 2-element array of structure{m,f})
 0:?     'cf' (layout(location=54 ) smooth out float)
 0:?     'cg' (layout(location=53 ) smooth out float)
+0:?     'alias1' (layout(location=10 ) in 4-component vector of float)
+0:?     'alias2' (layout(location=10 ) in 4-component vector of float)
 0:?     'gl_VertexID' (gl_VertexId int)
 0:?     'gl_InstanceID' (gl_InstanceId int)
 
