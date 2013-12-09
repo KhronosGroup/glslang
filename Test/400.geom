@@ -17,6 +17,7 @@ layout(max_vertices = 127, invocations = 4) out;
 
 in gl_PerVertex {      // testing input arrays with a block redeclaration, see 420.geom for without
     vec4 gl_Position;
+    layout(std140, location = 3) patch float gl_PointSize; // ERRORs...
 } gl_in[];
 
 void foo()

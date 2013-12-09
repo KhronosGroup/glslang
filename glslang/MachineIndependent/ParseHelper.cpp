@@ -376,6 +376,8 @@ TIntermTyped* TParseContext::handleVariable(TSourceLoc loc, TSymbol* symbol, TSt
 
         node = intermediate.addIndex(EOpIndexDirectStruct, container, constNode, loc);
         node->setType(*(*variable->getType().getStruct())[anon->getMemberNumber()].type);
+        if (node->getBasicType() == EbtVoid)
+            error(loc, "member of nameless block was not redeclared", string->c_str(), "");
         if (variable->getType().getQualifier().isIo())
             noteAccess = true;
 
@@ -1375,22 +1377,14 @@ void TParseContext::globalCheck(TSourceLoc loc, const char* token)
 // Except, if the symbol table is at a built-in level,
 // which is when we are parsing built-ins.
 //
-bool TParseContext::reservedErrorCheck(TSourceLoc loc, const TString& identifier)
+void TParseContext::reservedErrorCheck(TSourceLoc loc, const TString& identifier)
 {
     if (! symbolTable.atBuiltInLevel()) {
-        if (builtInName(identifier)) {
-            error(loc, "reserved built-in name", "gl_", "");
-
-            return true;
-        }
-        if (identifier.find("__") != TString::npos) {
+        if (builtInName(identifier))
+            error(loc, "reserved built-in name:", "gl_", identifier.c_str());
+        if (identifier.find("__") != TString::npos)
             error(loc, "Two consecutive underscores are reserved for future use.", identifier.c_str(), "", "");
-
-            return true;
-        }
     }
-
-    return false;
 }
 
 //
@@ -1992,10 +1986,7 @@ void TParseContext::declareArray(TSourceLoc loc, TString& identifier, const TTyp
         return;
     }
 
-    if (identifier.compare("gl_TexCoord") == 0)
-        limitCheck(loc, type.getArraySize(), "gl_MaxTextureCoords", "gl_TexCoord array size");
-    else if (identifier.compare("gl_ClipDistance") == 0)
-        limitCheck(loc, type.getArraySize(), "gl_MaxClipDistances", "gl_ClipDistance array size");
+    arrayLimitCheck(loc, identifier, type.getArraySize());
 
     newType.shareArraySizes(type);
 
@@ -2164,23 +2155,26 @@ TSymbol* TParseContext::redeclareBuiltinVariable(TSourceLoc loc, const TString& 
     return 0;
 }
 
-bool TParseContext::redeclareBuiltinBlock(TSourceLoc loc, TTypeList& typeList, const TString& blockName, const TString* instanceName, TArraySizes* arraySizes)
+//
+// Either redeclare the requested block, or give an error message why it can't be done.
+//
+void TParseContext::redeclareBuiltinBlock(TSourceLoc loc, TTypeList& newTypeList, const TString& blockName, const TString* instanceName, TArraySizes* arraySizes)
 {
-    // just a quick out, not everything that must be checked:
-    if (symbolTable.atBuiltInLevel() || profile == EEsProfile || ! builtInName(blockName))
-        return false;
+    const char* feature = "built-in block redeclaration";
+    requireProfile(loc, ECoreProfile | ECompatibilityProfile, feature);
+    profileRequires(loc, ECoreProfile | ECompatibilityProfile, 410, GL_ARB_separate_shader_objects, feature);
+
+    if (blockName != "gl_PerVertex" && blockName != "gl_PerFragment") {
+        error(loc, "cannot redeclare block: ", "block declaration", blockName.c_str());
+        return;
+    }
+
+    // Redeclaring a built-in block...
 
     if (instanceName && ! builtInName(*instanceName)) {
         error(loc, "cannot redeclare a built-in block with a user name", instanceName->c_str(), "");
-        return false;
+        return;
     }
-
-    profileRequires(loc, ECoreProfile | ECompatibilityProfile, 410, GL_ARB_separate_shader_objects, "built-in block redeclaration");
-
-    // Potentially redeclaring a built-in block...
-
-    if (blockName != "gl_PerVertex" && blockName != "gl_PerFragment")
-        return false;
 
     // Blocks with instance names are easy to find, lookup the instance name,
     // Anonymous blocks need to be found via a member.
@@ -2189,64 +2183,110 @@ bool TParseContext::redeclareBuiltinBlock(TSourceLoc loc, TTypeList& typeList, c
     if (instanceName)
         block = symbolTable.find(*instanceName, &builtIn);
     else
-        block = symbolTable.find(typeList.front().type->getFieldName(), &builtIn);
+        block = symbolTable.find(newTypeList.front().type->getFieldName(), &builtIn);
 
     // If the block was not found, this must be a version/profile/stage
-    // that doesn't have it.
-    if (! block)
-        return false;
-
+    // that doesn't have it, or the instance name is wrong.
+    const char* errorName = instanceName ? instanceName->c_str() : newTypeList.front().type->getFieldName().c_str();
+    if (! block) {
+        error(loc, "no declaration found for redeclaration", errorName, "");
+        return;
+    }
     // Built-in blocks cannot be redeclared more than once, which if happened,
     // we'd be finding the already redeclared one here, rather than the built in.
     if (! builtIn) {
         error(loc, "can only redeclare a built-in block once, and before any use", blockName.c_str(), "");
-        return false;
+        return;
     }
 
     // Copy the block to make a writable version, to insert into the block table after editing.
     block = symbolTable.copyUpDeferredInsert(block);
 
     if (block->getType().getBasicType() != EbtBlock) {
-        error(loc, "cannot redeclare a non block as a block", blockName.c_str(), "");
-        return false;
+        error(loc, "cannot redeclare a non block as a block", errorName, "");
+        return;
     }
 
     // Handle geometry shader input arrays: see inputArrayNodeResizeList comment in ParseHelper.h
     if (language == EShLangGeometry && block->getType().isArray() && block->getType().getQualifier().storage == EvqVaryingIn)
         inputArraySymbolResizeList.push_back(block);
 
-    // TODO: SSO/4.10 semantics: block redeclaration: instance array size matching
-
     // Edit and error check the container against the redeclaration
     //  - remove unused members
-    //  - ensure remaining qualifiers match
+    //  - ensure remaining qualifiers/types match
     TType& type = block->getWritableType();
     TTypeList::iterator member = type.getStruct()->begin();
+    size_t numOriginalMembersFound = 0;
     while (member != type.getStruct()->end()) {
         // look for match
         bool found = false;
-        for (TTypeList::iterator newMember = typeList.begin(); newMember != typeList.end(); ++newMember) {
+        TTypeList::iterator newMember;
+        TSourceLoc memberLoc;
+        for (newMember = newTypeList.begin(); newMember != newTypeList.end(); ++newMember) {
             if (member->type->getFieldName() == newMember->type->getFieldName()) {
                 found = true;
+                memberLoc = newMember->loc;
                 break;
             }
         }
 
-        // remove non-redeclared members
-        if (found)
-            ++member;
-        else
-            member = type.getStruct()->erase(member);
+        if (found) {
+            ++numOriginalMembersFound;
+            // - ensure match between redeclared members' types
+            // - check for things that can't be changed
+            // - update things that can be changed
+            TType& oldType = *member->type;
+            const TType& newType = *newMember->type;
+            if (! newType.sameElementType(oldType))
+                error(memberLoc, "cannot redeclare block member with a different type", member->type->getFieldName().c_str(), "");
+            if (oldType.isArray() != newType.isArray())
+                error(memberLoc, "cannot change arrayness of redeclared block member", member->type->getFieldName().c_str(), "");
+            else if (! oldType.sameArrayness(newType) && oldType.getArraySize() > 0)
+                error(memberLoc, "cannot change array size of redeclared block member", member->type->getFieldName().c_str(), "");
+            else if (newType.isArray())
+                arrayLimitCheck(loc, member->type->getFieldName(), newType.getArraySize());
+            if (newType.getQualifier().isMemory())
+                error(memberLoc, "cannot add memory qualifier to redeclared block member", member->type->getFieldName().c_str(), "");
+            if (newType.getQualifier().hasLayout())
+                error(memberLoc, "cannot add layout to redeclared block member", member->type->getFieldName().c_str(), "");
+            if (newType.getQualifier().patch)
+                error(memberLoc, "cannot add patch to redeclared block member", member->type->getFieldName().c_str(), "");
+            oldType.getQualifier().centroid = newType.getQualifier().centroid;
+            oldType.getQualifier().sample = newType.getQualifier().sample;
+            oldType.getQualifier().invariant = newType.getQualifier().invariant;
+            oldType.getQualifier().smooth = newType.getQualifier().smooth;
+            oldType.getQualifier().flat = newType.getQualifier().flat;
+            oldType.getQualifier().nopersp = newType.getQualifier().nopersp;
 
-        // TODO: SSO/4.10 semantics: block redeclaration: member type/qualifier matching
+            // go to next member
+            ++member;
+        } else {    
+            // Use EbtVoid to tag missing members of anonymous blocks that have been redeclared,
+            // to hide the original (shared) declaration.
+            // (Instance-named blocks can just have the member removed.)
+            if (instanceName)
+                member = type.getStruct()->erase(member);
+            else {
+                member->type->setElementType(EbtVoid, 1, 0, 0, 0);
+                ++member;
+            }
+        }
     }
+
+    if (numOriginalMembersFound < newTypeList.size())
+        error(loc, "block redeclaration has extra members", blockName.c_str(), "");
+    if (type.isArray() != (arraySizes != 0))
+        error(loc, "cannot change arrayness of redeclared block", blockName.c_str(), "");
+    else if (type.isArray() && type.getArraySize() > 0 && type.getArraySize() != arraySizes->getSize())
+        error(loc, "cannot change array size of redeclared block", blockName.c_str(), "");
 
     symbolTable.insert(*block);
 
+    // Check for general layout qualifier errors
+    layoutTypeCheck(loc, *block);
+
     // Save it in the AST for linker use.
     intermediate.addSymbolLinkageNode(linkage, *block);
-
-    return true;
 }
 
 void TParseContext::paramCheckFix(TSourceLoc loc, const TStorageQualifier& qualifier, TType& type)
@@ -2449,6 +2489,15 @@ void TParseContext::inductiveLoopCheck(TSourceLoc loc, TIntermNode* init, TInter
 
     // the body
     inductiveLoopBodyCheck(loop->getBody(), loopIndex, symbolTable);
+}
+
+// Do limit checks against for all built-in arrays.
+void TParseContext::arrayLimitCheck(TSourceLoc loc, const TString& identifier, int size)
+{
+    if (identifier.compare("gl_TexCoord") == 0)
+        limitCheck(loc, size, "gl_MaxTextureCoords", "gl_TexCoord array size");
+    else if (identifier.compare("gl_ClipDistance") == 0)
+        limitCheck(loc, size, "gl_MaxClipDistances", "gl_ClipDistance array size");
 }
 
 // See if the provide value is less than the symbol indicated by limit,
@@ -3348,18 +3397,6 @@ TIntermTyped* TParseContext::constructStruct(TIntermNode* node, const TType& typ
 //
 void TParseContext::declareBlock(TSourceLoc loc, TTypeList& typeList, const TString* instanceName, TArraySizes* arraySizes)
 {
-    // This might be a redeclaration of a built-in block, find out, and get
-    // a modifiable copy if so.
-    if (redeclareBuiltinBlock(loc, typeList, *blockName, instanceName, arraySizes))
-        return;
-
-    // Basic error checks
-    if (reservedErrorCheck(loc, *blockName))
-        return;
-
-    if (instanceName && reservedErrorCheck(loc, *instanceName))
-        return;
-
     if (profile == EEsProfile && arraySizes)
         arraySizeRequiredCheck(loc, arraySizes->getSize());
 
@@ -3392,13 +3429,27 @@ void TParseContext::declareBlock(TSourceLoc loc, TTypeList& typeList, const TStr
         pipeInOutFix(memberLoc, memberQualifier);
         if (memberQualifier.storage != EvqTemporary && memberQualifier.storage != EvqGlobal && memberQualifier.storage != currentBlockQualifier.storage)
             error(memberLoc, "member storage qualifier cannot contradict block storage qualifier", typeList[member].type->getFieldName().c_str(), "");
-        if ((currentBlockQualifier.storage == EvqUniform && memberQualifier.isInterpolation()) || memberQualifier.isAuxiliary())
+        if (currentBlockQualifier.storage == EvqUniform && (memberQualifier.isInterpolation() || memberQualifier.isAuxiliary()))
             error(memberLoc, "member of uniform block cannot have an auxiliary or interpolation qualifier", typeList[member].type->getFieldName().c_str(), "");
 
         TBasicType basicType = typeList[member].type->getBasicType();
         if (basicType == EbtSampler)
             error(memberLoc, "member of block cannot be a sampler type", typeList[member].type->getFieldName().c_str(), "");
     }
+
+    // This might be a redeclaration of a built-in block.  If so, redeclareBuiltinBlock() will
+    // do all the rest.
+    if (! symbolTable.atBuiltInLevel() && builtInName(*blockName)) {
+        redeclareBuiltinBlock(loc, typeList, *blockName, instanceName, arraySizes);
+        return;
+    }
+
+    // Not a redeclaration of a built-in; check that all names are user names.
+    reservedErrorCheck(loc, *blockName);
+    if (instanceName)
+        reservedErrorCheck(loc, *instanceName);
+    for (unsigned int member = 0; member < typeList.size(); ++member)
+        reservedErrorCheck(typeList[member].loc, typeList[member].type->getFieldName());
 
     // Make default block qualification, and adjust the member qualifications
 
@@ -3427,13 +3478,13 @@ void TParseContext::declareBlock(TSourceLoc loc, TTypeList& typeList, const TStr
         memberQualifier = newMemberQualification;
     }
 
-    //
-    // Build and add the interface block as a new type named blockName
-    //
-
     // reverse merge, so that currentBlockQualifier now has all layout information
     // (can't use defaultQualification directly, it's missing other non-layout-default-class qualifiers)
     mergeObjectLayoutQualifiers(loc, currentBlockQualifier, defaultQualification);
+
+    //
+    // Build and add the interface block as a new type named 'blockName'
+    //
 
     TType blockType(&typeList, *blockName, currentBlockQualifier);
     if (arraySizes)

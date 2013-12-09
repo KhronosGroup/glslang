@@ -8,15 +8,15 @@ ERROR: 0:22: 'vn8' : illegal use of type 'void'
 ERROR: 0:22: 'vp' : illegal use of type 'void' 
 ERROR: 0:25: 'cij' : variables with qualifier 'const' must be initialized 
 ERROR: 0:27: 'cip' : variables with qualifier 'const' must be initialized 
-ERROR: 0:34: 'gl_' : reserved built-in name 
-ERROR: 0:35: 'gl_' : reserved built-in name 
-ERROR: 0:35: 'gl_' : reserved built-in name 
-ERROR: 0:36: 'gl_' : reserved built-in name 
-ERROR: 0:36: 'gl_' : reserved built-in name 
-ERROR: 0:37: 'gl_' : reserved built-in name 
-ERROR: 0:37: 'gl_' : reserved built-in name 
+ERROR: 0:34: 'gl_' : reserved built-in name: gl_vi4
+ERROR: 0:35: 'gl_' : reserved built-in name: gl_vj
+ERROR: 0:35: 'gl_' : reserved built-in name: gl_vk5
+ERROR: 0:36: 'gl_' : reserved built-in name: gl_vm2
+ERROR: 0:36: 'gl_' : reserved built-in name: gl_vm3
+ERROR: 0:37: 'gl_' : reserved built-in name: gl_vn8
+ERROR: 0:37: 'gl_' : reserved built-in name: gl_vp
 ERROR: 0:42: '' : boolean expression expected 
-ERROR: 0:43: 'gl_' : reserved built-in name 
+ERROR: 0:43: 'gl_' : reserved built-in name: gl_cond
 ERROR: 18 compilation errors.  No code generated.
 
 

@@ -77,3 +77,7 @@ layout(binding = 31) uniform sampler2D sampb5[2]; // ERROR, binding too big
 
 int fgfg(float f, mediump int i);
 int fgfg(float f, highp int i);
+
+out gl_PerVertex {
+    float gl_ClipDistance[4];
+};

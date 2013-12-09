@@ -43,3 +43,8 @@ void foo4()
     v4.x = 3.2;                // ERROR
     v4.xy;   // should have non-uniform type
 }
+
+out gl_PerVertex {
+    float gl_PointSize[1];  // ERROR, adding array
+    float gl_ClipDistance;  // ERROR, removing array
+};

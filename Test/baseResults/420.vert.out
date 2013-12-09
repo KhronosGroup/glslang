@@ -130,6 +130,7 @@ ERROR: node is still EOpNull!
 0:?     'sampb3' (layout(binding=32 ) uniform sampler2D)
 0:?     'sampb4' (layout(binding=31 ) uniform sampler2D)
 0:?     'sampb5' (layout(binding=31 ) uniform 2-element array of sampler2D)
+0:?     '__anon__3' (out block{gl_ClipDistance,})
 0:?     'gl_VertexID' (gl_VertexId int)
 0:?     'gl_InstanceID' (gl_InstanceId int)
 

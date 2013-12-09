@@ -74,7 +74,7 @@ public:
                       const char *szExtraInfoFormat, ...);
     void C_DECL  warn(TSourceLoc, const char *szReason, const char *szToken,
                       const char *szExtraInfoFormat, ...);
-    bool reservedErrorCheck(TSourceLoc, const TString&);
+    void reservedErrorCheck(TSourceLoc, const TString&);
     void reservedPpErrorCheck(TSourceLoc, const char* name, const char* op);
     bool lineContinuationCheck(TSourceLoc, bool endOfComment);
     bool builtInName(const TString&);
@@ -125,7 +125,7 @@ public:
     void parameterSamplerCheck(TSourceLoc, TStorageQualifier qualifier, const TType& type);
     bool containsSampler(const TType& type);
     TSymbol* redeclareBuiltinVariable(TSourceLoc, const TString&, const TQualifier&, const TShaderQualifiers&, bool& newDeclaration);
-    bool redeclareBuiltinBlock(TSourceLoc, TTypeList& typeList, const TString& blockName, const TString* instanceName, TArraySizes* arraySizes);
+    void redeclareBuiltinBlock(TSourceLoc, TTypeList& typeList, const TString& blockName, const TString* instanceName, TArraySizes* arraySizes);
     void paramCheckFix(TSourceLoc, const TStorageQualifier&, TType& type);
     void paramCheckFix(TSourceLoc, const TQualifier&, TType& type);
     void nestedBlockCheck(TSourceLoc);
@@ -134,6 +134,7 @@ public:
     void opaqueCheck(TSourceLoc, const TType&, const char* op);
     void structTypeCheck(TSourceLoc, TPublicType&);
     void inductiveLoopCheck(TSourceLoc, TIntermNode* init, TIntermLoop* loop);
+    void arrayLimitCheck(TSourceLoc, const TString&, int size);
     void limitCheck(TSourceLoc, int value, const char* limit, const char* feature);
 
     void inductiveLoopBodyCheck(TIntermNode*, int loopIndexId, TSymbolTable&);

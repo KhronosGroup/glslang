@@ -23,3 +23,19 @@ void foo()
     vec4 c = gl_Color;
     outVar = inVar;
 }
+
+in gl_block { // ERROR
+    int gl_i;
+} gl_name;
+
+in myBlock {
+    int gl_i;  // ERROR
+} gl_name;     // ERROR
+
+in gl_PerVertex {  // ERROR
+    vec4 gl_FragCoord;
+} gl_in[];
+
+in gl_PerVertex {  // ERROR
+    vec4 gl_FragCoord;
+};  // ERROR

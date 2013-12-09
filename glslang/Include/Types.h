@@ -828,9 +828,11 @@ public:
         if (structure) {
             s.append("{");
             for (size_t i = 0; i < structure->size(); ++i) {
-                s.append((*structure)[i].type->getFieldName());
-                if (i < structure->size()-1)
-                    s.append(",");
+                if ((*structure)[i].type->getBasicType() != EbtVoid) {
+                    s.append((*structure)[i].type->getFieldName());
+                    if (i < structure->size() - 1)
+                        s.append(",");
+                }
             }
             s.append("}");
         }
