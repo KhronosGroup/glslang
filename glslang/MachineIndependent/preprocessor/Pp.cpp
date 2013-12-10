@@ -473,28 +473,8 @@ int TPpContext::eval(int token, int precedence, bool shortCircuit, int& res, boo
                 token = currentInput->scan(this, currentInput, ppToken);
             }
         } else {
-            int macroReturn = MacroExpand(ppToken->atom, ppToken, 1);
-            if (macroReturn == 0) {
-                parseContext.error(ppToken->loc, "can't evaluate expression", "preprocessor evaluation", "");
-                err = true;
-                res = 0;
-
-                return token;
-            } else {
-                if (macroReturn == -1) {
-                    if (! shortCircuit && parseContext.profile == EEsProfile) {
-                        const char* message = "undefined macro in expression not allowed in es profile";
-                        const char* name = GetAtomString(ppToken->atom);
-                        if (parseContext.messages & EShMsgRelaxedErrors)
-                            parseContext.warn(ppToken->loc, message, "preprocessor evaluation", name);
-                        else
-                            parseContext.error(ppToken->loc, message, "preprocessor evaluation", name);
-                    }
-                }
-                token = currentInput->scan(this, currentInput, ppToken);
-
-                return eval(token, precedence, shortCircuit, res, err, ppToken);
-            }
+            token = evalToToken(token, shortCircuit, res, err, ppToken);
+            return eval(token, precedence, shortCircuit, res, err, ppToken);
         }
     } else if (token == CPP_INTCONSTANT) {
         res = ppToken->ival;
@@ -530,6 +510,10 @@ int TPpContext::eval(int token, int precedence, bool shortCircuit, int& res, boo
             return token;
         }
     }
+
+    token = evalToToken(token, shortCircuit, res, err, ppToken);
+
+    // Perform evaluation of binary operation, if there is one, otherwise we are done.
     while (! err) {
         if (token == ')' || token == '\n') 
             break;
@@ -553,6 +537,33 @@ int TPpContext::eval(int token, int precedence, bool shortCircuit, int& res, boo
         token = currentInput->scan(this, currentInput, ppToken);
         token = eval(token, binop[op].precedence, shortCircuit, res, err, ppToken);
         res = binop[op].op(leftSide, res);
+    }
+
+    return token;
+}
+
+// Expand macros, skipping empty expansions, to get to the first real token in those expansions.
+int TPpContext::evalToToken(int token, bool shortCircuit, int& res, bool& err, TPpToken* ppToken)
+{
+    while (token == CPP_IDENTIFIER && ppToken->atom != definedAtom) {
+        int macroReturn = MacroExpand(ppToken->atom, ppToken, true);
+        if (macroReturn == 0) {
+            parseContext.error(ppToken->loc, "can't evaluate expression", "preprocessor evaluation", "");
+            err = true;
+            res = 0;
+            break;
+        }
+        if (macroReturn == -1) {
+            if (! shortCircuit && parseContext.profile == EEsProfile) {
+                const char* message = "undefined macro in expression not allowed in es profile";
+                const char* name = GetAtomString(ppToken->atom);
+                if (parseContext.messages & EShMsgRelaxedErrors)
+                    parseContext.warn(ppToken->loc, message, "preprocessor evaluation", name);
+                else
+                    parseContext.error(ppToken->loc, message, "preprocessor evaluation", name);
+            }
+        }
+        token = currentInput->scan(this, currentInput, ppToken);
     }
 
     return token;
@@ -612,6 +623,10 @@ int TPpContext::CPPifdef(int defined, TPpToken* ppToken)
 // Handle #line
 int TPpContext::CPPline(TPpToken* ppToken) 
 {
+    // "#line must have, after macro substitution, one of the following forms:
+    // "#line line
+    // "#line line source-string-number"
+
     int token = currentInput->scan(this, currentInput, ppToken);
     if (token == '\n') {
         parseContext.error(ppToken->loc, "must by followed by an integral literal", "#line", "");
@@ -633,6 +648,7 @@ int TPpContext::CPPline(TPpToken* ppToken)
                 parseContext.setCurrentString(fileRes);
         }
     }
+
     token = extraTokenCheck(lineAtom, ppToken, token);
 
     return token;
@@ -886,7 +902,7 @@ TPpContext::TokenStream* TPpContext::PrescanMacroArg(TokenStream *a, TPpToken* p
     PushEofSrc();
     ReadFromTokenStream(a, 0, 0);
     while ((token = currentInput->scan(this, currentInput, ppToken)) > 0) {
-        if (token == CPP_IDENTIFIER && MacroExpand(ppToken->atom, ppToken, 0) == 1)
+        if (token == CPP_IDENTIFIER && MacroExpand(ppToken->atom, ppToken, false) == 1)
             continue;
         RecordToken(n, token, ppToken);
     }
@@ -952,13 +968,13 @@ int TPpContext::zero_scan(TPpContext* pp, InputSrc *inInput, TPpToken* ppToken)
 
 /*
 ** Check an identifier (atom) to see if it is a macro that should be expanded.
-** If it is, push an InputSrc that will produce the appropriate expansion
+** If it is, and defined, push an InputSrc that will produce the appropriate expansion
 ** and return 1.
-** If it is, but undefined, it should expand to 0, push an InputSrc that will 
+** If it is, but undefined, and expandUndef is requested, push an InputSrc that will 
 ** expand to 0 and return -1.
 ** Otherwise, return 0.
 */
-int TPpContext::MacroExpand(int atom, TPpToken* ppToken, int expandUndef)
+int TPpContext::MacroExpand(int atom, TPpToken* ppToken, bool expandUndef)
 {
     Symbol *sym = LookUpSymbol(atom);
     MacroInputSrc *in;

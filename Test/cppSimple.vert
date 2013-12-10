@@ -251,11 +251,18 @@ double f = f1;
 #define F2 7
 #line L1 + L2
 #error line should be 14014, string 7
-#line L1 + L2 F1 + F2
+#line L1 + L2 F1 + F2 //  antoeuh sat  comment
 #error line should be 14014, string 12
 #line L1 + L2 + F1 + F2
 #error line should be 14026, string 12
 #line 1234 F1 + F2 extra
+#define empty_extra
+#line 1235 F1 + F2 empty_extra
+#define moreEmpty empty_extra
+#line 1236 F1 + F2 moreEmpty empty_extra // okay, lots of nothin
+#line 1237 F1 + F2 moreEmpty empty_extra extra  // ERROR, 'extra'
+#line 1238 F1 + F2 moreEmpty empty_extra
+#line 1239 empty_extra F1 empty_extra + empty_extra F2 empty_extra moreEmpty empty_extra
 #line (20000)
 #error line should be 20001
 #line (20000+10)
@@ -287,6 +294,17 @@ void foo234()
 // space in middle is an error
 #define SPACE_IN_MIDDLE(a,b) space +in middle
 #define SPACE_IN_MIDDLE(a,b) space + in middle
+
+#define FIRSTPART 17
+#define SECONDPART + 5
+
+#if FIRSTPART SECONDPART == 22
+#error good evaluation 1
+#endif
+
+#if moreEmpty FIRSTPART moreEmpty SECONDPART moreEmpty == moreEmpty 22 moreEmpty
+#error good evaluation 2
+#endif
 
 #line 10000
 #if 1

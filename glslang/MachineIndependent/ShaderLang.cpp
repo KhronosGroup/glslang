@@ -376,7 +376,7 @@ bool DeduceVersionProfile(TInfoSink& infoSink, EShLanguage stage, bool versionNo
     }
 
     // A metecheck on the condition the compiler itself...
-    switch(version) {
+    switch (version) {
     case 100:
     case 300:
 

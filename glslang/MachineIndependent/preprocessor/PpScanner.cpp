@@ -744,7 +744,7 @@ const char* TPpContext::tokenize(TPpToken* ppToken)
             continue;
 
         // expand macros
-        if (token == CPP_IDENTIFIER && MacroExpand(ppToken->atom, ppToken, 0) == 1)
+        if (token == CPP_IDENTIFIER && MacroExpand(ppToken->atom, ppToken, false) == 1)
             continue;
 
         if (token == CPP_IDENTIFIER)

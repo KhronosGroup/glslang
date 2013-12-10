@@ -66,22 +66,54 @@ shell.
 Note: Despite appearances, the use of a DLL is currently disabled; it
 simply makes a standalone executable from a statically linked library.
 
-Basic external programmatic interface
--------------------------------------
+Programmatic Interfaces
+-----------------------
 
 Another piece of software can programmatically translate shaders to an AST 
-using the C-style ShInitialize(), ShCompile(), et. al. interface.  The main() in 
-StandAlone/StandAlone.cpp shows an example way of using these.
+using one of two different interfaces: 
+    - A new C++ class-oriented interface, or
+    - The original C functional interface
 
-The Sh*() interface takes a "compiler" call-back object, which it calls after 
-building call back that is passed the AST and can then execute a backend on it.
+The main() in StandAlone/StandAlone.cpp shows examples using both styles.
 
-The following is a simplified resulting run-time call stack:
+C++ Class Interface (new, preferred):
 
-    ShCompile(shader, compiler) -> compiler(AST) -> <back end>
+    This interface is in roughly the last 1/3 of ShaderLang.h.  It is in the 
+    glslang namespace and contains the following.
 
-In practice, ShCompile() takes shader strings, default version, and
-warning/error and other options for controling compilation.
+        const char* GetEsslVersionString();
+        const char* GetGlslVersionString();
+        bool InitializeProcess();
+        void FinalizeProcess();
+
+        class TShader
+            bool parse(...);
+            void setStrings(...);
+            const char* getInfoLog();
+
+        class TProgram
+            void addShader(...);
+            bool link(...);
+            const char* getInfoLog();
+            Reflection queries
+
+    See ShaderLang.h and the usage of it in StandAlone/StandAlone.cpp for more
+    details.
+            
+C Functional Interface (orginal):
+
+    This interface is in roughly the first 2/3 of ShaderLang.h, and referred to
+    as the Sh*() interface, as all the entry points start "Sh".
+
+    The Sh*() interface takes a "compiler" call-back object, which it calls after 
+    building call back that is passed the AST and can then execute a backend on it.
+
+    The following is a simplified resulting run-time call stack:
+
+        ShCompile(shader, compiler) -> compiler(AST) -> <back end>
+
+    In practice, ShCompile() takes shader strings, default version, and
+    warning/error and other options for controling compilation.
 
 Testing
 -------
@@ -100,7 +132,7 @@ missing, those tests just won't run.
 Basic Internal Operation
 ------------------------
 
- -  Initial lexical analysis is done be the preprocessor in
+ -  Initial lexical analysis is done by the preprocessor in
     MachineIndependent/Preprocessor, and then refined by a GLSL scanner
     in MachineIndependent/Scan.cpp.  There is currently no use of flex.
 

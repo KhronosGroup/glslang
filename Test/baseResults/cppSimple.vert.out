@@ -67,12 +67,15 @@ ERROR: 7:14014: '#error' : line should be 14014 , string 7
 ERROR: 12:14014: '#error' : line should be 14014 , string 12  
 ERROR: 12:14026: '#error' : line should be 14026 , string 12  
 ERROR: 12:1234: '#line' : unexpected tokens following directive 
+ERROR: 12:1237: '#line' : unexpected tokens following directive 
 ERROR: 12:20001: '#error' : line should be 20001  
 ERROR: 12:20011: '#error' : line should be 20011  
 ERROR: 12:20021: '#error' : line should be 20021  
 ERROR: 12:20046: '#define' : Macro redefined; different substitutions: SPACE_IN_MIDDLE
+ERROR: 12:20052: '#error' : good evaluation 1  
+ERROR: 12:20056: '#error' : good evaluation 2  
 ERROR: 12:10003: '' : missing #endif 
-ERROR: 72 compilation errors.  No code generated.
+ERROR: 75 compilation errors.  No code generated.
 
 
 ERROR: node is still EOpNull!

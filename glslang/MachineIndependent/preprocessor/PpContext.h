@@ -247,6 +247,7 @@ protected:
     int CPPelse(int matchelse, TPpToken * ppToken);
     int extraTokenCheck(int atom, TPpToken* ppToken, int token);
     int eval(int token, int precedence, bool shortCircuit, int& res, bool& err, TPpToken * ppToken);
+    int evalToToken(int token, bool shortCircuit, int& res, bool& err, TPpToken * ppToken);
     int CPPif (TPpToken * ppToken); 
     int CPPifdef(int defined, TPpToken * ppToken);
     int CPPline(TPpToken * ppToken); 
@@ -260,7 +261,7 @@ protected:
     TokenStream* PrescanMacroArg(TokenStream *a, TPpToken * ppToken);
     static int macro_scan(TPpContext* pp, InputSrc *inInput, TPpToken * ppToken); 
     static int zero_scan(TPpContext* pp, InputSrc *inInput, TPpToken * ppToken); 
-    int MacroExpand(int atom, TPpToken* ppToken, int expandUndef);
+    int MacroExpand(int atom, TPpToken* ppToken, bool expandUndef);
 
     //
     // from PpSymbols.cpp
