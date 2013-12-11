@@ -91,7 +91,7 @@ void TIntermediate::merge(TInfoSink& infoSink, TIntermediate& unit)
     else if (vertices != unit.vertices)
         error(infoSink, "Contradictory layout max_vertices values");
 
-    if (vertexSpacing == ElgNone)
+    if (vertexSpacing == EvsNone)
         vertexSpacing = unit.vertexSpacing;
     else if (vertexSpacing != unit.vertexSpacing)
         error(infoSink, "Contradictory input vertex spacing");

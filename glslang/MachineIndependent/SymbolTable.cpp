@@ -322,11 +322,11 @@ TSymbolTableLevel* TSymbolTableLevel::clone() const
                 TVariable* container = anon->getAnonContainer().clone();
                 container->changeName(NewPoolTString(""));
                 // insert the whole container
-                symTableLevel->insert(*container);
+                symTableLevel->insert(*container, false);
                 containerCopied[anon->getAnonId()] = true;
             }
         } else
-            symTableLevel->insert(*iter->second->clone());
+            symTableLevel->insert(*iter->second->clone(), false);
     }
 
     return symTableLevel;
@@ -338,6 +338,7 @@ void TSymbolTable::copyTable(const TSymbolTable& copyOf)
 
     uniqueId = copyOf.uniqueId;
     noBuiltInRedeclarations = copyOf.noBuiltInRedeclarations;
+    separateNameSpaces = copyOf.separateNameSpaces;
     for (unsigned int i = copyOf.adoptedLevels; i < copyOf.table.size(); ++i)
         table.push_back(copyOf.table[i]->clone());
 }

@@ -2904,6 +2904,11 @@ const TFunction* TParseContext::findFunction(TSourceLoc loc, const TFunction& ca
 {
     const TFunction* function = 0;
 
+    if (symbolTable.isFunctionNameVariable(call.getName())) {
+        error(loc, "can't use function syntax on variable", call.getName().c_str(), "");
+        return 0;
+    }
+
     if (profile == EEsProfile || version < 120)
         function = findFunctionExact(loc, call, builtIn);
     else if (version < 400)

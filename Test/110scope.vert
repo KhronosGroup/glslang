@@ -1,11 +1,11 @@
-#version 100
+#version 110
 
 int f(int a, int b, int c)
 {
 	int a = b;  // ERROR, redefinition
 
     {
-		float a = float(a) + 1.0;
+		float a = float(a) + 1.0; // okay
     }
 
 	return a;
@@ -14,15 +14,15 @@ int f(int a, int b, int c)
 int f(int a, int b, int c);  // okay to redeclare
 
 bool b;
-float b(int a);      // ERROR: redefinition
+float b(int a);      // okay, b and b() are different
 
 float c(int a);
-bool c;              // ERROR: redefinition
+bool c;              // okay, and c() are different
 
-float f;             // ERROR: redefinition
-float tan;           // okay, built-in is in an outer scope
-float sin(float x);  // ERROR: can't redefine built-in functions
-float cos(float x)   // ERROR: can't redefine built-in functions
+float f;             // okay f and f() are different
+float tan;           // okay, hides built-in function
+float sin(float x);  // okay, can redefine built-in functions
+float cos(float x)   // okay, can redefine built-in functions
 {
 	return 1.0;
 }
@@ -31,19 +31,19 @@ bool radians(bool x) // okay, can overload built-in functions
     return true;
 }
 
-invariant gl_Position;
+
 
 void main()
 {
-    int g();    // ERROR: no local function declarations
-	g();
+    int g();    // okay
+    g();
 
-    float sin;  // okay
-	sin;
-    sin(0.7);  // ERROR, use of hidden function
+    float sin; // okay
+    sin;
+    sin(0.7);  // okay
     f(1,2,3);
 
-    float f;    // hides f()
+    float f;
     f = 3.0;
 
     gl_Position = vec4(f);
@@ -70,7 +70,5 @@ void main()
     }
 
     int degrees;
-    degrees(3.2);  // ERROR, use of hidden built-in function
+    degrees(3.2);
 }
-
-varying struct SSS { float f; } s; // ERROR

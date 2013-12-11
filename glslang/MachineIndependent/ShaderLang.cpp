@@ -170,6 +170,8 @@ void InitializeStageSymbolTable(TBuiltIns& builtIns, int version, EProfile profi
     IdentifyBuiltIns(version, profile, language, *symbolTables[language]);
     if (profile == EEsProfile && version >= 300)
         (*symbolTables[language]).setNoBuiltInRedeclarations();
+    if (version == 110)
+        (*symbolTables[language]).setSeparateNameSpaces();
 }
 
 //

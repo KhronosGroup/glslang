@@ -14,7 +14,7 @@ ERROR: 0:32: 'length' : method does not accept any arguments
 ERROR: 0:33: 'flizbit' : only the length method is supported for array 
 ERROR: 0:33: '=' :  cannot convert from '7-element array of float' to 'int'
 ERROR: 0:34: 'flizbit' : only the length method is supported for array 
-ERROR: 0:34: 'f' : no matching overloaded function found 
+ERROR: 0:34: 'f' : can't use function syntax on variable 
 ERROR: 0:34: 'a4' : redefinition 
 ERROR: 0:35: 'arrays of arrays' : not supported with this profile: none
 ERROR: 0:36: 'arrays of arrays' : not supported with this profile: none
@@ -38,13 +38,14 @@ ERROR: 0:57: 'float' : overloaded functions must have the same return type
 ERROR: 0:87: 'overloadC' : no matching overloaded function found 
 ERROR: 0:90: 'overloadC' : no matching overloaded function found 
 ERROR: 0:95: 'overloadD' : ambiguous function signature match: multiple signatures match under implicit type conversion 
+ERROR: 0:98: 'overloadB' : can't use function syntax on variable 
 ERROR: 0:106: 'overloadC' : no matching overloaded function found 
 ERROR: 0:107: 'overloadE' : no matching overloaded function found 
 ERROR: 0:108: 'overloadE' : no matching overloaded function found 
 ERROR: 0:111: 'overloadE' : no matching overloaded function found 
 ERROR: 0:117: 'overloadF' : no matching overloaded function found 
 ERROR: 0:121: 'gl_TexCoord array size' : must be less than gl_MaxTextureCoords (32)
-ERROR: 45 compilation errors.  No code generated.
+ERROR: 46 compilation errors.  No code generated.
 
 
 ERROR: node is still EOpNull!
@@ -138,10 +139,8 @@ ERROR: node is still EOpNull!
 0:95      Function Call: overloadD(f1;i1; (3-component vector of float)
 0:95        'i' (int)
 0:95        'i' (int)
-0:98      Function Call: overloadB(f1;f1; (2-component vector of float)
-0:98        Constant:
-0:98          1 (const int)
-0:98        'i' (int)
+0:98      Constant:
+0:98        0.000000
 0:100      Constant:
 0:100        0.000000
 0:101      Function Call: texture2D(s21;vf2; (4-component vector of float)

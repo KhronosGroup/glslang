@@ -16,6 +16,9 @@ int f(int a, int b, int c);  // okay to redeclare
 bool b;
 float b(int a);      // ERROR: redefinition
 
+float c(int a);
+bool c;              // ERROR: redefinition
+
 float f;             // ERROR: redefinition
 float tan;           // okay, hides built-in function
 float sin(float x);  // okay, can redefine built-in functions
@@ -37,7 +40,7 @@ void main()
 
     float sin; // okay
     sin;
-
+    sin(0.7);  // ERROR, use of hidden function
     f(1,2,3);
 
     float f;    // hides f()
@@ -65,4 +68,7 @@ void main()
         S S = S(0); // 'S' is only visible as a struct and constructor 
         S.x;        // 'S' is now visible as a variable
     }
+
+    int degrees;
+    degrees(3.2);  // ERROR, use of hidden built-in function
 }

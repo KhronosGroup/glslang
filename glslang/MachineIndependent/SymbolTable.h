@@ -283,7 +283,7 @@ public:
     TSymbolTableLevel() : defaultPrecision(0), anonId(0) { }
 	~TSymbolTableLevel();
 
-    bool insert(TSymbol& symbol)
+    bool insert(TSymbol& symbol, bool separateNameSpaces)
     {
         //
         // returning true means symbol was added to the table with no semantic errors
@@ -316,7 +316,7 @@ public:
             const TString& insertName = symbol.getMangledName();
             if (symbol.getAsFunction()) {
                 // make sure there isn't a variable of this name
-                if (level.find(name) != level.end())
+                if (! separateNameSpaces && level.find(name) != level.end())
                     return false;
 
                 // insert, and whatever happens is okay
@@ -362,6 +362,34 @@ public:
             if (parenAt != candidateName.npos && candidateName.compare(0, parenAt, name) == 0)
 
                 return true;
+        }
+
+        return false;
+    }
+
+    // See if there is a variable at this level having the given non-function-style name.
+    // Return true if name is found, and set variable to true if the name was a variable.
+    bool findFunctionVariableName(const TString& name, bool& variable) const
+    {
+        tLevel::const_iterator candidate = level.lower_bound(name);
+        if (candidate != level.end()) {
+            const TString& candidateName = (*candidate).first;
+            TString::size_type parenAt = candidateName.find_first_of('(');
+            if (parenAt == candidateName.npos) {
+                // not a mangled name
+                if (candidateName == name) {
+                    // found a variable name match
+                    variable = true;
+                    return true;
+                }
+            } else {
+                // a mangled name
+                if (candidateName.compare(0, parenAt, name) == 0) {
+                    // found a function name match
+                    variable = false;
+                    return true;
+                }
+            }
         }
 
         return false;
@@ -415,7 +443,7 @@ protected:
 
 class TSymbolTable {
 public:
-    TSymbolTable() : uniqueId(0), noBuiltInRedeclarations(false), adoptedLevels(0)
+    TSymbolTable() : uniqueId(0), noBuiltInRedeclarations(false), separateNameSpaces(false), adoptedLevels(0)
     {
         //
         // This symbol table cannot be used until push() is called.
@@ -438,6 +466,7 @@ public:
         }
         uniqueId = symTable.uniqueId;
         noBuiltInRedeclarations = symTable.noBuiltInRedeclarations;
+        separateNameSpaces = symTable.separateNameSpaces;
     }
 
     //
@@ -459,6 +488,7 @@ public:
     bool atGlobalLevel()  { return isGlobalLevel(currentLevel()); }
 
     void setNoBuiltInRedeclarations() { noBuiltInRedeclarations = true; }
+    void setSeparateNameSpaces() { separateNameSpaces = true; }
     
     void push()
     {
@@ -477,7 +507,7 @@ public:
         symbol.setUniqueId(++uniqueId);
 
         // make sure there isn't a function of this variable name
-        if (! symbol.getAsFunction() && table[currentLevel()]->hasFunctionName(symbol.getName()))
+        if (! separateNameSpaces && ! symbol.getAsFunction() && table[currentLevel()]->hasFunctionName(symbol.getName()))
             return false;
             
         // check for not overloading or redefining a built-in function
@@ -490,7 +520,7 @@ public:
             }
         }
 
-        return table[currentLevel()]->insert(symbol);
+        return table[currentLevel()]->insert(symbol, separateNameSpaces);
     }
 
     //
@@ -517,12 +547,12 @@ public:
     TSymbol* copyUp(TSymbol* shared)
     {
         TSymbol* copy = copyUpDeferredInsert(shared);
-        table[globalLevel]->insert(*copy);
+        table[globalLevel]->insert(*copy, separateNameSpaces);
         if (shared->getAsVariable())
             return copy;
         else {
             // get copy of an anonymous member's container
-            table[currentLevel()]->insert(*copy);
+            table[currentLevel()]->insert(*copy, separateNameSpaces);
             // return the copy of the anonymous member
             return table[currentLevel()]->find(shared->getName());
         }
@@ -543,6 +573,23 @@ public:
             *currentScope = isGlobalLevel(currentLevel()) || level == currentLevel();  // consider shared levels as "current scope" WRT user globals
 
         return symbol;
+    }
+
+    bool isFunctionNameVariable(const TString& name) const
+    {
+        if (separateNameSpaces)
+            return false;
+
+        int level = currentLevel();
+        do {
+            bool variable;
+            bool found = table[level]->findFunctionVariableName(name, variable);
+            if (found)
+                return variable;
+            --level;
+        } while (level >= 0);
+
+        return false;
     }
 
     void findFunctionNameList(const TString& name, TVector<TFunction*>& list, bool& builtIn)
@@ -606,6 +653,7 @@ protected:
     std::vector<TSymbolTableLevel*> table;
     int uniqueId;     // for unique identification in code generation
     bool noBuiltInRedeclarations;
+    bool separateNameSpaces;
     unsigned int adoptedLevels;
 };
 
