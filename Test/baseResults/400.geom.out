@@ -78,4 +78,8 @@ Linked geometry stage:
 
 ERROR: Linking geometry stage: At least one geometry shader must specify an output layout primitive
 
+invocations = 4
+max_vertices = 127
+input primitive = triangles
+output primitive = none
 

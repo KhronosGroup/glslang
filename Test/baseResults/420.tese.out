@@ -16,6 +16,9 @@ ERROR: 0:58: 'initializer list' : wrong number of structure members
 ERROR: 13 compilation errors.  No code generated.
 
 
+input primitive = none
+vertex spacing = none
+triangle order = none
 ERROR: node is still EOpNull!
 0:4  Sequence
 0:4    move second child to first child (2X2 matrix of float)
@@ -160,5 +163,9 @@ ERROR: node is still EOpNull!
 
 Linked tessellation evaluation stage:
 
+ERROR: Linking tessellation evaluation stage: At least one tessellation shader must specify an input layout primitive
 
+input primitive = none
+vertex spacing = equal_spacing
+triangle order = ccw
 

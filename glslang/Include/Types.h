@@ -221,6 +221,19 @@ enum TLayoutGeometry {
     ElgIsolines,
 };
 
+enum TVertexSpacing {
+    EvsNone,
+    EvsEqual,
+    EvsFractionalEven,
+    EvsFractionalOdd
+};
+
+enum TVertexOrder {
+    EvoNone,
+    EvoCw,
+    EvoCcw
+};
+
 class TQualifier {
 public:
     void clear()
@@ -232,7 +245,7 @@ public:
         smooth    = false;
         flat      = false;
         nopersp   = false;
-        patch     = false;
+        patch     = false;  // TODO 4.0 tessellation: implement semantics of patch (all of 4.3 stuff...), including arrayed inputs
         sample    = false;
         shared    = false;
         coherent  = false;
@@ -405,6 +418,23 @@ public:
         default:                    return "none";
         }
     }
+    static const char* getVertexSpacingString(TVertexSpacing spacing)
+    {
+        switch (spacing) {
+        case EvsEqual:              return "equal_spacing";
+        case EvsFractionalEven:     return "fractional_even_spacing";
+        case EvsFractionalOdd:      return "fractional_odd_spacing";
+        default:                    return "none";
+        }
+    }
+    static const char* getVertexOrderString(TVertexOrder order)
+    {
+        switch (order) {
+        case EvoCw:                 return "cw";
+        case EvoCcw:                return "ccw";
+        default:                    return "none";
+        }
+    }
     static int mapGeometryToSize(TLayoutGeometry geometry)
     {
         switch (geometry) {
@@ -421,11 +451,14 @@ public:
 // Qualifiers that don't need to be keep per object.  They have shader scope, not object scope.
 // So, they will not be part of TType, TQualifier, etc.
 struct TShaderQualifiers {
-    TLayoutGeometry geometry; // geometry shader in/out primitives
+    TLayoutGeometry geometry; // geometry/tessellation shader in/out primitives
     bool pixelCenterInteger;  // fragment shader
     bool originUpperLeft;     // fragment shader
     int invocations;          // 0 means no declaration
-    int maxVertices;
+    int vertices;             // both for tessellation "vertices" and geometry "max_vertices"
+    TVertexSpacing spacing;
+    TVertexOrder order;
+    bool pointMode;
 
     void init()
     {
@@ -433,7 +466,10 @@ struct TShaderQualifiers {
         originUpperLeft = false;
         pixelCenterInteger = false;
         invocations = 0;        // 0 means no declaration
-        maxVertices = 0;
+        vertices = 0;
+        spacing = EvsNone;
+        order = EvoNone;
+        pointMode = false;
     }
 };
 

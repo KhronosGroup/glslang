@@ -2061,7 +2061,7 @@ void TParseContext::nonInitConstCheck(TSourceLoc loc, TString& identifier, TType
 //
 TSymbol* TParseContext::redeclareBuiltinVariable(TSourceLoc loc, const TString& identifier, const TQualifier& qualifier, const TShaderQualifiers& publicType, bool& newDeclaration)
 {
-    if (profile == EEsProfile || ! builtInName(identifier) || symbolTable.atBuiltInLevel())
+    if (profile == EEsProfile || ! builtInName(identifier) || symbolTable.atBuiltInLevel() || ! symbolTable.atGlobalLevel())
         return 0;
 
     // Potentially redeclaring a built-in variable...
@@ -2589,7 +2589,52 @@ void TParseContext::setLayoutQualifier(TSourceLoc loc, TPublicType& publicType, 
                 return;
             }
         } else {
-            // TODO: 4.0 tessellation evaluation
+            // tessellation evaluation
+            // TODO: tessellation: semantic check these are on the in qualifier only
+
+            // input primitive
+            if (id == TQualifier::getGeometryString(ElgTriangles)) {
+                publicType.shaderQualifiers.geometry = ElgTriangles;
+                return;
+            }
+            if (id == TQualifier::getGeometryString(ElgQuads)) {
+                publicType.shaderQualifiers.geometry = ElgQuads;
+                return;
+            }
+            if (id == TQualifier::getGeometryString(ElgIsolines)) {
+                publicType.shaderQualifiers.geometry = ElgIsolines;
+                return;
+            }
+
+            // vertex spacing
+            if (id == TQualifier::getVertexSpacingString(EvsEqual)) {
+                publicType.shaderQualifiers.spacing = EvsEqual;
+                return;
+            }
+            if (id == TQualifier::getVertexSpacingString(EvsFractionalEven)) {
+                publicType.shaderQualifiers.spacing = EvsFractionalEven;
+                return;
+            }
+            if (id == TQualifier::getVertexSpacingString(EvsFractionalOdd)) {
+                publicType.shaderQualifiers.spacing = EvsFractionalOdd;
+                return;
+            }
+
+            // triangle order
+            if (id == TQualifier::getVertexOrderString(EvoCw)) {
+                publicType.shaderQualifiers.order = EvoCw;
+                return;
+            }
+            if (id == TQualifier::getVertexOrderString(EvoCcw)) {
+                publicType.shaderQualifiers.order = EvoCcw;
+                return;
+            }
+
+            // point mode
+            if (id == "point_mode") {
+                publicType.shaderQualifiers.pointMode = true;
+                return;
+            }
         }
     }
     if (language == EShLangFragment) {
@@ -2636,14 +2681,30 @@ void TParseContext::setLayoutQualifier(TSourceLoc loc, TPublicType& publicType, 
             publicType.qualifier.layoutBinding = value;
         return;
     }
-    if (language == EShLangGeometry) {
+    switch (language) {
+    case EShLangVertex:
+        break;
+
+    case EShLangTessControl:
+        if (id == "vertices") {
+            // TODO: tessellation: implement gl_out[] array sizing based on this
+            // TODO: tessellation: semantic check this is on the out qualifier only
+            publicType.shaderQualifiers.vertices = value;
+            return;
+        }
+        break;
+
+    case EShLangTessEvaluation:
+        break;
+
+    case EShLangGeometry:
         if (id == "invocations") {
             profileRequires(loc, ECompatibilityProfile | ECoreProfile, 400, 0, "invocations");
             publicType.shaderQualifiers.invocations = value;
             return;
         }
         if (id == "max_vertices") {
-            publicType.shaderQualifiers.maxVertices = value;
+            publicType.shaderQualifiers.vertices = value;
             if (value > resources.maxGeometryOutputVertices)
                 error(loc, "too large, must be less than gl_MaxGeometryOutputVertices", "max_vertices", "");
             return;
@@ -2652,7 +2713,18 @@ void TParseContext::setLayoutQualifier(TSourceLoc loc, TPublicType& publicType, 
             publicType.qualifier.layoutStream = value;
             return;
         }
+        break;
+
+    case EShLangFragment:
+        break;
+
+    case EShLangCompute:
+        break;
+
+	default:
+        break;
     }
+
     error(loc, "there is no such layout identifier for this stage taking an assigned value", id.c_str(), "");
 }
 
@@ -2666,8 +2738,8 @@ void TParseContext::mergeShaderLayoutQualifiers(TSourceLoc loc, TShaderQualifier
         dst.geometry = src.geometry;
     if (src.invocations != 0)
         dst.invocations = src.invocations;
-    if (src.maxVertices != 0)
-        dst.maxVertices = src.maxVertices;
+    if (src.vertices != 0)
+        dst.vertices = src.vertices;
     if (src.pixelCenterInteger)
         dst.pixelCenterInteger = src.pixelCenterInteger;
     if (src.originUpperLeft)
@@ -2819,7 +2891,7 @@ void TParseContext::checkNoShaderLayouts(TSourceLoc loc, const TShaderQualifiers
         error(loc, message, TQualifier::getGeometryString(shaderQualifiers.geometry), "");
     if (shaderQualifiers.invocations > 0)
         error(loc, message, "invocations", "");
-    if (shaderQualifiers.maxVertices > 0)
+    if (shaderQualifiers.vertices > 0)
         error(loc, message, "max_vertices", "");
 }
 
@@ -3604,9 +3676,13 @@ void TParseContext::invariantCheck(TSourceLoc loc, const TType& type, const TStr
 //
 void TParseContext::updateStandaloneQualifierDefaults(TSourceLoc loc, const TPublicType& publicType)
 {
-    if (publicType.shaderQualifiers.maxVertices) {
-        if (! intermediate.setMaxVertices(publicType.shaderQualifiers.maxVertices))
-            error(loc, "cannot change previously set layout value", "max_vertices", "");
+    if (publicType.shaderQualifiers.vertices) {
+        if (! intermediate.setVertices(publicType.shaderQualifiers.vertices)) {            
+            if (language == EShLangGeometry)
+                error(loc, "cannot change previously set layout value", "max_vertices", "");
+            else
+                error(loc, "cannot change previously set layout value", "vertices", "");
+        }
     }
     if (publicType.shaderQualifiers.invocations) {
         if (! intermediate.setInvocations(publicType.shaderQualifiers.invocations))
@@ -3620,6 +3696,8 @@ void TParseContext::updateStandaloneQualifierDefaults(TSourceLoc loc, const TPub
             case ElgLinesAdjacency:
             case ElgTriangles:
             case ElgTrianglesAdjacency:
+            case ElgQuads:
+            case ElgIsolines:
                 if (intermediate.setInputPrimitive(publicType.shaderQualifiers.geometry))
                     checkInputArrayConsistency(loc);
                 else
@@ -3642,6 +3720,16 @@ void TParseContext::updateStandaloneQualifierDefaults(TSourceLoc loc, const TPub
         } else
             error(loc, "cannot be used here", TQualifier::getGeometryString(publicType.shaderQualifiers.geometry), "");
     }
+    if (publicType.shaderQualifiers.spacing != EvsNone) {
+        if (! intermediate.setVertexSpacing(publicType.shaderQualifiers.spacing))
+            error(loc, "cannot change previously set vertex spacing", TQualifier::getVertexSpacingString(publicType.shaderQualifiers.spacing), "");
+    }
+    if (publicType.shaderQualifiers.order != EvoNone) {
+        if (! intermediate.setVertexOrder(publicType.shaderQualifiers.order))
+            error(loc, "cannot change previously set vertex order", TQualifier::getVertexOrderString(publicType.shaderQualifiers.order), "");
+    }
+    if (publicType.shaderQualifiers.pointMode)
+        intermediate.setPointMode();
 
     const TQualifier& qualifier = publicType.qualifier;
 

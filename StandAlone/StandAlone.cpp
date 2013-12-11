@@ -123,7 +123,7 @@ const char* DefaultConfig =
     "MaxVertexUniformComponents 4096\n"
     "MaxVaryingFloats 64\n"
     "MaxVertexTextureImageUnits 32\n"
-    "MaxCombinedTextureImageUnits 32\n"
+    "MaxCombinedTextureImageUnits 80\n"
     "MaxTextureImageUnits 32\n"
     "MaxFragmentUniformComponents 4096\n"
     "MaxDrawBuffers 32\n"

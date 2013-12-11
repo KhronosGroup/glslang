@@ -577,22 +577,46 @@ bool OutputSwitch(bool /* preVisit */, TIntermSwitch* node, TIntermTraverser* it
 // Individual functions can be initialized to 0 to skip processing of that
 // type of node.  It's children will still be processed.
 //
-void TIntermediate::outputTree(TInfoSink& infoSink)
+void TIntermediate::output(TInfoSink& infoSink, bool tree)
 {
-    if (language == EShLangGeometry) {
+    switch (language) {
+    case EShLangVertex:
+        break;
+
+    case EShLangTessControl:
+        infoSink.debug << "vertices = " << vertices << "\n";
+        break;
+
+    case EShLangTessEvaluation:
+        infoSink.debug << "input primitive = " << TQualifier::getGeometryString(inputPrimitive) << "\n";
+        infoSink.debug << "vertex spacing = " << TQualifier::getVertexSpacingString(vertexSpacing) << "\n";
+        infoSink.debug << "triangle order = " << TQualifier::getVertexOrderString(vertexOrder) << "\n";
+        if (pointMode)
+            infoSink.debug << "using point mode\n";
+        break;
+
+    case EShLangGeometry:
         infoSink.debug << "invocations = " << invocations << "\n";
-        infoSink.debug << "max_vertices = " << maxVertices << "\n";
+        infoSink.debug << "max_vertices = " << vertices << "\n";
         infoSink.debug << "input primitive = " << TQualifier::getGeometryString(inputPrimitive) << "\n";
         infoSink.debug << "output primitive = " << TQualifier::getGeometryString(outputPrimitive) << "\n";
-    }
-    if (language == EShLangFragment) {
+        break;
+
+    case EShLangFragment:
         if (pixelCenterInteger)
             infoSink.debug << "gl_FragCoord pixel center is integer\n";
         if (originUpperLeft)
             infoSink.debug << "gl_FragCoord origin is upper left\n";
+        break;
+
+    case EShLangCompute:
+        break;
+
+	default:
+        break;
     }
 
-    if (treeRoot == 0)
+    if (treeRoot == 0 || ! tree)
         return;
 
     TOutputTraverser it(infoSink);

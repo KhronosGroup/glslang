@@ -110,8 +110,8 @@ Shader Functionality to Implement/Finish
         - patch in, patch out
         - input/output arrays
           - unsized array sizing to gl_MaxPatchVertices, including gl_in/gl_out
-        - built-in variables, functions, and constants verification
-        - layout qualifiers for primitive types
+        + built-in variables, functions, and constants verification
+        + layout qualifiers for primitive types
       - Polymorphic functions: Run-time selection of what function gets called, through the new keyword subroutine.
       - 64bit floating point numbers with the new type keyword double.  Built-in functions extended for doubles, and new function matching rules are added to both allow implicit conversions when calling a function and preserve most existing function matching once doubles are included. 
       + More implicit conversions
@@ -143,7 +143,7 @@ Shader Functionality to Implement/Finish
       + Add streams out from geometry shader. Output can be directed to streams through
          + EmitStreamVertex() and EndStreamPrimitive().
     GLSL 4.1
-      - Support for partitioning shaders into multiple programs to provide light-weight mixing of different shader stages.
+      + Support for partitioning shaders into multiple programs to provide light-weight mixing of different shader stages.
             (GL_ARB_separate_shader_objects)
         - layout qualifiers
         - redeclaration of input/output blocks

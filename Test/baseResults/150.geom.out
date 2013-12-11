@@ -146,4 +146,8 @@ ERROR: node is still EOpNull!
 Linked geometry stage:
 
 
+invocations = 4
+max_vertices = 300
+input primitive = lines_adjancency
+output primitive = triangle_strip
 

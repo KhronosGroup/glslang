@@ -1,19 +1,118 @@
 400.tese
 Warning, version 400 is not yet complete; some version-specific features are present, but many are missing.
-ERROR: 0:5: 'barrier' : no matching overloaded function found 
-ERROR: 1 compilation errors.  No code generated.
+ERROR: 0:3: 'vertices' : there is no such layout identifier for this stage taking an assigned value 
+ERROR: 0:5: 'triangles' : cannot change previously set input primitive 
+ERROR: 0:6: 'isolines' : cannot change previously set input primitive 
+ERROR: 0:9: 'ccw' : cannot change previously set vertex order 
+ERROR: 0:12: 'equal_spacing' : cannot change previously set vertex spacing 
+ERROR: 0:13: 'fractional_even_spacing' : cannot change previously set vertex spacing 
+ERROR: 0:19: 'barrier' : no matching overloaded function found 
+ERROR: 7 compilation errors.  No code generated.
 
 
+input primitive = quads
+vertex spacing = fractional_odd_spacing
+triangle order = cw
+using point mode
 ERROR: node is still EOpNull!
-0:3  Function Definition: main( (void)
-0:3    Function Parameters: 
-0:5    Sequence
-0:5      Constant:
-0:5        0.000000
+0:17  Function Definition: main( (void)
+0:17    Function Parameters: 
+0:19    Sequence
+0:19      Constant:
+0:19        0.000000
+0:21      Sequence
+0:21        move second child to first child (int)
+0:21          'a' (int)
+0:21          Constant:
+0:21            1512 (const int)
+0:29      Sequence
+0:29        move second child to first child (4-component vector of float)
+0:29          'p' (4-component vector of float)
+0:29          gl_Position: direct index for structure (4-component vector of float)
+0:29            direct index (block{gl_Position,gl_PointSize,gl_ClipDistance})
+0:29              'gl_in' (in 32-element array of block{gl_Position,gl_PointSize,gl_ClipDistance})
+0:29              Constant:
+0:29                1 (const int)
+0:29            Constant:
+0:29              0 (const int)
+0:30      Sequence
+0:30        move second child to first child (float)
+0:30          'ps' (float)
+0:30          gl_PointSize: direct index for structure (float)
+0:30            direct index (block{gl_Position,gl_PointSize,gl_ClipDistance})
+0:30              'gl_in' (in 32-element array of block{gl_Position,gl_PointSize,gl_ClipDistance})
+0:30              Constant:
+0:30                1 (const int)
+0:30            Constant:
+0:30              1 (const int)
+0:31      Sequence
+0:31        move second child to first child (float)
+0:31          'cd' (float)
+0:31          direct index (float)
+0:31            gl_ClipDistance: direct index for structure (unsized array of float)
+0:31              direct index (block{gl_Position,gl_PointSize,gl_ClipDistance})
+0:31                'gl_in' (in 32-element array of block{gl_Position,gl_PointSize,gl_ClipDistance})
+0:31                Constant:
+0:31                  1 (const int)
+0:31              Constant:
+0:31                2 (const int)
+0:31            Constant:
+0:31              2 (const int)
+0:33      Sequence
+0:33        move second child to first child (int)
+0:33          'pvi' (int)
+0:33          'gl_PatchVerticesIn' (in int)
+0:34      Sequence
+0:34        move second child to first child (int)
+0:34          'pid' (int)
+0:34          'gl_PrimitiveID' (in int)
+0:35      Sequence
+0:35        move second child to first child (3-component vector of float)
+0:35          'tc' (3-component vector of float)
+0:35          'gl_TessCoord' (in 3-component vector of float)
+0:36      Sequence
+0:36        move second child to first child (float)
+0:36          'tlo' (float)
+0:36          direct index (patch float)
+0:36            'gl_TessLevelOuter' (patch in 4-element array of float)
+0:36            Constant:
+0:36              3 (const int)
+0:37      Sequence
+0:37        move second child to first child (float)
+0:37          'tli' (float)
+0:37          direct index (patch float)
+0:37            'gl_TessLevelInner' (patch in 2-element array of float)
+0:37            Constant:
+0:37              1 (const int)
+0:39      move second child to first child (4-component vector of float)
+0:39        gl_Position: direct index for structure (gl_Position 4-component vector of float)
+0:39          '__anon__1' (out block{gl_Position,gl_PointSize,gl_ClipDistance})
+0:39          Constant:
+0:39            0 (const uint)
+0:39        'p' (4-component vector of float)
+0:40      move second child to first child (float)
+0:40        gl_PointSize: direct index for structure (gl_PointSize float)
+0:40          '__anon__1' (out block{gl_Position,gl_PointSize,gl_ClipDistance})
+0:40          Constant:
+0:40            1 (const uint)
+0:40        'ps' (float)
+0:41      move second child to first child (float)
+0:41        direct index (float)
+0:41          gl_ClipDistance: direct index for structure (unsized array of float)
+0:41            '__anon__1' (out block{gl_Position,gl_PointSize,gl_ClipDistance})
+0:41            Constant:
+0:41              2 (const uint)
+0:41          Constant:
+0:41            2 (const int)
+0:41        'cd' (float)
 0:?   Linker Objects
 
 
 Linked tessellation evaluation stage:
 
 
+input primitive = quads
+vertex spacing = fractional_odd_spacing
+triangle order = cw
+using point mode
 

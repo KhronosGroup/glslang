@@ -80,14 +80,29 @@ void TIntermediate::merge(TInfoSink& infoSink, TIntermediate& unit)
         inputPrimitive = unit.inputPrimitive;
     else if (inputPrimitive != unit.inputPrimitive)
         error(infoSink, "Contradictory input layout primitives");
+    
     if (outputPrimitive == ElgNone)
         outputPrimitive = unit.outputPrimitive;
     else if (outputPrimitive != unit.outputPrimitive)
         error(infoSink, "Contradictory output layout primitives");
-    if (maxVertices == 0)
-        maxVertices = unit.maxVertices;
-    else if (maxVertices != unit.maxVertices)
+    
+    if (vertices == 0)
+        vertices = unit.vertices;
+    else if (vertices != unit.vertices)
         error(infoSink, "Contradictory layout max_vertices values");
+
+    if (vertexSpacing == ElgNone)
+        vertexSpacing = unit.vertexSpacing;
+    else if (vertexSpacing != unit.vertexSpacing)
+        error(infoSink, "Contradictory input vertex spacing");
+
+    if (vertexOrder == EvoNone)
+        vertexOrder = unit.vertexOrder;
+    else if (vertexOrder != unit.vertexOrder)
+        error(infoSink, "Contradictory triangle ordering");
+
+    if (unit.pointMode)
+        pointMode = true;
 
     if (unit.treeRoot == 0)
         return;
@@ -259,7 +274,9 @@ void TIntermediate::mergeErrorCheck(TInfoSink& infoSink, const TIntermSymbol& sy
 // Do final link-time error checking of a complete (merged) intermediate representation.
 // (Much error checking was done during merging).
 //
-void TIntermediate::errorCheck(TInfoSink& infoSink)
+// Also, lock in defaults of things not set.
+//
+void TIntermediate::finalCheck(TInfoSink& infoSink)
 {   
     if (numMains < 1)
         error(infoSink, "Missing entry point: Each stage requires one \"void main()\" entry point");
@@ -281,14 +298,21 @@ void TIntermediate::errorCheck(TInfoSink& infoSink)
     switch (language) {
     case EShLangVertex:
     case EShLangTessControl:
+        break;
     case EShLangTessEvaluation:
+        if (inputPrimitive == ElgNone)
+            error(infoSink, "At least one tessellation shader must specify an input layout primitive");
+        if (vertexSpacing == EvsNone)
+            vertexSpacing = EvsEqual;
+        if (vertexOrder == EvoNone)
+            vertexOrder = EvoCcw;
         break;
     case EShLangGeometry:
         if (inputPrimitive == ElgNone)
             error(infoSink, "At least one geometry shader must specify an input layout primitive");
         if (outputPrimitive == ElgNone)
             error(infoSink, "At least one geometry shader must specify an output layout primitive");
-        if (maxVertices == 0)
+        if (vertices == 0)
             error(infoSink, "At least one geometry shader must specify a layout(max_vertices = value)");
         break;
     case EShLangFragment:

@@ -77,7 +77,7 @@ ERROR: node is still EOpNull!
 0:36        move second child to first child (highp int)
 0:36          'c5' (highp int)
 0:36          Constant:
-0:36            32 (const int)
+0:36            80 (const int)
 0:37      Sequence
 0:37        move second child to first child (highp int)
 0:37          'c6' (highp int)

@@ -85,6 +85,7 @@ const char* const GL_ARB_shading_language_420pack = "GL_ARB_shading_language_420
 const char* const GL_ARB_texture_gather           = "GL_ARB_texture_gather";
 const char* const GL_ARB_gpu_shader5              = "GL_ARB_gpu_shader5";
 const char* const GL_ARB_separate_shader_objects  = "GL_ARB_separate_shader_objects";
+const char* const GL_ARB_tessellation_shader      = "GL_ARB_tessellation_shader";       // TODO: tessellation: make this extension work on version 150 and above shaders
 
 } // end namespace glslang
 

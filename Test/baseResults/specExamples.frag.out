@@ -302,4 +302,6 @@ ERROR: node is still EOpNull!
 Linked fragment stage:
 
 
+gl_FragCoord pixel center is integer
+gl_FragCoord origin is upper left
 

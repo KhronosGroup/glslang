@@ -61,9 +61,10 @@ class TIntermediate {
 public:
     explicit TIntermediate(EShLanguage l, int v = 0, EProfile p = ENoProfile) : language(l), treeRoot(0), profile(p), version(v), 
         numMains(0), numErrors(0), recursive(false),
-        invocations(0), maxVertices(0), inputPrimitive(ElgNone), outputPrimitive(ElgNone), pixelCenterInteger(false), originUpperLeft(false) { }
+        invocations(0), vertices(0), inputPrimitive(ElgNone), outputPrimitive(ElgNone), pixelCenterInteger(false), originUpperLeft(false),
+        vertexSpacing(EvsNone), vertexOrder(EvoNone), pointMode(false) { }
     bool postProcess(TIntermNode*, EShLanguage);
-    void outputTree(TInfoSink&);
+    void output(TInfoSink&, bool tree);
 	void removeTree();
 
     void setVersion(int v) { version = v; }
@@ -121,11 +122,11 @@ public:
         invocations = i;
         return true;
     }
-    bool setMaxVertices(int m)
+    bool setVertices(int m)
     {
-        if (maxVertices > 0)
-            return maxVertices == m;
-        maxVertices = m;
+        if (vertices > 0)
+            return vertices == m;
+        vertices = m;
         return true;
     }
     bool setInputPrimitive(TLayoutGeometry p)
@@ -135,7 +136,22 @@ public:
         inputPrimitive = p;
         return true;
     }
-    TLayoutGeometry getInputPrimitive() { return inputPrimitive; }
+    TLayoutGeometry getInputPrimitive() const { return inputPrimitive; }
+    bool setVertexSpacing(TVertexSpacing s)
+    {
+        if (vertexSpacing != EvsNone)
+            return vertexSpacing == s;
+        vertexSpacing = s;
+        return true;
+    }
+    bool setVertexOrder(TVertexOrder o)
+    {
+        if (vertexOrder != EvoNone)
+            return vertexOrder == o;
+        vertexOrder = o;
+        return true;
+    }
+    void setPointMode() { pointMode = true; }
     bool setOutputPrimitive(TLayoutGeometry p)
     {
         if (outputPrimitive != ElgNone)
@@ -150,7 +166,7 @@ public:
 
     void addToCallGraph(TInfoSink&, const TString& caller, const TString& callee);
     void merge(TInfoSink&, TIntermediate&);
-    void errorCheck(TInfoSink&);
+    void finalCheck(TInfoSink&);
 
     void addIoAccessed(const TString& name) { ioAccessed.insert(name); }
     bool inIoAccessed(const TString& name) const { return ioAccessed.find(name) != ioAccessed.end(); }
@@ -177,11 +193,14 @@ protected:
     int numErrors;
     bool recursive;
     int invocations;
-    int maxVertices;
+    int vertices;
     TLayoutGeometry inputPrimitive;
     TLayoutGeometry outputPrimitive;
     bool pixelCenterInteger;
     bool originUpperLeft;
+    TVertexSpacing vertexSpacing;
+    TVertexOrder vertexOrder;
+    bool pointMode;
 
     // for detecting recursion:  pair is <caller, callee>
     struct TCall {

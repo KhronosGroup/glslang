@@ -523,7 +523,7 @@ bool CompileDeferred(
     }
 
     if (messages & EShMsgAST)
-        intermediate.outputTree(parseContext.infoSink);
+        intermediate.output(parseContext.infoSink, true);
 
     delete [] lengths;
     delete [] strings;
@@ -1057,12 +1057,12 @@ bool TProgram::linkStage(EShLanguage stage, EShMessages messages)
         std::list<TShader*>::const_iterator it;
         for (it = stages[stage].begin(); it != stages[stage].end(); ++it)
             intermediate[stage]->merge(*infoSink, *(*it)->intermediate);
-
-        if (messages & EShMsgAST)
-            intermediate[stage]->outputTree(*infoSink);
     }
 
-    intermediate[stage]->errorCheck(*infoSink);
+    intermediate[stage]->finalCheck(*infoSink);
+
+    if (messages & EShMsgAST)
+        intermediate[stage]->output(*infoSink, stages[stage].size() > 1);
 
     return intermediate[stage]->getNumErrors() == 0;
 }
