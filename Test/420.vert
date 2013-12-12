@@ -81,3 +81,6 @@ int fgfg(float f, highp int i);
 out gl_PerVertex {
     float gl_ClipDistance[4];
 };
+
+patch in vec4 patchIn;              // ERROR
+patch out vec4 patchOut;            // ERROR

@@ -1,6 +1,7 @@
 400.geom
 Warning, version 400 is not yet complete; some version-specific features are present, but many are missing.
 ERROR: 0:13: 'invocations' : can only apply to a standalone qualifier 
+ERROR: 0:20: 'patch' : not supported in this stage: geometry
 ERROR: 0:20: 'gl_PointSize' : cannot add layout to redeclared block member 
 ERROR: 0:20: 'gl_PointSize' : cannot add patch to redeclared block member 
 ERROR: 0:25: 'length' :  array must be declared with a size before using this method
@@ -8,7 +9,9 @@ ERROR: 0:36: 'length' :  array must be declared with a size before using this me
 ERROR: 0:40: 'triangles' : inconsistent input primitive for array size colorBad
 ERROR: 0:44: 'triangles' : inconsistent input primitive for array size colorbad2
 ERROR: 0:56: 'location' : repeated use of location 4
-ERROR: 8 compilation errors.  No code generated.
+ERROR: 0:58: 'patch' : not supported in this stage: geometry
+ERROR: 0:59: 'patch' : not supported in this stage: geometry
+ERROR: 11 compilation errors.  No code generated.
 
 
 invocations = 4
@@ -72,6 +75,8 @@ ERROR: node is still EOpNull!
 0:?     'cva' (layout(location=4 ) in 3-element array of 4-component vector of float)
 0:?     'cvb' (layout(location=5 ) in 3-element array of 4-component vector of float)
 0:?     'cmc' (layout(location=2 ) in 3-element array of 3X3 matrix of float)
+0:?     'patchIn' (patch in 4-component vector of float)
+0:?     'patchOut' (layout(stream=0 ) patch out 4-component vector of float)
 
 
 Linked geometry stage:

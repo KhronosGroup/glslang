@@ -13,7 +13,9 @@ ERROR: 0:53: 'texel offset' : value is out of range: [gl_MinProgramTexelOffset, 
 ERROR: 0:53: 'texel offset' : value is out of range: [gl_MinProgramTexelOffset, gl_MaxProgramTexelOffset]
 ERROR: 0:54: 'texel offset' : value is out of range: [gl_MinProgramTexelOffset, gl_MaxProgramTexelOffset]
 ERROR: 0:54: 'texel offset' : value is out of range: [gl_MinProgramTexelOffset, gl_MaxProgramTexelOffset]
-ERROR: 13 compilation errors.  No code generated.
+ERROR: 0:57: 'patch' : not supported in this stage: fragment
+ERROR: 0:58: 'patch' : not supported in this stage: fragment
+ERROR: 15 compilation errors.  No code generated.
 
 
 gl_FragCoord pixel center is integer
@@ -204,6 +206,8 @@ ERROR: node is still EOpNull!
 0:?     'gl_FragCoord' (gl_FragCoord 4-component vector of float)
 0:?     'gl_FragCoord' (gl_FragCoord 4-component vector of float)
 0:?     'u2drs' (uniform sampler2DRectShadow)
+0:?     'patchIn' (smooth patch in 4-component vector of float)
+0:?     'patchOut' (patch out 4-component vector of float)
 
 
 Linked fragment stage:

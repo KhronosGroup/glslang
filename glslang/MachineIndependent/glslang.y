@@ -1228,6 +1228,8 @@ storage_qualifier
     }
     | PATCH {
         parseContext.globalCheck($1.loc, "patch");
+        parseContext.requireStage($1.loc, (EShLanguageMask)(EShLangTessControlMask | EShLangTessEvaluationMask), "patch");
+        parseContext.profileRequires($1.loc, ~EEsProfile, 400, 1, &GL_ARB_tessellation_shader, "patch");
         $$.init($1.loc);
         $$.qualifier.patch = true;
     }

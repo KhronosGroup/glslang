@@ -53,3 +53,6 @@ void foo23()
     textureProjGradOffset(u2drs, outp, vec2(0.0), vec2(0.0), offsets[2]);     // ERROR, offset out of range
     textureProjGradOffset(u2drs, outp, vec2(0.0), vec2(0.0), ivec2(-10, 20)); // ERROR, offset out of range
 }
+
+patch in vec4 patchIn;              // ERROR
+patch out vec4 patchOut;            // ERROR

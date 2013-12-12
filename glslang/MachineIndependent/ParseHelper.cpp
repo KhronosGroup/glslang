@@ -1638,41 +1638,6 @@ void TParseContext::globalQualifierCheck(TSourceLoc loc, const TQualifier& quali
         return;
     }
 
-    if (language == EShLangVertex && qualifier.storage == EvqVaryingIn) {
-        if (publicType.basicType == EbtStruct) {
-            error(loc, "cannot be a structure or array", GetStorageQualifierString(qualifier.storage), "");
-
-            return;
-        }
-        if (publicType.arraySizes) {
-            requireProfile(loc, ~EEsProfile, "vertex input arrays");
-            profileRequires(loc, ENoProfile, 150, 0, "vertex input arrays");
-        }
-    }
-
-    if (language == EShLangFragment && qualifier.storage == EvqVaryingOut) {
-        profileRequires(loc, EEsProfile, 300, 0, "fragment shader output");
-        if (publicType.basicType == EbtStruct) {
-            error(loc, "cannot be a structure", GetStorageQualifierString(qualifier.storage), "");
-
-            return;
-        }
-    }
-
-    if (language == EShLangVertex && qualifier.storage == EvqVaryingOut) {
-        if (publicType.userDef) {
-            profileRequires(loc, EEsProfile, 300, 0, "vertex-shader struct output");
-            profileRequires(loc, ~EEsProfile, 150, 0, "vertex-shader struct output");
-        }
-    }
-
-    if (language == EShLangFragment && qualifier.storage == EvqVaryingIn) {
-        if (publicType.userDef) {
-            profileRequires(loc, EEsProfile, 300, 0, "fragment-shader struct input");
-            profileRequires(loc, ~EEsProfile, 150, 0, "fragment-shader struct input");
-        }
-    }
-
     if (publicType.basicType == EbtInt || publicType.basicType == EbtUint || publicType.basicType == EbtDouble) {
         profileRequires(loc, EEsProfile, 300, 0, "shader input/output");
         if (! qualifier.flat) {
@@ -1683,9 +1648,85 @@ void TParseContext::globalQualifierCheck(TSourceLoc loc, const TQualifier& quali
         }
     }
 
-    if (language == EShLangVertex && qualifier.storage == EvqVaryingIn &&
-        (qualifier.isAuxiliary() || qualifier.isInterpolation() || qualifier.isMemory() || qualifier.invariant))
-        error(loc, "vertex input cannot be further qualified", "", "");
+    if (qualifier.patch && qualifier.isInterpolation())
+        error(loc, "cannot use interpolation qualifiers with patch", "patch", "");
+
+    if (qualifier.storage == EvqVaryingIn) {
+        switch (language) {
+        case EShLangVertex:
+            if (publicType.basicType == EbtStruct) {
+                error(loc, "cannot be a structure or array", GetStorageQualifierString(qualifier.storage), "");
+                return;
+            }
+            if (publicType.arraySizes) {
+                requireProfile(loc, ~EEsProfile, "vertex input arrays");
+                profileRequires(loc, ENoProfile, 150, 0, "vertex input arrays");
+            }
+            if (qualifier.isAuxiliary() || qualifier.isInterpolation() || qualifier.isMemory() || qualifier.invariant)
+                error(loc, "vertex input cannot be further qualified", "", "");
+            break;
+
+        case EShLangTessControl:
+            if (qualifier.patch)
+                error(loc, "can only use on output in tessellation-control shader", "patch", "");
+            break;
+
+        case EShLangTessEvaluation:
+            break;
+
+        case EShLangGeometry:
+            break;
+
+        case EShLangFragment:
+            if (publicType.userDef) {
+                profileRequires(loc, EEsProfile, 300, 0, "fragment-shader struct input");
+                profileRequires(loc, ~EEsProfile, 150, 0, "fragment-shader struct input");
+            }
+            break;
+
+        case EShLangCompute:
+            break;
+
+	    default:
+            break;
+        }
+    } else {
+        // qualifier.storage == EvqVaryingOut
+        switch (language) {
+        case EShLangVertex:
+            if (publicType.userDef) {
+                profileRequires(loc, EEsProfile, 300, 0, "vertex-shader struct output");
+                profileRequires(loc, ~EEsProfile, 150, 0, "vertex-shader struct output");
+            }
+            break;
+
+        case EShLangTessControl:
+            break;
+
+        case EShLangTessEvaluation:
+            if (qualifier.patch)
+                error(loc, "can only use on input in tessellation-evaluation shader", "patch", "");
+            break;
+
+        case EShLangGeometry:
+            break;
+
+        case EShLangFragment:
+            profileRequires(loc, EEsProfile, 300, 0, "fragment shader output");
+            if (publicType.basicType == EbtStruct) {
+                error(loc, "cannot be a structure", GetStorageQualifierString(qualifier.storage), "");
+
+                return;
+            }
+            break;
+
+        case EShLangCompute:
+            break;
+
+	    default:
+            break;
+        }
+    }
 }
 
 //

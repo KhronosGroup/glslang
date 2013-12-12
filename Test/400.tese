@@ -14,6 +14,9 @@ layout(fractional_even_spacing) in;    // ERROR
 
 layout(point_mode) in;
 
+patch in vec4 patchIn;
+patch out vec4 patchOut;  // ERROR
+
 void main()
 {
     barrier(); // ERROR
@@ -40,3 +43,8 @@ void main()
     gl_PointSize = ps;
     gl_ClipDistance[2] = cd;
 }
+
+smooth patch in vec4 badp1;         // ERROR
+flat patch in vec4 badp2;           // ERROR
+noperspective patch in vec4 badp3;  // ERROR
+patch sample in vec3 badp4;         // ERROR

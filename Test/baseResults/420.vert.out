@@ -28,7 +28,10 @@ ERROR: 0:70: 'binding' : requires uniform or buffer storage qualifier
 ERROR: 0:71: 'binding' : binding is too large 
 ERROR: 0:74: 'binding' : sampler binding not less than gl_MaxCombinedTextureImageUnits 
 ERROR: 0:76: 'binding' : sampler binding not less than gl_MaxCombinedTextureImageUnits (using array)
-ERROR: 27 compilation errors.  No code generated.
+ERROR: 0:85: 'patch' : not supported in this stage: vertex
+ERROR: 0:85: '' : vertex input cannot be further qualified 
+ERROR: 0:86: 'patch' : not supported in this stage: vertex
+ERROR: 30 compilation errors.  No code generated.
 
 
 ERROR: node is still EOpNull!
@@ -131,6 +134,8 @@ ERROR: node is still EOpNull!
 0:?     'sampb4' (layout(binding=31 ) uniform sampler2D)
 0:?     'sampb5' (layout(binding=79 ) uniform 2-element array of sampler2D)
 0:?     '__anon__3' (out block{gl_ClipDistance,})
+0:?     'patchIn' (patch in 4-component vector of float)
+0:?     'patchOut' (smooth patch out 4-component vector of float)
 0:?     'gl_VertexID' (gl_VertexId int)
 0:?     'gl_InstanceID' (gl_InstanceId int)
 

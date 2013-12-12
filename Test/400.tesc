@@ -7,6 +7,8 @@ layout(quads) in;                   // ERROR
 layout(ccw) out;                    // ERROR
 layout(fractional_even_spacing) in; // ERROR
 
+patch in vec4 patchIn;              // ERROR
+patch out vec4 patchOut;
 
 void main()
 {

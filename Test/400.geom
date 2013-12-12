@@ -54,3 +54,6 @@ void foo3()
 layout(location = 4) in vec4 cva[3];
 layout(location = 5) in vec4 cvb[3];
 layout(location = 2) in mat3 cmc[3];  // ERROR, collision
+
+patch in vec4 patchIn;              // ERROR
+patch out vec4 patchOut;            // ERROR

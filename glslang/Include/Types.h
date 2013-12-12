@@ -245,7 +245,7 @@ public:
         smooth    = false;
         flat      = false;
         nopersp   = false;
-        patch     = false;  // TODO 4.0 tessellation: implement semantics of patch (all of 4.3 stuff...), including arrayed inputs
+        patch     = false;
         sample    = false;
         shared    = false;
         coherent  = false;
