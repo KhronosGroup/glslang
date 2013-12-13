@@ -129,6 +129,7 @@ public:
         vertices = m;
         return true;
     }
+    int getVertices() const { return vertices; }
     bool setInputPrimitive(TLayoutGeometry p)
     {
         if (inputPrimitive != ElgNone)

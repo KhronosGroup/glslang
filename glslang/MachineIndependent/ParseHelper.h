@@ -84,9 +84,13 @@ public:
     TIntermTyped* handleBracketDereference(TSourceLoc, TIntermTyped* base, TIntermTyped* index);
     void checkIndex(TSourceLoc, const TType&, int& index);
     void handleIndexLimits(TSourceLoc, TIntermTyped* base, TIntermTyped* index);
-    void handleInputArrayAccess(TSourceLoc, TIntermTyped* base);
-    void checkInputArrayConsistency(TSourceLoc, bool tailOnly = false);
-    void checkInputArrayConsistency(TSourceLoc, TLayoutGeometry, TType&, const TString&);
+
+    bool isIoResizeArray(const TType&);
+    void handleIoResizeArrayAccess(TSourceLoc, TIntermTyped* base);
+    void checkIoArraysConsistency(TSourceLoc, bool tailOnly = false);
+    int getIoArrayImplicitSize() const;
+    void checkIoArrayConsistency(TSourceLoc, int requiredSize, const char* feature, TType&, const TString&);
+
     TIntermTyped* handleDotDereference(TSourceLoc, TIntermTyped* base, TString& field);
     TFunction* handleFunctionDeclarator(TSourceLoc loc, TFunction& function, bool prototype);
     TIntermAggregate* handleFunctionDefinition(TSourceLoc, TFunction&);
@@ -257,6 +261,11 @@ protected:
     //
     // Geometry shader input arrays:
     //  - array sizing is based on input primitive and/or explicit size
+    //
+    // Tessellation control output arrays:
+    //  - array sizing is based on output layout(vertices=...) and/or explicit size
+    //
+    // Both:
     //  - array sizing is retroactive
     //  - built-in block redeclarations interact with this
     //
@@ -270,23 +279,23 @@ protected:
     //  - the resize-list starts empty at beginning of user-shader compilation, it does
     //    not have built-ins in it
     //
-    //  - on built-in input array use: copy-up symbol and add both the symbol and
+    //  - on built-in array use: copy-up symbol and add both the symbol and
     //    its use to resize-list
     //
-    //  - on user-input array declaration: add it to the resize-list
+    //  - on user array declaration: add it to the resize-list
     //
     //  - on block redeclaration: copy-up symbol and add it to the resize-list
     //     * note, that appropriately gives an error if redeclaring a block that
     //       was already used and hence already copied-up
     //
-    //  - on seeing an input primitive-layout declaration, fix everything in the resize-list,
-    //    giving errors for mismatch
+    //  - on seeing a layout declaration that sizes the array, fix everything in the 
+    //    resize-list, giving errors for mismatch
     //
     //  - on seeing an array size declaration, give errors on mismatch between it and previous
-    //    input primitive declarations
+    //    array-sizing declarations
     //
-    TVector<TIntermSymbol*> inputArrayNodeResizeList;
-    TVector<TSymbol*> inputArraySymbolResizeList;
+    TVector<TIntermSymbol*> ioArrayNodeResizeList;
+    TVector<TSymbol*> ioArraySymbolResizeList;
 };
 
 } // end namespace glslang

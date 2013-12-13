@@ -163,7 +163,7 @@ ERROR: node is still EOpNull!
 
 Linked tessellation evaluation stage:
 
-ERROR: Linking tessellation evaluation stage: At least one tessellation shader must specify an input layout primitive
+ERROR: Linking tessellation evaluation stage: At least one shader must specify an input layout primitive
 
 input primitive = none
 vertex spacing = equal_spacing

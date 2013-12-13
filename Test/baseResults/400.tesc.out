@@ -1,11 +1,13 @@
 400.tesc
 Warning, version 400 is not yet complete; some version-specific features are present, but many are missing.
-ERROR: 0:4: 'length' :  array must be declared with a size before using this method
 ERROR: 0:6: 'quads' : unrecognized layout identifier, or qualifier requires assignemnt (e.g., binding = 4) 
 ERROR: 0:7: 'ccw' : unrecognized layout identifier, or qualifier requires assignemnt (e.g., binding = 4) 
 ERROR: 0:8: 'fractional_even_spacing' : unrecognized layout identifier, or qualifier requires assignemnt (e.g., binding = 4) 
 ERROR: 0:10: 'patch' : can only use on output in tessellation-control shader 
-ERROR: 5 compilation errors.  No code generated.
+ERROR: 0:39: 'vertices' : can only apply to 'out' 
+ERROR: 0:40: 'vertices' : cannot change previously set layout value 
+ERROR: 0:44: '[' :  array index out of range '4'
+ERROR: 7 compilation errors.  No code generated.
 
 
 vertices = 4
@@ -67,7 +69,7 @@ ERROR: node is still EOpNull!
 0:31      move second child to first child (4-component vector of float)
 0:31        gl_Position: direct index for structure (4-component vector of float)
 0:31          direct index (block{gl_Position,gl_PointSize,gl_ClipDistance})
-0:31            'gl_out' (out unsized array of block{gl_Position,gl_PointSize,gl_ClipDistance})
+0:31            'gl_out' (out 4-element array of block{gl_Position,gl_PointSize,gl_ClipDistance})
 0:31            Constant:
 0:31              1 (const int)
 0:31          Constant:
@@ -76,7 +78,7 @@ ERROR: node is still EOpNull!
 0:32      move second child to first child (float)
 0:32        gl_PointSize: direct index for structure (float)
 0:32          direct index (block{gl_Position,gl_PointSize,gl_ClipDistance})
-0:32            'gl_out' (out unsized array of block{gl_Position,gl_PointSize,gl_ClipDistance})
+0:32            'gl_out' (out 4-element array of block{gl_Position,gl_PointSize,gl_ClipDistance})
 0:32            Constant:
 0:32              1 (const int)
 0:32          Constant:
@@ -86,7 +88,7 @@ ERROR: node is still EOpNull!
 0:33        direct index (float)
 0:33          gl_ClipDistance: direct index for structure (unsized array of float)
 0:33            direct index (block{gl_Position,gl_PointSize,gl_ClipDistance})
-0:33              'gl_out' (out unsized array of block{gl_Position,gl_PointSize,gl_ClipDistance})
+0:33              'gl_out' (out 4-element array of block{gl_Position,gl_PointSize,gl_ClipDistance})
 0:33              Constant:
 0:33                1 (const int)
 0:33            Constant:
@@ -108,11 +110,21 @@ ERROR: node is still EOpNull!
 0:36            1 (const int)
 0:36        Constant:
 0:36          1.300000
+0:42  Function Definition: foo( (void)
+0:42    Function Parameters: 
+0:44    Sequence
+0:44      gl_PointSize: direct index for structure (float)
+0:44        direct index (block{gl_Position,gl_PointSize,gl_ClipDistance})
+0:44          'gl_out' (out 4-element array of block{gl_Position,gl_PointSize,gl_ClipDistance})
+0:44          Constant:
+0:44            4 (const int)
+0:44        Constant:
+0:44          1 (const int)
 0:?   Linker Objects
-0:?     'outa' (1-element array of int)
+0:?     'outa' (4-element array of int)
 0:?     'patchIn' (patch in 4-component vector of float)
 0:?     'patchOut' (patch out 4-component vector of float)
-0:?     'gl_out' (out unsized array of block{gl_Position,gl_PointSize,gl_ClipDistance})
+0:?     'gl_out' (out 4-element array of block{gl_Position,gl_PointSize,gl_ClipDistance})
 
 
 Linked tessellation control stage:

@@ -437,13 +437,21 @@ TIntermTyped* TParseContext::handleBracketDereference(TSourceLoc loc, TIntermTyp
         return intermediate.foldDereference(base, indexValue, loc);
     else {
         // at least one of base and index is variable...
+
+        if (isIoResizeArray(base->getType()))
+            handleIoResizeArrayAccess(loc, base);
+
         if (index->getQualifier().storage == EvqConst) {
             if (base->isArray() && base->getType().getArraySize() == 0)
                 updateMaxArraySize(loc, base, indexValue);
             result = intermediate.addIndex(EOpIndexDirect, base, index, loc);
         } else {
-            if (base->isArray() && base->getType().getArraySize() == 0)
-                error(loc, "", "[", "array must be redeclared with a size before being indexed with a variable");
+            if (base->isArray() && base->getType().getArraySize() == 0) {
+                if (isIoResizeArray(base->getType()))
+                    error(loc, "", "[", "array must be sized by a redeclaration or layout qualifier before being indexed with a variable");
+                else
+                    error(loc, "", "[", "array must be redeclared with a size before being indexed with a variable");
+            }
             if (base->getBasicType() == EbtBlock)
                 requireProfile(base->getLoc(), ~EEsProfile, "variable indexing block array");
             else if (language == EShLangFragment && base->getQualifier().isPipeOutput())
@@ -474,9 +482,6 @@ TIntermTyped* TParseContext::handleBracketDereference(TSourceLoc loc, TIntermTyp
 
         if (anyIndexLimits)
             handleIndexLimits(loc, base, index);
-
-        if (language == EShLangGeometry && base->isArray())
-            handleInputArrayAccess(loc, base);
     }
 
     return result;
@@ -523,62 +528,99 @@ void TParseContext::handleIndexLimits(TSourceLoc loc, TIntermTyped* base, TInter
     }
 }
 
-// Handle a dereference of a geometry shader input arrays.
-// See inputArrayNodeResizeList comment in ParseHelper.h.
-//
-void TParseContext::handleInputArrayAccess(TSourceLoc loc, TIntermTyped* base)
+// Return true if this is a geometry shader input array or tessellation control output array.
+bool TParseContext::isIoResizeArray(const TType& type)
 {
-    if (base->getType().getQualifier().storage == EvqVaryingIn) {
-        TIntermSymbol* symbol = base->getAsSymbolNode();
-        assert(symbol);
-        inputArrayNodeResizeList.push_back(symbol);
-        if (symbol && builtInName(symbol->getName())) {
-            // make sure we have a user-modifiable copy of this built-in input array
-            TSymbol* input = symbolTable.find(symbol->getName());
-            if (input->isReadOnly()) {
-                input = symbolTable.copyUp(input);
-                inputArraySymbolResizeList.push_back(input);
+    return type.isArray() &&
+           ((language == EShLangGeometry    && type.getQualifier().storage == EvqVaryingIn) ||
+            (language == EShLangTessControl && type.getQualifier().storage == EvqVaryingOut && ! type.getQualifier().patch));
+}
 
-                // Save it in the AST for linker use.
-                intermediate.addSymbolLinkageNode(linkage, *input);
+// Handle a dereference of a geometry shader input array or tessellation control output array.
+// See ioArrayNodeResizeList comment in ParseHelper.h.
+//
+void TParseContext::handleIoResizeArrayAccess(TSourceLoc loc, TIntermTyped* base)
+{
+    TIntermSymbol* symbol = base->getAsSymbolNode();
+    assert(symbol);
+    ioArrayNodeResizeList.push_back(symbol);
+    if (symbol && builtInName(symbol->getName())) {
+        // make sure we have a user-modifiable copy of this built-in input array
+        TSymbol* arry = symbolTable.find(symbol->getName());
+        if (arry->isReadOnly()) {
+            arry = symbolTable.copyUp(arry);
+
+            // fix array size, if already implicitly size
+            if (arry->getType().getArraySize() == 0) {
+                int newSize = getIoArrayImplicitSize();
+                if (newSize) {
+                    arry->getWritableType().changeArraySize(newSize);
+                    symbol->getWritableType().changeArraySize(newSize);
+                }
             }
+
+            ioArraySymbolResizeList.push_back(arry);
+
+            // Save it in the AST for linker use.
+            intermediate.addSymbolLinkageNode(linkage, *arry);
         }
     }
 }
 
-// If there has been an input primitive declaration, make sure all input array types
+// If there has been an input primitive declaration (geometry shader) or an output
+// number of vertices declaration(tessellation shader), make sure all input array types
 // match it in size.  Types come either from nodes in the AST or symbols in the 
 // symbol table.
 //
 // Types without an array size will be given one.
 // Types already having a size that is wrong will get an error.
 //
-void TParseContext::checkInputArrayConsistency(TSourceLoc loc, bool tailOnly)
+void TParseContext::checkIoArraysConsistency(TSourceLoc loc, bool tailOnly)
 {
-    TLayoutGeometry primitive = intermediate.getInputPrimitive();
-    if (primitive == ElgNone)
+    int requiredSize = getIoArrayImplicitSize();
+    if (requiredSize == 0)
         return;
 
+    const char* feature;
+    if (language == EShLangGeometry)
+        feature = TQualifier::getGeometryString(intermediate.getInputPrimitive());
+    else if (language == EShLangTessControl)
+        feature = "vertices";
+
     if (tailOnly) {
-        checkInputArrayConsistency(loc, primitive, inputArraySymbolResizeList.back()->getWritableType(), inputArraySymbolResizeList.back()->getName());
+        checkIoArrayConsistency(loc, requiredSize, feature, ioArraySymbolResizeList.back()->getWritableType(), ioArraySymbolResizeList.back()->getName());
         return;
     }
 
-    for (size_t i = 0; i < inputArrayNodeResizeList.size(); ++i)
-        checkInputArrayConsistency(loc, primitive, inputArrayNodeResizeList[i]->getWritableType(), inputArrayNodeResizeList[i]->getName());
+    for (size_t i = 0; i < ioArrayNodeResizeList.size(); ++i)
+        checkIoArrayConsistency(loc, requiredSize, feature, ioArrayNodeResizeList[i]->getWritableType(), ioArrayNodeResizeList[i]->getName());
 
-    for (size_t i = 0; i < inputArraySymbolResizeList.size(); ++i)
-        checkInputArrayConsistency(loc, primitive, inputArraySymbolResizeList[i]->getWritableType(), inputArraySymbolResizeList[i]->getName());
+    for (size_t i = 0; i < ioArraySymbolResizeList.size(); ++i)
+        checkIoArrayConsistency(loc, requiredSize, feature, ioArraySymbolResizeList[i]->getWritableType(), ioArraySymbolResizeList[i]->getName());
 }
 
-void TParseContext::checkInputArrayConsistency(TSourceLoc loc, TLayoutGeometry primitive, TType& type, const TString& name)
+int TParseContext::getIoArrayImplicitSize() const
 {
-    int requiredSize = TQualifier::mapGeometryToSize(primitive);
+    if (language == EShLangGeometry)
+        return TQualifier::mapGeometryToSize(intermediate.getInputPrimitive());
+    else if (language == EShLangTessControl)
+        return intermediate.getVertices();
+    else
+        return 0;
+}
 
+void TParseContext::checkIoArrayConsistency(TSourceLoc loc, int requiredSize, const char* feature, TType& type, const TString& name)
+{
     if (type.getArraySize() == 0)
         type.changeArraySize(requiredSize);
-    else if (type.getArraySize() != requiredSize)
-        error(loc, "inconsistent input primitive for array size", TQualifier::getGeometryString(primitive), name.c_str());
+    else if (type.getArraySize() != requiredSize) {
+        if (language == EShLangGeometry)
+            error(loc, "inconsistent input primitive for array size", feature, name.c_str());
+        else if (language == EShLangTessControl)
+            error(loc, "inconsistent output number of vertices for array size", feature, name.c_str());
+        else
+            assert(0);
+    }
 }
 
 //
@@ -837,13 +879,31 @@ TIntermTyped* TParseContext::handleFunctionCall(TSourceLoc loc, TFunction* fnCal
     if (op == EOpArrayLength) {
         if (fnCall->getParamCount() > 0)
             error(loc, "method does not accept any arguments", fnCall->getName().c_str(), "");
-        int length;
-        if (intermNode->getAsTyped() == 0 || ! intermNode->getAsTyped()->getType().isArray() || intermNode->getAsTyped()->getType().getArraySize() == 0) {
-            error(loc, "", fnCall->getName().c_str(), "array must be declared with a size before using this method");
-            length = 1;
+        int length = 0;
+        if (intermNode->getAsTyped() == 0 || ! intermNode->getAsTyped()->getType().isArray())
+            error(loc, "", fnCall->getName().c_str(), "can only be applied to an array");
+        else if (intermNode->getAsTyped()->getType().getArraySize() == 0) {
+            bool implicitlySized = false;
+            if (intermNode->getAsSymbolNode() && isIoResizeArray(intermNode->getAsTyped()->getType())) {
+                // We could be between a layout declaration that gives a built-in io array implicit size and 
+                // a user redeclaration of that array, meaning we have to substitute its implicit size here 
+                // without actually redeclaring the array.  (It is an error to use a member before the
+                // redeclaration, but not an error to use the array name itself.)
+                const TString& name = intermNode->getAsSymbolNode()->getName();
+                if (name == "gl_in" || name == "gl_out")
+                    length = getIoArrayImplicitSize();
+            }
+            if (length == 0) {
+                if (isIoResizeArray(intermNode->getAsTyped()->getType()))
+                    error(loc, "", fnCall->getName().c_str(), "array must first be sized by a redeclaration or layout qualifier");
+                else
+                    error(loc, "", fnCall->getName().c_str(), "array must be declared with a size before using this method");
+            }
         } else
             length = intermNode->getAsTyped()->getType().getArraySize();
 
+        if (length == 0)
+            length = 1;
         TConstUnionArray unionArray(1);
         unionArray[0].setIConst(length);
         result = intermediate.addConstantUnion(unionArray, TType(EbtInt, EvqConst), loc);
@@ -1986,10 +2046,9 @@ void TParseContext::declareArray(TSourceLoc loc, TString& identifier, const TTyp
             symbolTable.insert(*symbol);
             newDeclaration = true;
 
-            // Handle user geometry shader input arrays: see inputArrayNodeResizeList comment in ParseHelper.h
-            if (language == EShLangGeometry && type.getQualifier().storage == EvqVaryingIn && ! symbolTable.atBuiltInLevel()) {
-                inputArraySymbolResizeList.push_back(symbol);
-                checkInputArrayConsistency(loc, true);
+            if (! symbolTable.atBuiltInLevel() && isIoResizeArray(type)) {
+                ioArraySymbolResizeList.push_back(symbol);
+                checkIoArraysConsistency(loc, true);
             }
 
             return;
@@ -2016,8 +2075,8 @@ void TParseContext::declareArray(TSourceLoc loc, TString& identifier, const TTyp
         return;
     }
     if (newType.getArraySize() > 0) {
-        // be more leniant for input arrays to geometry shaders, where the redeclaration is the same size
-        if (! (language == EShLangGeometry && type.getQualifier().storage == EvqVaryingIn && newType.getArraySize() == type.getArraySize()))
+        // be more leniant for input arrays to geometry shaders and tessellation control outputs, where the redeclaration is the same size
+        if (! (isIoResizeArray(type) && newType.getArraySize() == type.getArraySize()))
             error(loc, "redeclaration of array with size", identifier.c_str(), "");
         return;
     }
@@ -2031,8 +2090,8 @@ void TParseContext::declareArray(TSourceLoc loc, TString& identifier, const TTyp
 
     newType.shareArraySizes(type);
 
-    if (language == EShLangGeometry && type.getQualifier().storage == EvqVaryingIn)
-        checkInputArrayConsistency(loc);
+    if (isIoResizeArray(type))
+        checkIoArraysConsistency(loc);
 }
 
 void TParseContext::updateMaxArraySize(TSourceLoc loc, TIntermNode *node, int index)
@@ -2064,9 +2123,8 @@ void TParseContext::updateMaxArraySize(TSourceLoc loc, TIntermNode *node, int in
     if (symbol->isReadOnly()) {
         symbol = symbolTable.copyUp(symbol);
         
-        // Handle geometry shader input arrays: see inputArrayNodeResizeList comment in ParseHelper.h
-        if (language == EShLangGeometry && symbol->getType().getQualifier().storage == EvqVaryingIn)
-            inputArraySymbolResizeList.push_back(symbol);
+        if (isIoResizeArray(symbol->getType()))
+            ioArraySymbolResizeList.push_back(symbol);
 
         // Save it in the AST for linker use.
         intermediate.addSymbolLinkageNode(linkage, *symbol);
@@ -2128,16 +2186,15 @@ TSymbol* TParseContext::redeclareBuiltinVariable(TSourceLoc loc, const TString& 
             return 0;
 
         // If it wasn't at a built-in level, then it's already been redeclared;
-        // that is, this is a redeclaration of a redeclaration, reuse that initial
+        // that is, this is a redeclaration of a redeclaration; reuse that initial
         // redeclaration.  Otherwise, make the new one.
         if (builtIn) {
             // Copy the symbol up to make a writable version
             newDeclaration = true;
             symbol = symbolTable.copyUp(symbol);
 
-            // Handle geometry shader input arrays: see inputArrayNodeResizeList comment in ParseHelper.h
-            if (language == EShLangGeometry && symbol->getType().getQualifier().storage == EvqVaryingIn && symbol->getType().isArray())
-                inputArraySymbolResizeList.push_back(symbol);
+            if (isIoResizeArray(symbol->getType()))
+                ioArraySymbolResizeList.push_back(symbol);
 
             // Save it in the AST for linker use.
             intermediate.addSymbolLinkageNode(linkage, *symbol);
@@ -2248,10 +2305,6 @@ void TParseContext::redeclareBuiltinBlock(TSourceLoc loc, TTypeList& newTypeList
         return;
     }
 
-    // Handle geometry shader input arrays: see inputArrayNodeResizeList comment in ParseHelper.h
-    if (language == EShLangGeometry && block->getType().isArray() && block->getType().getQualifier().storage == EvqVaryingIn)
-        inputArraySymbolResizeList.push_back(block);
-
     // Edit and error check the container against the redeclaration
     //  - remove unused members
     //  - ensure remaining qualifiers/types match
@@ -2320,11 +2373,19 @@ void TParseContext::redeclareBuiltinBlock(TSourceLoc loc, TTypeList& newTypeList
         error(loc, "cannot change arrayness of redeclared block", blockName.c_str(), "");
     else if (type.isArray() && type.getArraySize() > 0 && type.getArraySize() != arraySizes->getSize())
         error(loc, "cannot change array size of redeclared block", blockName.c_str(), "");
+    else if (type.isArray() && type.getArraySize() == 0 && arraySizes->getSize() > 0)
+        type.changeArraySize(arraySizes->getSize());
 
     symbolTable.insert(*block);
 
     // Check for general layout qualifier errors
     layoutTypeCheck(loc, *block);
+
+    // Tracking for implicit sizing of array
+    if (isIoResizeArray(block->getType())) {
+        ioArraySymbolResizeList.push_back(block);
+        checkIoArraysConsistency(loc, true);
+    }
 
     // Save it in the AST for linker use.
     intermediate.addSymbolLinkageNode(linkage, *block);
@@ -2728,8 +2789,6 @@ void TParseContext::setLayoutQualifier(TSourceLoc loc, TPublicType& publicType, 
 
     case EShLangTessControl:
         if (id == "vertices") {
-            // TODO: tessellation: implement gl_out[] array sizing based on this
-            // TODO: tessellation: semantic check this is on the out qualifier only
             publicType.shaderQualifiers.vertices = value;
             return;
         }
@@ -2932,8 +2991,14 @@ void TParseContext::checkNoShaderLayouts(TSourceLoc loc, const TShaderQualifiers
         error(loc, message, TQualifier::getGeometryString(shaderQualifiers.geometry), "");
     if (shaderQualifiers.invocations > 0)
         error(loc, message, "invocations", "");
-    if (shaderQualifiers.vertices > 0)
-        error(loc, message, "max_vertices", "");
+    if (shaderQualifiers.vertices > 0) {
+        if (language == EShLangGeometry)
+            error(loc, message, "max_vertices", "");
+        else if (language == EShLangTessControl)
+            error(loc, message, "vertices", "");
+        else
+            assert(0);
+    }
 }
 
 //
@@ -3726,8 +3791,15 @@ void TParseContext::updateStandaloneQualifierDefaults(TSourceLoc loc, const TPub
         if (! intermediate.setVertices(publicType.shaderQualifiers.vertices)) {            
             if (language == EShLangGeometry)
                 error(loc, "cannot change previously set layout value", "max_vertices", "");
-            else
+            else if (language == EShLangTessControl)
                 error(loc, "cannot change previously set layout value", "vertices", "");
+            else
+                assert(0);
+        } else if (language == EShLangTessControl) {
+            if (publicType.qualifier.storage != EvqVaryingOut)
+                error(loc, "can only apply to 'out'", "vertices", "");
+            else
+                checkIoArraysConsistency(loc);
         }
     }
     if (publicType.shaderQualifiers.invocations) {
@@ -3744,9 +3816,10 @@ void TParseContext::updateStandaloneQualifierDefaults(TSourceLoc loc, const TPub
             case ElgTrianglesAdjacency:
             case ElgQuads:
             case ElgIsolines:
-                if (intermediate.setInputPrimitive(publicType.shaderQualifiers.geometry))
-                    checkInputArrayConsistency(loc);
-                else
+                if (intermediate.setInputPrimitive(publicType.shaderQualifiers.geometry)) {
+                    if (language == EShLangGeometry)
+                        checkIoArraysConsistency(loc);
+                } else
                     error(loc, "cannot change previously set input primitive", TQualifier::getGeometryString(publicType.shaderQualifiers.geometry), "");
                 break;
             default:
@@ -3761,7 +3834,7 @@ void TParseContext::updateStandaloneQualifierDefaults(TSourceLoc loc, const TPub
                     error(loc, "cannot change previously set output primitive", TQualifier::getGeometryString(publicType.shaderQualifiers.geometry), "");
                 break;
             default:
-                error(loc, "does not only apply to output", TQualifier::getGeometryString(publicType.shaderQualifiers.geometry), "");
+                error(loc, "does not apply to output", TQualifier::getGeometryString(publicType.shaderQualifiers.geometry), "");
             }
         } else
             error(loc, "cannot be used here", TQualifier::getGeometryString(publicType.shaderQualifiers.geometry), "");

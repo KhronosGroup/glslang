@@ -88,8 +88,14 @@ void TIntermediate::merge(TInfoSink& infoSink, TIntermediate& unit)
     
     if (vertices == 0)
         vertices = unit.vertices;
-    else if (vertices != unit.vertices)
-        error(infoSink, "Contradictory layout max_vertices values");
+    else if (vertices != unit.vertices) {
+        if (language == EShLangGeometry)
+            error(infoSink, "Contradictory layout max_vertices values");
+        else if (language == EShLangTessControl)
+            error(infoSink, "Contradictory layout vertices values");
+        else
+            assert(0);
+    }
 
     if (vertexSpacing == EvsNone)
         vertexSpacing = unit.vertexSpacing;
@@ -297,11 +303,14 @@ void TIntermediate::finalCheck(TInfoSink& infoSink)
 
     switch (language) {
     case EShLangVertex:
+        break;
     case EShLangTessControl:
+        if (vertices == 0)
+            error(infoSink, "At least one shader must specify an output layout(vertices=...)");
         break;
     case EShLangTessEvaluation:
         if (inputPrimitive == ElgNone)
-            error(infoSink, "At least one tessellation shader must specify an input layout primitive");
+            error(infoSink, "At least one shader must specify an input layout primitive");
         if (vertexSpacing == EvsNone)
             vertexSpacing = EvsEqual;
         if (vertexOrder == EvoNone)
@@ -309,13 +318,14 @@ void TIntermediate::finalCheck(TInfoSink& infoSink)
         break;
     case EShLangGeometry:
         if (inputPrimitive == ElgNone)
-            error(infoSink, "At least one geometry shader must specify an input layout primitive");
+            error(infoSink, "At least one shader must specify an input layout primitive");
         if (outputPrimitive == ElgNone)
-            error(infoSink, "At least one geometry shader must specify an output layout primitive");
+            error(infoSink, "At least one shader must specify an output layout primitive");
         if (vertices == 0)
-            error(infoSink, "At least one geometry shader must specify a layout(max_vertices = value)");
+            error(infoSink, "At least one shader must specify a layout(max_vertices = value)");
         break;
     case EShLangFragment:
+        break;
     case EShLangCompute:
         break;
     }

@@ -35,3 +35,11 @@ void main()
     gl_TessLevelOuter[3] = 3.2;
     gl_TessLevelInner[1] = 1.3;
 }
+
+layout(vertices = 4) in;    // ERROR
+layout(vertices = 5) out;   // ERROR
+
+void foo()
+{
+    gl_out[4].gl_PointSize;  // ERROR
+}
