@@ -500,8 +500,9 @@ int TIntermediate::addUsedLocation(const TQualifier& qualifier, const TType& typ
         else
             size = 1;
     } else {
-        if (language == EShLangGeometry && qualifier.isPipeInput()) {
-            assert(type.isArray());
+        if (type.isArray() && 
+            (language == EShLangGeometry && qualifier.isPipeInput() ||
+            (language == EShLangTessControl && qualifier.isPipeOutput() && ! qualifier.patch))) {
             TType elementType(type, 0);
             size = computeTypeLocationSize(elementType);
         } else

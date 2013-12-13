@@ -48,3 +48,15 @@ smooth patch in vec4 badp1;         // ERROR
 flat patch in vec4 badp2;           // ERROR
 noperspective patch in vec4 badp3;  // ERROR
 patch sample in vec3 badp4;         // ERROR
+
+#extension GL_ARB_separate_shader_objects : enable
+
+in gl_PerVertex
+{
+float gl_ClipDistance[1];
+} gl_in[];                          // ERROR, no size
+
+in gl_PerVertex
+{
+float gl_ClipDistance[1];
+} gl_in[gl_MaxPatchVertices];

@@ -23,7 +23,7 @@ ERROR: 0:78: 'invocations' : not supported for this version or the enabled exten
 ERROR: 0:78: 'invocations' : can only apply to a standalone qualifier 
 ERROR: 0:79: 'max_vertices' : can only apply to a standalone qualifier 
 ERROR: 0:80: 'triangle_strip' : can only apply to a standalone qualifier 
-ERROR: 0:83: 'lines' : does not only apply to output 
+ERROR: 0:83: 'lines' : does not apply to output 
 ERROR: 0:85: 'triangles' : cannot change previously set input primitive 
 ERROR: 0:86: 'triangles_adjacency' : cannot change previously set input primitive 
 ERROR: 0:88: 'invocations' : not supported for this version or the enabled extensions 

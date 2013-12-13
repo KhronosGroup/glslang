@@ -2371,10 +2371,14 @@ void TParseContext::redeclareBuiltinBlock(TSourceLoc loc, TTypeList& newTypeList
         error(loc, "block redeclaration has extra members", blockName.c_str(), "");
     if (type.isArray() != (arraySizes != 0))
         error(loc, "cannot change arrayness of redeclared block", blockName.c_str(), "");
-    else if (type.isArray() && type.getArraySize() > 0 && type.getArraySize() != arraySizes->getSize())
-        error(loc, "cannot change array size of redeclared block", blockName.c_str(), "");
-    else if (type.isArray() && type.getArraySize() == 0 && arraySizes->getSize() > 0)
-        type.changeArraySize(arraySizes->getSize());
+    else if (type.isArray()) {
+        if (type.getArraySize() > 0 && arraySizes->getSize() == 0)
+            error(loc, "block already declared with size, can't redeclare as unsized", blockName.c_str(), "");
+        else if (type.getArraySize() > 0 && type.getArraySize() != arraySizes->getSize())
+            error(loc, "cannot change array size of redeclared block", blockName.c_str(), "");
+        else if (type.getArraySize() == 0 && arraySizes->getSize() > 0)
+            type.changeArraySize(arraySizes->getSize());
+    }
 
     symbolTable.insert(*block);
 
@@ -4004,3 +4008,4 @@ TIntermNode* TParseContext::addSwitch(TSourceLoc loc, TIntermTyped* expression, 
 }
 
 } // end namespace glslang
+// TODO: geometry and tessellation: make sure all inputs/outputs that should have extra level of arrayness do have the extra level of arrayness

@@ -12,7 +12,9 @@ ERROR: 0:47: 'patch' : cannot use interpolation qualifiers with patch
 ERROR: 0:48: 'patch' : cannot use interpolation qualifiers with patch 
 ERROR: 0:49: 'patch' : cannot use interpolation qualifiers with patch 
 ERROR: 0:50: '' : can only have one auxiliary qualifier (centroid, patch, and sample) 
-ERROR: 12 compilation errors.  No code generated.
+ERROR: 0:54: 'gl_PerVertex' : block already declared with size, can't redeclare as unsized 
+ERROR: 0:59: 'gl_PerVertex' : can only redeclare a built-in block once, and before any use 
+ERROR: 14 compilation errors.  No code generated.
 
 
 input primitive = quads
@@ -117,6 +119,7 @@ ERROR: node is still EOpNull!
 0:?     'badp2' (flat patch in 4-component vector of float)
 0:?     'badp3' (noperspective patch in 4-component vector of float)
 0:?     'badp4' (patch sample in 3-component vector of float)
+0:?     'gl_in' (in 32-element array of block{gl_ClipDistance})
 
 
 Linked tessellation evaluation stage:
