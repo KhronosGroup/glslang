@@ -190,12 +190,6 @@ int TPpContext::CPPdefine(TPpToken* ppToken)
     TSourceLoc defineLoc = ppToken->loc; // because ppToken is going to go to the next line before we report errors
     mac.body = new TokenStream;
     while (token != '\n') {
-        if (token == '\\') {
-            parseContext.lineContinuationCheck(ppToken->loc, false);
-            token = currentInput->scan(this, currentInput, ppToken);
-            if (token == '\n' || token == '\r')
-                token = currentInput->scan(this, currentInput, ppToken);
-        }
         RecordToken(mac.body, token, ppToken);
         token = currentInput->scan(this, currentInput, ppToken);
         if (token != '\n' && ppToken->space)

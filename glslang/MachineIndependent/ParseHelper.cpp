@@ -1484,6 +1484,7 @@ bool TParseContext::lineContinuationCheck(TSourceLoc loc, bool endOfComment)
 
     if (messages & EShMsgRelaxedErrors) {
         warn(loc, "not allowed in this version", message, "");
+        return true;
     } else {
         requireProfile(loc, EEsProfile | ECoreProfile | ECompatibilityProfile, message);
         profileRequires(loc, EEsProfile, 300, 0, message);

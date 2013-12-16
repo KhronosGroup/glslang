@@ -478,74 +478,82 @@ void TScanContext::fillInKeywordMap()
 
 int TScanContext::tokenize(TPpContext* pp, TParserToken& token)
 {
-    parserToken = &token;
-    TPpToken ppToken;
-    tokenText = pp->tokenize(&ppToken);
-    if (tokenText == 0)
-        return 0;
+    do {
+        parserToken = &token;
+        TPpToken ppToken;
+        tokenText = pp->tokenize(&ppToken);
+        if (tokenText == 0)
+            return 0;
 
-    loc = ppToken.loc;
-    parserToken->sType.lex.loc = loc;
-    switch (ppToken.token) {
-    case ';':  afterType = false;   return SEMICOLON;
-    case ',':  afterType = false;   return COMMA;
-    case ':':                       return COLON;
-    case '=':  afterType = false;   return EQUAL;
-    case '(':  afterType = false;   return LEFT_PAREN;
-    case ')':  afterType = false;   return RIGHT_PAREN;
-    case '.':  field = true;        return DOT;
-    case '!':                       return BANG;
-    case '-':                       return DASH;
-    case '~':                       return TILDE;
-    case '+':                       return PLUS;
-    case '*':                       return STAR;
-    case '/':                       return SLASH;
-    case '%':                       return PERCENT;
-    case '<':                       return LEFT_ANGLE;
-    case '>':                       return RIGHT_ANGLE;
-    case '|':                       return VERTICAL_BAR;
-    case '^':                       return CARET;
-    case '&':                       return AMPERSAND;
-    case '?':                       return QUESTION;
-    case '[':                       return LEFT_BRACKET;
-    case ']':                       return RIGHT_BRACKET;
-    case '{':                       return LEFT_BRACE;
-    case '}':                       return RIGHT_BRACE;
+        loc = ppToken.loc;
+        parserToken->sType.lex.loc = loc;
+        switch (ppToken.token) {
+        case ';':  afterType = false;   return SEMICOLON;
+        case ',':  afterType = false;   return COMMA;
+        case ':':                       return COLON;
+        case '=':  afterType = false;   return EQUAL;
+        case '(':  afterType = false;   return LEFT_PAREN;
+        case ')':  afterType = false;   return RIGHT_PAREN;
+        case '.':  field = true;        return DOT;
+        case '!':                       return BANG;
+        case '-':                       return DASH;
+        case '~':                       return TILDE;
+        case '+':                       return PLUS;
+        case '*':                       return STAR;
+        case '/':                       return SLASH;
+        case '%':                       return PERCENT;
+        case '<':                       return LEFT_ANGLE;
+        case '>':                       return RIGHT_ANGLE;
+        case '|':                       return VERTICAL_BAR;
+        case '^':                       return CARET;
+        case '&':                       return AMPERSAND;
+        case '?':                       return QUESTION;
+        case '[':                       return LEFT_BRACKET;
+        case ']':                       return RIGHT_BRACKET;
+        case '{':                       return LEFT_BRACE;
+        case '}':                       return RIGHT_BRACE;
+        case '\\':
+            parseContext.error(loc, "illegal use of escape character", "\\", "");
+            break;
 
-    case CPP_AND_OP:                return AND_OP;
-    case CPP_SUB_ASSIGN:            return SUB_ASSIGN;
-    case CPP_MOD_ASSIGN:            return MOD_ASSIGN;
-    case CPP_ADD_ASSIGN:            return ADD_ASSIGN;
-    case CPP_DIV_ASSIGN:            return DIV_ASSIGN;
-    case CPP_MUL_ASSIGN:            return MUL_ASSIGN;
-    case CPP_EQ_OP:                 return EQ_OP;
-    case CPP_XOR_OP:                return XOR_OP;
-    case CPP_GE_OP:                 return GE_OP;
-    case CPP_RIGHT_OP:              return RIGHT_OP;
-    case CPP_LE_OP:                 return LE_OP;
-    case CPP_LEFT_OP:               return LEFT_OP;
-    case CPP_DEC_OP:                return DEC_OP;
-    case CPP_NE_OP:                 return NE_OP;
-    case CPP_OR_OP:                 return OR_OP;
-    case CPP_INC_OP:                return INC_OP;
-    case CPP_RIGHT_ASSIGN:          return RIGHT_ASSIGN;
-    case CPP_LEFT_ASSIGN:           return LEFT_ASSIGN;
-    case CPP_AND_ASSIGN:            return AND_ASSIGN;
-    case CPP_OR_ASSIGN:             return OR_ASSIGN;
-    case CPP_XOR_ASSIGN:            return XOR_ASSIGN;
+        case CPP_AND_OP:                return AND_OP;
+        case CPP_SUB_ASSIGN:            return SUB_ASSIGN;
+        case CPP_MOD_ASSIGN:            return MOD_ASSIGN;
+        case CPP_ADD_ASSIGN:            return ADD_ASSIGN;
+        case CPP_DIV_ASSIGN:            return DIV_ASSIGN;
+        case CPP_MUL_ASSIGN:            return MUL_ASSIGN;
+        case CPP_EQ_OP:                 return EQ_OP;
+        case CPP_XOR_OP:                return XOR_OP;
+        case CPP_GE_OP:                 return GE_OP;
+        case CPP_RIGHT_OP:              return RIGHT_OP;
+        case CPP_LE_OP:                 return LE_OP;
+        case CPP_LEFT_OP:               return LEFT_OP;
+        case CPP_DEC_OP:                return DEC_OP;
+        case CPP_NE_OP:                 return NE_OP;
+        case CPP_OR_OP:                 return OR_OP;
+        case CPP_INC_OP:                return INC_OP;
+        case CPP_RIGHT_ASSIGN:          return RIGHT_ASSIGN;
+        case CPP_LEFT_ASSIGN:           return LEFT_ASSIGN;
+        case CPP_AND_ASSIGN:            return AND_ASSIGN;
+        case CPP_OR_ASSIGN:             return OR_ASSIGN;
+        case CPP_XOR_ASSIGN:            return XOR_ASSIGN;
                                    
-    case CPP_INTCONSTANT:           parserToken->sType.lex.i = ppToken.ival;       return INTCONSTANT;
-    case CPP_UINTCONSTANT:          parserToken->sType.lex.i = ppToken.ival;       return UINTCONSTANT;
-    case CPP_FLOATCONSTANT:         parserToken->sType.lex.d = ppToken.dval;       return FLOATCONSTANT;
-    case CPP_DOUBLECONSTANT:        parserToken->sType.lex.d = ppToken.dval;       return DOUBLECONSTANT;
-    case CPP_IDENTIFIER:            return tokenizeIdentifier();
+        case CPP_INTCONSTANT:           parserToken->sType.lex.i = ppToken.ival;       return INTCONSTANT;
+        case CPP_UINTCONSTANT:          parserToken->sType.lex.i = ppToken.ival;       return UINTCONSTANT;
+        case CPP_FLOATCONSTANT:         parserToken->sType.lex.d = ppToken.dval;       return FLOATCONSTANT;
+        case CPP_DOUBLECONSTANT:        parserToken->sType.lex.d = ppToken.dval;       return DOUBLECONSTANT;
+        case CPP_IDENTIFIER:            return tokenizeIdentifier();
 
-    case EOF:                       return 0;
+        case EOF:                       return 0;
                                    
-    default:
-        parseContext.infoSink.info.message(EPrefixInternalError, "Unknown PP token", loc);
-        return 0;
-    }
+        default:
+            char buf[2];
+            buf[0] = ppToken.token;
+            buf[1] = 0;
+            parseContext.error(loc, "unexpected token", buf, "");
+            break;
+        }
+    } while (true);
 }
 
 int TScanContext::tokenizeIdentifier()

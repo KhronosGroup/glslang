@@ -281,20 +281,29 @@ int TPpContext::sourceScan(TPpContext* pp, InputSrc*, TPpToken* ppToken)
         case 'k': case 'l': case 'm': case 'n': case 'o':
         case 'p': case 'q': case 'r': case 's': case 't':
         case 'u': case 'v': case 'w': case 'x': case 'y':
-        case 'z': case '\\' :
+        case 'z': case '\\':
             do {
                 if (ch == '\\') {
                     // escaped character
-                    pp->parseContext.lineContinuationCheck(ppToken->loc, false);
                     ch = pp->currentInput->getch(pp, pp->currentInput, ppToken);
                     if (ch == '\r' || ch == '\n') {
+                        pp->parseContext.lineContinuationCheck(ppToken->loc, false);
                         int nextch = pp->currentInput->getch(pp, pp->currentInput, ppToken);
                         if (ch == '\r' && nextch == '\n')
                             ch = pp->currentInput->getch(pp, pp->currentInput, ppToken);
                         else
                             ch = nextch;
-                    } else
-                        pp->parseContext.error(ppToken->loc, "can only escape newlines", "\\", "");
+                    } else {
+                        // Not an escaped newline.
+                        // Put back whatever it was
+                        pp->currentInput->ungetch(pp, pp->currentInput, ch, ppToken);
+                        // If not in the middle of an identifier, the \ is our token
+                        if (len == 0)
+                            return '\\';
+                        // Otherwise, put back the \ character, leave it for the next call
+                        ch = '\\';  // for the upcoming unget(...ch...);
+                        break;
+                    }
                 } else if (len < TPpToken::maxTokenLength) {
                     tokenText[len++] = ch;
                     ch = pp->currentInput->getch(pp, pp->currentInput, ppToken);					
@@ -303,7 +312,7 @@ int TPpContext::sourceScan(TPpContext* pp, InputSrc*, TPpToken* ppToken)
                         pp->parseContext.error(ppToken->loc, "name too long", "", "");
                         AlreadyComplained = 1;
                     }
-                    ch = pp->currentInput->getch(pp, pp->currentInput, ppToken);					
+                    ch = pp->currentInput->getch(pp, pp->currentInput, ppToken);
                 }
             } while ((ch >= 'a' && ch <= 'z') ||
                 (ch >= 'A' && ch <= 'Z') ||
