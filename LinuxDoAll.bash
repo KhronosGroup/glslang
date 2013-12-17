@@ -24,11 +24,11 @@ make -C StandAlone
 # install
 cd Install/Linux
 ./install
+cp glslangValidator ../../Test
+LD_LIBRARY_PATH=/usr/local/lib
+export LD_LIBRARY_PATH
 
 # run using test data
-cd Test
-../StandAlone/glslangValidator -i sample.vert sample.frag
-
 cd ../../Test
 chmod +x runtests
 ./runtests
