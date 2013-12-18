@@ -13,8 +13,8 @@ ERROR: 0:60: 'stream' : member cannot contradict block
 ERROR: 0:65: 'max_vertices' : can only apply to a standalone qualifier 
 ERROR: 0:70: 'points' : cannot change previously set output primitive 
 ERROR: 0:71: 'points' : cannot change previously set output primitive 
-ERROR: 0:72: 'triangle_strip' : does not apply to input 
-ERROR: 0:73: 'triangle_strip' : cannot be used here 
+ERROR: 0:72: 'triangle_strip' : cannot apply to input 
+ERROR: 0:73: 'triangle_strip' : cannot apply to: uniform
 ERROR: 0:74: 'triangle_strip' : can only apply to a standalone qualifier 
 ERROR: 0:75: 'triangle_strip' : can only apply to a standalone qualifier 
 ERROR: 0:76: 'invocations' : not supported for this version or the enabled extensions 
@@ -23,10 +23,10 @@ ERROR: 0:78: 'invocations' : not supported for this version or the enabled exten
 ERROR: 0:78: 'invocations' : can only apply to a standalone qualifier 
 ERROR: 0:79: 'max_vertices' : can only apply to a standalone qualifier 
 ERROR: 0:80: 'triangle_strip' : can only apply to a standalone qualifier 
-ERROR: 0:83: 'lines' : does not apply to output 
+ERROR: 0:83: 'lines' : cannot apply to 'out' 
 ERROR: 0:85: 'triangles' : cannot change previously set input primitive 
 ERROR: 0:86: 'triangles_adjacency' : cannot change previously set input primitive 
-ERROR: 0:88: 'invocations' : not supported for this version or the enabled extensions 
+ERROR: 0:87: 'invocations' : not supported for this version or the enabled extensions 
 ERROR: 0:88: 'max_vertices' : too large, must be less than gl_MaxGeometryOutputVertices 
 ERROR: 0:91: 'stream' : member cannot contradict block 
 ERROR: 29 compilation errors.  No code generated.
@@ -52,7 +52,10 @@ ERROR: node is still EOpNull!
 0:32          Constant:
 0:32            0 (const uint)
 0:32        color: direct index for structure (3-component vector of float)
-0:32          'fromV' (in block{color})
+0:32          direct index (block{color})
+0:32            'fromV' (in 4-element array of block{color})
+0:32            Constant:
+0:32              0 (const int)
 0:32          Constant:
 0:32            0 (const int)
 0:33      move second child to first child (float)
@@ -119,7 +122,7 @@ ERROR: node is still EOpNull!
 0:67          1.000000
 0:67          1.000000
 0:?   Linker Objects
-0:?     'fromV' (in block{color})
+0:?     'fromV' (in 4-element array of block{color})
 0:?     'toF' (layout(stream=0 ) out block{color})
 0:?     '__anon__0' (layout(stream=0 ) out block{color})
 0:?     'gl_in' (in 4-element array of block{gl_Position,gl_PointSize,gl_ClipDistance})
@@ -134,13 +137,13 @@ ERROR: node is still EOpNull!
 0:?     'ouua7' (layout(stream=7 ) out block{a})
 0:?     'ov2s3' (layout(stream=3 ) out 4-component vector of float)
 0:?     'badv4' (layout(stream=3 ) out 4-component vector of float)
-0:?     'bad2v4' (in 4-component vector of float)
+0:?     'bad2v4' (in 4-element array of 4-component vector of float)
 0:?     '__anon__1' (layout(stream=3 ) out block{a})
 0:?     'outbi' (layout(stream=3 ) out block{a,b,c})
-0:?     'inbi' (in block{a})
-0:?     '__anon__2' (in block{a15})
-0:?     '__anon__3' (layout(stream=3 ) out block{f15})
-0:?     '__anon__4' (layout(column_major shared ) uniform block{b15})
+0:?     'inbi' (in 4-element array of block{a})
+0:?     'insn' (in 4-element array of block{a15})
+0:?     '__anon__2' (layout(stream=3 ) out block{f15})
+0:?     '__anon__3' (layout(column_major shared ) uniform block{b15})
 
 
 Linked geometry stage:

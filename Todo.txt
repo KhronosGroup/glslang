@@ -17,6 +17,7 @@ Link Validation
       - 1.3: only statically used built-ins have to be redeclared as flat
       - 1.5: matching between gl_PerVertex blocks and gl_PerFragment blocks
       - 1.3: deprecated mixing fixed vertex/fragment stage with programmable fragment/vertex stage.
+      + 4.0: tessellation primitive, vertices, spacing, order, 
       - 4.3: compute shader not combined with any other stages
       - 4.3: remove cross-version linking restrictions.
       - 4.3: Allow mismatches in interpolation and auxiliary qualification across stages.
@@ -26,8 +27,8 @@ Link Validation
       - limits checking:
           + bindings
           - number of input/output compononents
-          - tessellation limits
-          - tessellation primitive array sizing consistency
+          + tessellation limits
+          + tessellation primitive array sizing consistency
           + Non ES: gl_TexCoord can only have a max array size of up to gl_MaxTextureCoords
           + Non ES: gl_ClipDistance ...
           - ...
@@ -106,10 +107,10 @@ Shader Functionality to Implement/Finish
       + texel offset limit checking
       + 1.50: geometry shaders: max_vertices must be checked against gl_MaxGeometryOutputVertices (maybe at compile time)
     GLSL 4.0
-      - tessellation control stage and tessellation evaluation stage. Includes barrier() built-in for synchronization.
-        - patch in, patch out
-        - input/output arrays
-          - unsized array sizing to gl_MaxPatchVertices, including gl_in/gl_out
+      + tessellation control stage and tessellation evaluation stage. Includes barrier() built-in for synchronization.
+        + patch in, patch out
+        + input/output arrays
+          + unsized array sizing to gl_MaxPatchVertices, including gl_in/gl_out
         + built-in variables, functions, and constants verification
         + layout qualifiers for primitive types
       - Polymorphic functions: Run-time selection of what function gets called, through the new keyword subroutine.

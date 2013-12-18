@@ -2,7 +2,7 @@
 
 in fromVertex {
     vec3 color;
-} fromV;
+} fromV[];
 
 out toFragment {
     vec3 color;
@@ -29,7 +29,7 @@ void main()
     EmitStreamVertex(1);    // ERROR
     EndStreamPrimitive(0);  // ERROR
 
-    color = fromV.color;
+    color = fromV[0].color;
     gl_ClipDistance[3] = gl_in[1].gl_ClipDistance[2];
     gl_Position = gl_in[0].gl_Position;
     gl_PointSize = gl_in[3].gl_PointSize;
@@ -72,7 +72,7 @@ layout(line_strip, points, stream = 3) out; // ERROR, changing output primitive
 layout(triangle_strip) in; // ERROR, not an input primitive
 layout(triangle_strip) uniform; // ERROR
 layout(triangle_strip) out vec4 badv4;  // ERROR, not on a variable
-layout(triangle_strip) in vec4 bad2v4;  // ERROR, not on a variable or input
+layout(triangle_strip) in vec4 bad2v4[];  // ERROR, not on a variable or input
 layout(invocations = 3) out outbn { int a; }; // ERROR, not on a block
 out outbn2 {
     layout(invocations = 3)  int a; // ERROR, not on a block member
@@ -84,16 +84,16 @@ layout(lines) out;  // ERROR, not on output
 layout(lines_adjancency) in;
 layout(triangles) in;             // ERROR, can't change it
 layout(triangles_adjacency) in;   // ERROR, can't change it
-
-layout(invocations = 4, max_vertices = 300) out;
+layout(invocations = 4) in;
+layout(max_vertices = 300) out;
 
 in inbn {
     layout(stream = 2) int a;     // ERROR, stream on input
-} inbi;
+} inbi[];
 
 in sameName {
     int a15;
-};
+} insn[];
 
 out sameName {
     float f15;

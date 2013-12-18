@@ -85,7 +85,8 @@ public:
     void checkIndex(TSourceLoc, const TType&, int& index);
     void handleIndexLimits(TSourceLoc, TIntermTyped* base, TIntermTyped* index);
 
-    bool isIoResizeArray(const TType&);
+    bool isIoResizeArray(const TType&) const;
+    void ioArrayCheck(TSourceLoc, const TType&, const TString& identifier);
     void handleIoResizeArrayAccess(TSourceLoc, TIntermTyped* base);
     void checkIoArraysConsistency(TSourceLoc, bool tailOnly = false);
     int getIoArrayImplicitSize() const;
@@ -94,7 +95,8 @@ public:
     TIntermTyped* handleDotDereference(TSourceLoc, TIntermTyped* base, TString& field);
     TFunction* handleFunctionDeclarator(TSourceLoc loc, TFunction& function, bool prototype);
     TIntermAggregate* handleFunctionDefinition(TSourceLoc, TFunction&);
-    TIntermTyped* handleFunctionCall(TSourceLoc, TFunction*, TIntermNode*, TIntermAggregate*);
+    TIntermTyped* handleFunctionCall(TSourceLoc, TFunction*, TIntermNode*);
+    TIntermTyped* handleLengthMethod(TSourceLoc, TFunction*, TIntermNode*);
     void nonOpBuiltInCheck(TSourceLoc, const TFunction&, TIntermAggregate&);
     TFunction* handleConstructorCall(TSourceLoc, TPublicType&);
 
@@ -146,7 +148,6 @@ public:
 
     void setLayoutQualifier(TSourceLoc, TPublicType&, TString&);
     void setLayoutQualifier(TSourceLoc, TPublicType&, TString&, int);
-    void mergeShaderLayoutQualifiers(TSourceLoc, TShaderQualifiers& dst, const TShaderQualifiers& src);
     void mergeObjectLayoutQualifiers(TSourceLoc, TQualifier& dest, const TQualifier& src);
     void layoutTypeCheck(TSourceLoc, const TSymbol&);
     void layoutQualifierCheck(TSourceLoc, const TQualifier&);
@@ -165,7 +166,6 @@ public:
     void addQualifierToExisting(TSourceLoc, TQualifier, TIdentifierList&);
     void invariantCheck(TSourceLoc, const TType&, const TString& identifier);
     void updateStandaloneQualifierDefaults(TSourceLoc, const TPublicType&);
-    void updateTypedDefaults(TSourceLoc, const TQualifier&, const TString* id);
     void wrapupSwitchSubsequence(TIntermAggregate* statements, TIntermNode* branchNode);
     TIntermNode* addSwitch(TSourceLoc, TIntermTyped* expression, TIntermAggregate* body);
 

@@ -529,11 +529,23 @@ void TParseContext::handleIndexLimits(TSourceLoc loc, TIntermTyped* base, TInter
 }
 
 // Return true if this is a geometry shader input array or tessellation control output array.
-bool TParseContext::isIoResizeArray(const TType& type)
+bool TParseContext::isIoResizeArray(const TType& type) const
 {
     return type.isArray() &&
            ((language == EShLangGeometry    && type.getQualifier().storage == EvqVaryingIn) ||
             (language == EShLangTessControl && type.getQualifier().storage == EvqVaryingOut && ! type.getQualifier().patch));
+}
+
+// Issue any errors if the non-array object is missing arrayness WRT
+// shader I/O that has array requirements.
+// All arrayness checking is handled in array paths, this is for 
+void TParseContext::ioArrayCheck(TSourceLoc loc, const TType& type, const TString& identifier)
+{
+    if (! type.isArray() && ! symbolTable.atBuiltInLevel()) {
+        if ((language == EShLangGeometry    && type.getQualifier().storage == EvqVaryingIn) ||
+            (language == EShLangTessControl && type.getQualifier().storage == EvqVaryingOut && ! type.getQualifier().patch))
+            error(loc, "type must be an array:", type.getStorageQualifierString(), identifier.c_str());
+    }
 }
 
 // Handle a dereference of a geometry shader input array or tessellation control output array.
@@ -615,9 +627,9 @@ void TParseContext::checkIoArrayConsistency(TSourceLoc loc, int requiredSize, co
         type.changeArraySize(requiredSize);
     else if (type.getArraySize() != requiredSize) {
         if (language == EShLangGeometry)
-            error(loc, "inconsistent input primitive for array size", feature, name.c_str());
+            error(loc, "inconsistent input primitive for array size of", feature, name.c_str());
         else if (language == EShLangTessControl)
-            error(loc, "inconsistent output number of vertices for array size", feature, name.c_str());
+            error(loc, "inconsistent output number of vertices for array size of", feature, name.c_str());
         else
             assert(0);
     }
@@ -871,43 +883,14 @@ TIntermAggregate* TParseContext::handleFunctionDefinition(TSourceLoc loc, TFunct
 //  - user function
 //  - subroutine call (not implemented yet)
 //
-TIntermTyped* TParseContext::handleFunctionCall(TSourceLoc loc, TFunction* fnCall, TIntermNode* intermNode, TIntermAggregate* intermAggregate)
+TIntermTyped* TParseContext::handleFunctionCall(TSourceLoc loc, TFunction* fnCall, TIntermNode* intermNode)
 {
     TIntermTyped* result = 0;
 
     TOperator op = fnCall->getBuiltInOp();
-    if (op == EOpArrayLength) {
-        if (fnCall->getParamCount() > 0)
-            error(loc, "method does not accept any arguments", fnCall->getName().c_str(), "");
-        int length = 0;
-        if (intermNode->getAsTyped() == 0 || ! intermNode->getAsTyped()->getType().isArray())
-            error(loc, "", fnCall->getName().c_str(), "can only be applied to an array");
-        else if (intermNode->getAsTyped()->getType().getArraySize() == 0) {
-            bool implicitlySized = false;
-            if (intermNode->getAsSymbolNode() && isIoResizeArray(intermNode->getAsTyped()->getType())) {
-                // We could be between a layout declaration that gives a built-in io array implicit size and 
-                // a user redeclaration of that array, meaning we have to substitute its implicit size here 
-                // without actually redeclaring the array.  (It is an error to use a member before the
-                // redeclaration, but not an error to use the array name itself.)
-                const TString& name = intermNode->getAsSymbolNode()->getName();
-                if (name == "gl_in" || name == "gl_out")
-                    length = getIoArrayImplicitSize();
-            }
-            if (length == 0) {
-                if (isIoResizeArray(intermNode->getAsTyped()->getType()))
-                    error(loc, "", fnCall->getName().c_str(), "array must first be sized by a redeclaration or layout qualifier");
-                else
-                    error(loc, "", fnCall->getName().c_str(), "array must be declared with a size before using this method");
-            }
-        } else
-            length = intermNode->getAsTyped()->getType().getArraySize();
-
-        if (length == 0)
-            length = 1;
-        TConstUnionArray unionArray(1);
-        unionArray[0].setIConst(length);
-        result = intermediate.addConstantUnion(unionArray, TType(EbtInt, EvqConst), loc);
-    } else if (op != EOpNull) {
+    if (op == EOpArrayLength)
+        result = handleLengthMethod(loc, fnCall, intermNode);
+    else if (op != EOpNull) {
         //
         // Then this should be a constructor.
         // Don't go through the symbol table for constructors.
@@ -949,7 +932,7 @@ TIntermTyped* TParseContext::handleFunctionCall(TSourceLoc loc, TFunction* fnCal
                 }
             } else {
                 // This is a function call not mapped to built-in operation
-                result = intermediate.setAggregateOperator(intermAggregate, EOpFunctionCall, fnCandidate->getType(), loc);
+                result = intermediate.setAggregateOperator(intermNode, EOpFunctionCall, fnCandidate->getType(), loc);
                 result->getAsAggregate()->setName(fnCandidate->getMangledName());
 
                 // this is how we know whether the given function is a built-in function or a user-defined function
@@ -989,6 +972,43 @@ TIntermTyped* TParseContext::handleFunctionCall(TSourceLoc loc, TFunction* fnCal
     return result;
 }
 
+// Do all processing handling object.length().
+// Return resulting tree node.
+TIntermTyped* TParseContext::handleLengthMethod(TSourceLoc loc, TFunction* fnCall, TIntermNode* intermNode)
+{
+    int length = 0;
+
+    if (fnCall->getParamCount() > 0)
+        error(loc, "method does not accept any arguments", fnCall->getName().c_str(), "");
+    if (intermNode->getAsTyped() == 0 || ! intermNode->getAsTyped()->getType().isArray())
+        error(loc, "", fnCall->getName().c_str(), "can only be applied to an array");
+    else if (intermNode->getAsTyped()->getType().getArraySize() == 0) {
+        bool implicitlySized = false;
+        if (intermNode->getAsSymbolNode() && isIoResizeArray(intermNode->getAsTyped()->getType())) {
+            // We could be between a layout declaration that gives a built-in io array implicit size and 
+            // a user redeclaration of that array, meaning we have to substitute its implicit size here 
+            // without actually redeclaring the array.  (It is an error to use a member before the
+            // redeclaration, but not an error to use the array name itself.)
+            const TString& name = intermNode->getAsSymbolNode()->getName();
+            if (name == "gl_in" || name == "gl_out")
+                length = getIoArrayImplicitSize();
+        }
+        if (length == 0) {
+            if (isIoResizeArray(intermNode->getAsTyped()->getType()))
+                error(loc, "", fnCall->getName().c_str(), "array must first be sized by a redeclaration or layout qualifier");
+            else
+                error(loc, "", fnCall->getName().c_str(), "array must be declared with a size before using this method");
+        }
+    } else
+        length = intermNode->getAsTyped()->getType().getArraySize();
+
+    if (length == 0)
+        length = 1;
+    TConstUnionArray unionArray(1);
+    unionArray[0].setIConst(length);
+
+    return intermediate.addConstantUnion(unionArray, TType(EbtInt, EvqConst), loc);
+}
 //
 // Do additional checking of built-in function calls that were not mapped
 // to built-in operations (e.g., texturing functions).
@@ -2696,8 +2716,7 @@ void TParseContext::setLayoutQualifier(TSourceLoc loc, TPublicType& publicType, 
                 return;
             }
         } else {
-            // tessellation evaluation
-            // TODO: tessellation: semantic check these are on the in qualifier only
+            assert(language == EShLangTessEvaluation);
 
             // input primitive
             if (id == TQualifier::getGeometryString(ElgTriangles)) {
@@ -2833,24 +2852,6 @@ void TParseContext::setLayoutQualifier(TSourceLoc loc, TPublicType& publicType, 
     error(loc, "there is no such layout identifier for this stage taking an assigned value", id.c_str(), "");
 }
 
-//
-// Merge characteristics of the 'src' qualifier into the 'dst', at the TPublicType level,
-// which means for layout-qualifier information not kept per qualifier.
-//
-void TParseContext::mergeShaderLayoutQualifiers(TSourceLoc loc, TShaderQualifiers& dst, const TShaderQualifiers& src)
-{
-    if (src.geometry != ElgNone)
-        dst.geometry = src.geometry;
-    if (src.invocations != 0)
-        dst.invocations = src.invocations;
-    if (src.vertices != 0)
-        dst.vertices = src.vertices;
-    if (src.pixelCenterInteger)
-        dst.pixelCenterInteger = src.pixelCenterInteger;
-    if (src.originUpperLeft)
-        dst.originUpperLeft = src.originUpperLeft;
-}
-
 // Merge any layout qualifier information from src into dst, leaving everything else in dst alone
 void TParseContext::mergeObjectLayoutQualifiers(TSourceLoc loc, TQualifier& dst, const TQualifier& src)
 {
@@ -2880,6 +2881,7 @@ void TParseContext::layoutTypeCheck(TSourceLoc loc, const TSymbol& symbol)
     layoutQualifierCheck(loc, qualifier);
 
     // now, error checking combining type and qualifier
+
     if (qualifier.hasLocation()) {
         switch (qualifier.storage) {
         case EvqVaryingIn:
@@ -2903,6 +2905,7 @@ void TParseContext::layoutTypeCheck(TSourceLoc loc, const TSymbol& symbol)
             break;
         }
         default:
+            error(loc, "location qualifiers only appy to uniform, buffer, in, or out storage qualifiers", symbol.getName().c_str(), "");
             break;
         }
 
@@ -2929,6 +2932,27 @@ void TParseContext::layoutTypeCheck(TSourceLoc loc, const TSymbol& symbol)
                 lastBinding += type.getArraySize();
             if (lastBinding >= resources.maxCombinedTextureImageUnits)
                 error(loc, "sampler binding not less than gl_MaxCombinedTextureImageUnits", "binding", type.isArray() ? "(using array)" : "");
+        }
+    }
+
+    // Check packing and matrix
+    if (qualifier.layoutMatrix || qualifier.layoutPacking) {
+        switch (qualifier.storage) {
+        case EvqBuffer:
+        case EvqUniform:
+            if (symbol.getType().getBasicType() != EbtBlock) {
+                if (qualifier.layoutMatrix != ElmNone)
+                    error(loc, "cannot specify matrix layout on a variable declaration", symbol.getName().c_str(), "");
+                if (qualifier.layoutPacking != ElpNone)
+                    error(loc, "cannot specify packing on a variable declaration", symbol.getName().c_str(), "");
+            }
+            break;
+        default:
+            if (symbol.getType().getBasicType() != EbtBlock && symbol.getAsVariable()) {
+                if (qualifier.layoutMatrix != ElmNone ||
+                    qualifier.layoutPacking != ElpNone)
+                    error(loc, "layout qualifiers for matrix layout and packing only apply to uniform or buffer blocks", symbol.getName().c_str(), "");
+            }
         }
     }
 }
@@ -3220,6 +3244,7 @@ TVariable* TParseContext::declareNonArray(TSourceLoc loc, TString& identifier, T
     // make a new variable
     TVariable* variable = new TVariable(&identifier, type);
 
+    ioArrayCheck(loc, type, identifier);
     // add variable to symbol table
     if (! symbolTable.insert(*variable)) {
         error(loc, "redefinition", variable->getName().c_str(), "");
@@ -3677,6 +3702,8 @@ void TParseContext::declareBlock(TSourceLoc loc, TTypeList& typeList, const TStr
     TType blockType(&typeList, *blockName, currentBlockQualifier);
     if (arraySizes)
         blockType.setArraySizes(arraySizes);
+    else
+        ioArrayCheck(loc, blockType, instanceName ? *instanceName : *blockName);
 
     //
     // Don't make a user-defined type out of block name; that will cause an error
@@ -3723,6 +3750,11 @@ void TParseContext::declareBlock(TSourceLoc loc, TTypeList& typeList, const TStr
 
     // Check for general layout qualifier errors
     layoutTypeCheck(loc, variable);
+
+    if (isIoResizeArray(blockType)) {
+        ioArraySymbolResizeList.push_back(&variable);
+        checkIoArraysConsistency(loc, true);
+    }
 
     // Save it in the AST for linker use.
     intermediate.addSymbolLinkageNode(linkage, variable);
@@ -3793,21 +3825,20 @@ void TParseContext::invariantCheck(TSourceLoc loc, const TType& type, const TStr
 void TParseContext::updateStandaloneQualifierDefaults(TSourceLoc loc, const TPublicType& publicType)
 {
     if (publicType.shaderQualifiers.vertices) {
-        if (! intermediate.setVertices(publicType.shaderQualifiers.vertices)) {            
-            if (language == EShLangGeometry)
-                error(loc, "cannot change previously set layout value", "max_vertices", "");
-            else if (language == EShLangTessControl)
-                error(loc, "cannot change previously set layout value", "vertices", "");
-            else
-                assert(0);
-        } else if (language == EShLangTessControl) {
-            if (publicType.qualifier.storage != EvqVaryingOut)
-                error(loc, "can only apply to 'out'", "vertices", "");
-            else
-                checkIoArraysConsistency(loc);
-        }
+        assert(language == EShLangTessControl || language == EShLangGeometry);
+        const char* id = (language == EShLangTessControl) ? "vertices" : "max_vertices";
+
+        if (publicType.qualifier.storage != EvqVaryingOut)
+            error(loc, "can only apply to 'out'", id, "");
+        if (! intermediate.setVertices(publicType.shaderQualifiers.vertices))
+            error(loc, "cannot change previously set layout value", id, "");
+        
+        if (language == EShLangTessControl)
+            checkIoArraysConsistency(loc);
     }
     if (publicType.shaderQualifiers.invocations) {
+        if (publicType.qualifier.storage != EvqVaryingIn)
+            error(loc, "can only apply to 'in'", "invocations", "");
         if (! intermediate.setInvocations(publicType.shaderQualifiers.invocations))
             error(loc, "cannot change previously set layout value", "invocations", "");
     }
@@ -3828,7 +3859,7 @@ void TParseContext::updateStandaloneQualifierDefaults(TSourceLoc loc, const TPub
                     error(loc, "cannot change previously set input primitive", TQualifier::getGeometryString(publicType.shaderQualifiers.geometry), "");
                 break;
             default:
-                error(loc, "does not apply to input", TQualifier::getGeometryString(publicType.shaderQualifiers.geometry), "");
+                error(loc, "cannot apply to input", TQualifier::getGeometryString(publicType.shaderQualifiers.geometry), "");
             }
         } else if (publicType.qualifier.storage == EvqVaryingOut) {
             switch (publicType.shaderQualifiers.geometry) {
@@ -3839,21 +3870,31 @@ void TParseContext::updateStandaloneQualifierDefaults(TSourceLoc loc, const TPub
                     error(loc, "cannot change previously set output primitive", TQualifier::getGeometryString(publicType.shaderQualifiers.geometry), "");
                 break;
             default:
-                error(loc, "does not apply to output", TQualifier::getGeometryString(publicType.shaderQualifiers.geometry), "");
+                error(loc, "cannot apply to 'out'", TQualifier::getGeometryString(publicType.shaderQualifiers.geometry), "");
             }
         } else
-            error(loc, "cannot be used here", TQualifier::getGeometryString(publicType.shaderQualifiers.geometry), "");
+            error(loc, "cannot apply to:", TQualifier::getGeometryString(publicType.shaderQualifiers.geometry), GetStorageQualifierString(publicType.qualifier.storage));
     }
     if (publicType.shaderQualifiers.spacing != EvsNone) {
-        if (! intermediate.setVertexSpacing(publicType.shaderQualifiers.spacing))
-            error(loc, "cannot change previously set vertex spacing", TQualifier::getVertexSpacingString(publicType.shaderQualifiers.spacing), "");
+        if (publicType.qualifier.storage == EvqVaryingIn) {
+            if (! intermediate.setVertexSpacing(publicType.shaderQualifiers.spacing))
+                error(loc, "cannot change previously set vertex spacing", TQualifier::getVertexSpacingString(publicType.shaderQualifiers.spacing), "");
+        } else
+            error(loc, "can only apply to 'in'", TQualifier::getVertexSpacingString(publicType.shaderQualifiers.spacing), "");
     }
     if (publicType.shaderQualifiers.order != EvoNone) {
-        if (! intermediate.setVertexOrder(publicType.shaderQualifiers.order))
-            error(loc, "cannot change previously set vertex order", TQualifier::getVertexOrderString(publicType.shaderQualifiers.order), "");
+        if (publicType.qualifier.storage == EvqVaryingIn) {
+            if (! intermediate.setVertexOrder(publicType.shaderQualifiers.order))
+                error(loc, "cannot change previously set vertex order", TQualifier::getVertexOrderString(publicType.shaderQualifiers.order), "");
+        } else
+            error(loc, "can only apply to 'in'", TQualifier::getVertexOrderString(publicType.shaderQualifiers.order), "");
     }
-    if (publicType.shaderQualifiers.pointMode)
-        intermediate.setPointMode();
+    if (publicType.shaderQualifiers.pointMode) {
+        if (publicType.qualifier.storage == EvqVaryingIn)
+            intermediate.setPointMode();
+        else
+            error(loc, "can only apply to 'in'", "point_mode", "");
+    }
 
     const TQualifier& qualifier = publicType.qualifier;
 
@@ -3893,44 +3934,6 @@ void TParseContext::updateStandaloneQualifierDefaults(TSourceLoc loc, const TPub
         error(loc, "cannot declare a default, include a type or full declaration", "binding", "");
     if (qualifier.hasLocation())
         error(loc, "cannot declare a default, use a full declaration", "location", "");
-}
-
-//
-// Update defaults for qualifiers when declared with a type, and optionally an identifier.
-// (But, not the case of just a qualifier.)
-//
-void TParseContext::updateTypedDefaults(TSourceLoc loc, const TQualifier& qualifier, const TString* id)
-{
-    if (! id) {
-        if (qualifier.hasLayout())
-            warn(loc, "cannot set qualifier defaults when using a type and no identifier", "", "");
-
-        return;
-    }
-
-    switch (qualifier.storage) {
-    case EvqBuffer:
-    case EvqUniform:
-        if (qualifier.layoutMatrix != ElmNone)
-            error(loc, "cannot specify matrix layout on a variable declaration", id->c_str(), "");
-        if (qualifier.layoutPacking != ElpNone)
-            error(loc, "cannot specify packing on a variable declaration", id->c_str(), "");
-        break;
-    case EvqVaryingIn:
-        if (qualifier.hasLocation())
-            globalInputDefaults.layoutSlotLocation = qualifier.layoutSlotLocation;
-        break;
-    case EvqVaryingOut:
-        if (qualifier.hasLocation())
-            globalOutputDefaults.layoutSlotLocation = qualifier.layoutSlotLocation;
-        break;
-    default:
-        if (qualifier.layoutMatrix != ElmNone ||
-            qualifier.layoutPacking != ElpNone)
-            error(loc, "layout qualifiers for matrix layout and packing only apply to uniform or buffer blocks", id->c_str(), "");
-        else if (qualifier.hasLocation())
-            error(loc, "location qualifiers only appy to uniform, buffer, in, or out storage qualifiers", id->c_str(), "");
-    }
 }
 
 //
@@ -4009,4 +4012,3 @@ TIntermNode* TParseContext::addSwitch(TSourceLoc loc, TIntermTyped* expression, 
 }
 
 } // end namespace glslang
-// TODO: geometry and tessellation: make sure all inputs/outputs that should have extra level of arrayness do have the extra level of arrayness

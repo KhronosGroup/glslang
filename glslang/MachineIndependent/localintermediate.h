@@ -118,7 +118,7 @@ public:
     bool setInvocations(int i) 
     {
         if (invocations > 0)
-            return false;
+            return invocations == i;
         invocations = i;
         return true;
     }

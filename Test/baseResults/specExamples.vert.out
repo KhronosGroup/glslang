@@ -21,7 +21,7 @@ ERROR: 0:85: 'offset' : there is no such layout identifier for this stage taking
 ERROR: 0:85: 'binding' : requires block, or sampler/image, or atomic-counter type 
 ERROR: 0:87: 'binding' : requires block, or sampler/image, or atomic-counter type 
 ERROR: 0:89: 'offset' : there is no such layout identifier for this stage taking an assigned value 
-WARNING: 0:89: '' : cannot set qualifier defaults when using a type and no identifier 
+WARNING: 0:89: 'layout' : useless application of layout qualifier 
 ERROR: 0:91: 'bar' : redefinition 
 ERROR: 0:92: 'offset' : there is no such layout identifier for this stage taking an assigned value 
 ERROR: 0:92: 'bar' : redefinition 

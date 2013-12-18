@@ -3,7 +3,7 @@ Warning, version 400 is not yet complete; some version-specific features are pre
 ERROR: 0:3: 'vertices' : there is no such layout identifier for this stage taking an assigned value 
 ERROR: 0:5: 'triangles' : cannot change previously set input primitive 
 ERROR: 0:6: 'isolines' : cannot change previously set input primitive 
-ERROR: 0:9: 'ccw' : cannot change previously set vertex order 
+ERROR: 0:8: 'ccw' : cannot change previously set vertex order 
 ERROR: 0:12: 'equal_spacing' : cannot change previously set vertex spacing 
 ERROR: 0:13: 'fractional_even_spacing' : cannot change previously set vertex spacing 
 ERROR: 0:18: 'patch' : can only use on input in tessellation-evaluation shader 
@@ -14,7 +14,16 @@ ERROR: 0:49: 'patch' : cannot use interpolation qualifiers with patch
 ERROR: 0:50: '' : can only have one auxiliary qualifier (centroid, patch, and sample) 
 ERROR: 0:54: 'gl_PerVertex' : block already declared with size, can't redeclare as unsized 
 ERROR: 0:59: 'gl_PerVertex' : can only redeclare a built-in block once, and before any use 
-ERROR: 14 compilation errors.  No code generated.
+ERROR: 0:64: 'quads' : cannot apply to 'out' 
+ERROR: 0:64: 'cw' : can only apply to 'in' 
+ERROR: 0:65: 'triangles' : cannot apply to 'out' 
+ERROR: 0:66: 'isolines' : cannot apply to 'out' 
+ERROR: 0:67: 'cw' : can only apply to 'in' 
+ERROR: 0:68: 'fractional_odd_spacing' : can only apply to 'in' 
+ERROR: 0:69: 'equal_spacing' : can only apply to 'in' 
+ERROR: 0:70: 'fractional_even_spacing' : can only apply to 'in' 
+ERROR: 0:71: 'point_mode' : can only apply to 'in' 
+ERROR: 23 compilation errors.  No code generated.
 
 
 input primitive = quads

@@ -82,7 +82,6 @@ using namespace glslang;
             TIntermNode* intermNode;
             glslang::TIntermNodePair nodePair;
             glslang::TIntermTyped* intermTypedNode;
-            glslang::TIntermAggregate* intermAggregate;
         };
         union {
             glslang::TPublicType type;
@@ -184,7 +183,7 @@ extern int yylex(YYSTYPE*, TParseContext&);
 
 %type <interm.intermNode> translation_unit function_definition
 %type <interm.intermNode> statement simple_statement
-%type <interm.intermAggregate>  statement_list switch_statement_list compound_statement
+%type <interm.intermNode> statement_list switch_statement_list compound_statement
 %type <interm.intermNode> declaration_statement selection_statement expression_statement
 %type <interm.intermNode> switch_statement case_label
 %type <interm.intermNode> declaration external_declaration
@@ -300,7 +299,7 @@ integer_expression
 
 function_call
     : function_call_or_method {
-        $$ = parseContext.handleFunctionCall($1.loc, $1.function, $1.intermNode, $1.intermAggregate);
+        $$ = parseContext.handleFunctionCall($1.loc, $1.function, $1.intermNode);
         delete $1.function;
     }
     ;
@@ -753,9 +752,9 @@ declaration
         // TODO: 4.0 functionality: subroutines: make the identifier a user type for this signature
     }
     | init_declarator_list SEMICOLON {
-        if ($1.intermAggregate)
-            $1.intermAggregate->setOperator(EOpSequence);
-        $$ = $1.intermAggregate;
+        if ($1.intermNode && $1.intermNode->getAsAggregate())
+            $1.intermNode->getAsAggregate()->setOperator(EOpSequence);
+        $$ = $1.intermNode;
     }
     | PRECISION precision_qualifier type_specifier SEMICOLON {
         parseContext.profileRequires($1.loc, ENoProfile, 130, 0, "precision statement");
@@ -980,42 +979,41 @@ init_declarator_list
     | init_declarator_list COMMA IDENTIFIER array_specifier EQUAL initializer {
         $$.type = $1.type;
         TIntermNode* initNode = parseContext.declareVariable($3.loc, *$3.string, $1.type, $4.arraySizes, $6);
-        $$.intermAggregate = parseContext.intermediate.growAggregate($1.intermAggregate, initNode, $5.loc);
+        $$.intermNode = parseContext.intermediate.growAggregate($1.intermNode, initNode, $5.loc);
     }
     | init_declarator_list COMMA IDENTIFIER EQUAL initializer {
         $$.type = $1.type;
         TIntermNode* initNode = parseContext.declareVariable($3.loc, *$3.string, $1.type, 0, $5);
-        $$.intermAggregate = parseContext.intermediate.growAggregate($1.intermAggregate, initNode, $4.loc);
+        $$.intermNode = parseContext.intermediate.growAggregate($1.intermNode, initNode, $4.loc);
     }
     ;
 
 single_declaration
     : fully_specified_type {
         $$.type = $1;
-        $$.intermAggregate = 0;
-        parseContext.updateTypedDefaults($1.loc, $$.type.qualifier, 0);
+        $$.intermNode = 0;
+        if ($$.type.qualifier.hasLayout())
+            parseContext.warn($1.loc, "useless application of layout qualifier", "layout", "");
     }
     | fully_specified_type IDENTIFIER {
         $$.type = $1;
-        $$.intermAggregate = 0;
+        $$.intermNode = 0;
         parseContext.declareVariable($2.loc, *$2.string, $1);
-        parseContext.updateTypedDefaults($2.loc, $$.type.qualifier, $2.string);
     }
     | fully_specified_type IDENTIFIER array_specifier {
         $$.type = $1;
-        $$.intermAggregate = 0;
+        $$.intermNode = 0;
         parseContext.declareVariable($2.loc, *$2.string, $1, $3.arraySizes);
-        parseContext.updateTypedDefaults($2.loc, $$.type.qualifier, $2.string);
     }
     | fully_specified_type IDENTIFIER array_specifier EQUAL initializer {
         $$.type = $1;
         TIntermNode* initNode = parseContext.declareVariable($2.loc, *$2.string, $1, $3.arraySizes, $5);
-        $$.intermAggregate = parseContext.intermediate.growAggregate(0, initNode, $4.loc);
+        $$.intermNode = parseContext.intermediate.growAggregate(0, initNode, $4.loc);
     }
     | fully_specified_type IDENTIFIER EQUAL initializer {
         $$.type = $1;
         TIntermNode* initNode = parseContext.declareVariable($2.loc, *$2.string, $1, 0, $4);
-        $$.intermAggregate = parseContext.intermediate.growAggregate(0, initNode, $3.loc);
+        $$.intermNode = parseContext.intermediate.growAggregate(0, initNode, $3.loc);
     }
 
 // Grammar Note:  No 'enum', or 'typedef'.
@@ -1045,7 +1043,7 @@ fully_specified_type
             $2.arraySizes = 0;
         
         parseContext.checkNoShaderLayouts($2.loc, $1.shaderQualifiers);
-        parseContext.mergeShaderLayoutQualifiers($2.loc, $2.shaderQualifiers, $1.shaderQualifiers);
+        $2.shaderQualifiers.merge($1.shaderQualifiers);
         parseContext.mergeQualifiers($2.loc, $2.qualifier, $1.qualifier, true);
         parseContext.precisionQualifierCheck($2.loc, $2);
 
@@ -1103,7 +1101,7 @@ layout_qualifier_id_list
     }
     | layout_qualifier_id_list COMMA layout_qualifier_id {
         $$ = $1;
-        parseContext.mergeShaderLayoutQualifiers($2.loc, $$.shaderQualifiers, $3.shaderQualifiers);
+        $$.shaderQualifiers.merge($3.shaderQualifiers);
         parseContext.mergeObjectLayoutQualifiers($2.loc, $$.qualifier, $3.qualifier);
     }
 
@@ -1142,7 +1140,7 @@ type_qualifier
         if ($$.basicType == EbtVoid)
             $$.basicType = $2.basicType;
 
-        parseContext.mergeShaderLayoutQualifiers($$.loc, $$.shaderQualifiers, $2.shaderQualifiers);
+        $$.shaderQualifiers.merge($2.shaderQualifiers);
         parseContext.mergeQualifiers($$.loc, $$.qualifier, $2.qualifier, false);
     }
     ;
@@ -2159,8 +2157,8 @@ compound_statement
         --parseContext.controlFlowNestingLevel;
     }
       RIGHT_BRACE {
-        if ($3 != 0)
-            $3->setOperator(EOpSequence);
+        if ($3 && $3->getAsAggregate())
+            $3->getAsAggregate()->setOperator(EOpSequence);
         $$ = $3;
     }
     ;
@@ -2188,8 +2186,8 @@ compound_statement_no_new_scope
         $$ = 0;
     }
     | LEFT_BRACE statement_list RIGHT_BRACE {
-        if ($2)
-            $2->setOperator(EOpSequence);
+        if ($2 && $2->getAsAggregate())
+            $2->getAsAggregate()->setOperator(EOpSequence);
         $$ = $2;
     }
     ;
@@ -2206,7 +2204,7 @@ statement_list
     | statement_list statement {
         if ($2 && $2->getAsBranchNode() && ($2->getAsBranchNode()->getFlowOp() == EOpCase || 
                                             $2->getAsBranchNode()->getFlowOp() == EOpDefault)) {
-            parseContext.wrapupSwitchSubsequence($1, $2);
+            parseContext.wrapupSwitchSubsequence($1 ? $1->getAsAggregate() : 0, $2);
             $$ = 0;  // start a fresh subsequence for what's after this case
         } else
             $$ = parseContext.intermediate.growAggregate($1, $2);
@@ -2261,7 +2259,7 @@ switch_statement
         parseContext.switchLevel.push_back(parseContext.controlFlowNestingLevel);
     } 
     LEFT_BRACE switch_statement_list RIGHT_BRACE {
-        $$ = parseContext.addSwitch($1.loc, $3, $7);
+        $$ = parseContext.addSwitch($1.loc, $3, $7 ? $7->getAsAggregate() : 0);
         delete parseContext.switchSequenceStack.back();
         parseContext.switchSequenceStack.pop_back();
         parseContext.switchLevel.pop_back();
@@ -2422,14 +2420,14 @@ external_declaration
 function_definition
     : function_prototype {
         $1.function = parseContext.handleFunctionDeclarator($1.loc, *$1.function, false /* not prototype */);
-        $1.intermAggregate = parseContext.handleFunctionDefinition($1.loc, *$1.function);
+        $1.intermNode = parseContext.handleFunctionDefinition($1.loc, *$1.function);
     }
     compound_statement_no_new_scope {
         //   May be best done as post process phase on intermediate code
         if (parseContext.currentFunctionType->getBasicType() != EbtVoid && ! parseContext.functionReturnsValue)
             parseContext.error($1.loc, "function does not return a value:", "", $1.function->getName().c_str());
         parseContext.symbolTable.pop(&parseContext.defaultPrecision[0]);
-        $$ = parseContext.intermediate.growAggregate($1.intermAggregate, $3);
+        $$ = parseContext.intermediate.growAggregate($1.intermNode, $3);
         parseContext.intermediate.setAggregateOperator($$, EOpFunction, $1.function->getType(), $1.loc);
         $$->getAsAggregate()->setName($1.function->getMangledName().c_str());
 

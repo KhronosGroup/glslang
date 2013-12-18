@@ -23,7 +23,7 @@ void foo3()
 }
 
 uniform sampler2D s2D;
-in vec2 coord;
+in vec2 coord[];
 uniform vec4 v4;
 
 void foo4()
@@ -37,7 +37,7 @@ void foo4()
         ivec2(2,1)
     };
 
-    vec4 v = textureGatherOffset(s2D, coord, offsets[i].xy);
+    vec4 v = textureGatherOffset(s2D, coord[0], offsets[i].xy);
 
     offsets[i].xy = ivec2(3);  // ERROR
     v4.x = 3.2;                // ERROR

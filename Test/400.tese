@@ -5,8 +5,8 @@ layout(quads, cw) in;
 layout(triangles) in;     // ERROR
 layout(isolines) in;      // ERROR
 
-layout(cw) in;
 layout(ccw) in;           // ERROR
+layout(cw) in;
 
 layout(fractional_odd_spacing) in;    
 layout(equal_spacing) in;              // ERROR
@@ -60,3 +60,13 @@ in gl_PerVertex
 {
 float gl_ClipDistance[1];
 } gl_in[gl_MaxPatchVertices];
+
+layout(quads, cw) out;     // ERROR
+layout(triangles) out;     // ERROR
+layout(isolines) out;      // ERROR
+layout(cw) out;            // ERROR
+layout(fractional_odd_spacing) out;    // ERROR
+layout(equal_spacing) out;             // ERROR
+layout(fractional_even_spacing) out;   // ERROR
+layout(point_mode) out;                // ERROR
+

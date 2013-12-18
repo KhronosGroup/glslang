@@ -1,11 +1,12 @@
 420.tesc
 Warning, version 400 is not yet complete; some version-specific features are present, but many are missing.
-ERROR: 0:7: 'vertices' : inconsistent output number of vertices for array size gl_out
-ERROR: 0:11: 'vertices' : inconsistent output number of vertices for array size a
-ERROR: 0:12: 'vertices' : inconsistent output number of vertices for array size outb
+ERROR: 0:7: 'vertices' : inconsistent output number of vertices for array size of gl_out
+ERROR: 0:11: 'vertices' : inconsistent output number of vertices for array size of a
+ERROR: 0:12: 'vertices' : inconsistent output number of vertices for array size of outb
 ERROR: 0:26: 'gl_PointSize' :  no such field in structure 
 ERROR: 0:26: 'assign' :  cannot convert from 'float' to 'block{gl_Position}'
-ERROR: 5 compilation errors.  No code generated.
+ERROR: 0:29: 'out' : type must be an array: outf
+ERROR: 6 compilation errors.  No code generated.
 
 
 vertices = 4
@@ -76,6 +77,7 @@ ERROR: node is still EOpNull!
 0:?     'a' (out 3-element array of int)
 0:?     'outb' (out 5-element array of int)
 0:?     'outc' (out 4-element array of int)
+0:?     'outf' (out float)
 
 
 Linked tessellation control stage:

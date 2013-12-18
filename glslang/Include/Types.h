@@ -471,6 +471,28 @@ struct TShaderQualifiers {
         order = EvoNone;
         pointMode = false;
     }
+
+    // Merge in characteristics from the 'src' qualifier.  They can override when
+    // set, but never erase when not set.
+    void merge(const TShaderQualifiers& src)
+    {
+        if (src.geometry != ElgNone)
+            geometry = src.geometry;
+        if (src.pixelCenterInteger)
+            pixelCenterInteger = src.pixelCenterInteger;
+        if (src.originUpperLeft)
+            originUpperLeft = src.originUpperLeft;
+        if (src.invocations != 0)
+            invocations = src.invocations;
+        if (src.vertices != 0)
+            vertices = src.vertices;
+        if (src.spacing != EvsNone)
+            spacing = src.spacing;
+        if (src.order != EvoNone)
+            order = src.order;
+        if (src.pointMode)
+            pointMode = true;
+    }
 };
 
 //

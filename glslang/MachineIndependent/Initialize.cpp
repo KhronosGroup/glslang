@@ -1285,8 +1285,6 @@ void TBuiltIns::initialize(int version, EProfile profile)
             "patch out float gl_TessLevelOuter[4];"
             "patch out float gl_TessLevelInner[2];"
             "\n");
-
-        // TODO 4.0 tessellation: do we also need to support the gl_VerticesOut mentioned in the extension specification?
     }
 
     //============================================================================

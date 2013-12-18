@@ -25,3 +25,5 @@ void main()
     gl_out[1].gl_Position = p;
     gl_out[1].gl_PointSize = ps;        // ERROR
 }
+
+out float outf;  // ERROR, no array

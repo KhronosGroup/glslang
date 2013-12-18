@@ -1,17 +1,24 @@
 400.geom
 Warning, version 400 is not yet complete; some version-specific features are present, but many are missing.
-ERROR: 0:13: 'invocations' : can only apply to a standalone qualifier 
+ERROR: 0:12: 'invocations' : can only apply to a standalone qualifier 
 ERROR: 0:20: 'patch' : not supported in this stage: geometry
 ERROR: 0:20: 'gl_PointSize' : cannot add layout to redeclared block member 
 ERROR: 0:20: 'gl_PointSize' : cannot add patch to redeclared block member 
 ERROR: 0:25: 'length' :  array must first be sized by a redeclaration or layout qualifier
 ERROR: 0:36: 'length' :  array must first be sized by a redeclaration or layout qualifier
-ERROR: 0:40: 'triangles' : inconsistent input primitive for array size colorBad
-ERROR: 0:44: 'triangles' : inconsistent input primitive for array size colorbad2
+ERROR: 0:40: 'triangles' : inconsistent input primitive for array size of colorBad
+ERROR: 0:44: 'triangles' : inconsistent input primitive for array size of colorbad2
 ERROR: 0:56: 'location' : repeated use of location 4
 ERROR: 0:58: 'patch' : not supported in this stage: geometry
 ERROR: 0:59: 'patch' : not supported in this stage: geometry
-ERROR: 11 compilation errors.  No code generated.
+ERROR: 0:61: 'in' : type must be an array: scalar
+ERROR: 0:63: 'invocations' : can only apply to 'in' 
+ERROR: 0:64: 'max_vertices' : can only apply to 'out' 
+ERROR: 0:65: 'max_vertices' : can only apply to 'out' 
+ERROR: 0:65: 'invocations' : can only apply to 'in' 
+ERROR: 0:67: 'in' : type must be an array: inbls
+ERROR: 0:71: 'triangles' : inconsistent input primitive for array size of inbla
+ERROR: 18 compilation errors.  No code generated.
 
 
 invocations = 4
@@ -30,10 +37,10 @@ ERROR: node is still EOpNull!
 0:6          0 (const int)
 0:7      EmitVertex (void)
 0:8      EndPrimitive (void)
-0:10      Sequence
-0:10        move second child to first child (int)
-0:10          'id' (int)
-0:10          'gl_InvocationID' (in int)
+0:9      Sequence
+0:9        move second child to first child (int)
+0:9          'id' (int)
+0:9          'gl_InvocationID' (in int)
 0:23  Function Definition: foo( (void)
 0:23    Function Parameters: 
 0:25    Sequence
@@ -65,7 +72,7 @@ ERROR: node is still EOpNull!
 0:51      Constant:
 0:51        3 (const int)
 0:?   Linker Objects
-0:?     '__anon__0' (layout(stream=0 ) out block{a})
+0:?     'bn' (in 3-element array of block{a})
 0:?     'gl_in' (in 3-element array of block{gl_Position,gl_PointSize})
 0:?     'color' (in 3-element array of 4-component vector of float)
 0:?     'color2' (in 3-element array of 4-component vector of float)
@@ -75,8 +82,11 @@ ERROR: node is still EOpNull!
 0:?     'cva' (layout(location=4 ) in 3-element array of 4-component vector of float)
 0:?     'cvb' (layout(location=5 ) in 3-element array of 4-component vector of float)
 0:?     'cmc' (layout(location=2 ) in 3-element array of 3X3 matrix of float)
-0:?     'patchIn' (patch in 4-component vector of float)
+0:?     'patchIn' (patch in 3-element array of 4-component vector of float)
 0:?     'patchOut' (layout(stream=0 ) patch out 4-component vector of float)
+0:?     'scalar' (in float)
+0:?     'inbls' (in block{a})
+0:?     'inbla' (in 17-element array of block{a})
 
 
 Linked geometry stage:

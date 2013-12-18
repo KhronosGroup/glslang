@@ -6,12 +6,12 @@ void main()
     EndStreamPrimitive(0);
     EmitVertex();
     EndPrimitive();
-
     int id = gl_InvocationID;
 }
 
-layout(invocations = 3) out outbn { int a; }; // ERROR, not on a block
-layout(max_vertices = 127, invocations = 4) out;
+layout(invocations = 4) in outbn { int a; } bn[]; // ERROR, not on a block
+layout(max_vertices = 127) out;
+layout(invocations = 4) in;
 
 #extension GL_ARB_separate_shader_objects : enable
 
@@ -55,5 +55,19 @@ layout(location = 4) in vec4 cva[3];
 layout(location = 5) in vec4 cvb[3];
 layout(location = 2) in mat3 cmc[3];  // ERROR, collision
 
-patch in vec4 patchIn;              // ERROR
+patch in vec4 patchIn[];            // ERROR
 patch out vec4 patchOut;            // ERROR
+
+in float scalar;  // ERROR, no array
+
+layout(max_vertices = 127, invocations = 4) out;      // ERROR
+layout(invocations = 4, max_vertices = 127) in;       // ERROR
+layout(max_vertices = 127, invocations = 4) uniform;  // 2 ERRORs
+
+in inblockscalar {
+    int a;
+} inbls;  // ERROR, not an array
+
+in inblocka {
+    int a;
+} inbla[17];  // ERROR, wrong array size

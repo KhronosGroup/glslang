@@ -51,7 +51,7 @@ shared vec4 compute_only;  // ERROR
 
 layout(packed) uniform;
 
-layout(packed) float aoeuntaoeu;
+layout(packed) float aoeuntaoeu;  // ERROR, packed on variable
 
 layout(location = 40) in float cd;
 layout(location = 37) in mat4x3 ce; // ERROR, overlap

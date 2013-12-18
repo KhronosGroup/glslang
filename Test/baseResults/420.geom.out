@@ -53,7 +53,10 @@ ERROR: node is still EOpNull!
 0:40          'v' (4-component vector of float)
 0:40          Function Call: textureGatherOffset(s21;vf2;vi2; (4-component vector of float)
 0:40            's2D' (uniform sampler2D)
-0:40            'coord' (in 2-component vector of float)
+0:40            direct index (2-component vector of float)
+0:40              'coord' (in 3-element array of 2-component vector of float)
+0:40              Constant:
+0:40                0 (const int)
 0:40            vector swizzle (2-component vector of int)
 0:40              indirect index (2-component vector of int)
 0:40                Constant:
@@ -115,7 +118,7 @@ ERROR: node is still EOpNull!
 0:?     'gl_in' (in 3-element array of block{gl_Position,gl_PointSize,gl_ClipDistance})
 0:?     'color3' (in 3-element array of 4-component vector of float)
 0:?     's2D' (uniform sampler2D)
-0:?     'coord' (in 2-component vector of float)
+0:?     'coord' (in 3-element array of 2-component vector of float)
 0:?     'v4' (uniform 4-component vector of float)
 0:?     '__anon__0' (layout(stream=0 ) out block{gl_PointSize,gl_ClipDistance})
 
