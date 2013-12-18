@@ -18,3 +18,5 @@ void main()
 #endif
 
 in struct S { float f; } s; // ERROR
+
+float patch = 3.1;

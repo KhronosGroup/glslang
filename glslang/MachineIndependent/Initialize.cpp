@@ -811,7 +811,7 @@ void TBuiltIns::initialize(int version, EProfile profile)
         //
         //============================================================================
 
-        if (version >= 400)
+        if (version >= 150)
             stageBuiltins[EShLangTessControl].append(
                 "void barrier();"
                 );
@@ -1255,7 +1255,7 @@ void TBuiltIns::initialize(int version, EProfile profile)
     //
     //============================================================================
 
-    if (version >= 400) {
+    if (version >= 150) {
         // Note:  "in gl_PerVertex {...} gl_in[gl_MaxPatchVertices];" is declared in initialize() below,
         // as it depends on the resource sizing of gl_MaxPatchVertices.
 
@@ -1293,7 +1293,7 @@ void TBuiltIns::initialize(int version, EProfile profile)
     //
     //============================================================================
 
-    if (version >= 400) {
+    if (version >= 150) {
         // Note:  "in gl_PerVertex {...} gl_in[gl_MaxPatchVertices];" is declared in initialize() below,
         // as it depends on the resource sizing of gl_MaxPatchVertices.
 
@@ -2001,7 +2001,7 @@ void TBuiltIns::initialize(const TBuiltInResource &resources, int version, EProf
         }
 
         // tessellation
-        if (version >= 400) {
+        if (version >= 150) {
             snprintf(builtInConstant, maxSize, "const int gl_MaxTessControlInputComponents = %d;", resources.maxTessControlInputComponents);
             s.append(builtInConstant);
             snprintf(builtInConstant, maxSize, "const int gl_MaxTessControlOutputComponents = %d;", resources.maxTessControlOutputComponents);

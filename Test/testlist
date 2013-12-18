@@ -49,7 +49,6 @@ tokenLength.vert
 300scope.vert
 400.frag
 420.vert
-420.tesc
 420.geom
 420_size_gl_in.geom
 430scope.vert
@@ -57,11 +56,7 @@ lineContinuation100.vert
 lineContinuation.vert
 numeral.frag
 400.geom
-400.tesc
-400.tese
 410.geom
-410.tesc
-420.tese
 430.vert
 430.comp
 dce.frag

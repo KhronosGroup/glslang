@@ -654,6 +654,11 @@ int TScanContext::tokenizeIdentifier()
         return keyword;
 
     case PATCH:
+        if (parseContext.symbolTable.atBuiltInLevel() || parseContext.extensionsTurnedOn(1, &GL_ARB_tessellation_shader))
+            return es30ReservedFromGLSL(150);
+        else
+            return es30ReservedFromGLSL(400);
+
     case SAMPLE:
     case SUBROUTINE:
         return es30ReservedFromGLSL(400);

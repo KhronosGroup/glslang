@@ -17,6 +17,11 @@ ERROR: node is still EOpNull!
 0:12            'gl_ClipDistance' (smooth in 5-element array of float)
 0:12            Constant:
 0:12              2 (const int)
+0:22  Sequence
+0:22    move second child to first child (float)
+0:22      'patch' (float)
+0:22      Constant:
+0:22        3.100000
 0:?   Linker Objects
 0:?     'v' (smooth in 4-component vector of float)
 0:?     'i' (smooth in 4-component vector of float)
@@ -24,6 +29,7 @@ ERROR: node is still EOpNull!
 0:?     'gl_ClipDistance' (smooth in 5-element array of float)
 0:?     'gl_ClipDistance' (smooth in 5-element array of float)
 0:?     's' (smooth in structure{f})
+0:?     'patch' (float)
 
 
 Linked fragment stage:

@@ -14,3 +14,5 @@ void main()
 layout(origin_upper_left, pixel_center_integer) in vec4 gl_FragCoord;  // ERROR, declared after use
 
 in struct S { float f; } s;
+
+float patch = 3.1;

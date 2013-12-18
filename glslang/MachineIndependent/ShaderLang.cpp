@@ -191,7 +191,7 @@ bool InitializeSymbolTables(TInfoSink& infoSink, TSymbolTable** commonTable,  TS
     // do the per-stage tables
     InitializeStageSymbolTable(builtIns, version, profile, EShLangVertex, infoSink, commonTable, symbolTables);
     InitializeStageSymbolTable(builtIns, version, profile, EShLangFragment, infoSink, commonTable, symbolTables);
-    if (profile != EEsProfile && version >= 400) {
+    if (profile != EEsProfile && version >= 150) {
         InitializeStageSymbolTable(builtIns, version, profile, EShLangTessControl, infoSink, commonTable, symbolTables);
         InitializeStageSymbolTable(builtIns, version, profile, EShLangTessEvaluation, infoSink, commonTable, symbolTables);
     }
@@ -353,10 +353,10 @@ bool DeduceVersionProfile(TInfoSink& infoSink, EShLanguage stage, bool versionNo
         break;
     case EShLangTessControl:
     case EShLangTessEvaluation:
-        if (version < 400 || (profile != ECoreProfile && profile != ECompatibilityProfile)) {
+        if (version < 150 || (profile != ECoreProfile && profile != ECompatibilityProfile)) {
             correct = false;
-            infoSink.info.message(EPrefixError, "#version: tessellation shaders require non-es profile and version 400 or above");
-            version = 400;
+            infoSink.info.message(EPrefixError, "#version: tessellation shaders require non-es profile and version 150 or above");
+            version = 150;
             profile = ECoreProfile;
         }
         break;
