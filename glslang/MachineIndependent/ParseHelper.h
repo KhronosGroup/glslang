@@ -86,6 +86,7 @@ public:
     void handleIndexLimits(TSourceLoc, TIntermTyped* base, TIntermTyped* index);
 
     bool isIoResizeArray(const TType&) const;
+    void fixIoArraySize(TSourceLoc, TType&);
     void ioArrayCheck(TSourceLoc, const TType&, const TString& identifier);
     void handleIoResizeArrayAccess(TSourceLoc, TIntermTyped* base);
     void checkIoArraysConsistency(TSourceLoc, bool tailOnly = false);

@@ -518,9 +518,9 @@ void TParseContext::handleIndexLimits(TSourceLoc loc, TIntermTyped* base, TInter
         (! limits.generalAttributeMatrixVectorIndexing && base->getQualifier().isPipeInput() && language == EShLangVertex && (base->getType().isMatrix() || base->getType().isVector())) ||
         (! limits.generalConstantMatrixVectorIndexing && base->getAsConstantUnion()) ||
         (! limits.generalVariableIndexing && ! base->getType().getQualifier().isUniform() &&
-                                                ! base->getType().getQualifier().isPipeInput() &&
-                                                ! base->getType().getQualifier().isPipeOutput() &&
-                                                base->getType().getQualifier().storage != EvqConst) ||
+                                             ! base->getType().getQualifier().isPipeInput() &&
+                                             ! base->getType().getQualifier().isPipeOutput() &&
+                                               base->getType().getQualifier().storage != EvqConst) ||
         (! limits.generalVaryingIndexing && (base->getType().getQualifier().isPipeInput() ||
                                                 base->getType().getQualifier().isPipeOutput()))) {
         // it's too early to know what the inductive variables are, save it for post processing
@@ -536,14 +536,35 @@ bool TParseContext::isIoResizeArray(const TType& type) const
             (language == EShLangTessControl && type.getQualifier().storage == EvqVaryingOut && ! type.getQualifier().patch));
 }
 
+// If an array is not isIoResizeArray() but is an io array, make sure it has the right size
+void TParseContext::fixIoArraySize(TSourceLoc loc, TType& type)
+{
+    if (! type.isArray() || type.getQualifier().patch || symbolTable.atBuiltInLevel())
+        return;
+
+    assert(! isIoResizeArray(type));
+
+    if (type.getQualifier().storage != EvqVaryingIn || type.getQualifier().patch)
+        return;
+
+    if (language == EShLangTessControl || language == EShLangTessEvaluation) {
+        if (type.getArraySize() != resources.maxPatchVertices) {
+            if (type.getArraySize() != 0)
+                error(loc, "tessellation input array size must be gl_MaxPatchVertices or unsized", "[]", "");
+            type.changeArraySize(resources.maxPatchVertices);
+        }
+    }
+}
+
 // Issue any errors if the non-array object is missing arrayness WRT
 // shader I/O that has array requirements.
 // All arrayness checking is handled in array paths, this is for 
 void TParseContext::ioArrayCheck(TSourceLoc loc, const TType& type, const TString& identifier)
 {
     if (! type.isArray() && ! symbolTable.atBuiltInLevel()) {
-        if ((language == EShLangGeometry    && type.getQualifier().storage == EvqVaryingIn) ||
-            (language == EShLangTessControl && type.getQualifier().storage == EvqVaryingOut && ! type.getQualifier().patch))
+        if ((language == EShLangGeometry       &&  type.getQualifier().storage == EvqVaryingIn) ||
+            (language == EShLangTessControl    && (type.getQualifier().storage == EvqVaryingOut || type.getQualifier().storage == EvqVaryingIn) && ! type.getQualifier().patch) ||
+            (language == EShLangTessEvaluation &&  type.getQualifier().storage == EvqVaryingIn && ! type.getQualifier().patch))
             error(loc, "type must be an array:", type.getStorageQualifierString(), identifier.c_str());
     }
 }
@@ -2067,9 +2088,12 @@ void TParseContext::declareArray(TSourceLoc loc, TString& identifier, const TTyp
             symbolTable.insert(*symbol);
             newDeclaration = true;
 
-            if (! symbolTable.atBuiltInLevel() && isIoResizeArray(type)) {
-                ioArraySymbolResizeList.push_back(symbol);
-                checkIoArraysConsistency(loc, true);
+            if (! symbolTable.atBuiltInLevel()) {
+                if (isIoResizeArray(type)) {
+                    ioArraySymbolResizeList.push_back(symbol);
+                    checkIoArraysConsistency(loc, true);
+                } else
+                    fixIoArraySize(loc, symbol->getWritableType());
             }
 
             return;
@@ -2410,7 +2434,8 @@ void TParseContext::redeclareBuiltinBlock(TSourceLoc loc, TTypeList& newTypeList
     if (isIoResizeArray(block->getType())) {
         ioArraySymbolResizeList.push_back(block);
         checkIoArraysConsistency(loc, true);
-    }
+    } else if (block->getType().isArray())
+        fixIoArraySize(loc, block->getWritableType());
 
     // Save it in the AST for linker use.
     intermediate.addSymbolLinkageNode(linkage, *block);
@@ -3754,7 +3779,8 @@ void TParseContext::declareBlock(TSourceLoc loc, TTypeList& typeList, const TStr
     if (isIoResizeArray(blockType)) {
         ioArraySymbolResizeList.push_back(&variable);
         checkIoArraysConsistency(loc, true);
-    }
+    } else
+        fixIoArraySize(loc, variable.getWritableType());
 
     // Save it in the AST for linker use.
     intermediate.addSymbolLinkageNode(linkage, variable);

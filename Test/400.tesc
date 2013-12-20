@@ -43,3 +43,18 @@ void foo()
 {
     gl_out[4].gl_PointSize;  // ERROR
 }
+
+in vec2 ina;   // ERROR, not array
+in vec2 inb[];
+in vec2 inc[18];  // ERROR, wrong size
+in vec2 ind[gl_MaxPatchVertices];
+
+#extension GL_ARB_separate_shader_objects : enable
+
+layout(location = 3) in vec4 ivla[];
+layout(location = 4) in vec4 ivlb[];
+layout(location = 4) in vec4 ivlc[];  // ERROR
+
+layout(location = 3) out vec4 ovla[];
+layout(location = 4) out vec4 ovlb[];
+layout(location = 4) out vec4 ovlc[];  // ERROR

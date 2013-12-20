@@ -59,7 +59,7 @@ float gl_ClipDistance[1];
 in gl_PerVertex
 {
 float gl_ClipDistance[1];
-} gl_in[gl_MaxPatchVertices];
+} gl_in[];
 
 layout(quads, cw) out;     // ERROR
 layout(triangles) out;     // ERROR
@@ -70,3 +70,30 @@ layout(equal_spacing) out;             // ERROR
 layout(fractional_even_spacing) out;   // ERROR
 layout(point_mode) out;                // ERROR
 
+in vec2 ina;   // ERROR, not array
+in vec2 inb[];
+in vec2 inc[18];  // ERROR, wrong size
+in vec2 ind[gl_MaxPatchVertices];
+
+in testbla {
+    int f;
+} bla;        // ERROR, not array
+
+in testblb {
+    int f;
+} blb[];
+
+in testblc {
+    int f;
+} blc[18]; // ERROR wrong size
+
+in testbld {
+    int f;
+} bld[gl_MaxPatchVertices];
+
+layout(location = 23) in vec4 ivla[];
+layout(location = 24) in vec4 ivlb[];
+layout(location = 24) in vec4 ivlc[];  // ERROR
+
+layout(location = 23) out vec4 ovla[2];
+layout(location = 24) out vec4 ovlb[2];  // ERROR

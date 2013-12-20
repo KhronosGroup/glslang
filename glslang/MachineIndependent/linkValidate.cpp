@@ -500,9 +500,10 @@ int TIntermediate::addUsedLocation(const TQualifier& qualifier, const TType& typ
         else
             size = 1;
     } else {
-        if (type.isArray() && 
-            (language == EShLangGeometry && qualifier.isPipeInput() ||
-            (language == EShLangTessControl && qualifier.isPipeOutput() && ! qualifier.patch))) {
+        if (type.isArray() && ! qualifier.patch &&
+            (language == EShLangGeometry && qualifier.isPipeInput()) ||
+            language == EShLangTessControl                           ||
+            (language == EShLangTessEvaluation && qualifier.isPipeInput())) {
             TType elementType(type, 0);
             size = computeTypeLocationSize(elementType);
         } else
@@ -534,8 +535,12 @@ int TIntermediate::computeTypeLocationSize(const TType& type)
     // "If the declared input is an array of size n and each element takes m locations, it will be assigned m * n 
     // consecutive locations..."
     if (type.isArray()) {
-        TType elementType(type, 0);
-        return type.getArraySize() * computeTypeLocationSize(elementType);
+        TType elementType(type, 0);        
+        if (type.getArraySize() == 0) {
+            // TODO: are there valid cases of having an unsized array with a location?  If so, running this code too early.
+            return computeTypeLocationSize(elementType);
+        } else
+            return type.getArraySize() * computeTypeLocationSize(elementType);
     }
 
     // "The locations consumed by block and structure members are determined by applying the rules above 

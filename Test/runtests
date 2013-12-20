@@ -3,6 +3,7 @@
 TARGETDIR=localResults
 BASEDIR=baseResults
 EXE=./glslangValidator.exe
+mkdir -p localResults
 
 #
 # configuration file tests
