@@ -142,11 +142,11 @@ public:
 
     void setInput(TInputScanner& input, bool versionWillBeError);
 
-    void TPpContext::pushInput(tInput* in)
+    void pushInput(tInput* in)
     {
         inputStack.push_back(in);
     }
-    void TPpContext::popInput()
+    void popInput()
     {
         delete inputStack.back();
         inputStack.pop_back();
