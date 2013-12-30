@@ -55,3 +55,7 @@ sum += 900000000.0;
 // sum should be 980600301.0
     gl_Position = vec4(sum);
 }
+
+#define FUNC(a,b)		a+b
+// needs to be last test in file due to syntax error
+void foo986(){	FUNC( (((2)))), 4); }  // ERROR, too many )

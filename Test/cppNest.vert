@@ -170,3 +170,8 @@ int;
     int;
     #endif
 #endif
+
+#define FUNC(a,b)		a+b
+void foo985(){	FUNC( (((2))), ((3),4)); }
+// needs to be last test in file
+void foo987(){	FUNC(((); }  // ERROR, EOF in argument

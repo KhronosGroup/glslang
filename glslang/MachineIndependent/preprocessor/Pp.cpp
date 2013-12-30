@@ -132,7 +132,7 @@ int TPpContext::CPPdefine(TPpToken* ppToken)
     Symbol *symb;
 
     // get macro name
-    int token = currentInput->scan(this, currentInput, ppToken);
+    int token = scanToken(ppToken);
     if (token != CPP_IDENTIFIER) {
         parseContext.error(ppToken->loc, "must be followed by macro name", "#define", "");
         return token;
@@ -145,12 +145,12 @@ int TPpContext::CPPdefine(TPpToken* ppToken)
     }
 
     // gather parameters to the macro, between (...)
-    token = currentInput->scan(this, currentInput, ppToken);
+    token = scanToken(ppToken);
     if (token == '(' && ! ppToken->space) {
         int argc = 0;
         int args[maxMacroArgs];
         do {
-            token = currentInput->scan(this, currentInput, ppToken);
+            token = scanToken(ppToken);
             if (argc == 0 && token == ')') 
                 break;
             if (token != CPP_IDENTIFIER) {
@@ -173,7 +173,7 @@ int TPpContext::CPPdefine(TPpToken* ppToken)
                 else
                     parseContext.error(ppToken->loc, "too many macro parameters", "#define", "");                    
             }
-            token = currentInput->scan(this, currentInput, ppToken);
+            token = scanToken(ppToken);
         } while (token == ',');
         if (token != ')') {            
             parseContext.error(ppToken->loc, "missing parenthesis", "#define", "");
@@ -183,7 +183,7 @@ int TPpContext::CPPdefine(TPpToken* ppToken)
         mac.argc = argc;
         mac.args = (int*)mem_Alloc(pool, argc * sizeof(int));
         memcpy(mac.args, args, argc * sizeof(int));
-        token = currentInput->scan(this, currentInput, ppToken);
+        token = scanToken(ppToken);
     }
 
     // record the definition of the macro
@@ -191,7 +191,7 @@ int TPpContext::CPPdefine(TPpToken* ppToken)
     mac.body = new TokenStream;
     while (token != '\n') {
         RecordToken(mac.body, token, ppToken);
-        token = currentInput->scan(this, currentInput, ppToken);
+        token = scanToken(ppToken);
         if (token != '\n' && ppToken->space)
             RecordToken(mac.body, ' ', ppToken);
     }
@@ -238,7 +238,7 @@ int TPpContext::CPPdefine(TPpToken* ppToken)
 // Handle #undef
 int TPpContext::CPPundef(TPpToken* ppToken)
 {
-    int token = currentInput->scan(this, currentInput, ppToken);
+    int token = scanToken(ppToken);
     Symbol *symb;
     if (token != CPP_IDENTIFIER) {
         parseContext.error(ppToken->loc, "must be followed by macro name", "#undef", "");
@@ -246,14 +246,14 @@ int TPpContext::CPPundef(TPpToken* ppToken)
         return token;
     }
 
-    const char* name = GetAtomString(ppToken->atom); // TODO preprocessor simplification: the token text should have been built into the ppToken during currentInput->scan()
+    const char* name = GetAtomString(ppToken->atom); // TODO preprocessor simplification: the token text should have been built into the ppToken during scanToken()
     parseContext.reservedPpErrorCheck(ppToken->loc, name, "#undef");
 
     symb = LookUpSymbol(ppToken->atom);
     if (symb) {
         symb->mac.undef = 1;
     }
-    token = currentInput->scan(this, currentInput, ppToken);
+    token = scanToken(ppToken);
     if (token != '\n')
         parseContext.error(ppToken->loc, "can only be followed by a single macro name", "#undef", "");
 
@@ -269,21 +269,21 @@ int TPpContext::CPPelse(int matchelse, TPpToken* ppToken)
 {
     int atom;
     int depth = 0;
-    int token = currentInput->scan(this, currentInput, ppToken);
+    int token = scanToken(ppToken);
 
     while (token != EOF) {
         if (token != '#') {
             while (token != '\n' && token != EOF)
-                token = currentInput->scan(this, currentInput, ppToken);
+                token = scanToken(ppToken);
             
             if (token == EOF)
                 return EOF;
 
-            token = currentInput->scan(this, currentInput, ppToken);
+            token = scanToken(ppToken);
             continue;
         }
 
-        if ((token = currentInput->scan(this, currentInput, ppToken)) != CPP_IDENTIFIER)
+        if ((token = scanToken(ppToken)) != CPP_IDENTIFIER)
             continue;
 
         atom = ppToken->atom;
@@ -292,7 +292,7 @@ int TPpContext::CPPelse(int matchelse, TPpToken* ppToken)
             ifdepth++; 
             elsetracker++;
         } else if (atom == endifAtom) {
-            token = extraTokenCheck(atom, ppToken, currentInput->scan(this, currentInput, ppToken));
+            token = extraTokenCheck(atom, ppToken, scanToken(ppToken));
             elseSeen[elsetracker] = false;
             --elsetracker;
             if (depth == 0) {
@@ -306,7 +306,7 @@ int TPpContext::CPPelse(int matchelse, TPpToken* ppToken)
         } else if (matchelse && depth == 0) {
             if (atom == elseAtom) {
                 elseSeen[elsetracker] = true;
-                token = extraTokenCheck(atom, ppToken, currentInput->scan(this, currentInput, ppToken));
+                token = extraTokenCheck(atom, ppToken, scanToken(ppToken));
                 // found the #else we are looking for
                 break;
             } else if (atom == elifAtom) {
@@ -327,7 +327,7 @@ int TPpContext::CPPelse(int matchelse, TPpToken* ppToken)
                 parseContext.error(ppToken->loc, "#else after #else", "#else", "");
             else
                 elseSeen[elsetracker] = true;
-            token = extraTokenCheck(atom, ppToken, currentInput->scan(this, currentInput, ppToken));
+            token = extraTokenCheck(atom, ppToken, scanToken(ppToken));
         } else if (atom == elifAtom) {
             if (elseSeen[elsetracker])
                 parseContext.error(ppToken->loc, "#elif after #else", "#elif", "");
@@ -363,7 +363,7 @@ int TPpContext::extraTokenCheck(int atom, TPpToken* ppToken, int token)
             parseContext.error(ppToken->loc, message, label, "");
 
         while (token != '\n')
-            token = currentInput->scan(this, currentInput, ppToken);
+            token = scanToken(ppToken);
     }
 
     return token;
@@ -438,16 +438,17 @@ struct TUnop {
 
 int TPpContext::eval(int token, int precedence, bool shortCircuit, int& res, bool& err, TPpToken* ppToken)
 {
+    TSourceLoc loc = ppToken->loc;  // because we sometimes read the newline before reporting the error
     if (token == CPP_IDENTIFIER) {
         if (ppToken->atom == definedAtom) {
             bool needclose = 0;
-            token = currentInput->scan(this, currentInput, ppToken);
+            token = scanToken(ppToken);
             if (token == '(') {
                 needclose = true;
-                token = currentInput->scan(this, currentInput, ppToken);
+                token = scanToken(ppToken);
             }
             if (token != CPP_IDENTIFIER) {
-                parseContext.error(ppToken->loc, "incorrect directive, expected identifier", "preprocessor evaluation", "");
+                parseContext.error(loc, "incorrect directive, expected identifier", "preprocessor evaluation", "");
                 err = true;
                 res = 0;
 
@@ -455,16 +456,16 @@ int TPpContext::eval(int token, int precedence, bool shortCircuit, int& res, boo
             }
             Symbol* s;
             res = (s = LookUpSymbol(ppToken->atom)) ? !s->mac.undef : 0;
-            token = currentInput->scan(this, currentInput, ppToken);
+            token = scanToken(ppToken);
             if (needclose) {
                 if (token != ')') {
-                    parseContext.error(ppToken->loc, "#else after #else", "preprocessor evaluation", "");
+                    parseContext.error(loc, "expected ')'", "preprocessor evaluation", "");
                     err = true;
                     res = 0;
 
                     return token;
                 }
-                token = currentInput->scan(this, currentInput, ppToken);
+                token = scanToken(ppToken);
             }
         } else {
             token = evalToToken(token, shortCircuit, res, err, ppToken);
@@ -472,19 +473,19 @@ int TPpContext::eval(int token, int precedence, bool shortCircuit, int& res, boo
         }
     } else if (token == CPP_INTCONSTANT) {
         res = ppToken->ival;
-        token = currentInput->scan(this, currentInput, ppToken);
+        token = scanToken(ppToken);
     } else if (token == '(') {
-        token = currentInput->scan(this, currentInput, ppToken);
+        token = scanToken(ppToken);
         token = eval(token, MIN_PRECEDENCE, shortCircuit, res, err, ppToken);
         if (! err) {
             if (token != ')') {
-                parseContext.error(ppToken->loc, "expected ')'", "preprocessor evaluation", "");
+                parseContext.error(loc, "expected ')'", "preprocessor evaluation", "");
                 err = true;
                 res = 0;
 
                 return token;
             }
-            token = currentInput->scan(this, currentInput, ppToken);
+            token = scanToken(ppToken);
         }
     } else {
         int op;
@@ -493,11 +494,11 @@ int TPpContext::eval(int token, int precedence, bool shortCircuit, int& res, boo
                 break;
         }
         if (op >= 0) {
-            token = currentInput->scan(this, currentInput, ppToken);
+            token = scanToken(ppToken);
             token = eval(token, UNARY, shortCircuit, res, err, ppToken);
             res = unop[op].op(res);
         } else {
-            parseContext.error(ppToken->loc, "bad expression", "preprocessor evaluation", "");
+            parseContext.error(loc, "bad expression", "preprocessor evaluation", "");
             err = true;
             res = 0;
 
@@ -528,7 +529,7 @@ int TPpContext::eval(int token, int precedence, bool shortCircuit, int& res, boo
                 shortCircuit = true;
         }
 
-        token = currentInput->scan(this, currentInput, ppToken);
+        token = scanToken(ppToken);
         token = eval(token, binop[op].precedence, shortCircuit, res, err, ppToken);
         res = binop[op].op(leftSide, res);
     }
@@ -540,11 +541,12 @@ int TPpContext::eval(int token, int precedence, bool shortCircuit, int& res, boo
 int TPpContext::evalToToken(int token, bool shortCircuit, int& res, bool& err, TPpToken* ppToken)
 {
     while (token == CPP_IDENTIFIER && ppToken->atom != definedAtom) {
-        int macroReturn = MacroExpand(ppToken->atom, ppToken, true);
+        int macroReturn = MacroExpand(ppToken->atom, ppToken, true, false);
         if (macroReturn == 0) {
             parseContext.error(ppToken->loc, "can't evaluate expression", "preprocessor evaluation", "");
             err = true;
             res = 0;
+            token = scanToken(ppToken);
             break;
         }
         if (macroReturn == -1) {
@@ -557,7 +559,7 @@ int TPpContext::evalToToken(int token, bool shortCircuit, int& res, bool& err, T
                     parseContext.error(ppToken->loc, message, "preprocessor evaluation", name);
             }
         }
-        token = currentInput->scan(this, currentInput, ppToken);
+        token = scanToken(ppToken);
     }
 
     return token;
@@ -566,7 +568,7 @@ int TPpContext::evalToToken(int token, bool shortCircuit, int& res, bool& err, T
 // Handle #if
 int TPpContext::CPPif(TPpToken* ppToken) 
 {
-    int token = currentInput->scan(this, currentInput, ppToken);
+    int token = scanToken(ppToken);
     elsetracker++;
     if (! ifdepth++)
         ifloc = ppToken->loc;
@@ -587,7 +589,7 @@ int TPpContext::CPPif(TPpToken* ppToken)
 // Handle #ifdef
 int TPpContext::CPPifdef(int defined, TPpToken* ppToken)
 {
-    int token = currentInput->scan(this, currentInput, ppToken);
+    int token = scanToken(ppToken);
     int name = ppToken->atom;
     if (++ifdepth > maxIfNesting) {
         parseContext.error(ppToken->loc, "maximum nesting depth exceeded", "#ifdef", "");
@@ -601,11 +603,11 @@ int TPpContext::CPPifdef(int defined, TPpToken* ppToken)
             parseContext.error(ppToken->loc, "must be followed by macro name", "#ifndef", "");
     } else {
         Symbol *s = LookUpSymbol(name);
-        token = currentInput->scan(this, currentInput, ppToken);
+        token = scanToken(ppToken);
         if (token != '\n') {
             parseContext.error(ppToken->loc, "unexpected tokens following #ifdef directive - expected a newline", "#ifdef", "");
             while (token != '\n')
-                token = currentInput->scan(this, currentInput, ppToken);
+                token = scanToken(ppToken);
         }
         if (((s && !s->mac.undef) ? 1 : 0) != defined)
             token = CPPelse(1, ppToken);
@@ -621,7 +623,7 @@ int TPpContext::CPPline(TPpToken* ppToken)
     // "#line line
     // "#line line source-string-number"
 
-    int token = currentInput->scan(this, currentInput, ppToken);
+    int token = scanToken(ppToken);
     if (token == '\n') {
         parseContext.error(ppToken->loc, "must by followed by an integral literal", "#line", "");
         return token;
@@ -651,7 +653,7 @@ int TPpContext::CPPline(TPpToken* ppToken)
 // Handle #error
 int TPpContext::CPPerror(TPpToken* ppToken) 
 {
-    int token = currentInput->scan(this, currentInput, ppToken);
+    int token = scanToken(ppToken);
     std::string message;
     TSourceLoc loc = ppToken->loc;
 
@@ -665,7 +667,7 @@ int TPpContext::CPPerror(TPpToken* ppToken)
             message.append(GetAtomString(token));
         }
         message.append(" ");
-        token = currentInput->scan(this, currentInput, ppToken);
+        token = scanToken(ppToken);
     }
     //store this msg into the shader's information log..set the Compile Error flag!!!!
     parseContext.error(loc, message.c_str(), "#error", "");
@@ -683,7 +685,7 @@ int TPpContext::CPPpragma(TPpToken* ppToken)
     TVector<TString> tokens;
 
     TSourceLoc loc = ppToken->loc;  // because we go to the next line before processing
-    int token = currentInput->scan(this, currentInput, ppToken);
+    int token = scanToken(ppToken);
     while (token != '\n' && token != EOF) {
         switch (token) {
         case CPP_IDENTIFIER:
@@ -702,7 +704,7 @@ int TPpContext::CPPpragma(TPpToken* ppToken)
             SrcStrName[1] = '\0';
             tokens.push_back(SrcStrName);
         }
-        token = currentInput->scan(this, currentInput, ppToken);
+        token = scanToken(ppToken);
     }
 
     if (token == EOF)
@@ -716,7 +718,7 @@ int TPpContext::CPPpragma(TPpToken* ppToken)
 // #version: This is just for error checking: the version and profile are decided before preprocessing starts
 int TPpContext::CPPversion(TPpToken* ppToken)
 {
-    int token = currentInput->scan(this, currentInput, ppToken);
+    int token = scanToken(ppToken);
 
     if (errorOnVersion || versionSeen)
         parseContext.error(ppToken->loc, "must occur first in shader", "#version", "");
@@ -733,7 +735,7 @@ int TPpContext::CPPversion(TPpToken* ppToken)
 
     ppToken->ival = atoi(ppToken->name);
 
-    token = currentInput->scan(this, currentInput, ppToken);
+    token = scanToken(ppToken);
 
     if (token == '\n')
         return token;
@@ -743,7 +745,7 @@ int TPpContext::CPPversion(TPpToken* ppToken)
             ppToken->atom != esAtom)
             parseContext.error(ppToken->loc, "bad profile name; use es, core, or compatibility", "#version", "");
 
-        token = currentInput->scan(this, currentInput, ppToken);
+        token = scanToken(ppToken);
 
         if (token == '\n')
             return token;
@@ -757,7 +759,7 @@ int TPpContext::CPPversion(TPpToken* ppToken)
 // Handle #extension
 int TPpContext::CPPextension(TPpToken* ppToken)
 {
-    int token = currentInput->scan(this, currentInput, ppToken);
+    int token = scanToken(ppToken);
     char extensionName[80];
 
     if (token=='\n') {
@@ -770,13 +772,13 @@ int TPpContext::CPPextension(TPpToken* ppToken)
 
     strcpy(extensionName, GetAtomString(ppToken->atom));
 
-    token = currentInput->scan(this, currentInput, ppToken);
+    token = scanToken(ppToken);
     if (token != ':') {
         parseContext.error(ppToken->loc, "':' missing after extension name", "#extension", "");
         return token;
     }
 
-    token = currentInput->scan(this, currentInput, ppToken);
+    token = scanToken(ppToken);
     if (token != CPP_IDENTIFIER) {
         parseContext.error(ppToken->loc, "behavior for extension not specified", "#extension", "");
         return token;
@@ -784,7 +786,7 @@ int TPpContext::CPPextension(TPpToken* ppToken)
 
     parseContext.updateExtensionBehavior(extensionName, GetAtomString(ppToken->atom));
 
-    token = currentInput->scan(this, currentInput, ppToken);
+    token = scanToken(ppToken);
     if (token == '\n')
         return token;
     else
@@ -795,7 +797,7 @@ int TPpContext::CPPextension(TPpToken* ppToken)
 
 int TPpContext::readCPPline(TPpToken* ppToken)
 {
-    int token = currentInput->scan(this, currentInput, ppToken);
+    int token = scanToken(ppToken);
     bool isVersion = false;
 
     if (token == CPP_IDENTIFIER) {
@@ -807,7 +809,7 @@ int TPpContext::readCPPline(TPpToken* ppToken)
             elsetracker[elseSeen] = true;
             if (! ifdepth)
                 parseContext.error(ppToken->loc, "mismatched statements", "#else", "");
-            token = extraTokenCheck(elseAtom, ppToken, currentInput->scan(this, currentInput, ppToken));
+            token = extraTokenCheck(elseAtom, ppToken, scanToken(ppToken));
             token = CPPelse(0, ppToken);
         } else if (ppToken->atom == elifAtom) {
             if (! ifdepth)
@@ -815,9 +817,9 @@ int TPpContext::readCPPline(TPpToken* ppToken)
             if (elseSeen[elsetracker])
                 parseContext.error(ppToken->loc, "#elif after #else", "#elif", "");
             // this token is really a dont care, but we still need to eat the tokens
-            token = currentInput->scan(this, currentInput, ppToken); 
+            token = scanToken(ppToken); 
             while (token != '\n')
-                token = currentInput->scan(this, currentInput, ppToken);
+                token = scanToken(ppToken);
             token = CPPelse(0, ppToken);
         } else if (ppToken->atom == endifAtom) {
             elseSeen[elsetracker] = false;
@@ -826,7 +828,7 @@ int TPpContext::readCPPline(TPpToken* ppToken)
                 parseContext.error(ppToken->loc, "mismatched statements", "#endif", "");
             else
                 --ifdepth;
-            token = extraTokenCheck(endifAtom, ppToken, currentInput->scan(this, currentInput, ppToken));
+            token = extraTokenCheck(endifAtom, ppToken, scanToken(ppToken));
         } else if (ppToken->atom == ifAtom) {
             token = CPPif (ppToken);
         } else if (ppToken->atom == ifdefAtom) {
@@ -849,38 +851,16 @@ int TPpContext::readCPPline(TPpToken* ppToken)
         } else {
             parseContext.error(ppToken->loc, "invalid directive:", "#", GetAtomString(ppToken->atom));
         }
-    } else if (token != '\n' && token > 0)
+    } else if (token != '\n' && token != EOF)
         parseContext.error(ppToken->loc, "invalid directive", "#", "");
 
     while (token != '\n' && token != 0 && token != EOF)
-        token = currentInput->scan(this, currentInput, ppToken);
+        token = scanToken(ppToken);
 
     return token;
 }
 
-int eof_scan(TPpContext*, TPpContext::InputSrc* in, TPpToken* ppToken) { return -1; }
-void noop(TPpContext*, TPpContext::InputSrc* in, int ch, TPpToken* ppToken) { }
-
-void TPpContext::PushEofSrc()
-{
-    InputSrc *in = new InputSrc;
-    in->scan = eof_scan;
-    in->getch = eof_scan;
-    in->ungetch = noop;
-    in->prev = currentInput;
-    currentInput = in;
-}
-
-void TPpContext::PopEofSrc()
-{
-    if (currentInput->scan == eof_scan) {
-        InputSrc *in = currentInput;
-        currentInput = in->prev;
-        delete in;
-    }
-}
-
-TPpContext::TokenStream* TPpContext::PrescanMacroArg(TokenStream *a, TPpToken* ppToken)
+TPpContext::TokenStream* TPpContext::PrescanMacroArg(TokenStream* a, TPpToken* ppToken, bool newLineOkay)
 {
     int token;
     TokenStream *n;
@@ -889,89 +869,79 @@ TPpContext::TokenStream* TPpContext::PrescanMacroArg(TokenStream *a, TPpToken* p
         token = ReadToken(a, ppToken);
         if (token == CPP_IDENTIFIER && LookUpSymbol(ppToken->atom))
             break;
-    } while (token != EOF);
-    if (token == EOF)
+    } while (token != tInput::endOfInput);
+
+    if (token == tInput::endOfInput)
         return a;
+
     n = new TokenStream;
-    PushEofSrc();
-    ReadFromTokenStream(a, 0, 0);
-    while ((token = currentInput->scan(this, currentInput, ppToken)) > 0) {
-        if (token == CPP_IDENTIFIER && MacroExpand(ppToken->atom, ppToken, false) == 1)
+    pushInput(new tMarkerInput(this));
+    pushTokenStreamInput(a, 0);
+    while ((token = scanToken(ppToken)) != tMarkerInput::marker) {
+        if (token == CPP_IDENTIFIER && MacroExpand(ppToken->atom, ppToken, false, newLineOkay) != 0)
             continue;
         RecordToken(n, token, ppToken);
     }
-    PopEofSrc();
+    popInput();
     delete a;
 
     return n;
 }
 
+// 
+// Return the next token for a macro expansion, handling macro args.
 //
-// These are called through function pointers
-//
-
-/* 
-** return the next token for a macro expansion, handling macro args 
-*/
-int TPpContext::macro_scan(TPpContext* pp, InputSrc* inInput, TPpToken* ppToken) 
+int TPpContext::tMacroInput::scan(TPpToken* ppToken)
 {
-    MacroInputSrc* in = (TPpContext::MacroInputSrc*)inInput;
-
-    int i;
     int token;
     do {
-        token = pp->ReadToken(in->mac->body, ppToken);
+        token = pp->ReadToken(mac->body, ppToken);
     } while (token == ' ');  // handle white space in macro
+
     // TODO: preprocessor:  properly handle whitespace (or lack of it) between tokens when expanding
     if (token == CPP_IDENTIFIER) {
-        for (i = in->mac->argc-1; i>=0; i--)
-            if (in->mac->args[i] == ppToken->atom) 
+        int i;
+        for (i = mac->argc - 1; i >= 0; i--)
+            if (mac->args[i] == ppToken->atom) 
                 break;
         if (i >= 0) {
-            pp->ReadFromTokenStream(in->args[i], ppToken->atom, 0);
+            pp->pushTokenStreamInput(args[i], ppToken->atom);
 
-            return pp->currentInput->scan(pp, pp->currentInput, ppToken);
+            return pp->scanToken(ppToken);
         }
     }
 
-    if (token != EOF) 
-        return token;
-
-    in->mac->busy = 0;
-    pp->currentInput = in->prev;
-    delete in;
-
-    return pp->currentInput->scan(pp, pp->currentInput, ppToken);
+    if (token == endOfInput)
+        mac->busy = 0;
+        
+    return token;
 }
 
 // return a zero, for scanning a macro that was never defined
-int TPpContext::zero_scan(TPpContext* pp, InputSrc *inInput, TPpToken* ppToken) 
+int TPpContext::tZeroInput::scan(TPpToken* ppToken)
 {
-    MacroInputSrc* in = (MacroInputSrc*)inInput;
+    if (done)
+        return endOfInput;
 
     strcpy(ppToken->name, "0");
     ppToken->ival = 0;
     ppToken->space = false;
-
-    // pop input
-    pp->currentInput = in->prev;
-    delete in;
+    done = true;
 
     return CPP_INTCONSTANT;
 }
 
-/*
-** Check an identifier (atom) to see if it is a macro that should be expanded.
-** If it is, and defined, push an InputSrc that will produce the appropriate expansion
-** and return 1.
-** If it is, but undefined, and expandUndef is requested, push an InputSrc that will 
-** expand to 0 and return -1.
-** Otherwise, return 0.
-*/
-int TPpContext::MacroExpand(int atom, TPpToken* ppToken, bool expandUndef)
+//
+// Check an identifier (atom) to see if it is a macro that should be expanded.
+// If it is, and defined, push an tInput that will produce the appropriate expansion
+// and return 1.
+// If it is, but undefined, and expandUndef is requested, push an tInput that will 
+// expand to 0 and return -1.
+// Otherwise, return 0 to indicate no expansion, which is not necessarily an error.
+//
+int TPpContext::MacroExpand(int atom, TPpToken* ppToken, bool expandUndef, bool newLineOkay)
 {
     Symbol *sym = LookUpSymbol(atom);
-    MacroInputSrc *in;
     int token;
     int depth = 0;
 
@@ -1004,30 +974,32 @@ int TPpContext::MacroExpand(int atom, TPpToken* ppToken, bool expandUndef)
     if (sym && sym->mac.busy)
         return 0;
 
-    // not expanding of undefined symbols
+    // not expanding undefined macros
     if ((! sym || sym->mac.undef) && ! expandUndef)
         return 0;
 
-    in = new MacroInputSrc;
-
+    // 0 is the value of an undefined macro
     if ((! sym || sym->mac.undef) && expandUndef) {
-        // push input
-        in->scan = zero_scan;
-        in->prev = currentInput;
-        currentInput = in;
-
+        pushInput(new tZeroInput(this));
         return -1;
     }
 
+    tMacroInput *in = new tMacroInput(this);
+
     TSourceLoc loc = ppToken->loc;  // in case we go to the next line before discovering the error
-    in->scan = macro_scan;
     in->mac = &sym->mac;
     if (sym->mac.args) {
-        token = currentInput->scan(this, currentInput, ppToken);
+        token = scanToken(ppToken);
+        if (newLineOkay) {
+            while (token == '\n')                
+                token = scanToken(ppToken);
+        }
         if (token != '(') {
+            parseContext.error(loc, "expected '(' following", "macro expansion", GetAtomString(atom));
             UngetToken(token, ppToken);
             ppToken->atom = atom;
 
+            delete in;
             return 0;
         }
         in->args.resize(in->mac->argc);
@@ -1038,23 +1010,24 @@ int TPpContext::MacroExpand(int atom, TPpToken* ppToken, bool expandUndef)
         do {
             depth = 0;
             while (1) {
-                token = currentInput->scan(this, currentInput, ppToken);
-                if (token <= 0) {
+                token = scanToken(ppToken);
+                if (token == EOF) {
                     parseContext.error(loc, "EOF in macro", "macro expansion", GetAtomString(atom));
-                    return 1;
+                    delete in;
+                    return 0;
                 }
                 if (token == '\n') {
-                    // TODO: Preprocessor functionality:  Correctly handle new line and escaped new line, for expansions that are both in and not in another preprocessor directive
-
-                    //if (in a pp line) {
-                    //    parseContext.error(loc, "missing ')':", "macro expansion", GetAtomString(atom));
-                    //    return 1;
-                    //}
+                    if (! newLineOkay) {
+                        parseContext.error(loc, "end of line in macro substitution:", "macro expansion", GetAtomString(atom));
+                        delete in;
+                        return 0;
+                    }
                     continue;
                 }
                 if (token == '#') {
                     parseContext.error(ppToken->loc, "unexpected '#'", "macro expansion", GetAtomString(atom));
-                    return 1;
+                    delete in;
+                    return 0;
                 }
                 if (in->mac->argc == 0 && token != ')')
                     break;
@@ -1080,29 +1053,28 @@ int TPpContext::MacroExpand(int atom, TPpToken* ppToken, bool expandUndef)
             parseContext.error(loc, "Too few args in Macro", "macro expansion", GetAtomString(atom));
         else if (token != ')') {
             depth=0;
-            while (token >= 0 && (depth > 0 || token != ')')) {
+            while (token != EOF && (depth > 0 || token != ')')) {
                 if (token == ')')
                     depth--;
-                token = currentInput->scan(this, currentInput, ppToken);
+                token = scanToken(ppToken);
                 if (token == '(')
                     depth++;
             }
 
-            if (token <= 0) {
+            if (token == EOF) {
                 parseContext.error(loc, "EOF in macro", "macro expansion", GetAtomString(atom));
-                return 1;
+                delete in;
+                return 0;
             }
             parseContext.error(loc, "Too many args in macro", "macro expansion", GetAtomString(atom));
         }
         for (int i = 0; i < in->mac->argc; i++)
-            in->args[i] = PrescanMacroArg(in->args[i], ppToken);
+            in->args[i] = PrescanMacroArg(in->args[i], ppToken, newLineOkay);
     }
 
-    /*retain the input source*/
-    in->prev = currentInput;
+    pushInput(in);
     sym->mac.busy = 1;
     RewindTokenStream(sym->mac.body);
-    currentInput = in;
 
     return 1;
 }

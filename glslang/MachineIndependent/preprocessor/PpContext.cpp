@@ -84,7 +84,7 @@ NVIDIA HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 namespace glslang {
 
 TPpContext::TPpContext(TParseContext& pc) : 
-    preamble(0), strings(0), parseContext(pc)
+    preamble(0), strings(0), parseContext(pc), inComment(false)
 {
     InitAtomTable();
     InitScanner(this);
@@ -143,17 +143,18 @@ TPpContext::~TPpContext()
         delete it->second->mac.body;
     mem_FreePool(pool);
     delete [] preamble;
+
+    // free up the inputStack
+    while (! inputStack.empty())
+        popInput();
 }
 
 void TPpContext::setInput(TInputScanner& input, bool versionWillBeError)
 {
-    StringInputSrc* in = new StringInputSrc;
-    in->input = &input;
-    in->scan = sourceScan;
-    in->getch = (int (*)(TPpContext*, InputSrc *, TPpToken *))sourceGetCh;
-    in->ungetch = (void (*)(TPpContext*, InputSrc *, int, TPpToken *))sourceUngetCh;
-    in->prev = currentInput;
-    currentInput = in;
+    assert(inputStack.size() == 0);
+
+    pushInput(new tStringInput(this, input));
+
     errorOnVersion = versionWillBeError;
     versionSeen = false;
 }

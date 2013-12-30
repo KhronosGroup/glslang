@@ -109,7 +109,7 @@ int TPpContext::lReadByte(TokenStream *pTok)
     if (pTok->current < pTok->data.size())
         return pTok->data[pTok->current++];
     else
-        return -1;
+        return tInput::endOfInput;
 }
 
 /*
@@ -124,6 +124,7 @@ void TPpContext::RecordToken(TokenStream *pTok, int token, TPpToken* ppToken)
         lAddByte(pTok, (unsigned char)((token & 0x7f) + 0x80));
     else
         lAddByte(pTok, (unsigned char)(token & 0x7f));
+
     switch (token) {
     case CPP_IDENTIFIER:
     case CPP_STRCONSTANT:
@@ -154,11 +155,6 @@ void TPpContext::RecordToken(TokenStream *pTok, int token, TPpToken* ppToken)
 void TPpContext::RewindTokenStream(TokenStream *pTok)
 {
     pTok->current = 0;
-
-    //if (pTok->head) {
-    //    pTok->current = pTok->head;
-    //    pTok->current->current = 0;
-    //}
 }
 
 /*
@@ -172,105 +168,82 @@ int TPpContext::ReadToken(TokenStream *pTok, TPpToken *ppToken)
 
     ltoken = lReadByte(pTok);
     ppToken->loc = parseContext.getCurrentLoc();
-    if (ltoken >= 0) {
-        if (ltoken > 127)
-            ltoken += 128;
-        switch (ltoken) {
-        case CPP_STRCONSTANT:
-        case CPP_IDENTIFIER:
-        case CPP_FLOATCONSTANT:
-        case CPP_DOUBLECONSTANT:
-        case CPP_INTCONSTANT:
-        case CPP_UINTCONSTANT:
-            len = 0;
-            ch = lReadByte(pTok);
-            while (ch != 0) {
-                if (len < TPpToken::maxTokenLength) {
-                    tokenText[len] = ch;
-                    len++;
-                    ch = lReadByte(pTok);
-                } else {
-                    parseContext.error(ppToken->loc, "token too long", "", "");
-                    break;
-                }
-            }
-            tokenText[len] = 0;
-
-            switch (ltoken) {
-            case CPP_IDENTIFIER:
-            case CPP_STRCONSTANT:
-                ppToken->atom = LookUpAddString(tokenText);
-                break;
-            case CPP_FLOATCONSTANT:
-            case CPP_DOUBLECONSTANT:
-                strcpy(ppToken->name, tokenText);
-                ppToken->dval = atof(ppToken->name);
-                break;
-            case CPP_INTCONSTANT:
-            case CPP_UINTCONSTANT:
-                strcpy(ppToken->name, tokenText);
-                if (len > 0 && tokenText[0] == '0') {
-                    if (len > 1 && tokenText[1] == 'x' || tokenText[1] == 'X')
-                        ppToken->ival = strtol(ppToken->name, 0, 16);
-                    else
-                        ppToken->ival = strtol(ppToken->name, 0, 8);
-                } else
-                    ppToken->ival = atoi(ppToken->name);
+    if (ltoken > 127)
+        ltoken += 128;
+    switch (ltoken) {
+    case CPP_STRCONSTANT:
+    case CPP_IDENTIFIER:
+    case CPP_FLOATCONSTANT:
+    case CPP_DOUBLECONSTANT:
+    case CPP_INTCONSTANT:
+    case CPP_UINTCONSTANT:
+        len = 0;
+        ch = lReadByte(pTok);
+        while (ch != 0) {
+            if (len < TPpToken::maxTokenLength) {
+                tokenText[len] = ch;
+                len++;
+                ch = lReadByte(pTok);
+            } else {
+                parseContext.error(ppToken->loc, "token too long", "", "");
                 break;
             }
         }
-        return ltoken;
+        tokenText[len] = 0;
+
+        switch (ltoken) {
+        case CPP_IDENTIFIER:
+        case CPP_STRCONSTANT:
+            ppToken->atom = LookUpAddString(tokenText);
+            break;
+        case CPP_FLOATCONSTANT:
+        case CPP_DOUBLECONSTANT:
+            strcpy(ppToken->name, tokenText);
+            ppToken->dval = atof(ppToken->name);
+            break;
+        case CPP_INTCONSTANT:
+        case CPP_UINTCONSTANT:
+            strcpy(ppToken->name, tokenText);
+            if (len > 0 && tokenText[0] == '0') {
+                if (len > 1 && tokenText[1] == 'x' || tokenText[1] == 'X')
+                    ppToken->ival = strtol(ppToken->name, 0, 16);
+                else
+                    ppToken->ival = strtol(ppToken->name, 0, 8);
+            } else
+                ppToken->ival = atoi(ppToken->name);
+            break;
+        }
     }
-    return EOF;
+
+    return ltoken;
 }
 
-int TPpContext::scan_token(TPpContext* pp, TokenInputSrc *in, TPpToken * ppToken)
+int TPpContext::tTokenInput::scan(TPpToken* ppToken)
 {
-    int token = pp->ReadToken(in->tokens, ppToken);
-    int (*final)(TPpContext *);
-    if (token > 0)
-        return token;
-    
-    pp->currentInput = in->prev;
-    final = in->final;
-    delete in;
-    if (final && !final(pp))
-        return -1;
-
-    return pp->currentInput->scan(pp, pp->currentInput, ppToken);
+    return pp->ReadToken(tokens, ppToken);
 }
 
-int TPpContext::ReadFromTokenStream(TokenStream *ts, int name, int (*final)(TPpContext *))
+void TPpContext::pushTokenStreamInput(TokenStream* ts, int name)
 {
-    TokenInputSrc* in = new TokenInputSrc;
-    in->prev = currentInput;
-    in->scan = (int (*)(TPpContext*, InputSrc*, TPpToken*))scan_token;
-    in->tokens = ts;
-    in->final = final;
+    pushInput(new tTokenInput(this, ts));
     RewindTokenStream(ts);
-    currentInput = in;
-
-    return 1;
 }
 
-int TPpContext::reget_token(TPpContext* pp, UngotToken *t, TPpToken * ppToken)
+int TPpContext::tUngotTokenInput::scan(TPpToken* ppToken)
 {
-    int token = t->token;
-    *ppToken = t->lval;
-    pp->currentInput = t->prev;
-    delete t;
+    if (done)
+        return endOfInput;
 
-    return token;
+    int ret = token;
+    *ppToken = lval;
+    done = true;
+
+    return ret;
 }
 
 void TPpContext::UngetToken(int token, TPpToken* ppToken)
 {
-    UngotToken *t = new UngotToken;
-    t->token = token;
-    t->lval = *ppToken;
-    t->scan = (int(*)(TPpContext*, struct InputSrc *, TPpToken *))reget_token;
-    t->prev = currentInput;
-    currentInput = t;
+    pushInput(new tUngotTokenInput(this, token, ppToken));
 }
 
 } // end namespace glslang

@@ -6,15 +6,15 @@ ERROR: 0:85: '#error' : good3
 ERROR: 0:89: '#error' : good4  
 ERROR: 0:93: '#error' : good5  
 ERROR: 0:97: '#error' : good6  
-ERROR: 0:101: 'preprocessor evaluation' : expected ')' 
+ERROR: 0:100: 'preprocessor evaluation' : expected ')' 
 ERROR: 0:101: '#error' : bad1  
 ERROR: 0:104: '#if' : unexpected tokens following directive 
 ERROR: 0:105: '#error' : bad2  
-ERROR: 0:109: 'preprocessor evaluation' : expected ')' 
+ERROR: 0:108: 'preprocessor evaluation' : expected ')' 
 ERROR: 0:109: '#error' : bad3  
 ERROR: 0:112: '#if' : unexpected tokens following directive 
 ERROR: 0:113: '#error' : bad4  
-ERROR: 0:117: 'preprocessor evaluation' : expected ')' 
+ERROR: 0:116: 'preprocessor evaluation' : expected ')' 
 ERROR: 0:117: '#error' : bad5  
 ERROR: 0:120: '#if' : unexpected tokens following directive 
 ERROR: 0:121: '#error' : bad6  
@@ -74,8 +74,16 @@ ERROR: 12:20021: '#error' : line should be 20021
 ERROR: 12:20046: '#define' : Macro redefined; different substitutions: SPACE_IN_MIDDLE
 ERROR: 12:20052: '#error' : good evaluation 1  
 ERROR: 12:20056: '#error' : good evaluation 2  
+ERROR: 12:9001: 'preprocessor evaluation' : expected ')' 
+ERROR: 12:9003: '#if' : unexpected tokens following directive 
+ERROR: 12:9015: 'macro expansion' : expected '(' following FOOOM
+ERROR: 12:9015: 'FOOOM' : undeclared identifier 
+ERROR: 12:9015: '=' :  cannot convert from 'float' to 'int'
+ERROR: 12:9016: 'macro expansion' : expected '(' following FOOOM
+ERROR: 12:9017: 'preprocessor evaluation' : can't evaluate expression 
+ERROR: 12:9017: 'preprocessor evaluation' : bad expression 
 ERROR: 12:10003: '' : missing #endif 
-ERROR: 75 compilation errors.  No code generated.
+ERROR: 83 compilation errors.  No code generated.
 
 
 ERROR: node is still EOpNull!
@@ -165,6 +173,10 @@ ERROR: node is still EOpNull!
 12:20034          6.000000
 12:20034          6.000000
 12:20034          6.000000
+12:9012  Sequence
+12:9012    move second child to first child (int)
+12:9012      'R1' (int)
+12:9012      'RECURSE' (int)
 0:?   Linker Objects
 0:?     'sum' (float)
 0:?     'linenumber' (int)
@@ -174,6 +186,9 @@ ERROR: node is still EOpNull!
 0:?     'a' (int)
 0:?     'n' (int)
 0:?     'f' (double)
+0:?     'RECURSE' (int)
+0:?     'R1' (int)
+0:?     'aoeua' (int)
 0:?     'gl_VertexID' (gl_VertexId int)
 0:?     'gl_InstanceID' (gl_InstanceId int)
 

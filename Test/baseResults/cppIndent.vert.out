@@ -1,6 +1,10 @@
 cppIndent.vert
+ERROR: 0:61: 'macro expansion' : Too few args in Macro FUNC
+ERROR: 0:61: '' :  syntax error
+ERROR: 2 compilation errors.  No code generated.
 
-0:? Sequence
+
+ERROR: node is still EOpNull!
 0:5  Sequence
 0:5    move second child to first child (float)
 0:5      'sum' (float)

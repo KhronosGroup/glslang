@@ -121,18 +121,36 @@ public:
     virtual ~TPpContext();
 
     void setPreamble(const char* preamble, size_t length);
-    void setInput(TInputScanner& input, bool versionWillBeError);
 
     const char* tokenize(TPpToken* ppToken);
 
-    // TODO: preprocessor simplification: this should be a base class, not a set of function pointers
-    struct InputSrc {
-        InputSrc() : prev(0), scan(0), getch(0), ungetch(0) { }
-        struct InputSrc	*prev;
-        int			(*scan)(TPpContext*, struct InputSrc *, TPpToken *);
-        int			(*getch)(TPpContext*, struct InputSrc *, TPpToken *);
-        void		(*ungetch)(TPpContext*, struct InputSrc *, int, TPpToken *);
+    class tInput {
+    public:
+        tInput(TPpContext* p) : done(false), pp(p) { }
+        virtual ~tInput() { }
+
+        virtual int scan(TPpToken*) = 0;
+        virtual int getch() = 0;
+        virtual void ungetch() = 0;
+
+        static const int endOfInput = -2;
+
+    protected:
+        bool done;
+        TPpContext* pp;
     };
+
+    void setInput(TInputScanner& input, bool versionWillBeError);
+
+    void TPpContext::pushInput(tInput* in)
+    {
+        inputStack.push_back(in);
+    }
+    void TPpContext::popInput()
+    {
+        delete inputStack.back();
+        inputStack.pop_back();
+    }
 
     struct TokenStream {
         TokenStream() : current(0) { }
@@ -145,7 +163,6 @@ public:
         uintptr_t           free, end;
         size_t              chunksize;
         uintptr_t           alignmask;
-        struct cleanup      *cleanup;
     };
 
     //
@@ -184,9 +201,30 @@ protected:
     int     currentString;          // which string we're currently parsing  (-1 for preamble)
 
     // Scanner data:
-    int mostRecentToken;        // Most recent token seen by the scanner
     int previous_token;
     TParseContext& parseContext;
+
+    // Get the next token from *stack* of input sources, popping input sources
+    // that are out of tokens, down until an input sources is found that has a token.
+    // Return EOF when there are no more tokens to be found by doing this.
+    int scanToken(TPpToken* ppToken)
+    {
+        int token = EOF;
+
+        while (! inputStack.empty()) {
+            token = inputStack.back()->scan(ppToken);
+            if (token != tInput::endOfInput)
+                break;
+            popInput();
+        }
+
+        if (token == tInput::endOfInput)
+            return EOF;
+
+        return token;
+    }
+    int  getChar() { return inputStack.back()->getch(); }
+    void ungetChar() { inputStack.back()->ungetch(); }
 
     static const int maxMacroArgs = 64;
     static const int maxIfNesting = 64;
@@ -196,18 +234,47 @@ protected:
     int elsetracker;              // #if-#else and #endif constructs...Counter.
     const char *ErrMsg;
 
-    struct MacroInputSrc : public InputSrc {
-        MacroInputSrc() : mac(0) { }
-        virtual ~MacroInputSrc()
+    class tMacroInput : public tInput {
+    public:
+        tMacroInput(TPpContext* pp) : tInput(pp) { }
+        virtual ~tMacroInput()
         {
             for (size_t i = 0; i < args.size(); ++i)
                 delete args[i];
         }
+
+        virtual int scan(TPpToken*);
+        virtual int getch() { assert(0); return endOfInput; }
+        virtual void ungetch() { assert(0); }
         MacroSymbol *mac;
         TVector<TokenStream*> args;
     };
 
-    InputSrc *currentInput;
+    class tMarkerInput : public tInput {
+    public:
+        tMarkerInput(TPpContext* pp) : tInput(pp) { }
+        virtual int scan(TPpToken*)
+        {
+            if (done)
+                return endOfInput;
+            done = true;
+
+            return marker;
+        }
+        virtual int getch() { assert(0); return endOfInput; }
+        virtual void ungetch() { assert(0); }
+        static const int marker = -3;
+    };
+
+    class tZeroInput : public tInput {
+    public:
+        tZeroInput(TPpContext* pp) : tInput(pp) { }
+        virtual int scan(TPpToken*);
+        virtual int getch() { assert(0); return endOfInput; }
+        virtual void ungetch() { assert(0); }
+    };
+
+    std::vector<tInput*> inputStack;
     bool errorOnVersion;
     bool versionSeen;
 
@@ -256,12 +323,8 @@ protected:
     int CPPversion(TPpToken * ppToken);
     int CPPextension(TPpToken * ppToken);
     int readCPPline(TPpToken * ppToken);
-    void PushEofSrc();
-    void PopEofSrc();
-    TokenStream* PrescanMacroArg(TokenStream *a, TPpToken * ppToken);
-    static int macro_scan(TPpContext* pp, InputSrc *inInput, TPpToken * ppToken); 
-    static int zero_scan(TPpContext* pp, InputSrc *inInput, TPpToken * ppToken); 
-    int MacroExpand(int atom, TPpToken* ppToken, bool expandUndef);
+    TokenStream* PrescanMacroArg(TokenStream *a, TPpToken * ppToken, bool newLineOkay);
+    int MacroExpand(int atom, TPpToken* ppToken, bool expandUndef, bool newLineOkay);
 
     //
     // from PpSymbols.cpp
@@ -278,32 +341,49 @@ protected:
     void RecordToken(TokenStream* pTok, int token, TPpToken* ppToken);
     void RewindTokenStream(TokenStream *pTok);
     int ReadToken(TokenStream* pTok, TPpToken* ppToken);
-    int ReadFromTokenStream(TokenStream *ts, int name, int (*final)(TPpContext *));
+    void pushTokenStreamInput(TokenStream *ts, int name);
     void UngetToken(int token, TPpToken* ppToken);
-    struct TokenInputSrc : public InputSrc {
+    
+    class tTokenInput : public tInput {
+    public:
+        tTokenInput(TPpContext* pp, TokenStream* t) : tInput(pp), tokens(t) { }
+        virtual int scan(TPpToken *);
+        virtual int getch() { assert(0); return endOfInput; }
+        virtual void ungetch() { assert(0); }
+    protected:
         TokenStream *tokens;
-        int (*final)(TPpContext *);
     };
-    static int scan_token(TPpContext*, TokenInputSrc *in, TPpToken * ppToken);
-    struct UngotToken : public InputSrc {
+
+    class tUngotTokenInput : public tInput {
+    public:
+        tUngotTokenInput(TPpContext* pp, int t, TPpToken* p) : tInput(pp), token(t), lval(*p) { }
+        virtual int scan(TPpToken *);
+        virtual int getch() { assert(0); return endOfInput; }
+        virtual void ungetch() { assert(0); }
+    protected:
         int token;
         TPpToken lval;
     };
-    static int reget_token(TPpContext *, UngotToken *t, TPpToken * ppToken);
 
     //
     // From PpScanner.cpp
     //
-    struct StringInputSrc : public InputSrc {
+    class tStringInput : public tInput {
+    public:
+        tStringInput(TPpContext* pp, TInputScanner& i) : tInput(pp), input(&i) { }
+        virtual int scan(TPpToken *);
+        virtual int getch();
+        virtual void ungetch();
+    protected:
         TInputScanner* input;
     };
+
     int InitScanner(TPpContext *cpp);
-    static int sourceGetCh(TPpContext*, StringInputSrc *in);
-    static void sourceUngetCh(TPpContext*, StringInputSrc *in, int ch, TPpToken *type);
     int ScanFromString(char *s);
-    bool check_EOF(int token);
+    void missingEndifCheck();
     int lFloatConst(char *str, int len, int ch, TPpToken * ppToken);
-    static int sourceScan(TPpContext*, InputSrc *in, TPpToken * ppToken);
+
+    bool inComment;
 
     //
     // From PpAtom.cpp

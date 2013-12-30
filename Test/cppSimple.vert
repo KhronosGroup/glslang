@@ -306,6 +306,26 @@ void foo234()
 #error good evaluation 2
 #endif
 
+// ERRORS...
+#line 9000
+#if defined(OUNH
+#endif
+#if defined OUNH)
+#endif
+
+// recursion (okay)
+#define RECURSE RECURSE
+int RECURSE;
+#define R2 R1
+#define R1 R2
+#undef RECURSE
+int R1 = RECURSE;
+
+#define FOOOM(a,b) a + b
+int aoeua = FOOOM;
+#if FOOOM
+#endif
+
 #line 10000
 #if 1
 #else

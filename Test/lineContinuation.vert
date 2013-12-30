@@ -54,4 +54,95 @@ D;
 # \
     error good continuation
 
-#define AA a \ b
+#define AA1 a \ b
+#define AA2 a \\ b
+#define AA3 a \\\ b
+#define AA4 a \\\\ b
+
+// anoetuh nonaetu \\\\\\
+still in comment
+
+int abdece = 10;
+int aoeuntaoehu = abd\
+\
+\
+\
+\
+\
+ece;
+
+float funkyf = \
+.\
+1\
+2\
+3\
+e\
++\
+1\
+7\
+;\
+int funkyh\
+=\
+0\
+x\
+f\
+4\
+;
+int funkyo =\
+0\
+4\
+2\
+;
+int c = \
+11;
+int d = 1\
+2;
+
+#define FOOM(a,b) a + b
+
+#if FO\
+OM(2\
+,\
+3)
+int bar103 = 17;
+#endif
+
+// ERROR
+#if FOOM(2,
+3)
+int bar104 = 19;
+#endif
+
+// ERROR
+#if FOOM(
+2,3)
+int bar105 = 19;
+#endif
+
+int bar106 = FOOM(5,7);
+int bar107 = FOOM  // okay
+    (
+    2
+    ,
+    3
+    )
+    ;
+
+void foo203209409()
+{
+    bar107 \
++= 37;
+    bar107 *\
+= 38;
+    bar107 /=\
+39;
+    bar107 +\
+41;
+}
+
+void foo230920394()
+{
+    // syntax error
+    bar107 +\
+ = 42;
+}
