@@ -109,8 +109,13 @@ void main()
             break;
         }
         break;
-    default:
+    case 4:
         f = tan(x);
+        if (f < 0.0)
+            default:            // ERROR
+                break;
     }
 
+    case 5:  // ERROR
+    default: // ERROR
 }

@@ -2276,16 +2276,25 @@ switch_statement_list
 
 case_label
     : CASE expression COLON {
+        $$ = 0;
         if (parseContext.switchLevel.size() == 0)
             parseContext.error($1.loc, "cannot appear outside switch statement", "case", "");
         else if (parseContext.switchLevel.back() != parseContext.controlFlowNestingLevel)
             parseContext.error($1.loc, "cannot be nested inside control flow", "case", "");
-        parseContext.constantValueCheck($2, "case");
-        parseContext.integerCheck($2, "case");
-        $$ = parseContext.intermediate.addBranch(EOpCase, $2, $1.loc);
+        else {
+            parseContext.constantValueCheck($2, "case");
+            parseContext.integerCheck($2, "case");
+            $$ = parseContext.intermediate.addBranch(EOpCase, $2, $1.loc);
+        }        
     }
     | DEFAULT COLON {
-        $$ = parseContext.intermediate.addBranch(EOpDefault, $1.loc);
+        $$ = 0;
+        if (parseContext.switchLevel.size() == 0)
+            parseContext.error($1.loc, "cannot appear outside switch statement", "default", "");
+        else if (parseContext.switchLevel.back() != parseContext.controlFlowNestingLevel)
+            parseContext.error($1.loc, "cannot be nested inside control flow", "default", "");
+        else
+            $$ = parseContext.intermediate.addBranch(EOpDefault, $1.loc);
     }
     ;
 
