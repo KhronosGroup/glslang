@@ -19,7 +19,8 @@ ERROR: 0:48: '@' : unexpected token
 ERROR: 0:50: 'line continuation' : not supported for this version or the enabled extensions 
 ERROR: 0:52: 'line continuation' : not supported for this version or the enabled extensions 
 ERROR: 0:53: '#error' : bad continuation  
-ERROR: 19 compilation errors.  No code generated.
+ERROR: 0:55: 'line continuation' : not supported for this version or the enabled extensions 
+ERROR: 20 compilation errors.  No code generated.
 
 
 ERROR: node is still EOpNull!

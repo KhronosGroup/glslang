@@ -11,7 +11,10 @@ ERROR: 0:89: '' : break statement only allowed in switch and loops
 ERROR: 0:99: 'case' : cannot be nested inside control flow 
 ERROR: 0:104: 'case' : cannot be nested inside control flow 
 ERROR: 0:108: 'case' : cannot be nested inside control flow 
-ERROR: 12 compilation errors.  No code generated.
+ERROR: 0:115: 'default' : cannot be nested inside control flow 
+ERROR: 0:119: 'case' : cannot appear outside switch statement 
+ERROR: 0:120: 'default' : cannot appear outside switch statement 
+ERROR: 15 compilation errors.  No code generated.
 
 
 ERROR: node is still EOpNull!
@@ -218,12 +221,6 @@ ERROR: node is still EOpNull!
 0:97                case:  with expression
 0:97                  Constant:
 0:97                    1 (const int)
-0:99                case:  with expression
-0:99                  Constant:
-0:99                    4 (const int)
-0:104                case:  with expression
-0:104                  Constant:
-0:104                    2 (const int)
 0:?                 Sequence
 0:?                   Sequence
 0:100                    Branch: Break
@@ -251,18 +248,25 @@ ERROR: node is still EOpNull!
 0:107                    Compare Less Than (bool)
 0:107                      'd' (uniform mediump int)
 0:107                      'c' (uniform mediump int)
-0:107                    true case
-0:108                    case:  with expression
-0:108                      Constant:
-0:108                        3 (const int)
+0:107                    true case is null
 0:109                  Branch: Break
 0:111            Branch: Break
-0:112          default: 
+0:112          case:  with expression
+0:112            Constant:
+0:112              4 (const int)
 0:?           Sequence
 0:113            move second child to first child (highp float)
 0:113              'f' (highp float)
 0:113              tangent (highp float)
 0:113                'x' (smooth in highp float)
+0:114            Test condition and select (void)
+0:114              Condition
+0:114              Compare Less Than (bool)
+0:114                'f' (highp float)
+0:114                Constant:
+0:114                  0.000000
+0:114              true case is null
+0:116            Branch: Break
 0:?   Linker Objects
 0:?     'c' (uniform mediump int)
 0:?     'd' (uniform mediump int)

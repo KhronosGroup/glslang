@@ -51,3 +51,6 @@ D;
 
 # \
     error bad continuation
+
+#define QUOTE "ab\
+cd"

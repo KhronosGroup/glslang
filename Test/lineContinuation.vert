@@ -140,6 +140,9 @@ void foo203209409()
 41;
 }
 
+#define QUOTE "ab\
+cd"
+
 void foo230920394()
 {
     // syntax error

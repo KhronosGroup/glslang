@@ -134,9 +134,9 @@ float twoPi = TWOPI;
 
 "boo" // ERROR
 int a = length("aoenatuh");  // ERROR
-
+#define QUOTE "abcd"  // okay
 'int';  // ERROR
-
+#define SINGLE 'a'   // okay
 // ERROR: all the following are reserved
 #define GL_
 #define GL_Macro 1
