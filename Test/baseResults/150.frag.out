@@ -26,7 +26,7 @@ ERROR: node is still EOpNull!
 0:?     'gl_FragCoord' (gl_FragCoord 4-component vector of float)
 0:?     'gl_FragCoord' (gl_FragCoord 4-component vector of float)
 0:?     'foo' (smooth in 4-component vector of float)
-0:?     's' (smooth in structure{f})
+0:?     's' (smooth in structure{float f})
 0:?     'patch' (float)
 
 

@@ -253,10 +253,10 @@ void TIntermediate::mergeErrorCheck(TInfoSink& infoSink, const TIntermSymbol& sy
     }
 
     // Layouts...
-    if (symbol.getQualifier().layoutMatrix       != unitSymbol.getQualifier().layoutMatrix ||
-        symbol.getQualifier().layoutPacking      != unitSymbol.getQualifier().layoutPacking ||
-        symbol.getQualifier().layoutSlotLocation != unitSymbol.getQualifier().layoutSlotLocation ||
-        symbol.getQualifier().layoutBinding      != unitSymbol.getQualifier().layoutBinding) {
+    if (symbol.getQualifier().layoutMatrix   != unitSymbol.getQualifier().layoutMatrix ||
+        symbol.getQualifier().layoutPacking  != unitSymbol.getQualifier().layoutPacking ||
+        symbol.getQualifier().layoutLocation != unitSymbol.getQualifier().layoutLocation ||
+        symbol.getQualifier().layoutBinding  != unitSymbol.getQualifier().layoutBinding) {
         error(infoSink, "Layout qualification must match:");
         writeTypeComparison = true;
     }
@@ -510,7 +510,7 @@ int TIntermediate::addUsedLocation(const TQualifier& qualifier, const TType& typ
             size = computeTypeLocationSize(type);
     }
 
-    TRange range = { qualifier.layoutSlotLocation, qualifier.layoutSlotLocation + size - 1 };
+    TRange range = { qualifier.layoutLocation, qualifier.layoutLocation + size - 1 };
 
     // check for collisions, except for vertex inputs on desktop
     if (! (profile != EEsProfile && language == EShLangVertex && qualifier.isPipeInput())) {

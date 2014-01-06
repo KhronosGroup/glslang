@@ -33,7 +33,7 @@ ERROR: node is still EOpNull!
 0:23        move second child to first child (4-component vector of float)
 0:23          'c' (4-component vector of float)
 0:23          gl_Color: direct index for structure (in 4-component vector of float)
-0:23            '__anon__0' (in block{gl_Color,})
+0:23            '__anon__0' (in block{in 4-component vector of float gl_Color, })
 0:23            Constant:
 0:23              2 (const uint)
 0:24      move second child to first child (4-component vector of float)
@@ -43,8 +43,8 @@ ERROR: node is still EOpNull!
 0:?     'inVar' (smooth in 4-component vector of float)
 0:?     'outVar' (out 4-component vector of float)
 0:?     'varyingVar' (smooth in 4-component vector of float)
-0:?     '__anon__0' (in block{gl_Color,})
-0:?     'gl_name' (in block{gl_i})
+0:?     '__anon__0' (in block{in 4-component vector of float gl_Color, })
+0:?     'gl_name' (in block{int gl_i})
 
 
 Linked fragment stage:

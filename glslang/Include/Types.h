@@ -353,7 +353,7 @@ public:
     {
         layoutMatrix = ElmNone;
         layoutPacking = ElpNone;
-        layoutSlotLocation = layoutLocationEnd;
+        layoutLocation = layoutLocationEnd;
         layoutBinding = layoutBindingEnd;
         layoutStream = layoutStreamEnd;
     }
@@ -367,7 +367,7 @@ public:
     }
     TLayoutMatrix  layoutMatrix       : 3;
     TLayoutPacking layoutPacking      : 4;
-    unsigned int   layoutSlotLocation : 7;  // ins/outs should have small numbers, buffer offsets could be large
+    unsigned int   layoutLocation : 7;  // ins/outs should have small numbers, buffer offsets could be large
     static const unsigned int layoutLocationEnd = 0x3F;
     unsigned int layoutBinding        : 8;
     static const unsigned int layoutBindingEnd = 0xFF;
@@ -375,7 +375,7 @@ public:
     static const unsigned int layoutStreamEnd = 0xFF;
     bool hasLocation() const
     {
-        return layoutSlotLocation != layoutLocationEnd;
+        return layoutLocation != layoutLocationEnd;
     }
     bool hasBinding() const
     {
@@ -825,7 +825,7 @@ public:
         if (qualifier.hasLayout()) {
             p += snprintf(p, end - p, "layout(");
             if (qualifier.hasLocation())
-                p += snprintf(p, end - p, "location=%d ", qualifier.layoutSlotLocation);
+                p += snprintf(p, end - p, "location=%d ", qualifier.layoutLocation);
             if (qualifier.hasBinding())
                 p += snprintf(p, end - p, "binding=%d ", qualifier.layoutBinding);
             if (qualifier.hasStream())
@@ -887,9 +887,11 @@ public:
             s.append("{");
             for (size_t i = 0; i < structure->size(); ++i) {
                 if ((*structure)[i].type->getBasicType() != EbtVoid) {
+                    s.append((*structure)[i].type->getCompleteString());
+                    s.append(" ");
                     s.append((*structure)[i].type->getFieldName());
                     if (i < structure->size() - 1)
-                        s.append(",");
+                        s.append(", ");
                 }
             }
             s.append("}");

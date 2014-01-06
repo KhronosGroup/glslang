@@ -83,7 +83,9 @@ namespace glslang {
 //
 // Do folding between a pair of nodes
 //
-TIntermTyped* TIntermConstantUnion::fold(TOperator op, TIntermTyped* constantNode)
+// Returns a new node representing the result.
+//
+TIntermTyped* TIntermConstantUnion::fold(TOperator op, const TIntermTyped* constantNode) const 
 {
     // For most cases, the return type matches the argument type, so set that
     // up and just code to exceptions below.
@@ -94,7 +96,7 @@ TIntermTyped* TIntermConstantUnion::fold(TOperator op, TIntermTyped* constantNod
     // A pair of nodes is to be folded together
     //
 
-    TIntermConstantUnion *node = constantNode->getAsConstantUnion();
+    const TIntermConstantUnion *node = constantNode->getAsConstantUnion();
     TConstUnionArray unionArray = getConstArray();
     TConstUnionArray rightUnionArray = node->getConstArray();
 
@@ -297,7 +299,9 @@ TIntermTyped* TIntermConstantUnion::fold(TOperator op, TIntermTyped* constantNod
 //
 // Do single unary node folding
 //
-TIntermTyped* TIntermConstantUnion::fold(TOperator op, const TType& returnType)
+// Returns a new node representing the result.
+//
+TIntermTyped* TIntermConstantUnion::fold(TOperator op, const TType& returnType) const
 {
     // First, size the result, which is mostly the same as the argument's size,
     // but not always, and classify what is componentwise.

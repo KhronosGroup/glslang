@@ -7,10 +7,10 @@ WARNING: 0:6: varying deprecated in version 130; may be removed in future releas
 0:23  Function Definition: main( (void)
 0:23    Function Parameters: 
 0:?     Sequence
-0:27      move second child to first child (3-element array of structure{i,f})
-0:27        'a' (3-element array of structure{i,f})
-0:27        Construct structure (3-element array of structure{i,f})
-0:27          Construct structure (structure{i,f})
+0:27      move second child to first child (3-element array of structure{int i, float f})
+0:27        'a' (3-element array of structure{int i, float f})
+0:27        Construct structure (3-element array of structure{int i, float f})
+0:27          Construct structure (structure{int i, float f})
 0:27            Convert float to int (int)
 0:27              direct index (float)
 0:27                'u' (smooth in 4-component vector of float)
@@ -20,7 +20,7 @@ WARNING: 0:6: varying deprecated in version 130; may be removed in future releas
 0:27              'u' (smooth in 4-component vector of float)
 0:27              Constant:
 0:27                1 (const int)
-0:27          Construct structure (structure{i,f})
+0:27          Construct structure (structure{int i, float f})
 0:27            Convert float to int (int)
 0:27              direct index (float)
 0:27                'u' (smooth in 4-component vector of float)
@@ -33,13 +33,13 @@ WARNING: 0:6: varying deprecated in version 130; may be removed in future releas
 0:27          Constant:
 0:27            14 (const int)
 0:27            14.000000
-0:28      move second child to first child (3-element array of structure{i,f})
-0:28        'b' (3-element array of structure{i,f})
-0:28        Construct structure (3-element array of structure{i,f})
+0:28      move second child to first child (3-element array of structure{int i, float f})
+0:28        'b' (3-element array of structure{int i, float f})
+0:28        Construct structure (3-element array of structure{int i, float f})
 0:28          Constant:
 0:28            17 (const int)
 0:28            17.000000
-0:28          Construct structure (structure{i,f})
+0:28          Construct structure (structure{int i, float f})
 0:28            Convert float to int (int)
 0:28              direct index (float)
 0:28                'w' (smooth in 4-component vector of float)
@@ -49,7 +49,7 @@ WARNING: 0:6: varying deprecated in version 130; may be removed in future releas
 0:28              'w' (smooth in 4-component vector of float)
 0:28              Constant:
 0:28                1 (const int)
-0:28          Construct structure (structure{i,f})
+0:28          Construct structure (structure{int i, float f})
 0:28            Convert float to int (int)
 0:28              direct index (float)
 0:28                'w' (smooth in 4-component vector of float)
@@ -62,8 +62,8 @@ WARNING: 0:6: varying deprecated in version 130; may be removed in future releas
 0:30      Test condition and select (void)
 0:30        Condition
 0:30        Compare Equal (bool)
-0:30          'foo2a' (uniform structure{i,f,s1_1})
-0:30          'foo2b' (uniform structure{i,f,s1_1})
+0:30          'foo2a' (uniform structure{int i, float f, structure{int i, float f} s1_1})
+0:30          'foo2b' (uniform structure{int i, float f, structure{int i, float f} s1_1})
 0:30        true case
 0:31        move second child to first child (4-component vector of float)
 0:31          'v' (4-component vector of float)
@@ -118,8 +118,8 @@ WARNING: 0:6: varying deprecated in version 130; may be removed in future releas
 0:44      Test condition and select (void)
 0:44        Condition
 0:44        Compare Equal (bool)
-0:44          'a' (3-element array of structure{i,f})
-0:44          'b' (3-element array of structure{i,f})
+0:44          'a' (3-element array of structure{int i, float f})
+0:44          'b' (3-element array of structure{int i, float f})
 0:44        true case
 0:45        vector scale second child into first child (4-component vector of float)
 0:45          'v' (4-component vector of float)
@@ -128,8 +128,8 @@ WARNING: 0:6: varying deprecated in version 130; may be removed in future releas
 0:47      Test condition and select (void)
 0:47        Condition
 0:47        Compare Not Equal (bool)
-0:47          'a' (3-element array of structure{i,f})
-0:47          'b' (3-element array of structure{i,f})
+0:47          'a' (3-element array of structure{int i, float f})
+0:47          'b' (3-element array of structure{int i, float f})
 0:47        true case
 0:48        vector scale second child into first child (4-component vector of float)
 0:48          'v' (4-component vector of float)
@@ -143,9 +143,9 @@ WARNING: 0:6: varying deprecated in version 130; may be removed in future releas
 0:?     'coord' (smooth in 2-component vector of float)
 0:?     'u' (smooth in 4-component vector of float)
 0:?     'w' (smooth in 4-component vector of float)
-0:?     'foo1' (uniform structure{i,f})
-0:?     'foo2a' (uniform structure{i,f,s1_1})
-0:?     'foo2b' (uniform structure{i,f,s1_1})
+0:?     'foo1' (uniform structure{int i, float f})
+0:?     'foo2a' (uniform structure{int i, float f, structure{int i, float f} s1_1})
+0:?     'foo2b' (uniform structure{int i, float f, structure{int i, float f} s1_1})
 
 
 Linked fragment stage:

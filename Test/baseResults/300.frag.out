@@ -201,13 +201,13 @@ ERROR: node is still EOpNull!
 0:91      move second child to first child (lowp 3-component vector of float)
 0:91        'sc' (out lowp 3-component vector of float)
 0:91        c: direct index for structure (lowp 3-component vector of float)
-0:91          's2' (smooth in structure{c,f})
+0:91          's2' (smooth in structure{lowp 3-component vector of float c, lowp float f})
 0:91          Constant:
 0:91            0 (const int)
 0:92      move second child to first child (lowp float)
 0:92        'sf' (out lowp float)
 0:92        f: direct index for structure (lowp float)
-0:92          's2' (smooth in structure{c,f})
+0:92          's2' (smooth in structure{lowp 3-component vector of float c, lowp float f})
 0:92          Constant:
 0:92            1 (const int)
 0:94      add (lowp 2-component vector of float)
@@ -241,28 +241,28 @@ ERROR: node is still EOpNull!
 0:111        'c4D' (smooth lowp 4-component vector of float)
 0:117  Function Definition: foo13(struct-s-i1-s211; (void)
 0:117    Function Parameters: 
-0:117      'inSt2' (in structure{i,s})
+0:117      'inSt2' (in structure{mediump int i, lowp sampler2D s})
 0:119    Sequence
 0:119      Test condition and select (void)
 0:119        Condition
 0:119        Compare Equal (bool)
-0:119          'st1' (uniform structure{i,s})
-0:119          'st2' (uniform structure{i,s})
+0:119          'st1' (uniform structure{mediump int i, lowp sampler2D s})
+0:119          'st2' (uniform structure{mediump int i, lowp sampler2D s})
 0:119        true case is null
 0:120      Test condition and select (void)
 0:120        Condition
 0:120        Compare Not Equal (bool)
-0:120          'st1' (uniform structure{i,s})
-0:120          'st2' (uniform structure{i,s})
+0:120          'st1' (uniform structure{mediump int i, lowp sampler2D s})
+0:120          'st2' (uniform structure{mediump int i, lowp sampler2D s})
 0:120        true case is null
 0:121      Constant:
 0:121        false (const bool)
-0:122      move second child to first child (structure{i,s})
-0:122        'inSt2' (in structure{i,s})
-0:122        'st1' (uniform structure{i,s})
+0:122      move second child to first child (structure{mediump int i, lowp sampler2D s})
+0:122        'inSt2' (in structure{mediump int i, lowp sampler2D s})
+0:122        'st1' (uniform structure{mediump int i, lowp sampler2D s})
 0:123      Compare Equal (bool)
-0:123        'inSt2' (in structure{i,s})
-0:123        'st1' (uniform structure{i,s})
+0:123        'inSt2' (in structure{mediump int i, lowp sampler2D s})
+0:123        'st1' (uniform structure{mediump int i, lowp sampler2D s})
 0:126  Function Definition: foo23( (void)
 0:126    Function Parameters: 
 0:128    Sequence
@@ -376,15 +376,15 @@ ERROR: node is still EOpNull!
 0:?     'ic4D' (flat in mediump 4-component vector of int)
 0:?     'badv' (noperspective in lowp 4-component vector of float)
 0:?     'bads' (smooth in lowp sampler2D)
-0:?     'badout' (smooth in structure{i,s})
-0:?     's2' (smooth in structure{c,f})
+0:?     'badout' (smooth in structure{mediump int i, lowp sampler2D s})
+0:?     's2' (smooth in structure{lowp 3-component vector of float c, lowp float f})
 0:?     'sc' (out lowp 3-component vector of float)
 0:?     'sf' (out lowp float)
 0:?     'arrayedSampler' (uniform 5-element array of lowp sampler2D)
-0:?     'multiInst' (layout(column_major shared ) uniform 2-element array of block{a,b,c})
+0:?     'multiInst' (layout(column_major shared ) uniform 2-element array of block{layout(column_major shared ) 2-element array of mediump int a, layout(column_major shared ) 2-element array of mediump int b, layout(column_major shared ) 2-element array of mediump int c})
 0:?     'colors' (out 4-element array of lowp 4-component vector of float)
-0:?     'st1' (uniform structure{i,s})
-0:?     'st2' (uniform structure{i,s})
+0:?     'st1' (uniform structure{mediump int i, lowp sampler2D s})
+0:?     'st2' (uniform structure{mediump int i, lowp sampler2D s})
 
 
 Linked fragment stage:

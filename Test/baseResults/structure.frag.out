@@ -16,8 +16,8 @@ WARNING: 0:3: varying deprecated in version 130; may be removed in future releas
 0:24        Compare Greater Than (bool)
 0:24          direct index (int)
 0:24            i: direct index for structure (5-element array of int)
-0:24              direct index (structure{i,f,s1_1})
-0:24                'foo2' (uniform 5-element array of structure{i,f,s1_1})
+0:24              direct index (structure{5-element array of int i, float f, 7-element array of structure{int i, 4-element array of float f, 5-element array of 4-component vector of float color} s1_1})
+0:24                'foo2' (uniform 5-element array of structure{5-element array of int i, float f, 7-element array of structure{int i, 4-element array of float f, 5-element array of 4-component vector of float color} s1_1})
 0:24                Constant:
 0:24                  3 (const int)
 0:24              Constant:
@@ -32,10 +32,10 @@ WARNING: 0:3: varying deprecated in version 130; may be removed in future releas
 0:25          direct index (float)
 0:25            direct index (4-component vector of float)
 0:25              color: direct index for structure (5-element array of 4-component vector of float)
-0:25                direct index (structure{i,f,color})
-0:25                  s1_1: direct index for structure (7-element array of structure{i,f,color})
-0:25                    direct index (structure{i,f,s1_1})
-0:25                      'foo2' (uniform 5-element array of structure{i,f,s1_1})
+0:25                direct index (structure{int i, 4-element array of float f, 5-element array of 4-component vector of float color})
+0:25                  s1_1: direct index for structure (7-element array of structure{int i, 4-element array of float f, 5-element array of 4-component vector of float color})
+0:25                    direct index (structure{5-element array of int i, float f, 7-element array of structure{int i, 4-element array of float f, 5-element array of 4-component vector of float color} s1_1})
+0:25                      'foo2' (uniform 5-element array of structure{5-element array of int i, float f, 7-element array of structure{int i, 4-element array of float f, 5-element array of 4-component vector of float color} s1_1})
 0:25                      Constant:
 0:25                        3 (const int)
 0:25                    Constant:
@@ -53,10 +53,10 @@ WARNING: 0:3: varying deprecated in version 130; may be removed in future releas
 0:27          'scale' (float)
 0:27          direct index (float)
 0:27            f: direct index for structure (4-element array of float)
-0:27              direct index (structure{i,f,color})
-0:27                s1_1: direct index for structure (7-element array of structure{i,f,color})
-0:27                  direct index (structure{i,f,s1_1})
-0:27                    'foo2' (uniform 5-element array of structure{i,f,s1_1})
+0:27              direct index (structure{int i, 4-element array of float f, 5-element array of 4-component vector of float color})
+0:27                s1_1: direct index for structure (7-element array of structure{int i, 4-element array of float f, 5-element array of 4-component vector of float color})
+0:27                  direct index (structure{5-element array of int i, float f, 7-element array of structure{int i, 4-element array of float f, 5-element array of 4-component vector of float color} s1_1})
+0:27                    'foo2' (uniform 5-element array of structure{5-element array of int i, float f, 7-element array of structure{int i, 4-element array of float f, 5-element array of 4-component vector of float color} s1_1})
 0:27                    Constant:
 0:27                      3 (const int)
 0:27                  Constant:
@@ -77,8 +77,8 @@ WARNING: 0:3: varying deprecated in version 130; may be removed in future releas
 0:?   Linker Objects
 0:?     'sampler' (uniform sampler2D)
 0:?     'coord' (smooth in 2-component vector of float)
-0:?     'foo' (uniform structure{i,f,color})
-0:?     'foo2' (uniform 5-element array of structure{i,f,s1_1})
+0:?     'foo' (uniform structure{int i, 4-element array of float f, 5-element array of 4-component vector of float color})
+0:?     'foo2' (uniform 5-element array of structure{5-element array of int i, float f, 7-element array of structure{int i, 4-element array of float f, 5-element array of 4-component vector of float color} s1_1})
 
 
 Linked fragment stage:

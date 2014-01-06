@@ -1,8 +1,8 @@
 430.vert
 Warning, version 430 is not yet complete; some version-specific features are present, but many are missing.
 ERROR: 0:3: 'v4' : location qualifiers only appy to uniform, buffer, in, or out storage qualifiers 
-ERROR: 0:7: 'location qualifier on input block' : not supported for this version or the enabled extensions 
-ERROR: 0:8: 'location qualifier on output block' : not supported for this version or the enabled extensions 
+ERROR: 0:7: 'location qualifier on in/out block' : not supported for this version or the enabled extensions 
+ERROR: 0:8: 'location qualifier on in/out block' : not supported for this version or the enabled extensions 
 ERROR: 0:21: 'g' : cannot use storage or interpolation qualifiers on structure members 
 ERROR: 0:22: 'h' : cannot use storage or interpolation qualifiers on structure members 
 ERROR: 0:23: 'i' : cannot use invariant qualifier on structure members 
@@ -23,7 +23,7 @@ ERROR: node is still EOpNull!
 0:16      move second child to first child (float)
 0:16        direct index (float)
 0:16          gl_ClipDistance: direct index for structure (17-element array of float)
-0:16            '__anon__0' (out block{gl_ClipDistance,})
+0:16            '__anon__0' (out block{17-element array of float gl_ClipDistance, })
 0:16            Constant:
 0:16              2 (const uint)
 0:16          Constant:
@@ -39,10 +39,10 @@ ERROR: node is still EOpNull!
 0:?   Linker Objects
 0:?     'v4' (layout(location=3 ) 4-component vector of float)
 0:?     'uv4' (layout(location=4 ) uniform 4-component vector of float)
-0:?     'b1' (layout(location=2 ) in block{v})
-0:?     'b2' (layout(location=2 ) out block{v})
-0:?     '__anon__0' (out block{gl_ClipDistance,})
-0:?     'cs' (layout(location=10 ) smooth out 2-element array of structure{m,f})
+0:?     'b1' (layout(location=2 ) in block{layout(location=2 ) 4-component vector of float v})
+0:?     'b2' (layout(location=2 ) out block{layout(location=2 ) 4-component vector of float v})
+0:?     '__anon__0' (out block{17-element array of float gl_ClipDistance, })
+0:?     'cs' (layout(location=10 ) smooth out 2-element array of structure{7-element array of 3X2 matrix of float m, float f})
 0:?     'cf' (layout(location=54 ) smooth out float)
 0:?     'cg' (layout(location=53 ) smooth out float)
 0:?     'alias1' (layout(location=10 ) in 4-component vector of float)

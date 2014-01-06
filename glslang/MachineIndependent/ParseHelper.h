@@ -108,7 +108,7 @@ public:
     void variableCheck(TIntermTyped*& nodePtr);
     bool lValueErrorCheck(TSourceLoc, const char* op, TIntermTyped*);
     void constantValueCheck(TIntermTyped* node, const char* token);
-    void integerCheck(TIntermTyped* node, const char* token);
+    void integerCheck(const TIntermTyped* node, const char* token);
     void globalCheck(TSourceLoc, const char* token);
     bool constructorError(TSourceLoc, TIntermNode*, TFunction&, TOperator, TType&);
     void arraySizeCheck(TSourceLoc, TIntermTyped* expr, int& size);

@@ -99,12 +99,12 @@ ERROR: node is still EOpNull!
 0:60            'x' (int)
 0:68      Sequence
 0:68        Sequence
-0:68          move second child to first child (structure{x})
-0:68            'S' (structure{x})
+0:68          move second child to first child (structure{int x})
+0:68            'S' (structure{int x})
 0:68            Constant:
 0:68              0 (const int)
 0:69        x: direct index for structure (int)
-0:69          'S' (structure{x})
+0:69          'S' (structure{int x})
 0:69          Constant:
 0:69            0 (const int)
 0:73      Constant:

@@ -127,29 +127,29 @@ ERROR: node is still EOpNull!
 0:40          1.000000
 0:40          1.000000
 0:40          1.000000
-0:53  Function Definition: bar9( (structure{v4,sa})
+0:53  Function Definition: bar9( (structure{mediump 4-component vector of float v4, structure{mediump 3-component vector of float v3, 4-element array of mediump 2-component vector of float v2} sa})
 0:53    Function Parameters: 
 0:?     Sequence
 0:56      Branch: Return with expression
-0:56        's' (structure{v4,sa})
+0:56        's' (structure{mediump 4-component vector of float v4, structure{mediump 3-component vector of float v3, 4-element array of mediump 2-component vector of float v2} sa})
 0:59  Function Definition: bar10(struct-SB-vf4-struct-SA-vf3-vf2[4]11; (void)
 0:59    Function Parameters: 
-0:59      's' (in structure{v4,sa})
+0:59      's' (in structure{mediump 4-component vector of float v4, structure{mediump 3-component vector of float v3, 4-element array of mediump 2-component vector of float v2} sa})
 0:63  Function Definition: bar11( (void)
 0:63    Function Parameters: 
 0:?     Sequence
-0:66      move second child to first child (structure{v4,sa})
-0:66        's1' (structure{v4,sa})
-0:66        's2' (structure{v4,sa})
+0:66      move second child to first child (structure{mediump 4-component vector of float v4, structure{mediump 3-component vector of float v3, 4-element array of mediump 2-component vector of float v2} sa})
+0:66        's1' (structure{mediump 4-component vector of float v4, structure{mediump 3-component vector of float v3, 4-element array of mediump 2-component vector of float v2} sa})
+0:66        's2' (structure{mediump 4-component vector of float v4, structure{mediump 3-component vector of float v3, 4-element array of mediump 2-component vector of float v2} sa})
 0:67      Function Call: bar10(struct-SB-vf4-struct-SA-vf3-vf2[4]11; (void)
-0:67        's1' (structure{v4,sa})
-0:68      move second child to first child (structure{v4,sa})
-0:68        's2' (structure{v4,sa})
-0:68        Function Call: bar9( (structure{v4,sa})
+0:67        's1' (structure{mediump 4-component vector of float v4, structure{mediump 3-component vector of float v3, 4-element array of mediump 2-component vector of float v2} sa})
+0:68      move second child to first child (structure{mediump 4-component vector of float v4, structure{mediump 3-component vector of float v3, 4-element array of mediump 2-component vector of float v2} sa})
+0:68        's2' (structure{mediump 4-component vector of float v4, structure{mediump 3-component vector of float v3, 4-element array of mediump 2-component vector of float v2} sa})
+0:68        Function Call: bar9( (structure{mediump 4-component vector of float v4, structure{mediump 3-component vector of float v3, 4-element array of mediump 2-component vector of float v2} sa})
 0:69      Sequence
-0:69        move second child to first child (structure{v4,sa})
-0:69          'initSb' (structure{v4,sa})
-0:69          's1' (structure{v4,sa})
+0:69        move second child to first child (structure{mediump 4-component vector of float v4, structure{mediump 3-component vector of float v3, 4-element array of mediump 2-component vector of float v2} sa})
+0:69          'initSb' (structure{mediump 4-component vector of float v4, structure{mediump 3-component vector of float v3, 4-element array of mediump 2-component vector of float v2} sa})
+0:69          's1' (structure{mediump 4-component vector of float v4, structure{mediump 3-component vector of float v3, 4-element array of mediump 2-component vector of float v2} sa})
 0:?   Linker Objects
 0:?     'gu' (unsized array of mediump float)
 0:?     'g4' (4-element array of mediump float)

@@ -28,7 +28,7 @@ ERROR: node is still EOpNull!
 0:?     'o' (out 4-component vector of float)
 0:?     'gl_ClipDistance' (smooth in 5-element array of float)
 0:?     'gl_ClipDistance' (smooth in 5-element array of float)
-0:?     's' (smooth in structure{f})
+0:?     's' (smooth in structure{float f})
 0:?     'patch' (float)
 
 

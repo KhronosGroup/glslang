@@ -70,7 +70,7 @@
 0:28      move second child to first child (mediump int)
 0:28        direct index (mediump int)
 0:28          t: direct index for structure (mediump 4-component vector of int)
-0:28            'f' (structure{t})
+0:28            'f' (structure{mediump 4-component vector of int t})
 0:28            Constant:
 0:28              0 (const int)
 0:28          Constant:
@@ -93,7 +93,7 @@
 0:30            'e' (mediump int)
 0:30            direct index (mediump int)
 0:30              t: direct index for structure (mediump 4-component vector of int)
-0:30                'f' (structure{t})
+0:30                'f' (structure{mediump 4-component vector of int t})
 0:30                Constant:
 0:30                  0 (const int)
 0:30              Constant:
@@ -107,7 +107,7 @@
 0:32            'e' (mediump int)
 0:32            direct index (mediump int)
 0:32              t: direct index for structure (mediump 4-component vector of int)
-0:32                'f' (structure{t})
+0:32                'f' (structure{mediump 4-component vector of int t})
 0:32                Constant:
 0:32                  0 (const int)
 0:32              Constant:

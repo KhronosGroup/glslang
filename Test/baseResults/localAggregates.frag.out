@@ -7,18 +7,18 @@ WARNING: 0:5: varying deprecated in version 130; may be removed in future releas
 0:34  Function Definition: main( (void)
 0:34    Function Parameters: 
 0:?     Sequence
-0:41      move second child to first child (structure{i,f,s1_1,bleh})
-0:41        'locals2' (structure{i,f,s1_1,bleh})
-0:41        s2_1: direct index for structure (structure{i,f,s1_1,bleh})
-0:41          'foo3' (uniform structure{s2_1,i,f,s1_1})
+0:41      move second child to first child (structure{int i, float f, structure{int i, float f} s1_1, 4-component vector of float bleh})
+0:41        'locals2' (structure{int i, float f, structure{int i, float f} s1_1, 4-component vector of float bleh})
+0:41        s2_1: direct index for structure (structure{int i, float f, structure{int i, float f} s1_1, 4-component vector of float bleh})
+0:41          'foo3' (uniform structure{structure{int i, float f, structure{int i, float f} s1_1, 4-component vector of float bleh} s2_1, int i, float f, structure{int i, float f} s1_1})
 0:41          Constant:
 0:41            0 (const int)
 0:43      Test condition and select (void)
 0:43        Condition
 0:43        Compare Greater Than (bool)
 0:43          i: direct index for structure (int)
-0:43            s2_1: direct index for structure (structure{i,f,s1_1,bleh})
-0:43              'foo3' (uniform structure{s2_1,i,f,s1_1})
+0:43            s2_1: direct index for structure (structure{int i, float f, structure{int i, float f} s1_1, 4-component vector of float bleh})
+0:43              'foo3' (uniform structure{structure{int i, float f, structure{int i, float f} s1_1, 4-component vector of float bleh} s2_1, int i, float f, structure{int i, float f} s1_1})
 0:43              Constant:
 0:43                0 (const int)
 0:43            Constant:
@@ -29,8 +29,8 @@ WARNING: 0:5: varying deprecated in version 130; may be removed in future releas
 0:44        Sequence
 0:44          move second child to first child (float)
 0:44            f: direct index for structure (float)
-0:44              s1_1: direct index for structure (structure{i,f})
-0:44                'locals2' (structure{i,f,s1_1,bleh})
+0:44              s1_1: direct index for structure (structure{int i, float f})
+0:44                'locals2' (structure{int i, float f, structure{int i, float f} s1_1, 4-component vector of float bleh})
 0:44                Constant:
 0:44                  2 (const int)
 0:44              Constant:
@@ -52,8 +52,8 @@ WARNING: 0:5: varying deprecated in version 130; may be removed in future releas
 0:46              Constant:
 0:46                2 (const int)
 0:46            i: direct index for structure (int)
-0:46              s2_1: direct index for structure (structure{i,f,s1_1,bleh})
-0:46                'foo3' (uniform structure{s2_1,i,f,s1_1})
+0:46              s2_1: direct index for structure (structure{int i, float f, structure{int i, float f} s1_1, 4-component vector of float bleh})
+0:46                'foo3' (uniform structure{structure{int i, float f, structure{int i, float f} s1_1, 4-component vector of float bleh} s2_1, int i, float f, structure{int i, float f} s1_1})
 0:46                Constant:
 0:46                  0 (const int)
 0:46              Constant:
@@ -62,8 +62,8 @@ WARNING: 0:5: varying deprecated in version 130; may be removed in future releas
 0:48        Sequence
 0:48          move second child to first child (float)
 0:48            f: direct index for structure (float)
-0:48              s1_1: direct index for structure (structure{i,f})
-0:48                'locals2' (structure{i,f,s1_1,bleh})
+0:48              s1_1: direct index for structure (structure{int i, float f})
+0:48                'locals2' (structure{int i, float f, structure{int i, float f} s1_1, 4-component vector of float bleh})
 0:48                Constant:
 0:48                  2 (const int)
 0:48              Constant:
@@ -148,14 +148,14 @@ WARNING: 0:5: varying deprecated in version 130; may be removed in future releas
 0:66          'localArray' (16-element array of float)
 0:68      move second child to first child (4-component vector of float)
 0:68        bleh: direct index for structure (4-component vector of float)
-0:68          'locals2' (structure{i,f,s1_1,bleh})
+0:68          'locals2' (structure{int i, float f, structure{int i, float f} s1_1, 4-component vector of float bleh})
 0:68          Constant:
 0:68            3 (const int)
 0:68        'color' (smooth in 4-component vector of float)
 0:69      move second child to first child (float)
 0:69        direct index (float)
 0:69          bleh: direct index for structure (4-component vector of float)
-0:69            'locals2' (structure{i,f,s1_1,bleh})
+0:69            'locals2' (structure{int i, float f, structure{int i, float f} s1_1, 4-component vector of float bleh})
 0:69            Constant:
 0:69              3 (const int)
 0:69          Constant:
@@ -169,7 +169,7 @@ WARNING: 0:5: varying deprecated in version 130; may be removed in future releas
 0:71        component-wise multiply (4-component vector of float)
 0:71          vector-scale (4-component vector of float)
 0:71            bleh: direct index for structure (4-component vector of float)
-0:71              'locals2' (structure{i,f,s1_1,bleh})
+0:71              'locals2' (structure{int i, float f, structure{int i, float f} s1_1, 4-component vector of float bleh})
 0:71              Constant:
 0:71                3 (const int)
 0:71            add (float)
@@ -180,8 +180,8 @@ WARNING: 0:5: varying deprecated in version 130; may be removed in future releas
 0:71                    Constant:
 0:71                      4 (const int)
 0:71                  f: direct index for structure (float)
-0:71                    s1_1: direct index for structure (structure{i,f})
-0:71                      'locals2' (structure{i,f,s1_1,bleh})
+0:71                    s1_1: direct index for structure (structure{int i, float f})
+0:71                      'locals2' (structure{int i, float f, structure{int i, float f} s1_1, 4-component vector of float bleh})
 0:71                      Constant:
 0:71                        2 (const int)
 0:71                    Constant:
@@ -199,9 +199,9 @@ WARNING: 0:5: varying deprecated in version 130; may be removed in future releas
 0:?     'sampler' (uniform sampler2D)
 0:?     'coord' (smooth in 2-component vector of float)
 0:?     'color' (smooth in 4-component vector of float)
-0:?     'foo' (uniform structure{i,f})
-0:?     'foo2' (uniform structure{i,f,s1_1,bleh})
-0:?     'foo3' (uniform structure{s2_1,i,f,s1_1})
+0:?     'foo' (uniform structure{int i, float f})
+0:?     'foo2' (uniform structure{int i, float f, structure{int i, float f} s1_1, 4-component vector of float bleh})
+0:?     'foo3' (uniform structure{structure{int i, float f, structure{int i, float f} s1_1, 4-component vector of float bleh} s2_1, int i, float f, structure{int i, float f} s1_1})
 0:?     'uFloatArray' (uniform 16-element array of float)
 0:?     'condition' (uniform int)
 

@@ -183,7 +183,7 @@ const char* TParseContext::getPreamble()
             "#define GL_ARB_shading_language_420pack 1\n"
             "#define GL_ARB_texture_gather 1\n"
             "#define GL_ARB_gpu_shader5 1\n"
-            "#define GL_ARB_separate_shader_objects 1\n";
+            "#define GL_ARB_separate_shader_objects 1\n"
             "#define GL_ARB_tessellation_shader 1\n";
     }
 }

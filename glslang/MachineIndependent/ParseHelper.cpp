@@ -1455,7 +1455,7 @@ void TParseContext::constantValueCheck(TIntermTyped* node, const char* token)
 // Both test, and if necessary spit out an error, to see if the node is really
 // an integer.
 //
-void TParseContext::integerCheck(TIntermTyped* node, const char* token)
+void TParseContext::integerCheck(const TIntermTyped* node, const char* token)
 {
     if ((node->getBasicType() == EbtInt || node->getBasicType() == EbtUint) && node->isScalar())
         return;
@@ -2820,7 +2820,7 @@ void TParseContext::setLayoutQualifier(TSourceLoc loc, TPublicType& publicType, 
         if ((unsigned int)value >= TQualifier::layoutLocationEnd)
             error(loc, "location is too large", id.c_str(), "");
         else
-            publicType.qualifier.layoutSlotLocation = value;
+            publicType.qualifier.layoutLocation = value;
         return;
     }
     if (id == "binding") {
@@ -2882,12 +2882,11 @@ void TParseContext::mergeObjectLayoutQualifiers(TSourceLoc loc, TQualifier& dst,
 {
     if (src.layoutMatrix != ElmNone)
         dst.layoutMatrix = src.layoutMatrix;
-
     if (src.layoutPacking != ElpNone)
         dst.layoutPacking = src.layoutPacking;
 
     if (src.hasLocation())
-        dst.layoutSlotLocation = src.layoutSlotLocation;
+        dst.layoutLocation = src.layoutLocation;
 
     if (src.hasBinding())
         dst.layoutBinding = src.layoutBinding;
@@ -2910,17 +2909,10 @@ void TParseContext::layoutTypeCheck(TSourceLoc loc, const TSymbol& symbol)
     if (qualifier.hasLocation()) {
         switch (qualifier.storage) {
         case EvqVaryingIn:
-        {
-            if (type.getBasicType() == EbtBlock)
-                profileRequires(loc, ECoreProfile | ECompatibilityProfile, 440, 0 /* TODO ARB_enhanced_layouts*/, "location qualifier on input block");
-            break;
-        }
         case EvqVaryingOut:
-        {
             if (type.getBasicType() == EbtBlock)
-                profileRequires(loc, ECoreProfile | ECompatibilityProfile, 440, 0 /* TODO ARB_enhanced_layouts*/, "location qualifier on output block");
+                profileRequires(loc, ECoreProfile | ECompatibilityProfile, 440, 0 /* TODO ARB_enhanced_layouts*/, "location qualifier on in/out block");
             break;
-        }
         case EvqUniform:
         case EvqBuffer:
         {
