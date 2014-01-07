@@ -5,7 +5,14 @@ ERROR: 0:31: 'gl_' : reserved built-in name: gl_name
 ERROR: 0:32: 'gl_' : reserved built-in name: gl_i
 ERROR: 0:35: 'gl_in' : no declaration found for redeclaration 
 ERROR: 0:39: 'gl_FragCoord' : cannot redeclare a non block as a block 
-ERROR: 5 compilation errors.  No code generated.
+ERROR: 0:44: 'non-literal layout-id value' : not supported for this version or the enabled extensions 
+ERROR: 0:44: 'layout-id value' : cannot be negative 
+ERROR: 0:45: 'non-literal layout-id value' : not supported for this version or the enabled extensions 
+ERROR: 0:46: 'layout-id value' : scalar integer expression required 
+ERROR: 0:46: 'location' : location is too large 
+ERROR: 0:51: 'layout-id value' : cannot be negative 
+ERROR: 0:52: 'layout-id value' : cannot be negative 
+ERROR: 12 compilation errors.  No code generated.
 
 
 ERROR: node is still EOpNull!
@@ -45,6 +52,15 @@ ERROR: node is still EOpNull!
 0:?     'varyingVar' (smooth in 4-component vector of float)
 0:?     '__anon__0' (in block{in 4-component vector of float gl_Color, })
 0:?     'gl_name' (in block{in int gl_i})
+0:?     'start' (const int)
+0:?       6 (const int)
+0:?     'v1' (smooth in 4-component vector of float)
+0:?     'v2' (layout(location=8 ) smooth in 4-component vector of float)
+0:?     'v20' (smooth in 4-component vector of float)
+0:?     'v3' (layout(location=6 ) smooth in 4-component vector of float)
+0:?     'v4' (smooth in 4-component vector of float)
+0:?     'v5' (smooth in 4-component vector of float)
+0:?     'v6' (layout(location=34 ) smooth in 4-component vector of float)
 
 
 Linked fragment stage:

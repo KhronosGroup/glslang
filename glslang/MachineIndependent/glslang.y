@@ -228,29 +228,29 @@ primary_expression
     | INTCONSTANT {
         TConstUnionArray unionArray(1);
         unionArray[0].setIConst($1.i);
-        $$ = parseContext.intermediate.addConstantUnion(unionArray, TType(EbtInt, EvqConst), $1.loc);
+        $$ = parseContext.intermediate.addConstantUnion(unionArray, TType(EbtInt, EvqConst), $1.loc, true);
     }
     | UINTCONSTANT {        
         parseContext.fullIntegerCheck($1.loc, "unsigned literal");
         TConstUnionArray unionArray(1);
         unionArray[0].setUConst($1.u);
-        $$ = parseContext.intermediate.addConstantUnion(unionArray, TType(EbtUint, EvqConst), $1.loc);
+        $$ = parseContext.intermediate.addConstantUnion(unionArray, TType(EbtUint, EvqConst), $1.loc, true);
     }
     | FLOATCONSTANT {
         TConstUnionArray unionArray(1);
         unionArray[0].setDConst($1.d);
-        $$ = parseContext.intermediate.addConstantUnion(unionArray, TType(EbtFloat, EvqConst), $1.loc);
+        $$ = parseContext.intermediate.addConstantUnion(unionArray, TType(EbtFloat, EvqConst), $1.loc, true);
     }
     | DOUBLECONSTANT {
         parseContext.doubleCheck($1.loc, "double literal");
         TConstUnionArray unionArray(1);
         unionArray[0].setDConst($1.d);
-        $$ = parseContext.intermediate.addConstantUnion(unionArray, TType(EbtDouble, EvqConst), $1.loc);
+        $$ = parseContext.intermediate.addConstantUnion(unionArray, TType(EbtDouble, EvqConst), $1.loc, true);
     }
     | BOOLCONSTANT {
         TConstUnionArray unionArray(1);
         unionArray[0].setBConst($1.b);
-        $$ = parseContext.intermediate.addConstantUnion(unionArray, TType(EbtBool, EvqConst), $1.loc);
+        $$ = parseContext.intermediate.addConstantUnion(unionArray, TType(EbtBool, EvqConst), $1.loc, true);
     }
     | LEFT_PAREN expression RIGHT_PAREN {
         $$ = $2;
@@ -1110,13 +1110,9 @@ layout_qualifier_id
         $$.init($1.loc);
         parseContext.setLayoutQualifier($1.loc, $$, *$1.string);
     }
-    | IDENTIFIER EQUAL INTCONSTANT {
+    | IDENTIFIER EQUAL constant_expression {
         $$.init($1.loc);
-        parseContext.setLayoutQualifier($1.loc, $$, *$1.string, $3.i);
-    }
-    | IDENTIFIER EQUAL UINTCONSTANT {
-        $$.init($1.loc);
-        parseContext.setLayoutQualifier($1.loc, $$, *$1.string, (int)$3.u);
+        parseContext.setLayoutQualifier($1.loc, $$, *$1.string, $3);
     }
     | SHARED { // because "shared" is both an identifier and a keyword
         $$.init($1.loc);

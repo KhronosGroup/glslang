@@ -148,7 +148,7 @@ public:
     void constantIndexExpressionCheck(TIntermNode*);
 
     void setLayoutQualifier(TSourceLoc, TPublicType&, TString&);
-    void setLayoutQualifier(TSourceLoc, TPublicType&, TString&, int);
+    void setLayoutQualifier(TSourceLoc, TPublicType&, TString&, const TIntermTyped*);
     void mergeObjectLayoutQualifiers(TSourceLoc, TQualifier& dest, const TQualifier& src, bool inheritOnly);
     void layoutTypeCheck(TSourceLoc, const TSymbol&);
     void layoutQualifierCheck(TSourceLoc, const TQualifier&);

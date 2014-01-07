@@ -494,15 +494,18 @@ protected:
 
 class TIntermConstantUnion : public TIntermTyped {
 public:
-    TIntermConstantUnion(const TConstUnionArray& ua, const TType& t) : TIntermTyped(t), unionArray(ua) { }
+    TIntermConstantUnion(const TConstUnionArray& ua, const TType& t) : TIntermTyped(t), unionArray(ua), literal(false) { }
     const TConstUnionArray& getConstArray() const { return unionArray; }
     virtual       TIntermConstantUnion* getAsConstantUnion()       { return this; }
     virtual const TIntermConstantUnion* getAsConstantUnion() const { return this; }
     virtual void traverse(TIntermTraverser*);
     virtual TIntermTyped* fold(TOperator, const TIntermTyped*) const;
     virtual TIntermTyped* fold(TOperator, const TType&) const;
+    void setLiteral() { literal = true; }
+    bool isLiteral() const { return literal; }
 protected:
     const TConstUnionArray unionArray;
+    bool literal;  // true if node represents a literal in the source code
 };
 
 //

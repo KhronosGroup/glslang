@@ -39,3 +39,15 @@ in gl_PerVertex {  // ERROR
 in gl_PerVertex {  // ERROR
     vec4 gl_FragCoord;
 };  // ERROR
+
+const int start = 6;
+layout(location = -2) in vec4 v1;         // ERROR
+layout(location = start + 2) in vec4 v2;  // ERROR
+layout(location = 4.7e10) in vec4 v20;    // ERROR
+
+#extension GL_ARB_enhanced_layouts : enable
+
+layout(location = start) in vec4 v3;
+layout(location = -2) in vec4 v4;         // ERROR
+layout(location = -start) in vec4 v5;     // ERROR
+layout(location = start*start - 2) in vec4 v6;

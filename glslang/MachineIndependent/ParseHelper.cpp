@@ -2808,12 +2808,24 @@ void TParseContext::setLayoutQualifier(TSourceLoc loc, TPublicType& publicType, 
 
 // Put the id's layout qualifier value into the public type.  This is before we know any
 // type information for error checking.
-void TParseContext::setLayoutQualifier(TSourceLoc loc, TPublicType& publicType, TString& id, int value)
+void TParseContext::setLayoutQualifier(TSourceLoc loc, TPublicType& publicType, TString& id, const TIntermTyped* node)
 {
+    const char* feature = "layout-id value";
+    const char* nonLiteralFeature = "non-literal layout-id value";
+
+    integerCheck(node, feature);
+    const TIntermConstantUnion* constUnion = node->getAsConstantUnion();
+    assert(constUnion);
+    int value = node->getAsConstantUnion()->getConstArray()[0].getIConst();
+
+    if (! constUnion->isLiteral()) {
+        requireProfile(loc, ECoreProfile | ECompatibilityProfile, nonLiteralFeature);
+        profileRequires(loc, ECoreProfile | ECompatibilityProfile, 440, GL_ARB_enhanced_layouts, nonLiteralFeature);
+    }
+
     if (value < 0) {
-        error(loc, "cannot be negative", "layout qualifier value", "");
+        error(loc, "cannot be negative", feature, "");
         return;
-        // TODO: 4.4: test the above, once expressions are allowed; until then, can't even express a negative location
     }
 
     std::transform(id.begin(), id.end(), id.begin(), ::tolower);

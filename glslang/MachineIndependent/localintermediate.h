@@ -96,7 +96,7 @@ public:
     TIntermTyped* addSelection(TIntermTyped* cond, TIntermTyped* trueBlock, TIntermTyped* falseBlock, TSourceLoc);
     TIntermTyped* addComma(TIntermTyped* left, TIntermTyped* right, TSourceLoc);
     TIntermTyped* addMethod(TIntermTyped*, const TType&, const TString*, TSourceLoc);
-    TIntermConstantUnion* addConstantUnion(const TConstUnionArray&, const TType&, TSourceLoc);
+    TIntermConstantUnion* addConstantUnion(const TConstUnionArray&, const TType&, TSourceLoc, bool literal = false);
     TIntermTyped* promoteConstantUnion(TBasicType, TIntermConstantUnion*) ;
     bool parseConstTree(TIntermNode*, TConstUnionArray, TOperator, const TType&, bool singleConstantParam = false);
     TIntermLoop* addLoop(TIntermNode*, TIntermTyped*, TIntermTyped*, bool testFirst, TSourceLoc);

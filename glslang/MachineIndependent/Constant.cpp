@@ -85,7 +85,7 @@ namespace glslang {
 //
 // Returns a new node representing the result.
 //
-TIntermTyped* TIntermConstantUnion::fold(TOperator op, const TIntermTyped* constantNode) const 
+TIntermTyped* TIntermConstantUnion::fold(TOperator op, const TIntermTyped* constantNode) const
 {
     // For most cases, the return type matches the argument type, so set that
     // up and just code to exceptions below.

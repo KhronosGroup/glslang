@@ -782,10 +782,12 @@ TIntermTyped* TIntermediate::addSelection(TIntermTyped* cond, TIntermTyped* true
 // Returns the constant union node created.
 //
 
-TIntermConstantUnion* TIntermediate::addConstantUnion(const TConstUnionArray& unionArray, const TType& t, TSourceLoc loc)
+TIntermConstantUnion* TIntermediate::addConstantUnion(const TConstUnionArray& unionArray, const TType& t, TSourceLoc loc, bool literal)
 {
     TIntermConstantUnion* node = new TIntermConstantUnion(unionArray, t);
     node->setLoc(loc);
+    if (literal)
+        node->setLiteral();
 
     return node;
 }

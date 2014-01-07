@@ -162,6 +162,7 @@ void TParseContext::initializeExtensionBehavior()
     extensionBehavior[GL_ARB_gpu_shader5]              = EBhDisablePartial;
     extensionBehavior[GL_ARB_separate_shader_objects]  = EBhDisable;
     extensionBehavior[GL_ARB_tessellation_shader]      = EBhDisable;
+    extensionBehavior[GL_ARB_enhanced_layouts]         = EBhDisable;
 }
 
 // Get code that is not part of a shared symbol table, is specific to this shader,
@@ -184,7 +185,8 @@ const char* TParseContext::getPreamble()
             "#define GL_ARB_texture_gather 1\n"
             "#define GL_ARB_gpu_shader5 1\n"
             "#define GL_ARB_separate_shader_objects 1\n"
-            "#define GL_ARB_tessellation_shader 1\n";
+            "#define GL_ARB_tessellation_shader 1\n"
+            "#define GL_ARB_enhanced_layouts 1\n";
     }
 }
 
