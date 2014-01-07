@@ -149,7 +149,7 @@ public:
 
     void setLayoutQualifier(TSourceLoc, TPublicType&, TString&);
     void setLayoutQualifier(TSourceLoc, TPublicType&, TString&, int);
-    void mergeObjectLayoutQualifiers(TSourceLoc, TQualifier& dest, const TQualifier& src);
+    void mergeObjectLayoutQualifiers(TSourceLoc, TQualifier& dest, const TQualifier& src, bool inheritOnly);
     void layoutTypeCheck(TSourceLoc, const TSymbol&);
     void layoutQualifierCheck(TSourceLoc, const TQualifier&);
     void checkNoShaderLayouts(TSourceLoc, const TShaderQualifiers&);

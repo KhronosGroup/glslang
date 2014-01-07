@@ -44,4 +44,4 @@ layout(location = 53) out float cg; // ERROR, collision at 31
 layout(location = 10) in vec4 alias1;
 layout(location = 10) in vec4 alias2;  // okay for vertex input on desktop
 
-float gl_ClipDistance[17];  // ERROR, size too big
+out float gl_ClipDistance[17];  // ERROR, size too big

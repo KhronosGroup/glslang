@@ -1102,7 +1102,7 @@ layout_qualifier_id_list
     | layout_qualifier_id_list COMMA layout_qualifier_id {
         $$ = $1;
         $$.shaderQualifiers.merge($3.shaderQualifiers);
-        parseContext.mergeObjectLayoutQualifiers($2.loc, $$.qualifier, $3.qualifier);
+        parseContext.mergeObjectLayoutQualifiers($2.loc, $$.qualifier, $3.qualifier, false);
     }
 
 layout_qualifier_id
@@ -2285,7 +2285,7 @@ case_label
             parseContext.constantValueCheck($2, "case");
             parseContext.integerCheck($2, "case");
             $$ = parseContext.intermediate.addBranch(EOpCase, $2, $1.loc);
-        }        
+        }
     }
     | DEFAULT COLON {
         $$ = 0;

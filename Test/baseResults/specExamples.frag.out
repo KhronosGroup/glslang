@@ -286,9 +286,9 @@ ERROR: node is still EOpNull!
 0:?       0.700000
 0:?       0.700000
 0:?       0.200000
-0:?     '__anon__0' (in block{smooth in 4-component vector of float Color1, smooth 4-component vector of float Color2, 2-component vector of float TexCoordA, uniform float Atten})
-0:?     '__anon__1' (in block{4-component vector of float LightPos, 3-component vector of float LightColor})
-0:?     'Materiala' (in block{4-component vector of float Color, 2-component vector of float TexCoord})
+0:?     '__anon__0' (in block{smooth in 4-component vector of float Color1, smooth in 4-component vector of float Color2, in 2-component vector of float TexCoordA, in float Atten})
+0:?     '__anon__1' (in block{in 4-component vector of float LightPos, in 3-component vector of float LightColor})
+0:?     'Materiala' (in block{in 4-component vector of float Color, in 2-component vector of float TexCoord})
 0:?     'gl_FragCoord' (gl_FragCoord 4-component vector of float)
 0:?     'gl_FragCoord' (gl_FragCoord 4-component vector of float)
 0:?     'factor' (layout(location=3 ) out 4-component vector of float)

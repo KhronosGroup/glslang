@@ -381,7 +381,7 @@ ERROR: node is still EOpNull!
 0:?     'sc' (out lowp 3-component vector of float)
 0:?     'sf' (out lowp float)
 0:?     'arrayedSampler' (uniform 5-element array of lowp sampler2D)
-0:?     'multiInst' (layout(column_major shared ) uniform 2-element array of block{layout(column_major shared ) 2-element array of mediump int a, layout(column_major shared ) 2-element array of mediump int b, layout(column_major shared ) 2-element array of mediump int c})
+0:?     'multiInst' (layout(column_major shared ) uniform 2-element array of block{layout(column_major shared ) uniform 2-element array of mediump int a, layout(column_major shared ) uniform 2-element array of mediump int b, layout(column_major shared ) uniform 2-element array of mediump int c})
 0:?     'colors' (out 4-element array of lowp 4-component vector of float)
 0:?     'st1' (uniform structure{mediump int i, lowp sampler2D s})
 0:?     'st2' (uniform structure{mediump int i, lowp sampler2D s})

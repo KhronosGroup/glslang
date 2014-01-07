@@ -438,7 +438,7 @@ TIntermTyped* TParseContext::handleBracketDereference(TSourceLoc loc, TIntermTyp
     else {
         // at least one of base and index is variable...
 
-        if (isIoResizeArray(base->getType()))
+        if (base->getAsSymbolNode() && isIoResizeArray(base->getType()))
             handleIoResizeArrayAccess(loc, base);
 
         if (index->getQualifier().storage == EvqConst) {
@@ -447,7 +447,7 @@ TIntermTyped* TParseContext::handleBracketDereference(TSourceLoc loc, TIntermTyp
             result = intermediate.addIndex(EOpIndexDirect, base, index, loc);
         } else {
             if (base->isArray() && base->getType().getArraySize() == 0) {
-                if (isIoResizeArray(base->getType()))
+                if (base->getAsSymbolNode() && isIoResizeArray(base->getType()))
                     error(loc, "", "[", "array must be sized by a redeclaration or layout qualifier before being indexed with a variable");
                 else
                     error(loc, "", "[", "array must be redeclared with a size before being indexed with a variable");
@@ -1015,7 +1015,7 @@ TIntermTyped* TParseContext::handleLengthMethod(TSourceLoc loc, TFunction* fnCal
                 length = getIoArrayImplicitSize();
         }
         if (length == 0) {
-            if (isIoResizeArray(intermNode->getAsTyped()->getType()))
+            if (intermNode->getAsSymbolNode() && isIoResizeArray(intermNode->getAsTyped()->getType()))
                 error(loc, "", fnCall->getName().c_str(), "array must first be sized by a redeclaration or layout qualifier");
             else
                 error(loc, "", fnCall->getName().c_str(), "array must be declared with a size before using this method");
@@ -1886,7 +1886,7 @@ void TParseContext::mergeQualifiers(TSourceLoc loc, TQualifier& dst, const TQual
         dst.precision = src.precision;
 
     // Layout qualifiers
-    mergeObjectLayoutQualifiers(loc, dst, src);
+    mergeObjectLayoutQualifiers(loc, dst, src, false);
 
     // individual qualifiers
     bool repeated = false;
@@ -2100,6 +2100,7 @@ void TParseContext::declareArray(TSourceLoc loc, TString& identifier, const TTyp
         }
         if (symbol->getAsAnonMember()) {
             error(loc, "cannot redeclare a user-block member array", identifier.c_str(), "");
+            symbol = 0;
             return;
         }
     }
@@ -2519,8 +2520,10 @@ void TParseContext::structTypeCheck(TSourceLoc loc, TPublicType& publicType)
             error(memberLoc, "cannot use storage or interpolation qualifiers on structure members", typeList[member].type->getFieldName().c_str(), "");
         if (memberQualifier.isMemory())
             error(memberLoc, "cannot use memory qualifiers on structure members", typeList[member].type->getFieldName().c_str(), "");
-        if (memberQualifier.hasLayout())
+        if (memberQualifier.hasLayout()) {
             error(memberLoc, "cannot use layout qualifiers on structure members", typeList[member].type->getFieldName().c_str(), "");
+            memberQualifier.clearLayout();
+        }
         if (memberQualifier.invariant)
             error(memberLoc, "cannot use invariant qualifier on structure members", typeList[member].type->getFieldName().c_str(), "");
     }
@@ -2878,18 +2881,19 @@ void TParseContext::setLayoutQualifier(TSourceLoc loc, TPublicType& publicType, 
 }
 
 // Merge any layout qualifier information from src into dst, leaving everything else in dst alone
-void TParseContext::mergeObjectLayoutQualifiers(TSourceLoc loc, TQualifier& dst, const TQualifier& src)
+void TParseContext::mergeObjectLayoutQualifiers(TSourceLoc loc, TQualifier& dst, const TQualifier& src, bool inheritOnly)
 {
     if (src.layoutMatrix != ElmNone)
         dst.layoutMatrix = src.layoutMatrix;
     if (src.layoutPacking != ElpNone)
         dst.layoutPacking = src.layoutPacking;
 
-    if (src.hasLocation())
-        dst.layoutLocation = src.layoutLocation;
-
-    if (src.hasBinding())
-        dst.layoutBinding = src.layoutBinding;
+    if (! inheritOnly) {
+        if (src.hasLocation())
+            dst.layoutLocation = src.layoutLocation;
+        if (src.hasBinding())
+            dst.layoutBinding = src.layoutBinding;
+    }
 
     if (src.hasStream())
         dst.layoutStream = src.layoutStream;
@@ -3659,6 +3663,7 @@ void TParseContext::declareBlock(TSourceLoc loc, TTypeList& typeList, const TStr
         pipeInOutFix(memberLoc, memberQualifier);
         if (memberQualifier.storage != EvqTemporary && memberQualifier.storage != EvqGlobal && memberQualifier.storage != currentBlockQualifier.storage)
             error(memberLoc, "member storage qualifier cannot contradict block storage qualifier", typeList[member].type->getFieldName().c_str(), "");
+        memberQualifier.storage = currentBlockQualifier.storage;
         if (currentBlockQualifier.storage == EvqUniform && (memberQualifier.isInterpolation() || memberQualifier.isAuxiliary()))
             error(memberLoc, "member of uniform block cannot have an auxiliary or interpolation qualifier", typeList[member].type->getFieldName().c_str(), "");
 
@@ -3693,7 +3698,7 @@ void TParseContext::declareBlock(TSourceLoc loc, TTypeList& typeList, const TStr
     }
 
     // fix and check for member layout qualifiers
-    mergeObjectLayoutQualifiers(loc, defaultQualification, currentBlockQualifier);
+    mergeObjectLayoutQualifiers(loc, defaultQualification, currentBlockQualifier, true);
     for (unsigned int member = 0; member < typeList.size(); ++member) {
         TQualifier& memberQualifier = typeList[member].type->getQualifier();
         TSourceLoc memberLoc = typeList[member].loc;
@@ -3710,7 +3715,7 @@ void TParseContext::declareBlock(TSourceLoc loc, TTypeList& typeList, const TStr
 
     // reverse merge, so that currentBlockQualifier now has all layout information
     // (can't use defaultQualification directly, it's missing other non-layout-default-class qualifiers)
-    mergeObjectLayoutQualifiers(loc, currentBlockQualifier, defaultQualification);
+    mergeObjectLayoutQualifiers(loc, currentBlockQualifier, defaultQualification, true);
 
     //
     // Build and add the interface block as a new type named 'blockName'

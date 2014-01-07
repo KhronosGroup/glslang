@@ -32,7 +32,6 @@ ERROR: 0:96: 'binding' : requires block, or sampler/image, or atomic-counter typ
 ERROR: 0:97: 'binding' : requires block, or sampler/image, or atomic-counter type 
 ERROR: 0:106: '' : vertex input cannot be further qualified 
 ERROR: 0:106: 'redeclaration' : cannot change storage, memory, or auxiliary qualification of gl_FrontColor
-ERROR: 0:107: 'redeclaration' : cannot change storage, memory, or auxiliary qualification of gl_FrontColor
 ERROR: 0:112: 'ColorIvn' : identifier not previously declared 
 ERROR: 0:132: 'shared' : not supported in this stage: vertex
 ERROR: 0:134: '' : function does not return a value: funcA
@@ -43,7 +42,7 @@ ERROR: 0:153: '' : function does not return a value: func3
 ERROR: 0:192: 'constructor' : constructing from a non-dereferenced array 
 ERROR: 0:193: 'constructor' : constructing from a non-dereferenced array 
 ERROR: 0:194: 'constructor' : constructing from a non-dereferenced array 
-ERROR: 42 compilation errors.  No code generated.
+ERROR: 41 compilation errors.  No code generated.
 
 
 ERROR: node is still EOpNull!
@@ -278,27 +277,27 @@ ERROR: node is still EOpNull!
 0:194        Constant:
 0:194          0.000000
 0:?   Linker Objects
-0:?     'Coords' (out block{4-component vector of float Position, 2-component vector of float Texture})
-0:?     '__anon__0' (out block{4-component vector of float Color})
-0:?     'transforms' (layout(column_major shared ) uniform 4-element array of block{layout(column_major shared ) 4X4 matrix of float ModelViewMatrix, layout(column_major shared ) 4X4 matrix of float ModelViewProjectionMatrix, layout(column_major shared ) unsized array of 4-component vector of float a, layout(column_major shared ) float Deformation})
+0:?     'Coords' (out block{out 4-component vector of float Position, out 2-component vector of float Texture})
+0:?     '__anon__0' (out block{out 4-component vector of float Color})
+0:?     'transforms' (layout(column_major shared ) uniform 4-element array of block{layout(column_major shared ) uniform 4X4 matrix of float ModelViewMatrix, layout(column_major shared ) uniform 4X4 matrix of float ModelViewProjectionMatrix, layout(column_major shared ) uniform unsized array of 4-component vector of float a, layout(column_major shared ) uniform float Deformation})
 0:?     'normal' (layout(location=3 ) in 4-component vector of float)
 0:?     'colors' (layout(location=6 ) in 3-element array of 4-component vector of float)
 0:?     's' (layout(location=3 ) structure{3-component vector of float a1, 2X2 matrix of float b, 2-element array of 4-component vector of float c})
 0:?     'var1' (smooth out 4-component vector of float)
-0:?     '__anon__1' (out block{4-component vector of float var2, 2-component vector of float var3, 3-component vector of float var4})
+0:?     '__anon__1' (out block{out 4-component vector of float var2, out 2-component vector of float var3, out 3-component vector of float var4})
 0:?     'var5' (smooth out 4-component vector of float)
-0:?     '__anon__2' (out block{4-component vector of float var6})
+0:?     '__anon__2' (out block{out 4-component vector of float var6})
 0:?     'var7' (smooth out 4-component vector of float)
-0:?     '__anon__3' (layout(row_major std140 ) uniform block{layout(row_major std140 ) 4X4 matrix of float M1, layout(column_major std140 ) 4X4 matrix of float M2, layout(row_major std140 ) 3X3 matrix of float N1})
-0:?     '__anon__4' (layout(column_major shared ) uniform block{layout(column_major shared ) 4X4 matrix of float M13, layout(row_major shared ) 4X4 matrix of float m14, layout(column_major shared ) 3X3 matrix of float N12})
+0:?     '__anon__3' (layout(row_major std140 ) uniform block{layout(row_major std140 ) uniform 4X4 matrix of float M1, layout(column_major std140 ) uniform 4X4 matrix of float M2, layout(row_major std140 ) uniform 3X3 matrix of float N1})
+0:?     '__anon__4' (layout(column_major shared ) uniform block{layout(column_major shared ) uniform 4X4 matrix of float M13, layout(row_major shared ) uniform 4X4 matrix of float m14, layout(column_major shared ) uniform 3X3 matrix of float N12})
 0:?     's17' (layout(binding=3 ) uniform sampler2D)
 0:?     'a2' (layout(binding=2 ) uniform int)
 0:?     'bar' (layout(binding=2 ) uniform int)
 0:?     'b2' (layout(binding=2 ) uniform int)
 0:?     'c2' (layout(binding=3 ) uniform int)
 0:?     'd2' (layout(binding=2 ) uniform int)
-0:?     '__anon__5' (out block{invariant gl_Position 4-component vector of float gl_Position, gl_PointSize float gl_PointSize, unsized array of float gl_ClipDistance, gl_ClipVertex 4-component vector of float gl_ClipVertex, flat 4-component vector of float gl_FrontColor, 4-component vector of float gl_BackColor, 4-component vector of float gl_FrontSecondaryColor, 4-component vector of float gl_BackSecondaryColor, unsized array of 4-component vector of float gl_TexCoord, float gl_FogFragCoord})
-0:?     '__anon__5' (out block{invariant gl_Position 4-component vector of float gl_Position, gl_PointSize float gl_PointSize, unsized array of float gl_ClipDistance, gl_ClipVertex 4-component vector of float gl_ClipVertex, flat 4-component vector of float gl_FrontColor, 4-component vector of float gl_BackColor, 4-component vector of float gl_FrontSecondaryColor, 4-component vector of float gl_BackSecondaryColor, unsized array of 4-component vector of float gl_TexCoord, float gl_FogFragCoord})
+0:?     '__anon__5' (out block{invariant gl_Position 4-component vector of float gl_Position, gl_PointSize float gl_PointSize, out unsized array of float gl_ClipDistance, gl_ClipVertex 4-component vector of float gl_ClipVertex, flat out 4-component vector of float gl_FrontColor, out 4-component vector of float gl_BackColor, out 4-component vector of float gl_FrontSecondaryColor, out 4-component vector of float gl_BackSecondaryColor, out unsized array of 4-component vector of float gl_TexCoord, out float gl_FogFragCoord})
+0:?     '__anon__5' (out block{invariant gl_Position 4-component vector of float gl_Position, gl_PointSize float gl_PointSize, out unsized array of float gl_ClipDistance, gl_ClipVertex 4-component vector of float gl_ClipVertex, flat out 4-component vector of float gl_FrontColor, out 4-component vector of float gl_BackColor, out 4-component vector of float gl_FrontSecondaryColor, out 4-component vector of float gl_BackSecondaryColor, out unsized array of 4-component vector of float gl_TexCoord, out float gl_FogFragCoord})
 0:?     'ColorInv' (smooth out 3-component vector of float)
 0:?     'Color4' (invariant centroid smooth out 3-component vector of float)
 0:?     'position' (smooth out 4-component vector of float)
@@ -308,8 +307,8 @@ ERROR: node is still EOpNull!
 0:?     'c' (in 4-component vector of float)
 0:?     'd' (in 4-component vector of float)
 0:?     'v' (smooth out 4-component vector of float)
-0:?     '__anon__6' (layout(row_major shared ) coherent uniform block{layout(row_major shared ) readonly 4-component vector of float member1, layout(row_major shared ) 4-component vector of float member2})
-0:?     '__anon__7' (layout(row_major shared ) uniform block{layout(row_major shared ) coherent readonly 4-component vector of float member1A, layout(row_major shared ) coherent 4-component vector of float member2A})
+0:?     '__anon__6' (layout(row_major shared ) coherent uniform block{layout(row_major shared ) readonly uniform 4-component vector of float member1, layout(row_major shared ) uniform 4-component vector of float member2})
+0:?     '__anon__7' (layout(row_major shared ) uniform block{layout(row_major shared ) coherent readonly uniform 4-component vector of float member1A, layout(row_major shared ) coherent uniform 4-component vector of float member2A})
 0:?     'shv' (shared 4-component vector of float)
 0:?     'img1' (uniform image2D)
 0:?     'img2' (coherent uniform image2D)

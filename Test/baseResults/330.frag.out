@@ -44,7 +44,7 @@ ERROR: node is still EOpNull!
 0:?     'outVar' (out 4-component vector of float)
 0:?     'varyingVar' (smooth in 4-component vector of float)
 0:?     '__anon__0' (in block{in 4-component vector of float gl_Color, })
-0:?     'gl_name' (in block{int gl_i})
+0:?     'gl_name' (in block{in int gl_i})
 
 
 Linked fragment stage:

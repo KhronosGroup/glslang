@@ -1,11 +1,11 @@
 #version 150 core
 
 in fromVertex {
-    vec3 color;
+    in vec3 color;
 } fromV[];
 
 out toFragment {
-    vec3 color;
+    out vec3 color;
 } toF;
 
 out fromVertex {  // okay to reuse a block name for another block name

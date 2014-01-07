@@ -14,7 +14,7 @@ void main()
     gl_ClipVertex = iv4;
 }
 
-float gl_ClipDistance[4];
+out float gl_ClipDistance[4];
 
 uniform foob {
     int a[];

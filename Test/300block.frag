@@ -16,7 +16,7 @@ uniform S s;
 
 uniform fooBlock {
     uvec4 bv;
-    mat2 bm2;
+    uniform mat2 bm2;
     lowp isampler2D sampler;   // ERROR
     struct T2 {           // ERROR
         int a;
