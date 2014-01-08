@@ -10,9 +10,22 @@ ERROR: 0:44: 'layout-id value' : cannot be negative
 ERROR: 0:45: 'non-literal layout-id value' : not supported for this version or the enabled extensions 
 ERROR: 0:46: 'layout-id value' : scalar integer expression required 
 ERROR: 0:46: 'location' : location is too large 
-ERROR: 0:51: 'layout-id value' : cannot be negative 
-ERROR: 0:52: 'layout-id value' : cannot be negative 
-ERROR: 12 compilation errors.  No code generated.
+ERROR: 0:50: 'f2' : cannot use layout qualifiers on structure members 
+ERROR: 0:55: 'location on block member' : not supported for this version or the enabled extensions 
+ERROR: 0:60: 'location on block member' : can only use in an in/out block 
+ERROR: 0:60: 'location qualifier on uniform or buffer' : not supported for this version or the enabled extensions 
+ERROR: 0:58: 'location qualifier on uniform or buffer' : not supported for this version or the enabled extensions 
+ERROR: 0:66: 'layout-id value' : cannot be negative 
+ERROR: 0:67: 'layout-id value' : cannot be negative 
+ERROR: 0:72: 'f2' : cannot use layout qualifiers on structure members 
+ERROR: 0:87: 'location on block member' : can only use in an in/out block 
+ERROR: 0:87: 'location qualifier on uniform or buffer' : not supported for this version or the enabled extensions 
+ERROR: 0:87: 'location' : overlapping use of location 3
+ERROR: 0:85: 'location qualifier on uniform or buffer' : not supported for this version or the enabled extensions 
+ERROR: 0:90: 'location' : either the block needs a location, or all members need a location, or no members have a location 
+ERROR: 0:104: 'A' : cannot use layout qualifiers on structure members 
+ERROR: 0:115: 'location' : overlapping use of location 44
+ERROR: 25 compilation errors.  No code generated.
 
 
 ERROR: node is still EOpNull!
@@ -57,10 +70,18 @@ ERROR: node is still EOpNull!
 0:?     'v1' (smooth in 4-component vector of float)
 0:?     'v2' (layout(location=8 ) smooth in 4-component vector of float)
 0:?     'v20' (smooth in 4-component vector of float)
+0:?     '__anon__1' (in block{layout(location=1 component=0 ) in float f1, layout(location=3 ) in float f2})
+0:?     'uinst' (layout(location=1 column_major shared ) uniform block{layout(column_major shared ) uniform float f1, layout(location=3 column_major shared ) uniform float f2})
 0:?     'v3' (layout(location=6 ) smooth in 4-component vector of float)
 0:?     'v4' (smooth in 4-component vector of float)
 0:?     'v5' (smooth in 4-component vector of float)
-0:?     'v6' (layout(location=34 ) smooth in 4-component vector of float)
+0:?     'v6' (layout(location=30 ) smooth in 4-component vector of float)
+0:?     'ininst2' (in block{layout(location=28 component=0 ) in bool b1, layout(location=29 component=0 ) in float f1, layout(location=25 ) in float f2, layout(location=26 component=0 ) in 4-component vector of float f3, layout(location=21 ) in structure{float f1, float f2} s2, layout(location=23 component=0 ) in 4-component vector of float f4, layout(location=24 component=0 ) in 4-component vector of float f5})
+0:?     'uinst2' (layout(location=13 column_major shared ) uniform block{layout(column_major shared ) uniform float f1, layout(location=3 column_major shared ) uniform float f2})
+0:?     'in3' (in block{in float f1, layout(location=40 ) in float f2})
+0:?     'in4' (in block{layout(location=50 ) in float f1, layout(location=51 ) in float f2})
+0:?     's' (layout(location=33 ) smooth in structure{3-component vector of float a, 2X2 matrix of float b, 2-element array of 4-component vector of float c, 2-component vector of float A})
+0:?     '__anon__2' (in block{layout(location=44 component=0 ) in 4-component vector of float d, layout(location=45 component=0 ) in 4-component vector of float e, layout(location=47 ) in 4-component vector of float f, layout(location=48 component=0 ) in 4-component vector of float g, layout(location=41 ) in 4-component vector of float h, layout(location=42 component=0 ) in 4-component vector of float i, layout(location=43 component=0 ) in 4-component vector of float j, layout(location=44 component=0 ) in 4-component vector of float k})
 
 
 Linked fragment stage:

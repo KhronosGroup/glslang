@@ -353,29 +353,55 @@ public:
     {
         layoutMatrix = ElmNone;
         layoutPacking = ElpNone;
+        layoutOffset = -1;
+        layoutAlign = -1;
+
         layoutLocation = layoutLocationEnd;
+        layoutComponent = layoutComponentEnd;
         layoutBinding = layoutBindingEnd;
         layoutStream = layoutStreamEnd;
+
+        layoutXfbBuffer = layoutXfbBufferEnd;
+        layoutXfbStride = layoutXfbStrideEnd;
+        layoutXfbOffset = layoutXfbOffsetEnd;
     }
     bool hasLayout() const
     {
-        return layoutMatrix != ElmNone ||
-               layoutPacking != ElpNone ||
+        return hasUniformLayout() || 
                hasLocation() ||
                hasBinding() ||
-               hasStream();
+               hasStream() ||
+               hasXfb();
     }
-    TLayoutMatrix  layoutMatrix       : 3;
-    TLayoutPacking layoutPacking      : 4;
-    unsigned int   layoutLocation : 7;  // ins/outs should have small numbers, buffer offsets could be large
-    static const unsigned int layoutLocationEnd = 0x3F;
-    unsigned int layoutBinding        : 8;
-    static const unsigned int layoutBindingEnd = 0xFF;
-    unsigned int layoutStream          : 8;
-    static const unsigned int layoutStreamEnd = 0xFF;
+    TLayoutMatrix  layoutMatrix                     : 3;
+    TLayoutPacking layoutPacking                    : 4;
+    int layoutOffset;
+    int layoutAlign;
+                 unsigned int layoutLocation        : 7;
+    static const unsigned int layoutLocationEnd =  0x3F;
+                 unsigned int layoutComponent       : 3;
+    static const unsigned int layoutComponentEnd =    4;
+                 unsigned int layoutBinding         : 8;
+    static const unsigned int layoutBindingEnd =   0xFF;
+                 unsigned int layoutStream          : 8;
+    static const unsigned int layoutStreamEnd =    0xFF;    
+                 unsigned int layoutXfbBuffer       : 4;
+    static const unsigned int layoutXfbBufferEnd =  0xF;
+                 unsigned int layoutXfbStride       : 8;
+    static const unsigned int layoutXfbStrideEnd = 0xFF;
+                 unsigned int layoutXfbOffset       : 8;
+    static const unsigned int layoutXfbOffsetEnd = 0xFF;
+    bool hasUniformLayout() const
+    {
+        return layoutMatrix  != ElmNone ||
+               layoutPacking != ElpNone ||
+               layoutOffset  != -1 ||
+               layoutAlign   != -1;
+    }
     bool hasLocation() const
     {
-        return layoutLocation != layoutLocationEnd;
+        return layoutLocation  != layoutLocationEnd ||
+               layoutComponent != layoutComponentEnd;
     }
     bool hasBinding() const
     {
@@ -384,6 +410,12 @@ public:
     bool hasStream() const
     {
         return layoutStream != layoutStreamEnd;
+    }
+    bool hasXfb() const
+    {
+        return layoutXfbBuffer != layoutXfbBufferEnd ||
+               layoutXfbStride != layoutXfbStrideEnd ||
+               layoutXfbOffset != layoutXfbOffsetEnd;
     }
     static const char* getLayoutPackingString(TLayoutPacking packing)
     {
@@ -824,8 +856,11 @@ public:
 
         if (qualifier.hasLayout()) {
             p += snprintf(p, end - p, "layout(");
-            if (qualifier.hasLocation())
+            if (qualifier.hasLocation()) {
                 p += snprintf(p, end - p, "location=%d ", qualifier.layoutLocation);
+                if (qualifier.layoutComponent != qualifier.layoutComponentEnd)
+                    p += snprintf(p, end - p, "component=%d ", qualifier.layoutComponent);
+            }
             if (qualifier.hasBinding())
                 p += snprintf(p, end - p, "binding=%d ", qualifier.layoutBinding);
             if (qualifier.hasStream())
@@ -834,6 +869,17 @@ public:
                 p += snprintf(p, end - p, "%s ", TQualifier::getLayoutMatrixString(qualifier.layoutMatrix));
             if (qualifier.layoutPacking != ElpNone)
                 p += snprintf(p, end - p, "%s ", TQualifier::getLayoutPackingString(qualifier.layoutPacking));
+            if (qualifier.layoutOffset != -1)
+                p += snprintf(p, end - p, "offset=%d ", qualifier.layoutOffset);
+            if (qualifier.layoutAlign != -1)
+                p += snprintf(p, end - p, "align=%d ", qualifier.layoutAlign);
+
+            if (qualifier.layoutXfbBuffer != qualifier.layoutXfbBufferEnd)
+                p += snprintf(p, end - p, "xfb_buffer=%d ", qualifier.layoutXfbBuffer);
+            if (qualifier.layoutXfbOffset != qualifier.layoutXfbOffsetEnd)
+                p += snprintf(p, end - p, "xfb_offset=%d ", qualifier.layoutXfbOffset);
+            if (qualifier.layoutXfbStride != qualifier.layoutXfbStrideEnd)
+                p += snprintf(p, end - p, "xfb_stride=%d ", qualifier.layoutXfbStride);
             p += snprintf(p, end - p, ") ");
         }
 

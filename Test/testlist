@@ -59,6 +59,8 @@ numeral.frag
 410.geom
 430.vert
 430.comp
+440.vert
+440.frag
 dce.frag
 ../../LunarGLASS/test/aggOps.frag
 ../../LunarGLASS/test/always-discard.frag

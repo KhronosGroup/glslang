@@ -101,6 +101,8 @@ TParseContext::TParseContext(TSymbolTable& symt, TIntermediate& interm, bool pb,
     globalBufferDefaults.layoutMatrix = ElmColumnMajor;
     globalBufferDefaults.layoutPacking = ElpShared;
 
+    // TODO: 4.4 enhanced layouts: defaults for xfb?
+
     globalInputDefaults.clear();
 
     globalOutputDefaults.clear();
@@ -2429,7 +2431,7 @@ void TParseContext::redeclareBuiltinBlock(TSourceLoc loc, TTypeList& newTypeList
     symbolTable.insert(*block);
 
     // Check for general layout qualifier errors
-    layoutTypeCheck(loc, *block);
+    layoutObjectCheck(loc, *block);
 
     // Tracking for implicit sizing of array
     if (isIoResizeArray(block->getType())) {
@@ -2829,7 +2831,20 @@ void TParseContext::setLayoutQualifier(TSourceLoc loc, TPublicType& publicType, 
     }
 
     std::transform(id.begin(), id.end(), id.begin(), ::tolower);
-    if (id == "location") {
+    
+    if (id == "offset") {
+        const char* feature = "uniform buffer-member offset";
+        requireProfile(loc, ECoreProfile | ECompatibilityProfile, feature);
+        profileRequires(loc, ECoreProfile | ECompatibilityProfile, 440, GL_ARB_enhanced_layouts, feature);
+        publicType.qualifier.layoutOffset = value;
+        return;
+    } else if (id == "align") {
+        const char* feature = "uniform buffer-member align";
+        requireProfile(loc, ECoreProfile | ECompatibilityProfile, feature);
+        profileRequires(loc, ECoreProfile | ECompatibilityProfile, 440, GL_ARB_enhanced_layouts, feature);
+        publicType.qualifier.layoutAlign = value;
+        return;
+    } else if (id == "location") {
         requireProfile(loc, EEsProfile | ECoreProfile | ECompatibilityProfile, "location");
         profileRequires(loc, ECoreProfile | ECompatibilityProfile, 330, 0, "location");
         if ((unsigned int)value >= TQualifier::layoutLocationEnd)
@@ -2837,8 +2852,7 @@ void TParseContext::setLayoutQualifier(TSourceLoc loc, TPublicType& publicType, 
         else
             publicType.qualifier.layoutLocation = value;
         return;
-    }
-    if (id == "binding") {
+    } else if (id == "binding") {
         requireProfile(loc, ECoreProfile | ECompatibilityProfile, "binding");
         profileRequires(loc, ECoreProfile | ECompatibilityProfile, 420, GL_ARB_shading_language_420pack, "binding");
         if ((unsigned int)value >= TQualifier::layoutBindingEnd)
@@ -2846,7 +2860,37 @@ void TParseContext::setLayoutQualifier(TSourceLoc loc, TPublicType& publicType, 
         else
             publicType.qualifier.layoutBinding = value;
         return;
+    } else if (id == "component") {
+        requireProfile(loc, ECoreProfile | ECompatibilityProfile, "component");
+        profileRequires(loc, ECoreProfile | ECompatibilityProfile, 440, GL_ARB_enhanced_layouts, "component");
+        if ((unsigned)value >= TQualifier::layoutComponentEnd)
+            error(loc, "component is too large", id.c_str(), "");
+        else
+            publicType.qualifier.layoutComponent = value;
+        return;
+    } else if (id.compare(0, 4, "xfb_") == 0) {
+        const char* feature = "transform feedback qualifier";
+        requireStage(loc, (EShLanguageMask)(EShLangVertexMask | EShLangGeometryMask | EShLangTessControlMask | EShLangTessEvaluationMask), feature);
+        requireProfile(loc, ECoreProfile | ECompatibilityProfile, feature);
+        profileRequires(loc, ECoreProfile | ECompatibilityProfile, 440, GL_ARB_enhanced_layouts, feature);
+        if (id == "xfb_buffer") {
+            if (value >= TQualifier::layoutXfbBufferEnd)   // TODO: 4.4 enhanced layouts: also check against gl_MaxTransformFeedbackBuffers
+                error(loc, "buffer is too large", id.c_str(), "");
+            else
+                publicType.qualifier.layoutXfbBuffer = value;
+        } else if (id == "xfb_offset") {
+            if (value >= TQualifier::layoutXfbOffsetEnd)   // TODO: 4.4 enhanced layouts: also check against gl_MaxTransformFeedbackInterleavedComponents
+                error(loc, "offset is too large", id.c_str(), "");
+            else
+                publicType.qualifier.layoutXfbOffset = value;
+        } else if (id == "xfb_stride") {
+            if (value >= TQualifier::layoutXfbStrideEnd)    // TODO: 4.4 enhanced layouts: also check against gl_MaxTransformFeedbackInterleavedComponents
+                error(loc, "stride is too large", id.c_str(), "");
+            else
+                publicType.qualifier.layoutXfbStride = value;
+        }
     }
+
     switch (language) {
     case EShLangVertex:
         break;
@@ -2900,51 +2944,122 @@ void TParseContext::mergeObjectLayoutQualifiers(TSourceLoc loc, TQualifier& dst,
     if (src.layoutPacking != ElpNone)
         dst.layoutPacking = src.layoutPacking;
 
-    if (! inheritOnly) {
-        if (src.hasLocation())
-            dst.layoutLocation = src.layoutLocation;
-        if (src.hasBinding())
-            dst.layoutBinding = src.layoutBinding;
-    }
-
     if (src.hasStream())
         dst.layoutStream = src.layoutStream;
+
+    if (src.layoutXfbBuffer != TQualifier::layoutXfbBufferEnd)
+        dst.layoutXfbBuffer = src.layoutXfbBuffer;
+
+    if (! inheritOnly) {
+        if (src.layoutLocation != TQualifier::layoutLocationEnd)
+            dst.layoutLocation = src.layoutLocation;
+        if (src.layoutComponent != TQualifier::layoutComponentEnd)
+            dst.layoutComponent = src.layoutComponent;
+        
+        if (src.layoutOffset != -1)
+            dst.layoutOffset = src.layoutOffset;
+        if (src.layoutAlign != -1)
+            dst.layoutAlign = src.layoutAlign;
+
+        if (src.layoutBinding != TQualifier::layoutBindingEnd)
+            dst.layoutBinding = src.layoutBinding;
+
+        if (src.layoutXfbStride != TQualifier::layoutXfbStrideEnd)
+            dst.layoutXfbStride = src.layoutXfbStride;
+        if (src.layoutXfbOffset != TQualifier::layoutXfbOffsetEnd)
+            dst.layoutXfbOffset = src.layoutXfbOffset;
+    }
 }
 
 // Do error layout error checking given a full variable/block declaration.
-void TParseContext::layoutTypeCheck(TSourceLoc loc, const TSymbol& symbol)
+void TParseContext::layoutObjectCheck(TSourceLoc loc, const TSymbol& symbol)
 {
     const TType& type = symbol.getType();
     const TQualifier& qualifier = type.getQualifier();
 
-    // first, qualifier only error checking
+    // first, cross check WRT to just the type
+    layoutTypeCheck(loc, type);
+
+    // now, any remaining error checking based on the object itself
+
+    if (qualifier.hasLocation()) {
+        switch (qualifier.storage) {
+        case EvqUniform:
+        case EvqBuffer:
+            if (symbol.getAsVariable() == 0)
+                error(loc, "can only be used on variable declaration", "location", "");
+            break;
+        default:
+            break;
+        }
+    }
+
+    // Check packing and matrix 
+    // TODO: 4.4 enhanced layouts: generalize to include offset/align
+    if (qualifier.layoutMatrix || qualifier.layoutPacking) {
+        switch (qualifier.storage) {
+        case EvqBuffer:
+        case EvqUniform:
+            if (type.getBasicType() != EbtBlock) {
+                if (qualifier.layoutMatrix != ElmNone)
+                    error(loc, "cannot specify matrix layout on a variable declaration", "layout", "");
+                if (qualifier.layoutPacking != ElpNone)
+                    error(loc, "cannot specify packing on a variable declaration", "layout", "");
+            }
+            break;
+        default:
+            if (type.getBasicType() != EbtBlock && symbol.getAsVariable()) {
+                if (qualifier.layoutMatrix != ElmNone ||
+                    qualifier.layoutPacking != ElpNone)
+                    error(loc, "qualifiers for matrix layout and block packing only apply to uniform or buffer blocks", "layout", "");
+            }
+        }
+    }
+}
+
+// Do error layout error checking with respect to a type.
+void TParseContext::layoutTypeCheck(TSourceLoc loc, const TType& type)
+{
+    const TQualifier& qualifier = type.getQualifier();
+
+    // first, intra layout qualifier-only error checking
     layoutQualifierCheck(loc, qualifier);
 
     // now, error checking combining type and qualifier
 
     if (qualifier.hasLocation()) {
+        if (qualifier.layoutComponent != TQualifier::layoutComponentEnd) {
+            // "It is a compile-time error if this sequence of components gets larger than 3."
+            if (qualifier.layoutComponent + type.getVectorSize() > 4)
+                error(loc, "type overflows the available 4 components", "component", "");
+
+            // "It is a compile-time error to apply the component qualifier to a matrix, a structure, a block, or an array containing any of these."
+            if (type.isMatrix() || type.getBasicType() == EbtBlock || type.getBasicType() == EbtStruct)
+                error(loc, "cannot apply to a matrix, structure, or block", "component", "");
+        }
+
         switch (qualifier.storage) {
         case EvqVaryingIn:
         case EvqVaryingOut:
             if (type.getBasicType() == EbtBlock)
-                profileRequires(loc, ECoreProfile | ECompatibilityProfile, 440, 0 /* TODO ARB_enhanced_layouts*/, "location qualifier on in/out block");
+                profileRequires(loc, ECoreProfile | ECompatibilityProfile, 440, GL_ARB_enhanced_layouts, "location qualifier on in/out block");
             break;
         case EvqUniform:
         case EvqBuffer:
-        {
-            const char* feature = "location qualifier on uniform or buffer";
-            if (symbol.getAsVariable() == 0)
-                error(loc, "can only be used on variable declaration", feature, "");
             break;
-        }
         default:
-            error(loc, "location qualifiers only appy to uniform, buffer, in, or out storage qualifiers", symbol.getName().c_str(), "");
+            error(loc, "can only appy to uniform, buffer, in, or out storage qualifiers", "location", "");
             break;
         }
 
-        int repeated = intermediate.addUsedLocation(qualifier, type);
-        if (repeated >= 0)
-            error(loc, "repeated use of location", "location", "%d", repeated);
+        bool typeCollision;
+        int repeated = intermediate.addUsedLocation(qualifier, type, typeCollision);
+        if (repeated >= 0 && ! typeCollision)
+            error(loc, "overlapping use of location", "location", "%d", repeated);
+        // "fragment-shader outputs ... if two variables are placed within the same
+        // location, they must have the same underlying type (floating-point or integer)"
+        if (typeCollision && language == EShLangFragment && qualifier.isPipeOutput())
+            error(loc, "fragment outputs sharing the same location must be the same basic type", "location", "%d", repeated);
     }
 
     if (qualifier.hasBinding()) {
@@ -2967,34 +3082,22 @@ void TParseContext::layoutTypeCheck(TSourceLoc loc, const TSymbol& symbol)
                 error(loc, "sampler binding not less than gl_MaxCombinedTextureImageUnits", "binding", type.isArray() ? "(using array)" : "");
         }
     }
-
-    // Check packing and matrix
-    if (qualifier.layoutMatrix || qualifier.layoutPacking) {
-        switch (qualifier.storage) {
-        case EvqBuffer:
-        case EvqUniform:
-            if (symbol.getType().getBasicType() != EbtBlock) {
-                if (qualifier.layoutMatrix != ElmNone)
-                    error(loc, "cannot specify matrix layout on a variable declaration", symbol.getName().c_str(), "");
-                if (qualifier.layoutPacking != ElpNone)
-                    error(loc, "cannot specify packing on a variable declaration", symbol.getName().c_str(), "");
-            }
-            break;
-        default:
-            if (symbol.getType().getBasicType() != EbtBlock && symbol.getAsVariable()) {
-                if (qualifier.layoutMatrix != ElmNone ||
-                    qualifier.layoutPacking != ElpNone)
-                    error(loc, "layout qualifiers for matrix layout and packing only apply to uniform or buffer blocks", symbol.getName().c_str(), "");
-            }
-        }
-    }
 }
 
 // Do layout error checking that can be done within a qualifier proper, not needing to know
 // if there are blocks, atomic counters, variables, etc.
 void TParseContext::layoutQualifierCheck(TSourceLoc loc, const TQualifier& qualifier)
 {
+    // "It is a compile-time error to use *component* without also specifying the location qualifier (order does not matter)."
+    if (qualifier.layoutComponent != TQualifier::layoutComponentEnd && qualifier.layoutLocation == TQualifier::layoutLocationEnd)
+        error(loc, "must specify 'location' to use 'component'", "component", "");
+
     if (qualifier.hasLocation()) {
+
+        // "As with input layout qualifiers, all shaders except compute shaders 
+        // allow *location* layout qualifiers on output variable declarations, 
+        // output block declarations, and output block member declarations."
+
         switch (qualifier.storage) {
         case EvqVaryingIn:
         {
@@ -3257,7 +3360,7 @@ TIntermNode* TParseContext::declareVariable(TSourceLoc loc, TString& identifier,
     }
 
     // look for errors/adjustments in layout qualifier use
-    layoutTypeCheck(loc, *symbol);
+    layoutObjectCheck(loc, *symbol);
 
     // see if it's a linker-level object to track
     if (newDeclaration && symbolTable.atGlobalLevel())
@@ -3710,7 +3813,10 @@ void TParseContext::declareBlock(TSourceLoc loc, TTypeList& typeList, const TStr
     }
 
     // fix and check for member layout qualifiers
+    // TODO: 4.4 enhanced layouts: generalize to include offset/align
     mergeObjectLayoutQualifiers(loc, defaultQualification, currentBlockQualifier, true);
+    bool memberWithLocation = false;
+    bool memberWithoutLocation = false;
     for (unsigned int member = 0; member < typeList.size(); ++member) {
         TQualifier& memberQualifier = typeList[member].type->getQualifier();
         TSourceLoc memberLoc = typeList[member].loc;
@@ -3720,10 +3826,28 @@ void TParseContext::declareBlock(TSourceLoc loc, TTypeList& typeList, const TStr
         }
         if (memberQualifier.layoutPacking != ElpNone)
             error(memberLoc, "member of block cannot have a packing layout qualifier", typeList[member].type->getFieldName().c_str(), "");
+        if (memberQualifier.hasLocation()) {
+            const char* feature = "location on block member";
+            switch (currentBlockQualifier.storage) {
+            case EvqVaryingIn:
+            case EvqVaryingOut:
+                requireProfile(memberLoc, ECoreProfile | ECompatibilityProfile, feature);
+                profileRequires(memberLoc, ECoreProfile | ECompatibilityProfile, 440, GL_ARB_enhanced_layouts, feature);
+                memberWithLocation = true;
+                break;
+            default:
+                error(memberLoc, "can only use in an in/out block", feature, "");
+                break;
+            }
+        } else
+            memberWithoutLocation = true;
         TQualifier newMemberQualification = defaultQualification;
         mergeQualifiers(memberLoc, newMemberQualification, memberQualifier, false);
         memberQualifier = newMemberQualification;
     }
+    fixBlockLocations(loc, currentBlockQualifier, typeList, memberWithLocation, memberWithoutLocation);
+    for (unsigned int member = 0; member < typeList.size(); ++member)
+        layoutTypeCheck(typeList[member].loc, *typeList[member].type);
 
     // reverse merge, so that currentBlockQualifier now has all layout information
     // (can't use defaultQualification directly, it's missing other non-layout-default-class qualifiers)
@@ -3783,7 +3907,7 @@ void TParseContext::declareBlock(TSourceLoc loc, TTypeList& typeList, const TStr
     }
 
     // Check for general layout qualifier errors
-    layoutTypeCheck(loc, variable);
+    layoutObjectCheck(loc, variable);
 
     if (isIoResizeArray(blockType)) {
         ioArraySymbolResizeList.push_back(&variable);
@@ -3793,6 +3917,46 @@ void TParseContext::declareBlock(TSourceLoc loc, TTypeList& typeList, const TStr
 
     // Save it in the AST for linker use.
     intermediate.addSymbolLinkageNode(linkage, variable);
+}
+
+//
+// "For a block, this process applies to the entire block, or until the first member 
+// is reached that has a location layout qualifier. When a block member is declared with a location 
+// qualifier, its location comes from that qualifier: The member's location qualifier overrides the block-level
+// declaration. Subsequent members are again assigned consecutive locations, based on the newest location, 
+// until the next member declared with a location qualifier. The values used for locations do not have to be 
+// declared in increasing order."
+void TParseContext::fixBlockLocations(TSourceLoc loc, TQualifier& qualifier, TTypeList& typeList, bool memberWithLocation, bool memberWithoutLocation)
+{
+    // "If a block has no block-level location layout qualifier, it is required that either all or none of its members 
+    // have a location layout qualifier, or a compile-time error results."
+    if (! qualifier.hasLocation() && memberWithLocation && memberWithoutLocation)
+        error(loc, "either the block needs a location, or all members need a location, or no members have a location", "location", "");
+    else {
+        if (memberWithLocation) {
+            // remove any block-level location and make it per *every* member
+            int nextLocation;  // by the rule above, initial value is not relevant
+            if (qualifier.hasLocation()) {
+                nextLocation = qualifier.layoutLocation;
+                qualifier.layoutLocation = TQualifier::layoutLocationEnd;
+                if (qualifier.layoutComponent != TQualifier::layoutComponentEnd) {
+                    // "It is a compile-time error to apply the *component* qualifier to a ... block"
+                    error(loc, "cannot apply to a block", "component", "");
+                }
+            }
+            for (unsigned int member = 0; member < typeList.size(); ++member) {
+                TQualifier& memberQualifier = typeList[member].type->getQualifier();
+                TSourceLoc memberLoc = typeList[member].loc;
+                if (! memberQualifier.hasLocation()) {
+                    if (nextLocation >= TQualifier::layoutLocationEnd)
+                        error(memberLoc, "location is too large", "location", "");
+                    memberQualifier.layoutLocation = nextLocation;
+                    memberQualifier.layoutComponent = 0;
+                }
+                nextLocation = memberQualifier.layoutLocation + intermediate.computeTypeLocationSize(*typeList[member].type);
+            }
+        }
+    }
 }
 
 // For an identifier that is already declared, add more qualification to it.
@@ -3941,6 +4105,7 @@ void TParseContext::updateStandaloneQualifierDefaults(TSourceLoc loc, const TPub
 
     layoutQualifierCheck(loc, qualifier);
 
+    // TODO: 4.4 enhanced layouts:  generalize to include all new ones
     switch (qualifier.storage) {
     case EvqUniform:
         if (qualifier.layoutMatrix != ElmNone)

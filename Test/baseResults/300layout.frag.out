@@ -1,7 +1,7 @@
 300layout.frag
 ERROR: 0:4: 'location qualifier on input' : not supported in this stage: fragment
-ERROR: 0:18: 'location' : repeated use of location 41
-ERROR: 0:19: 'location' : repeated use of location 40
+ERROR: 0:18: 'location' : overlapping use of location 41
+ERROR: 0:19: 'location' : overlapping use of location 40
 ERROR: 3 compilation errors.  No code generated.
 
 

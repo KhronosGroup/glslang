@@ -252,7 +252,8 @@ void TIntermediate::mergeErrorCheck(TInfoSink& infoSink, const TIntermSymbol& sy
         writeTypeComparison = true;
     }
 
-    // Layouts...
+    // Layouts... 
+    // TODO: 4.4 enhanced layouts: generalize to include offset/align
     if (symbol.getQualifier().layoutMatrix   != unitSymbol.getQualifier().layoutMatrix ||
         symbol.getQualifier().layoutPacking  != unitSymbol.getQualifier().layoutPacking ||
         symbol.getQualifier().layoutLocation != unitSymbol.getQualifier().layoutLocation ||
@@ -481,8 +482,14 @@ bool TIntermediate::userOutputUsed() const
 // as the accumulation is done.
 //
 // Returns < 0 if no collision, >= 0 if collision and the value returned is a colliding value.
-int TIntermediate::addUsedLocation(const TQualifier& qualifier, const TType& type)
+//
+// typeCollision is set to true if there is no direct collision, but the types in the same location
+// are different.
+//
+int TIntermediate::addUsedLocation(const TQualifier& qualifier, const TType& type, bool& typeCollision)
 {
+    typeCollision = false;
+
     int set;
     if (qualifier.isPipeInput())
         set = 0;
@@ -510,20 +517,34 @@ int TIntermediate::addUsedLocation(const TQualifier& qualifier, const TType& typ
             size = computeTypeLocationSize(type);
     }
 
-    TRange range = { qualifier.layoutLocation, qualifier.layoutLocation + size - 1 };
+    TRange locationRange = { qualifier.layoutLocation, qualifier.layoutLocation + size - 1 };
+    TRange componentRange = { 0, 3 };
+    if (qualifier.layoutComponent != TQualifier::layoutComponentEnd) {
+        componentRange.start = qualifier.layoutComponent;
+        componentRange.last = componentRange.start + type.getVectorSize() - 1;
+    }
 
     // check for collisions, except for vertex inputs on desktop
     if (! (profile != EEsProfile && language == EShLangVertex && qualifier.isPipeInput())) {
-        for (size_t r = 0; r < usedLocations[set].size(); ++r) {
-            if (range.last  >= usedLocations[set][r].start &&
-                range.start <= usedLocations[set][r].last) {
+        for (size_t r = 0; r < usedIo[set].size(); ++r) {
+            if (locationRange.last  >= usedIo[set][r].location.start &&
+                locationRange.start <= usedIo[set][r].location.last &&
+                componentRange.last  >= usedIo[set][r].component.start &&
+                componentRange.start <= usedIo[set][r].component.last) {
                 // there is a collision; pick one
-                return std::max(range.start, usedLocations[set][r].start);
+                return std::max(locationRange.start, usedIo[set][r].location.start);
+            } else if (locationRange.last  >= usedIo[set][r].location.start &&
+                       locationRange.start <= usedIo[set][r].location.last &&
+                       type.getBasicType() != usedIo[set][r].basicType) {
+                typeCollision = true;
+                return std::max(locationRange.start, usedIo[set][r].location.start);
             }
         }
     }
 
-    usedLocations[set].push_back(range);
+    TIoRange range = { locationRange, componentRange, type.getBasicType() };
+
+    usedIo[set].push_back(range);
 
     return -1;
 }
@@ -546,7 +567,6 @@ int TIntermediate::computeTypeLocationSize(const TType& type)
     // "The locations consumed by block and structure members are determined by applying the rules above 
     // recursively..."    
     if (type.isStruct()) {
-        // TODO: 440 functionality: input/output block locations when members also have locations
         int size = 0;
         for (size_t member = 0; member < type.getStruct()->size(); ++member) {
             TType memberType(type, member);

@@ -150,7 +150,8 @@ public:
     void setLayoutQualifier(TSourceLoc, TPublicType&, TString&);
     void setLayoutQualifier(TSourceLoc, TPublicType&, TString&, const TIntermTyped*);
     void mergeObjectLayoutQualifiers(TSourceLoc, TQualifier& dest, const TQualifier& src, bool inheritOnly);
-    void layoutTypeCheck(TSourceLoc, const TSymbol&);
+    void layoutObjectCheck(TSourceLoc, const TSymbol&);
+    void layoutTypeCheck(TSourceLoc, const TType&);
     void layoutQualifierCheck(TSourceLoc, const TQualifier&);
     void checkNoShaderLayouts(TSourceLoc, const TShaderQualifiers&);
 
@@ -163,6 +164,7 @@ public:
     TIntermTyped* constructStruct(TIntermNode*, const TType&, int, TSourceLoc);
     TIntermTyped* constructBuiltIn(const TType&, TOperator, TIntermNode*, TSourceLoc, bool subset);
     void declareBlock(TSourceLoc, TTypeList& typeList, const TString* instanceName = 0, TArraySizes* arraySizes = 0);
+    void fixBlockLocations(TSourceLoc, TQualifier&, TTypeList&, bool memberWithLocation, bool memberWithoutLocation);
     void addQualifierToExisting(TSourceLoc, TQualifier, const TString& identifier);
     void addQualifierToExisting(TSourceLoc, TQualifier, TIdentifierList&);
     void invariantCheck(TSourceLoc, const TType&, const TString& identifier);

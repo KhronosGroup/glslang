@@ -172,7 +172,8 @@ public:
     void addIoAccessed(const TString& name) { ioAccessed.insert(name); }
     bool inIoAccessed(const TString& name) const { return ioAccessed.find(name) != ioAccessed.end(); }
 
-    int addUsedLocation(const TQualifier&, const TType&);
+    int addUsedLocation(const TQualifier&, const TType&, bool& typeCollision);
+    int computeTypeLocationSize(const TType&);
 
 protected:
     void error(TInfoSink& infoSink, const char*);
@@ -183,7 +184,6 @@ protected:
     void inOutLocationCheck(TInfoSink&);
     TIntermSequence& findLinkerObjects() const;
     bool userOutputUsed() const;
-    int computeTypeLocationSize(const TType&);
 
 protected:
     const EShLanguage language;
@@ -217,11 +217,19 @@ protected:
 
     std::set<TString> ioAccessed;  // set of names of statically read/written I/O that might need extra checking
 
+    // A location range is a 2-D rectangle; the set of (location, component) pairs all lying
+    // both within the location range and the component range.
+    // The following are entirely encapsulated by addUsedLocation().
     struct TRange {
         int start;
         int last;
     };
-    std::vector<TRange> usedLocations[3];    // sets of used locations, one for each of in, out, and uniform
+    struct TIoRange {
+        TRange location;
+        TRange component;
+        TBasicType basicType;
+    };
+    std::vector<TIoRange> usedIo[3];    // sets of used locations, one for each of in, out, and uniform
 
 private:
     void operator=(TIntermediate&); // prevent assignments

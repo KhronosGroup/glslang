@@ -8,7 +8,7 @@ ERROR: 0:25: 'length' :  array must first be sized by a redeclaration or layout 
 ERROR: 0:36: 'length' :  array must first be sized by a redeclaration or layout qualifier
 ERROR: 0:40: 'triangles' : inconsistent input primitive for array size of colorBad
 ERROR: 0:44: 'triangles' : inconsistent input primitive for array size of colorbad2
-ERROR: 0:56: 'location' : repeated use of location 4
+ERROR: 0:56: 'location' : overlapping use of location 4
 ERROR: 0:58: 'patch' : not supported in this stage: geometry
 ERROR: 0:59: 'patch' : not supported in this stage: geometry
 ERROR: 0:61: 'in' : type must be an array: scalar

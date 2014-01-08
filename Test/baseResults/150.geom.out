@@ -9,6 +9,7 @@ ERROR: 0:44: 'stream' : can only be used on an output
 ERROR: 0:45: 'stream' : can only be used on an output 
 ERROR: 0:46: 'stream' : can only be used on an output 
 ERROR: 0:47: 'stream' : can only be used on an output 
+ERROR: 0:47: 'stream' : can only be used on an output 
 ERROR: 0:60: 'stream' : member cannot contradict block 
 ERROR: 0:65: 'max_vertices' : can only apply to a standalone qualifier 
 ERROR: 0:70: 'points' : cannot change previously set output primitive 
@@ -29,7 +30,8 @@ ERROR: 0:86: 'triangles_adjacency' : cannot change previously set input primitiv
 ERROR: 0:87: 'invocations' : not supported for this version or the enabled extensions 
 ERROR: 0:88: 'max_vertices' : too large, must be less than gl_MaxGeometryOutputVertices 
 ERROR: 0:91: 'stream' : member cannot contradict block 
-ERROR: 29 compilation errors.  No code generated.
+ERROR: 0:91: 'stream' : can only be used on an output 
+ERROR: 31 compilation errors.  No code generated.
 
 
 invocations = 4

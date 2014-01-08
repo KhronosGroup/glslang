@@ -45,9 +45,72 @@ layout(location = -2) in vec4 v1;         // ERROR
 layout(location = start + 2) in vec4 v2;  // ERROR
 layout(location = 4.7e10) in vec4 v20;    // ERROR
 
+struct S {
+    float f1;
+    layout(location = 3) float f2;        // ERROR
+};
+
+layout(location = 1) in inblock {         // ERROR
+    float f1;
+    layout(location = 3) float f2;        // ERROR
+};
+
+layout(location = 1) uniform ublock {     // ERROR
+    float f1;
+    layout(location = 3) float f2;        // ERROR
+} uinst;
+
 #extension GL_ARB_enhanced_layouts : enable
 
 layout(location = start) in vec4 v3;
 layout(location = -2) in vec4 v4;         // ERROR
 layout(location = -start) in vec4 v5;     // ERROR
-layout(location = start*start - 2) in vec4 v6;
+layout(location = start*start - 2 - 4) in vec4 v6;
+
+struct S2 {
+    float f1;
+    layout(location = 3) float f2;        // ERROR
+};
+
+layout(location = 28) in inblock2 {
+    bool b1;
+    float f1;
+    layout(location = 25) float f2;
+    vec4 f3;
+    layout(location = 21) S2 s2;
+    vec4 f4;
+    vec4 f5;
+} ininst2;
+
+layout(location = 13) uniform ublock2 {   // ERROR
+    float f1;
+    layout(location = 3) float f2;        // ERROR
+} uinst2;
+
+in inblock3 {                             // ERROR, mix of location internal with no location external
+    float f1;
+    layout(location = 40) float f2;
+} in3;
+
+in ublock4 {
+    layout(location = 50) float f1;
+    layout(location = 51) float f2;
+} in4;
+
+layout(location = 33) in struct SS {
+    vec3 a;    // gets location 33
+    mat2 b;    // gets locations 34 and 35
+    vec4 c[2]; // gets locations 36 and 37
+    layout (location = 38) vec2 A; // ERROR, can't use on struct member
+} s;
+
+layout(location = 44) in block {
+    vec4 d; // gets location 44
+    vec4 e; // gets location 45
+    layout(location = 47) vec4 f; // gets location 47
+    vec4 g; // gets location 48
+    layout (location = 41) vec4 h; // gets location 41
+    vec4 i; // gets location 42
+    vec4 j; // gets location 43
+    vec4 k; // ERROR, location 44 already used
+};

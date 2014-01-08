@@ -1,0 +1,66 @@
+440.vert
+Warning, version 440 is not yet complete; some version-specific features are present, but many are missing.
+ERROR: 0:8: 'component' : type overflows the available 4 components 
+ERROR: 0:15: 'component' : component is too large 
+ERROR: 0:23: 'location' : overlapping use of location 4
+ERROR: 0:26: 'location' : overlapping use of location 2
+ERROR: 0:31: 'location' : overlapping use of location 15
+ERROR: 0:32: 'location' : overlapping use of location 10
+ERROR: 0:37: 'location' : overlapping use of location 20
+ERROR: 0:39: 'component' : type overflows the available 4 components 
+ERROR: 0:40: 'component' : type overflows the available 4 components 
+ERROR: 0:42: 'component' : cannot apply to a matrix, structure, or block 
+ERROR: 0:43: 'component' : cannot apply to a matrix, structure, or block 
+ERROR: 0:44: 'component' : cannot apply to a matrix, structure, or block 
+ERROR: 0:46: 'component' : must specify 'location' to use 'component' 
+ERROR: 0:52: 'location' : overlapping use of location 40
+ERROR: 0:54: 'component' : type overflows the available 4 components 
+ERROR: 0:55: 'component' : type overflows the available 4 components 
+ERROR: 0:57: 'component' : cannot apply to a matrix, structure, or block 
+ERROR: 0:58: 'component' : cannot apply to a matrix, structure, or block 
+ERROR: 0:61: 'location' : cannot declare a default, use a full declaration 
+ERROR: 19 compilation errors.  No code generated.
+
+
+ERROR: node is still EOpNull!
+0:?   Linker Objects
+0:?     'a' (layout(location=2 component=2 ) in 2-component vector of float)
+0:?     'b' (layout(location=2 component=1 ) in float)
+0:?     'c' (layout(location=3 component=2 ) in 3-component vector of float)
+0:?     'd' (layout(location=0 component=3 ) in 4-element array of float)
+0:?     'e' (layout(location=4 component=0 ) in 5-element array of 3-component vector of float)
+0:?     'f' (layout(location=4 component=3 ) in 5-element array of float)
+0:?     'g' (layout(location=9 ) in 6-element array of float)
+0:?     'h' (layout(location=4 component=2 ) in 2-component vector of float)
+0:?     'i' (layout(location=3 component=2 ) smooth out 2-component vector of float)
+0:?     'j' (layout(location=3 component=0 ) smooth out 2-component vector of float)
+0:?     'k' (layout(location=4 component=2 ) smooth out 2-component vector of float)
+0:?     'm' (layout(location=4 component=2 ) smooth out 2-component vector of float)
+0:?     'n' (layout(location=2 component=2 ) smooth out 2-component vector of float)
+0:?     'p' (layout(location=2 component=0 ) smooth out 3-component vector of float)
+0:?     'q' (layout(location=10 component=3 ) smooth out 6-element array of float)
+0:?     'r' (layout(location=10 component=0 ) smooth out 6-element array of 3-component vector of float)
+0:?     's' (layout(location=15 component=3 ) smooth out float)
+0:?     't' (layout(location=10 component=1 ) smooth out float)
+0:?     'u' (layout(location=20 component=2 ) smooth out float)
+0:?     'v' (layout(location=20 component=0 ) smooth out float)
+0:?     'w' (layout(location=20 component=3 ) smooth out float)
+0:?     'x' (layout(location=20 component=1 ) smooth out 2-component vector of float)
+0:?     'y' (layout(location=30 component=3 ) smooth out 2-component vector of float)
+0:?     'z' (layout(location=31 component=1 ) smooth out 4-component vector of float)
+0:?     'ba' (layout(location=32 component=1 ) smooth out 4X4 matrix of float)
+0:?     'Ss' (layout(location=33 component=1 ) smooth out structure{int a})
+0:?     'bb' (layout(location=34 component=1 ) out block{out int a})
+0:?     'bc' (layout(location=63 component=1 ) smooth out float)
+0:?     'bd' (out block{layout(location=40 component=2 ) out float u, layout(location=40 component=0 ) out float v, layout(location=40 component=3 ) out float w, layout(location=40 component=1 ) out 2-component vector of float x, layout(location=41 component=3 ) out 2-component vector of float y, layout(location=42 component=1 ) out 4-component vector of float z, layout(location=42 component=1 ) out 4X4 matrix of float ba, layout(location=43 component=1 ) out structure{int a} Ss})
+0:?     'be' (layout(location=50 component=3 ) smooth out int)
+0:?     'bf' (layout(location=50 component=0 ) smooth out 3-component vector of float)
+0:?     'gl_VertexID' (gl_VertexId int)
+0:?     'gl_InstanceID' (gl_InstanceId int)
+
+
+Linked vertex stage:
+
+ERROR: Linking vertex stage: Missing entry point: Each stage requires one "void main()" entry point
+
+

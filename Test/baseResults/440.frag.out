@@ -1,0 +1,25 @@
+440.frag
+Warning, version 440 is not yet complete; some version-specific features are present, but many are missing.
+ERROR: 0:11: 'location' : overlapping use of location 4
+ERROR: 0:13: 'component' : type overflows the available 4 components 
+ERROR: 0:22: 'location' : fragment outputs sharing the same location must be the same basic type 30
+ERROR: 3 compilation errors.  No code generated.
+
+
+ERROR: node is still EOpNull!
+0:?   Linker Objects
+0:?     'a' (layout(location=4 component=2 ) smooth in 2-component vector of float)
+0:?     'b' (layout(location=4 component=1 ) smooth in float)
+0:?     'h' (layout(location=4 component=2 ) smooth in 2-component vector of float)
+0:?     'c' (layout(location=3 component=2 ) smooth in 3-component vector of float)
+0:?     'e' (layout(location=20 component=0 ) smooth in 6-element array of 3-component vector of float)
+0:?     'f' (layout(location=20 component=3 ) smooth in 6-element array of float)
+0:?     'be' (layout(location=30 component=3 ) out int)
+0:?     'bf' (layout(location=30 component=0 ) out 3-component vector of float)
+
+
+Linked fragment stage:
+
+ERROR: Linking fragment stage: Missing entry point: Each stage requires one "void main()" entry point
+
+

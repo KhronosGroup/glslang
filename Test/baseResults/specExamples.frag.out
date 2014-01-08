@@ -16,7 +16,7 @@ ERROR: 0:99: 'local_size_y' : there is no such layout identifier for this stage 
 ERROR: 0:100: 'local_size_x' : there is no such layout identifier for this stage taking an assigned value 
 ERROR: 0:102: 'color' : redefinition 
 ERROR: 0:103: 'index' : there is no such layout identifier for this stage taking an assigned value 
-ERROR: 0:104: 'location' : repeated use of location 3
+ERROR: 0:104: 'location' : overlapping use of location 3
 ERROR: 0:106: 'depth_greater' : unrecognized layout identifier, or qualifier requires assignemnt (e.g., binding = 4) 
 ERROR: 0:112: 'depth_any' : unrecognized layout identifier, or qualifier requires assignemnt (e.g., binding = 4) 
 ERROR: 0:115: 'depth_greater' : unrecognized layout identifier, or qualifier requires assignemnt (e.g., binding = 4) 

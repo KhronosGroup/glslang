@@ -2,9 +2,9 @@
 ERROR: 0:7: 'vertex input arrays' : not supported with this profile: es
 ERROR: 0:8: 'in' : cannot be a structure or array 
 ERROR: 0:8: 'vertex input arrays' : not supported with this profile: es
-ERROR: 0:8: 'location' : repeated use of location 10
-ERROR: 0:12: 'badm4' : cannot specify matrix layout on a variable declaration 
-ERROR: 0:12: 'badm4' : cannot specify packing on a variable declaration 
+ERROR: 0:8: 'location' : overlapping use of location 10
+ERROR: 0:12: 'layout' : cannot specify matrix layout on a variable declaration 
+ERROR: 0:12: 'layout' : cannot specify packing on a variable declaration 
 ERROR: 0:19: 'badf' : member of uniform block cannot have an auxiliary or interpolation qualifier 
 ERROR: 0:20: 'badg' : member storage qualifier cannot contradict block storage qualifier 
 ERROR: 0:21: 'bad1' : member of block cannot have a packing layout qualifier 
@@ -15,8 +15,8 @@ ERROR: 0:38: 'output block' : not supported with this profile: es
 ERROR: 0:42: 'location qualifier on output' : not supported in this stage: vertex
 ERROR: 0:50: 'shared' : not supported with this profile: es
 ERROR: 0:50: 'shared' : not supported in this stage: vertex
-ERROR: 0:54: 'aoeuntaoeu' : layout qualifiers for matrix layout and packing only apply to uniform or buffer blocks 
-ERROR: 0:57: 'location' : repeated use of location 40
+ERROR: 0:54: 'layout' : qualifiers for matrix layout and block packing only apply to uniform or buffer blocks 
+ERROR: 0:57: 'location' : overlapping use of location 40
 ERROR: 18 compilation errors.  No code generated.
 
 

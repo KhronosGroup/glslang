@@ -1,6 +1,6 @@
 430.vert
 Warning, version 430 is not yet complete; some version-specific features are present, but many are missing.
-ERROR: 0:3: 'v4' : location qualifiers only appy to uniform, buffer, in, or out storage qualifiers 
+ERROR: 0:3: 'location' : can only appy to uniform, buffer, in, or out storage qualifiers 
 ERROR: 0:7: 'location qualifier on in/out block' : not supported for this version or the enabled extensions 
 ERROR: 0:8: 'location qualifier on in/out block' : not supported for this version or the enabled extensions 
 ERROR: 0:21: 'g' : cannot use storage or interpolation qualifiers on structure members 
@@ -11,7 +11,7 @@ ERROR: 0:25: 'm3' : cannot use layout qualifiers on structure members
 ERROR: 0:28: '' : cannot use invariant qualifier on a function parameter 
 ERROR: 0:30: '' : cannot use layout qualifiers on a function parameter 
 ERROR: 0:31: '' : cannot use auxiliary or interpolation qualifiers on a function parameter 
-ERROR: 0:42: 'location' : repeated use of location 53
+ERROR: 0:42: 'location' : overlapping use of location 53
 ERROR: 0:47: 'gl_ClipDistance array size' : must be less than gl_MaxClipDistances (8)
 ERROR: 13 compilation errors.  No code generated.
 

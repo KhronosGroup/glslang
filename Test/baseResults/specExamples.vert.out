@@ -1,7 +1,7 @@
 specExamples.vert
 Warning, version 430 is not yet complete; some version-specific features are present, but many are missing.
 ERROR: 0:23: 'transforms' : redeclaration of array with size 
-ERROR: 0:29: 's' : location qualifiers only appy to uniform, buffer, in, or out storage qualifiers 
+ERROR: 0:29: 'location' : can only appy to uniform, buffer, in, or out storage qualifiers 
 ERROR: 0:31: 'triangles' : unrecognized layout identifier, or qualifier requires assignemnt (e.g., binding = 4) 
 ERROR: 0:31: 'invocations' : there is no such layout identifier for this stage taking an assigned value 
 ERROR: 0:33: 'lines' : unrecognized layout identifier, or qualifier requires assignemnt (e.g., binding = 4) 
@@ -17,15 +17,15 @@ ERROR: 0:47: 'stream' : there is no such layout identifier for this stage taking
 ERROR: 0:50: 'stream' : there is no such layout identifier for this stage taking an assigned value 
 ERROR: 0:55: 'stream' : there is no such layout identifier for this stage taking an assigned value 
 ERROR: 0:80: 's17' : redefinition 
-ERROR: 0:85: 'offset' : there is no such layout identifier for this stage taking an assigned value 
+ERROR: 0:85: 'uniform buffer-member offset' : not supported for this version or the enabled extensions 
 ERROR: 0:85: 'binding' : requires block, or sampler/image, or atomic-counter type 
 ERROR: 0:87: 'binding' : requires block, or sampler/image, or atomic-counter type 
-ERROR: 0:89: 'offset' : there is no such layout identifier for this stage taking an assigned value 
+ERROR: 0:89: 'uniform buffer-member offset' : not supported for this version or the enabled extensions 
 WARNING: 0:89: 'layout' : useless application of layout qualifier 
 ERROR: 0:91: 'bar' : redefinition 
-ERROR: 0:92: 'offset' : there is no such layout identifier for this stage taking an assigned value 
+ERROR: 0:92: 'uniform buffer-member offset' : not supported for this version or the enabled extensions 
 ERROR: 0:92: 'bar' : redefinition 
-ERROR: 0:94: 'offset' : there is no such layout identifier for this stage taking an assigned value 
+ERROR: 0:94: 'uniform buffer-member offset' : not supported for this version or the enabled extensions 
 ERROR: 0:94: 'a2' : redefinition 
 ERROR: 0:95: 'binding' : requires block, or sampler/image, or atomic-counter type 
 ERROR: 0:96: 'binding' : requires block, or sampler/image, or atomic-counter type 
@@ -291,7 +291,7 @@ ERROR: node is still EOpNull!
 0:?     '__anon__3' (layout(row_major std140 ) uniform block{layout(row_major std140 ) uniform 4X4 matrix of float M1, layout(column_major std140 ) uniform 4X4 matrix of float M2, layout(row_major std140 ) uniform 3X3 matrix of float N1})
 0:?     '__anon__4' (layout(column_major shared ) uniform block{layout(column_major shared ) uniform 4X4 matrix of float M13, layout(row_major shared ) uniform 4X4 matrix of float m14, layout(column_major shared ) uniform 3X3 matrix of float N12})
 0:?     's17' (layout(binding=3 ) uniform sampler2D)
-0:?     'a2' (layout(binding=2 ) uniform int)
+0:?     'a2' (layout(binding=2 offset=4 ) uniform int)
 0:?     'bar' (layout(binding=2 ) uniform int)
 0:?     'b2' (layout(binding=2 ) uniform int)
 0:?     'c2' (layout(binding=3 ) uniform int)

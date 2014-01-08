@@ -209,43 +209,39 @@ Shader Functionality to Implement/Finish
       - Arrays of arrays are now supported, as per the GL_ARB_arrays_of_arrays extension.
       - Compute shaders are now supported, as per the GL_ARB_compute_shader extension.
       - Added imageSize() built-ins to query the dimensions of an image.
-      - Define robust out-of-bounds access behavior when enabled, as per the GL_ARB_robust_buffer_access_behavior extension.
       - All choice of depth or stencil texturing, for a packed depth-stencil texture, as per the 
         GL_ARB_stencil_texturing extension.
       - Allow explicit locations/indexes to be assigned to uniform variables and subroutines, as per the 
         GL_ARB_explicit_uniform_location extension.
-      - Accept ES GLSL shader #version statements, which will request ES functionality for ES GLSL 
+      + Accept ES GLSL shader #version statements, which will request ES functionality for ES GLSL 
         versions 100 and 300, as per the GL_ARB_ES3_compatibility extension.
-      - Clarify and correct scoping rules to what would normally be expected and what was intended. 
+      + Clarify and correct scoping rules to what would normally be expected and what was intended. 
         (Function parameters and body nest inside global space. Loop variables and body nest inside 
         loop scope.)
-      - There are no digraphs (trigraphs were already disallowed).
-      - Remove the CPP difference that it is a compile-time error to use #if or #elif on expressions 
+      + There are no digraphs (trigraphs were already disallowed).
+      + Remove the CPP difference that it is a compile-time error to use #if or #elif on expressions 
         containing undefined macro names. This reverts back to following expected CPP behavior.
-      - Set both gl_MaxFragmentImageUniformsand gl_MaxCombinedImageUniforms to 8.
+      + Set both gl_MaxFragmentImageUniforms and gl_MaxCombinedImageUniforms to 8.
       - Clarify textureSize() for cube map arrays.
       - For layout qualifiers,
-            - make negative output locations a compile-time error, once integer expressions are allowed in layouts
+            + make negative output locations a compile-time error, once integer expressions are allowed in layouts
             - make indexes outside the range [0,1] a compile-time error.
       - Add textureQueryLevels() built-ins to query the number of mipmap levels, as per the 
         GL_ARB_texture_query_levels extension.
       + Make gl_Layer and gl_ViewportIndex also be inputs to the fragment shader, as per the 
         GL_ARB_fragment_layer_viewport extension.
-      - Add more examples and rules to be more specific about the required behavior of the precise 
-        qualifier.
       - Clarify fragment output variables cannot be double precision.
-      - Allow the new shared keyword to be in layout-qualifier-id, allowing backward compatibility 
+      + Allow the new shared keyword to be in layout-qualifier-id, allowing backward compatibility 
         with the shared identifier that was previously used.
       + Added overlooked texture function float textureOffset (sampler2DArrayShadow sampler, vec4 P, vec2 offset [, float bias] ).
       + Add missing type in grammar, ATOMIC_UINT, and missing qualifiers COHERENT, VOLATILE, RESTRICT, READONLY, and WRITEONLY.
-      - do version checking for the above
       + Add missing initializer lists to grammar.
     GLSL 4.4
       - Incorporate the ARB_enhanced_layouts extension, which adds
-        - compile-time constant expressions for layout qualifier integers
+        + compile-time constant expressions for layout qualifier integers
         - new offset and align layout qualifiers for control over buffer block layouts
-        - add location layout qualifier for input and output blocks and block members
-        - new componentlayout qualifier for finer-grained layout control of input and output variables and blocks
+        + add location layout qualifier for input and output blocks and block members
+        + new component layout qualifier for finer-grained layout control of input and output variables and blocks
         - new xfb_buffer, xfb_stride, and xfb_offsetlayout qualifiers to allow the shader to control 
           transform feedback buffering.
       + Bug 10530: To be consistent with ES, include sample types as valid in a precision statement. 
