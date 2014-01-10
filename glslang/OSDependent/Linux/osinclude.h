@@ -53,8 +53,8 @@ void DetachThreadLinux(void *);
 //
 // Thread Local Storage Operations
 //
-typedef unsigned int OS_TLSIndex;
-#define OS_INVALID_TLS_INDEX 0xFFFFFFFF
+typedef pthread_key_t OS_TLSIndex;
+#define OS_INVALID_TLS_INDEX ((pthread_key_t)0xFFFFFFFF)
 
 OS_TLSIndex OS_AllocTLSIndex();
 bool        OS_SetTLSValue(OS_TLSIndex nIndex, void *lpvValue);

@@ -36,6 +36,7 @@ gen_glslang_tab.cpp glslang_tab.h: glslang.y
 	@echo Generating gen_glslang_tab.cpp
 	@dos2unix glslang.y
 	bison -t -v -d glslang.y
+	@unix2dos glslang.y
 	mv glslang.tab.c gen_glslang_tab.cpp
 	mv glslang.tab.h glslang_tab.cpp.h
 
@@ -63,7 +64,7 @@ depend:
 #
 # Cleanup
 #
-.PHONY : clean
+.PHONY : clean $(LIBPREPROCESSOR) $(LIBCODEGEN) $(LIBOSDEPENDENT) $(LIBINITIALISATION)
 clean :
 	$(RM) *.o *.a gen_glslang_tab.cpp glslang_tab.cpp glslang_tab.cpp.h glslang_tab.h glslang.output
 	$(RM) ./lib/*.so

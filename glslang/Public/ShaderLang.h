@@ -46,7 +46,9 @@
 #define SH_IMPORT_EXPORT
 #else
 #define SH_IMPORT_EXPORT
+#ifndef __fastcall
 #define __fastcall
+#endif
 #define C_DECL
 #endif
 
