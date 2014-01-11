@@ -42,85 +42,75 @@ namespace glslang {
 //
 // Code to recursively delete the intermediate tree.
 //
+struct TRemoveTraverser : TIntermTraverser {
+    TRemoveTraverser() : TIntermTraverser(false, false, true, false) {}
 
-void RemoveSymbol(TIntermSymbol* node, TIntermTraverser* it)
-{
-	delete node;
-}
+    virtual void visitSymbol(TIntermSymbol* node)
+    {
+        delete node;
+    }
 
-bool RemoveBinary(bool  /*preVisit*/ , TIntermBinary* node, TIntermTraverser*)
-{
-	delete node;
+    virtual bool visitBinary(TVisit /* visit*/ , TIntermBinary* node)
+    {
+        delete node;
 
-	return true;
-}
+        return true;
+    }
 
-bool RemoveUnary(bool /*preVisit */, TIntermUnary* node, TIntermTraverser*)
-{
-    delete node;
+    virtual bool visitUnary(TVisit /* visit */, TIntermUnary* node)
+    {
+        delete node;
 
-	return true;
-}
+        return true;
+    }
 
-bool RemoveAggregate(bool  /*preVisit*/ , TIntermAggregate* node, TIntermTraverser*)
-{
-	delete node;
+    virtual bool visitAggregate(TVisit /* visit*/ , TIntermAggregate* node)
+    {
+        delete node;
 
-	return true;
-}
+        return true;
+    }
 
-bool RemoveSelection(bool  /*preVisit*/ , TIntermSelection* node, TIntermTraverser*)
-{
-	delete node;
+    virtual bool visitSelection(TVisit /* visit*/ , TIntermSelection* node)
+    {
+        delete node;
 
-	return true;
-}
+        return true;
+    }
 
-bool RemoveSwitch(bool  /*preVisit*/ , TIntermSwitch* node, TIntermTraverser*)
-{
-	delete node;
+    virtual bool visitSwitch(TVisit /* visit*/ , TIntermSwitch* node)
+    {
+        delete node;
 
-	return true;
-}
+        return true;
+    }
 
-void RemoveConstantUnion(TIntermConstantUnion* node, TIntermTraverser*)
-{
-	delete node;
-}
+    virtual void visitConstantUnion(TIntermConstantUnion* node)
+    {
+        delete node;
+    }
 
-bool RemoveLoop(bool  /*preVisit*/ , TIntermLoop* node, TIntermTraverser*)
-{
-	delete node;
+    virtual bool visitLoop(TVisit /* visit*/ , TIntermLoop* node)
+    {
+        delete node;
 
-    return true;
-}
+        return true;
+    }
 
-bool RemoveBranch(bool  /*preVisit*/ , TIntermBranch* node, TIntermTraverser*)
-{
-	delete node;
+    virtual bool visitBranch(TVisit /* visit*/ , TIntermBranch* node)
+    {
+        delete node;
 
-    return true;
-}
+        return true;
+    }
+};
 
 //
 // Entry point.
 //
 void RemoveAllTreeNodes(TIntermNode* root)
 {
-    TIntermTraverser it;
-
-    it.visitSymbol        = RemoveSymbol;
-    it.visitConstantUnion = RemoveConstantUnion;
-    it.visitBinary        = RemoveBinary;
-    it.visitUnary         = RemoveUnary;
-    it.visitAggregate     = RemoveAggregate;
-    it.visitSelection     = RemoveSelection;
-    it.visitLoop          = RemoveLoop;
-    it.visitBranch        = RemoveBranch;
-    it.visitSwitch        = RemoveSwitch;
-
-	it.preVisit = false;
-	it.postVisit = true;
+    TRemoveTraverser it;
 
     root->traverse(&it);
 }

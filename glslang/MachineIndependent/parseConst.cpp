@@ -43,9 +43,14 @@ namespace glslang {
 
 class TConstTraverser : public TIntermTraverser {
 public:
-    TConstTraverser(const TConstUnionArray& cUnion, bool singleConstParam, TOperator constructType, const TType& t) : unionArray(cUnion), type(t),
+    TConstTraverser(const TConstUnionArray& cUnion, bool singleConstParam, TOperator constructType, const TType& t)
+      : unionArray(cUnion), type(t),
         constructorType(constructType), singleConstantParam(singleConstParam), error(false), isMatrix(false), 
         matrixCols(0), matrixRows(0) {  index = 0; tOp = EOpNull; }
+
+    virtual void visitConstantUnion(TIntermConstantUnion* node);
+    virtual bool visitAggregate(TVisit, TIntermAggregate* node);
+
     int index;
     TConstUnionArray unionArray;
     TOperator tOp;
@@ -59,32 +64,30 @@ public:
     int matrixRows;
 };
 
-bool ParseAggregate(bool /* preVisit */, TIntermAggregate* node, TIntermTraverser* it)
+bool TConstTraverser::visitAggregate(TVisit /* visit */, TIntermAggregate* node)
 {
-    TConstTraverser* oit = static_cast<TConstTraverser*>(it);
-
     if (! node->isConstructor() && node->getOp() != EOpComma) {
-        oit->error = true;
+        error = true;
 
         return false;  
     }
 
     if (node->getSequence().size() == 0) {
-        oit->error = true;
+        error = true;
 
         return false;
     }
 
     bool flag = node->getSequence().size() == 1 && node->getSequence()[0]->getAsTyped()->getAsConstantUnion();
     if (flag) {
-        oit->singleConstantParam = true; 
-        oit->constructorType = node->getOp();
-        oit->size = node->getType().getObjectSize();
+        singleConstantParam = true; 
+        constructorType = node->getOp();
+        size = node->getType().getObjectSize();
 
         if (node->getType().isMatrix()) {
-            oit->isMatrix = true;
-            oit->matrixCols = node->getType().getMatrixCols();
-            oit->matrixRows = node->getType().getMatrixRows();
+            isMatrix = true;
+            matrixCols = node->getType().getMatrixCols();
+            matrixRows = node->getType().getMatrixRows();
         }
     }       
 
@@ -92,55 +95,54 @@ bool ParseAggregate(bool /* preVisit */, TIntermAggregate* node, TIntermTraverse
                                    p != node->getSequence().end(); p++) {
 
         if (node->getOp() == EOpComma)
-            oit->index = 0;           
+            index = 0;           
 
-        (*p)->traverse(oit);
+        (*p)->traverse(this);
     }   
     if (flag) 
     {
-        oit->singleConstantParam = false;   
-        oit->constructorType = EOpNull;
-        oit->size = 0;
-        oit->isMatrix = false;
-        oit->matrixCols = 0;
-        oit->matrixRows = 0;
+        singleConstantParam = false;   
+        constructorType = EOpNull;
+        size = 0;
+        isMatrix = false;
+        matrixCols = 0;
+        matrixRows = 0;
     }
 
     return false;
 }
 
-void ParseConstantUnion(TIntermConstantUnion* node, TIntermTraverser* it)
+void TConstTraverser::visitConstantUnion(TIntermConstantUnion* node)
 {
-    TConstTraverser* oit = static_cast<TConstTraverser*>(it);
-    TConstUnionArray leftUnionArray(oit->unionArray);
-    int instanceSize = oit->type.getObjectSize();
+    TConstUnionArray leftUnionArray(unionArray);
+    int instanceSize = type.getObjectSize();
 
-    if (oit->index >= instanceSize)
+    if (index >= instanceSize)
         return;
 
-    if (! oit->singleConstantParam) {
-        int size = node->getType().getObjectSize();
+    if (! singleConstantParam) {
+        int rightUnionSize = node->getType().getObjectSize();
     
         const TConstUnionArray& rightUnionArray = node->getConstArray();
-        for (int i = 0; i < size; i++) {
-            if (oit->index >= instanceSize)
+        for (int i = 0; i < rightUnionSize; i++) {
+            if (index >= instanceSize)
                 return;
-            leftUnionArray[oit->index] = rightUnionArray[i];
+            leftUnionArray[index] = rightUnionArray[i];
 
-            oit->index++;
+            index++;
         }
     } else {
-        int endIndex = oit->index + oit->size;
+        int endIndex = index + size;
         const TConstUnionArray& rightUnionArray = node->getConstArray();
-        if (! oit->isMatrix) {
+        if (! isMatrix) {
             int count = 0;
-            for (int i = oit->index; i < endIndex; i++) {
+            for (int i = index; i < endIndex; i++) {
                 if (i >= instanceSize)
                     return;
 
                 leftUnionArray[i] = rightUnionArray[count];
 
-                (oit->index)++;
+                (index)++;
                 
                 if (node->getType().getObjectSize() > 1)
                     count++;
@@ -148,12 +150,12 @@ void ParseConstantUnion(TIntermConstantUnion* node, TIntermTraverser* it)
         } else {
             // constructing a matrix, but from what?
             if (node->isMatrix()) {
-                // Matrix from a matrix; oit has the outer matrix, node is the argument matrix.
+                // Matrix from a matrix; this has the outer matrix, node is the argument matrix.
                 // Traverse the outer, potentially bigger matrix, fill in missing pieces with the
                 // identity matrix.
-                for (int c = 0; c < oit->matrixCols; ++c) {
-                    for (int r = 0; r < oit->matrixRows; ++r) {
-                        int targetOffset = oit->index + c * oit->matrixRows + r;
+                for (int c = 0; c < matrixCols; ++c) {
+                    for (int r = 0; r < matrixRows; ++r) {
+                        int targetOffset = index + c * matrixRows + r;
                         if (r < node->getType().getMatrixRows() && c < node->getType().getMatrixCols()) {
                             int srcOffset = c * node->getType().getMatrixRows() + r;
                             leftUnionArray[targetOffset] = rightUnionArray[srcOffset];
@@ -166,16 +168,16 @@ void ParseConstantUnion(TIntermConstantUnion* node, TIntermTraverser* it)
             } else {
                 // matrix from vector
                 int count = 0;
-                int index = oit->index;
-                for (int i = index; i < endIndex; i++) {
+                const int startIndex = index;
+                for (int i = startIndex; i < endIndex; i++) {
                     if (i >= instanceSize)
                         return;
-                    if (i == index || (i - index) % (oit->matrixRows + 1) == 0 )
+                    if (i == startIndex || (i - startIndex) % (matrixRows + 1) == 0 )
                         leftUnionArray[i] = rightUnionArray[count];
                     else 
                         leftUnionArray[i].setDConst(0.0);
 
-                    oit->index++;
+                    index++;
 
                     if (node->getType().getObjectSize() > 1)
                         count++;                
@@ -192,9 +194,6 @@ bool TIntermediate::parseConstTree(TIntermNode* root, TConstUnionArray unionArra
 
     TConstTraverser it(unionArray, singleConstantParam, constructorType, t);
     
-    it.visitAggregate = ParseAggregate;
-    it.visitConstantUnion = ParseConstantUnion;
-
     root->traverse(&it);
     if (it.error)
         return true;

@@ -643,6 +643,13 @@ protected:
     TIntermAggregate* body;
 };
 
+enum TVisit
+{
+    EvPreVisit,
+    EvInVisit,
+    EvPostVisit
+};
+
 //
 // For traversing the tree.  User should derive from this, 
 // put their traversal specific data in it, and then pass
@@ -653,43 +660,65 @@ protected:
 //
 // Explicitly set postVisit to true if you want post visiting, otherwise,
 // filled in methods will only be called at pre-visit time (before processing
-// the subtree).
+// the subtree).  Similary for inVisit for in-order visiting of nodes with
+// multiple children.
 //
-// If you only want post-visits, explicitly turn off preVisit and turn on postVisit.
+// If you only want post-visits, explicitly turn off preVisit (and inVisit) 
+// and turn on postVisit.
 //
 class TIntermTraverser {
 public:
-    POOL_ALLOCATOR_NEW_DELETE(GetThreadPoolAllocator())
+    POOL_ALLOCATOR_NEW_DELETE(glslang::GetThreadPoolAllocator())
+    TIntermTraverser(bool preVisit = true, bool inVisit = false, bool postVisit = false, bool rightToLeft = false) :
+            preVisit(preVisit),
+            inVisit(inVisit),
+            postVisit(postVisit),
+            rightToLeft(rightToLeft),
+            depth(0),
+            maxDepth(0) { }
+    virtual ~TIntermTraverser() { }
 
-    TIntermTraverser() : 
-        visitSymbol(0), 
-        visitConstantUnion(0),
-        visitBinary(0),
-        visitUnary(0),
-        visitSelection(0),
-        visitAggregate(0),
-        visitLoop(0),
-        visitBranch(0),
-        visitSwitch(0),
-        depth(0),
-        preVisit(true),
-        postVisit(false),
-        rightToLeft(false) {}
+    virtual void visitSymbol(TIntermSymbol*)                     { }
+    virtual void visitConstantUnion(TIntermConstantUnion*)       { }
+    virtual bool visitBinary(TVisit visit, TIntermBinary*)       { return true; }
+    virtual bool visitUnary(TVisit visit, TIntermUnary*)         { return true; }
+    virtual bool visitSelection(TVisit visit, TIntermSelection*) { return true; }
+    virtual bool visitAggregate(TVisit visit, TIntermAggregate*) { return true; }
+    virtual bool visitLoop(TVisit visit, TIntermLoop*)           { return true; }
+    virtual bool visitBranch(TVisit visit, TIntermBranch*)       { return true; }
+    virtual bool visitSwitch(TVisit, TIntermSwitch* node)        { return true; }
 
-    void (*visitSymbol)(TIntermSymbol*, TIntermTraverser*);
-    void (*visitConstantUnion)(TIntermConstantUnion*, TIntermTraverser*);
-    bool (*visitBinary)(bool preVisit, TIntermBinary*, TIntermTraverser*);
-    bool (*visitUnary)(bool preVisit, TIntermUnary*, TIntermTraverser*);
-    bool (*visitSelection)(bool preVisit, TIntermSelection*, TIntermTraverser*);
-    bool (*visitAggregate)(bool preVisit, TIntermAggregate*, TIntermTraverser*);
-    bool (*visitLoop)(bool preVisit, TIntermLoop*, TIntermTraverser*);
-    bool (*visitBranch)(bool preVisit, TIntermBranch*,  TIntermTraverser*);
-    bool (*visitSwitch)(bool preVisit, TIntermSwitch*,  TIntermTraverser*);
+    int getMaxDepth() const { return maxDepth; }
 
-    int  depth;
-    bool preVisit;
-    bool postVisit;
-    bool rightToLeft;
+    void incrementDepth(TIntermNode *current)
+    {
+        depth++;
+        maxDepth = std::max(maxDepth, depth);
+        path.push_back(current);
+    }
+
+    void decrementDepth()
+    {
+        depth--;
+        path.pop_back();
+    }
+
+    TIntermNode *getParentNode()
+    {
+        return path.size() == 0 ? NULL : path.back();
+    }
+
+    const bool preVisit;
+    const bool inVisit;
+    const bool postVisit;
+    const bool rightToLeft;
+
+protected:
+    int depth;
+    int maxDepth;
+
+    // All the nodes from root to the current node's parent during traversing.
+    TVector<TIntermNode *> path;
 };
 
 } // end namespace glslang

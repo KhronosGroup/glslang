@@ -78,6 +78,11 @@ class TLiveTraverser : public TIntermTraverser {
 public:
     TLiveTraverser(const TIntermediate& i, TReflection& r) : intermediate(i), reflection(r) { }
 
+    virtual bool visitAggregate(TVisit, TIntermAggregate* node);
+    virtual bool visitBinary(TVisit, TIntermBinary* node);
+    virtual void visitSymbol(TIntermSymbol* base);
+    virtual bool visitSelection(TVisit, TIntermSelection* node);
+
     // Track live funtions as well as uniforms, so that we don't visit dead functions
     // and only visit each function once.
     void addFunctionCall(TIntermAggregate* call)
@@ -712,34 +717,28 @@ public:
 
 const int TLiveTraverser::baseAlignmentVec4Std140 = 16;
 
-namespace {
-
 //
 // Implement the traversal functions of interest.
 //
 
 // To catch which function calls are not dead, and hence which functions must be visited.
-bool LiveAggregate(bool /* preVisit */, TIntermAggregate* node, TIntermTraverser* it)
+bool TLiveTraverser::visitAggregate(TVisit /* visit */, TIntermAggregate* node)
 {
-    TLiveTraverser* oit = static_cast<TLiveTraverser*>(it);
-
     if (node->getOp() == EOpFunctionCall)
-        oit->addFunctionCall(node);
+        addFunctionCall(node);
 
     return true; // traverse this subtree
 }
 
 // To catch dereferenced aggregates that must be reflected.
 // This catches them at the highest level possible in the tree.
-bool LiveBinary(bool /* preVisit */, TIntermBinary* node, TIntermTraverser* it)
+bool TLiveTraverser::visitBinary(TVisit /* visit */, TIntermBinary* node)
 {
-    TLiveTraverser* oit = static_cast<TLiveTraverser*>(it);
-
     switch (node->getOp()) {
     case EOpIndexDirect:
     case EOpIndexIndirect:
     case EOpIndexDirectStruct:
-        oit->addDereferencedUniform(node);
+        addDereferencedUniform(node);
         break;
     default:
         break;
@@ -751,33 +750,27 @@ bool LiveBinary(bool /* preVisit */, TIntermBinary* node, TIntermTraverser* it)
 }
 
 // To reflect non-dereferenced objects.
-void LiveSymbol(TIntermSymbol* base, TIntermTraverser* it)
+void TLiveTraverser::visitSymbol(TIntermSymbol* base)
 {
-    TLiveTraverser* oit = static_cast<TLiveTraverser*>(it);
-
     if (base->getQualifier().storage == EvqUniform)
-        oit->addUniform(*base);
+        addUniform(*base);
 }
 
 // To prune semantically dead paths.
-bool LiveSelection(bool /* preVisit */,  TIntermSelection* node, TIntermTraverser* it)
+bool TLiveTraverser::visitSelection(TVisit /* visit */,  TIntermSelection* node)
 {
-    TLiveTraverser* oit = static_cast<TLiveTraverser*>(it);
-
     TIntermConstantUnion* constant = node->getCondition()->getAsConstantUnion();
     if (constant) {
         // cull the path that is dead
         if (constant->getConstArray()[0].getBConst() == true && node->getTrueBlock())
-            node->getTrueBlock()->traverse(it);
+            node->getTrueBlock()->traverse(this);
         if (constant->getConstArray()[0].getBConst() == false && node->getFalseBlock())
-            node->getFalseBlock()->traverse(it);
+            node->getFalseBlock()->traverse(this);
 
         return false; // don't traverse any more, we did it all above
     } else
         return true; // traverse the whole subtree
 }
-
-} // end anonymous namespace
 
 //
 // Implement TReflection methods.
@@ -792,10 +785,6 @@ bool TReflection::addStage(EShLanguage, const TIntermediate& intermediate)
         return false;
 
     TLiveTraverser it(intermediate, *this);
-    it.visitSymbol = LiveSymbol;
-    it.visitSelection = LiveSelection;
-    it.visitBinary = LiveBinary;
-    it.visitAggregate = LiveAggregate;
 
     // put main() on functions to process
     it.pushFunction("main(");

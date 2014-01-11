@@ -63,7 +63,13 @@ namespace glslang {
 
 class TInductiveTraverser : public TIntermTraverser {
 public:
-    TInductiveTraverser(int id, TSymbolTable& st) : loopId(id), symbolTable(st), bad(false)  { }
+    TInductiveTraverser(int id, TSymbolTable& st)
+    : loopId(id), symbolTable(st), bad(false)  { }
+
+    virtual bool visitBinary(TVisit, TIntermBinary* node);
+    virtual bool visitUnary(TVisit, TIntermUnary* node);
+    virtual bool visitAggregate(TVisit, TIntermAggregate* node);
+
     int loopId;           // unique ID of the symbol that's the loop inductive variable
     TSymbolTable& symbolTable;
     bool bad;
@@ -71,49 +77,43 @@ public:
 };
 
 // check binary operations for those modifying the loop index
-bool InductiveBinary(bool /* preVisit */, TIntermBinary* node, TIntermTraverser* it)
+bool TInductiveTraverser::visitBinary(TVisit /* visit */, TIntermBinary* node)
 {
-    TInductiveTraverser* oit = static_cast<TInductiveTraverser*>(it);
-
     if (node->modifiesState() && node->getLeft()->getAsSymbolNode() && 
-                                 node->getLeft()->getAsSymbolNode()->getId() == oit->loopId) {
-        oit->bad = true;
-        oit->badLoc = node->getLoc();
+                                 node->getLeft()->getAsSymbolNode()->getId() == loopId) {
+        bad = true;
+        badLoc = node->getLoc();
     }
 
     return true;
 }
 
 // check unary operations for those modifying the loop index
-bool InductiveUnary(bool /* preVisit */, TIntermUnary* node, TIntermTraverser* it)
+bool TInductiveTraverser::visitUnary(TVisit /* visit */, TIntermUnary* node)
 {
-    TInductiveTraverser* oit = static_cast<TInductiveTraverser*>(it);
-
     if (node->modifiesState() && node->getOperand()->getAsSymbolNode() && 
-                                 node->getOperand()->getAsSymbolNode()->getId() == oit->loopId) {
-        oit->bad = true;
-        oit->badLoc = node->getLoc();
+                                 node->getOperand()->getAsSymbolNode()->getId() == loopId) {
+        bad = true;
+        badLoc = node->getLoc();
     }
 
     return true;
 }
 
 // check function calls for arguments modifying the loop index
-bool InductiveAggregate(bool /* preVisit */, TIntermAggregate* node, TIntermTraverser* it)
+bool TInductiveTraverser::visitAggregate(TVisit /* visit */, TIntermAggregate* node)
 {
-    TInductiveTraverser* oit = static_cast<TInductiveTraverser*>(it);
-
     if (node->getOp() == EOpFunctionCall) {
         // see if an out or inout argument is the loop index
         const TIntermSequence& args = node->getSequence();
         for (size_t i = 0; i < args.size(); ++i) {
-            if (args[i]->getAsSymbolNode() && args[i]->getAsSymbolNode()->getId() == oit->loopId) {
-                TSymbol* function = oit->symbolTable.find(node->getName());
+            if (args[i]->getAsSymbolNode() && args[i]->getAsSymbolNode()->getId() == loopId) {
+                TSymbol* function = symbolTable.find(node->getName());
                 const TType* type = (*function->getAsFunction())[i].type;
                 if (type->getQualifier().storage == EvqOut ||
                     type->getQualifier().storage == EvqInOut) {
-                    oit->bad = true;
-                    oit->badLoc = node->getLoc();
+                    bad = true;
+                    badLoc = node->getLoc();
                 }
             }
         }
@@ -132,10 +132,6 @@ void TParseContext::inductiveLoopBodyCheck(TIntermNode* body, int loopId, TSymbo
     if (! body)
         return;
 
-    it.visitAggregate = InductiveAggregate;
-    it.visitBinary = InductiveBinary;
-    it.visitUnary = InductiveUnary;
-
     body->traverse(&it);
 
     if (it.bad)
@@ -151,30 +147,28 @@ void TParseContext::inductiveLoopBodyCheck(TIntermNode* body, int loopId, TSymbo
 class TIndexTraverser : public TIntermTraverser {
 public:
     TIndexTraverser(const TIdSetType& ids) : inductiveLoopIds(ids), bad(false) { }
+    virtual void visitSymbol(TIntermSymbol* symbol);
+    virtual bool visitAggregate(TVisit, TIntermAggregate* node);
     const TIdSetType& inductiveLoopIds;
     bool bad;
     TSourceLoc badLoc;
 };
 
 // make sure symbols are inductive-loop indexes
-void IndexSymbol(TIntermSymbol* symbol, TIntermTraverser* it)
+void TIndexTraverser::visitSymbol(TIntermSymbol* symbol)
 {
-    TIndexTraverser* oit = static_cast<TIndexTraverser*>(it);
-
-    if (oit->inductiveLoopIds.find(symbol->getId()) == oit->inductiveLoopIds.end()) {
-        oit->bad = true;
-        oit->badLoc = symbol->getLoc();
+    if (inductiveLoopIds.find(symbol->getId()) == inductiveLoopIds.end()) {
+        bad = true;
+        badLoc = symbol->getLoc();
     }
 }
 
 // check for function calls, assuming they are bad; spec. doesn't really say
-bool IndexAggregate(bool /* preVisit */, TIntermAggregate* node, TIntermTraverser* it)
+bool TIndexTraverser::visitAggregate(TVisit /* visit */, TIntermAggregate* node)
 {
-    TIndexTraverser* oit = static_cast<TIndexTraverser*>(it);
-
     if (node->getOp() == EOpFunctionCall) {
-        oit->bad = true;
-        oit->badLoc = node->getLoc();
+        bad = true;
+        badLoc = node->getLoc();
     }
 
     return true;
@@ -186,9 +180,6 @@ bool IndexAggregate(bool /* preVisit */, TIntermAggregate* node, TIntermTraverse
 void TParseContext::constantIndexExpressionCheck(TIntermNode* index)
 {
     TIndexTraverser it(inductiveLoopIds);
-
-    it.visitSymbol = IndexSymbol;
-    it.visitAggregate = IndexAggregate;
 
     index->traverse(&it);
 
