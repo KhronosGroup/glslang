@@ -202,6 +202,7 @@ public:
 
 protected:
     void nonInitConstCheck(TSourceLoc, TString& identifier, TType& type);
+	void inheritGlobalDefaults(TQualifier& dst) const;
     TVariable* declareNonArray(TSourceLoc, TString& identifier, TType&, bool& newDeclaration);
     void declareArray(TSourceLoc, TString& identifier, const TType&, TSymbol*&, bool& newDeclaration);
     TIntermNode* executeInitializer(TSourceLoc, TString& identifier, TIntermTyped* initializer, TVariable* variable);

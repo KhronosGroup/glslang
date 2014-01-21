@@ -255,7 +255,7 @@ public:
         writeonly = false;
         clearLayout();
     }
-	TStorageQualifier   storage   : 6;
+    TStorageQualifier   storage   : 6;
     TPrecisionQualifier precision : 3;
     bool invariant : 1;
     bool centroid  : 1;
@@ -413,9 +413,21 @@ public:
     }
     bool hasXfb() const
     {
-        return layoutXfbBuffer != layoutXfbBufferEnd ||
-               layoutXfbStride != layoutXfbStrideEnd ||
-               layoutXfbOffset != layoutXfbOffsetEnd;
+        return hasXfbBuffer() ||
+               hasXfbStride() ||
+               hasXfbOffset();
+    }
+    bool hasXfbBuffer() const
+    {
+        return layoutXfbBuffer != layoutXfbBufferEnd;
+    }
+    bool hasXfbStride() const
+    {
+        return layoutXfbStride != layoutXfbStrideEnd;
+    }
+    bool hasXfbOffset() const
+    {
+        return layoutXfbOffset != layoutXfbOffsetEnd;
     }
     static const char* getLayoutPackingString(TLayoutPacking packing)
     {
@@ -662,7 +674,7 @@ public:
                             {
                                 sampler.clear();
                                 qualifier.clear();
-								typeName = NewPoolTString(n.c_str());
+                                typeName = NewPoolTString(n.c_str());
                             }
     // For interface blocks
     TType(TTypeList* userDef, const TString& n, const TQualifier& q) : 
@@ -670,7 +682,7 @@ public:
                             qualifier(q), arraySizes(0), structure(userDef), fieldName(0)
                             {
                                 sampler.clear();
-								typeName = NewPoolTString(n.c_str());
+                                typeName = NewPoolTString(n.c_str());
                             }
     virtual ~TType() {}
     
@@ -679,21 +691,21 @@ public:
     // the instances are sharing the same pool. 
     void shallowCopy(const TType& copyOf)
     {
-		basicType = copyOf.basicType;
+        basicType = copyOf.basicType;
         sampler = copyOf.sampler;
-		qualifier = copyOf.qualifier;
-		vectorSize = copyOf.vectorSize;
-		matrixCols = copyOf.matrixCols;
-		matrixRows = copyOf.matrixRows;
+        qualifier = copyOf.qualifier;
+        vectorSize = copyOf.vectorSize;
+        matrixCols = copyOf.matrixCols;
+        matrixRows = copyOf.matrixRows;
         arraySizes = copyOf.arraySizes;
         structure = copyOf.structure;
         structureSize = copyOf.structureSize;
-	    fieldName = copyOf.fieldName;
-	    typeName = copyOf.typeName;
+        fieldName = copyOf.fieldName;
+        typeName = copyOf.typeName;
     }
 
-	void deepCopy(const TType& copyOf)
-	{
+    void deepCopy(const TType& copyOf)
+    {
         shallowCopy(copyOf);
 
         if (arraySizes) {
@@ -701,31 +713,31 @@ public:
             *arraySizes = *copyOf.arraySizes;
         }
 
-		if (structure) {
-			structure = new TTypeList;
-    		TStructureMapIterator iter;
-			for (unsigned int i = 0; i < copyOf.structure->size(); ++i) {
-				TTypeLoc typeLoc;
-				typeLoc.loc = (*copyOf.structure)[i].loc;
-				typeLoc.type = new TType();
-		        typeLoc.type->deepCopy(*(*copyOf.structure)[i].type);
-				structure->push_back(typeLoc);
-			}
-		}
+        if (structure) {
+            structure = new TTypeList;
+            TStructureMapIterator iter;
+            for (unsigned int i = 0; i < copyOf.structure->size(); ++i) {
+                TTypeLoc typeLoc;
+                typeLoc.loc = (*copyOf.structure)[i].loc;
+                typeLoc.type = new TType();
+                typeLoc.type->deepCopy(*(*copyOf.structure)[i].type);
+                structure->push_back(typeLoc);
+            }
+        }
 
-		if (fieldName)
-			fieldName = NewPoolTString(copyOf.fieldName->c_str());
-		if (typeName)
-			typeName = NewPoolTString(copyOf.typeName->c_str());
-	}
+        if (fieldName)
+            fieldName = NewPoolTString(copyOf.fieldName->c_str());
+        if (typeName)
+            typeName = NewPoolTString(copyOf.typeName->c_str());
+    }
     
     TType* clone()
-	{
-		TType *newType = new TType();
-		newType->deepCopy(*this);
+    {
+        TType *newType = new TType();
+        newType->deepCopy(*this);
 
-		return newType;
-	}
+        return newType;
+    }
 
     // Merge type from parent, where a parentType is at the beginning of a declaration,
     // establishing some charastics for all subsequent names, while this type
@@ -768,14 +780,14 @@ public:
     virtual void setFieldName(const TString& n) { fieldName = NewPoolTString(n.c_str()); }
     virtual const TString& getTypeName() const
     {
-		assert(typeName);    		
-    	return *typeName;
+        assert(typeName);    		
+        return *typeName;
     }
 
     virtual const TString& getFieldName() const
     {
-    	assert(fieldName);
-		return *fieldName;
+        assert(fieldName);
+        return *fieldName;
     }
 
     virtual TBasicType getBasicType() const { return basicType; }
@@ -789,7 +801,7 @@ public:
 
     virtual bool isScalar() const { return vectorSize == 1 && ! isStruct() && ! isArray(); }
     virtual bool isVector() const { return vectorSize > 1; }
-	virtual bool isMatrix() const { return matrixCols ? true : false; }
+    virtual bool isMatrix() const { return matrixCols ? true : false; }
     virtual bool isArray()  const { return arraySizes != 0; }
     virtual bool isStruct() const { return structure != 0; }
 
@@ -798,9 +810,9 @@ public:
     {
         if (isArray())
             return true;
-		if (! structure)
+        if (! structure)
             return false;
-		for (unsigned int i = 0; i < structure->size(); ++i) {
+        for (unsigned int i = 0; i < structure->size(); ++i) {
             if ((*structure)[i].type->containsArray())
                 return true;
         }
@@ -852,35 +864,41 @@ public:
         const int maxSize = GlslangMaxTypeLength;
         char buf[maxSize];
         char *p = &buf[0];
-	    char *end = &buf[maxSize];
+        char *end = &buf[maxSize];
 
         if (qualifier.hasLayout()) {
-            p += snprintf(p, end - p, "layout(");
-            if (qualifier.hasLocation()) {
-                p += snprintf(p, end - p, "location=%d ", qualifier.layoutLocation);
-                if (qualifier.layoutComponent != qualifier.layoutComponentEnd)
-                    p += snprintf(p, end - p, "component=%d ", qualifier.layoutComponent);
-            }
-            if (qualifier.hasBinding())
-                p += snprintf(p, end - p, "binding=%d ", qualifier.layoutBinding);
-            if (qualifier.hasStream())
-                p += snprintf(p, end - p, "stream=%d ", qualifier.layoutStream);
-            if (qualifier.layoutMatrix != ElmNone)
-                p += snprintf(p, end - p, "%s ", TQualifier::getLayoutMatrixString(qualifier.layoutMatrix));
-            if (qualifier.layoutPacking != ElpNone)
-                p += snprintf(p, end - p, "%s ", TQualifier::getLayoutPackingString(qualifier.layoutPacking));
-            if (qualifier.layoutOffset != -1)
-                p += snprintf(p, end - p, "offset=%d ", qualifier.layoutOffset);
-            if (qualifier.layoutAlign != -1)
-                p += snprintf(p, end - p, "align=%d ", qualifier.layoutAlign);
+            // To reduce noise, skip this if the only layout is an xfb_buffer
+            // with no triggering xfb_offset.
+            TQualifier noXfbBuffer = qualifier;
+            noXfbBuffer.layoutXfbBuffer = TQualifier::layoutXfbBufferEnd;
+            if (noXfbBuffer.hasLayout()) {
+                p += snprintf(p, end - p, "layout(");
+                if (qualifier.hasLocation()) {
+                    p += snprintf(p, end - p, "location=%d ", qualifier.layoutLocation);
+                    if (qualifier.layoutComponent != qualifier.layoutComponentEnd)
+                        p += snprintf(p, end - p, "component=%d ", qualifier.layoutComponent);
+                }
+                if (qualifier.hasBinding())
+                    p += snprintf(p, end - p, "binding=%d ", qualifier.layoutBinding);
+                if (qualifier.hasStream())
+                    p += snprintf(p, end - p, "stream=%d ", qualifier.layoutStream);
+                if (qualifier.layoutMatrix != ElmNone)
+                    p += snprintf(p, end - p, "%s ", TQualifier::getLayoutMatrixString(qualifier.layoutMatrix));
+                if (qualifier.layoutPacking != ElpNone)
+                    p += snprintf(p, end - p, "%s ", TQualifier::getLayoutPackingString(qualifier.layoutPacking));
+                if (qualifier.layoutOffset != -1)
+                    p += snprintf(p, end - p, "offset=%d ", qualifier.layoutOffset);
+                if (qualifier.layoutAlign != -1)
+                    p += snprintf(p, end - p, "align=%d ", qualifier.layoutAlign);
 
-            if (qualifier.layoutXfbBuffer != qualifier.layoutXfbBufferEnd)
-                p += snprintf(p, end - p, "xfb_buffer=%d ", qualifier.layoutXfbBuffer);
-            if (qualifier.layoutXfbOffset != qualifier.layoutXfbOffsetEnd)
-                p += snprintf(p, end - p, "xfb_offset=%d ", qualifier.layoutXfbOffset);
-            if (qualifier.layoutXfbStride != qualifier.layoutXfbStrideEnd)
-                p += snprintf(p, end - p, "xfb_stride=%d ", qualifier.layoutXfbStride);
-            p += snprintf(p, end - p, ") ");
+                if (qualifier.hasXfbBuffer() && qualifier.hasXfbOffset())
+                    p += snprintf(p, end - p, "xfb_buffer=%d ", qualifier.layoutXfbBuffer);
+                if (qualifier.hasXfbOffset())
+                    p += snprintf(p, end - p, "xfb_offset=%d ", qualifier.layoutXfbOffset);
+                if (qualifier.hasXfbStride())
+                    p += snprintf(p, end - p, "xfb_stride=%d ", qualifier.layoutXfbStride);
+                p += snprintf(p, end - p, ") ");
+            }
         }
 
         if (qualifier.invariant)
@@ -1063,7 +1081,7 @@ protected:
     void buildMangledName(TString&);
     int getStructSize() const;
 
-	TBasicType basicType : 8;
+    TBasicType basicType : 8;
     int vectorSize       : 4;
     int matrixCols       : 4;
     int matrixRows       : 4;
@@ -1074,8 +1092,8 @@ protected:
 
     TTypeList* structure;       // 0 unless this is a struct
     mutable int structureSize;  // a cache, updated on first access
-	TString *fieldName;         // for structure field names
-	TString *typeName;          // for structure type name
+    TString *fieldName;         // for structure field names
+    TString *typeName;          // for structure type name
 };
 
 } // end namespace glslang

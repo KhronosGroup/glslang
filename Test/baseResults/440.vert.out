@@ -19,9 +19,13 @@ ERROR: 0:55: 'component' : type overflows the available 4 components
 ERROR: 0:57: 'component' : cannot apply to a matrix, structure, or block 
 ERROR: 0:58: 'component' : cannot apply to a matrix, structure, or block 
 ERROR: 0:61: 'location' : cannot declare a default, use a full declaration 
-ERROR: 19 compilation errors.  No code generated.
+ERROR: 0:81: 'xfb layout qualifier' : can only be used on an output 
+ERROR: 0:87: 'xfb_offset' : cannot declare a default, use a full declaration 
+ERROR: 0:97: 'xfb_buffer' : member cannot contradict block (or what block inherited from global) 
+ERROR: 22 compilation errors.  No code generated.
 
 
+in xfb mode
 ERROR: node is still EOpNull!
 0:?   Linker Objects
 0:?     'a' (layout(location=2 component=2 ) in 2-component vector of float)
@@ -55,6 +59,14 @@ ERROR: node is still EOpNull!
 0:?     'bd' (out block{layout(location=40 component=2 ) out float u, layout(location=40 component=0 ) out float v, layout(location=40 component=3 ) out float w, layout(location=40 component=1 ) out 2-component vector of float x, layout(location=41 component=3 ) out 2-component vector of float y, layout(location=42 component=1 ) out 4-component vector of float z, layout(location=42 component=1 ) out 4X4 matrix of float ba, layout(location=43 component=1 ) out structure{int a} Ss})
 0:?     'be' (layout(location=50 component=3 ) smooth out int)
 0:?     'bf' (layout(location=50 component=0 ) smooth out 3-component vector of float)
+0:?     'bbinst1' (out block{out 4-component vector of float bbv})
+0:?     'bbinst2' (out block{layout(xfb_buffer=0 xfb_offset=16 ) out 4-component vector of float bbv})
+0:?     'bbinst3' (out block{layout(xfb_buffer=3 xfb_offset=16 ) out 4-component vector of float bbv})
+0:?     'ubbinst3' (layout(column_major shared ) uniform block{layout(column_major shared xfb_offset=16 ) uniform 4-component vector of float bbv})
+0:?     'bg' (layout(xfb_buffer=2 xfb_offset=32 xfb_stride=64 ) smooth out 4-component vector of float)
+0:?     'bh' (layout(xfb_buffer=3 xfb_offset=32 xfb_stride=64 ) smooth out 4-component vector of float)
+0:?     'bbinst4' (layout(xfb_buffer=2 xfb_offset=16 xfb_stride=32 ) out block{layout(xfb_buffer=2 xfb_offset=16 ) out 4-component vector of float bbv1, layout(xfb_buffer=2 xfb_offset=16 ) out 4-component vector of float bbv2})
+0:?     'bbinst5' (out block{layout(xfb_buffer=3 xfb_offset=0 ) out 4-component vector of float bbv1, layout(xfb_buffer=3 xfb_offset=16 xfb_stride=32 ) out 4-component vector of float bbv2, out 4-component vector of float bbv3})
 0:?     'gl_VertexID' (gl_VertexId int)
 0:?     'gl_InstanceID' (gl_InstanceId int)
 
@@ -63,4 +75,5 @@ Linked vertex stage:
 
 ERROR: Linking vertex stage: Missing entry point: Each stage requires one "void main()" entry point
 
+in xfb mode
 

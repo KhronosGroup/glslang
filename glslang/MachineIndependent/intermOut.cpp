@@ -579,6 +579,9 @@ bool TOutputTraverser::visitSwitch(TVisit /* visit */, TIntermSwitch* node)
 //
 void TIntermediate::output(TInfoSink& infoSink, bool tree)
 {
+    if (xfbMode)
+        infoSink.debug << "in xfb mode\n";
+
     switch (language) {
     case EShLangVertex:
         break;

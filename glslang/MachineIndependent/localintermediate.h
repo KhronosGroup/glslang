@@ -62,7 +62,7 @@ public:
     explicit TIntermediate(EShLanguage l, int v = 0, EProfile p = ENoProfile) : language(l), treeRoot(0), profile(p), version(v), 
         numMains(0), numErrors(0), recursive(false),
         invocations(0), vertices(0), inputPrimitive(ElgNone), outputPrimitive(ElgNone), pixelCenterInteger(false), originUpperLeft(false),
-        vertexSpacing(EvsNone), vertexOrder(EvoNone), pointMode(false) { }
+        vertexSpacing(EvsNone), vertexOrder(EvoNone), pointMode(false), xfbMode(false) { }
     bool postProcess(TIntermNode*, EShLanguage);
     void output(TInfoSink&, bool tree);
 	void removeTree();
@@ -153,6 +153,7 @@ public:
         return true;
     }
     void setPointMode() { pointMode = true; }
+    void setXfbMode() { xfbMode = true; }
     bool setOutputPrimitive(TLayoutGeometry p)
     {
         if (outputPrimitive != ElgNone)
@@ -202,6 +203,7 @@ protected:
     TVertexSpacing vertexSpacing;
     TVertexOrder vertexOrder;
     bool pointMode;
+    bool xfbMode;
 
     // for detecting recursion:  pair is <caller, callee>
     struct TCall {

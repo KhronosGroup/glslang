@@ -101,11 +101,14 @@ TParseContext::TParseContext(TSymbolTable& symt, TIntermediate& interm, bool pb,
     globalBufferDefaults.layoutMatrix = ElmColumnMajor;
     globalBufferDefaults.layoutPacking = ElpShared;
 
-    // TODO: 4.4 enhanced layouts: defaults for xfb?
-
     globalInputDefaults.clear();
 
     globalOutputDefaults.clear();
+    if (language == EShLangVertex ||
+        language == EShLangTessControl ||
+        language == EShLangTessEvaluation ||
+        language == EShLangGeometry)
+        globalOutputDefaults.layoutXfbBuffer = 0;
     if (language == EShLangGeometry)
         globalOutputDefaults.layoutStream = 0;
 }
@@ -1791,7 +1794,7 @@ void TParseContext::globalQualifierCheck(TSourceLoc loc, const TQualifier& quali
         case EShLangCompute:
             break;
 
-	    default:
+        default:
             break;
         }
     } else {
@@ -1827,7 +1830,7 @@ void TParseContext::globalQualifierCheck(TSourceLoc loc, const TQualifier& quali
         case EShLangCompute:
             break;
 
-	    default:
+        default:
             break;
         }
     }
@@ -2869,6 +2872,7 @@ void TParseContext::setLayoutQualifier(TSourceLoc loc, TPublicType& publicType, 
             publicType.qualifier.layoutComponent = value;
         return;
     } else if (id.compare(0, 4, "xfb_") == 0) {
+        intermediate.setXfbMode();
         const char* feature = "transform feedback qualifier";
         requireStage(loc, (EShLanguageMask)(EShLangVertexMask | EShLangGeometryMask | EShLangTessControlMask | EShLangTessEvaluationMask), feature);
         requireProfile(loc, ECoreProfile | ECompatibilityProfile, feature);
@@ -2878,16 +2882,19 @@ void TParseContext::setLayoutQualifier(TSourceLoc loc, TPublicType& publicType, 
                 error(loc, "buffer is too large", id.c_str(), "");
             else
                 publicType.qualifier.layoutXfbBuffer = value;
+            return;
         } else if (id == "xfb_offset") {
             if (value >= TQualifier::layoutXfbOffsetEnd)   // TODO: 4.4 enhanced layouts: also check against gl_MaxTransformFeedbackInterleavedComponents
                 error(loc, "offset is too large", id.c_str(), "");
             else
                 publicType.qualifier.layoutXfbOffset = value;
+            return;
         } else if (id == "xfb_stride") {
-            if (value >= TQualifier::layoutXfbStrideEnd)    // TODO: 4.4 enhanced layouts: also check against gl_MaxTransformFeedbackInterleavedComponents
+            if (value >= TQualifier::layoutXfbStrideEnd)    // TODO: 4.4 enhanced layouts: also check against 4*gl_MaxTransformFeedbackInterleavedComponents
                 error(loc, "stride is too large", id.c_str(), "");
             else
                 publicType.qualifier.layoutXfbStride = value;
+            return;
         }
     }
 
@@ -2929,7 +2936,7 @@ void TParseContext::setLayoutQualifier(TSourceLoc loc, TPublicType& publicType, 
     case EShLangCompute:
         break;
 
-	default:
+    default:
         break;
     }
 
@@ -2947,8 +2954,10 @@ void TParseContext::mergeObjectLayoutQualifiers(TSourceLoc loc, TQualifier& dst,
     if (src.hasStream())
         dst.layoutStream = src.layoutStream;
 
-    if (src.layoutXfbBuffer != TQualifier::layoutXfbBufferEnd)
+    if (src.hasXfbBuffer())
         dst.layoutXfbBuffer = src.layoutXfbBuffer;
+    if (src.hasXfbOffset())
+        dst.layoutXfbOffset = src.layoutXfbOffset;
 
     if (! inheritOnly) {
         if (src.layoutLocation != TQualifier::layoutLocationEnd)
@@ -2964,10 +2973,8 @@ void TParseContext::mergeObjectLayoutQualifiers(TSourceLoc loc, TQualifier& dst,
         if (src.layoutBinding != TQualifier::layoutBindingEnd)
             dst.layoutBinding = src.layoutBinding;
 
-        if (src.layoutXfbStride != TQualifier::layoutXfbStrideEnd)
+        if (src.hasXfbStride())
             dst.layoutXfbStride = src.layoutXfbStride;
-        if (src.layoutXfbOffset != TQualifier::layoutXfbOffsetEnd)
-            dst.layoutXfbOffset = src.layoutXfbOffset;
     }
 }
 
@@ -3145,6 +3152,10 @@ void TParseContext::layoutQualifierCheck(TSourceLoc loc, const TQualifier& quali
         if (qualifier.storage != EvqVaryingOut)
             error(loc, "can only be used on an output", "stream", "");
     }
+    if (qualifier.hasXfb()) {
+        if (qualifier.storage != EvqVaryingOut)
+            error(loc, "can only be used on an output", "xfb layout qualifier", "");
+    }
 }
 
 // For places that can't have shader-level layout qualifiers
@@ -3303,10 +3314,6 @@ TIntermNode* TParseContext::declareVariable(TSourceLoc loc, TString& identifier,
     invariantCheck(loc, type, identifier);
     samplerCheck(loc, type, identifier);
 
-    // Pick up defaults
-    if (! type.getQualifier().hasStream() && language == EShLangGeometry && type.getQualifier().storage == EvqVaryingOut)
-        type.getQualifier().layoutStream = globalOutputDefaults.layoutStream;
-
     if (identifier != "gl_FragCoord" && (publicType.shaderQualifiers.originUpperLeft || publicType.shaderQualifiers.pixelCenterInteger))
         error(loc, "can only apply origin_upper_left and pixel_center_origin to gl_FragCoord", "layout qualifier", "");
 
@@ -3315,6 +3322,8 @@ TIntermNode* TParseContext::declareVariable(TSourceLoc loc, TString& identifier,
     TSymbol* symbol = redeclareBuiltinVariable(loc, identifier, type.getQualifier(), publicType.shaderQualifiers, newDeclaration);
     if (! symbol)
         reservedErrorCheck(loc, identifier);
+
+    inheritGlobalDefaults(type.getQualifier());
 
     // Declare the variable
     if (arraySizes || type.isArray()) {
@@ -3367,6 +3376,17 @@ TIntermNode* TParseContext::declareVariable(TSourceLoc loc, TString& identifier,
         intermediate.addSymbolLinkageNode(linkage, *symbol);
 
     return initNode;
+}
+
+// Pick up global defaults from the provide global defaults into dst.
+void TParseContext::inheritGlobalDefaults(TQualifier& dst) const
+{
+    if (dst.storage == EvqVaryingOut) {
+        if (! dst.hasStream() && language == EShLangGeometry)
+            dst.layoutStream = globalOutputDefaults.layoutStream;
+        if (! dst.hasXfbBuffer())
+            dst.layoutXfbBuffer = globalOutputDefaults.layoutXfbBuffer;
+    }
 }
 
 //
@@ -3824,6 +3844,10 @@ void TParseContext::declareBlock(TSourceLoc loc, TTypeList& typeList, const TStr
             if (defaultQualification.layoutStream != memberQualifier.layoutStream)
                 error(memberLoc, "member cannot contradict block", "stream", "");
         }
+        if (memberQualifier.hasXfbBuffer()) {
+            if (defaultQualification.layoutXfbBuffer != memberQualifier.layoutXfbBuffer)
+                error(memberLoc, "member cannot contradict block (or what block inherited from global)", "xfb_buffer", "");
+        }
         if (memberQualifier.layoutPacking != ElpNone)
             error(memberLoc, "member of block cannot have a packing layout qualifier", typeList[member].type->getFieldName().c_str(), "");
         if (memberQualifier.hasLocation()) {
@@ -4124,6 +4148,8 @@ void TParseContext::updateStandaloneQualifierDefaults(TSourceLoc loc, const TPub
     case EvqVaryingOut:
         if (qualifier.hasStream())
             globalOutputDefaults.layoutStream = qualifier.layoutStream;
+        if (qualifier.hasXfbBuffer())
+            globalOutputDefaults.layoutXfbBuffer = qualifier.layoutXfbBuffer;
         break;
     default:
         error(loc, "default qualifier requires 'uniform', 'buffer', 'in', or 'out' storage qualification", "", "");
@@ -4134,6 +4160,8 @@ void TParseContext::updateStandaloneQualifierDefaults(TSourceLoc loc, const TPub
         error(loc, "cannot declare a default, include a type or full declaration", "binding", "");
     if (qualifier.hasLocation())
         error(loc, "cannot declare a default, use a full declaration", "location", "");
+    if (qualifier.hasXfbOffset())
+        error(loc, "cannot declare a default, use a full declaration", "xfb_offset", "");
 }
 
 //

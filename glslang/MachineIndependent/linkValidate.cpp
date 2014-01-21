@@ -110,6 +110,9 @@ void TIntermediate::merge(TInfoSink& infoSink, TIntermediate& unit)
     if (unit.pointMode)
         pointMode = true;
 
+    if (unit.xfbMode)
+        xfbMode = true;
+
     if (unit.treeRoot == 0)
         return;
 

@@ -62,3 +62,37 @@ layout(location = 1, component = 1) out;                 // ERROR, no global set
 
 layout(location = 50, component = 3) out int be;
 layout(location = 50, component = 0) out vec3 bf;
+
+out bblck1 {
+    vec4 bbv;
+} bbinst1;
+
+out bblck2 {
+    layout(xfb_offset=16) vec4 bbv;
+} bbinst2;
+
+layout(xfb_buffer = 3, xfb_stride = 16) out;
+
+out bblck3 {
+    layout(xfb_offset=16) vec4 bbv;
+} bbinst3;
+
+uniform ubblck3 {
+    layout(xfb_offset=16) vec4 bbv;  // ERROR
+} ubbinst3;
+
+layout(xfb_buffer=2, xfb_offset=32, xfb_stride=64) out vec4 bg;
+layout(              xfb_offset=32, xfb_stride=64) out vec4 bh;
+
+layout(xfb_offset=48) out; // ERROR
+
+layout(xfb_stride=32, xfb_buffer=2, xfb_offset=16) out bblck4 {
+    vec4 bbv1;
+    vec4 bbv2;
+} bbinst4;
+
+out bblck5 {
+    layout(xfb_offset=0) vec4 bbv1;
+    layout(xfb_stride=32, xfb_buffer=3, xfb_offset=16) vec4 bbv2;
+    layout(xfb_buffer=2) vec4 bbv3;                               // ERROR, wrong buffer
+} bbinst5;
