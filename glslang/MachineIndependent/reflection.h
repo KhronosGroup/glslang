@@ -106,7 +106,7 @@ public:
     void dump();
 
 protected:
-    friend glslang::TLiveTraverser;
+    friend class glslang::TLiveTraverser;
 
     typedef std::map<TString, int> TNameToIndex;
     typedef std::vector<TObjectReflection> TMapIndexToReflection;

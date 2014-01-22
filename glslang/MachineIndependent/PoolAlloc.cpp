@@ -191,7 +191,7 @@ void TAllocation::checkGuardBlock(unsigned char* blockMem, unsigned char val, co
             char assertMsg[80];
 
             // We don't print the assert message.  It's here just to be helpful.
-            snprintf(assertMsg, maxSize, "PoolAlloc: Damage %s %lu byte allocation at 0x%p\n",
+            snprintf(assertMsg, maxSize, "PoolAlloc: Damage %s %zu byte allocation at 0x%p\n",
                       locText, size, data());
             assert(0 && "PoolAlloc: Damage in guard block");
         }
