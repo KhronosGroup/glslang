@@ -51,6 +51,55 @@ struct TVectorFields {
     int num;
 };
 
+//
+// Some helper structures for TIntermediate.  Their contents are encapsulated
+// by TIntermediate.
+//
+
+// Used for detecting recursion:  A "call" is a pair: <caller, callee>.
+struct TCall {
+    TCall(const TString& pCaller, const TString& pCallee) : caller(pCaller), callee(pCallee) { }
+    TString caller;
+    TString callee;
+    bool visited;
+    bool currentPath;
+    bool errorGiven;
+};
+
+// A generic 1-D range.
+struct TRange {
+    TRange(int start, int last) : start(start), last(last) { }
+    bool overlap(const TRange& rhs) const 
+    {
+        return last >= rhs.start && start <= rhs.last;
+    }
+    int start;
+    int last;
+};
+
+// A *location* range is a 2-D rectangle; the set of (location, component) pairs all lying
+// both within the location range and the component range.  Locations don't alias unless
+// both dimensions of their range overlap.
+struct TIoRange {
+    TIoRange(TRange location, TRange component, TBasicType basicType) : location(location), component(component), basicType(basicType) { }
+    bool overlap(const TIoRange& rhs) const
+    {
+        return location.overlap(rhs.location) && component.overlap(rhs.component);
+    }
+    TRange location;
+    TRange component;
+    TBasicType basicType;
+};
+
+// Things that need to be tracked per xfb buffer.
+struct TXfbBuffer {
+    TXfbBuffer() : stride(TQualifier::layoutXfbStrideEnd), implicitStride(0), containsDouble(false) { }
+    std::vector<TRange> ranges;  // byte offsets that have already been assigned
+    unsigned int stride;
+    unsigned int implicitStride;
+    bool containsDouble;
+};
+
 class TSymbolTable;
 class TSymbol;
 
@@ -62,7 +111,12 @@ public:
     explicit TIntermediate(EShLanguage l, int v = 0, EProfile p = ENoProfile) : language(l), treeRoot(0), profile(p), version(v), 
         numMains(0), numErrors(0), recursive(false),
         invocations(0), vertices(0), inputPrimitive(ElgNone), outputPrimitive(ElgNone), pixelCenterInteger(false), originUpperLeft(false),
-        vertexSpacing(EvsNone), vertexOrder(EvoNone), pointMode(false), xfbMode(false) { }
+        vertexSpacing(EvsNone), vertexOrder(EvoNone), pointMode(false), xfbMode(false)
+    {
+        xfbBuffers.resize(TQualifier::layoutXfbBufferEnd);
+    }
+    void setLimits(const TBuiltInResource& r) { resources = r; }
+
     bool postProcess(TIntermNode*, EShLanguage);
     void output(TInfoSink&, bool tree);
 	void removeTree();
@@ -176,6 +230,16 @@ public:
     int addUsedLocation(const TQualifier&, const TType&, bool& typeCollision);
     int computeTypeLocationSize(const TType&);
 
+    bool setXfbBufferStride(int buffer, int stride)
+    {
+        if (xfbBuffers[buffer].stride != TQualifier::layoutXfbStrideEnd)
+            return xfbBuffers[buffer].stride == stride;
+        xfbBuffers[buffer].stride = stride;
+        return true;
+    }
+    int addXfbBufferOffset(const TType&);
+    unsigned int computeTypeXfbSize(const TType&, bool& containsDouble) const;
+
 protected:
     void error(TInfoSink& infoSink, const char*);
     void mergeBodies(TInfoSink&, TIntermSequence& globals, const TIntermSequence& unitGlobals);
@@ -191,6 +255,7 @@ protected:
     TIntermNode* treeRoot;
     EProfile profile;
     int version;
+    TBuiltInResource resources;
     int numMains;
     int numErrors;
     bool recursive;
@@ -205,33 +270,12 @@ protected:
     bool pointMode;
     bool xfbMode;
 
-    // for detecting recursion:  pair is <caller, callee>
-    struct TCall {
-        TCall(const TString& pCaller, const TString& pCallee) : caller(pCaller), callee(pCallee) { }
-        TString caller;
-        TString callee;
-        bool visited;
-        bool currentPath;
-        bool errorGiven;
-    };
     typedef std::list<TCall> TGraph;
     TGraph callGraph;
 
-    std::set<TString> ioAccessed;  // set of names of statically read/written I/O that might need extra checking
-
-    // A location range is a 2-D rectangle; the set of (location, component) pairs all lying
-    // both within the location range and the component range.
-    // The following are entirely encapsulated by addUsedLocation().
-    struct TRange {
-        int start;
-        int last;
-    };
-    struct TIoRange {
-        TRange location;
-        TRange component;
-        TBasicType basicType;
-    };
+    std::set<TString> ioAccessed;       // set of names of statically read/written I/O that might need extra checking
     std::vector<TIoRange> usedIo[3];    // sets of used locations, one for each of in, out, and uniform
+    std::vector<TXfbBuffer> xfbBuffers; // all the data we need to track per xfb buffer
 
 private:
     void operator=(TIntermediate&); // prevent assignments

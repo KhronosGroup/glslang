@@ -373,24 +373,32 @@ public:
                hasStream() ||
                hasXfb();
     }
-    TLayoutMatrix  layoutMatrix                     : 3;
-    TLayoutPacking layoutPacking                    : 4;
+    TLayoutMatrix  layoutMatrix  : 3;
+    TLayoutPacking layoutPacking : 4;
     int layoutOffset;
     int layoutAlign;
-                 unsigned int layoutLocation        : 7;
-    static const unsigned int layoutLocationEnd =  0x3F;
-                 unsigned int layoutComponent       : 3;
-    static const unsigned int layoutComponentEnd =    4;
-                 unsigned int layoutBinding         : 8;
-    static const unsigned int layoutBindingEnd =   0xFF;
-                 unsigned int layoutStream          : 8;
-    static const unsigned int layoutStreamEnd =    0xFF;    
-                 unsigned int layoutXfbBuffer       : 4;
-    static const unsigned int layoutXfbBufferEnd =  0xF;
-                 unsigned int layoutXfbStride       : 8;
-    static const unsigned int layoutXfbStrideEnd = 0xFF;
-                 unsigned int layoutXfbOffset       : 8;
-    static const unsigned int layoutXfbOffsetEnd = 0xFF;
+
+                 unsigned int layoutLocation         : 7;
+    static const unsigned int layoutLocationEnd =   0x3F;
+
+                 unsigned int layoutComponent        : 3;
+    static const unsigned int layoutComponentEnd =     4;
+
+                 unsigned int layoutBinding          : 8;
+    static const unsigned int layoutBindingEnd =    0xFF;
+
+                 unsigned int layoutStream           : 8;
+    static const unsigned int layoutStreamEnd =     0xFF;
+
+                 unsigned int layoutXfbBuffer        : 4;
+    static const unsigned int layoutXfbBufferEnd =   0xF;
+
+                 unsigned int layoutXfbStride       : 10;
+    static const unsigned int layoutXfbStrideEnd = 0x3FF;
+
+                 unsigned int layoutXfbOffset       : 10;
+    static const unsigned int layoutXfbOffsetEnd = 0x3FF;
+
     bool hasUniformLayout() const
     {
         return layoutMatrix  != ElmNone ||
@@ -804,6 +812,20 @@ public:
     virtual bool isMatrix() const { return matrixCols ? true : false; }
     virtual bool isArray()  const { return arraySizes != 0; }
     virtual bool isStruct() const { return structure != 0; }
+
+    // Recursively checks if the type contains the given basic type
+    virtual bool containsBasicType(TBasicType checkType) const
+    {
+        if (basicType == checkType)
+            return true;
+        if (! structure)
+            return false;
+        for (unsigned int i = 0; i < structure->size(); ++i) {
+            if ((*structure)[i].type->containsBasicType(checkType))
+                return true;
+        }
+        return false;
+    }
 
     // Recursively check the structure for any arrays, needed for some error checks
     virtual bool containsArray() const

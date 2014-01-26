@@ -104,11 +104,16 @@ TParseContext::TParseContext(TSymbolTable& symt, TIntermediate& interm, bool pb,
     globalInputDefaults.clear();
 
     globalOutputDefaults.clear();
+
+    // "Shaders in the transform 
+    // feedback capturing mode have an initial global default of
+    //     layout(xfb_buffer = 0) out;"
     if (language == EShLangVertex ||
         language == EShLangTessControl ||
         language == EShLangTessEvaluation ||
         language == EShLangGeometry)
         globalOutputDefaults.layoutXfbBuffer = 0;
+
     if (language == EShLangGeometry)
         globalOutputDefaults.layoutStream = 0;
 }
@@ -123,6 +128,8 @@ void TParseContext::setLimits(const TBuiltInResource& r)
                      ! limits.generalUniformIndexing ||
                      ! limits.generalVariableIndexing ||
                      ! limits.generalVaryingIndexing;
+
+    intermediate.setLimits(resources);
 }
 
 //
@@ -2872,27 +2879,39 @@ void TParseContext::setLayoutQualifier(TSourceLoc loc, TPublicType& publicType, 
             publicType.qualifier.layoutComponent = value;
         return;
     } else if (id.compare(0, 4, "xfb_") == 0) {
+        // "Any shader making any static use (after preprocessing) of any of these 
+        // *xfb_* qualifiers will cause the shader to be in a transform feedback 
+        // capturing mode and hence responsible for describing the transform feedback 
+        // setup."
         intermediate.setXfbMode();
         const char* feature = "transform feedback qualifier";
         requireStage(loc, (EShLanguageMask)(EShLangVertexMask | EShLangGeometryMask | EShLangTessControlMask | EShLangTessEvaluationMask), feature);
         requireProfile(loc, ECoreProfile | ECompatibilityProfile, feature);
         profileRequires(loc, ECoreProfile | ECompatibilityProfile, 440, GL_ARB_enhanced_layouts, feature);
         if (id == "xfb_buffer") {
-            if (value >= TQualifier::layoutXfbBufferEnd)   // TODO: 4.4 enhanced layouts: also check against gl_MaxTransformFeedbackBuffers
-                error(loc, "buffer is too large", id.c_str(), "");
+            // "It is a compile-time error to specify an *xfb_buffer* that is greater than
+            // the implementation-dependent constant gl_MaxTransformFeedbackBuffers."
+            if (value >= resources.maxTransformFeedbackBuffers)
+                error(loc, "buffer is too large:", id.c_str(), "gl_MaxTransformFeedbackBuffers is %d", resources.maxTransformFeedbackBuffers);                
+            if (value >= TQualifier::layoutXfbBufferEnd)
+                error(loc, "buffer is too large:", id.c_str(), "internal max is %d", TQualifier::layoutXfbBufferEnd-1);
             else
                 publicType.qualifier.layoutXfbBuffer = value;
             return;
         } else if (id == "xfb_offset") {
-            if (value >= TQualifier::layoutXfbOffsetEnd)   // TODO: 4.4 enhanced layouts: also check against gl_MaxTransformFeedbackInterleavedComponents
-                error(loc, "offset is too large", id.c_str(), "");
+            if (value >= TQualifier::layoutXfbOffsetEnd)
+                error(loc, "offset is too large:", id.c_str(), "internal max is %d", TQualifier::layoutXfbOffsetEnd-1);
             else
                 publicType.qualifier.layoutXfbOffset = value;
             return;
         } else if (id == "xfb_stride") {
-            if (value >= TQualifier::layoutXfbStrideEnd)    // TODO: 4.4 enhanced layouts: also check against 4*gl_MaxTransformFeedbackInterleavedComponents
-                error(loc, "stride is too large", id.c_str(), "");
-            else
+            // "The resulting stride (implicit or explicit), when divided by 4, must be less than or equal to the 
+            // implementation-dependent constant gl_MaxTransformFeedbackInterleavedComponents."
+            if (value > 4 * resources.maxTransformFeedbackInterleavedComponents)
+                error(loc, "1/4 stride is too large:", id.c_str(), "gl_MaxTransformFeedbackInterleavedComponents is %d", resources.maxTransformFeedbackInterleavedComponents);
+            else if (value >= TQualifier::layoutXfbStrideEnd)
+                error(loc, "stride is too large:", id.c_str(), "internal max is %d", TQualifier::layoutXfbStrideEnd-1);
+            if (value < TQualifier::layoutXfbStrideEnd)
                 publicType.qualifier.layoutXfbStride = value;
             return;
         }
@@ -2956,8 +2975,6 @@ void TParseContext::mergeObjectLayoutQualifiers(TSourceLoc loc, TQualifier& dst,
 
     if (src.hasXfbBuffer())
         dst.layoutXfbBuffer = src.layoutXfbBuffer;
-    if (src.hasXfbOffset())
-        dst.layoutXfbOffset = src.layoutXfbOffset;
 
     if (! inheritOnly) {
         if (src.layoutLocation != TQualifier::layoutLocationEnd)
@@ -2975,6 +2992,8 @@ void TParseContext::mergeObjectLayoutQualifiers(TSourceLoc loc, TQualifier& dst,
 
         if (src.hasXfbStride())
             dst.layoutXfbStride = src.layoutXfbStride;
+        if (src.hasXfbOffset())
+            dst.layoutXfbOffset = src.layoutXfbOffset;
     }
 }
 
@@ -3067,6 +3086,25 @@ void TParseContext::layoutTypeCheck(TSourceLoc loc, const TType& type)
         // location, they must have the same underlying type (floating-point or integer)"
         if (typeCollision && language == EShLangFragment && qualifier.isPipeOutput())
             error(loc, "fragment outputs sharing the same location must be the same basic type", "location", "%d", repeated);
+    }
+
+    if (qualifier.hasXfbOffset() && qualifier.hasXfbBuffer()) {
+        int repeated = intermediate.addXfbBufferOffset(type);
+        if (repeated >= 0)
+            error(loc, "overlapping offsets at", "xfb_offset", "offset %d in buffer %d", repeated, qualifier.layoutXfbBuffer);
+
+        // "The offset must be a multiple of the size of the first component of the first 
+        // qualified variable or block member, or a compile-time error results. Further, if applied to an aggregate 
+        // containing a double, the offset must also be a multiple of 8..."
+        if (type.containsBasicType(EbtDouble) && ! IsMultipleOfPow2(qualifier.layoutXfbOffset, 8))
+            error(loc, "type contains double; xfb_offset must be a multiple of 8", "xfb_offset", "");
+        else if (! IsMultipleOfPow2(qualifier.layoutXfbOffset, 4))
+            error(loc, "must be a multiple of size of first component", "xfb_offset", "");
+    }
+
+    if (qualifier.hasXfbStride() && qualifier.hasXfbBuffer()) {
+        if (! intermediate.setXfbBufferStride(qualifier.layoutXfbBuffer, qualifier.layoutXfbStride))
+            error(loc, "all stride settings must match for xfb buffer", "xfb_stride", "%d", qualifier.layoutXfbBuffer);
     }
 
     if (qualifier.hasBinding()) {
@@ -3844,10 +3882,16 @@ void TParseContext::declareBlock(TSourceLoc loc, TTypeList& typeList, const TStr
             if (defaultQualification.layoutStream != memberQualifier.layoutStream)
                 error(memberLoc, "member cannot contradict block", "stream", "");
         }
+
+        // "This includes a block's inheritance of the 
+        // current global default buffer, a block member's inheritance of the block's 
+        // buffer, and the requirement that any *xfb_buffer* declared on a block 
+        // member must match the buffer inherited from the block."
         if (memberQualifier.hasXfbBuffer()) {
             if (defaultQualification.layoutXfbBuffer != memberQualifier.layoutXfbBuffer)
                 error(memberLoc, "member cannot contradict block (or what block inherited from global)", "xfb_buffer", "");
         }
+
         if (memberQualifier.layoutPacking != ElpNone)
             error(memberLoc, "member of block cannot have a packing layout qualifier", typeList[member].type->getFieldName().c_str(), "");
         if (memberQualifier.hasLocation()) {
@@ -3869,7 +3913,10 @@ void TParseContext::declareBlock(TSourceLoc loc, TTypeList& typeList, const TStr
         mergeQualifiers(memberLoc, newMemberQualification, memberQualifier, false);
         memberQualifier = newMemberQualification;
     }
+
+    // Process the members
     fixBlockLocations(loc, currentBlockQualifier, typeList, memberWithLocation, memberWithoutLocation);
+    fixBlockXfbOffsets(loc, currentBlockQualifier, typeList);
     for (unsigned int member = 0; member < typeList.size(); ++member)
         layoutTypeCheck(typeList[member].loc, *typeList[member].type);
 
@@ -3981,6 +4028,37 @@ void TParseContext::fixBlockLocations(TSourceLoc loc, TQualifier& qualifier, TTy
             }
         }
     }
+}
+
+void TParseContext::fixBlockXfbOffsets(TSourceLoc loc, TQualifier& qualifier, TTypeList& typeList)
+{
+    // "If a block is qualified with xfb_offset, all its 
+    // members are assigned transform feedback buffer offsets. If a block is not qualified with xfb_offset, any 
+    // members of that block not qualified with an xfb_offsetwill not be assigned transform feedback buffer 
+    // offsets."
+
+    if (! currentBlockQualifier.hasXfbBuffer() || ! currentBlockQualifier.hasXfbOffset())
+        return;
+
+    int nextOffset = currentBlockQualifier.layoutXfbOffset;
+    for (unsigned int member = 0; member < typeList.size(); ++member) {
+        TQualifier& memberQualifier = typeList[member].type->getQualifier();
+        bool containsDouble = false;
+        int memberSize = intermediate.computeTypeXfbSize(*typeList[member].type, containsDouble);
+        // see if we need to auto-assign an offset to this member
+        if (! memberQualifier.hasXfbOffset()) {
+            // "if applied to an aggregate containing a double, the offset must also be a multiple of 8"
+            if (containsDouble)
+                RoundToPow2(nextOffset, 8);
+            memberQualifier.layoutXfbOffset = nextOffset;
+        } else
+            nextOffset = memberQualifier.layoutXfbOffset;
+        nextOffset += memberSize;
+    }
+
+    // The above gave all block members an offset, so we can take it off the block now,
+    // which will avoid double counting the offset usage.
+    qualifier.layoutXfbOffset = TQualifier::layoutXfbOffsetEnd;
 }
 
 // For an identifier that is already declared, add more qualification to it.
@@ -4150,6 +4228,10 @@ void TParseContext::updateStandaloneQualifierDefaults(TSourceLoc loc, const TPub
             globalOutputDefaults.layoutStream = qualifier.layoutStream;
         if (qualifier.hasXfbBuffer())
             globalOutputDefaults.layoutXfbBuffer = qualifier.layoutXfbBuffer;
+        if (globalOutputDefaults.hasXfbBuffer() && qualifier.hasXfbStride()) {
+            if (! intermediate.setXfbBufferStride(globalOutputDefaults.layoutXfbBuffer, qualifier.layoutXfbStride))
+                error(loc, "all stride settings must match for xfb buffer", "xfb_stride", "%d", qualifier.layoutXfbBuffer);
+        }
         break;
     default:
         error(loc, "default qualifier requires 'uniform', 'buffer', 'in', or 'out' storage qualification", "", "");

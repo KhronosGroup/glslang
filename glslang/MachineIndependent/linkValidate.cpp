@@ -112,6 +112,16 @@ void TIntermediate::merge(TInfoSink& infoSink, TIntermediate& unit)
 
     if (unit.xfbMode)
         xfbMode = true;
+    for (size_t b = 0; b < xfbBuffers.size(); ++b) {
+        if (xfbBuffers[b].stride == TQualifier::layoutXfbStrideEnd)
+            xfbBuffers[b].stride = unit.xfbBuffers[b].stride;
+        else if (xfbBuffers[b].stride != unit.xfbBuffers[b].stride)
+            error(infoSink, "Contradictory xfb_stride");
+        xfbBuffers[b].implicitStride = std::max(xfbBuffers[b].implicitStride, unit.xfbBuffers[b].implicitStride);
+        if (unit.xfbBuffers[b].containsDouble)
+            xfbBuffers[b].containsDouble = true;
+        // TODO: 4.4 link: enhanced layouts: compare ranges
+    }
 
     if (unit.treeRoot == 0)
         return;
@@ -304,6 +314,44 @@ void TIntermediate::finalCheck(TInfoSink& infoSink)
         error(infoSink, "Cannot use gl_FragColor or gl_FragData when using user-defined outputs");
     if (inIoAccessed("gl_FragColor") && inIoAccessed("gl_FragData"))
         error(infoSink, "Cannot use both gl_FragColor and gl_FragData");
+
+    for (size_t b = 0; b < xfbBuffers.size(); ++b) {
+        if (xfbBuffers[b].containsDouble)
+            RoundToPow2(xfbBuffers[b].implicitStride, 8);
+
+        // "It is a compile-time or link-time error to have 
+        // any xfb_offset that overflows xfb_stride, whether stated on declarations before or after the xfb_stride, or
+        // in different compilation units. While xfb_stridecan be declared multiple times for the same buffer, it is a
+        // compile-time or link-time error to have different values specified for the stride for the same buffer."
+        if (xfbBuffers[b].stride != TQualifier::layoutXfbStrideEnd && xfbBuffers[b].implicitStride > xfbBuffers[b].stride) {
+            error(infoSink, "xfb_stride is too small to hold all buffer entries:");
+            infoSink.info.prefix(EPrefixError);
+            infoSink.info << "    xfb_buffer " << b << ", xfb_stride " << xfbBuffers[b].stride << ", minimum stride needed: " << xfbBuffers[b].implicitStride << "\n";
+        }
+        if (xfbBuffers[b].stride == TQualifier::layoutXfbStrideEnd)
+            xfbBuffers[b].stride = xfbBuffers[b].implicitStride;
+
+        // "If the buffer is capturing any 
+        // outputs with double-precision components, the stride must be a multiple of 8, otherwise it must be a 
+        // multiple of 4, or a compile-time or link-time error results."
+        if (xfbBuffers[b].containsDouble && ! IsMultipleOfPow2(xfbBuffers[b].stride, 8)) {
+            error(infoSink, "xfb_stride must be multiple of 8 for buffer holding a double:");
+            infoSink.info.prefix(EPrefixError);
+            infoSink.info << "    xfb_buffer " << b << ", xfb_stride " << xfbBuffers[b].stride << "\n";
+        } else if (! IsMultipleOfPow2(xfbBuffers[b].stride, 4)) {
+            error(infoSink, "xfb_stride must be multiple of 4:");
+            infoSink.info.prefix(EPrefixError);
+            infoSink.info << "    xfb_buffer " << b << ", xfb_stride " << xfbBuffers[b].stride << "\n";
+        }
+
+        // "The resulting stride (implicit or explicit), when divided by 4, must be less than or equal to the 
+        // implementation-dependent constant gl_MaxTransformFeedbackInterleavedComponents."
+        if (xfbBuffers[b].stride > (unsigned int)(4 * resources.maxTransformFeedbackInterleavedComponents)) {
+            error(infoSink, "xfb_stride is too large:");
+            infoSink.info.prefix(EPrefixError);
+            infoSink.info << "    xfb_buffer " << b << ", components (1/4 stride) needed are " << xfbBuffers[b].stride/4 << ", gl_MaxTransformFeedbackInterleavedComponents is " << resources.maxTransformFeedbackInterleavedComponents << "\n";
+        }
+    }
 
     switch (language) {
     case EShLangVertex:
@@ -510,6 +558,7 @@ int TIntermediate::addUsedLocation(const TQualifier& qualifier, const TType& typ
         else
             size = 1;
     } else {
+        // Strip off the outer array dimension for those having an extra one.
         if (type.isArray() && ! qualifier.patch &&
             (language == EShLangGeometry && qualifier.isPipeInput()) ||
             language == EShLangTessControl                           ||
@@ -520,36 +569,31 @@ int TIntermediate::addUsedLocation(const TQualifier& qualifier, const TType& typ
             size = computeTypeLocationSize(type);
     }
 
-    TRange locationRange = { qualifier.layoutLocation, qualifier.layoutLocation + size - 1 };
-    TRange componentRange = { 0, 3 };
+    TRange locationRange(qualifier.layoutLocation, qualifier.layoutLocation + size - 1);
+    TRange componentRange(0, 3);
     if (qualifier.layoutComponent != TQualifier::layoutComponentEnd) {
         componentRange.start = qualifier.layoutComponent;
         componentRange.last = componentRange.start + type.getVectorSize() - 1;
     }
+    TIoRange range(locationRange, componentRange, type.getBasicType());
 
     // check for collisions, except for vertex inputs on desktop
     if (! (profile != EEsProfile && language == EShLangVertex && qualifier.isPipeInput())) {
         for (size_t r = 0; r < usedIo[set].size(); ++r) {
-            if (locationRange.last  >= usedIo[set][r].location.start &&
-                locationRange.start <= usedIo[set][r].location.last &&
-                componentRange.last  >= usedIo[set][r].component.start &&
-                componentRange.start <= usedIo[set][r].component.last) {
+            if (range.overlap(usedIo[set][r])) {
                 // there is a collision; pick one
                 return std::max(locationRange.start, usedIo[set][r].location.start);
-            } else if (locationRange.last  >= usedIo[set][r].location.start &&
-                       locationRange.start <= usedIo[set][r].location.last &&
-                       type.getBasicType() != usedIo[set][r].basicType) {
+            } else if (locationRange.overlap(usedIo[set][r].location) && type.getBasicType() != usedIo[set][r].basicType) {
+                // aliased-type mismatch
                 typeCollision = true;
                 return std::max(locationRange.start, usedIo[set][r].location.start);
             }
         }
     }
 
-    TIoRange range = { locationRange, componentRange, type.getBasicType() };
-
     usedIo[set].push_back(range);
 
-    return -1;
+    return -1; // no collision
 }
 
 // Recursively figure out how many locations are used up by an input or output type.
@@ -559,7 +603,7 @@ int TIntermediate::computeTypeLocationSize(const TType& type)
     // "If the declared input is an array of size n and each element takes m locations, it will be assigned m * n 
     // consecutive locations..."
     if (type.isArray()) {
-        TType elementType(type, 0);        
+        TType elementType(type, 0);
         if (type.getArraySize() == 0) {
             // TODO: are there valid cases of having an unsized array with a location?  If so, running this code too early.
             return computeTypeLocationSize(elementType);
@@ -603,6 +647,97 @@ int TIntermediate::computeTypeLocationSize(const TType& type)
 
     assert(0);
     return 1;
+}
+
+// Accumulate xfb buffer ranges and check for collisions as the accumulation is done.
+//
+// Returns < 0 if no collision, >= 0 if collision and the value returned is a colliding value.
+//
+int TIntermediate::addXfbBufferOffset(const TType& type)
+{
+    const TQualifier& qualifier = type.getQualifier();
+
+    assert(qualifier.hasXfbOffset() && qualifier.hasXfbBuffer());
+    TXfbBuffer& buffer = xfbBuffers[qualifier.layoutXfbBuffer];
+
+    // compute the range
+    unsigned int size = computeTypeXfbSize(type, buffer.containsDouble);
+    buffer.implicitStride = std::max(buffer.implicitStride, qualifier.layoutXfbOffset + size);
+    TRange range(qualifier.layoutXfbOffset, qualifier.layoutXfbOffset + size - 1);
+
+    // check for collisions
+    for (size_t r = 0; r < buffer.ranges.size(); ++r) {
+        if (range.overlap(buffer.ranges[r])) {
+            // there is a collision; pick an example to return
+            return std::max(range.start, buffer.ranges[r].start);
+        }
+    }
+
+    buffer.ranges.push_back(range);
+
+    return -1;  // no collision
+}
+
+// Recursively figure out how many bytes of xfb buffer are used by the given type.
+// Return the size of type, in bytes.
+// Sets containsDouble to true if the type contains a double.
+// N.B. Caller must set containsDouble to false before calling.
+unsigned int TIntermediate::computeTypeXfbSize(const TType& type, bool& containsDouble) const
+{
+    // "...if applied to an aggregate containing a double, the offset must also be a multiple of 8, 
+    // and the space taken in the buffer will be a multiple of 8.
+    // ...within the qualified entity, subsequent components are each 
+    // assigned, in order, to the next available offset aligned to a multiple of
+    // that component's size.  Aggregate types are flattened down to the component
+    // level to get this sequence of components."
+
+    if (type.isArray()) {
+        assert(type.getArraySize() > 0);
+        TType elementType(type, 0);
+        return type.getArraySize() * computeTypeXfbSize(elementType, containsDouble);
+    }
+
+    if (type.isStruct()) {
+        unsigned int size = 0;
+        bool structContainsDouble = false;
+        for (size_t member = 0; member < type.getStruct()->size(); ++member) {
+            TType memberType(type, member);
+            // "... if applied to 
+            // an aggregate containing a double, the offset must also be a multiple of 8, 
+            // and the space taken in the buffer will be a multiple of 8."
+            bool memberContainsDouble = false;
+            int memberSize = computeTypeXfbSize(memberType, memberContainsDouble);
+            if (memberContainsDouble) {
+                structContainsDouble = true;
+                RoundToPow2(size, 8);
+            }
+            size += memberSize;
+        }
+
+        if (structContainsDouble) {
+            containsDouble = true;
+            RoundToPow2(size, 8);
+        }
+        return size;
+    }
+
+    int numComponents;
+    if (type.isScalar())
+        numComponents = 1;
+    else if (type.isVector())
+        numComponents = type.getVectorSize();
+    else if (type.isMatrix())
+        numComponents = type.getMatrixCols() * type.getMatrixRows();
+    else {
+        assert(0);
+        numComponents = 1;
+    }
+
+    if (type.getBasicType() == EbtDouble) {
+        containsDouble = true;
+        return 8 * numComponents;
+    } else
+        return 4 * numComponents;
 }
 
 } // end namespace glslang

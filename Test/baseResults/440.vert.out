@@ -22,7 +22,27 @@ ERROR: 0:61: 'location' : cannot declare a default, use a full declaration
 ERROR: 0:81: 'xfb layout qualifier' : can only be used on an output 
 ERROR: 0:87: 'xfb_offset' : cannot declare a default, use a full declaration 
 ERROR: 0:97: 'xfb_buffer' : member cannot contradict block (or what block inherited from global) 
-ERROR: 22 compilation errors.  No code generated.
+ERROR: 0:102: 'xfb_buffer' : member cannot contradict block (or what block inherited from global) 
+ERROR: 0:102: 'xfb_offset' : overlapping offsets at offset 32 in buffer 3
+ERROR: 0:103: 'xfb_offset' : overlapping offsets at offset 0 in buffer 2
+ERROR: 0:105: 'xfb_offset' : overlapping offsets at offset 24 in buffer 2
+ERROR: 0:108: 'xfb_stride' : all stride settings must match for xfb buffer 15
+ERROR: 0:112: 'xfb_offset' : overlapping offsets at offset 4 in buffer 1
+ERROR: 0:114: 'xfb_stride' : all stride settings must match for xfb buffer 3
+ERROR: 0:115: 'xfb_stride' : all stride settings must match for xfb buffer 3
+ERROR: 0:119: 'xfb_stride' : all stride settings must match for xfb buffer 3
+ERROR: 0:117: 'xfb_stride' : all stride settings must match for xfb buffer 3
+ERROR: 0:138: 'xfb_offset' : overlapping offsets at offset 64 in buffer 0
+ERROR: 0:143: 'xfb_buffer' : buffer is too large: gl_MaxTransformFeedbackBuffers is 4
+ERROR: 0:144: 'xfb_offset' : must be a multiple of size of first component 
+ERROR: 0:145: 'xfb_offset' : type contains double; xfb_offset must be a multiple of 8 
+ERROR: 0:147: 'xfb_offset' : must be a multiple of size of first component 
+ERROR: 0:148: 'xfb_offset' : type contains double; xfb_offset must be a multiple of 8 
+ERROR: 0:152: 'xfb_buffer' : buffer is too large: gl_MaxTransformFeedbackBuffers is 4
+ERROR: 0:155: 'xfb_buffer' : buffer is too large: gl_MaxTransformFeedbackBuffers is 4
+ERROR: 0:155: 'xfb_stride' : 1/4 stride is too large: gl_MaxTransformFeedbackInterleavedComponents is 64
+ERROR: 0:157: 'xfb_buffer' : buffer is too large: gl_MaxTransformFeedbackBuffers is 4
+ERROR: 42 compilation errors.  No code generated.
 
 
 in xfb mode
@@ -60,13 +80,22 @@ ERROR: node is still EOpNull!
 0:?     'be' (layout(location=50 component=3 ) smooth out int)
 0:?     'bf' (layout(location=50 component=0 ) smooth out 3-component vector of float)
 0:?     'bbinst1' (out block{out 4-component vector of float bbv})
-0:?     'bbinst2' (out block{layout(xfb_buffer=0 xfb_offset=16 ) out 4-component vector of float bbv})
+0:?     'bbinst2' (out block{layout(xfb_buffer=0 xfb_offset=64 ) out 4-component vector of float bbv})
 0:?     'bbinst3' (out block{layout(xfb_buffer=3 xfb_offset=16 ) out 4-component vector of float bbv})
 0:?     'ubbinst3' (layout(column_major shared ) uniform block{layout(column_major shared xfb_offset=16 ) uniform 4-component vector of float bbv})
-0:?     'bg' (layout(xfb_buffer=2 xfb_offset=32 xfb_stride=64 ) smooth out 4-component vector of float)
+0:?     'bg' (layout(xfb_buffer=2 xfb_offset=48 xfb_stride=80 ) smooth out 4-component vector of float)
 0:?     'bh' (layout(xfb_buffer=3 xfb_offset=32 xfb_stride=64 ) smooth out 4-component vector of float)
-0:?     'bbinst4' (layout(xfb_buffer=2 xfb_offset=16 xfb_stride=32 ) out block{layout(xfb_buffer=2 xfb_offset=16 ) out 4-component vector of float bbv1, layout(xfb_buffer=2 xfb_offset=16 ) out 4-component vector of float bbv2})
-0:?     'bbinst5' (out block{layout(xfb_buffer=3 xfb_offset=0 ) out 4-component vector of float bbv1, layout(xfb_buffer=3 xfb_offset=16 xfb_stride=32 ) out 4-component vector of float bbv2, out 4-component vector of float bbv3})
+0:?     'bbinst4' (layout(xfb_stride=80 ) out block{layout(xfb_buffer=2 xfb_offset=16 ) out 4-component vector of float bbv1, layout(xfb_buffer=2 xfb_offset=32 ) out 4-component vector of float bbv2})
+0:?     'bbinst5' (out block{layout(xfb_buffer=3 xfb_offset=0 ) out 4-component vector of float bbv1, layout(xfb_buffer=3 xfb_offset=48 xfb_stride=64 ) out 4-component vector of float bbv2, out 4-component vector of float bbv3})
+0:?     'bbinst6' (out block{layout(xfb_buffer=2 xfb_offset=0 ) out 4-component vector of float bbv1, layout(xfb_buffer=3 xfb_offset=32 xfb_stride=64 ) out 4-component vector of float bbv2, layout(xfb_buffer=2 xfb_offset=0 ) out 4-component vector of float bbv3, out 4-component vector of float bbv5, layout(xfb_buffer=2 xfb_offset=24 ) out float bbf6})
+0:?     'bj' (layout(xfb_buffer=1 xfb_offset=4 ) smooth out float)
+0:?     'bk' (layout(xfb_buffer=1 xfb_offset=0 ) smooth out 2-component vector of int)
+0:?     'bl' (layout(xfb_stride=48 ) smooth out float)
+0:?     'bbinst7' (layout(xfb_stride=48 ) out block{layout(xfb_stride=64 ) out 4-component vector of float bbv1, layout(xfb_stride=32 ) out 4-component vector of float bbv2})
+0:?     'bbinst8' (layout(xfb_stride=92 ) out block{layout(xfb_buffer=0 xfb_offset=0 ) out bool b, layout(xfb_buffer=0 xfb_offset=8 ) out structure{bool b, structure{int i, double d, float f} s, 2-component vector of float v2} t, layout(xfb_buffer=0 xfb_offset=48 ) out int i, layout(xfb_buffer=0 xfb_offset=52 ) out 3X3 matrix of float m3, layout(xfb_buffer=0 xfb_offset=88 ) out float f, layout(xfb_buffer=0 xfb_offset=92 ) out float g})
+0:?     'bbinst9' (out block{layout(xfb_buffer=4 xfb_offset=1 ) out bool b, layout(xfb_buffer=4 xfb_offset=12 ) out structure{bool b, structure{int i, double d, float f} s, 2-component vector of float v2} t, layout(xfb_buffer=4 xfb_offset=52 ) out 3X3 matrix of float m3, layout(xfb_buffer=4 xfb_offset=90 ) out int i, layout(xfb_buffer=4 xfb_offset=98 ) out double d, layout(xfb_buffer=4 xfb_offset=108 ) out structure{int a} s})
+0:?     'bm' (layout(xfb_buffer=5 xfb_offset=0 ) smooth out float)
+0:?     'bbinst10' (out block{layout(xfb_buffer=7 xfb_offset=0 ) out 4X4 matrix of double m1, layout(xfb_buffer=7 xfb_offset=128 ) out 4X4 matrix of double m2, layout(xfb_buffer=7 xfb_offset=256 ) out float f})
 0:?     'gl_VertexID' (gl_VertexId int)
 0:?     'gl_InstanceID' (gl_InstanceId int)
 
@@ -74,6 +103,14 @@ ERROR: node is still EOpNull!
 Linked vertex stage:
 
 ERROR: Linking vertex stage: Missing entry point: Each stage requires one "void main()" entry point
+ERROR: Linking vertex stage: xfb_stride is too small to hold all buffer entries:
+ERROR:     xfb_buffer 0, xfb_stride 92, minimum stride needed: 96
+ERROR: Linking vertex stage: xfb_stride must be multiple of 8 for buffer holding a double:
+ERROR:     xfb_buffer 0, xfb_stride 92
+ERROR: Linking vertex stage: xfb_stride must be multiple of 4:
+ERROR:     xfb_buffer 5, xfb_stride 6
+ERROR: Linking vertex stage: xfb_stride is too large:
+ERROR:     xfb_buffer 7, components (1/4 stride) needed are 66, gl_MaxTransformFeedbackInterleavedComponents is 64
 
 in xfb mode
 

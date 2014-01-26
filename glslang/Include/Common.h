@@ -185,6 +185,20 @@ typedef TMap<TString, TString>::tAllocator TPragmaTableAllocator;
 
 const int GlslangMaxTokenLength = 1024;
 
+// Round number up to a multiple of the given powerOf2, which is not
+// a power, just a number that must be a power of 2.
+template <class T> void RoundToPow2(T& number, int powerOf2)
+{
+    assert((powerOf2 & (powerOf2 - 1)) == 0);
+    number = (number + powerOf2 - 1) & ~(powerOf2 - 1);
+}
+
+template <class T> bool IsMultipleOfPow2(T number, int powerOf2)
+{
+    assert((powerOf2 & (powerOf2 - 1)) == 0);
+    return ! (number & (powerOf2 - 1));
+}
+
 } // end namespace glslang
 
 #endif // _COMMON_INCLUDED_

@@ -68,31 +68,94 @@ out bblck1 {
 } bbinst1;
 
 out bblck2 {
-    layout(xfb_offset=16) vec4 bbv;
+    layout(xfb_offset=64) vec4 bbv;
 } bbinst2;
 
-layout(xfb_buffer = 3, xfb_stride = 16) out;
+layout(xfb_buffer = 3, xfb_stride = 64) out;  // default buffer is 3
 
 out bblck3 {
-    layout(xfb_offset=16) vec4 bbv;
+    layout(xfb_offset=16) vec4 bbv;  // in xfb_buffer 3
 } bbinst3;
 
 uniform ubblck3 {
-    layout(xfb_offset=16) vec4 bbv;  // ERROR
+    layout(xfb_offset=16) vec4 bbv;  // ERROR, not in a uniform
 } ubbinst3;
 
-layout(xfb_buffer=2, xfb_offset=32, xfb_stride=64) out vec4 bg;
+layout(xfb_buffer=2, xfb_offset=48, xfb_stride=80) out vec4 bg;
 layout(              xfb_offset=32, xfb_stride=64) out vec4 bh;
 
 layout(xfb_offset=48) out; // ERROR
 
-layout(xfb_stride=32, xfb_buffer=2, xfb_offset=16) out bblck4 {
+layout(xfb_stride=80, xfb_buffer=2, xfb_offset=16) out bblck4 {
     vec4 bbv1;
     vec4 bbv2;
 } bbinst4;
 
 out bblck5 {
     layout(xfb_offset=0) vec4 bbv1;
-    layout(xfb_stride=32, xfb_buffer=3, xfb_offset=16) vec4 bbv2;
+    layout(xfb_stride=64, xfb_buffer=3, xfb_offset=48) vec4 bbv2;
     layout(xfb_buffer=2) vec4 bbv3;                               // ERROR, wrong buffer
 } bbinst5;
+
+out layout(xfb_buffer=2) bblck6 {
+    layout(xfb_offset=0) vec4 bbv1;
+    layout(xfb_stride=64, xfb_buffer=3, xfb_offset=32) vec4 bbv2; // ERROR, overlap 32 from bh, and buffer contradiction
+    layout(xfb_buffer=2, xfb_offset=0) vec4 bbv3;                 // ERROR, overlap 0 from bbinst5
+    layout(xfb_buffer=2) vec4 bbv5;
+    layout(xfb_offset=24) float bbf6;                             // ERROR, overlap 24 from bbv1 in bbinst4
+} bbinst6;
+
+layout(xfb_stride=48) out;                   // ERROR, stride of buffer 3
+
+layout(xfb_buffer=1) out;  // default buffer is 1
+layout(xfb_offset=4) out float bj;
+layout(xfb_offset=0) out ivec2 bk;           // ERROR, overlap 4
+
+layout(xfb_buffer=3, xfb_stride=48) out;     // ERROR, stride of buffer 3 (default is now 3)
+layout(xfb_stride=48) out float bl;          // ERROR, stride of buffer 3
+
+layout(xfb_stride=48) out bblck7 {           // ERROR, stride of buffer 3
+    layout(xfb_stride=64) vec4 bbv1;
+    layout(xfb_stride=32) vec4 bbv2;         // ERROR, stride of buffer 3
+} bbinst7;
+
+struct S5 {
+    int i;    // 4 bytes plus 4 byte hole
+    double d; // 8 bytes
+    float f;  // 4 bytes
+};  // total size = 20
+
+struct T {
+    bool b;   // 4 plus 4 byte hole
+    S5 s;     // 20 
+    vec2 v2;  // 8
+};  // total size = 36
+
+out layout(xfb_buffer=0, xfb_offset=0, xfb_stride=92) bblck8 {  // ERROR, stride not multiple of 8
+    bool b;    // offset 0
+    T t;       // offset 8, size 40
+    int i;     // offset 40 + 4 = 48
+    mat3x3 m3; // offset 52
+    float f;   // offset 52 + 9*4 = 88
+    float g;   // ERROR, overflow stride
+} bbinst8;
+
+out layout(xfb_buffer=4) bblck9 {
+    layout(xfb_offset=1) bool b;     // ERROR
+    layout(xfb_offset=12) T t;       // ERROR
+    layout(xfb_offset=52) mat3x3 m3; // non-multiple of 8 okay
+    layout(xfb_offset=90) int i;     // ERROR
+    layout(xfb_offset=98) double d;  // ERROR
+    layout(xfb_offset=108) S s;      // non-multiple of 8 okay
+} bbinst9;
+
+layout(xfb_buffer=5, xfb_stride=6) out;     // link ERROR, stride not multiple of 4
+layout(xfb_offset=0) out float bm;
+
+layout(xfb_buffer=6, xfb_stride=2000) out;  // ERROR, stride too big
+
+out layout(xfb_buffer=7, xfb_offset=0) bblck10 {  // link ERROR, implicit stride too big
+    dmat4x4 m1;
+    dmat4x4 m2;
+    float f;
+} bbinst10;
