@@ -735,12 +735,17 @@ int TScanContext::tokenizeIdentifier()
     case DVEC2:
     case DVEC3:
     case DVEC4:
+        afterType = true;
+        if (parseContext.profile == EEsProfile || parseContext.version < 400)
+            reservedWord();
+        return keyword;
+
     case SAMPLERCUBEARRAY:
     case SAMPLERCUBEARRAYSHADOW:
     case ISAMPLERCUBEARRAY:
     case USAMPLERCUBEARRAY:
         afterType = true;
-        if (parseContext.profile == EEsProfile || parseContext.version < 400)
+        if (parseContext.profile == EEsProfile || (parseContext.version < 400 && ! parseContext.extensionsTurnedOn(1, &GL_ARB_texture_cube_map_array)))
             reservedWord();
         return keyword;
 

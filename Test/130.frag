@@ -96,3 +96,23 @@ void bar234()
     s = textureGatherOffset(samp2DS, vec2(0.3), 1.3, ivec2(1));
     s = textureGatherOffset(samp2D, vec2(0.3), ivec2(1), 2);
 }
+
+#extension GL_ARB_texture_cube_map_array : enable
+
+uniform  samplerCubeArray Sca;
+uniform isamplerCubeArray Isca;
+uniform usamplerCubeArray Usca;
+uniform samplerCubeArrayShadow Scas;
+
+void bar235()
+{
+    ivec3 a = textureSize(Sca, 3);
+    vec4 b = texture(Sca, i);
+    ivec4 c = texture(Isca, i, 0.7);
+    uvec4 d = texture(Usca, i);
+    
+    b = textureLod(Sca, i, 1.7);
+    a = textureSize(Scas, a.x);
+    float f = texture(Scas, i, b.y);
+    c = textureGrad(Isca, i, vec3(0.1), vec3(0.2));
+}

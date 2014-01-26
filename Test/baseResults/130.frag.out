@@ -216,6 +216,74 @@ ERROR: node is still EOpNull!
 0:97            1 (const int)
 0:97          Constant:
 0:97            2 (const int)
+0:107  Function Definition: bar235( (void)
+0:107    Function Parameters: 
+0:109    Sequence
+0:109      Sequence
+0:109        move second child to first child (3-component vector of int)
+0:109          'a' (3-component vector of int)
+0:109          Function Call: textureSize(sAC1;i1; (3-component vector of int)
+0:109            'Sca' (uniform samplerCubeArray)
+0:109            Constant:
+0:109              3 (const int)
+0:110      Sequence
+0:110        move second child to first child (4-component vector of float)
+0:110          'b' (4-component vector of float)
+0:110          Function Call: texture(sAC1;vf4; (4-component vector of float)
+0:110            'Sca' (uniform samplerCubeArray)
+0:110            'i' (smooth in 4-component vector of float)
+0:111      Sequence
+0:111        move second child to first child (4-component vector of int)
+0:111          'c' (4-component vector of int)
+0:111          Function Call: texture(isA31;vf4;f1; (4-component vector of int)
+0:111            'Isca' (uniform isampler3DArray)
+0:111            'i' (smooth in 4-component vector of float)
+0:111            Constant:
+0:111              0.700000
+0:112      Sequence
+0:112        move second child to first child (4-component vector of uint)
+0:112          'd' (4-component vector of uint)
+0:112          Function Call: texture(usAC1;vf4; (4-component vector of uint)
+0:112            'Usca' (uniform usamplerCubeArray)
+0:112            'i' (smooth in 4-component vector of float)
+0:114      move second child to first child (4-component vector of float)
+0:114        'b' (4-component vector of float)
+0:114        Function Call: textureLod(sAC1;vf4;f1; (4-component vector of float)
+0:114          'Sca' (uniform samplerCubeArray)
+0:114          'i' (smooth in 4-component vector of float)
+0:114          Constant:
+0:114            1.700000
+0:115      move second child to first child (3-component vector of int)
+0:115        'a' (3-component vector of int)
+0:115        Function Call: textureSize(sASC1;i1; (3-component vector of int)
+0:115          'Scas' (uniform samplerCubeArrayShadow)
+0:115          direct index (int)
+0:115            'a' (3-component vector of int)
+0:115            Constant:
+0:115              0 (const int)
+0:116      Sequence
+0:116        move second child to first child (float)
+0:116          'f' (float)
+0:116          Function Call: texture(sASC1;vf4;f1; (float)
+0:116            'Scas' (uniform samplerCubeArrayShadow)
+0:116            'i' (smooth in 4-component vector of float)
+0:116            direct index (float)
+0:116              'b' (4-component vector of float)
+0:116              Constant:
+0:116                1 (const int)
+0:117      move second child to first child (4-component vector of int)
+0:117        'c' (4-component vector of int)
+0:117        Function Call: textureGrad(isA31;vf4;vf3;vf3; (4-component vector of int)
+0:117          'Isca' (uniform isampler3DArray)
+0:117          'i' (smooth in 4-component vector of float)
+0:117          Constant:
+0:117            0.100000
+0:117            0.100000
+0:117            0.100000
+0:117          Constant:
+0:117            0.200000
+0:117            0.200000
+0:117            0.200000
 0:?   Linker Objects
 0:?     'a' (3-component vector of float)
 0:?     'b' (float)
@@ -233,6 +301,10 @@ ERROR: node is still EOpNull!
 0:?     'samp2DS' (uniform sampler2DShadow)
 0:?     'samp2DR' (uniform sampler2DRect)
 0:?     'samp2DA' (uniform sampler2DArray)
+0:?     'Sca' (uniform samplerCubeArray)
+0:?     'Isca' (uniform isampler3DArray)
+0:?     'Usca' (uniform usamplerCubeArray)
+0:?     'Scas' (uniform samplerCubeArrayShadow)
 
 
 Linked fragment stage:

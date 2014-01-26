@@ -1464,7 +1464,7 @@ void TBuiltIns::add2ndGenerationSamplingImaging(int version, EProfile profile)
                             continue;
                         if (dim == Esd3D && shadow)
                             continue;
-                        if (dim == EsdCube && arrayed && version < 400)
+                        if (dim == EsdCube && arrayed && (profile == EEsProfile || version < 130))
                             continue;
                         if (dim == EsdBuffer && (profile == EEsProfile || version < 140))
                             continue;

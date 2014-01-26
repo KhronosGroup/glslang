@@ -87,6 +87,7 @@ const char* const GL_ARB_gpu_shader5              = "GL_ARB_gpu_shader5";
 const char* const GL_ARB_separate_shader_objects  = "GL_ARB_separate_shader_objects";
 const char* const GL_ARB_tessellation_shader      = "GL_ARB_tessellation_shader";
 const char* const GL_ARB_enhanced_layouts         = "GL_ARB_enhanced_layouts";
+const char* const GL_ARB_texture_cube_map_array   = "GL_ARB_texture_cube_map_array";
 
 } // end namespace glslang
 
