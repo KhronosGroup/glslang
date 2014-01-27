@@ -62,6 +62,7 @@
 #include <vector>
 #include <map>
 #include <list>
+#include <algorithm>
 #include <string>
 #include <stdio.h>
 #include <assert.h>

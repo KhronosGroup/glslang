@@ -326,7 +326,7 @@ void TIntermediate::finalCheck(TInfoSink& infoSink)
         if (xfbBuffers[b].stride != TQualifier::layoutXfbStrideEnd && xfbBuffers[b].implicitStride > xfbBuffers[b].stride) {
             error(infoSink, "xfb_stride is too small to hold all buffer entries:");
             infoSink.info.prefix(EPrefixError);
-            infoSink.info << "    xfb_buffer " << b << ", xfb_stride " << xfbBuffers[b].stride << ", minimum stride needed: " << xfbBuffers[b].implicitStride << "\n";
+            infoSink.info << "    xfb_buffer " << (unsigned int)b << ", xfb_stride " << xfbBuffers[b].stride << ", minimum stride needed: " << xfbBuffers[b].implicitStride << "\n";
         }
         if (xfbBuffers[b].stride == TQualifier::layoutXfbStrideEnd)
             xfbBuffers[b].stride = xfbBuffers[b].implicitStride;
@@ -337,11 +337,11 @@ void TIntermediate::finalCheck(TInfoSink& infoSink)
         if (xfbBuffers[b].containsDouble && ! IsMultipleOfPow2(xfbBuffers[b].stride, 8)) {
             error(infoSink, "xfb_stride must be multiple of 8 for buffer holding a double:");
             infoSink.info.prefix(EPrefixError);
-            infoSink.info << "    xfb_buffer " << b << ", xfb_stride " << xfbBuffers[b].stride << "\n";
+            infoSink.info << "    xfb_buffer " << (unsigned int)b << ", xfb_stride " << xfbBuffers[b].stride << "\n";
         } else if (! IsMultipleOfPow2(xfbBuffers[b].stride, 4)) {
             error(infoSink, "xfb_stride must be multiple of 4:");
             infoSink.info.prefix(EPrefixError);
-            infoSink.info << "    xfb_buffer " << b << ", xfb_stride " << xfbBuffers[b].stride << "\n";
+            infoSink.info << "    xfb_buffer " << (unsigned int)b << ", xfb_stride " << xfbBuffers[b].stride << "\n";
         }
 
         // "The resulting stride (implicit or explicit), when divided by 4, must be less than or equal to the 
@@ -349,7 +349,7 @@ void TIntermediate::finalCheck(TInfoSink& infoSink)
         if (xfbBuffers[b].stride > (unsigned int)(4 * resources.maxTransformFeedbackInterleavedComponents)) {
             error(infoSink, "xfb_stride is too large:");
             infoSink.info.prefix(EPrefixError);
-            infoSink.info << "    xfb_buffer " << b << ", components (1/4 stride) needed are " << xfbBuffers[b].stride/4 << ", gl_MaxTransformFeedbackInterleavedComponents is " << resources.maxTransformFeedbackInterleavedComponents << "\n";
+            infoSink.info << "    xfb_buffer " << (unsigned int)b << ", components (1/4 stride) needed are " << xfbBuffers[b].stride/4 << ", gl_MaxTransformFeedbackInterleavedComponents is " << resources.maxTransformFeedbackInterleavedComponents << "\n";
         }
     }
 
