@@ -33,9 +33,10 @@ ERROR: 0:122: '=' : can't use with samplers or structs containing samplers
 ERROR: 0:123: '==' : can't use with samplers or structs containing samplers 
 ERROR: 0:129: 'texel offset' : value is out of range: [gl_MinProgramTexelOffset, gl_MaxProgramTexelOffset]
 ERROR: 0:129: 'texel offset' : value is out of range: [gl_MinProgramTexelOffset, gl_MaxProgramTexelOffset]
-ERROR: 0:148: 'imageBuffer' : Reserved word. 
-ERROR: 0:148: '' :  syntax error
-ERROR: 36 compilation errors.  No code generated.
+ERROR: 0:148: 'qualifier' : cannot use auxiliary, memory, interpolation, or precision qualifier in a default qualifier declaration (declaration with no type) 
+ERROR: 0:150: 'imageBuffer' : Reserved word. 
+ERROR: 0:150: '' :  syntax error
+ERROR: 37 compilation errors.  No code generated.
 
 
 ERROR: node is still EOpNull!

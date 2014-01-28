@@ -166,6 +166,7 @@ public:
     void declareBlock(TSourceLoc, TTypeList& typeList, const TString* instanceName = 0, TArraySizes* arraySizes = 0);
     void fixBlockLocations(TSourceLoc, TQualifier&, TTypeList&, bool memberWithLocation, bool memberWithoutLocation);
     void fixBlockXfbOffsets(TSourceLoc, TQualifier&, TTypeList&);
+    void fixBlockUniformOffsets(TSourceLoc, TQualifier&, TTypeList&);
     void addQualifierToExisting(TSourceLoc, TQualifier, const TString& identifier);
     void addQualifierToExisting(TSourceLoc, TQualifier, TIdentifierList&);
     void invariantCheck(TSourceLoc, const TType&, const TString& identifier);

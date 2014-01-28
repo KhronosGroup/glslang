@@ -145,5 +145,7 @@ void foo324(void)
     mat3x2 m32 = outerProduct(vec2(2,3), vec3(5,7,11));// rows: (10, 14, 22), (15, 21, 33)
 }
 
+uniform mediump;       // ERROR
+
 float imageBuffer;    // ERROR, reserved
 float uimage2DRect;   // ERROR, reserved

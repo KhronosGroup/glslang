@@ -401,10 +401,26 @@ public:
 
     bool hasUniformLayout() const
     {
-        return layoutMatrix  != ElmNone ||
-               layoutPacking != ElpNone ||
-               layoutOffset  != -1 ||
-               layoutAlign   != -1;
+        return hasMatrix() ||
+               hasPacking() ||
+               hasOffset() ||
+               hasAlign();
+    }
+    bool hasMatrix() const
+    {
+        return layoutMatrix != ElmNone;
+    }
+    bool hasPacking() const
+    {
+        return layoutPacking != ElpNone;
+    }
+    bool hasOffset() const
+    {
+        return layoutOffset != -1;
+    }
+    bool hasAlign() const
+    {
+        return layoutAlign != -1;
     }
     bool hasLocation() const
     {
@@ -904,13 +920,13 @@ public:
                     p += snprintf(p, end - p, "binding=%d ", qualifier.layoutBinding);
                 if (qualifier.hasStream())
                     p += snprintf(p, end - p, "stream=%d ", qualifier.layoutStream);
-                if (qualifier.layoutMatrix != ElmNone)
+                if (qualifier.hasMatrix())
                     p += snprintf(p, end - p, "%s ", TQualifier::getLayoutMatrixString(qualifier.layoutMatrix));
-                if (qualifier.layoutPacking != ElpNone)
+                if (qualifier.hasPacking())
                     p += snprintf(p, end - p, "%s ", TQualifier::getLayoutPackingString(qualifier.layoutPacking));
-                if (qualifier.layoutOffset != -1)
+                if (qualifier.hasOffset())
                     p += snprintf(p, end - p, "offset=%d ", qualifier.layoutOffset);
-                if (qualifier.layoutAlign != -1)
+                if (qualifier.hasAlign())
                     p += snprintf(p, end - p, "align=%d ", qualifier.layoutAlign);
 
                 if (qualifier.hasXfbBuffer() && qualifier.hasXfbOffset())

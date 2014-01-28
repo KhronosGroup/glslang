@@ -15,7 +15,7 @@ ERROR: 0:38: 'output block' : not supported with this profile: es
 ERROR: 0:42: 'location qualifier on output' : not supported in this stage: vertex
 ERROR: 0:50: 'shared' : not supported with this profile: es
 ERROR: 0:50: 'shared' : not supported in this stage: vertex
-ERROR: 0:54: 'layout' : qualifiers for matrix layout and block packing only apply to uniform or buffer blocks 
+ERROR: 0:54: 'layout' : cannot specify packing on a variable declaration 
 ERROR: 0:57: 'location' : overlapping use of location 40
 ERROR: 18 compilation errors.  No code generated.
 
@@ -73,7 +73,7 @@ ERROR: node is still EOpNull!
 0:?     '__anon__2' (out block{out highp float f})
 0:?     'badoutA' (layout(location=10 ) smooth out highp 4-component vector of float)
 0:?     'compute_only' (shared highp 4-component vector of float)
-0:?     'aoeuntaoeu' (layout(packed ) highp float)
+0:?     'aoeuntaoeu' (layout(packed ) uniform highp float)
 0:?     'cd' (layout(location=40 ) in highp float)
 0:?     'ce' (layout(location=37 ) in highp 4X3 matrix of float)
 0:?     'gl_VertexID' (gl_VertexId highp int)

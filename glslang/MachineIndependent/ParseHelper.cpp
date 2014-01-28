@@ -2852,7 +2852,11 @@ void TParseContext::setLayoutQualifier(TSourceLoc loc, TPublicType& publicType, 
         const char* feature = "uniform buffer-member align";
         requireProfile(loc, ECoreProfile | ECompatibilityProfile, feature);
         profileRequires(loc, ECoreProfile | ECompatibilityProfile, 440, GL_ARB_enhanced_layouts, feature);
-        publicType.qualifier.layoutAlign = value;
+        // "The specified alignment must be a power of 2, or a compile-time error results."
+        if (! IsPow2(value))
+            error(loc, "must be a power of 2", "align", "");
+        else
+            publicType.qualifier.layoutAlign = value;
         return;
     } else if (id == "location") {
         requireProfile(loc, EEsProfile | ECoreProfile | ECompatibilityProfile, "location");
@@ -2965,9 +2969,9 @@ void TParseContext::setLayoutQualifier(TSourceLoc loc, TPublicType& publicType, 
 // Merge any layout qualifier information from src into dst, leaving everything else in dst alone
 void TParseContext::mergeObjectLayoutQualifiers(TSourceLoc loc, TQualifier& dst, const TQualifier& src, bool inheritOnly)
 {
-    if (src.layoutMatrix != ElmNone)
+    if (src.hasMatrix())
         dst.layoutMatrix = src.layoutMatrix;
-    if (src.layoutPacking != ElpNone)
+    if (src.hasPacking())
         dst.layoutPacking = src.layoutPacking;
 
     if (src.hasStream())
@@ -2976,16 +2980,17 @@ void TParseContext::mergeObjectLayoutQualifiers(TSourceLoc loc, TQualifier& dst,
     if (src.hasXfbBuffer())
         dst.layoutXfbBuffer = src.layoutXfbBuffer;
 
+    if (src.hasAlign())
+        dst.layoutAlign = src.layoutAlign;
+
     if (! inheritOnly) {
         if (src.layoutLocation != TQualifier::layoutLocationEnd)
             dst.layoutLocation = src.layoutLocation;
         if (src.layoutComponent != TQualifier::layoutComponentEnd)
             dst.layoutComponent = src.layoutComponent;
         
-        if (src.layoutOffset != -1)
+        if (src.hasOffset())
             dst.layoutOffset = src.layoutOffset;
-        if (src.layoutAlign != -1)
-            dst.layoutAlign = src.layoutAlign;
 
         if (src.layoutBinding != TQualifier::layoutBindingEnd)
             dst.layoutBinding = src.layoutBinding;
@@ -3021,24 +3026,26 @@ void TParseContext::layoutObjectCheck(TSourceLoc loc, const TSymbol& symbol)
     }
 
     // Check packing and matrix 
-    // TODO: 4.4 enhanced layouts: generalize to include offset/align
-    if (qualifier.layoutMatrix || qualifier.layoutPacking) {
+    if (qualifier.hasUniformLayout()) {
         switch (qualifier.storage) {
         case EvqBuffer:
         case EvqUniform:
             if (type.getBasicType() != EbtBlock) {
-                if (qualifier.layoutMatrix != ElmNone)
+                if (qualifier.hasMatrix())
                     error(loc, "cannot specify matrix layout on a variable declaration", "layout", "");
-                if (qualifier.layoutPacking != ElpNone)
+                if (qualifier.hasPacking())
                     error(loc, "cannot specify packing on a variable declaration", "layout", "");
+                // "The offset qualifier can only be used on block members of blocks..."
+                if (qualifier.hasOffset())
+                    error(loc, "cannot specify on a variable declaration", "offset", "");
+                // "The align qualifier can only be used on blocks or block members..."
+                if (qualifier.hasAlign())
+                    error(loc, "cannot specify on a variable declaration", "align", "");
             }
             break;
         default:
-            if (type.getBasicType() != EbtBlock && symbol.getAsVariable()) {
-                if (qualifier.layoutMatrix != ElmNone ||
-                    qualifier.layoutPacking != ElpNone)
-                    error(loc, "qualifiers for matrix layout and block packing only apply to uniform or buffer blocks", "layout", "");
-            }
+            // these were already filtered by layoutTypeCheck() (or its callees)
+            break;
         }
     }
 }
@@ -3127,6 +3134,12 @@ void TParseContext::layoutTypeCheck(TSourceLoc loc, const TType& type)
                 error(loc, "sampler binding not less than gl_MaxCombinedTextureImageUnits", "binding", type.isArray() ? "(using array)" : "");
         }
     }
+
+    // "The offset qualifier can only be used on block members of blocks..."                
+    if (qualifier.hasOffset()) {
+        if (type.getBasicType() == EbtBlock)
+            error(loc, "only applies to block members, not blocks", "offset", "");        
+    }
 }
 
 // Do layout error checking that can be done within a qualifier proper, not needing to know
@@ -3185,7 +3198,6 @@ void TParseContext::layoutQualifierCheck(TSourceLoc loc, const TQualifier& quali
         if (qualifier.storage != EvqUniform && qualifier.storage != EvqBuffer)
             error(loc, "requires uniform or buffer storage qualifier", "binding", "");
     }
-
     if (qualifier.hasStream()) {
         if (qualifier.storage != EvqVaryingOut)
             error(loc, "can only be used on an output", "stream", "");
@@ -3193,6 +3205,14 @@ void TParseContext::layoutQualifierCheck(TSourceLoc loc, const TQualifier& quali
     if (qualifier.hasXfb()) {
         if (qualifier.storage != EvqVaryingOut)
             error(loc, "can only be used on an output", "xfb layout qualifier", "");
+    }
+    if (qualifier.hasUniformLayout()) {
+        if (! (qualifier.storage == EvqUniform || qualifier.storage == EvqBuffer)) {
+            if (qualifier.hasMatrix() || qualifier.hasPacking())
+                error(loc, "matrix or packing qualifiers can only be used on a uniform or buffer", "layout", "");
+            if (qualifier.hasOffset() || qualifier.hasAlign())
+                error(loc, "offset/align can only be used on a uniform or buffer", "layout", "");
+        }
     }
 }
 
@@ -3871,8 +3891,18 @@ void TParseContext::declareBlock(TSourceLoc loc, TTypeList& typeList, const TStr
     }
 
     // fix and check for member layout qualifiers
-    // TODO: 4.4 enhanced layouts: generalize to include offset/align
+
     mergeObjectLayoutQualifiers(loc, defaultQualification, currentBlockQualifier, true);
+
+    // "The offset qualifier can only be used on block members of blocks declared with std140 or std430 layouts."
+    // "The align qualifier can only be used on blocks or block members, and only for blocks declared with std140 or std430 layouts."
+    if (currentBlockQualifier.hasAlign() || currentBlockQualifier.hasAlign()) {
+        if (defaultQualification.layoutPacking != ElpStd140 && defaultQualification.layoutPacking != ElpStd430) {
+            error(loc, "can only be used with std140 or std430 layout packing", "offset/align", "");
+            defaultQualification.layoutAlign = -1;
+        }
+    }
+
     bool memberWithLocation = false;
     bool memberWithoutLocation = false;
     for (unsigned int member = 0; member < typeList.size(); ++member) {
@@ -3892,7 +3922,7 @@ void TParseContext::declareBlock(TSourceLoc loc, TTypeList& typeList, const TStr
                 error(memberLoc, "member cannot contradict block (or what block inherited from global)", "xfb_buffer", "");
         }
 
-        if (memberQualifier.layoutPacking != ElpNone)
+        if (memberQualifier.hasPacking())
             error(memberLoc, "member of block cannot have a packing layout qualifier", typeList[member].type->getFieldName().c_str(), "");
         if (memberQualifier.hasLocation()) {
             const char* feature = "location on block member";
@@ -3909,6 +3939,11 @@ void TParseContext::declareBlock(TSourceLoc loc, TTypeList& typeList, const TStr
             }
         } else
             memberWithoutLocation = true;
+        if (memberQualifier.hasAlign()) {
+            if (defaultQualification.layoutPacking != ElpStd140 && defaultQualification.layoutPacking != ElpStd430)
+                error(memberLoc, "can only be used with std140 or std430 layout packing", "align", "");
+        }
+
         TQualifier newMemberQualification = defaultQualification;
         mergeQualifiers(memberLoc, newMemberQualification, memberQualifier, false);
         memberQualifier = newMemberQualification;
@@ -3917,6 +3952,7 @@ void TParseContext::declareBlock(TSourceLoc loc, TTypeList& typeList, const TStr
     // Process the members
     fixBlockLocations(loc, currentBlockQualifier, typeList, memberWithLocation, memberWithoutLocation);
     fixBlockXfbOffsets(loc, currentBlockQualifier, typeList);
+    fixBlockUniformOffsets(loc, currentBlockQualifier, typeList);
     for (unsigned int member = 0; member < typeList.size(); ++member)
         layoutTypeCheck(typeList[member].loc, *typeList[member].type);
 
@@ -4037,10 +4073,10 @@ void TParseContext::fixBlockXfbOffsets(TSourceLoc loc, TQualifier& qualifier, TT
     // members of that block not qualified with an xfb_offsetwill not be assigned transform feedback buffer 
     // offsets."
 
-    if (! currentBlockQualifier.hasXfbBuffer() || ! currentBlockQualifier.hasXfbOffset())
+    if (! qualifier.hasXfbBuffer() || ! qualifier.hasXfbOffset())
         return;
 
-    int nextOffset = currentBlockQualifier.layoutXfbOffset;
+    int nextOffset = qualifier.layoutXfbOffset;
     for (unsigned int member = 0; member < typeList.size(); ++member) {
         TQualifier& memberQualifier = typeList[member].type->getQualifier();
         bool containsDouble = false;
@@ -4059,6 +4095,12 @@ void TParseContext::fixBlockXfbOffsets(TSourceLoc loc, TQualifier& qualifier, TT
     // The above gave all block members an offset, so we can take it off the block now,
     // which will avoid double counting the offset usage.
     qualifier.layoutXfbOffset = TQualifier::layoutXfbOffsetEnd;
+}
+
+void TParseContext::fixBlockUniformOffsets(TSourceLoc loc, TQualifier& qualifier, TTypeList& typeList)
+{
+    if (qualifier.storage != EvqUniform || qualifier.storage != EvqBuffer)
+        return;
 }
 
 // For an identifier that is already declared, add more qualification to it.
@@ -4203,22 +4245,26 @@ void TParseContext::updateStandaloneQualifierDefaults(TSourceLoc loc, const TPub
         qualifier.isMemory() ||
         qualifier.isInterpolation() ||
         qualifier.precision != EpqNone)
-        error(loc, "cannot use auxiliary, memory, interpolation, or precision qualifier in a default qualifier declaration (declaration with no type)", "", "");
+        error(loc, "cannot use auxiliary, memory, interpolation, or precision qualifier in a default qualifier declaration (declaration with no type)", "qualifier", "");
+    // "The offset qualifier can only be used on block members of blocks..."
+    // "The align qualifier can only be used on blocks or block members..."
+    if (qualifier.hasOffset() ||
+        qualifier.hasAlign())
+        error(loc, "cannot use offset or align qualifiers in a default qualifier declaration (declaration with no type)", "layout qualifier", "");
 
     layoutQualifierCheck(loc, qualifier);
 
-    // TODO: 4.4 enhanced layouts:  generalize to include all new ones
     switch (qualifier.storage) {
     case EvqUniform:
-        if (qualifier.layoutMatrix != ElmNone)
+        if (qualifier.hasMatrix())
             globalUniformDefaults.layoutMatrix = qualifier.layoutMatrix;
-        if (qualifier.layoutPacking != ElpNone)
+        if (qualifier.hasPacking())
             globalUniformDefaults.layoutPacking = qualifier.layoutPacking;
         break;
     case EvqBuffer:
-        if (qualifier.layoutMatrix != ElmNone)
+        if (qualifier.hasMatrix())
             globalBufferDefaults.layoutMatrix = qualifier.layoutMatrix;
-        if (qualifier.layoutPacking != ElpNone)
+        if (qualifier.hasPacking())
             globalBufferDefaults.layoutPacking = qualifier.layoutPacking;
         break;
     case EvqVaryingIn:

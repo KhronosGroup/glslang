@@ -3,7 +3,44 @@ Warning, version 440 is not yet complete; some version-specific features are pre
 ERROR: 0:11: 'location' : overlapping use of location 4
 ERROR: 0:13: 'component' : type overflows the available 4 components 
 ERROR: 0:22: 'location' : fragment outputs sharing the same location must be the same basic type 30
-ERROR: 3 compilation errors.  No code generated.
+ERROR: 0:24: 'qualifier' : cannot use auxiliary, memory, interpolation, or precision qualifier in a default qualifier declaration (declaration with no type) 
+ERROR: 0:25: 'qualifier' : cannot use auxiliary, memory, interpolation, or precision qualifier in a default qualifier declaration (declaration with no type) 
+ERROR: 0:26: 'qualifier' : cannot use auxiliary, memory, interpolation, or precision qualifier in a default qualifier declaration (declaration with no type) 
+ERROR: 0:29: 'layout qualifier' : cannot use offset or align qualifiers in a default qualifier declaration (declaration with no type) 
+ERROR: 0:30: 'layout qualifier' : cannot use offset or align qualifiers in a default qualifier declaration (declaration with no type) 
+ERROR: 0:30: 'layout' : offset/align can only be used on a uniform or buffer 
+ERROR: 0:31: 'layout qualifier' : cannot use offset or align qualifiers in a default qualifier declaration (declaration with no type) 
+ERROR: 0:31: 'layout' : offset/align can only be used on a uniform or buffer 
+ERROR: 0:33: 'layout qualifier' : cannot use offset or align qualifiers in a default qualifier declaration (declaration with no type) 
+ERROR: 0:34: 'layout qualifier' : cannot use offset or align qualifiers in a default qualifier declaration (declaration with no type) 
+ERROR: 0:34: 'layout' : offset/align can only be used on a uniform or buffer 
+ERROR: 0:35: 'layout qualifier' : cannot use offset or align qualifiers in a default qualifier declaration (declaration with no type) 
+ERROR: 0:35: 'layout' : offset/align can only be used on a uniform or buffer 
+ERROR: 0:37: 'offset' : only applies to block members, not blocks 
+ERROR: 0:38: 'layout' : offset/align can only be used on a uniform or buffer 
+ERROR: 0:38: 'offset' : only applies to block members, not blocks 
+ERROR: 0:39: 'layout' : offset/align can only be used on a uniform or buffer 
+ERROR: 0:39: 'offset' : only applies to block members, not blocks 
+ERROR: 0:42: 'offset/align' : can only be used with std140 or std430 layout packing 
+ERROR: 0:43: 'offset/align' : can only be used with std140 or std430 layout packing 
+ERROR: 0:43: 'layout' : offset/align can only be used on a uniform or buffer 
+ERROR: 0:44: 'offset/align' : can only be used with std140 or std430 layout packing 
+ERROR: 0:44: 'layout' : offset/align can only be used on a uniform or buffer 
+ERROR: 0:46: 'offset' : cannot specify on a variable declaration 
+ERROR: 0:47: 'layout' : offset/align can only be used on a uniform or buffer 
+ERROR: 0:48: 'layout' : offset/align can only be used on a uniform or buffer 
+ERROR: 0:50: 'align' : cannot specify on a variable declaration 
+ERROR: 0:51: 'layout' : offset/align can only be used on a uniform or buffer 
+ERROR: 0:52: 'layout' : offset/align can only be used on a uniform or buffer 
+ERROR: 0:54: 'layout' : matrix or packing qualifiers can only be used on a uniform or buffer 
+ERROR: 0:55: 'layout' : cannot specify packing on a variable declaration 
+ERROR: 0:57: 'align' : must be a power of 2 
+ERROR: 0:58: 'align' : can only be used with std140 or std430 layout packing 
+ERROR: 0:63: 'align' : can only be used with std140 or std430 layout packing 
+ERROR: 0:62: 'layout' : offset/align can only be used on a uniform or buffer 
+ERROR: 0:63: 'layout' : offset/align can only be used on a uniform or buffer 
+ERROR: 0:87: 'align' : must be a power of 2 
+ERROR: 40 compilation errors.  No code generated.
 
 
 ERROR: node is still EOpNull!
@@ -16,6 +53,25 @@ ERROR: node is still EOpNull!
 0:?     'f' (layout(location=20 component=3 ) smooth in 6-element array of float)
 0:?     'be' (layout(location=30 component=3 ) out int)
 0:?     'bf' (layout(location=30 component=0 ) out 3-component vector of float)
+0:?     'inst1' (layout(column_major shared offset=12 ) uniform block{layout(column_major shared ) uniform int a})
+0:?     'inst2' (layout(offset=12 ) in block{in int a})
+0:?     'inst3' (layout(offset=12 ) out block{out int a})
+0:?     'inst4' (layout(column_major std140 align=16 ) uniform block{layout(column_major std140 align=16 ) uniform int a})
+0:?     'inst8' (layout(column_major shared align=16 ) uniform block{layout(column_major shared ) uniform int a})
+0:?     'inst5' (layout(align=16 ) in block{in int a})
+0:?     'inst6' (layout(align=16 ) out block{out int a})
+0:?     'v1' (layout(offset=12 ) uniform 4-component vector of float)
+0:?     'v2' (layout(offset=12 ) smooth in 4-component vector of float)
+0:?     'v3' (layout(offset=12 ) out 4-component vector of float)
+0:?     'v4' (layout(align=16 ) uniform 4-component vector of float)
+0:?     'v5' (layout(align=16 ) smooth in 4-component vector of float)
+0:?     'v6' (layout(align=16 ) out 4-component vector of float)
+0:?     'v7' (layout(std140 ) uniform 4-component vector of float)
+0:?     'inst7' (layout(column_major shared ) uniform block{layout(column_major shared offset=12 align=4 ) uniform float f})
+0:?     'inst10' (in block{layout(offset=12 ) in float f, layout(align=4 ) in float g})
+0:?     'inst9' (layout(column_major std430 align=32 ) uniform block{layout(column_major std430 align=32 ) uniform float e, layout(column_major std430 offset=12 align=4 ) uniform float f, layout(column_major std430 offset=20 align=32 ) uniform float g, layout(column_major std430 align=32 ) uniform float h})
+0:?     'inst11' (layout(column_major std430 ) uniform block{layout(column_major std430 offset=12 align=4 ) uniform float f, layout(column_major std430 ) uniform float g})
+0:?     'specExample' (layout(column_major std140 ) uniform block{layout(column_major std140 ) uniform 4-component vector of float a, layout(column_major std140 offset=20 ) uniform 3-component vector of float b, layout(column_major std140 offset=40 ) uniform 2-component vector of float c, layout(column_major std140 offset=48 ) uniform 2-component vector of float d, layout(column_major std140 align=16 ) uniform float e, layout(column_major std140 align=2 ) uniform double f, layout(column_major std140 ) uniform double g, layout(column_major std140 offset=80 ) uniform float h, layout(column_major std140 align=64 ) uniform 3-component vector of double i, layout(column_major std140 offset=153 align=8 ) uniform float j})
 
 
 Linked fragment stage:
