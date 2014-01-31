@@ -171,13 +171,24 @@ void TParseContext::initializeExtensionBehavior()
 const char* TParseContext::getPreamble()
 {
     if (profile == EEsProfile) {
-        return
-            "#define GL_ES 1\n"
-            "#define GL_OES_texture_3D 1\n"
-            "#define GL_OES_standard_derivatives 1\n"
-            "#define GL_EXT_frag_depth 1\n"
-            "#define GL_OES_EGL_image_external 1\n"
-            "#define GL_EXT_shader_texture_lod 1\n";
+        if (version == 100) {
+            return
+                "#define GL_ES 1\n"
+                "#define GL_FRAGMENT_PRECISION_HIGH 1\n"
+                "#define GL_OES_texture_3D 1\n"
+                "#define GL_OES_standard_derivatives 1\n"
+                "#define GL_EXT_frag_depth 1\n"
+                "#define GL_OES_EGL_image_external 1\n"
+                "#define GL_EXT_shader_texture_lod 1\n";
+        } else {
+            return
+                "#define GL_ES 1\n"
+                "#define GL_OES_texture_3D 1\n"
+                "#define GL_OES_standard_derivatives 1\n"
+                "#define GL_EXT_frag_depth 1\n"
+                "#define GL_OES_EGL_image_external 1\n"
+                "#define GL_EXT_shader_texture_lod 1\n";
+        }
     } else {
         return
             "#define GL_FRAGMENT_PRECISION_HIGH 1\n"
