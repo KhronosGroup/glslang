@@ -1415,7 +1415,7 @@ void TIntermTyped::propagatePrecision(TPrecisionQualifier newPrecision)
 TIntermTyped* TIntermediate::promoteConstantUnion(TBasicType promoteTo, TIntermConstantUnion* node) 
 {
     const TConstUnionArray& rightUnionArray = node->getConstArray();
-    int size = node->getType().getObjectSize();
+    int size = node->getType().computeNumComponents();
 
     TConstUnionArray leftUnionArray(size);
 

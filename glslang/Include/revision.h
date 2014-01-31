@@ -9,5 +9,5 @@
 // source have to figure out how to create revision.h just to get a build
 // going.  However, if it is not updated, it can be a version behind.
 
-#define GLSLANG_REVISION "25043"
-#define GLSLANG_DATE     "2014/01/27 13:02:12"
+#define GLSLANG_REVISION "25092"
+#define GLSLANG_DATE     "2014/01/28 14:13:59"

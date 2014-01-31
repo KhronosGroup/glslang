@@ -108,139 +108,42 @@ public:
         }
     }
 
-    static const int baseAlignmentVec4Std140;
-
-    // align a value:  if 'value' is not aligned to 'alignment', move it up to a multiple of alignment
-    void align(int& value, int alignment)
+    // Lookup or calculate the offset of a block member, using the recursively 
+    // defined block offset rules.
+    int getOffset(const TType& type, int index)
     {
-        int error = value % alignment;
-        if (error)
-            value += alignment - error;
-    }
+        const TTypeList& memberList = *type.getStruct();
 
-    // return the size and alignment of a scalar
-    int getBaseAlignmentScalar(const TType& type, int& size)
-    {
-        switch (type.getBasicType()) {
-        case EbtDouble:  size = 8; return 8;
-        default:         size = 4; return 4;
-        }
-    }
+        // Don't calculate offset if one is present, it could be user supplied
+        // and different than what would be calculated.  That is, this is faster,
+        // but not just an optimization.
+        if (memberList[index].type->getQualifier().hasOffset())
+            return memberList[index].type->getQualifier().layoutOffset;
 
-    // Implement base-alignment and size rules from section 7.6.2.2 Standard Uniform Block Layout
-    // Operates recursively.
-    // If std140 is true, it does the rounding up to vec4 size required by std140, 
-    // otherwise it does not, yielding std430 rules.
-    //
-    // Returns the size of the type.
-    int getBaseAlignment(const TType& type, int& size, bool std140)
-    {
-        int alignment;
-
-        // rules 4, 6, and 8
-        if (type.isArray()) {
-            TType derefType(type, 0);
-            alignment = getBaseAlignment(derefType, size, std140);
-            if (std140)
-                alignment = std::max(baseAlignmentVec4Std140, alignment);
-            align(size, alignment);
-            size *= type.getArraySize();
-            return alignment;
-        }
-
-        // rule 9
-        if (type.getBasicType() == EbtStruct) {
-            const TTypeList& memberList = *type.getStruct();
-
-            size = 0;
-            int maxAlignment = std140 ? baseAlignmentVec4Std140 : 0;
-            for (size_t m = 0; m < memberList.size(); ++m) {
-                int memberSize;
-                int memberAlignment = getBaseAlignment(*memberList[m].type, memberSize, std140);
-                maxAlignment = std::max(maxAlignment, memberAlignment);
-                align(size, memberAlignment);         
-                size += memberSize;
-            }
-
-            return maxAlignment;
-        }
-
-        // rule 1
-        if (type.isScalar())
-            return getBaseAlignmentScalar(type, size);
-
-        // rules 2 and 3
-        if (type.isVector()) {
-            int scalarAlign = getBaseAlignmentScalar(type, size);
-            switch (type.getVectorSize()) {
-            case 2:
-                size *= 2;
-                return 2 * scalarAlign;
-            default: 
-                size *= type.getVectorSize();
-                return 4 * scalarAlign;
-            }
-        }
-
-        // rules 5 and 7
-        if (type.isMatrix()) {
-            TType derefType(type, 0);
-            
-            // rule 5: deref to row, not to column, meaning the size of vector is num columns instead of num rows
-            if (type.getQualifier().layoutMatrix == ElmRowMajor)
-                derefType.setElementType(derefType.getBasicType(), type.getMatrixCols(), 0, 0, 0);
-            
-            alignment = getBaseAlignment(derefType, size, std140);
-            if (std140)
-                alignment = std::max(baseAlignmentVec4Std140, alignment);
-            align(size, alignment);
-            if (type.getQualifier().layoutMatrix == ElmRowMajor)
-                size *= type.getMatrixRows();
-            else
-                size *= type.getMatrixCols();
-
-            return alignment;
-        }
-
-        assert(0);  // all cases should be covered above
-        size = baseAlignmentVec4Std140;
-        return baseAlignmentVec4Std140;
-    }
-
-    // Calculate the offset of a block member, using the recursively defined
-    // block offset rules.
-    int getBlockMemberOffset(const TType& blockType, int index)
-    {
-        // TODO: reflection performance: cache intermediate results instead of recomputing them
-
-        int offset = 0;
-        const TTypeList& memberList = *blockType.getStruct();        
         int memberSize;
-        for (int m = 0; m < index; ++m) {
-            int memberAlignment = getBaseAlignment(*memberList[m].type, memberSize, blockType.getQualifier().layoutPacking == ElpStd140);
-            align(offset, memberAlignment);
-            offset += memberSize;
+        int offset = 0;
+        for (int m = 0; m <= index; ++m) {
+            int memberAlignment = intermediate.getBaseAlignment(*memberList[m].type, memberSize, type.getQualifier().layoutPacking == ElpStd140);
+            RoundToPow2(offset, memberAlignment);
+            if (m < index)
+                offset += memberSize;
         }
-        int memberAlignment = getBaseAlignment(*memberList[index].type, memberSize, blockType.getQualifier().layoutPacking == ElpStd140);
-        align(offset, memberAlignment);
 
         return offset;
     }
 
     // Calculate the block data size.
-    // Arrayness is not taken into account, each element is backed by a separate buffer.
+    // Block arrayness is not taken into account, each element is backed by a separate buffer.
     int getBlockSize(const TType& blockType)
     {
-        int size = 0;
-        const TTypeList& memberList = *blockType.getStruct();        
-        int memberSize;
-        for (size_t m = 0; m < memberList.size(); ++m) {
-            int memberAlignment = getBaseAlignment(*memberList[m].type, memberSize, blockType.getQualifier().layoutPacking == ElpStd140);
-            align(size, memberAlignment);
-            size += memberSize;
-        }
+        const TTypeList& memberList = *blockType.getStruct();
+        int lastIndex = memberList.size() - 1;
+        int lastOffset = getOffset(blockType, lastIndex);
 
-        return size;
+        int lastMemberSize;
+        intermediate.getBaseAlignment(*memberList[lastIndex].type, lastMemberSize, blockType.getQualifier().layoutPacking == ElpStd140);
+
+        return lastOffset + lastMemberSize;
     }
 
     // Traverse the provided deref chain, including the base, and
@@ -283,7 +186,7 @@ public:
             case EOpIndexDirectStruct:
                 index = visitNode->getRight()->getAsConstantUnion()->getConstArray()[0].getIConst();
                 if (offset >= 0)
-                    offset += getBlockMemberOffset(visitNode->getLeft()->getType(), index);
+                    offset += getOffset(visitNode->getLeft()->getType(), index);
                 if (name.size() > 0)
                     name.append(".");
                 name.append((*visitNode->getLeft()->getType().getStruct())[index].type->getFieldName());
@@ -714,8 +617,6 @@ public:
     TReflection& reflection;
     std::set<const TIntermNode*> processedDerefs;
 };
-
-const int TLiveTraverser::baseAlignmentVec4Std140 = 16;
 
 //
 // Implement the traversal functions of interest.

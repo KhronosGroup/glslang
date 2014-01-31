@@ -79,13 +79,58 @@ uniform ubl11 {
 
 layout(std140) uniform block {
                         vec4   a;     // a takes offsets 0-15
-    layout(offset = 20) vec3   b;     // b takes offsets 32-43
+    layout(offset = 32) vec3   b;     // b takes offsets 32-43
     layout(offset = 40) vec2   c;     // ERROR, lies within previous member
+    layout(align = 6)   double g;     // ERROR, 6 is not a power of 2
+    layout(offset=68)   double h;     // ERROR, offset not aligned
+} specExampleErrors;
+
+layout(std140) uniform block2 {
+                        vec4   a;     // a takes offsets 0-15
+    layout(offset = 32) vec3   b;     // b takes offsets 32-43
     layout(offset = 48) vec2   d;     // d takes offsets 48-55
     layout(align = 16)  float  e;     // e takes offsets 64-67
     layout(align = 2)   double f;     // f takes offsets 72-79
-    layout(align = 6)   double g;     // ERROR, 6 is not a power of 2
     layout(offset = 80) float  h;     // h takes offsets 80-83
     layout(align = 64)  dvec3  i;     // i takes offsets 128-151
-    layout(offset = 153, align = 8) float  j;     // j takes offsets 160-163
+    layout(offset = 164, align = 8) float  j;     // j takes offsets 168-171
 } specExample;
+
+layout(std430) uniform block430 {
+                        vec4   a;     // a takes offsets 0-15
+    layout(offset = 32) vec3   b;     // b takes offsets 32-43
+    layout(offset = 40) vec2   c;     // ERROR, lies within previous member
+    layout(align = 6)   double g;     // ERROR, 6 is not a power of 2
+    layout(offset=68)   double h;     // ERROR, offset not aligned
+} specExampleErrors430;
+
+layout(std430) uniform block2430 {
+                        vec4   a;     // a takes offsets 0-15
+    layout(offset = 32) vec3   b;     // b takes offsets 32-43
+    layout(offset = 48) vec2   d;     // d takes offsets 48-55
+    layout(align = 16)  float  e;     // e takes offsets 64-67
+    layout(align = 2)   double f;     // f takes offsets 72-79
+    layout(offset = 80) float  h;     // h takes offsets 80-83
+    layout(align = 64)  dvec3  i;     // i takes offsets 128-151
+    layout(offset = 164, align = 8) float  j;     // j takes offsets 168-171
+} specExample430;
+
+layout(std430, align = 128) uniform block24300 {
+    vec4   a;
+    vec3   b;
+    vec2   d;
+    float  e;
+    double f;
+    float  h;
+    dvec3  i;
+} specExample4300;
+
+layout(std430, align = 128) uniform block24301 {
+    vec4   a;
+    vec3   b;
+    vec2   d;
+    layout(offset=388) float  e;
+    layout(align=8) double f;
+    float  h;
+    dvec3  i;
+} specExample4301;

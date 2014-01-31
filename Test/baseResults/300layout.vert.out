@@ -32,12 +32,12 @@ ERROR: node is still EOpNull!
 0:46            add (highp 4X4 matrix of float)
 0:46              add (highp 4X4 matrix of float)
 0:46                add (highp 4X4 matrix of float)
-0:46                  M1: direct index for structure (layout(row_major std140 ) uniform highp 4X4 matrix of float)
-0:46                    'tblock' (layout(row_major std140 ) uniform block{layout(row_major std140 ) uniform highp 4X4 matrix of float M1, layout(column_major std140 ) uniform highp 4X4 matrix of float M2, layout(row_major std140 ) uniform highp 3X3 matrix of float N1, layout(row_major std140 ) centroid uniform highp float badf, layout(row_major std140 ) uniform highp float badg, layout(row_major std140 ) uniform highp float bad1, layout(row_major shared ) uniform highp float bad2, layout(row_major packed ) uniform highp float bad3})
+0:46                  M1: direct index for structure (layout(row_major std140 offset=0 ) uniform highp 4X4 matrix of float)
+0:46                    'tblock' (layout(row_major std140 ) uniform block{layout(row_major std140 offset=0 ) uniform highp 4X4 matrix of float M1, layout(column_major std140 offset=64 ) uniform highp 4X4 matrix of float M2, layout(row_major std140 offset=128 ) uniform highp 3X3 matrix of float N1, layout(row_major std140 offset=176 ) centroid uniform highp float badf, layout(row_major std140 offset=180 ) uniform highp float badg, layout(row_major std140 offset=184 ) uniform highp float bad1, layout(row_major shared offset=188 ) uniform highp float bad2, layout(row_major packed offset=192 ) uniform highp float bad3})
 0:46                    Constant:
 0:46                      0 (const int)
-0:46                  M2: direct index for structure (layout(column_major std140 ) uniform highp 4X4 matrix of float)
-0:46                    'tblock' (layout(row_major std140 ) uniform block{layout(row_major std140 ) uniform highp 4X4 matrix of float M1, layout(column_major std140 ) uniform highp 4X4 matrix of float M2, layout(row_major std140 ) uniform highp 3X3 matrix of float N1, layout(row_major std140 ) centroid uniform highp float badf, layout(row_major std140 ) uniform highp float badg, layout(row_major std140 ) uniform highp float bad1, layout(row_major shared ) uniform highp float bad2, layout(row_major packed ) uniform highp float bad3})
+0:46                  M2: direct index for structure (layout(column_major std140 offset=64 ) uniform highp 4X4 matrix of float)
+0:46                    'tblock' (layout(row_major std140 ) uniform block{layout(row_major std140 offset=0 ) uniform highp 4X4 matrix of float M1, layout(column_major std140 offset=64 ) uniform highp 4X4 matrix of float M2, layout(row_major std140 offset=128 ) uniform highp 3X3 matrix of float N1, layout(row_major std140 offset=176 ) centroid uniform highp float badf, layout(row_major std140 offset=180 ) uniform highp float badg, layout(row_major std140 offset=184 ) uniform highp float bad1, layout(row_major shared offset=188 ) uniform highp float bad2, layout(row_major packed offset=192 ) uniform highp float bad3})
 0:46                    Constant:
 0:46                      1 (const int)
 0:46                M4: direct index for structure (layout(row_major shared ) uniform highp 4X4 matrix of float)
@@ -56,8 +56,8 @@ ERROR: node is still EOpNull!
 0:47        'color' (smooth out highp 3-component vector of float)
 0:47        vector-times-matrix (highp 3-component vector of float)
 0:47          'c' (layout(location=7 ) in highp 3-component vector of float)
-0:47          N1: direct index for structure (layout(row_major std140 ) uniform highp 3X3 matrix of float)
-0:47            'tblock' (layout(row_major std140 ) uniform block{layout(row_major std140 ) uniform highp 4X4 matrix of float M1, layout(column_major std140 ) uniform highp 4X4 matrix of float M2, layout(row_major std140 ) uniform highp 3X3 matrix of float N1, layout(row_major std140 ) centroid uniform highp float badf, layout(row_major std140 ) uniform highp float badg, layout(row_major std140 ) uniform highp float bad1, layout(row_major shared ) uniform highp float bad2, layout(row_major packed ) uniform highp float bad3})
+0:47          N1: direct index for structure (layout(row_major std140 offset=128 ) uniform highp 3X3 matrix of float)
+0:47            'tblock' (layout(row_major std140 ) uniform block{layout(row_major std140 offset=0 ) uniform highp 4X4 matrix of float M1, layout(column_major std140 offset=64 ) uniform highp 4X4 matrix of float M2, layout(row_major std140 offset=128 ) uniform highp 3X3 matrix of float N1, layout(row_major std140 offset=176 ) centroid uniform highp float badf, layout(row_major std140 offset=180 ) uniform highp float badg, layout(row_major std140 offset=184 ) uniform highp float bad1, layout(row_major shared offset=188 ) uniform highp float bad2, layout(row_major packed offset=192 ) uniform highp float bad3})
 0:47            Constant:
 0:47              2 (const int)
 0:?   Linker Objects
@@ -68,7 +68,7 @@ ERROR: node is still EOpNull!
 0:?     'pos' (smooth out highp 4-component vector of float)
 0:?     'color' (smooth out highp 3-component vector of float)
 0:?     'badm4' (layout(column_major shared ) uniform highp 4X4 matrix of float)
-0:?     'tblock' (layout(row_major std140 ) uniform block{layout(row_major std140 ) uniform highp 4X4 matrix of float M1, layout(column_major std140 ) uniform highp 4X4 matrix of float M2, layout(row_major std140 ) uniform highp 3X3 matrix of float N1, layout(row_major std140 ) centroid uniform highp float badf, layout(row_major std140 ) uniform highp float badg, layout(row_major std140 ) uniform highp float bad1, layout(row_major shared ) uniform highp float bad2, layout(row_major packed ) uniform highp float bad3})
+0:?     'tblock' (layout(row_major std140 ) uniform block{layout(row_major std140 offset=0 ) uniform highp 4X4 matrix of float M1, layout(column_major std140 offset=64 ) uniform highp 4X4 matrix of float M2, layout(row_major std140 offset=128 ) uniform highp 3X3 matrix of float N1, layout(row_major std140 offset=176 ) centroid uniform highp float badf, layout(row_major std140 offset=180 ) uniform highp float badg, layout(row_major std140 offset=184 ) uniform highp float bad1, layout(row_major shared offset=188 ) uniform highp float bad2, layout(row_major packed offset=192 ) uniform highp float bad3})
 0:?     '__anon__0' (layout(row_major shared ) uniform block{layout(row_major shared ) uniform bool b, layout(row_major shared ) uniform highp 4X4 matrix of float t2m})
 0:?     '__anon__2' (out block{out highp float f})
 0:?     'badoutA' (layout(location=10 ) smooth out highp 4-component vector of float)

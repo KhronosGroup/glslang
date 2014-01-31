@@ -82,7 +82,7 @@ bool TConstTraverser::visitAggregate(TVisit /* visit */, TIntermAggregate* node)
     if (flag) {
         singleConstantParam = true; 
         constructorType = node->getOp();
-        size = node->getType().getObjectSize();
+        size = node->getType().computeNumComponents();
 
         if (node->getType().isMatrix()) {
             isMatrix = true;
@@ -115,13 +115,13 @@ bool TConstTraverser::visitAggregate(TVisit /* visit */, TIntermAggregate* node)
 void TConstTraverser::visitConstantUnion(TIntermConstantUnion* node)
 {
     TConstUnionArray leftUnionArray(unionArray);
-    int instanceSize = type.getObjectSize();
+    int instanceSize = type.computeNumComponents();
 
     if (index >= instanceSize)
         return;
 
     if (! singleConstantParam) {
-        int rightUnionSize = node->getType().getObjectSize();
+        int rightUnionSize = node->getType().computeNumComponents();
     
         const TConstUnionArray& rightUnionArray = node->getConstArray();
         for (int i = 0; i < rightUnionSize; i++) {
@@ -136,6 +136,7 @@ void TConstTraverser::visitConstantUnion(TIntermConstantUnion* node)
         const TConstUnionArray& rightUnionArray = node->getConstArray();
         if (! isMatrix) {
             int count = 0;
+            int nodeComps = node->getType().computeNumComponents();
             for (int i = index; i < endIndex; i++) {
                 if (i >= instanceSize)
                     return;
@@ -144,7 +145,7 @@ void TConstTraverser::visitConstantUnion(TIntermConstantUnion* node)
 
                 (index)++;
                 
-                if (node->getType().getObjectSize() > 1)
+                if (nodeComps > 1)
                     count++;
             }
         } else {
@@ -169,6 +170,7 @@ void TConstTraverser::visitConstantUnion(TIntermConstantUnion* node)
                 // matrix from vector
                 int count = 0;
                 const int startIndex = index;
+                int nodeComps = node->getType().computeNumComponents();
                 for (int i = startIndex; i < endIndex; i++) {
                     if (i >= instanceSize)
                         return;
@@ -179,7 +181,7 @@ void TConstTraverser::visitConstantUnion(TIntermConstantUnion* node)
 
                     index++;
 
-                    if (node->getType().getObjectSize() > 1)
+                    if (nodeComps > 1)
                         count++;                
                 }
             }

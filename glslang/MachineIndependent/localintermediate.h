@@ -239,6 +239,7 @@ public:
     }
     int addXfbBufferOffset(const TType&);
     unsigned int computeTypeXfbSize(const TType&, bool& containsDouble) const;
+    int getBaseAlignment(const TType&, int& size, bool std140) const;
 
 protected:
     void error(TInfoSink& infoSink, const char*);
@@ -249,6 +250,7 @@ protected:
     void inOutLocationCheck(TInfoSink&);
     TIntermSequence& findLinkerObjects() const;
     bool userOutputUsed() const;
+    int getBaseAlignmentScalar(const TType&, int& size) const;
 
 protected:
     const EShLanguage language;

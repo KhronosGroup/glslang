@@ -42,7 +42,7 @@
 
 namespace glslang {
 
-const int GlslangMaxTypeLength = 200;
+const int GlslangMaxTypeLength = 200;  // TODO: need to print block/struct one member per line, so this can stay bounded
 
 //
 // Details within a sampler type
@@ -643,7 +643,7 @@ public:
     // for "empty" type (no args) or simple scalar/vector/matrix
     explicit TType(TBasicType t = EbtVoid, TStorageQualifier q = EvqTemporary, int vs = 1, int mc = 0, int mr = 0) :
                             basicType(t), vectorSize(vs), matrixCols(mc), matrixRows(mr), arraySizes(0),
-                            structure(0), structureSize(0), fieldName(0), typeName(0)
+                            structure(0), fieldName(0), typeName(0)
                             {
                                 sampler.clear();
                                 qualifier.clear();
@@ -652,7 +652,7 @@ public:
     // for explicit precision qualifier
     TType(TBasicType t, TStorageQualifier q, TPrecisionQualifier p, int vs = 1, int mc = 0, int mr = 0) :
                             basicType(t), vectorSize(vs), matrixCols(mc), matrixRows(mr), arraySizes(0),
-                            structure(0), structureSize(0), fieldName(0), typeName(0)
+                            structure(0), fieldName(0), typeName(0)
                             {
                                 sampler.clear();
                                 qualifier.clear();
@@ -663,7 +663,7 @@ public:
     // for turning a TPublicType into a TType
     explicit TType(const TPublicType& p) :
                             basicType(p.basicType), vectorSize(p.vectorSize), matrixCols(p.matrixCols), matrixRows(p.matrixRows), arraySizes(p.arraySizes),
-                            structure(0), structureSize(0), fieldName(0), typeName(0)
+                            structure(0), fieldName(0), typeName(0)
                             {
                                 if (basicType == EbtSampler)
                                     sampler = p.sampler;
@@ -723,7 +723,6 @@ public:
         matrixRows = copyOf.matrixRows;
         arraySizes = copyOf.arraySizes;
         structure = copyOf.structure;
-        structureSize = copyOf.structureSize;
         fieldName = copyOf.fieldName;
         typeName = copyOf.typeName;
     }
@@ -1015,24 +1014,25 @@ public:
     TTypeList* getStruct() { return structure; }
     TTypeList* getStruct() const { return structure; }
 
-    int getObjectSize() const
+    int computeNumComponents() const
     {
-        int totalSize;
+        int components = 0;
 
-        if (getBasicType() == EbtStruct || getBasicType() == EbtBlock)
-            totalSize = getStructSize();
-        else if (matrixCols)
-            totalSize = matrixCols * matrixRows;
+        if (getBasicType() == EbtStruct || getBasicType() == EbtBlock) {
+            for (TTypeList::iterator tl = getStruct()->begin(); tl != getStruct()->end(); tl++)
+                components += ((*tl).type)->computeNumComponents();
+        } else if (matrixCols)
+            components = matrixCols * matrixRows;
         else
-            totalSize = vectorSize;
+            components = vectorSize;
 
         if (isArray()) {
             // this function can only be used in paths that don't allow unsized arrays
             assert(getArraySize() > 0);
-            totalSize *= getArraySize();
+            components *= getArraySize();
         }
 
-        return totalSize;
+        return components;
     }
 
     // append this type's mangled name to the passed in 'name'
@@ -1117,7 +1117,6 @@ protected:
     TType& operator=(const TType& type);
 
     void buildMangledName(TString&);
-    int getStructSize() const;
 
     TBasicType basicType : 8;
     int vectorSize       : 4;
@@ -1129,7 +1128,6 @@ protected:
     TArraySizes* arraySizes;
 
     TTypeList* structure;       // 0 unless this is a struct
-    mutable int structureSize;  // a cache, updated on first access
     TString *fieldName;         // for structure field names
     TString *typeName;          // for structure type name
 };

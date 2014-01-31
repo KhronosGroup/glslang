@@ -118,20 +118,6 @@ void TType::buildMangledName(TString& mangledName)
     }
 }
 
-int TType::getStructSize() const
-{
-    if (! isStruct()) {
-        assert(false && "Not a struct");
-        return 0;
-    }
-
-    if (structureSize == 0)
-        for (TTypeList::iterator tl = getStruct()->begin(); tl != getStruct()->end(); tl++)
-            structureSize += ((*tl).type)->getObjectSize();
-
-    return structureSize;
-}
-
 //
 // Dump functions.
 //
@@ -256,7 +242,6 @@ TVariable::TVariable(const TVariable& copyOf) : TSymbol(copyOf)
 
     if (! copyOf.unionArray.empty()) {
         assert(! copyOf.type.isStruct());
-        assert(copyOf.type.getObjectSize() == 1);
         TConstUnionArray newArray(1);
         newArray[0] = copyOf.unionArray[0];
         unionArray = newArray;

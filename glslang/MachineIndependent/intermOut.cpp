@@ -411,7 +411,7 @@ bool TOutputTraverser::visitSelection(TVisit /* visit */, TIntermSelection* node
 
 void OutputConstantUnion(TInfoSink& out, const TIntermTyped* node, const TConstUnionArray& constUnion, int depth)
 {
-    int size = node->getType().getObjectSize();
+    int size = node->getType().computeNumComponents();
 
     for (int i = 0; i < size; i++) {
         OutputTreeText(out, node, depth);

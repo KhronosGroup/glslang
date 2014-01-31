@@ -289,7 +289,7 @@ ERROR: node is still EOpNull!
 0:?     'var5' (smooth out 4-component vector of float)
 0:?     '__anon__2' (out block{out 4-component vector of float var6})
 0:?     'var7' (smooth out 4-component vector of float)
-0:?     '__anon__3' (layout(row_major std140 ) uniform block{layout(row_major std140 ) uniform 4X4 matrix of float M1, layout(column_major std140 ) uniform 4X4 matrix of float M2, layout(row_major std140 ) uniform 3X3 matrix of float N1})
+0:?     '__anon__3' (layout(row_major std140 ) uniform block{layout(row_major std140 offset=0 ) uniform 4X4 matrix of float M1, layout(column_major std140 offset=64 ) uniform 4X4 matrix of float M2, layout(row_major std140 offset=128 ) uniform 3X3 matrix of float N1})
 0:?     '__anon__4' (layout(column_major shared ) uniform block{layout(column_major shared ) uniform 4X4 matrix of float M13, layout(row_major shared ) uniform 4X4 matrix of float m14, layout(column_major shared ) uniform 3X3 matrix of float N12})
 0:?     's17' (layout(binding=3 ) uniform sampler2D)
 0:?     'a2' (layout(binding=2 offset=4 ) uniform int)

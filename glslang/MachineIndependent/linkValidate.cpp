@@ -60,6 +60,10 @@ void TIntermediate::error(TInfoSink& infoSink, const char* message)
     ++numErrors;
 }
 
+// TODO: 4.4 offset/align:  "Two blocks linked together in the same program with the same block 
+// name must have the exact same set of members qualified with offset and their integral-constant 
+// expression values must be the same, or a link-time error results."
+
 //
 // Merge the information from 'unit' into 'this'
 //
@@ -266,7 +270,9 @@ void TIntermediate::mergeErrorCheck(TInfoSink& infoSink, const TIntermSymbol& sy
     }
 
     // Layouts... 
-    // TODO: 4.4 enhanced layouts: generalize to include offset/align
+    // TODO: 4.4 enhanced layouts: Generalize to include offset/align: currrent spec 
+    //       requires separate user-supplied offset from actual computed offset, but 
+    //       current implementation only has one offset.
     if (symbol.getQualifier().layoutMatrix   != unitSymbol.getQualifier().layoutMatrix ||
         symbol.getQualifier().layoutPacking  != unitSymbol.getQualifier().layoutPacking ||
         symbol.getQualifier().layoutLocation != unitSymbol.getQualifier().layoutLocation ||
@@ -321,7 +327,7 @@ void TIntermediate::finalCheck(TInfoSink& infoSink)
 
         // "It is a compile-time or link-time error to have 
         // any xfb_offset that overflows xfb_stride, whether stated on declarations before or after the xfb_stride, or
-        // in different compilation units. While xfb_stridecan be declared multiple times for the same buffer, it is a
+        // in different compilation units. While xfb_stride can be declared multiple times for the same buffer, it is a
         // compile-time or link-time error to have different values specified for the stride for the same buffer."
         if (xfbBuffers[b].stride != TQualifier::layoutXfbStrideEnd && xfbBuffers[b].implicitStride > xfbBuffers[b].stride) {
             error(infoSink, "xfb_stride is too small to hold all buffer entries:");
@@ -738,6 +744,155 @@ unsigned int TIntermediate::computeTypeXfbSize(const TType& type, bool& contains
         return 8 * numComponents;
     } else
         return 4 * numComponents;
+}
+
+const int baseAlignmentVec4Std140 = 16;
+
+// Return the size and alignment of a scalar.
+// The size is returned in the 'size' parameter
+// Return value is the alignment of the type.
+int TIntermediate::getBaseAlignmentScalar(const TType& type, int& size) const
+{
+    switch (type.getBasicType()) {
+    case EbtDouble:  size = 8; return 8;
+    default:         size = 4; return 4;
+    }
+}
+
+// Implement base-alignment and size rules from section 7.6.2.2 Standard Uniform Block Layout
+// Operates recursively.
+//
+// If std140 is true, it does the rounding up to vec4 size required by std140, 
+// otherwise it does not, yielding std430 rules.
+//
+// The size is returned in the 'size' parameter
+// Return value is the alignment of the type.
+int TIntermediate::getBaseAlignment(const TType& type, int& size, bool std140) const
+{
+    int alignment;
+
+    // When using the std140 storage layout, structures will be laid out in buffer
+    // storage with its members stored in monotonically increasing order based on their
+    // location in the declaration. A structure and each structure member have a base
+    // offset and a base alignment, from which an aligned offset is computed by rounding
+    // the base offset up to a multiple of the base alignment. The base offset of the first
+    // member of a structure is taken from the aligned offset of the structure itself. The
+    // base offset of all other structure members is derived by taking the offset of the
+    // last basic machine unit consumed by the previous member and adding one. Each
+    // structure member is stored in memory at its aligned offset. The members of a top-
+    // level uniform block are laid out in buffer storage by treating the uniform block as
+    // a structure with a base offset of zero.
+    //
+    //   1. If the member is a scalar consuming N basic machine units, the base alignment is N.
+    //
+    //   2. If the member is a two- or four-component vector with components consuming N basic 
+    //      machine units, the base alignment is 2N or 4N, respectively.
+    //
+    //   3. If the member is a three-component vector with components consuming N
+    //      basic machine units, the base alignment is 4N.
+    //
+    //   4. If the member is an array of scalars or vectors, the base alignment and array
+    //      stride are set to match the base alignment of a single array element, according
+    //      to rules (1), (2), and (3), and rounded up to the base alignment of a vec4. The
+    //      array may have padding at the end; the base offset of the member following
+    //      the array is rounded up to the next multiple of the base alignment.
+    //
+    //   5. If the member is a column-major matrix with C columns and R rows, the
+    //      matrix is stored identically to an array of C column vectors with R 
+    //      components each, according to rule (4).
+    //
+    //   6. If the member is an array of S column-major matrices with C columns and
+    //      R rows, the matrix is stored identically to a row of S  C column vectors
+    //      with R components each, according to rule (4).
+    //
+    //   7. If the member is a row-major matrix with C columns and R rows, the matrix
+    //      is stored identically to an array of R row vectors with C components each,
+    //      according to rule (4).
+    //
+    //   8. If the member is an array of S row-major matrices with C columns and R
+    //      rows, the matrix is stored identically to a row of S  R row vectors with C
+    //      components each, according to rule (4).
+    //
+    //   9. If the member is a structure, the base alignment of the structure is N , where
+    //      N is the largest base alignment value of any    of its members, and rounded
+    //      up to the base alignment of a vec4. The individual members of this substructure 
+    //      are then assigned offsets by applying this set of rules recursively,
+    //      where the base offset of the first member of the sub-structure is equal to the
+    //      aligned offset of the structure. The structure may have padding at the end;
+    //      the base offset of the member following the sub-structure is rounded up to
+    //      the next multiple of the base alignment of the structure.
+    //
+    //   10. If the member is an array of S structures, the S elements of the array are laid
+    //       out in order, according to rule (9).
+
+    // rules 4, 6, and 8
+    if (type.isArray()) {
+        TType derefType(type, 0);
+        alignment = getBaseAlignment(derefType, size, std140);
+        if (std140)
+            alignment = std::max(baseAlignmentVec4Std140, alignment);
+        RoundToPow2(size, alignment);
+        size *= type.getArraySize();
+        return alignment;
+    }
+
+    // rule 9
+    if (type.getBasicType() == EbtStruct) {
+        const TTypeList& memberList = *type.getStruct();
+
+        size = 0;
+        int maxAlignment = std140 ? baseAlignmentVec4Std140 : 0;
+        for (size_t m = 0; m < memberList.size(); ++m) {
+            int memberSize;
+            int memberAlignment = getBaseAlignment(*memberList[m].type, memberSize, std140);
+            maxAlignment = std::max(maxAlignment, memberAlignment);
+            RoundToPow2(size, memberAlignment);         
+            size += memberSize;
+        }
+
+        return maxAlignment;
+    }
+
+    // rule 1
+    if (type.isScalar())
+        return getBaseAlignmentScalar(type, size);
+
+    // rules 2 and 3
+    if (type.isVector()) {
+        int scalarAlign = getBaseAlignmentScalar(type, size);
+        switch (type.getVectorSize()) {
+        case 2:
+            size *= 2;
+            return 2 * scalarAlign;
+        default: 
+            size *= type.getVectorSize();
+            return 4 * scalarAlign;
+        }
+    }
+
+    // rules 5 and 7
+    if (type.isMatrix()) {
+        TType derefType(type, 0);
+            
+        // rule 5: deref to row, not to column, meaning the size of vector is num columns instead of num rows
+        if (type.getQualifier().layoutMatrix == ElmRowMajor)
+            derefType.setElementType(derefType.getBasicType(), type.getMatrixCols(), 0, 0, 0);
+            
+        alignment = getBaseAlignment(derefType, size, std140);
+        if (std140)
+            alignment = std::max(baseAlignmentVec4Std140, alignment);
+        RoundToPow2(size, alignment);
+        if (type.getQualifier().layoutMatrix == ElmRowMajor)
+            size *= type.getMatrixRows();
+        else
+            size *= type.getMatrixCols();
+
+        return alignment;
+    }
+
+    assert(0);  // all cases should be covered above
+    size = baseAlignmentVec4Std140;
+    return baseAlignmentVec4Std140;
 }
 
 } // end namespace glslang

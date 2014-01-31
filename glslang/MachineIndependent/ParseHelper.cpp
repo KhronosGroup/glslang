@@ -1602,13 +1602,13 @@ bool TParseContext::constructorError(TSourceLoc loc, TIntermNode* node, TFunctio
     bool matrixInMatrix = false;
     bool arrayArg = false;
     for (int i = 0; i < function.getParamCount(); ++i) {
-        size += function[i].type->getObjectSize();
+        size += function[i].type->computeNumComponents();
 
         if (constructingMatrix && function[i].type->isMatrix())
             matrixInMatrix = true;
         if (full)
             overFull = true;
-        if (op != EOpConstructStruct && ! type.isArray() && size >= type.getObjectSize())
+        if (op != EOpConstructStruct && ! type.isArray() && size >= type.computeNumComponents())
             full = true;
         if (function[i].type->getQualifier().storage != EvqConst)
             constType = false;
@@ -1649,8 +1649,8 @@ bool TParseContext::constructorError(TSourceLoc loc, TIntermNode* node, TFunctio
         return true;
     }
 
-    if ((op != EOpConstructStruct && size != 1 && size < type.getObjectSize()) ||
-        (op == EOpConstructStruct && size < type.getObjectSize())) {
+    if ((op != EOpConstructStruct && size != 1 && size < type.computeNumComponents()) ||
+        (op == EOpConstructStruct && size < type.computeNumComponents())) {
         error(loc, "not enough data provided for construction", "constructor", "");
         return true;
     }
@@ -4097,10 +4097,58 @@ void TParseContext::fixBlockXfbOffsets(TSourceLoc loc, TQualifier& qualifier, TT
     qualifier.layoutXfbOffset = TQualifier::layoutXfbOffsetEnd;
 }
 
+// Calculate and save the offset of each block member, using the recursively 
+// defined block offset rules and the user-provided offset and align.
+//
+// Also, compute and save the total size of the block. For the block's size, arrayness 
+// is not taken into account, as each element is backed by a separate buffer.
+//
 void TParseContext::fixBlockUniformOffsets(TSourceLoc loc, TQualifier& qualifier, TTypeList& typeList)
 {
-    if (qualifier.storage != EvqUniform || qualifier.storage != EvqBuffer)
+    if (qualifier.storage != EvqUniform && qualifier.storage != EvqBuffer)
         return;
+    if (qualifier.layoutPacking != ElpStd140 && qualifier.layoutPacking != ElpStd430)
+        return;
+
+    int offset = 0;
+    int memberSize;
+    for (unsigned int member = 0; member < typeList.size(); ++member) {
+        TQualifier& memberQualifier = typeList[member].type->getQualifier();
+        TSourceLoc memberLoc = typeList[member].loc;
+
+        // "When align is applied to an array, it effects only the start of the array, not the array's internal stride."
+        
+        int memberAlignment = intermediate.getBaseAlignment(*typeList[member].type, memberSize, qualifier.layoutPacking == ElpStd140);
+        if (memberQualifier.hasOffset()) {
+            // "The specified offset must be a multiple 
+            // of the base alignment of the type of the block member it qualifies, or a compile-time error results."
+            if (! IsMultipleOfPow2(memberQualifier.layoutOffset, memberAlignment))
+                error(memberLoc, "must be a multiple of the member's alignment", "offset", "");
+
+            // "It is a compile-time error to specify an offset that is smaller than the offset of the previous 
+            // member in the block or that lies within the previous member of the block"
+            if (memberQualifier.layoutOffset < offset)
+                error(memberLoc, "cannot lie in previous members", "offset", "");
+
+            // "The offset qualifier forces the qualified member to start at or after the specified 
+            // integral-constant expression, which will be its byte offset from the beginning of the buffer. 
+            // "The actual offset of a member is computed as 
+            // follows: If offset was declared, start with that offset, otherwise start with the next available offset."
+            offset = std::max(offset, memberQualifier.layoutOffset);
+        }
+
+        // "The actual alignment of a member will be the greater of the specified align alignment and the standard 
+        // (e.g., std140) base alignment for the member's type."
+        if (memberQualifier.hasAlign())
+            memberAlignment = std::max(memberAlignment, memberQualifier.layoutAlign);
+
+        // "If the resulting offset is not a multiple of the actual alignment,
+        // increase it to the first offset that is a multiple of 
+        // the actual alignment."
+        RoundToPow2(offset, memberAlignment);
+        typeList[member].type->getQualifier().layoutOffset = offset;
+        offset += memberSize;
+    }
 }
 
 // For an identifier that is already declared, add more qualification to it.

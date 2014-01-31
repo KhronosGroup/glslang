@@ -39,8 +39,13 @@ ERROR: 0:58: 'align' : can only be used with std140 or std430 layout packing
 ERROR: 0:63: 'align' : can only be used with std140 or std430 layout packing 
 ERROR: 0:62: 'layout' : offset/align can only be used on a uniform or buffer 
 ERROR: 0:63: 'layout' : offset/align can only be used on a uniform or buffer 
-ERROR: 0:87: 'align' : must be a power of 2 
-ERROR: 40 compilation errors.  No code generated.
+ERROR: 0:84: 'align' : must be a power of 2 
+ERROR: 0:83: 'offset' : cannot lie in previous members 
+ERROR: 0:85: 'offset' : must be a multiple of the member's alignment 
+ERROR: 0:103: 'align' : must be a power of 2 
+ERROR: 0:102: 'offset' : cannot lie in previous members 
+ERROR: 0:104: 'offset' : must be a multiple of the member's alignment 
+ERROR: 45 compilation errors.  No code generated.
 
 
 ERROR: node is still EOpNull!
@@ -56,7 +61,7 @@ ERROR: node is still EOpNull!
 0:?     'inst1' (layout(column_major shared offset=12 ) uniform block{layout(column_major shared ) uniform int a})
 0:?     'inst2' (layout(offset=12 ) in block{in int a})
 0:?     'inst3' (layout(offset=12 ) out block{out int a})
-0:?     'inst4' (layout(column_major std140 align=16 ) uniform block{layout(column_major std140 align=16 ) uniform int a})
+0:?     'inst4' (layout(column_major std140 align=16 ) uniform block{layout(column_major std140 offset=0 align=16 ) uniform int a})
 0:?     'inst8' (layout(column_major shared align=16 ) uniform block{layout(column_major shared ) uniform int a})
 0:?     'inst5' (layout(align=16 ) in block{in int a})
 0:?     'inst6' (layout(align=16 ) out block{out int a})
@@ -71,7 +76,12 @@ ERROR: node is still EOpNull!
 0:?     'inst10' (in block{layout(offset=12 ) in float f, layout(align=4 ) in float g})
 0:?     'inst9' (layout(column_major std430 align=32 ) uniform block{layout(column_major std430 align=32 ) uniform float e, layout(column_major std430 offset=12 align=4 ) uniform float f, layout(column_major std430 offset=20 align=32 ) uniform float g, layout(column_major std430 align=32 ) uniform float h})
 0:?     'inst11' (layout(column_major std430 ) uniform block{layout(column_major std430 offset=12 align=4 ) uniform float f, layout(column_major std430 ) uniform float g})
-0:?     'specExample' (layout(column_major std140 ) uniform block{layout(column_major std140 ) uniform 4-component vector of float a, layout(column_major std140 offset=20 ) uniform 3-component vector of float b, layout(column_major std140 offset=40 ) uniform 2-component vector of float c, layout(column_major std140 offset=48 ) uniform 2-component vector of float d, layout(column_major std140 align=16 ) uniform float e, layout(column_major std140 align=2 ) uniform double f, layout(column_major std140 ) uniform double g, layout(column_major std140 offset=80 ) uniform float h, layout(column_major std140 align=64 ) uniform 3-component vector of double i, layout(column_major std140 offset=153 align=8 ) uniform float j})
+0:?     'specExampleErrors' (layout(column_major std140 ) uniform block{layout(column_major std140 offset=0 ) uniform 4-component vector of float a, layout(column_major std140 offset=32 ) uniform 3-component vector of float b, layout(column_major std140 offset=48 ) uniform 2-component vector of float c, layout(column_major std140 offset=56 ) uniform double g, layout(column_major std140 offset=72 ) uniform double h})
+0:?     'specExample' (layout(column_major std140 ) uniform block{layout(column_major std140 offset=0 ) uniform 4-component vector of float a, layout(column_major std140 offset=32 ) uniform 3-component vector of float b, layout(column_major std140 offset=48 ) uniform 2-component vector of float d, layout(column_major std140 offset=64 align=16 ) uniform float e, layout(column_major std140 offset=72 align=2 ) uniform double f, layout(column_major std140 offset=80 ) uniform float h, layout(column_major std140 offset=128 align=64 ) uniform 3-component vector of double i, layout(column_major std140 offset=168 align=8 ) uniform float j})
+0:?     'specExampleErrors430' (layout(column_major std430 ) uniform block{layout(column_major std430 offset=0 ) uniform 4-component vector of float a, layout(column_major std430 offset=32 ) uniform 3-component vector of float b, layout(column_major std430 offset=48 ) uniform 2-component vector of float c, layout(column_major std430 offset=56 ) uniform double g, layout(column_major std430 offset=72 ) uniform double h})
+0:?     'specExample430' (layout(column_major std430 ) uniform block{layout(column_major std430 offset=0 ) uniform 4-component vector of float a, layout(column_major std430 offset=32 ) uniform 3-component vector of float b, layout(column_major std430 offset=48 ) uniform 2-component vector of float d, layout(column_major std430 offset=64 align=16 ) uniform float e, layout(column_major std430 offset=72 align=2 ) uniform double f, layout(column_major std430 offset=80 ) uniform float h, layout(column_major std430 offset=128 align=64 ) uniform 3-component vector of double i, layout(column_major std430 offset=168 align=8 ) uniform float j})
+0:?     'specExample4300' (layout(column_major std430 align=128 ) uniform block{layout(column_major std430 offset=0 align=128 ) uniform 4-component vector of float a, layout(column_major std430 offset=128 align=128 ) uniform 3-component vector of float b, layout(column_major std430 offset=256 align=128 ) uniform 2-component vector of float d, layout(column_major std430 offset=384 align=128 ) uniform float e, layout(column_major std430 offset=512 align=128 ) uniform double f, layout(column_major std430 offset=640 align=128 ) uniform float h, layout(column_major std430 offset=768 align=128 ) uniform 3-component vector of double i})
+0:?     'specExample4301' (layout(column_major std430 align=128 ) uniform block{layout(column_major std430 offset=0 align=128 ) uniform 4-component vector of float a, layout(column_major std430 offset=128 align=128 ) uniform 3-component vector of float b, layout(column_major std430 offset=256 align=128 ) uniform 2-component vector of float d, layout(column_major std430 offset=512 align=128 ) uniform float e, layout(column_major std430 offset=520 align=8 ) uniform double f, layout(column_major std430 offset=640 align=128 ) uniform float h, layout(column_major std430 offset=768 align=128 ) uniform 3-component vector of double i})
 
 
 Linked fragment stage:

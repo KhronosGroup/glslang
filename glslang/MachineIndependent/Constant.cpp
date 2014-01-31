@@ -101,50 +101,52 @@ TIntermTyped* TIntermConstantUnion::fold(TOperator op, const TIntermTyped* const
     TConstUnionArray rightUnionArray = node->getConstArray();
 
     // Figure out the size of the result
-    int objectSize;
+    int newComps;
+    int constComps;
     switch(op) {
     case EOpMatrixTimesMatrix:
-        objectSize = getMatrixRows() * node->getMatrixCols();
+        newComps = getMatrixRows() * node->getMatrixCols();
         break;
     case EOpMatrixTimesVector:
-        objectSize = getMatrixRows();
+        newComps = getMatrixRows();
         break;
     case EOpVectorTimesMatrix:
-        objectSize = node->getMatrixCols();
+        newComps = node->getMatrixCols();
         break;
     default:
-        objectSize = getType().getObjectSize();                    
-        if (constantNode->getType().getObjectSize() == 1 && getType().getObjectSize() > 1) {
+        newComps = getType().computeNumComponents();
+        constComps = constantNode->getType().computeNumComponents();
+        if (constComps == 1 && newComps > 1) {
             // for a case like vec4 f = vec4(2,3,4,5) + 1.2;
-            TConstUnionArray smearedArray(objectSize, node->getConstArray()[0]);
+            TConstUnionArray smearedArray(newComps, node->getConstArray()[0]);
             rightUnionArray = smearedArray;
-        } else if (constantNode->getType().getObjectSize() > 1 && getType().getObjectSize() == 1) {
+        } else if (constComps > 1 && newComps == 1) {
             // for a case like vec4 f = 1.2 + vec4(2,3,4,5);            
-            objectSize = constantNode->getType().getObjectSize();
+            newComps = constComps;
             rightUnionArray = node->getConstArray();
-            TConstUnionArray smearedArray(objectSize, getConstArray()[0]);
+            TConstUnionArray smearedArray(newComps, getConstArray()[0]);
             unionArray = smearedArray;
             returnType.shallowCopy(node->getType());
         }
         break;
     }
 
-    TConstUnionArray newConstArray(objectSize);
+    TConstUnionArray newConstArray(newComps);
 
     switch(op) {
     case EOpAdd:
-        for (int i = 0; i < objectSize; i++)
+        for (int i = 0; i < newComps; i++)
             newConstArray[i] = unionArray[i] + rightUnionArray[i];
         break;
     case EOpSub:
-        for (int i = 0; i < objectSize; i++)
+        for (int i = 0; i < newComps; i++)
             newConstArray[i] = unionArray[i] - rightUnionArray[i];
         break;
 
     case EOpMul:
     case EOpVectorTimesScalar:
     case EOpMatrixTimesScalar:
-        for (int i = 0; i < objectSize; i++)
+        for (int i = 0; i < newComps; i++)
             newConstArray[i] = unionArray[i] * rightUnionArray[i];
         break;
     case EOpMatrixTimesMatrix:
@@ -159,7 +161,7 @@ TIntermTyped* TIntermConstantUnion::fold(TOperator op, const TIntermTyped* const
         returnType.shallowCopy(TType(getType().getBasicType(), EvqConst, 0, getMatrixRows(), node->getMatrixCols()));
         break;
     case EOpDiv:
-        for (int i = 0; i < objectSize; i++) {
+        for (int i = 0; i < newComps; i++) {
             switch (getType().getBasicType()) {
             case EbtDouble:
             case EbtFloat:
@@ -211,7 +213,7 @@ TIntermTyped* TIntermConstantUnion::fold(TOperator op, const TIntermTyped* const
         break;
 
     case EOpMod:
-        for (int i = 0; i < objectSize; i++) {
+        for (int i = 0; i < newComps; i++) {
             if (rightUnionArray[i] == 0)
                 newConstArray[i] = unionArray[i];
             else
@@ -220,40 +222,40 @@ TIntermTyped* TIntermConstantUnion::fold(TOperator op, const TIntermTyped* const
         break;
 
     case EOpRightShift:
-        for (int i = 0; i < objectSize; i++)
+        for (int i = 0; i < newComps; i++)
             newConstArray[i] = unionArray[i] >> rightUnionArray[i];
         break;
 
     case EOpLeftShift:
-        for (int i = 0; i < objectSize; i++)
+        for (int i = 0; i < newComps; i++)
             newConstArray[i] = unionArray[i] << rightUnionArray[i];
         break;
 
     case EOpAnd:
-        for (int i = 0; i < objectSize; i++)
+        for (int i = 0; i < newComps; i++)
             newConstArray[i] = unionArray[i] & rightUnionArray[i];
         break;
     case EOpInclusiveOr:
-        for (int i = 0; i < objectSize; i++)
+        for (int i = 0; i < newComps; i++)
             newConstArray[i] = unionArray[i] | rightUnionArray[i];
         break;
     case EOpExclusiveOr:
-        for (int i = 0; i < objectSize; i++)
+        for (int i = 0; i < newComps; i++)
             newConstArray[i] = unionArray[i] ^ rightUnionArray[i];
         break;
 
     case EOpLogicalAnd: // this code is written for possible future use, will not get executed currently
-        for (int i = 0; i < objectSize; i++)
+        for (int i = 0; i < newComps; i++)
             newConstArray[i] = unionArray[i] && rightUnionArray[i];
         break;
 
     case EOpLogicalOr: // this code is written for possible future use, will not get executed currently
-        for (int i = 0; i < objectSize; i++)
+        for (int i = 0; i < newComps; i++)
             newConstArray[i] = unionArray[i] || rightUnionArray[i];
         break;
 
     case EOpLogicalXor:
-        for (int i = 0; i < objectSize; i++) {
+        for (int i = 0; i < newComps; i++) {
             switch (getType().getBasicType()) {
             case EbtBool: newConstArray[i].setBConst((unionArray[i] == rightUnionArray[i]) ? false : true); break;
             default: assert(false && "Default missing");
@@ -309,6 +311,7 @@ TIntermTyped* TIntermConstantUnion::fold(TOperator op, const TType& returnType) 
     int resultSize;
     bool componentWise = true;
 
+    int objectSize = getType().computeNumComponents();
     switch (op) {
     case EOpDeterminant:
     case EOpAny:
@@ -339,18 +342,17 @@ TIntermTyped* TIntermConstantUnion::fold(TOperator op, const TType& returnType) 
 
     case EOpNormalize:
         componentWise = false;
-        resultSize = getType().getObjectSize();
+        resultSize = objectSize;
         break;
 
     default:
-        resultSize = getType().getObjectSize();
+        resultSize = objectSize;
         break;
     }
 
     // Set up for processing
     TConstUnionArray newConstArray(resultSize);
     const TConstUnionArray& unionArray = getConstArray();
-    int objectSize = getType().getObjectSize();
 
     // Process non-component-wise operations
     switch (op) {
@@ -593,13 +595,13 @@ TIntermTyped* TIntermediate::fold(TIntermAggregate* aggrNode)
     case EOpVectorEqual:
     case EOpVectorNotEqual:
         componentwise = true;
-        objectSize = children[0]->getAsConstantUnion()->getType().getObjectSize();
+        objectSize = children[0]->getAsConstantUnion()->getType().computeNumComponents();
         break;
     case EOpCross:
     case EOpReflect:
     case EOpRefract:
     case EOpFaceForward:
-        objectSize = children[0]->getAsConstantUnion()->getType().getObjectSize();
+        objectSize = children[0]->getAsConstantUnion()->getType().computeNumComponents();
         break;
     case EOpDistance:
     case EOpDot:
@@ -726,7 +728,7 @@ TIntermTyped* TIntermediate::fold(TIntermAggregate* aggrNode)
     } else {
         // Non-componentwise...
 
-        int numComps = children[0]->getAsConstantUnion()->getType().getObjectSize();
+        int numComps = children[0]->getAsConstantUnion()->getType().computeNumComponents();
         double dot;
 
         switch (aggrNode->getOp()) {
@@ -788,7 +790,7 @@ TIntermTyped* TIntermediate::fold(TIntermAggregate* aggrNode)
         case EOpOuterProduct:
         {
             int numRows = numComps;
-            int numCols = children[1]->getAsConstantUnion()->getType().getObjectSize();
+            int numCols = children[1]->getAsConstantUnion()->getType().computeNumComponents();
             for (int row = 0; row < numRows; ++row)
                 for (int col = 0; col < numCols; ++col)
                     newConstArray[col * numRows + row] = childConstUnions[0][row] * childConstUnions[1][col];
@@ -828,7 +830,7 @@ TIntermTyped* TIntermediate::foldConstructor(TIntermAggregate* aggrNode)
 {
     bool error = false;
 
-    TConstUnionArray unionArray(aggrNode->getType().getObjectSize());
+    TConstUnionArray unionArray(aggrNode->getType().computeNumComponents());
     if (aggrNode->getSequence().size() == 1)
         error = parseConstTree(aggrNode, unionArray, aggrNode->getOp(), aggrNode->getType(), true);
     else
@@ -850,13 +852,13 @@ TIntermTyped* TIntermediate::foldDereference(TIntermTyped* node, int index, TSou
     TType dereferencedType(node->getType(), index);
     dereferencedType.getQualifier().storage = EvqConst;
     TIntermTyped* result = 0;
-    int size = dereferencedType.getObjectSize();
+    int size = dereferencedType.computeNumComponents();
     
     int start;
     if (node->isStruct()) {
         start = 0;
         for (int i = 0; i < index; ++i)
-            start += (*node->getType().getStruct())[i].type->getObjectSize();
+            start += (*node->getType().getStruct())[i].type->computeNumComponents();
     } else
         start = size * index;
 
