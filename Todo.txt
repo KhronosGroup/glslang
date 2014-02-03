@@ -237,12 +237,12 @@ Shader Functionality to Implement/Finish
       + Add missing type in grammar, ATOMIC_UINT, and missing qualifiers COHERENT, VOLATILE, RESTRICT, READONLY, and WRITEONLY.
       + Add missing initializer lists to grammar.
     GLSL 4.4
-      - Incorporate the ARB_enhanced_layouts extension, which adds
+      + Incorporate the ARB_enhanced_layouts extension, which adds
         + compile-time constant expressions for layout qualifier integers
-        - new offset and align layout qualifiers for control over buffer block layouts
+        + new offset and align layout qualifiers for control over buffer block layouts
         + add location layout qualifier for input and output blocks and block members
         + new component layout qualifier for finer-grained layout control of input and output variables and blocks
-        - new xfb_buffer, xfb_stride, and xfb_offsetlayout qualifiers to allow the shader to control 
+        + new xfb_buffer, xfb_stride, and xfb_offsetlayout qualifiers to allow the shader to control 
           transform feedback buffering.
       + Bug 10530: To be consistent with ES, include sample types as valid in a precision statement. 
         Note the defaults are irrelevant, as precision qualifiers are not required or have any meaning.

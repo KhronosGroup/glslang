@@ -1882,6 +1882,8 @@ void TBuiltIns::initialize(const TBuiltInResource &resources, int version, EProf
             s.append(builtInConstant);
         }
     } else {
+        // non-ES profile
+
         snprintf(builtInConstant, maxSize, "const int  gl_MaxVertexAttribs = %d;", resources.maxVertexAttribs);
         s.append(builtInConstant);
 
@@ -2111,6 +2113,14 @@ void TBuiltIns::initialize(const TBuiltInResource &resources, int version, EProf
             snprintf(builtInConstant, maxSize, "const int gl_MaxComputeAtomicCounterBuffers = %d;", resources.maxComputeAtomicCounterBuffers);
             s.append(builtInConstant);
         }
+
+        // enhanced layouts
+        if (version >= 430) {
+            snprintf(builtInConstant, maxSize, "const int gl_MaxTransformFeedbackBuffers = %d;", resources.maxTransformFeedbackBuffers);
+            s.append(builtInConstant);
+            snprintf(builtInConstant, maxSize, "const int gl_MaxTransformFeedbackInterleavedComponents = %d;", resources.maxTransformFeedbackInterleavedComponents);
+            s.append(builtInConstant);
+        }
     }
 
     s.append("\n");
@@ -2140,6 +2150,8 @@ void SpecialQualifier(const char* name, TStorageQualifier qualifier, TSymbolTabl
 // 1) Programmatically add symbols that could not be added by simple text strings above.
 // 2) Map built-in functions to operators, for those that will turn into an operation node
 //    instead of remaining a function call.
+// 3) Tag extension-related symbols added to their base version with their extensions, so
+//    that if an early version has the extension turned off, there is an error reported on use.
 //
 void IdentifyBuiltIns(int version, EProfile profile, EShLanguage language, TSymbolTable& symbolTable)
 {
@@ -2326,10 +2338,19 @@ void IdentifyBuiltIns(int version, EProfile profile, EShLanguage language, TSymb
 //
 // Add context-dependent (resource-specific) built-ins not yet handled.  These
 // would be ones that need to be programmatically added because they cannot 
-// be added by simple text strings.
+// be added by simple text strings.  For these, also
+// 1) Map built-in functions to operators, for those that will turn into an operation node
+//    instead of remaining a function call.
+// 2) Tag extension-related symbols added to their base version with their extensions, so
+//    that if an early version has the extension turned off, there is an error reported on use.
 //
 void IdentifyBuiltIns(int version, EProfile profile, EShLanguage language, TSymbolTable& symbolTable, const TBuiltInResource &resources)
 {
+    if (version >= 430 && version < 440) {
+        symbolTable.setVariableExtensions("gl_MaxTransformFeedbackBuffers", 1, &GL_ARB_enhanced_layouts);
+        symbolTable.setVariableExtensions("gl_MaxTransformFeedbackInterleavedComponents", 1, &GL_ARB_enhanced_layouts);
+    }
+
     switch(language) {
 
     case EShLangFragment:

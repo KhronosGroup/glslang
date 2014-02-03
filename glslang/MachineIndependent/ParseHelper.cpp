@@ -2827,12 +2827,16 @@ void TParseContext::setLayoutQualifier(TSourceLoc loc, TPublicType& publicType, 
 
     integerCheck(node, feature);
     const TIntermConstantUnion* constUnion = node->getAsConstantUnion();
-    assert(constUnion);
-    int value = node->getAsConstantUnion()->getConstArray()[0].getIConst();
-
-    if (! constUnion->isLiteral()) {
-        requireProfile(loc, ECoreProfile | ECompatibilityProfile, nonLiteralFeature);
-        profileRequires(loc, ECoreProfile | ECompatibilityProfile, 440, GL_ARB_enhanced_layouts, nonLiteralFeature);
+    int value;
+    if (constUnion) {
+        value = constUnion->getConstArray()[0].getIConst();
+        if (! constUnion->isLiteral()) {
+            requireProfile(loc, ECoreProfile | ECompatibilityProfile, nonLiteralFeature);
+            profileRequires(loc, ECoreProfile | ECompatibilityProfile, 440, GL_ARB_enhanced_layouts, nonLiteralFeature);
+        }
+    } else {
+        // grammar should have give out the error message
+        value = 0;
     }
 
     if (value < 0) {
@@ -2967,6 +2971,20 @@ void TParseContext::setLayoutQualifier(TSourceLoc loc, TPublicType& publicType, 
 }
 
 // Merge any layout qualifier information from src into dst, leaving everything else in dst alone
+//
+// "More than one layout qualifier may appear in a single declaration.
+// Additionally, the same layout-qualifier-name can occur multiple times 
+// within a layout qualifier or across multiple layout qualifiers in the 
+// same declaration. When the same layout-qualifier-name occurs 
+// multiple times, in a single declaration, the last occurrence overrides 
+// the former occurrence(s).  Further, if such a layout-qualifier-name 
+// will effect subsequent declarations or other observable behavior, it 
+// is only the last occurrence that will have any effect, behaving as if 
+// the earlier occurrence(s) within the declaration are not present.  
+// This is also true for overriding layout-qualifier-names, where one 
+// overrides the other (e.g., row_major vs. column_major); only the last 
+// occurrence has any effect."    
+//
 void TParseContext::mergeObjectLayoutQualifiers(TSourceLoc loc, TQualifier& dst, const TQualifier& src, bool inheritOnly)
 {
     if (src.hasMatrix())

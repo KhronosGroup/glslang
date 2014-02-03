@@ -45,3 +45,100 @@ layout(location = 10) in vec4 alias1;
 layout(location = 10) in vec4 alias2;  // okay for vertex input on desktop
 
 out float gl_ClipDistance[17];  // ERROR, size too big
+
+// enhanced_layouts (most tests are in 440.*)
+
+layout(location = start*start - 2 - 4) in vec4 v6e;    // ERROR
+
+layout(location = 28) in inblock2e {
+    layout(location = 25) float f2;                     // ERROR
+} ininst2e;
+
+in ublock4e {
+    layout(location = 50) float f1;                      // ERROR
+    layout(location = 51) float f2;                      // ERROR
+} in4e;
+
+layout(align=16, std140) uniform  ubl4e { int a; } inst4e;// ERROR
+
+layout(align=32) uniform ubl9e {                          // ERROR
+    layout(offset=12, align=4) float f;                   // ERROR
+    layout(offset=20) float g;                            // ERROR
+} inst9e;
+
+layout(std140) uniform blocke {
+                        vec4   a;
+    layout(offset = 32) vec3   b;                          // ERROR
+} spinste;
+
+int aconste[gl_MaxTransformFeedbackBuffers];               // ERROR ??
+int bconste[gl_MaxTransformFeedbackInterleavedComponents]; // ERROR
+
+out bblck2 {
+    layout(xfb_offset=64) vec4 bbv;                              // ERROR
+} bbinst2;
+
+layout(xfb_buffer = 3, xfb_stride = 64) out;                     // ERROR
+
+layout(xfb_buffer=2, xfb_offset=48, xfb_stride=80) out vec4 bge; // ERROR
+layout(              xfb_offset=32, xfb_stride=64) out vec4 bhe; // ERROR
+
+layout(xfb_stride=80, xfb_buffer=2, xfb_offset=16) out bblck4e { // ERROR
+    vec4 bbv1;
+    vec4 bbv2;
+} bbinst4e;
+
+out bblck5e {
+    layout(xfb_offset=0) vec4 bbv1;                               // ERROR
+    layout(xfb_stride=64, xfb_buffer=3, xfb_offset=48) vec4 bbv2; // ERROR
+} bbinst5e;
+
+#extension GL_ARB_enhanced_layouts : enable
+
+layout(align=16, std140) uniform  ubl4 { int a; } inst4;
+layout(std430) uniform;
+
+layout(align=32) uniform ubl9 {
+    layout(offset=12, align=4) float f;
+    layout(offset=20) float g;
+} inst9;
+
+layout(std140) uniform block {
+                        vec4   a;     // a takes offsets 0-15
+    layout(offset = 32) vec3   b;     // b takes offsets 32-43
+} spinst;
+
+int aconst[gl_MaxTransformFeedbackBuffers];
+int bconst[gl_MaxTransformFeedbackInterleavedComponents];
+
+const int start2 = 5;
+layout(location = start2 * start2 - 2 - 4) in vec4 v6;
+
+layout(location = 28) in inblock2 {
+    bool b1;
+    float f1;
+    layout(location = 25) float f2;
+} ininst2;
+
+in ublock4 {
+    layout(location = 50) float f1;
+    layout(location = 51) float f2;
+} in4;
+
+out bblck2g {
+    layout(xfb_offset=64) vec4 bbv;
+} bbinst2g;
+
+layout(xfb_buffer = 1, xfb_stride = 80) out;  // default buffer is 3
+
+layout(xfb_buffer=1, xfb_offset=48, xfb_stride=80) out vec4 bg;
+layout(              xfb_offset=32, xfb_stride=80) out vec4 bh;
+
+layout(xfb_stride=80, xfb_buffer=1, xfb_offset=16) out bblck4 {
+    vec4 bbv1;
+} bbinst4;
+
+out bblck5 {
+    layout(xfb_offset=0) vec4 bbv1;
+    layout(xfb_stride=80, xfb_buffer=1, xfb_offset=64) vec4 bbv2;
+} bbinst5;

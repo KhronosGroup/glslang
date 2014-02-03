@@ -134,3 +134,6 @@ layout(std430, align = 128) uniform block24301 {
     float  h;
     dvec3  i;
 } specExample4301;
+
+int aconst[gl_MaxTransformFeedbackBuffers];
+int bconst[gl_MaxTransformFeedbackInterleavedComponents];
