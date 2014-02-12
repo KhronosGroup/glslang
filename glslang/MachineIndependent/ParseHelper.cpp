@@ -691,8 +691,8 @@ TIntermTyped* TParseContext::handleDotDereference(TSourceLoc loc, TIntermTyped* 
     } else if (base->isVector() || base->isScalar()) {
         if (base->isScalar()) {
             const char* dotFeature = "scalar swizzle";
-            requireProfile(loc, ECoreProfile | ECompatibilityProfile, dotFeature);
-            profileRequires(loc, ECoreProfile | ECompatibilityProfile, 420, GL_ARB_shading_language_420pack, dotFeature);
+            requireProfile(loc, ~EEsProfile, dotFeature);
+            profileRequires(loc, ~EEsProfile, 420, GL_ARB_shading_language_420pack, dotFeature);
         }
 
         TVectorFields fields;
@@ -1863,7 +1863,7 @@ void TParseContext::mergeQualifiers(TSourceLoc loc, TQualifier& dst, const TQual
         error(loc, "can only have one interpolation qualifier (flat, smooth, noperspective)", "", "");
 
     // Ordering
-    if (! force && version < 420) {
+    if (! force && version < 420 && ! extensionsTurnedOn(1, &GL_ARB_shading_language_420pack)) {
         // non-function parameters
         if (src.invariant && (dst.isInterpolation() || dst.isAuxiliary() || dst.storage != EvqTemporary || dst.precision != EpqNone))
             error(loc, "invariant qualifier must appear first", "", "");
@@ -2317,8 +2317,8 @@ TSymbol* TParseContext::redeclareBuiltinVariable(TSourceLoc loc, const TString& 
 void TParseContext::redeclareBuiltinBlock(TSourceLoc loc, TTypeList& newTypeList, const TString& blockName, const TString* instanceName, TArraySizes* arraySizes)
 {
     const char* feature = "built-in block redeclaration";
-    requireProfile(loc, ECoreProfile | ECompatibilityProfile, feature);
-    profileRequires(loc, ECoreProfile | ECompatibilityProfile, 410, GL_ARB_separate_shader_objects, feature);
+    requireProfile(loc, ~EEsProfile, feature);
+    profileRequires(loc, ~EEsProfile, 410, GL_ARB_separate_shader_objects, feature);
 
     if (blockName != "gl_PerVertex" && blockName != "gl_PerFragment") {
         error(loc, "cannot redeclare block: ", "block declaration", blockName.c_str());
@@ -2863,16 +2863,16 @@ void TParseContext::setLayoutQualifier(TSourceLoc loc, TPublicType& publicType, 
             publicType.qualifier.layoutAlign = value;
         return;
     } else if (id == "location") {
-        requireProfile(loc, EEsProfile | ECoreProfile | ECompatibilityProfile, "location");
-        profileRequires(loc, ECoreProfile | ECompatibilityProfile, 330, 0, "location");
+        profileRequires(loc, EEsProfile, 300, 0, "location");
+        profileRequires(loc, ~EEsProfile, 330, GL_ARB_separate_shader_objects, "location");
         if ((unsigned int)value >= TQualifier::layoutLocationEnd)
             error(loc, "location is too large", id.c_str(), "");
         else
             publicType.qualifier.layoutLocation = value;
         return;
     } else if (id == "binding") {
-        requireProfile(loc, ECoreProfile | ECompatibilityProfile, "binding");
-        profileRequires(loc, ECoreProfile | ECompatibilityProfile, 420, GL_ARB_shading_language_420pack, "binding");
+        requireProfile(loc, ~EEsProfile, "binding");
+        profileRequires(loc, ~EEsProfile, 420, GL_ARB_shading_language_420pack, "binding");
         if ((unsigned int)value >= TQualifier::layoutBindingEnd)
             error(loc, "binding is too large", id.c_str(), "");
         else
@@ -3182,9 +3182,9 @@ void TParseContext::layoutQualifierCheck(TSourceLoc loc, const TQualifier& quali
                 requireStage(loc, EShLangVertex, feature);
             requireStage(loc, (EShLanguageMask)~EShLangComputeMask, feature);
             if (language == EShLangVertex)
-                profileRequires(loc, ECoreProfile | ECompatibilityProfile, 330, 0, feature);
+                profileRequires(loc, ~EEsProfile, 330, GL_ARB_separate_shader_objects, feature);
             else
-                profileRequires(loc, ECoreProfile | ECompatibilityProfile, 410, GL_ARB_separate_shader_objects, feature);
+                profileRequires(loc, ~EEsProfile, 410, GL_ARB_separate_shader_objects, feature);
             break;
         }
         case EvqVaryingOut:
@@ -3194,9 +3194,9 @@ void TParseContext::layoutQualifierCheck(TSourceLoc loc, const TQualifier& quali
                 requireStage(loc, EShLangFragment, feature);
             requireStage(loc, (EShLanguageMask)~EShLangComputeMask, feature);
             if (language == EShLangFragment)
-                profileRequires(loc, ECoreProfile | ECompatibilityProfile, 330, 0, feature);
+                profileRequires(loc, ~EEsProfile, 330, GL_ARB_separate_shader_objects, feature);
             else
-                profileRequires(loc, ECoreProfile | ECompatibilityProfile, 410, GL_ARB_separate_shader_objects, feature);
+                profileRequires(loc, ~EEsProfile, 410, GL_ARB_separate_shader_objects, feature);
             break;
         }
         case EvqUniform:
@@ -3542,8 +3542,8 @@ TIntermNode* TParseContext::executeInitializer(TSourceLoc loc, TString& identifi
     if (qualifier == EvqConst) {
         if (initializer->getType().getQualifier().storage != EvqConst) {
             const char* initFeature = "non-constant initializer";
-            requireProfile(loc, ECoreProfile | ECompatibilityProfile, initFeature);
-            profileRequires(loc, ECoreProfile | ECompatibilityProfile, 420, GL_ARB_shading_language_420pack, initFeature);
+            requireProfile(loc, ~EEsProfile, initFeature);
+            profileRequires(loc, ~EEsProfile, 420, GL_ARB_shading_language_420pack, initFeature);
             variable->getWritableType().getQualifier().storage = EvqConstReadOnly;
             qualifier = EvqConstReadOnly;
         }
@@ -3855,10 +3855,12 @@ void TParseContext::declareBlock(TSourceLoc loc, TTypeList& typeList, const TStr
         profileRequires(loc, ENoProfile, 140, 0, "uniform block");
         break;
     case EvqVaryingIn:
-        requireProfile(loc, ECoreProfile | ECompatibilityProfile, "input block");
+        requireProfile(loc, ~EEsProfile, "input block");
+        profileRequires(loc, ~EEsProfile, 150, GL_ARB_separate_shader_objects, "input block");
         break;
     case EvqVaryingOut:
-        requireProfile(loc, ECoreProfile | ECompatibilityProfile, "output block");
+        requireProfile(loc, ~EEsProfile, "output block");
+        profileRequires(loc, ~EEsProfile, 150, GL_ARB_separate_shader_objects, "output block");
         break;
     default:
         error(loc, "only uniform, buffer, in, or out blocks are supported", blockName->c_str(), "");

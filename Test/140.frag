@@ -20,3 +20,9 @@ void main()
 in struct S { float f; } s; // ERROR
 
 float patch = 3.1;
+
+layout(location=3) in vec4 vl;  // ERROR
+
+#extension GL_ARB_separate_shader_objects : enable
+
+layout(location=4) in vec4 vl2;

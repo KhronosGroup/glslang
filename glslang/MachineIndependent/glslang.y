@@ -2099,14 +2099,14 @@ initializer
     }
     | LEFT_BRACE initializer_list RIGHT_BRACE {
         const char* initFeature = "{ } style initializers";
-        parseContext.requireProfile($1.loc, ECoreProfile | ECompatibilityProfile, initFeature);
-        parseContext.profileRequires($1.loc, ECoreProfile | ECompatibilityProfile, 420, GL_ARB_shading_language_420pack, initFeature);
+        parseContext.requireProfile($1.loc, ~EEsProfile, initFeature);
+        parseContext.profileRequires($1.loc, ~EEsProfile, 420, GL_ARB_shading_language_420pack, initFeature);
         $$ = $2;
     }
     | LEFT_BRACE initializer_list COMMA RIGHT_BRACE {
         const char* initFeature = "{ } style initializers";
-        parseContext.requireProfile($1.loc, ECoreProfile | ECompatibilityProfile, initFeature);
-        parseContext.profileRequires($1.loc, ECoreProfile | ECompatibilityProfile, 420, GL_ARB_shading_language_420pack, initFeature);
+        parseContext.requireProfile($1.loc, ~EEsProfile, initFeature);
+        parseContext.profileRequires($1.loc, ~EEsProfile, 420, GL_ARB_shading_language_420pack, initFeature);
         $$ = $2;
     }
     ;

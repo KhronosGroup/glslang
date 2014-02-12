@@ -17,7 +17,7 @@ ERROR: 0:79: ':' :  wrong operand types: no operation ':' exists that takes a le
 ERROR: 0:79: 'assign' :  cannot convert from '4X4 matrix of float' to 'fragColor 4-component vector of float'
 ERROR: 0:82: 'xr' : illegal - vector component fields not from the same set 
 ERROR: 0:83: 'xyxyx' : illegal vector field selection 
-ERROR: 0:83: 'scalar swizzle' : not supported with this profile: none
+ERROR: 0:83: 'scalar swizzle' : not supported for this version or the enabled extensions 
 ERROR: 0:83: 'xy' : vector field selection out of range 
 ERROR: 0:84: 'z' : vector field selection out of range 
 ERROR: 0:85: 'assign' :  l-value required 

@@ -14,7 +14,14 @@ ERROR: 0:81: 'textureGatherOffset(...)' : not supported for this version or the 
 ERROR: 0:84: 'textureGatherOffset(...)' : not supported for this version or the enabled extensions 
 ERROR: 0:85: 'textureGatherOffset(...)' : not supported for this version or the enabled extensions 
 WARNING: 0:88: '#extension' : extension is only partially supported: GL_ARB_gpu_shader5
-ERROR: 12 compilation errors.  No code generated.
+WARNING: 0:120: '#extension' : extension is only partially supported: GL_ARB_shading_language_420pack
+ERROR: 0:123: 'uniform block' : not supported for this version or the enabled extensions 
+ERROR: 0:130: '.' : field selection not allowed on matrix 
+ERROR: 0:130: 'm43' : can't use function syntax on variable 
+ERROR: 0:130: '=' :  cannot convert from 'const float' to 'int'
+ERROR: 0:132: 'gl_MinProgramTexelOffset' : undeclared identifier 
+ERROR: 0:132: 'gl_MaxProgramTexelOffset' : undeclared identifier 
+ERROR: 18 compilation errors.  No code generated.
 
 
 ERROR: node is still EOpNull!
@@ -284,6 +291,34 @@ ERROR: node is still EOpNull!
 0:117            0.200000
 0:117            0.200000
 0:117            0.200000
+0:126  Function Definition: bar23444( (void)
+0:126    Function Parameters: 
+0:?     Sequence
+0:129      Sequence
+0:129        move second child to first child (float)
+0:129          'a1' (float)
+0:129          direct index (float)
+0:129            direct index (3-component vector of float)
+0:129              'm43' (4X3 matrix of float)
+0:129              Constant:
+0:129                3 (const int)
+0:129            Constant:
+0:129              1 (const int)
+0:131      Sequence
+0:131        move second child to first child (float)
+0:131          'b' (const (read only) float)
+0:131          component-wise multiply (float)
+0:131            Constant:
+0:131              2.000000
+0:131            'a1' (float)
+0:132      move second child to first child (float)
+0:132        direct index (float)
+0:132          'a' (3-component vector of float)
+0:132          Constant:
+0:132            0 (const int)
+0:132        add (float)
+0:132          'gl_MinProgramTexelOffset' (float)
+0:132          'gl_MaxProgramTexelOffset' (float)
 0:?   Linker Objects
 0:?     'a' (3-component vector of float)
 0:?     'b' (float)
@@ -305,6 +340,12 @@ ERROR: node is still EOpNull!
 0:?     'Isca' (uniform isampler3DArray)
 0:?     'Usca' (uniform usamplerCubeArray)
 0:?     'Scas' (uniform samplerCubeArrayShadow)
+0:?     'ai' (const 3-element array of int)
+0:?       10 (const int)
+0:?       23 (const int)
+0:?       32 (const int)
+0:?     'instanceName' (layout(binding=0 column_major shared ) uniform block{layout(column_major shared ) uniform int a})
+0:?     'bounds' (layout(binding=0 ) uniform sampler2D)
 
 
 Linked fragment stage:

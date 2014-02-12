@@ -3,7 +3,9 @@ Warning, version 140 is not yet complete; most features are present, but a few a
 WARNING: 0:3: varying deprecated in version 130; may be removed in future release
 ERROR: 0:17: '#error' : GL_ES is not set  
 ERROR: 0:20: 'fragment-shader struct input' : not supported for this version or the enabled extensions 
-ERROR: 2 compilation errors.  No code generated.
+ERROR: 0:24: 'location' : not supported for this version or the enabled extensions 
+ERROR: 0:24: 'location qualifier on input' : not supported for this version or the enabled extensions 
+ERROR: 4 compilation errors.  No code generated.
 
 
 ERROR: node is still EOpNull!
@@ -30,6 +32,8 @@ ERROR: node is still EOpNull!
 0:?     'gl_ClipDistance' (smooth in 5-element array of float)
 0:?     's' (smooth in structure{float f})
 0:?     'patch' (float)
+0:?     'vl' (layout(location=3 ) smooth in 4-component vector of float)
+0:?     'vl2' (layout(location=4 ) smooth in 4-component vector of float)
 
 
 Linked fragment stage:
