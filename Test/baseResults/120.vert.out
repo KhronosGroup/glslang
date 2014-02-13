@@ -1,7 +1,7 @@
 120.vert
 ERROR: 0:3: 'in for stage inputs' : not supported for this version or the enabled extensions 
 ERROR: 0:4: 'out for stage outputs' : not supported for this version or the enabled extensions 
-ERROR: 0:11: 'gl_Position' : cannot add storage, auxiliary, memory, interpolation, or precision qualifier to an existing variable 
+ERROR: 0:11: 'gl_Position' : cannot add storage, auxiliary, memory, interpolation, layout, or precision qualifier to an existing variable 
 ERROR: 0:12: '' : can only have one auxiliary qualifier (centroid, patch, and sample) 
 ERROR: 0:12: '' : replicated qualifiers 
 ERROR: 0:12: 'foo' : identifier not previously declared 

@@ -34,6 +34,7 @@ ERROR: 0:97: 'binding' : requires block, or sampler/image, or atomic-counter typ
 ERROR: 0:106: '' : vertex input cannot be further qualified 
 ERROR: 0:106: 'redeclaration' : cannot change storage, memory, or auxiliary qualification of gl_FrontColor
 ERROR: 0:112: 'ColorIvn' : identifier not previously declared 
+WARNING: 0:118: '' : unknown requalification 
 ERROR: 0:132: 'shared' : not supported in this stage: vertex
 ERROR: 0:134: '' : function does not return a value: funcA
 ERROR: 0:136: '' : function does not return a value: funcB

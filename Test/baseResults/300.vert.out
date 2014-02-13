@@ -35,7 +35,10 @@ ERROR: 0:146: '' : array size required
 ERROR: 0:147: '' : array size required 
 ERROR: 0:148: '' : array size required 
 ERROR: 0:149: 'float' : cannot apply precision statement to this type; use 'float', 'int' or a sampler type 
-ERROR: 36 compilation errors.  No code generated.
+ERROR: 0:168: 'Binst' : cannot add storage, auxiliary, memory, interpolation, layout, or precision qualifier to an existing variable 
+ERROR: 0:169: 'Bblock' : cannot add storage, auxiliary, memory, interpolation, layout, or precision qualifier to an existing variable 
+ERROR: 0:170: 'Bfoo' : cannot add storage, auxiliary, memory, interpolation, layout, or precision qualifier to an existing variable 
+ERROR: 39 compilation errors.  No code generated.
 
 
 ERROR: node is still EOpNull!
@@ -286,6 +289,8 @@ ERROR: node is still EOpNull!
 0:?     's2DAS' (uniform lowp sampler2DArrayShadow)
 0:?     'c2D' (in highp 2-component vector of float)
 0:?     'ssss' (smooth out structure{highp float f})
+0:?     'Binst' (layout(column_major shared ) uniform block{layout(column_major shared ) uniform highp int a})
+0:?     'Bfoo' (highp int)
 0:?     'gl_VertexID' (gl_VertexId highp int)
 0:?     'gl_InstanceID' (gl_InstanceId highp int)
 

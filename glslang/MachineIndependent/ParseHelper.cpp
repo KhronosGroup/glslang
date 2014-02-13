@@ -4187,10 +4187,10 @@ void TParseContext::addQualifierToExisting(TSourceLoc loc, TQualifier qualifier,
     if (qualifier.isAuxiliary() ||
         qualifier.isMemory() ||
         qualifier.isInterpolation() ||
+        qualifier.hasLayout() ||
         qualifier.storage != EvqTemporary ||
         qualifier.precision != EpqNone) {
-        error(loc, "cannot add storage, auxiliary, memory, interpolation, or precision qualifier to an existing variable", identifier.c_str(), "");
-
+        error(loc, "cannot add storage, auxiliary, memory, interpolation, layout, or precision qualifier to an existing variable", identifier.c_str(), "");
         return;
     }
 
@@ -4204,7 +4204,8 @@ void TParseContext::addQualifierToExisting(TSourceLoc loc, TQualifier qualifier,
             error(loc, "cannot change qualification after use", "invariant", "");
         symbol->getWritableType().getQualifier().invariant = true;
         invariantCheck(loc, symbol->getType(), identifier);
-    }
+    } else
+        warn(loc, "unknown requalification", "", "");
 }
 
 void TParseContext::addQualifierToExisting(TSourceLoc loc, TQualifier qualifier, TIdentifierList& identifiers)

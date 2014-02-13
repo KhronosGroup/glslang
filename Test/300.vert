@@ -159,3 +159,12 @@ int agggf(float f) { return 2; }
 int agggf(float f);
 
 out struct Ssss { float f; } ssss;
+
+uniform Bblock {
+   int a;
+} Binst;
+int Bfoo;
+
+layout(std140) Binst;    // ERROR
+layout(std140) Bblock;   // ERROR
+layout(std140) Bfoo;     // ERROR
