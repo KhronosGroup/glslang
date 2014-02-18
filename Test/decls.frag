@@ -42,3 +42,8 @@ void main()
     while (int icond = b);
     while (bool gl_cond = b < c);
 }
+
+int foob__vi4[4] = int[](1, 2, 3, 4);
+int foob__vj, foob__vk5[5] = int[](5, 6, 7, 8, 9);
+int __foobvm2[2] = int[](10, 11), __foobvm3[3] = int[](12, 13, 14);
+int foob__vn8[4] = int[](21, 22, 23, 24), foob__vp;

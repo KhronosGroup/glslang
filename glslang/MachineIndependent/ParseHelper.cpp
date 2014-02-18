@@ -1486,17 +1486,21 @@ void TParseContext::globalCheck(TSourceLoc loc, const char* token)
 }
 
 //
-// If it starts "gl_" or has double underscore, it's a reserved name.
-// Except, if the symbol table is at a built-in level,
-// which is when we are parsing built-ins.
+// Reserved errors for GLSL.
 //
 void TParseContext::reservedErrorCheck(TSourceLoc loc, const TString& identifier)
 {
+    // "Identifiers starting with "gl_" are reserved for use by OpenGL, and may not be
+    // declared in a shader; this results in a compile-time error."
     if (! symbolTable.atBuiltInLevel()) {
         if (builtInName(identifier))
-            error(loc, "reserved built-in name:", "gl_", identifier.c_str());
+            error(loc, "identifiers starting with \"gl_\" are reserved", identifier.c_str(), "");
+
+        // "In addition, all identifiers containing two consecutive underscores (__) are
+        // reserved; using such a name does not itself result in an error, but may result
+        // in undefined behavior."
         if (identifier.find("__") != TString::npos)
-            error(loc, "Two consecutive underscores are reserved for future use.", identifier.c_str(), "", "");
+            warn(loc, "identifiers containing consecutive underscores (\"__\") are reserved", identifier.c_str(), "");
     }
 }
 
@@ -1505,13 +1509,15 @@ void TParseContext::reservedErrorCheck(TSourceLoc loc, const TString& identifier
 //
 void TParseContext::reservedPpErrorCheck(TSourceLoc loc, const char* identifier, const char* op)
 {
-    // "All macro names containing two consecutive underscores ( __ ) are reserved for future use as predefined 
-    // macro names. All macro names prefixed with "GL_" ("GL" followed by a single underscore) are also 
-    // reserved."
+    // "All macro names containing two consecutive underscores ( __ ) are reserved;
+    // defining such a name does not itself result in an error, but may result in
+    // undefined behavior.  All macro names prefixed with "GL_" ("GL" followed by a
+    // single underscore) are also reserved, and defining such a name results in a
+    // compile-time error."
     if (strncmp(identifier, "GL_", 3) == 0)
-        error(loc, "can't use with built-in names (\"GL_\" prefix)", op, "");
+        error(loc, "names beginning with \"GL_\" can't be defined:", op,  identifier);
     else if (strstr(identifier, "__") != 0)
-        error(loc, "can't use with built-in names (containing consecutive underscores)", op, "");
+        warn(loc, "names containing consecutive underscores are reserved:", op, identifier);
 }
 
 //
