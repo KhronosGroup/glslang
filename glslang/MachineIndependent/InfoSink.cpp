@@ -38,7 +38,7 @@
 
 namespace glslang {
 
-void TInfoSinkBase::append(const char *s)           
+void TInfoSinkBase::append(const char* s)           
 {
     if (outputStream & EString) {
         checkMem(strlen(s)); 

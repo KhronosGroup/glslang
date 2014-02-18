@@ -120,7 +120,7 @@ public:
     }
 
 protected:
-    void append(const char *s); 
+    void append(const char* s); 
 
     void append(int count, char c);
     void append(const TPersistString& t);

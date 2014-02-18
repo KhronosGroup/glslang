@@ -56,7 +56,7 @@ namespace glslang {
 // read past any white space
 void TInputScanner::consumeWhiteSpace(bool& foundNonSpaceTab)
 {
-    char c = peek();  // don't accidentally consume anything other than whitespace
+    int c = peek();  // don't accidentally consume anything other than whitespace
     while (c == ' ' || c == '\t' || c == '\r' || c == '\n') {
         if (c == '\r' || c == '\n')
             foundNonSpaceTab = true;
@@ -72,7 +72,7 @@ bool TInputScanner::consumeComment()
         return false;
 
     get();  // consume the '/'
-    char c = peek();
+    int c = peek();
     if (c == '/') {
 
         // a '//' style comment
@@ -139,7 +139,7 @@ void TInputScanner::consumeWhitespaceComment(bool& foundNonSpaceTab)
         consumeWhiteSpace(foundNonSpaceTab);
  
         // if not starting a comment now, then done
-        char c = peek();
+        int c = peek();
         if (c != '/' || c < 0)
             return;
 
@@ -176,7 +176,7 @@ bool TInputScanner::scanVersion(int& version, EProfile& profile)
         return true;
 
     // whitespace
-    char c;
+    int c;
     do {
         c = get();
     } while (c == ' ' || c == '\t');

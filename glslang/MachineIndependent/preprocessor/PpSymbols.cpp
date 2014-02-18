@@ -98,15 +98,15 @@ namespace glslang {
 */
 TPpContext::Symbol* TPpContext::NewSymbol(int atom)
 {
-    Symbol *lSymb;
-    char *pch;
+    Symbol* lSymb;
+    char* pch;
     int ii;
 
     lSymb = (Symbol *) mem_Alloc(pool, sizeof(Symbol));
     lSymb->atom = atom;
 
     // Clear macro
-    pch = (char *) &lSymb->mac;
+    pch = (char*) &lSymb->mac;
     for (ii = 0; ii < sizeof(lSymb->mac); ii++)
         *pch++ = 0;
 

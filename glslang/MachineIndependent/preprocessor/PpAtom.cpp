@@ -96,7 +96,7 @@ using namespace glslang;
 
 const struct {
     int val;
-    const char *str;
+    const char* str;
 } tokens[] = {
     { CPP_AND_OP,         "&&" },
     { CPP_AND_ASSIGN,     "&=" },
@@ -128,7 +128,7 @@ namespace glslang {
 //
 // Map a new or existing string to an atom, inventing a new atom if necessary.
 //
-int TPpContext::LookUpAddString(const char *s)
+int TPpContext::LookUpAddString(const char* s)
 {
     TAtomMap::const_iterator it = atomMap.find(s);
     if (it == atomMap.end())
@@ -140,7 +140,7 @@ int TPpContext::LookUpAddString(const char *s)
 //
 // Map an already created atom to its string.
 //
-const char *TPpContext::GetAtomString(int atom)
+const char* TPpContext::GetAtomString(int atom)
 {
     if (atom == 0)
         return "<null atom>";
@@ -159,7 +159,7 @@ const char *TPpContext::GetAtomString(int atom)
 //
 // Add forced mapping of string to atom.
 //
-int TPpContext::AddAtomFixed(const char *s, int atom)
+int TPpContext::AddAtomFixed(const char* s, int atom)
 {
     TAtomMap::const_iterator it = atomMap.insert(std::pair<TString, int>(s, atom)).first;
     if (stringMap.size() < (size_t)atom + 1)
@@ -175,7 +175,7 @@ int TPpContext::AddAtomFixed(const char *s, int atom)
 void TPpContext::InitAtomTable()
 {
     // Add single character tokens to the atom table:
-    const char *s = "~!%^&*()-+=|,.<>/?;:[]{}#";
+    const char* s = "~!%^&*()-+=|,.<>/?;:[]{}#";
     char t[2];
 
     t[1] = '\0';

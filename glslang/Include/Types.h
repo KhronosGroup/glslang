@@ -900,8 +900,8 @@ public:
     {
         const int maxSize = GlslangMaxTypeLength;
         char buf[maxSize];
-        char *p = &buf[0];
-        char *end = &buf[maxSize];
+        char* p = &buf[0];
+        char* end = &buf[maxSize];
 
         if (qualifier.hasLayout()) {
             // To reduce noise, skip this if the only layout is an xfb_buffer

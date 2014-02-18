@@ -232,7 +232,7 @@ protected:
     int ifdepth;                  // current #if-#else-#endif nesting in the cpp.c file (pre-processor)    
     bool elseSeen[maxIfNesting];  // Keep a track of whether an else has been seen at a particular depth
     int elsetracker;              // #if-#else and #endif constructs...Counter.
-    const char *ErrMsg;
+    const char* ErrMsg;
 
     class tMacroInput : public tInput {
     public:
@@ -371,17 +371,17 @@ protected:
     class tStringInput : public tInput {
     public:
         tStringInput(TPpContext* pp, TInputScanner& i) : tInput(pp), input(&i) { }
-        virtual int scan(TPpToken *);
+        virtual int scan(TPpToken*);
         virtual int getch();
         virtual void ungetch();
     protected:
         TInputScanner* input;
     };
 
-    int InitScanner(TPpContext *cpp);
-    int ScanFromString(char *s);
+    int InitScanner(TPpContext* cpp);
+    int ScanFromString(char* s);
     void missingEndifCheck();
-    int lFloatConst(char *str, int len, int ch, TPpToken * ppToken);
+    int lFloatConst(char* str, int len, int ch, TPpToken* ppToken);
 
     bool inComment;
 
@@ -394,17 +394,17 @@ protected:
     TStringMap stringMap;
     int nextAtom;
     void InitAtomTable();
-    int AddAtomFixed(const char *s, int atom);
-    int LookUpAddString(const char *s);
-    const char *GetAtomString(int atom);
+    int AddAtomFixed(const char* s, int atom);
+    int LookUpAddString(const char* s);
+    const char* GetAtomString(int atom);
 
     //
     // From PpMemory.cpp
     //
     MemoryPool *mem_CreatePool(size_t chunksize, unsigned align);
-    void mem_FreePool(MemoryPool *);
-    void *mem_Alloc(MemoryPool *p, size_t size);
-    int mem_AddCleanup(MemoryPool *p, void (*fn)(void *, void*), void *arg1, void* arg2);
+    void mem_FreePool(MemoryPool*);
+    void *mem_Alloc(MemoryPool* p, size_t size);
+    int mem_AddCleanup(MemoryPool* p, void (*fn)(void *, void*), void* arg1, void* arg2);
 };
 
 } // end namespace glslang

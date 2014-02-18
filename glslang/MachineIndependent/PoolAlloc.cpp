@@ -276,7 +276,7 @@ void* TPoolAllocator::allocate(size_t numBytes)
         //
         // Safe to allocate from currentPageOffset.
         //
-        unsigned char* memory = reinterpret_cast<unsigned char *>(inUseList) + currentPageOffset;
+        unsigned char* memory = reinterpret_cast<unsigned char*>(inUseList) + currentPageOffset;
         currentPageOffset += allocationSize;
         currentPageOffset = (currentPageOffset + alignmentMask) & ~alignmentMask;
 
@@ -320,7 +320,7 @@ void* TPoolAllocator::allocate(size_t numBytes)
     new(memory) tHeader(inUseList, 1);
     inUseList = memory;
     
-    unsigned char* ret = reinterpret_cast<unsigned char *>(inUseList) + headerSkip;
+    unsigned char* ret = reinterpret_cast<unsigned char*>(inUseList) + headerSkip;
     currentPageOffset = (headerSkip + allocationSize + alignmentMask) & ~alignmentMask;
 
     return initializeAllocation(inUseList, ret, numBytes);

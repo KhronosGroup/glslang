@@ -150,7 +150,7 @@ bool TParseContext::parseShaderStrings(TPpContext& ppContext, TInputScanner& inp
 }
 
 // This is called from bison when it has a parse (syntax) error
-void TParseContext::parserError(const char *s)
+void TParseContext::parserError(const char* s)
 {
     if (afterEOF) {
         if (tokensBeforeEOF == 1)
@@ -324,8 +324,8 @@ bool TParseContext::parseVectorFields(TSourceLoc loc, const TString& compString,
 //
 // Used to output syntax, parsing, and semantic errors.
 //
-void C_DECL TParseContext::error(TSourceLoc loc, const char *szReason, const char *szToken,
-                                 const char *szExtraInfoFormat, ...)
+void C_DECL TParseContext::error(TSourceLoc loc, const char* szReason, const char* szToken,
+                                 const char* szExtraInfoFormat, ...)
 {
     const int maxSize = GlslangMaxTokenLength + 200;
     char szExtraInfo[maxSize];
@@ -344,8 +344,8 @@ void C_DECL TParseContext::error(TSourceLoc loc, const char *szReason, const cha
     ++numErrors;
 }
 
-void C_DECL TParseContext::warn(TSourceLoc loc, const char *szReason, const char *szToken,
-                                 const char *szExtraInfoFormat, ...)
+void C_DECL TParseContext::warn(TSourceLoc loc, const char* szReason, const char* szToken,
+                                 const char* szExtraInfoFormat, ...)
 {
     if (messages & EShMsgSuppressWarnings)
         return;

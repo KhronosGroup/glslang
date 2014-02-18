@@ -62,12 +62,12 @@ public:
     // anything else is the next character
 
     // retrieve the next character and advance one character
-    char get()
+    int get()
     {
         if (currentSource >= numSources)
             return -1;
 
-        char ret = sources[currentSource][currentChar];
+        int ret = sources[currentSource][currentChar];
         if (ret == '\n')
             ++loc[currentSource].line;
         advance();
@@ -76,7 +76,7 @@ public:
     }
 
     // retrieve the next character, no advance
-    char peek()
+    int peek()
     {
         if (currentSource >= numSources)
             return -1;

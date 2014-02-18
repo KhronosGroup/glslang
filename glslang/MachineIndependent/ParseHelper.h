@@ -67,13 +67,13 @@ public:
 
     void setLimits(const TBuiltInResource&);
     bool parseShaderStrings(TPpContext&, TInputScanner& input, bool versionWillBeError = false);
-    void parserError(const char *s);     // for bison's yyerror
+    void parserError(const char* s);     // for bison's yyerror
     const char* getPreamble();
 
-    void C_DECL error(TSourceLoc, const char *szReason, const char *szToken,
-                      const char *szExtraInfoFormat, ...);
-    void C_DECL  warn(TSourceLoc, const char *szReason, const char *szToken,
-                      const char *szExtraInfoFormat, ...);
+    void C_DECL error(TSourceLoc, const char* szReason, const char* szToken,
+                      const char* szExtraInfoFormat, ...);
+    void C_DECL  warn(TSourceLoc, const char* szReason, const char* szToken,
+                      const char* szExtraInfoFormat, ...);
     void reservedErrorCheck(TSourceLoc, const TString&);
     void reservedPpErrorCheck(TSourceLoc, const char* name, const char* op);
     bool lineContinuationCheck(TSourceLoc, bool endOfComment);
@@ -188,14 +188,14 @@ public:
 
     // The following are implemented in Versions.cpp to localize version/profile/stage/extensions control
     void initializeExtensionBehavior();
-    void requireProfile(TSourceLoc, int queryProfiles, const char *featureDesc);
-    void profileRequires(TSourceLoc, int queryProfiles, int minVersion, int numExtensions, const char* const extensions[], const char *featureDesc);
-    void profileRequires(TSourceLoc, int queryProfiles, int minVersion, const char* const extension, const char *featureDesc);
-    void requireStage(TSourceLoc, EShLanguageMask, const char *featureDesc);
-    void requireStage(TSourceLoc, EShLanguage, const char *featureDesc);
-    void checkDeprecated(TSourceLoc, int queryProfiles, int depVersion, const char *featureDesc);
-    void requireNotRemoved(TSourceLoc, int queryProfiles, int removedVersion, const char *featureDesc);
-    void requireExtensions(TSourceLoc, int numExtensions, const char* const extensions[], const char *featureDesc);
+    void requireProfile(TSourceLoc, int queryProfiles, const char* featureDesc);
+    void profileRequires(TSourceLoc, int queryProfiles, int minVersion, int numExtensions, const char* const extensions[], const char* featureDesc);
+    void profileRequires(TSourceLoc, int queryProfiles, int minVersion, const char* const extension, const char* featureDesc);
+    void requireStage(TSourceLoc, EShLanguageMask, const char* featureDesc);
+    void requireStage(TSourceLoc, EShLanguage, const char* featureDesc);
+    void checkDeprecated(TSourceLoc, int queryProfiles, int depVersion, const char* featureDesc);
+    void requireNotRemoved(TSourceLoc, int queryProfiles, int removedVersion, const char* featureDesc);
+    void requireExtensions(TSourceLoc, int numExtensions, const char* const extensions[], const char* featureDesc);
     TExtensionBehavior getExtensionBehavior(const char*);
     bool extensionsTurnedOn(int numExtensions, const char* const extensions[]);
     void updateExtensionBehavior(const char* const extension, const char* behavior);

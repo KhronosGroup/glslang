@@ -93,7 +93,7 @@ ShBinding FixedAttributeBindings[] = {
 ShBindingTable FixedAttributeTable = { 3, FixedAttributeBindings };
 
 EShLanguage FindLanguage(const std::string& name);
-void CompileFile(const char *fileName, ShHandle);
+void CompileFile(const char* fileName, ShHandle);
 void usage();
 void FreeFileData(char** data);
 char** ReadFileData(const char* fileName);
@@ -212,7 +212,7 @@ const char* DefaultConfig =
 void ProcessConfigFile()
 {
     char** configStrings = 0;
-    char *config = 0;
+    char* config = 0;
     if (ConfigFile.size() > 0) {
         configStrings = ReadFileData(ConfigFile.c_str());
         if (configStrings)
@@ -746,7 +746,7 @@ EShLanguage FindLanguage(const std::string& name)
 // Read a file's data into a string, and compile it using the old interface ShCompile, 
 // for non-linkable results.
 //
-void CompileFile(const char *fileName, ShHandle compiler)
+void CompileFile(const char* fileName, ShHandle compiler)
 {
     int ret;
     char** shaderStrings = ReadFileData(fileName);
@@ -832,8 +832,8 @@ void usage()
 
 int fopen_s(
    FILE** pFile,
-   const char *filename,
-   const char *mode
+   const char* filename,
+   const char* mode
 )
 {
    if (!pFile || !filename || !mode) {
@@ -858,11 +858,11 @@ int fopen_s(
 //
 //   Malloc a string of sufficient size and read a string into it.
 //
-char** ReadFileData(const char *fileName) 
+char** ReadFileData(const char* fileName) 
 {
     FILE *in;
 	int errorCode = fopen_s(&in, fileName, "r");
-    char *fdata;
+    char* fdata;
     int count = 0;
     const int maxSourceStrings = 5;
     char** return_data = (char**)malloc(maxSourceStrings+1);
@@ -879,7 +879,7 @@ char** ReadFileData(const char *fileName)
 	fseek(in, 0, SEEK_SET);
 	
 	
-	if (!(fdata = (char *)malloc(count+2))) {
+	if (!(fdata = (char*)malloc(count+2))) {
             printf("Error allocating memory\n");
             return 0;
     }
@@ -917,7 +917,7 @@ char** ReadFileData(const char *fileName)
     return return_data;
 }
 
-void FreeFileData(char **data)
+void FreeFileData(char** data)
 {
     for(int i=0;i<NumShaderStrings;i++)
         free(data[i]);

@@ -117,8 +117,8 @@ int TPpContext::lReadByte(TokenStream *pTok)
 */
 void TPpContext::RecordToken(TokenStream *pTok, int token, TPpToken* ppToken)
 {
-    const char *s;
-    char *str = NULL;
+    const char* s;
+    char* str = NULL;
 
     if (token > 256)
         lAddByte(pTok, (unsigned char)((token & 0x7f) + 0x80));
@@ -164,7 +164,7 @@ int TPpContext::ReadToken(TokenStream *pTok, TPpToken *ppToken)
 {
     char tokenText[TPpToken::maxTokenLength + 1];
     int ltoken, len;
-    char ch;
+    int ch;
 
     ltoken = lReadByte(pTok);
     ppToken->loc = parseContext.getCurrentLoc();
