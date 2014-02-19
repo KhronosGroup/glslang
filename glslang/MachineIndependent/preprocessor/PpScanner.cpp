@@ -113,7 +113,7 @@ int TPpContext::InitScanner(TPpContext *cpp)
 *         letter 'e', or a precision ending (e.g., F or LF).
 */
 
-int TPpContext::lFloatConst(char* str, int len, int ch, TPpToken* ppToken)
+int TPpContext::lFloatConst(int len, int ch, TPpToken* ppToken)
 {
     bool HasDecimalOrExponent = false;
     int declen, exp, ExpSign;
@@ -124,6 +124,7 @@ int TPpContext::lFloatConst(char* str, int len, int ch, TPpToken* ppToken)
     exp = 0;
 
     str_len=len;
+    char* str = ppToken->name;
     if (ch == '.') {
         HasDecimalOrExponent = true;
         str[len++]=ch;
@@ -220,8 +221,6 @@ int TPpContext::lFloatConst(char* str, int len, int ch, TPpToken* ppToken)
 
         ppToken->dval = strtod(str, 0);
     }
-    // Suffix:
-    strcpy(ppToken->name, str);
 
     if (isDouble)
         return CPP_DOUBLECONSTANT;
@@ -385,7 +384,7 @@ int TPpContext::tStringInput::scan(TPpToken* ppToken)
                     } while (ch >= '0' && ch <= '9');
                 }
                 if (ch == '.' || ch == 'e' || ch == 'f' || ch == 'E' || ch == 'F' || ch == 'l' || ch == 'L') 
-                    return pp->lFloatConst(ppToken->name, len, ch, ppToken);
+                    return pp->lFloatConst(len, ch, ppToken);
                 
                 // wasn't a float, so must be octal...
                 if (nonOctal)
@@ -424,7 +423,7 @@ int TPpContext::tStringInput::scan(TPpToken* ppToken)
                 ch = pp->getChar();
             } while (ch >= '0' && ch <= '9');
             if (ch == '.' || ch == 'e' || ch == 'f' || ch == 'E' || ch == 'F' || ch == 'l' || ch == 'L') {
-                return pp->lFloatConst(ppToken->name, len, ch, ppToken);
+                return pp->lFloatConst(len, ch, ppToken);
             } else {
                 // Finish handling signed and unsigned integers
                 int numericLen = len;
@@ -600,7 +599,7 @@ int TPpContext::tStringInput::scan(TPpToken* ppToken)
             ch = pp->getChar();
             if (ch >= '0' && ch <= '9') {
                 pp->ungetChar();
-                return pp->lFloatConst(ppToken->name, 0, '.', ppToken);
+                return pp->lFloatConst(0, '.', ppToken);
             } else {
                 pp->ungetChar();
                 return '.';

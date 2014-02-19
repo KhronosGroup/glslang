@@ -381,7 +381,7 @@ protected:
     int InitScanner(TPpContext* cpp);
     int ScanFromString(char* s);
     void missingEndifCheck();
-    int lFloatConst(char* str, int len, int ch, TPpToken* ppToken);
+    int lFloatConst(int len, int ch, TPpToken* ppToken);
 
     bool inComment;
 

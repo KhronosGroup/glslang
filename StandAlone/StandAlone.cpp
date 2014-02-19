@@ -224,7 +224,7 @@ void ProcessConfigFile()
     }
 
     if (config == 0) {
-        config = new char[strlen(DefaultConfig)];
+        config = new char[strlen(DefaultConfig) + 1];
         strcpy(config, DefaultConfig);
     }
 
@@ -862,10 +862,10 @@ char** ReadFileData(const char* fileName)
 {
     FILE *in;
 	int errorCode = fopen_s(&in, fileName, "r");
-    char* fdata;
+    char *fdata;
     int count = 0;
     const int maxSourceStrings = 5;
-    char** return_data = (char**)malloc(maxSourceStrings+1);
+    char** return_data = (char**)malloc(sizeof(char *) * (maxSourceStrings+1));
 
     //return_data[MAX_SOURCE_STRINGS]=NULL;
 	if (errorCode) {
