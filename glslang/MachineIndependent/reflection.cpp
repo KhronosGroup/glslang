@@ -137,7 +137,7 @@ public:
     int getBlockSize(const TType& blockType)
     {
         const TTypeList& memberList = *blockType.getStruct();
-        int lastIndex = memberList.size() - 1;
+        int lastIndex = (int)memberList.size() - 1;
         int lastOffset = getOffset(blockType, lastIndex);
 
         int lastMemberSize;
@@ -211,7 +211,7 @@ public:
                 // Visit all members of this aggregate, and for each one, 
                 // fully explode the remaining aggregate to dereference
                 const TTypeList& typeList = *terminalType->getStruct();
-                for (size_t i = 0; i < typeList.size(); ++i) {
+                for (int i = 0; i < (int)typeList.size(); ++i) {
                     TString newBaseName = name;
                     newBaseName.append(TString(".") + typeList[i].type->getFieldName());
                     TType derefType(*terminalType, i);
@@ -232,7 +232,7 @@ public:
 
         TReflection::TNameToIndex::const_iterator it = reflection.nameToIndex.find(name);
         if (it == reflection.nameToIndex.end()) {
-            reflection.nameToIndex[name] = reflection.indexToUniform.size();                        
+            reflection.nameToIndex[name] = (int)reflection.indexToUniform.size();                        
             reflection.indexToUniform.push_back(TObjectReflection(name, offset, mapToGlType(*terminalType), arraySize, blockIndex));
         } else if (arraySize > 1) {
             int& reflectedArraySize = reflection.indexToUniform[it->second].size;
@@ -327,7 +327,7 @@ public:
         int blockIndex;
         TReflection::TNameToIndex::const_iterator it = reflection.nameToIndex.find(name);
         if (reflection.nameToIndex.find(name) == reflection.nameToIndex.end()) {
-            blockIndex = reflection.indexToUniformBlock.size();
+            blockIndex = (int)reflection.indexToUniformBlock.size();
             reflection.nameToIndex[name] = blockIndex;
             reflection.indexToUniformBlock.push_back(TObjectReflection(name, -1, -1, size, -1));
         } else

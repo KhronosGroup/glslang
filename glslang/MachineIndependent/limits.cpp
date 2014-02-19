@@ -106,7 +106,7 @@ bool TInductiveTraverser::visitAggregate(TVisit /* visit */, TIntermAggregate* n
     if (node->getOp() == EOpFunctionCall) {
         // see if an out or inout argument is the loop index
         const TIntermSequence& args = node->getSequence();
-        for (size_t i = 0; i < args.size(); ++i) {
+        for (int i = 0; i < (int)args.size(); ++i) {
             if (args[i]->getAsSymbolNode() && args[i]->getAsSymbolNode()->getId() == loopId) {
                 TSymbol* function = symbolTable.find(node->getName());
                 const TType* type = (*function->getAsFunction())[i].type;

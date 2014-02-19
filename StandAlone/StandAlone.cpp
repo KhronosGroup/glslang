@@ -760,7 +760,7 @@ void CompileFile(const char* fileName, ShHandle compiler)
 
     // move to length-based strings, rather than null-terminated strings
     for (int s = 0; s < NumShaderStrings; ++s)
-        lengths[s] = strlen(shaderStrings[s]);
+        lengths[s] = (int)strlen(shaderStrings[s]);
 
     if (! shaderStrings) {
         CompileFailed = true;

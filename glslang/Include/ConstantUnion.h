@@ -445,8 +445,8 @@ public:
         unionArray = new TConstUnionVector(size, val);
     }
 
-    TConstUnion& operator[](int index) { return (*unionArray)[index]; }
-    const TConstUnion& operator[](int index) const { return (*unionArray)[index]; }
+    TConstUnion& operator[](size_t index) { return (*unionArray)[index]; }
+    const TConstUnion& operator[](size_t index) const { return (*unionArray)[index]; }
     bool operator==(const TConstUnionArray& rhs) const
     {
         // this includes the case that both are unallocated

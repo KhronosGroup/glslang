@@ -139,7 +139,7 @@ protected:
     const char* const *sources; // array of strings
     const size_t *lengths;      // length of each string
     int currentSource;
-    int currentChar;
+    size_t currentChar;
 
     // This is for reporting what string/line an error occurred on, and can be overridden by #line.
     // It remembers the last state of each source string as it is left for the next one, so unget() 

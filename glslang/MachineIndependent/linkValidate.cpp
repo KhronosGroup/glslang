@@ -621,7 +621,7 @@ int TIntermediate::computeTypeLocationSize(const TType& type)
     // recursively..."    
     if (type.isStruct()) {
         int size = 0;
-        for (size_t member = 0; member < type.getStruct()->size(); ++member) {
+        for (int member = 0; member < (int)type.getStruct()->size(); ++member) {
             TType memberType(type, member);
             size += computeTypeLocationSize(memberType);
         }
@@ -706,7 +706,7 @@ unsigned int TIntermediate::computeTypeXfbSize(const TType& type, bool& contains
     if (type.isStruct()) {
         unsigned int size = 0;
         bool structContainsDouble = false;
-        for (size_t member = 0; member < type.getStruct()->size(); ++member) {
+        for (int member = 0; member < (int)type.getStruct()->size(); ++member) {
             TType memberType(type, member);
             // "... if applied to 
             // an aggregate containing a double, the offset must also be a multiple of 8, 

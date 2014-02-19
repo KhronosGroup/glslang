@@ -80,7 +80,7 @@ namespace glslang {
 
         int size()
         {
-            return worklist.size();
+            return (int)worklist.size();
         }
 
         bool empty()

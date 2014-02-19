@@ -3608,7 +3608,7 @@ TIntermTyped* TParseContext::convertInitializerList(TSourceLoc loc, const TType&
         TType arrayType;
         arrayType.shallowCopy(type);
         arrayType.setArraySizes(type);
-        arrayType.changeArraySize(initList->getSequence().size());
+        arrayType.changeArraySize((int)initList->getSequence().size());
         TType elementType(arrayType, 0); // dereferenced type
         for (size_t i = 0; i < initList->getSequence().size(); ++i) {
             initList->getSequence()[i] = convertInitializerList(loc, elementType, initList->getSequence()[i]->getAsTyped());
