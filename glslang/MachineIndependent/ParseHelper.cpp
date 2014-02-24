@@ -4096,7 +4096,7 @@ void TParseContext::fixBlockXfbOffsets(TSourceLoc loc, TQualifier& qualifier, TT
 {
     // "If a block is qualified with xfb_offset, all its 
     // members are assigned transform feedback buffer offsets. If a block is not qualified with xfb_offset, any 
-    // members of that block not qualified with an xfb_offsetwill not be assigned transform feedback buffer 
+    // members of that block not qualified with an xfb_offset will not be assigned transform feedback buffer 
     // offsets."
 
     if (! qualifier.hasXfbBuffer() || ! qualifier.hasXfbOffset())

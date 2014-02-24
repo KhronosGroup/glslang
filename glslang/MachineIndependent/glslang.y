@@ -253,7 +253,9 @@ primary_expression
         $$ = parseContext.intermediate.addConstantUnion(unionArray, TType(EbtBool, EvqConst), $1.loc, true);
     }
     | LEFT_PAREN expression RIGHT_PAREN {
-        $$ = $2;
+        $$ = $2;        
+        if ($$->getAsConstantUnion())
+            $$->getAsConstantUnion()->setExpression();
     }
     ;
 
@@ -430,8 +432,11 @@ unary_expression
                 parseContext.unaryOpError($1.loc, errorOp, $2->getCompleteString());
                 $$ = $2;
             }
-        } else
+        } else {
             $$ = $2;
+            if ($$->getAsConstantUnion())
+                $$->getAsConstantUnion()->setExpression();
+        }
     }
     ;
 // Grammar Note:  No traditional style type casts.

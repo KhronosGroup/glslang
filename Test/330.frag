@@ -44,6 +44,8 @@ const int start = 6;
 layout(location = -2) in vec4 v1;         // ERROR
 layout(location = start + 2) in vec4 v2;  // ERROR
 layout(location = 4.7e10) in vec4 v20;    // ERROR
+layout(location = +60) in float v21;      // ERROR
+layout(location = (2)) in float v22;      // ERROR
 
 struct S {
     float f1;
@@ -66,6 +68,8 @@ layout(location = start) in vec4 v3;
 layout(location = -2) in vec4 v4;         // ERROR
 layout(location = -start) in vec4 v5;     // ERROR
 layout(location = start*start - 2 - 4) in vec4 v6;
+layout(location = +61) in float v23;
+layout(location = (62)) in float v24;
 
 struct S2 {
     float f1;

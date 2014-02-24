@@ -502,6 +502,7 @@ public:
     virtual TIntermTyped* fold(TOperator, const TIntermTyped*) const;
     virtual TIntermTyped* fold(TOperator, const TType&) const;
     void setLiteral() { literal = true; }
+    void setExpression() { literal = false; }
     bool isLiteral() const { return literal; }
 protected:
     const TConstUnionArray unionArray;
