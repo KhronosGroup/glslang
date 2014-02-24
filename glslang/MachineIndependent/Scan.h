@@ -93,9 +93,11 @@ public:
             do {
                 --currentSource;
             } while (currentSource > 0 && lengths[currentSource] == 0);
-            currentChar = lengths[currentSource] - 1;
-            if (currentChar < 0)
+            if (lengths[currentSource] == 0) {
+                // set to 0 if we've backed up to the start of an empty string
                 currentChar = 0;
+            } else
+                currentChar = lengths[currentSource] - 1;
         }
         if (peek() == '\n')
             --loc[currentSource].line;

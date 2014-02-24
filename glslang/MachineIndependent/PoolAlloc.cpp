@@ -185,6 +185,7 @@ const unsigned char TAllocation::userDataFill       = 0xcd;
 //
 void TAllocation::checkGuardBlock(unsigned char* blockMem, unsigned char val, const char* locText) const
 {
+#ifdef GUARD_BLOCKS
     for (int x = 0; x < guardBlockSize; x++) {
         if (blockMem[x] != val) {
 			const int maxSize = 80;
@@ -196,6 +197,9 @@ void TAllocation::checkGuardBlock(unsigned char* blockMem, unsigned char val, co
             assert(0 && "PoolAlloc: Damage in guard block");
         }
     }
+#else
+    assert(guardBlockSize == 0);
+#endif
 }
 
 
