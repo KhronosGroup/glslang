@@ -43,7 +43,7 @@
 
 #include "preprocessor/PpContext.h"
 
-extern int yyparse(void*);
+extern int yyparse(glslang::TParseContext*);
 
 namespace glslang {
 
@@ -143,7 +143,7 @@ bool TParseContext::parseShaderStrings(TPpContext& ppContext, TInputScanner& inp
 {
     currentScanner = &input;
     ppContext.setInput(input, versionWillBeError);
-    yyparse((void*)this);
+    yyparse(this);
     finalErrorCheck();
 
     return numErrors == 0;

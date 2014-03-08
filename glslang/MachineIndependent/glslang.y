@@ -97,15 +97,15 @@ using namespace glslang;
 
 %{
 
-#define YYPARSE_PARAM voidParseContext
-#define parseContext (*(TParseContext*)voidParseContext)
-#define YYLEX_PARAM parseContext
-#define yyerror(msg) parseContext.parserError(msg)
+#define parseContext (*pParseContext)
+#define yyerror(context, msg) context->parserError(msg)
 
 extern int yylex(YYSTYPE*, TParseContext&);
 
 %}
 
+%parse-param {glslang::TParseContext* pParseContext}
+%lex-param {parseContext}
 %pure_parser  // enable thread safety
 %expect 1     // One shift reduce conflict because of if | else
 
