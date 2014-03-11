@@ -10,5 +10,11 @@ set(SOURCES
     PpSymbols.cpp
     PpTokens.cpp)
 
-add_library(Preprocessor STATIC ${SOURCES})
+set(HEADERS
+    PpContext.h
+    PpTokens.h)
 
+add_library(Preprocessor STATIC ${SOURCES} ${HEADERS})
+
+install(TARGETS Preprocessor
+        ARCHIVE DESTINATION lib)
