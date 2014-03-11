@@ -11,15 +11,18 @@ endif(WIN32)
 
 add_executable(glslangValidator StandAlone.cpp)
 
-target_link_libraries(glslangValidator
-                      glslang
-                      GenericCodeGen
-                      OSDependent
-                      Preprocessor
-                      OGLCompiler)
+set(LIBRARIES
+    glslang
+    GenericCodeGen
+    OSDependent
+    Preprocessor
+    OGLCompiler)
+
 if(UNIX)
-    target_link_libraries(${target_link_libraries} pthread)
+    set(LIBRARIES ${LIBRARIES} pthread)
 endif(UNIX)
+
+target_link_libraries(glslangValidator ${LIBRARIES})
 
 install(TARGETS glslangValidator
         RUNTIME DESTINATION bin)

@@ -1,5 +1,7 @@
 cmake_minimum_required(VERSION 2.8)
 
+set(CMAKE_INSTALL_PREFIX install)
+
 project(glslang)
 
 add_subdirectory(glslang/MachineIndependent)
