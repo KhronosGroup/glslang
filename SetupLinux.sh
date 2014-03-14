@@ -4,7 +4,7 @@ mkdir build
 pushd build
 cmake ..
 cmake ..
-make
+make -j 2
 make install
 install/bin/glslangValidator -i ../Test/sample.vert ../Test/sample.frag
 popd
