@@ -31,7 +31,6 @@ set(SOURCES
 set(HEADERS
     ../Public/ShaderLang.h
     gl_types.h
-    glslang_tab.cpp.h
     Initialize.h
     localintermediate.h
     ParseHelper.h
