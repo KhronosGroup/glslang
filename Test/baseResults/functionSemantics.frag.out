@@ -148,11 +148,11 @@ Warning, version 400 is not yet complete; some version-specific features are pre
 0:45                  1.000000
 0:45                  2.000000
 0:45                  3.000000
-0:45                'tempArg' (out int)
+0:45                'tempArg' (int)
 0:45            move second child to first child (float)
 0:45              'arg' (float)
 0:45              Convert int to float (float)
-0:45                'tempArg' (out int)
+0:45                'tempArg' (int)
 0:45            'tempReturn' (int)
 0:46      add second child into first child (int)
 0:46        'color' (int)
