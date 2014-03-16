@@ -102,6 +102,7 @@ struct TXfbBuffer {
 
 class TSymbolTable;
 class TSymbol;
+class TVariable;
 
 //
 // Set of helper functions to help parse and build the tree.
@@ -133,13 +134,14 @@ public:
     bool isRecursive() const { return recursive; }
     
     TIntermSymbol* addSymbol(int Id, const TString&, const TType&, TSourceLoc);
-    TIntermTyped* addConversion(TOperator, const TType&, TIntermTyped*);
+    TIntermSymbol* addSymbol(const TVariable&, TSourceLoc);
+    TIntermTyped* addConversion(TOperator, const TType&, TIntermTyped*) const;
     TIntermTyped* addBinaryMath(TOperator, TIntermTyped* left, TIntermTyped* right, TSourceLoc);
     TIntermTyped* addAssign(TOperator op, TIntermTyped* left, TIntermTyped* right, TSourceLoc);
     TIntermTyped* addIndex(TOperator op, TIntermTyped* base, TIntermTyped* index, TSourceLoc);
     TIntermTyped* addUnaryMath(TOperator, TIntermNode* child, TSourceLoc);
     TIntermTyped* addBuiltInFunctionCall(TSourceLoc line, TOperator, bool unary, TIntermNode*, const TType& returnType);
-    bool canImplicitlyPromote(TBasicType from, TBasicType to);
+    bool canImplicitlyPromote(TBasicType from, TBasicType to) const;
     TIntermAggregate* growAggregate(TIntermNode* left, TIntermNode* right);
     TIntermAggregate* growAggregate(TIntermNode* left, TIntermNode* right, TSourceLoc);
     TIntermAggregate* makeAggregate(TIntermNode* node);
@@ -150,8 +152,8 @@ public:
     TIntermTyped* addSelection(TIntermTyped* cond, TIntermTyped* trueBlock, TIntermTyped* falseBlock, TSourceLoc);
     TIntermTyped* addComma(TIntermTyped* left, TIntermTyped* right, TSourceLoc);
     TIntermTyped* addMethod(TIntermTyped*, const TType&, const TString*, TSourceLoc);
-    TIntermConstantUnion* addConstantUnion(const TConstUnionArray&, const TType&, TSourceLoc, bool literal = false);
-    TIntermTyped* promoteConstantUnion(TBasicType, TIntermConstantUnion*) ;
+    TIntermConstantUnion* addConstantUnion(const TConstUnionArray&, const TType&, TSourceLoc, bool literal = false) const;
+    TIntermTyped* promoteConstantUnion(TBasicType, TIntermConstantUnion*) const;
     bool parseConstTree(TIntermNode*, TConstUnionArray, TOperator, const TType&, bool singleConstantParam = false);
     TIntermLoop* addLoop(TIntermNode*, TIntermTyped*, TIntermTyped*, bool testFirst, TSourceLoc);
     TIntermBranch* addBranch(TOperator, TSourceLoc);

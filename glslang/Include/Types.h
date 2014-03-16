@@ -238,9 +238,15 @@ class TQualifier {
 public:
     void clear()
     {
-        storage   = EvqTemporary;
         precision = EpqNone;
         invariant = false;
+        makeTemporary();
+    }
+
+    // drop qualifiers that don't belong in a temporary variable
+    void makeTemporary()
+    {
+        storage   = EvqTemporary;
         centroid  = false;
         smooth    = false;
         flat      = false;
@@ -255,6 +261,7 @@ public:
         writeonly = false;
         clearLayout();
     }
+
     TStorageQualifier   storage   : 6;
     TPrecisionQualifier precision : 3;
     bool invariant : 1;
@@ -308,6 +315,29 @@ public:
         case EvqVaryingOut:
         case EvqFragColor:
         case EvqFragDepth:
+            return true;
+        default:
+            return false;
+        }
+    }
+
+    bool isParamInput() const
+    {
+        switch (storage) {
+        case EvqIn:
+        case EvqInOut:
+        case EvqConstReadOnly:
+            return true;
+        default:
+            return false;
+        }
+    }
+
+    bool isParamOutput() const
+    {
+        switch (storage) {
+        case EvqOut:
+        case EvqInOut:
             return true;
         default:
             return false;

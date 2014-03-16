@@ -94,20 +94,25 @@ ERROR: node is still EOpNull!
 0:43        'gl_PointSize' (invariant gl_PointSize float)
 0:43        Constant:
 0:43          3.800000
+0:61  Function Definition: overloadB(f1;f1; (void)
+0:61    Function Parameters: 
+0:61      '' (in float)
+0:61      '' (const (read only) float)
 0:78  Function Definition: foo( (void)
 0:78    Function Parameters: 
 0:?     Sequence
-0:83      Function Call: overloadB(f1;f1; (2-component vector of float)
+0:83      Function Call: overloadB(f1;f1; (void)
 0:83        'f' (float)
 0:83        'f' (float)
-0:84      Function Call: overloadB(f1;f1; (2-component vector of float)
+0:84      Function Call: overloadB(f1;f1; (void)
 0:84        'f' (float)
 0:84        Constant:
-0:84          2 (const int)
-0:85      Function Call: overloadB(f1;f1; (2-component vector of float)
+0:84          2.000000
+0:85      Function Call: overloadB(f1;f1; (void)
 0:85        Constant:
-0:85          1 (const int)
-0:85        'i' (int)
+0:85          1.000000
+0:85        Convert int to float (float)
+0:85          'i' (int)
 0:87      Constant:
 0:87        0.000000
 0:88      Function Call: overloadC(i1;i1; (2-component vector of float)
@@ -125,8 +130,8 @@ ERROR: node is still EOpNull!
 0:90        0.000000
 0:91      Function Call: overloadC(vf2;vf2; (2-component vector of float)
 0:91        Constant:
-0:91          1 (const int)
-0:91          1 (const int)
+0:91          1.000000
+0:91          1.000000
 0:91        Constant:
 0:91          2.000000
 0:91          2.000000
@@ -137,7 +142,8 @@ ERROR: node is still EOpNull!
 0:94        'f' (float)
 0:94        'i' (int)
 0:95      Function Call: overloadD(f1;i1; (3-component vector of float)
-0:95        'i' (int)
+0:95        Convert int to float (float)
+0:95          'i' (int)
 0:95        'i' (int)
 0:98      Constant:
 0:98        0.000000
@@ -146,8 +152,8 @@ ERROR: node is still EOpNull!
 0:101      Function Call: texture2D(s21;vf2; (4-component vector of float)
 0:101        's2D' (uniform sampler2D)
 0:101        Constant:
-0:101          0 (const int)
-0:101          0 (const int)
+0:101          0.000000
+0:101          0.000000
 0:102      clamp (4-component vector of float)
 0:102        'attv4' (in 4-component vector of float)
 0:102        Constant:
@@ -181,8 +187,8 @@ ERROR: node is still EOpNull!
 0:111        0.000000
 0:112      Function Call: overloadE(vf2; (3-component vector of float)
 0:112        Constant:
-0:112          1 (const int)
-0:112          1 (const int)
+0:112          1.000000
+0:112          1.000000
 0:115      Function Call: overloadE(f1[2]; (3-component vector of float)
 0:115        'b' (2-element array of float)
 0:117      Constant:
@@ -190,6 +196,82 @@ ERROR: node is still EOpNull!
 0:118      Function Call: overloadF(i1; (3-component vector of float)
 0:118        Constant:
 0:118          1 (const int)
+0:128  Function Definition: foo2( (void)
+0:128    Function Parameters: 
+0:?     Sequence
+0:135      Comma (void)
+0:135        Function Call: outFun(f1;vi2;i1;f1; (void)
+0:135          Convert int to float (float)
+0:135            'i' (int)
+0:135          'tempArg' (out 2-component vector of int)
+0:135          'i' (int)
+0:135          'f' (float)
+0:135        move second child to first child (2-component vector of float)
+0:135          'v2' (2-component vector of float)
+0:135          Convert int to float (2-component vector of float)
+0:135            'tempArg' (out 2-component vector of int)
+0:136      Comma (int)
+0:136        move second child to first child (int)
+0:136          'tempReturn' (int)
+0:136          Function Call: outFunRet(f1;i1;i1;vi4; (int)
+0:136            Convert int to float (float)
+0:136              'i' (int)
+0:136            'tempArg' (out int)
+0:136            'i' (int)
+0:136            'tempArg' (out 4-component vector of int)
+0:136        move second child to first child (float)
+0:136          'f' (float)
+0:136          Convert int to float (float)
+0:136            'tempArg' (out int)
+0:136        move second child to first child (4-component vector of float)
+0:136          'v4' (4-component vector of float)
+0:136          Convert int to float (4-component vector of float)
+0:136            'tempArg' (out 4-component vector of int)
+0:136        'tempReturn' (int)
+0:137      Sequence
+0:137        move second child to first child (float)
+0:137          'ret' (float)
+0:137          Convert int to float (float)
+0:137            Comma (int)
+0:137              move second child to first child (int)
+0:137                'tempReturn' (int)
+0:137                Function Call: outFunRet(f1;i1;i1;vi4; (int)
+0:137                  Convert int to float (float)
+0:137                    'i' (int)
+0:137                  'tempArg' (out int)
+0:137                  'i' (int)
+0:137                  'tempArg' (out 4-component vector of int)
+0:137              move second child to first child (float)
+0:137                'f' (float)
+0:137                Convert int to float (float)
+0:137                  'tempArg' (out int)
+0:137              move second child to first child (4-component vector of float)
+0:137                'v4' (4-component vector of float)
+0:137                Convert int to float (4-component vector of float)
+0:137                  'tempArg' (out 4-component vector of int)
+0:137              'tempReturn' (int)
+0:138      Sequence
+0:138        move second child to first child (2-component vector of float)
+0:138          'ret2' (2-component vector of float)
+0:138          Convert int to float (2-component vector of float)
+0:138            Comma (2-component vector of int)
+0:138              move second child to first child (2-component vector of int)
+0:138                'tempReturn' (2-component vector of int)
+0:138                Function Call: outFunRet(f1;vi4;i1;vi4; (2-component vector of int)
+0:138                  Convert int to float (float)
+0:138                    'i' (int)
+0:138                  'tempArg' (out 4-component vector of int)
+0:138                  'i' (int)
+0:138                  'tempArg' (out 4-component vector of int)
+0:138              move second child to first child (4-component vector of float)
+0:138                'v4' (4-component vector of float)
+0:138                Convert int to float (4-component vector of float)
+0:138                  'tempArg' (out 4-component vector of int)
+0:138              move second child to first child (4-component vector of float)
+0:138                'v4' (4-component vector of float)
+0:138                Convert int to float (4-component vector of float)
+0:138                  'tempArg' (out 4-component vector of int)
+0:138              'tempReturn' (2-component vector of int)
 0:?   Linker Objects
 0:?     'i' (in 4-component vector of float)
 0:?     'o' (smooth out 4-component vector of float)

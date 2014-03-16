@@ -247,7 +247,7 @@ enum TOperator {
     //
 
     EOpConstructGuardStart,
-    EOpConstructInt,
+    EOpConstructInt,          // these first scalar forms also identify what implicit conversion is needed
     EOpConstructUint,
     EOpConstructBool,
     EOpConstructFloat,

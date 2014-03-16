@@ -58,15 +58,15 @@ float overloadA(float);            // ERROR, different return value for same sig
 float overloadA(out float f, int);
 float overloadA(int i);
 
-vec2 overloadB(float, float);
+void overloadB(float, const in float) { }
 
 vec2 overloadC(int, int);
-vec2 overloadC(int, float);
+vec2 overloadC(const in int, float);
 vec2 overloadC(float, int);
 vec2 overloadC(vec2, vec2);
 
 vec3 overloadD(int, float);
-vec3 overloadD(float, int);
+vec3 overloadD(float, in int);
 
 vec3 overloadE(float[2]);
 vec3 overloadE(mat2 m);
@@ -119,3 +119,21 @@ void foo()
 }
 
 varying vec4 gl_TexCoord[35]; // ERROR, size too big
+
+// tests for output conversions
+void outFun(in float, out ivec2, in int, out float);
+int outFunRet(in float, out int, const in int, out ivec4);
+ivec2 outFunRet(in float, out ivec4, in int, out ivec4);
+
+void foo2()
+{
+    vec2 v2;
+    vec4 v4;
+    float f;
+    int i;
+
+    outFun(i, v2, i, f);
+    outFunRet(i, f, i, v4);
+    float ret = outFunRet(i, f, i, v4);
+    vec2 ret2 = outFunRet(i, v4, i, v4);
+}

@@ -502,6 +502,12 @@ public:
         table.pop_back();
     }
 
+    //
+    // Insert a visible symbol into the symbol table so it can
+    // be found later by name.
+    //
+    // Returns false if the was a name collision.
+    //
     bool insert(TSymbol& symbol)
     {
         symbol.setUniqueId(++uniqueId);
@@ -521,6 +527,17 @@ public:
         }
 
         return table[currentLevel()]->insert(symbol, separateNameSpaces);
+    }
+
+    //
+    // To allocate an internal temporary, which will need to be uniquely
+    // identified by the consumer of the AST, but never need to 
+    // found by doing a symbol table search by name, hence allowed an
+    // arbitrary name in the symbol with no worry of collision.
+    //
+    void makeInternalVariable(TSymbol& symbol)
+    {
+        symbol.setUniqueId(++uniqueId);
     }
 
     //

@@ -381,7 +381,7 @@ TIntermTyped* TParseContext::handleVariable(TSourceLoc loc, TSymbol* symbol, TSt
     if (anon) {
         // it was a member of an anonymous container, have to insert its dereference
         const TVariable* variable = anon->getAnonContainer().getAsVariable();
-        TIntermTyped* container = intermediate.addSymbol(variable->getUniqueId(), variable->getName(), variable->getType(), loc);
+        TIntermTyped* container = intermediate.addSymbol(*variable, loc);
         TConstUnionArray unionArray(1);
         unionArray[0].setUConst(anon->getMemberNumber());
         TIntermTyped* constNode = intermediate.addConstantUnion(unionArray, TType(EbtUint, EvqConst), loc);
@@ -892,9 +892,7 @@ TIntermAggregate* TParseContext::handleFunctionDefinition(TSourceLoc loc, TFunct
 
                 // Add the parameter to the HIL
                 paramNodes = intermediate.growAggregate(paramNodes,
-                                                        intermediate.addSymbol(variable->getUniqueId(),
-                                                                               variable->getName(),
-                                                                               variable->getType(), loc),
+                                                        intermediate.addSymbol(*variable, loc),
                                                         loc);
             }
         } else
@@ -916,13 +914,13 @@ TIntermAggregate* TParseContext::handleFunctionDefinition(TSourceLoc loc, TFunct
 //  - user function
 //  - subroutine call (not implemented yet)
 //
-TIntermTyped* TParseContext::handleFunctionCall(TSourceLoc loc, TFunction* fnCall, TIntermNode* intermNode)
+TIntermTyped* TParseContext::handleFunctionCall(TSourceLoc loc, TFunction* function, TIntermNode* intermNode)
 {
     TIntermTyped* result = 0;
 
-    TOperator op = fnCall->getBuiltInOp();
+    TOperator op = function->getBuiltInOp();
     if (op == EOpArrayLength)
-        result = handleLengthMethod(loc, fnCall, intermNode);
+        result = handleLengthMethod(loc, function, intermNode);
     else if (op != EOpNull) {
         //
         // Then this should be a constructor.
@@ -930,7 +928,7 @@ TIntermTyped* TParseContext::handleFunctionCall(TSourceLoc loc, TFunction* fnCal
         // Their parameters will be verified algorithmically.
         //
         TType type(EbtVoid);  // use this to get the type back
-        if (! constructorError(loc, intermNode, *fnCall, op, type)) {
+        if (! constructorError(loc, intermNode, *function, op, type)) {
             //
             // It's a constructor, of type 'type'.
             //
@@ -944,7 +942,7 @@ TIntermTyped* TParseContext::handleFunctionCall(TSourceLoc loc, TFunction* fnCal
         //
         const TFunction* fnCandidate;
         bool builtIn;
-        fnCandidate = findFunction(loc, *fnCall, builtIn);
+        fnCandidate = findFunction(loc, *function, builtIn);
         if (fnCandidate) {
             // Error check for function requiring specific extensions present.
             if (builtIn && fnCandidate->getNumExtensions())
@@ -966,30 +964,33 @@ TIntermTyped* TParseContext::handleFunctionCall(TSourceLoc loc, TFunction* fnCal
             } else {
                 // This is a function call not mapped to built-in operation
                 result = intermediate.setAggregateOperator(intermNode, EOpFunctionCall, fnCandidate->getType(), loc);
-                result->getAsAggregate()->setName(fnCandidate->getMangledName());
+                TIntermAggregate* call = result->getAsAggregate();
+                call->setName(fnCandidate->getMangledName());
 
                 // this is how we know whether the given function is a built-in function or a user-defined function
                 // if builtIn == false, it's a userDefined -> could be an overloaded built-in function also
                 // if builtIn == true, it's definitely a built-in function with EOpNull
                 if (! builtIn) {
-                    result->getAsAggregate()->setUserDefined();
+                    call->setUserDefined();
                     intermediate.addToCallGraph(infoSink, currentCaller, fnCandidate->getMangledName());
                 }
 
                 // Make sure storage qualifications work for these arguments.
                 TStorageQualifier qual;
-                TQualifierList& qualifierList = result->getAsAggregate()->getQualifierList();
+                TQualifierList& qualifierList = call->getQualifierList();
                 for (int i = 0; i < fnCandidate->getParamCount(); ++i) {
                     qual = (*fnCandidate)[i].type->getQualifier().storage;
                     if (qual == EvqOut || qual == EvqInOut) {
-                        if (lValueErrorCheck(result->getLoc(), "assign", result->getAsAggregate()->getSequence()[i]->getAsTyped()))
+                        if (lValueErrorCheck(call->getLoc(), "assign", call->getSequence()[i]->getAsTyped()))
                             error(intermNode->getLoc(), "Constant value cannot be passed for 'out' or 'inout' parameters.", "Error", "");
                     }
                     qualifierList.push_back(qual);
                 }
 
+                result = handleArgumentConversions(*fnCandidate, *call);
+
                 if (builtIn)
-                    nonOpBuiltInCheck(loc, *fnCandidate, *result->getAsAggregate());
+                    nonOpBuiltInCheck(loc, *fnCandidate, *call);
             }
         }
     }
@@ -1007,14 +1008,14 @@ TIntermTyped* TParseContext::handleFunctionCall(TSourceLoc loc, TFunction* fnCal
 
 // Do all processing handling object.length().
 // Return resulting tree node.
-TIntermTyped* TParseContext::handleLengthMethod(TSourceLoc loc, TFunction* fnCall, TIntermNode* intermNode)
+TIntermTyped* TParseContext::handleLengthMethod(TSourceLoc loc, TFunction* function, TIntermNode* intermNode)
 {
     int length = 0;
 
-    if (fnCall->getParamCount() > 0)
-        error(loc, "method does not accept any arguments", fnCall->getName().c_str(), "");
+    if (function->getParamCount() > 0)
+        error(loc, "method does not accept any arguments", function->getName().c_str(), "");
     if (intermNode->getAsTyped() == 0 || ! intermNode->getAsTyped()->getType().isArray())
-        error(loc, "", fnCall->getName().c_str(), "can only be applied to an array");
+        error(loc, "", function->getName().c_str(), "can only be applied to an array");
     else if (intermNode->getAsTyped()->getType().getArraySize() == 0) {
         bool implicitlySized = false;
         if (intermNode->getAsSymbolNode() && isIoResizeArray(intermNode->getAsTyped()->getType())) {
@@ -1028,9 +1029,9 @@ TIntermTyped* TParseContext::handleLengthMethod(TSourceLoc loc, TFunction* fnCal
         }
         if (length == 0) {
             if (intermNode->getAsSymbolNode() && isIoResizeArray(intermNode->getAsTyped()->getType()))
-                error(loc, "", fnCall->getName().c_str(), "array must first be sized by a redeclaration or layout qualifier");
+                error(loc, "", function->getName().c_str(), "array must first be sized by a redeclaration or layout qualifier");
             else
-                error(loc, "", fnCall->getName().c_str(), "array must be declared with a size before using this method");
+                error(loc, "", function->getName().c_str(), "array must be declared with a size before using this method");
         }
     } else
         length = intermNode->getAsTyped()->getType().getArraySize();
@@ -1042,6 +1043,86 @@ TIntermTyped* TParseContext::handleLengthMethod(TSourceLoc loc, TFunction* fnCal
 
     return intermediate.addConstantUnion(unionArray, TType(EbtInt, EvqConst), loc);
 }
+
+//
+// Add any needed implicit conversions for function-call arguments.  This is 
+// straightforward for input parameters, but output parameters need to 
+// a different tree topology, complicated further by whether the function
+// has a return value.  Create the new subtree, as neeeded.
+//
+// Returns a node of a subtree that evaluates to the return value of the function.
+//
+TIntermTyped* TParseContext::handleArgumentConversions(const TFunction& function, TIntermAggregate& intermNode) const
+{
+    TIntermSequence& arguments = intermNode.getSequence();
+
+    // Will there be any output conversions?
+    bool outputConversions = false;
+    for (int i = 0; i < function.getParamCount(); ++i) {
+        if (*function[i].type != arguments[i]->getAsTyped()->getType() && function[i].type->getQualifier().storage == EvqOut) {
+            outputConversions = true;
+            break;
+        }
+    }
+
+    // Setup for the new tree, if needed:
+    //
+    // Output conversions need a different tree topology.
+    // Out-qualified arguments need a temporary of the correct type, with the call
+    // followed by an assignment of the temporary to the original argument:
+    //     void: function(arg, ...)  ->        (          function(tempArg, ...), arg = tempArg, ...)
+    //     ret = function(arg, ...)  ->  ret = (tempRet = function(tempArg, ...), arg = tempArg, ..., tempRet)
+    // Where the "tempArg" type needs no conversion as an argument, but will convert on assignment.
+    TIntermTyped* conversionTree = 0;
+    TVariable* tempRet = 0;
+    if (outputConversions) {
+        if (intermNode.getBasicType() != EbtVoid) {
+            // do the "tempRet = function(...), " bit from above
+            tempRet = makeInternalVariable("tempReturn", intermNode.getType());
+            TIntermSymbol* tempRetNode = intermediate.addSymbol(*tempRet, intermNode.getLoc());
+            conversionTree = intermediate.addAssign(EOpAssign, tempRetNode, &intermNode, intermNode.getLoc());
+        } else
+            conversionTree = &intermNode;
+
+        conversionTree = intermediate.makeAggregate(conversionTree);
+    }
+
+    // Process each argument's conversion
+    for (int i = 0; i < function.getParamCount(); ++i) {
+        if (*function[i].type != arguments[i]->getAsTyped()->getType()) {
+            if (function[i].type->getQualifier().isParamInput()) {
+                // In-qualified arguments just need an extra node added above the argument to
+                // convert to the correct type.
+                arguments[i] = intermediate.addConversion(EOpAssign, *function[i].type, arguments[i]->getAsTyped());
+            } else if (function[i].type->getQualifier().isParamOutput()) {
+                // Out-qualified arguments need to use the topology set up above.
+                // do the " ...(tempArg, ...), arg = tempArg" bit from above
+                TVariable* tempArg = makeInternalVariable("tempArg", *function[i].type);
+                tempArg->getWritableType().getQualifier().makeTemporary();
+                TIntermSymbol* tempArgNode = intermediate.addSymbol(*tempArg, intermNode.getLoc());
+                TIntermTyped* tempAssign = intermediate.addAssign(EOpAssign, arguments[i]->getAsTyped(), tempArgNode, arguments[i]->getLoc());
+                conversionTree = intermediate.growAggregate(conversionTree, tempAssign, arguments[i]->getLoc());
+                // replace the argument with another node for the same tempArg variable
+                arguments[i] = intermediate.addSymbol(*tempArg, intermNode.getLoc());
+            }
+        }
+    }
+
+    // Done if no output conversions
+    if (! outputConversions)
+        return &intermNode;
+
+    // Otherwise, finalize the tree topology (see bigger comment above).
+    if (tempRet) {
+        // do the "..., tempRet" bit from above
+        TIntermSymbol* tempRetNode = intermediate.addSymbol(*tempRet, intermNode.getLoc());
+        conversionTree = intermediate.growAggregate(conversionTree, tempRetNode, intermNode.getLoc());
+    }
+    conversionTree = intermediate.setAggregateOperator(conversionTree, EOpComma, intermNode.getType(), intermNode.getLoc());
+
+    return conversionTree;
+}
+
 //
 // Do additional checking of built-in function calls that were not mapped
 // to built-in operations (e.g., texturing functions).
@@ -1136,12 +1217,12 @@ void TParseContext::nonOpBuiltInCheck(TSourceLoc loc, const TFunction& fnCandida
 }
 
 //
-// Handle seeing a built-in-type constructor call in the grammar.
+// Handle seeing a built-in constructor in a grammar production.
 //
-TFunction* TParseContext::handleConstructorCall(TSourceLoc loc, TPublicType& publicType)
+TFunction* TParseContext::handleConstructorCall(TSourceLoc loc, const TPublicType& publicType)
 {
-    publicType.qualifier.precision = EpqNone;
     TType type(publicType);
+    type.getQualifier().precision = EpqNone;
 
     if (type.isArray()) {
         profileRequires(loc, ENoProfile, 120, GL_3DL_array_objects, "arrayed constructor");
@@ -1151,10 +1232,9 @@ TFunction* TParseContext::handleConstructorCall(TSourceLoc loc, TPublicType& pub
     TOperator op = mapTypeToConstructorOp(type);
 
     if (op == EOpNull) {
-        error(loc, "cannot construct this type", TType::getBasicString(publicType.basicType), "");
+        error(loc, "cannot construct this type", type.getBasicString(), "");
         op = EOpConstructFloat;
-        publicType.basicType = EbtFloat;
-        TType errorType(publicType);
+        TType errorType(EbtFloat);
         type.shallowCopy(errorType);
     }
 
@@ -1164,9 +1244,9 @@ TFunction* TParseContext::handleConstructorCall(TSourceLoc loc, TPublicType& pub
 }
 
 //
-// Given a type, find what operation would construct it.
+// Given a type, find what operation would fully construct it.
 //
-TOperator TParseContext::mapTypeToConstructorOp(const TType& type)
+TOperator TParseContext::mapTypeToConstructorOp(const TType& type) const
 {
     if (type.isStruct())
         return EOpConstructStruct;
@@ -1335,9 +1415,7 @@ void TParseContext::variableCheck(TIntermTyped*& nodePtr)
         symbolTable.insert(*fakeVariable);
 
         // substitute a symbol node for this new variable
-        nodePtr = intermediate.addSymbol(fakeVariable->getUniqueId(),
-                                         fakeVariable->getName(),
-                                         fakeVariable->getType(), symbol->getLoc());
+        nodePtr = intermediate.addSymbol(*fakeVariable, symbol->getLoc());
     } else {
         switch (symbol->getQualifier().storage) {
         case EvqPointCoord:
@@ -3340,12 +3418,11 @@ const TFunction* TParseContext::findFunction120(TSourceLoc loc, const TFunction&
                 possibleMatch = false;
             else {
                 // do direction-specific checks for conversion of basic type
-                TStorageQualifier qualifier = function[i].type->getQualifier().storage;
-                if (qualifier == EvqIn || qualifier == EvqInOut) {
+                if (function[i].type->getQualifier().isParamInput()) {
                     if (! intermediate.canImplicitlyPromote(call[i].type->getBasicType(), function[i].type->getBasicType()))
                         possibleMatch = false;
                 }
-                if (qualifier == EvqOut || qualifier == EvqInOut) {
+                if (function[i].type->getQualifier().isParamOutput()) {
                     if (! intermediate.canImplicitlyPromote(function[i].type->getBasicType(), call[i].type->getBasicType()))
                         possibleMatch = false;
                 }
@@ -3472,6 +3549,22 @@ void TParseContext::inheritGlobalDefaults(TQualifier& dst) const
 }
 
 //
+// Make an internal-only variable whose name is for debug purposes only
+// and won't be searched for.  Callers will only use the return value to use
+// the variable, not the name to look it up.  It is okay if the name
+// is the same as other names; there won't be any conflict.
+//
+TVariable* TParseContext::makeInternalVariable(const char* name, const TType& type) const
+{
+    TString* nameString = new TString(name);
+    TSourceLoc loc = {0, 0};
+    TVariable* variable = new TVariable(nameString, type);
+    symbolTable.makeInternalVariable(*variable);
+
+    return variable;
+}
+
+//
 // Declare a non-array variable, the main point being there is no redeclaration
 // for resizing allowed.
 //
@@ -3569,7 +3662,7 @@ TIntermNode* TParseContext::executeInitializer(TSourceLoc loc, TString& identifi
         variable->setConstArray(initializer->getAsConstantUnion()->getConstArray());
     } else {
         // normal assigning of a value to a variable...
-        TIntermSymbol* intermSymbol = intermediate.addSymbol(variable->getUniqueId(), variable->getName(), variable->getType(), loc);
+        TIntermSymbol* intermSymbol = intermediate.addSymbol(*variable, loc);
         TIntermNode* initNode = intermediate.addAssign(EOpAssign, intermSymbol, initializer, loc);
         if (! initNode)
             assignError(loc, "=", intermSymbol->getCompleteString(), initializer->getCompleteString());

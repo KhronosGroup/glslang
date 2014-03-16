@@ -67,6 +67,11 @@ TIntermSymbol* TIntermediate::addSymbol(int id, const TString& name, const TType
     return node;
 }
 
+TIntermSymbol* TIntermediate::addSymbol(const TVariable& variable, TSourceLoc loc)
+{
+    return addSymbol(variable.getUniqueId(), variable.getName(), variable.getType(), loc);
+}
+
 //
 // Connect two nodes with a new parent that does a binary operation on the nodes.
 //
@@ -363,14 +368,16 @@ TIntermTyped* TIntermediate::setAggregateOperator(TIntermNode* node, TOperator o
 }
 
 //
-// Convert one type to another.
+// Convert the node's type to the given type, as allowed by the operation involved 'op'.
+// For implicit conversions, 'op' is not the requested conversion, it is the explicit 
+// operation requiring the implicit conversion.
 //
 // Returns the node representing the conversion, which could be the same
 // node passed in if no conversion was needed.
 //
 // Return 0 if a conversion can't be done.
 //
-TIntermTyped* TIntermediate::addConversion(TOperator op, const TType& type, TIntermTyped* node)
+TIntermTyped* TIntermediate::addConversion(TOperator op, const TType& type, TIntermTyped* node) const
 {
     //
     // Does the base type allow operation?
@@ -490,88 +497,86 @@ TIntermTyped* TIntermediate::addConversion(TOperator op, const TType& type, TInt
             return 0;
     }
     
-    if (node->getAsConstantUnion()) {
-
+    if (node->getAsConstantUnion())
         return promoteConstantUnion(promoteTo, node->getAsConstantUnion());
-    } else {    
-        //
-        // Add a new newNode for the conversion.
-        //
-        TIntermUnary* newNode = 0;
 
-        TOperator newOp = EOpNull;
+    //
+    // Add a new newNode for the conversion.
+    //
+    TIntermUnary* newNode = 0;
 
-        // This is 'mechanism' here, it does any conversion told.  The policy comes
-        // from the shader or the above code.
-        switch (promoteTo) {
-        case EbtDouble:
-            //switch (node->getBasicType()) {
-            //case EbtInt:   newOp = EOpConvIntToDouble;   break;
-            //case EbtUint:  newOp = EOpConvUintToDouble;  break;
-            //case EbtBool:  newOp = EOpConvBoolToDouble;  break;
-            //case EbtFloat: newOp = EOpConvFloatToDouble; break;
-            //default:
-                return 0;
-            //}
-            break;
-        case EbtFloat:
-            switch (node->getBasicType()) {
-            case EbtInt:    newOp = EOpConvIntToFloat;  break;
-            case EbtUint:   newOp = EOpConvUintToFloat; break;
-            case EbtBool:   newOp = EOpConvBoolToFloat; break;
-            case EbtDouble: newOp = EOpConvDoubleToFloat; break;
-            default:
-                return 0;
-            }
-            break;
-        case EbtBool:
-            switch (node->getBasicType()) {
-            case EbtInt:    newOp = EOpConvIntToBool;   break;
-            case EbtUint:   newOp = EOpConvUintToBool; break;
-            case EbtFloat:  newOp = EOpConvFloatToBool; break;
-            case EbtDouble: newOp = EOpConvDoubleToBool; break;
-            default:
-                return 0;
-            }
-            break;
-        case EbtInt:
-            switch (node->getBasicType()) {
-            case EbtUint:   newOp = EOpConvUintToInt;  break;
-            case EbtBool:   newOp = EOpConvBoolToInt;  break;
-            case EbtFloat:  newOp = EOpConvFloatToInt; break;
-            case EbtDouble: newOp = EOpConvDoubleToInt; break;
-            default:
-                return 0;
-            }
-            break;
-        case EbtUint:
-            switch (node->getBasicType()) {
-            case EbtInt:    newOp = EOpConvIntToUint;   break;
-            case EbtBool:   newOp = EOpConvBoolToUint;  break;
-            case EbtFloat:  newOp = EOpConvFloatToUint; break;
-            case EbtDouble: newOp = EOpConvDoubleToUint; break;
-            default:
-                return 0;
-            }
-            break;
-        default: 
+    TOperator newOp = EOpNull;
+
+    // This is 'mechanism' here, it does any conversion told.  The policy comes
+    // from the shader or the above code.
+    switch (promoteTo) {
+    case EbtDouble:
+        //switch (node->getBasicType()) {
+        //case EbtInt:   newOp = EOpConvIntToDouble;   break;
+        //case EbtUint:  newOp = EOpConvUintToDouble;  break;
+        //case EbtBool:  newOp = EOpConvBoolToDouble;  break;
+        //case EbtFloat: newOp = EOpConvFloatToDouble; break;
+        //default:
+            return 0;
+        //}
+        break;
+    case EbtFloat:
+        switch (node->getBasicType()) {
+        case EbtInt:    newOp = EOpConvIntToFloat;    break;
+        case EbtUint:   newOp = EOpConvUintToFloat;   break;
+        case EbtBool:   newOp = EOpConvBoolToFloat;   break;
+        case EbtDouble: newOp = EOpConvDoubleToFloat; break;
+        default:
             return 0;
         }
-
-        TType type(promoteTo, EvqTemporary, node->getVectorSize(), node->getMatrixCols(), node->getMatrixRows());
-        newNode = new TIntermUnary(newOp, type);
-        newNode->setLoc(node->getLoc());
-        newNode->setOperand(node);
-
-        return newNode;
+        break;
+    case EbtBool:
+        switch (node->getBasicType()) {
+        case EbtInt:    newOp = EOpConvIntToBool;    break;
+        case EbtUint:   newOp = EOpConvUintToBool;   break;
+        case EbtFloat:  newOp = EOpConvFloatToBool;  break;
+        case EbtDouble: newOp = EOpConvDoubleToBool; break;
+        default:
+            return 0;
+        }
+        break;
+    case EbtInt:
+        switch (node->getBasicType()) {
+        case EbtUint:   newOp = EOpConvUintToInt;   break;
+        case EbtBool:   newOp = EOpConvBoolToInt;   break;
+        case EbtFloat:  newOp = EOpConvFloatToInt;  break;
+        case EbtDouble: newOp = EOpConvDoubleToInt; break;
+        default:
+            return 0;
+        }
+        break;
+    case EbtUint:
+        switch (node->getBasicType()) {
+        case EbtInt:    newOp = EOpConvIntToUint;    break;
+        case EbtBool:   newOp = EOpConvBoolToUint;   break;
+        case EbtFloat:  newOp = EOpConvFloatToUint;  break;
+        case EbtDouble: newOp = EOpConvDoubleToUint; break;
+        default:
+            return 0;
+        }
+        break;
+    default: 
+        return 0;
     }
+
+    TType newType(promoteTo, EvqTemporary, node->getVectorSize(), node->getMatrixCols(), node->getMatrixRows());
+    newNode = new TIntermUnary(newOp, newType);
+    newNode->setLoc(node->getLoc());
+    newNode->setOperand(node);
+
+    return newNode;
 }
 
 //
 // See if the 'from' type is allowed to be implicitly converted to the 
 // 'to' type.  This is not about vector/array/struct, only about basic type.
 //
-bool TIntermediate::canImplicitlyPromote(TBasicType from, TBasicType to)
+bool TIntermediate::canImplicitlyPromote(TBasicType from, TBasicType to) const
 {
     if (profile == EEsProfile || version == 110)
         return false;
@@ -713,8 +718,7 @@ TIntermTyped* TIntermediate::addComma(TIntermTyped* left, TIntermTyped* right, T
         TIntermTyped *commaAggregate = growAggregate(left, right, loc);
         commaAggregate->getAsAggregate()->setOperator(EOpComma);
         commaAggregate->setType(right->getType());
-        commaAggregate->getWritableType().getQualifier().storage = EvqTemporary;
-        commaAggregate->getWritableType().getQualifier().precision = right->getType().getQualifier().precision;
+        commaAggregate->getWritableType().getQualifier().makeTemporary();
 
         return commaAggregate;
     }
@@ -782,7 +786,7 @@ TIntermTyped* TIntermediate::addSelection(TIntermTyped* cond, TIntermTyped* true
 // Returns the constant union node created.
 //
 
-TIntermConstantUnion* TIntermediate::addConstantUnion(const TConstUnionArray& unionArray, const TType& t, TSourceLoc loc, bool literal)
+TIntermConstantUnion* TIntermediate::addConstantUnion(const TConstUnionArray& unionArray, const TType& t, TSourceLoc loc, bool literal) const
 {
     TIntermConstantUnion* node = new TIntermConstantUnion(unionArray, t);
     node->setLoc(loc);
@@ -1028,7 +1032,7 @@ bool TIntermUnary::promote()
     }
 
     setType(operand->getType());
-    getWritableType().getQualifier().storage = EvqTemporary;
+    getWritableType().getQualifier().makeTemporary();
 
     return true;
 }
@@ -1412,7 +1416,7 @@ void TIntermTyped::propagatePrecision(TPrecisionQualifier newPrecision)
     }
 }
 
-TIntermTyped* TIntermediate::promoteConstantUnion(TBasicType promoteTo, TIntermConstantUnion* node) 
+TIntermTyped* TIntermediate::promoteConstantUnion(TBasicType promoteTo, TIntermConstantUnion* node) const
 {
     const TConstUnionArray& rightUnionArray = node->getConstArray();
     int size = node->getType().computeNumComponents();

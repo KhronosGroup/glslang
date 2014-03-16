@@ -98,8 +98,9 @@ public:
     TIntermAggregate* handleFunctionDefinition(TSourceLoc, TFunction&);
     TIntermTyped* handleFunctionCall(TSourceLoc, TFunction*, TIntermNode*);
     TIntermTyped* handleLengthMethod(TSourceLoc, TFunction*, TIntermNode*);
+    TIntermTyped* handleArgumentConversions(const TFunction&, TIntermAggregate&) const;
     void nonOpBuiltInCheck(TSourceLoc, const TFunction&, TIntermAggregate&);
-    TFunction* handleConstructorCall(TSourceLoc, TPublicType&);
+    TFunction* handleConstructorCall(TSourceLoc, const TPublicType&);
 
     bool parseVectorFields(TSourceLoc, const TString&, int vecSize, TVectorFields&);
     void assignError(TSourceLoc, const char* op, TString left, TString right);
@@ -205,11 +206,12 @@ public:
 protected:
     void nonInitConstCheck(TSourceLoc, TString& identifier, TType& type);
 	void inheritGlobalDefaults(TQualifier& dst) const;
+    TVariable* makeInternalVariable(const char* name, const TType&) const;
     TVariable* declareNonArray(TSourceLoc, TString& identifier, TType&, bool& newDeclaration);
     void declareArray(TSourceLoc, TString& identifier, const TType&, TSymbol*&, bool& newDeclaration);
     TIntermNode* executeInitializer(TSourceLoc, TString& identifier, TIntermTyped* initializer, TVariable* variable);
     TIntermTyped* convertInitializerList(TSourceLoc, const TType&, TIntermTyped* initializer);
-    TOperator mapTypeToConstructorOp(const TType&);
+    TOperator mapTypeToConstructorOp(const TType&) const;
     void finalErrorCheck();
 
 public:
