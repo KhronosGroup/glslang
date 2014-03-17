@@ -18,9 +18,11 @@ set(LIBRARIES
     Preprocessor
     OGLCompiler)
 
-if(UNIX)
+if(WIN32)
+    set(LIBRARIES ${LIBRARIES} psapi)
+elseif(UNIX)
     set(LIBRARIES ${LIBRARIES} pthread)
-endif(UNIX)
+endif(WIN32)
 
 target_link_libraries(glslangValidator ${LIBRARIES})
 
