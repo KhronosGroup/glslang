@@ -2255,14 +2255,18 @@ condition
 switch_statement
     : SWITCH LEFT_PAREN expression RIGHT_PAREN {
         // start new switch sequence on the switch stack
+        ++parseContext.controlFlowNestingLevel;
         parseContext.switchSequenceStack.push_back(new TIntermSequence);
         parseContext.switchLevel.push_back(parseContext.controlFlowNestingLevel);
+        parseContext.symbolTable.push();
     } 
     LEFT_BRACE switch_statement_list RIGHT_BRACE {
         $$ = parseContext.addSwitch($1.loc, $3, $7 ? $7->getAsAggregate() : 0);
         delete parseContext.switchSequenceStack.back();
         parseContext.switchSequenceStack.pop_back();
         parseContext.switchLevel.pop_back();
+        parseContext.symbolTable.pop(&parseContext.defaultPrecision[0]);        
+        --parseContext.controlFlowNestingLevel;
     }
     ;
 

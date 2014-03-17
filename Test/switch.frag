@@ -118,4 +118,37 @@ void main()
 
     case 5:  // ERROR
     default: // ERROR
+
+    switch (0) {
+        default:
+        int onlyInSwitch = 0;
+    }
+    onlyInSwitch;   // ERROR
+   
+    switch (0) {
+        default:
+            int x;  // current "no statement" ERROR, but maybe this should count as a statement, or the semantic check removed
+    }
+
+    switch (c) {
+    case 1:
+    {
+        int nestedX;
+        break;
+    }
+    case 2:
+        nestedX;    // ERROR
+        break;
+    case 3:
+        int linearZ;
+        break;
+    case 4:
+        int linearY = linearZ;
+        break;
+    case 5:         // ERROR? that branch bypassed an initializer?
+        const int linearC = 4;
+        break;
+    case 6:         // ERROR? that branch bypassed an initializer?
+        linearC;
+    }
 }

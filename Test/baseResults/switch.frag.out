@@ -14,7 +14,10 @@ ERROR: 0:108: 'case' : cannot be nested inside control flow
 ERROR: 0:115: 'default' : cannot be nested inside control flow 
 ERROR: 0:119: 'case' : cannot appear outside switch statement 
 ERROR: 0:120: 'default' : cannot appear outside switch statement 
-ERROR: 15 compilation errors.  No code generated.
+ERROR: 0:126: 'onlyInSwitch' : undeclared identifier 
+ERROR: 0:128: 'switch' : last case/default label must be followed by statements 
+ERROR: 0:140: 'nestedX' : undeclared identifier 
+ERROR: 18 compilation errors.  No code generated.
 
 
 ERROR: node is still EOpNull!
@@ -267,6 +270,64 @@ ERROR: node is still EOpNull!
 0:114                  0.000000
 0:114              true case is null
 0:116            Branch: Break
+0:122      switch
+0:122      condition
+0:122        Constant:
+0:122          0 (const int)
+0:122      body
+0:122        Sequence
+0:123          default: 
+0:?           Sequence
+0:124            Sequence
+0:124              move second child to first child (mediump int)
+0:124                'onlyInSwitch' (mediump int)
+0:124                Constant:
+0:124                  0 (const int)
+0:126      'onlyInSwitch' (float)
+0:128      Constant:
+0:128        0 (const int)
+0:133      switch
+0:133      condition
+0:133        'c' (uniform mediump int)
+0:133      body
+0:133        Sequence
+0:134          case:  with expression
+0:134            Constant:
+0:134              1 (const int)
+0:?           Sequence
+0:?             Sequence
+0:137              Branch: Break
+0:139          case:  with expression
+0:139            Constant:
+0:139              2 (const int)
+0:?           Sequence
+0:140            'nestedX' (float)
+0:141            Branch: Break
+0:142          case:  with expression
+0:142            Constant:
+0:142              3 (const int)
+0:?           Sequence
+0:144            Branch: Break
+0:145          case:  with expression
+0:145            Constant:
+0:145              4 (const int)
+0:?           Sequence
+0:146            Sequence
+0:146              move second child to first child (mediump int)
+0:146                'linearY' (mediump int)
+0:146                'linearZ' (mediump int)
+0:147            Branch: Break
+0:148          case:  with expression
+0:148            Constant:
+0:148              5 (const int)
+0:?           Sequence
+0:150            Branch: Break
+0:151          case:  with expression
+0:151            Constant:
+0:151              6 (const int)
+0:?           Sequence
+0:152            Constant:
+0:152              4 (const int)
 0:?   Linker Objects
 0:?     'c' (uniform mediump int)
 0:?     'd' (uniform mediump int)
