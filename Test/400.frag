@@ -56,3 +56,9 @@ void foo23()
 
 patch in vec4 patchIn;              // ERROR
 patch out vec4 patchOut;            // ERROR
+
+void foo24()
+{
+    dvec3 df, di;
+    df = modf(outp.xyz, di);
+}

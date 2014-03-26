@@ -136,4 +136,5 @@ void foo2()
     outFunRet(i, f, i, v4);
     float ret = outFunRet(i, f, i, v4);
     vec2 ret2 = outFunRet(i, v4, i, v4);
+    bool b = any(lessThan(v4, attv4));  // tests aggregate arg to unary built-in 
 }

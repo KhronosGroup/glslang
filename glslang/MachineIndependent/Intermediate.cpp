@@ -511,14 +511,14 @@ TIntermTyped* TIntermediate::addConversion(TOperator op, const TType& type, TInt
     // from the shader or the above code.
     switch (promoteTo) {
     case EbtDouble:
-        //switch (node->getBasicType()) {
-        //case EbtInt:   newOp = EOpConvIntToDouble;   break;
-        //case EbtUint:  newOp = EOpConvUintToDouble;  break;
-        //case EbtBool:  newOp = EOpConvBoolToDouble;  break;
-        //case EbtFloat: newOp = EOpConvFloatToDouble; break;
-        //default:
+        switch (node->getBasicType()) {
+        case EbtInt:   newOp = EOpConvIntToDouble;   break;
+        case EbtUint:  newOp = EOpConvUintToDouble;  break;
+        case EbtBool:  newOp = EOpConvBoolToDouble;  break;
+        case EbtFloat: newOp = EOpConvFloatToDouble; break;
+        default:
             return 0;
-        //}
+        }
         break;
     case EbtFloat:
         switch (node->getBasicType()) {

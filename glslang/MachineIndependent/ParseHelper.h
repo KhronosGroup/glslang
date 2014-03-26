@@ -98,7 +98,8 @@ public:
     TIntermAggregate* handleFunctionDefinition(TSourceLoc, TFunction&);
     TIntermTyped* handleFunctionCall(TSourceLoc, TFunction*, TIntermNode*);
     TIntermTyped* handleLengthMethod(TSourceLoc, TFunction*, TIntermNode*);
-    TIntermTyped* handleArgumentConversions(const TFunction&, TIntermAggregate&) const;
+    void addInputArgumentConversions(const TFunction&, TIntermNode*&) const;
+    TIntermTyped* addOutputArgumentConversions(const TFunction&, TIntermAggregate&) const;
     void nonOpBuiltInCheck(TSourceLoc, const TFunction&, TIntermAggregate&);
     TFunction* handleConstructorCall(TSourceLoc, const TPublicType&);
 

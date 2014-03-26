@@ -148,7 +148,7 @@ ERROR: node is still EOpNull!
 0:98      Constant:
 0:98        0.000000
 0:100      Constant:
-0:100        0.000000
+0:100        0.841471
 0:101      Function Call: texture2D(s21;vf2; (4-component vector of float)
 0:101        's2D' (uniform sampler2D)
 0:101        Constant:
@@ -157,16 +157,17 @@ ERROR: node is still EOpNull!
 0:102      clamp (4-component vector of float)
 0:102        'attv4' (in 4-component vector of float)
 0:102        Constant:
-0:102          0 (const int)
+0:102          0.000000
 0:102        Constant:
-0:102          1 (const int)
+0:102          1.000000
 0:103      clamp (4-component vector of float)
-0:103        Convert float to int (4-component vector of int)
-0:103          'attv4' (in 4-component vector of float)
+0:103        Convert int to float (4-component vector of float)
+0:103          Convert float to int (4-component vector of int)
+0:103            'attv4' (in 4-component vector of float)
 0:103        Constant:
-0:103          0 (const int)
+0:103          0.000000
 0:103        Constant:
-0:103          1 (const int)
+0:103          1.000000
 0:106      Constant:
 0:106        0.000000
 0:107      Constant:
@@ -272,6 +273,13 @@ ERROR: node is still EOpNull!
 0:138                Convert int to float (4-component vector of float)
 0:138                  'tempArg' (4-component vector of int)
 0:138              'tempReturn' (2-component vector of int)
+0:139      Sequence
+0:139        move second child to first child (bool)
+0:139          'b' (bool)
+0:139          any (bool)
+0:139            Compare Less Than (4-component vector of bool)
+0:139              'v4' (4-component vector of float)
+0:139              'attv4' (in 4-component vector of float)
 0:?   Linker Objects
 0:?     'i' (in 4-component vector of float)
 0:?     'o' (smooth out 4-component vector of float)

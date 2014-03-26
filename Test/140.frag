@@ -26,3 +26,9 @@ layout(location=3) in vec4 vl;  // ERROR
 #extension GL_ARB_separate_shader_objects : enable
 
 layout(location=4) in vec4 vl2;
+
+void foo()
+{
+    vec2 r1 = modf(v.xy, v.zw);  // ERROR, v.zw not l-value
+    vec2 r2 = modf(o.xy, o.zw);
+}

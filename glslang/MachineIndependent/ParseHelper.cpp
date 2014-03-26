@@ -914,13 +914,13 @@ TIntermAggregate* TParseContext::handleFunctionDefinition(TSourceLoc loc, TFunct
 //  - user function
 //  - subroutine call (not implemented yet)
 //
-TIntermTyped* TParseContext::handleFunctionCall(TSourceLoc loc, TFunction* function, TIntermNode* intermNode)
+TIntermTyped* TParseContext::handleFunctionCall(TSourceLoc loc, TFunction* function, TIntermNode* arguments)
 {
     TIntermTyped* result = 0;
 
     TOperator op = function->getBuiltInOp();
     if (op == EOpArrayLength)
-        result = handleLengthMethod(loc, function, intermNode);
+        result = handleLengthMethod(loc, function, arguments);
     else if (op != EOpNull) {
         //
         // Then this should be a constructor.
@@ -928,11 +928,11 @@ TIntermTyped* TParseContext::handleFunctionCall(TSourceLoc loc, TFunction* funct
         // Their parameters will be verified algorithmically.
         //
         TType type(EbtVoid);  // use this to get the type back
-        if (! constructorError(loc, intermNode, *function, op, type)) {
+        if (! constructorError(loc, arguments, *function, op, type)) {
             //
             // It's a constructor, of type 'type'.
             //
-            result = addConstructor(loc, intermNode, type, op);
+            result = addConstructor(loc, arguments, type, op);
             if (result == 0)
                 error(loc, "cannot construct with these arguments", type.getCompleteString().c_str(), "");
         }
@@ -944,26 +944,46 @@ TIntermTyped* TParseContext::handleFunctionCall(TSourceLoc loc, TFunction* funct
         bool builtIn;
         fnCandidate = findFunction(loc, *function, builtIn);
         if (fnCandidate) {
-            // Error check for function requiring specific extensions present.
+            // This is a declared function that might map to
+            //  - a built-in operator,
+            //  - a built-in function not mapped to an operator, or
+            //  - a user function.
+
+            // Error check for a function requiring specific extensions present.
             if (builtIn && fnCandidate->getNumExtensions())
                 requireExtensions(loc, fnCandidate->getNumExtensions(), fnCandidate->getExtensions(), fnCandidate->getName().c_str());
 
-            //
-            // A declared function.  But, it might still map to a built-in
-            // operation.
-            //
+            if (arguments) {
+                // Make sure storage qualifications work for these arguments.
+                TIntermAggregate* aggregate = arguments->getAsAggregate();
+                for (int i = 0; i < fnCandidate->getParamCount(); ++i) {
+                    TStorageQualifier qual = (*fnCandidate)[i].type->getQualifier().storage;
+                    if (qual == EvqOut || qual == EvqInOut) {
+                        // At this early point there is a slight ambiguity between whether an aggregate 'arguments'
+                        // is the single argument itself or its children are the arguments.  Only one argument
+                        // means take 'arguments' itself as the one argument.
+                        TIntermNode* arg = fnCandidate->getParamCount() == 1 ? arguments : (aggregate ? aggregate->getSequence()[i] : arguments);
+                        if (lValueErrorCheck(arguments->getLoc(), "assign", arg->getAsTyped()))
+                            error(arguments->getLoc(), "Non-L-value cannot be passed for 'out' or 'inout' parameters.", "out", "");
+                    }
+                }
+
+                // Convert 'in' arguments
+                addInputArgumentConversions(*fnCandidate, arguments);  // arguments may be modified if it's just a single argument node
+            }
+
             op = fnCandidate->getBuiltInOp();
             if (builtIn && op != EOpNull) {
                 // A function call mapped to a built-in operation.
-                result = intermediate.addBuiltInFunctionCall(loc, op, fnCandidate->getParamCount() == 1, intermNode, fnCandidate->getType());
+                result = intermediate.addBuiltInFunctionCall(loc, op, fnCandidate->getParamCount() == 1, arguments, fnCandidate->getType());
                 if (result == 0)  {
-                    error(intermNode->getLoc(), " wrong operand type", "Internal Error",
+                    error(arguments->getLoc(), " wrong operand type", "Internal Error",
                                         "built in unary operator function.  Type: %s",
-                                        static_cast<TIntermTyped*>(intermNode)->getCompleteString().c_str());
+                                        static_cast<TIntermTyped*>(arguments)->getCompleteString().c_str());
                 }
             } else {
-                // This is a function call not mapped to built-in operation
-                result = intermediate.setAggregateOperator(intermNode, EOpFunctionCall, fnCandidate->getType(), loc);
+                // This is a function call not mapped to built-in operator, but it could still be a built-in function
+                result = intermediate.setAggregateOperator(arguments, EOpFunctionCall, fnCandidate->getType(), loc);
                 TIntermAggregate* call = result->getAsAggregate();
                 call->setName(fnCandidate->getMangledName());
 
@@ -975,22 +995,20 @@ TIntermTyped* TParseContext::handleFunctionCall(TSourceLoc loc, TFunction* funct
                     intermediate.addToCallGraph(infoSink, currentCaller, fnCandidate->getMangledName());
                 }
 
-                // Make sure storage qualifications work for these arguments.
-                TStorageQualifier qual;
-                TQualifierList& qualifierList = call->getQualifierList();
-                for (int i = 0; i < fnCandidate->getParamCount(); ++i) {
-                    qual = (*fnCandidate)[i].type->getQualifier().storage;
-                    if (qual == EvqOut || qual == EvqInOut) {
-                        if (lValueErrorCheck(call->getLoc(), "assign", call->getSequence()[i]->getAsTyped()))
-                            error(intermNode->getLoc(), "Constant value cannot be passed for 'out' or 'inout' parameters.", "Error", "");
-                    }
-                    qualifierList.push_back(qual);
-                }
-
-                result = handleArgumentConversions(*fnCandidate, *call);
-
                 if (builtIn)
                     nonOpBuiltInCheck(loc, *fnCandidate, *call);
+            }
+
+            // Convert 'out' arguments.  If it was a constant folded built-in, it won't be an aggregate anymore.
+            // Built-ins with a single argument aren't called with an aggregate, but they also don't have an output.
+            // Also, build the qualifier list for user function calls, which are always called with an aggregate.
+            if (result->getAsAggregate()) {
+                TQualifierList& qualifierList = result->getAsAggregate()->getQualifierList();
+                for (int i = 0; i < fnCandidate->getParamCount(); ++i) {
+                    TStorageQualifier qual = (*fnCandidate)[i].type->getQualifier().storage;
+                    qualifierList.push_back(qual);
+                }
+                result = addOutputArgumentConversions(*fnCandidate, *result->getAsAggregate());
             }
         }
     }
@@ -1045,14 +1063,40 @@ TIntermTyped* TParseContext::handleLengthMethod(TSourceLoc loc, TFunction* funct
 }
 
 //
-// Add any needed implicit conversions for function-call arguments.  This is 
-// straightforward for input parameters, but output parameters need to 
-// a different tree topology, complicated further by whether the function
-// has a return value.  Create the new subtree, as neeeded.
+// Add any needed implicit conversions for function-call arguments to input parameters.
+//
+void TParseContext::addInputArgumentConversions(const TFunction& function, TIntermNode*& arguments) const
+{
+    TIntermAggregate* aggregate = arguments->getAsAggregate();
+
+    // Process each argument's conversion
+    for (int i = 0; i < function.getParamCount(); ++i) {
+        // At this early point there is a slight ambiguity between whether an aggregate 'arguments'
+        // is the single argument itself or its children are the arguments.  Only one argument
+        // means take 'arguments' itself as the one argument.
+        TIntermTyped* arg = function.getParamCount() == 1 ? arguments->getAsTyped() : (aggregate ? aggregate->getSequence()[i]->getAsTyped() : arguments->getAsTyped());
+        if (*function[i].type != arg->getType()) {
+            if (function[i].type->getQualifier().isParamInput()) {
+                // In-qualified arguments just need an extra node added above the argument to
+                // convert to the correct type.
+                arg = intermediate.addConversion(EOpAssign, *function[i].type, arg);
+                if (aggregate)
+                    aggregate->getSequence()[i] = arg;
+                else
+                    arguments = arg;
+            }
+        }
+    }
+}
+
+//
+// Add any needed implicit output conversions for function-call arguments.  This
+// can require a new tree topology, complicated further by whether the function
+// has a return value.
 //
 // Returns a node of a subtree that evaluates to the return value of the function.
 //
-TIntermTyped* TParseContext::handleArgumentConversions(const TFunction& function, TIntermAggregate& intermNode) const
+TIntermTyped* TParseContext::addOutputArgumentConversions(const TFunction& function, TIntermAggregate& intermNode) const
 {
     TIntermSequence& arguments = intermNode.getSequence();
 
@@ -1065,6 +1109,9 @@ TIntermTyped* TParseContext::handleArgumentConversions(const TFunction& function
         }
     }
 
+    if (! outputConversions)
+        return &intermNode;
+
     // Setup for the new tree, if needed:
     //
     // Output conversions need a different tree topology.
@@ -1075,26 +1122,20 @@ TIntermTyped* TParseContext::handleArgumentConversions(const TFunction& function
     // Where the "tempArg" type needs no conversion as an argument, but will convert on assignment.
     TIntermTyped* conversionTree = 0;
     TVariable* tempRet = 0;
-    if (outputConversions) {
-        if (intermNode.getBasicType() != EbtVoid) {
-            // do the "tempRet = function(...), " bit from above
-            tempRet = makeInternalVariable("tempReturn", intermNode.getType());
-            TIntermSymbol* tempRetNode = intermediate.addSymbol(*tempRet, intermNode.getLoc());
-            conversionTree = intermediate.addAssign(EOpAssign, tempRetNode, &intermNode, intermNode.getLoc());
-        } else
-            conversionTree = &intermNode;
+    if (intermNode.getBasicType() != EbtVoid) {
+        // do the "tempRet = function(...), " bit from above
+        tempRet = makeInternalVariable("tempReturn", intermNode.getType());
+        TIntermSymbol* tempRetNode = intermediate.addSymbol(*tempRet, intermNode.getLoc());
+        conversionTree = intermediate.addAssign(EOpAssign, tempRetNode, &intermNode, intermNode.getLoc());
+    } else
+        conversionTree = &intermNode;
 
-        conversionTree = intermediate.makeAggregate(conversionTree);
-    }
+    conversionTree = intermediate.makeAggregate(conversionTree);
 
     // Process each argument's conversion
     for (int i = 0; i < function.getParamCount(); ++i) {
         if (*function[i].type != arguments[i]->getAsTyped()->getType()) {
-            if (function[i].type->getQualifier().isParamInput()) {
-                // In-qualified arguments just need an extra node added above the argument to
-                // convert to the correct type.
-                arguments[i] = intermediate.addConversion(EOpAssign, *function[i].type, arguments[i]->getAsTyped());
-            } else if (function[i].type->getQualifier().isParamOutput()) {
+            if (function[i].type->getQualifier().isParamOutput()) {
                 // Out-qualified arguments need to use the topology set up above.
                 // do the " ...(tempArg, ...), arg = tempArg" bit from above
                 TVariable* tempArg = makeInternalVariable("tempArg", *function[i].type);
@@ -1108,11 +1149,7 @@ TIntermTyped* TParseContext::handleArgumentConversions(const TFunction& function
         }
     }
 
-    // Done if no output conversions
-    if (! outputConversions)
-        return &intermNode;
-
-    // Otherwise, finalize the tree topology (see bigger comment above).
+    // Finalize the tree topology (see bigger comment above).
     if (tempRet) {
         // do the "..., tempRet" bit from above
         TIntermSymbol* tempRetNode = intermediate.addSymbol(*tempRet, intermNode.getLoc());
