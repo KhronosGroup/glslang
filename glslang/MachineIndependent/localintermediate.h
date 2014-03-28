@@ -126,6 +126,7 @@ public:
     int getVersion() const { return version; }
     void setProfile(EProfile p) { profile = p; }
     EProfile getProfile() const { return profile; }
+    EShLanguage getStage() const { return language; }
     void setTreeRoot(TIntermNode* r) { treeRoot = r; }
     TIntermNode* getTreeRoot() const { return treeRoot; }
     void addMainCount() { ++numMains; }

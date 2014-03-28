@@ -223,21 +223,6 @@ SH_IMPORT_EXPORT int ShExcludeAttributes(const ShHandle, int *attributes, int co
 //
 SH_IMPORT_EXPORT int ShGetUniformLocation(const ShHandle uniformMap, const char* name);
 
-// These are currently unused in the front end, but consumers of the front-end still 
-// be rely on them:
-enum TDebugOptions {
-    EDebugOpNone               = 0x000,
-    EDebugOpIntermediate       = 0x001,
-    EDebugOpAssembly           = 0x002,
-    EDebugOpObjectCode         = 0x004,
-    EDebugOpLinkMaps           = 0x008,
-    EDebugOpSuppressInfolog    = 0x010,
-    EDebugOpMemoryLeakMode     = 0x020,
-    EDebugOpTexturePrototypes  = 0x040,
-    EDebugOpRelaxedErrors      = 0x080,
-    EDebugOpGiveWarnings       = 0x100,
-};
-
 #ifdef __cplusplus
     }  // end extern "C"
 #endif
@@ -282,7 +267,7 @@ void FinalizeProcess();
 // provide the shader through setStrings(), then call parse(), then query
 // the info logs.
 //
-// N.B.: Does not yet support having the same TShader instance being linked multiple programs.
+// N.B.: Does not yet support having the same TShader instance being linked into multiple programs.
 //
 // N.B.: Destruct a linked program *before* destructing the shaders linked into it.
 //
@@ -292,8 +277,11 @@ public:
     virtual ~TShader();
     void setStrings(const char* const* s, int n) { strings = s; numStrings = n; }
     bool parse(const TBuiltInResource*, int defaultVersion, bool forwardCompatible, EShMessages);
+
     const char* getInfoLog();
     const char* getInfoDebugLog();
+
+    EShLanguage getStage() const { return stage; }
 
 protected:
     TPoolAllocator* pool;
@@ -328,6 +316,8 @@ public:
     bool link(EShMessages);
     const char* getInfoLog();
     const char* getInfoDebugLog();
+
+    TIntermediate* getIntermediate(EShLanguage stage) const { return intermediate[stage]; }
 
     // Reflection Interface
     bool buildReflection();                          // call first, to do liveness analysis, index mapping, etc.; returns false on failure

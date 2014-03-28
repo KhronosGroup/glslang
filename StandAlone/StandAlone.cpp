@@ -867,7 +867,6 @@ char** ReadFileData(const char* fileName)
     const int maxSourceStrings = 5;
     char** return_data = (char**)malloc(sizeof(char *) * (maxSourceStrings+1));
 
-    //return_data[MAX_SOURCE_STRINGS]=NULL;
 	if (errorCode) {
         printf("Error: unable to open input file: %s\n", fileName);
         return 0;
@@ -878,10 +877,9 @@ char** ReadFileData(const char* fileName)
 
 	fseek(in, 0, SEEK_SET);
 	
-	
 	if (!(fdata = (char*)malloc(count+2))) {
-            printf("Error allocating memory\n");
-            return 0;
+        printf("Error allocating memory\n");
+        return 0;
     }
 	if (fread(fdata,1,count, in)!=count) {
             printf("Error reading input file: %s\n", fileName);
