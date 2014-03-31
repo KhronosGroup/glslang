@@ -2,7 +2,13 @@ cmake_minimum_required(VERSION 2.8)
 
 include_directories(. ../../../OGLCompilersDLL)
 
-add_library(OSDependent STATIC ossource.cpp osinclude.h)
+set(SOURCES ossource.cpp osinclude.h)
+
+add_library(OSDependent STATIC ${SOURCES})
+
+if(WIN32)
+    source_group("Source" FILES ${SOURCES})
+endif(WIN32)
 
 install(TARGETS OSDependent 
         ARCHIVE DESTINATION lib)

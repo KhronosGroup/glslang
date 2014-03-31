@@ -6,10 +6,16 @@ if(WIN32)
 elseif(UNIX)
     include_directories(${include_directories} ../glslang/OSDependent/Linux)
 else(WIN32)
-    message("unkown platform")
+    message("unknown platform")
 endif(WIN32)
 
-add_library(OGLCompiler STATIC  InitializeDll.cpp InitializeDll.h)
+set(SOURCES InitializeDll.cpp InitializeDll.h)
+
+add_library(OGLCompiler STATIC ${SOURCES})
+
+if(WIN32)
+    source_group("Source" FILES ${SOURCES})
+endif(WIN32)
 
 install(TARGETS OGLCompiler 
         ARCHIVE DESTINATION lib)

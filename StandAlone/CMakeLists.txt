@@ -9,14 +9,14 @@ else(WIN32)
     message("unkown platform")
 endif(WIN32)
 
-add_executable(glslangValidator StandAlone.cpp)
+set(SOURCES StandAlone.cpp)
+
+add_executable(glslangValidator ${SOURCES})
 
 set(LIBRARIES
     glslang
-    GenericCodeGen
-    OSDependent
-    Preprocessor
-    OGLCompiler)
+    OGLCompiler
+    OSDependent)
 
 if(WIN32)
     set(LIBRARIES ${LIBRARIES} psapi)
@@ -25,6 +25,10 @@ elseif(UNIX)
 endif(WIN32)
 
 target_link_libraries(glslangValidator ${LIBRARIES})
+
+if(WIN32)
+    source_group("Source" FILES ${SOURCES})
+endif(WIN32)
 
 install(TARGETS glslangValidator
         RUNTIME DESTINATION bin)
