@@ -3,6 +3,7 @@ Warning, version 430 is not yet complete; some version-specific features are pre
 WARNING: 0:10: 'line continuation' : used at end of comment; the following line is still part of the comment 
 WARNING: 0:12: 'line continuation' : used at end of comment; the following line is still part of the comment 
 
+Shader version: 430
 0:? Sequence
 0:17  Function Definition: main( (void)
 0:17    Function Parameters: 
@@ -13,4 +14,5 @@ WARNING: 0:12: 'line continuation' : used at end of comment; the following line 
 Linked fragment stage:
 
 
+Shader version: 430
 

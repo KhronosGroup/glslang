@@ -20,6 +20,7 @@ ERROR: 0:63: '' : array size required
 ERROR: 17 compilation errors.  No code generated.
 
 
+Shader version: 130
 ERROR: node is still EOpNull!
 0:9  Function Definition: foo(f1[5]; (4-element array of float)
 0:9    Function Parameters: 
@@ -195,4 +196,5 @@ ERROR: node is still EOpNull!
 Linked fragment stage:
 
 
+Shader version: 130
 

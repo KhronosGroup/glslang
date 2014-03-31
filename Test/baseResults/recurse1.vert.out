@@ -1,6 +1,7 @@
 recurse1.vert
 Warning, version 330 is not yet complete; some version-specific features are present, but many are missing.
 
+Shader version: 330
 0:? Sequence
 0:3  Function Definition: main( (void)
 0:3    Function Parameters: 
@@ -71,6 +72,7 @@ Warning, version 330 is not yet complete; some version-specific features are pre
 recurse1.frag
 Warning, version 330 is not yet complete; some version-specific features are present, but many are missing.
 
+Shader version: 330
 0:? Sequence
 0:5  Function Definition: main( (void)
 0:5    Function Parameters: 
@@ -159,6 +161,7 @@ Warning, version 330 is not yet complete; some version-specific features are pre
 recurse2.frag
 Warning, version 330 is not yet complete; some version-specific features are present, but many are missing.
 
+Shader version: 330
 0:? Sequence
 0:9  Function Definition: cbar(i1; (float)
 0:9    Function Parameters: 
@@ -217,6 +220,8 @@ ERROR: Linking fragment stage: Recursion detected:
 ERROR: Linking fragment stage: Recursion detected:
     cfoo(f1; calling cbar(i1;
 
+Shader version: 330
+Shader version: 330
 0:? Sequence
 0:5  Function Definition: main( (void)
 0:5    Function Parameters: 

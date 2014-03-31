@@ -1,5 +1,6 @@
 ../../LunarGLASS/test/swizzle.frag
 
+Shader version: 110
 0:? Sequence
 0:9  Function Definition: main( (void)
 0:9    Function Parameters: 
@@ -212,4 +213,5 @@
 Linked fragment stage:
 
 
+Shader version: 110
 

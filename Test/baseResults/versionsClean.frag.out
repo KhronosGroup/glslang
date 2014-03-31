@@ -4,6 +4,7 @@ ERROR: 0:34: '#version' : must occur first in shader
 ERROR: 2 compilation errors.  No code generated.
 
 
+Shader version: 300
 ERROR: node is still EOpNull!
 0:41  Function Definition: main( (void)
 0:41    Function Parameters: 
@@ -24,4 +25,5 @@ ERROR: node is still EOpNull!
 Linked fragment stage:
 
 
+Shader version: 300
 

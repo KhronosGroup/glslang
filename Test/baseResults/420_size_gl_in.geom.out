@@ -4,6 +4,7 @@ ERROR: 0:19: 'gl_PerVertex' : can only redeclare a built-in block once, and befo
 ERROR: 1 compilation errors.  No code generated.
 
 
+Shader version: 420
 invocations = 0
 max_vertices = 0
 input primitive = triangles
@@ -42,6 +43,7 @@ ERROR: Linking geometry stage: Missing entry point: Each stage requires one "voi
 ERROR: Linking geometry stage: At least one shader must specify an output layout primitive
 ERROR: Linking geometry stage: At least one shader must specify a layout(max_vertices = value)
 
+Shader version: 420
 invocations = 0
 max_vertices = 0
 input primitive = triangles

@@ -39,6 +39,7 @@ ERROR: 0:150: '' :  syntax error
 ERROR: 37 compilation errors.  No code generated.
 
 
+Shader version: 300
 ERROR: node is still EOpNull!
 0:53  Function Definition: main( (void)
 0:53    Function Parameters: 
@@ -392,4 +393,5 @@ Linked fragment stage:
 
 ERROR: Linking fragment stage: when more than one fragment shader output, all must have location qualifiers
 
+Shader version: 300
 

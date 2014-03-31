@@ -9,6 +9,7 @@ ERROR: 0:76: 'bool' : type cannot have precision qualifier
 ERROR: 7 compilation errors.  No code generated.
 
 
+Shader version: 100
 ERROR: node is still EOpNull!
 0:5  Function Definition: foo(vf3; (lowp 2-component vector of float)
 0:5    Function Parameters: 
@@ -127,4 +128,5 @@ ERROR: node is still EOpNull!
 Linked fragment stage:
 
 
+Shader version: 100
 

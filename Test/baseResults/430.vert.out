@@ -47,6 +47,8 @@ ERROR: 0:93: 'transform feedback qualifier' : not supported for this version or 
 ERROR: 44 compilation errors.  No code generated.
 
 
+Shader version: 430
+Requested GL_ARB_enhanced_layouts
 in xfb mode
 ERROR: node is still EOpNull!
 0:14  Function Definition: foo( (void)
@@ -117,5 +119,7 @@ ERROR: Linking vertex stage: Missing entry point: Each stage requires one "void 
 ERROR: Linking vertex stage: xfb_stride is too small to hold all buffer entries:
 ERROR:     xfb_buffer 3, xfb_stride 64, minimum stride needed: 80
 
+Shader version: 430
+Requested GL_ARB_enhanced_layouts
 in xfb mode
 

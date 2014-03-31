@@ -1,6 +1,7 @@
 ../../LunarGLASS/test/conversion.frag
 Warning, version 130 is not yet complete; most features are present, but a few are missing.
 
+Shader version: 130
 0:? Sequence
 0:33  Function Definition: main( (void)
 0:33    Function Parameters: 
@@ -479,4 +480,5 @@ Warning, version 130 is not yet complete; most features are present, but a few a
 Linked fragment stage:
 
 
+Shader version: 130
 

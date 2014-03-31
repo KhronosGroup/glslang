@@ -30,6 +30,9 @@ ERROR: 0:119: 'location' : overlapping use of location 44
 ERROR: 27 compilation errors.  No code generated.
 
 
+Shader version: 330
+Requested GL_ARB_enhanced_layouts
+Requested GL_ARB_separate_shader_objects
 ERROR: node is still EOpNull!
 0:8  Function Definition: main( (void)
 0:8    Function Parameters: 
@@ -95,4 +98,7 @@ Linked fragment stage:
 ERROR: Linking fragment stage: Cannot use gl_FragColor or gl_FragData when using user-defined outputs
 ERROR: Linking fragment stage: Cannot use both gl_FragColor and gl_FragData
 
+Shader version: 330
+Requested GL_ARB_enhanced_layouts
+Requested GL_ARB_separate_shader_objects
 

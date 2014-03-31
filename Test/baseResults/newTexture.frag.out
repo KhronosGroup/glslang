@@ -1,6 +1,7 @@
 ../../LunarGLASS/test/newTexture.frag
 Warning, version 430 is not yet complete; some version-specific features are present, but many are missing.
 
+Shader version: 430
 0:? Sequence
 0:34  Function Definition: main( (void)
 0:34    Function Parameters: 
@@ -230,4 +231,5 @@ Warning, version 430 is not yet complete; some version-specific features are pre
 Linked fragment stage:
 
 
+Shader version: 430
 

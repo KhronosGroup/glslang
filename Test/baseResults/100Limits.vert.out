@@ -1,5 +1,6 @@
 100Limits.vert
 
+Shader version: 100
 0:? Sequence
 0:15  Function Definition: foo(f1; (void)
 0:15    Function Parameters: 
@@ -445,4 +446,5 @@
 Linked vertex stage:
 
 
+Shader version: 100
 

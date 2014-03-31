@@ -11,6 +11,7 @@ ERROR: 0:73: 'degrees' : can't use function syntax on variable
 ERROR: 8 compilation errors.  No code generated.
 
 
+Shader version: 430
 ERROR: node is still EOpNull!
 0:3  Function Definition: f(i1;i1;i1; (int)
 0:3    Function Parameters: 
@@ -127,4 +128,5 @@ ERROR: node is still EOpNull!
 Linked vertex stage:
 
 
+Shader version: 430
 

@@ -457,6 +457,8 @@ void TParseContext::updateExtensionBehavior(const char* extension, const char* b
         } else {
             if (iter->second == EBhDisablePartial)
                 warn(getCurrentLoc(), "extension is only partially supported:", "#extension", extension);
+            if (behavior == EBhEnable || behavior == EBhRequire)
+                intermediate.addRequestedExtension(extension);
             iter->second = behavior;
         }
     }

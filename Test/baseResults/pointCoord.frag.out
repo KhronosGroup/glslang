@@ -1,5 +1,6 @@
 pointCoord.frag
 
+Shader version: 100
 0:? Sequence
 0:5  Function Definition: main( (void)
 0:5    Function Parameters: 
@@ -35,4 +36,5 @@ pointCoord.frag
 Linked fragment stage:
 
 
+Shader version: 100
 

@@ -34,6 +34,7 @@ ERROR: 0:91: 'stream' : can only be used on an output
 ERROR: 31 compilation errors.  No code generated.
 
 
+Shader version: 150
 invocations = 4
 max_vertices = 300
 input primitive = lines_adjancency
@@ -151,6 +152,7 @@ ERROR: node is still EOpNull!
 Linked geometry stage:
 
 
+Shader version: 150
 invocations = 4
 max_vertices = 300
 input primitive = lines_adjancency

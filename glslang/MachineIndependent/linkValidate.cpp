@@ -131,11 +131,16 @@ void TIntermediate::merge(TInfoSink& infoSink, TIntermediate& unit)
         return;
 
     if (treeRoot == 0) {
-        version = unit.version;
         treeRoot = unit.treeRoot;
+        version = unit.version;
+        requestedExtensions = unit.requestedExtensions;
         return;
-    } else
-        version = std::max(version, unit.version);
+    }
+
+    // Getting this far means we have two existing trees to merge...
+    
+    version = std::max(version, unit.version);
+    requestedExtensions.insert(unit.requestedExtensions.begin(), unit.requestedExtensions.end());
 
     // Get the top-level globals of each unit
     TIntermSequence& globals = treeRoot->getAsAggregate()->getSequence();

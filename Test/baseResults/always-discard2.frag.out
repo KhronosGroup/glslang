@@ -1,5 +1,6 @@
 ../../LunarGLASS/test/always-discard2.frag
 
+Shader version: 110
 0:? Sequence
 0:4  Function Definition: main( (void)
 0:4    Function Parameters: 
@@ -61,4 +62,5 @@
 Linked fragment stage:
 
 
+Shader version: 110
 

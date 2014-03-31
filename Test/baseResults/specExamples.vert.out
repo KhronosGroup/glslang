@@ -47,6 +47,8 @@ ERROR: 0:194: 'constructor' : constructing from a non-dereferenced array
 ERROR: 42 compilation errors.  No code generated.
 
 
+Shader version: 430
+Requested GL_3DL_array_objects
 ERROR: node is still EOpNull!
 0:134  Function Definition: funcA(I21; (4-component vector of float)
 0:134    Function Parameters: 
@@ -321,4 +323,6 @@ ERROR: node is still EOpNull!
 Linked vertex stage:
 
 
+Shader version: 430
+Requested GL_3DL_array_objects
 

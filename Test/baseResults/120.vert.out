@@ -48,6 +48,7 @@ ERROR: 0:121: 'gl_TexCoord array size' : must be less than gl_MaxTextureCoords (
 ERROR: 46 compilation errors.  No code generated.
 
 
+Shader version: 120
 ERROR: node is still EOpNull!
 0:15  Function Definition: main( (void)
 0:15    Function Parameters: 
@@ -298,4 +299,5 @@ ERROR: node is still EOpNull!
 Linked vertex stage:
 
 
+Shader version: 120
 

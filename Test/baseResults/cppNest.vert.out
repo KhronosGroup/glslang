@@ -8,6 +8,7 @@ ERROR: 0:178: '' :  syntax error
 ERROR: 6 compilation errors.  No code generated.
 
 
+Shader version: 110
 ERROR: node is still EOpNull!
 0:5  Sequence
 0:5    move second child to first child (float)
@@ -75,4 +76,5 @@ ERROR: node is still EOpNull!
 Linked vertex stage:
 
 
+Shader version: 110
 

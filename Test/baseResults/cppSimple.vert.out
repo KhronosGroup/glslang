@@ -86,6 +86,7 @@ ERROR: 12:10003: '' : missing #endif
 ERROR: 79 compilation errors.  No code generated.
 
 
+Shader version: 400
 ERROR: node is still EOpNull!
 0:5  Sequence
 0:5    move second child to first child (float)
@@ -196,4 +197,5 @@ ERROR: node is still EOpNull!
 Linked vertex stage:
 
 
+Shader version: 400
 

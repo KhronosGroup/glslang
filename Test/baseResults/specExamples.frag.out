@@ -52,6 +52,8 @@ ERROR: 0:232: 'out' : not allowed in nested scope
 ERROR: 49 compilation errors.  No code generated.
 
 
+Shader version: 430
+Requested GL_3DL_array_objects
 gl_FragCoord pixel center is integer
 gl_FragCoord origin is upper left
 ERROR: node is still EOpNull!
@@ -302,6 +304,8 @@ ERROR: node is still EOpNull!
 Linked fragment stage:
 
 
+Shader version: 430
+Requested GL_3DL_array_objects
 gl_FragCoord pixel center is integer
 gl_FragCoord origin is upper left
 

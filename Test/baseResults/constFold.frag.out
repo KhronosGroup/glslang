@@ -9,6 +9,7 @@ ERROR: 0:114: '[' :  matrix index out of range '3'
 ERROR: 6 compilation errors.  No code generated.
 
 
+Shader version: 430
 ERROR: node is still EOpNull!
 0:28  Function Definition: main( (void)
 0:28    Function Parameters: 
@@ -309,4 +310,5 @@ ERROR: node is still EOpNull!
 Linked fragment stage:
 
 
+Shader version: 430
 

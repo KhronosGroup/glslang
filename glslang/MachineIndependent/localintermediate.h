@@ -127,6 +127,9 @@ public:
     void setProfile(EProfile p) { profile = p; }
     EProfile getProfile() const { return profile; }
     EShLanguage getStage() const { return language; }
+    void addRequestedExtension(const char* extension) { requestedExtensions.insert(extension); }
+    const std::set<std::string>& getRequestedExtensions() const { return requestedExtensions; }
+
     void setTreeRoot(TIntermNode* r) { treeRoot = r; }
     TIntermNode* getTreeRoot() const { return treeRoot; }
     void addMainCount() { ++numMains; }
@@ -255,11 +258,11 @@ protected:
     bool userOutputUsed() const;
     int getBaseAlignmentScalar(const TType&, int& size) const;
 
-protected:
     const EShLanguage language;
     TIntermNode* treeRoot;
     EProfile profile;
     int version;
+    std::set<std::string> requestedExtensions;  // cumulation of all enabled or required extensions; not connected to what subset of the shader used them
     TBuiltInResource resources;
     int numMains;
     int numErrors;

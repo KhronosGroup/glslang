@@ -10,6 +10,8 @@ ERROR: 0:32: 'out' : Non-L-value cannot be passed for 'out' or 'inout' parameter
 ERROR: 6 compilation errors.  No code generated.
 
 
+Shader version: 140
+Requested GL_ARB_separate_shader_objects
 ERROR: node is still EOpNull!
 0:10  Function Definition: main( (void)
 0:10    Function Parameters: 
@@ -80,4 +82,6 @@ ERROR: node is still EOpNull!
 Linked fragment stage:
 
 
+Shader version: 140
+Requested GL_ARB_separate_shader_objects
 

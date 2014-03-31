@@ -6,6 +6,8 @@ ERROR: 0:45: 'discard' : not supported in this stage: vertex
 ERROR: 2 compilation errors.  No code generated.
 
 
+Shader version: 420
+Requested GL_ARB_texture_rectangle
 ERROR: node is still EOpNull!
 0:42  Function Definition: main( (void)
 0:42    Function Parameters: 
@@ -30,4 +32,6 @@ ERROR: node is still EOpNull!
 Linked vertex stage:
 
 
+Shader version: 420
+Requested GL_ARB_texture_rectangle
 

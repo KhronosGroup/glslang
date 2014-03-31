@@ -45,6 +45,7 @@ ERROR: 0:157: 'xfb_buffer' : buffer is too large: gl_MaxTransformFeedbackBuffers
 ERROR: 42 compilation errors.  No code generated.
 
 
+Shader version: 440
 in xfb mode
 ERROR: node is still EOpNull!
 0:?   Linker Objects
@@ -112,5 +113,6 @@ ERROR:     xfb_buffer 5, xfb_stride 6
 ERROR: Linking vertex stage: xfb_stride is too large:
 ERROR:     xfb_buffer 7, components (1/4 stride) needed are 66, gl_MaxTransformFeedbackInterleavedComponents is 64
 
+Shader version: 440
 in xfb mode
 

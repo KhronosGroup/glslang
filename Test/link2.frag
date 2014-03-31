@@ -31,3 +31,6 @@ struct S {
 uniform S s = S(82, 3.9);
 uniform S sn = S(82, 3.9);
 uniform S se = S(81, 3.9);
+
+#extension GL_OES_texture_3D : enable
+#extension GL_OES_standard_derivatives : enable

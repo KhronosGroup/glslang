@@ -6,6 +6,7 @@ ERROR: 0:44: 'floating-point suffix' : not supported for this version or the ena
 ERROR: 4 compilation errors.  No code generated.
 
 
+Shader version: 110
 ERROR: node is still EOpNull!
 0:42  Function Definition: main( (void)
 0:42    Function Parameters: 
@@ -25,4 +26,5 @@ ERROR: node is still EOpNull!
 Linked fragment stage:
 
 
+Shader version: 110
 

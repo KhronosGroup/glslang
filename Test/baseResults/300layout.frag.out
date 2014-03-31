@@ -5,6 +5,7 @@ ERROR: 0:19: 'location' : overlapping use of location 40
 ERROR: 3 compilation errors.  No code generated.
 
 
+Shader version: 300
 ERROR: node is still EOpNull!
 0:10  Function Definition: main( (void)
 0:10    Function Parameters: 
@@ -35,4 +36,5 @@ ERROR: node is still EOpNull!
 Linked fragment stage:
 
 
+Shader version: 300
 

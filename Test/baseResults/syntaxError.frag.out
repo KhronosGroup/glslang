@@ -4,6 +4,7 @@ ERROR: 0:9: '' :  syntax error
 ERROR: 2 compilation errors.  No code generated.
 
 
+Shader version: 120
 ERROR: node is still EOpNull!
 0:?   Linker Objects
 0:?     'bigColor' (uniform 4-component vector of float)
@@ -14,4 +15,5 @@ ERROR: node is still EOpNull!
 Linked fragment stage:
 
 
+Shader version: 120
 

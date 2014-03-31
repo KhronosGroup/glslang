@@ -1,5 +1,6 @@
 noMain.vert
 
+Shader version: 300
 0:? Sequence
 0:3  Function Definition: foo( (void)
 0:3    Function Parameters: 
@@ -12,6 +13,7 @@ ERROR: 0:7: 'main' : function already has a body
 ERROR: 1 compilation errors.  No code generated.
 
 
+Shader version: 300
 ERROR: node is still EOpNull!
 0:3  Function Definition: main( (void)
 0:3    Function Parameters: 
@@ -27,4 +29,6 @@ ERROR: Linking vertex stage: Missing entry point: Each stage requires one "void 
 Linked fragment stage:
 
 
+Shader version: 300
+Shader version: 300
 

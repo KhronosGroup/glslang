@@ -9,6 +9,7 @@ ERROR: 0:21: '[' :  vector index out of range '4'
 ERROR: 7 compilation errors.  No code generated.
 
 
+Shader version: 120
 ERROR: node is still EOpNull!
 0:12  Function Definition: main( (void)
 0:12    Function Parameters: 
@@ -40,4 +41,5 @@ ERROR: node is still EOpNull!
 Linked vertex stage:
 
 
+Shader version: 120
 

@@ -21,6 +21,8 @@ ERROR: 0:71: 'triangles' : inconsistent input primitive for array size of inbla
 ERROR: 18 compilation errors.  No code generated.
 
 
+Shader version: 400
+Requested GL_ARB_separate_shader_objects
 invocations = 4
 max_vertices = 127
 input primitive = triangles
@@ -93,6 +95,8 @@ Linked geometry stage:
 
 ERROR: Linking geometry stage: At least one shader must specify an output layout primitive
 
+Shader version: 400
+Requested GL_ARB_separate_shader_objects
 invocations = 4
 max_vertices = 127
 input primitive = triangles

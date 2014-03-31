@@ -41,6 +41,7 @@ ERROR: 0:170: 'Bfoo' : cannot add storage, auxiliary, memory, interpolation, lay
 ERROR: 39 compilation errors.  No code generated.
 
 
+Shader version: 300
 ERROR: node is still EOpNull!
 0:27  Function Definition: main( (void)
 0:27    Function Parameters: 
@@ -298,4 +299,5 @@ ERROR: node is still EOpNull!
 Linked vertex stage:
 
 
+Shader version: 300
 

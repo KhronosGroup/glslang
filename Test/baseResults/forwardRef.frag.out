@@ -1,5 +1,6 @@
 forwardRef.frag
 
+Shader version: 110
 0:? Sequence
 0:11  Function Definition: main( (void)
 0:11    Function Parameters: 
@@ -63,4 +64,5 @@ forwardRef.frag
 Linked fragment stage:
 
 
+Shader version: 110
 

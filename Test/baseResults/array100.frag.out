@@ -24,6 +24,7 @@ ERROR: 0:69: 'array initializer' : not supported for this version or the enabled
 ERROR: 22 compilation errors.  No code generated.
 
 
+Shader version: 100
 ERROR: node is still EOpNull!
 0:9  Function Definition: foo(f1[5]; (4-element array of mediump float)
 0:9    Function Parameters: 
@@ -160,4 +161,5 @@ ERROR: node is still EOpNull!
 Linked fragment stage:
 
 
+Shader version: 100
 

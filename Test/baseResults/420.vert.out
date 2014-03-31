@@ -34,6 +34,7 @@ ERROR: 0:86: 'patch' : not supported in this stage: vertex
 ERROR: 30 compilation errors.  No code generated.
 
 
+Shader version: 420
 ERROR: node is still EOpNull!
 0:20  Function Definition: foo( (const int)
 0:20    Function Parameters: 
@@ -143,4 +144,5 @@ ERROR: node is still EOpNull!
 Linked vertex stage:
 
 
+Shader version: 420
 

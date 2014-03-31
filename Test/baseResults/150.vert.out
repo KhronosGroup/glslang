@@ -4,6 +4,7 @@ ERROR: 0:22: 'a' : cannot redeclare a user-block member array
 ERROR: 1 compilation errors.  No code generated.
 
 
+Shader version: 150
 ERROR: node is still EOpNull!
 0:9  Function Definition: main( (void)
 0:9    Function Parameters: 
@@ -50,4 +51,5 @@ Linked vertex stage:
 
 ERROR: Linking vertex stage: Can only use one of gl_ClipDistance or gl_ClipVertex (gl_ClipDistance is preferred)
 
+Shader version: 150
 

@@ -4,6 +4,7 @@ ERROR: 0:12: 'location qualifier on input' : not supported in this stage: comput
 ERROR: 1 compilation errors.  No code generated.
 
 
+Shader version: 430
 ERROR: node is still EOpNull!
 0:3  Function Definition: main( (void)
 0:3    Function Parameters: 
@@ -20,4 +21,5 @@ ERROR: node is still EOpNull!
 Linked compute stage:
 
 
+Shader version: 430
 

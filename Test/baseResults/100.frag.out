@@ -71,6 +71,12 @@ ERROR: 0:181: '' :  syntax error
 ERROR: 62 compilation errors.  No code generated.
 
 
+Shader version: 100
+Requested GL_EXT_frag_depth
+Requested GL_EXT_shader_texture_lod
+Requested GL_OES_EGL_image_external
+Requested GL_OES_standard_derivatives
+Requested GL_OES_texture_3D
 ERROR: node is still EOpNull!
 0:3  Sequence
 0:3    move second child to first child (3-element array of mediump int)
@@ -349,4 +355,10 @@ ERROR: node is still EOpNull!
 Linked fragment stage:
 
 
+Shader version: 100
+Requested GL_EXT_frag_depth
+Requested GL_EXT_shader_texture_lod
+Requested GL_OES_EGL_image_external
+Requested GL_OES_standard_derivatives
+Requested GL_OES_texture_3D
 

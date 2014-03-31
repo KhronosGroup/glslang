@@ -24,6 +24,12 @@ ERROR: 0:132: 'gl_MaxProgramTexelOffset' : undeclared identifier
 ERROR: 18 compilation errors.  No code generated.
 
 
+Shader version: 130
+Requested GL_ARB_gpu_shader5
+Requested GL_ARB_shading_language_420pack
+Requested GL_ARB_texture_cube_map_array
+Requested GL_ARB_texture_gather
+Requested GL_ARB_texture_rectangle
 ERROR: node is still EOpNull!
 0:16  Function Definition: main( (void)
 0:16    Function Parameters: 
@@ -351,4 +357,10 @@ ERROR: node is still EOpNull!
 Linked fragment stage:
 
 
+Shader version: 130
+Requested GL_ARB_gpu_shader5
+Requested GL_ARB_shading_language_420pack
+Requested GL_ARB_texture_cube_map_array
+Requested GL_ARB_texture_gather
+Requested GL_ARB_texture_rectangle
 

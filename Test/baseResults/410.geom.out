@@ -10,6 +10,7 @@ ERROR: 0:33: 'assign' :  cannot convert from 'const 4-component vector of float'
 ERROR: 7 compilation errors.  No code generated.
 
 
+Shader version: 410
 invocations = 0
 max_vertices = 0
 input primitive = none
@@ -56,6 +57,7 @@ ERROR: Linking geometry stage: At least one shader must specify an input layout 
 ERROR: Linking geometry stage: At least one shader must specify an output layout primitive
 ERROR: Linking geometry stage: At least one shader must specify a layout(max_vertices = value)
 
+Shader version: 410
 invocations = 0
 max_vertices = 0
 input primitive = none

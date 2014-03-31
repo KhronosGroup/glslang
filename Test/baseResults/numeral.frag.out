@@ -13,6 +13,7 @@ ERROR: 0:88: '' : float literal needs a decimal point or exponent
 ERROR: 10 compilation errors.  No code generated.
 
 
+Shader version: 400
 ERROR: node is still EOpNull!
 0:3  Function Definition: main( (void)
 0:3    Function Parameters: 
@@ -384,4 +385,5 @@ ERROR: node is still EOpNull!
 Linked fragment stage:
 
 
+Shader version: 400
 

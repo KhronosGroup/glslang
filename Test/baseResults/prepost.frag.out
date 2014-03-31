@@ -1,6 +1,7 @@
 ../../LunarGLASS/test/prepost.frag
 Warning, version 140 is not yet complete; most features are present, but a few are missing.
 
+Shader version: 140
 0:? Sequence
 0:3  Function Definition: main( (void)
 0:3    Function Parameters: 
@@ -137,4 +138,5 @@ Warning, version 140 is not yet complete; most features are present, but a few a
 Linked fragment stage:
 
 
+Shader version: 140
 

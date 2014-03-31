@@ -1,6 +1,7 @@
 link1.frag
 Warning, version 130 is not yet complete; most features are present, but a few are missing.
 
+Shader version: 130
 0:? Sequence
 0:8  Sequence
 0:8    move second child to first child (4-component vector of float)
@@ -82,6 +83,9 @@ Warning, version 130 is not yet complete; most features are present, but a few a
 link2.frag
 Warning, version 130 is not yet complete; most features are present, but a few are missing.
 
+Shader version: 130
+Requested GL_OES_standard_derivatives
+Requested GL_OES_texture_3D
 0:? Sequence
 0:8  Sequence
 0:8    move second child to first child (4-component vector of float)
@@ -151,6 +155,10 @@ Warning, version 130 is not yet complete; most features are present, but a few a
 
 link3.frag
 
+Shader version: 300
+Requested GL_OES_EGL_image_external
+Requested GL_OES_standard_derivatives
+Requested GL_OES_texture_3D
 0:? Sequence
 0:?   Linker Objects
 0:?     'iv3' (smooth in highp 2-component vector of float)
@@ -174,6 +182,10 @@ ERROR: Linking fragment stage: Types must match:
 ERROR: Linking fragment stage: Precision qualifiers must match:
     iv3: "smooth in 3-component vector of float" versus "smooth in highp 2-component vector of float"
 
+Shader version: 300
+Requested GL_OES_EGL_image_external
+Requested GL_OES_standard_derivatives
+Requested GL_OES_texture_3D
 0:? Sequence
 0:8  Sequence
 0:8    move second child to first child (4-component vector of float)

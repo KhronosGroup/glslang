@@ -1,5 +1,6 @@
 ../../LunarGLASS/test/flowControl.frag
 
+Shader version: 120
 0:? Sequence
 0:10  Function Definition: main( (void)
 0:10    Function Parameters: 
@@ -41,4 +42,5 @@
 Linked fragment stage:
 
 
+Shader version: 120
 

@@ -58,6 +58,7 @@ ERROR: 0:90: 'assign' :  l-value required
 ERROR: 56 compilation errors.  No code generated.
 
 
+Shader version: 300
 ERROR: node is still EOpNull!
 0:13  Function Definition: main( (void)
 0:13    Function Parameters: 
@@ -239,4 +240,5 @@ ERROR: node is still EOpNull!
 Linked fragment stage:
 
 
+Shader version: 300
 

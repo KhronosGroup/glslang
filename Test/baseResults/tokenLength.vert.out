@@ -16,6 +16,7 @@ ERROR: 0:36: '' : float literal too long
 ERROR: 14 compilation errors.  No code generated.
 
 
+Shader version: 300
 ERROR: node is still EOpNull!
 0:9  Sequence
 0:9    move second child to first child (highp int)
@@ -111,4 +112,5 @@ ERROR: node is still EOpNull!
 Linked vertex stage:
 
 
+Shader version: 300
 

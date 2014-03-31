@@ -12,6 +12,7 @@ ERROR: 0:33: '=' : global const initializers must be constant 'const structure{3
 ERROR: 9 compilation errors.  No code generated.
 
 
+Shader version: 330
 ERROR: node is still EOpNull!
 0:10  Function Definition: main( (void)
 0:10    Function Parameters: 
@@ -35,4 +36,5 @@ ERROR: node is still EOpNull!
 Linked fragment stage:
 
 
+Shader version: 330
 

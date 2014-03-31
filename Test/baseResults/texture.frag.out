@@ -3,6 +3,7 @@ Warning, version 130 is not yet complete; most features are present, but a few a
 WARNING: 0:14: varying deprecated in version 130; may be removed in future release
 WARNING: 0:15: varying deprecated in version 130; may be removed in future release
 
+Shader version: 130
 0:? Sequence
 0:17  Function Definition: main( (void)
 0:17    Function Parameters: 
@@ -284,4 +285,5 @@ WARNING: 0:15: varying deprecated in version 130; may be removed in future relea
 Linked fragment stage:
 
 
+Shader version: 130
 

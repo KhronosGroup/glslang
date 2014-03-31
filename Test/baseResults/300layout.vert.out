@@ -20,6 +20,7 @@ ERROR: 0:57: 'location' : overlapping use of location 40
 ERROR: 18 compilation errors.  No code generated.
 
 
+Shader version: 300
 ERROR: node is still EOpNull!
 0:44  Function Definition: main( (void)
 0:44    Function Parameters: 
@@ -83,4 +84,5 @@ ERROR: node is still EOpNull!
 Linked vertex stage:
 
 
+Shader version: 300
 

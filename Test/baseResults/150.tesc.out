@@ -1,6 +1,8 @@
 150.tesc
 Warning, version 150 is not yet complete; some version-specific features are present, but many are missing.
 
+Shader version: 150
+Requested GL_ARB_tessellation_shader
 vertices = 4
 0:? Sequence
 0:10  Function Definition: main( (void)
@@ -112,6 +114,8 @@ ERROR: 0:12: 'barrier' : no matching overloaded function found
 ERROR: 1 compilation errors.  No code generated.
 
 
+Shader version: 150
+Requested GL_ARB_tessellation_shader
 input primitive = quads
 vertex spacing = fractional_odd_spacing
 triangle order = cw
@@ -226,6 +230,8 @@ ERROR: 0:60: 'location' : overlapping use of location 4
 ERROR: 11 compilation errors.  No code generated.
 
 
+Shader version: 400
+Requested GL_ARB_separate_shader_objects
 vertices = 4
 ERROR: node is still EOpNull!
 0:13  Function Definition: main( (void)
@@ -386,6 +392,8 @@ ERROR: 0:99: 'location' : overlapping use of location 24
 ERROR: 29 compilation errors.  No code generated.
 
 
+Shader version: 400
+Requested GL_ARB_separate_shader_objects
 input primitive = quads
 vertex spacing = fractional_odd_spacing
 triangle order = cw
@@ -509,6 +517,7 @@ ERROR: 0:4: 'length' :  array must first be sized by a redeclaration or layout q
 ERROR: 1 compilation errors.  No code generated.
 
 
+Shader version: 400
 vertices = 0
 ERROR: node is still EOpNull!
 0:8  Function Definition: main( (void)
@@ -528,6 +537,8 @@ ERROR: 0:29: 'out' : type must be an array: outf
 ERROR: 6 compilation errors.  No code generated.
 
 
+Shader version: 400
+Requested GL_ARB_separate_shader_objects
 vertices = 4
 ERROR: node is still EOpNull!
 0:15  Function Definition: main( (void)
@@ -616,6 +627,7 @@ ERROR: 0:58: 'initializer list' : wrong number of structure members
 ERROR: 13 compilation errors.  No code generated.
 
 
+Shader version: 420
 input primitive = none
 vertex spacing = none
 triangle order = none
@@ -793,6 +805,9 @@ ERROR: Linking tessellation evaluation stage: Multiple function bodies in multip
 ERROR: Linking tessellation evaluation stage: Multiple function bodies in multiple compilation units for the same signature in the same stage:
     main(
 
+Shader version: 400
+Requested GL_ARB_separate_shader_objects
+Requested GL_ARB_tessellation_shader
 vertices = 4
 0:? Sequence
 0:10  Function Definition: main( (void)
@@ -1083,6 +1098,9 @@ vertices = 4
 0:?     'outb' (out 5-element array of int)
 0:?     'outc' (out 4-element array of int)
 0:?     'outf' (out float)
+Shader version: 420
+Requested GL_ARB_separate_shader_objects
+Requested GL_ARB_tessellation_shader
 input primitive = quads
 vertex spacing = fractional_odd_spacing
 triangle order = cw

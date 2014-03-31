@@ -5,6 +5,7 @@ ERROR: 0:14: 'sampler/image' : type requires declaration of default precision qu
 ERROR: 3 compilation errors.  No code generated.
 
 
+Shader version: 300
 ERROR: node is still EOpNull!
 0:18  Function Definition: main( (void)
 0:18    Function Parameters: 
@@ -52,4 +53,5 @@ ERROR: node is still EOpNull!
 Linked vertex stage:
 
 
+Shader version: 300
 

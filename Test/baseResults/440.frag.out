@@ -48,6 +48,7 @@ ERROR: 0:104: 'offset' : must be a multiple of the member's alignment
 ERROR: 45 compilation errors.  No code generated.
 
 
+Shader version: 440
 ERROR: node is still EOpNull!
 0:?   Linker Objects
 0:?     'a' (layout(location=4 component=2 ) smooth in 2-component vector of float)
@@ -90,4 +91,5 @@ Linked fragment stage:
 
 ERROR: Linking fragment stage: Missing entry point: Each stage requires one "void main()" entry point
 
+Shader version: 440
 

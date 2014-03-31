@@ -1,5 +1,6 @@
 300link3.frag
 
+Shader version: 300
 0:? Sequence
 0:7  Function Definition: main( (void)
 0:7    Function Parameters: 
@@ -10,4 +11,5 @@
 Linked fragment stage:
 
 
+Shader version: 300
 

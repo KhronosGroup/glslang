@@ -6,6 +6,7 @@ ERROR: 0:45: 'variable indexing block array' : not supported with this profile: 
 ERROR: 4 compilation errors.  No code generated.
 
 
+Shader version: 300
 ERROR: node is still EOpNull!
 0:42  Function Definition: main( (void)
 0:42    Function Parameters: 
@@ -60,4 +61,5 @@ ERROR: node is still EOpNull!
 Linked fragment stage:
 
 
+Shader version: 300
 

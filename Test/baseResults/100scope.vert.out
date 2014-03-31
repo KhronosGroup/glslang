@@ -14,6 +14,7 @@ ERROR: 0:76: 'vertex-shader struct output' : not supported for this version or t
 ERROR: 12 compilation errors.  No code generated.
 
 
+Shader version: 100
 ERROR: node is still EOpNull!
 0:3  Function Definition: f(i1;i1;i1; (highp int)
 0:3    Function Parameters: 
@@ -126,4 +127,5 @@ ERROR: node is still EOpNull!
 Linked vertex stage:
 
 
+Shader version: 100
 

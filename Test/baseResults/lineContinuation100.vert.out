@@ -23,6 +23,7 @@ ERROR: 0:55: 'line continuation' : not supported for this version or the enabled
 ERROR: 20 compilation errors.  No code generated.
 
 
+Shader version: 100
 ERROR: node is still EOpNull!
 0:20  Function Definition: main( (void)
 0:20    Function Parameters: 
@@ -95,4 +96,5 @@ ERROR: node is still EOpNull!
 Linked vertex stage:
 
 
+Shader version: 100
 

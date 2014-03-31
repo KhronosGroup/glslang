@@ -1,5 +1,6 @@
 ../../LunarGLASS/test/forLoop.frag
 
+Shader version: 120
 0:? Sequence
 0:8  Function Definition: main( (void)
 0:8    Function Parameters: 
@@ -39,4 +40,5 @@
 Linked fragment stage:
 
 
+Shader version: 120
 

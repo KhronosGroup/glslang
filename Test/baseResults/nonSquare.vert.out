@@ -1,5 +1,6 @@
 nonSquare.vert
 
+Shader version: 120
 0:? Sequence
 0:15  Function Definition: main( (void)
 0:15    Function Parameters: 
@@ -92,4 +93,5 @@ nonSquare.vert
 Linked vertex stage:
 
 
+Shader version: 120
 

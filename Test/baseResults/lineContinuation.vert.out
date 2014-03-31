@@ -23,6 +23,7 @@ ERROR: 0:150: '' :  syntax error
 ERROR: 19 compilation errors.  No code generated.
 
 
+Shader version: 300
 ERROR: node is still EOpNull!
 0:20  Function Definition: main( (void)
 0:20    Function Parameters: 
@@ -188,4 +189,5 @@ ERROR: node is still EOpNull!
 Linked vertex stage:
 
 
+Shader version: 300
 

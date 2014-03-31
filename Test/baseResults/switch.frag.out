@@ -20,6 +20,7 @@ ERROR: 0:140: 'nestedX' : undeclared identifier
 ERROR: 18 compilation errors.  No code generated.
 
 
+Shader version: 300
 ERROR: node is still EOpNull!
 0:6  Function Definition: main( (void)
 0:6    Function Parameters: 
@@ -337,4 +338,5 @@ ERROR: node is still EOpNull!
 Linked fragment stage:
 
 
+Shader version: 300
 

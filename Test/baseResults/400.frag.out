@@ -18,6 +18,8 @@ ERROR: 0:58: 'patch' : not supported in this stage: fragment
 ERROR: 15 compilation errors.  No code generated.
 
 
+Shader version: 400
+Requested GL_ARB_separate_shader_objects
 gl_FragCoord pixel center is integer
 gl_FragCoord origin is upper left
 ERROR: node is still EOpNull!
@@ -238,6 +240,8 @@ ERROR: node is still EOpNull!
 Linked fragment stage:
 
 
+Shader version: 400
+Requested GL_ARB_separate_shader_objects
 gl_FragCoord pixel center is integer
 gl_FragCoord origin is upper left
 

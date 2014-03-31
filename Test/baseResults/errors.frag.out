@@ -4,6 +4,7 @@ ERROR: 0:1: 'int' :  main function cannot return a value
 ERROR: 2 compilation errors.  No code generated.
 
 
+Shader version: 100
 ERROR: node is still EOpNull!
 0:1  Function Definition: main(i1; (mediump int)
 0:1    Function Parameters: 
@@ -18,4 +19,5 @@ ERROR: node is still EOpNull!
 Linked fragment stage:
 
 
+Shader version: 100
 
