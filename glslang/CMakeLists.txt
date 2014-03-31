@@ -70,7 +70,7 @@ set(HEADERS
 find_package(BISON)
 if(BISON_FOUND)
     message("bison found")
-    BISON_TARGET(GLSLParser glslang.y ${CMAKE_CURRENT_BINARY_DIR}/gen_glslang_tab.cpp
+    BISON_TARGET(GLSLParser MachineIndependent/glslang.y ${CMAKE_CURRENT_BINARY_DIR}/gen_glslang_tab.cpp
                  COMPILE_FLAGS
                  "--defines=${CMAKE_CURRENT_BINARY_DIR}/glslang_tab.cpp.h")
 else(BISON_FOUND)
