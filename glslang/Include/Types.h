@@ -174,14 +174,14 @@ typedef TVector<TString*> TIdentifierList;
 struct TArraySizes {
     POOL_ALLOCATOR_NEW_DELETE(GetThreadPoolAllocator())
 
-    TArraySizes() : maxArraySize(0) { }
+    TArraySizes() : implicitArraySize(0) { }
     int getSize() { return sizes.front(); }  // TArraySizes only exists if there is at least one dimension
     void setSize(int s) { sizes.push_back(s); }
     bool isArrayOfArrays() { return sizes.size() > 1; }
 protected:
     TVector<int> sizes;
     friend class TType;
-    int maxArraySize; // for tracking maximum referenced index, before an explicit size is given
+    int implicitArraySize; // for tracking maximum referenced index, before an explicit size is given
 };
 
 //
@@ -889,7 +889,7 @@ public:
     void shareArraySizes(const TType& type)
     {
         // For when we are sharing existing array descriptors.
-        // This allows all references to the same unsized array
+        // This allows all references to the same array
         // to be updated at once, by having all of them share the
         // array description.
         *arraySizes = *type.arraySizes;
@@ -903,8 +903,11 @@ public:
     void setArraySizes(const TType& type) { setArraySizes(type.arraySizes); }
     
     void changeArraySize(int s) { arraySizes->sizes.front() = s; }
-    void setMaxArraySize (int s) { arraySizes->maxArraySize = s; }
-    int getMaxArraySize () const { return arraySizes->maxArraySize; }
+    bool isImplicitlySizedArray() const { return isArray() && ! getArraySize(); }
+    bool isExplicitlySizedArray() const { return ! isImplicitlySizedArray(); }
+    void setImplicitArraySize (int s) { arraySizes->implicitArraySize = s; }
+    int getImplicitArraySize () const { return arraySizes->implicitArraySize; }
+
     const char* getBasicString() const 
     {
         return TType::getBasicString(basicType);
@@ -998,7 +1001,7 @@ public:
             p += snprintf(p, end - p, "%s ", getStorageQualifierString());
         if (arraySizes) {
             if (arraySizes->sizes.front() == 0)
-                p += snprintf(p, end - p, "unsized array of ");
+                p += snprintf(p, end - p, "implicitly-sized array of ");
             else
                 p += snprintf(p, end - p, "%d-element array of ", arraySizes->sizes.front());
         }
@@ -1057,8 +1060,8 @@ public:
             components = vectorSize;
 
         if (isArray()) {
-            // this function can only be used in paths that don't allow unsized arrays
-            assert(getArraySize() > 0);
+            // this function can only be used in paths that have a known array size
+            assert(isExplicitlySizedArray());
             components *= getArraySize();
         }
 

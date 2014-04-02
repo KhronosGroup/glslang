@@ -63,16 +63,16 @@ ERROR: node is still EOpNull!
 0:32            0 (const int)
 0:33      move second child to first child (float)
 0:33        direct index (layout(stream=0 ) float)
-0:33          gl_ClipDistance: direct index for structure (layout(stream=0 ) out unsized array of float)
-0:33            '__anon__1' (layout(stream=0 ) out block{layout(stream=0 ) gl_Position 4-component vector of float gl_Position, layout(stream=0 ) gl_PointSize float gl_PointSize, layout(stream=0 ) out unsized array of float gl_ClipDistance})
+0:33          gl_ClipDistance: direct index for structure (layout(stream=0 ) out implicitly-sized array of float)
+0:33            '__anon__1' (layout(stream=0 ) out block{layout(stream=0 ) gl_Position 4-component vector of float gl_Position, layout(stream=0 ) gl_PointSize float gl_PointSize, layout(stream=0 ) out implicitly-sized array of float gl_ClipDistance})
 0:33            Constant:
 0:33              2 (const uint)
 0:33          Constant:
 0:33            3 (const int)
 0:33        direct index (float)
-0:33          gl_ClipDistance: direct index for structure (in unsized array of float)
-0:33            direct index (block{in 4-component vector of float gl_Position, in float gl_PointSize, in unsized array of float gl_ClipDistance})
-0:33              'gl_in' (in 4-element array of block{in 4-component vector of float gl_Position, in float gl_PointSize, in unsized array of float gl_ClipDistance})
+0:33          gl_ClipDistance: direct index for structure (in implicitly-sized array of float)
+0:33            direct index (block{in 4-component vector of float gl_Position, in float gl_PointSize, in implicitly-sized array of float gl_ClipDistance})
+0:33              'gl_in' (in 4-element array of block{in 4-component vector of float gl_Position, in float gl_PointSize, in implicitly-sized array of float gl_ClipDistance})
 0:33              Constant:
 0:33                1 (const int)
 0:33            Constant:
@@ -81,24 +81,24 @@ ERROR: node is still EOpNull!
 0:33            2 (const int)
 0:34      move second child to first child (4-component vector of float)
 0:34        gl_Position: direct index for structure (layout(stream=0 ) gl_Position 4-component vector of float)
-0:34          '__anon__1' (layout(stream=0 ) out block{layout(stream=0 ) gl_Position 4-component vector of float gl_Position, layout(stream=0 ) gl_PointSize float gl_PointSize, layout(stream=0 ) out unsized array of float gl_ClipDistance})
+0:34          '__anon__1' (layout(stream=0 ) out block{layout(stream=0 ) gl_Position 4-component vector of float gl_Position, layout(stream=0 ) gl_PointSize float gl_PointSize, layout(stream=0 ) out implicitly-sized array of float gl_ClipDistance})
 0:34          Constant:
 0:34            0 (const uint)
 0:34        gl_Position: direct index for structure (in 4-component vector of float)
-0:34          direct index (block{in 4-component vector of float gl_Position, in float gl_PointSize, in unsized array of float gl_ClipDistance})
-0:34            'gl_in' (in 4-element array of block{in 4-component vector of float gl_Position, in float gl_PointSize, in unsized array of float gl_ClipDistance})
+0:34          direct index (block{in 4-component vector of float gl_Position, in float gl_PointSize, in implicitly-sized array of float gl_ClipDistance})
+0:34            'gl_in' (in 4-element array of block{in 4-component vector of float gl_Position, in float gl_PointSize, in implicitly-sized array of float gl_ClipDistance})
 0:34            Constant:
 0:34              0 (const int)
 0:34          Constant:
 0:34            0 (const int)
 0:35      move second child to first child (float)
 0:35        gl_PointSize: direct index for structure (layout(stream=0 ) gl_PointSize float)
-0:35          '__anon__1' (layout(stream=0 ) out block{layout(stream=0 ) gl_Position 4-component vector of float gl_Position, layout(stream=0 ) gl_PointSize float gl_PointSize, layout(stream=0 ) out unsized array of float gl_ClipDistance})
+0:35          '__anon__1' (layout(stream=0 ) out block{layout(stream=0 ) gl_Position 4-component vector of float gl_Position, layout(stream=0 ) gl_PointSize float gl_PointSize, layout(stream=0 ) out implicitly-sized array of float gl_ClipDistance})
 0:35          Constant:
 0:35            1 (const uint)
 0:35        gl_PointSize: direct index for structure (in float)
-0:35          direct index (block{in 4-component vector of float gl_Position, in float gl_PointSize, in unsized array of float gl_ClipDistance})
-0:35            'gl_in' (in 4-element array of block{in 4-component vector of float gl_Position, in float gl_PointSize, in unsized array of float gl_ClipDistance})
+0:35          direct index (block{in 4-component vector of float gl_Position, in float gl_PointSize, in implicitly-sized array of float gl_ClipDistance})
+0:35            'gl_in' (in 4-element array of block{in 4-component vector of float gl_Position, in float gl_PointSize, in implicitly-sized array of float gl_ClipDistance})
 0:35            Constant:
 0:35              3 (const int)
 0:35          Constant:
@@ -128,7 +128,7 @@ ERROR: node is still EOpNull!
 0:?     'fromV' (in 4-element array of block{in 3-component vector of float color})
 0:?     'toF' (layout(stream=0 ) out block{layout(stream=0 ) out 3-component vector of float color})
 0:?     '__anon__0' (layout(stream=0 ) out block{layout(stream=0 ) out 3-component vector of float color})
-0:?     'gl_in' (in 4-element array of block{in 4-component vector of float gl_Position, in float gl_PointSize, in unsized array of float gl_ClipDistance})
+0:?     'gl_in' (in 4-element array of block{in 4-component vector of float gl_Position, in float gl_PointSize, in implicitly-sized array of float gl_ClipDistance})
 0:?     'ov0' (layout(stream=0 ) out 4-component vector of float)
 0:?     'ov4' (layout(stream=4 ) out 4-component vector of float)
 0:?     'o1v0' (layout(stream=0 ) out 4-component vector of float)

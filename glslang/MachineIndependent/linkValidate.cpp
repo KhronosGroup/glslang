@@ -186,7 +186,7 @@ void TIntermediate::mergeBodies(TInfoSink& infoSink, TIntermSequence& globals, c
 //
 void TIntermediate::mergeLinkerObjects(TInfoSink& infoSink, TIntermSequence& linkerObjects, const TIntermSequence& unitLinkerObjects)
 {
-    // Error check and merge the linker objects (duplicates should not be merged)
+    // Error check and merge the linker objects (duplicates should not be created)
     std::size_t initialNumLinkerObjects = linkerObjects.size();
     for (unsigned int unitLinkObj = 0; unitLinkObj < unitLinkerObjects.size(); ++unitLinkObj) {
         bool merge = true;
@@ -615,8 +615,8 @@ int TIntermediate::computeTypeLocationSize(const TType& type)
     // consecutive locations..."
     if (type.isArray()) {
         TType elementType(type, 0);
-        if (type.getArraySize() == 0) {
-            // TODO: are there valid cases of having an unsized array with a location?  If so, running this code too early.
+        if (type.isImplicitlySizedArray()) {
+            // TODO: are there valid cases of having an implicitly-sized array with a location?  If so, running this code too early.
             return computeTypeLocationSize(elementType);
         } else
             return type.getArraySize() * computeTypeLocationSize(elementType);
@@ -703,7 +703,7 @@ unsigned int TIntermediate::computeTypeXfbSize(const TType& type, bool& contains
     // level to get this sequence of components."
 
     if (type.isArray()) {
-        assert(type.getArraySize() > 0);
+        assert(type.isExplicitlySizedArray());
         TType elementType(type, 0);
         return type.getArraySize() * computeTypeXfbSize(elementType, containsDouble);
     }

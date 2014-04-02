@@ -21,15 +21,15 @@ ERROR: node is still EOpNull!
 0:9      Constant:
 0:9        1 (const int)
 0:10      gl_Position: direct index for structure (in 4-component vector of float)
-0:10        direct index (block{in 4-component vector of float gl_Position, in float gl_PointSize, in unsized array of float gl_ClipDistance})
-0:10          'gl_in' (in 3-element array of block{in 4-component vector of float gl_Position, in float gl_PointSize, in unsized array of float gl_ClipDistance})
+0:10        direct index (block{in 4-component vector of float gl_Position, in float gl_PointSize, in implicitly-sized array of float gl_ClipDistance})
+0:10          'gl_in' (in 3-element array of block{in 4-component vector of float gl_Position, in float gl_PointSize, in implicitly-sized array of float gl_ClipDistance})
 0:10          Constant:
 0:10            1 (const int)
 0:10        Constant:
 0:10          0 (const int)
 0:11      gl_Position: direct index for structure (in 4-component vector of float)
-0:11        indirect index (block{in 4-component vector of float gl_Position, in float gl_PointSize, in unsized array of float gl_ClipDistance})
-0:11          'gl_in' (in 3-element array of block{in 4-component vector of float gl_Position, in float gl_PointSize, in unsized array of float gl_ClipDistance})
+0:11        indirect index (block{in 4-component vector of float gl_Position, in float gl_PointSize, in implicitly-sized array of float gl_ClipDistance})
+0:11          'gl_in' (in 3-element array of block{in 4-component vector of float gl_Position, in float gl_PointSize, in implicitly-sized array of float gl_ClipDistance})
 0:11          'i' (int)
 0:11        Constant:
 0:11          0 (const int)
@@ -39,8 +39,8 @@ ERROR: node is still EOpNull!
 0:20      Constant:
 0:20        3 (const int)
 0:21      gl_Position: direct index for structure (in 4-component vector of float)
-0:21        indirect index (block{in 4-component vector of float gl_Position, in float gl_PointSize, in unsized array of float gl_ClipDistance})
-0:21          'gl_in' (in 3-element array of block{in 4-component vector of float gl_Position, in float gl_PointSize, in unsized array of float gl_ClipDistance})
+0:21        indirect index (block{in 4-component vector of float gl_Position, in float gl_PointSize, in implicitly-sized array of float gl_ClipDistance})
+0:21          'gl_in' (in 3-element array of block{in 4-component vector of float gl_Position, in float gl_PointSize, in implicitly-sized array of float gl_ClipDistance})
 0:21          'i' (int)
 0:21        Constant:
 0:21          0 (const int)
@@ -116,12 +116,12 @@ ERROR: node is still EOpNull!
 0:44            1 (const int)
 0:?   Linker Objects
 0:?     'i' (int)
-0:?     'gl_in' (in 3-element array of block{in 4-component vector of float gl_Position, in float gl_PointSize, in unsized array of float gl_ClipDistance})
+0:?     'gl_in' (in 3-element array of block{in 4-component vector of float gl_Position, in float gl_PointSize, in implicitly-sized array of float gl_ClipDistance})
 0:?     'color3' (in 3-element array of 4-component vector of float)
 0:?     's2D' (uniform sampler2D)
 0:?     'coord' (in 3-element array of 2-component vector of float)
 0:?     'v4' (uniform 4-component vector of float)
-0:?     '__anon__0' (layout(stream=0 ) out block{layout(stream=0 ) gl_PointSize float gl_PointSize, layout(stream=0 ) out unsized array of float gl_ClipDistance})
+0:?     '__anon__0' (layout(stream=0 ) out block{layout(stream=0 ) gl_PointSize float gl_PointSize, layout(stream=0 ) out implicitly-sized array of float gl_ClipDistance})
 
 
 Linked geometry stage:

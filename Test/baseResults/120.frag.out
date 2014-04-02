@@ -300,7 +300,7 @@ ERROR: node is still EOpNull!
 0:120        move second child to first child (4-component vector of float)
 0:120          'v' (4-component vector of float)
 0:120          direct index (smooth 4-component vector of float)
-0:120            'gl_TexCoord' (smooth in unsized array of 4-component vector of float)
+0:120            'gl_TexCoord' (smooth in implicitly-sized array of 4-component vector of float)
 0:120            Constant:
 0:120              1 (const int)
 0:121      add second child into first child (4-component vector of float)

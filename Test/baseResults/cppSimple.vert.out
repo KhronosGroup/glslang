@@ -126,7 +126,7 @@ ERROR: node is still EOpNull!
 0:65          0.050000
 0:69      move second child to first child (4-component vector of float)
 0:69        gl_Position: direct index for structure (gl_Position 4-component vector of float)
-0:69          '__anon__1' (out block{gl_Position 4-component vector of float gl_Position, gl_PointSize float gl_PointSize, out unsized array of float gl_ClipDistance, gl_ClipVertex 4-component vector of float gl_ClipVertex, out 4-component vector of float gl_FrontColor, out 4-component vector of float gl_BackColor, out 4-component vector of float gl_FrontSecondaryColor, out 4-component vector of float gl_BackSecondaryColor, out unsized array of 4-component vector of float gl_TexCoord, out float gl_FogFragCoord})
+0:69          '__anon__1' (out block{gl_Position 4-component vector of float gl_Position, gl_PointSize float gl_PointSize, out implicitly-sized array of float gl_ClipDistance, gl_ClipVertex 4-component vector of float gl_ClipVertex, out 4-component vector of float gl_FrontColor, out 4-component vector of float gl_BackColor, out 4-component vector of float gl_FrontSecondaryColor, out 4-component vector of float gl_BackSecondaryColor, out implicitly-sized array of 4-component vector of float gl_TexCoord, out float gl_FogFragCoord})
 0:69          Constant:
 0:69            0 (const uint)
 0:69        Construct vec4 (4-component vector of float)
@@ -166,7 +166,7 @@ ERROR: node is still EOpNull!
 12:20034    Sequence
 12:20034      move second child to first child (4-component vector of float)
 12:20034        gl_Position: direct index for structure (gl_Position 4-component vector of float)
-12:20034          '__anon__1' (out block{gl_Position 4-component vector of float gl_Position, gl_PointSize float gl_PointSize, out unsized array of float gl_ClipDistance, gl_ClipVertex 4-component vector of float gl_ClipVertex, out 4-component vector of float gl_FrontColor, out 4-component vector of float gl_BackColor, out 4-component vector of float gl_FrontSecondaryColor, out 4-component vector of float gl_BackSecondaryColor, out unsized array of 4-component vector of float gl_TexCoord, out float gl_FogFragCoord})
+12:20034          '__anon__1' (out block{gl_Position 4-component vector of float gl_Position, gl_PointSize float gl_PointSize, out implicitly-sized array of float gl_ClipDistance, gl_ClipVertex 4-component vector of float gl_ClipVertex, out 4-component vector of float gl_FrontColor, out 4-component vector of float gl_BackColor, out 4-component vector of float gl_FrontSecondaryColor, out 4-component vector of float gl_BackSecondaryColor, out implicitly-sized array of 4-component vector of float gl_TexCoord, out float gl_FogFragCoord})
 12:20034          Constant:
 12:20034            0 (const uint)
 12:20034        Constant:

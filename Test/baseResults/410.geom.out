@@ -31,7 +31,7 @@ ERROR: node is still EOpNull!
 0:30          'p' (float)
 0:30          gl_PointSize: direct index for structure (in float)
 0:30            direct index (block{in float gl_PointSize})
-0:30              'gl_in' (in unsized array of block{in float gl_PointSize})
+0:30              'gl_in' (in implicitly-sized array of block{in float gl_PointSize})
 0:30              Constant:
 0:30                1 (const int)
 0:30            Constant:
@@ -47,7 +47,7 @@ ERROR: node is still EOpNull!
 0:33        Constant:
 0:33          0 (const uint)
 0:?   Linker Objects
-0:?     'gl_in' (in unsized array of block{in float gl_PointSize})
+0:?     'gl_in' (in implicitly-sized array of block{in float gl_PointSize})
 0:?     '__anon__0' (layout(stream=0 ) out block{layout(stream=0 ) gl_PointSize float gl_PointSize, })
 
 

@@ -176,7 +176,7 @@ public:
     void wrapupSwitchSubsequence(TIntermAggregate* statements, TIntermNode* branchNode);
     TIntermNode* addSwitch(TSourceLoc, TIntermTyped* expression, TIntermAggregate* body);
 
-    void updateMaxArraySize(TSourceLoc, TIntermNode*, int index);
+    void updateImplicitArraySize(TSourceLoc, TIntermNode*, int index);
 
     void setScanContext(TScanContext* c) { scanContext = c; }
     TScanContext* getScanContext() const { return scanContext; }

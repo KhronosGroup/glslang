@@ -297,8 +297,8 @@ ERROR: node is still EOpNull!
 0:?     'colors' (layout(location=2 ) out 3-element array of 4-component vector of float)
 0:?     'gl_FragDepth' (gl_FragDepth float)
 0:?     'gl_FragDepth' (gl_FragDepth float)
-0:?     '__anon__2' (in block{in float gl_FogFragCoord, in unsized array of 4-component vector of float gl_TexCoord, flat in 4-component vector of float gl_Color, in 4-component vector of float gl_SecondaryColor})
-0:?     '__anon__2' (in block{in float gl_FogFragCoord, in unsized array of 4-component vector of float gl_TexCoord, flat in 4-component vector of float gl_Color, in 4-component vector of float gl_SecondaryColor})
+0:?     '__anon__2' (in block{in float gl_FogFragCoord, in implicitly-sized array of 4-component vector of float gl_TexCoord, flat in 4-component vector of float gl_Color, in 4-component vector of float gl_SecondaryColor})
+0:?     '__anon__2' (in block{in float gl_FogFragCoord, in implicitly-sized array of 4-component vector of float gl_TexCoord, flat in 4-component vector of float gl_Color, in 4-component vector of float gl_SecondaryColor})
 
 
 Linked fragment stage:

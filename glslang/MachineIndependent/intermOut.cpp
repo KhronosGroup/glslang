@@ -473,12 +473,7 @@ void TOutputTraverser::visitSymbol(TIntermSymbol* node)
 {
     OutputTreeText(infoSink, node, depth);
 
-    const int maxSize = GlslangMaxTypeLength + GlslangMaxTokenLength;
-    char buf[maxSize];
-    snprintf(buf, maxSize, "'%s' (%s)\n",
-             node->getName().c_str(),
-             node->getCompleteString().c_str());
-    infoSink.debug << buf;
+    infoSink.debug << "'" << node->getName() << "' (" << node->getCompleteString() << ")\n";
 
     if (! node->getConstArray().empty())
         OutputConstantUnion(infoSink, node, node->getConstArray(), depth + 1);
