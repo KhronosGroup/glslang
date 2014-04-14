@@ -206,7 +206,10 @@ void TIntermediate::mergeLinkerObjects(TInfoSink& infoSink, TIntermSequence& lin
                 // Similarly for binding
                 if (! symbol->getQualifier().hasBinding() && unitSymbol->getQualifier().hasBinding())
                     symbol->getQualifier().layoutBinding = unitSymbol->getQualifier().layoutBinding;
-                
+
+                // Update implicit array sizes
+                mergeImplicitArraySizes(symbol->getWritableType(), unitSymbol->getType());
+
                 // Check for consistent types/qualification/initializers etc.
                 mergeErrorCheck(infoSink, *symbol, *unitSymbol, false);
             }
@@ -214,6 +217,25 @@ void TIntermediate::mergeLinkerObjects(TInfoSink& infoSink, TIntermSequence& lin
         if (merge)
             linkerObjects.push_back(unitLinkerObjects[unitLinkObj]);
     }
+}
+
+// Recursively merge the implicit array sizes through the objects' respective type trees.
+void TIntermediate::mergeImplicitArraySizes(TType& type, const TType& unitType)
+{
+    if (type.isImplicitlySizedArray() && unitType.isArray()) {
+        int newImplicitArraySize = unitType.getArraySize();
+        if (newImplicitArraySize == 0)
+            newImplicitArraySize = unitType.getImplicitArraySize();
+        if (newImplicitArraySize > type.getImplicitArraySize ())
+            type.setImplicitArraySize(newImplicitArraySize);
+    }
+
+    // Type mismatches are caught and reported after this, just be careful for now.
+    if (! type.isStruct() || ! unitType.isStruct() || type.getStruct()->size() != unitType.getStruct()->size())
+        return;
+
+    for (int i = 0; i < (int)type.getStruct()->size(); ++i)
+        mergeImplicitArraySizes(*(*type.getStruct())[i].type, *(*unitType.getStruct())[i].type);
 }
 
 //
@@ -305,7 +327,7 @@ void TIntermediate::mergeErrorCheck(TInfoSink& infoSink, const TIntermSymbol& sy
 // Do final link-time error checking of a complete (merged) intermediate representation.
 // (Much error checking was done during merging).
 //
-// Also, lock in defaults of things not set.
+// Also, lock in defaults of things not set, including array sizes.
 //
 void TIntermediate::finalCheck(TInfoSink& infoSink)
 {   
@@ -392,6 +414,21 @@ void TIntermediate::finalCheck(TInfoSink& infoSink)
     case EShLangCompute:
         break;
     }
+
+    // Process the tree for any node-specific work.
+    class TFinalLinkTraverser : public TIntermTraverser {
+    public:
+        TFinalLinkTraverser() { }
+        virtual ~TFinalLinkTraverser() { }
+
+        virtual void visitSymbol(TIntermSymbol* symbol)
+        {
+            // Implicitly size arrays.
+            symbol->getWritableType().adoptImplicitArraySizes();
+        }
+    } finalLinkTraverser;
+
+    treeRoot->traverse(&finalLinkTraverser);
 }
 
 //
@@ -877,11 +914,8 @@ int TIntermediate::getBaseAlignment(const TType& type, int& size, bool std140) c
 
     // rules 5 and 7
     if (type.isMatrix()) {
-        TType derefType(type, 0);
-            
         // rule 5: deref to row, not to column, meaning the size of vector is num columns instead of num rows
-        if (type.getQualifier().layoutMatrix == ElmRowMajor)
-            derefType.setElementType(derefType.getBasicType(), type.getMatrixCols(), 0, 0, 0);
+        TType derefType(type, 0, type.getQualifier().layoutMatrix == ElmRowMajor);
             
         alignment = getBaseAlignment(derefType, size, std140);
         if (std140)

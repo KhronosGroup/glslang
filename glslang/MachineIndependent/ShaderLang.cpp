@@ -1064,7 +1064,7 @@ bool TProgram::linkStage(EShLanguage stage, EShMessages messages)
     intermediate[stage]->finalCheck(*infoSink);
 
     if (messages & EShMsgAST)
-        intermediate[stage]->output(*infoSink, stages[stage].size() > 1);
+        intermediate[stage]->output(*infoSink, true);
 
     return intermediate[stage]->getNumErrors() == 0;
 }

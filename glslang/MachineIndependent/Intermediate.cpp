@@ -866,10 +866,10 @@ void TIntermediate::addSymbolLinkageNodes(TIntermAggregate*& linkage, EShLanguag
     // by the AST.
     //
     // Almost entirely, translation of symbols is driven by what's present 
-    // in the AST traversal, not by translating the symbol table.  
+    // in the AST traversal, not by translating the symbol table.
     //
     // However, there are some special cases:
-    //  - From the specification: "Special built-in inputs gl_VertexID and 
+    //  - From the specification: "Special built-in inputs gl_VertexID and
     //    gl_InstanceID are also considered active vertex attributes."
     //  - Linker-based type mismatch error reporting needs to see all 
     //    uniforms/ins/outs variables and blocks.

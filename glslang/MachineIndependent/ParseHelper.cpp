@@ -371,59 +371,56 @@ void C_DECL TParseContext::warn(TSourceLoc loc, const char* szReason, const char
 TIntermTyped* TParseContext::handleVariable(TSourceLoc loc, TSymbol* symbol, TString* string)
 {
     TIntermTyped* node = 0;
-    bool noteAccess = false;
 
     // Error check for function requiring specific extensions present.
     if (symbol && symbol->getNumExtensions())
         requireExtensions(loc, symbol->getNumExtensions(), symbol->getExtensions(), symbol->getName().c_str());
 
+    if (symbol && symbol->isReadOnly()) {
+        // All shared things containing an implicitly sized array must be copied up 
+        // on first use, so that all future references will share its array structure,
+        // so that editing the implicit size will effect all nodes consuming it,
+        // and so that editing the implicit size won't change the shared one.
+        if (symbol->getType().containsImplicitlySizedArray())
+            makeEditable(symbol);
+    }
+
+    const TVariable* variable;
     const TAnonMember* anon = symbol ? symbol->getAsAnonMember() : 0;
     if (anon) {
-        // it was a member of an anonymous container
-        
-        // create a subtree for its dereference
-        const TVariable* variable = anon->getAnonContainer().getAsVariable();
+        // It was a member of an anonymous container.
+
+        // Create a subtree for its dereference.
+        variable = anon->getAnonContainer().getAsVariable();
         TIntermTyped* container = intermediate.addSymbol(*variable, loc);
         TConstUnionArray unionArray(1);
         unionArray[0].setUConst(anon->getMemberNumber());
         TIntermTyped* constNode = intermediate.addConstantUnion(unionArray, TType(EbtUint, EvqConst), loc);
-
         node = intermediate.addIndex(EOpIndexDirectStruct, container, constNode, loc);
-        node->setType(*(*variable->getType().getStruct())[anon->getMemberNumber()].type);
-        if (node->getBasicType() == EbtVoid)
-            error(loc, "member of nameless block was not redeclared", string->c_str(), "");
-        if (variable->getType().getQualifier().isIo())
-            noteAccess = true;
 
-        // TODO: does this create any accidental type sharing with the built-in level?
+        node->setType(*(*variable->getType().getStruct())[anon->getMemberNumber()].type);
+        if (node->getType().wasTypeHidden())
+            error(loc, "member of nameless block was not redeclared", string->c_str(), "");
     } else {
-        // The symbol table search was done in the lexical phase, but
-        // if this is a new symbol, it wouldn't have found it.
-        TVariable* variable = symbol ? symbol->getAsVariable() : 0;
+        // Not a member of an anonymous container.
+
+        // The symbol table search was done in the lexical phase.
+        // See if it was a variable.
+        variable = symbol ? symbol->getAsVariable() : 0;
         if (symbol && ! variable)
             error(loc, "variable name expected", string->c_str(), "");
 
+        // Recovery, if it wasn't found or was not a variable.
         if (! variable)
             variable = new TVariable(string, TType(EbtVoid));
 
         if (variable->getType().getQualifier().storage == EvqConst)
             node = intermediate.addConstantUnion(variable->getConstArray(), variable->getType(), loc);
-        else {
-            TType* type;
-            if (variable->isReadOnly()) {
-                type = new TType;
-                // break type sharing with built-ins; only costs if there are arrays or structures
-                type->deepCopy(variable->getType());
-            } else
-                type = &variable->getWritableType();
-            // addSymbol will do a shallow copy of the type to the node, thus sharing array and struct information
-            node = intermediate.addSymbol(variable->getUniqueId(), variable->getName(), *type, loc);
-            if (type->getQualifier().isIo())
-                noteAccess = true;
-        }
+        else
+            node = intermediate.addSymbol(*variable, loc);
     }
 
-    if (noteAccess)
+    if (variable->getType().getQualifier().isIo())
         intermediate.addIoAccessed(*string);
 
     return node;
@@ -543,6 +540,22 @@ void TParseContext::handleIndexLimits(TSourceLoc loc, TIntermTyped* base, TInter
     }
 }
 
+// Make a shared symbol have a non-shared version that can be edited by the current 
+// compile, such that editing its type will not change the shared version and will
+// effect all nodes sharing it.
+void TParseContext::makeEditable(TSymbol*& symbol)
+{
+    // copyUp() does a deep copy of the type.
+    symbol = symbolTable.copyUp(symbol);
+
+    // Also, see if it's tied to IO resizing
+    if (isIoResizeArray(symbol->getType()))
+        ioArraySymbolResizeList.push_back(symbol);
+
+    // Also, save it in the AST for linker use.
+    intermediate.addSymbolLinkageNode(linkage, *symbol);
+}
+
 // Return true if this is a geometry shader input array or tessellation control output array.
 bool TParseContext::isIoResizeArray(const TType& type) const
 {
@@ -585,33 +598,20 @@ void TParseContext::ioArrayCheck(TSourceLoc loc, const TType& type, const TStrin
 }
 
 // Handle a dereference of a geometry shader input array or tessellation control output array.
-// See ioArrayNodeResizeList comment in ParseHelper.h.
+// See ioArraySymbolResizeList comment in ParseHelper.h.
 //
 void TParseContext::handleIoResizeArrayAccess(TSourceLoc loc, TIntermTyped* base)
 {
-    TIntermSymbol* symbol = base->getAsSymbolNode();
-    assert(symbol);
-    ioArrayNodeResizeList.push_back(symbol);
-    if (symbol && builtInName(symbol->getName())) {
-        // make sure we have a user-modifiable copy of this built-in input array
-        TSymbol* arry = symbolTable.find(symbol->getName());
-        if (arry->isReadOnly()) {
-            arry = symbolTable.copyUp(arry);
+    TIntermSymbol* symbolNode = base->getAsSymbolNode();
+    assert(symbolNode);
+    if (! symbolNode)
+        return;
 
-            // fix array size, if already implicitly size
-            if (arry->getType().isImplicitlySizedArray()) {
-                int newSize = getIoArrayImplicitSize();
-                if (newSize) {
-                    arry->getWritableType().changeArraySize(newSize);
-                    symbol->getWritableType().changeArraySize(newSize);
-                }
-            }
-
-            ioArraySymbolResizeList.push_back(arry);
-
-            // Save it in the AST for linker use.
-            intermediate.addSymbolLinkageNode(linkage, *arry);
-        }
+    // fix array size, if it can be fixed and needs to be fixed (will allow variable indexing)
+    if (symbolNode->getType().isImplicitlySizedArray()) {
+        int newSize = getIoArrayImplicitSize();
+        if (newSize)
+            symbolNode->getWritableType().changeArraySize(newSize);
     }
 }
 
@@ -639,9 +639,6 @@ void TParseContext::checkIoArraysConsistency(TSourceLoc loc, bool tailOnly)
         checkIoArrayConsistency(loc, requiredSize, feature, ioArraySymbolResizeList.back()->getWritableType(), ioArraySymbolResizeList.back()->getName());
         return;
     }
-
-    for (size_t i = 0; i < ioArrayNodeResizeList.size(); ++i)
-        checkIoArrayConsistency(loc, requiredSize, feature, ioArrayNodeResizeList[i]->getWritableType(), ioArrayNodeResizeList[i]->getName());
 
     for (size_t i = 0; i < ioArraySymbolResizeList.size(); ++i)
         checkIoArrayConsistency(loc, requiredSize, feature, ioArraySymbolResizeList[i]->getWritableType(), ioArraySymbolResizeList[i]->getName());
@@ -732,7 +729,7 @@ TIntermTyped* TParseContext::handleDotDereference(TSourceLoc loc, TIntermTyped* 
     } else if (base->isMatrix())
         error(loc, "field selection not allowed on matrix", ".", "");
     else if (base->getBasicType() == EbtStruct || base->getBasicType() == EbtBlock) {
-        TTypeList* fields = base->getType().getStruct();
+        const TTypeList* fields = base->getType().getStruct();
         bool fieldFound = false;
         unsigned int member;
         for (member = 0; member < fields->size(); ++member) {
@@ -2118,7 +2115,7 @@ bool TParseContext::containsSampler(const TType& type)
         return true;
 
     if (type.getBasicType() == EbtStruct) {
-        TTypeList& structure = *type.getStruct();
+        const TTypeList& structure = *type.getStruct();
         for (unsigned int i = 0; i < structure.size(); ++i) {
             if (containsSampler(*structure[i].type))
                 return true;
@@ -2204,7 +2201,7 @@ void TParseContext::arrayDimCheck(TSourceLoc loc, const TType* type, TArraySizes
 }
 
 //
-// Do all the semantic checking for declaring an array, with and
+// Do all the semantic checking for declaring or redeclaring an array, with and
 // without a size, and make the right changes to the symbol table.
 //
 // size == 0 means no specified size.
@@ -2249,27 +2246,28 @@ void TParseContext::declareArray(TSourceLoc loc, TString& identifier, const TTyp
         return;
     }
 
-    TType& newType = symbol->getWritableType();
+    // redeclareBuiltinVariable() should have already done the copyUp()
+    TType& existingType = symbol->getWritableType();
 
-    if (! newType.isArray()) {
+    if (! existingType.isArray()) {
         error(loc, "redeclaring non-array as array", identifier.c_str(), "");
         return;
     }
-    if (newType.isExplicitlySizedArray()) {
+    if (existingType.isExplicitlySizedArray()) {
         // be more leniant for input arrays to geometry shaders and tessellation control outputs, where the redeclaration is the same size
-        if (! (isIoResizeArray(type) && newType.getArraySize() == type.getArraySize()))
+        if (! (isIoResizeArray(type) && existingType.getArraySize() == type.getArraySize()))
             error(loc, "redeclaration of array with size", identifier.c_str(), "");
         return;
     }
 
-    if (! newType.sameElementType(type)) {
+    if (! existingType.sameElementType(type)) {
         error(loc, "redeclaration of array with a different type", identifier.c_str(), "");
         return;
     }
 
     arrayLimitCheck(loc, identifier, type.getArraySize());
 
-    newType.shareArraySizes(type);
+    existingType.updateArraySizes(type);
 
     if (isIoResizeArray(type))
         checkIoArraysConsistency(loc);
@@ -2284,31 +2282,35 @@ void TParseContext::updateImplicitArraySize(TSourceLoc loc, TIntermNode *node, i
 
     // something to do...
 
-    // TODO: 1.50 linker: unsized block member array: 'node' could be an expression for a dereference
-    TIntermSymbol* symbolNode = node->getAsSymbolNode();
-    if (! symbolNode)
-        return;
+    // Figure out what symbol to lookup, as we will use its type to edit for the size change,
+    // as that type will be shared through shallow copies for future references.
+    TSymbol* symbol = 0;
+    int blockIndex = -1;
+    const TString* lookupName;
+    if (node->getAsSymbolNode())
+        lookupName = &node->getAsSymbolNode()->getName();
+    else if (node->getAsBinaryNode()) {
+        const TIntermBinary* deref = node->getAsBinaryNode();
+        // This has to be the result of a block dereference, unless it's bad shader code
+        if (! deref->getLeft()->getAsSymbolNode() || deref->getLeft()->getBasicType() != EbtBlock ||
+            deref->getRight()->getAsConstantUnion() == 0)
+            return;
 
-    TSymbol* symbol = symbolTable.find(symbolNode->getName());
-    assert(symbol);
+        blockIndex = deref->getRight()->getAsConstantUnion()->getConstArray()[0].getIConst();
+
+        lookupName = &deref->getLeft()->getAsSymbolNode()->getName();
+        if (IsAnonymous(*lookupName))
+            lookupName = &(*deref->getLeft()->getType().getStruct())[blockIndex].type->getFieldName();
+    }
+
+    // Lookup the symbol, should only fail if shader code is incorrect
+    symbol = symbolTable.find(*lookupName);
     if (symbol == 0)
         return;
 
     if (symbol->getAsFunction()) {
         error(loc, "array variable name expected", symbol->getName().c_str(), "");
         return;
-    }
-
-    // For read-only built-ins, add a new variable for holding the maximum array size of an implicitly-sized shared array.
-    // TODO: desktop linker: unsized arrays: is this new array type shared with the node?
-    if (symbol->isReadOnly()) {
-        symbol = symbolTable.copyUp(symbol);
-        
-        if (isIoResizeArray(symbol->getType()))
-            ioArraySymbolResizeList.push_back(symbol);
-
-        // Save it in the AST for linker use.
-        intermediate.addSymbolLinkageNode(linkage, *symbol);
     }
 
     symbol->getWritableType().setImplicitArraySize(index + 1);
@@ -2371,14 +2373,8 @@ TSymbol* TParseContext::redeclareBuiltinVariable(TSourceLoc loc, const TString& 
         // redeclaration.  Otherwise, make the new one.
         if (builtIn) {
             // Copy the symbol up to make a writable version
+            makeEditable(symbol);
             newDeclaration = true;
-            symbol = symbolTable.copyUp(symbol);
-
-            if (isIoResizeArray(symbol->getType()))
-                ioArraySymbolResizeList.push_back(symbol);
-
-            // Save it in the AST for linker use.
-            intermediate.addSymbolLinkageNode(linkage, *symbol);
         }
 
         // Now, modify the type of the copy, as per the type of the current redeclaration.
@@ -2490,12 +2486,12 @@ void TParseContext::redeclareBuiltinBlock(TSourceLoc loc, TTypeList& newTypeList
     //  - remove unused members
     //  - ensure remaining qualifiers/types match
     TType& type = block->getWritableType();
-    TTypeList::iterator member = type.getStruct()->begin();
+    TTypeList::iterator member = type.getWritableStruct()->begin();
     size_t numOriginalMembersFound = 0;
     while (member != type.getStruct()->end()) {
         // look for match
         bool found = false;
-        TTypeList::iterator newMember;
+        TTypeList::const_iterator newMember;
         TSourceLoc memberLoc;
         for (newMember = newTypeList.begin(); newMember != newTypeList.end(); ++newMember) {
             if (member->type->getFieldName() == newMember->type->getFieldName()) {
@@ -2536,13 +2532,13 @@ void TParseContext::redeclareBuiltinBlock(TSourceLoc loc, TTypeList& newTypeList
             // go to next member
             ++member;
         } else {    
-            // Use EbtVoid to tag missing members of anonymous blocks that have been redeclared,
-            // to hide the original (shared) declaration.
-            // (Instance-named blocks can just have the member removed.)
+            // For missing members of anonymous blocks that have been redeclared,
+            // hide the original (shared) declaration.
+            // Instance-named blocks can just have the member removed.
             if (instanceName)
-                member = type.getStruct()->erase(member);
+                member = type.getWritableStruct()->erase(member);
             else {
-                member->type->setElementType(EbtVoid, 1, 0, 0, 0);
+                member->type->hideType();
                 ++member;
             }
         }
@@ -2643,7 +2639,7 @@ void TParseContext::opaqueCheck(TSourceLoc loc, const TType& type, const char* o
 
 void TParseContext::structTypeCheck(TSourceLoc loc, TPublicType& publicType)
 {
-    TTypeList& typeList = *publicType.userDef->getStruct();
+    const TTypeList& typeList = *publicType.userDef->getStruct();
 
     // fix and check for member storage qualifiers and types that don't belong within a structure
     for (unsigned int member = 0; member < typeList.size(); ++member) {
@@ -3797,7 +3793,7 @@ TIntermTyped* TParseContext::addConstructor(TSourceLoc loc, TIntermNode* node, c
 
     TIntermAggregate* aggrNode = node->getAsAggregate();
 
-    TTypeList::iterator memberTypes;
+    TTypeList::const_iterator memberTypes;
     if (op == EOpConstructStruct)
         memberTypes = type.getStruct()->begin();
 

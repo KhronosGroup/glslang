@@ -44,6 +44,12 @@ namespace glslang {
 
 const int GlslangMaxTypeLength = 200;  // TODO: need to print block/struct one member per line, so this can stay bounded
 
+const char* const AnonymousPrefix = "anon@"; // for something like a block whose members can be directly accessed
+inline bool IsAnonymous(const TString& name)
+{
+    return name.compare(0, 5, AnonymousPrefix) == 0;
+}
+
 //
 // Details within a sampler type
 //
@@ -174,7 +180,7 @@ typedef TVector<TString*> TIdentifierList;
 struct TArraySizes {
     POOL_ALLOCATOR_NEW_DELETE(GetThreadPoolAllocator())
 
-    TArraySizes() : implicitArraySize(0) { }
+    TArraySizes() : implicitArraySize(1) { }
     int getSize() { return sizes.front(); }  // TArraySizes only exists if there is at least one dimension
     void setSize(int s) { sizes.push_back(s); }
     bool isArrayOfArrays() { return sizes.size() > 1; }
@@ -701,14 +707,14 @@ public:
                                     sampler.clear();
                                 qualifier = p.qualifier;
                                 if (p.userDef) {
-                                    structure = p.userDef->getStruct();
+                                    structure = p.userDef->getWritableStruct();  // public type is short-lived; there are no sharing issues
                                     typeName = NewPoolTString(p.userDef->getTypeName().c_str());
                                 }
                             }
     // to efficiently make a dereferenced type
     // without ever duplicating the outer structure that will be thrown away
     // and using only shallow copy
-    TType(const TType& type, int derefIndex)
+    TType(const TType& type, int derefIndex, bool rowMajor = false)
                             {
                                 if (! type.isArray() && (type.basicType == EbtStruct || type.basicType == EbtBlock)) {
                                     // do a structure dereference
@@ -718,7 +724,7 @@ public:
                                 } else {
                                     // do an array/vector/matrix dereference
                                     shallowCopy(type);
-                                    dereference();
+                                    dereference(rowMajor);
                                 }
                             }
     // for making structures, ...
@@ -761,12 +767,12 @@ public:
     {
         shallowCopy(copyOf);
 
-        if (arraySizes) {
+        if (copyOf.arraySizes) {
             arraySizes = new TArraySizes;
             *arraySizes = *copyOf.arraySizes;
         }
 
-        if (structure) {
+        if (copyOf.structure) {
             structure = new TTypeList;
             TStructureMapIterator iter;
             for (unsigned int i = 0; i < copyOf.structure->size(); ++i) {
@@ -778,9 +784,9 @@ public:
             }
         }
 
-        if (fieldName)
+        if (copyOf.fieldName)
             fieldName = NewPoolTString(copyOf.fieldName->c_str());
-        if (typeName)
+        if (copyOf.typeName)
             typeName = NewPoolTString(copyOf.typeName->c_str());
     }
     
@@ -793,47 +799,48 @@ public:
     }
 
     // Merge type from parent, where a parentType is at the beginning of a declaration,
-    // establishing some charastics for all subsequent names, while this type
+    // establishing some characteristics for all subsequent names, while this type
     // is on the individual names.
     void mergeType(const TPublicType& parentType)
     {
         // arrayness is currently the only child aspect that has to be preserved
-        setElementType(parentType.basicType, parentType.vectorSize, parentType.matrixCols, parentType.matrixRows, parentType.userDef);
+        basicType = parentType.basicType;
+        vectorSize = parentType.vectorSize;
+        matrixCols = parentType.matrixCols;
+        matrixRows = parentType.matrixRows;
         qualifier = parentType.qualifier;
         sampler = parentType.sampler;
         if (parentType.arraySizes)
             setArraySizes(parentType.arraySizes);
-        if (parentType.userDef)
+        if (parentType.userDef) {
+            structure = parentType.userDef->getWritableStruct();
             setTypeName(parentType.userDef->getTypeName());
+        }
     }
 
-    virtual void dereference()
+    virtual void dereference(bool rowMajor = false)
     {
         if (arraySizes)
             arraySizes = 0;
         else if (matrixCols > 0) {
-            vectorSize = matrixRows;
+            if (rowMajor)
+                vectorSize = matrixCols;
+            else
+                vectorSize = matrixRows;
             matrixCols = 0;
             matrixRows = 0;
         } else if (vectorSize > 1)
             vectorSize = 1;
     }
 
-    virtual void setElementType(TBasicType t, int s, int mc, int mr, const TType* userDef)
-    {
-        basicType = t;
-        vectorSize = s;
-        matrixCols = mc;
-        matrixRows = mr;
-        if (userDef)
-            structure = userDef->getStruct();
-        // leave array information intact.
-    }
+    virtual void hideType() { basicType = EbtVoid; vectorSize = 1; }
+    virtual bool wasTypeHidden() const { return basicType == EbtVoid; }
+
     virtual void setTypeName(const TString& n) { typeName = NewPoolTString(n.c_str()); }
     virtual void setFieldName(const TString& n) { fieldName = NewPoolTString(n.c_str()); }
     virtual const TString& getTypeName() const
     {
-        assert(typeName);    		
+        assert(typeName);
         return *typeName;
     }
 
@@ -845,17 +852,22 @@ public:
 
     virtual TBasicType getBasicType() const { return basicType; }
     virtual const TSampler& getSampler() const { return sampler; }
-    virtual TQualifier& getQualifier() { return qualifier; }
+
+    virtual       TQualifier& getQualifier()       { return qualifier; }
     virtual const TQualifier& getQualifier() const { return qualifier; }
 
     virtual int getVectorSize() const { return vectorSize; }
     virtual int getMatrixCols() const { return matrixCols; }
     virtual int getMatrixRows() const { return matrixRows; }
+    virtual int getArraySize()  const { return arraySizes->sizes.front(); }
+    virtual int getImplicitArraySize () const { return arraySizes->implicitArraySize; }
 
     virtual bool isScalar() const { return vectorSize == 1 && ! isStruct() && ! isArray(); }
     virtual bool isVector() const { return vectorSize > 1; }
     virtual bool isMatrix() const { return matrixCols ? true : false; }
     virtual bool isArray()  const { return arraySizes != 0; }
+    virtual bool isImplicitlySizedArray() const { return isArray() && ! getArraySize(); }
+    virtual bool isExplicitlySizedArray() const { return ! isImplicitlySizedArray(); }
     virtual bool isStruct() const { return structure != 0; }
 
     // Recursively checks if the type contains the given basic type
@@ -885,28 +897,58 @@ public:
         }
         return false;
     }
-    int getArraySize() const { return arraySizes->sizes.front(); }
-    void shareArraySizes(const TType& type)
+
+    // Recursively check the structure for any implicitly-sized arrays, needed for triggering a copyUp().
+    virtual bool containsImplicitlySizedArray() const
     {
-        // For when we are sharing existing array descriptors.
-        // This allows all references to the same array
-        // to be updated at once, by having all of them share the
-        // array description.
+        if (isImplicitlySizedArray())
+            return true;
+        if (! structure)
+            return false;
+        for (unsigned int i = 0; i < structure->size(); ++i) {
+            if ((*structure)[i].type->containsImplicitlySizedArray())
+                return true;
+        }
+        return false;
+    }
+
+    // Array editing methods.  Array descriptors can be shared across
+    // type instances.  This allows all uses of the same array
+    // to be updated at once.  E.g., all nodes can be explicitly sized
+    // by tracking and correcting one implicit size.  Or, all nodes
+    // can get the explicit size on a redeclaration that gives size.
+    //
+    // N.B.:  Don't share with the shared symbol tables (symbols are
+    // marked as isReadOnly().  Such symbols with arrays that will be
+    // edited need to copyUp() on first use, so that 
+    // A) the edits don't effect the shared symbol table, and
+    // B) the edits are shared across all users.
+    void updateArraySizes(const TType& type)
+    {
+        // For when we may already be sharing existing array descriptors,
+        // keeping the pointers the same, just updating the contents.
         *arraySizes = *type.arraySizes;
     }
     void setArraySizes(TArraySizes* s)
     {
-        // For when we don't want distinct types sharing the same descriptor.
+        // For setting a fresh new set of array sizes, not yet worrying about sharing.
         arraySizes = new TArraySizes;
         *arraySizes = *s;
     }
     void setArraySizes(const TType& type) { setArraySizes(type.arraySizes); }
-    
     void changeArraySize(int s) { arraySizes->sizes.front() = s; }
-    bool isImplicitlySizedArray() const { return isArray() && ! getArraySize(); }
-    bool isExplicitlySizedArray() const { return ! isImplicitlySizedArray(); }
     void setImplicitArraySize (int s) { arraySizes->implicitArraySize = s; }
-    int getImplicitArraySize () const { return arraySizes->implicitArraySize; }
+
+    // Recursively make the implicit array size the explicit array size, through the type tree.
+    void adoptImplicitArraySizes()
+    {
+        if (isImplicitlySizedArray())
+            changeArraySize(getImplicitArraySize());
+        if (isStruct()) {
+            for (int i = 0; i < (int)structure->size(); ++i)
+                (*structure)[i].type->adoptImplicitArraySizes();
+        }
+    }
 
     const char* getBasicString() const 
     {
@@ -1044,15 +1086,15 @@ public:
 
     const char* getStorageQualifierString() const { return GetStorageQualifierString(qualifier.storage); }
     const char* getPrecisionQualifierString() const { return GetPrecisionQualifierString(qualifier.precision); }
-    TTypeList* getStruct() { return structure; }
-    TTypeList* getStruct() const { return structure; }
+    const TTypeList* getStruct() const { return structure; }
+    TTypeList* getWritableStruct() const { return structure; }  // This should only be used when known to not be sharing with other threads
 
     int computeNumComponents() const
     {
         int components = 0;
 
         if (getBasicType() == EbtStruct || getBasicType() == EbtBlock) {
-            for (TTypeList::iterator tl = getStruct()->begin(); tl != getStruct()->end(); tl++)
+            for (TTypeList::const_iterator tl = getStruct()->begin(); tl != getStruct()->end(); tl++)
                 components += ((*tl).type)->computeNumComponents();
         } else if (matrixCols)
             components = matrixCols * matrixRows;
@@ -1158,9 +1200,8 @@ protected:
     TSampler sampler;
     TQualifier qualifier;
 
-    TArraySizes* arraySizes;
-
-    TTypeList* structure;       // 0 unless this is a struct
+    TArraySizes* arraySizes;    // 0 unless this is an array; can be shared across types
+    TTypeList* structure;       // 0 unless this is a struct; can be shared across types
     TString *fieldName;         // for structure field names
     TString *typeName;          // for structure type name
 };

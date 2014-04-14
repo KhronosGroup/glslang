@@ -283,7 +283,7 @@ public:
         bool block = base->getBasicType() == EbtBlock;
         if (block) {
             offset = 0;
-            anonymous = base->getName().compare(0, 6, "__anon") == 0;
+            anonymous = IsAnonymous(base->getName());
             if (base->getType().isArray()) {
                 assert(! anonymous);
                 for (int e = 0; e < base->getType().getArraySize(); ++e)
