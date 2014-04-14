@@ -1,0 +1,303 @@
+130.vert
+ERROR: 0:59: 'gl_InstanceID' : undeclared identifier 
+ERROR: 0:59: '=' :  cannot convert from 'float' to 'int'
+ERROR: 0:61: 'texelFetch' : no matching overloaded function found 
+ERROR: 0:61: 'assign' :  cannot convert from 'const float' to 'int'
+ERROR: 0:75: '##' : token pasting not implemented (internal error) 
+ERROR: 0:75: '' :  syntax error
+ERROR: 6 compilation errors.  No code generated.
+
+
+Shader version: 130
+ERROR: node is still EOpNull!
+0:15  Function Definition: main( (void)
+0:15    Function Parameters: 
+0:17    Sequence
+0:17      Sequence
+0:17        move second child to first child (float)
+0:17          'f' (float)
+0:17          Constant:
+0:17            3.000000
+0:18      switch
+0:18      condition
+0:18        'c' (uniform int)
+0:18      body
+0:18        Sequence
+0:19          case:  with expression
+0:19            Constant:
+0:19              1 (const int)
+0:?           Sequence
+0:20            move second child to first child (float)
+0:20              'f' (float)
+0:20              sine (float)
+0:20                'f' (float)
+0:21            Branch: Break
+0:22          case:  with expression
+0:22            Constant:
+0:22              2 (const int)
+0:?           Sequence
+0:23            move second child to first child (float)
+0:23              'f' (float)
+0:23              component-wise multiply (float)
+0:23                'f' (float)
+0:23                'f' (float)
+0:24          default: 
+0:?           Sequence
+0:25            move second child to first child (float)
+0:25              'f' (float)
+0:25              Constant:
+0:25                3.000000
+0:29      move second child to first child (uint)
+0:29        'i' (uint)
+0:29        direct index (uint)
+0:29          Function Call: texture(us21;vf2; (4-component vector of uint)
+0:29            'us2D' (uniform usampler2D)
+0:29            Convert int to float (2-component vector of float)
+0:29              'x' (in 2-component vector of int)
+0:29          Constant:
+0:29            3 (const int)
+0:30      inclusive-or (uint)
+0:30        left-shift (uint)
+0:30          'i' (uint)
+0:30          Constant:
+0:30            3 (const uint)
+0:30        Constant:
+0:30          69 (const uint)
+0:33      Sequence
+0:33        move second child to first child (3-component vector of float)
+0:33          'v11' (3-component vector of float)
+0:33          modf (3-component vector of float)
+0:33            'modfIn' (3-component vector of float)
+0:33            'modfOut' (3-component vector of float)
+0:34      Sequence
+0:34        move second child to first child (float)
+0:34          't' (float)
+0:34          trunc (float)
+0:34            'f' (float)
+0:35      Sequence
+0:35        move second child to first child (2-component vector of float)
+0:35          'v12' (2-component vector of float)
+0:35          round (2-component vector of float)
+0:35            'v2a' (in 2-component vector of float)
+0:36      Sequence
+0:36        move second child to first child (2-component vector of float)
+0:36          'v13' (2-component vector of float)
+0:36          roundEven (2-component vector of float)
+0:36            'v2a' (in 2-component vector of float)
+0:37      Sequence
+0:37        move second child to first child (2-component vector of bool)
+0:37          'b10' (2-component vector of bool)
+0:37          isnan (2-component vector of bool)
+0:37            'v2a' (in 2-component vector of float)
+0:38      Sequence
+0:38        move second child to first child (4-component vector of bool)
+0:38          'b11' (4-component vector of bool)
+0:38          isinf (4-component vector of bool)
+0:38            'v4' (uniform 4-component vector of float)
+0:40      add (2-component vector of float)
+0:40        hyp. sine (float)
+0:40          'c1D' (in float)
+0:41        vector-scale (2-component vector of float)
+0:41          hyp. cosine (float)
+0:41            'c1D' (in float)
+0:41          hyp. tangent (2-component vector of float)
+0:41            'c2D' (in 2-component vector of float)
+0:42      add (4-component vector of float)
+0:42        arc hyp. sine (4-component vector of float)
+0:42          'c4D' (smooth 4-component vector of float)
+0:42        arc hyp. cosine (4-component vector of float)
+0:42          'c4D' (smooth 4-component vector of float)
+0:43      arc hyp. tangent (3-component vector of float)
+0:43        'c3D' (in 3-component vector of float)
+0:45      Sequence
+0:45        move second child to first child (int)
+0:45          'id' (int)
+0:45          'gl_VertexID' (gl_VertexId int)
+0:46      move second child to first child (float)
+0:46        direct index (smooth float)
+0:46          'gl_ClipDistance' (smooth out implicitly-sized array of float)
+0:46          Constant:
+0:46            1 (const int)
+0:46        Constant:
+0:46          0.300000
+0:57  Function Definition: foo88( (void)
+0:57    Function Parameters: 
+0:?     Sequence
+0:61      'id' (int)
+0:63      'gl_ClipVertex' (gl_ClipVertex 4-component vector of float)
+0:64      'gl_Color' (in 4-component vector of float)
+0:65      direct index (structure{4-component vector of float ambient, 4-component vector of float diffuse, 4-component vector of float specular, 4-component vector of float position, 4-component vector of float halfVector, 3-component vector of float spotDirection, float spotExponent, float spotCutoff, float spotCosCutoff, float constantAttenuation, float linearAttenuation, float quadraticAttenuation})
+0:65        'gl_LightSource' (uniform 32-element array of structure{4-component vector of float ambient, 4-component vector of float diffuse, 4-component vector of float specular, 4-component vector of float position, 4-component vector of float halfVector, 3-component vector of float spotDirection, float spotExponent, float spotCutoff, float spotCosCutoff, float constantAttenuation, float linearAttenuation, float quadraticAttenuation})
+0:65        Constant:
+0:65          0 (const int)
+0:66      far: direct index for structure (float)
+0:66        'gl_DepthRange' (uniform structure{float near, float far, float diff})
+0:66        Constant:
+0:66          1 (const int)
+0:67      'gl_TexCoord' (smooth out implicitly-sized array of 4-component vector of float)
+0:68      'gl_FogFragCoord' (smooth out float)
+0:69      'gl_FrontColor' (smooth out 4-component vector of float)
+0:?   Linker Objects
+0:?     'c' (uniform int)
+0:?     'us2D' (uniform usampler2D)
+0:?     'x' (in 2-component vector of int)
+0:?     'v2a' (in 2-component vector of float)
+0:?     'c1D' (in float)
+0:?     'c2D' (in 2-component vector of float)
+0:?     'c3D' (in 3-component vector of float)
+0:?     'c4D' (smooth 4-component vector of float)
+0:?     'v4' (uniform 4-component vector of float)
+0:?     'gl_ClipDistance' (smooth out implicitly-sized array of float)
+0:?     'gl_TexCoord' (smooth out implicitly-sized array of 4-component vector of float)
+0:?     'abc' (int)
+0:?     'gl_VertexID' (gl_VertexId int)
+
+
+Linked vertex stage:
+
+ERROR: Linking vertex stage: Can only use one of gl_ClipDistance or gl_ClipVertex (gl_ClipDistance is preferred)
+
+Shader version: 130
+ERROR: node is still EOpNull!
+0:15  Function Definition: main( (void)
+0:15    Function Parameters: 
+0:17    Sequence
+0:17      Sequence
+0:17        move second child to first child (float)
+0:17          'f' (float)
+0:17          Constant:
+0:17            3.000000
+0:18      switch
+0:18      condition
+0:18        'c' (uniform int)
+0:18      body
+0:18        Sequence
+0:19          case:  with expression
+0:19            Constant:
+0:19              1 (const int)
+0:?           Sequence
+0:20            move second child to first child (float)
+0:20              'f' (float)
+0:20              sine (float)
+0:20                'f' (float)
+0:21            Branch: Break
+0:22          case:  with expression
+0:22            Constant:
+0:22              2 (const int)
+0:?           Sequence
+0:23            move second child to first child (float)
+0:23              'f' (float)
+0:23              component-wise multiply (float)
+0:23                'f' (float)
+0:23                'f' (float)
+0:24          default: 
+0:?           Sequence
+0:25            move second child to first child (float)
+0:25              'f' (float)
+0:25              Constant:
+0:25                3.000000
+0:29      move second child to first child (uint)
+0:29        'i' (uint)
+0:29        direct index (uint)
+0:29          Function Call: texture(us21;vf2; (4-component vector of uint)
+0:29            'us2D' (uniform usampler2D)
+0:29            Convert int to float (2-component vector of float)
+0:29              'x' (in 2-component vector of int)
+0:29          Constant:
+0:29            3 (const int)
+0:30      inclusive-or (uint)
+0:30        left-shift (uint)
+0:30          'i' (uint)
+0:30          Constant:
+0:30            3 (const uint)
+0:30        Constant:
+0:30          69 (const uint)
+0:33      Sequence
+0:33        move second child to first child (3-component vector of float)
+0:33          'v11' (3-component vector of float)
+0:33          modf (3-component vector of float)
+0:33            'modfIn' (3-component vector of float)
+0:33            'modfOut' (3-component vector of float)
+0:34      Sequence
+0:34        move second child to first child (float)
+0:34          't' (float)
+0:34          trunc (float)
+0:34            'f' (float)
+0:35      Sequence
+0:35        move second child to first child (2-component vector of float)
+0:35          'v12' (2-component vector of float)
+0:35          round (2-component vector of float)
+0:35            'v2a' (in 2-component vector of float)
+0:36      Sequence
+0:36        move second child to first child (2-component vector of float)
+0:36          'v13' (2-component vector of float)
+0:36          roundEven (2-component vector of float)
+0:36            'v2a' (in 2-component vector of float)
+0:37      Sequence
+0:37        move second child to first child (2-component vector of bool)
+0:37          'b10' (2-component vector of bool)
+0:37          isnan (2-component vector of bool)
+0:37            'v2a' (in 2-component vector of float)
+0:38      Sequence
+0:38        move second child to first child (4-component vector of bool)
+0:38          'b11' (4-component vector of bool)
+0:38          isinf (4-component vector of bool)
+0:38            'v4' (uniform 4-component vector of float)
+0:40      add (2-component vector of float)
+0:40        hyp. sine (float)
+0:40          'c1D' (in float)
+0:41        vector-scale (2-component vector of float)
+0:41          hyp. cosine (float)
+0:41            'c1D' (in float)
+0:41          hyp. tangent (2-component vector of float)
+0:41            'c2D' (in 2-component vector of float)
+0:42      add (4-component vector of float)
+0:42        arc hyp. sine (4-component vector of float)
+0:42          'c4D' (smooth 4-component vector of float)
+0:42        arc hyp. cosine (4-component vector of float)
+0:42          'c4D' (smooth 4-component vector of float)
+0:43      arc hyp. tangent (3-component vector of float)
+0:43        'c3D' (in 3-component vector of float)
+0:45      Sequence
+0:45        move second child to first child (int)
+0:45          'id' (int)
+0:45          'gl_VertexID' (gl_VertexId int)
+0:46      move second child to first child (float)
+0:46        direct index (smooth float)
+0:46          'gl_ClipDistance' (smooth out 2-element array of float)
+0:46          Constant:
+0:46            1 (const int)
+0:46        Constant:
+0:46          0.300000
+0:57  Function Definition: foo88( (void)
+0:57    Function Parameters: 
+0:?     Sequence
+0:61      'id' (int)
+0:63      'gl_ClipVertex' (gl_ClipVertex 4-component vector of float)
+0:64      'gl_Color' (in 4-component vector of float)
+0:65      direct index (structure{4-component vector of float ambient, 4-component vector of float diffuse, 4-component vector of float specular, 4-component vector of float position, 4-component vector of float halfVector, 3-component vector of float spotDirection, float spotExponent, float spotCutoff, float spotCosCutoff, float constantAttenuation, float linearAttenuation, float quadraticAttenuation})
+0:65        'gl_LightSource' (uniform 32-element array of structure{4-component vector of float ambient, 4-component vector of float diffuse, 4-component vector of float specular, 4-component vector of float position, 4-component vector of float halfVector, 3-component vector of float spotDirection, float spotExponent, float spotCutoff, float spotCosCutoff, float constantAttenuation, float linearAttenuation, float quadraticAttenuation})
+0:65        Constant:
+0:65          0 (const int)
+0:66      far: direct index for structure (float)
+0:66        'gl_DepthRange' (uniform structure{float near, float far, float diff})
+0:66        Constant:
+0:66          1 (const int)
+0:67      'gl_TexCoord' (smooth out 1-element array of 4-component vector of float)
+0:68      'gl_FogFragCoord' (smooth out float)
+0:69      'gl_FrontColor' (smooth out 4-component vector of float)
+0:?   Linker Objects
+0:?     'c' (uniform int)
+0:?     'us2D' (uniform usampler2D)
+0:?     'x' (in 2-component vector of int)
+0:?     'v2a' (in 2-component vector of float)
+0:?     'c1D' (in float)
+0:?     'c2D' (in 2-component vector of float)
+0:?     'c3D' (in 3-component vector of float)
+0:?     'c4D' (smooth 4-component vector of float)
+0:?     'v4' (uniform 4-component vector of float)
+0:?     'gl_ClipDistance' (smooth out 2-element array of float)
+0:?     'gl_TexCoord' (smooth out 1-element array of 4-component vector of float)
+0:?     'abc' (int)
+0:?     'gl_VertexID' (gl_VertexId int)
+

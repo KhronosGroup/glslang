@@ -1,0 +1,94 @@
+140.vert
+
+Shader version: 140
+0:? Sequence
+0:9  Function Definition: main( (void)
+0:9    Function Parameters: 
+0:11    Sequence
+0:11      Sequence
+0:11        move second child to first child (int)
+0:11          'id' (int)
+0:11          'gl_InstanceID' (gl_InstanceId int)
+0:12      add second child into first child (int)
+0:12        'id' (int)
+0:12        anonMem: direct index for structure (layout(column_major std140 offset=0 ) uniform int)
+0:12          'anon@0' (layout(column_major std140 ) uniform block{layout(column_major std140 offset=0 ) uniform int anonMem})
+0:12          Constant:
+0:12            0 (const uint)
+0:13      add second child into first child (int)
+0:13        'id' (int)
+0:13        direct index (int)
+0:13          Function Call: texelFetch(isB1;i1; (4-component vector of int)
+0:13            'sbuf' (uniform isamplerBuffer)
+0:13            Constant:
+0:13              8 (const int)
+0:13          Constant:
+0:13            3 (const int)
+0:14      'gl_ClipVertex' (gl_ClipVertex 4-component vector of float)
+0:15      'gl_Color' (in 4-component vector of float)
+0:16      direct index (structure{4-component vector of float ambient, 4-component vector of float diffuse, 4-component vector of float specular, 4-component vector of float position, 4-component vector of float halfVector, 3-component vector of float spotDirection, float spotExponent, float spotCutoff, float spotCosCutoff, float constantAttenuation, float linearAttenuation, float quadraticAttenuation})
+0:16        'gl_LightSource' (uniform 32-element array of structure{4-component vector of float ambient, 4-component vector of float diffuse, 4-component vector of float specular, 4-component vector of float position, 4-component vector of float halfVector, 3-component vector of float spotDirection, float spotExponent, float spotCutoff, float spotCosCutoff, float constantAttenuation, float linearAttenuation, float quadraticAttenuation})
+0:16        Constant:
+0:16          0 (const int)
+0:17      far: direct index for structure (float)
+0:17        'gl_DepthRange' (uniform structure{float near, float far, float diff})
+0:17        Constant:
+0:17          1 (const int)
+0:18      'gl_TexCoord' (smooth out implicitly-sized array of 4-component vector of float)
+0:19      'gl_FogFragCoord' (smooth out float)
+0:20      'gl_FrontColor' (smooth out 4-component vector of float)
+0:?   Linker Objects
+0:?     'sbuf' (uniform isamplerBuffer)
+0:?     'anon@0' (layout(column_major std140 ) uniform block{layout(column_major std140 offset=0 ) uniform int anonMem})
+0:?     'gl_TexCoord' (smooth out implicitly-sized array of 4-component vector of float)
+0:?     'gl_VertexID' (gl_VertexId int)
+0:?     'gl_InstanceID' (gl_InstanceId int)
+
+
+Linked vertex stage:
+
+
+Shader version: 140
+0:? Sequence
+0:9  Function Definition: main( (void)
+0:9    Function Parameters: 
+0:11    Sequence
+0:11      Sequence
+0:11        move second child to first child (int)
+0:11          'id' (int)
+0:11          'gl_InstanceID' (gl_InstanceId int)
+0:12      add second child into first child (int)
+0:12        'id' (int)
+0:12        anonMem: direct index for structure (layout(column_major std140 offset=0 ) uniform int)
+0:12          'anon@0' (layout(column_major std140 ) uniform block{layout(column_major std140 offset=0 ) uniform int anonMem})
+0:12          Constant:
+0:12            0 (const uint)
+0:13      add second child into first child (int)
+0:13        'id' (int)
+0:13        direct index (int)
+0:13          Function Call: texelFetch(isB1;i1; (4-component vector of int)
+0:13            'sbuf' (uniform isamplerBuffer)
+0:13            Constant:
+0:13              8 (const int)
+0:13          Constant:
+0:13            3 (const int)
+0:14      'gl_ClipVertex' (gl_ClipVertex 4-component vector of float)
+0:15      'gl_Color' (in 4-component vector of float)
+0:16      direct index (structure{4-component vector of float ambient, 4-component vector of float diffuse, 4-component vector of float specular, 4-component vector of float position, 4-component vector of float halfVector, 3-component vector of float spotDirection, float spotExponent, float spotCutoff, float spotCosCutoff, float constantAttenuation, float linearAttenuation, float quadraticAttenuation})
+0:16        'gl_LightSource' (uniform 32-element array of structure{4-component vector of float ambient, 4-component vector of float diffuse, 4-component vector of float specular, 4-component vector of float position, 4-component vector of float halfVector, 3-component vector of float spotDirection, float spotExponent, float spotCutoff, float spotCosCutoff, float constantAttenuation, float linearAttenuation, float quadraticAttenuation})
+0:16        Constant:
+0:16          0 (const int)
+0:17      far: direct index for structure (float)
+0:17        'gl_DepthRange' (uniform structure{float near, float far, float diff})
+0:17        Constant:
+0:17          1 (const int)
+0:18      'gl_TexCoord' (smooth out 1-element array of 4-component vector of float)
+0:19      'gl_FogFragCoord' (smooth out float)
+0:20      'gl_FrontColor' (smooth out 4-component vector of float)
+0:?   Linker Objects
+0:?     'sbuf' (uniform isamplerBuffer)
+0:?     'anon@0' (layout(column_major std140 ) uniform block{layout(column_major std140 offset=0 ) uniform int anonMem})
+0:?     'gl_TexCoord' (smooth out 1-element array of 4-component vector of float)
+0:?     'gl_VertexID' (gl_VertexId int)
+0:?     'gl_InstanceID' (gl_InstanceId int)
+
