@@ -85,6 +85,7 @@ public:
     void checkIndex(TSourceLoc, const TType&, int& index);
     void handleIndexLimits(TSourceLoc, TIntermTyped* base, TIntermTyped* index);
 
+    void makeEditable(TSymbol*&);
     bool isIoResizeArray(const TType&) const;
     void fixIoArraySize(TSourceLoc, TType&);
     void ioArrayCheck(TSourceLoc, const TType&, const TString& identifier);
@@ -279,21 +280,17 @@ protected:
     //  - built-in block redeclarations interact with this
     //
     // Design:
-    //  - use a per-context "resize-list", a list of entities whose array sizes
-    //    can be fixed; this is logically one list, but physically two:
-    //     * a list for nodes in the AST
-    //     * a list for symbols in the symbol table
-    //    this could be done a bit more simply, but this allows better error messages.
+    //  - use a per-context "resize-list", a list of symbols whose array sizes
+    //    can be fixed
     //
     //  - the resize-list starts empty at beginning of user-shader compilation, it does
     //    not have built-ins in it
     //
-    //  - on built-in array use: copy-up symbol and add both the symbol and
-    //    its use to resize-list
+    //  - on built-in array use: copyUp() symbol and add it to the resize-list
     //
     //  - on user array declaration: add it to the resize-list
     //
-    //  - on block redeclaration: copy-up symbol and add it to the resize-list
+    //  - on block redeclaration: copyUp() symbol and add it to the resize-list
     //     * note, that appropriately gives an error if redeclaring a block that
     //       was already used and hence already copied-up
     //
@@ -303,7 +300,6 @@ protected:
     //  - on seeing an array size declaration, give errors on mismatch between it and previous
     //    array-sizing declarations
     //
-    TVector<TIntermSymbol*> ioArrayNodeResizeList;
     TVector<TSymbol*> ioArraySymbolResizeList;
 };
 

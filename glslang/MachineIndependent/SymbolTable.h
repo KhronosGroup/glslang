@@ -126,7 +126,7 @@ protected:
     const char** extensions; // an array of pointers to existing constant char strings
 
     //
-    // N.B.: Non-const functions that will be generally used should assert an this,
+    // N.B.: Non-const functions that will be generally used should assert on this,
     // to avoid overwriting shared symbol-table information.
     //
     bool writable;
@@ -254,14 +254,14 @@ public:
     
     virtual const TType& getType() const
     {
-        TTypeList& types = *anonContainer.getType().getStruct();
+        const TTypeList& types = *anonContainer.getType().getStruct();
         return *types[memberNumber].type;
     }
 
     virtual TType& getWritableType()
     {
         assert(writable);
-        TTypeList& types = *anonContainer.getType().getStruct();
+        const TTypeList& types = *anonContainer.getType().getStruct();
         return *types[memberNumber].type;
     }
     
@@ -294,7 +294,7 @@ public:
             // An empty name means an anonymous container, exposing its members to the external scope.
             // Give it a name and insert its members in the symbol table, pointing to the container.
             char buf[20];
-            snprintf(buf, 20, "__anon__%d", anonId);
+            snprintf(buf, 20, "%s%d", AnonymousPrefix, anonId);
             symbol.changeName(NewPoolTString(buf));
 
             bool isOkay = true;
@@ -541,9 +541,9 @@ public:
     }
 
     //
-    // Copy a variable or anonymous member's structure from a shared level up 
-    // to the current level, so it can be modified without impacting other users 
-    // of the shared table.
+    // Copy a variable or anonymous member's structure from a shared level so that
+    // it can be added (soon after return) to the symbol table where it can be
+    // modified without impacting other users of the shared table.
     //
     TSymbol* copyUpDeferredInsert(TSymbol* shared)
     {
@@ -568,10 +568,8 @@ public:
         if (shared->getAsVariable())
             return copy;
         else {
-            // get copy of an anonymous member's container
-            table[currentLevel()]->insert(*copy, separateNameSpaces);
             // return the copy of the anonymous member
-            return table[currentLevel()]->find(shared->getName());
+            return table[globalLevel]->find(shared->getName());
         }
     }
 
