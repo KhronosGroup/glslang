@@ -1,14 +1,16 @@
 420.tesc
-Warning, version 400 is not yet complete; some version-specific features are present, but many are missing.
+Warning, version 400 is not yet complete; most version-specific features are present, but some are missing.
 ERROR: 0:7: 'vertices' : inconsistent output number of vertices for array size of gl_out
 ERROR: 0:11: 'vertices' : inconsistent output number of vertices for array size of a
 ERROR: 0:12: 'vertices' : inconsistent output number of vertices for array size of outb
 ERROR: 0:26: 'gl_PointSize' :  no such field in structure 
-ERROR: 0:26: 'assign' :  cannot convert from 'float' to 'block{gl_Position}'
+ERROR: 0:26: 'assign' :  cannot convert from 'float' to 'block{out 4-component vector of float gl_Position}'
 ERROR: 0:29: 'out' : type must be an array: outf
 ERROR: 6 compilation errors.  No code generated.
 
 
+Shader version: 400
+Requested GL_ARB_separate_shader_objects
 vertices = 4
 ERROR: node is still EOpNull!
 0:15  Function Definition: main( (void)
@@ -17,9 +19,9 @@ ERROR: node is still EOpNull!
 0:17      Sequence
 0:17        move second child to first child (4-component vector of float)
 0:17          'p' (4-component vector of float)
-0:17          gl_Position: direct index for structure (4-component vector of float)
-0:17            direct index (block{gl_Position,gl_PointSize,gl_ClipDistance})
-0:17              'gl_in' (in 32-element array of block{gl_Position,gl_PointSize,gl_ClipDistance})
+0:17          gl_Position: direct index for structure (in 4-component vector of float)
+0:17            direct index (block{in 4-component vector of float gl_Position, in float gl_PointSize, in implicitly-sized array of float gl_ClipDistance})
+0:17              'gl_in' (in 32-element array of block{in 4-component vector of float gl_Position, in float gl_PointSize, in implicitly-sized array of float gl_ClipDistance})
 0:17              Constant:
 0:17                1 (const int)
 0:17            Constant:
@@ -27,9 +29,9 @@ ERROR: node is still EOpNull!
 0:18      Sequence
 0:18        move second child to first child (float)
 0:18          'ps' (float)
-0:18          gl_PointSize: direct index for structure (float)
-0:18            direct index (block{gl_Position,gl_PointSize,gl_ClipDistance})
-0:18              'gl_in' (in 32-element array of block{gl_Position,gl_PointSize,gl_ClipDistance})
+0:18          gl_PointSize: direct index for structure (in float)
+0:18            direct index (block{in 4-component vector of float gl_Position, in float gl_PointSize, in implicitly-sized array of float gl_ClipDistance})
+0:18              'gl_in' (in 32-element array of block{in 4-component vector of float gl_Position, in float gl_PointSize, in implicitly-sized array of float gl_ClipDistance})
 0:18              Constant:
 0:18                1 (const int)
 0:18            Constant:
@@ -38,9 +40,9 @@ ERROR: node is still EOpNull!
 0:19        move second child to first child (float)
 0:19          'cd' (float)
 0:19          direct index (float)
-0:19            gl_ClipDistance: direct index for structure (unsized array of float)
-0:19              direct index (block{gl_Position,gl_PointSize,gl_ClipDistance})
-0:19                'gl_in' (in 32-element array of block{gl_Position,gl_PointSize,gl_ClipDistance})
+0:19            gl_ClipDistance: direct index for structure (in implicitly-sized array of float)
+0:19              direct index (block{in 4-component vector of float gl_Position, in float gl_PointSize, in implicitly-sized array of float gl_ClipDistance})
+0:19                'gl_in' (in 32-element array of block{in 4-component vector of float gl_Position, in float gl_PointSize, in implicitly-sized array of float gl_ClipDistance})
 0:19                Constant:
 0:19                  1 (const int)
 0:19              Constant:
@@ -60,20 +62,20 @@ ERROR: node is still EOpNull!
 0:23          'iid' (int)
 0:23          'gl_InvocationID' (in int)
 0:25      move second child to first child (4-component vector of float)
-0:25        gl_Position: direct index for structure (4-component vector of float)
-0:25          direct index (block{gl_Position})
-0:25            'gl_out' (out 3-element array of block{gl_Position})
+0:25        gl_Position: direct index for structure (out 4-component vector of float)
+0:25          direct index (block{out 4-component vector of float gl_Position})
+0:25            'gl_out' (out 3-element array of block{out 4-component vector of float gl_Position})
 0:25            Constant:
 0:25              1 (const int)
 0:25          Constant:
 0:25            0 (const int)
 0:25        'p' (4-component vector of float)
-0:26      direct index (block{gl_Position})
-0:26        'gl_out' (out 3-element array of block{gl_Position})
+0:26      direct index (block{out 4-component vector of float gl_Position})
+0:26        'gl_out' (out 3-element array of block{out 4-component vector of float gl_Position})
 0:26        Constant:
 0:26          1 (const int)
 0:?   Linker Objects
-0:?     'gl_out' (out 3-element array of block{gl_Position})
+0:?     'gl_out' (out 3-element array of block{out 4-component vector of float gl_Position})
 0:?     'a' (out 3-element array of int)
 0:?     'outb' (out 5-element array of int)
 0:?     'outc' (out 4-element array of int)
@@ -83,5 +85,75 @@ ERROR: node is still EOpNull!
 Linked tessellation control stage:
 
 
+Shader version: 400
+Requested GL_ARB_separate_shader_objects
 vertices = 4
+ERROR: node is still EOpNull!
+0:15  Function Definition: main( (void)
+0:15    Function Parameters: 
+0:17    Sequence
+0:17      Sequence
+0:17        move second child to first child (4-component vector of float)
+0:17          'p' (4-component vector of float)
+0:17          gl_Position: direct index for structure (in 4-component vector of float)
+0:17            direct index (block{in 4-component vector of float gl_Position, in float gl_PointSize, in 1-element array of float gl_ClipDistance})
+0:17              'gl_in' (in 32-element array of block{in 4-component vector of float gl_Position, in float gl_PointSize, in 1-element array of float gl_ClipDistance})
+0:17              Constant:
+0:17                1 (const int)
+0:17            Constant:
+0:17              0 (const int)
+0:18      Sequence
+0:18        move second child to first child (float)
+0:18          'ps' (float)
+0:18          gl_PointSize: direct index for structure (in float)
+0:18            direct index (block{in 4-component vector of float gl_Position, in float gl_PointSize, in 1-element array of float gl_ClipDistance})
+0:18              'gl_in' (in 32-element array of block{in 4-component vector of float gl_Position, in float gl_PointSize, in 1-element array of float gl_ClipDistance})
+0:18              Constant:
+0:18                1 (const int)
+0:18            Constant:
+0:18              1 (const int)
+0:19      Sequence
+0:19        move second child to first child (float)
+0:19          'cd' (float)
+0:19          direct index (float)
+0:19            gl_ClipDistance: direct index for structure (in 1-element array of float)
+0:19              direct index (block{in 4-component vector of float gl_Position, in float gl_PointSize, in 1-element array of float gl_ClipDistance})
+0:19                'gl_in' (in 32-element array of block{in 4-component vector of float gl_Position, in float gl_PointSize, in 1-element array of float gl_ClipDistance})
+0:19                Constant:
+0:19                  1 (const int)
+0:19              Constant:
+0:19                2 (const int)
+0:19            Constant:
+0:19              2 (const int)
+0:21      Sequence
+0:21        move second child to first child (int)
+0:21          'pvi' (int)
+0:21          'gl_PatchVerticesIn' (in int)
+0:22      Sequence
+0:22        move second child to first child (int)
+0:22          'pid' (int)
+0:22          'gl_PrimitiveID' (in int)
+0:23      Sequence
+0:23        move second child to first child (int)
+0:23          'iid' (int)
+0:23          'gl_InvocationID' (in int)
+0:25      move second child to first child (4-component vector of float)
+0:25        gl_Position: direct index for structure (out 4-component vector of float)
+0:25          direct index (block{out 4-component vector of float gl_Position})
+0:25            'gl_out' (out 3-element array of block{out 4-component vector of float gl_Position})
+0:25            Constant:
+0:25              1 (const int)
+0:25          Constant:
+0:25            0 (const int)
+0:25        'p' (4-component vector of float)
+0:26      direct index (block{out 4-component vector of float gl_Position})
+0:26        'gl_out' (out 3-element array of block{out 4-component vector of float gl_Position})
+0:26        Constant:
+0:26          1 (const int)
+0:?   Linker Objects
+0:?     'gl_out' (out 3-element array of block{out 4-component vector of float gl_Position})
+0:?     'a' (out 3-element array of int)
+0:?     'outb' (out 5-element array of int)
+0:?     'outc' (out 4-element array of int)
+0:?     'outf' (out float)
 
