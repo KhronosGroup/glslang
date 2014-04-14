@@ -1,5 +1,5 @@
 330.frag
-Warning, version 330 is not yet complete; some version-specific features are present, but many are missing.
+Warning, version 330 is not yet complete; most version-specific features are present, but some are missing.
 ERROR: 0:27: 'block declaration' : cannot redeclare block:  gl_block
 ERROR: 0:31: 'gl_name' : identifiers starting with "gl_" are reserved 
 ERROR: 0:32: 'gl_i' : identifiers starting with "gl_" are reserved 
@@ -58,7 +58,7 @@ ERROR: node is still EOpNull!
 0:23        move second child to first child (4-component vector of float)
 0:23          'c' (4-component vector of float)
 0:23          gl_Color: direct index for structure (in 4-component vector of float)
-0:23            '__anon__0' (in block{in 4-component vector of float gl_Color, })
+0:23            'anon@0' (in block{in 4-component vector of float gl_Color, })
 0:23            Constant:
 0:23              2 (const uint)
 0:24      move second child to first child (4-component vector of float)
@@ -68,7 +68,7 @@ ERROR: node is still EOpNull!
 0:?     'inVar' (smooth in 4-component vector of float)
 0:?     'outVar' (out 4-component vector of float)
 0:?     'varyingVar' (smooth in 4-component vector of float)
-0:?     '__anon__0' (in block{in 4-component vector of float gl_Color, })
+0:?     'anon@0' (in block{in 4-component vector of float gl_Color, })
 0:?     'gl_name' (in block{in int gl_i})
 0:?     'start' (const int)
 0:?       6 (const int)
@@ -77,7 +77,7 @@ ERROR: node is still EOpNull!
 0:?     'v20' (smooth in 4-component vector of float)
 0:?     'v21' (layout(location=60 ) smooth in float)
 0:?     'v22' (layout(location=2 ) smooth in float)
-0:?     '__anon__1' (in block{layout(location=1 component=0 ) in float f1, layout(location=3 ) in float f2})
+0:?     'anon@1' (in block{layout(location=1 component=0 ) in float f1, layout(location=3 ) in float f2})
 0:?     'uinst' (layout(location=1 column_major shared ) uniform block{layout(column_major shared ) uniform float f1, layout(location=3 column_major shared ) uniform float f2})
 0:?     'v3' (layout(location=6 ) smooth in 4-component vector of float)
 0:?     'v4' (smooth in 4-component vector of float)
@@ -90,7 +90,7 @@ ERROR: node is still EOpNull!
 0:?     'in3' (in block{in float f1, layout(location=40 ) in float f2})
 0:?     'in4' (in block{layout(location=50 ) in float f1, layout(location=51 ) in float f2})
 0:?     's' (layout(location=33 ) smooth in structure{3-component vector of float a, 2X2 matrix of float b, 2-element array of 4-component vector of float c, 2-component vector of float A})
-0:?     '__anon__2' (in block{layout(location=44 component=0 ) in 4-component vector of float d, layout(location=45 component=0 ) in 4-component vector of float e, layout(location=47 ) in 4-component vector of float f, layout(location=48 component=0 ) in 4-component vector of float g, layout(location=41 ) in 4-component vector of float h, layout(location=42 component=0 ) in 4-component vector of float i, layout(location=43 component=0 ) in 4-component vector of float j, layout(location=44 component=0 ) in 4-component vector of float k})
+0:?     'anon@2' (in block{layout(location=44 component=0 ) in 4-component vector of float d, layout(location=45 component=0 ) in 4-component vector of float e, layout(location=47 ) in 4-component vector of float f, layout(location=48 component=0 ) in 4-component vector of float g, layout(location=41 ) in 4-component vector of float h, layout(location=42 component=0 ) in 4-component vector of float i, layout(location=43 component=0 ) in 4-component vector of float j, layout(location=44 component=0 ) in 4-component vector of float k})
 
 
 Linked fragment stage:
@@ -101,4 +101,62 @@ ERROR: Linking fragment stage: Cannot use both gl_FragColor and gl_FragData
 Shader version: 330
 Requested GL_ARB_enhanced_layouts
 Requested GL_ARB_separate_shader_objects
+ERROR: node is still EOpNull!
+0:8  Function Definition: main( (void)
+0:8    Function Parameters: 
+0:10    Sequence
+0:10      move second child to first child (4-component vector of float)
+0:10        'gl_FragColor' (fragColor 4-component vector of float)
+0:10        'varyingVar' (smooth in 4-component vector of float)
+0:11      move second child to first child (4-component vector of float)
+0:11        direct index (4-component vector of float)
+0:11          'gl_FragData' (fragColor 32-element array of 4-component vector of float)
+0:11          Constant:
+0:11            1 (const int)
+0:11        'inVar' (smooth in 4-component vector of float)
+0:12      Sequence
+0:12        move second child to first child (int)
+0:12          'buffer' (int)
+0:12          Constant:
+0:12            4 (const int)
+0:21  Function Definition: foo( (void)
+0:21    Function Parameters: 
+0:23    Sequence
+0:23      Sequence
+0:23        move second child to first child (4-component vector of float)
+0:23          'c' (4-component vector of float)
+0:23          gl_Color: direct index for structure (in 4-component vector of float)
+0:23            'anon@0' (in block{in 4-component vector of float gl_Color, })
+0:23            Constant:
+0:23              2 (const uint)
+0:24      move second child to first child (4-component vector of float)
+0:24        'outVar' (out 4-component vector of float)
+0:24        'inVar' (smooth in 4-component vector of float)
+0:?   Linker Objects
+0:?     'inVar' (smooth in 4-component vector of float)
+0:?     'outVar' (out 4-component vector of float)
+0:?     'varyingVar' (smooth in 4-component vector of float)
+0:?     'anon@0' (in block{in 4-component vector of float gl_Color, })
+0:?     'gl_name' (in block{in int gl_i})
+0:?     'start' (const int)
+0:?       6 (const int)
+0:?     'v1' (smooth in 4-component vector of float)
+0:?     'v2' (layout(location=8 ) smooth in 4-component vector of float)
+0:?     'v20' (smooth in 4-component vector of float)
+0:?     'v21' (layout(location=60 ) smooth in float)
+0:?     'v22' (layout(location=2 ) smooth in float)
+0:?     'anon@1' (in block{layout(location=1 component=0 ) in float f1, layout(location=3 ) in float f2})
+0:?     'uinst' (layout(location=1 column_major shared ) uniform block{layout(column_major shared ) uniform float f1, layout(location=3 column_major shared ) uniform float f2})
+0:?     'v3' (layout(location=6 ) smooth in 4-component vector of float)
+0:?     'v4' (smooth in 4-component vector of float)
+0:?     'v5' (smooth in 4-component vector of float)
+0:?     'v6' (layout(location=30 ) smooth in 4-component vector of float)
+0:?     'v23' (layout(location=61 ) smooth in float)
+0:?     'v24' (layout(location=62 ) smooth in float)
+0:?     'ininst2' (in block{layout(location=28 component=0 ) in bool b1, layout(location=29 component=0 ) in float f1, layout(location=25 ) in float f2, layout(location=26 component=0 ) in 4-component vector of float f3, layout(location=21 ) in structure{float f1, float f2} s2, layout(location=23 component=0 ) in 4-component vector of float f4, layout(location=24 component=0 ) in 4-component vector of float f5})
+0:?     'uinst2' (layout(location=13 column_major shared ) uniform block{layout(column_major shared ) uniform float f1, layout(location=3 column_major shared ) uniform float f2})
+0:?     'in3' (in block{in float f1, layout(location=40 ) in float f2})
+0:?     'in4' (in block{layout(location=50 ) in float f1, layout(location=51 ) in float f2})
+0:?     's' (layout(location=33 ) smooth in structure{3-component vector of float a, 2X2 matrix of float b, 2-element array of 4-component vector of float c, 2-component vector of float A})
+0:?     'anon@2' (in block{layout(location=44 component=0 ) in 4-component vector of float d, layout(location=45 component=0 ) in 4-component vector of float e, layout(location=47 ) in 4-component vector of float f, layout(location=48 component=0 ) in 4-component vector of float g, layout(location=41 ) in 4-component vector of float h, layout(location=42 component=0 ) in 4-component vector of float i, layout(location=43 component=0 ) in 4-component vector of float j, layout(location=44 component=0 ) in 4-component vector of float k})
 

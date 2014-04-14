@@ -61,3 +61,42 @@ void main()
 int[] foo213234();        // ERROR
 int foo234234(float[]);   // ERROR
 int foo234235(vec2[] v);  // ERROR
+
+vec3 guns[];
+float f = guns[7];
+
+void foo()
+{
+    int uns[];
+    uns[3] = 40;
+    uns[1] = 30;
+    guns[2] = vec3(2.4);
+
+    float unsf[];
+    bar(unsf);          // ERROR
+}
+
+float[] foo2()          // ERROR
+{
+    float f[];
+    return f;
+    float g[9];
+    return g;           // ERROR
+}
+
+float gUnusedUnsized[];
+
+void foo3()
+{
+    float resize1[];
+    resize1[2] = 4.0;
+    resize1.length();  // ERROR
+    float resize1[3];
+    resize1.length();
+
+    float resize2[];
+    resize2[5] = 4.0;
+    float resize2[5];  // should be ERROR, but is not
+    resize2.length();
+    resize2[5] = 4.0;  // ERROR
+}

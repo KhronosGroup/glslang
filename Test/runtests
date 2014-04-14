@@ -26,13 +26,23 @@ while read t; do
     diff -b $BASEDIR/$b.out $TARGETDIR/$b.out
 done < testlist
 
+if [ -a localtestlist ]
+  then
+    while read t; do
+        echo Running $t...
+        b=`basename $t`
+        $EXE -i -l $t > $TARGETDIR/$b.out
+        diff -b $BASEDIR/$b.out $TARGETDIR/$b.out
+    done < localtestlist
+fi
+
 #
 # grouped shaders for bulk (faster) tests
 #
 function runBulkTest {
     echo Running $*...
     $EXE -i -l -t $* > $TARGETDIR/$1.out
-	diff -b $BASEDIR/$1.out $TARGETDIR/$1.out
+    diff -b $BASEDIR/$1.out $TARGETDIR/$1.out
 }
 
 runBulkTest mains1.frag mains2.frag noMain1.geom noMain2.geom

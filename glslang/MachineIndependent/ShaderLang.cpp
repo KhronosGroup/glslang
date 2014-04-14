@@ -377,21 +377,19 @@ bool DeduceVersionProfile(TInfoSink& infoSink, EShLanguage stage, bool versionNo
         infoSink.info.message(EPrefixError, "#version: statement must appear first in es-profile shader; before comments or newlines");
     }
 
-    // A metecheck on the condition the compiler itself...
+    // A metecheck on the condition of the compiler itself...
     switch (version) {
     case 100:
     case 300:
 
     case 110:
     case 120:
-        // versions are complete
-        break;
     case 130:
     case 140:
-        infoSink.info << "Warning, version " << version << " is not yet complete; most features are present, but a few are missing.\n";
+        // versions are complete
         break;
     default:
-        infoSink.info << "Warning, version " << version << " is not yet complete; some version-specific features are present, but many are missing.\n";
+        infoSink.info << "Warning, version " << version << " is not yet complete; most version-specific features are present, but some are missing.\n";
         break;
     }
 

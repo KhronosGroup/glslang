@@ -1,5 +1,4 @@
 ../../LunarGLASS/test/structAssignment.frag
-Warning, version 130 is not yet complete; most features are present, but a few are missing.
 WARNING: 0:4: varying deprecated in version 130; may be removed in future release
 
 Shader version: 130
@@ -55,4 +54,50 @@ Linked fragment stage:
 
 
 Shader version: 130
+0:? Sequence
+0:29  Function Definition: main( (void)
+0:29    Function Parameters: 
+0:?     Sequence
+0:33      Test condition and select (void)
+0:33        Condition
+0:33        Compare Greater Than (bool)
+0:33          i: direct index for structure (int)
+0:33            s2_1: direct index for structure (structure{int i, float f, structure{int i, float f} s1_1})
+0:33              'foo3' (uniform structure{structure{int i, float f, structure{int i, float f} s1_1} s2_1, int i, float f, structure{int i, float f} s1_1})
+0:33              Constant:
+0:33                0 (const int)
+0:33            Constant:
+0:33              0 (const int)
+0:33          Constant:
+0:33            0 (const int)
+0:33        true case
+0:34        move second child to first child (structure{int i, float f, structure{int i, float f} s1_1})
+0:34          'locals2' (structure{int i, float f, structure{int i, float f} s1_1})
+0:34          s2_1: direct index for structure (structure{int i, float f, structure{int i, float f} s1_1})
+0:34            'foo3' (uniform structure{structure{int i, float f, structure{int i, float f} s1_1} s2_1, int i, float f, structure{int i, float f} s1_1})
+0:34            Constant:
+0:34              0 (const int)
+0:33        false case
+0:36        move second child to first child (structure{int i, float f, structure{int i, float f} s1_1})
+0:36          'locals2' (structure{int i, float f, structure{int i, float f} s1_1})
+0:36          'foo2' (uniform structure{int i, float f, structure{int i, float f} s1_1})
+0:38      move second child to first child (4-component vector of float)
+0:38        'gl_FragColor' (fragColor 4-component vector of float)
+0:38        vector-scale (4-component vector of float)
+0:38          f: direct index for structure (float)
+0:38            s1_1: direct index for structure (structure{int i, float f})
+0:38              'locals2' (structure{int i, float f, structure{int i, float f} s1_1})
+0:38              Constant:
+0:38                2 (const int)
+0:38            Constant:
+0:38              1 (const int)
+0:38          Function Call: texture2D(s21;vf2; (4-component vector of float)
+0:38            'sampler' (uniform sampler2D)
+0:38            'coord' (smooth in 2-component vector of float)
+0:?   Linker Objects
+0:?     'sampler' (uniform sampler2D)
+0:?     'coord' (smooth in 2-component vector of float)
+0:?     'foo' (uniform structure{int i, float f})
+0:?     'foo2' (uniform structure{int i, float f, structure{int i, float f} s1_1})
+0:?     'foo3' (uniform structure{structure{int i, float f, structure{int i, float f} s1_1} s2_1, int i, float f, structure{int i, float f} s1_1})
 

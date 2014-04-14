@@ -71,7 +71,6 @@ Shader Functionality to Implement/Finish
       + Handle multiple compilation units per stage
       + Allow initializers on uniform declarations
       + signature matching takes type conversions into account, ambiguity is an error
-      - bug: allow constructors to contain non-dereferenced arrays?
     GLSL 1.3
       + flat redeclaration of built-in variables
       - Preprocessor token pasting (##), ## does macro expansion after pasting not before
@@ -82,6 +81,7 @@ Shader Functionality to Implement/Finish
       + ftransform() is deprecated
       + Deprecated built-in vertex inputs (attributes) and some outputs (varyings).
     GLSL 1.4 (Non-ES)
+      + rectangular textures
       + track as removed in this release, but present in others:
         + Use of gl_ClipVertex.  Use gl_ClipDistance instead.
         + Built-in vertex shader inputs.

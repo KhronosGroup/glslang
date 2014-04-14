@@ -1,5 +1,5 @@
 420_size_gl_in.geom
-Warning, version 420 is not yet complete; some version-specific features are present, but many are missing.
+Warning, version 420 is not yet complete; most version-specific features are present, but some are missing.
 ERROR: 0:19: 'gl_PerVertex' : can only redeclare a built-in block once, and before any use 
 ERROR: 1 compilation errors.  No code generated.
 
@@ -48,4 +48,30 @@ invocations = 0
 max_vertices = 0
 input primitive = triangles
 output primitive = none
+ERROR: node is still EOpNull!
+0:11  Function Definition: foo( (void)
+0:11    Function Parameters: 
+0:13    Sequence
+0:13      Constant:
+0:13        3 (const int)
+0:14      gl_Position: direct index for structure (in 4-component vector of float)
+0:14        direct index (block{in 4-component vector of float gl_Position, in float gl_PointSize, in 1-element array of float gl_ClipDistance})
+0:14          'gl_in' (in 3-element array of block{in 4-component vector of float gl_Position, in float gl_PointSize, in 1-element array of float gl_ClipDistance})
+0:14          Constant:
+0:14            1 (const int)
+0:14        Constant:
+0:14          0 (const int)
+0:15      Constant:
+0:15        3 (const int)
+0:16      gl_Position: direct index for structure (in 4-component vector of float)
+0:16        indirect index (block{in 4-component vector of float gl_Position, in float gl_PointSize, in 1-element array of float gl_ClipDistance})
+0:16          'gl_in' (in 3-element array of block{in 4-component vector of float gl_Position, in float gl_PointSize, in 1-element array of float gl_ClipDistance})
+0:16          'i' (int)
+0:16        Constant:
+0:16          0 (const int)
+0:?   Linker Objects
+0:?     'i' (int)
+0:?     'colorun' (in 3-element array of 4-component vector of float)
+0:?     'color3' (in 3-element array of 4-component vector of float)
+0:?     'gl_in' (in 3-element array of block{in 4-component vector of float gl_Position, in float gl_PointSize, in 1-element array of float gl_ClipDistance})
 

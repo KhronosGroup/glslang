@@ -1,5 +1,5 @@
 ../../LunarGLASS/test/simpleFunctionCall.frag
-Warning, version 150 is not yet complete; some version-specific features are present, but many are missing.
+Warning, version 150 is not yet complete; most version-specific features are present, but some are missing.
 WARNING: 0:4: varying deprecated in version 130; may be removed in future release
 
 Shader version: 150
@@ -25,4 +25,20 @@ Linked fragment stage:
 
 
 Shader version: 150
+0:? Sequence
+0:7  Function Definition: foo( (4-component vector of float)
+0:7    Function Parameters: 
+0:9    Sequence
+0:9      Branch: Return with expression
+0:9        'BaseColor' (smooth in 4-component vector of float)
+0:12  Function Definition: main( (void)
+0:12    Function Parameters: 
+0:14    Sequence
+0:14      move second child to first child (4-component vector of float)
+0:14        'gl_FragColor' (fragColor 4-component vector of float)
+0:14        Function Call: foo( (4-component vector of float)
+0:?   Linker Objects
+0:?     'bigColor' (uniform 4-component vector of float)
+0:?     'BaseColor' (smooth in 4-component vector of float)
+0:?     'd' (uniform float)
 

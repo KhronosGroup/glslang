@@ -1,5 +1,4 @@
 link1.frag
-Warning, version 130 is not yet complete; most features are present, but a few are missing.
 
 Shader version: 130
 0:? Sequence
@@ -81,7 +80,6 @@ Shader version: 130
 0:?       3.900000
 
 link2.frag
-Warning, version 130 is not yet complete; most features are present, but a few are missing.
 
 Shader version: 130
 Requested GL_OES_standard_derivatives

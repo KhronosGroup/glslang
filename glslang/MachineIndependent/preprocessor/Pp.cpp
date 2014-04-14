@@ -933,9 +933,9 @@ int TPpContext::tZeroInput::scan(TPpToken* ppToken)
 
 //
 // Check an identifier (atom) to see if it is a macro that should be expanded.
-// If it is, and defined, push an tInput that will produce the appropriate expansion
+// If it is, and defined, push a tInput that will produce the appropriate expansion
 // and return 1.
-// If it is, but undefined, and expandUndef is requested, push an tInput that will 
+// If it is, but undefined, and expandUndef is requested, push a tInput that will 
 // expand to 0 and return -1.
 // Otherwise, return 0 to indicate no expansion, which is not necessarily an error.
 //

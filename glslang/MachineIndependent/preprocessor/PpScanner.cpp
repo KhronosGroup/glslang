@@ -251,7 +251,7 @@ int TPpContext::tStringInput::scan(TPpToken* ppToken)
         len = 0;
         switch (ch) {
         default:
-            return ch; // Single character token, including '\' (escaped newlines are handled at a lower level, so this is just a '\' token)
+            return ch; // Single character token, including '#' and '\' (escaped newlines are handled at a lower level, so this is just a '\' token)
 
         case EOF:
             return endOfInput;

@@ -338,6 +338,7 @@ protected:
     //
     void lAddByte(TokenStream *fTok, unsigned char fVal);
     int lReadByte(TokenStream *pTok);
+    void lUnreadByte(TokenStream *pTok);
     void RecordToken(TokenStream* pTok, int token, TPpToken* ppToken);
     void RewindTokenStream(TokenStream *pTok);
     int ReadToken(TokenStream* pTok, TPpToken* ppToken);

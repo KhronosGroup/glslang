@@ -112,6 +112,12 @@ int TPpContext::lReadByte(TokenStream *pTok)
         return tInput::endOfInput;
 }
 
+void TPpContext::lUnreadByte(TokenStream *pTok)
+{
+    if (pTok->current > 0)
+        --pTok->current;
+}
+
 /*
 * Add a token to the end of a list for later playback.
 */
@@ -171,6 +177,16 @@ int TPpContext::ReadToken(TokenStream *pTok, TPpToken *ppToken)
     if (ltoken > 127)
         ltoken += 128;
     switch (ltoken) {
+    case '#':        
+        if (lReadByte(pTok) == '#') {
+            parseContext.requireProfile(ppToken->loc, ~EEsProfile, "token pasting (##)");
+            parseContext.profileRequires(ppToken->loc, ~EEsProfile, 130, 0, "token pasting (##)");
+            parseContext.error(ppToken->loc, "token pasting not implemented (internal error)", "##", "");
+            //return CPP_TOKEN_PASTE;
+            return ReadToken(pTok, ppToken);
+        } else
+            lUnreadByte(pTok);
+        break;
     case CPP_STRCONSTANT:
     case CPP_IDENTIFIER:
     case CPP_FLOATCONSTANT:

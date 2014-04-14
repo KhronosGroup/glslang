@@ -138,3 +138,56 @@ void foo2()
     vec2 ret2 = outFunRet(i, v4, i, v4);
     bool b = any(lessThan(v4, attv4));  // tests aggregate arg to unary built-in 
 }
+
+// version 130 features
+
+uniform int c;
+
+attribute ivec2 x;
+attribute vec2 v2a;
+attribute float c1D;
+attribute vec2  c2D;
+attribute vec3  c3D;
+
+uniform vec4 v4;
+
+void foo213()
+{
+    float f = 3;
+    switch (c) {         // ERRORs...
+    case 1:              
+        f = sin(f);
+        break;
+    case 2:
+        f = f * f;
+    default:
+        f = 3.0;
+    }
+
+    int i;          
+    i << 3 | 0x8A >> 1 & 0xFF;      // ERRORs...
+
+    vec3 modfOut, modfIn;
+    vec3 v11 = modf(modfIn, modfOut); // ERRORS...
+    float t = trunc(f);
+    vec2 v12 = round(v2a);
+    vec2 v13 = roundEven(v2a);
+    bvec2 b10 = isnan(v2a);
+    bvec4 b11 = isinf(v4);
+
+    sinh(c1D) +                      // ERRORS...
+    cosh(c1D) * tanh(c2D);
+    asinh(c4D) + acosh(c4D);
+    atanh(c3D);
+
+    int id = gl_VertexID;            // ERROR
+    gl_ClipDistance[1] = 0.3;        // ERROR
+}
+
+// token pasting (ERRORS...)
+
+#define mac abc##def
+int mac;
+
+#define macr(A,B) A ## B
+int macr(qrs,tuv);

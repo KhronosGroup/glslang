@@ -1,5 +1,5 @@
 420.vert
-Warning, version 420 is not yet complete; some version-specific features are present, but many are missing.
+Warning, version 420 is not yet complete; most version-specific features are present, but some are missing.
 ERROR: 0:2: '#version' : must occur first in shader 
 WARNING: 0:3: varying deprecated in version 130; may be removed in future release
 ERROR: 0:3: 'varying' : no longer supported in core profile; removed in version 420
@@ -126,15 +126,15 @@ ERROR: node is still EOpNull!
 0:?     'dx' (const float)
 0:?       4.200000
 0:?     'boundInst' (layout(binding=3 column_major shared ) uniform block{layout(column_major shared ) uniform int aoeu})
-0:?     '__anon__0' (layout(binding=7 column_major shared ) uniform block{layout(column_major shared ) uniform int aoeu})
-0:?     '__anon__1' (layout(binding=1 ) in block{in int aoeua})
-0:?     '__anon__2' (layout(column_major shared ) uniform block{layout(column_major shared ) uniform int aooeu})
+0:?     'anon@0' (layout(binding=7 column_major shared ) uniform block{layout(column_major shared ) uniform int aoeu})
+0:?     'anon@1' (layout(binding=1 ) in block{in int aoeua})
+0:?     'anon@2' (layout(column_major shared ) uniform block{layout(column_major shared ) uniform int aooeu})
 0:?     'sampb1' (layout(binding=4 ) uniform sampler2D)
 0:?     'sampb2' (layout(binding=5 ) uniform 10-element array of sampler2D)
 0:?     'sampb3' (layout(binding=80 ) uniform sampler2D)
 0:?     'sampb4' (layout(binding=31 ) uniform sampler2D)
 0:?     'sampb5' (layout(binding=79 ) uniform 2-element array of sampler2D)
-0:?     '__anon__3' (out block{out implicitly-sized array of float gl_ClipDistance, })
+0:?     'anon@3' (out block{out implicitly-sized array of float gl_ClipDistance, })
 0:?     'patchIn' (patch in 4-component vector of float)
 0:?     'patchOut' (smooth patch out 4-component vector of float)
 0:?     'gl_VertexID' (gl_VertexId int)
@@ -145,4 +145,108 @@ Linked vertex stage:
 
 
 Shader version: 420
+ERROR: node is still EOpNull!
+0:20  Function Definition: foo( (const int)
+0:20    Function Parameters: 
+0:?     Sequence
+0:23      Sequence
+0:23        move second child to first child (int)
+0:23          'b' (const (read only) int)
+0:23          'anonconst' (int)
+0:25      Sequence
+0:25        move second child to first child (int)
+0:25          'd' (const (read only) int)
+0:25          'b' (const (read only) int)
+0:29      Branch: Return with expression
+0:29        'b' (const (read only) int)
+0:32  Function Definition: main( (void)
+0:32    Function Parameters: 
+0:?     Sequence
+0:35      Test condition and select (void)
+0:35        Condition
+0:35        Compare Equal (bool)
+0:35          'i' (int)
+0:35          Constant:
+0:35            3 (const int)
+0:35        true case
+0:36        Sequence
+0:36          move second child to first child (int)
+0:36            'j' (int)
+0:36            'i' (int)
+0:42      Loop with condition tested first
+0:42        Loop Condition
+0:42        Constant:
+0:42          true (const bool)
+0:42        No loop body
+0:50  Function Definition: bar(vf4; (void)
+0:50    Function Parameters: 
+0:50      'v' (in 4-component vector of float)
+0:?     Sequence
+0:53      's' (int)
+0:54      's' (int)
+0:55      Test condition and select (void)
+0:55        Condition
+0:55        Compare Equal (bool)
+0:55          direct index (float)
+0:55            direct index (4-component vector of float)
+0:55              'bad' (in 10-element array of 4-component vector of float)
+0:55              Constant:
+0:55                0 (const int)
+0:55            Constant:
+0:55              0 (const int)
+0:55          Constant:
+0:55            4.200000
+0:55        true case is null
+0:57      Test condition and select (void)
+0:57        Condition
+0:57        Constant:
+0:57          true (const bool)
+0:57        true case
+0:58        move second child to first child (4-component vector of float)
+0:58          'badorder3' (flat out 4-component vector of float)
+0:58          direct index (4-component vector of float)
+0:58            'bad' (in 10-element array of 4-component vector of float)
+0:58            Constant:
+0:58              0 (const int)
+0:61      Sequence
+0:61        move second child to first child (3-component vector of float)
+0:61          'smeared' (3-component vector of float)
+0:61          Construct vec3 (3-component vector of float)
+0:61            'f' (float)
+0:62      'f' (float)
+0:63      'f' (float)
+0:?   Linker Objects
+0:?     'v2' (smooth out 2-component vector of float)
+0:?     'bad' (in 10-element array of 4-component vector of float)
+0:?     'badorder' (in 4-component vector of float)
+0:?     'badorder2' (invariant smooth out 4-component vector of float)
+0:?     'badorder4' (centroid in 4-component vector of float)
+0:?     'badorder3' (flat out 4-component vector of float)
+0:?     'rep' (smooth flat out 4-component vector of float)
+0:?     'rep2' (centroid smooth sample out 4-component vector of float)
+0:?     'rep3' (in 4-component vector of float)
+0:?     'anonconst' (int)
+0:?     'aconst' (const int)
+0:?       5 (const int)
+0:?     'a' (const int)
+0:?       5 (const int)
+0:?     'b' (int)
+0:?     'cx' (const float)
+0:?       4.200000
+0:?     'dx' (const float)
+0:?       4.200000
+0:?     'boundInst' (layout(binding=3 column_major shared ) uniform block{layout(column_major shared ) uniform int aoeu})
+0:?     'anon@0' (layout(binding=7 column_major shared ) uniform block{layout(column_major shared ) uniform int aoeu})
+0:?     'anon@1' (layout(binding=1 ) in block{in int aoeua})
+0:?     'anon@2' (layout(column_major shared ) uniform block{layout(column_major shared ) uniform int aooeu})
+0:?     'sampb1' (layout(binding=4 ) uniform sampler2D)
+0:?     'sampb2' (layout(binding=5 ) uniform 10-element array of sampler2D)
+0:?     'sampb3' (layout(binding=80 ) uniform sampler2D)
+0:?     'sampb4' (layout(binding=31 ) uniform sampler2D)
+0:?     'sampb5' (layout(binding=79 ) uniform 2-element array of sampler2D)
+0:?     'anon@3' (out block{out 1-element array of float gl_ClipDistance, })
+0:?     'patchIn' (patch in 4-component vector of float)
+0:?     'patchOut' (smooth patch out 4-component vector of float)
+0:?     'gl_VertexID' (gl_VertexId int)
+0:?     'gl_InstanceID' (gl_InstanceId int)
 

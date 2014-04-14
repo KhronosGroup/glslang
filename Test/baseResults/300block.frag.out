@@ -25,7 +25,7 @@ ERROR: node is still EOpNull!
 0:44          Convert uint to float (float)
 0:44            direct index (mediump uint)
 0:44              bv: direct index for structure (layout(column_major shared ) uniform mediump 4-component vector of uint)
-0:44                '__anon__0' (layout(column_major shared ) uniform block{layout(column_major shared ) uniform mediump 4-component vector of uint bv, layout(column_major shared ) uniform mediump 2X2 matrix of float bm2, layout(column_major shared ) uniform lowp isampler2D sampler, layout(column_major shared ) uniform structure{mediump int a} t, layout(column_major shared ) uniform structure{mediump 4-component vector of float u, mediump 4-component vector of uint v, lowp isampler3D sampler, mediump 3-component vector of float w, structure{mediump int a} t} fbs})
+0:44                'anon@0' (layout(column_major shared ) uniform block{layout(column_major shared ) uniform mediump 4-component vector of uint bv, layout(column_major shared ) uniform mediump 2X2 matrix of float bm2, layout(column_major shared ) uniform lowp isampler2D sampler, layout(column_major shared ) uniform structure{mediump int a} t, layout(column_major shared ) uniform structure{mediump 4-component vector of float u, mediump 4-component vector of uint v, lowp isampler3D sampler, mediump 3-component vector of float w, structure{mediump int a} t} fbs})
 0:44                Constant:
 0:44                  0 (const uint)
 0:44              Constant:
@@ -52,14 +52,63 @@ ERROR: node is still EOpNull!
 0:45            0 (const int)
 0:?   Linker Objects
 0:?     's' (uniform structure{mediump 4-component vector of float u, mediump 4-component vector of uint v, lowp isampler3D sampler, mediump 3-component vector of float w, structure{mediump int a} t})
-0:?     '__anon__0' (layout(column_major shared ) uniform block{layout(column_major shared ) uniform mediump 4-component vector of uint bv, layout(column_major shared ) uniform mediump 2X2 matrix of float bm2, layout(column_major shared ) uniform lowp isampler2D sampler, layout(column_major shared ) uniform structure{mediump int a} t, layout(column_major shared ) uniform structure{mediump 4-component vector of float u, mediump 4-component vector of uint v, lowp isampler3D sampler, mediump 3-component vector of float w, structure{mediump int a} t} fbs})
+0:?     'anon@0' (layout(column_major shared ) uniform block{layout(column_major shared ) uniform mediump 4-component vector of uint bv, layout(column_major shared ) uniform mediump 2X2 matrix of float bm2, layout(column_major shared ) uniform lowp isampler2D sampler, layout(column_major shared ) uniform structure{mediump int a} t, layout(column_major shared ) uniform structure{mediump 4-component vector of float u, mediump 4-component vector of uint v, lowp isampler3D sampler, mediump 3-component vector of float w, structure{mediump int a} t} fbs})
 0:?     'inst' (layout(column_major shared ) uniform block{layout(column_major shared ) uniform mediump 4-component vector of uint nbv, layout(column_major shared ) uniform mediump int ni})
 0:?     'insts' (layout(column_major shared ) uniform 4-element array of block{layout(column_major shared ) uniform mediump 4-component vector of uint nbv, layout(column_major shared ) uniform mediump int ni})
-0:?     '__anon__1' (layout(column_major shared ) uniform block{layout(column_major shared ) uniform mediump float f, layout(column_major shared ) uniform mediump uint u})
+0:?     'anon@1' (layout(column_major shared ) uniform block{layout(column_major shared ) uniform mediump float f, layout(column_major shared ) uniform mediump uint u})
 
 
 Linked fragment stage:
 
 
 Shader version: 300
+ERROR: node is still EOpNull!
+0:42  Function Definition: main( (void)
+0:42    Function Parameters: 
+0:44    Sequence
+0:44      Function Call: texture(is31;vf3; (mediump 4-component vector of int)
+0:44        sampler: direct index for structure (lowp isampler3D)
+0:44          's' (uniform structure{mediump 4-component vector of float u, mediump 4-component vector of uint v, lowp isampler3D sampler, mediump 3-component vector of float w, structure{mediump int a} t})
+0:44          Constant:
+0:44            2 (const int)
+0:44        Construct vec3 (3-component vector of float)
+0:44          Convert int to float (float)
+0:44            ni: direct index for structure (layout(column_major shared ) uniform mediump int)
+0:44              'inst' (layout(column_major shared ) uniform block{layout(column_major shared ) uniform mediump 4-component vector of uint nbv, layout(column_major shared ) uniform mediump int ni})
+0:44              Constant:
+0:44                1 (const int)
+0:44          Convert uint to float (float)
+0:44            direct index (mediump uint)
+0:44              bv: direct index for structure (layout(column_major shared ) uniform mediump 4-component vector of uint)
+0:44                'anon@0' (layout(column_major shared ) uniform block{layout(column_major shared ) uniform mediump 4-component vector of uint bv, layout(column_major shared ) uniform mediump 2X2 matrix of float bm2, layout(column_major shared ) uniform lowp isampler2D sampler, layout(column_major shared ) uniform structure{mediump int a} t, layout(column_major shared ) uniform structure{mediump 4-component vector of float u, mediump 4-component vector of uint v, lowp isampler3D sampler, mediump 3-component vector of float w, structure{mediump int a} t} fbs})
+0:44                Constant:
+0:44                  0 (const uint)
+0:44              Constant:
+0:44                1 (const int)
+0:44          Convert uint to float (float)
+0:44            direct index (mediump uint)
+0:44              nbv: direct index for structure (layout(column_major shared ) uniform mediump 4-component vector of uint)
+0:44                direct index (layout(column_major shared ) block{layout(column_major shared ) uniform mediump 4-component vector of uint nbv, layout(column_major shared ) uniform mediump int ni})
+0:44                  'insts' (layout(column_major shared ) uniform 4-element array of block{layout(column_major shared ) uniform mediump 4-component vector of uint nbv, layout(column_major shared ) uniform mediump int ni})
+0:44                  Constant:
+0:44                    2 (const int)
+0:44                Constant:
+0:44                  0 (const int)
+0:44              Constant:
+0:44                2 (const int)
+0:45      indirect index (layout(column_major shared ) block{layout(column_major shared ) uniform mediump 4-component vector of uint nbv, layout(column_major shared ) uniform mediump int ni})
+0:45        'insts' (layout(column_major shared ) uniform 4-element array of block{layout(column_major shared ) uniform mediump 4-component vector of uint nbv, layout(column_major shared ) uniform mediump int ni})
+0:45        direct index (mediump uint)
+0:45          v: direct index for structure (mediump 4-component vector of uint)
+0:45            's' (uniform structure{mediump 4-component vector of float u, mediump 4-component vector of uint v, lowp isampler3D sampler, mediump 3-component vector of float w, structure{mediump int a} t})
+0:45            Constant:
+0:45              1 (const int)
+0:45          Constant:
+0:45            0 (const int)
+0:?   Linker Objects
+0:?     's' (uniform structure{mediump 4-component vector of float u, mediump 4-component vector of uint v, lowp isampler3D sampler, mediump 3-component vector of float w, structure{mediump int a} t})
+0:?     'anon@0' (layout(column_major shared ) uniform block{layout(column_major shared ) uniform mediump 4-component vector of uint bv, layout(column_major shared ) uniform mediump 2X2 matrix of float bm2, layout(column_major shared ) uniform lowp isampler2D sampler, layout(column_major shared ) uniform structure{mediump int a} t, layout(column_major shared ) uniform structure{mediump 4-component vector of float u, mediump 4-component vector of uint v, lowp isampler3D sampler, mediump 3-component vector of float w, structure{mediump int a} t} fbs})
+0:?     'inst' (layout(column_major shared ) uniform block{layout(column_major shared ) uniform mediump 4-component vector of uint nbv, layout(column_major shared ) uniform mediump int ni})
+0:?     'insts' (layout(column_major shared ) uniform 4-element array of block{layout(column_major shared ) uniform mediump 4-component vector of uint nbv, layout(column_major shared ) uniform mediump int ni})
+0:?     'anon@1' (layout(column_major shared ) uniform block{layout(column_major shared ) uniform mediump float f, layout(column_major shared ) uniform mediump uint u})
 

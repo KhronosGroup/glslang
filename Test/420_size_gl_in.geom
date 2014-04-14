@@ -13,7 +13,7 @@ void foo()
     gl_in.length();
     gl_in[1].gl_Position;
     gl_in.length();
-    gl_in[i].gl_Position;
+    gl_in[i].gl_Position;   // should be sized to 3 by 'triangles'
 }
 
 in gl_PerVertex {  // ERROR, already used

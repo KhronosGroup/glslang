@@ -1,5 +1,5 @@
 recurse1.vert
-Warning, version 330 is not yet complete; some version-specific features are present, but many are missing.
+Warning, version 330 is not yet complete; most version-specific features are present, but some are missing.
 
 Shader version: 330
 0:? Sequence
@@ -70,7 +70,7 @@ Shader version: 330
 0:?     'gl_InstanceID' (gl_InstanceId int)
 
 recurse1.frag
-Warning, version 330 is not yet complete; some version-specific features are present, but many are missing.
+Warning, version 330 is not yet complete; most version-specific features are present, but some are missing.
 
 Shader version: 330
 0:? Sequence
@@ -159,7 +159,7 @@ Shader version: 330
 0:?   Linker Objects
 
 recurse2.frag
-Warning, version 330 is not yet complete; some version-specific features are present, but many are missing.
+Warning, version 330 is not yet complete; most version-specific features are present, but some are missing.
 
 Shader version: 330
 0:? Sequence
@@ -221,6 +221,72 @@ ERROR: Linking fragment stage: Recursion detected:
     cfoo(f1; calling cbar(i1;
 
 Shader version: 330
+0:? Sequence
+0:3  Function Definition: main( (void)
+0:3    Function Parameters: 
+0:9  Function Definition: self( (void)
+0:9    Function Parameters: 
+0:11    Sequence
+0:11      Function Call: self( (void)
+0:16  Function Definition: foo(f1; (void)
+0:16    Function Parameters: 
+0:16      '' (in float)
+0:18    Sequence
+0:18      Function Call: bar(i1; (float)
+0:18        Constant:
+0:18          2 (const int)
+0:21  Function Definition: bar(i1; (float)
+0:21    Function Parameters: 
+0:21      '' (in int)
+0:23    Sequence
+0:23      Function Call: foo(f1; (void)
+0:23        Constant:
+0:23          4.200000
+0:25      Branch: Return with expression
+0:25        Constant:
+0:25          3.200000
+0:32  Function Definition: A( (void)
+0:32    Function Parameters: 
+0:32    Sequence
+0:32      Function Call: B( (void)
+0:33  Function Definition: C( (void)
+0:33    Function Parameters: 
+0:33    Sequence
+0:33      Function Call: D( (void)
+0:34  Function Definition: B( (void)
+0:34    Function Parameters: 
+0:34    Sequence
+0:34      Function Call: C( (void)
+0:35  Function Definition: D( (void)
+0:35    Function Parameters: 
+0:35    Sequence
+0:35      Function Call: A( (void)
+0:41  Function Definition: AT( (void)
+0:41    Function Parameters: 
+0:41    Sequence
+0:41      Function Call: BT( (void)
+0:41      Function Call: BT( (void)
+0:41      Function Call: BT( (void)
+0:42  Function Definition: CT( (void)
+0:42    Function Parameters: 
+0:42    Sequence
+0:42      Function Call: DT( (void)
+0:42      Function Call: AT( (void)
+0:42      Function Call: DT( (void)
+0:42      Function Call: BT( (void)
+0:43  Function Definition: BT( (void)
+0:43    Function Parameters: 
+0:43    Sequence
+0:43      Function Call: CT( (void)
+0:43      Function Call: CT( (void)
+0:43      Function Call: CT( (void)
+0:44  Function Definition: DT( (void)
+0:44    Function Parameters: 
+0:44    Sequence
+0:44      Function Call: AT( (void)
+0:?   Linker Objects
+0:?     'gl_VertexID' (gl_VertexId int)
+0:?     'gl_InstanceID' (gl_InstanceId int)
 Shader version: 330
 0:? Sequence
 0:5  Function Definition: main( (void)
