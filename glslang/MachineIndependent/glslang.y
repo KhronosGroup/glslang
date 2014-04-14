@@ -1679,7 +1679,7 @@ type_specifier_nonarray
     | ISAMPLERCUBEARRAY {
         $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
         $$.basicType = EbtSampler;
-        $$.sampler.set(EbtInt, Esd3D, true);
+        $$.sampler.set(EbtInt, EsdCube, true);
     }
     | USAMPLER1D {
         $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());

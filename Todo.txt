@@ -1,4 +1,4 @@
-Current functionality level: ESSL 3.0
+Current functionality level: ESSL 3.0, GLSL 1.5
 
 + create version system
 
@@ -91,13 +91,13 @@ Shader Functionality to Implement/Finish
         + Fixed functionality for a programmable stage. 
         + ftransform().  Use invariant outputs instead.
     GLSL 1.5 (Non-ES)
-      - Deprecated gl_MaxVaryingComponents
+      + Deprecated gl_MaxVaryingComponents
       + Add new minimum maximums for gl_MaxVertexOutputComponents, gl_MaxGeometryInputComponents, gl_MaxGeometryOutputComponents, and gl_MaxFragmentInputComponents, 
                 rather than relying on gl_MaxVaryingComponents.  Also, corrected gl_MaxVaryingComponents to be 60 instead of 64.
       + Added gl_PrimitiveID as an input to fragment shaders.
       + Added gl_FragCoord qualifiers origin_upper_left, and pixel_center_integer to modify the values returned by gl_FragCoord (and have no affect on any other aspect of the pipeline or language).
         + including redeclaration of gl_FragCoord that adds nothing
-      - Added support for multi-sample textures through sampler2DMS and sampler2DMSArray support in texelFetch() and textureSize().
+      + Added support for multi-sample textures through sampler2DMS and sampler2DMSArray support in texelFetch() and textureSize().
       + Broadened interface blocks from just uniforms to in and out interfaces as well.
       + Broaden array usage to include vertex shader inputs (vertex in).
       + Added geometry shaders.  This includes targeting layers in FBO rendering.

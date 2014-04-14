@@ -16,7 +16,6 @@ Shader version: 110
 
 noMain1.geom
 ERROR: #version: geometry shaders require non-es profile and version 150 or above
-Warning, version 150 is not yet complete; most version-specific features are present, but some are missing.
 ERROR: 1 compilation errors.  No code generated.
 
 
@@ -31,7 +30,6 @@ ERROR: node is still EOpNull!
 0:?   Linker Objects
 
 noMain2.geom
-Warning, version 150 is not yet complete; most version-specific features are present, but some are missing.
 
 Shader version: 150
 invocations = 0

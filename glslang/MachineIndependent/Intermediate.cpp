@@ -368,7 +368,7 @@ TIntermTyped* TIntermediate::setAggregateOperator(TIntermNode* node, TOperator o
 }
 
 //
-// Convert the node's type to the given type, as allowed by the operation involved 'op'.
+// Convert the node's type to the given type, as allowed by the operation involved: 'op'.
 // For implicit conversions, 'op' is not the requested conversion, it is the explicit 
 // operation requiring the implicit conversion.
 //
@@ -384,9 +384,13 @@ TIntermTyped* TIntermediate::addConversion(TOperator op, const TType& type, TInt
     //
     switch (node->getBasicType()) {
     case EbtVoid:
-    case EbtSampler:
         return 0;
-    default: break;
+    case EbtSampler:
+        if (op != EOpFunctionCall)
+            return 0;
+        break;
+    default:
+        break;
     }
 
     //
@@ -450,6 +454,7 @@ TIntermTyped* TIntermediate::addConversion(TOperator op, const TType& type, TInt
     case EOpMatrixTimesVector:
     case EOpMatrixTimesScalar:
 
+    case EOpFunctionCall:
     case EOpAssign:
     case EOpAddAssign:
     case EOpSubAssign:

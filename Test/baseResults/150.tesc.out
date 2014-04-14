@@ -1,5 +1,4 @@
 150.tesc
-Warning, version 150 is not yet complete; most version-specific features are present, but some are missing.
 
 Shader version: 150
 Requested GL_ARB_tessellation_shader
@@ -109,7 +108,6 @@ vertices = 4
 0:?     'patchOut' (patch out 4-component vector of float)
 
 150.tese
-Warning, version 150 is not yet complete; most version-specific features are present, but some are missing.
 ERROR: 0:12: 'barrier' : no matching overloaded function found 
 ERROR: 1 compilation errors.  No code generated.
 

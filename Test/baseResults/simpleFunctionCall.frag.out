@@ -1,5 +1,4 @@
 ../../LunarGLASS/test/simpleFunctionCall.frag
-Warning, version 150 is not yet complete; most version-specific features are present, but some are missing.
 WARNING: 0:4: varying deprecated in version 130; may be removed in future release
 
 Shader version: 150

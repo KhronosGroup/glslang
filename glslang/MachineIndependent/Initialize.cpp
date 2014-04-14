@@ -1423,7 +1423,7 @@ void TBuiltIns::initialize(int version, EProfile profile)
     if (version >= 130)
         add2ndGenerationSamplingImaging(version, profile);
 
-    //printf("%s\n", commonBuiltins.c_str();
+    // printf("%s\n", commonBuiltins.c_str());
 }
 
 //
@@ -1914,8 +1914,10 @@ void TBuiltIns::initialize(const TBuiltInResource &resources, int version, EProf
         snprintf(builtInConstant, maxSize, "const int  gl_MaxVertexUniformComponents = %d;", resources.maxVertexUniformComponents);
         s.append(builtInConstant);
 
-        snprintf(builtInConstant, maxSize, "const int  gl_MaxVaryingFloats = %d;", resources.maxVaryingFloats);
-        s.append(builtInConstant);
+        if (version < 150 || ARBCompatibility) {
+            snprintf(builtInConstant, maxSize, "const int  gl_MaxVaryingFloats = %d;", resources.maxVaryingFloats);
+            s.append(builtInConstant);
+        }
 
         snprintf(builtInConstant, maxSize, "const int  gl_MaxFragmentUniformComponents = %d;", resources.maxFragmentUniformComponents);
         s.append(builtInConstant);

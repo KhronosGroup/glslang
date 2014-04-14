@@ -1078,11 +1078,13 @@ void TParseContext::addInputArgumentConversions(const TFunction& function, TInte
             if (function[i].type->getQualifier().isParamInput()) {
                 // In-qualified arguments just need an extra node added above the argument to
                 // convert to the correct type.
-                arg = intermediate.addConversion(EOpAssign, *function[i].type, arg);
-                if (aggregate)
-                    aggregate->getSequence()[i] = arg;
-                else
-                    arguments = arg;
+                arg = intermediate.addConversion(EOpFunctionCall, *function[i].type, arg);
+                if (arg) {
+                    if (aggregate)
+                        aggregate->getSequence()[i] = arg;
+                    else
+                        arguments = arg;
+                }
             }
         }
     }
