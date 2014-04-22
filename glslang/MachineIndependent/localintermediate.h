@@ -234,7 +234,7 @@ public:
     bool inIoAccessed(const TString& name) const { return ioAccessed.find(name) != ioAccessed.end(); }
 
     int addUsedLocation(const TQualifier&, const TType&, bool& typeCollision);
-    int computeTypeLocationSize(const TType&);
+    int computeTypeLocationSize(const TType&) const;
 
     bool setXfbBufferStride(int buffer, int stride)
     {

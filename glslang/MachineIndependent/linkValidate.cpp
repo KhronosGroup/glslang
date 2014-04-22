@@ -646,7 +646,7 @@ int TIntermediate::addUsedLocation(const TQualifier& qualifier, const TType& typ
 
 // Recursively figure out how many locations are used up by an input or output type.
 // Return the size of type, as measured by "locations".
-int TIntermediate::computeTypeLocationSize(const TType& type)
+int TIntermediate::computeTypeLocationSize(const TType& type) const
 {
     // "If the declared input is an array of size n and each element takes m locations, it will be assigned m * n 
     // consecutive locations..."
