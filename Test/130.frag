@@ -131,3 +131,10 @@ void bar23444()
     const float b = 2 * a1;
     a.x = gl_MinProgramTexelOffset + gl_MaxProgramTexelOffset;    // ERROR until shading_language_420pack is fully implemented
 }
+
+in float gl_FogFragCoord;
+
+#extension GL_ARB_separate_shader_objects : enable
+
+in float gl_FogFragCoord;
+in int gl_FogFragCoord;

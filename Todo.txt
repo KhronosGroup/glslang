@@ -146,9 +146,9 @@ Shader Functionality to Implement/Finish
     GLSL 4.1
       + Support for partitioning shaders into multiple programs to provide light-weight mixing of different shader stages.
             (GL_ARB_separate_shader_objects)
-        - layout qualifiers
-        - redeclaration of input/output blocks
-        - ...
+        + layout qualifiers
+        + redeclaration of input/output blocks
+        + ...
       - Add 64-bit floating-point attributes for vertex shader inputs.
       + Support viewport arrays so where the geometry shader selects which viewport array will transform its output.
     GLSL 4.2

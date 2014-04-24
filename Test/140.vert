@@ -19,3 +19,15 @@ void main()
     gl_FogFragCoord;    // could be ERROR, but compiling under compatibility profile
     gl_FrontColor;      // could be ERROR, but compiling under compatibility profile
 }
+
+out vec4 gl_Position;  // ERROR
+
+#extension GL_ARB_separate_shader_objects : enable
+
+out vec4 gl_Position;
+in vec4 gl_Position;   // ERROR
+out vec3 gl_Position;  // ERROR
+
+out float gl_PointSize;
+out vec4 gl_ClipVertex;
+out float gl_FogFragCoord;

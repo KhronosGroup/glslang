@@ -2348,9 +2348,20 @@ TSymbol* TParseContext::redeclareBuiltinVariable(TSourceLoc loc, const TString& 
     if (profile == EEsProfile || ! builtInName(identifier) || symbolTable.atBuiltInLevel() || ! symbolTable.atGlobalLevel())
         return 0;
 
+    // Special case when using GL_ARB_separate_shader_objects
+    bool ssoPre150 = false;  // means the only reason this variable is redeclared is due to this combination
+    if (version <= 140 && extensionsTurnedOn(1, &GL_ARB_separate_shader_objects)) {
+        if (identifier == "gl_Position"     ||
+            identifier == "gl_PointSize"    ||
+            identifier == "gl_ClipVertex"   ||
+            identifier == "gl_FogFragCoord")
+            ssoPre150 = true;
+    }
+
     // Potentially redeclaring a built-in variable...
 
-    if ((identifier == "gl_FragDepth"           && version >= 420) ||
+    if (ssoPre150 ||
+        (identifier == "gl_FragDepth"           && version >= 420) ||
         (identifier == "gl_FragCoord"           && version >= 150) ||
         (identifier == "gl_ClipDistance"        && version >= 130) ||
         (identifier == "gl_FrontColor"          && version >= 130) ||
@@ -2382,12 +2393,22 @@ TSymbol* TParseContext::redeclareBuiltinVariable(TSourceLoc loc, const TString& 
         // Now, modify the type of the copy, as per the type of the current redeclaration.
 
         TQualifier& symbolQualifier = symbol->getWritableType().getQualifier();
-        if (identifier == "gl_FrontColor"          ||
-            identifier == "gl_BackColor"           ||
-            identifier == "gl_FrontSecondaryColor" ||
-            identifier == "gl_BackSecondaryColor"  ||
-            identifier == "gl_SecondaryColor"      ||
-            identifier == "gl_Color") {
+        if (ssoPre150) {            
+            if (intermediate.inIoAccessed(identifier))
+                error(loc, "cannot redeclare after use", identifier.c_str(), "");
+            if (qualifier.hasLayout())
+                error(loc, "cannot apply layout qualifier to", "redeclaration", symbol->getName().c_str());
+            if (qualifier.isMemory() || qualifier.isAuxiliary() || (language == EShLangVertex   && qualifier.storage != EvqVaryingOut) ||
+                                                                   (language == EShLangFragment && qualifier.storage != EvqVaryingIn))
+                error(loc, "cannot change storage, memory, or auxiliary qualification of", "redeclaration", symbol->getName().c_str());
+            if (! qualifier.smooth)
+                error(loc, "cannot change interpolation qualification of", "redeclaration", symbol->getName().c_str());
+        } else if (identifier == "gl_FrontColor"          ||
+                   identifier == "gl_BackColor"           ||
+                   identifier == "gl_FrontSecondaryColor" ||
+                   identifier == "gl_BackSecondaryColor"  ||
+                   identifier == "gl_SecondaryColor"      ||
+                   identifier == "gl_Color") {
             symbolQualifier.flat = qualifier.flat;
             symbolQualifier.smooth = qualifier.smooth;
             symbolQualifier.nopersp = qualifier.nopersp;
