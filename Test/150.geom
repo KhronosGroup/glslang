@@ -62,6 +62,8 @@ layout(stream = 7) out ooutb3 {
 
 out vec4 ov2s3;  // stream should be 3
 
+layout(max_vertices = 200) out;
+layout(max_vertices = 300) out;   // ERROR, too big
 void foo(layout(max_vertices = 4) int a)  // ERROR
 {
     ouuaa6.a = vec4(1.0);
@@ -73,9 +75,9 @@ layout(triangle_strip) in; // ERROR, not an input primitive
 layout(triangle_strip) uniform; // ERROR
 layout(triangle_strip) out vec4 badv4;  // ERROR, not on a variable
 layout(triangle_strip) in vec4 bad2v4[];  // ERROR, not on a variable or input
-layout(invocations = 3) out outbn { int a; }; // ERROR, not on a block
+layout(invocations = 3) out outbn { int a; }; // 2 ERROR, not on a block, not until 4.0
 out outbn2 {
-    layout(invocations = 3)  int a; // ERROR, not on a block member
+    layout(invocations = 3)  int a; // 2 ERRORs, not on a block member, not until 4.0
     layout(max_vertices = 3) int b; // ERROR, not on a block member
     layout(triangle_strip)   int c; // ERROR, not on a block member
 } outbi;
@@ -84,8 +86,7 @@ layout(lines) out;  // ERROR, not on output
 layout(lines_adjancency) in;
 layout(triangles) in;             // ERROR, can't change it
 layout(triangles_adjacency) in;   // ERROR, can't change it
-layout(invocations = 4) in;
-layout(max_vertices = 300) out;
+layout(invocations = 4) in;       // ERROR, not until 4.0
 
 in inbn {
     layout(stream = 2) int a;     // ERROR, stream on input
