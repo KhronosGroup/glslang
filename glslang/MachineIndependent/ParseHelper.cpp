@@ -4578,7 +4578,7 @@ TIntermNode* TParseContext::addSwitch(TSourceLoc loc, TIntermTyped* expression, 
         return expression;
 
     if (lastStatements == 0) {
-        error(loc, "last case/default label must be followed by statements", "switch", "");
+        warn(loc, "last case/default label not be followed by statements", "switch", "");
 
         return expression;
     }

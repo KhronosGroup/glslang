@@ -18,7 +18,7 @@ void main()
     {
     }
 
-    switch(c)        // ERROR, not enough stuff after last label
+    switch(c)        // WARNING, not enough stuff after last label
     {
     case 2:
     }
@@ -127,7 +127,7 @@ void main()
    
     switch (0) {
         default:
-            int x;  // current "no statement" ERROR, but maybe this should count as a statement, or the semantic check removed
+            int x;  // WARNING (was "no statement" ERROR, but spec. changed because unclear what a statement is)
     }
 
     switch (c) {
@@ -138,6 +138,8 @@ void main()
     }
     case 2:
         nestedX;    // ERROR
+        int nestedZ;
+        float a;    // okay, hiding outer 'a'
         break;
     case 3:
         int linearZ;
@@ -145,10 +147,11 @@ void main()
     case 4:
         int linearY = linearZ;
         break;
-    case 5:         // ERROR? that branch bypassed an initializer?
+    case 5:         // okay that branch bypassed an initializer
         const int linearC = 4;
         break;
-    case 6:         // ERROR? that branch bypassed an initializer?
+    case 6:         // okay that branch bypassed an initializer
         linearC;
     }
+    nestedZ;        // ERROR, no longer in scope
 }
