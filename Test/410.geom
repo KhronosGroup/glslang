@@ -32,3 +32,8 @@ void foo()
     vec4 v = gl_in[1].gl_Position;    // ERROR, not included in the redeclaration
     gl_Position = vec4(1.0);          // ERROR, not included in the redeclaration
 }
+
+float foo5()
+{
+    return 4;  // implicit conversion of return type
+}

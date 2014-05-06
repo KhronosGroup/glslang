@@ -19,7 +19,7 @@ ERROR: 0:63: '' : array size required
 ERROR: 0:66: '=' :  cannot convert from '3-component vector of float' to 'float'
 ERROR: 0:76: 'bar' : no matching overloaded function found 
 ERROR: 0:79: '' : array size required 
-ERROR: 0:84: 'return' : function return is not matching type: 
+ERROR: 0:84: 'return' : type does not match, or is not convertible to, the function's return type 
 ERROR: 0:93: 'length' :  array must be declared with a size before using this method
 ERROR: 0:101: '[' :  array index out of range '5'
 ERROR: 23 compilation errors.  No code generated.

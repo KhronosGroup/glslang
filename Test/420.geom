@@ -48,3 +48,8 @@ out gl_PerVertex {
     float gl_PointSize[1];  // ERROR, adding array
     float gl_ClipDistance;  // ERROR, removing array
 };
+
+float foo5()
+{
+    return i;  // implicit conversion of return type
+}

@@ -114,6 +114,12 @@ ERROR: node is still EOpNull!
 0:44            0 (const int)
 0:44          Constant:
 0:44            1 (const int)
+0:52  Function Definition: foo5( (float)
+0:52    Function Parameters: 
+0:54    Sequence
+0:54      Branch: Return with expression
+0:54        Convert int to float (float)
+0:54          'i' (int)
 0:?   Linker Objects
 0:?     'i' (int)
 0:?     'gl_in' (in 3-element array of block{in 4-component vector of float gl_Position, in float gl_PointSize, in implicitly-sized array of float gl_ClipDistance})
@@ -235,6 +241,12 @@ ERROR: node is still EOpNull!
 0:44            0 (const int)
 0:44          Constant:
 0:44            1 (const int)
+0:52  Function Definition: foo5( (float)
+0:52    Function Parameters: 
+0:54    Sequence
+0:54      Branch: Return with expression
+0:54        Convert int to float (float)
+0:54          'i' (int)
 0:?   Linker Objects
 0:?     'i' (int)
 0:?     'gl_in' (in 3-element array of block{in 4-component vector of float gl_Position, in float gl_PointSize, in 1-element array of float gl_ClipDistance})

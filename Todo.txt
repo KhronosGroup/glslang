@@ -115,20 +115,21 @@ Shader Functionality to Implement/Finish
         + layout qualifiers for primitive types
       - Polymorphic functions: Run-time selection of what function gets called, through the new keyword subroutine.
       - 64bit floating point numbers with the new type keyword double.  Built-in functions extended for doubles, and new function matching rules are added to both allow implicit conversions when calling a function and preserve most existing function matching once doubles are included. 
-      + More implicit conversions
+      + More implicit conversions 
          + float to double, and similarly for all floating-point vector and matrix types
          + int to uint, and similarly for all integer vector types
          + int to double, and similarly for all vectors of integers and doubles.
          + uint to double, and similarly for all vectors of integers and doubles.
-      - Cube map array textures and texture functions texture(), textureSize(), textureLod(), and textureGrad().
-      - Sampler arrays can take a variable index now, as long as it's value is uniform for all uses.
+      + Cube map array textures and texture functions texture(), textureSize(), textureLod(), and textureGrad().
+      + Sampler arrays can take a variable index now, as long as it's value is uniform for all uses.
       - Per-sample shading. Including sample input mask gl_SampleMaskIn[] and per-sample interpolation, with explicit interpolation built-ins interpolateAtCentroid(), interpolateAtSample(), and interpolateAtOffset().
       - New precise qualifier to disallow optimizations that re-order operations or treat different instances of the same operator with different precision.
       - Add a fused multiply and add built-in, fma(), in relation to the new precise qualifier. (Because “a * b + c” will require two operations under new rules for precise.)
       - Added new built-in floating-point functions 
          - frexp() and ldexp()
-         - packUnorm2x16(), packUnorm4x8(),packSnorm4x8(), and packDouble2x32()
-         - unpackUnorm2x16(), unpackUnorm4x8(),unpackSnorm4x8(), and unpackDouble2x32()
+         + packUnorm2x16(), unpackUnorm2x16(),
+         - packUnorm4x8(),packSnorm4x8(), and packDouble2x32()
+         - unpackUnorm4x8(),unpackSnorm4x8(), and unpackDouble2x32()
       - Add new built-in integer functions
          - uaddCarry() andusubBorrow()
          - umulExtended() andimulExtended()
@@ -186,8 +187,7 @@ Shader Functionality to Implement/Finish
       - Allow .length() to be applied to vectors and matrices, returning the number of components or columns.
       + Clarify that .length() returns an int type and can be used as a constant integer expression.
       + Allow swizzle operations on scalars.
-      - Positive signed decimal literals, as well as octal and hexadecimal, can set all 32 bits. This includes setting the sign bit to create a negative value.
-      - Make GLSL consistent with the API regarding user clipping, by no longer referring to gl_Position when gl_ClipVertex is not written. Rather, user clipping becomes undefined.
+      + Positive signed decimal literals, as well as octal and hexadecimal, can set all 32 bits. This includes setting the sign bit to create a negative value.
       - Clarified that a comma sequence-operator expression cannot be a constant expression. E.g., “(2,3)” is not allowed, semantically, 
             as a valid constant expression 3, even though it is an expression that will evaluate to 3.
       + Use vec2 instead of vec3 for coordinate in textureGather*(sampler2DRect,...).

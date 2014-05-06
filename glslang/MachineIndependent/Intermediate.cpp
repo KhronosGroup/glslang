@@ -372,7 +372,7 @@ TIntermTyped* TIntermediate::setAggregateOperator(TIntermNode* node, TOperator o
 // For implicit conversions, 'op' is not the requested conversion, it is the explicit 
 // operation requiring the implicit conversion.
 //
-// Returns the node representing the conversion, which could be the same
+// Returns a node representing the conversion, which could be the same
 // node passed in if no conversion was needed.
 //
 // Return 0 if a conversion can't be done.
@@ -455,6 +455,7 @@ TIntermTyped* TIntermediate::addConversion(TOperator op, const TType& type, TInt
     case EOpMatrixTimesScalar:
 
     case EOpFunctionCall:
+    case EOpReturn:
     case EOpAssign:
     case EOpAddAssign:
     case EOpSubAssign:

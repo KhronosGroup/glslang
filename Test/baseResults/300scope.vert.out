@@ -44,16 +44,12 @@ ERROR: node is still EOpNull!
 0:25    Function Parameters: 
 0:25      'x' (in highp float)
 0:27    Sequence
-0:27      Branch: Return with expression
-0:27        Constant:
-0:27          1.000000
+0:27      Branch: Return
 0:29  Function Definition: radians(b1; (bool)
 0:29    Function Parameters: 
 0:29      'x' (in bool)
 0:31    Sequence
-0:31      Branch: Return with expression
-0:31        Constant:
-0:31          true (const bool)
+0:31      Branch: Return
 0:36  Function Definition: main( (void)
 0:36    Function Parameters: 
 0:?     Sequence
@@ -157,16 +153,12 @@ ERROR: node is still EOpNull!
 0:25    Function Parameters: 
 0:25      'x' (in highp float)
 0:27    Sequence
-0:27      Branch: Return with expression
-0:27        Constant:
-0:27          1.000000
+0:27      Branch: Return
 0:29  Function Definition: radians(b1; (bool)
 0:29    Function Parameters: 
 0:29      'x' (in bool)
 0:31    Sequence
-0:31      Branch: Return with expression
-0:31        Constant:
-0:31          true (const bool)
+0:31      Branch: Return
 0:36  Function Definition: main( (void)
 0:36    Function Parameters: 
 0:?     Sequence

@@ -2395,12 +2395,22 @@ jump_statement
             parseContext.error($1.loc, "non-void function must return a value", "return", "");
     }
     | RETURN expression SEMICOLON {
-        $$ = parseContext.intermediate.addBranch(EOpReturn, $2, $1.loc);
         parseContext.functionReturnsValue = true;
-        if (parseContext.currentFunctionType->getBasicType() == EbtVoid)
+        if (parseContext.currentFunctionType->getBasicType() == EbtVoid) {
             parseContext.error($1.loc, "void function cannot return a value", "return", "");
-        else if (*(parseContext.currentFunctionType) != $2->getType())
-            parseContext.error($1.loc, "function return is not matching type:", "return", "");
+            $$ = parseContext.intermediate.addBranch(EOpReturn, $1.loc);
+        } else if (*(parseContext.currentFunctionType) != $2->getType()) {
+            TIntermTyped* converted = parseContext.intermediate.addConversion(EOpReturn, *parseContext.currentFunctionType, $2);
+            if (converted) {
+                if (parseContext.version < 420)
+                    parseContext.warn($1.loc, "type conversion on return values was not explicitly allowed until version 420", "return", "");
+                $$ = parseContext.intermediate.addBranch(EOpReturn, converted, $1.loc);
+            } else {
+                parseContext.error($1.loc, "type does not match, or is not convertible to, the function's return type", "return", "");
+                $$ = parseContext.intermediate.addBranch(EOpReturn, $2, $1.loc);
+            }
+        } else
+		    $$ = parseContext.intermediate.addBranch(EOpReturn, $2, $1.loc);
     }
     | DISCARD SEMICOLON {
         parseContext.requireStage($1.loc, EShLangFragment, "discard");
