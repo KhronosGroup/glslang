@@ -97,3 +97,5 @@ layout(location = 24) in vec4 ivlc[];  // ERROR
 
 layout(location = 23) out vec4 ovla[2];
 layout(location = 24) out vec4 ovlb[2];  // ERROR
+
+in float gl_TessLevelOuter[4];           // ERROR

@@ -2213,6 +2213,11 @@ void TParseContext::declareArray(TSourceLoc loc, TString& identifier, const TTyp
     if (! symbol) {
         bool currentScope;
         symbol = symbolTable.find(identifier, 0, &currentScope);
+
+        if (symbol && builtInName(identifier) && ! symbolTable.atBuiltInLevel()) {
+            // bad shader (errors already reported) trying to redeclare a built-in name as an array
+            return;
+        }
         if (symbol == 0 || ! currentScope) {
             //
             // Successfully process a new definition.

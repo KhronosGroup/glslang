@@ -388,7 +388,8 @@ ERROR: 0:78: 'in' : type must be an array: bla
 ERROR: 0:86: '[]' : tessellation input array size must be gl_MaxPatchVertices or implicitly sized 
 ERROR: 0:96: 'location' : overlapping use of location 24
 ERROR: 0:99: 'location' : overlapping use of location 24
-ERROR: 29 compilation errors.  No code generated.
+ERROR: 0:101: 'gl_TessLevelOuter' : identifiers starting with "gl_" are reserved 
+ERROR: 30 compilation errors.  No code generated.
 
 
 Shader version: 400
