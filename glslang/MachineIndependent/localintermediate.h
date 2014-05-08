@@ -182,6 +182,7 @@ public:
         invocations = i;
         return true;
     }
+    int getInvocations() const { return invocations; }
     bool setVertices(int m)
     {
         if (vertices > 0)
@@ -205,6 +206,7 @@ public:
         vertexSpacing = s;
         return true;
     }
+    TVertexSpacing getVertexSpacing() const { return vertexSpacing; }
     bool setVertexOrder(TVertexOrder o)
     {
         if (vertexOrder != EvoNone)
@@ -212,8 +214,11 @@ public:
         vertexOrder = o;
         return true;
     }
+    TVertexOrder getVertexOrder() const { return vertexOrder; }
     void setPointMode() { pointMode = true; }
+    bool getPointMode() const { return pointMode; }
     void setXfbMode() { xfbMode = true; }
+    bool getXfbMode() const { return xfbMode; }
     bool setOutputPrimitive(TLayoutGeometry p)
     {
         if (outputPrimitive != ElgNone)
@@ -221,6 +226,7 @@ public:
         outputPrimitive = p;
         return true;
     }
+    TLayoutGeometry getOutputPrimitive() const { return outputPrimitive; }
     void setOriginUpperLeft() { originUpperLeft = true; }
     bool getOriginUpperLeft() const { return originUpperLeft; }
     void setPixelCenterInteger() { pixelCenterInteger = true; }
