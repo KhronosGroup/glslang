@@ -312,7 +312,7 @@ enum TOperator {
     // Array operators
     //
 
-    EOpArrayLength,
+    EOpArrayLength,      // "Array" distinguishes from length(v) built-in function, but it applies to vectors and matrices as well.
 };
 
 class TIntermTraverser;

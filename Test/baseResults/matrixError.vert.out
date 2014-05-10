@@ -3,7 +3,7 @@ ERROR: 0:10: 'constructor' : too many arguments
 ERROR: 0:7: 'const' : non-matching or non-convertible constant type for const initializer 
 ERROR: 0:17: 'assign' :  cannot convert from '2-component vector of float' to '3-component vector of float'
 ERROR: 0:18: 'assign' :  cannot convert from '2-component vector of float' to '3-component vector of float'
-ERROR: 0:19: '.' : field selection not allowed on matrix 
+ERROR: 0:19: 'xy' : does not apply to this type: 2X3 matrix of float
 ERROR: 0:21: '[' :  matrix index out of range '2'
 ERROR: 0:21: '[' :  vector index out of range '4'
 ERROR: 7 compilation errors.  No code generated.

@@ -31,7 +31,10 @@ ERROR: 0:76: 'binding' : sampler binding not less than gl_MaxCombinedTextureImag
 ERROR: 0:85: 'patch' : not supported in this stage: vertex
 ERROR: 0:85: '' : vertex input cannot be further qualified 
 ERROR: 0:86: 'patch' : not supported in this stage: vertex
-ERROR: 30 compilation errors.  No code generated.
+ERROR: 0:97: 'gl_MinProgramTexelOffset' : undeclared identifier 
+ERROR: 0:97: 'gl_MaxProgramTexelOffset' : undeclared identifier 
+ERROR: 0:97: '=' :  cannot convert from 'float' to 'int'
+ERROR: 33 compilation errors.  No code generated.
 
 
 Shader version: 420
@@ -105,6 +108,39 @@ ERROR: node is still EOpNull!
 0:61            'f' (float)
 0:62      'f' (float)
 0:63      'f' (float)
+0:88  Function Definition: bar23444( (void)
+0:88    Function Parameters: 
+0:?     Sequence
+0:91      Sequence
+0:91        move second child to first child (float)
+0:91          'a1' (float)
+0:91          direct index (float)
+0:91            direct index (3-component vector of float)
+0:91              'm43' (4X3 matrix of float)
+0:91              Constant:
+0:91                3 (const int)
+0:91            Constant:
+0:91              1 (const int)
+0:93      Sequence
+0:93        move second child to first child (int)
+0:93          'a2' (int)
+0:93          Constant:
+0:93            4 (const int)
+0:94      add second child into first child (int)
+0:94        'a2' (int)
+0:94        Constant:
+0:94          3 (const int)
+0:95      add second child into first child (int)
+0:95        'a2' (int)
+0:95        Constant:
+0:95          3 (const int)
+0:96      Sequence
+0:96        move second child to first child (float)
+0:96          'b' (const (read only) float)
+0:96          component-wise multiply (float)
+0:96            Constant:
+0:96              2.000000
+0:96            'a1' (float)
 0:?   Linker Objects
 0:?     'v2' (smooth out 2-component vector of float)
 0:?     'bad' (in 10-element array of 4-component vector of float)
@@ -215,6 +251,39 @@ ERROR: node is still EOpNull!
 0:61            'f' (float)
 0:62      'f' (float)
 0:63      'f' (float)
+0:88  Function Definition: bar23444( (void)
+0:88    Function Parameters: 
+0:?     Sequence
+0:91      Sequence
+0:91        move second child to first child (float)
+0:91          'a1' (float)
+0:91          direct index (float)
+0:91            direct index (3-component vector of float)
+0:91              'm43' (4X3 matrix of float)
+0:91              Constant:
+0:91                3 (const int)
+0:91            Constant:
+0:91              1 (const int)
+0:93      Sequence
+0:93        move second child to first child (int)
+0:93          'a2' (int)
+0:93          Constant:
+0:93            4 (const int)
+0:94      add second child into first child (int)
+0:94        'a2' (int)
+0:94        Constant:
+0:94          3 (const int)
+0:95      add second child into first child (int)
+0:95        'a2' (int)
+0:95        Constant:
+0:95          3 (const int)
+0:96      Sequence
+0:96        move second child to first child (float)
+0:96          'b' (const (read only) float)
+0:96          component-wise multiply (float)
+0:96            Constant:
+0:96              2.000000
+0:96            'a1' (float)
 0:?   Linker Objects
 0:?     'v2' (smooth out 2-component vector of float)
 0:?     'bad' (in 10-element array of 4-component vector of float)

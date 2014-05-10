@@ -362,11 +362,8 @@ function_identifier
 
         TIntermMethod* method = $1->getAsMethodNode();
         if (method) {
-            if (method->getObject()->isArray()) {
-                $$.function = new TFunction(&method->getMethodName(), TType(EbtInt), EOpArrayLength);
-                $$.intermNode = method->getObject();
-            } else
-                parseContext.error(method->getLoc(), "only arrays have methods", "", "");
+            $$.function = new TFunction(&method->getMethodName(), TType(EbtInt), EOpArrayLength);
+            $$.intermNode = method->getObject();
         } else {
             TIntermSymbol* symbol = $1->getAsSymbolNode();
             if (symbol) {

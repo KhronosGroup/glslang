@@ -669,22 +669,32 @@ void TParseContext::checkIoArrayConsistency(TSourceLoc loc, int requiredSize, co
 //
 TIntermTyped* TParseContext::handleDotDereference(TSourceLoc loc, TIntermTyped* base, TString& field)
 {
-    TIntermTyped* result = base;
-
     variableCheck(base);
-    if (base->isArray()) {
-        //
-        // It can only be a method (e.g., length), which can't be resolved until
-        // we later see the function calling syntax.  Save away the name for now.
-        //
 
-        if (field == "length") {
+    //
+    // .length() can't be resolved until we later see the function-calling syntax.
+    // Save away the name in the AST for now.  Processing is compeleted in 
+    // handleLengthMethod().
+    //
+    if (field == "length") {
+        if (base->isArray()) {
             profileRequires(loc, ENoProfile, 120, GL_3DL_array_objects, ".length");
             profileRequires(loc, EEsProfile, 300, 0, ".length");
-            result = intermediate.addMethod(base, TType(EbtInt), &field, loc);
-        } else
-        error(loc, "only the length method is supported for array", field.c_str(), "");
-    } else if (base->isVector() || base->isScalar()) {
+        } else if (base->isVector() || base->isMatrix()) {
+            const char* feature = ".length() on vectors and matrices";
+            requireProfile(loc, ~EEsProfile, feature);
+            profileRequires(loc, ~EEsProfile, 420, GL_ARB_shading_language_420pack, feature);
+        } else {
+            error(loc, "does not operate on this type:", field.c_str(), base->getType().getCompleteString().c_str());
+
+            return base;
+        }
+
+        return intermediate.addMethod(base, TType(EbtInt), &field, loc);
+    }
+
+    TIntermTyped* result = base;
+    if (base->isVector() || base->isScalar()) {
         if (base->isScalar()) {
             const char* dotFeature = "scalar swizzle";
             requireProfile(loc, ~EEsProfile, dotFeature);
@@ -720,9 +730,7 @@ TIntermTyped* TParseContext::handleDotDereference(TSourceLoc loc, TIntermTyped* 
                 result->setType(TType(base->getBasicType(), EvqTemporary, base->getType().getQualifier().precision, (int) vectorString.size()));
             }
         }
-    } else if (base->isMatrix())
-        error(loc, "field selection not allowed on matrix", ".", "");
-    else if (base->getBasicType() == EbtStruct || base->getBasicType() == EbtBlock) {
+    } else if (base->getBasicType() == EbtStruct || base->getBasicType() == EbtBlock) {
         const TTypeList* fields = base->getType().getStruct();
         bool fieldFound = false;
         int member;
@@ -741,9 +749,9 @@ TIntermTyped* TParseContext::handleDotDereference(TSourceLoc loc, TIntermTyped* 
                 result->setType(*(*fields)[member].type);
             }
         } else
-            error(loc, " no such field in structure", field.c_str(), "");
+            error(loc, "no such field in structure", field.c_str(), "");
     } else
-        error(loc, " dot operator does not operater on this type:", field.c_str(), base->getType().getCompleteString().c_str());
+        error(loc, "does not apply to this type:", field.c_str(), base->getType().getCompleteString().c_str());
 
     return result;
 }
@@ -1013,7 +1021,10 @@ TIntermTyped* TParseContext::handleFunctionCall(TSourceLoc loc, TFunction* funct
     return result;
 }
 
-// Do all processing handling object.length().
+// Finish processing object.length(). This started earlier in handleDotDereference(), where
+// the ".length" part was recognized and semantically checked, and finished here where the 
+// function syntax "()" is recognized.
+//
 // Return resulting tree node.
 TIntermTyped* TParseContext::handleLengthMethod(TSourceLoc loc, TFunction* function, TIntermNode* intermNode)
 {
@@ -1021,26 +1032,36 @@ TIntermTyped* TParseContext::handleLengthMethod(TSourceLoc loc, TFunction* funct
 
     if (function->getParamCount() > 0)
         error(loc, "method does not accept any arguments", function->getName().c_str(), "");
-    if (intermNode->getAsTyped() == 0 || ! intermNode->getAsTyped()->getType().isArray())
-        error(loc, "", function->getName().c_str(), "can only be applied to an array");
-    else if (intermNode->getAsTyped()->getType().isImplicitlySizedArray()) {
-        if (intermNode->getAsSymbolNode() && isIoResizeArray(intermNode->getAsTyped()->getType())) {
-            // We could be between a layout declaration that gives a built-in io array implicit size and 
-            // a user redeclaration of that array, meaning we have to substitute its implicit size here 
-            // without actually redeclaring the array.  (It is an error to use a member before the
-            // redeclaration, but not an error to use the array name itself.)
-            const TString& name = intermNode->getAsSymbolNode()->getName();
-            if (name == "gl_in" || name == "gl_out")
-                length = getIoArrayImplicitSize();
+    else {
+        const TType& type = intermNode->getAsTyped()->getType();
+        if (type.isArray()) {
+            if (type.isImplicitlySizedArray()) {
+                if (intermNode->getAsSymbolNode() && isIoResizeArray(type)) {
+                    // We could be between a layout declaration that gives a built-in io array implicit size and 
+                    // a user redeclaration of that array, meaning we have to substitute its implicit size here 
+                    // without actually redeclaring the array.  (It is an error to use a member before the
+                    // redeclaration, but not an error to use the array name itself.)
+                    const TString& name = intermNode->getAsSymbolNode()->getName();
+                    if (name == "gl_in" || name == "gl_out")
+                        length = getIoArrayImplicitSize();
+                }
+                if (length == 0) {
+                    if (intermNode->getAsSymbolNode() && isIoResizeArray(type))
+                        error(loc, "", function->getName().c_str(), "array must first be sized by a redeclaration or layout qualifier");
+                    else
+                        error(loc, "", function->getName().c_str(), "array must be declared with a size before using this method");
+                }
+            } else
+                length = type.getArraySize();
+        } else if (type.isMatrix())
+            length = type.getMatrixCols();
+        else if (type.isVector())
+            length = type.getVectorSize();
+        else {
+            // we should not get here, because earlier semantic checking should have prevented this path
+            error(loc, ".length()", "unexpected use of .length()", "");
         }
-        if (length == 0) {
-            if (intermNode->getAsSymbolNode() && isIoResizeArray(intermNode->getAsTyped()->getType()))
-                error(loc, "", function->getName().c_str(), "array must first be sized by a redeclaration or layout qualifier");
-            else
-                error(loc, "", function->getName().c_str(), "array must be declared with a size before using this method");
-        }
-    } else
-        length = intermNode->getAsTyped()->getType().getArraySize();
+    }
 
     if (length == 0)
         length = 1;
@@ -1633,7 +1654,7 @@ bool TParseContext::lineContinuationCheck(TSourceLoc loc, bool endOfComment)
     const char* message = "line continuation";
 
     bool lineContinuationAllowed = (profile == EEsProfile && version >= 300) ||
-                                   (profile != EEsProfile && version >= 420);
+                                   (profile != EEsProfile && (version >= 420 || extensionsTurnedOn(1, &GL_ARB_shading_language_420pack)));
 
     if (endOfComment) {
         if (lineContinuationAllowed)
@@ -1645,12 +1666,12 @@ bool TParseContext::lineContinuationCheck(TSourceLoc loc, bool endOfComment)
     }
 
     if (messages & EShMsgRelaxedErrors) {
+        if (! lineContinuationAllowed)
             warn(loc, "not allowed in this version", message, "");
         return true;
     } else {
-        requireProfile(loc, EEsProfile | ECoreProfile | ECompatibilityProfile, message);
         profileRequires(loc, EEsProfile, 300, 0, message);
-        profileRequires(loc, ECoreProfile | ECompatibilityProfile, 420, 0, message);
+        profileRequires(loc, ~EEsProfile, 420, GL_ARB_shading_language_420pack, message);
     }
 
     return lineContinuationAllowed;

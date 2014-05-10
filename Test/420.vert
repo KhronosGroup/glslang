@@ -84,3 +84,15 @@ out gl_PerVertex {
 
 patch in vec4 patchIn;              // ERROR
 patch out vec4 patchOut;            // ERROR
+
+void bar23444()
+{
+    mat4x3 m43;  \
+    float a1 = m43[3].y;
+    vec3 v3;
+    int a2 = m43.length();
+    a2 += m43[1].length();
+    a2 += v3.length();
+    const float b = 2 * a1;
+    int a = gl_MinProgramTexelOffset + gl_MaxProgramTexelOffset;
+}

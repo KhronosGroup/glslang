@@ -117,6 +117,9 @@ void bar235()
     c = textureGrad(Isca, i, vec3(0.1), vec3(0.2));
 }
 
+int \
+    x;  // ERROR until 420pack is turned on
+
 #extension GL_ARB_shading_language_420pack : enable
 
 const int ai[3] = { 10, 23, 32 };
@@ -125,11 +128,19 @@ uniform layout(binding=0) sampler2D bounds;
 
 void bar23444()
 {
-    mat4x3 m43;
+    mat4x3 m43;  \
     float a1 = m43[3].y;
-    int a2 = m43.length();  // ERROR until shading_language_420pack is fully implemented
+    vec3 v3;
+    int a2 = m43.length();
+    a2 += m43[1].length();
+    a2 += v3.length();
     const float b = 2 * a1;
-    a.x = gl_MinProgramTexelOffset + gl_MaxProgramTexelOffset;    // ERROR until shading_language_420pack is fully implemented
+    a.x = gl_MinProgramTexelOffset + gl_MaxProgramTexelOffset;
+    bool boolb;
+    boolb.length();     // ERROR
+    m43[3][1].length(); // ERROR
+    v3.length;          // ERROR
+    v3.length(b);       // ERROR
 }
 
 in float gl_FogFragCoord;
