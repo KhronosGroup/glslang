@@ -157,6 +157,10 @@ public:
     TIntermTyped* addComma(TIntermTyped* left, TIntermTyped* right, TSourceLoc);
     TIntermTyped* addMethod(TIntermTyped*, const TType&, const TString*, TSourceLoc);
     TIntermConstantUnion* addConstantUnion(const TConstUnionArray&, const TType&, TSourceLoc, bool literal = false) const;
+    TIntermConstantUnion* addConstantUnion(int, TSourceLoc, bool literal = false) const;
+    TIntermConstantUnion* addConstantUnion(unsigned int, TSourceLoc, bool literal = false) const;
+    TIntermConstantUnion* addConstantUnion(bool, TSourceLoc, bool literal = false) const;
+    TIntermConstantUnion* addConstantUnion(double, TBasicType, TSourceLoc, bool literal = false) const;
     TIntermTyped* promoteConstantUnion(TBasicType, TIntermConstantUnion*) const;
     bool parseConstTree(TIntermNode*, TConstUnionArray, TOperator, const TType&, bool singleConstantParam = false);
     TIntermLoop* addLoop(TIntermNode*, TIntermTyped*, TIntermTyped*, bool testFirst, TSourceLoc);

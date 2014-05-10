@@ -393,9 +393,7 @@ TIntermTyped* TParseContext::handleVariable(TSourceLoc loc, TSymbol* symbol, TSt
         // Create a subtree for its dereference.
         variable = anon->getAnonContainer().getAsVariable();
         TIntermTyped* container = intermediate.addSymbol(*variable, loc);
-        TConstUnionArray unionArray(1);
-        unionArray[0].setUConst(anon->getMemberNumber());
-        TIntermTyped* constNode = intermediate.addConstantUnion(unionArray, TType(EbtUint, EvqConst), loc);
+        TIntermTyped* constNode = intermediate.addConstantUnion(anon->getMemberNumber(), loc);
         node = intermediate.addIndex(EOpIndexDirectStruct, container, constNode, loc);
 
         node->setType(*(*variable->getType().getStruct())[anon->getMemberNumber()].type);
@@ -480,9 +478,7 @@ TIntermTyped* TParseContext::handleBracketDereference(TSourceLoc loc, TIntermTyp
 
     if (result == 0) {
         // Insert dummy error-recovery result
-        TConstUnionArray unionArray(1);
-        unionArray[0].setDConst(0.0);
-        result = intermediate.addConstantUnion(unionArray, TType(EbtFloat, EvqConst), loc);
+        result = intermediate.addConstantUnion(0.0, EbtFloat, loc);
     } else {
         // Insert valid dereferenced result
         TType newType(base->getType(), 0);  // dereferenced type
@@ -687,7 +683,7 @@ TIntermTyped* TParseContext::handleDotDereference(TSourceLoc loc, TIntermTyped* 
             profileRequires(loc, EEsProfile, 300, 0, ".length");
             result = intermediate.addMethod(base, TType(EbtInt), &field, loc);
         } else
-            error(loc, "only the length method is supported for array", field.c_str(), "");
+        error(loc, "only the length method is supported for array", field.c_str(), "");
     } else if (base->isVector() || base->isScalar()) {
         if (base->isScalar()) {
             const char* dotFeature = "scalar swizzle";
@@ -714,9 +710,7 @@ TIntermTyped* TParseContext::handleDotDereference(TSourceLoc loc, TIntermTyped* 
             result = intermediate.foldSwizzle(base, fields, loc);
         else {
             if (fields.num == 1) {
-                TConstUnionArray unionArray(1);
-                unionArray[0].setIConst(fields.offsets[0]);
-                TIntermTyped* index = intermediate.addConstantUnion(unionArray, TType(EbtInt, EvqConst), loc);
+                TIntermTyped* index = intermediate.addConstantUnion(fields.offsets[0], loc);
                 result = intermediate.addIndex(EOpIndexDirect, base, index, loc);
                 result->setType(TType(base->getBasicType(), EvqTemporary, base->getType().getQualifier().precision));
             } else {
@@ -731,8 +725,8 @@ TIntermTyped* TParseContext::handleDotDereference(TSourceLoc loc, TIntermTyped* 
     else if (base->getBasicType() == EbtStruct || base->getBasicType() == EbtBlock) {
         const TTypeList* fields = base->getType().getStruct();
         bool fieldFound = false;
-        unsigned int member;
-        for (member = 0; member < fields->size(); ++member) {
+        int member;
+        for (member = 0; member < (int)fields->size(); ++member) {
             if ((*fields)[member].type->getFieldName() == field) {
                 fieldFound = true;
                 break;
@@ -742,9 +736,7 @@ TIntermTyped* TParseContext::handleDotDereference(TSourceLoc loc, TIntermTyped* 
             if (base->getType().getQualifier().storage == EvqConst)
                 result = intermediate.foldDereference(base, member, loc);
             else {
-                TConstUnionArray unionArray(1);
-                unionArray[0].setIConst(member);
-                TIntermTyped* index = intermediate.addConstantUnion(unionArray, TType(EbtInt, EvqConst), loc);
+                TIntermTyped* index = intermediate.addConstantUnion(member, loc);
                 result = intermediate.addIndex(EOpIndexDirectStruct, base, index, loc);
                 result->setType(*(*fields)[member].type);
             }
@@ -1015,11 +1007,8 @@ TIntermTyped* TParseContext::handleFunctionCall(TSourceLoc loc, TFunction* funct
 
     // generic error recovery
     // TODO: simplification: localize all the error recoveries that look like this, and taking type into account to reduce cascades
-    if (result == 0) {
-        TConstUnionArray unionArray(1);
-        unionArray[0].setDConst(0.0);
-        result = intermediate.addConstantUnion(unionArray, TType(EbtFloat, EvqConst), loc);
-    }
+    if (result == 0)
+        result = intermediate.addConstantUnion(0.0, EbtFloat, loc);
 
     return result;
 }
@@ -1055,10 +1044,8 @@ TIntermTyped* TParseContext::handleLengthMethod(TSourceLoc loc, TFunction* funct
 
     if (length == 0)
         length = 1;
-    TConstUnionArray unionArray(1);
-    unionArray[0].setIConst(length);
 
-    return intermediate.addConstantUnion(unionArray, TType(EbtInt, EvqConst), loc);
+    return intermediate.addConstantUnion(length, loc);
 }
 
 //
@@ -1658,7 +1645,7 @@ bool TParseContext::lineContinuationCheck(TSourceLoc loc, bool endOfComment)
     }
 
     if (messages & EShMsgRelaxedErrors) {
-        warn(loc, "not allowed in this version", message, "");
+            warn(loc, "not allowed in this version", message, "");
         return true;
     } else {
         requireProfile(loc, EEsProfile | ECoreProfile | ECompatibilityProfile, message);

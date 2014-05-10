@@ -802,6 +802,40 @@ TIntermConstantUnion* TIntermediate::addConstantUnion(const TConstUnionArray& un
     return node;
 }
 
+TIntermConstantUnion* TIntermediate::addConstantUnion(int i, TSourceLoc loc, bool literal) const
+{
+    TConstUnionArray unionArray(1);
+    unionArray[0].setIConst(i);
+
+    return addConstantUnion(unionArray, TType(EbtInt, EvqConst), loc, literal);
+}
+
+TIntermConstantUnion* TIntermediate::addConstantUnion(unsigned int u, TSourceLoc loc, bool literal) const
+{
+    TConstUnionArray unionArray(1);
+    unionArray[0].setUConst(u);
+
+    return addConstantUnion(unionArray, TType(EbtUint, EvqConst), loc, literal);
+}
+
+TIntermConstantUnion* TIntermediate::addConstantUnion(bool b, TSourceLoc loc, bool literal) const
+{
+    TConstUnionArray unionArray(1);
+    unionArray[0].setBConst(b);
+
+    return addConstantUnion(unionArray, TType(EbtBool, EvqConst), loc, literal);
+}
+
+TIntermConstantUnion* TIntermediate::addConstantUnion(double d, TBasicType baseType, TSourceLoc loc, bool literal) const
+{
+    assert(baseType == EbtFloat || baseType == EbtDouble);
+
+    TConstUnionArray unionArray(1);
+    unionArray[0].setDConst(d);
+
+    return addConstantUnion(unionArray, TType(baseType, EvqConst), loc, literal);
+}
+
 TIntermTyped* TIntermediate::addSwizzle(TVectorFields& fields, TSourceLoc loc)
 {
     
@@ -812,9 +846,7 @@ TIntermTyped* TIntermediate::addSwizzle(TVectorFields& fields, TSourceLoc loc)
     TIntermSequence &sequenceVector = node->getSequence();
 
     for (int i = 0; i < fields.num; i++) {
-        TConstUnionArray unionArray(1);
-        unionArray[0].setIConst(fields.offsets[i]);
-        constIntNode = addConstantUnion(unionArray, TType(EbtInt, EvqConst), loc);
+        constIntNode = addConstantUnion(fields.offsets[i], loc);
         sequenceVector.push_back(constIntNode);
     }
 

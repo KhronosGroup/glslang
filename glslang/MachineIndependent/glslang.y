@@ -226,31 +226,21 @@ primary_expression
         $$ = $1;
     }
     | INTCONSTANT {
-        TConstUnionArray unionArray(1);
-        unionArray[0].setIConst($1.i);
-        $$ = parseContext.intermediate.addConstantUnion(unionArray, TType(EbtInt, EvqConst), $1.loc, true);
+        $$ = parseContext.intermediate.addConstantUnion($1.i, $1.loc, true);
     }
     | UINTCONSTANT {        
         parseContext.fullIntegerCheck($1.loc, "unsigned literal");
-        TConstUnionArray unionArray(1);
-        unionArray[0].setUConst($1.u);
-        $$ = parseContext.intermediate.addConstantUnion(unionArray, TType(EbtUint, EvqConst), $1.loc, true);
+        $$ = parseContext.intermediate.addConstantUnion($1.u, $1.loc, true);
     }
     | FLOATCONSTANT {
-        TConstUnionArray unionArray(1);
-        unionArray[0].setDConst($1.d);
-        $$ = parseContext.intermediate.addConstantUnion(unionArray, TType(EbtFloat, EvqConst), $1.loc, true);
+        $$ = parseContext.intermediate.addConstantUnion($1.d, EbtFloat, $1.loc, true);
     }
     | DOUBLECONSTANT {
         parseContext.doubleCheck($1.loc, "double literal");
-        TConstUnionArray unionArray(1);
-        unionArray[0].setDConst($1.d);
-        $$ = parseContext.intermediate.addConstantUnion(unionArray, TType(EbtDouble, EvqConst), $1.loc, true);
+        $$ = parseContext.intermediate.addConstantUnion($1.d, EbtDouble, $1.loc, true);
     }
     | BOOLCONSTANT {
-        TConstUnionArray unionArray(1);
-        unionArray[0].setBConst($1.b);
-        $$ = parseContext.intermediate.addConstantUnion(unionArray, TType(EbtBool, EvqConst), $1.loc, true);
+        $$ = parseContext.intermediate.addConstantUnion($1.b, $1.loc, true);
     }
     | LEFT_PAREN expression RIGHT_PAREN {
         $$ = $2;        
@@ -365,7 +355,7 @@ function_identifier
     }
     | postfix_expression {
         //
-        // Should be a method or subroutine call, but we don't have arguments yet.
+        // Should be a method or subroutine call, but we haven't recognized the arguments yet.
         //
         $$.function = 0;
         $$.intermNode = 0;
@@ -520,36 +510,28 @@ relational_expression
         $$ = parseContext.intermediate.addBinaryMath(EOpLessThan, $1, $3, $2.loc);
         if ($$ == 0) {
             parseContext.binaryOpError($2.loc, "<", $1->getCompleteString(), $3->getCompleteString());
-            TConstUnionArray unionArray(1);
-            unionArray[0].setBConst(false);
-            $$ = parseContext.intermediate.addConstantUnion(unionArray, TType(EbtBool, EvqConst), $2.loc);
+            $$ = parseContext.intermediate.addConstantUnion(false, $2.loc);
         }
     }
     | relational_expression RIGHT_ANGLE shift_expression  {
         $$ = parseContext.intermediate.addBinaryMath(EOpGreaterThan, $1, $3, $2.loc);
         if ($$ == 0) {
             parseContext.binaryOpError($2.loc, ">", $1->getCompleteString(), $3->getCompleteString());
-            TConstUnionArray unionArray(1);
-            unionArray[0].setBConst(false);
-            $$ = parseContext.intermediate.addConstantUnion(unionArray, TType(EbtBool, EvqConst), $2.loc);
+            $$ = parseContext.intermediate.addConstantUnion(false, $2.loc);
         }
     }
     | relational_expression LE_OP shift_expression  {
         $$ = parseContext.intermediate.addBinaryMath(EOpLessThanEqual, $1, $3, $2.loc);
         if ($$ == 0) {
             parseContext.binaryOpError($2.loc, "<=", $1->getCompleteString(), $3->getCompleteString());
-            TConstUnionArray unionArray(1);
-            unionArray[0].setBConst(false);
-            $$ = parseContext.intermediate.addConstantUnion(unionArray, TType(EbtBool, EvqConst), $2.loc);
+            $$ = parseContext.intermediate.addConstantUnion(false, $2.loc);
         }
     }
     | relational_expression GE_OP shift_expression  {
         $$ = parseContext.intermediate.addBinaryMath(EOpGreaterThanEqual, $1, $3, $2.loc);
         if ($$ == 0) {
             parseContext.binaryOpError($2.loc, ">=", $1->getCompleteString(), $3->getCompleteString());
-            TConstUnionArray unionArray(1);
-            unionArray[0].setBConst(false);
-            $$ = parseContext.intermediate.addConstantUnion(unionArray, TType(EbtBool, EvqConst), $2.loc);
+            $$ = parseContext.intermediate.addConstantUnion(false, $2.loc);
         }
     }
     ;
@@ -562,9 +544,7 @@ equality_expression
         $$ = parseContext.intermediate.addBinaryMath(EOpEqual, $1, $3, $2.loc);
         if ($$ == 0) {
             parseContext.binaryOpError($2.loc, "==", $1->getCompleteString(), $3->getCompleteString());
-            TConstUnionArray unionArray(1);
-            unionArray[0].setBConst(false);
-            $$ = parseContext.intermediate.addConstantUnion(unionArray, TType(EbtBool, EvqConst), $2.loc);
+            $$ = parseContext.intermediate.addConstantUnion(false, $2.loc);
         }
     }
     | equality_expression NE_OP relational_expression {
@@ -573,9 +553,7 @@ equality_expression
         $$ = parseContext.intermediate.addBinaryMath(EOpNotEqual, $1, $3, $2.loc);
         if ($$ == 0) {
             parseContext.binaryOpError($2.loc, "!=", $1->getCompleteString(), $3->getCompleteString());
-            TConstUnionArray unionArray(1);
-            unionArray[0].setBConst(false);
-            $$ = parseContext.intermediate.addConstantUnion(unionArray, TType(EbtBool, EvqConst), $2.loc);
+            $$ = parseContext.intermediate.addConstantUnion(false, $2.loc);
         }
     }
     ;
@@ -622,9 +600,7 @@ logical_and_expression
         $$ = parseContext.intermediate.addBinaryMath(EOpLogicalAnd, $1, $3, $2.loc);
         if ($$ == 0) {
             parseContext.binaryOpError($2.loc, "&&", $1->getCompleteString(), $3->getCompleteString());
-            TConstUnionArray unionArray(1);
-            unionArray[0].setBConst(false);
-            $$ = parseContext.intermediate.addConstantUnion(unionArray, TType(EbtBool, EvqConst), $2.loc);
+            $$ = parseContext.intermediate.addConstantUnion(false, $2.loc);
         }
     }
     ;
@@ -635,9 +611,7 @@ logical_xor_expression
         $$ = parseContext.intermediate.addBinaryMath(EOpLogicalXor, $1, $3, $2.loc);
         if ($$ == 0) {
             parseContext.binaryOpError($2.loc, "^^", $1->getCompleteString(), $3->getCompleteString());
-            TConstUnionArray unionArray(1);
-            unionArray[0].setBConst(false);
-            $$ = parseContext.intermediate.addConstantUnion(unionArray, TType(EbtBool, EvqConst), $2.loc);
+            $$ = parseContext.intermediate.addConstantUnion(false, $2.loc);
         }
     }
     ;
@@ -648,9 +622,7 @@ logical_or_expression
         $$ = parseContext.intermediate.addBinaryMath(EOpLogicalOr, $1, $3, $2.loc);
         if ($$ == 0) {
             parseContext.binaryOpError($2.loc, "||", $1->getCompleteString(), $3->getCompleteString());
-            TConstUnionArray unionArray(1);
-            unionArray[0].setBConst(false);
-            $$ = parseContext.intermediate.addConstantUnion(unionArray, TType(EbtBool, EvqConst), $2.loc);
+            $$ = parseContext.intermediate.addConstantUnion(false, $2.loc);
         }
     }
     ;
