@@ -96,7 +96,7 @@ TIntermTyped* TIntermediate::addBinaryMath(TOperator op, TIntermTyped* left, TIn
     }
     
     //
-    // Need a new node holding things together then.  Make
+    // Need a new node holding things together.  Make
     // one and promote it to the right type.
     //
     TIntermBinary* node = new TIntermBinary(op);
@@ -113,6 +113,7 @@ TIntermTyped* TIntermediate::addBinaryMath(TOperator op, TIntermTyped* left, TIn
         
     //
     // If they are both constants, they must be folded.
+    // (Unless it's the sequence (comma) operator, but that's handled in addComma().)
     //
 
     TIntermConstantUnion *leftTempConstant = left->getAsConstantUnion();
@@ -716,18 +717,21 @@ TIntermNode* TIntermediate::addSelection(TIntermTyped* cond, TIntermNodePair nod
 
 TIntermTyped* TIntermediate::addComma(TIntermTyped* left, TIntermTyped* right, TSourceLoc loc)
 {
-    if (left->getType().getQualifier().storage == EvqConst && 
-        right->getType().getQualifier().storage == EvqConst) {
+    // However, the lowest precedence operators of the sequence operator ( , ) and the assignment operators 
+    // ... are not included in the operators that can create a constant expression.
+    //
+    //if (left->getType().getQualifier().storage == EvqConst && 
+    //    right->getType().getQualifier().storage == EvqConst) {
 
-        return right;
-    } else {
-        TIntermTyped *commaAggregate = growAggregate(left, right, loc);
-        commaAggregate->getAsAggregate()->setOperator(EOpComma);
-        commaAggregate->setType(right->getType());
-        commaAggregate->getWritableType().getQualifier().makeTemporary();
+    //    return right;
+    //}
 
-        return commaAggregate;
-    }
+    TIntermTyped *commaAggregate = growAggregate(left, right, loc);
+    commaAggregate->getAsAggregate()->setOperator(EOpComma);
+    commaAggregate->setType(right->getType());
+    commaAggregate->getWritableType().getQualifier().makeTemporary();
+
+    return commaAggregate;
 }
 
 TIntermTyped* TIntermediate::addMethod(TIntermTyped* object, const TType& type, const TString* name, TSourceLoc loc)

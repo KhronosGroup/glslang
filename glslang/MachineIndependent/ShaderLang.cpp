@@ -124,7 +124,7 @@ bool InitializeSymbolTable(const TString& builtIns, int version, EProfile profil
                            TSymbolTable& symbolTable)
 {
     TIntermediate intermediate(language, version, profile);
-	
+    
     TParseContext parseContext(symbolTable, intermediate, true, version, profile, language, infoSink);
     TPpContext ppContext(parseContext);
     TScanContext scanContext(parseContext);
@@ -181,7 +181,7 @@ void InitializeStageSymbolTable(TBuiltIns& builtIns, int version, EProfile profi
 bool InitializeSymbolTables(TInfoSink& infoSink, TSymbolTable** commonTable,  TSymbolTable** symbolTables, int version, EProfile profile)
 {
     TBuiltIns builtIns;
-	builtIns.initialize(version, profile);
+    builtIns.initialize(version, profile);
 
     // do the common tables
     InitializeSymbolTable(builtIns.getCommonString(), version, profile, EShLangVertex, infoSink, *commonTable[EPcGeneral]);
@@ -207,9 +207,9 @@ bool AddContextSpecificSymbols(const TBuiltInResource* resources, TInfoSink& inf
 {
     TBuiltIns builtIns;
     
-	builtIns.initialize(*resources, version, profile, language);
+    builtIns.initialize(*resources, version, profile, language);
     InitializeSymbolTable(builtIns.getCommonString(), version, profile, language, infoSink, symbolTable);
-	IdentifyBuiltIns(version, profile, language, symbolTable, *resources);
+    IdentifyBuiltIns(version, profile, language, symbolTable, *resources);
 
     return true;
 }

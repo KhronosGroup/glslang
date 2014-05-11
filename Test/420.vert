@@ -96,3 +96,6 @@ void bar23444()
     const float b = 2 * a1;
     int a = gl_MinProgramTexelOffset + gl_MaxProgramTexelOffset;
 }
+
+const int comma0 = (2, 3);  // ERROR
+int comma1[(2, 3)];   // ERROR

@@ -14,10 +14,7 @@ ERROR: 0:84: 'textureGatherOffset(...)' : not supported for this version or the 
 ERROR: 0:85: 'textureGatherOffset(...)' : not supported for this version or the enabled extensions 
 WARNING: 0:88: '#extension' : extension is only partially supported: GL_ARB_gpu_shader5
 ERROR: 0:120: 'line continuation' : not supported for this version or the enabled extensions 
-WARNING: 0:123: '#extension' : extension is only partially supported: GL_ARB_shading_language_420pack
 ERROR: 0:126: 'uniform block' : not supported for this version or the enabled extensions 
-ERROR: 0:138: 'gl_MinProgramTexelOffset' : undeclared identifier 
-ERROR: 0:138: 'gl_MaxProgramTexelOffset' : undeclared identifier 
 ERROR: 0:140: 'length' : does not operate on this type: bool
 ERROR: 0:140: 'boolb' : can't use function syntax on variable 
 ERROR: 0:141: 'length' : does not operate on this type: float
@@ -28,7 +25,7 @@ ERROR: 0:143: 'length' : method does not accept any arguments
 ERROR: 0:146: 'gl_FogFragCoord' : identifiers starting with "gl_" are reserved 
 ERROR: 0:151: 'int' : must be qualified as flat in
 ERROR: 0:151: 'redeclaration' : cannot change the type of gl_FogFragCoord
-ERROR: 26 compilation errors.  No code generated.
+ERROR: 24 compilation errors.  No code generated.
 
 
 Shader version: 130
@@ -343,9 +340,8 @@ ERROR: node is still EOpNull!
 0:138          'a' (3-component vector of float)
 0:138          Constant:
 0:138            0 (const int)
-0:138        add (float)
-0:138          'gl_MinProgramTexelOffset' (float)
-0:138          'gl_MaxProgramTexelOffset' (float)
+0:138        Constant:
+0:138          -1.000000
 0:140      Constant:
 0:140        0.000000
 0:141      Constant:
@@ -698,9 +694,8 @@ ERROR: node is still EOpNull!
 0:138          'a' (3-component vector of float)
 0:138          Constant:
 0:138            0 (const int)
-0:138        add (float)
-0:138          'gl_MinProgramTexelOffset' (float)
-0:138          'gl_MaxProgramTexelOffset' (float)
+0:138        Constant:
+0:138          -1.000000
 0:140      Constant:
 0:140        0.000000
 0:141      Constant:

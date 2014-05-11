@@ -71,7 +71,7 @@ layout(std140) uniform blocke {
     layout(offset = 32) vec3   b;                          // ERROR
 } spinste;
 
-int aconste[gl_MaxTransformFeedbackBuffers];               // ERROR ??
+int aconste[gl_MaxTransformFeedbackBuffers];               // ERROR
 int bconste[gl_MaxTransformFeedbackInterleavedComponents]; // ERROR
 
 out bblck2 {

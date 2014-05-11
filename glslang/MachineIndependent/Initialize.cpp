@@ -1978,6 +1978,12 @@ void TBuiltIns::initialize(const TBuiltInResource &resources, int version, EProf
             s.append(builtInConstant);
             snprintf(builtInConstant, maxSize, "const int gl_MaxVaryingComponents = %d;", resources.maxVaryingComponents);
             s.append(builtInConstant);
+
+            // GL_ARB_shading_language_420pack
+            snprintf(builtInConstant, maxSize, "const mediump int  gl_MinProgramTexelOffset = %d;", resources.minProgramTexelOffset);
+            s.append(builtInConstant);
+            snprintf(builtInConstant, maxSize, "const mediump int  gl_MaxProgramTexelOffset = %d;", resources.maxProgramTexelOffset);
+            s.append(builtInConstant);
         }
 
         // geometry
@@ -2338,7 +2344,7 @@ void IdentifyBuiltIns(int version, EProfile profile, EShLanguage language, TSymb
 }
 
 //
-// Add context-dependent (resource-specific) built-ins not yet handled.  These
+// Add context-dependent (resource-specific) built-ins not handled by the above.  These
 // would be ones that need to be programmatically added because they cannot 
 // be added by simple text strings.  For these, also
 // 1) Map built-in functions to operators, for those that will turn into an operation node
@@ -2352,9 +2358,12 @@ void IdentifyBuiltIns(int version, EProfile profile, EShLanguage language, TSymb
         symbolTable.setVariableExtensions("gl_MaxTransformFeedbackBuffers", 1, &GL_ARB_enhanced_layouts);
         symbolTable.setVariableExtensions("gl_MaxTransformFeedbackInterleavedComponents", 1, &GL_ARB_enhanced_layouts);
     }
+    if (profile != EEsProfile && version >= 130 && version < 420) {
+        symbolTable.setVariableExtensions("gl_MinProgramTexelOffset", 1, &GL_ARB_shading_language_420pack);
+        symbolTable.setVariableExtensions("gl_MaxProgramTexelOffset", 1, &GL_ARB_shading_language_420pack);
+    }
 
     switch(language) {
-
     case EShLangFragment:
         // Set up gl_FragData based on current array size.
         if (version == 100 || IncludeLegacy(version, profile) || (! ForwardCompatibility && profile != EEsProfile && version < 420)) {

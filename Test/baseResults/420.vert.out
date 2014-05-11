@@ -31,9 +31,9 @@ ERROR: 0:76: 'binding' : sampler binding not less than gl_MaxCombinedTextureImag
 ERROR: 0:85: 'patch' : not supported in this stage: vertex
 ERROR: 0:85: '' : vertex input cannot be further qualified 
 ERROR: 0:86: 'patch' : not supported in this stage: vertex
-ERROR: 0:97: 'gl_MinProgramTexelOffset' : undeclared identifier 
-ERROR: 0:97: 'gl_MaxProgramTexelOffset' : undeclared identifier 
-ERROR: 0:97: '=' :  cannot convert from 'float' to 'int'
+ERROR: 0:100: '=' : global const initializers must be constant 'const int'
+ERROR: 0:101: '' : constant expression required 
+ERROR: 0:101: '' : array size must be a constant integer expression 
 ERROR: 33 compilation errors.  No code generated.
 
 
@@ -141,6 +141,11 @@ ERROR: node is still EOpNull!
 0:96            Constant:
 0:96              2.000000
 0:96            'a1' (float)
+0:97      Sequence
+0:97        move second child to first child (int)
+0:97          'a' (int)
+0:97          Constant:
+0:97            -1 (const int)
 0:?   Linker Objects
 0:?     'v2' (smooth out 2-component vector of float)
 0:?     'bad' (in 10-element array of 4-component vector of float)
@@ -173,6 +178,8 @@ ERROR: node is still EOpNull!
 0:?     'anon@3' (out block{out implicitly-sized array of float gl_ClipDistance, })
 0:?     'patchIn' (patch in 4-component vector of float)
 0:?     'patchOut' (smooth patch out 4-component vector of float)
+0:?     'comma0' (int)
+0:?     'comma1' (1-element array of int)
 0:?     'gl_VertexID' (gl_VertexId int)
 0:?     'gl_InstanceID' (gl_InstanceId int)
 
@@ -284,6 +291,11 @@ ERROR: node is still EOpNull!
 0:96            Constant:
 0:96              2.000000
 0:96            'a1' (float)
+0:97      Sequence
+0:97        move second child to first child (int)
+0:97          'a' (int)
+0:97          Constant:
+0:97            -1 (const int)
 0:?   Linker Objects
 0:?     'v2' (smooth out 2-component vector of float)
 0:?     'bad' (in 10-element array of 4-component vector of float)
@@ -316,6 +328,8 @@ ERROR: node is still EOpNull!
 0:?     'anon@3' (out block{out 1-element array of float gl_ClipDistance, })
 0:?     'patchIn' (patch in 4-component vector of float)
 0:?     'patchOut' (smooth patch out 4-component vector of float)
+0:?     'comma0' (int)
+0:?     'comma1' (1-element array of int)
 0:?     'gl_VertexID' (gl_VertexId int)
 0:?     'gl_InstanceID' (gl_InstanceId int)
 
