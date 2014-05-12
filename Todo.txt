@@ -188,7 +188,7 @@ Shader Functionality to Implement/Finish
       + Clarify that .length() returns an int type and can be used as a constant integer expression.
       + Allow swizzle operations on scalars.
       + Positive signed decimal literals, as well as octal and hexadecimal, can set all 32 bits. This includes setting the sign bit to create a negative value.
-      - Clarified that a comma sequence-operator expression cannot be a constant expression. E.g., “(2,3)” is not allowed, semantically, 
+      + Clarified that a comma sequence-operator expression cannot be a constant expression. E.g., “(2,3)” is not allowed, semantically, 
             as a valid constant expression 3, even though it is an expression that will evaluate to 3.
       + Use vec2 instead of vec3 for coordinate in textureGather*(sampler2DRect,...).
       + Clarify that textureGatherOffset() can take non-constants for the offsets.

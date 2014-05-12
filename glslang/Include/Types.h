@@ -833,8 +833,8 @@ public:
             vectorSize = 1;
     }
 
-    virtual void hideType() { basicType = EbtVoid; vectorSize = 1; }
-    virtual bool wasTypeHidden() const { return basicType == EbtVoid; }
+    virtual void hideMember() { basicType = EbtVoid; vectorSize = 1; }
+    virtual bool hiddenMember() const { return basicType == EbtVoid; }
 
     virtual void setTypeName(const TString& n) { typeName = NewPoolTString(n.c_str()); }
     virtual void setFieldName(const TString& n) { fieldName = NewPoolTString(n.c_str()); }
@@ -1062,7 +1062,7 @@ public:
         if (structure) {
             s.append("{");
             for (size_t i = 0; i < structure->size(); ++i) {
-                if ((*structure)[i].type->getBasicType() != EbtVoid) {
+                if (! (*structure)[i].type->hiddenMember()) {
                     s.append((*structure)[i].type->getCompleteString());
                     s.append(" ");
                     s.append((*structure)[i].type->getFieldName());

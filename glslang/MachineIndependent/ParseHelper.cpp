@@ -397,7 +397,7 @@ TIntermTyped* TParseContext::handleVariable(TSourceLoc loc, TSymbol* symbol, TSt
         node = intermediate.addIndex(EOpIndexDirectStruct, container, constNode, loc);
 
         node->setType(*(*variable->getType().getStruct())[anon->getMemberNumber()].type);
-        if (node->getType().wasTypeHidden())
+        if (node->getType().hiddenMember())
             error(loc, "member of nameless block was not redeclared", string->c_str(), "");
     } else {
         // Not a member of an anonymous container.
@@ -2574,7 +2574,7 @@ void TParseContext::redeclareBuiltinBlock(TSourceLoc loc, TTypeList& newTypeList
             if (instanceName)
                 member = type.getWritableStruct()->erase(member);
             else {
-                member->type->hideType();
+                member->type->hideMember();
                 ++member;
             }
         }
