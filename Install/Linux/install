@@ -1,2 +1,1 @@
 sudo cp glslangValidator /usr/local/bin
-sudo cp libglslang.so /usr/local/lib
