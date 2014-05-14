@@ -381,7 +381,11 @@ TIntermTyped* TParseContext::handleVariable(TSourceLoc loc, TSymbol* symbol, TSt
         // on first use, so that all future references will share its array structure,
         // so that editing the implicit size will effect all nodes consuming it,
         // and so that editing the implicit size won't change the shared one.
-        if (symbol->getType().containsImplicitlySizedArray())
+        //
+        // If this is a variable or a block, check it and all it contains, but if this 
+        // is a member of an anonymous block, check the whole block, as the whole block
+        // will need to be copied up if it contains an implicitly-sized array.
+        if (symbol->getType().containsImplicitlySizedArray() || (symbol->getAsAnonMember() && symbol->getAsAnonMember()->getAnonContainer().getType().containsImplicitlySizedArray()))
             makeEditable(symbol);
     }
 
