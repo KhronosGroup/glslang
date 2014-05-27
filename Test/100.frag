@@ -178,4 +178,20 @@ int agggf(float f);  // ERROR, second prototype
 
 varying struct SSS { float f; } s; // ERROR
 
+int vf(void);
+int vf2();
+int vf3(void v);      // ERROR
+int vf4(int, void);   // ERROR
+int vf5(int, void v); // ERROR
+
+void badswizzle()
+{
+    vec3 a[5];
+    a.y;        // ERROR, no array swizzle
+    a.zy;       // ERROR, no array swizzle
+    a.nothing;  // ERROR
+    a.length(); // ERROR, not this version
+    a.method(); // ERROR
+}
+
 uniform samplerExternalOES badExt;  // syntax ERROR

@@ -11,9 +11,9 @@ ERROR: 0:21: 'assign' :  l-value required (can't modify a const)
 ERROR: 0:28: 'length' :  array must be declared with a size before using this method
 ERROR: 0:31: 'length' : incomplete method syntax 
 ERROR: 0:32: 'length' : method does not accept any arguments 
-ERROR: 0:33: 'flizbit' : does not apply to this type: 7-element array of float
+ERROR: 0:33: '.' : cannot apply to an array: flizbit
 ERROR: 0:33: '=' :  cannot convert from '7-element array of float' to 'int'
-ERROR: 0:34: 'flizbit' : does not apply to this type: 7-element array of float
+ERROR: 0:34: '.' : cannot apply to an array: flizbit
 ERROR: 0:34: 'f' : can't use function syntax on variable 
 ERROR: 0:34: 'a4' : redefinition 
 ERROR: 0:35: 'arrays of arrays' : not supported with this profile: none

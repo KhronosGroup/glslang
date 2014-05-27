@@ -67,8 +67,18 @@ ERROR: 0:167: 'highp' : overloaded functions must have the same parameter precis
 ERROR: 0:170: 'multiple prototypes for same function' : not supported for this version or the enabled extensions 
 ERROR: 0:177: 'multiple prototypes for same function' : not supported for this version or the enabled extensions 
 ERROR: 0:179: 'fragment-shader struct input' : not supported for this version or the enabled extensions 
-ERROR: 0:181: '' :  syntax error
-ERROR: 62 compilation errors.  No code generated.
+ERROR: 0:183: 'v' : illegal use of type 'void' 
+ERROR: 0:184: 'void' : cannot be an argument type except for '(void)' 
+ERROR: 0:185: 'v' : illegal use of type 'void' 
+ERROR: 0:185: 'void' : cannot be an argument type except for '(void)' 
+ERROR: 0:190: '.' : cannot apply to an array: y
+ERROR: 0:191: '.' : cannot apply to an array: zy
+ERROR: 0:192: '.' : cannot apply to an array: nothing
+ERROR: 0:193: '.length' : not supported for this version or the enabled extensions 
+ERROR: 0:194: '.' : cannot apply to an array: method
+ERROR: 0:194: 'a' : can't use function syntax on variable 
+ERROR: 0:197: '' :  syntax error
+ERROR: 72 compilation errors.  No code generated.
 
 
 Shader version: 100
@@ -326,6 +336,16 @@ ERROR: node is still EOpNull!
 0:175      Branch: Return with expression
 0:175        Constant:
 0:175          2 (const int)
+0:187  Function Definition: badswizzle( (void)
+0:187    Function Parameters: 
+0:?     Sequence
+0:190      'a' (5-element array of mediump 3-component vector of float)
+0:191      'a' (5-element array of mediump 3-component vector of float)
+0:192      'a' (5-element array of mediump 3-component vector of float)
+0:193      Constant:
+0:193        5 (const int)
+0:194      Constant:
+0:194        0.000000
 0:?   Linker Objects
 0:?     'a' (3-element array of mediump int)
 0:?     'uint' (mediump int)
@@ -610,6 +630,16 @@ ERROR: node is still EOpNull!
 0:175      Branch: Return with expression
 0:175        Constant:
 0:175          2 (const int)
+0:187  Function Definition: badswizzle( (void)
+0:187    Function Parameters: 
+0:?     Sequence
+0:190      'a' (5-element array of mediump 3-component vector of float)
+0:191      'a' (5-element array of mediump 3-component vector of float)
+0:192      'a' (5-element array of mediump 3-component vector of float)
+0:193      Constant:
+0:193        5 (const int)
+0:194      Constant:
+0:194        0.000000
 0:?   Linker Objects
 0:?     'a' (3-element array of mediump int)
 0:?     'uint' (mediump int)

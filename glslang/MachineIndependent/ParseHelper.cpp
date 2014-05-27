@@ -697,6 +697,17 @@ TIntermTyped* TParseContext::handleDotDereference(TSourceLoc loc, TIntermTyped* 
         return intermediate.addMethod(base, TType(EbtInt), &field, loc);
     }
 
+    // It's not .length() if we get to here.
+
+    if (base->isArray()) {
+        error(loc, "cannot apply to an array:", ".", field.c_str());
+
+        return base;
+    }
+
+    // It's neither an array nor .length() if we get here,
+    // leaving swizzles and struct/block dereferences.
+
     TIntermTyped* result = base;
     if (base->isVector() || base->isScalar()) {
         if (base->isScalar()) {
