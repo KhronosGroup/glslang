@@ -171,3 +171,31 @@ void matConst()
     mat3 m3a1[2] = mat3[2](m3s, m3s);
     mat3 m3a2[2] = mat3[2](m3s, m3s, m3s);         // ERROR, too many args
 }
+
+uniform sampler3D s3D;
+uniform sampler1D s1D;
+uniform sampler2DShadow s2DS;
+
+void foo2323()
+{
+    vec4 v;
+    vec2 v2;
+    float f;
+    v = texture2DLod(s2D, v2, f);    // ERROR
+    v = texture3DProjLod(s3D, v, f); // ERROR
+    v = texture1DProjLod(s1D, v, f); // ERROR
+    v = shadow2DProjLod(s2DS, v, f); // ERROR
+}
+
+#extension GL_ARB_shader_texture_lod : require
+
+void foo2324()
+{
+    vec4 v;
+    vec2 v2;
+    float f;
+    v = texture2DLod(s2D, v2, f);
+    v = texture3DProjLod(s3D, v, f);
+    v = texture1DProjLod(s1D, v, f);
+    v = shadow2DProjLod(s2DS, v, f);
+}

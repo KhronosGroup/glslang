@@ -752,7 +752,7 @@ void TBuiltIns::initialize(int version, EProfile profile)
     // Original-style texture Functions with lod.
     //
     TString* s;
-    if (version < 130)
+    if (version == 100)
         s = &stageBuiltins[EShLangVertex];
     else
         s = &commonBuiltins;
@@ -761,12 +761,12 @@ void TBuiltIns::initialize(int version, EProfile profile)
         (profile == ECoreProfile && version < 420) ||
          profile == ENoProfile) {             
         s->append(
-            "vec4 texture2DLod(sampler2D, vec2, float);"
-            "vec4 texture2DProjLod(sampler2D, vec3, float);"
-            "vec4 texture2DProjLod(sampler2D, vec4, float);"
-            "vec4 texture3DLod(sampler3D, vec3, float);"         // OES_texture_3D, but caught by keyword check
-            "vec4 texture3DProjLod(sampler3D, vec4, float);"     // OES_texture_3D, but caught by keyword check
-            "vec4 textureCubeLod(samplerCube, vec3, float);"
+            "vec4 texture2DLod(sampler2D, vec2, float);"         // ARB_shader_texture_lod
+            "vec4 texture2DProjLod(sampler2D, vec3, float);"     // ARB_shader_texture_lod
+            "vec4 texture2DProjLod(sampler2D, vec4, float);"     // ARB_shader_texture_lod
+            "vec4 texture3DLod(sampler3D, vec3, float);"         // ARB_shader_texture_lod  // OES_texture_3D, but caught by keyword check
+            "vec4 texture3DProjLod(sampler3D, vec4, float);"     // ARB_shader_texture_lod  // OES_texture_3D, but caught by keyword check
+            "vec4 textureCubeLod(samplerCube, vec3, float);"     // ARB_shader_texture_lod
             
             "\n");
     }
@@ -774,13 +774,13 @@ void TBuiltIns::initialize(int version, EProfile profile)
         (profile == ECoreProfile && version < 420) ||
          profile == ENoProfile) {
         s->append(
-            "vec4 texture1DLod(sampler1D, float, float);"
-            "vec4 texture1DProjLod(sampler1D, vec2, float);"
-            "vec4 texture1DProjLod(sampler1D, vec4, float);"
-            "vec4 shadow1DLod(sampler1DShadow, vec3, float);"
-            "vec4 shadow2DLod(sampler2DShadow, vec3, float);"
-            "vec4 shadow1DProjLod(sampler1DShadow, vec4, float);"
-            "vec4 shadow2DProjLod(sampler2DShadow, vec4, float);"
+            "vec4 texture1DLod(sampler1D, float, float);"         // ARB_shader_texture_lod
+            "vec4 texture1DProjLod(sampler1D, vec2, float);"      // ARB_shader_texture_lod
+            "vec4 texture1DProjLod(sampler1D, vec4, float);"      // ARB_shader_texture_lod
+            "vec4 shadow1DLod(sampler1DShadow, vec3, float);"     // ARB_shader_texture_lod
+            "vec4 shadow2DLod(sampler2DShadow, vec3, float);"     // ARB_shader_texture_lod
+            "vec4 shadow1DProjLod(sampler1DShadow, vec4, float);" // ARB_shader_texture_lod
+            "vec4 shadow2DProjLod(sampler2DShadow, vec4, float);" // ARB_shader_texture_lod
             
             "\n");
     }
@@ -2195,6 +2195,18 @@ void IdentifyBuiltIns(int version, EProfile profile, EShLanguage language, TSymb
             symbolTable.setFunctionExtensions("texture2DLodEXT",     1, &GL_EXT_shader_texture_lod);
             symbolTable.setFunctionExtensions("texture2DProjLodEXT", 1, &GL_EXT_shader_texture_lod);
             symbolTable.setFunctionExtensions("textureCubeLodEXT",   1, &GL_EXT_shader_texture_lod);
+        } else if (version < 130) {
+            symbolTable.setFunctionExtensions("texture1DLod",        1, &GL_ARB_shader_texture_lod);
+            symbolTable.setFunctionExtensions("texture2DLod",        1, &GL_ARB_shader_texture_lod);
+            symbolTable.setFunctionExtensions("texture3DLod",        1, &GL_ARB_shader_texture_lod);
+            symbolTable.setFunctionExtensions("textureCubeLod",      1, &GL_ARB_shader_texture_lod);
+            symbolTable.setFunctionExtensions("texture1DProjLod",    1, &GL_ARB_shader_texture_lod);
+            symbolTable.setFunctionExtensions("texture2DProjLod",    1, &GL_ARB_shader_texture_lod);
+            symbolTable.setFunctionExtensions("texture3DProjLod",    1, &GL_ARB_shader_texture_lod);
+            symbolTable.setFunctionExtensions("shadow1DLod",         1, &GL_ARB_shader_texture_lod);
+            symbolTable.setFunctionExtensions("shadow2DLod",         1, &GL_ARB_shader_texture_lod);
+            symbolTable.setFunctionExtensions("shadow1DProjLod",     1, &GL_ARB_shader_texture_lod);
+            symbolTable.setFunctionExtensions("shadow2DProjLod",     1, &GL_ARB_shader_texture_lod);
         }
         symbolTable.setVariableExtensions("gl_FragDepthEXT", 1, &GL_EXT_frag_depth);
         break;
