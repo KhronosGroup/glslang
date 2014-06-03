@@ -445,6 +445,7 @@ public:
         unionArray = new TConstUnionVector(size, val);
     }
 
+    int size() const { return unionArray ? (int)unionArray->size() : 0; }
     TConstUnion& operator[](size_t index) { return (*unionArray)[index]; }
     const TConstUnion& operator[](size_t index) const { return (*unionArray)[index]; }
     bool operator==(const TConstUnionArray& rhs) const

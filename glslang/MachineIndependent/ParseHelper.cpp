@@ -1698,9 +1698,9 @@ bool TParseContext::builtInName(const TString& identifier)
 }
 
 //
-// Make sure there is enough data provided to the constructor to build
-// something of the type of the constructor.  Also returns the type of
-// the constructor.
+// Make sure there is enough data and not too many arguments provided to the
+// constructor to build something of the type of the constructor.  Also returns
+// the type of the constructor.
 //
 // Returns true if there was an error in construction.
 //
@@ -1781,6 +1781,11 @@ bool TParseContext::constructorError(TSourceLoc loc, TIntermNode* node, TFunctio
 
     if (matrixInMatrix && ! type.isArray()) {
         profileRequires(loc, ENoProfile, 120, 0, "constructing matrix from matrix");
+
+        // "If a matrix argument is given to a matrix constructor,
+        // it is a compile-time error to have any other arguments."
+        if (function.getParamCount() > 1)
+            error(loc, "matrix constructed from matrix can only have one argument", "constructor", "");
         return false;
     }
 

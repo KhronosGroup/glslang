@@ -152,3 +152,22 @@ void foo123()
     mat3x2 rfoo1 = matrixCompMult(m23, m32);  // ERROR
     mat3x4 rfoo2 = matrixCompMult(m34, m44);  // ERROR    
 }
+
+void matConst()
+{
+    vec2 v2;
+    vec3 v3;
+    mat4 m4b1 = mat4(v2, v3);                      // ERROR, not enough
+    mat4 m4b2 = mat4(v2, v3, v3, v3, v3, v2, v2);  // ERROR, too much
+    mat4 m4g = mat4(v2, v3, v3, v3, v3, v3);
+    mat4 m4 = mat4(v2, v3, v3, v3, v3, v2);
+    mat3 m3 = mat3(m4);
+    mat3 m3b1 = mat3(m4, v2);                      // ERROR, extra arg
+    mat3 m3b2 = mat3(m4, m4);                      // ERROR, extra arg
+    mat3x2 m32 = mat3x2(m4);
+    mat4 m4c = mat4(m32);
+    mat3 m3s = mat3(v2.x);
+
+    mat3 m3a1[2] = mat3[2](m3s, m3s);
+    mat3 m3a2[2] = mat3[2](m3s, m3s, m3s);         // ERROR, too many args
+}
