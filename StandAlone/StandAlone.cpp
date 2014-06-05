@@ -428,7 +428,7 @@ void ProcessConfigFile()
 glslang::TWorklist Worklist;
 
 // array of unique places to leave the shader names and infologs for the asynchronous compiles
-glslang::TWorkItem **Work = 0;
+glslang::TWorkItem** Work = 0;
 int NumWorkItems = 0;
 
 int Options = 0;
@@ -455,7 +455,7 @@ bool ProcessArguments(int argc, char* argv[])
 {
     ExecutableName = argv[0];
     NumWorkItems = argc;  // will include some empties where the '-' options were, but it doesn't matter, they'll be 0
-    Work = new glslang::TWorkItem*[NumWorkItems];    
+    Work = new glslang::TWorkItem*[NumWorkItems];
     Work[0] = 0;
 
     argc--;

@@ -190,7 +190,7 @@ SH_IMPORT_EXPORT int ShLink(
     const int numHandles,
     ShHandle uniformMap,          // updated with new uniforms
     short int** uniformsAccessed,  // returned with indexes of uniforms accessed
-    int* numUniformsAccessed); 	
+    int* numUniformsAccessed);
 
 SH_IMPORT_EXPORT int ShLinkExt(
     const ShHandle,               // linker object
