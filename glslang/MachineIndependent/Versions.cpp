@@ -367,6 +367,10 @@ void TParseContext::requireExtensions(TSourceLoc loc, int numExtensions, const c
     bool warned = false;
     for (int i = 0; i < numExtensions; ++i) {
         TExtensionBehavior behavior = getExtensionBehavior(extensions[i]);
+        if (behavior == EBhDisable && (messages & EShMsgRelaxedErrors)) {
+            infoSink.info.message(EPrefixWarning, "The following extension must be enabled to use this feature:", loc);
+            behavior = EBhWarn;
+        }
         if (behavior == EBhWarn) {
             infoSink.info.message(EPrefixWarning, ("extension " + TString(extensions[i]) + " is being used for " + featureDesc).c_str(), loc);
             warned = true;

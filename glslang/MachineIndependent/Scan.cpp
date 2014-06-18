@@ -155,79 +155,117 @@ void TInputScanner::consumeWhitespaceComment(bool& foundNonSpaceTab)
 // or no #version was found; otherwise, returns false.  There is no error case, it always
 // succeeds, but will leave version == 0 if no #version was found.
 //
+// Sets versionNotFirstToken based on whether tokens (beyond white space and comments)
+// appeared before the #version.
+//
 // N.B. does not attempt to leave input in any particular known state.  The assumption
 // is that scanning will start anew, following the rules for the chosen version/profile,
 // and with a corresponding parsing context.
 //
-bool TInputScanner::scanVersion(int& version, EProfile& profile)
+bool TInputScanner::scanVersion(int& version, EProfile& profile, bool& notFirstToken)
 {
     // This function doesn't have to get all the semantics correct,
     // just find the #version if there is a correct one present.
     // The preprocessor will have the responsibility of getting all the semantics right.
 
+    bool versionNotFirst = false;  // means not first WRT comments and white space, nothing more
+    notFirstToken = false;         // means not first WRT to real tokens
     version = 0;  // means not found
     profile = ENoProfile;
 
     bool foundNonSpaceTab = false;
-    consumeWhitespaceComment(foundNonSpaceTab);
-
-    // #
-    if (get() != '#')
-        return true;
-
-    // whitespace
+    bool lookingInMiddle = false;
     int c;
     do {
-        c = get();
-    } while (c == ' ' || c == '\t');
+        if (lookingInMiddle) {
+            notFirstToken = true;
+            // make forward progress by finishing off the current line plus extra new lines
+            if (peek() == '\n' || peek() == '\r') {
+                while (peek() == '\n' || peek() == '\r')
+                    get();
+            } else
+                do {
+                    c = get();
+                } while (c > 0 && c != '\n' && c != '\r');
+                while (peek() == '\n' || peek() == '\r')
+                    get();
+                if (peek() < 0)
+                    return true;
+        }
+        lookingInMiddle = true;
 
-    if (    c != 'v' ||
-        get() != 'e' ||
-        get() != 'r' ||
-        get() != 's' ||
-        get() != 'i' ||
-        get() != 'o' ||
-        get() != 'n')
-        return true;
+        // Nominal start, skipping the desktop allowed comments and white space, but tracking if 
+        // something else was found for ES:
+        consumeWhitespaceComment(foundNonSpaceTab);
+        if (foundNonSpaceTab) 
+            versionNotFirst = true;
 
-    // whitespace
-    do {
-        c = get();
-    } while (c == ' ' || c == '\t');
+        // "#"
+        if (get() != '#') {
+            versionNotFirst = true;
+            continue;
+        }
 
-    // version number
-    while (c >= '0' && c <= '9') {
-        version = 10 * version + (c - '0');
-        c = get();
-    }
-    if (version == 0)
-        return true;
-    
-    // whitespace
-    while (c == ' ' || c == '\t')
-        c = get();
+        // whitespace
+        do {
+            c = get();
+        } while (c == ' ' || c == '\t');
 
-    // profile
-    const int maxProfileLength = 13;  // not including any 0
-    char profileString[maxProfileLength];
-    int profileLength;
-    for (profileLength = 0; profileLength < maxProfileLength; ++profileLength) {
-        if (c < 0 || c == ' ' || c == '\t' || c == '\n' || c == '\r')
-            break;
-        profileString[profileLength] = c;
-        c = get();
-    }
-    if (c > 0 && c != ' ' && c != '\t' && c != '\n' && c != '\r')
-        return true;
+        // "version"
+        if (    c != 'v' ||
+            get() != 'e' ||
+            get() != 'r' ||
+            get() != 's' ||
+            get() != 'i' ||
+            get() != 'o' ||
+            get() != 'n') {
+            versionNotFirst = true;
+            continue;
+        }
 
-    if (profileLength == 2 && strncmp(profileString, "es", profileLength) == 0)
-        profile = EEsProfile;
-    else if (profileLength == 4 && strncmp(profileString, "core", profileLength) == 0)
-        profile = ECoreProfile;
-    else if (profileLength == 13 && strncmp(profileString, "compatibility", profileLength) == 0)
-        profile = ECompatibilityProfile;
+        // whitespace
+        do {
+            c = get();
+        } while (c == ' ' || c == '\t');
 
-    return foundNonSpaceTab;
+        // version number
+        while (c >= '0' && c <= '9') {
+            version = 10 * version + (c - '0');
+            c = get();
+        }
+        if (version == 0) {
+            versionNotFirst = true;
+            continue;
+        }
+
+        // whitespace
+        while (c == ' ' || c == '\t')
+            c = get();
+
+        // profile
+        const int maxProfileLength = 13;  // not including any 0
+        char profileString[maxProfileLength];
+        int profileLength;
+        for (profileLength = 0; profileLength < maxProfileLength; ++profileLength) {
+            if (c < 0 || c == ' ' || c == '\t' || c == '\n' || c == '\r')
+                break;
+            profileString[profileLength] = c;
+            c = get();
+        }
+        if (c > 0 && c != ' ' && c != '\t' && c != '\n' && c != '\r') {
+            versionNotFirst = true;
+            continue;
+        }
+
+        if (profileLength == 2 && strncmp(profileString, "es", profileLength) == 0)
+            profile = EEsProfile;
+        else if (profileLength == 4 && strncmp(profileString, "core", profileLength) == 0)
+            profile = ECoreProfile;
+        else if (profileLength == 13 && strncmp(profileString, "compatibility", profileLength) == 0)
+            profile = ECompatibilityProfile;
+
+        return versionNotFirst;
+    } while (true);
 }
 
 // Fill this in when doing glslang-level scanning, to hand back to the parser.

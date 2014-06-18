@@ -112,7 +112,7 @@ public:
     void consumeWhiteSpace(bool& foundNonSpaceTab);
     bool consumeComment();
     void consumeWhitespaceComment(bool& foundNonSpaceTab);
-    bool scanVersion(int& version, EProfile& profile);
+    bool scanVersion(int& version, EProfile& profile, bool& notFirstToken);
 
 protected:
 

@@ -461,11 +461,19 @@ bool CompileDeferred(
     int version;
     EProfile profile;
     glslang::TInputScanner userInput(numStrings, &strings[1], &lengths[1]);  // no preamble
-    bool versionNotFirst = userInput.scanVersion(version, profile);
+    bool versionNotFirstToken;
+    bool versionNotFirst = userInput.scanVersion(version, profile, versionNotFirstToken);
     bool versionNotFound = version == 0;
     bool goodVersion = DeduceVersionProfile(compiler->infoSink, compiler->getLanguage(), versionNotFirst, defaultVersion, version, profile);
     bool versionWillBeError = (versionNotFound || (profile == EEsProfile && version >= 300 && versionNotFirst));
-    
+    bool warnVersionNotFirst = false;
+    if (! versionWillBeError && versionNotFirstToken) {
+        if (messages & EShMsgRelaxedErrors)
+            warnVersionNotFirst = true;
+        else
+            versionWillBeError = true;
+    }
+
     intermediate.setVersion(version);
     intermediate.setProfile(profile);
     SetupBuiltinSymbolTable(version, profile);
@@ -496,6 +504,12 @@ bool CompileDeferred(
     parseContext.setLimits(*resources);
     if (! goodVersion)
         parseContext.addError();
+    if (warnVersionNotFirst) {
+        TSourceLoc loc;
+        loc.line = 1;
+        loc.string = 0;
+        parseContext.warn(loc, "Illegal to have non-comment, non-whitespace tokens before #version", "#version", "");
+    }
 
     parseContext.initializeExtensionBehavior();
 

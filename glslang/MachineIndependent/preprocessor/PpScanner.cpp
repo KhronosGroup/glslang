@@ -205,7 +205,8 @@ int TPpContext::lFloatConst(int len, int ch, TPpToken* ppToken)
             }
         } else if (ch == 'f' || ch == 'F') {
             parseContext.profileRequires(ppToken->loc,  EEsProfile, 300, 0, "floating-point suffix");
-            parseContext.profileRequires(ppToken->loc, ~EEsProfile, 120, 0, "floating-point suffix");
+            if ((parseContext.messages & EShMsgRelaxedErrors) == 0)
+                parseContext.profileRequires(ppToken->loc, ~EEsProfile, 120, 0, "floating-point suffix");
             if (! HasDecimalOrExponent)
                 parseContext.error(ppToken->loc, "float literal needs a decimal point or exponent", "", "");
             if (len < TPpToken::maxTokenLength)
