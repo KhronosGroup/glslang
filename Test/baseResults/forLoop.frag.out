@@ -1,78 +1,200 @@
 ../../LunarGLASS/test/forLoop.frag
 
-Shader version: 120
+Shader version: 130
 0:? Sequence
-0:8  Function Definition: main( (void)
-0:8    Function Parameters: 
-0:10    Sequence
-0:10      Sequence
-0:10        move second child to first child (4-component vector of float)
-0:10          'color' (4-component vector of float)
-0:10          'BaseColor' (smooth in 4-component vector of float)
-0:12      Sequence
-0:12        Sequence
-0:12          move second child to first child (int)
-0:12            'i' (int)
-0:12            Constant:
-0:12              0 (const int)
-0:12        Loop with condition tested first
-0:12          Loop Condition
-0:12          Compare Less Than (bool)
-0:12            'i' (int)
-0:12            'Count' (uniform int)
-0:12          Loop Body
-0:13          Sequence
-0:13            add second child into first child (4-component vector of float)
-0:13              'color' (4-component vector of float)
-0:13              'bigColor' (uniform 4-component vector of float)
-0:12          Loop Terminal Expression
-0:12          Pre-Increment (int)
-0:12            'i' (int)
-0:16      move second child to first child (4-component vector of float)
-0:16        'gl_FragColor' (fragColor 4-component vector of float)
-0:16        'color' (4-component vector of float)
+0:9  Function Definition: main( (void)
+0:9    Function Parameters: 
+0:11    Sequence
+0:11      Sequence
+0:11        move second child to first child (4-component vector of float)
+0:11          'color' (4-component vector of float)
+0:11          'BaseColor' (smooth in 4-component vector of float)
+0:13      Sequence
+0:13        Sequence
+0:13          move second child to first child (int)
+0:13            'i' (int)
+0:13            Constant:
+0:13              0 (const int)
+0:13        Loop with condition tested first
+0:13          Loop Condition
+0:13          Compare Less Than (bool)
+0:13            'i' (int)
+0:13            'Count' (uniform int)
+0:13          Loop Body
+0:14          Sequence
+0:14            add second child into first child (4-component vector of float)
+0:14              'color' (4-component vector of float)
+0:14              'bigColor' (uniform 4-component vector of float)
+0:13          Loop Terminal Expression
+0:13          Pre-Increment (int)
+0:13            'i' (int)
+0:17      move second child to first child (4-component vector of float)
+0:17        'gl_FragColor' (fragColor 4-component vector of float)
+0:17        'color' (4-component vector of float)
+0:19      Sequence
+0:19        move second child to first child (float)
+0:19          'sum' (float)
+0:19          Constant:
+0:19            0.000000
+0:20      Sequence
+0:20        Sequence
+0:20          move second child to first child (int)
+0:20            'i' (int)
+0:20            Constant:
+0:20              0 (const int)
+0:20        Loop with condition tested first
+0:20          Loop Condition
+0:20          Compare Less Than (bool)
+0:20            'i' (int)
+0:20            Constant:
+0:20              4 (const int)
+0:20          Loop Body
+0:21          add second child into first child (float)
+0:21            'sum' (float)
+0:21            Convert uint to float (float)
+0:21              indirect index (uint)
+0:21                'v4' (uniform 4-component vector of uint)
+0:21                'i' (int)
+0:20          Loop Terminal Expression
+0:20          Pre-Increment (int)
+0:20            'i' (int)
+0:25      Sequence
+0:25        Sequence
+0:25          move second child to first child (int)
+0:25            'i' (int)
+0:25            Constant:
+0:25              0 (const int)
+0:25        Loop with condition tested first
+0:25          Loop Condition
+0:25          Compare Less Than (bool)
+0:25            'i' (int)
+0:25            Constant:
+0:25              4 (const int)
+0:25          Loop Body
+0:26          move second child to first child (float)
+0:26            indirect index (float)
+0:26              'tv4' (4-component vector of float)
+0:26              'i' (int)
+0:26            Convert uint to float (float)
+0:26              component-wise multiply (uint)
+0:26                indirect index (uint)
+0:26                  'v4' (uniform 4-component vector of uint)
+0:26                  'i' (int)
+0:26                Constant:
+0:26                  4 (const uint)
+0:25          Loop Terminal Expression
+0:25          Pre-Increment (int)
+0:25            'i' (int)
+0:28      add second child into first child (4-component vector of float)
+0:28        'gl_FragColor' (fragColor 4-component vector of float)
+0:28        add (4-component vector of float)
+0:28          Construct vec4 (4-component vector of float)
+0:28            'sum' (float)
+0:28          'tv4' (4-component vector of float)
 0:?   Linker Objects
 0:?     'bigColor' (uniform 4-component vector of float)
 0:?     'BaseColor' (smooth in 4-component vector of float)
 0:?     'Count' (uniform int)
+0:?     'v4' (uniform 4-component vector of uint)
 
 
 Linked fragment stage:
 
 
-Shader version: 120
+Shader version: 130
 0:? Sequence
-0:8  Function Definition: main( (void)
-0:8    Function Parameters: 
-0:10    Sequence
-0:10      Sequence
-0:10        move second child to first child (4-component vector of float)
-0:10          'color' (4-component vector of float)
-0:10          'BaseColor' (smooth in 4-component vector of float)
-0:12      Sequence
-0:12        Sequence
-0:12          move second child to first child (int)
-0:12            'i' (int)
-0:12            Constant:
-0:12              0 (const int)
-0:12        Loop with condition tested first
-0:12          Loop Condition
-0:12          Compare Less Than (bool)
-0:12            'i' (int)
-0:12            'Count' (uniform int)
-0:12          Loop Body
-0:13          Sequence
-0:13            add second child into first child (4-component vector of float)
-0:13              'color' (4-component vector of float)
-0:13              'bigColor' (uniform 4-component vector of float)
-0:12          Loop Terminal Expression
-0:12          Pre-Increment (int)
-0:12            'i' (int)
-0:16      move second child to first child (4-component vector of float)
-0:16        'gl_FragColor' (fragColor 4-component vector of float)
-0:16        'color' (4-component vector of float)
+0:9  Function Definition: main( (void)
+0:9    Function Parameters: 
+0:11    Sequence
+0:11      Sequence
+0:11        move second child to first child (4-component vector of float)
+0:11          'color' (4-component vector of float)
+0:11          'BaseColor' (smooth in 4-component vector of float)
+0:13      Sequence
+0:13        Sequence
+0:13          move second child to first child (int)
+0:13            'i' (int)
+0:13            Constant:
+0:13              0 (const int)
+0:13        Loop with condition tested first
+0:13          Loop Condition
+0:13          Compare Less Than (bool)
+0:13            'i' (int)
+0:13            'Count' (uniform int)
+0:13          Loop Body
+0:14          Sequence
+0:14            add second child into first child (4-component vector of float)
+0:14              'color' (4-component vector of float)
+0:14              'bigColor' (uniform 4-component vector of float)
+0:13          Loop Terminal Expression
+0:13          Pre-Increment (int)
+0:13            'i' (int)
+0:17      move second child to first child (4-component vector of float)
+0:17        'gl_FragColor' (fragColor 4-component vector of float)
+0:17        'color' (4-component vector of float)
+0:19      Sequence
+0:19        move second child to first child (float)
+0:19          'sum' (float)
+0:19          Constant:
+0:19            0.000000
+0:20      Sequence
+0:20        Sequence
+0:20          move second child to first child (int)
+0:20            'i' (int)
+0:20            Constant:
+0:20              0 (const int)
+0:20        Loop with condition tested first
+0:20          Loop Condition
+0:20          Compare Less Than (bool)
+0:20            'i' (int)
+0:20            Constant:
+0:20              4 (const int)
+0:20          Loop Body
+0:21          add second child into first child (float)
+0:21            'sum' (float)
+0:21            Convert uint to float (float)
+0:21              indirect index (uint)
+0:21                'v4' (uniform 4-component vector of uint)
+0:21                'i' (int)
+0:20          Loop Terminal Expression
+0:20          Pre-Increment (int)
+0:20            'i' (int)
+0:25      Sequence
+0:25        Sequence
+0:25          move second child to first child (int)
+0:25            'i' (int)
+0:25            Constant:
+0:25              0 (const int)
+0:25        Loop with condition tested first
+0:25          Loop Condition
+0:25          Compare Less Than (bool)
+0:25            'i' (int)
+0:25            Constant:
+0:25              4 (const int)
+0:25          Loop Body
+0:26          move second child to first child (float)
+0:26            indirect index (float)
+0:26              'tv4' (4-component vector of float)
+0:26              'i' (int)
+0:26            Convert uint to float (float)
+0:26              component-wise multiply (uint)
+0:26                indirect index (uint)
+0:26                  'v4' (uniform 4-component vector of uint)
+0:26                  'i' (int)
+0:26                Constant:
+0:26                  4 (const uint)
+0:25          Loop Terminal Expression
+0:25          Pre-Increment (int)
+0:25            'i' (int)
+0:28      add second child into first child (4-component vector of float)
+0:28        'gl_FragColor' (fragColor 4-component vector of float)
+0:28        add (4-component vector of float)
+0:28          Construct vec4 (4-component vector of float)
+0:28            'sum' (float)
+0:28          'tv4' (4-component vector of float)
 0:?   Linker Objects
 0:?     'bigColor' (uniform 4-component vector of float)
 0:?     'BaseColor' (smooth in 4-component vector of float)
 0:?     'Count' (uniform int)
+0:?     'v4' (uniform 4-component vector of uint)
 
