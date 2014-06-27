@@ -39,6 +39,7 @@
 
 #include "../Include/Common.h"
 #include "../Include/BaseTypes.h"
+#include "../Public/ShaderLang.h"
 
 namespace glslang {
 
@@ -379,6 +380,21 @@ public:
         case EvqFragColor:
         case EvqFragDepth:
             return true;
+        default:
+            return false;
+        }
+    }
+
+    // True if this type of IO is supposed to be arrayed with extra level for per-vertex data
+    bool isArrayedIo(EShLanguage language) const
+    {
+        switch (language) {
+        case EShLangGeometry:
+            return isPipeInput();
+        case EShLangTessControl:
+            return ! patch && (isPipeInput() || isPipeOutput());
+        case EShLangTessEvaluation:
+            return ! patch && isPipeInput();
         default:
             return false;
         }

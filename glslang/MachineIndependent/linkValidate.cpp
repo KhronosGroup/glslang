@@ -607,10 +607,7 @@ int TIntermediate::addUsedLocation(const TQualifier& qualifier, const TType& typ
             size = 1;
     } else {
         // Strip off the outer array dimension for those having an extra one.
-        if (type.isArray() && ! qualifier.patch &&
-            (language == EShLangGeometry && qualifier.isPipeInput()) ||
-            language == EShLangTessControl                           ||
-            (language == EShLangTessEvaluation && qualifier.isPipeInput())) {
+        if (type.isArray() && qualifier.isArrayedIo(language)) {
             TType elementType(type, 0);
             size = computeTypeLocationSize(elementType);
         } else

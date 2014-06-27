@@ -590,9 +590,7 @@ void TParseContext::fixIoArraySize(TSourceLoc loc, TType& type)
 void TParseContext::ioArrayCheck(TSourceLoc loc, const TType& type, const TString& identifier)
 {
     if (! type.isArray() && ! symbolTable.atBuiltInLevel()) {
-        if ((language == EShLangGeometry       &&  type.getQualifier().storage == EvqVaryingIn) ||
-            (language == EShLangTessControl    && (type.getQualifier().storage == EvqVaryingOut || type.getQualifier().storage == EvqVaryingIn) && ! type.getQualifier().patch) ||
-            (language == EShLangTessEvaluation &&  type.getQualifier().storage == EvqVaryingIn && ! type.getQualifier().patch))
+        if (type.getQualifier().isArrayedIo(language))
             error(loc, "type must be an array:", type.getStorageQualifierString(), identifier.c_str());
     }
 }
