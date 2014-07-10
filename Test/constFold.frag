@@ -116,4 +116,6 @@ void foo2()
     p = -2147483647 / -1;
     p = -2147483648 / -1;
     p =  2147483647 / -1;
+    float f = vec4(7.8 < 2.4 ? -1.333 : 1.444).a;
+    f = vec4(inv.x < 2.4 ? -1.0 : 1.0).a;  // not folded, ensuring no propagation
 }

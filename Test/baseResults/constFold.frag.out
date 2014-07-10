@@ -231,6 +231,32 @@ ERROR: node is still EOpNull!
 0:118        'p' (int)
 0:118        Constant:
 0:118          -2147483647 (const int)
+0:119      Sequence
+0:119        move second child to first child (float)
+0:119          'f' (float)
+0:119          Constant:
+0:119            1.444000
+0:120      move second child to first child (float)
+0:120        'f' (float)
+0:120        direct index (float)
+0:120          Construct vec4 (4-component vector of float)
+0:120            Test condition and select (float)
+0:120              Condition
+0:120              Compare Less Than (bool)
+0:120                direct index (float)
+0:120                  'inv' (smooth in 4-component vector of float)
+0:120                  Constant:
+0:120                    0 (const int)
+0:120                Constant:
+0:120                  2.400000
+0:120              true case
+0:120              Constant:
+0:120                -1.000000
+0:120              false case
+0:120              Constant:
+0:120                1.000000
+0:120          Constant:
+0:120            3 (const int)
 0:?   Linker Objects
 0:?     'a' (const int)
 0:?       1 (const int)
@@ -532,6 +558,32 @@ ERROR: node is still EOpNull!
 0:118        'p' (int)
 0:118        Constant:
 0:118          -2147483647 (const int)
+0:119      Sequence
+0:119        move second child to first child (float)
+0:119          'f' (float)
+0:119          Constant:
+0:119            1.444000
+0:120      move second child to first child (float)
+0:120        'f' (float)
+0:120        direct index (float)
+0:120          Construct vec4 (4-component vector of float)
+0:120            Test condition and select (float)
+0:120              Condition
+0:120              Compare Less Than (bool)
+0:120                direct index (float)
+0:120                  'inv' (smooth in 4-component vector of float)
+0:120                  Constant:
+0:120                    0 (const int)
+0:120                Constant:
+0:120                  2.400000
+0:120              true case
+0:120              Constant:
+0:120                -1.000000
+0:120              false case
+0:120              Constant:
+0:120                1.000000
+0:120          Constant:
+0:120            3 (const int)
 0:?   Linker Objects
 0:?     'a' (const int)
 0:?       1 (const int)

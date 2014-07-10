@@ -784,6 +784,7 @@ TIntermTyped* TIntermediate::addSelection(TIntermTyped* cond, TIntermTyped* true
     // Make a selection node.
     //
     TIntermSelection* node = new TIntermSelection(cond, trueBlock, falseBlock, trueBlock->getType());
+    node->getQualifier().storage = EvqTemporary;
     node->setLoc(loc);
     node->getQualifier().precision = std::max(trueBlock->getQualifier().precision, falseBlock->getQualifier().precision);
 
