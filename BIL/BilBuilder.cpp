@@ -53,7 +53,6 @@ Builder::~Builder()
 void MissingFunctionality(const char* fun)
 {
     printf("Missing functionality: %s\n", fun);
-    exit(1);
 }
 
 }; // end glbil namespace
