@@ -479,6 +479,10 @@ public:
         return layoutLocation  != layoutLocationEnd ||
                layoutComponent != layoutComponentEnd;
     }
+    bool hasComponent() const
+    {
+        return layoutComponent != layoutComponentEnd;
+    }
     bool hasBinding() const
     {
         return layoutBinding != layoutBindingEnd;

@@ -16,7 +16,8 @@ add_executable(glslangValidator ${SOURCES})
 set(LIBRARIES
     glslang
     OGLCompiler
-    OSDependent)
+    OSDependent
+    BIL)
 
 if(WIN32)
     set(LIBRARIES ${LIBRARIES} psapi)

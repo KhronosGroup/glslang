@@ -1,5 +1,8 @@
 Current functionality level: ESSL 3.0, GLSL 1.5
 
+Bugs
+ - implicitly-sized gl_ClipDistance[] (at least in tessellation shaders) with sizes greater than one are not getting sizes greater than one
+
 + create version system
 
 Link Validation

@@ -40,6 +40,7 @@
 #include "Worklist.h"
 #include "./../glslang/Include/ShHandle.h"
 #include "./../glslang/Public/ShaderLang.h"
+#include "../BIL/GlslangToBil.h"
 #include <string.h>
 #include <stdlib.h>
 #include <math.h>
@@ -64,6 +65,7 @@ enum TOptions {
     EOptionDumpReflection     = 0x100,
     EOptionSuppressWarnings   = 0x200,
     EOptionDumpVersions       = 0x400,
+    EOptionBil                = 0x800,
 };
 
 //
@@ -464,6 +466,9 @@ bool ProcessArguments(int argc, char* argv[])
         Work[argc] = 0;
         if (argv[0][0] == '-') {
             switch (argv[0][1]) {
+            case 'b':
+                Options |= EOptionBil;
+                break;
             case 'c':
                 Options |= EOptionDumpConfig;
                 break;
@@ -613,6 +618,17 @@ void CompileAndLinkShaders()
     if (Options & EOptionDumpReflection) {
         program.buildReflection();
         program.dumpReflection();
+    }
+
+    if (Options & EOptionBil) {
+        if (CompileFailed || LinkFailed)
+            printf("Bil is not generated for failed compile or link\n");
+        else {
+            for (int stage = 0; stage < EShLangCount; ++stage) {
+                if (program.getIntermediate((EShLanguage)stage))
+                    glslang::GlslangToBil(*program.getIntermediate((EShLanguage)stage));
+            }
+        }
     }
 
     // Free everything up, program has to go before the shaders
@@ -813,6 +829,7 @@ void usage()
            "\n"
            "To get other information, use one of the following options:\n"
            "(Each option must be specified separately, but can go anywhere in the command line.)\n"
+           "  -b  create BIL\n"
            "  -c  configuration dump; use to create default configuration file (redirect to a .conf file)\n"
            "  -i  intermediate tree (glslang AST) is printed out\n"
            "  -l  link validation of all input files\n"

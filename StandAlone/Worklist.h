@@ -48,6 +48,7 @@ namespace glslang {
             name(s) { }
         std::string name;
         std::string results;
+        std::string resultsIndex;
     };
 
     class TWorklist {
