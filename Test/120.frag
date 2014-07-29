@@ -185,6 +185,10 @@ void foo2323()
     v = texture3DProjLod(s3D, v, f); // ERROR
     v = texture1DProjLod(s1D, v, f); // ERROR
     v = shadow2DProjLod(s2DS, v, f); // ERROR
+
+    v = texture1DGradARB(s1D, f, f, f);         // ERROR
+    v = texture2DProjGradARB(s2D, v, v2, v2);   // ERROR
+    v = shadow2DProjGradARB(s2DS, v, v2, v2);   // ERROR
 }
 
 #extension GL_ARB_shader_texture_lod : require
@@ -198,9 +202,14 @@ void foo2324()
     v = texture3DProjLod(s3D, v, f);
     v = texture1DProjLod(s1D, v, f);
     v = shadow2DProjLod(s2DS, v, f);
+
+    v = texture1DGradARB(s1D, f, f, f);
+    v = texture2DProjGradARB(s2D, v, v2, v2);
+    v = shadow2DProjGradARB(s2DS, v, v2, v2);
+    v = shadow2DRectProjGradARB(s2DS, v, v2, v2);  // ERROR
 }
 
-uniform sampler2DRect s2DRbad;
+uniform sampler2DRect s2DRbad;  // ERROR
 
 void foo121111()
 {
@@ -224,4 +233,6 @@ void foo12111()
     v = texture2DRectProj(s2DR, v4);
     v = shadow2DRect(s2DRS, v3);
     v = shadow2DRectProj(s2DRS, v4);
+
+    v = shadow2DRectProjGradARB(s2DRS, v, v2, v2);
 }
