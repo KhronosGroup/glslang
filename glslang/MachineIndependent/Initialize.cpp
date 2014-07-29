@@ -2193,27 +2193,9 @@ void IdentifyBuiltIns(int version, EProfile profile, EShLanguage language, TSymb
     // that cannot be declared with the text strings.
     //
 
-    // GL_ARB_shader_texture_lod functions usable only with the extension enabled
-    if (profile != EEsProfile) {
-        symbolTable.setFunctionExtensions("texture1DGradARB",         1, &GL_ARB_shader_texture_lod);
-        symbolTable.setFunctionExtensions("texture1DProjGradARB",     1, &GL_ARB_shader_texture_lod);
-        symbolTable.setFunctionExtensions("texture1DProjGradARB",     1, &GL_ARB_shader_texture_lod);
-        symbolTable.setFunctionExtensions("texture2DGradARB",         1, &GL_ARB_shader_texture_lod);
-        symbolTable.setFunctionExtensions("texture2DProjGradARB",     1, &GL_ARB_shader_texture_lod);
-        symbolTable.setFunctionExtensions("texture2DProjGradARB",     1, &GL_ARB_shader_texture_lod);
-        symbolTable.setFunctionExtensions("texture3DGradARB",         1, &GL_ARB_shader_texture_lod);
-        symbolTable.setFunctionExtensions("texture3DProjGradARB",     1, &GL_ARB_shader_texture_lod);
-        symbolTable.setFunctionExtensions("textureCubeGradARB",       1, &GL_ARB_shader_texture_lod);
-        symbolTable.setFunctionExtensions("shadow1DGradARB",          1, &GL_ARB_shader_texture_lod);
-        symbolTable.setFunctionExtensions("shadow1DProjGradARB",      1, &GL_ARB_shader_texture_lod);
-        symbolTable.setFunctionExtensions("shadow2DGradARB",          1, &GL_ARB_shader_texture_lod);
-        symbolTable.setFunctionExtensions("shadow2DProjGradARB",      1, &GL_ARB_shader_texture_lod);
-        symbolTable.setFunctionExtensions("texture2DRectGradARB",     1, &GL_ARB_shader_texture_lod);
-        symbolTable.setFunctionExtensions("texture2DRectProjGradARB", 1, &GL_ARB_shader_texture_lod);
-        symbolTable.setFunctionExtensions("texture2DRectProjGradARB", 1, &GL_ARB_shader_texture_lod);
-        symbolTable.setFunctionExtensions("shadow2DRectGradARB",      1, &GL_ARB_shader_texture_lod);
-        symbolTable.setFunctionExtensions("shadow2DRectProjGradARB",  1, &GL_ARB_shader_texture_lod);
-    }
+    // N.B.: a symbol should only be tagged once, and this function is called multiple times, once
+    // per stage that's used for this profile.  So, stick common ones in the fragment stage to
+    // ensure they are tagged exactly once.
 
     switch(language) {
     case EShLangVertex:
@@ -2256,6 +2238,32 @@ void IdentifyBuiltIns(int version, EProfile profile, EShLanguage language, TSymb
             symbolTable.setFunctionExtensions("shadow1DProjLod",     1, &GL_ARB_shader_texture_lod);
             symbolTable.setFunctionExtensions("shadow2DProjLod",     1, &GL_ARB_shader_texture_lod);
         }
+
+        // GL_ARB_shader_texture_lod functions usable only with the extension enabled
+        if (profile != EEsProfile) {
+            symbolTable.setFunctionExtensions("texture1DGradARB",         1, &GL_ARB_shader_texture_lod);
+            symbolTable.setFunctionExtensions("texture1DProjGradARB",     1, &GL_ARB_shader_texture_lod);
+            symbolTable.setFunctionExtensions("texture2DGradARB",         1, &GL_ARB_shader_texture_lod);
+            symbolTable.setFunctionExtensions("texture2DProjGradARB",     1, &GL_ARB_shader_texture_lod);
+            symbolTable.setFunctionExtensions("texture3DGradARB",         1, &GL_ARB_shader_texture_lod);
+            symbolTable.setFunctionExtensions("texture3DProjGradARB",     1, &GL_ARB_shader_texture_lod);
+            symbolTable.setFunctionExtensions("textureCubeGradARB",       1, &GL_ARB_shader_texture_lod);
+            symbolTable.setFunctionExtensions("shadow1DGradARB",          1, &GL_ARB_shader_texture_lod);
+            symbolTable.setFunctionExtensions("shadow1DProjGradARB",      1, &GL_ARB_shader_texture_lod);
+            symbolTable.setFunctionExtensions("shadow2DGradARB",          1, &GL_ARB_shader_texture_lod);
+            symbolTable.setFunctionExtensions("shadow2DProjGradARB",      1, &GL_ARB_shader_texture_lod);
+            symbolTable.setFunctionExtensions("texture2DRectGradARB",     1, &GL_ARB_shader_texture_lod);
+            symbolTable.setFunctionExtensions("texture2DRectProjGradARB", 1, &GL_ARB_shader_texture_lod);
+            symbolTable.setFunctionExtensions("shadow2DRectGradARB",      1, &GL_ARB_shader_texture_lod);
+            symbolTable.setFunctionExtensions("shadow2DRectProjGradARB",  1, &GL_ARB_shader_texture_lod);
+        }
+
+        if (profile == EEsProfile) {
+            symbolTable.setFunctionExtensions("texture2DGradEXT",     1, &GL_EXT_shader_texture_lod);
+            symbolTable.setFunctionExtensions("texture2DProjGradEXT", 1, &GL_EXT_shader_texture_lod);
+            symbolTable.setFunctionExtensions("textureCubeGradEXT",   1, &GL_EXT_shader_texture_lod);
+        }
+
         symbolTable.setVariableExtensions("gl_FragDepthEXT", 1, &GL_EXT_frag_depth);
         break;
 
@@ -2266,12 +2274,6 @@ void IdentifyBuiltIns(int version, EProfile profile, EShLanguage language, TSymb
     default:
         assert(false && "Language not supported");
         break;
-    }
-
-    if (profile == EEsProfile) {
-        symbolTable.setFunctionExtensions("texture2DGradEXT",     1, &GL_EXT_shader_texture_lod);
-        symbolTable.setFunctionExtensions("texture2DProjGradEXT", 1, &GL_EXT_shader_texture_lod);
-        symbolTable.setFunctionExtensions("textureCubeGradEXT",   1, &GL_EXT_shader_texture_lod);
     }
 
     //
