@@ -47,11 +47,13 @@ ERROR: 0:185: 'texture3DProjLod' : required extension not requested: GL_ARB_shad
 ERROR: 0:186: 'texture1DProjLod' : required extension not requested: GL_ARB_shader_texture_lod
 ERROR: 0:187: 'shadow2DProjLod' : required extension not requested: GL_ARB_shader_texture_lod
 WARNING: 0:190: '#extension' : extension is only partially supported: GL_ARB_shader_texture_lod
-ERROR: 47 compilation errors.  No code generated.
+ERROR: 0:203: 'sampler2DRect' : Reserved word. 
+ERROR: 48 compilation errors.  No code generated.
 
 
 Shader version: 120
 Requested GL_ARB_shader_texture_lod
+Requested GL_ARB_texture_rectangle
 ERROR: node is still EOpNull!
 0:21  Function Definition: main( (void)
 0:21    Function Parameters: 
@@ -497,6 +499,43 @@ ERROR: node is still EOpNull!
 0:200          's2DS' (uniform sampler2DShadow)
 0:200          'v' (4-component vector of float)
 0:200          'f' (float)
+0:205  Function Definition: foo121111( (void)
+0:205    Function Parameters: 
+0:?     Sequence
+0:208      Sequence
+0:208        move second child to first child (4-component vector of float)
+0:208          'v' (4-component vector of float)
+0:208          Function Call: texture2DRect(sR21;vf2; (4-component vector of float)
+0:208            's2DRbad' (uniform sampler2DRect)
+0:208            'v2' (2-component vector of float)
+0:216  Function Definition: foo12111( (void)
+0:216    Function Parameters: 
+0:?     Sequence
+0:222      move second child to first child (4-component vector of float)
+0:222        'v' (4-component vector of float)
+0:222        Function Call: texture2DRect(sR21;vf2; (4-component vector of float)
+0:222          's2DR' (uniform sampler2DRect)
+0:222          'v2' (2-component vector of float)
+0:223      move second child to first child (4-component vector of float)
+0:223        'v' (4-component vector of float)
+0:223        Function Call: texture2DRectProj(sR21;vf3; (4-component vector of float)
+0:223          's2DR' (uniform sampler2DRect)
+0:223          'v3' (3-component vector of float)
+0:224      move second child to first child (4-component vector of float)
+0:224        'v' (4-component vector of float)
+0:224        Function Call: texture2DRectProj(sR21;vf4; (4-component vector of float)
+0:224          's2DR' (uniform sampler2DRect)
+0:224          'v4' (4-component vector of float)
+0:225      move second child to first child (4-component vector of float)
+0:225        'v' (4-component vector of float)
+0:225        Function Call: shadow2DRect(sSR21;vf3; (4-component vector of float)
+0:225          's2DRS' (uniform sampler2DRectShadow)
+0:225          'v3' (3-component vector of float)
+0:226      move second child to first child (4-component vector of float)
+0:226        'v' (4-component vector of float)
+0:226        Function Call: shadow2DRectProj(sSR21;vf4; (4-component vector of float)
+0:226          's2DRS' (uniform sampler2DRectShadow)
+0:226          'v4' (4-component vector of float)
 0:?   Linker Objects
 0:?     'lowp' (float)
 0:?     'mediump' (float)
@@ -523,6 +562,9 @@ ERROR: node is still EOpNull!
 0:?     's3D' (uniform sampler3D)
 0:?     's1D' (uniform sampler1D)
 0:?     's2DS' (uniform sampler2DShadow)
+0:?     's2DRbad' (uniform sampler2DRect)
+0:?     's2DR' (uniform sampler2DRect)
+0:?     's2DRS' (uniform sampler2DRectShadow)
 
 
 Linked fragment stage:
@@ -532,6 +574,7 @@ ERROR: Linking fragment stage: Recursion detected:
 
 Shader version: 120
 Requested GL_ARB_shader_texture_lod
+Requested GL_ARB_texture_rectangle
 ERROR: node is still EOpNull!
 0:21  Function Definition: main( (void)
 0:21    Function Parameters: 
@@ -977,6 +1020,43 @@ ERROR: node is still EOpNull!
 0:200          's2DS' (uniform sampler2DShadow)
 0:200          'v' (4-component vector of float)
 0:200          'f' (float)
+0:205  Function Definition: foo121111( (void)
+0:205    Function Parameters: 
+0:?     Sequence
+0:208      Sequence
+0:208        move second child to first child (4-component vector of float)
+0:208          'v' (4-component vector of float)
+0:208          Function Call: texture2DRect(sR21;vf2; (4-component vector of float)
+0:208            's2DRbad' (uniform sampler2DRect)
+0:208            'v2' (2-component vector of float)
+0:216  Function Definition: foo12111( (void)
+0:216    Function Parameters: 
+0:?     Sequence
+0:222      move second child to first child (4-component vector of float)
+0:222        'v' (4-component vector of float)
+0:222        Function Call: texture2DRect(sR21;vf2; (4-component vector of float)
+0:222          's2DR' (uniform sampler2DRect)
+0:222          'v2' (2-component vector of float)
+0:223      move second child to first child (4-component vector of float)
+0:223        'v' (4-component vector of float)
+0:223        Function Call: texture2DRectProj(sR21;vf3; (4-component vector of float)
+0:223          's2DR' (uniform sampler2DRect)
+0:223          'v3' (3-component vector of float)
+0:224      move second child to first child (4-component vector of float)
+0:224        'v' (4-component vector of float)
+0:224        Function Call: texture2DRectProj(sR21;vf4; (4-component vector of float)
+0:224          's2DR' (uniform sampler2DRect)
+0:224          'v4' (4-component vector of float)
+0:225      move second child to first child (4-component vector of float)
+0:225        'v' (4-component vector of float)
+0:225        Function Call: shadow2DRect(sSR21;vf3; (4-component vector of float)
+0:225          's2DRS' (uniform sampler2DRectShadow)
+0:225          'v3' (3-component vector of float)
+0:226      move second child to first child (4-component vector of float)
+0:226        'v' (4-component vector of float)
+0:226        Function Call: shadow2DRectProj(sSR21;vf4; (4-component vector of float)
+0:226          's2DRS' (uniform sampler2DRectShadow)
+0:226          'v4' (4-component vector of float)
 0:?   Linker Objects
 0:?     'lowp' (float)
 0:?     'mediump' (float)
@@ -1003,4 +1083,7 @@ ERROR: node is still EOpNull!
 0:?     's3D' (uniform sampler3D)
 0:?     's1D' (uniform sampler1D)
 0:?     's2DS' (uniform sampler2DShadow)
+0:?     's2DRbad' (uniform sampler2DRect)
+0:?     's2DR' (uniform sampler2DRect)
+0:?     's2DRS' (uniform sampler2DRectShadow)
 

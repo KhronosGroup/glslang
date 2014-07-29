@@ -199,3 +199,29 @@ void foo2324()
     v = texture1DProjLod(s1D, v, f);
     v = shadow2DProjLod(s2DS, v, f);
 }
+
+uniform sampler2DRect s2DRbad;
+
+void foo121111()
+{
+    vec2 v2;
+    vec4 v = texture2DRect(s2DRbad, v2);
+}
+
+#extension GL_ARB_texture_rectangle : enable
+
+uniform sampler2DRect s2DR;
+uniform sampler2DRectShadow s2DRS;
+
+void foo12111()
+{
+    vec2 v2;
+    vec3 v3;
+    vec4 v4;
+    vec4 v;
+    v = texture2DRect(s2DR, v2);
+    v = texture2DRectProj(s2DR, v3);
+    v = texture2DRectProj(s2DR, v4);
+    v = shadow2DRect(s2DRS, v3);
+    v = shadow2DRectProj(s2DRS, v4);
+}

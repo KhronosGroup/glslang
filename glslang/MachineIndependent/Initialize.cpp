@@ -689,7 +689,13 @@ void TBuiltIns::initialize(int version, EProfile profile)
             "vec4 shadow2D(sampler2DShadow, vec3);"
             "vec4 shadow1DProj(sampler1DShadow, vec4);"
             "vec4 shadow2DProj(sampler2DShadow, vec4);"
-            
+
+            "vec4 texture2DRect(sampler2DRect, vec2);"          // GL_ARB_texture_rectangle, caught by keyword check
+            "vec4 texture2DRectProj(sampler2DRect, vec3);"      // GL_ARB_texture_rectangle, caught by keyword check
+            "vec4 texture2DRectProj(sampler2DRect, vec4);"      // GL_ARB_texture_rectangle, caught by keyword check
+            "vec4 shadow2DRect(sampler2DRectShadow, vec3);"     // GL_ARB_texture_rectangle, caught by keyword check
+            "vec4 shadow2DRectProj(sampler2DRectShadow, vec4);" // GL_ARB_texture_rectangle, caught by keyword check
+
             "\n");
     }
 
