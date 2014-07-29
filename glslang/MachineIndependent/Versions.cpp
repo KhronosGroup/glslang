@@ -154,7 +154,6 @@ void TParseContext::initializeExtensionBehavior()
     extensionBehavior[GL_EXT_frag_depth]               = EBhDisable;
     extensionBehavior[GL_OES_EGL_image_external]       = EBhDisable;
     extensionBehavior[GL_EXT_shader_texture_lod]       = EBhDisable;
-    extensionBehavior[GL_ARB_shader_texture_lod]       = EBhDisable;
 
     extensionBehavior[GL_ARB_texture_rectangle]        = EBhDisable;
     extensionBehavior[GL_3DL_array_objects]            = EBhDisable;
@@ -165,6 +164,8 @@ void TParseContext::initializeExtensionBehavior()
     extensionBehavior[GL_ARB_tessellation_shader]      = EBhDisable;
     extensionBehavior[GL_ARB_enhanced_layouts]         = EBhDisable;
     extensionBehavior[GL_ARB_texture_cube_map_array]   = EBhDisable;
+    extensionBehavior[GL_ARB_shader_texture_lod]       = EBhDisable;
+    extensionBehavior[GL_ARB_explicit_attrib_location] = EBhDisablePartial; // "index" for fragment outputs is missing
 }
 
 // Get code that is not part of a shared symbol table, is specific to this shader,
@@ -201,7 +202,8 @@ const char* TParseContext::getPreamble()
             "#define GL_ARB_tessellation_shader 1\n"
             "#define GL_ARB_enhanced_layouts 1\n"
             "#define GL_ARB_texture_cube_map_array 1\n"
-            "#define GL_ARB_shader_texture_lod 1\n";
+            "#define GL_ARB_shader_texture_lod 1\n"
+            "#define GL_ARB_explicit_attrib_location 1\n";
     }
 }
 

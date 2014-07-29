@@ -23,6 +23,12 @@ float patch = 3.1;
 
 layout(location=3) in vec4 vl;  // ERROR
 
+layout(location = 3) out vec4 factorBad;  // ERROR
+
+#extension GL_ARB_explicit_attrib_location : enable
+
+layout(location = 5) out vec4 factor;
+
 #extension GL_ARB_separate_shader_objects : enable
 
 layout(location=4) in vec4 vl2;

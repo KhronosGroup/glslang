@@ -3037,7 +3037,8 @@ void TParseContext::setLayoutQualifier(TSourceLoc loc, TPublicType& publicType, 
         return;
     } else if (id == "location") {
         profileRequires(loc, EEsProfile, 300, 0, "location");
-        profileRequires(loc, ~EEsProfile, 330, GL_ARB_separate_shader_objects, "location");
+        const char* exts[2] = { GL_ARB_separate_shader_objects, GL_ARB_explicit_attrib_location };
+        profileRequires(loc, ~EEsProfile, 330, 2, exts, "location");
         if ((unsigned int)value >= TQualifier::layoutLocationEnd)
             error(loc, "location is too large", id.c_str(), "");
         else
@@ -3354,9 +3355,10 @@ void TParseContext::layoutQualifierCheck(TSourceLoc loc, const TQualifier& quali
             if (profile == EEsProfile)
                 requireStage(loc, EShLangVertex, feature);
             requireStage(loc, (EShLanguageMask)~EShLangComputeMask, feature);
-            if (language == EShLangVertex)
-                profileRequires(loc, ~EEsProfile, 330, GL_ARB_separate_shader_objects, feature);
-            else
+            if (language == EShLangVertex) {
+                const char* exts[2] = { GL_ARB_separate_shader_objects, GL_ARB_explicit_attrib_location };
+                profileRequires(loc, ~EEsProfile, 330, 2, exts, feature);
+            } else
                 profileRequires(loc, ~EEsProfile, 410, GL_ARB_separate_shader_objects, feature);
             break;
         }
@@ -3366,9 +3368,10 @@ void TParseContext::layoutQualifierCheck(TSourceLoc loc, const TQualifier& quali
             if (profile == EEsProfile)
                 requireStage(loc, EShLangFragment, feature);
             requireStage(loc, (EShLanguageMask)~EShLangComputeMask, feature);
-            if (language == EShLangFragment)
-                profileRequires(loc, ~EEsProfile, 330, GL_ARB_separate_shader_objects, feature);
-            else
+            if (language == EShLangFragment) {
+                const char* exts[2] = { GL_ARB_separate_shader_objects, GL_ARB_explicit_attrib_location };
+                profileRequires(loc, ~EEsProfile, 330, 2, exts, feature);
+            } else
                 profileRequires(loc, ~EEsProfile, 410, GL_ARB_separate_shader_objects, feature);
             break;
         }

@@ -4,12 +4,16 @@ ERROR: 0:17: '#error' : GL_ES is not set
 ERROR: 0:20: 'fragment-shader struct input' : not supported for this version or the enabled extensions 
 ERROR: 0:24: 'location' : not supported for this version or the enabled extensions 
 ERROR: 0:24: 'location qualifier on input' : not supported for this version or the enabled extensions 
-ERROR: 0:32: 'assign' :  l-value required "v" (can't modify shader input)
-ERROR: 0:32: 'out' : Non-L-value cannot be passed for 'out' or 'inout' parameters. 
-ERROR: 6 compilation errors.  No code generated.
+ERROR: 0:26: 'location' : not supported for this version or the enabled extensions 
+ERROR: 0:26: 'location qualifier on output' : not supported for this version or the enabled extensions 
+WARNING: 0:28: '#extension' : extension is only partially supported: GL_ARB_explicit_attrib_location
+ERROR: 0:38: 'assign' :  l-value required "v" (can't modify shader input)
+ERROR: 0:38: 'out' : Non-L-value cannot be passed for 'out' or 'inout' parameters. 
+ERROR: 8 compilation errors.  No code generated.
 
 
 Shader version: 140
+Requested GL_ARB_explicit_attrib_location
 Requested GL_ARB_separate_shader_objects
 ERROR: node is still EOpNull!
 0:10  Function Definition: main( (void)
@@ -27,45 +31,45 @@ ERROR: node is still EOpNull!
 0:22      'patch' (float)
 0:22      Constant:
 0:22        3.100000
-0:30  Function Definition: foo( (void)
-0:30    Function Parameters: 
-0:32    Sequence
-0:32      Sequence
-0:32        move second child to first child (2-component vector of float)
-0:32          'r1' (2-component vector of float)
-0:32          modf (2-component vector of float)
-0:32            vector swizzle (2-component vector of float)
-0:32              'v' (smooth in 4-component vector of float)
-0:32              Sequence
-0:32                Constant:
-0:32                  0 (const int)
-0:32                Constant:
-0:32                  1 (const int)
-0:32            vector swizzle (2-component vector of float)
-0:32              'v' (smooth in 4-component vector of float)
-0:32              Sequence
-0:32                Constant:
-0:32                  2 (const int)
-0:32                Constant:
-0:32                  3 (const int)
-0:33      Sequence
-0:33        move second child to first child (2-component vector of float)
-0:33          'r2' (2-component vector of float)
-0:33          modf (2-component vector of float)
-0:33            vector swizzle (2-component vector of float)
-0:33              'o' (out 4-component vector of float)
-0:33              Sequence
-0:33                Constant:
-0:33                  0 (const int)
-0:33                Constant:
-0:33                  1 (const int)
-0:33            vector swizzle (2-component vector of float)
-0:33              'o' (out 4-component vector of float)
-0:33              Sequence
-0:33                Constant:
-0:33                  2 (const int)
-0:33                Constant:
-0:33                  3 (const int)
+0:36  Function Definition: foo( (void)
+0:36    Function Parameters: 
+0:38    Sequence
+0:38      Sequence
+0:38        move second child to first child (2-component vector of float)
+0:38          'r1' (2-component vector of float)
+0:38          modf (2-component vector of float)
+0:38            vector swizzle (2-component vector of float)
+0:38              'v' (smooth in 4-component vector of float)
+0:38              Sequence
+0:38                Constant:
+0:38                  0 (const int)
+0:38                Constant:
+0:38                  1 (const int)
+0:38            vector swizzle (2-component vector of float)
+0:38              'v' (smooth in 4-component vector of float)
+0:38              Sequence
+0:38                Constant:
+0:38                  2 (const int)
+0:38                Constant:
+0:38                  3 (const int)
+0:39      Sequence
+0:39        move second child to first child (2-component vector of float)
+0:39          'r2' (2-component vector of float)
+0:39          modf (2-component vector of float)
+0:39            vector swizzle (2-component vector of float)
+0:39              'o' (out 4-component vector of float)
+0:39              Sequence
+0:39                Constant:
+0:39                  0 (const int)
+0:39                Constant:
+0:39                  1 (const int)
+0:39            vector swizzle (2-component vector of float)
+0:39              'o' (out 4-component vector of float)
+0:39              Sequence
+0:39                Constant:
+0:39                  2 (const int)
+0:39                Constant:
+0:39                  3 (const int)
 0:?   Linker Objects
 0:?     'v' (smooth in 4-component vector of float)
 0:?     'i' (smooth in 4-component vector of float)
@@ -75,6 +79,8 @@ ERROR: node is still EOpNull!
 0:?     's' (smooth in structure{float f})
 0:?     'patch' (float)
 0:?     'vl' (layout(location=3 ) smooth in 4-component vector of float)
+0:?     'factorBad' (layout(location=3 ) out 4-component vector of float)
+0:?     'factor' (layout(location=5 ) out 4-component vector of float)
 0:?     'vl2' (layout(location=4 ) smooth in 4-component vector of float)
 
 
@@ -82,6 +88,7 @@ Linked fragment stage:
 
 
 Shader version: 140
+Requested GL_ARB_explicit_attrib_location
 Requested GL_ARB_separate_shader_objects
 ERROR: node is still EOpNull!
 0:10  Function Definition: main( (void)
@@ -99,45 +106,45 @@ ERROR: node is still EOpNull!
 0:22      'patch' (float)
 0:22      Constant:
 0:22        3.100000
-0:30  Function Definition: foo( (void)
-0:30    Function Parameters: 
-0:32    Sequence
-0:32      Sequence
-0:32        move second child to first child (2-component vector of float)
-0:32          'r1' (2-component vector of float)
-0:32          modf (2-component vector of float)
-0:32            vector swizzle (2-component vector of float)
-0:32              'v' (smooth in 4-component vector of float)
-0:32              Sequence
-0:32                Constant:
-0:32                  0 (const int)
-0:32                Constant:
-0:32                  1 (const int)
-0:32            vector swizzle (2-component vector of float)
-0:32              'v' (smooth in 4-component vector of float)
-0:32              Sequence
-0:32                Constant:
-0:32                  2 (const int)
-0:32                Constant:
-0:32                  3 (const int)
-0:33      Sequence
-0:33        move second child to first child (2-component vector of float)
-0:33          'r2' (2-component vector of float)
-0:33          modf (2-component vector of float)
-0:33            vector swizzle (2-component vector of float)
-0:33              'o' (out 4-component vector of float)
-0:33              Sequence
-0:33                Constant:
-0:33                  0 (const int)
-0:33                Constant:
-0:33                  1 (const int)
-0:33            vector swizzle (2-component vector of float)
-0:33              'o' (out 4-component vector of float)
-0:33              Sequence
-0:33                Constant:
-0:33                  2 (const int)
-0:33                Constant:
-0:33                  3 (const int)
+0:36  Function Definition: foo( (void)
+0:36    Function Parameters: 
+0:38    Sequence
+0:38      Sequence
+0:38        move second child to first child (2-component vector of float)
+0:38          'r1' (2-component vector of float)
+0:38          modf (2-component vector of float)
+0:38            vector swizzle (2-component vector of float)
+0:38              'v' (smooth in 4-component vector of float)
+0:38              Sequence
+0:38                Constant:
+0:38                  0 (const int)
+0:38                Constant:
+0:38                  1 (const int)
+0:38            vector swizzle (2-component vector of float)
+0:38              'v' (smooth in 4-component vector of float)
+0:38              Sequence
+0:38                Constant:
+0:38                  2 (const int)
+0:38                Constant:
+0:38                  3 (const int)
+0:39      Sequence
+0:39        move second child to first child (2-component vector of float)
+0:39          'r2' (2-component vector of float)
+0:39          modf (2-component vector of float)
+0:39            vector swizzle (2-component vector of float)
+0:39              'o' (out 4-component vector of float)
+0:39              Sequence
+0:39                Constant:
+0:39                  0 (const int)
+0:39                Constant:
+0:39                  1 (const int)
+0:39            vector swizzle (2-component vector of float)
+0:39              'o' (out 4-component vector of float)
+0:39              Sequence
+0:39                Constant:
+0:39                  2 (const int)
+0:39                Constant:
+0:39                  3 (const int)
 0:?   Linker Objects
 0:?     'v' (smooth in 4-component vector of float)
 0:?     'i' (smooth in 4-component vector of float)
@@ -147,5 +154,7 @@ ERROR: node is still EOpNull!
 0:?     's' (smooth in structure{float f})
 0:?     'patch' (float)
 0:?     'vl' (layout(location=3 ) smooth in 4-component vector of float)
+0:?     'factorBad' (layout(location=3 ) out 4-component vector of float)
+0:?     'factor' (layout(location=5 ) out 4-component vector of float)
 0:?     'vl2' (layout(location=4 ) smooth in 4-component vector of float)
 

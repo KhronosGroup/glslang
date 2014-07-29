@@ -1,14 +1,18 @@
 140.vert
 ERROR: 0:23: 'gl_Position' : identifiers starting with "gl_" are reserved 
-ERROR: 0:28: 'redeclaration' : cannot change storage, memory, or auxiliary qualification of gl_Position
-ERROR: 0:28: 'redeclaration' : cannot change interpolation qualification of gl_Position
-ERROR: 0:29: 'redeclaration' : cannot change the type of gl_Position
-ERROR: 0:32: 'gl_ClipVertex' : cannot redeclare after use 
-ERROR: 0:33: 'gl_FogFragCoord' : cannot redeclare after use 
-ERROR: 6 compilation errors.  No code generated.
+ERROR: 0:25: 'location' : not supported for this version or the enabled extensions 
+ERROR: 0:25: 'location qualifier on input' : not supported for this version or the enabled extensions 
+WARNING: 0:27: '#extension' : extension is only partially supported: GL_ARB_explicit_attrib_location
+ERROR: 0:34: 'redeclaration' : cannot change storage, memory, or auxiliary qualification of gl_Position
+ERROR: 0:34: 'redeclaration' : cannot change interpolation qualification of gl_Position
+ERROR: 0:35: 'redeclaration' : cannot change the type of gl_Position
+ERROR: 0:38: 'gl_ClipVertex' : cannot redeclare after use 
+ERROR: 0:39: 'gl_FogFragCoord' : cannot redeclare after use 
+ERROR: 8 compilation errors.  No code generated.
 
 
 Shader version: 140
+Requested GL_ARB_explicit_attrib_location
 Requested GL_ARB_separate_shader_objects
 ERROR: node is still EOpNull!
 0:9  Function Definition: main( (void)
@@ -51,6 +55,8 @@ ERROR: node is still EOpNull!
 0:?     'anon@0' (layout(column_major std140 ) uniform block{layout(column_major std140 offset=0 ) uniform int anonMem})
 0:?     'gl_TexCoord' (smooth out implicitly-sized array of 4-component vector of float)
 0:?     'gl_Position' (smooth out 4-component vector of float)
+0:?     'locBad' (layout(location=9 ) in 4-component vector of float)
+0:?     'loc' (layout(location=9 ) in 4-component vector of float)
 0:?     'gl_PointSize' (gl_PointSize float)
 0:?     'gl_PointSize' (gl_PointSize float)
 0:?     'gl_ClipVertex' (gl_ClipVertex 4-component vector of float)
@@ -65,6 +71,7 @@ Linked vertex stage:
 
 
 Shader version: 140
+Requested GL_ARB_explicit_attrib_location
 Requested GL_ARB_separate_shader_objects
 ERROR: node is still EOpNull!
 0:9  Function Definition: main( (void)
@@ -107,6 +114,8 @@ ERROR: node is still EOpNull!
 0:?     'anon@0' (layout(column_major std140 ) uniform block{layout(column_major std140 offset=0 ) uniform int anonMem})
 0:?     'gl_TexCoord' (smooth out 1-element array of 4-component vector of float)
 0:?     'gl_Position' (smooth out 4-component vector of float)
+0:?     'locBad' (layout(location=9 ) in 4-component vector of float)
+0:?     'loc' (layout(location=9 ) in 4-component vector of float)
 0:?     'gl_PointSize' (gl_PointSize float)
 0:?     'gl_PointSize' (gl_PointSize float)
 0:?     'gl_ClipVertex' (gl_ClipVertex 4-component vector of float)

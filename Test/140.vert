@@ -22,6 +22,12 @@ void main()
 
 out vec4 gl_Position;  // ERROR
 
+layout(location = 9) in vec4 locBad;  // ERROR
+
+#extension GL_ARB_explicit_attrib_location : enable
+
+layout(location = 9) in vec4 loc;
+
 #extension GL_ARB_separate_shader_objects : enable
 
 out vec4 gl_Position;
