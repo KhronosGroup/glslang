@@ -83,7 +83,7 @@ out outbn2 {
 } outbi;
 
 layout(lines) out;  // ERROR, not on output
-layout(lines_adjancency) in;
+layout(lines_adjacency) in;
 layout(triangles) in;             // ERROR, can't change it
 layout(triangles_adjacency) in;   // ERROR, can't change it
 layout(invocations = 4) in;       // ERROR, not until 4.0

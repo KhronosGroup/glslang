@@ -215,9 +215,9 @@ ERROR: node is still EOpNull!
 
 400.tesc
 Warning, version 400 is not yet complete; most version-specific features are present, but some are missing.
-ERROR: 0:6: 'quads' : unrecognized layout identifier, or qualifier requires assignemnt (e.g., binding = 4) 
-ERROR: 0:7: 'ccw' : unrecognized layout identifier, or qualifier requires assignemnt (e.g., binding = 4) 
-ERROR: 0:8: 'fractional_even_spacing' : unrecognized layout identifier, or qualifier requires assignemnt (e.g., binding = 4) 
+ERROR: 0:6: 'quads' : unrecognized layout identifier, or qualifier requires assignment (e.g., binding = 4) 
+ERROR: 0:7: 'ccw' : unrecognized layout identifier, or qualifier requires assignment (e.g., binding = 4) 
+ERROR: 0:8: 'fractional_even_spacing' : unrecognized layout identifier, or qualifier requires assignment (e.g., binding = 4) 
 ERROR: 0:10: 'patch' : can only use on output in tessellation-control shader 
 ERROR: 0:39: 'vertices' : can only apply to 'out' 
 ERROR: 0:40: 'vertices' : cannot change previously set layout value 

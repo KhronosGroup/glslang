@@ -88,6 +88,7 @@ struct TBuiltInResource {
     int maxFragmentInputComponents;
     int maxImageUnits;
     int maxCombinedImageUnitsAndFragmentOutputs;
+    int maxCombinedShaderOutputResources;
     int maxImageSamples;
     int maxVertexImageUniforms;
     int maxTessControlImageUniforms;

@@ -99,3 +99,46 @@ void bar23444()
 
 const int comma0 = (2, 3);  // ERROR
 int comma1[(2, 3)];   // ERROR
+
+layout(r32i) uniform iimage2D iimg2D;
+layout(rgba32i) uniform iimage2D iimg2Drgba;
+layout(rgba32f) uniform image2D img2Drgba;
+layout(r32ui) uniform uimage2D uimg2D;
+uniform image2DMS img2DMS; // ERROR image variables not declared writeonly must have format layout qualifier
+uniform writeonly image2DMS img2DMSWO;
+void qux()
+{
+    int i = aoeu;
+    imageAtomicCompSwap(iimg2D, ivec2(i,i), i, i);
+    imageAtomicAdd(uimg2D, ivec2(i,i), uint(i));
+    imageAtomicMin(iimg2Drgba, ivec2(i,i), i); // ERROR iimg2Drgba does not have r32i layout
+    imageAtomicMax(img2Drgba, ivec2(i,i), i);  // ERROR img2Drgba is not integer image
+    ivec4 pos = imageLoad(iimg2D, ivec2(i,i));
+    vec4 col = imageLoad(img2DMS, ivec2(i,i), i);
+    imageStore(img2DMSWO, ivec2(i,i), i, vec4(0));
+    imageLoad(img2DMSWO, ivec2(i,i), i);       // ERROR, drops writeonly
+}
+
+volatile float vol; // ERROR, not an image
+readonly int vol2;  // ERROR, not an image
+
+void passr(coherent readonly iimage2D image)
+{
+}
+
+layout(r32i) coherent readonly uniform iimage2D qualim1;
+layout(r32i) coherent restrict readonly uniform iimage2D qualim2;
+
+void passrc()
+{
+    passr(qualim1);
+    passr(qualim2);   // ERROR, drops restrict
+    passr(iimg2D);
+}
+
+layout(rg8i) uniform uimage2D i1bad;     // ERROR, type mismatch
+layout(rgba32i) uniform image2D i2bad;   // ERROR, type mismatch
+layout(rgba32f) uniform uimage2D i3bad;  // ERROR, type mismatch
+layout(r8_snorm) uniform iimage2D i4bad; // ERROR, type mismatch
+layout(rgba32ui) uniform iimage2D i5bad; // ERROR, type mismatch
+layout(r8ui) uniform iimage2D i6bad;     // ERROR, type mismatch

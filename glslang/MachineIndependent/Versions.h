@@ -90,6 +90,7 @@ const char* const GL_ARB_enhanced_layouts         = "GL_ARB_enhanced_layouts";
 const char* const GL_ARB_texture_cube_map_array   = "GL_ARB_texture_cube_map_array";
 const char* const GL_ARB_shader_texture_lod       = "GL_ARB_shader_texture_lod";
 const char* const GL_ARB_explicit_attrib_location = "GL_ARB_explicit_attrib_location";
+const char* const GL_ARB_shader_image_load_store  = "GL_ARB_shader_image_load_store";
 
 } // end namespace glslang
 

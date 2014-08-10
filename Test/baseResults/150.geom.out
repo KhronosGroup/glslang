@@ -37,7 +37,7 @@ ERROR: 32 compilation errors.  No code generated.
 Shader version: 150
 invocations = 4
 max_vertices = 200
-input primitive = lines_adjancency
+input primitive = lines_adjacency
 output primitive = triangle_strip
 ERROR: node is still EOpNull!
 0:25  Function Definition: main( (void)
@@ -156,7 +156,7 @@ Linked geometry stage:
 Shader version: 150
 invocations = 4
 max_vertices = 200
-input primitive = lines_adjancency
+input primitive = lines_adjacency
 output primitive = triangle_strip
 ERROR: node is still EOpNull!
 0:25  Function Definition: main( (void)

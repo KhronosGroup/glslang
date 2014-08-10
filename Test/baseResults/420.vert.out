@@ -34,7 +34,20 @@ ERROR: 0:86: 'patch' : not supported in this stage: vertex
 ERROR: 0:100: '=' : global const initializers must be constant 'const int'
 ERROR: 0:101: '' : constant expression required 
 ERROR: 0:101: '' : array size must be a constant integer expression 
-ERROR: 33 compilation errors.  No code generated.
+ERROR: 0:107: '' : image variables not declared 'writeonly' must have a format layout qualifier 
+ERROR: 0:114: 'imageAtomicMin' : only supported on image with format r32i or r32ui 
+ERROR: 0:115: 'imageAtomicMax' : no matching overloaded function found 
+ERROR: 0:119: 'writeonly' : argument cannot drop memory qualifier when passed to formal parameter 
+ERROR: 0:122: '' : memory qualifiers can only be used on image types 
+ERROR: 0:123: '' : memory qualifiers can only be used on image types 
+ERROR: 0:135: 'restrict' : argument cannot drop memory qualifier when passed to formal parameter 
+ERROR: 0:139: 'rg8i' : does not apply to unsigned integer images 
+ERROR: 0:140: 'rgba32i' : does not apply to floating point images 
+ERROR: 0:141: 'rgba32f' : does not apply to unsigned integer images 
+ERROR: 0:142: 'r8_snorm' : does not apply to signed integer images 
+ERROR: 0:143: 'rgba32ui' : does not apply to signed integer images 
+ERROR: 0:144: 'r8ui' : does not apply to signed integer images 
+ERROR: 46 compilation errors.  No code generated.
 
 
 Shader version: 420
@@ -73,7 +86,7 @@ ERROR: node is still EOpNull!
 0:42        No loop body
 0:50  Function Definition: bar(vf4; (void)
 0:50    Function Parameters: 
-0:50      'v' (in 4-component vector of float)
+0:50      'v' (volatile in 4-component vector of float)
 0:?     Sequence
 0:53      's' (int)
 0:54      's' (int)
@@ -146,6 +159,84 @@ ERROR: node is still EOpNull!
 0:97          'a' (int)
 0:97          Constant:
 0:97            -1 (const int)
+0:109  Function Definition: qux( (void)
+0:109    Function Parameters: 
+0:111    Sequence
+0:111      Sequence
+0:111        move second child to first child (int)
+0:111          'i' (int)
+0:111          aoeu: direct index for structure (layout(column_major shared ) uniform int)
+0:111            'anon@0' (layout(binding=7 column_major shared ) uniform block{layout(column_major shared ) uniform int aoeu})
+0:111            Constant:
+0:111              0 (const uint)
+0:112      Function Call: imageAtomicCompSwap(iI21;vi2;i1;i1; (int)
+0:112        'iimg2D' (layout(r32i ) uniform iimage2D)
+0:112        Construct ivec2 (2-component vector of int)
+0:112          'i' (int)
+0:112          'i' (int)
+0:112        'i' (int)
+0:112        'i' (int)
+0:113      Function Call: imageAtomicAdd(uI21;vi2;u1; (uint)
+0:113        'uimg2D' (layout(r32ui ) uniform uimage2D)
+0:113        Construct ivec2 (2-component vector of int)
+0:113          'i' (int)
+0:113          'i' (int)
+0:113        Convert int to uint (uint)
+0:113          'i' (int)
+0:114      Function Call: imageAtomicMin(iI21;vi2;i1; (int)
+0:114        'iimg2Drgba' (layout(rgba32i ) uniform iimage2D)
+0:114        Construct ivec2 (2-component vector of int)
+0:114          'i' (int)
+0:114          'i' (int)
+0:114        'i' (int)
+0:115      Constant:
+0:115        0.000000
+0:116      Sequence
+0:116        move second child to first child (4-component vector of int)
+0:116          'pos' (4-component vector of int)
+0:116          Function Call: imageLoad(iI21;vi2; (4-component vector of int)
+0:116            'iimg2D' (layout(r32i ) uniform iimage2D)
+0:116            Construct ivec2 (2-component vector of int)
+0:116              'i' (int)
+0:116              'i' (int)
+0:117      Sequence
+0:117        move second child to first child (4-component vector of float)
+0:117          'col' (4-component vector of float)
+0:117          Function Call: imageLoad(I21;vi2;i1; (4-component vector of float)
+0:117            'img2DMS' (uniform image2DMS)
+0:117            Construct ivec2 (2-component vector of int)
+0:117              'i' (int)
+0:117              'i' (int)
+0:117            'i' (int)
+0:118      Function Call: imageStore(I21;vi2;i1;vf4; (void)
+0:118        'img2DMSWO' (writeonly uniform image2DMS)
+0:118        Construct ivec2 (2-component vector of int)
+0:118          'i' (int)
+0:118          'i' (int)
+0:118        'i' (int)
+0:118        Constant:
+0:118          0.000000
+0:118          0.000000
+0:118          0.000000
+0:118          0.000000
+0:119      Function Call: imageLoad(I21;vi2;i1; (4-component vector of float)
+0:119        'img2DMSWO' (writeonly uniform image2DMS)
+0:119        Construct ivec2 (2-component vector of int)
+0:119          'i' (int)
+0:119          'i' (int)
+0:119        'i' (int)
+0:125  Function Definition: passr(iI21; (void)
+0:125    Function Parameters: 
+0:125      'image' (coherent readonly in iimage2D)
+0:132  Function Definition: passrc( (void)
+0:132    Function Parameters: 
+0:134    Sequence
+0:134      Function Call: passr(iI21; (void)
+0:134        'qualim1' (layout(r32i ) coherent readonly uniform iimage2D)
+0:135      Function Call: passr(iI21; (void)
+0:135        'qualim2' (layout(r32i ) coherent restrict readonly uniform iimage2D)
+0:136      Function Call: passr(iI21; (void)
+0:136        'iimg2D' (layout(r32i ) uniform iimage2D)
 0:?   Linker Objects
 0:?     'v2' (smooth out 2-component vector of float)
 0:?     'bad' (in 10-element array of 4-component vector of float)
@@ -180,6 +271,22 @@ ERROR: node is still EOpNull!
 0:?     'patchOut' (smooth patch out 4-component vector of float)
 0:?     'comma0' (int)
 0:?     'comma1' (1-element array of int)
+0:?     'iimg2D' (layout(r32i ) uniform iimage2D)
+0:?     'iimg2Drgba' (layout(rgba32i ) uniform iimage2D)
+0:?     'img2Drgba' (layout(rgba32f ) uniform image2D)
+0:?     'uimg2D' (layout(r32ui ) uniform uimage2D)
+0:?     'img2DMS' (uniform image2DMS)
+0:?     'img2DMSWO' (writeonly uniform image2DMS)
+0:?     'vol' (volatile float)
+0:?     'vol2' (readonly int)
+0:?     'qualim1' (layout(r32i ) coherent readonly uniform iimage2D)
+0:?     'qualim2' (layout(r32i ) coherent restrict readonly uniform iimage2D)
+0:?     'i1bad' (layout(rg8i ) uniform uimage2D)
+0:?     'i2bad' (layout(rgba32i ) uniform image2D)
+0:?     'i3bad' (layout(rgba32f ) uniform uimage2D)
+0:?     'i4bad' (layout(r8_snorm ) uniform iimage2D)
+0:?     'i5bad' (layout(rgba32ui ) uniform iimage2D)
+0:?     'i6bad' (layout(r8ui ) uniform iimage2D)
 0:?     'gl_VertexID' (gl_VertexId int)
 0:?     'gl_InstanceID' (gl_InstanceId int)
 
@@ -223,7 +330,7 @@ ERROR: node is still EOpNull!
 0:42        No loop body
 0:50  Function Definition: bar(vf4; (void)
 0:50    Function Parameters: 
-0:50      'v' (in 4-component vector of float)
+0:50      'v' (volatile in 4-component vector of float)
 0:?     Sequence
 0:53      's' (int)
 0:54      's' (int)
@@ -296,6 +403,84 @@ ERROR: node is still EOpNull!
 0:97          'a' (int)
 0:97          Constant:
 0:97            -1 (const int)
+0:109  Function Definition: qux( (void)
+0:109    Function Parameters: 
+0:111    Sequence
+0:111      Sequence
+0:111        move second child to first child (int)
+0:111          'i' (int)
+0:111          aoeu: direct index for structure (layout(column_major shared ) uniform int)
+0:111            'anon@0' (layout(binding=7 column_major shared ) uniform block{layout(column_major shared ) uniform int aoeu})
+0:111            Constant:
+0:111              0 (const uint)
+0:112      Function Call: imageAtomicCompSwap(iI21;vi2;i1;i1; (int)
+0:112        'iimg2D' (layout(r32i ) uniform iimage2D)
+0:112        Construct ivec2 (2-component vector of int)
+0:112          'i' (int)
+0:112          'i' (int)
+0:112        'i' (int)
+0:112        'i' (int)
+0:113      Function Call: imageAtomicAdd(uI21;vi2;u1; (uint)
+0:113        'uimg2D' (layout(r32ui ) uniform uimage2D)
+0:113        Construct ivec2 (2-component vector of int)
+0:113          'i' (int)
+0:113          'i' (int)
+0:113        Convert int to uint (uint)
+0:113          'i' (int)
+0:114      Function Call: imageAtomicMin(iI21;vi2;i1; (int)
+0:114        'iimg2Drgba' (layout(rgba32i ) uniform iimage2D)
+0:114        Construct ivec2 (2-component vector of int)
+0:114          'i' (int)
+0:114          'i' (int)
+0:114        'i' (int)
+0:115      Constant:
+0:115        0.000000
+0:116      Sequence
+0:116        move second child to first child (4-component vector of int)
+0:116          'pos' (4-component vector of int)
+0:116          Function Call: imageLoad(iI21;vi2; (4-component vector of int)
+0:116            'iimg2D' (layout(r32i ) uniform iimage2D)
+0:116            Construct ivec2 (2-component vector of int)
+0:116              'i' (int)
+0:116              'i' (int)
+0:117      Sequence
+0:117        move second child to first child (4-component vector of float)
+0:117          'col' (4-component vector of float)
+0:117          Function Call: imageLoad(I21;vi2;i1; (4-component vector of float)
+0:117            'img2DMS' (uniform image2DMS)
+0:117            Construct ivec2 (2-component vector of int)
+0:117              'i' (int)
+0:117              'i' (int)
+0:117            'i' (int)
+0:118      Function Call: imageStore(I21;vi2;i1;vf4; (void)
+0:118        'img2DMSWO' (writeonly uniform image2DMS)
+0:118        Construct ivec2 (2-component vector of int)
+0:118          'i' (int)
+0:118          'i' (int)
+0:118        'i' (int)
+0:118        Constant:
+0:118          0.000000
+0:118          0.000000
+0:118          0.000000
+0:118          0.000000
+0:119      Function Call: imageLoad(I21;vi2;i1; (4-component vector of float)
+0:119        'img2DMSWO' (writeonly uniform image2DMS)
+0:119        Construct ivec2 (2-component vector of int)
+0:119          'i' (int)
+0:119          'i' (int)
+0:119        'i' (int)
+0:125  Function Definition: passr(iI21; (void)
+0:125    Function Parameters: 
+0:125      'image' (coherent readonly in iimage2D)
+0:132  Function Definition: passrc( (void)
+0:132    Function Parameters: 
+0:134    Sequence
+0:134      Function Call: passr(iI21; (void)
+0:134        'qualim1' (layout(r32i ) coherent readonly uniform iimage2D)
+0:135      Function Call: passr(iI21; (void)
+0:135        'qualim2' (layout(r32i ) coherent restrict readonly uniform iimage2D)
+0:136      Function Call: passr(iI21; (void)
+0:136        'iimg2D' (layout(r32i ) uniform iimage2D)
 0:?   Linker Objects
 0:?     'v2' (smooth out 2-component vector of float)
 0:?     'bad' (in 10-element array of 4-component vector of float)
@@ -330,6 +515,22 @@ ERROR: node is still EOpNull!
 0:?     'patchOut' (smooth patch out 4-component vector of float)
 0:?     'comma0' (int)
 0:?     'comma1' (1-element array of int)
+0:?     'iimg2D' (layout(r32i ) uniform iimage2D)
+0:?     'iimg2Drgba' (layout(rgba32i ) uniform iimage2D)
+0:?     'img2Drgba' (layout(rgba32f ) uniform image2D)
+0:?     'uimg2D' (layout(r32ui ) uniform uimage2D)
+0:?     'img2DMS' (uniform image2DMS)
+0:?     'img2DMSWO' (writeonly uniform image2DMS)
+0:?     'vol' (volatile float)
+0:?     'vol2' (readonly int)
+0:?     'qualim1' (layout(r32i ) coherent readonly uniform iimage2D)
+0:?     'qualim2' (layout(r32i ) coherent restrict readonly uniform iimage2D)
+0:?     'i1bad' (layout(rg8i ) uniform uimage2D)
+0:?     'i2bad' (layout(rgba32i ) uniform image2D)
+0:?     'i3bad' (layout(rgba32f ) uniform uimage2D)
+0:?     'i4bad' (layout(r8_snorm ) uniform iimage2D)
+0:?     'i5bad' (layout(rgba32ui ) uniform iimage2D)
+0:?     'i6bad' (layout(r8ui ) uniform iimage2D)
 0:?     'gl_VertexID' (gl_VertexId int)
 0:?     'gl_InstanceID' (gl_InstanceId int)
 

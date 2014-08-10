@@ -845,7 +845,7 @@ void TBuiltIns::initialize(int version, EProfile profile)
                 "void barrier();"
                 );
 
-        if (version >= 420)
+        if (version >= 130)
             commonBuiltins.append(
                 "void memoryBarrier();"
                 );
@@ -1467,9 +1467,6 @@ void TBuiltIns::add2ndGenerationSamplingImaging(int version, EProfile profile)
     // enumerate all the types
     for (int image = 0; image <= 1; ++image) { // loop over "bool" image vs sampler
 
-        if (image > 0 && version < 420)
-            continue;
-
         for (int shadow = 0; shadow <= 1; ++shadow) { // loop over "bool" shadow or not
             for (int ms = 0; ms <=1; ++ms) {
 
@@ -1523,8 +1520,7 @@ void TBuiltIns::add2ndGenerationSamplingImaging(int version, EProfile profile)
                                 addImageFunctions(sampler, typeName, version, profile);
                             else {
                                 addSamplingFunctions(sampler, typeName, version, profile);
-                                if (version >= 130)
-                                    addGatherFunctions(sampler, typeName, version, profile);
+                                addGatherFunctions(sampler, typeName, version, profile);
                             }
                         }
                     }
@@ -1577,7 +1573,63 @@ void TBuiltIns::addQueryFunctions(TSampler sampler, TString& typeName, int versi
 //
 void TBuiltIns::addImageFunctions(TSampler sampler, TString& typeName, int version, EProfile profile)
 {
-    // TODO: 4.2 Functionality: imaging functions
+    int dims = dimMap[sampler.dim] + (sampler.arrayed ? 1 : 0);
+    TString imageParams = typeName;
+    if (dims == 1)
+        imageParams.append(", int");
+    else {
+        imageParams.append(", ivec");
+        imageParams.append(postfixes[dims]);
+    }
+    if (sampler.ms)
+        imageParams.append(", int");
+
+    commonBuiltins.append(prefixes[sampler.type]);
+    commonBuiltins.append("vec4 imageLoad(readonly ");
+    commonBuiltins.append(imageParams);
+    commonBuiltins.append(");\n");
+
+    commonBuiltins.append("void imageStore(writeonly ");
+    commonBuiltins.append(imageParams);
+    commonBuiltins.append(", ");
+    commonBuiltins.append(prefixes[sampler.type]);
+    commonBuiltins.append("vec4);\n");
+
+    if (sampler.type == EbtInt || sampler.type == EbtUint) {
+        const char* dataType = sampler.type == EbtInt ? "int" : "uint";
+
+        const int numBuiltins = 7;
+
+        static const char* atomicFunc[numBuiltins] = {
+            " imageAtomicAdd(",
+            " imageAtomicMin(",
+            " imageAtomicMax(",
+            " imageAtomicAnd(",
+            " imageAtomicOr(",
+            " imageAtomicXor(",
+            " imageAtomicExchange("
+        }; 
+
+        for (size_t i = 0; i < numBuiltins; ++i) {
+            commonBuiltins.append(dataType);
+            commonBuiltins.append(atomicFunc[i]);
+            if (version >= 450)
+                commonBuiltins.append("coherent ");
+            commonBuiltins.append(imageParams);
+            commonBuiltins.append(", ");
+            commonBuiltins.append(dataType);
+            commonBuiltins.append(");\n");
+        }
+
+        commonBuiltins.append(dataType);
+        commonBuiltins.append(" imageAtomicCompSwap(");
+        commonBuiltins.append(imageParams);
+        commonBuiltins.append(", ");
+        commonBuiltins.append(dataType);
+        commonBuiltins.append(", ");
+        commonBuiltins.append(dataType);
+        commonBuiltins.append(");\n");
+    }
 }
 
 //
@@ -2111,17 +2163,27 @@ void TBuiltIns::initialize(const TBuiltInResource &resources, int version, EProf
         }
 
         // images
-        if (version >= 420) {
-            //snprintf(builtInConstant, maxSize, "const int gl_MaxGeometryImageUniforms = %d;", resources.);
-            //snprintf(builtInConstant, maxSize, "const int gl_MaxGeometryTextureImageUnits = %d;", resources.);
-            //snprintf(builtInConstant, maxSize, "const int gl_MaxTessControlImageUniforms = %d;", resources.);
-            //snprintf(builtInConstant, maxSize, "const int gl_MaxTessEvaluationImageUniforms = %d;", resources.);
-            //snprintf(builtInConstant, maxSize, "const int gl_MaxImageUnits = %d;", resources.);
-            //snprintf(builtInConstant, maxSize, "const int gl_MaxCombinedImageUnitsAndFragmentOutputs = %d;", resources.);
-            //snprintf(builtInConstant, maxSize, "const int gl_MaxImageSamples = %d;", resources.);
-            //snprintf(builtInConstant, maxSize, "const int gl_MaxVertexImageUniforms = %d;", resources.);
-            //snprintf(builtInConstant, maxSize, "const int gl_MaxFragmentImageUniforms = %d;", resources.);
-            //snprintf(builtInConstant, maxSize, "const int gl_MaxCombinedImageUniforms = %d;", resources.);
+        if (version >= 130) {
+            snprintf(builtInConstant, maxSize, "const int gl_MaxImageUnits = %d;", resources.maxImageUnits);
+            s.append(builtInConstant);
+            snprintf(builtInConstant, maxSize, "const int gl_MaxCombinedImageUnitsAndFragmentOutputs = %d;", resources.maxCombinedImageUnitsAndFragmentOutputs);
+            s.append(builtInConstant);
+            snprintf(builtInConstant, maxSize, "const int gl_MaxCombinedShaderOutputResources = %d;", resources.maxCombinedShaderOutputResources);
+            s.append(builtInConstant);
+            snprintf(builtInConstant, maxSize, "const int gl_MaxImageSamples = %d;", resources.maxImageSamples);
+            s.append(builtInConstant);
+            snprintf(builtInConstant, maxSize, "const int gl_MaxVertexImageUniforms = %d;", resources.maxVertexImageUniforms);
+            s.append(builtInConstant);
+            snprintf(builtInConstant, maxSize, "const int gl_MaxTessControlImageUniforms = %d;", resources.maxTessControlImageUniforms);
+            s.append(builtInConstant);
+            snprintf(builtInConstant, maxSize, "const int gl_MaxTessEvaluationImageUniforms = %d;", resources.maxTessEvaluationImageUniforms);
+            s.append(builtInConstant);
+            snprintf(builtInConstant, maxSize, "const int gl_MaxGeometryImageUniforms = %d;", resources.maxGeometryImageUniforms);
+            s.append(builtInConstant);
+            snprintf(builtInConstant, maxSize, "const int gl_MaxFragmentImageUniforms = %d;", resources.maxFragmentImageUniforms);
+            s.append(builtInConstant);
+            snprintf(builtInConstant, maxSize, "const int gl_MaxCombinedImageUniforms = %d;", resources.maxCombinedImageUniforms);
+            s.append(builtInConstant);
         }
 
         // compute
@@ -2263,6 +2325,11 @@ void IdentifyBuiltIns(int version, EProfile profile, EShLanguage language, TSymb
             symbolTable.setFunctionExtensions("texture2DProjGradEXT", 1, &GL_EXT_shader_texture_lod);
             symbolTable.setFunctionExtensions("textureCubeGradEXT",   1, &GL_EXT_shader_texture_lod);
         }
+
+        // GL_ARB_shader_image_load_store
+        if (version < 420)
+            symbolTable.setFunctionExtensions("memoryBarrier", 1, &GL_ARB_shader_image_load_store);
+        // All the image access functions are protected by checks on the type of the first argument.
 
         symbolTable.setVariableExtensions("gl_FragDepthEXT", 1, &GL_EXT_frag_depth);
         break;

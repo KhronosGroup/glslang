@@ -967,17 +967,31 @@ TIntermTyped* TParseContext::handleFunctionCall(TSourceLoc loc, TFunction* funct
                 requireExtensions(loc, fnCandidate->getNumExtensions(), fnCandidate->getExtensions(), fnCandidate->getName().c_str());
 
             if (arguments) {
-                // Make sure storage qualifications work for these arguments.
+                // Make sure qualifications work for these arguments.
                 TIntermAggregate* aggregate = arguments->getAsAggregate();
                 for (int i = 0; i < fnCandidate->getParamCount(); ++i) {
-                    TStorageQualifier qual = (*fnCandidate)[i].type->getQualifier().storage;
-                    if (qual == EvqOut || qual == EvqInOut) {
-                        // At this early point there is a slight ambiguity between whether an aggregate 'arguments'
-                        // is the single argument itself or its children are the arguments.  Only one argument
-                        // means take 'arguments' itself as the one argument.
-                        TIntermNode* arg = fnCandidate->getParamCount() == 1 ? arguments : (aggregate ? aggregate->getSequence()[i] : arguments);
+                    // At this early point there is a slight ambiguity between whether an aggregate 'arguments'
+                    // is the single argument itself or its children are the arguments.  Only one argument
+                    // means take 'arguments' itself as the one argument.
+                    TIntermNode* arg = fnCandidate->getParamCount() == 1 ? arguments : (aggregate ? aggregate->getSequence()[i] : arguments);
+                    TQualifier& formalQualifier = (*fnCandidate)[i].type->getQualifier();
+                    if (formalQualifier.storage == EvqOut || formalQualifier.storage == EvqInOut) {
                         if (lValueErrorCheck(arguments->getLoc(), "assign", arg->getAsTyped()))
                             error(arguments->getLoc(), "Non-L-value cannot be passed for 'out' or 'inout' parameters.", "out", "");
+                    }
+                    TQualifier& argQualifier = arg->getAsTyped()->getQualifier();
+                    if (argQualifier.isMemory()) {
+                        const char* message = "argument cannot drop memory qualifier when passed to formal parameter";
+                        if (argQualifier.volatil && ! formalQualifier.volatil)
+                            error(arguments->getLoc(), message, "volatile", "");
+                        if (argQualifier.coherent && ! formalQualifier.coherent)
+                            error(arguments->getLoc(), message, "coherent", "");
+                        if (argQualifier.restrict && ! formalQualifier.restrict)
+                            error(arguments->getLoc(), message, "restrict", "");
+                        if (argQualifier.readonly && ! formalQualifier.readonly)
+                            error(arguments->getLoc(), message, "readonly", "");
+                        if (argQualifier.writeonly && ! formalQualifier.writeonly)
+                            error(arguments->getLoc(), message, "writeonly", "");
                     }
                 }
 
@@ -1272,6 +1286,14 @@ void TParseContext::nonOpBuiltInCheck(TSourceLoc loc, const TFunction& fnCandida
                 }
             }
         }
+    }
+    if (fnCandidate.getName().compare(0, 11, "imageAtomic") == 0) {
+        const TType& imageType = callNode.getSequence()[0]->getAsTyped()->getType();
+        if (imageType.getSampler().type == EbtInt || imageType.getSampler().type == EbtUint) {
+            if (imageType.getQualifier().layoutFormat != ElfR32i && imageType.getQualifier().layoutFormat != ElfR32ui)
+                error(loc, "only supported on image with format r32i or r32ui", fnCandidate.getName().c_str(), "");
+        } else
+            error(loc, "only supported on integer images", fnCandidate.getName().c_str(), "");
     }
 }
 
@@ -2651,6 +2673,13 @@ void TParseContext::paramCheckFix(TSourceLoc loc, const TStorageQualifier& quali
 
 void TParseContext::paramCheckFix(TSourceLoc loc, const TQualifier& qualifier, TType& type)
 {
+    if (qualifier.isMemory()) {
+        type.getQualifier().volatil   = qualifier.volatil;
+        type.getQualifier().coherent  = qualifier.coherent;
+        type.getQualifier().readonly  = qualifier.readonly;
+        type.getQualifier().writeonly = qualifier.writeonly;
+        type.getQualifier().restrict  = qualifier.restrict;
+    }
     if (qualifier.isAuxiliary() ||
         qualifier.isInterpolation())
         error(loc, "cannot use auxiliary or interpolation qualifiers on a function parameter", "", "");
@@ -2898,6 +2927,14 @@ void TParseContext::setLayoutQualifier(TSourceLoc loc, TPublicType& publicType, 
         publicType.qualifier.layoutPacking = ElpStd430;
         return;
     }
+    for (TLayoutFormat format = (TLayoutFormat)(ElfNone + 1); format < ElfCount; format = (TLayoutFormat)(format + 1)) {
+        if (id == TQualifier::getLayoutFormatString(format)) {
+            requireProfile(loc, ENoProfile | ECoreProfile | ECompatibilityProfile, "image load store");
+            profileRequires(loc, ENoProfile | ECoreProfile | ECompatibilityProfile, 420, GL_ARB_shader_image_load_store, "image load store");
+            publicType.qualifier.layoutFormat = format;
+            return;
+        }
+    }
     if (language == EShLangGeometry || language == EShLangTessEvaluation) {
         if (id == TQualifier::getGeometryString(ElgTriangles)) {
             publicType.shaderQualifiers.geometry = ElgTriangles;
@@ -2987,8 +3024,14 @@ void TParseContext::setLayoutQualifier(TSourceLoc loc, TPublicType& publicType, 
             publicType.shaderQualifiers.pixelCenterInteger = true;
             return;
         }
+        if (id == "early_fragment_tests") {
+            requireProfile(loc, ENoProfile | ECoreProfile | ECompatibilityProfile, "early_fragment_tests");
+            profileRequires(loc, ENoProfile | ECoreProfile | ECompatibilityProfile, 420, GL_ARB_shader_image_load_store, "early_fragment_tests");
+            publicType.shaderQualifiers.earlyFragmentTests = true;
+            return;
+        }
     }
-    error(loc, "unrecognized layout identifier, or qualifier requires assignemnt (e.g., binding = 4)", id.c_str(), "");
+    error(loc, "unrecognized layout identifier, or qualifier requires assignment (e.g., binding = 4)", id.c_str(), "");
 }
 
 // Put the id's layout qualifier value into the public type.  This is before we know any
@@ -3169,6 +3212,9 @@ void TParseContext::mergeObjectLayoutQualifiers(TSourceLoc loc, TQualifier& dst,
     if (src.hasStream())
         dst.layoutStream = src.layoutStream;
 
+    if (src.hasFormat())
+        dst.layoutFormat = src.layoutFormat;
+
     if (src.hasXfbBuffer())
         dst.layoutXfbBuffer = src.layoutXfbBuffer;
 
@@ -3332,6 +3378,23 @@ void TParseContext::layoutTypeCheck(TSourceLoc loc, const TType& type)
         if (type.getBasicType() == EbtBlock)
             error(loc, "only applies to block members, not blocks", "offset", "");        
     }
+
+    // Image format
+    if (qualifier.hasFormat()) {
+        if (type.getBasicType() != EbtSampler || ! type.getSampler().image)
+            error(loc, "only apply to images", TQualifier::getLayoutFormatString(qualifier.layoutFormat), "");
+        else {
+            if (type.getSampler().type == EbtFloat && qualifier.layoutFormat > ElfFloatGuard)
+                error(loc, "does not apply to floating point images", TQualifier::getLayoutFormatString(qualifier.layoutFormat), "");
+            if (type.getSampler().type == EbtInt && (qualifier.layoutFormat < ElfFloatGuard || qualifier.layoutFormat > ElfIntGuard))
+                error(loc, "does not apply to signed integer images", TQualifier::getLayoutFormatString(qualifier.layoutFormat), "");
+            if (type.getSampler().type == EbtUint && qualifier.layoutFormat < ElfIntGuard)
+                error(loc, "does not apply to unsigned integer images", TQualifier::getLayoutFormatString(qualifier.layoutFormat), "");
+        }
+    } else if (type.getBasicType() == EbtSampler && type.getSampler().image && !qualifier.writeonly)
+        error(loc, "image variables not declared 'writeonly' must have a format layout qualifier", "", "");
+    if (qualifier.isMemory() && (type.getBasicType() != EbtSampler || ! type.getSampler().image))
+        error(loc, "memory qualifiers can only be used on image types", "", "");
 }
 
 // Do layout error checking that can be done within a qualifier proper, not needing to know
@@ -4497,6 +4560,12 @@ void TParseContext::updateStandaloneQualifierDefaults(TSourceLoc loc, const TPub
             intermediate.setPointMode();
         else
             error(loc, "can only apply to 'in'", "point_mode", "");
+    }
+    if (publicType.shaderQualifiers.earlyFragmentTests) {
+        if (publicType.qualifier.storage == EvqVaryingIn)
+            intermediate.setEarlyFragmentTests();
+        else
+            error(loc, "can only apply to 'in'", "early_fragment_tests", "");
     }
 
     const TQualifier& qualifier = publicType.qualifier;

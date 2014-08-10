@@ -241,6 +241,61 @@ enum TVertexOrder {
     EvoCcw
 };
 
+// Note: order matters, as type of format is done by comparison.
+enum TLayoutFormat {
+    ElfNone,
+
+    // Float image
+    ElfRgba32f,
+    ElfRgba16f,
+    ElfRg32f,
+    ElfRg16f,
+    ElfR11fG11fB10f,
+    ElfR32f,
+    ElfR16f,
+    ElfRgba16,
+    ElfRgb10A2,
+    ElfRgba8,
+    ElfRg16,
+    ElfRg8,
+    ElfR16,
+    ElfR8,
+    ElfRgba16Snorm,
+    ElfRgba8Snorm,
+    ElfRg16Snorm,
+    ElfRg8Snorm,
+    ElfR16Snorm,
+    ElfR8Snorm,
+
+    ElfFloatGuard,      // to help with comparisons
+
+    // Int image
+    ElfRgba32i,
+    ElfRgba16i,
+    ElfRgba8i,
+    ElfRg32i,
+    ElfRg16i,
+    ElfRg8i,
+    ElfR32i,
+    ElfR16i,
+    ElfR8i,
+
+    ElfIntGuard,       // to help with comparisons
+
+    // Uint image
+    ElfRgba32ui,
+    ElfRgba16ui,
+    ElfRgba8ui,
+    ElfRg32ui,
+    ElfRg16ui,
+    ElfRg8ui,
+    ElfR32ui,
+    ElfR16ui,
+    ElfR8ui,
+
+    ElfCount
+};
+
 class TQualifier {
 public:
     void clear()
@@ -416,6 +471,8 @@ public:
         layoutXfbBuffer = layoutXfbBufferEnd;
         layoutXfbStride = layoutXfbStrideEnd;
         layoutXfbOffset = layoutXfbOffsetEnd;
+
+        layoutFormat = ElfNone;
     }
     bool hasLayout() const
     {
@@ -423,7 +480,8 @@ public:
                hasLocation() ||
                hasBinding() ||
                hasStream() ||
-               hasXfb();
+               hasXfb() ||
+               hasFormat();
     }
     TLayoutMatrix  layoutMatrix  : 3;
     TLayoutPacking layoutPacking : 4;
@@ -450,6 +508,8 @@ public:
 
                  unsigned int layoutXfbOffset       : 10;
     static const unsigned int layoutXfbOffsetEnd = 0x3FF;
+
+    TLayoutFormat layoutFormat                      :  8;
 
     bool hasUniformLayout() const
     {
@@ -491,6 +551,10 @@ public:
     {
         return layoutStream != layoutStreamEnd;
     }
+    bool hasFormat() const
+    {
+        return layoutFormat != ElfNone;
+    }
     bool hasXfb() const
     {
         return hasXfbBuffer() ||
@@ -527,12 +591,58 @@ public:
         default:             return "none";
         }
     }
+    static const char* getLayoutFormatString(TLayoutFormat f)
+    {
+        switch (f) {
+        case ElfRgba32f:      return "rgba32f";
+        case ElfRgba16f:      return "rgba16f";
+        case ElfRg32f:        return "rg32f";
+        case ElfRg16f:        return "rg16f";
+        case ElfR11fG11fB10f: return "r11f_g11f_b10f";
+        case ElfR32f:         return "r32f";
+        case ElfR16f:         return "r16f";
+        case ElfRgba16:       return "rgba16";
+        case ElfRgb10A2:      return "rgb10_a2";
+        case ElfRgba8:        return "rgba8";
+        case ElfRg16:         return "rg16";
+        case ElfRg8:          return "rg8";
+        case ElfR16:          return "r16";
+        case ElfR8:           return "r8";
+        case ElfRgba16Snorm:  return "rgba16_snorm";
+        case ElfRgba8Snorm:   return "rgba8_snorm";
+        case ElfRg16Snorm:    return "rg16_snorm";
+        case ElfRg8Snorm:     return "rg8_snorm";
+        case ElfR16Snorm:     return "r16_snorm";
+        case ElfR8Snorm:      return "r8_snorm";
+
+        case ElfRgba32i:      return "rgba32i";
+        case ElfRgba16i:      return "rgba16i";
+        case ElfRgba8i:       return "rgba8i";
+        case ElfRg32i:        return "rg32i";
+        case ElfRg16i:        return "rg16i";
+        case ElfRg8i:         return "rg8i";
+        case ElfR32i:         return "r32i";
+        case ElfR16i:         return "r16i";
+        case ElfR8i:          return "r8i";
+
+        case ElfRgba32ui:     return "rgba32ui";
+        case ElfRgba16ui:     return "rgba16ui";
+        case ElfRgba8ui:      return "rgba8ui";
+        case ElfRg32ui:       return "rg32ui";
+        case ElfRg16ui:       return "rg16ui";
+        case ElfRg8ui:        return "rg8ui";
+        case ElfR32ui:        return "r32ui";
+        case ElfR16ui:        return "r16ui";
+        case ElfR8ui:         return "r8ui";
+        default:              return "none";
+        }
+    }
     static const char* getGeometryString(TLayoutGeometry geometry)
     {
         switch (geometry) {
         case ElgPoints:             return "points";
         case ElgLines:              return "lines";
-        case ElgLinesAdjacency:     return "lines_adjancency";
+        case ElgLinesAdjacency:     return "lines_adjacency";
         case ElgLineStrip:          return "line_strip";
         case ElgTriangles:          return "triangles";
         case ElgTrianglesAdjacency: return "triangles_adjacency";
@@ -583,6 +693,7 @@ struct TShaderQualifiers {
     TVertexSpacing spacing;
     TVertexOrder order;
     bool pointMode;
+    bool earlyFragmentTests;  // fragment input
 
     void init()
     {
@@ -594,6 +705,7 @@ struct TShaderQualifiers {
         spacing = EvsNone;
         order = EvoNone;
         pointMode = false;
+        earlyFragmentTests = false;
     }
 
     // Merge in characteristics from the 'src' qualifier.  They can override when
@@ -616,6 +728,8 @@ struct TShaderQualifiers {
             order = src.order;
         if (src.pointMode)
             pointMode = true;
+        if (src.earlyFragmentTests)
+            earlyFragmentTests = true;
     }
 };
 
@@ -1022,6 +1136,9 @@ public:
                     p += snprintf(p, end - p, "offset=%d ", qualifier.layoutOffset);
                 if (qualifier.hasAlign())
                     p += snprintf(p, end - p, "align=%d ", qualifier.layoutAlign);
+
+                if (qualifier.hasFormat())
+                    p += snprintf(p, end - p, "%s ", TQualifier::getLayoutFormatString(qualifier.layoutFormat));
 
                 if (qualifier.hasXfbBuffer() && qualifier.hasXfbOffset())
                     p += snprintf(p, end - p, "xfb_buffer=%d ", qualifier.layoutXfbBuffer);

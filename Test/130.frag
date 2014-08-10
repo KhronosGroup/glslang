@@ -148,4 +148,22 @@ in float gl_FogFragCoord;
 #extension GL_ARB_separate_shader_objects : enable
 
 in float gl_FogFragCoord;
-in int gl_FogFragCoord;
+in int gl_FogFragCoord;    // ERROR
+
+layout(early_fragment_tests) in;         // ERROR
+layout(r32i) uniform iimage2D iimg2Dbad; // ERROR
+
+#extension GL_ARB_shader_image_load_store : enable
+
+layout(early_fragment_tests) in;
+
+layout(r32i) uniform iimage2D iimg2D;
+
+void qux2()
+{
+    int i;
+    imageAtomicCompSwap(iimg2D, ivec2(i,i), i, i);
+    ivec4 pos = imageLoad(iimg2D, ivec2(i,i));
+}
+
+layout(early_fragment_tests) out;         // ERROR

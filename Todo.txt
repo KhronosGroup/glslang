@@ -168,11 +168,12 @@ Shader Functionality to Implement/Finish
       + ES convergence
         + Clarify that .xyzwxy.xy is illegal, as it temporarily makes a “vec6”.
         + Clarify that return statements only accept values (no return of a void function).
-      - Add image types (GL_ARB_shader_image_load_store)
+      + Add image types (GL_ARB_shader_image_load_store)
         + 33 new types, all with “image” in their name, correspond to the non-shadow texture types
-        + addition of memory qualifiers: coherent,volatile, restrict, readonly, and writeonly
-        - can read/write/modify images from a shader, through new built-in functions
-        - qualifiers can act independently on the opaque shader variable and the backing image, so extra qualifiers can be used to separately qualify these
+        + addition of memory qualifiers: coherent, volatile, restrict, readonly, and writeonly
+        + can read/write/modify images from a shader, through new built-in functions
+        + qualifiers can act independently on the opaque shader variable and the backing image, so extra qualifiers can be used to separately qualify these
+        + early_fragment_tests
       + Variables declared in if and else statements are scoped only to the end of those statements, especially for non-compound statements
         Note, this is not backward compatible, it may depend on #version.
       + Allow implicit conversions of return values to the declared type of the function.

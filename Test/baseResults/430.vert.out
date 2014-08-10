@@ -67,7 +67,7 @@ ERROR: node is still EOpNull!
 0:31  Function Definition: foo3(vf4;vf3;vf2;vf3; (void)
 0:31    Function Parameters: 
 0:31      'v4' (in 4-component vector of float)
-0:31      'v3' (in 3-component vector of float)
+0:31      'v3' (volatile in 3-component vector of float)
 0:31      'v2' (in 2-component vector of float)
 0:31      'cv3' (in 3-component vector of float)
 0:?   Linker Objects
@@ -139,7 +139,7 @@ ERROR: node is still EOpNull!
 0:31  Function Definition: foo3(vf4;vf3;vf2;vf3; (void)
 0:31    Function Parameters: 
 0:31      'v4' (in 4-component vector of float)
-0:31      'v3' (in 3-component vector of float)
+0:31      'v3' (volatile in 3-component vector of float)
 0:31      'v2' (in 2-component vector of float)
 0:31      'cv3' (in 3-component vector of float)
 0:?   Linker Objects

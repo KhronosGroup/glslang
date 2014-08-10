@@ -672,15 +672,17 @@ int TScanContext::tokenizeIdentifier()
             return identifierOrType();
         return keyword;
 
+    case ATOMIC_UINT:
+        return es30ReservedFromGLSL(420);
+
     case COHERENT:
     case RESTRICT:
     case READONLY:
     case WRITEONLY:
-    case ATOMIC_UINT:
-        return es30ReservedFromGLSL(420);
+        return es30ReservedFromGLSL(parseContext.extensionsTurnedOn(1, &GL_ARB_shader_image_load_store) ? 130 : 420);
 
     case VOLATILE:
-        if (parseContext.profile == EEsProfile || parseContext.version < 420)
+        if (! parseContext.symbolTable.atBuiltInLevel() && (parseContext.profile == EEsProfile || (parseContext.version < 420 && ! parseContext.extensionsTurnedOn(1, &GL_ARB_shader_image_load_store))))
             reservedWord();
         return keyword;
 
@@ -766,7 +768,7 @@ int TScanContext::tokenizeIdentifier()
 
     case IMAGECUBEARRAY:
     case IIMAGECUBEARRAY:
-    case UIMAGECUBEARRAY:
+    case UIMAGECUBEARRAY:        
     case IMAGE2DMS:
     case IIMAGE2DMS:
     case UIMAGE2DMS:
@@ -993,6 +995,9 @@ int TScanContext::identifierOrReserved(bool reserved)
 // but then got reserved by ES 3.0.
 int TScanContext::es30ReservedFromGLSL(int version)
 {
+    if (parseContext.symbolTable.atBuiltInLevel())
+        return keyword;
+
     if ((parseContext.profile == EEsProfile && parseContext.version < 300) ||
         (parseContext.profile != EEsProfile && parseContext.version < version)) {
             if (parseContext.forwardCompatible)
@@ -1067,7 +1072,7 @@ int TScanContext::firstGenerationImage()
 {
     afterType = true;
 
-    if (parseContext.profile != EEsProfile && parseContext.version >= 420)
+    if (parseContext.symbolTable.atBuiltInLevel() || (parseContext.profile != EEsProfile && (parseContext.version >= 420 || parseContext.extensionsTurnedOn(1, &GL_ARB_shader_image_load_store))))
         return keyword;
 
     if ((parseContext.profile == EEsProfile && parseContext.version >= 300) ||
@@ -1087,7 +1092,7 @@ int TScanContext::secondGenerationImage()
 {
     afterType = true;
 
-    if (parseContext.profile != EEsProfile && parseContext.version >= 420)
+    if (parseContext.symbolTable.atBuiltInLevel() || parseContext.profile != EEsProfile && (parseContext.version >= 420 || parseContext.extensionsTurnedOn(1, &GL_ARB_shader_image_load_store)))
         return keyword;
 
     if (parseContext.forwardCompatible)

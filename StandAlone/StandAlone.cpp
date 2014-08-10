@@ -155,6 +155,7 @@ const char* DefaultConfig =
     "MaxFragmentInputComponents 128\n"
     "MaxImageUnits 8\n"
     "MaxCombinedImageUnitsAndFragmentOutputs 8\n"
+    "MaxCombinedShaderOutputResources 8\n"
     "MaxImageSamples 0\n"
     "MaxVertexImageUniforms 0\n"
     "MaxTessControlImageUniforms 0\n"
@@ -316,6 +317,8 @@ void ProcessConfigFile()
             Resources.maxImageUnits = value;
         else if (strcmp(token, "MaxCombinedImageUnitsAndFragmentOutputs") == 0)
             Resources.maxCombinedImageUnitsAndFragmentOutputs = value;
+        else if (strcmp(token, "MaxCombinedShaderOutputResources") == 0)
+            Resources.maxCombinedShaderOutputResources = value;
         else if (strcmp(token, "MaxImageSamples") == 0)
             Resources.maxImageSamples = value;
         else if (strcmp(token, "MaxVertexImageUniforms") == 0)

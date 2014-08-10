@@ -80,6 +80,9 @@ void TIntermediate::merge(TInfoSink& infoSink, TIntermediate& unit)
     if (originUpperLeft != unit.originUpperLeft || pixelCenterInteger != unit.pixelCenterInteger)
         error(infoSink, "gl_FragCoord redeclarations must match across shaders\n");
 
+    if (! earlyFragmentTests)
+        earlyFragmentTests = unit.earlyFragmentTests;
+
     if (inputPrimitive == ElgNone)
         inputPrimitive = unit.inputPrimitive;
     else if (inputPrimitive != unit.inputPrimitive)

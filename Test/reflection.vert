@@ -72,7 +72,7 @@ uniform float uf2;
 uniform float ufDead3;
 uniform float ufDead4;
 
-uniform uimage2D image_ui2D;
+uniform writeonly uimage2D image_ui2D;
 uniform sampler2D sampler_2D;
 uniform sampler2DMSArray sampler_2DMSArray;
 
@@ -111,7 +111,7 @@ void liveFunction2()
     float f = uf1;
 }
 
-void liveFunction1(uimage2D p_ui2D, sampler2D p_2D, sampler2DMSArray p_2DMSArray)
+void liveFunction1(writeonly uimage2D p_ui2D, sampler2D p_2D, sampler2DMSArray p_2DMSArray)
 
 {
     liveFunction2();

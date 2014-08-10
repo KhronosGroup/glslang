@@ -112,7 +112,7 @@ public:
     explicit TIntermediate(EShLanguage l, int v = 0, EProfile p = ENoProfile) : language(l), treeRoot(0), profile(p), version(v), 
         numMains(0), numErrors(0), recursive(false),
         invocations(0), vertices(0), inputPrimitive(ElgNone), outputPrimitive(ElgNone), pixelCenterInteger(false), originUpperLeft(false),
-        vertexSpacing(EvsNone), vertexOrder(EvoNone), pointMode(false), xfbMode(false)
+        vertexSpacing(EvsNone), vertexOrder(EvoNone), pointMode(false), earlyFragmentTests(false), xfbMode(false)
     {
         xfbBuffers.resize(TQualifier::layoutXfbBufferEnd);
     }
@@ -235,6 +235,8 @@ public:
     bool getOriginUpperLeft() const { return originUpperLeft; }
     void setPixelCenterInteger() { pixelCenterInteger = true; }
     bool getPixelCenterInteger() const { return pixelCenterInteger; }
+    void setEarlyFragmentTests() { earlyFragmentTests = true; }
+    bool getEarlyFragmentTests() const { return earlyFragmentTests; }
 
     void addToCallGraph(TInfoSink&, const TString& caller, const TString& callee);
     void merge(TInfoSink&, TIntermediate&);
@@ -287,6 +289,7 @@ protected:
     TVertexSpacing vertexSpacing;
     TVertexOrder vertexOrder;
     bool pointMode;
+    bool earlyFragmentTests;
     bool xfbMode;
 
     typedef std::list<TCall> TGraph;

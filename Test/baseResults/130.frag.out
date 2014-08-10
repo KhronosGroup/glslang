@@ -25,16 +25,22 @@ ERROR: 0:143: 'length' : method does not accept any arguments
 ERROR: 0:146: 'gl_FogFragCoord' : identifiers starting with "gl_" are reserved 
 ERROR: 0:151: 'int' : must be qualified as flat in
 ERROR: 0:151: 'redeclaration' : cannot change the type of gl_FogFragCoord
-ERROR: 24 compilation errors.  No code generated.
+ERROR: 0:153: 'early_fragment_tests' : not supported for this version or the enabled extensions 
+ERROR: 0:154: 'image load store' : not supported for this version or the enabled extensions 
+ERROR: 0:154: 'iimage2D' : Reserved word. 
+ERROR: 0:169: 'early_fragment_tests' : can only apply to 'in' 
+ERROR: 28 compilation errors.  No code generated.
 
 
 Shader version: 130
 Requested GL_ARB_gpu_shader5
 Requested GL_ARB_separate_shader_objects
+Requested GL_ARB_shader_image_load_store
 Requested GL_ARB_shading_language_420pack
 Requested GL_ARB_texture_cube_map_array
 Requested GL_ARB_texture_gather
 Requested GL_ARB_texture_rectangle
+using early_fragment_tests
 ERROR: node is still EOpNull!
 0:16  Function Definition: main( (void)
 0:16    Function Parameters: 
@@ -348,6 +354,24 @@ ERROR: node is still EOpNull!
 0:141        0.000000
 0:143      Constant:
 0:143        1 (const int)
+0:162  Function Definition: qux2( (void)
+0:162    Function Parameters: 
+0:?     Sequence
+0:165      Function Call: imageAtomicCompSwap(iI21;vi2;i1;i1; (int)
+0:165        'iimg2D' (layout(r32i ) uniform iimage2D)
+0:165        Construct ivec2 (2-component vector of int)
+0:165          'i' (int)
+0:165          'i' (int)
+0:165        'i' (int)
+0:165        'i' (int)
+0:166      Sequence
+0:166        move second child to first child (4-component vector of int)
+0:166          'pos' (4-component vector of int)
+0:166          Function Call: imageLoad(iI21;vi2; (4-component vector of int)
+0:166            'iimg2D' (layout(r32i ) uniform iimage2D)
+0:166            Construct ivec2 (2-component vector of int)
+0:166              'i' (int)
+0:166              'i' (int)
 0:?   Linker Objects
 0:?     'a' (3-component vector of float)
 0:?     'b' (float)
@@ -377,6 +401,8 @@ ERROR: node is still EOpNull!
 0:?     'instanceName' (layout(binding=0 column_major shared ) uniform block{layout(column_major shared ) uniform int a})
 0:?     'bounds' (layout(binding=0 ) uniform sampler2D)
 0:?     'gl_FogFragCoord' (smooth in float)
+0:?     'iimg2Dbad' (layout(r32i ) uniform iimage2D)
+0:?     'iimg2D' (layout(r32i ) uniform iimage2D)
 
 
 Linked fragment stage:
@@ -385,10 +411,12 @@ Linked fragment stage:
 Shader version: 130
 Requested GL_ARB_gpu_shader5
 Requested GL_ARB_separate_shader_objects
+Requested GL_ARB_shader_image_load_store
 Requested GL_ARB_shading_language_420pack
 Requested GL_ARB_texture_cube_map_array
 Requested GL_ARB_texture_gather
 Requested GL_ARB_texture_rectangle
+using early_fragment_tests
 ERROR: node is still EOpNull!
 0:16  Function Definition: main( (void)
 0:16    Function Parameters: 
@@ -702,6 +730,24 @@ ERROR: node is still EOpNull!
 0:141        0.000000
 0:143      Constant:
 0:143        1 (const int)
+0:162  Function Definition: qux2( (void)
+0:162    Function Parameters: 
+0:?     Sequence
+0:165      Function Call: imageAtomicCompSwap(iI21;vi2;i1;i1; (int)
+0:165        'iimg2D' (layout(r32i ) uniform iimage2D)
+0:165        Construct ivec2 (2-component vector of int)
+0:165          'i' (int)
+0:165          'i' (int)
+0:165        'i' (int)
+0:165        'i' (int)
+0:166      Sequence
+0:166        move second child to first child (4-component vector of int)
+0:166          'pos' (4-component vector of int)
+0:166          Function Call: imageLoad(iI21;vi2; (4-component vector of int)
+0:166            'iimg2D' (layout(r32i ) uniform iimage2D)
+0:166            Construct ivec2 (2-component vector of int)
+0:166              'i' (int)
+0:166              'i' (int)
 0:?   Linker Objects
 0:?     'a' (3-component vector of float)
 0:?     'b' (float)
@@ -731,4 +777,6 @@ ERROR: node is still EOpNull!
 0:?     'instanceName' (layout(binding=0 column_major shared ) uniform block{layout(column_major shared ) uniform int a})
 0:?     'bounds' (layout(binding=0 ) uniform sampler2D)
 0:?     'gl_FogFragCoord' (smooth in float)
+0:?     'iimg2Dbad' (layout(r32i ) uniform iimage2D)
+0:?     'iimg2D' (layout(r32i ) uniform iimage2D)
 

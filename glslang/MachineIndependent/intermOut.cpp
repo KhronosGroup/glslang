@@ -611,6 +611,8 @@ void TIntermediate::output(TInfoSink& infoSink, bool tree)
             infoSink.debug << "gl_FragCoord pixel center is integer\n";
         if (originUpperLeft)
             infoSink.debug << "gl_FragCoord origin is upper left\n";
+        if (earlyFragmentTests)
+            infoSink.debug << "using early_fragment_tests\n";
         break;
 
     case EShLangCompute:
