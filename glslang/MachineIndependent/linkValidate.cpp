@@ -117,6 +117,13 @@ void TIntermediate::merge(TInfoSink& infoSink, TIntermediate& unit)
     if (unit.pointMode)
         pointMode = true;
 
+    for (int i = 0; i < 3; ++i) {
+        if (localSize[i] > 1)
+            localSize[i] = unit.localSize[i];
+        else if (localSize[i] != unit.localSize[i])
+            error(infoSink, "Contradictory local size");
+    }
+
     if (unit.xfbMode)
         xfbMode = true;
     for (size_t b = 0; b < xfbBuffers.size(); ++b) {

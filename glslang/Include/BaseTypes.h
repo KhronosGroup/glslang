@@ -69,6 +69,7 @@ enum TStorageQualifier {
     EvqVaryingOut,    // pipeline ouput, read/write
     EvqUniform,       // read only, shader with app
     EvqBuffer,        // read only, shader with app
+    EvqShared,        // compute shader's read/write 'shared' qualifier
     
     // parameters
     EvqIn,            // also, for 'in' in the grammar before we know if it's a pipeline input or an 'in' parameter
@@ -109,6 +110,8 @@ __inline const char* GetStorageQualifierString(TStorageQualifier q)
     case EvqVaryingIn:      return "in";             break;
     case EvqVaryingOut:     return "out";            break;
     case EvqUniform:        return "uniform";        break;
+    case EvqBuffer:         return "buffer";         break;
+    case EvqShared:         return "shared";         break;
     case EvqIn:             return "in";             break;
     case EvqOut:            return "out";            break;
     case EvqInOut:          return "inout";          break;

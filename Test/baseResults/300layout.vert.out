@@ -15,10 +15,9 @@ ERROR: 0:38: 'output block' : not supported with this profile: es
 ERROR: 0:42: 'location qualifier on output' : not supported in this stage: vertex
 ERROR: 0:50: 'shared' : not supported with this profile: es
 ERROR: 0:50: 'shared' : not supported in this stage: vertex
-ERROR: 0:50: '' : memory qualifiers can only be used on image types 
 ERROR: 0:54: 'layout' : cannot specify packing on a variable declaration 
 ERROR: 0:57: 'location' : overlapping use of location 40
-ERROR: 19 compilation errors.  No code generated.
+ERROR: 18 compilation errors.  No code generated.
 
 
 Shader version: 300

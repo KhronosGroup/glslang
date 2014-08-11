@@ -154,6 +154,7 @@ public:
     virtual TType& getWritableType() { assert(writable); return type; }
     virtual bool isUserType() const { return userType; }
     virtual const TConstUnionArray& getConstArray() const { return unionArray; }
+    virtual TConstUnionArray& getWritableConstArray() { assert(writable); return unionArray; }
     virtual void setConstArray(const TConstUnionArray& constArray) { unionArray = constArray; }
 
     virtual void dump(TInfoSink &infoSink) const;

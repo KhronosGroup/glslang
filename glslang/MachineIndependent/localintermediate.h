@@ -114,6 +114,9 @@ public:
         invocations(0), vertices(0), inputPrimitive(ElgNone), outputPrimitive(ElgNone), pixelCenterInteger(false), originUpperLeft(false),
         vertexSpacing(EvsNone), vertexOrder(EvoNone), pointMode(false), earlyFragmentTests(false), xfbMode(false)
     {
+        localSize[0] = 1;
+        localSize[1] = 1;
+        localSize[2] = 1;
         xfbBuffers.resize(TQualifier::layoutXfbBufferEnd);
     }
     void setLimits(const TBuiltInResource& r) { resources = r; }
@@ -221,6 +224,16 @@ public:
     TVertexOrder getVertexOrder() const { return vertexOrder; }
     void setPointMode() { pointMode = true; }
     bool getPointMode() const { return pointMode; }
+    
+    bool setLocalSize(int dim, int size)
+    {
+        if (localSize[dim] > 1)
+            return size == localSize[dim];
+        localSize[dim] = size;
+        return true;
+    }
+    unsigned int getLocalSize(int dim) const { return localSize[dim]; }
+
     void setXfbMode() { xfbMode = true; }
     bool getXfbMode() const { return xfbMode; }
     bool setOutputPrimitive(TLayoutGeometry p)
@@ -289,6 +302,7 @@ protected:
     TVertexSpacing vertexSpacing;
     TVertexOrder vertexOrder;
     bool pointMode;
+    int localSize[3];
     bool earlyFragmentTests;
     bool xfbMode;
 

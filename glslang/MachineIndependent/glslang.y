@@ -1220,7 +1220,7 @@ storage_qualifier
         parseContext.profileRequires($1.loc, ECoreProfile, 430, 0, "shared");
         parseContext.requireStage($1.loc, EShLangCompute, "shared");
         $$.init($1.loc);
-        $$.qualifier.shared = true;
+        $$.qualifier.storage = EvqShared;
     }
     | COHERENT {
         $$.init($1.loc);

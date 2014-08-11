@@ -1079,14 +1079,14 @@ void TBuiltIns::initialize(int version, EProfile profile)
     if (version >= 430) {
         stageBuiltins[EShLangCompute].append(
             "in uvec3 gl_NumWorkGroups;"
-            // TODO: 4.3 functionality: compute shader: constant with no initializer                "const uvec3 gl_WorkGroupSize;"
+            "const uvec3 gl_WorkGroupSize = uvec3(1,1,1);"
 
             "in uvec3 gl_WorkGroupID;"
             "in uvec3 gl_LocalInvocationID;"
 
             "in uvec3 gl_GlobalInvocationID;"
             "in uint gl_LocalInvocationIndex;"
-            
+
             "\n");
     }
 

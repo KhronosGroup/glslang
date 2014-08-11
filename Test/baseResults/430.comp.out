@@ -1,36 +1,81 @@
 430.comp
 Warning, version 430 is not yet complete; most version-specific features are present, but some are missing.
-ERROR: 0:12: 'location qualifier on input' : not supported in this stage: compute
-ERROR: 1 compilation errors.  No code generated.
+ERROR: 0:4: 'local_size' : cannot change previously set size 
+ERROR: 0:5: 'local_size' : too large; see gl_MaxComputeWorkGroupSize 
+ERROR: 0:26: 'in' : global storage input qualifier cannot be used in a compute shader 
+ERROR: 0:26: 'location qualifier on input' : not supported in this stage: compute
+ERROR: 0:27: 'in' : global storage input qualifier cannot be used in a compute shader 
+ERROR: 0:28: 'out' : global storage output qualifier cannot be used in a compute shader 
+ERROR: 0:31: 'shared' : cannot apply layout qualifiers to a shared variable 
+ERROR: 0:31: 'location' : can only appy to uniform, buffer, in, or out storage qualifiers 
+ERROR: 0:32: 'shared' :  cannot initialize this type of qualifier  
+ERROR: 0:34: 'local_size' : can only apply to 'in' 
+ERROR: 0:34: 'local_size' : can only apply to 'in' 
+ERROR: 0:34: 'local_size' : can only apply to 'in' 
+ERROR: 12 compilation errors.  No code generated.
 
 
 Shader version: 430
+local_size = (2, 1, 4096)
 ERROR: node is still EOpNull!
-0:3  Function Definition: main( (void)
-0:3    Function Parameters: 
-0:5    Sequence
-0:5      MemoryBarrierAtomicCounter (void)
-0:6      MemoryBarrierBuffer (void)
-0:7      MemoryBarrierShared (void)
-0:8      MemoryBarrierImage (void)
-0:9      GroupMemoryBarrier (void)
+0:15  Function Definition: main( (void)
+0:15    Function Parameters: 
+0:17    Sequence
+0:17      Barrier (void)
+0:18      MemoryBarrier (void)
+0:19      MemoryBarrierAtomicCounter (void)
+0:20      MemoryBarrierBuffer (void)
+0:21      MemoryBarrierShared (void)
+0:22      MemoryBarrierImage (void)
+0:23      GroupMemoryBarrier (void)
 0:?   Linker Objects
+0:?     'gl_WorkGroupSize' (const 3-component vector of uint)
+0:?       2 (const uint)
+0:?       1 (const uint)
+0:?       4096 (const uint)
+0:?     'total' (const int)
+0:?       66592 (const int)
 0:?     'v3' (layout(location=2 ) in 3-component vector of float)
+0:?     'f' (in float)
+0:?     'fo' (out float)
+0:?     's' (shared 4-component vector of float)
+0:?     'sl' (layout(location=2 ) shared 4-component vector of float)
+0:?     'fs' (shared float)
+0:?     'arrX' (2-element array of int)
+0:?     'arrY' (1-element array of int)
+0:?     'arrZ' (4096-element array of int)
 
 
 Linked compute stage:
 
 
 Shader version: 430
+local_size = (2, 1, 4096)
 ERROR: node is still EOpNull!
-0:3  Function Definition: main( (void)
-0:3    Function Parameters: 
-0:5    Sequence
-0:5      MemoryBarrierAtomicCounter (void)
-0:6      MemoryBarrierBuffer (void)
-0:7      MemoryBarrierShared (void)
-0:8      MemoryBarrierImage (void)
-0:9      GroupMemoryBarrier (void)
+0:15  Function Definition: main( (void)
+0:15    Function Parameters: 
+0:17    Sequence
+0:17      Barrier (void)
+0:18      MemoryBarrier (void)
+0:19      MemoryBarrierAtomicCounter (void)
+0:20      MemoryBarrierBuffer (void)
+0:21      MemoryBarrierShared (void)
+0:22      MemoryBarrierImage (void)
+0:23      GroupMemoryBarrier (void)
 0:?   Linker Objects
+0:?     'gl_WorkGroupSize' (const 3-component vector of uint)
+0:?       2 (const uint)
+0:?       1 (const uint)
+0:?       4096 (const uint)
+0:?     'total' (const int)
+0:?       66592 (const int)
 0:?     'v3' (layout(location=2 ) in 3-component vector of float)
+0:?     'f' (in float)
+0:?     'fo' (out float)
+0:?     's' (shared 4-component vector of float)
+0:?     'sl' (layout(location=2 ) shared 4-component vector of float)
+0:?     'fs' (shared float)
+0:?     'arrX' (2-element array of int)
+0:?     'arrY' (1-element array of int)
+0:?     'arrZ' (4096-element array of int)
 

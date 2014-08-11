@@ -342,7 +342,7 @@ public:
 
     bool isMemory() const
     {
-        return shared || coherent || volatil || restrict || readonly || writeonly;
+        return coherent || volatil || restrict || readonly || writeonly;
     }
     bool isInterpolation() const
     {
@@ -693,6 +693,7 @@ struct TShaderQualifiers {
     TVertexSpacing spacing;
     TVertexOrder order;
     bool pointMode;
+    int localSize[3];         // compute shader
     bool earlyFragmentTests;  // fragment input
 
     void init()
@@ -705,6 +706,9 @@ struct TShaderQualifiers {
         spacing = EvsNone;
         order = EvoNone;
         pointMode = false;
+        localSize[0] = 1;
+        localSize[1] = 1;
+        localSize[2] = 1;
         earlyFragmentTests = false;
     }
 
@@ -728,6 +732,10 @@ struct TShaderQualifiers {
             order = src.order;
         if (src.pointMode)
             pointMode = true;
+        for (int i = 0; i < 3; ++i) {
+            if (src.localSize[i] > 1)
+                localSize[i] = src.localSize[i];
+        }
         if (src.earlyFragmentTests)
             earlyFragmentTests = true;
     }

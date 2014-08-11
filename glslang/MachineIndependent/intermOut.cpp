@@ -429,7 +429,7 @@ void OutputConstantUnion(TInfoSink& out, const TIntermTyped* node, const TConstU
         case EbtFloat:
         case EbtDouble:
             {
-				const int maxSize = 300;
+                const int maxSize = 300;
                 char buf[maxSize];
                 snprintf(buf, maxSize, "%f", constUnion[i].getDConst());
 
@@ -438,7 +438,7 @@ void OutputConstantUnion(TInfoSink& out, const TIntermTyped* node, const TConstU
             break;
         case EbtInt:
             {
-				const int maxSize = 300;
+                const int maxSize = 300;
                 char buf[maxSize];
                 snprintf(buf, maxSize, "%d (%s)", constUnion[i].getIConst(), "const int");
 
@@ -447,7 +447,7 @@ void OutputConstantUnion(TInfoSink& out, const TIntermTyped* node, const TConstU
             break;
         case EbtUint:
             {
-				const int maxSize = 300;
+                const int maxSize = 300;
                 char buf[maxSize];
                 snprintf(buf, maxSize, "%u (%s)", constUnion[i].getUConst(), "const uint");
 
@@ -616,9 +616,10 @@ void TIntermediate::output(TInfoSink& infoSink, bool tree)
         break;
 
     case EShLangCompute:
+        infoSink.debug << "local_size = (" << localSize[0] << ", " << localSize[1] << ", " << localSize[2] << ")\n";
         break;
 
-	default:
+    default:
         break;
     }
 

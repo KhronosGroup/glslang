@@ -57,10 +57,9 @@ Link Validation
       + location match
       - block matching
       - component/binding/index/offset match check
-      - compute shader layout(local_size_*) matching
+      + compute shader layout(local_size_*) matching
       + mixed es/non-es profiles are an error
       - matching redeclarations of interface blocks
-      - 4.3: early_fragment_tests contradictions
       - 4.3: implicit array sizing is cross shader within a stage
       - 4.4: If gl_FragCoord is redeclared in any fragment shader in a program, it must be redeclared in all the fragment shaders in that program that have a static use gl_FragCoord
 
@@ -211,7 +210,7 @@ Shader Functionality to Implement/Finish
             - Arrays of other objects (uniform blocks) containing implicitly sized arrays will have the same implicit size for all 
                 elements of the array.
       - Arrays of arrays are now supported, as per the GL_ARB_arrays_of_arrays extension.
-      - Compute shaders are now supported, as per the GL_ARB_compute_shader extension.
+      + Compute shaders are now supported, as per the GL_ARB_compute_shader extension.
       - Added imageSize() built-ins to query the dimensions of an image.
       - All choice of depth or stencil texturing, for a packed depth-stencil texture, as per the 
         GL_ARB_stencil_texturing extension.

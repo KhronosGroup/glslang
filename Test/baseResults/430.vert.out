@@ -44,7 +44,11 @@ ERROR: 0:92: 'transform feedback qualifier' : not supported for this version or 
 ERROR: 0:93: 'transform feedback qualifier' : not supported for this version or the enabled extensions 
 ERROR: 0:93: 'transform feedback qualifier' : not supported for this version or the enabled extensions 
 ERROR: 0:93: 'transform feedback qualifier' : not supported for this version or the enabled extensions 
-ERROR: 44 compilation errors.  No code generated.
+ERROR: 0:146: 'shared' : not supported in this stage: vertex
+ERROR: 0:150: 'barrier' : no matching overloaded function found 
+ERROR: 0:154: 'memoryBarrierShared' : no matching overloaded function found 
+ERROR: 0:156: 'groupMemoryBarrier' : no matching overloaded function found 
+ERROR: 48 compilation errors.  No code generated.
 
 
 Shader version: 430
@@ -70,6 +74,19 @@ ERROR: node is still EOpNull!
 0:31      'v3' (volatile in 3-component vector of float)
 0:31      'v2' (in 2-component vector of float)
 0:31      'cv3' (in 3-component vector of float)
+0:148  Function Definition: fooBarrier( (void)
+0:148    Function Parameters: 
+0:150    Sequence
+0:150      Constant:
+0:150        0.000000
+0:151      MemoryBarrier (void)
+0:152      MemoryBarrierAtomicCounter (void)
+0:153      MemoryBarrierBuffer (void)
+0:154      Constant:
+0:154        0.000000
+0:155      MemoryBarrierImage (void)
+0:156      Constant:
+0:156        0.000000
 0:?   Linker Objects
 0:?     'v4' (layout(location=3 ) 4-component vector of float)
 0:?     'uv4' (layout(location=4 ) uniform 4-component vector of float)
@@ -109,6 +126,7 @@ ERROR: node is still EOpNull!
 0:?     'bh' (layout(xfb_buffer=1 xfb_offset=32 xfb_stride=80 ) smooth out 4-component vector of float)
 0:?     'bbinst4' (layout(xfb_stride=80 ) out block{layout(xfb_buffer=1 xfb_offset=16 ) out 4-component vector of float bbv1})
 0:?     'bbinst5' (out block{layout(xfb_buffer=1 xfb_offset=0 ) out 4-component vector of float bbv1, layout(xfb_buffer=1 xfb_offset=64 xfb_stride=80 ) out 4-component vector of float bbv2})
+0:?     'sharedv' (shared 4-component vector of float)
 0:?     'gl_VertexID' (gl_VertexId int)
 0:?     'gl_InstanceID' (gl_InstanceId int)
 
@@ -142,6 +160,19 @@ ERROR: node is still EOpNull!
 0:31      'v3' (volatile in 3-component vector of float)
 0:31      'v2' (in 2-component vector of float)
 0:31      'cv3' (in 3-component vector of float)
+0:148  Function Definition: fooBarrier( (void)
+0:148    Function Parameters: 
+0:150    Sequence
+0:150      Constant:
+0:150        0.000000
+0:151      MemoryBarrier (void)
+0:152      MemoryBarrierAtomicCounter (void)
+0:153      MemoryBarrierBuffer (void)
+0:154      Constant:
+0:154        0.000000
+0:155      MemoryBarrierImage (void)
+0:156      Constant:
+0:156        0.000000
 0:?   Linker Objects
 0:?     'v4' (layout(location=3 ) 4-component vector of float)
 0:?     'uv4' (layout(location=4 ) uniform 4-component vector of float)
@@ -181,6 +212,7 @@ ERROR: node is still EOpNull!
 0:?     'bh' (layout(xfb_buffer=1 xfb_offset=32 xfb_stride=80 ) smooth out 4-component vector of float)
 0:?     'bbinst4' (layout(xfb_stride=80 ) out block{layout(xfb_buffer=1 xfb_offset=16 ) out 4-component vector of float bbv1})
 0:?     'bbinst5' (out block{layout(xfb_buffer=1 xfb_offset=0 ) out 4-component vector of float bbv1, layout(xfb_buffer=1 xfb_offset=64 xfb_stride=80 ) out 4-component vector of float bbv2})
+0:?     'sharedv' (shared 4-component vector of float)
 0:?     'gl_VertexID' (gl_VertexId int)
 0:?     'gl_InstanceID' (gl_InstanceId int)
 

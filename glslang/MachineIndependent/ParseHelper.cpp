@@ -1969,6 +1969,8 @@ void TParseContext::globalQualifierCheck(TSourceLoc loc, const TQualifier& quali
             break;
 
         case EShLangCompute:
+            if (! symbolTable.atBuiltInLevel())
+                error(loc, "global storage input qualifier cannot be used in a compute shader", "in", "");
             break;
 
         default:
@@ -2002,9 +2004,10 @@ void TParseContext::globalQualifierCheck(TSourceLoc loc, const TQualifier& quali
 
                 return;
             }
-            break;
+        break;
 
         case EShLangCompute:
+            error(loc, "global storage output qualifier cannot be used in a compute shader", "out", "");
             break;
 
         default:
@@ -3178,6 +3181,18 @@ void TParseContext::setLayoutQualifier(TSourceLoc loc, TPublicType& publicType, 
         break;
 
     case EShLangCompute:
+        if (id == "local_size_x") {
+            publicType.shaderQualifiers.localSize[0] = value;
+            return;
+        }
+        if (id == "local_size_y") {
+            publicType.shaderQualifiers.localSize[1] = value;
+            return;
+        }
+        if (id == "local_size_z") {
+            publicType.shaderQualifiers.localSize[2] = value;
+            return;
+        }
         break;
 
     default:
@@ -3401,6 +3416,9 @@ void TParseContext::layoutTypeCheck(TSourceLoc loc, const TType& type)
 // if there are blocks, atomic counters, variables, etc.
 void TParseContext::layoutQualifierCheck(TSourceLoc loc, const TQualifier& qualifier)
 {
+    if (qualifier.storage == EvqShared && qualifier.hasLayout())
+        error(loc, "cannot apply layout qualifiers to a shared variable", "shared", "");
+
     // "It is a compile-time error to use *component* without also specifying the location qualifier (order does not matter)."
     if (qualifier.layoutComponent != TQualifier::layoutComponentEnd && qualifier.layoutLocation == TQualifier::layoutLocationEnd)
         error(loc, "must specify 'location' to use 'component'", "component", "");
@@ -3489,6 +3507,10 @@ void TParseContext::checkNoShaderLayouts(TSourceLoc loc, const TShaderQualifiers
             error(loc, message, "vertices", "");
         else
             assert(0);
+    }
+    for (int i = 0; i < 3; ++i) {
+        if (shaderQualifiers.localSize[i] > 1)
+            error(loc, message, "local_size", "");
     }
 }
 
@@ -4560,6 +4582,34 @@ void TParseContext::updateStandaloneQualifierDefaults(TSourceLoc loc, const TPub
             intermediate.setPointMode();
         else
             error(loc, "can only apply to 'in'", "point_mode", "");
+    }
+    for (int i = 0; i < 3; ++i) {
+        if (publicType.shaderQualifiers.localSize[i] > 1) {
+            if (publicType.qualifier.storage == EvqVaryingIn) {
+                if (! intermediate.setLocalSize(i, publicType.shaderQualifiers.localSize[i]))
+                    error(loc, "cannot change previously set size", "local_size", "");
+                else {
+                    int max;
+                    switch (i) {
+                    case 0: max = resources.maxComputeWorkGroupSizeX; break;
+                    case 1: max = resources.maxComputeWorkGroupSizeY; break;
+                    case 2: max = resources.maxComputeWorkGroupSizeZ; break;
+                    default: break;
+                    }
+                    if (intermediate.getLocalSize(i) > (unsigned int)max)
+                        error(loc, "too large; see gl_MaxComputeWorkGroupSize", "local_size", "");
+
+                    // Fix the existing constant gl_WorkGroupSize with this new information.
+                    bool builtIn;
+                    TSymbol* symbol = symbolTable.find("gl_WorkGroupSize", &builtIn);
+                    if (builtIn)
+                        makeEditable(symbol);
+                    TVariable* workGroupSize = symbol->getAsVariable();
+                    workGroupSize->getWritableConstArray()[i].setUConst(intermediate.getLocalSize(i));
+                }
+            } else
+                error(loc, "can only apply to 'in'", "local_size", "");
+        }
     }
     if (publicType.shaderQualifiers.earlyFragmentTests) {
         if (publicType.qualifier.storage == EvqVaryingIn)

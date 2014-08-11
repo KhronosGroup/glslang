@@ -40,7 +40,6 @@ ERROR: 0:122: '' : memory qualifiers can only be used on image types
 ERROR: 0:128: '' : memory qualifiers can only be used on image types 
 ERROR: 0:129: '' : memory qualifiers can only be used on image types 
 ERROR: 0:132: 'shared' : not supported in this stage: vertex
-ERROR: 0:132: '' : memory qualifiers can only be used on image types 
 ERROR: 0:134: '' : function does not return a value: funcA
 ERROR: 0:136: '' : function does not return a value: funcB
 ERROR: 0:153: '' : function does not return a value: func3
@@ -48,7 +47,7 @@ ERROR: 0:170: 'coherent' : argument cannot drop memory qualifier when passed to 
 ERROR: 0:192: 'constructor' : constructing from a non-dereferenced array 
 ERROR: 0:193: 'constructor' : constructing from a non-dereferenced array 
 ERROR: 0:194: 'constructor' : constructing from a non-dereferenced array 
-ERROR: 46 compilation errors.  No code generated.
+ERROR: 45 compilation errors.  No code generated.
 
 
 Shader version: 430

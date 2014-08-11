@@ -242,8 +242,7 @@ TVariable::TVariable(const TVariable& copyOf) : TSymbol(copyOf)
 
     if (! copyOf.unionArray.empty()) {
         assert(! copyOf.type.isStruct());
-        TConstUnionArray newArray(1);
-        newArray[0] = copyOf.unionArray[0];
+        TConstUnionArray newArray(copyOf.unionArray, 0, copyOf.unionArray.size());
         unionArray = newArray;
     }
 }

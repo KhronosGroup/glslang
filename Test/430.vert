@@ -142,3 +142,16 @@ out bblck5 {
     layout(xfb_offset=0) vec4 bbv1;
     layout(xfb_stride=80, xfb_buffer=1, xfb_offset=64) vec4 bbv2;
 } bbinst5;
+
+shared vec4 sharedv;
+
+void fooBarrier()
+{
+    barrier();                       // ERROR
+    memoryBarrier();
+    memoryBarrierAtomicCounter();
+    memoryBarrierBuffer();
+    memoryBarrierShared();           // ERROR
+    memoryBarrierImage();
+    groupMemoryBarrier();            // ERROR
+}
