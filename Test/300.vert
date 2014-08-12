@@ -168,3 +168,7 @@ int Bfoo;
 layout(std140) Binst;    // ERROR
 layout(std140) Bblock;   // ERROR
 layout(std140) Bfoo;     // ERROR
+
+struct SNA {
+    int a[];             // ERROR
+};

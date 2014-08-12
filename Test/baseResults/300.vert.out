@@ -16,8 +16,8 @@ ERROR: 0:18: 'uniform' : too many storage qualifiers
 ERROR: 0:56: '#error' : GL_ES is set  
 ERROR: 0:62: '' : array size required 
 ERROR: 0:63: '' : array size required 
-ERROR: 0:65: '' : array size required 
 ERROR: 0:64: '' : array size required 
+ERROR: 0:65: 'implicitly-sized array in a block' : not supported with this profile: es
 ERROR: 0:67: '' : array size required 
 ERROR: 0:76: 'invariant' : cannot change qualification after use 
 ERROR: 0:78: 'invariant' : can only apply to an output: invIn
@@ -38,7 +38,8 @@ ERROR: 0:149: 'float' : cannot apply precision statement to this type; use 'floa
 ERROR: 0:168: 'Binst' : cannot add storage, auxiliary, memory, interpolation, layout, or precision qualifier to an existing variable 
 ERROR: 0:169: 'Bblock' : cannot add storage, auxiliary, memory, interpolation, layout, or precision qualifier to an existing variable 
 ERROR: 0:170: 'Bfoo' : cannot add storage, auxiliary, memory, interpolation, layout, or precision qualifier to an existing variable 
-ERROR: 39 compilation errors.  No code generated.
+ERROR: 0:173: '' : array size required 
+ERROR: 40 compilation errors.  No code generated.
 
 
 Shader version: 300

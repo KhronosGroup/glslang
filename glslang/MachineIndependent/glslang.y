@@ -1216,8 +1216,8 @@ storage_qualifier
         $$.qualifier.storage = EvqBuffer;
     }
     | SHARED {
-        parseContext.requireProfile($1.loc, ~EEsProfile, "shared");
-        parseContext.profileRequires($1.loc, ECoreProfile, 430, 0, "shared");
+        parseContext.profileRequires($1.loc, ECoreProfile | ECompatibilityProfile, 430, 0, "shared");
+        parseContext.profileRequires($1.loc, EEsProfile, 310, 0, "shared");
         parseContext.requireStage($1.loc, EShLangCompute, "shared");
         $$.init($1.loc);
         $$.qualifier.storage = EvqShared;
@@ -1964,6 +1964,7 @@ precision_qualifier
 struct_specifier
     : STRUCT IDENTIFIER LEFT_BRACE { parseContext.nestedStructCheck($1.loc); } struct_declaration_list RIGHT_BRACE {
         TType* structure = new TType($5, *$2.string);
+        parseContext.structArrayCheck($2.loc, structure);
         TVariable* userTypeDef = new TVariable($2.string, *structure, true);
         if (! parseContext.symbolTable.insert(*userTypeDef))
             parseContext.error($2.loc, "redefinition", $2.string->c_str(), "struct");
@@ -2055,8 +2056,6 @@ struct_declarator
         $$.type->setFieldName(*$1.string);
     }
     | IDENTIFIER array_specifier {        
-        if (parseContext.profile == EEsProfile)
-            parseContext.arraySizeRequiredCheck($2.loc, $2.arraySizes->getSize());
         parseContext.arrayDimCheck($1.loc, $2.arraySizes, 0);
 
         $$.type = new TType(EbtVoid);

@@ -117,6 +117,7 @@ public:
     void arraySizeCheck(TSourceLoc, TIntermTyped* expr, int& size);
     bool arrayQualifierError(TSourceLoc, const TQualifier&);
     void arraySizeRequiredCheck(TSourceLoc, int size);
+    void structArrayCheck(TSourceLoc, TType* structure);
     void arrayDimError(TSourceLoc);
     void arrayDimCheck(TSourceLoc, TArraySizes* sizes1, TArraySizes* sizes2);
     void arrayDimCheck(TSourceLoc, const TType*, TArraySizes*);

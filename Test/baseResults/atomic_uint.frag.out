@@ -2,7 +2,7 @@ atomic_uint.frag
 Warning, version 420 is not yet complete; most version-specific features are present, but some are missing.
 ERROR: 0:10: 'atomic_uint' : samplers and atomic_uints cannot be output parameters 
 ERROR: 0:12: 'return' : type does not match, or is not convertible to, the function's return type 
-ERROR: 0:17: 'atomic_uint' : atomic_uints can only be used in uniform variables or function parameters: non_uniform_counter
+ERROR: 0:18: 'atomic_uint' : atomic_uints can only be used in uniform variables or function parameters: non_uniform_counter
 ERROR: 3 compilation errors.  No code generated.
 
 
@@ -21,16 +21,19 @@ ERROR: node is still EOpNull!
 0:12    Sequence
 0:12      Branch: Return with expression
 0:12        'counter' (layout(binding=0 ) uniform atomic_uint)
-0:15  Function Definition: main( (void)
-0:15    Function Parameters: 
+0:13      Branch: Return with expression
+0:13        Function Call: atomicCounter(au1; (uint)
+0:13          'counter' (layout(binding=0 ) uniform atomic_uint)
+0:16  Function Definition: main( (void)
+0:16    Function Parameters: 
 0:?     Sequence
-0:18      Sequence
-0:18        move second child to first child (uint)
-0:18          'val' (uint)
-0:18          Function Call: atomicCounter(au1; (uint)
-0:18            'counter' (layout(binding=0 ) uniform atomic_uint)
-0:19      Function Call: atomicCounterDecrement(au1; (uint)
-0:19        'counter' (layout(binding=0 ) uniform atomic_uint)
+0:19      Sequence
+0:19        move second child to first child (uint)
+0:19          'val' (uint)
+0:19          Function Call: atomicCounter(au1; (uint)
+0:19            'counter' (layout(binding=0 ) uniform atomic_uint)
+0:20      Function Call: atomicCounterDecrement(au1; (uint)
+0:20        'counter' (layout(binding=0 ) uniform atomic_uint)
 0:?   Linker Objects
 0:?     'counter' (layout(binding=0 ) uniform atomic_uint)
 
@@ -53,16 +56,19 @@ ERROR: node is still EOpNull!
 0:12    Sequence
 0:12      Branch: Return with expression
 0:12        'counter' (layout(binding=0 ) uniform atomic_uint)
-0:15  Function Definition: main( (void)
-0:15    Function Parameters: 
+0:13      Branch: Return with expression
+0:13        Function Call: atomicCounter(au1; (uint)
+0:13          'counter' (layout(binding=0 ) uniform atomic_uint)
+0:16  Function Definition: main( (void)
+0:16    Function Parameters: 
 0:?     Sequence
-0:18      Sequence
-0:18        move second child to first child (uint)
-0:18          'val' (uint)
-0:18          Function Call: atomicCounter(au1; (uint)
-0:18            'counter' (layout(binding=0 ) uniform atomic_uint)
-0:19      Function Call: atomicCounterDecrement(au1; (uint)
-0:19        'counter' (layout(binding=0 ) uniform atomic_uint)
+0:19      Sequence
+0:19        move second child to first child (uint)
+0:19          'val' (uint)
+0:19          Function Call: atomicCounter(au1; (uint)
+0:19            'counter' (layout(binding=0 ) uniform atomic_uint)
+0:20      Function Call: atomicCounterDecrement(au1; (uint)
+0:20        'counter' (layout(binding=0 ) uniform atomic_uint)
 0:?   Linker Objects
 0:?     'counter' (layout(binding=0 ) uniform atomic_uint)
 

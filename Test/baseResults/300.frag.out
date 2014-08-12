@@ -19,11 +19,11 @@ ERROR: 0:85: 'dvec3' : Reserved word.
 ERROR: 0:85: 'double vector' : not supported with this profile: es
 ERROR: 0:86: 'dvec4' : Reserved word. 
 ERROR: 0:86: 'double vector' : not supported with this profile: es
-ERROR: 0:101: 'arrays of arrays' : not supported with this profile: es
-ERROR: 0:102: 'arrays of arrays' : not supported with this profile: es
-ERROR: 0:102: 'arrays of arrays' : not supported with this profile: es
-ERROR: 0:103: 'arrays of arrays' : not supported with this profile: es
-ERROR: 0:100: 'arrays of arrays' : not supported with this profile: es
+ERROR: 0:101: 'arrays of arrays' : not supported for this version or the enabled extensions 
+ERROR: 0:102: 'arrays of arrays' : not supported for this version or the enabled extensions 
+ERROR: 0:102: 'arrays of arrays' : not supported for this version or the enabled extensions 
+ERROR: 0:103: 'arrays of arrays' : not supported for this version or the enabled extensions 
+ERROR: 0:100: 'arrays of arrays' : not supported for this version or the enabled extensions 
 ERROR: 0:111: 'variable indexing fragment shader ouput array' : not supported with this profile: es
 ERROR: 0:119: '==' : can't use with samplers or structs containing samplers 
 ERROR: 0:120: '!=' : can't use with samplers or structs containing samplers 

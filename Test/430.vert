@@ -143,7 +143,7 @@ out bblck5 {
     layout(xfb_stride=80, xfb_buffer=1, xfb_offset=64) vec4 bbv2;
 } bbinst5;
 
-shared vec4 sharedv;
+shared vec4 sharedv;                // ERROR
 
 void fooBarrier()
 {

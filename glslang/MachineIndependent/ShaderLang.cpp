@@ -78,11 +78,13 @@ int MapVersionToIndex(int version)
         case 420: return 10;
         case 430: return 11;
         case 440: return 12;
+        case 310: return 13;
+        case 450: return 14;
         default:       // |
             return  0; // |
         }              // |
 }                      // V
-const int VersionCount = 13;  // number of case statements above
+const int VersionCount = 15;  // number of case statements above
 
 int MapProfileToIndex(EProfile profile)
 {
@@ -197,7 +199,8 @@ bool InitializeSymbolTables(TInfoSink& infoSink, TSymbolTable** commonTable,  TS
     }
     if (profile != EEsProfile && version >= 150)
         InitializeStageSymbolTable(builtIns, version, profile, EShLangGeometry, infoSink, commonTable, symbolTables);
-    if (profile != EEsProfile && version >= 430)
+    if ((profile != EEsProfile && version >= 430) ||
+        (profile == EEsProfile && version >= 310))
         InitializeStageSymbolTable(builtIns, version, profile, EShLangCompute, infoSink, commonTable, symbolTables);
 
     return true;
@@ -303,9 +306,9 @@ bool DeduceVersionProfile(TInfoSink& infoSink, EShLanguage stage, bool versionNo
 
     // Get a good profile...
     if (profile == ENoProfile) {
-        if (version == 300) {
+        if (version == 300 || version == 310) {
             correct = false;
-            infoSink.info.message(EPrefixError, "#version: version 300 requires specifying the 'es' profile");
+            infoSink.info.message(EPrefixError, "#version: versions 300 and 310 require specifying the 'es' profile");
             profile = EEsProfile;
         } else if (version == 100)
             profile = EEsProfile;
@@ -322,16 +325,16 @@ bool DeduceVersionProfile(TInfoSink& infoSink, EShLanguage stage, bool versionNo
                 profile = EEsProfile;
             else
                 profile = ENoProfile;
-        } else if (version == 300) {
+        } else if (version == 300 || version == 310) {
             if (profile != EEsProfile) {
                 correct = false;
-                infoSink.info.message(EPrefixError, "#version: version 300 supports only the es profile");
+                infoSink.info.message(EPrefixError, "#version: versions 300 and 310 support only the es profile");
             }
             profile = EEsProfile;
         } else {
             if (profile == EEsProfile) {
                 correct = false;
-                infoSink.info.message(EPrefixError, "#version: only version 300 supports the es profile");
+                infoSink.info.message(EPrefixError, "#version: only version 300 and 310 support the es profile");
                 if (version >= FirstProfileVersion)
                     profile = ECoreProfile;
                 else
@@ -361,10 +364,11 @@ bool DeduceVersionProfile(TInfoSink& infoSink, EShLanguage stage, bool versionNo
         }
         break;
     case EShLangCompute:
-        if (version < 430 || (profile != ECoreProfile && profile != ECompatibilityProfile)) {
+        if ((profile == EEsProfile && version < 310) ||
+            (profile != EEsProfile && version < 430)) {
             correct = false;
-            infoSink.info.message(EPrefixError, "#version: compute shaders require non-es profile and version 430 or above");
-            version = 430;
+            infoSink.info.message(EPrefixError, "#version: compute shaders require es profile with version 310 or above, or non-es profile with version 430 or above");
+            version = profile == EEsProfile ? 310 : 430;
             profile = ECoreProfile;
         }
         break;
@@ -395,9 +399,21 @@ bool DeduceVersionProfile(TInfoSink& infoSink, EShLanguage stage, bool versionNo
         // versions are complete
         break;
 
-    default:
+    case 310:
+    case 330:
+    case 400:
+    case 410:
+    case 420:
+    case 430:
+    case 440:
+    case 450:
         infoSink.info << "Warning, version " << version << " is not yet complete; most version-specific features are present, but some are missing.\n";
         break;
+
+    default:
+        infoSink.info << "Warning, version " << version << " is unknown.\n";
+        break;
+
     }
 
     return correct;

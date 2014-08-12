@@ -668,18 +668,25 @@ int TScanContext::tokenizeIdentifier()
         return keyword;
 
     case BUFFER:
-        if (parseContext.version < 430)
+        if ((parseContext.profile == EEsProfile && parseContext.version < 310) || 
+            (parseContext.profile != EEsProfile && parseContext.version < 430))
             return identifierOrType();
         return keyword;
 
     case ATOMIC_UINT:
-        return es30ReservedFromGLSL(420);
+        if (parseContext.profile == EEsProfile && parseContext.version >= 310)
+            return keyword;
+        else
+            return es30ReservedFromGLSL(420);
 
     case COHERENT:
     case RESTRICT:
     case READONLY:
     case WRITEONLY:
-        return es30ReservedFromGLSL(parseContext.extensionsTurnedOn(1, &GL_ARB_shader_image_load_store) ? 130 : 420);
+        if (parseContext.profile == EEsProfile && parseContext.version >= 310)
+            return keyword;
+        else
+            return es30ReservedFromGLSL(parseContext.extensionsTurnedOn(1, &GL_ARB_shader_image_load_store) ? 130 : 420);
 
     case VOLATILE:
         if (! parseContext.symbolTable.atBuiltInLevel() && (parseContext.profile == EEsProfile || (parseContext.version < 420 && ! parseContext.extensionsTurnedOn(1, &GL_ARB_shader_image_load_store))))
@@ -743,28 +750,30 @@ int TScanContext::tokenizeIdentifier()
     case IMAGE1D:
     case IIMAGE1D:
     case UIMAGE1D:
+    case IMAGE1DARRAY:
+    case IIMAGE1DARRAY:
+    case UIMAGE1DARRAY:
+    case IMAGE2DRECT:
+    case IIMAGE2DRECT:
+    case UIMAGE2DRECT:
+    case IMAGEBUFFER:
+    case IIMAGEBUFFER:
+    case UIMAGEBUFFER:
+        return firstGenerationImage(false);
+
     case IMAGE2D:
     case IIMAGE2D:
     case UIMAGE2D:
     case IMAGE3D:
     case IIMAGE3D:
     case UIMAGE3D:
-    case IMAGE2DRECT:
-    case IIMAGE2DRECT:
-    case UIMAGE2DRECT:
     case IMAGECUBE:
     case IIMAGECUBE:
     case UIMAGECUBE:
-    case IMAGEBUFFER:
-    case IIMAGEBUFFER:
-    case UIMAGEBUFFER:
-    case IMAGE1DARRAY:
-    case IIMAGE1DARRAY:
-    case UIMAGE1DARRAY:
     case IMAGE2DARRAY:
     case IIMAGE2DARRAY:
     case UIMAGE2DARRAY:
-        return firstGenerationImage();
+        return firstGenerationImage(true);
 
     case IMAGECUBEARRAY:
     case IIMAGECUBEARRAY:
@@ -1068,11 +1077,13 @@ int TScanContext::dMat()
     return identifierOrType();
 }
 
-int TScanContext::firstGenerationImage()
+int TScanContext::firstGenerationImage(bool inEs310)
 {
     afterType = true;
 
-    if (parseContext.symbolTable.atBuiltInLevel() || (parseContext.profile != EEsProfile && (parseContext.version >= 420 || parseContext.extensionsTurnedOn(1, &GL_ARB_shader_image_load_store))))
+    if (parseContext.symbolTable.atBuiltInLevel() || 
+        (parseContext.profile != EEsProfile && (parseContext.version >= 420 || parseContext.extensionsTurnedOn(1, &GL_ARB_shader_image_load_store))) ||                                                     
+        (inEs310 && parseContext.profile == EEsProfile && parseContext.version >= 310))
         return keyword;
 
     if ((parseContext.profile == EEsProfile && parseContext.version >= 300) ||

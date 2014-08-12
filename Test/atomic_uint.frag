@@ -9,7 +9,8 @@ uint func(atomic_uint c)
 
 uint func2(out atomic_uint c) // ERROR
 {
-    return counter;
+    return counter;           // ERROR, type mismatch
+    return atomicCounter(counter);
 }
 
 void main()

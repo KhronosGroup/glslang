@@ -82,15 +82,16 @@ TParseContext::TParseContext(TSymbolTable& symt, TIntermediate& interm, bool pb,
         case EShLangFragment:
             defaultPrecision[EbtInt] = EpqMedium;
             defaultPrecision[EbtUint] = EpqMedium;
-            defaultPrecision[EbtSampler] = EpqLow;
             break;
         default:
             defaultPrecision[EbtInt] = EpqHigh;
             defaultPrecision[EbtUint] = EpqHigh;
             defaultPrecision[EbtFloat] = EpqHigh;
-            defaultPrecision[EbtSampler] = EpqLow;
             break;
         }
+
+        defaultPrecision[EbtSampler] = EpqLow;
+        defaultPrecision[EbtAtomicUint] = EpqHigh;
     }
 
     globalUniformDefaults.clear();
@@ -1216,7 +1217,7 @@ void TParseContext::nonOpBuiltInCheck(TSourceLoc loc, const TFunction& fnCandida
         if (fnCandidate.getName().compare(0, 13, "textureGather") == 0) {
             TString featureString = fnCandidate.getName() + "(...)";
             const char* feature = featureString.c_str();
-            requireProfile(loc, ~EEsProfile, feature);
+            profileRequires(loc, EEsProfile, 310, 0, feature);
 
             int compArg = -1;  // track which argument, if any, is the constant component argument
             if (fnCandidate.getName().compare("textureGatherOffset") == 0) {
@@ -2067,7 +2068,9 @@ void TParseContext::mergeQualifiers(TSourceLoc loc, TQualifier& dst, const TQual
         error(loc, "can only have one interpolation qualifier (flat, smooth, noperspective)", "", "");
 
     // Ordering
-    if (! force && version < 420 && ! extensionsTurnedOn(1, &GL_ARB_shading_language_420pack)) {
+    if (! force && ((profile != EEsProfile && version < 420) || 
+                     profile == EEsProfile && version < 310)
+                && ! extensionsTurnedOn(1, &GL_ARB_shading_language_420pack)) {
         // non-function parameters
         if (src.invariant && (dst.isInterpolation() || dst.isAuxiliary() || dst.storage != EvqTemporary || dst.precision != EpqNone))
             error(loc, "invariant qualifier must appear first", "", "");
@@ -2173,7 +2176,10 @@ void TParseContext::precisionQualifierCheck(TSourceLoc loc, TPublicType& publicT
     if (profile != EEsProfile || parsingBuiltins)
         return;
 
-    if (publicType.basicType == EbtFloat || publicType.basicType == EbtUint || publicType.basicType == EbtInt || publicType.basicType == EbtSampler) {
+    if (publicType.basicType == EbtAtomicUint && publicType.qualifier.precision != EpqNone && publicType.qualifier.precision != EpqHigh)
+        error(loc, "atomic counters can only be highp", "atomic_uint", "");
+
+    if (publicType.basicType == EbtFloat || publicType.basicType == EbtUint || publicType.basicType == EbtInt || publicType.basicType == EbtSampler || publicType.basicType == EbtAtomicUint) {
         if (publicType.qualifier.precision == EpqNone) {
             if (messages & EShMsgRelaxedErrors)
                 warn(loc, "type requires declaration of default precision qualifier", TType::getBasicString(publicType.basicType), "substituting 'mediump'");
@@ -2262,10 +2268,21 @@ void TParseContext::arraySizeRequiredCheck(TSourceLoc loc, int size)
     }
 }
 
+void TParseContext::structArrayCheck(TSourceLoc loc, TType* type)
+{
+    const TTypeList& structure = *type->getStruct();
+    for (int m = 0; m < (int)structure.size(); ++m) {
+        const TType& member = *structure[m].type;
+        if (member.isArray() && ! member.isExplicitlySizedArray())
+            arraySizeRequiredCheck(structure[m].loc, 0);
+    }
+}
+
 void TParseContext::arrayDimError(TSourceLoc loc)
 {
-    requireProfile(loc, ECoreProfile | ECompatibilityProfile, "arrays of arrays");
+    requireProfile(loc, EEsProfile | ECoreProfile | ECompatibilityProfile, "arrays of arrays");
     profileRequires(loc, ECoreProfile | ECompatibilityProfile, 430, 0, "arrays of arrays");
+    profileRequires(loc, EEsProfile, 310, 0, "arrays of arrays");
 }
 
 void TParseContext::arrayDimCheck(TSourceLoc loc, TArraySizes* sizes1, TArraySizes* sizes2)
@@ -2955,15 +2972,20 @@ void TParseContext::setLayoutQualifier(TSourceLoc loc, TPublicType& publicType, 
         return;
     }
     if (id == TQualifier::getLayoutPackingString(ElpStd430)) {
-        requireProfile(loc, ECoreProfile | ECompatibilityProfile, "std430");
+        requireProfile(loc, EEsProfile | ECoreProfile | ECompatibilityProfile, "std430");
         profileRequires(loc, ECoreProfile | ECompatibilityProfile, 430, 0, "std430");
+        profileRequires(loc, EEsProfile, 310, 0, "std430");
         publicType.qualifier.layoutPacking = ElpStd430;
         return;
     }
     for (TLayoutFormat format = (TLayoutFormat)(ElfNone + 1); format < ElfCount; format = (TLayoutFormat)(format + 1)) {
         if (id == TQualifier::getLayoutFormatString(format)) {
-            requireProfile(loc, ENoProfile | ECoreProfile | ECompatibilityProfile, "image load store");
+            if ((format > ElfEsFloatGuard && format < ElfFloatGuard) ||
+                (format > ElfEsIntGuard && format < ElfIntGuard) ||
+                (format > ElfEsUintGuard && format < ElfCount))
+                requireProfile(loc, ENoProfile | ECoreProfile | ECompatibilityProfile, "image load-store format");
             profileRequires(loc, ENoProfile | ECoreProfile | ECompatibilityProfile, 420, GL_ARB_shader_image_load_store, "image load store");
+            profileRequires(loc, EEsProfile, 310, GL_ARB_shader_image_load_store, "image load store");
             publicType.qualifier.layoutFormat = format;
             return;
         }
@@ -3097,8 +3119,9 @@ void TParseContext::setLayoutQualifier(TSourceLoc loc, TPublicType& publicType, 
     
     if (id == "offset") {
         const char* feature = "uniform buffer-member offset";
-        requireProfile(loc, ECoreProfile | ECompatibilityProfile, feature);
+        requireProfile(loc, EEsProfile | ECoreProfile | ECompatibilityProfile, feature);
         profileRequires(loc, ECoreProfile | ECompatibilityProfile, 440, GL_ARB_enhanced_layouts, feature);
+        profileRequires(loc, EEsProfile, 310, 0, feature);
         publicType.qualifier.layoutOffset = value;
         return;
     } else if (id == "align") {
@@ -3121,8 +3144,8 @@ void TParseContext::setLayoutQualifier(TSourceLoc loc, TPublicType& publicType, 
             publicType.qualifier.layoutLocation = value;
         return;
     } else if (id == "binding") {
-        requireProfile(loc, ~EEsProfile, "binding");
         profileRequires(loc, ~EEsProfile, 420, GL_ARB_shading_language_420pack, "binding");
+        profileRequires(loc, EEsProfile, 310, 0, "binding");
         if ((unsigned int)value >= TQualifier::layoutBindingEnd)
             error(loc, "binding is too large", id.c_str(), "");
         else
@@ -3460,35 +3483,44 @@ void TParseContext::layoutQualifierCheck(TSourceLoc loc, const TQualifier& quali
         case EvqVaryingIn:
         {
             const char* feature = "location qualifier on input";
-            if (profile == EEsProfile)
+            if (profile == EEsProfile && version < 310)
                 requireStage(loc, EShLangVertex, feature);
-            requireStage(loc, (EShLanguageMask)~EShLangComputeMask, feature);
+            else
+                requireStage(loc, (EShLanguageMask)~EShLangComputeMask, feature);
             if (language == EShLangVertex) {
                 const char* exts[2] = { GL_ARB_separate_shader_objects, GL_ARB_explicit_attrib_location };
                 profileRequires(loc, ~EEsProfile, 330, 2, exts, feature);
-            } else
+                profileRequires(loc, EEsProfile, 300, 0, feature);
+            } else {
                 profileRequires(loc, ~EEsProfile, 410, GL_ARB_separate_shader_objects, feature);
+                profileRequires(loc, EEsProfile, 310, 0, feature);
+            }
             break;
         }
         case EvqVaryingOut:
         {
             const char* feature = "location qualifier on output";
-            if (profile == EEsProfile)
+            if (profile == EEsProfile && version < 310)
                 requireStage(loc, EShLangFragment, feature);
-            requireStage(loc, (EShLanguageMask)~EShLangComputeMask, feature);
+            else
+                requireStage(loc, (EShLanguageMask)~EShLangComputeMask, feature);
             if (language == EShLangFragment) {
                 const char* exts[2] = { GL_ARB_separate_shader_objects, GL_ARB_explicit_attrib_location };
                 profileRequires(loc, ~EEsProfile, 330, 2, exts, feature);
-            } else
+                profileRequires(loc, EEsProfile, 300, 0, feature);
+            } else {
                 profileRequires(loc, ~EEsProfile, 410, GL_ARB_separate_shader_objects, feature);
+                profileRequires(loc, EEsProfile, 310, 0, feature);
+            }
             break;
         }
         case EvqUniform:
         case EvqBuffer:
         {
             const char* feature = "location qualifier on uniform or buffer";
-            requireProfile(loc, ECoreProfile | ECompatibilityProfile, feature);
+            requireProfile(loc, EEsProfile | ECoreProfile | ECompatibilityProfile, feature);
             profileRequires(loc, ECoreProfile | ECompatibilityProfile, 430, 0, feature);
+            profileRequires(loc, EEsProfile, 310, 0, feature);
             break;
         }
         default:
@@ -4155,8 +4187,9 @@ void TParseContext::declareBlock(TSourceLoc loc, TTypeList& typeList, const TStr
         profileRequires(loc, ENoProfile, 140, 0, "uniform block");
         break;
     case EvqBuffer:
-        requireProfile(loc, ECoreProfile | ECompatibilityProfile, "buffer block");
+        requireProfile(loc, EEsProfile | ECoreProfile | ECompatibilityProfile, "buffer block");
         profileRequires(loc, ECoreProfile | ECompatibilityProfile, 430, 0, "buffer block");
+        profileRequires(loc, EEsProfile, 310, 0, "buffer block");
         break;
     case EvqVaryingIn:
         requireProfile(loc, ~EEsProfile, "input block");
@@ -4186,6 +4219,8 @@ void TParseContext::declareBlock(TSourceLoc loc, TTypeList& typeList, const TStr
             error(memberLoc, "member of uniform or buffer block cannot have an auxiliary or interpolation qualifier", memberType.getFieldName().c_str(), "");
         if (memberType.isRuntimeSizedArray() && member < typeList.size() - 1)
             error(memberLoc, "only the last member of a buffer block can be run-time sized", memberType.getFieldName().c_str(), "");
+        if (memberType.isImplicitlySizedArray())
+            requireProfile(memberLoc, ~EEsProfile, "implicitly-sized array in a block");
 
         TBasicType basicType = memberType.getBasicType();
         if (basicType == EbtSampler)

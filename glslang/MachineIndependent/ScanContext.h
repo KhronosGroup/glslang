@@ -64,7 +64,7 @@ protected:
     int precisionKeyword();
     int matNxM();
     int dMat();
-    int firstGenerationImage();
+    int firstGenerationImage(bool inEs310);
     int secondGenerationImage();
 
     TParseContext& parseContext;

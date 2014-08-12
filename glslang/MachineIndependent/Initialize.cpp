@@ -743,7 +743,8 @@ void TBuiltIns::initialize(int version, EProfile profile)
     //
     // Atomic counter functions.
     //
-    if (profile != EEsProfile && version >= 420) {
+    if ((profile != EEsProfile && version >= 420) ||
+        (profile == EEsProfile && version >= 310)) {
         commonBuiltins.append(
             "uint atomicCounterIncrement(atomic_uint x);"
             "uint atomicCounterDecrement(atomic_uint x);"
@@ -841,38 +842,37 @@ void TBuiltIns::initialize(int version, EProfile profile)
             
             "\n");
     }
-    if (profile != EEsProfile) {
-        //============================================================================
-        //
-        // Prototypes for all control functions.
-        //
-        //============================================================================
 
-        if (version >= 150)
-            stageBuiltins[EShLangTessControl].append(
-                "void barrier();"
-                );
-        if (version >= 430)
-            stageBuiltins[EShLangCompute].append(
-                "void barrier();"
-                );
-
-        if (version >= 130)
-            commonBuiltins.append(
-                "void memoryBarrier();"
-                );
-        if (version >= 430) {
-            commonBuiltins.append(
-                "void memoryBarrierAtomicCounter();"
-                "void memoryBarrierBuffer();"
-                "void memoryBarrierImage();"
-                );
-            stageBuiltins[EShLangCompute].append(
-                "void memoryBarrierShared();"
-                "void groupMemoryBarrier();"
-                );
-        }
+    //============================================================================
+    //
+    // Prototypes for all control functions.
+    //
+    //============================================================================
+    bool esBarrier = (profile == EEsProfile && version >= 310);
+    if (profile != EEsProfile && version >= 150)
+        stageBuiltins[EShLangTessControl].append(
+            "void barrier();"
+            );
+    if ((profile != EEsProfile && version >= 430) || esBarrier)
+        stageBuiltins[EShLangCompute].append(
+            "void barrier();"
+            );
+    if ((profile != EEsProfile && version >= 130) || esBarrier)
+        commonBuiltins.append(
+            "void memoryBarrier();"
+            );
+    if ((profile != EEsProfile && version >= 430) || esBarrier) {
+        commonBuiltins.append(
+            "void memoryBarrierAtomicCounter();"
+            "void memoryBarrierBuffer();"
+            "void memoryBarrierImage();"
+            );
+        stageBuiltins[EShLangCompute].append(
+            "void memoryBarrierShared();"
+            "void groupMemoryBarrier();"
+            );
     }
+
     //============================================================================
     //
     // Prototypes for built-in functions seen by fragment shaders only.
@@ -1088,7 +1088,8 @@ void TBuiltIns::initialize(int version, EProfile profile)
     //
     //============================================================================
 
-    if (version >= 430) {
+    if (profile != EEsProfile && version >= 430 ||
+        profile == EEsProfile && version >= 310) {
         stageBuiltins[EShLangCompute].append(
             "in uvec3 gl_NumWorkGroups;"
             "const uvec3 gl_WorkGroupSize = uvec3(1,1,1);"
@@ -1276,11 +1277,11 @@ void TBuiltIns::initialize(int version, EProfile profile)
             "out vec4 gl_ClipVertex;"
             );
 
-        if (version >= 400)
+        if (version >= 400 && profile != EEsProfile)
             stageBuiltins[EShLangGeometry].append(
             "in int gl_InvocationID;"
             );
-        if (version >= 410)
+        if (version >= 410 && profile != EEsProfile)
             stageBuiltins[EShLangGeometry].append(
             "out int gl_ViewportIndex;"
             );
@@ -1434,6 +1435,11 @@ void TBuiltIns::initialize(int version, EProfile profile)
                 "flat in int gl_Layer;"
                 "flat in int gl_ViewportIndex;"
                 );
+
+        if (version >= 450)
+            stageBuiltins[EShLangFragment].append(
+                "bool gl_HelperInvocation;"     // needs qualifier fixed later
+                );
     } else {
         // ES profile
 
@@ -1444,13 +1450,18 @@ void TBuiltIns::initialize(int version, EProfile profile)
                 "mediump vec4 gl_FragColor;"    // needs qualifier fixed later
                 "mediump vec2 gl_PointCoord;"   // needs qualifier fixed later
                 );
-        else if (version == 300)
+        else if (version >= 300) {
             stageBuiltins[EShLangFragment].append(
                 "highp   vec4  gl_FragCoord;"    // needs qualifier fixed later
                 "        bool  gl_FrontFacing;"  // needs qualifier fixed later
                 "mediump vec2  gl_PointCoord;"   // needs qualifier fixed later
                 "highp   float gl_FragDepth;"    // needs qualifier fixed later
                 );
+            if (version >= 310)
+                stageBuiltins[EShLangFragment].append(
+                        "bool  gl_HelperInvocation;"  // needs qualifier fixed later
+                    );
+        }
         stageBuiltins[EShLangFragment].append(
             "highp float gl_FragDepthEXT;"       // GL_EXT_frag_depth
             );
@@ -1554,7 +1565,7 @@ void TBuiltIns::addQueryFunctions(TSampler sampler, TString& typeName, int versi
     // textureSize
     //
 
-    if (version < 430 && sampler.image)
+    if (sampler.image && ((profile == EEsProfile && version < 310) || (profile != EEsProfile && version < 430)))
         return;
 
     if (profile == EEsProfile)
@@ -1607,40 +1618,42 @@ void TBuiltIns::addImageFunctions(TSampler sampler, TString& typeName, int versi
     commonBuiltins.append(prefixes[sampler.type]);
     commonBuiltins.append("vec4);\n");
 
-    if (sampler.type == EbtInt || sampler.type == EbtUint) {
-        const char* dataType = sampler.type == EbtInt ? "int" : "uint";
+    if (profile != EEsProfile) {
+        if (sampler.type == EbtInt || sampler.type == EbtUint) {
+            const char* dataType = sampler.type == EbtInt ? "int" : "uint";
 
-        const int numBuiltins = 7;
+            const int numBuiltins = 7;
 
-        static const char* atomicFunc[numBuiltins] = {
-            " imageAtomicAdd(",
-            " imageAtomicMin(",
-            " imageAtomicMax(",
-            " imageAtomicAnd(",
-            " imageAtomicOr(",
-            " imageAtomicXor(",
-            " imageAtomicExchange("
-        }; 
+            static const char* atomicFunc[numBuiltins] = {
+                " imageAtomicAdd(",
+                " imageAtomicMin(",
+                " imageAtomicMax(",
+                " imageAtomicAnd(",
+                " imageAtomicOr(",
+                " imageAtomicXor(",
+                " imageAtomicExchange("
+            }; 
 
-        for (size_t i = 0; i < numBuiltins; ++i) {
+            for (size_t i = 0; i < numBuiltins; ++i) {
+                commonBuiltins.append(dataType);
+                commonBuiltins.append(atomicFunc[i]);
+                if (version >= 450)
+                    commonBuiltins.append("coherent ");
+                commonBuiltins.append(imageParams);
+                commonBuiltins.append(", ");
+                commonBuiltins.append(dataType);
+                commonBuiltins.append(");\n");
+            }
+
             commonBuiltins.append(dataType);
-            commonBuiltins.append(atomicFunc[i]);
-            if (version >= 450)
-                commonBuiltins.append("coherent ");
+            commonBuiltins.append(" imageAtomicCompSwap(");
             commonBuiltins.append(imageParams);
+            commonBuiltins.append(", ");
+            commonBuiltins.append(dataType);
             commonBuiltins.append(", ");
             commonBuiltins.append(dataType);
             commonBuiltins.append(");\n");
         }
-
-        commonBuiltins.append(dataType);
-        commonBuiltins.append(" imageAtomicCompSwap(");
-        commonBuiltins.append(imageParams);
-        commonBuiltins.append(", ");
-        commonBuiltins.append(dataType);
-        commonBuiltins.append(", ");
-        commonBuiltins.append(dataType);
-        commonBuiltins.append(");\n");
     }
 }
 
@@ -1847,6 +1860,9 @@ void TBuiltIns::addGatherFunctions(TSampler sampler, TString& typeName, int vers
         return;
 
     for (int offset = 0; offset < 3; ++offset) { // loop over three forms of offset in the call name:  none, Offset, and Offsets
+
+        if (profile == EEsProfile && offset == 2)
+            continue;
 
         for (int comp = 0; comp < 2; ++comp) { // loop over presence of comp argument
 
@@ -2156,24 +2172,6 @@ void TBuiltIns::initialize(const TBuiltInResource &resources, int version, EProf
             s.append(builtInConstant);
         }
 
-        // atomic counters
-        if (version >= 420) {
-            //snprintf(builtInConstant, maxSize, "const int gl_MaxVertexAtomicCounters = %d;", resources.);
-            //snprintf(builtInConstant, maxSize, "const int gl_MaxTessControlAtomicCounters = %d;", resources.);
-            //snprintf(builtInConstant, maxSize, "const int gl_MaxTessEvaluationAtomicCounters = %d;", resources.);
-            //snprintf(builtInConstant, maxSize, "const int gl_MaxGeometryAtomicCounters = %d;", resources.);
-            //snprintf(builtInConstant, maxSize, "const int gl_MaxFragmentAtomicCounters = %d;", resources.);
-            //snprintf(builtInConstant, maxSize, "const int gl_MaxCombinedAtomicCounters = %d;", resources.);
-            //snprintf(builtInConstant, maxSize, "const int gl_MaxAtomicCounterBindings = %d;", resources.);
-            //snprintf(builtInConstant, maxSize, "const int gl_MaxVertexAtomicCounterBuffers = %d;", resources.);
-            //snprintf(builtInConstant, maxSize, "const int gl_MaxTessControlAtomicCounterBuffers = %d;", resources.);
-            //snprintf(builtInConstant, maxSize, "const int gl_MaxTessEvaluationAtomicCounterBuffers = %d;", resources.);
-            //snprintf(builtInConstant, maxSize, "const int gl_MaxGeometryAtomicCounterBuffers = %d;", resources.);
-            //snprintf(builtInConstant, maxSize, "const int gl_MaxFragmentAtomicCounterBuffers = %d;", resources.);
-            //snprintf(builtInConstant, maxSize, "const int gl_MaxCombinedAtomicCounterBuffers = %d;", resources.);
-            //snprintf(builtInConstant, maxSize, "const int gl_MaxAtomicCounterBufferSize = %d;", resources.);
-        }
-
         // images
         if (version >= 130) {
             snprintf(builtInConstant, maxSize, "const int gl_MaxImageUnits = %d;", resources.maxImageUnits);
@@ -2198,29 +2196,6 @@ void TBuiltIns::initialize(const TBuiltInResource &resources, int version, EProf
             s.append(builtInConstant);
         }
 
-        // compute
-        if (version >= 430) {
-            snprintf(builtInConstant, maxSize, "const ivec3 gl_MaxComputeWorkGroupCount = {%d,%d,%d};", resources.maxComputeWorkGroupCountX,
-                                                                                                        resources.maxComputeWorkGroupCountY,
-                                                                                                        resources.maxComputeWorkGroupCountZ);                
-            s.append(builtInConstant);
-            snprintf(builtInConstant, maxSize, "const ivec3 gl_MaxComputeWorkGroupSize = {%d,%d,%d};", resources.maxComputeWorkGroupSizeX,
-                                                                                                        resources.maxComputeWorkGroupSizeY,
-                                                                                                        resources.maxComputeWorkGroupSizeZ);
-            s.append(builtInConstant);
-
-            snprintf(builtInConstant, maxSize, "const int gl_MaxComputeUniformComponents = %d;", resources.maxComputeUniformComponents);
-            s.append(builtInConstant);
-            snprintf(builtInConstant, maxSize, "const int gl_MaxComputeTextureImageUnits = %d;", resources.maxComputeTextureImageUnits);
-            s.append(builtInConstant);
-            snprintf(builtInConstant, maxSize, "const int gl_MaxComputeImageUniforms = %d;", resources.maxComputeImageUniforms);
-            s.append(builtInConstant);
-            snprintf(builtInConstant, maxSize, "const int gl_MaxComputeAtomicCounters = %d;", resources.maxComputeAtomicCounters);
-            s.append(builtInConstant);
-            snprintf(builtInConstant, maxSize, "const int gl_MaxComputeAtomicCounterBuffers = %d;", resources.maxComputeAtomicCounterBuffers);
-            s.append(builtInConstant);
-        }
-
         // enhanced layouts
         if (version >= 430) {
             snprintf(builtInConstant, maxSize, "const int gl_MaxTransformFeedbackBuffers = %d;", resources.maxTransformFeedbackBuffers);
@@ -2228,6 +2203,50 @@ void TBuiltIns::initialize(const TBuiltInResource &resources, int version, EProf
             snprintf(builtInConstant, maxSize, "const int gl_MaxTransformFeedbackInterleavedComponents = %d;", resources.maxTransformFeedbackInterleavedComponents);
             s.append(builtInConstant);
         }
+    }
+
+    // TODO: atomic counters 
+    if (profile == EEsProfile && version >= 310 || profile != EEsProfile && version >= 420) {
+        //snprintf(builtInConstant, maxSize, "const int gl_MaxVertexAtomicCounters = %d;", resources.);
+        //snprintf(builtInConstant, maxSize, "const int gl_MaxFragmentAtomicCounters = %d;", resources.);
+        //snprintf(builtInConstant, maxSize, "const int gl_MaxCombinedAtomicCounters = %d;", resources.);
+        //snprintf(builtInConstant, maxSize, "const int gl_MaxAtomicCounterBindings = %d;", resources.);
+        //snprintf(builtInConstant, maxSize, "const int gl_MaxVertexAtomicCounterBuffers = %d;", resources.);
+        //snprintf(builtInConstant, maxSize, "const int gl_MaxFragmentAtomicCounterBuffers = %d;", resources.);
+        //snprintf(builtInConstant, maxSize, "const int gl_MaxCombinedAtomicCounterBuffers = %d;", resources.);
+        //snprintf(builtInConstant, maxSize, "const int gl_MaxAtomicCounterBufferSize = %d;", resources.);
+    }
+    if (profile != EEsProfile && version >= 420) {
+        //snprintf(builtInConstant, maxSize, "const int gl_MaxTessControlAtomicCounters = %d;", resources.);
+        //snprintf(builtInConstant, maxSize, "const int gl_MaxTessEvaluationAtomicCounters = %d;", resources.);
+        //snprintf(builtInConstant, maxSize, "const int gl_MaxGeometryAtomicCounters = %d;", resources.);
+        //snprintf(builtInConstant, maxSize, "const int gl_MaxTessControlAtomicCounterBuffers = %d;", resources.);
+        //snprintf(builtInConstant, maxSize, "const int gl_MaxTessEvaluationAtomicCounterBuffers = %d;", resources.);
+        //snprintf(builtInConstant, maxSize, "const int gl_MaxGeometryAtomicCounterBuffers = %d;", resources.);
+    }
+
+
+    // compute
+    if ((profile == EEsProfile && version >= 310) || (profile != EEsProfile && version >= 430)) {
+        snprintf(builtInConstant, maxSize, "const ivec3 gl_MaxComputeWorkGroupCount = ivec3(%d,%d,%d);", resources.maxComputeWorkGroupCountX,
+                                                                                                    resources.maxComputeWorkGroupCountY,
+                                                                                                    resources.maxComputeWorkGroupCountZ);                
+        s.append(builtInConstant);
+        snprintf(builtInConstant, maxSize, "const ivec3 gl_MaxComputeWorkGroupSize = ivec3(%d,%d,%d);", resources.maxComputeWorkGroupSizeX,
+                                                                                                    resources.maxComputeWorkGroupSizeY,
+                                                                                                    resources.maxComputeWorkGroupSizeZ);
+        s.append(builtInConstant);
+
+        snprintf(builtInConstant, maxSize, "const int gl_MaxComputeUniformComponents = %d;", resources.maxComputeUniformComponents);
+        s.append(builtInConstant);
+        snprintf(builtInConstant, maxSize, "const int gl_MaxComputeTextureImageUnits = %d;", resources.maxComputeTextureImageUnits);
+        s.append(builtInConstant);
+        snprintf(builtInConstant, maxSize, "const int gl_MaxComputeImageUniforms = %d;", resources.maxComputeImageUniforms);
+        s.append(builtInConstant);
+        snprintf(builtInConstant, maxSize, "const int gl_MaxComputeAtomicCounters = %d;", resources.maxComputeAtomicCounters);
+        s.append(builtInConstant);
+        snprintf(builtInConstant, maxSize, "const int gl_MaxComputeAtomicCounterBuffers = %d;", resources.maxComputeAtomicCounterBuffers);
+        s.append(builtInConstant);
     }
 
     s.append("\n");
@@ -2284,12 +2303,13 @@ void IdentifyBuiltIns(int version, EProfile profile, EShLanguage language, TSymb
         break;
 
     case EShLangFragment:
-        SpecialQualifier("gl_FrontFacing",  EvqFace, symbolTable);
-        SpecialQualifier("gl_FragCoord",    EvqFragCoord, symbolTable);
-        SpecialQualifier("gl_PointCoord",   EvqPointCoord, symbolTable);
-        SpecialQualifier("gl_FragColor",    EvqFragColor, symbolTable);
-        SpecialQualifier("gl_FragDepth",    EvqFragDepth, symbolTable);
-        SpecialQualifier("gl_FragDepthEXT", EvqFragDepth, symbolTable);
+        SpecialQualifier("gl_FrontFacing",      EvqFace, symbolTable);
+        SpecialQualifier("gl_FragCoord",        EvqFragCoord, symbolTable);
+        SpecialQualifier("gl_PointCoord",       EvqPointCoord, symbolTable);
+        SpecialQualifier("gl_FragColor",        EvqFragColor, symbolTable);
+        SpecialQualifier("gl_FragDepth",        EvqFragDepth, symbolTable);
+        SpecialQualifier("gl_FragDepthEXT",     EvqFragDepth, symbolTable);
+        SpecialQualifier("gl_HelperInvocation", EvqIn, symbolTable);
         if (version == 100) {
             symbolTable.setFunctionExtensions("dFdx",   1, &GL_OES_standard_derivatives);
             symbolTable.setFunctionExtensions("dFdy",   1, &GL_OES_standard_derivatives);
@@ -2339,7 +2359,7 @@ void IdentifyBuiltIns(int version, EProfile profile, EShLanguage language, TSymb
         }
 
         // GL_ARB_shader_image_load_store
-        if (version < 420)
+        if (profile != EEsProfile && version < 420)
             symbolTable.setFunctionExtensions("memoryBarrier", 1, &GL_ARB_shader_image_load_store);
         // All the image access functions are protected by checks on the type of the first argument.
 
@@ -2495,7 +2515,7 @@ void IdentifyBuiltIns(int version, EProfile profile, EShLanguage language, TSymb
 //
 void IdentifyBuiltIns(int version, EProfile profile, EShLanguage language, TSymbolTable& symbolTable, const TBuiltInResource &resources)
 {
-    if (version >= 430 && version < 440) {
+    if (profile != EEsProfile && version >= 430 && version < 440) {
         symbolTable.setVariableExtensions("gl_MaxTransformFeedbackBuffers", 1, &GL_ARB_enhanced_layouts);
         symbolTable.setVariableExtensions("gl_MaxTransformFeedbackInterleavedComponents", 1, &GL_ARB_enhanced_layouts);
     }

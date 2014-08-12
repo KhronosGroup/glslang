@@ -248,20 +248,23 @@ enum TLayoutFormat {
     // Float image
     ElfRgba32f,
     ElfRgba16f,
+    ElfR32f,
+    ElfRgba8,
+    ElfRgba8Snorm,
+
+    ElfEsFloatGuard,    // to help with comparisons
+
     ElfRg32f,
     ElfRg16f,
     ElfR11fG11fB10f,
-    ElfR32f,
     ElfR16f,
     ElfRgba16,
     ElfRgb10A2,
-    ElfRgba8,
     ElfRg16,
     ElfRg8,
     ElfR16,
     ElfR8,
     ElfRgba16Snorm,
-    ElfRgba8Snorm,
     ElfRg16Snorm,
     ElfRg8Snorm,
     ElfR16Snorm,
@@ -273,10 +276,13 @@ enum TLayoutFormat {
     ElfRgba32i,
     ElfRgba16i,
     ElfRgba8i,
+    ElfR32i,
+
+    ElfEsIntGuard,     // to help with comparisons
+
     ElfRg32i,
     ElfRg16i,
     ElfRg8i,
-    ElfR32i,
     ElfR16i,
     ElfR8i,
 
@@ -286,10 +292,13 @@ enum TLayoutFormat {
     ElfRgba32ui,
     ElfRgba16ui,
     ElfRgba8ui,
+    ElfR32ui,
+
+    ElfEsUintGuard,    // to help with comparisons
+
     ElfRg32ui,
     ElfRg16ui,
     ElfRg8ui,
-    ElfR32ui,
     ElfR16ui,
     ElfR8ui,
 
