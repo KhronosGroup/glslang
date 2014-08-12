@@ -296,8 +296,7 @@ void TIntermediate::mergeErrorCheck(TInfoSink& infoSink, const TIntermSymbol& sy
     }
 
     // Memory...
-    if (symbol.getQualifier().shared    != unitSymbol.getQualifier().shared ||
-        symbol.getQualifier().coherent  != unitSymbol.getQualifier().coherent ||
+    if (symbol.getQualifier().coherent  != unitSymbol.getQualifier().coherent ||
         symbol.getQualifier().volatil   != unitSymbol.getQualifier().volatil ||
         symbol.getQualifier().restrict  != unitSymbol.getQualifier().restrict ||
         symbol.getQualifier().readonly  != unitSymbol.getQualifier().readonly ||

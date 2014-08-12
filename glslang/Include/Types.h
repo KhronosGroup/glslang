@@ -315,7 +315,6 @@ public:
         nopersp   = false;
         patch     = false;
         sample    = false;
-        shared    = false;
         coherent  = false;
         volatil   = false;
         restrict  = false;
@@ -333,7 +332,6 @@ public:
     bool nopersp   : 1;
     bool patch     : 1;
     bool sample    : 1;
-    bool shared    : 1;
     bool coherent  : 1;
     bool volatil   : 1;
     bool restrict  : 1;
@@ -1179,8 +1177,6 @@ public:
             p += snprintf(p, end - p, "patch ");
         if (qualifier.sample)
             p += snprintf(p, end - p, "sample ");
-        if (qualifier.shared)
-            p += snprintf(p, end - p, "shared ");
         if (qualifier.coherent)
             p += snprintf(p, end - p, "coherent ");
         if (qualifier.volatil)

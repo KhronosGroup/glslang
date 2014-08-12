@@ -48,7 +48,8 @@ ERROR: 0:146: 'shared' : not supported in this stage: vertex
 ERROR: 0:150: 'barrier' : no matching overloaded function found 
 ERROR: 0:154: 'memoryBarrierShared' : no matching overloaded function found 
 ERROR: 0:156: 'groupMemoryBarrier' : no matching overloaded function found 
-ERROR: 48 compilation errors.  No code generated.
+ERROR: 0:159: 'buffer' : buffers can be declared only as blocks 
+ERROR: 49 compilation errors.  No code generated.
 
 
 Shader version: 430
@@ -127,6 +128,7 @@ ERROR: node is still EOpNull!
 0:?     'bbinst4' (layout(xfb_stride=80 ) out block{layout(xfb_buffer=1 xfb_offset=16 ) out 4-component vector of float bbv1})
 0:?     'bbinst5' (out block{layout(xfb_buffer=1 xfb_offset=0 ) out 4-component vector of float bbv1, layout(xfb_buffer=1 xfb_offset=64 xfb_stride=80 ) out 4-component vector of float bbv2})
 0:?     'sharedv' (shared 4-component vector of float)
+0:?     'v' (buffer 4-component vector of float)
 0:?     'gl_VertexID' (gl_VertexId int)
 0:?     'gl_InstanceID' (gl_InstanceId int)
 
@@ -213,6 +215,7 @@ ERROR: node is still EOpNull!
 0:?     'bbinst4' (layout(xfb_stride=80 ) out block{layout(xfb_buffer=1 xfb_offset=16 ) out 4-component vector of float bbv1})
 0:?     'bbinst5' (out block{layout(xfb_buffer=1 xfb_offset=0 ) out 4-component vector of float bbv1, layout(xfb_buffer=1 xfb_offset=64 xfb_stride=80 ) out 4-component vector of float bbv2})
 0:?     'sharedv' (shared 4-component vector of float)
+0:?     'v' (buffer 4-component vector of float)
 0:?     'gl_VertexID' (gl_VertexId int)
 0:?     'gl_InstanceID' (gl_InstanceId int)
 

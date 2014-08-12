@@ -1921,6 +1921,9 @@ void TParseContext::globalQualifierCheck(TSourceLoc loc, const TQualifier& quali
     if (qualifier.isMemory() && ! publicType.isImage() && publicType.qualifier.storage != EvqBuffer)
         error(loc, "memory qualifiers cannot be used on this type", "", "");
 
+    if (qualifier.storage == EvqBuffer && publicType.basicType != EbtBlock)
+        error(loc, "buffers can be declared only as blocks", "buffer", "");
+
     if (qualifier.storage != EvqVaryingIn && qualifier.storage != EvqVaryingOut)
         return;
 
@@ -2093,7 +2096,6 @@ void TParseContext::mergeQualifiers(TSourceLoc loc, TQualifier& dst, const TQual
     MERGE_SINGLETON(nopersp);
     MERGE_SINGLETON(patch);
     MERGE_SINGLETON(sample);
-    MERGE_SINGLETON(shared);
     MERGE_SINGLETON(coherent);
     MERGE_SINGLETON(volatil);
     MERGE_SINGLETON(restrict);

@@ -155,3 +155,5 @@ void fooBarrier()
     memoryBarrierImage();
     groupMemoryBarrier();            // ERROR
 }
+
+buffer vec4 v;  // ERROR
