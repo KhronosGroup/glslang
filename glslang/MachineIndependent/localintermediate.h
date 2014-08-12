@@ -310,7 +310,7 @@ protected:
     TGraph callGraph;
 
     std::set<TString> ioAccessed;       // set of names of statically read/written I/O that might need extra checking
-    std::vector<TIoRange> usedIo[3];    // sets of used locations, one for each of in, out, and uniform
+    std::vector<TIoRange> usedIo[4];    // sets of used locations, one for each of in, out, uniform and buffers
     std::vector<TXfbBuffer> xfbBuffers; // all the data we need to track per xfb buffer
 
 private:

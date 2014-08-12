@@ -526,10 +526,10 @@ void TParseContext::checkIndex(TSourceLoc loc, const TType& type, int& index)
 void TParseContext::handleIndexLimits(TSourceLoc loc, TIntermTyped* base, TIntermTyped* index)
 {
     if ((! limits.generalSamplerIndexing && base->getBasicType() == EbtSampler) ||
-        (! limits.generalUniformIndexing && base->getQualifier().isUniform() && language != EShLangVertex) ||
+        (! limits.generalUniformIndexing && base->getQualifier().isUniformOrBuffer() && language != EShLangVertex) ||
         (! limits.generalAttributeMatrixVectorIndexing && base->getQualifier().isPipeInput() && language == EShLangVertex && (base->getType().isMatrix() || base->getType().isVector())) ||
         (! limits.generalConstantMatrixVectorIndexing && base->getAsConstantUnion()) ||
-        (! limits.generalVariableIndexing && ! base->getType().getQualifier().isUniform() &&
+        (! limits.generalVariableIndexing && ! base->getType().getQualifier().isUniformOrBuffer() &&
                                              ! base->getType().getQualifier().isPipeInput() &&
                                              ! base->getType().getQualifier().isPipeOutput() &&
                                                base->getType().getQualifier().storage != EvqConst) ||
@@ -1062,7 +1062,10 @@ TIntermTyped* TParseContext::handleLengthMethod(TSourceLoc loc, TFunction* funct
     else {
         const TType& type = intermNode->getAsTyped()->getType();
         if (type.isArray()) {
-            if (type.isImplicitlySizedArray()) {
+            if (type.isRuntimeSizedArray()) {
+                // Create a unary op and let the back end handle it
+                return intermediate.addBuiltInFunctionCall(loc, EOpArrayLength, true, intermNode, TType(EbtInt));
+            } else if (type.isImplicitlySizedArray()) {
                 if (intermNode->getAsSymbolNode() && isIoResizeArray(type)) {
                     // We could be between a layout declaration that gives a built-in io array implicit size and 
                     // a user redeclaration of that array, meaning we have to substitute its implicit size here 
@@ -1565,12 +1568,16 @@ bool TParseContext::lValueErrorCheck(TSourceLoc loc, const char* op, TIntermType
     case EvqConst:          message = "can't modify a const";        break;
     case EvqConstReadOnly:  message = "can't modify a const";        break;
     case EvqVaryingIn:      message = "can't modify shader input";   break;
-    case EvqUniform:        message = "can't modify a uniform";      break;
     case EvqInstanceId:     message = "can't modify gl_InstanceID";  break;
     case EvqVertexId:       message = "can't modify gl_VertexID";    break;
     case EvqFace:           message = "can't modify gl_FrontFace";   break;
     case EvqFragCoord:      message = "can't modify gl_FragCoord";   break;
     case EvqPointCoord:     message = "can't modify gl_PointCoord";  break;
+    case EvqUniform:        message = "can't modify a uniform";      break;
+    case EvqBuffer:
+        if (node->getQualifier().readonly)
+            message = "can't modify a readonly buffer";
+        break;
     default:
 
         //
@@ -1910,6 +1917,9 @@ void TParseContext::globalQualifierCheck(TSourceLoc loc, const TQualifier& quali
 {
     if (! symbolTable.atGlobalLevel())
         return;
+
+    if (qualifier.isMemory() && ! publicType.isImage() && publicType.qualifier.storage != EvqBuffer)
+        error(loc, "memory qualifiers cannot be used on this type", "", "");
 
     if (qualifier.storage != EvqVaryingIn && qualifier.storage != EvqVaryingOut)
         return;
@@ -3281,8 +3291,8 @@ void TParseContext::layoutObjectCheck(TSourceLoc loc, const TSymbol& symbol)
     // Check packing and matrix 
     if (qualifier.hasUniformLayout()) {
         switch (qualifier.storage) {
-        case EvqBuffer:
         case EvqUniform:
+        case EvqBuffer:
             if (type.getBasicType() != EbtBlock) {
                 if (qualifier.hasMatrix())
                     error(loc, "cannot specify matrix layout on a variable declaration", "layout", "");
@@ -3396,7 +3406,7 @@ void TParseContext::layoutTypeCheck(TSourceLoc loc, const TType& type)
 
     // Image format
     if (qualifier.hasFormat()) {
-        if (type.getBasicType() != EbtSampler || ! type.getSampler().image)
+        if (! type.isImage())
             error(loc, "only apply to images", TQualifier::getLayoutFormatString(qualifier.layoutFormat), "");
         else {
             if (type.getSampler().type == EbtFloat && qualifier.layoutFormat > ElfFloatGuard)
@@ -3406,10 +3416,8 @@ void TParseContext::layoutTypeCheck(TSourceLoc loc, const TType& type)
             if (type.getSampler().type == EbtUint && qualifier.layoutFormat < ElfIntGuard)
                 error(loc, "does not apply to unsigned integer images", TQualifier::getLayoutFormatString(qualifier.layoutFormat), "");
         }
-    } else if (type.getBasicType() == EbtSampler && type.getSampler().image && !qualifier.writeonly)
+    } else if (type.isImage() && ! qualifier.writeonly)
         error(loc, "image variables not declared 'writeonly' must have a format layout qualifier", "", "");
-    if (qualifier.isMemory() && (type.getBasicType() != EbtSampler || ! type.getSampler().image))
-        error(loc, "memory qualifiers can only be used on image types", "", "");
 }
 
 // Do layout error checking that can be done within a qualifier proper, not needing to know
@@ -3470,7 +3478,7 @@ void TParseContext::layoutQualifierCheck(TSourceLoc loc, const TQualifier& quali
     }
 
     if (qualifier.hasBinding()) {
-        if (qualifier.storage != EvqUniform && qualifier.storage != EvqBuffer)
+        if (! qualifier.isUniformOrBuffer())
             error(loc, "requires uniform or buffer storage qualifier", "binding", "");
     }
     if (qualifier.hasStream()) {
@@ -3482,7 +3490,7 @@ void TParseContext::layoutQualifierCheck(TSourceLoc loc, const TQualifier& quali
             error(loc, "can only be used on an output", "xfb layout qualifier", "");
     }
     if (qualifier.hasUniformLayout()) {
-        if (! (qualifier.storage == EvqUniform || qualifier.storage == EvqBuffer)) {
+        if (! qualifier.isUniformOrBuffer()) {
             if (qualifier.hasMatrix() || qualifier.hasPacking())
                 error(loc, "matrix or packing qualifiers can only be used on a uniform or buffer", "layout", "");
             if (qualifier.hasOffset() || qualifier.hasAlign())
@@ -4122,13 +4130,13 @@ void TParseContext::declareBlock(TSourceLoc loc, TTypeList& typeList, const TStr
         arraySizeRequiredCheck(loc, arraySizes->getSize());
 
     switch (currentBlockQualifier.storage) {
-    case EvqBuffer:
-        requireProfile(loc, ECoreProfile | ECompatibilityProfile, "buffer block");
-        profileRequires(loc, ECoreProfile | ECompatibilityProfile, 430, 0, "buffer block");
-        break;
     case EvqUniform:
         profileRequires(loc, EEsProfile, 300, 0, "uniform block");
         profileRequires(loc, ENoProfile, 140, 0, "uniform block");
+        break;
+    case EvqBuffer:
+        requireProfile(loc, ECoreProfile | ECompatibilityProfile, "buffer block");
+        profileRequires(loc, ECoreProfile | ECompatibilityProfile, 430, 0, "buffer block");
         break;
     case EvqVaryingIn:
         requireProfile(loc, ~EEsProfile, "input block");
@@ -4147,16 +4155,19 @@ void TParseContext::declareBlock(TSourceLoc loc, TTypeList& typeList, const TStr
 
     // fix and check for member storage qualifiers and types that don't belong within a block
     for (unsigned int member = 0; member < typeList.size(); ++member) {
-        TQualifier& memberQualifier = typeList[member].type->getQualifier();
+        TType& memberType = *typeList[member].type;
+        TQualifier& memberQualifier = memberType.getQualifier();
         TSourceLoc memberLoc = typeList[member].loc;
         pipeInOutFix(memberLoc, memberQualifier);
         if (memberQualifier.storage != EvqTemporary && memberQualifier.storage != EvqGlobal && memberQualifier.storage != currentBlockQualifier.storage)
-            error(memberLoc, "member storage qualifier cannot contradict block storage qualifier", typeList[member].type->getFieldName().c_str(), "");
+            error(memberLoc, "member storage qualifier cannot contradict block storage qualifier", memberType.getFieldName().c_str(), "");
         memberQualifier.storage = currentBlockQualifier.storage;
-        if (currentBlockQualifier.storage == EvqUniform && (memberQualifier.isInterpolation() || memberQualifier.isAuxiliary()))
-            error(memberLoc, "member of uniform block cannot have an auxiliary or interpolation qualifier", typeList[member].type->getFieldName().c_str(), "");
+        if ((currentBlockQualifier.storage == EvqUniform || currentBlockQualifier.storage == EvqBuffer) && (memberQualifier.isInterpolation() || memberQualifier.isAuxiliary()))
+            error(memberLoc, "member of uniform or buffer block cannot have an auxiliary or interpolation qualifier", memberType.getFieldName().c_str(), "");
+        if (memberType.isRuntimeSizedArray() && member < typeList.size() - 1)
+            error(memberLoc, "only the last member of a buffer block can be run-time sized", memberType.getFieldName().c_str(), "");
 
-        TBasicType basicType = typeList[member].type->getBasicType();
+        TBasicType basicType = memberType.getBasicType();
         if (basicType == EbtSampler)
             error(memberLoc, "member of block cannot be a sampler type", typeList[member].type->getFieldName().c_str(), "");
     }
@@ -4179,8 +4190,8 @@ void TParseContext::declareBlock(TSourceLoc loc, TTypeList& typeList, const TStr
 
     TQualifier defaultQualification;
     switch (currentBlockQualifier.storage) {
-    case EvqBuffer:     defaultQualification = globalBufferDefaults;     break;
     case EvqUniform:    defaultQualification = globalUniformDefaults;    break;
+    case EvqBuffer:     defaultQualification = globalBufferDefaults;     break;
     case EvqVaryingIn:  defaultQualification = globalInputDefaults;      break;
     case EvqVaryingOut: defaultQualification = globalOutputDefaults;     break;
     default:            defaultQualification.clear();                    break;
@@ -4401,7 +4412,7 @@ void TParseContext::fixBlockXfbOffsets(TSourceLoc loc, TQualifier& qualifier, TT
 //
 void TParseContext::fixBlockUniformOffsets(TSourceLoc loc, TQualifier& qualifier, TTypeList& typeList)
 {
-    if (qualifier.storage != EvqUniform && qualifier.storage != EvqBuffer)
+    if (! qualifier.isUniformOrBuffer())
         return;
     if (qualifier.layoutPacking != ElpStd140 && qualifier.layoutPacking != ElpStd430)
         return;

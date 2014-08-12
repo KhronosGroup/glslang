@@ -12,6 +12,18 @@ const int total = gl_MaxComputeWorkGroupCount.y
                 + gl_MaxComputeAtomicCounters
                 + gl_MaxComputeAtomicCounterBuffers;
 
+buffer ShaderStorageBlock
+{
+    int value;
+    float values[];
+};
+
+buffer InvalidShaderStorageBlock
+{
+    float values[];  // ERROR
+    int value;
+} invalid;
+
 void main()
 {
     barrier();
@@ -21,6 +33,7 @@ void main()
     memoryBarrierShared();
     memoryBarrierImage();
     groupMemoryBarrier();
+    value = int(values[gl_LocalInvocationIndex]);
 }
 
 layout(location = 2) in vec3 v3;      // ERROR
@@ -36,3 +49,15 @@ layout(local_size_x = 2, local_size_y = 3, local_size_z = 4) out;  // ERROR
 int arrX[gl_WorkGroupSize.x];
 int arrY[gl_WorkGroupSize.y];
 int arrZ[gl_WorkGroupSize.z];
+
+readonly buffer roblock
+{
+    int value;
+    float values[];
+} ro;
+
+void foo()
+{
+    ro.values[2] = 4.7;        // ERROR, readonly
+    ro.values.length();
+}

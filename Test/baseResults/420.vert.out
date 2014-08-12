@@ -38,8 +38,8 @@ ERROR: 0:107: '' : image variables not declared 'writeonly' must have a format l
 ERROR: 0:114: 'imageAtomicMin' : only supported on image with format r32i or r32ui 
 ERROR: 0:115: 'imageAtomicMax' : no matching overloaded function found 
 ERROR: 0:119: 'writeonly' : argument cannot drop memory qualifier when passed to formal parameter 
-ERROR: 0:122: '' : memory qualifiers can only be used on image types 
-ERROR: 0:123: '' : memory qualifiers can only be used on image types 
+ERROR: 0:122: '' : memory qualifiers cannot be used on this type 
+ERROR: 0:123: '' : memory qualifiers cannot be used on this type 
 ERROR: 0:135: 'restrict' : argument cannot drop memory qualifier when passed to formal parameter 
 ERROR: 0:139: 'rg8i' : does not apply to unsigned integer images 
 ERROR: 0:140: 'rgba32i' : does not apply to floating point images 

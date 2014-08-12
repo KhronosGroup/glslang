@@ -406,7 +406,7 @@ public:
         }
     }
 
-    bool isUniform() const
+    bool isUniformOrBuffer() const
     {
         switch (storage) {
         case EvqUniform:
@@ -802,9 +802,14 @@ public:
         vectorSize = 0;
     }
 
-    bool isScalar()
+    bool isScalar() const
     {
         return matrixCols == 0 && vectorSize == 1 && arraySizes == 0 && userDef == 0;
+    }
+
+    bool isImage() const
+    {
+        return basicType == EbtSampler && sampler.image;
     }
 };
 
@@ -1008,9 +1013,11 @@ public:
     virtual bool isVector() const { return vectorSize > 1; }
     virtual bool isMatrix() const { return matrixCols ? true : false; }
     virtual bool isArray()  const { return arraySizes != 0; }
-    virtual bool isImplicitlySizedArray() const { return isArray() && ! getArraySize(); }
-    virtual bool isExplicitlySizedArray() const { return ! isImplicitlySizedArray(); }
+    virtual bool isImplicitlySizedArray() const { return isArray() && ! getArraySize() && qualifier.storage != EvqBuffer; }
+    virtual bool isExplicitlySizedArray() const { return isArray() && getArraySize(); }
+    virtual bool isRuntimeSizedArray() const { return isArray() && ! getArraySize() && qualifier.storage == EvqBuffer; }
     virtual bool isStruct() const { return structure != 0; }
+    virtual bool isImage() const { return basicType == EbtSampler && getSampler().image; }
 
     // Recursively checks if the type contains the given basic type
     virtual bool containsBasicType(TBasicType checkType) const

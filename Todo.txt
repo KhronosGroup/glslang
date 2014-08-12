@@ -197,9 +197,10 @@ Shader Functionality to Implement/Finish
       + Clarify that textureGatherOffset() can take non-constants for the offsets.
     GLSL 4.3
       - Add shader storage buffer objects, as per the ARB_shader_storage_buffer_object extension. This includes 
-            - allowing the last member of a storage buffer block to be an array that does not know its size until render time
+            + allowing the last member of a storage buffer block to be an array that does not know its size until render time
             - read/write memory shared with the application and other shader invocations
-            - adding the std430 layout qualifier for shader storage blocks
+            + adding the std430 layout qualifier for shader storage blocks
+            - add atomic built-ins
       - Allow .length() on all arrays; returning a compile-time constant or not, depending on how the 
         array is sized, as per the ARB_shader_storage_buffer_object extension.
       - Be clear that implicit array sizing is only within a stage, not cross stage.

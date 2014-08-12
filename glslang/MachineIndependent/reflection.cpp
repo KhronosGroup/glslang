@@ -265,7 +265,7 @@ public:
         // We have an array or structure or block dereference, see if it's a uniform 
         // based dereference (if not, skip it).
         TIntermSymbol* base = findBase(topNode);
-        if (! base || base->getQualifier().storage != EvqUniform)
+        if (! base || ! base->getQualifier().isUniformOrBuffer())
             return;
             
         // See if we've already processed this (e.g., in the middle of something 

@@ -1213,7 +1213,7 @@ storage_qualifier
     | BUFFER {
         parseContext.globalCheck($1.loc, "buffer");
         $$.init($1.loc);
-        $$.qualifier.storage = EvqUniform; // TODO: 4.0 functionality: implement BUFFER
+        $$.qualifier.storage = EvqBuffer;
     }
     | SHARED {
         parseContext.requireProfile($1.loc, ~EEsProfile, "shared");

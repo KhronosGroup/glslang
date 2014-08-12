@@ -67,8 +67,8 @@ enum TStorageQualifier {
     EvqConst,         // User-defined constant values, will be semantically constant and constant folded
     EvqVaryingIn,     // pipeline input, read only
     EvqVaryingOut,    // pipeline ouput, read/write
-    EvqUniform,       // read only, shader with app
-    EvqBuffer,        // read only, shader with app
+    EvqUniform,       // read only, shared with app
+    EvqBuffer,        // read/write, shared with app
     EvqShared,        // compute shader's read/write 'shared' qualifier
     
     // parameters

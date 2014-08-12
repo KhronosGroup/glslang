@@ -604,13 +604,15 @@ int TIntermediate::addUsedLocation(const TQualifier& qualifier, const TType& typ
         set = 0;
     else if (qualifier.isPipeOutput())
         set = 1;
-    else if (qualifier.isUniform())
+    else if (qualifier.storage == EvqUniform)
         set = 2;
+    else if (qualifier.storage == EvqBuffer)
+        set = 3;
     else
         return -1;
 
     int size;
-    if (qualifier.isUniform()) {
+    if (qualifier.isUniformOrBuffer()) {
         if (type.isArray())
             size = type.getArraySize();
         else

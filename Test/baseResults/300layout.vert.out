@@ -5,7 +5,7 @@ ERROR: 0:8: 'vertex input arrays' : not supported with this profile: es
 ERROR: 0:8: 'location' : overlapping use of location 10
 ERROR: 0:12: 'layout' : cannot specify matrix layout on a variable declaration 
 ERROR: 0:12: 'layout' : cannot specify packing on a variable declaration 
-ERROR: 0:19: 'badf' : member of uniform block cannot have an auxiliary or interpolation qualifier 
+ERROR: 0:19: 'badf' : member of uniform or buffer block cannot have an auxiliary or interpolation qualifier 
 ERROR: 0:20: 'badg' : member storage qualifier cannot contradict block storage qualifier 
 ERROR: 0:21: 'bad1' : member of block cannot have a packing layout qualifier 
 ERROR: 0:22: 'bad2' : member of block cannot have a packing layout qualifier 

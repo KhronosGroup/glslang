@@ -2,32 +2,64 @@
 Warning, version 430 is not yet complete; most version-specific features are present, but some are missing.
 ERROR: 0:4: 'local_size' : cannot change previously set size 
 ERROR: 0:5: 'local_size' : too large; see gl_MaxComputeWorkGroupSize 
-ERROR: 0:26: 'in' : global storage input qualifier cannot be used in a compute shader 
-ERROR: 0:26: 'location qualifier on input' : not supported in this stage: compute
-ERROR: 0:27: 'in' : global storage input qualifier cannot be used in a compute shader 
-ERROR: 0:28: 'out' : global storage output qualifier cannot be used in a compute shader 
-ERROR: 0:31: 'shared' : cannot apply layout qualifiers to a shared variable 
-ERROR: 0:31: 'location' : can only appy to uniform, buffer, in, or out storage qualifiers 
-ERROR: 0:32: 'shared' :  cannot initialize this type of qualifier  
-ERROR: 0:34: 'local_size' : can only apply to 'in' 
-ERROR: 0:34: 'local_size' : can only apply to 'in' 
-ERROR: 0:34: 'local_size' : can only apply to 'in' 
-ERROR: 12 compilation errors.  No code generated.
+ERROR: 0:23: 'values' : only the last member of a buffer block can be run-time sized 
+ERROR: 0:39: 'in' : global storage input qualifier cannot be used in a compute shader 
+ERROR: 0:39: 'location qualifier on input' : not supported in this stage: compute
+ERROR: 0:40: 'in' : global storage input qualifier cannot be used in a compute shader 
+ERROR: 0:41: 'out' : global storage output qualifier cannot be used in a compute shader 
+ERROR: 0:44: 'shared' : cannot apply layout qualifiers to a shared variable 
+ERROR: 0:44: 'location' : can only appy to uniform, buffer, in, or out storage qualifiers 
+ERROR: 0:45: 'shared' :  cannot initialize this type of qualifier  
+ERROR: 0:47: 'local_size' : can only apply to 'in' 
+ERROR: 0:47: 'local_size' : can only apply to 'in' 
+ERROR: 0:47: 'local_size' : can only apply to 'in' 
+ERROR: 0:61: 'assign' :  l-value required "ro" (can't modify a readonly buffer)
+ERROR: 14 compilation errors.  No code generated.
 
 
 Shader version: 430
 local_size = (2, 1, 4096)
 ERROR: node is still EOpNull!
-0:15  Function Definition: main( (void)
-0:15    Function Parameters: 
-0:17    Sequence
-0:17      Barrier (void)
-0:18      MemoryBarrier (void)
-0:19      MemoryBarrierAtomicCounter (void)
-0:20      MemoryBarrierBuffer (void)
-0:21      MemoryBarrierShared (void)
-0:22      MemoryBarrierImage (void)
-0:23      GroupMemoryBarrier (void)
+0:27  Function Definition: main( (void)
+0:27    Function Parameters: 
+0:29    Sequence
+0:29      Barrier (void)
+0:30      MemoryBarrier (void)
+0:31      MemoryBarrierAtomicCounter (void)
+0:32      MemoryBarrierBuffer (void)
+0:33      MemoryBarrierShared (void)
+0:34      MemoryBarrierImage (void)
+0:35      GroupMemoryBarrier (void)
+0:36      move second child to first child (int)
+0:36        value: direct index for structure (layout(column_major shared ) buffer int)
+0:36          'anon@0' (layout(column_major shared ) buffer block{layout(column_major shared ) buffer int value, layout(column_major shared ) buffer implicitly-sized array of float values})
+0:36          Constant:
+0:36            0 (const uint)
+0:36        Convert float to int (int)
+0:36          indirect index (layout(column_major shared ) float)
+0:36            values: direct index for structure (layout(column_major shared ) buffer implicitly-sized array of float)
+0:36              'anon@0' (layout(column_major shared ) buffer block{layout(column_major shared ) buffer int value, layout(column_major shared ) buffer implicitly-sized array of float values})
+0:36              Constant:
+0:36                1 (const uint)
+0:36            'gl_LocalInvocationIndex' (in uint)
+0:59  Function Definition: foo( (void)
+0:59    Function Parameters: 
+0:61    Sequence
+0:61      move second child to first child (float)
+0:61        direct index (layout(column_major shared ) float)
+0:61          values: direct index for structure (layout(column_major shared ) buffer implicitly-sized array of float)
+0:61            'ro' (layout(column_major shared ) readonly buffer block{layout(column_major shared ) buffer int value, layout(column_major shared ) buffer implicitly-sized array of float values})
+0:61            Constant:
+0:61              1 (const int)
+0:61          Constant:
+0:61            2 (const int)
+0:61        Constant:
+0:61          4.700000
+0:62      array length (int)
+0:62        values: direct index for structure (layout(column_major shared ) buffer implicitly-sized array of float)
+0:62          'ro' (layout(column_major shared ) readonly buffer block{layout(column_major shared ) buffer int value, layout(column_major shared ) buffer implicitly-sized array of float values})
+0:62          Constant:
+0:62            1 (const int)
 0:?   Linker Objects
 0:?     'gl_WorkGroupSize' (const 3-component vector of uint)
 0:?       2 (const uint)
@@ -35,6 +67,8 @@ ERROR: node is still EOpNull!
 0:?       4096 (const uint)
 0:?     'total' (const int)
 0:?       66592 (const int)
+0:?     'anon@0' (layout(column_major shared ) buffer block{layout(column_major shared ) buffer int value, layout(column_major shared ) buffer implicitly-sized array of float values})
+0:?     'invalid' (layout(column_major shared ) buffer block{layout(column_major shared ) buffer implicitly-sized array of float values, layout(column_major shared ) buffer int value})
 0:?     'v3' (layout(location=2 ) in 3-component vector of float)
 0:?     'f' (in float)
 0:?     'fo' (out float)
@@ -44,6 +78,7 @@ ERROR: node is still EOpNull!
 0:?     'arrX' (2-element array of int)
 0:?     'arrY' (1-element array of int)
 0:?     'arrZ' (4096-element array of int)
+0:?     'ro' (layout(column_major shared ) readonly buffer block{layout(column_major shared ) buffer int value, layout(column_major shared ) buffer implicitly-sized array of float values})
 
 
 Linked compute stage:
@@ -52,16 +87,46 @@ Linked compute stage:
 Shader version: 430
 local_size = (2, 1, 4096)
 ERROR: node is still EOpNull!
-0:15  Function Definition: main( (void)
-0:15    Function Parameters: 
-0:17    Sequence
-0:17      Barrier (void)
-0:18      MemoryBarrier (void)
-0:19      MemoryBarrierAtomicCounter (void)
-0:20      MemoryBarrierBuffer (void)
-0:21      MemoryBarrierShared (void)
-0:22      MemoryBarrierImage (void)
-0:23      GroupMemoryBarrier (void)
+0:27  Function Definition: main( (void)
+0:27    Function Parameters: 
+0:29    Sequence
+0:29      Barrier (void)
+0:30      MemoryBarrier (void)
+0:31      MemoryBarrierAtomicCounter (void)
+0:32      MemoryBarrierBuffer (void)
+0:33      MemoryBarrierShared (void)
+0:34      MemoryBarrierImage (void)
+0:35      GroupMemoryBarrier (void)
+0:36      move second child to first child (int)
+0:36        value: direct index for structure (layout(column_major shared ) buffer int)
+0:36          'anon@0' (layout(column_major shared ) buffer block{layout(column_major shared ) buffer int value, layout(column_major shared ) buffer implicitly-sized array of float values})
+0:36          Constant:
+0:36            0 (const uint)
+0:36        Convert float to int (int)
+0:36          indirect index (layout(column_major shared ) float)
+0:36            values: direct index for structure (layout(column_major shared ) buffer implicitly-sized array of float)
+0:36              'anon@0' (layout(column_major shared ) buffer block{layout(column_major shared ) buffer int value, layout(column_major shared ) buffer implicitly-sized array of float values})
+0:36              Constant:
+0:36                1 (const uint)
+0:36            'gl_LocalInvocationIndex' (in uint)
+0:59  Function Definition: foo( (void)
+0:59    Function Parameters: 
+0:61    Sequence
+0:61      move second child to first child (float)
+0:61        direct index (layout(column_major shared ) float)
+0:61          values: direct index for structure (layout(column_major shared ) buffer implicitly-sized array of float)
+0:61            'ro' (layout(column_major shared ) readonly buffer block{layout(column_major shared ) buffer int value, layout(column_major shared ) buffer implicitly-sized array of float values})
+0:61            Constant:
+0:61              1 (const int)
+0:61          Constant:
+0:61            2 (const int)
+0:61        Constant:
+0:61          4.700000
+0:62      array length (int)
+0:62        values: direct index for structure (layout(column_major shared ) buffer implicitly-sized array of float)
+0:62          'ro' (layout(column_major shared ) readonly buffer block{layout(column_major shared ) buffer int value, layout(column_major shared ) buffer implicitly-sized array of float values})
+0:62          Constant:
+0:62            1 (const int)
 0:?   Linker Objects
 0:?     'gl_WorkGroupSize' (const 3-component vector of uint)
 0:?       2 (const uint)
@@ -69,6 +134,8 @@ ERROR: node is still EOpNull!
 0:?       4096 (const uint)
 0:?     'total' (const int)
 0:?       66592 (const int)
+0:?     'anon@0' (layout(column_major shared ) buffer block{layout(column_major shared ) buffer int value, layout(column_major shared ) buffer implicitly-sized array of float values})
+0:?     'invalid' (layout(column_major shared ) buffer block{layout(column_major shared ) buffer implicitly-sized array of float values, layout(column_major shared ) buffer int value})
 0:?     'v3' (layout(location=2 ) in 3-component vector of float)
 0:?     'f' (in float)
 0:?     'fo' (out float)
@@ -78,4 +145,5 @@ ERROR: node is still EOpNull!
 0:?     'arrX' (2-element array of int)
 0:?     'arrY' (1-element array of int)
 0:?     'arrZ' (4096-element array of int)
+0:?     'ro' (layout(column_major shared ) readonly buffer block{layout(column_major shared ) buffer int value, layout(column_major shared ) buffer implicitly-sized array of float values})
 
