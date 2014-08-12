@@ -124,6 +124,7 @@ public:
     void boolCheck(TSourceLoc, const TIntermTyped*);
     void boolCheck(TSourceLoc, const TPublicType&);
     void samplerCheck(TSourceLoc, const TType&, const TString& identifier);
+    void atomicUintCheck(TSourceLoc, const TType&, const TString& identifier);
     void pipeInOutFix(TSourceLoc, TQualifier&);
     void globalQualifierCheck(TSourceLoc, const TQualifier&, const TPublicType&);
     bool structQualifierErrorCheck(TSourceLoc, const TPublicType& pType);
@@ -132,8 +133,8 @@ public:
     int computeSamplerTypeIndex(TSampler&);
     TPrecisionQualifier getDefaultPrecision(TPublicType&);
     void precisionQualifierCheck(TSourceLoc, TPublicType&);
-    void parameterSamplerCheck(TSourceLoc, TStorageQualifier qualifier, const TType& type);
-    bool containsSampler(const TType& type);
+    void parameterTypeCheck(TSourceLoc, TStorageQualifier qualifier, const TType& type);
+    bool containsFieldWithBasicType(const TType& type ,TBasicType basicType);
     TSymbol* redeclareBuiltinVariable(TSourceLoc, const TString&, const TQualifier&, const TShaderQualifiers&, bool& newDeclaration);
     void redeclareBuiltinBlock(TSourceLoc, TTypeList& typeList, const TString& blockName, const TString* instanceName, TArraySizes* arraySizes);
     void paramCheckFix(TSourceLoc, const TStorageQualifier&, TType& type);

@@ -69,6 +69,7 @@ numeral.frag
 440.vert
 440.frag
 dce.frag
+atomic_uint.frag
 ../../LunarGLASS/test/aggOps.frag
 ../../LunarGLASS/test/always-discard.frag
 ../../LunarGLASS/test/always-discard2.frag

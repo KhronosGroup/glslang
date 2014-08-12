@@ -1587,6 +1587,9 @@ bool TParseContext::lValueErrorCheck(TSourceLoc loc, const char* op, TIntermType
         case EbtSampler:
             message = "can't modify a sampler";
             break;
+        case EbtAtomicUint:
+            message = "can't modify an atomic_uint";
+            break;
         case EbtVoid:
             message = "can't modify void";
             break;
@@ -1841,6 +1844,10 @@ bool TParseContext::constructorError(TSourceLoc loc, TIntermNode* node, TFunctio
         error(loc, "cannot convert a sampler", "constructor", "");
         return true;
     }
+    if (op != EOpConstructStruct && typed->getBasicType() == EbtAtomicUint) {
+        error(loc, "cannot convert an atomic_uint", "constructor", "");
+        return true;
+    }
     if (typed->getBasicType() == EbtVoid) {
         error(loc, "cannot convert a void", "constructor", "");
         return true;
@@ -1882,10 +1889,21 @@ void TParseContext::samplerCheck(TSourceLoc loc, const TType& type, const TStrin
     if (type.getQualifier().storage == EvqUniform)
         return;
 
-    if (type.getBasicType() == EbtStruct && containsSampler(type))
+    if (type.getBasicType() == EbtStruct && containsFieldWithBasicType(type, EbtSampler))
         error(loc, "non-uniform struct contains a sampler or image:", type.getBasicTypeString().c_str(), identifier.c_str());
     else if (type.getBasicType() == EbtSampler && type.getQualifier().storage != EvqUniform)
         error(loc, "sampler/image types can only be used in uniform variables or function parameters:", type.getBasicTypeString().c_str(), identifier.c_str());
+}
+
+void TParseContext::atomicUintCheck(TSourceLoc loc, const TType& type, const TString& identifier)
+{
+    if (type.getQualifier().storage == EvqUniform)
+        return;
+
+    if (type.getBasicType() == EbtStruct && containsFieldWithBasicType(type, EbtAtomicUint))
+        error(loc, "non-uniform struct contains an atomic_uint:", type.getBasicTypeString().c_str(), identifier.c_str());
+    else if (type.getBasicType() == EbtAtomicUint && type.getQualifier().storage != EvqUniform)
+        error(loc, "atomic_uints can only be used in uniform variables or function parameters:", type.getBasicTypeString().c_str(), identifier.c_str());
 }
 
 //
@@ -2168,21 +2186,21 @@ void TParseContext::precisionQualifierCheck(TSourceLoc loc, TPublicType& publicT
         error(loc, "type cannot have precision qualifier", TType::getBasicString(publicType.basicType), "");
 }
 
-void TParseContext::parameterSamplerCheck(TSourceLoc loc, TStorageQualifier qualifier, const TType& type)
+void TParseContext::parameterTypeCheck(TSourceLoc loc, TStorageQualifier qualifier, const TType& type)
 {
-    if ((qualifier == EvqOut || qualifier == EvqInOut) && type.getBasicType() != EbtStruct && type.getBasicType() == EbtSampler)
-        error(loc, "samplers cannot be output parameters", type.getBasicTypeString().c_str(), "");
+    if ((qualifier == EvqOut || qualifier == EvqInOut) && (type.getBasicType() == EbtSampler || type.getBasicType() == EbtAtomicUint))
+        error(loc, "samplers and atomic_uints cannot be output parameters", type.getBasicTypeString().c_str(), "");
 }
 
-bool TParseContext::containsSampler(const TType& type)
+bool TParseContext::containsFieldWithBasicType(const TType& type, TBasicType basicType)
 {
-    if (type.getBasicType() == EbtSampler)
+    if (type.getBasicType() == basicType)
         return true;
 
     if (type.getBasicType() == EbtStruct) {
         const TTypeList& structure = *type.getStruct();
         for (unsigned int i = 0; i < structure.size(); ++i) {
-            if (containsSampler(*structure[i].type))
+            if (containsFieldWithBasicType(*structure[i].type, basicType))
                 return true;
         }
     }
@@ -2731,7 +2749,7 @@ void TParseContext::arrayObjectCheck(TSourceLoc loc, const TType& type, const ch
 
 void TParseContext::opaqueCheck(TSourceLoc loc, const TType& type, const char* op)
 {
-    if (containsSampler(type))
+    if (containsFieldWithBasicType(type, EbtSampler))
         error(loc, "can't use with samplers or structs containing samplers", op, "");
 }
 
@@ -3388,9 +3406,8 @@ void TParseContext::layoutTypeCheck(TSourceLoc loc, const TType& type)
         // an array of size N, all elements of the array from binding through binding + N – 1 must be within this
         // range."
         //
-        if (type.getBasicType() != EbtSampler && type.getBasicType() != EbtBlock)
+        if (type.getBasicType() != EbtSampler && type.getBasicType() != EbtBlock && type.getBasicType() != EbtAtomicUint)
             error(loc, "requires block, or sampler/image, or atomic-counter type", "binding", "");
-            // TODO: 4.2 functionality: atomic counter: include in test above
         if (type.getBasicType() == EbtSampler) {
             int lastBinding = qualifier.layoutBinding;
             if (type.isArray())
@@ -3659,6 +3676,7 @@ TIntermNode* TParseContext::declareVariable(TSourceLoc loc, TString& identifier,
 
     invariantCheck(loc, type, identifier);
     samplerCheck(loc, type, identifier);
+    atomicUintCheck(loc, type, identifier);
 
     if (identifier != "gl_FragCoord" && (publicType.shaderQualifiers.originUpperLeft || publicType.shaderQualifiers.pixelCenterInteger))
         error(loc, "can only apply origin_upper_left and pixel_center_origin to gl_FragCoord", "layout qualifier", "");

@@ -530,12 +530,13 @@ public:
         if (type.isVector()) {
             int offset = type.getVectorSize() - 2;
             switch (type.getBasicType()) {
-            case EbtFloat:     return GL_FLOAT_VEC2        + offset;
-            case EbtDouble:    return GL_DOUBLE_VEC2       + offset;
-            case EbtInt:       return GL_INT_VEC2          + offset;
-            case EbtUint:      return GL_UNSIGNED_INT_VEC2 + offset;
-            case EbtBool:      return GL_BOOL_VEC2         + offset;
-            default:           return 0;
+            case EbtFloat:      return GL_FLOAT_VEC2                  + offset;
+            case EbtDouble:     return GL_DOUBLE_VEC2                 + offset;
+            case EbtInt:        return GL_INT_VEC2                    + offset;
+            case EbtUint:       return GL_UNSIGNED_INT_VEC2           + offset;
+            case EbtBool:       return GL_BOOL_VEC2                   + offset;
+            case EbtAtomicUint: return GL_UNSIGNED_INT_ATOMIC_COUNTER + offset;
+            default:            return 0;
             }
         }
         if (type.isMatrix()) {
@@ -594,12 +595,13 @@ public:
         }
         if (type.getVectorSize() == 1) {
             switch (type.getBasicType()) {
-            case EbtFloat:     return GL_FLOAT;
-            case EbtDouble:    return GL_DOUBLE;
-            case EbtInt:       return GL_INT;
-            case EbtUint:      return GL_UNSIGNED_INT;
-            case EbtBool:      return GL_BOOL;
-            default:           return 0;
+            case EbtFloat:      return GL_FLOAT;
+            case EbtDouble:     return GL_DOUBLE;
+            case EbtInt:        return GL_INT;
+            case EbtUint:       return GL_UNSIGNED_INT;
+            case EbtBool:       return GL_BOOL;
+            case EbtAtomicUint: return GL_UNSIGNED_INT_ATOMIC_COUNTER;
+            default:            return 0;
             }
         }
 

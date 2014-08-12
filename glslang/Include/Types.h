@@ -1111,6 +1111,7 @@ public:
         case EbtInt:               return "int";
         case EbtUint:              return "uint";
         case EbtBool:              return "bool";
+        case EbtAtomicUint:        return "atomic_uint";
         case EbtSampler:           return "sampler/image";
         case EbtStruct:            return "structure";
         case EbtBlock:             return "block";

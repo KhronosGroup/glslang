@@ -900,13 +900,13 @@ parameter_declaration
             $$.param.type->getQualifier().precision = $1.qualifier.precision;
         
         parseContext.checkNoShaderLayouts($1.loc, $1.shaderQualifiers);
-        parseContext.parameterSamplerCheck($2.loc, $1.qualifier.storage, *$$.param.type);
+        parseContext.parameterTypeCheck($2.loc, $1.qualifier.storage, *$$.param.type);
         parseContext.paramCheckFix($1.loc, $1.qualifier, *$$.param.type);
     }
     | parameter_declarator {
         $$ = $1;
 
-        parseContext.parameterSamplerCheck($1.loc, EvqIn, *$1.param.type);
+        parseContext.parameterTypeCheck($1.loc, EvqIn, *$1.param.type);
         parseContext.paramCheckFix($1.loc, EvqTemporary, *$$.param.type);
     }
     //
@@ -918,13 +918,13 @@ parameter_declaration
             $$.param.type->getQualifier().precision = $1.qualifier.precision;
         
         parseContext.checkNoShaderLayouts($1.loc, $1.shaderQualifiers);
-        parseContext.parameterSamplerCheck($2.loc, $1.qualifier.storage, *$$.param.type);
+        parseContext.parameterTypeCheck($2.loc, $1.qualifier.storage, *$$.param.type);
         parseContext.paramCheckFix($1.loc, $1.qualifier, *$$.param.type);
     }
     | parameter_type_specifier {
         $$ = $1;
 
-        parseContext.parameterSamplerCheck($1.loc, EvqIn, *$1.param.type);
+        parseContext.parameterTypeCheck($1.loc, EvqIn, *$1.param.type);
         parseContext.paramCheckFix($1.loc, EvqTemporary, *$$.param.type);
     }
     ;
@@ -1546,9 +1546,8 @@ type_specifier_nonarray
         $$.setMatrix(4, 4);
     }
     | ATOMIC_UINT {
-        // TODO: 4.2 functionality: add atomic_uint type
         $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
-        $$.basicType = EbtInt;
+        $$.basicType = EbtAtomicUint;
     }
     | SAMPLER1D {
         $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());

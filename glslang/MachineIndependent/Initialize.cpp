@@ -740,6 +740,18 @@ void TBuiltIns::initialize(int version, EProfile profile)
             "\n");
     }
 
+    //
+    // Atomic counter functions.
+    //
+    if (profile != EEsProfile && version >= 420) {
+        commonBuiltins.append(
+            "uint atomicCounterIncrement(atomic_uint x);"
+            "uint atomicCounterDecrement(atomic_uint x);"
+            "uint atomicCounter(atomic_uint x);"
+
+            "\n");
+    }
+
     //============================================================================
     //
     // Prototypes for built-in functions seen by vertex shaders only.
