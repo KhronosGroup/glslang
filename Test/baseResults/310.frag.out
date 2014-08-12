@@ -1,0 +1,317 @@
+310.frag
+Warning, version 310 is not yet complete; most version-specific features are present, but some are missing.
+ERROR: 0:8: 'origin_upper_left' : not supported with this profile: es
+ERROR: 0:8: 'pixel_center_integer' : not supported with this profile: es
+ERROR: 0:8: 'gl_FragCoord' : identifiers starting with "gl_" are reserved 
+ERROR: 0:11: 'location' : overlapping use of location 2
+ERROR: 0:15: 'usampler2DRect' : Reserved word. 
+ERROR: 0:15: 'sampler/image' : type requires declaration of default precision qualifier 
+ERROR: 0:23: 'variable indexing sampler array' : not supported with this profile: es
+ERROR: 0:27: 'textureGatherOffsets' : no matching overloaded function found 
+ERROR: 0:27: '=' :  cannot convert from 'const float' to 'mediump 4-component vector of uint'
+ERROR: 0:30: 'textureGatherOffset(...)' : must be a compile-time constant: component argument
+ERROR: 0:31: 'textureGatherOffset(...)' : must be 0, 1, 2, or 3: component argument
+ERROR: 0:42: 'texel offset' : argument must be compile-time constant 
+ERROR: 0:44: 'texel offset' : value is out of range: [gl_MinProgramTexelOffset, gl_MaxProgramTexelOffset]
+ERROR: 0:44: 'texel offset' : value is out of range: [gl_MinProgramTexelOffset, gl_MaxProgramTexelOffset]
+ERROR: 0:45: 'texel offset' : value is out of range: [gl_MinProgramTexelOffset, gl_MaxProgramTexelOffset]
+ERROR: 0:45: 'texel offset' : value is out of range: [gl_MinProgramTexelOffset, gl_MaxProgramTexelOffset]
+ERROR: 16 compilation errors.  No code generated.
+
+
+Shader version: 310
+ERROR: node is still EOpNull!
+0:21  Function Definition: main( (void)
+0:21    Function Parameters: 
+0:23    Sequence
+0:23      Sequence
+0:23        move second child to first child (highp 4-component vector of float)
+0:23          'v' (mediump 4-component vector of float)
+0:23          Function Call: texture(s21;vf2; (highp 4-component vector of float)
+0:23            indirect index (highp sampler2D)
+0:23              'arrayedSampler' (uniform 5-element array of highp sampler2D)
+0:23              'i' (uniform mediump int)
+0:23            'c2D' (smooth in mediump 2-component vector of float)
+0:28      Sequence
+0:28        move second child to first child (highp 4-component vector of float)
+0:28          'v4' (mediump 4-component vector of float)
+0:28          Function Call: textureGather(s21;vf2; (highp 4-component vector of float)
+0:28            direct index (highp sampler2D)
+0:28              'arrayedSampler' (uniform 5-element array of highp sampler2D)
+0:28              Constant:
+0:28                0 (const int)
+0:28            'c2D' (smooth in mediump 2-component vector of float)
+0:29      Sequence
+0:29        move second child to first child (mediump 4-component vector of int)
+0:29          'iv4' (mediump 4-component vector of int)
+0:29          Function Call: textureGatherOffset(isA21;vf3;vi2;i1; (mediump 4-component vector of int)
+0:29            'isamp2DA' (uniform highp isampler2DArray)
+0:29            Constant:
+0:29              0.100000
+0:29              0.100000
+0:29              0.100000
+0:29            Constant:
+0:29              1 (const int)
+0:29              1 (const int)
+0:29            Constant:
+0:29              3 (const int)
+0:30      move second child to first child (mediump 4-component vector of int)
+0:30        'iv4' (mediump 4-component vector of int)
+0:30        Function Call: textureGatherOffset(isA21;vf3;vi2;i1; (mediump 4-component vector of int)
+0:30          'isamp2DA' (uniform highp isampler2DArray)
+0:30          Constant:
+0:30            0.100000
+0:30            0.100000
+0:30            0.100000
+0:30          Constant:
+0:30            1 (const int)
+0:30            1 (const int)
+0:30          'i' (uniform mediump int)
+0:31      move second child to first child (mediump 4-component vector of int)
+0:31        'iv4' (mediump 4-component vector of int)
+0:31        Function Call: textureGatherOffset(isA21;vf3;vi2;i1; (mediump 4-component vector of int)
+0:31          'isamp2DA' (uniform highp isampler2DArray)
+0:31          Constant:
+0:31            0.100000
+0:31            0.100000
+0:31            0.100000
+0:31          Constant:
+0:31            1 (const int)
+0:31            1 (const int)
+0:31          Constant:
+0:31            4 (const int)
+0:32      move second child to first child (mediump 4-component vector of int)
+0:32        'iv4' (mediump 4-component vector of int)
+0:32        Function Call: textureGatherOffset(isA21;vf3;vi2;i1; (mediump 4-component vector of int)
+0:32          'isamp2DA' (uniform highp isampler2DArray)
+0:32          Constant:
+0:32            0.100000
+0:32            0.100000
+0:32            0.100000
+0:32          Constant:
+0:32            1 (const int)
+0:32            1 (const int)
+0:32          Constant:
+0:32            3 (const int)
+0:33      move second child to first child (mediump 4-component vector of int)
+0:33        'iv4' (mediump 4-component vector of int)
+0:33        Function Call: textureGatherOffset(isA21;vf3;vi2; (mediump 4-component vector of int)
+0:33          'isamp2DA' (uniform highp isampler2DArray)
+0:33          Constant:
+0:33            0.100000
+0:33            0.100000
+0:33            0.100000
+0:33          Construct ivec2 (2-component vector of int)
+0:33            'i' (uniform mediump int)
+0:38  Function Definition: foo23( (void)
+0:38    Function Parameters: 
+0:?     Sequence
+0:42      Function Call: textureProjGradOffset(us21;vf4;vf2;vf2;vi2; (mediump 4-component vector of uint)
+0:42        'usamp2d' (uniform highp usampler2D)
+0:42        'outp' (out mediump 4-component vector of float)
+0:42        Constant:
+0:42          0.000000
+0:42          0.000000
+0:42        Constant:
+0:42          0.000000
+0:42          0.000000
+0:42        Convert float to int (2-component vector of int)
+0:42          'c2D' (smooth in mediump 2-component vector of float)
+0:43      Function Call: textureProjGradOffset(us21;vf4;vf2;vf2;vi2; (mediump 4-component vector of uint)
+0:43        'usamp2d' (uniform highp usampler2D)
+0:43        'outp' (out mediump 4-component vector of float)
+0:43        Constant:
+0:43          0.000000
+0:43          0.000000
+0:43        Constant:
+0:43          0.000000
+0:43          0.000000
+0:43        Constant:
+0:43          3 (const int)
+0:43          4 (const int)
+0:44      Function Call: textureProjGradOffset(us21;vf4;vf2;vf2;vi2; (mediump 4-component vector of uint)
+0:44        'usamp2d' (uniform highp usampler2D)
+0:44        'outp' (out mediump 4-component vector of float)
+0:44        Constant:
+0:44          0.000000
+0:44          0.000000
+0:44        Constant:
+0:44          0.000000
+0:44          0.000000
+0:44        Constant:
+0:44          15 (const int)
+0:44          16 (const int)
+0:45      Function Call: textureProjGradOffset(us21;vf4;vf2;vf2;vi2; (mediump 4-component vector of uint)
+0:45        'usamp2d' (uniform highp usampler2D)
+0:45        'outp' (out mediump 4-component vector of float)
+0:45        Constant:
+0:45          0.000000
+0:45          0.000000
+0:45        Constant:
+0:45          0.000000
+0:45          0.000000
+0:45        Constant:
+0:45          -10 (const int)
+0:45          20 (const int)
+0:?   Linker Objects
+0:?     'gl_FragCoord' (smooth in mediump 4-component vector of float)
+0:?     'v3' (layout(location=2 ) smooth in mediump 3-component vector of float)
+0:?     'yi' (layout(location=2 ) smooth in mediump 4X4 matrix of float)
+0:?     'arrayedSampler' (uniform 5-element array of highp sampler2D)
+0:?     'usamp2d' (uniform highp usampler2D)
+0:?     'samp2dr' (uniform mediump usampler2DRect)
+0:?     'isamp2DA' (uniform highp isampler2DArray)
+0:?     'c2D' (smooth in mediump 2-component vector of float)
+0:?     'i' (uniform mediump int)
+0:?     'outp' (out mediump 4-component vector of float)
+
+
+Linked fragment stage:
+
+
+Shader version: 310
+ERROR: node is still EOpNull!
+0:21  Function Definition: main( (void)
+0:21    Function Parameters: 
+0:23    Sequence
+0:23      Sequence
+0:23        move second child to first child (highp 4-component vector of float)
+0:23          'v' (mediump 4-component vector of float)
+0:23          Function Call: texture(s21;vf2; (highp 4-component vector of float)
+0:23            indirect index (highp sampler2D)
+0:23              'arrayedSampler' (uniform 5-element array of highp sampler2D)
+0:23              'i' (uniform mediump int)
+0:23            'c2D' (smooth in mediump 2-component vector of float)
+0:28      Sequence
+0:28        move second child to first child (highp 4-component vector of float)
+0:28          'v4' (mediump 4-component vector of float)
+0:28          Function Call: textureGather(s21;vf2; (highp 4-component vector of float)
+0:28            direct index (highp sampler2D)
+0:28              'arrayedSampler' (uniform 5-element array of highp sampler2D)
+0:28              Constant:
+0:28                0 (const int)
+0:28            'c2D' (smooth in mediump 2-component vector of float)
+0:29      Sequence
+0:29        move second child to first child (mediump 4-component vector of int)
+0:29          'iv4' (mediump 4-component vector of int)
+0:29          Function Call: textureGatherOffset(isA21;vf3;vi2;i1; (mediump 4-component vector of int)
+0:29            'isamp2DA' (uniform highp isampler2DArray)
+0:29            Constant:
+0:29              0.100000
+0:29              0.100000
+0:29              0.100000
+0:29            Constant:
+0:29              1 (const int)
+0:29              1 (const int)
+0:29            Constant:
+0:29              3 (const int)
+0:30      move second child to first child (mediump 4-component vector of int)
+0:30        'iv4' (mediump 4-component vector of int)
+0:30        Function Call: textureGatherOffset(isA21;vf3;vi2;i1; (mediump 4-component vector of int)
+0:30          'isamp2DA' (uniform highp isampler2DArray)
+0:30          Constant:
+0:30            0.100000
+0:30            0.100000
+0:30            0.100000
+0:30          Constant:
+0:30            1 (const int)
+0:30            1 (const int)
+0:30          'i' (uniform mediump int)
+0:31      move second child to first child (mediump 4-component vector of int)
+0:31        'iv4' (mediump 4-component vector of int)
+0:31        Function Call: textureGatherOffset(isA21;vf3;vi2;i1; (mediump 4-component vector of int)
+0:31          'isamp2DA' (uniform highp isampler2DArray)
+0:31          Constant:
+0:31            0.100000
+0:31            0.100000
+0:31            0.100000
+0:31          Constant:
+0:31            1 (const int)
+0:31            1 (const int)
+0:31          Constant:
+0:31            4 (const int)
+0:32      move second child to first child (mediump 4-component vector of int)
+0:32        'iv4' (mediump 4-component vector of int)
+0:32        Function Call: textureGatherOffset(isA21;vf3;vi2;i1; (mediump 4-component vector of int)
+0:32          'isamp2DA' (uniform highp isampler2DArray)
+0:32          Constant:
+0:32            0.100000
+0:32            0.100000
+0:32            0.100000
+0:32          Constant:
+0:32            1 (const int)
+0:32            1 (const int)
+0:32          Constant:
+0:32            3 (const int)
+0:33      move second child to first child (mediump 4-component vector of int)
+0:33        'iv4' (mediump 4-component vector of int)
+0:33        Function Call: textureGatherOffset(isA21;vf3;vi2; (mediump 4-component vector of int)
+0:33          'isamp2DA' (uniform highp isampler2DArray)
+0:33          Constant:
+0:33            0.100000
+0:33            0.100000
+0:33            0.100000
+0:33          Construct ivec2 (2-component vector of int)
+0:33            'i' (uniform mediump int)
+0:38  Function Definition: foo23( (void)
+0:38    Function Parameters: 
+0:?     Sequence
+0:42      Function Call: textureProjGradOffset(us21;vf4;vf2;vf2;vi2; (mediump 4-component vector of uint)
+0:42        'usamp2d' (uniform highp usampler2D)
+0:42        'outp' (out mediump 4-component vector of float)
+0:42        Constant:
+0:42          0.000000
+0:42          0.000000
+0:42        Constant:
+0:42          0.000000
+0:42          0.000000
+0:42        Convert float to int (2-component vector of int)
+0:42          'c2D' (smooth in mediump 2-component vector of float)
+0:43      Function Call: textureProjGradOffset(us21;vf4;vf2;vf2;vi2; (mediump 4-component vector of uint)
+0:43        'usamp2d' (uniform highp usampler2D)
+0:43        'outp' (out mediump 4-component vector of float)
+0:43        Constant:
+0:43          0.000000
+0:43          0.000000
+0:43        Constant:
+0:43          0.000000
+0:43          0.000000
+0:43        Constant:
+0:43          3 (const int)
+0:43          4 (const int)
+0:44      Function Call: textureProjGradOffset(us21;vf4;vf2;vf2;vi2; (mediump 4-component vector of uint)
+0:44        'usamp2d' (uniform highp usampler2D)
+0:44        'outp' (out mediump 4-component vector of float)
+0:44        Constant:
+0:44          0.000000
+0:44          0.000000
+0:44        Constant:
+0:44          0.000000
+0:44          0.000000
+0:44        Constant:
+0:44          15 (const int)
+0:44          16 (const int)
+0:45      Function Call: textureProjGradOffset(us21;vf4;vf2;vf2;vi2; (mediump 4-component vector of uint)
+0:45        'usamp2d' (uniform highp usampler2D)
+0:45        'outp' (out mediump 4-component vector of float)
+0:45        Constant:
+0:45          0.000000
+0:45          0.000000
+0:45        Constant:
+0:45          0.000000
+0:45          0.000000
+0:45        Constant:
+0:45          -10 (const int)
+0:45          20 (const int)
+0:?   Linker Objects
+0:?     'gl_FragCoord' (smooth in mediump 4-component vector of float)
+0:?     'v3' (layout(location=2 ) smooth in mediump 3-component vector of float)
+0:?     'yi' (layout(location=2 ) smooth in mediump 4X4 matrix of float)
+0:?     'arrayedSampler' (uniform 5-element array of highp sampler2D)
+0:?     'usamp2d' (uniform highp usampler2D)
+0:?     'samp2dr' (uniform mediump usampler2DRect)
+0:?     'isamp2DA' (uniform highp isampler2DArray)
+0:?     'c2D' (smooth in mediump 2-component vector of float)
+0:?     'i' (uniform mediump int)
+0:?     'outp' (out mediump 4-component vector of float)
+

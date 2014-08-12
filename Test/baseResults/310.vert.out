@@ -1,0 +1,38 @@
+310.vert
+Warning, version 310 is not yet complete; most version-specific features are present, but some are missing.
+ERROR: 0:3: 'shared' : not supported in this stage: vertex
+ERROR: 0:4: 'local_size_x' : there is no such layout identifier for this stage taking an assigned value 
+ERROR: 0:5: 'buffer' : buffers can be declared only as blocks 
+ERROR: 0:10: 'location' : overlapping use of location 3
+ERROR: 4 compilation errors.  No code generated.
+
+
+Shader version: 310
+ERROR: node is still EOpNull!
+0:?   Linker Objects
+0:?     's' (shared highp 4-component vector of float)
+0:?     'v' (buffer highp 4-component vector of float)
+0:?     'x' (layout(location=2 ) uniform highp 4X4 matrix of float)
+0:?     'y' (layout(location=3 ) uniform highp 4X4 matrix of float)
+0:?     'xi' (layout(location=2 ) smooth out highp 4X4 matrix of float)
+0:?     'yi' (layout(location=3 ) smooth out highp 4X4 matrix of float)
+0:?     'gl_VertexID' (gl_VertexId highp int)
+0:?     'gl_InstanceID' (gl_InstanceId highp int)
+
+
+Linked vertex stage:
+
+ERROR: Linking vertex stage: Missing entry point: Each stage requires one "void main()" entry point
+
+Shader version: 310
+ERROR: node is still EOpNull!
+0:?   Linker Objects
+0:?     's' (shared highp 4-component vector of float)
+0:?     'v' (buffer highp 4-component vector of float)
+0:?     'x' (layout(location=2 ) uniform highp 4X4 matrix of float)
+0:?     'y' (layout(location=3 ) uniform highp 4X4 matrix of float)
+0:?     'xi' (layout(location=2 ) smooth out highp 4X4 matrix of float)
+0:?     'yi' (layout(location=3 ) smooth out highp 4X4 matrix of float)
+0:?     'gl_VertexID' (gl_VertexId highp int)
+0:?     'gl_InstanceID' (gl_InstanceId highp int)
+

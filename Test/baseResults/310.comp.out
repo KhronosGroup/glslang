@@ -1,0 +1,388 @@
+310.comp
+Warning, version 310 is not yet complete; most version-specific features are present, but some are missing.
+ERROR: 0:4: 'local_size' : cannot change previously set size 
+ERROR: 0:5: 'local_size' : too large; see gl_MaxComputeWorkGroupSize 
+ERROR: 0:23: 'values' : only the last member of a buffer block can be run-time sized 
+ERROR: 0:39: 'in' : global storage input qualifier cannot be used in a compute shader 
+ERROR: 0:39: 'location qualifier on input' : not supported in this stage: compute
+ERROR: 0:40: 'in' : global storage input qualifier cannot be used in a compute shader 
+ERROR: 0:41: 'out' : global storage output qualifier cannot be used in a compute shader 
+ERROR: 0:44: 'shared' : cannot apply layout qualifiers to a shared variable 
+ERROR: 0:44: 'location' : can only appy to uniform, buffer, in, or out storage qualifiers 
+ERROR: 0:45: 'shared' :  cannot initialize this type of qualifier  
+ERROR: 0:47: 'local_size' : can only apply to 'in' 
+ERROR: 0:47: 'local_size' : can only apply to 'in' 
+ERROR: 0:47: 'local_size' : can only apply to 'in' 
+ERROR: 0:61: 'assign' :  l-value required "ro" (can't modify a readonly buffer)
+ERROR: 0:66: 'buffer' : buffers can be declared only as blocks 
+ERROR: 0:68: 'sampler/image' : type requires declaration of default precision qualifier 
+ERROR: 0:76: '' : image variables not declared 'writeonly' must have a format layout qualifier 
+ERROR: 0:87: 'imageAtomicCompSwap' : no matching overloaded function found 
+ERROR: 0:88: 'imageAtomicAdd' : no matching overloaded function found 
+ERROR: 0:89: 'imageAtomicMin' : no matching overloaded function found 
+ERROR: 0:90: 'imageAtomicMax' : no matching overloaded function found 
+ERROR: 0:94: 'writeonly' : argument cannot drop memory qualifier when passed to formal parameter 
+ERROR: 0:97: 'volatile' : Reserved word. 
+ERROR: 0:97: '' : memory qualifiers cannot be used on this type 
+ERROR: 0:98: '' : memory qualifiers cannot be used on this type 
+ERROR: 0:110: 'restrict' : argument cannot drop memory qualifier when passed to formal parameter 
+ERROR: 0:114: 'image load-store format' : not supported with this profile: es
+ERROR: 0:114: 'rg8i' : does not apply to unsigned integer images 
+ERROR: 0:115: 'rgba32i' : does not apply to floating point images 
+ERROR: 0:116: 'rgba32f' : does not apply to unsigned integer images 
+ERROR: 0:117: 'image load-store format' : not supported with this profile: es
+ERROR: 0:117: 'r8_snorm' : does not apply to signed integer images 
+ERROR: 0:118: 'rgba32ui' : does not apply to signed integer images 
+ERROR: 0:119: 'image load-store format' : not supported with this profile: es
+ERROR: 0:119: 'r8ui' : does not apply to signed integer images 
+ERROR: 0:128: 'atomic_uint' : samplers and atomic_uints cannot be output parameters 
+ERROR: 0:130: 'return' : type does not match, or is not convertible to, the function's return type 
+ERROR: 0:136: 'atomic_uint' : atomic_uints can only be used in uniform variables or function parameters: non_uniform_counter
+ERROR: 0:141: 'atomic_uint' : atomic counters can only be highp 
+ERROR: 39 compilation errors.  No code generated.
+
+
+Shader version: 310
+local_size = (2, 1, 4096)
+ERROR: node is still EOpNull!
+0:27  Function Definition: main( (void)
+0:27    Function Parameters: 
+0:29    Sequence
+0:29      Barrier (void)
+0:30      MemoryBarrier (void)
+0:31      MemoryBarrierAtomicCounter (void)
+0:32      MemoryBarrierBuffer (void)
+0:33      MemoryBarrierShared (void)
+0:34      MemoryBarrierImage (void)
+0:35      GroupMemoryBarrier (void)
+0:36      move second child to first child (highp int)
+0:36        value: direct index for structure (layout(column_major shared ) buffer highp int)
+0:36          'anon@0' (layout(column_major shared ) buffer block{layout(column_major shared ) buffer highp int value, layout(column_major shared ) buffer implicitly-sized array of highp float values})
+0:36          Constant:
+0:36            0 (const uint)
+0:36        Convert float to int (highp int)
+0:36          indirect index (layout(column_major shared ) highp float)
+0:36            values: direct index for structure (layout(column_major shared ) buffer implicitly-sized array of highp float)
+0:36              'anon@0' (layout(column_major shared ) buffer block{layout(column_major shared ) buffer highp int value, layout(column_major shared ) buffer implicitly-sized array of highp float values})
+0:36              Constant:
+0:36                1 (const uint)
+0:36            'gl_LocalInvocationIndex' (in highp uint)
+0:59  Function Definition: foo( (void)
+0:59    Function Parameters: 
+0:61    Sequence
+0:61      move second child to first child (highp float)
+0:61        direct index (layout(column_major shared ) highp float)
+0:61          values: direct index for structure (layout(column_major shared ) buffer implicitly-sized array of highp float)
+0:61            'ro' (layout(column_major shared ) readonly buffer block{layout(column_major shared ) buffer highp int value, layout(column_major shared ) buffer implicitly-sized array of highp float values})
+0:61            Constant:
+0:61              1 (const int)
+0:61          Constant:
+0:61            2 (const int)
+0:61        Constant:
+0:61          4.700000
+0:62      array length (highp int)
+0:62        values: direct index for structure (layout(column_major shared ) buffer implicitly-sized array of highp float)
+0:62          'ro' (layout(column_major shared ) readonly buffer block{layout(column_major shared ) buffer highp int value, layout(column_major shared ) buffer implicitly-sized array of highp float values})
+0:62          Constant:
+0:62            1 (const int)
+0:63      Pre-Increment (highp 4-component vector of float)
+0:63        's' (shared highp 4-component vector of float)
+0:84  Function Definition: qux( (void)
+0:84    Function Parameters: 
+0:86    Sequence
+0:86      Sequence
+0:86        move second child to first child (highp int)
+0:86          'i' (highp int)
+0:86          Constant:
+0:86            4 (const int)
+0:87      Constant:
+0:87        0.000000
+0:88      Constant:
+0:88        0.000000
+0:89      Constant:
+0:89        0.000000
+0:90      Constant:
+0:90        0.000000
+0:91      Sequence
+0:91        move second child to first child (highp 4-component vector of int)
+0:91          'pos' (highp 4-component vector of int)
+0:91          Function Call: imageLoad(iI21;vi2; (highp 4-component vector of int)
+0:91            'iimg2D' (layout(r32i ) uniform highp iimage2D)
+0:91            Construct ivec2 (2-component vector of int)
+0:91              'i' (highp int)
+0:91              'i' (highp int)
+0:92      Function Call: imageStore(iIA21;vi3;vi4; (highp void)
+0:92        'ii2da' (writeonly uniform highp iimage2DArray)
+0:92        Construct ivec3 (3-component vector of int)
+0:92          'i' (highp int)
+0:92          'i' (highp int)
+0:92          'i' (highp int)
+0:92        Constant:
+0:92          0 (const int)
+0:92          0 (const int)
+0:92          0 (const int)
+0:92          0 (const int)
+0:93      Function Call: imageLoad(I21;vi2; (highp 4-component vector of float)
+0:93        'img2Drgba' (layout(rgba32f ) uniform lowp image2D)
+0:93        Construct ivec2 (2-component vector of int)
+0:93          'i' (highp int)
+0:93          'i' (highp int)
+0:94      Function Call: imageLoad(iIA21;vi3; (highp 4-component vector of int)
+0:94        'ii2da' (writeonly uniform highp iimage2DArray)
+0:94        Construct ivec3 (3-component vector of int)
+0:94          'i' (highp int)
+0:94          'i' (highp int)
+0:94          'i' (highp int)
+0:100  Function Definition: passr(iI21; (void)
+0:100    Function Parameters: 
+0:100      'image' (coherent readonly in highp iimage2D)
+0:107  Function Definition: passrc( (void)
+0:107    Function Parameters: 
+0:109    Sequence
+0:109      Function Call: passr(iI21; (void)
+0:109        'qualim1' (layout(r32i ) coherent readonly uniform highp iimage2D)
+0:110      Function Call: passr(iI21; (void)
+0:110        'qualim2' (layout(r32i ) coherent restrict readonly uniform highp iimage2D)
+0:111      Function Call: passr(iI21; (void)
+0:111        'iimg2D' (layout(r32i ) uniform highp iimage2D)
+0:123  Function Definition: func(au1; (highp uint)
+0:123    Function Parameters: 
+0:123      'c' (in highp atomic_uint)
+0:125    Sequence
+0:125      Branch: Return with expression
+0:125        Function Call: atomicCounterIncrement(au1; (highp uint)
+0:125          'c' (in highp atomic_uint)
+0:128  Function Definition: func2(au1; (highp uint)
+0:128    Function Parameters: 
+0:128      'c' (out highp atomic_uint)
+0:130    Sequence
+0:130      Branch: Return with expression
+0:130        'counter' (layout(binding=0 ) uniform highp atomic_uint)
+0:131      Branch: Return with expression
+0:131        Function Call: atomicCounter(au1; (highp uint)
+0:131          'counter' (layout(binding=0 ) uniform highp atomic_uint)
+0:134  Function Definition: mainAC( (void)
+0:134    Function Parameters: 
+0:?     Sequence
+0:137      Sequence
+0:137        move second child to first child (highp uint)
+0:137          'val' (highp uint)
+0:137          Function Call: atomicCounter(au1; (highp uint)
+0:137            'counter' (layout(binding=0 ) uniform highp atomic_uint)
+0:138      Function Call: atomicCounterDecrement(au1; (highp uint)
+0:138        'counter' (layout(binding=0 ) uniform highp atomic_uint)
+0:?   Linker Objects
+0:?     'gl_WorkGroupSize' (const highp 3-component vector of uint)
+0:?       2 (const uint)
+0:?       1 (const uint)
+0:?       4096 (const uint)
+0:?     'total' (const highp int)
+0:?       66592 (const int)
+0:?     'anon@0' (layout(column_major shared ) buffer block{layout(column_major shared ) buffer highp int value, layout(column_major shared ) buffer implicitly-sized array of highp float values})
+0:?     'invalid' (layout(column_major shared ) buffer block{layout(column_major shared ) buffer implicitly-sized array of highp float values, layout(column_major shared ) buffer highp int value})
+0:?     'v3' (layout(location=2 ) in highp 3-component vector of float)
+0:?     'f' (in highp float)
+0:?     'fo' (out highp float)
+0:?     's' (shared highp 4-component vector of float)
+0:?     'sl' (layout(location=2 ) shared highp 4-component vector of float)
+0:?     'fs' (shared highp float)
+0:?     'arrX' (2-element array of highp int)
+0:?     'arrY' (1-element array of highp int)
+0:?     'arrZ' (4096-element array of highp int)
+0:?     'ro' (layout(column_major shared ) readonly buffer block{layout(column_major shared ) buffer highp int value, layout(column_major shared ) buffer implicitly-sized array of highp float values})
+0:?     'v' (buffer highp 4-component vector of float)
+0:?     'us2dbad' (uniform mediump usampler2D)
+0:?     'us2d' (uniform highp usampler2D)
+0:?     'ii2dabad' (uniform highp iimage2DArray)
+0:?     'ii2da' (writeonly uniform highp iimage2DArray)
+0:?     'iimg2D' (layout(r32i ) uniform highp iimage2D)
+0:?     'iimg2Drgba' (layout(rgba32i ) uniform highp iimage2D)
+0:?     'img2Drgba' (layout(rgba32f ) uniform lowp image2D)
+0:?     'uimg2D' (layout(r32ui ) uniform highp uimage2D)
+0:?     'vol' (volatile highp float)
+0:?     'vol2' (readonly highp int)
+0:?     'qualim1' (layout(r32i ) coherent readonly uniform highp iimage2D)
+0:?     'qualim2' (layout(r32i ) coherent restrict readonly uniform highp iimage2D)
+0:?     'i1bad' (layout(rg8i ) uniform highp uimage2D)
+0:?     'i2bad' (layout(rgba32i ) uniform lowp image2D)
+0:?     'i3bad' (layout(rgba32f ) uniform highp uimage2D)
+0:?     'i4bad' (layout(r8_snorm ) uniform highp iimage2D)
+0:?     'i5bad' (layout(rgba32ui ) uniform highp iimage2D)
+0:?     'i6bad' (layout(r8ui ) uniform highp iimage2D)
+0:?     'counter' (layout(binding=0 ) uniform highp atomic_uint)
+0:?     'counterBad' (layout(binding=1 ) uniform mediump atomic_uint)
+
+
+Linked compute stage:
+
+
+Shader version: 310
+local_size = (2, 1, 4096)
+ERROR: node is still EOpNull!
+0:27  Function Definition: main( (void)
+0:27    Function Parameters: 
+0:29    Sequence
+0:29      Barrier (void)
+0:30      MemoryBarrier (void)
+0:31      MemoryBarrierAtomicCounter (void)
+0:32      MemoryBarrierBuffer (void)
+0:33      MemoryBarrierShared (void)
+0:34      MemoryBarrierImage (void)
+0:35      GroupMemoryBarrier (void)
+0:36      move second child to first child (highp int)
+0:36        value: direct index for structure (layout(column_major shared ) buffer highp int)
+0:36          'anon@0' (layout(column_major shared ) buffer block{layout(column_major shared ) buffer highp int value, layout(column_major shared ) buffer implicitly-sized array of highp float values})
+0:36          Constant:
+0:36            0 (const uint)
+0:36        Convert float to int (highp int)
+0:36          indirect index (layout(column_major shared ) highp float)
+0:36            values: direct index for structure (layout(column_major shared ) buffer implicitly-sized array of highp float)
+0:36              'anon@0' (layout(column_major shared ) buffer block{layout(column_major shared ) buffer highp int value, layout(column_major shared ) buffer implicitly-sized array of highp float values})
+0:36              Constant:
+0:36                1 (const uint)
+0:36            'gl_LocalInvocationIndex' (in highp uint)
+0:59  Function Definition: foo( (void)
+0:59    Function Parameters: 
+0:61    Sequence
+0:61      move second child to first child (highp float)
+0:61        direct index (layout(column_major shared ) highp float)
+0:61          values: direct index for structure (layout(column_major shared ) buffer implicitly-sized array of highp float)
+0:61            'ro' (layout(column_major shared ) readonly buffer block{layout(column_major shared ) buffer highp int value, layout(column_major shared ) buffer implicitly-sized array of highp float values})
+0:61            Constant:
+0:61              1 (const int)
+0:61          Constant:
+0:61            2 (const int)
+0:61        Constant:
+0:61          4.700000
+0:62      array length (highp int)
+0:62        values: direct index for structure (layout(column_major shared ) buffer implicitly-sized array of highp float)
+0:62          'ro' (layout(column_major shared ) readonly buffer block{layout(column_major shared ) buffer highp int value, layout(column_major shared ) buffer implicitly-sized array of highp float values})
+0:62          Constant:
+0:62            1 (const int)
+0:63      Pre-Increment (highp 4-component vector of float)
+0:63        's' (shared highp 4-component vector of float)
+0:84  Function Definition: qux( (void)
+0:84    Function Parameters: 
+0:86    Sequence
+0:86      Sequence
+0:86        move second child to first child (highp int)
+0:86          'i' (highp int)
+0:86          Constant:
+0:86            4 (const int)
+0:87      Constant:
+0:87        0.000000
+0:88      Constant:
+0:88        0.000000
+0:89      Constant:
+0:89        0.000000
+0:90      Constant:
+0:90        0.000000
+0:91      Sequence
+0:91        move second child to first child (highp 4-component vector of int)
+0:91          'pos' (highp 4-component vector of int)
+0:91          Function Call: imageLoad(iI21;vi2; (highp 4-component vector of int)
+0:91            'iimg2D' (layout(r32i ) uniform highp iimage2D)
+0:91            Construct ivec2 (2-component vector of int)
+0:91              'i' (highp int)
+0:91              'i' (highp int)
+0:92      Function Call: imageStore(iIA21;vi3;vi4; (highp void)
+0:92        'ii2da' (writeonly uniform highp iimage2DArray)
+0:92        Construct ivec3 (3-component vector of int)
+0:92          'i' (highp int)
+0:92          'i' (highp int)
+0:92          'i' (highp int)
+0:92        Constant:
+0:92          0 (const int)
+0:92          0 (const int)
+0:92          0 (const int)
+0:92          0 (const int)
+0:93      Function Call: imageLoad(I21;vi2; (highp 4-component vector of float)
+0:93        'img2Drgba' (layout(rgba32f ) uniform lowp image2D)
+0:93        Construct ivec2 (2-component vector of int)
+0:93          'i' (highp int)
+0:93          'i' (highp int)
+0:94      Function Call: imageLoad(iIA21;vi3; (highp 4-component vector of int)
+0:94        'ii2da' (writeonly uniform highp iimage2DArray)
+0:94        Construct ivec3 (3-component vector of int)
+0:94          'i' (highp int)
+0:94          'i' (highp int)
+0:94          'i' (highp int)
+0:100  Function Definition: passr(iI21; (void)
+0:100    Function Parameters: 
+0:100      'image' (coherent readonly in highp iimage2D)
+0:107  Function Definition: passrc( (void)
+0:107    Function Parameters: 
+0:109    Sequence
+0:109      Function Call: passr(iI21; (void)
+0:109        'qualim1' (layout(r32i ) coherent readonly uniform highp iimage2D)
+0:110      Function Call: passr(iI21; (void)
+0:110        'qualim2' (layout(r32i ) coherent restrict readonly uniform highp iimage2D)
+0:111      Function Call: passr(iI21; (void)
+0:111        'iimg2D' (layout(r32i ) uniform highp iimage2D)
+0:123  Function Definition: func(au1; (highp uint)
+0:123    Function Parameters: 
+0:123      'c' (in highp atomic_uint)
+0:125    Sequence
+0:125      Branch: Return with expression
+0:125        Function Call: atomicCounterIncrement(au1; (highp uint)
+0:125          'c' (in highp atomic_uint)
+0:128  Function Definition: func2(au1; (highp uint)
+0:128    Function Parameters: 
+0:128      'c' (out highp atomic_uint)
+0:130    Sequence
+0:130      Branch: Return with expression
+0:130        'counter' (layout(binding=0 ) uniform highp atomic_uint)
+0:131      Branch: Return with expression
+0:131        Function Call: atomicCounter(au1; (highp uint)
+0:131          'counter' (layout(binding=0 ) uniform highp atomic_uint)
+0:134  Function Definition: mainAC( (void)
+0:134    Function Parameters: 
+0:?     Sequence
+0:137      Sequence
+0:137        move second child to first child (highp uint)
+0:137          'val' (highp uint)
+0:137          Function Call: atomicCounter(au1; (highp uint)
+0:137            'counter' (layout(binding=0 ) uniform highp atomic_uint)
+0:138      Function Call: atomicCounterDecrement(au1; (highp uint)
+0:138        'counter' (layout(binding=0 ) uniform highp atomic_uint)
+0:?   Linker Objects
+0:?     'gl_WorkGroupSize' (const highp 3-component vector of uint)
+0:?       2 (const uint)
+0:?       1 (const uint)
+0:?       4096 (const uint)
+0:?     'total' (const highp int)
+0:?       66592 (const int)
+0:?     'anon@0' (layout(column_major shared ) buffer block{layout(column_major shared ) buffer highp int value, layout(column_major shared ) buffer implicitly-sized array of highp float values})
+0:?     'invalid' (layout(column_major shared ) buffer block{layout(column_major shared ) buffer implicitly-sized array of highp float values, layout(column_major shared ) buffer highp int value})
+0:?     'v3' (layout(location=2 ) in highp 3-component vector of float)
+0:?     'f' (in highp float)
+0:?     'fo' (out highp float)
+0:?     's' (shared highp 4-component vector of float)
+0:?     'sl' (layout(location=2 ) shared highp 4-component vector of float)
+0:?     'fs' (shared highp float)
+0:?     'arrX' (2-element array of highp int)
+0:?     'arrY' (1-element array of highp int)
+0:?     'arrZ' (4096-element array of highp int)
+0:?     'ro' (layout(column_major shared ) readonly buffer block{layout(column_major shared ) buffer highp int value, layout(column_major shared ) buffer implicitly-sized array of highp float values})
+0:?     'v' (buffer highp 4-component vector of float)
+0:?     'us2dbad' (uniform mediump usampler2D)
+0:?     'us2d' (uniform highp usampler2D)
+0:?     'ii2dabad' (uniform highp iimage2DArray)
+0:?     'ii2da' (writeonly uniform highp iimage2DArray)
+0:?     'iimg2D' (layout(r32i ) uniform highp iimage2D)
+0:?     'iimg2Drgba' (layout(rgba32i ) uniform highp iimage2D)
+0:?     'img2Drgba' (layout(rgba32f ) uniform lowp image2D)
+0:?     'uimg2D' (layout(r32ui ) uniform highp uimage2D)
+0:?     'vol' (volatile highp float)
+0:?     'vol2' (readonly highp int)
+0:?     'qualim1' (layout(r32i ) coherent readonly uniform highp iimage2D)
+0:?     'qualim2' (layout(r32i ) coherent restrict readonly uniform highp iimage2D)
+0:?     'i1bad' (layout(rg8i ) uniform highp uimage2D)
+0:?     'i2bad' (layout(rgba32i ) uniform lowp image2D)
+0:?     'i3bad' (layout(rgba32f ) uniform highp uimage2D)
+0:?     'i4bad' (layout(r8_snorm ) uniform highp iimage2D)
+0:?     'i5bad' (layout(rgba32ui ) uniform highp iimage2D)
+0:?     'i6bad' (layout(r8ui ) uniform highp iimage2D)
+0:?     'counter' (layout(binding=0 ) uniform highp atomic_uint)
+0:?     'counterBad' (layout(binding=1 ) uniform mediump atomic_uint)
+
