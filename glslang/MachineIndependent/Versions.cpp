@@ -168,6 +168,7 @@ void TParseContext::initializeExtensionBehavior()
     extensionBehavior[GL_ARB_explicit_attrib_location] = EBhDisablePartial; // "index" for fragment outputs is missing
     extensionBehavior[GL_ARB_shader_image_load_store]  = EBhDisable;
     extensionBehavior[GL_ARB_shader_atomic_counters]   = EBhDisable;
+    extensionBehavior[GL_ARB_derivative_control]       = EBhDisable;
 }
 
 // Get code that is not part of a shared symbol table, is specific to this shader,
@@ -207,7 +208,9 @@ const char* TParseContext::getPreamble()
             "#define GL_ARB_shader_texture_lod 1\n"
             "#define GL_ARB_explicit_attrib_location 1\n"
             "#define GL_ARB_shader_image_load_store 1\n"
-            "#define GL_ARB_shader_atomic_counters 1\n";
+            "#define GL_ARB_shader_atomic_counters 1\n"
+            "#define GL_ARB_derivative_control 1\n"
+            ;
     }
 }
 

@@ -208,6 +208,12 @@ enum TOperator {
     EOpDPdx,            // Fragment only
     EOpDPdy,            // Fragment only
     EOpFwidth,          // Fragment only
+    EOpDPdxFine,        // Fragment only
+    EOpDPdyFine,        // Fragment only
+    EOpFwidthFine,      // Fragment only
+    EOpDPdxCoarse,      // Fragment only
+    EOpDPdyCoarse,      // Fragment only
+    EOpFwidthCoarse,    // Fragment only
 
     EOpMatrixTimesMatrix,
     EOpOuterProduct,

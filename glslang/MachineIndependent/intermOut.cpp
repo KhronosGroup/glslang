@@ -250,6 +250,12 @@ bool TOutputTraverser::visitUnary(TVisit /* visit */, TIntermUnary* node)
     case EOpDPdx:           out.debug << "dPdx";                 break;
     case EOpDPdy:           out.debug << "dPdy";                 break;
     case EOpFwidth:         out.debug << "fwidth";               break;
+    case EOpDPdxFine:       out.debug << "dPdxFine";             break;
+    case EOpDPdyFine:       out.debug << "dPdyFine";             break;
+    case EOpFwidthFine:     out.debug << "fwidthFine";           break;
+    case EOpDPdxCoarse:     out.debug << "dPdxCoarse";           break;
+    case EOpDPdyCoarse:     out.debug << "dPdyCoarse";           break;
+    case EOpFwidthCoarse:   out.debug << "fwidthCoarse";         break;
     case EOpDeterminant:    out.debug << "determinant";          break;
     case EOpMatrixInverse:  out.debug << "inverse";              break;
     case EOpTranspose:      out.debug << "transpose";            break;

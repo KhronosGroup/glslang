@@ -71,6 +71,7 @@ numeral.frag
 430.comp
 440.vert
 440.frag
+450.frag
 dce.frag
 atomic_uint.frag
 ../../LunarGLASS/test/aggOps.frag

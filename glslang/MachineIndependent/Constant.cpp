@@ -451,6 +451,12 @@ TIntermTyped* TIntermConstantUnion::fold(TOperator op, const TType& returnType) 
         case EOpDPdx:
         case EOpDPdy:
         case EOpFwidth:
+        case EOpDPdxFine:
+        case EOpDPdyFine:
+        case EOpFwidthFine:
+        case EOpDPdxCoarse:
+        case EOpDPdyCoarse:
+        case EOpFwidthCoarse:
             // The derivatives are all mandated to create a constant 0.
             newConstArray[i].setDConst(0.0);
             break;

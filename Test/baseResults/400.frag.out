@@ -15,10 +15,15 @@ ERROR: 0:54: 'texel offset' : value is out of range: [gl_MinProgramTexelOffset, 
 ERROR: 0:54: 'texel offset' : value is out of range: [gl_MinProgramTexelOffset, gl_MaxProgramTexelOffset]
 ERROR: 0:57: 'patch' : not supported in this stage: fragment
 ERROR: 0:58: 'patch' : not supported in this stage: fragment
-ERROR: 15 compilation errors.  No code generated.
+ERROR: 0:73: 'dFdxFine' : required extension not requested: GL_ARB_derivative_control
+ERROR: 0:74: 'dFdyCoarse' : required extension not requested: GL_ARB_derivative_control
+ERROR: 0:75: 'fwidthCoarse' : required extension not requested: GL_ARB_derivative_control
+ERROR: 0:75: 'fwidthFine' : required extension not requested: GL_ARB_derivative_control
+ERROR: 19 compilation errors.  No code generated.
 
 
 Shader version: 400
+Requested GL_ARB_derivative_control
 Requested GL_ARB_separate_shader_objects
 gl_FragCoord pixel center is integer
 gl_FragCoord origin is upper left
@@ -217,6 +222,48 @@ ERROR: node is still EOpNull!
 0:63              Convert float to double (3-component vector of double)
 0:63                'tempArg' (3-component vector of float)
 0:63            'tempReturn' (3-component vector of float)
+0:71  Function Definition: foodc1( (void)
+0:71    Function Parameters: 
+0:73    Sequence
+0:73      Sequence
+0:73        move second child to first child (2-component vector of float)
+0:73          'v2' (2-component vector of float)
+0:73          dPdxFine (2-component vector of float)
+0:73            'in2' (smooth in 2-component vector of float)
+0:74      Sequence
+0:74        move second child to first child (3-component vector of float)
+0:74          'v3' (3-component vector of float)
+0:74          dPdyCoarse (3-component vector of float)
+0:74            'in3' (smooth in 3-component vector of float)
+0:75      Sequence
+0:75        move second child to first child (4-component vector of float)
+0:75          'v4' (4-component vector of float)
+0:75          add (4-component vector of float)
+0:75            fwidthCoarse (4-component vector of float)
+0:75              'in4' (smooth in 4-component vector of float)
+0:75            fwidthFine (4-component vector of float)
+0:75              'in4' (smooth in 4-component vector of float)
+0:80  Function Definition: foodc2( (void)
+0:80    Function Parameters: 
+0:82    Sequence
+0:82      Sequence
+0:82        move second child to first child (2-component vector of float)
+0:82          'v2' (2-component vector of float)
+0:82          dPdxFine (2-component vector of float)
+0:82            'in2' (smooth in 2-component vector of float)
+0:83      Sequence
+0:83        move second child to first child (3-component vector of float)
+0:83          'v3' (3-component vector of float)
+0:83          dPdyCoarse (3-component vector of float)
+0:83            'in3' (smooth in 3-component vector of float)
+0:84      Sequence
+0:84        move second child to first child (4-component vector of float)
+0:84          'v4' (4-component vector of float)
+0:84          add (4-component vector of float)
+0:84            fwidthCoarse (4-component vector of float)
+0:84              'in4' (smooth in 4-component vector of float)
+0:84            fwidthFine (4-component vector of float)
+0:84              'in4' (smooth in 4-component vector of float)
 0:?   Linker Objects
 0:?     'c2D' (smooth in 2-component vector of float)
 0:?     'i' (flat in int)
@@ -235,12 +282,17 @@ ERROR: node is still EOpNull!
 0:?     'u2drs' (uniform sampler2DRectShadow)
 0:?     'patchIn' (smooth patch in 4-component vector of float)
 0:?     'patchOut' (patch out 4-component vector of float)
+0:?     'in1' (smooth in float)
+0:?     'in2' (smooth in 2-component vector of float)
+0:?     'in3' (smooth in 3-component vector of float)
+0:?     'in4' (smooth in 4-component vector of float)
 
 
 Linked fragment stage:
 
 
 Shader version: 400
+Requested GL_ARB_derivative_control
 Requested GL_ARB_separate_shader_objects
 gl_FragCoord pixel center is integer
 gl_FragCoord origin is upper left
@@ -439,6 +491,48 @@ ERROR: node is still EOpNull!
 0:63              Convert float to double (3-component vector of double)
 0:63                'tempArg' (3-component vector of float)
 0:63            'tempReturn' (3-component vector of float)
+0:71  Function Definition: foodc1( (void)
+0:71    Function Parameters: 
+0:73    Sequence
+0:73      Sequence
+0:73        move second child to first child (2-component vector of float)
+0:73          'v2' (2-component vector of float)
+0:73          dPdxFine (2-component vector of float)
+0:73            'in2' (smooth in 2-component vector of float)
+0:74      Sequence
+0:74        move second child to first child (3-component vector of float)
+0:74          'v3' (3-component vector of float)
+0:74          dPdyCoarse (3-component vector of float)
+0:74            'in3' (smooth in 3-component vector of float)
+0:75      Sequence
+0:75        move second child to first child (4-component vector of float)
+0:75          'v4' (4-component vector of float)
+0:75          add (4-component vector of float)
+0:75            fwidthCoarse (4-component vector of float)
+0:75              'in4' (smooth in 4-component vector of float)
+0:75            fwidthFine (4-component vector of float)
+0:75              'in4' (smooth in 4-component vector of float)
+0:80  Function Definition: foodc2( (void)
+0:80    Function Parameters: 
+0:82    Sequence
+0:82      Sequence
+0:82        move second child to first child (2-component vector of float)
+0:82          'v2' (2-component vector of float)
+0:82          dPdxFine (2-component vector of float)
+0:82            'in2' (smooth in 2-component vector of float)
+0:83      Sequence
+0:83        move second child to first child (3-component vector of float)
+0:83          'v3' (3-component vector of float)
+0:83          dPdyCoarse (3-component vector of float)
+0:83            'in3' (smooth in 3-component vector of float)
+0:84      Sequence
+0:84        move second child to first child (4-component vector of float)
+0:84          'v4' (4-component vector of float)
+0:84          add (4-component vector of float)
+0:84            fwidthCoarse (4-component vector of float)
+0:84              'in4' (smooth in 4-component vector of float)
+0:84            fwidthFine (4-component vector of float)
+0:84              'in4' (smooth in 4-component vector of float)
 0:?   Linker Objects
 0:?     'c2D' (smooth in 2-component vector of float)
 0:?     'i' (flat in int)
@@ -457,4 +551,8 @@ ERROR: node is still EOpNull!
 0:?     'u2drs' (uniform sampler2DRectShadow)
 0:?     'patchIn' (smooth patch in 4-component vector of float)
 0:?     'patchOut' (patch out 4-component vector of float)
+0:?     'in1' (smooth in float)
+0:?     'in2' (smooth in 2-component vector of float)
+0:?     'in3' (smooth in 3-component vector of float)
+0:?     'in4' (smooth in 4-component vector of float)
 

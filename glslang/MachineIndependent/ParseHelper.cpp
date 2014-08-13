@@ -3347,7 +3347,7 @@ void TParseContext::layoutObjectCheck(TSourceLoc loc, const TSymbol& symbol)
                     error(loc, "cannot specify on a variable declaration", "offset", "");
                 if (qualifier.hasOffset() && ! qualifier.hasBinding() && type.getBasicType() == EbtAtomicUint)
                     error(loc, "a binding is required", "offset", "");
-                if (qualifier.hasBinding() && qualifier.layoutBinding >= resources.maxAtomicCounterBindings && type.getBasicType() == EbtAtomicUint)
+                if (qualifier.hasBinding() && (int)qualifier.layoutBinding >= resources.maxAtomicCounterBindings && type.getBasicType() == EbtAtomicUint)
                     error(loc, "cannot be greater-than-or-equal to gl_MaxAtomicCounterBindings", "binding", "");
                 // "The align qualifier can only be used on blocks or block members..."
                 if (qualifier.hasAlign())

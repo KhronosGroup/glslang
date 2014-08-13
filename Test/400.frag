@@ -62,3 +62,24 @@ void foo24()
     dvec3 df, di;
     df = modf(outp.xyz, di);
 }
+
+in float in1;
+in vec2 in2;
+in vec3 in3;
+in vec4 in4;
+
+void foodc1()
+{
+    vec2 v2 = dFdxFine(in2);           // ERROR
+    vec3 v3 = dFdyCoarse(in3);         // ERROR
+    vec4 v4 = fwidthCoarse(in4) + fwidthFine(in4);   // ERROR
+}
+
+#extension GL_ARB_derivative_control : enable
+
+void foodc2()
+{
+    vec2 v2 = dFdxFine(in2);
+    vec3 v3 = dFdyCoarse(in3);
+    vec4 v4 = fwidthCoarse(in4) + fwidthFine(in4);
+}

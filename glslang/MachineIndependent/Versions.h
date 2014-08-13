@@ -92,6 +92,7 @@ const char* const GL_ARB_shader_texture_lod       = "GL_ARB_shader_texture_lod";
 const char* const GL_ARB_explicit_attrib_location = "GL_ARB_explicit_attrib_location";
 const char* const GL_ARB_shader_image_load_store  = "GL_ARB_shader_image_load_store";
 const char* const GL_ARB_shader_atomic_counters   = "GL_ARB_shader_atomic_counters";
+const char* const GL_ARB_derivative_control       = "GL_ARB_derivative_control";
 
 } // end namespace glslang
 

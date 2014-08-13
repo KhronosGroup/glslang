@@ -933,6 +933,45 @@ void TBuiltIns::initialize(int version, EProfile profile)
             
         "\n");
 
+    // GL_ARB_derivative_control
+    if (profile != EEsProfile && version >= 400) {
+	    stageBuiltins[EShLangFragment].append(
+            "float dFdxFine(float p);"
+            "vec2  dFdxFine(vec2  p);"
+            "vec3  dFdxFine(vec3  p);"
+            "vec4  dFdxFine(vec4  p);"
+                 
+            "float dFdyFine(float p);"
+            "vec2  dFdyFine(vec2  p);"
+            "vec3  dFdyFine(vec3  p);"
+            "vec4  dFdyFine(vec4  p);"
+                 
+            "float fwidthFine(float p);"
+            "vec2  fwidthFine(vec2  p);"
+            "vec3  fwidthFine(vec3  p);"
+            "vec4  fwidthFine(vec4  p);"
+            
+            "\n");
+
+	    stageBuiltins[EShLangFragment].append(
+            "float dFdxCoarse(float p);"
+            "vec2  dFdxCoarse(vec2  p);"
+            "vec3  dFdxCoarse(vec3  p);"
+            "vec4  dFdxCoarse(vec4  p);"
+                 
+            "float dFdyCoarse(float p);"
+            "vec2  dFdyCoarse(vec2  p);"
+            "vec3  dFdyCoarse(vec3  p);"
+            "vec4  dFdyCoarse(vec4  p);"
+                 
+            "float fwidthCoarse(float p);"
+            "vec2  fwidthCoarse(vec2  p);"
+            "vec3  fwidthCoarse(vec3  p);"
+            "vec4  fwidthCoarse(vec4  p);"
+            
+            "\n");
+    }
+
     //============================================================================
     //
     // Standard Uniforms
@@ -2383,6 +2422,16 @@ void IdentifyBuiltIns(int version, EProfile profile, EShLanguage language, TSymb
             symbolTable.setFunctionExtensions("atomicCounter"         , 1, &GL_ARB_shader_atomic_counters);
         }
 
+        // GL_ARB_derivative_control
+        if (profile != EEsProfile && version < 450) {
+            symbolTable.setFunctionExtensions("dFdxFine",     1, &GL_ARB_derivative_control);
+            symbolTable.setFunctionExtensions("dFdyFine",     1, &GL_ARB_derivative_control);
+            symbolTable.setFunctionExtensions("fwidthFine",   1, &GL_ARB_derivative_control);
+            symbolTable.setFunctionExtensions("dFdxCoarse",   1, &GL_ARB_derivative_control);
+            symbolTable.setFunctionExtensions("dFdyCoarse",   1, &GL_ARB_derivative_control);
+            symbolTable.setFunctionExtensions("fwidthCoarse", 1, &GL_ARB_derivative_control);
+        }
+
         symbolTable.setVariableExtensions("gl_FragDepthEXT", 1, &GL_EXT_frag_depth);
         break;
 
@@ -2512,6 +2561,14 @@ void IdentifyBuiltIns(int version, EProfile profile, EShLanguage language, TSymb
         symbolTable.relateToOperator("dFdx",         EOpDPdx);
         symbolTable.relateToOperator("dFdy",         EOpDPdy);
         symbolTable.relateToOperator("fwidth",       EOpFwidth);
+        if (profile != EEsProfile && version >= 400) {
+            symbolTable.relateToOperator("dFdxFine",     EOpDPdxFine);
+            symbolTable.relateToOperator("dFdyFine",     EOpDPdyFine);
+            symbolTable.relateToOperator("fwidthFine",   EOpFwidthFine);
+            symbolTable.relateToOperator("dFdxCoarse",   EOpDPdxCoarse);
+            symbolTable.relateToOperator("dFdyCoarse",   EOpDPdyCoarse);
+            symbolTable.relateToOperator("fwidthCoarse", EOpFwidthCoarse);
+        }
         break;
 
     case EShLangCompute:
