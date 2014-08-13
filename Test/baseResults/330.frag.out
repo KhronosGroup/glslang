@@ -1,5 +1,4 @@
 330.frag
-Warning, version 330 is not yet complete; most version-specific features are present, but some are missing.
 ERROR: 0:27: 'block declaration' : cannot redeclare block:  gl_block
 ERROR: 0:31: 'gl_name' : identifiers starting with "gl_" are reserved 
 ERROR: 0:32: 'gl_i' : identifiers starting with "gl_" are reserved 

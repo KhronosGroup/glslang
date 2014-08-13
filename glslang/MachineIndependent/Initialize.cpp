@@ -804,6 +804,93 @@ void TBuiltIns::initialize(int version, EProfile profile)
             "\n");
     }
 
+    // Bitfield
+    if ((profile == EEsProfile && version >= 310) ||
+        (profile != EEsProfile && version >= 400)) {
+	    commonBuiltins.append(
+            " uint uaddCarry( uint,  uint, out  uint carry);"
+            "uvec2 uaddCarry(uvec2, uvec2, out uvec2 carry);"
+            "uvec3 uaddCarry(uvec3, uvec3, out uvec3 carry);"
+            "uvec4 uaddCarry(uvec4, uvec4, out uvec4 carry);"
+
+            " uint usubBorrow( uint,  uint, out  uint borrow);"
+            "uvec2 usubBorrow(uvec2, uvec2, out uvec2 borrow);"
+            "uvec3 usubBorrow(uvec3, uvec3, out uvec3 borrow);"
+            "uvec4 usubBorrow(uvec4, uvec4, out uvec4 borrow);"
+
+            "void umulExtended( uint,  uint, out  uint, out  uint lsb);"
+            "void umulExtended(uvec2, uvec2, out uvec2, out uvec2 lsb);"
+            "void umulExtended(uvec3, uvec3, out uvec3, out uvec3 lsb);"
+            "void umulExtended(uvec4, uvec4, out uvec4, out uvec4 lsb);"
+
+            "void imulExtended(  int,   int, out   int, out   int lsb);"
+            "void imulExtended(ivec2, ivec2, out ivec2, out ivec2 lsb);"
+            "void imulExtended(ivec3, ivec3, out ivec3, out ivec3 lsb);"
+            "void imulExtended(ivec4, ivec4, out ivec4, out ivec4 lsb);"
+
+            "  int bitfieldExtract(  int, int, int);"
+            "ivec2 bitfieldExtract(ivec2, int, int);"
+            "ivec3 bitfieldExtract(ivec3, int, int);"
+            "ivec4 bitfieldExtract(ivec4, int, int);"
+
+            " uint bitfieldExtract( uint, int, int);"
+            "uvec2 bitfieldExtract(uvec2, int, int);"
+            "uvec3 bitfieldExtract(uvec3, int, int);"
+            "uvec4 bitfieldExtract(uvec4, int, int);"
+
+            "  int bitfieldInsert(  int base,   int, int, int);"
+            "ivec2 bitfieldInsert(ivec2 base, ivec2, int, int);"
+            "ivec3 bitfieldInsert(ivec3 base, ivec3, int, int);"
+            "ivec4 bitfieldInsert(ivec4 base, ivec4, int, int);"
+
+            " uint bitfieldInsert( uint base,  uint, int, int);"
+            "uvec2 bitfieldInsert(uvec2 base, uvec2, int, int);"
+            "uvec3 bitfieldInsert(uvec3 base, uvec3, int, int);"
+            "uvec4 bitfieldInsert(uvec4 base, uvec4, int, int);"
+
+            "  int bitfieldReverse(  int);"
+            "ivec2 bitfieldReverse(ivec2);"
+            "ivec3 bitfieldReverse(ivec3);"
+            "ivec4 bitfieldReverse(ivec4);"
+
+            " uint bitfieldReverse( uint);"
+            "uvec2 bitfieldReverse(uvec2);"
+            "uvec3 bitfieldReverse(uvec3);"
+            "uvec4 bitfieldReverse(uvec4);"
+
+            "  int bitCount(  int);"
+            "ivec2 bitCount(ivec2);"
+            "ivec3 bitCount(ivec3);"
+            "ivec4 bitCount(ivec4);"
+
+            "  int bitCount( uint);"
+            "ivec2 bitCount(uvec2);"
+            "ivec3 bitCount(uvec3);"
+            "ivec4 bitCount(uvec4);"
+
+            "  int findLSB(  int);"
+            "ivec2 findLSB(ivec2);"
+            "ivec3 findLSB(ivec3);"
+            "ivec4 findLSB(ivec4);"
+
+            "  int findLSB( uint);"
+            "ivec2 findLSB(uvec2);"
+            "ivec3 findLSB(uvec3);"
+            "ivec4 findLSB(uvec4);"
+
+            "  int findMSB(  int);"
+            "ivec2 findMSB(ivec2);"
+            "ivec3 findMSB(ivec3);"
+            "ivec4 findMSB(ivec4);"
+
+            "  int findMSB( uint);"
+            "ivec2 findMSB(uvec2);"
+            "ivec3 findMSB(uvec3);"
+            "ivec4 findMSB(uvec4);"
+            
+            "\n");
+    }
+
     //============================================================================
     //
     // Prototypes for built-in functions seen by vertex shaders only.
@@ -2556,7 +2643,6 @@ void IdentifyBuiltIns(int version, EProfile profile, EShLanguage language, TSymb
         break;
 
     case EShLangCompute:
-        // TODO: 4.3 desktop functionality: compute special variables
         break;
 
     default:

@@ -1,5 +1,4 @@
 recurse1.vert
-Warning, version 330 is not yet complete; most version-specific features are present, but some are missing.
 
 Shader version: 330
 0:? Sequence
@@ -70,7 +69,6 @@ Shader version: 330
 0:?     'gl_InstanceID' (gl_InstanceId int)
 
 recurse1.frag
-Warning, version 330 is not yet complete; most version-specific features are present, but some are missing.
 
 Shader version: 330
 0:? Sequence
@@ -159,7 +157,6 @@ Shader version: 330
 0:?   Linker Objects
 
 recurse2.frag
-Warning, version 330 is not yet complete; most version-specific features are present, but some are missing.
 
 Shader version: 330
 0:? Sequence

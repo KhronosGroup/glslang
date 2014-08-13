@@ -69,6 +69,17 @@ Shader Functionality to Implement/Finish
       + implement non-inductive array accesses limitation detection
     ESSL 3.0
       - "const" compile-time constant propagation in the front-end has to be complete, for all built-in functions
+    ESSL 3.1
+      + Compute shaders
+      + Shader storage buffer objects
+      - Arrays of arrays
+      + Atomic counters
+      + Images
+      + Separate program objects (also known as separate shader objects)
+      + Explicit uniform locations
+      + Texture gather
+      + Bitfield operations
+      + Integer mix function
     GLSL 1.2
       + Handle multiple compilation units per stage
       + Allow initializers on uniform declarations
@@ -108,6 +119,9 @@ Shader Functionality to Implement/Finish
       + Broaden structure usage to include geometry inputs and geometry outputs.
       + texel offset limit checking
       + 1.50: geometry shaders: max_vertices must be checked against gl_MaxGeometryOutputVertices (maybe at compile time)
+    GLSL 3.3
+      + Add ARB_explicit_attrib_location extension
+      + Add ARB_shader_bit_encoding extension
     GLSL 4.0
       + tessellation control stage and tessellation evaluation stage. Includes barrier() built-in for synchronization.
         + patch in, patch out
@@ -179,8 +193,8 @@ Shader Functionality to Implement/Finish
       + The const keyword can be used to declare variables within a function body with initializer expressions that are not constant expressions.
       + Qualifiers on variable declarations no longer have to follow a strict order. The layout qualifier can be used multiple times, and multiple parameter qualifiers can be used.
       + Parameter qualifiers can include precision and memory qualifiers.
-      - Add a new atomic_uint type to support atomic counters. Also, add built-in functions for manipulating atomic counters.
-        - atomicCounterIncrement, atomicCounterDecrement, and atomicCounter
+      + Add a new atomic_uint type to support atomic counters. Also, add built-in functions for manipulating atomic counters.
+        + atomicCounterIncrement, atomicCounterDecrement, and atomicCounter
       - Add layout qualifier identifiers binding and offset to bind units to sampler and image variable declarations, atomic counters, and uniform blocks.
       - Add built-in functions to pack/unpack 16 bit floating-point numbers (ARB_shading_language_pack2f).
         - packHalf2x16 and unpackHalf2x16
@@ -196,11 +210,12 @@ Shader Functionality to Implement/Finish
       + Use vec2 instead of vec3 for coordinate in textureGather*(sampler2DRect,...).
       + Clarify that textureGatherOffset() can take non-constants for the offsets.
     GLSL 4.3
-      - Add shader storage buffer objects, as per the ARB_shader_storage_buffer_object extension. This includes 
+      + Add shader storage buffer objects, as per the ARB_shader_storage_buffer_object extension. This includes 
             + allowing the last member of a storage buffer block to be an array that does not know its size until render time
-            - read/write memory shared with the application and other shader invocations
+            + read/write memory shared with the application and other shader invocations
             + adding the std430 layout qualifier for shader storage blocks
-            - add atomic built-ins
+            + add atomic built-ins
+            + layout(binding=)
       - Allow .length() on all arrays; returning a compile-time constant or not, depending on how the 
         array is sized, as per the ARB_shader_storage_buffer_object extension.
       - Be clear that implicit array sizing is only within a stage, not cross stage.
@@ -250,4 +265,15 @@ Shader Functionality to Implement/Finish
           transform feedback buffering.
       + Bug 10530: To be consistent with ES, include sample types as valid in a precision statement. 
         Note the defaults are irrelevant, as precision qualifiers are not required or have any meaning.
-
+    GLSL 4.5
+      + Incorporate the ARB_ES3_1_compatibility extension
+        + Supports OpenGL ES 310 shaders.
+        + Adds imageAtomicExchange() built-in function for floating-point images.
+        + Adds coherent to atomic and image-atomic built-in function parameters.
+        + Adds gl_HelperInvocation built-in variable to say whether a fragment shader invocation is 
+              only as a helper, so the shader can skip code not needed or harmful when in a helper invocation.
+        + Adds gl_MaxSamplesbuilt-in constant, and several other built-in constants.
+        + Adds mix() built-in functions for selection of int, uint, andbool components.
+      + Incorporate the GL_ARB_shader_texture_image_samples extension to query how many samples are in a multi-sample texture or image.
+      + Incorporate the GL_ARB_cull_distance extensions to add the built-in variable gl_CullDistance[] , which will cull whole primitives.
+      + Incorporate the GL_ARB_derivative_control extension

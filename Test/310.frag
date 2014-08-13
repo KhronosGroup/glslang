@@ -59,3 +59,12 @@ void foo23()
     uvec3 um3 = mix(uvec3(i), uvec3(i), bvec3(b));
     ivec4 im4 = mix(ivec4(i), ivec4(i), bvec4(b));
 }
+
+layout(binding=3) uniform sampler2D s1;
+layout(binding=3) uniform sampler2D s2; // ERROR: overlapping bindings?  Don't see that in the 310 spec.
+layout(binding=2) uniform writeonly image2D i2D;
+
+layout(binding = 1) uniform bb {
+    int foo;
+    layout(binding = 2) float f;     // ERROR
+} bbi;

@@ -58,9 +58,7 @@ namespace glslang {
 //
 void TIntermMethod::traverse(TIntermTraverser* it)
 {
-    // Tree should always resolve all methods as constants
-
-    // TODO: 4.3 functionality: some .length() will stay as methods
+    // Tree should always resolve all methods as a non-method.
 }
 
 void TIntermSymbol::traverse(TIntermTraverser *it)

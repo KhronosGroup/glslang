@@ -396,11 +396,11 @@ bool DeduceVersionProfile(TInfoSink& infoSink, EShLanguage stage, bool versionNo
     case 130:
     case 140:
     case 150:
+    case 330:
         // versions are complete
         break;
 
     case 310:
-    case 330:
     case 400:
     case 410:
     case 420:

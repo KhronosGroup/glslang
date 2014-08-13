@@ -16,7 +16,8 @@ ERROR: 0:44: 'texel offset' : value is out of range: [gl_MinProgramTexelOffset, 
 ERROR: 0:44: 'texel offset' : value is out of range: [gl_MinProgramTexelOffset, gl_MaxProgramTexelOffset]
 ERROR: 0:45: 'texel offset' : value is out of range: [gl_MinProgramTexelOffset, gl_MaxProgramTexelOffset]
 ERROR: 0:45: 'texel offset' : value is out of range: [gl_MinProgramTexelOffset, gl_MaxProgramTexelOffset]
-ERROR: 16 compilation errors.  No code generated.
+ERROR: 0:69: 'binding' : requires block, or sampler/image, or atomic-counter type 
+ERROR: 17 compilation errors.  No code generated.
 
 
 Shader version: 310
@@ -203,6 +204,10 @@ ERROR: node is still EOpNull!
 0:?     'c2D' (smooth in mediump 2-component vector of float)
 0:?     'i' (uniform mediump int)
 0:?     'outp' (out mediump 4-component vector of float)
+0:?     's1' (layout(binding=3 ) uniform highp sampler2D)
+0:?     's2' (layout(binding=3 ) uniform highp sampler2D)
+0:?     'i2D' (layout(binding=2 ) writeonly uniform highp image2D)
+0:?     'bbi' (layout(binding=1 column_major shared ) uniform block{layout(column_major shared ) uniform mediump int foo, layout(binding=2 column_major shared ) uniform mediump float f})
 
 
 Linked fragment stage:
@@ -392,4 +397,8 @@ ERROR: node is still EOpNull!
 0:?     'c2D' (smooth in mediump 2-component vector of float)
 0:?     'i' (uniform mediump int)
 0:?     'outp' (out mediump 4-component vector of float)
+0:?     's1' (layout(binding=3 ) uniform highp sampler2D)
+0:?     's2' (layout(binding=3 ) uniform highp sampler2D)
+0:?     'i2D' (layout(binding=2 ) writeonly uniform highp image2D)
+0:?     'bbi' (layout(binding=1 column_major shared ) uniform block{layout(column_major shared ) uniform mediump int foo, layout(binding=2 column_major shared ) uniform mediump float f})
 
