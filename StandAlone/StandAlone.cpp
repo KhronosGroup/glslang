@@ -66,6 +66,7 @@ enum TOptions {
     EOptionSuppressWarnings   = 0x200,
     EOptionDumpVersions       = 0x400,
     EOptionBil                = 0x800,
+    EOptionDefaultDesktop     = 0x1000,
 };
 
 //
@@ -446,7 +447,6 @@ glslang::TWorkItem** Work = 0;
 int NumWorkItems = 0;
 
 int Options = 0;
-bool Delay = false;
 const char* ExecutableName;
 
 //
@@ -485,7 +485,7 @@ bool ProcessArguments(int argc, char* argv[])
                 Options |= EOptionDumpConfig;
                 break;
             case 'd':
-                Delay = true;                        
+                Options |= EOptionDefaultDesktop;
                 break;
             case 'i':
                 Options |= EOptionIntermediate;
@@ -601,7 +601,7 @@ void CompileAndLinkShaders()
 
         shader->setStrings(shaderStrings, 1);
 
-        if (! shader->parse(&Resources, 100, false, messages))
+        if (! shader->parse(&Resources, (Options & EOptionDefaultDesktop) ? 110 : 100, false, messages))
             CompileFailed = true;
         
         program.addShader(shader);
@@ -722,9 +722,6 @@ int C_DECL main(int argc, char* argv[])
         ShFinalize();
     }
 
-    if (Delay)
-        glslang::OS_Sleep(1000000);
-
     if (CompileFailed)
         return EFailCompile;
     if (LinkFailed)
@@ -800,13 +797,13 @@ void CompileFile(const char* fileName, ShHandle compiler)
     
     for (int i = 0; i < ((Options & EOptionMemoryLeakMode) ? 100 : 1); ++i) {
         for (int j = 0; j < ((Options & EOptionMemoryLeakMode) ? 100 : 1); ++j) {
-            //ret = ShCompile(compiler, shaderStrings, NumShaderStrings, lengths, EShOptNone, &Resources, Options, 100, false, messages);
-            ret = ShCompile(compiler, shaderStrings, NumShaderStrings, 0, EShOptNone, &Resources, Options, 100, false, messages);
+            //ret = ShCompile(compiler, shaderStrings, NumShaderStrings, lengths, EShOptNone, &Resources, Options, (Options & EOptionDefaultDesktop) ? 110 : 100, false, messages);
+            ret = ShCompile(compiler, shaderStrings, NumShaderStrings, 0, EShOptNone, &Resources, Options, (Options & EOptionDefaultDesktop) ? 110 : 100, false, messages);
             //const char* multi[12] = { "# ve", "rsion", " 300 e", "s", "\n#err", 
             //                         "or should be l", "ine 1", "string 5\n", "float glo", "bal", 
             //                         ";\n#error should be line 2\n void main() {", "global = 2.3;}" };
             //const char* multi[7] = { "/", "/", "\\", "\n", "\n", "#", "version 300 es" };
-            //ret = ShCompile(compiler, multi, 7, 0, EShOptNone, &Resources, Options, 100, false, messages);
+            //ret = ShCompile(compiler, multi, 7, 0, EShOptNone, &Resources, Options, (Options & EOptionDefaultDesktop) ? 110 : 100, false, messages);
         }
 
         if (Options & EOptionMemoryLeakMode)
@@ -841,8 +838,8 @@ void usage()
            "\n"
            "To get other information, use one of the following options:\n"
            "(Each option must be specified separately, but can go anywhere in the command line.)\n"
-           "  -b  create BIL\n"
            "  -c  configuration dump; use to create default configuration file (redirect to a .conf file)\n"
+           "  -d  default to desktop (#version 110) when there is no version in the shader (default is ES version 100)\n"
            "  -i  intermediate tree (glslang AST) is printed out\n"
            "  -l  link validation of all input files\n"
            "  -m  memory leak mode\n"
