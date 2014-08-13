@@ -199,6 +199,7 @@ const char* DefaultConfig =
     "MaxTransformFeedbackInterleavedComponents 64\n"
     "MaxCullDistances 8\n"
     "MaxCombinedClipAndCullDistances 8\n"
+    "MaxSamples 4\n"
 
     "nonInductiveForLoops 1\n"
     "whileLoops 1\n"
@@ -407,6 +408,8 @@ void ProcessConfigFile()
             Resources.maxCullDistances = value;
         else if (strcmp(token, "MaxCombinedClipAndCullDistances") == 0)
             Resources.maxCombinedClipAndCullDistances = value;
+        else if (strcmp(token, "MaxSamples") == 0)
+            Resources.maxSamples = value;
 
         else if (strcmp(token, "nonInductiveForLoops") == 0)
             Resources.limits.nonInductiveForLoops = (value != 0);

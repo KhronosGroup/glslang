@@ -132,6 +132,7 @@ struct TBuiltInResource {
     int maxTransformFeedbackInterleavedComponents;
     int maxCullDistances;
     int maxCombinedClipAndCullDistances;
+    int maxSamples;
 
     TLimits limits;
 };

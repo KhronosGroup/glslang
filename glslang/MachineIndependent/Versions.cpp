@@ -149,26 +149,27 @@ namespace glslang {
 //
 void TParseContext::initializeExtensionBehavior()
 {
-    extensionBehavior[GL_OES_texture_3D]               = EBhDisable;
-    extensionBehavior[GL_OES_standard_derivatives]     = EBhDisable;
-    extensionBehavior[GL_EXT_frag_depth]               = EBhDisable;
-    extensionBehavior[GL_OES_EGL_image_external]       = EBhDisable;
-    extensionBehavior[GL_EXT_shader_texture_lod]       = EBhDisable;
-
-    extensionBehavior[GL_ARB_texture_rectangle]        = EBhDisable;
-    extensionBehavior[GL_3DL_array_objects]            = EBhDisable;
-    extensionBehavior[GL_ARB_shading_language_420pack] = EBhDisable;
-    extensionBehavior[GL_ARB_texture_gather]           = EBhDisable;
-    extensionBehavior[GL_ARB_gpu_shader5]              = EBhDisablePartial;
-    extensionBehavior[GL_ARB_separate_shader_objects]  = EBhDisable;
-    extensionBehavior[GL_ARB_tessellation_shader]      = EBhDisable;
-    extensionBehavior[GL_ARB_enhanced_layouts]         = EBhDisable;
-    extensionBehavior[GL_ARB_texture_cube_map_array]   = EBhDisable;
-    extensionBehavior[GL_ARB_shader_texture_lod]       = EBhDisable;
-    extensionBehavior[GL_ARB_explicit_attrib_location] = EBhDisablePartial; // "index" for fragment outputs is missing
-    extensionBehavior[GL_ARB_shader_image_load_store]  = EBhDisable;
-    extensionBehavior[GL_ARB_shader_atomic_counters]   = EBhDisable;
-    extensionBehavior[GL_ARB_derivative_control]       = EBhDisable;
+    extensionBehavior[GL_OES_texture_3D]                   = EBhDisable;
+    extensionBehavior[GL_OES_standard_derivatives]         = EBhDisable;
+    extensionBehavior[GL_EXT_frag_depth]                   = EBhDisable;
+    extensionBehavior[GL_OES_EGL_image_external]           = EBhDisable;
+    extensionBehavior[GL_EXT_shader_texture_lod]           = EBhDisable;
+                                                          
+    extensionBehavior[GL_ARB_texture_rectangle]            = EBhDisable;
+    extensionBehavior[GL_3DL_array_objects]                = EBhDisable;
+    extensionBehavior[GL_ARB_shading_language_420pack]     = EBhDisable;
+    extensionBehavior[GL_ARB_texture_gather]               = EBhDisable;
+    extensionBehavior[GL_ARB_gpu_shader5]                  = EBhDisablePartial;
+    extensionBehavior[GL_ARB_separate_shader_objects]      = EBhDisable;
+    extensionBehavior[GL_ARB_tessellation_shader]          = EBhDisable;
+    extensionBehavior[GL_ARB_enhanced_layouts]             = EBhDisable;
+    extensionBehavior[GL_ARB_texture_cube_map_array]       = EBhDisable;
+    extensionBehavior[GL_ARB_shader_texture_lod]           = EBhDisable;
+    extensionBehavior[GL_ARB_explicit_attrib_location]     = EBhDisablePartial; // "index" for fragment outputs is missing
+    extensionBehavior[GL_ARB_shader_image_load_store]      = EBhDisable;
+    extensionBehavior[GL_ARB_shader_atomic_counters]       = EBhDisable;
+    extensionBehavior[GL_ARB_derivative_control]           = EBhDisable;
+    extensionBehavior[GL_ARB_shader_texture_image_samples] = EBhDisable;
 //    extensionBehavior[GL_ARB_cull_distance]            = EBhDisable;    // present for 4.5, but need extension control over block members
 }
 
@@ -213,6 +214,7 @@ const char* TParseContext::getPreamble()
             "#define GL_ARB_shader_image_load_store 1\n"
             "#define GL_ARB_shader_atomic_counters 1\n"
             "#define GL_ARB_derivative_control 1\n"
+            "#define GL_ARB_shader_texture_image_samples 1\n"
 //            "#define GL_ARB_cull_distance 1\n"    // present for 4.5, but need extension control over block members
             ;
     }

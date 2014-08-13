@@ -49,11 +49,16 @@ ERROR: 0:150: 'barrier' : no matching overloaded function found
 ERROR: 0:154: 'memoryBarrierShared' : no matching overloaded function found 
 ERROR: 0:156: 'groupMemoryBarrier' : no matching overloaded function found 
 ERROR: 0:159: 'buffer' : buffers can be declared only as blocks 
-ERROR: 49 compilation errors.  No code generated.
+ERROR: 0:168: 'textureSamples and imageSamples' : not supported for this version or the enabled extensions 
+ERROR: 0:169: 'textureSamples and imageSamples' : not supported for this version or the enabled extensions 
+ERROR: 0:170: 'textureSamples and imageSamples' : not supported for this version or the enabled extensions 
+ERROR: 0:171: 'textureSamples and imageSamples' : not supported for this version or the enabled extensions 
+ERROR: 53 compilation errors.  No code generated.
 
 
 Shader version: 430
 Requested GL_ARB_enhanced_layouts
+Requested GL_ARB_shader_texture_image_samples
 in xfb mode
 ERROR: node is still EOpNull!
 0:14  Function Definition: foo( (void)
@@ -88,6 +93,46 @@ ERROR: node is still EOpNull!
 0:155      MemoryBarrierImage (void)
 0:156      Constant:
 0:156        0.000000
+0:166  Function Definition: fooq( (void)
+0:166    Function Parameters: 
+0:168    Sequence
+0:168      Sequence
+0:168        move second child to first child (int)
+0:168          's' (int)
+0:168          Function Call: textureSamples(s21; (int)
+0:168            's2dms' (uniform sampler2DMS)
+0:169      add second child into first child (int)
+0:169        's' (int)
+0:169        Function Call: textureSamples(usA21; (int)
+0:169          'us2dmsa' (uniform usampler2DMSArray)
+0:170      add second child into first child (int)
+0:170        's' (int)
+0:170        Function Call: imageSamples(iI21; (int)
+0:170          'ii2dms' (layout(rgba32i ) uniform iimage2DMS)
+0:171      add second child into first child (int)
+0:171        's' (int)
+0:171        Function Call: imageSamples(IA21; (int)
+0:171          'i2dmsa' (layout(rgba32f ) uniform image2DMSArray)
+0:176  Function Definition: fooq2( (void)
+0:176    Function Parameters: 
+0:178    Sequence
+0:178      Sequence
+0:178        move second child to first child (int)
+0:178          's' (int)
+0:178          Function Call: textureSamples(s21; (int)
+0:178            's2dms' (uniform sampler2DMS)
+0:179      add second child into first child (int)
+0:179        's' (int)
+0:179        Function Call: textureSamples(usA21; (int)
+0:179          'us2dmsa' (uniform usampler2DMSArray)
+0:180      add second child into first child (int)
+0:180        's' (int)
+0:180        Function Call: imageSamples(iI21; (int)
+0:180          'ii2dms' (layout(rgba32i ) uniform iimage2DMS)
+0:181      add second child into first child (int)
+0:181        's' (int)
+0:181        Function Call: imageSamples(IA21; (int)
+0:181          'i2dmsa' (layout(rgba32f ) uniform image2DMSArray)
 0:?   Linker Objects
 0:?     'v4' (layout(location=3 ) 4-component vector of float)
 0:?     'uv4' (layout(location=4 ) uniform 4-component vector of float)
@@ -129,6 +174,10 @@ ERROR: node is still EOpNull!
 0:?     'bbinst5' (out block{layout(xfb_buffer=1 xfb_offset=0 ) out 4-component vector of float bbv1, layout(xfb_buffer=1 xfb_offset=64 xfb_stride=80 ) out 4-component vector of float bbv2})
 0:?     'sharedv' (shared 4-component vector of float)
 0:?     'v' (buffer 4-component vector of float)
+0:?     's2dms' (uniform sampler2DMS)
+0:?     'us2dmsa' (uniform usampler2DMSArray)
+0:?     'ii2dms' (layout(rgba32i ) uniform iimage2DMS)
+0:?     'i2dmsa' (layout(rgba32f ) uniform image2DMSArray)
 0:?     'gl_VertexID' (gl_VertexId int)
 0:?     'gl_InstanceID' (gl_InstanceId int)
 
@@ -141,6 +190,7 @@ ERROR:     xfb_buffer 3, xfb_stride 64, minimum stride needed: 80
 
 Shader version: 430
 Requested GL_ARB_enhanced_layouts
+Requested GL_ARB_shader_texture_image_samples
 in xfb mode
 ERROR: node is still EOpNull!
 0:14  Function Definition: foo( (void)
@@ -175,6 +225,46 @@ ERROR: node is still EOpNull!
 0:155      MemoryBarrierImage (void)
 0:156      Constant:
 0:156        0.000000
+0:166  Function Definition: fooq( (void)
+0:166    Function Parameters: 
+0:168    Sequence
+0:168      Sequence
+0:168        move second child to first child (int)
+0:168          's' (int)
+0:168          Function Call: textureSamples(s21; (int)
+0:168            's2dms' (uniform sampler2DMS)
+0:169      add second child into first child (int)
+0:169        's' (int)
+0:169        Function Call: textureSamples(usA21; (int)
+0:169          'us2dmsa' (uniform usampler2DMSArray)
+0:170      add second child into first child (int)
+0:170        's' (int)
+0:170        Function Call: imageSamples(iI21; (int)
+0:170          'ii2dms' (layout(rgba32i ) uniform iimage2DMS)
+0:171      add second child into first child (int)
+0:171        's' (int)
+0:171        Function Call: imageSamples(IA21; (int)
+0:171          'i2dmsa' (layout(rgba32f ) uniform image2DMSArray)
+0:176  Function Definition: fooq2( (void)
+0:176    Function Parameters: 
+0:178    Sequence
+0:178      Sequence
+0:178        move second child to first child (int)
+0:178          's' (int)
+0:178          Function Call: textureSamples(s21; (int)
+0:178            's2dms' (uniform sampler2DMS)
+0:179      add second child into first child (int)
+0:179        's' (int)
+0:179        Function Call: textureSamples(usA21; (int)
+0:179          'us2dmsa' (uniform usampler2DMSArray)
+0:180      add second child into first child (int)
+0:180        's' (int)
+0:180        Function Call: imageSamples(iI21; (int)
+0:180          'ii2dms' (layout(rgba32i ) uniform iimage2DMS)
+0:181      add second child into first child (int)
+0:181        's' (int)
+0:181        Function Call: imageSamples(IA21; (int)
+0:181          'i2dmsa' (layout(rgba32f ) uniform image2DMSArray)
 0:?   Linker Objects
 0:?     'v4' (layout(location=3 ) 4-component vector of float)
 0:?     'uv4' (layout(location=4 ) uniform 4-component vector of float)
@@ -216,6 +306,10 @@ ERROR: node is still EOpNull!
 0:?     'bbinst5' (out block{layout(xfb_buffer=1 xfb_offset=0 ) out 4-component vector of float bbv1, layout(xfb_buffer=1 xfb_offset=64 xfb_stride=80 ) out 4-component vector of float bbv2})
 0:?     'sharedv' (shared 4-component vector of float)
 0:?     'v' (buffer 4-component vector of float)
+0:?     's2dms' (uniform sampler2DMS)
+0:?     'us2dmsa' (uniform usampler2DMSArray)
+0:?     'ii2dms' (layout(rgba32i ) uniform iimage2DMS)
+0:?     'i2dmsa' (layout(rgba32f ) uniform image2DMSArray)
 0:?     'gl_VertexID' (gl_VertexId int)
 0:?     'gl_InstanceID' (gl_InstanceId int)
 

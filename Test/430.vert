@@ -157,3 +157,26 @@ void fooBarrier()
 }
 
 buffer vec4 v;  // ERROR
+
+uniform sampler2DMS s2dms;
+uniform usampler2DMSArray us2dmsa;
+layout(rgba32i) uniform iimage2DMS ii2dms;
+layout(rgba32f) uniform image2DMSArray i2dmsa;
+
+void fooq()
+{
+    int s = textureSamples(s2dms); // ERROR
+    s += textureSamples(us2dmsa);  // ERROR
+    s += imageSamples(ii2dms);     // ERROR
+    s += imageSamples(i2dmsa);     // ERROR
+}
+
+#extension GL_ARB_shader_texture_image_samples : enable
+
+void fooq2()
+{
+    int s = textureSamples(s2dms);
+    s += textureSamples(us2dmsa); 
+    s += imageSamples(ii2dms);    
+    s += imageSamples(i2dmsa);    
+}

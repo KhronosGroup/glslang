@@ -1296,12 +1296,17 @@ void TParseContext::nonOpBuiltInCheck(TSourceLoc loc, const TFunction& fnCandida
             }
         }
     }
+
+    // GL_ARB_shader_texture_image_samples
+    if (fnCandidate.getName().compare(0, 14, "textureSamples") == 0 || fnCandidate.getName().compare(0, 12, "imageSamples") == 0)
+        profileRequires(loc, ~EEsProfile, 450, GL_ARB_shader_texture_image_samples, "textureSamples and imageSamples");
+
     if (fnCandidate.getName().compare(0, 11, "imageAtomic") == 0) {
         const TType& imageType = callNode.getSequence()[0]->getAsTyped()->getType();
         if (imageType.getSampler().type == EbtInt || imageType.getSampler().type == EbtUint) {
             if (imageType.getQualifier().layoutFormat != ElfR32i && imageType.getQualifier().layoutFormat != ElfR32ui)
                 error(loc, "only supported on image with format r32i or r32ui", fnCandidate.getName().c_str(), "");
-        } else
+        } else if (fnCandidate.getName().compare(0, 19, "imageAtomicExchange") != 0) 
             error(loc, "only supported on integer images", fnCandidate.getName().c_str(), "");
     }
 }

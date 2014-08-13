@@ -1697,6 +1697,18 @@ void TBuiltIns::addQueryFunctions(TSampler sampler, TString& typeName, int versi
         commonBuiltins.append(",int);\n");
     else
         commonBuiltins.append(");\n");
+
+    // GL_ARB_shader_texture_image_samples
+    // TODO: spec issue? there are no memory qualifiers; how to query a writeonly/readonly image, etc?
+    if (profile != EEsProfile && version >= 430 && sampler.ms) {
+        commonBuiltins.append("int ");
+        if (sampler.image)
+            commonBuiltins.append("imageSamples(");
+        else
+            commonBuiltins.append("textureSamples(");
+        commonBuiltins.append(typeName);
+        commonBuiltins.append(");\n");
+    }
 }
 
 //
@@ -1764,6 +1776,15 @@ void TBuiltIns::addImageFunctions(TSampler sampler, TString& typeName, int versi
             commonBuiltins.append(", ");
             commonBuiltins.append(dataType);
             commonBuiltins.append(");\n");
+        } else {
+            // not int or uint
+            // GL_ARB_ES3_1_compatibility
+            // TODO: spec issue: are there restrictions on the kind of layout() that can be used?  what about dropping memory qualifiers?
+            if (version >= 450) {
+                commonBuiltins.append("float imageAtomicExchange(coherent ");
+                commonBuiltins.append(imageParams);
+                commonBuiltins.append(", float);\n");
+            }
         }
     }
 }
@@ -2356,6 +2377,8 @@ void TBuiltIns::initialize(const TBuiltInResource &resources, int version, EProf
         s.append(builtInConstant);
         snprintf(builtInConstant, maxSize, "const int gl_MaxGeometryAtomicCounterBuffers = %d;", resources.       maxGeometryAtomicCounterBuffers);
         s.append(builtInConstant);
+
+        s.append("\n");
     }
 
 
@@ -2380,13 +2403,21 @@ void TBuiltIns::initialize(const TBuiltInResource &resources, int version, EProf
         s.append(builtInConstant);
         snprintf(builtInConstant, maxSize, "const int gl_MaxComputeAtomicCounterBuffers = %d;", resources.maxComputeAtomicCounterBuffers);
         s.append(builtInConstant);
+
+        s.append("\n");
     }
 
     // GL_ARB_cull_distance
     if (profile != EEsProfile && version >= 450) {
-        snprintf(builtInConstant, maxSize, "const int gl_MaxCullDistances                = %d;", resources.maxCullDistances);
+        snprintf(builtInConstant, maxSize, "const int gl_MaxCullDistances = %d;",                resources.maxCullDistances);
         s.append(builtInConstant);
         snprintf(builtInConstant, maxSize, "const int gl_MaxCombinedClipAndCullDistances = %d;", resources.maxCombinedClipAndCullDistances);
+        s.append(builtInConstant);
+    }
+
+    // GL_ARB_ES3_1_compatibility
+    if (profile != EEsProfile && version >= 450) {
+        snprintf(builtInConstant, maxSize, "const int gl_MaxSamples = %d;", resources.maxSamples);
         s.append(builtInConstant);
     }
 

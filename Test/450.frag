@@ -16,7 +16,7 @@ void main()
     v4 = fwidthCoarse(in4) + fwidthFine(in4);
 
     float cull = gl_CullDistance[2];
-    float consts = gl_MaxCullDistances + gl_MaxCombinedClipAndCullDistances;
+    float consts = gl_MaxCullDistances + gl_MaxCombinedClipAndCullDistances + gl_MaxSamples;
 
     if (gl_HelperInvocation)
         ++v4;
@@ -32,4 +32,18 @@ void main()
     bvec2 b2 = mix(bvec2(b1), bvec2(b3), bvec2(b));
     uint um = mix(uin, uin, b);
     ivec3 im3 = mix(ivec3(uin), ivec3(uin), bvec3(b));
+}
+
+uniform sampler2DMS s2dms;
+uniform usampler2DMSArray us2dmsa;
+layout(rgba32i) uniform iimage2DMS ii2dms;
+layout(rgba32f) uniform image2DMSArray i2dmsa;
+
+void foo()
+{
+    int s = textureSamples(s2dms);
+    s += textureSamples(us2dmsa);
+    s += imageSamples(ii2dms);
+    s += imageSamples(i2dmsa);
+    float f = imageAtomicExchange(i2dmsa, ivec3(in3), 2, 4.5);
 }
