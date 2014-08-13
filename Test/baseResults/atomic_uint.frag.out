@@ -3,7 +3,15 @@ Warning, version 420 is not yet complete; most version-specific features are pre
 ERROR: 0:10: 'atomic_uint' : samplers and atomic_uints cannot be output parameters 
 ERROR: 0:12: 'return' : type does not match, or is not convertible to, the function's return type 
 ERROR: 0:18: 'atomic_uint' : atomic_uints can only be used in uniform variables or function parameters: non_uniform_counter
-ERROR: 3 compilation errors.  No code generated.
+ERROR: 0:23: 'binding' : cannot be greater-than-or-equal to gl_MaxAtomicCounterBindings 
+ERROR: 0:28: '+' :  wrong operand types: no operation '+' exists that takes a left-hand operand of type 'layout(binding=0 ) uniform atomic_uint' and a right operand of type 'layout(binding=0 ) uniform atomic_uint' (or there is no acceptable conversion)
+ERROR: 0:29: '-' :  wrong operand type no operation '-' exists that takes an operand of type layout(binding=0 ) uniform atomic_uint (or there is no acceptable conversion)
+ERROR: 0:31: '[]' : scalar integer expression required 
+ERROR: 0:34: 'assign' :  l-value required "counter" (can't modify a uniform)
+ERROR: 0:34: 'assign' :  cannot convert from 'const int' to 'layout(binding=0 ) uniform atomic_uint'
+ERROR: 0:37: 'atomic_uint' : atomic_uints can only be used in uniform variables or function parameters: acin
+ERROR: 0:38: 'atomic_uint' : atomic_uints can only be used in uniform variables or function parameters: acg
+ERROR: 11 compilation errors.  No code generated.
 
 
 Shader version: 420
@@ -34,8 +42,28 @@ ERROR: node is still EOpNull!
 0:19            'counter' (layout(binding=0 ) uniform atomic_uint)
 0:20      Function Call: atomicCounterDecrement(au1; (uint)
 0:20        'counter' (layout(binding=0 ) uniform atomic_uint)
+0:26  Function Definition: opac( (void)
+0:26    Function Parameters: 
+0:28    Sequence
+0:28      'counter' (layout(binding=0 ) uniform atomic_uint)
+0:29      'counter' (layout(binding=0 ) uniform atomic_uint)
+0:31      indirect index (int)
+0:31        'a' (3-element array of int)
+0:31        'counter' (layout(binding=0 ) uniform atomic_uint)
+0:32      direct index (layout(binding=1 offset=3 ) atomic_uint)
+0:32        'countArr' (layout(binding=1 offset=3 ) uniform 4-element array of atomic_uint)
+0:32        Constant:
+0:32          2 (const int)
+0:33      indirect index (layout(binding=1 offset=3 ) atomic_uint)
+0:33        'countArr' (layout(binding=1 offset=3 ) uniform 4-element array of atomic_uint)
+0:33        'i' (uniform int)
+0:34      'counter' (layout(binding=0 ) uniform atomic_uint)
 0:?   Linker Objects
 0:?     'counter' (layout(binding=0 ) uniform atomic_uint)
+0:?     'countArr' (layout(binding=1 offset=3 ) uniform 4-element array of atomic_uint)
+0:?     'i' (uniform int)
+0:?     'acin' (smooth in atomic_uint)
+0:?     'acg' (atomic_uint)
 
 
 Linked fragment stage:
@@ -69,6 +97,26 @@ ERROR: node is still EOpNull!
 0:19            'counter' (layout(binding=0 ) uniform atomic_uint)
 0:20      Function Call: atomicCounterDecrement(au1; (uint)
 0:20        'counter' (layout(binding=0 ) uniform atomic_uint)
+0:26  Function Definition: opac( (void)
+0:26    Function Parameters: 
+0:28    Sequence
+0:28      'counter' (layout(binding=0 ) uniform atomic_uint)
+0:29      'counter' (layout(binding=0 ) uniform atomic_uint)
+0:31      indirect index (int)
+0:31        'a' (3-element array of int)
+0:31        'counter' (layout(binding=0 ) uniform atomic_uint)
+0:32      direct index (layout(binding=1 offset=3 ) atomic_uint)
+0:32        'countArr' (layout(binding=1 offset=3 ) uniform 4-element array of atomic_uint)
+0:32        Constant:
+0:32          2 (const int)
+0:33      indirect index (layout(binding=1 offset=3 ) atomic_uint)
+0:33        'countArr' (layout(binding=1 offset=3 ) uniform 4-element array of atomic_uint)
+0:33        'i' (uniform int)
+0:34      'counter' (layout(binding=0 ) uniform atomic_uint)
 0:?   Linker Objects
 0:?     'counter' (layout(binding=0 ) uniform atomic_uint)
+0:?     'countArr' (layout(binding=1 offset=3 ) uniform 4-element array of atomic_uint)
+0:?     'i' (uniform int)
+0:?     'acin' (smooth in atomic_uint)
+0:?     'acg' (atomic_uint)
 

@@ -17,15 +17,15 @@ ERROR: 0:47: 'stream' : there is no such layout identifier for this stage taking
 ERROR: 0:50: 'stream' : there is no such layout identifier for this stage taking an assigned value 
 ERROR: 0:55: 'stream' : there is no such layout identifier for this stage taking an assigned value 
 ERROR: 0:80: 's17' : redefinition 
-ERROR: 0:85: 'uniform buffer-member offset' : not supported for this version or the enabled extensions 
-ERROR: 0:85: 'offset' : cannot specify on a variable declaration 
-ERROR: 0:89: 'uniform buffer-member offset' : not supported for this version or the enabled extensions 
+ERROR: 0:85: 'binding' : cannot be greater-than-or-equal to gl_MaxAtomicCounterBindings 
+ERROR: 0:87: 'binding' : cannot be greater-than-or-equal to gl_MaxAtomicCounterBindings 
 WARNING: 0:89: 'layout' : useless application of layout qualifier 
 ERROR: 0:91: 'bar' : redefinition 
-ERROR: 0:92: 'uniform buffer-member offset' : not supported for this version or the enabled extensions 
-ERROR: 0:92: 'bar' : redefinition 
-ERROR: 0:94: 'uniform buffer-member offset' : not supported for this version or the enabled extensions 
+ERROR: 0:92: 'offset' : a binding is required 
 ERROR: 0:94: 'a2' : redefinition 
+ERROR: 0:95: 'binding' : cannot be greater-than-or-equal to gl_MaxAtomicCounterBindings 
+ERROR: 0:96: 'binding' : cannot be greater-than-or-equal to gl_MaxAtomicCounterBindings 
+ERROR: 0:97: 'binding' : cannot be greater-than-or-equal to gl_MaxAtomicCounterBindings 
 ERROR: 0:106: '' : vertex input cannot be further qualified 
 ERROR: 0:106: 'redeclaration' : cannot change storage, memory, or auxiliary qualification of gl_FrontColor
 ERROR: 0:112: 'ColorIvn' : identifier not previously declared 
@@ -291,6 +291,7 @@ ERROR: node is still EOpNull!
 0:?     's17' (layout(binding=3 ) uniform sampler2D)
 0:?     'a2' (layout(binding=2 offset=4 ) uniform atomic_uint)
 0:?     'bar' (layout(binding=2 ) uniform atomic_uint)
+0:?     'bar23' (layout(offset=8 ) uniform atomic_uint)
 0:?     'b2' (layout(binding=2 ) uniform atomic_uint)
 0:?     'c2' (layout(binding=3 ) uniform atomic_uint)
 0:?     'd2' (layout(binding=2 ) uniform atomic_uint)
@@ -567,6 +568,7 @@ ERROR: node is still EOpNull!
 0:?     's17' (layout(binding=3 ) uniform sampler2D)
 0:?     'a2' (layout(binding=2 offset=4 ) uniform atomic_uint)
 0:?     'bar' (layout(binding=2 ) uniform atomic_uint)
+0:?     'bar23' (layout(offset=8 ) uniform atomic_uint)
 0:?     'b2' (layout(binding=2 ) uniform atomic_uint)
 0:?     'c2' (layout(binding=3 ) uniform atomic_uint)
 0:?     'd2' (layout(binding=2 ) uniform atomic_uint)

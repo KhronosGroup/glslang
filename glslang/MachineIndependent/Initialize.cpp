@@ -743,7 +743,7 @@ void TBuiltIns::initialize(int version, EProfile profile)
     //
     // Atomic counter functions.
     //
-    if ((profile != EEsProfile && version >= 420) ||
+    if ((profile != EEsProfile && version >= 300) ||
         (profile == EEsProfile && version >= 310)) {
         commonBuiltins.append(
             "uint atomicCounterIncrement(atomic_uint x);"
@@ -2205,24 +2205,37 @@ void TBuiltIns::initialize(const TBuiltInResource &resources, int version, EProf
         }
     }
 
-    // TODO: atomic counters 
     if (profile == EEsProfile && version >= 310 || profile != EEsProfile && version >= 420) {
-        //snprintf(builtInConstant, maxSize, "const int gl_MaxVertexAtomicCounters = %d;", resources.);
-        //snprintf(builtInConstant, maxSize, "const int gl_MaxFragmentAtomicCounters = %d;", resources.);
-        //snprintf(builtInConstant, maxSize, "const int gl_MaxCombinedAtomicCounters = %d;", resources.);
-        //snprintf(builtInConstant, maxSize, "const int gl_MaxAtomicCounterBindings = %d;", resources.);
-        //snprintf(builtInConstant, maxSize, "const int gl_MaxVertexAtomicCounterBuffers = %d;", resources.);
-        //snprintf(builtInConstant, maxSize, "const int gl_MaxFragmentAtomicCounterBuffers = %d;", resources.);
-        //snprintf(builtInConstant, maxSize, "const int gl_MaxCombinedAtomicCounterBuffers = %d;", resources.);
-        //snprintf(builtInConstant, maxSize, "const int gl_MaxAtomicCounterBufferSize = %d;", resources.);
+        snprintf(builtInConstant, maxSize, "const int gl_MaxVertexAtomicCounters = %d;", resources.               maxVertexAtomicCounters);
+        s.append(builtInConstant);
+        snprintf(builtInConstant, maxSize, "const int gl_MaxFragmentAtomicCounters = %d;", resources.             maxFragmentAtomicCounters);
+        s.append(builtInConstant);
+        snprintf(builtInConstant, maxSize, "const int gl_MaxCombinedAtomicCounters = %d;", resources.             maxCombinedAtomicCounters);
+        s.append(builtInConstant);
+        snprintf(builtInConstant, maxSize, "const int gl_MaxAtomicCounterBindings = %d;", resources.              maxAtomicCounterBindings);
+        s.append(builtInConstant);
+        snprintf(builtInConstant, maxSize, "const int gl_MaxVertexAtomicCounterBuffers = %d;", resources.         maxVertexAtomicCounterBuffers);
+        s.append(builtInConstant);
+        snprintf(builtInConstant, maxSize, "const int gl_MaxFragmentAtomicCounterBuffers = %d;", resources.       maxFragmentAtomicCounterBuffers);
+        s.append(builtInConstant);
+        snprintf(builtInConstant, maxSize, "const int gl_MaxCombinedAtomicCounterBuffers = %d;", resources.       maxCombinedAtomicCounterBuffers);
+        s.append(builtInConstant);
+        snprintf(builtInConstant, maxSize, "const int gl_MaxAtomicCounterBufferSize = %d;", resources.            maxAtomicCounterBufferSize);
+        s.append(builtInConstant);
     }
     if (profile != EEsProfile && version >= 420) {
-        //snprintf(builtInConstant, maxSize, "const int gl_MaxTessControlAtomicCounters = %d;", resources.);
-        //snprintf(builtInConstant, maxSize, "const int gl_MaxTessEvaluationAtomicCounters = %d;", resources.);
-        //snprintf(builtInConstant, maxSize, "const int gl_MaxGeometryAtomicCounters = %d;", resources.);
-        //snprintf(builtInConstant, maxSize, "const int gl_MaxTessControlAtomicCounterBuffers = %d;", resources.);
-        //snprintf(builtInConstant, maxSize, "const int gl_MaxTessEvaluationAtomicCounterBuffers = %d;", resources.);
-        //snprintf(builtInConstant, maxSize, "const int gl_MaxGeometryAtomicCounterBuffers = %d;", resources.);
+        snprintf(builtInConstant, maxSize, "const int gl_MaxTessControlAtomicCounters = %d;", resources.          maxTessControlAtomicCounters);
+        s.append(builtInConstant);
+        snprintf(builtInConstant, maxSize, "const int gl_MaxTessEvaluationAtomicCounters = %d;", resources.       maxTessEvaluationAtomicCounters);
+        s.append(builtInConstant);
+        snprintf(builtInConstant, maxSize, "const int gl_MaxGeometryAtomicCounters = %d;", resources.             maxGeometryAtomicCounters);
+        s.append(builtInConstant);
+        snprintf(builtInConstant, maxSize, "const int gl_MaxTessControlAtomicCounterBuffers = %d;", resources.    maxTessControlAtomicCounterBuffers);
+        s.append(builtInConstant);
+        snprintf(builtInConstant, maxSize, "const int gl_MaxTessEvaluationAtomicCounterBuffers = %d;", resources. maxTessEvaluationAtomicCounterBuffers);
+        s.append(builtInConstant);
+        snprintf(builtInConstant, maxSize, "const int gl_MaxGeometryAtomicCounterBuffers = %d;", resources.       maxGeometryAtomicCounterBuffers);
+        s.append(builtInConstant);
     }
 
 
@@ -2362,6 +2375,13 @@ void IdentifyBuiltIns(int version, EProfile profile, EShLanguage language, TSymb
         if (profile != EEsProfile && version < 420)
             symbolTable.setFunctionExtensions("memoryBarrier", 1, &GL_ARB_shader_image_load_store);
         // All the image access functions are protected by checks on the type of the first argument.
+
+        // GL_ARB_shader_atomic_counters
+        if (profile != EEsProfile && version < 420) {
+            symbolTable.setFunctionExtensions("atomicCounterIncrement", 1, &GL_ARB_shader_atomic_counters);
+            symbolTable.setFunctionExtensions("atomicCounterDecrement", 1, &GL_ARB_shader_atomic_counters);
+            symbolTable.setFunctionExtensions("atomicCounter"         , 1, &GL_ARB_shader_atomic_counters);
+        }
 
         symbolTable.setVariableExtensions("gl_FragDepthEXT", 1, &GL_EXT_frag_depth);
         break;

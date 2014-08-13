@@ -139,3 +139,14 @@ void mainAC()
 }
 
 layout(binding = 1) uniform mediump atomic_uint counterBad;  // ERROR, not highp
+
+layout(binding = 2, offset = 4) uniform atomic_uint countArr[4];
+uniform int i;
+
+void opac()
+{
+    int a[3];
+    a[counter];         // ERROR
+    countArr[2];
+    countArr[i];
+}

@@ -3118,9 +3118,10 @@ void TParseContext::setLayoutQualifier(TSourceLoc loc, TPublicType& publicType, 
     std::transform(id.begin(), id.end(), id.begin(), ::tolower);
     
     if (id == "offset") {
-        const char* feature = "uniform buffer-member offset";
+        const char* feature = "uniform offset";
         requireProfile(loc, EEsProfile | ECoreProfile | ECompatibilityProfile, feature);
-        profileRequires(loc, ECoreProfile | ECompatibilityProfile, 440, GL_ARB_enhanced_layouts, feature);
+        const char* exts[2] = { GL_ARB_enhanced_layouts, GL_ARB_shader_atomic_counters };
+        profileRequires(loc, ECoreProfile | ECompatibilityProfile, 420, 2, exts, feature);
         profileRequires(loc, EEsProfile, 310, 0, feature);
         publicType.qualifier.layoutOffset = value;
         return;
@@ -3342,8 +3343,12 @@ void TParseContext::layoutObjectCheck(TSourceLoc loc, const TSymbol& symbol)
                 if (qualifier.hasPacking())
                     error(loc, "cannot specify packing on a variable declaration", "layout", "");
                 // "The offset qualifier can only be used on block members of blocks..."
-                if (qualifier.hasOffset())
+                if (qualifier.hasOffset() && type.getBasicType() != EbtAtomicUint)
                     error(loc, "cannot specify on a variable declaration", "offset", "");
+                if (qualifier.hasOffset() && ! qualifier.hasBinding() && type.getBasicType() == EbtAtomicUint)
+                    error(loc, "a binding is required", "offset", "");
+                if (qualifier.hasBinding() && qualifier.layoutBinding >= resources.maxAtomicCounterBindings && type.getBasicType() == EbtAtomicUint)
+                    error(loc, "cannot be greater-than-or-equal to gl_MaxAtomicCounterBindings", "binding", "");
                 // "The align qualifier can only be used on blocks or block members..."
                 if (qualifier.hasAlign())
                     error(loc, "cannot specify on a variable declaration", "align", "");
@@ -3356,7 +3361,7 @@ void TParseContext::layoutObjectCheck(TSourceLoc loc, const TSymbol& symbol)
     }
 }
 
-// Do error layout error checking with respect to a type.
+// Do layout error checking with respect to a type.
 void TParseContext::layoutTypeCheck(TSourceLoc loc, const TType& type)
 {
     const TQualifier& qualifier = type.getQualifier();
@@ -3440,10 +3445,10 @@ void TParseContext::layoutTypeCheck(TSourceLoc loc, const TType& type)
         }
     }
 
-    // "The offset qualifier can only be used on block members of blocks..."                
+    // "The offset qualifier can only be used on block members of blocks..."
     if (qualifier.hasOffset()) {
         if (type.getBasicType() == EbtBlock)
-            error(loc, "only applies to block members, not blocks", "offset", "");        
+            error(loc, "only applies to block members, not blocks", "offset", "");
     }
 
     // Image format
@@ -4221,6 +4226,10 @@ void TParseContext::declareBlock(TSourceLoc loc, TTypeList& typeList, const TStr
             error(memberLoc, "only the last member of a buffer block can be run-time sized", memberType.getFieldName().c_str(), "");
         if (memberType.isImplicitlySizedArray())
             requireProfile(memberLoc, ~EEsProfile, "implicitly-sized array in a block");
+        if (memberQualifier.hasOffset()) {
+            requireProfile(memberLoc, ~EEsProfile, "offset on block member");
+            profileRequires(memberLoc, ~EEsProfile, 440, GL_ARB_enhanced_layouts, "offset on block member");
+        }
 
         TBasicType basicType = memberType.getBasicType();
         if (basicType == EbtSampler)

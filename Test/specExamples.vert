@@ -89,7 +89,7 @@ layout (binding = 2) uniform atomic_uint bar;
 layout (binding = 2, offset = 4) uniform atomic_uint;
 
 layout (binding = 2) uniform atomic_uint bar; // offset is 4
-layout (offset = 8) uniform atomic_uint bar;  // error, no default binding
+layout (offset = 8) uniform atomic_uint bar23;  // error, no default binding
 
 layout (binding=3, offset=4) uniform atomic_uint a2; // offset = 4
 layout (binding=2) uniform atomic_uint b2;           // offset = 0

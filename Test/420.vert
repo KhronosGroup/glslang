@@ -142,3 +142,7 @@ layout(rgba32f) uniform uimage2D i3bad;  // ERROR, type mismatch
 layout(r8_snorm) uniform iimage2D i4bad; // ERROR, type mismatch
 layout(rgba32ui) uniform iimage2D i5bad; // ERROR, type mismatch
 layout(r8ui) uniform iimage2D i6bad;     // ERROR, type mismatch
+
+uniform offcheck {
+    layout(offset = 16) int foo;   // ERROR
+} offcheckI;

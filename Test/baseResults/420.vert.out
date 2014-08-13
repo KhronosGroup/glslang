@@ -47,7 +47,8 @@ ERROR: 0:141: 'rgba32f' : does not apply to unsigned integer images
 ERROR: 0:142: 'r8_snorm' : does not apply to signed integer images 
 ERROR: 0:143: 'rgba32ui' : does not apply to signed integer images 
 ERROR: 0:144: 'r8ui' : does not apply to signed integer images 
-ERROR: 46 compilation errors.  No code generated.
+ERROR: 0:147: 'offset on block member' : not supported for this version or the enabled extensions 
+ERROR: 47 compilation errors.  No code generated.
 
 
 Shader version: 420
@@ -287,6 +288,7 @@ ERROR: node is still EOpNull!
 0:?     'i4bad' (layout(r8_snorm ) uniform iimage2D)
 0:?     'i5bad' (layout(rgba32ui ) uniform iimage2D)
 0:?     'i6bad' (layout(r8ui ) uniform iimage2D)
+0:?     'offcheckI' (layout(column_major shared ) uniform block{layout(column_major shared offset=16 ) uniform int foo})
 0:?     'gl_VertexID' (gl_VertexId int)
 0:?     'gl_InstanceID' (gl_InstanceId int)
 
@@ -531,6 +533,7 @@ ERROR: node is still EOpNull!
 0:?     'i4bad' (layout(r8_snorm ) uniform iimage2D)
 0:?     'i5bad' (layout(rgba32ui ) uniform iimage2D)
 0:?     'i6bad' (layout(r8ui ) uniform iimage2D)
+0:?     'offcheckI' (layout(column_major shared ) uniform block{layout(column_major shared offset=16 ) uniform int foo})
 0:?     'gl_VertexID' (gl_VertexId int)
 0:?     'gl_InstanceID' (gl_InstanceId int)
 

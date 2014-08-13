@@ -386,6 +386,7 @@ TIntermTyped* TIntermediate::addConversion(TOperator op, const TType& type, TInt
     switch (node->getBasicType()) {
     case EbtVoid:
         return 0;
+    case EbtAtomicUint:
     case EbtSampler:
         if (op != EOpFunctionCall)
             return 0;

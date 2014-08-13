@@ -523,6 +523,7 @@ public:
         return hasMatrix() ||
                hasPacking() ||
                hasOffset() ||
+               hasBinding() ||
                hasAlign();
     }
     bool hasMatrix() const
