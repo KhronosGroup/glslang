@@ -187,6 +187,37 @@ ERROR: node is still EOpNull!
 0:151      indirect index (layout(binding=2 offset=4 ) highp atomic_uint)
 0:151        'countArr' (layout(binding=2 offset=4 ) uniform 4-element array of highp atomic_uint)
 0:151        'i' (uniform highp int)
+0:157  Function Definition: atoms( (void)
+0:157    Function Parameters: 
+0:159    Sequence
+0:159      Sequence
+0:159        move second child to first child (highp int)
+0:159          'origi' (highp int)
+0:159          Function Call: atomicAdd(i1;i1; (highp int)
+0:159            'atomi' (shared highp int)
+0:159            Constant:
+0:159              3 (const int)
+0:160      Sequence
+0:160        move second child to first child (highp uint)
+0:160          'origu' (highp uint)
+0:160          Function Call: atomicAnd(u1;u1; (highp uint)
+0:160            'atomu' (shared highp uint)
+0:160            Constant:
+0:160              7 (const uint)
+0:161      move second child to first child (highp int)
+0:161        'origi' (highp int)
+0:161        Function Call: atomicExchange(i1;i1; (highp int)
+0:161          'atomi' (shared highp int)
+0:161          Constant:
+0:161            4 (const int)
+0:162      move second child to first child (highp uint)
+0:162        'origu' (highp uint)
+0:162        Function Call: atomicCompSwap(u1;u1;u1; (highp uint)
+0:162          'atomu' (shared highp uint)
+0:162          Constant:
+0:162            10 (const uint)
+0:162          Constant:
+0:162            8 (const uint)
 0:?   Linker Objects
 0:?     'gl_WorkGroupSize' (const highp 3-component vector of uint)
 0:?       2 (const uint)
@@ -229,6 +260,8 @@ ERROR: node is still EOpNull!
 0:?     'counterBad' (layout(binding=1 ) uniform mediump atomic_uint)
 0:?     'countArr' (layout(binding=2 offset=4 ) uniform 4-element array of highp atomic_uint)
 0:?     'i' (uniform highp int)
+0:?     'atomi' (shared highp int)
+0:?     'atomu' (shared highp uint)
 
 
 Linked compute stage:
@@ -376,6 +409,37 @@ ERROR: node is still EOpNull!
 0:151      indirect index (layout(binding=2 offset=4 ) highp atomic_uint)
 0:151        'countArr' (layout(binding=2 offset=4 ) uniform 4-element array of highp atomic_uint)
 0:151        'i' (uniform highp int)
+0:157  Function Definition: atoms( (void)
+0:157    Function Parameters: 
+0:159    Sequence
+0:159      Sequence
+0:159        move second child to first child (highp int)
+0:159          'origi' (highp int)
+0:159          Function Call: atomicAdd(i1;i1; (highp int)
+0:159            'atomi' (shared highp int)
+0:159            Constant:
+0:159              3 (const int)
+0:160      Sequence
+0:160        move second child to first child (highp uint)
+0:160          'origu' (highp uint)
+0:160          Function Call: atomicAnd(u1;u1; (highp uint)
+0:160            'atomu' (shared highp uint)
+0:160            Constant:
+0:160              7 (const uint)
+0:161      move second child to first child (highp int)
+0:161        'origi' (highp int)
+0:161        Function Call: atomicExchange(i1;i1; (highp int)
+0:161          'atomi' (shared highp int)
+0:161          Constant:
+0:161            4 (const int)
+0:162      move second child to first child (highp uint)
+0:162        'origu' (highp uint)
+0:162        Function Call: atomicCompSwap(u1;u1;u1; (highp uint)
+0:162          'atomu' (shared highp uint)
+0:162          Constant:
+0:162            10 (const uint)
+0:162          Constant:
+0:162            8 (const uint)
 0:?   Linker Objects
 0:?     'gl_WorkGroupSize' (const highp 3-component vector of uint)
 0:?       2 (const uint)
@@ -418,4 +482,6 @@ ERROR: node is still EOpNull!
 0:?     'counterBad' (layout(binding=1 ) uniform mediump atomic_uint)
 0:?     'countArr' (layout(binding=2 offset=4 ) uniform 4-element array of highp atomic_uint)
 0:?     'i' (uniform highp int)
+0:?     'atomi' (shared highp int)
+0:?     'atomu' (shared highp uint)
 

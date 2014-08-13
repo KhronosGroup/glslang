@@ -17,4 +17,19 @@ void main()
 
     float cull = gl_CullDistance[2];
     float consts = gl_MaxCullDistances + gl_MaxCombinedClipAndCullDistances;
+
+    if (gl_HelperInvocation)
+        ++v4;
+
+    int sum = gl_MaxVertexImageUniforms +
+              gl_MaxFragmentImageUniforms +
+              gl_MaxComputeImageUniforms +
+              gl_MaxCombinedImageUniforms +
+              gl_MaxCombinedShaderOutputResources;
+
+    bool b1, b3, b;
+    uint uin;
+    bvec2 b2 = mix(bvec2(b1), bvec2(b3), bvec2(b));
+    uint um = mix(uin, uin, b);
+    ivec3 im3 = mix(ivec3(uin), ivec3(uin), bvec3(b));
 }

@@ -229,6 +229,8 @@ void TIntermediate::mergeLinkerObjects(TInfoSink& infoSink, TIntermSequence& lin
     }
 }
 
+// TODO 4.5 link functionality: cull distance array size checking
+
 // Recursively merge the implicit array sizes through the objects' respective type trees.
 void TIntermediate::mergeImplicitArraySizes(TType& type, const TType& unitType)
 {

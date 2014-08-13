@@ -150,3 +150,14 @@ void opac()
     countArr[2];
     countArr[i];
 }
+
+shared int atomi;
+shared uint atomu;
+
+void atoms()
+{
+    int origi = atomicAdd(atomi, 3);
+    uint origu = atomicAnd(atomu, 7u);
+    origi = atomicExchange(atomi, 4);
+    origu = atomicCompSwap(atomu, 10u, 8u);
+}

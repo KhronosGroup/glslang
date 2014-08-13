@@ -153,6 +153,45 @@ ERROR: node is still EOpNull!
 0:45        Constant:
 0:45          -10 (const int)
 0:45          20 (const int)
+0:47      Test condition and select (void)
+0:47        Condition
+0:47        'gl_HelperInvocation' (in bool)
+0:47        true case
+0:48        Pre-Increment (mediump 4-component vector of float)
+0:48          'outp' (out mediump 4-component vector of float)
+0:50      Sequence
+0:50        move second child to first child (mediump int)
+0:50          'sum' (mediump int)
+0:50          Constant:
+0:50            32 (const int)
+0:58      move second child to first child (bool)
+0:58        'b1' (bool)
+0:58        mix (bool)
+0:58          'b2' (bool)
+0:58          'b3' (bool)
+0:58          'b' (bool)
+0:59      Sequence
+0:59        move second child to first child (mediump 3-component vector of uint)
+0:59          'um3' (mediump 3-component vector of uint)
+0:59          mix (mediump 3-component vector of uint)
+0:59            Construct uvec3 (mediump 3-component vector of uint)
+0:59              Convert int to uint (mediump uint)
+0:59                'i' (uniform mediump int)
+0:59            Construct uvec3 (mediump 3-component vector of uint)
+0:59              Convert int to uint (mediump uint)
+0:59                'i' (uniform mediump int)
+0:59            Construct bvec3 (3-component vector of bool)
+0:59              'b' (bool)
+0:60      Sequence
+0:60        move second child to first child (mediump 4-component vector of int)
+0:60          'im4' (mediump 4-component vector of int)
+0:60          mix (mediump 4-component vector of int)
+0:60            Construct ivec4 (mediump 4-component vector of int)
+0:60              'i' (uniform mediump int)
+0:60            Construct ivec4 (mediump 4-component vector of int)
+0:60              'i' (uniform mediump int)
+0:60            Construct bvec4 (4-component vector of bool)
+0:60              'b' (bool)
 0:?   Linker Objects
 0:?     'gl_FragCoord' (smooth in mediump 4-component vector of float)
 0:?     'v3' (layout(location=2 ) smooth in mediump 3-component vector of float)
@@ -303,6 +342,45 @@ ERROR: node is still EOpNull!
 0:45        Constant:
 0:45          -10 (const int)
 0:45          20 (const int)
+0:47      Test condition and select (void)
+0:47        Condition
+0:47        'gl_HelperInvocation' (in bool)
+0:47        true case
+0:48        Pre-Increment (mediump 4-component vector of float)
+0:48          'outp' (out mediump 4-component vector of float)
+0:50      Sequence
+0:50        move second child to first child (mediump int)
+0:50          'sum' (mediump int)
+0:50          Constant:
+0:50            32 (const int)
+0:58      move second child to first child (bool)
+0:58        'b1' (bool)
+0:58        mix (bool)
+0:58          'b2' (bool)
+0:58          'b3' (bool)
+0:58          'b' (bool)
+0:59      Sequence
+0:59        move second child to first child (mediump 3-component vector of uint)
+0:59          'um3' (mediump 3-component vector of uint)
+0:59          mix (mediump 3-component vector of uint)
+0:59            Construct uvec3 (mediump 3-component vector of uint)
+0:59              Convert int to uint (mediump uint)
+0:59                'i' (uniform mediump int)
+0:59            Construct uvec3 (mediump 3-component vector of uint)
+0:59              Convert int to uint (mediump uint)
+0:59                'i' (uniform mediump int)
+0:59            Construct bvec3 (3-component vector of bool)
+0:59              'b' (bool)
+0:60      Sequence
+0:60        move second child to first child (mediump 4-component vector of int)
+0:60          'im4' (mediump 4-component vector of int)
+0:60          mix (mediump 4-component vector of int)
+0:60            Construct ivec4 (mediump 4-component vector of int)
+0:60              'i' (uniform mediump int)
+0:60            Construct ivec4 (mediump 4-component vector of int)
+0:60              'i' (uniform mediump int)
+0:60            Construct bvec4 (4-component vector of bool)
+0:60              'b' (bool)
 0:?   Linker Objects
 0:?     'gl_FragCoord' (smooth in mediump 4-component vector of float)
 0:?     'v3' (layout(location=2 ) smooth in mediump 3-component vector of float)

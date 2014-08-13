@@ -372,7 +372,7 @@ void TBuiltIns::initialize(int version, EProfile profile)
             "ivec2 max(ivec2  x, ivec2  y);"
             "ivec3 max(ivec3  x, ivec3  y);"
             "ivec4 max(ivec4  x, ivec4  y);"
-                     
+
             " uint max(uint   x, uint y);"
             "uvec2 max(uvec2  x, uint y);"
             "uvec3 max(uvec3  x, uint y);"
@@ -380,7 +380,7 @@ void TBuiltIns::initialize(int version, EProfile profile)
             "uvec2 max(uvec2  x, uvec2  y);"
             "uvec3 max(uvec3  x, uvec3  y);"
             "uvec4 max(uvec4  x, uvec4  y);"
-                     
+
             "int    clamp(int x, int minVal, int maxVal);"
             "ivec2  clamp(ivec2  x, int minVal, int maxVal);"
             "ivec3  clamp(ivec3  x, int minVal, int maxVal);"
@@ -388,7 +388,7 @@ void TBuiltIns::initialize(int version, EProfile profile)
             "ivec2  clamp(ivec2  x, ivec2  minVal, ivec2  maxVal);"
             "ivec3  clamp(ivec3  x, ivec3  minVal, ivec3  maxVal);"
             "ivec4  clamp(ivec4  x, ivec4  minVal, ivec4  maxVal);"
-                     
+
             "uint   clamp(uint x, uint minVal, uint maxVal);"
             "uvec2  clamp(uvec2  x, uint minVal, uint maxVal);"
             "uvec3  clamp(uvec3  x, uint minVal, uint maxVal);"
@@ -396,22 +396,73 @@ void TBuiltIns::initialize(int version, EProfile profile)
             "uvec2  clamp(uvec2  x, uvec2  minVal, uvec2  maxVal);"
             "uvec3  clamp(uvec3  x, uvec3  minVal, uvec3  maxVal);"
             "uvec4  clamp(uvec4  x, uvec4  minVal, uvec4  maxVal);"
-                     
+
             "float mix(float x, float y, bool  a);"
             "vec2  mix(vec2  x, vec2  y, bvec2 a);"
             "vec3  mix(vec3  x, vec3  y, bvec3 a);"
             "vec4  mix(vec4  x, vec4  y, bvec4 a);"
-                     
+
             "bool  isnan(float x);"
             "bvec2 isnan(vec2  x);"
             "bvec3 isnan(vec3  x);"
             "bvec4 isnan(vec4  x);"
-                     
+
             "bool  isinf(float x);"
             "bvec2 isinf(vec2  x);"
             "bvec3 isinf(vec3  x);"
             "bvec4 isinf(vec4  x);"
+
+            "\n");
+    }
+
+    if (profile == EEsProfile && version >= 310 ||
+        profile != EEsProfile && version >= 430) {
+        commonBuiltins.append(
+            "uint atomicAdd(coherent inout uint, uint);"
+            " int atomicAdd(coherent inout  int,  int);"
+
+            "uint atomicMin(coherent inout uint, uint);"
+            " int atomicMin(coherent inout  int,  int);"
             
+            "uint atomicMax(coherent inout uint, uint);"
+            " int atomicMax(coherent inout  int,  int);"
+            
+            "uint atomicAnd(coherent inout uint, uint);"
+            " int atomicAnd(coherent inout  int,  int);"
+            
+            "uint atomicOr (coherent inout uint, uint);"
+            " int atomicOr (coherent inout  int,  int);"
+            
+            "uint atomicXor(coherent inout uint, uint);"
+            " int atomicXor(coherent inout  int,  int);"
+
+            "uint atomicExchange(coherent inout uint, uint);"
+            " int atomicExchange(coherent inout  int,  int);"
+
+            "uint atomicCompSwap(coherent inout uint, uint, uint);"
+            " int atomicCompSwap(coherent inout  int,  int,  int);"
+
+            "\n");
+    }
+
+    if (profile == EEsProfile && version >= 310 ||
+        profile != EEsProfile && version >= 450) {
+        commonBuiltins.append(
+            "int    mix(int    x, int    y, bool  a);"
+            "ivec2  mix(ivec2  x, ivec2  y, bvec2 a);"
+            "ivec3  mix(ivec3  x, ivec3  y, bvec3 a);"
+            "ivec4  mix(ivec4  x, ivec4  y, bvec4 a);"
+
+            "uint   mix(uint   x, uint   y, bool  a);"
+            "uvec2  mix(uvec2  x, uvec2  y, bvec2 a);"
+            "uvec3  mix(uvec3  x, uvec3  y, bvec3 a);"
+            "uvec4  mix(uvec4  x, uvec4  y, bvec4 a);"
+
+            "bool   mix(bool   x, bool   y, bool  a);"
+            "bvec2  mix(bvec2  x, bvec2  y, bvec2 a);"
+            "bvec3  mix(bvec3  x, bvec3  y, bvec3 a);"
+            "bvec4  mix(bvec4  x, bvec4  y, bvec4 a);"
+
             "\n");
     }
 
@@ -2238,25 +2289,15 @@ void TBuiltIns::initialize(const TBuiltInResource &resources, int version, EProf
 
         // images
         if (version >= 130) {
-            snprintf(builtInConstant, maxSize, "const int gl_MaxImageUnits = %d;", resources.maxImageUnits);
-            s.append(builtInConstant);
             snprintf(builtInConstant, maxSize, "const int gl_MaxCombinedImageUnitsAndFragmentOutputs = %d;", resources.maxCombinedImageUnitsAndFragmentOutputs);
             s.append(builtInConstant);
-            snprintf(builtInConstant, maxSize, "const int gl_MaxCombinedShaderOutputResources = %d;", resources.maxCombinedShaderOutputResources);
-            s.append(builtInConstant);
             snprintf(builtInConstant, maxSize, "const int gl_MaxImageSamples = %d;", resources.maxImageSamples);
-            s.append(builtInConstant);
-            snprintf(builtInConstant, maxSize, "const int gl_MaxVertexImageUniforms = %d;", resources.maxVertexImageUniforms);
             s.append(builtInConstant);
             snprintf(builtInConstant, maxSize, "const int gl_MaxTessControlImageUniforms = %d;", resources.maxTessControlImageUniforms);
             s.append(builtInConstant);
             snprintf(builtInConstant, maxSize, "const int gl_MaxTessEvaluationImageUniforms = %d;", resources.maxTessEvaluationImageUniforms);
             s.append(builtInConstant);
             snprintf(builtInConstant, maxSize, "const int gl_MaxGeometryImageUniforms = %d;", resources.maxGeometryImageUniforms);
-            s.append(builtInConstant);
-            snprintf(builtInConstant, maxSize, "const int gl_MaxFragmentImageUniforms = %d;", resources.maxFragmentImageUniforms);
-            s.append(builtInConstant);
-            snprintf(builtInConstant, maxSize, "const int gl_MaxCombinedImageUniforms = %d;", resources.maxCombinedImageUniforms);
             s.append(builtInConstant);
         }
 
@@ -2269,6 +2310,21 @@ void TBuiltIns::initialize(const TBuiltInResource &resources, int version, EProf
         }
     }
 
+    // images (some in compute below)
+    if (profile == EEsProfile && version >= 310 || profile != EEsProfile && version >= 130) {
+        snprintf(builtInConstant, maxSize, "const int gl_MaxImageUnits = %d;", resources.maxImageUnits);
+        s.append(builtInConstant);
+        snprintf(builtInConstant, maxSize, "const int gl_MaxCombinedShaderOutputResources = %d;", resources.maxCombinedShaderOutputResources);
+        s.append(builtInConstant);
+        snprintf(builtInConstant, maxSize, "const int gl_MaxVertexImageUniforms = %d;", resources.maxVertexImageUniforms);
+        s.append(builtInConstant);
+        snprintf(builtInConstant, maxSize, "const int gl_MaxFragmentImageUniforms = %d;", resources.maxFragmentImageUniforms);
+        s.append(builtInConstant);
+        snprintf(builtInConstant, maxSize, "const int gl_MaxCombinedImageUniforms = %d;", resources.maxCombinedImageUniforms);
+        s.append(builtInConstant);
+    }
+
+    // atomic counters (some in compute below)
     if (profile == EEsProfile && version >= 310 || profile != EEsProfile && version >= 420) {
         snprintf(builtInConstant, maxSize, "const int gl_MaxVertexAtomicCounters = %d;", resources.               maxVertexAtomicCounters);
         s.append(builtInConstant);

@@ -994,6 +994,11 @@ TIntermTyped* TParseContext::handleFunctionCall(TSourceLoc loc, TFunction* funct
                         if (argQualifier.writeonly && ! formalQualifier.writeonly)
                             error(arguments->getLoc(), message, "writeonly", "");
                     }
+                    // TODO 4.5 functionality:  A shader will fail to compile 
+                    // if the value passed to the memargument of an atomic memory function does not correspond to a buffer or
+                    // shared variable. It is acceptable to pass an element of an array or a single component of a vector to the 
+                    // memargument of an atomic memory function, as long as the underlying array or vector is a buffer or 
+                    // shared variable.
                 }
 
                 // Convert 'in' arguments

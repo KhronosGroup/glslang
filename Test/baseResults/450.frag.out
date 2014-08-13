@@ -59,6 +59,46 @@ Shader version: 450
 0:19          'consts' (float)
 0:19          Constant:
 0:19            16.000000
+0:21      Test condition and select (void)
+0:21        Condition
+0:21        'gl_HelperInvocation' (in bool)
+0:21        true case
+0:22        Pre-Increment (4-component vector of float)
+0:22          'v4' (4-component vector of float)
+0:24      Sequence
+0:24        move second child to first child (int)
+0:24          'sum' (int)
+0:24          Constant:
+0:24            32 (const int)
+0:32      Sequence
+0:32        move second child to first child (2-component vector of bool)
+0:32          'b2' (2-component vector of bool)
+0:32          mix (2-component vector of bool)
+0:32            Construct bvec2 (2-component vector of bool)
+0:32              'b1' (bool)
+0:32            Construct bvec2 (2-component vector of bool)
+0:32              'b3' (bool)
+0:32            Construct bvec2 (2-component vector of bool)
+0:32              'b' (bool)
+0:33      Sequence
+0:33        move second child to first child (uint)
+0:33          'um' (uint)
+0:33          mix (uint)
+0:33            'uin' (uint)
+0:33            'uin' (uint)
+0:33            'b' (bool)
+0:34      Sequence
+0:34        move second child to first child (3-component vector of int)
+0:34          'im3' (3-component vector of int)
+0:34          mix (3-component vector of int)
+0:34            Construct ivec3 (3-component vector of int)
+0:34              Convert uint to int (int)
+0:34                'uin' (uint)
+0:34            Construct ivec3 (3-component vector of int)
+0:34              Convert uint to int (int)
+0:34                'uin' (uint)
+0:34            Construct bvec3 (3-component vector of bool)
+0:34              'b' (bool)
 0:?   Linker Objects
 0:?     'in1' (smooth in float)
 0:?     'in2' (smooth in 2-component vector of float)
@@ -128,6 +168,46 @@ Shader version: 450
 0:19          'consts' (float)
 0:19          Constant:
 0:19            16.000000
+0:21      Test condition and select (void)
+0:21        Condition
+0:21        'gl_HelperInvocation' (in bool)
+0:21        true case
+0:22        Pre-Increment (4-component vector of float)
+0:22          'v4' (4-component vector of float)
+0:24      Sequence
+0:24        move second child to first child (int)
+0:24          'sum' (int)
+0:24          Constant:
+0:24            32 (const int)
+0:32      Sequence
+0:32        move second child to first child (2-component vector of bool)
+0:32          'b2' (2-component vector of bool)
+0:32          mix (2-component vector of bool)
+0:32            Construct bvec2 (2-component vector of bool)
+0:32              'b1' (bool)
+0:32            Construct bvec2 (2-component vector of bool)
+0:32              'b3' (bool)
+0:32            Construct bvec2 (2-component vector of bool)
+0:32              'b' (bool)
+0:33      Sequence
+0:33        move second child to first child (uint)
+0:33          'um' (uint)
+0:33          mix (uint)
+0:33            'uin' (uint)
+0:33            'uin' (uint)
+0:33            'b' (bool)
+0:34      Sequence
+0:34        move second child to first child (3-component vector of int)
+0:34          'im3' (3-component vector of int)
+0:34          mix (3-component vector of int)
+0:34            Construct ivec3 (3-component vector of int)
+0:34              Convert uint to int (int)
+0:34                'uin' (uint)
+0:34            Construct ivec3 (3-component vector of int)
+0:34              Convert uint to int (int)
+0:34                'uin' (uint)
+0:34            Construct bvec3 (3-component vector of bool)
+0:34              'b' (bool)
 0:?   Linker Objects
 0:?     'in1' (smooth in float)
 0:?     'in2' (smooth in 2-component vector of float)

@@ -43,4 +43,19 @@ void foo23()
     textureProjGradOffset(usamp2d, outp, vec2(0.0), vec2(0.0), offsets[1]);
     textureProjGradOffset(usamp2d, outp, vec2(0.0), vec2(0.0), offsets[2]);     // ERROR, offset out of range
     textureProjGradOffset(usamp2d, outp, vec2(0.0), vec2(0.0), ivec2(-10, 20)); // ERROR, offset out of range
+
+    if (gl_HelperInvocation)
+        ++outp;
+
+    int sum = gl_MaxVertexImageUniforms +
+              gl_MaxFragmentImageUniforms +
+              gl_MaxComputeImageUniforms +
+              gl_MaxCombinedImageUniforms +
+              gl_MaxCombinedShaderOutputResources;
+
+    bool b1, b2, b3, b;
+
+    b1 = mix(b2, b3, b);
+    uvec3 um3 = mix(uvec3(i), uvec3(i), bvec3(b));
+    ivec4 im4 = mix(ivec4(i), ivec4(i), bvec4(b));
 }
