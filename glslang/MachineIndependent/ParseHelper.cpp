@@ -2559,6 +2559,7 @@ TSymbol* TParseContext::redeclareBuiltinVariable(TSourceLoc loc, const TString& 
 //
 // Either redeclare the requested block, or give an error message why it can't be done.
 //
+// TODO: functionality: explicitly sizing members of redeclared blocks is not giving them an explicit size
 void TParseContext::redeclareBuiltinBlock(TSourceLoc loc, TTypeList& newTypeList, const TString& blockName, const TString* instanceName, TArraySizes* arraySizes)
 {
     const char* feature = "built-in block redeclaration";

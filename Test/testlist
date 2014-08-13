@@ -71,7 +71,12 @@ numeral.frag
 430.comp
 440.vert
 440.frag
+450.vert
+450.geom
+450.tesc
+450.tese
 450.frag
+450.comp
 dce.frag
 atomic_uint.frag
 ../../LunarGLASS/test/aggOps.frag

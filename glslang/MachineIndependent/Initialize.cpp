@@ -1221,7 +1221,7 @@ void TBuiltIns::initialize(int version, EProfile profile)
                     "vec4 gl_Position;"     // needs qualifier fixed later
                     "float gl_PointSize;"   // needs qualifier fixed later
                     "float gl_ClipDistance[];"
-                    );
+                    );            
             if (IncludeLegacy(version, profile))
                 stageBuiltins[EShLangVertex].append(
                     "vec4 gl_ClipVertex;"   // needs qualifier fixed later
@@ -1231,6 +1231,10 @@ void TBuiltIns::initialize(int version, EProfile profile)
                     "vec4 gl_BackSecondaryColor;"
                     "vec4 gl_TexCoord[];"
                     "float gl_FogFragCoord;"
+                    );
+            if (version >= 450)
+                stageBuiltins[EShLangVertex].append(
+                    "float gl_CullDistance[];"
                     );
             stageBuiltins[EShLangVertex].append(
                 "};"
@@ -1285,6 +1289,10 @@ void TBuiltIns::initialize(int version, EProfile profile)
                 "vec4 gl_TexCoord[];"
                 "float gl_FogFragCoord;"
                 );
+        if (version >= 450)
+            stageBuiltins[EShLangGeometry].append(
+                "float gl_CullDistance[];"
+                );
         stageBuiltins[EShLangGeometry].append(
             "} gl_in[];"
 
@@ -1303,6 +1311,10 @@ void TBuiltIns::initialize(int version, EProfile profile)
                 "vec4 gl_BackSecondaryColor;"
                 "vec4 gl_TexCoord[];"
                 "float gl_FogFragCoord;"
+                );
+        if (version >= 450)
+            stageBuiltins[EShLangGeometry].append(
+                "float gl_CullDistance[];"
                 );
         stageBuiltins[EShLangGeometry].append(
             "};"
@@ -1356,6 +1368,10 @@ void TBuiltIns::initialize(int version, EProfile profile)
                 "vec4 gl_TexCoord[];"
                 "float gl_FogFragCoord;"
                 );
+        if (version >= 450)
+            stageBuiltins[EShLangTessControl].append(
+                "float gl_CullDistance[];"
+                );
         stageBuiltins[EShLangTessControl].append(
             "} gl_out[];"
 
@@ -1396,6 +1412,10 @@ void TBuiltIns::initialize(int version, EProfile profile)
                 "vec4 gl_BackSecondaryColor;"
                 "vec4 gl_TexCoord[];"
                 "float gl_FogFragCoord;"
+                );
+        if (version >= 450)
+            stageBuiltins[EShLangTessEvaluation].append(
+                "float gl_CullDistance[];"
                 );
         stageBuiltins[EShLangTessEvaluation].append(
             "};"
@@ -1477,6 +1497,7 @@ void TBuiltIns::initialize(int version, EProfile profile)
 
         if (version >= 450)
             stageBuiltins[EShLangFragment].append(
+                "in float gl_CullDistance[];"
                 "bool gl_HelperInvocation;"     // needs qualifier fixed later
                 );
     } else {
@@ -2200,6 +2221,10 @@ void TBuiltIns::initialize(const TBuiltInResource &resources, int version, EProf
                         "vec4 gl_TexCoord[];"
                         "float gl_FogFragCoord;"
                         );
+                if (profile != EEsProfile && version >= 450)
+                    s.append(
+                        "float gl_CullDistance[];"
+                       );
                 s.append(
                     "} gl_in[gl_MaxPatchVertices];"
                     "\n");
@@ -2298,6 +2323,14 @@ void TBuiltIns::initialize(const TBuiltInResource &resources, int version, EProf
         snprintf(builtInConstant, maxSize, "const int gl_MaxComputeAtomicCounters = %d;", resources.maxComputeAtomicCounters);
         s.append(builtInConstant);
         snprintf(builtInConstant, maxSize, "const int gl_MaxComputeAtomicCounterBuffers = %d;", resources.maxComputeAtomicCounterBuffers);
+        s.append(builtInConstant);
+    }
+
+    // GL_ARB_cull_distance
+    if (profile != EEsProfile && version >= 450) {
+        snprintf(builtInConstant, maxSize, "const int gl_MaxCullDistances                = %d;", resources.maxCullDistances);
+        s.append(builtInConstant);
+        snprintf(builtInConstant, maxSize, "const int gl_MaxCombinedClipAndCullDistances = %d;", resources.maxCombinedClipAndCullDistances);
         s.append(builtInConstant);
     }
 

@@ -1,0 +1,47 @@
+450.vert
+Warning, version 450 is not yet complete; most version-specific features are present, but some are missing.
+
+Shader version: 450
+0:? Sequence
+0:7  Function Definition: main( (void)
+0:7    Function Parameters: 
+0:9    Sequence
+0:9      move second child to first child (float)
+0:9        direct index (float)
+0:9          gl_CullDistance: direct index for structure (out implicitly-sized array of float)
+0:9            'anon@0' (out block{out implicitly-sized array of float gl_CullDistance})
+0:9            Constant:
+0:9              10 (const uint)
+0:9          Constant:
+0:9            2 (const int)
+0:9        Constant:
+0:9          4.500000
+0:?   Linker Objects
+0:?     'anon@0' (out block{out implicitly-sized array of float gl_CullDistance})
+0:?     'gl_VertexID' (gl_VertexId int)
+0:?     'gl_InstanceID' (gl_InstanceId int)
+
+
+Linked vertex stage:
+
+
+Shader version: 450
+0:? Sequence
+0:7  Function Definition: main( (void)
+0:7    Function Parameters: 
+0:9    Sequence
+0:9      move second child to first child (float)
+0:9        direct index (float)
+0:9          gl_CullDistance: direct index for structure (out 3-element array of float)
+0:9            'anon@0' (out block{out 3-element array of float gl_CullDistance})
+0:9            Constant:
+0:9              10 (const uint)
+0:9          Constant:
+0:9            2 (const int)
+0:9        Constant:
+0:9          4.500000
+0:?   Linker Objects
+0:?     'anon@0' (out block{out 3-element array of float gl_CullDistance})
+0:?     'gl_VertexID' (gl_VertexId int)
+0:?     'gl_InstanceID' (gl_InstanceId int)
+

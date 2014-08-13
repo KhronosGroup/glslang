@@ -169,6 +169,7 @@ void TParseContext::initializeExtensionBehavior()
     extensionBehavior[GL_ARB_shader_image_load_store]  = EBhDisable;
     extensionBehavior[GL_ARB_shader_atomic_counters]   = EBhDisable;
     extensionBehavior[GL_ARB_derivative_control]       = EBhDisable;
+//    extensionBehavior[GL_ARB_cull_distance]            = EBhDisable;    // present for 4.5, but need extension control over block members
 }
 
 // Get code that is not part of a shared symbol table, is specific to this shader,
@@ -184,7 +185,8 @@ const char* TParseContext::getPreamble()
                 "#define GL_OES_standard_derivatives 1\n"
                 "#define GL_EXT_frag_depth 1\n"
                 "#define GL_OES_EGL_image_external 1\n"
-                "#define GL_EXT_shader_texture_lod 1\n";
+                "#define GL_EXT_shader_texture_lod 1\n"
+                ;
         } else {
             return
                 "#define GL_ES 1\n"
@@ -192,7 +194,8 @@ const char* TParseContext::getPreamble()
                 "#define GL_OES_standard_derivatives 1\n"
                 "#define GL_EXT_frag_depth 1\n"
                 "#define GL_OES_EGL_image_external 1\n"
-                "#define GL_EXT_shader_texture_lod 1\n";
+                "#define GL_EXT_shader_texture_lod 1\n"
+                ;
         }
     } else {
         return
@@ -210,6 +213,7 @@ const char* TParseContext::getPreamble()
             "#define GL_ARB_shader_image_load_store 1\n"
             "#define GL_ARB_shader_atomic_counters 1\n"
             "#define GL_ARB_derivative_control 1\n"
+//            "#define GL_ARB_cull_distance 1\n"    // present for 4.5, but need extension control over block members
             ;
     }
 }

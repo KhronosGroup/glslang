@@ -197,6 +197,8 @@ const char* DefaultConfig =
     "MaxAtomicCounterBufferSize 16384\n"
     "MaxTransformFeedbackBuffers 4\n"
     "MaxTransformFeedbackInterleavedComponents 64\n"
+    "MaxCullDistances 8\n"
+    "MaxCombinedClipAndCullDistances 8\n"
 
     "nonInductiveForLoops 1\n"
     "whileLoops 1\n"
@@ -401,6 +403,10 @@ void ProcessConfigFile()
             Resources.maxTransformFeedbackBuffers = value;
         else if (strcmp(token, "MaxTransformFeedbackInterleavedComponents") == 0)
             Resources.maxTransformFeedbackInterleavedComponents = value;
+        else if (strcmp(token, "MaxCullDistances") == 0)
+            Resources.maxCullDistances = value;
+        else if (strcmp(token, "MaxCombinedClipAndCullDistances") == 0)
+            Resources.maxCombinedClipAndCullDistances = value;
 
         else if (strcmp(token, "nonInductiveForLoops") == 0)
             Resources.limits.nonInductiveForLoops = (value != 0);

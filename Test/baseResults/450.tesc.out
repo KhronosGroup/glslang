@@ -1,0 +1,70 @@
+450.tesc
+Warning, version 450 is not yet complete; most version-specific features are present, but some are missing.
+
+Shader version: 450
+vertices = 0
+0:? Sequence
+0:11  Function Definition: main( (void)
+0:11    Function Parameters: 
+0:13    Sequence
+0:13      move second child to first child (float)
+0:13        direct index (float)
+0:13          gl_CullDistance: direct index for structure (out implicitly-sized array of float)
+0:13            direct index (block{out implicitly-sized array of float gl_CullDistance})
+0:13              'gl_out' (out implicitly-sized array of block{out implicitly-sized array of float gl_CullDistance})
+0:13              Constant:
+0:13                0 (const int)
+0:13            Constant:
+0:13              0 (const int)
+0:13          Constant:
+0:13            2 (const int)
+0:13        direct index (float)
+0:13          gl_CullDistance: direct index for structure (in implicitly-sized array of float)
+0:13            direct index (block{in implicitly-sized array of float gl_CullDistance})
+0:13              'gl_in' (in 32-element array of block{in implicitly-sized array of float gl_CullDistance})
+0:13              Constant:
+0:13                1 (const int)
+0:13            Constant:
+0:13              0 (const int)
+0:13          Constant:
+0:13            2 (const int)
+0:?   Linker Objects
+0:?     'gl_in' (in 32-element array of block{in implicitly-sized array of float gl_CullDistance})
+0:?     'gl_out' (out implicitly-sized array of block{out implicitly-sized array of float gl_CullDistance})
+
+
+Linked tessellation control stage:
+
+ERROR: Linking tessellation control stage: At least one shader must specify an output layout(vertices=...)
+
+Shader version: 450
+vertices = 0
+0:? Sequence
+0:11  Function Definition: main( (void)
+0:11    Function Parameters: 
+0:13    Sequence
+0:13      move second child to first child (float)
+0:13        direct index (float)
+0:13          gl_CullDistance: direct index for structure (out 1-element array of float)
+0:13            direct index (block{out 1-element array of float gl_CullDistance})
+0:13              'gl_out' (out 1-element array of block{out 1-element array of float gl_CullDistance})
+0:13              Constant:
+0:13                0 (const int)
+0:13            Constant:
+0:13              0 (const int)
+0:13          Constant:
+0:13            2 (const int)
+0:13        direct index (float)
+0:13          gl_CullDistance: direct index for structure (in 1-element array of float)
+0:13            direct index (block{in 1-element array of float gl_CullDistance})
+0:13              'gl_in' (in 32-element array of block{in 1-element array of float gl_CullDistance})
+0:13              Constant:
+0:13                1 (const int)
+0:13            Constant:
+0:13              0 (const int)
+0:13          Constant:
+0:13            2 (const int)
+0:?   Linker Objects
+0:?     'gl_in' (in 32-element array of block{in 1-element array of float gl_CullDistance})
+0:?     'gl_out' (out 1-element array of block{out 1-element array of float gl_CullDistance})
+

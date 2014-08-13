@@ -14,4 +14,7 @@ void main()
     v3 = dFdyFine(in3);
     float f = dFdx(in1) + dFdxFine(in1) + dFdxCoarse(in1);
     v4 = fwidthCoarse(in4) + fwidthFine(in4);
+
+    float cull = gl_CullDistance[2];
+    float consts = gl_MaxCullDistances + gl_MaxCombinedClipAndCullDistances;
 }
