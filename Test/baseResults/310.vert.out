@@ -4,7 +4,10 @@ ERROR: 0:3: 'shared' : not supported in this stage: vertex
 ERROR: 0:4: 'local_size_x' : there is no such layout identifier for this stage taking an assigned value 
 ERROR: 0:5: 'buffer' : buffers can be declared only as blocks 
 ERROR: 0:10: 'location' : overlapping use of location 3
-ERROR: 4 compilation errors.  No code generated.
+ERROR: 0:58: 'usampler2DMSArray' : Reserved word. 
+ERROR: 0:58: 'sampler/image' : type requires declaration of default precision qualifier 
+ERROR: 0:67: 'textureSamples' : no matching overloaded function found 
+ERROR: 7 compilation errors.  No code generated.
 
 
 Shader version: 310
@@ -126,6 +129,35 @@ ERROR: node is still EOpNull!
 0:48        'v4' (mediump 4-component vector of float)
 0:48        Function Call: unpackSnorm4x8(u1; (mediump 4-component vector of float)
 0:48          'u1' (highp uint)
+0:60  Function Definition: foo( (void)
+0:60    Function Parameters: 
+0:?     Sequence
+0:63      move second child to first child (highp 2-component vector of int)
+0:63        'v2' (highp 2-component vector of int)
+0:63        Function Call: textureSize(s21; (highp 2-component vector of int)
+0:63          's2dms' (uniform highp sampler2DMS)
+0:64      move second child to first child (highp 2-component vector of int)
+0:64        'v2' (highp 2-component vector of int)
+0:64        Function Call: textureSize(us21; (highp 2-component vector of int)
+0:64          'us2dms' (uniform highp usampler2DMS)
+0:65      Sequence
+0:65        move second child to first child (highp 4-component vector of float)
+0:65          'v4' (highp 4-component vector of float)
+0:65          Function Call: texelFetch(s21;vi2;i1; (highp 4-component vector of float)
+0:65            's2dms' (uniform highp sampler2DMS)
+0:65            'v2' (highp 2-component vector of int)
+0:65            Constant:
+0:65              2 (const int)
+0:66      Sequence
+0:66        move second child to first child (highp 4-component vector of int)
+0:66          'iv4' (highp 4-component vector of int)
+0:66          Function Call: texelFetch(is21;vi2;i1; (highp 4-component vector of int)
+0:66            'is2dms' (uniform highp isampler2DMS)
+0:66            'v2' (highp 2-component vector of int)
+0:66            Constant:
+0:66              2 (const int)
+0:67      Constant:
+0:67        0.000000
 0:?   Linker Objects
 0:?     's' (shared highp 4-component vector of float)
 0:?     'v' (buffer highp 4-component vector of float)
@@ -133,6 +165,10 @@ ERROR: node is still EOpNull!
 0:?     'y' (layout(location=3 ) uniform highp 4X4 matrix of float)
 0:?     'xi' (layout(location=2 ) smooth out highp 4X4 matrix of float)
 0:?     'yi' (layout(location=3 ) smooth out highp 4X4 matrix of float)
+0:?     's2dms' (uniform highp sampler2DMS)
+0:?     'is2dms' (uniform highp isampler2DMS)
+0:?     'us2dms' (uniform highp usampler2DMS)
+0:?     'us2dmsa' (uniform mediump usampler2DMSArray)
 0:?     'gl_VertexID' (gl_VertexId highp int)
 0:?     'gl_InstanceID' (gl_InstanceId highp int)
 
@@ -259,6 +295,35 @@ ERROR: node is still EOpNull!
 0:48        'v4' (mediump 4-component vector of float)
 0:48        Function Call: unpackSnorm4x8(u1; (mediump 4-component vector of float)
 0:48          'u1' (highp uint)
+0:60  Function Definition: foo( (void)
+0:60    Function Parameters: 
+0:?     Sequence
+0:63      move second child to first child (highp 2-component vector of int)
+0:63        'v2' (highp 2-component vector of int)
+0:63        Function Call: textureSize(s21; (highp 2-component vector of int)
+0:63          's2dms' (uniform highp sampler2DMS)
+0:64      move second child to first child (highp 2-component vector of int)
+0:64        'v2' (highp 2-component vector of int)
+0:64        Function Call: textureSize(us21; (highp 2-component vector of int)
+0:64          'us2dms' (uniform highp usampler2DMS)
+0:65      Sequence
+0:65        move second child to first child (highp 4-component vector of float)
+0:65          'v4' (highp 4-component vector of float)
+0:65          Function Call: texelFetch(s21;vi2;i1; (highp 4-component vector of float)
+0:65            's2dms' (uniform highp sampler2DMS)
+0:65            'v2' (highp 2-component vector of int)
+0:65            Constant:
+0:65              2 (const int)
+0:66      Sequence
+0:66        move second child to first child (highp 4-component vector of int)
+0:66          'iv4' (highp 4-component vector of int)
+0:66          Function Call: texelFetch(is21;vi2;i1; (highp 4-component vector of int)
+0:66            'is2dms' (uniform highp isampler2DMS)
+0:66            'v2' (highp 2-component vector of int)
+0:66            Constant:
+0:66              2 (const int)
+0:67      Constant:
+0:67        0.000000
 0:?   Linker Objects
 0:?     's' (shared highp 4-component vector of float)
 0:?     'v' (buffer highp 4-component vector of float)
@@ -266,6 +331,10 @@ ERROR: node is still EOpNull!
 0:?     'y' (layout(location=3 ) uniform highp 4X4 matrix of float)
 0:?     'xi' (layout(location=2 ) smooth out highp 4X4 matrix of float)
 0:?     'yi' (layout(location=3 ) smooth out highp 4X4 matrix of float)
+0:?     's2dms' (uniform highp sampler2DMS)
+0:?     'is2dms' (uniform highp isampler2DMS)
+0:?     'us2dms' (uniform highp usampler2DMS)
+0:?     'us2dmsa' (uniform mediump usampler2DMSArray)
 0:?     'gl_VertexID' (gl_VertexId highp int)
 0:?     'gl_InstanceID' (gl_InstanceId highp int)
 

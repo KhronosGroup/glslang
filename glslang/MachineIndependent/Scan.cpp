@@ -842,6 +842,11 @@ int TScanContext::tokenizeIdentifier()
     case SAMPLER2DMS:
     case ISAMPLER2DMS:
     case USAMPLER2DMS:
+        afterType = true;
+        if (parseContext.profile == EEsProfile && parseContext.version >= 310)
+            return keyword;
+        return es30ReservedFromGLSL(150);
+
     case SAMPLER2DMSARRAY:
     case ISAMPLER2DMSARRAY:
     case USAMPLER2DMSARRAY:

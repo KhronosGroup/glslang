@@ -1757,7 +1757,11 @@ void TBuiltIns::add2ndGenerationSamplingImaging(int version, EProfile profile)
 
                 if ((ms || image) && shadow)
                     continue;
-                if (ms && (profile == EEsProfile || version < 150))
+                if (ms && profile != EEsProfile && version < 150)
+                    continue;
+                if (ms && image && profile == EEsProfile)
+                    continue;
+                if (ms && profile == EEsProfile && version < 310)
                     continue;
 
                 for (int arrayed = 0; arrayed <= 1; ++arrayed) { // loop over "bool" arrayed or not
@@ -1776,6 +1780,8 @@ void TBuiltIns::add2ndGenerationSamplingImaging(int version, EProfile profile)
                         if (dim == EsdBuffer && (profile == EEsProfile || version < 140))
                             continue;
                         if (dim == EsdBuffer && (shadow || arrayed || ms))
+                            continue;
+                        if (ms && arrayed && profile == EEsProfile)
                             continue;
 
                         for (int bType = 0; bType < 3; ++bType) { // float, int, uint results

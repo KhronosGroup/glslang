@@ -47,3 +47,24 @@ void main()
     v4 = unpackUnorm4x8(u1);
     v4 = unpackSnorm4x8(u1);
 }
+
+precision highp sampler2DMS;
+precision highp isampler2DMS;
+precision highp usampler2DMS;
+
+uniform sampler2DMS s2dms;
+uniform isampler2DMS is2dms;
+uniform usampler2DMS us2dms;
+uniform usampler2DMSArray us2dmsa;   // ERROR
+
+void foo()
+{
+    ivec2 v2;
+    v2 = textureSize(s2dms);
+    v2 = textureSize(us2dms);
+    vec4 v4 = texelFetch(s2dms, v2, 2);
+    ivec4 iv4 = texelFetch(is2dms, v2, 2);
+    textureSamples(s2dms);   // ERROR
+
+
+}

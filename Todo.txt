@@ -85,7 +85,7 @@ Shader Functionality to Implement/Finish
       - overlapping offsets
       + frexp/ldexp
       + packUnorm4x8(),packSnorm4x8(), unpackUnorm4x8(), unpackSnorm4x8()
-      - 2DMS samplers and images
+      + 2DMS samplers and images
       - inheritance of memory qualifiers in block members
     GLSL 1.2
       + Handle multiple compilation units per stage
