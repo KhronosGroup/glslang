@@ -1960,7 +1960,6 @@ void TParseContext::globalQualifierCheck(TSourceLoc loc, const TQualifier& quali
 
     if (publicType.basicType == EbtBool) {
         error(loc, "cannot be bool", GetStorageQualifierString(qualifier.storage), "");
-
         return;
     }
 
@@ -2043,7 +2042,10 @@ void TParseContext::globalQualifierCheck(TSourceLoc loc, const TQualifier& quali
             profileRequires(loc, EEsProfile, 300, 0, "fragment shader output");
             if (publicType.basicType == EbtStruct) {
                 error(loc, "cannot be a structure", GetStorageQualifierString(qualifier.storage), "");
-
+                return;
+            }
+            if (publicType.matrixRows > 0) {
+                error(loc, "cannot be a matrix", GetStorageQualifierString(qualifier.storage), "");
                 return;
             }
         break;
@@ -2155,6 +2157,13 @@ void TParseContext::setDefaultPrecision(TSourceLoc loc, TPublicType& publicType,
 
             return;  // all is well
         }
+    }
+
+    if (basicType == EbtAtomicUint) {
+        if (qualifier != EpqHigh)
+            error(loc, "can only apply highp to atomic_uint", "precision", "");
+
+        return;
     }
 
     error(loc, "cannot apply precision statement to this type; use 'float', 'int' or a sampler type", TType::getBasicString(basicType), "");
@@ -3091,8 +3100,8 @@ void TParseContext::setLayoutQualifier(TSourceLoc loc, TPublicType& publicType, 
             return;
         }
         if (id == "early_fragment_tests") {
-            requireProfile(loc, ENoProfile | ECoreProfile | ECompatibilityProfile, "early_fragment_tests");
             profileRequires(loc, ENoProfile | ECoreProfile | ECompatibilityProfile, 420, GL_ARB_shader_image_load_store, "early_fragment_tests");
+            profileRequires(loc, EEsProfile, 310, 0, "early_fragment_tests");
             publicType.shaderQualifiers.earlyFragmentTests = true;
             return;
         }
@@ -3391,6 +3400,11 @@ void TParseContext::layoutTypeCheck(TSourceLoc loc, const TType& type)
             // "It is a compile-time error to apply the component qualifier to a matrix, a structure, a block, or an array containing any of these."
             if (type.isMatrix() || type.getBasicType() == EbtBlock || type.getBasicType() == EbtStruct)
                 error(loc, "cannot apply to a matrix, structure, or block", "component", "");
+        }
+
+        if (qualifier.storage == EvqVaryingOut && language == EShLangFragment) {
+            if (qualifier.layoutLocation >= (unsigned int)resources.maxDrawBuffers)
+                error(loc, "too large for fragment output", "location", "");
         }
 
         switch (qualifier.storage) {

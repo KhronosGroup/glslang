@@ -42,7 +42,21 @@ ERROR: 0:141: 'atomic_uint' : atomic counters can only be highp
 ERROR: 0:141: 'binding' : cannot be greater-than-or-equal to gl_MaxAtomicCounterBindings 
 ERROR: 0:143: 'binding' : cannot be greater-than-or-equal to gl_MaxAtomicCounterBindings 
 ERROR: 0:149: '[]' : scalar integer expression required 
-ERROR: 42 compilation errors.  No code generated.
+ERROR: 0:166: 'precision' : can only apply highp to atomic_uint 
+ERROR: 0:168: 'precise' : Reserved word. 
+ERROR: 0:170: 'dmat2x4' : Reserved word. 
+ERROR: 0:170: 'double matrix' : not supported with this profile: es
+ERROR: 0:171: 'samplerCubeArray' : Reserved word. 
+ERROR: 0:171: 'sampler/image' : type requires declaration of default precision qualifier 
+ERROR: 0:172: 'iimage2DRect' : Reserved word. 
+ERROR: 0:172: 'sampler/image' : type requires declaration of default precision qualifier 
+ERROR: 0:172: '' : image variables not declared 'writeonly' must have a format layout qualifier 
+ERROR: 0:173: 'image2DMS' : Reserved word. 
+ERROR: 0:173: '' : image variables not declared 'writeonly' must have a format layout qualifier 
+ERROR: 0:174: 'uimage2DMSArray' : Reserved word. 
+ERROR: 0:174: 'sampler/image' : type requires declaration of default precision qualifier 
+ERROR: 0:174: '' : image variables not declared 'writeonly' must have a format layout qualifier 
+ERROR: 56 compilation errors.  No code generated.
 
 
 Shader version: 310
@@ -262,6 +276,12 @@ ERROR: node is still EOpNull!
 0:?     'i' (uniform highp int)
 0:?     'atomi' (shared highp int)
 0:?     'atomu' (shared highp uint)
+0:?     'pfoo' (highp int)
+0:?     'dm' (2X4 matrix of double)
+0:?     'sca' (uniform mediump samplerCubeArray)
+0:?     'i2dr' (uniform mediump iimage2DRect)
+0:?     'i2dms' (uniform lowp image2DMS)
+0:?     'u2dmsa' (uniform mediump uimage2DMSArray)
 
 
 Linked compute stage:
@@ -484,4 +504,10 @@ ERROR: node is still EOpNull!
 0:?     'i' (uniform highp int)
 0:?     'atomi' (shared highp int)
 0:?     'atomu' (shared highp uint)
+0:?     'pfoo' (highp int)
+0:?     'dm' (2X4 matrix of double)
+0:?     'sca' (uniform mediump samplerCubeArray)
+0:?     'i2dr' (uniform mediump iimage2DRect)
+0:?     'i2dms' (uniform lowp image2DMS)
+0:?     'u2dmsa' (uniform mediump uimage2DMSArray)
 

@@ -147,5 +147,8 @@ void foo324(void)
 
 uniform mediump;       // ERROR
 
+layout(early_fragment_tests) in;  // ERROR
+
 float imageBuffer;    // ERROR, reserved
 float uimage2DRect;   // ERROR, reserved
+

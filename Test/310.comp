@@ -161,3 +161,14 @@ void atoms()
     origi = atomicExchange(atomi, 4);
     origu = atomicCompSwap(atomu, 10u, 8u);
 }
+
+precision highp atomic_uint;
+precision lowp atomic_uint;   // ERROR
+
+precise int pfoo;  // ERROR, reserved
+
+dmat2x4 dm;                     // ERROR
+uniform samplerCubeArray sca;   // ERROR
+uniform iimage2DRect i2dr;      // ERROR
+uniform image2DMS i2dms;        // ERROR
+uniform uimage2DMSArray u2dmsa; // ERROR

@@ -80,6 +80,13 @@ Shader Functionality to Implement/Finish
       + Texture gather
       + Bitfield operations
       + Integer mix function
+      - overlapping bindings
+      - offset post incrementing
+      - overlapping offsets
+      - frexp/ldexp
+      - packUnorm4x8(),packSnorm4x8(), unpackUnorm4x8(), unpackSnorm4x8()
+      - 2DMS samplers and images
+      - inheritance of memory qualifiers in block members
     GLSL 1.2
       + Handle multiple compilation units per stage
       + Allow initializers on uniform declarations
@@ -227,7 +234,7 @@ Shader Functionality to Implement/Finish
                 elements of the array.
       - Arrays of arrays are now supported, as per the GL_ARB_arrays_of_arrays extension.
       + Compute shaders are now supported, as per the GL_ARB_compute_shader extension.
-      - Added imageSize() built-ins to query the dimensions of an image.
+      + Added imageSize() built-ins to query the dimensions of an image.
       - All choice of depth or stencil texturing, for a packed depth-stencil texture, as per the 
         GL_ARB_stencil_texturing extension.
       - Allow explicit locations/indexes to be assigned to uniform variables and subroutines, as per the 

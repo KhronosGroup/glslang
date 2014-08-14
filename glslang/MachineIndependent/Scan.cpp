@@ -919,7 +919,9 @@ int TScanContext::tokenizeIdentifier()
         return keyword;
 
     case PRECISE:
-        if (parseContext.profile == EEsProfile ||
+        if (parseContext.profile == EEsProfile && parseContext.version >= 310)
+            reservedWord();
+        else if (parseContext.profile == EEsProfile ||
             (parseContext.profile != EEsProfile && parseContext.version < 400))
             return identifierOrType();
         return keyword;
@@ -1103,6 +1105,11 @@ int TScanContext::firstGenerationImage(bool inEs310)
 int TScanContext::secondGenerationImage()
 {
     afterType = true;
+
+    if (parseContext.profile == EEsProfile && parseContext.version >= 310) {
+        reservedWord();
+        return keyword;
+    }
 
     if (parseContext.symbolTable.atBuiltInLevel() || parseContext.profile != EEsProfile && (parseContext.version >= 420 || parseContext.extensionsTurnedOn(1, &GL_ARB_shader_image_load_store)))
         return keyword;

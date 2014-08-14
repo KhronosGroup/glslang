@@ -68,3 +68,38 @@ layout(binding = 1) uniform bb {
     int foo;
     layout(binding = 2) float f;     // ERROR
 } bbi;
+
+in centroid vec4 centroidIn;
+layout(location = 200000) uniform vec4 bigl;  // ERROR, location too big
+
+layout(early_fragment_tests) in;
+
+layout(location = 40) out vec4 bigout1;  // ERROR, too big
+layout(location = 40) out vec4 bigout2;  // ERROR, overlap
+layout(location = -2) out vec4 neg;      // ERROR, negative
+
+layout(std430) uniform b430 {
+    int i;
+} b430i;
+
+layout(shared) uniform bshar {
+    int i;
+} bshari;
+
+in smooth vec4 smoothIn;
+in flat int flatIn;
+
+uniform sampler2DMS s2dms;
+
+void foots()
+{
+    highp ivec2 v2 = textureSize(s1, 2);
+    highp ivec3 v3 = textureSize(isamp2DA, 3);
+    v2 = textureSize(s2dms);
+    v2 = imageSize(i2D);
+}
+
+out bool bout;          // ERROR
+out image2D imageOut;   // ERROR
+out mat2x3 mout;        // ERROR
+
