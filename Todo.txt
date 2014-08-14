@@ -83,8 +83,8 @@ Shader Functionality to Implement/Finish
       - overlapping bindings
       - offset post incrementing
       - overlapping offsets
-      - frexp/ldexp
-      - packUnorm4x8(),packSnorm4x8(), unpackUnorm4x8(), unpackSnorm4x8()
+      + frexp/ldexp
+      + packUnorm4x8(),packSnorm4x8(), unpackUnorm4x8(), unpackSnorm4x8()
       - 2DMS samplers and images
       - inheritance of memory qualifiers in block members
     GLSL 1.2
@@ -148,17 +148,17 @@ Shader Functionality to Implement/Finish
       - Per-sample shading. Including sample input mask gl_SampleMaskIn[] and per-sample interpolation, with explicit interpolation built-ins interpolateAtCentroid(), interpolateAtSample(), and interpolateAtOffset().
       - New precise qualifier to disallow optimizations that re-order operations or treat different instances of the same operator with different precision.
       - Add a fused multiply and add built-in, fma(), in relation to the new precise qualifier. (Because “a * b + c” will require two operations under new rules for precise.)
-      - Added new built-in floating-point functions 
-         - frexp() and ldexp()
+      + Added new built-in floating-point functions 
+         + frexp() and ldexp()
          + packUnorm2x16(), unpackUnorm2x16(),
-         - packUnorm4x8(),packSnorm4x8(), and packDouble2x32()
-         - unpackUnorm4x8(),unpackSnorm4x8(), and unpackDouble2x32()
-      - Add new built-in integer functions
-         - uaddCarry() andusubBorrow()
-         - umulExtended() andimulExtended()
-         - bitfieldExtract() andbitfieldInsert()
-         - bitfieldReverse()
-         - bitCount(),findLSB(), andfindMSB()
+         + packUnorm4x8(), packSnorm4x8(), unpackUnorm4x8(), unpackSnorm4x8()
+         + packDouble2x32() and unpackDouble2x32()
+      + Add new built-in integer functions
+         + uaddCarry() and usubBorrow()
+         + umulExtended() and imulExtended()
+         + bitfieldExtract() and bitfieldInsert()
+         + bitfieldReverse()
+         + bitCount(), findLSB(), andfindMSB()
       - New built-in to query LOD, textureQueryLod().
       - New overloaded function matching algorithm, handling selection from many valid multiple choices.
       + Texture gather functions that return four texels with a single call.

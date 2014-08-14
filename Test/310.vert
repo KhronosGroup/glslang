@@ -35,4 +35,15 @@ void main()
     i4 = findLSB(u4);
     i1 = findMSB(i1);
     i2 = findMSB(u2);
+
+    vec3 v3;
+    v3 = frexp(v3, i3);
+    vec2 v2;
+    v2 = ldexp(v2, i2);
+
+    mediump vec4 v4;
+    u1 = packUnorm4x8(v4);
+    u1 = packSnorm4x8(v4);
+    v4 = unpackUnorm4x8(u1);
+    v4 = unpackSnorm4x8(u1);
 }

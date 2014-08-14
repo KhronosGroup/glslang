@@ -492,16 +492,59 @@ void TBuiltIns::initialize(int version, EProfile profile)
             "\n");
     }
 
+    if ((profile == EEsProfile && version >= 310) ||
+        (profile != EEsProfile && version >= 400)) {
+        commonBuiltins.append(
+            "highp float frexp(highp float, out highp int);"
+            "highp vec2  frexp(highp vec2,  out highp ivec2);"
+            "highp vec3  frexp(highp vec3,  out highp ivec3);"
+            "highp vec4  frexp(highp vec4,  out highp ivec4);"
+
+            "highp float ldexp(highp float, highp int);"
+            "highp vec2  ldexp(highp vec2,  highp ivec2);"
+            "highp vec3  ldexp(highp vec3,  highp ivec3);"
+            "highp vec4  ldexp(highp vec4,  highp ivec4);"
+
+            "\n");
+    }
+
+    if (profile != EEsProfile && version >= 400) {
+        commonBuiltins.append(
+            "double frexp(double, out int);"
+            "dvec2  frexp( dvec2, out ivec2);"
+            "dvec3  frexp( dvec3, out ivec3);"
+            "dvec4  frexp( dvec4, out ivec4);"
+
+            "double ldexp(double, int);"
+            "dvec2  ldexp( dvec2, ivec2);"
+            "dvec3  ldexp( dvec3, ivec3);"
+            "dvec4  ldexp( dvec4, ivec4);"
+
+            "double packDouble2x32(uvec2);"
+            "uvec2 unpackDouble2x32(double);"
+
+            "\n");
+    }
+
     if ((profile == EEsProfile && version >= 300) ||
         (profile != EEsProfile && version >= 400)) {
         commonBuiltins.append(
-            "highp uint packSnorm2x16 (vec2);"
-            "highp vec2 unpackSnorm2x16 (highp uint);"
-            "highp uint packUnorm2x16 (vec2);"
-            "highp vec2 unpackUnorm2x16 (highp uint);"
+            "highp uint packSnorm2x16(vec2);"
+            "highp vec2 unpackSnorm2x16(highp uint);"
+            "highp uint packUnorm2x16(vec2);"
+            "highp vec2 unpackUnorm2x16(highp uint);"
             "highp uint packHalf2x16(mediump vec2);"
             "mediump vec2 unpackHalf2x16(highp uint);"
-            
+            "\n");
+    }
+
+    if ((profile == EEsProfile && version >= 310) ||
+        (profile != EEsProfile && version >= 400)) {
+        commonBuiltins.append(
+            "highp   uint packSnorm4x8  (mediump vec4);"
+            "mediump vec4 unpackSnorm4x8(highp   uint);"
+            "highp   uint packUnorm4x8  (mediump vec4);"
+            "mediump vec4 unpackUnorm4x8(highp   uint);"
             "\n");
     }
 

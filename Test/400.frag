@@ -82,4 +82,20 @@ void foodc2()
     vec2 v2 = dFdxFine(in2);
     vec3 v3 = dFdyCoarse(in3);
     vec4 v4 = fwidthCoarse(in4) + fwidthFine(in4);
+
+    uint u1;
+    ivec3 i3;
+    ivec2 i2;
+    v2 = frexp(v2, i2);
+    v3 = ldexp(v3, i3);
+
+    u1 = packUnorm4x8(v4);
+    u1 = packSnorm4x8(v4);
+    v4 = unpackUnorm4x8(u1);
+    v4 = unpackSnorm4x8(u1);
+
+    double d;
+    uvec2 u2;
+    d = packDouble2x32(u2);
+    u2 = unpackDouble2x32(d);
 }
