@@ -492,6 +492,21 @@ void TBuiltIns::initialize(int version, EProfile profile)
             "\n");
     }
 
+    if (profile != EEsProfile && version >= 400) {
+        commonBuiltins.append(
+            "float  fma(float,  float,  float );"
+            "vec2   fma(vec2,   vec2,   vec2  );"
+            "vec3   fma(vec3,   vec3,   vec3  );"
+            "vec4   fma(vec4,   vec4,   vec4  );"
+
+            "double fma(double, double, double);"
+            "dvec2  fma(dvec2,  dvec2,  dvec2 );"
+            "dvec3  fma(dvec3,  dvec3,  dvec3 );"
+            "dvec4  fma(dvec4,  dvec4,  dvec4 );"
+            
+            "\n");
+    }
+
     if ((profile == EEsProfile && version >= 310) ||
         (profile != EEsProfile && version >= 400)) {
         commonBuiltins.append(
@@ -529,10 +544,16 @@ void TBuiltIns::initialize(int version, EProfile profile)
     if ((profile == EEsProfile && version >= 300) ||
         (profile != EEsProfile && version >= 400)) {
         commonBuiltins.append(
-            "highp uint packSnorm2x16(vec2);"
-            "highp vec2 unpackSnorm2x16(highp uint);"
             "highp uint packUnorm2x16(vec2);"
             "highp vec2 unpackUnorm2x16(highp uint);"
+            "\n");
+    }
+
+    if ((profile == EEsProfile && version >= 300) ||
+        (profile != EEsProfile && version >= 420)) {
+        commonBuiltins.append(
+            "highp uint packSnorm2x16(vec2);"
+            "highp vec2 unpackSnorm2x16(highp uint);"
             "highp uint packHalf2x16(mediump vec2);"
             "mediump vec2 unpackHalf2x16(highp uint);"
             "\n");

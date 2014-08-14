@@ -126,6 +126,24 @@ ERROR: node is still EOpNull!
 0:44            4 (const int)
 0:44        Constant:
 0:44          1 (const int)
+0:64  Function Definition: foop( (void)
+0:64    Function Parameters: 
+0:?     Sequence
+0:68      multiply second child into first child (3-component vector of float)
+0:68        'pv3' (3-component vector of float)
+0:68        'pv3' (3-component vector of float)
+0:69      move second child to first child (3-component vector of float)
+0:69        'pv3' (3-component vector of float)
+0:69        Function Call: fma(vf3;vf3;vf3; (3-component vector of float)
+0:69          'pv3' (3-component vector of float)
+0:69          'pv3' (3-component vector of float)
+0:69          'pv3' (3-component vector of float)
+0:70      move second child to first child (double)
+0:70        'd' (double)
+0:70        Function Call: fma(d1;d1;d1; (double)
+0:70          'd' (double)
+0:70          'd' (double)
+0:70          'd' (double)
 0:?   Linker Objects
 0:?     'gl_out' (out 4-element array of block{out 4-component vector of float gl_Position, out float gl_PointSize, out implicitly-sized array of float gl_ClipDistance})
 0:?     'outa' (4-element array of int)
@@ -141,6 +159,7 @@ ERROR: node is still EOpNull!
 0:?     'ovla' (layout(location=3 ) out 4-element array of 4-component vector of float)
 0:?     'ovlb' (layout(location=4 ) out 4-element array of 4-component vector of float)
 0:?     'ovlc' (layout(location=4 ) out 4-element array of 4-component vector of float)
+0:?     'pv3' (3-component vector of float)
 
 
 Linked tessellation control stage:
@@ -258,6 +277,24 @@ ERROR: node is still EOpNull!
 0:44            4 (const int)
 0:44        Constant:
 0:44          1 (const int)
+0:64  Function Definition: foop( (void)
+0:64    Function Parameters: 
+0:?     Sequence
+0:68      multiply second child into first child (3-component vector of float)
+0:68        'pv3' (3-component vector of float)
+0:68        'pv3' (3-component vector of float)
+0:69      move second child to first child (3-component vector of float)
+0:69        'pv3' (3-component vector of float)
+0:69        Function Call: fma(vf3;vf3;vf3; (3-component vector of float)
+0:69          'pv3' (3-component vector of float)
+0:69          'pv3' (3-component vector of float)
+0:69          'pv3' (3-component vector of float)
+0:70      move second child to first child (double)
+0:70        'd' (double)
+0:70        Function Call: fma(d1;d1;d1; (double)
+0:70          'd' (double)
+0:70          'd' (double)
+0:70          'd' (double)
 0:?   Linker Objects
 0:?     'gl_out' (out 4-element array of block{out 4-component vector of float gl_Position, out float gl_PointSize, out 1-element array of float gl_ClipDistance})
 0:?     'outa' (4-element array of int)
@@ -273,4 +310,5 @@ ERROR: node is still EOpNull!
 0:?     'ovla' (layout(location=3 ) out 4-element array of 4-component vector of float)
 0:?     'ovlb' (layout(location=4 ) out 4-element array of 4-component vector of float)
 0:?     'ovlc' (layout(location=4 ) out 4-element array of 4-component vector of float)
+0:?     'pv3' (3-component vector of float)
 

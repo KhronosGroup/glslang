@@ -147,7 +147,7 @@ Shader Functionality to Implement/Finish
       + Sampler arrays can take a variable index now, as long as it's value is uniform for all uses.
       - Per-sample shading. Including sample input mask gl_SampleMaskIn[] and per-sample interpolation, with explicit interpolation built-ins interpolateAtCentroid(), interpolateAtSample(), and interpolateAtOffset().
       - New precise qualifier to disallow optimizations that re-order operations or treat different instances of the same operator with different precision.
-      - Add a fused multiply and add built-in, fma(), in relation to the new precise qualifier. (Because “a * b + c” will require two operations under new rules for precise.)
+      + Add a fused multiply and add built-in, fma(), in relation to the new precise qualifier. (Because “a * b + c” will require two operations under new rules for precise.)
       + Added new built-in floating-point functions 
          + frexp() and ldexp()
          + packUnorm2x16(), unpackUnorm2x16(),
@@ -203,9 +203,9 @@ Shader Functionality to Implement/Finish
       + Add a new atomic_uint type to support atomic counters. Also, add built-in functions for manipulating atomic counters.
         + atomicCounterIncrement, atomicCounterDecrement, and atomicCounter
       - Add layout qualifier identifiers binding and offset to bind units to sampler and image variable declarations, atomic counters, and uniform blocks.
-      - Add built-in functions to pack/unpack 16 bit floating-point numbers (ARB_shading_language_pack2f).
-        - packHalf2x16 and unpackHalf2x16
-        - packSnorm2x16and unpackSnorm2x16
+      + Add built-in functions to pack/unpack 16 bit floating-point numbers (ARB_shading_language_pack2f).
+        + packHalf2x16 and unpackHalf2x16
+        + packSnorm2x16and unpackSnorm2x16
       - Add gl_FragDepth layout qualifiers to communicate what kind of changes will be made to gl_FragDepth (GL_AMD_conservative depth).
       + Add C-style curly brace initializer lists syntax for initializers. Full initialization of aggregates is required when these are used.
       + Allow .length() to be applied to vectors and matrices, returning the number of components or columns.

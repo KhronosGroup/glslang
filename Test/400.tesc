@@ -58,3 +58,14 @@ layout(location = 4) in vec4 ivlc[];  // ERROR
 layout(location = 3) out vec4 ovla[];
 layout(location = 4) out vec4 ovlb[];
 layout(location = 4) out vec4 ovlc[];  // ERROR
+
+precise vec3 pv3;
+
+void foop()
+{
+    precise double d;
+
+    pv3 *= pv3;
+    pv3 = fma(pv3, pv3, pv3);
+    d = fma(d, d, d);
+}
