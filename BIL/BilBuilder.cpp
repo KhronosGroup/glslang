@@ -33,6 +33,7 @@
 //POSSIBILITY OF SUCH DAMAGE.
 
 #include <assert.h>
+#include <stdio.h>
 
 #include "BilBuilder.h"
 

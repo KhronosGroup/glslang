@@ -37,7 +37,7 @@
 #ifndef _COMMON_INCLUDED_
 #define _COMMON_INCLUDED_
 
-#ifdef _WIN32
+#if defined _WIN32 && !defined __GNUC__
     #include <basetsd.h>
     #define snprintf sprintf_s
     #define safe_vsprintf(buf,max,format,args) vsnprintf_s((buf), (max), (max), (format), (args))
@@ -166,7 +166,7 @@ inline const TString String(const int i, const int base = 10)
 {
     char text[16];     // 32 bit ints are at most 10 digits in base 10
     
-    #ifdef _WIN32
+    #if defined _WIN32 && !defined __GNUC__
         _itoa_s(i, text, base);
     #else
         // we assume base 10 for all cases

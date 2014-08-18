@@ -53,10 +53,10 @@ extern "C" {
 
 // Command-line options
 enum TOptions {
-	EOptionNone               = 0x000,
-	EOptionIntermediate       = 0x001,
-	EOptionSuppressInfolog    = 0x002,
-	EOptionMemoryLeakMode     = 0x004,
+    EOptionNone               = 0x000,
+    EOptionIntermediate       = 0x001,
+    EOptionSuppressInfolog    = 0x002,
+    EOptionMemoryLeakMode     = 0x004,
     EOptionRelaxedErrors      = 0x008,
     EOptionGiveWarnings       = 0x010,
     EOptionsLinkProgram       = 0x020,
@@ -887,13 +887,19 @@ int fopen_s(
 char** ReadFileData(const char* fileName) 
 {
     FILE *in;
-	int errorCode = fopen_s(&in, fileName, "r");
+    #if defined(_WIN32) && defined(__GNUC__)
+        in = fopen(fileName, "r");
+        int errorCode = in ? 0 : 1;
+    #else
+        int errorCode = fopen_s(&in, fileName, "r");
+    #endif
+
     char *fdata;
     int count = 0;
     const int maxSourceStrings = 5;
     char** return_data = (char**)malloc(sizeof(char *) * (maxSourceStrings+1));
 
-	if (errorCode) {
+    if (errorCode) {
         printf("Error: unable to open input file: %s\n", fileName);
         return 0;
     }
@@ -901,13 +907,13 @@ char** ReadFileData(const char* fileName)
     while (fgetc(in) != EOF)
         count++;
 
-	fseek(in, 0, SEEK_SET);
-	
-	if (!(fdata = (char*)malloc(count+2))) {
+    fseek(in, 0, SEEK_SET);
+    
+    if (!(fdata = (char*)malloc(count+2))) {
         printf("Error allocating memory\n");
         return 0;
     }
-	if (fread(fdata,1,count, in)!=count) {
+    if (fread(fdata,1,count, in)!=count) {
             printf("Error reading input file: %s\n", fileName);
             return 0;
     }
@@ -921,23 +927,23 @@ char** ReadFileData(const char* fileName)
     } else
         NumShaderStrings = 1;
 
-	int len = (int)(ceil)((float)count/(float)NumShaderStrings);
+    int len = (int)(ceil)((float)count/(float)NumShaderStrings);
     int ptr_len=0,i=0;
-	while(count>0){
-		return_data[i]=(char*)malloc(len+2);
-		memcpy(return_data[i],fdata+ptr_len,len);
-		return_data[i][len]='\0';
-		count-=(len);
-		ptr_len+=(len);
-		if(count<len){
+    while(count>0){
+        return_data[i]=(char*)malloc(len+2);
+        memcpy(return_data[i],fdata+ptr_len,len);
+        return_data[i][len]='\0';
+        count-=(len);
+        ptr_len+=(len);
+        if(count<len){
             if(count==0){
                NumShaderStrings=(i+1);
                break;
             }
            len = count;
-		}  
-		++i;
-	}
+        }  
+        ++i;
+    }
     return return_data;
 }
 
