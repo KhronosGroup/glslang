@@ -83,6 +83,11 @@ void TIntermediate::merge(TInfoSink& infoSink, TIntermediate& unit)
     if (! earlyFragmentTests)
         earlyFragmentTests = unit.earlyFragmentTests;
 
+    if (depthLayout == EldNone)
+        depthLayout = unit.depthLayout;
+    else if (depthLayout != unit.depthLayout)
+        error(infoSink, "Contradictory depth layouts");
+
     if (inputPrimitive == ElgNone)
         inputPrimitive = unit.inputPrimitive;
     else if (inputPrimitive != unit.inputPrimitive)

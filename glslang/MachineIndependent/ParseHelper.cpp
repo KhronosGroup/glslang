@@ -2565,8 +2565,14 @@ TSymbol* TParseContext::redeclareBuiltinVariable(TSourceLoc loc, const TString& 
                 error(loc, "can only change layout qualification of", "redeclaration", symbol->getName().c_str());
             if (qualifier.storage != EvqVaryingOut)
                 error(loc, "cannot change output storage qualification of", "redeclaration", symbol->getName().c_str());
-            // TODO 4.2: gl_FragDepth redeclaration
-        }        
+            if (publicType.layoutDepth != EldNone) {
+                if (intermediate.inIoAccessed("gl_FragDepth"))
+                    error(loc, "cannot redeclare after use", "gl_FragDepth", "");
+                if (! intermediate.setDepth(publicType.layoutDepth))
+                    error(loc, "all redeclarations must use the same depth layout on", "redeclaration", symbol->getName().c_str());
+            }
+
+        }
         // TODO: semantics quality: separate smooth from nothing declared, then use IsInterpolation for several tests above
 
         return symbol;
@@ -2965,8 +2971,8 @@ void TParseContext::finalErrorCheck()
 // Layout qualifier stuff.
 //
 
-// Put the id's layout qualification into the public type.  This is before we know any
-// type information for error checking.
+// Put the id's layout qualification into the public type, for qualifiers not having a number set.
+// This is before we know any type information for error checking.
 void TParseContext::setLayoutQualifier(TSourceLoc loc, TPublicType& publicType, TString& id)
 {
     std::transform(id.begin(), id.end(), id.begin(), ::tolower);
@@ -3105,12 +3111,20 @@ void TParseContext::setLayoutQualifier(TSourceLoc loc, TPublicType& publicType, 
             publicType.shaderQualifiers.earlyFragmentTests = true;
             return;
         }
+        for (TLayoutDepth depth = (TLayoutDepth)(EldNone + 1); depth < EldCount; depth = (TLayoutDepth)(depth+1)) {
+            if (id == TQualifier::getLayoutDepthString(depth)) {
+                requireProfile(loc, ECoreProfile | ECompatibilityProfile, "depth layout qualifier");
+                profileRequires(loc, ECoreProfile | ECompatibilityProfile, 420, 0, "depth layout qualifier");
+                publicType.shaderQualifiers.layoutDepth = depth;
+                return;
+            }
+        }
     }
     error(loc, "unrecognized layout identifier, or qualifier requires assignment (e.g., binding = 4)", id.c_str(), "");
 }
 
-// Put the id's layout qualifier value into the public type.  This is before we know any
-// type information for error checking.
+// Put the id's layout qualifier value into the public type, for qualifiers having a number set.
+// This is before we know any type information for error checking.
 void TParseContext::setLayoutQualifier(TSourceLoc loc, TPublicType& publicType, TString& id, const TIntermTyped* node)
 {
     const char* feature = "layout-id value";
@@ -3742,6 +3756,8 @@ TIntermNode* TParseContext::declareVariable(TSourceLoc loc, TString& identifier,
 
     if (identifier != "gl_FragCoord" && (publicType.shaderQualifiers.originUpperLeft || publicType.shaderQualifiers.pixelCenterInteger))
         error(loc, "can only apply origin_upper_left and pixel_center_origin to gl_FragCoord", "layout qualifier", "");
+    if (identifier != "gl_FragDepth" && publicType.shaderQualifiers.layoutDepth != EldNone)
+        error(loc, "can only apply depth layout to gl_FragDepth", "layout qualifier", "");
 
     // Check for redeclaration of built-ins and/or attempting to declare a reserved name
     bool newDeclaration = false;    // true if a new entry gets added to the symbol table

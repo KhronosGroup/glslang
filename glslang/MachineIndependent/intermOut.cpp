@@ -621,6 +621,8 @@ void TIntermediate::output(TInfoSink& infoSink, bool tree)
             infoSink.debug << "gl_FragCoord origin is upper left\n";
         if (earlyFragmentTests)
             infoSink.debug << "using early_fragment_tests\n";
+        if (depthLayout != EldNone)
+            infoSink.debug << "using " << TQualifier::getLayoutDepthString(depthLayout) << "\n";
         break;
 
     case EShLangCompute:

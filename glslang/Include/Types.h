@@ -305,6 +305,16 @@ enum TLayoutFormat {
     ElfCount
 };
 
+enum TLayoutDepth {
+    EldNone,
+    EldAny,
+    EldGreater,
+    EldLess,
+    EldUnchanged,
+    
+    EldCount
+};
+
 class TQualifier {
 public:
     void clear()
@@ -645,6 +655,16 @@ public:
         default:              return "none";
         }
     }
+    static const char* getLayoutDepthString(TLayoutDepth d)
+    {
+        switch (d) {
+        case EldAny:       return "depth_any";
+        case EldGreater:   return "depth_greater";
+        case EldLess:      return "depth_less";
+        case EldUnchanged: return "depth_unchanged";
+        default:           return "none";
+        }
+    }
     static const char* getGeometryString(TLayoutGeometry geometry)
     {
         switch (geometry) {
@@ -703,6 +723,7 @@ struct TShaderQualifiers {
     bool pointMode;
     int localSize[3];         // compute shader
     bool earlyFragmentTests;  // fragment input
+    TLayoutDepth layoutDepth;
 
     void init()
     {
@@ -718,6 +739,7 @@ struct TShaderQualifiers {
         localSize[1] = 1;
         localSize[2] = 1;
         earlyFragmentTests = false;
+        layoutDepth = EldNone;
     }
 
     // Merge in characteristics from the 'src' qualifier.  They can override when
@@ -746,6 +768,8 @@ struct TShaderQualifiers {
         }
         if (src.earlyFragmentTests)
             earlyFragmentTests = true;
+        if (src.layoutDepth)
+            layoutDepth = src.layoutDepth;
     }
 };
 
@@ -1160,10 +1184,8 @@ public:
                     p += snprintf(p, end - p, "offset=%d ", qualifier.layoutOffset);
                 if (qualifier.hasAlign())
                     p += snprintf(p, end - p, "align=%d ", qualifier.layoutAlign);
-
                 if (qualifier.hasFormat())
                     p += snprintf(p, end - p, "%s ", TQualifier::getLayoutFormatString(qualifier.layoutFormat));
-
                 if (qualifier.hasXfbBuffer() && qualifier.hasXfbOffset())
                     p += snprintf(p, end - p, "xfb_buffer=%d ", qualifier.layoutXfbBuffer);
                 if (qualifier.hasXfbOffset())

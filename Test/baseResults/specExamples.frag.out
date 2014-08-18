@@ -16,11 +16,9 @@ ERROR: 0:100: 'local_size_x' : there is no such layout identifier for this stage
 ERROR: 0:102: 'color' : redefinition 
 ERROR: 0:103: 'index' : there is no such layout identifier for this stage taking an assigned value 
 ERROR: 0:104: 'location' : overlapping use of location 3
-ERROR: 0:106: 'depth_greater' : unrecognized layout identifier, or qualifier requires assignment (e.g., binding = 4) 
-ERROR: 0:112: 'depth_any' : unrecognized layout identifier, or qualifier requires assignment (e.g., binding = 4) 
-ERROR: 0:115: 'depth_greater' : unrecognized layout identifier, or qualifier requires assignment (e.g., binding = 4) 
-ERROR: 0:118: 'depth_less' : unrecognized layout identifier, or qualifier requires assignment (e.g., binding = 4) 
-ERROR: 0:121: 'depth_unchanged' : unrecognized layout identifier, or qualifier requires assignment (e.g., binding = 4) 
+ERROR: 0:112: 'redeclaration' : all redeclarations must use the same depth layout on gl_FragDepth
+ERROR: 0:118: 'redeclaration' : all redeclarations must use the same depth layout on gl_FragDepth
+ERROR: 0:121: 'redeclaration' : all redeclarations must use the same depth layout on gl_FragDepth
 ERROR: 0:150: 'constructor' : constructing from a non-dereferenced array 
 ERROR: 0:150: '=' :  cannot convert from 'const float' to '3-element array of 4-component vector of float'
 ERROR: 0:152: 'constructor' :  cannot convert parameter 1 from 'const 2-element array of 4-component vector of float' to '4-component vector of float'
@@ -45,7 +43,7 @@ ERROR: 0:226: 'in' : not allowed in nested scope
 ERROR: 0:227: 'in' : not allowed in nested scope 
 ERROR: 0:228: 'in' : not allowed in nested scope 
 ERROR: 0:232: 'out' : not allowed in nested scope 
-ERROR: 45 compilation errors.  No code generated.
+ERROR: 43 compilation errors.  No code generated.
 
 
 Shader version: 430
@@ -53,6 +51,7 @@ Requested GL_3DL_array_objects
 gl_FragCoord pixel center is integer
 gl_FragCoord origin is upper left
 using early_fragment_tests
+using depth_greater
 ERROR: node is still EOpNull!
 0:5  Sequence
 0:5    move second child to first child (int)
@@ -306,6 +305,7 @@ Requested GL_3DL_array_objects
 gl_FragCoord pixel center is integer
 gl_FragCoord origin is upper left
 using early_fragment_tests
+using depth_greater
 ERROR: node is still EOpNull!
 0:5  Sequence
 0:5    move second child to first child (int)

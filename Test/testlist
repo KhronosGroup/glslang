@@ -53,6 +53,7 @@ tokenLength.vert
 110scope.vert
 300scope.vert
 400.frag
+420.frag
 420.vert
 420.geom
 420_size_gl_in.geom
