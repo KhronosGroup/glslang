@@ -265,20 +265,12 @@ postfix_expression
     | postfix_expression INC_OP {
         parseContext.variableCheck($1);
         parseContext.lValueErrorCheck($2.loc, "++", $1);
-        $$ = parseContext.intermediate.addUnaryMath(EOpPostIncrement, $1, $2.loc);
-        if ($$ == 0) {
-            parseContext.unaryOpError($2.loc, "++", $1->getCompleteString());
-            $$ = $1;
-        }
+        $$ = parseContext.handleUnaryMath($2.loc, "++", EOpPostIncrement, $1);
     }
     | postfix_expression DEC_OP {
         parseContext.variableCheck($1);
         parseContext.lValueErrorCheck($2.loc, "--", $1);
-        $$ = parseContext.intermediate.addUnaryMath(EOpPostDecrement, $1, $2.loc);
-        if ($$ == 0) {
-            parseContext.unaryOpError($2.loc, "--", $1->getCompleteString());
-            $$ = $1;
-        }
+        $$ = parseContext.handleUnaryMath($2.loc, "--", EOpPostDecrement, $1);
     }
     ;
 
@@ -391,34 +383,22 @@ unary_expression
     }
     | INC_OP unary_expression {
         parseContext.lValueErrorCheck($1.loc, "++", $2);
-        $$ = parseContext.intermediate.addUnaryMath(EOpPreIncrement, $2, $1.loc);
-        if ($$ == 0) {
-            parseContext.unaryOpError($1.loc, "++", $2->getCompleteString());
-            $$ = $2;
-        }
+        $$ = parseContext.handleUnaryMath($1.loc, "++", EOpPreIncrement, $2);
     }
     | DEC_OP unary_expression {
         parseContext.lValueErrorCheck($1.loc, "--", $2);
-        $$ = parseContext.intermediate.addUnaryMath(EOpPreDecrement, $2, $1.loc);
-        if ($$ == 0) {
-            parseContext.unaryOpError($1.loc, "--", $2->getCompleteString());
-            $$ = $2;
-        }
+        $$ = parseContext.handleUnaryMath($1.loc, "--", EOpPreDecrement, $2);
     }
     | unary_operator unary_expression {
         if ($1.op != EOpNull) {
-            $$ = parseContext.intermediate.addUnaryMath($1.op, $2, $1.loc);
-            if ($$ == 0) {
-                char errorOp[2] = {0, 0};
-                switch($1.op) {
-                case EOpNegative:   errorOp[0] = '-'; break;
-                case EOpLogicalNot: errorOp[0] = '!'; break;
-                case EOpBitwiseNot: errorOp[0] = '~'; break;
-                default: break; // some compilers want this
-                }
-                parseContext.unaryOpError($1.loc, errorOp, $2->getCompleteString());
-                $$ = $2;
+            char errorOp[2] = {0, 0};
+            switch($1.op) {
+            case EOpNegative:   errorOp[0] = '-'; break;
+            case EOpLogicalNot: errorOp[0] = '!'; break;
+            case EOpBitwiseNot: errorOp[0] = '~'; break;
+            default: break; // some compilers want this
             }
+            $$ = parseContext.handleUnaryMath($1.loc, errorOp, $1.op, $2);
         } else {
             $$ = $2;
             if ($$->getAsConstantUnion())
@@ -440,44 +420,34 @@ unary_operator
 multiplicative_expression
     : unary_expression { $$ = $1; }
     | multiplicative_expression STAR unary_expression {
-        $$ = parseContext.intermediate.addBinaryMath(EOpMul, $1, $3, $2.loc);
-        if ($$ == 0) {
-            parseContext.binaryOpError($2.loc, "*", $1->getCompleteString(), $3->getCompleteString());
+        $$ = parseContext.handleBinaryMath($2.loc, "*", EOpMul, $1, $3);
+        if ($$ == 0)
             $$ = $1;
-        }
     }
     | multiplicative_expression SLASH unary_expression {
-        $$ = parseContext.intermediate.addBinaryMath(EOpDiv, $1, $3, $2.loc);
-        if ($$ == 0) {
-            parseContext.binaryOpError($2.loc, "/", $1->getCompleteString(), $3->getCompleteString());
+        $$ = parseContext.handleBinaryMath($2.loc, "/", EOpDiv, $1, $3);
+        if ($$ == 0)
             $$ = $1;
-        }
     }
     | multiplicative_expression PERCENT unary_expression {
         parseContext.fullIntegerCheck($2.loc, "%");
-        $$ = parseContext.intermediate.addBinaryMath(EOpMod, $1, $3, $2.loc);
-        if ($$ == 0) {
-            parseContext.binaryOpError($2.loc, "%", $1->getCompleteString(), $3->getCompleteString());
+        $$ = parseContext.handleBinaryMath($2.loc, "%", EOpMod, $1, $3);
+        if ($$ == 0)
             $$ = $1;
-        }
     }
     ;
 
 additive_expression
     : multiplicative_expression { $$ = $1; }
     | additive_expression PLUS multiplicative_expression {
-        $$ = parseContext.intermediate.addBinaryMath(EOpAdd, $1, $3, $2.loc);
-        if ($$ == 0) {
-            parseContext.binaryOpError($2.loc, "+", $1->getCompleteString(), $3->getCompleteString());
+        $$ = parseContext.handleBinaryMath($2.loc, "+", EOpAdd, $1, $3);
+        if ($$ == 0)
             $$ = $1;
-        }
     }
     | additive_expression DASH multiplicative_expression {
-        $$ = parseContext.intermediate.addBinaryMath(EOpSub, $1, $3, $2.loc);
-        if ($$ == 0) {
-            parseContext.binaryOpError($2.loc, "-", $1->getCompleteString(), $3->getCompleteString());
+        $$ = parseContext.handleBinaryMath($2.loc, "-", EOpSub, $1, $3);
+        if ($$ == 0)
             $$ = $1;
-        }
     }
     ;
 
@@ -485,51 +455,39 @@ shift_expression
     : additive_expression { $$ = $1; }
     | shift_expression LEFT_OP additive_expression {
         parseContext.fullIntegerCheck($2.loc, "bit shift left");
-        $$ = parseContext.intermediate.addBinaryMath(EOpLeftShift, $1, $3, $2.loc);
-        if ($$ == 0) {
-            parseContext.binaryOpError($2.loc, "<<", $1->getCompleteString(), $3->getCompleteString());
+        $$ = parseContext.handleBinaryMath($2.loc, "<<", EOpLeftShift, $1, $3);
+        if ($$ == 0)
             $$ = $1;
-        }
     }
     | shift_expression RIGHT_OP additive_expression {
         parseContext.fullIntegerCheck($2.loc, "bit shift right");
-        $$ = parseContext.intermediate.addBinaryMath(EOpRightShift, $1, $3, $2.loc);
-        if ($$ == 0) {
-            parseContext.binaryOpError($2.loc, ">>", $1->getCompleteString(), $3->getCompleteString());
+        $$ = parseContext.handleBinaryMath($2.loc, ">>", EOpRightShift, $1, $3);
+        if ($$ == 0)
             $$ = $1;
-        }
     }
     ;
 
 relational_expression
     : shift_expression { $$ = $1; }
     | relational_expression LEFT_ANGLE shift_expression {
-        $$ = parseContext.intermediate.addBinaryMath(EOpLessThan, $1, $3, $2.loc);
-        if ($$ == 0) {
-            parseContext.binaryOpError($2.loc, "<", $1->getCompleteString(), $3->getCompleteString());
+        $$ = parseContext.handleBinaryMath($2.loc, "<", EOpLessThan, $1, $3);
+        if ($$ == 0)
             $$ = parseContext.intermediate.addConstantUnion(false, $2.loc);
-        }
     }
     | relational_expression RIGHT_ANGLE shift_expression  {
-        $$ = parseContext.intermediate.addBinaryMath(EOpGreaterThan, $1, $3, $2.loc);
-        if ($$ == 0) {
-            parseContext.binaryOpError($2.loc, ">", $1->getCompleteString(), $3->getCompleteString());
+        $$ = parseContext.handleBinaryMath($2.loc, ">", EOpGreaterThan, $1, $3);
+        if ($$ == 0)
             $$ = parseContext.intermediate.addConstantUnion(false, $2.loc);
-        }
     }
     | relational_expression LE_OP shift_expression  {
-        $$ = parseContext.intermediate.addBinaryMath(EOpLessThanEqual, $1, $3, $2.loc);
-        if ($$ == 0) {
-            parseContext.binaryOpError($2.loc, "<=", $1->getCompleteString(), $3->getCompleteString());
+        $$ = parseContext.handleBinaryMath($2.loc, "<=", EOpLessThanEqual, $1, $3);
+        if ($$ == 0)
             $$ = parseContext.intermediate.addConstantUnion(false, $2.loc);
-        }
     }
     | relational_expression GE_OP shift_expression  {
-        $$ = parseContext.intermediate.addBinaryMath(EOpGreaterThanEqual, $1, $3, $2.loc);
-        if ($$ == 0) {
-            parseContext.binaryOpError($2.loc, ">=", $1->getCompleteString(), $3->getCompleteString());
+        $$ = parseContext.handleBinaryMath($2.loc, ">=", EOpGreaterThanEqual, $1, $3);
+        if ($$ == 0)
             $$ = parseContext.intermediate.addConstantUnion(false, $2.loc);
-        }
     }
     ;
 
@@ -538,20 +496,16 @@ equality_expression
     | equality_expression EQ_OP relational_expression  {
         parseContext.arrayObjectCheck($2.loc, $1->getType(), "array comparison");
         parseContext.opaqueCheck($2.loc, $1->getType(), "==");
-        $$ = parseContext.intermediate.addBinaryMath(EOpEqual, $1, $3, $2.loc);
-        if ($$ == 0) {
-            parseContext.binaryOpError($2.loc, "==", $1->getCompleteString(), $3->getCompleteString());
+        $$ = parseContext.handleBinaryMath($2.loc, "==", EOpEqual, $1, $3);
+        if ($$ == 0)
             $$ = parseContext.intermediate.addConstantUnion(false, $2.loc);
-        }
     }
     | equality_expression NE_OP relational_expression {
         parseContext.arrayObjectCheck($2.loc, $1->getType(), "array comparison");
         parseContext.opaqueCheck($2.loc, $1->getType(), "!=");
-        $$ = parseContext.intermediate.addBinaryMath(EOpNotEqual, $1, $3, $2.loc);
-        if ($$ == 0) {
-            parseContext.binaryOpError($2.loc, "!=", $1->getCompleteString(), $3->getCompleteString());
+        $$ = parseContext.handleBinaryMath($2.loc, "!=", EOpNotEqual, $1, $3);
+        if ($$ == 0)
             $$ = parseContext.intermediate.addConstantUnion(false, $2.loc);
-        }
     }
     ;
 
@@ -559,11 +513,9 @@ and_expression
     : equality_expression { $$ = $1; }
     | and_expression AMPERSAND equality_expression {
         parseContext.fullIntegerCheck($2.loc, "bitwise and");
-        $$ = parseContext.intermediate.addBinaryMath(EOpAnd, $1, $3, $2.loc);
-        if ($$ == 0) {
-            parseContext.binaryOpError($2.loc, "&", $1->getCompleteString(), $3->getCompleteString());
+        $$ = parseContext.handleBinaryMath($2.loc, "&", EOpAnd, $1, $3);
+        if ($$ == 0)
             $$ = $1;
-        }
     }
     ;
 
@@ -571,11 +523,9 @@ exclusive_or_expression
     : and_expression { $$ = $1; }
     | exclusive_or_expression CARET and_expression {
         parseContext.fullIntegerCheck($2.loc, "bitwise exclusive or");
-        $$ = parseContext.intermediate.addBinaryMath(EOpExclusiveOr, $1, $3, $2.loc);
-        if ($$ == 0) {
-            parseContext.binaryOpError($2.loc, "^", $1->getCompleteString(), $3->getCompleteString());
+        $$ = parseContext.handleBinaryMath($2.loc, "^", EOpExclusiveOr, $1, $3);
+        if ($$ == 0)
             $$ = $1;
-        }
     }
     ;
 
@@ -583,44 +533,36 @@ inclusive_or_expression
     : exclusive_or_expression { $$ = $1; }
     | inclusive_or_expression VERTICAL_BAR exclusive_or_expression {
         parseContext.fullIntegerCheck($2.loc, "bitwise inclusive or");
-        $$ = parseContext.intermediate.addBinaryMath(EOpInclusiveOr, $1, $3, $2.loc);
-        if ($$ == 0) {
-            parseContext.binaryOpError($2.loc, "|", $1->getCompleteString(), $3->getCompleteString());
+        $$ = parseContext.handleBinaryMath($2.loc, "|", EOpInclusiveOr, $1, $3);
+        if ($$ == 0)
             $$ = $1;
-        }
     }
     ;
 
 logical_and_expression
     : inclusive_or_expression { $$ = $1; }
     | logical_and_expression AND_OP inclusive_or_expression {
-        $$ = parseContext.intermediate.addBinaryMath(EOpLogicalAnd, $1, $3, $2.loc);
-        if ($$ == 0) {
-            parseContext.binaryOpError($2.loc, "&&", $1->getCompleteString(), $3->getCompleteString());
+        $$ = parseContext.handleBinaryMath($2.loc, "&&", EOpLogicalAnd, $1, $3);
+        if ($$ == 0)
             $$ = parseContext.intermediate.addConstantUnion(false, $2.loc);
-        }
     }
     ;
 
 logical_xor_expression
     : logical_and_expression { $$ = $1; }
     | logical_xor_expression XOR_OP logical_and_expression  {
-        $$ = parseContext.intermediate.addBinaryMath(EOpLogicalXor, $1, $3, $2.loc);
-        if ($$ == 0) {
-            parseContext.binaryOpError($2.loc, "^^", $1->getCompleteString(), $3->getCompleteString());
+        $$ = parseContext.handleBinaryMath($2.loc, "^^", EOpLogicalXor, $1, $3);
+        if ($$ == 0)
             $$ = parseContext.intermediate.addConstantUnion(false, $2.loc);
-        }
     }
     ;
 
 logical_or_expression
     : logical_xor_expression { $$ = $1; }
     | logical_or_expression OR_OP logical_xor_expression  {
-        $$ = parseContext.intermediate.addBinaryMath(EOpLogicalOr, $1, $3, $2.loc);
-        if ($$ == 0) {
-            parseContext.binaryOpError($2.loc, "||", $1->getCompleteString(), $3->getCompleteString());
+        $$ = parseContext.handleBinaryMath($2.loc, "||", EOpLogicalOr, $1, $3);
+        if ($$ == 0)
             $$ = parseContext.intermediate.addConstantUnion(false, $2.loc);
-        }
     }
     ;
 
@@ -628,7 +570,9 @@ conditional_expression
     : logical_or_expression { $$ = $1; }
     | logical_or_expression QUESTION expression COLON assignment_expression {
         parseContext.boolCheck($2.loc, $1);
-
+        parseContext.rValueErrorCheck($2.loc, "?", $1);
+        parseContext.rValueErrorCheck($4.loc, ":", $3);
+        parseContext.rValueErrorCheck($4.loc, ":", $5);
         $$ = parseContext.intermediate.addSelection($1, $3, $5, $2.loc);
         if ($$ == 0) {
             parseContext.binaryOpError($2.loc, ":", $3->getCompleteString(), $5->getCompleteString());
@@ -643,6 +587,7 @@ assignment_expression
         parseContext.arrayObjectCheck($2.loc, $1->getType(), "array assignment");
         parseContext.opaqueCheck($2.loc, $1->getType(), "=");
         parseContext.lValueErrorCheck($2.loc, "assign", $1);
+        parseContext.rValueErrorCheck($2.loc, "assign", $3);
         $$ = parseContext.intermediate.addAssign($2.op, $1, $3, $2.loc);
         if ($$ == 0) {
             parseContext.assignError($2.loc, "assign", $1->getCompleteString(), $3->getCompleteString());

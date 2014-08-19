@@ -77,8 +77,8 @@ uniform iimage2DArray ii2dabad;  // ERROR, not writeonly
 uniform writeonly iimage2DArray ii2da;
 
 layout(r32i) uniform iimage2D iimg2D;
-layout(rgba32i) uniform iimage2D iimg2Drgba;
-layout(rgba32f) uniform image2D img2Drgba;
+layout(rgba32i) uniform readonly iimage2D iimg2Drgba;
+layout(rgba32f) uniform readonly image2D img2Drgba;
 layout(r32ui) uniform uimage2D uimg2D;
 
 void qux()
@@ -111,12 +111,12 @@ void passrc()
     passr(iimg2D);
 }
 
-layout(rg8i) uniform uimage2D i1bad;     // ERROR, type mismatch
-layout(rgba32i) uniform image2D i2bad;   // ERROR, type mismatch
-layout(rgba32f) uniform uimage2D i3bad;  // ERROR, type mismatch
-layout(r8_snorm) uniform iimage2D i4bad; // ERROR, type mismatch
-layout(rgba32ui) uniform iimage2D i5bad; // ERROR, type mismatch
-layout(r8ui) uniform iimage2D i6bad;     // ERROR, type mismatch
+layout(rg8i)     uniform readonly uimage2D i1bad; // ERROR, type mismatch
+layout(rgba32i)  uniform readonly image2D i2bad;  // ERROR, type mismatch
+layout(rgba32f)  uniform readonly uimage2D i3bad; // ERROR, type mismatch
+layout(r8_snorm) uniform readonly iimage2D i4bad; // ERROR, type mismatch
+layout(rgba32ui) uniform readonly iimage2D i5bad; // ERROR, type mismatch
+layout(r8ui)     uniform readonly iimage2D i6bad; // ERROR, type mismatch
 
 layout(binding = 0) uniform atomic_uint counter;
 
@@ -146,7 +146,7 @@ uniform int i;
 void opac()
 {
     int a[3];
-    a[counter];         // ERROR
+    a[counter];         // ERROR, non-integer
     countArr[2];
     countArr[i];
 }
@@ -172,3 +172,54 @@ uniform samplerCubeArray sca;   // ERROR
 uniform iimage2DRect i2dr;      // ERROR
 uniform image2DMS i2dms;        // ERROR
 uniform uimage2DMSArray u2dmsa; // ERROR
+
+layout(r32f)  coherent volatile restrict readonly writeonly uniform  image2D okay1;
+layout(r32i)  coherent volatile restrict readonly           uniform iimage2D okay2;
+layout(r32ui) coherent volatile restrict          writeonly uniform uimage2D okay3;
+layout(r32f)  coherent volatile restrict                    uniform  image2D okay4;
+ 
+layout(rgba32f)  coherent volatile restrict                 uniform  image2D badQ1;  // ERROR, bad qualifiers
+layout(rgba8i)   coherent volatile restrict                 uniform iimage2D badQ2;  // ERROR, bad qualifiers
+layout(rgba16ui) coherent volatile restrict                 uniform uimage2D badQ3;  // ERROR, bad qualifiers
+
+writeonly buffer woblock
+{
+    int value;
+    float values[];
+} wo;
+
+void foowo()
+{
+    float g;
+    g = wo.values[2];            // ERROR, writeonly
+    float f = wo.values[2];      // ERROR, writeonly
+    ++wo.values[2];              // ERROR, writeonly
+    wo.values[2]--;              // ERROR, writeonly
+    f + wo.values[2];            // ERROR, writeonly
+    wo.values[2] - f;            // ERROR, writeonly
+    bool b;
+    b ? f : wo.values[2];        // ERROR, writeonly
+    b ? wo.values[2] : f;        // ERROR, writeonly
+    if (f == wo.values[2])       // ERROR, writeonly
+        ++f;
+    if (f >= wo.values[2])       // ERROR, writeonly
+        ++f;
+    f = vec3(wo.values[2]).x;    // ERROR, writeonly
+    ~wo.value;                   // ERROR, writeonly
+    wo.values[2] = 3.4;
+}
+
+buffer multioblock
+{
+    readonly int value;
+    writeonly float values[];
+} multio;
+
+void foomultio()
+{
+    float g;
+    g = wo.values[2];            // ERROR, writeonly
+    ~wo.value;
+    wo.values[2] = 3.4;
+    wo.value = 2;                // ERROR, readonly
+}

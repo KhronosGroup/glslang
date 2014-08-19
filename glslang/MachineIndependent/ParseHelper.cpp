@@ -678,6 +678,34 @@ void TParseContext::checkIoArrayConsistency(TSourceLoc loc, int requiredSize, co
     }
 }
 
+// Handle seeing a binary node with a math operation.
+TIntermTyped* TParseContext::handleBinaryMath(TSourceLoc loc, const char* str, TOperator op, TIntermTyped* left, TIntermTyped* right)
+{
+    rValueErrorCheck(loc, str, left->getAsTyped());
+    rValueErrorCheck(loc, str, right->getAsTyped());
+
+    TIntermTyped* result = intermediate.addBinaryMath(op, left, right, loc);
+    if (! result)
+        binaryOpError(loc, str, left->getCompleteString(), right->getCompleteString());
+
+    return result;
+}
+
+// Handle seeing a unary node with a math operation.
+TIntermTyped* TParseContext::handleUnaryMath(TSourceLoc loc, const char* str, TOperator op, TIntermTyped* childNode)
+{
+    rValueErrorCheck(loc, str, childNode);
+
+    TIntermTyped* result = intermediate.addUnaryMath(op, childNode, loc);
+
+    if (result)
+        return result;
+    else
+        unaryOpError(loc, str, childNode->getCompleteString());
+        
+    return childNode;
+}
+
 //
 // Handle seeing a base.field dereference in the grammar.
 //
@@ -1540,7 +1568,6 @@ void TParseContext::variableCheck(TIntermTyped*& nodePtr)
 //
 bool TParseContext::lValueErrorCheck(TSourceLoc loc, const char* op, TIntermTyped* node)
 {
-    TIntermSymbol* symNode = node->getAsSymbolNode();
     TIntermBinary* binaryNode = node->getAsBinaryNode();
 
     if (binaryNode) {
@@ -1582,6 +1609,7 @@ bool TParseContext::lValueErrorCheck(TSourceLoc loc, const char* op, TIntermType
 
 
     const char* symbol = 0;
+    TIntermSymbol* symNode = node->getAsSymbolNode();
     if (symNode != 0)
         symbol = symNode->getName().c_str();
 
@@ -1642,6 +1670,32 @@ bool TParseContext::lValueErrorCheck(TSourceLoc loc, const char* op, TIntermType
         error(loc, " l-value required", op, "(%s)", message);
 
     return true;
+}
+
+// Test for and give an error if the node can't be read from.
+void TParseContext::rValueErrorCheck(TSourceLoc loc, const char* op, TIntermTyped* node)
+{
+    if (! node)
+        return;
+
+    TIntermBinary* binaryNode = node->getAsBinaryNode();
+    if (binaryNode) {
+        switch(binaryNode->getOp()) {
+        case EOpIndexDirect:
+        case EOpIndexIndirect:
+        case EOpIndexDirectStruct:
+        case EOpVectorSwizzle:
+            rValueErrorCheck(loc, op, binaryNode->getLeft());
+        default:
+            break;
+        }
+
+        return;
+    }
+
+    TIntermSymbol* symNode = node->getAsSymbolNode();
+    if (symNode && symNode->getQualifier().writeonly)
+        error(loc, "can't read from writeonly object: ", op, symNode->getName().c_str());
 }
 
 //
@@ -3530,6 +3584,15 @@ void TParseContext::layoutTypeCheck(TSourceLoc loc, const TType& type)
                 error(loc, "does not apply to signed integer images", TQualifier::getLayoutFormatString(qualifier.layoutFormat), "");
             if (type.getSampler().type == EbtUint && qualifier.layoutFormat < ElfIntGuard)
                 error(loc, "does not apply to unsigned integer images", TQualifier::getLayoutFormatString(qualifier.layoutFormat), "");
+
+            if (profile == EEsProfile) {
+                // "Except for image variables qualified with the format qualifiers r32f, r32i, and r32ui, image variables must 
+                // specify either memory qualifier readonly or the memory qualifier writeonly."
+                if (! (qualifier.layoutFormat == ElfR32f || qualifier.layoutFormat == ElfR32i || qualifier.layoutFormat == ElfR32ui)) {
+                    if (! qualifier.readonly && ! qualifier.writeonly)
+                        error(loc, "format requires readonly or writeonly memory qualifier", TQualifier::getLayoutFormatString(qualifier.layoutFormat), "");
+                }
+            }
         }
     } else if (type.isImage() && ! qualifier.writeonly)
         error(loc, "image variables not declared 'writeonly' must have a format layout qualifier", "", "");
@@ -3828,7 +3891,9 @@ TIntermNode* TParseContext::declareVariable(TSourceLoc loc, TString& identifier,
     if (voidErrorCheck(loc, identifier, type.getBasicType()))
         return 0;
 
-    if (! initializer)
+    if (initializer)        
+        rValueErrorCheck(loc, "initializer", initializer);
+    else
         nonInitConstCheck(loc, identifier, type);
 
     invariantCheck(loc, type, identifier);
@@ -4118,8 +4183,9 @@ TIntermTyped* TParseContext::convertInitializerList(TSourceLoc loc, const TType&
 //
 TIntermTyped* TParseContext::addConstructor(TSourceLoc loc, TIntermNode* node, const TType& type, TOperator op)
 {
-    if (node == 0)
+    if (node == 0 || node->getAsTyped() == 0)
         return 0;
+    rValueErrorCheck(loc, "constructor", node->getAsTyped());
 
     TIntermAggregate* aggrNode = node->getAsAggregate();
 
@@ -4150,7 +4216,7 @@ TIntermTyped* TParseContext::addConstructor(TSourceLoc loc, TIntermNode* node, c
         else if (op == EOpConstructStruct)
             newNode = constructStruct(node, *(*memberTypes).type, 1, node->getLoc());
         else
-            newNode = constructBuiltIn(type, op, node, node->getLoc(), false);
+            newNode = constructBuiltIn(type, op, node->getAsTyped(), node->getLoc(), false);
 
         if (newNode && (type.isArray() || op == EOpConstructStruct))
             newNode = intermediate.setAggregateOperator(newNode, EOpConstructStruct, type, loc);
@@ -4178,7 +4244,7 @@ TIntermTyped* TParseContext::addConstructor(TSourceLoc loc, TIntermNode* node, c
         else if (op == EOpConstructStruct)
             newNode = constructStruct(*p, *(memberTypes[paramCount]).type, paramCount+1, node->getLoc());
         else
-            newNode = constructBuiltIn(type, op, *p, node->getLoc(), true);
+            newNode = constructBuiltIn(type, op, (*p)->getAsTyped(), node->getLoc(), true);
 
         if (newNode)
             *p = newNode;
@@ -4198,7 +4264,7 @@ TIntermTyped* TParseContext::addConstructor(TSourceLoc loc, TIntermNode* node, c
 //
 // Returns 0 for an error or the constructed node.
 //
-TIntermTyped* TParseContext::constructBuiltIn(const TType& type, TOperator op, TIntermNode* node, TSourceLoc loc, bool subset)
+TIntermTyped* TParseContext::constructBuiltIn(const TType& type, TOperator op, TIntermTyped* node, TSourceLoc loc, bool subset)
 {
     TIntermTyped* newNode;
     TOperator basicOp;

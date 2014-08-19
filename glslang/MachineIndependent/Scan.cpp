@@ -677,8 +677,7 @@ int TScanContext::tokenizeIdentifier()
         if (parseContext.profile == EEsProfile && parseContext.version >= 310 ||
             parseContext.extensionsTurnedOn(1, &GL_ARB_shader_atomic_counters))
             return keyword;
-        else
-            return es30ReservedFromGLSL(420);
+        return es30ReservedFromGLSL(420);
 
     case COHERENT:
     case RESTRICT:
@@ -686,10 +685,11 @@ int TScanContext::tokenizeIdentifier()
     case WRITEONLY:
         if (parseContext.profile == EEsProfile && parseContext.version >= 310)
             return keyword;
-        else
-            return es30ReservedFromGLSL(parseContext.extensionsTurnedOn(1, &GL_ARB_shader_image_load_store) ? 130 : 420);
+        return es30ReservedFromGLSL(parseContext.extensionsTurnedOn(1, &GL_ARB_shader_image_load_store) ? 130 : 420);
 
     case VOLATILE:
+        if (parseContext.profile == EEsProfile && parseContext.version >= 310)
+            return keyword;
         if (! parseContext.symbolTable.atBuiltInLevel() && (parseContext.profile == EEsProfile || (parseContext.version < 420 && ! parseContext.extensionsTurnedOn(1, &GL_ARB_shader_image_load_store))))
             reservedWord();
         return keyword;

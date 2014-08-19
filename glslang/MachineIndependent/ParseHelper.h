@@ -95,6 +95,8 @@ public:
     int getIoArrayImplicitSize() const;
     void checkIoArrayConsistency(TSourceLoc, int requiredSize, const char* feature, TType&, const TString&);
 
+    TIntermTyped* handleBinaryMath(TSourceLoc, const char* str, TOperator op, TIntermTyped* left, TIntermTyped* right);
+    TIntermTyped* handleUnaryMath(TSourceLoc, const char* str, TOperator op, TIntermTyped* childNode);
     TIntermTyped* handleDotDereference(TSourceLoc, TIntermTyped* base, TString& field);
     TFunction* handleFunctionDeclarator(TSourceLoc loc, TFunction& function, bool prototype);
     TIntermAggregate* handleFunctionDefinition(TSourceLoc, TFunction&);
@@ -111,6 +113,7 @@ public:
     void binaryOpError(TSourceLoc, const char* op, TString left, TString right);
     void variableCheck(TIntermTyped*& nodePtr);
     bool lValueErrorCheck(TSourceLoc, const char* op, TIntermTyped*);
+    void rValueErrorCheck(TSourceLoc, const char* op, TIntermTyped*);
     void constantValueCheck(TIntermTyped* node, const char* token);
     void integerCheck(const TIntermTyped* node, const char* token);
     void globalCheck(TSourceLoc, const char* token);
@@ -170,7 +173,7 @@ public:
     TIntermNode* declareVariable(TSourceLoc, TString& identifier, const TPublicType&, TArraySizes* typeArray = 0, TIntermTyped* initializer = 0);
     TIntermTyped* addConstructor(TSourceLoc, TIntermNode*, const TType&, TOperator);
     TIntermTyped* constructStruct(TIntermNode*, const TType&, int, TSourceLoc);
-    TIntermTyped* constructBuiltIn(const TType&, TOperator, TIntermNode*, TSourceLoc, bool subset);
+    TIntermTyped* constructBuiltIn(const TType&, TOperator, TIntermTyped*, TSourceLoc, bool subset);
     void declareBlock(TSourceLoc, TTypeList& typeList, const TString* instanceName = 0, TArraySizes* arraySizes = 0);
     void fixBlockLocations(TSourceLoc, TQualifier&, TTypeList&, bool memberWithLocation, bool memberWithoutLocation);
     void fixBlockXfbOffsets(TSourceLoc, TQualifier&, TTypeList&);

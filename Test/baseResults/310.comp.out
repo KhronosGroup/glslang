@@ -22,7 +22,6 @@ ERROR: 0:88: 'imageAtomicAdd' : no matching overloaded function found
 ERROR: 0:89: 'imageAtomicMin' : no matching overloaded function found 
 ERROR: 0:90: 'imageAtomicMax' : no matching overloaded function found 
 ERROR: 0:94: 'writeonly' : argument cannot drop memory qualifier when passed to formal parameter 
-ERROR: 0:97: 'volatile' : Reserved word. 
 ERROR: 0:97: '' : memory qualifiers cannot be used on this type 
 ERROR: 0:98: '' : memory qualifiers cannot be used on this type 
 ERROR: 0:110: 'restrict' : argument cannot drop memory qualifier when passed to formal parameter 
@@ -57,7 +56,24 @@ ERROR: 0:173: '' : image variables not declared 'writeonly' must have a format l
 ERROR: 0:174: 'uimage2DMSArray' : Reserved word. 
 ERROR: 0:174: 'sampler/image' : type requires declaration of default precision qualifier 
 ERROR: 0:174: '' : image variables not declared 'writeonly' must have a format layout qualifier 
-ERROR: 57 compilation errors.  No code generated.
+ERROR: 0:181: 'rgba32f' : format requires readonly or writeonly memory qualifier 
+ERROR: 0:182: 'rgba8i' : format requires readonly or writeonly memory qualifier 
+ERROR: 0:183: 'rgba16ui' : format requires readonly or writeonly memory qualifier 
+ERROR: 0:194: 'assign' : can't read from writeonly object:  wo
+ERROR: 0:195: 'initializer' : can't read from writeonly object:  wo
+ERROR: 0:196: '++' : can't read from writeonly object:  wo
+ERROR: 0:197: '--' : can't read from writeonly object:  wo
+ERROR: 0:198: '+' : can't read from writeonly object:  wo
+ERROR: 0:199: '-' : can't read from writeonly object:  wo
+ERROR: 0:201: ':' : can't read from writeonly object:  wo
+ERROR: 0:202: ':' : can't read from writeonly object:  wo
+ERROR: 0:203: '==' : can't read from writeonly object:  wo
+ERROR: 0:205: '>=' : can't read from writeonly object:  wo
+ERROR: 0:207: 'constructor' : can't read from writeonly object:  wo
+ERROR: 0:208: '~' : can't read from writeonly object:  wo
+ERROR: 0:221: 'assign' : can't read from writeonly object:  wo
+ERROR: 0:222: '~' : can't read from writeonly object:  wo
+ERROR: 73 compilation errors.  No code generated.
 
 
 Shader version: 310
@@ -141,7 +157,7 @@ ERROR: node is still EOpNull!
 0:92          0 (const int)
 0:92          0 (const int)
 0:93      Function Call: imageLoad(I21;vi2; (highp 4-component vector of float)
-0:93        'img2Drgba' (layout(rgba32f ) uniform lowp image2D)
+0:93        'img2Drgba' (layout(rgba32f ) readonly uniform lowp image2D)
 0:93        Construct ivec2 (2-component vector of int)
 0:93          'i' (highp int)
 0:93          'i' (highp int)
@@ -233,6 +249,178 @@ ERROR: node is still EOpNull!
 0:162            10 (const uint)
 0:162          Constant:
 0:162            8 (const uint)
+0:191  Function Definition: foowo( (void)
+0:191    Function Parameters: 
+0:?     Sequence
+0:194      move second child to first child (highp float)
+0:194        'g' (highp float)
+0:194        direct index (layout(column_major shared ) highp float)
+0:194          values: direct index for structure (layout(column_major shared ) buffer implicitly-sized array of highp float)
+0:194            'wo' (layout(column_major shared ) writeonly buffer block{layout(column_major shared ) buffer highp int value, layout(column_major shared ) buffer implicitly-sized array of highp float values})
+0:194            Constant:
+0:194              1 (const int)
+0:194          Constant:
+0:194            2 (const int)
+0:195      Sequence
+0:195        move second child to first child (highp float)
+0:195          'f' (highp float)
+0:195          direct index (layout(column_major shared ) highp float)
+0:195            values: direct index for structure (layout(column_major shared ) buffer implicitly-sized array of highp float)
+0:195              'wo' (layout(column_major shared ) writeonly buffer block{layout(column_major shared ) buffer highp int value, layout(column_major shared ) buffer implicitly-sized array of highp float values})
+0:195              Constant:
+0:195                1 (const int)
+0:195            Constant:
+0:195              2 (const int)
+0:196      Pre-Increment (highp float)
+0:196        direct index (layout(column_major shared ) highp float)
+0:196          values: direct index for structure (layout(column_major shared ) buffer implicitly-sized array of highp float)
+0:196            'wo' (layout(column_major shared ) writeonly buffer block{layout(column_major shared ) buffer highp int value, layout(column_major shared ) buffer implicitly-sized array of highp float values})
+0:196            Constant:
+0:196              1 (const int)
+0:196          Constant:
+0:196            2 (const int)
+0:197      Post-Decrement (highp float)
+0:197        direct index (layout(column_major shared ) highp float)
+0:197          values: direct index for structure (layout(column_major shared ) buffer implicitly-sized array of highp float)
+0:197            'wo' (layout(column_major shared ) writeonly buffer block{layout(column_major shared ) buffer highp int value, layout(column_major shared ) buffer implicitly-sized array of highp float values})
+0:197            Constant:
+0:197              1 (const int)
+0:197          Constant:
+0:197            2 (const int)
+0:198      add (highp float)
+0:198        'f' (highp float)
+0:198        direct index (layout(column_major shared ) highp float)
+0:198          values: direct index for structure (layout(column_major shared ) buffer implicitly-sized array of highp float)
+0:198            'wo' (layout(column_major shared ) writeonly buffer block{layout(column_major shared ) buffer highp int value, layout(column_major shared ) buffer implicitly-sized array of highp float values})
+0:198            Constant:
+0:198              1 (const int)
+0:198          Constant:
+0:198            2 (const int)
+0:199      subtract (highp float)
+0:199        direct index (layout(column_major shared ) highp float)
+0:199          values: direct index for structure (layout(column_major shared ) buffer implicitly-sized array of highp float)
+0:199            'wo' (layout(column_major shared ) writeonly buffer block{layout(column_major shared ) buffer highp int value, layout(column_major shared ) buffer implicitly-sized array of highp float values})
+0:199            Constant:
+0:199              1 (const int)
+0:199          Constant:
+0:199            2 (const int)
+0:199        'f' (highp float)
+0:201      Test condition and select (highp float)
+0:201        Condition
+0:201        'b' (bool)
+0:201        true case
+0:201        'f' (highp float)
+0:201        false case
+0:201        direct index (layout(column_major shared ) highp float)
+0:201          values: direct index for structure (layout(column_major shared ) buffer implicitly-sized array of highp float)
+0:201            'wo' (layout(column_major shared ) writeonly buffer block{layout(column_major shared ) buffer highp int value, layout(column_major shared ) buffer implicitly-sized array of highp float values})
+0:201            Constant:
+0:201              1 (const int)
+0:201          Constant:
+0:201            2 (const int)
+0:202      Test condition and select (layout(column_major shared ) highp float)
+0:202        Condition
+0:202        'b' (bool)
+0:202        true case
+0:202        direct index (layout(column_major shared ) highp float)
+0:202          values: direct index for structure (layout(column_major shared ) buffer implicitly-sized array of highp float)
+0:202            'wo' (layout(column_major shared ) writeonly buffer block{layout(column_major shared ) buffer highp int value, layout(column_major shared ) buffer implicitly-sized array of highp float values})
+0:202            Constant:
+0:202              1 (const int)
+0:202          Constant:
+0:202            2 (const int)
+0:202        false case
+0:202        'f' (highp float)
+0:203      Test condition and select (void)
+0:203        Condition
+0:203        Compare Equal (bool)
+0:203          'f' (highp float)
+0:203          direct index (layout(column_major shared ) highp float)
+0:203            values: direct index for structure (layout(column_major shared ) buffer implicitly-sized array of highp float)
+0:203              'wo' (layout(column_major shared ) writeonly buffer block{layout(column_major shared ) buffer highp int value, layout(column_major shared ) buffer implicitly-sized array of highp float values})
+0:203              Constant:
+0:203                1 (const int)
+0:203            Constant:
+0:203              2 (const int)
+0:203        true case
+0:204        Pre-Increment (highp float)
+0:204          'f' (highp float)
+0:205      Test condition and select (void)
+0:205        Condition
+0:205        Compare Greater Than or Equal (bool)
+0:205          'f' (highp float)
+0:205          direct index (layout(column_major shared ) highp float)
+0:205            values: direct index for structure (layout(column_major shared ) buffer implicitly-sized array of highp float)
+0:205              'wo' (layout(column_major shared ) writeonly buffer block{layout(column_major shared ) buffer highp int value, layout(column_major shared ) buffer implicitly-sized array of highp float values})
+0:205              Constant:
+0:205                1 (const int)
+0:205            Constant:
+0:205              2 (const int)
+0:205        true case
+0:206        Pre-Increment (highp float)
+0:206          'f' (highp float)
+0:207      move second child to first child (highp float)
+0:207        'f' (highp float)
+0:207        direct index (highp float)
+0:207          Construct vec3 (highp 3-component vector of float)
+0:207            direct index (layout(column_major shared ) highp float)
+0:207              values: direct index for structure (layout(column_major shared ) buffer implicitly-sized array of highp float)
+0:207                'wo' (layout(column_major shared ) writeonly buffer block{layout(column_major shared ) buffer highp int value, layout(column_major shared ) buffer implicitly-sized array of highp float values})
+0:207                Constant:
+0:207                  1 (const int)
+0:207              Constant:
+0:207                2 (const int)
+0:207          Constant:
+0:207            0 (const int)
+0:208      Bitwise not (highp int)
+0:208        value: direct index for structure (layout(column_major shared ) buffer highp int)
+0:208          'wo' (layout(column_major shared ) writeonly buffer block{layout(column_major shared ) buffer highp int value, layout(column_major shared ) buffer implicitly-sized array of highp float values})
+0:208          Constant:
+0:208            0 (const int)
+0:209      move second child to first child (highp float)
+0:209        direct index (layout(column_major shared ) highp float)
+0:209          values: direct index for structure (layout(column_major shared ) buffer implicitly-sized array of highp float)
+0:209            'wo' (layout(column_major shared ) writeonly buffer block{layout(column_major shared ) buffer highp int value, layout(column_major shared ) buffer implicitly-sized array of highp float values})
+0:209            Constant:
+0:209              1 (const int)
+0:209          Constant:
+0:209            2 (const int)
+0:209        Constant:
+0:209          3.400000
+0:218  Function Definition: foomultio( (void)
+0:218    Function Parameters: 
+0:?     Sequence
+0:221      move second child to first child (highp float)
+0:221        'g' (highp float)
+0:221        direct index (layout(column_major shared ) highp float)
+0:221          values: direct index for structure (layout(column_major shared ) buffer implicitly-sized array of highp float)
+0:221            'wo' (layout(column_major shared ) writeonly buffer block{layout(column_major shared ) buffer highp int value, layout(column_major shared ) buffer implicitly-sized array of highp float values})
+0:221            Constant:
+0:221              1 (const int)
+0:221          Constant:
+0:221            2 (const int)
+0:222      Bitwise not (highp int)
+0:222        value: direct index for structure (layout(column_major shared ) buffer highp int)
+0:222          'wo' (layout(column_major shared ) writeonly buffer block{layout(column_major shared ) buffer highp int value, layout(column_major shared ) buffer implicitly-sized array of highp float values})
+0:222          Constant:
+0:222            0 (const int)
+0:223      move second child to first child (highp float)
+0:223        direct index (layout(column_major shared ) highp float)
+0:223          values: direct index for structure (layout(column_major shared ) buffer implicitly-sized array of highp float)
+0:223            'wo' (layout(column_major shared ) writeonly buffer block{layout(column_major shared ) buffer highp int value, layout(column_major shared ) buffer implicitly-sized array of highp float values})
+0:223            Constant:
+0:223              1 (const int)
+0:223          Constant:
+0:223            2 (const int)
+0:223        Constant:
+0:223          3.400000
+0:224      move second child to first child (highp int)
+0:224        value: direct index for structure (layout(column_major shared ) buffer highp int)
+0:224          'wo' (layout(column_major shared ) writeonly buffer block{layout(column_major shared ) buffer highp int value, layout(column_major shared ) buffer implicitly-sized array of highp float values})
+0:224          Constant:
+0:224            0 (const int)
+0:224        Constant:
+0:224          2 (const int)
 0:?   Linker Objects
 0:?     'gl_WorkGroupSize' (const highp 3-component vector of uint)
 0:?       2 (const uint)
@@ -258,19 +446,19 @@ ERROR: node is still EOpNull!
 0:?     'ii2dabad' (uniform highp iimage2DArray)
 0:?     'ii2da' (writeonly uniform highp iimage2DArray)
 0:?     'iimg2D' (layout(r32i ) uniform highp iimage2D)
-0:?     'iimg2Drgba' (layout(rgba32i ) uniform highp iimage2D)
-0:?     'img2Drgba' (layout(rgba32f ) uniform lowp image2D)
+0:?     'iimg2Drgba' (layout(rgba32i ) readonly uniform highp iimage2D)
+0:?     'img2Drgba' (layout(rgba32f ) readonly uniform lowp image2D)
 0:?     'uimg2D' (layout(r32ui ) uniform highp uimage2D)
 0:?     'vol' (volatile highp float)
 0:?     'vol2' (readonly highp int)
 0:?     'qualim1' (layout(r32i ) coherent readonly uniform highp iimage2D)
 0:?     'qualim2' (layout(r32i ) coherent restrict readonly uniform highp iimage2D)
-0:?     'i1bad' (layout(rg8i ) uniform highp uimage2D)
-0:?     'i2bad' (layout(rgba32i ) uniform lowp image2D)
-0:?     'i3bad' (layout(rgba32f ) uniform highp uimage2D)
-0:?     'i4bad' (layout(r8_snorm ) uniform highp iimage2D)
-0:?     'i5bad' (layout(rgba32ui ) uniform highp iimage2D)
-0:?     'i6bad' (layout(r8ui ) uniform highp iimage2D)
+0:?     'i1bad' (layout(rg8i ) readonly uniform highp uimage2D)
+0:?     'i2bad' (layout(rgba32i ) readonly uniform lowp image2D)
+0:?     'i3bad' (layout(rgba32f ) readonly uniform highp uimage2D)
+0:?     'i4bad' (layout(r8_snorm ) readonly uniform highp iimage2D)
+0:?     'i5bad' (layout(rgba32ui ) readonly uniform highp iimage2D)
+0:?     'i6bad' (layout(r8ui ) readonly uniform highp iimage2D)
 0:?     'counter' (layout(binding=0 offset=0 ) uniform highp atomic_uint)
 0:?     'counterBad' (layout(binding=1 ) uniform mediump atomic_uint)
 0:?     'countArr' (layout(binding=2 offset=4 ) uniform 4-element array of highp atomic_uint)
@@ -283,6 +471,15 @@ ERROR: node is still EOpNull!
 0:?     'i2dr' (uniform mediump iimage2DRect)
 0:?     'i2dms' (uniform lowp image2DMS)
 0:?     'u2dmsa' (uniform mediump uimage2DMSArray)
+0:?     'okay1' (layout(r32f ) coherent volatile restrict readonly writeonly uniform lowp image2D)
+0:?     'okay2' (layout(r32i ) coherent volatile restrict readonly uniform highp iimage2D)
+0:?     'okay3' (layout(r32ui ) coherent volatile restrict writeonly uniform highp uimage2D)
+0:?     'okay4' (layout(r32f ) coherent volatile restrict uniform lowp image2D)
+0:?     'badQ1' (layout(rgba32f ) coherent volatile restrict uniform lowp image2D)
+0:?     'badQ2' (layout(rgba8i ) coherent volatile restrict uniform highp iimage2D)
+0:?     'badQ3' (layout(rgba16ui ) coherent volatile restrict uniform highp uimage2D)
+0:?     'wo' (layout(column_major shared ) writeonly buffer block{layout(column_major shared ) buffer highp int value, layout(column_major shared ) buffer implicitly-sized array of highp float values})
+0:?     'multio' (layout(column_major shared ) buffer block{layout(column_major shared ) readonly buffer highp int value, layout(column_major shared ) writeonly buffer implicitly-sized array of highp float values})
 
 
 Linked compute stage:
@@ -369,7 +566,7 @@ ERROR: node is still EOpNull!
 0:92          0 (const int)
 0:92          0 (const int)
 0:93      Function Call: imageLoad(I21;vi2; (highp 4-component vector of float)
-0:93        'img2Drgba' (layout(rgba32f ) uniform lowp image2D)
+0:93        'img2Drgba' (layout(rgba32f ) readonly uniform lowp image2D)
 0:93        Construct ivec2 (2-component vector of int)
 0:93          'i' (highp int)
 0:93          'i' (highp int)
@@ -461,6 +658,178 @@ ERROR: node is still EOpNull!
 0:162            10 (const uint)
 0:162          Constant:
 0:162            8 (const uint)
+0:191  Function Definition: foowo( (void)
+0:191    Function Parameters: 
+0:?     Sequence
+0:194      move second child to first child (highp float)
+0:194        'g' (highp float)
+0:194        direct index (layout(column_major shared ) highp float)
+0:194          values: direct index for structure (layout(column_major shared ) buffer implicitly-sized array of highp float)
+0:194            'wo' (layout(column_major shared ) writeonly buffer block{layout(column_major shared ) buffer highp int value, layout(column_major shared ) buffer implicitly-sized array of highp float values})
+0:194            Constant:
+0:194              1 (const int)
+0:194          Constant:
+0:194            2 (const int)
+0:195      Sequence
+0:195        move second child to first child (highp float)
+0:195          'f' (highp float)
+0:195          direct index (layout(column_major shared ) highp float)
+0:195            values: direct index for structure (layout(column_major shared ) buffer implicitly-sized array of highp float)
+0:195              'wo' (layout(column_major shared ) writeonly buffer block{layout(column_major shared ) buffer highp int value, layout(column_major shared ) buffer implicitly-sized array of highp float values})
+0:195              Constant:
+0:195                1 (const int)
+0:195            Constant:
+0:195              2 (const int)
+0:196      Pre-Increment (highp float)
+0:196        direct index (layout(column_major shared ) highp float)
+0:196          values: direct index for structure (layout(column_major shared ) buffer implicitly-sized array of highp float)
+0:196            'wo' (layout(column_major shared ) writeonly buffer block{layout(column_major shared ) buffer highp int value, layout(column_major shared ) buffer implicitly-sized array of highp float values})
+0:196            Constant:
+0:196              1 (const int)
+0:196          Constant:
+0:196            2 (const int)
+0:197      Post-Decrement (highp float)
+0:197        direct index (layout(column_major shared ) highp float)
+0:197          values: direct index for structure (layout(column_major shared ) buffer implicitly-sized array of highp float)
+0:197            'wo' (layout(column_major shared ) writeonly buffer block{layout(column_major shared ) buffer highp int value, layout(column_major shared ) buffer implicitly-sized array of highp float values})
+0:197            Constant:
+0:197              1 (const int)
+0:197          Constant:
+0:197            2 (const int)
+0:198      add (highp float)
+0:198        'f' (highp float)
+0:198        direct index (layout(column_major shared ) highp float)
+0:198          values: direct index for structure (layout(column_major shared ) buffer implicitly-sized array of highp float)
+0:198            'wo' (layout(column_major shared ) writeonly buffer block{layout(column_major shared ) buffer highp int value, layout(column_major shared ) buffer implicitly-sized array of highp float values})
+0:198            Constant:
+0:198              1 (const int)
+0:198          Constant:
+0:198            2 (const int)
+0:199      subtract (highp float)
+0:199        direct index (layout(column_major shared ) highp float)
+0:199          values: direct index for structure (layout(column_major shared ) buffer implicitly-sized array of highp float)
+0:199            'wo' (layout(column_major shared ) writeonly buffer block{layout(column_major shared ) buffer highp int value, layout(column_major shared ) buffer implicitly-sized array of highp float values})
+0:199            Constant:
+0:199              1 (const int)
+0:199          Constant:
+0:199            2 (const int)
+0:199        'f' (highp float)
+0:201      Test condition and select (highp float)
+0:201        Condition
+0:201        'b' (bool)
+0:201        true case
+0:201        'f' (highp float)
+0:201        false case
+0:201        direct index (layout(column_major shared ) highp float)
+0:201          values: direct index for structure (layout(column_major shared ) buffer implicitly-sized array of highp float)
+0:201            'wo' (layout(column_major shared ) writeonly buffer block{layout(column_major shared ) buffer highp int value, layout(column_major shared ) buffer implicitly-sized array of highp float values})
+0:201            Constant:
+0:201              1 (const int)
+0:201          Constant:
+0:201            2 (const int)
+0:202      Test condition and select (layout(column_major shared ) highp float)
+0:202        Condition
+0:202        'b' (bool)
+0:202        true case
+0:202        direct index (layout(column_major shared ) highp float)
+0:202          values: direct index for structure (layout(column_major shared ) buffer implicitly-sized array of highp float)
+0:202            'wo' (layout(column_major shared ) writeonly buffer block{layout(column_major shared ) buffer highp int value, layout(column_major shared ) buffer implicitly-sized array of highp float values})
+0:202            Constant:
+0:202              1 (const int)
+0:202          Constant:
+0:202            2 (const int)
+0:202        false case
+0:202        'f' (highp float)
+0:203      Test condition and select (void)
+0:203        Condition
+0:203        Compare Equal (bool)
+0:203          'f' (highp float)
+0:203          direct index (layout(column_major shared ) highp float)
+0:203            values: direct index for structure (layout(column_major shared ) buffer implicitly-sized array of highp float)
+0:203              'wo' (layout(column_major shared ) writeonly buffer block{layout(column_major shared ) buffer highp int value, layout(column_major shared ) buffer implicitly-sized array of highp float values})
+0:203              Constant:
+0:203                1 (const int)
+0:203            Constant:
+0:203              2 (const int)
+0:203        true case
+0:204        Pre-Increment (highp float)
+0:204          'f' (highp float)
+0:205      Test condition and select (void)
+0:205        Condition
+0:205        Compare Greater Than or Equal (bool)
+0:205          'f' (highp float)
+0:205          direct index (layout(column_major shared ) highp float)
+0:205            values: direct index for structure (layout(column_major shared ) buffer implicitly-sized array of highp float)
+0:205              'wo' (layout(column_major shared ) writeonly buffer block{layout(column_major shared ) buffer highp int value, layout(column_major shared ) buffer implicitly-sized array of highp float values})
+0:205              Constant:
+0:205                1 (const int)
+0:205            Constant:
+0:205              2 (const int)
+0:205        true case
+0:206        Pre-Increment (highp float)
+0:206          'f' (highp float)
+0:207      move second child to first child (highp float)
+0:207        'f' (highp float)
+0:207        direct index (highp float)
+0:207          Construct vec3 (highp 3-component vector of float)
+0:207            direct index (layout(column_major shared ) highp float)
+0:207              values: direct index for structure (layout(column_major shared ) buffer implicitly-sized array of highp float)
+0:207                'wo' (layout(column_major shared ) writeonly buffer block{layout(column_major shared ) buffer highp int value, layout(column_major shared ) buffer implicitly-sized array of highp float values})
+0:207                Constant:
+0:207                  1 (const int)
+0:207              Constant:
+0:207                2 (const int)
+0:207          Constant:
+0:207            0 (const int)
+0:208      Bitwise not (highp int)
+0:208        value: direct index for structure (layout(column_major shared ) buffer highp int)
+0:208          'wo' (layout(column_major shared ) writeonly buffer block{layout(column_major shared ) buffer highp int value, layout(column_major shared ) buffer implicitly-sized array of highp float values})
+0:208          Constant:
+0:208            0 (const int)
+0:209      move second child to first child (highp float)
+0:209        direct index (layout(column_major shared ) highp float)
+0:209          values: direct index for structure (layout(column_major shared ) buffer implicitly-sized array of highp float)
+0:209            'wo' (layout(column_major shared ) writeonly buffer block{layout(column_major shared ) buffer highp int value, layout(column_major shared ) buffer implicitly-sized array of highp float values})
+0:209            Constant:
+0:209              1 (const int)
+0:209          Constant:
+0:209            2 (const int)
+0:209        Constant:
+0:209          3.400000
+0:218  Function Definition: foomultio( (void)
+0:218    Function Parameters: 
+0:?     Sequence
+0:221      move second child to first child (highp float)
+0:221        'g' (highp float)
+0:221        direct index (layout(column_major shared ) highp float)
+0:221          values: direct index for structure (layout(column_major shared ) buffer implicitly-sized array of highp float)
+0:221            'wo' (layout(column_major shared ) writeonly buffer block{layout(column_major shared ) buffer highp int value, layout(column_major shared ) buffer implicitly-sized array of highp float values})
+0:221            Constant:
+0:221              1 (const int)
+0:221          Constant:
+0:221            2 (const int)
+0:222      Bitwise not (highp int)
+0:222        value: direct index for structure (layout(column_major shared ) buffer highp int)
+0:222          'wo' (layout(column_major shared ) writeonly buffer block{layout(column_major shared ) buffer highp int value, layout(column_major shared ) buffer implicitly-sized array of highp float values})
+0:222          Constant:
+0:222            0 (const int)
+0:223      move second child to first child (highp float)
+0:223        direct index (layout(column_major shared ) highp float)
+0:223          values: direct index for structure (layout(column_major shared ) buffer implicitly-sized array of highp float)
+0:223            'wo' (layout(column_major shared ) writeonly buffer block{layout(column_major shared ) buffer highp int value, layout(column_major shared ) buffer implicitly-sized array of highp float values})
+0:223            Constant:
+0:223              1 (const int)
+0:223          Constant:
+0:223            2 (const int)
+0:223        Constant:
+0:223          3.400000
+0:224      move second child to first child (highp int)
+0:224        value: direct index for structure (layout(column_major shared ) buffer highp int)
+0:224          'wo' (layout(column_major shared ) writeonly buffer block{layout(column_major shared ) buffer highp int value, layout(column_major shared ) buffer implicitly-sized array of highp float values})
+0:224          Constant:
+0:224            0 (const int)
+0:224        Constant:
+0:224          2 (const int)
 0:?   Linker Objects
 0:?     'gl_WorkGroupSize' (const highp 3-component vector of uint)
 0:?       2 (const uint)
@@ -486,19 +855,19 @@ ERROR: node is still EOpNull!
 0:?     'ii2dabad' (uniform highp iimage2DArray)
 0:?     'ii2da' (writeonly uniform highp iimage2DArray)
 0:?     'iimg2D' (layout(r32i ) uniform highp iimage2D)
-0:?     'iimg2Drgba' (layout(rgba32i ) uniform highp iimage2D)
-0:?     'img2Drgba' (layout(rgba32f ) uniform lowp image2D)
+0:?     'iimg2Drgba' (layout(rgba32i ) readonly uniform highp iimage2D)
+0:?     'img2Drgba' (layout(rgba32f ) readonly uniform lowp image2D)
 0:?     'uimg2D' (layout(r32ui ) uniform highp uimage2D)
 0:?     'vol' (volatile highp float)
 0:?     'vol2' (readonly highp int)
 0:?     'qualim1' (layout(r32i ) coherent readonly uniform highp iimage2D)
 0:?     'qualim2' (layout(r32i ) coherent restrict readonly uniform highp iimage2D)
-0:?     'i1bad' (layout(rg8i ) uniform highp uimage2D)
-0:?     'i2bad' (layout(rgba32i ) uniform lowp image2D)
-0:?     'i3bad' (layout(rgba32f ) uniform highp uimage2D)
-0:?     'i4bad' (layout(r8_snorm ) uniform highp iimage2D)
-0:?     'i5bad' (layout(rgba32ui ) uniform highp iimage2D)
-0:?     'i6bad' (layout(r8ui ) uniform highp iimage2D)
+0:?     'i1bad' (layout(rg8i ) readonly uniform highp uimage2D)
+0:?     'i2bad' (layout(rgba32i ) readonly uniform lowp image2D)
+0:?     'i3bad' (layout(rgba32f ) readonly uniform highp uimage2D)
+0:?     'i4bad' (layout(r8_snorm ) readonly uniform highp iimage2D)
+0:?     'i5bad' (layout(rgba32ui ) readonly uniform highp iimage2D)
+0:?     'i6bad' (layout(r8ui ) readonly uniform highp iimage2D)
 0:?     'counter' (layout(binding=0 offset=0 ) uniform highp atomic_uint)
 0:?     'counterBad' (layout(binding=1 ) uniform mediump atomic_uint)
 0:?     'countArr' (layout(binding=2 offset=4 ) uniform 4-element array of highp atomic_uint)
@@ -511,4 +880,13 @@ ERROR: node is still EOpNull!
 0:?     'i2dr' (uniform mediump iimage2DRect)
 0:?     'i2dms' (uniform lowp image2DMS)
 0:?     'u2dmsa' (uniform mediump uimage2DMSArray)
+0:?     'okay1' (layout(r32f ) coherent volatile restrict readonly writeonly uniform lowp image2D)
+0:?     'okay2' (layout(r32i ) coherent volatile restrict readonly uniform highp iimage2D)
+0:?     'okay3' (layout(r32ui ) coherent volatile restrict writeonly uniform highp uimage2D)
+0:?     'okay4' (layout(r32f ) coherent volatile restrict uniform lowp image2D)
+0:?     'badQ1' (layout(rgba32f ) coherent volatile restrict uniform lowp image2D)
+0:?     'badQ2' (layout(rgba8i ) coherent volatile restrict uniform highp iimage2D)
+0:?     'badQ3' (layout(rgba16ui ) coherent volatile restrict uniform highp uimage2D)
+0:?     'wo' (layout(column_major shared ) writeonly buffer block{layout(column_major shared ) buffer highp int value, layout(column_major shared ) buffer implicitly-sized array of highp float values})
+0:?     'multio' (layout(column_major shared ) buffer block{layout(column_major shared ) readonly buffer highp int value, layout(column_major shared ) writeonly buffer implicitly-sized array of highp float values})
 

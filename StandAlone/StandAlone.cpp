@@ -142,7 +142,7 @@ const char* DefaultConfig =
     "MaxComputeWorkGroupCountY 65535\n"
     "MaxComputeWorkGroupCountZ 65535\n"
     "MaxComputeWorkGroupSizeX 1024\n"
-    "MaxComputeWorkGroupSizeX 1024\n"
+    "MaxComputeWorkGroupSizeY 1024\n"
     "MaxComputeWorkGroupSizeZ 64\n"
     "MaxComputeUniformComponents 1024\n"
     "MaxComputeTextureImageUnits 16\n"

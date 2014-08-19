@@ -187,10 +187,8 @@ TIntermTyped* TIntermediate::addIndex(TOperator op, TIntermTyped* base, TIntermT
 //
 // Returns the added node.
 //
-TIntermTyped* TIntermediate::addUnaryMath(TOperator op, TIntermNode* childNode, TSourceLoc loc)
+TIntermTyped* TIntermediate::addUnaryMath(TOperator op, TIntermTyped* child, TSourceLoc loc)
 {
-    TIntermTyped* child = childNode->getAsTyped();
-
     if (child->getType().getBasicType() == EbtBlock)
         return 0;
 
