@@ -3266,6 +3266,13 @@ void TParseContext::setLayoutQualifier(TSourceLoc loc, TPublicType& publicType, 
         break;
 
     case EShLangFragment:
+        if (id == "index") {
+            requireProfile(loc, ECompatibilityProfile | ECoreProfile, "index layout qualifier on fragment output");
+            const char* exts[2] = { GL_ARB_separate_shader_objects, GL_ARB_explicit_attrib_location };
+            profileRequires(loc, ECompatibilityProfile | ECoreProfile, 330, 2, exts, "index layout qualifier on fragment output");
+            publicType.qualifier.layoutIndex = value;
+            return;
+        }
         break;
 
     case EShLangCompute:
@@ -3325,11 +3332,13 @@ void TParseContext::mergeObjectLayoutQualifiers(TSourceLoc loc, TQualifier& dst,
         dst.layoutAlign = src.layoutAlign;
 
     if (! inheritOnly) {
-        if (src.layoutLocation != TQualifier::layoutLocationEnd)
+        if (src.hasLocation())
             dst.layoutLocation = src.layoutLocation;
-        if (src.layoutComponent != TQualifier::layoutComponentEnd)
+        if (src.hasComponent())
             dst.layoutComponent = src.layoutComponent;
-        
+        if (src.hasIndex())
+            dst.layoutIndex = src.layoutIndex;
+
         if (src.hasOffset())
             dst.layoutOffset = src.layoutOffset;
 
@@ -3354,7 +3363,7 @@ void TParseContext::layoutObjectCheck(TSourceLoc loc, const TSymbol& symbol)
 
     // now, any remaining error checking based on the object itself
 
-    if (qualifier.hasLocation()) {
+    if (qualifier.hasAnyLocation()) {
         switch (qualifier.storage) {
         case EvqUniform:
         case EvqBuffer:
@@ -3405,8 +3414,14 @@ void TParseContext::layoutTypeCheck(TSourceLoc loc, const TType& type)
 
     // now, error checking combining type and qualifier
 
-    if (qualifier.hasLocation()) {
-        if (qualifier.layoutComponent != TQualifier::layoutComponentEnd) {
+    if (qualifier.hasAnyLocation()) {
+        if (qualifier.hasLocation()) {
+            if (qualifier.storage == EvqVaryingOut && language == EShLangFragment) {
+                if (qualifier.layoutLocation >= (unsigned int)resources.maxDrawBuffers)
+                    error(loc, "too large for fragment output", "location", "");
+            }
+        }
+        if (qualifier.hasComponent()) {
             // "It is a compile-time error if this sequence of components gets larger than 3."
             if (qualifier.layoutComponent + type.getVectorSize() > 4)
                 error(loc, "type overflows the available 4 components", "component", "");
@@ -3414,11 +3429,6 @@ void TParseContext::layoutTypeCheck(TSourceLoc loc, const TType& type)
             // "It is a compile-time error to apply the component qualifier to a matrix, a structure, a block, or an array containing any of these."
             if (type.isMatrix() || type.getBasicType() == EbtBlock || type.getBasicType() == EbtStruct)
                 error(loc, "cannot apply to a matrix, structure, or block", "component", "");
-        }
-
-        if (qualifier.storage == EvqVaryingOut && language == EShLangFragment) {
-            if (qualifier.layoutLocation >= (unsigned int)resources.maxDrawBuffers)
-                error(loc, "too large for fragment output", "location", "");
         }
 
         switch (qualifier.storage) {
@@ -3514,10 +3524,10 @@ void TParseContext::layoutQualifierCheck(TSourceLoc loc, const TQualifier& quali
         error(loc, "cannot apply layout qualifiers to a shared variable", "shared", "");
 
     // "It is a compile-time error to use *component* without also specifying the location qualifier (order does not matter)."
-    if (qualifier.layoutComponent != TQualifier::layoutComponentEnd && qualifier.layoutLocation == TQualifier::layoutLocationEnd)
+    if (qualifier.hasComponent() && ! qualifier.hasLocation())
         error(loc, "must specify 'location' to use 'component'", "component", "");
 
-    if (qualifier.hasLocation()) {
+    if (qualifier.hasAnyLocation()) {
 
         // "As with input layout qualifiers, all shaders except compute shaders 
         // allow *location* layout qualifiers on output variable declarations, 
@@ -3569,6 +3579,12 @@ void TParseContext::layoutQualifierCheck(TSourceLoc loc, const TQualifier& quali
         }
         default:
             break;
+        }
+        if (qualifier.hasIndex()) {
+            if (qualifier.storage != EvqVaryingOut)
+                error(loc, "can only be used on an output", "index", "");
+            if (! qualifier.hasLocation())
+                error(loc, "can only be used with an explicit location", "index", "");
         }
     }
 
@@ -4240,10 +4256,14 @@ void TParseContext::declareBlock(TSourceLoc loc, TTypeList& typeList, const TStr
     case EvqVaryingIn:
         requireProfile(loc, ~EEsProfile, "input block");
         profileRequires(loc, ~EEsProfile, 150, GL_ARB_separate_shader_objects, "input block");
+        if (language == EShLangVertex)
+            error(loc, "cannot declare an input block in a vertex shader", "in", "");
         break;
     case EvqVaryingOut:
         requireProfile(loc, ~EEsProfile, "output block");
         profileRequires(loc, ~EEsProfile, 150, GL_ARB_separate_shader_objects, "output block");
+        if (language == EShLangFragment)
+            error(loc, "cannot declare an output block in a fragment shader", "out", "");
         break;
     default:
         error(loc, "only uniform, buffer, in, or out blocks are supported", blockName->c_str(), "");
@@ -4455,12 +4475,15 @@ void TParseContext::fixBlockLocations(TSourceLoc loc, TQualifier& qualifier, TTy
         if (memberWithLocation) {
             // remove any block-level location and make it per *every* member
             int nextLocation;  // by the rule above, initial value is not relevant
-            if (qualifier.hasLocation()) {
+            if (qualifier.hasAnyLocation()) {
                 nextLocation = qualifier.layoutLocation;
                 qualifier.layoutLocation = TQualifier::layoutLocationEnd;
-                if (qualifier.layoutComponent != TQualifier::layoutComponentEnd) {
+                if (qualifier.hasComponent()) {
                     // "It is a compile-time error to apply the *component* qualifier to a ... block"
                     error(loc, "cannot apply to a block", "component", "");
+                }
+                if (qualifier.hasIndex()) {
+                    error(loc, "cannot apply to a block", "index", "");
                 }
             }
             for (unsigned int member = 0; member < typeList.size(); ++member) {
@@ -4781,8 +4804,8 @@ void TParseContext::updateStandaloneQualifierDefaults(TSourceLoc loc, const TPub
 
     if (qualifier.hasBinding())
         error(loc, "cannot declare a default, include a type or full declaration", "binding", "");
-    if (qualifier.hasLocation())
-        error(loc, "cannot declare a default, use a full declaration", "location", "");
+    if (qualifier.hasAnyLocation())
+        error(loc, "cannot declare a default, use a full declaration", "location/component/index", "");
     if (qualifier.hasXfbOffset())
         error(loc, "cannot declare a default, use a full declaration", "xfb_offset", "");
 }

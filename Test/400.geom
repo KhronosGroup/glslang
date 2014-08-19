@@ -99,3 +99,5 @@ void bits()
     i1 = findMSB(i1);
     i2 = findMSB(u2);
 }
+
+layout(location = 7, index = 1) out vec4 indexedOut;

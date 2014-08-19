@@ -18,7 +18,8 @@ ERROR: 0:65: 'max_vertices' : can only apply to 'out'
 ERROR: 0:65: 'invocations' : can only apply to 'in' 
 ERROR: 0:67: 'in' : type must be an array: inbls
 ERROR: 0:71: 'triangles' : inconsistent input primitive for array size of inbla
-ERROR: 18 compilation errors.  No code generated.
+ERROR: 0:103: 'index' : there is no such layout identifier for this stage taking an assigned value 
+ERROR: 19 compilation errors.  No code generated.
 
 
 Shader version: 400
@@ -180,6 +181,7 @@ ERROR: node is still EOpNull!
 0:?     'scalar' (in float)
 0:?     'inbls' (in block{in int a})
 0:?     'inbla' (in 17-element array of block{in int a})
+0:?     'indexedOut' (layout(location=7 stream=0 ) out 4-component vector of float)
 
 
 Linked geometry stage:
@@ -345,4 +347,5 @@ ERROR: node is still EOpNull!
 0:?     'scalar' (in float)
 0:?     'inbls' (in block{in int a})
 0:?     'inbla' (in 17-element array of block{in int a})
+0:?     'indexedOut' (layout(location=7 stream=0 ) out 4-component vector of float)
 

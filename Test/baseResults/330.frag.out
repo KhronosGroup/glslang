@@ -26,7 +26,14 @@ ERROR: 0:89: 'location qualifier on uniform or buffer' : not supported for this 
 ERROR: 0:94: 'location' : either the block needs a location, or all members need a location, or no members have a location 
 ERROR: 0:108: 'A' : cannot use layout qualifiers on structure members 
 ERROR: 0:119: 'location' : overlapping use of location 44
-ERROR: 27 compilation errors.  No code generated.
+ERROR: 0:122: 'index' : can only be used with an explicit location 
+ERROR: 0:124: 'location' : overlapping use of location 0
+ERROR: 0:125: 'index' : can only be used on an output 
+ERROR: 0:126: 'index' : can only be used on an output 
+ERROR: 0:126: 'location/component/index' : cannot declare a default, use a full declaration 
+ERROR: 0:127: 'location/component/index' : cannot declare a default, use a full declaration 
+ERROR: 0:128: 'out' : cannot declare an output block in a fragment shader 
+ERROR: 34 compilation errors.  No code generated.
 
 
 Shader version: 330
@@ -61,11 +68,11 @@ ERROR: node is still EOpNull!
 0:23            Constant:
 0:23              2 (const uint)
 0:24      move second child to first child (4-component vector of float)
-0:24        'outVar' (out 4-component vector of float)
+0:24        'outVar' (layout(location=0 index=0 ) out 4-component vector of float)
 0:24        'inVar' (smooth in 4-component vector of float)
 0:?   Linker Objects
 0:?     'inVar' (smooth in 4-component vector of float)
-0:?     'outVar' (out 4-component vector of float)
+0:?     'outVar' (layout(location=0 index=0 ) out 4-component vector of float)
 0:?     'varyingVar' (smooth in 4-component vector of float)
 0:?     'anon@0' (in block{in 4-component vector of float gl_Color, })
 0:?     'gl_name' (in block{in int gl_i})
@@ -90,6 +97,11 @@ ERROR: node is still EOpNull!
 0:?     'in4' (in block{layout(location=50 ) in float f1, layout(location=51 ) in float f2})
 0:?     's' (layout(location=33 ) smooth in structure{3-component vector of float a, 2X2 matrix of float b, 2-element array of 4-component vector of float c, 2-component vector of float A})
 0:?     'anon@2' (in block{layout(location=44 component=0 ) in 4-component vector of float d, layout(location=45 component=0 ) in 4-component vector of float e, layout(location=47 ) in 4-component vector of float f, layout(location=48 component=0 ) in 4-component vector of float g, layout(location=41 ) in 4-component vector of float h, layout(location=42 component=0 ) in 4-component vector of float i, layout(location=43 component=0 ) in 4-component vector of float j, layout(location=44 component=0 ) in 4-component vector of float k})
+0:?     'outVar2' (layout(location=63 index=0 ) out 4-component vector of float)
+0:?     'outVar3' (layout(location=0 index=1 ) out 4-component vector of float)
+0:?     'outVar4' (layout(location=0 index=1 ) out 4-component vector of float)
+0:?     'indexIn' (layout(location=27 index=0 ) smooth in 4-component vector of float)
+0:?     'indexBlockI' (layout(location=26 index=0 ) out block{out int a})
 
 
 Linked fragment stage:
@@ -129,11 +141,11 @@ ERROR: node is still EOpNull!
 0:23            Constant:
 0:23              2 (const uint)
 0:24      move second child to first child (4-component vector of float)
-0:24        'outVar' (out 4-component vector of float)
+0:24        'outVar' (layout(location=0 index=0 ) out 4-component vector of float)
 0:24        'inVar' (smooth in 4-component vector of float)
 0:?   Linker Objects
 0:?     'inVar' (smooth in 4-component vector of float)
-0:?     'outVar' (out 4-component vector of float)
+0:?     'outVar' (layout(location=0 index=0 ) out 4-component vector of float)
 0:?     'varyingVar' (smooth in 4-component vector of float)
 0:?     'anon@0' (in block{in 4-component vector of float gl_Color, })
 0:?     'gl_name' (in block{in int gl_i})
@@ -158,4 +170,9 @@ ERROR: node is still EOpNull!
 0:?     'in4' (in block{layout(location=50 ) in float f1, layout(location=51 ) in float f2})
 0:?     's' (layout(location=33 ) smooth in structure{3-component vector of float a, 2X2 matrix of float b, 2-element array of 4-component vector of float c, 2-component vector of float A})
 0:?     'anon@2' (in block{layout(location=44 component=0 ) in 4-component vector of float d, layout(location=45 component=0 ) in 4-component vector of float e, layout(location=47 ) in 4-component vector of float f, layout(location=48 component=0 ) in 4-component vector of float g, layout(location=41 ) in 4-component vector of float h, layout(location=42 component=0 ) in 4-component vector of float i, layout(location=43 component=0 ) in 4-component vector of float j, layout(location=44 component=0 ) in 4-component vector of float k})
+0:?     'outVar2' (layout(location=63 index=0 ) out 4-component vector of float)
+0:?     'outVar3' (layout(location=0 index=1 ) out 4-component vector of float)
+0:?     'outVar4' (layout(location=0 index=1 ) out 4-component vector of float)
+0:?     'indexIn' (layout(location=27 index=0 ) smooth in 4-component vector of float)
+0:?     'indexBlockI' (layout(location=26 index=0 ) out block{out int a})
 

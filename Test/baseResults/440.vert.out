@@ -18,7 +18,7 @@ ERROR: 0:54: 'component' : type overflows the available 4 components
 ERROR: 0:55: 'component' : type overflows the available 4 components 
 ERROR: 0:57: 'component' : cannot apply to a matrix, structure, or block 
 ERROR: 0:58: 'component' : cannot apply to a matrix, structure, or block 
-ERROR: 0:61: 'location' : cannot declare a default, use a full declaration 
+ERROR: 0:61: 'location/component/index' : cannot declare a default, use a full declaration 
 ERROR: 0:81: 'xfb layout qualifier' : can only be used on an output 
 ERROR: 0:87: 'xfb_offset' : cannot declare a default, use a full declaration 
 ERROR: 0:97: 'xfb_buffer' : member cannot contradict block (or what block inherited from global) 

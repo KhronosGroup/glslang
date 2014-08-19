@@ -165,7 +165,7 @@ void TParseContext::initializeExtensionBehavior()
     extensionBehavior[GL_ARB_enhanced_layouts]             = EBhDisable;
     extensionBehavior[GL_ARB_texture_cube_map_array]       = EBhDisable;
     extensionBehavior[GL_ARB_shader_texture_lod]           = EBhDisable;
-    extensionBehavior[GL_ARB_explicit_attrib_location]     = EBhDisablePartial; // "index" for fragment outputs is missing
+    extensionBehavior[GL_ARB_explicit_attrib_location]     = EBhDisable;
     extensionBehavior[GL_ARB_shader_image_load_store]      = EBhDisable;
     extensionBehavior[GL_ARB_shader_atomic_counters]       = EBhDisable;
     extensionBehavior[GL_ARB_derivative_control]           = EBhDisable;

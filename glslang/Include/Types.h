@@ -483,6 +483,8 @@ public:
         layoutLocation = layoutLocationEnd;
         layoutComponent = layoutComponentEnd;
         layoutBinding = layoutBindingEnd;
+        layoutIndex = layoutIndexEnd;
+
         layoutStream = layoutStreamEnd;
 
         layoutXfbBuffer = layoutXfbBufferEnd;
@@ -494,7 +496,7 @@ public:
     bool hasLayout() const
     {
         return hasUniformLayout() || 
-               hasLocation() ||
+               hasAnyLocation() ||
                hasBinding() ||
                hasStream() ||
                hasXfb() ||
@@ -513,6 +515,9 @@ public:
 
                  unsigned int layoutBinding          : 8;
     static const unsigned int layoutBindingEnd =    0xFF;
+
+                 unsigned int layoutIndex           :  8;
+    static const unsigned int layoutIndexEnd =      0xFF;
 
                  unsigned int layoutStream           : 8;
     static const unsigned int layoutStreamEnd =     0xFF;
@@ -552,14 +557,23 @@ public:
     {
         return layoutAlign != -1;
     }
+    bool hasAnyLocation() const
+    {
+        return hasLocation() ||
+               hasComponent() ||
+               hasIndex();
+    }
     bool hasLocation() const
     {
-        return layoutLocation  != layoutLocationEnd ||
-               layoutComponent != layoutComponentEnd;
+        return layoutLocation  != layoutLocationEnd;
     }
     bool hasComponent() const
     {
         return layoutComponent != layoutComponentEnd;
+    }
+    bool hasIndex() const
+    {
+        return layoutIndex != layoutIndexEnd;
     }
     bool hasBinding() const
     {
@@ -1167,10 +1181,12 @@ public:
             noXfbBuffer.layoutXfbBuffer = TQualifier::layoutXfbBufferEnd;
             if (noXfbBuffer.hasLayout()) {
                 p += snprintf(p, end - p, "layout(");
-                if (qualifier.hasLocation()) {
+                if (qualifier.hasAnyLocation()) {
                     p += snprintf(p, end - p, "location=%d ", qualifier.layoutLocation);
-                    if (qualifier.layoutComponent != qualifier.layoutComponentEnd)
+                    if (qualifier.hasComponent())
                         p += snprintf(p, end - p, "component=%d ", qualifier.layoutComponent);
+                    if (qualifier.hasIndex())
+                        p += snprintf(p, end - p, "index=%d ", qualifier.layoutIndex);
                 }
                 if (qualifier.hasBinding())
                     p += snprintf(p, end - p, "binding=%d ", qualifier.layoutBinding);

@@ -1,6 +1,7 @@
 430.vert
 Warning, version 430 is not yet complete; most version-specific features are present, but some are missing.
 ERROR: 0:3: 'location' : can only appy to uniform, buffer, in, or out storage qualifiers 
+ERROR: 0:7: 'in' : cannot declare an input block in a vertex shader 
 ERROR: 0:7: 'location qualifier on in/out block' : not supported for this version or the enabled extensions 
 ERROR: 0:8: 'location qualifier on in/out block' : not supported for this version or the enabled extensions 
 ERROR: 0:21: 'g' : cannot use storage or interpolation qualifiers on structure members 
@@ -16,7 +17,9 @@ ERROR: 0:47: 'gl_ClipDistance array size' : must be less than gl_MaxClipDistance
 ERROR: 0:51: 'start' : undeclared identifier 
 ERROR: 0:51: '' : constant expression required 
 ERROR: 0:51: 'layout-id value' : scalar integer expression required 
+ERROR: 0:53: 'in' : cannot declare an input block in a vertex shader 
 ERROR: 0:54: 'location on block member' : not supported for this version or the enabled extensions 
+ERROR: 0:57: 'in' : cannot declare an input block in a vertex shader 
 ERROR: 0:58: 'location on block member' : not supported for this version or the enabled extensions 
 ERROR: 0:59: 'location on block member' : not supported for this version or the enabled extensions 
 ERROR: 0:62: 'uniform buffer-member align' : not supported for this version or the enabled extensions 
@@ -44,6 +47,8 @@ ERROR: 0:92: 'transform feedback qualifier' : not supported for this version or 
 ERROR: 0:93: 'transform feedback qualifier' : not supported for this version or the enabled extensions 
 ERROR: 0:93: 'transform feedback qualifier' : not supported for this version or the enabled extensions 
 ERROR: 0:93: 'transform feedback qualifier' : not supported for this version or the enabled extensions 
+ERROR: 0:117: 'in' : cannot declare an input block in a vertex shader 
+ERROR: 0:123: 'in' : cannot declare an input block in a vertex shader 
 ERROR: 0:146: 'shared' : not supported in this stage: vertex
 ERROR: 0:150: 'barrier' : no matching overloaded function found 
 ERROR: 0:154: 'memoryBarrierShared' : no matching overloaded function found 
@@ -53,7 +58,7 @@ ERROR: 0:168: 'textureSamples and imageSamples' : not supported for this version
 ERROR: 0:169: 'textureSamples and imageSamples' : not supported for this version or the enabled extensions 
 ERROR: 0:170: 'textureSamples and imageSamples' : not supported for this version or the enabled extensions 
 ERROR: 0:171: 'textureSamples and imageSamples' : not supported for this version or the enabled extensions 
-ERROR: 53 compilation errors.  No code generated.
+ERROR: 58 compilation errors.  No code generated.
 
 
 Shader version: 430

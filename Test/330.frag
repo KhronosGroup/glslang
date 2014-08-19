@@ -1,7 +1,7 @@
 #version 330 compatibility
 
 in vec4 inVar;
-out vec4 outVar;
+layout(location=0, index=0) out vec4 outVar;
 
 varying vec4 varyingVar;
 
@@ -118,3 +118,11 @@ layout(location = 44) in block {
     vec4 j; // gets location 43
     vec4 k; // ERROR, location 44 already used
 };
+
+layout(index=0) out vec4 outVar2; // ERROR: missing explicit location
+layout(location=0, index=1) out vec4 outVar3; // no error even though location is overlapping
+layout(location=0, index=1) out vec4 outVar4; // ERROR overlapping
+layout(location=27, index=0) in vec4 indexIn; // ERROR, not on in
+layout(location=0, index=0) in; // ERROR, not just on in
+layout(location=0, index=0) out; // ERROR, need a variable
+layout(location=26, index=0) out indexBlock { int a; } indexBlockI; // ERROR, not on a block

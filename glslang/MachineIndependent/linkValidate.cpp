@@ -313,13 +313,15 @@ void TIntermediate::mergeErrorCheck(TInfoSink& infoSink, const TIntermSymbol& sy
     }
 
     // Layouts... 
-    // TODO: 4.4 enhanced layouts: Generalize to include offset/align: currrent spec 
+    // TODO: 4.4 enhanced layouts: Generalize to include offset/align: current spec 
     //       requires separate user-supplied offset from actual computed offset, but 
     //       current implementation only has one offset.
-    if (symbol.getQualifier().layoutMatrix   != unitSymbol.getQualifier().layoutMatrix ||
-        symbol.getQualifier().layoutPacking  != unitSymbol.getQualifier().layoutPacking ||
-        symbol.getQualifier().layoutLocation != unitSymbol.getQualifier().layoutLocation ||
-        symbol.getQualifier().layoutBinding  != unitSymbol.getQualifier().layoutBinding) {
+    if (symbol.getQualifier().layoutMatrix    != unitSymbol.getQualifier().layoutMatrix ||
+        symbol.getQualifier().layoutPacking   != unitSymbol.getQualifier().layoutPacking ||
+        symbol.getQualifier().layoutLocation  != unitSymbol.getQualifier().layoutLocation ||
+        symbol.getQualifier().layoutComponent != unitSymbol.getQualifier().layoutComponent ||
+        symbol.getQualifier().layoutIndex     != unitSymbol.getQualifier().layoutIndex ||
+        symbol.getQualifier().layoutBinding   != unitSymbol.getQualifier().layoutBinding) {
         error(infoSink, "Layout qualification must match:");
         writeTypeComparison = true;
     }
@@ -547,7 +549,7 @@ void TIntermediate::inOutLocationCheck(TInfoSink& infoSink)
         if (language == EShLangFragment) {
             if (qualifier.storage == EvqVaryingOut) {
                 ++numFragOut;
-                if (qualifier.hasLocation())
+                if (qualifier.hasAnyLocation())
                     fragOutHasLocation = true;
                 else
                     fragOutWithNoLocation = true;
@@ -634,11 +636,11 @@ int TIntermediate::addUsedLocation(const TQualifier& qualifier, const TType& typ
 
     TRange locationRange(qualifier.layoutLocation, qualifier.layoutLocation + size - 1);
     TRange componentRange(0, 3);
-    if (qualifier.layoutComponent != TQualifier::layoutComponentEnd) {
+    if (qualifier.hasComponent()) {
         componentRange.start = qualifier.layoutComponent;
         componentRange.last = componentRange.start + type.getVectorSize() - 1;
     }
-    TIoRange range(locationRange, componentRange, type.getBasicType());
+    TIoRange range(locationRange, componentRange, type.getBasicType(), qualifier.hasIndex() ? qualifier.layoutIndex : 0);
 
     // check for collisions, except for vertex inputs on desktop
     if (! (profile != EEsProfile && language == EShLangVertex && qualifier.isPipeInput())) {

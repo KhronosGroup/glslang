@@ -2,7 +2,6 @@
 ERROR: 0:23: 'gl_Position' : identifiers starting with "gl_" are reserved 
 ERROR: 0:25: 'location' : not supported for this version or the enabled extensions 
 ERROR: 0:25: 'location qualifier on input' : not supported for this version or the enabled extensions 
-WARNING: 0:27: '#extension' : extension is only partially supported: GL_ARB_explicit_attrib_location
 ERROR: 0:34: 'redeclaration' : cannot change storage, memory, or auxiliary qualification of gl_Position
 ERROR: 0:34: 'redeclaration' : cannot change interpolation qualification of gl_Position
 ERROR: 0:35: 'redeclaration' : cannot change the type of gl_Position

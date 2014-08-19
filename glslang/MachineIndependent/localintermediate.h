@@ -77,18 +77,20 @@ struct TRange {
     int last;
 };
 
-// A *location* range is a 2-D rectangle; the set of (location, component) pairs all lying
-// both within the location range and the component range.  Locations don't alias unless
-// both dimensions of their range overlap.
+// An IO range is a 3-D rectangle; the set of (location, component, index) triples all lying
+// within the same location range, component range, and index value.  Locations don't alias unless
+// all other dimensions of their range overlap.
 struct TIoRange {
-    TIoRange(TRange location, TRange component, TBasicType basicType) : location(location), component(component), basicType(basicType) { }
+    TIoRange(TRange location, TRange component, TBasicType basicType, int index)
+        : location(location), component(component), basicType(basicType), index(index) { }
     bool overlap(const TIoRange& rhs) const
     {
-        return location.overlap(rhs.location) && component.overlap(rhs.component);
+        return location.overlap(rhs.location) && component.overlap(rhs.component) && index == rhs.index;
     }
     TRange location;
     TRange component;
     TBasicType basicType;
+    int index;
 };
 
 // Things that need to be tracked per xfb buffer.

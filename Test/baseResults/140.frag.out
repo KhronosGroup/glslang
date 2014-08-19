@@ -6,7 +6,6 @@ ERROR: 0:24: 'location' : not supported for this version or the enabled extensio
 ERROR: 0:24: 'location qualifier on input' : not supported for this version or the enabled extensions 
 ERROR: 0:26: 'location' : not supported for this version or the enabled extensions 
 ERROR: 0:26: 'location qualifier on output' : not supported for this version or the enabled extensions 
-WARNING: 0:28: '#extension' : extension is only partially supported: GL_ARB_explicit_attrib_location
 ERROR: 0:38: 'assign' :  l-value required "v" (can't modify shader input)
 ERROR: 0:38: 'out' : Non-L-value cannot be passed for 'out' or 'inout' parameters. 
 ERROR: 8 compilation errors.  No code generated.

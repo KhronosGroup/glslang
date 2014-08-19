@@ -14,8 +14,6 @@ ERROR: 0:99: 'local_size_x' : there is no such layout identifier for this stage 
 ERROR: 0:99: 'local_size_y' : there is no such layout identifier for this stage taking an assigned value 
 ERROR: 0:100: 'local_size_x' : there is no such layout identifier for this stage taking an assigned value 
 ERROR: 0:102: 'color' : redefinition 
-ERROR: 0:103: 'index' : there is no such layout identifier for this stage taking an assigned value 
-ERROR: 0:104: 'location' : overlapping use of location 3
 ERROR: 0:112: 'redeclaration' : all redeclarations must use the same depth layout on gl_FragDepth
 ERROR: 0:118: 'redeclaration' : all redeclarations must use the same depth layout on gl_FragDepth
 ERROR: 0:121: 'redeclaration' : all redeclarations must use the same depth layout on gl_FragDepth
@@ -43,7 +41,7 @@ ERROR: 0:226: 'in' : not allowed in nested scope
 ERROR: 0:227: 'in' : not allowed in nested scope 
 ERROR: 0:228: 'in' : not allowed in nested scope 
 ERROR: 0:232: 'out' : not allowed in nested scope 
-ERROR: 43 compilation errors.  No code generated.
+ERROR: 41 compilation errors.  No code generated.
 
 
 Shader version: 430
@@ -289,7 +287,7 @@ ERROR: node is still EOpNull!
 0:?     'Materiala' (in block{in 4-component vector of float Color, in 2-component vector of float TexCoord})
 0:?     'gl_FragCoord' (gl_FragCoord 4-component vector of float)
 0:?     'gl_FragCoord' (gl_FragCoord 4-component vector of float)
-0:?     'factor' (layout(location=3 ) out 4-component vector of float)
+0:?     'factor' (layout(location=3 index=1 ) out 4-component vector of float)
 0:?     'colors' (layout(location=2 ) out 3-element array of 4-component vector of float)
 0:?     'gl_FragDepth' (gl_FragDepth float)
 0:?     'gl_FragDepth' (gl_FragDepth float)
@@ -543,7 +541,7 @@ ERROR: node is still EOpNull!
 0:?     'Materiala' (in block{in 4-component vector of float Color, in 2-component vector of float TexCoord})
 0:?     'gl_FragCoord' (gl_FragCoord 4-component vector of float)
 0:?     'gl_FragCoord' (gl_FragCoord 4-component vector of float)
-0:?     'factor' (layout(location=3 ) out 4-component vector of float)
+0:?     'factor' (layout(location=3 index=1 ) out 4-component vector of float)
 0:?     'colors' (layout(location=2 ) out 3-element array of 4-component vector of float)
 0:?     'gl_FragDepth' (gl_FragDepth float)
 0:?     'gl_FragDepth' (gl_FragDepth float)

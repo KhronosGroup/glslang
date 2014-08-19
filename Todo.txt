@@ -206,7 +206,7 @@ Shader Functionality to Implement/Finish
       + Add built-in functions to pack/unpack 16 bit floating-point numbers (ARB_shading_language_pack2f).
         + packHalf2x16 and unpackHalf2x16
         + packSnorm2x16and unpackSnorm2x16
-      - Add gl_FragDepth layout qualifiers to communicate what kind of changes will be made to gl_FragDepth (GL_AMD_conservative depth).
+      + Add gl_FragDepth layout qualifiers to communicate what kind of changes will be made to gl_FragDepth (GL_AMD_conservative depth).
       + Add C-style curly brace initializer lists syntax for initializers. Full initialization of aggregates is required when these are used.
       + Allow .length() to be applied to vectors and matrices, returning the number of components or columns.
       + Clarify that .length() returns an int type and can be used as a constant integer expression.
