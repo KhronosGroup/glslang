@@ -966,8 +966,7 @@ single_declaration
     : fully_specified_type {
         $$.type = $1;
         $$.intermNode = 0;
-        if ($$.type.qualifier.hasLayout())
-            parseContext.warn($1.loc, "useless application of layout qualifier", "layout", "");
+        parseContext.declareTypeDefaults($$.loc, $$.type);
     }
     | fully_specified_type IDENTIFIER {
         $$.type = $1;

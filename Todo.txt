@@ -38,7 +38,7 @@ Link Validation
       + exactly one main
       + ES 3.0: fragment outputs all have locations, if more than one
       + location aliasing/overlap (except desktop vertex shader inputs)
-      - Non ES: binding overlap for atomic counters
+      + binding overlap for atomic counters
       + Non ES: geometry shader input array sizes and input layout qualifier declaration
       + Non ES: read or write to both gl_ClipVertex and gl_ClipDistance
       + Non ES: write to only one of gl_FragColor, gl_FragData, or user-declared
@@ -56,9 +56,10 @@ Link Validation
       + value checking of uniform initializers
       + location match
       - block matching
-      - component/binding/index/offset match check
+      + component/binding/index/offset match check
       + compute shader layout(local_size_*) matching
       + mixed es/non-es profiles are an error
+      - binding overlap for atomic counters
       - matching redeclarations of interface blocks
       - 4.3: implicit array sizing is cross shader within a stage
       - 4.4: If gl_FragCoord is redeclared in any fragment shader in a program, it must be redeclared in all the fragment shaders in that program that have a static use gl_FragCoord
@@ -80,9 +81,7 @@ Shader Functionality to Implement/Finish
       + Texture gather
       + Bitfield operations
       + Integer mix function
-      - overlapping bindings
-      - offset post incrementing
-      - overlapping offsets
+      + overlapping bindings/offsets and offset post increment
       + frexp/ldexp
       + packUnorm4x8(),packSnorm4x8(), unpackUnorm4x8(), unpackSnorm4x8()
       + 2DMS samplers and images
@@ -202,7 +201,7 @@ Shader Functionality to Implement/Finish
       + Parameter qualifiers can include precision and memory qualifiers.
       + Add a new atomic_uint type to support atomic counters. Also, add built-in functions for manipulating atomic counters.
         + atomicCounterIncrement, atomicCounterDecrement, and atomicCounter
-      - Add layout qualifier identifiers binding and offset to bind units to sampler and image variable declarations, atomic counters, and uniform blocks.
+      + Add layout qualifier identifiers binding and offset to bind units to sampler and image variable declarations, atomic counters, and uniform blocks.
       + Add built-in functions to pack/unpack 16 bit floating-point numbers (ARB_shading_language_pack2f).
         + packHalf2x16 and unpackHalf2x16
         + packSnorm2x16and unpackSnorm2x16

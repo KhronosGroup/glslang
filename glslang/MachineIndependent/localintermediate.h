@@ -93,6 +93,19 @@ struct TIoRange {
     int index;
 };
 
+// An IO range is a 2-D rectangle; the set of (binding, offset) pairs all lying
+// within the same binding and offset range.
+struct TOffsetRange {
+    TOffsetRange(TRange binding, TRange offset)
+        : binding(binding), offset(offset) { }
+    bool overlap(const TOffsetRange& rhs) const
+    {
+        return binding.overlap(rhs.binding) && offset.overlap(rhs.offset);
+    }
+    TRange binding;
+    TRange offset;
+};
+
 // Things that need to be tracked per xfb buffer.
 struct TXfbBuffer {
     TXfbBuffer() : stride(TQualifier::layoutXfbStrideEnd), implicitStride(0), containsDouble(false) { }
@@ -269,6 +282,7 @@ public:
     bool inIoAccessed(const TString& name) const { return ioAccessed.find(name) != ioAccessed.end(); }
 
     int addUsedLocation(const TQualifier&, const TType&, bool& typeCollision);
+    int addUsedOffsets(int binding, int offset, int numOffsets);
     int computeTypeLocationSize(const TType&) const;
 
     bool setXfbBufferStride(int buffer, int stride)
@@ -320,9 +334,10 @@ protected:
     typedef std::list<TCall> TGraph;
     TGraph callGraph;
 
-    std::set<TString> ioAccessed;       // set of names of statically read/written I/O that might need extra checking
-    std::vector<TIoRange> usedIo[4];    // sets of used locations, one for each of in, out, uniform and buffers
-    std::vector<TXfbBuffer> xfbBuffers; // all the data we need to track per xfb buffer
+    std::set<TString> ioAccessed;           // set of names of statically read/written I/O that might need extra checking
+    std::vector<TIoRange> usedIo[4];        // sets of used locations, one for each of in, out, uniform, and buffers
+    std::vector<TOffsetRange> usedAtomics;  // sets of bindings used by atomic counters
+    std::vector<TXfbBuffer> xfbBuffers;     // all the data we need to track per xfb buffer
 
 private:
     void operator=(TIntermediate&); // prevent assignments

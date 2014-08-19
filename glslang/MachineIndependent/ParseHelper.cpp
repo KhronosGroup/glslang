@@ -54,7 +54,7 @@ TParseContext::TParseContext(TSymbolTable& symt, TIntermediate& interm, bool pb,
             contextPragma(true, false), loopNestingLevel(0), controlFlowNestingLevel(0), structNestingLevel(0),
             tokensBeforeEOF(false), limits(resources.limits), currentScanner(0),
             numErrors(0), parsingBuiltins(pb), afterEOF(false),
-            anyIndexLimits(false)
+            atomicUintOffsets(0), anyIndexLimits(false)
 {
     // ensure we always have a linkage node, even if empty, to simplify tree topology algorithms
     linkage = new TIntermAggregate;
@@ -103,7 +103,6 @@ TParseContext::TParseContext(TSymbolTable& symt, TIntermediate& interm, bool pb,
     globalBufferDefaults.layoutPacking = ElpShared;
 
     globalInputDefaults.clear();
-
     globalOutputDefaults.clear();
 
     // "Shaders in the transform 
@@ -119,6 +118,11 @@ TParseContext::TParseContext(TSymbolTable& symt, TIntermediate& interm, bool pb,
         globalOutputDefaults.layoutStream = 0;
 }
 
+TParseContext::~TParseContext()
+{
+    delete [] atomicUintOffsets;
+}
+
 void TParseContext::setLimits(const TBuiltInResource& r)
 {
     resources = r;
@@ -131,6 +135,13 @@ void TParseContext::setLimits(const TBuiltInResource& r)
                      ! limits.generalVaryingIndexing;
 
     intermediate.setLimits(resources);
+
+    // "Each binding point tracks its own current default offset for
+    // inheritance of subsequent variables using the same binding. The initial state of compilation is that all
+    // binding points have an offset of 0."
+    atomicUintOffsets = new int[resources.maxAtomicCounterBindings];
+    for (int b = 0; b < resources.maxAtomicCounterBindings; ++b)
+        atomicUintOffsets[b] = 0;
 }
 
 //
@@ -3388,10 +3399,6 @@ void TParseContext::layoutObjectCheck(TSourceLoc loc, const TSymbol& symbol)
                 // "The offset qualifier can only be used on block members of blocks..."
                 if (qualifier.hasOffset() && type.getBasicType() != EbtAtomicUint)
                     error(loc, "cannot specify on a variable declaration", "offset", "");
-                if (qualifier.hasOffset() && ! qualifier.hasBinding() && type.getBasicType() == EbtAtomicUint)
-                    error(loc, "a binding is required", "offset", "");
-                if (qualifier.hasBinding() && (int)qualifier.layoutBinding >= resources.maxAtomicCounterBindings && type.getBasicType() == EbtAtomicUint)
-                    error(loc, "cannot be greater-than-or-equal to gl_MaxAtomicCounterBindings", "binding", "");
                 // "The align qualifier can only be used on blocks or block members..."
                 if (qualifier.hasAlign())
                     error(loc, "cannot specify on a variable declaration", "align", "");
@@ -3492,6 +3499,18 @@ void TParseContext::layoutTypeCheck(TSourceLoc loc, const TType& type)
             if (lastBinding >= resources.maxCombinedTextureImageUnits)
                 error(loc, "sampler binding not less than gl_MaxCombinedTextureImageUnits", "binding", type.isArray() ? "(using array)" : "");
         }
+        if (type.getBasicType() == EbtAtomicUint) {
+            if (qualifier.layoutBinding >= (unsigned int)resources.maxAtomicCounterBindings) {
+                error(loc, "atomic_uint binding is too large; see gl_MaxAtomicCounterBindings", "binding", "");
+                return;
+            }
+        }
+    }
+
+    // atomic_uint
+    if (type.getBasicType() == EbtAtomicUint) {
+        if (! type.getQualifier().hasBinding())
+            error(loc, "layout(binding=X) is required", "atomic_uint", "");
     }
 
     // "The offset qualifier can only be used on block members of blocks..."
@@ -3633,6 +3652,35 @@ void TParseContext::checkNoShaderLayouts(TSourceLoc loc, const TShaderQualifiers
     }
 }
 
+// Correct and/or advance an object's offset layout qualifier.
+void TParseContext::fixOffset(TSourceLoc loc, TSymbol& symbol)
+{
+    const TQualifier& qualifier = symbol.getType().getQualifier();
+    if (symbol.getType().getBasicType() == EbtAtomicUint) {
+        if (qualifier.hasBinding() && (int)qualifier.layoutBinding < resources.maxAtomicCounterBindings) {
+
+            // Set the offset
+            int offset;
+            if (qualifier.hasOffset())
+                offset = qualifier.layoutOffset;
+            else
+                offset = atomicUintOffsets[qualifier.layoutBinding];
+            symbol.getWritableType().getQualifier().layoutOffset = offset;
+
+            // Check for overlap
+            int numOffsets = 4;
+            if (symbol.getType().isArray())
+                numOffsets *= symbol.getType().getArraySize();
+            int repeated = intermediate.addUsedOffsets(qualifier.layoutBinding, offset, numOffsets);
+            if (repeated >= 0)
+                error(loc, "atomic counters sharing the same offset:", "offset", "%d", repeated);
+
+            // Bump the default offset
+            atomicUintOffsets[qualifier.layoutBinding] = offset + numOffsets;
+        }
+    }
+}
+
 //
 // Look up a function name in the symbol table, and make sure it is a function.
 //
@@ -3748,6 +3796,23 @@ const TFunction* TParseContext::findFunction400(TSourceLoc loc, const TFunction&
     return findFunction120(loc, call, builtIn);
 }
 
+// When a declaration includes a type, but not a variable name, it can be 
+// to establish defaults.
+void TParseContext::declareTypeDefaults(TSourceLoc loc, const TPublicType& publicType)
+{
+    if (publicType.basicType == EbtAtomicUint && publicType.qualifier.hasBinding() && publicType.qualifier.hasOffset()) {
+        if (publicType.qualifier.layoutBinding >= (unsigned int)resources.maxAtomicCounterBindings) {
+            error(loc, "atomic_uint binding is too large", "binding", "");
+            return;
+        }
+        atomicUintOffsets[publicType.qualifier.layoutBinding] = publicType.qualifier.layoutOffset;
+        return;
+    }
+
+    if (publicType.qualifier.hasLayout())
+        warn(loc, "useless application of layout qualifier", "layout", "");
+}
+
 //
 // Do everything necessary to handle a variable (non-block) declaration.
 // Either redeclaring a variable, or making a new one, updating the symbol
@@ -3826,8 +3891,9 @@ TIntermNode* TParseContext::declareVariable(TSourceLoc loc, TString& identifier,
         initNode = executeInitializer(loc, identifier, initializer, variable);
     }
 
-    // look for errors/adjustments in layout qualifier use
+    // look for errors in layout qualifier use
     layoutObjectCheck(loc, *symbol);
+    fixOffset(loc, *symbol);
 
     // see if it's a linker-level object to track
     if (newDeclaration && symbolTable.atGlobalLevel())

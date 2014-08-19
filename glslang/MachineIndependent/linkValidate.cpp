@@ -321,7 +321,8 @@ void TIntermediate::mergeErrorCheck(TInfoSink& infoSink, const TIntermSymbol& sy
         symbol.getQualifier().layoutLocation  != unitSymbol.getQualifier().layoutLocation ||
         symbol.getQualifier().layoutComponent != unitSymbol.getQualifier().layoutComponent ||
         symbol.getQualifier().layoutIndex     != unitSymbol.getQualifier().layoutIndex ||
-        symbol.getQualifier().layoutBinding   != unitSymbol.getQualifier().layoutBinding) {
+        symbol.getQualifier().layoutBinding   != unitSymbol.getQualifier().layoutBinding ||
+        (symbol.getQualifier().hasBinding() && (symbol.getQualifier().layoutOffset != unitSymbol.getQualifier().layoutOffset))) {
         error(infoSink, "Layout qualification must match:");
         writeTypeComparison = true;
     }
@@ -657,6 +658,30 @@ int TIntermediate::addUsedLocation(const TQualifier& qualifier, const TType& typ
     }
 
     usedIo[set].push_back(range);
+
+    return -1; // no collision
+}
+
+// Accumulate locations used for inputs, outputs, and uniforms, and check for collisions
+// as the accumulation is done.
+//
+// Returns < 0 if no collision, >= 0 if collision and the value returned is a colliding value.
+//
+int TIntermediate::addUsedOffsets(int binding, int offset, int numOffsets)
+{
+    TRange bindingRange(binding, binding);
+    TRange offsetRange(offset, offset + numOffsets - 1);
+    TOffsetRange range(bindingRange, offsetRange);
+
+    // check for collisions, except for vertex inputs on desktop
+    for (size_t r = 0; r < usedAtomics.size(); ++r) {
+        if (range.overlap(usedAtomics[r])) {
+            // there is a collision; pick one
+            return std::max(offset, usedAtomics[r].offset.start);
+        }
+    }
+
+    usedAtomics.push_back(range);
 
     return -1; // no collision
 }

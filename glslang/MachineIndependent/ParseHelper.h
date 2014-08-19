@@ -64,6 +64,7 @@ class TParseContext {
 public:
     TParseContext(TSymbolTable&, TIntermediate&, bool parsingBuiltins, int version, EProfile, EShLanguage, TInfoSink&,
                   bool forwardCompatible = false, EShMessages messages = EShMsgDefault);
+    virtual ~TParseContext();
 
     void setLimits(const TBuiltInResource&);
     bool parseShaderStrings(TPpContext&, TInputScanner& input, bool versionWillBeError = false);
@@ -159,11 +160,13 @@ public:
     void layoutTypeCheck(TSourceLoc, const TType&);
     void layoutQualifierCheck(TSourceLoc, const TQualifier&);
     void checkNoShaderLayouts(TSourceLoc, const TShaderQualifiers&);
+    void fixOffset(TSourceLoc, TSymbol&);
 
     const TFunction* findFunction(TSourceLoc loc, const TFunction& call, bool& builtIn);
     const TFunction* findFunctionExact(TSourceLoc loc, const TFunction& call, bool& builtIn);
     const TFunction* findFunction120(TSourceLoc loc, const TFunction& call, bool& builtIn);
     const TFunction* findFunction400(TSourceLoc loc, const TFunction& call, bool& builtIn);
+    void declareTypeDefaults(TSourceLoc, const TPublicType&);
     TIntermNode* declareVariable(TSourceLoc, TString& identifier, const TPublicType&, TArraySizes* typeArray = 0, TIntermTyped* initializer = 0);
     TIntermTyped* addConstructor(TSourceLoc, TIntermNode*, const TType&, TOperator);
     TIntermTyped* constructStruct(TIntermNode*, const TType&, int, TSourceLoc);
@@ -265,6 +268,7 @@ protected:
     TQualifier globalUniformDefaults;
     TQualifier globalInputDefaults;
     TQualifier globalOutputDefaults;
+    int* atomicUintOffsets;       // to become an array of the right size to hold an offset per binding point
     TString currentCaller;
     TIdSetType inductiveLoopIds;
     bool anyIndexLimits;

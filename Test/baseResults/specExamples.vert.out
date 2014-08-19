@@ -17,15 +17,15 @@ ERROR: 0:47: 'stream' : there is no such layout identifier for this stage taking
 ERROR: 0:50: 'stream' : there is no such layout identifier for this stage taking an assigned value 
 ERROR: 0:55: 'stream' : there is no such layout identifier for this stage taking an assigned value 
 ERROR: 0:80: 's17' : redefinition 
-ERROR: 0:85: 'binding' : cannot be greater-than-or-equal to gl_MaxAtomicCounterBindings 
-ERROR: 0:87: 'binding' : cannot be greater-than-or-equal to gl_MaxAtomicCounterBindings 
-WARNING: 0:89: 'layout' : useless application of layout qualifier 
+ERROR: 0:85: 'binding' : atomic_uint binding is too large; see gl_MaxAtomicCounterBindings 
+ERROR: 0:87: 'binding' : atomic_uint binding is too large; see gl_MaxAtomicCounterBindings 
+ERROR: 0:89: 'binding' : atomic_uint binding is too large 
 ERROR: 0:91: 'bar' : redefinition 
-ERROR: 0:92: 'offset' : a binding is required 
+ERROR: 0:92: 'atomic_uint' : layout(binding=X) is required 
 ERROR: 0:94: 'a2' : redefinition 
-ERROR: 0:95: 'binding' : cannot be greater-than-or-equal to gl_MaxAtomicCounterBindings 
-ERROR: 0:96: 'binding' : cannot be greater-than-or-equal to gl_MaxAtomicCounterBindings 
-ERROR: 0:97: 'binding' : cannot be greater-than-or-equal to gl_MaxAtomicCounterBindings 
+ERROR: 0:95: 'binding' : atomic_uint binding is too large; see gl_MaxAtomicCounterBindings 
+ERROR: 0:96: 'binding' : atomic_uint binding is too large; see gl_MaxAtomicCounterBindings 
+ERROR: 0:97: 'binding' : atomic_uint binding is too large; see gl_MaxAtomicCounterBindings 
 ERROR: 0:106: '' : vertex input cannot be further qualified 
 ERROR: 0:106: 'redeclaration' : cannot change storage, memory, or auxiliary qualification of gl_FrontColor
 ERROR: 0:112: 'ColorIvn' : identifier not previously declared 
@@ -38,7 +38,7 @@ ERROR: 0:170: 'coherent' : argument cannot drop memory qualifier when passed to 
 ERROR: 0:192: 'constructor' : constructing from a non-dereferenced array 
 ERROR: 0:193: 'constructor' : constructing from a non-dereferenced array 
 ERROR: 0:194: 'constructor' : constructing from a non-dereferenced array 
-ERROR: 36 compilation errors.  No code generated.
+ERROR: 37 compilation errors.  No code generated.
 
 
 Shader version: 430
