@@ -41,6 +41,7 @@
 #include "./../glslang/Include/ShHandle.h"
 #include "./../glslang/Public/ShaderLang.h"
 #include "../BIL/GlslangToBil.h"
+#include "../BIL/BilDisassemble.h"
 #include <string.h>
 #include <stdlib.h>
 #include <math.h>
@@ -637,8 +638,22 @@ void CompileAndLinkShaders()
             printf("Bil is not generated for failed compile or link\n");
         else {
             for (int stage = 0; stage < EShLangCount; ++stage) {
-                if (program.getIntermediate((EShLanguage)stage))
-                    glslang::GlslangToBil(*program.getIntermediate((EShLanguage)stage));
+                if (program.getIntermediate((EShLanguage)stage)) {
+                    std::vector<unsigned int> bil;
+                    glslang::GlslangToBil(*program.getIntermediate((EShLanguage)stage), bil);
+                    const char* name;
+                    switch (stage) {
+                    case EShLangVertex:          name = "vert";    break;
+                    case EShLangTessControl:     name = "tesc";    break;
+                    case EShLangTessEvaluation:  name = "tese";    break;
+                    case EShLangGeometry:        name = "geom";    break;
+                    case EShLangFragment:        name = "frag";    break;
+                    case EShLangCompute:         name = "comp";    break;
+                    default:                     name = "unknown"; break;
+                    }
+                    glbil::Disassemble(std::cout, bil);
+                    glslang::OutputBil(bil, name);
+                }
             }
         }
     }

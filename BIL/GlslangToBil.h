@@ -36,6 +36,8 @@
 
 namespace glslang {
 
-void GlslangToBil(const glslang::TIntermediate& intermediate);
+void GlslangToBil(const glslang::TIntermediate& intermediate, std::vector<unsigned int> bil);
+
+void OutputBil(const std::vector<unsigned int>& bil, const char* baseName);
 
 };

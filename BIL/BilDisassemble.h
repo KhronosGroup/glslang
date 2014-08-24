@@ -32,5 +32,19 @@
 //ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 //POSSIBILITY OF SUCH DAMAGE.
 
+#pragma once
+#ifndef BilDisassembler_H
+#define BilDisassembler_H
+
 #include "Bil.h"
 
+#include <iostream>
+#include <vector>
+
+namespace glbil {
+
+    void Disassemble(std::ostream& out, const std::vector<unsigned int>&);
+
+};  // end glbil namespace
+
+#endif // BilDisassembler_H

@@ -33,3 +33,11 @@
 //POSSIBILITY OF SUCH DAMAGE.
 
 #include "BilDisassemble.h"
+
+namespace glbil {
+
+void Disassemble(std::ostream& out, const std::vector<unsigned int>&)
+{
+}
+
+};  // end glbil namespace

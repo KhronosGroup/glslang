@@ -373,8 +373,74 @@ protected:
     public:
         tStringInput(TPpContext* pp, TInputScanner& i) : tInput(pp), input(&i) { }
         virtual int scan(TPpToken*);
-        virtual int getch();
-        virtual void ungetch();
+
+        // Scanner used to get source stream characters.
+        //  - Escaped newlines are handled here, invisibly to the caller.
+        //  - All forms of newline are handled, and turned into just a '\n'.
+        int tStringInput::getch()
+        {
+            int ch = input->get();
+
+            if (ch == '\\') {
+                // Move past escaped newlines, as many as sequentially exist
+                do {
+                    if (input->peek() == '\r' || input->peek() == '\n') {
+                        bool allowed = pp->parseContext.lineContinuationCheck(input->getSourceLoc(), pp->inComment);
+                        if (! allowed && pp->inComment)
+                            return '\\';
+
+                        // escape one newline now
+                        ch = input->get();
+                        int nextch = input->get();
+                        if (ch == '\r' && nextch == '\n')
+                            ch = input->get();
+                        else
+                            ch = nextch;
+                    } else
+                        return '\\';
+                } while (ch == '\\');
+            }
+    
+            // handle any non-escaped newline
+            if (ch == '\r' || ch == '\n') {
+                if (ch == '\r' && input->peek() == '\n')
+                    ch = input->get();
+                return '\n';
+            }
+
+            return ch;
+        }
+
+        // Scanner used to backup the source stream characters.  Newlines are
+        // handled here, invisibly to the caller, meaning have to undo exactly
+        // what getch() above does (e.g., don't leave things in the middle of a
+        // sequence of escaped newlines).
+        void tStringInput::ungetch()
+        {
+            input->unget();
+
+            do {
+                int ch = input->peek();
+                if (ch == '\r' || ch == '\n') {
+                    if (ch == '\n') {
+                        // correct for two-character newline
+                        input->unget();
+                        if (input->peek() != '\r')
+                            input->get();
+                    }
+                    // now in front of a complete newline, move past an escape character
+                    input->unget();
+                    if (input->peek() == '\\')
+                        input->unget();
+                    else {
+                        input->get();
+                        break;
+                    }
+                } else
+                    break;
+            } while (true);
+        }
+
     protected:
         TInputScanner* input;
     };
