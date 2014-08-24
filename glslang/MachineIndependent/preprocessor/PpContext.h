@@ -377,7 +377,7 @@ protected:
         // Scanner used to get source stream characters.
         //  - Escaped newlines are handled here, invisibly to the caller.
         //  - All forms of newline are handled, and turned into just a '\n'.
-        int tStringInput::getch()
+        int getch()
         {
             int ch = input->get();
 
@@ -415,7 +415,7 @@ protected:
         // handled here, invisibly to the caller, meaning have to undo exactly
         // what getch() above does (e.g., don't leave things in the middle of a
         // sequence of escaped newlines).
-        void tStringInput::ungetch()
+        void ungetch()
         {
             input->unget();
 
