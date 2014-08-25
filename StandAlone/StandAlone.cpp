@@ -60,7 +60,7 @@ enum TOptions {
     EOptionMemoryLeakMode     = 0x004,
     EOptionRelaxedErrors      = 0x008,
     EOptionGiveWarnings       = 0x010,
-    EOptionsLinkProgram       = 0x020,
+    EOptionLinkProgram        = 0x020,
     EOptionMultiThreaded      = 0x040,
     EOptionDumpConfig         = 0x080,
     EOptionDumpReflection     = 0x100,
@@ -481,6 +481,7 @@ bool ProcessArguments(int argc, char* argv[])
             switch (argv[0][1]) {
             case 'b':
                 Options |= EOptionBil;
+                Options |= EOptionLinkProgram;
                 break;
             case 'c':
                 Options |= EOptionDumpConfig;
@@ -492,7 +493,7 @@ bool ProcessArguments(int argc, char* argv[])
                 Options |= EOptionIntermediate;
                 break;
             case 'l':
-                Options |= EOptionsLinkProgram;
+                Options |= EOptionLinkProgram;
                 break;
             case 'm':
                 Options |= EOptionMemoryLeakMode;
@@ -701,7 +702,7 @@ int C_DECL main(int argc, char* argv[])
     // 1) linking all arguments together, single-threaded, new C++ interface
     // 2) independent arguments, can be tackled by multiple asynchronous threads, for testing thread safety, using the old handle interface
     //
-    if (Options & EOptionsLinkProgram) {
+    if (Options & EOptionLinkProgram) {
         glslang::InitializeProcess();
         CompileAndLinkShaders();
         glslang::FinalizeProcess();
