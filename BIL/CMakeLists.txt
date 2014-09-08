@@ -9,6 +9,7 @@ set(SOURCES
     BilDoc.cpp)
 
 set(HEADERS
+    Bil.h
     GlslangToBil.h
     BilBuilder.h
     Bir.h
