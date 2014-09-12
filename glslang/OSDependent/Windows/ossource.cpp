@@ -134,9 +134,13 @@ void OS_Sleep(int milliseconds)
 
 void OS_DumpMemoryCounters()
 {
+#ifdef DUMP_COUNTERS
     PROCESS_MEMORY_COUNTERS counters;
     GetProcessMemoryInfo(GetCurrentProcess(), &counters, sizeof(counters));
     printf("Working set size: %d\n", counters.WorkingSetSize);
+#else
+    printf("Recompile with DUMP_COUNTERS defined to see counters.\n");
+#endif
 }
 
 } // namespace glslang

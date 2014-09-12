@@ -43,6 +43,7 @@
 #include "../BIL/GlslangToBil.h"
 #include "../BIL/BilDisassemble.h"
 #include "../BIL/BilDoc.h"
+#include "../BIL/GLSL450Lib.h"
 #include <string.h>
 #include <stdlib.h>
 #include <math.h>
@@ -711,6 +712,7 @@ int C_DECL main(int argc, char* argv[])
     //
     if (Options & EOptionLinkProgram) {
         glslang::InitializeProcess();
+        GLSL_STD_450::Initialize();
         CompileAndLinkShaders();
         glslang::FinalizeProcess();
     } else {

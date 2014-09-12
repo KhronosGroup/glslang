@@ -44,6 +44,7 @@
 
 namespace glbil {
 
+    void Parameterize();
     void PrintDoc();
 
 };  // end glbil namespace

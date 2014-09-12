@@ -42,24 +42,24 @@
 
 #include "BilDoc.h"
 
+namespace glbil {
+
 #if ! defined(INCLUDE_BIL_DOC)
 
-namespace glbil {
-
-    void PrintDoc()
-    {
-    }
-
-}; // end glbil namespace
-
-#else
-
-namespace glbil {
+void Parameterize()
+{
+}
 
 void PrintDoc()
 {
 }
 
-}; // end glbil namespace
+#else
+
+void PrintDoc()
+{
+}
 
 #endif
+
+}; // end glbil namespace
