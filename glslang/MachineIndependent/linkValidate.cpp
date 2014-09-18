@@ -172,7 +172,7 @@ void TIntermediate::merge(TInfoSink& infoSink, TIntermediate& unit)
 }
 
 //
-// Merge the function bodies and global-level initalizers from unitGlobals into globals.
+// Merge the function bodies and global-level initializers from unitGlobals into globals.
 // Will error check duplication of function bodies for the same signature.
 //
 void TIntermediate::mergeBodies(TInfoSink& infoSink, TIntermSequence& globals, const TIntermSequence& unitGlobals)

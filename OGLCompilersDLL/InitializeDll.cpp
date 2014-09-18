@@ -68,7 +68,7 @@ bool InitProcess()
 	}
 
     if (! InitializePoolIndex()) {
-        assert(0 && "InitProcess(): Failed to initalize global pool");
+        assert(0 && "InitProcess(): Failed to initialize global pool");
 
         glslang::ReleaseGlobalLock();
         return false;

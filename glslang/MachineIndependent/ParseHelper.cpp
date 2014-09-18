@@ -4020,7 +4020,7 @@ TVariable* TParseContext::declareNonArray(TSourceLoc loc, TString& identifier, T
 // Handle all types of initializers from the grammar.
 //
 // Returning 0 just means there is no code to execute to handle the
-// initializer, which will, for example, be the case for constant initalizers.
+// initializer, which will, for example, be the case for constant initializers.
 //
 TIntermNode* TParseContext::executeInitializer(TSourceLoc loc, TString& identifier,
                                                TIntermTyped* initializer, TVariable* variable)
@@ -4104,7 +4104,7 @@ TIntermNode* TParseContext::executeInitializer(TSourceLoc loc, TString& identifi
 }
 
 //
-// Reprocess any initalizer-list { ... } parts of the initializer.
+// Reprocess any initializer-list { ... } parts of the initializer.
 // Need to heirarchically assign correct types and implicit
 // conversions. Will do this mimicking the same process used for
 // creating a constructor-style initializer, ensuring we get the
