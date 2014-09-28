@@ -4,17 +4,13 @@ include_directories(.. ${CMAKE_CURRENT_BINARY_DIR})
 
 set(SOURCES
     GlslangToBil.cpp
-    BilBuilder.cpp
-    BilDisassemble.cpp
-    BilDoc.cpp)
+    BilBuilder.cpp)
 
 set(HEADERS
     Bil.h
     GlslangToBil.h
     BilBuilder.h
-    Bir.h
-    BilDisassemble.h
-    BilDoc.h)
+    Bir.h)
 
 add_library(BIL STATIC ${SOURCES} ${HEADERS})
 

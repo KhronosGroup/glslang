@@ -41,8 +41,6 @@
 #include "./../glslang/Include/ShHandle.h"
 #include "./../glslang/Public/ShaderLang.h"
 #include "../BIL/GlslangToBil.h"
-#include "../BIL/BilDisassemble.h"
-#include "../BIL/BilDoc.h"
 #include "../BIL/GLSL450Lib.h"
 #include <string.h>
 #include <stdlib.h>
@@ -500,11 +498,6 @@ bool ProcessArguments(int argc, char* argv[])
             case 'm':
                 Options |= EOptionMemoryLeakMode;
                 break;
-            case 'p':
-                glbil::Parameterize();
-                glbil::PrintDoc();
-                exit(0);
-                break;
             case 'q':
                 Options |= EOptionDumpReflection;
                 break;
@@ -645,7 +638,6 @@ void CompileAndLinkShaders()
         if (CompileFailed || LinkFailed)
             printf("Bil is not generated for failed compile or link\n");
         else {
-            glbil::Parameterize();
             for (int stage = 0; stage < EShLangCount; ++stage) {
                 if (program.getIntermediate((EShLanguage)stage)) {
                     std::vector<unsigned int> bil;
@@ -660,7 +652,6 @@ void CompileAndLinkShaders()
                     case EShLangCompute:         name = "comp";    break;
                     default:                     name = "unknown"; break;
                     }
-                    glbil::Disassemble(std::cout, bil);
                     glslang::OutputBil(bil, name);
                 }
             }
@@ -863,13 +854,12 @@ void usage()
            "\n"
            "To get other information, use one of the following options:\n"
            "(Each option must be specified separately, but can go anywhere in the command line.)\n"
-           "  -b  create BIL in file <stage>.bil and print out disassembly\n"
+           "  -b  create BIL in file <stage>.bil\n"
            "  -c  configuration dump; use to create default configuration file (redirect to a .conf file)\n"
            "  -d  default to desktop (#version 110) when there is no version in the shader (default is ES version 100)\n"
            "  -i  intermediate tree (glslang AST) is printed out\n"
            "  -l  link validation of all input files\n"
            "  -m  memory leak mode\n"
-           "  -p  print BIL documentation\n"
            "  -q  dump reflection query database\n"
            "  -r  relaxed semantic error-checking mode\n"
            "  -s  silent mode\n"

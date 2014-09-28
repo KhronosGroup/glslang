@@ -35,7 +35,6 @@
 #include "Bil.h"
 #include "GlslangToBil.h"
 #include "BilBuilder.h"
-#include "BilDisassemble.h"
 
 // Glslang includes
 #include "glslang/MachineIndependent/localintermediate.h"
