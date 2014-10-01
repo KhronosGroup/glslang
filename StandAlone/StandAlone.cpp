@@ -703,7 +703,6 @@ int C_DECL main(int argc, char* argv[])
     //
     if (Options & EOptionLinkProgram) {
         glslang::InitializeProcess();
-        GLSL_STD_450::Initialize();
         CompileAndLinkShaders();
         glslang::FinalizeProcess();
     } else {
