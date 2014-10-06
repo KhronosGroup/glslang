@@ -37,7 +37,7 @@
 #ifndef _COMMON_INCLUDED_
 #define _COMMON_INCLUDED_
 
-#if defined _WIN32 && !defined __GNUC__
+#if defined _MSC_VER || defined MINGW_HAS_SECURE_API
     #include <basetsd.h>
     #define snprintf sprintf_s
     #define safe_vsprintf(buf,max,format,args) vsnprintf_s((buf), (max), (max), (format), (args))
@@ -166,11 +166,11 @@ inline const TString String(const int i, const int base = 10)
 {
     char text[16];     // 32 bit ints are at most 10 digits in base 10
     
-    #if defined _WIN32 && !defined __GNUC__
-        _itoa_s(i, text, base);
+    #if defined _MSC_VER || defined MINGW_HAS_SECURE_API
+        _itoa_s(i, text, sizeof(text), base);
     #else
         // we assume base 10 for all cases
-        sprintf(text, "%d", i);
+        snprintf(text, sizeof(text), "%d", i);
     #endif
 
     return text;

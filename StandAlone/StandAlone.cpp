@@ -868,7 +868,7 @@ void usage()
            );
 }
 
-#ifndef _WIN32
+#if !defined _MSC_VER && !defined MINGW_HAS_SECURE_API
 
 #include <errno.h>
 
@@ -903,12 +903,7 @@ int fopen_s(
 char** ReadFileData(const char* fileName) 
 {
     FILE *in;
-    #if defined(_WIN32) && defined(__GNUC__)
-        in = fopen(fileName, "r");
-        int errorCode = in ? 0 : 1;
-    #else
-        int errorCode = fopen_s(&in, fileName, "r");
-    #endif
+    int errorCode = fopen_s(&in, fileName, "r");
 
     char *fdata;
     int count = 0;
