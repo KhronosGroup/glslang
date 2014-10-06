@@ -103,3 +103,23 @@ out sameName {
 uniform sameName {
     bool b15;
 };
+
+float summ = gl_MaxVertexAttribs +
+             gl_MaxVertexUniformComponents +
+             gl_MaxVaryingFloats +
+             gl_MaxVaryingComponents +
+             gl_MaxVertexOutputComponents  +
+             gl_MaxGeometryInputComponents  +
+             gl_MaxGeometryOutputComponents  +
+             gl_MaxFragmentInputComponents  +
+             gl_MaxVertexTextureImageUnits +
+             gl_MaxCombinedTextureImageUnits +
+             gl_MaxTextureImageUnits +
+             gl_MaxFragmentUniformComponents +
+             gl_MaxDrawBuffers +
+             gl_MaxClipDistances  +
+             gl_MaxGeometryTextureImageUnits +
+             gl_MaxGeometryOutputVertices +
+             gl_MaxGeometryTotalOutputComponents  +
+             gl_MaxGeometryUniformComponents  +
+             gl_MaxGeometryVaryingComponents;
