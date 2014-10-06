@@ -1,4 +1,5 @@
 300.frag
+ERROR: 0:2: 'float' : type requires declaration of default precision qualifier 
 ERROR: 0:30: 'noperspective' : Reserved word. 
 ERROR: 0:30: 'noperspective' : not supported with this profile: es
 ERROR: 0:31: 'sampler2D' : sampler/image types can only be used in uniform variables or function parameters: bads
@@ -37,7 +38,7 @@ ERROR: 0:148: 'qualifier' : cannot use auxiliary, memory, interpolation, or prec
 ERROR: 0:150: 'early_fragment_tests' : not supported for this version or the enabled extensions 
 ERROR: 0:152: 'imageBuffer' : Reserved word. 
 ERROR: 0:152: '' :  syntax error
-ERROR: 38 compilation errors.  No code generated.
+ERROR: 39 compilation errors.  No code generated.
 
 
 Shader version: 300

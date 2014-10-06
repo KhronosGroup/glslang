@@ -1,5 +1,5 @@
 #version 300 es
-
+void nodef1(float f); // ERROR, no default precision
 uniform sampler2D s2D;
 uniform lowp sampler3D s3D;
 uniform samplerCube sCube;

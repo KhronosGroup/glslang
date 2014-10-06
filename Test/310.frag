@@ -1,5 +1,5 @@
 #version 310 es
-
+highp float nodef3(float); // ERROR, no default precision
 precision mediump float;
 precision highp usampler2D;
 precision highp sampler2D;

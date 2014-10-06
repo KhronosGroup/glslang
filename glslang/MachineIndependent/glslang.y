@@ -811,6 +811,7 @@ parameter_declarator
             parseContext.error($2.loc, "illegal use of type 'void'", $2.string->c_str(), "");
         }
         parseContext.reservedErrorCheck($2.loc, *$2.string);
+        parseContext.precisionQualifierCheck($1.loc, $1);
 
         TParameter param = {$2.string, new TType($1)};
         $$.loc = $2.loc;
@@ -825,7 +826,8 @@ parameter_declarator
         parseContext.arrayDimCheck($2.loc, $1.arraySizes, $3.arraySizes);
 
         parseContext.arraySizeRequiredCheck($3.loc, $3.arraySizes->getSize());
-        parseContext.reservedErrorCheck($2.loc, *$2.string);
+        parseContext.reservedErrorCheck($2.loc, *$2.string);        
+        parseContext.precisionQualifierCheck($1.loc, $1);
 
         $1.arraySizes = $3.arraySizes;
 
@@ -880,6 +882,7 @@ parameter_type_specifier
         $$.param = param;
         if ($1.arraySizes)
             parseContext.arraySizeRequiredCheck($1.loc, $1.arraySizes->getSize());
+        parseContext.precisionQualifierCheck($1.loc, $1);
     }
     ;
 
