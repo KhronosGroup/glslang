@@ -37,3 +37,23 @@ out vec3 gl_Position;  // ERROR
 out float gl_PointSize;
 out vec4 gl_ClipVertex;
 out float gl_FogFragCoord;
+
+uniform sampler2DRect s2dr;
+uniform sampler2DRectShadow s2drs;
+in ivec2 itloc2;
+in vec2 tloc2;
+in vec3 tloc3;
+in vec4 tloc4;
+
+void foo()
+{
+    vec4 v = texelFetch(s2dr, itloc2);
+    v += texelFetch(s2dr, itloc2, 0.2);     // ERROR, no lod
+    v += texture(s2dr, tloc2);
+    v += texture(s2dr, tloc2, 0.3);         // ERROR, no bias
+    v += texture(s2drs, tloc3);
+    v += textureProj(s2dr, tloc3);
+    v += textureProj(s2dr, tloc4);
+    v += textureProjGradOffset(s2dr, tloc4, ivec2(0.0), ivec2(0.0), ivec2(1,2));
+    v += textureProjGradOffset(s2drs, tloc4, ivec2(0.0), ivec2(0.0), ivec2(1,2));
+}
