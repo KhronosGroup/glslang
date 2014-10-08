@@ -149,6 +149,9 @@ uniform mediump;       // ERROR
 
 layout(early_fragment_tests) in;  // ERROR
 
+#ifndef GL_FRAGMENT_PRECISION_HIGH
+#error missing GL_FRAGMENT_PRECISION_HIGH
+#endif
+
 float imageBuffer;    // ERROR, reserved
 float uimage2DRect;   // ERROR, reserved
-

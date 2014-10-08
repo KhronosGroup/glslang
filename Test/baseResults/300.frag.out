@@ -36,8 +36,8 @@ ERROR: 0:129: 'texel offset' : value is out of range: [gl_MinProgramTexelOffset,
 ERROR: 0:129: 'texel offset' : value is out of range: [gl_MinProgramTexelOffset, gl_MaxProgramTexelOffset]
 ERROR: 0:148: 'qualifier' : cannot use auxiliary, memory, interpolation, or precision qualifier in a default qualifier declaration (declaration with no type) 
 ERROR: 0:150: 'early_fragment_tests' : not supported for this version or the enabled extensions 
-ERROR: 0:152: 'imageBuffer' : Reserved word. 
-ERROR: 0:152: '' :  syntax error
+ERROR: 0:156: 'imageBuffer' : Reserved word. 
+ERROR: 0:156: '' :  syntax error
 ERROR: 39 compilation errors.  No code generated.
 
 
