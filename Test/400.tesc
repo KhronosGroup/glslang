@@ -69,3 +69,7 @@ void foop()
     pv3 = fma(pv3, pv3, pv3);
     d = fma(d, d, d);
 }
+
+patch out pinbn {
+    int a;
+} pinbi;
