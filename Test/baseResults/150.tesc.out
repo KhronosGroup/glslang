@@ -375,6 +375,7 @@ ERROR: node is still EOpNull!
 0:?     'ovlb' (layout(location=4 ) out 4-element array of 4-component vector of float)
 0:?     'ovlc' (layout(location=4 ) out 4-element array of 4-component vector of float)
 0:?     'pv3' (3-component vector of float)
+0:?     'pinbi' (patch out block{out int a})
 
 400.tese
 Warning, version 400 is not yet complete; most version-specific features are present, but some are missing.
@@ -530,6 +531,7 @@ ERROR: node is still EOpNull!
 0:?     'ivlc' (layout(location=24 ) in 32-element array of 4-component vector of float)
 0:?     'ovla' (layout(location=23 ) out 2-element array of 4-component vector of float)
 0:?     'ovlb' (layout(location=24 ) out 2-element array of 4-component vector of float)
+0:?     'pinbi' (patch in block{in int a})
 
 410.tesc
 Warning, version 400 is not yet complete; most version-specific features are present, but some are missing.
@@ -1136,6 +1138,7 @@ vertices = 4
 0:?     'ovlb' (layout(location=4 ) out 4-element array of 4-component vector of float)
 0:?     'ovlc' (layout(location=4 ) out 4-element array of 4-component vector of float)
 0:?     'pv3' (3-component vector of float)
+0:?     'pinbi' (patch out block{out int a})
 0:?     'a' (out 3-element array of int)
 0:?     'outb' (out 5-element array of int)
 0:?     'outc' (out 4-element array of int)
@@ -1424,6 +1427,7 @@ ERROR: node is still EOpNull!
 0:?     'ivlc' (layout(location=24 ) in 32-element array of 4-component vector of float)
 0:?     'ovla' (layout(location=23 ) out 2-element array of 4-component vector of float)
 0:?     'ovlb' (layout(location=24 ) out 2-element array of 4-component vector of float)
+0:?     'pinbi' (patch in block{in int a})
 0:?     'a' (const 2X2 matrix of float)
 0:?       1.000000
 0:?       0.000000

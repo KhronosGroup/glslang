@@ -160,6 +160,7 @@ ERROR: node is still EOpNull!
 0:?     'ovlb' (layout(location=4 ) out 4-element array of 4-component vector of float)
 0:?     'ovlc' (layout(location=4 ) out 4-element array of 4-component vector of float)
 0:?     'pv3' (3-component vector of float)
+0:?     'pinbi' (patch out block{out int a})
 
 
 Linked tessellation control stage:
@@ -311,4 +312,5 @@ ERROR: node is still EOpNull!
 0:?     'ovlb' (layout(location=4 ) out 4-element array of 4-component vector of float)
 0:?     'ovlc' (layout(location=4 ) out 4-element array of 4-component vector of float)
 0:?     'pv3' (3-component vector of float)
+0:?     'pinbi' (patch out block{out int a})
 

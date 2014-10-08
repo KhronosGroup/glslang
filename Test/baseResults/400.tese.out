@@ -152,6 +152,7 @@ ERROR: node is still EOpNull!
 0:?     'ivlc' (layout(location=24 ) in 32-element array of 4-component vector of float)
 0:?     'ovla' (layout(location=23 ) out 2-element array of 4-component vector of float)
 0:?     'ovlb' (layout(location=24 ) out 2-element array of 4-component vector of float)
+0:?     'pinbi' (patch in block{in int a})
 
 
 Linked tessellation evaluation stage:
@@ -276,4 +277,5 @@ ERROR: node is still EOpNull!
 0:?     'ivlc' (layout(location=24 ) in 32-element array of 4-component vector of float)
 0:?     'ovla' (layout(location=23 ) out 2-element array of 4-component vector of float)
 0:?     'ovlb' (layout(location=24 ) out 2-element array of 4-component vector of float)
+0:?     'pinbi' (patch in block{in int a})
 
