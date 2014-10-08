@@ -153,5 +153,9 @@ layout(early_fragment_tests) in;  // ERROR
 #error missing GL_FRAGMENT_PRECISION_HIGH
 #endif
 
+invariant in;                // ERROR
+invariant in vec4;           // ERROR
+invariant in vec4 fooinv;    // ERROR
+
 float imageBuffer;    // ERROR, reserved
 float uimage2DRect;   // ERROR, reserved

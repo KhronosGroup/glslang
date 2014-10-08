@@ -1983,10 +1983,11 @@ void TParseContext::atomicUintCheck(TSourceLoc loc, const TType& type, const TSt
 }
 
 //
-// move from parameter/unknown qualifiers to pipeline in/out qualifiers
+// Check/fix just a full qualifier (no variables or types yet, but qualifier is complete) at global level.
 //
-void TParseContext::pipeInOutFix(TSourceLoc loc, TQualifier& qualifier)
+void TParseContext::globalQualifierFixCheck(TSourceLoc loc, TQualifier& qualifier)
 {
+    // move from parameter/unknown qualifiers to pipeline in/out qualifiers
     switch (qualifier.storage) {
     case EvqIn:
         profileRequires(loc, ENoProfile, 130, 0, "in for stage inputs");
@@ -2005,9 +2006,14 @@ void TParseContext::pipeInOutFix(TSourceLoc loc, TQualifier& qualifier)
     default:
         break;
     }
+
+    invariantCheck(loc, qualifier);
 }
 
-void TParseContext::globalQualifierCheck(TSourceLoc loc, const TQualifier& qualifier, const TPublicType& publicType)
+//
+// Check a full qualifier and type (no variable yet) at global level.
+//
+void TParseContext::globalQualifierTypeCheck(TSourceLoc loc, const TQualifier& qualifier, const TPublicType& publicType)
 {
     if (! symbolTable.atGlobalLevel())
         return;
@@ -3598,7 +3604,7 @@ void TParseContext::layoutTypeCheck(TSourceLoc loc, const TType& type)
         error(loc, "image variables not declared 'writeonly' must have a format layout qualifier", "", "");
 }
 
-// Do layout error checking that can be done within a qualifier proper, not needing to know
+// Do layout error checking that can be done within a layout qualifier proper, not needing to know
 // if there are blocks, atomic counters, variables, etc.
 void TParseContext::layoutQualifierCheck(TSourceLoc loc, const TQualifier& qualifier)
 {
@@ -3896,7 +3902,6 @@ TIntermNode* TParseContext::declareVariable(TSourceLoc loc, TString& identifier,
     else
         nonInitConstCheck(loc, identifier, type);
 
-    invariantCheck(loc, type, identifier);
     samplerCheck(loc, type, identifier);
     atomicUintCheck(loc, type, identifier);
 
@@ -4409,7 +4414,7 @@ void TParseContext::declareBlock(TSourceLoc loc, TTypeList& typeList, const TStr
         TType& memberType = *typeList[member].type;
         TQualifier& memberQualifier = memberType.getQualifier();
         TSourceLoc memberLoc = typeList[member].loc;
-        pipeInOutFix(memberLoc, memberQualifier);
+        globalQualifierFixCheck(memberLoc, memberQualifier);
         if (memberQualifier.storage != EvqTemporary && memberQualifier.storage != EvqGlobal && memberQualifier.storage != currentBlockQualifier.storage)
             error(memberLoc, "member storage qualifier cannot contradict block storage qualifier", memberType.getFieldName().c_str(), "");
         memberQualifier.storage = currentBlockQualifier.storage;
@@ -4750,7 +4755,7 @@ void TParseContext::addQualifierToExisting(TSourceLoc loc, TQualifier qualifier,
         if (intermediate.inIoAccessed(identifier))
             error(loc, "cannot change qualification after use", "invariant", "");
         symbol->getWritableType().getQualifier().invariant = true;
-        invariantCheck(loc, symbol->getType(), identifier);
+        invariantCheck(loc, symbol->getType().getQualifier());
     } else
         warn(loc, "unknown requalification", "", "");
 }
@@ -4761,19 +4766,19 @@ void TParseContext::addQualifierToExisting(TSourceLoc loc, TQualifier qualifier,
         addQualifierToExisting(loc, qualifier, *identifiers[i]);
 }
 
-void TParseContext::invariantCheck(TSourceLoc loc, const TType& type, const TString& identifier)
+void TParseContext::invariantCheck(TSourceLoc loc, const TQualifier& qualifier)
 {
-    if (! type.getQualifier().invariant)
+    if (! qualifier.invariant)
         return;
 
-    bool pipeOut = type.getQualifier().isPipeOutput();
-    bool pipeIn = type.getQualifier().isPipeInput();
+    bool pipeOut = qualifier.isPipeOutput();
+    bool pipeIn = qualifier.isPipeInput();
     if (version >= 300 || profile != EEsProfile && version >= 420) {
         if (! pipeOut)
-            error(loc, "can only apply to an output:", "invariant", identifier.c_str());
+            error(loc, "can only apply to an output", "invariant", "");
     } else {
         if ((language == EShLangVertex && pipeIn) || (! pipeOut && ! pipeIn))
-            error(loc, "can only apply to an output or an input in a non-vertex stage\n", "invariant", "");
+            error(loc, "can only apply to an output, or to an input in a non-vertex stage\n", "invariant", "");
     }
 }
 
@@ -5002,7 +5007,7 @@ TIntermNode* TParseContext::addSwitch(TSourceLoc loc, TIntermTyped* expression, 
         return expression;
 
     if (lastStatements == 0) {
-        warn(loc, "last case/default label not be followed by statements", "switch", "");
+        warn(loc, "last case/default label not followed by statements", "switch", "");
 
         return expression;
     }

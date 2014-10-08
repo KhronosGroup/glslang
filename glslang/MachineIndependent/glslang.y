@@ -696,18 +696,16 @@ declaration
         $$ = 0;
     }
     | type_qualifier SEMICOLON {
-        parseContext.pipeInOutFix($1.loc, $1.qualifier);
+        parseContext.globalQualifierFixCheck($1.loc, $1.qualifier);
         parseContext.updateStandaloneQualifierDefaults($1.loc, $1);
         $$ = 0;
     }
     | type_qualifier IDENTIFIER SEMICOLON {
-        parseContext.pipeInOutFix($1.loc, $1.qualifier);
         parseContext.checkNoShaderLayouts($1.loc, $1.shaderQualifiers);
         parseContext.addQualifierToExisting($1.loc, $1.qualifier, *$2.string);
         $$ = 0;
     }
     | type_qualifier IDENTIFIER identifier_list SEMICOLON {
-        parseContext.pipeInOutFix($1.loc, $1.qualifier);
         parseContext.checkNoShaderLayouts($1.loc, $1.shaderQualifiers);
         $3->push_back($2.string);
         parseContext.addQualifierToExisting($1.loc, $1.qualifier, *$3);
@@ -719,7 +717,7 @@ block_structure
     : type_qualifier IDENTIFIER LEFT_BRACE { parseContext.nestedBlockCheck($1.loc); } struct_declaration_list RIGHT_BRACE {
         --parseContext.structNestingLevel;
         parseContext.blockName = $2.string;
-        parseContext.pipeInOutFix($1.loc, $1.qualifier);
+        parseContext.globalQualifierFixCheck($1.loc, $1.qualifier);
         parseContext.checkNoShaderLayouts($1.loc, $1.shaderQualifiers);
         parseContext.currentBlockQualifier = $1.qualifier;
         $$.loc = $1.loc;
@@ -943,7 +941,7 @@ fully_specified_type
     : type_specifier {
         $$ = $1;
 
-        parseContext.globalQualifierCheck($1.loc, $1.qualifier, $$);
+        parseContext.globalQualifierTypeCheck($1.loc, $1.qualifier, $$);
         if ($1.arraySizes) {
             parseContext.profileRequires($1.loc, ENoProfile, 120, GL_3DL_array_objects, "arrayed type");
             parseContext.profileRequires($1.loc, EEsProfile, 300, 0, "arrayed type");
@@ -952,8 +950,8 @@ fully_specified_type
         parseContext.precisionQualifierCheck($$.loc, $$);
     }
     | type_qualifier type_specifier  {
-        parseContext.pipeInOutFix($1.loc, $1.qualifier);
-        parseContext.globalQualifierCheck($1.loc, $1.qualifier, $2);
+        parseContext.globalQualifierFixCheck($1.loc, $1.qualifier);
+        parseContext.globalQualifierTypeCheck($1.loc, $1.qualifier, $2);
 
         if ($2.arraySizes) {
             parseContext.profileRequires($2.loc, ENoProfile, 120, GL_3DL_array_objects, "arrayed type");
@@ -1965,6 +1963,7 @@ struct_declaration
         }
     }
     | type_qualifier type_specifier struct_declarator_list SEMICOLON {
+        parseContext.globalQualifierFixCheck($1.loc, $1.qualifier);
         if ($2.arraySizes) {
             parseContext.profileRequires($2.loc, ENoProfile, 120, GL_3DL_array_objects, "arrayed type");
             parseContext.profileRequires($2.loc, EEsProfile, 300, 0, "arrayed type");

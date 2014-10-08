@@ -1,7 +1,7 @@
 switch.frag
 ERROR: 0:11: 'switch' : condition must be a scalar integer expression 
 ERROR: 0:14: 'switch' : condition must be a scalar integer expression 
-WARNING: 0:21: 'switch' : last case/default label not be followed by statements 
+WARNING: 0:21: 'switch' : last case/default label not followed by statements 
 ERROR: 0:28: 'switch' : cannot have statements before first case/default label 
 ERROR: 0:43: 'default' : duplicate label 
 ERROR: 0:63: 'case' : duplicated value 
@@ -15,7 +15,7 @@ ERROR: 0:115: 'default' : cannot be nested inside control flow
 ERROR: 0:119: 'case' : cannot appear outside switch statement 
 ERROR: 0:120: 'default' : cannot appear outside switch statement 
 ERROR: 0:126: 'onlyInSwitch' : undeclared identifier 
-WARNING: 0:128: 'switch' : last case/default label not be followed by statements 
+WARNING: 0:128: 'switch' : last case/default label not followed by statements 
 ERROR: 0:140: 'nestedX' : undeclared identifier 
 ERROR: 0:156: 'nestedZ' : undeclared identifier 
 ERROR: 17 compilation errors.  No code generated.

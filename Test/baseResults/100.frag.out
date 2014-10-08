@@ -23,26 +23,31 @@ ERROR: 0:38: 'array comparison' : not supported for this version or the enabled 
 ERROR: 0:40: 'switch' : Reserved word. 
 ERROR: 0:40: 'switch statements' : not supported for this version or the enabled extensions 
 ERROR: 0:45: '' : array size required 
-ERROR: 0:47: 'invariant' : can only apply to an output or an input in a non-vertex stage
+ERROR: 0:47: 'invariant' : can only apply to an output, or to an input in a non-vertex stage
  
-ERROR: 0:50: 'invariant' : can only apply to an output or an input in a non-vertex stage
+ERROR: 0:49: 'invariant' : can only apply to an output, or to an input in a non-vertex stage
+ 
+ERROR: 0:50: 'invariant' : can only apply to an output, or to an input in a non-vertex stage
  
 ERROR: 0:56: 'invariant' : not allowed in nested scope 
-ERROR: 0:56: 'invariant' : can only apply to an output or an input in a non-vertex stage
+ERROR: 0:56: 'invariant' : can only apply to an output, or to an input in a non-vertex stage
  
 ERROR: 0:57: 'invariant' : not allowed in nested scope 
-ERROR: 0:57: 'invariant' : can only apply to an output or an input in a non-vertex stage
+ERROR: 0:57: 'invariant' : can only apply to an output, or to an input in a non-vertex stage
  
 ERROR: 0:59: 'invariant' : not allowed in nested scope 
-ERROR: 0:59: 'invariant' : can only apply to an output or an input in a non-vertex stage
+ERROR: 0:59: 'invariant' : can only apply to an output, or to an input in a non-vertex stage
  
-ERROR: 0:63: 'invariant' : can only apply to an output or an input in a non-vertex stage
+ERROR: 0:63: 'invariant' : can only apply to an output, or to an input in a non-vertex stage
  
-ERROR: 0:64: 'invariant' : can only apply to an output or an input in a non-vertex stage
+ERROR: 0:64: 'invariant' : can only apply to an output, or to an input in a non-vertex stage
  
 ERROR: 0:66: 'sampler2D' : sampler/image types can only be used in uniform variables or function parameters: glob2D
 ERROR: 0:69: 'sampler2D' : sampler/image types can only be used in uniform variables or function parameters: v2D
 ERROR: 0:71: 'sampler2D' : sampler/image types can only be used in uniform variables or function parameters: vary2D
+ERROR: 0:75: 'in for stage inputs' : not supported for this version or the enabled extensions 
+ERROR: 0:77: 'invariant' : can only apply to an output, or to an input in a non-vertex stage
+ 
 ERROR: 0:75: 'g' : cannot use storage or interpolation qualifiers on structure members 
 ERROR: 0:76: 'h' : cannot use storage or interpolation qualifiers on structure members 
 ERROR: 0:77: 'i' : cannot use invariant qualifier on structure members 
@@ -77,8 +82,8 @@ ERROR: 0:192: '.' : cannot apply to an array: nothing
 ERROR: 0:193: '.length' : not supported for this version or the enabled extensions 
 ERROR: 0:194: '.' : cannot apply to an array: method
 ERROR: 0:194: 'a' : can't use function syntax on variable 
-ERROR: 0:197: '' :  syntax error
-ERROR: 72 compilation errors.  No code generated.
+ERROR: 0:199: '' :  syntax error
+ERROR: 75 compilation errors.  No code generated.
 
 
 Shader version: 100

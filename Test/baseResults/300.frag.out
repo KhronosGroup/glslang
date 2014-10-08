@@ -36,9 +36,12 @@ ERROR: 0:129: 'texel offset' : value is out of range: [gl_MinProgramTexelOffset,
 ERROR: 0:129: 'texel offset' : value is out of range: [gl_MinProgramTexelOffset, gl_MaxProgramTexelOffset]
 ERROR: 0:148: 'qualifier' : cannot use auxiliary, memory, interpolation, or precision qualifier in a default qualifier declaration (declaration with no type) 
 ERROR: 0:150: 'early_fragment_tests' : not supported for this version or the enabled extensions 
-ERROR: 0:156: 'imageBuffer' : Reserved word. 
-ERROR: 0:156: '' :  syntax error
-ERROR: 39 compilation errors.  No code generated.
+ERROR: 0:156: 'invariant' : can only apply to an output 
+ERROR: 0:157: 'invariant' : can only apply to an output 
+ERROR: 0:158: 'invariant' : can only apply to an output 
+ERROR: 0:160: 'imageBuffer' : Reserved word. 
+ERROR: 0:160: '' :  syntax error
+ERROR: 42 compilation errors.  No code generated.
 
 
 Shader version: 300
@@ -390,6 +393,7 @@ ERROR: node is still EOpNull!
 0:?     'colors' (out 4-element array of lowp 4-component vector of float)
 0:?     'st1' (uniform structure{mediump int i, lowp sampler2D s})
 0:?     'st2' (uniform structure{mediump int i, lowp sampler2D s})
+0:?     'fooinv' (invariant smooth in lowp 4-component vector of float)
 
 
 Linked fragment stage:
@@ -745,4 +749,5 @@ ERROR: node is still EOpNull!
 0:?     'colors' (out 4-element array of lowp 4-component vector of float)
 0:?     'st1' (uniform structure{mediump int i, lowp sampler2D s})
 0:?     'st2' (uniform structure{mediump int i, lowp sampler2D s})
+0:?     'fooinv' (invariant smooth in lowp 4-component vector of float)
 

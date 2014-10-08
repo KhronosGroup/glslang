@@ -46,7 +46,7 @@ float fa[];              // ERROR
 float f13;
 invariant f13;           // ERROR
 struct S { int a; };
-invariant S;
+invariant S;             // ERROR, not an input or output
 invariant float fi;      // ERROR
 varying vec4 av;
 invariant av;            // okay in v100
@@ -193,5 +193,7 @@ void badswizzle()
     a.length(); // ERROR, not this version
     a.method(); // ERROR
 }
+
+#pragma STDGL invariant(all)
 
 uniform samplerExternalOES badExt;  // syntax ERROR

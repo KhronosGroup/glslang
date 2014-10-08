@@ -20,7 +20,7 @@ ERROR: 0:64: '' : array size required
 ERROR: 0:65: 'implicitly-sized array in a block' : not supported with this profile: es
 ERROR: 0:67: '' : array size required 
 ERROR: 0:76: 'invariant' : cannot change qualification after use 
-ERROR: 0:78: 'invariant' : can only apply to an output: invIn
+ERROR: 0:78: 'invariant' : can only apply to an output 
 ERROR: 0:88: 'ub2' : Cannot reuse block name within the same interface: uniform
 ERROR: 0:92: 'ub2' : Cannot reuse block name within the same interface: uniform
 ERROR: 0:96: 'ub2' : Cannot reuse block name within the same interface: uniform

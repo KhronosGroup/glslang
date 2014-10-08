@@ -4,6 +4,7 @@ ERROR: 0:3: 'location' : can only appy to uniform, buffer, in, or out storage qu
 ERROR: 0:7: 'in' : cannot declare an input block in a vertex shader 
 ERROR: 0:7: 'location qualifier on in/out block' : not supported for this version or the enabled extensions 
 ERROR: 0:8: 'location qualifier on in/out block' : not supported for this version or the enabled extensions 
+ERROR: 0:23: 'invariant' : can only apply to an output 
 ERROR: 0:21: 'g' : cannot use storage or interpolation qualifiers on structure members 
 ERROR: 0:22: 'h' : cannot use storage or interpolation qualifiers on structure members 
 ERROR: 0:23: 'i' : cannot use invariant qualifier on structure members 
@@ -58,7 +59,7 @@ ERROR: 0:168: 'textureSamples and imageSamples' : not supported for this version
 ERROR: 0:169: 'textureSamples and imageSamples' : not supported for this version or the enabled extensions 
 ERROR: 0:170: 'textureSamples and imageSamples' : not supported for this version or the enabled extensions 
 ERROR: 0:171: 'textureSamples and imageSamples' : not supported for this version or the enabled extensions 
-ERROR: 58 compilation errors.  No code generated.
+ERROR: 59 compilation errors.  No code generated.
 
 
 Shader version: 430

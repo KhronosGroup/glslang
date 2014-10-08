@@ -130,8 +130,8 @@ public:
     void boolCheck(TSourceLoc, const TPublicType&);
     void samplerCheck(TSourceLoc, const TType&, const TString& identifier);
     void atomicUintCheck(TSourceLoc, const TType&, const TString& identifier);
-    void pipeInOutFix(TSourceLoc, TQualifier&);
-    void globalQualifierCheck(TSourceLoc, const TQualifier&, const TPublicType&);
+    void globalQualifierFixCheck(TSourceLoc, TQualifier&);
+    void globalQualifierTypeCheck(TSourceLoc, const TQualifier&, const TPublicType&);
     bool structQualifierErrorCheck(TSourceLoc, const TPublicType& pType);
     void mergeQualifiers(TSourceLoc, TQualifier& dst, const TQualifier& src, bool force);
     void setDefaultPrecision(TSourceLoc, TPublicType&, TPrecisionQualifier);
@@ -180,7 +180,7 @@ public:
     void fixBlockUniformOffsets(TSourceLoc, TQualifier&, TTypeList&);
     void addQualifierToExisting(TSourceLoc, TQualifier, const TString& identifier);
     void addQualifierToExisting(TSourceLoc, TQualifier, TIdentifierList&);
-    void invariantCheck(TSourceLoc, const TType&, const TString& identifier);
+    void invariantCheck(TSourceLoc, const TQualifier&);
     void updateStandaloneQualifierDefaults(TSourceLoc, const TPublicType&);
     void wrapupSwitchSubsequence(TIntermAggregate* statements, TIntermNode* branchNode);
     TIntermNode* addSwitch(TSourceLoc, TIntermTyped* expression, TIntermAggregate* body);
