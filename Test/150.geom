@@ -123,3 +123,17 @@ float summ = gl_MaxVertexAttribs +
              gl_MaxGeometryTotalOutputComponents  +
              gl_MaxGeometryUniformComponents  +
              gl_MaxGeometryVaryingComponents;
+
+void fooe1()
+{
+    gl_ViewportIndex = gl_MaxViewports - 1;
+}
+
+#extension GL_ARB_viewport_array : enable
+
+void fooe2()
+{
+    gl_ViewportIndex = gl_MaxViewports - 1;
+}
+
+out int gl_ViewportIndex;

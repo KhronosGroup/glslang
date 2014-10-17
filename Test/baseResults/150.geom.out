@@ -31,10 +31,14 @@ ERROR: 0:88: 'triangles_adjacency' : cannot change previously set input primitiv
 ERROR: 0:89: 'invocations' : not supported for this version or the enabled extensions 
 ERROR: 0:92: 'stream' : member cannot contradict block 
 ERROR: 0:92: 'stream' : can only be used on an output 
-ERROR: 32 compilation errors.  No code generated.
+ERROR: 0:129: 'gl_ViewportIndex' : required extension not requested: GL_ARB_viewport_array
+ERROR: 0:129: 'gl_MaxViewports' : required extension not requested: GL_ARB_viewport_array
+ERROR: 0:139: 'gl_ViewportIndex' : identifiers starting with "gl_" are reserved 
+ERROR: 35 compilation errors.  No code generated.
 
 
 Shader version: 150
+Requested GL_ARB_viewport_array
 invocations = 4
 max_vertices = 200
 input primitive = lines_adjacency
@@ -129,6 +133,20 @@ ERROR: node is still EOpNull!
 0:107      'summ' (float)
 0:107      Constant:
 0:107        11332.000000
+0:127  Function Definition: fooe1( (void)
+0:127    Function Parameters: 
+0:129    Sequence
+0:129      move second child to first child (int)
+0:129        'gl_ViewportIndex' (layout(stream=0 ) out int)
+0:129        Constant:
+0:129          15 (const int)
+0:134  Function Definition: fooe2( (void)
+0:134    Function Parameters: 
+0:136    Sequence
+0:136      move second child to first child (int)
+0:136        'gl_ViewportIndex' (layout(stream=0 ) out int)
+0:136        Constant:
+0:136          15 (const int)
 0:?   Linker Objects
 0:?     'fromV' (in 4-element array of block{in 3-component vector of float color})
 0:?     'toF' (layout(stream=0 ) out block{layout(stream=0 ) out 3-component vector of float color})
@@ -154,12 +172,14 @@ ERROR: node is still EOpNull!
 0:?     'anon@3' (layout(stream=3 ) out block{layout(stream=3 ) out float f15})
 0:?     'anon@4' (layout(column_major shared ) uniform block{layout(column_major shared ) uniform bool b15})
 0:?     'summ' (float)
+0:?     'gl_ViewportIndex' (layout(stream=3 ) out int)
 
 
 Linked geometry stage:
 
 
 Shader version: 150
+Requested GL_ARB_viewport_array
 invocations = 4
 max_vertices = 200
 input primitive = lines_adjacency
@@ -254,6 +274,20 @@ ERROR: node is still EOpNull!
 0:107      'summ' (float)
 0:107      Constant:
 0:107        11332.000000
+0:127  Function Definition: fooe1( (void)
+0:127    Function Parameters: 
+0:129    Sequence
+0:129      move second child to first child (int)
+0:129        'gl_ViewportIndex' (layout(stream=0 ) out int)
+0:129        Constant:
+0:129          15 (const int)
+0:134  Function Definition: fooe2( (void)
+0:134    Function Parameters: 
+0:136    Sequence
+0:136      move second child to first child (int)
+0:136        'gl_ViewportIndex' (layout(stream=0 ) out int)
+0:136        Constant:
+0:136          15 (const int)
 0:?   Linker Objects
 0:?     'fromV' (in 4-element array of block{in 3-component vector of float color})
 0:?     'toF' (layout(stream=0 ) out block{layout(stream=0 ) out 3-component vector of float color})
@@ -279,4 +313,5 @@ ERROR: node is still EOpNull!
 0:?     'anon@3' (layout(stream=3 ) out block{layout(stream=3 ) out float f15})
 0:?     'anon@4' (layout(column_major shared ) uniform block{layout(column_major shared ) uniform bool b15})
 0:?     'summ' (float)
+0:?     'gl_ViewportIndex' (layout(stream=3 ) out int)
 

@@ -871,7 +871,7 @@ void TBuiltIns::initialize(int version, EProfile profile)
     // Bitfield
     if ((profile == EEsProfile && version >= 310) ||
         (profile != EEsProfile && version >= 400)) {
-	    commonBuiltins.append(
+        commonBuiltins.append(
             " uint uaddCarry( uint,  uint, out  uint carry);"
             "uvec2 uaddCarry(uvec2, uvec2, out uvec2 carry);"
             "uvec3 uaddCarry(uvec3, uvec3, out uvec3 carry);"
@@ -1117,7 +1117,7 @@ void TBuiltIns::initialize(int version, EProfile profile)
             "\n");
     }
 
-	stageBuiltins[EShLangFragment].append(
+    stageBuiltins[EShLangFragment].append(
         "float dFdx(float p);"
         "vec2  dFdx(vec2  p);"
         "vec3  dFdx(vec3  p);"
@@ -1137,7 +1137,7 @@ void TBuiltIns::initialize(int version, EProfile profile)
 
     // GL_ARB_derivative_control
     if (profile != EEsProfile && version >= 400) {
-	    stageBuiltins[EShLangFragment].append(
+        stageBuiltins[EShLangFragment].append(
             "float dFdxFine(float p);"
             "vec2  dFdxFine(vec2  p);"
             "vec3  dFdxFine(vec3  p);"
@@ -1155,7 +1155,7 @@ void TBuiltIns::initialize(int version, EProfile profile)
             
             "\n");
 
-	    stageBuiltins[EShLangFragment].append(
+        stageBuiltins[EShLangFragment].append(
             "float dFdxCoarse(float p);"
             "vec2  dFdxCoarse(vec2  p);"
             "vec3  dFdxCoarse(vec3  p);"
@@ -1444,11 +1444,11 @@ void TBuiltIns::initialize(int version, EProfile profile)
         }
         if (version >= 130)
             stageBuiltins[EShLangVertex].append(
-                "int gl_VertexID;"     // needs qualifier fixed later
+                "int gl_VertexID;"            // needs qualifier fixed later
                 );
         if (version >= 140)
             stageBuiltins[EShLangVertex].append(
-                "int gl_InstanceID;"   // needs qualifier fixed later
+                "int gl_InstanceID;"          // needs qualifier fixed later
                 );
     } else {
         // ES profile
@@ -1459,11 +1459,11 @@ void TBuiltIns::initialize(int version, EProfile profile)
                 );
         } else {
             stageBuiltins[EShLangVertex].append(
-                "highp int gl_VertexID;"     // needs qualifier fixed later
-                "highp int gl_InstanceID;"   // needs qualifier fixed later
+                "highp int gl_VertexID;"      // needs qualifier fixed later
+                "highp int gl_InstanceID;"    // needs qualifier fixed later
 
-                "highp vec4  gl_Position;"   // needs qualifier fixed later
-                "highp float gl_PointSize;"  // needs qualifier fixed later
+                "highp vec4  gl_Position;"    // needs qualifier fixed later
+                "highp float gl_PointSize;"   // needs qualifier fixed later
                 );
         }
     }
@@ -1522,8 +1522,7 @@ void TBuiltIns::initialize(int version, EProfile profile)
             "};"
 
             "out int gl_PrimitiveID;"
-            "out int gl_Layer;"
-            "\n");
+            "out int gl_Layer;");
 
         if (version < 400 && profile == ECompatibilityProfile)
             stageBuiltins[EShLangGeometry].append(
@@ -1534,10 +1533,12 @@ void TBuiltIns::initialize(int version, EProfile profile)
             stageBuiltins[EShLangGeometry].append(
             "in int gl_InvocationID;"
             );
-        if (version >= 410 && profile != EEsProfile)
+        // GL_ARB_viewport_array
+        if (version >= 150 && profile != EEsProfile)
             stageBuiltins[EShLangGeometry].append(
             "out int gl_ViewportIndex;"
             );
+        stageBuiltins[EShLangGeometry].append("\n");
     }
 
     //============================================================================
@@ -2230,7 +2231,7 @@ void TBuiltIns::initialize(const TBuiltInResource &resources, int version, EProf
     //============================================================================
 
     TString& s = commonBuiltins;
-	const int maxSize = 80;
+    const int maxSize = 80;
     char builtInConstant[maxSize];
 
     //
@@ -2462,7 +2463,7 @@ void TBuiltIns::initialize(const TBuiltInResource &resources, int version, EProf
             }
         }
 
-        if (version >= 410) {
+        if (version >= 150) {
             snprintf(builtInConstant, maxSize, "const int gl_MaxViewports = %d;", resources.maxViewports);
             s.append(builtInConstant);
         }
@@ -2631,6 +2632,8 @@ void IdentifyBuiltIns(int version, EProfile profile, EShLanguage language, TSymb
         SpecialQualifier("gl_ClipVertex", EvqClipVertex, symbolTable);
         SpecialQualifier("gl_VertexID",   EvqVertexId, symbolTable);
         SpecialQualifier("gl_InstanceID", EvqInstanceId, symbolTable);
+        if (version < 410)
+            symbolTable.setVariableExtensions("gl_ViewportIndex", 1, &GL_ARB_viewport_array);
         break;
 
     case EShLangFragment:
@@ -2854,7 +2857,7 @@ void IdentifyBuiltIns(int version, EProfile profile, EShLanguage language, TSymb
         symbolTable.relateToOperator("groupMemoryBarrier",  EOpGroupMemoryBarrier);
         break;
 
-	default:
+    default:
         assert(false && "Language not supported");
     }
 }
@@ -2878,6 +2881,8 @@ void IdentifyBuiltIns(int version, EProfile profile, EShLanguage language, TSymb
         symbolTable.setVariableExtensions("gl_MinProgramTexelOffset", 1, &GL_ARB_shading_language_420pack);
         symbolTable.setVariableExtensions("gl_MaxProgramTexelOffset", 1, &GL_ARB_shading_language_420pack);
     }
+    if (profile != EEsProfile && version >= 150 && version < 410)
+        symbolTable.setVariableExtensions("gl_MaxViewports", 1, &GL_ARB_viewport_array);
 
     switch(language) {
     case EShLangFragment:
@@ -2892,7 +2897,7 @@ void IdentifyBuiltIns(int version, EProfile profile, EShLanguage language, TSymb
         }
         break;
 
-	default:
+    default:
         break;
     }
 }

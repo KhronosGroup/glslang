@@ -94,6 +94,7 @@ const char* const GL_ARB_shader_image_load_store      = "GL_ARB_shader_image_loa
 const char* const GL_ARB_shader_atomic_counters       = "GL_ARB_shader_atomic_counters";
 const char* const GL_ARB_derivative_control           = "GL_ARB_derivative_control";
 const char* const GL_ARB_shader_texture_image_samples = "GL_ARB_shader_texture_image_samples";
+const char* const GL_ARB_viewport_array               = "GL_ARB_viewport_array";
 //const char* const GL_ARB_cull_distance            = "GL_ARB_cull_distance";  // present for 4.5, but need extension control over block members
 
 } // end namespace glslang

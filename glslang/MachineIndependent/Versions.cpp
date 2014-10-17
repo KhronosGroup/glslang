@@ -170,7 +170,8 @@ void TParseContext::initializeExtensionBehavior()
     extensionBehavior[GL_ARB_shader_atomic_counters]       = EBhDisable;
     extensionBehavior[GL_ARB_derivative_control]           = EBhDisable;
     extensionBehavior[GL_ARB_shader_texture_image_samples] = EBhDisable;
-//    extensionBehavior[GL_ARB_cull_distance]            = EBhDisable;    // present for 4.5, but need extension control over block members
+    extensionBehavior[GL_ARB_viewport_array]               = EBhDisable;
+//    extensionBehavior[GL_ARB_cull_distance]                = EBhDisable;    // present for 4.5, but need extension control over block members
 }
 
 // Get code that is not part of a shared symbol table, is specific to this shader,
@@ -204,6 +205,7 @@ const char* TParseContext::getPreamble()
             "#define GL_ARB_shader_atomic_counters 1\n"
             "#define GL_ARB_derivative_control 1\n"
             "#define GL_ARB_shader_texture_image_samples 1\n"
+            "#define GL_ARB_viewport_array 1\n"
 //            "#define GL_ARB_cull_distance 1\n"    // present for 4.5, but need extension control over block members
             ;
     }
