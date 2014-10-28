@@ -7,7 +7,14 @@ ERROR: 0:10: 'location' : overlapping use of location 3
 ERROR: 0:58: 'usampler2DMSArray' : Reserved word. 
 ERROR: 0:58: 'sampler/image' : type requires declaration of default precision qualifier 
 ERROR: 0:67: 'textureSamples' : no matching overloaded function found 
-ERROR: 7 compilation errors.  No code generated.
+ERROR: 0:72: 'out' : cannot be bool 
+ERROR: 0:73: 'sampler2D' : sampler/image types can only be used in uniform variables or function parameters: outo
+ERROR: 0:75: 'vertex-shader array-of-array output' : not supported with this profile: es
+ERROR: 0:78: 'vertex-shader array-of-struct output' : not supported with this profile: es
+ERROR: 0:79: 'vertex-shader array-of-struct output' : not supported with this profile: es
+ERROR: 0:81: 'vertex-shader struct output containing an array' : not supported with this profile: es
+ERROR: 0:83: 'vertex-shader struct output containing structure' : not supported with this profile: es
+ERROR: 14 compilation errors.  No code generated.
 
 
 Shader version: 310
@@ -169,6 +176,15 @@ ERROR: node is still EOpNull!
 0:?     'is2dms' (uniform highp isampler2DMS)
 0:?     'us2dms' (uniform highp usampler2DMS)
 0:?     'us2dmsa' (uniform mediump usampler2DMSArray)
+0:?     'outb' (smooth out bool)
+0:?     'outo' (smooth out highp sampler2D)
+0:?     'outa' (smooth out 4-element array of highp float)
+0:?     'outaa' (smooth out 4-element array of highp float)
+0:?     'outs' (smooth out structure{highp float f})
+0:?     'outasa' (smooth out 4-element array of structure{highp float f})
+0:?     'outsa' (smooth out 4-element array of structure{highp float f})
+0:?     'outSA' (smooth out structure{4-element array of highp float f})
+0:?     'outSS' (smooth out structure{highp float f, structure{highp float f} s})
 0:?     'gl_VertexID' (gl_VertexId highp int)
 0:?     'gl_InstanceID' (gl_InstanceId highp int)
 
@@ -335,6 +351,15 @@ ERROR: node is still EOpNull!
 0:?     'is2dms' (uniform highp isampler2DMS)
 0:?     'us2dms' (uniform highp usampler2DMS)
 0:?     'us2dmsa' (uniform mediump usampler2DMSArray)
+0:?     'outb' (smooth out bool)
+0:?     'outo' (smooth out highp sampler2D)
+0:?     'outa' (smooth out 4-element array of highp float)
+0:?     'outaa' (smooth out 4-element array of highp float)
+0:?     'outs' (smooth out structure{highp float f})
+0:?     'outasa' (smooth out 4-element array of structure{highp float f})
+0:?     'outsa' (smooth out 4-element array of structure{highp float f})
+0:?     'outSA' (smooth out structure{4-element array of highp float f})
+0:?     'outSS' (smooth out structure{highp float f, structure{highp float f} s})
 0:?     'gl_VertexID' (gl_VertexId highp int)
 0:?     'gl_InstanceID' (gl_InstanceId highp int)
 

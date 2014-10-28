@@ -1053,6 +1053,7 @@ public:
     virtual int getMatrixCols() const { return matrixCols; }
     virtual int getMatrixRows() const { return matrixRows; }
     virtual int getArraySize()  const { return arraySizes->sizes.front(); }
+    virtual bool isArrayOfArrays() const { return arraySizes && arraySizes->isArrayOfArrays(); }
     virtual int getImplicitArraySize () const { return arraySizes->implicitArraySize; }
 
     virtual bool isScalar() const { return vectorSize == 1 && ! isStruct() && ! isArray(); }
@@ -1088,6 +1089,18 @@ public:
             return false;
         for (unsigned int i = 0; i < structure->size(); ++i) {
             if ((*structure)[i].type->containsArray())
+                return true;
+        }
+        return false;
+    }
+
+    // Check the structure for any structures, needed for some error checks
+    virtual bool containsStructure() const
+    {
+        if (! structure)
+            return false;
+        for (unsigned int i = 0; i < structure->size(); ++i) {
+            if ((*structure)[i].type->structure)
                 return true;
         }
         return false;

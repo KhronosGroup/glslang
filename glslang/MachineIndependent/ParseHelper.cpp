@@ -2077,6 +2077,10 @@ void TParseContext::globalQualifierTypeCheck(TSourceLoc loc, const TQualifier& q
             if (publicType.userDef) {
                 profileRequires(loc, EEsProfile, 300, 0, "fragment-shader struct input");
                 profileRequires(loc, ~EEsProfile, 150, 0, "fragment-shader struct input");
+                if (publicType.userDef->containsStructure())
+                    requireProfile(loc, ~EEsProfile, "fragment-shader struct input containing structure");
+                if (publicType.userDef->containsArray())
+                    requireProfile(loc, ~EEsProfile, "fragment-shader struct input containing an array");
             }
             break;
 
@@ -2095,7 +2099,12 @@ void TParseContext::globalQualifierTypeCheck(TSourceLoc loc, const TQualifier& q
             if (publicType.userDef) {
                 profileRequires(loc, EEsProfile, 300, 0, "vertex-shader struct output");
                 profileRequires(loc, ~EEsProfile, 150, 0, "vertex-shader struct output");
+                if (publicType.userDef->containsStructure())
+                    requireProfile(loc, ~EEsProfile, "vertex-shader struct output containing structure");
+                if (publicType.userDef->containsArray())
+                    requireProfile(loc, ~EEsProfile, "vertex-shader struct output containing an array");
             }
+
             break;
 
         case EShLangTessControl:
@@ -2342,6 +2351,30 @@ bool TParseContext::arrayQualifierError(TSourceLoc loc, const TQualifier& qualif
     if (qualifier.storage == EvqVaryingIn && language == EShLangVertex) {
         requireProfile(loc, ~EEsProfile, "vertex input arrays");
         profileRequires(loc, ENoProfile, 150, 0, "vertex input arrays");
+    }
+
+    return false;
+}
+
+//
+// See if this qualifier and type combination can be an array.
+// Assumes arrayQualifierError() was also called to catch the type-invariant tests.
+//
+// Returns true if there is an error.
+//
+bool TParseContext::arrayError(TSourceLoc loc, const TType& type)
+{
+    if (type.getQualifier().storage == EvqVaryingOut && language == EShLangVertex) {
+        if (type.isArrayOfArrays())
+            requireProfile(loc, ~EEsProfile, "vertex-shader array-of-array output");
+        else if (type.getArraySize() && type.isStruct())
+            requireProfile(loc, ~EEsProfile, "vertex-shader array-of-struct output");
+    }
+    if (type.getQualifier().storage == EvqVaryingIn && language == EShLangFragment) {
+        if (type.isArrayOfArrays())
+            requireProfile(loc, ~EEsProfile, "fragment-shader array-of-array input");
+        else if (type.getArraySize() && type.isStruct())
+            requireProfile(loc, ~EEsProfile, "fragment-shader array-of-struct input");
     }
 
     return false;
@@ -3932,7 +3965,7 @@ TIntermNode* TParseContext::declareVariable(TSourceLoc loc, TString& identifier,
         if (profile == EEsProfile && ! initializer)
             arraySizeRequiredCheck(loc, type.getArraySize());
 
-        if (! arrayQualifierError(loc, type.getQualifier()))
+        if (! arrayQualifierError(loc, type.getQualifier()) && ! arrayError(loc, type))
             declareArray(loc, identifier, type, symbol, newDeclaration);
 
         if (initializer) {

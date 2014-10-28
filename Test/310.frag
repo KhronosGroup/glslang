@@ -103,3 +103,15 @@ out bool bout;          // ERROR
 out image2D imageOut;   // ERROR
 out mat2x3 mout;        // ERROR
 
+in bool inb;         // ERROR
+in sampler2D ino;    // ERROR
+in float ina[4];
+in float inaa[4][2]; // ERROR
+struct S { float f; };
+in S ins;
+in S[4] inasa;       // ERROR
+in S insa[4];        // ERROR
+struct SA { float f[4]; };
+in SA inSA;          // ERROR
+struct SS { float f; S s; };
+in SS inSS;          // ERROR

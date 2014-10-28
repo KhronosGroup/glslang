@@ -120,6 +120,7 @@ public:
     bool constructorError(TSourceLoc, TIntermNode*, TFunction&, TOperator, TType&);
     void arraySizeCheck(TSourceLoc, TIntermTyped* expr, int& size);
     bool arrayQualifierError(TSourceLoc, const TQualifier&);
+    bool arrayError(TSourceLoc, const TType&);
     void arraySizeRequiredCheck(TSourceLoc, int size);
     void structArrayCheck(TSourceLoc, TType* structure);
     void arrayDimError(TSourceLoc);

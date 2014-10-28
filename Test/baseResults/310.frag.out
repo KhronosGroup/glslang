@@ -29,7 +29,14 @@ ERROR: 0:102: 'out' : cannot be bool
 ERROR: 0:103: 'image2D' : sampler/image types can only be used in uniform variables or function parameters: imageOut
 ERROR: 0:103: '' : image variables not declared 'writeonly' must have a format layout qualifier 
 ERROR: 0:104: 'out' : cannot be a matrix 
-ERROR: 29 compilation errors.  No code generated.
+ERROR: 0:106: 'in' : cannot be bool 
+ERROR: 0:107: 'sampler2D' : sampler/image types can only be used in uniform variables or function parameters: ino
+ERROR: 0:109: 'fragment-shader array-of-array input' : not supported with this profile: es
+ERROR: 0:112: 'fragment-shader array-of-struct input' : not supported with this profile: es
+ERROR: 0:113: 'fragment-shader array-of-struct input' : not supported with this profile: es
+ERROR: 0:115: 'fragment-shader struct input containing an array' : not supported with this profile: es
+ERROR: 0:117: 'fragment-shader struct input containing structure' : not supported with this profile: es
+ERROR: 36 compilation errors.  No code generated.
 
 
 Shader version: 310
@@ -259,6 +266,15 @@ ERROR: node is still EOpNull!
 0:?     'bout' (out bool)
 0:?     'imageOut' (out highp image2D)
 0:?     'mout' (out mediump 2X3 matrix of float)
+0:?     'inb' (smooth in bool)
+0:?     'ino' (smooth in highp sampler2D)
+0:?     'ina' (smooth in 4-element array of mediump float)
+0:?     'inaa' (smooth in 4-element array of mediump float)
+0:?     'ins' (smooth in structure{mediump float f})
+0:?     'inasa' (smooth in 4-element array of structure{mediump float f})
+0:?     'insa' (smooth in 4-element array of structure{mediump float f})
+0:?     'inSA' (smooth in structure{4-element array of mediump float f})
+0:?     'inSS' (smooth in structure{mediump float f, structure{mediump float f} s})
 
 
 Linked fragment stage:
@@ -492,4 +508,13 @@ ERROR: node is still EOpNull!
 0:?     'bout' (out bool)
 0:?     'imageOut' (out highp image2D)
 0:?     'mout' (out mediump 2X3 matrix of float)
+0:?     'inb' (smooth in bool)
+0:?     'ino' (smooth in highp sampler2D)
+0:?     'ina' (smooth in 4-element array of mediump float)
+0:?     'inaa' (smooth in 4-element array of mediump float)
+0:?     'ins' (smooth in structure{mediump float f})
+0:?     'inasa' (smooth in 4-element array of structure{mediump float f})
+0:?     'insa' (smooth in 4-element array of structure{mediump float f})
+0:?     'inSA' (smooth in structure{4-element array of mediump float f})
+0:?     'inSS' (smooth in structure{mediump float f, structure{mediump float f} s})
 

@@ -68,3 +68,16 @@ void foo()
 
 
 }
+
+out bool outb;         // ERROR
+out sampler2D outo;    // ERROR
+out float outa[4];
+out float outaa[4][2]; // ERROR
+struct S { float f; };
+out S outs;
+out S[4] outasa;       // ERROR
+out S outsa[4];        // ERROR
+struct SA { float f[4]; };
+out SA outSA;          // ERROR
+struct SS { float f; S s; };
+out SS outSS;          // ERROR
