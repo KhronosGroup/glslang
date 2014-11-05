@@ -106,7 +106,7 @@ extern int yylex(YYSTYPE*, TParseContext&);
 
 %parse-param {glslang::TParseContext* pParseContext}
 %lex-param {parseContext}
-%pure_parser  // enable thread safety
+%pure-parser  // enable thread safety
 %expect 1     // One shift reduce conflict because of if | else
 
 %token <lex> ATTRIBUTE VARYING
