@@ -62,7 +62,11 @@ void foo23()
 
 layout(binding=3) uniform sampler2D s1;
 layout(binding=3) uniform sampler2D s2; // ERROR: overlapping bindings?  Don't see that in the 310 spec.
-layout(binding=2) uniform writeonly image2D i2D;
+layout(binding=2) uniform writeonly image2D      i2D;
+layout(binding=4) uniform readonly  image3D      i3D;
+layout(binding=5) uniform           imageCube    iCube;
+layout(binding=6) uniform           image2DArray i2DA;
+layout(binding=6) uniform coherent volatile restrict image2D i2Dqualified;
 
 layout(binding = 1) uniform bb {
     int foo;
@@ -97,6 +101,10 @@ void foots()
     highp ivec3 v3 = textureSize(isamp2DA, 3);
     v2 = textureSize(s2dms);
     v2 = imageSize(i2D);
+    v3 = imageSize(i3D);
+    v2 = imageSize(iCube);
+    v3 = imageSize(i2DA);
+    v2 = imageSize(i2Dqualified);
 }
 
 out bool bout;          // ERROR
