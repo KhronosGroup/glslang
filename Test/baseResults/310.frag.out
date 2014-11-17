@@ -30,11 +30,6 @@ ERROR: 0:82: 'location' : too large for fragment output
 ERROR: 0:82: 'location' : overlapping use of location 40
 ERROR: 0:83: 'non-literal layout-id value' : not supported with this profile: es
 ERROR: 0:83: 'layout-id value' : cannot be negative 
-ERROR: 0:103: 'writeonly' : argument cannot drop memory qualifier when passed to formal parameter 
-ERROR: 0:104: 'readonly' : argument cannot drop memory qualifier when passed to formal parameter 
-ERROR: 0:107: 'volatile' : argument cannot drop memory qualifier when passed to formal parameter 
-ERROR: 0:107: 'coherent' : argument cannot drop memory qualifier when passed to formal parameter 
-ERROR: 0:107: 'restrict' : argument cannot drop memory qualifier when passed to formal parameter 
 ERROR: 0:110: 'out' : cannot be bool 
 ERROR: 0:111: 'image2D' : sampler/image types can only be used in uniform variables or function parameters: imageOut
 ERROR: 0:111: '' : image variables not declared 'writeonly' must have a format layout qualifier 
@@ -46,7 +41,7 @@ ERROR: 0:120: 'fragment-shader array-of-struct input' : not supported with this 
 ERROR: 0:121: 'fragment-shader array-of-struct input' : not supported with this profile: es
 ERROR: 0:123: 'fragment-shader struct input containing an array' : not supported with this profile: es
 ERROR: 0:125: 'fragment-shader struct input containing structure' : not supported with this profile: es
-ERROR: 46 compilation errors.  No code generated.
+ERROR: 41 compilation errors.  No code generated.
 
 
 Shader version: 310
