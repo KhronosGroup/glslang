@@ -1026,8 +1026,6 @@ TIntermTyped* TParseContext::handleFunctionCall(TSourceLoc loc, TFunction* funct
                             error(arguments->getLoc(), message, "volatile", "");
                         if (argQualifier.coherent && ! formalQualifier.coherent)
                             error(arguments->getLoc(), message, "coherent", "");
-                        if (argQualifier.restrict && ! formalQualifier.restrict)
-                            error(arguments->getLoc(), message, "restrict", "");
                         if (argQualifier.readonly && ! formalQualifier.readonly)
                             error(arguments->getLoc(), message, "readonly", "");
                         if (argQualifier.writeonly && ! formalQualifier.writeonly)

@@ -418,29 +418,29 @@ void TBuiltIns::initialize(int version, EProfile profile)
     if (profile == EEsProfile && version >= 310 ||
         profile != EEsProfile && version >= 430) {
         commonBuiltins.append(
-            "uint atomicAdd(coherent volatile restrict inout uint, uint);"
-            " int atomicAdd(coherent volatile restrict inout  int,  int);"
+            "uint atomicAdd(coherent volatile inout uint, uint);"
+            " int atomicAdd(coherent volatile inout  int,  int);"
 
-            "uint atomicMin(coherent volatile restrict inout uint, uint);"
-            " int atomicMin(coherent volatile restrict inout  int,  int);"
+            "uint atomicMin(coherent volatile inout uint, uint);"
+            " int atomicMin(coherent volatile inout  int,  int);"
             
-            "uint atomicMax(coherent volatile restrict inout uint, uint);"
-            " int atomicMax(coherent volatile restrict inout  int,  int);"
+            "uint atomicMax(coherent volatile inout uint, uint);"
+            " int atomicMax(coherent volatile inout  int,  int);"
             
-            "uint atomicAnd(coherent volatile restrict inout uint, uint);"
-            " int atomicAnd(coherent volatile restrict inout  int,  int);"
+            "uint atomicAnd(coherent volatile inout uint, uint);"
+            " int atomicAnd(coherent volatile inout  int,  int);"
             
-            "uint atomicOr (coherent volatile restrict inout uint, uint);"
-            " int atomicOr (coherent volatile restrict inout  int,  int);"
+            "uint atomicOr (coherent volatile inout uint, uint);"
+            " int atomicOr (coherent volatile inout  int,  int);"
             
-            "uint atomicXor(coherent volatile restrict inout uint, uint);"
-            " int atomicXor(coherent volatile restrict inout  int,  int);"
+            "uint atomicXor(coherent volatile inout uint, uint);"
+            " int atomicXor(coherent volatile inout  int,  int);"
 
-            "uint atomicExchange(coherent volatile restrict inout uint, uint);"
-            " int atomicExchange(coherent volatile restrict inout  int,  int);"
+            "uint atomicExchange(coherent volatile inout uint, uint);"
+            " int atomicExchange(coherent volatile inout  int,  int);"
 
-            "uint atomicCompSwap(coherent volatile restrict inout uint, uint, uint);"
-            " int atomicCompSwap(coherent volatile restrict inout  int,  int,  int);"
+            "uint atomicCompSwap(coherent volatile inout uint, uint, uint);"
+            " int atomicCompSwap(coherent volatile inout  int,  int,  int);"
 
             "\n");
     }
@@ -1847,7 +1847,7 @@ void TBuiltIns::addQueryFunctions(TSampler sampler, TString& typeName, int versi
         commonBuiltins.append(postfixes[dims]);
     }
     if (sampler.image)
-        commonBuiltins.append(" imageSize(readonly writeonly volatile coherent restrict ");
+        commonBuiltins.append(" imageSize(readonly writeonly volatile coherent ");
     else
         commonBuiltins.append(" textureSize(");
     commonBuiltins.append(typeName);
@@ -1861,7 +1861,7 @@ void TBuiltIns::addQueryFunctions(TSampler sampler, TString& typeName, int versi
     if (profile != EEsProfile && version >= 430 && sampler.ms) {
         commonBuiltins.append("int ");
         if (sampler.image)
-            commonBuiltins.append("imageSamples(");
+            commonBuiltins.append("imageSamples(readonly writeonly volatile coherent ");
         else
             commonBuiltins.append("textureSamples(");
         commonBuiltins.append(typeName);
@@ -1889,11 +1889,11 @@ void TBuiltIns::addImageFunctions(TSampler sampler, TString& typeName, int versi
         imageParams.append(", int");
 
     commonBuiltins.append(prefixes[sampler.type]);
-    commonBuiltins.append("vec4 imageLoad(readonly volatile coherent restrict ");
+    commonBuiltins.append("vec4 imageLoad(readonly volatile coherent ");
     commonBuiltins.append(imageParams);
     commonBuiltins.append(");\n");
 
-    commonBuiltins.append("void imageStore(writeonly volatile coherent restrict ");
+    commonBuiltins.append("void imageStore(writeonly volatile coherent ");
     commonBuiltins.append(imageParams);
     commonBuiltins.append(", ");
     commonBuiltins.append(prefixes[sampler.type]);
@@ -1906,13 +1906,13 @@ void TBuiltIns::addImageFunctions(TSampler sampler, TString& typeName, int versi
             const int numBuiltins = 7;
 
             static const char* atomicFunc[numBuiltins] = {
-                " imageAtomicAdd(volatile coherent restrict ",
-                " imageAtomicMin(volatile coherent restrict ",
-                " imageAtomicMax(volatile coherent restrict ",
-                " imageAtomicAnd(volatile coherent restrict ",
-                " imageAtomicOr(volatile coherent restrict ",
-                " imageAtomicXor(volatile coherent restrict ",
-                " imageAtomicExchange(volatile coherent restrict "
+                " imageAtomicAdd(volatile coherent ",
+                " imageAtomicMin(volatile coherent ",
+                " imageAtomicMax(volatile coherent ",
+                " imageAtomicAnd(volatile coherent ",
+                " imageAtomicOr(volatile coherent ",
+                " imageAtomicXor(volatile coherent ",
+                " imageAtomicExchange(volatile coherent "
             }; 
 
             for (size_t i = 0; i < numBuiltins; ++i) {
@@ -1925,7 +1925,7 @@ void TBuiltIns::addImageFunctions(TSampler sampler, TString& typeName, int versi
             }
 
             commonBuiltins.append(dataType);
-            commonBuiltins.append(" imageAtomicCompSwap(volatile coherent restrict ");
+            commonBuiltins.append(" imageAtomicCompSwap(volatile coherent ");
             commonBuiltins.append(imageParams);
             commonBuiltins.append(", ");
             commonBuiltins.append(dataType);
@@ -1937,7 +1937,7 @@ void TBuiltIns::addImageFunctions(TSampler sampler, TString& typeName, int versi
             // GL_ARB_ES3_1_compatibility
             // TODO: spec issue: are there restrictions on the kind of layout() that can be used?  what about dropping memory qualifiers?
             if (version >= 450) {
-                commonBuiltins.append("float imageAtomicExchange(volatile coherent restrict ");
+                commonBuiltins.append("float imageAtomicExchange(volatile coherent ");
                 commonBuiltins.append(imageParams);
                 commonBuiltins.append(", float);\n");
             }

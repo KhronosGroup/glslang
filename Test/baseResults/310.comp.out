@@ -24,7 +24,6 @@ ERROR: 0:90: 'imageAtomicMax' : no matching overloaded function found
 ERROR: 0:94: 'writeonly' : argument cannot drop memory qualifier when passed to formal parameter 
 ERROR: 0:97: '' : memory qualifiers cannot be used on this type 
 ERROR: 0:98: '' : memory qualifiers cannot be used on this type 
-ERROR: 0:110: 'restrict' : argument cannot drop memory qualifier when passed to formal parameter 
 ERROR: 0:114: 'image load-store format' : not supported with this profile: es
 ERROR: 0:114: 'rg8i' : does not apply to unsigned integer images 
 ERROR: 0:115: 'rgba32i' : does not apply to floating point images 
@@ -73,7 +72,7 @@ ERROR: 0:207: 'constructor' : can't read from writeonly object:  wo
 ERROR: 0:208: '~' : can't read from writeonly object:  wo
 ERROR: 0:221: 'assign' : can't read from writeonly object:  wo
 ERROR: 0:222: '~' : can't read from writeonly object:  wo
-ERROR: 73 compilation errors.  No code generated.
+ERROR: 72 compilation errors.  No code generated.
 
 
 Shader version: 310

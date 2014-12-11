@@ -127,12 +127,12 @@ void passr(coherent readonly iimage2D image)
 }
 
 layout(r32i) coherent readonly uniform iimage2D qualim1;
-layout(r32i) coherent restrict readonly uniform iimage2D qualim2;
+layout(r32i) coherent volatile readonly uniform iimage2D qualim2;
 
 void passrc()
 {
     passr(qualim1);
-    passr(qualim2);   // ERROR, drops restrict
+    passr(qualim2);   // ERROR, drops volatile
     passr(iimg2D);
 }
 
