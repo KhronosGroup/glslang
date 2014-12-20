@@ -61,28 +61,28 @@ ERROR: 0:235: 'line continuation' : not supported for this version or the enable
 ERROR: 0:236: '#error' : good continuation  
 ERROR: 0:238: '#' : invalid directive: flizbit
 ERROR: 0:242: '#' : invalid directive: directive
-ERROR: 0:12001: '#error' : line should be 12001  
-ERROR: 7:13001: '#error' : line should be 13001 , string 7  
-ERROR: 7:14014: '#error' : line should be 14014 , string 7  
-ERROR: 12:14014: '#error' : line should be 14014 , string 12  
-ERROR: 12:14026: '#error' : line should be 14026 , string 12  
-ERROR: 12:1234: '#line' : unexpected tokens following directive 
-ERROR: 12:1237: '#line' : unexpected tokens following directive 
-ERROR: 12:20001: '#error' : line should be 20001  
-ERROR: 12:20011: '#error' : line should be 20011  
-ERROR: 12:20021: '#error' : line should be 20021  
-ERROR: 12:20046: '#define' : Macro redefined; different substitutions: SPACE_IN_MIDDLE
-ERROR: 12:20052: '#error' : good evaluation 1  
-ERROR: 12:20056: '#error' : good evaluation 2  
-ERROR: 12:9001: 'preprocessor evaluation' : expected ')' 
-ERROR: 12:9003: '#if' : unexpected tokens following directive 
+ERROR: 0:12000: '#error' : line should be 12000  
+ERROR: 7:13000: '#error' : line should be 13000 , string 7  
+ERROR: 7:14013: '#error' : line should be 14013 , string 7  
+ERROR: 12:14013: '#error' : line should be 14013 , string 12  
+ERROR: 12:14025: '#error' : line should be 14025 , string 12  
+ERROR: 12:1233: '#line' : unexpected tokens following directive 
+ERROR: 12:1236: '#line' : unexpected tokens following directive 
+ERROR: 12:20000: '#error' : line should be 20000  
+ERROR: 12:20010: '#error' : line should be 20010  
+ERROR: 12:20020: '#error' : line should be 20020  
+ERROR: 12:20045: '#define' : Macro redefined; different substitutions: SPACE_IN_MIDDLE
+ERROR: 12:20051: '#error' : good evaluation 1  
+ERROR: 12:20055: '#error' : good evaluation 2  
+ERROR: 12:9000: 'preprocessor evaluation' : expected ')' 
+ERROR: 12:9002: '#if' : unexpected tokens following directive 
+ERROR: 12:9014: 'macro expansion' : expected '(' following FOOOM
+ERROR: 12:9014: 'FOOOM' : undeclared identifier 
+ERROR: 12:9014: '=' :  cannot convert from 'float' to 'int'
 ERROR: 12:9015: 'macro expansion' : expected '(' following FOOOM
-ERROR: 12:9015: 'FOOOM' : undeclared identifier 
-ERROR: 12:9015: '=' :  cannot convert from 'float' to 'int'
-ERROR: 12:9016: 'macro expansion' : expected '(' following FOOOM
-ERROR: 12:9017: 'preprocessor evaluation' : can't evaluate expression 
-ERROR: 12:9017: 'preprocessor evaluation' : bad expression 
-ERROR: 12:10003: '' : missing #endif 
+ERROR: 12:9016: 'preprocessor evaluation' : can't evaluate expression 
+ERROR: 12:9016: 'preprocessor evaluation' : bad expression 
+ERROR: 12:10002: '' : missing #endif 
 ERROR: 79 compilation errors.  No code generated.
 
 
@@ -161,23 +161,23 @@ ERROR: node is still EOpNull!
 0:202      'f' (double)
 0:202      Constant:
 0:202        0.000800
-12:20032  Function Definition: foo234( (void)
-12:20032    Function Parameters: 
-12:20034    Sequence
-12:20034      move second child to first child (4-component vector of float)
-12:20034        gl_Position: direct index for structure (gl_Position 4-component vector of float)
-12:20034          'anon@0' (out block{gl_Position 4-component vector of float gl_Position, gl_PointSize float gl_PointSize, out implicitly-sized array of float gl_ClipDistance, gl_ClipVertex 4-component vector of float gl_ClipVertex, out 4-component vector of float gl_FrontColor, out 4-component vector of float gl_BackColor, out 4-component vector of float gl_FrontSecondaryColor, out 4-component vector of float gl_BackSecondaryColor, out implicitly-sized array of 4-component vector of float gl_TexCoord, out float gl_FogFragCoord})
-12:20034          Constant:
-12:20034            0 (const uint)
-12:20034        Constant:
-12:20034          6.000000
-12:20034          6.000000
-12:20034          6.000000
-12:20034          6.000000
-12:9012  Sequence
-12:9012    move second child to first child (int)
-12:9012      'R1' (int)
-12:9012      'RECURSE' (int)
+12:20031  Function Definition: foo234( (void)
+12:20031    Function Parameters: 
+12:20033    Sequence
+12:20033      move second child to first child (4-component vector of float)
+12:20033        gl_Position: direct index for structure (gl_Position 4-component vector of float)
+12:20033          'anon@0' (out block{gl_Position 4-component vector of float gl_Position, gl_PointSize float gl_PointSize, out implicitly-sized array of float gl_ClipDistance, gl_ClipVertex 4-component vector of float gl_ClipVertex, out 4-component vector of float gl_FrontColor, out 4-component vector of float gl_BackColor, out 4-component vector of float gl_FrontSecondaryColor, out 4-component vector of float gl_BackSecondaryColor, out implicitly-sized array of 4-component vector of float gl_TexCoord, out float gl_FogFragCoord})
+12:20033          Constant:
+12:20033            0 (const uint)
+12:20033        Constant:
+12:20033          6.000000
+12:20033          6.000000
+12:20033          6.000000
+12:20033          6.000000
+12:9011  Sequence
+12:9011    move second child to first child (int)
+12:9011      'R1' (int)
+12:9011      'RECURSE' (int)
 0:?   Linker Objects
 0:?     'sum' (float)
 0:?     'anon@0' (out block{gl_Position 4-component vector of float gl_Position, gl_PointSize float gl_PointSize, out implicitly-sized array of float gl_ClipDistance, gl_ClipVertex 4-component vector of float gl_ClipVertex, out 4-component vector of float gl_FrontColor, out 4-component vector of float gl_BackColor, out 4-component vector of float gl_FrontSecondaryColor, out 4-component vector of float gl_BackSecondaryColor, out implicitly-sized array of 4-component vector of float gl_TexCoord, out float gl_FogFragCoord})
@@ -273,23 +273,23 @@ ERROR: node is still EOpNull!
 0:202      'f' (double)
 0:202      Constant:
 0:202        0.000800
-12:20032  Function Definition: foo234( (void)
-12:20032    Function Parameters: 
-12:20034    Sequence
-12:20034      move second child to first child (4-component vector of float)
-12:20034        gl_Position: direct index for structure (gl_Position 4-component vector of float)
-12:20034          'anon@0' (out block{gl_Position 4-component vector of float gl_Position, gl_PointSize float gl_PointSize, out 1-element array of float gl_ClipDistance, gl_ClipVertex 4-component vector of float gl_ClipVertex, out 4-component vector of float gl_FrontColor, out 4-component vector of float gl_BackColor, out 4-component vector of float gl_FrontSecondaryColor, out 4-component vector of float gl_BackSecondaryColor, out 1-element array of 4-component vector of float gl_TexCoord, out float gl_FogFragCoord})
-12:20034          Constant:
-12:20034            0 (const uint)
-12:20034        Constant:
-12:20034          6.000000
-12:20034          6.000000
-12:20034          6.000000
-12:20034          6.000000
-12:9012  Sequence
-12:9012    move second child to first child (int)
-12:9012      'R1' (int)
-12:9012      'RECURSE' (int)
+12:20031  Function Definition: foo234( (void)
+12:20031    Function Parameters: 
+12:20033    Sequence
+12:20033      move second child to first child (4-component vector of float)
+12:20033        gl_Position: direct index for structure (gl_Position 4-component vector of float)
+12:20033          'anon@0' (out block{gl_Position 4-component vector of float gl_Position, gl_PointSize float gl_PointSize, out 1-element array of float gl_ClipDistance, gl_ClipVertex 4-component vector of float gl_ClipVertex, out 4-component vector of float gl_FrontColor, out 4-component vector of float gl_BackColor, out 4-component vector of float gl_FrontSecondaryColor, out 4-component vector of float gl_BackSecondaryColor, out 1-element array of 4-component vector of float gl_TexCoord, out float gl_FogFragCoord})
+12:20033          Constant:
+12:20033            0 (const uint)
+12:20033        Constant:
+12:20033          6.000000
+12:20033          6.000000
+12:20033          6.000000
+12:20033          6.000000
+12:9011  Sequence
+12:9011    move second child to first child (int)
+12:9011      'R1' (int)
+12:9011      'RECURSE' (int)
 0:?   Linker Objects
 0:?     'sum' (float)
 0:?     'anon@0' (out block{gl_Position 4-component vector of float gl_Position, gl_PointSize float gl_PointSize, out 1-element array of float gl_ClipDistance, gl_ClipVertex 4-component vector of float gl_ClipVertex, out 4-component vector of float gl_FrontColor, out 4-component vector of float gl_BackColor, out 4-component vector of float gl_FrontSecondaryColor, out 4-component vector of float gl_BackSecondaryColor, out 1-element array of 4-component vector of float gl_TexCoord, out float gl_FogFragCoord})

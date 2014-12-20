@@ -635,7 +635,18 @@ int TPpContext::CPPline(TPpToken* ppToken)
     if (! lineErr) {
         if (token == '\n')
             ++lineRes;
+
+        // Desktop, pre-version 3.30:  "After processing this directive
+        // (including its new-line), the implementation will behave as if it is compiling at line number line+1 and
+        // source string number source-string-number."
+        //
+        // Desktop, version 3.30 and later, and ES:  "After processing this directive
+        // (including its new-line), the implementation will behave as if it is compiling at line number line and
+        // source string number source-string-number.
+        if (parseContext.profile == EEsProfile || parseContext.version >= 330)
+            --lineRes;
         parseContext.setCurrentLine(lineRes);
+
         if (token != '\n') {
             int fileRes = 0;
             bool fileErr = false;

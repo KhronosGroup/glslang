@@ -33,8 +33,9 @@ ERROR: 0:144: 'preprocessor evaluation' : undefined macro in expression not allo
 ERROR: 0:153: 'preprocessor evaluation' : undefined macro in expression not allowed in es profile UNDEF
 ERROR: 0:156: 'preprocessor evaluation' : undefined macro in expression not allowed in es profile UNDEF2
 ERROR: 0:159: 'preprocessor evaluation' : undefined macro in expression not allowed in es profile UNDEF2
-ERROR: 0:10002: '' : missing #endif 
-ERROR: 35 compilation errors.  No code generated.
+ERROR: 0:3000: '#error' : line of this error should be 3000  
+ERROR: 0:10001: '' : missing #endif 
+ERROR: 36 compilation errors.  No code generated.
 
 
 Shader version: 300

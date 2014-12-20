@@ -82,8 +82,9 @@ ERROR: 0:192: '.' : cannot apply to an array: nothing
 ERROR: 0:193: '.length' : not supported for this version or the enabled extensions 
 ERROR: 0:194: '.' : cannot apply to an array: method
 ERROR: 0:194: 'a' : can't use function syntax on variable 
-ERROR: 0:199: '' :  syntax error
-ERROR: 75 compilation errors.  No code generated.
+ERROR: 0:3000: '#error' : line of this error should be 3000  
+ERROR: 0:3002: '' :  syntax error
+ERROR: 76 compilation errors.  No code generated.
 
 
 Shader version: 100

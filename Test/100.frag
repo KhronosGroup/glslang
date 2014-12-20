@@ -196,4 +196,7 @@ void badswizzle()
 
 #pragma STDGL invariant(all)
 
+#line 3000
+#error line of this error should be 3000
+
 uniform samplerExternalOES badExt;  // syntax ERROR

@@ -20,3 +20,6 @@ uniform foob {
     int a[];
 };
 int a[5]; // ERROR, resizing user-block member
+
+#line 3000
+#error line of this error should be 3001

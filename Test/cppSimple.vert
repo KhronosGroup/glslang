@@ -242,19 +242,19 @@ double f = f1;
 #directive directive was expanded
 
 #line 12000
-#error line should be 12001
+#error line should be 12000
 #line 13000 7
-#error line should be 13001, string 7
+#error line should be 13000, string 7
 #define L1 14000
 #define L2 13
 #define F1 5
 #define F2 7
 #line L1 + L2
-#error line should be 14014, string 7
+#error line should be 14013, string 7
 #line L1 + L2 F1 + F2 //  antoeuh sat  comment
-#error line should be 14014, string 12
+#error line should be 14013, string 12
 #line L1 + L2 + F1 + F2
-#error line should be 14026, string 12
+#error line should be 14025, string 12
 #line 1234 F1 + F2 extra
 #define empty_extra
 #line 1235 F1 + F2 empty_extra
@@ -264,11 +264,11 @@ double f = f1;
 #line 1238 F1 + F2 moreEmpty empty_extra
 #line 1239 empty_extra F1 empty_extra + empty_extra F2 empty_extra moreEmpty empty_extra
 #line (20000)
-#error line should be 20001
+#error line should be 20000
 #line (20000+10)
-#error line should be 20011
+#error line should be 20010
 #line +20020
-#error line should be 20021
+#error line should be 20020
 
 #define VAL1 1.0
 #define VAL2 2.0

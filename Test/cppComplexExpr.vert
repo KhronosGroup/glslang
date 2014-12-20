@@ -159,6 +159,9 @@ float c = foobar(1.1, 2.2
 #if (VAL0 && UNDEF) || UNDEF2 // UNDEF2 ERROR
 #endif
 
+#line 3000
+#error line of this error should be 3000
+
 #line 10000
 #if 0
 // ERROR, EOF
