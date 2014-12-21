@@ -138,7 +138,7 @@ public:
     void setDefaultPrecision(TSourceLoc, TPublicType&, TPrecisionQualifier);
     int computeSamplerTypeIndex(TSampler&);
     TPrecisionQualifier getDefaultPrecision(TPublicType&);
-    void precisionQualifierCheck(TSourceLoc, TPublicType&);
+    void precisionQualifierCheck(TSourceLoc, TBasicType, TQualifier&);
     void parameterTypeCheck(TSourceLoc, TStorageQualifier qualifier, const TType& type);
     bool containsFieldWithBasicType(const TType& type ,TBasicType basicType);
     TSymbol* redeclareBuiltinVariable(TSourceLoc, const TString&, const TQualifier&, const TShaderQualifiers&, bool& newDeclaration);

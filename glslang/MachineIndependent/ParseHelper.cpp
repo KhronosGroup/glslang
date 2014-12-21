@@ -2266,27 +2266,27 @@ TPrecisionQualifier TParseContext::getDefaultPrecision(TPublicType& publicType)
         return defaultPrecision[publicType.basicType];
 }
 
-void TParseContext::precisionQualifierCheck(TSourceLoc loc, TPublicType& publicType)
+void TParseContext::precisionQualifierCheck(TSourceLoc loc, TBasicType baseType, TQualifier& qualifier)
 {
     // Built-in symbols are allowed some ambiguous precisions, to be pinned down
     // later by context.
     if (profile != EEsProfile || parsingBuiltins)
         return;
 
-    if (publicType.basicType == EbtAtomicUint && publicType.qualifier.precision != EpqNone && publicType.qualifier.precision != EpqHigh)
+    if (baseType == EbtAtomicUint && qualifier.precision != EpqNone && qualifier.precision != EpqHigh)
         error(loc, "atomic counters can only be highp", "atomic_uint", "");
 
-    if (publicType.basicType == EbtFloat || publicType.basicType == EbtUint || publicType.basicType == EbtInt || publicType.basicType == EbtSampler || publicType.basicType == EbtAtomicUint) {
-        if (publicType.qualifier.precision == EpqNone) {
+    if (baseType == EbtFloat || baseType == EbtUint || baseType == EbtInt || baseType == EbtSampler || baseType == EbtAtomicUint) {
+        if (qualifier.precision == EpqNone) {
             if (messages & EShMsgRelaxedErrors)
-                warn(loc, "type requires declaration of default precision qualifier", TType::getBasicString(publicType.basicType), "substituting 'mediump'");
+                warn(loc, "type requires declaration of default precision qualifier", TType::getBasicString(baseType), "substituting 'mediump'");
             else
-                error(loc, "type requires declaration of default precision qualifier", TType::getBasicString(publicType.basicType), "");
-            publicType.qualifier.precision = EpqMedium;
-            defaultPrecision[publicType.basicType] = EpqMedium;
+                error(loc, "type requires declaration of default precision qualifier", TType::getBasicString(baseType), "");
+            qualifier.precision = EpqMedium;
+            defaultPrecision[baseType] = EpqMedium;
         }
-    } else if (publicType.qualifier.precision != EpqNone)
-        error(loc, "type cannot have precision qualifier", TType::getBasicString(publicType.basicType), "");
+    } else if (qualifier.precision != EpqNone)
+        error(loc, "type cannot have precision qualifier", TType::getBasicString(baseType), "");
 }
 
 void TParseContext::parameterTypeCheck(TSourceLoc loc, TStorageQualifier qualifier, const TType& type)

@@ -35,7 +35,7 @@
 //
 
 /**
- * This is bison grammar and productions for parsing all versions of the 
+ * This is bison grammar and productions for parsing all versions of the
  * GLSL shading languages.
  */
 %{
@@ -228,7 +228,7 @@ primary_expression
     | INTCONSTANT {
         $$ = parseContext.intermediate.addConstantUnion($1.i, $1.loc, true);
     }
-    | UINTCONSTANT {        
+    | UINTCONSTANT {
         parseContext.fullIntegerCheck($1.loc, "unsigned literal");
         $$ = parseContext.intermediate.addConstantUnion($1.u, $1.loc, true);
     }
@@ -243,7 +243,7 @@ primary_expression
         $$ = parseContext.intermediate.addConstantUnion($1.b, $1.loc, true);
     }
     | LEFT_PAREN expression RIGHT_PAREN {
-        $$ = $2;        
+        $$ = $2;
         if ($$->getAsConstantUnion())
             $$->getAsConstantUnion()->setExpression();
     }
@@ -343,7 +343,7 @@ function_identifier
     : type_specifier {
         // Constructor
         $$.intermNode = 0;
-        $$.function = parseContext.handleConstructorCall($1.loc, $1); 
+        $$.function = parseContext.handleConstructorCall($1.loc, $1);
     }
     | postfix_expression {
         //
@@ -602,27 +602,27 @@ assignment_operator
         $$.op = EOpAssign;
     }
     | MUL_ASSIGN {
-        $$.loc = $1.loc; 
+        $$.loc = $1.loc;
         $$.op = EOpMulAssign;
     }
     | DIV_ASSIGN {
-        $$.loc = $1.loc; 
+        $$.loc = $1.loc;
         $$.op = EOpDivAssign;
     }
-    | MOD_ASSIGN   {        
+    | MOD_ASSIGN {
         parseContext.fullIntegerCheck($1.loc, "%=");
-        $$.loc = $1.loc; 
+        $$.loc = $1.loc;
         $$.op = EOpModAssign;
     }
     | ADD_ASSIGN {
-        $$.loc = $1.loc; 
+        $$.loc = $1.loc;
         $$.op = EOpAddAssign;
     }
     | SUB_ASSIGN {
         $$.loc = $1.loc;
         $$.op = EOpSubAssign;
     }
-    | LEFT_ASSIGN  {
+    | LEFT_ASSIGN {
         parseContext.fullIntegerCheck($1.loc, "bit-shift left assign");
         $$.loc = $1.loc; $$.op = EOpLeftShiftAssign;
     }
@@ -630,15 +630,15 @@ assignment_operator
         parseContext.fullIntegerCheck($1.loc, "bit-shift right assign");
         $$.loc = $1.loc; $$.op = EOpRightShiftAssign;
     }
-    | AND_ASSIGN   {
+    | AND_ASSIGN {
         parseContext.fullIntegerCheck($1.loc, "bitwise-and assign");
         $$.loc = $1.loc; $$.op = EOpAndAssign;
     }
-    | XOR_ASSIGN   {
+    | XOR_ASSIGN {
         parseContext.fullIntegerCheck($1.loc, "bitwise-xor assign");
         $$.loc = $1.loc; $$.op = EOpExclusiveOrAssign;
     }
-    | OR_ASSIGN    {
+    | OR_ASSIGN {
         parseContext.fullIntegerCheck($1.loc, "bitwise-or assign");
         $$.loc = $1.loc; $$.op = EOpInclusiveOrAssign;
     }
@@ -809,7 +809,6 @@ parameter_declarator
             parseContext.error($2.loc, "illegal use of type 'void'", $2.string->c_str(), "");
         }
         parseContext.reservedErrorCheck($2.loc, *$2.string);
-        parseContext.precisionQualifierCheck($1.loc, $1);
 
         TParameter param = {$2.string, new TType($1)};
         $$.loc = $2.loc;
@@ -824,8 +823,7 @@ parameter_declarator
         parseContext.arrayDimCheck($2.loc, $1.arraySizes, $3.arraySizes);
 
         parseContext.arraySizeRequiredCheck($3.loc, $3.arraySizes->getSize());
-        parseContext.reservedErrorCheck($2.loc, *$2.string);        
-        parseContext.precisionQualifierCheck($1.loc, $1);
+        parseContext.reservedErrorCheck($2.loc, *$2.string);
 
         $1.arraySizes = $3.arraySizes;
 
@@ -843,16 +841,19 @@ parameter_declaration
         $$ = $2;
         if ($1.qualifier.precision != EpqNone)
             $$.param.type->getQualifier().precision = $1.qualifier.precision;
-        
+        parseContext.precisionQualifierCheck($$.loc, $$.param.type->getBasicType(), $$.param.type->getQualifier());
+
         parseContext.checkNoShaderLayouts($1.loc, $1.shaderQualifiers);
         parseContext.parameterTypeCheck($2.loc, $1.qualifier.storage, *$$.param.type);
         parseContext.paramCheckFix($1.loc, $1.qualifier, *$$.param.type);
+
     }
     | parameter_declarator {
         $$ = $1;
 
         parseContext.parameterTypeCheck($1.loc, EvqIn, *$1.param.type);
         parseContext.paramCheckFix($1.loc, EvqTemporary, *$$.param.type);
+        parseContext.precisionQualifierCheck($$.loc, $$.param.type->getBasicType(), $$.param.type->getQualifier());
     }
     //
     // Without name
@@ -861,7 +862,8 @@ parameter_declaration
         $$ = $2;
         if ($1.qualifier.precision != EpqNone)
             $$.param.type->getQualifier().precision = $1.qualifier.precision;
-        
+        parseContext.precisionQualifierCheck($1.loc, $$.param.type->getBasicType(), $$.param.type->getQualifier());
+
         parseContext.checkNoShaderLayouts($1.loc, $1.shaderQualifiers);
         parseContext.parameterTypeCheck($2.loc, $1.qualifier.storage, *$$.param.type);
         parseContext.paramCheckFix($1.loc, $1.qualifier, *$$.param.type);
@@ -871,6 +873,7 @@ parameter_declaration
 
         parseContext.parameterTypeCheck($1.loc, EvqIn, *$1.param.type);
         parseContext.paramCheckFix($1.loc, EvqTemporary, *$$.param.type);
+        parseContext.precisionQualifierCheck($$.loc, $$.param.type->getBasicType(), $$.param.type->getQualifier());
     }
     ;
 
@@ -880,7 +883,6 @@ parameter_type_specifier
         $$.param = param;
         if ($1.arraySizes)
             parseContext.arraySizeRequiredCheck($1.loc, $1.arraySizes->getSize());
-        parseContext.precisionQualifierCheck($1.loc, $1);
     }
     ;
 
@@ -947,7 +949,7 @@ fully_specified_type
             parseContext.profileRequires($1.loc, EEsProfile, 300, 0, "arrayed type");
         }
 
-        parseContext.precisionQualifierCheck($$.loc, $$);
+        parseContext.precisionQualifierCheck($$.loc, $$.basicType, $$.qualifier);
     }
     | type_qualifier type_specifier  {
         parseContext.globalQualifierFixCheck($1.loc, $1.qualifier);
@@ -960,15 +962,15 @@ fully_specified_type
 
         if ($2.arraySizes && parseContext.arrayQualifierError($2.loc, $1.qualifier))
             $2.arraySizes = 0;
-        
+
         parseContext.checkNoShaderLayouts($2.loc, $1.shaderQualifiers);
         $2.shaderQualifiers.merge($1.shaderQualifiers);
         parseContext.mergeQualifiers($2.loc, $2.qualifier, $1.qualifier, true);
-        parseContext.precisionQualifierCheck($2.loc, $2);
+        parseContext.precisionQualifierCheck($2.loc, $2.basicType, $2.qualifier);
 
         $$ = $2;
 
-        if (! $$.qualifier.isInterpolation() && 
+        if (! $$.qualifier.isInterpolation() &&
             ((parseContext.language == EShLangVertex   && $$.qualifier.storage == EvqVaryingOut) ||
              (parseContext.language == EShLangFragment && $$.qualifier.storage == EvqVaryingIn)))
             $$.qualifier.smooth = true;
@@ -1215,7 +1217,7 @@ type_specifier
         $$ = $1;
         $$.qualifier.precision = parseContext.getDefaultPrecision($$);
     }
-    | type_specifier_nonarray array_specifier {        
+    | type_specifier_nonarray array_specifier {
         parseContext.arrayDimCheck($2.loc, $2.arraySizes, 0);
         $$ = $1;
         $$.qualifier.precision = parseContext.getDefaultPrecision($$);
@@ -1955,7 +1957,7 @@ struct_declaration
         $$ = $2;
 
         parseContext.voidErrorCheck($1.loc, (*$2)[0].type->getFieldName(), $1.basicType);
-        parseContext.precisionQualifierCheck($1.loc, $1);
+        parseContext.precisionQualifierCheck($1.loc, $1.basicType, $1.qualifier);
 
         for (unsigned int i = 0; i < $$->size(); ++i) {
             parseContext.arrayDimCheck($1.loc, (*$$)[i].type, $1.arraySizes);
@@ -1976,7 +1978,7 @@ struct_declaration
         parseContext.checkNoShaderLayouts($1.loc, $1.shaderQualifiers);
         parseContext.voidErrorCheck($2.loc, (*$3)[0].type->getFieldName(), $2.basicType);
         parseContext.mergeQualifiers($2.loc, $2.qualifier, $1.qualifier, true);
-        parseContext.precisionQualifierCheck($2.loc, $2);
+        parseContext.precisionQualifierCheck($2.loc, $2.basicType, $2.qualifier);
 
         for (unsigned int i = 0; i < $$->size(); ++i) {
             parseContext.arrayDimCheck($1.loc, (*$$)[i].type, $2.arraySizes);
@@ -2001,7 +2003,7 @@ struct_declarator
         $$.loc = $1.loc;
         $$.type->setFieldName(*$1.string);
     }
-    | IDENTIFIER array_specifier {        
+    | IDENTIFIER array_specifier {
         parseContext.arrayDimCheck($1.loc, $2.arraySizes, 0);
 
         $$.type = new TType(EbtVoid);
@@ -2065,7 +2067,7 @@ compound_statement
         parseContext.symbolTable.push();
         ++parseContext.controlFlowNestingLevel;
     }
-      statement_list { 
+      statement_list {
         parseContext.symbolTable.pop(&parseContext.defaultPrecision[0]);
         --parseContext.controlFlowNestingLevel;
     }
@@ -2083,10 +2085,10 @@ statement_no_new_scope
 
 statement_scoped
     : compound_statement  { $$ = $1; }
-    | { 
+    | {
         parseContext.symbolTable.push();
         ++parseContext.controlFlowNestingLevel;
-    } 
+    }
       simple_statement {
         parseContext.symbolTable.pop(&parseContext.defaultPrecision[0]);
         --parseContext.controlFlowNestingLevel;
@@ -2115,7 +2117,7 @@ statement_list
         }
     }
     | statement_list statement {
-        if ($2 && $2->getAsBranchNode() && ($2->getAsBranchNode()->getFlowOp() == EOpCase || 
+        if ($2 && $2->getAsBranchNode() && ($2->getAsBranchNode()->getFlowOp() == EOpCase ||
                                             $2->getAsBranchNode()->getFlowOp() == EOpDefault)) {
             parseContext.wrapupSwitchSubsequence($1 ? $1->getAsAggregate() : 0, $2);
             $$ = 0;  // start a fresh subsequence for what's after this case
@@ -2172,13 +2174,13 @@ switch_statement
         parseContext.switchSequenceStack.push_back(new TIntermSequence);
         parseContext.switchLevel.push_back(parseContext.controlFlowNestingLevel);
         parseContext.symbolTable.push();
-    } 
+    }
     LEFT_BRACE switch_statement_list RIGHT_BRACE {
         $$ = parseContext.addSwitch($1.loc, $3, $7 ? $7->getAsAggregate() : 0);
         delete parseContext.switchSequenceStack.back();
         parseContext.switchSequenceStack.pop_back();
         parseContext.switchLevel.pop_back();
-        parseContext.symbolTable.pop(&parseContext.defaultPrecision[0]);        
+        parseContext.symbolTable.pop(&parseContext.defaultPrecision[0]);
         --parseContext.controlFlowNestingLevel;
     }
     ;
@@ -2230,10 +2232,10 @@ iteration_statement
         --parseContext.loopNestingLevel;
         --parseContext.controlFlowNestingLevel;
     }
-    | DO { 
+    | DO {
         ++parseContext.loopNestingLevel;
         ++parseContext.controlFlowNestingLevel;
-    } 
+    }
       statement WHILE LEFT_PAREN expression RIGHT_PAREN SEMICOLON {
         if (! parseContext.limits.whileLoops)
             parseContext.error($1.loc, "do-while loops not available", "limitation", "");
