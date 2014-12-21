@@ -29,7 +29,14 @@ ERROR: node is still EOpNull!
 0:11      'f' (highp float)
 0:14      'a' (2-element array of mediump int)
 0:17      'c' (uniform mediump int)
-0:21      'c' (uniform mediump int)
+0:21      switch
+0:21      condition
+0:21        'c' (uniform mediump int)
+0:21      body
+0:21        Sequence
+0:23          case:  with expression
+0:23            Constant:
+0:23              2 (const int)
 0:26      switch
 0:26      condition
 0:26        'c' (uniform mediump int)
@@ -286,8 +293,13 @@ ERROR: node is still EOpNull!
 0:124                Constant:
 0:124                  0 (const int)
 0:126      'onlyInSwitch' (float)
-0:128      Constant:
-0:128        0 (const int)
+0:128      switch
+0:128      condition
+0:128        Constant:
+0:128          0 (const int)
+0:128      body
+0:128        Sequence
+0:129          default: 
 0:133      switch
 0:133      condition
 0:133        'c' (uniform mediump int)
@@ -348,7 +360,14 @@ ERROR: node is still EOpNull!
 0:11      'f' (highp float)
 0:14      'a' (2-element array of mediump int)
 0:17      'c' (uniform mediump int)
-0:21      'c' (uniform mediump int)
+0:21      switch
+0:21      condition
+0:21        'c' (uniform mediump int)
+0:21      body
+0:21        Sequence
+0:23          case:  with expression
+0:23            Constant:
+0:23              2 (const int)
 0:26      switch
 0:26      condition
 0:26        'c' (uniform mediump int)
@@ -605,8 +624,13 @@ ERROR: node is still EOpNull!
 0:124                Constant:
 0:124                  0 (const int)
 0:126      'onlyInSwitch' (float)
-0:128      Constant:
-0:128        0 (const int)
+0:128      switch
+0:128      condition
+0:128        Constant:
+0:128          0 (const int)
+0:128      body
+0:128        Sequence
+0:129          default: 
 0:133      switch
 0:133      condition
 0:133        'c' (uniform mediump int)

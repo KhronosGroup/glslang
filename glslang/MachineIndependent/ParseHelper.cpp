@@ -5037,11 +5037,8 @@ TIntermNode* TParseContext::addSwitch(TSourceLoc loc, TIntermTyped* expression, 
     if (switchSequence->size() == 0)
         return expression;
 
-    if (lastStatements == 0) {
+    if (lastStatements == 0)
         warn(loc, "last case/default label not followed by statements", "switch", "");
-
-        return expression;
-    }
 
     TIntermAggregate* body = new TIntermAggregate(EOpSequence);
     body->getSequence() = *switchSequenceStack.back();
