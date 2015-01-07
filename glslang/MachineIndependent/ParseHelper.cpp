@@ -51,7 +51,8 @@ TParseContext::TParseContext(TSymbolTable& symt, TIntermediate& interm, bool pb,
                              bool fc, EShMessages m) :
             intermediate(interm), symbolTable(symt), infoSink(is), language(L),
             version(v), profile(p), forwardCompatible(fc), messages(m),
-            contextPragma(true, false), loopNestingLevel(0), controlFlowNestingLevel(0), structNestingLevel(0),
+            contextPragma(true, false), loopNestingLevel(0), structNestingLevel(0), controlFlowNestingLevel(0), statementNestingLevel(0),
+            postMainReturn(false),
             tokensBeforeEOF(false), limits(resources.limits), currentScanner(0),
             numErrors(0), parsingBuiltins(pb), afterEOF(false),
             atomicUintOffsets(0), anyIndexLimits(false)
@@ -915,7 +916,9 @@ TIntermAggregate* TParseContext::handleFunctionDefinition(TSourceLoc loc, TFunct
         if (function.getType().getBasicType() != EbtVoid)
             error(loc, "", function.getType().getBasicTypeString().c_str(), "main function cannot return a value");
         intermediate.addMainCount();
-    }
+        inMain = true;
+    } else
+        inMain = false;
 
     //
     // New symbol table scope for body of function plus its arguments
@@ -953,7 +956,9 @@ TIntermAggregate* TParseContext::handleFunctionDefinition(TSourceLoc loc, TFunct
     }
     intermediate.setAggregateOperator(paramNodes, EOpParameters, TType(EbtVoid), loc);
     loopNestingLevel = 0;
+    statementNestingLevel = 0;
     controlFlowNestingLevel = 0;
+    postMainReturn = false;
 
     return paramNodes;
 }
@@ -1045,6 +1050,7 @@ TIntermTyped* TParseContext::handleFunctionCall(TSourceLoc loc, TFunction* funct
             op = fnCandidate->getBuiltInOp();
             if (builtIn && op != EOpNull) {
                 // A function call mapped to a built-in operation.
+                checkLocation(loc, op);
                 result = intermediate.addBuiltInFunctionCall(loc, op, fnCandidate->getParamCount() == 1, arguments, fnCandidate->getType());
                 if (result == 0)  {
                     error(arguments->getLoc(), " wrong operand type", "Internal Error",
@@ -1089,6 +1095,25 @@ TIntermTyped* TParseContext::handleFunctionCall(TSourceLoc loc, TFunction* funct
         result = intermediate.addConstantUnion(0.0, EbtFloat, loc);
 
     return result;
+}
+
+// See if the operation is being done in an illegal location.
+void TParseContext::checkLocation(TSourceLoc loc, TOperator op)
+{
+    switch (op) {
+    case EOpBarrier:
+        if (language == EShLangTessControl) {
+            if (controlFlowNestingLevel > 0)
+                error(loc, "tessellation control barrier() cannot be placed within flow control", "", "");
+            if (! inMain)
+                error(loc, "tessellation control barrier() must be in main()", "", "");
+            else if (postMainReturn)
+                error(loc, "tessellation control barrier() cannot be placed after a return from main()", "", "");
+        }
+        break;
+    default:
+        break;
+    }
 }
 
 // Finish processing object.length(). This started earlier in handleDotDereference(), where

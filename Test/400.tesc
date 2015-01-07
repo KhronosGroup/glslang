@@ -34,6 +34,31 @@ void main()
 
     gl_TessLevelOuter[3] = 3.2;
     gl_TessLevelInner[1] = 1.3;
+
+    if (a > 10)
+        barrier();           // ERROR
+    else
+        barrier();           // ERROR
+
+    barrier();
+
+    do {
+        barrier();           // ERROR
+    } while (a > 10);
+
+    switch (a) {
+    default:
+        barrier();           // ERROR
+        break;
+    }
+
+    {
+        barrier();
+    }
+
+    return;
+
+    barrier();               // ERROR
 }
 
 layout(vertices = 4) in;    // ERROR
@@ -42,6 +67,8 @@ layout(vertices = 5) out;   // ERROR
 void foo()
 {
     gl_out[4].gl_PointSize;  // ERROR
+
+    barrier();                // ERROR
 }
 
 in vec2 ina;   // ERROR, not array

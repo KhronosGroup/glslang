@@ -101,6 +101,7 @@ public:
     TFunction* handleFunctionDeclarator(TSourceLoc loc, TFunction& function, bool prototype);
     TIntermAggregate* handleFunctionDefinition(TSourceLoc, TFunction&);
     TIntermTyped* handleFunctionCall(TSourceLoc, TFunction*, TIntermNode*);
+    void checkLocation(TSourceLoc, TOperator);
     TIntermTyped* handleLengthMethod(TSourceLoc, TFunction*, TIntermNode*);
     void addInputArgumentConversions(const TFunction&, TIntermNode*&) const;
     TIntermTyped* addOutputArgumentConversions(const TFunction&, TIntermAggregate&) const;
@@ -245,9 +246,12 @@ public:
     struct TPragma contextPragma;
     int loopNestingLevel;        // 0 if outside all loops
     int structNestingLevel;      // 0 if outside blocks and structures
-    int controlFlowNestingLevel; // 0 if outside all flow control or compound statements; also counts compound statements
+    int controlFlowNestingLevel; // 0 if outside all flow control
+    int statementNestingLevel;   // 0 if outside all flow control or compound statements
     TList<TIntermSequence*> switchSequenceStack;  // case, node, case, case, node, ...; ensure only one node between cases;   stack of them for nesting
-    TList<int> switchLevel;      // the controlFlowNestingLevel the current switch statement is at, which must match the level of its case statements
+    TList<int> switchLevel;      // the statementNestingLevel the current switch statement is at, which must match the level of its case statements
+    bool inMain;                 // if inside a function, true if the function is main
+    bool postMainReturn;         // if inside a function, true if the function is main and this is after a return statement
     const TType* currentFunctionType;  // the return type of the function that's currently being parsed
     bool functionReturnsValue;   // true if a non-void function has a return
     const TString* blockName;

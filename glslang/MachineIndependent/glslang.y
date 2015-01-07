@@ -2065,11 +2065,11 @@ compound_statement
     : LEFT_BRACE RIGHT_BRACE { $$ = 0; }
     | LEFT_BRACE {
         parseContext.symbolTable.push();
-        ++parseContext.controlFlowNestingLevel;
+        ++parseContext.statementNestingLevel;
     }
       statement_list {
         parseContext.symbolTable.pop(&parseContext.defaultPrecision[0]);
-        --parseContext.controlFlowNestingLevel;
+        --parseContext.statementNestingLevel;
     }
       RIGHT_BRACE {
         if ($3 && $3->getAsAggregate())
@@ -2084,13 +2084,21 @@ statement_no_new_scope
     ;
 
 statement_scoped
-    : compound_statement  { $$ = $1; }
+    : {
+        ++parseContext.controlFlowNestingLevel;
+    }
+      compound_statement  {
+        --parseContext.controlFlowNestingLevel;
+        $$ = $2;
+    }
     | {
         parseContext.symbolTable.push();
+        ++parseContext.statementNestingLevel;
         ++parseContext.controlFlowNestingLevel;
     }
       simple_statement {
         parseContext.symbolTable.pop(&parseContext.defaultPrecision[0]);
+        --parseContext.statementNestingLevel;
         --parseContext.controlFlowNestingLevel;
         $$ = $2;
     }
@@ -2171,8 +2179,9 @@ switch_statement
     : SWITCH LEFT_PAREN expression RIGHT_PAREN {
         // start new switch sequence on the switch stack
         ++parseContext.controlFlowNestingLevel;
+        ++parseContext.statementNestingLevel;
         parseContext.switchSequenceStack.push_back(new TIntermSequence);
-        parseContext.switchLevel.push_back(parseContext.controlFlowNestingLevel);
+        parseContext.switchLevel.push_back(parseContext.statementNestingLevel);
         parseContext.symbolTable.push();
     }
     LEFT_BRACE switch_statement_list RIGHT_BRACE {
@@ -2181,6 +2190,7 @@ switch_statement
         parseContext.switchSequenceStack.pop_back();
         parseContext.switchLevel.pop_back();
         parseContext.symbolTable.pop(&parseContext.defaultPrecision[0]);
+        --parseContext.statementNestingLevel;
         --parseContext.controlFlowNestingLevel;
     }
     ;
@@ -2199,7 +2209,7 @@ case_label
         $$ = 0;
         if (parseContext.switchLevel.size() == 0)
             parseContext.error($1.loc, "cannot appear outside switch statement", "case", "");
-        else if (parseContext.switchLevel.back() != parseContext.controlFlowNestingLevel)
+        else if (parseContext.switchLevel.back() != parseContext.statementNestingLevel)
             parseContext.error($1.loc, "cannot be nested inside control flow", "case", "");
         else {
             parseContext.constantValueCheck($2, "case");
@@ -2211,7 +2221,7 @@ case_label
         $$ = 0;
         if (parseContext.switchLevel.size() == 0)
             parseContext.error($1.loc, "cannot appear outside switch statement", "default", "");
-        else if (parseContext.switchLevel.back() != parseContext.controlFlowNestingLevel)
+        else if (parseContext.switchLevel.back() != parseContext.statementNestingLevel)
             parseContext.error($1.loc, "cannot be nested inside control flow", "default", "");
         else
             $$ = parseContext.intermediate.addBranch(EOpDefault, $1.loc);
@@ -2224,16 +2234,19 @@ iteration_statement
             parseContext.error($1.loc, "while loops not available", "limitation", "");
         parseContext.symbolTable.push();
         ++parseContext.loopNestingLevel;
+        ++parseContext.statementNestingLevel;
         ++parseContext.controlFlowNestingLevel;
     }
       condition RIGHT_PAREN statement_no_new_scope {
         parseContext.symbolTable.pop(&parseContext.defaultPrecision[0]);
         $$ = parseContext.intermediate.addLoop($6, $4, 0, true, $1.loc);
         --parseContext.loopNestingLevel;
+        --parseContext.statementNestingLevel;
         --parseContext.controlFlowNestingLevel;
     }
     | DO {
         ++parseContext.loopNestingLevel;
+        ++parseContext.statementNestingLevel;
         ++parseContext.controlFlowNestingLevel;
     }
       statement WHILE LEFT_PAREN expression RIGHT_PAREN SEMICOLON {
@@ -2244,11 +2257,13 @@ iteration_statement
 
         $$ = parseContext.intermediate.addLoop($3, $6, 0, false, $4.loc);
         --parseContext.loopNestingLevel;
+        --parseContext.statementNestingLevel;
         --parseContext.controlFlowNestingLevel;
     }
     | FOR LEFT_PAREN {
         parseContext.symbolTable.push();
         ++parseContext.loopNestingLevel;
+        ++parseContext.statementNestingLevel;
         ++parseContext.controlFlowNestingLevel;
     }
       for_init_statement for_rest_statement RIGHT_PAREN statement_no_new_scope {
@@ -2260,6 +2275,7 @@ iteration_statement
         $$ = parseContext.intermediate.growAggregate($$, forLoop, $1.loc);
         $$->getAsAggregate()->setOperator(EOpSequence);
         --parseContext.loopNestingLevel;
+        --parseContext.statementNestingLevel;
         --parseContext.controlFlowNestingLevel;
     }
     ;
@@ -2308,6 +2324,8 @@ jump_statement
         $$ = parseContext.intermediate.addBranch(EOpReturn, $1.loc);
         if (parseContext.currentFunctionType->getBasicType() != EbtVoid)
             parseContext.error($1.loc, "non-void function must return a value", "return", "");
+        if (parseContext.inMain)
+            parseContext.postMainReturn = true;
     }
     | RETURN expression SEMICOLON {
         parseContext.functionReturnsValue = true;

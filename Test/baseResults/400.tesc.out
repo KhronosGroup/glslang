@@ -4,14 +4,20 @@ ERROR: 0:6: 'quads' : unrecognized layout identifier, or qualifier requires assi
 ERROR: 0:7: 'ccw' : unrecognized layout identifier, or qualifier requires assignment (e.g., binding = 4) 
 ERROR: 0:8: 'fractional_even_spacing' : unrecognized layout identifier, or qualifier requires assignment (e.g., binding = 4) 
 ERROR: 0:10: 'patch' : can only use on output in tessellation-control shader 
-ERROR: 0:39: 'vertices' : can only apply to 'out' 
-ERROR: 0:40: 'vertices' : cannot change previously set layout value 
-ERROR: 0:44: '[' :  array index out of range '4'
-ERROR: 0:47: 'in' : type must be an array: ina
-ERROR: 0:49: '[]' : tessellation input array size must be gl_MaxPatchVertices or implicitly sized 
-ERROR: 0:56: 'location' : overlapping use of location 4
-ERROR: 0:60: 'location' : overlapping use of location 4
-ERROR: 11 compilation errors.  No code generated.
+ERROR: 0:39: '' : tessellation control barrier() cannot be placed within flow control 
+ERROR: 0:41: '' : tessellation control barrier() cannot be placed within flow control 
+ERROR: 0:46: '' : tessellation control barrier() cannot be placed within flow control 
+ERROR: 0:51: '' : tessellation control barrier() cannot be placed within flow control 
+ERROR: 0:61: '' : tessellation control barrier() cannot be placed after a return from main() 
+ERROR: 0:64: 'vertices' : can only apply to 'out' 
+ERROR: 0:65: 'vertices' : cannot change previously set layout value 
+ERROR: 0:69: '[' :  array index out of range '4'
+ERROR: 0:71: '' : tessellation control barrier() must be in main() 
+ERROR: 0:74: 'in' : type must be an array: ina
+ERROR: 0:76: '[]' : tessellation input array size must be gl_MaxPatchVertices or implicitly sized 
+ERROR: 0:83: 'location' : overlapping use of location 4
+ERROR: 0:87: 'location' : overlapping use of location 4
+ERROR: 17 compilation errors.  No code generated.
 
 
 Shader version: 400
@@ -116,34 +122,68 @@ ERROR: node is still EOpNull!
 0:36            1 (const int)
 0:36        Constant:
 0:36          1.300000
-0:42  Function Definition: foo( (void)
-0:42    Function Parameters: 
-0:44    Sequence
-0:44      gl_PointSize: direct index for structure (out float)
-0:44        direct index (block{out 4-component vector of float gl_Position, out float gl_PointSize, out implicitly-sized array of float gl_ClipDistance})
-0:44          'gl_out' (out 4-element array of block{out 4-component vector of float gl_Position, out float gl_PointSize, out implicitly-sized array of float gl_ClipDistance})
-0:44          Constant:
-0:44            4 (const int)
-0:44        Constant:
-0:44          1 (const int)
-0:64  Function Definition: foop( (void)
-0:64    Function Parameters: 
+0:38      Test condition and select (void)
+0:38        Condition
+0:38        Compare Greater Than (bool)
+0:38          'a' (int)
+0:38          Constant:
+0:38            10 (const int)
+0:38        true case
+0:39        Barrier (void)
+0:38        false case
+0:41        Barrier (void)
+0:43      Barrier (void)
+0:47      Loop with condition not tested first
+0:47        Loop Condition
+0:47        Compare Greater Than (bool)
+0:47          'a' (int)
+0:47          Constant:
+0:47            10 (const int)
+0:47        Loop Body
+0:46        Sequence
+0:46          Barrier (void)
+0:49      switch
+0:49      condition
+0:49        'a' (int)
+0:49      body
+0:49        Sequence
+0:50          default: 
+0:?           Sequence
+0:51            Barrier (void)
+0:52            Branch: Break
+0:56      Sequence
+0:56        Barrier (void)
+0:59      Branch: Return
+0:61      Barrier (void)
+0:67  Function Definition: foo( (void)
+0:67    Function Parameters: 
+0:69    Sequence
+0:69      gl_PointSize: direct index for structure (out float)
+0:69        direct index (block{out 4-component vector of float gl_Position, out float gl_PointSize, out implicitly-sized array of float gl_ClipDistance})
+0:69          'gl_out' (out 4-element array of block{out 4-component vector of float gl_Position, out float gl_PointSize, out implicitly-sized array of float gl_ClipDistance})
+0:69          Constant:
+0:69            4 (const int)
+0:69        Constant:
+0:69          1 (const int)
+0:71      Barrier (void)
+0:91  Function Definition: foop( (void)
+0:91    Function Parameters: 
 0:?     Sequence
-0:68      multiply second child into first child (3-component vector of float)
-0:68        'pv3' (3-component vector of float)
-0:68        'pv3' (3-component vector of float)
-0:69      move second child to first child (3-component vector of float)
-0:69        'pv3' (3-component vector of float)
-0:69        Function Call: fma(vf3;vf3;vf3; (3-component vector of float)
-0:69          'pv3' (3-component vector of float)
-0:69          'pv3' (3-component vector of float)
-0:69          'pv3' (3-component vector of float)
-0:70      move second child to first child (double)
-0:70        'd' (double)
-0:70        Function Call: fma(d1;d1;d1; (double)
-0:70          'd' (double)
-0:70          'd' (double)
-0:70          'd' (double)
+0:95      multiply second child into first child (3-component vector of float)
+0:95        'pv3' (3-component vector of float)
+0:95        'pv3' (3-component vector of float)
+0:96      move second child to first child (3-component vector of float)
+0:96        'pv3' (3-component vector of float)
+0:96        Function Call: fma(vf3;vf3;vf3; (3-component vector of float)
+0:96          'pv3' (3-component vector of float)
+0:96          'pv3' (3-component vector of float)
+0:96          'pv3' (3-component vector of float)
+0:97      move second child to first child (double)
+0:97        'd' (double)
+0:97        Function Call: fma(d1;d1;d1; (double)
+0:97          'd' (double)
+0:97          'd' (double)
+0:97          'd' (double)
 0:?   Linker Objects
 0:?     'gl_out' (out 4-element array of block{out 4-component vector of float gl_Position, out float gl_PointSize, out implicitly-sized array of float gl_ClipDistance})
 0:?     'outa' (4-element array of int)
@@ -268,34 +308,68 @@ ERROR: node is still EOpNull!
 0:36            1 (const int)
 0:36        Constant:
 0:36          1.300000
-0:42  Function Definition: foo( (void)
-0:42    Function Parameters: 
-0:44    Sequence
-0:44      gl_PointSize: direct index for structure (out float)
-0:44        direct index (block{out 4-component vector of float gl_Position, out float gl_PointSize, out 1-element array of float gl_ClipDistance})
-0:44          'gl_out' (out 4-element array of block{out 4-component vector of float gl_Position, out float gl_PointSize, out 1-element array of float gl_ClipDistance})
-0:44          Constant:
-0:44            4 (const int)
-0:44        Constant:
-0:44          1 (const int)
-0:64  Function Definition: foop( (void)
-0:64    Function Parameters: 
+0:38      Test condition and select (void)
+0:38        Condition
+0:38        Compare Greater Than (bool)
+0:38          'a' (int)
+0:38          Constant:
+0:38            10 (const int)
+0:38        true case
+0:39        Barrier (void)
+0:38        false case
+0:41        Barrier (void)
+0:43      Barrier (void)
+0:47      Loop with condition not tested first
+0:47        Loop Condition
+0:47        Compare Greater Than (bool)
+0:47          'a' (int)
+0:47          Constant:
+0:47            10 (const int)
+0:47        Loop Body
+0:46        Sequence
+0:46          Barrier (void)
+0:49      switch
+0:49      condition
+0:49        'a' (int)
+0:49      body
+0:49        Sequence
+0:50          default: 
+0:?           Sequence
+0:51            Barrier (void)
+0:52            Branch: Break
+0:56      Sequence
+0:56        Barrier (void)
+0:59      Branch: Return
+0:61      Barrier (void)
+0:67  Function Definition: foo( (void)
+0:67    Function Parameters: 
+0:69    Sequence
+0:69      gl_PointSize: direct index for structure (out float)
+0:69        direct index (block{out 4-component vector of float gl_Position, out float gl_PointSize, out 1-element array of float gl_ClipDistance})
+0:69          'gl_out' (out 4-element array of block{out 4-component vector of float gl_Position, out float gl_PointSize, out 1-element array of float gl_ClipDistance})
+0:69          Constant:
+0:69            4 (const int)
+0:69        Constant:
+0:69          1 (const int)
+0:71      Barrier (void)
+0:91  Function Definition: foop( (void)
+0:91    Function Parameters: 
 0:?     Sequence
-0:68      multiply second child into first child (3-component vector of float)
-0:68        'pv3' (3-component vector of float)
-0:68        'pv3' (3-component vector of float)
-0:69      move second child to first child (3-component vector of float)
-0:69        'pv3' (3-component vector of float)
-0:69        Function Call: fma(vf3;vf3;vf3; (3-component vector of float)
-0:69          'pv3' (3-component vector of float)
-0:69          'pv3' (3-component vector of float)
-0:69          'pv3' (3-component vector of float)
-0:70      move second child to first child (double)
-0:70        'd' (double)
-0:70        Function Call: fma(d1;d1;d1; (double)
-0:70          'd' (double)
-0:70          'd' (double)
-0:70          'd' (double)
+0:95      multiply second child into first child (3-component vector of float)
+0:95        'pv3' (3-component vector of float)
+0:95        'pv3' (3-component vector of float)
+0:96      move second child to first child (3-component vector of float)
+0:96        'pv3' (3-component vector of float)
+0:96        Function Call: fma(vf3;vf3;vf3; (3-component vector of float)
+0:96          'pv3' (3-component vector of float)
+0:96          'pv3' (3-component vector of float)
+0:96          'pv3' (3-component vector of float)
+0:97      move second child to first child (double)
+0:97        'd' (double)
+0:97        Function Call: fma(d1;d1;d1; (double)
+0:97          'd' (double)
+0:97          'd' (double)
+0:97          'd' (double)
 0:?   Linker Objects
 0:?     'gl_out' (out 4-element array of block{out 4-component vector of float gl_Position, out float gl_PointSize, out 1-element array of float gl_ClipDistance})
 0:?     'outa' (4-element array of int)

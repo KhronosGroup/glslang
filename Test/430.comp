@@ -34,6 +34,10 @@ void main()
     memoryBarrierImage();
     groupMemoryBarrier();
     value = int(values[gl_LocalInvocationIndex]);
+
+    int a;
+    if (a > 10)
+        barrier();
 }
 
 layout(location = 2) in vec3 v3;      // ERROR
@@ -60,4 +64,5 @@ void foo()
 {
     ro.values[2] = 4.7;        // ERROR, readonly
     ro.values.length();
+    barrier();
 }
