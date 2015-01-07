@@ -161,6 +161,15 @@ float c = foobar(1.1, 2.2
 
 #line 3000
 #error line of this error should be 3000
+    
+#define __LINE__ 30
+#define __FILE__
+#define __VERSION__
+#define GL_SOME_EXTENSION
+#undef __LINE__
+#undef __FILE__
+#undef __VERSION__
+#undef GL_SOME_EXTENSION
 
 #line 10000
 #if 0

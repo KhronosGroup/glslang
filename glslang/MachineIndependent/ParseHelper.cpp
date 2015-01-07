@@ -1783,9 +1783,16 @@ void TParseContext::reservedPpErrorCheck(TSourceLoc loc, const char* identifier,
     // single underscore) are also reserved, and defining such a name results in a
     // compile-time error."
     if (strncmp(identifier, "GL_", 3) == 0)
-        error(loc, "names beginning with \"GL_\" can't be defined:", op,  identifier);
-    else if (strstr(identifier, "__") != 0)
-        warn(loc, "names containing consecutive underscores are reserved:", op, identifier);
+        error(loc, "names beginning with \"GL_\" can't be (un)defined:", op,  identifier);
+    else if (strstr(identifier, "__") != 0) {
+        if (profile == EEsProfile && version >= 300 &&
+            (strcmp(identifier, "__LINE__") == 0 ||
+             strcmp(identifier, "__FILE__") == 0 ||
+             strcmp(identifier, "__VERSION__") == 0))
+            error(loc, "predefined names can't be (un)defined:", op,  identifier);
+        else
+            warn(loc, "names containing consecutive underscores are reserved:", op, identifier);
+    }
 }
 
 //

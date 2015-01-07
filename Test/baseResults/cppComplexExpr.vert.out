@@ -34,8 +34,16 @@ ERROR: 0:153: 'preprocessor evaluation' : undefined macro in expression not allo
 ERROR: 0:156: 'preprocessor evaluation' : undefined macro in expression not allowed in es profile UNDEF2
 ERROR: 0:159: 'preprocessor evaluation' : undefined macro in expression not allowed in es profile UNDEF2
 ERROR: 0:3000: '#error' : line of this error should be 3000  
+ERROR: 0:3002: '#define' : predefined names can't be (un)defined: __LINE__
+ERROR: 0:3003: '#define' : predefined names can't be (un)defined: __FILE__
+ERROR: 0:3004: '#define' : predefined names can't be (un)defined: __VERSION__
+ERROR: 0:3005: '#define' : names beginning with "GL_" can't be (un)defined: GL_SOME_EXTENSION
+ERROR: 0:3006: '#undef' : predefined names can't be (un)defined: __LINE__
+ERROR: 0:3007: '#undef' : predefined names can't be (un)defined: __FILE__
+ERROR: 0:3008: '#undef' : predefined names can't be (un)defined: __VERSION__
+ERROR: 0:3009: '#undef' : names beginning with "GL_" can't be (un)defined: GL_SOME_EXTENSION
 ERROR: 0:10001: '' : missing #endif 
-ERROR: 36 compilation errors.  No code generated.
+ERROR: 44 compilation errors.  No code generated.
 
 
 Shader version: 300
