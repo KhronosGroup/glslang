@@ -568,15 +568,19 @@ logical_or_expression
 
 conditional_expression
     : logical_or_expression { $$ = $1; }
-    | logical_or_expression QUESTION expression COLON assignment_expression {
+    | logical_or_expression QUESTION {
+        ++parseContext.controlFlowNestingLevel;
+    }
+      expression COLON assignment_expression {
+        --parseContext.controlFlowNestingLevel;
         parseContext.boolCheck($2.loc, $1);
         parseContext.rValueErrorCheck($2.loc, "?", $1);
-        parseContext.rValueErrorCheck($4.loc, ":", $3);
-        parseContext.rValueErrorCheck($4.loc, ":", $5);
-        $$ = parseContext.intermediate.addSelection($1, $3, $5, $2.loc);
+        parseContext.rValueErrorCheck($5.loc, ":", $4);
+        parseContext.rValueErrorCheck($5.loc, ":", $6);
+        $$ = parseContext.intermediate.addSelection($1, $4, $6, $2.loc);
         if ($$ == 0) {
-            parseContext.binaryOpError($2.loc, ":", $3->getCompleteString(), $5->getCompleteString());
-            $$ = $5;
+            parseContext.binaryOpError($2.loc, ":", $4->getCompleteString(), $6->getCompleteString());
+            $$ = $6;
         }
     }
     ;

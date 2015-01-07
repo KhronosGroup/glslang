@@ -223,6 +223,7 @@ ERROR: 0:39: '' : tessellation control barrier() cannot be placed within flow co
 ERROR: 0:41: '' : tessellation control barrier() cannot be placed within flow control 
 ERROR: 0:46: '' : tessellation control barrier() cannot be placed within flow control 
 ERROR: 0:51: '' : tessellation control barrier() cannot be placed within flow control 
+ERROR: 0:54: '' : tessellation control barrier() cannot be placed within flow control 
 ERROR: 0:61: '' : tessellation control barrier() cannot be placed after a return from main() 
 ERROR: 0:64: 'vertices' : can only apply to 'out' 
 ERROR: 0:65: 'vertices' : cannot change previously set layout value 
@@ -232,7 +233,7 @@ ERROR: 0:74: 'in' : type must be an array: ina
 ERROR: 0:76: '[]' : tessellation input array size must be gl_MaxPatchVertices or implicitly sized 
 ERROR: 0:83: 'location' : overlapping use of location 4
 ERROR: 0:87: 'location' : overlapping use of location 4
-ERROR: 17 compilation errors.  No code generated.
+ERROR: 18 compilation errors.  No code generated.
 
 
 Shader version: 400
@@ -366,6 +367,18 @@ ERROR: node is still EOpNull!
 0:?           Sequence
 0:51            Barrier (void)
 0:52            Branch: Break
+0:54      Test condition and select (int)
+0:54        Condition
+0:54        Compare Less Than (bool)
+0:54          'a' (int)
+0:54          Constant:
+0:54            12 (const int)
+0:54        true case
+0:54        'a' (int)
+0:54        false case
+0:54        Comma (int)
+0:54          Barrier (void)
+0:54          'a' (int)
 0:56      Sequence
 0:56        Barrier (void)
 0:59      Branch: Return
@@ -1100,6 +1113,18 @@ vertices = 4
 0:?           Sequence
 0:51            Barrier (void)
 0:52            Branch: Break
+0:54      Test condition and select (int)
+0:54        Condition
+0:54        Compare Less Than (bool)
+0:54          'a' (int)
+0:54          Constant:
+0:54            12 (const int)
+0:54        true case
+0:54        'a' (int)
+0:54        false case
+0:54        Comma (int)
+0:54          Barrier (void)
+0:54          'a' (int)
 0:56      Sequence
 0:56        Barrier (void)
 0:59      Branch: Return

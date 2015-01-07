@@ -51,7 +51,7 @@ void main()
         barrier();           // ERROR
         break;
     }
-
+    a < 12 ? a : (barrier(), a); // ERROR
     {
         barrier();
     }
