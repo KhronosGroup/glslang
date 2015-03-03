@@ -10,7 +10,7 @@ set(HEADERS
     spirv.h
     GlslangToSpv.h
     SpvBuilder.h
-    SpvIR.h)
+    spvIR.h)
 
 add_library(SPIRV STATIC ${SOURCES} ${HEADERS})
 
