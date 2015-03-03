@@ -17,7 +17,7 @@ set(LIBRARIES
     glslang
     OGLCompiler
     OSDependent
-    BIL)
+    SPIRV)
 
 if(WIN32)
     set(LIBRARIES ${LIBRARIES} psapi)

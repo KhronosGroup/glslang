@@ -3312,6 +3312,12 @@ void TParseContext::setLayoutQualifier(TSourceLoc loc, TPublicType& publicType, 
         else
             publicType.qualifier.layoutLocation = value;
         return;
+    } else if (id == "set") {
+        if ((unsigned int)value >= TQualifier::layoutSetEnd)
+            error(loc, "set is too large", id.c_str(), "");
+        else
+            publicType.qualifier.layoutSet = value;
+        return;
     } else if (id == "binding") {
         profileRequires(loc, ~EEsProfile, 420, GL_ARB_shading_language_420pack, "binding");
         profileRequires(loc, EEsProfile, 310, 0, "binding");
@@ -3476,6 +3482,8 @@ void TParseContext::mergeObjectLayoutQualifiers(TSourceLoc loc, TQualifier& dst,
         if (src.hasOffset())
             dst.layoutOffset = src.layoutOffset;
 
+        if (src.hasSet())
+            dst.layoutSet = src.layoutSet;
         if (src.layoutBinding != TQualifier::layoutBindingEnd)
             dst.layoutBinding = src.layoutBinding;
 

@@ -3,20 +3,20 @@ cmake_minimum_required(VERSION 2.8)
 include_directories(.. ${CMAKE_CURRENT_BINARY_DIR})
 
 set(SOURCES
-    GlslangToBil.cpp
-    BilBuilder.cpp)
+    GlslangToSpv.cpp
+    SpvBuilder.cpp)
 
 set(HEADERS
-    Bil.h
-    GlslangToBil.h
-    BilBuilder.h
-    Bir.h)
+    spirv.h
+    GlslangToSpv.h
+    SpvBuilder.h
+    SpvIR.h)
 
-add_library(BIL STATIC ${SOURCES} ${HEADERS})
+add_library(SPIRV STATIC ${SOURCES} ${HEADERS})
 
 if(WIN32)
     source_group("Source" FILES ${SOURCES} ${HEADERS})
 endif(WIN32)
 
-install(TARGETS BIL
+install(TARGETS SPIRV
         ARCHIVE DESTINATION lib)

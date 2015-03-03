@@ -482,6 +482,7 @@ public:
 
         layoutLocation = layoutLocationEnd;
         layoutComponent = layoutComponentEnd;
+        layoutSet = layoutSetEnd;
         layoutBinding = layoutBindingEnd;
         layoutIndex = layoutIndexEnd;
 
@@ -512,6 +513,9 @@ public:
 
                  unsigned int layoutComponent        : 3;
     static const unsigned int layoutComponentEnd =     4;
+
+                 unsigned int layoutSet              : 7;
+    static const unsigned int layoutSetEnd      =   0x3F;
 
                  unsigned int layoutBinding          : 8;
     static const unsigned int layoutBindingEnd =    0xFF;
@@ -574,6 +578,10 @@ public:
     bool hasIndex() const
     {
         return layoutIndex != layoutIndexEnd;
+    }
+    bool hasSet() const
+    {
+        return layoutSet != layoutSetEnd;
     }
     bool hasBinding() const
     {
@@ -1201,6 +1209,8 @@ public:
                     if (qualifier.hasIndex())
                         p += snprintf(p, end - p, "index=%d ", qualifier.layoutIndex);
                 }
+                if (qualifier.hasSet())
+                    p += snprintf(p, end - p, "set=%d ", qualifier.layoutSet);
                 if (qualifier.hasBinding())
                     p += snprintf(p, end - p, "binding=%d ", qualifier.layoutBinding);
                 if (qualifier.hasStream())

@@ -36,8 +36,7 @@
 
 namespace glslang {
 
-void GlslangToBil(const glslang::TIntermediate& intermediate, std::vector<unsigned int> bil);
-
-void OutputBil(const std::vector<unsigned int>& bil, const char* baseName);
+void GlslangToSpv(const glslang::TIntermediate& intermediate, std::vector<unsigned int>& spirv);
+void OutputSpv(const std::vector<unsigned int>& spirv, const char* baseName);
 
 };

@@ -40,8 +40,8 @@
 #include "Worklist.h"
 #include "./../glslang/Include/ShHandle.h"
 #include "./../glslang/Public/ShaderLang.h"
-#include "../BIL/GlslangToBil.h"
-#include "../BIL/GLSL450Lib.h"
+#include "../SPIRV/GlslangToSpv.h"
+#include "../SPIRV/GLSL450Lib.h"
 #include <string.h>
 #include <stdlib.h>
 #include <math.h>
@@ -66,7 +66,7 @@ enum TOptions {
     EOptionDumpReflection     = 0x100,
     EOptionSuppressWarnings   = 0x200,
     EOptionDumpVersions       = 0x400,
-    EOptionBil                = 0x800,
+    EOptionSpv                = 0x800,
     EOptionDefaultDesktop     = 0x1000,
 };
 
@@ -479,8 +479,8 @@ bool ProcessArguments(int argc, char* argv[])
         Work[argc] = 0;
         if (argv[0][0] == '-') {
             switch (argv[0][1]) {
-            case 'b':
-                Options |= EOptionBil;
+            case 'V':
+                Options |= EOptionSpv;
                 Options |= EOptionLinkProgram;
                 break;
             case 'c':
@@ -634,14 +634,14 @@ void CompileAndLinkShaders()
         program.dumpReflection();
     }
 
-    if (Options & EOptionBil) {
+    if (Options & EOptionSpv) {
         if (CompileFailed || LinkFailed)
-            printf("Bil is not generated for failed compile or link\n");
+            printf("SPIRV is not generated for failed compile or link\n");
         else {
             for (int stage = 0; stage < EShLangCount; ++stage) {
                 if (program.getIntermediate((EShLanguage)stage)) {
-                    std::vector<unsigned int> bil;
-                    glslang::GlslangToBil(*program.getIntermediate((EShLanguage)stage), bil);
+                    std::vector<unsigned int> spirv;
+                    glslang::GlslangToSpv(*program.getIntermediate((EShLanguage)stage), spirv);
                     const char* name;
                     switch (stage) {
                     case EShLangVertex:          name = "vert";    break;
@@ -652,7 +652,7 @@ void CompileAndLinkShaders()
                     case EShLangCompute:         name = "comp";    break;
                     default:                     name = "unknown"; break;
                     }
-                    glslang::OutputBil(bil, name);
+                    glslang::OutputSpv(spirv, name);
                 }
             }
         }
@@ -839,7 +839,7 @@ void usage()
 {
     printf("Usage: glslangValidator [option]... [file]...\n"
            "\n"
-           "Where: each 'file' ends in\n"
+           "Where: each 'file' ends in .<stage>, where <stage> is one of\n"
            "    .conf to provide an optional config file that replaces the default configuration\n"
            "          (see -c option below for generating a template)\n"
            "    .vert for a vertex shader\n"
@@ -853,7 +853,7 @@ void usage()
            "\n"
            "To get other information, use one of the following options:\n"
            "(Each option must be specified separately, but can go anywhere in the command line.)\n"
-           "  -b  create BIL in file <stage>.bil\n"
+           "  -V  create SPIR-V in file <stage>.spv\n"
            "  -c  configuration dump; use to create default configuration file (redirect to a .conf file)\n"
            "  -d  default to desktop (#version 110) when there is no version in the shader (default is ES version 100)\n"
            "  -i  intermediate tree (glslang AST) is printed out\n"
