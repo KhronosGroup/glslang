@@ -40,10 +40,10 @@
 // Disassembler for SPIR-V.
 //
 
-#include <unordered_map>
 #include <iomanip>
 #include <stack>
 #include <sstream>
+#include "stdlib.h"
 
 #include "GLSL450Lib.h"
 extern const char* GlslStd450DebugNames[GLSL_STD_450::Count];
