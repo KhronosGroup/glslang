@@ -42,6 +42,8 @@
 #include "./../glslang/Public/ShaderLang.h"
 #include "../SPIRV/GlslangToSpv.h"
 #include "../SPIRV/GLSL450Lib.h"
+#include "../SPIRV/doc.h"
+#include "../SPIRV/disassemble.h"
 #include <string.h>
 #include <stdlib.h>
 #include <math.h>
@@ -54,20 +56,21 @@ extern "C" {
 
 // Command-line options
 enum TOptions {
-    EOptionNone               = 0x000,
-    EOptionIntermediate       = 0x001,
-    EOptionSuppressInfolog    = 0x002,
-    EOptionMemoryLeakMode     = 0x004,
-    EOptionRelaxedErrors      = 0x008,
-    EOptionGiveWarnings       = 0x010,
-    EOptionLinkProgram        = 0x020,
-    EOptionMultiThreaded      = 0x040,
-    EOptionDumpConfig         = 0x080,
-    EOptionDumpReflection     = 0x100,
-    EOptionSuppressWarnings   = 0x200,
-    EOptionDumpVersions       = 0x400,
-    EOptionSpv                = 0x800,
-    EOptionDefaultDesktop     = 0x1000,
+    EOptionNone               = 0x0000,
+    EOptionIntermediate       = 0x0001,
+    EOptionSuppressInfolog    = 0x0002,
+    EOptionMemoryLeakMode     = 0x0004,
+    EOptionRelaxedErrors      = 0x0008,
+    EOptionGiveWarnings       = 0x0010,
+    EOptionLinkProgram        = 0x0020,
+    EOptionMultiThreaded      = 0x0040,
+    EOptionDumpConfig         = 0x0080,
+    EOptionDumpReflection     = 0x0100,
+    EOptionSuppressWarnings   = 0x0200,
+    EOptionDumpVersions       = 0x0400,
+    EOptionSpv                = 0x0800,
+    EOptionHumanReadableSpv   = 0x1000,
+    EOptionDefaultDesktop     = 0x2000,
 };
 
 //
@@ -479,6 +482,9 @@ bool ProcessArguments(int argc, char* argv[])
         Work[argc] = 0;
         if (argv[0][0] == '-') {
             switch (argv[0][1]) {
+            case 'H':
+                Options |= EOptionHumanReadableSpv;
+                // fall through to -V
             case 'V':
                 Options |= EOptionSpv;
                 Options |= EOptionLinkProgram;
@@ -570,6 +576,8 @@ CompileShaders(void*)
     return 0;
 }
 
+const char* GlslStd450DebugNames[GLSL_STD_450::Count];
+
 //
 // For linking mode: Will independently parse each item in the worklist, but then put them
 // in the same program and link them together.
@@ -653,6 +661,11 @@ void CompileAndLinkShaders()
                     default:                     name = "unknown"; break;
                     }
                     glslang::OutputSpv(spirv, name);
+                    if (Options & EOptionHumanReadableSpv) {
+                        spv::Parameterize();
+                        GLSL_STD_450::GetDebugNames(GlslStd450DebugNames);
+                        spv::Disassemble(std::cout, spirv);
+                    }
                 }
             }
         }
@@ -854,6 +867,7 @@ void usage()
            "To get other information, use one of the following options:\n"
            "(Each option must be specified separately, but can go anywhere in the command line.)\n"
            "  -V  create SPIR-V in file <stage>.spv\n"
+           "  -H  print human readable form of SPIR-V; turns on -V\n"
            "  -c  configuration dump; use to create default configuration file (redirect to a .conf file)\n"
            "  -d  default to desktop (#version 110) when there is no version in the shader (default is ES version 100)\n"
            "  -i  intermediate tree (glslang AST) is printed out\n"
