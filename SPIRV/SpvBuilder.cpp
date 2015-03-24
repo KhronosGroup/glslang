@@ -877,12 +877,19 @@ Id Builder::createCompositeInsert(Id object, Id composite, Id typeId, std::vecto
     return insert->getResultId();
 }
 
-Id Builder::createEmptyOp(OpCode opCode)
+// An opcode that has no operands, no result id, and no type
+void Builder::createNoResultOp(OpCode opCode)
 {
     Instruction* op = new Instruction(opCode);
     buildPoint->addInstruction(op);
+}
 
-    return op->getResultId();
+// An opcode that has one operand, no result id, and no type
+void Builder::createNoResultOp(OpCode opCode, Id operand)
+{
+    Instruction* op = new Instruction(opCode);
+    op->addIdOperand(operand);
+    buildPoint->addInstruction(op);
 }
 
 void Builder::createControlBarrier(unsigned executionScope)
@@ -900,6 +907,7 @@ void Builder::createMemoryBarrier(unsigned executionScope, unsigned memorySemant
     buildPoint->addInstruction(op);
 }
 
+// An opcode that has one operands, a result id, and a type
 Id Builder::createUnaryOp(OpCode opCode, Id typeId, Id operand)
 {
     Instruction* op = new Instruction(getUniqueId(), typeId, opCode);

@@ -228,7 +228,8 @@ public:
     Id createCompositeInsert(Id object, Id composite, Id typeId, unsigned index);
     Id createCompositeInsert(Id object, Id composite, Id typeId, std::vector<unsigned>& indexes);
 
-    Id createEmptyOp(OpCode);
+    void createNoResultOp(OpCode);
+    void createNoResultOp(OpCode, Id operand);
     void createControlBarrier(unsigned executionScope);
     void createMemoryBarrier(unsigned executionScope, unsigned memorySemantics);
     Id createUnaryOp(OpCode, Id typeId, Id operand);

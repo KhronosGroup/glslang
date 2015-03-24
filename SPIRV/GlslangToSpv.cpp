@@ -736,6 +736,14 @@ bool TGlslangToSpvTraverser::visitUnary(glslang::TVisit /* visit */, glslang::TI
         }
 
         return false;
+
+    case glslang::EOpEmitStreamVertex:
+        builder.createNoResultOp(spv::OpEmitStreamVertex, operand);
+        return false;
+    case glslang::EOpEndStreamPrimitive:
+        builder.createNoResultOp(spv::OpEndStreamPrimitive, operand);
+        return false;
+
     default:
         spv::MissingFunctionality("glslang unary");
         break;
@@ -967,13 +975,7 @@ bool TGlslangToSpvTraverser::visitAggregate(glslang::TVisit visit, glslang::TInt
     case glslang::EOpMemoryBarrierShared:
     case glslang::EOpGroupMemoryBarrier:
         noReturnValue = true;
-        // These all have 0 operands and will naturally finish up in the createIntrinsic code below for 0 operands
-        break;
-
-    case glslang::EOpEmitStreamVertex:
-    case glslang::EOpEndStreamPrimitive:
-        noReturnValue = true;
-        // These all have 1 operand and will naturally finish up in the createIntrinsic code below for 1 operand
+        // These all have 0 operands and will naturally finish up in the code below for 0 operands
         break;
 
     default:
@@ -2137,13 +2139,6 @@ spv::Id TGlslangToSpvTraverser::createUnaryOperation(glslang::TOperator op, spv:
         libCall = GLSL_STD_450::Sign;
         break;
 
-    case glslang::EOpEmitStreamVertex:
-        unaryOp = spv::OpEmitStreamVertex;
-        break;
-    case glslang::EOpEndStreamPrimitive:
-        unaryOp = spv::OpEndStreamPrimitive;
-        break;
-
     default:
         return 0;
     }
@@ -2331,12 +2326,13 @@ spv::Id TGlslangToSpvTraverser::createMiscOperation(glslang::TOperator op, spv::
     else {
         switch (operands.size()) {
         case 0:
-            id = builder.createEmptyOp(opCode);
-            break;
+            // should all be handled by visitAggregate and createNoArgOperation
+            assert(0);
+            return 0;
         case 1:
             // should all be handled by createUnaryOperation
             assert(0);
-            break;
+            return 0;
         case 2:
             id = builder.createBinOp(opCode, typeId, operands[0], operands[1]);
             break;
@@ -2362,9 +2358,11 @@ spv::Id TGlslangToSpvTraverser::createNoArgOperation(glslang::TOperator op)
 
     switch (op) {
     case glslang::EOpEmitVertex:
-        return builder.createEmptyOp(spv::OpEmitVertex);
+        builder.createNoResultOp(spv::OpEmitVertex);
+        return 0;
     case glslang::EOpEndPrimitive:
-        return builder.createEmptyOp(spv::OpEndPrimitive);
+        builder.createNoResultOp(spv::OpEndPrimitive);
+        return 0;
     case glslang::EOpBarrier:
         builder.createMemoryBarrier(spv::ExecutionScopeDevice, spv::MemorySemanticsAllMemory);
         builder.createControlBarrier(spv::ExecutionScopeDevice);
