@@ -106,14 +106,14 @@ public:
         samplerContentImage,
         samplerContentTextureFilter
     };
-    Id makeSampler(Id sampledType, Dimensionality, samplerContent, bool arrayed, bool shadow, bool ms);
+    Id makeSampler(Id sampledType, Dim, samplerContent, bool arrayed, bool shadow, bool ms);
 
     // For querying about types.
     Id getTypeId(Id resultId) const { return module.getTypeId(resultId); }
     Id getDerefTypeId(Id resultId) const;
-    OpCode getOpCode(Id id) const { return module.getInstruction(id)->getOpCode(); }
-    OpCode getTypeClass(Id typeId) const { return getOpCode(typeId); }
-    OpCode getMostBasicTypeClass(Id typeId) const;
+    Op getOpCode(Id id) const { return module.getInstruction(id)->getOpCode(); }
+    Op getTypeClass(Id typeId) const { return getOpCode(typeId); }
+    Op getMostBasicTypeClass(Id typeId) const;
     int getNumComponents(Id resultId) const { return getNumTypeComponents(getTypeId(resultId)); }
     int getNumTypeComponents(Id typeId) const;
     Id getScalarTypeId(Id typeId) const;
@@ -151,10 +151,10 @@ public:
     }
     int getNumRows(Id resultId) const { return getTypeNumRows(getTypeId(resultId)); }
 
-    Dimensionality getDimensionality(Id resultId) const
+    Dim getDimensionality(Id resultId) const
     {
         assert(isSamplerType(getTypeId(resultId)));
-        return (Dimensionality)module.getInstruction(getTypeId(resultId))->getImmediateOperand(1);
+        return (Dim)module.getInstruction(getTypeId(resultId))->getImmediateOperand(1);
     }
     bool isArrayedSampler(Id resultId) const
     {
@@ -228,14 +228,14 @@ public:
     Id createCompositeInsert(Id object, Id composite, Id typeId, unsigned index);
     Id createCompositeInsert(Id object, Id composite, Id typeId, std::vector<unsigned>& indexes);
 
-    void createNoResultOp(OpCode);
-    void createNoResultOp(OpCode, Id operand);
+    void createNoResultOp(Op);
+    void createNoResultOp(Op, Id operand);
     void createControlBarrier(unsigned executionScope);
     void createMemoryBarrier(unsigned executionScope, unsigned memorySemantics);
-    Id createUnaryOp(OpCode, Id typeId, Id operand);
-    Id createBinOp(OpCode, Id typeId, Id operand1, Id operand2);
-    Id createTriOp(OpCode, Id typeId, Id operand1, Id operand2, Id operand3);
-    Id createTernaryOp(OpCode, Id typeId, Id operand1, Id operand2, Id operand3);
+    Id createUnaryOp(Op, Id typeId, Id operand);
+    Id createBinOp(Op, Id typeId, Id operand1, Id operand2);
+    Id createTriOp(Op, Id typeId, Id operand1, Id operand2, Id operand3);
+    Id createTernaryOp(Op, Id typeId, Id operand1, Id operand2, Id operand3);
     Id createFunctionCall(spv::Function*, std::vector<spv::Id>&);
 
     // Take an rvalue (source) and a set of channels to extract from it to
@@ -289,7 +289,7 @@ public:
 
     // Emit the OpTextureQuery* instruction that was passed in.
     // Figure out the right return value and type, and return it.
-    Id createTextureQueryCall(OpCode, const TextureParameters&);
+    Id createTextureQueryCall(Op, const TextureParameters&);
 
     Id createSamplePositionCall(Decoration precision, Id, Id);
 
@@ -461,13 +461,13 @@ public:
     void dump(std::vector<unsigned int>&) const;
 
 protected:
-    Id findScalarConstant(OpCode typeClass, Id typeId, unsigned value) const;
-    Id findCompositeConstant(OpCode typeClass, std::vector<Id>& comps) const;
+    Id findScalarConstant(Op typeClass, Id typeId, unsigned value) const;
+    Id findCompositeConstant(Op typeClass, std::vector<Id>& comps) const;
     Id collapseAccessChain();
     void simplifyAccessChainSwizzle();
     void createAndSetNoPredecessorBlock(const char*);
     void createBranch(Block* block);
-    void createMerge(OpCode, Block*, unsigned int control);
+    void createMerge(Op, Block*, unsigned int control);
     void createConditionalBranch(Id condition, Block* thenBlock, Block* elseBlock);
     void dumpInstructions(std::vector<unsigned int>&, const std::vector<Instruction*>&) const;
 

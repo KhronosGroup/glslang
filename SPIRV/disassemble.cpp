@@ -40,10 +40,11 @@
 // Disassembler for SPIR-V.
 //
 
+#include <stdlib.h>
+#include <assert.h>
 #include <iomanip>
 #include <stack>
 #include <sstream>
-#include "stdlib.h"
 
 #include "GLSL450Lib.h"
 extern const char* GlslStd450DebugNames[GLSL_STD_450::Count];
@@ -69,7 +70,7 @@ public:
     void processInstructions();
 
 protected:
-    OpCode getOpCode(int id) const { return idInstruction[id] ? (OpCode)(stream[idInstruction[id]] & OpCodeMask) : OpNop; }
+    Op getOpCode(int id) const { return idInstruction[id] ? (Op)(stream[idInstruction[id]] & OpCodeMask) : OpNop; }
 
     // Output methods
     void outputIndent();
@@ -80,7 +81,7 @@ protected:
     void disassembleImmediates(int numOperands);
     void disassembleIds(int numOperands);
     void disassembleString();
-    void disassembleInstruction(Id resultId, Id typeId, OpCode opCode, int numOperands);
+    void disassembleInstruction(Id resultId, Id typeId, Op opCode, int numOperands);
 
     // Data
     std::ostream& out;                       // where to write the disassembly
@@ -144,7 +145,7 @@ void SpirvStream::processInstructions()
         // Instruction wordCount and opcode
         unsigned int firstWord = stream[word];
         unsigned wordCount = firstWord >> WordCountShift;
-        OpCode opCode = (OpCode)(firstWord & OpCodeMask);
+        Op opCode = (Op)(firstWord & OpCodeMask);
         int nextInst = word + wordCount;
         ++word;
 
@@ -176,7 +177,7 @@ void SpirvStream::processInstructions()
         outputTypeId(typeId);
         outputIndent();
 
-        // Hand off the OpCode and all its operands
+        // Hand off the Op and all its operands
         disassembleInstruction(resultId, typeId, opCode, numOperands);
         if (word != nextInst) {
             out << " ERROR, incorrect number of operands consumed.  At " << word << " instead of " << nextInst << " instruction start was " << instructionStart;
@@ -277,14 +278,11 @@ void SpirvStream::disassembleString()
     out << "\"";
 }
 
-void SpirvStream::disassembleInstruction(Id resultId, Id typeId, OpCode opCode, int numOperands)
+void SpirvStream::disassembleInstruction(Id resultId, Id typeId, Op opCode, int numOperands)
 {
     // Process the opcode
 
-    if (opCode < 0 || opCode >= OpCount)
-        Kill(out, "Bad opcode");
-    else
-        out << InstructionDesc[opCode].opName + 2; // Skip the "Op"
+    out << (OpcodeString(opCode) + 2);  // leave out the "Op"
 
     if (opCode == OpLoopMerge || opCode == OpSelectionMerge)
         nextNestedControl = stream[word];
@@ -339,7 +337,7 @@ void SpirvStream::disassembleInstruction(Id resultId, Id typeId, OpCode opCode, 
     // Handle textures specially, so can put out helpful strings.
     if (opCode == OpTypeSampler) {
         disassembleIds(1);
-        out << " " << DimensionString((Dimensionality)stream[word++]);
+        out << " " << DimensionString((Dim)stream[word++]);
         switch (stream[word++]) {
         case 0: out << " texture";        break;
         case 1: out << " image";          break;
@@ -354,7 +352,8 @@ void SpirvStream::disassembleInstruction(Id resultId, Id typeId, OpCode opCode, 
     // Handle all the parameterized operands
     for (int op = 0; op < InstructionDesc[opCode].operands.getNum(); ++op) {
         out << " ";
-        switch (InstructionDesc[opCode].operands.getClass(op)) {
+        OperandClass operandClass = InstructionDesc[opCode].operands.getClass(op);
+        switch (operandClass) {
         case OperandId:
             disassembleIds(1);
             // Get names for printing "(XXX)" for readability, *after* this id
@@ -366,7 +365,7 @@ void SpirvStream::disassembleInstruction(Id resultId, Id typeId, OpCode opCode, 
             disassembleIds(numOperands);
             return;
         case OperandVariableLiterals:
-            if (opCode == OpDecorate && stream[word - 1] == DecBuiltIn) {
+            if (opCode == OpDecorate && stream[word - 1] == DecorationBuiltIn) {
                 out << BuiltInString(stream[word++]);
                 --numOperands;
                 ++op;
@@ -376,8 +375,8 @@ void SpirvStream::disassembleInstruction(Id resultId, Id typeId, OpCode opCode, 
         case OperandVariableLiteralId:
             while (numOperands > 0) {
                 out << std::endl;
-                outputResultId(NoResult);
-                outputTypeId(NoType);
+                outputResultId(0);
+                outputTypeId(0);
                 outputIndent();
                 out << "     case ";
                 disassembleImmediates(1);
@@ -397,76 +396,23 @@ void SpirvStream::disassembleInstruction(Id resultId, Id typeId, OpCode opCode, 
         case OperandLiteralString:
             disassembleString();
             return;
-        case OperandSource:
-            out << SourceString((SourceLanguage)stream[word++]);
-            break;
-        case OperandExecutionModel:
-            out << ExecutionModelString((ExecutionModel)stream[word++]);
-            break;
-        case OperandAddressing:
-            out << AddressingString((AddressingModel)stream[word++]);
-            break;
-        case OperandMemory:
-            out << MemoryString((MemoryModel)stream[word++]);
-            break;
-        case OperandExecutionMode:
-            out << ExecutionModeString((ExecutionMode)stream[word++]);
-            break;
-        case OperandStorage:
-            out << StorageClassString((StorageClass)stream[word++]);
-            break;
-        case OperandDimensionality:
-            out << DimensionString((Dimensionality)stream[word++]);
-            break;
-        case OperandDecoration:
-            out << DecorationString((Decoration)stream[word++]);
-            break;
-        case OperandBuiltIn:
-            out << BuiltInString((BuiltIn)stream[word++]);
-            break;
-        case OperandSelect:
-            out << SelectControlString((SelectControl)stream[word++]);
-            break;
-        case OperandLoop:
-            out << LoopControlString((LoopControl)stream[word++]);
-            break;
-        case OperandFunction:
-        {
-            unsigned int control = stream[word++];
-            if (control == 0)
-                out << FunctionControlString(control);
-            else {
-                for (int m = 0; m < FunctionControlCount; ++m) {
-                    if (control & (1 << m))
-                        out << FunctionControlString(m);
-                }
-            }
-            break;
-        }
-        case OperandMemorySemantics:
-            for (int shift = 0; shift < MemorySemanticsCount; ++shift) {
-                unsigned lit = (stream[word] & (1 << shift));
-                if (lit)
-                    out << MemorySemanticsString(lit) << " ";
-            }
-            word++;
-            break;
-        case OperandMemoryAccess:
-            out << MemoryAccessString(stream[word++]);
-            break;
-        case OperandExecutionScope:
-            out << ExecutionScopeString(stream[word++]);
-            break;
-        case OperandGroupOperation:
-            out << GroupOperationString(stream[word++]);
-            break;
-        case OperandKernelEnqueueFlags:
-            out << KernelEnqueueFlagsString(stream[word++]);
-            break;
-        case OperandKernelProfilingInfo:
-            out << KernelProfilingInfoString(stream[word++]);
-            break;
         default:
+            assert(operandClass >= OperandSource && operandClass < OperandOpcode);
+
+            if (OperandClassParams[operandClass].bitmask) {
+                unsigned int mask = stream[word++];
+                if (mask == 0)
+                    out << "None";
+                else {
+                    for (int m = 0; m < OperandClassParams[operandClass].ceiling; ++m) {
+                        if (mask & (1 << m))
+                            out << OperandClassParams[operandClass].getName(m) << " ";
+                    }
+                }
+                break;
+            } else
+                out << OperandClassParams[operandClass].getName(stream[word++]);
+
             break;
         }
         --numOperands;

@@ -60,14 +60,21 @@ namespace spv {
 class Function;
 class Module;
 
+const Id NoResult = 0;
+const Id NoType = 0;
+
+const unsigned int BadValue = 0xFFFFFFFF;
+const Decoration NoPrecision = (Decoration)BadValue;
+const MemorySemanticsMask MemorySemanticsAllMemory = (MemorySemanticsMask)0x3FF;
+
 //
 // SPIR-V IR instruction.
 //
 
 class Instruction {
 public:
-    Instruction(Id resultId, Id typeId, OpCode opCode) : resultId(resultId), typeId(typeId), opCode(opCode), string(0) { }
-    explicit Instruction(OpCode opCode) : resultId(NoResult), typeId(NoType), opCode(opCode), string(0) { }
+    Instruction(Id resultId, Id typeId, Op opCode) : resultId(resultId), typeId(typeId), opCode(opCode), string(0) { }
+    explicit Instruction(Op opCode) : resultId(NoResult), typeId(NoType), opCode(opCode), string(0) { }
     virtual ~Instruction()
     {
         delete string;
@@ -103,7 +110,7 @@ public:
 
         originalString = str;
     }
-    OpCode getOpCode() const { return opCode; }
+    Op getOpCode() const { return opCode; }
     int getNumOperands() const { return operands.size(); }
     Id getResultId() const { return resultId; }
     Id getTypeId() const { return typeId; }
@@ -143,7 +150,7 @@ protected:
     Instruction(const Instruction&);
     Id resultId;
     Id typeId;
-    OpCode opCode;
+    Op opCode;
     std::vector<Id> operands;
     std::vector<unsigned int>* string; // usually non-existent
     std::string originalString;        // could be optimized away; convenience for getting string operand
@@ -310,7 +317,7 @@ __inline Function::Function(Id id, Id resultType, Id functionType, Id firstParam
     : parent(parent), functionInstruction(id, resultType, OpFunction)
 {
     // OpFunction
-    functionInstruction.addImmediateOperand(FunctionControlNone);
+    functionInstruction.addImmediateOperand(FunctionControlMaskNone);
     functionInstruction.addIdOperand(functionType);
     parent.mapInstruction(&functionInstruction);
     parent.addFunction(this);

@@ -124,7 +124,7 @@ enum Entrypoints {
 inline void GetDebugNames(const char** names)
 {
     for (int i = 0; i < Count; ++i)
-        names[i] = "unknown";
+        names[i] = "Unknown";
 
     names[Round]                   = "round";
     names[RoundEven]               = "roundEven";

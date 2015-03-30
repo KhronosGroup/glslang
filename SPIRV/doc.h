@@ -37,8 +37,7 @@
 //
 
 //
-// Return English versions of instruction/operand information.
-// This can be used for disassembly, printing documentation, etc.
+// Parameterize the SPIR-V enumerants.
 //
 
 #include "spirv.h"
@@ -47,7 +46,7 @@
 
 namespace spv {
 
-// Fill in all the parameters of the instruction set
+// Fill in all the parameters
 void Parameterize();
 
 // Return the English names of all the enums.
@@ -76,6 +75,35 @@ const char* ExecutionScopeString(int);
 const char* GroupOperationString(int);
 const char* KernelEnqueueFlagsString(int);
 const char* KernelProfilingInfoString(int);
+const char* OpcodeString(int);
+
+// For grouping opcodes into subsections
+enum OpcodeClass {
+    OpClassMisc,            // default, until opcode is classified
+    OpClassDebug,
+    OpClassAnnotate,
+    OpClassExtension,
+    OpClassMode,
+    OpClassType,
+    OpClassConstant,
+    OpClassMemory,
+    OpClassFunction,
+    OpClassTexture,
+    OpClassConvert,
+    OpClassComposite,
+    OpClassArithmetic,
+    OpClassRelationalLogical,
+    OpClassDerivative,
+    OpClassFlowControl,
+    OpClassAtomic,
+    OpClassPrimitive,
+    OpClassBarrier,
+    OpClassGroup,
+    OpClassDeviceSideEnqueue,
+    OpClassPipe,
+
+    OpClassCount
+};
 
 // For parameterizing operands.
 enum OperandClass {
@@ -99,35 +127,85 @@ enum OperandClass {
     OperandFPFastMath,
     OperandFPRoundingMode,
     OperandLinkageType,
+    OperandAccessQualifier,
     OperandFuncParamAttr,
     OperandDecoration,
     OperandBuiltIn,
     OperandSelect,
     OperandLoop,
     OperandFunction,
-    OperandAccessQualifier,
     OperandMemorySemantics,
     OperandMemoryAccess,
     OperandExecutionScope,
 	OperandGroupOperation,
     OperandKernelEnqueueFlags,
     OperandKernelProfilingInfo,
+
+    OperandOpcode,
+
     OperandCount
 };
+
+// Set of capabilities.  Generally, something is assumed to be in core,
+// if nothing else is said.  So, these are used to identify when something
+// requires a specific capability to be declared.
+enum Capability {
+    CapMatrix,
+    CapShader,
+    CapGeom,
+    CapTess,
+    CapAddr,
+    CapLink,
+    CapKernel
+};
+
+// Any specific enum can have a set of capabilities that allow it:
+typedef std::vector<Capability> EnumCaps;
 
 // Parameterize a set of operands with their OperandClass(es) and descriptions.
 class OperandParameters {
 public:
     OperandParameters() { }
-    void push(OperandClass oc)
+    void push(OperandClass oc, const char* d)
     {
         opClass.push_back(oc);
+        desc.push_back(d);
     }
     OperandClass getClass(int op) const { return opClass[op]; }
+    const char* getDesc(int op) const { return desc[op]; }
     int getNum() const { return (int)opClass.size(); }
 
 protected:
     std::vector<OperandClass> opClass;
+    std::vector<const char*> desc;
+};
+
+// Parameterize an enumerant
+class EnumParameters {
+public:
+    EnumParameters() : desc(0) { }
+    EnumCaps caps;
+    const char* desc;
+};
+
+// Parameterize a set of enumerants that form an enum
+class EnumDefinition : public EnumParameters {
+public:
+    EnumDefinition() : 
+        ceiling(0), bitmask(false), getName(0), enumParams(0), operandParams(0) { }
+    void set(int ceil, const char* (*name)(int), EnumParameters* ep, bool mask = false)
+    {
+        ceiling = ceil;
+        getName = name;
+        bitmask = mask;
+        enumParams = ep;
+    }
+    void setOperands(OperandParameters* op) { operandParams = op; }
+    int ceiling;   // ceiling of enumerants
+    bool bitmask;  // true if these enumerants combine into a bitmask
+    const char* (*getName)(int);      // a function that returns the name for each enumerant value (or shift)
+    EnumParameters* enumParams;       // parameters for each individual enumerant
+    OperandParameters* operandParams; // sets of operands
 };
 
 // Parameterize an instruction's logical format, including its known set of operands,
@@ -137,7 +215,8 @@ public:
     InstructionParameters() :
         typePresent(true),         // most normal, only exceptions have to be spelled out
         resultPresent(true),       // most normal, only exceptions have to be spelled out
-        opName(0)
+        opDesc(0),
+        opClass(OpClassMisc)
     { }
 
     void setResultAndType(bool r, bool t)
@@ -149,7 +228,9 @@ public:
     bool hasResult() const { return resultPresent != 0; }
     bool hasType()   const { return typePresent != 0; }
 
-    const char* opName;
+    const char* opDesc;
+    EnumCaps capabilities;
+    OpcodeClass opClass;
     OperandParameters operands;
 
 protected:
@@ -157,8 +238,19 @@ protected:
     int resultPresent : 1;
 };
 
+const int OpcodeCeiling = 267;
+
 // The set of objects that hold all the instruction/operand
 // parameterization information.
-extern InstructionParameters InstructionDesc[spv::OpCount];
+extern InstructionParameters InstructionDesc[];
+
+// These hold definitions of the enumerants used for operands
+extern EnumDefinition OperandClassParams[];
+
+const char* GetOperandDesc(OperandClass operand);
+void PrintImmediateRow(int imm, const char* name, const EnumParameters* enumParams, bool caps, bool hex = false);
+const char* AccessQualifierString(int attr);
+
+void PrintOperands(const OperandParameters& operands, int reservedOperands);
 
 };  // end namespace spv
