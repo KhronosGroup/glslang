@@ -287,35 +287,14 @@ spv::Decoration TranslateInvariantDecoration(const glslang::TType& type)
         return (spv::Decoration)spv::BadValue;
 }
 
-// Identify what SPIR-V built-in variable a symbol is.
-// Return -1 if a symbol is not a built-in to decorate.
-int TranslateBuiltInDecoration(const glslang::TIntermSymbol& symbol)
+// Translate glslang built-in variable to SPIR-V built in decoration.
+spv::BuiltIn TranslateBuiltInDecoration(const glslang::TIntermSymbol& node)
 {
-    switch (symbol.getQualifier().storage) {
-    case glslang::EvqVertexId:    return spv::BuiltInVertexId;
-    case glslang::EvqInstanceId:  return spv::BuiltInInstanceId;
-    case glslang::EvqPosition:    return spv::BuiltInPosition;
-    case glslang::EvqPointSize:   return spv::BuiltInPointSize;
-    case glslang::EvqClipVertex:  return spv::BuiltInClipVertex;
-    case glslang::EvqFace:        return spv::BuiltInFrontFacing;
-    case glslang::EvqFragCoord:   return spv::BuiltInFragCoord;
-    case glslang::EvqPointCoord:  return spv::BuiltInPointCoord;
-    case glslang::EvqFragColor:   return spv::BuiltInFragColor;
-    case glslang::EvqFragDepth:   return spv::BuiltInFragDepth;
-    default:
-        // TODO: built-ins not identified by storage qualifier
-        return -1;
-    }
-}
-
-// Translate glslang built-in variable to SPIR-V built in.
-spv::BuiltIn TranslateBuiltIn(const glslang::TIntermSymbol* node)
-{
-    const glslang::TString& name = node->getName();
+    const glslang::TString& name = node.getName();
     if (name.compare(0, 3, "gl_") != 0)
         return (spv::BuiltIn)spv::BadValue;
 
-    switch (node->getQualifier().storage) {
+    switch (node.getQualifier().storage) {
     case glslang::EvqPosition:   return spv::BuiltInPosition;
     case glslang::EvqPointSize:  return spv::BuiltInPointSize;
     case glslang::EvqClipVertex: return spv::BuiltInClipVertex;
@@ -326,7 +305,7 @@ spv::BuiltIn TranslateBuiltIn(const glslang::TIntermSymbol* node)
     case glslang::EvqFace:       return spv::BuiltInFrontFacing;
     case glslang::EvqFragColor:  return spv::BuiltInFragColor;
     case glslang::EvqFragDepth:  return spv::BuiltInFragDepth;
-    default:                     return (spv::BuiltIn)spv::BadValue;
+    default:
         if (name == "gl_ClipDistance")
             return spv::BuiltInClipDistance;
         else if (name == "gl_PrimitiveID" || name == "gl_PrimitiveIDIn")
@@ -365,7 +344,10 @@ spv::BuiltIn TranslateBuiltIn(const glslang::TIntermSymbol* node)
             return spv::BuiltInGlobalInvocationId;
         else if (name == "gl_LocalInvocationIndexID")
             return spv::BuiltInLocalInvocationIndex;
+        break;
     }
+
+    return (spv::BuiltIn)spv::BadValue;
 }
 
 //
@@ -2439,7 +2421,7 @@ spv::Id TGlslangToSpvTraverser::getSymbolId(const glslang::TIntermSymbol* symbol
 
     // built-in variable decorations
     int num = TranslateBuiltInDecoration(*symbol);
-    if (num >= 0)
+    if (num != spv::BadValue)
         builder.addDecoration(id, spv::DecorationBuiltIn, num);
 
     if (linkageOnly)
