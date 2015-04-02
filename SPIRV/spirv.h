@@ -1,24 +1,27 @@
 /*
-** Copyright (c) 2014-2015 The Khronos Group Inc.
+** Copyright (c) 2015 The Khronos Group Inc.
 **
-** Permission is hereby granted, free of charge, to any person obtaining a
-** copy of this software and/or associated documentation files (the
-** "Materials"), to deal in the Materials without restriction, including
-** without limitation the rights to use, copy, modify, merge, publish,
-** distribute, sublicense, and/or sell copies of the Materials, and to
-** permit persons to whom the Materials are furnished to do so, subject to
-** the following conditions:
+** Permission is hereby granted, free of charge, to any person obtaining a copy
+** of this software and/or associated documentation files (the "Materials"),
+** to deal in the Materials without restriction, including without limitation
+** the rights to use, copy, modify, merge, publish, distribute, sublicense,
+** and/or sell copies of the Materials, and to permit persons to whom the
+** Materials are furnished to do so, subject to the following conditions:
 **
-** The above copyright notice and this permission notice shall be included
-** in all copies or substantial portions of the Materials.
+** The above copyright notice and this permission notice shall be included in
+** all copies or substantial portions of the Materials.
 **
-** THE MATERIALS ARE PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
-** EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-** MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
-** IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
-** CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
-** TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
-** MATERIALS OR THE USE OR OTHER DEALINGS IN THE MATERIALS.
+** MODIFICATIONS TO THIS FILE MAY MEAN IT NO LONGER ACCURATELY REFLECTS KHRONOS
+** STANDARDS. THE UNMODIFIED, NORMATIVE VERSIONS OF KHRONOS SPECIFICATIONS AND
+** HEADER INFORMATION ARE LOCATED AT https://www.khronos.org/registry/ 
+**
+** THE MATERIALS ARE PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+** OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+** FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
+** THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+** LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+** FROM,OUT OF OR IN CONNECTION WITH THE MATERIALS OR THE USE OR OTHER DEALINGS
+** IN THE MATERIALS.
 */
 
 /*
@@ -27,7 +30,7 @@
 */
 
 /*
-** Specification revision 29.
+** Specification revision 30.
 ** Enumeration tokens for SPIR-V, in three styles: C, C++, generic.
 ** - C++ will have the tokens in the "spv" name space, with no prefix.
 ** - C will have tokens with as "Spv" prefix.
@@ -143,15 +146,15 @@ enum Dim {
 
 enum SamplerAddressingMode {
     SamplerAddressingModeNone = 0,
-    SamplerAddressingModeClampToEdge = 2,
-    SamplerAddressingModeClamp = 4,
-    SamplerAddressingModeRepeat = 6,
-    SamplerAddressingModeRepeatMirrored = 8,
+    SamplerAddressingModeClampToEdge = 1,
+    SamplerAddressingModeClamp = 2,
+    SamplerAddressingModeRepeat = 3,
+    SamplerAddressingModeRepeatMirrored = 4,
 };
 
 enum SamplerFilterMode {
-    SamplerFilterModeNearest = 16,
-    SamplerFilterModeLinear = 32,
+    SamplerFilterModeNearest = 0,
+    SamplerFilterModeLinear = 1,
 };
 
 enum FPFastMathModeShift {
@@ -772,15 +775,15 @@ typedef enum SpvDim_ {
 
 typedef enum SpvSamplerAddressingMode_ {
     SpvSamplerAddressingModeNone = 0,
-    SpvSamplerAddressingModeClampToEdge = 2,
-    SpvSamplerAddressingModeClamp = 4,
-    SpvSamplerAddressingModeRepeat = 6,
-    SpvSamplerAddressingModeRepeatMirrored = 8,
+    SpvSamplerAddressingModeClampToEdge = 1,
+    SpvSamplerAddressingModeClamp = 2,
+    SpvSamplerAddressingModeRepeat = 3,
+    SpvSamplerAddressingModeRepeatMirrored = 4,
 } SpvSamplerAddressingMode;
 
 typedef enum SpvSamplerFilterMode_ {
-    SpvSamplerFilterModeNearest = 16,
-    SpvSamplerFilterModeLinear = 32,
+    SpvSamplerFilterModeNearest = 0,
+    SpvSamplerFilterModeLinear = 1,
 } SpvSamplerFilterMode;
 
 typedef enum SpvFPFastMathModeShift_ {

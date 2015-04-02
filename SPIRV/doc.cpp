@@ -317,29 +317,29 @@ const char* DimensionString(int dim)
     }
 }
 
-const int SamplerAddressingModeCeiling = 9;
+const int SamplerAddressingModeCeiling = 5;
 
 const char* SamplerAddressingModeString(int mode)
 {
     switch (mode) {
     case 0:  return "None";
-    case 2:  return "ClampToEdge";
-    case 4:  return "Clamp";
-    case 6:  return "Repeat";
-    case 8:  return "RepeatMirrored";
+    case 1:  return "ClampToEdge";
+    case 2:  return "Clamp";
+    case 3:  return "Repeat";
+    case 4:  return "RepeatMirrored";
 
     case SamplerAddressingModeCeiling:
     default: return "Bad";
     }
 }
 
-const int SamplerFilterModeCeiling = 0x21;
+const int SamplerFilterModeCeiling = 2;
 
 const char* SamplerFilterModeString(int mode)
 {
     switch (mode) {
-    case 0x10: return "Nearest";
-    case 0x20: return "Linear";
+    case 0: return "Nearest";
+    case 1: return "Linear";
 
     case SamplerFilterModeCeiling:
     default: return "Bad";
