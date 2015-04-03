@@ -1831,7 +1831,7 @@ Id Builder::accessChainLoad(Decoration precision)
                 id = createCompositeExtract(accessChain.base, accessChain.resultType, indexes);
             else {
                 // make a new function variable for this r-value
-                Id lValue = createVariable(StorageClassUniform, getTypeId(accessChain.base), "indexable");
+                Id lValue = createVariable(StorageClassFunction, getTypeId(accessChain.base), "indexable");
 
                 // store into it
                 createStore(accessChain.base, lValue);
