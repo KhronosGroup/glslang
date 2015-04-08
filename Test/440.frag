@@ -102,6 +102,7 @@ layout(std430) uniform block430 {
     layout(offset = 40) vec2   c;     // ERROR, lies within previous member
     layout(align = 6)   double g;     // ERROR, 6 is not a power of 2
     layout(offset=68)   double h;     // ERROR, offset not aligned
+    layout(align = 0)   double i;     // ERROR, 0 not a power of 2
 } specExampleErrors430;
 
 layout(std430) uniform block2430 {

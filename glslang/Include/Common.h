@@ -188,6 +188,9 @@ const int GlslangMaxTokenLength = 1024;
 
 template <class T> bool IsPow2(T powerOf2)
 {
+    if (powerOf2 <= 0)
+        return false;
+
     return (powerOf2 & (powerOf2 - 1)) == 0;
 }
 
