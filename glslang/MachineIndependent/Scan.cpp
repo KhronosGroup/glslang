@@ -695,12 +695,16 @@ int TScanContext::tokenizeIdentifier()
         return keyword;
 
     case LAYOUT:
+    {
+        const int numLayoutExts = 2;
+        const char* layoutExts[numLayoutExts] = { GL_ARB_shading_language_420pack,
+                                                  GL_ARB_explicit_attrib_location };
         if ((parseContext.profile == EEsProfile && parseContext.version < 300) ||
             (parseContext.profile != EEsProfile && parseContext.version < 140 &&
-            ! parseContext.extensionsTurnedOn(1, &GL_ARB_shading_language_420pack)))
+            ! parseContext.extensionsTurnedOn(numLayoutExts, layoutExts)))
             return identifierOrType();
         return keyword;
-
+    }
     case SHARED:
         if ((parseContext.profile == EEsProfile && parseContext.version < 300) ||
             (parseContext.profile != EEsProfile && parseContext.version < 140))
