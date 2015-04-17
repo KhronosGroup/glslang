@@ -1065,7 +1065,8 @@ bool TIntermUnary::promote()
     case EOpPreDecrement:
         if (operand->getBasicType() != EbtInt && 
             operand->getBasicType() != EbtUint && 
-            operand->getBasicType() != EbtFloat)
+            operand->getBasicType() != EbtFloat &&
+            operand->getBasicType() != EbtDouble)
 
             return false;
         break;

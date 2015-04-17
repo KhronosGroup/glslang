@@ -33,7 +33,7 @@ layout (location = 12) in dmat2x4 vs_tcs_last[];
 
 void foo()
 {
- if ((dmat2x4(dvec4(-0.625, -0.5, -0.375, -0.25), dvec4(-0.375, -0.25, -0.125, 0)) != vs_tcs_first[0]) ||
+ if ((dmat2x4(dvec4(-0.625, -0.5, -0.375lf, -0.25), dvec4(-0.375, -0.25, -0.125, 0)) != vs_tcs_first[0]) ||
         (dmat2x4(dvec4(0.375, 0.5, 0.625, 0.75), dvec4(0.625, 0.75, 0.875, -0.625)) != vs_tcs_last[0]))
     {
         ;
