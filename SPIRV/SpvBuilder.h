@@ -462,6 +462,7 @@ public:
 
 protected:
     Id findScalarConstant(Op typeClass, Id typeId, unsigned value) const;
+    Id findScalarConstant(Op typeClass, Id typeId, unsigned v1, unsigned v2) const;
     Id findCompositeConstant(Op typeClass, std::vector<Id>& comps) const;
     Id collapseAccessChain();
     void simplifyAccessChainSwizzle();

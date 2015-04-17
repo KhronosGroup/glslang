@@ -62,7 +62,18 @@ readonly buffer roblock
 
 void foo()
 {
-    ro.values[2] = 4.7;        // ERROR, readonly
+    ro.values[2] = 4.7;             // ERROR, readonly
     ro.values.length();
     barrier();
+}
+
+uniform double roll;
+uniform writeonly image2D destTex;
+void fooaoeu() {
+     ivec2 storePos = ivec2(gl_GlobalInvocationID.xy);
+     double localCoef = length(vec2(ivec2(gl_LocalInvocationID.xy)-8)/8.0);
+     dvec4 aa = dvec4(0.4, 0.2, 0.3, 0.4);
+     double globalCoef = 1.0;
+     int i = globalCoef;            // ERROR, can't convert from double to int
+     double di = i;
 }

@@ -134,12 +134,14 @@ int TPpContext::lFloatConst(int len, int ch, TPpToken* ppToken)
                 declen++;
                 if (len > 0 || ch != '0') {
                     str[len] = ch;
-                    len++;str_len++;
+                    len++;
+                    str_len++;
                 }
                 ch = getChar();
             } else {
                 parseContext.error(ppToken->loc, "float literal too long", "", "");
-                len = 1,str_len=1;
+                len = 1;
+                str_len = 1;
             }
         }
     }

@@ -426,6 +426,9 @@ TIntermTyped* TIntermediate::addConversion(TOperator op, const TType& type, TInt
     case EOpConstructFloat:
         promoteTo = EbtFloat;
         break;
+    case EOpConstructDouble:
+        promoteTo = EbtDouble;
+        break;
     case EOpConstructInt:
         promoteTo = EbtInt;
         break;
@@ -1482,7 +1485,7 @@ TIntermTyped* TIntermediate::promoteConstantUnion(TBasicType promoteTo, TIntermC
                 leftUnionArray[i] = rightUnionArray[i];
                 break;
             case EbtDouble:
-                leftUnionArray[i].setDConst(static_cast<double>(rightUnionArray[i].getBConst()));
+                leftUnionArray[i].setDConst(static_cast<double>(rightUnionArray[i].getDConst()));
                 break;
             default: 
                 return node;

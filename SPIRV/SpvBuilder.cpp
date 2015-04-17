@@ -441,8 +441,25 @@ Id Builder::findScalarConstant(Op typeClass, Id typeId, unsigned value) const
     Instruction* constant;
     for (int i = 0; i < (int)groupedConstants[typeClass].size(); ++i) {
         constant = groupedConstants[typeClass][i];
-        if (constant->getTypeId() == typeId &&
+        if (constant->getNumOperands() == 1 &&
+            constant->getTypeId() == typeId &&
             constant->getImmediateOperand(0) == value)
+            return constant->getResultId();
+    }
+
+    return 0;
+}
+
+// Version findScalarConstant (see above) for scalars that take two operands (e.g. a 'double').
+Id Builder::findScalarConstant(Op typeClass, Id typeId, unsigned v1, unsigned v2) const
+{
+    Instruction* constant;
+    for (int i = 0; i < (int)groupedConstants[typeClass].size(); ++i) {
+        constant = groupedConstants[typeClass][i];
+        if (constant->getNumOperands() == 2 &&
+            constant->getTypeId() == typeId &&
+            constant->getImmediateOperand(0) == v1 &&
+            constant->getImmediateOperand(1) == v2)
             return constant->getResultId();
     }
 
@@ -510,9 +527,22 @@ Id Builder::makeFloatConstant(float f)
 
 Id Builder::makeDoubleConstant(double d)
 {
-    // TODO 
-    MissingFunctionality("double constant");
-    return NoResult;
+    Id typeId = makeFloatType(64);
+    unsigned long long value = *(unsigned long long*)&d;
+    unsigned op1 = value & 0xFFFFFFFF;
+    unsigned op2 = value >> 32;
+    Id existing = findScalarConstant(OpTypeFloat, typeId, op1, op2);
+    if (existing)
+        return existing;
+
+    Instruction* c = new Instruction(getUniqueId(), typeId, OpConstant);
+    c->addImmediateOperand(op1);
+    c->addImmediateOperand(op2);
+    constantsTypesGlobals.push_back(c);
+    groupedConstants[OpTypeFloat].push_back(c);
+    module.mapInstruction(c);
+
+    return c->getResultId();
 }
 
 Id Builder::findCompositeConstant(Op typeClass, std::vector<Id>& comps) const

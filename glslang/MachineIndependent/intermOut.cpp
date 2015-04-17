@@ -298,6 +298,7 @@ bool TOutputTraverser::visitAggregate(TVisit /* visit */, TIntermAggregate* node
     case EOpParameters:    out.debug << "Function Parameters: ";                    break;
 
     case EOpConstructFloat: out.debug << "Construct float"; break;
+    case EOpConstructDouble:out.debug << "Construct double"; break;
     case EOpConstructVec2:  out.debug << "Construct vec2";  break;
     case EOpConstructVec3:  out.debug << "Construct vec3";  break;
     case EOpConstructVec4:  out.debug << "Construct vec4";  break;

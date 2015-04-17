@@ -603,7 +603,7 @@ ERROR: node is still EOpNull!
 0:?     'patchOut' (patch out 4-component vector of float)
 
 420.tesc
-Warning, version 400 is not yet complete; most version-specific features are present, but some are missing.
+Warning, version 420 is not yet complete; most version-specific features are present, but some are missing.
 ERROR: 0:7: 'vertices' : inconsistent output number of vertices for array size of gl_out
 ERROR: 0:11: 'vertices' : inconsistent output number of vertices for array size of a
 ERROR: 0:12: 'vertices' : inconsistent output number of vertices for array size of outb
@@ -613,7 +613,7 @@ ERROR: 0:29: 'out' : type must be an array: outf
 ERROR: 6 compilation errors.  No code generated.
 
 
-Shader version: 400
+Shader version: 420
 Requested GL_ARB_separate_shader_objects
 vertices = 4
 ERROR: node is still EOpNull!
@@ -678,12 +678,49 @@ ERROR: node is still EOpNull!
 0:26        'gl_out' (out 3-element array of block{out 4-component vector of float gl_Position})
 0:26        Constant:
 0:26          1 (const int)
+0:34  Function Definition: foo( (void)
+0:34    Function Parameters: 
+0:36    Sequence
+0:36      Test condition and select (void)
+0:36        Condition
+0:36        logical-or (bool)
+0:36          Compare Not Equal (bool)
+0:36            Constant:
+0:36              -0.625000
+0:36              -0.500000
+0:36              -0.375000
+0:36              -0.250000
+0:36              -0.375000
+0:36              -0.250000
+0:36              -0.125000
+0:36              0.000000
+0:36            direct index (layout(location=0 ) 2X4 matrix of double)
+0:36              'vs_tcs_first' (layout(location=0 ) in 32-element array of 2X4 matrix of double)
+0:36              Constant:
+0:36                0 (const int)
+0:37          Compare Not Equal (bool)
+0:37            Constant:
+0:37              0.375000
+0:37              0.500000
+0:37              0.625000
+0:37              0.750000
+0:37              0.625000
+0:37              0.750000
+0:37              0.875000
+0:37              -0.625000
+0:37            direct index (layout(location=12 ) 2X4 matrix of double)
+0:37              'vs_tcs_last' (layout(location=12 ) in 32-element array of 2X4 matrix of double)
+0:37              Constant:
+0:37                0 (const int)
+0:36        true case is null
 0:?   Linker Objects
 0:?     'gl_out' (out 3-element array of block{out 4-component vector of float gl_Position})
 0:?     'a' (out 3-element array of int)
 0:?     'outb' (out 5-element array of int)
 0:?     'outc' (out 4-element array of int)
 0:?     'outf' (out float)
+0:?     'vs_tcs_first' (layout(location=0 ) in 32-element array of 2X4 matrix of double)
+0:?     'vs_tcs_last' (layout(location=12 ) in 32-element array of 2X4 matrix of double)
 
 420.tese
 Warning, version 420 is not yet complete; most version-specific features are present, but some are missing.
@@ -867,6 +904,8 @@ ERROR: Linking tessellation control stage: Multiple function bodies in multiple 
 ERROR: Linking tessellation control stage: Multiple function bodies in multiple compilation units for the same signature in the same stage:
     main(
 ERROR: Linking tessellation control stage: Multiple function bodies in multiple compilation units for the same signature in the same stage:
+    foo(
+ERROR: Linking tessellation control stage: Multiple function bodies in multiple compilation units for the same signature in the same stage:
     main(
 ERROR: Linking tessellation control stage: Types must match:
     gl_out: "out 4-element array of block{out 4-component vector of float gl_Position, out float gl_PointSize, out implicitly-sized array of float gl_ClipDistance}" versus "out 3-element array of block{out 4-component vector of float gl_Position}"
@@ -883,7 +922,7 @@ ERROR: Linking tessellation evaluation stage: Multiple function bodies in multip
 ERROR: Linking tessellation evaluation stage: Multiple function bodies in multiple compilation units for the same signature in the same stage:
     main(
 
-Shader version: 400
+Shader version: 420
 Requested GL_ARB_separate_shader_objects
 Requested GL_ARB_tessellation_shader
 vertices = 4
@@ -1221,6 +1260,41 @@ vertices = 4
 0:26        'gl_out' (out 3-element array of block{out 4-component vector of float gl_Position})
 0:26        Constant:
 0:26          1 (const int)
+0:34  Function Definition: foo( (void)
+0:34    Function Parameters: 
+0:36    Sequence
+0:36      Test condition and select (void)
+0:36        Condition
+0:36        logical-or (bool)
+0:36          Compare Not Equal (bool)
+0:36            Constant:
+0:36              -0.625000
+0:36              -0.500000
+0:36              -0.375000
+0:36              -0.250000
+0:36              -0.375000
+0:36              -0.250000
+0:36              -0.125000
+0:36              0.000000
+0:36            direct index (layout(location=0 ) 2X4 matrix of double)
+0:36              'vs_tcs_first' (layout(location=0 ) in 32-element array of 2X4 matrix of double)
+0:36              Constant:
+0:36                0 (const int)
+0:37          Compare Not Equal (bool)
+0:37            Constant:
+0:37              0.375000
+0:37              0.500000
+0:37              0.625000
+0:37              0.750000
+0:37              0.625000
+0:37              0.750000
+0:37              0.875000
+0:37              -0.625000
+0:37            direct index (layout(location=12 ) 2X4 matrix of double)
+0:37              'vs_tcs_last' (layout(location=12 ) in 32-element array of 2X4 matrix of double)
+0:37              Constant:
+0:37                0 (const int)
+0:36        true case is null
 0:?   Linker Objects
 0:?     'gl_out' (out 4-element array of block{out 4-component vector of float gl_Position, out float gl_PointSize, out 1-element array of float gl_ClipDistance})
 0:?     'outa' (4-element array of int)
@@ -1242,6 +1316,8 @@ vertices = 4
 0:?     'outb' (out 5-element array of int)
 0:?     'outc' (out 4-element array of int)
 0:?     'outf' (out float)
+0:?     'vs_tcs_first' (layout(location=0 ) in 32-element array of 2X4 matrix of double)
+0:?     'vs_tcs_last' (layout(location=12 ) in 32-element array of 2X4 matrix of double)
 Shader version: 420
 Requested GL_ARB_separate_shader_objects
 Requested GL_ARB_tessellation_shader
