@@ -450,7 +450,7 @@ Id Builder::findScalarConstant(Op typeClass, Id typeId, unsigned value) const
     return 0;
 }
 
-// Version findScalarConstant (see above) for scalars that take two operands (e.g. a 'double').
+// Version of findScalarConstant (see above) for scalars that take two operands (e.g. a 'double').
 Id Builder::findScalarConstant(Op typeClass, Id typeId, unsigned v1, unsigned v2) const
 {
     Instruction* constant;

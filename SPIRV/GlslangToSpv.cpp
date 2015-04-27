@@ -2393,6 +2393,8 @@ spv::Id TGlslangToSpvTraverser::getSymbolId(const glslang::TIntermSymbol* symbol
         addDecoration(id, TranslateInterpolationDecoration(symbol->getType()));
         if (symbol->getQualifier().hasLocation())
             builder.addDecoration(id, spv::DecorationLocation, symbol->getQualifier().layoutLocation);
+        if (symbol->getQualifier().hasIndex())
+            builder.addDecoration(id, spv::DecorationIndex, symbol->getQualifier().layoutIndex);
         if (symbol->getQualifier().hasComponent())
             builder.addDecoration(id, spv::DecorationComponent, symbol->getQualifier().layoutComponent);
         if (glslangIntermediate->getXfbMode()) {
