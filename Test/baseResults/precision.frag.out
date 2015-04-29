@@ -11,7 +11,7 @@ ERROR: 7 compilation errors.  No code generated.
 
 Shader version: 100
 ERROR: node is still EOpNull!
-0:5  Function Definition: foo(vf3; (temp lowp 2-component vector of float)
+0:5  Function Definition: foo(vf3; (global lowp 2-component vector of float)
 0:5    Function Parameters: 
 0:5      'mv3' (in mediump 3-component vector of float)
 0:?     Sequence
@@ -122,7 +122,7 @@ ERROR: node is still EOpNull!
 0:?     'samplerHigh' (uniform highp sampler2D)
 0:?     'uint' (global mediump 4-component vector of float)
 0:?     'global_high' (global highp int)
-0:?     'b2' (temp mediump 2-component vector of bool)
+0:?     'b2' (global mediump 2-component vector of bool)
 
 
 Linked fragment stage:
@@ -130,7 +130,7 @@ Linked fragment stage:
 
 Shader version: 100
 ERROR: node is still EOpNull!
-0:5  Function Definition: foo(vf3; (temp lowp 2-component vector of float)
+0:5  Function Definition: foo(vf3; (global lowp 2-component vector of float)
 0:5    Function Parameters: 
 0:5      'mv3' (in mediump 3-component vector of float)
 0:?     Sequence
@@ -241,5 +241,5 @@ ERROR: node is still EOpNull!
 0:?     'samplerHigh' (uniform highp sampler2D)
 0:?     'uint' (global mediump 4-component vector of float)
 0:?     'global_high' (global highp int)
-0:?     'b2' (temp mediump 2-component vector of bool)
+0:?     'b2' (global mediump 2-component vector of bool)
 

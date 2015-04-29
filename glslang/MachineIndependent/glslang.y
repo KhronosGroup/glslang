@@ -1894,19 +1894,19 @@ type_specifier_nonarray
 precision_qualifier
     : HIGH_PRECISION {
         parseContext.profileRequires($1.loc, ENoProfile, 130, 0, "highp precision qualifier");
-        $$.init($1.loc);
+        $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
         if (parseContext.profile == EEsProfile)
 		    $$.qualifier.precision = EpqHigh;
     }
     | MEDIUM_PRECISION {
         parseContext.profileRequires($1.loc, ENoProfile, 130, 0, "mediump precision qualifier");
-        $$.init($1.loc);
+        $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
         if (parseContext.profile == EEsProfile)
 	    	$$.qualifier.precision = EpqMedium;
     }
     | LOW_PRECISION {
         parseContext.profileRequires($1.loc, ENoProfile, 130, 0, "lowp precision qualifier");
-        $$.init($1.loc);
+        $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
         if (parseContext.profile == EEsProfile)
     		$$.qualifier.precision = EpqLow;
     }

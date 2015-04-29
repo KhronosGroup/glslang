@@ -193,7 +193,7 @@ ERROR: node is still EOpNull!
 0:80              0 (const int)
 0:80            Constant:
 0:80              1 (const int)
-0:80        Function Call: textureSize(sSC1;i1; (temp highp 2-component vector of int)
+0:80        Function Call: textureSize(sSC1;i1; (global highp 2-component vector of int)
 0:80          'sCubeShadow' (uniform lowp samplerCubeShadow)
 0:80          Constant:
 0:80            2 (const int)
@@ -549,7 +549,7 @@ ERROR: node is still EOpNull!
 0:80              0 (const int)
 0:80            Constant:
 0:80              1 (const int)
-0:80        Function Call: textureSize(sSC1;i1; (temp highp 2-component vector of int)
+0:80        Function Call: textureSize(sSC1;i1; (global highp 2-component vector of int)
 0:80          'sCubeShadow' (uniform lowp samplerCubeShadow)
 0:80          Constant:
 0:80            2 (const int)

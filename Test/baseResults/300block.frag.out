@@ -12,8 +12,8 @@ ERROR: node is still EOpNull!
 0:42    Function Parameters: 
 0:44    Sequence
 0:44      Function Call: texture(is31;vf3; (global mediump 4-component vector of int)
-0:44        sampler: direct index for structure (temp lowp isampler3D)
-0:44          's' (uniform structure{global mediump 4-component vector of float u, global mediump 4-component vector of uint v, temp lowp isampler3D sampler, global mediump 3-component vector of float w, global structure{global mediump int a} t})
+0:44        sampler: direct index for structure (global lowp isampler3D)
+0:44          's' (uniform structure{global mediump 4-component vector of float u, global mediump 4-component vector of uint v, global lowp isampler3D sampler, global mediump 3-component vector of float w, global structure{global mediump int a} t})
 0:44          Constant:
 0:44            2 (const int)
 0:44        Construct vec3 (temp 3-component vector of float)
@@ -25,7 +25,7 @@ ERROR: node is still EOpNull!
 0:44          Convert uint to float (temp float)
 0:44            direct index (temp mediump uint)
 0:44              bv: direct index for structure (layout(column_major shared ) uniform mediump 4-component vector of uint)
-0:44                'anon@0' (layout(column_major shared ) uniform block{layout(column_major shared ) uniform mediump 4-component vector of uint bv, layout(column_major shared ) uniform mediump 2X2 matrix of float bm2, layout(column_major shared ) uniform lowp isampler2D sampler, layout(column_major shared ) uniform structure{global mediump int a} t, layout(column_major shared ) uniform structure{global mediump 4-component vector of float u, global mediump 4-component vector of uint v, temp lowp isampler3D sampler, global mediump 3-component vector of float w, global structure{global mediump int a} t} fbs})
+0:44                'anon@0' (layout(column_major shared ) uniform block{layout(column_major shared ) uniform mediump 4-component vector of uint bv, layout(column_major shared ) uniform mediump 2X2 matrix of float bm2, layout(column_major shared ) uniform lowp isampler2D sampler, layout(column_major shared ) uniform structure{global mediump int a} t, layout(column_major shared ) uniform structure{global mediump 4-component vector of float u, global mediump 4-component vector of uint v, global lowp isampler3D sampler, global mediump 3-component vector of float w, global structure{global mediump int a} t} fbs})
 0:44                Constant:
 0:44                  0 (const uint)
 0:44              Constant:
@@ -45,14 +45,14 @@ ERROR: node is still EOpNull!
 0:45        'insts' (layout(column_major shared ) uniform 4-element array of block{layout(column_major shared ) uniform mediump 4-component vector of uint nbv, layout(column_major shared ) uniform mediump int ni})
 0:45        direct index (temp mediump uint)
 0:45          v: direct index for structure (global mediump 4-component vector of uint)
-0:45            's' (uniform structure{global mediump 4-component vector of float u, global mediump 4-component vector of uint v, temp lowp isampler3D sampler, global mediump 3-component vector of float w, global structure{global mediump int a} t})
+0:45            's' (uniform structure{global mediump 4-component vector of float u, global mediump 4-component vector of uint v, global lowp isampler3D sampler, global mediump 3-component vector of float w, global structure{global mediump int a} t})
 0:45            Constant:
 0:45              1 (const int)
 0:45          Constant:
 0:45            0 (const int)
 0:?   Linker Objects
-0:?     's' (uniform structure{global mediump 4-component vector of float u, global mediump 4-component vector of uint v, temp lowp isampler3D sampler, global mediump 3-component vector of float w, global structure{global mediump int a} t})
-0:?     'anon@0' (layout(column_major shared ) uniform block{layout(column_major shared ) uniform mediump 4-component vector of uint bv, layout(column_major shared ) uniform mediump 2X2 matrix of float bm2, layout(column_major shared ) uniform lowp isampler2D sampler, layout(column_major shared ) uniform structure{global mediump int a} t, layout(column_major shared ) uniform structure{global mediump 4-component vector of float u, global mediump 4-component vector of uint v, temp lowp isampler3D sampler, global mediump 3-component vector of float w, global structure{global mediump int a} t} fbs})
+0:?     's' (uniform structure{global mediump 4-component vector of float u, global mediump 4-component vector of uint v, global lowp isampler3D sampler, global mediump 3-component vector of float w, global structure{global mediump int a} t})
+0:?     'anon@0' (layout(column_major shared ) uniform block{layout(column_major shared ) uniform mediump 4-component vector of uint bv, layout(column_major shared ) uniform mediump 2X2 matrix of float bm2, layout(column_major shared ) uniform lowp isampler2D sampler, layout(column_major shared ) uniform structure{global mediump int a} t, layout(column_major shared ) uniform structure{global mediump 4-component vector of float u, global mediump 4-component vector of uint v, global lowp isampler3D sampler, global mediump 3-component vector of float w, global structure{global mediump int a} t} fbs})
 0:?     'inst' (layout(column_major shared ) uniform block{layout(column_major shared ) uniform mediump 4-component vector of uint nbv, layout(column_major shared ) uniform mediump int ni})
 0:?     'insts' (layout(column_major shared ) uniform 4-element array of block{layout(column_major shared ) uniform mediump 4-component vector of uint nbv, layout(column_major shared ) uniform mediump int ni})
 0:?     'anon@1' (layout(column_major shared ) uniform block{layout(column_major shared ) uniform mediump float f, layout(column_major shared ) uniform mediump uint u})
@@ -67,8 +67,8 @@ ERROR: node is still EOpNull!
 0:42    Function Parameters: 
 0:44    Sequence
 0:44      Function Call: texture(is31;vf3; (global mediump 4-component vector of int)
-0:44        sampler: direct index for structure (temp lowp isampler3D)
-0:44          's' (uniform structure{global mediump 4-component vector of float u, global mediump 4-component vector of uint v, temp lowp isampler3D sampler, global mediump 3-component vector of float w, global structure{global mediump int a} t})
+0:44        sampler: direct index for structure (global lowp isampler3D)
+0:44          's' (uniform structure{global mediump 4-component vector of float u, global mediump 4-component vector of uint v, global lowp isampler3D sampler, global mediump 3-component vector of float w, global structure{global mediump int a} t})
 0:44          Constant:
 0:44            2 (const int)
 0:44        Construct vec3 (temp 3-component vector of float)
@@ -80,7 +80,7 @@ ERROR: node is still EOpNull!
 0:44          Convert uint to float (temp float)
 0:44            direct index (temp mediump uint)
 0:44              bv: direct index for structure (layout(column_major shared ) uniform mediump 4-component vector of uint)
-0:44                'anon@0' (layout(column_major shared ) uniform block{layout(column_major shared ) uniform mediump 4-component vector of uint bv, layout(column_major shared ) uniform mediump 2X2 matrix of float bm2, layout(column_major shared ) uniform lowp isampler2D sampler, layout(column_major shared ) uniform structure{global mediump int a} t, layout(column_major shared ) uniform structure{global mediump 4-component vector of float u, global mediump 4-component vector of uint v, temp lowp isampler3D sampler, global mediump 3-component vector of float w, global structure{global mediump int a} t} fbs})
+0:44                'anon@0' (layout(column_major shared ) uniform block{layout(column_major shared ) uniform mediump 4-component vector of uint bv, layout(column_major shared ) uniform mediump 2X2 matrix of float bm2, layout(column_major shared ) uniform lowp isampler2D sampler, layout(column_major shared ) uniform structure{global mediump int a} t, layout(column_major shared ) uniform structure{global mediump 4-component vector of float u, global mediump 4-component vector of uint v, global lowp isampler3D sampler, global mediump 3-component vector of float w, global structure{global mediump int a} t} fbs})
 0:44                Constant:
 0:44                  0 (const uint)
 0:44              Constant:
@@ -100,14 +100,14 @@ ERROR: node is still EOpNull!
 0:45        'insts' (layout(column_major shared ) uniform 4-element array of block{layout(column_major shared ) uniform mediump 4-component vector of uint nbv, layout(column_major shared ) uniform mediump int ni})
 0:45        direct index (temp mediump uint)
 0:45          v: direct index for structure (global mediump 4-component vector of uint)
-0:45            's' (uniform structure{global mediump 4-component vector of float u, global mediump 4-component vector of uint v, temp lowp isampler3D sampler, global mediump 3-component vector of float w, global structure{global mediump int a} t})
+0:45            's' (uniform structure{global mediump 4-component vector of float u, global mediump 4-component vector of uint v, global lowp isampler3D sampler, global mediump 3-component vector of float w, global structure{global mediump int a} t})
 0:45            Constant:
 0:45              1 (const int)
 0:45          Constant:
 0:45            0 (const int)
 0:?   Linker Objects
-0:?     's' (uniform structure{global mediump 4-component vector of float u, global mediump 4-component vector of uint v, temp lowp isampler3D sampler, global mediump 3-component vector of float w, global structure{global mediump int a} t})
-0:?     'anon@0' (layout(column_major shared ) uniform block{layout(column_major shared ) uniform mediump 4-component vector of uint bv, layout(column_major shared ) uniform mediump 2X2 matrix of float bm2, layout(column_major shared ) uniform lowp isampler2D sampler, layout(column_major shared ) uniform structure{global mediump int a} t, layout(column_major shared ) uniform structure{global mediump 4-component vector of float u, global mediump 4-component vector of uint v, temp lowp isampler3D sampler, global mediump 3-component vector of float w, global structure{global mediump int a} t} fbs})
+0:?     's' (uniform structure{global mediump 4-component vector of float u, global mediump 4-component vector of uint v, global lowp isampler3D sampler, global mediump 3-component vector of float w, global structure{global mediump int a} t})
+0:?     'anon@0' (layout(column_major shared ) uniform block{layout(column_major shared ) uniform mediump 4-component vector of uint bv, layout(column_major shared ) uniform mediump 2X2 matrix of float bm2, layout(column_major shared ) uniform lowp isampler2D sampler, layout(column_major shared ) uniform structure{global mediump int a} t, layout(column_major shared ) uniform structure{global mediump 4-component vector of float u, global mediump 4-component vector of uint v, global lowp isampler3D sampler, global mediump 3-component vector of float w, global structure{global mediump int a} t} fbs})
 0:?     'inst' (layout(column_major shared ) uniform block{layout(column_major shared ) uniform mediump 4-component vector of uint nbv, layout(column_major shared ) uniform mediump int ni})
 0:?     'insts' (layout(column_major shared ) uniform 4-element array of block{layout(column_major shared ) uniform mediump 4-component vector of uint nbv, layout(column_major shared ) uniform mediump int ni})
 0:?     'anon@1' (layout(column_major shared ) uniform block{layout(column_major shared ) uniform mediump float f, layout(column_major shared ) uniform mediump uint u})

@@ -156,32 +156,32 @@ ERROR: node is still EOpNull!
 0:62      Sequence
 0:62        move second child to first child (temp highp uint)
 0:62          'u19' (temp mediump uint)
-0:62          packSnorm2x16 (temp highp uint)
+0:62          packSnorm2x16 (global highp uint)
 0:62            'v2a' (global mediump 2-component vector of float)
 0:63      Sequence
 0:63        move second child to first child (temp highp 2-component vector of float)
 0:63          'v20' (temp mediump 2-component vector of float)
-0:63          unpackSnorm2x16 (temp highp 2-component vector of float)
+0:63          unpackSnorm2x16 (global highp 2-component vector of float)
 0:63            'uy' (global mediump uint)
 0:64      Sequence
 0:64        move second child to first child (temp highp uint)
 0:64          'u15' (temp mediump uint)
-0:64          packUnorm2x16 (temp highp uint)
+0:64          packUnorm2x16 (global highp uint)
 0:64            'v2a' (global mediump 2-component vector of float)
 0:65      Sequence
 0:65        move second child to first child (temp highp 2-component vector of float)
 0:65          'v16' (temp mediump 2-component vector of float)
-0:65          unpackUnorm2x16 (temp highp 2-component vector of float)
+0:65          unpackUnorm2x16 (global highp 2-component vector of float)
 0:65            'uy' (global mediump uint)
 0:66      Sequence
 0:66        move second child to first child (temp highp uint)
 0:66          'u17' (temp mediump uint)
-0:66          packHalf2x16 (temp highp uint)
+0:66          packHalf2x16 (global highp uint)
 0:66            'v2b' (global mediump 2-component vector of float)
 0:67      Sequence
 0:67        move second child to first child (temp mediump 2-component vector of float)
 0:67          'v18' (temp mediump 2-component vector of float)
-0:67          unpackHalf2x16 (temp mediump 2-component vector of float)
+0:67          unpackHalf2x16 (global mediump 2-component vector of float)
 0:67            'uy' (global mediump uint)
 0:70      Constant:
 0:70        0.000000
@@ -363,32 +363,32 @@ ERROR: node is still EOpNull!
 0:62      Sequence
 0:62        move second child to first child (temp highp uint)
 0:62          'u19' (temp mediump uint)
-0:62          packSnorm2x16 (temp highp uint)
+0:62          packSnorm2x16 (global highp uint)
 0:62            'v2a' (global mediump 2-component vector of float)
 0:63      Sequence
 0:63        move second child to first child (temp highp 2-component vector of float)
 0:63          'v20' (temp mediump 2-component vector of float)
-0:63          unpackSnorm2x16 (temp highp 2-component vector of float)
+0:63          unpackSnorm2x16 (global highp 2-component vector of float)
 0:63            'uy' (global mediump uint)
 0:64      Sequence
 0:64        move second child to first child (temp highp uint)
 0:64          'u15' (temp mediump uint)
-0:64          packUnorm2x16 (temp highp uint)
+0:64          packUnorm2x16 (global highp uint)
 0:64            'v2a' (global mediump 2-component vector of float)
 0:65      Sequence
 0:65        move second child to first child (temp highp 2-component vector of float)
 0:65          'v16' (temp mediump 2-component vector of float)
-0:65          unpackUnorm2x16 (temp highp 2-component vector of float)
+0:65          unpackUnorm2x16 (global highp 2-component vector of float)
 0:65            'uy' (global mediump uint)
 0:66      Sequence
 0:66        move second child to first child (temp highp uint)
 0:66          'u17' (temp mediump uint)
-0:66          packHalf2x16 (temp highp uint)
+0:66          packHalf2x16 (global highp uint)
 0:66            'v2b' (global mediump 2-component vector of float)
 0:67      Sequence
 0:67        move second child to first child (temp mediump 2-component vector of float)
 0:67          'v18' (temp mediump 2-component vector of float)
-0:67          unpackHalf2x16 (temp mediump 2-component vector of float)
+0:67          unpackHalf2x16 (global mediump 2-component vector of float)
 0:67            'uy' (global mediump uint)
 0:70      Constant:
 0:70        0.000000

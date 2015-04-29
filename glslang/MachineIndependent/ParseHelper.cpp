@@ -2217,7 +2217,8 @@ void TParseContext::mergeQualifiers(TSourceLoc loc, TQualifier& dst, const TQual
     else if ((dst.storage == EvqIn    && src.storage == EvqConst) ||
              (dst.storage == EvqConst && src.storage == EvqIn))
         dst.storage = EvqConstReadOnly;
-    else if (src.storage != EvqTemporary)
+    else if (src.storage != EvqTemporary &&
+             src.storage != EvqGlobal)
         error(loc, "too many storage qualifiers", GetStorageQualifierString(src.storage), "");
 
     // Precision qualifiers
@@ -2871,6 +2872,7 @@ void TParseContext::paramCheckFix(TSourceLoc loc, const TStorageQualifier& quali
     case EvqInOut:
         type.getQualifier().storage = qualifier;
         break;
+    case EvqGlobal:
     case EvqTemporary:
         type.getQualifier().storage = EvqIn;
         break;

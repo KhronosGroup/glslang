@@ -343,7 +343,7 @@ ERROR: node is still EOpNull!
 0:137            'a1' (temp float)
 0:138      move second child to first child (temp float)
 0:138        direct index (temp float)
-0:138          'a' (temp 3-component vector of float)
+0:138          'a' (global 3-component vector of float)
 0:138          Constant:
 0:138            0 (const int)
 0:138        Constant:
@@ -373,9 +373,9 @@ ERROR: node is still EOpNull!
 0:166              'i' (temp int)
 0:166              'i' (temp int)
 0:?   Linker Objects
-0:?     'a' (temp 3-component vector of float)
-0:?     'b' (temp float)
-0:?     'c' (temp int)
+0:?     'a' (global 3-component vector of float)
+0:?     'b' (global float)
+0:?     'c' (global int)
 0:?     'i' (smooth in 4-component vector of float)
 0:?     'o' (out 4-component vector of float)
 0:?     'fflat' (flat in float)
@@ -719,7 +719,7 @@ ERROR: node is still EOpNull!
 0:137            'a1' (temp float)
 0:138      move second child to first child (temp float)
 0:138        direct index (temp float)
-0:138          'a' (temp 3-component vector of float)
+0:138          'a' (global 3-component vector of float)
 0:138          Constant:
 0:138            0 (const int)
 0:138        Constant:
@@ -749,9 +749,9 @@ ERROR: node is still EOpNull!
 0:166              'i' (temp int)
 0:166              'i' (temp int)
 0:?   Linker Objects
-0:?     'a' (temp 3-component vector of float)
-0:?     'b' (temp float)
-0:?     'c' (temp int)
+0:?     'a' (global 3-component vector of float)
+0:?     'b' (global float)
+0:?     'c' (global int)
 0:?     'i' (smooth in 4-component vector of float)
 0:?     'o' (out 4-component vector of float)
 0:?     'fflat' (flat in float)
