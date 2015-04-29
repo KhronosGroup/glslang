@@ -23,45 +23,45 @@ ERROR: 18 compilation errors.  No code generated.
 
 Shader version: 420
 ERROR: node is still EOpNull!
-0:5  Function Definition: func(au1; (uint)
+0:5  Function Definition: func(au1; (global uint)
 0:5    Function Parameters: 
 0:5      'c' (in atomic_uint)
 0:7    Sequence
 0:7      Branch: Return with expression
-0:7        Function Call: atomicCounterIncrement(au1; (uint)
+0:7        Function Call: atomicCounterIncrement(au1; (global uint)
 0:7          'c' (in atomic_uint)
-0:10  Function Definition: func2(au1; (uint)
+0:10  Function Definition: func2(au1; (global uint)
 0:10    Function Parameters: 
 0:10      'c' (out atomic_uint)
 0:12    Sequence
 0:12      Branch: Return with expression
 0:12        'counter' (layout(binding=0 offset=0 ) uniform atomic_uint)
 0:13      Branch: Return with expression
-0:13        Function Call: atomicCounter(au1; (uint)
+0:13        Function Call: atomicCounter(au1; (global uint)
 0:13          'counter' (layout(binding=0 offset=0 ) uniform atomic_uint)
-0:16  Function Definition: main( (void)
+0:16  Function Definition: main( (global void)
 0:16    Function Parameters: 
 0:?     Sequence
 0:19      Sequence
-0:19        move second child to first child (uint)
-0:19          'val' (uint)
-0:19          Function Call: atomicCounter(au1; (uint)
+0:19        move second child to first child (temp uint)
+0:19          'val' (temp uint)
+0:19          Function Call: atomicCounter(au1; (global uint)
 0:19            'counter' (layout(binding=0 offset=0 ) uniform atomic_uint)
-0:20      Function Call: atomicCounterDecrement(au1; (uint)
+0:20      Function Call: atomicCounterDecrement(au1; (global uint)
 0:20        'counter' (layout(binding=0 offset=0 ) uniform atomic_uint)
-0:26  Function Definition: opac( (void)
+0:26  Function Definition: opac( (global void)
 0:26    Function Parameters: 
 0:28    Sequence
 0:28      'counter' (layout(binding=0 offset=0 ) uniform atomic_uint)
 0:29      'counter' (layout(binding=0 offset=0 ) uniform atomic_uint)
-0:31      indirect index (int)
-0:31        'a' (3-element array of int)
+0:31      indirect index (temp int)
+0:31        'a' (temp 3-element array of int)
 0:31        'counter' (layout(binding=0 offset=0 ) uniform atomic_uint)
-0:32      direct index (layout(binding=1 offset=3 ) atomic_uint)
+0:32      direct index (layout(binding=1 offset=3 ) temp atomic_uint)
 0:32        'countArr' (layout(binding=1 offset=3 ) uniform 4-element array of atomic_uint)
 0:32        Constant:
 0:32          2 (const int)
-0:33      indirect index (layout(binding=1 offset=3 ) atomic_uint)
+0:33      indirect index (layout(binding=1 offset=3 ) temp atomic_uint)
 0:33        'countArr' (layout(binding=1 offset=3 ) uniform 4-element array of atomic_uint)
 0:33        'i' (uniform int)
 0:34      'counter' (layout(binding=0 offset=0 ) uniform atomic_uint)
@@ -70,7 +70,7 @@ ERROR: node is still EOpNull!
 0:?     'countArr' (layout(binding=1 offset=3 ) uniform 4-element array of atomic_uint)
 0:?     'i' (uniform int)
 0:?     'acin' (smooth in atomic_uint)
-0:?     'acg' (atomic_uint)
+0:?     'acg' (global atomic_uint)
 0:?     'aNoBind' (uniform atomic_uint)
 0:?     'aOffset' (layout(binding=0 offset=32 ) uniform atomic_uint)
 0:?     'bar3' (layout(binding=0 offset=4 ) uniform atomic_uint)
@@ -86,45 +86,45 @@ Linked fragment stage:
 
 Shader version: 420
 ERROR: node is still EOpNull!
-0:5  Function Definition: func(au1; (uint)
+0:5  Function Definition: func(au1; (global uint)
 0:5    Function Parameters: 
 0:5      'c' (in atomic_uint)
 0:7    Sequence
 0:7      Branch: Return with expression
-0:7        Function Call: atomicCounterIncrement(au1; (uint)
+0:7        Function Call: atomicCounterIncrement(au1; (global uint)
 0:7          'c' (in atomic_uint)
-0:10  Function Definition: func2(au1; (uint)
+0:10  Function Definition: func2(au1; (global uint)
 0:10    Function Parameters: 
 0:10      'c' (out atomic_uint)
 0:12    Sequence
 0:12      Branch: Return with expression
 0:12        'counter' (layout(binding=0 offset=0 ) uniform atomic_uint)
 0:13      Branch: Return with expression
-0:13        Function Call: atomicCounter(au1; (uint)
+0:13        Function Call: atomicCounter(au1; (global uint)
 0:13          'counter' (layout(binding=0 offset=0 ) uniform atomic_uint)
-0:16  Function Definition: main( (void)
+0:16  Function Definition: main( (global void)
 0:16    Function Parameters: 
 0:?     Sequence
 0:19      Sequence
-0:19        move second child to first child (uint)
-0:19          'val' (uint)
-0:19          Function Call: atomicCounter(au1; (uint)
+0:19        move second child to first child (temp uint)
+0:19          'val' (temp uint)
+0:19          Function Call: atomicCounter(au1; (global uint)
 0:19            'counter' (layout(binding=0 offset=0 ) uniform atomic_uint)
-0:20      Function Call: atomicCounterDecrement(au1; (uint)
+0:20      Function Call: atomicCounterDecrement(au1; (global uint)
 0:20        'counter' (layout(binding=0 offset=0 ) uniform atomic_uint)
-0:26  Function Definition: opac( (void)
+0:26  Function Definition: opac( (global void)
 0:26    Function Parameters: 
 0:28    Sequence
 0:28      'counter' (layout(binding=0 offset=0 ) uniform atomic_uint)
 0:29      'counter' (layout(binding=0 offset=0 ) uniform atomic_uint)
-0:31      indirect index (int)
-0:31        'a' (3-element array of int)
+0:31      indirect index (temp int)
+0:31        'a' (temp 3-element array of int)
 0:31        'counter' (layout(binding=0 offset=0 ) uniform atomic_uint)
-0:32      direct index (layout(binding=1 offset=3 ) atomic_uint)
+0:32      direct index (layout(binding=1 offset=3 ) temp atomic_uint)
 0:32        'countArr' (layout(binding=1 offset=3 ) uniform 4-element array of atomic_uint)
 0:32        Constant:
 0:32          2 (const int)
-0:33      indirect index (layout(binding=1 offset=3 ) atomic_uint)
+0:33      indirect index (layout(binding=1 offset=3 ) temp atomic_uint)
 0:33        'countArr' (layout(binding=1 offset=3 ) uniform 4-element array of atomic_uint)
 0:33        'i' (uniform int)
 0:34      'counter' (layout(binding=0 offset=0 ) uniform atomic_uint)
@@ -133,7 +133,7 @@ ERROR: node is still EOpNull!
 0:?     'countArr' (layout(binding=1 offset=3 ) uniform 4-element array of atomic_uint)
 0:?     'i' (uniform int)
 0:?     'acin' (smooth in atomic_uint)
-0:?     'acg' (atomic_uint)
+0:?     'acg' (global atomic_uint)
 0:?     'aNoBind' (uniform atomic_uint)
 0:?     'aOffset' (layout(binding=0 offset=32 ) uniform atomic_uint)
 0:?     'bar3' (layout(binding=0 offset=4 ) uniform atomic_uint)

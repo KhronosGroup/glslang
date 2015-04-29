@@ -2,7 +2,7 @@
 
 Shader version: 300
 0:? Sequence
-0:9  Function Definition: main( (void)
+0:9  Function Definition: main( (global void)
 0:9    Function Parameters: 
 0:?   Linker Objects
 0:?     'pos' (smooth in mediump 4-component vector of float)
@@ -16,7 +16,7 @@ Linked fragment stage:
 
 Shader version: 300
 0:? Sequence
-0:9  Function Definition: main( (void)
+0:9  Function Definition: main( (global void)
 0:9    Function Parameters: 
 0:?   Linker Objects
 0:?     'pos' (smooth in mediump 4-component vector of float)

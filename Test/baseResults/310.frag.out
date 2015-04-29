@@ -9,7 +9,7 @@ ERROR: 0:15: 'usampler2DRect' : Reserved word.
 ERROR: 0:15: 'sampler/image' : type requires declaration of default precision qualifier 
 ERROR: 0:23: 'variable indexing sampler array' : not supported with this profile: es
 ERROR: 0:27: 'textureGatherOffsets' : no matching overloaded function found 
-ERROR: 0:27: '=' :  cannot convert from 'const float' to 'mediump 4-component vector of uint'
+ERROR: 0:27: '=' :  cannot convert from 'const float' to 'temp mediump 4-component vector of uint'
 ERROR: 0:30: 'textureGatherOffset(...)' : must be a compile-time constant: component argument
 ERROR: 0:31: 'textureGatherOffset(...)' : must be 0, 1, 2, or 3: component argument
 ERROR: 0:42: 'texel offset' : argument must be compile-time constant 
@@ -47,30 +47,30 @@ ERROR: 41 compilation errors.  No code generated.
 Shader version: 310
 using early_fragment_tests
 ERROR: node is still EOpNull!
-0:21  Function Definition: main( (void)
+0:21  Function Definition: main( (global void)
 0:21    Function Parameters: 
 0:23    Sequence
 0:23      Sequence
-0:23        move second child to first child (highp 4-component vector of float)
-0:23          'v' (mediump 4-component vector of float)
-0:23          Function Call: texture(s21;vf2; (highp 4-component vector of float)
-0:23            indirect index (highp sampler2D)
+0:23        move second child to first child (temp highp 4-component vector of float)
+0:23          'v' (temp mediump 4-component vector of float)
+0:23          Function Call: texture(s21;vf2; (global highp 4-component vector of float)
+0:23            indirect index (temp highp sampler2D)
 0:23              'arrayedSampler' (uniform 5-element array of highp sampler2D)
 0:23              'i' (uniform mediump int)
 0:23            'c2D' (smooth in mediump 2-component vector of float)
 0:28      Sequence
-0:28        move second child to first child (highp 4-component vector of float)
-0:28          'v4' (mediump 4-component vector of float)
-0:28          Function Call: textureGather(s21;vf2; (highp 4-component vector of float)
-0:28            direct index (highp sampler2D)
+0:28        move second child to first child (temp highp 4-component vector of float)
+0:28          'v4' (temp mediump 4-component vector of float)
+0:28          Function Call: textureGather(s21;vf2; (global highp 4-component vector of float)
+0:28            direct index (temp highp sampler2D)
 0:28              'arrayedSampler' (uniform 5-element array of highp sampler2D)
 0:28              Constant:
 0:28                0 (const int)
 0:28            'c2D' (smooth in mediump 2-component vector of float)
 0:29      Sequence
-0:29        move second child to first child (mediump 4-component vector of int)
-0:29          'iv4' (mediump 4-component vector of int)
-0:29          Function Call: textureGatherOffset(isA21;vf3;vi2;i1; (mediump 4-component vector of int)
+0:29        move second child to first child (temp mediump 4-component vector of int)
+0:29          'iv4' (temp mediump 4-component vector of int)
+0:29          Function Call: textureGatherOffset(isA21;vf3;vi2;i1; (global mediump 4-component vector of int)
 0:29            'isamp2DA' (uniform highp isampler2DArray)
 0:29            Constant:
 0:29              0.100000
@@ -81,9 +81,9 @@ ERROR: node is still EOpNull!
 0:29              1 (const int)
 0:29            Constant:
 0:29              3 (const int)
-0:30      move second child to first child (mediump 4-component vector of int)
-0:30        'iv4' (mediump 4-component vector of int)
-0:30        Function Call: textureGatherOffset(isA21;vf3;vi2;i1; (mediump 4-component vector of int)
+0:30      move second child to first child (temp mediump 4-component vector of int)
+0:30        'iv4' (temp mediump 4-component vector of int)
+0:30        Function Call: textureGatherOffset(isA21;vf3;vi2;i1; (global mediump 4-component vector of int)
 0:30          'isamp2DA' (uniform highp isampler2DArray)
 0:30          Constant:
 0:30            0.100000
@@ -93,9 +93,9 @@ ERROR: node is still EOpNull!
 0:30            1 (const int)
 0:30            1 (const int)
 0:30          'i' (uniform mediump int)
-0:31      move second child to first child (mediump 4-component vector of int)
-0:31        'iv4' (mediump 4-component vector of int)
-0:31        Function Call: textureGatherOffset(isA21;vf3;vi2;i1; (mediump 4-component vector of int)
+0:31      move second child to first child (temp mediump 4-component vector of int)
+0:31        'iv4' (temp mediump 4-component vector of int)
+0:31        Function Call: textureGatherOffset(isA21;vf3;vi2;i1; (global mediump 4-component vector of int)
 0:31          'isamp2DA' (uniform highp isampler2DArray)
 0:31          Constant:
 0:31            0.100000
@@ -106,9 +106,9 @@ ERROR: node is still EOpNull!
 0:31            1 (const int)
 0:31          Constant:
 0:31            4 (const int)
-0:32      move second child to first child (mediump 4-component vector of int)
-0:32        'iv4' (mediump 4-component vector of int)
-0:32        Function Call: textureGatherOffset(isA21;vf3;vi2;i1; (mediump 4-component vector of int)
+0:32      move second child to first child (temp mediump 4-component vector of int)
+0:32        'iv4' (temp mediump 4-component vector of int)
+0:32        Function Call: textureGatherOffset(isA21;vf3;vi2;i1; (global mediump 4-component vector of int)
 0:32          'isamp2DA' (uniform highp isampler2DArray)
 0:32          Constant:
 0:32            0.100000
@@ -119,20 +119,20 @@ ERROR: node is still EOpNull!
 0:32            1 (const int)
 0:32          Constant:
 0:32            3 (const int)
-0:33      move second child to first child (mediump 4-component vector of int)
-0:33        'iv4' (mediump 4-component vector of int)
-0:33        Function Call: textureGatherOffset(isA21;vf3;vi2; (mediump 4-component vector of int)
+0:33      move second child to first child (temp mediump 4-component vector of int)
+0:33        'iv4' (temp mediump 4-component vector of int)
+0:33        Function Call: textureGatherOffset(isA21;vf3;vi2; (global mediump 4-component vector of int)
 0:33          'isamp2DA' (uniform highp isampler2DArray)
 0:33          Constant:
 0:33            0.100000
 0:33            0.100000
 0:33            0.100000
-0:33          Construct ivec2 (2-component vector of int)
+0:33          Construct ivec2 (temp 2-component vector of int)
 0:33            'i' (uniform mediump int)
-0:38  Function Definition: foo23( (void)
+0:38  Function Definition: foo23( (global void)
 0:38    Function Parameters: 
 0:?     Sequence
-0:42      Function Call: textureProjGradOffset(us21;vf4;vf2;vf2;vi2; (mediump 4-component vector of uint)
+0:42      Function Call: textureProjGradOffset(us21;vf4;vf2;vf2;vi2; (global mediump 4-component vector of uint)
 0:42        'usamp2d' (uniform highp usampler2D)
 0:42        'outp' (out mediump 4-component vector of float)
 0:42        Constant:
@@ -141,9 +141,9 @@ ERROR: node is still EOpNull!
 0:42        Constant:
 0:42          0.000000
 0:42          0.000000
-0:42        Convert float to int (2-component vector of int)
+0:42        Convert float to int (temp 2-component vector of int)
 0:42          'c2D' (smooth in mediump 2-component vector of float)
-0:43      Function Call: textureProjGradOffset(us21;vf4;vf2;vf2;vi2; (mediump 4-component vector of uint)
+0:43      Function Call: textureProjGradOffset(us21;vf4;vf2;vf2;vi2; (global mediump 4-component vector of uint)
 0:43        'usamp2d' (uniform highp usampler2D)
 0:43        'outp' (out mediump 4-component vector of float)
 0:43        Constant:
@@ -155,7 +155,7 @@ ERROR: node is still EOpNull!
 0:43        Constant:
 0:43          3 (const int)
 0:43          4 (const int)
-0:44      Function Call: textureProjGradOffset(us21;vf4;vf2;vf2;vi2; (mediump 4-component vector of uint)
+0:44      Function Call: textureProjGradOffset(us21;vf4;vf2;vf2;vi2; (global mediump 4-component vector of uint)
 0:44        'usamp2d' (uniform highp usampler2D)
 0:44        'outp' (out mediump 4-component vector of float)
 0:44        Constant:
@@ -167,7 +167,7 @@ ERROR: node is still EOpNull!
 0:44        Constant:
 0:44          15 (const int)
 0:44          16 (const int)
-0:45      Function Call: textureProjGradOffset(us21;vf4;vf2;vf2;vi2; (mediump 4-component vector of uint)
+0:45      Function Call: textureProjGradOffset(us21;vf4;vf2;vf2;vi2; (global mediump 4-component vector of uint)
 0:45        'usamp2d' (uniform highp usampler2D)
 0:45        'outp' (out mediump 4-component vector of float)
 0:45        Constant:
@@ -179,85 +179,85 @@ ERROR: node is still EOpNull!
 0:45        Constant:
 0:45          -10 (const int)
 0:45          20 (const int)
-0:47      Test condition and select (void)
+0:47      Test condition and select (temp void)
 0:47        Condition
 0:47        'gl_HelperInvocation' (in bool)
 0:47        true case
-0:48        Pre-Increment (mediump 4-component vector of float)
+0:48        Pre-Increment (temp mediump 4-component vector of float)
 0:48          'outp' (out mediump 4-component vector of float)
 0:50      Sequence
-0:50        move second child to first child (mediump int)
-0:50          'sum' (mediump int)
+0:50        move second child to first child (temp mediump int)
+0:50          'sum' (temp mediump int)
 0:50          Constant:
 0:50            32 (const int)
-0:58      move second child to first child (bool)
-0:58        'b1' (bool)
-0:58        mix (bool)
-0:58          'b2' (bool)
-0:58          'b3' (bool)
-0:58          'b' (bool)
+0:58      move second child to first child (temp bool)
+0:58        'b1' (temp bool)
+0:58        mix (global bool)
+0:58          'b2' (temp bool)
+0:58          'b3' (temp bool)
+0:58          'b' (temp bool)
 0:59      Sequence
-0:59        move second child to first child (mediump 3-component vector of uint)
-0:59          'um3' (mediump 3-component vector of uint)
-0:59          mix (mediump 3-component vector of uint)
-0:59            Construct uvec3 (mediump 3-component vector of uint)
-0:59              Convert int to uint (mediump uint)
+0:59        move second child to first child (temp mediump 3-component vector of uint)
+0:59          'um3' (temp mediump 3-component vector of uint)
+0:59          mix (global mediump 3-component vector of uint)
+0:59            Construct uvec3 (temp mediump 3-component vector of uint)
+0:59              Convert int to uint (temp mediump uint)
 0:59                'i' (uniform mediump int)
-0:59            Construct uvec3 (mediump 3-component vector of uint)
-0:59              Convert int to uint (mediump uint)
+0:59            Construct uvec3 (temp mediump 3-component vector of uint)
+0:59              Convert int to uint (temp mediump uint)
 0:59                'i' (uniform mediump int)
-0:59            Construct bvec3 (3-component vector of bool)
-0:59              'b' (bool)
+0:59            Construct bvec3 (temp 3-component vector of bool)
+0:59              'b' (temp bool)
 0:60      Sequence
-0:60        move second child to first child (mediump 4-component vector of int)
-0:60          'im4' (mediump 4-component vector of int)
-0:60          mix (mediump 4-component vector of int)
-0:60            Construct ivec4 (mediump 4-component vector of int)
+0:60        move second child to first child (temp mediump 4-component vector of int)
+0:60          'im4' (temp mediump 4-component vector of int)
+0:60          mix (global mediump 4-component vector of int)
+0:60            Construct ivec4 (temp mediump 4-component vector of int)
 0:60              'i' (uniform mediump int)
-0:60            Construct ivec4 (mediump 4-component vector of int)
+0:60            Construct ivec4 (temp mediump 4-component vector of int)
 0:60              'i' (uniform mediump int)
-0:60            Construct bvec4 (4-component vector of bool)
-0:60              'b' (bool)
-0:98  Function Definition: foots( (void)
+0:60            Construct bvec4 (temp 4-component vector of bool)
+0:60              'b' (temp bool)
+0:98  Function Definition: foots( (global void)
 0:98    Function Parameters: 
 0:100    Sequence
 0:100      Sequence
-0:100        move second child to first child (highp 2-component vector of int)
-0:100          'v2' (highp 2-component vector of int)
-0:100          Function Call: textureSize(s21;i1; (highp 2-component vector of int)
+0:100        move second child to first child (temp highp 2-component vector of int)
+0:100          'v2' (temp highp 2-component vector of int)
+0:100          Function Call: textureSize(s21;i1; (temp highp 2-component vector of int)
 0:100            's1' (layout(binding=3 ) uniform highp sampler2D)
 0:100            Constant:
 0:100              2 (const int)
 0:101      Sequence
-0:101        move second child to first child (highp 3-component vector of int)
-0:101          'v3' (highp 3-component vector of int)
-0:101          Function Call: textureSize(isA21;i1; (highp 3-component vector of int)
+0:101        move second child to first child (temp highp 3-component vector of int)
+0:101          'v3' (temp highp 3-component vector of int)
+0:101          Function Call: textureSize(isA21;i1; (temp highp 3-component vector of int)
 0:101            'isamp2DA' (uniform highp isampler2DArray)
 0:101            Constant:
 0:101              3 (const int)
-0:102      move second child to first child (highp 2-component vector of int)
-0:102        'v2' (highp 2-component vector of int)
-0:102        Function Call: textureSize(s21; (highp 2-component vector of int)
+0:102      move second child to first child (temp highp 2-component vector of int)
+0:102        'v2' (temp highp 2-component vector of int)
+0:102        Function Call: textureSize(s21; (temp highp 2-component vector of int)
 0:102          's2dms' (uniform highp sampler2DMS)
-0:103      move second child to first child (highp 2-component vector of int)
-0:103        'v2' (highp 2-component vector of int)
-0:103        Function Call: imageSize(I21; (highp 2-component vector of int)
+0:103      move second child to first child (temp highp 2-component vector of int)
+0:103        'v2' (temp highp 2-component vector of int)
+0:103        Function Call: imageSize(I21; (temp highp 2-component vector of int)
 0:103          'i2D' (layout(binding=2 ) writeonly uniform highp image2D)
-0:104      move second child to first child (highp 3-component vector of int)
-0:104        'v3' (highp 3-component vector of int)
-0:104        Function Call: imageSize(I31; (highp 3-component vector of int)
+0:104      move second child to first child (temp highp 3-component vector of int)
+0:104        'v3' (temp highp 3-component vector of int)
+0:104        Function Call: imageSize(I31; (temp highp 3-component vector of int)
 0:104          'i3D' (layout(binding=4 ) readonly uniform mediump image3D)
-0:105      move second child to first child (highp 2-component vector of int)
-0:105        'v2' (highp 2-component vector of int)
-0:105        Function Call: imageSize(IC1; (highp 2-component vector of int)
+0:105      move second child to first child (temp highp 2-component vector of int)
+0:105        'v2' (temp highp 2-component vector of int)
+0:105        Function Call: imageSize(IC1; (temp highp 2-component vector of int)
 0:105          'iCube' (layout(binding=5 ) uniform lowp imageCube)
-0:106      move second child to first child (highp 3-component vector of int)
-0:106        'v3' (highp 3-component vector of int)
-0:106        Function Call: imageSize(IA21; (highp 3-component vector of int)
+0:106      move second child to first child (temp highp 3-component vector of int)
+0:106        'v3' (temp highp 3-component vector of int)
+0:106        Function Call: imageSize(IA21; (temp highp 3-component vector of int)
 0:106          'i2DA' (layout(binding=6 ) uniform mediump image2DArray)
-0:107      move second child to first child (highp 2-component vector of int)
-0:107        'v2' (highp 2-component vector of int)
-0:107        Function Call: imageSize(I21; (highp 2-component vector of int)
+0:107      move second child to first child (temp highp 2-component vector of int)
+0:107        'v2' (temp highp 2-component vector of int)
+0:107        Function Call: imageSize(I21; (temp highp 2-component vector of int)
 0:107          'i2Dqualified' (layout(binding=6 ) coherent volatile restrict uniform highp image2D)
 0:?   Linker Objects
 0:?     'gl_FragCoord' (smooth in mediump 4-component vector of float)
@@ -295,11 +295,11 @@ ERROR: node is still EOpNull!
 0:?     'ino' (smooth in highp sampler2D)
 0:?     'ina' (smooth in 4-element array of mediump float)
 0:?     'inaa' (smooth in 4-element array of mediump float)
-0:?     'ins' (smooth in structure{mediump float f})
-0:?     'inasa' (smooth in 4-element array of structure{mediump float f})
-0:?     'insa' (smooth in 4-element array of structure{mediump float f})
-0:?     'inSA' (smooth in structure{4-element array of mediump float f})
-0:?     'inSS' (smooth in structure{mediump float f, structure{mediump float f} s})
+0:?     'ins' (smooth in structure{global mediump float f})
+0:?     'inasa' (smooth in 4-element array of structure{global mediump float f})
+0:?     'insa' (smooth in 4-element array of structure{global mediump float f})
+0:?     'inSA' (smooth in structure{global 4-element array of mediump float f})
+0:?     'inSS' (smooth in structure{global mediump float f, global structure{global mediump float f} s})
 
 
 Linked fragment stage:
@@ -309,30 +309,30 @@ ERROR: Linking fragment stage: when more than one fragment shader output, all mu
 Shader version: 310
 using early_fragment_tests
 ERROR: node is still EOpNull!
-0:21  Function Definition: main( (void)
+0:21  Function Definition: main( (global void)
 0:21    Function Parameters: 
 0:23    Sequence
 0:23      Sequence
-0:23        move second child to first child (highp 4-component vector of float)
-0:23          'v' (mediump 4-component vector of float)
-0:23          Function Call: texture(s21;vf2; (highp 4-component vector of float)
-0:23            indirect index (highp sampler2D)
+0:23        move second child to first child (temp highp 4-component vector of float)
+0:23          'v' (temp mediump 4-component vector of float)
+0:23          Function Call: texture(s21;vf2; (global highp 4-component vector of float)
+0:23            indirect index (temp highp sampler2D)
 0:23              'arrayedSampler' (uniform 5-element array of highp sampler2D)
 0:23              'i' (uniform mediump int)
 0:23            'c2D' (smooth in mediump 2-component vector of float)
 0:28      Sequence
-0:28        move second child to first child (highp 4-component vector of float)
-0:28          'v4' (mediump 4-component vector of float)
-0:28          Function Call: textureGather(s21;vf2; (highp 4-component vector of float)
-0:28            direct index (highp sampler2D)
+0:28        move second child to first child (temp highp 4-component vector of float)
+0:28          'v4' (temp mediump 4-component vector of float)
+0:28          Function Call: textureGather(s21;vf2; (global highp 4-component vector of float)
+0:28            direct index (temp highp sampler2D)
 0:28              'arrayedSampler' (uniform 5-element array of highp sampler2D)
 0:28              Constant:
 0:28                0 (const int)
 0:28            'c2D' (smooth in mediump 2-component vector of float)
 0:29      Sequence
-0:29        move second child to first child (mediump 4-component vector of int)
-0:29          'iv4' (mediump 4-component vector of int)
-0:29          Function Call: textureGatherOffset(isA21;vf3;vi2;i1; (mediump 4-component vector of int)
+0:29        move second child to first child (temp mediump 4-component vector of int)
+0:29          'iv4' (temp mediump 4-component vector of int)
+0:29          Function Call: textureGatherOffset(isA21;vf3;vi2;i1; (global mediump 4-component vector of int)
 0:29            'isamp2DA' (uniform highp isampler2DArray)
 0:29            Constant:
 0:29              0.100000
@@ -343,9 +343,9 @@ ERROR: node is still EOpNull!
 0:29              1 (const int)
 0:29            Constant:
 0:29              3 (const int)
-0:30      move second child to first child (mediump 4-component vector of int)
-0:30        'iv4' (mediump 4-component vector of int)
-0:30        Function Call: textureGatherOffset(isA21;vf3;vi2;i1; (mediump 4-component vector of int)
+0:30      move second child to first child (temp mediump 4-component vector of int)
+0:30        'iv4' (temp mediump 4-component vector of int)
+0:30        Function Call: textureGatherOffset(isA21;vf3;vi2;i1; (global mediump 4-component vector of int)
 0:30          'isamp2DA' (uniform highp isampler2DArray)
 0:30          Constant:
 0:30            0.100000
@@ -355,9 +355,9 @@ ERROR: node is still EOpNull!
 0:30            1 (const int)
 0:30            1 (const int)
 0:30          'i' (uniform mediump int)
-0:31      move second child to first child (mediump 4-component vector of int)
-0:31        'iv4' (mediump 4-component vector of int)
-0:31        Function Call: textureGatherOffset(isA21;vf3;vi2;i1; (mediump 4-component vector of int)
+0:31      move second child to first child (temp mediump 4-component vector of int)
+0:31        'iv4' (temp mediump 4-component vector of int)
+0:31        Function Call: textureGatherOffset(isA21;vf3;vi2;i1; (global mediump 4-component vector of int)
 0:31          'isamp2DA' (uniform highp isampler2DArray)
 0:31          Constant:
 0:31            0.100000
@@ -368,9 +368,9 @@ ERROR: node is still EOpNull!
 0:31            1 (const int)
 0:31          Constant:
 0:31            4 (const int)
-0:32      move second child to first child (mediump 4-component vector of int)
-0:32        'iv4' (mediump 4-component vector of int)
-0:32        Function Call: textureGatherOffset(isA21;vf3;vi2;i1; (mediump 4-component vector of int)
+0:32      move second child to first child (temp mediump 4-component vector of int)
+0:32        'iv4' (temp mediump 4-component vector of int)
+0:32        Function Call: textureGatherOffset(isA21;vf3;vi2;i1; (global mediump 4-component vector of int)
 0:32          'isamp2DA' (uniform highp isampler2DArray)
 0:32          Constant:
 0:32            0.100000
@@ -381,20 +381,20 @@ ERROR: node is still EOpNull!
 0:32            1 (const int)
 0:32          Constant:
 0:32            3 (const int)
-0:33      move second child to first child (mediump 4-component vector of int)
-0:33        'iv4' (mediump 4-component vector of int)
-0:33        Function Call: textureGatherOffset(isA21;vf3;vi2; (mediump 4-component vector of int)
+0:33      move second child to first child (temp mediump 4-component vector of int)
+0:33        'iv4' (temp mediump 4-component vector of int)
+0:33        Function Call: textureGatherOffset(isA21;vf3;vi2; (global mediump 4-component vector of int)
 0:33          'isamp2DA' (uniform highp isampler2DArray)
 0:33          Constant:
 0:33            0.100000
 0:33            0.100000
 0:33            0.100000
-0:33          Construct ivec2 (2-component vector of int)
+0:33          Construct ivec2 (temp 2-component vector of int)
 0:33            'i' (uniform mediump int)
-0:38  Function Definition: foo23( (void)
+0:38  Function Definition: foo23( (global void)
 0:38    Function Parameters: 
 0:?     Sequence
-0:42      Function Call: textureProjGradOffset(us21;vf4;vf2;vf2;vi2; (mediump 4-component vector of uint)
+0:42      Function Call: textureProjGradOffset(us21;vf4;vf2;vf2;vi2; (global mediump 4-component vector of uint)
 0:42        'usamp2d' (uniform highp usampler2D)
 0:42        'outp' (out mediump 4-component vector of float)
 0:42        Constant:
@@ -403,9 +403,9 @@ ERROR: node is still EOpNull!
 0:42        Constant:
 0:42          0.000000
 0:42          0.000000
-0:42        Convert float to int (2-component vector of int)
+0:42        Convert float to int (temp 2-component vector of int)
 0:42          'c2D' (smooth in mediump 2-component vector of float)
-0:43      Function Call: textureProjGradOffset(us21;vf4;vf2;vf2;vi2; (mediump 4-component vector of uint)
+0:43      Function Call: textureProjGradOffset(us21;vf4;vf2;vf2;vi2; (global mediump 4-component vector of uint)
 0:43        'usamp2d' (uniform highp usampler2D)
 0:43        'outp' (out mediump 4-component vector of float)
 0:43        Constant:
@@ -417,7 +417,7 @@ ERROR: node is still EOpNull!
 0:43        Constant:
 0:43          3 (const int)
 0:43          4 (const int)
-0:44      Function Call: textureProjGradOffset(us21;vf4;vf2;vf2;vi2; (mediump 4-component vector of uint)
+0:44      Function Call: textureProjGradOffset(us21;vf4;vf2;vf2;vi2; (global mediump 4-component vector of uint)
 0:44        'usamp2d' (uniform highp usampler2D)
 0:44        'outp' (out mediump 4-component vector of float)
 0:44        Constant:
@@ -429,7 +429,7 @@ ERROR: node is still EOpNull!
 0:44        Constant:
 0:44          15 (const int)
 0:44          16 (const int)
-0:45      Function Call: textureProjGradOffset(us21;vf4;vf2;vf2;vi2; (mediump 4-component vector of uint)
+0:45      Function Call: textureProjGradOffset(us21;vf4;vf2;vf2;vi2; (global mediump 4-component vector of uint)
 0:45        'usamp2d' (uniform highp usampler2D)
 0:45        'outp' (out mediump 4-component vector of float)
 0:45        Constant:
@@ -441,85 +441,85 @@ ERROR: node is still EOpNull!
 0:45        Constant:
 0:45          -10 (const int)
 0:45          20 (const int)
-0:47      Test condition and select (void)
+0:47      Test condition and select (temp void)
 0:47        Condition
 0:47        'gl_HelperInvocation' (in bool)
 0:47        true case
-0:48        Pre-Increment (mediump 4-component vector of float)
+0:48        Pre-Increment (temp mediump 4-component vector of float)
 0:48          'outp' (out mediump 4-component vector of float)
 0:50      Sequence
-0:50        move second child to first child (mediump int)
-0:50          'sum' (mediump int)
+0:50        move second child to first child (temp mediump int)
+0:50          'sum' (temp mediump int)
 0:50          Constant:
 0:50            32 (const int)
-0:58      move second child to first child (bool)
-0:58        'b1' (bool)
-0:58        mix (bool)
-0:58          'b2' (bool)
-0:58          'b3' (bool)
-0:58          'b' (bool)
+0:58      move second child to first child (temp bool)
+0:58        'b1' (temp bool)
+0:58        mix (global bool)
+0:58          'b2' (temp bool)
+0:58          'b3' (temp bool)
+0:58          'b' (temp bool)
 0:59      Sequence
-0:59        move second child to first child (mediump 3-component vector of uint)
-0:59          'um3' (mediump 3-component vector of uint)
-0:59          mix (mediump 3-component vector of uint)
-0:59            Construct uvec3 (mediump 3-component vector of uint)
-0:59              Convert int to uint (mediump uint)
+0:59        move second child to first child (temp mediump 3-component vector of uint)
+0:59          'um3' (temp mediump 3-component vector of uint)
+0:59          mix (global mediump 3-component vector of uint)
+0:59            Construct uvec3 (temp mediump 3-component vector of uint)
+0:59              Convert int to uint (temp mediump uint)
 0:59                'i' (uniform mediump int)
-0:59            Construct uvec3 (mediump 3-component vector of uint)
-0:59              Convert int to uint (mediump uint)
+0:59            Construct uvec3 (temp mediump 3-component vector of uint)
+0:59              Convert int to uint (temp mediump uint)
 0:59                'i' (uniform mediump int)
-0:59            Construct bvec3 (3-component vector of bool)
-0:59              'b' (bool)
+0:59            Construct bvec3 (temp 3-component vector of bool)
+0:59              'b' (temp bool)
 0:60      Sequence
-0:60        move second child to first child (mediump 4-component vector of int)
-0:60          'im4' (mediump 4-component vector of int)
-0:60          mix (mediump 4-component vector of int)
-0:60            Construct ivec4 (mediump 4-component vector of int)
+0:60        move second child to first child (temp mediump 4-component vector of int)
+0:60          'im4' (temp mediump 4-component vector of int)
+0:60          mix (global mediump 4-component vector of int)
+0:60            Construct ivec4 (temp mediump 4-component vector of int)
 0:60              'i' (uniform mediump int)
-0:60            Construct ivec4 (mediump 4-component vector of int)
+0:60            Construct ivec4 (temp mediump 4-component vector of int)
 0:60              'i' (uniform mediump int)
-0:60            Construct bvec4 (4-component vector of bool)
-0:60              'b' (bool)
-0:98  Function Definition: foots( (void)
+0:60            Construct bvec4 (temp 4-component vector of bool)
+0:60              'b' (temp bool)
+0:98  Function Definition: foots( (global void)
 0:98    Function Parameters: 
 0:100    Sequence
 0:100      Sequence
-0:100        move second child to first child (highp 2-component vector of int)
-0:100          'v2' (highp 2-component vector of int)
-0:100          Function Call: textureSize(s21;i1; (highp 2-component vector of int)
+0:100        move second child to first child (temp highp 2-component vector of int)
+0:100          'v2' (temp highp 2-component vector of int)
+0:100          Function Call: textureSize(s21;i1; (temp highp 2-component vector of int)
 0:100            's1' (layout(binding=3 ) uniform highp sampler2D)
 0:100            Constant:
 0:100              2 (const int)
 0:101      Sequence
-0:101        move second child to first child (highp 3-component vector of int)
-0:101          'v3' (highp 3-component vector of int)
-0:101          Function Call: textureSize(isA21;i1; (highp 3-component vector of int)
+0:101        move second child to first child (temp highp 3-component vector of int)
+0:101          'v3' (temp highp 3-component vector of int)
+0:101          Function Call: textureSize(isA21;i1; (temp highp 3-component vector of int)
 0:101            'isamp2DA' (uniform highp isampler2DArray)
 0:101            Constant:
 0:101              3 (const int)
-0:102      move second child to first child (highp 2-component vector of int)
-0:102        'v2' (highp 2-component vector of int)
-0:102        Function Call: textureSize(s21; (highp 2-component vector of int)
+0:102      move second child to first child (temp highp 2-component vector of int)
+0:102        'v2' (temp highp 2-component vector of int)
+0:102        Function Call: textureSize(s21; (temp highp 2-component vector of int)
 0:102          's2dms' (uniform highp sampler2DMS)
-0:103      move second child to first child (highp 2-component vector of int)
-0:103        'v2' (highp 2-component vector of int)
-0:103        Function Call: imageSize(I21; (highp 2-component vector of int)
+0:103      move second child to first child (temp highp 2-component vector of int)
+0:103        'v2' (temp highp 2-component vector of int)
+0:103        Function Call: imageSize(I21; (temp highp 2-component vector of int)
 0:103          'i2D' (layout(binding=2 ) writeonly uniform highp image2D)
-0:104      move second child to first child (highp 3-component vector of int)
-0:104        'v3' (highp 3-component vector of int)
-0:104        Function Call: imageSize(I31; (highp 3-component vector of int)
+0:104      move second child to first child (temp highp 3-component vector of int)
+0:104        'v3' (temp highp 3-component vector of int)
+0:104        Function Call: imageSize(I31; (temp highp 3-component vector of int)
 0:104          'i3D' (layout(binding=4 ) readonly uniform mediump image3D)
-0:105      move second child to first child (highp 2-component vector of int)
-0:105        'v2' (highp 2-component vector of int)
-0:105        Function Call: imageSize(IC1; (highp 2-component vector of int)
+0:105      move second child to first child (temp highp 2-component vector of int)
+0:105        'v2' (temp highp 2-component vector of int)
+0:105        Function Call: imageSize(IC1; (temp highp 2-component vector of int)
 0:105          'iCube' (layout(binding=5 ) uniform lowp imageCube)
-0:106      move second child to first child (highp 3-component vector of int)
-0:106        'v3' (highp 3-component vector of int)
-0:106        Function Call: imageSize(IA21; (highp 3-component vector of int)
+0:106      move second child to first child (temp highp 3-component vector of int)
+0:106        'v3' (temp highp 3-component vector of int)
+0:106        Function Call: imageSize(IA21; (temp highp 3-component vector of int)
 0:106          'i2DA' (layout(binding=6 ) uniform mediump image2DArray)
-0:107      move second child to first child (highp 2-component vector of int)
-0:107        'v2' (highp 2-component vector of int)
-0:107        Function Call: imageSize(I21; (highp 2-component vector of int)
+0:107      move second child to first child (temp highp 2-component vector of int)
+0:107        'v2' (temp highp 2-component vector of int)
+0:107        Function Call: imageSize(I21; (temp highp 2-component vector of int)
 0:107          'i2Dqualified' (layout(binding=6 ) coherent volatile restrict uniform highp image2D)
 0:?   Linker Objects
 0:?     'gl_FragCoord' (smooth in mediump 4-component vector of float)
@@ -557,9 +557,9 @@ ERROR: node is still EOpNull!
 0:?     'ino' (smooth in highp sampler2D)
 0:?     'ina' (smooth in 4-element array of mediump float)
 0:?     'inaa' (smooth in 4-element array of mediump float)
-0:?     'ins' (smooth in structure{mediump float f})
-0:?     'inasa' (smooth in 4-element array of structure{mediump float f})
-0:?     'insa' (smooth in 4-element array of structure{mediump float f})
-0:?     'inSA' (smooth in structure{4-element array of mediump float f})
-0:?     'inSS' (smooth in structure{mediump float f, structure{mediump float f} s})
+0:?     'ins' (smooth in structure{global mediump float f})
+0:?     'inasa' (smooth in 4-element array of structure{global mediump float f})
+0:?     'insa' (smooth in 4-element array of structure{global mediump float f})
+0:?     'inSA' (smooth in structure{global 4-element array of mediump float f})
+0:?     'inSS' (smooth in structure{global mediump float f, global structure{global mediump float f} s})
 

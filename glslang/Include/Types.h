@@ -1259,8 +1259,7 @@ public:
             p += snprintf(p, end - p, "readonly ");
         if (qualifier.writeonly)
             p += snprintf(p, end - p, "writeonly ");
-        if (qualifier.storage != EvqTemporary && qualifier.storage != EvqGlobal)
-            p += snprintf(p, end - p, "%s ", getStorageQualifierString());
+        p += snprintf(p, end - p, "%s ", getStorageQualifierString());
         if (arraySizes) {
             if (arraySizes->sizes.front() == 0)
                 p += snprintf(p, end - p, "implicitly-sized array of ");

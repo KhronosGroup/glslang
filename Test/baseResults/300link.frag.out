@@ -2,7 +2,7 @@
 
 Shader version: 300
 0:? Sequence
-0:8  Function Definition: main( (void)
+0:8  Function Definition: main( (global void)
 0:8    Function Parameters: 
 0:?   Linker Objects
 0:?     'color1' (out highp 4-component vector of float)
@@ -15,7 +15,7 @@ ERROR: Linking fragment stage: when more than one fragment shader output, all mu
 
 Shader version: 300
 0:? Sequence
-0:8  Function Definition: main( (void)
+0:8  Function Definition: main( (global void)
 0:8    Function Parameters: 
 0:?   Linker Objects
 0:?     'color1' (out highp 4-component vector of float)

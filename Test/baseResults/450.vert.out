@@ -7,11 +7,11 @@ ERROR: 2 compilation errors.  No code generated.
 
 Shader version: 450
 ERROR: node is still EOpNull!
-0:7  Function Definition: main( (void)
+0:7  Function Definition: main( (global void)
 0:7    Function Parameters: 
 0:9    Sequence
-0:9      move second child to first child (float)
-0:9        direct index (float)
+0:9      move second child to first child (temp float)
+0:9        direct index (temp float)
 0:9          gl_CullDistance: direct index for structure (out implicitly-sized array of float)
 0:9            'anon@0' (out block{out implicitly-sized array of float gl_CullDistance})
 0:9            Constant:
@@ -26,11 +26,11 @@ ERROR: node is still EOpNull!
 0:?     'outo' (smooth out sampler2D)
 0:?     'outa' (smooth out 4-element array of float)
 0:?     'outaa' (smooth out 4-element array of float)
-0:?     'outs' (smooth out structure{float f})
-0:?     'outasa' (smooth out 4-element array of structure{float f})
-0:?     'outsa' (smooth out 4-element array of structure{float f})
-0:?     'outSA' (smooth out structure{4-element array of float f})
-0:?     'outSS' (smooth out structure{float f, structure{float f} s})
+0:?     'outs' (smooth out structure{global float f})
+0:?     'outasa' (smooth out 4-element array of structure{global float f})
+0:?     'outsa' (smooth out 4-element array of structure{global float f})
+0:?     'outSA' (smooth out structure{global 4-element array of float f})
+0:?     'outSS' (smooth out structure{global float f, global structure{global float f} s})
 0:?     'gl_VertexID' (gl_VertexId int)
 0:?     'gl_InstanceID' (gl_InstanceId int)
 
@@ -40,11 +40,11 @@ Linked vertex stage:
 
 Shader version: 450
 ERROR: node is still EOpNull!
-0:7  Function Definition: main( (void)
+0:7  Function Definition: main( (global void)
 0:7    Function Parameters: 
 0:9    Sequence
-0:9      move second child to first child (float)
-0:9        direct index (float)
+0:9      move second child to first child (temp float)
+0:9        direct index (temp float)
 0:9          gl_CullDistance: direct index for structure (out 3-element array of float)
 0:9            'anon@0' (out block{out 3-element array of float gl_CullDistance})
 0:9            Constant:
@@ -59,11 +59,11 @@ ERROR: node is still EOpNull!
 0:?     'outo' (smooth out sampler2D)
 0:?     'outa' (smooth out 4-element array of float)
 0:?     'outaa' (smooth out 4-element array of float)
-0:?     'outs' (smooth out structure{float f})
-0:?     'outasa' (smooth out 4-element array of structure{float f})
-0:?     'outsa' (smooth out 4-element array of structure{float f})
-0:?     'outSA' (smooth out structure{4-element array of float f})
-0:?     'outSS' (smooth out structure{float f, structure{float f} s})
+0:?     'outs' (smooth out structure{global float f})
+0:?     'outasa' (smooth out 4-element array of structure{global float f})
+0:?     'outsa' (smooth out 4-element array of structure{global float f})
+0:?     'outSA' (smooth out structure{global 4-element array of float f})
+0:?     'outSS' (smooth out structure{global float f, global structure{global float f} s})
 0:?     'gl_VertexID' (gl_VertexId int)
 0:?     'gl_InstanceID' (gl_InstanceId int)
 

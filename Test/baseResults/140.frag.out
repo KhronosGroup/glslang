@@ -15,36 +15,36 @@ Shader version: 140
 Requested GL_ARB_explicit_attrib_location
 Requested GL_ARB_separate_shader_objects
 ERROR: node is still EOpNull!
-0:10  Function Definition: main( (void)
+0:10  Function Definition: main( (global void)
 0:10    Function Parameters: 
 0:12    Sequence
 0:12      Sequence
-0:12        move second child to first child (float)
-0:12          'clip' (float)
-0:12          direct index (smooth float)
+0:12        move second child to first child (temp float)
+0:12          'clip' (temp float)
+0:12          direct index (smooth temp float)
 0:12            'gl_ClipDistance' (smooth in 5-element array of float)
 0:12            Constant:
 0:12              2 (const int)
 0:22  Sequence
-0:22    move second child to first child (float)
-0:22      'patch' (float)
+0:22    move second child to first child (temp float)
+0:22      'patch' (global float)
 0:22      Constant:
 0:22        3.100000
-0:36  Function Definition: foo( (void)
+0:36  Function Definition: foo( (global void)
 0:36    Function Parameters: 
 0:38    Sequence
 0:38      Sequence
-0:38        move second child to first child (2-component vector of float)
-0:38          'r1' (2-component vector of float)
-0:38          modf (2-component vector of float)
-0:38            vector swizzle (2-component vector of float)
+0:38        move second child to first child (temp 2-component vector of float)
+0:38          'r1' (temp 2-component vector of float)
+0:38          modf (global 2-component vector of float)
+0:38            vector swizzle (temp 2-component vector of float)
 0:38              'v' (smooth in 4-component vector of float)
 0:38              Sequence
 0:38                Constant:
 0:38                  0 (const int)
 0:38                Constant:
 0:38                  1 (const int)
-0:38            vector swizzle (2-component vector of float)
+0:38            vector swizzle (temp 2-component vector of float)
 0:38              'v' (smooth in 4-component vector of float)
 0:38              Sequence
 0:38                Constant:
@@ -52,17 +52,17 @@ ERROR: node is still EOpNull!
 0:38                Constant:
 0:38                  3 (const int)
 0:39      Sequence
-0:39        move second child to first child (2-component vector of float)
-0:39          'r2' (2-component vector of float)
-0:39          modf (2-component vector of float)
-0:39            vector swizzle (2-component vector of float)
+0:39        move second child to first child (temp 2-component vector of float)
+0:39          'r2' (temp 2-component vector of float)
+0:39          modf (global 2-component vector of float)
+0:39            vector swizzle (temp 2-component vector of float)
 0:39              'o' (out 4-component vector of float)
 0:39              Sequence
 0:39                Constant:
 0:39                  0 (const int)
 0:39                Constant:
 0:39                  1 (const int)
-0:39            vector swizzle (2-component vector of float)
+0:39            vector swizzle (temp 2-component vector of float)
 0:39              'o' (out 4-component vector of float)
 0:39              Sequence
 0:39                Constant:
@@ -75,8 +75,8 @@ ERROR: node is still EOpNull!
 0:?     'o' (out 4-component vector of float)
 0:?     'gl_ClipDistance' (smooth in 5-element array of float)
 0:?     'gl_ClipDistance' (smooth in 5-element array of float)
-0:?     's' (smooth in structure{float f})
-0:?     'patch' (float)
+0:?     's' (smooth in structure{global float f})
+0:?     'patch' (global float)
 0:?     'vl' (layout(location=3 ) smooth in 4-component vector of float)
 0:?     'factorBad' (layout(location=3 ) out 4-component vector of float)
 0:?     'factor' (layout(location=5 ) out 4-component vector of float)
@@ -90,36 +90,36 @@ Shader version: 140
 Requested GL_ARB_explicit_attrib_location
 Requested GL_ARB_separate_shader_objects
 ERROR: node is still EOpNull!
-0:10  Function Definition: main( (void)
+0:10  Function Definition: main( (global void)
 0:10    Function Parameters: 
 0:12    Sequence
 0:12      Sequence
-0:12        move second child to first child (float)
-0:12          'clip' (float)
-0:12          direct index (smooth float)
+0:12        move second child to first child (temp float)
+0:12          'clip' (temp float)
+0:12          direct index (smooth temp float)
 0:12            'gl_ClipDistance' (smooth in 5-element array of float)
 0:12            Constant:
 0:12              2 (const int)
 0:22  Sequence
-0:22    move second child to first child (float)
-0:22      'patch' (float)
+0:22    move second child to first child (temp float)
+0:22      'patch' (global float)
 0:22      Constant:
 0:22        3.100000
-0:36  Function Definition: foo( (void)
+0:36  Function Definition: foo( (global void)
 0:36    Function Parameters: 
 0:38    Sequence
 0:38      Sequence
-0:38        move second child to first child (2-component vector of float)
-0:38          'r1' (2-component vector of float)
-0:38          modf (2-component vector of float)
-0:38            vector swizzle (2-component vector of float)
+0:38        move second child to first child (temp 2-component vector of float)
+0:38          'r1' (temp 2-component vector of float)
+0:38          modf (global 2-component vector of float)
+0:38            vector swizzle (temp 2-component vector of float)
 0:38              'v' (smooth in 4-component vector of float)
 0:38              Sequence
 0:38                Constant:
 0:38                  0 (const int)
 0:38                Constant:
 0:38                  1 (const int)
-0:38            vector swizzle (2-component vector of float)
+0:38            vector swizzle (temp 2-component vector of float)
 0:38              'v' (smooth in 4-component vector of float)
 0:38              Sequence
 0:38                Constant:
@@ -127,17 +127,17 @@ ERROR: node is still EOpNull!
 0:38                Constant:
 0:38                  3 (const int)
 0:39      Sequence
-0:39        move second child to first child (2-component vector of float)
-0:39          'r2' (2-component vector of float)
-0:39          modf (2-component vector of float)
-0:39            vector swizzle (2-component vector of float)
+0:39        move second child to first child (temp 2-component vector of float)
+0:39          'r2' (temp 2-component vector of float)
+0:39          modf (global 2-component vector of float)
+0:39            vector swizzle (temp 2-component vector of float)
 0:39              'o' (out 4-component vector of float)
 0:39              Sequence
 0:39                Constant:
 0:39                  0 (const int)
 0:39                Constant:
 0:39                  1 (const int)
-0:39            vector swizzle (2-component vector of float)
+0:39            vector swizzle (temp 2-component vector of float)
 0:39              'o' (out 4-component vector of float)
 0:39              Sequence
 0:39                Constant:
@@ -150,8 +150,8 @@ ERROR: node is still EOpNull!
 0:?     'o' (out 4-component vector of float)
 0:?     'gl_ClipDistance' (smooth in 5-element array of float)
 0:?     'gl_ClipDistance' (smooth in 5-element array of float)
-0:?     's' (smooth in structure{float f})
-0:?     'patch' (float)
+0:?     's' (smooth in structure{global float f})
+0:?     'patch' (global float)
 0:?     'vl' (layout(location=3 ) smooth in 4-component vector of float)
 0:?     'factorBad' (layout(location=3 ) out 4-component vector of float)
 0:?     'factor' (layout(location=5 ) out 4-component vector of float)

@@ -11,17 +11,17 @@ ERROR: 7 compilation errors.  No code generated.
 
 Shader version: 300
 ERROR: node is still EOpNull!
-0:10  Function Definition: main( (void)
+0:10  Function Definition: main( (global void)
 0:10    Function Parameters: 
 0:12    Sequence
-0:12      move second child to first child (mediump 4-component vector of float)
+0:12      move second child to first child (temp mediump 4-component vector of float)
 0:12        'c' (layout(location=1 ) out mediump 4-component vector of float)
 0:12        'color' (layout(location=2 ) smooth in mediump 4-component vector of float)
-0:13      move second child to first child (mediump 4-component vector of float)
+0:13      move second child to first child (temp mediump 4-component vector of float)
 0:13        'p' (layout(location=3 ) out mediump 4-component vector of float)
 0:13        'pos' (smooth in mediump 4-component vector of float)
-0:14      move second child to first child (mediump 4-component vector of float)
-0:14        direct index (layout(location=4 ) mediump 4-component vector of float)
+0:14      move second child to first child (temp mediump 4-component vector of float)
+0:14        direct index (layout(location=4 ) temp mediump 4-component vector of float)
 0:14          'q' (layout(location=4 ) out 2-element array of mediump 4-component vector of float)
 0:14          Constant:
 0:14            1 (const int)
@@ -42,17 +42,17 @@ Linked fragment stage:
 
 Shader version: 300
 ERROR: node is still EOpNull!
-0:10  Function Definition: main( (void)
+0:10  Function Definition: main( (global void)
 0:10    Function Parameters: 
 0:12    Sequence
-0:12      move second child to first child (mediump 4-component vector of float)
+0:12      move second child to first child (temp mediump 4-component vector of float)
 0:12        'c' (layout(location=1 ) out mediump 4-component vector of float)
 0:12        'color' (layout(location=2 ) smooth in mediump 4-component vector of float)
-0:13      move second child to first child (mediump 4-component vector of float)
+0:13      move second child to first child (temp mediump 4-component vector of float)
 0:13        'p' (layout(location=3 ) out mediump 4-component vector of float)
 0:13        'pos' (smooth in mediump 4-component vector of float)
-0:14      move second child to first child (mediump 4-component vector of float)
-0:14        direct index (layout(location=4 ) mediump 4-component vector of float)
+0:14      move second child to first child (temp mediump 4-component vector of float)
+0:14        direct index (layout(location=4 ) temp mediump 4-component vector of float)
 0:14          'q' (layout(location=4 ) out 2-element array of mediump 4-component vector of float)
 0:14          Constant:
 0:14            1 (const int)

@@ -1,6 +1,6 @@
 specExamples.frag
 Warning, version 430 is not yet complete; most version-specific features are present, but some are missing.
-ERROR: 0:6: '=' :  cannot convert from 'const uint' to 'int'
+ERROR: 0:6: '=' :  cannot convert from 'const uint' to 'global int'
 ERROR: 0:20: '' : numeric literal too big 
 ERROR: 0:21: '' : hexidecimal literal too big 
 ERROR: 0:37: 'view' : redefinition 
@@ -18,8 +18,8 @@ ERROR: 0:112: 'redeclaration' : all redeclarations must use the same depth layou
 ERROR: 0:118: 'redeclaration' : all redeclarations must use the same depth layout on gl_FragDepth
 ERROR: 0:121: 'redeclaration' : all redeclarations must use the same depth layout on gl_FragDepth
 ERROR: 0:150: 'constructor' : constructing from a non-dereferenced array 
-ERROR: 0:150: '=' :  cannot convert from 'const float' to '3-element array of 4-component vector of float'
-ERROR: 0:152: 'constructor' :  cannot convert parameter 1 from 'const 2-element array of 4-component vector of float' to '4-component vector of float'
+ERROR: 0:150: '=' :  cannot convert from 'const float' to 'temp 3-element array of 4-component vector of float'
+ERROR: 0:152: 'constructor' :  cannot convert parameter 1 from 'const 2-element array of 4-component vector of float' to 'temp 4-component vector of float'
 ERROR: 0:172: 'x' : undeclared identifier 
 ERROR: 0:172: '[]' : scalar integer expression required 
 ERROR: 0:175: 'x' : undeclared identifier 
@@ -52,71 +52,71 @@ using early_fragment_tests
 using depth_greater
 ERROR: node is still EOpNull!
 0:5  Sequence
-0:5    move second child to first child (int)
-0:5      'a' (int)
+0:5    move second child to first child (temp int)
+0:5      'a' (global int)
 0:5      Constant:
 0:5        -1 (const int)
 0:7  Sequence
-0:7    move second child to first child (uint)
-0:7      'c' (uint)
+0:7    move second child to first child (temp uint)
+0:7      'c' (global uint)
 0:7      Constant:
 0:7        4294967295 (const uint)
 0:8  Sequence
-0:8    move second child to first child (uint)
-0:8      'd' (uint)
+0:8    move second child to first child (temp uint)
+0:8      'd' (global uint)
 0:8      Constant:
 0:8        4294967295 (const uint)
 0:9  Sequence
-0:9    move second child to first child (int)
-0:9      'e' (int)
+0:9    move second child to first child (temp int)
+0:9      'e' (global int)
 0:9      Constant:
 0:9        -1 (const int)
 0:13  Sequence
-0:13    move second child to first child (uint)
-0:13      'f' (uint)
+0:13    move second child to first child (temp uint)
+0:13      'f' (global uint)
 0:13      Constant:
 0:13        4294967295 (const uint)
 0:17  Sequence
-0:17    move second child to first child (int)
-0:17      'g' (int)
+0:17    move second child to first child (temp int)
+0:17      'g' (global int)
 0:17      Constant:
 0:17        -1294967296 (const int)
 0:19  Sequence
-0:19    move second child to first child (int)
-0:19      'h' (int)
+0:19    move second child to first child (temp int)
+0:19      'h' (global int)
 0:19      Constant:
 0:19        -1610612736 (const int)
 0:20  Sequence
-0:20    move second child to first child (int)
-0:20      'i' (int)
+0:20    move second child to first child (temp int)
+0:20      'i' (global int)
 0:20      Constant:
 0:20        -1 (const int)
 0:21  Sequence
-0:21    move second child to first child (int)
-0:21      'j' (int)
+0:21    move second child to first child (temp int)
+0:21      'j' (global int)
 0:21      Constant:
 0:21        -1 (const int)
 0:22  Sequence
-0:22    move second child to first child (int)
-0:22      'k' (int)
+0:22    move second child to first child (temp int)
+0:22      'k' (global int)
 0:22      Constant:
 0:22        -2147483648 (const int)
 0:23  Sequence
-0:23    move second child to first child (int)
-0:23      'l' (int)
+0:23    move second child to first child (temp int)
+0:23      'l' (global int)
 0:23      Constant:
 0:23        -2147483648 (const int)
 0:25  Sequence
-0:25    move second child to first child (float)
-0:25      'fb' (float)
+0:25    move second child to first child (temp float)
+0:25      'fb' (global float)
 0:25      Constant:
 0:25        1.500000
 0:26  Sequence
-0:26    move second child to first child (double)
-0:26      'fd' (double)
+0:26    move second child to first child (temp double)
+0:26      'fd' (global double)
 0:26      Constant:
 0:26        2.000000
-0:127  Function Definition: foo(f1[5]; (5-element array of float)
+0:127  Function Definition: foo(f1[5]; (global 5-element array of float)
 0:127    Function Parameters: 
 0:127      '' (in 5-element array of float)
 0:129    Sequence
@@ -127,13 +127,13 @@ ERROR: node is still EOpNull!
 0:129          5.000000
 0:129          5.200000
 0:129          1.100000
-0:137  Function Definition: main( (void)
+0:137  Function Definition: main( (global void)
 0:137    Function Parameters: 
 0:140    Sequence
 0:140      Sequence
 0:140        Sequence
-0:140          move second child to first child (5-element array of float)
-0:140            'a' (5-element array of float)
+0:140          move second child to first child (temp 5-element array of float)
+0:140            'a' (temp 5-element array of float)
 0:140            Constant:
 0:140              3.400000
 0:140              4.200000
@@ -142,8 +142,8 @@ ERROR: node is still EOpNull!
 0:140              1.100000
 0:143      Sequence
 0:143        Sequence
-0:143          move second child to first child (5-element array of float)
-0:143            'a' (5-element array of float)
+0:143          move second child to first child (temp 5-element array of float)
+0:143            'a' (temp 5-element array of float)
 0:143            Constant:
 0:143              3.400000
 0:143              4.200000
@@ -152,8 +152,8 @@ ERROR: node is still EOpNull!
 0:143              1.100000
 0:?       Sequence
 0:149        Sequence
-0:149          move second child to first child (2-element array of 4-component vector of float)
-0:149            'b' (2-element array of 4-component vector of float)
+0:149          move second child to first child (temp 2-element array of 4-component vector of float)
+0:149            'b' (temp 2-element array of 4-component vector of float)
 0:149            Constant:
 0:149              0.000000
 0:149              0.000000
@@ -166,18 +166,18 @@ ERROR: node is still EOpNull!
 0:?       Sequence
 0:159        Sequence
 0:159          Sequence
-0:159            move second child to first child (5-element array of float)
-0:159              'b' (5-element array of float)
-0:159              'a' (5-element array of float)
+0:159            move second child to first child (temp 5-element array of float)
+0:159              'b' (temp 5-element array of float)
+0:159              'a' (temp 5-element array of float)
 0:162        Sequence
 0:162          Sequence
-0:162            move second child to first child (5-element array of float)
-0:162              'b' (5-element array of float)
-0:162              'a' (5-element array of float)
+0:162            move second child to first child (temp 5-element array of float)
+0:162              'b' (temp 5-element array of float)
+0:162              'a' (temp 5-element array of float)
 0:165        Sequence
 0:165          Sequence
-0:165            move second child to first child (5-element array of float)
-0:165              'b' (5-element array of float)
+0:165            move second child to first child (temp 5-element array of float)
+0:165              'b' (temp 5-element array of float)
 0:165              Constant:
 0:165                1.000000
 0:165                2.000000
@@ -196,15 +196,15 @@ ERROR: node is still EOpNull!
 0:178      Constant:
 0:178        0.000000
 0:193      Sequence
-0:193        move second child to first child (structure{float a, int b})
-0:193          'e' (structure{float a, int b})
+0:193        move second child to first child (temp structure{temp float a, temp int b})
+0:193          'e' (temp structure{temp float a, temp int b})
 0:193          Constant:
 0:193            1.200000
 0:193            2 (const int)
 0:216      Sequence
 0:216        Sequence
-0:216          move second child to first child (5-element array of float)
-0:216            'a' (5-element array of float)
+0:216          move second child to first child (temp 5-element array of float)
+0:216            'a' (temp 5-element array of float)
 0:216            Constant:
 0:216              3.400000
 0:216              4.200000
@@ -212,8 +212,8 @@ ERROR: node is still EOpNull!
 0:216              5.200000
 0:216              1.100000
 0:217        Sequence
-0:217          move second child to first child (5-element array of float)
-0:217            'b' (5-element array of float)
+0:217          move second child to first child (temp 5-element array of float)
+0:217            'b' (temp 5-element array of float)
 0:217            Constant:
 0:217              3.400000
 0:217              4.200000
@@ -221,55 +221,55 @@ ERROR: node is still EOpNull!
 0:217              5.200000
 0:217              1.100000
 0:218        Sequence
-0:218          move second child to first child (5-element array of float)
-0:218            'c' (5-element array of float)
-0:218            'a' (5-element array of float)
+0:218          move second child to first child (temp 5-element array of float)
+0:218            'c' (temp 5-element array of float)
+0:218            'a' (temp 5-element array of float)
 0:219        Sequence
-0:219          move second child to first child (5-element array of float)
-0:219            'd' (5-element array of float)
-0:219            'b' (5-element array of float)
+0:219          move second child to first child (temp 5-element array of float)
+0:219            'd' (temp 5-element array of float)
+0:219            'b' (temp 5-element array of float)
 0:?       Sequence
 0:223        Sequence
-0:223          move second child to first child (float)
+0:223          move second child to first child (temp float)
 0:223            'ceiling' (const (read only) float)
-0:223            Convert int to float (float)
-0:223              add (int)
-0:223                'a' (int)
-0:223                'b' (int)
+0:223            Convert int to float (temp float)
+0:223              add (temp int)
+0:223                'a' (global int)
+0:223                'b' (global int)
 0:?   Linker Objects
-0:?     'a' (int)
-0:?     'b' (int)
-0:?     'c' (uint)
-0:?     'd' (uint)
-0:?     'e' (int)
-0:?     'f' (uint)
-0:?     'g' (int)
-0:?     'h' (int)
-0:?     'i' (int)
-0:?     'j' (int)
-0:?     'k' (int)
-0:?     'l' (int)
-0:?     'fa' (float)
-0:?     'fb' (float)
-0:?     'fc' (double)
-0:?     'fd' (double)
-0:?     'texcoord1' (2-component vector of float)
-0:?     'texcoord2' (2-component vector of float)
-0:?     'position' (3-component vector of float)
-0:?     'myRGBA' (4-component vector of float)
-0:?     'textureLookup' (2-component vector of int)
-0:?     'less' (3-component vector of bool)
-0:?     'mat2D' (2X2 matrix of float)
-0:?     'optMatrix' (3X3 matrix of float)
-0:?     'view' (4X4 matrix of float)
-0:?     'projection' (4X4 matrix of float)
-0:?     'm' (3X2 matrix of float)
-0:?     'highPrecisionMVP' (4X4 matrix of double)
-0:?     'dm' (2X4 matrix of double)
-0:?     'lightVar' (structure{float intensity, 3-component vector of float position})
-0:?     'frequencies' (3-element array of float)
+0:?     'a' (global int)
+0:?     'b' (global int)
+0:?     'c' (global uint)
+0:?     'd' (global uint)
+0:?     'e' (global int)
+0:?     'f' (global uint)
+0:?     'g' (global int)
+0:?     'h' (global int)
+0:?     'i' (global int)
+0:?     'j' (global int)
+0:?     'k' (global int)
+0:?     'l' (global int)
+0:?     'fa' (global float)
+0:?     'fb' (global float)
+0:?     'fc' (global double)
+0:?     'fd' (global double)
+0:?     'texcoord1' (global 2-component vector of float)
+0:?     'texcoord2' (global 2-component vector of float)
+0:?     'position' (global 3-component vector of float)
+0:?     'myRGBA' (global 4-component vector of float)
+0:?     'textureLookup' (global 2-component vector of int)
+0:?     'less' (global 3-component vector of bool)
+0:?     'mat2D' (global 2X2 matrix of float)
+0:?     'optMatrix' (global 3X3 matrix of float)
+0:?     'view' (global 4X4 matrix of float)
+0:?     'projection' (global 4X4 matrix of float)
+0:?     'm' (global 3X2 matrix of float)
+0:?     'highPrecisionMVP' (global 4X4 matrix of double)
+0:?     'dm' (global 2X4 matrix of double)
+0:?     'lightVar' (global structure{global float intensity, global 3-component vector of float position})
+0:?     'frequencies' (global 3-element array of float)
 0:?     'lightPosition' (uniform 4-element array of 4-component vector of float)
-0:?     'lights' (2-element array of structure{float intensity, 3-component vector of float position})
+0:?     'lights' (global 2-element array of structure{global float intensity, global 3-component vector of float position})
 0:?     'numLights' (const int)
 0:?       2 (const int)
 0:?     'normal' (smooth in 3-component vector of float)
@@ -306,71 +306,71 @@ using early_fragment_tests
 using depth_greater
 ERROR: node is still EOpNull!
 0:5  Sequence
-0:5    move second child to first child (int)
-0:5      'a' (int)
+0:5    move second child to first child (temp int)
+0:5      'a' (global int)
 0:5      Constant:
 0:5        -1 (const int)
 0:7  Sequence
-0:7    move second child to first child (uint)
-0:7      'c' (uint)
+0:7    move second child to first child (temp uint)
+0:7      'c' (global uint)
 0:7      Constant:
 0:7        4294967295 (const uint)
 0:8  Sequence
-0:8    move second child to first child (uint)
-0:8      'd' (uint)
+0:8    move second child to first child (temp uint)
+0:8      'd' (global uint)
 0:8      Constant:
 0:8        4294967295 (const uint)
 0:9  Sequence
-0:9    move second child to first child (int)
-0:9      'e' (int)
+0:9    move second child to first child (temp int)
+0:9      'e' (global int)
 0:9      Constant:
 0:9        -1 (const int)
 0:13  Sequence
-0:13    move second child to first child (uint)
-0:13      'f' (uint)
+0:13    move second child to first child (temp uint)
+0:13      'f' (global uint)
 0:13      Constant:
 0:13        4294967295 (const uint)
 0:17  Sequence
-0:17    move second child to first child (int)
-0:17      'g' (int)
+0:17    move second child to first child (temp int)
+0:17      'g' (global int)
 0:17      Constant:
 0:17        -1294967296 (const int)
 0:19  Sequence
-0:19    move second child to first child (int)
-0:19      'h' (int)
+0:19    move second child to first child (temp int)
+0:19      'h' (global int)
 0:19      Constant:
 0:19        -1610612736 (const int)
 0:20  Sequence
-0:20    move second child to first child (int)
-0:20      'i' (int)
+0:20    move second child to first child (temp int)
+0:20      'i' (global int)
 0:20      Constant:
 0:20        -1 (const int)
 0:21  Sequence
-0:21    move second child to first child (int)
-0:21      'j' (int)
+0:21    move second child to first child (temp int)
+0:21      'j' (global int)
 0:21      Constant:
 0:21        -1 (const int)
 0:22  Sequence
-0:22    move second child to first child (int)
-0:22      'k' (int)
+0:22    move second child to first child (temp int)
+0:22      'k' (global int)
 0:22      Constant:
 0:22        -2147483648 (const int)
 0:23  Sequence
-0:23    move second child to first child (int)
-0:23      'l' (int)
+0:23    move second child to first child (temp int)
+0:23      'l' (global int)
 0:23      Constant:
 0:23        -2147483648 (const int)
 0:25  Sequence
-0:25    move second child to first child (float)
-0:25      'fb' (float)
+0:25    move second child to first child (temp float)
+0:25      'fb' (global float)
 0:25      Constant:
 0:25        1.500000
 0:26  Sequence
-0:26    move second child to first child (double)
-0:26      'fd' (double)
+0:26    move second child to first child (temp double)
+0:26      'fd' (global double)
 0:26      Constant:
 0:26        2.000000
-0:127  Function Definition: foo(f1[5]; (5-element array of float)
+0:127  Function Definition: foo(f1[5]; (global 5-element array of float)
 0:127    Function Parameters: 
 0:127      '' (in 5-element array of float)
 0:129    Sequence
@@ -381,13 +381,13 @@ ERROR: node is still EOpNull!
 0:129          5.000000
 0:129          5.200000
 0:129          1.100000
-0:137  Function Definition: main( (void)
+0:137  Function Definition: main( (global void)
 0:137    Function Parameters: 
 0:140    Sequence
 0:140      Sequence
 0:140        Sequence
-0:140          move second child to first child (5-element array of float)
-0:140            'a' (5-element array of float)
+0:140          move second child to first child (temp 5-element array of float)
+0:140            'a' (temp 5-element array of float)
 0:140            Constant:
 0:140              3.400000
 0:140              4.200000
@@ -396,8 +396,8 @@ ERROR: node is still EOpNull!
 0:140              1.100000
 0:143      Sequence
 0:143        Sequence
-0:143          move second child to first child (5-element array of float)
-0:143            'a' (5-element array of float)
+0:143          move second child to first child (temp 5-element array of float)
+0:143            'a' (temp 5-element array of float)
 0:143            Constant:
 0:143              3.400000
 0:143              4.200000
@@ -406,8 +406,8 @@ ERROR: node is still EOpNull!
 0:143              1.100000
 0:?       Sequence
 0:149        Sequence
-0:149          move second child to first child (2-element array of 4-component vector of float)
-0:149            'b' (2-element array of 4-component vector of float)
+0:149          move second child to first child (temp 2-element array of 4-component vector of float)
+0:149            'b' (temp 2-element array of 4-component vector of float)
 0:149            Constant:
 0:149              0.000000
 0:149              0.000000
@@ -420,18 +420,18 @@ ERROR: node is still EOpNull!
 0:?       Sequence
 0:159        Sequence
 0:159          Sequence
-0:159            move second child to first child (5-element array of float)
-0:159              'b' (5-element array of float)
-0:159              'a' (5-element array of float)
+0:159            move second child to first child (temp 5-element array of float)
+0:159              'b' (temp 5-element array of float)
+0:159              'a' (temp 5-element array of float)
 0:162        Sequence
 0:162          Sequence
-0:162            move second child to first child (5-element array of float)
-0:162              'b' (5-element array of float)
-0:162              'a' (5-element array of float)
+0:162            move second child to first child (temp 5-element array of float)
+0:162              'b' (temp 5-element array of float)
+0:162              'a' (temp 5-element array of float)
 0:165        Sequence
 0:165          Sequence
-0:165            move second child to first child (5-element array of float)
-0:165              'b' (5-element array of float)
+0:165            move second child to first child (temp 5-element array of float)
+0:165              'b' (temp 5-element array of float)
 0:165              Constant:
 0:165                1.000000
 0:165                2.000000
@@ -450,15 +450,15 @@ ERROR: node is still EOpNull!
 0:178      Constant:
 0:178        0.000000
 0:193      Sequence
-0:193        move second child to first child (structure{float a, int b})
-0:193          'e' (structure{float a, int b})
+0:193        move second child to first child (temp structure{temp float a, temp int b})
+0:193          'e' (temp structure{temp float a, temp int b})
 0:193          Constant:
 0:193            1.200000
 0:193            2 (const int)
 0:216      Sequence
 0:216        Sequence
-0:216          move second child to first child (5-element array of float)
-0:216            'a' (5-element array of float)
+0:216          move second child to first child (temp 5-element array of float)
+0:216            'a' (temp 5-element array of float)
 0:216            Constant:
 0:216              3.400000
 0:216              4.200000
@@ -466,8 +466,8 @@ ERROR: node is still EOpNull!
 0:216              5.200000
 0:216              1.100000
 0:217        Sequence
-0:217          move second child to first child (5-element array of float)
-0:217            'b' (5-element array of float)
+0:217          move second child to first child (temp 5-element array of float)
+0:217            'b' (temp 5-element array of float)
 0:217            Constant:
 0:217              3.400000
 0:217              4.200000
@@ -475,55 +475,55 @@ ERROR: node is still EOpNull!
 0:217              5.200000
 0:217              1.100000
 0:218        Sequence
-0:218          move second child to first child (5-element array of float)
-0:218            'c' (5-element array of float)
-0:218            'a' (5-element array of float)
+0:218          move second child to first child (temp 5-element array of float)
+0:218            'c' (temp 5-element array of float)
+0:218            'a' (temp 5-element array of float)
 0:219        Sequence
-0:219          move second child to first child (5-element array of float)
-0:219            'd' (5-element array of float)
-0:219            'b' (5-element array of float)
+0:219          move second child to first child (temp 5-element array of float)
+0:219            'd' (temp 5-element array of float)
+0:219            'b' (temp 5-element array of float)
 0:?       Sequence
 0:223        Sequence
-0:223          move second child to first child (float)
+0:223          move second child to first child (temp float)
 0:223            'ceiling' (const (read only) float)
-0:223            Convert int to float (float)
-0:223              add (int)
-0:223                'a' (int)
-0:223                'b' (int)
+0:223            Convert int to float (temp float)
+0:223              add (temp int)
+0:223                'a' (global int)
+0:223                'b' (global int)
 0:?   Linker Objects
-0:?     'a' (int)
-0:?     'b' (int)
-0:?     'c' (uint)
-0:?     'd' (uint)
-0:?     'e' (int)
-0:?     'f' (uint)
-0:?     'g' (int)
-0:?     'h' (int)
-0:?     'i' (int)
-0:?     'j' (int)
-0:?     'k' (int)
-0:?     'l' (int)
-0:?     'fa' (float)
-0:?     'fb' (float)
-0:?     'fc' (double)
-0:?     'fd' (double)
-0:?     'texcoord1' (2-component vector of float)
-0:?     'texcoord2' (2-component vector of float)
-0:?     'position' (3-component vector of float)
-0:?     'myRGBA' (4-component vector of float)
-0:?     'textureLookup' (2-component vector of int)
-0:?     'less' (3-component vector of bool)
-0:?     'mat2D' (2X2 matrix of float)
-0:?     'optMatrix' (3X3 matrix of float)
-0:?     'view' (4X4 matrix of float)
-0:?     'projection' (4X4 matrix of float)
-0:?     'm' (3X2 matrix of float)
-0:?     'highPrecisionMVP' (4X4 matrix of double)
-0:?     'dm' (2X4 matrix of double)
-0:?     'lightVar' (structure{float intensity, 3-component vector of float position})
-0:?     'frequencies' (3-element array of float)
+0:?     'a' (global int)
+0:?     'b' (global int)
+0:?     'c' (global uint)
+0:?     'd' (global uint)
+0:?     'e' (global int)
+0:?     'f' (global uint)
+0:?     'g' (global int)
+0:?     'h' (global int)
+0:?     'i' (global int)
+0:?     'j' (global int)
+0:?     'k' (global int)
+0:?     'l' (global int)
+0:?     'fa' (global float)
+0:?     'fb' (global float)
+0:?     'fc' (global double)
+0:?     'fd' (global double)
+0:?     'texcoord1' (global 2-component vector of float)
+0:?     'texcoord2' (global 2-component vector of float)
+0:?     'position' (global 3-component vector of float)
+0:?     'myRGBA' (global 4-component vector of float)
+0:?     'textureLookup' (global 2-component vector of int)
+0:?     'less' (global 3-component vector of bool)
+0:?     'mat2D' (global 2X2 matrix of float)
+0:?     'optMatrix' (global 3X3 matrix of float)
+0:?     'view' (global 4X4 matrix of float)
+0:?     'projection' (global 4X4 matrix of float)
+0:?     'm' (global 3X2 matrix of float)
+0:?     'highPrecisionMVP' (global 4X4 matrix of double)
+0:?     'dm' (global 2X4 matrix of double)
+0:?     'lightVar' (global structure{global float intensity, global 3-component vector of float position})
+0:?     'frequencies' (global 3-element array of float)
 0:?     'lightPosition' (uniform 4-element array of 4-component vector of float)
-0:?     'lights' (2-element array of structure{float intensity, 3-component vector of float position})
+0:?     'lights' (global 2-element array of structure{global float intensity, global 3-component vector of float position})
 0:?     'numLights' (const int)
 0:?       2 (const int)
 0:?     'normal' (smooth in 3-component vector of float)

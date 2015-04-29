@@ -23,17 +23,17 @@ ERROR: 19 compilation errors.  No code generated.
 
 Shader version: 300
 ERROR: node is still EOpNull!
-0:44  Function Definition: main( (void)
+0:44  Function Definition: main( (global void)
 0:44    Function Parameters: 
 0:46    Sequence
-0:46      move second child to first child (highp 4-component vector of float)
+0:46      move second child to first child (temp highp 4-component vector of float)
 0:46        'pos' (smooth out highp 4-component vector of float)
-0:46        vector-times-matrix (highp 4-component vector of float)
+0:46        vector-times-matrix (temp highp 4-component vector of float)
 0:46          'p' (layout(location=3 ) in highp 4-component vector of float)
-0:46          add (highp 4X4 matrix of float)
-0:46            add (highp 4X4 matrix of float)
-0:46              add (highp 4X4 matrix of float)
-0:46                add (highp 4X4 matrix of float)
+0:46          add (temp highp 4X4 matrix of float)
+0:46            add (temp highp 4X4 matrix of float)
+0:46              add (temp highp 4X4 matrix of float)
+0:46                add (temp highp 4X4 matrix of float)
 0:46                  M1: direct index for structure (layout(row_major std140 offset=0 ) uniform highp 4X4 matrix of float)
 0:46                    'tblock' (layout(row_major std140 ) uniform block{layout(row_major std140 offset=0 ) uniform highp 4X4 matrix of float M1, layout(column_major std140 offset=64 ) uniform highp 4X4 matrix of float M2, layout(row_major std140 offset=128 ) uniform highp 3X3 matrix of float N1, layout(row_major std140 offset=176 ) centroid uniform highp float badf, layout(row_major std140 offset=180 ) uniform highp float badg, layout(row_major std140 offset=184 ) uniform highp float bad1, layout(row_major shared offset=188 ) uniform highp float bad2, layout(row_major packed offset=192 ) uniform highp float bad3})
 0:46                    Constant:
@@ -54,9 +54,9 @@ ERROR: node is still EOpNull!
 0:46              'anon@0' (layout(row_major shared ) uniform block{layout(row_major shared ) uniform bool b, layout(row_major shared ) uniform highp 4X4 matrix of float t2m})
 0:46              Constant:
 0:46                1 (const uint)
-0:47      move second child to first child (highp 3-component vector of float)
+0:47      move second child to first child (temp highp 3-component vector of float)
 0:47        'color' (smooth out highp 3-component vector of float)
-0:47        vector-times-matrix (highp 3-component vector of float)
+0:47        vector-times-matrix (temp highp 3-component vector of float)
 0:47          'c' (layout(location=7 ) in highp 3-component vector of float)
 0:47          N1: direct index for structure (layout(row_major std140 offset=128 ) uniform highp 3X3 matrix of float)
 0:47            'tblock' (layout(row_major std140 ) uniform block{layout(row_major std140 offset=0 ) uniform highp 4X4 matrix of float M1, layout(column_major std140 offset=64 ) uniform highp 4X4 matrix of float M2, layout(row_major std140 offset=128 ) uniform highp 3X3 matrix of float N1, layout(row_major std140 offset=176 ) centroid uniform highp float badf, layout(row_major std140 offset=180 ) uniform highp float badg, layout(row_major std140 offset=184 ) uniform highp float bad1, layout(row_major shared offset=188 ) uniform highp float bad2, layout(row_major packed offset=192 ) uniform highp float bad3})
@@ -66,7 +66,7 @@ ERROR: node is still EOpNull!
 0:?     'c' (layout(location=7 ) in highp 3-component vector of float)
 0:?     'p' (layout(location=3 ) in highp 4-component vector of float)
 0:?     'q' (layout(location=9 ) in 4-element array of highp 4-component vector of float)
-0:?     'r' (layout(location=10 ) in 4-element array of structure{highp 4-component vector of float v})
+0:?     'r' (layout(location=10 ) in 4-element array of structure{global highp 4-component vector of float v})
 0:?     'pos' (smooth out highp 4-component vector of float)
 0:?     'color' (smooth out highp 3-component vector of float)
 0:?     'badm4' (layout(column_major shared ) uniform highp 4X4 matrix of float)
@@ -87,17 +87,17 @@ Linked vertex stage:
 
 Shader version: 300
 ERROR: node is still EOpNull!
-0:44  Function Definition: main( (void)
+0:44  Function Definition: main( (global void)
 0:44    Function Parameters: 
 0:46    Sequence
-0:46      move second child to first child (highp 4-component vector of float)
+0:46      move second child to first child (temp highp 4-component vector of float)
 0:46        'pos' (smooth out highp 4-component vector of float)
-0:46        vector-times-matrix (highp 4-component vector of float)
+0:46        vector-times-matrix (temp highp 4-component vector of float)
 0:46          'p' (layout(location=3 ) in highp 4-component vector of float)
-0:46          add (highp 4X4 matrix of float)
-0:46            add (highp 4X4 matrix of float)
-0:46              add (highp 4X4 matrix of float)
-0:46                add (highp 4X4 matrix of float)
+0:46          add (temp highp 4X4 matrix of float)
+0:46            add (temp highp 4X4 matrix of float)
+0:46              add (temp highp 4X4 matrix of float)
+0:46                add (temp highp 4X4 matrix of float)
 0:46                  M1: direct index for structure (layout(row_major std140 offset=0 ) uniform highp 4X4 matrix of float)
 0:46                    'tblock' (layout(row_major std140 ) uniform block{layout(row_major std140 offset=0 ) uniform highp 4X4 matrix of float M1, layout(column_major std140 offset=64 ) uniform highp 4X4 matrix of float M2, layout(row_major std140 offset=128 ) uniform highp 3X3 matrix of float N1, layout(row_major std140 offset=176 ) centroid uniform highp float badf, layout(row_major std140 offset=180 ) uniform highp float badg, layout(row_major std140 offset=184 ) uniform highp float bad1, layout(row_major shared offset=188 ) uniform highp float bad2, layout(row_major packed offset=192 ) uniform highp float bad3})
 0:46                    Constant:
@@ -118,9 +118,9 @@ ERROR: node is still EOpNull!
 0:46              'anon@0' (layout(row_major shared ) uniform block{layout(row_major shared ) uniform bool b, layout(row_major shared ) uniform highp 4X4 matrix of float t2m})
 0:46              Constant:
 0:46                1 (const uint)
-0:47      move second child to first child (highp 3-component vector of float)
+0:47      move second child to first child (temp highp 3-component vector of float)
 0:47        'color' (smooth out highp 3-component vector of float)
-0:47        vector-times-matrix (highp 3-component vector of float)
+0:47        vector-times-matrix (temp highp 3-component vector of float)
 0:47          'c' (layout(location=7 ) in highp 3-component vector of float)
 0:47          N1: direct index for structure (layout(row_major std140 offset=128 ) uniform highp 3X3 matrix of float)
 0:47            'tblock' (layout(row_major std140 ) uniform block{layout(row_major std140 offset=0 ) uniform highp 4X4 matrix of float M1, layout(column_major std140 offset=64 ) uniform highp 4X4 matrix of float M2, layout(row_major std140 offset=128 ) uniform highp 3X3 matrix of float N1, layout(row_major std140 offset=176 ) centroid uniform highp float badf, layout(row_major std140 offset=180 ) uniform highp float badg, layout(row_major std140 offset=184 ) uniform highp float bad1, layout(row_major shared offset=188 ) uniform highp float bad2, layout(row_major packed offset=192 ) uniform highp float bad3})
@@ -130,7 +130,7 @@ ERROR: node is still EOpNull!
 0:?     'c' (layout(location=7 ) in highp 3-component vector of float)
 0:?     'p' (layout(location=3 ) in highp 4-component vector of float)
 0:?     'q' (layout(location=9 ) in 4-element array of highp 4-component vector of float)
-0:?     'r' (layout(location=10 ) in 4-element array of structure{highp 4-component vector of float v})
+0:?     'r' (layout(location=10 ) in 4-element array of structure{global highp 4-component vector of float v})
 0:?     'pos' (smooth out highp 4-component vector of float)
 0:?     'color' (smooth out highp 3-component vector of float)
 0:?     'badm4' (layout(column_major shared ) uniform highp 4X4 matrix of float)

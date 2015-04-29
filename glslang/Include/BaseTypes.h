@@ -104,7 +104,7 @@ enum TStorageQualifier {
 __inline const char* GetStorageQualifierString(TStorageQualifier q) 
 {
     switch (q) {
-    case EvqTemporary:      return "temporary";      break;
+    case EvqTemporary:      return "temp";           break;
     case EvqGlobal:         return "global";         break;
     case EvqConst:          return "const";          break;
     case EvqConstReadOnly:  return "const (read only)"; break;
