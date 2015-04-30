@@ -4154,6 +4154,15 @@ TIntermNode* TParseContext::executeInitializer(TSourceLoc loc, TString& identifi
             variable->getWritableType().getQualifier().storage = EvqConstReadOnly;
             qualifier = EvqConstReadOnly;
         }
+    } else {
+        // Non-const global variables in ES need a const initializer.
+        //
+        // "In declarations of global variables with no storage qualifier or with a const
+        // qualifier any initializer must be a constant expression."
+        if (symbolTable.atGlobalLevel() && initializer->getType().getQualifier().storage != EvqConst) {
+            const char* initFeature = "non-constant global initializer";
+            requireProfile(loc, ~EEsProfile, initFeature);
+        }
     }
 
     if (qualifier == EvqConst || qualifier == EvqUniform) {

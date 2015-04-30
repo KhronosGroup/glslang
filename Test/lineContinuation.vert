@@ -39,10 +39,10 @@ FOO
 #define C int q3 = $ 1
 #define D int q4 = @ 1
 
-int a1 = \ 4;  // ERROR
-int a2 = @ 3;  // ERROR
-int a3 = $4;   // ERROR
-int a4 = a2\;  // ERROR
+const highp int a1 = \ 4;  // ERROR
+const highp int a2 = @ 3;  // ERROR
+const highp int a3 = $4;   // ERROR
+const highp int a4 = a2\;  // ERROR
 
 A;
 B;
@@ -62,8 +62,8 @@ D;
 // anoetuh nonaetu \\\\\\
 still in comment
 
-int abdece = 10;
-int aoeuntaoehu = abd\
+const int abdece = 10;
+const int aoeuntaoehu = abd\
 \
 \
 \

@@ -33,8 +33,21 @@ layout(location = 5) out vec4 factor;
 
 layout(location=4) in vec4 vl2;
 
+float fooi();
+
 void foo()
 {
     vec2 r1 = modf(v.xy, v.zw);  // ERROR, v.zw not l-value
     vec2 r2 = modf(o.xy, o.zw);
+    o.z = fooi();
+}
+
+// Test extra-function initializers
+
+float i1 = gl_FrontFacing ? -2.0 : 2.0;
+float i2 = 102;
+
+float fooi()
+{
+    return i1 + i2;
 }

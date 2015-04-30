@@ -42,25 +42,6 @@ ERROR: node is still EOpNull!
 0:24          'a' (in highp 4-component vector of float)
 0:25      Branch: Return with expression
 0:25        'b' (temp highp 4-component vector of float)
-0:40  Sequence
-0:40    move second child to first child (temp highp int)
-0:40      'a1' (global highp int)
-0:40      Constant:
-0:40        4 (const int)
-0:41  Sequence
-0:41    move second child to first child (temp highp int)
-0:41      'a2' (global highp int)
-0:41      Constant:
-0:41        3 (const int)
-0:42  Sequence
-0:42    move second child to first child (temp highp int)
-0:42      'a3' (global highp int)
-0:42      Constant:
-0:42        4 (const int)
-0:43  Sequence
-0:43    move second child to first child (temp highp int)
-0:43      'a4' (global highp int)
-0:43      'a2' (global highp int)
 0:45  Sequence
 0:45    move second child to first child (temp highp int)
 0:45      'q1' (global highp int)
@@ -83,10 +64,14 @@ ERROR: node is still EOpNull!
 0:48        1 (const int)
 0:?   Linker Objects
 0:?     'foo' (global highp float)
-0:?     'a1' (global highp int)
-0:?     'a2' (global highp int)
-0:?     'a3' (global highp int)
-0:?     'a4' (global highp int)
+0:?     'a1' (const highp int)
+0:?       4 (const int)
+0:?     'a2' (const highp int)
+0:?       3 (const int)
+0:?     'a3' (const highp int)
+0:?       4 (const int)
+0:?     'a4' (const highp int)
+0:?       3 (const int)
 0:?     'q1' (global highp int)
 0:?     'q2' (global highp int)
 0:?     'q3' (global highp int)
@@ -115,25 +100,6 @@ ERROR: node is still EOpNull!
 0:24          'a' (in highp 4-component vector of float)
 0:25      Branch: Return with expression
 0:25        'b' (temp highp 4-component vector of float)
-0:40  Sequence
-0:40    move second child to first child (temp highp int)
-0:40      'a1' (global highp int)
-0:40      Constant:
-0:40        4 (const int)
-0:41  Sequence
-0:41    move second child to first child (temp highp int)
-0:41      'a2' (global highp int)
-0:41      Constant:
-0:41        3 (const int)
-0:42  Sequence
-0:42    move second child to first child (temp highp int)
-0:42      'a3' (global highp int)
-0:42      Constant:
-0:42        4 (const int)
-0:43  Sequence
-0:43    move second child to first child (temp highp int)
-0:43      'a4' (global highp int)
-0:43      'a2' (global highp int)
 0:45  Sequence
 0:45    move second child to first child (temp highp int)
 0:45      'q1' (global highp int)
@@ -156,10 +122,14 @@ ERROR: node is still EOpNull!
 0:48        1 (const int)
 0:?   Linker Objects
 0:?     'foo' (global highp float)
-0:?     'a1' (global highp int)
-0:?     'a2' (global highp int)
-0:?     'a3' (global highp int)
-0:?     'a4' (global highp int)
+0:?     'a1' (const highp int)
+0:?       4 (const int)
+0:?     'a2' (const highp int)
+0:?       3 (const int)
+0:?     'a3' (const highp int)
+0:?       4 (const int)
+0:?     'a4' (const highp int)
+0:?       3 (const int)
 0:?     'q1' (global highp int)
 0:?     'q2' (global highp int)
 0:?     'q3' (global highp int)

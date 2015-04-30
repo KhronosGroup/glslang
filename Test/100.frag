@@ -1,6 +1,6 @@
 // okay
 #version 100
-int a[3] = { 2, 3, 4, };  // ERROR
+int a[3] = { 2, 3, 4, };  // ERROR (lots)
 #version 100
 int uint;
 
@@ -193,6 +193,25 @@ void badswizzle()
     a.length(); // ERROR, not this version
     a.method(); // ERROR
 }
+
+float fooinit();
+
+float fooinittest()
+{
+    return fooinit();
+}
+
+// Test extra-function initializers
+const float fi1 = 3.0;
+const float fi2 = 4.0;
+const float fi3 = 5.0;
+
+float fooinit()
+{
+    return fi1 + fi2 + fi3;  // should make a constant of 12.0
+}
+
+int init1 = gl_FrontFacing ? 1 : 2; // ERROR, non-const initializer
 
 #pragma STDGL invariant(all)
 

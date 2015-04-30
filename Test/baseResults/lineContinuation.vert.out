@@ -42,25 +42,6 @@ ERROR: node is still EOpNull!
 0:24          'a' (in highp 4-component vector of float)
 0:25      Branch: Return with expression
 0:25        'b' (temp highp 4-component vector of float)
-0:42  Sequence
-0:42    move second child to first child (temp highp int)
-0:42      'a1' (global highp int)
-0:42      Constant:
-0:42        4 (const int)
-0:43  Sequence
-0:43    move second child to first child (temp highp int)
-0:43      'a2' (global highp int)
-0:43      Constant:
-0:43        3 (const int)
-0:44  Sequence
-0:44    move second child to first child (temp highp int)
-0:44      'a3' (global highp int)
-0:44      Constant:
-0:44        4 (const int)
-0:45  Sequence
-0:45    move second child to first child (temp highp int)
-0:45      'a4' (global highp int)
-0:45      'a2' (global highp int)
 0:47  Sequence
 0:47    move second child to first child (temp highp int)
 0:47      'q1' (global highp int)
@@ -81,15 +62,6 @@ ERROR: node is still EOpNull!
 0:50      'q4' (global highp int)
 0:50      Constant:
 0:50        1 (const int)
-0:65  Sequence
-0:65    move second child to first child (temp highp int)
-0:65      'abdece' (global highp int)
-0:65      Constant:
-0:65        10 (const int)
-0:66  Sequence
-0:66    move second child to first child (temp highp int)
-0:66      'aoeuntaoehu' (global highp int)
-0:66      'abdece' (global highp int)
 0:74  Sequence
 0:74    move second child to first child (temp highp float)
 0:74      'funkyf' (global highp float)
@@ -162,16 +134,22 @@ ERROR: node is still EOpNull!
 0:?   Linker Objects
 0:?     'foo' (global highp float)
 0:?     'goodDecl' (global highp int)
-0:?     'a1' (global highp int)
-0:?     'a2' (global highp int)
-0:?     'a3' (global highp int)
-0:?     'a4' (global highp int)
+0:?     'a1' (const highp int)
+0:?       4 (const int)
+0:?     'a2' (const highp int)
+0:?       3 (const int)
+0:?     'a3' (const highp int)
+0:?       4 (const int)
+0:?     'a4' (const highp int)
+0:?       3 (const int)
 0:?     'q1' (global highp int)
 0:?     'q2' (global highp int)
 0:?     'q3' (global highp int)
 0:?     'q4' (global highp int)
-0:?     'abdece' (global highp int)
-0:?     'aoeuntaoehu' (global highp int)
+0:?     'abdece' (const highp int)
+0:?       10 (const int)
+0:?     'aoeuntaoehu' (const highp int)
+0:?       10 (const int)
 0:?     'funkyf' (global highp float)
 0:?     'funkyh' (global highp int)
 0:?     'funkyo' (global highp int)
@@ -208,25 +186,6 @@ ERROR: node is still EOpNull!
 0:24          'a' (in highp 4-component vector of float)
 0:25      Branch: Return with expression
 0:25        'b' (temp highp 4-component vector of float)
-0:42  Sequence
-0:42    move second child to first child (temp highp int)
-0:42      'a1' (global highp int)
-0:42      Constant:
-0:42        4 (const int)
-0:43  Sequence
-0:43    move second child to first child (temp highp int)
-0:43      'a2' (global highp int)
-0:43      Constant:
-0:43        3 (const int)
-0:44  Sequence
-0:44    move second child to first child (temp highp int)
-0:44      'a3' (global highp int)
-0:44      Constant:
-0:44        4 (const int)
-0:45  Sequence
-0:45    move second child to first child (temp highp int)
-0:45      'a4' (global highp int)
-0:45      'a2' (global highp int)
 0:47  Sequence
 0:47    move second child to first child (temp highp int)
 0:47      'q1' (global highp int)
@@ -247,15 +206,6 @@ ERROR: node is still EOpNull!
 0:50      'q4' (global highp int)
 0:50      Constant:
 0:50        1 (const int)
-0:65  Sequence
-0:65    move second child to first child (temp highp int)
-0:65      'abdece' (global highp int)
-0:65      Constant:
-0:65        10 (const int)
-0:66  Sequence
-0:66    move second child to first child (temp highp int)
-0:66      'aoeuntaoehu' (global highp int)
-0:66      'abdece' (global highp int)
 0:74  Sequence
 0:74    move second child to first child (temp highp float)
 0:74      'funkyf' (global highp float)
@@ -328,16 +278,22 @@ ERROR: node is still EOpNull!
 0:?   Linker Objects
 0:?     'foo' (global highp float)
 0:?     'goodDecl' (global highp int)
-0:?     'a1' (global highp int)
-0:?     'a2' (global highp int)
-0:?     'a3' (global highp int)
-0:?     'a4' (global highp int)
+0:?     'a1' (const highp int)
+0:?       4 (const int)
+0:?     'a2' (const highp int)
+0:?       3 (const int)
+0:?     'a3' (const highp int)
+0:?       4 (const int)
+0:?     'a4' (const highp int)
+0:?       3 (const int)
 0:?     'q1' (global highp int)
 0:?     'q2' (global highp int)
 0:?     'q3' (global highp int)
 0:?     'q4' (global highp int)
-0:?     'abdece' (global highp int)
-0:?     'aoeuntaoehu' (global highp int)
+0:?     'abdece' (const highp int)
+0:?       10 (const int)
+0:?     'aoeuntaoehu' (const highp int)
+0:?       10 (const int)
 0:?     'funkyf' (global highp float)
 0:?     'funkyh' (global highp int)
 0:?     'funkyo' (global highp int)
