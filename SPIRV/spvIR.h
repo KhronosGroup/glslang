@@ -162,8 +162,6 @@ protected:
 
 class Block {
 public:
-    // Setting insert to true indicates to add this new block 
-    // to the end of the parent function.
     Block(Id id, Function& parent);
     virtual ~Block()
     {
@@ -177,6 +175,8 @@ public:
     void addPredecessor(Block* pred) { predecessors.push_back(pred); }
     void addLocalVariable(Instruction* inst) { localVariables.push_back(inst); }
     int getNumPredecessors() const { return (int)predecessors.size(); }
+    void setUnreachable() { unreachable = true; }
+    bool isUnreachable() const { return unreachable; }
 
     bool isTerminated() const
     {
@@ -195,6 +195,12 @@ public:
 
     void dump(std::vector<unsigned int>& out) const
     {
+        // skip the degenerate unreachable blocks
+        // TODO: code gen: skip all unreachable blocks (transitive closure)
+        //                 (but, until that's done safer to keep non-degenerate unreachable blocks, in case others depend on something)
+        if (unreachable && instructions.size() <= 2)
+            return;
+
         instructions[0]->dump(out);
         for (int i = 0; i < (int)localVariables.size(); ++i)
             localVariables[i]->dump(out);
@@ -212,6 +218,11 @@ protected:
     std::vector<Block*> predecessors;
     std::vector<Instruction*> localVariables;
     Function& parent;
+
+    // track whether this block is known to be uncreachable (not necessarily 
+    // true for all unreachable blocks, but should be set at least
+    // for the extraneous ones introduced by the builder).
+    bool unreachable;
 };
 
 //
@@ -338,7 +349,7 @@ __inline void Function::addLocalVariable(Instruction* inst)
     parent.mapInstruction(inst);
 }
 
-__inline Block::Block(Id id, Function& parent) : parent(parent)
+__inline Block::Block(Id id, Function& parent) : parent(parent), unreachable(false)
 {
     instructions.push_back(new Instruction(id, NoType, OpLabel));
 }

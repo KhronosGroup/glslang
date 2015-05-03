@@ -1683,6 +1683,7 @@ void Builder::addSwitchBreak()
 {
     // branch to the top of the merge block stack
     createBranch(switchMerges.top());
+    createAndSetNoPredecessorBlock("post-switch-break");
 }
 
 // Comments in header
@@ -1993,11 +1994,12 @@ void Builder::simplifyAccessChainSwizzle()
 void Builder::createAndSetNoPredecessorBlock(const char* name)
 {
     Block* block = new Block(getUniqueId(), buildPoint->getParent());
+    block->setUnreachable();
     buildPoint->getParent().addBlock(block);
     setBuildPoint(block);
 
-    if (name)
-        addName(block->getId(), name);
+    //if (name)
+    //    addName(block->getId(), name);
 }
 
 // Comments in header

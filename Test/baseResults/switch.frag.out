@@ -17,7 +17,7 @@ ERROR: 0:120: 'default' : cannot appear outside switch statement
 ERROR: 0:126: 'onlyInSwitch' : undeclared identifier 
 WARNING: 0:128: 'switch' : last case/default label not followed by statements 
 ERROR: 0:140: 'nestedX' : undeclared identifier 
-ERROR: 0:156: 'nestedZ' : undeclared identifier 
+ERROR: 0:157: 'nestedZ' : undeclared identifier 
 ERROR: 17 compilation errors.  No code generated.
 
 
@@ -322,27 +322,28 @@ ERROR: node is still EOpNull!
 0:144              3 (const int)
 0:?           Sequence
 0:146            Branch: Break
-0:147          case:  with expression
-0:147            Constant:
-0:147              4 (const int)
+0:147            Branch: Break
+0:148          case:  with expression
+0:148            Constant:
+0:148              4 (const int)
 0:?           Sequence
-0:148            Sequence
-0:148              move second child to first child (temp mediump int)
-0:148                'linearY' (temp mediump int)
-0:148                'linearZ' (temp mediump int)
-0:149            Branch: Break
-0:150          case:  with expression
-0:150            Constant:
-0:150              5 (const int)
+0:149            Sequence
+0:149              move second child to first child (temp mediump int)
+0:149                'linearY' (temp mediump int)
+0:149                'linearZ' (temp mediump int)
+0:150            Branch: Break
+0:151          case:  with expression
+0:151            Constant:
+0:151              5 (const int)
 0:?           Sequence
-0:152            Branch: Break
-0:153          case:  with expression
-0:153            Constant:
-0:153              6 (const int)
-0:?           Sequence
+0:153            Branch: Break
+0:154          case:  with expression
 0:154            Constant:
-0:154              4 (const int)
-0:156      'nestedZ' (temp float)
+0:154              6 (const int)
+0:?           Sequence
+0:155            Constant:
+0:155              4 (const int)
+0:157      'nestedZ' (temp float)
 0:?   Linker Objects
 0:?     'c' (uniform mediump int)
 0:?     'd' (uniform mediump int)
@@ -653,27 +654,28 @@ ERROR: node is still EOpNull!
 0:144              3 (const int)
 0:?           Sequence
 0:146            Branch: Break
-0:147          case:  with expression
-0:147            Constant:
-0:147              4 (const int)
+0:147            Branch: Break
+0:148          case:  with expression
+0:148            Constant:
+0:148              4 (const int)
 0:?           Sequence
-0:148            Sequence
-0:148              move second child to first child (temp mediump int)
-0:148                'linearY' (temp mediump int)
-0:148                'linearZ' (temp mediump int)
-0:149            Branch: Break
-0:150          case:  with expression
-0:150            Constant:
-0:150              5 (const int)
+0:149            Sequence
+0:149              move second child to first child (temp mediump int)
+0:149                'linearY' (temp mediump int)
+0:149                'linearZ' (temp mediump int)
+0:150            Branch: Break
+0:151          case:  with expression
+0:151            Constant:
+0:151              5 (const int)
 0:?           Sequence
-0:152            Branch: Break
-0:153          case:  with expression
-0:153            Constant:
-0:153              6 (const int)
-0:?           Sequence
+0:153            Branch: Break
+0:154          case:  with expression
 0:154            Constant:
-0:154              4 (const int)
-0:156      'nestedZ' (temp float)
+0:154              6 (const int)
+0:?           Sequence
+0:155            Constant:
+0:155              4 (const int)
+0:157      'nestedZ' (temp float)
 0:?   Linker Objects
 0:?     'c' (uniform mediump int)
 0:?     'd' (uniform mediump int)
