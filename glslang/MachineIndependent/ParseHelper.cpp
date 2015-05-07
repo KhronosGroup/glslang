@@ -2977,7 +2977,7 @@ void TParseContext::inductiveLoopCheck(TSourceLoc loc, TIntermNode* init, TInter
 {
     // loop index init must exist and be a declaration, which shows up in the AST as an aggregate of size 1 of the declaration
     bool badInit = false;
-    if (! init || ! init->getAsAggregate() || ! init->getAsAggregate()->getSequence().size() == 1)
+    if (! init || ! init->getAsAggregate() || init->getAsAggregate()->getSequence().size() != 1)
         badInit = true;
     TIntermBinary* binaryInit;
     if (! badInit) {
