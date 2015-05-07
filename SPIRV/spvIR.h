@@ -54,7 +54,7 @@
 
 #include <vector>
 #include <iostream>
-#include <cassert>
+#include <assert.h>
 
 namespace spv {
 

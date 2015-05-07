@@ -221,7 +221,7 @@ int TPpContext::ReadToken(TokenStream *pTok, TPpToken *ppToken)
         case CPP_UINTCONSTANT:
             strcpy(ppToken->name, tokenText);
             if (len > 0 && tokenText[0] == '0') {
-                if (len > 1 && tokenText[1] == 'x' || tokenText[1] == 'X')
+                if (len > 1 && (tokenText[1] == 'x' || tokenText[1] == 'X'))
                     ppToken->ival = strtol(ppToken->name, 0, 16);
                 else
                     ppToken->ival = strtol(ppToken->name, 0, 8);
