@@ -2551,7 +2551,10 @@ void TParseContext::updateImplicitArraySize(TSourceLoc loc, TIntermNode *node, i
     else if (node->getAsBinaryNode()) {
         const TIntermBinary* deref = node->getAsBinaryNode();
         // This has to be the result of a block dereference, unless it's bad shader code
+        // If it's a uniform block, then an error will be issued elsewhere, but
+        // return early now to avoid crashing later in this function.
         if (! deref->getLeft()->getAsSymbolNode() || deref->getLeft()->getBasicType() != EbtBlock ||
+            deref->getLeft()->getType().getQualifier().storage == EvqUniform ||
             deref->getRight()->getAsConstantUnion() == 0)
             return;
 
