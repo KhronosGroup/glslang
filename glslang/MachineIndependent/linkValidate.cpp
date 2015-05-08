@@ -835,7 +835,7 @@ const int baseAlignmentVec4Std140 = 16;
 // Return the size and alignment of a scalar.
 // The size is returned in the 'size' parameter
 // Return value is the alignment of the type.
-int TIntermediate::getBaseAlignmentScalar(const TType& type, int& size) const
+int TIntermediate::getBaseAlignmentScalar(const TType& type, int& size)
 {
     switch (type.getBasicType()) {
     case EbtDouble:  size = 8; return 8;
@@ -851,7 +851,7 @@ int TIntermediate::getBaseAlignmentScalar(const TType& type, int& size) const
 //
 // The size is returned in the 'size' parameter
 // Return value is the alignment of the type.
-int TIntermediate::getBaseAlignment(const TType& type, int& size, bool std140) const
+int TIntermediate::getBaseAlignment(const TType& type, int& size, bool std140)
 {
     int alignment;
 
