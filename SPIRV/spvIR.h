@@ -84,6 +84,7 @@ public:
     void addImmediateOperand(unsigned int immediate) { operands.push_back(immediate); }
     void addStringOperand(const char* str)
     {
+        originalString = str;
         string = new std::vector<unsigned int>;
         unsigned int word;
         char* wordString = (char*)&word;
@@ -108,8 +109,6 @@ public:
                 *(wordPtr++) = 0;
             string->push_back(word);
         }
-
-        originalString = str;
     }
     Op getOpCode() const { return opCode; }
     int getNumOperands() const { return operands.size(); }
