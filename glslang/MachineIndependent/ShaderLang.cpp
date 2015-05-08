@@ -644,14 +644,28 @@ void ShDestruct(ShHandle handle)
 //
 int __fastcall ShFinalize()
 {
-    for (int version = 0; version < VersionCount; ++version)
-        for (int p = 0; p < ProfileCount; ++p)
-            for (int lang = 0; lang < EShLangCount; ++lang)
+    for (int version = 0; version < VersionCount; ++version) {
+        for (int p = 0; p < ProfileCount; ++p) {
+            for (int lang = 0; lang < EShLangCount; ++lang) {
                 delete SharedSymbolTables[version][p][lang];
+                SharedSymbolTables[version][p][lang] = 0;
+            }
+        }
+    }
+
+    for (int version = 0; version < VersionCount; ++version) {
+        for (int p = 0; p < ProfileCount; ++p) {
+            for (int pc = 0; pc < EPcCount; ++pc) {
+                delete CommonSymbolTable[version][p][pc];
+                CommonSymbolTable[version][p][pc] = 0;
+            }
+        }
+    }
 
     if (PerProcessGPA) {
         PerProcessGPA->popAll();
         delete PerProcessGPA;
+        PerProcessGPA = 0;
     }
 
     return 1;
