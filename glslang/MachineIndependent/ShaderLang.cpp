@@ -583,7 +583,7 @@ int ShInitialize()
 
     if (! PerProcessGPA)
         PerProcessGPA = new TPoolAllocator();
-    
+
     glslang::TScanContext::fillInKeywordMap();
 
     return 1;
@@ -667,6 +667,8 @@ int __fastcall ShFinalize()
         delete PerProcessGPA;
         PerProcessGPA = 0;
     }
+
+    glslang::TScanContext::deleteKeywordMap();
 
     return 1;
 }

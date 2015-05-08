@@ -514,6 +514,14 @@ void TScanContext::fillInKeywordMap()
     ReservedSet->insert("using");
 }
 
+void TScanContext::deleteKeywordMap()
+{
+    delete KeywordMap;
+    KeywordMap = 0;
+    delete ReservedSet;
+    ReservedSet = 0;
+}
+
 int TScanContext::tokenize(TPpContext* pp, TParserToken& token)
 {
     do {

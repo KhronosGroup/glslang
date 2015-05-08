@@ -52,6 +52,8 @@ public:
     virtual ~TScanContext() { }
 
     static void fillInKeywordMap();
+    static void deleteKeywordMap();
+
     int tokenize(TPpContext*, TParserToken&);
 
 protected:

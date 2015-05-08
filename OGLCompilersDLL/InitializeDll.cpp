@@ -50,13 +50,13 @@ bool InitProcess()
     glslang::GetGlobalLock();
 
     if (ThreadInitializeIndex != OS_INVALID_TLS_INDEX) {
-		//
-		// Function is re-entrant.
-		//
+        //
+        // Function is re-entrant.
+        //
 
         glslang::ReleaseGlobalLock();
         return true;
-	}
+    }
 
     ThreadInitializeIndex = OS_AllocTLSIndex();
 
@@ -65,16 +65,16 @@ bool InitProcess()
 
         glslang::ReleaseGlobalLock();
         return false;
-	}
+    }
 
     if (! InitializePoolIndex()) {
         assert(0 && "InitProcess(): Failed to initialize global pool");
 
         glslang::ReleaseGlobalLock();
         return false;
-	}
+    }
 
-	InitThread();
+    InitThread();
 
     glslang::ReleaseGlobalLock();
     return true;
@@ -83,23 +83,23 @@ bool InitProcess()
 
 bool InitThread()
 {
-	//
+    //
     // This function is re-entrant
-	//
+    //
     if (ThreadInitializeIndex == OS_INVALID_TLS_INDEX) {
-		assert(0 && "InitThread(): Process hasn't been initalised.");
+        assert(0 && "InitThread(): Process hasn't been initalised.");
         return false;
-	}
+    }
 
     if (OS_GetTLSValue(ThreadInitializeIndex) != 0)
         return true;
 
-	InitializeMemoryPools();
+    InitializeMemoryPools();
 
     if (! OS_SetTLSValue(ThreadInitializeIndex, (void *)1)) {
-		assert(0 && "InitThread(): Unable to set init flag.");
+        assert(0 && "InitThread(): Unable to set init flag.");
         return false;
-	}
+    }
 
     return true;
 }
@@ -112,18 +112,18 @@ bool DetachThread()
     if (ThreadInitializeIndex == OS_INVALID_TLS_INDEX)
         return true;
 
-	//
-	// Function is re-entrant and this thread may not have been initalised.
-	//
+    //
+    // Function is re-entrant and this thread may not have been initialized.
+    //
     if (OS_GetTLSValue(ThreadInitializeIndex) != 0) {
         if (!OS_SetTLSValue(ThreadInitializeIndex, (void *)0)) {
-			assert(0 && "DetachThread(): Unable to clear init flag.");
+            assert(0 && "DetachThread(): Unable to clear init flag.");
             success = false;
-		}
+        }
 
-		FreeGlobalPools();
+        FreeGlobalPools();
 
-	}
+    }
 
     return success;
 }
@@ -139,7 +139,7 @@ bool DetachProcess()
 
     success = DetachThread();
 
-	FreePoolIndex();
+    FreePoolIndex();
 
     OS_FreeTLSIndex(ThreadInitializeIndex);
     ThreadInitializeIndex = OS_INVALID_TLS_INDEX;
