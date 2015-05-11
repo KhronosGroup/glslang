@@ -111,7 +111,7 @@ public:
         }
     }
     Op getOpCode() const { return opCode; }
-    int getNumOperands() const { return operands.size(); }
+    int getNumOperands() const { return (int)operands.size(); }
     Id getResultId() const { return resultId; }
     Id getTypeId() const { return typeId; }
     Id getIdOperand(int op) const { return operands[op]; }
@@ -127,9 +127,9 @@ public:
             ++wordCount;
         if (resultId)
             ++wordCount;
-        wordCount += operands.size();
+        wordCount += (unsigned int)operands.size();
         if (string)
-            wordCount += string->size();
+            wordCount += (unsigned int)string->size();
 
         // Write out the beginning of the instruction
         out.push_back(((wordCount) << WordCountShift) | opCode);
