@@ -2543,12 +2543,12 @@ void TBuiltIns::initialize(const TBuiltInResource &resources, int version, EProf
     // compute
     if ((profile == EEsProfile && version >= 310) || (profile != EEsProfile && version >= 430)) {
         snprintf(builtInConstant, maxSize, "const ivec3 gl_MaxComputeWorkGroupCount = ivec3(%d,%d,%d);", resources.maxComputeWorkGroupCountX,
-                                                                                                    resources.maxComputeWorkGroupCountY,
-                                                                                                    resources.maxComputeWorkGroupCountZ);                
+                                                                                                         resources.maxComputeWorkGroupCountY,
+                                                                                                         resources.maxComputeWorkGroupCountZ);                
         s.append(builtInConstant);
         snprintf(builtInConstant, maxSize, "const ivec3 gl_MaxComputeWorkGroupSize = ivec3(%d,%d,%d);", resources.maxComputeWorkGroupSizeX,
-                                                                                                    resources.maxComputeWorkGroupSizeY,
-                                                                                                    resources.maxComputeWorkGroupSizeZ);
+                                                                                                        resources.maxComputeWorkGroupSizeY,
+                                                                                                        resources.maxComputeWorkGroupSizeZ);
         s.append(builtInConstant);
 
         snprintf(builtInConstant, maxSize, "const int gl_MaxComputeUniformComponents = %d;", resources.maxComputeUniformComponents);

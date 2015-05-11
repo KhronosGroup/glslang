@@ -40,6 +40,7 @@ comment.frag
 310.vert
 310.frag
 310implicitSizeArrayError.vert
+310AofA.vert
 330.frag
 330comp.frag
 constErrors.frag

@@ -1261,10 +1261,14 @@ public:
             p += snprintf(p, end - p, "writeonly ");
         p += snprintf(p, end - p, "%s ", getStorageQualifierString());
         if (arraySizes) {
-            if (arraySizes->sizes.front() == 0)
+            if (arraySizes->sizes.front() == 0) {
                 p += snprintf(p, end - p, "implicitly-sized array of ");
-            else
-                p += snprintf(p, end - p, "%d-element array of ", arraySizes->sizes.front());
+            } else {
+                for(int i = 0; i < (int)arraySizes->sizes.size() ; ++i) {
+//                    p += snprintf(p, end - p, "%s%d", (i == 0 ? "" : "x"), arraySizes->sizes[numDimensions-1-i]);
+                    p += snprintf(p, end - p, "%d-element array of ", arraySizes->sizes[i]);
+                }
+            }
         }
         if (qualifier.precision != EpqNone)
             p += snprintf(p, end - p, "%s ", getPrecisionQualifierString());
