@@ -678,6 +678,8 @@ void CompileAndLinkShaders()
                         spv::spirvbin_t().remap(spirv, remapOpts);
                     }
 
+                    glslang::OutputSpv(spirv, name);
+
                     if (Options & EOptionHumanReadableSpv) {
                         spv::Parameterize();
                         GLSL_STD_450::GetDebugNames(GlslStd450DebugNames);
