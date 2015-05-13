@@ -44,6 +44,7 @@
 #include "../SPIRV/GLSL450Lib.h"
 #include "../SPIRV/doc.h"
 #include "../SPIRV/disassemble.h"
+#include "../SPIRV/SPVRemapper.h"
 #include <string.h>
 #include <stdlib.h>
 #include <math.h>
@@ -71,6 +72,8 @@ enum TOptions {
     EOptionSpv                = 0x0800,
     EOptionHumanReadableSpv   = 0x1000,
     EOptionDefaultDesktop     = 0x2000,
+    EOptionCanonicalizeSpv    = 0x4000,
+    EOptionStripSpv           = 0x8000,
 };
 
 //
@@ -481,11 +484,17 @@ bool ProcessArguments(int argc, char* argv[])
     for (; argc >= 1; argc--, argv++) {
         Work[argc] = 0;
         if (argv[0][0] == '-') {
-            switch (argv[0][1]) {
-            case 'H':
-                Options |= EOptionHumanReadableSpv;
-                // fall through to -V
+            const char optLetter = argv[0][1];
+
+            switch (optLetter) {
+            case 'S': // fall through to -V
+            case 'C': // fall through to -V
+            case 'H': // fall through to -V
             case 'V':
+                if (optLetter == 'H') Options |= EOptionHumanReadableSpv;
+                if (optLetter == 'S') Options |= EOptionStripSpv;
+                if (optLetter == 'C') Options |= EOptionCanonicalizeSpv;
+                
                 Options |= EOptionSpv;
                 Options |= EOptionLinkProgram;
                 break;
@@ -660,7 +669,15 @@ void CompileAndLinkShaders()
                     case EShLangCompute:         name = "comp";    break;
                     default:                     name = "unknown"; break;
                     }
-                    glslang::OutputSpv(spirv, name);
+                    if (Options & (EOptionCanonicalizeSpv | EOptionStripSpv)) {
+                        const unsigned int remapOpts =
+                            ((Options & EOptionCanonicalizeSpv) ? (spv::spirvbin_t::ALL_BUT_STRIP) : 0) |
+                            ((Options & EOptionStripSpv)        ? (spv::spirvbin_t::STRIP) : 0);
+
+                        spv::Parameterize();
+                        spv::spirvbin_t().remap(spirv, remapOpts);
+                    }
+
                     if (Options & EOptionHumanReadableSpv) {
                         spv::Parameterize();
                         GLSL_STD_450::GetDebugNames(GlslStd450DebugNames);
@@ -867,6 +884,8 @@ void usage()
            "To get other information, use one of the following options:\n"
            "(Each option must be specified separately, but can go anywhere in the command line.)\n"
            "  -V  create SPIR-V in file <stage>.spv\n"
+           "  -C  canonicalize generated SPIR-V: turns on -V\n"
+           "  -S  debug-strip SPIR-V: turns on -V\n"
            "  -H  print human readable form of SPIR-V; turns on -V\n"
            "  -c  configuration dump; use to create default configuration file (redirect to a .conf file)\n"
            "  -d  default to desktop (#version 110) when there is no version in the shader (default is ES version 100)\n"

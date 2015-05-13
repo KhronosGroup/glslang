@@ -871,6 +871,14 @@ EnumParameters KernelProfilingInfoParams[KernelProfilingInfoCeiling];
 // Set up all the parameterizing descriptions of the opcodes, operands, etc.
 void Parameterize()
 {
+    static bool initialized = false;
+
+    // only do this once.
+    if (initialized)
+        return;
+
+    initialized = true;
+
     // Exceptions to having a result <id> and a resulting type <id>.
     // (Everything is initialized to have both).
 

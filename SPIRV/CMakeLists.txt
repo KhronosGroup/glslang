@@ -5,6 +5,7 @@ include_directories(.. ${CMAKE_CURRENT_BINARY_DIR})
 set(SOURCES
     GlslangToSpv.cpp
     SpvBuilder.cpp
+    SPVRemapper.cpp
     doc.cpp
     disassemble.cpp)
 
@@ -12,6 +13,7 @@ set(HEADERS
     spirv.h
     GlslangToSpv.h
     SpvBuilder.h
+    SPVRemapper.h
     spvIR.h
     doc.h
     disassemble.h)

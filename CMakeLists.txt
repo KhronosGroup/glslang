@@ -13,6 +13,10 @@ else(WIN32)
     message("unkown platform")
 endif(WIN32)
 
+if(CMAKE_COMPILER_IS_GNUCXX)
+    add_definitions(-std=c++11)
+endif()
+
 add_subdirectory(glslang)
 add_subdirectory(OGLCompilersDLL)
 add_subdirectory(StandAlone)
