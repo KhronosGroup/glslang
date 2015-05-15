@@ -1,0 +1,9 @@
+# Test looping constructs.
+# No tests yet for making sure break and continue from a nested loop
+# goes to the innermost target.
+spv.do-simple.vert
+spv.do-while-continue-break.vert
+spv.for-continue-break.vert
+spv.for-simple.vert
+spv.while-continue-break.vert
+spv.while-simple.vert

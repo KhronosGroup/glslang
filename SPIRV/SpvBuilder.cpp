@@ -1719,6 +1719,7 @@ void Builder::makeNewLoop()
     loop.function = &getBuildPoint()->getParent();
     loop.header = new Block(getUniqueId(), *loop.function);
     loop.merge  = new Block(getUniqueId(), *loop.function);
+    loop.test   = NULL;
 
     loops.push(loop);
 
@@ -1730,43 +1731,75 @@ void Builder::makeNewLoop()
     setBuildPoint(loop.header);
 }
 
-void Builder::createLoopHeaderBranch(Id condition)
+void Builder::createLoopTestBranch(Id condition)
 {
-    Loop loop = loops.top();
+    Loop& loop = loops.top();
 
+    // If loop.test exists, then we've already generated the LoopMerge
+    // for this loop.
+    if (!loop.test)
+      createMerge(OpLoopMerge, loop.merge, LoopControlMaskNone);
+
+    // Branching to the "body" block will keep control inside
+    // the loop.
     Block* body = new Block(getUniqueId(), *loop.function);
-    createMerge(OpLoopMerge, loop.merge, LoopControlMaskNone);
     createConditionalBranch(condition, body, loop.merge);
     loop.function->addBlock(body);
     setBuildPoint(body);
 }
 
-// Add a back-edge (e.g "continue") for the innermost loop that you're in
-void Builder::createLoopBackEdge(bool implicit)
+void Builder::endLoopHeaderWithoutTest()
 {
-    Loop loop = loops.top();
+    Loop& loop = loops.top();
 
-    // Just branch back, and set up a block for dead code if it's a user continue
-    createBranch(loop.header);
-    if (! implicit)
-        createAndSetNoPredecessorBlock("post-loop-continue");
+    createMerge(OpLoopMerge, loop.merge, LoopControlMaskNone);
+    Block* body = new Block(getUniqueId(), *loop.function);
+    createBranch(body);
+    loop.function->addBlock(body);
+    setBuildPoint(body);
+
+    assert(!loop.test);
+    loop.test = new Block(getUniqueId(), *loop.function);
+}
+
+void Builder::createBranchToLoopTest()
+{
+    Loop& loop = loops.top();
+    Block* testBlock = loop.test;
+    assert(testBlock);
+    createBranch(testBlock);
+    loop.function->addBlock(testBlock);
+    setBuildPoint(testBlock);
+}
+
+void Builder::createLoopContinue()
+{
+    Loop& loop = loops.top();
+    if (loop.test)
+      createBranch(loop.test);
+    else
+      createBranch(loop.header);
+    // Set up a block for dead code.
+    createAndSetNoPredecessorBlock("post-loop-continue");
 }
 
 // Add an exit (e.g. "break") for the innermost loop that you're in
 void Builder::createLoopExit()
 {
     createBranch(loops.top().merge);
+    // Set up a block for dead code.
     createAndSetNoPredecessorBlock("post-loop-break");
 }
 
 // Close the innermost loop
 void Builder::closeLoop()
 {
+    Loop& loop = loops.top();
+
     // Branch back to the top
-    createLoopBackEdge(true);
+    createBranch(loop.header);
 
     // Add the merge block and set the build point to it
-    Loop loop = loops.top();
     loop.function->addBlock(loop.merge);
     setBuildPoint(loop.merge);
 

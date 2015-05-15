@@ -37,6 +37,16 @@ if [ -a localtestlist ]
 fi
 
 #
+# SPIR-V code generation tests
+#
+grep -v "^#" test-spirv-list | while read t; do
+    echo Running SPIR-V $t...
+    b=`basename $t`
+    $EXE -H $t > $TARGETDIR/$b.out
+    diff -b $BASEDIR/$b.out $TARGETDIR/$b.out
+done
+
+#
 # grouped shaders for bulk (faster) tests
 #
 function runBulkTest {

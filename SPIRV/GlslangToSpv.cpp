@@ -1159,19 +1159,21 @@ bool TGlslangToSpvTraverser::visitLoop(glslang::TVisit /* visit */, glslang::TIn
 
     bool bodyOut = false;
     if (! node->testFirst()) {
+        builder.endLoopHeaderWithoutTest();
         if (node->getBody()) {
             breakForLoop.push(true);
             node->getBody()->traverse(this);
             breakForLoop.pop();
         }
         bodyOut = true;
+        builder.createBranchToLoopTest();
     }
 
     if (node->getTest()) {
         node->getTest()->traverse(this);
         // the AST only contained the test computation, not the branch, we have to add it
         spv::Id condition = builder.accessChainLoad(TranslatePrecisionDecoration(node->getTest()->getType()));
-        builder.createLoopHeaderBranch(condition);
+        builder.createLoopTestBranch(condition);
     }
 
     if (! bodyOut && node->getBody()) {
@@ -1208,7 +1210,7 @@ bool TGlslangToSpvTraverser::visitBranch(glslang::TVisit /* visit */, glslang::T
     case glslang::EOpContinue:
         if (loopTerminal.top())
             loopTerminal.top()->traverse(this);
-        builder.createLoopBackEdge();
+        builder.createLoopContinue();
         break;
     case glslang::EOpReturn:
         if (inMain)
