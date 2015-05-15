@@ -56,7 +56,7 @@ namespace glslang {
 //
 // Traversal functions for terminals are straighforward....
 //
-void TIntermMethod::traverse(TIntermTraverser* it)
+void TIntermMethod::traverse(TIntermTraverser*)
 {
     // Tree should always resolve all methods as a non-method.
 }

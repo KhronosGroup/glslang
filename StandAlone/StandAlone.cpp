@@ -938,7 +938,7 @@ char** ReadFileData(const char* fileName)
         printf("Error allocating memory\n");
         return 0;
     }
-    if (fread(fdata,1,count, in)!=count) {
+    if ((int)fread(fdata,1,count, in) != count) {
             printf("Error reading input file: %s\n", fileName);
             return 0;
     }

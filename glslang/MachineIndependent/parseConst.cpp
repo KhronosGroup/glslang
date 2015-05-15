@@ -62,6 +62,10 @@ public:
     bool isMatrix;
     int matrixCols;
     int matrixRows;
+
+protected:
+    TConstTraverser(TConstTraverser&);
+    TConstTraverser& operator=(TConstTraverser&);
 };
 
 bool TConstTraverser::visitAggregate(TVisit /* visit */, TIntermAggregate* node)

@@ -70,6 +70,9 @@ public:
     void processInstructions();
 
 protected:
+    SpirvStream(SpirvStream&);
+    SpirvStream& operator=(SpirvStream&);
+
     Op getOpCode(int id) const { return idInstruction[id] ? (Op)(stream[idInstruction[id]] & OpCodeMask) : OpNop; }
 
     // Output methods
@@ -278,7 +281,7 @@ void SpirvStream::disassembleString()
     out << "\"";
 }
 
-void SpirvStream::disassembleInstruction(Id resultId, Id typeId, Op opCode, int numOperands)
+void SpirvStream::disassembleInstruction(Id resultId, Id /*typeId*/, Op opCode, int numOperands)
 {
     // Process the opcode
 

@@ -117,7 +117,7 @@ Id Builder::makePointer(StorageClass storageClass, Id pointee)
     Instruction* type;
     for (int t = 0; t < (int)groupedTypes[OpTypePointer].size(); ++t) {
         type = groupedTypes[OpTypePointer][t];
-        if (type->getImmediateOperand(0) == storageClass &&
+        if (type->getImmediateOperand(0) == (unsigned)storageClass &&
             type->getIdOperand(1) == pointee)
             return type->getResultId();
     }
@@ -139,8 +139,8 @@ Id Builder::makeIntegerType(int width, bool hasSign)
     Instruction* type;
     for (int t = 0; t < (int)groupedTypes[OpTypeInt].size(); ++t) {
         type = groupedTypes[OpTypeInt][t];
-        if (type->getImmediateOperand(0) == width &&
-            type->getImmediateOperand(1) == (hasSign ? 1 : 0))
+        if (type->getImmediateOperand(0) == (unsigned)width &&
+            type->getImmediateOperand(1) == (hasSign ? 1u : 0u))
             return type->getResultId();
     }
 
@@ -161,7 +161,7 @@ Id Builder::makeFloatType(int width)
     Instruction* type;
     for (int t = 0; t < (int)groupedTypes[OpTypeFloat].size(); ++t) {
         type = groupedTypes[OpTypeFloat][t];
-        if (type->getImmediateOperand(0) == width)
+        if (type->getImmediateOperand(0) == (unsigned)width)
             return type->getResultId();
     }
 
@@ -196,7 +196,7 @@ Id Builder::makeVectorType(Id component, int size)
     for (int t = 0; t < (int)groupedTypes[OpTypeVector].size(); ++t) {
         type = groupedTypes[OpTypeVector][t];
         if (type->getIdOperand(0) == component &&
-            type->getImmediateOperand(1) == size)
+            type->getImmediateOperand(1) == (unsigned)size)
             return type->getResultId();
     }
 
@@ -222,7 +222,7 @@ Id Builder::makeMatrixType(Id component, int cols, int rows)
     for (int t = 0; t < (int)groupedTypes[OpTypeMatrix].size(); ++t) {
         type = groupedTypes[OpTypeMatrix][t];
         if (type->getIdOperand(0) == column &&
-            type->getImmediateOperand(1) == cols)
+            type->getImmediateOperand(1) == (unsigned)cols)
             return type->getResultId();
     }
 
@@ -268,7 +268,7 @@ Id Builder::makeFunctionType(Id returnType, std::vector<Id>& paramTypes)
     Instruction* type;
     for (int t = 0; t < (int)groupedTypes[OpTypeFunction].size(); ++t) {
         type = groupedTypes[OpTypeFunction][t];
-        if (type->getIdOperand(0) != returnType || paramTypes.size() != type->getNumOperands() - 1)
+        if (type->getIdOperand(0) != returnType || (int)paramTypes.size() != type->getNumOperands() - 1)
             continue;
         bool mismatch = false;
         for (int p = 0; p < (int)paramTypes.size(); ++p) {
@@ -547,13 +547,13 @@ Id Builder::makeDoubleConstant(double d)
 
 Id Builder::findCompositeConstant(Op typeClass, std::vector<Id>& comps) const
 {
-    Instruction* constant;
+    Instruction* constant = 0;
     bool found = false;
     for (int i = 0; i < (int)groupedConstants[typeClass].size(); ++i) {
         constant = groupedConstants[typeClass][i];
 
         // same shape?
-        if (constant->getNumOperands() != comps.size())
+        if (constant->getNumOperands() != (int)comps.size())
             continue;
 
         // same contents?
@@ -1049,7 +1049,7 @@ void Builder::promoteScalar(Decoration precision, Id& left, Id& right)
 }
 
 // Comments in header
-Id Builder::smearScalar(Decoration precision, Id scalar, Id vectorType)
+Id Builder::smearScalar(Decoration /*precision*/, Id scalar, Id vectorType)
 {
     assert(getNumComponents(scalar) == 1);
 
@@ -1066,7 +1066,7 @@ Id Builder::smearScalar(Decoration precision, Id scalar, Id vectorType)
 }
 
 // Comments in header
-Id Builder::createBuiltinCall(Decoration precision, Id resultType, Id builtins, int entryPoint, std::vector<Id>& args)
+Id Builder::createBuiltinCall(Decoration /*precision*/, Id resultType, Id builtins, int entryPoint, std::vector<Id>& args)
 {
     Instruction* inst = new Instruction(getUniqueId(), resultType, OpExtInst);
     inst->addIdOperand(builtins);
@@ -1259,8 +1259,6 @@ Id Builder::createTextureQueryCall(Op opCode, const TextureParameters& parameter
 // Comments in header
 Id Builder::createCompare(Decoration precision, Id value1, Id value2, bool equal)
 {
-    Instruction* compare = 0;
-    spv::Op binOp = spv::OpNop;
     Id boolType = makeBoolType();
     Id valueType = getTypeId(value1);
 
@@ -1461,7 +1459,7 @@ Id Builder::createCompositeConstruct(Id typeId, std::vector<Id>& constituents)
 // Vector or scalar constructor
 Id Builder::createConstructor(Decoration precision, const std::vector<Id>& sources, Id resultTypeId)
 {
-    Id result;
+    Id result = 0;
     unsigned int numTargetComponents = getNumTypeComponents(resultTypeId);
     unsigned int targetComponent = 0;
 
@@ -1701,7 +1699,7 @@ void Builder::nextSwitchSegment(std::vector<Block*>& segmentBlock, int nextSegme
 }
 
 // Comments in header
-void Builder::endSwitch(std::vector<Block*>& segmentBlock)
+void Builder::endSwitch(std::vector<Block*>& /*segmentBlock*/)
 {
     // Close out previous segment by jumping, if necessary, to next segment
     if (! buildPoint->isTerminated())
@@ -1840,7 +1838,7 @@ void Builder::accessChainStore(Id rvalue)
 }
 
 // Comments in header
-Id Builder::accessChainLoad(Decoration precision)
+Id Builder::accessChainLoad(Decoration /*precision*/)
 {
     Id id;
 
@@ -1991,7 +1989,7 @@ void Builder::simplifyAccessChainSwizzle()
 // Utility method for creating a new block and setting the insert point to
 // be in it. This is useful for flow-control operations that need a "dummy"
 // block proceeding them (e.g. instructions after a discard, etc).
-void Builder::createAndSetNoPredecessorBlock(const char* name)
+void Builder::createAndSetNoPredecessorBlock(const char* /*name*/)
 {
     Block* block = new Block(getUniqueId(), buildPoint->getParent());
     block->setUnreachable();

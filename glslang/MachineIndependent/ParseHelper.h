@@ -160,7 +160,7 @@ public:
 
     void setLayoutQualifier(TSourceLoc, TPublicType&, TString&);
     void setLayoutQualifier(TSourceLoc, TPublicType&, TString&, const TIntermTyped*);
-    void mergeObjectLayoutQualifiers(TSourceLoc, TQualifier& dest, const TQualifier& src, bool inheritOnly);
+    void mergeObjectLayoutQualifiers(TQualifier& dest, const TQualifier& src, bool inheritOnly);
     void layoutObjectCheck(TSourceLoc, const TSymbol&);
     void layoutTypeCheck(TSourceLoc, const TType&);
     void layoutQualifierCheck(TSourceLoc, const TQualifier&);
@@ -178,8 +178,8 @@ public:
     TIntermTyped* constructBuiltIn(const TType&, TOperator, TIntermTyped*, TSourceLoc, bool subset);
     void declareBlock(TSourceLoc, TTypeList& typeList, const TString* instanceName = 0, TArraySizes* arraySizes = 0);
     void fixBlockLocations(TSourceLoc, TQualifier&, TTypeList&, bool memberWithLocation, bool memberWithoutLocation);
-    void fixBlockXfbOffsets(TSourceLoc, TQualifier&, TTypeList&);
-    void fixBlockUniformOffsets(TSourceLoc, TQualifier&, TTypeList&);
+    void fixBlockXfbOffsets(TQualifier&, TTypeList&);
+    void fixBlockUniformOffsets(TQualifier&, TTypeList&);
     void addQualifierToExisting(TSourceLoc, TQualifier, const TString& identifier);
     void addQualifierToExisting(TSourceLoc, TQualifier, TIdentifierList&);
     void invariantCheck(TSourceLoc, const TQualifier&);
@@ -221,7 +221,7 @@ protected:
     TVariable* makeInternalVariable(const char* name, const TType&) const;
     TVariable* declareNonArray(TSourceLoc, TString& identifier, TType&, bool& newDeclaration);
     void declareArray(TSourceLoc, TString& identifier, const TType&, TSymbol*&, bool& newDeclaration);
-    TIntermNode* executeInitializer(TSourceLoc, TString& identifier, TIntermTyped* initializer, TVariable* variable);
+    TIntermNode* executeInitializer(TSourceLoc, TIntermTyped* initializer, TVariable* variable);
     TIntermTyped* convertInitializerList(TSourceLoc, const TType&, TIntermTyped* initializer);
     TOperator mapTypeToConstructorOp(const TType&) const;
     void finalErrorCheck();
@@ -263,6 +263,9 @@ public:
     TLimits& limits;
 
 protected:
+    TParseContext(TParseContext&);
+    TParseContext& operator=(TParseContext&);
+
     TScanContext* scanContext;
     TPpContext* ppContext;
     TInputScanner* currentScanner;

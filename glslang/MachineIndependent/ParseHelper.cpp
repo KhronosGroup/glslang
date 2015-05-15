@@ -536,7 +536,7 @@ void TParseContext::checkIndex(TSourceLoc loc, const TType& type, int& index)
 }
 
 // for ES 2.0 (version 100) limitations for almost all index operations except vertex-shader uniforms
-void TParseContext::handleIndexLimits(TSourceLoc loc, TIntermTyped* base, TIntermTyped* index)
+void TParseContext::handleIndexLimits(TSourceLoc /*loc*/, TIntermTyped* base, TIntermTyped* index)
 {
     if ((! limits.generalSamplerIndexing && base->getBasicType() == EbtSampler) ||
         (! limits.generalUniformIndexing && base->getQualifier().isUniformOrBuffer() && language != EShLangVertex) ||
@@ -611,7 +611,7 @@ void TParseContext::ioArrayCheck(TSourceLoc loc, const TType& type, const TStrin
 // Handle a dereference of a geometry shader input array or tessellation control output array.
 // See ioArraySymbolResizeList comment in ParseHelper.h.
 //
-void TParseContext::handleIoResizeArrayAccess(TSourceLoc loc, TIntermTyped* base)
+void TParseContext::handleIoResizeArrayAccess(TSourceLoc /*loc*/, TIntermTyped* base)
 {
     TIntermSymbol* symbolNode = base->getAsSymbolNode();
     assert(symbolNode);
@@ -645,6 +645,8 @@ void TParseContext::checkIoArraysConsistency(TSourceLoc loc, bool tailOnly)
         feature = TQualifier::getGeometryString(intermediate.getInputPrimitive());
     else if (language == EShLangTessControl)
         feature = "vertices";
+    else
+        feature = "unknown";
 
     if (tailOnly) {
         checkIoArrayConsistency(loc, requiredSize, feature, ioArraySymbolResizeList.back()->getWritableType(), ioArraySymbolResizeList.back()->getName());
@@ -1408,7 +1410,7 @@ TOperator TParseContext::mapTypeToConstructorOp(const TType& type) const
     if (type.isStruct())
         return EOpConstructStruct;
 
-    TOperator op;
+    TOperator op = EOpNull;
     switch (type.getBasicType()) {
     case EbtFloat:
         if (type.isMatrix()) {
@@ -1515,7 +1517,6 @@ TOperator TParseContext::mapTypeToConstructorOp(const TType& type) const
         }
         break;
     default:
-        op = EOpNull;
         break;
     }
 
@@ -1930,7 +1931,7 @@ bool TParseContext::constructorError(TSourceLoc loc, TIntermNode* node, TFunctio
         return true;
     }
 
-    if (op == EOpConstructStruct && ! type.isArray() && type.getStruct()->size() != function.getParamCount()) {
+    if (op == EOpConstructStruct && ! type.isArray() && (int)type.getStruct()->size() != function.getParamCount()) {
         error(loc, "Number of constructor parameters does not match the number of structure fields", "constructor", "");
         return true;
     }
@@ -2228,7 +2229,7 @@ void TParseContext::mergeQualifiers(TSourceLoc loc, TQualifier& dst, const TQual
         dst.precision = src.precision;
 
     // Layout qualifiers
-    mergeObjectLayoutQualifiers(loc, dst, src, false);
+    mergeObjectLayoutQualifiers(dst, src, false);
 
     // individual qualifiers
     bool repeated = false;
@@ -2422,7 +2423,7 @@ void TParseContext::arraySizeRequiredCheck(TSourceLoc loc, int size)
     }
 }
 
-void TParseContext::structArrayCheck(TSourceLoc loc, TType* type)
+void TParseContext::structArrayCheck(TSourceLoc /*loc*/, TType* type)
 {
     const TTypeList& structure = *type->getStruct();
     for (int m = 0; m < (int)structure.size(); ++m) {
@@ -2545,7 +2546,7 @@ void TParseContext::updateImplicitArraySize(TSourceLoc loc, TIntermNode *node, i
     // as that type will be shared through shallow copies for future references.
     TSymbol* symbol = 0;
     int blockIndex = -1;
-    const TString* lookupName;
+    const TString* lookupName = 0;
     if (node->getAsSymbolNode())
         lookupName = &node->getAsSymbolNode()->getName();
     else if (node->getAsBinaryNode()) {
@@ -2782,7 +2783,7 @@ void TParseContext::redeclareBuiltinBlock(TSourceLoc loc, TTypeList& newTypeList
         // look for match
         bool found = false;
         TTypeList::const_iterator newMember;
-        TSourceLoc memberLoc;
+        TSourceLoc memberLoc = {};
         for (newMember = newTypeList.begin(); newMember != newTypeList.end(); ++newMember) {
             if (member->type->getFieldName() == newMember->type->getFieldName()) {
                 found = true;
@@ -2935,7 +2936,7 @@ void TParseContext::opaqueCheck(TSourceLoc loc, const TType& type, const char* o
         error(loc, "can't use with samplers or structs containing samplers", op, "");
 }
 
-void TParseContext::structTypeCheck(TSourceLoc loc, TPublicType& publicType)
+void TParseContext::structTypeCheck(TSourceLoc /*loc*/, TPublicType& publicType)
 {
     const TTypeList& typeList = *publicType.userDef->getStruct();
 
@@ -2982,7 +2983,7 @@ void TParseContext::inductiveLoopCheck(TSourceLoc loc, TIntermNode* init, TInter
     bool badInit = false;
     if (! init || ! init->getAsAggregate() || init->getAsAggregate()->getSequence().size() != 1)
         badInit = true;
-    TIntermBinary* binaryInit;
+    TIntermBinary* binaryInit = 0;
     if (! badInit) {
         // get the declaration assignment
         binaryInit = init->getAsAggregate()->getSequence()[0]->getAsBinaryNode();
@@ -3457,7 +3458,7 @@ void TParseContext::setLayoutQualifier(TSourceLoc loc, TPublicType& publicType, 
 // overrides the other (e.g., row_major vs. column_major); only the last 
 // occurrence has any effect."    
 //
-void TParseContext::mergeObjectLayoutQualifiers(TSourceLoc loc, TQualifier& dst, const TQualifier& src, bool inheritOnly)
+void TParseContext::mergeObjectLayoutQualifiers(TQualifier& dst, const TQualifier& src, bool inheritOnly)
 {
     if (src.hasMatrix())
         dst.layoutMatrix = src.layoutMatrix;
@@ -3853,8 +3854,6 @@ const TFunction* TParseContext::findFunction(TSourceLoc loc, const TFunction& ca
 // Function finding algorithm for ES and desktop 110.
 const TFunction* TParseContext::findFunctionExact(TSourceLoc loc, const TFunction& call, bool& builtIn)
 {
-    const TFunction* function = 0;
-
     TSymbol* symbol = symbolTable.find(call.getMangledName(), &builtIn);
     if (symbol == 0) {
         error(loc, "no matching overloaded function found", call.getName().c_str(), "");
@@ -3886,7 +3885,6 @@ const TFunction* TParseContext::findFunction120(TSourceLoc loc, const TFunction&
     TVector<TFunction*> candidateList;
     symbolTable.findFunctionNameList(call.getMangledName(), candidateList, builtIn);
 
-    int numPossibleMatches = 0;
     for (TVector<TFunction*>::const_iterator it = candidateList.begin(); it != candidateList.end(); ++it) {
         const TFunction& function = *(*it);
 
@@ -4034,7 +4032,7 @@ TIntermNode* TParseContext::declareVariable(TSourceLoc loc, TString& identifier,
             error(loc, "initializer requires a variable, not a member", identifier.c_str(), "");
             return 0;
         }
-        initNode = executeInitializer(loc, identifier, initializer, variable);
+        initNode = executeInitializer(loc, initializer, variable);
     }
 
     // look for errors in layout qualifier use
@@ -4068,7 +4066,6 @@ void TParseContext::inheritGlobalDefaults(TQualifier& dst) const
 TVariable* TParseContext::makeInternalVariable(const char* name, const TType& type) const
 {
     TString* nameString = new TString(name);
-    TSourceLoc loc = {0, 0};
     TVariable* variable = new TVariable(nameString, type);
     symbolTable.makeInternalVariable(*variable);
 
@@ -4103,8 +4100,7 @@ TVariable* TParseContext::declareNonArray(TSourceLoc loc, TString& identifier, T
 // Returning 0 just means there is no code to execute to handle the
 // initializer, which will, for example, be the case for constant initializers.
 //
-TIntermNode* TParseContext::executeInitializer(TSourceLoc loc, TString& identifier,
-                                               TIntermTyped* initializer, TVariable* variable)
+TIntermNode* TParseContext::executeInitializer(TSourceLoc loc, TIntermTyped* initializer, TVariable* variable)
 {
     //
     // Identifier must be of type constant, a global, or a temporary, and
@@ -4241,7 +4237,7 @@ TIntermTyped* TParseContext::convertInitializerList(TSourceLoc loc, const TType&
                 return 0;
         }
     } else if (type.isMatrix()) {
-        if (type.getMatrixCols() != initList->getSequence().size()) {
+        if (type.getMatrixCols() != (int)initList->getSequence().size()) {
             error(loc, "wrong number of matrix columns:", "initializer list", type.getCompleteString().c_str());
             return 0;
         }
@@ -4252,7 +4248,7 @@ TIntermTyped* TParseContext::convertInitializerList(TSourceLoc loc, const TType&
                 return 0;
         }
     } else if (type.isVector()) {
-        if (type.getVectorSize() != initList->getSequence().size()) {
+        if (type.getVectorSize() != (int)initList->getSequence().size()) {
             error(loc, "wrong vector size (or rows in a matrix column):", "initializer list", type.getCompleteString().c_str());
             return 0;
         }
@@ -4546,7 +4542,7 @@ void TParseContext::declareBlock(TSourceLoc loc, TTypeList& typeList, const TStr
 
     // fix and check for member layout qualifiers
 
-    mergeObjectLayoutQualifiers(loc, defaultQualification, currentBlockQualifier, true);
+    mergeObjectLayoutQualifiers(defaultQualification, currentBlockQualifier, true);
 
     // "The offset qualifier can only be used on block members of blocks declared with std140 or std430 layouts."
     // "The align qualifier can only be used on blocks or block members, and only for blocks declared with std140 or std430 layouts."
@@ -4605,14 +4601,14 @@ void TParseContext::declareBlock(TSourceLoc loc, TTypeList& typeList, const TStr
 
     // Process the members
     fixBlockLocations(loc, currentBlockQualifier, typeList, memberWithLocation, memberWithoutLocation);
-    fixBlockXfbOffsets(loc, currentBlockQualifier, typeList);
-    fixBlockUniformOffsets(loc, currentBlockQualifier, typeList);
+    fixBlockXfbOffsets(currentBlockQualifier, typeList);
+    fixBlockUniformOffsets(currentBlockQualifier, typeList);
     for (unsigned int member = 0; member < typeList.size(); ++member)
         layoutTypeCheck(typeList[member].loc, *typeList[member].type);
 
     // reverse merge, so that currentBlockQualifier now has all layout information
     // (can't use defaultQualification directly, it's missing other non-layout-default-class qualifiers)
-    mergeObjectLayoutQualifiers(loc, currentBlockQualifier, defaultQualification, true);
+    mergeObjectLayoutQualifiers(currentBlockQualifier, defaultQualification, true);
 
     //
     // Build and add the interface block as a new type named 'blockName'
@@ -4696,7 +4692,7 @@ void TParseContext::fixBlockLocations(TSourceLoc loc, TQualifier& qualifier, TTy
     else {
         if (memberWithLocation) {
             // remove any block-level location and make it per *every* member
-            int nextLocation;  // by the rule above, initial value is not relevant
+            int nextLocation = 0;  // by the rule above, initial value is not relevant
             if (qualifier.hasAnyLocation()) {
                 nextLocation = qualifier.layoutLocation;
                 qualifier.layoutLocation = TQualifier::layoutLocationEnd;
@@ -4723,7 +4719,7 @@ void TParseContext::fixBlockLocations(TSourceLoc loc, TQualifier& qualifier, TTy
     }
 }
 
-void TParseContext::fixBlockXfbOffsets(TSourceLoc loc, TQualifier& qualifier, TTypeList& typeList)
+void TParseContext::fixBlockXfbOffsets(TQualifier& qualifier, TTypeList& typeList)
 {
     // "If a block is qualified with xfb_offset, all its 
     // members are assigned transform feedback buffer offsets. If a block is not qualified with xfb_offset, any 
@@ -4760,7 +4756,7 @@ void TParseContext::fixBlockXfbOffsets(TSourceLoc loc, TQualifier& qualifier, TT
 // Also, compute and save the total size of the block. For the block's size, arrayness 
 // is not taken into account, as each element is backed by a separate buffer.
 //
-void TParseContext::fixBlockUniformOffsets(TSourceLoc loc, TQualifier& qualifier, TTypeList& typeList)
+void TParseContext::fixBlockUniformOffsets(TQualifier& qualifier, TTypeList& typeList)
 {
     if (! qualifier.isUniformOrBuffer())
         return;
@@ -4950,7 +4946,7 @@ void TParseContext::updateStandaloneQualifierDefaults(TSourceLoc loc, const TPub
                 if (! intermediate.setLocalSize(i, publicType.shaderQualifiers.localSize[i]))
                     error(loc, "cannot change previously set size", "local_size", "");
                 else {
-                    int max;
+                    int max = 0;
                     switch (i) {
                     case 0: max = resources.maxComputeWorkGroupSizeX; break;
                     case 1: max = resources.maxComputeWorkGroupSizeY; break;

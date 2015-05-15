@@ -101,7 +101,7 @@ public:
     Id makeMatrixType(Id component, int cols, int rows);
     Id makeArrayType(Id element, unsigned size);
     Id makeFunctionType(Id returnType, std::vector<Id>& paramTypes);
-    enum samplerContent {
+    enum samplerContent : unsigned {
         samplerContentTexture,
         samplerContentImage,
         samplerContentTextureFilter
@@ -250,7 +250,7 @@ public:
 
     // If the value passed in is an instruction and the precision is not EMpNone,
     // it gets tagged with the requested precision.
-    void setPrecision(Id value, Decoration precision)
+    void setPrecision(Id /* value */, Decoration /* precision */)
     {
         // TODO
     }
@@ -318,6 +318,9 @@ public:
         void makeEndIf();
 
     private:
+        If(const If&);
+        If& operator=(If&);
+
         Builder& builder;
         Id condition;
         Function* function;

@@ -183,7 +183,11 @@ const unsigned char TAllocation::userDataFill       = 0xcd;
 //
 // Check a single guard block for damage
 //
+#ifdef GUARD_BLOCKS
 void TAllocation::checkGuardBlock(unsigned char* blockMem, unsigned char val, const char* locText) const
+#else
+void TAllocation::checkGuardBlock(unsigned char*, unsigned char, const char*) const
+#endif
 {
 #ifdef GUARD_BLOCKS
     for (int x = 0; x < guardBlockSize; x++) {

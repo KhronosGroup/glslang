@@ -68,7 +68,7 @@ void DeleteCompiler(TCompiler* compiler)
 //
 //  Generate code from the given parse tree
 //
-bool TGenericCompiler::compile(TIntermNode *root, int version, EProfile profile)
+bool TGenericCompiler::compile(TIntermNode* /*root*/, int /*version*/, EProfile /*profile*/)
 {
     haveValidObjectCode = true;
 

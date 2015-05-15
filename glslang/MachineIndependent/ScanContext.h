@@ -57,6 +57,9 @@ public:
     int tokenize(TPpContext*, TParserToken&);
 
 protected:
+    TScanContext(TScanContext&);
+    TScanContext& operator=(TScanContext&);
+
     int tokenizeIdentifier();
     int identifierOrType();
     int reservedWord();

@@ -214,11 +214,13 @@ protected:
     typedef std::vector<tAllocState> tAllocStack;
 
     // Track allocations if and only if we're using guard blocks
+#ifndef GUARD_BLOCKS
+    void* initializeAllocation(tHeader*, unsigned char* memory, size_t) {
+#else
     void* initializeAllocation(tHeader* block, unsigned char* memory, size_t numBytes) {
-#       ifdef GUARD_BLOCKS
         new(memory) TAllocation(numBytes, memory, block->lastAllocation);
         block->lastAllocation = reinterpret_cast<TAllocation*>(memory);
-#       endif
+#endif
 
         // This is optimized entirely away if GUARD_BLOCKS is not defined.
         return TAllocation::offsetAllocation(memory);
@@ -314,7 +316,7 @@ public:
     TPoolAllocator& getAllocator() const { return allocator; }
 
 protected:
-    pool_allocator& operator=(const pool_allocator& rhs) { return *this; }
+    pool_allocator& operator=(const pool_allocator&) { return *this; }
     TPoolAllocator& allocator;
 };
 

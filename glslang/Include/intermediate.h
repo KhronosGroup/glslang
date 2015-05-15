@@ -694,15 +694,15 @@ public:
             maxDepth(0) { }
     virtual ~TIntermTraverser() { }
 
-    virtual void visitSymbol(TIntermSymbol*)                     { }
-    virtual void visitConstantUnion(TIntermConstantUnion*)       { }
-    virtual bool visitBinary(TVisit visit, TIntermBinary*)       { return true; }
-    virtual bool visitUnary(TVisit visit, TIntermUnary*)         { return true; }
-    virtual bool visitSelection(TVisit visit, TIntermSelection*) { return true; }
-    virtual bool visitAggregate(TVisit visit, TIntermAggregate*) { return true; }
-    virtual bool visitLoop(TVisit visit, TIntermLoop*)           { return true; }
-    virtual bool visitBranch(TVisit visit, TIntermBranch*)       { return true; }
-    virtual bool visitSwitch(TVisit, TIntermSwitch* node)        { return true; }
+    virtual void visitSymbol(TIntermSymbol*)               { }
+    virtual void visitConstantUnion(TIntermConstantUnion*) { }
+    virtual bool visitBinary(TVisit, TIntermBinary*)       { return true; }
+    virtual bool visitUnary(TVisit, TIntermUnary*)         { return true; }
+    virtual bool visitSelection(TVisit, TIntermSelection*) { return true; }
+    virtual bool visitAggregate(TVisit, TIntermAggregate*) { return true; }
+    virtual bool visitLoop(TVisit, TIntermLoop*)           { return true; }
+    virtual bool visitBranch(TVisit, TIntermBranch*)       { return true; }
+    virtual bool visitSwitch(TVisit, TIntermSwitch*)       { return true; }
 
     int getMaxDepth() const { return maxDepth; }
 
@@ -730,6 +730,8 @@ public:
     const bool rightToLeft;
 
 protected:
+    TIntermTraverser& operator=(TIntermTraverser&);
+
     int depth;
     int maxDepth;
 

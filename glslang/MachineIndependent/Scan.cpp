@@ -249,7 +249,7 @@ bool TInputScanner::scanVersion(int& version, EProfile& profile, bool& notFirstT
         for (profileLength = 0; profileLength < maxProfileLength; ++profileLength) {
             if (c < 0 || c == ' ' || c == '\t' || c == '\n' || c == '\r')
                 break;
-            profileString[profileLength] = c;
+            profileString[profileLength] = (char)c;
             c = get();
         }
         if (c > 0 && c != ' ' && c != '\t' && c != '\n' && c != '\r') {
@@ -274,6 +274,9 @@ public:
     explicit TParserToken(YYSTYPE& b) : sType(b) { }
 
     YYSTYPE& sType;
+protected:
+    TParserToken(TParserToken&);
+    TParserToken& operator=(TParserToken&);
 };
 
 } // end namespace glslang
@@ -594,7 +597,7 @@ int TScanContext::tokenize(TPpContext* pp, TParserToken& token)
                                    
         default:
             char buf[2];
-            buf[0] = ppToken.token;
+            buf[0] = (char)ppToken.token;
             buf[1] = 0;
             parseContext.error(loc, "unexpected token", buf, "");
             break;

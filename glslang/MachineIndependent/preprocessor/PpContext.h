@@ -193,6 +193,9 @@ public:
     TSymbolMap symbols; // this has light use... just defined macros
 
 protected:
+    TPpContext(TPpContext&);
+    TPpContext& operator=(TPpContext&);
+
     char*   preamble;               // string to parse, all before line 1 of string 0, it is 0 if no preamble
     int     preambleLength;
     char**  strings;                // official strings of shader, starting a string 0 line 1
@@ -342,7 +345,7 @@ protected:
     void RecordToken(TokenStream* pTok, int token, TPpToken* ppToken);
     void RewindTokenStream(TokenStream *pTok);
     int ReadToken(TokenStream* pTok, TPpToken* ppToken);
-    void pushTokenStreamInput(TokenStream *ts, int name);
+    void pushTokenStreamInput(TokenStream *ts);
     void UngetToken(int token, TPpToken* ppToken);
     
     class tTokenInput : public tInput {
@@ -445,7 +448,7 @@ protected:
         TInputScanner* input;
     };
 
-    int InitScanner(TPpContext* cpp);
+    int InitScanner();
     int ScanFromString(char* s);
     void missingEndifCheck();
     int lFloatConst(int len, int ch, TPpToken* ppToken);

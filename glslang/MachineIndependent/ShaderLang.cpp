@@ -688,7 +688,7 @@ int ShCompile(
     const int* inputLengths,
     const EShOptimizationLevel optLevel,
     const TBuiltInResource* resources,
-    int debugOptions,          // currently unused
+    int /*debugOptions*/,
     int defaultVersion,        // use 100 for ES environment, 110 for desktop
     bool forwardCompatible,    // give errors for use of deprecated features
     EShMessages messages       // warnings/errors/AST; things to print out
@@ -729,36 +729,6 @@ int ShCompile(
 //
 // Return:  The return value of is really boolean, indicating
 // success or failure.
-//
-int ShLink(
-    const ShHandle linkHandle,
-    const ShHandle compHandles[],
-    const int numHandles,
-    ShHandle uniformMapHandle,
-    short int** uniformsAccessed,
-    int* numUniformsAccessed)
-
-{
-    if (!InitThread())
-        return 0;
-
-    TShHandleBase* base = reinterpret_cast<TShHandleBase*>(linkHandle);
-    TLinker* linker = static_cast<TLinker*>(base->getAsLinker());
-    if (linker == 0)
-        return 0;
-
-    int returnValue;
-    GetThreadPoolAllocator().push();
-    returnValue = ShLinkExt(linkHandle, compHandles, numHandles);
-    GetThreadPoolAllocator().pop();
-
-    if (returnValue)
-        return 1;
-
-    return 0;
-}
-//
-// This link method will be eventually used once the ICD supports the new linker interface
 //
 int ShLinkExt(
     const ShHandle linkHandle,
@@ -835,6 +805,8 @@ const char* ShGetInfoLog(const ShHandle handle)
         infoSink = &(base->getAsCompiler()->getInfoSink());
     else if (base->getAsLinker())
         infoSink = &(base->getAsLinker()->getInfoSink());
+    else
+        return 0;
 
     infoSink->info << infoSink->debug.c_str();
     return infoSink->info.c_str();
@@ -990,7 +962,7 @@ void FinalizeProcess()
 class TDeferredCompiler : public TCompiler {
 public:
     TDeferredCompiler(EShLanguage s, TInfoSink& i) : TCompiler(s, i) { }
-    virtual bool compile(TIntermNode* root, int version = 0, EProfile profile = ENoProfile) { return true; }
+    virtual bool compile(TIntermNode*, int = 0, EProfile = ENoProfile) { return true; }
 };
 
 TShader::TShader(EShLanguage s) 

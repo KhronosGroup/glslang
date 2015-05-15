@@ -87,7 +87,7 @@ TPpContext::TPpContext(TParseContext& pc) :
     preamble(0), strings(0), parseContext(pc), inComment(false)
 {
     InitAtomTable();
-    InitScanner(this);
+    InitScanner();
 
     ifdepth = 0;
     for (elsetracker = 0; elsetracker < maxIfNesting; elsetracker++)

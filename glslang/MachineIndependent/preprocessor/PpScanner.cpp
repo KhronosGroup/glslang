@@ -92,7 +92,7 @@ NVIDIA HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 namespace glslang {
 
-int TPpContext::InitScanner(TPpContext *cpp)
+int TPpContext::InitScanner()
 {
     // Add various atoms needed by the CPP line scanner:
     if (!InitCPP())
@@ -127,13 +127,13 @@ int TPpContext::lFloatConst(int len, int ch, TPpToken* ppToken)
     char* str = ppToken->name;
     if (ch == '.') {
         HasDecimalOrExponent = true;
-        str[len++]=ch;
+        str[len++] = (char)ch;
         ch = getChar();
         while (ch >= '0' && ch <= '9') {
             if (len < TPpToken::maxTokenLength) {
                 declen++;
                 if (len > 0 || ch != '0') {
-                    str[len] = ch;
+                    str[len] = (char)ch;
                     len++;
                     str_len++;
                 }
@@ -155,21 +155,21 @@ int TPpContext::lFloatConst(int len, int ch, TPpToken* ppToken)
             len = 1,str_len=1;
         } else {
             ExpSign = 1;
-            str[len++]=ch;
+            str[len++] = (char)ch;
             ch = getChar();
             if (ch == '+') {
-                str[len++]=ch;  
+                str[len++] = (char)ch;
                 ch = getChar();
             } else if (ch == '-') {
                 ExpSign = -1;
-                str[len++]=ch;
+                str[len++] = (char)ch;
                 ch = getChar();
             }
             if (ch >= '0' && ch <= '9') {
                 while (ch >= '0' && ch <= '9') {
                     if (len < TPpToken::maxTokenLength) {
                         exp = exp*10 + ch - '0';
-                        str[len++]=ch;
+                        str[len++] = (char)ch;
                         ch = getChar();
                     } else {
                         parseContext.error(ppToken->loc, "float literal too long", "", "");
@@ -197,8 +197,8 @@ int TPpContext::lFloatConst(int len, int ch, TPpToken* ppToken)
                 ungetChar();
             } else {
                 if (len < TPpToken::maxTokenLength) {
-                    str[len++] = ch;
-                    str[len++] = ch2;
+                    str[len++] = (char)ch;
+                    str[len++] = (char)ch2;
                     isDouble = 1;
                 } else {
                     parseContext.error(ppToken->loc, "float literal too long", "", "");
@@ -212,7 +212,7 @@ int TPpContext::lFloatConst(int len, int ch, TPpToken* ppToken)
             if (! HasDecimalOrExponent)
                 parseContext.error(ppToken->loc, "float literal needs a decimal point or exponent", "", "");
             if (len < TPpToken::maxTokenLength)
-                str[len++] = ch;
+                str[len++] = (char)ch;
             else {
                 parseContext.error(ppToken->loc, "float literal too long", "", "");
                 len = 1,str_len=1;
@@ -238,7 +238,9 @@ int TPpContext::tStringInput::scan(TPpToken* ppToken)
 {
     char tokenText[TPpToken::maxTokenLength + 1];
     int AlreadyComplained = 0;
-    int len, ch, ii;
+    int len = 0;
+    int ch = 0;
+    int ii = 0;
     unsigned ival = 0;
 
     ppToken->ival = 0;
@@ -273,7 +275,7 @@ int TPpContext::tStringInput::scan(TPpToken* ppToken)
         case 'z':
             do {
                 if (len < TPpToken::maxTokenLength) {
-                    tokenText[len++] = ch;
+                    tokenText[len++] = (char)ch;
                     ch = pp->getChar();					
                 } else {
                     if (! AlreadyComplained) {
@@ -297,13 +299,13 @@ int TPpContext::tStringInput::scan(TPpToken* ppToken)
 
             return CPP_IDENTIFIER;
         case '0':
-            ppToken->name[len++] = ch;
+            ppToken->name[len++] = (char)ch;
             ch = pp->getChar();
             if (ch == 'x' || ch == 'X') {
                 // must be hexidecimal
 
                 bool isUnsigned = false;
-                ppToken->name[len++] = ch;
+                ppToken->name[len++] = (char)ch;
                 ch = pp->getChar();
                 if ((ch >= '0' && ch <= '9') ||
                     (ch >= 'A' && ch <= 'F') ||
@@ -312,7 +314,7 @@ int TPpContext::tStringInput::scan(TPpToken* ppToken)
                     ival = 0;
                     do {
                         if (ival <= 0x0fffffff) {
-                            ppToken->name[len++] = ch;
+                            ppToken->name[len++] = (char)ch;
                             if (ch >= '0' && ch <= '9') {
                                 ii = ch - '0';
                             } else if (ch >= 'A' && ch <= 'F') {
@@ -338,7 +340,7 @@ int TPpContext::tStringInput::scan(TPpToken* ppToken)
                 }
                 if (ch == 'u' || ch == 'U') {
                     if (len < TPpToken::maxTokenLength)
-                        ppToken->name[len++] = ch;
+                        ppToken->name[len++] = (char)ch;
                     isUnsigned = true;
                 } else
                     pp->ungetChar();
@@ -360,7 +362,7 @@ int TPpContext::tStringInput::scan(TPpToken* ppToken)
                 // see how much octal-like stuff we can read
                 while (ch >= '0' && ch <= '7') {
                     if (len < TPpToken::maxTokenLength)
-                        ppToken->name[len++] = ch;
+                        ppToken->name[len++] = (char)ch;
                     else if (! AlreadyComplained) {
                         pp->parseContext.error(ppToken->loc, "numeric literal too long", "", "");
                         AlreadyComplained = 1;
@@ -378,7 +380,7 @@ int TPpContext::tStringInput::scan(TPpToken* ppToken)
                     nonOctal = true;
                     do {
                         if (len < TPpToken::maxTokenLength)
-                            ppToken->name[len++] = ch;
+                            ppToken->name[len++] = (char)ch;
                         else if (! AlreadyComplained) {
                             pp->parseContext.error(ppToken->loc, "numeric literal too long", "", "");
                             AlreadyComplained = 1;
@@ -395,7 +397,7 @@ int TPpContext::tStringInput::scan(TPpToken* ppToken)
 
                 if (ch == 'u' || ch == 'U') {
                     if (len < TPpToken::maxTokenLength)
-                        ppToken->name[len++] = ch;
+                        ppToken->name[len++] = (char)ch;
                     isUnsigned = true;
                 } else
                     pp->ungetChar();
@@ -418,7 +420,7 @@ int TPpContext::tStringInput::scan(TPpToken* ppToken)
 
             do {
                 if (len < TPpToken::maxTokenLength)
-                    ppToken->name[len++] = ch;
+                    ppToken->name[len++] = (char)ch;
                 else if (! AlreadyComplained) {
                     pp->parseContext.error(ppToken->loc, "numeric literal too long", "", "");
                     AlreadyComplained = 1;
@@ -433,7 +435,7 @@ int TPpContext::tStringInput::scan(TPpToken* ppToken)
                 int uint = 0;
                 if (ch == 'u' || ch == 'U') {
                     if (len < TPpToken::maxTokenLength)
-                        ppToken->name[len++] = ch;
+                        ppToken->name[len++] = (char)ch;
                     uint = 1;
                 } else
                     pp->ungetChar();
@@ -442,9 +444,9 @@ int TPpContext::tStringInput::scan(TPpToken* ppToken)
                 ival = 0;
                 for (ii = 0; ii < numericLen; ii++) {
                     ch = ppToken->name[ii] - '0';
-                    if ((ival > 429496729) || (ival == 429496729 && ch >= 6)) {
+                    if ((ival > 0x19999999u) || (ival == 0x19999999u && ch >= 6)) {
                         pp->parseContext.error(ppToken->loc, "numeric literal too big", "", "");
-                        ival = -1;
+                        ival = 0xFFFFFFFFu;
                         break;
                     } else
                         ival = ival * 10 + ch;
@@ -651,7 +653,7 @@ int TPpContext::tStringInput::scan(TPpToken* ppToken)
             ch = pp->getChar();
             while (ch != '"' && ch != '\n' && ch != EOF) {
                 if (len < TPpToken::maxTokenLength) {
-                    tokenText[len] = ch;
+                    tokenText[len] = (char)ch;
                     len++;
                     ch = pp->getChar();
                 } else

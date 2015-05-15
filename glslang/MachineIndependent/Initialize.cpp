@@ -1951,7 +1951,7 @@ void TBuiltIns::addImageFunctions(TSampler sampler, TString& typeName, int versi
 //
 // Add all the texture lookup functions for the given type.
 //
-void TBuiltIns::addSamplingFunctions(TSampler sampler, TString& typeName, int version, EProfile profile)
+void TBuiltIns::addSamplingFunctions(TSampler sampler, TString& typeName, int /*version*/, EProfile /*profile*/)
 {
     //
     // texturing

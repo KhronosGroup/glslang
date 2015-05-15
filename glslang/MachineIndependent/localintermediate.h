@@ -285,7 +285,7 @@ public:
     int addUsedOffsets(int binding, int offset, int numOffsets);
     int computeTypeLocationSize(const TType&) const;
 
-    bool setXfbBufferStride(int buffer, int stride)
+    bool setXfbBufferStride(int buffer, unsigned stride)
     {
         if (xfbBuffers[buffer].stride != TQualifier::layoutXfbStrideEnd)
             return xfbBuffers[buffer].stride == stride;

@@ -197,7 +197,7 @@ int TPpContext::ReadToken(TokenStream *pTok, TPpToken *ppToken)
         ch = lReadByte(pTok);
         while (ch != 0) {
             if (len < TPpToken::maxTokenLength) {
-                tokenText[len] = ch;
+                tokenText[len] = (char)ch;
                 len++;
                 ch = lReadByte(pTok);
             } else {
@@ -239,7 +239,7 @@ int TPpContext::tTokenInput::scan(TPpToken* ppToken)
     return pp->ReadToken(tokens, ppToken);
 }
 
-void TPpContext::pushTokenStreamInput(TokenStream* ts, int name)
+void TPpContext::pushTokenStreamInput(TokenStream* ts)
 {
     pushInput(new tTokenInput(this, ts));
     RewindTokenStream(ts);

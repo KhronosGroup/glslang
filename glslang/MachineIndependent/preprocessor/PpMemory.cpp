@@ -95,8 +95,6 @@ struct chunk {
 
 TPpContext::MemoryPool* TPpContext::mem_CreatePool(size_t chunksize, unsigned int align)
 {
-    MemoryPool  *pool;
-
     if (align == 0)
         align = ALIGN;
     if (chunksize == 0)
@@ -107,7 +105,9 @@ TPpContext::MemoryPool* TPpContext::mem_CreatePool(size_t chunksize, unsigned in
         return 0;
     if (chunksize & (align - 1))
         return 0;
-    if (!(pool = (MemoryPool*)malloc(chunksize)))
+
+    MemoryPool *pool = (MemoryPool*)malloc(chunksize);
+    if (! pool)
         return 0;
 
     pool->next = 0;

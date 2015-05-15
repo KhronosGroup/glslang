@@ -618,6 +618,10 @@ public:
     const TIntermediate& intermediate;
     TReflection& reflection;
     std::set<const TIntermNode*> processedDerefs;
+
+protected:
+    TLiveTraverser(TLiveTraverser&);
+    TLiveTraverser& operator=(TLiveTraverser&);
 };
 
 //

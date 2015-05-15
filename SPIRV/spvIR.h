@@ -210,6 +210,7 @@ public:
 
 protected:
     Block(const Block&);
+    Block& operator=(Block&);
 
     // To enforce keeping parent and ownership in sync:
     friend Function;
@@ -244,7 +245,7 @@ public:
     Id getParamId(int p) { return parameterInstructions[p]->getResultId(); }
 
     void addBlock(Block* block) { blocks.push_back(block); }
-    void popBlock(Block* block) { assert(blocks.back() == block); blocks.pop_back(); }
+    void popBlock(Block*) { blocks.pop_back(); }
 
     Module& getParent() const { return parent; }
     Block* getEntryBlock() const { return blocks.front(); }
@@ -269,6 +270,8 @@ public:
 
 protected:
     Function(const Function&);
+    Function& operator=(Function&);
+
     Module& parent;
     Instruction functionInstruction;
     std::vector<Instruction*> parameterInstructions;

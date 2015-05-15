@@ -46,7 +46,7 @@ class TGenericLinker : public TLinker {
 public:
     TGenericLinker(EShExecutable e, int dOptions) : TLinker(e, infoSink), debugOptions(dOptions) { }
     bool link(TCompilerList&, TUniformMap*) { return true; }
-	void getAttributeBindings(ShBindingTable const **t) const { }
+	void getAttributeBindings(ShBindingTable const **) const { }
     TInfoSink infoSink;
     int debugOptions;
 };
@@ -57,7 +57,7 @@ public:
 class TUniformLinkedMap : public TUniformMap {
 public:
     TUniformLinkedMap() { }
-    virtual int getLocation(const char* name) { return 0; }
+    virtual int getLocation(const char*) { return 0; }
 };
 
 TShHandleBase* ConstructLinker(EShExecutable executable, int debugOptions)

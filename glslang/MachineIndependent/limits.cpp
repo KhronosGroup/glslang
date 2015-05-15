@@ -74,6 +74,10 @@ public:
     TSymbolTable& symbolTable;
     bool bad;
     TSourceLoc badLoc;
+
+protected:
+    TInductiveTraverser(TInductiveTraverser&);
+    TInductiveTraverser& operator=(TInductiveTraverser&);
 };
 
 // check binary operations for those modifying the loop index
@@ -152,6 +156,10 @@ public:
     const TIdSetType& inductiveLoopIds;
     bool bad;
     TSourceLoc badLoc;
+
+protected:
+    TIndexTraverser(TIndexTraverser&);
+    TIndexTraverser& operator=(TIndexTraverser&);
 };
 
 // make sure symbols are inductive-loop indexes

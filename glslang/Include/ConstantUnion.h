@@ -185,8 +185,6 @@ public:
             assert(false && "Default missing");
             return false;
         }
-
-        return false;
     }
 
     bool operator<(const TConstUnion& constant) const
@@ -212,8 +210,6 @@ public:
             assert(false && "Default missing");
             return false;
         }
-
-        return false;
     }
 
     TConstUnion operator+(const TConstUnion& constant) const

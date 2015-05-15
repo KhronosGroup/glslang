@@ -454,8 +454,8 @@ int TPpContext::eval(int token, int precedence, bool shortCircuit, int& res, boo
 
                 return token;
             }
-            Symbol* s;
-            res = (s = LookUpSymbol(ppToken->atom)) ? !s->mac.undef : 0;
+            Symbol* s = LookUpSymbol(ppToken->atom);
+            res = s ? ! s->mac.undef : 0;
             token = scanToken(ppToken);
             if (needclose) {
                 if (token != ')') {
@@ -690,8 +690,6 @@ int TPpContext::CPPerror(TPpToken* ppToken)
 int TPpContext::CPPpragma(TPpToken* ppToken)
 {
     char SrcStrName[2];
-    int tokenCount = 0;
-    int maxTokenCount = 10;
     const char* SrcStr;
     TVector<TString> tokens;
 
@@ -711,7 +709,7 @@ int TPpContext::CPPpragma(TPpToken* ppToken)
             tokens.push_back(SrcStr);
             break;
         default:
-            SrcStrName[0] = token;
+            SrcStrName[0] = (char)token;
             SrcStrName[1] = '\0';
             tokens.push_back(SrcStrName);
         }
@@ -887,7 +885,7 @@ TPpContext::TokenStream* TPpContext::PrescanMacroArg(TokenStream* a, TPpToken* p
 
     n = new TokenStream;
     pushInput(new tMarkerInput(this));
-    pushTokenStreamInput(a, 0);
+    pushTokenStreamInput(a);
     while ((token = scanToken(ppToken)) != tMarkerInput::marker) {
         if (token == CPP_IDENTIFIER && MacroExpand(ppToken->atom, ppToken, false, newLineOkay) != 0)
             continue;
@@ -916,7 +914,7 @@ int TPpContext::tMacroInput::scan(TPpToken* ppToken)
             if (mac->args[i] == ppToken->atom) 
                 break;
         if (i >= 0) {
-            pp->pushTokenStreamInput(args[i], ppToken->atom);
+            pp->pushTokenStreamInput(args[i]);
 
             return pp->scanToken(ppToken);
         }

@@ -891,7 +891,7 @@ TIntermBranch* TIntermediate::addBranch(TOperator branchOp, TIntermTyped* expres
 // This is to be executed after the final root is put on top by the parsing
 // process.
 //
-bool TIntermediate::postProcess(TIntermNode* root, EShLanguage language)
+bool TIntermediate::postProcess(TIntermNode* root, EShLanguage /*language*/)
 {
     if (root == 0)
         return true;
@@ -968,7 +968,7 @@ void TIntermediate::addSymbolLinkageNode(TIntermAggregate*& linkage, const TSymb
 // Add a caller->callee relationship to the call graph.
 // Assumes the strings are unique per signature.
 //
-void TIntermediate::addToCallGraph(TInfoSink& infoSink, const TString& caller, const TString& callee)
+void TIntermediate::addToCallGraph(TInfoSink& /*infoSink*/, const TString& caller, const TString& callee)
 {
     // Duplicates are okay, but faster to not keep them, and they come grouped by caller,
     // as long as new ones are push on the same end we check on for duplicates

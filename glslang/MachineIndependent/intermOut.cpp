@@ -67,6 +67,9 @@ public:
     virtual bool visitSwitch(TVisit, TIntermSwitch* node);
 
     TInfoSink& infoSink;
+protected:
+    TOutputTraverser(TOutputTraverser&);
+    TOutputTraverser& operator=(TOutputTraverser&);
 };
 
 //

@@ -98,6 +98,8 @@ public:
     
     TInfoSink& infoSink;
 protected:
+    TCompiler& operator=(TCompiler&);
+
     EShLanguage language;
     bool haveValidObjectCode;
 };
@@ -137,6 +139,7 @@ public:
     virtual TInfoSink& getInfoSink() { return infoSink; }
     TInfoSink& infoSink;
 protected:
+    TLinker& operator=(TLinker&);
     EShExecutable executable;
     bool haveReturnableObjectCode;  // true when objectCode is acceptable to send to driver
 

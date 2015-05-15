@@ -99,7 +99,7 @@ protected:
     spv::Id createUnaryOperation(glslang::TOperator op, spv::Decoration precision, spv::Id typeId, spv::Id operand, bool isFloat);
     spv::Id createConversion(glslang::TOperator op, spv::Decoration precision, spv::Id destTypeId, spv::Id operand);
     spv::Id makeSmearedConstant(spv::Id constant, int vectorSize);
-    spv::Id createMiscOperation(glslang::TOperator op, spv::Decoration precision, spv::Id typeId, std::vector<spv::Id>& operands, bool isUnsigned);
+    spv::Id createMiscOperation(glslang::TOperator op, spv::Decoration precision, spv::Id typeId, std::vector<spv::Id>& operands);
     spv::Id createNoArgOperation(glslang::TOperator op);
     spv::Id getSymbolId(const glslang::TIntermSymbol* node);
     void addDecoration(spv::Id id, spv::Decoration dec);
@@ -1029,11 +1029,8 @@ bool TGlslangToSpvTraverser::visitAggregate(glslang::TVisit visit, glslang::TInt
         result = createUnaryOperation(node->getOp(), precision, convertGlslangToSpvType(node->getType()), operands.front(), node->getType().getBasicType() == glslang::EbtFloat || node->getType().getBasicType() == glslang::EbtDouble);
         break;
     default:
-        {
-            const glslang::TType& type = glslangOperands.front()->getAsTyped()->getType();
-            result = createMiscOperation(node->getOp(), precision, convertGlslangToSpvType(node->getType()), operands, type.getBasicType() == glslang::EbtUint);
-            break;
-        }
+        result = createMiscOperation(node->getOp(), precision, convertGlslangToSpvType(node->getType()), operands);
+        break;
     }
 
     if (noReturnValue)
@@ -1271,7 +1268,7 @@ spv::Id TGlslangToSpvTraverser::getSampledType(const glslang::TSampler& sampler)
 // Do full recursive conversion of an arbitrary glslang type to a SPIR-V Id.
 spv::Id TGlslangToSpvTraverser::convertGlslangToSpvType(const glslang::TType& type)
 {
-    spv::Id spvType;
+    spv::Id spvType = 0;
 
     switch (type.getBasicType()) {
     case glslang::EbtVoid:
@@ -2142,8 +2139,8 @@ spv::Id TGlslangToSpvTraverser::createUnaryOperation(glslang::TOperator op, spv:
 spv::Id TGlslangToSpvTraverser::createConversion(glslang::TOperator op, spv::Decoration precision, spv::Id destType, spv::Id operand)
 {
     spv::Op convOp = spv::OpNop;
-    spv::Id zero;
-    spv::Id one;
+    spv::Id zero = 0;
+    spv::Id one = 0;
 
     int vectorSize = builder.isVectorType(destType) ? builder.getNumTypeComponents(destType) : 0;
 
@@ -2246,7 +2243,7 @@ spv::Id TGlslangToSpvTraverser::makeSmearedConstant(spv::Id constant, int vector
     return builder.makeCompositeConstant(vectorTypeId, components);
 }
 
-spv::Id TGlslangToSpvTraverser::createMiscOperation(glslang::TOperator op, spv::Decoration precision, spv::Id typeId, std::vector<spv::Id>& operands, bool isUnsigned)
+spv::Id TGlslangToSpvTraverser::createMiscOperation(glslang::TOperator op, spv::Decoration precision, spv::Id typeId, std::vector<spv::Id>& operands)
 {
     spv::Op opCode = spv::OpNop;
     int libCall = -1;
@@ -2502,7 +2499,7 @@ spv::Id TGlslangToSpvTraverser::createSpvConstant(const glslang::TType& glslangT
     } else {
         // we have a non-aggregate (scalar) constant
         bool zero = nextConst >= consts.size();
-        spv::Id scalar;
+        spv::Id scalar = 0;
         switch (glslangType.getBasicType()) {
         case glslang::EbtInt:
             scalar = builder.makeIntConstant(zero ? 0 : consts[nextConst].getIConst());

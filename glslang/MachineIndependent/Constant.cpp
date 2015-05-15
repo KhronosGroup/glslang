@@ -646,10 +646,10 @@ TIntermTyped* TIntermediate::fold(TIntermAggregate* aggrNode)
 
             // some arguments are scalars instead of matching vectors; simulate a smear
             int arg0comp = std::min(comp, children[0]->getAsTyped()->getType().getVectorSize() - 1);
-            int arg1comp;
+            int arg1comp = 0;
             if (children.size() > 1)
                 arg1comp = std::min(comp, children[1]->getAsTyped()->getType().getVectorSize() - 1);
-            int arg2comp;
+            int arg2comp = 0;
             if (children.size() > 2)
                 arg2comp = std::min(comp, children[2]->getAsTyped()->getType().getVectorSize() - 1);
 
