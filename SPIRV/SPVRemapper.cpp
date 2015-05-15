@@ -1,26 +1,47 @@
+//
+//Copyright (C) 2015 LunarG, Inc.
+//
+//All rights reserved.
+//
+//Redistribution and use in source and binary forms, with or without
+//modification, are permitted provided that the following conditions
+//are met:
+//
+//    Redistributions of source code must retain the above copyright
+//    notice, this list of conditions and the following disclaimer.
+//
+//    Redistributions in binary form must reproduce the above
+//    copyright notice, this list of conditions and the following
+//    disclaimer in the documentation and/or other materials provided
+//    with the distribution.
+//
+//    Neither the name of 3Dlabs Inc. Ltd. nor the names of its
+//    contributors may be used to endorse or promote products derived
+//    from this software without specific prior written permission.
+//
+//THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+//"AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+//LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
+//FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
+//COPYRIGHT HOLDERS OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT,
+//INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,
+//BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+//LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+//CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
+//LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN
+//ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+//POSSIBILITY OF SUCH DAMAGE.
+//
+
 #include "SPVRemapper.h"
 #include "doc.h"
 
 /* -*-mode:c++; tab-width: 8; indent-tabs-mode: nil; c-basic-offset: 3 -*- */
 
-// Poor man's basename: given a complete path, return file portion.
-// E.g:
-//      Linux:  /foo/bar/test  -> test
-//      Win:   c:\foo\bar\test -> test
-// It's not very efficient, but that doesn't matter for our minimal-duty use.
-// Using boost::filesystem would be better in many ways, but want to avoid that dependency.
-const std::string spv::spirvbin_base_t::basename(const std::string& filename)
-{
-   const size_t sepLoc = filename.find_last_of(path_sep_char());
-
-   return (sepLoc == filename.npos) ? filename : filename.substr(sepLoc+1);
-}
-
 #if !defined (use_cpp11)
 // ... not supported before C++11
 #else // defined (use_cpp11)
 
-#include <fstream>
 #include <algorithm>
 #include <cassert>
 
@@ -204,14 +225,14 @@ spv::Id spirvbin_t::localId(spv::Id id, spv::Id newId)
 
    if (newId != unmapped && newId != unused) {
       if (isOldIdUnused(id))
-         ferror(std::string("ID unused in module: ") + std::to_string(id));
+          error(std::string("ID unused in module: ") + std::to_string(id));
 
       if (!isOldIdUnmapped(id))
-         ferror(std::string("ID already mapped: ") + std::to_string(id) + " -> "
+         error(std::string("ID already mapped: ") + std::to_string(id) + " -> "
                 + std::to_string(localId(id)));
 
       if (isNewIdMapped(newId))
-         ferror(std::string("ID already used in module: ") + std::to_string(newId));
+         error(std::string("ID already used in module: ") + std::to_string(newId));
 
       msg(4, 4, std::string("map: ") + std::to_string(id) + " -> " + std::to_string(newId));
       setMapped(newId);
@@ -238,39 +259,9 @@ std::string spirvbin_t::literalString(int word) const
 }
 
 
-// Write word stream to disk, in outputDir, with same filename used to read it.
-void spirvbin_t::write(const std::string& outputDir) const
-{
-   if (filename.empty())
-      error("missing filename");
-
-   if (outputDir.empty())
-      error("missing output directory");
-
-   const std::string outfile = outputDir + path_sep_char() + basename(filename);
-
-   std::ofstream fp;
-
-   msg(2, 2, std::string("writing: ") + outfile);
-
-   fp.open(outfile, std::fstream::out | std::fstream::binary);
-
-   if (fp.fail())
-      error(std::string("error opening file for write: ") + outfile);
-
-   for (auto word : spv) {
-      fp.write((char *)&word, sizeof(word));
-      if (fp.fail())
-         error(std::string("error writing file: ") + outfile);
-   }
-
-   // file is closed by destructor
-}
-
-
 void spirvbin_t::applyMap()
 {
-   msg(3, 2, std::string("Applying map: ") + basename(filename));
+   msg(3, 2, std::string("Applying map: "));
    
    // Map local IDs through the ID map
    process(inst_fn_nop, // ignore instructions
@@ -285,7 +276,7 @@ void spirvbin_t::applyMap()
 // Find free IDs for anything we haven't mapped
 void spirvbin_t::mapRemainder()
 {
-   msg(3, 2, std::string("Remapping remainder: ") + basename(filename));
+   msg(3, 2, std::string("Remapping remainder: "));
 
    spv::Id     unusedId  = 1;  // can't use 0: that's NoResult
    spirword_t  maxBound  = 0;
@@ -299,7 +290,7 @@ void spirvbin_t::mapRemainder()
          localId(id, unusedId = nextUnusedId(unusedId));
 
       if (isOldIdUnmapped(id))
-         ferror(std::string("old ID not mapped: ") + std::to_string(id));
+         error(std::string("old ID not mapped: ") + std::to_string(id));
 
       // Track max bound
       maxBound = std::max(maxBound, localId(id) + 1);
@@ -326,7 +317,7 @@ void spirvbin_t::stripDebug()
 
 void spirvbin_t::buildLocalMaps()
 {
-   msg(2, 2, std::string("build local maps: ") + filename);
+   msg(2, 2, std::string("build local maps: "));
 
    mapped.clear();
    idMapL.clear();
@@ -362,13 +353,13 @@ void spirvbin_t::buildLocalMaps()
             entryPoint = asId(start + 2);
          } else if (opCode == spv::Op::OpFunction) {
             if (fnStart != 0)
-               ferror("nested function found");
+               error("nested function found");
             fnStart = start;
             fnRes   = asId(start + 2);
          } else if (opCode == spv::Op::OpFunctionEnd) {
             assert(fnRes != spv::NoResult);
             if (fnStart == 0)
-               ferror("function end without function start");
+               error("function end without function start");
             fnPos[fnRes] = {fnStart, start + asWordCount(start)};
             fnStart = 0;
          } else if (isConstOp(opCode)) {
@@ -388,55 +379,23 @@ void spirvbin_t::buildLocalMaps()
       );
 }
 
-// Read word stream from disk
-void spirvbin_t::read(const std::string& inFilename)
-{
-   std::ifstream fp;
-   filename = inFilename;
-
-   msg(2, 2, std::string("reading: ") + filename);
-
-   spv.clear();
-   fp.open(filename, std::fstream::in | std::fstream::binary);
-
-   if (fp.fail())
-      ferror("error opening file for read: ");
-
-   // Reserve space (for efficiency, not for correctness)
-   fp.seekg(0, fp.end);
-   spv.reserve(size_t(fp.tellg()) / sizeof(spirword_t));
-   fp.seekg(0, fp.beg);
-
-   while (!fp.eof()) {
-      spirword_t inWord;
-      fp.read((char *)&inWord, sizeof(inWord));
-
-      if (!fp.eof()) {
-         spv.push_back(inWord);
-         if (fp.fail())
-            ferror("error reading file: ");
-      }
-   }
-}
-
-
 // Validate the SPIR header
 void spirvbin_t::validate() const
 {
-   msg(2, 2, std::string("validating: ") + filename);
+   msg(2, 2, std::string("validating: "));
 
    if (spv.size() < header_size)
-      ferror("file too short: ");
+      error("file too short: ");
 
    if (magic() != spv::MagicNumber)
-      ferror("bad magic number");
+      error("bad magic number");
 
-   // 1 = version:            TODO: print for verbose output
-   // 2 = generator magic:    TODO: print for verbose output
-   // 3 = result <id> bound:  TODO: print for verbose output
+   // field 1 = version
+   // field 2 = generator magic
+   // field 3 = result <id> bound
 
    if (schemaNum() != 0)
-      ferror("bad schema, must be 0");
+      error("bad schema, must be 0");
 }
 
 
@@ -448,12 +407,10 @@ int spirvbin_t::processInstruction(int word, instfn_t instFn, idfn_t idFn)
    const int      nextInst  = word++ + wordCount;
 
    if (nextInst > int(spv.size()))
-      ferror("spir instruction terminated too early");
+      error("spir instruction terminated too early");
 
    // Base for computing number of operands; will be updated as more is learned
    unsigned numOperands = wordCount - 1;
-
-   // msg(5, 4, std::string("opcode: ") + spv::InstructionDesc[opCode].opName);
 
    if (instFn(opCode, instructionStart))
       return nextInst;
@@ -906,7 +863,7 @@ void spirvbin_t::optLoadStore()
 // remove bodies of uncalled functions
 void spirvbin_t::dceFuncs()
 {
-   msg(3, 2, std::string("Removing Dead Functions: ") + filename);
+   msg(3, 2, std::string("Removing Dead Functions: "));
 
    // TODO: There are more efficient ways to do this.
    bool changed = true;
@@ -923,7 +880,6 @@ void spirvbin_t::dceFuncs()
          const auto call_it = fnCalls.find(fn->first);
          
          if (call_it == fnCalls.end() || call_it->second == 0) {
-            // msg(3, 4, std::string("removing dead function: ") + std::to_string(fn->first));
             changed = true;
             stripRange.push_back(fn->second);
             fnPosDCE.insert(*fn);
@@ -954,7 +910,7 @@ void spirvbin_t::dceFuncs()
 // remove unused function variables + decorations
 void spirvbin_t::dceVars()
 {
-   msg(3, 2, std::string("DCE Vars: ") + basename(filename));
+   msg(3, 2, std::string("DCE Vars: "));
 
    std::unordered_map<spv::Id, int> varUseCount;
 
@@ -1091,7 +1047,7 @@ int spirvbin_t::typePos(spv::Id id) const
 {
    const auto tid_it = typeConstPosR.find(id);
    if (tid_it == typeConstPosR.end())
-      ferror("type ID not found");
+      error("type ID not found");
 
    return tid_it->second;
 }
@@ -1171,7 +1127,7 @@ std::uint32_t spirvbin_t::hashType(int typeStart) const
          }
 
       default:
-         ferror("unknown type opcode");
+         error("unknown type opcode");
          return 0;
    }
 }
@@ -1180,7 +1136,7 @@ void spirvbin_t::mapTypeConst()
 {
    globaltypes_t globalTypeMap;
 
-   msg(3, 2, std::string("Remapping Consts & Types: ") + basename(filename));
+   msg(3, 2, std::string("Remapping Consts & Types: "));
 
    static const std::uint32_t softTypeIdLimit = 3011; // small prime.  TODO: get from options
    static const std::uint32_t firstMappedID   = 8;    // offset into ID space
@@ -1258,15 +1214,6 @@ void spirvbin_t::remap(std::vector<std::uint32_t>& in_spv, std::uint32_t opts)
    spv.swap(in_spv);
    remap(opts);
    spv.swap(in_spv);
-}
-
-// remap from a disk file
-void spirvbin_t::remap(const std::string& file, const std::string& outputDir,
-                       std::uint32_t opts)
-{
-   read(file);
-   remap(opts);
-   write(outputDir);
 }
 
 } // namespace SPV

@@ -1,3 +1,37 @@
+//
+//Copyright (C) 2015 LunarG, Inc.
+//
+//All rights reserved.
+//
+//Redistribution and use in source and binary forms, with or without
+//modification, are permitted provided that the following conditions
+//are met:
+//
+//    Redistributions of source code must retain the above copyright
+//    notice, this list of conditions and the following disclaimer.
+//
+//    Redistributions in binary form must reproduce the above
+//    copyright notice, this list of conditions and the following
+//    disclaimer in the documentation and/or other materials provided
+//    with the distribution.
+//
+//    Neither the name of 3Dlabs Inc. Ltd. nor the names of its
+//    contributors may be used to endorse or promote products derived
+//    from this software without specific prior written permission.
+//
+//THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+//"AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+//LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
+//FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
+//COPYRIGHT HOLDERS OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT,
+//INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,
+//BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+//LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+//CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
+//LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN
+//ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+//POSSIBILITY OF SUCH DAMAGE.
+//
 
 #ifndef SPIRVREMAPPER_H
 #define SPIRVREMAPPER_H
@@ -34,16 +68,6 @@ public:
       ALL_BUT_STRIP = (MAP_ALL | DCE_ALL | OPT_ALL),
       DO_EVERYTHING = (STRIP | ALL_BUT_STRIP)
    };
-   
-// OS dependent path separator (avoiding boost::filesystem dependency)
-#if defined(_WIN32)
-   static const char path_sep_char() { return '\\'; }
-#else
-   static const char path_sep_char() { return '/';  }
-#endif
-
-   // Poor man's basename, to avoid external dependencies
-   static const std::string basename(const std::string& filename);
 };
 
 } // namespace SPV
@@ -52,7 +76,6 @@ public:
 #include <stdio.h>
 
 namespace spv {
-
 class spirvbin_t : public spirvbin_base_t
 {
 public:
@@ -62,11 +85,6 @@ public:
     {
         printf("Tool not compiled for C++11, which is required for SPIR-V remapping.\n");
     }
-
-   void remap(const std::string& filename, const std::string& outputDir, unsigned int opts = 0)
-   {
-       printf("Tool not compiled for C++11, which is required for SPIR-V remapping.\n");
-   }
 };
 
 } // namespace SPV
@@ -95,10 +113,6 @@ public:
    // remap on an existing binary in memory
    void remap(std::vector<std::uint32_t>& spv, std::uint32_t opts = Options::DO_EVERYTHING);
 
-   // load binary from disk file, and remap that.
-   void remap(const std::string& filename, const std::string& outputDir,
-              std::uint32_t opts = Options::DO_EVERYTHING);
-
    // Type for error/log handler functions
    typedef std::function<void(const std::string&)> errorfn_t;
    typedef std::function<void(const std::string&)> logfn_t;
@@ -112,14 +126,10 @@ protected:
    virtual void msg(int minVerbosity, int indent, const std::string& txt) const;
 
 private:
-   // write SPV to given directory using filename passed to remap(filename...)
-   void write(const std::string& outputDir) const;
-
    // Local to global, or global to local ID map
    typedef std::unordered_map<spv::Id, spv::Id> idmap_t;
    typedef std::unordered_set<spv::Id>          idset_t;
 
-   void read(const std::string& filename);          // read SPV from disk file
    void remap(std::uint32_t opts = Options::DO_EVERYTHING);
 
    // Map of names to IDs
@@ -148,10 +158,6 @@ private:
 
    // handle error
    void error(const std::string& txt) const { errorHandler(txt); }
-   // handle error with our filename appended to the string
-   void ferror(const std::string& txt) const {
-      error(std::string("\nERROR processing file ") + filename + ":\n" + txt);
-   }
 
    bool    isConstOp(spv::Op opCode)       const;
    bool    isTypeOp(spv::Op opCode)        const;
@@ -229,7 +235,6 @@ private:
    void        strip();               // remove debug symbols
    
    std::vector<spirword_t> spv;      // SPIR words
-   std::string             filename; // the file this came from
 
    namemap_t               nameMap;  // ID names from OpName
 
