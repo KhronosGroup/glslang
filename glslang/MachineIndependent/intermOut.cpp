@@ -37,6 +37,24 @@
 #include "localintermediate.h"
 #include "../Include/InfoSink.h"
 
+#ifdef _MSC_VER
+#include <float.h>
+#else
+#include <math.h>
+#endif
+
+namespace {
+
+bool is_positive_infinity(double x) {
+#ifdef _MSC_VER
+  return _fpclass(x) == _FPCLASS_PINF;
+#else
+  return isinf(x) && (x >= 0);
+#endif
+}
+
+}
+
 namespace glslang {
 
 //
@@ -441,11 +459,19 @@ void OutputConstantUnion(TInfoSink& out, const TIntermTyped* node, const TConstU
         case EbtFloat:
         case EbtDouble:
             {
-                const int maxSize = 300;
-                char buf[maxSize];
-                snprintf(buf, maxSize, "%f", constUnion[i].getDConst());
+                const double value = constUnion[i].getDConst();
+                // Print infinity in a portable way, for test stability.
+                // Other cases may be needed in the future: negative infinity,
+                // and NaNs.
+                if (is_positive_infinity(value))
+                    out.debug << "inf\n";
+                else {
+                    const int maxSize = 300;
+                    char buf[maxSize];
+                    snprintf(buf, maxSize, "%f", value);
 
-                out.debug << buf << "\n";
+                    out.debug << buf << "\n";
+                }
             }
             break;
         case EbtInt:
