@@ -1,0 +1,12 @@
+spv.matrix2.frag
+WARNING: 0:4: varying deprecated in version 130; may be removed in future release
+WARNING: 0:13: varying deprecated in version 130; may be removed in future release
+WARNING: 0:15: varying deprecated in version 130; may be removed in future release
+
+
+
+Linked fragment stage:
+
+
+
+Missing functionality: binary operation on matrix

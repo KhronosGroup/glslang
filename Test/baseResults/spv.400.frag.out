@@ -1,0 +1,10 @@
+spv.400.frag
+Warning, version 400 is not yet complete; most version-specific features are present, but some are missing.
+
+
+
+Linked fragment stage:
+
+
+
+Missing functionality: texture gather

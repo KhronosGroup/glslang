@@ -1,0 +1,11 @@
+spv.texture.frag
+WARNING: 0:14: varying deprecated in version 130; may be removed in future release
+WARNING: 0:15: varying deprecated in version 130; may be removed in future release
+
+
+
+Linked fragment stage:
+
+
+
+Missing functionality: texel fetch
