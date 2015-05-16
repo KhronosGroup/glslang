@@ -10,7 +10,9 @@ ERROR: 0:24: '' : octal literal digit too large
 ERROR: 0:49: '' : bad digit in hexidecimal literal 
 ERROR: 0:50: '' : hexidecimal literal too big 
 ERROR: 0:88: '' : float literal needs a decimal point or exponent 
-ERROR: 10 compilation errors.  No code generated.
+ERROR: 0:98: '' : numeric literal too big 
+ERROR: 0:101: '' : numeric literal too big 
+ERROR: 12 compilation errors.  No code generated.
 
 
 Shader version: 400
@@ -373,6 +375,36 @@ ERROR: node is still EOpNull!
 0:88          'e5' (temp float)
 0:88          Constant:
 0:88            5.000000
+0:98  Sequence
+0:98    move second child to first child (temp uint)
+0:98      'g1' (global uint)
+0:98      Constant:
+0:98        4294967295 (const uint)
+0:99  Sequence
+0:99    move second child to first child (temp uint)
+0:99      'g2' (global uint)
+0:99      Constant:
+0:99        4294967295 (const uint)
+0:100  Sequence
+0:100    move second child to first child (temp uint)
+0:100      'g3' (global uint)
+0:100      Constant:
+0:100        4294967294 (const uint)
+0:101  Sequence
+0:101    move second child to first child (temp int)
+0:101      'g4' (global int)
+0:101      Constant:
+0:101        -1 (const int)
+0:102  Sequence
+0:102    move second child to first child (temp int)
+0:102      'g5' (global int)
+0:102      Constant:
+0:102        -1 (const int)
+0:103  Sequence
+0:103    move second child to first child (temp int)
+0:103      'g6' (global int)
+0:103      Constant:
+0:103        -2 (const int)
 0:?   Linker Objects
 0:?     'c2' (layout(location=2 ) out 4-component vector of float)
 0:?     'c3' (layout(location=3 ) out 4-component vector of float)
@@ -380,6 +412,12 @@ ERROR: node is still EOpNull!
 0:?     'c5' (layout(location=5 ) out 4-component vector of float)
 0:?     'c6' (layout(location=6 ) out 4-component vector of float)
 0:?     'c7' (layout(location=7 ) out 4-component vector of float)
+0:?     'g1' (global uint)
+0:?     'g2' (global uint)
+0:?     'g3' (global uint)
+0:?     'g4' (global int)
+0:?     'g5' (global int)
+0:?     'g6' (global int)
 
 
 Linked fragment stage:
@@ -745,6 +783,36 @@ ERROR: node is still EOpNull!
 0:88          'e5' (temp float)
 0:88          Constant:
 0:88            5.000000
+0:98  Sequence
+0:98    move second child to first child (temp uint)
+0:98      'g1' (global uint)
+0:98      Constant:
+0:98        4294967295 (const uint)
+0:99  Sequence
+0:99    move second child to first child (temp uint)
+0:99      'g2' (global uint)
+0:99      Constant:
+0:99        4294967295 (const uint)
+0:100  Sequence
+0:100    move second child to first child (temp uint)
+0:100      'g3' (global uint)
+0:100      Constant:
+0:100        4294967294 (const uint)
+0:101  Sequence
+0:101    move second child to first child (temp int)
+0:101      'g4' (global int)
+0:101      Constant:
+0:101        -1 (const int)
+0:102  Sequence
+0:102    move second child to first child (temp int)
+0:102      'g5' (global int)
+0:102      Constant:
+0:102        -1 (const int)
+0:103  Sequence
+0:103    move second child to first child (temp int)
+0:103      'g6' (global int)
+0:103      Constant:
+0:103        -2 (const int)
 0:?   Linker Objects
 0:?     'c2' (layout(location=2 ) out 4-component vector of float)
 0:?     'c3' (layout(location=3 ) out 4-component vector of float)
@@ -752,4 +820,10 @@ ERROR: node is still EOpNull!
 0:?     'c5' (layout(location=5 ) out 4-component vector of float)
 0:?     'c6' (layout(location=6 ) out 4-component vector of float)
 0:?     'c7' (layout(location=7 ) out 4-component vector of float)
+0:?     'g1' (global uint)
+0:?     'g2' (global uint)
+0:?     'g3' (global uint)
+0:?     'g4' (global int)
+0:?     'g5' (global int)
+0:?     'g6' (global int)
 

@@ -94,3 +94,10 @@ layout (location = 04) out vec4 c4;
 layout (location = 005u) out vec4 c5;
 layout (location = 0x6) out vec4 c6;
 layout (location = 0x7u) out vec4 c7;
+
+uint g1 = 4294967296u; // ERROR, too big
+uint g2 = 4294967295u;
+uint g3 = 4294967294u;
+int g4 = 4294967296;   // ERROR, too big
+int g5 = 4294967295;
+int g6 = 4294967294;

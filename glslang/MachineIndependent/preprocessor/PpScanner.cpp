@@ -432,19 +432,21 @@ int TPpContext::tStringInput::scan(TPpToken* ppToken)
             } else {
                 // Finish handling signed and unsigned integers
                 int numericLen = len;
-                int uint = 0;
+                bool uint = false;
                 if (ch == 'u' || ch == 'U') {
                     if (len < TPpToken::maxTokenLength)
                         ppToken->name[len++] = (char)ch;
-                    uint = 1;
+                    uint = true;
                 } else
                     pp->ungetChar();
 
-                ppToken->name[len] = '\0';				
+                ppToken->name[len] = '\0';
                 ival = 0;
-                for (ii = 0; ii < numericLen; ii++) {
-                    ch = ppToken->name[ii] - '0';
-                    if ((ival > 0x19999999u) || (ival == 0x19999999u && ch >= 6)) {
+                const unsigned oneTenthMaxInt  = 0xFFFFFFFFu / 10;
+                const unsigned remainderMaxInt = 0xFFFFFFFFu - 10 * oneTenthMaxInt;
+                for (int i = 0; i < numericLen; i++) {
+                    ch = ppToken->name[i] - '0';
+                    if ((ival > oneTenthMaxInt) || (ival == oneTenthMaxInt && ch > remainderMaxInt)) {
                         pp->parseContext.error(ppToken->loc, "numeric literal too big", "", "");
                         ival = 0xFFFFFFFFu;
                         break;
