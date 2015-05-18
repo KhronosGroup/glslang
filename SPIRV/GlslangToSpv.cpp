@@ -290,64 +290,40 @@ spv::Decoration TranslateInvariantDecoration(const glslang::TType& type)
 // Translate glslang built-in variable to SPIR-V built in decoration.
 spv::BuiltIn TranslateBuiltInDecoration(const glslang::TIntermSymbol& node)
 {
-    const glslang::TString& name = node.getName();
-    if (name.compare(0, 3, "gl_") != 0)
-        return (spv::BuiltIn)spv::BadValue;
-
-    switch (node.getQualifier().storage) {
-    case glslang::EvqPosition:   return spv::BuiltInPosition;
-    case glslang::EvqPointSize:  return spv::BuiltInPointSize;
-    case glslang::EvqClipVertex: return spv::BuiltInClipVertex;
-    case glslang::EvqVertexId:   return spv::BuiltInVertexId;
-    case glslang::EvqInstanceId: return spv::BuiltInInstanceId;
-    case glslang::EvqFragCoord:  return spv::BuiltInFragCoord;
-    case glslang::EvqPointCoord: return spv::BuiltInPointCoord;
-    case glslang::EvqFace:       return spv::BuiltInFrontFacing;
-    case glslang::EvqFragColor:  return spv::BuiltInFragColor;
-    case glslang::EvqFragDepth:  return spv::BuiltInFragDepth;
-    default:
-        if (name == "gl_ClipDistance")
-            return spv::BuiltInClipDistance;
-        else if (name == "gl_PrimitiveID" || name == "gl_PrimitiveIDIn")
-            return spv::BuiltInPrimitiveId;
-        else if (name == "gl_InvocationID")
-            return spv::BuiltInInvocationId;
-        else if (name == "gl_Layer")
-            return spv::BuiltInLayer;
-        else if (name == "gl_ViewportIndex")
-            return spv::BuiltInViewportIndex;
-        else if (name == "gl_TessLevelOuter")
-            return spv::BuiltInTessLevelOuter;
-        else if (name == "gl_TessLevelInner")
-            return spv::BuiltInTessLevelInner;
-        else if (name == "gl_TessCoord")
-            return spv::BuiltInTessCoord;
-        else if (name == "gl_PatchVerticesIn")
-            return spv::BuiltInPatchVertices;
-        else if (name == "gl_SampleID")
-            return spv::BuiltInSampleId;
-        else if (name == "gl_SamplePosition")
-            return spv::BuiltInSamplePosition;
-        else if (name == "gl_SampleMask" || name == "gl_SampleMaskIn")
-            return spv::BuiltInSampleMask;
-
-        // Compute shader:
-        else if (name == "gl_NumWorkGroups")
-            return spv::BuiltInNumWorkgroups;
-        else if (name == "gl_WorkGroupSize")
-            return spv::BuiltInWorkgroupSize;
-        else if (name == "gl_WorkGroupID")
-            return spv::BuiltInWorkgroupId;
-        else if (name == "gl_LocalInvocationID")
-            return spv::BuiltInLocalInvocationId;
-        else if (name == "gl_GlobalInvocationID")
-            return spv::BuiltInGlobalInvocationId;
-        else if (name == "gl_LocalInvocationIndexID")
-            return spv::BuiltInLocalInvocationIndex;
-        break;
+    switch (node.getQualifier().builtIn) {
+    case glslang::EbvPosition:             return spv::BuiltInPosition;
+    case glslang::EbvPointSize:            return spv::BuiltInPointSize;
+    case glslang::EbvClipVertex:           return spv::BuiltInClipVertex;
+    case glslang::EbvClipDistance:         return spv::BuiltInClipDistance;
+    case glslang::EbvCullDistance:         return spv::BuiltInCullDistance;
+    case glslang::EbvVertexId:             return spv::BuiltInVertexId;
+    case glslang::EbvInstanceId:           return spv::BuiltInInstanceId;
+    case glslang::EbvPrimitiveId:          return spv::BuiltInPrimitiveId;
+    case glslang::EbvInvocationId:         return spv::BuiltInInvocationId;
+    case glslang::EbvLayer:                return spv::BuiltInLayer;
+    case glslang::EbvViewportIndex:        return spv::BuiltInViewportIndex;
+    case glslang::EbvTessLevelInner:       return spv::BuiltInTessLevelInner;
+    case glslang::EbvTessLevelOuter:       return spv::BuiltInTessLevelOuter;
+    case glslang::EbvTessCoord:            return spv::BuiltInTessCoord;
+    case glslang::EbvPatchVertices:        return spv::BuiltInPatchVertices;
+    case glslang::EbvFragCoord:            return spv::BuiltInFragCoord;
+    case glslang::EbvPointCoord:           return spv::BuiltInPointCoord;
+    case glslang::EbvFace:                 return spv::BuiltInFrontFacing;
+    case glslang::EbvSampleId:             return spv::BuiltInSampleId;
+    case glslang::EbvSamplePosition:       return spv::BuiltInSamplePosition;
+    case glslang::EbvSampleMask:           return spv::BuiltInSampleMask;
+    case glslang::EbvFragColor:            return spv::BuiltInFragColor;
+    case glslang::EbvFragData:             return spv::BuiltInFragColor;
+    case glslang::EbvFragDepth:            return spv::BuiltInFragDepth;
+    case glslang::EbvHelperInvocation:     return spv::BuiltInHelperInvocation;
+    case glslang::EbvNumWorkGroups:        return spv::BuiltInNumWorkgroups;
+    case glslang::EbvWorkGroupSize:        return spv::BuiltInWorkgroupSize;
+    case glslang::EbvWorkGroupId:          return spv::BuiltInWorkgroupId;
+    case glslang::EbvLocalInvocationId:    return spv::BuiltInLocalInvocationId;
+    case glslang::EbvLocalInvocationIndex: return spv::BuiltInLocalInvocationIndex;
+    case glslang::EbvGlobalInvocationId:   return spv::BuiltInGlobalInvocationId;
+    default:                               return (spv::BuiltIn)spv::BadValue;
     }
-
-    return (spv::BuiltIn)spv::BadValue;
 }
 
 //
@@ -2193,7 +2169,7 @@ spv::Id TGlslangToSpvTraverser::createConversion(glslang::TOperator op, spv::Dec
     case glslang::EOpConvUintToDouble:
         convOp = spv::OpConvertUToF;
         break;
-        
+
     case glslang::EOpConvDoubleToFloat:
     case glslang::EOpConvFloatToDouble:
         convOp = spv::OpFConvert;
@@ -2224,7 +2200,7 @@ spv::Id TGlslangToSpvTraverser::createConversion(glslang::TOperator op, spv::Dec
     if (convOp == spv::OpSelect) {
         zero = makeSmearedConstant(zero, vectorSize);
         one  = makeSmearedConstant(one, vectorSize);
-        result = builder.createTriOp(convOp, destType, operand, one, zero); 
+        result = builder.createTriOp(convOp, destType, operand, one, zero);
     } else
         result = builder.createUnaryOp(convOp, destType, operand);
 

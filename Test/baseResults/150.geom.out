@@ -109,7 +109,7 @@ ERROR: node is still EOpNull!
 0:35            1 (const int)
 0:36      move second child to first child (temp int)
 0:36        'gl_PrimitiveID' (layout(stream=0 ) out int PrimitiveID)
-0:36        'gl_PrimitiveIDIn' (in int)
+0:36        'gl_PrimitiveIDIn' (in int PrimitiveID)
 0:37      move second child to first child (temp int)
 0:37        'gl_Layer' (layout(stream=0 ) out int Layer)
 0:37        Constant:
@@ -250,7 +250,7 @@ ERROR: node is still EOpNull!
 0:35            1 (const int)
 0:36      move second child to first child (temp int)
 0:36        'gl_PrimitiveID' (layout(stream=0 ) out int PrimitiveID)
-0:36        'gl_PrimitiveIDIn' (in int)
+0:36        'gl_PrimitiveIDIn' (in int PrimitiveID)
 0:37      move second child to first child (temp int)
 0:37        'gl_Layer' (layout(stream=0 ) out int Layer)
 0:37        Constant:

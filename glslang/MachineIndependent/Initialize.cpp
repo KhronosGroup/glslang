@@ -2706,6 +2706,7 @@ void IdentifyBuiltIns(int version, EProfile profile, EShLanguage language, TSymb
 
         BuiltInVariable("gl_ClipDistance",    EbvClipDistance,   symbolTable);
         BuiltInVariable("gl_CullDistance",    EbvCullDistance,   symbolTable);
+        BuiltInVariable("gl_PrimitiveIDIn",   EbvPrimitiveId,    symbolTable);
         BuiltInVariable("gl_PrimitiveID",     EbvPrimitiveId,    symbolTable);
         BuiltInVariable("gl_InvocationID",    EbvInvocationId,   symbolTable);
         BuiltInVariable("gl_Layer",           EbvLayer,          symbolTable);
@@ -2766,8 +2767,6 @@ void IdentifyBuiltIns(int version, EProfile profile, EShLanguage language, TSymb
         BuiltInVariable("gl_ViewportIndex",   EbvViewportIndex,  symbolTable);
 
         // Compatibility variables
-
-        SpecialQualifier("gl_FragData", EvqFragColor, EbvFragData, symbolTable);
 
         BuiltInVariable("gl_in", "gl_FogFragCoord",   EbvFogFragCoord,   symbolTable);
         BuiltInVariable("gl_in", "gl_TexCoord",       EbvTexCoord,       symbolTable);
@@ -3037,6 +3036,7 @@ void IdentifyBuiltIns(int version, EProfile profile, EShLanguage language, TSymb
             arraySizes->setSize(resources.maxDrawBuffers);
             fragData.setArraySizes(arraySizes);
             symbolTable.insert(*new TVariable(NewPoolTString("gl_FragData"), fragData));
+            SpecialQualifier("gl_FragData", EvqFragColor, EbvFragData, symbolTable);
         }
         break;
 
