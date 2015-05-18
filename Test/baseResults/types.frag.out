@@ -159,7 +159,7 @@ Shader version: 130
 0:48            'u_f4' (uniform 4-component vector of float)
 0:48            'i_f4' (smooth in 4-component vector of float)
 0:50      move second child to first child (temp 4-component vector of float)
-0:50        'gl_FragColor' (fragColor 4-component vector of float)
+0:50        'gl_FragColor' (fragColor 4-component vector of float FragColor)
 0:60        Test condition and select (temp 4-component vector of float)
 0:60          Condition
 0:59          logical-or (temp bool)
@@ -499,7 +499,7 @@ Shader version: 130
 0:48            'u_f4' (uniform 4-component vector of float)
 0:48            'i_f4' (smooth in 4-component vector of float)
 0:50      move second child to first child (temp 4-component vector of float)
-0:50        'gl_FragColor' (fragColor 4-component vector of float)
+0:50        'gl_FragColor' (fragColor 4-component vector of float FragColor)
 0:60        Test condition and select (temp 4-component vector of float)
 0:60          Condition
 0:59          logical-or (temp bool)

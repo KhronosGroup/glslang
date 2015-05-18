@@ -12,7 +12,7 @@ Shader version: 150
 0:12    Function Parameters: 
 0:14    Sequence
 0:14      move second child to first child (temp 4-component vector of float)
-0:14        'gl_FragColor' (fragColor 4-component vector of float)
+0:14        'gl_FragColor' (fragColor 4-component vector of float FragColor)
 0:14        Function Call: foo( (global 4-component vector of float)
 0:?   Linker Objects
 0:?     'bigColor' (uniform 4-component vector of float)
@@ -34,7 +34,7 @@ Shader version: 150
 0:12    Function Parameters: 
 0:14    Sequence
 0:14      move second child to first child (temp 4-component vector of float)
-0:14        'gl_FragColor' (fragColor 4-component vector of float)
+0:14        'gl_FragColor' (fragColor 4-component vector of float FragColor)
 0:14        Function Call: foo( (global 4-component vector of float)
 0:?   Linker Objects
 0:?     'bigColor' (uniform 4-component vector of float)

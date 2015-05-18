@@ -71,7 +71,7 @@ Shader version: 130
 0:37            Constant:
 0:37              1 (const int)
 0:43      move second child to first child (temp 4-component vector of float)
-0:43        'gl_FragColor' (fragColor 4-component vector of float)
+0:43        'gl_FragColor' (fragColor 4-component vector of float FragColor)
 0:43        vector-scale (temp 4-component vector of float)
 0:43          'scale' (temp float)
 0:43          Function Call: texture2D(s21;vf2; (global 4-component vector of float)
@@ -88,7 +88,7 @@ Shader version: 130
 0:45              1.000000
 0:45              2.000000
 0:46      add second child into first child (temp 4-component vector of float)
-0:46        'gl_FragColor' (fragColor 4-component vector of float)
+0:46        'gl_FragColor' (fragColor 4-component vector of float FragColor)
 0:46        Construct vec4 (temp 4-component vector of float)
 0:46          indirect index (temp 2-component vector of float)
 0:46            'constructed' (temp 3-element array of 2-component vector of float)
@@ -184,7 +184,7 @@ Shader version: 130
 0:37            Constant:
 0:37              1 (const int)
 0:43      move second child to first child (temp 4-component vector of float)
-0:43        'gl_FragColor' (fragColor 4-component vector of float)
+0:43        'gl_FragColor' (fragColor 4-component vector of float FragColor)
 0:43        vector-scale (temp 4-component vector of float)
 0:43          'scale' (temp float)
 0:43          Function Call: texture2D(s21;vf2; (global 4-component vector of float)
@@ -201,7 +201,7 @@ Shader version: 130
 0:45              1.000000
 0:45              2.000000
 0:46      add second child into first child (temp 4-component vector of float)
-0:46        'gl_FragColor' (fragColor 4-component vector of float)
+0:46        'gl_FragColor' (fragColor 4-component vector of float FragColor)
 0:46        Construct vec4 (temp 4-component vector of float)
 0:46          indirect index (temp 2-component vector of float)
 0:46            'constructed' (temp 3-element array of 2-component vector of float)

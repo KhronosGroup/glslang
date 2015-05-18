@@ -78,8 +78,8 @@ ERROR: node is still EOpNull!
 0:?     'aoeuntaoeu' (layout(packed ) uniform highp float)
 0:?     'cd' (layout(location=40 ) in highp float)
 0:?     'ce' (layout(location=37 ) in highp 4X3 matrix of float)
-0:?     'gl_VertexID' (gl_VertexId highp int)
-0:?     'gl_InstanceID' (gl_InstanceId highp int)
+0:?     'gl_VertexID' (gl_VertexId highp int VertexId)
+0:?     'gl_InstanceID' (gl_InstanceId highp int InstanceId)
 
 
 Linked vertex stage:
@@ -142,6 +142,6 @@ ERROR: node is still EOpNull!
 0:?     'aoeuntaoeu' (layout(packed ) uniform highp float)
 0:?     'cd' (layout(location=40 ) in highp float)
 0:?     'ce' (layout(location=37 ) in highp 4X3 matrix of float)
-0:?     'gl_VertexID' (gl_VertexId highp int)
-0:?     'gl_InstanceID' (gl_InstanceId highp int)
+0:?     'gl_VertexID' (gl_VertexId highp int VertexId)
+0:?     'gl_InstanceID' (gl_InstanceId highp int InstanceId)
 

@@ -90,10 +90,10 @@ ERROR: node is still EOpNull!
 0:17        'centTexCoord' (invariant smooth out 2-component vector of float)
 0:17        'attv2' (in 2-component vector of float)
 0:18      move second child to first child (temp 4-component vector of float)
-0:18        'gl_Position' (invariant gl_Position 4-component vector of float)
+0:18        'gl_Position' (invariant gl_Position 4-component vector of float Position)
 0:18        'attv4' (in 4-component vector of float)
 0:20      move second child to first child (temp 4-component vector of float)
-0:20        'gl_ClipVertex' (gl_ClipVertex 4-component vector of float)
+0:20        'gl_ClipVertex' (gl_ClipVertex 4-component vector of float ClipVertex)
 0:20        'attv4' (in 4-component vector of float)
 0:21      move second child to first child (temp float)
 0:21        Constant:
@@ -101,7 +101,7 @@ ERROR: node is still EOpNull!
 0:21        Constant:
 0:21          0.200000
 0:25      move second child to first child (temp 4-component vector of float)
-0:25        'gl_Position' (invariant gl_Position 4-component vector of float)
+0:25        'gl_Position' (invariant gl_Position 4-component vector of float Position)
 0:25        direct index (temp 4-component vector of float)
 0:25          'b' (temp 12-element array of 4-component vector of float)
 0:25          Constant:
@@ -125,7 +125,7 @@ ERROR: node is still EOpNull!
 0:32          Constant:
 0:32            1 (const int)
 0:43      move second child to first child (temp float)
-0:43        'gl_PointSize' (invariant gl_PointSize float)
+0:43        'gl_PointSize' (invariant gl_PointSize float PointSize)
 0:43        Constant:
 0:43          3.800000
 0:61  Function Definition: overloadB(f1;f1; (global void)
@@ -385,8 +385,8 @@ ERROR: node is still EOpNull!
 0:?       3.400000
 0:?     'concall' (const float)
 0:?       0.295520
-0:?     'gl_TexCoord' (smooth out 35-element array of 4-component vector of float)
-0:?     'gl_TexCoord' (smooth out 35-element array of 4-component vector of float)
+0:?     'gl_TexCoord' (smooth out 35-element array of 4-component vector of float TexCoord)
+0:?     'gl_TexCoord' (smooth out 35-element array of 4-component vector of float TexCoord)
 0:?     'c' (uniform int)
 0:?     'x' (in 2-component vector of int)
 0:?     'v2a' (in 2-component vector of float)
@@ -409,10 +409,10 @@ ERROR: node is still EOpNull!
 0:17        'centTexCoord' (invariant smooth out 2-component vector of float)
 0:17        'attv2' (in 2-component vector of float)
 0:18      move second child to first child (temp 4-component vector of float)
-0:18        'gl_Position' (invariant gl_Position 4-component vector of float)
+0:18        'gl_Position' (invariant gl_Position 4-component vector of float Position)
 0:18        'attv4' (in 4-component vector of float)
 0:20      move second child to first child (temp 4-component vector of float)
-0:20        'gl_ClipVertex' (gl_ClipVertex 4-component vector of float)
+0:20        'gl_ClipVertex' (gl_ClipVertex 4-component vector of float ClipVertex)
 0:20        'attv4' (in 4-component vector of float)
 0:21      move second child to first child (temp float)
 0:21        Constant:
@@ -420,7 +420,7 @@ ERROR: node is still EOpNull!
 0:21        Constant:
 0:21          0.200000
 0:25      move second child to first child (temp 4-component vector of float)
-0:25        'gl_Position' (invariant gl_Position 4-component vector of float)
+0:25        'gl_Position' (invariant gl_Position 4-component vector of float Position)
 0:25        direct index (temp 4-component vector of float)
 0:25          'b' (temp 12-element array of 4-component vector of float)
 0:25          Constant:
@@ -444,7 +444,7 @@ ERROR: node is still EOpNull!
 0:32          Constant:
 0:32            1 (const int)
 0:43      move second child to first child (temp float)
-0:43        'gl_PointSize' (invariant gl_PointSize float)
+0:43        'gl_PointSize' (invariant gl_PointSize float PointSize)
 0:43        Constant:
 0:43          3.800000
 0:61  Function Definition: overloadB(f1;f1; (global void)
@@ -704,8 +704,8 @@ ERROR: node is still EOpNull!
 0:?       3.400000
 0:?     'concall' (const float)
 0:?       0.295520
-0:?     'gl_TexCoord' (smooth out 35-element array of 4-component vector of float)
-0:?     'gl_TexCoord' (smooth out 35-element array of 4-component vector of float)
+0:?     'gl_TexCoord' (smooth out 35-element array of 4-component vector of float TexCoord)
+0:?     'gl_TexCoord' (smooth out 35-element array of 4-component vector of float TexCoord)
 0:?     'c' (uniform int)
 0:?     'x' (in 2-component vector of int)
 0:?     'v2a' (in 2-component vector of float)

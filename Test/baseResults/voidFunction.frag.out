@@ -34,7 +34,7 @@ Shader version: 120
 0:29            0 (const int)
 0:29        'bar' (global float)
 0:31      move second child to first child (temp 4-component vector of float)
-0:31        'gl_FragColor' (fragColor 4-component vector of float)
+0:31        'gl_FragColor' (fragColor 4-component vector of float FragColor)
 0:31        'outColor' (temp 4-component vector of float)
 0:33      Branch: Return
 0:?   Linker Objects
@@ -81,7 +81,7 @@ Shader version: 120
 0:29            0 (const int)
 0:29        'bar' (global float)
 0:31      move second child to first child (temp 4-component vector of float)
-0:31        'gl_FragColor' (fragColor 4-component vector of float)
+0:31        'gl_FragColor' (fragColor 4-component vector of float FragColor)
 0:31        'outColor' (temp 4-component vector of float)
 0:33      Branch: Return
 0:?   Linker Objects

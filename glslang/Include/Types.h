@@ -328,6 +328,7 @@ public:
     void makeTemporary()
     {
         storage   = EvqTemporary;
+        builtIn   = EbvNone;
         centroid  = false;
         smooth    = false;
         flat      = false;
@@ -343,6 +344,7 @@ public:
     }
 
     TStorageQualifier   storage   : 6;
+    TBuiltInVariable    builtIn   : 8;
     TPrecisionQualifier precision : 3;
     bool invariant : 1;
     bool centroid  : 1;
@@ -1281,6 +1283,11 @@ public:
         TString s(buf);
         s.append(getBasicTypeString());
 
+        if (qualifier.builtIn != EbvNone) {
+            s.append(" ");
+            s.append(getBuiltInVariableString());
+        }
+
         // Add struct/block members
         if (structure) {
             s.append("{");
@@ -1308,6 +1315,7 @@ public:
     }
 
     const char* getStorageQualifierString() const { return GetStorageQualifierString(qualifier.storage); }
+    const char* getBuiltInVariableString() const { return GetBuiltInVariableString(qualifier.builtIn); }
     const char* getPrecisionQualifierString() const { return GetPrecisionQualifierString(qualifier.precision); }
     const TTypeList* getStruct() const { return structure; }
     TTypeList* getWritableStruct() const { return structure; }  // This should only be used when known to not be sharing with other threads

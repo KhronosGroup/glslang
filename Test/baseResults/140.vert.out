@@ -22,7 +22,7 @@ ERROR: node is still EOpNull!
 0:11      Sequence
 0:11        move second child to first child (temp int)
 0:11          'id' (temp int)
-0:11          'gl_InstanceID' (gl_InstanceId int)
+0:11          'gl_InstanceID' (gl_InstanceId int InstanceId)
 0:12      add second child into first child (temp int)
 0:12        'id' (temp int)
 0:12        anonMem: direct index for structure (layout(column_major std140 offset=0 ) uniform int)
@@ -38,8 +38,8 @@ ERROR: node is still EOpNull!
 0:13              8 (const int)
 0:13          Constant:
 0:13            3 (const int)
-0:14      'gl_ClipVertex' (gl_ClipVertex 4-component vector of float)
-0:15      'gl_Color' (in 4-component vector of float)
+0:14      'gl_ClipVertex' (gl_ClipVertex 4-component vector of float ClipVertex)
+0:15      'gl_Color' (in 4-component vector of float Color)
 0:16      direct index (temp structure{global 4-component vector of float ambient, global 4-component vector of float diffuse, global 4-component vector of float specular, global 4-component vector of float position, global 4-component vector of float halfVector, global 3-component vector of float spotDirection, global float spotExponent, global float spotCutoff, global float spotCosCutoff, global float constantAttenuation, global float linearAttenuation, global float quadraticAttenuation})
 0:16        'gl_LightSource' (uniform 32-element array of structure{global 4-component vector of float ambient, global 4-component vector of float diffuse, global 4-component vector of float specular, global 4-component vector of float position, global 4-component vector of float halfVector, global 3-component vector of float spotDirection, global float spotExponent, global float spotCutoff, global float spotCosCutoff, global float constantAttenuation, global float linearAttenuation, global float quadraticAttenuation})
 0:16        Constant:
@@ -48,9 +48,9 @@ ERROR: node is still EOpNull!
 0:17        'gl_DepthRange' (uniform structure{global float near, global float far, global float diff})
 0:17        Constant:
 0:17          1 (const int)
-0:18      'gl_TexCoord' (smooth out implicitly-sized array of 4-component vector of float)
-0:19      'gl_FogFragCoord' (smooth out float)
-0:20      'gl_FrontColor' (smooth out 4-component vector of float)
+0:18      'gl_TexCoord' (smooth out implicitly-sized array of 4-component vector of float TexCoord)
+0:19      'gl_FogFragCoord' (smooth out float FogFragCoord)
+0:20      'gl_FrontColor' (smooth out 4-component vector of float FrontColor)
 0:48  Function Definition: foo( (global void)
 0:48    Function Parameters: 
 0:50    Sequence
@@ -119,24 +119,24 @@ ERROR: node is still EOpNull!
 0:?   Linker Objects
 0:?     'sbuf' (uniform isamplerBuffer)
 0:?     'anon@0' (layout(column_major std140 ) uniform block{layout(column_major std140 offset=0 ) uniform int anonMem})
-0:?     'gl_TexCoord' (smooth out implicitly-sized array of 4-component vector of float)
+0:?     'gl_TexCoord' (smooth out implicitly-sized array of 4-component vector of float TexCoord)
 0:?     'gl_Position' (smooth out 4-component vector of float)
 0:?     'locBad' (layout(location=9 ) in 4-component vector of float)
 0:?     'loc' (layout(location=9 ) in 4-component vector of float)
-0:?     'gl_PointSize' (gl_PointSize float)
-0:?     'gl_PointSize' (gl_PointSize float)
-0:?     'gl_ClipVertex' (gl_ClipVertex 4-component vector of float)
-0:?     'gl_ClipVertex' (gl_ClipVertex 4-component vector of float)
-0:?     'gl_FogFragCoord' (smooth out float)
-0:?     'gl_FogFragCoord' (smooth out float)
+0:?     'gl_PointSize' (gl_PointSize float PointSize)
+0:?     'gl_PointSize' (gl_PointSize float PointSize)
+0:?     'gl_ClipVertex' (gl_ClipVertex 4-component vector of float ClipVertex)
+0:?     'gl_ClipVertex' (gl_ClipVertex 4-component vector of float ClipVertex)
+0:?     'gl_FogFragCoord' (smooth out float FogFragCoord)
+0:?     'gl_FogFragCoord' (smooth out float FogFragCoord)
 0:?     's2dr' (uniform sampler2DRect)
 0:?     's2drs' (uniform sampler2DRectShadow)
 0:?     'itloc2' (in 2-component vector of int)
 0:?     'tloc2' (in 2-component vector of float)
 0:?     'tloc3' (in 3-component vector of float)
 0:?     'tloc4' (in 4-component vector of float)
-0:?     'gl_VertexID' (gl_VertexId int)
-0:?     'gl_InstanceID' (gl_InstanceId int)
+0:?     'gl_VertexID' (gl_VertexId int VertexId)
+0:?     'gl_InstanceID' (gl_InstanceId int InstanceId)
 
 
 Linked vertex stage:
@@ -152,7 +152,7 @@ ERROR: node is still EOpNull!
 0:11      Sequence
 0:11        move second child to first child (temp int)
 0:11          'id' (temp int)
-0:11          'gl_InstanceID' (gl_InstanceId int)
+0:11          'gl_InstanceID' (gl_InstanceId int InstanceId)
 0:12      add second child into first child (temp int)
 0:12        'id' (temp int)
 0:12        anonMem: direct index for structure (layout(column_major std140 offset=0 ) uniform int)
@@ -168,8 +168,8 @@ ERROR: node is still EOpNull!
 0:13              8 (const int)
 0:13          Constant:
 0:13            3 (const int)
-0:14      'gl_ClipVertex' (gl_ClipVertex 4-component vector of float)
-0:15      'gl_Color' (in 4-component vector of float)
+0:14      'gl_ClipVertex' (gl_ClipVertex 4-component vector of float ClipVertex)
+0:15      'gl_Color' (in 4-component vector of float Color)
 0:16      direct index (temp structure{global 4-component vector of float ambient, global 4-component vector of float diffuse, global 4-component vector of float specular, global 4-component vector of float position, global 4-component vector of float halfVector, global 3-component vector of float spotDirection, global float spotExponent, global float spotCutoff, global float spotCosCutoff, global float constantAttenuation, global float linearAttenuation, global float quadraticAttenuation})
 0:16        'gl_LightSource' (uniform 32-element array of structure{global 4-component vector of float ambient, global 4-component vector of float diffuse, global 4-component vector of float specular, global 4-component vector of float position, global 4-component vector of float halfVector, global 3-component vector of float spotDirection, global float spotExponent, global float spotCutoff, global float spotCosCutoff, global float constantAttenuation, global float linearAttenuation, global float quadraticAttenuation})
 0:16        Constant:
@@ -178,9 +178,9 @@ ERROR: node is still EOpNull!
 0:17        'gl_DepthRange' (uniform structure{global float near, global float far, global float diff})
 0:17        Constant:
 0:17          1 (const int)
-0:18      'gl_TexCoord' (smooth out 1-element array of 4-component vector of float)
-0:19      'gl_FogFragCoord' (smooth out float)
-0:20      'gl_FrontColor' (smooth out 4-component vector of float)
+0:18      'gl_TexCoord' (smooth out 1-element array of 4-component vector of float TexCoord)
+0:19      'gl_FogFragCoord' (smooth out float FogFragCoord)
+0:20      'gl_FrontColor' (smooth out 4-component vector of float FrontColor)
 0:48  Function Definition: foo( (global void)
 0:48    Function Parameters: 
 0:50    Sequence
@@ -249,22 +249,22 @@ ERROR: node is still EOpNull!
 0:?   Linker Objects
 0:?     'sbuf' (uniform isamplerBuffer)
 0:?     'anon@0' (layout(column_major std140 ) uniform block{layout(column_major std140 offset=0 ) uniform int anonMem})
-0:?     'gl_TexCoord' (smooth out 1-element array of 4-component vector of float)
+0:?     'gl_TexCoord' (smooth out 1-element array of 4-component vector of float TexCoord)
 0:?     'gl_Position' (smooth out 4-component vector of float)
 0:?     'locBad' (layout(location=9 ) in 4-component vector of float)
 0:?     'loc' (layout(location=9 ) in 4-component vector of float)
-0:?     'gl_PointSize' (gl_PointSize float)
-0:?     'gl_PointSize' (gl_PointSize float)
-0:?     'gl_ClipVertex' (gl_ClipVertex 4-component vector of float)
-0:?     'gl_ClipVertex' (gl_ClipVertex 4-component vector of float)
-0:?     'gl_FogFragCoord' (smooth out float)
-0:?     'gl_FogFragCoord' (smooth out float)
+0:?     'gl_PointSize' (gl_PointSize float PointSize)
+0:?     'gl_PointSize' (gl_PointSize float PointSize)
+0:?     'gl_ClipVertex' (gl_ClipVertex 4-component vector of float ClipVertex)
+0:?     'gl_ClipVertex' (gl_ClipVertex 4-component vector of float ClipVertex)
+0:?     'gl_FogFragCoord' (smooth out float FogFragCoord)
+0:?     'gl_FogFragCoord' (smooth out float FogFragCoord)
 0:?     's2dr' (uniform sampler2DRect)
 0:?     's2drs' (uniform sampler2DRectShadow)
 0:?     'itloc2' (in 2-component vector of int)
 0:?     'tloc2' (in 2-component vector of float)
 0:?     'tloc3' (in 3-component vector of float)
 0:?     'tloc4' (in 4-component vector of float)
-0:?     'gl_VertexID' (gl_VertexId int)
-0:?     'gl_InstanceID' (gl_InstanceId int)
+0:?     'gl_VertexID' (gl_VertexId int VertexId)
+0:?     'gl_InstanceID' (gl_InstanceId int InstanceId)
 

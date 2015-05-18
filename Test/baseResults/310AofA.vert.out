@@ -24,8 +24,8 @@ Shader version: 310
 0:13          2 (const uint)
 0:13        'd' (temp 3-element array of 2-element array of highp int)
 0:?   Linker Objects
-0:?     'gl_VertexID' (gl_VertexId highp int)
-0:?     'gl_InstanceID' (gl_InstanceId highp int)
+0:?     'gl_VertexID' (gl_VertexId highp int VertexId)
+0:?     'gl_InstanceID' (gl_InstanceId highp int InstanceId)
 
 
 Linked vertex stage:
@@ -54,6 +54,6 @@ Shader version: 310
 0:13          2 (const uint)
 0:13        'd' (temp 3-element array of 2-element array of highp int)
 0:?   Linker Objects
-0:?     'gl_VertexID' (gl_VertexId highp int)
-0:?     'gl_InstanceID' (gl_InstanceId highp int)
+0:?     'gl_VertexID' (gl_VertexId highp int VertexId)
+0:?     'gl_InstanceID' (gl_InstanceId highp int InstanceId)
 

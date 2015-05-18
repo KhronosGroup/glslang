@@ -65,8 +65,8 @@ Shader version: 330
 0:44    Sequence
 0:44      Function Call: AT( (global void)
 0:?   Linker Objects
-0:?     'gl_VertexID' (gl_VertexId int)
-0:?     'gl_InstanceID' (gl_InstanceId int)
+0:?     'gl_VertexID' (gl_VertexId int VertexId)
+0:?     'gl_InstanceID' (gl_InstanceId int InstanceId)
 
 recurse1.frag
 
@@ -282,8 +282,8 @@ Shader version: 330
 0:44    Sequence
 0:44      Function Call: AT( (global void)
 0:?   Linker Objects
-0:?     'gl_VertexID' (gl_VertexId int)
-0:?     'gl_InstanceID' (gl_InstanceId int)
+0:?     'gl_VertexID' (gl_VertexId int VertexId)
+0:?     'gl_InstanceID' (gl_InstanceId int InstanceId)
 Shader version: 330
 0:? Sequence
 0:5  Function Definition: main( (global void)

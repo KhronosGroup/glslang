@@ -43,15 +43,15 @@ ERROR: node is still EOpNull!
 0:9      Sequence
 0:9        move second child to first child (temp int)
 0:9          'id' (temp int)
-0:9          'gl_InvocationID' (in int)
+0:9          'gl_InvocationID' (in int InvocationID)
 0:23  Function Definition: foo( (global void)
 0:23    Function Parameters: 
 0:25    Sequence
 0:25      Constant:
 0:25        1 (const int)
-0:26      gl_Position: direct index for structure (in 4-component vector of float)
-0:26        direct index (temp block{in 4-component vector of float gl_Position, in float gl_PointSize})
-0:26          'gl_in' (in 3-element array of block{in 4-component vector of float gl_Position, in float gl_PointSize})
+0:26      gl_Position: direct index for structure (in 4-component vector of float Position)
+0:26        direct index (temp block{in 4-component vector of float Position gl_Position, in float PointSize gl_PointSize})
+0:26          'gl_in' (in 3-element array of block{in 4-component vector of float Position gl_Position, in float PointSize gl_PointSize})
 0:26          Constant:
 0:26            1 (const int)
 0:26        Constant:
@@ -167,7 +167,7 @@ ERROR: node is still EOpNull!
 0:100          'u2' (temp 2-component vector of uint)
 0:?   Linker Objects
 0:?     'bn' (in 3-element array of block{in int a})
-0:?     'gl_in' (in 3-element array of block{in 4-component vector of float gl_Position, in float gl_PointSize})
+0:?     'gl_in' (in 3-element array of block{in 4-component vector of float Position gl_Position, in float PointSize gl_PointSize})
 0:?     'color' (in 3-element array of 4-component vector of float)
 0:?     'color2' (in 3-element array of 4-component vector of float)
 0:?     'colorS' (in 3-element array of 4-component vector of float)
@@ -209,15 +209,15 @@ ERROR: node is still EOpNull!
 0:9      Sequence
 0:9        move second child to first child (temp int)
 0:9          'id' (temp int)
-0:9          'gl_InvocationID' (in int)
+0:9          'gl_InvocationID' (in int InvocationID)
 0:23  Function Definition: foo( (global void)
 0:23    Function Parameters: 
 0:25    Sequence
 0:25      Constant:
 0:25        1 (const int)
-0:26      gl_Position: direct index for structure (in 4-component vector of float)
-0:26        direct index (temp block{in 4-component vector of float gl_Position, in float gl_PointSize})
-0:26          'gl_in' (in 3-element array of block{in 4-component vector of float gl_Position, in float gl_PointSize})
+0:26      gl_Position: direct index for structure (in 4-component vector of float Position)
+0:26        direct index (temp block{in 4-component vector of float Position gl_Position, in float PointSize gl_PointSize})
+0:26          'gl_in' (in 3-element array of block{in 4-component vector of float Position gl_Position, in float PointSize gl_PointSize})
 0:26          Constant:
 0:26            1 (const int)
 0:26        Constant:
@@ -333,7 +333,7 @@ ERROR: node is still EOpNull!
 0:100          'u2' (temp 2-component vector of uint)
 0:?   Linker Objects
 0:?     'bn' (in 3-element array of block{in int a})
-0:?     'gl_in' (in 3-element array of block{in 4-component vector of float gl_Position, in float gl_PointSize})
+0:?     'gl_in' (in 3-element array of block{in 4-component vector of float Position gl_Position, in float PointSize gl_PointSize})
 0:?     'color' (in 3-element array of 4-component vector of float)
 0:?     'color2' (in 3-element array of 4-component vector of float)
 0:?     'colorS' (in 3-element array of 4-component vector of float)

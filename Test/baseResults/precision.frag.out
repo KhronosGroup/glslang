@@ -33,7 +33,7 @@ ERROR: node is still EOpNull!
 0:27            'global_medium' (global mediump int)
 0:27            'global_high' (global highp int)
 0:29      move second child to first child (temp mediump 4-component vector of float)
-0:29        'gl_FragColor' (fragColor mediump 4-component vector of float)
+0:29        'gl_FragColor' (fragColor mediump 4-component vector of float FragColor)
 0:29        Construct vec4 (temp mediump 4-component vector of float)
 0:29          'color' (smooth in mediump 3-component vector of float)
 0:29          Constant:
@@ -152,7 +152,7 @@ ERROR: node is still EOpNull!
 0:27            'global_medium' (global mediump int)
 0:27            'global_high' (global highp int)
 0:29      move second child to first child (temp mediump 4-component vector of float)
-0:29        'gl_FragColor' (fragColor mediump 4-component vector of float)
+0:29        'gl_FragColor' (fragColor mediump 4-component vector of float FragColor)
 0:29        Construct vec4 (temp mediump 4-component vector of float)
 0:29          'color' (smooth in mediump 3-component vector of float)
 0:29          Constant:

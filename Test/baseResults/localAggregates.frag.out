@@ -165,7 +165,7 @@ Shader version: 130
 0:69          Constant:
 0:69            1 (const int)
 0:71      move second child to first child (temp 4-component vector of float)
-0:71        'gl_FragColor' (fragColor 4-component vector of float)
+0:71        'gl_FragColor' (fragColor 4-component vector of float FragColor)
 0:71        component-wise multiply (temp 4-component vector of float)
 0:71          vector-scale (temp 4-component vector of float)
 0:71            bleh: direct index for structure (global 4-component vector of float)
@@ -372,7 +372,7 @@ Shader version: 130
 0:69          Constant:
 0:69            1 (const int)
 0:71      move second child to first child (temp 4-component vector of float)
-0:71        'gl_FragColor' (fragColor 4-component vector of float)
+0:71        'gl_FragColor' (fragColor 4-component vector of float FragColor)
 0:71        component-wise multiply (temp 4-component vector of float)
 0:71          vector-scale (temp 4-component vector of float)
 0:71            bleh: direct index for structure (global 4-component vector of float)

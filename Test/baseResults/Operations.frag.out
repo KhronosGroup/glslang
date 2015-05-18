@@ -409,7 +409,7 @@ Shader version: 130
 0:163        Negate conditional (temp bool)
 0:163          'b' (temp bool)
 0:165      move second child to first child (temp 4-component vector of float)
-0:165        'gl_FragColor' (fragColor 4-component vector of float)
+0:165        'gl_FragColor' (fragColor 4-component vector of float FragColor)
 0:165        Test condition and select (temp 4-component vector of float)
 0:165          Condition
 0:165          'b' (temp bool)
@@ -846,7 +846,7 @@ Shader version: 130
 0:163        Negate conditional (temp bool)
 0:163          'b' (temp bool)
 0:165      move second child to first child (temp 4-component vector of float)
-0:165        'gl_FragColor' (fragColor 4-component vector of float)
+0:165        'gl_FragColor' (fragColor 4-component vector of float FragColor)
 0:165        Test condition and select (temp 4-component vector of float)
 0:165          Condition
 0:165          'b' (temp bool)

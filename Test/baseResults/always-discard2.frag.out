@@ -53,7 +53,7 @@ Shader version: 110
 0:12              1.000000
 0:14      Branch: Kill
 0:17      move second child to first child (temp 4-component vector of float)
-0:17        'gl_FragColor' (fragColor 4-component vector of float)
+0:17        'gl_FragColor' (fragColor 4-component vector of float FragColor)
 0:17        'color' (temp 4-component vector of float)
 0:?   Linker Objects
 0:?     'tex_coord' (smooth in 2-component vector of float)
@@ -115,7 +115,7 @@ Shader version: 110
 0:12              1.000000
 0:14      Branch: Kill
 0:17      move second child to first child (temp 4-component vector of float)
-0:17        'gl_FragColor' (fragColor 4-component vector of float)
+0:17        'gl_FragColor' (fragColor 4-component vector of float FragColor)
 0:17        'color' (temp 4-component vector of float)
 0:?   Linker Objects
 0:?     'tex_coord' (smooth in 2-component vector of float)

@@ -4,7 +4,7 @@ ERROR: 0:7: 'vertices' : inconsistent output number of vertices for array size o
 ERROR: 0:11: 'vertices' : inconsistent output number of vertices for array size of a
 ERROR: 0:12: 'vertices' : inconsistent output number of vertices for array size of outb
 ERROR: 0:26: 'gl_PointSize' : no such field in structure 
-ERROR: 0:26: 'assign' :  cannot convert from 'temp float' to 'temp block{out 4-component vector of float gl_Position}'
+ERROR: 0:26: 'assign' :  cannot convert from 'temp float' to 'temp block{out 4-component vector of float Position gl_Position}'
 ERROR: 0:29: 'out' : type must be an array: outf
 ERROR: 6 compilation errors.  No code generated.
 
@@ -52,26 +52,26 @@ ERROR: node is still EOpNull!
 0:21      Sequence
 0:21        move second child to first child (temp int)
 0:21          'pvi' (temp int)
-0:21          'gl_PatchVerticesIn' (in int)
+0:21          'gl_PatchVerticesIn' (in int PatchVertices)
 0:22      Sequence
 0:22        move second child to first child (temp int)
 0:22          'pid' (temp int)
-0:22          'gl_PrimitiveID' (in int)
+0:22          'gl_PrimitiveID' (in int PrimitiveID)
 0:23      Sequence
 0:23        move second child to first child (temp int)
 0:23          'iid' (temp int)
-0:23          'gl_InvocationID' (in int)
+0:23          'gl_InvocationID' (in int InvocationID)
 0:25      move second child to first child (temp 4-component vector of float)
-0:25        gl_Position: direct index for structure (out 4-component vector of float)
-0:25          direct index (temp block{out 4-component vector of float gl_Position})
-0:25            'gl_out' (out 3-element array of block{out 4-component vector of float gl_Position})
+0:25        gl_Position: direct index for structure (out 4-component vector of float Position)
+0:25          direct index (temp block{out 4-component vector of float Position gl_Position})
+0:25            'gl_out' (out 3-element array of block{out 4-component vector of float Position gl_Position})
 0:25            Constant:
 0:25              1 (const int)
 0:25          Constant:
 0:25            0 (const int)
 0:25        'p' (temp 4-component vector of float)
-0:26      direct index (temp block{out 4-component vector of float gl_Position})
-0:26        'gl_out' (out 3-element array of block{out 4-component vector of float gl_Position})
+0:26      direct index (temp block{out 4-component vector of float Position gl_Position})
+0:26        'gl_out' (out 3-element array of block{out 4-component vector of float Position gl_Position})
 0:26        Constant:
 0:26          1 (const int)
 0:34  Function Definition: foo( (global void)
@@ -110,7 +110,7 @@ ERROR: node is still EOpNull!
 0:37                0 (const int)
 0:36        true case is null
 0:?   Linker Objects
-0:?     'gl_out' (out 3-element array of block{out 4-component vector of float gl_Position})
+0:?     'gl_out' (out 3-element array of block{out 4-component vector of float Position gl_Position})
 0:?     'a' (out 3-element array of int)
 0:?     'outb' (out 5-element array of int)
 0:?     'outc' (out 4-element array of int)
@@ -165,26 +165,26 @@ ERROR: node is still EOpNull!
 0:21      Sequence
 0:21        move second child to first child (temp int)
 0:21          'pvi' (temp int)
-0:21          'gl_PatchVerticesIn' (in int)
+0:21          'gl_PatchVerticesIn' (in int PatchVertices)
 0:22      Sequence
 0:22        move second child to first child (temp int)
 0:22          'pid' (temp int)
-0:22          'gl_PrimitiveID' (in int)
+0:22          'gl_PrimitiveID' (in int PrimitiveID)
 0:23      Sequence
 0:23        move second child to first child (temp int)
 0:23          'iid' (temp int)
-0:23          'gl_InvocationID' (in int)
+0:23          'gl_InvocationID' (in int InvocationID)
 0:25      move second child to first child (temp 4-component vector of float)
-0:25        gl_Position: direct index for structure (out 4-component vector of float)
-0:25          direct index (temp block{out 4-component vector of float gl_Position})
-0:25            'gl_out' (out 3-element array of block{out 4-component vector of float gl_Position})
+0:25        gl_Position: direct index for structure (out 4-component vector of float Position)
+0:25          direct index (temp block{out 4-component vector of float Position gl_Position})
+0:25            'gl_out' (out 3-element array of block{out 4-component vector of float Position gl_Position})
 0:25            Constant:
 0:25              1 (const int)
 0:25          Constant:
 0:25            0 (const int)
 0:25        'p' (temp 4-component vector of float)
-0:26      direct index (temp block{out 4-component vector of float gl_Position})
-0:26        'gl_out' (out 3-element array of block{out 4-component vector of float gl_Position})
+0:26      direct index (temp block{out 4-component vector of float Position gl_Position})
+0:26        'gl_out' (out 3-element array of block{out 4-component vector of float Position gl_Position})
 0:26        Constant:
 0:26          1 (const int)
 0:34  Function Definition: foo( (global void)
@@ -223,7 +223,7 @@ ERROR: node is still EOpNull!
 0:37                0 (const int)
 0:36        true case is null
 0:?   Linker Objects
-0:?     'gl_out' (out 3-element array of block{out 4-component vector of float gl_Position})
+0:?     'gl_out' (out 3-element array of block{out 4-component vector of float Position gl_Position})
 0:?     'a' (out 3-element array of int)
 0:?     'outb' (out 5-element array of int)
 0:?     'outc' (out 4-element array of int)

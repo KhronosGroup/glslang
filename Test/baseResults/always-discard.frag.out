@@ -81,7 +81,7 @@ Shader version: 110
 0:17              Pre-Increment (temp 4-component vector of float)
 0:17                'color' (temp 4-component vector of float)
 0:20          move second child to first child (temp 4-component vector of float)
-0:20            'gl_FragColor' (fragColor 4-component vector of float)
+0:20            'gl_FragColor' (fragColor 4-component vector of float FragColor)
 0:20            'color' (temp 4-component vector of float)
 0:22          Test condition and select (temp void)
 0:22            Condition
@@ -112,7 +112,7 @@ Shader version: 110
 0:32              Constant:
 0:32                2.000000
 0:34      move second child to first child (temp 4-component vector of float)
-0:34        'gl_FragColor' (fragColor 4-component vector of float)
+0:34        'gl_FragColor' (fragColor 4-component vector of float FragColor)
 0:34        'color' (temp 4-component vector of float)
 0:?   Linker Objects
 0:?     'tex_coord' (smooth in 2-component vector of float)
@@ -202,7 +202,7 @@ Shader version: 110
 0:17              Pre-Increment (temp 4-component vector of float)
 0:17                'color' (temp 4-component vector of float)
 0:20          move second child to first child (temp 4-component vector of float)
-0:20            'gl_FragColor' (fragColor 4-component vector of float)
+0:20            'gl_FragColor' (fragColor 4-component vector of float FragColor)
 0:20            'color' (temp 4-component vector of float)
 0:22          Test condition and select (temp void)
 0:22            Condition
@@ -233,7 +233,7 @@ Shader version: 110
 0:32              Constant:
 0:32                2.000000
 0:34      move second child to first child (temp 4-component vector of float)
-0:34        'gl_FragColor' (fragColor 4-component vector of float)
+0:34        'gl_FragColor' (fragColor 4-component vector of float FragColor)
 0:34        'color' (temp 4-component vector of float)
 0:?   Linker Objects
 0:?     'tex_coord' (smooth in 2-component vector of float)

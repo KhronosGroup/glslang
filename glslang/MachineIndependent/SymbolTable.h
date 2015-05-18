@@ -82,7 +82,7 @@ class TSymbol {
 public:
     POOL_ALLOCATOR_NEW_DELETE(GetThreadPoolAllocator())
     explicit TSymbol(const TString *n) :  name(n), numExtensions(0), extensions(0), writable(true) { }
-	virtual TSymbol* clone() const = 0;
+    virtual TSymbol* clone() const = 0;
     virtual ~TSymbol() { }  // rely on all symbol owned memory coming from the pool
 
     virtual const TString& getName() const { return *name; }
@@ -114,7 +114,7 @@ public:
     virtual void makeReadOnly() { writable = false; }
 
 protected:
-	explicit TSymbol(const TSymbol&);
+    explicit TSymbol(const TSymbol&);
     TSymbol& operator=(const TSymbol&);
 
     const TString *name;
@@ -145,7 +145,7 @@ protected:
 class TVariable : public TSymbol {
 public:
     TVariable(const TString *name, const TType& t, bool uT = false ) : TSymbol(name), userType(uT) { type.shallowCopy(t); }
-	virtual TVariable* clone() const;
+    virtual TVariable* clone() const;
     virtual ~TVariable() { }
 
     virtual TVariable* getAsVariable() { return this; }
@@ -177,14 +177,14 @@ protected:
 struct TParameter {
     TString *name;
     TType* type;
-	void copyParam(const TParameter& param) 
+    void copyParam(const TParameter& param) 
     {
-		if (param.name)
+        if (param.name)
             name = NewPoolTString(param.name->c_str());
         else
             name = 0;
-		type = param.type->clone();
-	}
+        type = param.type->clone();
+    }
 };
 
 //
@@ -201,8 +201,8 @@ public:
         mangledName(*name + '('),
         op(tOp),
         defined(false), prototyped(false) { returnType.shallowCopy(retType); }    
-	virtual TFunction* clone() const;
-	virtual ~TFunction();
+    virtual TFunction* clone() const;
+    virtual ~TFunction();
 
     virtual TFunction* getAsFunction() { return this; }
     virtual const TFunction* getAsFunction() const { return this; }
@@ -235,7 +235,7 @@ protected:
     TFunction& operator=(const TFunction&);
 
     typedef TVector<TParameter> TParamList;
-	TParamList parameters;
+    TParamList parameters;
     TType returnType;
     TString mangledName;
     TOperator op;
@@ -243,15 +243,21 @@ protected:
     bool prototyped;
 };
 
+//
+// Members of anonymous blocks are a kind of TSymbol.  They are not hidden in
+// the symbol table behind a container; rather they are visible and point to
+// their anonymous container.  (The anonymous container is found through the
+// member, not the other way around.)
+//
 class TAnonMember : public TSymbol {
 public:
     TAnonMember(const TString* n, unsigned int m, const TVariable& a, int an) : TSymbol(n), anonContainer(a), memberNumber(m), anonId(an) { }
-	virtual TAnonMember* clone() const;
+    virtual TAnonMember* clone() const;
     virtual ~TAnonMember() { }
 
     virtual const TAnonMember* getAsAnonMember() const { return this; }
     virtual const TVariable& getAnonContainer() const { return anonContainer; }
-    virtual unsigned int getMemberNumber() const { return memberNumber; }    
+    virtual unsigned int getMemberNumber() const { return memberNumber; }
     
     virtual const TType& getType() const
     {
@@ -282,7 +288,7 @@ class TSymbolTableLevel {
 public:
     POOL_ALLOCATOR_NEW_DELETE(GetThreadPoolAllocator())
     TSymbolTableLevel() : defaultPrecision(0), anonId(0) { }
-	~TSymbolTableLevel();
+    ~TSymbolTableLevel();
 
     bool insert(TSymbol& symbol, bool separateNameSpaces)
     {
@@ -426,7 +432,7 @@ public:
     void relateToOperator(const char* name, TOperator op);
     void setFunctionExtensions(const char* name, int num, const char* const extensions[]);
     void dump(TInfoSink &infoSink) const;
-	TSymbolTableLevel* clone() const;
+    TSymbolTableLevel* clone() const;
     void readOnly();
 
 protected:
@@ -650,7 +656,7 @@ public:
 
     int getMaxSymbolId() { return uniqueId; }
     void dump(TInfoSink &infoSink) const;
-	void copyTable(const TSymbolTable& copyOf);
+    void copyTable(const TSymbolTable& copyOf);
 
     void setPreviousDefaultPrecisions(TPrecisionQualifier *p) { table[currentLevel()]->setPreviousDefaultPrecisions(p); }
 

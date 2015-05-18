@@ -109,7 +109,7 @@ Shader version: 110
 0:55            false case
 0:58            Branch: Return
 0:101      move second child to first child (temp 4-component vector of float)
-0:101        'gl_FragColor' (fragColor 4-component vector of float)
+0:101        'gl_FragColor' (fragColor 4-component vector of float FragColor)
 0:101        component-wise multiply (temp 4-component vector of float)
 0:101          'color' (temp 4-component vector of float)
 0:101          'color2' (temp 4-component vector of float)
@@ -239,7 +239,7 @@ Shader version: 110
 0:55            false case
 0:58            Branch: Return
 0:101      move second child to first child (temp 4-component vector of float)
-0:101        'gl_FragColor' (fragColor 4-component vector of float)
+0:101        'gl_FragColor' (fragColor 4-component vector of float FragColor)
 0:101        component-wise multiply (temp 4-component vector of float)
 0:101          'color' (temp 4-component vector of float)
 0:101          'color2' (temp 4-component vector of float)

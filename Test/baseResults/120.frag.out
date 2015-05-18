@@ -14,7 +14,7 @@ ERROR: 0:62: '+' :  wrong operand types: no operation '+' exists that takes a le
 ERROR: 0:63: 'bitwise-or assign' : not supported for this version or the enabled extensions 
 ERROR: 0:63: 'assign' :  cannot convert from 'temp bool' to 'temp float'
 ERROR: 0:79: ':' :  wrong operand types: no operation ':' exists that takes a left-hand operand of type 'temp 4-component vector of float' and a right operand of type 'temp 4X4 matrix of float' (or there is no acceptable conversion)
-ERROR: 0:79: 'assign' :  cannot convert from 'temp 4X4 matrix of float' to 'fragColor 4-component vector of float'
+ERROR: 0:79: 'assign' :  cannot convert from 'temp 4X4 matrix of float' to 'fragColor 4-component vector of float FragColor'
 ERROR: 0:82: 'xr' : illegal - vector component fields not from the same set 
 ERROR: 0:83: 'xyxyx' : illegal vector field selection 
 ERROR: 0:83: 'scalar swizzle' : not supported for this version or the enabled extensions 
@@ -241,18 +241,18 @@ ERROR: node is still EOpNull!
 0:62        'b' (temp bool)
 0:63      'f' (temp float)
 0:65      move second child to first child (temp 4-component vector of float)
-0:65        'gl_FragColor' (fragColor 4-component vector of float)
+0:65        'gl_FragColor' (fragColor 4-component vector of float FragColor)
 0:65        Function Call: texture2D(s21;vf2; (global 4-component vector of float)
 0:65          's2D' (uniform sampler2D)
 0:65          'centTexCoord' (centroid smooth in 2-component vector of float)
 0:?       Sequence
-0:79        'gl_FragColor' (fragColor 4-component vector of float)
+0:79        'gl_FragColor' (fragColor 4-component vector of float FragColor)
 0:82      direct index (temp float)
-0:82        'gl_FragColor' (fragColor 4-component vector of float)
+0:82        'gl_FragColor' (fragColor 4-component vector of float FragColor)
 0:82        Constant:
 0:82          0 (const int)
 0:83      direct index (temp float)
-0:83        'gl_FragColor' (fragColor 4-component vector of float)
+0:83        'gl_FragColor' (fragColor 4-component vector of float FragColor)
 0:83        Constant:
 0:83          0 (const int)
 0:84      direct index (temp float)
@@ -318,14 +318,14 @@ ERROR: node is still EOpNull!
 0:120      Sequence
 0:120        move second child to first child (temp 4-component vector of float)
 0:120          'v' (temp 4-component vector of float)
-0:120          direct index (smooth temp 4-component vector of float)
-0:120            'gl_TexCoord' (smooth in 6-element array of 4-component vector of float)
+0:120          direct index (smooth temp 4-component vector of float TexCoord)
+0:120            'gl_TexCoord' (smooth in 6-element array of 4-component vector of float TexCoord)
 0:120            Constant:
 0:120              1 (const int)
 0:121      add second child into first child (temp 4-component vector of float)
 0:121        'v' (temp 4-component vector of float)
-0:121        direct index (smooth temp 4-component vector of float)
-0:121          'gl_TexCoord' (smooth in 6-element array of 4-component vector of float)
+0:121        direct index (smooth temp 4-component vector of float TexCoord)
+0:121          'gl_TexCoord' (smooth in 6-element array of 4-component vector of float TexCoord)
 0:121          Constant:
 0:121            3 (const int)
 0:139  Function Definition: foo123( (global void)
@@ -603,7 +603,7 @@ ERROR: node is still EOpNull!
 0:?     'imageBuffer' (global float)
 0:?     'uimage2DRect' (global float)
 0:?     'a' (temp int)
-0:?     'gl_TexCoord' (smooth in 6-element array of 4-component vector of float)
+0:?     'gl_TexCoord' (smooth in 6-element array of 4-component vector of float TexCoord)
 0:?     'm22' (global 2X2 matrix of float)
 0:?     'm23' (global 2X3 matrix of float)
 0:?     'm24' (global 2X4 matrix of float)
@@ -812,18 +812,18 @@ ERROR: node is still EOpNull!
 0:62        'b' (temp bool)
 0:63      'f' (temp float)
 0:65      move second child to first child (temp 4-component vector of float)
-0:65        'gl_FragColor' (fragColor 4-component vector of float)
+0:65        'gl_FragColor' (fragColor 4-component vector of float FragColor)
 0:65        Function Call: texture2D(s21;vf2; (global 4-component vector of float)
 0:65          's2D' (uniform sampler2D)
 0:65          'centTexCoord' (centroid smooth in 2-component vector of float)
 0:?       Sequence
-0:79        'gl_FragColor' (fragColor 4-component vector of float)
+0:79        'gl_FragColor' (fragColor 4-component vector of float FragColor)
 0:82      direct index (temp float)
-0:82        'gl_FragColor' (fragColor 4-component vector of float)
+0:82        'gl_FragColor' (fragColor 4-component vector of float FragColor)
 0:82        Constant:
 0:82          0 (const int)
 0:83      direct index (temp float)
-0:83        'gl_FragColor' (fragColor 4-component vector of float)
+0:83        'gl_FragColor' (fragColor 4-component vector of float FragColor)
 0:83        Constant:
 0:83          0 (const int)
 0:84      direct index (temp float)
@@ -889,14 +889,14 @@ ERROR: node is still EOpNull!
 0:120      Sequence
 0:120        move second child to first child (temp 4-component vector of float)
 0:120          'v' (temp 4-component vector of float)
-0:120          direct index (smooth temp 4-component vector of float)
-0:120            'gl_TexCoord' (smooth in 6-element array of 4-component vector of float)
+0:120          direct index (smooth temp 4-component vector of float TexCoord)
+0:120            'gl_TexCoord' (smooth in 6-element array of 4-component vector of float TexCoord)
 0:120            Constant:
 0:120              1 (const int)
 0:121      add second child into first child (temp 4-component vector of float)
 0:121        'v' (temp 4-component vector of float)
-0:121        direct index (smooth temp 4-component vector of float)
-0:121          'gl_TexCoord' (smooth in 6-element array of 4-component vector of float)
+0:121        direct index (smooth temp 4-component vector of float TexCoord)
+0:121          'gl_TexCoord' (smooth in 6-element array of 4-component vector of float TexCoord)
 0:121          Constant:
 0:121            3 (const int)
 0:139  Function Definition: foo123( (global void)
@@ -1174,7 +1174,7 @@ ERROR: node is still EOpNull!
 0:?     'imageBuffer' (global float)
 0:?     'uimage2DRect' (global float)
 0:?     'a' (temp int)
-0:?     'gl_TexCoord' (smooth in 6-element array of 4-component vector of float)
+0:?     'gl_TexCoord' (smooth in 6-element array of 4-component vector of float TexCoord)
 0:?     'm22' (global 2X2 matrix of float)
 0:?     'm23' (global 2X3 matrix of float)
 0:?     'm24' (global 2X4 matrix of float)

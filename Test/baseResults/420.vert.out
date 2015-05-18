@@ -268,7 +268,7 @@ ERROR: node is still EOpNull!
 0:?     'sampb3' (layout(binding=80 ) uniform sampler2D)
 0:?     'sampb4' (layout(binding=31 ) uniform sampler2D)
 0:?     'sampb5' (layout(binding=79 ) uniform 2-element array of sampler2D)
-0:?     'anon@3' (out block{out implicitly-sized array of float gl_ClipDistance, })
+0:?     'anon@3' (out block{out implicitly-sized array of float ClipDistance gl_ClipDistance, })
 0:?     'patchIn' (patch in 4-component vector of float)
 0:?     'patchOut' (smooth patch out 4-component vector of float)
 0:?     'comma0' (temp int)
@@ -290,8 +290,8 @@ ERROR: node is still EOpNull!
 0:?     'i5bad' (layout(rgba32ui ) uniform iimage2D)
 0:?     'i6bad' (layout(r8ui ) uniform iimage2D)
 0:?     'offcheckI' (layout(column_major shared ) uniform block{layout(column_major shared offset=16 ) uniform int foo})
-0:?     'gl_VertexID' (gl_VertexId int)
-0:?     'gl_InstanceID' (gl_InstanceId int)
+0:?     'gl_VertexID' (gl_VertexId int VertexId)
+0:?     'gl_InstanceID' (gl_InstanceId int InstanceId)
 
 
 Linked vertex stage:
@@ -513,7 +513,7 @@ ERROR: node is still EOpNull!
 0:?     'sampb3' (layout(binding=80 ) uniform sampler2D)
 0:?     'sampb4' (layout(binding=31 ) uniform sampler2D)
 0:?     'sampb5' (layout(binding=79 ) uniform 2-element array of sampler2D)
-0:?     'anon@3' (out block{out 1-element array of float gl_ClipDistance, })
+0:?     'anon@3' (out block{out 1-element array of float ClipDistance gl_ClipDistance, })
 0:?     'patchIn' (patch in 4-component vector of float)
 0:?     'patchOut' (smooth patch out 4-component vector of float)
 0:?     'comma0' (temp int)
@@ -535,6 +535,6 @@ ERROR: node is still EOpNull!
 0:?     'i5bad' (layout(rgba32ui ) uniform iimage2D)
 0:?     'i6bad' (layout(r8ui ) uniform iimage2D)
 0:?     'offcheckI' (layout(column_major shared ) uniform block{layout(column_major shared offset=16 ) uniform int foo})
-0:?     'gl_VertexID' (gl_VertexId int)
-0:?     'gl_InstanceID' (gl_InstanceId int)
+0:?     'gl_VertexID' (gl_VertexId int VertexId)
+0:?     'gl_InstanceID' (gl_InstanceId int InstanceId)
 

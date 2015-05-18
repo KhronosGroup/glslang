@@ -1365,7 +1365,7 @@ void TBuiltIns::initialize(int version, EProfile profile)
                 "attribute vec4  gl_MultiTexCoord5;"
                 "attribute vec4  gl_MultiTexCoord6;"
                 "attribute vec4  gl_MultiTexCoord7;"
-                "attribute float gl_FogCoord;"            
+                "attribute float gl_FogCoord;"
                 "\n");
         } else if (IncludeLegacy(version, profile)) {
             stageBuiltins[EShLangVertex].append(
@@ -2591,14 +2591,60 @@ void TBuiltIns::initialize(const TBuiltInResource &resources, int version, EProf
 //
 // Safe to call even if name is not present.
 //
-// N.B.: longer term, having special qualifiers is probably not the way to go, but this is keeping
-// in place the legacy ones.
+// Only use this for built-in variables that have a special qualifier in TStorageQualifier.
+// New built-in variables should use a generic (textually declarable) qualifier in
+// TStoraregQualifier and only call BuiltInVariable().
 //
-void SpecialQualifier(const char* name, TStorageQualifier qualifier, TSymbolTable& symbolTable)
+void SpecialQualifier(const char* name, TStorageQualifier qualifier, TBuiltInVariable builtIn, TSymbolTable& symbolTable)
 {
     TSymbol* symbol = symbolTable.find(name);
-    if (symbol)
-        symbol->getWritableType().getQualifier().storage = qualifier;
+    if (symbol) {
+        TQualifier& symQualifier = symbol->getWritableType().getQualifier();
+        symQualifier.storage = qualifier;
+        symQualifier.builtIn = builtIn;
+    }
+}
+
+//
+// To tag built-in variables with their TBuiltInVariable enum.  Use this when the
+// normal declaration text already gets the qualifier right, and all that's needed
+// is setting the builtIn field.  This should be the normal way for all new
+// built-in variables.
+//
+// If SpecialQualifier() was called, this does not need to be called.
+//
+// Safe to call even if name is not present.
+//
+void BuiltInVariable(const char* name, TBuiltInVariable builtIn, TSymbolTable& symbolTable)
+{
+    TSymbol* symbol = symbolTable.find(name);
+    if (! symbol)
+        return;
+
+    TQualifier& symQualifier = symbol->getWritableType().getQualifier();
+    symQualifier.builtIn = builtIn;
+}
+
+//
+// For built-in variables inside a named block.
+// SpecialQualifier() won't ever go inside a block; their member's qualifier come
+// from the qualification of the block.
+//
+// See comments above for other detail.
+//
+void BuiltInVariable(const char* blockName, const char* name, TBuiltInVariable builtIn, TSymbolTable& symbolTable)
+{
+    TSymbol* symbol = symbolTable.find(blockName);
+    if (! symbol)
+        return;
+
+    TTypeList& structure = *symbol->getWritableType().getWritableStruct();
+    for (int i = 0; i < (int)structure.size(); ++i) {
+        if (structure[i].type->getFieldName().compare(name) == 0) {
+            structure[i].type->getQualifier().builtIn = builtIn;
+            return;
+        }
+    }
 }
 
 //
@@ -2622,26 +2668,119 @@ void IdentifyBuiltIns(int version, EProfile profile, EShLanguage language, TSymb
 
     switch(language) {
     case EShLangVertex:
+        // Compatibility variables, vertex only
+        BuiltInVariable("gl_Color",          EbvColor,          symbolTable);
+        BuiltInVariable("gl_SecondaryColor", EbvSecondaryColor, symbolTable);
+        BuiltInVariable("gl_Normal",         EbvNormal,         symbolTable);
+        BuiltInVariable("gl_Vertex",         EbvVertex,         symbolTable);
+        BuiltInVariable("gl_MultiTexCoord0", EbvMultiTexCoord0, symbolTable);
+        BuiltInVariable("gl_MultiTexCoord1", EbvMultiTexCoord1, symbolTable);
+        BuiltInVariable("gl_MultiTexCoord2", EbvMultiTexCoord2, symbolTable);
+        BuiltInVariable("gl_MultiTexCoord3", EbvMultiTexCoord3, symbolTable);
+        BuiltInVariable("gl_MultiTexCoord4", EbvMultiTexCoord4, symbolTable);
+        BuiltInVariable("gl_MultiTexCoord5", EbvMultiTexCoord5, symbolTable);
+        BuiltInVariable("gl_MultiTexCoord6", EbvMultiTexCoord6, symbolTable);
+        BuiltInVariable("gl_MultiTexCoord7", EbvMultiTexCoord7, symbolTable);
+        BuiltInVariable("gl_FogCoord",       EbvFogFragCoord,   symbolTable);
+
+        // Fall through
+
     case EShLangTessControl:
     case EShLangTessEvaluation:
     case EShLangGeometry:
-        SpecialQualifier("gl_Position",   EvqPosition, symbolTable);
-        SpecialQualifier("gl_PointSize",  EvqPointSize, symbolTable);
-        SpecialQualifier("gl_ClipVertex", EvqClipVertex, symbolTable);
-        SpecialQualifier("gl_VertexID",   EvqVertexId, symbolTable);
-        SpecialQualifier("gl_InstanceID", EvqInstanceId, symbolTable);
+        SpecialQualifier("gl_Position",   EvqPosition,   EbvPosition,   symbolTable);
+        SpecialQualifier("gl_PointSize",  EvqPointSize,  EbvPointSize,  symbolTable);
+        SpecialQualifier("gl_ClipVertex", EvqClipVertex, EbvClipVertex, symbolTable);
+        SpecialQualifier("gl_VertexID",   EvqVertexId,   EbvVertexId,   symbolTable);
+        SpecialQualifier("gl_InstanceID", EvqInstanceId, EbvInstanceId, symbolTable);
+
+        BuiltInVariable("gl_in",  "gl_Position",     EbvPosition,     symbolTable);
+        BuiltInVariable("gl_in",  "gl_PointSize",    EbvPointSize,    symbolTable);
+        BuiltInVariable("gl_in",  "gl_ClipDistance", EbvClipDistance, symbolTable);
+        BuiltInVariable("gl_in",  "gl_CullDistance", EbvCullDistance, symbolTable);
+
+        BuiltInVariable("gl_out", "gl_Position",     EbvPosition,     symbolTable);
+        BuiltInVariable("gl_out", "gl_PointSize",    EbvPointSize,    symbolTable);
+        BuiltInVariable("gl_out", "gl_ClipDistance", EbvClipDistance, symbolTable);
+        BuiltInVariable("gl_out", "gl_CullDistance", EbvCullDistance, symbolTable);
+
+        BuiltInVariable("gl_ClipDistance",    EbvClipDistance,   symbolTable);
+        BuiltInVariable("gl_CullDistance",    EbvCullDistance,   symbolTable);
+        BuiltInVariable("gl_PrimitiveID",     EbvPrimitiveId,    symbolTable);
+        BuiltInVariable("gl_InvocationID",    EbvInvocationId,   symbolTable);
+        BuiltInVariable("gl_Layer",           EbvLayer,          symbolTable);
+        BuiltInVariable("gl_ViewportIndex",   EbvViewportIndex,  symbolTable);
+        BuiltInVariable("gl_PatchVerticesIn", EbvPatchVertices,  symbolTable);
+        BuiltInVariable("gl_TessLevelOuter",  EbvTessLevelOuter, symbolTable);
+        BuiltInVariable("gl_TessLevelInner",  EbvTessLevelInner, symbolTable);
+        BuiltInVariable("gl_TessCoord",       EbvTessCoord,      symbolTable);
+
         if (version < 410)
             symbolTable.setVariableExtensions("gl_ViewportIndex", 1, &GL_ARB_viewport_array);
+
+        // Compatibility variables
+
+        BuiltInVariable("gl_in", "gl_ClipVertex",          EbvClipVertex,          symbolTable);
+        BuiltInVariable("gl_in", "gl_FrontColor",          EbvFrontColor,          symbolTable);
+        BuiltInVariable("gl_in", "gl_BackColor",           EbvBackColor,           symbolTable);
+        BuiltInVariable("gl_in", "gl_FrontSecondaryColor", EbvFrontSecondaryColor, symbolTable);
+        BuiltInVariable("gl_in", "gl_BackSecondaryColor",  EbvBackSecondaryColor,  symbolTable);
+        BuiltInVariable("gl_in", "gl_TexCoord",            EbvTexCoord,            symbolTable);
+        BuiltInVariable("gl_in", "gl_FogFragCoord",        EbvFogFragCoord,        symbolTable);
+
+        BuiltInVariable("gl_out", "gl_ClipVertex",          EbvClipVertex,          symbolTable);
+        BuiltInVariable("gl_out", "gl_FrontColor",          EbvFrontColor,          symbolTable);
+        BuiltInVariable("gl_out", "gl_BackColor",           EbvBackColor,           symbolTable);
+        BuiltInVariable("gl_out", "gl_FrontSecondaryColor", EbvFrontSecondaryColor, symbolTable);
+        BuiltInVariable("gl_out", "gl_BackSecondaryColor",  EbvBackSecondaryColor,  symbolTable);
+        BuiltInVariable("gl_out", "gl_TexCoord",            EbvTexCoord,            symbolTable);
+        BuiltInVariable("gl_out", "gl_FogFragCoord",        EbvFogFragCoord,        symbolTable);
+
+        BuiltInVariable("gl_ClipVertex",          EbvClipVertex,          symbolTable);
+        BuiltInVariable("gl_FrontColor",          EbvFrontColor,          symbolTable);
+        BuiltInVariable("gl_BackColor",           EbvBackColor,           symbolTable);
+        BuiltInVariable("gl_FrontSecondaryColor", EbvFrontSecondaryColor, symbolTable);
+        BuiltInVariable("gl_BackSecondaryColor",  EbvBackSecondaryColor,  symbolTable);
+        BuiltInVariable("gl_TexCoord",            EbvTexCoord,            symbolTable);
+        BuiltInVariable("gl_FogFragCoord",        EbvFogFragCoord,        symbolTable);
+
         break;
 
     case EShLangFragment:
-        SpecialQualifier("gl_FrontFacing",      EvqFace, symbolTable);
-        SpecialQualifier("gl_FragCoord",        EvqFragCoord, symbolTable);
-        SpecialQualifier("gl_PointCoord",       EvqPointCoord, symbolTable);
-        SpecialQualifier("gl_FragColor",        EvqFragColor, symbolTable);
-        SpecialQualifier("gl_FragDepth",        EvqFragDepth, symbolTable);
-        SpecialQualifier("gl_FragDepthEXT",     EvqFragDepth, symbolTable);
-        SpecialQualifier("gl_HelperInvocation", EvqIn, symbolTable);
+        SpecialQualifier("gl_FrontFacing",      EvqFace,       EbvFace,             symbolTable);
+        SpecialQualifier("gl_FragCoord",        EvqFragCoord,  EbvFragCoord,        symbolTable);
+        SpecialQualifier("gl_PointCoord",       EvqPointCoord, EbvPointCoord,       symbolTable);
+        SpecialQualifier("gl_FragColor",        EvqFragColor,  EbvFragColor,        symbolTable);
+        SpecialQualifier("gl_FragDepth",        EvqFragDepth,  EbvFragDepth,        symbolTable);
+        SpecialQualifier("gl_FragDepthEXT",     EvqFragDepth,  EbvFragDepth,        symbolTable);
+        SpecialQualifier("gl_HelperInvocation", EvqIn,         EbvHelperInvocation, symbolTable);
+
+        BuiltInVariable("gl_ClipDistance",    EbvClipDistance,   symbolTable);
+        BuiltInVariable("gl_CullDistance",    EbvCullDistance,   symbolTable);
+        BuiltInVariable("gl_PrimitiveID",     EbvPrimitiveId,    symbolTable);
+        BuiltInVariable("gl_SampleID",        EbvSampleId,       symbolTable);
+        BuiltInVariable("gl_SamplePosition",  EbvSamplePosition, symbolTable);
+        BuiltInVariable("gl_SampleMaskIn",    EbvSampleMask,     symbolTable);
+        BuiltInVariable("gl_SampleMask",      EbvSampleMask,     symbolTable);
+        BuiltInVariable("gl_Layer",           EbvLayer,          symbolTable);
+        BuiltInVariable("gl_ViewportIndex",   EbvViewportIndex,  symbolTable);
+
+        // Compatibility variables
+
+        SpecialQualifier("gl_FragData", EvqFragColor, EbvFragData, symbolTable);
+
+        BuiltInVariable("gl_in", "gl_FogFragCoord",   EbvFogFragCoord,   symbolTable);
+        BuiltInVariable("gl_in", "gl_TexCoord",       EbvTexCoord,       symbolTable);
+        BuiltInVariable("gl_in", "gl_Color",          EbvColor,          symbolTable);
+        BuiltInVariable("gl_in", "gl_SecondaryColor", EbvSecondaryColor, symbolTable);
+
+        BuiltInVariable("gl_FogFragCoord",   EbvFogFragCoord,   symbolTable);
+        BuiltInVariable("gl_TexCoord",       EbvTexCoord,       symbolTable);
+        BuiltInVariable("gl_Color",          EbvColor,          symbolTable);
+        BuiltInVariable("gl_SecondaryColor", EbvSecondaryColor, symbolTable);
+
+        // built-in functions
+
         if (version == 100) {
             symbolTable.setFunctionExtensions("dFdx",   1, &GL_OES_standard_derivatives);
             symbolTable.setFunctionExtensions("dFdy",   1, &GL_OES_standard_derivatives);
@@ -2716,6 +2855,12 @@ void IdentifyBuiltIns(int version, EProfile profile, EShLanguage language, TSymb
         break;
 
     case EShLangCompute:
+        BuiltInVariable("gl_NumWorkGroups",         EbvNumWorkGroups,        symbolTable);
+        BuiltInVariable("gl_WorkGroupSize",         EbvWorkGroupSize,        symbolTable);
+        BuiltInVariable("gl_WorkGroupID",           EbvWorkGroupId,          symbolTable);
+        BuiltInVariable("gl_LocalInvocationID",     EbvLocalInvocationId,    symbolTable);
+        BuiltInVariable("gl_GlobalInvocationID",    EbvGlobalInvocationId,   symbolTable);
+        BuiltInVariable("gl_LocalInvocationIndex",  EbvLocalInvocationIndex, symbolTable);
         break;
 
     default:

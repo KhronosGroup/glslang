@@ -163,7 +163,7 @@ Shader version: 130
 0:94      Post-Increment (temp 4-component vector of float)
 0:94        'color' (temp 4-component vector of float)
 0:95      move second child to first child (temp 4-component vector of float)
-0:95        'gl_FragColor' (fragColor 4-component vector of float)
+0:95        'gl_FragColor' (fragColor 4-component vector of float FragColor)
 0:95        'color' (temp 4-component vector of float)
 0:?   Linker Objects
 0:?     'bigColor' (uniform 4-component vector of float)
@@ -380,7 +380,7 @@ Shader version: 130
 0:94      Post-Increment (temp 4-component vector of float)
 0:94        'color' (temp 4-component vector of float)
 0:95      move second child to first child (temp 4-component vector of float)
-0:95        'gl_FragColor' (fragColor 4-component vector of float)
+0:95        'gl_FragColor' (fragColor 4-component vector of float FragColor)
 0:95        'color' (temp 4-component vector of float)
 0:?   Linker Objects
 0:?     'bigColor' (uniform 4-component vector of float)

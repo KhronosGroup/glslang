@@ -29,7 +29,7 @@ Shader version: 130
 0:14          Pre-Increment (temp int)
 0:14            'i' (temp int)
 0:18      move second child to first child (temp 4-component vector of float)
-0:18        'gl_FragColor' (fragColor 4-component vector of float)
+0:18        'gl_FragColor' (fragColor 4-component vector of float FragColor)
 0:18        'color' (temp 4-component vector of float)
 0:20      Sequence
 0:20        move second child to first child (temp float)
@@ -86,7 +86,7 @@ Shader version: 130
 0:26          Pre-Increment (temp int)
 0:26            'i' (temp int)
 0:29      add second child into first child (temp 4-component vector of float)
-0:29        'gl_FragColor' (fragColor 4-component vector of float)
+0:29        'gl_FragColor' (fragColor 4-component vector of float FragColor)
 0:29        add (temp 4-component vector of float)
 0:29          Construct vec4 (temp 4-component vector of float)
 0:29            'sum' (temp float)
@@ -133,7 +133,7 @@ Shader version: 130
 0:34            'i' (temp int)
 0:37      add second child into first child (temp 3-component vector of float)
 0:37        vector swizzle (temp 3-component vector of float)
-0:37          'gl_FragColor' (fragColor 4-component vector of float)
+0:37          'gl_FragColor' (fragColor 4-component vector of float FragColor)
 0:37          Sequence
 0:37            Constant:
 0:37              0 (const int)
@@ -164,7 +164,7 @@ Shader version: 130
 0:39              16 (const int)
 0:39          Loop Body
 0:40          vector scale second child into first child (temp 4-component vector of float)
-0:40            'gl_FragColor' (fragColor 4-component vector of float)
+0:40            'gl_FragColor' (fragColor 4-component vector of float FragColor)
 0:40            'f' (smooth in float)
 0:39          Loop Terminal Expression
 0:39          add second child into first child (temp int)
@@ -211,7 +211,7 @@ Shader version: 130
 0:14          Pre-Increment (temp int)
 0:14            'i' (temp int)
 0:18      move second child to first child (temp 4-component vector of float)
-0:18        'gl_FragColor' (fragColor 4-component vector of float)
+0:18        'gl_FragColor' (fragColor 4-component vector of float FragColor)
 0:18        'color' (temp 4-component vector of float)
 0:20      Sequence
 0:20        move second child to first child (temp float)
@@ -268,7 +268,7 @@ Shader version: 130
 0:26          Pre-Increment (temp int)
 0:26            'i' (temp int)
 0:29      add second child into first child (temp 4-component vector of float)
-0:29        'gl_FragColor' (fragColor 4-component vector of float)
+0:29        'gl_FragColor' (fragColor 4-component vector of float FragColor)
 0:29        add (temp 4-component vector of float)
 0:29          Construct vec4 (temp 4-component vector of float)
 0:29            'sum' (temp float)
@@ -315,7 +315,7 @@ Shader version: 130
 0:34            'i' (temp int)
 0:37      add second child into first child (temp 3-component vector of float)
 0:37        vector swizzle (temp 3-component vector of float)
-0:37          'gl_FragColor' (fragColor 4-component vector of float)
+0:37          'gl_FragColor' (fragColor 4-component vector of float FragColor)
 0:37          Sequence
 0:37            Constant:
 0:37              0 (const int)
@@ -346,7 +346,7 @@ Shader version: 130
 0:39              16 (const int)
 0:39          Loop Body
 0:40          vector scale second child into first child (temp 4-component vector of float)
-0:40            'gl_FragColor' (fragColor 4-component vector of float)
+0:40            'gl_FragColor' (fragColor 4-component vector of float FragColor)
 0:40            'f' (smooth in float)
 0:39          Loop Terminal Expression
 0:39          add second child into first child (temp int)

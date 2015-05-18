@@ -218,7 +218,7 @@ ERROR: node is still EOpNull!
 0:103        'gl_FragDepth' (temp mediump float)
 0:103        'f13' (invariant global mediump float)
 0:104      move second child to first child (temp highp float)
-0:104        'gl_FragDepthEXT' (gl_FragDepth highp float)
+0:104        'gl_FragDepthEXT' (gl_FragDepth highp float FragDepth)
 0:104        'f13' (invariant global mediump float)
 0:109  Function Definition: foo239( (global void)
 0:109    Function Parameters: 
@@ -227,7 +227,7 @@ ERROR: node is still EOpNull!
 0:111        'gl_FragDepth' (temp mediump float)
 0:111        'f13' (invariant global mediump float)
 0:112      move second child to first child (temp highp float)
-0:112        'gl_FragDepthEXT' (gl_FragDepth highp float)
+0:112        'gl_FragDepthEXT' (gl_FragDepth highp float FragDepth)
 0:112        'f13' (invariant global mediump float)
 0:119  Function Definition: foo245( (global void)
 0:119    Function Parameters: 
@@ -370,7 +370,7 @@ ERROR: node is still EOpNull!
 0:214      'init1' (global mediump int)
 0:214      Test condition and select (temp mediump int)
 0:214        Condition
-0:214        'gl_FrontFacing' (gl_FrontFacing bool)
+0:214        'gl_FrontFacing' (gl_FrontFacing bool Face)
 0:214        true case
 0:214        Constant:
 0:214          1 (const int)
@@ -542,7 +542,7 @@ ERROR: node is still EOpNull!
 0:103        'gl_FragDepth' (temp mediump float)
 0:103        'f13' (invariant global mediump float)
 0:104      move second child to first child (temp highp float)
-0:104        'gl_FragDepthEXT' (gl_FragDepth highp float)
+0:104        'gl_FragDepthEXT' (gl_FragDepth highp float FragDepth)
 0:104        'f13' (invariant global mediump float)
 0:109  Function Definition: foo239( (global void)
 0:109    Function Parameters: 
@@ -551,7 +551,7 @@ ERROR: node is still EOpNull!
 0:111        'gl_FragDepth' (temp mediump float)
 0:111        'f13' (invariant global mediump float)
 0:112      move second child to first child (temp highp float)
-0:112        'gl_FragDepthEXT' (gl_FragDepth highp float)
+0:112        'gl_FragDepthEXT' (gl_FragDepth highp float FragDepth)
 0:112        'f13' (invariant global mediump float)
 0:119  Function Definition: foo245( (global void)
 0:119    Function Parameters: 
@@ -694,7 +694,7 @@ ERROR: node is still EOpNull!
 0:214      'init1' (global mediump int)
 0:214      Test condition and select (temp mediump int)
 0:214        Condition
-0:214        'gl_FrontFacing' (gl_FrontFacing bool)
+0:214        'gl_FrontFacing' (gl_FrontFacing bool Face)
 0:214        true case
 0:214        Constant:
 0:214          1 (const int)

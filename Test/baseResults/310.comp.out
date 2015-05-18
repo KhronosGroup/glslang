@@ -99,7 +99,7 @@ ERROR: node is still EOpNull!
 0:36              'anon@0' (layout(column_major shared ) buffer block{layout(column_major shared ) buffer highp int value, layout(column_major shared ) buffer implicitly-sized array of highp float values})
 0:36              Constant:
 0:36                1 (const uint)
-0:36            'gl_LocalInvocationIndex' (in highp uint)
+0:36            'gl_LocalInvocationIndex' (in highp uint LocalInvocationIndex)
 0:59  Function Definition: foo( (global void)
 0:59    Function Parameters: 
 0:61    Sequence
@@ -421,7 +421,7 @@ ERROR: node is still EOpNull!
 0:224        Constant:
 0:224          2 (const int)
 0:?   Linker Objects
-0:?     'gl_WorkGroupSize' (const highp 3-component vector of uint)
+0:?     'gl_WorkGroupSize' (const highp 3-component vector of uint WorkGroupSize)
 0:?       2 (const uint)
 0:?       1 (const uint)
 0:?       4096 (const uint)
@@ -508,7 +508,7 @@ ERROR: node is still EOpNull!
 0:36              'anon@0' (layout(column_major shared ) buffer block{layout(column_major shared ) buffer highp int value, layout(column_major shared ) buffer implicitly-sized array of highp float values})
 0:36              Constant:
 0:36                1 (const uint)
-0:36            'gl_LocalInvocationIndex' (in highp uint)
+0:36            'gl_LocalInvocationIndex' (in highp uint LocalInvocationIndex)
 0:59  Function Definition: foo( (global void)
 0:59    Function Parameters: 
 0:61    Sequence
@@ -830,7 +830,7 @@ ERROR: node is still EOpNull!
 0:224        Constant:
 0:224          2 (const int)
 0:?   Linker Objects
-0:?     'gl_WorkGroupSize' (const highp 3-component vector of uint)
+0:?     'gl_WorkGroupSize' (const highp 3-component vector of uint WorkGroupSize)
 0:?       2 (const uint)
 0:?       1 (const uint)
 0:?       4096 (const uint)

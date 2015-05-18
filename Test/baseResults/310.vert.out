@@ -185,8 +185,8 @@ ERROR: node is still EOpNull!
 0:?     'outsa' (smooth out 4-element array of structure{global highp float f})
 0:?     'outSA' (smooth out structure{global 4-element array of highp float f})
 0:?     'outSS' (smooth out structure{global highp float f, global structure{global highp float f} s})
-0:?     'gl_VertexID' (gl_VertexId highp int)
-0:?     'gl_InstanceID' (gl_InstanceId highp int)
+0:?     'gl_VertexID' (gl_VertexId highp int VertexId)
+0:?     'gl_InstanceID' (gl_InstanceId highp int InstanceId)
 
 
 Linked vertex stage:
@@ -360,6 +360,6 @@ ERROR: node is still EOpNull!
 0:?     'outsa' (smooth out 4-element array of structure{global highp float f})
 0:?     'outSA' (smooth out structure{global 4-element array of highp float f})
 0:?     'outSS' (smooth out structure{global highp float f, global structure{global highp float f} s})
-0:?     'gl_VertexID' (gl_VertexId highp int)
-0:?     'gl_InstanceID' (gl_InstanceId highp int)
+0:?     'gl_VertexID' (gl_VertexId highp int VertexId)
+0:?     'gl_InstanceID' (gl_InstanceId highp int InstanceId)
 

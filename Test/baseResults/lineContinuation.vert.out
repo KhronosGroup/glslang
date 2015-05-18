@@ -29,7 +29,7 @@ ERROR: node is still EOpNull!
 0:20    Function Parameters: 
 0:20    Sequence
 0:20      move second child to first child (temp highp 4-component vector of float)
-0:20        'gl_Position' (gl_Position highp 4-component vector of float)
+0:20        'gl_Position' (gl_Position highp 4-component vector of float Position)
 0:20        Construct vec4 (temp highp 4-component vector of float)
 0:20          'foo' (global highp float)
 0:22  Function Definition: foo2(vf4; (global highp 4-component vector of float)
@@ -160,8 +160,8 @@ ERROR: node is still EOpNull!
 0:?     'bar105' (global highp int)
 0:?     'bar106' (global highp int)
 0:?     'bar107' (global highp int)
-0:?     'gl_VertexID' (gl_VertexId highp int)
-0:?     'gl_InstanceID' (gl_InstanceId highp int)
+0:?     'gl_VertexID' (gl_VertexId highp int VertexId)
+0:?     'gl_InstanceID' (gl_InstanceId highp int InstanceId)
 
 
 Linked vertex stage:
@@ -173,7 +173,7 @@ ERROR: node is still EOpNull!
 0:20    Function Parameters: 
 0:20    Sequence
 0:20      move second child to first child (temp highp 4-component vector of float)
-0:20        'gl_Position' (gl_Position highp 4-component vector of float)
+0:20        'gl_Position' (gl_Position highp 4-component vector of float Position)
 0:20        Construct vec4 (temp highp 4-component vector of float)
 0:20          'foo' (global highp float)
 0:22  Function Definition: foo2(vf4; (global highp 4-component vector of float)
@@ -304,6 +304,6 @@ ERROR: node is still EOpNull!
 0:?     'bar105' (global highp int)
 0:?     'bar106' (global highp int)
 0:?     'bar107' (global highp int)
-0:?     'gl_VertexID' (gl_VertexId highp int)
-0:?     'gl_InstanceID' (gl_InstanceId highp int)
+0:?     'gl_VertexID' (gl_VertexId highp int VertexId)
+0:?     'gl_InstanceID' (gl_InstanceId highp int InstanceId)
 

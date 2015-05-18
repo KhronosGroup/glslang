@@ -181,7 +181,7 @@ ERROR: node is still EOpNull!
 0:45          20 (const int)
 0:47      Test condition and select (temp void)
 0:47        Condition
-0:47        'gl_HelperInvocation' (in bool)
+0:47        'gl_HelperInvocation' (in bool HelperInvocation)
 0:47        true case
 0:48        Pre-Increment (temp mediump 4-component vector of float)
 0:48          'outp' (out mediump 4-component vector of float)
@@ -443,7 +443,7 @@ ERROR: node is still EOpNull!
 0:45          20 (const int)
 0:47      Test condition and select (temp void)
 0:47        Condition
-0:47        'gl_HelperInvocation' (in bool)
+0:47        'gl_HelperInvocation' (in bool HelperInvocation)
 0:47        true case
 0:48        Pre-Increment (temp mediump 4-component vector of float)
 0:48          'outp' (out mediump 4-component vector of float)

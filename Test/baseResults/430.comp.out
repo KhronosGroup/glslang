@@ -42,7 +42,7 @@ ERROR: node is still EOpNull!
 0:36              'anon@0' (layout(column_major shared ) buffer block{layout(column_major shared ) buffer int value, layout(column_major shared ) buffer implicitly-sized array of float values})
 0:36              Constant:
 0:36                1 (const uint)
-0:36            'gl_LocalInvocationIndex' (in uint)
+0:36            'gl_LocalInvocationIndex' (in uint LocalInvocationIndex)
 0:39      Test condition and select (temp void)
 0:39        Condition
 0:39        Compare Greater Than (temp bool)
@@ -78,7 +78,7 @@ ERROR: node is still EOpNull!
 0:73          'storePos' (temp 2-component vector of int)
 0:73          Convert uint to int (temp 2-component vector of int)
 0:73            vector swizzle (temp 2-component vector of uint)
-0:73              'gl_GlobalInvocationID' (in 3-component vector of uint)
+0:73              'gl_GlobalInvocationID' (in 3-component vector of uint GlobalInvocationID)
 0:73              Sequence
 0:73                Constant:
 0:73                  0 (const int)
@@ -94,7 +94,7 @@ ERROR: node is still EOpNull!
 0:74                  subtract (temp 2-component vector of int)
 0:74                    Convert uint to int (temp 2-component vector of int)
 0:74                      vector swizzle (temp 2-component vector of uint)
-0:74                        'gl_LocalInvocationID' (in 3-component vector of uint)
+0:74                        'gl_LocalInvocationID' (in 3-component vector of uint LocalInvocationID)
 0:74                        Sequence
 0:74                          Constant:
 0:74                            0 (const int)
@@ -123,7 +123,7 @@ ERROR: node is still EOpNull!
 0:78          Convert int to double (temp double)
 0:78            'i' (temp int)
 0:?   Linker Objects
-0:?     'gl_WorkGroupSize' (const 3-component vector of uint)
+0:?     'gl_WorkGroupSize' (const 3-component vector of uint WorkGroupSize)
 0:?       2 (const uint)
 0:?       1 (const uint)
 0:?       4096 (const uint)
@@ -172,7 +172,7 @@ ERROR: node is still EOpNull!
 0:36              'anon@0' (layout(column_major shared ) buffer block{layout(column_major shared ) buffer int value, layout(column_major shared ) buffer implicitly-sized array of float values})
 0:36              Constant:
 0:36                1 (const uint)
-0:36            'gl_LocalInvocationIndex' (in uint)
+0:36            'gl_LocalInvocationIndex' (in uint LocalInvocationIndex)
 0:39      Test condition and select (temp void)
 0:39        Condition
 0:39        Compare Greater Than (temp bool)
@@ -208,7 +208,7 @@ ERROR: node is still EOpNull!
 0:73          'storePos' (temp 2-component vector of int)
 0:73          Convert uint to int (temp 2-component vector of int)
 0:73            vector swizzle (temp 2-component vector of uint)
-0:73              'gl_GlobalInvocationID' (in 3-component vector of uint)
+0:73              'gl_GlobalInvocationID' (in 3-component vector of uint GlobalInvocationID)
 0:73              Sequence
 0:73                Constant:
 0:73                  0 (const int)
@@ -224,7 +224,7 @@ ERROR: node is still EOpNull!
 0:74                  subtract (temp 2-component vector of int)
 0:74                    Convert uint to int (temp 2-component vector of int)
 0:74                      vector swizzle (temp 2-component vector of uint)
-0:74                        'gl_LocalInvocationID' (in 3-component vector of uint)
+0:74                        'gl_LocalInvocationID' (in 3-component vector of uint LocalInvocationID)
 0:74                        Sequence
 0:74                          Constant:
 0:74                            0 (const int)
@@ -253,7 +253,7 @@ ERROR: node is still EOpNull!
 0:78          Convert int to double (temp double)
 0:78            'i' (temp int)
 0:?   Linker Objects
-0:?     'gl_WorkGroupSize' (const 3-component vector of uint)
+0:?     'gl_WorkGroupSize' (const 3-component vector of uint WorkGroupSize)
 0:?       2 (const uint)
 0:?       1 (const uint)
 0:?       4096 (const uint)

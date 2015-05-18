@@ -280,7 +280,7 @@ Shader version: 130
 0:74                  Constant:
 0:74                    1 (const int)
 0:76      move second child to first child (temp 4-component vector of float)
-0:76        'gl_FragColor' (fragColor 4-component vector of float)
+0:76        'gl_FragColor' (fragColor 4-component vector of float FragColor)
 0:86        Test condition and select (temp 4-component vector of float)
 0:86          Condition
 0:85          logical-or (temp bool)
@@ -445,7 +445,7 @@ Shader version: 130
 0:110          Convert int to bool (temp 4-component vector of bool)
 0:110            'cv2' (temp 4-component vector of int)
 0:111      add second child into first child (temp 4-component vector of float)
-0:111        'gl_FragColor' (fragColor 4-component vector of float)
+0:111        'gl_FragColor' (fragColor 4-component vector of float FragColor)
 0:111        Construct float (temp float)
 0:111          Convert bool to float (temp 4-component vector of float)
 0:111            'cv5' (temp 4-component vector of bool)
@@ -759,7 +759,7 @@ Shader version: 130
 0:74                  Constant:
 0:74                    1 (const int)
 0:76      move second child to first child (temp 4-component vector of float)
-0:76        'gl_FragColor' (fragColor 4-component vector of float)
+0:76        'gl_FragColor' (fragColor 4-component vector of float FragColor)
 0:86        Test condition and select (temp 4-component vector of float)
 0:86          Condition
 0:85          logical-or (temp bool)
@@ -924,7 +924,7 @@ Shader version: 130
 0:110          Convert int to bool (temp 4-component vector of bool)
 0:110            'cv2' (temp 4-component vector of int)
 0:111      add second child into first child (temp 4-component vector of float)
-0:111        'gl_FragColor' (fragColor 4-component vector of float)
+0:111        'gl_FragColor' (fragColor 4-component vector of float FragColor)
 0:111        Construct float (temp float)
 0:111          Convert bool to float (temp 4-component vector of float)
 0:111            'cv5' (temp 4-component vector of bool)

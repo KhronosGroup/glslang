@@ -792,7 +792,7 @@ Shader version: 130
 0:276      Post-Increment (temp 4-component vector of float)
 0:276        'color' (temp 4-component vector of float)
 0:277      move second child to first child (temp 4-component vector of float)
-0:277        'gl_FragColor' (fragColor 4-component vector of float)
+0:277        'gl_FragColor' (fragColor 4-component vector of float FragColor)
 0:277        'color' (temp 4-component vector of float)
 0:280      Loop with condition tested first
 0:280        Loop Condition
@@ -914,7 +914,7 @@ Shader version: 130
 0:317      Post-Increment (temp 4-component vector of float)
 0:317        'color' (temp 4-component vector of float)
 0:319      move second child to first child (temp 4-component vector of float)
-0:319        'gl_FragColor' (fragColor 4-component vector of float)
+0:319        'gl_FragColor' (fragColor 4-component vector of float FragColor)
 0:319        'color' (temp 4-component vector of float)
 0:?   Linker Objects
 0:?     'bigColor' (uniform 4-component vector of float)
@@ -1760,7 +1760,7 @@ Shader version: 130
 0:276      Post-Increment (temp 4-component vector of float)
 0:276        'color' (temp 4-component vector of float)
 0:277      move second child to first child (temp 4-component vector of float)
-0:277        'gl_FragColor' (fragColor 4-component vector of float)
+0:277        'gl_FragColor' (fragColor 4-component vector of float FragColor)
 0:277        'color' (temp 4-component vector of float)
 0:280      Loop with condition tested first
 0:280        Loop Condition
@@ -1882,7 +1882,7 @@ Shader version: 130
 0:317      Post-Increment (temp 4-component vector of float)
 0:317        'color' (temp 4-component vector of float)
 0:319      move second child to first child (temp 4-component vector of float)
-0:319        'gl_FragColor' (fragColor 4-component vector of float)
+0:319        'gl_FragColor' (fragColor 4-component vector of float FragColor)
 0:319        'color' (temp 4-component vector of float)
 0:?   Linker Objects
 0:?     'bigColor' (uniform 4-component vector of float)

@@ -9,14 +9,14 @@ Shader version: 130
 0:25    Function Parameters: 
 0:27    Sequence
 0:27      move second child to first child (temp 4-component vector of float)
-0:27        'gl_FragColor' (fragColor 4-component vector of float)
+0:27        'gl_FragColor' (fragColor 4-component vector of float FragColor)
 0:27        Construct vec4 (temp 4-component vector of float)
 0:27          direct index (temp 4-component vector of float)
 0:27            'un34' (uniform 4X4 matrix of float)
 0:27            Constant:
 0:27              1 (const int)
 0:28      add second child into first child (temp 4-component vector of float)
-0:28        'gl_FragColor' (fragColor 4-component vector of float)
+0:28        'gl_FragColor' (fragColor 4-component vector of float FragColor)
 0:28        Construct vec4 (temp 4-component vector of float)
 0:28          vector-times-matrix (temp 3-component vector of float)
 0:28            'Color' (smooth in 3-component vector of float)
@@ -30,17 +30,17 @@ Shader version: 130
 0:30          'n' (uniform 4X4 matrix of float)
 0:30        true case
 0:31        add second child into first child (temp 4-component vector of float)
-0:31          'gl_FragColor' (fragColor 4-component vector of float)
+0:31          'gl_FragColor' (fragColor 4-component vector of float FragColor)
 0:31          'v' (smooth in 4-component vector of float)
 0:30        false case
 0:33        Sequence
 0:33          add second child into first child (temp 4-component vector of float)
-0:33            'gl_FragColor' (fragColor 4-component vector of float)
+0:33            'gl_FragColor' (fragColor 4-component vector of float FragColor)
 0:33            matrix-times-vector (temp 4-component vector of float)
 0:33              'm' (uniform 4X4 matrix of float)
 0:33              'v' (smooth in 4-component vector of float)
 0:34          add second child into first child (temp 4-component vector of float)
-0:34            'gl_FragColor' (fragColor 4-component vector of float)
+0:34            'gl_FragColor' (fragColor 4-component vector of float FragColor)
 0:34            vector-times-matrix (temp 4-component vector of float)
 0:34              'v' (smooth in 4-component vector of float)
 0:34              subtract (temp 4X4 matrix of float)
@@ -230,13 +230,13 @@ Shader version: 130
 0:51          'un34' (uniform 4X4 matrix of float)
 0:51        true case
 0:52        add second child into first child (temp 4-component vector of float)
-0:52          'gl_FragColor' (fragColor 4-component vector of float)
+0:52          'gl_FragColor' (fragColor 4-component vector of float FragColor)
 0:52          matrix-times-vector (temp 4-component vector of float)
 0:52            'm34' (temp 4X4 matrix of float)
 0:52            'u' (smooth in 4-component vector of float)
 0:51        false case
 0:54        add second child into first child (temp 4-component vector of float)
-0:54          'gl_FragColor' (fragColor 4-component vector of float)
+0:54          'gl_FragColor' (fragColor 4-component vector of float FragColor)
 0:54          matrix-times-vector (temp 4-component vector of float)
 0:54            matrix-multiply (temp 4X4 matrix of float)
 0:54              'un34' (uniform 4X4 matrix of float)
@@ -262,14 +262,14 @@ Shader version: 130
 0:25    Function Parameters: 
 0:27    Sequence
 0:27      move second child to first child (temp 4-component vector of float)
-0:27        'gl_FragColor' (fragColor 4-component vector of float)
+0:27        'gl_FragColor' (fragColor 4-component vector of float FragColor)
 0:27        Construct vec4 (temp 4-component vector of float)
 0:27          direct index (temp 4-component vector of float)
 0:27            'un34' (uniform 4X4 matrix of float)
 0:27            Constant:
 0:27              1 (const int)
 0:28      add second child into first child (temp 4-component vector of float)
-0:28        'gl_FragColor' (fragColor 4-component vector of float)
+0:28        'gl_FragColor' (fragColor 4-component vector of float FragColor)
 0:28        Construct vec4 (temp 4-component vector of float)
 0:28          vector-times-matrix (temp 3-component vector of float)
 0:28            'Color' (smooth in 3-component vector of float)
@@ -283,17 +283,17 @@ Shader version: 130
 0:30          'n' (uniform 4X4 matrix of float)
 0:30        true case
 0:31        add second child into first child (temp 4-component vector of float)
-0:31          'gl_FragColor' (fragColor 4-component vector of float)
+0:31          'gl_FragColor' (fragColor 4-component vector of float FragColor)
 0:31          'v' (smooth in 4-component vector of float)
 0:30        false case
 0:33        Sequence
 0:33          add second child into first child (temp 4-component vector of float)
-0:33            'gl_FragColor' (fragColor 4-component vector of float)
+0:33            'gl_FragColor' (fragColor 4-component vector of float FragColor)
 0:33            matrix-times-vector (temp 4-component vector of float)
 0:33              'm' (uniform 4X4 matrix of float)
 0:33              'v' (smooth in 4-component vector of float)
 0:34          add second child into first child (temp 4-component vector of float)
-0:34            'gl_FragColor' (fragColor 4-component vector of float)
+0:34            'gl_FragColor' (fragColor 4-component vector of float FragColor)
 0:34            vector-times-matrix (temp 4-component vector of float)
 0:34              'v' (smooth in 4-component vector of float)
 0:34              subtract (temp 4X4 matrix of float)
@@ -483,13 +483,13 @@ Shader version: 130
 0:51          'un34' (uniform 4X4 matrix of float)
 0:51        true case
 0:52        add second child into first child (temp 4-component vector of float)
-0:52          'gl_FragColor' (fragColor 4-component vector of float)
+0:52          'gl_FragColor' (fragColor 4-component vector of float FragColor)
 0:52          matrix-times-vector (temp 4-component vector of float)
 0:52            'm34' (temp 4X4 matrix of float)
 0:52            'u' (smooth in 4-component vector of float)
 0:51        false case
 0:54        add second child into first child (temp 4-component vector of float)
-0:54          'gl_FragColor' (fragColor 4-component vector of float)
+0:54          'gl_FragColor' (fragColor 4-component vector of float FragColor)
 0:54          matrix-times-vector (temp 4-component vector of float)
 0:54            matrix-multiply (temp 4X4 matrix of float)
 0:54              'un34' (uniform 4X4 matrix of float)

@@ -43,8 +43,8 @@ ERROR: node is still EOpNull!
 0:14          'outp' (out 4-component vector of float)
 0:14          Constant:
 0:14            0 (const int)
-0:14        direct index (smooth temp float)
-0:14          'gl_ClipDistance' (smooth in 4-element array of float)
+0:14        direct index (smooth temp float ClipDistance)
+0:14          'gl_ClipDistance' (smooth in 4-element array of float ClipDistance)
 0:14          Constant:
 0:14            1 (const int)
 0:18      Sequence
@@ -146,7 +146,7 @@ ERROR: node is still EOpNull!
 0:27      Sequence
 0:27        move second child to first child (temp 4-component vector of float)
 0:27          'c' (temp 4-component vector of float)
-0:27          'gl_FragCoord' (gl_FragCoord 4-component vector of float)
+0:27          'gl_FragCoord' (gl_FragCoord 4-component vector of float FragCoord)
 0:47  Function Definition: foo23( (global void)
 0:47    Function Parameters: 
 0:?     Sequence
@@ -305,14 +305,14 @@ ERROR: node is still EOpNull!
 0:?     'arrayedSampler' (uniform 5-element array of sampler2D)
 0:?     'samp2dr' (uniform usampler2DRect)
 0:?     'isamp2DA' (uniform isampler2DArray)
-0:?     'gl_ClipDistance' (smooth in 4-element array of float)
+0:?     'gl_ClipDistance' (smooth in 4-element array of float ClipDistance)
 0:?     'vl' (layout(location=4 ) smooth in 4-component vector of float)
 0:?     'vl2' (layout(location=6 ) smooth in 4-component vector of float)
 0:?     'uv3' (layout(location=3 ) uniform 3-component vector of float)
-0:?     'anon@0' (in block{in float gl_FogFragCoord, in implicitly-sized array of 4-component vector of float gl_TexCoord, smooth in 4-component vector of float gl_Color, in 4-component vector of float gl_SecondaryColor})
-0:?     'anon@0' (in block{in float gl_FogFragCoord, in implicitly-sized array of 4-component vector of float gl_TexCoord, smooth in 4-component vector of float gl_Color, in 4-component vector of float gl_SecondaryColor})
-0:?     'gl_FragCoord' (gl_FragCoord 4-component vector of float)
-0:?     'gl_FragCoord' (gl_FragCoord 4-component vector of float)
+0:?     'anon@0' (in block{in float FogFragCoord gl_FogFragCoord, in implicitly-sized array of 4-component vector of float TexCoord gl_TexCoord, smooth in 4-component vector of float Color gl_Color, in 4-component vector of float SecondaryColor gl_SecondaryColor})
+0:?     'anon@0' (in block{in float FogFragCoord gl_FogFragCoord, in implicitly-sized array of 4-component vector of float TexCoord gl_TexCoord, smooth in 4-component vector of float Color gl_Color, in 4-component vector of float SecondaryColor gl_SecondaryColor})
+0:?     'gl_FragCoord' (gl_FragCoord 4-component vector of float FragCoord)
+0:?     'gl_FragCoord' (gl_FragCoord 4-component vector of float FragCoord)
 0:?     'u2drs' (uniform sampler2DRectShadow)
 0:?     'patchIn' (smooth patch in 4-component vector of float)
 0:?     'patchOut' (patch out 4-component vector of float)
@@ -346,8 +346,8 @@ ERROR: node is still EOpNull!
 0:14          'outp' (out 4-component vector of float)
 0:14          Constant:
 0:14            0 (const int)
-0:14        direct index (smooth temp float)
-0:14          'gl_ClipDistance' (smooth in 4-element array of float)
+0:14        direct index (smooth temp float ClipDistance)
+0:14          'gl_ClipDistance' (smooth in 4-element array of float ClipDistance)
 0:14          Constant:
 0:14            1 (const int)
 0:18      Sequence
@@ -449,7 +449,7 @@ ERROR: node is still EOpNull!
 0:27      Sequence
 0:27        move second child to first child (temp 4-component vector of float)
 0:27          'c' (temp 4-component vector of float)
-0:27          'gl_FragCoord' (gl_FragCoord 4-component vector of float)
+0:27          'gl_FragCoord' (gl_FragCoord 4-component vector of float FragCoord)
 0:47  Function Definition: foo23( (global void)
 0:47    Function Parameters: 
 0:?     Sequence
@@ -608,14 +608,14 @@ ERROR: node is still EOpNull!
 0:?     'arrayedSampler' (uniform 5-element array of sampler2D)
 0:?     'samp2dr' (uniform usampler2DRect)
 0:?     'isamp2DA' (uniform isampler2DArray)
-0:?     'gl_ClipDistance' (smooth in 4-element array of float)
+0:?     'gl_ClipDistance' (smooth in 4-element array of float ClipDistance)
 0:?     'vl' (layout(location=4 ) smooth in 4-component vector of float)
 0:?     'vl2' (layout(location=6 ) smooth in 4-component vector of float)
 0:?     'uv3' (layout(location=3 ) uniform 3-component vector of float)
-0:?     'anon@0' (in block{in float gl_FogFragCoord, in 1-element array of 4-component vector of float gl_TexCoord, smooth in 4-component vector of float gl_Color, in 4-component vector of float gl_SecondaryColor})
-0:?     'anon@0' (in block{in float gl_FogFragCoord, in 1-element array of 4-component vector of float gl_TexCoord, smooth in 4-component vector of float gl_Color, in 4-component vector of float gl_SecondaryColor})
-0:?     'gl_FragCoord' (gl_FragCoord 4-component vector of float)
-0:?     'gl_FragCoord' (gl_FragCoord 4-component vector of float)
+0:?     'anon@0' (in block{in float FogFragCoord gl_FogFragCoord, in 1-element array of 4-component vector of float TexCoord gl_TexCoord, smooth in 4-component vector of float Color gl_Color, in 4-component vector of float SecondaryColor gl_SecondaryColor})
+0:?     'anon@0' (in block{in float FogFragCoord gl_FogFragCoord, in 1-element array of 4-component vector of float TexCoord gl_TexCoord, smooth in 4-component vector of float Color gl_Color, in 4-component vector of float SecondaryColor gl_SecondaryColor})
+0:?     'gl_FragCoord' (gl_FragCoord 4-component vector of float FragCoord)
+0:?     'gl_FragCoord' (gl_FragCoord 4-component vector of float FragCoord)
 0:?     'u2drs' (uniform sampler2DRectShadow)
 0:?     'patchIn' (smooth patch in 4-component vector of float)
 0:?     'patchOut' (patch out 4-component vector of float)

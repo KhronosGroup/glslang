@@ -9,7 +9,7 @@ Shader version: 100
 0:9        Condition
 0:9        Compare Less Than (temp bool)
 0:9          length (global mediump float)
-0:9            'gl_PointCoord' (gl_PointCoord mediump 2-component vector of float)
+0:9            'gl_PointCoord' (gl_PointCoord mediump 2-component vector of float PointCoord)
 0:9          Constant:
 0:9            0.300000
 0:9        true case
@@ -17,7 +17,7 @@ Shader version: 100
 0:10          'color' (temp highp 4-component vector of float)
 0:10          Function Call: texture2D(s21;vf2; (global lowp 4-component vector of float)
 0:10            'sampler' (uniform lowp sampler2D)
-0:10            'gl_PointCoord' (gl_PointCoord mediump 2-component vector of float)
+0:10            'gl_PointCoord' (gl_PointCoord mediump 2-component vector of float PointCoord)
 0:9        false case
 0:12        move second child to first child (temp highp 4-component vector of float)
 0:12          'color' (temp highp 4-component vector of float)
@@ -27,7 +27,7 @@ Shader version: 100
 0:12            0.000000
 0:12            0.000000
 0:14      move second child to first child (temp highp 4-component vector of float)
-0:14        'gl_FragColor' (fragColor mediump 4-component vector of float)
+0:14        'gl_FragColor' (fragColor mediump 4-component vector of float FragColor)
 0:14        'color' (temp highp 4-component vector of float)
 0:?   Linker Objects
 0:?     'sampler' (uniform lowp sampler2D)
@@ -45,7 +45,7 @@ Shader version: 100
 0:9        Condition
 0:9        Compare Less Than (temp bool)
 0:9          length (global mediump float)
-0:9            'gl_PointCoord' (gl_PointCoord mediump 2-component vector of float)
+0:9            'gl_PointCoord' (gl_PointCoord mediump 2-component vector of float PointCoord)
 0:9          Constant:
 0:9            0.300000
 0:9        true case
@@ -53,7 +53,7 @@ Shader version: 100
 0:10          'color' (temp highp 4-component vector of float)
 0:10          Function Call: texture2D(s21;vf2; (global lowp 4-component vector of float)
 0:10            'sampler' (uniform lowp sampler2D)
-0:10            'gl_PointCoord' (gl_PointCoord mediump 2-component vector of float)
+0:10            'gl_PointCoord' (gl_PointCoord mediump 2-component vector of float PointCoord)
 0:9        false case
 0:12        move second child to first child (temp highp 4-component vector of float)
 0:12          'color' (temp highp 4-component vector of float)
@@ -63,7 +63,7 @@ Shader version: 100
 0:12            0.000000
 0:12            0.000000
 0:14      move second child to first child (temp highp 4-component vector of float)
-0:14        'gl_FragColor' (fragColor mediump 4-component vector of float)
+0:14        'gl_FragColor' (fragColor mediump 4-component vector of float FragColor)
 0:14        'color' (temp highp 4-component vector of float)
 0:?   Linker Objects
 0:?     'sampler' (uniform lowp sampler2D)

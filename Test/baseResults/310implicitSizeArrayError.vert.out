@@ -21,8 +21,8 @@ ERROR: node is still EOpNull!
 0:?   Linker Objects
 0:?     'uni' (layout(location=0 column_major shared ) uniform block{layout(column_major shared ) uniform implicitly-sized array of highp int a})
 0:?     'o' (layout(location=0 ) smooth out highp int)
-0:?     'gl_VertexID' (gl_VertexId highp int)
-0:?     'gl_InstanceID' (gl_InstanceId highp int)
+0:?     'gl_VertexID' (gl_VertexId highp int VertexId)
+0:?     'gl_InstanceID' (gl_InstanceId highp int InstanceId)
 
 
 Linked vertex stage:
@@ -45,6 +45,6 @@ ERROR: node is still EOpNull!
 0:?   Linker Objects
 0:?     'uni' (layout(location=0 column_major shared ) uniform block{layout(column_major shared ) uniform 1-element array of highp int a})
 0:?     'o' (layout(location=0 ) smooth out highp int)
-0:?     'gl_VertexID' (gl_VertexId highp int)
-0:?     'gl_InstanceID' (gl_InstanceId highp int)
+0:?     'gl_VertexID' (gl_VertexId highp int VertexId)
+0:?     'gl_InstanceID' (gl_InstanceId highp int InstanceId)
 

@@ -50,8 +50,8 @@ Shader version: 450
 0:18      Sequence
 0:18        move second child to first child (temp float)
 0:18          'cull' (temp float)
-0:18          direct index (smooth temp float)
-0:18            'gl_CullDistance' (smooth in implicitly-sized array of float)
+0:18          direct index (smooth temp float CullDistance)
+0:18            'gl_CullDistance' (smooth in implicitly-sized array of float CullDistance)
 0:18            Constant:
 0:18              2 (const int)
 0:19      Sequence
@@ -61,7 +61,7 @@ Shader version: 450
 0:19            20.000000
 0:21      Test condition and select (temp void)
 0:21        Condition
-0:21        'gl_HelperInvocation' (in bool)
+0:21        'gl_HelperInvocation' (in bool HelperInvocation)
 0:21        true case
 0:22        Pre-Increment (temp 4-component vector of float)
 0:22          'v4' (temp 4-component vector of float)
@@ -135,7 +135,7 @@ Shader version: 450
 0:?     'in2' (smooth in 2-component vector of float)
 0:?     'in3' (smooth in 3-component vector of float)
 0:?     'in4' (smooth in 4-component vector of float)
-0:?     'gl_CullDistance' (smooth in implicitly-sized array of float)
+0:?     'gl_CullDistance' (smooth in implicitly-sized array of float CullDistance)
 0:?     's2dms' (uniform sampler2DMS)
 0:?     'us2dmsa' (uniform usampler2DMSArray)
 0:?     'ii2dms' (layout(rgba32i ) uniform iimage2DMS)
@@ -194,8 +194,8 @@ Shader version: 450
 0:18      Sequence
 0:18        move second child to first child (temp float)
 0:18          'cull' (temp float)
-0:18          direct index (smooth temp float)
-0:18            'gl_CullDistance' (smooth in 3-element array of float)
+0:18          direct index (smooth temp float CullDistance)
+0:18            'gl_CullDistance' (smooth in 3-element array of float CullDistance)
 0:18            Constant:
 0:18              2 (const int)
 0:19      Sequence
@@ -205,7 +205,7 @@ Shader version: 450
 0:19            20.000000
 0:21      Test condition and select (temp void)
 0:21        Condition
-0:21        'gl_HelperInvocation' (in bool)
+0:21        'gl_HelperInvocation' (in bool HelperInvocation)
 0:21        true case
 0:22        Pre-Increment (temp 4-component vector of float)
 0:22          'v4' (temp 4-component vector of float)
@@ -279,7 +279,7 @@ Shader version: 450
 0:?     'in2' (smooth in 2-component vector of float)
 0:?     'in3' (smooth in 3-component vector of float)
 0:?     'in4' (smooth in 4-component vector of float)
-0:?     'gl_CullDistance' (smooth in 3-element array of float)
+0:?     'gl_CullDistance' (smooth in 3-element array of float CullDistance)
 0:?     's2dms' (uniform sampler2DMS)
 0:?     'us2dmsa' (uniform usampler2DMSArray)
 0:?     'ii2dms' (layout(rgba32i ) uniform iimage2DMS)

@@ -21,8 +21,8 @@ ERROR: node is still EOpNull!
 0:12      Sequence
 0:12        move second child to first child (temp float)
 0:12          'clip' (temp float)
-0:12          direct index (smooth temp float)
-0:12            'gl_ClipDistance' (smooth in 5-element array of float)
+0:12          direct index (smooth temp float ClipDistance)
+0:12            'gl_ClipDistance' (smooth in 5-element array of float ClipDistance)
 0:12            Constant:
 0:12              2 (const int)
 0:22  Sequence
@@ -80,7 +80,7 @@ ERROR: node is still EOpNull!
 0:47      'i1' (global float)
 0:47      Test condition and select (temp float)
 0:47        Condition
-0:47        'gl_FrontFacing' (gl_FrontFacing bool)
+0:47        'gl_FrontFacing' (gl_FrontFacing bool Face)
 0:47        true case
 0:47        Constant:
 0:47          -2.000000
@@ -103,8 +103,8 @@ ERROR: node is still EOpNull!
 0:?     'v' (smooth in 4-component vector of float)
 0:?     'i' (smooth in 4-component vector of float)
 0:?     'o' (out 4-component vector of float)
-0:?     'gl_ClipDistance' (smooth in 5-element array of float)
-0:?     'gl_ClipDistance' (smooth in 5-element array of float)
+0:?     'gl_ClipDistance' (smooth in 5-element array of float ClipDistance)
+0:?     'gl_ClipDistance' (smooth in 5-element array of float ClipDistance)
 0:?     's' (smooth in structure{global float f})
 0:?     'patch' (global float)
 0:?     'vl' (layout(location=3 ) smooth in 4-component vector of float)
@@ -128,8 +128,8 @@ ERROR: node is still EOpNull!
 0:12      Sequence
 0:12        move second child to first child (temp float)
 0:12          'clip' (temp float)
-0:12          direct index (smooth temp float)
-0:12            'gl_ClipDistance' (smooth in 5-element array of float)
+0:12          direct index (smooth temp float ClipDistance)
+0:12            'gl_ClipDistance' (smooth in 5-element array of float ClipDistance)
 0:12            Constant:
 0:12              2 (const int)
 0:22  Sequence
@@ -187,7 +187,7 @@ ERROR: node is still EOpNull!
 0:47      'i1' (global float)
 0:47      Test condition and select (temp float)
 0:47        Condition
-0:47        'gl_FrontFacing' (gl_FrontFacing bool)
+0:47        'gl_FrontFacing' (gl_FrontFacing bool Face)
 0:47        true case
 0:47        Constant:
 0:47          -2.000000
@@ -210,8 +210,8 @@ ERROR: node is still EOpNull!
 0:?     'v' (smooth in 4-component vector of float)
 0:?     'i' (smooth in 4-component vector of float)
 0:?     'o' (out 4-component vector of float)
-0:?     'gl_ClipDistance' (smooth in 5-element array of float)
-0:?     'gl_ClipDistance' (smooth in 5-element array of float)
+0:?     'gl_ClipDistance' (smooth in 5-element array of float ClipDistance)
+0:?     'gl_ClipDistance' (smooth in 5-element array of float ClipDistance)
 0:?     's' (smooth in structure{global float f})
 0:?     'patch' (global float)
 0:?     'vl' (layout(location=3 ) smooth in 4-component vector of float)

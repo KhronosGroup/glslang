@@ -38,7 +38,7 @@ Shader version: 130
 0:13          Constant:
 0:13            12 (const int)
 0:15      move second child to first child (temp 4-component vector of float)
-0:15        'gl_FragColor' (fragColor 4-component vector of float)
+0:15        'gl_FragColor' (fragColor 4-component vector of float FragColor)
 0:15        'texColor' (temp 4-component vector of float)
 0:?   Linker Objects
 0:?     'texSampler2D' (uniform sampler2D)
@@ -88,7 +88,7 @@ Shader version: 130
 0:13          Constant:
 0:13            12 (const int)
 0:15      move second child to first child (temp 4-component vector of float)
-0:15        'gl_FragColor' (fragColor 4-component vector of float)
+0:15        'gl_FragColor' (fragColor 4-component vector of float FragColor)
 0:15        'texColor' (temp 4-component vector of float)
 0:?   Linker Objects
 0:?     'texSampler2D' (uniform sampler2D)

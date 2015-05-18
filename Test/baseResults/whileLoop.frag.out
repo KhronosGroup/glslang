@@ -23,7 +23,7 @@ Shader version: 110
 0:12            'color' (temp 4-component vector of float)
 0:12            'bigColor' (uniform 4-component vector of float)
 0:15      move second child to first child (temp 4-component vector of float)
-0:15        'gl_FragColor' (fragColor 4-component vector of float)
+0:15        'gl_FragColor' (fragColor 4-component vector of float FragColor)
 0:15        'color' (temp 4-component vector of float)
 0:?   Linker Objects
 0:?     'bigColor' (uniform 4-component vector of float)
@@ -57,7 +57,7 @@ Shader version: 110
 0:12            'color' (temp 4-component vector of float)
 0:12            'bigColor' (uniform 4-component vector of float)
 0:15      move second child to first child (temp 4-component vector of float)
-0:15        'gl_FragColor' (fragColor 4-component vector of float)
+0:15        'gl_FragColor' (fragColor 4-component vector of float FragColor)
 0:15        'color' (temp 4-component vector of float)
 0:?   Linker Objects
 0:?     'bigColor' (uniform 4-component vector of float)
