@@ -1119,7 +1119,7 @@ bool TGlslangToSpvTraverser::visitSwitch(glslang::TVisit /* visit */, glslang::T
     // handle the case where the last code segment is missing, due to no code 
     // statements between the last case and the end of the switch statement
     if ((int)codeSegments.size() == valueIndexToSegment[caseValues.size() - 1])
-        codeSegments.push_back(0);
+        codeSegments.push_back(nullptr);
 
     // make the switch statement
     std::vector<spv::Block*> segmentBlocks; // returned, as the blocks allocated in the call

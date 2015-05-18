@@ -994,7 +994,7 @@ bool TShader::parse(const TBuiltInResource* builtInResources, int defaultVersion
     pool = new TPoolAllocator();
     SetThreadPoolAllocator(*pool);
 
-    return CompileDeferred(compiler, strings, numStrings, 0, EShOptNone, builtInResources, defaultVersion, forwardCompatible, messages, *intermediate);
+    return CompileDeferred(compiler, strings, numStrings, nullptr, EShOptNone, builtInResources, defaultVersion, forwardCompatible, messages, *intermediate);
 }
 
 const char* TShader::getInfoLog()

@@ -486,7 +486,7 @@ TIntermTyped* TParseContext::handleBracketDereference(TSourceLoc loc, TIntermTyp
             else if (base->getBasicType() == EbtSampler && version >= 130) {
                 const char* explanation = "variable indexing sampler array";
                 requireProfile(base->getLoc(), ECoreProfile | ECompatibilityProfile, explanation);
-                profileRequires(base->getLoc(), ECoreProfile | ECompatibilityProfile, 400, 0, explanation);
+                profileRequires(base->getLoc(), ECoreProfile | ECompatibilityProfile, 400, nullptr, explanation);
             }
 
             result = intermediate.addIndex(EOpIndexIndirect, base, index, loc);
@@ -724,7 +724,7 @@ TIntermTyped* TParseContext::handleDotDereference(TSourceLoc loc, TIntermTyped* 
     if (field == "length") {
         if (base->isArray()) {
             profileRequires(loc, ENoProfile, 120, GL_3DL_array_objects, ".length");
-            profileRequires(loc, EEsProfile, 300, 0, ".length");
+            profileRequires(loc, EEsProfile, 300, nullptr, ".length");
         } else if (base->isVector() || base->isMatrix()) {
             const char* feature = ".length() on vectors and matrices";
             requireProfile(loc, ~EEsProfile, feature);
@@ -841,7 +841,7 @@ TFunction* TParseContext::handleFunctionDeclarator(TSourceLoc loc, TFunction& fu
     const TFunction* prevDec = symbol ? symbol->getAsFunction() : 0;
     if (prevDec) {
         if (prevDec->isPrototyped() && prototype)
-            profileRequires(loc, EEsProfile, 300, 0, "multiple prototypes for same function");
+            profileRequires(loc, EEsProfile, 300, nullptr, "multiple prototypes for same function");
         if (prevDec->getType() != function.getType())
             error(loc, "overloaded functions must have the same return type", function.getType().getBasicTypeString().c_str(), "");
         for (int i = 0; i < prevDec->getParamCount(); ++i) {
@@ -1286,7 +1286,7 @@ void TParseContext::nonOpBuiltInCheck(TSourceLoc loc, const TFunction& fnCandida
         if (fnCandidate.getName().compare(0, 13, "textureGather") == 0) {
             TString featureString = fnCandidate.getName() + "(...)";
             const char* feature = featureString.c_str();
-            profileRequires(loc, EEsProfile, 310, 0, feature);
+            profileRequires(loc, EEsProfile, 310, nullptr, feature);
 
             int compArg = -1;  // track which argument, if any, is the constant component argument
             if (fnCandidate.getName().compare("textureGatherOffset") == 0) {
@@ -1385,7 +1385,7 @@ TFunction* TParseContext::handleConstructorCall(TSourceLoc loc, const TPublicTyp
 
     if (type.isArray()) {
         profileRequires(loc, ENoProfile, 120, GL_3DL_array_objects, "arrayed constructor");
-        profileRequires(loc, EEsProfile, 300, 0, "arrayed constructor");
+        profileRequires(loc, EEsProfile, 300, nullptr, "arrayed constructor");
     }
 
     TOperator op = mapTypeToConstructorOp(type);
@@ -1577,7 +1577,7 @@ void TParseContext::variableCheck(TIntermTyped*& nodePtr)
     } else {
         switch (symbol->getQualifier().storage) {
         case EvqPointCoord:
-            profileRequires(symbol->getLoc(), ENoProfile, 120, 0, "gl_PointCoord");
+            profileRequires(symbol->getLoc(), ENoProfile, 120, nullptr, "gl_PointCoord");
             break;
         default: break; // some compilers want this
         }
@@ -1822,7 +1822,7 @@ bool TParseContext::lineContinuationCheck(TSourceLoc loc, bool endOfComment)
             warn(loc, "not allowed in this version", message, "");
         return true;
     } else {
-        profileRequires(loc, EEsProfile, 300, 0, message);
+        profileRequires(loc, EEsProfile, 300, nullptr, message);
         profileRequires(loc, ~EEsProfile, 420, GL_ARB_shading_language_420pack, message);
     }
 
@@ -1917,7 +1917,7 @@ bool TParseContext::constructorError(TSourceLoc loc, TIntermNode* node, TFunctio
     }
 
     if (matrixInMatrix && ! type.isArray()) {
-        profileRequires(loc, ENoProfile, 120, 0, "constructing matrix from matrix");
+        profileRequires(loc, ENoProfile, 120, nullptr, "constructing matrix from matrix");
 
         // "If a matrix argument is given to a matrix constructor,
         // it is a compile-time error to have any other arguments."
@@ -2021,13 +2021,13 @@ void TParseContext::globalQualifierFixCheck(TSourceLoc loc, TQualifier& qualifie
     // move from parameter/unknown qualifiers to pipeline in/out qualifiers
     switch (qualifier.storage) {
     case EvqIn:
-        profileRequires(loc, ENoProfile, 130, 0, "in for stage inputs");
-        profileRequires(loc, EEsProfile, 300, 0, "in for stage inputs");
+        profileRequires(loc, ENoProfile, 130, nullptr, "in for stage inputs");
+        profileRequires(loc, EEsProfile, 300, nullptr, "in for stage inputs");
         qualifier.storage = EvqVaryingIn;
         break;
     case EvqOut:
-        profileRequires(loc, ENoProfile, 130, 0, "out for stage outputs");
-        profileRequires(loc, EEsProfile, 300, 0, "out for stage outputs");
+        profileRequires(loc, ENoProfile, 130, nullptr, "out for stage outputs");
+        profileRequires(loc, EEsProfile, 300, nullptr, "out for stage outputs");
         qualifier.storage = EvqVaryingOut;
         break;
     case EvqInOut:
@@ -2066,7 +2066,7 @@ void TParseContext::globalQualifierTypeCheck(TSourceLoc loc, const TQualifier& q
     }
 
     if (publicType.basicType == EbtInt || publicType.basicType == EbtUint || publicType.basicType == EbtDouble) {
-        profileRequires(loc, EEsProfile, 300, 0, "shader input/output");
+        profileRequires(loc, EEsProfile, 300, nullptr, "shader input/output");
         if (! qualifier.flat) {
             if (qualifier.storage == EvqVaryingIn && language == EShLangFragment)
                 error(loc, "must be qualified as flat", TType::getBasicString(publicType.basicType), GetStorageQualifierString(qualifier.storage));
@@ -2087,7 +2087,7 @@ void TParseContext::globalQualifierTypeCheck(TSourceLoc loc, const TQualifier& q
             }
             if (publicType.arraySizes) {
                 requireProfile(loc, ~EEsProfile, "vertex input arrays");
-                profileRequires(loc, ENoProfile, 150, 0, "vertex input arrays");
+                profileRequires(loc, ENoProfile, 150, nullptr, "vertex input arrays");
             }
             if (qualifier.isAuxiliary() || qualifier.isInterpolation() || qualifier.isMemory() || qualifier.invariant)
                 error(loc, "vertex input cannot be further qualified", "", "");
@@ -2106,8 +2106,8 @@ void TParseContext::globalQualifierTypeCheck(TSourceLoc loc, const TQualifier& q
 
         case EShLangFragment:
             if (publicType.userDef) {
-                profileRequires(loc, EEsProfile, 300, 0, "fragment-shader struct input");
-                profileRequires(loc, ~EEsProfile, 150, 0, "fragment-shader struct input");
+                profileRequires(loc, EEsProfile, 300, nullptr, "fragment-shader struct input");
+                profileRequires(loc, ~EEsProfile, 150, nullptr, "fragment-shader struct input");
                 if (publicType.userDef->containsStructure())
                     requireProfile(loc, ~EEsProfile, "fragment-shader struct input containing structure");
                 if (publicType.userDef->containsArray())
@@ -2128,8 +2128,8 @@ void TParseContext::globalQualifierTypeCheck(TSourceLoc loc, const TQualifier& q
         switch (language) {
         case EShLangVertex:
             if (publicType.userDef) {
-                profileRequires(loc, EEsProfile, 300, 0, "vertex-shader struct output");
-                profileRequires(loc, ~EEsProfile, 150, 0, "vertex-shader struct output");
+                profileRequires(loc, EEsProfile, 300, nullptr, "vertex-shader struct output");
+                profileRequires(loc, ~EEsProfile, 150, nullptr, "vertex-shader struct output");
                 if (publicType.userDef->containsStructure())
                     requireProfile(loc, ~EEsProfile, "vertex-shader struct output containing structure");
                 if (publicType.userDef->containsArray())
@@ -2150,7 +2150,7 @@ void TParseContext::globalQualifierTypeCheck(TSourceLoc loc, const TQualifier& q
             break;
 
         case EShLangFragment:
-            profileRequires(loc, EEsProfile, 300, 0, "fragment shader output");
+            profileRequires(loc, EEsProfile, 300, nullptr, "fragment shader output");
             if (publicType.basicType == EbtStruct) {
                 error(loc, "cannot be a structure", GetStorageQualifierString(qualifier.storage), "");
                 return;
@@ -2377,12 +2377,12 @@ bool TParseContext::arrayQualifierError(TSourceLoc loc, const TQualifier& qualif
 {
     if (qualifier.storage == EvqConst) {
         profileRequires(loc, ENoProfile, 120, GL_3DL_array_objects, "const array");
-        profileRequires(loc, EEsProfile, 300, 0, "const array");
+        profileRequires(loc, EEsProfile, 300, nullptr, "const array");
     }
 
     if (qualifier.storage == EvqVaryingIn && language == EShLangVertex) {
         requireProfile(loc, ~EEsProfile, "vertex input arrays");
-        profileRequires(loc, ENoProfile, 150, 0, "vertex input arrays");
+        profileRequires(loc, ENoProfile, 150, nullptr, "vertex input arrays");
     }
 
     return false;
@@ -2436,8 +2436,8 @@ void TParseContext::structArrayCheck(TSourceLoc /*loc*/, TType* type)
 void TParseContext::arrayDimError(TSourceLoc loc)
 {
     requireProfile(loc, EEsProfile | ECoreProfile | ECompatibilityProfile, "arrays of arrays");
-    profileRequires(loc, ECoreProfile | ECompatibilityProfile, 430, 0, "arrays of arrays");
-    profileRequires(loc, EEsProfile, 310, 0, "arrays of arrays");
+    profileRequires(loc, ECoreProfile | ECompatibilityProfile, 430, nullptr, "arrays of arrays");
+    profileRequires(loc, EEsProfile, 310, nullptr, "arrays of arrays");
 }
 
 void TParseContext::arrayDimCheck(TSourceLoc loc, TArraySizes* sizes1, TArraySizes* sizes2)
@@ -2465,7 +2465,7 @@ void TParseContext::declareArray(TSourceLoc loc, TString& identifier, const TTyp
 {
     if (! symbol) {
         bool currentScope;
-        symbol = symbolTable.find(identifier, 0, &currentScope);
+        symbol = symbolTable.find(identifier, nullptr, &currentScope);
 
         if (symbol && builtInName(identifier) && ! symbolTable.atBuiltInLevel()) {
             // bad shader (errors already reported) trying to redeclare a built-in name as an array
@@ -2926,7 +2926,7 @@ void TParseContext::arrayObjectCheck(TSourceLoc loc, const TType& type, const ch
     // Some versions don't allow comparing arrays or structures containing arrays
     if (type.containsArray()) {
         profileRequires(loc, ENoProfile, 120, GL_3DL_array_objects, op);
-        profileRequires(loc, EEsProfile, 300, 0, op);
+        profileRequires(loc, EEsProfile, 300, nullptr, op);
     }
 }
 
@@ -3139,8 +3139,8 @@ void TParseContext::setLayoutQualifier(TSourceLoc loc, TPublicType& publicType, 
     }
     if (id == TQualifier::getLayoutPackingString(ElpStd430)) {
         requireProfile(loc, EEsProfile | ECoreProfile | ECompatibilityProfile, "std430");
-        profileRequires(loc, ECoreProfile | ECompatibilityProfile, 430, 0, "std430");
-        profileRequires(loc, EEsProfile, 310, 0, "std430");
+        profileRequires(loc, ECoreProfile | ECompatibilityProfile, 430, nullptr, "std430");
+        profileRequires(loc, EEsProfile, 310, nullptr, "std430");
         publicType.qualifier.layoutPacking = ElpStd430;
         return;
     }
@@ -3247,14 +3247,14 @@ void TParseContext::setLayoutQualifier(TSourceLoc loc, TPublicType& publicType, 
         }
         if (id == "early_fragment_tests") {
             profileRequires(loc, ENoProfile | ECoreProfile | ECompatibilityProfile, 420, GL_ARB_shader_image_load_store, "early_fragment_tests");
-            profileRequires(loc, EEsProfile, 310, 0, "early_fragment_tests");
+            profileRequires(loc, EEsProfile, 310, nullptr, "early_fragment_tests");
             publicType.shaderQualifiers.earlyFragmentTests = true;
             return;
         }
         for (TLayoutDepth depth = (TLayoutDepth)(EldNone + 1); depth < EldCount; depth = (TLayoutDepth)(depth+1)) {
             if (id == TQualifier::getLayoutDepthString(depth)) {
                 requireProfile(loc, ECoreProfile | ECompatibilityProfile, "depth layout qualifier");
-                profileRequires(loc, ECoreProfile | ECompatibilityProfile, 420, 0, "depth layout qualifier");
+                profileRequires(loc, ECoreProfile | ECompatibilityProfile, 420, nullptr, "depth layout qualifier");
                 publicType.shaderQualifiers.layoutDepth = depth;
                 return;
             }
@@ -3296,7 +3296,7 @@ void TParseContext::setLayoutQualifier(TSourceLoc loc, TPublicType& publicType, 
         requireProfile(loc, EEsProfile | ECoreProfile | ECompatibilityProfile, feature);
         const char* exts[2] = { GL_ARB_enhanced_layouts, GL_ARB_shader_atomic_counters };
         profileRequires(loc, ECoreProfile | ECompatibilityProfile, 420, 2, exts, feature);
-        profileRequires(loc, EEsProfile, 310, 0, feature);
+        profileRequires(loc, EEsProfile, 310, nullptr, feature);
         publicType.qualifier.layoutOffset = value;
         return;
     } else if (id == "align") {
@@ -3310,7 +3310,7 @@ void TParseContext::setLayoutQualifier(TSourceLoc loc, TPublicType& publicType, 
             publicType.qualifier.layoutAlign = value;
         return;
     } else if (id == "location") {
-        profileRequires(loc, EEsProfile, 300, 0, "location");
+        profileRequires(loc, EEsProfile, 300, nullptr, "location");
         const char* exts[2] = { GL_ARB_separate_shader_objects, GL_ARB_explicit_attrib_location };
         profileRequires(loc, ~EEsProfile, 330, 2, exts, "location");
         if ((unsigned int)value >= TQualifier::layoutLocationEnd)
@@ -3326,7 +3326,7 @@ void TParseContext::setLayoutQualifier(TSourceLoc loc, TPublicType& publicType, 
         return;
     } else if (id == "binding") {
         profileRequires(loc, ~EEsProfile, 420, GL_ARB_shading_language_420pack, "binding");
-        profileRequires(loc, EEsProfile, 310, 0, "binding");
+        profileRequires(loc, EEsProfile, 310, nullptr, "binding");
         if ((unsigned int)value >= TQualifier::layoutBindingEnd)
             error(loc, "binding is too large", id.c_str(), "");
         else
@@ -3395,7 +3395,7 @@ void TParseContext::setLayoutQualifier(TSourceLoc loc, TPublicType& publicType, 
 
     case EShLangGeometry:
         if (id == "invocations") {
-            profileRequires(loc, ECompatibilityProfile | ECoreProfile, 400, 0, "invocations");
+            profileRequires(loc, ECompatibilityProfile | ECoreProfile, 400, nullptr, "invocations");
             publicType.shaderQualifiers.invocations = value;
             return;
         }
@@ -3709,10 +3709,10 @@ void TParseContext::layoutQualifierCheck(TSourceLoc loc, const TQualifier& quali
             if (language == EShLangVertex) {
                 const char* exts[2] = { GL_ARB_separate_shader_objects, GL_ARB_explicit_attrib_location };
                 profileRequires(loc, ~EEsProfile, 330, 2, exts, feature);
-                profileRequires(loc, EEsProfile, 300, 0, feature);
+                profileRequires(loc, EEsProfile, 300, nullptr, feature);
             } else {
                 profileRequires(loc, ~EEsProfile, 410, GL_ARB_separate_shader_objects, feature);
-                profileRequires(loc, EEsProfile, 310, 0, feature);
+                profileRequires(loc, EEsProfile, 310, nullptr, feature);
             }
             break;
         }
@@ -3726,10 +3726,10 @@ void TParseContext::layoutQualifierCheck(TSourceLoc loc, const TQualifier& quali
             if (language == EShLangFragment) {
                 const char* exts[2] = { GL_ARB_separate_shader_objects, GL_ARB_explicit_attrib_location };
                 profileRequires(loc, ~EEsProfile, 330, 2, exts, feature);
-                profileRequires(loc, EEsProfile, 300, 0, feature);
+                profileRequires(loc, EEsProfile, 300, nullptr, feature);
             } else {
                 profileRequires(loc, ~EEsProfile, 410, GL_ARB_separate_shader_objects, feature);
-                profileRequires(loc, EEsProfile, 310, 0, feature);
+                profileRequires(loc, EEsProfile, 310, nullptr, feature);
             }
             break;
         }
@@ -3738,8 +3738,8 @@ void TParseContext::layoutQualifierCheck(TSourceLoc loc, const TQualifier& quali
         {
             const char* feature = "location qualifier on uniform or buffer";
             requireProfile(loc, EEsProfile | ECoreProfile | ECompatibilityProfile, feature);
-            profileRequires(loc, ECoreProfile | ECompatibilityProfile, 430, 0, feature);
-            profileRequires(loc, EEsProfile, 310, 0, feature);
+            profileRequires(loc, ECoreProfile | ECompatibilityProfile, 430, nullptr, feature);
+            profileRequires(loc, EEsProfile, 310, nullptr, feature);
             break;
         }
         default:
@@ -4011,7 +4011,7 @@ TIntermNode* TParseContext::declareVariable(TSourceLoc loc, TString& identifier,
 
         if (initializer) {
             profileRequires(loc, ENoProfile, 120, GL_3DL_array_objects, "initializer");
-            profileRequires(loc, EEsProfile, 300, 0, "initializer");
+            profileRequires(loc, EEsProfile, 300, nullptr, "initializer");
         }
     } else {
         // non-array case
@@ -4463,13 +4463,13 @@ void TParseContext::declareBlock(TSourceLoc loc, TTypeList& typeList, const TStr
 
     switch (currentBlockQualifier.storage) {
     case EvqUniform:
-        profileRequires(loc, EEsProfile, 300, 0, "uniform block");
-        profileRequires(loc, ENoProfile, 140, 0, "uniform block");
+        profileRequires(loc, EEsProfile, 300, nullptr, "uniform block");
+        profileRequires(loc, ENoProfile, 140, nullptr, "uniform block");
         break;
     case EvqBuffer:
         requireProfile(loc, EEsProfile | ECoreProfile | ECompatibilityProfile, "buffer block");
-        profileRequires(loc, ECoreProfile | ECompatibilityProfile, 430, 0, "buffer block");
-        profileRequires(loc, EEsProfile, 310, 0, "buffer block");
+        profileRequires(loc, ECoreProfile | ECompatibilityProfile, 430, nullptr, "buffer block");
+        profileRequires(loc, EEsProfile, 310, nullptr, "buffer block");
         break;
     case EvqVaryingIn:
         requireProfile(loc, ~EEsProfile, "input block");
@@ -5072,10 +5072,10 @@ void TParseContext::wrapupSwitchSubsequence(TIntermAggregate* statements, TInter
 //
 TIntermNode* TParseContext::addSwitch(TSourceLoc loc, TIntermTyped* expression, TIntermAggregate* lastStatements)
 {
-    profileRequires(loc, EEsProfile, 300, 0, "switch statements");
-    profileRequires(loc, ENoProfile, 130, 0, "switch statements");
+    profileRequires(loc, EEsProfile, 300, nullptr, "switch statements");
+    profileRequires(loc, ENoProfile, 130, nullptr, "switch statements");
 
-    wrapupSwitchSubsequence(lastStatements, 0);
+    wrapupSwitchSubsequence(lastStatements, nullptr);
 
     if (expression == 0 ||
         (expression->getBasicType() != EbtInt && expression->getBasicType() != EbtUint) ||

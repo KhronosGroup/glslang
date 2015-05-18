@@ -801,7 +801,7 @@ EShLanguage FindLanguage(const std::string& name)
 //
 void CompileFile(const char* fileName, ShHandle compiler)
 {
-    int ret;
+    int ret = 0;
     char** shaderStrings = ReadFileData(fileName);
     if (! shaderStrings) {
         usage();
@@ -826,12 +826,12 @@ void CompileFile(const char* fileName, ShHandle compiler)
     for (int i = 0; i < ((Options & EOptionMemoryLeakMode) ? 100 : 1); ++i) {
         for (int j = 0; j < ((Options & EOptionMemoryLeakMode) ? 100 : 1); ++j) {
             //ret = ShCompile(compiler, shaderStrings, NumShaderStrings, lengths, EShOptNone, &Resources, Options, (Options & EOptionDefaultDesktop) ? 110 : 100, false, messages);
-            ret = ShCompile(compiler, shaderStrings, NumShaderStrings, 0, EShOptNone, &Resources, Options, (Options & EOptionDefaultDesktop) ? 110 : 100, false, messages);
+            ret = ShCompile(compiler, shaderStrings, NumShaderStrings, nullptr, EShOptNone, &Resources, Options, (Options & EOptionDefaultDesktop) ? 110 : 100, false, messages);
             //const char* multi[12] = { "# ve", "rsion", " 300 e", "s", "\n#err", 
             //                         "or should be l", "ine 1", "string 5\n", "float glo", "bal", 
             //                         ";\n#error should be line 2\n void main() {", "global = 2.3;}" };
             //const char* multi[7] = { "/", "/", "\\", "\n", "\n", "#", "version 300 es" };
-            //ret = ShCompile(compiler, multi, 7, 0, EShOptNone, &Resources, Options, (Options & EOptionDefaultDesktop) ? 110 : 100, false, messages);
+            //ret = ShCompile(compiler, multi, 7, nullptr, EShOptNone, &Resources, Options, (Options & EOptionDefaultDesktop) ? 110 : 100, false, messages);
         }
 
         if (Options & EOptionMemoryLeakMode)
@@ -919,28 +919,28 @@ char** ReadFileData(const char* fileName)
     FILE *in;
     int errorCode = fopen_s(&in, fileName, "r");
 
-    char *fdata;
     int count = 0;
     const int maxSourceStrings = 5;
     char** return_data = (char**)malloc(sizeof(char *) * (maxSourceStrings+1));
 
     if (errorCode) {
         printf("Error: unable to open input file: %s\n", fileName);
-        return 0;
+        return nullptr;
     }
     
     while (fgetc(in) != EOF)
         count++;
 
     fseek(in, 0, SEEK_SET);
-    
-    if (!(fdata = (char*)malloc(count+2))) {
+
+    char *fdata = (char*)malloc(count+2);
+    if (! fdata) {
         printf("Error allocating memory\n");
-        return 0;
+        return nullptr;
     }
     if ((int)fread(fdata,1,count, in) != count) {
             printf("Error reading input file: %s\n", fileName);
-            return 0;
+            return nullptr;
     }
     fdata[count] = '\0';
     fclose(in);

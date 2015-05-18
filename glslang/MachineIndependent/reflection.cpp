@@ -367,7 +367,7 @@ public:
             return base;
         TIntermBinary* left = node->getLeft()->getAsBinaryNode();
         if (! left)
-            return 0;
+            return nullptr;
 
         return findBase(left);
     }

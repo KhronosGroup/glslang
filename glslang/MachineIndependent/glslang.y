@@ -96,6 +96,10 @@ using namespace glslang;
 }
 
 %{
+    
+#pragma warning(disable : 4065)
+#pragma warning(disable : 4127)
+#pragma warning(disable : 4244)
 
 #define parseContext (*pParseContext)
 #define yyerror(context, msg) context->parserError(msg)

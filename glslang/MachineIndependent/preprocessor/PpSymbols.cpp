@@ -127,7 +127,7 @@ TPpContext::Symbol* TPpContext::LookUpSymbol(int atom)
 {
     TSymbolMap::iterator it = symbols.find(atom);
     if (it == symbols.end())
-        return 0;
+        return nullptr;
     else
         return it->second;
 }

@@ -481,8 +481,8 @@ void TParseContext::updateExtensionBehavior(const char* extension, const char* b
 //
 void TParseContext::fullIntegerCheck(TSourceLoc loc, const char* op)
 {
-    profileRequires(loc, ENoProfile, 130, 0, op); 
-    profileRequires(loc, EEsProfile, 300, 0, op);
+    profileRequires(loc, ENoProfile, 130, nullptr, op); 
+    profileRequires(loc, EEsProfile, 300, nullptr, op);
 }
 
 //
@@ -491,8 +491,8 @@ void TParseContext::fullIntegerCheck(TSourceLoc loc, const char* op)
 void TParseContext::doubleCheck(TSourceLoc loc, const char* op)
 {
     requireProfile(loc, ECoreProfile | ECompatibilityProfile, op);
-    profileRequires(loc, ECoreProfile, 400, 0, op);
-    profileRequires(loc, ECompatibilityProfile, 400, 0, op);
+    profileRequires(loc, ECoreProfile, 400, nullptr, op);
+    profileRequires(loc, ECompatibilityProfile, 400, nullptr, op);
 }
 
 } // end namespace glslang

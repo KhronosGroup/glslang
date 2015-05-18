@@ -206,9 +206,9 @@ int TPpContext::lFloatConst(int len, int ch, TPpToken* ppToken)
                 }
             }
         } else if (ch == 'f' || ch == 'F') {
-            parseContext.profileRequires(ppToken->loc,  EEsProfile, 300, 0, "floating-point suffix");
+            parseContext.profileRequires(ppToken->loc,  EEsProfile, 300, nullptr, "floating-point suffix");
             if ((parseContext.messages & EShMsgRelaxedErrors) == 0)
-                parseContext.profileRequires(ppToken->loc, ~EEsProfile, 120, 0, "floating-point suffix");
+                parseContext.profileRequires(ppToken->loc, ~EEsProfile, 120, nullptr, "floating-point suffix");
             if (! HasDecimalOrExponent)
                 parseContext.error(ppToken->loc, "float literal needs a decimal point or exponent", "", "");
             if (len < TPpToken::maxTokenLength)
@@ -222,7 +222,7 @@ int TPpContext::lFloatConst(int len, int ch, TPpToken* ppToken)
 
         str[len]='\0';
 
-        ppToken->dval = strtod(str, 0);
+        ppToken->dval = strtod(str, nullptr);
     }
 
     if (isDouble)
@@ -687,24 +687,24 @@ const char* TPpContext::tokenize(TPpToken* ppToken)
     int token = '\n';
 
     for(;;) {
-        const char* tokenString = 0;
+        const char* tokenString = nullptr;
         token = scanToken(ppToken);
         ppToken->token = token;
         if (token == EOF) {
             missingEndifCheck();
-            return 0;
+            return nullptr;
         }
         if (token == '#') {
             if (previous_token == '\n') {
                 token = readCPPline(ppToken);
                 if (token == EOF) {
                     missingEndifCheck();
-                    return 0;
+                    return nullptr;
                 }
                 continue;
             } else {
                 parseContext.error(ppToken->loc, "preprocessor directive cannot be preceded by another token", "#", "");
-                return 0;
+                return nullptr;
             }
         }
         previous_token = token;
@@ -723,10 +723,10 @@ const char* TPpContext::tokenize(TPpToken* ppToken)
             tokenString = ppToken->name;
         else if (token == CPP_STRCONSTANT) {
             parseContext.error(ppToken->loc, "string literals not supported", "\"\"", "");
-            tokenString = 0;
+            tokenString = nullptr;
         } else if (token == '\'') {
             parseContext.error(ppToken->loc, "character literals not supported", "\'", "");
-            tokenString = 0;
+            tokenString = nullptr;
         } else
             tokenString = GetAtomString(token);
 

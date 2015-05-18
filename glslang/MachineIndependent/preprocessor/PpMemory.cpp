@@ -100,15 +100,15 @@ TPpContext::MemoryPool* TPpContext::mem_CreatePool(size_t chunksize, unsigned in
     if (chunksize == 0)
         chunksize = CHUNKSIZE;
     if (align & (align - 1))
-        return 0;
+        return nullptr;
     if (chunksize < sizeof(MemoryPool))
-        return 0;
+        return nullptr;
     if (chunksize & (align - 1))
-        return 0;
+        return nullptr;
 
     MemoryPool *pool = (MemoryPool*)malloc(chunksize);
     if (! pool)
-        return 0;
+        return nullptr;
 
     pool->next = 0;
     pool->chunksize = chunksize;
@@ -143,10 +143,12 @@ void* TPpContext::mem_Alloc(MemoryPool *pool, size_t size)
             // request size is too big for the chunksize, so allocate it as
             // a single chunk of the right size
             ch = (struct chunk*)malloc(minreq);
-            if (!ch) return 0;
+            if (! ch)
+                return nullptr;
         } else {
             ch = (struct chunk*)malloc(pool->chunksize);
-            if (!ch) return 0;
+            if (! ch)
+                return nullptr;
             pool->free = (uintptr_t)ch + minreq;
             pool->end = (uintptr_t)ch + pool->chunksize;
         }
