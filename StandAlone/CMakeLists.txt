@@ -10,8 +10,10 @@ else(WIN32)
 endif(WIN32)
 
 set(SOURCES StandAlone.cpp)
+set(REMAPPER_SOURCES spirv-remap.cpp)
 
 add_executable(glslangValidator ${SOURCES})
+add_executable(spirv-remap ${REMAPPER_SOURCES})
 
 set(LIBRARIES
     glslang
@@ -26,10 +28,14 @@ elseif(UNIX)
 endif(WIN32)
 
 target_link_libraries(glslangValidator ${LIBRARIES})
+target_link_libraries(spirv-remap ${LIBRARIES})
 
 if(WIN32)
     source_group("Source" FILES ${SOURCES})
 endif(WIN32)
 
 install(TARGETS glslangValidator
+        RUNTIME DESTINATION bin)
+
+install(TARGETS spirv-remap
         RUNTIME DESTINATION bin)
