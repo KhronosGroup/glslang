@@ -105,7 +105,7 @@ public:
 
 namespace spv {
 
-// class to hold SPIRV binary data for remapping, DCE, and debug stripping
+// class to hold SPIR-V binary data for remapping, DCE, and debug stripping
 class spirvbin_t : public spirvbin_base_t
 {
 public:

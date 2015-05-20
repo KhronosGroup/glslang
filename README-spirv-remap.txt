@@ -5,9 +5,9 @@ spirv-remap 0.97
 
 INTRO:
 --------------------------------------------------------------------------------
-spirv-remap is a utility to improve compression of SPIRV binary files via
+spirv-remap is a utility to improve compression of SPIR-V binary files via
 entropy reduction, plus optional stripping of debug information and
-load/store optimization.  It transforms SPIRV to SPIRV, remapping IDs.  The
+load/store optimization.  It transforms SPIR-V to SPIR-V, remapping IDs.  The
 resulting modules have an increased ID range (IDs are not as tightly packed
 around zero), but will compress better when multiple modules are compressed
 together, since compressor's dictionary can find better cross module
@@ -87,10 +87,10 @@ public:
 
 The class definition is in SPVRemapper.cpp.
 
-remap() accepts an std::vector of SPIRV words, modifies them per the
+remap() accepts an std::vector of SPIR-V words, modifies them per the
 request given in 'opts', and leaves the 'spv' container with the result.
 It is safe to instantiate one spirvbin_t per thread and process a different
-SPIRV in each.
+SPIR-V in each.
 
 The "opts" parameter to remap() accepts a bit mask of desired remapping
 options.  See REMAPPING AND OPTIMIZATION OPTIONS.
