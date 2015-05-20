@@ -58,7 +58,7 @@ namespace spv {
     }
 
     // hash opcode, with special handling for OpExtInst
-    std::uint32_t spirvbin_t::asOpCodeHash(int word)
+    std::uint32_t spirvbin_t::asOpCodeHash(unsigned word)
     {
         const spv::Op opCode = asOpCode(word);
 
@@ -196,8 +196,8 @@ namespace spv {
         }
     }
 
-    const auto inst_fn_nop = [](spv::Op, int) { return false; };
-    const auto op_fn_nop   = [](spv::Id&)     { };
+    const auto inst_fn_nop = [](spv::Op, unsigned) { return false; };
+    const auto op_fn_nop   = [](spv::Id&)          { };
 
     // g++ doesn't like these defined in the class proper in an anonymous namespace.
     // Dunno why.  Also MSVC doesn't like the constexpr keyword.  Also dunno why.
@@ -242,7 +242,7 @@ namespace spv {
 
     // Parse a literal string from the SPIR binary and return it as an std::string
     // Due to C++11 RValue references, this doesn't copy the result string.
-    std::string spirvbin_t::literalString(int word) const
+    std::string spirvbin_t::literalString(unsigned word) const
     {
         std::string literal;
 
@@ -304,7 +304,7 @@ namespace spv {
 
         // build local Id and name maps
         process(
-            [&](spv::Op opCode, int start) {
+            [&](spv::Op opCode, unsigned start) {
                 // remember opcodes we want to strip later
                 if (isStripOp(opCode))
                     stripInst(start);
@@ -335,7 +335,7 @@ namespace spv {
 
         // build local Id and name maps
         process(
-            [&](spv::Op opCode, int start) {
+            [&](spv::Op opCode, unsigned start) {
                 // remember opcodes we want to strip later
                 if ((options & Options::STRIP) && isStripOp(opCode))
                     stripInst(start);
@@ -358,7 +358,7 @@ namespace spv {
                     assert(fnRes != spv::NoResult);
                     if (fnStart == 0)
                         error("function end without function start");
-                    fnPos[fnRes] = {fnStart, start + asWordCount(start)};
+                    fnPos[fnRes] = range_t(fnStart, start + asWordCount(start));
                     fnStart = 0;
                 } else if (isConstOp(opCode)) {
                     assert(asId(start + 2) != spv::NoResult);
@@ -397,7 +397,7 @@ namespace spv {
     }
 
 
-    int spirvbin_t::processInstruction(int word, instfn_t instFn, idfn_t idFn)
+    int spirvbin_t::processInstruction(unsigned word, instfn_t instFn, idfn_t idFn)
     {
         const auto     instructionStart = word;
         const unsigned wordCount = asWordCount(instructionStart);
@@ -501,19 +501,19 @@ namespace spv {
     }
 
     // Make a pass over all the instructions and process them given appropriate functions
-    spirvbin_t& spirvbin_t::process(instfn_t instFn, idfn_t idFn, int begin, int end)
+    spirvbin_t& spirvbin_t::process(instfn_t instFn, idfn_t idFn, unsigned begin, unsigned end)
     {
         // For efficiency, reserve name map space.  It can grow if needed.
         nameMap.reserve(32);
 
         // If begin or end == 0, use defaults
-        begin = (begin == 0 ? header_size      : begin);
-        end   = (end   == 0 ? int(spv.size()) : end);
+        begin = (begin == 0 ? header_size          : begin);
+        end   = (end   == 0 ? unsigned(spv.size()) : end);
 
         // basic parsing and InstructionDesc table borrowed from SpvDisassemble.cpp...
-        int nextInst = int(spv.size());
+        unsigned nextInst = unsigned(spv.size());
 
-        for (int word = begin; word < end; word = nextInst)
+        for (unsigned word = begin; word < end; word = nextInst)
             nextInst = processInstruction(word, instFn, idFn);
 
         return *this;
@@ -544,13 +544,13 @@ namespace spv {
         // Initial approach: go through some high priority opcodes first and assign them
         // hash values.
 
-        spv::Id          fnId       = spv::NoResult;
-        std::vector<int> instPos;
-        instPos.reserve(int(spv.size()) / 16); // initial estimate; can grow if needed.
+        spv::Id               fnId       = spv::NoResult;
+        std::vector<unsigned> instPos;
+        instPos.reserve(unsigned(spv.size()) / 16); // initial estimate; can grow if needed.
 
         // Build local table of instruction start positions
         process(
-            [&](spv::Op, int start) { instPos.push_back(start); return true; },
+            [&](spv::Op, unsigned start) { instPos.push_back(start); return true; },
             op_fn_nop);
 
         // Window size for context-sensitive canonicalization values
@@ -558,11 +558,11 @@ namespace spv {
         // We essentially performa a little convolution around each instruction,
         // to capture the flavor of nearby code, to hopefully match to similar
         // code in other modules.
-        static const int windowSize = 2;
+        static const unsigned windowSize = 2;
 
-        for (int entry = 0; entry < int(instPos.size()); ++entry) {
-            const int     start  = instPos[entry];
-            const spv::Op opCode = asOpCode(start);
+        for (unsigned entry = 0; entry < unsigned(instPos.size()); ++entry) {
+            const unsigned start  = instPos[entry];
+            const spv::Op  opCode = asOpCode(start);
 
             if (opCode == spv::OpFunction)
                 fnId   = asId(start + 2);
@@ -571,20 +571,18 @@ namespace spv {
                 fnId = spv::NoResult;
 
             if (fnId != spv::NoResult) { // if inside a function
-                const int word   = start + (spv::InstructionDesc[opCode].hasType() ? 2 : 1);
-                const int result = spv::InstructionDesc[opCode].hasResult() ? word : -1;
+                if (spv::InstructionDesc[opCode].hasResult()) {
+                    const unsigned word    = start + (spv::InstructionDesc[opCode].hasType() ? 2 : 1);
+                    const spv::Id  resId   = asId(word);
+                    std::uint32_t  hashval = fnId * 17; // small prime
 
-                if (result > 0) {
-                    const spv::Id resId = asId(result);
-                    std::uint32_t hashval = fnId * 17; // small prime
-
-                    for (int i = entry-1; i >= entry-windowSize; --i) {
+                    for (unsigned i = entry-1; i >= entry-windowSize; --i) {
                         if (asOpCode(instPos[i]) == spv::OpFunction)
                             break;
                         hashval = hashval * 30103 + asOpCodeHash(instPos[i]); // 30103 = semiarbitrary prime
                     }
 
-                    for (int i = entry; i <= entry + windowSize; ++i) {
+                    for (unsigned i = entry; i <= entry + windowSize; ++i) {
                         if (asOpCode(instPos[i]) == spv::OpFunctionEnd)
                             break;
                         hashval = hashval * 30103 + asOpCodeHash(instPos[i]); // 30103 = semiarbitrary prime
@@ -602,7 +600,7 @@ namespace spv {
         fnId = spv::NoResult;
 
         process(
-            [&](spv::Op opCode, int start) {
+            [&](spv::Op opCode, unsigned start) {
                 switch (opCode) {
                 case spv::OpFunction:
                     // Reset counters at each function
@@ -645,7 +643,7 @@ namespace spv {
                 }
 
                 return false;
-        },
+            },
 
             [&](spv::Id& id) {
                 if (thisOpCode != spv::OpNop) {
@@ -655,62 +653,8 @@ namespace spv {
                     if (isOldIdUnmapped(id))
                         localId(id, nextUnusedId(hashval % softTypeIdLimit + firstMappedID));
                 }
-        });
+            });
     }
-
-#ifdef NOTDEF
-    // remove bodies of uncalled functions
-    void spirvbin_t::offsetIds()
-    {
-        // Count of how many functions each ID appears within
-        std::unordered_map<spv::Id, int> idFnCount;
-        std::unordered_map<spv::Id, int> idDefinedLoc;
-        idset_t                          idsUsed;  // IDs used in a given function
-
-        int instCount = 0;
-
-        // create a count of how many functions each ID is used within
-        process(
-            [&](spv::OpCode opCode, int start) {
-                ++instCount;
-
-                switch (opCode) {
-                case spv::OpFunction:
-                    for (const auto id : idsUsed)
-                        ++idFnCount[id];
-                    idsUsed.clear();
-                    break;
-
-                default:
-                    {
-                        const int word   = start + (spv::InstructionDesc[opCode].hasType() ? 2 : 1);
-                        const int result = spv::InstructionDesc[opCode].hasResult() ? word : -1;
-
-                        if (result > 0)
-                            idDefinedLoc[asId(result)] = instCount;
-                    }
-                    break;
-                }
-
-                return false;
-        },
-
-            [&](spv::Id& id) { idsUsed.insert(id); });
-
-        // For each ID defined in exactly one function, replace uses by
-        // negative offset to definitions in instructions.
-
-        static const int relOffsetLimit = 64;
-
-        instCount = 0;
-        process([&](spv::OpCode, int) { ++instCount; return false; },
-            [&](spv::Id& id) {
-                if (idFnCount[id] == 1 && (instCount - idDefinedLoc[id]) < relOffsetLimit)
-                    id = idDefinedLoc[id] - instCount;
-        });
-    }
-#endif
-
 
     // EXPERIMENTAL: forward IO and uniform load/stores into operands
     // This produces invalid Schema-0 SPIRV
@@ -721,7 +665,7 @@ namespace spv {
 
         // EXPERIMENTAL: Forward input and access chain loads into consumptions
         process(
-            [&](spv::Op opCode, int start) {
+            [&](spv::Op opCode, unsigned start) {
                 // Add inputs and uniforms to the map
                 if (((opCode == spv::OpVariable && asWordCount(start) == 4) || (opCode == spv::OpVariableArray)) &&
                     (spv[start+3] == spv::StorageClassUniform ||
@@ -738,7 +682,7 @@ namespace spv {
                 }
 
                 return false;
-        },
+            },
 
             [&](spv::Id& id) { if (idMap.find(id) != idMap.end()) id = idMap[id]; }
         );
@@ -748,7 +692,7 @@ namespace spv {
         idMap.clear();
 
         process(
-            [&](spv::Op opCode, int start) {
+            [&](spv::Op opCode, unsigned start) {
                 // Add inputs and uniforms to the map
                 if (((opCode == spv::OpVariable && asWordCount(start) == 4) || (opCode == spv::OpVariableArray)) &&
                     (spv[start+3] == spv::StorageClassOutput))
@@ -760,7 +704,7 @@ namespace spv {
                 }
 
                 return false;
-        },
+            },
             op_fn_nop);
 
         process(
@@ -781,7 +725,7 @@ namespace spv {
 
         // Find all the function local pointers stored at most once, and not via access chains
         process(
-            [&](spv::Op opCode, int start) {
+            [&](spv::Op opCode, unsigned start) {
                 const int wordCount = asWordCount(start);
 
                 // Add local variables to the map
@@ -826,33 +770,32 @@ namespace spv {
                 }
 
                 return true;
-        },
+            },
             op_fn_nop);
 
         process(
-            [&](spv::Op opCode, int start) {
+            [&](spv::Op opCode, unsigned start) {
                 if (opCode == spv::OpLoad && fnLocalVars.count(asId(start+3)) > 0)
                     idMap[asId(start+2)] = idMap[asId(start+3)];
                 return false;
-        },
+            },
             op_fn_nop);
 
         // Remove the load/store/variables for the ones we've discovered
         process(
-            [&](spv::Op opCode, int start) {
+            [&](spv::Op opCode, unsigned start) {
                 if ((opCode == spv::OpLoad  && fnLocalVars.count(asId(start+3)) > 0) ||
                     (opCode == spv::OpStore && fnLocalVars.count(asId(start+1)) > 0) ||
                     (opCode == spv::OpVariable && fnLocalVars.count(asId(start+2)) > 0)) {
-                        stripInst(start);
-                        return true;
+                    stripInst(start);
+                    return true;
                 }
 
                 return false;
-        },
+            },
 
             [&](spv::Id& id) { if (idMap.find(id) != idMap.end()) id = idMap[id]; }
         );
-
 
         strip();          // strip out data we decided to eliminate
         buildLocalMaps(); // rebuild ID mapping data
@@ -884,7 +827,7 @@ namespace spv {
 
                     // decrease counts of called functions
                     process(
-                        [&](spv::Op opCode, int start) {
+                        [&](spv::Op opCode, unsigned start) {
                             if (opCode == spv::Op::OpFunctionCall) {
                                 const auto call_it = fnCalls.find(asId(start + 3));
                                 if (call_it != fnCalls.end()) {
@@ -894,7 +837,7 @@ namespace spv {
                             }
 
                             return true;
-                    },
+                        },
                         op_fn_nop,
                         fn->second.first,
                         fn->second.second);
@@ -914,7 +857,7 @@ namespace spv {
 
         // Count function variable use
         process(
-            [&](spv::Op opCode, int start) {
+            [&](spv::Op opCode, unsigned start) {
                 if (opCode == spv::OpVariable) { ++varUseCount[asId(start+2)]; return true; }
                 return false;
         },
@@ -924,7 +867,7 @@ namespace spv {
 
         // Remove single-use function variables + associated decorations and names
         process(
-            [&](spv::Op opCode, int start) {
+            [&](spv::Op opCode, unsigned start) {
                 if ((opCode == spv::OpVariable && varUseCount[asId(start+2)] == 1)  ||
                     (opCode == spv::OpDecorate && varUseCount[asId(start+1)] == 1)  ||
                     (opCode == spv::OpName     && varUseCount[asId(start+1)] == 1)) {
@@ -1041,7 +984,7 @@ namespace spv {
 #endif // NOTDEF
 
     // Return start position in SPV of given type.  error if not found.
-    int spirvbin_t::typePos(spv::Id id) const
+    unsigned spirvbin_t::typePos(spv::Id id) const
     {
         const auto tid_it = typeConstPosR.find(id);
         if (tid_it == typeConstPosR.end())
@@ -1052,7 +995,7 @@ namespace spv {
 
     // Hash types to canonical values.  This can return ID collisions (it's a bit
     // inevitable): it's up to the caller to handle that gracefully.
-    std::uint32_t spirvbin_t::hashType(int typeStart) const
+    std::uint32_t spirvbin_t::hashType(unsigned typeStart) const
     {
         const unsigned wordCount   = asWordCount(typeStart);
         const spv::Op  opCode      = asOpCode(typeStart);
@@ -1160,7 +1103,7 @@ namespace spv {
 
         // Allocate a new binary big enough to hold old binary
         // We'll step this iterator through the strip ranges as we go through the binary
-        decltype(stripRange)::const_iterator strip_it = stripRange.begin();
+        auto strip_it = stripRange.begin();
 
         int strippedPos = 0;
         for (unsigned word = 0; word < unsigned(spv.size()); ++word) {
@@ -1201,12 +1144,6 @@ namespace spv {
         mapRemainder(); // map any unmapped IDs
         applyMap();     // Now remap each shader to the new IDs we've come up with
         strip();        // strip out data we decided to eliminate
-
-#define EXPERIMENT3 0
-#if (EXPERIMENT3)
-        // TODO: ... shortcuts for simple single-const access chains and constants,
-        // folded into high half of the ID space.
-#endif
     }
 
     // remap from a memory image

@@ -48,11 +48,11 @@ for Linux.  Command line arguments can be provided in any order.
 Perform ID remapping on all shaders in "*.spv", writing new files with
 the same basenames to /tmp/out_dir.
 
-  spirv-remap --map all --input *.spv --output /tmp/out_dir
+  spirv-remap -v --map all --input *.spv --output /tmp/out_dir
 
 2. Perform all possible size reductions
 
-  spirv-remap-linux-64 --do-everything --input *.spv --output /tmp/out_dir
+  spirv-remap-linux-64 -v --do-everything --input *.spv --output /tmp/out_dir
 
 Note that --do-everything is a synonym for:
 

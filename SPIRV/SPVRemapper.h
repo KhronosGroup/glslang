@@ -43,7 +43,7 @@ namespace spv {
 
 // MSVC defines __cplusplus as an older value, even when it supports almost all of 11.
 // We handle that here by making our own symbol.
-#if __cplusplus >= 201103L || _MSC_VER >= 1800
+#if __cplusplus >= 201103L || _MSC_VER >= 1700
 #   define use_cpp11 1
 #endif
 
@@ -84,6 +84,7 @@ public:
     void remap(std::vector<unsigned int>& /*spv*/, unsigned int /*opts = 0*/)
     {
         printf("Tool not compiled for C++11, which is required for SPIR-V remapping.\n");
+        exit(5);
     }
 };
 
@@ -137,9 +138,9 @@ private:
 
    typedef std::uint32_t spirword_t;
 
-   typedef std::pair<int, int> range_t;
-   typedef std::function<void(spv::Id&)>           idfn_t;
-   typedef std::function<bool(spv::Op, int start)> instfn_t;
+   typedef std::pair<unsigned, unsigned> range_t;
+   typedef std::function<void(spv::Id&)>                idfn_t;
+   typedef std::function<bool(spv::Op, unsigned start)> instfn_t;
 
    // Special Values for ID map:
    static const spv::Id unmapped;     // unchanged from default value
@@ -168,14 +169,14 @@ private:
    range_t typeRange(spv::Op opCode)       const;
    range_t constRange(spv::Op opCode)      const;
    
-   spv::Id&        asId(int word)                { return spv[word]; }
-   const spv::Id&  asId(int word)          const { return spv[word]; }
-   spv::Op         asOpCode(int word)      const { return opOpCode(spv[word]); }
-   std::uint32_t   asOpCodeHash(int word);
-   spv::Decoration asDecoration(int word)  const { return spv::Decoration(spv[word]); }
-   unsigned        asWordCount(int word)   const { return opWordCount(spv[word]); }
-   spv::Id         asTypeConstId(int word) const { return asId(word + (isTypeOp(asOpCode(word)) ? 1 : 2)); }
-   int             typePos(spv::Id id)     const;
+   spv::Id&        asId(unsigned word)                { return spv[word]; }
+   const spv::Id&  asId(unsigned word)          const { return spv[word]; }
+   spv::Op         asOpCode(unsigned word)      const { return opOpCode(spv[word]); }
+   std::uint32_t   asOpCodeHash(unsigned word);
+   spv::Decoration asDecoration(unsigned word)  const { return spv::Decoration(spv[word]); }
+   unsigned        asWordCount(unsigned word)   const { return opWordCount(spv[word]); }
+   spv::Id         asTypeConstId(unsigned word) const { return asId(word + (isTypeOp(asOpCode(word)) ? 1 : 2)); }
+   unsigned        typePos(spv::Id id)          const;
 
    static unsigned    opWordCount(spirword_t data) { return data >> spv::WordCountShift; }
    static spv::Op     opOpCode(spirword_t data)    { return spv::Op(data & spv::OpCodeMask); }
@@ -201,7 +202,7 @@ private:
    inline spv::Id   nextUnusedId(spv::Id id);
 
    void buildLocalMaps();
-   std::string literalString(int word) const; // Return literal as a std::string
+   std::string literalString(unsigned word) const; // Return literal as a std::string
    int literalStringWords(const std::string& str) const { return (int(str.size())+4)/4; }
 
    bool isNewIdMapped(spv::Id newId)   const { return isMapped(newId);            }
@@ -212,10 +213,10 @@ private:
 
    // bool    matchType(const globaltypes_t& globalTypes, spv::Id lt, spv::Id gt) const;
    // spv::Id findType(const globaltypes_t& globalTypes, spv::Id lt) const;
-   std::uint32_t hashType(int typeStart) const;
+   std::uint32_t hashType(unsigned typeStart) const;
 
-   spirvbin_t& process(instfn_t, idfn_t, int begin = 0, int end = 0);
-   int         processInstruction(int word, instfn_t, idfn_t);
+   spirvbin_t& process(instfn_t, idfn_t, unsigned begin = 0, unsigned end = 0);
+   int         processInstruction(unsigned word, instfn_t, idfn_t);
 
    void        validate() const;
    void        mapTypeConst();
@@ -251,12 +252,12 @@ private:
 
    // Add a strip range for a given instruction starting at 'start'
    // Note: avoiding brace initializers to please older versions os MSVC.
-   void stripInst(int start) { stripRange.push_back(std::pair<unsigned, unsigned>(start, start + asWordCount(start))); }
+   void stripInst(unsigned start) { stripRange.push_back(range_t(start, start + asWordCount(start))); }
 
    // Function start and end.  use unordered_map because we'll have
    // many fewer functions than IDs.
-   std::unordered_map<spv::Id, std::pair<int, int>> fnPos;
-   std::unordered_map<spv::Id, std::pair<int, int>> fnPosDCE; // deleted functions
+   std::unordered_map<spv::Id, range_t> fnPos;
+   std::unordered_map<spv::Id, range_t> fnPosDCE; // deleted functions
 
    // Which functions are called, anywhere in the module, with a call count
    std::unordered_map<spv::Id, int> fnCalls;
@@ -270,7 +271,7 @@ private:
    spv::Id largestNewId;    // biggest new ID we have mapped anything to
 
    // Sections of the binary to strip, given as [begin,end)
-   std::vector<std::pair<unsigned, unsigned>> stripRange;
+   std::vector<range_t> stripRange;
 
    // processing options:
    std::uint32_t options;

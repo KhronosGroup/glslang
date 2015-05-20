@@ -75,11 +75,12 @@ namespace {
     }
 
     // Read word stream from disk
-    void read(std::vector<SpvWord>& spv, const std::string& inFilename)
+    void read(std::vector<SpvWord>& spv, const std::string& inFilename, int verbosity)
     {
         std::ifstream fp;
 
-        std::cout << "  reading: " << inFilename << std::endl;
+        if (verbosity > 0)
+            logHandler(std::string("  reading: ") + inFilename);
 
         spv.clear();
         fp.open(inFilename, std::fstream::in | std::fstream::binary);
@@ -104,14 +105,15 @@ namespace {
         }
     }
 
-    void write(std::vector<SpvWord>& spv, const std::string& outFile)
+    void write(std::vector<SpvWord>& spv, const std::string& outFile, int verbosity)
     {
         if (outFile.empty())
             errHandler("missing output filename.");
 
         std::ofstream fp;
 
-        std::cout << "  writing: " << outFile << std::endl;
+        if (verbosity > 0)
+            logHandler(std::string("  writing: ") + outFile);
 
         fp.open(outFile, std::fstream::out | std::fstream::binary);
 
@@ -157,12 +159,12 @@ namespace {
     {
         for (const auto& filename : inputFile) {
             std::vector<SpvWord> spv;
-            read(spv, filename);
+            read(spv, filename, verbosity);
             spv::spirvbin_t(verbosity).remap(spv, opts);
 
             const std::string outfile = outputDir + path_sep_char() + basename(filename);
 
-            write(spv, outfile);
+            write(spv, outfile, verbosity);
         }
 
         if (verbosity > 0)
@@ -305,17 +307,18 @@ namespace {
 
 int main(int argc, char** argv)
 {
-#ifdef use_cpp11
     std::vector<std::string> inputFile;
     std::string              outputDir;
     int                      opts;
     int                      verbosity;
 
+#ifdef use_cpp11
     // handle errors by exiting
     spv::spirvbin_t::registerErrorHandler(errHandler);
 
     // Log messages to std::cout
     spv::spirvbin_t::registerLogHandler(logHandler);
+#endif
 
     if (argc < 2)
         usage(argv[0]);
@@ -329,8 +332,6 @@ int main(int argc, char** argv)
 
     // Main operations: read, remap, and write.
     execute(inputFile, outputDir, opts, verbosity);
-
-#endif
 
     // If we get here, everything went OK!  Nothing more to be done.
 }
