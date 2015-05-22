@@ -130,6 +130,21 @@ protected:
 // Helper functions for translating glslang representations to SPIR-V enumerants.
 //
 
+// Translate glslang profile to SPIR-V source language.
+spv::SourceLanguage TranslateSourceLanguage(EProfile profile)
+{
+    switch (profile) {
+    case ENoProfile:
+    case ECoreProfile:
+    case ECompatibilityProfile:
+        return spv::SourceLanguageGLSL;
+    case EEsProfile:
+        return spv::SourceLanguageESSL;
+    default:
+        return spv::SourceLanguageUnknown;
+    }
+}
+
 // Translate glslang language (stage) to SPIR-V execution model.
 spv::ExecutionModel TranslateExecutionModel(EShLanguage stage)
 {
@@ -339,7 +354,7 @@ TGlslangToSpvTraverser::TGlslangToSpvTraverser(const glslang::TIntermediate* gls
     spv::ExecutionModel executionModel = TranslateExecutionModel(glslangIntermediate->getStage());
 
     builder.clearAccessChain();
-    builder.setSource(spv::SourceLanguageGLSL, glslangIntermediate->getVersion());
+    builder.setSource(TranslateSourceLanguage(glslangIntermediate->getProfile()), glslangIntermediate->getVersion());
     stdBuiltins = builder.import("GLSL.std.450");
     builder.setMemoryModel(spv::AddressingModelLogical, spv::MemoryModelGLSL450);
     shaderEntry = builder.makeMain();
