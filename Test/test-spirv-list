@@ -28,6 +28,7 @@ spv.400.tesc
 spv.400.tese
 spv.420.geom
 spv.430.vert
+spv.accessChain.frag
 spv.aggOps.frag
 spv.always-discard.frag
 spv.always-discard2.frag

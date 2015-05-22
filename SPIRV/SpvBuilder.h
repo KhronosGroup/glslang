@@ -228,6 +228,9 @@ public:
     Id createCompositeInsert(Id object, Id composite, Id typeId, unsigned index);
     Id createCompositeInsert(Id object, Id composite, Id typeId, std::vector<unsigned>& indexes);
 
+    Id createVectorExtractDynamic(Id vector, Id typeId, Id componentIndex);
+    Id createVectorInsertDynamic(Id vector, Id typeId, Id component, Id componentIndex);
+
     void createNoResultOp(Op);
     void createNoResultOp(Op, Id operand);
     void createControlBarrier(unsigned executionScope);
@@ -244,7 +247,7 @@ public:
 
     // Take a copy of an lvalue (target) and a source of components, and set the
     // source components into the lvalue where the 'channels' say to put them.
-    // An update version of the target is returned.
+    // An updated version of the target is returned.
     // (No true lvalue or stores are used.)
     Id createLvalueSwizzle(Id typeId, Id target, Id source, std::vector<unsigned>& channels);
 
@@ -426,9 +429,8 @@ public:
         std::vector<Id> indexChain;
         Id instr;                    // the instruction that generates this access chain
         std::vector<unsigned> swizzle;
-        Id component;                // a dynamic component index
-        int swizzleTargetWidth;
-        Id resultType;               // dereferenced type, to be inclusive of swizzles, which can't have a pointer
+        Id component;                // a dynamic component index, can coexist with a swizzle, done after the swizzle
+        Id resultType;               // dereferenced type, to be exclusive of swizzles
         bool isRValue;
     };
 
@@ -449,6 +451,7 @@ public:
     {
         assert(isPointer(lValue));
         accessChain.base = lValue;
+        accessChain.resultType = getContainedTypeId(getTypeId(lValue));
     }
 
     // set new base value as an r-value
@@ -467,7 +470,7 @@ public:
     }
 
     // push new swizzle onto the end of any existing swizzle, merging into a single swizzle
-    void accessChainPushSwizzle(std::vector<unsigned>& swizzle, int width, Id type);
+    void accessChainPushSwizzle(std::vector<unsigned>& swizzle, int width);
 
     // push a variable component selection onto the access chain; supporting only one, so unsided
     void accessChainPushComponent(Id component) { accessChain.component = component; }
@@ -489,6 +492,7 @@ protected:
     Id findCompositeConstant(Op typeClass, std::vector<Id>& comps) const;
     Id collapseAccessChain();
     void simplifyAccessChainSwizzle();
+    void mergeAccessChainSwizzle();
     void createAndSetNoPredecessorBlock(const char*);
     void createBranch(Block* block);
     void createMerge(Op, Block*, unsigned int control);

@@ -52,7 +52,7 @@ Linked fragment stage:
              292:     19(int) Constant 2
              299:     19(int) Constant 1
              301:             TypePointer Function 7(float)
-             331:             TypeVector 7(float) 3
+             332:             TypeVector 7(float) 3
              347:    7(float) Constant 1073741824
              354:    7(float) Constant 1065353216
              359:     19(int) Constant 66
@@ -435,11 +435,11 @@ Linked fragment stage:
              329:    7(float) Load 302(f) 
              330:    7(float) FAdd 329 328
                               Store 302(f) 330 
-             332:    8(fvec4) Load 10(v) 
-             333:  331(fvec3) VectorShuffle 332 332 0 1 2
+             331:    8(fvec4) Load 10(v) 
+             333:  332(fvec3) VectorShuffle 331 331 0 1 2
              334:    8(fvec4) Load 10(v) 
-             335:  331(fvec3) VectorShuffle 334 334 0 1 2
-             336:  331(fvec3) ExtInst 1(GLSL.std.450) 60(cross) 333 335
+             335:  332(fvec3) VectorShuffle 334 334 0 1 2
+             336:  332(fvec3) ExtInst 1(GLSL.std.450) 60(cross) 333 335
              337:    7(float) CompositeExtract 336 0
              338:    7(float) Load 302(f) 
              339:    7(float) FAdd 338 337
