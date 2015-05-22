@@ -1857,8 +1857,9 @@ void Builder::accessChainStore(Id rvalue)
         Id tempBaseId = createLoad(base);
         source = createLvalueSwizzle(getTypeId(tempBaseId), tempBaseId, rvalue, accessChain.swizzle);
     } else if (accessChain.component) {
-        Instruction* vectorInsert = new Instruction(getUniqueId(), getTypeId(rvalue), OpVectorInsertDynamic);
-        vectorInsert->addIdOperand(createLoad(base));
+        Id tempBaseId = createLoad(base);
+        Instruction* vectorInsert = new Instruction(getUniqueId(), getTypeId(tempBaseId), OpVectorInsertDynamic);
+        vectorInsert->addIdOperand(tempBaseId);
         vectorInsert->addIdOperand(rvalue);
         vectorInsert->addIdOperand(accessChain.component);
         buildPoint->addInstruction(vectorInsert);

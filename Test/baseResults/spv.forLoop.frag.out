@@ -131,9 +131,9 @@ Linked fragment stage:
               70:     48(int)   VectorExtractDynamic 69 68
               72:     48(int)   IMul 70 71
               73:    7(float)   ConvertUToF 72
-              75:    8(fvec4)   Load 66(tv4) 
-              74:    7(float)   VectorInsertDynamic 75 73 67
-                                Store 66(tv4) 74 
+              74:    8(fvec4)   Load 66(tv4) 
+              75:    8(fvec4)   VectorInsertDynamic 74 73 67
+                                Store 66(tv4) 75 
               76:     14(int)   Load 60(i) 
               77:     14(int)   IAdd 76 33
                                 Store 60(i) 77 
