@@ -28,9 +28,13 @@ Linked geometry stage:
                               MemberName 17(gl_PerVertex) 0  "gl_Position"
                               MemberName 17(gl_PerVertex) 1  "gl_ClipDistance"
                               Name 21  "gl_in"
+                              MemberDecorate 12(gl_PerVertex) 0 BuiltIn Position
+                              MemberDecorate 12(gl_PerVertex) 1 BuiltIn ClipDistance
                               Decorate 12(gl_PerVertex) Block 
                               Decorate 12(gl_PerVertex) Stream 0
                               Decorate 14 Stream 0
+                              MemberDecorate 17(gl_PerVertex) 0 BuiltIn Position
+                              MemberDecorate 17(gl_PerVertex) 1 BuiltIn ClipDistance
                               Decorate 17(gl_PerVertex) Block 
                2:             TypeVoid
                3:             TypeFunction 2 

@@ -62,6 +62,9 @@ Linked tessellation evaluation stage:
                               Decorate 54(gl_TessLevelOuter) BuiltIn TessLevelOuter
                               Decorate 62(gl_TessLevelInner) Patch 
                               Decorate 62(gl_TessLevelInner) BuiltIn TessLevelInner
+                              MemberDecorate 67(gl_PerVertex) 0 BuiltIn Position
+                              MemberDecorate 67(gl_PerVertex) 1 BuiltIn PointSize
+                              MemberDecorate 67(gl_PerVertex) 2 BuiltIn ClipDistance
                               Decorate 67(gl_PerVertex) Block 
                               Decorate 78(patchIn) Patch 
                               Decorate 78(patchIn) NoStaticUse 

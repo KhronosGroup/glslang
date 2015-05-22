@@ -303,9 +303,9 @@ spv::Decoration TranslateInvariantDecoration(const glslang::TType& type)
 }
 
 // Translate glslang built-in variable to SPIR-V built in decoration.
-spv::BuiltIn TranslateBuiltInDecoration(const glslang::TIntermSymbol& node)
+spv::BuiltIn TranslateBuiltInDecoration(glslang::TBuiltInVariable builtIn)
 {
-    switch (node.getQualifier().builtIn) {
+    switch (builtIn) {
     case glslang::EbvPosition:             return spv::BuiltInPosition;
     case glslang::EbvPointSize:            return spv::BuiltInPointSize;
     case glslang::EbvClipVertex:           return spv::BuiltInClipVertex;
@@ -1344,6 +1344,11 @@ spv::Id TGlslangToSpvTraverser::convertGlslangToSpvType(const glslang::TType& ty
                         builder.addMemberDecoration(spvType, member, spv::DecorationComponent, glslangType.getQualifier().layoutComponent);
                     if (glslangType.getQualifier().hasXfbOffset())
                         builder.addMemberDecoration(spvType, member, spv::DecorationOffset, glslangType.getQualifier().layoutXfbOffset);
+
+                    // built-in variable decorations
+                    int builtIn = TranslateBuiltInDecoration(glslangType.getQualifier().builtIn);
+                    if (builtIn != spv::BadValue)
+                        builder.addMemberDecoration(spvType, member, spv::DecorationBuiltIn, builtIn);
                 }
             }
 
@@ -2412,9 +2417,9 @@ spv::Id TGlslangToSpvTraverser::getSymbolId(const glslang::TIntermSymbol* symbol
     }
 
     // built-in variable decorations
-    int num = TranslateBuiltInDecoration(*symbol);
-    if (num != spv::BadValue)
-        builder.addDecoration(id, spv::DecorationBuiltIn, num);
+    int builtIn = TranslateBuiltInDecoration(symbol->getQualifier().builtIn);
+    if (builtIn != spv::BadValue)
+        builder.addDecoration(id, spv::DecorationBuiltIn, builtIn);
 
     if (linkageOnly)
         builder.addDecoration(id, spv::DecorationNoStaticUse);

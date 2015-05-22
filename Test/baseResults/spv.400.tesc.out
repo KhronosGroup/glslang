@@ -52,6 +52,9 @@ Linked tessellation control stage:
                               Decorate 39(gl_PatchVerticesIn) BuiltIn PatchVertices
                               Decorate 42(gl_PrimitiveID) BuiltIn PrimitiveId
                               Decorate 45(gl_InvocationID) BuiltIn InvocationId
+                              MemberDecorate 47(gl_PerVertex) 0 BuiltIn Position
+                              MemberDecorate 47(gl_PerVertex) 1 BuiltIn PointSize
+                              MemberDecorate 47(gl_PerVertex) 2 BuiltIn ClipDistance
                               Decorate 47(gl_PerVertex) Block 
                               Decorate 62(gl_TessLevelOuter) Patch 
                               Decorate 62(gl_TessLevelOuter) BuiltIn TessLevelOuter

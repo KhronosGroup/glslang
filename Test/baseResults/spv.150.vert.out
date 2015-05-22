@@ -42,6 +42,10 @@ Linked vertex stage:
                               Name 51  "gl_VertexID"
                               Name 52  "gl_InstanceID"
                               MemberDecorate 14(gl_PerVertex) 0 Invariant 
+                              MemberDecorate 14(gl_PerVertex) 0 BuiltIn Position
+                              MemberDecorate 14(gl_PerVertex) 1 BuiltIn PointSize
+                              MemberDecorate 14(gl_PerVertex) 2 BuiltIn ClipDistance
+                              MemberDecorate 14(gl_PerVertex) 3 BuiltIn ClipVertex
                               Decorate 14(gl_PerVertex) Block 
                               Decorate 49(ui) NoStaticUse 
                               Decorate 51(gl_VertexID) BuiltIn VertexId

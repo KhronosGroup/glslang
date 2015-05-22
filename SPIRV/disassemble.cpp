@@ -368,7 +368,8 @@ void SpirvStream::disassembleInstruction(Id resultId, Id /*typeId*/, Op opCode, 
             disassembleIds(numOperands);
             return;
         case OperandVariableLiterals:
-            if (opCode == OpDecorate && stream[word - 1] == DecorationBuiltIn) {
+            if (opCode == OpDecorate && stream[word - 1] == DecorationBuiltIn ||
+                opCode == OpMemberDecorate && stream[word - 1] == DecorationBuiltIn) {
                 out << BuiltInString(stream[word++]);
                 --numOperands;
                 ++op;

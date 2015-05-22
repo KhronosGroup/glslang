@@ -36,6 +36,7 @@ Linked vertex stage:
                               Name 58  "sampb4"
                               Name 60  "gl_VertexID"
                               Name 61  "gl_InstanceID"
+                              MemberDecorate 11(gl_PerVertex) 0 BuiltIn ClipDistance
                               Decorate 11(gl_PerVertex) Block 
                               Decorate 35(badorder3) Flat 
                               Decorate 43(uv4) Location 4
