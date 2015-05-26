@@ -395,6 +395,41 @@ bool TOutputTraverser::visitAggregate(TVisit /* visit */, TIntermAggregate* node
     case EOpMemoryBarrierShared:        out.debug << "MemoryBarrierShared";        break;
     case EOpGroupMemoryBarrier:         out.debug << "GroupMemoryBarrier";         break;
 
+    case EImageQuerySize:               out.debug << "imageQuerySize";        break;
+    case EImageQuerySamples:            out.debug << "imageQuerySamples";     break;
+    case EImageLoad:                    out.debug << "imageLoad";             break;
+    case EImageStore:                   out.debug << "imageStore";            break;
+    case EImageAtomicAdd:               out.debug << "imageAtomicAdd";        break;
+    case EImageAtomicMin:               out.debug << "imageAtomicMin";        break;
+    case EImageAtomicMax:               out.debug << "imageAtomicMax";        break;
+    case EImageAtomicAnd:               out.debug << "imageAtomicAnd";        break;
+    case EImageAtomicOr:                out.debug << "imageAtomicOr";         break;
+    case EImageAtomicXor:               out.debug << "imageAtomicXor";        break;
+    case EImageAtomicExchange:          out.debug << "imageAtomicExchange";   break;
+    case EImageAtomicCompSwap:          out.debug << "imageAtomicCompSwap";   break;
+
+    case ETextureQuerySize:             out.debug << "textureSize";           break;
+    case ETextureQueryLod:              out.debug << "textureQueryLod";       break;
+    case ETextureQueryLevels:           out.debug << "textureQueryLevels";    break;
+    case ETextureQuerySamples:          out.debug << "textureSamples";        break;
+    case ETexture:                      out.debug << "texture";               break;
+    case ETextureProj:                  out.debug << "textureProj";           break;
+    case ETextureLod:                   out.debug << "textureLod";            break;
+    case ETextureOffset:                out.debug << "textureOffset";         break;
+    case ETextureFetch:                 out.debug << "textureFetch";          break;
+    case ETextureFetchOffset:           out.debug << "textureFetchOffset";    break;
+    case ETextureProjOffset:            out.debug << "textureProjOffset";     break;
+    case ETextureLodOffset:             out.debug << "textureLodOffset";      break;
+    case ETextureProjLod:               out.debug << "textureProjLod";        break;
+    case ETextureProjLodOffset:         out.debug << "textureProjLodOffset";  break;
+    case ETextureGrad:                  out.debug << "textureGrad";           break;
+    case ETextureGradOffset:            out.debug << "textureGradOffset";     break;
+    case ETextureProjGrad:              out.debug << "textureProjGrad";       break;
+    case ETextureProjGradOffset:        out.debug << "textureProjGradOffset"; break;
+    case ETextureGather:                out.debug << "textureGather";         break;
+    case ETextureGatherOffset:          out.debug << "textureGatherOffset";   break;
+    case ETextureGatherOffsets:         out.debug << "textureGatherOffsets";  break;
+
     default: out.debug.message(EPrefixError, "Bad aggregation op");
     }
 

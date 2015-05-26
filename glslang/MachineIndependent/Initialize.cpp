@@ -57,6 +57,7 @@ namespace glslang {
 bool ARBCompatibility = true;
 
 const bool ForwardCompatibility = false;
+const bool PureOperatorBuiltins = false;  // could break backward compatibility; pending feedback
 
 inline bool IncludeLegacy(int version, EProfile profile)
 {
@@ -2964,6 +2965,69 @@ void IdentifyBuiltIns(int version, EProfile profile, EShLanguage language, TSymb
     symbolTable.relateToOperator("memoryBarrierAtomicCounter", EOpMemoryBarrierAtomicCounter);
     symbolTable.relateToOperator("memoryBarrierBuffer",        EOpMemoryBarrierBuffer);
     symbolTable.relateToOperator("memoryBarrierImage",         EOpMemoryBarrierImage);
+
+    if (PureOperatorBuiltins) {
+        symbolTable.relateToOperator("imageQuerySize",          EImageQuerySize);
+        symbolTable.relateToOperator("imageQuerySamples",       EImageQuerySamples);
+        symbolTable.relateToOperator("imageLoad",               EImageLoad);
+        symbolTable.relateToOperator("imageStore",              EImageStore);
+        symbolTable.relateToOperator("imageAtomicAdd",          EImageAtomicAdd);
+        symbolTable.relateToOperator("imageAtomicMin",          EImageAtomicMin);
+        symbolTable.relateToOperator("imageAtomicMax",          EImageAtomicMax);
+        symbolTable.relateToOperator("imageAtomicAnd",          EImageAtomicAnd);
+        symbolTable.relateToOperator("imageAtomicOr",           EImageAtomicOr);
+        symbolTable.relateToOperator("imageAtomicXor",          EImageAtomicXor);
+        symbolTable.relateToOperator("imageAtomicExchange",     EImageAtomicExchange);
+        symbolTable.relateToOperator("imageAtomicCompSwap",     EImageAtomicCompSwap);
+
+        symbolTable.relateToOperator("textureSize",             ETextureQuerySize);
+        symbolTable.relateToOperator("textureQueryLod",         ETextureQueryLod);
+        symbolTable.relateToOperator("textureQueryLevels",      ETextureQueryLevels);
+        symbolTable.relateToOperator("textureSamples",          ETextureQuerySamples);
+        symbolTable.relateToOperator("texture",                 ETexture);
+        symbolTable.relateToOperator("textureProj",             ETextureProj);
+        symbolTable.relateToOperator("textureLod",              ETextureLod);
+        symbolTable.relateToOperator("textureOffset",           ETextureOffset);
+        symbolTable.relateToOperator("textureFetch",            ETextureFetch);
+        symbolTable.relateToOperator("textureFetchOffset",      ETextureFetchOffset);
+        symbolTable.relateToOperator("textureProjOffset",       ETextureProjOffset);
+        symbolTable.relateToOperator("textureLodOffset",        ETextureLodOffset);
+        symbolTable.relateToOperator("textureProjLod",          ETextureProjLod);
+        symbolTable.relateToOperator("textureProjLodOffset",    ETextureProjLodOffset);
+        symbolTable.relateToOperator("textureGrad",             ETextureGrad);
+        symbolTable.relateToOperator("textureGradOffset",       ETextureGradOffset);
+        symbolTable.relateToOperator("textureProjGrad",         ETextureProjGrad);
+        symbolTable.relateToOperator("textureProjGradOffset",   ETextureProjGradOffset);
+        symbolTable.relateToOperator("textureGather",           ETextureGather);
+        symbolTable.relateToOperator("textureGatherOffset",     ETextureGatherOffset);
+        symbolTable.relateToOperator("textureGatherOffsets",    ETextureGatherOffsets);
+
+        if (IncludeLegacy(version, profile)) {
+            // TBD: add ftransform(), any others?
+            symbolTable.relateToOperator("texture1D",         ETexture);
+            symbolTable.relateToOperator("texture1DProj",     ETextureProj);
+            symbolTable.relateToOperator("texture1DLod",      ETextureLod);
+            symbolTable.relateToOperator("texture1DProjLod",  ETextureProjLod);
+            symbolTable.relateToOperator("texture2D",         ETexture);
+            symbolTable.relateToOperator("texture2DProj",     ETextureProj);
+            symbolTable.relateToOperator("texture2DLod",      ETextureLod);
+            symbolTable.relateToOperator("texture2DProjLod",  ETextureProjLod);
+            symbolTable.relateToOperator("texture3D",         ETexture);
+            symbolTable.relateToOperator("texture3DProj",     ETextureProj);
+            symbolTable.relateToOperator("texture3DLod",      ETextureLod);
+            symbolTable.relateToOperator("texture3DProjLod",  ETextureProjLod);
+            symbolTable.relateToOperator("textureCube",       ETexture);
+            symbolTable.relateToOperator("textureCubeLod",    ETextureLod);
+            symbolTable.relateToOperator("shadow1D",          ETexture);
+            symbolTable.relateToOperator("shadow2D",          ETexture);
+            symbolTable.relateToOperator("shadow1DProj",      ETextureProj);
+            symbolTable.relateToOperator("shadow2DProj",      ETextureProj);
+            symbolTable.relateToOperator("shadow1DLod",       ETextureLod);
+            symbolTable.relateToOperator("shadow2DLod",       ETextureLod);
+            symbolTable.relateToOperator("shadow1DProjLod",   ETextureProjLod);
+            symbolTable.relateToOperator("shadow2DProjLod",   ETextureProjLod);
+        }
+    }
 
     switch(language) {
     case EShLangVertex:

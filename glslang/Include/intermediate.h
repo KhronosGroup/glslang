@@ -328,6 +328,52 @@ enum TOperator {
     //
 
     EOpArrayLength,      // "Array" distinguishes from length(v) built-in function, but it applies to vectors and matrices as well.
+
+    //
+    // Image operations
+    //
+
+    // N.B. The following is not being used yet, pending input, as switching
+    //      to it from the current text-based approach will break existing consumers.
+
+    EImageQuerySize,
+    EImageQuerySamples,
+    EImageLoad,
+    EImageStore,
+    EImageAtomicAdd,
+    EImageAtomicMin,
+    EImageAtomicMax,
+    EImageAtomicAnd,
+    EImageAtomicOr,
+    EImageAtomicXor,
+    EImageAtomicExchange,
+    EImageAtomicCompSwap,
+
+    //
+    // Texture operations
+    //
+
+    ETextureQuerySize,
+    ETextureQueryLod,
+    ETextureQueryLevels,
+    ETextureQuerySamples,
+    ETexture,
+    ETextureProj,
+    ETextureLod,
+    ETextureOffset,
+    ETextureFetch,
+    ETextureFetchOffset,
+    ETextureProjOffset,
+    ETextureLodOffset,
+    ETextureProjLod,
+    ETextureProjLodOffset,
+    ETextureGrad,
+    ETextureGradOffset,
+    ETextureProjGrad,
+    ETextureProjGradOffset,
+    ETextureGather,
+    ETextureGatherOffset,
+    ETextureGatherOffsets,
 };
 
 class TIntermTraverser;
