@@ -435,6 +435,7 @@ bool CompileDeferred(
     const char* const shaderStrings[],
     const int numStrings,
     const int* inputLengths,
+    const char* customPreamble,
     const EShOptimizationLevel optLevel,
     const TBuiltInResource* resources,
     int defaultVersion,         // use 100 for ES environment, 110 for desktop
@@ -457,18 +458,20 @@ bool CompileDeferred(
     // which lets the grammar accept what was a null (post preprocessing) shader.
     //
     // Shader will look like
-    //   string 0:                preamble
-    //   string 1...numStrings:   user's shader
-    //   string numStrings+1:     "int;"
-    //
-    size_t* lengths = new size_t[numStrings + 2];
-    const char** strings = new const char*[numStrings + 2];
+    //   string 0:                system preamble
+    //   string 1:                custom preamble
+    //   string 2...numStrings+1: user's shader
+    //   string numStrings+2:     "int;"
+    const int numPre = 2;
+    const int numPost = 1;
+    size_t* lengths = new size_t[numStrings + numPre + numPost];
+    const char** strings = new const char*[numStrings + numPre + numPost];
     for (int s = 0; s < numStrings; ++s) {
-        strings[s + 1] = shaderStrings[s];
+        strings[s + numPre] = shaderStrings[s];
         if (inputLengths == 0 || inputLengths[s] < 0)
-            lengths[s + 1] = strlen(shaderStrings[s]);
+            lengths[s + numPre] = strlen(shaderStrings[s]);
         else
-            lengths[s + 1] = inputLengths[s];
+            lengths[s + numPre] = inputLengths[s];
     }
 
     // First, without using the preprocessor or parser, find the #version, so we know what
@@ -476,7 +479,7 @@ bool CompileDeferred(
     // outlined above, just the user shader.
     int version;
     EProfile profile;
-    glslang::TInputScanner userInput(numStrings, &strings[1], &lengths[1]);  // no preamble
+    glslang::TInputScanner userInput(numStrings, &strings[numPre], &lengths[numPre]);  // no preamble
     bool versionNotFirstToken;
     bool versionNotFirst = userInput.scanVersion(version, profile, versionNotFirstToken);
     bool versionNotFound = version == 0;
@@ -534,9 +537,12 @@ bool CompileDeferred(
     // Fill in the strings as outlined above.
     strings[0] = parseContext.getPreamble();
     lengths[0] = strlen(strings[0]);
-    strings[numStrings + 1] = "\n int;";
-    lengths[numStrings + 1] = strlen(strings[numStrings + 1]);
-    TInputScanner fullInput(numStrings + 2, strings, lengths, 1, 1);
+    strings[1] = customPreamble;
+    lengths[1] = strlen(strings[1]);
+    assert(2 == numPre);
+    strings[numStrings + numPre] = "\n int;";
+    lengths[numStrings + numPre] = strlen(strings[numStrings + numPre]);
+    TInputScanner fullInput(numStrings + numPre + numPost, strings, lengths, numPre, numPost);
 
     // Push a new symbol allocation scope that will get used for the shader's globals.
     symbolTable.push();
@@ -707,7 +713,7 @@ int ShCompile(
     compiler->infoSink.debug.erase();
 
     TIntermediate intermediate(compiler->getLanguage());
-    bool success = CompileDeferred(compiler, shaderStrings, numStrings, inputLengths, optLevel, resources, defaultVersion, forwardCompatible, messages, intermediate);
+    bool success = CompileDeferred(compiler, shaderStrings, numStrings, inputLengths, "", optLevel, resources, defaultVersion, forwardCompatible, messages, intermediate);
 
     //
     // Call the machine dependent compiler
@@ -966,7 +972,7 @@ public:
 };
 
 TShader::TShader(EShLanguage s) 
-    : pool(0), stage(s)
+    : pool(0), stage(s), preamble("")
 {
     infoSink = new TInfoSink;
     compiler = new TDeferredCompiler(stage, *infoSink);
@@ -993,8 +999,10 @@ bool TShader::parse(const TBuiltInResource* builtInResources, int defaultVersion
     
     pool = new TPoolAllocator();
     SetThreadPoolAllocator(*pool);
+    if (! preamble)
+        preamble = "";
 
-    return CompileDeferred(compiler, strings, numStrings, nullptr, EShOptNone, builtInResources, defaultVersion, forwardCompatible, messages, *intermediate);
+    return CompileDeferred(compiler, strings, numStrings, nullptr, preamble, EShOptNone, builtInResources, defaultVersion, forwardCompatible, messages, *intermediate);
 }
 
 const char* TShader::getInfoLog()

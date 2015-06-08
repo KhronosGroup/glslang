@@ -263,11 +263,13 @@ bool InitializeProcess();
 // Call once per process to tear down everything
 void FinalizeProcess();
 
-// Make one TShader per shader that you will link into a program.  Then
-// provide the shader through setStrings(), then call parse(), then query
-// the info logs.
+// Make one TShader per shader that you will link into a program.  Then provide
+// the shader through setStrings(), then call parse(), then query the info logs.
+// Optionally use setPreamble() to set a special shader string that will be
+// processed before all others but won't affect the validity of #version.
 //
-// N.B.: Does not yet support having the same TShader instance being linked into multiple programs.
+// N.B.: Does not yet support having the same TShader instance being linked into
+// multiple programs.
 //
 // N.B.: Destruct a linked program *before* destructing the shaders linked into it.
 //
@@ -276,6 +278,7 @@ public:
     explicit TShader(EShLanguage);
     virtual ~TShader();
     void setStrings(const char* const* s, int n) { strings = s; numStrings = n; }
+    void setPreamble(const char* s) { preamble = s; }
     bool parse(const TBuiltInResource*, int defaultVersion, bool forwardCompatible, EShMessages);
 
     const char* getInfoLog();
@@ -290,6 +293,7 @@ protected:
     TIntermediate* intermediate;
     TInfoSink* infoSink;
     const char* const* strings;
+    const char* preamble;
     int numStrings;
 
     friend class TProgram;
