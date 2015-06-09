@@ -266,7 +266,7 @@ namespace spv {
             [this](spv::Id& id) {
                 id = localId(id);
                 assert(id != unused && id != unmapped);
-        }
+            }
         );
     }
 
@@ -309,7 +309,7 @@ namespace spv {
                 if (isStripOp(opCode))
                     stripInst(start);
                 return true;
-        },
+            },
             op_fn_nop);
     }
 
@@ -319,7 +319,7 @@ namespace spv {
 
         mapped.clear();
         idMapL.clear();
-        nameMap.clear();
+//      preserve nameMap, so we don't clear that.
         fnPos.clear();
         fnPosDCE.clear();
         fnCalls.clear();
@@ -342,9 +342,9 @@ namespace spv {
 
                 if (opCode == spv::Op::OpName) {
                     const spv::Id    target = asId(start+1);
-                    const std::string  name   = literalString(start+2);
+                    const std::string  name = literalString(start+2);
                     nameMap[name] = target;
-                    return true;
+
                 } else if (opCode == spv::Op::OpFunctionCall) {
                     ++fnCalls[asId(start + 3)];
                 } else if (opCode == spv::Op::OpEntryPoint) {
@@ -371,7 +371,7 @@ namespace spv {
                 }
 
                 return false;
-        },
+            },
 
             [this](spv::Id& id) { localId(id, unmapped); }
         );
@@ -713,7 +713,6 @@ namespace spv {
         );
 
         strip();          // strip out data we decided to eliminate
-        buildLocalMaps(); // rebuild ID mapping data
     }
 
     // remove bodies of uncalled functions
@@ -798,7 +797,6 @@ namespace spv {
         );
 
         strip();          // strip out data we decided to eliminate
-        buildLocalMaps(); // rebuild ID mapping data
     }
 
     // remove bodies of uncalled functions
@@ -860,7 +858,7 @@ namespace spv {
             [&](spv::Op opCode, unsigned start) {
                 if (opCode == spv::OpVariable) { ++varUseCount[asId(start+2)]; return true; }
                 return false;
-        },
+            },
 
             [&](spv::Id& id) { if (varUseCount[id]) ++varUseCount[id]; }
         );
@@ -874,7 +872,7 @@ namespace spv {
                         stripInst(start);
                 }
                 return true;
-        },
+            },
             op_fn_nop);
     }
 
@@ -1116,6 +1114,8 @@ namespace spv {
 
         spv.resize(strippedPos);
         stripRange.clear();
+
+        buildLocalMaps();
     }
 
     // Strip a single binary by removing ranges given in stripRange
@@ -1131,6 +1131,8 @@ namespace spv {
 
         msg(3, 4, std::string("ID bound: ") + std::to_string(bound()));
 
+        strip();        // strip out data we decided to eliminate
+
         if (options & OPT_LOADSTORE) optLoadStore();
         if (options & OPT_FWD_LS)    forwardLoadStores();
         if (options & DCE_FUNCS)     dceFuncs();
@@ -1139,7 +1141,6 @@ namespace spv {
         if (options & MAP_TYPES)     mapTypeConst();
         if (options & MAP_NAMES)     mapNames();
         if (options & MAP_FUNCS)     mapFnBodies();
-        // if (options & STRIP)         stripDebug();
 
         mapRemainder(); // map any unmapped IDs
         applyMap();     // Now remap each shader to the new IDs we've come up with
