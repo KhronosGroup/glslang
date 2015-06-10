@@ -299,7 +299,7 @@ namespace spv {
 
     void spirvbin_t::stripDebug()
     {
-        if ((options & Options::STRIP) == 0)
+        if ((options & STRIP) == 0)
             return;
 
         // build local Id and name maps
@@ -337,7 +337,7 @@ namespace spv {
         process(
             [&](spv::Op opCode, unsigned start) {
                 // remember opcodes we want to strip later
-                if ((options & Options::STRIP) && isStripOp(opCode))
+                if ((options & STRIP) && isStripOp(opCode))
                     stripInst(start);
 
                 if (opCode == spv::Op::OpName) {

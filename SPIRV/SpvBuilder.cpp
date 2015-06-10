@@ -301,7 +301,7 @@ Id Builder::makeSampler(Id sampledType, Dim dim, samplerContent content, bool ar
         type = groupedTypes[OpTypeSampler][t];
         if (type->getIdOperand(0) == sampledType &&
             type->getImmediateOperand(1) == (unsigned int)dim &&
-            type->getImmediateOperand(2) == content &&
+            type->getImmediateOperand(2) == (unsigned int)content &&
             type->getImmediateOperand(3) == (arrayed ? 1u : 0u) &&
             type->getImmediateOperand(4) == ( shadow ? 1u : 0u) &&
             type->getImmediateOperand(5) == (     ms ? 1u : 0u))
@@ -1842,7 +1842,7 @@ void Builder::clearAccessChain()
 }
 
 // Comments in header
-void Builder::accessChainPushSwizzle(std::vector<unsigned>& swizzle, int width)
+void Builder::accessChainPushSwizzle(std::vector<unsigned>& swizzle)
 {
     // if needed, propagate the swizzle for the current access chain
     if (accessChain.swizzle.size()) {

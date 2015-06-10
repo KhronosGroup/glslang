@@ -101,7 +101,7 @@ public:
     Id makeMatrixType(Id component, int cols, int rows);
     Id makeArrayType(Id element, unsigned size);
     Id makeFunctionType(Id returnType, std::vector<Id>& paramTypes);
-    enum samplerContent : unsigned {
+    enum samplerContent {
         samplerContentTexture,
         samplerContentImage,
         samplerContentTextureFilter
@@ -470,7 +470,7 @@ public:
     }
 
     // push new swizzle onto the end of any existing swizzle, merging into a single swizzle
-    void accessChainPushSwizzle(std::vector<unsigned>& swizzle, int width);
+    void accessChainPushSwizzle(std::vector<unsigned>& swizzle);
 
     // push a variable component selection onto the access chain; supporting only one, so unsided
     void accessChainPushComponent(Id component) { accessChain.component = component; }

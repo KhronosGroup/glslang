@@ -72,7 +72,7 @@ public:
    spirvbin_t(int verbose = 0);  // construct
 
    // remap an existing binary in memory
-   void remap(std::vector<std::uint32_t>& spv, std::uint32_t opts = Options::DO_EVERYTHING);
+   void remap(std::vector<std::uint32_t>& spv, std::uint32_t opts = DO_EVERYTHING);
 
    // Type for error/log handler functions
    typedef std::function<void(const std::string&)> errorfn_t;
@@ -119,7 +119,7 @@ normal build process.
 REMAPPING AND OPTIMIZATION OPTIONS
 --------------------------------------------------------------------------------
 API:
-   These are bits defined under spv::spirvbin_t::Options::, and can be
+   These are bits defined under spv::spirvbin_t::, and can be
    bitwise or-ed together as desired.
 
    MAP_TYPES      = canonicalize type IDs

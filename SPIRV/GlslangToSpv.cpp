@@ -573,7 +573,7 @@ bool TGlslangToSpvTraverser::visitBinary(glslang::TVisit /* visit */, glslang::T
                 // so short circuit the access-chain stuff with a swizzle.
                 std::vector<unsigned> swizzle;
                 swizzle.push_back(node->getRight()->getAsConstantUnion()->getConstArray()[0].getIConst());
-                builder.accessChainPushSwizzle(swizzle, node->getLeft()->getVectorSize());
+                builder.accessChainPushSwizzle(swizzle);
             } else {
                 // normal case for indexing array or structure or block
                 builder.accessChainPush(builder.makeIntConstant(index), convertGlslangToSpvType(node->getType()));
@@ -615,7 +615,7 @@ bool TGlslangToSpvTraverser::visitBinary(glslang::TVisit /* visit */, glslang::T
             std::vector<unsigned> swizzle;
             for (int i = 0; i < (int)swizzleSequence.size(); ++i)
                 swizzle.push_back(swizzleSequence[i]->getAsConstantUnion()->getConstArray()[0].getIConst());
-            builder.accessChainPushSwizzle(swizzle, node->getLeft()->getVectorSize());
+            builder.accessChainPushSwizzle(swizzle);
         }
         return false;
     default:

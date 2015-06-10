@@ -38,6 +38,7 @@
 
 #include <string>
 #include <vector>
+#include <stdlib.h>
 
 namespace spv {
 
@@ -112,7 +113,7 @@ public:
    spirvbin_t(int verbose = 0) : entryPoint(spv::NoResult), largestNewId(0), verbose(verbose) { }
    
    // remap on an existing binary in memory
-   void remap(std::vector<std::uint32_t>& spv, std::uint32_t opts = Options::DO_EVERYTHING);
+   void remap(std::vector<std::uint32_t>& spv, std::uint32_t opts = DO_EVERYTHING);
 
    // Type for error/log handler functions
    typedef std::function<void(const std::string&)> errorfn_t;
@@ -131,7 +132,7 @@ private:
    typedef std::unordered_map<spv::Id, spv::Id> idmap_t;
    typedef std::unordered_set<spv::Id>          idset_t;
 
-   void remap(std::uint32_t opts = Options::DO_EVERYTHING);
+   void remap(std::uint32_t opts = DO_EVERYTHING);
 
    // Map of names to IDs
    typedef std::unordered_map<std::string, spv::Id> namemap_t;
