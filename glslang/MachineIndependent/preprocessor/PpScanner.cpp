@@ -285,9 +285,9 @@ int TPpContext::tStringInput::scan(TPpToken* ppToken)
                     ch = pp->getChar();
                 }
             } while ((ch >= 'a' && ch <= 'z') ||
-                (ch >= 'A' && ch <= 'Z') ||
-                (ch >= '0' && ch <= '9') ||
-                ch == '_');
+                     (ch >= 'A' && ch <= 'Z') ||
+                     (ch >= '0' && ch <= '9') ||
+                     ch == '_');
 
             // line continuation with no token before or after makes len == 0, and need to start over skipping white space, etc.
             if (len == 0)
@@ -333,8 +333,8 @@ int TPpContext::tStringInput::scan(TPpToken* ppToken)
                         }
                         ch = pp->getChar();
                     } while ((ch >= '0' && ch <= '9') ||
-                        (ch >= 'A' && ch <= 'F') ||
-                        (ch >= 'a' && ch <= 'f'));
+                             (ch >= 'A' && ch <= 'F') ||
+                             (ch >= 'a' && ch <= 'f'));
                 } else {
                     pp->parseContext.error(ppToken->loc, "bad digit in hexidecimal literal", "", "");
                 }

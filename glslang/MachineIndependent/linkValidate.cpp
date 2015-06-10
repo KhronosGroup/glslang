@@ -432,6 +432,9 @@ void TIntermediate::finalCheck(TInfoSink& infoSink)
         break;
     case EShLangCompute:
         break;
+    default:
+        error(infoSink, "Unknown Stage.");
+        break;
     }
 
     // Process the tree for any node-specific work.

@@ -2192,7 +2192,7 @@ void TParseContext::mergeQualifiers(TSourceLoc loc, TQualifier& dst, const TQual
 
     // Ordering
     if (! force && ((profile != EEsProfile && version < 420) || 
-                     profile == EEsProfile && version < 310)
+                    (profile == EEsProfile && version < 310))
                 && ! extensionsTurnedOn(1, &GL_ARB_shading_language_420pack)) {
         // non-function parameters
         if (src.invariant && (dst.isInterpolation() || dst.isAuxiliary() || dst.storage != EvqTemporary || dst.precision != EpqNone))
@@ -4854,7 +4854,7 @@ void TParseContext::invariantCheck(TSourceLoc loc, const TQualifier& qualifier)
 
     bool pipeOut = qualifier.isPipeOutput();
     bool pipeIn = qualifier.isPipeInput();
-    if (version >= 300 || profile != EEsProfile && version >= 420) {
+    if (version >= 300 || (profile != EEsProfile && version >= 420)) {
         if (! pipeOut)
             error(loc, "can only apply to an output", "invariant", "");
     } else {

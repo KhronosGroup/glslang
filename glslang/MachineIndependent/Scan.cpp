@@ -1131,7 +1131,9 @@ int TScanContext::secondGenerationImage()
         return keyword;
     }
 
-    if (parseContext.symbolTable.atBuiltInLevel() || parseContext.profile != EEsProfile && (parseContext.version >= 420 || parseContext.extensionsTurnedOn(1, &GL_ARB_shader_image_load_store)))
+    if (parseContext.symbolTable.atBuiltInLevel() || 
+        (parseContext.profile != EEsProfile && 
+         (parseContext.version >= 420 || parseContext.extensionsTurnedOn(1, &GL_ARB_shader_image_load_store))))
         return keyword;
 
     if (parseContext.forwardCompatible)

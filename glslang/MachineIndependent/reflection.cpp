@@ -381,16 +381,16 @@ public:
             // a sampler...
             switch (sampler.type) {
             case EbtFloat:
-                switch (sampler.dim) {
+                switch ((int)sampler.dim) {
                 case Esd1D:
-                    switch (sampler.shadow) {
+                    switch ((int)sampler.shadow) {
                     case false: return sampler.arrayed ? GL_SAMPLER_1D_ARRAY : GL_SAMPLER_1D;
                     case true:  return sampler.arrayed ? GL_SAMPLER_1D_ARRAY_SHADOW : GL_SAMPLER_1D_SHADOW;
                     }
                 case Esd2D:
-                    switch (sampler.ms) {
+                    switch ((int)sampler.ms) {
                     case false:
-                        switch (sampler.shadow) {
+                        switch ((int)sampler.shadow) {
                         case false: return sampler.arrayed ? GL_SAMPLER_2D_ARRAY : GL_SAMPLER_2D;
                         case true:  return sampler.arrayed ? GL_SAMPLER_2D_ARRAY_SHADOW : GL_SAMPLER_2D_SHADOW;
                         }
@@ -399,7 +399,7 @@ public:
                 case Esd3D:
                     return GL_SAMPLER_3D;
                 case EsdCube:
-                    switch (sampler.shadow) {
+                    switch ((int)sampler.shadow) {
                     case false: return sampler.arrayed ? GL_SAMPLER_CUBE_MAP_ARRAY : GL_SAMPLER_CUBE;
                     case true:  return sampler.arrayed ? GL_SAMPLER_CUBE_MAP_ARRAY_SHADOW : GL_SAMPLER_CUBE_SHADOW;
                     }
@@ -409,11 +409,11 @@ public:
                     return GL_SAMPLER_BUFFER;
                 }
             case EbtInt:
-                switch (sampler.dim) {
+                switch ((int)sampler.dim) {
                 case Esd1D:
                     return sampler.arrayed ? GL_INT_SAMPLER_1D_ARRAY : GL_INT_SAMPLER_1D;
                 case Esd2D:
-                    switch (sampler.ms) {
+                    switch ((int)sampler.ms) {
                     case false:  return sampler.arrayed ? GL_INT_SAMPLER_2D_ARRAY : GL_INT_SAMPLER_2D;
                     case true:   return sampler.arrayed ? GL_INT_SAMPLER_2D_MULTISAMPLE_ARRAY : GL_INT_SAMPLER_2D_MULTISAMPLE;
                     }
@@ -427,11 +427,11 @@ public:
                     return GL_INT_SAMPLER_BUFFER;
                 }
             case EbtUint:
-                switch (sampler.dim) {
+                switch ((int)sampler.dim) {
                 case Esd1D:
                     return sampler.arrayed ? GL_UNSIGNED_INT_SAMPLER_1D_ARRAY : GL_UNSIGNED_INT_SAMPLER_1D;
                 case Esd2D:
-                    switch (sampler.ms) {
+                    switch ((int)sampler.ms) {
                     case false:  return sampler.arrayed ? GL_UNSIGNED_INT_SAMPLER_2D_ARRAY : GL_UNSIGNED_INT_SAMPLER_2D;
                     case true:   return sampler.arrayed ? GL_UNSIGNED_INT_SAMPLER_2D_MULTISAMPLE_ARRAY : GL_UNSIGNED_INT_SAMPLER_2D_MULTISAMPLE;
                     }
@@ -451,11 +451,11 @@ public:
             // an image...
             switch (sampler.type) {
             case EbtFloat:
-                switch (sampler.dim) {
+                switch ((int)sampler.dim) {
                 case Esd1D:
                     return sampler.arrayed ? GL_IMAGE_1D_ARRAY : GL_IMAGE_1D;
                 case Esd2D:
-                    switch (sampler.ms) {
+                    switch ((int)sampler.ms) {
                     case false:     return sampler.arrayed ? GL_IMAGE_2D_ARRAY : GL_IMAGE_2D;
                     case true:      return sampler.arrayed ? GL_IMAGE_2D_MULTISAMPLE_ARRAY : GL_IMAGE_2D_MULTISAMPLE;
                     }
@@ -469,11 +469,11 @@ public:
                     return GL_IMAGE_BUFFER;
                 }
             case EbtInt:
-                switch (sampler.dim) {
+                switch ((int)sampler.dim) {
                 case Esd1D:
                     return sampler.arrayed ? GL_INT_IMAGE_1D_ARRAY : GL_INT_IMAGE_1D;
                 case Esd2D:
-                    switch (sampler.ms) {
+                    switch ((int)sampler.ms) {
                     case false:  return sampler.arrayed ? GL_INT_IMAGE_2D_ARRAY : GL_INT_IMAGE_2D;
                     case true:   return sampler.arrayed ? GL_INT_IMAGE_2D_MULTISAMPLE_ARRAY : GL_INT_IMAGE_2D_MULTISAMPLE;
                     }
@@ -487,11 +487,11 @@ public:
                     return GL_INT_IMAGE_BUFFER;
                 }
             case EbtUint:
-                switch (sampler.dim) {
+                switch ((int)sampler.dim) {
                 case Esd1D:
                     return sampler.arrayed ? GL_UNSIGNED_INT_IMAGE_1D_ARRAY : GL_UNSIGNED_INT_IMAGE_1D;
                 case Esd2D:
-                    switch (sampler.ms) {
+                    switch ((int)sampler.ms) {
                     case false:  return sampler.arrayed ? GL_UNSIGNED_INT_IMAGE_2D_ARRAY : GL_UNSIGNED_INT_IMAGE_2D;
                     case true:   return sampler.arrayed ? GL_UNSIGNED_INT_IMAGE_2D_MULTISAMPLE_ARRAY : GL_UNSIGNED_INT_IMAGE_2D_MULTISAMPLE;
                     }

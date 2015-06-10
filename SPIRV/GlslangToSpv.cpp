@@ -370,7 +370,7 @@ TGlslangToSpvTraverser::TGlslangToSpvTraverser(const glslang::TIntermediate* gls
     if (glslangIntermediate->getXfbMode())
         builder.addExecutionMode(shaderEntry, spv::ExecutionModeXfb);
 
-    spv::ExecutionMode mode;
+    unsigned int mode;
     switch (glslangIntermediate->getStage()) {
     case EShLangVertex:
         break;
@@ -384,10 +384,10 @@ TGlslangToSpvTraverser::TGlslangToSpvTraverser(const glslang::TIntermediate* gls
         case glslang::ElgTriangles:           mode = spv::ExecutionModeInputTriangles;     break;
         case glslang::ElgQuads:               mode = spv::ExecutionModeInputQuads;         break;
         case glslang::ElgIsolines:            mode = spv::ExecutionModeInputIsolines;      break;
-        default:                              mode = (spv::ExecutionMode)spv::BadValue;    break;
+        default:                              mode = spv::BadValue;    break;
         }
         if (mode != spv::BadValue)
-            builder.addExecutionMode(shaderEntry, mode);
+            builder.addExecutionMode(shaderEntry, (spv::ExecutionMode)mode);
 
         // TODO
         //builder.addExecutionMode(spv::VertexSpacingMdName, glslangIntermediate->getVertexSpacing());
@@ -402,20 +402,20 @@ TGlslangToSpvTraverser::TGlslangToSpvTraverser(const glslang::TIntermediate* gls
         case glslang::ElgLinesAdjacency:     mode = spv::ExecutionModeInputLinesAdjacency;     break;
         case glslang::ElgTriangles:          mode = spv::ExecutionModeInputTriangles;          break;
         case glslang::ElgTrianglesAdjacency: mode = spv::ExecutionModeInputTrianglesAdjacency; break;
-        default:                             mode = (spv::ExecutionMode)spv::BadValue;         break;
+        default:                             mode = spv::BadValue;         break;
         }
         if (mode != spv::BadValue)
-            builder.addExecutionMode(shaderEntry, mode);
+            builder.addExecutionMode(shaderEntry, (spv::ExecutionMode)mode);
         builder.addExecutionMode(shaderEntry, spv::ExecutionModeInvocations, glslangIntermediate->getInvocations());
 
         switch (glslangIntermediate->getOutputPrimitive()) {
         case glslang::ElgPoints:        mode = spv::ExecutionModeOutputPoints;                 break;
         case glslang::ElgLineStrip:     mode = spv::ExecutionModeOutputLineStrip;              break;
         case glslang::ElgTriangleStrip: mode = spv::ExecutionModeOutputTriangleStrip;          break;
-        default:                        mode = (spv::ExecutionMode)spv::BadValue;              break;
+        default:                        mode = spv::BadValue;              break;
         }
         if (mode != spv::BadValue)
-            builder.addExecutionMode(shaderEntry, mode);
+            builder.addExecutionMode(shaderEntry, (spv::ExecutionMode)mode);
         builder.addExecutionMode(shaderEntry, spv::ExecutionModeOutputVertices, glslangIntermediate->getVertices());
         break;
 
@@ -1239,10 +1239,7 @@ spv::Id TGlslangToSpvTraverser::createSpvVariable(const glslang::TIntermSymbol* 
     if (glslang::IsAnonymous(name))
         name = "";
 
-    if (storageClass == spv::BadValue)
-        return builder.createVariable(spv::StorageClassFunction, spvType, name);
-    else
-        return builder.createVariable(storageClass, spvType, name);
+    return builder.createVariable(storageClass, spvType, name);
 }
 
 // Return type Id of the sampled type.

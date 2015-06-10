@@ -447,7 +447,8 @@ struct TIntermNodePair {
 //
 class TIntermTyped : public TIntermNode {
 public:
-	TIntermTyped(const TType& t) { type.shallowCopy(t); }
+    TIntermTyped(const TType& t) { type.shallowCopy(t); }
+    TIntermTyped(TBasicType basicType) { TType bt(basicType); type.shallowCopy(bt); }
     virtual       TIntermTyped* getAsTyped()       { return this; }
     virtual const TIntermTyped* getAsTyped() const { return this; }
     virtual void setType(const TType& t) { type.shallowCopy(t); }
@@ -535,9 +536,9 @@ protected:
 //
 class TIntermSymbol : public TIntermTyped {
 public:
-	// if symbol is initialized as symbol(sym), the memory comes from the poolallocator of sym. If sym comes from
-	// per process threadPoolAllocator, then it causes increased memory usage per compile
-	// it is essential to use "symbol = sym" to assign to symbol
+    // if symbol is initialized as symbol(sym), the memory comes from the poolallocator of sym. If sym comes from
+    // per process threadPoolAllocator, then it causes increased memory usage per compile
+    // it is essential to use "symbol = sym" to assign to symbol
     TIntermSymbol(int i, const TString& n, const TType& t) : 
         TIntermTyped(t), id(i) { name = n;} 
     virtual int getId() const { return id; }
@@ -582,8 +583,8 @@ public:
     bool isConstructor() const;
     virtual bool promote() { return true; }
 protected:
-    TIntermOperator(TOperator o) : TIntermTyped(TType(EbtFloat)), op(o) {}
-    TIntermOperator(TOperator o, TType& t) : TIntermTyped(t), op(o) {}   
+    TIntermOperator(TOperator o) : TIntermTyped(EbtFloat), op(o) {}
+    TIntermOperator(TOperator o, TType& t) : TIntermTyped(t), op(o) {}
     TOperator op;
 };
 
@@ -634,35 +635,35 @@ class TIntermAggregate : public TIntermOperator {
 public:
     TIntermAggregate() : TIntermOperator(EOpNull), userDefined(false), pragmaTable(0) { }
     TIntermAggregate(TOperator o) : TIntermOperator(o), pragmaTable(0) { }
-	~TIntermAggregate() { delete pragmaTable; }
+    ~TIntermAggregate() { delete pragmaTable; }
     virtual       TIntermAggregate* getAsAggregate()       { return this; }
     virtual const TIntermAggregate* getAsAggregate() const { return this; }
     virtual void setOperator(TOperator o) { op = o; }
     virtual TIntermSequence& getSequence() { return sequence; }
     virtual const TIntermSequence& getSequence() const { return sequence; }
-	virtual void setName(const TString& n) { name = n; }
+    virtual void setName(const TString& n) { name = n; }
     virtual const TString& getName() const { return name; }
     virtual void traverse(TIntermTraverser*);
     virtual void setUserDefined() { userDefined = true; }
     virtual bool isUserDefined() { return userDefined; }
     virtual TQualifierList& getQualifierList() { return qualifier; }
     virtual const TQualifierList& getQualifierList() const { return qualifier; }
-	void setOptimize(bool o) { optimize = o; }
-	void setDebug(bool d) { debug = d; }
-	bool getOptimize() { return optimize; }
-	bool getDebug() { return debug; }
-	void addToPragmaTable(const TPragmaTable& pTable);
-	const TPragmaTable& getPragmaTable() const { return *pragmaTable; }
+    void setOptimize(bool o) { optimize = o; }
+    void setDebug(bool d) { debug = d; }
+    bool getOptimize() { return optimize; }
+    bool getDebug() { return debug; }
+    void addToPragmaTable(const TPragmaTable& pTable);
+    const TPragmaTable& getPragmaTable() const { return *pragmaTable; }
 protected:
-	TIntermAggregate(const TIntermAggregate&); // disallow copy constructor
-	TIntermAggregate& operator=(const TIntermAggregate&); // disallow assignment operator
+    TIntermAggregate(const TIntermAggregate&); // disallow copy constructor
+    TIntermAggregate& operator=(const TIntermAggregate&); // disallow assignment operator
     TIntermSequence sequence;
     TQualifierList qualifier;
-	TString name;
+    TString name;
     bool userDefined; // used for user defined function names
-	bool optimize;
-	bool debug;
-	TPragmaTable* pragmaTable;
+    bool optimize;
+    bool debug;
+    TPragmaTable* pragmaTable;
 };
 
 //
@@ -671,7 +672,7 @@ protected:
 class TIntermSelection : public TIntermTyped {
 public:
     TIntermSelection(TIntermTyped* cond, TIntermNode* trueB, TIntermNode* falseB) :
-        TIntermTyped(TType(EbtVoid)), condition(cond), trueBlock(trueB), falseBlock(falseB) {}
+        TIntermTyped(EbtVoid), condition(cond), trueBlock(trueB), falseBlock(falseB) {}
     TIntermSelection(TIntermTyped* cond, TIntermNode* trueB, TIntermNode* falseB, const TType& type) :
         TIntermTyped(type), condition(cond), trueBlock(trueB), falseBlock(falseB) {}
     virtual void traverse(TIntermTraverser*);

@@ -980,6 +980,8 @@ void FreeFileData(char** data)
 
 void InfoLogMsg(const char* msg, const char* name, const int num)
 {
-    printf(num >= 0 ? "#### %s %s %d INFO LOG ####\n" :
-           "#### %s %s INFO LOG ####\n", msg, name, num);
+    if (num >= 0 )
+        printf("#### %s %s %d INFO LOG ####\n", msg, name, num);
+    else
+        printf("#### %s %s INFO LOG ####\n", msg, name);
 }

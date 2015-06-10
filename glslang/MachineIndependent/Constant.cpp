@@ -132,6 +132,7 @@ TIntermTyped* TIntermConstantUnion::fold(TOperator op, const TIntermTyped* const
     }
 
     TConstUnionArray newConstArray(newComps);
+    TType constBool(EbtBool, EvqConst);
 
     switch(op) {
     case EOpAdd:
@@ -265,27 +266,27 @@ TIntermTyped* TIntermConstantUnion::fold(TOperator op, const TIntermTyped* const
 
     case EOpLessThan:
         newConstArray[0].setBConst(unionArray[0] < rightUnionArray[0]);
-        returnType.shallowCopy(TType(EbtBool, EvqConst));
+        returnType.shallowCopy(constBool);
         break;
     case EOpGreaterThan:
         newConstArray[0].setBConst(unionArray[0] > rightUnionArray[0]);
-        returnType.shallowCopy(TType(EbtBool, EvqConst));
+        returnType.shallowCopy(constBool);
         break;
     case EOpLessThanEqual:
         newConstArray[0].setBConst(! (unionArray[0] > rightUnionArray[0]));
-        returnType.shallowCopy(TType(EbtBool, EvqConst));
+        returnType.shallowCopy(constBool);
         break;
     case EOpGreaterThanEqual:
         newConstArray[0].setBConst(! (unionArray[0] < rightUnionArray[0]));
-        returnType.shallowCopy(TType(EbtBool, EvqConst));
+        returnType.shallowCopy(constBool);
         break;
     case EOpEqual:
         newConstArray[0].setBConst(node->getConstArray() == unionArray);
-        returnType.shallowCopy(TType(EbtBool, EvqConst));
+        returnType.shallowCopy(constBool);
         break;
     case EOpNotEqual:
         newConstArray[0].setBConst(node->getConstArray() != unionArray);
-        returnType.shallowCopy(TType(EbtBool, EvqConst));
+        returnType.shallowCopy(constBool);
         break;
 
     default:

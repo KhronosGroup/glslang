@@ -2053,8 +2053,8 @@ void Builder::simplifyAccessChainSwizzle()
 void Builder::mergeAccessChainSwizzle()
 {
     // is there even a chance of doing something?  Need a single-component swizzle
-    if (accessChain.swizzle.size() > 1 ||
-        accessChain.swizzle.size() == 0 && accessChain.component == 0)
+    if ((accessChain.swizzle.size() > 1) ||
+        (accessChain.swizzle.size() == 0 && accessChain.component == 0))
         return;
 
     // TODO: optimization: remove this, but for now confine this to non-dynamic accesses

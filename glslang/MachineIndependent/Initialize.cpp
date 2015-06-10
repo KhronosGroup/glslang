@@ -416,8 +416,8 @@ void TBuiltIns::initialize(int version, EProfile profile)
             "\n");
     }
 
-    if (profile == EEsProfile && version >= 310 ||
-        profile != EEsProfile && version >= 430) {
+    if ((profile == EEsProfile && version >= 310) ||
+        (profile != EEsProfile && version >= 430)) {
         commonBuiltins.append(
             "uint atomicAdd(coherent volatile inout uint, uint);"
             " int atomicAdd(coherent volatile inout  int,  int);"
@@ -446,8 +446,8 @@ void TBuiltIns::initialize(int version, EProfile profile)
             "\n");
     }
 
-    if (profile == EEsProfile && version >= 310 ||
-        profile != EEsProfile && version >= 450) {
+    if ((profile == EEsProfile && version >= 310) ||
+        (profile != EEsProfile && version >= 450)) {
         commonBuiltins.append(
             "int    mix(int    x, int    y, bool  a);"
             "ivec2  mix(ivec2  x, ivec2  y, bvec2 a);"
@@ -1330,8 +1330,8 @@ void TBuiltIns::initialize(int version, EProfile profile)
     //
     //============================================================================
 
-    if (profile != EEsProfile && version >= 430 ||
-        profile == EEsProfile && version >= 310) {
+    if ((profile != EEsProfile && version >= 430) ||
+        (profile == EEsProfile && version >= 310)) {
         stageBuiltins[EShLangCompute].append(
             "in uvec3 gl_NumWorkGroups;"
             "const uvec3 gl_WorkGroupSize = uvec3(1,1,1);"
@@ -2491,7 +2491,8 @@ void TBuiltIns::initialize(const TBuiltInResource &resources, int version, EProf
     }
 
     // images (some in compute below)
-    if (profile == EEsProfile && version >= 310 || profile != EEsProfile && version >= 130) {
+    if ((profile == EEsProfile && version >= 310) || 
+        (profile != EEsProfile && version >= 130)) {
         snprintf(builtInConstant, maxSize, "const int gl_MaxImageUnits = %d;", resources.maxImageUnits);
         s.append(builtInConstant);
         snprintf(builtInConstant, maxSize, "const int gl_MaxCombinedShaderOutputResources = %d;", resources.maxCombinedShaderOutputResources);
@@ -2505,7 +2506,8 @@ void TBuiltIns::initialize(const TBuiltInResource &resources, int version, EProf
     }
 
     // atomic counters (some in compute below)
-    if (profile == EEsProfile && version >= 310 || profile != EEsProfile && version >= 420) {
+    if ((profile == EEsProfile && version >= 310) || 
+        (profile != EEsProfile && version >= 420)) {
         snprintf(builtInConstant, maxSize, "const int gl_MaxVertexAtomicCounters = %d;", resources.               maxVertexAtomicCounters);
         s.append(builtInConstant);
         snprintf(builtInConstant, maxSize, "const int gl_MaxFragmentAtomicCounters = %d;", resources.             maxFragmentAtomicCounters);
