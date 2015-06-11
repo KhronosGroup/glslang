@@ -4160,7 +4160,10 @@ TIntermNode* TParseContext::executeInitializer(TSourceLoc loc, TIntermTyped* ini
         // qualifier any initializer must be a constant expression."
         if (symbolTable.atGlobalLevel() && initializer->getType().getQualifier().storage != EvqConst) {
             const char* initFeature = "non-constant global initializer";
-            requireProfile(loc, ~EEsProfile, initFeature);
+            if (messages & EShMsgRelaxedErrors)
+                warn(loc, "not allowed in this version", initFeature, "");
+            else
+                requireProfile(loc, ~EEsProfile, initFeature);
         }
     }
 
