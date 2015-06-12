@@ -130,4 +130,13 @@ void main()
 
     color += foo1(v,v,c).y;
     color += foo2(v,v,c).z;
+
+    switch (c) {
+    case 0: break;
+    default:
+    }
+
+    switch (c) {
+    default:
+    }
 }
