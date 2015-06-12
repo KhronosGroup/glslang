@@ -989,7 +989,7 @@ void TBuiltIns::initialize(int version, EProfile profile)
             "vec4 texture3DLod(sampler3D, vec3, float);"         // GL_ARB_shader_texture_lod  // OES_texture_3D, but caught by keyword check
             "vec4 texture3DProjLod(sampler3D, vec4, float);"     // GL_ARB_shader_texture_lod  // OES_texture_3D, but caught by keyword check
             "vec4 textureCubeLod(samplerCube, vec3, float);"     // GL_ARB_shader_texture_lod
-            
+
             "\n");
     }
     if ( profile == ECompatibilityProfile ||
@@ -1026,14 +1026,15 @@ void TBuiltIns::initialize(int version, EProfile profile)
             "\n");
     }
 
-    if (profile != EEsProfile && version >= 150) {
+    if ((profile != EEsProfile && version >= 150) ||
+        (profile == EEsProfile && version >= 310)) {
         //============================================================================
         //
         // Prototypes for built-in functions seen by geometry shaders only.
         //
         //============================================================================
 
-        if (version >= 400) {
+        if (profile != EEsProfile && version >= 400) {
             stageBuiltins[EShLangGeometry].append(
                 "void EmitStreamVertex(int);"
                 "void EndStreamPrimitive(int);"
@@ -1093,7 +1094,7 @@ void TBuiltIns::initialize(int version, EProfile profile)
             "vec4 texture3D(sampler3D, vec3, float);"        // OES_texture_3D
             "vec4 texture3DProj(sampler3D, vec4, float);"    // OES_texture_3D
             "vec4 textureCube(samplerCube, vec3, float);"
-            
+
             "\n");
     }
     if (profile != EEsProfile && version > 100) {
@@ -1105,7 +1106,7 @@ void TBuiltIns::initialize(int version, EProfile profile)
             "vec4 shadow2D(sampler2DShadow, vec3, float);"
             "vec4 shadow1DProj(sampler1DShadow, vec4, float);"
             "vec4 shadow2DProj(sampler2DShadow, vec4, float);"
-            
+
             "\n");
     }
     if (profile == EEsProfile) {
@@ -1114,7 +1115,7 @@ void TBuiltIns::initialize(int version, EProfile profile)
             "vec4 texture2DProjLodEXT(sampler2D, vec3, float);"  // GL_EXT_shader_texture_lod
             "vec4 texture2DProjLodEXT(sampler2D, vec4, float);"  // GL_EXT_shader_texture_lod
             "vec4 textureCubeLodEXT(samplerCube, vec3, float);"  // GL_EXT_shader_texture_lod
-            
+
             "\n");
     }
 
@@ -1128,12 +1129,12 @@ void TBuiltIns::initialize(int version, EProfile profile)
         "vec2  dFdy(vec2  p);"
         "vec3  dFdy(vec3  p);"
         "vec4  dFdy(vec4  p);"
-                 
+
         "float fwidth(float p);"
         "vec2  fwidth(vec2  p);"
         "vec3  fwidth(vec3  p);"
         "vec4  fwidth(vec4  p);"
-            
+
         "\n");
 
     // GL_ARB_derivative_control
@@ -1143,17 +1144,17 @@ void TBuiltIns::initialize(int version, EProfile profile)
             "vec2  dFdxFine(vec2  p);"
             "vec3  dFdxFine(vec3  p);"
             "vec4  dFdxFine(vec4  p);"
-                 
+
             "float dFdyFine(float p);"
             "vec2  dFdyFine(vec2  p);"
             "vec3  dFdyFine(vec3  p);"
             "vec4  dFdyFine(vec4  p);"
-                 
+
             "float fwidthFine(float p);"
             "vec2  fwidthFine(vec2  p);"
             "vec3  fwidthFine(vec3  p);"
             "vec4  fwidthFine(vec4  p);"
-            
+
             "\n");
 
         stageBuiltins[EShLangFragment].append(
@@ -1161,7 +1162,7 @@ void TBuiltIns::initialize(int version, EProfile profile)
             "vec2  dFdxCoarse(vec2  p);"
             "vec3  dFdxCoarse(vec3  p);"
             "vec4  dFdxCoarse(vec4  p);"
-                 
+
             "float dFdyCoarse(float p);"
             "vec2  dFdyCoarse(vec2  p);"
             "vec3  dFdyCoarse(vec3  p);"
@@ -1505,7 +1506,7 @@ void TBuiltIns::initialize(int version, EProfile profile)
                 "float gl_PointSize;"
                 "float gl_ClipDistance[];"
                 "\n");
-        if (version >= 400 && profile == ECompatibilityProfile)
+        if (profile == ECompatibilityProfile && version >= 400)
             stageBuiltins[EShLangGeometry].append(
                 "vec4 gl_ClipVertex;"
                 "vec4 gl_FrontColor;"
@@ -1525,22 +1526,42 @@ void TBuiltIns::initialize(int version, EProfile profile)
             "out int gl_PrimitiveID;"
             "out int gl_Layer;");
 
-        if (version < 400 && profile == ECompatibilityProfile)
+        if (profile == ECompatibilityProfile && version < 400)
             stageBuiltins[EShLangGeometry].append(
             "out vec4 gl_ClipVertex;"
             );
 
-        if (version >= 400 && profile != EEsProfile)
+        if (version >= 400)
             stageBuiltins[EShLangGeometry].append(
             "in int gl_InvocationID;"
             );
         // GL_ARB_viewport_array
-        if (version >= 150 && profile != EEsProfile)
+        if (version >= 150)
             stageBuiltins[EShLangGeometry].append(
             "out int gl_ViewportIndex;"
             );
         stageBuiltins[EShLangGeometry].append("\n");
+    } else if (profile == EEsProfile && version >= 310) {
+        stageBuiltins[EShLangGeometry].append(
+            "in gl_PerVertex {"
+                "highp vec4 gl_Position;"
+                "highp float gl_PointSize;"
+            "} gl_in[];"
+            "\n"
+            "in highp int gl_PrimitiveIDIn;"
+            "in highp int gl_InvocationID;"
+            "\n"
+            "out gl_PerVertex {"
+                "vec4 gl_Position;"
+                "float gl_PointSize;"
+            "};"
+            "\n"
+            "out int gl_PrimitiveID;"
+            "out int gl_Layer;"
+            "\n"
+            );
     }
+
 
     //============================================================================
     //
@@ -2275,6 +2296,29 @@ void TBuiltIns::initialize(const TBuiltInResource &resources, int version, EProf
             snprintf(builtInConstant, maxSize, "const mediump int  gl_MaxProgramTexelOffset = %d;", resources.maxProgramTexelOffset);
             s.append(builtInConstant);
         }
+
+        // geometry
+        if (version >= 310) {
+            snprintf(builtInConstant, maxSize, "const int gl_MaxGeometryInputComponents = %d;", resources.maxGeometryInputComponents);
+            s.append(builtInConstant);
+            snprintf(builtInConstant, maxSize, "const int gl_MaxGeometryOutputComponents = %d;", resources.maxGeometryOutputComponents);
+            s.append(builtInConstant);
+            snprintf(builtInConstant, maxSize, "const int gl_MaxGeometryImageUniforms = %d;", resources.maxGeometryImageUniforms);
+            s.append(builtInConstant);
+            snprintf(builtInConstant, maxSize, "const int gl_MaxGeometryTextureImageUnits = %d;", resources.maxGeometryTextureImageUnits);
+            s.append(builtInConstant);
+            snprintf(builtInConstant, maxSize, "const int gl_MaxGeometryOutputVertices = %d;", resources.maxGeometryOutputVertices);
+            s.append(builtInConstant);
+            snprintf(builtInConstant, maxSize, "const int gl_MaxGeometryTotalOutputComponents = %d;", resources.maxGeometryTotalOutputComponents);
+            s.append(builtInConstant);
+            snprintf(builtInConstant, maxSize, "const int gl_MaxGeometryUniformComponents = %d;", resources.maxGeometryUniformComponents);
+            s.append(builtInConstant);
+            snprintf(builtInConstant, maxSize, "const int gl_MaxGeometryAtomicCounters = %d;", resources.maxGeometryAtomicCounters);
+            s.append(builtInConstant);
+            snprintf(builtInConstant, maxSize, "const int gl_MaxGeometryAtomicCounterBuffers = %d;", resources.maxGeometryAtomicCounterBuffers);
+            s.append(builtInConstant);
+        }
+
     } else {
         // non-ES profile
 

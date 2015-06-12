@@ -85,6 +85,7 @@ const char* const GL_ARB_shading_language_420pack     = "GL_ARB_shading_language
 const char* const GL_ARB_texture_gather               = "GL_ARB_texture_gather";
 const char* const GL_ARB_gpu_shader5                  = "GL_ARB_gpu_shader5";
 const char* const GL_ARB_separate_shader_objects      = "GL_ARB_separate_shader_objects";
+const char* const GL_ARB_compute_shader               = "GL_ARB_compute_shader";
 const char* const GL_ARB_tessellation_shader          = "GL_ARB_tessellation_shader";
 const char* const GL_ARB_enhanced_layouts             = "GL_ARB_enhanced_layouts";
 const char* const GL_ARB_texture_cube_map_array       = "GL_ARB_texture_cube_map_array";
@@ -96,6 +97,23 @@ const char* const GL_ARB_derivative_control           = "GL_ARB_derivative_contr
 const char* const GL_ARB_shader_texture_image_samples = "GL_ARB_shader_texture_image_samples";
 const char* const GL_ARB_viewport_array               = "GL_ARB_viewport_array";
 //const char* const GL_ARB_cull_distance            = "GL_ARB_cull_distance";  // present for 4.5, but need extension control over block members
+
+// AEP
+const char* const GL_ANDROID_extension_pack_es31a             = "GL_ANDROID_extension_pack_es31a";
+const char* const GL_KHR_blend_equation_advanced              = "GL_KHR_blend_equation_advanced";
+const char* const GL_OES_sample_variables                     = "GL_OES_sample_variables";
+const char* const GL_OES_shader_image_atomic                  = "GL_OES_shader_image_atomic";
+const char* const GL_OES_shader_multisample_interpolation     = "GL_OES_shader_multisample_interpolation";
+const char* const GL_OES_texture_storage_multisample_2d_array = "GL_OES_texture_storage_multisample_2d_array";
+const char* const GL_EXT_geometry_shader                      = "GL_EXT_geometry_shader";
+const char* const GL_EXT_geometry_point_size                  = "GL_EXT_geometry_point_size";
+const char* const GL_EXT_gpu_shader5                          = "GL_EXT_gpu_shader5";
+const char* const GL_EXT_primitive_bounding_box               = "GL_EXT_primitive_bounding_box";
+const char* const GL_EXT_shader_io_blocks                     = "GL_EXT_shader_io_blocks";
+const char* const GL_EXT_tessellation_shader                  = "GL_EXT_tessellation_shader";
+const char* const GL_EXT_tessellation_point_size              = "GL_EXT_tessellation_point_size";
+const char* const GL_EXT_texture_buffer                       = "GL_EXT_texture_buffer";
+const char* const GL_EXT_texture_cube_map_array               = "GL_EXT_texture_cube_map_array";
 
 } // end namespace glslang
 

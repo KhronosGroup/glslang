@@ -224,6 +224,7 @@ protected:
     TIntermNode* executeInitializer(TSourceLoc, TIntermTyped* initializer, TVariable* variable);
     TIntermTyped* convertInitializerList(TSourceLoc, const TType&, TIntermTyped* initializer);
     TOperator mapTypeToConstructorOp(const TType&) const;
+    void updateExtensionBehavior(const char* const extension, TExtensionBehavior);
     void finalErrorCheck();
 
 public:

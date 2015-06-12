@@ -161,6 +161,7 @@ void TParseContext::initializeExtensionBehavior()
     extensionBehavior[GL_ARB_texture_gather]               = EBhDisable;
     extensionBehavior[GL_ARB_gpu_shader5]                  = EBhDisablePartial;
     extensionBehavior[GL_ARB_separate_shader_objects]      = EBhDisable;
+    extensionBehavior[GL_ARB_compute_shader]               = EBhDisablePartial;
     extensionBehavior[GL_ARB_tessellation_shader]          = EBhDisable;
     extensionBehavior[GL_ARB_enhanced_layouts]             = EBhDisable;
     extensionBehavior[GL_ARB_texture_cube_map_array]       = EBhDisable;
@@ -172,6 +173,23 @@ void TParseContext::initializeExtensionBehavior()
     extensionBehavior[GL_ARB_shader_texture_image_samples] = EBhDisable;
     extensionBehavior[GL_ARB_viewport_array]               = EBhDisable;
 //    extensionBehavior[GL_ARB_cull_distance]                = EBhDisable;    // present for 4.5, but need extension control over block members
+
+    // AEP
+    extensionBehavior[GL_ANDROID_extension_pack_es31a]             = EBhDisablePartial;
+    extensionBehavior[GL_KHR_blend_equation_advanced]              = EBhDisablePartial;
+    extensionBehavior[GL_OES_sample_variables]                     = EBhDisablePartial;
+    extensionBehavior[GL_OES_shader_image_atomic]                  = EBhDisablePartial;
+    extensionBehavior[GL_OES_shader_multisample_interpolation]     = EBhDisablePartial;
+    extensionBehavior[GL_OES_texture_storage_multisample_2d_array] = EBhDisablePartial;
+    extensionBehavior[GL_EXT_geometry_shader]                      = EBhDisablePartial;
+    extensionBehavior[GL_EXT_geometry_point_size]                  = EBhDisablePartial;
+    extensionBehavior[GL_EXT_gpu_shader5]                          = EBhDisablePartial;
+    extensionBehavior[GL_EXT_primitive_bounding_box]               = EBhDisablePartial;
+    extensionBehavior[GL_EXT_shader_io_blocks]                     = EBhDisablePartial;
+    extensionBehavior[GL_EXT_tessellation_shader]                  = EBhDisablePartial;
+    extensionBehavior[GL_EXT_tessellation_point_size]              = EBhDisablePartial;
+    extensionBehavior[GL_EXT_texture_buffer]                       = EBhDisablePartial;
+    extensionBehavior[GL_EXT_texture_cube_map_array]               = EBhDisablePartial;
 }
 
 // Get code that is not part of a shared symbol table, is specific to this shader,
@@ -187,6 +205,23 @@ const char* TParseContext::getPreamble()
             "#define GL_EXT_frag_depth 1\n"
             "#define GL_OES_EGL_image_external 1\n"
             "#define GL_EXT_shader_texture_lod 1\n"
+
+            // AEP
+            "#define GL_ANDROID_extension_pack_es31a 1\n"
+            "#define GL_KHR_blend_equation_advanced 1\n"
+            "#define GL_OES_sample_variables 1\n"
+            "#define GL_OES_shader_image_atomic 1\n"
+            "#define GL_OES_shader_multisample_interpolation 1\n"
+            "#define GL_OES_texture_storage_multisample_2d_array 1\n"
+            "#define GL_EXT_geometry_shader 1\n"
+            "#define GL_EXT_geometry_point_size 1\n"
+            "#define GL_EXT_gpu_shader5 1\n"
+            "#define GL_EXT_primitive_bounding_box 1\n"
+            "#define GL_EXT_shader_io_blocks 1\n"
+            "#define GL_EXT_tessellation_shader 1\n"
+            "#define GL_EXT_tessellation_point_size 1\n"
+            "#define GL_EXT_texture_buffer 1\n"
+            "#define GL_EXT_texture_cube_map_array 1\n"
             ;
     } else {
         return
@@ -196,6 +231,7 @@ const char* TParseContext::getPreamble()
             "#define GL_ARB_texture_gather 1\n"
             "#define GL_ARB_gpu_shader5 1\n"
             "#define GL_ARB_separate_shader_objects 1\n"
+            "#define GL_ARB_compute_shader 1\n"
             "#define GL_ARB_tessellation_shader 1\n"
             "#define GL_ARB_enhanced_layouts 1\n"
             "#define GL_ARB_texture_cube_map_array 1\n"
@@ -434,12 +470,36 @@ void TParseContext::updateExtensionBehavior(const char* extension, const char* b
         behavior = EBhDisable;
     else if (! strcmp("warn", behaviorString))
         behavior = EBhWarn;
-    else
-        error(getCurrentLoc(), "behavior not supported", "#extension", behaviorString);
+    else {
+        error(getCurrentLoc(), "behavior not supported:", "#extension", behaviorString);
+        return;
+    }
 
+    // update the requested extension
+    updateExtensionBehavior(extension, behavior);
+
+    // see if need to propagate to everything in AEP
+    if (strcmp(extension, "GL_ANDROID_extension_pack_es31a") == 0) {
+        updateExtensionBehavior("GL_KHR_blend_equation_advanced", behaviorString);
+        updateExtensionBehavior("GL_OES_sample_variables", behaviorString);
+        updateExtensionBehavior("GL_OES_shader_image_atomic", behaviorString);
+        updateExtensionBehavior("GL_OES_shader_multisample_interpolation", behaviorString);
+        updateExtensionBehavior("GL_OES_texture_storage_multisample_2d_array", behaviorString);
+        updateExtensionBehavior("GL_EXT_geometry_shader", behaviorString);
+        updateExtensionBehavior("GL_EXT_gpu_shader5", behaviorString);
+        updateExtensionBehavior("GL_EXT_primitive_bounding_box", behaviorString);
+        updateExtensionBehavior("GL_EXT_shader_io_blocks", behaviorString);
+        updateExtensionBehavior("GL_EXT_tessellation_shader", behaviorString);
+        updateExtensionBehavior("GL_EXT_texture_buffer", behaviorString);
+        updateExtensionBehavior("GL_EXT_texture_cube_map_array", behaviorString);
+    }
+}
+
+void TParseContext::updateExtensionBehavior(const char* extension, TExtensionBehavior behavior)
+{
     // Update the current behavior
     TMap<TString, TExtensionBehavior>::iterator iter;
-    if (! strcmp(extension, "all")) {
+    if (strcmp(extension, "all") == 0) {
         // special case for the 'all' extension; apply it to every extension present
         if (behavior == EBhRequire || behavior == EBhEnable) {
             error(getCurrentLoc(), "extension 'all' cannot have 'require' or 'enable' behavior", "#extension", "");

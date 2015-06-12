@@ -15,7 +15,7 @@ Shader version: 110
 0:?   Linker Objects
 
 noMain1.geom
-ERROR: #version: geometry shaders require non-es profile and version 150 or above
+ERROR: #version: geometry shaders require es profile with version 310 or non-es profile with version 150 or above
 ERROR: 1 compilation errors.  No code generated.
 
 

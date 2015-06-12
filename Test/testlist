@@ -38,6 +38,7 @@ comment.frag
 300block.frag
 310.comp
 310.vert
+310.geom
 310.frag
 310implicitSizeArrayError.vert
 310AofA.vert

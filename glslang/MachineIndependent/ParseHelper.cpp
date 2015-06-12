@@ -157,7 +157,8 @@ bool TParseContext::parseShaderStrings(TPpContext& ppContext, TInputScanner& inp
     currentScanner = &input;
     ppContext.setInput(input, versionWillBeError);
     yyparse(this);
-    finalErrorCheck();
+    if (! parsingBuiltins)
+        finalErrorCheck();
 
     return numErrors == 0;
 }
@@ -3105,6 +3106,30 @@ void TParseContext::finalErrorCheck()
     // Check on array indexes for ES 2.0 (version 100) limitations.
     for (size_t i = 0; i < needsIndexLimitationChecking.size(); ++i)
         constantIndexExpressionCheck(needsIndexLimitationChecking[i]);
+
+    // Check for stages that are enabled by extension.
+    // Can't do this at the beginning, it is chicken and egg to add a stage by extension.
+    // Specific stage-specific features were correctly tested for already, this is just 
+    // about the stage itself.
+    switch (language) {
+    case EShLangGeometry:
+        if (profile == EEsProfile && version == 310)
+            requireExtensions(getCurrentLoc(), 1, &GL_EXT_geometry_shader, "geometry shaders");
+        break;
+    case EShLangTessControl:
+    case EShLangTessEvaluation:
+        if (profile == EEsProfile && version == 310)
+            requireExtensions(getCurrentLoc(), 1, &GL_EXT_tessellation_shader, "tessellation shaders");
+        else if (profile != EEsProfile && version < 400)
+            requireExtensions(getCurrentLoc(), 1, &GL_ARB_tessellation_shader, "tessellation shaders");
+        break;
+    case EShLangCompute:
+        if (profile != EEsProfile && version < 430)
+            requireExtensions(getCurrentLoc(), 1, &GL_ARB_compute_shader, "tessellation shaders");
+        break;
+    default:
+        break;
+    }
 }
 
 //

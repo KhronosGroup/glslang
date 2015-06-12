@@ -347,28 +347,32 @@ bool DeduceVersionProfile(TInfoSink& infoSink, EShLanguage stage, bool versionNo
     // Correct for stage type...
     switch (stage) {
     case EShLangGeometry:
-        if (version < 150 || (profile != ECoreProfile && profile != ECompatibilityProfile)) {
+        if ((profile == EEsProfile && version < 310) ||
+            (profile != EEsProfile && version < 150)) {
             correct = false;
-            infoSink.info.message(EPrefixError, "#version: geometry shaders require non-es profile and version 150 or above");
-            version = 150;
-            profile = ECoreProfile;
+            infoSink.info.message(EPrefixError, "#version: geometry shaders require es profile with version 310 or non-es profile with version 150 or above");
+            version = (profile == EEsProfile) ? 310 : 150;
+            if (profile == EEsProfile || profile == ENoProfile)
+                profile = ECoreProfile;
         }
         break;
     case EShLangTessControl:
     case EShLangTessEvaluation:
-        if (version < 150 || (profile != ECoreProfile && profile != ECompatibilityProfile)) {
+        if ((profile == EEsProfile && version < 310) ||
+            (profile != EEsProfile && version < 150)) {
             correct = false;
-            infoSink.info.message(EPrefixError, "#version: tessellation shaders require non-es profile and version 150 or above");
-            version = 150;
-            profile = ECoreProfile;
+            infoSink.info.message(EPrefixError, "#version: tessellation shaders require es profile with version 310 or non-es profile with version 150 or above");
+            version = (profile == EEsProfile) ? 310 : 400; // 150 supports the extension, correction is to 400 which does not
+            if (profile == EEsProfile || profile == ENoProfile)
+                profile = ECoreProfile;
         }
         break;
     case EShLangCompute:
         if ((profile == EEsProfile && version < 310) ||
-            (profile != EEsProfile && version < 430)) {
+            (profile != EEsProfile && version < 420)) {
             correct = false;
-            infoSink.info.message(EPrefixError, "#version: compute shaders require es profile with version 310 or above, or non-es profile with version 430 or above");
-            version = profile == EEsProfile ? 310 : 430;
+            infoSink.info.message(EPrefixError, "#version: compute shaders require es profile with version 310 or above, or non-es profile with version 420 or above");
+            version = profile == EEsProfile ? 310 : 430; // 420 supports the extension, correction is to 430 which does not
             profile = ECoreProfile;
         }
         break;
