@@ -4493,6 +4493,8 @@ void TParseContext::declareBlock(TSourceLoc loc, TTypeList& typeList, const TStr
     case EvqUniform:
         profileRequires(loc, EEsProfile, 300, nullptr, "uniform block");
         profileRequires(loc, ENoProfile, 140, nullptr, "uniform block");
+        if (currentBlockQualifier.layoutPacking == ElpStd430)
+            requireProfile(loc, ~EEsProfile, "std430 on a uniform block");
         break;
     case EvqBuffer:
         requireProfile(loc, EEsProfile | ECoreProfile | ECompatibilityProfile, "buffer block");

@@ -38,8 +38,10 @@ ERROR: 0:149: 'float' : cannot apply precision statement to this type; use 'floa
 ERROR: 0:168: 'Binst' : cannot add storage, auxiliary, memory, interpolation, layout, or precision qualifier to an existing variable 
 ERROR: 0:169: 'Bblock' : cannot add storage, auxiliary, memory, interpolation, layout, or precision qualifier to an existing variable 
 ERROR: 0:170: 'Bfoo' : cannot add storage, auxiliary, memory, interpolation, layout, or precision qualifier to an existing variable 
-ERROR: 0:173: '' : array size required 
-ERROR: 40 compilation errors.  No code generated.
+ERROR: 0:172: 'std430' : not supported for this version or the enabled extensions 
+ERROR: 0:172: 'std430 on a uniform block' : not supported with this profile: es
+ERROR: 0:175: '' : array size required 
+ERROR: 42 compilation errors.  No code generated.
 
 
 Shader version: 300
@@ -293,6 +295,7 @@ ERROR: node is still EOpNull!
 0:?     'ssss' (smooth out structure{global highp float f})
 0:?     'Binst' (layout(column_major shared ) uniform block{layout(column_major shared ) uniform highp int a})
 0:?     'Bfoo' (global highp int)
+0:?     'B430i' (layout(column_major std430 ) uniform block{layout(column_major std430 offset=0 ) uniform highp int a})
 0:?     'gl_VertexID' (gl_VertexId highp int VertexId)
 0:?     'gl_InstanceID' (gl_InstanceId highp int InstanceId)
 
@@ -551,6 +554,7 @@ ERROR: node is still EOpNull!
 0:?     'ssss' (smooth out structure{global highp float f})
 0:?     'Binst' (layout(column_major shared ) uniform block{layout(column_major shared ) uniform highp int a})
 0:?     'Bfoo' (global highp int)
+0:?     'B430i' (layout(column_major std430 ) uniform block{layout(column_major std430 offset=0 ) uniform highp int a})
 0:?     'gl_VertexID' (gl_VertexId highp int VertexId)
 0:?     'gl_InstanceID' (gl_InstanceId highp int InstanceId)
 

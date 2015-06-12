@@ -14,7 +14,8 @@ ERROR: 0:78: 'vertex-shader array-of-struct output' : not supported with this pr
 ERROR: 0:79: 'vertex-shader array-of-struct output' : not supported with this profile: es
 ERROR: 0:81: 'vertex-shader struct output containing an array' : not supported with this profile: es
 ERROR: 0:83: 'vertex-shader struct output containing structure' : not supported with this profile: es
-ERROR: 14 compilation errors.  No code generated.
+ERROR: 0:85: 'std430 on a uniform block' : not supported with this profile: es
+ERROR: 15 compilation errors.  No code generated.
 
 
 Shader version: 310
@@ -185,6 +186,8 @@ ERROR: node is still EOpNull!
 0:?     'outsa' (smooth out 4-element array of structure{global highp float f})
 0:?     'outSA' (smooth out structure{global 4-element array of highp float f})
 0:?     'outSS' (smooth out structure{global highp float f, global structure{global highp float f} s})
+0:?     'U430i' (layout(column_major std430 ) uniform block{layout(column_major std430 offset=0 ) uniform highp int a})
+0:?     'B430i' (layout(column_major std430 ) buffer block{layout(column_major std430 offset=0 ) buffer highp int a})
 0:?     'gl_VertexID' (gl_VertexId highp int VertexId)
 0:?     'gl_InstanceID' (gl_InstanceId highp int InstanceId)
 
@@ -360,6 +363,8 @@ ERROR: node is still EOpNull!
 0:?     'outsa' (smooth out 4-element array of structure{global highp float f})
 0:?     'outSA' (smooth out structure{global 4-element array of highp float f})
 0:?     'outSS' (smooth out structure{global highp float f, global structure{global highp float f} s})
+0:?     'U430i' (layout(column_major std430 ) uniform block{layout(column_major std430 offset=0 ) uniform highp int a})
+0:?     'B430i' (layout(column_major std430 ) buffer block{layout(column_major std430 offset=0 ) buffer highp int a})
 0:?     'gl_VertexID' (gl_VertexId highp int VertexId)
 0:?     'gl_InstanceID' (gl_InstanceId highp int InstanceId)
 

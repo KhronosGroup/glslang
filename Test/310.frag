@@ -82,7 +82,7 @@ layout(location = 40) out vec4 bigout1;  // ERROR, too big
 layout(location = 40) out vec4 bigout2;  // ERROR, overlap
 layout(location = -2) out vec4 neg;      // ERROR, negative
 
-layout(std430) uniform b430 {
+layout(std430) buffer b430 {
     int i;
 } b430i;
 

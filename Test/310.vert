@@ -81,3 +81,6 @@ struct SA { float f[4]; };
 out SA outSA;          // ERROR
 struct SS { float f; S s; };
 out SS outSS;          // ERROR
+
+layout(std430) uniform U430 { int a; } U430i;    // ERROR
+layout(std430) buffer B430 { int a; } B430i;
