@@ -145,7 +145,7 @@ Linked fragment stage:
                               Store 74(v) 91 
               94:   11(float) Load 67(z) 
               95:   72(fvec4) Load 74(v) 
-              96:   72(fvec4) VectorTimesScalar 94 95
+              96:   72(fvec4) VectorTimesScalar 95 94
                               Store 93(gl_FragColor) 96 
                               Branch 6
                6:             Label

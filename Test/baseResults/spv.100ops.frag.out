@@ -73,7 +73,7 @@ Linked fragment stage:
               39:     16(int) Load 18(z) 
               40:    7(float) ConvertSToF 39
               41:   35(fvec4) CompositeConstruct 40 40 40 40
-              42:   35(fvec4) VectorTimesScalar 38 41
+              42:   35(fvec4) VectorTimesScalar 41 38
               43:    7(float) FunctionCall 9(foo() 
               44:   35(fvec4) CompositeConstruct 43 43 43 43
               45:   35(fvec4) FAdd 42 44

@@ -118,7 +118,7 @@ Linked fragment stage:
               60:          57 Load 59(sampler) 
               64:   61(fvec2) Load 63(coord) 
               65:   53(fvec4) TextureSample 60 64 
-              66:   53(fvec4) VectorTimesScalar 56 65
+              66:   53(fvec4) VectorTimesScalar 65 56
                               Store 55(gl_FragColor) 66 
               70:   61(fvec2) Load 63(coord) 
               71:   13(float) Load 31(scale) 

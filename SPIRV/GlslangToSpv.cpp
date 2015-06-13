@@ -1684,9 +1684,10 @@ spv::Id TGlslangToSpvTraverser::handleUserFunctionCall(const glslang::TIntermAgg
     return result;
 }
 
+// Translate AST operation to SPV operation, already having SPV-based operands/types.
 spv::Id TGlslangToSpvTraverser::createBinaryOperation(glslang::TOperator op, spv::Decoration precision, 
-                                                        spv::Id typeId, spv::Id left, spv::Id right,
-                                                        glslang::TBasicType typeProxy, bool reduceComparison)
+                                                      spv::Id typeId, spv::Id left, spv::Id right,
+                                                      glslang::TBasicType typeProxy, bool reduceComparison)
 {
     bool isUnsigned = typeProxy == glslang::EbtUint;
     bool isFloat = typeProxy == glslang::EbtFloat || typeProxy == glslang::EbtDouble;
@@ -1719,22 +1720,34 @@ spv::Id TGlslangToSpvTraverser::createBinaryOperation(glslang::TOperator op, spv
         break;
     case glslang::EOpVectorTimesScalar:
     case glslang::EOpVectorTimesScalarAssign:
+        if (builder.isVector(right))
+            std::swap(left, right);
+        assert(builder.isScalar(right));
         binOp = spv::OpVectorTimesScalar;
         needsPromotion = false;
         break;
     case glslang::EOpVectorTimesMatrix:
     case glslang::EOpVectorTimesMatrixAssign:
+        assert(builder.isVector(left));
+        assert(builder.isMatrix(right));
         binOp = spv::OpVectorTimesMatrix;
         break;
     case glslang::EOpMatrixTimesVector:
+        assert(builder.isMatrix(left));
+        assert(builder.isVector(right));
         binOp = spv::OpMatrixTimesVector;
         break;
     case glslang::EOpMatrixTimesScalar:
     case glslang::EOpMatrixTimesScalarAssign:
+        if (builder.isMatrix(right))
+            std::swap(left, right);
+        assert(builder.isScalar(right));
         binOp = spv::OpMatrixTimesScalar;
         break;
     case glslang::EOpMatrixTimesMatrix:
     case glslang::EOpMatrixTimesMatrixAssign:
+        assert(builder.isMatrix(left));
+        assert(builder.isMatrix(right));
         binOp = spv::OpMatrixTimesMatrix;
         break;
     case glslang::EOpOuterProduct:
