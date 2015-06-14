@@ -72,7 +72,9 @@ ERROR: 0:207: 'constructor' : can't read from writeonly object:  wo
 ERROR: 0:208: '~' : can't read from writeonly object:  wo
 ERROR: 0:221: 'assign' : can't read from writeonly object:  wo
 ERROR: 0:222: '~' : can't read from writeonly object:  wo
-ERROR: 72 compilation errors.  No code generated.
+ERROR: 0:227: 'input block' : not supported in this stage: compute
+ERROR: 0:231: 'output block' : not supported in this stage: compute
+ERROR: 74 compilation errors.  No code generated.
 
 
 Shader version: 310
@@ -479,6 +481,8 @@ ERROR: node is still EOpNull!
 0:?     'badQ3' (layout(rgba16ui ) coherent volatile restrict uniform highp uimage2D)
 0:?     'wo' (layout(column_major shared ) writeonly buffer block{layout(column_major shared ) buffer highp int value, layout(column_major shared ) buffer implicitly-sized array of highp float values})
 0:?     'multio' (layout(column_major shared ) buffer block{layout(column_major shared ) readonly buffer highp int value, layout(column_major shared ) writeonly buffer implicitly-sized array of highp float values})
+0:?     'inbi' (in block{in highp int a})
+0:?     'outbi' (out block{out highp int a})
 
 
 Linked compute stage:
@@ -888,4 +892,6 @@ ERROR: node is still EOpNull!
 0:?     'badQ3' (layout(rgba16ui ) coherent volatile restrict uniform highp uimage2D)
 0:?     'wo' (layout(column_major shared ) writeonly buffer block{layout(column_major shared ) buffer highp int value, layout(column_major shared ) buffer implicitly-sized array of highp float values})
 0:?     'multio' (layout(column_major shared ) buffer block{layout(column_major shared ) readonly buffer highp int value, layout(column_major shared ) writeonly buffer implicitly-sized array of highp float values})
+0:?     'inbi' (in block{in highp int a})
+0:?     'outbi' (out block{out highp int a})
 

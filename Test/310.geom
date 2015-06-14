@@ -8,6 +8,8 @@ in fromVertex {
     in vec3 color;
 } fromV[];
 
+in vec4 nonBlockUnsized[];
+
 out toFragment {
     out vec3 color;
 } toF;
@@ -34,37 +36,19 @@ void main()
     EndStreamPrimitive(0);  // ERROR
 
     color = fromV[0].color;
-    gl_ClipDistance[3] = gl_in[1].gl_ClipDistance[2];
+    gl_ClipDistance[3] =              // ERROR, no ClipDistance
+        gl_in[1].gl_ClipDistance[2];  // ERROR, no ClipDistance
     gl_Position = gl_in[0].gl_Position;
     gl_PointSize = gl_in[3].gl_PointSize;
     gl_PrimitiveID = gl_PrimitiveIDIn;
     gl_Layer = 2;
 }
 
-out vec4 ov0;  // stream should be 0
-layout(stream = 4) out vec4 ov4;
-out vec4 o1v0;  // stream should be 0
+layout(stream = 4) out vec4 ov4; // ERROR, no streams
 
-layout(stream = 3) uniform;        // ERROR
-layout(stream = 3) in;             // ERROR
-layout(stream = 3) uniform int ua; // ERROR
-layout(stream = 3) uniform ubb { int ua; } ibb; // ERROR
+layout(line_strip, points, triangle_strip, points, triangle_strip) out;  // just means triangle_strip"
 
-layout(line_strip, points, triangle_strip, stream = 3, points, triangle_strip) out;  // just means "stream = 3, triangle_strip"
-layout(stream = 3, triangle_strip) out;
-out vec4 ov3;  // stream should be 3
-
-layout(stream = 6) out ooutb { vec4 a; } ouuaa6;
-
-layout(stream = 6) out ooutb2 {
-    layout(stream = 6) vec4 a;
-} ouua6;
-
-layout(stream = 7) out ooutb3 {
-    layout(stream = 6) vec4 a;  // ERROR
-} ouua7;
-
-out vec4 ov2s3;  // stream should be 3
+out ooutb { vec4 a; } ouuaa6;
 
 layout(max_vertices = 200) out;
 layout(max_vertices = 300) out;   // ERROR, too big
@@ -73,8 +57,8 @@ void foo(layout(max_vertices = 4) int a)  // ERROR
     ouuaa6.a = vec4(1.0);
 }
 
-layout(line_strip, points, triangle_strip, stream = 3, points) out;  // ERROR, changing output primitive
-layout(line_strip, points, stream = 3) out; // ERROR, changing output primitive
+layout(line_strip, points, triangle_strip, points) out;  // ERROR, changing output primitive
+layout(line_strip, points) out; // ERROR, changing output primitive
 layout(triangle_strip) in; // ERROR, not an input primitive
 layout(triangle_strip) uniform; // ERROR
 layout(triangle_strip) out vec4 badv4;  // ERROR, not on a variable
@@ -92,10 +76,6 @@ layout(triangles) in;             // ERROR, can't change it
 layout(triangles_adjacency) in;   // ERROR, can't change it
 layout(invocations = 4) in;       // ERROR, not until 4.0
 
-in inbn {
-    layout(stream = 2) int a;     // ERROR, stream on input
-} inbi[];
-
 in sameName {
     int a15;
 } insn[];
@@ -108,36 +88,23 @@ uniform sameName {
     bool b15;
 };
 
-float summ = gl_MaxVertexAttribs +
-             gl_MaxVertexUniformComponents +
-             gl_MaxVaryingFloats +
-             gl_MaxVaryingComponents +
-             gl_MaxVertexOutputComponents  +
-             gl_MaxGeometryInputComponents  +
-             gl_MaxGeometryOutputComponents  +
-             gl_MaxFragmentInputComponents  +
+const int summ = gl_MaxVertexAttribs +
+             gl_MaxGeometryInputComponents +
+             gl_MaxGeometryOutputComponents +
+             gl_MaxGeometryImageUniforms +
+             gl_MaxGeometryTextureImageUnits +
+             gl_MaxGeometryOutputVertices +
+             gl_MaxGeometryTotalOutputComponents +
+             gl_MaxGeometryUniformComponents +
+             gl_MaxGeometryAtomicCounters +
+             gl_MaxGeometryAtomicCounterBuffers +
              gl_MaxVertexTextureImageUnits +
              gl_MaxCombinedTextureImageUnits +
              gl_MaxTextureImageUnits +
-             gl_MaxFragmentUniformComponents +
-             gl_MaxDrawBuffers +
-             gl_MaxClipDistances  +
-             gl_MaxGeometryTextureImageUnits +
-             gl_MaxGeometryOutputVertices +
-             gl_MaxGeometryTotalOutputComponents  +
-             gl_MaxGeometryUniformComponents  +
-             gl_MaxGeometryVaryingComponents;
+             gl_MaxDrawBuffers;
 
 void fooe1()
 {
-    gl_ViewportIndex = gl_MaxViewports - 1;
+    gl_ViewportIndex;  // ERROR, not in ES
+    gl_MaxViewports;   // ERROR, not in ES
 }
-
-#extension GL_ARB_viewport_array : enable
-
-void fooe2()
-{
-    gl_ViewportIndex = gl_MaxViewports - 1;
-}
-
-out int gl_ViewportIndex;

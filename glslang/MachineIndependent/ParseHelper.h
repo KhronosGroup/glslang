@@ -123,7 +123,8 @@ public:
     bool arrayQualifierError(TSourceLoc, const TQualifier&);
     bool arrayError(TSourceLoc, const TType&);
     void arraySizeRequiredCheck(TSourceLoc, int size);
-    void structArrayCheck(TSourceLoc, TType* structure);
+    void structArrayCheck(TSourceLoc, const TType& structure);
+    void variableArrayUnsizedCheck(TSourceLoc, const TType&, bool initializer);
     void arrayDimError(TSourceLoc);
     void arrayDimCheck(TSourceLoc, TArraySizes* sizes1, TArraySizes* sizes2);
     void arrayDimCheck(TSourceLoc, const TType*, TArraySizes*);
@@ -177,6 +178,7 @@ public:
     TIntermTyped* constructStruct(TIntermNode*, const TType&, int, TSourceLoc);
     TIntermTyped* constructBuiltIn(const TType&, TOperator, TIntermTyped*, TSourceLoc, bool subset);
     void declareBlock(TSourceLoc, TTypeList& typeList, const TString* instanceName = 0, TArraySizes* arraySizes = 0);
+    void blockStageIoCheck(TSourceLoc, TStorageQualifier, TArraySizes*);
     void fixBlockLocations(TSourceLoc, TQualifier&, TTypeList&, bool memberWithLocation, bool memberWithoutLocation);
     void fixBlockXfbOffsets(TQualifier&, TTypeList&);
     void fixBlockUniformOffsets(TQualifier&, TTypeList&);

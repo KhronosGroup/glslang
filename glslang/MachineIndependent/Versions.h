@@ -115,6 +115,38 @@ const char* const GL_EXT_tessellation_point_size              = "GL_EXT_tessella
 const char* const GL_EXT_texture_buffer                       = "GL_EXT_texture_buffer";
 const char* const GL_EXT_texture_cube_map_array               = "GL_EXT_texture_cube_map_array";
 
+// OES matching AEP
+const char* const GL_OES_geometry_shader                      = "GL_OES_geometry_shader";
+const char* const GL_OES_gpu_shader5                          = "GL_OES_gpu_shader5";
+const char* const GL_OES_primitive_bounding_box               = "GL_OES_primitive_bounding_box";
+const char* const GL_OES_shader_io_blocks                     = "GL_OES_shader_io_blocks";
+const char* const GL_OES_tessellation_shader                  = "GL_OES_tessellation_shader";
+const char* const GL_OES_texture_buffer                       = "GL_OES_texture_buffer";
+const char* const GL_OES_texture_cube_map_array               = "GL_OES_texture_cube_map_array";
+
+// Arrays of extensions for the above AEP duplications
+
+const char* const AEP_geometry_shader[] = { GL_EXT_geometry_shader, GL_OES_geometry_shader };
+const int Num_AEP_geometry_shader = sizeof(AEP_geometry_shader)/sizeof(AEP_geometry_shader[0]);
+
+const char* const AEP_gpu_shader5[] = { GL_EXT_gpu_shader5, GL_OES_gpu_shader5 };
+const int Num_AEP_gpu_shader5 = sizeof(AEP_gpu_shader5)/sizeof(AEP_gpu_shader5[0]);
+
+const char* const AEP_primitive_bounding_box[] = { GL_EXT_primitive_bounding_box, GL_OES_primitive_bounding_box };
+const int Num_AEP_primitive_bounding_box = sizeof(AEP_primitive_bounding_box)/sizeof(AEP_primitive_bounding_box[0]);
+
+const char* const AEP_shader_io_blocks[] = { GL_EXT_shader_io_blocks, GL_OES_shader_io_blocks };
+const int Num_AEP_shader_io_blocks = sizeof(AEP_shader_io_blocks)/sizeof(AEP_shader_io_blocks[0]);
+
+const char* const AEP_tessellation_shader[] = { GL_EXT_tessellation_shader, GL_OES_tessellation_shader };
+const int Num_AEP_tessellation_shader = sizeof(AEP_tessellation_shader)/sizeof(AEP_tessellation_shader[0]);
+
+const char* const AEP_texture_buffer[] = { GL_EXT_texture_buffer, GL_OES_texture_buffer };
+const int Num_AEP_texture_buffer = sizeof(AEP_texture_buffer)/sizeof(AEP_texture_buffer[0]);
+
+const char* const AEP_texture_cube_map_array[] = { GL_EXT_texture_cube_map_array, GL_OES_texture_cube_map_array };
+const int Num_AEP_texture_cube_map_array = sizeof(AEP_texture_cube_map_array)/sizeof(AEP_texture_cube_map_array[0]);
+
 } // end namespace glslang
 
 #endif // _VERSIONS_INCLUDED_

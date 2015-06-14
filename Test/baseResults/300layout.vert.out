@@ -11,7 +11,7 @@ ERROR: 0:21: 'bad1' : member of block cannot have a packing layout qualifier
 ERROR: 0:22: 'bad2' : member of block cannot have a packing layout qualifier 
 ERROR: 0:23: 'bad3' : member of block cannot have a packing layout qualifier 
 ERROR: 0:31: 'T3' : nameless block contains a member that already has a name at global scope 
-ERROR: 0:38: 'output block' : not supported with this profile: es
+ERROR: 0:38: 'vertex output block' : not supported for this version or the enabled extensions 
 ERROR: 0:42: 'location qualifier on output' : not supported in this stage: vertex
 ERROR: 0:42: 'location qualifier on output' : not supported for this version or the enabled extensions 
 ERROR: 0:50: 'shared' : not supported for this version or the enabled extensions 

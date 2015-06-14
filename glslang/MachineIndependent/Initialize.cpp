@@ -622,6 +622,7 @@ void TBuiltIns::initialize(int version, EProfile profile)
             
         "\n");
 
+    // 120 is correct for both ES and desktop
     if (version >= 120) {
         commonBuiltins.append(
             "mat2   outerProduct(vec2 c, vec2 r);"
@@ -653,6 +654,7 @@ void TBuiltIns::initialize(int version, EProfile profile)
             
             "\n");
 
+        // 150 is correct for both ES and desktop
         if (version >= 150) {
             commonBuiltins.append(
                 "float determinant(mat2 m);"
@@ -1043,7 +1045,6 @@ void TBuiltIns::initialize(int version, EProfile profile)
         stageBuiltins[EShLangGeometry].append(
             "void EmitVertex();"
             "void EndPrimitive();"
-            
             "\n");
     }
 
@@ -1569,7 +1570,7 @@ void TBuiltIns::initialize(int version, EProfile profile)
     //
     //============================================================================
 
-    if (version >= 150) {
+    if (profile != EEsProfile && version >= 150) {
         // Note:  "in gl_PerVertex {...} gl_in[gl_MaxPatchVertices];" is declared in initialize() below,
         // as it depends on the resource sizing of gl_MaxPatchVertices.
 
@@ -1603,6 +1604,25 @@ void TBuiltIns::initialize(int version, EProfile profile)
             "patch out float gl_TessLevelOuter[4];"
             "patch out float gl_TessLevelInner[2];"
             "\n");
+    } else {
+        // Note:  "in gl_PerVertex {...} gl_in[gl_MaxPatchVertices];" is declared in initialize() below,
+        // as it depends on the resource sizing of gl_MaxPatchVertices.
+
+        stageBuiltins[EShLangTessControl].append(
+            "in highp int gl_PatchVerticesIn;"
+            "in highp int gl_PrimitiveID;"
+            "in highp int gl_InvocationID;"
+
+            "out gl_PerVertex {"
+                "highp vec4 gl_Position;"
+                "highp float gl_PointSize;"
+                );
+        stageBuiltins[EShLangTessControl].append(
+            "} gl_out[];"
+
+            "patch out highp float gl_TessLevelOuter[4];"
+            "patch out highp float gl_TessLevelInner[2];"
+            "\n");
     }
 
     //============================================================================
@@ -1611,7 +1631,7 @@ void TBuiltIns::initialize(int version, EProfile profile)
     //
     //============================================================================
 
-    if (version >= 150) {
+    if (profile != EEsProfile && version >= 150) {
         // Note:  "in gl_PerVertex {...} gl_in[gl_MaxPatchVertices];" is declared in initialize() below,
         // as it depends on the resource sizing of gl_MaxPatchVertices.
 
@@ -1642,6 +1662,25 @@ void TBuiltIns::initialize(int version, EProfile profile)
             stageBuiltins[EShLangTessEvaluation].append(
                 "float gl_CullDistance[];"
                 );
+        stageBuiltins[EShLangTessEvaluation].append(
+            "};"
+            "\n");
+    } else {
+        // Note:  "in gl_PerVertex {...} gl_in[gl_MaxPatchVertices];" is declared in initialize() below,
+        // as it depends on the resource sizing of gl_MaxPatchVertices.
+
+        stageBuiltins[EShLangTessEvaluation].append(
+            "in highp int gl_PatchVerticesIn;"
+            "in highp int gl_PrimitiveID;"
+            "in highp vec3 gl_TessCoord;"
+
+            "patch in highp float gl_TessLevelOuter[4];"
+            "patch in highp float gl_TessLevelInner[2];"
+                
+            "out gl_PerVertex {"
+                "vec4 gl_Position;"
+                "float gl_PointSize;"
+            );
         stageBuiltins[EShLangTessEvaluation].append(
             "};"
             "\n");
@@ -2923,6 +2962,7 @@ void IdentifyBuiltIns(int version, EProfile profile, EShLanguage language, TSymb
     symbolTable.relateToOperator("not",              EOpVectorLogicalNot);
 
     symbolTable.relateToOperator("matrixCompMult",   EOpMul);
+    // 120 and 150 are correct for both ES and desktop
     if (version >= 120) {
         symbolTable.relateToOperator("outerProduct", EOpOuterProduct);
         symbolTable.relateToOperator("transpose", EOpTranspose);

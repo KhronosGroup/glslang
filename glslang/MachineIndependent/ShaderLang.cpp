@@ -178,7 +178,7 @@ void InitializeStageSymbolTable(TBuiltIns& builtIns, int version, EProfile profi
 
 //
 // Initialize the full set of shareable symbol tables;
-// The common (cross-stage) and those sharable per-stage.
+// The common (cross-stage) and those shareable per-stage.
 //
 bool InitializeSymbolTables(TInfoSink& infoSink, TSymbolTable** commonTable,  TSymbolTable** symbolTables, int version, EProfile profile)
 {
@@ -191,14 +191,24 @@ bool InitializeSymbolTables(TInfoSink& infoSink, TSymbolTable** commonTable,  TS
         InitializeSymbolTable(builtIns.getCommonString(), version, profile, EShLangFragment, infoSink, *commonTable[EPcFragment]);
 
     // do the per-stage tables
+
+    // always have vertex and fragment
     InitializeStageSymbolTable(builtIns, version, profile, EShLangVertex, infoSink, commonTable, symbolTables);
     InitializeStageSymbolTable(builtIns, version, profile, EShLangFragment, infoSink, commonTable, symbolTables);
-    if (profile != EEsProfile && version >= 150) {
+
+    // check for tessellation
+    if ((profile != EEsProfile && version >= 150) ||
+        (profile == EEsProfile && version >= 310)) {
         InitializeStageSymbolTable(builtIns, version, profile, EShLangTessControl, infoSink, commonTable, symbolTables);
         InitializeStageSymbolTable(builtIns, version, profile, EShLangTessEvaluation, infoSink, commonTable, symbolTables);
     }
-    if (profile != EEsProfile && version >= 150)
+
+    // check for geometry
+    if ((profile != EEsProfile && version >= 150) ||
+        (profile == EEsProfile && version >= 310))
         InitializeStageSymbolTable(builtIns, version, profile, EShLangGeometry, infoSink, commonTable, symbolTables);
+
+    // check for compute
     if ((profile != EEsProfile && version >= 430) ||
         (profile == EEsProfile && version >= 310))
         InitializeStageSymbolTable(builtIns, version, profile, EShLangCompute, infoSink, commonTable, symbolTables);

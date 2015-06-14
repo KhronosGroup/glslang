@@ -1,299 +1,244 @@
 310.geom
 Warning, version 310 is not yet complete; most version-specific features are present, but some are missing.
 WARNING: 0:3: '#extension' : extension is only partially supported: GL_EXT_geometry_shader
-ERROR: 0:7: '' : array size required 
-ERROR: 0:7: 'input block' : not supported with this profile: es
-ERROR: 0:11: 'output block' : not supported with this profile: es
-ERROR: 0:15: 'output block' : not supported with this profile: es
-ERROR: 0:19: 'output block' : not supported with this profile: es
-ERROR: 0:19: 'fromVertex' : block instance name redefinition 
-ERROR: 0:23: 'fromVertex' : redefinition 
-ERROR: 0:25: 'output block' : not supported with this profile: es
-ERROR: 0:25: 'fooC' : block instance name redefinition 
-ERROR: 0:31: 'EmitVertex' : no matching overloaded function found 
-ERROR: 0:32: 'EndPrimitive' : no matching overloaded function found 
-ERROR: 0:33: 'EmitStreamVertex' : no matching overloaded function found 
-ERROR: 0:34: 'EndStreamPrimitive' : no matching overloaded function found 
-ERROR: 0:37: 'gl_ClipDistance' : undeclared identifier 
-ERROR: 0:37: 'gl_ClipDistance' :  left of '[' is not of type array, matrix, or vector  
-ERROR: 0:37: 'gl_in' : undeclared identifier 
-ERROR: 0:37: 'gl_in' :  left of '[' is not of type array, matrix, or vector  
-ERROR: 0:37: 'scalar swizzle' : not supported with this profile: es
-ERROR: 0:37: 'gl_ClipDistance' : illegal vector field selection 
-ERROR: 0:37: 'expression' :  left of '[' is not of type array, matrix, or vector  
-ERROR: 0:37: 'assign' :  l-value required (can't modify a const)
-ERROR: 0:38: 'gl_Position' : undeclared identifier 
-ERROR: 0:38: 'gl_in' :  left of '[' is not of type array, matrix, or vector  
-ERROR: 0:38: 'scalar swizzle' : not supported with this profile: es
-ERROR: 0:38: 'gl_Position' : illegal vector field selection 
-ERROR: 0:39: 'gl_PointSize' : undeclared identifier 
-ERROR: 0:39: 'gl_in' :  left of '[' is not of type array, matrix, or vector  
-ERROR: 0:39: 'scalar swizzle' : not supported with this profile: es
-ERROR: 0:39: 'gl_PointSize' : illegal vector field selection 
-ERROR: 0:40: 'gl_PrimitiveID' : undeclared identifier 
-ERROR: 0:40: 'gl_PrimitiveIDIn' : undeclared identifier 
-ERROR: 0:41: 'gl_Layer' : undeclared identifier 
-ERROR: 0:41: 'assign' :  cannot convert from 'const int' to 'temp float'
-ERROR: 0:48: 'stream' : can only be used on an output 
-ERROR: 0:49: 'stream' : can only be used on an output 
-ERROR: 0:50: 'stream' : can only be used on an output 
-ERROR: 0:51: 'stream' : can only be used on an output 
-ERROR: 0:51: 'stream' : can only be used on an output 
-ERROR: 0:57: 'output block' : not supported with this profile: es
-ERROR: 0:59: 'output block' : not supported with this profile: es
-ERROR: 0:63: 'output block' : not supported with this profile: es
-ERROR: 0:64: 'stream' : member cannot contradict block 
-ERROR: 0:70: 'max_vertices' : too large, must be less than gl_MaxGeometryOutputVertices 
-ERROR: 0:70: 'max_vertices' : cannot change previously set layout value 
-ERROR: 0:71: 'max_vertices' : can only apply to a standalone qualifier 
-ERROR: 0:76: 'points' : cannot change previously set output primitive 
-ERROR: 0:77: 'points' : cannot change previously set output primitive 
-ERROR: 0:78: 'triangle_strip' : cannot apply to input 
-ERROR: 0:79: 'triangle_strip' : cannot apply to: uniform
-ERROR: 0:80: 'triangle_strip' : can only apply to a standalone qualifier 
-ERROR: 0:81: 'triangle_strip' : can only apply to a standalone qualifier 
-ERROR: 0:81: '' : array size required 
-ERROR: 0:82: 'invocations' : can only apply to a standalone qualifier 
-ERROR: 0:82: 'output block' : not supported with this profile: es
-ERROR: 0:84: 'invocations' : can only apply to a standalone qualifier 
-ERROR: 0:85: 'max_vertices' : can only apply to a standalone qualifier 
-ERROR: 0:86: 'triangle_strip' : can only apply to a standalone qualifier 
-ERROR: 0:83: 'output block' : not supported with this profile: es
-ERROR: 0:89: 'lines' : cannot apply to 'out' 
-ERROR: 0:91: 'triangles' : cannot change previously set input primitive 
-ERROR: 0:92: 'triangles_adjacency' : cannot change previously set input primitive 
-ERROR: 0:95: '' : array size required 
-ERROR: 0:95: 'input block' : not supported with this profile: es
-ERROR: 0:96: 'stream' : member cannot contradict block 
-ERROR: 0:96: 'stream' : can only be used on an output 
-ERROR: 0:99: '' : array size required 
-ERROR: 0:99: 'input block' : not supported with this profile: es
-ERROR: 0:103: 'output block' : not supported with this profile: es
-ERROR: 0:112: 'gl_MaxVertexUniformComponents' : undeclared identifier 
-ERROR: 0:111: '+' :  wrong operand types: no operation '+' exists that takes a left-hand operand of type 'const mediump int' and a right operand of type 'temp float' (or there is no acceptable conversion)
-ERROR: 0:113: 'gl_MaxVaryingFloats' : undeclared identifier 
-ERROR: 0:112: '+' :  wrong operand types: no operation '+' exists that takes a left-hand operand of type 'const mediump int' and a right operand of type 'temp float' (or there is no acceptable conversion)
-ERROR: 0:114: 'gl_MaxVaryingComponents' : undeclared identifier 
-ERROR: 0:113: '+' :  wrong operand types: no operation '+' exists that takes a left-hand operand of type 'const mediump int' and a right operand of type 'temp float' (or there is no acceptable conversion)
-ERROR: 0:115: 'gl_MaxVertexOutputComponents' : undeclared identifier 
-ERROR: 0:114: '+' :  wrong operand types: no operation '+' exists that takes a left-hand operand of type 'const mediump int' and a right operand of type 'temp float' (or there is no acceptable conversion)
-ERROR: 0:118: 'gl_MaxFragmentInputComponents' : undeclared identifier 
-ERROR: 0:117: '+' :  wrong operand types: no operation '+' exists that takes a left-hand operand of type 'const mediump int' and a right operand of type 'temp float' (or there is no acceptable conversion)
-ERROR: 0:122: 'gl_MaxFragmentUniformComponents' : undeclared identifier 
-ERROR: 0:121: '+' :  wrong operand types: no operation '+' exists that takes a left-hand operand of type 'const mediump int' and a right operand of type 'temp float' (or there is no acceptable conversion)
-ERROR: 0:124: 'gl_MaxClipDistances' : undeclared identifier 
-ERROR: 0:123: '+' :  wrong operand types: no operation '+' exists that takes a left-hand operand of type 'const mediump int' and a right operand of type 'temp float' (or there is no acceptable conversion)
-ERROR: 0:129: 'gl_MaxGeometryVaryingComponents' : undeclared identifier 
-ERROR: 0:128: '+' :  wrong operand types: no operation '+' exists that takes a left-hand operand of type 'const mediump int' and a right operand of type 'temp float' (or there is no acceptable conversion)
-ERROR: 0:111: '=' :  cannot convert from 'const mediump int' to 'global mediump float'
-ERROR: 0:133: 'gl_ViewportIndex' : undeclared identifier 
-ERROR: 0:133: 'gl_MaxViewports' : undeclared identifier 
-ERROR: 0:133: '-' :  wrong operand types: no operation '-' exists that takes a left-hand operand of type 'temp float' and a right operand of type 'const int' (or there is no acceptable conversion)
-ERROR: 0:140: 'gl_ViewportIndex' : undeclared identifier 
-ERROR: 0:140: 'gl_MaxViewports' : undeclared identifier 
-ERROR: 0:140: '-' :  wrong operand types: no operation '-' exists that takes a left-hand operand of type 'temp float' and a right operand of type 'const int' (or there is no acceptable conversion)
-ERROR: 91 compilation errors.  No code generated.
+WARNING: 0:3: '#extension' : extension is only partially supported: GL_EXT_shader_io_blocks
+ERROR: 0:21: 'fromVertex' : block instance name redefinition 
+ERROR: 0:25: 'fromVertex' : redefinition 
+ERROR: 0:27: 'fooC' : block instance name redefinition 
+ERROR: 0:35: 'EmitStreamVertex' : no matching overloaded function found 
+ERROR: 0:36: 'EndStreamPrimitive' : no matching overloaded function found 
+ERROR: 0:39: 'gl_ClipDistance' : undeclared identifier 
+ERROR: 0:39: 'gl_ClipDistance' :  left of '[' is not of type array, matrix, or vector  
+ERROR: 0:40: 'gl_ClipDistance' : no such field in structure 
+ERROR: 0:40: 'expression' :  left of '[' is not of type array, matrix, or vector  
+ERROR: 0:39: 'assign' :  l-value required (can't modify a const)
+ERROR: 0:47: 'selecting output stream' : not supported with this profile: es
+ERROR: 0:54: 'max_vertices' : too large, must be less than gl_MaxGeometryOutputVertices 
+ERROR: 0:54: 'max_vertices' : cannot change previously set layout value 
+ERROR: 0:55: 'max_vertices' : can only apply to a standalone qualifier 
+ERROR: 0:60: 'points' : cannot change previously set output primitive 
+ERROR: 0:61: 'points' : cannot change previously set output primitive 
+ERROR: 0:62: 'triangle_strip' : cannot apply to input 
+ERROR: 0:63: 'triangle_strip' : cannot apply to: uniform
+ERROR: 0:64: 'triangle_strip' : can only apply to a standalone qualifier 
+ERROR: 0:65: 'triangle_strip' : can only apply to a standalone qualifier 
+ERROR: 0:66: 'invocations' : can only apply to a standalone qualifier 
+ERROR: 0:68: 'invocations' : can only apply to a standalone qualifier 
+ERROR: 0:69: 'max_vertices' : can only apply to a standalone qualifier 
+ERROR: 0:70: 'triangle_strip' : can only apply to a standalone qualifier 
+ERROR: 0:73: 'lines' : cannot apply to 'out' 
+ERROR: 0:75: 'triangles' : cannot change previously set input primitive 
+ERROR: 0:76: 'triangles_adjacency' : cannot change previously set input primitive 
+ERROR: 0:108: 'gl_ViewportIndex' : undeclared identifier 
+ERROR: 0:109: 'gl_MaxViewports' : undeclared identifier 
+ERROR: 29 compilation errors.  No code generated.
 
 
 Shader version: 310
-Requested GL_ARB_viewport_array
 Requested GL_EXT_geometry_shader
+Requested GL_EXT_shader_io_blocks
 invocations = 4
 max_vertices = 200
 input primitive = lines_adjacency
 output primitive = triangle_strip
 ERROR: node is still EOpNull!
-0:29  Function Definition: main( (global void)
-0:29    Function Parameters: 
-0:31    Sequence
-0:31      Constant:
-0:31        0.000000
-0:32      Constant:
-0:32        0.000000
-0:33      Constant:
-0:33        0.000000
-0:34      Constant:
-0:34        0.000000
-0:36      move second child to first child (temp mediump 3-component vector of float)
-0:36        color: direct index for structure (layout(stream=0 ) out mediump 3-component vector of float)
-0:36          'anon@0' (layout(stream=0 ) out block{layout(stream=0 ) out mediump 3-component vector of float color})
-0:36          Constant:
-0:36            0 (const uint)
-0:36        color: direct index for structure (in mediump 3-component vector of float)
-0:36          direct index (temp block{in mediump 3-component vector of float color})
-0:36            'fromV' (in 4-element array of block{in mediump 3-component vector of float color})
-0:36            Constant:
-0:36              0 (const int)
-0:36          Constant:
-0:36            0 (const int)
-0:37      move second child to first child (temp float)
-0:37        Constant:
-0:37          0.000000
-0:37        Constant:
-0:37          0.000000
-0:38      move second child to first child (temp float)
-0:38        'gl_Position' (temp float)
-0:38        Constant:
-0:38          0.000000
+0:31  Function Definition: main( (global void)
+0:31    Function Parameters: 
+0:33    Sequence
+0:33      EmitVertex (global void)
+0:34      EndPrimitive (global void)
+0:35      Constant:
+0:35        0.000000
+0:36      Constant:
+0:36        0.000000
+0:38      move second child to first child (temp mediump 3-component vector of float)
+0:38        color: direct index for structure (layout(stream=0 ) out mediump 3-component vector of float)
+0:38          'anon@0' (layout(stream=0 ) out block{layout(stream=0 ) out mediump 3-component vector of float color})
+0:38          Constant:
+0:38            0 (const uint)
+0:38        color: direct index for structure (in mediump 3-component vector of float)
+0:38          direct index (temp block{in mediump 3-component vector of float color})
+0:38            'fromV' (in 4-element array of block{in mediump 3-component vector of float color})
+0:38            Constant:
+0:38              0 (const int)
+0:38          Constant:
+0:38            0 (const int)
 0:39      move second child to first child (temp float)
-0:39        'gl_PointSize' (temp float)
 0:39        Constant:
 0:39          0.000000
-0:40      move second child to first child (temp float)
-0:40        'gl_PrimitiveID' (temp float)
-0:40        'gl_PrimitiveIDIn' (temp float)
-0:41      'gl_Layer' (temp float)
-0:71  Function Definition: foo(i1; (global void)
-0:71    Function Parameters: 
-0:71      'a' (in highp int)
-0:73    Sequence
-0:73      move second child to first child (temp mediump 4-component vector of float)
-0:73        a: direct index for structure (layout(stream=6 ) out mediump 4-component vector of float)
-0:73          'ouuaa6' (layout(stream=6 ) out block{layout(stream=6 ) out mediump 4-component vector of float a})
-0:73          Constant:
-0:73            0 (const int)
-0:73        Constant:
-0:73          1.000000
-0:73          1.000000
-0:73          1.000000
-0:73          1.000000
-0:131  Function Definition: fooe1( (global void)
-0:131    Function Parameters: 
-0:133    Sequence
-0:133      move second child to first child (temp float)
-0:133        'gl_ViewportIndex' (temp float)
-0:133        'gl_MaxViewports' (temp float)
-0:138  Function Definition: fooe2( (global void)
-0:138    Function Parameters: 
-0:140    Sequence
-0:140      move second child to first child (temp float)
-0:140        'gl_ViewportIndex' (temp float)
-0:140        'gl_MaxViewports' (temp float)
+0:40        Constant:
+0:40          0.000000
+0:41      move second child to first child (temp highp 4-component vector of float)
+0:41        gl_Position: direct index for structure (layout(stream=0 ) gl_Position highp 4-component vector of float Position)
+0:41          'anon@1' (layout(stream=0 ) out block{layout(stream=0 ) gl_Position highp 4-component vector of float Position gl_Position, layout(stream=0 ) gl_PointSize highp float PointSize gl_PointSize})
+0:41          Constant:
+0:41            0 (const uint)
+0:41        gl_Position: direct index for structure (in highp 4-component vector of float Position)
+0:41          direct index (temp block{in highp 4-component vector of float Position gl_Position, in highp float PointSize gl_PointSize})
+0:41            'gl_in' (in 4-element array of block{in highp 4-component vector of float Position gl_Position, in highp float PointSize gl_PointSize})
+0:41            Constant:
+0:41              0 (const int)
+0:41          Constant:
+0:41            0 (const int)
+0:42      move second child to first child (temp highp float)
+0:42        gl_PointSize: direct index for structure (layout(stream=0 ) gl_PointSize highp float PointSize)
+0:42          'anon@1' (layout(stream=0 ) out block{layout(stream=0 ) gl_Position highp 4-component vector of float Position gl_Position, layout(stream=0 ) gl_PointSize highp float PointSize gl_PointSize})
+0:42          Constant:
+0:42            1 (const uint)
+0:42        gl_PointSize: direct index for structure (in highp float PointSize)
+0:42          direct index (temp block{in highp 4-component vector of float Position gl_Position, in highp float PointSize gl_PointSize})
+0:42            'gl_in' (in 4-element array of block{in highp 4-component vector of float Position gl_Position, in highp float PointSize gl_PointSize})
+0:42            Constant:
+0:42              3 (const int)
+0:42          Constant:
+0:42            1 (const int)
+0:43      move second child to first child (temp highp int)
+0:43        'gl_PrimitiveID' (layout(stream=0 ) out highp int PrimitiveID)
+0:43        'gl_PrimitiveIDIn' (in highp int PrimitiveID)
+0:44      move second child to first child (temp highp int)
+0:44        'gl_Layer' (layout(stream=0 ) out highp int Layer)
+0:44        Constant:
+0:44          2 (const int)
+0:55  Function Definition: foo(i1; (global void)
+0:55    Function Parameters: 
+0:55      'a' (in highp int)
+0:57    Sequence
+0:57      move second child to first child (temp mediump 4-component vector of float)
+0:57        a: direct index for structure (layout(stream=0 ) out mediump 4-component vector of float)
+0:57          'ouuaa6' (layout(stream=0 ) out block{layout(stream=0 ) out mediump 4-component vector of float a})
+0:57          Constant:
+0:57            0 (const int)
+0:57        Constant:
+0:57          1.000000
+0:57          1.000000
+0:57          1.000000
+0:57          1.000000
+0:106  Function Definition: fooe1( (global void)
+0:106    Function Parameters: 
+0:108    Sequence
+0:108      'gl_ViewportIndex' (temp float)
+0:109      'gl_MaxViewports' (temp float)
 0:?   Linker Objects
 0:?     'fromV' (in 4-element array of block{in mediump 3-component vector of float color})
+0:?     'nonBlockUnsized' (in 4-element array of mediump 4-component vector of float)
 0:?     'toF' (layout(stream=0 ) out block{layout(stream=0 ) out mediump 3-component vector of float color})
 0:?     'anon@0' (layout(stream=0 ) out block{layout(stream=0 ) out mediump 3-component vector of float color})
-0:?     'ov0' (layout(stream=0 ) out mediump 4-component vector of float)
+0:?     'gl_in' (in 4-element array of block{in highp 4-component vector of float Position gl_Position, in highp float PointSize gl_PointSize})
 0:?     'ov4' (layout(stream=4 ) out mediump 4-component vector of float)
-0:?     'o1v0' (layout(stream=0 ) out mediump 4-component vector of float)
-0:?     'ua' (layout(stream=3 ) uniform highp int)
-0:?     'ibb' (layout(stream=3 column_major shared ) uniform block{layout(stream=3 column_major shared ) uniform highp int ua})
-0:?     'ov3' (layout(stream=3 ) out mediump 4-component vector of float)
-0:?     'ouuaa6' (layout(stream=6 ) out block{layout(stream=6 ) out mediump 4-component vector of float a})
-0:?     'ouua6' (layout(stream=6 ) out block{layout(stream=6 ) out mediump 4-component vector of float a})
-0:?     'ouua7' (layout(stream=7 ) out block{layout(stream=6 ) out mediump 4-component vector of float a})
-0:?     'ov2s3' (layout(stream=3 ) out mediump 4-component vector of float)
-0:?     'badv4' (layout(stream=3 ) out mediump 4-component vector of float)
-0:?     'bad2v4' (in implicitly-sized array of mediump 4-component vector of float)
-0:?     'anon@1' (layout(stream=3 ) out block{layout(stream=3 ) out highp int a})
-0:?     'outbi' (layout(stream=3 ) out block{layout(stream=3 ) out highp int a, layout(stream=3 ) out highp int b, layout(stream=3 ) out highp int c})
-0:?     'inbi' (in 4-element array of block{layout(stream=2 ) in highp int a})
+0:?     'ouuaa6' (layout(stream=0 ) out block{layout(stream=0 ) out mediump 4-component vector of float a})
+0:?     'badv4' (layout(stream=0 ) out mediump 4-component vector of float)
+0:?     'bad2v4' (in 4-element array of mediump 4-component vector of float)
+0:?     'anon@1' (layout(stream=0 ) out block{layout(stream=0 ) out highp int a})
+0:?     'outbi' (layout(stream=0 ) out block{layout(stream=0 ) out highp int a, layout(stream=0 ) out highp int b, layout(stream=0 ) out highp int c})
 0:?     'insn' (in 4-element array of block{in highp int a15})
-0:?     'anon@2' (layout(stream=3 ) out block{layout(stream=3 ) out mediump float f15})
+0:?     'anon@2' (layout(stream=0 ) out block{layout(stream=0 ) out mediump float f15})
 0:?     'anon@3' (layout(column_major shared ) uniform block{layout(column_major shared ) uniform bool b15})
-0:?     'summ' (global mediump float)
-0:?     'gl_ViewportIndex' (layout(stream=3 ) out highp int)
+0:?     'summ' (const highp int)
+0:?       2752 (const int)
 
 
 Linked geometry stage:
 
 
 Shader version: 310
-Requested GL_ARB_viewport_array
 Requested GL_EXT_geometry_shader
+Requested GL_EXT_shader_io_blocks
 invocations = 4
 max_vertices = 200
 input primitive = lines_adjacency
 output primitive = triangle_strip
 ERROR: node is still EOpNull!
-0:29  Function Definition: main( (global void)
-0:29    Function Parameters: 
-0:31    Sequence
-0:31      Constant:
-0:31        0.000000
-0:32      Constant:
-0:32        0.000000
-0:33      Constant:
-0:33        0.000000
-0:34      Constant:
-0:34        0.000000
-0:36      move second child to first child (temp mediump 3-component vector of float)
-0:36        color: direct index for structure (layout(stream=0 ) out mediump 3-component vector of float)
-0:36          'anon@0' (layout(stream=0 ) out block{layout(stream=0 ) out mediump 3-component vector of float color})
-0:36          Constant:
-0:36            0 (const uint)
-0:36        color: direct index for structure (in mediump 3-component vector of float)
-0:36          direct index (temp block{in mediump 3-component vector of float color})
-0:36            'fromV' (in 4-element array of block{in mediump 3-component vector of float color})
-0:36            Constant:
-0:36              0 (const int)
-0:36          Constant:
-0:36            0 (const int)
-0:37      move second child to first child (temp float)
-0:37        Constant:
-0:37          0.000000
-0:37        Constant:
-0:37          0.000000
-0:38      move second child to first child (temp float)
-0:38        'gl_Position' (temp float)
-0:38        Constant:
-0:38          0.000000
+0:31  Function Definition: main( (global void)
+0:31    Function Parameters: 
+0:33    Sequence
+0:33      EmitVertex (global void)
+0:34      EndPrimitive (global void)
+0:35      Constant:
+0:35        0.000000
+0:36      Constant:
+0:36        0.000000
+0:38      move second child to first child (temp mediump 3-component vector of float)
+0:38        color: direct index for structure (layout(stream=0 ) out mediump 3-component vector of float)
+0:38          'anon@0' (layout(stream=0 ) out block{layout(stream=0 ) out mediump 3-component vector of float color})
+0:38          Constant:
+0:38            0 (const uint)
+0:38        color: direct index for structure (in mediump 3-component vector of float)
+0:38          direct index (temp block{in mediump 3-component vector of float color})
+0:38            'fromV' (in 4-element array of block{in mediump 3-component vector of float color})
+0:38            Constant:
+0:38              0 (const int)
+0:38          Constant:
+0:38            0 (const int)
 0:39      move second child to first child (temp float)
-0:39        'gl_PointSize' (temp float)
 0:39        Constant:
 0:39          0.000000
-0:40      move second child to first child (temp float)
-0:40        'gl_PrimitiveID' (temp float)
-0:40        'gl_PrimitiveIDIn' (temp float)
-0:41      'gl_Layer' (temp float)
-0:71  Function Definition: foo(i1; (global void)
-0:71    Function Parameters: 
-0:71      'a' (in highp int)
-0:73    Sequence
-0:73      move second child to first child (temp mediump 4-component vector of float)
-0:73        a: direct index for structure (layout(stream=6 ) out mediump 4-component vector of float)
-0:73          'ouuaa6' (layout(stream=6 ) out block{layout(stream=6 ) out mediump 4-component vector of float a})
-0:73          Constant:
-0:73            0 (const int)
-0:73        Constant:
-0:73          1.000000
-0:73          1.000000
-0:73          1.000000
-0:73          1.000000
-0:131  Function Definition: fooe1( (global void)
-0:131    Function Parameters: 
-0:133    Sequence
-0:133      move second child to first child (temp float)
-0:133        'gl_ViewportIndex' (temp float)
-0:133        'gl_MaxViewports' (temp float)
-0:138  Function Definition: fooe2( (global void)
-0:138    Function Parameters: 
-0:140    Sequence
-0:140      move second child to first child (temp float)
-0:140        'gl_ViewportIndex' (temp float)
-0:140        'gl_MaxViewports' (temp float)
+0:40        Constant:
+0:40          0.000000
+0:41      move second child to first child (temp highp 4-component vector of float)
+0:41        gl_Position: direct index for structure (layout(stream=0 ) gl_Position highp 4-component vector of float Position)
+0:41          'anon@1' (layout(stream=0 ) out block{layout(stream=0 ) gl_Position highp 4-component vector of float Position gl_Position, layout(stream=0 ) gl_PointSize highp float PointSize gl_PointSize})
+0:41          Constant:
+0:41            0 (const uint)
+0:41        gl_Position: direct index for structure (in highp 4-component vector of float Position)
+0:41          direct index (temp block{in highp 4-component vector of float Position gl_Position, in highp float PointSize gl_PointSize})
+0:41            'gl_in' (in 4-element array of block{in highp 4-component vector of float Position gl_Position, in highp float PointSize gl_PointSize})
+0:41            Constant:
+0:41              0 (const int)
+0:41          Constant:
+0:41            0 (const int)
+0:42      move second child to first child (temp highp float)
+0:42        gl_PointSize: direct index for structure (layout(stream=0 ) gl_PointSize highp float PointSize)
+0:42          'anon@1' (layout(stream=0 ) out block{layout(stream=0 ) gl_Position highp 4-component vector of float Position gl_Position, layout(stream=0 ) gl_PointSize highp float PointSize gl_PointSize})
+0:42          Constant:
+0:42            1 (const uint)
+0:42        gl_PointSize: direct index for structure (in highp float PointSize)
+0:42          direct index (temp block{in highp 4-component vector of float Position gl_Position, in highp float PointSize gl_PointSize})
+0:42            'gl_in' (in 4-element array of block{in highp 4-component vector of float Position gl_Position, in highp float PointSize gl_PointSize})
+0:42            Constant:
+0:42              3 (const int)
+0:42          Constant:
+0:42            1 (const int)
+0:43      move second child to first child (temp highp int)
+0:43        'gl_PrimitiveID' (layout(stream=0 ) out highp int PrimitiveID)
+0:43        'gl_PrimitiveIDIn' (in highp int PrimitiveID)
+0:44      move second child to first child (temp highp int)
+0:44        'gl_Layer' (layout(stream=0 ) out highp int Layer)
+0:44        Constant:
+0:44          2 (const int)
+0:55  Function Definition: foo(i1; (global void)
+0:55    Function Parameters: 
+0:55      'a' (in highp int)
+0:57    Sequence
+0:57      move second child to first child (temp mediump 4-component vector of float)
+0:57        a: direct index for structure (layout(stream=0 ) out mediump 4-component vector of float)
+0:57          'ouuaa6' (layout(stream=0 ) out block{layout(stream=0 ) out mediump 4-component vector of float a})
+0:57          Constant:
+0:57            0 (const int)
+0:57        Constant:
+0:57          1.000000
+0:57          1.000000
+0:57          1.000000
+0:57          1.000000
+0:106  Function Definition: fooe1( (global void)
+0:106    Function Parameters: 
+0:108    Sequence
+0:108      'gl_ViewportIndex' (temp float)
+0:109      'gl_MaxViewports' (temp float)
 0:?   Linker Objects
 0:?     'fromV' (in 4-element array of block{in mediump 3-component vector of float color})
+0:?     'nonBlockUnsized' (in 4-element array of mediump 4-component vector of float)
 0:?     'toF' (layout(stream=0 ) out block{layout(stream=0 ) out mediump 3-component vector of float color})
 0:?     'anon@0' (layout(stream=0 ) out block{layout(stream=0 ) out mediump 3-component vector of float color})
-0:?     'ov0' (layout(stream=0 ) out mediump 4-component vector of float)
+0:?     'gl_in' (in 4-element array of block{in highp 4-component vector of float Position gl_Position, in highp float PointSize gl_PointSize})
 0:?     'ov4' (layout(stream=4 ) out mediump 4-component vector of float)
-0:?     'o1v0' (layout(stream=0 ) out mediump 4-component vector of float)
-0:?     'ua' (layout(stream=3 ) uniform highp int)
-0:?     'ibb' (layout(stream=3 column_major shared ) uniform block{layout(stream=3 column_major shared ) uniform highp int ua})
-0:?     'ov3' (layout(stream=3 ) out mediump 4-component vector of float)
-0:?     'ouuaa6' (layout(stream=6 ) out block{layout(stream=6 ) out mediump 4-component vector of float a})
-0:?     'ouua6' (layout(stream=6 ) out block{layout(stream=6 ) out mediump 4-component vector of float a})
-0:?     'ouua7' (layout(stream=7 ) out block{layout(stream=6 ) out mediump 4-component vector of float a})
-0:?     'ov2s3' (layout(stream=3 ) out mediump 4-component vector of float)
-0:?     'badv4' (layout(stream=3 ) out mediump 4-component vector of float)
-0:?     'bad2v4' (in 1-element array of mediump 4-component vector of float)
-0:?     'anon@1' (layout(stream=3 ) out block{layout(stream=3 ) out highp int a})
-0:?     'outbi' (layout(stream=3 ) out block{layout(stream=3 ) out highp int a, layout(stream=3 ) out highp int b, layout(stream=3 ) out highp int c})
-0:?     'inbi' (in 4-element array of block{layout(stream=2 ) in highp int a})
+0:?     'ouuaa6' (layout(stream=0 ) out block{layout(stream=0 ) out mediump 4-component vector of float a})
+0:?     'badv4' (layout(stream=0 ) out mediump 4-component vector of float)
+0:?     'bad2v4' (in 4-element array of mediump 4-component vector of float)
+0:?     'anon@1' (layout(stream=0 ) out block{layout(stream=0 ) out highp int a})
+0:?     'outbi' (layout(stream=0 ) out block{layout(stream=0 ) out highp int a, layout(stream=0 ) out highp int b, layout(stream=0 ) out highp int c})
 0:?     'insn' (in 4-element array of block{in highp int a15})
-0:?     'anon@2' (layout(stream=3 ) out block{layout(stream=3 ) out mediump float f15})
+0:?     'anon@2' (layout(stream=0 ) out block{layout(stream=0 ) out mediump float f15})
 0:?     'anon@3' (layout(column_major shared ) uniform block{layout(column_major shared ) uniform bool b15})
-0:?     'summ' (global mediump float)
-0:?     'gl_ViewportIndex' (layout(stream=3 ) out highp int)
+0:?     'summ' (const highp int)
+0:?       2752 (const int)
 

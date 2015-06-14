@@ -190,6 +190,15 @@ void TParseContext::initializeExtensionBehavior()
     extensionBehavior[GL_EXT_tessellation_point_size]              = EBhDisablePartial;
     extensionBehavior[GL_EXT_texture_buffer]                       = EBhDisablePartial;
     extensionBehavior[GL_EXT_texture_cube_map_array]               = EBhDisablePartial;
+
+    // OES matching AEP
+    extensionBehavior[GL_OES_geometry_shader]          = EBhDisablePartial;
+    extensionBehavior[GL_OES_gpu_shader5]              = EBhDisablePartial;
+    extensionBehavior[GL_OES_primitive_bounding_box]   = EBhDisablePartial;
+    extensionBehavior[GL_OES_shader_io_blocks]         = EBhDisablePartial;
+    extensionBehavior[GL_OES_tessellation_shader]      = EBhDisablePartial;
+    extensionBehavior[GL_OES_texture_buffer]           = EBhDisablePartial;
+    extensionBehavior[GL_OES_texture_cube_map_array]   = EBhDisablePartial;
 }
 
 // Get code that is not part of a shared symbol table, is specific to this shader,
@@ -222,6 +231,15 @@ const char* TParseContext::getPreamble()
             "#define GL_EXT_tessellation_point_size 1\n"
             "#define GL_EXT_texture_buffer 1\n"
             "#define GL_EXT_texture_cube_map_array 1\n"
+
+            // OES matching AEP
+            "#define GL_OES_geometry_shader 1\n"
+            "#define GL_OES_gpu_shader5 1\n"
+            "#define GL_OES_primitive_bounding_box 1\n"
+            "#define GL_OES_shader_io_blocks 1\n"
+            "#define GL_OES_tessellation_shader 1\n"
+            "#define GL_OES_texture_buffer 1\n"
+            "#define GL_OES_texture_cube_map_array 1\n"
             ;
     } else {
         return
@@ -478,8 +496,9 @@ void TParseContext::updateExtensionBehavior(const char* extension, const char* b
     // update the requested extension
     updateExtensionBehavior(extension, behavior);
 
-    // see if need to propagate to everything in AEP
+    // see if need to propagate to implicitly modified things
     if (strcmp(extension, "GL_ANDROID_extension_pack_es31a") == 0) {
+        // to everything in AEP
         updateExtensionBehavior("GL_KHR_blend_equation_advanced", behaviorString);
         updateExtensionBehavior("GL_OES_sample_variables", behaviorString);
         updateExtensionBehavior("GL_OES_shader_image_atomic", behaviorString);
@@ -493,6 +512,16 @@ void TParseContext::updateExtensionBehavior(const char* extension, const char* b
         updateExtensionBehavior("GL_EXT_texture_buffer", behaviorString);
         updateExtensionBehavior("GL_EXT_texture_cube_map_array", behaviorString);
     }
+    // geometry to io_blocks
+    else if (strcmp(extension, "GL_EXT_geometry_shader") == 0)
+        updateExtensionBehavior("GL_EXT_shader_io_blocks", behaviorString);
+    else if (strcmp(extension, "GL_OES_geometry_shader") == 0)
+        updateExtensionBehavior("GL_OES_shader_io_blocks", behaviorString);
+    // tessellation to io_blocks
+    else if (strcmp(extension, "GL_EXT_tessellation_shader") == 0)
+        updateExtensionBehavior("GL_EXT_shader_io_blocks", behaviorString);
+    else if (strcmp(extension, "GL_OES_tessellation_shader") == 0)
+        updateExtensionBehavior("GL_OES_shader_io_blocks", behaviorString);
 }
 
 void TParseContext::updateExtensionBehavior(const char* extension, TExtensionBehavior behavior)

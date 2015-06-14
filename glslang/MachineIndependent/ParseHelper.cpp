@@ -2418,20 +2418,45 @@ bool TParseContext::arrayError(TSourceLoc loc, const TType& type)
 //
 void TParseContext::arraySizeRequiredCheck(TSourceLoc loc, int size)
 {
-    if (size == 0) {
+    if (size == 0)
         error(loc, "array size required", "", "");
-        size = 1;
-    }
 }
 
-void TParseContext::structArrayCheck(TSourceLoc /*loc*/, TType* type)
+void TParseContext::structArrayCheck(TSourceLoc /*loc*/, const TType& type)
 {
-    const TTypeList& structure = *type->getStruct();
+    const TTypeList& structure = *type.getStruct();
     for (int m = 0; m < (int)structure.size(); ++m) {
         const TType& member = *structure[m].type;
         if (member.isArray() && ! member.isExplicitlySizedArray())
             arraySizeRequiredCheck(structure[m].loc, 0);
     }
+}
+
+void TParseContext::variableArrayUnsizedCheck(TSourceLoc loc, const TType& type, bool initializer)
+{
+    // desktop always allows unsized variable arrays,
+    // ES always allows them if there is an initializer present to get the size from
+    if (profile != EEsProfile || initializer)
+        return;
+
+    // for ES, if size isn't coming from an initializer, it has to be explicitly declared now,
+    // with very few exceptions
+    switch (language) {
+    case EShLangGeometry:
+        if (type.getQualifier().storage == EvqVaryingIn)
+            if (extensionsTurnedOn(Num_AEP_geometry_shader, AEP_geometry_shader))
+                return;
+        break;
+    case EShLangTessControl:
+        if (type.getQualifier().storage == EvqVaryingOut)
+            if (extensionsTurnedOn(Num_AEP_tessellation_shader, AEP_tessellation_shader))
+                return;
+        break;
+    default:
+        break;
+    }
+
+    arraySizeRequiredCheck(loc, type.getArraySize());
 }
 
 void TParseContext::arrayDimError(TSourceLoc loc)
@@ -2612,7 +2637,7 @@ TSymbol* TParseContext::redeclareBuiltinVariable(TSourceLoc loc, const TString& 
 
     // Special case when using GL_ARB_separate_shader_objects
     bool ssoPre150 = false;  // means the only reason this variable is redeclared is due to this combination
-    if (version <= 140 && extensionsTurnedOn(1, &GL_ARB_separate_shader_objects)) {
+    if (profile != EEsProfile && version <= 140 && extensionsTurnedOn(1, &GL_ARB_separate_shader_objects)) {
         if (identifier == "gl_Position"     ||
             identifier == "gl_PointSize"    ||
             identifier == "gl_ClipVertex"   ||
@@ -3086,7 +3111,7 @@ void TParseContext::arrayLimitCheck(TSourceLoc loc, const TString& identifier, i
         limitCheck(loc, size, "gl_MaxClipDistances", "gl_ClipDistance array size");
 }
 
-// See if the provide value is less than the symbol indicated by limit,
+// See if the provided value is less than the symbol indicated by limit,
 // which should be a constant in the symbol table.
 void TParseContext::limitCheck(TSourceLoc loc, int value, const char* limit, const char* feature)
 {
@@ -3108,18 +3133,19 @@ void TParseContext::finalErrorCheck()
         constantIndexExpressionCheck(needsIndexLimitationChecking[i]);
 
     // Check for stages that are enabled by extension.
-    // Can't do this at the beginning, it is chicken and egg to add a stage by extension.
-    // Specific stage-specific features were correctly tested for already, this is just 
+    // Can't do this at the beginning, it is chicken and egg to add a stage by
+    // extension.
+    // Stage-specific features were correctly tested for already, this is just 
     // about the stage itself.
     switch (language) {
     case EShLangGeometry:
         if (profile == EEsProfile && version == 310)
-            requireExtensions(getCurrentLoc(), 1, &GL_EXT_geometry_shader, "geometry shaders");
+            requireExtensions(getCurrentLoc(), Num_AEP_geometry_shader, AEP_geometry_shader, "geometry shaders");
         break;
     case EShLangTessControl:
     case EShLangTessEvaluation:
         if (profile == EEsProfile && version == 310)
-            requireExtensions(getCurrentLoc(), 1, &GL_EXT_tessellation_shader, "tessellation shaders");
+            requireExtensions(getCurrentLoc(), Num_AEP_tessellation_shader, AEP_tessellation_shader, "tessellation shaders");
         else if (profile != EEsProfile && version < 400)
             requireExtensions(getCurrentLoc(), 1, &GL_ARB_tessellation_shader, "tessellation shaders");
         break;
@@ -3431,6 +3457,7 @@ void TParseContext::setLayoutQualifier(TSourceLoc loc, TPublicType& publicType, 
             return;
         }
         if (id == "stream") {
+            requireProfile(loc, ~EEsProfile, "selecting output stream");
             publicType.qualifier.layoutStream = value;
             return;
         }
@@ -4027,9 +4054,7 @@ TIntermNode* TParseContext::declareVariable(TSourceLoc loc, TString& identifier,
         if (arraySizes)
             type.setArraySizes(arraySizes);
 
-        // for ES, if size isn't coming from an initializer, it has to be explicitly declared now
-        if (profile == EEsProfile && ! initializer)
-            arraySizeRequiredCheck(loc, type.getArraySize());
+        variableArrayUnsizedCheck(loc, type, initializer != nullptr);
 
         if (! arrayQualifierError(loc, type.getQualifier()) && ! arrayError(loc, type))
             declareArray(loc, identifier, type, symbol, newDeclaration);
@@ -4486,38 +4511,7 @@ TIntermTyped* TParseContext::constructStruct(TIntermNode* node, const TType& typ
 //
 void TParseContext::declareBlock(TSourceLoc loc, TTypeList& typeList, const TString* instanceName, TArraySizes* arraySizes)
 {
-    if (profile == EEsProfile && arraySizes)
-        arraySizeRequiredCheck(loc, arraySizes->getSize());
-
-    switch (currentBlockQualifier.storage) {
-    case EvqUniform:
-        profileRequires(loc, EEsProfile, 300, nullptr, "uniform block");
-        profileRequires(loc, ENoProfile, 140, nullptr, "uniform block");
-        if (currentBlockQualifier.layoutPacking == ElpStd430)
-            requireProfile(loc, ~EEsProfile, "std430 on a uniform block");
-        break;
-    case EvqBuffer:
-        requireProfile(loc, EEsProfile | ECoreProfile | ECompatibilityProfile, "buffer block");
-        profileRequires(loc, ECoreProfile | ECompatibilityProfile, 430, nullptr, "buffer block");
-        profileRequires(loc, EEsProfile, 310, nullptr, "buffer block");
-        break;
-    case EvqVaryingIn:
-        requireProfile(loc, ~EEsProfile, "input block");
-        profileRequires(loc, ~EEsProfile, 150, GL_ARB_separate_shader_objects, "input block");
-        if (language == EShLangVertex)
-            error(loc, "cannot declare an input block in a vertex shader", "in", "");
-        break;
-    case EvqVaryingOut:
-        requireProfile(loc, ~EEsProfile, "output block");
-        profileRequires(loc, ~EEsProfile, 150, GL_ARB_separate_shader_objects, "output block");
-        if (language == EShLangFragment)
-            error(loc, "cannot declare an output block in a fragment shader", "out", "");
-        break;
-    default:
-        error(loc, "only uniform, buffer, in, or out blocks are supported", blockName->c_str(), "");
-        return;
-    }
-
+    blockStageIoCheck(loc, currentBlockQualifier.storage, arraySizes);
     arrayDimCheck(loc, arraySizes, 0);
 
     // fix and check for member storage qualifiers and types that don't belong within a block
@@ -4704,6 +4698,91 @@ void TParseContext::declareBlock(TSourceLoc loc, TTypeList& typeList, const TStr
 
     // Save it in the AST for linker use.
     intermediate.addSymbolLinkageNode(linkage, variable);
+}
+
+// Do all block-declaration checking regarding the combination of in/out/uniform/buffer
+// with a particular stage and with a given arrayness.
+void TParseContext::blockStageIoCheck(TSourceLoc loc, TStorageQualifier storageQualifier, TArraySizes* arraySizes)
+{
+    switch (storageQualifier) {
+    case EvqUniform:
+        profileRequires(loc, EEsProfile, 300, nullptr, "uniform block");
+        profileRequires(loc, ENoProfile, 140, nullptr, "uniform block");
+        if (currentBlockQualifier.layoutPacking == ElpStd430)
+            requireProfile(loc, ~EEsProfile, "std430 on a uniform block");
+        if (profile == EEsProfile && arraySizes)
+            arraySizeRequiredCheck(loc, arraySizes->getSize());
+        break;
+    case EvqBuffer:
+        requireProfile(loc, EEsProfile | ECoreProfile | ECompatibilityProfile, "buffer block");
+        profileRequires(loc, ECoreProfile | ECompatibilityProfile, 430, nullptr, "buffer block");
+        profileRequires(loc, EEsProfile, 310, nullptr, "buffer block");
+        if (profile == EEsProfile && arraySizes)
+            arraySizeRequiredCheck(loc, arraySizes->getSize());
+        break;
+    case EvqVaryingIn:
+        profileRequires(loc, ~EEsProfile, 150, GL_ARB_separate_shader_objects, "input block");
+        switch (language) {
+        case EShLangVertex:
+            // It is a compile-time error to have an input block in a vertex shader or an output block in a fragment shader
+            error(loc, "cannot declare an input block in a vertex shader", "in", "");
+            break;
+        case EShLangTessEvaluation:
+        case EShLangTessControl:
+            if (profile == EEsProfile && arraySizes)
+                arraySizeRequiredCheck(loc, arraySizes->getSize());
+            break;
+        case EShLangGeometry:
+            break;
+        case EShLangFragment:
+            profileRequires(loc, EEsProfile, 0, Num_AEP_shader_io_blocks, AEP_shader_io_blocks, "fragment input block");
+            if (profile == EEsProfile && arraySizes)
+                arraySizeRequiredCheck(loc, arraySizes->getSize());
+            break;
+        case EShLangCompute:
+            // "Compute shaders do not permit user-defined input variables..."
+            requireStage(loc, (EShLanguageMask)~EShLangComputeMask, "input block");
+            break;
+        default:
+            error(loc, "unexpected stage", "", "");
+            break;
+        }
+        break;
+    case EvqVaryingOut:
+        profileRequires(loc, ~EEsProfile, 150, GL_ARB_separate_shader_objects, "output block");
+        switch (language) {
+        case EShLangVertex:
+            profileRequires(loc, EEsProfile, 0, Num_AEP_shader_io_blocks, AEP_shader_io_blocks, "vertex output block");
+            if (profile == EEsProfile && arraySizes)
+                arraySizeRequiredCheck(loc, arraySizes->getSize());
+            break;
+        case EShLangTessEvaluation:
+            if (profile == EEsProfile && arraySizes)
+                arraySizeRequiredCheck(loc, arraySizes->getSize());
+            break;
+        case EShLangTessControl:
+            break;
+        case EShLangGeometry:
+            if (profile == EEsProfile && arraySizes)
+                arraySizeRequiredCheck(loc, arraySizes->getSize());
+            break;
+        case EShLangFragment:
+            // It is a compile-time error to have an input block in a vertex shader or an output block in a fragment shader
+            error(loc, "cannot declare an output block in a fragment shader", "out", "");
+            break;
+        case EShLangCompute:
+            // "Compute shaders ... do not support user-defined output variables..."
+            requireStage(loc, (EShLanguageMask)~EShLangComputeMask, "output block");
+            break;
+        default:
+            error(loc, "unexpected stage", "", "");
+            break;
+        }
+        break;
+    default:
+        error(loc, "only uniform, buffer, in, or out blocks are supported", blockName->c_str(), "");
+        return;
+    }
 }
 
 //

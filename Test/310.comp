@@ -223,3 +223,11 @@ void foomultio()
     wo.values[2] = 3.4;
     wo.value = 2;                // ERROR, readonly
 }
+
+in inb {     // ERROR
+    int a;
+} inbi;
+
+out outb {     // ERROR
+    int a;
+} outbi;

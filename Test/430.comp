@@ -77,3 +77,11 @@ void fooaoeu() {
      int i = globalCoef;            // ERROR, can't convert from double to int
      double di = i;
 }
+
+in inb {     // ERROR
+    int a;
+} inbi;
+
+out outb {     // ERROR
+    int a;
+} outbi;

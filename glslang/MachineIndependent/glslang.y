@@ -1919,7 +1919,7 @@ precision_qualifier
 struct_specifier
     : STRUCT IDENTIFIER LEFT_BRACE { parseContext.nestedStructCheck($1.loc); } struct_declaration_list RIGHT_BRACE {
         TType* structure = new TType($5, *$2.string);
-        parseContext.structArrayCheck($2.loc, structure);
+        parseContext.structArrayCheck($2.loc, *structure);
         TVariable* userTypeDef = new TVariable($2.string, *structure, true);
         if (! parseContext.symbolTable.insert(*userTypeDef))
             parseContext.error($2.loc, "redefinition", $2.string->c_str(), "struct");

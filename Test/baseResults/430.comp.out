@@ -15,7 +15,9 @@ ERROR: 0:51: 'local_size' : can only apply to 'in'
 ERROR: 0:51: 'local_size' : can only apply to 'in' 
 ERROR: 0:65: 'assign' :  l-value required "ro" (can't modify a readonly buffer)
 ERROR: 0:77: '=' :  cannot convert from 'temp double' to 'temp int'
-ERROR: 15 compilation errors.  No code generated.
+ERROR: 0:81: 'input block' : not supported in this stage: compute
+ERROR: 0:85: 'output block' : not supported in this stage: compute
+ERROR: 17 compilation errors.  No code generated.
 
 
 Shader version: 430
@@ -143,6 +145,8 @@ ERROR: node is still EOpNull!
 0:?     'ro' (layout(column_major shared ) readonly buffer block{layout(column_major shared ) buffer int value, layout(column_major shared ) buffer implicitly-sized array of float values})
 0:?     'roll' (uniform double)
 0:?     'destTex' (writeonly uniform image2D)
+0:?     'inbi' (in block{in int a})
+0:?     'outbi' (out block{out int a})
 
 
 Linked compute stage:
@@ -273,4 +277,6 @@ ERROR: node is still EOpNull!
 0:?     'ro' (layout(column_major shared ) readonly buffer block{layout(column_major shared ) buffer int value, layout(column_major shared ) buffer implicitly-sized array of float values})
 0:?     'roll' (uniform double)
 0:?     'destTex' (writeonly uniform image2D)
+0:?     'inbi' (in block{in int a})
+0:?     'outbi' (out block{out int a})
 
