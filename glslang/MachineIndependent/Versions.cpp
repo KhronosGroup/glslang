@@ -185,7 +185,7 @@ void TParseContext::initializeExtensionBehavior()
     extensionBehavior[GL_EXT_geometry_point_size]                  = EBhDisablePartial;
     extensionBehavior[GL_EXT_gpu_shader5]                          = EBhDisablePartial;
     extensionBehavior[GL_EXT_primitive_bounding_box]               = EBhDisablePartial;
-    extensionBehavior[GL_EXT_shader_io_blocks]                     = EBhDisablePartial;
+    extensionBehavior[GL_EXT_shader_io_blocks]                     = EBhDisable;
     extensionBehavior[GL_EXT_tessellation_shader]                  = EBhDisablePartial;
     extensionBehavior[GL_EXT_tessellation_point_size]              = EBhDisablePartial;
     extensionBehavior[GL_EXT_texture_buffer]                       = EBhDisablePartial;
@@ -195,7 +195,7 @@ void TParseContext::initializeExtensionBehavior()
     extensionBehavior[GL_OES_geometry_shader]          = EBhDisablePartial;
     extensionBehavior[GL_OES_gpu_shader5]              = EBhDisablePartial;
     extensionBehavior[GL_OES_primitive_bounding_box]   = EBhDisablePartial;
-    extensionBehavior[GL_OES_shader_io_blocks]         = EBhDisablePartial;
+    extensionBehavior[GL_OES_shader_io_blocks]         = EBhDisable;
     extensionBehavior[GL_OES_tessellation_shader]      = EBhDisablePartial;
     extensionBehavior[GL_OES_texture_buffer]           = EBhDisablePartial;
     extensionBehavior[GL_OES_texture_cube_map_array]   = EBhDisablePartial;

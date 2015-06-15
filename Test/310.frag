@@ -123,3 +123,62 @@ struct SA { float f[4]; };
 in SA inSA;          // ERROR
 struct SS { float f; S s; };
 in SS inSS;          // ERROR
+
+#ifndef GL_EXT_shader_io_blocks
+#error GL_EXT_shader_io_blocks not defined
+#endif
+
+#extension GL_EXT_shader_io_blocks : enable
+
+out outbname { int a; } outbinst;   // ERROR, not out block in fragment shader
+
+in inbname {
+    int a;
+    vec4 v;
+    struct { int b; } s;     // ERROR, nested struct definition
+} inbinst;
+
+in inbname2 {
+    layout(location = 12) int aAnon;
+    layout(location = 13) centroid in vec4 vAnon;
+};
+
+in layout(location = 13) vec4 aliased; // ERROR, aliased
+
+in inbname2 {                // ERROR, reuse of block name
+    int aAnon;
+    centroid in vec4 vAnon;
+};
+
+in badmember {               // ERROR, aAnon already in global scope
+    int aAnon;
+};
+
+int inbname;                 // ERROR, redefinition of block name
+
+vec4 vAnon;                  // ERROR, anon in global scope; redefinition
+
+in arrayed {
+    float f;
+} arrayedInst[4];
+
+void fooIO()
+{
+    vec4 v = inbinst.v + vAnon;
+    v *= arrayedInst[2].f;
+    v *= arrayedInst[i].f;       // ERROR, not constant
+}
+
+in vec4 gl_FragCoord;
+layout(origin_upper_left, pixel_center_integer) in vec4 gl_FragCoord;  // ERROR, non-ES
+
+layout(early_fragment_tests) in;
+out float gl_FragDepth;
+layout(depth_any) out float gl_FragDepth;  // ERROR, non-ES
+
+void foo_IO()
+{
+    gl_FragDepth = 0.2;  // ERROR, early_fragment_tests declared
+}
+
+out float gl_FragDepth;

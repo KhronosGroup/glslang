@@ -84,3 +84,42 @@ out SS outSS;          // ERROR
 
 layout(std430) uniform U430 { int a; } U430i;    // ERROR
 layout(std430) buffer B430 { int a; } B430i;
+
+#ifndef GL_OES_shader_io_blocks
+#error GL_OES_shader_io_blocks not defined
+#endif
+
+#extension GL_OES_shader_io_blocks : enable
+
+out outbname {
+    int a;
+    out vec4 v;
+    highp sampler2D s;   // ERROR, opaque type
+} outbinst;
+
+out outbname2 {
+    layout(location = 12) int aAnon;
+    layout(location = 13) vec4 vAnon;
+};
+
+layout(location = 12) out highp int aliased;  // ERROR, aliasing location
+
+in inbname { int a; } inbinst;  // ERROR, no in block in vertex shader
+
+out gl_PerVertex {              // ERROR, has extra member
+    highp vec4 gl_Position;
+    highp vec4 t;
+};
+
+void foo_IO()
+{
+    int sum  = gl_VertexID +
+               gl_InstanceID;
+    gl_Position = vec4(1.0);
+    gl_PointSize = 2.0;         // ERROR, removed by redeclaration
+}
+
+out gl_PerVertex {              // ERROR, already used and already redeclared
+    highp vec4 gl_Position;
+    highp vec4 t;
+};

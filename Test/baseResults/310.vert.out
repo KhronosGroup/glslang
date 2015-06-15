@@ -15,10 +15,18 @@ ERROR: 0:79: 'vertex-shader array-of-struct output' : not supported with this pr
 ERROR: 0:81: 'vertex-shader struct output containing an array' : not supported with this profile: es
 ERROR: 0:83: 'vertex-shader struct output containing structure' : not supported with this profile: es
 ERROR: 0:85: 'std430 on a uniform block' : not supported with this profile: es
-ERROR: 15 compilation errors.  No code generated.
+ERROR: 0:97: 's' : member of block cannot be a sampler type 
+ERROR: 0:105: 'location' : overlapping use of location 12
+ERROR: 0:107: 'in' : cannot declare an input block in a vertex shader 
+ERROR: 0:109: 'gl_PerVertex' : block redeclaration has extra members 
+ERROR: 0:119: 'gl_PointSize' : member of nameless block was not redeclared 
+ERROR: 0:119: 'assign' :  cannot convert from 'const float' to 'gl_PointSize highp void PointSize'
+ERROR: 0:122: 'gl_PerVertex' : can only redeclare a built-in block once, and before any use 
+ERROR: 22 compilation errors.  No code generated.
 
 
 Shader version: 310
+Requested GL_OES_shader_io_blocks
 ERROR: node is still EOpNull!
 0:12  Function Definition: main( (global void)
 0:12    Function Parameters: 
@@ -166,6 +174,29 @@ ERROR: node is still EOpNull!
 0:66              2 (const int)
 0:67      Constant:
 0:67        0.000000
+0:114  Function Definition: foo_IO( (global void)
+0:114    Function Parameters: 
+0:116    Sequence
+0:116      Sequence
+0:116        move second child to first child (temp highp int)
+0:116          'sum' (temp highp int)
+0:116          add (temp highp int)
+0:116            'gl_VertexID' (gl_VertexId highp int VertexId)
+0:117            'gl_InstanceID' (gl_InstanceId highp int InstanceId)
+0:118      move second child to first child (temp highp 4-component vector of float)
+0:118        gl_Position: direct index for structure (gl_Position highp 4-component vector of float Position)
+0:118          'anon@1' (out block{gl_Position highp 4-component vector of float Position gl_Position, })
+0:118          Constant:
+0:118            0 (const uint)
+0:118        Constant:
+0:118          1.000000
+0:118          1.000000
+0:118          1.000000
+0:118          1.000000
+0:119      gl_PointSize: direct index for structure (gl_PointSize highp void PointSize)
+0:119        'anon@1' (out block{gl_Position highp 4-component vector of float Position gl_Position, })
+0:119        Constant:
+0:119          1 (const uint)
 0:?   Linker Objects
 0:?     's' (shared highp 4-component vector of float)
 0:?     'v' (buffer highp 4-component vector of float)
@@ -188,6 +219,11 @@ ERROR: node is still EOpNull!
 0:?     'outSS' (smooth out structure{global highp float f, global structure{global highp float f} s})
 0:?     'U430i' (layout(column_major std430 ) uniform block{layout(column_major std430 offset=0 ) uniform highp int a})
 0:?     'B430i' (layout(column_major std430 ) buffer block{layout(column_major std430 offset=0 ) buffer highp int a})
+0:?     'outbinst' (out block{out highp int a, out highp 4-component vector of float v, out highp sampler2D s})
+0:?     'anon@0' (out block{layout(location=12 ) out highp int aAnon, layout(location=13 ) out highp 4-component vector of float vAnon})
+0:?     'aliased' (layout(location=12 ) smooth out highp int)
+0:?     'inbinst' (in block{in highp int a})
+0:?     'anon@1' (out block{gl_Position highp 4-component vector of float Position gl_Position, })
 0:?     'gl_VertexID' (gl_VertexId highp int VertexId)
 0:?     'gl_InstanceID' (gl_InstanceId highp int InstanceId)
 
@@ -196,6 +232,7 @@ Linked vertex stage:
 
 
 Shader version: 310
+Requested GL_OES_shader_io_blocks
 ERROR: node is still EOpNull!
 0:12  Function Definition: main( (global void)
 0:12    Function Parameters: 
@@ -343,6 +380,29 @@ ERROR: node is still EOpNull!
 0:66              2 (const int)
 0:67      Constant:
 0:67        0.000000
+0:114  Function Definition: foo_IO( (global void)
+0:114    Function Parameters: 
+0:116    Sequence
+0:116      Sequence
+0:116        move second child to first child (temp highp int)
+0:116          'sum' (temp highp int)
+0:116          add (temp highp int)
+0:116            'gl_VertexID' (gl_VertexId highp int VertexId)
+0:117            'gl_InstanceID' (gl_InstanceId highp int InstanceId)
+0:118      move second child to first child (temp highp 4-component vector of float)
+0:118        gl_Position: direct index for structure (gl_Position highp 4-component vector of float Position)
+0:118          'anon@1' (out block{gl_Position highp 4-component vector of float Position gl_Position, })
+0:118          Constant:
+0:118            0 (const uint)
+0:118        Constant:
+0:118          1.000000
+0:118          1.000000
+0:118          1.000000
+0:118          1.000000
+0:119      gl_PointSize: direct index for structure (gl_PointSize highp void PointSize)
+0:119        'anon@1' (out block{gl_Position highp 4-component vector of float Position gl_Position, })
+0:119        Constant:
+0:119          1 (const uint)
 0:?   Linker Objects
 0:?     's' (shared highp 4-component vector of float)
 0:?     'v' (buffer highp 4-component vector of float)
@@ -365,6 +425,11 @@ ERROR: node is still EOpNull!
 0:?     'outSS' (smooth out structure{global highp float f, global structure{global highp float f} s})
 0:?     'U430i' (layout(column_major std430 ) uniform block{layout(column_major std430 offset=0 ) uniform highp int a})
 0:?     'B430i' (layout(column_major std430 ) buffer block{layout(column_major std430 offset=0 ) buffer highp int a})
+0:?     'outbinst' (out block{out highp int a, out highp 4-component vector of float v, out highp sampler2D s})
+0:?     'anon@0' (out block{layout(location=12 ) out highp int aAnon, layout(location=13 ) out highp 4-component vector of float vAnon})
+0:?     'aliased' (layout(location=12 ) smooth out highp int)
+0:?     'inbinst' (in block{in highp int a})
+0:?     'anon@1' (out block{gl_Position highp 4-component vector of float Position gl_Position, })
 0:?     'gl_VertexID' (gl_VertexId highp int VertexId)
 0:?     'gl_InstanceID' (gl_InstanceId highp int InstanceId)
 

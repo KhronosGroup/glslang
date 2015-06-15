@@ -41,11 +41,28 @@ ERROR: 0:120: 'fragment-shader array-of-struct input' : not supported with this 
 ERROR: 0:121: 'fragment-shader array-of-struct input' : not supported with this profile: es
 ERROR: 0:123: 'fragment-shader struct input containing an array' : not supported with this profile: es
 ERROR: 0:125: 'fragment-shader struct input containing structure' : not supported with this profile: es
-ERROR: 41 compilation errors.  No code generated.
+ERROR: 0:133: 'out' : cannot declare an output block in a fragment shader 
+ERROR: 0:138: '' : cannot nest a structure definition inside a structure or block 
+ERROR: 0:146: 'location' : overlapping use of location 13
+ERROR: 0:148: 'inbname2' : Cannot reuse block name within the same interface: in
+ERROR: 0:153: 'badmember' : nameless block contains a member that already has a name at global scope 
+ERROR: 0:157: 'inbname' : redefinition 
+ERROR: 0:159: 'vAnon' : redefinition 
+ERROR: 0:169: 'variable indexing block array' : not supported with this profile: es
+ERROR: 0:173: 'origin_upper_left' : not supported with this profile: es
+ERROR: 0:173: 'pixel_center_integer' : not supported with this profile: es
+ERROR: 0:173: 'redeclaration' : cannot redeclare with different qualification: gl_FragCoord
+ERROR: 0:177: 'depth layout qualifier' : not supported with this profile: es
+ERROR: 0:181: 'assign' :  l-value required "gl_FragDepth" (can't modify gl_FragDepth if using early_fragment_tests)
+ERROR: 54 compilation errors.  No code generated.
 
 
 Shader version: 310
+Requested GL_EXT_shader_io_blocks
+gl_FragCoord pixel center is integer
+gl_FragCoord origin is upper left
 using early_fragment_tests
+using depth_any
 ERROR: node is still EOpNull!
 0:21  Function Definition: main( (global void)
 0:21    Function Parameters: 
@@ -259,6 +276,45 @@ ERROR: node is still EOpNull!
 0:107        'v2' (temp highp 2-component vector of int)
 0:107        Function Call: imageSize(I21; (global highp 2-component vector of int)
 0:107          'i2Dqualified' (layout(binding=6 ) coherent volatile restrict uniform highp image2D)
+0:165  Function Definition: fooIO( (global void)
+0:165    Function Parameters: 
+0:167    Sequence
+0:167      Sequence
+0:167        move second child to first child (temp mediump 4-component vector of float)
+0:167          'v' (temp mediump 4-component vector of float)
+0:167          add (temp mediump 4-component vector of float)
+0:167            v: direct index for structure (in mediump 4-component vector of float)
+0:167              'inbinst' (in block{in mediump int a, in mediump 4-component vector of float v, in structure{global mediump int b} s})
+0:167              Constant:
+0:167                1 (const int)
+0:167            vAnon: direct index for structure (layout(location=13 ) centroid in mediump 4-component vector of float)
+0:167              'anon@0' (in block{layout(location=12 ) in mediump int aAnon, layout(location=13 ) centroid in mediump 4-component vector of float vAnon})
+0:167              Constant:
+0:167                1 (const uint)
+0:168      vector scale second child into first child (temp mediump 4-component vector of float)
+0:168        'v' (temp mediump 4-component vector of float)
+0:168        f: direct index for structure (in mediump float)
+0:168          direct index (temp block{in mediump float f})
+0:168            'arrayedInst' (in 4-element array of block{in mediump float f})
+0:168            Constant:
+0:168              2 (const int)
+0:168          Constant:
+0:168            0 (const int)
+0:169      vector scale second child into first child (temp mediump 4-component vector of float)
+0:169        'v' (temp mediump 4-component vector of float)
+0:169        f: direct index for structure (in mediump float)
+0:169          indirect index (temp block{in mediump float f})
+0:169            'arrayedInst' (in 4-element array of block{in mediump float f})
+0:169            'i' (uniform mediump int)
+0:169          Constant:
+0:169            0 (const int)
+0:179  Function Definition: foo_IO( (global void)
+0:179    Function Parameters: 
+0:181    Sequence
+0:181      move second child to first child (temp highp float)
+0:181        'gl_FragDepth' (gl_FragDepth highp float FragDepth)
+0:181        Constant:
+0:181          0.200000
 0:?   Linker Objects
 0:?     'gl_FragCoord' (smooth in mediump 4-component vector of float)
 0:?     'v3' (layout(location=2 ) smooth in mediump 3-component vector of float)
@@ -300,6 +356,13 @@ ERROR: node is still EOpNull!
 0:?     'insa' (smooth in 4-element array of structure{global mediump float f})
 0:?     'inSA' (smooth in structure{global 4-element array of mediump float f})
 0:?     'inSS' (smooth in structure{global mediump float f, global structure{global mediump float f} s})
+0:?     'outbinst' (out block{out mediump int a})
+0:?     'inbinst' (in block{in mediump int a, in mediump 4-component vector of float v, in structure{global mediump int b} s})
+0:?     'anon@0' (in block{layout(location=12 ) in mediump int aAnon, layout(location=13 ) centroid in mediump 4-component vector of float vAnon})
+0:?     'aliased' (layout(location=13 ) smooth in mediump 4-component vector of float)
+0:?     'arrayedInst' (in 4-element array of block{in mediump float f})
+0:?     'gl_FragDepth' (gl_FragDepth highp float FragDepth)
+0:?     'gl_FragDepth' (gl_FragDepth highp float FragDepth)
 
 
 Linked fragment stage:
@@ -307,7 +370,11 @@ Linked fragment stage:
 ERROR: Linking fragment stage: when more than one fragment shader output, all must have location qualifiers
 
 Shader version: 310
+Requested GL_EXT_shader_io_blocks
+gl_FragCoord pixel center is integer
+gl_FragCoord origin is upper left
 using early_fragment_tests
+using depth_any
 ERROR: node is still EOpNull!
 0:21  Function Definition: main( (global void)
 0:21    Function Parameters: 
@@ -521,6 +588,45 @@ ERROR: node is still EOpNull!
 0:107        'v2' (temp highp 2-component vector of int)
 0:107        Function Call: imageSize(I21; (global highp 2-component vector of int)
 0:107          'i2Dqualified' (layout(binding=6 ) coherent volatile restrict uniform highp image2D)
+0:165  Function Definition: fooIO( (global void)
+0:165    Function Parameters: 
+0:167    Sequence
+0:167      Sequence
+0:167        move second child to first child (temp mediump 4-component vector of float)
+0:167          'v' (temp mediump 4-component vector of float)
+0:167          add (temp mediump 4-component vector of float)
+0:167            v: direct index for structure (in mediump 4-component vector of float)
+0:167              'inbinst' (in block{in mediump int a, in mediump 4-component vector of float v, in structure{global mediump int b} s})
+0:167              Constant:
+0:167                1 (const int)
+0:167            vAnon: direct index for structure (layout(location=13 ) centroid in mediump 4-component vector of float)
+0:167              'anon@0' (in block{layout(location=12 ) in mediump int aAnon, layout(location=13 ) centroid in mediump 4-component vector of float vAnon})
+0:167              Constant:
+0:167                1 (const uint)
+0:168      vector scale second child into first child (temp mediump 4-component vector of float)
+0:168        'v' (temp mediump 4-component vector of float)
+0:168        f: direct index for structure (in mediump float)
+0:168          direct index (temp block{in mediump float f})
+0:168            'arrayedInst' (in 4-element array of block{in mediump float f})
+0:168            Constant:
+0:168              2 (const int)
+0:168          Constant:
+0:168            0 (const int)
+0:169      vector scale second child into first child (temp mediump 4-component vector of float)
+0:169        'v' (temp mediump 4-component vector of float)
+0:169        f: direct index for structure (in mediump float)
+0:169          indirect index (temp block{in mediump float f})
+0:169            'arrayedInst' (in 4-element array of block{in mediump float f})
+0:169            'i' (uniform mediump int)
+0:169          Constant:
+0:169            0 (const int)
+0:179  Function Definition: foo_IO( (global void)
+0:179    Function Parameters: 
+0:181    Sequence
+0:181      move second child to first child (temp highp float)
+0:181        'gl_FragDepth' (gl_FragDepth highp float FragDepth)
+0:181        Constant:
+0:181          0.200000
 0:?   Linker Objects
 0:?     'gl_FragCoord' (smooth in mediump 4-component vector of float)
 0:?     'v3' (layout(location=2 ) smooth in mediump 3-component vector of float)
@@ -562,4 +668,11 @@ ERROR: node is still EOpNull!
 0:?     'insa' (smooth in 4-element array of structure{global mediump float f})
 0:?     'inSA' (smooth in structure{global 4-element array of mediump float f})
 0:?     'inSS' (smooth in structure{global mediump float f, global structure{global mediump float f} s})
+0:?     'outbinst' (out block{out mediump int a})
+0:?     'inbinst' (in block{in mediump int a, in mediump 4-component vector of float v, in structure{global mediump int b} s})
+0:?     'anon@0' (in block{layout(location=12 ) in mediump int aAnon, layout(location=13 ) centroid in mediump 4-component vector of float vAnon})
+0:?     'aliased' (layout(location=13 ) smooth in mediump 4-component vector of float)
+0:?     'arrayedInst' (in 4-element array of block{in mediump float f})
+0:?     'gl_FragDepth' (gl_FragDepth highp float FragDepth)
+0:?     'gl_FragDepth' (gl_FragDepth highp float FragDepth)
 

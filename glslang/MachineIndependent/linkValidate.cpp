@@ -715,7 +715,9 @@ int TIntermediate::computeTypeLocationSize(const TType& type) const
         return size;
     }
 
-    // "If a vertex shader input is any scalar or vector type, it will consume a single location. If a non-vertex 
+    // ES: "If a shader input is any scalar or vector type, it will consume a single location."
+
+    // Desktop: "If a vertex shader input is any scalar or vector type, it will consume a single location. If a non-vertex 
     // shader input is a scalar or vector type other than dvec3 or dvec4, it will consume a single location, while 
     // types dvec3 or dvec4 will consume two consecutive locations. Inputs of type double and dvec2 will 
     // consume only a single location, in all stages."

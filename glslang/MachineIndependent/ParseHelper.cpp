@@ -1653,8 +1653,13 @@ bool TParseContext::lValueErrorCheck(TSourceLoc loc, const char* op, TIntermType
         if (node->getQualifier().readonly)
             message = "can't modify a readonly buffer";
         break;
-    default:
+    case EvqFragDepth:
+        // "In addition, it is an error to statically write to gl_FragDepth in the fragment shader."
+        if (profile == EEsProfile && intermediate.getEarlyFragmentTests())
+            message = "can't modify gl_FragDepth if using early_fragment_tests";
+        break;
 
+    default:
         //
         // Type that can't be written to?
         //
@@ -2632,7 +2637,12 @@ void TParseContext::nonInitConstCheck(TSourceLoc loc, TString& identifier, TType
 //
 TSymbol* TParseContext::redeclareBuiltinVariable(TSourceLoc loc, const TString& identifier, const TQualifier& qualifier, const TShaderQualifiers& publicType, bool& newDeclaration)
 {
-    if (profile == EEsProfile || ! builtInName(identifier) || symbolTable.atBuiltInLevel() || ! symbolTable.atGlobalLevel())
+    if (! builtInName(identifier) || symbolTable.atBuiltInLevel() || ! symbolTable.atGlobalLevel())
+        return 0;
+
+    bool nonEsRedecls = (profile != EEsProfile && (version >= 130 || identifier == "gl_TexCoord"));
+    bool    esRedecls = (profile == EEsProfile && extensionsTurnedOn(Num_AEP_shader_io_blocks, AEP_shader_io_blocks));
+    if (! esRedecls && ! nonEsRedecls)
         return 0;
 
     // Special case when using GL_ARB_separate_shader_objects
@@ -2648,15 +2658,15 @@ TSymbol* TParseContext::redeclareBuiltinVariable(TSourceLoc loc, const TString& 
     // Potentially redeclaring a built-in variable...
 
     if (ssoPre150 ||
-        (identifier == "gl_FragDepth"           && version >= 420) ||
-        (identifier == "gl_FragCoord"           && version >= 150) ||
-        (identifier == "gl_ClipDistance"        && version >= 130) ||
-        (identifier == "gl_FrontColor"          && version >= 130) ||
-        (identifier == "gl_BackColor"           && version >= 130) ||
-        (identifier == "gl_FrontSecondaryColor" && version >= 130) ||
-        (identifier == "gl_BackSecondaryColor"  && version >= 130) ||
-        (identifier == "gl_SecondaryColor"      && version >= 130) ||
-        (identifier == "gl_Color"               && version >= 130 && language == EShLangFragment) ||
+        (identifier == "gl_FragDepth"           && ((nonEsRedecls && version >= 420) || esRedecls)) ||
+        (identifier == "gl_FragCoord"           && ((nonEsRedecls && version >= 150) || esRedecls)) ||
+         identifier == "gl_ClipDistance"                                                            ||
+         identifier == "gl_FrontColor"                                                              ||
+         identifier == "gl_BackColor"                                                               ||
+         identifier == "gl_FrontSecondaryColor"                                                     ||
+         identifier == "gl_BackSecondaryColor"                                                      ||
+         identifier == "gl_SecondaryColor"                                                          ||
+        (identifier == "gl_Color"               && language == EShLangFragment)                     ||
          identifier == "gl_TexCoord") {
 
         // Find the existing symbol, if any.
@@ -2715,7 +2725,7 @@ TSymbol* TParseContext::redeclareBuiltinVariable(TSourceLoc loc, const TString& 
             if (qualifier.nopersp != symbolQualifier.nopersp || qualifier.flat != symbolQualifier.flat ||
                 qualifier.isMemory() || qualifier.isAuxiliary())
                 error(loc, "can only change layout qualification of", "redeclaration", symbol->getName().c_str());
-            if (identifier == "gl_FragCoord" && qualifier.storage != EvqVaryingIn)
+            if (qualifier.storage != EvqVaryingIn)
                 error(loc, "cannot change input storage qualification of", "redeclaration", symbol->getName().c_str());
             if (! builtIn && (publicType.pixelCenterInteger != intermediate.getPixelCenterInteger() || 
                               publicType.originUpperLeft != intermediate.getOriginUpperLeft()))
@@ -2753,7 +2763,7 @@ TSymbol* TParseContext::redeclareBuiltinVariable(TSourceLoc loc, const TString& 
 void TParseContext::redeclareBuiltinBlock(TSourceLoc loc, TTypeList& newTypeList, const TString& blockName, const TString* instanceName, TArraySizes* arraySizes)
 {
     const char* feature = "built-in block redeclaration";
-    requireProfile(loc, ~EEsProfile, feature);
+    profileRequires(loc, EEsProfile, 0, Num_AEP_shader_io_blocks, AEP_shader_io_blocks, feature);
     profileRequires(loc, ~EEsProfile, 410, GL_ARB_separate_shader_objects, feature);
 
     if (blockName != "gl_PerVertex" && blockName != "gl_PerFragment") {
@@ -4603,8 +4613,9 @@ void TParseContext::declareBlock(TSourceLoc loc, TTypeList& typeList, const TStr
             switch (currentBlockQualifier.storage) {
             case EvqVaryingIn:
             case EvqVaryingOut:
-                requireProfile(memberLoc, ECoreProfile | ECompatibilityProfile, feature);
+                requireProfile(memberLoc, ECoreProfile | ECompatibilityProfile | EEsProfile, feature);
                 profileRequires(memberLoc, ECoreProfile | ECompatibilityProfile, 440, GL_ARB_enhanced_layouts, feature);
+                profileRequires(memberLoc, EEsProfile, 0, Num_AEP_shader_io_blocks, AEP_shader_io_blocks, feature);
                 memberWithLocation = true;
                 break;
             default:
@@ -4752,7 +4763,9 @@ void TParseContext::blockStageIoCheck(TSourceLoc loc, TStorageQualifier storageQ
         profileRequires(loc, ~EEsProfile, 150, GL_ARB_separate_shader_objects, "output block");
         switch (language) {
         case EShLangVertex:
-            profileRequires(loc, EEsProfile, 0, Num_AEP_shader_io_blocks, AEP_shader_io_blocks, "vertex output block");
+            // ES 310 can have a block before shader_io is turned on, so skip this test for built-ins
+            if (! parsingBuiltins)
+                profileRequires(loc, EEsProfile, 0, Num_AEP_shader_io_blocks, AEP_shader_io_blocks, "vertex output block");
             if (profile == EEsProfile && arraySizes)
                 arraySizeRequiredCheck(loc, arraySizes->getSize());
             break;
