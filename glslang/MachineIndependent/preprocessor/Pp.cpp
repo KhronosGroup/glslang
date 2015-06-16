@@ -743,17 +743,19 @@ int TPpContext::CPPversion(TPpToken* ppToken)
         parseContext.error(ppToken->loc, "must be followed by version number", "#version", "");
 
     ppToken->ival = atoi(ppToken->name);
-
+    int versionNumber = ppToken->ival;
+    int line = ppToken->loc.line;
     token = scanToken(ppToken);
 
-    if (token == '\n')
+    if (token == '\n') {
+        parseContext.notifyVersion(line, versionNumber, nullptr);
         return token;
-    else {
+    } else {
         if (ppToken->atom != coreAtom &&
             ppToken->atom != compatibilityAtom &&
             ppToken->atom != esAtom)
             parseContext.error(ppToken->loc, "bad profile name; use es, core, or compatibility", "#version", "");
-
+        parseContext.notifyVersion(line, versionNumber, GetAtomString(ppToken->atom));
         token = scanToken(ppToken);
 
         if (token == '\n')
@@ -768,6 +770,7 @@ int TPpContext::CPPversion(TPpToken* ppToken)
 // Handle #extension
 int TPpContext::CPPextension(TPpToken* ppToken)
 {
+    int line = ppToken->loc.line;
     int token = scanToken(ppToken);
     char extensionName[80];
 
@@ -793,7 +796,7 @@ int TPpContext::CPPextension(TPpToken* ppToken)
         return token;
     }
 
-    parseContext.updateExtensionBehavior(extensionName, GetAtomString(ppToken->atom));
+    parseContext.updateExtensionBehavior(line, extensionName, GetAtomString(ppToken->atom));
 
     token = scanToken(ppToken);
     if (token == '\n')

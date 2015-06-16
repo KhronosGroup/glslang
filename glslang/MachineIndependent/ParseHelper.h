@@ -42,6 +42,8 @@
 #include "localintermediate.h"
 #include "Scan.h"
 
+#include <functional>
+
 namespace glslang {
 
 struct TPragma {
@@ -198,8 +200,10 @@ public:
     void addError() { ++numErrors; }
     int getNumErrors() const { return numErrors; }
     const TSourceLoc& getCurrentLoc() const { return currentScanner->getSourceLoc(); }
-    void setCurrentLine(int line) { currentScanner->setLine(line); }
+    void setCurrentLine(int line);
     void setCurrentString(int string) { currentScanner->setString(string); }
+
+    void notifyVersion(int line, int version, const char* type_string);
 
     // The following are implemented in Versions.cpp to localize version/profile/stage/extensions control
     void initializeExtensionBehavior();
@@ -213,9 +217,14 @@ public:
     void requireExtensions(TSourceLoc, int numExtensions, const char* const extensions[], const char* featureDesc);
     TExtensionBehavior getExtensionBehavior(const char*);
     bool extensionsTurnedOn(int numExtensions, const char* const extensions[]);
-    void updateExtensionBehavior(const char* const extension, const char* behavior);
+    void updateExtensionBehavior(int line, const char* const extension, const char* behavior);
     void fullIntegerCheck(TSourceLoc, const char* op);
     void doubleCheck(TSourceLoc, const char* op);
+
+    void setVersionCallback(const std::function<void(int, int, const char*)>& func) { versionCallback = func; }
+    void setPragmaCallback(const std::function<void(int, const TVector<TString>&)>& func) { pragmaCallback = func; }
+    void setLineCallback(const std::function<void(int)>& func) { lineCallback = func; }
+    void setExtensionCallback(const std::function<void(int, const char*, const char*)>& func) { extensionCallback = func; }
 
 protected:
     void nonInitConstCheck(TSourceLoc, TString& identifier, TType& type);
@@ -321,6 +330,13 @@ protected:
     //    array-sizing declarations
     //
     TVector<TSymbol*> ioArraySymbolResizeList;
+
+    // These, if set, will be called when a line, pragma ... is preprocessed.
+    // They will be called with any parameters to the original directive.
+    std::function<void(int)> lineCallback;
+    std::function<void(int, const TVector<TString>&)> pragmaCallback;
+    std::function<void(int, int, const char*)> versionCallback;
+    std::function<void(int, const char*, const char*)> extensionCallback;
 };
 
 } // end namespace glslang

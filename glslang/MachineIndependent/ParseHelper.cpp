@@ -175,6 +175,9 @@ void TParseContext::parserError(const char* s)
 
 void TParseContext::handlePragma(TSourceLoc loc, const TVector<TString>& tokens)
 {
+    if (pragmaCallback)
+        pragmaCallback(loc.line, tokens);
+
     if (tokens.size() == 0)
         return;
 
@@ -5222,5 +5225,21 @@ TIntermNode* TParseContext::addSwitch(TSourceLoc loc, TIntermTyped* expression, 
 
     return switchNode;
 }
+
+void TParseContext::setCurrentLine(int line)
+{
+    currentScanner->setLine(line);
+    if (lineCallback) {
+        lineCallback(line);
+    }
+}
+
+void TParseContext::notifyVersion(int line, int version, const char* type_string)
+{
+    if (versionCallback) {
+        versionCallback(line, version, type_string);
+    }
+}
+
 
 } // end namespace glslang

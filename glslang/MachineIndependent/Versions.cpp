@@ -462,8 +462,11 @@ bool TParseContext::extensionsTurnedOn(int numExtensions, const char* const exte
 //
 // Change the current state of an extension's behavior.
 //
-void TParseContext::updateExtensionBehavior(const char* extension, const char* behaviorString)
+void TParseContext::updateExtensionBehavior(int line, const char* extension, const char* behaviorString)
 {
+    if (extensionCallback)
+        extensionCallback(line, extension, behaviorString);
+
     // Translate from text string of extension's behavior to an enum.
     TExtensionBehavior behavior = EBhDisable;
     if (! strcmp("require", behaviorString))
@@ -485,29 +488,29 @@ void TParseContext::updateExtensionBehavior(const char* extension, const char* b
     // see if need to propagate to implicitly modified things
     if (strcmp(extension, "GL_ANDROID_extension_pack_es31a") == 0) {
         // to everything in AEP
-        updateExtensionBehavior("GL_KHR_blend_equation_advanced", behaviorString);
-        updateExtensionBehavior("GL_OES_sample_variables", behaviorString);
-        updateExtensionBehavior("GL_OES_shader_image_atomic", behaviorString);
-        updateExtensionBehavior("GL_OES_shader_multisample_interpolation", behaviorString);
-        updateExtensionBehavior("GL_OES_texture_storage_multisample_2d_array", behaviorString);
-        updateExtensionBehavior("GL_EXT_geometry_shader", behaviorString);
-        updateExtensionBehavior("GL_EXT_gpu_shader5", behaviorString);
-        updateExtensionBehavior("GL_EXT_primitive_bounding_box", behaviorString);
-        updateExtensionBehavior("GL_EXT_shader_io_blocks", behaviorString);
-        updateExtensionBehavior("GL_EXT_tessellation_shader", behaviorString);
-        updateExtensionBehavior("GL_EXT_texture_buffer", behaviorString);
-        updateExtensionBehavior("GL_EXT_texture_cube_map_array", behaviorString);
+        updateExtensionBehavior(line, "GL_KHR_blend_equation_advanced", behaviorString);
+        updateExtensionBehavior(line, "GL_OES_sample_variables", behaviorString);
+        updateExtensionBehavior(line, "GL_OES_shader_image_atomic", behaviorString);
+        updateExtensionBehavior(line, "GL_OES_shader_multisample_interpolation", behaviorString);
+        updateExtensionBehavior(line, "GL_OES_texture_storage_multisample_2d_array", behaviorString);
+        updateExtensionBehavior(line, "GL_EXT_geometry_shader", behaviorString);
+        updateExtensionBehavior(line, "GL_EXT_gpu_shader5", behaviorString);
+        updateExtensionBehavior(line, "GL_EXT_primitive_bounding_box", behaviorString);
+        updateExtensionBehavior(line, "GL_EXT_shader_io_blocks", behaviorString);
+        updateExtensionBehavior(line, "GL_EXT_tessellation_shader", behaviorString);
+        updateExtensionBehavior(line, "GL_EXT_texture_buffer", behaviorString);
+        updateExtensionBehavior(line, "GL_EXT_texture_cube_map_array", behaviorString);
     }
     // geometry to io_blocks
     else if (strcmp(extension, "GL_EXT_geometry_shader") == 0)
-        updateExtensionBehavior("GL_EXT_shader_io_blocks", behaviorString);
+        updateExtensionBehavior(line, "GL_EXT_shader_io_blocks", behaviorString);
     else if (strcmp(extension, "GL_OES_geometry_shader") == 0)
-        updateExtensionBehavior("GL_OES_shader_io_blocks", behaviorString);
+        updateExtensionBehavior(line, "GL_OES_shader_io_blocks", behaviorString);
     // tessellation to io_blocks
     else if (strcmp(extension, "GL_EXT_tessellation_shader") == 0)
-        updateExtensionBehavior("GL_EXT_shader_io_blocks", behaviorString);
+        updateExtensionBehavior(line, "GL_EXT_shader_io_blocks", behaviorString);
     else if (strcmp(extension, "GL_OES_tessellation_shader") == 0)
-        updateExtensionBehavior("GL_OES_shader_io_blocks", behaviorString);
+        updateExtensionBehavior(line, "GL_OES_shader_io_blocks", behaviorString);
 }
 
 void TParseContext::updateExtensionBehavior(const char* extension, TExtensionBehavior behavior)
