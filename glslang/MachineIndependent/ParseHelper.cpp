@@ -2819,7 +2819,8 @@ void TParseContext::redeclareBuiltinBlock(TSourceLoc loc, TTypeList& newTypeList
         // look for match
         bool found = false;
         TTypeList::const_iterator newMember;
-        TSourceLoc memberLoc = {};
+        TSourceLoc memberLoc;
+        memberLoc.init();
         for (newMember = newTypeList.begin(); newMember != newTypeList.end(); ++newMember) {
             if (member->type->getFieldName() == newMember->type->getFieldName()) {
                 found = true;

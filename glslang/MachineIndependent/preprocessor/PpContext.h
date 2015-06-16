@@ -87,9 +87,8 @@ namespace glslang {
 class TPpToken {
 public:
     TPpToken() : token(0), ival(0), space(false), dval(0.0), atom(0)
-    { 
-        loc.line = 0; 
-        loc.string = 0; 
+    {
+        loc.init(); 
         name[0] = 0;
     }
 

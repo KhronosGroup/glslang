@@ -560,8 +560,7 @@ bool CompileDeferred(
         parseContext.addError();
     if (warnVersionNotFirst) {
         TSourceLoc loc;
-        loc.line = 1;
-        loc.string = 0;
+        loc.init();
         parseContext.warn(loc, "Illegal to have non-comment, non-whitespace tokens before #version", "#version", "");
     }
 

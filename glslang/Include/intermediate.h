@@ -400,7 +400,7 @@ class TIntermNode {
 public:
     POOL_ALLOCATOR_NEW_DELETE(glslang::GetThreadPoolAllocator())
 
-    TIntermNode() { loc.line = 0; loc.string = 0; }
+    TIntermNode() { loc.init(); }
     virtual glslang::TSourceLoc getLoc() const { return loc; }
     virtual void setLoc(glslang::TSourceLoc l) { loc = l; }
     virtual void traverse(glslang::TIntermTraverser*) = 0;

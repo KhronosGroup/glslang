@@ -177,8 +177,10 @@ inline const TString String(const int i, const int base = 10)
 }
 
 struct TSourceLoc {
+    void init() { string = 0; line = 0; column = 0; }
     int string;
     int line;
+    int column;
 };
 
 typedef TMap<TString, TString> TPragmaTable;

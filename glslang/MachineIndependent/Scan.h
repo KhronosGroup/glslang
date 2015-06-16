@@ -52,7 +52,9 @@ public:
         loc = new TSourceLoc[numSources];
         loc[currentSource].string = -stringBias;
         loc[currentSource].line = 1;
+        loc[currentSource].column = 0;
     }
+
     virtual ~TInputScanner()
     {
         delete [] loc;
@@ -68,8 +70,11 @@ public:
             return -1;
 
         int ret = sources[currentSource][currentChar];
-        if (ret == '\n')
+        ++loc[currentSource].column;
+        if (ret == '\n') {
             ++loc[currentSource].line;
+            loc[currentSource].column = 0;
+        }
         advance();
 
         return ret;
@@ -87,9 +92,23 @@ public:
     // go back one character
     void unget()
     {
-        if (currentChar > 0)
+        if (currentChar > 0) {
             --currentChar;
-        else {
+            --loc[currentSource].column;
+            if (loc[currentSource].column < 0) {
+              // We've moved back past a new line. Find the
+              // previous newline (or start of the file) to compute
+              // the column count on the now current line.
+              size_t ch = currentChar;
+              while(ch > 0) {
+                if (sources[currentSource][ch] == '\n') {
+                  break;
+                }
+                --ch;
+              }
+              loc[currentSource].column = currentChar - ch;
+            }
+        } else {
             do {
                 --currentSource;
             } while (currentSource > 0 && lengths[currentSource] == 0);
@@ -125,12 +144,14 @@ protected:
             if (currentSource < numSources) {
                 loc[currentSource].string = loc[currentSource - 1].string + 1;
                 loc[currentSource].line = 1;
+                loc[currentSource].column = 0;
             }
             while (currentSource < numSources && lengths[currentSource] == 0) {
                 ++currentSource;
                 if (currentSource < numSources) {
                     loc[currentSource].string = loc[currentSource - 1].string + 1;
                     loc[currentSource].line = 1;
+                    loc[currentSource].column = 0;
                 }
             }
             currentChar = 0;
