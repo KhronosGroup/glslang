@@ -40,12 +40,19 @@ fi
 #
 # SPIR-V code generation tests
 #
-grep -v "^#" test-spirv-list | while read t; do
-    echo Running SPIR-V $t...
-    b=`basename $t`
-    $EXE -H $t > $TARGETDIR/$b.out
-    diff -b $BASEDIR/$b.out $TARGETDIR/$b.out || HASERROR=1
-done
+while read t; do
+  case $t in
+    \#*)
+      # Skip comment lines in the test list file.
+      ;;
+    *)
+      echo Running SPIR-V $t...
+      b=`basename $t`
+      $EXE -H $t > $TARGETDIR/$b.out
+      diff -b $BASEDIR/$b.out $TARGETDIR/$b.out || HASERROR=1
+      ;;
+  esac
+done < test-spirv-list
 
 #
 # grouped shaders for bulk (faster) tests
