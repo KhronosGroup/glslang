@@ -35,6 +35,7 @@
 #define _COMPILER_INTERFACE_INCLUDED_
 
 #include "../Include/ResourceLimits.h"
+#include "../MachineIndependent/Versions.h"
 
 #ifdef _WIN32
 #define C_DECL __cdecl
@@ -279,6 +280,9 @@ public:
     virtual ~TShader();
     void setStrings(const char* const* s, int n) { strings = s; numStrings = n; }
     void setPreamble(const char* s) { preamble = s; }
+    bool parse(const TBuiltInResource*, int defaultVersion, EProfile defaultProfile, bool forceDefaultVersionAndProfile, bool forwardCompatible, EShMessages);
+    // Equivalent to parse() without a default profile and without forcing defaults.
+    // Provided for backwards compatibility.
     bool parse(const TBuiltInResource*, int defaultVersion, bool forwardCompatible, EShMessages);
 
     const char* getInfoLog();

@@ -58,6 +58,20 @@ typedef enum {
 namespace glslang {
 
 //
+// Map from profile enum to externally readable text name.
+//
+inline const char* ProfileName(EProfile profile)
+{
+    switch (profile) {
+    case ENoProfile:             return "none";
+    case ECoreProfile:           return "core";
+    case ECompatibilityProfile:  return "compatibility";
+    case EEsProfile:             return "es";
+    default:                     return "unknown profile";
+    }
+}
+
+//
 // The behaviors from the GLSL "#extension extension_name : behavior"
 //
 typedef enum {

@@ -453,6 +453,10 @@ bool CompileDeferred(
     const EShOptimizationLevel optLevel,
     const TBuiltInResource* resources,
     int defaultVersion,         // use 100 for ES environment, 110 for desktop
+    EProfile defaultProfile,
+    // set version/profile to defaultVersion/defaultProfile regardless of the #version
+    // directive in the source code
+    bool forceDefaultVersionAndProfile,
     bool forwardCompatible,     // give errors for use of deprecated features
     EShMessages messages,       // warnings/errors/AST; things to print out
     TIntermediate& intermediate // returned tree, etc.
@@ -497,6 +501,23 @@ bool CompileDeferred(
     bool versionNotFirstToken;
     bool versionNotFirst = userInput.scanVersion(version, profile, versionNotFirstToken);
     bool versionNotFound = version == 0;
+    if (forceDefaultVersionAndProfile) {
+        if (!(messages & EShMsgSuppressWarnings) && !versionNotFound &&
+            (version != defaultVersion || profile != defaultProfile)) {
+            compiler->infoSink.info << "Warning, (version, profile) forced to be ("
+                                    << defaultVersion << ", " << ProfileName(defaultProfile)
+                                    << "), while in source code it is ("
+                                    << version << ", " << ProfileName(profile) << ")\n";
+        }
+
+        if (versionNotFound) {
+            versionNotFirstToken = false;
+            versionNotFirst = false;
+            versionNotFound = false;
+        }
+        version = defaultVersion;
+        profile = defaultProfile;
+    }
     bool goodVersion = DeduceVersionProfile(compiler->infoSink, compiler->getLanguage(), versionNotFirst, defaultVersion, version, profile);
     bool versionWillBeError = (versionNotFound || (profile == EEsProfile && version >= 300 && versionNotFirst));
     bool warnVersionNotFirst = false;
@@ -727,7 +748,7 @@ int ShCompile(
     compiler->infoSink.debug.erase();
 
     TIntermediate intermediate(compiler->getLanguage());
-    bool success = CompileDeferred(compiler, shaderStrings, numStrings, inputLengths, "", optLevel, resources, defaultVersion, forwardCompatible, messages, intermediate);
+    bool success = CompileDeferred(compiler, shaderStrings, numStrings, inputLengths, "", optLevel, resources, defaultVersion, ENoProfile, false, forwardCompatible, messages, intermediate);
 
     //
     // Call the machine dependent compiler
@@ -1006,7 +1027,7 @@ TShader::~TShader()
 //
 // Returns true for success.
 //
-bool TShader::parse(const TBuiltInResource* builtInResources, int defaultVersion, bool forwardCompatible, EShMessages messages)
+bool TShader::parse(const TBuiltInResource* builtInResources, int defaultVersion, EProfile defaultProfile, bool forceDefaultVersionAndProfile, bool forwardCompatible, EShMessages messages)
 {
     if (! InitThread())
         return false;
@@ -1016,7 +1037,12 @@ bool TShader::parse(const TBuiltInResource* builtInResources, int defaultVersion
     if (! preamble)
         preamble = "";
 
-    return CompileDeferred(compiler, strings, numStrings, nullptr, preamble, EShOptNone, builtInResources, defaultVersion, forwardCompatible, messages, *intermediate);
+    return CompileDeferred(compiler, strings, numStrings, nullptr, preamble, EShOptNone, builtInResources, defaultVersion, defaultProfile, forceDefaultVersionAndProfile, forwardCompatible, messages, *intermediate);
+}
+
+bool TShader::parse(const TBuiltInResource* builtInResources, int defaultVersion, bool forwardCompatible, EShMessages messages)
+{
+  return parse(builtInResources, defaultVersion, ENoProfile, false, forwardCompatible, messages);
 }
 
 const char* TShader::getInfoLog()

@@ -266,20 +266,6 @@ const char* TParseContext::getPreamble()
 }
 
 //
-// Map from profile enum to externally readable text name.
-//
-const char* ProfileName(EProfile profile)
-{
-    switch (profile) {
-    case ENoProfile:             return "none";        
-    case ECoreProfile:           return "core";
-    case ECompatibilityProfile:  return "compatibility";
-    case EEsProfile:             return "es";
-    default:                     return "unknown profile";
-    }
-}
-
-//
 // When to use requireProfile():
 //
 //     Use if only some profiles support a feature.  However, if within a profile the feature 

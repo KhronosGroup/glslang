@@ -155,7 +155,7 @@ void TInputScanner::consumeWhitespaceComment(bool& foundNonSpaceTab)
 // or no #version was found; otherwise, returns false.  There is no error case, it always
 // succeeds, but will leave version == 0 if no #version was found.
 //
-// Sets versionNotFirstToken based on whether tokens (beyond white space and comments)
+// Sets notFirstToken based on whether tokens (beyond white space and comments)
 // appeared before the #version.
 //
 // N.B. does not attempt to leave input in any particular known state.  The assumption
