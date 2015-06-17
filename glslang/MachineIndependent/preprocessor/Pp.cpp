@@ -629,10 +629,15 @@ int TPpContext::CPPline(TPpToken* ppToken)
         return token;
     }
 
-    int lineRes = 0;
+    int lineRes = 0; // Line number after macro expansion.
+    int lineToken = 0;
+    int fileRes = 0; // Source file number after macro expansion.
+    bool hasFile = false;
     bool lineErr = false;
+    bool fileErr = false;
     token = eval(token, MIN_PRECEDENCE, false, lineRes, lineErr, ppToken);
     if (! lineErr) {
+        lineToken = lineRes;
         if (token == '\n')
             ++lineRes;
 
@@ -648,14 +653,15 @@ int TPpContext::CPPline(TPpToken* ppToken)
         parseContext.setCurrentLine(lineRes);
 
         if (token != '\n') {
-            int fileRes = 0;
-            bool fileErr = false;
             token = eval(token, MIN_PRECEDENCE, false, fileRes, fileErr, ppToken);
             if (! fileErr)
                 parseContext.setCurrentString(fileRes);
+                hasFile = true;
         }
     }
-
+    if (!fileErr && !lineErr) {
+      parseContext.notifyLineDirective(lineToken, hasFile, fileRes);
+    }
     token = extraTokenCheck(lineAtom, ppToken, token);
 
     return token;
@@ -680,6 +686,7 @@ int TPpContext::CPPerror(TPpToken* ppToken)
         message.append(" ");
         token = scanToken(ppToken);
     }
+    parseContext.notifyErrorDirective(loc.line, message.c_str());
     //store this msg into the shader's information log..set the Compile Error flag!!!!
     parseContext.error(loc, message.c_str(), "#error", "");
 

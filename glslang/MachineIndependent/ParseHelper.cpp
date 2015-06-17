@@ -5226,14 +5226,6 @@ TIntermNode* TParseContext::addSwitch(TSourceLoc loc, TIntermTyped* expression, 
     return switchNode;
 }
 
-void TParseContext::setCurrentLine(int line)
-{
-    currentScanner->setLine(line);
-    if (lineCallback) {
-        lineCallback(line);
-    }
-}
-
 void TParseContext::notifyVersion(int line, int version, const char* type_string)
 {
     if (versionCallback) {
@@ -5241,5 +5233,18 @@ void TParseContext::notifyVersion(int line, int version, const char* type_string
     }
 }
 
+void TParseContext::notifyErrorDirective(int line, const char* error_message)
+{
+    if (errorCallback) {
+        errorCallback(line, error_message);
+    }
+}
+
+void TParseContext::notifyLineDirective(int line, bool has_source, int source)
+{
+    if (lineCallback) {
+        lineCallback(line, has_source, source);
+    }
+}
 
 } // end namespace glslang

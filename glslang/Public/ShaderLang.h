@@ -245,6 +245,7 @@ SH_IMPORT_EXPORT int ShGetUniformLocation(const ShHandle uniformMap, const char*
 //
 
 #include <list>
+#include <string>
 
 class TCompiler;
 class TInfoSink;
@@ -284,6 +285,10 @@ public:
     // Equivalent to parse() without a default profile and without forcing defaults.
     // Provided for backwards compatibility.
     bool parse(const TBuiltInResource*, int defaultVersion, bool forwardCompatible, EShMessages);
+    bool preprocess(const TBuiltInResource* builtInResources,
+                    int defaultVersion, EProfile defaultProfile, bool forceDefaultVersionAndProfile,
+                    bool forwardCompatible,
+                    EShMessages message, std::string* outputString);
 
     const char* getInfoLog();
     const char* getInfoDebugLog();

@@ -71,6 +71,7 @@ enum TOptions {
     EOptionSpv                = 0x0800,
     EOptionHumanReadableSpv   = 0x1000,
     EOptionDefaultDesktop     = 0x2000,
+    EOptionOutputPreprocessed = 0x4000,
 };
 
 //
@@ -489,6 +490,9 @@ bool ProcessArguments(int argc, char* argv[])
                 Options |= EOptionSpv;
                 Options |= EOptionLinkProgram;
                 break;
+            case 'E':
+                Options |= EOptionOutputPreprocessed;
+                break;
             case 'c':
                 Options |= EOptionDumpConfig;
                 break;
@@ -534,6 +538,13 @@ bool ProcessArguments(int argc, char* argv[])
                 Worklist.add(Work[argc]);
             }
         }
+    }
+
+    // Make sure that -E is not specified alongside -V -H or -l.
+    if (Options & EOptionOutputPreprocessed &&
+        ((Options &
+          (EOptionSpv | EOptionHumanReadableSpv | EOptionLinkProgram)))) {
+      return false;
     }
 
     return true;
@@ -608,12 +619,19 @@ void CompileAndLinkShaders()
             usage();
             return;
         }
+        const int defaultVersion = Options & EOptionDefaultDesktop? 110: 100;
 
         shader->setStrings(shaderStrings, 1);
-
-        if (! shader->parse(&Resources, (Options & EOptionDefaultDesktop) ? 110 : 100, false, messages))
+        if (Options & EOptionOutputPreprocessed) {
+            std::string str;
+            shader->preprocess(&Resources, defaultVersion, ENoProfile, false, false, messages, &str);
+            puts(str.c_str());
+            FreeFileData(shaderStrings);
+            continue;
+        }
+        if (! shader->parse(&Resources, defaultVersion, false, messages))
             CompileFailed = true;
-        
+
         program.addShader(shader);
 
         if (! (Options & EOptionSuppressInfolog)) {
@@ -629,7 +647,7 @@ void CompileAndLinkShaders()
     // Program-level processing...
     //
 
-    if (! program.link(messages))
+    if (!(Options & EOptionOutputPreprocessed) && ! program.link(messages))
         LinkFailed = true;
 
     if (! (Options & EOptionSuppressInfolog)) {
@@ -714,7 +732,8 @@ int C_DECL main(int argc, char* argv[])
     // 1) linking all arguments together, single-threaded, new C++ interface
     // 2) independent arguments, can be tackled by multiple asynchronous threads, for testing thread safety, using the old handle interface
     //
-    if (Options & EOptionLinkProgram) {
+    if (Options & EOptionLinkProgram ||
+        Options & EOptionOutputPreprocessed) {
         glslang::InitializeProcess();
         CompileAndLinkShaders();
         glslang::FinalizeProcess();
@@ -868,6 +887,7 @@ void usage()
            "(Each option must be specified separately, but can go anywhere in the command line.)\n"
            "  -V  create SPIR-V in file <stage>.spv\n"
            "  -H  print human readable form of SPIR-V; turns on -V\n"
+           "  -E  print pre-processed GLSL; cannot be used with -V, -H, or -l.\n"
            "  -c  configuration dump; use to create default configuration file (redirect to a .conf file)\n"
            "  -d  default to desktop (#version 110) when there is no version in the shader (default is ES version 100)\n"
            "  -i  intermediate tree (glslang AST) is printed out\n"

@@ -14,7 +14,6 @@ spv.double.comp
 spv.100ops.frag
 spv.130.frag
 spv.140.frag
-spv.140.vert
 spv.150.geom
 spv.150.vert
 spv.300BuiltIns.vert

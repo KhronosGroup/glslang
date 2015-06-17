@@ -41,6 +41,8 @@
 // and the shading language compiler/linker.
 //
 #include <string.h>
+#include <iostream>
+#include <sstream>
 #include "SymbolTable.h"
 #include "ParseHelper.h"
 #include "Scan.h"
@@ -433,18 +435,17 @@ bool DeduceVersionProfile(TInfoSink& infoSink, EShLanguage stage, bool versionNo
     return correct;
 }
 
+// This is the common setup and cleanup code for PreprocessDeferred and
+// CompileDeferred.
+// It takes any callable with a signature of
+//  bool (TParseContext& parseContext, TPpContext& ppContext,
+//                  TInputScanner& input, bool versionWillBeError,
+//                  TSymbolTable& , TIntermediate& ,
+//                  EShOptimizationLevel , EShMessages );
+// Which returns false if a failure was detected and true otherwise.
 //
-// Do a partial compile on the given strings for a single compilation unit
-// for a potential deferred link into a single stage (and deferred full compile of that
-// stage through machine-dependent compilation).
-//
-// All preprocessing, parsing, semantic checks, etc. for a single compilation unit
-// are done here.
-//
-// Return:  The tree and other information is filled into the intermediate argument, 
-//          and true is returned by the function for success.
-//
-bool CompileDeferred(
+template<typename ProcessingContext>
+bool ProcessDeferred(
     TCompiler* compiler,
     const char* const shaderStrings[],
     const int numStrings,
@@ -459,7 +460,9 @@ bool CompileDeferred(
     bool forceDefaultVersionAndProfile,
     bool forwardCompatible,     // give errors for use of deprecated features
     EShMessages messages,       // warnings/errors/AST; things to print out
-    TIntermediate& intermediate // returned tree, etc.
+    TIntermediate& intermediate, // returned tree, etc.
+    ProcessingContext& processingContext,
+    bool requireNonempty
     )
 {
     if (! InitThread())
@@ -481,7 +484,7 @@ bool CompileDeferred(
     //   string 2...numStrings+1: user's shader
     //   string numStrings+2:     "int;"
     const int numPre = 2;
-    const int numPost = 1;
+    const int numPost = requireNonempty? 1 : 0;
     size_t* lengths = new size_t[numStrings + numPre + numPost];
     const char** strings = new const char*[numStrings + numPre + numPost];
     for (int s = 0; s < numStrings; ++s) {
@@ -566,7 +569,6 @@ bool CompileDeferred(
 
     parseContext.initializeExtensionBehavior();
 
-    bool success = true;
     
     // Fill in the strings as outlined above.
     strings[0] = parseContext.getPreamble();
@@ -574,38 +576,237 @@ bool CompileDeferred(
     strings[1] = customPreamble;
     lengths[1] = strlen(strings[1]);
     assert(2 == numPre);
-    strings[numStrings + numPre] = "\n int;";
-    lengths[numStrings + numPre] = strlen(strings[numStrings + numPre]);
+    if (requireNonempty) {
+        strings[numStrings + numPre] = "\n int;";
+        lengths[numStrings + numPre] = strlen(strings[numStrings + numPre]);
+    }
     TInputScanner fullInput(numStrings + numPre + numPost, strings, lengths, numPre, numPost);
 
     // Push a new symbol allocation scope that will get used for the shader's globals.
     symbolTable.push();
 
-    // Parse the full shader.
-    if (! parseContext.parseShaderStrings(ppContext, fullInput, versionWillBeError))
-        success = false;
-    intermediate.addSymbolLinkageNodes(parseContext.linkage, parseContext.language, symbolTable);
+    bool success = processingContext(parseContext, ppContext, fullInput,
+                                     versionWillBeError, symbolTable,
+                                     intermediate, optLevel, messages);
 
     // Clean up the symbol table. The AST is self-sufficient now.
     delete symbolTableMemory;
 
-    if (success && intermediate.getTreeRoot()) {
-        if (optLevel == EShOptNoGeneration)
-            parseContext.infoSink.info.message(EPrefixNone, "No errors.  No code generation or linking was requested.");
-        else
-            success = intermediate.postProcess(intermediate.getTreeRoot(), parseContext.language);
-    } else if (! success) {
-        parseContext.infoSink.info.prefix(EPrefixError);
-        parseContext.infoSink.info << parseContext.getNumErrors() << " compilation errors.  No code generated.\n\n";
-    }
-
-    if (messages & EShMsgAST)
-        intermediate.output(parseContext.infoSink, true);
 
     delete [] lengths;
     delete [] strings;
 
     return success;
+}
+
+// DoPreprocessing is a valid ProcessingContext template argument,
+// which only performs the preprocessing step of compilation.
+// It places the result in the "string" argument to its constructor.
+struct DoPreprocessing {
+    explicit DoPreprocessing(std::string* string): outputString(string) {}
+    bool operator()(TParseContext& parseContext, TPpContext& ppContext,
+                    TInputScanner& input, bool versionWillBeError,
+                    TSymbolTable& , TIntermediate& ,
+                    EShOptimizationLevel , EShMessages )
+    {
+        // This is a list of tokens that do not require a space before or after.
+        static const std::string unNeededSpaceTokens = ";()[]";
+        static const std::string noSpaceBeforeTokens = ",";
+        glslang::TPpToken token;
+
+        std::stringstream outputStream;
+        int lastLine = -1; // lastLine is the line number of the last token
+        // processed. It is tracked in order for new-lines to be inserted when
+        // a token appears on a new line.
+        int lastToken = -1;
+        parseContext.setScanner(&input);
+        ppContext.setInput(input, versionWillBeError);
+
+        // Inserts newlines and incremnets lastLine until
+        // lastLine >= line.
+        auto adjustLine = [&lastLine, &outputStream](int line) {
+            int tokenLine = line - 1;
+            while(lastLine < tokenLine) {
+                if (lastLine >= 0) {
+                     outputStream << std::endl;
+                }
+                ++lastLine;
+            }
+        };
+
+        parseContext.setExtensionCallback([&adjustLine, &outputStream](
+            int line, const char* extension, const char* behavior) {
+                adjustLine(line);
+                outputStream << "#extension " << extension << " : " << behavior;
+        });
+        parseContext.setLineCallback([&lastLine, &outputStream](
+            int line, bool hasSource, int sourceNum) {
+            // SourceNum is the number of the source-string that is being parsed.
+            if (lastLine != -1) {
+                outputStream << std::endl;
+            }
+            outputStream << "#line " << line;
+            if (hasSource) {
+                outputStream << " " << sourceNum;
+            }
+            outputStream << std::endl;
+            lastLine = std::max(line - 1, 1);
+        });
+
+
+        parseContext.setVersionCallback(
+            [&adjustLine, &lastLine, &outputStream](int line, int version, const char* str) {
+                adjustLine(line);
+                outputStream << "#version " << version;
+                if (str) {
+                    outputStream << " " << str;
+                }
+                outputStream << std::endl;
+                ++lastLine;
+            });
+
+        parseContext.setPragmaCallback([&adjustLine, &outputStream](
+            int line, const glslang::TVector<glslang::TString>& ops) {
+                adjustLine(line);
+                outputStream << "#pragma ";
+                for(size_t i = 0; i < ops.size(); ++i) {
+                    outputStream << ops[i];
+                }
+        });
+
+        parseContext.setErrorCallback([&adjustLine, &outputStream](
+            int line, const char* errorMessage) {
+                adjustLine(line);
+                outputStream << "#error " << errorMessage;
+        });
+        while (const char* tok = ppContext.tokenize(&token)) {
+            int tokenLine = token.loc.line - 1;  // start at 0;
+            bool newLine = false;
+            while (lastLine < tokenLine) {
+                if (lastLine > -1) {
+                    outputStream << std::endl;
+                    newLine = true;
+                }
+                ++lastLine;
+                if (lastLine == tokenLine) {
+                    // Don't emit whitespace onto empty lines.
+                    // Copy any whitespace characters at the start of a line
+                    // from the input to the output.
+                    for(int i = 0; i < token.loc.column - 1; ++i) {
+                        outputStream << " ";
+                    }
+                }
+            }
+
+            // Output a space in between tokens, but not at the start of a line,
+            // and also not around special tokens. This helps with readability
+            // and consistency.
+            if (!newLine &&
+                lastToken != -1 &&
+                (unNeededSpaceTokens.find((char)token.token) == std::string::npos) &&
+                (unNeededSpaceTokens.find((char)lastToken) == std::string::npos) &&
+                (noSpaceBeforeTokens.find((char)token.token) == std::string::npos)) {
+                outputStream << " ";
+            }
+            lastToken = token.token;
+            outputStream << tok;
+        }
+        outputStream << std::endl;
+        *outputString = outputStream.str();
+
+        return true;
+    }
+    std::string* outputString;
+};
+
+// DoFullParse is a valid ProcessingConext template argument for fully
+// parsing the shader.  It populates the "intermediate" with the AST.
+struct DoFullParse{
+  bool operator()(TParseContext& parseContext, TPpContext& ppContext,
+                  TInputScanner& fullInput, bool versionWillBeError,
+                  TSymbolTable& symbolTable, TIntermediate& intermediate,
+                  EShOptimizationLevel optLevel, EShMessages messages) 
+    {
+        bool success = true;
+        // Parse the full shader.
+        if (! parseContext.parseShaderStrings(ppContext, fullInput, versionWillBeError))
+            success = false;
+        intermediate.addSymbolLinkageNodes(parseContext.linkage, parseContext.language, symbolTable);
+
+        if (success && intermediate.getTreeRoot()) {
+            if (optLevel == EShOptNoGeneration)
+                parseContext.infoSink.info.message(EPrefixNone, "No errors.  No code generation or linking was requested.");
+            else
+                success = intermediate.postProcess(intermediate.getTreeRoot(), parseContext.language);
+        } else if (! success) {
+            parseContext.infoSink.info.prefix(EPrefixError);
+            parseContext.infoSink.info << parseContext.getNumErrors() << " compilation errors.  No code generated.\n\n";
+        }
+
+        if (messages & EShMsgAST)
+            intermediate.output(parseContext.infoSink, true);
+
+        return success;
+    }
+};
+
+// Take a single compilation unit, and run the preprocessor on it.
+// Return: True if there were no issues found in preprocessing,
+//         False if during preprocessing any unknown version, pragmas or
+//         extensions were found.
+bool PreprocessDeferred(
+    TCompiler* compiler,
+    const char* const shaderStrings[],
+    const int numStrings,
+    const int* inputLengths,
+    const char* preamble,
+    const EShOptimizationLevel optLevel,
+    const TBuiltInResource* resources,
+    int defaultVersion,         // use 100 for ES environment, 110 for desktop
+    EProfile defaultProfile,
+    bool forceDefaultVersionAndProfile,
+    bool forwardCompatible,     // give errors for use of deprecated features
+    EShMessages messages,       // warnings/errors/AST; things to print out
+    TIntermediate& intermediate, // returned tree, etc.
+    std::string* outputString)
+{
+    DoPreprocessing parser(outputString);
+    return ProcessDeferred(compiler, shaderStrings, numStrings, inputLengths,
+                           preamble, optLevel, resources, defaultVersion, defaultProfile, forceDefaultVersionAndProfile,
+                           forwardCompatible, messages, intermediate, parser, false);
+}
+
+
+//
+// do a partial compile on the given strings for a single compilation unit
+// for a potential deferred link into a single stage (and deferred full compile of that
+// stage through machine-dependent compilation).
+//
+// all preprocessing, parsing, semantic checks, etc. for a single compilation unit
+// are done here.
+//
+// return:  the tree and other information is filled into the intermediate argument, 
+//          and true is returned by the function for success.
+//
+bool CompileDeferred(
+    TCompiler* compiler,
+    const char* const shaderStrings[],
+    const int numStrings,
+    const int* inputLengths,
+    const char* preamble,
+    const EShOptimizationLevel optLevel,
+    const TBuiltInResource* resources,
+    int defaultVersion,         // use 100 for ES environment, 110 for desktop
+    EProfile defaultProfile,
+    bool forceDefaultVersionAndProfile,
+    bool forwardCompatible,     // give errors for use of deprecated features
+    EShMessages messages,       // warnings/errors/AST; things to print out
+    TIntermediate& intermediate) // returned tree, etc.
+{
+    DoFullParse parser;
+    return ProcessDeferred(compiler, shaderStrings, numStrings, inputLengths,
+                           preamble, optLevel, resources, defaultVersion, defaultProfile, forceDefaultVersionAndProfile,
+                           forwardCompatible, messages, intermediate, parser, true);
 }
 
 } // end anonymous namespace for local functions
@@ -1026,7 +1227,8 @@ TShader::~TShader()
 //
 // Returns true for success.
 //
-bool TShader::parse(const TBuiltInResource* builtInResources, int defaultVersion, EProfile defaultProfile, bool forceDefaultVersionAndProfile, bool forwardCompatible, EShMessages messages)
+bool TShader::parse(const TBuiltInResource* builtInResources, int defaultVersion, EProfile defaultProfile, bool forceDefaultVersionAndProfile,
+                    bool forwardCompatible, EShMessages messages)
 {
     if (! InitThread())
         return false;
@@ -1041,7 +1243,28 @@ bool TShader::parse(const TBuiltInResource* builtInResources, int defaultVersion
 
 bool TShader::parse(const TBuiltInResource* builtInResources, int defaultVersion, bool forwardCompatible, EShMessages messages)
 {
-  return parse(builtInResources, defaultVersion, ENoProfile, false, forwardCompatible, messages);
+    return parse(builtInResources, defaultVersion, ENoProfile, false, forwardCompatible, messages);
+}
+
+// Fill in a string with the result of preprocessing ShaderStrings
+// Returns true if all extensions, pragmas and version strings were valid.
+bool TShader::preprocess(const TBuiltInResource* builtInResources,
+                         int defaultVersion, EProfile defaultProfile, bool forceDefaultVersionAndProfile,
+                         bool forwardCompatible,
+                         EShMessages message, std::string* output_string)
+{
+    if (! InitThread())
+        return false;
+
+    pool = new TPoolAllocator();
+    SetThreadPoolAllocator(*pool);
+    if (! preamble)
+        preamble = "";
+
+    return PreprocessDeferred(compiler, strings, numStrings,
+                              nullptr, preamble, EShOptNone, builtInResources,
+                              defaultVersion, defaultProfile, forceDefaultVersionAndProfile, forwardCompatible, message,
+                              *intermediate, output_string);
 }
 
 const char* TShader::getInfoLog()

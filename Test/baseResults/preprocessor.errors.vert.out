@@ -1,0 +1,18 @@
+#version 310 es
+
+
+
+
+
+
+
+#error This should show up in pp output . 
+
+
+
+
+int main(){
+}
+
+
+

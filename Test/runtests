@@ -55,6 +55,16 @@ while read t; do
 done < test-spirv-list
 
 #
+# Preprocessor tests
+#
+while read t; do
+    echo Running Preprocessor $t...
+    b=`basename $t`
+    $EXE -E $t > $TARGETDIR/$b.out
+    diff -b $BASEDIR/$b.out $TARGETDIR/$b.out || HASERROR=1
+done < test-preprocessor-list
+
+#
 # grouped shaders for bulk (faster) tests
 #
 function runBulkTest {
