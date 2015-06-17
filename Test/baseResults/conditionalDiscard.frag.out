@@ -1,4 +1,4 @@
-../../LunarGLASS/test/conditionalDiscard.frag
+conditionalDiscard.frag
 
 Shader version: 110
 0:? Sequence

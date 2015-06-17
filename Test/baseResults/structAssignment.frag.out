@@ -1,4 +1,4 @@
-../../LunarGLASS/test/structAssignment.frag
+structAssignment.frag
 WARNING: 0:4: varying deprecated in version 130; may be removed in future release
 
 Shader version: 130

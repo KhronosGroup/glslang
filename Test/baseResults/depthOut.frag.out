@@ -1,4 +1,4 @@
-../../LunarGLASS/test/depthOut.frag
+depthOut.frag
 WARNING: 0:3: varying deprecated in version 130; may be removed in future release
 WARNING: 0:4: varying deprecated in version 130; may be removed in future release
 

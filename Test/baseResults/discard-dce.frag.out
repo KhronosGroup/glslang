@@ -1,4 +1,4 @@
-../../LunarGLASS/test/discard-dce.frag
+discard-dce.frag
 
 Shader version: 110
 0:? Sequence
