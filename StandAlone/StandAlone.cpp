@@ -700,8 +700,8 @@ void CompileAndLinkShaders()
         shader->setStrings(shaderStrings, 1);
         if (Options & EOptionOutputPreprocessed) {
             std::string str;
-            if (shader->preprocess(&Resources, defaultVersion, ENoProfile,
-                                   false, false, messages, &str)) {
+            if (shader->preprocess(&Resources, defaultVersion, ENoProfile, false, false,
+                                   messages, &str, glslang::TShader::ForbidInclude())) {
                 PutsIfNonEmpty(str.c_str());
             } else {
                 CompileFailed = true;

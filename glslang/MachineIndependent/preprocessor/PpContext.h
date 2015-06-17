@@ -118,7 +118,7 @@ class TInputScanner;
 // Don't expect too much in terms of OO design.
 class TPpContext {
 public:
-    TPpContext(TParseContext&);
+    TPpContext(TParseContext&, const TShader::Includer&);
     virtual ~TPpContext();
 
     void setPreamble(const char* preamble, size_t length);
@@ -281,6 +281,8 @@ protected:
     // from Pp.cpp
     //
     TSourceLoc ifloc; /* outermost #if */
+    // Used to obtain #include content.
+    const TShader::Includer& includer;
 
     int InitCPP();
     int CPPdefine(TPpToken * ppToken);
@@ -291,6 +293,7 @@ protected:
     int evalToToken(int token, bool shortCircuit, int& res, bool& err, TPpToken * ppToken);
     int CPPif (TPpToken * ppToken); 
     int CPPifdef(int defined, TPpToken * ppToken);
+    int CPPinclude(TPpToken * ppToken);
     int CPPline(TPpToken * ppToken); 
     int CPPerror(TPpToken * ppToken); 
     int CPPpragma(TPpToken * ppToken);
@@ -417,6 +420,36 @@ protected:
 
     protected:
         TInputScanner* input;
+    };
+
+    // Holds a string that can be tokenized via the tInput interface.
+    class TokenizableString : public tInput {
+    public:
+        // Copies str, which must be non-empty.
+        TokenizableString(const std::string& str, TPpContext* pp)
+            : tInput(pp),
+              str_(str),
+              strings(str_.data()),
+              length(str_.size()),
+              scanner(1, &strings, &length),
+              stringInput(pp, scanner) {}
+
+        // tInput methods:
+        int scan(TPpToken* t) override { return stringInput.scan(t); }
+        int getch() override { return stringInput.getch(); }
+        void ungetch() override { stringInput.ungetch(); }
+
+    private:
+        // Stores the titular string.
+        const std::string str_;
+        // Will point to str_[0] and be passed to scanner constructor.
+        const char* const strings;
+        // Length of str_, passed to scanner constructor.
+        size_t length;
+        // Scans over str_.
+        TInputScanner scanner;
+        // Delegate object implementing the tInput interface.
+        tStringInput stringInput;
     };
 
     int InitScanner();

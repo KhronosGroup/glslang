@@ -120,6 +120,9 @@ const struct {
     { PpAtomLineMacro,       "__LINE__" },
     { PpAtomFileMacro,       "__FILE__" },
     { PpAtomVersionMacro,    "__VERSION__" },
+
+    { PpAtomInclude,        "include" },
+
 };
 
 } // end anonymous namespace

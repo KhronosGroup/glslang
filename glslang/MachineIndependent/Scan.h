@@ -154,6 +154,9 @@ public:
         loc[getLastValidSourceIndex()].name = nullptr;
     }
 
+    // for #include content indentation
+    void setColumn(int col) { loc[getLastValidSourceIndex()].column = col; }
+
     const TSourceLoc& getSourceLoc() const { return loc[std::max(0, std::min(currentSource, numSources - finale - 1))]; }
     // Returns the index (starting from 0) of the most recent valid source string we are reading from.
     int getLastValidSourceIndex() const { return std::min(currentSource, numSources - 1); }

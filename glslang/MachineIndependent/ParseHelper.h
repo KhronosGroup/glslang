@@ -214,6 +214,7 @@ public:
     int getNumErrors() const { return numErrors; }
     const TSourceLoc& getCurrentLoc() const { return currentScanner->getSourceLoc(); }
     void setCurrentLine(int line) { currentScanner->setLine(line); }
+    void setCurrentColumn(int col) { currentScanner->setColumn(col); }
     void setCurrentSourceName(const char* name) { currentScanner->setFile(name); }
     void setCurrentString(int string) { currentScanner->setString(string); }
     void setScanner(TInputScanner* scanner) { currentScanner  = scanner; }

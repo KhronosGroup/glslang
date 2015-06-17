@@ -158,6 +158,9 @@ enum EFixedAtoms {
     PpAtomFileMacro,
     PpAtomVersionMacro,
 
+    // #include
+    PpAtomInclude,
+
     PpAtomLast,
 };
 

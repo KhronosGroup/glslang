@@ -596,6 +596,38 @@ int TPpContext::CPPifdef(int defined, TPpToken* ppToken)
     return token;
 }
 
+// Handle #include
+int TPpContext::CPPinclude(TPpToken* ppToken)
+{
+    const TSourceLoc directiveLoc = ppToken->loc;
+    int token = scanToken(ppToken);
+    if (token != PpAtomConstString) {
+        // TODO: handle angle brackets.
+        parseContext.ppError(directiveLoc, "must be followed by a file designation", "#include", "");
+    } else {
+        const char* name = GetAtomString(ppToken->atom);
+        token = scanToken(ppToken);
+        if (token != '\n' && token != EndOfInput) {
+            parseContext.ppError(ppToken->loc, "extra content after file designation", "#include", "");
+        } else {
+            if (!inputStack.empty()) ungetChar();
+            std::string replacement;
+            bool success;
+            std::tie(success, replacement) = includer.include(name);
+            if (success) {
+                pushInput(new TokenizableString(replacement, this));
+                // At EOF, there's no "current" location anymore.
+                if (token != EndOfInput) parseContext.setCurrentColumn(0);
+                // Don't accidentally return EndOfInput, which will end all preprocessing.
+                return '\n';
+            } else {
+                parseContext.ppError(ppToken->loc, "not found", name, "");
+            }
+        }
+    }
+    return token;
+}
+
 // Handle #line
 int TPpContext::CPPline(TPpToken* ppToken) 
 {
@@ -844,6 +876,9 @@ int TPpContext::readCPPline(TPpToken* ppToken)
             break;
         case PpAtomIfndef:
             token = CPPifdef(0, ppToken);
+            break;
+        case PpAtomInclude:
+            token = CPPinclude(ppToken);
             break;
         case PpAtomLine:
             token = CPPline(ppToken);

@@ -249,6 +249,7 @@ SH_IMPORT_EXPORT int ShGetUniformLocation(const ShHandle uniformMap, const char*
 
 #include <list>
 #include <string>
+#include <utility>
 
 class TCompiler;
 class TInfoSink;
@@ -288,14 +289,34 @@ public:
     void setStringsWithLengthsAndNames(
         const char* const* s, const int* l, const char* const* names, int n);
     void setPreamble(const char* s) { preamble = s; }
-    bool parse(const TBuiltInResource*, int defaultVersion, EProfile defaultProfile, bool forceDefaultVersionAndProfile, bool forwardCompatible, EShMessages);
+
+    // Interface to #include handlers.
+    class Includer {
+    public:
+        // On success, returns true and the content that replaces "#include
+        // filename".  On failure, returns false and an arbitrary string.
+        virtual std::pair<bool, std::string> include(const char* filename) const = 0;
+    };
+
+    // Generates #error as #include content.
+    class ForbidInclude : public Includer {
+    public:
+        std::pair<bool, std::string> include(const char* filename) const override
+        {
+            return std::make_pair<bool, std::string>(true, "#error unexpected include directive\n");
+        }
+    };
+
+    bool parse(const TBuiltInResource*, int defaultVersion, EProfile defaultProfile, bool forceDefaultVersionAndProfile,
+               bool forwardCompatible, EShMessages, const Includer& = ForbidInclude());
+
     // Equivalent to parse() without a default profile and without forcing defaults.
     // Provided for backwards compatibility.
     bool parse(const TBuiltInResource*, int defaultVersion, bool forwardCompatible, EShMessages);
     bool preprocess(const TBuiltInResource* builtInResources,
                     int defaultVersion, EProfile defaultProfile, bool forceDefaultVersionAndProfile,
-                    bool forwardCompatible,
-                    EShMessages message, std::string* outputString);
+                    bool forwardCompatible, EShMessages message, std::string* outputString,
+                    const TShader::Includer& includer);
 
     const char* getInfoLog();
     const char* getInfoDebugLog();

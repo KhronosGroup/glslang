@@ -4,6 +4,7 @@ preprocessor.edge_cases.vert
 preprocessor.errors.vert
 preprocessor.extensions.vert
 preprocessor.function_macro.vert
+preprocessor.include.vert
 preprocessor.line.vert
 preprocessor.line.frag
 preprocessor.pragma.vert
