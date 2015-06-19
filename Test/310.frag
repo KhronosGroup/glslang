@@ -179,6 +179,17 @@ layout(depth_any) out float gl_FragDepth;  // ERROR, non-ES
 void foo_IO()
 {
     gl_FragDepth = 0.2;  // ERROR, early_fragment_tests declared
+    gl_Layer;            // ERROR, not present
+    gl_PrimitiveID;      // ERROR, not present
+    bool f = gl_FrontFacing;
 }
 
 out float gl_FragDepth;
+
+#extension GL_OES_geometry_shader : enable
+
+void foo_GS()
+{
+    highp int l = gl_Layer;
+    highp int p = gl_PrimitiveID;
+}

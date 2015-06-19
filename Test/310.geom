@@ -1,6 +1,14 @@
 #version 310 es
 
+#ifdef GL_EXT_geometry_shader
 #extension GL_EXT_geometry_shader : enable
+#else
+#error no GL_EXT_geometry_shader 
+#endif
+
+#ifndef GL_OES_geometry_shader
+#error no GL_OES_geometry_shader
+#endif
 
 precision mediump float;
 
@@ -18,15 +26,15 @@ out fromVertex {  // okay to reuse a block name for another block name
     vec3 color;
 };
 
-out fooB {
+out fooB {        // ERROR, cannot reuse block name as block instance
     vec2 color;
-} fromVertex;     // ERROR, cannot reuse block name as block instance
+} fromVertex;
 
 int fromVertex;   // ERROR, cannot reuse a block name for something else
 
-out fooC {
+out fooC {        // ERROR, cannot have same name for block and instance name
     vec2 color;
-} fooC;           // ERROR, cannot have same name for block and instance name
+} fooC;
 
 void main()
 {
@@ -74,7 +82,7 @@ layout(lines) out;  // ERROR, not on output
 layout(lines_adjacency) in;
 layout(triangles) in;             // ERROR, can't change it
 layout(triangles_adjacency) in;   // ERROR, can't change it
-layout(invocations = 4) in;       // ERROR, not until 4.0
+layout(invocations = 4) in;
 
 in sameName {
     int a15;
@@ -107,4 +115,25 @@ void fooe1()
 {
     gl_ViewportIndex;  // ERROR, not in ES
     gl_MaxViewports;   // ERROR, not in ES
+    insn.length();     // 4: lines_adjacency
+    int inv = gl_InvocationID;
 }
+
+in vec4 explArray[4];
+in vec4 explArrayBad[5];  // ERROR, wrong size
+in vec4 nonArrayed;       // ERROR, not an array
+flat out vec3 myColor1;
+centroid out vec3 myColor2;
+centroid in vec3 centr[];
+sample out vec4 perSampleColor;  // ERROR without sample extensions
+
+layout(max_vertices = 200) out;  // matching redecl
+
+layout(location = 7, component = 2) in float comp[];  // ERROR, es has no component
+
+void notHere()
+{
+    gl_MaxGeometryVaryingComponents;  // ERROR, not in ES
+    gl_VerticesIn;                    // ERROR, not in ES
+}
+

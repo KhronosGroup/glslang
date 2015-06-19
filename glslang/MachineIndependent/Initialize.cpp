@@ -1474,7 +1474,7 @@ void TBuiltIns::initialize(int version, EProfile profile)
                 stageBuiltins[EShLangVertex].append(
                     "out gl_PerVertex {"
                         "highp vec4  gl_Position;"    // needs qualifier fixed later
-                        "highp float gl_PointSize;"    // needs qualifier fixed later
+                        "highp float gl_PointSize;"   // needs qualifier fixed later
                     "};"
                     );
         }
@@ -1674,7 +1674,7 @@ void TBuiltIns::initialize(int version, EProfile profile)
         stageBuiltins[EShLangTessEvaluation].append(
             "};"
             "\n");
-    } else {
+    } else if (profile == EEsProfile && version >= 310) {
         // Note:  "in gl_PerVertex {...} gl_in[gl_MaxPatchVertices];" is declared in initialize() below,
         // as it depends on the resource sizing of gl_MaxPatchVertices.
 
@@ -1792,7 +1792,9 @@ void TBuiltIns::initialize(int version, EProfile profile)
                 );
             if (version >= 310)
                 stageBuiltins[EShLangFragment].append(
-                        "bool  gl_HelperInvocation;"  // needs qualifier fixed later
+                    "bool gl_HelperInvocation;"    // needs qualifier fixed later
+                    "flat in highp int gl_PrimitiveID;"  // needs qualifier fixed later
+                    "flat in highp int gl_Layer;"        // needs qualifier fixed later
                     );
         }
         stageBuiltins[EShLangFragment].append(
@@ -2946,6 +2948,8 @@ void IdentifyBuiltIns(int version, EProfile profile, EShLanguage language, TSymb
         }
 
         symbolTable.setVariableExtensions("gl_FragDepthEXT", 1, &GL_EXT_frag_depth);
+        symbolTable.setVariableExtensions("gl_PrimitiveID",  Num_AEP_geometry_shader, AEP_geometry_shader);
+        symbolTable.setVariableExtensions("gl_Layer",        Num_AEP_geometry_shader, AEP_geometry_shader);
         break;
 
     case EShLangCompute:

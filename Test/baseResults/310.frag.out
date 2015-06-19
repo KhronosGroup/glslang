@@ -54,11 +54,19 @@ ERROR: 0:173: 'pixel_center_integer' : not supported with this profile: es
 ERROR: 0:173: 'redeclaration' : cannot redeclare with different qualification: gl_FragCoord
 ERROR: 0:177: 'depth layout qualifier' : not supported with this profile: es
 ERROR: 0:181: 'assign' :  l-value required "gl_FragDepth" (can't modify gl_FragDepth if using early_fragment_tests)
-ERROR: 54 compilation errors.  No code generated.
+ERROR: 0:182: 'gl_Layer' : required extension not requested: Possible extensions include:
+GL_EXT_geometry_shader
+GL_OES_geometry_shader
+ERROR: 0:183: 'gl_PrimitiveID' : required extension not requested: Possible extensions include:
+GL_EXT_geometry_shader
+GL_OES_geometry_shader
+ERROR: 56 compilation errors.  No code generated.
 
 
 Shader version: 310
 Requested GL_EXT_shader_io_blocks
+Requested GL_OES_geometry_shader
+Requested GL_OES_shader_io_blocks
 gl_FragCoord pixel center is integer
 gl_FragCoord origin is upper left
 using early_fragment_tests
@@ -315,6 +323,23 @@ ERROR: node is still EOpNull!
 0:181        'gl_FragDepth' (gl_FragDepth highp float FragDepth)
 0:181        Constant:
 0:181          0.200000
+0:182      'gl_Layer' (flat in highp int Layer)
+0:183      'gl_PrimitiveID' (flat in highp int PrimitiveID)
+0:184      Sequence
+0:184        move second child to first child (temp bool)
+0:184          'f' (temp bool)
+0:184          'gl_FrontFacing' (gl_FrontFacing bool Face)
+0:191  Function Definition: foo_GS( (global void)
+0:191    Function Parameters: 
+0:193    Sequence
+0:193      Sequence
+0:193        move second child to first child (temp highp int)
+0:193          'l' (temp highp int)
+0:193          'gl_Layer' (flat in highp int Layer)
+0:194      Sequence
+0:194        move second child to first child (temp highp int)
+0:194          'p' (temp highp int)
+0:194          'gl_PrimitiveID' (flat in highp int PrimitiveID)
 0:?   Linker Objects
 0:?     'gl_FragCoord' (smooth in mediump 4-component vector of float)
 0:?     'v3' (layout(location=2 ) smooth in mediump 3-component vector of float)
@@ -371,6 +396,8 @@ ERROR: Linking fragment stage: when more than one fragment shader output, all mu
 
 Shader version: 310
 Requested GL_EXT_shader_io_blocks
+Requested GL_OES_geometry_shader
+Requested GL_OES_shader_io_blocks
 gl_FragCoord pixel center is integer
 gl_FragCoord origin is upper left
 using early_fragment_tests
@@ -627,6 +654,23 @@ ERROR: node is still EOpNull!
 0:181        'gl_FragDepth' (gl_FragDepth highp float FragDepth)
 0:181        Constant:
 0:181          0.200000
+0:182      'gl_Layer' (flat in highp int Layer)
+0:183      'gl_PrimitiveID' (flat in highp int PrimitiveID)
+0:184      Sequence
+0:184        move second child to first child (temp bool)
+0:184          'f' (temp bool)
+0:184          'gl_FrontFacing' (gl_FrontFacing bool Face)
+0:191  Function Definition: foo_GS( (global void)
+0:191    Function Parameters: 
+0:193    Sequence
+0:193      Sequence
+0:193        move second child to first child (temp highp int)
+0:193          'l' (temp highp int)
+0:193          'gl_Layer' (flat in highp int Layer)
+0:194      Sequence
+0:194        move second child to first child (temp highp int)
+0:194          'p' (temp highp int)
+0:194          'gl_PrimitiveID' (flat in highp int PrimitiveID)
 0:?   Linker Objects
 0:?     'gl_FragCoord' (smooth in mediump 4-component vector of float)
 0:?     'v3' (layout(location=2 ) smooth in mediump 3-component vector of float)
