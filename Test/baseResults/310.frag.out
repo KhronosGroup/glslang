@@ -41,7 +41,7 @@ ERROR: 0:120: 'fragment-shader array-of-struct input' : not supported with this 
 ERROR: 0:121: 'fragment-shader array-of-struct input' : not supported with this profile: es
 ERROR: 0:123: 'fragment-shader struct input containing an array' : not supported with this profile: es
 ERROR: 0:125: 'fragment-shader struct input containing structure' : not supported with this profile: es
-ERROR: 0:133: 'out' : cannot declare an output block in a fragment shader 
+ERROR: 0:133: 'output block' : not supported in this stage: fragment
 ERROR: 0:138: '' : cannot nest a structure definition inside a structure or block 
 ERROR: 0:146: 'location' : overlapping use of location 13
 ERROR: 0:148: 'inbname2' : Cannot reuse block name within the same interface: in

@@ -40,6 +40,8 @@ comment.frag
 310.vert
 310.geom
 310.frag
+310.tesc
+310.tese
 310implicitSizeArrayError.vert
 310AofA.vert
 330.frag

@@ -1054,7 +1054,7 @@ void TBuiltIns::initialize(int version, EProfile profile)
     //
     //============================================================================
     bool esBarrier = (profile == EEsProfile && version >= 310);
-    if (profile != EEsProfile && version >= 150)
+    if (profile != EEsProfile && version >= 150 || esBarrier)
         stageBuiltins[EShLangTessControl].append(
             "void barrier();"
             );
@@ -2347,8 +2347,9 @@ void TBuiltIns::initialize(const TBuiltInResource &resources, int version, EProf
             s.append(builtInConstant);
         }
 
-        // geometry
         if (version >= 310) {
+            // geometry
+
             snprintf(builtInConstant, maxSize, "const int gl_MaxGeometryInputComponents = %d;", resources.maxGeometryInputComponents);
             s.append(builtInConstant);
             snprintf(builtInConstant, maxSize, "const int gl_MaxGeometryOutputComponents = %d;", resources.maxGeometryOutputComponents);
@@ -2367,6 +2368,46 @@ void TBuiltIns::initialize(const TBuiltInResource &resources, int version, EProf
             s.append(builtInConstant);
             snprintf(builtInConstant, maxSize, "const int gl_MaxGeometryAtomicCounterBuffers = %d;", resources.maxGeometryAtomicCounterBuffers);
             s.append(builtInConstant);
+
+            // tessellation
+
+            snprintf(builtInConstant, maxSize, "const int gl_MaxTessControlInputComponents = %d;", resources.maxTessControlInputComponents);
+            s.append(builtInConstant);
+            snprintf(builtInConstant, maxSize, "const int gl_MaxTessControlOutputComponents = %d;", resources.maxTessControlOutputComponents);
+            s.append(builtInConstant);
+            snprintf(builtInConstant, maxSize, "const int gl_MaxTessControlTextureImageUnits = %d;", resources.maxTessControlTextureImageUnits);
+            s.append(builtInConstant);
+            snprintf(builtInConstant, maxSize, "const int gl_MaxTessControlUniformComponents = %d;", resources.maxTessControlUniformComponents);
+            s.append(builtInConstant);
+            snprintf(builtInConstant, maxSize, "const int gl_MaxTessControlTotalOutputComponents = %d;", resources.maxTessControlTotalOutputComponents);
+            s.append(builtInConstant);
+                
+            snprintf(builtInConstant, maxSize, "const int gl_MaxTessEvaluationInputComponents = %d;", resources.maxTessEvaluationInputComponents);
+            s.append(builtInConstant);
+            snprintf(builtInConstant, maxSize, "const int gl_MaxTessEvaluationOutputComponents = %d;", resources.maxTessEvaluationOutputComponents);
+            s.append(builtInConstant);
+            snprintf(builtInConstant, maxSize, "const int gl_MaxTessEvaluationTextureImageUnits = %d;", resources.maxTessEvaluationTextureImageUnits);
+            s.append(builtInConstant);
+            snprintf(builtInConstant, maxSize, "const int gl_MaxTessEvaluationUniformComponents = %d;", resources.maxTessEvaluationUniformComponents);
+            s.append(builtInConstant);
+                
+            snprintf(builtInConstant, maxSize, "const int gl_MaxTessPatchComponents = %d;", resources.maxTessPatchComponents);
+            s.append(builtInConstant);
+
+            snprintf(builtInConstant, maxSize, "const int gl_MaxPatchVertices = %d;", resources.maxPatchVertices);
+            s.append(builtInConstant);
+            snprintf(builtInConstant, maxSize, "const int gl_MaxTessGenLevel = %d;", resources.maxTessGenLevel);
+            s.append(builtInConstant);
+
+            // this is here instead of with the others in initialize(version, profile) due to the dependence on gl_MaxPatchVertices
+            if (language == EShLangTessControl || language == EShLangTessEvaluation) {
+                s.append(
+                    "in gl_PerVertex {"
+                        "highp vec4 gl_Position;"
+                        "highp float gl_PointSize;"
+                    "} gl_in[gl_MaxPatchVertices];"
+                    "\n");
+            }
         }
 
     } else {
@@ -2529,6 +2570,7 @@ void TBuiltIns::initialize(const TBuiltInResource &resources, int version, EProf
             snprintf(builtInConstant, maxSize, "const int gl_MaxPatchVertices = %d;", resources.maxPatchVertices);
             s.append(builtInConstant);
 
+            // this is here instead of with the others in initialize(version, profile) due to the dependence on gl_MaxPatchVertices
             if (language == EShLangTessControl || language == EShLangTessEvaluation) {
                 s.append(
                     "in gl_PerVertex {"

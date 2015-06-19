@@ -2440,23 +2440,30 @@ void TParseContext::structArrayCheck(TSourceLoc /*loc*/, const TType& type)
     }
 }
 
-void TParseContext::variableArrayUnsizedCheck(TSourceLoc loc, const TType& type, bool initializer)
+void TParseContext::arrayUnsizedCheck(TSourceLoc loc, const TQualifier& qualifier, int size, bool initializer)
 {
     // desktop always allows unsized variable arrays,
     // ES always allows them if there is an initializer present to get the size from
-    if (profile != EEsProfile || initializer)
+    if (parsingBuiltins || profile != EEsProfile || initializer)
         return;
 
     // for ES, if size isn't coming from an initializer, it has to be explicitly declared now,
     // with very few exceptions
     switch (language) {
     case EShLangGeometry:
-        if (type.getQualifier().storage == EvqVaryingIn)
+        if (qualifier.storage == EvqVaryingIn)
             if (extensionsTurnedOn(Num_AEP_geometry_shader, AEP_geometry_shader))
                 return;
         break;
     case EShLangTessControl:
-        if (type.getQualifier().storage == EvqVaryingOut)
+        if ( qualifier.storage == EvqVaryingIn ||
+            (qualifier.storage == EvqVaryingOut && ! qualifier.patch))
+            if (extensionsTurnedOn(Num_AEP_tessellation_shader, AEP_tessellation_shader))
+                return;
+        break;
+    case EShLangTessEvaluation:
+        if ((qualifier.storage == EvqVaryingIn && ! qualifier.patch) ||
+             qualifier.storage == EvqVaryingOut)
             if (extensionsTurnedOn(Num_AEP_tessellation_shader, AEP_tessellation_shader))
                 return;
         break;
@@ -2464,7 +2471,7 @@ void TParseContext::variableArrayUnsizedCheck(TSourceLoc loc, const TType& type,
         break;
     }
 
-    arraySizeRequiredCheck(loc, type.getArraySize());
+    arraySizeRequiredCheck(loc, size);
 }
 
 void TParseContext::arrayDimError(TSourceLoc loc)
@@ -4068,7 +4075,7 @@ TIntermNode* TParseContext::declareVariable(TSourceLoc loc, TString& identifier,
         if (arraySizes)
             type.setArraySizes(arraySizes);
 
-        variableArrayUnsizedCheck(loc, type, initializer != nullptr);
+        arrayUnsizedCheck(loc, type.getQualifier(), type.getArraySize(), initializer != nullptr);
 
         if (! arrayQualifierError(loc, type.getQualifier()) && ! arrayError(loc, type))
             declareArray(loc, identifier, type, symbol, newDeclaration);
@@ -4525,7 +4532,9 @@ TIntermTyped* TParseContext::constructStruct(TIntermNode* node, const TType& typ
 //
 void TParseContext::declareBlock(TSourceLoc loc, TTypeList& typeList, const TString* instanceName, TArraySizes* arraySizes)
 {
-    blockStageIoCheck(loc, currentBlockQualifier.storage, arraySizes);
+    blockStageIoCheck(loc, currentBlockQualifier);
+    if (arraySizes)
+        arrayUnsizedCheck(loc, currentBlockQualifier, arraySizes->getSize(), false);
     arrayDimCheck(loc, arraySizes, 0);
 
     // fix and check for member storage qualifiers and types that don't belong within a block
@@ -4716,85 +4725,35 @@ void TParseContext::declareBlock(TSourceLoc loc, TTypeList& typeList, const TStr
 }
 
 // Do all block-declaration checking regarding the combination of in/out/uniform/buffer
-// with a particular stage and with a given arrayness.
-void TParseContext::blockStageIoCheck(TSourceLoc loc, TStorageQualifier storageQualifier, TArraySizes* arraySizes)
+// with a particular stage.
+void TParseContext::blockStageIoCheck(TSourceLoc loc, const TQualifier& qualifier)
 {
-    switch (storageQualifier) {
+    switch (qualifier.storage) {
     case EvqUniform:
         profileRequires(loc, EEsProfile, 300, nullptr, "uniform block");
         profileRequires(loc, ENoProfile, 140, nullptr, "uniform block");
         if (currentBlockQualifier.layoutPacking == ElpStd430)
             requireProfile(loc, ~EEsProfile, "std430 on a uniform block");
-        if (profile == EEsProfile && arraySizes)
-            arraySizeRequiredCheck(loc, arraySizes->getSize());
         break;
     case EvqBuffer:
         requireProfile(loc, EEsProfile | ECoreProfile | ECompatibilityProfile, "buffer block");
         profileRequires(loc, ECoreProfile | ECompatibilityProfile, 430, nullptr, "buffer block");
         profileRequires(loc, EEsProfile, 310, nullptr, "buffer block");
-        if (profile == EEsProfile && arraySizes)
-            arraySizeRequiredCheck(loc, arraySizes->getSize());
         break;
     case EvqVaryingIn:
         profileRequires(loc, ~EEsProfile, 150, GL_ARB_separate_shader_objects, "input block");
-        switch (language) {
-        case EShLangVertex:
-            // It is a compile-time error to have an input block in a vertex shader or an output block in a fragment shader
-            error(loc, "cannot declare an input block in a vertex shader", "in", "");
-            break;
-        case EShLangTessEvaluation:
-        case EShLangTessControl:
-            if (profile == EEsProfile && arraySizes)
-                arraySizeRequiredCheck(loc, arraySizes->getSize());
-            break;
-        case EShLangGeometry:
-            break;
-        case EShLangFragment:
+        // It is a compile-time error to have an input block in a vertex shader or an output block in a fragment shader
+        // "Compute shaders do not permit user-defined input variables..."
+        requireStage(loc, (EShLanguageMask)(EShLangTessControlMask|EShLangTessEvaluationMask|EShLangGeometryMask|EShLangFragmentMask), "input block");
+        if (language == EShLangFragment)
             profileRequires(loc, EEsProfile, 0, Num_AEP_shader_io_blocks, AEP_shader_io_blocks, "fragment input block");
-            if (profile == EEsProfile && arraySizes)
-                arraySizeRequiredCheck(loc, arraySizes->getSize());
-            break;
-        case EShLangCompute:
-            // "Compute shaders do not permit user-defined input variables..."
-            requireStage(loc, (EShLanguageMask)~EShLangComputeMask, "input block");
-            break;
-        default:
-            error(loc, "unexpected stage", "", "");
-            break;
-        }
         break;
     case EvqVaryingOut:
         profileRequires(loc, ~EEsProfile, 150, GL_ARB_separate_shader_objects, "output block");
-        switch (language) {
-        case EShLangVertex:
-            // ES 310 can have a block before shader_io is turned on, so skip this test for built-ins
-            if (! parsingBuiltins)
-                profileRequires(loc, EEsProfile, 0, Num_AEP_shader_io_blocks, AEP_shader_io_blocks, "vertex output block");
-            if (profile == EEsProfile && arraySizes)
-                arraySizeRequiredCheck(loc, arraySizes->getSize());
-            break;
-        case EShLangTessEvaluation:
-            if (profile == EEsProfile && arraySizes)
-                arraySizeRequiredCheck(loc, arraySizes->getSize());
-            break;
-        case EShLangTessControl:
-            break;
-        case EShLangGeometry:
-            if (profile == EEsProfile && arraySizes)
-                arraySizeRequiredCheck(loc, arraySizes->getSize());
-            break;
-        case EShLangFragment:
-            // It is a compile-time error to have an input block in a vertex shader or an output block in a fragment shader
-            error(loc, "cannot declare an output block in a fragment shader", "out", "");
-            break;
-        case EShLangCompute:
-            // "Compute shaders ... do not support user-defined output variables..."
-            requireStage(loc, (EShLanguageMask)~EShLangComputeMask, "output block");
-            break;
-        default:
-            error(loc, "unexpected stage", "", "");
-            break;
-        }
+        requireStage(loc, (EShLanguageMask)(EShLangVertexMask|EShLangTessControlMask|EShLangTessEvaluationMask|EShLangGeometryMask), "output block");
+        // ES 310 can have a block before shader_io is turned on, so skip this test for built-ins
+        if (language == EShLangVertex && ! parsingBuiltins)
+            profileRequires(loc, EEsProfile, 0, Num_AEP_shader_io_blocks, AEP_shader_io_blocks, "vertex output block");
         break;
     default:
         error(loc, "only uniform, buffer, in, or out blocks are supported", blockName->c_str(), "");

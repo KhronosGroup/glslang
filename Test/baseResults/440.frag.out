@@ -19,13 +19,13 @@ ERROR: 0:35: 'layout' : offset/align can only be used on a uniform or buffer
 ERROR: 0:37: 'offset' : only applies to block members, not blocks 
 ERROR: 0:38: 'layout' : offset/align can only be used on a uniform or buffer 
 ERROR: 0:38: 'offset' : only applies to block members, not blocks 
-ERROR: 0:39: 'out' : cannot declare an output block in a fragment shader 
+ERROR: 0:39: 'output block' : not supported in this stage: fragment
 ERROR: 0:39: 'layout' : offset/align can only be used on a uniform or buffer 
 ERROR: 0:39: 'offset' : only applies to block members, not blocks 
 ERROR: 0:42: 'offset/align' : can only be used with std140 or std430 layout packing 
 ERROR: 0:43: 'offset/align' : can only be used with std140 or std430 layout packing 
 ERROR: 0:43: 'layout' : offset/align can only be used on a uniform or buffer 
-ERROR: 0:44: 'out' : cannot declare an output block in a fragment shader 
+ERROR: 0:44: 'output block' : not supported in this stage: fragment
 ERROR: 0:44: 'offset/align' : can only be used with std140 or std430 layout packing 
 ERROR: 0:44: 'layout' : offset/align can only be used on a uniform or buffer 
 ERROR: 0:46: 'offset' : cannot specify on a variable declaration 

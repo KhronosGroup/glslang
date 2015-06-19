@@ -32,7 +32,7 @@ ERROR: 0:125: 'index' : can only be used on an output
 ERROR: 0:126: 'index' : can only be used on an output 
 ERROR: 0:126: 'location/component/index' : cannot declare a default, use a full declaration 
 ERROR: 0:127: 'location/component/index' : cannot declare a default, use a full declaration 
-ERROR: 0:128: 'out' : cannot declare an output block in a fragment shader 
+ERROR: 0:128: 'output block' : not supported in this stage: fragment
 ERROR: 34 compilation errors.  No code generated.
 
 
