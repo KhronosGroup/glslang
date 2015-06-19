@@ -2,9 +2,7 @@ spv.newTexture.frag
 Warning, version 430 is not yet complete; most version-specific features are present, but some are missing.
 
 
-
 Linked fragment stage:
-
 
 
 Missing functionality: texel fetch

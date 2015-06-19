@@ -1,5 +1,4 @@
 100Limits.vert
-
 Shader version: 100
 0:? Sequence
 0:15  Function Definition: foo(f1; (global void)

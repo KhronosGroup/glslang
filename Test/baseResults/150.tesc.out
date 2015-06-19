@@ -1,5 +1,4 @@
 150.tesc
-
 Shader version: 150
 Requested GL_ARB_tessellation_shader
 vertices = 4

@@ -21,5 +21,3 @@ int main(){
   gl_Position = vec4(fn(3));
 }
 
-
-

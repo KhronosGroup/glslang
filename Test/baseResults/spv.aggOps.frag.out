@@ -3,9 +3,7 @@ WARNING: 0:4: varying deprecated in version 130; may be removed in future releas
 WARNING: 0:6: varying deprecated in version 130; may be removed in future release
 
 
-
 Linked fragment stage:
-
 
 
 Missing functionality: Composite comparison of non-vectors

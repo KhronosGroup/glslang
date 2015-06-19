@@ -1,5 +1,4 @@
 link1.frag
-
 Shader version: 130
 0:? Sequence
 0:8  Sequence
@@ -80,7 +79,6 @@ Shader version: 130
 0:?       3.900000
 
 link2.frag
-
 Shader version: 130
 Requested GL_OES_standard_derivatives
 Requested GL_OES_texture_3D
@@ -152,7 +150,6 @@ Requested GL_OES_texture_3D
 0:?       3.900000
 
 link3.frag
-
 Shader version: 300
 Requested GL_OES_EGL_image_external
 Requested GL_OES_standard_derivatives

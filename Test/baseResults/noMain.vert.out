@@ -1,5 +1,4 @@
 noMain.vert
-
 Shader version: 300
 0:? Sequence
 0:3  Function Definition: foo( (global void)

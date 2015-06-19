@@ -589,6 +589,15 @@ CompileShaders(void*)
 
 const char* GlslStd450DebugNames[GLSL_STD_450::Count];
 
+// Outputs the given string, but only if it is non-null and non-empty.
+// This prevents erroneous newlines from appearing.
+void puts_if_non_empty(const char* str)
+{
+    if (str && str[0]) {
+        puts(str);
+    }
+}
+
 //
 // For linking mode: Will independently parse each item in the worklist, but then put them
 // in the same program and link them together.
@@ -635,9 +644,9 @@ void CompileAndLinkShaders()
         program.addShader(shader);
 
         if (! (Options & EOptionSuppressInfolog)) {
-            puts(workItem->name.c_str());
-            puts(shader->getInfoLog());
-            puts(shader->getInfoDebugLog());
+            puts_if_non_empty(workItem->name.c_str());
+            puts_if_non_empty(shader->getInfoLog());
+            puts_if_non_empty(shader->getInfoDebugLog());
         }
 
         FreeFileData(shaderStrings);
@@ -651,8 +660,8 @@ void CompileAndLinkShaders()
         LinkFailed = true;
 
     if (! (Options & EOptionSuppressInfolog)) {
-        puts(program.getInfoLog());
-        puts(program.getInfoDebugLog());
+        puts_if_non_empty(program.getInfoLog());
+        puts_if_non_empty(program.getInfoDebugLog());
     }
 
     if (Options & EOptionDumpReflection) {
@@ -760,8 +769,8 @@ int C_DECL main(int argc, char* argv[])
         for (int w = 0; w < NumWorkItems; ++w) {
             if (Work[w]) {
                 if (printShaderNames)
-                    puts(Work[w]->name.c_str());
-                puts(Work[w]->results.c_str());
+                    puts_if_non_empty(Work[w]->name.c_str());
+                puts_if_non_empty(Work[w]->results.c_str());
                 delete Work[w];
             }
         }

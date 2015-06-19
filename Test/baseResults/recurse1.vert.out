@@ -1,5 +1,4 @@
 recurse1.vert
-
 Shader version: 330
 0:? Sequence
 0:3  Function Definition: main( (global void)
@@ -69,7 +68,6 @@ Shader version: 330
 0:?     'gl_InstanceID' (gl_InstanceId int InstanceId)
 
 recurse1.frag
-
 Shader version: 330
 0:? Sequence
 0:5  Function Definition: main( (global void)
@@ -157,7 +155,6 @@ Shader version: 330
 0:?   Linker Objects
 
 recurse2.frag
-
 Shader version: 330
 0:? Sequence
 0:9  Function Definition: cbar(i1; (global float)

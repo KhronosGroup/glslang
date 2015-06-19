@@ -1,5 +1,4 @@
 always-discard.frag
-
 Shader version: 110
 0:? Sequence
 0:4  Function Definition: main( (global void)

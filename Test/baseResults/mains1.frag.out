@@ -1,5 +1,4 @@
 mains1.frag
-
 Shader version: 110
 0:? Sequence
 0:3  Function Definition: main( (global void)
@@ -7,7 +6,6 @@ Shader version: 110
 0:?   Linker Objects
 
 mains2.frag
-
 Shader version: 110
 0:? Sequence
 0:3  Function Definition: main( (global void)
@@ -30,7 +28,6 @@ ERROR: node is still EOpNull!
 0:?   Linker Objects
 
 noMain2.geom
-
 Shader version: 150
 invocations = 0
 max_vertices = 0

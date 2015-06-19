@@ -1,5 +1,4 @@
 conditionalDiscard.frag
-
 Shader version: 110
 0:? Sequence
 0:6  Function Definition: main( (global void)

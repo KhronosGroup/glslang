@@ -2,9 +2,7 @@ spv.130.frag
 WARNING: 0:34: '#extension' : extension is only partially supported: GL_ARB_gpu_shader5
 
 
-
 Linked fragment stage:
-
 
 
 Missing functionality: texture gather
