@@ -4,8 +4,14 @@ ERROR: 0:8: 'quads' : unrecognized layout identifier, or qualifier requires assi
 ERROR: 0:9: 'ccw' : unrecognized layout identifier, or qualifier requires assignment (e.g., binding = 4) 
 ERROR: 0:10: 'fractional_even_spacing' : unrecognized layout identifier, or qualifier requires assignment (e.g., binding = 4) 
 ERROR: 0:12: 'patch' : can only use on output in tessellation-control shader 
+ERROR: 0:26: 'gl_PointSize' : required extension not requested: Possible extensions include:
+GL_EXT_tessellation_point_size
+GL_OES_tessellation_point_size
 ERROR: 0:27: 'gl_ClipDistance' : no such field in structure 
 ERROR: 0:27: 'expression' :  left of '[' is not of type array, matrix, or vector  
+ERROR: 0:34: 'gl_PointSize' : required extension not requested: Possible extensions include:
+GL_EXT_tessellation_point_size
+GL_OES_tessellation_point_size
 ERROR: 0:35: 'gl_ClipDistance' : no such field in structure 
 ERROR: 0:35: 'expression' :  left of '[' is not of type array, matrix, or vector  
 ERROR: 0:35: 'assign' :  l-value required (can't modify a const)
@@ -29,12 +35,13 @@ ERROR: 0:95: 'fma' : no matching overloaded function found
 ERROR: 0:104: 'sample' : Reserved word. 
 ERROR: 0:106: 'vertices' : can only apply to a standalone qualifier 
 ERROR: 0:107: 'vertices' : inconsistent output number of vertices for array size of misSized
-ERROR: 29 compilation errors.  No code generated.
+ERROR: 31 compilation errors.  No code generated.
 
 
 Shader version: 310
 Requested GL_ARB_separate_shader_objects
 Requested GL_OES_shader_io_blocks
+Requested GL_OES_tessellation_point_size
 Requested GL_OES_tessellation_shader
 vertices = 4
 ERROR: node is still EOpNull!
@@ -183,6 +190,28 @@ ERROR: node is still EOpNull!
 0:95        'd' (temp highp float)
 0:95        Constant:
 0:95          0.000000
+0:112  Function Definition: pointSize2( (global void)
+0:112    Function Parameters: 
+0:114    Sequence
+0:114      Sequence
+0:114        move second child to first child (temp highp float)
+0:114          'ps' (temp highp float)
+0:114          gl_PointSize: direct index for structure (in highp float)
+0:114            direct index (temp block{in highp 4-component vector of float gl_Position, in highp float gl_PointSize})
+0:114              'gl_in' (in 32-element array of block{in highp 4-component vector of float gl_Position, in highp float gl_PointSize})
+0:114              Constant:
+0:114                1 (const int)
+0:114            Constant:
+0:114              1 (const int)
+0:115      move second child to first child (temp highp float)
+0:115        gl_PointSize: direct index for structure (out highp float PointSize)
+0:115          direct index (temp block{out highp 4-component vector of float Position gl_Position, out highp float PointSize gl_PointSize})
+0:115            'gl_out' (out 4-element array of block{out highp 4-component vector of float Position gl_Position, out highp float PointSize gl_PointSize})
+0:115            Constant:
+0:115              1 (const int)
+0:115          Constant:
+0:115            1 (const int)
+0:115        'ps' (temp highp float)
 0:?   Linker Objects
 0:?     'gl_out' (out 4-element array of block{out highp 4-component vector of float Position gl_Position, out highp float PointSize gl_PointSize})
 0:?     'outa' (global 4-element array of highp int)
@@ -214,6 +243,7 @@ Linked tessellation control stage:
 Shader version: 310
 Requested GL_ARB_separate_shader_objects
 Requested GL_OES_shader_io_blocks
+Requested GL_OES_tessellation_point_size
 Requested GL_OES_tessellation_shader
 vertices = 4
 ERROR: node is still EOpNull!
@@ -362,6 +392,28 @@ ERROR: node is still EOpNull!
 0:95        'd' (temp highp float)
 0:95        Constant:
 0:95          0.000000
+0:112  Function Definition: pointSize2( (global void)
+0:112    Function Parameters: 
+0:114    Sequence
+0:114      Sequence
+0:114        move second child to first child (temp highp float)
+0:114          'ps' (temp highp float)
+0:114          gl_PointSize: direct index for structure (in highp float)
+0:114            direct index (temp block{in highp 4-component vector of float gl_Position, in highp float gl_PointSize})
+0:114              'gl_in' (in 32-element array of block{in highp 4-component vector of float gl_Position, in highp float gl_PointSize})
+0:114              Constant:
+0:114                1 (const int)
+0:114            Constant:
+0:114              1 (const int)
+0:115      move second child to first child (temp highp float)
+0:115        gl_PointSize: direct index for structure (out highp float PointSize)
+0:115          direct index (temp block{out highp 4-component vector of float Position gl_Position, out highp float PointSize gl_PointSize})
+0:115            'gl_out' (out 4-element array of block{out highp 4-component vector of float Position gl_Position, out highp float PointSize gl_PointSize})
+0:115            Constant:
+0:115              1 (const int)
+0:115          Constant:
+0:115            1 (const int)
+0:115        'ps' (temp highp float)
 0:?   Linker Objects
 0:?     'gl_out' (out 4-element array of block{out highp 4-component vector of float Position gl_Position, out highp float PointSize gl_PointSize})
 0:?     'outa' (global 4-element array of highp int)

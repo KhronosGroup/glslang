@@ -182,21 +182,23 @@ void TParseContext::initializeExtensionBehavior()
     extensionBehavior[GL_OES_shader_multisample_interpolation]     = EBhDisablePartial;
     extensionBehavior[GL_OES_texture_storage_multisample_2d_array] = EBhDisablePartial;
     extensionBehavior[GL_EXT_geometry_shader]                      = EBhDisable;
-    extensionBehavior[GL_EXT_geometry_point_size]                  = EBhDisablePartial;
+    extensionBehavior[GL_EXT_geometry_point_size]                  = EBhDisable;
     extensionBehavior[GL_EXT_gpu_shader5]                          = EBhDisablePartial;
     extensionBehavior[GL_EXT_primitive_bounding_box]               = EBhDisablePartial;
     extensionBehavior[GL_EXT_shader_io_blocks]                     = EBhDisable;
     extensionBehavior[GL_EXT_tessellation_shader]                  = EBhDisable;
-    extensionBehavior[GL_EXT_tessellation_point_size]              = EBhDisablePartial;
+    extensionBehavior[GL_EXT_tessellation_point_size]              = EBhDisable;
     extensionBehavior[GL_EXT_texture_buffer]                       = EBhDisablePartial;
     extensionBehavior[GL_EXT_texture_cube_map_array]               = EBhDisablePartial;
 
     // OES matching AEP
     extensionBehavior[GL_OES_geometry_shader]          = EBhDisable;
+    extensionBehavior[GL_OES_geometry_point_size]      = EBhDisable;
     extensionBehavior[GL_OES_gpu_shader5]              = EBhDisablePartial;
     extensionBehavior[GL_OES_primitive_bounding_box]   = EBhDisablePartial;
     extensionBehavior[GL_OES_shader_io_blocks]         = EBhDisable;
     extensionBehavior[GL_OES_tessellation_shader]      = EBhDisable;
+    extensionBehavior[GL_OES_tessellation_point_size]  = EBhDisable;
     extensionBehavior[GL_OES_texture_buffer]           = EBhDisablePartial;
     extensionBehavior[GL_OES_texture_cube_map_array]   = EBhDisablePartial;
 }
@@ -234,10 +236,12 @@ const char* TParseContext::getPreamble()
 
             // OES matching AEP
             "#define GL_OES_geometry_shader 1\n"
+            "#define GL_OES_geometry_point_size 1\n"
             "#define GL_OES_gpu_shader5 1\n"
             "#define GL_OES_primitive_bounding_box 1\n"
             "#define GL_OES_shader_io_blocks 1\n"
             "#define GL_OES_tessellation_shader 1\n"
+            "#define GL_OES_tessellation_point_size 1\n"
             "#define GL_OES_texture_buffer 1\n"
             "#define GL_OES_texture_cube_map_array 1\n"
             ;

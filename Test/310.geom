@@ -47,7 +47,7 @@ void main()
     gl_ClipDistance[3] =              // ERROR, no ClipDistance
         gl_in[1].gl_ClipDistance[2];  // ERROR, no ClipDistance
     gl_Position = gl_in[0].gl_Position;
-    gl_PointSize = gl_in[3].gl_PointSize;
+
     gl_PrimitiveID = gl_PrimitiveIDIn;
     gl_Layer = 2;
 }
@@ -137,3 +137,16 @@ void notHere()
     gl_VerticesIn;                    // ERROR, not in ES
 }
 
+void pointSize1()
+{
+    highp float ps = gl_in[3].gl_PointSize;  // ERROR, need point_size extension
+    gl_PointSize = ps;                       // ERROR, need point_size extension
+}
+
+#extension GL_OES_geometry_point_size : enable
+
+void pointSize2()
+{
+    highp float ps = gl_in[3].gl_PointSize;
+    gl_PointSize = ps;
+}

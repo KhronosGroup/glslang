@@ -84,7 +84,7 @@ public:
     bool builtInName(const TString&);
 
     void handlePragma(TSourceLoc, const TVector<TString>&);
-    TIntermTyped* handleVariable(TSourceLoc, TSymbol* symbol, TString* string);
+    TIntermTyped* handleVariable(TSourceLoc, TSymbol* symbol, const TString* string);
     TIntermTyped* handleBracketDereference(TSourceLoc, TIntermTyped* base, TIntermTyped* index);
     void checkIndex(TSourceLoc, const TType&, int& index);
     void handleIndexLimits(TSourceLoc, TIntermTyped* base, TIntermTyped* index);
@@ -100,8 +100,9 @@ public:
 
     TIntermTyped* handleBinaryMath(TSourceLoc, const char* str, TOperator op, TIntermTyped* left, TIntermTyped* right);
     TIntermTyped* handleUnaryMath(TSourceLoc, const char* str, TOperator op, TIntermTyped* childNode);
-    TIntermTyped* handleDotDereference(TSourceLoc, TIntermTyped* base, TString& field);
-    TFunction* handleFunctionDeclarator(TSourceLoc loc, TFunction& function, bool prototype);
+    TIntermTyped* handleDotDereference(TSourceLoc, TIntermTyped* base, const TString& field);
+    void blockMemberExtensionCheck(TSourceLoc, const TIntermTyped* base, const TString& field);
+    TFunction* handleFunctionDeclarator(TSourceLoc, TFunction& function, bool prototype);
     TIntermAggregate* handleFunctionDefinition(TSourceLoc, TFunction&);
     TIntermTyped* handleFunctionCall(TSourceLoc, TFunction*, TIntermNode*);
     void checkLocation(TSourceLoc, TOperator);

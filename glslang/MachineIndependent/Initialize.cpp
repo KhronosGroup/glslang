@@ -2884,6 +2884,18 @@ void IdentifyBuiltIns(int version, EProfile profile, EShLanguage language, TSymb
         BuiltInVariable("gl_TexCoord",            EbvTexCoord,            symbolTable);
         BuiltInVariable("gl_FogFragCoord",        EbvFogFragCoord,        symbolTable);
 
+        // gl_PointSize, when it needs to be tied to an extension, is always a member of a block.
+        // (Sometimes with an instance name, sometimes anonymous).
+        // However, the current automatic extension scheme does not work per block member,
+        // so for now check when parsing.
+        //
+        //if (profile == EEsProfile) {
+        //    if (language == EShLangGeometry)
+        //        symbolTable.setVariableExtensions("gl_PointSize", Num_AEP_geometry_point_size, AEP_geometry_point_size);
+        //    else if (language == EShLangTessEvaluation || language == EShLangTessControl)
+        //        symbolTable.setVariableExtensions("gl_PointSize", Num_AEP_tessellation_point_size, AEP_tessellation_point_size);
+        //}
+
         break;
 
     case EShLangFragment:

@@ -34,7 +34,7 @@ void main()
             gl_MaxTessGenLevel;
 
     vec4 p = gl_in[1].gl_Position;
-    float ps = gl_in[1].gl_PointSize;
+    float ps = gl_in[1].gl_PointSize;        // ERROR, need point_size extension
     float cd = gl_in[1].gl_ClipDistance[2];  // ERROR, not in ES
 
     int pvi = gl_PatchVerticesIn;
@@ -44,7 +44,7 @@ void main()
     float tli = gl_TessLevelInner[1];
 
     gl_Position = p;
-    gl_PointSize = ps;
+    gl_PointSize = ps;             // ERROR, need point_size extension
     gl_ClipDistance[2] = cd;       // ERROR, not in ES
 }
 
@@ -111,3 +111,11 @@ patch in pinbn {
 centroid out vec3 myColor2;
 centroid in vec3 centr[];
 sample out vec4 perSampleColor;  // ERROR without sample extensions
+
+#extension GL_OES_tessellation_point_size : enable
+
+void pointSize2()
+{
+    float ps = gl_in[1].gl_PointSize;  // ERROR, not in the redeclaration, but no error on use of gl_PointSize
+    gl_PointSize = ps;
+}

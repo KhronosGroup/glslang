@@ -23,7 +23,7 @@ void main()
             gl_MaxTessControlTotalOutputComponents;
 
     vec4 p = gl_in[1].gl_Position;
-    float ps = gl_in[1].gl_PointSize;
+    float ps = gl_in[1].gl_PointSize;        // ERROR, need point_size extension
     float cd = gl_in[1].gl_ClipDistance[2];  // ERROR, not in ES
 
     int pvi = gl_PatchVerticesIn;
@@ -31,7 +31,7 @@ void main()
     int iid = gl_InvocationID;
 
     gl_out[1].gl_Position = p;
-    gl_out[1].gl_PointSize = ps;
+    gl_out[1].gl_PointSize = ps;        // ERROR, need point_size extension
     gl_out[1].gl_ClipDistance[1] = cd;  // ERROR, not in ES
 
     gl_TessLevelOuter[3] = 3.2;
@@ -106,6 +106,14 @@ sample out vec4 perSampleColor[];   // ERROR without sample extensions
 layout(vertices = 4) out float badlay[];   // ERROR, not on a variable
 out float misSized[5];              // ERROR, size doesn't match
 out float okaySize[4];
+
+#extension GL_OES_tessellation_point_size : enable
+
+void pointSize2()
+{
+    float ps = gl_in[1].gl_PointSize;
+    gl_out[1].gl_PointSize = ps;
+}
 
 // for testing with gpu_shader5
 //precise vec3 pv3;

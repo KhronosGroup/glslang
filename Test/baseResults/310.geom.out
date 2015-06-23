@@ -35,12 +35,19 @@ ERROR: 0:128: 'sample' : Reserved word.
 ERROR: 0:132: 'component' : not supported with this profile: es
 ERROR: 0:136: 'gl_MaxGeometryVaryingComponents' : undeclared identifier 
 ERROR: 0:137: 'gl_VerticesIn' : undeclared identifier 
-ERROR: 35 compilation errors.  No code generated.
+ERROR: 0:142: 'gl_PointSize' : required extension not requested: Possible extensions include:
+GL_EXT_geometry_point_size
+GL_OES_geometry_point_size
+ERROR: 0:143: 'gl_PointSize' : required extension not requested: Possible extensions include:
+GL_EXT_geometry_point_size
+GL_OES_geometry_point_size
+ERROR: 37 compilation errors.  No code generated.
 
 
 Shader version: 310
 Requested GL_EXT_geometry_shader
 Requested GL_EXT_shader_io_blocks
+Requested GL_OES_geometry_point_size
 invocations = 4
 max_vertices = 200
 input primitive = lines_adjacency
@@ -84,18 +91,6 @@ ERROR: node is still EOpNull!
 0:49              0 (const int)
 0:49          Constant:
 0:49            0 (const int)
-0:50      move second child to first child (temp highp float)
-0:50        gl_PointSize: direct index for structure (layout(stream=0 ) gl_PointSize highp float PointSize)
-0:50          'anon@1' (layout(stream=0 ) out block{layout(stream=0 ) gl_Position highp 4-component vector of float Position gl_Position, layout(stream=0 ) gl_PointSize highp float PointSize gl_PointSize})
-0:50          Constant:
-0:50            1 (const uint)
-0:50        gl_PointSize: direct index for structure (in highp float PointSize)
-0:50          direct index (temp block{in highp 4-component vector of float Position gl_Position, in highp float PointSize gl_PointSize})
-0:50            'gl_in' (in 4-element array of block{in highp 4-component vector of float Position gl_Position, in highp float PointSize gl_PointSize})
-0:50            Constant:
-0:50              3 (const int)
-0:50          Constant:
-0:50            1 (const int)
 0:51      move second child to first child (temp highp int)
 0:51        'gl_PrimitiveID' (layout(stream=0 ) out highp int PrimitiveID)
 0:51        'gl_PrimitiveIDIn' (in highp int PrimitiveID)
@@ -133,6 +128,44 @@ ERROR: node is still EOpNull!
 0:136    Sequence
 0:136      'gl_MaxGeometryVaryingComponents' (temp float)
 0:137      'gl_VerticesIn' (temp float)
+0:140  Function Definition: pointSize1( (global void)
+0:140    Function Parameters: 
+0:142    Sequence
+0:142      Sequence
+0:142        move second child to first child (temp highp float)
+0:142          'ps' (temp highp float)
+0:142          gl_PointSize: direct index for structure (in highp float PointSize)
+0:142            direct index (temp block{in highp 4-component vector of float Position gl_Position, in highp float PointSize gl_PointSize})
+0:142              'gl_in' (in 4-element array of block{in highp 4-component vector of float Position gl_Position, in highp float PointSize gl_PointSize})
+0:142              Constant:
+0:142                3 (const int)
+0:142            Constant:
+0:142              1 (const int)
+0:143      move second child to first child (temp highp float)
+0:143        gl_PointSize: direct index for structure (layout(stream=0 ) gl_PointSize highp float PointSize)
+0:143          'anon@1' (layout(stream=0 ) out block{layout(stream=0 ) gl_Position highp 4-component vector of float Position gl_Position, layout(stream=0 ) gl_PointSize highp float PointSize gl_PointSize})
+0:143          Constant:
+0:143            1 (const uint)
+0:143        'ps' (temp highp float)
+0:148  Function Definition: pointSize2( (global void)
+0:148    Function Parameters: 
+0:150    Sequence
+0:150      Sequence
+0:150        move second child to first child (temp highp float)
+0:150          'ps' (temp highp float)
+0:150          gl_PointSize: direct index for structure (in highp float PointSize)
+0:150            direct index (temp block{in highp 4-component vector of float Position gl_Position, in highp float PointSize gl_PointSize})
+0:150              'gl_in' (in 4-element array of block{in highp 4-component vector of float Position gl_Position, in highp float PointSize gl_PointSize})
+0:150              Constant:
+0:150                3 (const int)
+0:150            Constant:
+0:150              1 (const int)
+0:151      move second child to first child (temp highp float)
+0:151        gl_PointSize: direct index for structure (layout(stream=0 ) gl_PointSize highp float PointSize)
+0:151          'anon@1' (layout(stream=0 ) out block{layout(stream=0 ) gl_Position highp 4-component vector of float Position gl_Position, layout(stream=0 ) gl_PointSize highp float PointSize gl_PointSize})
+0:151          Constant:
+0:151            1 (const uint)
+0:151        'ps' (temp highp float)
 0:?   Linker Objects
 0:?     'fromV' (in 4-element array of block{in mediump 3-component vector of float color})
 0:?     'nonBlockUnsized' (in 4-element array of mediump 4-component vector of float)
@@ -166,6 +199,7 @@ Linked geometry stage:
 Shader version: 310
 Requested GL_EXT_geometry_shader
 Requested GL_EXT_shader_io_blocks
+Requested GL_OES_geometry_point_size
 invocations = 4
 max_vertices = 200
 input primitive = lines_adjacency
@@ -209,18 +243,6 @@ ERROR: node is still EOpNull!
 0:49              0 (const int)
 0:49          Constant:
 0:49            0 (const int)
-0:50      move second child to first child (temp highp float)
-0:50        gl_PointSize: direct index for structure (layout(stream=0 ) gl_PointSize highp float PointSize)
-0:50          'anon@1' (layout(stream=0 ) out block{layout(stream=0 ) gl_Position highp 4-component vector of float Position gl_Position, layout(stream=0 ) gl_PointSize highp float PointSize gl_PointSize})
-0:50          Constant:
-0:50            1 (const uint)
-0:50        gl_PointSize: direct index for structure (in highp float PointSize)
-0:50          direct index (temp block{in highp 4-component vector of float Position gl_Position, in highp float PointSize gl_PointSize})
-0:50            'gl_in' (in 4-element array of block{in highp 4-component vector of float Position gl_Position, in highp float PointSize gl_PointSize})
-0:50            Constant:
-0:50              3 (const int)
-0:50          Constant:
-0:50            1 (const int)
 0:51      move second child to first child (temp highp int)
 0:51        'gl_PrimitiveID' (layout(stream=0 ) out highp int PrimitiveID)
 0:51        'gl_PrimitiveIDIn' (in highp int PrimitiveID)
@@ -258,6 +280,44 @@ ERROR: node is still EOpNull!
 0:136    Sequence
 0:136      'gl_MaxGeometryVaryingComponents' (temp float)
 0:137      'gl_VerticesIn' (temp float)
+0:140  Function Definition: pointSize1( (global void)
+0:140    Function Parameters: 
+0:142    Sequence
+0:142      Sequence
+0:142        move second child to first child (temp highp float)
+0:142          'ps' (temp highp float)
+0:142          gl_PointSize: direct index for structure (in highp float PointSize)
+0:142            direct index (temp block{in highp 4-component vector of float Position gl_Position, in highp float PointSize gl_PointSize})
+0:142              'gl_in' (in 4-element array of block{in highp 4-component vector of float Position gl_Position, in highp float PointSize gl_PointSize})
+0:142              Constant:
+0:142                3 (const int)
+0:142            Constant:
+0:142              1 (const int)
+0:143      move second child to first child (temp highp float)
+0:143        gl_PointSize: direct index for structure (layout(stream=0 ) gl_PointSize highp float PointSize)
+0:143          'anon@1' (layout(stream=0 ) out block{layout(stream=0 ) gl_Position highp 4-component vector of float Position gl_Position, layout(stream=0 ) gl_PointSize highp float PointSize gl_PointSize})
+0:143          Constant:
+0:143            1 (const uint)
+0:143        'ps' (temp highp float)
+0:148  Function Definition: pointSize2( (global void)
+0:148    Function Parameters: 
+0:150    Sequence
+0:150      Sequence
+0:150        move second child to first child (temp highp float)
+0:150          'ps' (temp highp float)
+0:150          gl_PointSize: direct index for structure (in highp float PointSize)
+0:150            direct index (temp block{in highp 4-component vector of float Position gl_Position, in highp float PointSize gl_PointSize})
+0:150              'gl_in' (in 4-element array of block{in highp 4-component vector of float Position gl_Position, in highp float PointSize gl_PointSize})
+0:150              Constant:
+0:150                3 (const int)
+0:150            Constant:
+0:150              1 (const int)
+0:151      move second child to first child (temp highp float)
+0:151        gl_PointSize: direct index for structure (layout(stream=0 ) gl_PointSize highp float PointSize)
+0:151          'anon@1' (layout(stream=0 ) out block{layout(stream=0 ) gl_Position highp 4-component vector of float Position gl_Position, layout(stream=0 ) gl_PointSize highp float PointSize gl_PointSize})
+0:151          Constant:
+0:151            1 (const uint)
+0:151        'ps' (temp highp float)
 0:?   Linker Objects
 0:?     'fromV' (in 4-element array of block{in mediump 3-component vector of float color})
 0:?     'nonBlockUnsized' (in 4-element array of mediump 4-component vector of float)

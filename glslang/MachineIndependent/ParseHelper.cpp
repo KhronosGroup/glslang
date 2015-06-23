@@ -385,11 +385,11 @@ void C_DECL TParseContext::warn(TSourceLoc loc, const char* szReason, const char
 //
 // Handle seeing a variable identifier in the grammar.
 //
-TIntermTyped* TParseContext::handleVariable(TSourceLoc loc, TSymbol* symbol, TString* string)
+TIntermTyped* TParseContext::handleVariable(TSourceLoc loc, TSymbol* symbol, const TString* string)
 {
     TIntermTyped* node = 0;
 
-    // Error check for function requiring specific extensions present.
+    // Error check for requiring specific extensions present.
     if (symbol && symbol->getNumExtensions())
         requireExtensions(loc, symbol->getNumExtensions(), symbol->getExtensions(), symbol->getName().c_str());
 
@@ -410,6 +410,9 @@ TIntermTyped* TParseContext::handleVariable(TSourceLoc loc, TSymbol* symbol, TSt
     const TAnonMember* anon = symbol ? symbol->getAsAnonMember() : 0;
     if (anon) {
         // It was a member of an anonymous container.
+
+        // The "getNumExtensions()" mechanism above doesn't yet work for block members
+        blockMemberExtensionCheck(loc, 0, *string);
 
         // Create a subtree for its dereference.
         variable = anon->getAnonContainer().getAsVariable();
@@ -716,7 +719,7 @@ TIntermTyped* TParseContext::handleUnaryMath(TSourceLoc loc, const char* str, TO
 //
 // Handle seeing a base.field dereference in the grammar.
 //
-TIntermTyped* TParseContext::handleDotDereference(TSourceLoc loc, TIntermTyped* base, TString& field)
+TIntermTyped* TParseContext::handleDotDereference(TSourceLoc loc, TIntermTyped* base, const TString& field)
 {
     variableCheck(base);
 
@@ -804,6 +807,7 @@ TIntermTyped* TParseContext::handleDotDereference(TSourceLoc loc, TIntermTyped* 
             if (base->getType().getQualifier().storage == EvqConst)
                 result = intermediate.foldDereference(base, member, loc);
             else {
+                blockMemberExtensionCheck(loc, base, field);
                 TIntermTyped* index = intermediate.addConstantUnion(member, loc);
                 result = intermediate.addIndex(EOpIndexDirectStruct, base, index, loc);
                 result->setType(*(*fields)[member].type);
@@ -814,6 +818,16 @@ TIntermTyped* TParseContext::handleDotDereference(TSourceLoc loc, TIntermTyped* 
         error(loc, "does not apply to this type:", field.c_str(), base->getType().getCompleteString().c_str());
 
     return result;
+}
+
+void TParseContext::blockMemberExtensionCheck(TSourceLoc loc, const TIntermTyped* /*base*/, const TString& field)
+{
+    if (profile == EEsProfile && field == "gl_PointSize") {
+        if (language == EShLangGeometry)
+            requireExtensions(loc, Num_AEP_geometry_point_size, AEP_geometry_point_size, "gl_PointSize");
+        else if (language == EShLangTessControl || language == EShLangTessEvaluation)
+            requireExtensions(loc, Num_AEP_tessellation_point_size, AEP_tessellation_point_size, "gl_PointSize");
+    }
 }
 
 //
