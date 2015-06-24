@@ -341,24 +341,35 @@ bool TParseContext::parseVectorFields(TSourceLoc loc, const TString& compString,
 //
 // Used to output syntax, parsing, and semantic errors.
 //
-void C_DECL TParseContext::error(TSourceLoc loc, const char* szReason, const char* szToken,
-                                 const char* szExtraInfoFormat, ...)
+
+void TParseContext::outputMessage(TSourceLoc loc, const char* szReason,
+                                  const char* szToken,
+                                  const char* szExtraInfoFormat,
+                                  TPrefixType prefix, va_list args)
 {
     const int maxSize = GlslangMaxTokenLength + 200;
     char szExtraInfo[maxSize];
-    va_list marker;
 
-    va_start(marker, szExtraInfoFormat);
+    safe_vsprintf(szExtraInfo, maxSize, szExtraInfoFormat, args);
 
-    safe_vsprintf(szExtraInfo, maxSize, szExtraInfoFormat, marker);
-
-    infoSink.info.prefix(EPrefixError);
+    infoSink.info.prefix(prefix);
     infoSink.info.location(loc);
     infoSink.info << "'" << szToken <<  "' : " << szReason << " " << szExtraInfo << "\n";
 
-    va_end(marker);
+    if (prefix == EPrefixError) {
+        ++numErrors;
+    }
+}
 
-    ++numErrors;
+void C_DECL TParseContext::error(TSourceLoc loc, const char* szReason, const char* szToken,
+                                 const char* szExtraInfoFormat, ...)
+{
+    if (messages & EShMsgOnlyPreprocessor)
+      return;
+    va_list args;
+    va_start(args, szExtraInfoFormat);
+    outputMessage(loc, szReason, szToken, szExtraInfoFormat, EPrefixError, args);
+    va_end(args);
 }
 
 void C_DECL TParseContext::warn(TSourceLoc loc, const char* szReason, const char* szToken,
@@ -366,20 +377,28 @@ void C_DECL TParseContext::warn(TSourceLoc loc, const char* szReason, const char
 {
     if (suppressWarnings())
         return;
+    va_list args;
+    va_start(args, szExtraInfoFormat);
+    outputMessage(loc, szReason, szToken, szExtraInfoFormat, EPrefixWarning, args);
+    va_end(args);
+}
 
-    const int maxSize = GlslangMaxTokenLength + 200;
-    char szExtraInfo[maxSize];
-    va_list marker;
+void C_DECL TParseContext::ppError(TSourceLoc loc, const char* szReason, const char* szToken,
+                                 const char* szExtraInfoFormat, ...)
+{
+    va_list args;
+    va_start(args, szExtraInfoFormat);
+    outputMessage(loc, szReason, szToken, szExtraInfoFormat, EPrefixError, args);
+    va_end(args);
+}
 
-    va_start(marker, szExtraInfoFormat);
-
-    safe_vsprintf(szExtraInfo, maxSize, szExtraInfoFormat, marker);
-
-    infoSink.info.prefix(EPrefixWarning);
-    infoSink.info.location(loc);
-    infoSink.info << "'" << szToken <<  "' : " << szReason << " " << szExtraInfo << "\n";
-
-    va_end(marker);
+void C_DECL TParseContext::ppWarn(TSourceLoc loc, const char* szReason, const char* szToken,
+                                 const char* szExtraInfoFormat, ...)
+{
+    va_list args;
+    va_start(args, szExtraInfoFormat);
+    outputMessage(loc, szReason, szToken, szExtraInfoFormat, EPrefixWarning, args);
+    va_end(args);
 }
 
 //
@@ -1815,18 +1834,18 @@ void TParseContext::reservedPpErrorCheck(TSourceLoc loc, const char* identifier,
     // compile-time error."
     // however, before that, ES tests required an error.
     if (strncmp(identifier, "GL_", 3) == 0)
-        error(loc, "names beginning with \"GL_\" can't be (un)defined:", op,  identifier);
+        ppError(loc, "names beginning with \"GL_\" can't be (un)defined:", op,  identifier);
     else if (strstr(identifier, "__") != 0) {
         if (profile == EEsProfile && version >= 300 &&
             (strcmp(identifier, "__LINE__") == 0 ||
              strcmp(identifier, "__FILE__") == 0 ||
              strcmp(identifier, "__VERSION__") == 0))
-            error(loc, "predefined names can't be (un)defined:", op,  identifier);
+            ppError(loc, "predefined names can't be (un)defined:", op,  identifier);
         else {
             if (profile == EEsProfile && version <= 300)
-                error(loc, "names containing consecutive underscores are reserved, and an error if version <= 300:", op, identifier);
+                ppError(loc, "names containing consecutive underscores are reserved, and an error if version <= 300:", op, identifier);
             else
-                warn(loc, "names containing consecutive underscores are reserved:", op, identifier);
+                ppWarn(loc, "names containing consecutive underscores are reserved:", op, identifier);
         }
     }
 }

@@ -131,6 +131,7 @@ enum EShMessages {
     EShMsgAST              = (1 << 2),  // print the AST intermediate representation
     EShMsgSpvRules         = (1 << 3),  // issue messages for SPIR-V generation
     EShMsgVulkanRules      = (1 << 4),  // issue messages for Vulkan-requirements of GLSL for SPIR-V
+    EShMsgOnlyPreprocessor = (1 << 5),  // only print out errors produced by the preprocessor
 };
 
 //
