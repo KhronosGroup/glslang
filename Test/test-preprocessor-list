@@ -1,3 +1,4 @@
+preprocessor.cpp_style_line_directive.vert
 preprocessor.edge_cases.vert
 preprocessor.errors.vert
 preprocessor.extensions.vert

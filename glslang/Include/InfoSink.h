@@ -96,9 +96,14 @@ public:
         }
     }
     void location(TSourceLoc loc) {
-	    const int maxSize = 24;
+        const int maxSize = 24;
         char locText[maxSize];
-        snprintf(locText, maxSize, "%d:%d", loc.string, loc.line);
+        if (loc.name != nullptr) {
+            append(loc.name);
+            snprintf(locText, maxSize, ":%d", loc.line);
+        } else {
+            snprintf(locText, maxSize, "%d:%d", loc.string, loc.line);
+        }
         append(locText);
         append(": ");
     }

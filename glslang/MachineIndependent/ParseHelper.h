@@ -214,6 +214,7 @@ public:
     int getNumErrors() const { return numErrors; }
     const TSourceLoc& getCurrentLoc() const { return currentScanner->getSourceLoc(); }
     void setCurrentLine(int line) { currentScanner->setLine(line); }
+    void setCurrentSourceName(const char* name) { currentScanner->setFile(name); }
     void setCurrentString(int string) { currentScanner->setString(string); }
     void setScanner(TInputScanner* scanner) { currentScanner  = scanner; }
 
@@ -221,7 +222,7 @@ public:
 
     void notifyVersion(int line, int version, const char* type_string);
     void notifyErrorDirective(int line, const char* error_message);
-    void notifyLineDirective(int curLineNo, int newLineNo, bool hasSource, int sourceNum);
+    void notifyLineDirective(int curLineNo, int newLineNo, bool hasSource, int sourceNum, const char* sourceName);
     void notifyExtensionDirective(int line, const char* extension, const char* behavior);
 
     // The following are implemented in Versions.cpp to localize version/profile/stage/extensions control
@@ -243,7 +244,7 @@ public:
 
     void setVersionCallback(const std::function<void(int, int, const char*)>& func) { versionCallback = func; }
     void setPragmaCallback(const std::function<void(int, const TVector<TString>&)>& func) { pragmaCallback = func; }
-    void setLineCallback(const std::function<void(int, int, bool, int)>& func) { lineCallback = func; }
+    void setLineCallback(const std::function<void(int, int, bool, int, const char*)>& func) { lineCallback = func; }
     void setExtensionCallback(const std::function<void(int, const char*, const char*)>& func) { extensionCallback = func; }
     void setErrorCallback(const std::function<void(int, const char*)>& func) { errorCallback = func; }
 
@@ -357,7 +358,7 @@ protected:
 
     // These, if set, will be called when a line, pragma ... is preprocessed.
     // They will be called with any parameters to the original directive.
-    std::function<void(int, int, bool, int)> lineCallback;
+    std::function<void(int, int, bool, int, const char*)> lineCallback;
     std::function<void(int, const TVector<TString>&)> pragmaCallback;
     std::function<void(int, int, const char*)> versionCallback;
     std::function<void(int, const char*, const char*)> extensionCallback;
