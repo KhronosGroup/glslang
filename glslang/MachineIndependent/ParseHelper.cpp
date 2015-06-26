@@ -5186,8 +5186,16 @@ TIntermNode* TParseContext::addSwitch(TSourceLoc loc, TIntermTyped* expression, 
     if (switchSequence->size() == 0)
         return expression;
 
-    if (lastStatements == 0)
-        warn(loc, "last case/default label not followed by statements", "switch", "");
+    if (lastStatements == 0) {
+        // This was originally an ERRROR, because early versions of the specification said
+        // "it is an error to have no statement between a label and the end of the switch statement."
+        // The specifications were updated to remove this (being ill-defined what a "statement" was),
+        // so, this became a warning.  However, 3.0 tests still check for the error.
+        if (profile == EEsProfile && version <= 300 && (messages & EShMsgRelaxedErrors) == 0)
+            error(loc, "last case/default label not followed by statements", "switch", "");
+        else
+            warn(loc, "last case/default label not followed by statements", "switch", "");
+    }
 
     TIntermAggregate* body = new TIntermAggregate(EOpSequence);
     body->getSequence() = *switchSequenceStack.back();
