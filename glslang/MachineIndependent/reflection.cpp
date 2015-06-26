@@ -40,7 +40,7 @@
 #include "gl_types.h"
 
 //
-// Grow the reflection database through a friend traverser class of TReflection and a 
+// Grow the reflection database through a friend traverser class of TReflection and a
 // collection of functions to do a liveness traversal that note what uniforms are used
 // in semantically non-dead code.
 //
@@ -50,22 +50,22 @@
 //
 // 1. Put main() on list of live functions.
 //
-// 2. Traverse any live function, while skipping if-tests with a compile-time constant 
-//    condition of false, and while adding any encountered function calls to the live 
+// 2. Traverse any live function, while skipping if-tests with a compile-time constant
+//    condition of false, and while adding any encountered function calls to the live
 //    function list.
 //
 //    Repeat until the live function list is empty.
 //
 // 3. Add any encountered uniform variables and blocks to the reflection database.
 //
-// Can be attempted with a failed link, but will return false if recursion had been detected, or 
+// Can be attempted with a failed link, but will return false if recursion had been detected, or
 // there wasn't exactly one main.
 //
 
 namespace glslang {
 
 //
-// The traverser: mostly pass through, except 
+// The traverser: mostly pass through, except
 //  - processing function-call nodes to push live functions onto the stack of functions to process
 //  - processing binary nodes to see if they are dereferences of an aggregates to track
 //  - processing symbol nodes to see if they are non-aggregate objects to track
@@ -108,7 +108,7 @@ public:
         }
     }
 
-    // Lookup or calculate the offset of a block member, using the recursively 
+    // Lookup or calculate the offset of a block member, using the recursively
     // defined block offset rules.
     int getOffset(const TType& type, int index)
     {
@@ -153,7 +153,7 @@ public:
     //
     // arraySize tracks, just for the final dereference in the chain, if there was a specific known size.
     // A value of 0 for arraySize will mean to use the full array's size.
-    void blowUpActiveAggregate(const TType& baseType, const TString& baseName, const TList<TIntermBinary*>& derefs, 
+    void blowUpActiveAggregate(const TType& baseType, const TString& baseName, const TList<TIntermBinary*>& derefs,
                                TList<TIntermBinary*>::const_iterator deref, int offset, int blockIndex, int arraySize)
     {
         // process the part of the derefence chain that was explicit in the shader
@@ -195,11 +195,11 @@ public:
                 break;
             }
         }
-        
+
         // if the terminalType is still too coarse a granularity, this is still an aggregate to expand, expand it...
         if (! isReflectionGranularity(*terminalType)) {
             if (terminalType->isArray()) {
-                // Visit all the indices of this array, and for each one, 
+                // Visit all the indices of this array, and for each one,
                 // fully explode the remaining aggregate to dereference
                 for (int i = 0; i < terminalType->getArraySize(); ++i) {
                     TString newBaseName = name;
@@ -208,7 +208,7 @@ public:
                     blowUpActiveAggregate(derefType, newBaseName, derefs, derefs.end(), offset, blockIndex, 0);
                 }
             } else {
-                // Visit all members of this aggregate, and for each one, 
+                // Visit all members of this aggregate, and for each one,
                 // fully explode the remaining aggregate to dereference
                 const TTypeList& typeList = *terminalType->getStruct();
                 for (int i = 0; i < (int)typeList.size(); ++i) {
@@ -232,7 +232,7 @@ public:
 
         TReflection::TNameToIndex::const_iterator it = reflection.nameToIndex.find(name);
         if (it == reflection.nameToIndex.end()) {
-            reflection.nameToIndex[name] = (int)reflection.indexToUniform.size();                        
+            reflection.nameToIndex[name] = (int)reflection.indexToUniform.size();
             reflection.indexToUniform.push_back(TObjectReflection(name, offset, mapToGlType(*terminalType), arraySize, blockIndex));
         } else if (arraySize > 1) {
             int& reflectedArraySize = reflection.indexToUniform[it->second].size;
@@ -242,7 +242,7 @@ public:
 
     // Add a uniform dereference where blocks/struct/arrays are involved in the access.
     // Handles the situation where the left node is at the correct or too coarse a
-    // granularity for reflection.  (That is, further dereferences up the tree will be 
+    // granularity for reflection.  (That is, further dereferences up the tree will be
     // skipped.) Earlier dereferences, down the tree, will be handled
     // at the same time, and logged to prevent reprocessing as the tree is traversed.
     //
@@ -250,7 +250,7 @@ public:
     //  - a simple non-array, non-struct variable (no dereference even conceivable)
     //  - an aggregrate consumed en masse, without a dereference
     //
-    // So, this code is for cases like 
+    // So, this code is for cases like
     //   - a struct/block dereferencing a member (whether the member is array or not)
     //   - an array of struct
     //   - structs/arrays containing the above
@@ -262,13 +262,13 @@ public:
         if ((leftType.isVector() || leftType.isMatrix()) && ! leftType.isArray())
             return;
 
-        // We have an array or structure or block dereference, see if it's a uniform 
+        // We have an array or structure or block dereference, see if it's a uniform
         // based dereference (if not, skip it).
         TIntermSymbol* base = findBase(topNode);
         if (! base || ! base->getQualifier().isUniformOrBuffer())
             return;
-            
-        // See if we've already processed this (e.g., in the middle of something 
+
+        // See if we've already processed this (e.g., in the middle of something
         // we did earlier), and if so skip it
         if (processedDerefs.find(topNode) != processedDerefs.end())
             return;
@@ -337,7 +337,7 @@ public:
     }
 
     //
-    // Given a function name, find its subroot in the tree, and push it onto the stack of 
+    // Given a function name, find its subroot in the tree, and push it onto the stack of
     // functions left to process.
     //
     void pushFunction(const TString& name)
@@ -447,7 +447,7 @@ public:
             default:
                 return 0;
             }
-        } else { 
+        } else {
             // an image...
             switch (sampler.type) {
             case EbtFloat:
@@ -612,7 +612,7 @@ public:
     {
         return type.isArray() ? type.getArraySize() : 1;
     }
-    
+
     typedef std::list<TIntermAggregate*> TFunctionStack;
     TFunctionStack functions;
     const TIntermediate& intermediate;
@@ -651,7 +651,7 @@ bool TLiveTraverser::visitBinary(TVisit /* visit */, TIntermBinary* node)
         break;
     }
 
-    // still need to visit everything below, which could contain sub-expressions 
+    // still need to visit everything below, which could contain sub-expressions
     // containing different uniforms
     return true;
 }
@@ -687,7 +687,7 @@ bool TLiveTraverser::visitSelection(TVisit /* visit */,  TIntermSelection* node)
 //
 // Returns false if the input is too malformed to do this.
 bool TReflection::addStage(EShLanguage, const TIntermediate& intermediate)
-{    
+{
     if (intermediate.getNumMains() != 1 || intermediate.isRecursive())
         return false;
 
