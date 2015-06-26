@@ -53,6 +53,7 @@ while read t; do
       ;;
   esac
 done < test-spirv-list
+rm -f comp.spv frag.spv geom.spv tesc.spv tese.spv vert.spv
 
 #
 # Preprocessor tests
