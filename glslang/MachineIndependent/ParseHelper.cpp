@@ -1788,11 +1788,17 @@ void TParseContext::reservedErrorCheck(TSourceLoc loc, const TString& identifier
         if (builtInName(identifier))
             error(loc, "identifiers starting with \"gl_\" are reserved", identifier.c_str(), "");
 
+        // "__" are not supposed to be an error.  ES 310 (and desktop) added the clarification:
         // "In addition, all identifiers containing two consecutive underscores (__) are
         // reserved; using such a name does not itself result in an error, but may result
         // in undefined behavior."
-        if (identifier.find("__") != TString::npos)
-            warn(loc, "identifiers containing consecutive underscores (\"__\") are reserved", identifier.c_str(), "");
+        // however, before that, ES tests required an error.
+        if (identifier.find("__") != TString::npos) {
+            if (profile == EEsProfile && version <= 300)
+                error(loc, "identifiers containing consecutive underscores (\"__\") are reserved, and an error if version <= 300", identifier.c_str(), "");
+            else
+                warn(loc, "identifiers containing consecutive underscores (\"__\") are reserved", identifier.c_str(), "");
+        }
     }
 }
 
@@ -1801,11 +1807,13 @@ void TParseContext::reservedErrorCheck(TSourceLoc loc, const TString& identifier
 //
 void TParseContext::reservedPpErrorCheck(TSourceLoc loc, const char* identifier, const char* op)
 {
+    // "__" are not supposed to be an error.  ES 310 (and desktop) added the clarification:
     // "All macro names containing two consecutive underscores ( __ ) are reserved;
     // defining such a name does not itself result in an error, but may result in
     // undefined behavior.  All macro names prefixed with "GL_" ("GL" followed by a
     // single underscore) are also reserved, and defining such a name results in a
     // compile-time error."
+    // however, before that, ES tests required an error.
     if (strncmp(identifier, "GL_", 3) == 0)
         error(loc, "names beginning with \"GL_\" can't be (un)defined:", op,  identifier);
     else if (strstr(identifier, "__") != 0) {
@@ -1814,8 +1822,12 @@ void TParseContext::reservedPpErrorCheck(TSourceLoc loc, const char* identifier,
              strcmp(identifier, "__FILE__") == 0 ||
              strcmp(identifier, "__VERSION__") == 0))
             error(loc, "predefined names can't be (un)defined:", op,  identifier);
-        else
-            warn(loc, "names containing consecutive underscores are reserved:", op, identifier);
+        else {
+            if (profile == EEsProfile && version <= 300)
+                error(loc, "names containing consecutive underscores are reserved, and an error if version <= 300:", op, identifier);
+            else
+                warn(loc, "names containing consecutive underscores are reserved:", op, identifier);
+        }
     }
 }
 

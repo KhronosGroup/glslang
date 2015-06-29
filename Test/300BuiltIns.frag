@@ -3,7 +3,7 @@
 int imax, imin;
 uint umax, umin;
 
-vec3 x, y;
+vec3 x, y;    // ERROR, needs default precision
 bvec3 bv;
 
 uint uy;
@@ -67,5 +67,10 @@ void main()
     vec2 v18 = unpackHalf2x16(uy);
 
     // not present
-    noise2(v18);
+    noise2(v18);  // ERROR, not present
+
+    float t__;  // ERROR, no __ until revision 310
+
+      // ERROR, no __ until revision 310
+    #define __D
 }

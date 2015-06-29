@@ -231,3 +231,8 @@ in inb {     // ERROR
 out outb {     // ERROR
     int a;
 } outbi;
+
+float t__;  // ERROR, no __ until revision 310
+
+    // ERROR, no __ until revision 310
+#define __D

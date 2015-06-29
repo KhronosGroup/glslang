@@ -74,6 +74,8 @@ ERROR: 0:221: 'assign' : can't read from writeonly object:  wo
 ERROR: 0:222: '~' : can't read from writeonly object:  wo
 ERROR: 0:227: 'input block' : not supported in this stage: compute
 ERROR: 0:231: 'output block' : not supported in this stage: compute
+WARNING: 0:235: 't__' : identifiers containing consecutive underscores ("__") are reserved 
+WARNING: 0:238: '#define' : names containing consecutive underscores are reserved: __D
 ERROR: 74 compilation errors.  No code generated.
 
 
@@ -483,6 +485,7 @@ ERROR: node is still EOpNull!
 0:?     'multio' (layout(column_major shared ) buffer block{layout(column_major shared ) readonly buffer highp int value, layout(column_major shared ) writeonly buffer implicitly-sized array of highp float values})
 0:?     'inbi' (in block{in highp int a})
 0:?     'outbi' (out block{out highp int a})
+0:?     't__' (global highp float)
 
 
 Linked compute stage:
@@ -894,4 +897,5 @@ ERROR: node is still EOpNull!
 0:?     'multio' (layout(column_major shared ) buffer block{layout(column_major shared ) readonly buffer highp int value, layout(column_major shared ) writeonly buffer implicitly-sized array of highp float values})
 0:?     'inbi' (in block{in highp int a})
 0:?     'outbi' (out block{out highp int a})
+0:?     't__' (global highp float)
 
