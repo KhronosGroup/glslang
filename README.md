@@ -35,41 +35,16 @@ The applied stage-specific rules are based on the file extension:
 There is also a non-shader extension
 * `.conf` for a configuration file of limits, see usage statement for example
 
-Source: Build and run on Linux
--------------------------------
+Building
+--------
 
-A simple bash script `BuildLinux.sh` is provided at the root directory
-to do the build and run a test cases.  You will need a recent version of
-bison installed.
+CMake: The currently maintained and preferred way of building is through CMake.
+In MSVC, after running CMake, you may need to use the Configuration Manager to
+check the INSTALL project.
 
-Once the executable is generated, it needs to be dynamically linked with the
-shared object created in `lib` directory. To achieve that, `cd` to
-`StandAlone` directory to update the `LD_LIBRARY_PATH` as follows
-
-```bash
-export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:./../glslang/MachineIndependent/lib
-```
-
-You can also update `LD_LIBRARY_PATH` in the `.cshrc` or `.bashrc` file,
-depending on the shell you are using. You will need to give the complete path
-of `lib` directory in `.cshrc` or `.bashrc` files.
-
-Source: Build and run on Windows
---------------------------------
-
-Current development is with Visual Studio verion 11 (2012).  The solution
-file is in the project's root directory `Standalone.sln`.
-
-Building the StandAlone project (the default) will create `glslangValidate.exe`
-and copy it into the `Test` directory and `Install` directory.  This allows
-local test scripts to use either the debug or release version, whichever was
-built last.
-
-Windows execution and testing is generally done from within a cygwin
-shell.
-
-Note: Despite appearances, the use of a DLL is currently disabled; it
-simply makes a standalone executable from a statically linked library.
+Note there are some legacy build methods still intermingled within the directory
+structure (make, MSVC), but these are no longer maintained, having been
+replaced with CMake.
 
 Programmatic Interfaces
 -----------------------
