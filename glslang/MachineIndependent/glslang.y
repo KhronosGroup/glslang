@@ -809,7 +809,7 @@ parameter_declarator
     // Type + name
     : type_specifier IDENTIFIER {
         if ($1.arraySizes) {
-            parseContext.profileRequires($1.loc, ENoProfile, 120, GL_3DL_array_objects, "arrayed type");
+            parseContext.profileRequires($1.loc, ENoProfile, 120, _GL_3DL_array_objects, "arrayed type");
             parseContext.profileRequires($1.loc, EEsProfile, 300, 0, "arrayed type");
             parseContext.arraySizeRequiredCheck($1.loc, $1.arraySizes->getSize());
         }
@@ -824,7 +824,7 @@ parameter_declarator
     }
     | type_specifier IDENTIFIER array_specifier {
         if ($1.arraySizes) {
-            parseContext.profileRequires($1.loc, ENoProfile, 120, GL_3DL_array_objects, "arrayed type");
+            parseContext.profileRequires($1.loc, ENoProfile, 120, _GL_3DL_array_objects, "arrayed type");
             parseContext.profileRequires($1.loc, EEsProfile, 300, 0, "arrayed type");
             parseContext.arraySizeRequiredCheck($1.loc, $1.arraySizes->getSize());
         }
@@ -953,7 +953,7 @@ fully_specified_type
 
         parseContext.globalQualifierTypeCheck($1.loc, $1.qualifier, $$);
         if ($1.arraySizes) {
-            parseContext.profileRequires($1.loc, ENoProfile, 120, GL_3DL_array_objects, "arrayed type");
+            parseContext.profileRequires($1.loc, ENoProfile, 120, _GL_3DL_array_objects, "arrayed type");
             parseContext.profileRequires($1.loc, EEsProfile, 300, 0, "arrayed type");
         }
 
@@ -964,7 +964,7 @@ fully_specified_type
         parseContext.globalQualifierTypeCheck($1.loc, $1.qualifier, $2);
 
         if ($2.arraySizes) {
-            parseContext.profileRequires($2.loc, ENoProfile, 120, GL_3DL_array_objects, "arrayed type");
+            parseContext.profileRequires($2.loc, ENoProfile, 120, _GL_3DL_array_objects, "arrayed type");
             parseContext.profileRequires($2.loc, EEsProfile, 300, 0, "arrayed type");
         }
 
@@ -1956,7 +1956,7 @@ struct_declaration_list
 struct_declaration
     : type_specifier struct_declarator_list SEMICOLON {
         if ($1.arraySizes) {
-            parseContext.profileRequires($1.loc, ENoProfile, 120, GL_3DL_array_objects, "arrayed type");
+            parseContext.profileRequires($1.loc, ENoProfile, 120, _GL_3DL_array_objects, "arrayed type");
             parseContext.profileRequires($1.loc, EEsProfile, 300, 0, "arrayed type");
             if (parseContext.profile == EEsProfile)
                 parseContext.arraySizeRequiredCheck($1.loc, $1.arraySizes->getSize());
@@ -1975,7 +1975,7 @@ struct_declaration
     | type_qualifier type_specifier struct_declarator_list SEMICOLON {
         parseContext.globalQualifierFixCheck($1.loc, $1.qualifier);
         if ($2.arraySizes) {
-            parseContext.profileRequires($2.loc, ENoProfile, 120, GL_3DL_array_objects, "arrayed type");
+            parseContext.profileRequires($2.loc, ENoProfile, 120, _GL_3DL_array_objects, "arrayed type");
             parseContext.profileRequires($2.loc, EEsProfile, 300, 0, "arrayed type");
             if (parseContext.profile == EEsProfile)
                 parseContext.arraySizeRequiredCheck($2.loc, $2.arraySizes->getSize());
@@ -2028,13 +2028,13 @@ initializer
     | LEFT_BRACE initializer_list RIGHT_BRACE {
         const char* initFeature = "{ } style initializers";
         parseContext.requireProfile($1.loc, ~EEsProfile, initFeature);
-        parseContext.profileRequires($1.loc, ~EEsProfile, 420, GL_ARB_shading_language_420pack, initFeature);
+        parseContext.profileRequires($1.loc, ~EEsProfile, 420, _GL_ARB_shading_language_420pack, initFeature);
         $$ = $2;
     }
     | LEFT_BRACE initializer_list COMMA RIGHT_BRACE {
         const char* initFeature = "{ } style initializers";
         parseContext.requireProfile($1.loc, ~EEsProfile, initFeature);
-        parseContext.profileRequires($1.loc, ~EEsProfile, 420, GL_ARB_shading_language_420pack, initFeature);
+        parseContext.profileRequires($1.loc, ~EEsProfile, 420, _GL_ARB_shading_language_420pack, initFeature);
         $$ = $2;
     }
     ;
