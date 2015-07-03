@@ -212,6 +212,8 @@ public:
     void setCurrentString(int string) { currentScanner->setString(string); }
     void setScanner(TInputScanner* scanner) { currentScanner  = scanner; }
 
+    bool lineDirectiveShouldSetNextLine() const;
+
     void notifyVersion(int line, int version, const char* type_string);
     void notifyErrorDirective(int line, const char* error_message);
     void notifyLineDirective(int line, bool has_source, int source);

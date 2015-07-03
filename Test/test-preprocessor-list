@@ -3,5 +3,6 @@ preprocessor.errors.vert
 preprocessor.extensions.vert
 preprocessor.function_macro.vert
 preprocessor.line.vert
+preprocessor.line.frag
 preprocessor.pragma.vert
 preprocessor.simple.vert
