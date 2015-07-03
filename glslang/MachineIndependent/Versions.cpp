@@ -149,58 +149,58 @@ namespace glslang {
 //
 void TParseContext::initializeExtensionBehavior()
 {
-    extensionBehavior[_GL_OES_texture_3D]                   = EBhDisable;
-    extensionBehavior[_GL_OES_standard_derivatives]         = EBhDisable;
-    extensionBehavior[_GL_EXT_frag_depth]                   = EBhDisable;
-    extensionBehavior[_GL_OES_EGL_image_external]           = EBhDisable;
-    extensionBehavior[_GL_EXT_shader_texture_lod]           = EBhDisable;
+    extensionBehavior[E_GL_OES_texture_3D]                   = EBhDisable;
+    extensionBehavior[E_GL_OES_standard_derivatives]         = EBhDisable;
+    extensionBehavior[E_GL_EXT_frag_depth]                   = EBhDisable;
+    extensionBehavior[E_GL_OES_EGL_image_external]           = EBhDisable;
+    extensionBehavior[E_GL_EXT_shader_texture_lod]           = EBhDisable;
                                                           
-    extensionBehavior[_GL_ARB_texture_rectangle]            = EBhDisable;
-    extensionBehavior[_GL_3DL_array_objects]                = EBhDisable;
-    extensionBehavior[_GL_ARB_shading_language_420pack]     = EBhDisable;
-    extensionBehavior[_GL_ARB_texture_gather]               = EBhDisable;
-    extensionBehavior[_GL_ARB_gpu_shader5]                  = EBhDisablePartial;
-    extensionBehavior[_GL_ARB_separate_shader_objects]      = EBhDisable;
-    extensionBehavior[_GL_ARB_compute_shader]               = EBhDisablePartial;
-    extensionBehavior[_GL_ARB_tessellation_shader]          = EBhDisable;
-    extensionBehavior[_GL_ARB_enhanced_layouts]             = EBhDisable;
-    extensionBehavior[_GL_ARB_texture_cube_map_array]       = EBhDisable;
-    extensionBehavior[_GL_ARB_shader_texture_lod]           = EBhDisable;
-    extensionBehavior[_GL_ARB_explicit_attrib_location]     = EBhDisable;
-    extensionBehavior[_GL_ARB_shader_image_load_store]      = EBhDisable;
-    extensionBehavior[_GL_ARB_shader_atomic_counters]       = EBhDisable;
-    extensionBehavior[_GL_ARB_derivative_control]           = EBhDisable;
-    extensionBehavior[_GL_ARB_shader_texture_image_samples] = EBhDisable;
-    extensionBehavior[_GL_ARB_viewport_array]               = EBhDisable;
-//    extensionBehavior[_GL_ARB_cull_distance]                = EBhDisable;    // present for 4.5, but need extension control over block members
+    extensionBehavior[E_GL_ARB_texture_rectangle]            = EBhDisable;
+    extensionBehavior[E_GL_3DL_array_objects]                = EBhDisable;
+    extensionBehavior[E_GL_ARB_shading_language_420pack]     = EBhDisable;
+    extensionBehavior[E_GL_ARB_texture_gather]               = EBhDisable;
+    extensionBehavior[E_GL_ARB_gpu_shader5]                  = EBhDisablePartial;
+    extensionBehavior[E_GL_ARB_separate_shader_objects]      = EBhDisable;
+    extensionBehavior[E_GL_ARB_compute_shader]               = EBhDisablePartial;
+    extensionBehavior[E_GL_ARB_tessellation_shader]          = EBhDisable;
+    extensionBehavior[E_GL_ARB_enhanced_layouts]             = EBhDisable;
+    extensionBehavior[E_GL_ARB_texture_cube_map_array]       = EBhDisable;
+    extensionBehavior[E_GL_ARB_shader_texture_lod]           = EBhDisable;
+    extensionBehavior[E_GL_ARB_explicit_attrib_location]     = EBhDisable;
+    extensionBehavior[E_GL_ARB_shader_image_load_store]      = EBhDisable;
+    extensionBehavior[E_GL_ARB_shader_atomic_counters]       = EBhDisable;
+    extensionBehavior[E_GL_ARB_derivative_control]           = EBhDisable;
+    extensionBehavior[E_GL_ARB_shader_texture_image_samples] = EBhDisable;
+    extensionBehavior[E_GL_ARB_viewport_array]               = EBhDisable;
+//    extensionBehavior[E_GL_ARB_cull_distance]                = EBhDisable;    // present for 4.5, but need extension control over block members
 
     // AEP
-    extensionBehavior[_GL_ANDROID_extension_pack_es31a]             = EBhDisablePartial;
-    extensionBehavior[_GL_KHR_blend_equation_advanced]              = EBhDisablePartial;
-    extensionBehavior[_GL_OES_sample_variables]                     = EBhDisablePartial;
-    extensionBehavior[_GL_OES_shader_image_atomic]                  = EBhDisablePartial;
-    extensionBehavior[_GL_OES_shader_multisample_interpolation]     = EBhDisablePartial;
-    extensionBehavior[_GL_OES_texture_storage_multisample_2d_array] = EBhDisablePartial;
-    extensionBehavior[_GL_EXT_geometry_shader]                      = EBhDisable;
-    extensionBehavior[_GL_EXT_geometry_point_size]                  = EBhDisable;
-    extensionBehavior[_GL_EXT_gpu_shader5]                          = EBhDisablePartial;
-    extensionBehavior[_GL_EXT_primitive_bounding_box]               = EBhDisablePartial;
-    extensionBehavior[_GL_EXT_shader_io_blocks]                     = EBhDisable;
-    extensionBehavior[_GL_EXT_tessellation_shader]                  = EBhDisable;
-    extensionBehavior[_GL_EXT_tessellation_point_size]              = EBhDisable;
-    extensionBehavior[_GL_EXT_texture_buffer]                       = EBhDisablePartial;
-    extensionBehavior[_GL_EXT_texture_cube_map_array]               = EBhDisablePartial;
+    extensionBehavior[E_GL_ANDROID_extension_pack_es31a]             = EBhDisablePartial;
+    extensionBehavior[E_GL_KHR_blend_equation_advanced]              = EBhDisablePartial;
+    extensionBehavior[E_GL_OES_sample_variables]                     = EBhDisablePartial;
+    extensionBehavior[E_GL_OES_shader_image_atomic]                  = EBhDisablePartial;
+    extensionBehavior[E_GL_OES_shader_multisample_interpolation]     = EBhDisablePartial;
+    extensionBehavior[E_GL_OES_texture_storage_multisample_2d_array] = EBhDisablePartial;
+    extensionBehavior[E_GL_EXT_geometry_shader]                      = EBhDisable;
+    extensionBehavior[E_GL_EXT_geometry_point_size]                  = EBhDisable;
+    extensionBehavior[E_GL_EXT_gpu_shader5]                          = EBhDisablePartial;
+    extensionBehavior[E_GL_EXT_primitive_bounding_box]               = EBhDisablePartial;
+    extensionBehavior[E_GL_EXT_shader_io_blocks]                     = EBhDisable;
+    extensionBehavior[E_GL_EXT_tessellation_shader]                  = EBhDisable;
+    extensionBehavior[E_GL_EXT_tessellation_point_size]              = EBhDisable;
+    extensionBehavior[E_GL_EXT_texture_buffer]                       = EBhDisablePartial;
+    extensionBehavior[E_GL_EXT_texture_cube_map_array]               = EBhDisablePartial;
 
     // OES matching AEP
-    extensionBehavior[_GL_OES_geometry_shader]          = EBhDisable;
-    extensionBehavior[_GL_OES_geometry_point_size]      = EBhDisable;
-    extensionBehavior[_GL_OES_gpu_shader5]              = EBhDisablePartial;
-    extensionBehavior[_GL_OES_primitive_bounding_box]   = EBhDisablePartial;
-    extensionBehavior[_GL_OES_shader_io_blocks]         = EBhDisable;
-    extensionBehavior[_GL_OES_tessellation_shader]      = EBhDisable;
-    extensionBehavior[_GL_OES_tessellation_point_size]  = EBhDisable;
-    extensionBehavior[_GL_OES_texture_buffer]           = EBhDisablePartial;
-    extensionBehavior[_GL_OES_texture_cube_map_array]   = EBhDisablePartial;
+    extensionBehavior[E_GL_OES_geometry_shader]          = EBhDisable;
+    extensionBehavior[E_GL_OES_geometry_point_size]      = EBhDisable;
+    extensionBehavior[E_GL_OES_gpu_shader5]              = EBhDisablePartial;
+    extensionBehavior[E_GL_OES_primitive_bounding_box]   = EBhDisablePartial;
+    extensionBehavior[E_GL_OES_shader_io_blocks]         = EBhDisable;
+    extensionBehavior[E_GL_OES_tessellation_shader]      = EBhDisable;
+    extensionBehavior[E_GL_OES_tessellation_point_size]  = EBhDisable;
+    extensionBehavior[E_GL_OES_texture_buffer]           = EBhDisablePartial;
+    extensionBehavior[E_GL_OES_texture_cube_map_array]   = EBhDisablePartial;
 }
 
 // Get code that is not part of a shared symbol table, is specific to this shader,
