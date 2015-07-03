@@ -660,14 +660,12 @@ struct DoPreprocessing {
 
 
         parseContext.setVersionCallback(
-            [&adjustLine, &lastLine, &outputStream](int line, int version, const char* str) {
+            [&adjustLine, &outputStream](int line, int version, const char* str) {
                 adjustLine(line);
                 outputStream << "#version " << version;
                 if (str) {
                     outputStream << " " << str;
                 }
-                outputStream << std::endl;
-                ++lastLine;
             });
 
         parseContext.setPragmaCallback([&adjustLine, &outputStream](
