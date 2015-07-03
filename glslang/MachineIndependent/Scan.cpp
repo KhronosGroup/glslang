@@ -686,7 +686,7 @@ int TScanContext::tokenizeIdentifier()
 
     case ATOMIC_UINT:
         if (parseContext.profile == EEsProfile && parseContext.version >= 310 ||
-            parseContext.extensionsTurnedOn(1, &GL_ARB_shader_atomic_counters))
+            parseContext.extensionsTurnedOn(1, &_GL_ARB_shader_atomic_counters))
             return keyword;
         return es30ReservedFromGLSL(420);
 
@@ -696,20 +696,20 @@ int TScanContext::tokenizeIdentifier()
     case WRITEONLY:
         if (parseContext.profile == EEsProfile && parseContext.version >= 310)
             return keyword;
-        return es30ReservedFromGLSL(parseContext.extensionsTurnedOn(1, &GL_ARB_shader_image_load_store) ? 130 : 420);
+        return es30ReservedFromGLSL(parseContext.extensionsTurnedOn(1, &_GL_ARB_shader_image_load_store) ? 130 : 420);
 
     case VOLATILE:
         if (parseContext.profile == EEsProfile && parseContext.version >= 310)
             return keyword;
-        if (! parseContext.symbolTable.atBuiltInLevel() && (parseContext.profile == EEsProfile || (parseContext.version < 420 && ! parseContext.extensionsTurnedOn(1, &GL_ARB_shader_image_load_store))))
+        if (! parseContext.symbolTable.atBuiltInLevel() && (parseContext.profile == EEsProfile || (parseContext.version < 420 && ! parseContext.extensionsTurnedOn(1, &_GL_ARB_shader_image_load_store))))
             reservedWord();
         return keyword;
 
     case LAYOUT:
     {
         const int numLayoutExts = 2;
-        const char* layoutExts[numLayoutExts] = { GL_ARB_shading_language_420pack,
-                                                  GL_ARB_explicit_attrib_location };
+        const char* layoutExts[numLayoutExts] = { _GL_ARB_shading_language_420pack,
+                                                  _GL_ARB_explicit_attrib_location };
         if ((parseContext.profile == EEsProfile && parseContext.version < 300) ||
             (parseContext.profile != EEsProfile && parseContext.version < 140 &&
             ! parseContext.extensionsTurnedOn(numLayoutExts, layoutExts)))
@@ -725,7 +725,7 @@ int TScanContext::tokenizeIdentifier()
     case PATCH:
         if (parseContext.symbolTable.atBuiltInLevel() ||
             (parseContext.profile == EEsProfile && parseContext.extensionsTurnedOn(Num_AEP_tessellation_shader, AEP_tessellation_shader)) ||
-            (parseContext.profile != EEsProfile && parseContext.extensionsTurnedOn(1, &GL_ARB_tessellation_shader)))
+            (parseContext.profile != EEsProfile && parseContext.extensionsTurnedOn(1, &_GL_ARB_tessellation_shader)))
             return keyword;
 
         return es30ReservedFromGLSL(400);
@@ -818,7 +818,7 @@ int TScanContext::tokenizeIdentifier()
     case ISAMPLERCUBEARRAY:
     case USAMPLERCUBEARRAY:
         afterType = true;
-        if (parseContext.profile == EEsProfile || (parseContext.version < 400 && ! parseContext.extensionsTurnedOn(1, &GL_ARB_texture_cube_map_array)))
+        if (parseContext.profile == EEsProfile || (parseContext.version < 400 && ! parseContext.extensionsTurnedOn(1, &_GL_ARB_texture_cube_map_array)))
             reservedWord();
         return keyword;
 
@@ -880,7 +880,7 @@ int TScanContext::tokenizeIdentifier()
     case SAMPLER3D:
         afterType = true;
         if (parseContext.profile == EEsProfile && parseContext.version < 300) {
-            if (! parseContext.extensionsTurnedOn(1, &GL_OES_texture_3D))
+            if (! parseContext.extensionsTurnedOn(1, &_GL_OES_texture_3D))
                 reservedWord();
         }
         return keyword;
@@ -896,9 +896,9 @@ int TScanContext::tokenizeIdentifier()
         afterType = true;
         if (parseContext.profile == EEsProfile)
             reservedWord();
-        else if (parseContext.version < 140 && ! parseContext.symbolTable.atBuiltInLevel() && ! parseContext.extensionsTurnedOn(1, &GL_ARB_texture_rectangle)) {
+        else if (parseContext.version < 140 && ! parseContext.symbolTable.atBuiltInLevel() && ! parseContext.extensionsTurnedOn(1, &_GL_ARB_texture_rectangle)) {
             if (parseContext.messages & EShMsgRelaxedErrors)
-                parseContext.requireExtensions(loc, 1, &GL_ARB_texture_rectangle, "texture-rectangle sampler keyword");
+                parseContext.requireExtensions(loc, 1, &_GL_ARB_texture_rectangle, "texture-rectangle sampler keyword");
             else
                 reservedWord();
         }
@@ -915,7 +915,7 @@ int TScanContext::tokenizeIdentifier()
 
     case SAMPLEREXTERNALOES:
         afterType = true;
-        if (parseContext.symbolTable.atBuiltInLevel() || parseContext.extensionsTurnedOn(1, &GL_OES_EGL_image_external))
+        if (parseContext.symbolTable.atBuiltInLevel() || parseContext.extensionsTurnedOn(1, &_GL_OES_EGL_image_external))
             return keyword;
         return identifierOrType();
 
@@ -1107,7 +1107,7 @@ int TScanContext::firstGenerationImage(bool inEs310)
     afterType = true;
 
     if (parseContext.symbolTable.atBuiltInLevel() || 
-        (parseContext.profile != EEsProfile && (parseContext.version >= 420 || parseContext.extensionsTurnedOn(1, &GL_ARB_shader_image_load_store))) ||                                                     
+        (parseContext.profile != EEsProfile && (parseContext.version >= 420 || parseContext.extensionsTurnedOn(1, &_GL_ARB_shader_image_load_store))) ||                                                     
         (inEs310 && parseContext.profile == EEsProfile && parseContext.version >= 310))
         return keyword;
 
@@ -1135,7 +1135,7 @@ int TScanContext::secondGenerationImage()
 
     if (parseContext.symbolTable.atBuiltInLevel() || 
         (parseContext.profile != EEsProfile && 
-         (parseContext.version >= 420 || parseContext.extensionsTurnedOn(1, &GL_ARB_shader_image_load_store))))
+         (parseContext.version >= 420 || parseContext.extensionsTurnedOn(1, &_GL_ARB_shader_image_load_store))))
         return keyword;
 
     if (parseContext.forwardCompatible)
