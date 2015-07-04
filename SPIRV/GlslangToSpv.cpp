@@ -1693,7 +1693,7 @@ spv::Id TGlslangToSpvTraverser::createBinaryOperation(glslang::TOperator op, spv
     bool isFloat = typeProxy == glslang::EbtFloat || typeProxy == glslang::EbtDouble;
 
     spv::Op binOp = spv::OpNop;
-    bool needsPromotion = true;
+    bool needMatchingVectors = true;  // for non-matrix ops, would a scalar need to smear to match a vector?
     bool comparison = false;
 
     switch (op) {
@@ -1720,11 +1720,14 @@ spv::Id TGlslangToSpvTraverser::createBinaryOperation(glslang::TOperator op, spv
         break;
     case glslang::EOpVectorTimesScalar:
     case glslang::EOpVectorTimesScalarAssign:
-        if (builder.isVector(right))
-            std::swap(left, right);
-        assert(builder.isScalar(right));
-        binOp = spv::OpVectorTimesScalar;
-        needsPromotion = false;
+        if (isFloat) {
+            if (builder.isVector(right))
+                std::swap(left, right);
+            assert(builder.isScalar(right));
+            needMatchingVectors = false;
+            binOp = spv::OpVectorTimesScalar;
+        } else
+            binOp = spv::OpIMul;
         break;
     case glslang::EOpVectorTimesMatrix:
     case glslang::EOpVectorTimesMatrixAssign:
@@ -1752,7 +1755,7 @@ spv::Id TGlslangToSpvTraverser::createBinaryOperation(glslang::TOperator op, spv
         break;
     case glslang::EOpOuterProduct:
         binOp = spv::OpOuterProduct;
-        needsPromotion = false;
+        needMatchingVectors = false;
         break;
 
     case glslang::EOpDiv:
@@ -1789,7 +1792,7 @@ spv::Id TGlslangToSpvTraverser::createBinaryOperation(glslang::TOperator op, spv
         binOp = spv::OpBitwiseAnd;
         break;
     case glslang::EOpLogicalAnd:
-        needsPromotion = false;
+        needMatchingVectors = false;
         binOp = spv::OpLogicalAnd;
         break;
     case glslang::EOpInclusiveOr:
@@ -1797,7 +1800,7 @@ spv::Id TGlslangToSpvTraverser::createBinaryOperation(glslang::TOperator op, spv
         binOp = spv::OpBitwiseOr;
         break;
     case glslang::EOpLogicalOr:
-        needsPromotion = false;
+        needMatchingVectors = false;
         binOp = spv::OpLogicalOr;
         break;
     case glslang::EOpExclusiveOr:
@@ -1805,7 +1808,7 @@ spv::Id TGlslangToSpvTraverser::createBinaryOperation(glslang::TOperator op, spv
         binOp = spv::OpBitwiseXor;
         break;
     case glslang::EOpLogicalXor:
-        needsPromotion = false;
+        needMatchingVectors = false;
         binOp = spv::OpLogicalXor;
         break;
 
@@ -1849,7 +1852,7 @@ spv::Id TGlslangToSpvTraverser::createBinaryOperation(glslang::TOperator op, spv
         }
 
         // No matrix involved; make both operands be the same number of components, if needed
-        if (needsPromotion)
+        if (needMatchingVectors)
             builder.promoteScalar(precision, left, right);
 
         spv::Id id = builder.createBinOp(binOp, typeId, left, right);
