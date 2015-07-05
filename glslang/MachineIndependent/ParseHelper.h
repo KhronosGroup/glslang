@@ -218,6 +218,7 @@ public:
     void setCurrentSourceName(const char* name) { currentScanner->setFile(name); }
     void setCurrentString(int string) { currentScanner->setString(string); }
     void setScanner(TInputScanner* scanner) { currentScanner  = scanner; }
+    TInputScanner* getScanner() const { return currentScanner; }
 
     bool lineDirectiveShouldSetNextLine() const;
 

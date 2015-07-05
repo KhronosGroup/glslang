@@ -615,7 +615,7 @@ int TPpContext::CPPinclude(TPpToken* ppToken)
             bool success;
             std::tie(success, replacement) = includer.include(name);
             if (success) {
-                pushInput(new TokenizableString(replacement, this));
+                pushInput(new TokenizableString(directiveLoc, replacement, this));
                 // At EOF, there's no "current" location anymore.
                 if (token != EndOfInput) parseContext.setCurrentColumn(0);
                 // Don't accidentally return EndOfInput, which will end all preprocessing.
