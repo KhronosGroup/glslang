@@ -448,20 +448,25 @@ TExtensionBehavior TParseContext::getExtensionBehavior(const char* extension)
         return iter->second;
 }
 
+// Returns true if the given extension is set to enable, require, or warn.
+bool TParseContext::extensionTurnedOn(const char* const extension)
+{
+      switch (getExtensionBehavior(extension)) {
+      case EBhEnable:
+      case EBhRequire:
+      case EBhWarn:
+          return true;
+      default:
+          break;
+      }
+      return false;
+}
 // See if any of the extensions are set to enable, require, or warn.
 bool TParseContext::extensionsTurnedOn(int numExtensions, const char* const extensions[])
 {
     for (int i = 0; i < numExtensions; ++i) {
-        switch (getExtensionBehavior(extensions[i])) {
-        case EBhEnable:
-        case EBhRequire:
-        case EBhWarn:
-            return true;
-        default:
-            break;
-        }
+        if (extensionTurnedOn(extensions[i])) return true;
     }
-
     return false;
 }
 
