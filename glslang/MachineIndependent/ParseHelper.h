@@ -216,7 +216,7 @@ public:
 
     void notifyVersion(int line, int version, const char* type_string);
     void notifyErrorDirective(int line, const char* error_message);
-    void notifyLineDirective(int line, bool has_source, int source);
+    void notifyLineDirective(int curLineNo, int newLineNo, bool hasSource, int sourceNum);
 
     // The following are implemented in Versions.cpp to localize version/profile/stage/extensions control
     void initializeExtensionBehavior();
@@ -236,7 +236,7 @@ public:
 
     void setVersionCallback(const std::function<void(int, int, const char*)>& func) { versionCallback = func; }
     void setPragmaCallback(const std::function<void(int, const TVector<TString>&)>& func) { pragmaCallback = func; }
-    void setLineCallback(const std::function<void(int, bool, int)>& func) { lineCallback = func; }
+    void setLineCallback(const std::function<void(int, int, bool, int)>& func) { lineCallback = func; }
     void setExtensionCallback(const std::function<void(int, const char*, const char*)>& func) { extensionCallback = func; }
     void setErrorCallback(const std::function<void(int, const char*)>& func) { errorCallback = func; }
 
@@ -347,7 +347,7 @@ protected:
 
     // These, if set, will be called when a line, pragma ... is preprocessed.
     // They will be called with any parameters to the original directive.
-    std::function<void(int, bool, int)> lineCallback;
+    std::function<void(int, int, bool, int)> lineCallback;
     std::function<void(int, const TVector<TString>&)> pragmaCallback;
     std::function<void(int, int, const char*)> versionCallback;
     std::function<void(int, const char*, const char*)> extensionCallback;

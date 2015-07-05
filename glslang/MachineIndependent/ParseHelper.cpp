@@ -5254,10 +5254,10 @@ void TParseContext::notifyErrorDirective(int line, const char* error_message)
     }
 }
 
-void TParseContext::notifyLineDirective(int line, bool has_source, int source)
+void TParseContext::notifyLineDirective(int curLineNo, int newLineNo, bool hasSource, int sourceNum)
 {
     if (lineCallback) {
-        lineCallback(line, has_source, source);
+        lineCallback(curLineNo, newLineNo, hasSource, sourceNum);
     }
 }
 

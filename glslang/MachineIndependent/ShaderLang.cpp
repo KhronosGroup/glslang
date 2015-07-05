@@ -639,12 +639,10 @@ struct DoPreprocessing {
                 adjustLine(line);
                 outputStream << "#extension " << extension << " : " << behavior;
         });
-        parseContext.setLineCallback([&lastLine, &outputStream, &parseContext](
-            int newLineNo, bool hasSource, int sourceNum) {
+        parseContext.setLineCallback([&adjustLine, &lastLine, &outputStream, &parseContext](
+            int curLineNo, int newLineNo, bool hasSource, int sourceNum) {
             // SourceNum is the number of the source-string that is being parsed.
-            if (lastLine != -1) {
-                outputStream << std::endl;
-            }
+            adjustLine(curLineNo);
             outputStream << "#line " << newLineNo;
             if (hasSource) {
                 outputStream << " " << sourceNum;

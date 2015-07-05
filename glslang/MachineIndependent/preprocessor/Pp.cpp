@@ -624,6 +624,7 @@ int TPpContext::CPPline(TPpToken* ppToken)
     // "#line line source-string-number"
 
     int token = scanToken(ppToken);
+    const int directiveLoc = ppToken->loc.line;
     if (token == '\n') {
         parseContext.error(ppToken->loc, "must by followed by an integral literal", "#line", "");
         return token;
@@ -653,7 +654,7 @@ int TPpContext::CPPline(TPpToken* ppToken)
         }
     }
     if (!fileErr && !lineErr) {
-      parseContext.notifyLineDirective(lineToken, hasFile, fileRes);
+        parseContext.notifyLineDirective(directiveLoc, lineToken, hasFile, fileRes);
     }
     token = extraTokenCheck(lineAtom, ppToken, token);
 
