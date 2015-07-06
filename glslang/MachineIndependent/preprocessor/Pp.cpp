@@ -83,6 +83,7 @@ NVIDIA HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <stdarg.h>
 #include <stdio.h>
+#include <sstream>
 #include <stdlib.h>
 #include <string.h>
 #include <ctype.h>
@@ -605,23 +606,36 @@ int TPpContext::CPPinclude(TPpToken* ppToken)
         // TODO: handle angle brackets.
         parseContext.ppError(directiveLoc, "must be followed by a file designation", "#include", "");
     } else {
-        const char* name = GetAtomString(ppToken->atom);
+        // Make a copy of the name because it will be overwritten by the next token scan.
+        const std::string filename = ppToken->name;
         token = scanToken(ppToken);
         if (token != '\n' && token != EndOfInput) {
             parseContext.ppError(ppToken->loc, "extra content after file designation", "#include", "");
         } else {
-            if (!inputStack.empty()) ungetChar();
+            std::string sourceName;
             std::string replacement;
-            bool success;
-            std::tie(success, replacement) = includer.include(name);
-            if (success) {
-                pushInput(new TokenizableString(directiveLoc, replacement, this));
+            std::tie(sourceName, replacement) = includer.include(filename.c_str());
+            if (!sourceName.empty()) {
+                if (!replacement.empty()) {
+                    const bool forNextLine = parseContext.lineDirectiveShouldSetNextLine();
+                    std::ostringstream content;
+                    content << "#line " << forNextLine << " " << "\"" << sourceName << "\"\n";
+                    content << replacement << (replacement.back() == '\n' ? "" : "\n");
+                    content << "#line " << directiveLoc.line + forNextLine << " ";
+                    if (directiveLoc.name != nullptr) {
+                        content << "\"" << directiveLoc.name << "\"";
+                    } else {
+                        content << directiveLoc.string;
+                    }
+                    content << "\n";
+                    pushInput(new TokenizableString(directiveLoc, content.str(), this));
+                }
                 // At EOF, there's no "current" location anymore.
                 if (token != EndOfInput) parseContext.setCurrentColumn(0);
                 // Don't accidentally return EndOfInput, which will end all preprocessing.
                 return '\n';
             } else {
-                parseContext.ppError(ppToken->loc, "not found", name, "");
+                parseContext.ppError(directiveLoc, replacement.c_str(), "#include", "");
             }
         }
     }

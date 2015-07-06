@@ -293,17 +293,18 @@ public:
     // Interface to #include handlers.
     class Includer {
     public:
-        // On success, returns true and the content that replaces "#include
-        // filename".  On failure, returns false and an arbitrary string.
-        virtual std::pair<bool, std::string> include(const char* filename) const = 0;
+        // On success, returns the full path and content of the file with the given
+        // filename that replaces "#include filename". On failure, returns an empty
+        // string and an error message.
+        virtual std::pair<std::string, std::string> include(const char* filename) const = 0;
     };
 
-    // Generates #error as #include content.
+    // Returns an error message for any #include directive.
     class ForbidInclude : public Includer {
     public:
-        std::pair<bool, std::string> include(const char* filename) const override
+        std::pair<std::string, std::string> include(const char* filename) const override
         {
-            return std::make_pair<bool, std::string>(true, "#error unexpected include directive\n");
+            return std::make_pair<std::string, std::string>("", "unexpected include directive");
         }
     };
 
