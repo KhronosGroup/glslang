@@ -1,5 +1,38 @@
-Current functionality level: ESSL 3.0, GLSL 1.5
+Current Compilation Full-Functionality Level: ESSL 1.00-3.00, GLSL 1.10-3.30
 
+Summary of main missing features:
+
+AEP
+ - GL_KHR_blend_equation_advanced
+ - GL_OES_sample_variables
+ - GL_OES_shader_image_atomic
+ - GL_OES_shader_multisample_interpolation
+ - GL_OES_texture_storage_multisample_2d_array
+ + GL_EXT_geometry_shader
+ + GL_EXT_geometry_point_size
+ - GL_EXT_gpu_shader5
+ - GL_EXT_primitive_bounding_box
+ + GL_EXT_shader_io_blocks
+ + GL_EXT_tessellation_shader
+ + GL_EXT_tessellation_point_size
+ - GL_EXT_texture_buffer
+ - GL_EXT_texture_cube_map_array
+
+Missing features in ES 3.1
+ - Arrays of arrays
+ - .length() on run-time array
+
+Missing desktop features that are in EAP
+ - per-sample shading
+ - "precise"
+ 
+Missing desktop features, non AEP
+ - subroutines
+ - built-in functions for type 'double'
+ - second-generation function-overloading disambiguation algorithm (version 400)
+ - Preprocessor token pasting (##), ## does macro expansion after pasting not before
+ - textureQueryLevels and textureQueryLod
+ 
 Bugs
  - implicitly-sized gl_ClipDistance[] (at least in tessellation shaders) with sizes greater than one are not getting sizes greater than one
 
@@ -234,10 +267,7 @@ Shader Functionality to Implement/Finish
       - Arrays of arrays are now supported, as per the GL_ARB_arrays_of_arrays extension.
       + Compute shaders are now supported, as per the GL_ARB_compute_shader extension.
       + Added imageSize() built-ins to query the dimensions of an image.
-      - All choice of depth or stencil texturing, for a packed depth-stencil texture, as per the 
-        GL_ARB_stencil_texturing extension.
-      - Allow explicit locations/indexes to be assigned to uniform variables and subroutines, as per the 
-        GL_ARB_explicit_uniform_location extension.
+      - Allow explicit locations/indexes to be assigned to subroutines, as per the GL_ARB_explicit_uniform_location extension.
       + Accept ES GLSL shader #version statements, which will request ES functionality for ES GLSL 
         versions 100 and 300, as per the GL_ARB_ES3_compatibility extension.
       + Clarify and correct scoping rules to what would normally be expected and what was intended. 
