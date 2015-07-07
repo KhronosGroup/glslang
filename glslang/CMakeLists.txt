@@ -42,7 +42,7 @@ set(SOURCES
 
 set(HEADERS
     Public/ShaderLang.h
-    Include/Arrays.h
+    Include/arrays.h
     Include/BaseTypes.h
     Include/Common.h
     Include/ConstantUnion.h
