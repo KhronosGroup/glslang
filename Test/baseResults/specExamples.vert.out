@@ -35,6 +35,7 @@ ERROR: 0:134: '' : function does not return a value: funcA
 ERROR: 0:136: '' : function does not return a value: funcB
 ERROR: 0:153: '' : function does not return a value: func3
 ERROR: 0:170: 'coherent' : argument cannot drop memory qualifier when passed to formal parameter 
+WARNING: 0:192: 'Not supported yet.' : arrays of arrays 
 ERROR: 0:192: 'constructor' : constructing from a non-dereferenced array 
 ERROR: 0:193: 'constructor' : constructing from a non-dereferenced array 
 ERROR: 0:194: 'constructor' : constructing from a non-dereferenced array 

@@ -36,6 +36,7 @@ ERROR: 0:111: '' : image variables not declared 'writeonly' must have a format l
 ERROR: 0:112: 'out' : cannot be a matrix 
 ERROR: 0:114: 'in' : cannot be bool 
 ERROR: 0:115: 'sampler2D' : sampler/image types can only be used in uniform variables or function parameters: ino
+WARNING: 0:117: 'Not supported yet.' : arrays of arrays 
 ERROR: 0:117: 'fragment-shader array-of-array input' : not supported with this profile: es
 ERROR: 0:120: 'fragment-shader array-of-struct input' : not supported with this profile: es
 ERROR: 0:121: 'fragment-shader array-of-struct input' : not supported with this profile: es

@@ -21,6 +21,7 @@ ERROR: 0:85: 'double vector' : not supported with this profile: es
 ERROR: 0:86: 'dvec4' : Reserved word. 
 ERROR: 0:86: 'double vector' : not supported with this profile: es
 ERROR: 0:101: 'arrays of arrays' : not supported for this version or the enabled extensions 
+WARNING: 0:101: 'Not supported yet.' : arrays of arrays 
 ERROR: 0:102: 'arrays of arrays' : not supported for this version or the enabled extensions 
 ERROR: 0:102: 'arrays of arrays' : not supported for this version or the enabled extensions 
 ERROR: 0:103: 'arrays of arrays' : not supported for this version or the enabled extensions 

@@ -40,6 +40,7 @@
 #include "../Include/Common.h"
 #include "../Include/BaseTypes.h"
 #include "../Public/ShaderLang.h"
+#include "arrays.h"
 
 namespace glslang {
 
@@ -167,29 +168,6 @@ struct TTypeLoc {
 typedef TVector<TTypeLoc> TTypeList;
 
 typedef TVector<TString*> TIdentifierList;
-
-//
-// TODO: memory: TArraySizes can be replaced by something smaller.
-// Almost all arrays could be handled by two sizes each fitting
-// in 16 bits, needing a real vector only in the cases where there
-// are more than 3 sizes or a size needing more than 16 bits.
-//
-// The type is a pointer, so that it can be non-allocated and zero
-// for the vast majority of non-array types.  Note that means if it
-// is used, it will be containing at least one size.
-
-struct TArraySizes {
-    POOL_ALLOCATOR_NEW_DELETE(GetThreadPoolAllocator())
-
-    TArraySizes() : implicitArraySize(1) { }
-    int getSize() { return sizes.front(); }  // TArraySizes only exists if there is at least one dimension
-    void setSize(int s) { sizes.push_back(s); }
-    bool isArrayOfArrays() { return sizes.size() > 1; }
-protected:
-    TVector<int> sizes;
-    friend class TType;
-    int implicitArraySize; // for tracking maximum referenced index, before an explicit size is given
-};
 
 //
 // Following are a series of helper enums for managing layouts and qualifiers,
@@ -962,7 +940,7 @@ public:
         vectorSize = copyOf.vectorSize;
         matrixCols = copyOf.matrixCols;
         matrixRows = copyOf.matrixRows;
-        arraySizes = copyOf.arraySizes;
+        arraySizes = copyOf.arraySizes;  // copying the pointer only, not the contents
         structure = copyOf.structure;
         fieldName = copyOf.fieldName;
         typeName = copyOf.typeName;
@@ -1064,9 +1042,9 @@ public:
     virtual int getVectorSize() const { return vectorSize; }
     virtual int getMatrixCols() const { return matrixCols; }
     virtual int getMatrixRows() const { return matrixRows; }
-    virtual int getArraySize()  const { return arraySizes->sizes.front(); }
-    virtual bool isArrayOfArrays() const { return arraySizes && arraySizes->isArrayOfArrays(); }
-    virtual int getImplicitArraySize () const { return arraySizes->implicitArraySize; }
+    virtual int getArraySize()  const { return arraySizes->getOuterSize(); }
+    virtual bool isArrayOfArrays() const { return arraySizes && arraySizes->getNumDims() > 1; }
+    virtual int getImplicitArraySize() const { return arraySizes->getImplicitSize(); }
 
     virtual bool isScalar() const { return vectorSize == 1 && ! isStruct() && ! isArray(); }
     virtual bool isVector() const { return vectorSize > 1; }
@@ -1147,17 +1125,20 @@ public:
     {
         // For when we may already be sharing existing array descriptors,
         // keeping the pointers the same, just updating the contents.
+        assert(arraySizes != nullptr);
+        assert(type.arraySizes != nullptr);
         *arraySizes = *type.arraySizes;
     }
     void setArraySizes(TArraySizes* s)
     {
         // For setting a fresh new set of array sizes, not yet worrying about sharing.
         arraySizes = new TArraySizes;
+        assert(s != nullptr);
         *arraySizes = *s;
     }
     void setArraySizes(const TType& type) { setArraySizes(type.arraySizes); }
-    void changeArraySize(int s) { arraySizes->sizes.front() = s; }
-    void setImplicitArraySize (int s) { arraySizes->implicitArraySize = s; }
+    void changeArraySize(int s) { arraySizes->changeOuterSize(s); }
+    void setImplicitArraySize (int s) { arraySizes->setImplicitSize(s); }
 
     // Recursively make the implicit array size the explicit array size, through the type tree.
     void adoptImplicitArraySizes()
@@ -1265,12 +1246,12 @@ public:
             p += snprintf(p, end - p, "writeonly ");
         p += snprintf(p, end - p, "%s ", getStorageQualifierString());
         if (arraySizes) {
-            if (arraySizes->sizes.front() == 0) {
+            if (arraySizes->getOuterSize() == 0) {
                 p += snprintf(p, end - p, "implicitly-sized array of ");
             } else {
-                for(int i = 0; i < (int)arraySizes->sizes.size() ; ++i) {
+                for(int i = 0; i < (int)arraySizes->getNumDims() ; ++i) {
 //                    p += snprintf(p, end - p, "%s%d", (i == 0 ? "" : "x"), arraySizes->sizes[numDimensions-1-i]);
-                    p += snprintf(p, end - p, "%d-element array of ", arraySizes->sizes[i]);
+                    p += snprintf(p, end - p, "%d-element array of ", (*arraySizes)[i]);
                 }
             }
         }
@@ -1395,7 +1376,7 @@ public:
     bool sameArrayness(const TType& right) const
     {
         return ((arraySizes == 0 && right.arraySizes == 0) ||
-                (arraySizes && right.arraySizes && arraySizes->sizes == right.arraySizes->sizes));
+                (arraySizes && right.arraySizes && *arraySizes == *right.arraySizes));
     }
 
     // See if two type's elements match in all ways except basic type
@@ -1433,7 +1414,7 @@ protected:
     TSampler sampler;
     TQualifier qualifier;
 
-    TArraySizes* arraySizes;    // 0 unless this is an array; can be shared across types
+    TArraySizes* arraySizes;    // 0 unless an array; can be shared across types
     TTypeList* structure;       // 0 unless this is a struct; can be shared across types
     TString *fieldName;         // for structure field names
     TString *typeName;          // for structure type name

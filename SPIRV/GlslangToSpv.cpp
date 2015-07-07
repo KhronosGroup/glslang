@@ -2469,7 +2469,7 @@ spv::Id TGlslangToSpvTraverser::createSpvConstant(const glslang::TType& glslangT
 
     if (glslangType.isArray()) {
         glslang::TType elementType;
-        elementType.shallowCopy(glslangType);   // TODO: desktop arrays of arrays functionality will need a deeper copy to avoid modifying the original
+        elementType.deepCopy(glslangType);
         elementType.dereference();
         for (int i = 0; i < glslangType.getArraySize(); ++i)
             spvConsts.push_back(createSpvConstant(elementType, consts, nextConst));

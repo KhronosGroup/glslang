@@ -129,7 +129,7 @@ public:
     void arraySizeRequiredCheck(TSourceLoc, int size);
     void structArrayCheck(TSourceLoc, const TType& structure);
     void arrayUnsizedCheck(TSourceLoc, const TQualifier&, int size, bool initializer);
-    void arrayDimError(TSourceLoc);
+    void arrayOfArrayVersionCheck(TSourceLoc);
     void arrayDimCheck(TSourceLoc, TArraySizes* sizes1, TArraySizes* sizes2);
     void arrayDimCheck(TSourceLoc, const TType*, TArraySizes*);
     bool voidErrorCheck(TSourceLoc, const TString&, TBasicType);

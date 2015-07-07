@@ -2500,26 +2500,34 @@ void TParseContext::arrayUnsizedCheck(TSourceLoc loc, const TQualifier& qualifie
     arraySizeRequiredCheck(loc, size);
 }
 
-void TParseContext::arrayDimError(TSourceLoc loc)
+void TParseContext::arrayOfArrayVersionCheck(TSourceLoc loc)
 {
-    requireProfile(loc, EEsProfile | ECoreProfile | ECompatibilityProfile, "arrays of arrays");
-    profileRequires(loc, ECoreProfile | ECompatibilityProfile, 430, nullptr, "arrays of arrays");
-    profileRequires(loc, EEsProfile, 310, nullptr, "arrays of arrays");
+    const char* feature = "arrays of arrays";
+
+    requireProfile(loc, EEsProfile | ECoreProfile | ECompatibilityProfile, feature);
+    profileRequires(loc, EEsProfile, 310, nullptr, feature);
+    profileRequires(loc, ECoreProfile | ECompatibilityProfile, 430, nullptr, feature);
+
+    static int once = false;
+    if (! once) {
+        warn(loc, feature, "Not supported yet.", "");
+        once = true;
+    }
 }
 
 void TParseContext::arrayDimCheck(TSourceLoc loc, TArraySizes* sizes1, TArraySizes* sizes2)
 {
     if ((sizes1 && sizes2) ||
-        (sizes1 && sizes1->isArrayOfArrays()) ||
-        (sizes2 && sizes2->isArrayOfArrays()))
-        arrayDimError(loc);
+        (sizes1 && sizes1->getNumDims() > 1) ||
+        (sizes2 && sizes2->getNumDims() > 1))
+        arrayOfArrayVersionCheck(loc);
 }
 
 void TParseContext::arrayDimCheck(TSourceLoc loc, const TType* type, TArraySizes* sizes2)
 {
     if ((type && type->isArray() && sizes2) ||
-        (sizes2 && sizes2->isArrayOfArrays()))
-        arrayDimError(loc);
+        (sizes2 && sizes2->getNumDims() > 1))
+        arrayOfArrayVersionCheck(loc);
 }
 
 //
@@ -2913,12 +2921,12 @@ void TParseContext::redeclareBuiltinBlock(TSourceLoc loc, TTypeList& newTypeList
     if (type.isArray() != (arraySizes != 0))
         error(loc, "cannot change arrayness of redeclared block", blockName.c_str(), "");
     else if (type.isArray()) {
-        if (type.isExplicitlySizedArray() && arraySizes->getSize() == 0)
+        if (type.isExplicitlySizedArray() && arraySizes->getOuterSize() == 0)
             error(loc, "block already declared with size, can't redeclare as implicitly-sized", blockName.c_str(), "");
-        else if (type.isExplicitlySizedArray() && type.getArraySize() != arraySizes->getSize())
+        else if (type.isExplicitlySizedArray() && type.getArraySize() != arraySizes->getOuterSize())
             error(loc, "cannot change array size of redeclared block", blockName.c_str(), "");
-        else if (type.isImplicitlySizedArray() && arraySizes->getSize() > 0)
-            type.changeArraySize(arraySizes->getSize());
+        else if (type.isImplicitlySizedArray() && arraySizes->getOuterSize() > 0)
+            type.changeArraySize(arraySizes->getOuterSize());
     }
 
     symbolTable.insert(*block);
@@ -4560,7 +4568,7 @@ void TParseContext::declareBlock(TSourceLoc loc, TTypeList& typeList, const TStr
 {
     blockStageIoCheck(loc, currentBlockQualifier);
     if (arraySizes)
-        arrayUnsizedCheck(loc, currentBlockQualifier, arraySizes->getSize(), false);
+        arrayUnsizedCheck(loc, currentBlockQualifier, arraySizes->getOuterSize(), false);
     arrayDimCheck(loc, arraySizes, 0);
 
     // fix and check for member storage qualifiers and types that don't belong within a block

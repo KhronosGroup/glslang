@@ -3250,7 +3250,7 @@ void IdentifyBuiltIns(int version, EProfile profile, EShLanguage language, TSymb
             TPrecisionQualifier pq = profile == EEsProfile ? EpqMedium : EpqNone;
             TType fragData(EbtFloat, EvqFragColor, pq, 4);
             TArraySizes* arraySizes = new TArraySizes;
-            arraySizes->setSize(resources.maxDrawBuffers);
+            arraySizes->setOuterSize(resources.maxDrawBuffers);
             fragData.setArraySizes(arraySizes);
             symbolTable.insert(*new TVariable(NewPoolTString("gl_FragData"), fragData));
             SpecialQualifier("gl_FragData", EvqFragColor, EbvFragData, symbolTable);
