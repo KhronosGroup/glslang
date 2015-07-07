@@ -43,6 +43,8 @@ class TConstUnion {
 public:
     POOL_ALLOCATOR_NEW_DELETE(GetThreadPoolAllocator())
 
+    TConstUnion() : iConst(0), type(EbtInt) { }
+
     void setIConst(int i)
     { 
         iConst = i; 
@@ -398,7 +400,7 @@ private:
         unsigned int uConst; // used for uvec, scalar uints
         bool bConst;         // used for bvec, scalar bools
         double dConst;       // used for vec, dvec, mat, dmat, scalar floats and doubles
-    } ;
+    };
 
     TBasicType type;
 };
