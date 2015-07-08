@@ -88,7 +88,7 @@ NVIDIA HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "PpContext.h"
 #include "PpTokens.h"
-#include "Scan.h"
+#include "../Scan.h"
 
 namespace glslang {
 

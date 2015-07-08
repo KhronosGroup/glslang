@@ -45,8 +45,8 @@
 #include "GLSL450Lib.h"
 
 // Glslang includes
-#include "glslang/MachineIndependent/localintermediate.h"
-#include "glslang/MachineIndependent/SymbolTable.h"
+#include "../glslang/MachineIndependent/localintermediate.h"
+#include "../glslang/MachineIndependent/SymbolTable.h"
 
 #include <string>
 #include <map>

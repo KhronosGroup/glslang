@@ -49,7 +49,7 @@
 #include "ScanContext.h"
 
 #include "../Include/ShHandle.h"
-#include "InitializeDll.h"
+#include "../../OGLCompilersDLL/InitializeDll.h"
 
 #include "preprocessor/PpContext.h"
 
