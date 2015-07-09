@@ -599,17 +599,40 @@ bool ProcessDeferred(
     return success;
 }
 
-// Responsible for keeping track of the most recent line in the preprocessor
-// and outputting newlines appropriately if the line changes.
+// Responsible for keeping track of the most recent source string and line in
+// the preprocessor and outputting newlines appropriately if the source string
+// or line changes.
 class SourceLineSynchronizer {
 public:
-    SourceLineSynchronizer(std::stringstream* output) : output(output) {}
+    SourceLineSynchronizer(const std::function<int()>& lastSourceIndex,
+                           std::stringstream* output)
+      : getLastSourceIndex(lastSourceIndex), output(output) {}
     SourceLineSynchronizer(const SourceLineSynchronizer&) = delete;
     SourceLineSynchronizer& operator=(const SourceLineSynchronizer&) = delete;
 
-    // If we switched to a new line, returns true and inserts newlines
-    // appropriately. Otherwise, returns false and outputs nothing.
+    // Sets the internally tracked source string index to that of the most
+    // recently read token. If we switched to a new source string, returns
+    // true and inserts a newline. Otherwise, returns false and outputs nothing.
+    bool syncToMostRecentString() {
+        if (getLastSourceIndex() != lastSource) {
+            // After switching to a new source string, we need to reset lastLine
+            // because line number resets every time a new source string is
+            // used. We also need to output a newline to separate the output
+            // from the previous source string (if there is one).
+            if (lastSource != -1 || lastLine != 0)
+                *output << std::endl;
+            lastSource = getLastSourceIndex();
+            lastLine = -1;
+            return true;
+        }
+        return false;
+    }
+
+    // Calls syncToMostRecentString() and then sets the internally tracked line
+    // number to tokenLine. If we switched to a new line, returns true and inserts
+    // newlines appropriately. Otherwise, returns false and outputs nothing.
     bool syncToLine(int tokenLine) {
+        syncToMostRecentString();
         const bool newLineStarted = lastLine < tokenLine;
         for (; lastLine < tokenLine; ++lastLine) {
             if (lastLine > 0) *output << std::endl;
@@ -617,12 +640,20 @@ public:
         return newLineStarted;
     }
 
-    // Sets the line number of the most recent line to newLineNum.
+    // Sets the internally tracked line number to newLineNum.
     void setLineNum(int newLineNum) { lastLine = newLineNum; }
 
 private:
+    // A function for getting the index of the last valid source string we've
+    // read tokens from.
+    const std::function<int()> getLastSourceIndex;
     // output stream for newlines.
     std::stringstream* output;
+    // lastSource is the source string index (starting from 0) of the last token
+    // processed. It is tracked in order for newlines to be inserted when a new
+    // source string starts. -1 means we haven't started processing any source
+    // string.
+    int lastSource = -1;
     // lastLine is the line number (starting from 1) of the last token processed.
     // It is tracked in order for newlines to be inserted when a token appears
     // on a new line. 0 means we haven't started processing any line in the
@@ -649,7 +680,8 @@ struct DoPreprocessing {
         ppContext.setInput(input, versionWillBeError);
 
         std::stringstream outputStream;
-        SourceLineSynchronizer lineSync(&outputStream);
+        SourceLineSynchronizer lineSync(
+            std::bind(&TInputScanner::getLastValidSourceIndex, &input), &outputStream);
 
         parseContext.setExtensionCallback([&lineSync, &outputStream](
             int line, const char* extension, const char* behavior) {
@@ -701,6 +733,7 @@ struct DoPreprocessing {
 
         int lastToken = EOF; // lastToken records the last token processed.
         while (const char* tok = ppContext.tokenize(&token)) {
+            bool isNewString = lineSync.syncToMostRecentString();
             bool isNewLine = lineSync.syncToLine(token.loc.line);
 
             if (isNewLine) {
@@ -713,7 +746,7 @@ struct DoPreprocessing {
             // Output a space in between tokens, but not at the start of a line,
             // and also not around special tokens. This helps with readability
             // and consistency.
-            if (!isNewLine && lastToken != -1 &&
+            if (!isNewString && !isNewLine && lastToken != -1 &&
                 (unNeededSpaceTokens.find((char)token.token) == std::string::npos) &&
                 (unNeededSpaceTokens.find((char)lastToken) == std::string::npos) &&
                 (noSpaceBeforeTokens.find((char)token.token) == std::string::npos)) {
