@@ -213,10 +213,10 @@ public:
 class InstructionParameters {
 public:
     InstructionParameters() :
-        typePresent(true),         // most normal, only exceptions have to be spelled out
-        resultPresent(true),       // most normal, only exceptions have to be spelled out
         opDesc(0),
-        opClass(OpClassMisc)
+        opClass(OpClassMisc),
+        typePresent(true),         // most normal, only exceptions have to be spelled out
+        resultPresent(true)        // most normal, only exceptions have to be spelled out
     { }
 
     void setResultAndType(bool r, bool t)

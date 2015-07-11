@@ -1175,7 +1175,7 @@ Id Builder::createTextureCall(Decoration precision, Id resultType, bool proj, co
 Id Builder::createTextureQueryCall(Op opCode, const TextureParameters& parameters)
 {
     // Figure out the result type
-    Id resultType;
+    Id resultType = NoType;
     switch (opCode) {
     case OpTextureQuerySize:
     case OpTextureQuerySizeLod:
