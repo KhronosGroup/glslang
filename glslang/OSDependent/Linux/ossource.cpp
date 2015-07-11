@@ -36,7 +36,7 @@
 // This file contains the Linux-specific functions
 //
 #include "osinclude.h"
-#include "InitializeDll.h"
+#include "../../../OGLCompilersDLL/InitializeDll.h"
 
 namespace glslang {
 
