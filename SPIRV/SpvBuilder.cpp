@@ -704,7 +704,7 @@ void Builder::closeMain()
 Function* Builder::makeFunctionEntry(Id returnType, const char* name, std::vector<Id>& paramTypes, Block **entry)
 {
     Id typeId = makeFunctionType(returnType, paramTypes);
-    Id firstParamId = paramTypes.size() == 0 ? 0 : getUniqueIds(paramTypes.size());
+    Id firstParamId = paramTypes.size() == 0 ? 0 : getUniqueIds((int)paramTypes.size());
     Function* function = new Function(getUniqueId(), returnType, typeId, firstParamId, module);
 
     if (entry) {
@@ -1943,7 +1943,7 @@ Id Builder::accessChainLoad(Decoration /*precision*/)
         // static swizzle
         Id resultType = componentType;
         if (accessChain.swizzle.size() > 1)
-            resultType = makeVectorType(componentType, accessChain.swizzle.size());
+            resultType = makeVectorType(componentType, (int)accessChain.swizzle.size());
         id = createRvalueSwizzle(resultType, id, accessChain.swizzle);
     }
 

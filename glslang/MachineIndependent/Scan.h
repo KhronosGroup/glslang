@@ -106,7 +106,7 @@ public:
                 }
                 --ch;
               }
-              loc[currentSource].column = currentChar - ch;
+              loc[currentSource].column = (int)(currentChar - ch);
             }
         } else {
             do {
