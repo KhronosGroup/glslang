@@ -817,7 +817,6 @@ int TPpContext::CPPextension(TPpToken* ppToken)
 int TPpContext::readCPPline(TPpToken* ppToken)
 {
     int token = scanToken(ppToken);
-    bool isVersion = false;
 
     if (token == CPP_IDENTIFIER) {
         if (ppToken->atom == defineAtom) {
@@ -864,7 +863,6 @@ int TPpContext::readCPPline(TPpToken* ppToken)
             token = CPPerror(ppToken);
         } else if (ppToken->atom == versionAtom) {
             token = CPPversion(ppToken);
-            isVersion = true;
         } else if (ppToken->atom == extensionAtom) {
             token = CPPextension(ppToken);
         } else {

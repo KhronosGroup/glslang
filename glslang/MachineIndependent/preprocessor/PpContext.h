@@ -408,7 +408,7 @@ protected:
             // handle any non-escaped newline
             if (ch == '\r' || ch == '\n') {
                 if (ch == '\r' && input->peek() == '\n')
-                    ch = input->get();
+                    input->get();
                 return '\n';
             }
 

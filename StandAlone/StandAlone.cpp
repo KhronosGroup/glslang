@@ -626,6 +626,8 @@ void CompileAndLinkShaders()
         char** shaderStrings = ReadFileData(workItem->name.c_str());
         if (! shaderStrings) {
             usage();
+            delete &program;
+
             return;
         }
         const int defaultVersion = Options & EOptionDefaultDesktop? 110: 100;
@@ -945,14 +947,14 @@ int fopen_s(
 //
 char** ReadFileData(const char* fileName) 
 {
-    FILE *in;
+    FILE *in = nullptr;
     int errorCode = fopen_s(&in, fileName, "r");
 
     int count = 0;
-    const int maxSourceStrings = 5;
-    char** return_data = (char**)malloc(sizeof(char *) * (maxSourceStrings+1));
+    const int maxSourceStrings = 5;  // for testing splitting shader/tokens across multiple strings
+    char** return_data = (char**)malloc(sizeof(char *) * (maxSourceStrings+1)); // freed in FreeFileData()
 
-    if (errorCode) {
+    if (errorCode || in == nullptr) {
         printf("Error: unable to open input file: %s\n", fileName);
         return nullptr;
     }
@@ -962,49 +964,61 @@ char** ReadFileData(const char* fileName)
 
     fseek(in, 0, SEEK_SET);
 
-    char *fdata = (char*)malloc(count+2);
+    char *fdata = (char*)malloc(count+2); // freed before return of this function
     if (! fdata) {
         printf("Error allocating memory\n");
         return nullptr;
     }
-    if ((int)fread(fdata,1,count, in) != count) {
-            printf("Error reading input file: %s\n", fileName);
-            return nullptr;
+    if ((int)fread(fdata, 1, count, in) != count) {
+        printf("Error reading input file: %s\n", fileName);
+        free(fdata);
+        return nullptr;
     }
     fdata[count] = '\0';
     fclose(in);
+
     if (count == 0) {
-        return_data[0]=(char*)malloc(count+2);
+        // recover from empty file
+        return_data[0] = (char*)malloc(count+2);  // freed in FreeFileData()
         return_data[0][0]='\0';
         NumShaderStrings = 0;
-        return return_data;       
-    } else
-        NumShaderStrings = 1;
+        free(fdata);
 
+        return return_data;
+    } else
+        NumShaderStrings = 1;  // Set to larger than 1 for testing multiple strings
+
+    // compute how to split up the file into multiple strings, for testing multiple strings
     int len = (int)(ceil)((float)count/(float)NumShaderStrings);
-    int ptr_len=0,i=0;
-    while(count>0){
-        return_data[i]=(char*)malloc(len+2);
-        memcpy(return_data[i],fdata+ptr_len,len);
-        return_data[i][len]='\0';
-        count-=(len);
-        ptr_len+=(len);
-        if(count<len){
-            if(count==0){
-               NumShaderStrings=(i+1);
+    int ptr_len = 0;
+    int i = 0;
+    while (count > 0) {
+        return_data[i] = (char*)malloc(len + 2);  // freed in FreeFileData()
+        memcpy(return_data[i], fdata + ptr_len, len);
+        return_data[i][len] = '\0';
+        count -= len;
+        ptr_len += len;
+        if (count < len) {
+            if (count == 0) {
+               NumShaderStrings = i + 1;
                break;
             }
-           len = count;
+            len = count;
         }  
         ++i;
     }
+
+    free(fdata);
+
     return return_data;
 }
 
 void FreeFileData(char** data)
 {
-    for(int i=0;i<NumShaderStrings;i++)
+    for(int i = 0; i < NumShaderStrings; i++)
         free(data[i]);
+
+    free(data);
 }
 
 void InfoLogMsg(const char* msg, const char* name, const int num)

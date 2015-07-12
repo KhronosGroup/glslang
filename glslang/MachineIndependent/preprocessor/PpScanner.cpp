@@ -116,12 +116,11 @@ int TPpContext::InitScanner()
 int TPpContext::lFloatConst(int len, int ch, TPpToken* ppToken)
 {
     bool HasDecimalOrExponent = false;
-    int declen, exp, ExpSign;
+    int declen;
     int str_len;
     int isDouble = 0;
 
     declen = 0;
-    exp = 0;
 
     str_len=len;
     char* str = ppToken->name;
@@ -152,34 +151,32 @@ int TPpContext::lFloatConst(int len, int ch, TPpToken* ppToken)
         HasDecimalOrExponent = true;
         if (len >= TPpToken::maxTokenLength) {
             parseContext.error(ppToken->loc, "float literal too long", "", "");
-            len = 1,str_len=1;
+            len = 1;
+            str_len = 1;
         } else {
-            ExpSign = 1;
             str[len++] = (char)ch;
             ch = getChar();
             if (ch == '+') {
                 str[len++] = (char)ch;
                 ch = getChar();
             } else if (ch == '-') {
-                ExpSign = -1;
                 str[len++] = (char)ch;
                 ch = getChar();
             }
             if (ch >= '0' && ch <= '9') {
                 while (ch >= '0' && ch <= '9') {
                     if (len < TPpToken::maxTokenLength) {
-                        exp = exp*10 + ch - '0';
                         str[len++] = (char)ch;
                         ch = getChar();
                     } else {
                         parseContext.error(ppToken->loc, "float literal too long", "", "");
-                        len = 1,str_len=1;
+                        len = 1;
+                        str_len = 1;
                     }
                 }
             } else {
                 parseContext.error(ppToken->loc, "bad character in float exponent", "", "");
             }
-            exp *= ExpSign;
         }
     }
 
