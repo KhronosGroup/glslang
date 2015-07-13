@@ -1,3 +1,10 @@
+Also see the Khronos landing page for glslang as a reference front end:
+
+https://www.khronos.org/opengles/sdk/tools/Reference-Compiler/
+
+The above page includes where to get binaries, and is kept up to date
+regarding the feature level of glslang.
+
 glslang
 =======
 
