@@ -897,7 +897,7 @@ int TScanContext::tokenizeIdentifier()
         if (parseContext.profile == EEsProfile)
             reservedWord();
         else if (parseContext.version < 140 && ! parseContext.symbolTable.atBuiltInLevel() && ! parseContext.extensionsTurnedOn(1, &E_GL_ARB_texture_rectangle)) {
-            if (parseContext.messages & EShMsgRelaxedErrors)
+            if (parseContext.relaxedErrors())
                 parseContext.requireExtensions(loc, 1, &E_GL_ARB_texture_rectangle, "texture-rectangle sampler keyword");
             else
                 reservedWord();

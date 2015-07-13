@@ -377,7 +377,7 @@ void TParseContext::checkDeprecated(TSourceLoc loc, int profileMask, int depVers
         if (version >= depVersion) {
             if (forwardCompatible)
                 error(loc, "deprecated, may be removed in future release", featureDesc, "");
-            else if (! (messages & EShMsgSuppressWarnings))
+            else if (! suppressWarnings())
                 infoSink.info.message(EPrefixWarning, (TString(featureDesc) + " deprecated in version " +
                                                        String(depVersion) + "; may be removed in future release").c_str(), loc);
         }
@@ -417,7 +417,7 @@ void TParseContext::requireExtensions(TSourceLoc loc, int numExtensions, const c
     bool warned = false;
     for (int i = 0; i < numExtensions; ++i) {
         TExtensionBehavior behavior = getExtensionBehavior(extensions[i]);
-        if (behavior == EBhDisable && (messages & EShMsgRelaxedErrors)) {
+        if (behavior == EBhDisable && relaxedErrors()) {
             infoSink.info.message(EPrefixWarning, "The following extension must be enabled to use this feature:", loc);
             behavior = EBhWarn;
         }

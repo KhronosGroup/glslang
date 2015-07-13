@@ -357,7 +357,7 @@ int TPpContext::extraTokenCheck(int atom, TPpToken* ppToken, int token)
         else
             label = "";
 
-        if (parseContext.messages & EShMsgRelaxedErrors)
+        if (parseContext.relaxedErrors())
             parseContext.warn(ppToken->loc, message, label, "");
         else
             parseContext.error(ppToken->loc, message, label, "");
@@ -553,7 +553,7 @@ int TPpContext::evalToToken(int token, bool shortCircuit, int& res, bool& err, T
             if (! shortCircuit && parseContext.profile == EEsProfile) {
                 const char* message = "undefined macro in expression not allowed in es profile";
                 const char* name = GetAtomString(ppToken->atom);
-                if (parseContext.messages & EShMsgRelaxedErrors)
+                if (parseContext.relaxedErrors())
                     parseContext.warn(ppToken->loc, message, "preprocessor evaluation", name);
                 else
                     parseContext.error(ppToken->loc, message, "preprocessor evaluation", name);

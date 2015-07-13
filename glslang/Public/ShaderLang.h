@@ -129,6 +129,8 @@ enum EShMessages {
     EShMsgRelaxedErrors    = (1 << 0),  // be liberal in accepting input
     EShMsgSuppressWarnings = (1 << 1),  // suppress all warnings, except those required by the specification
     EShMsgAST              = (1 << 2),  // print the AST intermediate representation
+    EShMsgSpvRules         = (1 << 3),  // issue messages for SPIR-V generation
+    EShMsgVulkanRules      = (1 << 4),  // issue messages for Vulkan-requirements of GLSL for SPIR-V
 };
 
 //

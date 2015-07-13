@@ -505,7 +505,7 @@ bool ProcessDeferred(
     bool versionNotFirst = userInput.scanVersion(version, profile, versionNotFirstToken);
     bool versionNotFound = version == 0;
     if (forceDefaultVersionAndProfile) {
-        if (!(messages & EShMsgSuppressWarnings) && !versionNotFound &&
+        if (! (messages & EShMsgSuppressWarnings) && ! versionNotFound &&
             (version != defaultVersion || profile != defaultProfile)) {
             compiler->infoSink.info << "Warning, (version, profile) forced to be ("
                                     << defaultVersion << ", " << ProfileName(defaultProfile)

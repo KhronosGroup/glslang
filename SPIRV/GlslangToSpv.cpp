@@ -2543,13 +2543,18 @@ spv::Id TGlslangToSpvTraverser::createSpvConstant(const glslang::TType& glslangT
 
 namespace glslang {
 
+void GetSpirvVersion(std::string& version)
+{
+    char buf[10];
+    snprintf(buf, "0.%d", spv::Version);
+    version = buf;
+}
+
 // Write SPIR-V out to a binary file
 void OutputSpv(const std::vector<unsigned int>& spirv, const char* baseName)
 {
     std::ofstream out;
-    std::string fileName(baseName);
-    fileName.append(".spv");
-    out.open(fileName.c_str(), std::ios::binary | std::ios::out);
+    out.open(baseName, std::ios::binary | std::ios::out);
     for (int i = 0; i < (int)spirv.size(); ++i) {
         unsigned int word = spirv[i];
         out.write((const char*)&word, 4);

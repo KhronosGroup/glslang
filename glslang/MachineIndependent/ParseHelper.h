@@ -78,6 +78,12 @@ public:
                       const char* szExtraInfoFormat, ...);
     void C_DECL  warn(TSourceLoc, const char* szReason, const char* szToken,
                       const char* szExtraInfoFormat, ...);
+
+    bool relaxedErrors()    const { return (messages & EShMsgRelaxedErrors)    != 0; }
+    bool suppressWarnings() const { return (messages & EShMsgSuppressWarnings) != 0; }
+    bool vulkanRules()      const { return (messages & EShMsgVulkanRules)      != 0; }
+    bool spirvRules()       const { return (messages & EShMsgSpvRules)         != 0; }
+
     void reservedErrorCheck(TSourceLoc, const TString&);
     void reservedPpErrorCheck(TSourceLoc, const char* name, const char* op);
     bool lineContinuationCheck(TSourceLoc, bool endOfComment);
@@ -258,7 +264,6 @@ public:
     int version;                 // version, updated by #version in the shader
     EProfile profile;            // the declared profile in the shader (core by default)
     bool forwardCompatible;      // true if errors are to be given for use of deprecated features
-    EShMessages messages;        // errors/warnings
 
     // Current state of parsing
     struct TPragma contextPragma;
@@ -284,6 +289,7 @@ protected:
     TParseContext(TParseContext&);
     TParseContext& operator=(TParseContext&);
 
+    EShMessages messages;        // errors/warnings/rule-sets
     TScanContext* scanContext;
     TPpContext* ppContext;
     TInputScanner* currentScanner;

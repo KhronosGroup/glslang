@@ -50,10 +50,10 @@ namespace glslang {
 TParseContext::TParseContext(TSymbolTable& symt, TIntermediate& interm, bool pb, int v, EProfile p, EShLanguage L, TInfoSink& is,
                              bool fc, EShMessages m) :
             intermediate(interm), symbolTable(symt), infoSink(is), language(L),
-            version(v), profile(p), forwardCompatible(fc), messages(m),
+            version(v), profile(p), forwardCompatible(fc), 
             contextPragma(true, false), loopNestingLevel(0), structNestingLevel(0), controlFlowNestingLevel(0), statementNestingLevel(0),
             postMainReturn(false),
-            tokensBeforeEOF(false), limits(resources.limits), currentScanner(0),
+            tokensBeforeEOF(false), limits(resources.limits), messages(m), currentScanner(0),
             numErrors(0), parsingBuiltins(pb), afterEOF(false),
             atomicUintOffsets(0), anyIndexLimits(false)
 {
@@ -364,7 +364,7 @@ void C_DECL TParseContext::error(TSourceLoc loc, const char* szReason, const cha
 void C_DECL TParseContext::warn(TSourceLoc loc, const char* szReason, const char* szToken,
                                  const char* szExtraInfoFormat, ...)
 {
-    if (messages & EShMsgSuppressWarnings)
+    if (suppressWarnings())
         return;
 
     const int maxSize = GlslangMaxTokenLength + 200;
@@ -1852,7 +1852,7 @@ bool TParseContext::lineContinuationCheck(TSourceLoc loc, bool endOfComment)
         return lineContinuationAllowed;
     }
 
-    if (messages & EShMsgRelaxedErrors) {
+    if (relaxedErrors()) {
         if (! lineContinuationAllowed)
             warn(loc, "not allowed in this version", message, "");
         return true;
@@ -2347,7 +2347,7 @@ void TParseContext::precisionQualifierCheck(TSourceLoc loc, TBasicType baseType,
 
     if (baseType == EbtFloat || baseType == EbtUint || baseType == EbtInt || baseType == EbtSampler || baseType == EbtAtomicUint) {
         if (qualifier.precision == EpqNone) {
-            if (messages & EShMsgRelaxedErrors)
+            if (relaxedErrors())
                 warn(loc, "type requires declaration of default precision qualifier", TType::getBasicString(baseType), "substituting 'mediump'");
             else
                 error(loc, "type requires declaration of default precision qualifier", TType::getBasicString(baseType), "");
@@ -4265,7 +4265,7 @@ TIntermNode* TParseContext::executeInitializer(TSourceLoc loc, TIntermTyped* ini
         // qualifier any initializer must be a constant expression."
         if (symbolTable.atGlobalLevel() && initializer->getType().getQualifier().storage != EvqConst) {
             const char* initFeature = "non-constant global initializer";
-            if (messages & EShMsgRelaxedErrors)
+            if (relaxedErrors())
                 warn(loc, "not allowed in this version", initFeature, "");
             else
                 requireProfile(loc, ~EEsProfile, initFeature);
@@ -5211,7 +5211,7 @@ TIntermNode* TParseContext::addSwitch(TSourceLoc loc, TIntermTyped* expression, 
         // "it is an error to have no statement between a label and the end of the switch statement."
         // The specifications were updated to remove this (being ill-defined what a "statement" was),
         // so, this became a warning.  However, 3.0 tests still check for the error.
-        if (profile == EEsProfile && version <= 300 && (messages & EShMsgRelaxedErrors) == 0)
+        if (profile == EEsProfile && version <= 300 && ! relaxedErrors())
             error(loc, "last case/default label not followed by statements", "switch", "");
         else
             warn(loc, "last case/default label not followed by statements", "switch", "");
