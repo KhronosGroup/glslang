@@ -611,6 +611,8 @@ void SetMessageOptions(EShMessages& messages)
         messages = (EShMessages)(messages | EShMsgSpvRules);
     if (Options & EOptionVulkanRules)
         messages = (EShMessages)(messages | EShMsgVulkanRules);
+    if (Options & EOptionOutputPreprocessed)
+        messages = (EShMessages)(messages | EShMsgOnlyPreprocessor);
 }
 
 //
@@ -645,10 +647,19 @@ const char* GlslStd450DebugNames[GLSL_STD_450::Count];
 
 // Outputs the given string, but only if it is non-null and non-empty.
 // This prevents erroneous newlines from appearing.
-void puts_if_non_empty(const char* str)
+void PutsIfNonEmpty(const char* str)
 {
     if (str && str[0]) {
         puts(str);
+    }
+}
+
+// Outputs the given string to stderr, but only if it is non-null and non-empty.
+// This prevents erroneous newlines from appearing.
+void StderrIfNonEmpty(const char* str)
+{
+    if (str && str[0]) {
+      fprintf(stderr, "%s\n", str);
     }
 }
 
@@ -689,8 +700,14 @@ void CompileAndLinkShaders()
         shader->setStrings(shaderStrings, 1);
         if (Options & EOptionOutputPreprocessed) {
             std::string str;
-            shader->preprocess(&Resources, defaultVersion, ENoProfile, false, false, messages, &str);
-            puts(str.c_str());
+            if (shader->preprocess(&Resources, defaultVersion, ENoProfile,
+                                   false, false, messages, &str)) {
+                PutsIfNonEmpty(str.c_str());
+            } else {
+                CompileFailed = true;
+            }
+            StderrIfNonEmpty(shader->getInfoLog());
+            StderrIfNonEmpty(shader->getInfoDebugLog());
             FreeFileData(shaderStrings);
             continue;
         }
@@ -700,9 +717,9 @@ void CompileAndLinkShaders()
         program.addShader(shader);
 
         if (! (Options & EOptionSuppressInfolog)) {
-            puts_if_non_empty(workItem->name.c_str());
-            puts_if_non_empty(shader->getInfoLog());
-            puts_if_non_empty(shader->getInfoDebugLog());
+            PutsIfNonEmpty(workItem->name.c_str());
+            PutsIfNonEmpty(shader->getInfoLog());
+            PutsIfNonEmpty(shader->getInfoDebugLog());
         }
 
         FreeFileData(shaderStrings);
@@ -716,8 +733,8 @@ void CompileAndLinkShaders()
         LinkFailed = true;
 
     if (! (Options & EOptionSuppressInfolog)) {
-        puts_if_non_empty(program.getInfoLog());
-        puts_if_non_empty(program.getInfoDebugLog());
+        PutsIfNonEmpty(program.getInfoLog());
+        PutsIfNonEmpty(program.getInfoDebugLog());
     }
 
     if (Options & EOptionDumpReflection) {
@@ -814,8 +831,8 @@ int C_DECL main(int argc, char* argv[])
         for (int w = 0; w < NumWorkItems; ++w) {
             if (Work[w]) {
                 if (printShaderNames)
-                    puts_if_non_empty(Work[w]->name.c_str());
-                puts_if_non_empty(Work[w]->results.c_str());
+                    PutsIfNonEmpty(Work[w]->name.c_str());
+                PutsIfNonEmpty(Work[w]->results.c_str());
                 delete Work[w];
             }
         }
@@ -943,7 +960,8 @@ void usage()
            "  -G          create SPIR-V binary, under OpenGL semantics; turns on -l;\n"
            "              default file name is <stage>.spv (-o overrides this)\n"
            "  -H          print human readable form of SPIR-V; turns on -V\n"
-           "  -E          print pre-processed GLSL; cannot be used with -l.\n"
+           "  -E          print pre-processed GLSL; cannot be used with -l;\n"
+           "              errors will appear on stderr.\n"
            "  -c          configuration dump;\n"
            "              creates the default configuration file (redirect to a .conf file)\n"
            "  -d          default to desktop (#version 110) when there is no shader #version\n"

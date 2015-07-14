@@ -78,6 +78,10 @@ public:
                       const char* szExtraInfoFormat, ...);
     void C_DECL  warn(TSourceLoc, const char* szReason, const char* szToken,
                       const char* szExtraInfoFormat, ...);
+    void C_DECL ppError(TSourceLoc, const char* szReason, const char* szToken,
+                      const char* szExtraInfoFormat, ...);
+    void C_DECL ppWarn(TSourceLoc, const char* szReason, const char* szToken,
+                      const char* szExtraInfoFormat, ...);
 
     bool relaxedErrors()    const { return (messages & EShMsgRelaxedErrors)    != 0; }
     bool suppressWarnings() const { return (messages & EShMsgSuppressWarnings) != 0; }
@@ -250,6 +254,9 @@ protected:
     TOperator mapTypeToConstructorOp(const TType&) const;
     void updateExtensionBehavior(const char* const extension, TExtensionBehavior);
     void finalErrorCheck();
+    void outputMessage(TSourceLoc, const char* szReason, const char* szToken,
+                       const char* szExtraInfoFormat, TPrefixType prefix,
+                       va_list args);
 
 public:
     //

@@ -138,7 +138,7 @@ int TPpContext::lFloatConst(int len, int ch, TPpToken* ppToken)
                 }
                 ch = getChar();
             } else {
-                parseContext.error(ppToken->loc, "float literal too long", "", "");
+                parseContext.PpError(ppToken->loc, "float literal too long", "", "");
                 len = 1;
                 str_len = 1;
             }
@@ -150,7 +150,7 @@ int TPpContext::lFloatConst(int len, int ch, TPpToken* ppToken)
     if (ch == 'e' || ch == 'E') {
         HasDecimalOrExponent = true;
         if (len >= TPpToken::maxTokenLength) {
-            parseContext.error(ppToken->loc, "float literal too long", "", "");
+            parseContext.PpError(ppToken->loc, "float literal too long", "", "");
             len = 1;
             str_len = 1;
         } else {
@@ -169,13 +169,13 @@ int TPpContext::lFloatConst(int len, int ch, TPpToken* ppToken)
                         str[len++] = (char)ch;
                         ch = getChar();
                     } else {
-                        parseContext.error(ppToken->loc, "float literal too long", "", "");
+                        parseContext.PpError(ppToken->loc, "float literal too long", "", "");
                         len = 1;
                         str_len = 1;
                     }
                 }
             } else {
-                parseContext.error(ppToken->loc, "bad character in float exponent", "", "");
+                parseContext.PpError(ppToken->loc, "bad character in float exponent", "", "");
             }
         }
     }
@@ -187,7 +187,7 @@ int TPpContext::lFloatConst(int len, int ch, TPpToken* ppToken)
         if (ch == 'l' || ch == 'L') {
             parseContext.doubleCheck(ppToken->loc, "double floating-point suffix");
             if (! HasDecimalOrExponent)
-                parseContext.error(ppToken->loc, "float literal needs a decimal point or exponent", "", "");
+                parseContext.PpError(ppToken->loc, "float literal needs a decimal point or exponent", "", "");
             int ch2 = getChar();
             if (ch2 != 'f' && ch2 != 'F') {
                 ungetChar();
@@ -198,7 +198,7 @@ int TPpContext::lFloatConst(int len, int ch, TPpToken* ppToken)
                     str[len++] = (char)ch2;
                     isDouble = 1;
                 } else {
-                    parseContext.error(ppToken->loc, "float literal too long", "", "");
+                    parseContext.PpError(ppToken->loc, "float literal too long", "", "");
                     len = 1,str_len=1;
                 }
             }
@@ -207,11 +207,11 @@ int TPpContext::lFloatConst(int len, int ch, TPpToken* ppToken)
             if (! parseContext.relaxedErrors())
                 parseContext.profileRequires(ppToken->loc, ~EEsProfile, 120, nullptr, "floating-point suffix");
             if (! HasDecimalOrExponent)
-                parseContext.error(ppToken->loc, "float literal needs a decimal point or exponent", "", "");
+                parseContext.PpError(ppToken->loc, "float literal needs a decimal point or exponent", "", "");
             if (len < TPpToken::maxTokenLength)
                 str[len++] = (char)ch;
             else {
-                parseContext.error(ppToken->loc, "float literal too long", "", "");
+                parseContext.PpError(ppToken->loc, "float literal too long", "", "");
                 len = 1,str_len=1;
             }
         } else 
@@ -276,7 +276,7 @@ int TPpContext::tStringInput::scan(TPpToken* ppToken)
                     ch = pp->getChar();					
                 } else {
                     if (! AlreadyComplained) {
-                        pp->parseContext.error(ppToken->loc, "name too long", "", "");
+                        pp->parseContext.PpError(ppToken->loc, "name too long", "", "");
                         AlreadyComplained = 1;
                     }
                     ch = pp->getChar();
@@ -319,11 +319,11 @@ int TPpContext::tStringInput::scan(TPpToken* ppToken)
                             } else if (ch >= 'a' && ch <= 'f') {
                                 ii = ch - 'a' + 10;
                             } else
-                                pp->parseContext.error(ppToken->loc, "bad digit in hexidecimal literal", "", "");
+                                pp->parseContext.PpError(ppToken->loc, "bad digit in hexidecimal literal", "", "");
                             ival = (ival << 4) | ii;
                         } else {
                             if (! AlreadyComplained) {
-                                pp->parseContext.error(ppToken->loc, "hexidecimal literal too big", "", "");
+                                pp->parseContext.PpError(ppToken->loc, "hexidecimal literal too big", "", "");
                                 AlreadyComplained = 1;
                             }
                             ival = 0xffffffff;
@@ -333,7 +333,7 @@ int TPpContext::tStringInput::scan(TPpToken* ppToken)
                              (ch >= 'A' && ch <= 'F') ||
                              (ch >= 'a' && ch <= 'f'));
                 } else {
-                    pp->parseContext.error(ppToken->loc, "bad digit in hexidecimal literal", "", "");
+                    pp->parseContext.PpError(ppToken->loc, "bad digit in hexidecimal literal", "", "");
                 }
                 if (ch == 'u' || ch == 'U') {
                     if (len < TPpToken::maxTokenLength)
@@ -361,7 +361,7 @@ int TPpContext::tStringInput::scan(TPpToken* ppToken)
                     if (len < TPpToken::maxTokenLength)
                         ppToken->name[len++] = (char)ch;
                     else if (! AlreadyComplained) {
-                        pp->parseContext.error(ppToken->loc, "numeric literal too long", "", "");
+                        pp->parseContext.PpError(ppToken->loc, "numeric literal too long", "", "");
                         AlreadyComplained = 1;
                     }
                     if (ival <= 0x1fffffff) {
@@ -379,7 +379,7 @@ int TPpContext::tStringInput::scan(TPpToken* ppToken)
                         if (len < TPpToken::maxTokenLength)
                             ppToken->name[len++] = (char)ch;
                         else if (! AlreadyComplained) {
-                            pp->parseContext.error(ppToken->loc, "numeric literal too long", "", "");
+                            pp->parseContext.PpError(ppToken->loc, "numeric literal too long", "", "");
                             AlreadyComplained = 1;
                         }
                         ch = pp->getChar();
@@ -390,7 +390,7 @@ int TPpContext::tStringInput::scan(TPpToken* ppToken)
                 
                 // wasn't a float, so must be octal...
                 if (nonOctal)
-                    pp->parseContext.error(ppToken->loc, "octal literal digit too large", "", "");
+                    pp->parseContext.PpError(ppToken->loc, "octal literal digit too large", "", "");
 
                 if (ch == 'u' || ch == 'U') {
                     if (len < TPpToken::maxTokenLength)
@@ -401,7 +401,7 @@ int TPpContext::tStringInput::scan(TPpToken* ppToken)
                 ppToken->name[len] = '\0';
 
                 if (octalOverflow)
-                    pp->parseContext.error(ppToken->loc, "octal literal too big", "", "");
+                    pp->parseContext.PpError(ppToken->loc, "octal literal too big", "", "");
 
                 ppToken->ival = (int)ival;
 
@@ -419,7 +419,7 @@ int TPpContext::tStringInput::scan(TPpToken* ppToken)
                 if (len < TPpToken::maxTokenLength)
                     ppToken->name[len++] = (char)ch;
                 else if (! AlreadyComplained) {
-                    pp->parseContext.error(ppToken->loc, "numeric literal too long", "", "");
+                    pp->parseContext.PpError(ppToken->loc, "numeric literal too long", "", "");
                     AlreadyComplained = 1;
                 }
                 ch = pp->getChar();
@@ -444,7 +444,7 @@ int TPpContext::tStringInput::scan(TPpToken* ppToken)
                 for (int i = 0; i < numericLen; i++) {
                     ch = ppToken->name[i] - '0';
                     if ((ival > oneTenthMaxInt) || (ival == oneTenthMaxInt && ch > remainderMaxInt)) {
-                        pp->parseContext.error(ppToken->loc, "numeric literal too big", "", "");
+                        pp->parseContext.PpError(ppToken->loc, "numeric literal too big", "", "");
                         ival = 0xFFFFFFFFu;
                         break;
                     } else
@@ -627,14 +627,14 @@ int TPpContext::tStringInput::scan(TPpToken* ppToken)
                 do {
                     while (ch != '*') {
                         if (ch == EOF) {
-                            pp->parseContext.error(ppToken->loc, "EOF in comment", "comment", "");
+                            pp->parseContext.PpError(ppToken->loc, "EOF in comment", "comment", "");
                             return endOfInput;
                         }
                         ch = pp->getChar();
                     }
                     ch = pp->getChar();
                     if (ch == EOF) {
-                        pp->parseContext.error(ppToken->loc, "EOF in comment", "comment", "");
+                        pp->parseContext.PpError(ppToken->loc, "EOF in comment", "comment", "");
                         return endOfInput;
                     }
                 } while (ch != '/');
@@ -663,7 +663,7 @@ int TPpContext::tStringInput::scan(TPpToken* ppToken)
                 ppToken->atom = pp->LookUpAddString(tokenText);
                 return CPP_STRCONSTANT;
             } else {
-                pp->parseContext.error(ppToken->loc, "end of line in string", "string", "");
+                pp->parseContext.PpError(ppToken->loc, "end of line in string", "string", "");
                 return CPP_ERROR_SY;
             }
         }
@@ -700,7 +700,7 @@ const char* TPpContext::tokenize(TPpToken* ppToken)
                 }
                 continue;
             } else {
-                parseContext.error(ppToken->loc, "preprocessor directive cannot be preceded by another token", "#", "");
+                parseContext.PpError(ppToken->loc, "preprocessor directive cannot be preceded by another token", "#", "");
                 return nullptr;
             }
         }
@@ -719,10 +719,10 @@ const char* TPpContext::tokenize(TPpToken* ppToken)
                  token == CPP_FLOATCONSTANT || token == CPP_DOUBLECONSTANT)
             tokenString = ppToken->name;
         else if (token == CPP_STRCONSTANT) {
-            parseContext.error(ppToken->loc, "string literals not supported", "\"\"", "");
+            parseContext.PpError(ppToken->loc, "string literals not supported", "\"\"", "");
             tokenString = nullptr;
         } else if (token == '\'') {
-            parseContext.error(ppToken->loc, "character literals not supported", "\'", "");
+            parseContext.PpError(ppToken->loc, "character literals not supported", "\'", "");
             tokenString = nullptr;
         } else
             tokenString = GetAtomString(token);
@@ -740,7 +740,7 @@ const char* TPpContext::tokenize(TPpToken* ppToken)
 void TPpContext::missingEndifCheck()
 {
     if (ifdepth > 0)
-        parseContext.error(parseContext.getCurrentLoc(), "missing #endif", "", "");
+        parseContext.PpError(parseContext.getCurrentLoc(), "missing #endif", "", "");
 }
 
 } // end namespace glslang

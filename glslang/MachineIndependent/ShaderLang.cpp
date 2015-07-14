@@ -714,7 +714,13 @@ struct DoPreprocessing {
         outputStream << std::endl;
         *outputString = outputStream.str();
 
-        return true;
+        bool success = true;
+        if (parseContext.getNumErrors() > 0) {
+            success = false;
+            parseContext.infoSink.info.prefix(EPrefixError);
+            parseContext.infoSink.info << parseContext.getNumErrors() << " compilation errors.  No code generated.\n\n";
+        }
+        return success;
     }
     std::string* outputString;
 };

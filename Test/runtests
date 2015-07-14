@@ -61,8 +61,9 @@ rm -f comp.spv frag.spv geom.spv tesc.spv tese.spv vert.spv
 while read t; do
     echo Running Preprocessor $t...
     b=`basename $t`
-    $EXE -E $t > $TARGETDIR/$b.out
+    $EXE -E $t > $TARGETDIR/$b.out 2> $TARGETDIR/$b.err
     diff -b $BASEDIR/$b.out $TARGETDIR/$b.out || HASERROR=1
+    diff -b $BASEDIR/$b.err $TARGETDIR/$b.err || HASERROR=1
 done < test-preprocessor-list
 
 #
