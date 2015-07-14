@@ -227,6 +227,7 @@ public:
     void requireNotRemoved(TSourceLoc, int queryProfiles, int removedVersion, const char* featureDesc);
     void requireExtensions(TSourceLoc, int numExtensions, const char* const extensions[], const char* featureDesc);
     TExtensionBehavior getExtensionBehavior(const char*);
+    bool extensionTurnedOn(const char* const extension);
     bool extensionsTurnedOn(int numExtensions, const char* const extensions[]);
     void updateExtensionBehavior(int line, const char* const extension, const char* behavior);
     void fullIntegerCheck(TSourceLoc, const char* op);

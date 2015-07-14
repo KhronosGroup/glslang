@@ -1841,7 +1841,7 @@ bool TParseContext::lineContinuationCheck(TSourceLoc loc, bool endOfComment)
     const char* message = "line continuation";
 
     bool lineContinuationAllowed = (profile == EEsProfile && version >= 300) ||
-                                   (profile != EEsProfile && (version >= 420 || extensionsTurnedOn(1, &E_GL_ARB_shading_language_420pack)));
+                                   (profile != EEsProfile && (version >= 420 || extensionTurnedOn(E_GL_ARB_shading_language_420pack)));
 
     if (endOfComment) {
         if (lineContinuationAllowed)
@@ -2228,7 +2228,7 @@ void TParseContext::mergeQualifiers(TSourceLoc loc, TQualifier& dst, const TQual
     // Ordering
     if (! force && ((profile != EEsProfile && version < 420) || 
                     (profile == EEsProfile && version < 310))
-                && ! extensionsTurnedOn(1, &E_GL_ARB_shading_language_420pack)) {
+                && ! extensionTurnedOn(E_GL_ARB_shading_language_420pack)) {
         // non-function parameters
         if (src.invariant && (dst.isInterpolation() || dst.isAuxiliary() || dst.storage != EvqTemporary || dst.precision != EpqNone))
             error(loc, "invariant qualifier must appear first", "", "");
@@ -2691,7 +2691,7 @@ TSymbol* TParseContext::redeclareBuiltinVariable(TSourceLoc loc, const TString& 
 
     // Special case when using GL_ARB_separate_shader_objects
     bool ssoPre150 = false;  // means the only reason this variable is redeclared is due to this combination
-    if (profile != EEsProfile && version <= 140 && extensionsTurnedOn(1, &E_GL_ARB_separate_shader_objects)) {
+    if (profile != EEsProfile && version <= 140 && extensionTurnedOn(E_GL_ARB_separate_shader_objects)) {
         if (identifier == "gl_Position"     ||
             identifier == "gl_PointSize"    ||
             identifier == "gl_ClipVertex"   ||
