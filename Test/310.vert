@@ -123,3 +123,19 @@ out gl_PerVertex {              // ERROR, already used and already redeclared
     highp vec4 gl_Position;
     highp vec4 t;
 };
+
+smooth out smo {                // ERROR, no smooth on a block
+    int i;
+} smon;
+
+flat out fmo {                  // ERROR, no flat on a block
+    int i;
+} fmon;
+
+centroid out cmo {              // ERROR, no centroid on a block
+    int i;
+} cmon;
+
+invariant out imo {             // ERROR, no invariant on a block
+    int i;
+} imon;

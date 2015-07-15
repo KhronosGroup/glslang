@@ -4586,6 +4586,7 @@ TIntermTyped* TParseContext::constructStruct(TIntermNode* node, const TType& typ
 void TParseContext::declareBlock(TSourceLoc loc, TTypeList& typeList, const TString* instanceName, TArraySizes* arraySizes)
 {
     blockStageIoCheck(loc, currentBlockQualifier);
+    blockQualifierCheck(loc, currentBlockQualifier);
     if (arraySizes)
         arrayUnsizedCheck(loc, currentBlockQualifier, arraySizes->getOuterSize(), false);
     arrayDimCheck(loc, arraySizes, 0);
@@ -4810,8 +4811,38 @@ void TParseContext::blockStageIoCheck(TSourceLoc loc, const TQualifier& qualifie
         break;
     default:
         error(loc, "only uniform, buffer, in, or out blocks are supported", blockName->c_str(), "");
-        return;
+        break;
     }
+}
+
+// Do all block-declaration checking regarding its qualifers.
+void TParseContext::blockQualifierCheck(TSourceLoc loc, const TQualifier& qualifier)
+{
+    // The 4.5 specification says:
+    //
+    // interface-block :
+    //    layout-qualifieropt interface-qualifier  block-name { member-list } instance-nameopt ;
+    //
+    // interface-qualifier :
+    //    in
+    //    out
+    //    patch in
+    //    patch out
+    //    uniform
+    //    buffer
+    //
+    // Note however memory qualifiers aren't included, yet the specification also says
+    //
+    // "...memory qualifiers may also be used in the declaration of shader storage blocks..."
+
+    if (qualifier.isInterpolation())
+        error(loc, "cannot use interpolation qualifiers on an interface block", "flat/smooth/noperspective", "");
+    if (qualifier.centroid)
+        error(loc, "cannot use centroid qualifier on an interface block", "centroid", "");
+    if (qualifier.sample)
+        error(loc, "cannot use sample qualifier on an interface block", "sample", "");
+    if (qualifier.invariant)
+        error(loc, "cannot use invariant qualifier on an interface block", "invariant", "");
 }
 
 //
