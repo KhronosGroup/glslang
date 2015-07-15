@@ -123,10 +123,12 @@ public:
     }
 
     // for #line override
-    void setLine(int newLine) { loc[currentSource].line = newLine; }
-    void setString(int newString) { loc[currentSource].string = newString; }
+    void setLine(int newLine) { loc[getLastValidSourceIndex()].line = newLine; }
+    void setString(int newString) { loc[getLastValidSourceIndex()].string = newString; }
 
     const TSourceLoc& getSourceLoc() const { return loc[std::max(0, std::min(currentSource, numSources - finale - 1))]; }
+    // Returns the index (starting from 0) of the most recent valid source string we are reading from.
+    int getLastValidSourceIndex() const { return std::min(currentSource, numSources - 1); }
 
     void consumeWhiteSpace(bool& foundNonSpaceTab);
     bool consumeComment();
