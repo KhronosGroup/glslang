@@ -599,6 +599,36 @@ bool ProcessDeferred(
     return success;
 }
 
+// Responsible for keeping track of the most recent line in the preprocessor
+// and outputting newlines appropriately if the line changes.
+class SourceLineSynchronizer {
+public:
+    SourceLineSynchronizer(std::stringstream* output) : output(output) {}
+    SourceLineSynchronizer(const SourceLineSynchronizer&) = delete;
+    SourceLineSynchronizer& operator=(const SourceLineSynchronizer&) = delete;
+
+    // If we switched to a new line, returns true and inserts newlines
+    // appropriately. Otherwise, returns false and outputs nothing.
+    bool syncToLine(int tokenLine) {
+        const bool newLineStarted = lastLine < tokenLine;
+        for (; lastLine < tokenLine; ++lastLine) {
+            if (lastLine > 0) *output << std::endl;
+        }
+        return newLineStarted;
+    }
+
+    // Sets the line number of the most recent line to newLineNum.
+    void setLineNum(int newLineNum) { lastLine = newLineNum; }
+
+private:
+    // output stream for newlines.
+    std::stringstream* output;
+    // lastLine is the line number (starting from 1) of the last token processed.
+    // It is tracked in order for newlines to be inserted when a token appears
+    // on a new line. 0 means we haven't started processing any line in the
+    // current source string.
+    int lastLine = 0;
+};
 
 // DoPreprocessing is a valid ProcessingContext template argument,
 // which only performs the preprocessing step of compilation.
@@ -615,99 +645,75 @@ struct DoPreprocessing {
         static const std::string noSpaceBeforeTokens = ",";
         glslang::TPpToken token;
 
-        std::stringstream outputStream;
-        int lastLine = -1; // lastLine is the line number of the last token
-        // processed. It is tracked in order for new-lines to be inserted when
-        // a token appears on a new line.
-        int lastToken = -1;
         parseContext.setScanner(&input);
         ppContext.setInput(input, versionWillBeError);
 
-        // Inserts newlines and incremnets lastLine until
-        // lastLine >= line.
-        auto adjustLine = [&lastLine, &outputStream](int line) {
-            int tokenLine = line - 1;
-            while(lastLine < tokenLine) {
-                if (lastLine >= 0) {
-                     outputStream << std::endl;
-                }
-                ++lastLine;
-            }
-        };
+        std::stringstream outputStream;
+        SourceLineSynchronizer lineSync(&outputStream);
 
-        parseContext.setExtensionCallback([&adjustLine, &outputStream](
+        parseContext.setExtensionCallback([&lineSync, &outputStream](
             int line, const char* extension, const char* behavior) {
-                adjustLine(line);
+                lineSync.syncToLine(line);
                 outputStream << "#extension " << extension << " : " << behavior;
         });
 
-        parseContext.setLineCallback([&adjustLine, &lastLine, &outputStream, &parseContext](
-            int curLineNo, int newLineNo, bool hasSource, int sourceNum) {
+        parseContext.setLineCallback([&lineSync, &outputStream, &parseContext](
+            int curLineNum, int newLineNum, bool hasSource, int sourceNum) {
             // SourceNum is the number of the source-string that is being parsed.
-            adjustLine(curLineNo);
-            outputStream << "#line " << newLineNo;
+            lineSync.syncToLine(curLineNum);
+            outputStream << "#line " << newLineNum;
             if (hasSource) {
                 outputStream << " " << sourceNum;
             }
             if (parseContext.lineDirectiveShouldSetNextLine()) {
-                // newLineNo is the new line number for the line following the #line
+                // newLineNum is the new line number for the line following the #line
                 // directive. So the new line number for the current line is
-                newLineNo -= 1;
+                newLineNum -= 1;
             }
             outputStream << std::endl;
-            // Line number starts from 1. And we are at the next line of the #line
-            // directive now. So lastLine (from 0) should be (newLineNo - 1) + 1.
-            lastLine = newLineNo;
+            // And we are at the next line of the #line directive now.
+            lineSync.setLineNum(newLineNum + 1);
         });
 
         parseContext.setVersionCallback(
-            [&adjustLine, &outputStream](int line, int version, const char* str) {
-                adjustLine(line);
+            [&lineSync, &outputStream](int line, int version, const char* str) {
+                lineSync.syncToLine(line);
                 outputStream << "#version " << version;
                 if (str) {
                     outputStream << " " << str;
                 }
             });
 
-        parseContext.setPragmaCallback([&adjustLine, &outputStream](
+        parseContext.setPragmaCallback([&lineSync, &outputStream](
             int line, const glslang::TVector<glslang::TString>& ops) {
-                adjustLine(line);
+                lineSync.syncToLine(line);
                 outputStream << "#pragma ";
                 for(size_t i = 0; i < ops.size(); ++i) {
                     outputStream << ops[i];
                 }
         });
 
-        parseContext.setErrorCallback([&adjustLine, &outputStream](
+        parseContext.setErrorCallback([&lineSync, &outputStream](
             int line, const char* errorMessage) {
-                adjustLine(line);
+                lineSync.syncToLine(line);
                 outputStream << "#error " << errorMessage;
         });
 
+        int lastToken = EOF; // lastToken records the last token processed.
         while (const char* tok = ppContext.tokenize(&token)) {
-            int tokenLine = token.loc.line - 1;  // start at 0;
-            bool newLine = false;
-            while (lastLine < tokenLine) {
-                if (lastLine > -1) {
-                    outputStream << std::endl;
-                    newLine = true;
-                }
-                ++lastLine;
-                if (lastLine == tokenLine) {
-                    // Don't emit whitespace onto empty lines.
-                    // Copy any whitespace characters at the start of a line
-                    // from the input to the output.
-                    for(int i = 0; i < token.loc.column - 1; ++i) {
-                        outputStream << " ";
-                    }
-                }
+            bool isNewLine = lineSync.syncToLine(token.loc.line);
+
+            if (isNewLine) {
+                // Don't emit whitespace onto empty lines.
+                // Copy any whitespace characters at the start of a line
+                // from the input to the output.
+                outputStream << std::string(token.loc.column - 1, ' ');
             }
 
             // Output a space in between tokens, but not at the start of a line,
             // and also not around special tokens. This helps with readability
             // and consistency.
-            if (!newLine &&
-                lastToken != -1 &&
+            if (!isNewLine && lastToken != -1 &&
                 (unNeededSpaceTokens.find((char)token.token) == std::string::npos) &&
                 (unNeededSpaceTokens.find((char)lastToken) == std::string::npos) &&
                 (noSpaceBeforeTokens.find((char)token.token) == std::string::npos)) {
