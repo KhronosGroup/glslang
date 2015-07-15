@@ -1736,16 +1736,29 @@ void Builder::endSwitch(std::vector<Block*>& /*segmentBlock*/)
 }
 
 // Comments in header
-void Builder::makeNewLoop()
+void Builder::makeNewLoop(bool loopTestFirst)
 {
-    Loop loop = { };
+    loops.push({ });
+    Loop& loop = loops.top();
 
-    loop.function = &getBuildPoint()->getParent();
-    loop.header = new Block(getUniqueId(), *loop.function);
-    loop.merge  = new Block(getUniqueId(), *loop.function);
-    loop.test   = NULL;
+    loop.function  = &getBuildPoint()->getParent();
+    loop.header    = new Block(getUniqueId(), *loop.function);
+    loop.merge     = new Block(getUniqueId(), *loop.function);
+    // Delaying creation of the loop body perturbs test results less,
+    // which makes for easier patch review.
+    // TODO(dneto): Create the loop body block here, instead of
+    // upon first use.
+    loop.body      = 0;
+    loop.testFirst = loopTestFirst;
+    loop.isFirstIteration = 0;
 
-    loops.push(loop);
+    // The loop test is always emitted before the loop body.
+    // But if the loop test executes at the bottom of the loop, then
+    // execute the test only on the second and subsequent iterations.
+
+    // Remember the block that branches to the loop header.  This
+    // is required for the test-after-body case.
+    Block* preheader = getBuildPoint();
 
     // Branch into the loop
     createBranch(loop.header);
@@ -1753,56 +1766,80 @@ void Builder::makeNewLoop()
     // Set ourselves inside the loop
     loop.function->addBlock(loop.header);
     setBuildPoint(loop.header);
+
+    if (!loopTestFirst) {
+        // Generate code to defer the loop test until the second and
+        // subsequent iterations.
+
+        // A phi node determines whether we're on the first iteration.
+        loop.isFirstIteration = new Instruction(getUniqueId(), makeBoolType(), OpPhi);
+        // It's always the first iteration when coming from the preheader.
+        // All other branches to this loop header will need to indicate "false",
+        // but we don't yet know where they will come from.
+        loop.isFirstIteration->addIdOperand(makeBoolConstant(true));
+        loop.isFirstIteration->addIdOperand(preheader->getId());
+        getBuildPoint()->addInstruction(loop.isFirstIteration);
+
+        // Mark the end of the structured loop. This must exist in the loop header block.
+        createMerge(OpLoopMerge, loop.merge, LoopControlMaskNone);
+
+        // Generate code to see if this is the first iteration of the loop.
+        // It needs to be in its own block, since the loop merge and
+        // the selection merge instructions can't both be in the same
+        // (header) block.
+        Block* firstIterationCheck = new Block(getUniqueId(), *loop.function);
+        createBranch(firstIterationCheck);
+        loop.function->addBlock(firstIterationCheck);
+        setBuildPoint(firstIterationCheck);
+
+        loop.body = new Block(getUniqueId(), *loop.function);
+        // Control flow after this "if" normally reconverges at the loop body.
+        // However, the loop test has a "break branch" out of this selection
+        // construct because it can transfer control to the loop merge block.
+        createMerge(OpSelectionMerge, loop.body, SelectionControlMaskNone);
+
+        Block* loopTest = new Block(getUniqueId(), *loop.function);
+        createConditionalBranch(loop.isFirstIteration->getResultId(), loop.body, loopTest);
+
+        loop.function->addBlock(loopTest);
+        setBuildPoint(loopTest);
+    }
 }
 
 void Builder::createLoopTestBranch(Id condition)
 {
     Loop& loop = loops.top();
 
-    // If loop.test exists, then we've already generated the LoopMerge
-    // for this loop.
-    if (!loop.test)
-      createMerge(OpLoopMerge, loop.merge, LoopControlMaskNone);
+    // Generate the merge instruction. However, we've already generated
+    // it if the loop test executes after the body.
+    if (loop.testFirst) {
+        createMerge(OpLoopMerge, loop.merge, LoopControlMaskNone);
+        loop.body = new Block(getUniqueId(), *loop.function);
+    }
+    assert(loop.body);
 
     // Branching to the "body" block will keep control inside
     // the loop.
-    Block* body = new Block(getUniqueId(), *loop.function);
-    createConditionalBranch(condition, body, loop.merge);
-    loop.function->addBlock(body);
-    setBuildPoint(body);
+    createConditionalBranch(condition, loop.body, loop.merge);
+    loop.function->addBlock(loop.body);
+    setBuildPoint(loop.body);
 }
 
-void Builder::endLoopHeaderWithoutTest()
+void Builder::createBranchToBody()
 {
     Loop& loop = loops.top();
+    assert(loop.body);
 
-    createMerge(OpLoopMerge, loop.merge, LoopControlMaskNone);
-    Block* body = new Block(getUniqueId(), *loop.function);
-    createBranch(body);
-    loop.function->addBlock(body);
-    setBuildPoint(body);
-
-    assert(!loop.test);
-    loop.test = new Block(getUniqueId(), *loop.function);
-}
-
-void Builder::createBranchToLoopTest()
-{
-    Loop& loop = loops.top();
-    Block* testBlock = loop.test;
-    assert(testBlock);
-    createBranch(testBlock);
-    loop.function->addBlock(testBlock);
-    setBuildPoint(testBlock);
+    // This is a reconvergence of control flow, so no merge instruction
+    // is required.
+    createBranch(loop.body);
+    loop.function->addBlock(loop.body);
+    setBuildPoint(loop.body);
 }
 
 void Builder::createLoopContinue()
 {
-    Loop& loop = loops.top();
-    if (loop.test)
-      createBranch(loop.test);
-    else
-      createBranch(loop.header);
+    createBranchToLoopHeaderFromInside(loops.top());
     // Set up a block for dead code.
     createAndSetNoPredecessorBlock("post-loop-continue");
 }
@@ -1821,13 +1858,25 @@ void Builder::closeLoop()
     Loop& loop = loops.top();
 
     // Branch back to the top
-    createBranch(loop.header);
+    createBranchToLoopHeaderFromInside(loop);
 
     // Add the merge block and set the build point to it
     loop.function->addBlock(loop.merge);
     setBuildPoint(loop.merge);
 
     loops.pop();
+}
+
+// Create a branch to the header of the given loop, from inside
+// the loop body.
+// Adjusts the phi node for the first-iteration value if needeed.
+void Builder::createBranchToLoopHeaderFromInside(const Loop& loop)
+{
+    createBranch(loop.header);
+    if (loop.isFirstIteration) {
+        loop.isFirstIteration->addIdOperand(makeBoolConstant(false));
+        loop.isFirstIteration->addIdOperand(getBuildPoint()->getId());
+    }
 }
 
 void Builder::clearAccessChain()
