@@ -357,35 +357,25 @@ public:
     // Finish off the innermost switch.
     void endSwitch(std::vector<Block*>& segmentBB);
 
-    // Start the beginning of a new loop.
-    void makeNewLoop();
+    // Start the beginning of a new loop, and prepare the builder to
+    // generate code for the loop test.
+    // The loopTestFirst parameter is true when the loop test executes before
+    // the body.  (It is false for do-while loops.)
+    void makeNewLoop(bool loopTestFirst);
 
     // Add the branch for the loop test, based on the given condition.
-    // The true branch goes to the block that remains inside the loop, and
-    // the false branch goes to the loop's merge block.  The  builder insertion
-    // point will be placed at the start of the inside-the-loop block.
+    // The true branch goes to the first block in the loop body, and
+    // the false branch goes to the loop's merge block.  The builder insertion
+    // point will be placed at the start of the body.
     void createLoopTestBranch(Id condition);
 
-    // Finish generating the loop header block in the case where the loop test
-    // is at the bottom of the loop.  It will include the LoopMerge instruction
-    // and a branch to the rest of the body.  The loop header block must be
-    // separate from the rest of the body to make room for the the two kinds
-    // of *Merge instructions that might have to occur just before a branch:
-    // the loop header must have a LoopMerge as its second-last instruction,
-    // and the body might begin with a conditional branch, which must have its
-    // own SelectionMerge instruction.
-    // Also create the basic block that will contain the loop test, but don't
-    // insert it into the function yet.  Any "continue" constructs in this loop
-    // will branch to the loop test block. The builder insertion point will be
-    // placed at the start of the body block.
-    void endLoopHeaderWithoutTest();
-
-    // Generate a branch to the loop test block.  This can only be called if
-    // the loop test is at the bottom of the loop. The builder insertion point
-    // is left at the start of the test block.
-    void createBranchToLoopTest();
+    // Generate an unconditional branch to the loop body.  The builder insertion
+    // point will be placed at the start of the body.  Use this when there is
+    // no loop test.
+    void createBranchToBody();
 
     // Add a branch to the test of the current (innermost) loop.
+    // The way we generate code, that's also the loop header.
     void createLoopContinue();
 
     // Add an exit (e.g. "break") for the innermost loop that you're in
@@ -499,6 +489,9 @@ protected:
     void createConditionalBranch(Id condition, Block* thenBlock, Block* elseBlock);
     void dumpInstructions(std::vector<unsigned int>&, const std::vector<Instruction*>&) const;
 
+    struct Loop; // Defined below.
+    void createBranchToLoopHeaderFromInside(const Loop& loop);
+
     SourceLanguage source;
     int sourceVersion;
     std::vector<const char*> extensions;
@@ -543,11 +536,18 @@ protected:
         // to the merge block when either the loop test fails, or when a
         // nested "break" is encountered.
         Block* merge;
-        // If not NULL, the test block is the basic block containing the loop
-        // test and the conditional branch back to the header or the merge
-        // block.  This is created for "do-while" loops, and is the target of
-        // any "continue" constructs that might exist.
-        Block* test;
+        // The body block is the first basic block in the body of the loop, i.e.
+        // the code that is to be repeatedly executed, aside from loop control.
+        // This member is null until we generate code that references the loop
+        // body block.
+        Block* body;
+        // True when the loop test executes before the body.
+        bool testFirst;
+        // When the test executes after the body, this is defined as the phi
+        // instruction that tells us whether we are on the first iteration of
+        // the loop.  Otherwise this is null.
+        Instruction* isFirstIteration;
+        // The function containing the loop.
         Function* function;
     };
 
