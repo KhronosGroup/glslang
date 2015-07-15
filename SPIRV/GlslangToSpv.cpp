@@ -2545,9 +2545,9 @@ namespace glslang {
 
 void GetSpirvVersion(std::string& version)
 {
-    const int bufSize = 10;
+    const int bufSize = 100;
     char buf[bufSize];
-    snprintf(buf, bufSize, "0.%d", spv::Version);
+    snprintf(buf, bufSize, "%d, Revision %d", spv::Version, spv::Revision);
     version = buf;
 }
 
