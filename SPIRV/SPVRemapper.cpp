@@ -450,11 +450,12 @@ namespace spv {
                 return nextInst;
 
             case spv::OperandVariableLiterals:
-                if (opCode == spv::OpDecorate && asDecoration(word - 1) == spv::DecorationBuiltIn) {
-                    ++word;
-                    --numOperands;
-                }
-                word += numOperands;
+                // for clarity
+                // if (opCode == spv::OpDecorate && asDecoration(word - 1) == spv::DecorationBuiltIn) {
+                //     ++word;
+                //     --numOperands;
+                // }
+                // word += numOperands;
                 return nextInst;
 
             case spv::OperandVariableLiteralId:
@@ -466,7 +467,7 @@ namespace spv {
                 return nextInst;
 
             case spv::OperandLiteralString:
-                word += literalStringWords(literalString(word));
+                // word += literalStringWords(literalString(word)); // for clarity
                 return nextInst;
 
                 // Single word operands we simply ignore, as they hold no IDs
