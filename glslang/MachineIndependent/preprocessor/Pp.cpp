@@ -624,6 +624,7 @@ int TPpContext::CPPline(TPpToken* ppToken)
     // "#line line source-string-number"
 
     int token = scanToken(ppToken);
+    const int directiveLoc = ppToken->loc.line;
     if (token == '\n') {
         parseContext.ppError(ppToken->loc, "must by followed by an integral literal", "#line", "");
         return token;
@@ -641,14 +642,7 @@ int TPpContext::CPPline(TPpToken* ppToken)
         if (token == '\n')
             ++lineRes;
 
-        // Desktop, pre-version 3.30:  "After processing this directive
-        // (including its new-line), the implementation will behave as if it is compiling at line number line+1 and
-        // source string number source-string-number."
-        //
-        // Desktop, version 3.30 and later, and ES:  "After processing this directive
-        // (including its new-line), the implementation will behave as if it is compiling at line number line and
-        // source string number source-string-number.
-        if (parseContext.profile == EEsProfile || parseContext.version >= 330)
+        if (parseContext.lineDirectiveShouldSetNextLine())
             --lineRes;
         parseContext.setCurrentLine(lineRes);
 
@@ -660,7 +654,7 @@ int TPpContext::CPPline(TPpToken* ppToken)
         }
     }
     if (!fileErr && !lineErr) {
-      parseContext.notifyLineDirective(lineToken, hasFile, fileRes);
+        parseContext.notifyLineDirective(directiveLoc, lineToken, hasFile, fileRes);
     }
     token = extraTokenCheck(lineAtom, ppToken, token);
 

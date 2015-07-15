@@ -639,30 +639,33 @@ struct DoPreprocessing {
                 adjustLine(line);
                 outputStream << "#extension " << extension << " : " << behavior;
         });
-        parseContext.setLineCallback([&lastLine, &outputStream](
-            int line, bool hasSource, int sourceNum) {
+        parseContext.setLineCallback([&adjustLine, &lastLine, &outputStream, &parseContext](
+            int curLineNo, int newLineNo, bool hasSource, int sourceNum) {
             // SourceNum is the number of the source-string that is being parsed.
-            if (lastLine != -1) {
-                outputStream << std::endl;
-            }
-            outputStream << "#line " << line;
+            adjustLine(curLineNo);
+            outputStream << "#line " << newLineNo;
             if (hasSource) {
                 outputStream << " " << sourceNum;
             }
+            if (parseContext.lineDirectiveShouldSetNextLine()) {
+                // newLineNo is the new line number for the line following the #line
+                // directive. So the new line number for the current line is
+                newLineNo -= 1;
+            }
             outputStream << std::endl;
-            lastLine = std::max(line - 1, 1);
+            // Line number starts from 1. And we are at the next line of the #line
+            // directive now. So lastLine (from 0) should be (newLineNo - 1) + 1.
+            lastLine = newLineNo;
         });
 
 
         parseContext.setVersionCallback(
-            [&adjustLine, &lastLine, &outputStream](int line, int version, const char* str) {
+            [&adjustLine, &outputStream](int line, int version, const char* str) {
                 adjustLine(line);
                 outputStream << "#version " << version;
                 if (str) {
                     outputStream << " " << str;
                 }
-                outputStream << std::endl;
-                ++lastLine;
             });
 
         parseContext.setPragmaCallback([&adjustLine, &outputStream](

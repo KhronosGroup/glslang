@@ -2673,6 +2673,19 @@ void TParseContext::updateImplicitArraySize(TSourceLoc loc, TIntermNode *node, i
     symbol->getWritableType().setImplicitArraySize(index + 1);
 }
 
+// Returns true if the first argument to the #line directive is the line number for the next line.
+//
+// Desktop, pre-version 3.30:  "After processing this directive
+// (including its new-line), the implementation will behave as if it is compiling at line number line+1 and
+// source string number source-string-number."
+//
+// Desktop, version 3.30 and later, and ES:  "After processing this directive
+// (including its new-line), the implementation will behave as if it is compiling at line number line and
+// source string number source-string-number.
+bool TParseContext::lineDirectiveShouldSetNextLine() const {
+    return profile == EEsProfile || version >= 330;
+}
+
 //
 // Enforce non-initializer type/qualifier rules.
 //
@@ -5291,10 +5304,10 @@ void TParseContext::notifyErrorDirective(int line, const char* error_message)
     }
 }
 
-void TParseContext::notifyLineDirective(int line, bool has_source, int source)
+void TParseContext::notifyLineDirective(int curLineNo, int newLineNo, bool hasSource, int sourceNum)
 {
     if (lineCallback) {
-        lineCallback(line, has_source, source);
+        lineCallback(curLineNo, newLineNo, hasSource, sourceNum);
     }
 }
 

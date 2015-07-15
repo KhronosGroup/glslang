@@ -3,6 +3,7 @@ preprocessor.errors.vert
 preprocessor.extensions.vert
 preprocessor.function_macro.vert
 preprocessor.line.vert
+preprocessor.line.frag
 preprocessor.pragma.vert
 preprocessor.simple.vert
 preprocessor.success_if_parse_would_fail.vert
