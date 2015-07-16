@@ -773,6 +773,7 @@ int TPpContext::CPPextension(TPpToken* ppToken)
     }
 
     parseContext.updateExtensionBehavior(line, extensionName, ppToken->name);
+    parseContext.notifyExtensionDirective(line, extensionName, ppToken->name);
 
     token = scanToken(ppToken);
     if (token == '\n')

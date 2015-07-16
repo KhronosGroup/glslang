@@ -222,6 +222,7 @@ public:
     void notifyVersion(int line, int version, const char* type_string);
     void notifyErrorDirective(int line, const char* error_message);
     void notifyLineDirective(int curLineNo, int newLineNo, bool hasSource, int sourceNum);
+    void notifyExtensionDirective(int line, const char* extension, const char* behavior);
 
     // The following are implemented in Versions.cpp to localize version/profile/stage/extensions control
     void initializeExtensionBehavior();

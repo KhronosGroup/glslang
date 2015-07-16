@@ -475,9 +475,6 @@ bool TParseContext::extensionsTurnedOn(int numExtensions, const char* const exte
 //
 void TParseContext::updateExtensionBehavior(int line, const char* extension, const char* behaviorString)
 {
-    if (extensionCallback)
-        extensionCallback(line, extension, behaviorString);
-
     // Translate from text string of extension's behavior to an enum.
     TExtensionBehavior behavior = EBhDisable;
     if (! strcmp("require", behaviorString))
