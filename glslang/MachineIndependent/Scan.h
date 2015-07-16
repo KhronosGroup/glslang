@@ -69,7 +69,7 @@ public:
         if (currentSource >= numSources)
             return -1;
 
-        int ret = sources[currentSource][currentChar];
+        int ret = peek();
         ++loc[currentSource].column;
         if (ret == '\n') {
             ++loc[currentSource].line;
@@ -85,8 +85,18 @@ public:
     {
         if (currentSource >= numSources)
             return -1;
-
-        return sources[currentSource][currentChar];
+        // Make sure we do not read off the end of a string.
+        // N.B. Sources can have a length of 0.
+        int sourceToRead = currentSource;
+        int charToRead = currentChar;
+        while(charToRead >= lengths[sourceToRead]) {
+            charToRead = 0;
+            sourceToRead += 1;
+            if (sourceToRead >= numSources) {
+              return -1;
+            }
+        }
+        return sources[sourceToRead][charToRead];
     }
 
     // go back one character

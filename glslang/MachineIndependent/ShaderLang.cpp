@@ -599,6 +599,7 @@ bool ProcessDeferred(
     return success;
 }
 
+
 // DoPreprocessing is a valid ProcessingContext template argument,
 // which only performs the preprocessing step of compilation.
 // It places the result in the "string" argument to its constructor.
@@ -639,6 +640,7 @@ struct DoPreprocessing {
                 adjustLine(line);
                 outputStream << "#extension " << extension << " : " << behavior;
         });
+
         parseContext.setLineCallback([&adjustLine, &lastLine, &outputStream, &parseContext](
             int curLineNo, int newLineNo, bool hasSource, int sourceNum) {
             // SourceNum is the number of the source-string that is being parsed.
@@ -657,7 +659,6 @@ struct DoPreprocessing {
             // directive now. So lastLine (from 0) should be (newLineNo - 1) + 1.
             lastLine = newLineNo;
         });
-
 
         parseContext.setVersionCallback(
             [&adjustLine, &outputStream](int line, int version, const char* str) {
@@ -682,6 +683,7 @@ struct DoPreprocessing {
                 adjustLine(line);
                 outputStream << "#error " << errorMessage;
         });
+
         while (const char* tok = ppContext.tokenize(&token)) {
             int tokenLine = token.loc.line - 1;  // start at 0;
             bool newLine = false;
@@ -1216,7 +1218,7 @@ public:
 };
 
 TShader::TShader(EShLanguage s) 
-    : pool(0), stage(s), preamble("")
+    : pool(0), stage(s), preamble(""), lengths(nullptr)
 {
     infoSink = new TInfoSink;
     compiler = new TDeferredCompiler(stage, *infoSink);
@@ -1231,6 +1233,19 @@ TShader::~TShader()
     delete pool;
 }
 
+void TShader::setStrings(const char* const* s, int n)
+{
+    strings = s;
+    numStrings = n;
+    lengths = nullptr;
+}
+
+void TShader::setStringsWithLengths(const char* const* s, const int* l, int n)
+{
+    strings = s;
+    numStrings = n;
+    lengths = l;
+}
 //
 // Turn the shader strings into a parse tree in the TIntermediate.
 //
@@ -1247,7 +1262,7 @@ bool TShader::parse(const TBuiltInResource* builtInResources, int defaultVersion
     if (! preamble)
         preamble = "";
 
-    return CompileDeferred(compiler, strings, numStrings, nullptr, preamble, EShOptNone, builtInResources, defaultVersion, defaultProfile, forceDefaultVersionAndProfile, forwardCompatible, messages, *intermediate);
+    return CompileDeferred(compiler, strings, numStrings, lengths, preamble, EShOptNone, builtInResources, defaultVersion, defaultProfile, forceDefaultVersionAndProfile, forwardCompatible, messages, *intermediate);
 }
 
 bool TShader::parse(const TBuiltInResource* builtInResources, int defaultVersion, bool forwardCompatible, EShMessages messages)
@@ -1271,7 +1286,7 @@ bool TShader::preprocess(const TBuiltInResource* builtInResources,
         preamble = "";
 
     return PreprocessDeferred(compiler, strings, numStrings,
-                              nullptr, preamble, EShOptNone, builtInResources,
+                              lengths, preamble, EShOptNone, builtInResources,
                               defaultVersion, defaultProfile, forceDefaultVersionAndProfile, forwardCompatible, message,
                               *intermediate, output_string);
 }

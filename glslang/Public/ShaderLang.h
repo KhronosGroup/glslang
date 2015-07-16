@@ -269,7 +269,8 @@ bool InitializeProcess();
 void FinalizeProcess();
 
 // Make one TShader per shader that you will link into a program.  Then provide
-// the shader through setStrings(), then call parse(), then query the info logs.
+// the shader through setStrings() or setStringsWithLengths(), then call parse(),
+// then query the info logs.
 // Optionally use setPreamble() to set a special shader string that will be
 // processed before all others but won't affect the validity of #version.
 //
@@ -282,7 +283,8 @@ class TShader {
 public:
     explicit TShader(EShLanguage);
     virtual ~TShader();
-    void setStrings(const char* const* s, int n) { strings = s; numStrings = n; }
+    void setStrings(const char* const* s, int n);
+    void setStringsWithLengths(const char* const* s, const int* l, int n);
     void setPreamble(const char* s) { preamble = s; }
     bool parse(const TBuiltInResource*, int defaultVersion, EProfile defaultProfile, bool forceDefaultVersionAndProfile, bool forwardCompatible, EShMessages);
     // Equivalent to parse() without a default profile and without forcing defaults.
@@ -304,7 +306,14 @@ protected:
     TCompiler* compiler;
     TIntermediate* intermediate;
     TInfoSink* infoSink;
+    // strings and lengths follow the standard for glShaderSource:
+    //     strings is an array of numStrings pointers to string data.
+    //     lengths can be null, but if not it is an array of numStrings
+    //         integers containing the length of the associated strings.
+    //         if lengths is null or lengths[n] < 0  the associated strings[n] is
+    //         assumed to be null-terminated.
     const char* const* strings;
+    const int* lengths;
     const char* preamble;
     int numStrings;
 
