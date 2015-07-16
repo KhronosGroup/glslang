@@ -183,7 +183,7 @@ void TParseContext::initializeExtensionBehavior()
     extensionBehavior[E_GL_OES_texture_storage_multisample_2d_array] = EBhDisablePartial;
     extensionBehavior[E_GL_EXT_geometry_shader]                      = EBhDisable;
     extensionBehavior[E_GL_EXT_geometry_point_size]                  = EBhDisable;
-    extensionBehavior[E_GL_EXT_gpu_shader5]                          = EBhDisablePartial;
+    extensionBehavior[E_GL_EXT_gpu_shader5]                          = EBhDisable;
     extensionBehavior[E_GL_EXT_primitive_bounding_box]               = EBhDisablePartial;
     extensionBehavior[E_GL_EXT_shader_io_blocks]                     = EBhDisable;
     extensionBehavior[E_GL_EXT_tessellation_shader]                  = EBhDisable;
@@ -194,7 +194,7 @@ void TParseContext::initializeExtensionBehavior()
     // OES matching AEP
     extensionBehavior[E_GL_OES_geometry_shader]          = EBhDisable;
     extensionBehavior[E_GL_OES_geometry_point_size]      = EBhDisable;
-    extensionBehavior[E_GL_OES_gpu_shader5]              = EBhDisablePartial;
+    extensionBehavior[E_GL_OES_gpu_shader5]              = EBhDisable;
     extensionBehavior[E_GL_OES_primitive_bounding_box]   = EBhDisablePartial;
     extensionBehavior[E_GL_OES_shader_io_blocks]         = EBhDisable;
     extensionBehavior[E_GL_OES_tessellation_shader]      = EBhDisable;

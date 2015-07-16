@@ -505,13 +505,19 @@ TIntermTyped* TParseContext::handleBracketDereference(TSourceLoc loc, TIntermTyp
                 else
                     error(loc, "", "[", "array must be redeclared with a size before being indexed with a variable");
             }
-            if (base->getBasicType() == EbtBlock)
-                requireProfile(base->getLoc(), ~EEsProfile, "variable indexing block array");
-            else if (language == EShLangFragment && base->getQualifier().isPipeOutput())
+            if (base->getBasicType() == EbtBlock) {
+                if (base->getQualifier().storage == EvqBuffer)
+                    requireProfile(base->getLoc(), ~EEsProfile, "variable indexing buffer block array");
+                else if (base->getQualifier().storage == EvqUniform)
+                    profileRequires(base->getLoc(), EEsProfile, 0, Num_AEP_gpu_shader5, AEP_gpu_shader5, "variable indexing uniform block array");
+                else
+                    requireProfile(base->getLoc(), ~EEsProfile, "variable indexing in/out block array");
+            } else if (language == EShLangFragment && base->getQualifier().isPipeOutput())
                 requireProfile(base->getLoc(), ~EEsProfile, "variable indexing fragment shader ouput array");
             else if (base->getBasicType() == EbtSampler && version >= 130) {
                 const char* explanation = "variable indexing sampler array";
-                requireProfile(base->getLoc(), ECoreProfile | ECompatibilityProfile, explanation);
+                requireProfile(base->getLoc(), EEsProfile | ECoreProfile | ECompatibilityProfile, explanation);
+                profileRequires(base->getLoc(), EEsProfile, 0, Num_AEP_gpu_shader5, AEP_gpu_shader5, explanation);
                 profileRequires(base->getLoc(), ECoreProfile | ECompatibilityProfile, 400, nullptr, explanation);
             }
 
@@ -1332,6 +1338,9 @@ void TParseContext::nonOpBuiltInCheck(TSourceLoc loc, const TFunction& fnCandida
                     profileRequires(loc, ~EEsProfile, 400, E_GL_ARB_texture_gather, feature);
                 else
                     profileRequires(loc, ~EEsProfile, 400, E_GL_ARB_gpu_shader5, feature);
+                int offsetArg = fnCandidate[0].type->getSampler().shadow ? 3 : 2;
+                if (! callNode.getSequence()[offsetArg]->getAsConstantUnion())
+                    profileRequires(loc, EEsProfile, 0, Num_AEP_gpu_shader5, AEP_gpu_shader5, "non-constant offset argument");
                 if (! fnCandidate[0].type->getSampler().shadow)
                     compArg = 3;
             } else if (fnCandidate.getName().compare("textureGatherOffsets") == 0) {

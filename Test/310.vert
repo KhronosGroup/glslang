@@ -139,3 +139,45 @@ centroid out cmo {              // ERROR, no centroid on a block
 invariant out imo {             // ERROR, no invariant on a block
     int i;
 } imon;
+
+in vec2 inf, ing;
+uniform ivec2 offsets[4];
+uniform sampler2D sArray[4];
+uniform int sIndex;
+layout(binding = 0) uniform atomic_uint auArray[2];
+uniform ubName { int i; } ubInst[4];
+buffer bbName { int i; } bbInst[4];
+uniform writeonly image2D iArray[5];
+const ivec2 constOffsets[4] = ivec2[4](ivec2(0.1), ivec2(0.2), ivec2(0.3), ivec2(0.4));
+
+void pfooBad()
+{
+    precise vec2 h;          // ERROR reserved
+    h = fma(inf, ing, h);    // ERROR, not available
+    sArray[sIndex + 1];      // ERRRO, not supported
+    auArray[sIndex + 1];
+    ubInst[1];
+    bbInst[2];
+    ubInst[sIndex + 1];      // ERRRO, not supported
+    bbInst[sIndex];          // ERRRO, not supported
+    iArray[2];
+    iArray[sIndex * 2];      // ERRRO, not supported
+    textureGatherOffset(sArray[0], vec2(0.1), ivec2(inf));     // ERROR, offset not constant
+    textureGatherOffsets(sArray[0], vec2(0.1), constOffsets);  // ERROR, not available
+}
+
+#extension GL_OES_gpu_shader5 : enable
+
+void pfoo()
+{
+    precise vec2 h;
+    h = fma(inf, ing, h);
+    sArray[sIndex + 1];
+    ubInst[sIndex + 1];
+    bbInst[sIndex - 2];      // ERROR, still not supported
+    iArray[2];
+    iArray[sIndex - 2];
+    textureGatherOffset(sArray[0], vec2(0.1), ivec2(inf));
+    textureGatherOffsets(sArray[0], vec2(0.1), constOffsets);
+    textureGatherOffsets(sArray[0], vec2(0.1), offsets);   // ERROR, offset not constant
+}

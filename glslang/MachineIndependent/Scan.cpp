@@ -941,12 +941,14 @@ int TScanContext::tokenizeIdentifier()
         return keyword;
 
     case PRECISE:
-        if (parseContext.profile == EEsProfile && parseContext.version >= 310)
+        if ((parseContext.profile == EEsProfile && parseContext.extensionsTurnedOn(Num_AEP_gpu_shader5, AEP_gpu_shader5)) || 
+            (parseContext.profile != EEsProfile && parseContext.version >= 400))
+            return keyword;
+        if (parseContext.profile == EEsProfile && parseContext.version == 310) {
             reservedWord();
-        else if (parseContext.profile == EEsProfile ||
-            (parseContext.profile != EEsProfile && parseContext.version < 400))
-            return identifierOrType();
-        return keyword;
+            return keyword;
+        }
+        return identifierOrType();
 
     case INVARIANT:
         if (parseContext.profile != EEsProfile && parseContext.version < 120)

@@ -7,11 +7,12 @@ ERROR: 0:8: 'gl_FragCoord' : identifiers starting with "gl_" are reserved
 ERROR: 0:11: 'location' : overlapping use of location 2
 ERROR: 0:15: 'usampler2DRect' : Reserved word. 
 ERROR: 0:15: 'sampler/image' : type requires declaration of default precision qualifier 
-ERROR: 0:23: 'variable indexing sampler array' : not supported with this profile: es
+ERROR: 0:23: 'variable indexing sampler array' : not supported for this version or the enabled extensions 
 ERROR: 0:27: 'textureGatherOffsets' : no matching overloaded function found 
 ERROR: 0:27: '=' :  cannot convert from 'const float' to 'temp mediump 4-component vector of uint'
 ERROR: 0:30: 'textureGatherOffset(...)' : must be a compile-time constant: component argument
 ERROR: 0:31: 'textureGatherOffset(...)' : must be 0, 1, 2, or 3: component argument
+ERROR: 0:34: 'non-constant offset argument' : not supported for this version or the enabled extensions 
 ERROR: 0:42: 'texel offset' : argument must be compile-time constant 
 ERROR: 0:44: 'texel offset' : value is out of range: [gl_MinProgramTexelOffset, gl_MaxProgramTexelOffset]
 ERROR: 0:44: 'texel offset' : value is out of range: [gl_MinProgramTexelOffset, gl_MaxProgramTexelOffset]
@@ -49,7 +50,7 @@ ERROR: 0:148: 'inbname2' : Cannot reuse block name within the same interface: in
 ERROR: 0:153: 'badmember' : nameless block contains a member that already has a name at global scope 
 ERROR: 0:157: 'inbname' : redefinition 
 ERROR: 0:159: 'vAnon' : redefinition 
-ERROR: 0:169: 'variable indexing block array' : not supported with this profile: es
+ERROR: 0:169: 'variable indexing in/out block array' : not supported with this profile: es
 ERROR: 0:173: 'origin_upper_left' : not supported with this profile: es
 ERROR: 0:173: 'pixel_center_integer' : not supported with this profile: es
 ERROR: 0:173: 'redeclaration' : cannot redeclare with different qualification: gl_FragCoord
@@ -61,12 +62,22 @@ GL_OES_geometry_shader
 ERROR: 0:183: 'gl_PrimitiveID' : required extension not requested: Possible extensions include:
 GL_EXT_geometry_shader
 GL_OES_geometry_shader
-ERROR: 56 compilation errors.  No code generated.
+ERROR: 0:209: 'precise' : Reserved word. 
+ERROR: 0:210: 'fma' : required extension not requested: Possible extensions include:
+GL_EXT_gpu_shader5
+GL_OES_gpu_shader5
+ERROR: 0:211: 'non-constant offset argument' : not supported for this version or the enabled extensions 
+ERROR: 0:212: 'textureGatherOffsets' : required extension not requested: Possible extensions include:
+GL_EXT_gpu_shader5
+GL_OES_gpu_shader5
+ERROR: 0:223: 'textureGatherOffsets(...)' : must be a compile-time constant: offsets argument
+ERROR: 62 compilation errors.  No code generated.
 
 
 Shader version: 310
 Requested GL_EXT_shader_io_blocks
 Requested GL_OES_geometry_shader
+Requested GL_OES_gpu_shader5
 Requested GL_OES_shader_io_blocks
 gl_FragCoord pixel center is integer
 gl_FragCoord origin is upper left
@@ -153,8 +164,19 @@ ERROR: node is still EOpNull!
 0:33            0.100000
 0:33            0.100000
 0:33            0.100000
-0:33          Construct ivec2 (temp 2-component vector of int)
-0:33            'i' (uniform mediump int)
+0:33          Constant:
+0:33            0 (const int)
+0:33            0 (const int)
+0:34      move second child to first child (temp mediump 4-component vector of int)
+0:34        'iv4' (temp mediump 4-component vector of int)
+0:34        Function Call: textureGatherOffset(isA21;vf3;vi2; (global mediump 4-component vector of int)
+0:34          'isamp2DA' (uniform highp isampler2DArray)
+0:34          Constant:
+0:34            0.100000
+0:34            0.100000
+0:34            0.100000
+0:34          Construct ivec2 (temp 2-component vector of int)
+0:34            'i' (uniform mediump int)
 0:38  Function Definition: foo23( (global void)
 0:38    Function Parameters: 
 0:?     Sequence
@@ -341,6 +363,87 @@ ERROR: node is still EOpNull!
 0:194        move second child to first child (temp highp int)
 0:194          'p' (temp highp int)
 0:194          'gl_PrimitiveID' (flat in highp int PrimitiveID)
+0:207  Function Definition: pfooBad( (global void)
+0:207    Function Parameters: 
+0:?     Sequence
+0:210      move second child to first child (temp mediump 2-component vector of float)
+0:210        'h' (temp mediump 2-component vector of float)
+0:210        Function Call: fma(vf2;vf2;vf2; (global mediump 2-component vector of float)
+0:210          'inf' (smooth in mediump 2-component vector of float)
+0:210          'ing' (smooth in mediump 2-component vector of float)
+0:210          'h' (temp mediump 2-component vector of float)
+0:211      Function Call: textureGatherOffset(s21;vf2;vi2; (global highp 4-component vector of float)
+0:211        direct index (temp highp sampler2D)
+0:211          'sArray' (uniform 4-element array of highp sampler2D)
+0:211          Constant:
+0:211            0 (const int)
+0:211        Constant:
+0:211          0.100000
+0:211          0.100000
+0:211        Convert float to int (temp 2-component vector of int)
+0:211          'inf' (smooth in mediump 2-component vector of float)
+0:212      Function Call: textureGatherOffsets(s21;vf2;vi2[4]; (global highp 4-component vector of float)
+0:212        direct index (temp highp sampler2D)
+0:212          'sArray' (uniform 4-element array of highp sampler2D)
+0:212          Constant:
+0:212            0 (const int)
+0:212        Constant:
+0:212          0.100000
+0:212          0.100000
+0:212        Constant:
+0:212          0 (const int)
+0:212          0 (const int)
+0:212          0 (const int)
+0:212          0 (const int)
+0:212          0 (const int)
+0:212          0 (const int)
+0:212          0 (const int)
+0:212          0 (const int)
+0:217  Function Definition: pfoo( (global void)
+0:217    Function Parameters: 
+0:?     Sequence
+0:220      move second child to first child (temp mediump 2-component vector of float)
+0:220        'h' (temp mediump 2-component vector of float)
+0:220        Function Call: fma(vf2;vf2;vf2; (global mediump 2-component vector of float)
+0:220          'inf' (smooth in mediump 2-component vector of float)
+0:220          'ing' (smooth in mediump 2-component vector of float)
+0:220          'h' (temp mediump 2-component vector of float)
+0:221      Function Call: textureGatherOffset(s21;vf2;vi2; (global highp 4-component vector of float)
+0:221        direct index (temp highp sampler2D)
+0:221          'sArray' (uniform 4-element array of highp sampler2D)
+0:221          Constant:
+0:221            0 (const int)
+0:221        Constant:
+0:221          0.100000
+0:221          0.100000
+0:221        Convert float to int (temp 2-component vector of int)
+0:221          'inf' (smooth in mediump 2-component vector of float)
+0:222      Function Call: textureGatherOffsets(s21;vf2;vi2[4]; (global highp 4-component vector of float)
+0:222        direct index (temp highp sampler2D)
+0:222          'sArray' (uniform 4-element array of highp sampler2D)
+0:222          Constant:
+0:222            0 (const int)
+0:222        Constant:
+0:222          0.100000
+0:222          0.100000
+0:222        Constant:
+0:222          0 (const int)
+0:222          0 (const int)
+0:222          0 (const int)
+0:222          0 (const int)
+0:222          0 (const int)
+0:222          0 (const int)
+0:222          0 (const int)
+0:222          0 (const int)
+0:223      Function Call: textureGatherOffsets(s21;vf2;vi2[4]; (global highp 4-component vector of float)
+0:223        direct index (temp highp sampler2D)
+0:223          'sArray' (uniform 4-element array of highp sampler2D)
+0:223          Constant:
+0:223            0 (const int)
+0:223        Constant:
+0:223          0.100000
+0:223          0.100000
+0:223        'offsets' (uniform 4-element array of mediump 2-component vector of int)
 0:?   Linker Objects
 0:?     'gl_FragCoord' (smooth in mediump 4-component vector of float)
 0:?     'v3' (layout(location=2 ) smooth in mediump 3-component vector of float)
@@ -389,6 +492,24 @@ ERROR: node is still EOpNull!
 0:?     'arrayedInst' (in 4-element array of block{in mediump float f})
 0:?     'gl_FragDepth' (gl_FragDepth highp float FragDepth)
 0:?     'gl_FragDepth' (gl_FragDepth highp float FragDepth)
+0:?     'inf' (smooth in mediump 2-component vector of float)
+0:?     'ing' (smooth in mediump 2-component vector of float)
+0:?     'offsets' (uniform 4-element array of mediump 2-component vector of int)
+0:?     'sArray' (uniform 4-element array of highp sampler2D)
+0:?     'sIndex' (uniform mediump int)
+0:?     'auArray' (layout(binding=0 offset=0 ) uniform 2-element array of highp atomic_uint)
+0:?     'ubInst' (layout(column_major shared ) uniform 4-element array of block{layout(column_major shared ) uniform mediump int i})
+0:?     'bbInst' (layout(column_major shared ) buffer 4-element array of block{layout(column_major shared ) buffer mediump int i})
+0:?     'iArray' (writeonly uniform 5-element array of highp image2D)
+0:?     'constOffsets' (const 4-element array of mediump 2-component vector of int)
+0:?       0 (const int)
+0:?       0 (const int)
+0:?       0 (const int)
+0:?       0 (const int)
+0:?       0 (const int)
+0:?       0 (const int)
+0:?       0 (const int)
+0:?       0 (const int)
 
 
 Linked fragment stage:
@@ -398,6 +519,7 @@ ERROR: Linking fragment stage: when more than one fragment shader output, all mu
 Shader version: 310
 Requested GL_EXT_shader_io_blocks
 Requested GL_OES_geometry_shader
+Requested GL_OES_gpu_shader5
 Requested GL_OES_shader_io_blocks
 gl_FragCoord pixel center is integer
 gl_FragCoord origin is upper left
@@ -484,8 +606,19 @@ ERROR: node is still EOpNull!
 0:33            0.100000
 0:33            0.100000
 0:33            0.100000
-0:33          Construct ivec2 (temp 2-component vector of int)
-0:33            'i' (uniform mediump int)
+0:33          Constant:
+0:33            0 (const int)
+0:33            0 (const int)
+0:34      move second child to first child (temp mediump 4-component vector of int)
+0:34        'iv4' (temp mediump 4-component vector of int)
+0:34        Function Call: textureGatherOffset(isA21;vf3;vi2; (global mediump 4-component vector of int)
+0:34          'isamp2DA' (uniform highp isampler2DArray)
+0:34          Constant:
+0:34            0.100000
+0:34            0.100000
+0:34            0.100000
+0:34          Construct ivec2 (temp 2-component vector of int)
+0:34            'i' (uniform mediump int)
 0:38  Function Definition: foo23( (global void)
 0:38    Function Parameters: 
 0:?     Sequence
@@ -672,6 +805,87 @@ ERROR: node is still EOpNull!
 0:194        move second child to first child (temp highp int)
 0:194          'p' (temp highp int)
 0:194          'gl_PrimitiveID' (flat in highp int PrimitiveID)
+0:207  Function Definition: pfooBad( (global void)
+0:207    Function Parameters: 
+0:?     Sequence
+0:210      move second child to first child (temp mediump 2-component vector of float)
+0:210        'h' (temp mediump 2-component vector of float)
+0:210        Function Call: fma(vf2;vf2;vf2; (global mediump 2-component vector of float)
+0:210          'inf' (smooth in mediump 2-component vector of float)
+0:210          'ing' (smooth in mediump 2-component vector of float)
+0:210          'h' (temp mediump 2-component vector of float)
+0:211      Function Call: textureGatherOffset(s21;vf2;vi2; (global highp 4-component vector of float)
+0:211        direct index (temp highp sampler2D)
+0:211          'sArray' (uniform 4-element array of highp sampler2D)
+0:211          Constant:
+0:211            0 (const int)
+0:211        Constant:
+0:211          0.100000
+0:211          0.100000
+0:211        Convert float to int (temp 2-component vector of int)
+0:211          'inf' (smooth in mediump 2-component vector of float)
+0:212      Function Call: textureGatherOffsets(s21;vf2;vi2[4]; (global highp 4-component vector of float)
+0:212        direct index (temp highp sampler2D)
+0:212          'sArray' (uniform 4-element array of highp sampler2D)
+0:212          Constant:
+0:212            0 (const int)
+0:212        Constant:
+0:212          0.100000
+0:212          0.100000
+0:212        Constant:
+0:212          0 (const int)
+0:212          0 (const int)
+0:212          0 (const int)
+0:212          0 (const int)
+0:212          0 (const int)
+0:212          0 (const int)
+0:212          0 (const int)
+0:212          0 (const int)
+0:217  Function Definition: pfoo( (global void)
+0:217    Function Parameters: 
+0:?     Sequence
+0:220      move second child to first child (temp mediump 2-component vector of float)
+0:220        'h' (temp mediump 2-component vector of float)
+0:220        Function Call: fma(vf2;vf2;vf2; (global mediump 2-component vector of float)
+0:220          'inf' (smooth in mediump 2-component vector of float)
+0:220          'ing' (smooth in mediump 2-component vector of float)
+0:220          'h' (temp mediump 2-component vector of float)
+0:221      Function Call: textureGatherOffset(s21;vf2;vi2; (global highp 4-component vector of float)
+0:221        direct index (temp highp sampler2D)
+0:221          'sArray' (uniform 4-element array of highp sampler2D)
+0:221          Constant:
+0:221            0 (const int)
+0:221        Constant:
+0:221          0.100000
+0:221          0.100000
+0:221        Convert float to int (temp 2-component vector of int)
+0:221          'inf' (smooth in mediump 2-component vector of float)
+0:222      Function Call: textureGatherOffsets(s21;vf2;vi2[4]; (global highp 4-component vector of float)
+0:222        direct index (temp highp sampler2D)
+0:222          'sArray' (uniform 4-element array of highp sampler2D)
+0:222          Constant:
+0:222            0 (const int)
+0:222        Constant:
+0:222          0.100000
+0:222          0.100000
+0:222        Constant:
+0:222          0 (const int)
+0:222          0 (const int)
+0:222          0 (const int)
+0:222          0 (const int)
+0:222          0 (const int)
+0:222          0 (const int)
+0:222          0 (const int)
+0:222          0 (const int)
+0:223      Function Call: textureGatherOffsets(s21;vf2;vi2[4]; (global highp 4-component vector of float)
+0:223        direct index (temp highp sampler2D)
+0:223          'sArray' (uniform 4-element array of highp sampler2D)
+0:223          Constant:
+0:223            0 (const int)
+0:223        Constant:
+0:223          0.100000
+0:223          0.100000
+0:223        'offsets' (uniform 4-element array of mediump 2-component vector of int)
 0:?   Linker Objects
 0:?     'gl_FragCoord' (smooth in mediump 4-component vector of float)
 0:?     'v3' (layout(location=2 ) smooth in mediump 3-component vector of float)
@@ -720,4 +934,22 @@ ERROR: node is still EOpNull!
 0:?     'arrayedInst' (in 4-element array of block{in mediump float f})
 0:?     'gl_FragDepth' (gl_FragDepth highp float FragDepth)
 0:?     'gl_FragDepth' (gl_FragDepth highp float FragDepth)
+0:?     'inf' (smooth in mediump 2-component vector of float)
+0:?     'ing' (smooth in mediump 2-component vector of float)
+0:?     'offsets' (uniform 4-element array of mediump 2-component vector of int)
+0:?     'sArray' (uniform 4-element array of highp sampler2D)
+0:?     'sIndex' (uniform mediump int)
+0:?     'auArray' (layout(binding=0 offset=0 ) uniform 2-element array of highp atomic_uint)
+0:?     'ubInst' (layout(column_major shared ) uniform 4-element array of block{layout(column_major shared ) uniform mediump int i})
+0:?     'bbInst' (layout(column_major shared ) buffer 4-element array of block{layout(column_major shared ) buffer mediump int i})
+0:?     'iArray' (writeonly uniform 5-element array of highp image2D)
+0:?     'constOffsets' (const 4-element array of mediump 2-component vector of int)
+0:?       0 (const int)
+0:?       0 (const int)
+0:?       0 (const int)
+0:?       0 (const int)
+0:?       0 (const int)
+0:?       0 (const int)
+0:?       0 (const int)
+0:?       0 (const int)
 

@@ -493,19 +493,24 @@ void TBuiltIns::initialize(int version, EProfile profile)
             "\n");
     }
 
-    if (profile != EEsProfile && version >= 400) {
+    if ((profile != EEsProfile && version >= 400) ||
+        (profile == EEsProfile && version >= 310)) {    // GL_OES_gpu_shader5
+
         commonBuiltins.append(
             "float  fma(float,  float,  float );"
             "vec2   fma(vec2,   vec2,   vec2  );"
             "vec3   fma(vec3,   vec3,   vec3  );"
             "vec4   fma(vec4,   vec4,   vec4  );"
-
-            "double fma(double, double, double);"
-            "dvec2  fma(dvec2,  dvec2,  dvec2 );"
-            "dvec3  fma(dvec3,  dvec3,  dvec3 );"
-            "dvec4  fma(dvec4,  dvec4,  dvec4 );"
-            
             "\n");
+
+        if (profile != EEsProfile) {
+            commonBuiltins.append(
+                "double fma(double, double, double);"
+                "dvec2  fma(dvec2,  dvec2,  dvec2 );"
+                "dvec3  fma(dvec3,  dvec3,  dvec3 );"
+                "dvec4  fma(dvec4,  dvec4,  dvec4 );"
+                "\n");
+        }
     }
 
     if ((profile == EEsProfile && version >= 310) ||
@@ -2221,9 +2226,6 @@ void TBuiltIns::addGatherFunctions(TSampler sampler, TString& typeName, int vers
 
     for (int offset = 0; offset < 3; ++offset) { // loop over three forms of offset in the call name:  none, Offset, and Offsets
 
-        if (profile == EEsProfile && offset == 2)
-            continue;
-
         for (int comp = 0; comp < 2; ++comp) { // loop over presence of comp argument
 
             if (comp > 0 && sampler.shadow)
@@ -2802,8 +2804,11 @@ void IdentifyBuiltIns(int version, EProfile profile, EShLanguage language, TSymb
     //
 
     // N.B.: a symbol should only be tagged once, and this function is called multiple times, once
-    // per stage that's used for this profile.  So, stick common ones in the fragment stage to
-    // ensure they are tagged exactly once.
+    // per stage that's used for this profile.  So
+    //  - generally, stick common ones in the fragment stage to ensure they are tagged exactly once
+    //  - for ES, which has different precisions for different stages, the coarsest-grained tagging 
+    //    for a built-in used in many stages needs to be once for the fragment stage and once for
+    //    the vertex stage
 
     switch(language) {
     case EShLangVertex:
@@ -2821,6 +2826,15 @@ void IdentifyBuiltIns(int version, EProfile profile, EShLanguage language, TSymb
         BuiltInVariable("gl_MultiTexCoord6", EbvMultiTexCoord6, symbolTable);
         BuiltInVariable("gl_MultiTexCoord7", EbvMultiTexCoord7, symbolTable);
         BuiltInVariable("gl_FogCoord",       EbvFogFragCoord,   symbolTable);
+
+        if (profile == EEsProfile) {
+            symbolTable.setFunctionExtensions("texture2DGradEXT",     1, &E_GL_EXT_shader_texture_lod);
+            symbolTable.setFunctionExtensions("texture2DProjGradEXT", 1, &E_GL_EXT_shader_texture_lod);
+            symbolTable.setFunctionExtensions("textureCubeGradEXT",   1, &E_GL_EXT_shader_texture_lod);
+            symbolTable.setFunctionExtensions("textureGatherOffsets", Num_AEP_gpu_shader5, AEP_gpu_shader5);
+            if (version >= 310)
+                symbolTable.setFunctionExtensions("fma", Num_AEP_gpu_shader5, AEP_gpu_shader5);
+        }
 
         // Fall through
 
@@ -2931,15 +2945,21 @@ void IdentifyBuiltIns(int version, EProfile profile, EShLanguage language, TSymb
 
         // built-in functions
 
-        if (version == 100) {
-            symbolTable.setFunctionExtensions("dFdx",   1, &E_GL_OES_standard_derivatives);
-            symbolTable.setFunctionExtensions("dFdy",   1, &E_GL_OES_standard_derivatives);
-            symbolTable.setFunctionExtensions("fwidth", 1, &E_GL_OES_standard_derivatives);
-        }
         if (profile == EEsProfile) {
-            symbolTable.setFunctionExtensions("texture2DLodEXT",     1, &E_GL_EXT_shader_texture_lod);
-            symbolTable.setFunctionExtensions("texture2DProjLodEXT", 1, &E_GL_EXT_shader_texture_lod);
-            symbolTable.setFunctionExtensions("textureCubeLodEXT",   1, &E_GL_EXT_shader_texture_lod);
+            symbolTable.setFunctionExtensions("texture2DLodEXT",      1, &E_GL_EXT_shader_texture_lod);
+            symbolTable.setFunctionExtensions("texture2DProjLodEXT",  1, &E_GL_EXT_shader_texture_lod);
+            symbolTable.setFunctionExtensions("textureCubeLodEXT",    1, &E_GL_EXT_shader_texture_lod);
+            symbolTable.setFunctionExtensions("texture2DGradEXT",     1, &E_GL_EXT_shader_texture_lod);
+            symbolTable.setFunctionExtensions("texture2DProjGradEXT", 1, &E_GL_EXT_shader_texture_lod);
+            symbolTable.setFunctionExtensions("textureCubeGradEXT",   1, &E_GL_EXT_shader_texture_lod);
+            symbolTable.setFunctionExtensions("textureGatherOffsets", Num_AEP_gpu_shader5, AEP_gpu_shader5);
+            if (version == 100) {
+                symbolTable.setFunctionExtensions("dFdx",   1, &E_GL_OES_standard_derivatives);
+                symbolTable.setFunctionExtensions("dFdy",   1, &E_GL_OES_standard_derivatives);
+                symbolTable.setFunctionExtensions("fwidth", 1, &E_GL_OES_standard_derivatives);
+            }
+            if (version >= 310)
+                symbolTable.setFunctionExtensions("fma", Num_AEP_gpu_shader5, AEP_gpu_shader5);
         } else if (version < 130) {
             symbolTable.setFunctionExtensions("texture1DLod",        1, &E_GL_ARB_shader_texture_lod);
             symbolTable.setFunctionExtensions("texture2DLod",        1, &E_GL_ARB_shader_texture_lod);
@@ -2971,12 +2991,6 @@ void IdentifyBuiltIns(int version, EProfile profile, EShLanguage language, TSymb
             symbolTable.setFunctionExtensions("texture2DRectProjGradARB", 1, &E_GL_ARB_shader_texture_lod);
             symbolTable.setFunctionExtensions("shadow2DRectGradARB",      1, &E_GL_ARB_shader_texture_lod);
             symbolTable.setFunctionExtensions("shadow2DRectProjGradARB",  1, &E_GL_ARB_shader_texture_lod);
-        }
-
-        if (profile == EEsProfile) {
-            symbolTable.setFunctionExtensions("texture2DGradEXT",     1, &E_GL_EXT_shader_texture_lod);
-            symbolTable.setFunctionExtensions("texture2DProjGradEXT", 1, &E_GL_EXT_shader_texture_lod);
-            symbolTable.setFunctionExtensions("textureCubeGradEXT",   1, &E_GL_EXT_shader_texture_lod);
         }
 
         // E_GL_ARB_shader_image_load_store

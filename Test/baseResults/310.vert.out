@@ -27,10 +27,25 @@ ERROR: 0:127: 'flat/smooth/noperspective' : cannot use interpolation qualifiers 
 ERROR: 0:131: 'flat/smooth/noperspective' : cannot use interpolation qualifiers on an interface block 
 ERROR: 0:135: 'centroid' : cannot use centroid qualifier on an interface block 
 ERROR: 0:139: 'invariant' : cannot use invariant qualifier on an interface block 
-ERROR: 26 compilation errors.  No code generated.
+ERROR: 0:155: 'precise' : Reserved word. 
+ERROR: 0:156: 'fma' : required extension not requested: Possible extensions include:
+GL_EXT_gpu_shader5
+GL_OES_gpu_shader5
+ERROR: 0:157: 'variable indexing sampler array' : not supported for this version or the enabled extensions 
+ERROR: 0:161: 'variable indexing uniform block array' : not supported for this version or the enabled extensions 
+ERROR: 0:162: 'variable indexing buffer block array' : not supported with this profile: es
+ERROR: 0:164: 'variable indexing sampler array' : not supported for this version or the enabled extensions 
+ERROR: 0:165: 'non-constant offset argument' : not supported for this version or the enabled extensions 
+ERROR: 0:166: 'textureGatherOffsets' : required extension not requested: Possible extensions include:
+GL_EXT_gpu_shader5
+GL_OES_gpu_shader5
+ERROR: 0:177: 'variable indexing buffer block array' : not supported with this profile: es
+ERROR: 0:182: 'textureGatherOffsets(...)' : must be a compile-time constant: offsets argument
+ERROR: 36 compilation errors.  No code generated.
 
 
 Shader version: 310
+Requested GL_OES_gpu_shader5
 Requested GL_OES_shader_io_blocks
 ERROR: node is still EOpNull!
 0:12  Function Definition: main( (global void)
@@ -202,6 +217,154 @@ ERROR: node is still EOpNull!
 0:119        'anon@1' (out block{gl_Position highp 4-component vector of float Position gl_Position, })
 0:119        Constant:
 0:119          1 (const uint)
+0:153  Function Definition: pfooBad( (global void)
+0:153    Function Parameters: 
+0:?     Sequence
+0:156      move second child to first child (temp highp 2-component vector of float)
+0:156        'h' (temp highp 2-component vector of float)
+0:156        Function Call: fma(vf2;vf2;vf2; (global highp 2-component vector of float)
+0:156          'inf' (in highp 2-component vector of float)
+0:156          'ing' (in highp 2-component vector of float)
+0:156          'h' (temp highp 2-component vector of float)
+0:157      indirect index (temp highp sampler2D)
+0:157        'sArray' (uniform 4-element array of highp sampler2D)
+0:157        add (temp highp int)
+0:157          'sIndex' (uniform highp int)
+0:157          Constant:
+0:157            1 (const int)
+0:158      indirect index (layout(binding=0 offset=0 ) temp highp atomic_uint)
+0:158        'auArray' (layout(binding=0 offset=0 ) uniform 2-element array of highp atomic_uint)
+0:158        add (temp highp int)
+0:158          'sIndex' (uniform highp int)
+0:158          Constant:
+0:158            1 (const int)
+0:159      direct index (layout(column_major shared ) temp block{layout(column_major shared ) uniform highp int i})
+0:159        'ubInst' (layout(column_major shared ) uniform 4-element array of block{layout(column_major shared ) uniform highp int i})
+0:159        Constant:
+0:159          1 (const int)
+0:160      direct index (layout(column_major shared ) temp block{layout(column_major shared ) buffer highp int i})
+0:160        'bbInst' (layout(column_major shared ) buffer 4-element array of block{layout(column_major shared ) buffer highp int i})
+0:160        Constant:
+0:160          2 (const int)
+0:161      indirect index (layout(column_major shared ) temp block{layout(column_major shared ) uniform highp int i})
+0:161        'ubInst' (layout(column_major shared ) uniform 4-element array of block{layout(column_major shared ) uniform highp int i})
+0:161        add (temp highp int)
+0:161          'sIndex' (uniform highp int)
+0:161          Constant:
+0:161            1 (const int)
+0:162      indirect index (layout(column_major shared ) temp block{layout(column_major shared ) buffer highp int i})
+0:162        'bbInst' (layout(column_major shared ) buffer 4-element array of block{layout(column_major shared ) buffer highp int i})
+0:162        'sIndex' (uniform highp int)
+0:163      direct index (writeonly temp highp image2D)
+0:163        'iArray' (writeonly uniform 5-element array of highp image2D)
+0:163        Constant:
+0:163          2 (const int)
+0:164      indirect index (writeonly temp highp image2D)
+0:164        'iArray' (writeonly uniform 5-element array of highp image2D)
+0:164        component-wise multiply (temp highp int)
+0:164          'sIndex' (uniform highp int)
+0:164          Constant:
+0:164            2 (const int)
+0:165      Function Call: textureGatherOffset(s21;vf2;vi2; (global highp 4-component vector of float)
+0:165        direct index (temp highp sampler2D)
+0:165          'sArray' (uniform 4-element array of highp sampler2D)
+0:165          Constant:
+0:165            0 (const int)
+0:165        Constant:
+0:165          0.100000
+0:165          0.100000
+0:165        Convert float to int (temp 2-component vector of int)
+0:165          'inf' (in highp 2-component vector of float)
+0:166      Function Call: textureGatherOffsets(s21;vf2;vi2[4]; (global highp 4-component vector of float)
+0:166        direct index (temp highp sampler2D)
+0:166          'sArray' (uniform 4-element array of highp sampler2D)
+0:166          Constant:
+0:166            0 (const int)
+0:166        Constant:
+0:166          0.100000
+0:166          0.100000
+0:166        Constant:
+0:166          0 (const int)
+0:166          0 (const int)
+0:166          0 (const int)
+0:166          0 (const int)
+0:166          0 (const int)
+0:166          0 (const int)
+0:166          0 (const int)
+0:166          0 (const int)
+0:171  Function Definition: pfoo( (global void)
+0:171    Function Parameters: 
+0:?     Sequence
+0:174      move second child to first child (temp highp 2-component vector of float)
+0:174        'h' (temp highp 2-component vector of float)
+0:174        Function Call: fma(vf2;vf2;vf2; (global highp 2-component vector of float)
+0:174          'inf' (in highp 2-component vector of float)
+0:174          'ing' (in highp 2-component vector of float)
+0:174          'h' (temp highp 2-component vector of float)
+0:175      indirect index (temp highp sampler2D)
+0:175        'sArray' (uniform 4-element array of highp sampler2D)
+0:175        add (temp highp int)
+0:175          'sIndex' (uniform highp int)
+0:175          Constant:
+0:175            1 (const int)
+0:176      indirect index (layout(column_major shared ) temp block{layout(column_major shared ) uniform highp int i})
+0:176        'ubInst' (layout(column_major shared ) uniform 4-element array of block{layout(column_major shared ) uniform highp int i})
+0:176        add (temp highp int)
+0:176          'sIndex' (uniform highp int)
+0:176          Constant:
+0:176            1 (const int)
+0:177      indirect index (layout(column_major shared ) temp block{layout(column_major shared ) buffer highp int i})
+0:177        'bbInst' (layout(column_major shared ) buffer 4-element array of block{layout(column_major shared ) buffer highp int i})
+0:177        subtract (temp highp int)
+0:177          'sIndex' (uniform highp int)
+0:177          Constant:
+0:177            2 (const int)
+0:178      direct index (writeonly temp highp image2D)
+0:178        'iArray' (writeonly uniform 5-element array of highp image2D)
+0:178        Constant:
+0:178          2 (const int)
+0:179      indirect index (writeonly temp highp image2D)
+0:179        'iArray' (writeonly uniform 5-element array of highp image2D)
+0:179        subtract (temp highp int)
+0:179          'sIndex' (uniform highp int)
+0:179          Constant:
+0:179            2 (const int)
+0:180      Function Call: textureGatherOffset(s21;vf2;vi2; (global highp 4-component vector of float)
+0:180        direct index (temp highp sampler2D)
+0:180          'sArray' (uniform 4-element array of highp sampler2D)
+0:180          Constant:
+0:180            0 (const int)
+0:180        Constant:
+0:180          0.100000
+0:180          0.100000
+0:180        Convert float to int (temp 2-component vector of int)
+0:180          'inf' (in highp 2-component vector of float)
+0:181      Function Call: textureGatherOffsets(s21;vf2;vi2[4]; (global highp 4-component vector of float)
+0:181        direct index (temp highp sampler2D)
+0:181          'sArray' (uniform 4-element array of highp sampler2D)
+0:181          Constant:
+0:181            0 (const int)
+0:181        Constant:
+0:181          0.100000
+0:181          0.100000
+0:181        Constant:
+0:181          0 (const int)
+0:181          0 (const int)
+0:181          0 (const int)
+0:181          0 (const int)
+0:181          0 (const int)
+0:181          0 (const int)
+0:181          0 (const int)
+0:181          0 (const int)
+0:182      Function Call: textureGatherOffsets(s21;vf2;vi2[4]; (global highp 4-component vector of float)
+0:182        direct index (temp highp sampler2D)
+0:182          'sArray' (uniform 4-element array of highp sampler2D)
+0:182          Constant:
+0:182            0 (const int)
+0:182        Constant:
+0:182          0.100000
+0:182          0.100000
+0:182        'offsets' (uniform 4-element array of highp 2-component vector of int)
 0:?   Linker Objects
 0:?     's' (shared highp 4-component vector of float)
 0:?     'v' (buffer highp 4-component vector of float)
@@ -233,6 +396,24 @@ ERROR: node is still EOpNull!
 0:?     'fmon' (flat out block{out highp int i})
 0:?     'cmon' (centroid out block{out highp int i})
 0:?     'imon' (invariant out block{out highp int i})
+0:?     'inf' (in highp 2-component vector of float)
+0:?     'ing' (in highp 2-component vector of float)
+0:?     'offsets' (uniform 4-element array of highp 2-component vector of int)
+0:?     'sArray' (uniform 4-element array of highp sampler2D)
+0:?     'sIndex' (uniform highp int)
+0:?     'auArray' (layout(binding=0 offset=0 ) uniform 2-element array of highp atomic_uint)
+0:?     'ubInst' (layout(column_major shared ) uniform 4-element array of block{layout(column_major shared ) uniform highp int i})
+0:?     'bbInst' (layout(column_major shared ) buffer 4-element array of block{layout(column_major shared ) buffer highp int i})
+0:?     'iArray' (writeonly uniform 5-element array of highp image2D)
+0:?     'constOffsets' (const 4-element array of highp 2-component vector of int)
+0:?       0 (const int)
+0:?       0 (const int)
+0:?       0 (const int)
+0:?       0 (const int)
+0:?       0 (const int)
+0:?       0 (const int)
+0:?       0 (const int)
+0:?       0 (const int)
 0:?     'gl_VertexID' (gl_VertexId highp int VertexId)
 0:?     'gl_InstanceID' (gl_InstanceId highp int InstanceId)
 
@@ -241,6 +422,7 @@ Linked vertex stage:
 
 
 Shader version: 310
+Requested GL_OES_gpu_shader5
 Requested GL_OES_shader_io_blocks
 ERROR: node is still EOpNull!
 0:12  Function Definition: main( (global void)
@@ -412,6 +594,154 @@ ERROR: node is still EOpNull!
 0:119        'anon@1' (out block{gl_Position highp 4-component vector of float Position gl_Position, })
 0:119        Constant:
 0:119          1 (const uint)
+0:153  Function Definition: pfooBad( (global void)
+0:153    Function Parameters: 
+0:?     Sequence
+0:156      move second child to first child (temp highp 2-component vector of float)
+0:156        'h' (temp highp 2-component vector of float)
+0:156        Function Call: fma(vf2;vf2;vf2; (global highp 2-component vector of float)
+0:156          'inf' (in highp 2-component vector of float)
+0:156          'ing' (in highp 2-component vector of float)
+0:156          'h' (temp highp 2-component vector of float)
+0:157      indirect index (temp highp sampler2D)
+0:157        'sArray' (uniform 4-element array of highp sampler2D)
+0:157        add (temp highp int)
+0:157          'sIndex' (uniform highp int)
+0:157          Constant:
+0:157            1 (const int)
+0:158      indirect index (layout(binding=0 offset=0 ) temp highp atomic_uint)
+0:158        'auArray' (layout(binding=0 offset=0 ) uniform 2-element array of highp atomic_uint)
+0:158        add (temp highp int)
+0:158          'sIndex' (uniform highp int)
+0:158          Constant:
+0:158            1 (const int)
+0:159      direct index (layout(column_major shared ) temp block{layout(column_major shared ) uniform highp int i})
+0:159        'ubInst' (layout(column_major shared ) uniform 4-element array of block{layout(column_major shared ) uniform highp int i})
+0:159        Constant:
+0:159          1 (const int)
+0:160      direct index (layout(column_major shared ) temp block{layout(column_major shared ) buffer highp int i})
+0:160        'bbInst' (layout(column_major shared ) buffer 4-element array of block{layout(column_major shared ) buffer highp int i})
+0:160        Constant:
+0:160          2 (const int)
+0:161      indirect index (layout(column_major shared ) temp block{layout(column_major shared ) uniform highp int i})
+0:161        'ubInst' (layout(column_major shared ) uniform 4-element array of block{layout(column_major shared ) uniform highp int i})
+0:161        add (temp highp int)
+0:161          'sIndex' (uniform highp int)
+0:161          Constant:
+0:161            1 (const int)
+0:162      indirect index (layout(column_major shared ) temp block{layout(column_major shared ) buffer highp int i})
+0:162        'bbInst' (layout(column_major shared ) buffer 4-element array of block{layout(column_major shared ) buffer highp int i})
+0:162        'sIndex' (uniform highp int)
+0:163      direct index (writeonly temp highp image2D)
+0:163        'iArray' (writeonly uniform 5-element array of highp image2D)
+0:163        Constant:
+0:163          2 (const int)
+0:164      indirect index (writeonly temp highp image2D)
+0:164        'iArray' (writeonly uniform 5-element array of highp image2D)
+0:164        component-wise multiply (temp highp int)
+0:164          'sIndex' (uniform highp int)
+0:164          Constant:
+0:164            2 (const int)
+0:165      Function Call: textureGatherOffset(s21;vf2;vi2; (global highp 4-component vector of float)
+0:165        direct index (temp highp sampler2D)
+0:165          'sArray' (uniform 4-element array of highp sampler2D)
+0:165          Constant:
+0:165            0 (const int)
+0:165        Constant:
+0:165          0.100000
+0:165          0.100000
+0:165        Convert float to int (temp 2-component vector of int)
+0:165          'inf' (in highp 2-component vector of float)
+0:166      Function Call: textureGatherOffsets(s21;vf2;vi2[4]; (global highp 4-component vector of float)
+0:166        direct index (temp highp sampler2D)
+0:166          'sArray' (uniform 4-element array of highp sampler2D)
+0:166          Constant:
+0:166            0 (const int)
+0:166        Constant:
+0:166          0.100000
+0:166          0.100000
+0:166        Constant:
+0:166          0 (const int)
+0:166          0 (const int)
+0:166          0 (const int)
+0:166          0 (const int)
+0:166          0 (const int)
+0:166          0 (const int)
+0:166          0 (const int)
+0:166          0 (const int)
+0:171  Function Definition: pfoo( (global void)
+0:171    Function Parameters: 
+0:?     Sequence
+0:174      move second child to first child (temp highp 2-component vector of float)
+0:174        'h' (temp highp 2-component vector of float)
+0:174        Function Call: fma(vf2;vf2;vf2; (global highp 2-component vector of float)
+0:174          'inf' (in highp 2-component vector of float)
+0:174          'ing' (in highp 2-component vector of float)
+0:174          'h' (temp highp 2-component vector of float)
+0:175      indirect index (temp highp sampler2D)
+0:175        'sArray' (uniform 4-element array of highp sampler2D)
+0:175        add (temp highp int)
+0:175          'sIndex' (uniform highp int)
+0:175          Constant:
+0:175            1 (const int)
+0:176      indirect index (layout(column_major shared ) temp block{layout(column_major shared ) uniform highp int i})
+0:176        'ubInst' (layout(column_major shared ) uniform 4-element array of block{layout(column_major shared ) uniform highp int i})
+0:176        add (temp highp int)
+0:176          'sIndex' (uniform highp int)
+0:176          Constant:
+0:176            1 (const int)
+0:177      indirect index (layout(column_major shared ) temp block{layout(column_major shared ) buffer highp int i})
+0:177        'bbInst' (layout(column_major shared ) buffer 4-element array of block{layout(column_major shared ) buffer highp int i})
+0:177        subtract (temp highp int)
+0:177          'sIndex' (uniform highp int)
+0:177          Constant:
+0:177            2 (const int)
+0:178      direct index (writeonly temp highp image2D)
+0:178        'iArray' (writeonly uniform 5-element array of highp image2D)
+0:178        Constant:
+0:178          2 (const int)
+0:179      indirect index (writeonly temp highp image2D)
+0:179        'iArray' (writeonly uniform 5-element array of highp image2D)
+0:179        subtract (temp highp int)
+0:179          'sIndex' (uniform highp int)
+0:179          Constant:
+0:179            2 (const int)
+0:180      Function Call: textureGatherOffset(s21;vf2;vi2; (global highp 4-component vector of float)
+0:180        direct index (temp highp sampler2D)
+0:180          'sArray' (uniform 4-element array of highp sampler2D)
+0:180          Constant:
+0:180            0 (const int)
+0:180        Constant:
+0:180          0.100000
+0:180          0.100000
+0:180        Convert float to int (temp 2-component vector of int)
+0:180          'inf' (in highp 2-component vector of float)
+0:181      Function Call: textureGatherOffsets(s21;vf2;vi2[4]; (global highp 4-component vector of float)
+0:181        direct index (temp highp sampler2D)
+0:181          'sArray' (uniform 4-element array of highp sampler2D)
+0:181          Constant:
+0:181            0 (const int)
+0:181        Constant:
+0:181          0.100000
+0:181          0.100000
+0:181        Constant:
+0:181          0 (const int)
+0:181          0 (const int)
+0:181          0 (const int)
+0:181          0 (const int)
+0:181          0 (const int)
+0:181          0 (const int)
+0:181          0 (const int)
+0:181          0 (const int)
+0:182      Function Call: textureGatherOffsets(s21;vf2;vi2[4]; (global highp 4-component vector of float)
+0:182        direct index (temp highp sampler2D)
+0:182          'sArray' (uniform 4-element array of highp sampler2D)
+0:182          Constant:
+0:182            0 (const int)
+0:182        Constant:
+0:182          0.100000
+0:182          0.100000
+0:182        'offsets' (uniform 4-element array of highp 2-component vector of int)
 0:?   Linker Objects
 0:?     's' (shared highp 4-component vector of float)
 0:?     'v' (buffer highp 4-component vector of float)
@@ -443,6 +773,24 @@ ERROR: node is still EOpNull!
 0:?     'fmon' (flat out block{out highp int i})
 0:?     'cmon' (centroid out block{out highp int i})
 0:?     'imon' (invariant out block{out highp int i})
+0:?     'inf' (in highp 2-component vector of float)
+0:?     'ing' (in highp 2-component vector of float)
+0:?     'offsets' (uniform 4-element array of highp 2-component vector of int)
+0:?     'sArray' (uniform 4-element array of highp sampler2D)
+0:?     'sIndex' (uniform highp int)
+0:?     'auArray' (layout(binding=0 offset=0 ) uniform 2-element array of highp atomic_uint)
+0:?     'ubInst' (layout(column_major shared ) uniform 4-element array of block{layout(column_major shared ) uniform highp int i})
+0:?     'bbInst' (layout(column_major shared ) buffer 4-element array of block{layout(column_major shared ) buffer highp int i})
+0:?     'iArray' (writeonly uniform 5-element array of highp image2D)
+0:?     'constOffsets' (const 4-element array of highp 2-component vector of int)
+0:?       0 (const int)
+0:?       0 (const int)
+0:?       0 (const int)
+0:?       0 (const int)
+0:?       0 (const int)
+0:?       0 (const int)
+0:?       0 (const int)
+0:?       0 (const int)
 0:?     'gl_VertexID' (gl_VertexId highp int VertexId)
 0:?     'gl_InstanceID' (gl_InstanceId highp int InstanceId)
 

@@ -10,7 +10,7 @@ ERROR: 0:63: 'texel offset' : argument must be compile-time constant
 ERROR: 0:64: 'texel offset' : argument must be compile-time constant 
 ERROR: 0:66: 'texel offset' : argument must be compile-time constant 
 ERROR: 0:68: 'texel offset' : argument must be compile-time constant 
-ERROR: 0:69: 'variable indexing sampler array' : not supported with this profile: es
+ERROR: 0:69: 'variable indexing sampler array' : not supported for this version or the enabled extensions 
 ERROR: 0:73: 'texel offset' : argument must be compile-time constant 
 ERROR: 0:83: 'double' : Reserved word. 
 ERROR: 0:83: 'double' : not supported with this profile: es
