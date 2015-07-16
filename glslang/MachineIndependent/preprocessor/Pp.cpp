@@ -661,7 +661,7 @@ int TPpContext::CPPline(TPpToken* ppToken)
 
         if (token != '\n') {
             if (token == PpAtomConstString) {
-                parseContext.requireExtensions(directiveLoc, 1, &E_GL_GOOGLE_cpp_style_line_directive, "filename-based #line");
+                parseContext.requireExtensions(directiveLoc, 1, &E_GL_GOOGLE_cpp_style_line_directive, "filename-based #line", true);
                 // We need to save a copy of the string instead of pointing
                 // to the name field of the token since the name field
                 // will likely be overwritten by the next token scan.
@@ -878,6 +878,7 @@ int TPpContext::readCPPline(TPpToken* ppToken)
             token = CPPifdef(0, ppToken);
             break;
         case PpAtomInclude:
+            parseContext.requireExtensions(ppToken->loc, 1, &E_GL_GOOGLE_include_directive, "#include", true);
             token = CPPinclude(ppToken);
             break;
         case PpAtomLine:
@@ -1002,7 +1003,7 @@ int TPpContext::MacroExpand(int atom, TPpToken* ppToken, bool expandUndef, bool 
 
     case PpAtomFileMacro: {
         if (const char* current_file = parseContext.getCurrentLoc().name) {
-            parseContext.requireExtensions(ppToken->loc, 1, &E_GL_GOOGLE_cpp_style_line_directive, "filename-based __FILE__");
+            parseContext.requireExtensions(ppToken->loc, 1, &E_GL_GOOGLE_cpp_style_line_directive, "filename-based __FILE__", true);
             sprintf(ppToken->name, "\"%s\"", current_file);
         } else {
             ppToken->ival = parseContext.getCurrentLoc().string;

@@ -235,7 +235,7 @@ public:
     void requireStage(const TSourceLoc&, EShLanguage, const char* featureDesc);
     void checkDeprecated(const TSourceLoc&, int queryProfiles, int depVersion, const char* featureDesc);
     void requireNotRemoved(const TSourceLoc&, int queryProfiles, int removedVersion, const char* featureDesc);
-    void requireExtensions(const TSourceLoc&, int numExtensions, const char* const extensions[], const char* featureDesc);
+    void requireExtensions(const TSourceLoc&, int numExtensions, const char* const extensions[], const char* featureDesc, bool requiredByPreprocessor = false);
     TExtensionBehavior getExtensionBehavior(const char*);
     bool extensionTurnedOn(const char* const extension);
     bool extensionsTurnedOn(int numExtensions, const char* const extensions[]);

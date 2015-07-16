@@ -174,7 +174,9 @@ void TParseContext::initializeExtensionBehavior()
     extensionBehavior[E_GL_ARB_viewport_array]               = EBhDisable;
 //    extensionBehavior[E_GL_ARB_cull_distance]                = EBhDisable;    // present for 4.5, but need extension control over block members
 
+    // #line and #include
     extensionBehavior[E_GL_GOOGLE_cpp_style_line_directive]          = EBhDisable;
+    extensionBehavior[E_GL_GOOGLE_include_directive]                 = EBhDisable;
 
     // AEP
     extensionBehavior[E_GL_ANDROID_extension_pack_es31a]             = EBhDisablePartial;
@@ -219,7 +221,9 @@ const char* TParseContext::getPreamble()
             "#define GL_OES_EGL_image_external 1\n"
             "#define GL_EXT_shader_texture_lod 1\n"
 
+            // #line and #include
             "#define GL_GOOGLE_cpp_style_line_directive 1\n"
+            "#define GL_GOOGLE_include_directive 1\n"
 
             // AEP
             "#define GL_ANDROID_extension_pack_es31a 1\n"
@@ -270,6 +274,7 @@ const char* TParseContext::getPreamble()
             "#define GL_ARB_viewport_array 1\n"
 
             "#define GL_GOOGLE_cpp_style_line_directive 1\n"
+            "#define GL_GOOGLE_include_directive 1\n"
 //            "#define GL_ARB_cull_distance 1\n"    // present for 4.5, but need extension control over block members
             ;
     }
@@ -410,7 +415,7 @@ void TParseContext::requireNotRemoved(const TSourceLoc& loc, int profileMask, in
 // Use when there are no profile/version to check, it's just an error if one of the
 // extensions is not present.
 //
-void TParseContext::requireExtensions(const TSourceLoc& loc, int numExtensions, const char* const extensions[], const char* featureDesc)
+void TParseContext::requireExtensions(const TSourceLoc& loc, int numExtensions, const char* const extensions[], const char* featureDesc, bool requiredByPreprocessor)
 {
     // First, see if any of the extensions are enabled
     for (int i = 0; i < numExtensions; ++i) {
@@ -437,9 +442,15 @@ void TParseContext::requireExtensions(const TSourceLoc& loc, int numExtensions, 
 
     // If we get this far, give errors explaining what extensions are needed
     if (numExtensions == 1)
-        error(loc, "required extension not requested:", featureDesc, extensions[0]);
+        if (requiredByPreprocessor)
+            ppError(loc, "required extension not requested:", featureDesc, extensions[0]);
+        else
+            error(loc, "required extension not requested:", featureDesc, extensions[0]);
     else {
-        error(loc, "required extension not requested:", featureDesc, "Possible extensions include:");
+        if (requiredByPreprocessor)
+            ppError(loc, "required extension not requested:", featureDesc, "Possible extensions include:");
+        else
+            error(loc, "required extension not requested:", featureDesc, "Possible extensions include:");
         for (int i = 0; i < numExtensions; ++i)
             infoSink.info.message(EPrefixNone, extensions[i]);
     }
@@ -525,6 +536,8 @@ void TParseContext::updateExtensionBehavior(int line, const char* extension, con
         updateExtensionBehavior(line, "GL_EXT_shader_io_blocks", behaviorString);
     else if (strcmp(extension, "GL_OES_tessellation_shader") == 0)
         updateExtensionBehavior(line, "GL_OES_shader_io_blocks", behaviorString);
+    else if (strcmp(extension, "GL_GOOGLE_include_directive") == 0)
+        updateExtensionBehavior(line, "GL_GOOGLE_cpp_style_line_directive", behaviorString);
 }
 
 void TParseContext::updateExtensionBehavior(const char* extension, TExtensionBehavior behavior)
