@@ -1147,28 +1147,18 @@ bool TGlslangToSpvTraverser::visitLoop(glslang::TVisit /* visit */, glslang::TIn
     // body emission needs to know what the for-loop terminal is when it sees a "continue"
     loopTerminal.push(node->getTerminal());
 
-    builder.makeNewLoop();
-
-    bool bodyOut = false;
-    if (! node->testFirst()) {
-        builder.endLoopHeaderWithoutTest();
-        if (node->getBody()) {
-            breakForLoop.push(true);
-            node->getBody()->traverse(this);
-            breakForLoop.pop();
-        }
-        bodyOut = true;
-        builder.createBranchToLoopTest();
-    }
+    builder.makeNewLoop(node->testFirst());
 
     if (node->getTest()) {
         node->getTest()->traverse(this);
         // the AST only contained the test computation, not the branch, we have to add it
         spv::Id condition = builder.accessChainLoad(TranslatePrecisionDecoration(node->getTest()->getType()));
         builder.createLoopTestBranch(condition);
+    } else {
+        builder.createBranchToBody();
     }
 
-    if (! bodyOut && node->getBody()) {
+    if (node->getBody()) {
         breakForLoop.push(true);
         node->getBody()->traverse(this);
         breakForLoop.pop();
