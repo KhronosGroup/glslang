@@ -41,8 +41,8 @@ Linked vertex stage:
                7:             TypeInt 32 1
                8:             TypePointer Function 7(int)
               10:      7(int) Constant 0
-              14:      7(int) Constant 10
-              15:             TypeBool
+              15:      7(int) Constant 10
+              16:             TypeBool
               19:      7(int) Constant 1
               21:      7(int) Constant 2
               32:      7(int) Constant 3
@@ -64,15 +64,15 @@ Linked vertex stage:
                               Store 9(i) 10 
                               Branch 11
               11:             Label
-              13:      7(int) Load 9(i) 
-              16:    15(bool) SLessThan 13 14
+              14:      7(int) Load 9(i) 
+              17:    16(bool) SLessThan 14 15
                               LoopMerge 12 None
-                              BranchConditional 16 17 12 
-              17:               Label
+                              BranchConditional 17 13 12 
+              13:               Label
                                 Store 18(A) 19 
               20:      7(int)   Load 9(i) 
               22:      7(int)   SMod 20 21
-              23:    15(bool)   IEqual 22 10
+              23:    16(bool)   IEqual 22 10
                                 SelectionMerge 25 None
                                 BranchConditional 23 24 25 
               24:                 Label
@@ -87,7 +87,7 @@ Linked vertex stage:
               25:               Label
               31:      7(int)   Load 9(i) 
               33:      7(int)   SMod 31 32
-              34:    15(bool)   IEqual 33 10
+              34:    16(bool)   IEqual 33 10
                                 SelectionMerge 36 None
                                 BranchConditional 34 35 36 
               35:                 Label

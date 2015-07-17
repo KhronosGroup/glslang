@@ -524,7 +524,18 @@ protected:
 
     // Data that needs to be kept in order to properly handle loops.
     struct Loop {
-        Loop() : header(nullptr), merge(nullptr), body(nullptr), testFirst(false), isFirstIteration(nullptr), function(nullptr) { }
+        // Constructs a default Loop structure containing new header, merge, and
+        // body blocks for the current function.
+        // The testFirst argument indicates whether the loop test executes at
+        // the top of the loop rather than at the bottom.  In the latter case,
+        // also create a phi instruction whose value indicates whether we're on
+        // the first iteration of the loop.  The phi instruction is initialized
+        // with no values or predecessor operands.
+        Loop(Builder& builder, bool testFirst);
+        Loop(const Loop&) = default;
+
+        // The function containing the loop.
+        Function* const function;
         // The header is the first block generated for the loop.
         // It dominates all the blocks in the loop, i.e. it is always
         // executed before any others.
@@ -532,24 +543,22 @@ protected:
         // "for" loops), then the header begins with the test code.
         // Otherwise, the loop is a "do-while" loop and the header contains the
         // start of the body of the loop (if the body exists).
-        Block* header;
+        Block* const header;
         // The merge block marks the end of the loop.  Control is transferred
         // to the merge block when either the loop test fails, or when a
         // nested "break" is encountered.
-        Block* merge;
+        Block* const merge;
         // The body block is the first basic block in the body of the loop, i.e.
         // the code that is to be repeatedly executed, aside from loop control.
         // This member is null until we generate code that references the loop
         // body block.
-        Block* body;
+        Block* const body;
         // True when the loop test executes before the body.
-        bool testFirst;
+        const bool testFirst;
         // When the test executes after the body, this is defined as the phi
         // instruction that tells us whether we are on the first iteration of
         // the loop.  Otherwise this is null.
-        Instruction* isFirstIteration;
-        // The function containing the loop.
-        Function* function;
+        Instruction* const isFirstIteration;
     };
 
     // Our loop stack.

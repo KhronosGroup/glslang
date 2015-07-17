@@ -15,7 +15,7 @@ Linked fragment stage:
                               Name 10  "color"
                               Name 12  "BaseColor"
                               Name 16  "i"
-                              Name 22  "Count"
+                              Name 23  "Count"
                               Name 28  "bigColor"
                               Name 36  "gl_FragColor"
                               Name 39  "sum"
@@ -40,9 +40,9 @@ Linked fragment stage:
               14:             TypeInt 32 1
               15:             TypePointer Function 14(int)
               17:     14(int) Constant 0
-              21:             TypePointer UniformConstant 14(int)
-       22(Count):     21(ptr) Variable UniformConstant 
-              24:             TypeBool
+              22:             TypePointer UniformConstant 14(int)
+       23(Count):     22(ptr) Variable UniformConstant 
+              25:             TypeBool
               27:             TypePointer UniformConstant 8(fvec4)
     28(bigColor):     27(ptr) Variable UniformConstant 
               33:     14(int) Constant 1
@@ -50,7 +50,7 @@ Linked fragment stage:
 36(gl_FragColor):     35(ptr) Variable Output 
               38:             TypePointer Function 7(float)
               40:    7(float) Constant 0
-              45:     14(int) Constant 4
+              46:     14(int) Constant 4
               48:             TypeInt 32 0
               49:             TypeVector 48(int) 4
               50:             TypePointer UniformConstant 49(ivec4)
@@ -59,7 +59,7 @@ Linked fragment stage:
               86:             TypeVector 7(float) 3
               97:             TypePointer Input 7(float)
            98(f):     97(ptr) Variable Input 
-             115:     14(int) Constant 16
+             116:     14(int) Constant 16
          4(main):           2 Function None 3
                5:             Label
        10(color):      9(ptr) Variable Function 
@@ -76,12 +76,12 @@ Linked fragment stage:
                               Store 16(i) 17 
                               Branch 18
               18:             Label
-              20:     14(int) Load 16(i) 
-              23:     14(int) Load 22(Count) 
-              25:    24(bool) SLessThan 20 23
+              21:     14(int) Load 16(i) 
+              24:     14(int) Load 23(Count) 
+              26:    25(bool) SLessThan 21 24
                               LoopMerge 19 None
-                              BranchConditional 25 26 19 
-              26:               Label
+                              BranchConditional 26 20 19 
+              20:               Label
               29:    8(fvec4)   Load 28(bigColor) 
               30:    8(fvec4)   Load 10(color) 
               31:    8(fvec4)   FAdd 30 29
@@ -97,11 +97,11 @@ Linked fragment stage:
                               Store 41(i) 17 
                               Branch 42
               42:             Label
-              44:     14(int) Load 41(i) 
-              46:    24(bool) SLessThan 44 45
+              45:     14(int) Load 41(i) 
+              47:    25(bool) SLessThan 45 46
                               LoopMerge 43 None
-                              BranchConditional 46 47 43 
-              47:               Label
+                              BranchConditional 47 44 43 
+              44:               Label
               52:     14(int)   Load 41(i) 
               53:   49(ivec4)   Load 51(v4) 
               54:     48(int)   VectorExtractDynamic 53 52
@@ -117,11 +117,11 @@ Linked fragment stage:
                               Store 60(i) 17 
                               Branch 61
               61:             Label
-              63:     14(int) Load 60(i) 
-              64:    24(bool) SLessThan 63 45
+              64:     14(int) Load 60(i) 
+              65:    25(bool) SLessThan 64 46
                               LoopMerge 62 None
-                              BranchConditional 64 65 62 
-              65:               Label
+                              BranchConditional 65 63 62 
+              63:               Label
               67:     14(int)   Load 60(i) 
               68:     14(int)   Load 60(i) 
               69:   49(ivec4)   Load 51(v4) 
@@ -151,12 +151,12 @@ Linked fragment stage:
                               Store 90(i) 17 
                               Branch 91
               91:             Label
-              93:     14(int) Load 90(i) 
-              94:     14(int) Load 22(Count) 
-              95:    24(bool) SLessThan 93 94
+              94:     14(int) Load 90(i) 
+              95:     14(int) Load 23(Count) 
+              96:    25(bool) SLessThan 94 95
                               LoopMerge 92 None
-                              BranchConditional 95 96 92 
-              96:               Label
+                              BranchConditional 96 93 92 
+              93:               Label
               99:    7(float)   Load 98(f) 
              100:    8(fvec4)   Load 84(r) 
              101:    8(fvec4)   CompositeInsert 99 100 3
@@ -177,17 +177,17 @@ Linked fragment stage:
                               Store 111(i) 17 
                               Branch 112
              112:             Label
-             114:     14(int) Load 111(i) 
-             116:    24(bool) SLessThan 114 115
+             115:     14(int) Load 111(i) 
+             117:    25(bool) SLessThan 115 116
                               LoopMerge 113 None
-                              BranchConditional 116 117 113 
-             117:               Label
+                              BranchConditional 117 114 113 
+             114:               Label
              118:    7(float)   Load 98(f) 
              119:    8(fvec4)   Load 36(gl_FragColor) 
              120:    8(fvec4)   VectorTimesScalar 119 118
                                 Store 36(gl_FragColor) 120 
              121:     14(int)   Load 111(i) 
-             122:     14(int)   IAdd 121 45
+             122:     14(int)   IAdd 121 46
                                 Store 111(i) 122 
                                 Branch 112
              113:             Label

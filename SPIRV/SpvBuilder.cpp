@@ -1738,19 +1738,8 @@ void Builder::endSwitch(std::vector<Block*>& /*segmentBlock*/)
 // Comments in header
 void Builder::makeNewLoop(bool loopTestFirst)
 {
-    loops.push(Loop());
-    Loop& loop = loops.top();
-
-    loop.function  = &getBuildPoint()->getParent();
-    loop.header    = new Block(getUniqueId(), *loop.function);
-    loop.merge     = new Block(getUniqueId(), *loop.function);
-    // Delaying creation of the loop body perturbs test results less,
-    // which makes for easier patch review.
-    // TODO(dneto): Create the loop body block here, instead of
-    // upon first use.
-    loop.body      = 0;
-    loop.testFirst = loopTestFirst;
-    loop.isFirstIteration = 0;
+    loops.push(Loop(*this, loopTestFirst));
+    const Loop& loop = loops.top();
 
     // The loop test is always emitted before the loop body.
     // But if the loop test executes at the bottom of the loop, then
@@ -1771,8 +1760,6 @@ void Builder::makeNewLoop(bool loopTestFirst)
         // Generate code to defer the loop test until the second and
         // subsequent iterations.
 
-        // A phi node determines whether we're on the first iteration.
-        loop.isFirstIteration = new Instruction(getUniqueId(), makeBoolType(), OpPhi);
         // It's always the first iteration when coming from the preheader.
         // All other branches to this loop header will need to indicate "false",
         // but we don't yet know where they will come from.
@@ -1792,7 +1779,6 @@ void Builder::makeNewLoop(bool loopTestFirst)
         loop.function->addBlock(firstIterationCheck);
         setBuildPoint(firstIterationCheck);
 
-        loop.body = new Block(getUniqueId(), *loop.function);
         // Control flow after this "if" normally reconverges at the loop body.
         // However, the loop test has a "break branch" out of this selection
         // construct because it can transfer control to the loop merge block.
@@ -1808,14 +1794,13 @@ void Builder::makeNewLoop(bool loopTestFirst)
 
 void Builder::createLoopTestBranch(Id condition)
 {
-    Loop& loop = loops.top();
+    const Loop& loop = loops.top();
 
     // Generate the merge instruction. If the loop test executes before
     // the body, then this is a loop merge.  Otherwise the loop merge
     // has already been generated and this is a conditional merge.
     if (loop.testFirst) {
         createMerge(OpLoopMerge, loop.merge, LoopControlMaskNone);
-        loop.body = new Block(getUniqueId(), *loop.function);
         // Branching to the "body" block will keep control inside
         // the loop.
         createConditionalBranch(condition, loop.body, loop.merge);
@@ -1842,7 +1827,7 @@ void Builder::createLoopTestBranch(Id condition)
 
 void Builder::createBranchToBody()
 {
-    Loop& loop = loops.top();
+    const Loop& loop = loops.top();
     assert(loop.body);
 
     // This is a reconvergence of control flow, so no merge instruction
@@ -1870,7 +1855,7 @@ void Builder::createLoopExit()
 // Close the innermost loop
 void Builder::closeLoop()
 {
-    Loop& loop = loops.top();
+    const Loop& loop = loops.top();
 
     // Branch back to the top
     createBranchToLoopHeaderFromInside(loop);
@@ -2197,5 +2182,16 @@ void ValidationError(const char* error)
 {
     printf("Validation Error: %s\n", error);
 }
+
+Builder::Loop::Loop(Builder& builder, bool testFirstArg)
+  : function(&builder.getBuildPoint()->getParent()),
+    header(new Block(builder.getUniqueId(), *function)),
+    merge(new Block(builder.getUniqueId(), *function)),
+    body(new Block(builder.getUniqueId(), *function)),
+    testFirst(testFirstArg),
+    isFirstIteration(testFirst
+                     ? nullptr
+                     : new Instruction(builder.getUniqueId(), builder.makeBoolType(), OpPhi))
+  {}
 
 }; // end spv namespace

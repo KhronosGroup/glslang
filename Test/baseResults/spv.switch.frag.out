@@ -70,10 +70,10 @@ Linked fragment stage:
            74(x):     73(ptr) Variable Input 
           128(d):     60(ptr) Variable UniformConstant 
              155:     10(int) Constant 0
-             159:     10(int) Constant 10
-             160:             TypeBool
+             160:     10(int) Constant 10
+             161:             TypeBool
              173:     10(int) Constant 20
-             177:     10(int) Constant 30
+             178:     10(int) Constant 30
              183:    7(float) Constant 1120429670
              203:    7(float) Constant 1079739679
              221:             TypePointer Output 7(float)
@@ -214,11 +214,11 @@ Linked fragment stage:
                               Store 154(i) 155 
                               Branch 156
              156:             Label
-             158:     10(int) Load 154(i) 
-             161:   160(bool) SLessThan 158 159
+             159:     10(int) Load 154(i) 
+             162:   161(bool) SLessThan 159 160
                               LoopMerge 157 None
-                              BranchConditional 161 162 157 
-             162:               Label
+                              BranchConditional 162 158 157 
+             158:               Label
              163:     10(int)   Load 61(c) 
                                 SelectionMerge 167 None
                                 Switch 163 166 
@@ -233,16 +233,16 @@ Linked fragment stage:
                                   Store 172(j) 173 
                                   Branch 174
              174:                 Label
-             176:     10(int)     Load 172(j) 
-             178:   160(bool)     SLessThan 176 177
+             177:     10(int)     Load 172(j) 
+             179:   161(bool)     SLessThan 177 178
                                   LoopMerge 175 None
-                                  BranchConditional 178 179 175 
-             179:                   Label
+                                  BranchConditional 179 176 175 
+             176:                   Label
              180:    7(float)       Load 72(f) 
              181:    7(float)       FAdd 180 48
                                     Store 72(f) 181 
              182:    7(float)       Load 72(f) 
-             184:   160(bool)       FOrdLessThan 182 183
+             184:   161(bool)       FOrdLessThan 182 183
                                     SelectionMerge 186 None
                                     BranchConditional 184 185 186 
              185:                     Label
@@ -270,7 +270,7 @@ Linked fragment stage:
                                   Branch 167
              167:               Label
              202:    7(float)   Load 72(f) 
-             204:   160(bool)   FOrdLessThan 202 203
+             204:   161(bool)   FOrdLessThan 202 203
                                 SelectionMerge 206 None
                                 BranchConditional 204 205 206 
              205:                 Label
