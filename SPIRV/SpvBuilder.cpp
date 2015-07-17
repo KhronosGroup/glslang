@@ -1810,11 +1810,14 @@ void Builder::createLoopTestBranch(Id condition)
 {
     Loop& loop = loops.top();
 
-    // Generate the merge instruction. However, we've already generated
-    // it if the loop test executes after the body.
+    // Generate the merge instruction. If the loop test executes before
+    // the body, then this is a loop merge.  Otherwise the loop merge
+    // has already been generated and this is a conditional merge.
     if (loop.testFirst) {
         createMerge(OpLoopMerge, loop.merge, LoopControlMaskNone);
         loop.body = new Block(getUniqueId(), *loop.function);
+    } else {
+        createMerge(OpSelectionMerge, loop.merge, SelectionControlMaskNone);
     }
     assert(loop.body);
 

@@ -53,17 +53,18 @@ Linked fragment stage:
               23:    7(float)   CompositeExtract 22 0
               26:    7(float)   Load 25(d) 
               27:    17(bool)   FOrdLessThan 23 26
+                                SelectionMerge 15 None
                                 BranchConditional 27 20 15 
-              20:             Label
-              30:    8(fvec4) Load 29(bigColor) 
-              31:    8(fvec4) Load 10(color) 
-              32:    8(fvec4) FAdd 31 30
-                              Store 10(color) 32 
-                              Branch 14
-              15:             Label
-              36:    8(fvec4) Load 10(color) 
-                              Store 35(gl_FragColor) 36 
-                              Branch 6
-               6:             Label
-                              Return
-                              FunctionEnd
+              20:                 Label
+              30:    8(fvec4)     Load 29(bigColor) 
+              31:    8(fvec4)     Load 10(color) 
+              32:    8(fvec4)     FAdd 31 30
+                                  Store 10(color) 32 
+                                  Branch 14
+              15:               Label
+              36:    8(fvec4)   Load 10(color) 
+                                Store 35(gl_FragColor) 36 
+                                Branch 6
+               6:               Label
+                                Return
+                                FunctionEnd

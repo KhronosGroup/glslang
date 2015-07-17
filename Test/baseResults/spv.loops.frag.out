@@ -346,779 +346,785 @@ Linked fragment stage:
              154:    7(float)   CompositeExtract 153 0
              155:    7(float)   Load 92(d2) 
              156:    16(bool)   FOrdLessThan 154 155
+                                SelectionMerge 148 None
                                 BranchConditional 156 151 148 
-             151:             Label
-             158:    8(fvec4) Load 157(bigColor3) 
-             159:    8(fvec4) Load 10(color) 
-             160:    8(fvec4) FAdd 159 158
-                              Store 10(color) 160 
-                              Branch 147
-             148:             Label
-                              Store 162(i) 131 
-                              Branch 163
-             163:             Label
-             165:    128(int) Load 162(i) 
-             167:    16(bool) SLessThan 165 166
-                              LoopMerge 164 None
-                              BranchConditional 167 168 164 
-             168:               Label
-             169:    7(float)   Load 97(d3) 
-             170:    8(fvec4)   Load 10(color) 
-             171:    7(float)   CompositeExtract 170 2
-             172:    7(float)   FAdd 171 169
-             173:    8(fvec4)   Load 10(color) 
-             174:    8(fvec4)   CompositeInsert 172 173 2
-                                Store 10(color) 174 
-             175:    128(int)   Load 162(i) 
-             176:    128(int)   IAdd 175 145
-                                Store 162(i) 176 
+             151:                 Label
+             158:    8(fvec4)     Load 157(bigColor3) 
+             159:    8(fvec4)     Load 10(color) 
+             160:    8(fvec4)     FAdd 159 158
+                                  Store 10(color) 160 
+                                  Branch 147
+             148:               Label
+                                Store 162(i) 131 
                                 Branch 163
-             164:             Label
-                              Store 177(i) 131 
-                              Branch 178
-             178:             Label
-             180:    128(int) Load 177(i) 
-             182:    16(bool) SLessThan 180 181
-                              LoopMerge 179 None
-                              BranchConditional 182 183 179 
-             183:               Label
-             184:    8(fvec4)   Load 10(color) 
-             185:    7(float)   CompositeExtract 184 2
-             187:    16(bool)   FOrdLessThan 185 186
-                                SelectionMerge 189 None
-                                BranchConditional 187 188 195 
-             188:                 Label
-             190:    8(fvec4)     Load 10(color) 
-             191:    7(float)     CompositeExtract 190 0
-             192:    7(float)     FAdd 191 85
-             193:    8(fvec4)     Load 10(color) 
-             194:    8(fvec4)     CompositeInsert 192 193 0
-                                  Store 10(color) 194 
-                                  Branch 189
-             195:                 Label
-             196:    8(fvec4)     Load 10(color) 
-             197:    7(float)     CompositeExtract 196 1
-             198:    7(float)     FAdd 197 85
-             199:    8(fvec4)     Load 10(color) 
-             200:    8(fvec4)     CompositeInsert 198 199 1
-                                  Store 10(color) 200 
-                                  Branch 189
-             189:               Label
-             201:    8(fvec4)   Load 10(color) 
-             202:    7(float)   CompositeExtract 201 3
-             203:    16(bool)   FOrdLessThan 202 186
-                                SelectionMerge 205 None
-                                BranchConditional 203 204 205 
-             204:                 Label
-             206:    8(fvec4)     Load 10(color) 
-             207:    7(float)     CompositeExtract 206 2
-             208:    8(fvec4)     Load 10(color) 
-             209:    7(float)     CompositeExtract 208 1
-             210:    16(bool)     FOrdGreaterThan 207 209
-                                  SelectionMerge 212 None
-                                  BranchConditional 210 211 212 
-             211:                   Label
-                                    Branch 212
-             212:                 Label
-                                  Branch 205
-             205:               Label
-             213:    128(int)   Load 177(i) 
-             214:    128(int)   IAdd 213 145
-                                Store 177(i) 214 
+             163:               Label
+             165:    128(int)   Load 162(i) 
+             167:    16(bool)   SLessThan 165 166
+                                LoopMerge 164 None
+                                BranchConditional 167 168 164 
+             168:                 Label
+             169:    7(float)     Load 97(d3) 
+             170:    8(fvec4)     Load 10(color) 
+             171:    7(float)     CompositeExtract 170 2
+             172:    7(float)     FAdd 171 169
+             173:    8(fvec4)     Load 10(color) 
+             174:    8(fvec4)     CompositeInsert 172 173 2
+                                  Store 10(color) 174 
+             175:    128(int)     Load 162(i) 
+             176:    128(int)     IAdd 175 145
+                                  Store 162(i) 176 
+                                  Branch 163
+             164:               Label
+                                Store 177(i) 131 
                                 Branch 178
-             179:             Label
-                              Store 215(i) 131 
-                              Branch 216
-             216:             Label
-             218:    128(int) Load 215(i) 
-             220:    16(bool) SLessThan 218 219
-                              LoopMerge 217 None
-                              BranchConditional 220 221 217 
-             221:               Label
-             222:    8(fvec4)   Load 10(color) 
-             223:    7(float)   CompositeExtract 222 2
-             224:    16(bool)   FOrdLessThan 223 186
-                                SelectionMerge 226 None
-                                BranchConditional 224 225 232 
-             225:                 Label
-             227:    8(fvec4)     Load 10(color) 
-             228:    7(float)     CompositeExtract 227 0
-             229:    7(float)     FAdd 228 85
-             230:    8(fvec4)     Load 10(color) 
-             231:    8(fvec4)     CompositeInsert 229 230 0
-                                  Store 10(color) 231 
-                                  Branch 226
-             232:                 Label
-             233:    8(fvec4)     Load 10(color) 
-             234:    7(float)     CompositeExtract 233 1
-             235:    7(float)     FAdd 234 85
-             236:    8(fvec4)     Load 10(color) 
-             237:    8(fvec4)     CompositeInsert 235 236 1
-                                  Store 10(color) 237 
-                                  Branch 226
-             226:               Label
-             238:    128(int)   Load 215(i) 
-             239:    128(int)   IAdd 238 145
-                                Store 215(i) 239 
+             178:               Label
+             180:    128(int)   Load 177(i) 
+             182:    16(bool)   SLessThan 180 181
+                                LoopMerge 179 None
+                                BranchConditional 182 183 179 
+             183:                 Label
+             184:    8(fvec4)     Load 10(color) 
+             185:    7(float)     CompositeExtract 184 2
+             187:    16(bool)     FOrdLessThan 185 186
+                                  SelectionMerge 189 None
+                                  BranchConditional 187 188 195 
+             188:                   Label
+             190:    8(fvec4)       Load 10(color) 
+             191:    7(float)       CompositeExtract 190 0
+             192:    7(float)       FAdd 191 85
+             193:    8(fvec4)       Load 10(color) 
+             194:    8(fvec4)       CompositeInsert 192 193 0
+                                    Store 10(color) 194 
+                                    Branch 189
+             195:                   Label
+             196:    8(fvec4)       Load 10(color) 
+             197:    7(float)       CompositeExtract 196 1
+             198:    7(float)       FAdd 197 85
+             199:    8(fvec4)       Load 10(color) 
+             200:    8(fvec4)       CompositeInsert 198 199 1
+                                    Store 10(color) 200 
+                                    Branch 189
+             189:                 Label
+             201:    8(fvec4)     Load 10(color) 
+             202:    7(float)     CompositeExtract 201 3
+             203:    16(bool)     FOrdLessThan 202 186
+                                  SelectionMerge 205 None
+                                  BranchConditional 203 204 205 
+             204:                   Label
+             206:    8(fvec4)       Load 10(color) 
+             207:    7(float)       CompositeExtract 206 2
+             208:    8(fvec4)       Load 10(color) 
+             209:    7(float)       CompositeExtract 208 1
+             210:    16(bool)       FOrdGreaterThan 207 209
+                                    SelectionMerge 212 None
+                                    BranchConditional 210 211 212 
+             211:                     Label
+                                      Branch 212
+             212:                   Label
+                                    Branch 205
+             205:                 Label
+             213:    128(int)     Load 177(i) 
+             214:    128(int)     IAdd 213 145
+                                  Store 177(i) 214 
+                                  Branch 178
+             179:               Label
+                                Store 215(i) 131 
                                 Branch 216
-             217:             Label
-                              Store 240(i) 131 
-                              Branch 241
-             241:             Label
-             243:    128(int) Load 240(i) 
-             244:    16(bool) SLessThan 243 166
-                              LoopMerge 242 None
-                              BranchConditional 244 245 242 
-             245:               Label
-             246:    7(float)   Load 97(d3) 
-             247:    8(fvec4)   Load 10(color) 
-             248:    7(float)   CompositeExtract 247 2
-             249:    7(float)   FAdd 248 246
-             250:    8(fvec4)   Load 10(color) 
-             251:    8(fvec4)   CompositeInsert 249 250 2
-                                Store 10(color) 251 
-             252:    8(fvec4)   Load 10(color) 
-             253:    7(float)   CompositeExtract 252 0
-             254:    7(float)   Load 119(d4) 
-             255:    16(bool)   FOrdLessThan 253 254
-                                SelectionMerge 257 None
-                                BranchConditional 255 256 257 
-             256:                 Label
-             258:    128(int)     Load 240(i) 
-             259:    128(int)     IAdd 258 145
-                                  Store 240(i) 259 
-                                  Branch 241
-             257:               Label
-             261:    8(fvec4)   Load 10(color) 
-             262:    7(float)   CompositeExtract 261 3
-             263:    7(float)   FAdd 262 85
-             264:    8(fvec4)   Load 10(color) 
-             265:    8(fvec4)   CompositeInsert 263 264 3
-                                Store 10(color) 265 
-             266:    128(int)   Load 240(i) 
-             267:    128(int)   IAdd 266 145
-                                Store 240(i) 267 
+             216:               Label
+             218:    128(int)   Load 215(i) 
+             220:    16(bool)   SLessThan 218 219
+                                LoopMerge 217 None
+                                BranchConditional 220 221 217 
+             221:                 Label
+             222:    8(fvec4)     Load 10(color) 
+             223:    7(float)     CompositeExtract 222 2
+             224:    16(bool)     FOrdLessThan 223 186
+                                  SelectionMerge 226 None
+                                  BranchConditional 224 225 232 
+             225:                   Label
+             227:    8(fvec4)       Load 10(color) 
+             228:    7(float)       CompositeExtract 227 0
+             229:    7(float)       FAdd 228 85
+             230:    8(fvec4)       Load 10(color) 
+             231:    8(fvec4)       CompositeInsert 229 230 0
+                                    Store 10(color) 231 
+                                    Branch 226
+             232:                   Label
+             233:    8(fvec4)       Load 10(color) 
+             234:    7(float)       CompositeExtract 233 1
+             235:    7(float)       FAdd 234 85
+             236:    8(fvec4)       Load 10(color) 
+             237:    8(fvec4)       CompositeInsert 235 236 1
+                                    Store 10(color) 237 
+                                    Branch 226
+             226:                 Label
+             238:    128(int)     Load 215(i) 
+             239:    128(int)     IAdd 238 145
+                                  Store 215(i) 239 
+                                  Branch 216
+             217:               Label
+                                Store 240(i) 131 
                                 Branch 241
-             242:             Label
-                              Store 268(i) 131 
-                              Branch 269
-             269:             Label
-             271:    128(int) Load 268(i) 
-             272:    16(bool) SLessThan 271 166
-                              LoopMerge 270 None
-                              BranchConditional 272 273 270 
-             273:               Label
-             274:    7(float)   Load 97(d3) 
-             275:    8(fvec4)   Load 10(color) 
-             276:    7(float)   CompositeExtract 275 2
-             277:    7(float)   FAdd 276 274
-             278:    8(fvec4)   Load 10(color) 
-             279:    8(fvec4)   CompositeInsert 277 278 2
-                                Store 10(color) 279 
-             280:    8(fvec4)   Load 10(color) 
-             281:    7(float)   CompositeExtract 280 0
-             282:    7(float)   Load 119(d4) 
-             283:    16(bool)   FOrdLessThan 281 282
-                                SelectionMerge 285 None
-                                BranchConditional 283 284 285 
-             284:                 Label
-                                  Branch 270
-             285:               Label
-             287:    8(fvec4)   Load 10(color) 
-             288:    7(float)   CompositeExtract 287 3
-             289:    7(float)   FAdd 288 85
-             290:    8(fvec4)   Load 10(color) 
-             291:    8(fvec4)   CompositeInsert 289 290 3
-                                Store 10(color) 291 
-             292:    128(int)   Load 268(i) 
-             293:    128(int)   IAdd 292 145
-                                Store 268(i) 293 
+             241:               Label
+             243:    128(int)   Load 240(i) 
+             244:    16(bool)   SLessThan 243 166
+                                LoopMerge 242 None
+                                BranchConditional 244 245 242 
+             245:                 Label
+             246:    7(float)     Load 97(d3) 
+             247:    8(fvec4)     Load 10(color) 
+             248:    7(float)     CompositeExtract 247 2
+             249:    7(float)     FAdd 248 246
+             250:    8(fvec4)     Load 10(color) 
+             251:    8(fvec4)     CompositeInsert 249 250 2
+                                  Store 10(color) 251 
+             252:    8(fvec4)     Load 10(color) 
+             253:    7(float)     CompositeExtract 252 0
+             254:    7(float)     Load 119(d4) 
+             255:    16(bool)     FOrdLessThan 253 254
+                                  SelectionMerge 257 None
+                                  BranchConditional 255 256 257 
+             256:                   Label
+             258:    128(int)       Load 240(i) 
+             259:    128(int)       IAdd 258 145
+                                    Store 240(i) 259 
+                                    Branch 241
+             257:                 Label
+             261:    8(fvec4)     Load 10(color) 
+             262:    7(float)     CompositeExtract 261 3
+             263:    7(float)     FAdd 262 85
+             264:    8(fvec4)     Load 10(color) 
+             265:    8(fvec4)     CompositeInsert 263 264 3
+                                  Store 10(color) 265 
+             266:    128(int)     Load 240(i) 
+             267:    128(int)     IAdd 266 145
+                                  Store 240(i) 267 
+                                  Branch 241
+             242:               Label
+                                Store 268(i) 131 
                                 Branch 269
-             270:             Label
-                              Branch 294
-             294:             Label
-             296:    16(bool) Phi 17 270 161 312 161 320
-                              LoopMerge 295 None
-                              Branch 297
-             297:             Label
-                              SelectionMerge 298 None
-                              BranchConditional 296 298 299 
-             299:               Label
-             300:    8(fvec4)   Load 10(color) 
-             301:    7(float)   CompositeExtract 300 2
-             302:    7(float)   Load 119(d4) 
-             303:    16(bool)   FOrdLessThan 301 302
-                                BranchConditional 303 298 295 
-             298:             Label
-             305:    8(fvec4) Load 304(bigColor4) 
-             306:    8(fvec4) Load 10(color) 
-             307:    8(fvec4) FAdd 306 305
-                              Store 10(color) 307 
-             308:    8(fvec4) Load 10(color) 
-             309:    7(float) CompositeExtract 308 0
-             310:    7(float) Load 119(d4) 
-             311:    16(bool) FOrdLessThan 309 310
-                              SelectionMerge 313 None
-                              BranchConditional 311 312 313 
-             312:               Label
+             269:               Label
+             271:    128(int)   Load 268(i) 
+             272:    16(bool)   SLessThan 271 166
+                                LoopMerge 270 None
+                                BranchConditional 272 273 270 
+             273:                 Label
+             274:    7(float)     Load 97(d3) 
+             275:    8(fvec4)     Load 10(color) 
+             276:    7(float)     CompositeExtract 275 2
+             277:    7(float)     FAdd 276 274
+             278:    8(fvec4)     Load 10(color) 
+             279:    8(fvec4)     CompositeInsert 277 278 2
+                                  Store 10(color) 279 
+             280:    8(fvec4)     Load 10(color) 
+             281:    7(float)     CompositeExtract 280 0
+             282:    7(float)     Load 119(d4) 
+             283:    16(bool)     FOrdLessThan 281 282
+                                  SelectionMerge 285 None
+                                  BranchConditional 283 284 285 
+             284:                   Label
+                                    Branch 270
+             285:                 Label
+             287:    8(fvec4)     Load 10(color) 
+             288:    7(float)     CompositeExtract 287 3
+             289:    7(float)     FAdd 288 85
+             290:    8(fvec4)     Load 10(color) 
+             291:    8(fvec4)     CompositeInsert 289 290 3
+                                  Store 10(color) 291 
+             292:    128(int)     Load 268(i) 
+             293:    128(int)     IAdd 292 145
+                                  Store 268(i) 293 
+                                  Branch 269
+             270:               Label
                                 Branch 294
-             313:             Label
-             315:    8(fvec4) Load 10(color) 
-             316:    7(float) CompositeExtract 315 1
-             317:    7(float) Load 119(d4) 
-             318:    16(bool) FOrdLessThan 316 317
-                              SelectionMerge 320 None
-                              BranchConditional 318 319 327 
-             319:               Label
-             321:    7(float)   Load 119(d4) 
-             322:    8(fvec4)   Load 10(color) 
-             323:    7(float)   CompositeExtract 322 1
-             324:    7(float)   FAdd 323 321
-             325:    8(fvec4)   Load 10(color) 
-             326:    8(fvec4)   CompositeInsert 324 325 1
-                                Store 10(color) 326 
-                                Branch 320
-             327:               Label
-             328:    7(float)   Load 119(d4) 
-             329:    8(fvec4)   Load 10(color) 
-             330:    7(float)   CompositeExtract 329 0
-             331:    7(float)   FAdd 330 328
-             332:    8(fvec4)   Load 10(color) 
-             333:    8(fvec4)   CompositeInsert 331 332 0
-                                Store 10(color) 333 
-                                Branch 320
-             320:             Label
-                              Branch 294
-             295:             Label
-                              Branch 334
-             334:             Label
-             336:    16(bool) Phi 17 295 161 354
-                              LoopMerge 335 None
-                              Branch 337
-             337:             Label
-                              SelectionMerge 338 None
-                              BranchConditional 336 338 339 
-             339:               Label
-             340:    8(fvec4)   Load 10(color) 
-             341:    7(float)   CompositeExtract 340 0
-             343:    7(float)   Load 342(d5) 
-             344:    16(bool)   FOrdLessThan 341 343
-                                BranchConditional 344 338 335 
-             338:             Label
-             346:    8(fvec4) Load 345(bigColor5) 
-             347:    8(fvec4) Load 10(color) 
-             348:    8(fvec4) FAdd 347 346
-                              Store 10(color) 348 
-             349:    8(fvec4) Load 10(color) 
-             350:    7(float) CompositeExtract 349 1
-             351:    7(float) Load 342(d5) 
-             352:    16(bool) FOrdLessThan 350 351
-                              SelectionMerge 354 None
-                              BranchConditional 352 353 354 
-             353:               Label
-             355:    7(float)   Load 342(d5) 
-             356:    8(fvec4)   Load 10(color) 
-             357:    7(float)   CompositeExtract 356 1
-             358:    7(float)   FAdd 357 355
-             359:    8(fvec4)   Load 10(color) 
-             360:    8(fvec4)   CompositeInsert 358 359 1
-                                Store 10(color) 360 
-                                Branch 354
-             354:             Label
-                              Branch 334
-             335:             Label
-             361:    8(fvec4) Load 10(color) 
-             362:    7(float) CompositeExtract 361 0
-             364:    7(float) Load 363(d6) 
-             365:    16(bool) FOrdLessThan 362 364
-                              SelectionMerge 367 None
-                              BranchConditional 365 366 379 
-             366:               Label
-                                Branch 368
-             368:               Label
-             370:    8(fvec4)   Load 10(color) 
-             371:    7(float)   CompositeExtract 370 1
-             372:    7(float)   Load 363(d6) 
-             373:    16(bool)   FOrdLessThan 371 372
-                                LoopMerge 369 None
-                                BranchConditional 373 374 369 
-             374:                 Label
-             376:    8(fvec4)     Load 375(bigColor6) 
-             377:    8(fvec4)     Load 10(color) 
-             378:    8(fvec4)     FAdd 377 376
-                                  Store 10(color) 378 
-                                  Branch 368
-             369:               Label
-                                Branch 367
-             379:               Label
-                                Branch 380
-             380:               Label
-             382:    8(fvec4)   Load 10(color) 
-             383:    7(float)   CompositeExtract 382 2
-             384:    7(float)   Load 363(d6) 
-             385:    16(bool)   FOrdLessThan 383 384
-                                LoopMerge 381 None
-                                BranchConditional 385 386 381 
-             386:                 Label
-             387:    8(fvec4)     Load 375(bigColor6) 
-             388:    7(float)     CompositeExtract 387 2
-             389:    8(fvec4)     Load 10(color) 
-             390:    7(float)     CompositeExtract 389 2
-             391:    7(float)     FAdd 390 388
-             392:    8(fvec4)     Load 10(color) 
-             393:    8(fvec4)     CompositeInsert 391 392 2
-                                  Store 10(color) 393 
-                                  Branch 380
-             381:               Label
-                                Branch 367
-             367:             Label
-             394:    8(fvec4) Load 10(color) 
-             395:    7(float) CompositeExtract 394 0
-             396:    7(float) Load 363(d6) 
-             397:    16(bool) FOrdLessThan 395 396
-                              SelectionMerge 399 None
-                              BranchConditional 397 398 416 
-             398:               Label
-                                Branch 400
-             400:               Label
-             402:    8(fvec4)   Load 10(color) 
-             403:    7(float)   CompositeExtract 402 1
-             404:    7(float)   Load 363(d6) 
-             405:    16(bool)   FOrdLessThan 403 404
-                                LoopMerge 401 None
-                                BranchConditional 405 406 401 
-             406:                 Label
-             407:    8(fvec4)     Load 375(bigColor6) 
-             408:    8(fvec4)     Load 10(color) 
-             409:    8(fvec4)     FAdd 408 407
-                                  Store 10(color) 409 
-             411:    7(float)     Load 410(d7) 
-             412:    16(bool)     FOrdLessThan 411 85
-                                  SelectionMerge 414 None
-                                  BranchConditional 412 413 414 
-             413:                   Label
-                                    Branch 401
-             414:                 Label
-                                  Branch 400
-             401:               Label
-                                Branch 399
-             416:               Label
-                                Branch 417
-             417:               Label
-             419:    8(fvec4)   Load 10(color) 
-             420:    7(float)   CompositeExtract 419 2
-             421:    7(float)   Load 363(d6) 
-             422:    16(bool)   FOrdLessThan 420 421
-                                LoopMerge 418 None
-                                BranchConditional 422 423 418 
-             423:                 Label
-             424:    8(fvec4)     Load 375(bigColor6) 
-             425:    7(float)     CompositeExtract 424 2
-             426:    8(fvec4)     Load 10(color) 
-             427:    7(float)     CompositeExtract 426 2
-             428:    7(float)     FAdd 427 425
-             429:    8(fvec4)     Load 10(color) 
-             430:    8(fvec4)     CompositeInsert 428 429 2
-                                  Store 10(color) 430 
-                                  Branch 417
-             418:               Label
-                                Branch 399
-             399:             Label
-                              Branch 431
-             431:             Label
-             433:    16(bool) Phi 17 399 161 450
-                              LoopMerge 432 None
-                              Branch 434
-             434:             Label
-                              SelectionMerge 435 None
-                              BranchConditional 433 435 436 
-             436:               Label
-                                BranchConditional 17 435 432 
-             435:             Label
-             437:    7(float) Load 410(d7) 
-             439:    16(bool) FOrdLessThan 437 438
-                              SelectionMerge 441 None
-                              BranchConditional 439 440 441 
-             440:               Label
-                                Branch 432
-             441:             Label
-             444:    8(fvec4) Load 443(bigColor7) 
-             445:    8(fvec4) Load 10(color) 
-             446:    8(fvec4) FAdd 445 444
-                              Store 10(color) 446 
-             447:    7(float) Load 410(d7) 
-             448:    16(bool) FOrdLessThan 447 85
-                              SelectionMerge 450 None
-                              BranchConditional 448 449 450 
-             449:               Label
-             451:    8(fvec4)   Load 10(color) 
-             452:    7(float)   CompositeExtract 451 2
-             453:    7(float)   FAdd 452 85
-             454:    8(fvec4)   Load 10(color) 
-             455:    8(fvec4)   CompositeInsert 453 454 2
-                                Store 10(color) 455 
-                                Branch 432
-             450:             Label
-             457:    8(fvec4) Load 12(BaseColor) 
-             458:    8(fvec4) Load 10(color) 
-             459:    8(fvec4) FAdd 458 457
-                              Store 10(color) 459 
-                              Branch 431
-             432:             Label
-                              Branch 460
-             460:             Label
-             462:    16(bool) Phi 17 432 161 482
-                              LoopMerge 461 None
-                              Branch 463
-             463:             Label
-                              SelectionMerge 464 None
-                              BranchConditional 462 464 465 
-             465:               Label
-             466:    8(fvec4)   Load 10(color) 
-             467:    7(float)   CompositeExtract 466 2
-             469:    7(float)   Load 468(d8) 
-             470:    16(bool)   FOrdLessThan 467 469
-                                BranchConditional 470 464 461 
-             464:             Label
-             471:    7(float) Load 468(d8) 
-             472:    16(bool) FOrdLessThan 471 438
-                              SelectionMerge 474 None
-                              BranchConditional 472 473 474 
-             473:               Label
-                                Branch 461
-             474:             Label
-             476:    8(fvec4) Load 443(bigColor7) 
-             477:    8(fvec4) Load 10(color) 
-             478:    8(fvec4) FAdd 477 476
-                              Store 10(color) 478 
-             479:    7(float) Load 468(d8) 
-             480:    16(bool) FOrdLessThan 479 85
-                              SelectionMerge 482 None
-                              BranchConditional 480 481 482 
-             481:               Label
-             483:    8(fvec4)   Load 10(color) 
-             484:    7(float)   CompositeExtract 483 2
-             485:    7(float)   FAdd 484 85
-             486:    8(fvec4)   Load 10(color) 
-             487:    8(fvec4)   CompositeInsert 485 486 2
-                                Store 10(color) 487 
-             488:    7(float)   Load 468(d8) 
-             490:    16(bool)   FOrdLessThan 488 489
-                                SelectionMerge 492 None
-                                BranchConditional 490 491 498 
-             491:                 Label
-             493:    8(fvec4)     Load 10(color) 
-             494:    7(float)     CompositeExtract 493 1
-             495:    7(float)     FAdd 494 85
-             496:    8(fvec4)     Load 10(color) 
-             497:    8(fvec4)     CompositeInsert 495 496 1
-                                  Store 10(color) 497 
-                                  Branch 492
-             498:                 Label
-             499:    8(fvec4)     Load 10(color) 
-             500:    7(float)     CompositeExtract 499 0
-             501:    7(float)     FAdd 500 85
-             502:    8(fvec4)     Load 10(color) 
-             503:    8(fvec4)     CompositeInsert 501 502 0
-                                  Store 10(color) 503 
-                                  Branch 492
-             492:               Label
-                                Branch 461
-             482:             Label
-             505:    8(fvec4) Load 12(BaseColor) 
-             506:    8(fvec4) Load 10(color) 
-             507:    8(fvec4) FAdd 506 505
-                              Store 10(color) 507 
-                              Branch 460
-             461:             Label
-                              Branch 508
-             508:             Label
-             510:    8(fvec4) Load 10(color) 
-             511:    7(float) CompositeExtract 510 3
-             513:    7(float) Load 512(d9) 
-             514:    16(bool) FOrdLessThan 511 513
-                              LoopMerge 509 None
-                              BranchConditional 514 515 509 
-             515:               Label
-             516:    7(float)   Load 512(d9) 
-             517:    7(float)   Load 468(d8) 
-             518:    16(bool)   FOrdGreaterThan 516 517
-                                SelectionMerge 520 None
-                                BranchConditional 518 519 520 
-             519:                 Label
-             521:    8(fvec4)     Load 10(color) 
-             522:    7(float)     CompositeExtract 521 0
-             523:    7(float)     Load 410(d7) 
-             524:    16(bool)     FOrdLessThanEqual 522 523
-                                  SelectionMerge 526 None
-                                  BranchConditional 524 525 526 
-             525:                   Label
-             527:    8(fvec4)       Load 10(color) 
-             528:    7(float)       CompositeExtract 527 2
-             530:    16(bool)       FOrdEqual 528 529
-                                    SelectionMerge 532 None
-                                    BranchConditional 530 531 538 
-             531:                     Label
-             533:    8(fvec4)         Load 10(color) 
-             534:    7(float)         CompositeExtract 533 3
-             535:    7(float)         FAdd 534 85
-             536:    8(fvec4)         Load 10(color) 
-             537:    8(fvec4)         CompositeInsert 535 536 3
-                                      Store 10(color) 537 
-                                      Branch 532
-             538:                     Label
-                                      Branch 509
-             532:                   Label
-                                    Branch 526
-             526:                 Label
-                                  Branch 520
-             520:               Label
-                                Branch 508
-             509:             Label
-                              Branch 540
-             540:             Label
-             542:    8(fvec4) Load 10(color) 
-             543:    7(float) CompositeExtract 542 2
-             545:    7(float) Load 544(d10) 
-             546:    16(bool) FOrdLessThan 543 545
-                              LoopMerge 541 None
-                              BranchConditional 546 547 541 
-             547:               Label
-             548:    8(fvec4)   Load 10(color) 
-             549:    7(float)   CompositeExtract 548 1
-             550:    7(float)   FAdd 549 85
-             551:    8(fvec4)   Load 10(color) 
-             552:    8(fvec4)   CompositeInsert 550 551 1
-                                Store 10(color) 552 
-             553:    8(fvec4)   Load 10(color) 
-             554:    7(float)   CompositeExtract 553 1
-             556:    7(float)   Load 555(d11) 
-             557:    16(bool)   FOrdLessThan 554 556
-                                SelectionMerge 559 None
-                                BranchConditional 557 558 559 
-             558:                 Label
-             560:    8(fvec4)     Load 10(color) 
-             561:    7(float)     CompositeExtract 560 2
-             562:    7(float)     FAdd 561 85
-             563:    8(fvec4)     Load 10(color) 
-             564:    8(fvec4)     CompositeInsert 562 563 2
-                                  Store 10(color) 564 
-             565:    8(fvec4)     Load 10(color) 
-             566:    7(float)     CompositeExtract 565 3
-             568:    7(float)     Load 567(d12) 
-             569:    16(bool)     FOrdLessThan 566 568
-                                  SelectionMerge 571 None
-                                  BranchConditional 569 570 577 
-             570:                   Label
-             572:    8(fvec4)       Load 10(color) 
-             573:    7(float)       CompositeExtract 572 3
-             574:    7(float)       FAdd 573 85
-             575:    8(fvec4)       Load 10(color) 
-             576:    8(fvec4)       CompositeInsert 574 575 3
-                                    Store 10(color) 576 
-                                    Branch 571
-             577:                   Label
-             578:    8(fvec4)       Load 10(color) 
-             579:    7(float)       CompositeExtract 578 0
-             580:    7(float)       FAdd 579 85
-             581:    8(fvec4)       Load 10(color) 
-             582:    8(fvec4)       CompositeInsert 580 581 0
-                                    Store 10(color) 582 
-                                    Branch 571
-             571:                 Label
-                                  Branch 540
-             559:               Label
-             584:    8(fvec4)   Load 10(color) 
-             585:    8(fvec4)   CompositeConstruct 85 85 85 85
-             586:    8(fvec4)   FAdd 584 585
-                                Store 10(color) 586 
-                                Branch 541
-             541:             Label
-                              Branch 588
-             588:             Label
-             590:    8(fvec4) Load 10(color) 
-             591:    7(float) CompositeExtract 590 0
-             593:    16(bool) FOrdLessThan 591 592
-                              LoopMerge 589 None
-                              BranchConditional 593 594 589 
-             594:               Label
-             596:    8(fvec4)   Load 595(bigColor8) 
-             597:    8(fvec4)   Load 10(color) 
-             598:    8(fvec4)   FAdd 597 596
-                                Store 10(color) 598 
-             599:    8(fvec4)   Load 10(color) 
-             600:    7(float)   CompositeExtract 599 2
-             601:    7(float)   Load 468(d8) 
-             602:    16(bool)   FOrdLessThan 600 601
-                                SelectionMerge 604 None
-                                BranchConditional 602 603 604 
-             603:                 Label
-             605:    8(fvec4)     Load 10(color) 
-             606:    7(float)     CompositeExtract 605 3
-             607:    7(float)     Load 363(d6) 
-             608:    16(bool)     FOrdLessThan 606 607
-                                  SelectionMerge 610 None
-                                  BranchConditional 608 609 610 
-             609:                   Label
-                                    Branch 588
-             610:                 Label
-                                  Branch 604
-             604:               Label
-             612:    8(fvec4)   Load 595(bigColor8) 
-             613:    7(float)   CompositeExtract 612 0
-             614:    8(fvec4)   Load 10(color) 
-             615:    7(float)   CompositeExtract 614 1
-             616:    7(float)   FAdd 615 613
-             617:    8(fvec4)   Load 10(color) 
-             618:    8(fvec4)   CompositeInsert 616 617 1
-                                Store 10(color) 618 
-                                Branch 588
-             589:             Label
-             619:    8(fvec4) Load 10(color) 
-             620:    8(fvec4) CompositeConstruct 85 85 85 85
-             621:    8(fvec4) FAdd 619 620
-                              Store 10(color) 621 
-             624:    8(fvec4) Load 10(color) 
-                              Store 623(gl_FragColor) 624 
-                              Branch 625
-             625:             Label
-             627:    8(fvec4) Load 10(color) 
-             628:    7(float) CompositeExtract 627 0
-             630:    7(float) Load 629(d14) 
-             631:    16(bool) FOrdLessThan 628 630
-                              LoopMerge 626 None
-                              BranchConditional 631 632 626 
-             632:               Label
-             633:    8(fvec4)   Load 10(color) 
-             634:    7(float)   CompositeExtract 633 1
-             636:    7(float)   Load 635(d15) 
-             637:    16(bool)   FOrdLessThan 634 636
-                                SelectionMerge 639 None
-                                BranchConditional 637 638 641 
-             638:                 Label
-                                  Branch 6
-             641:                 Label
-             642:    8(fvec4)     Load 10(color) 
-             643:    8(fvec4)     CompositeConstruct 85 85 85 85
-             644:    8(fvec4)     FAdd 642 643
-                                  Store 10(color) 644 
-                                  Branch 639
-             639:               Label
-                                Branch 625
-             626:             Label
-             645:    8(fvec4) Load 10(color) 
-             646:    8(fvec4) CompositeConstruct 85 85 85 85
-             647:    8(fvec4) FAdd 645 646
-                              Store 10(color) 647 
-                              Branch 648
-             648:             Label
-             650:    8(fvec4) Load 10(color) 
-             651:    7(float) CompositeExtract 650 3
-             653:    7(float) Load 652(d16) 
-             654:    16(bool) FOrdLessThan 651 653
-                              LoopMerge 649 None
-                              BranchConditional 654 655 649 
-             655:               Label
-             656:    8(fvec4)   Load 10(color) 
-             657:    7(float)   CompositeExtract 656 3
-             658:    7(float)   FAdd 657 85
-             659:    8(fvec4)   Load 10(color) 
-             660:    8(fvec4)   CompositeInsert 658 659 3
-                                Store 10(color) 660 
-                                Branch 648
-             649:             Label
-                              Branch 661
-             661:             Label
-             663:    8(fvec4) Load 10(color) 
-             664:    7(float) CompositeExtract 663 3
-             665:    7(float) Load 92(d2) 
-             666:    16(bool) FOrdLessThan 664 665
-             667:    8(fvec4) Load 10(color) 
-             668:    7(float) CompositeExtract 667 1
-             669:    7(float) Load 97(d3) 
-             670:    16(bool) FOrdLessThan 668 669
-             671:    16(bool) LogicalAnd 666 670
-                              LoopMerge 662 None
-                              BranchConditional 671 672 662 
-             672:               Label
-             673:    8(fvec4)   Load 102(bigColor1_2) 
-             674:    8(fvec4)   Load 10(color) 
-             675:    8(fvec4)   FAdd 674 673
-                                Store 10(color) 675 
-             676:    8(fvec4)   Load 10(color) 
-             677:    7(float)   CompositeExtract 676 2
-             678:    7(float)   Load 97(d3) 
-             679:    16(bool)   FOrdLessThan 677 678
-                                SelectionMerge 681 None
-                                BranchConditional 679 680 681 
-             680:                 Label
-                                  Branch 6
-             681:               Label
-                                Branch 661
-             662:             Label
-                              Branch 683
-             683:             Label
-             685:    16(bool) Phi 17 662 161 700
-                              LoopMerge 684 None
-                              Branch 686
-             686:             Label
-                              SelectionMerge 687 None
-                              BranchConditional 685 687 688 
-             688:               Label
-             689:    8(fvec4)   Load 10(color) 
-             690:    7(float)   CompositeExtract 689 0
-             692:    7(float)   Load 691(d17) 
-             693:    16(bool)   FOrdLessThan 690 692
-                                BranchConditional 693 687 684 
-             687:             Label
-             694:    8(fvec4) Load 10(color) 
-             695:    7(float) CompositeExtract 694 1
-             697:    7(float) Load 696(d18) 
-             698:    16(bool) FOrdLessThan 695 697
-                              SelectionMerge 700 None
-                              BranchConditional 698 699 700 
-             699:               Label
-                                Branch 6
-             700:             Label
-             702:    8(fvec4) Load 10(color) 
-             703:    8(fvec4) CompositeConstruct 85 85 85 85
-             704:    8(fvec4) FAdd 702 703
-                              Store 10(color) 704 
-                              Branch 683
-             684:             Label
-                              Branch 705
-             705:             Label
-             707:    8(fvec4) Load 10(color) 
-             708:    7(float) CompositeExtract 707 1
-             709:    7(float) Load 652(d16) 
-             710:    16(bool) FOrdLessThan 708 709
-                              LoopMerge 706 None
-                              BranchConditional 710 711 706 
-             711:               Label
-             712:    8(fvec4)   Load 10(color) 
-             713:    7(float)   CompositeExtract 712 3
-             714:    7(float)   Load 652(d16) 
-             715:    16(bool)   FOrdLessThan 713 714
-                                SelectionMerge 717 None
-                                BranchConditional 715 716 719 
-             716:                 Label
-                                  Kill
-             719:                 Label
-             720:    8(fvec4)     Load 10(color) 
-             721:    8(fvec4)     CompositeConstruct 85 85 85 85
-             722:    8(fvec4)     FAdd 720 721
-                                  Store 10(color) 722 
-                                  Branch 717
-             717:               Label
-                                Branch 705
-             706:             Label
-             723:    8(fvec4) Load 10(color) 
-             724:    8(fvec4) CompositeConstruct 85 85 85 85
-             725:    8(fvec4) FAdd 723 724
-                              Store 10(color) 725 
-             726:    8(fvec4) Load 10(color) 
-                              Store 623(gl_FragColor) 726 
-                              Branch 6
-               6:             Label
-                              Return
-                              FunctionEnd
+             294:               Label
+             296:    16(bool)   Phi 17 270 161 312 161 320
+                                LoopMerge 295 None
+                                Branch 297
+             297:               Label
+                                SelectionMerge 298 None
+                                BranchConditional 296 298 299 
+             299:                 Label
+             300:    8(fvec4)     Load 10(color) 
+             301:    7(float)     CompositeExtract 300 2
+             302:    7(float)     Load 119(d4) 
+             303:    16(bool)     FOrdLessThan 301 302
+                                  SelectionMerge 295 None
+                                  BranchConditional 303 298 295 
+             298:                   Label
+             305:    8(fvec4)       Load 304(bigColor4) 
+             306:    8(fvec4)       Load 10(color) 
+             307:    8(fvec4)       FAdd 306 305
+                                    Store 10(color) 307 
+             308:    8(fvec4)       Load 10(color) 
+             309:    7(float)       CompositeExtract 308 0
+             310:    7(float)       Load 119(d4) 
+             311:    16(bool)       FOrdLessThan 309 310
+                                    SelectionMerge 313 None
+                                    BranchConditional 311 312 313 
+             312:                     Label
+                                      Branch 294
+             313:                   Label
+             315:    8(fvec4)       Load 10(color) 
+             316:    7(float)       CompositeExtract 315 1
+             317:    7(float)       Load 119(d4) 
+             318:    16(bool)       FOrdLessThan 316 317
+                                    SelectionMerge 320 None
+                                    BranchConditional 318 319 327 
+             319:                     Label
+             321:    7(float)         Load 119(d4) 
+             322:    8(fvec4)         Load 10(color) 
+             323:    7(float)         CompositeExtract 322 1
+             324:    7(float)         FAdd 323 321
+             325:    8(fvec4)         Load 10(color) 
+             326:    8(fvec4)         CompositeInsert 324 325 1
+                                      Store 10(color) 326 
+                                      Branch 320
+             327:                     Label
+             328:    7(float)         Load 119(d4) 
+             329:    8(fvec4)         Load 10(color) 
+             330:    7(float)         CompositeExtract 329 0
+             331:    7(float)         FAdd 330 328
+             332:    8(fvec4)         Load 10(color) 
+             333:    8(fvec4)         CompositeInsert 331 332 0
+                                      Store 10(color) 333 
+                                      Branch 320
+             320:                   Label
+                                    Branch 294
+             295:                 Label
+                                  Branch 334
+             334:                 Label
+             336:    16(bool)     Phi 17 295 161 354
+                                  LoopMerge 335 None
+                                  Branch 337
+             337:                 Label
+                                  SelectionMerge 338 None
+                                  BranchConditional 336 338 339 
+             339:                   Label
+             340:    8(fvec4)       Load 10(color) 
+             341:    7(float)       CompositeExtract 340 0
+             343:    7(float)       Load 342(d5) 
+             344:    16(bool)       FOrdLessThan 341 343
+                                    SelectionMerge 335 None
+                                    BranchConditional 344 338 335 
+             338:                     Label
+             346:    8(fvec4)         Load 345(bigColor5) 
+             347:    8(fvec4)         Load 10(color) 
+             348:    8(fvec4)         FAdd 347 346
+                                      Store 10(color) 348 
+             349:    8(fvec4)         Load 10(color) 
+             350:    7(float)         CompositeExtract 349 1
+             351:    7(float)         Load 342(d5) 
+             352:    16(bool)         FOrdLessThan 350 351
+                                      SelectionMerge 354 None
+                                      BranchConditional 352 353 354 
+             353:                       Label
+             355:    7(float)           Load 342(d5) 
+             356:    8(fvec4)           Load 10(color) 
+             357:    7(float)           CompositeExtract 356 1
+             358:    7(float)           FAdd 357 355
+             359:    8(fvec4)           Load 10(color) 
+             360:    8(fvec4)           CompositeInsert 358 359 1
+                                        Store 10(color) 360 
+                                        Branch 354
+             354:                     Label
+                                      Branch 334
+             335:                   Label
+             361:    8(fvec4)       Load 10(color) 
+             362:    7(float)       CompositeExtract 361 0
+             364:    7(float)       Load 363(d6) 
+             365:    16(bool)       FOrdLessThan 362 364
+                                    SelectionMerge 367 None
+                                    BranchConditional 365 366 379 
+             366:                     Label
+                                      Branch 368
+             368:                     Label
+             370:    8(fvec4)         Load 10(color) 
+             371:    7(float)         CompositeExtract 370 1
+             372:    7(float)         Load 363(d6) 
+             373:    16(bool)         FOrdLessThan 371 372
+                                      LoopMerge 369 None
+                                      BranchConditional 373 374 369 
+             374:                       Label
+             376:    8(fvec4)           Load 375(bigColor6) 
+             377:    8(fvec4)           Load 10(color) 
+             378:    8(fvec4)           FAdd 377 376
+                                        Store 10(color) 378 
+                                        Branch 368
+             369:                     Label
+                                      Branch 367
+             379:                     Label
+                                      Branch 380
+             380:                     Label
+             382:    8(fvec4)         Load 10(color) 
+             383:    7(float)         CompositeExtract 382 2
+             384:    7(float)         Load 363(d6) 
+             385:    16(bool)         FOrdLessThan 383 384
+                                      LoopMerge 381 None
+                                      BranchConditional 385 386 381 
+             386:                       Label
+             387:    8(fvec4)           Load 375(bigColor6) 
+             388:    7(float)           CompositeExtract 387 2
+             389:    8(fvec4)           Load 10(color) 
+             390:    7(float)           CompositeExtract 389 2
+             391:    7(float)           FAdd 390 388
+             392:    8(fvec4)           Load 10(color) 
+             393:    8(fvec4)           CompositeInsert 391 392 2
+                                        Store 10(color) 393 
+                                        Branch 380
+             381:                     Label
+                                      Branch 367
+             367:                   Label
+             394:    8(fvec4)       Load 10(color) 
+             395:    7(float)       CompositeExtract 394 0
+             396:    7(float)       Load 363(d6) 
+             397:    16(bool)       FOrdLessThan 395 396
+                                    SelectionMerge 399 None
+                                    BranchConditional 397 398 416 
+             398:                     Label
+                                      Branch 400
+             400:                     Label
+             402:    8(fvec4)         Load 10(color) 
+             403:    7(float)         CompositeExtract 402 1
+             404:    7(float)         Load 363(d6) 
+             405:    16(bool)         FOrdLessThan 403 404
+                                      LoopMerge 401 None
+                                      BranchConditional 405 406 401 
+             406:                       Label
+             407:    8(fvec4)           Load 375(bigColor6) 
+             408:    8(fvec4)           Load 10(color) 
+             409:    8(fvec4)           FAdd 408 407
+                                        Store 10(color) 409 
+             411:    7(float)           Load 410(d7) 
+             412:    16(bool)           FOrdLessThan 411 85
+                                        SelectionMerge 414 None
+                                        BranchConditional 412 413 414 
+             413:                         Label
+                                          Branch 401
+             414:                       Label
+                                        Branch 400
+             401:                     Label
+                                      Branch 399
+             416:                     Label
+                                      Branch 417
+             417:                     Label
+             419:    8(fvec4)         Load 10(color) 
+             420:    7(float)         CompositeExtract 419 2
+             421:    7(float)         Load 363(d6) 
+             422:    16(bool)         FOrdLessThan 420 421
+                                      LoopMerge 418 None
+                                      BranchConditional 422 423 418 
+             423:                       Label
+             424:    8(fvec4)           Load 375(bigColor6) 
+             425:    7(float)           CompositeExtract 424 2
+             426:    8(fvec4)           Load 10(color) 
+             427:    7(float)           CompositeExtract 426 2
+             428:    7(float)           FAdd 427 425
+             429:    8(fvec4)           Load 10(color) 
+             430:    8(fvec4)           CompositeInsert 428 429 2
+                                        Store 10(color) 430 
+                                        Branch 417
+             418:                     Label
+                                      Branch 399
+             399:                   Label
+                                    Branch 431
+             431:                   Label
+             433:    16(bool)       Phi 17 399 161 450
+                                    LoopMerge 432 None
+                                    Branch 434
+             434:                   Label
+                                    SelectionMerge 435 None
+                                    BranchConditional 433 435 436 
+             436:                     Label
+                                      SelectionMerge 432 None
+                                      BranchConditional 17 435 432 
+             435:                       Label
+             437:    7(float)           Load 410(d7) 
+             439:    16(bool)           FOrdLessThan 437 438
+                                        SelectionMerge 441 None
+                                        BranchConditional 439 440 441 
+             440:                         Label
+                                          Branch 432
+             441:                       Label
+             444:    8(fvec4)           Load 443(bigColor7) 
+             445:    8(fvec4)           Load 10(color) 
+             446:    8(fvec4)           FAdd 445 444
+                                        Store 10(color) 446 
+             447:    7(float)           Load 410(d7) 
+             448:    16(bool)           FOrdLessThan 447 85
+                                        SelectionMerge 450 None
+                                        BranchConditional 448 449 450 
+             449:                         Label
+             451:    8(fvec4)             Load 10(color) 
+             452:    7(float)             CompositeExtract 451 2
+             453:    7(float)             FAdd 452 85
+             454:    8(fvec4)             Load 10(color) 
+             455:    8(fvec4)             CompositeInsert 453 454 2
+                                          Store 10(color) 455 
+                                          Branch 432
+             450:                       Label
+             457:    8(fvec4)           Load 12(BaseColor) 
+             458:    8(fvec4)           Load 10(color) 
+             459:    8(fvec4)           FAdd 458 457
+                                        Store 10(color) 459 
+                                        Branch 431
+             432:                     Label
+                                      Branch 460
+             460:                     Label
+             462:    16(bool)         Phi 17 432 161 482
+                                      LoopMerge 461 None
+                                      Branch 463
+             463:                     Label
+                                      SelectionMerge 464 None
+                                      BranchConditional 462 464 465 
+             465:                       Label
+             466:    8(fvec4)           Load 10(color) 
+             467:    7(float)           CompositeExtract 466 2
+             469:    7(float)           Load 468(d8) 
+             470:    16(bool)           FOrdLessThan 467 469
+                                        SelectionMerge 461 None
+                                        BranchConditional 470 464 461 
+             464:                         Label
+             471:    7(float)             Load 468(d8) 
+             472:    16(bool)             FOrdLessThan 471 438
+                                          SelectionMerge 474 None
+                                          BranchConditional 472 473 474 
+             473:                           Label
+                                            Branch 461
+             474:                         Label
+             476:    8(fvec4)             Load 443(bigColor7) 
+             477:    8(fvec4)             Load 10(color) 
+             478:    8(fvec4)             FAdd 477 476
+                                          Store 10(color) 478 
+             479:    7(float)             Load 468(d8) 
+             480:    16(bool)             FOrdLessThan 479 85
+                                          SelectionMerge 482 None
+                                          BranchConditional 480 481 482 
+             481:                           Label
+             483:    8(fvec4)               Load 10(color) 
+             484:    7(float)               CompositeExtract 483 2
+             485:    7(float)               FAdd 484 85
+             486:    8(fvec4)               Load 10(color) 
+             487:    8(fvec4)               CompositeInsert 485 486 2
+                                            Store 10(color) 487 
+             488:    7(float)               Load 468(d8) 
+             490:    16(bool)               FOrdLessThan 488 489
+                                            SelectionMerge 492 None
+                                            BranchConditional 490 491 498 
+             491:                             Label
+             493:    8(fvec4)                 Load 10(color) 
+             494:    7(float)                 CompositeExtract 493 1
+             495:    7(float)                 FAdd 494 85
+             496:    8(fvec4)                 Load 10(color) 
+             497:    8(fvec4)                 CompositeInsert 495 496 1
+                                              Store 10(color) 497 
+                                              Branch 492
+             498:                             Label
+             499:    8(fvec4)                 Load 10(color) 
+             500:    7(float)                 CompositeExtract 499 0
+             501:    7(float)                 FAdd 500 85
+             502:    8(fvec4)                 Load 10(color) 
+             503:    8(fvec4)                 CompositeInsert 501 502 0
+                                              Store 10(color) 503 
+                                              Branch 492
+             492:                           Label
+                                            Branch 461
+             482:                         Label
+             505:    8(fvec4)             Load 12(BaseColor) 
+             506:    8(fvec4)             Load 10(color) 
+             507:    8(fvec4)             FAdd 506 505
+                                          Store 10(color) 507 
+                                          Branch 460
+             461:                       Label
+                                        Branch 508
+             508:                       Label
+             510:    8(fvec4)           Load 10(color) 
+             511:    7(float)           CompositeExtract 510 3
+             513:    7(float)           Load 512(d9) 
+             514:    16(bool)           FOrdLessThan 511 513
+                                        LoopMerge 509 None
+                                        BranchConditional 514 515 509 
+             515:                         Label
+             516:    7(float)             Load 512(d9) 
+             517:    7(float)             Load 468(d8) 
+             518:    16(bool)             FOrdGreaterThan 516 517
+                                          SelectionMerge 520 None
+                                          BranchConditional 518 519 520 
+             519:                           Label
+             521:    8(fvec4)               Load 10(color) 
+             522:    7(float)               CompositeExtract 521 0
+             523:    7(float)               Load 410(d7) 
+             524:    16(bool)               FOrdLessThanEqual 522 523
+                                            SelectionMerge 526 None
+                                            BranchConditional 524 525 526 
+             525:                             Label
+             527:    8(fvec4)                 Load 10(color) 
+             528:    7(float)                 CompositeExtract 527 2
+             530:    16(bool)                 FOrdEqual 528 529
+                                              SelectionMerge 532 None
+                                              BranchConditional 530 531 538 
+             531:                               Label
+             533:    8(fvec4)                   Load 10(color) 
+             534:    7(float)                   CompositeExtract 533 3
+             535:    7(float)                   FAdd 534 85
+             536:    8(fvec4)                   Load 10(color) 
+             537:    8(fvec4)                   CompositeInsert 535 536 3
+                                                Store 10(color) 537 
+                                                Branch 532
+             538:                               Label
+                                                Branch 509
+             532:                             Label
+                                              Branch 526
+             526:                           Label
+                                            Branch 520
+             520:                         Label
+                                          Branch 508
+             509:                       Label
+                                        Branch 540
+             540:                       Label
+             542:    8(fvec4)           Load 10(color) 
+             543:    7(float)           CompositeExtract 542 2
+             545:    7(float)           Load 544(d10) 
+             546:    16(bool)           FOrdLessThan 543 545
+                                        LoopMerge 541 None
+                                        BranchConditional 546 547 541 
+             547:                         Label
+             548:    8(fvec4)             Load 10(color) 
+             549:    7(float)             CompositeExtract 548 1
+             550:    7(float)             FAdd 549 85
+             551:    8(fvec4)             Load 10(color) 
+             552:    8(fvec4)             CompositeInsert 550 551 1
+                                          Store 10(color) 552 
+             553:    8(fvec4)             Load 10(color) 
+             554:    7(float)             CompositeExtract 553 1
+             556:    7(float)             Load 555(d11) 
+             557:    16(bool)             FOrdLessThan 554 556
+                                          SelectionMerge 559 None
+                                          BranchConditional 557 558 559 
+             558:                           Label
+             560:    8(fvec4)               Load 10(color) 
+             561:    7(float)               CompositeExtract 560 2
+             562:    7(float)               FAdd 561 85
+             563:    8(fvec4)               Load 10(color) 
+             564:    8(fvec4)               CompositeInsert 562 563 2
+                                            Store 10(color) 564 
+             565:    8(fvec4)               Load 10(color) 
+             566:    7(float)               CompositeExtract 565 3
+             568:    7(float)               Load 567(d12) 
+             569:    16(bool)               FOrdLessThan 566 568
+                                            SelectionMerge 571 None
+                                            BranchConditional 569 570 577 
+             570:                             Label
+             572:    8(fvec4)                 Load 10(color) 
+             573:    7(float)                 CompositeExtract 572 3
+             574:    7(float)                 FAdd 573 85
+             575:    8(fvec4)                 Load 10(color) 
+             576:    8(fvec4)                 CompositeInsert 574 575 3
+                                              Store 10(color) 576 
+                                              Branch 571
+             577:                             Label
+             578:    8(fvec4)                 Load 10(color) 
+             579:    7(float)                 CompositeExtract 578 0
+             580:    7(float)                 FAdd 579 85
+             581:    8(fvec4)                 Load 10(color) 
+             582:    8(fvec4)                 CompositeInsert 580 581 0
+                                              Store 10(color) 582 
+                                              Branch 571
+             571:                           Label
+                                            Branch 540
+             559:                         Label
+             584:    8(fvec4)             Load 10(color) 
+             585:    8(fvec4)             CompositeConstruct 85 85 85 85
+             586:    8(fvec4)             FAdd 584 585
+                                          Store 10(color) 586 
+                                          Branch 541
+             541:                       Label
+                                        Branch 588
+             588:                       Label
+             590:    8(fvec4)           Load 10(color) 
+             591:    7(float)           CompositeExtract 590 0
+             593:    16(bool)           FOrdLessThan 591 592
+                                        LoopMerge 589 None
+                                        BranchConditional 593 594 589 
+             594:                         Label
+             596:    8(fvec4)             Load 595(bigColor8) 
+             597:    8(fvec4)             Load 10(color) 
+             598:    8(fvec4)             FAdd 597 596
+                                          Store 10(color) 598 
+             599:    8(fvec4)             Load 10(color) 
+             600:    7(float)             CompositeExtract 599 2
+             601:    7(float)             Load 468(d8) 
+             602:    16(bool)             FOrdLessThan 600 601
+                                          SelectionMerge 604 None
+                                          BranchConditional 602 603 604 
+             603:                           Label
+             605:    8(fvec4)               Load 10(color) 
+             606:    7(float)               CompositeExtract 605 3
+             607:    7(float)               Load 363(d6) 
+             608:    16(bool)               FOrdLessThan 606 607
+                                            SelectionMerge 610 None
+                                            BranchConditional 608 609 610 
+             609:                             Label
+                                              Branch 588
+             610:                           Label
+                                            Branch 604
+             604:                         Label
+             612:    8(fvec4)             Load 595(bigColor8) 
+             613:    7(float)             CompositeExtract 612 0
+             614:    8(fvec4)             Load 10(color) 
+             615:    7(float)             CompositeExtract 614 1
+             616:    7(float)             FAdd 615 613
+             617:    8(fvec4)             Load 10(color) 
+             618:    8(fvec4)             CompositeInsert 616 617 1
+                                          Store 10(color) 618 
+                                          Branch 588
+             589:                       Label
+             619:    8(fvec4)           Load 10(color) 
+             620:    8(fvec4)           CompositeConstruct 85 85 85 85
+             621:    8(fvec4)           FAdd 619 620
+                                        Store 10(color) 621 
+             624:    8(fvec4)           Load 10(color) 
+                                        Store 623(gl_FragColor) 624 
+                                        Branch 625
+             625:                       Label
+             627:    8(fvec4)           Load 10(color) 
+             628:    7(float)           CompositeExtract 627 0
+             630:    7(float)           Load 629(d14) 
+             631:    16(bool)           FOrdLessThan 628 630
+                                        LoopMerge 626 None
+                                        BranchConditional 631 632 626 
+             632:                         Label
+             633:    8(fvec4)             Load 10(color) 
+             634:    7(float)             CompositeExtract 633 1
+             636:    7(float)             Load 635(d15) 
+             637:    16(bool)             FOrdLessThan 634 636
+                                          SelectionMerge 639 None
+                                          BranchConditional 637 638 641 
+             638:                           Label
+                                            Branch 6
+             641:                           Label
+             642:    8(fvec4)               Load 10(color) 
+             643:    8(fvec4)               CompositeConstruct 85 85 85 85
+             644:    8(fvec4)               FAdd 642 643
+                                            Store 10(color) 644 
+                                            Branch 639
+             639:                         Label
+                                          Branch 625
+             626:                       Label
+             645:    8(fvec4)           Load 10(color) 
+             646:    8(fvec4)           CompositeConstruct 85 85 85 85
+             647:    8(fvec4)           FAdd 645 646
+                                        Store 10(color) 647 
+                                        Branch 648
+             648:                       Label
+             650:    8(fvec4)           Load 10(color) 
+             651:    7(float)           CompositeExtract 650 3
+             653:    7(float)           Load 652(d16) 
+             654:    16(bool)           FOrdLessThan 651 653
+                                        LoopMerge 649 None
+                                        BranchConditional 654 655 649 
+             655:                         Label
+             656:    8(fvec4)             Load 10(color) 
+             657:    7(float)             CompositeExtract 656 3
+             658:    7(float)             FAdd 657 85
+             659:    8(fvec4)             Load 10(color) 
+             660:    8(fvec4)             CompositeInsert 658 659 3
+                                          Store 10(color) 660 
+                                          Branch 648
+             649:                       Label
+                                        Branch 661
+             661:                       Label
+             663:    8(fvec4)           Load 10(color) 
+             664:    7(float)           CompositeExtract 663 3
+             665:    7(float)           Load 92(d2) 
+             666:    16(bool)           FOrdLessThan 664 665
+             667:    8(fvec4)           Load 10(color) 
+             668:    7(float)           CompositeExtract 667 1
+             669:    7(float)           Load 97(d3) 
+             670:    16(bool)           FOrdLessThan 668 669
+             671:    16(bool)           LogicalAnd 666 670
+                                        LoopMerge 662 None
+                                        BranchConditional 671 672 662 
+             672:                         Label
+             673:    8(fvec4)             Load 102(bigColor1_2) 
+             674:    8(fvec4)             Load 10(color) 
+             675:    8(fvec4)             FAdd 674 673
+                                          Store 10(color) 675 
+             676:    8(fvec4)             Load 10(color) 
+             677:    7(float)             CompositeExtract 676 2
+             678:    7(float)             Load 97(d3) 
+             679:    16(bool)             FOrdLessThan 677 678
+                                          SelectionMerge 681 None
+                                          BranchConditional 679 680 681 
+             680:                           Label
+                                            Branch 6
+             681:                         Label
+                                          Branch 661
+             662:                       Label
+                                        Branch 683
+             683:                       Label
+             685:    16(bool)           Phi 17 662 161 700
+                                        LoopMerge 684 None
+                                        Branch 686
+             686:                       Label
+                                        SelectionMerge 687 None
+                                        BranchConditional 685 687 688 
+             688:                         Label
+             689:    8(fvec4)             Load 10(color) 
+             690:    7(float)             CompositeExtract 689 0
+             692:    7(float)             Load 691(d17) 
+             693:    16(bool)             FOrdLessThan 690 692
+                                          SelectionMerge 684 None
+                                          BranchConditional 693 687 684 
+             687:                           Label
+             694:    8(fvec4)               Load 10(color) 
+             695:    7(float)               CompositeExtract 694 1
+             697:    7(float)               Load 696(d18) 
+             698:    16(bool)               FOrdLessThan 695 697
+                                            SelectionMerge 700 None
+                                            BranchConditional 698 699 700 
+             699:                             Label
+                                              Branch 6
+             700:                           Label
+             702:    8(fvec4)               Load 10(color) 
+             703:    8(fvec4)               CompositeConstruct 85 85 85 85
+             704:    8(fvec4)               FAdd 702 703
+                                            Store 10(color) 704 
+                                            Branch 683
+             684:                         Label
+                                          Branch 705
+             705:                         Label
+             707:    8(fvec4)             Load 10(color) 
+             708:    7(float)             CompositeExtract 707 1
+             709:    7(float)             Load 652(d16) 
+             710:    16(bool)             FOrdLessThan 708 709
+                                          LoopMerge 706 None
+                                          BranchConditional 710 711 706 
+             711:                           Label
+             712:    8(fvec4)               Load 10(color) 
+             713:    7(float)               CompositeExtract 712 3
+             714:    7(float)               Load 652(d16) 
+             715:    16(bool)               FOrdLessThan 713 714
+                                            SelectionMerge 717 None
+                                            BranchConditional 715 716 719 
+             716:                             Label
+                                              Kill
+             719:                             Label
+             720:    8(fvec4)                 Load 10(color) 
+             721:    8(fvec4)                 CompositeConstruct 85 85 85 85
+             722:    8(fvec4)                 FAdd 720 721
+                                              Store 10(color) 722 
+                                              Branch 717
+             717:                           Label
+                                            Branch 705
+             706:                         Label
+             723:    8(fvec4)             Load 10(color) 
+             724:    8(fvec4)             CompositeConstruct 85 85 85 85
+             725:    8(fvec4)             FAdd 723 724
+                                          Store 10(color) 725 
+             726:    8(fvec4)             Load 10(color) 
+                                          Store 623(gl_FragColor) 726 
+                                          Branch 6
+               6:                         Label
+                                          Return
+                                          FunctionEnd

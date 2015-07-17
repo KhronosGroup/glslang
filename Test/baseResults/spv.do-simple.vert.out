@@ -50,14 +50,15 @@ Linked vertex stage:
               18:               Label
               19:      7(int)   Load 9(i) 
               21:    14(bool)   SLessThan 19 20
+                                SelectionMerge 12 None
                                 BranchConditional 21 17 12 
-              17:             Label
-              22:      7(int) Load 9(i) 
-              24:      7(int) IAdd 22 23
-                              Store 9(i) 24 
-                              Branch 11
-              12:             Label
-                              Branch 6
-               6:             Label
-                              Return
-                              FunctionEnd
+              17:                 Label
+              22:      7(int)     Load 9(i) 
+              24:      7(int)     IAdd 22 23
+                                  Store 9(i) 24 
+                                  Branch 11
+              12:               Label
+                                Branch 6
+               6:               Label
+                                Return
+                                FunctionEnd

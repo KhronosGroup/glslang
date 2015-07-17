@@ -79,36 +79,37 @@ Linked vertex stage:
               21:      7(int)   IAdd 19 20
                                 Store 9(i) 21 
               23:    14(bool)   SLessThan 21 22
+                                SelectionMerge 12 None
                                 BranchConditional 23 17 12 
-              17:             Label
-                              Store 24(A) 10 
-              25:      7(int) Load 9(i) 
-              27:    14(bool) IEqual 25 26
-                              SelectionMerge 29 None
-                              BranchConditional 27 28 29 
-              28:               Label
-                                Store 30(B) 20 
-                                Branch 11
-              32:               Label
-                                Store 33(C) 26 
-                                Branch 29
-              29:             Label
-              34:      7(int) Load 9(i) 
-              36:    14(bool) IEqual 34 35
-                              SelectionMerge 38 None
-                              BranchConditional 36 37 38 
-              37:               Label
-                                Store 39(D) 40 
-                                Branch 12
-              41:               Label
-                                Store 42(E) 43 
-                                Branch 38
-              38:             Label
-                              Store 44(F) 45 
-                              Branch 11
-              12:             Label
-                              Store 46(G) 47 
-                              Branch 6
-               6:             Label
-                              Return
-                              FunctionEnd
+              17:                 Label
+                                  Store 24(A) 10 
+              25:      7(int)     Load 9(i) 
+              27:    14(bool)     IEqual 25 26
+                                  SelectionMerge 29 None
+                                  BranchConditional 27 28 29 
+              28:                   Label
+                                    Store 30(B) 20 
+                                    Branch 11
+              32:                   Label
+                                    Store 33(C) 26 
+                                    Branch 29
+              29:                 Label
+              34:      7(int)     Load 9(i) 
+              36:    14(bool)     IEqual 34 35
+                                  SelectionMerge 38 None
+                                  BranchConditional 36 37 38 
+              37:                   Label
+                                    Store 39(D) 40 
+                                    Branch 12
+              41:                   Label
+                                    Store 42(E) 43 
+                                    Branch 38
+              38:                 Label
+                                  Store 44(F) 45 
+                                  Branch 11
+              12:               Label
+                                Store 46(G) 47 
+                                Branch 6
+               6:               Label
+                                Return
+                                FunctionEnd
