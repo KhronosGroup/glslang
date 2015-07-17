@@ -213,10 +213,15 @@ namespace {
                 verbosity = 1;
 
                 if (a < argc) {
-                    try {
-                        verbosity = std::stoi(argv[a]);
+                    char* end_ptr = 0;
+                    int verb = ::strtol(argv[a], &end_ptr, 10);
+                    // If we have not read to the end of the string or
+                    // the string contained no elements, then we do not want to
+                    // store the value.
+                    if (*end_ptr == '\0' && end_ptr != argv[a]) {
+                        verbosity = verb;
                         ++a;
-                    } catch (const std::invalid_argument&) { } // ok to have no numeric value
+                    }
                 }
             }
             else if (arg == "--version" || arg == "-V") {
