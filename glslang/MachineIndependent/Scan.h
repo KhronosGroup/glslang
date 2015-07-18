@@ -88,7 +88,7 @@ public:
         // Make sure we do not read off the end of a string.
         // N.B. Sources can have a length of 0.
         int sourceToRead = currentSource;
-        int charToRead = currentChar;
+        size_t charToRead = currentChar;
         while(charToRead >= lengths[sourceToRead]) {
             charToRead = 0;
             sourceToRead += 1;

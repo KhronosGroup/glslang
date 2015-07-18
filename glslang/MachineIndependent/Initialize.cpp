@@ -2207,7 +2207,7 @@ void TBuiltIns::addSamplingFunctions(TSampler sampler, TString& typeName, int /*
 //
 // Add all the texture gather functions for the given type.
 //
-void TBuiltIns::addGatherFunctions(TSampler sampler, TString& typeName, int version, EProfile profile)
+void TBuiltIns::addGatherFunctions(TSampler sampler, TString& typeName, int version, EProfile /* profile */)
 {
     switch (sampler.dim) {
     case Esd2D:
