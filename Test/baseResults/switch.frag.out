@@ -37,6 +37,8 @@ ERROR: node is still EOpNull!
 0:23          case:  with expression
 0:23            Constant:
 0:23              2 (const int)
+0:21          Sequence
+0:21            Branch: Break
 0:26      switch
 0:26      condition
 0:26        'c' (uniform mediump int)
@@ -300,6 +302,8 @@ ERROR: node is still EOpNull!
 0:128      body
 0:128        Sequence
 0:129          default: 
+0:128          Sequence
+0:128            Branch: Break
 0:133      switch
 0:133      condition
 0:133        'c' (uniform mediump int)
@@ -369,6 +373,8 @@ ERROR: node is still EOpNull!
 0:23          case:  with expression
 0:23            Constant:
 0:23              2 (const int)
+0:21          Sequence
+0:21            Branch: Break
 0:26      switch
 0:26      condition
 0:26        'c' (uniform mediump int)
@@ -632,6 +638,8 @@ ERROR: node is still EOpNull!
 0:128      body
 0:128        Sequence
 0:129          default: 
+0:128          Sequence
+0:128            Branch: Break
 0:133      switch
 0:133      condition
 0:133        'c' (uniform mediump int)

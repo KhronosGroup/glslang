@@ -5287,6 +5287,11 @@ TIntermNode* TParseContext::addSwitch(TSourceLoc loc, TIntermTyped* expression, 
             error(loc, "last case/default label not followed by statements", "switch", "");
         else
             warn(loc, "last case/default label not followed by statements", "switch", "");
+
+        // emulate a break for error recovery
+        lastStatements = intermediate.makeAggregate(intermediate.addBranch(EOpBreak, loc));
+        lastStatements->setOperator(EOpSequence);
+        switchSequence->push_back(lastStatements);
     }
 
     TIntermAggregate* body = new TIntermAggregate(EOpSequence);

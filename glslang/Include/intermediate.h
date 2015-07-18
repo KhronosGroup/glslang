@@ -641,7 +641,7 @@ public:
     virtual       TIntermAggregate* getAsAggregate()       { return this; }
     virtual const TIntermAggregate* getAsAggregate() const { return this; }
     virtual void setOperator(TOperator o) { op = o; }
-    virtual TIntermSequence& getSequence() { return sequence; }
+    virtual       TIntermSequence& getSequence()       { return sequence; }
     virtual const TIntermSequence& getSequence() const { return sequence; }
     virtual void setName(const TString& n) { name = n; }
     virtual const TString& getName() const { return name; }
