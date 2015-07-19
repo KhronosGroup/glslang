@@ -287,31 +287,6 @@ protected:
     //
     // from Pp.cpp
     //
-    int bindAtom;
-    int constAtom;
-    int defaultAtom;
-    int defineAtom;
-    int definedAtom;
-    int elseAtom;
-    int elifAtom;
-    int endifAtom;
-    int ifAtom;
-    int ifdefAtom;
-    int ifndefAtom;
-    int includeAtom;
-    int lineAtom;
-    int pragmaAtom;
-    int texunitAtom;
-    int undefAtom;
-    int errorAtom;
-    int __LINE__Atom;
-    int __FILE__Atom;
-    int __VERSION__Atom;
-    int versionAtom;
-    int coreAtom;
-    int compatibilityAtom;
-    int esAtom;
-    int extensionAtom;
     TSourceLoc ifloc; /* outermost #if */
 
     int InitCPP();
@@ -467,7 +442,7 @@ protected:
     TStringMap stringMap;
     int nextAtom;
     void InitAtomTable();
-    int AddAtomFixed(const char* s, int atom);
+    void AddAtomFixed(const char* s, int atom);
     int LookUpAddString(const char* s);
     const char* GetAtomString(int atom);
 

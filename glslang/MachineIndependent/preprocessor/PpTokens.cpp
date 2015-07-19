@@ -126,25 +126,25 @@ void TPpContext::RecordToken(TokenStream *pTok, int token, TPpToken* ppToken)
     const char* s;
     char* str = NULL;
 
-    if (token > 256)
+    if (token > PpAtomMaxSingle)
         lAddByte(pTok, (unsigned char)((token & 0x7f) + 0x80));
     else
         lAddByte(pTok, (unsigned char)(token & 0x7f));
 
     switch (token) {
-    case CPP_IDENTIFIER:
-    case CPP_STRCONSTANT:
-        s = GetAtomString(ppToken->atom);
+    case PpAtomIdentifier:
+    case PpAtomConstString:
+        s = ppToken->name;
         while (*s)
             lAddByte(pTok, (unsigned char) *s++);
         lAddByte(pTok, 0);
         break;
-    case CPP_INTCONSTANT:
-    case CPP_UINTCONSTANT:
-    case CPP_FLOATCONSTANT:
-    case CPP_DOUBLECONSTANT:
+    case PpAtomConstInt:
+    case PpAtomConstUint:
+    case PpAtomConstFloat:
+    case PpAtomConstDouble:
         str = ppToken->name;
-        while (*str){
+        while (*str) {
             lAddByte(pTok, (unsigned char) *str);
             str++;
         }
@@ -168,7 +168,7 @@ void TPpContext::RewindTokenStream(TokenStream *pTok)
 */
 int TPpContext::ReadToken(TokenStream *pTok, TPpToken *ppToken)
 {
-    char tokenText[TPpToken::maxTokenLength + 1];
+    char* tokenText = ppToken->name;
     int ltoken, len;
     int ch;
 
@@ -182,17 +182,17 @@ int TPpContext::ReadToken(TokenStream *pTok, TPpToken *ppToken)
             parseContext.requireProfile(ppToken->loc, ~EEsProfile, "token pasting (##)");
             parseContext.profileRequires(ppToken->loc, ~EEsProfile, 130, 0, "token pasting (##)");
             parseContext.error(ppToken->loc, "token pasting not implemented (internal error)", "##", "");
-            //return CPP_TOKEN_PASTE;
+            //return PpAtomPaste;
             return ReadToken(pTok, ppToken);
         } else
             lUnreadByte(pTok);
         break;
-    case CPP_STRCONSTANT:
-    case CPP_IDENTIFIER:
-    case CPP_FLOATCONSTANT:
-    case CPP_DOUBLECONSTANT:
-    case CPP_INTCONSTANT:
-    case CPP_UINTCONSTANT:
+    case PpAtomConstString:
+    case PpAtomIdentifier:
+    case PpAtomConstFloat:
+    case PpAtomConstDouble:
+    case PpAtomConstInt:
+    case PpAtomConstUint:
         len = 0;
         ch = lReadByte(pTok);
         while (ch != 0) {
@@ -208,17 +208,18 @@ int TPpContext::ReadToken(TokenStream *pTok, TPpToken *ppToken)
         tokenText[len] = 0;
 
         switch (ltoken) {
-        case CPP_IDENTIFIER:
-        case CPP_STRCONSTANT:
+        case PpAtomIdentifier:
             ppToken->atom = LookUpAddString(tokenText);
             break;
-        case CPP_FLOATCONSTANT:
-        case CPP_DOUBLECONSTANT:
+        case PpAtomConstString:
+            break;
+        case PpAtomConstFloat:
+        case PpAtomConstDouble:
             strcpy(ppToken->name, tokenText);
             ppToken->dval = atof(ppToken->name);
             break;
-        case CPP_INTCONSTANT:
-        case CPP_UINTCONSTANT:
+        case PpAtomConstInt:
+        case PpAtomConstUint:
             strcpy(ppToken->name, tokenText);
             if (len > 0 && tokenText[0] == '0') {
                 if (len > 1 && (tokenText[1] == 'x' || tokenText[1] == 'X'))

@@ -306,7 +306,7 @@ protected:
     TInputScanner* currentScanner;
     int numErrors;               // number of compile-time errors encountered
     bool parsingBuiltins;        // true if parsing built-in symbols/functions
-    std::unordered_map<TString, TExtensionBehavior> extensionBehavior;    // for each extension string, what its current behavior is set to
+    TUnorderedMap<TString, TExtensionBehavior> extensionBehavior;    // for each extension string, what its current behavior is set to
     static const int maxSamplerIndex = EsdNumDims * (EbtNumTypes * (2 * 2 * 2)); // see computeSamplerTypeIndex()
     TPrecisionQualifier defaultSamplerPrecision[maxSamplerIndex];
     bool afterEOF;

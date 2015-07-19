@@ -567,33 +567,38 @@ int TScanContext::tokenize(TPpContext* pp, TParserToken& token)
             parseContext.error(loc, "illegal use of escape character", "\\", "");
             break;
 
-        case CPP_AND_OP:                return AND_OP;
-        case CPP_SUB_ASSIGN:            return SUB_ASSIGN;
-        case CPP_MOD_ASSIGN:            return MOD_ASSIGN;
-        case CPP_ADD_ASSIGN:            return ADD_ASSIGN;
-        case CPP_DIV_ASSIGN:            return DIV_ASSIGN;
-        case CPP_MUL_ASSIGN:            return MUL_ASSIGN;
-        case CPP_EQ_OP:                 return EQ_OP;
-        case CPP_XOR_OP:                return XOR_OP;
-        case CPP_GE_OP:                 return GE_OP;
-        case CPP_RIGHT_OP:              return RIGHT_OP;
-        case CPP_LE_OP:                 return LE_OP;
-        case CPP_LEFT_OP:               return LEFT_OP;
-        case CPP_DEC_OP:                return DEC_OP;
-        case CPP_NE_OP:                 return NE_OP;
-        case CPP_OR_OP:                 return OR_OP;
-        case CPP_INC_OP:                return INC_OP;
-        case CPP_RIGHT_ASSIGN:          return RIGHT_ASSIGN;
-        case CPP_LEFT_ASSIGN:           return LEFT_ASSIGN;
-        case CPP_AND_ASSIGN:            return AND_ASSIGN;
-        case CPP_OR_ASSIGN:             return OR_ASSIGN;
-        case CPP_XOR_ASSIGN:            return XOR_ASSIGN;
+        case PpAtomAdd:                return ADD_ASSIGN;
+        case PpAtomSub:                return SUB_ASSIGN;
+        case PpAtomMul:                return MUL_ASSIGN;
+        case PpAtomDiv:                return DIV_ASSIGN;
+        case PpAtomMod:                return MOD_ASSIGN;
+
+        case PpAtomRight:              return RIGHT_OP;
+        case PpAtomLeft:               return LEFT_OP;
+
+        case PpAtomRightAssign:        return RIGHT_ASSIGN;
+        case PpAtomLeftAssign:         return LEFT_ASSIGN;
+        case PpAtomAndAssign:          return AND_ASSIGN;
+        case PpAtomOrAssign:           return OR_ASSIGN;
+        case PpAtomXorAssign:          return XOR_ASSIGN;
+
+        case PpAtomAnd:                return AND_OP;
+        case PpAtomOr:                 return OR_OP;
+        case PpAtomXor:                return XOR_OP;
+
+        case PpAtomEQ:                 return EQ_OP;
+        case PpAtomGE:                 return GE_OP;
+        case PpAtomNE:                 return NE_OP;
+        case PpAtomLE:                 return LE_OP;
+
+        case PpAtomDecrement:          return DEC_OP;
+        case PpAtomIncrement:          return INC_OP;
                                    
-        case CPP_INTCONSTANT:           parserToken->sType.lex.i = ppToken.ival;       return INTCONSTANT;
-        case CPP_UINTCONSTANT:          parserToken->sType.lex.i = ppToken.ival;       return UINTCONSTANT;
-        case CPP_FLOATCONSTANT:         parserToken->sType.lex.d = ppToken.dval;       return FLOATCONSTANT;
-        case CPP_DOUBLECONSTANT:        parserToken->sType.lex.d = ppToken.dval;       return DOUBLECONSTANT;
-        case CPP_IDENTIFIER:            return tokenizeIdentifier();
+        case PpAtomConstInt:           parserToken->sType.lex.i = ppToken.ival;       return INTCONSTANT;
+        case PpAtomConstUint:          parserToken->sType.lex.i = ppToken.ival;       return UINTCONSTANT;
+        case PpAtomConstFloat:         parserToken->sType.lex.d = ppToken.dval;       return FLOATCONSTANT;
+        case PpAtomConstDouble:        parserToken->sType.lex.d = ppToken.dval;       return DOUBLECONSTANT;
+        case PpAtomIdentifier:         return tokenizeIdentifier();
 
         case EOF:                       return 0;
                                    

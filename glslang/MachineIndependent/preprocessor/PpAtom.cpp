@@ -98,27 +98,28 @@ const struct {
     int val;
     const char* str;
 } tokens[] = {
-    { CPP_AND_OP,         "&&" },
-    { CPP_AND_ASSIGN,     "&=" },
-    { CPP_SUB_ASSIGN,     "-=" },
-    { CPP_MOD_ASSIGN,     "%=" },
-    { CPP_ADD_ASSIGN,     "+=" },
-    { CPP_DIV_ASSIGN,     "/=" },
-    { CPP_MUL_ASSIGN,     "*=" },
-    { CPP_EQ_OP,          "==" },
-    { CPP_XOR_OP,         "^^" }, 
-    { CPP_XOR_ASSIGN,     "^=" }, 
-    { CPP_GE_OP,          ">=" },
-    { CPP_RIGHT_OP,       ">>" },
-    { CPP_RIGHT_ASSIGN,   ">>="}, 
-    { CPP_LE_OP,          "<=" },
-    { CPP_LEFT_OP,        "<<" },
-    { CPP_LEFT_ASSIGN,    "<<="},
-    { CPP_DEC_OP,         "--" },
-    { CPP_NE_OP,          "!=" },
-    { CPP_OR_OP,          "||" },
-    { CPP_OR_ASSIGN,      "|=" }, 
-    { CPP_INC_OP,         "++" },
+    { PpAtomDefine,         "define" },
+    { PpAtomDefined,        "defined" },
+    { PpAtomUndef,          "undef" },
+    { PpAtomIf,             "if" },
+    { PpAtomElif,           "elif" },
+    { PpAtomElse,           "else" },
+    { PpAtomEndif,          "endif" },
+    { PpAtomIfdef,          "ifdef" },
+    { PpAtomIfndef,         "ifndef" },
+    { PpAtomLine,           "line" },
+    { PpAtomPragma,         "pragma" },
+    { PpAtomError,          "error" },
+
+    { PpAtomVersion,        "version" },
+    { PpAtomCore,           "core" },
+    { PpAtomCompatibility,  "compatibility" },
+    { PpAtomEs,             "es" },
+    { PpAtomExtension,      "extension" },
+
+    { PpAtomLineMacro,       "__LINE__" },
+    { PpAtomFileMacro,       "__FILE__" },
+    { PpAtomVersionMacro,    "__VERSION__" },
 };
 
 } // end anonymous namespace
@@ -131,9 +132,10 @@ namespace glslang {
 int TPpContext::LookUpAddString(const char* s)
 {
     auto it = atomMap.find(s);
-    if (it == atomMap.end())
-        return AddAtomFixed(s, nextAtom++);
-    else
+    if (it == atomMap.end()) {
+        AddAtomFixed(s, nextAtom);
+        return nextAtom++;
+    } else
         return it->second;
 }
 
@@ -159,14 +161,12 @@ const char* TPpContext::GetAtomString(int atom)
 //
 // Add forced mapping of string to atom.
 //
-int TPpContext::AddAtomFixed(const char* s, int atom)
+void TPpContext::AddAtomFixed(const char* s, int atom)
 {
     auto it = atomMap.insert(std::pair<TString, int>(s, atom)).first;
     if (stringMap.size() < (size_t)atom + 1)
         stringMap.resize(atom + 100, 0);
     stringMap[atom] = &it->first;
-
-    return atom;
 }
 
 //
@@ -189,7 +189,7 @@ void TPpContext::InitAtomTable()
     for (int ii = 0; ii < sizeof(tokens)/sizeof(tokens[0]); ii++)
         AddAtomFixed(tokens[ii].str, tokens[ii].val);
 
-    nextAtom = CPP_FIRST_USER_TOKEN_SY;
+    nextAtom = PpAtomLast;
 }
 
 } // end namespace glslang

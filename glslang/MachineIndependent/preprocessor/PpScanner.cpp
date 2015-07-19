@@ -223,9 +223,9 @@ int TPpContext::lFloatConst(int len, int ch, TPpToken* ppToken)
     }
 
     if (isDouble)
-        return CPP_DOUBLECONSTANT;
+        return PpAtomConstDouble;
     else
-        return CPP_FLOATCONSTANT;
+        return PpAtomConstFloat;
 }
 
 //
@@ -233,7 +233,7 @@ int TPpContext::lFloatConst(int len, int ch, TPpToken* ppToken)
 //
 int TPpContext::tStringInput::scan(TPpToken* ppToken)
 {
-    char tokenText[TPpToken::maxTokenLength + 1];
+    char* tokenText = ppToken->name;
     int AlreadyComplained = 0;
     int len = 0;
     int ch = 0;
@@ -253,7 +253,8 @@ int TPpContext::tStringInput::scan(TPpToken* ppToken)
         len = 0;
         switch (ch) {
         default:
-            return ch; // Single character token, including '#' and '\' (escaped newlines are handled at a lower level, so this is just a '\' token)
+            // Single character token, including '#' and '\' (escaped newlines are handled at a lower level, so this is just a '\' token)
+            return ch;
 
         case EOF:
             return endOfInput;
@@ -273,7 +274,7 @@ int TPpContext::tStringInput::scan(TPpToken* ppToken)
             do {
                 if (len < TPpToken::maxTokenLength) {
                     tokenText[len++] = (char)ch;
-                    ch = pp->getChar();					
+                    ch = pp->getChar();
                 } else {
                     if (! AlreadyComplained) {
                         pp->parseContext.ppError(ppToken->loc, "name too long", "", "");
@@ -293,8 +294,7 @@ int TPpContext::tStringInput::scan(TPpToken* ppToken)
             tokenText[len] = '\0';
             pp->ungetChar();
             ppToken->atom = pp->LookUpAddString(tokenText);
-
-            return CPP_IDENTIFIER;
+            return PpAtomIdentifier;
         case '0':
             ppToken->name[len++] = (char)ch;
             ch = pp->getChar();
@@ -345,9 +345,9 @@ int TPpContext::tStringInput::scan(TPpToken* ppToken)
                 ppToken->ival = (int)ival;
 
                 if (isUnsigned)
-                    return CPP_UINTCONSTANT;
+                    return PpAtomConstUint;
                 else
-                    return CPP_INTCONSTANT;
+                    return PpAtomConstInt;
             } else {
                 // could be octal integer or floating point, speculative pursue octal until it must be floating point
 
@@ -406,9 +406,9 @@ int TPpContext::tStringInput::scan(TPpToken* ppToken)
                 ppToken->ival = (int)ival;
 
                 if (isUnsigned)
-                    return CPP_UINTCONSTANT;
+                    return PpAtomConstUint;
                 else
-                    return CPP_INTCONSTANT;
+                    return PpAtomConstInt;
             }
             break;
         case '1': case '2': case '3': case '4':
@@ -453,17 +453,17 @@ int TPpContext::tStringInput::scan(TPpToken* ppToken)
                 ppToken->ival = (int)ival;
 
                 if (uint)
-                    return CPP_UINTCONSTANT;
+                    return PpAtomConstUint;
                 else
-                    return CPP_INTCONSTANT;
+                    return PpAtomConstInt;
             }
             break;
         case '-':
             ch = pp->getChar();
             if (ch == '-') {
-                return CPP_DEC_OP;
+                return PpAtomDecrement;
             } else if (ch == '=') {
-                return CPP_SUB_ASSIGN;
+                return PpAtomSub;
             } else {
                 pp->ungetChar();
                 return '-';
@@ -471,9 +471,9 @@ int TPpContext::tStringInput::scan(TPpToken* ppToken)
         case '+':
             ch = pp->getChar();
             if (ch == '+') {
-                return CPP_INC_OP;
+                return PpAtomIncrement;
             } else if (ch == '=') {
-                return CPP_ADD_ASSIGN;
+                return PpAtomAdd;
             } else {
                 pp->ungetChar();
                 return '+';
@@ -481,7 +481,7 @@ int TPpContext::tStringInput::scan(TPpToken* ppToken)
         case '*':
             ch = pp->getChar();
             if (ch == '=') {
-                return CPP_MUL_ASSIGN;
+                return PpAtomMul;
             } else {
                 pp->ungetChar();
                 return '*';
@@ -489,28 +489,18 @@ int TPpContext::tStringInput::scan(TPpToken* ppToken)
         case '%':
             ch = pp->getChar();
             if (ch == '=') {
-                return CPP_MOD_ASSIGN;
-            } else if (ch == '>'){
-                return CPP_RIGHT_BRACE;
+                return PpAtomMod;
             } else {
                 pp->ungetChar();
                 return '%';
             }
-        case ':':
-            ch = pp->getChar();
-            if (ch == '>') {
-                return CPP_RIGHT_BRACKET;
-            } else {
-                pp->ungetChar();
-                return ':';
-            }
         case '^':
             ch = pp->getChar();
             if (ch == '^') {
-                return CPP_XOR_OP;
+                return PpAtomXor;
             } else {
                 if (ch == '=')
-                    return CPP_XOR_ASSIGN;
+                    return PpAtomXorAssign;
                 else{
                     pp->ungetChar();
                     return '^';
@@ -520,7 +510,7 @@ int TPpContext::tStringInput::scan(TPpToken* ppToken)
         case '=':
             ch = pp->getChar();
             if (ch == '=') {
-                return CPP_EQ_OP;
+                return PpAtomEQ;
             } else {
                 pp->ungetChar();
                 return '=';
@@ -528,7 +518,7 @@ int TPpContext::tStringInput::scan(TPpToken* ppToken)
         case '!':
             ch = pp->getChar();
             if (ch == '=') {
-                return CPP_NE_OP;
+                return PpAtomNE;
             } else {
                 pp->ungetChar();
                 return '!';
@@ -536,68 +526,54 @@ int TPpContext::tStringInput::scan(TPpToken* ppToken)
         case '|':
             ch = pp->getChar();
             if (ch == '|') {
-                return CPP_OR_OP;
+                return PpAtomOr;
+            } else if (ch == '=') {
+                return PpAtomOrAssign;
             } else {
-                if (ch == '=')
-                    return CPP_OR_ASSIGN;
-                else{
-                    pp->ungetChar();
-                    return '|';
-                }
+                pp->ungetChar();
+                return '|';
             }
         case '&':
             ch = pp->getChar();
             if (ch == '&') {
-                return CPP_AND_OP;
+                return PpAtomAnd;
+            } else if (ch == '=') {
+                return PpAtomAndAssign;
             } else {
-                if (ch == '=')
-                    return CPP_AND_ASSIGN;
-                else{
-                    pp->ungetChar();
-                    return '&';
-                }
+                pp->ungetChar();
+                return '&';
             }
         case '<':
             ch = pp->getChar();
             if (ch == '<') {
                 ch = pp->getChar();
                 if (ch == '=')
-                    return CPP_LEFT_ASSIGN;
-                else{
+                    return PpAtomLeftAssign;
+                else {
                     pp->ungetChar();
-                    return CPP_LEFT_OP;
+                    return PpAtomLeft;
                 }
+            } else if (ch == '=') {
+                return PpAtomLE;
             } else {
-                if (ch == '=') {
-                    return CPP_LE_OP;
-                } else {
-                    if (ch == '%')
-                        return CPP_LEFT_BRACE;
-                    else if (ch == ':')
-                        return CPP_LEFT_BRACKET;
-                    else{
-                        pp->ungetChar();
-                        return '<';
-                    }
-                }
+                pp->ungetChar();
+                return '<';
             }
         case '>':
             ch = pp->getChar();
             if (ch == '>') {
                 ch = pp->getChar();
                 if (ch == '=')
-                    return CPP_RIGHT_ASSIGN;
-                else{
+                    return PpAtomRightAssign;
+                else {
                     pp->ungetChar();
-                    return CPP_RIGHT_OP;
+                    return PpAtomRight;
                 }
+            } else if (ch == '=') {
+                return PpAtomGE;
             } else {
-                if (ch == '=') {
-                    return CPP_GE_OP;
-                } else {
-                    pp->ungetChar();
-                    return '>';
-                }
+                pp->ungetChar();
+                return '>';
             }
         case '.':
             ch = pp->getChar();
@@ -642,7 +618,7 @@ int TPpContext::tStringInput::scan(TPpToken* ppToken)
                 // loop again to get the next token...
                 break;
             } else if (ch == '=') {
-                return CPP_DIV_ASSIGN;
+                return PpAtomDiv;
             } else {
                 pp->ungetChar();
                 return '/';
@@ -659,13 +635,11 @@ int TPpContext::tStringInput::scan(TPpToken* ppToken)
                     break;
             };
             tokenText[len] = '\0';
-            if (ch == '"') {
-                ppToken->atom = pp->LookUpAddString(tokenText);
-                return CPP_STRCONSTANT;
-            } else {
+            if (ch != '"') {
+                pp->ungetChar();
                 pp->parseContext.ppError(ppToken->loc, "end of line in string", "string", "");
-                return CPP_ERROR_SY;
             }
+            return PpAtomConstString;
         }
 
         ch = pp->getChar();
@@ -684,7 +658,6 @@ const char* TPpContext::tokenize(TPpToken* ppToken)
     int token = '\n';
 
     for(;;) {
-        const char* tokenString = nullptr;
         token = scanToken(ppToken);
         ppToken->token = token;
         if (token == EOF) {
@@ -710,22 +683,28 @@ const char* TPpContext::tokenize(TPpToken* ppToken)
             continue;
 
         // expand macros
-        if (token == CPP_IDENTIFIER && MacroExpand(ppToken->atom, ppToken, false, true) != 0)
+        if (token == PpAtomIdentifier && MacroExpand(ppToken->atom, ppToken, false, true) != 0)
             continue;
 
-        if (token == CPP_IDENTIFIER)
-            tokenString = GetAtomString(ppToken->atom);
-        else if (token == CPP_INTCONSTANT || token == CPP_UINTCONSTANT ||
-                 token == CPP_FLOATCONSTANT || token == CPP_DOUBLECONSTANT)
+        const char* tokenString = nullptr;
+        switch (token) {
+        case PpAtomIdentifier:
+        case PpAtomConstInt:
+        case PpAtomConstUint:
+        case PpAtomConstFloat:
+        case PpAtomConstDouble:
             tokenString = ppToken->name;
-        else if (token == CPP_STRCONSTANT) {
+            break;
+        case PpAtomConstString:
             parseContext.ppError(ppToken->loc, "string literals not supported", "\"\"", "");
-            tokenString = nullptr;
-        } else if (token == '\'') {
+            break;
+        case '\'':
             parseContext.ppError(ppToken->loc, "character literals not supported", "\'", "");
-            tokenString = nullptr;
-        } else
+            break;
+        default:
             tokenString = GetAtomString(token);
+            break;
+        }
 
         if (tokenString) {
             if (tokenString[0] != 0)

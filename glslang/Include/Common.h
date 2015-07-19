@@ -92,6 +92,7 @@ namespace glslang {
 typedef pool_allocator<char> TStringAllocator;
 typedef std::basic_string <char, std::char_traits<char>, TStringAllocator> TString;
 
+// Repackage the std::hash for use by unordered map/set with a TString key.
 struct TStringHash {
     size_t operator()(const TString& string) const { return std::hash<TString>()(string); }
 };
