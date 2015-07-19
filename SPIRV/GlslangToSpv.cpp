@@ -117,11 +117,11 @@ protected:
     const glslang::TIntermediate* glslangIntermediate;
     spv::Id stdBuiltins;
 
-    std::map<int, spv::Id> symbolValues;
-    std::set<int> constReadOnlyParameters;  // set of formal function parameters that have glslang qualifier constReadOnly, so we know they are not local function "const" that are write-once
-    std::map<std::string, spv::Function*> functionMap;
-    std::map<const glslang::TTypeList*, spv::Id> structMap;
-    std::map<const glslang::TTypeList*, std::vector<int> > memberRemapper;  // for mapping glslang block indices to spv indices (e.g., due to hidden members)
+    std::unordered_map<int, spv::Id> symbolValues;
+    std::unordered_set<int> constReadOnlyParameters;  // set of formal function parameters that have glslang qualifier constReadOnly, so we know they are not local function "const" that are write-once
+    std::unordered_map<std::string, spv::Function*> functionMap;
+    std::unordered_map<const glslang::TTypeList*, spv::Id> structMap;
+    std::unordered_map<const glslang::TTypeList*, std::vector<int> > memberRemapper;  // for mapping glslang block indices to spv indices (e.g., due to hidden members)
     std::stack<bool> breakForLoop;  // false means break for switch
     std::stack<glslang::TIntermTyped*> loopTerminal;  // code from the last part of a for loop: for(...; ...; terminal), needed for e.g., continue };
 };
@@ -361,8 +361,8 @@ TGlslangToSpvTraverser::TGlslangToSpvTraverser(const glslang::TIntermediate* gls
     builder.addEntryPoint(executionModel, shaderEntry);
 
     // Add the source extensions
-    const std::set<std::string>& sourceExtensions = glslangIntermediate->getRequestedExtensions();
-    for (std::set<std::string>::const_iterator it = sourceExtensions.begin(); it != sourceExtensions.end(); ++it)
+    const auto& sourceExtensions = glslangIntermediate->getRequestedExtensions();
+    for (auto it = sourceExtensions.begin(); it != sourceExtensions.end(); ++it)
         builder.addSourceExtension(it->c_str());
 
     // Add the top-level modes for this shader.
@@ -2385,8 +2385,7 @@ spv::Id TGlslangToSpvTraverser::createNoArgOperation(glslang::TOperator op)
 
 spv::Id TGlslangToSpvTraverser::getSymbolId(const glslang::TIntermSymbol* symbol)
 {
-    std::map<int, spv::Id>::iterator iter;
-    iter = symbolValues.find(symbol->getId());
+    auto iter = symbolValues.find(symbol->getId());
     spv::Id id;
     if (symbolValues.end() != iter) {
         id = iter->second;

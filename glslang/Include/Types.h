@@ -849,9 +849,6 @@ public:
     }
 };
 
-typedef std::map<TTypeList*, TTypeList*> TStructureMap;
-typedef std::map<TTypeList*, TTypeList*>::const_iterator TStructureMapIterator;
-
 //
 // Base class for things that have a type.
 //
@@ -957,7 +954,6 @@ public:
 
         if (copyOf.structure) {
             structure = new TTypeList;
-            TStructureMapIterator iter;
             for (unsigned int i = 0; i < copyOf.structure->size(); ++i) {
                 TTypeLoc typeLoc;
                 typeLoc.loc = (*copyOf.structure)[i].loc;

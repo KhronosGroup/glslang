@@ -130,7 +130,7 @@ namespace glslang {
 //
 int TPpContext::LookUpAddString(const char* s)
 {
-    TAtomMap::const_iterator it = atomMap.find(s);
+    auto it = atomMap.find(s);
     if (it == atomMap.end())
         return AddAtomFixed(s, nextAtom++);
     else
@@ -161,7 +161,7 @@ const char* TPpContext::GetAtomString(int atom)
 //
 int TPpContext::AddAtomFixed(const char* s, int atom)
 {
-    TAtomMap::const_iterator it = atomMap.insert(std::pair<TString, int>(s, atom)).first;
+    auto it = atomMap.insert(std::pair<TString, int>(s, atom)).first;
     if (stringMap.size() < (size_t)atom + 1)
         stringMap.resize(atom + 100, 0);
     stringMap[atom] = &it->first;

@@ -59,8 +59,10 @@
 #endif
 
 #include <set>
+#include <unordered_set>
 #include <vector>
 #include <map>
+#include <unordered_map>
 #include <list>
 #include <algorithm>
 #include <string>
@@ -82,10 +84,6 @@
     void operator delete[](void*) { }                                 \
     void operator delete[](void *, void *) { }
 
-#define TBaseMap std::map
-#define TBaseList std::list
-#define TBaseSet std::set
-
 namespace glslang {
 
 //
@@ -93,10 +91,15 @@ namespace glslang {
 //
 typedef pool_allocator<char> TStringAllocator;
 typedef std::basic_string <char, std::char_traits<char>, TStringAllocator> TString;
+
+struct TStringHash {
+    size_t operator()(const TString& string) const { return std::hash<TString>()(string); }
+};
+
 inline TString* NewPoolTString(const char* s)
 {
-	void* memory = GetThreadPoolAllocator().allocate(sizeof(TString));
-	return new(memory) TString(s);
+    void* memory = GetThreadPoolAllocator().allocate(sizeof(TString));
+    return new(memory) TString(s);
 }
 
 template<class T> inline T* NewPoolObject(T)
@@ -123,28 +126,32 @@ public:
     TVector(size_type i, const T& val) : std::vector<T, pool_allocator<T> >(i, val) {}
 };
 
-template <class T> class TList   : public TBaseList  <T, pool_allocator<T> > {
+template <class T> class TList  : public std::list<T, pool_allocator<T> > {
 public:
-    typedef typename TBaseList<T, pool_allocator<T> >::size_type size_type;
-    TList() : TBaseList<T, pool_allocator<T> >() {}
-    TList(const pool_allocator<T>& a) : TBaseList<T, pool_allocator<T> >(a) {}
-    TList(size_type i): TBaseList<T, pool_allocator<T> >(i) {}
+    typedef typename std::list<T, pool_allocator<T> >::size_type size_type;
+    TList() : std::list<T, pool_allocator<T> >() {}
+    TList(const pool_allocator<T>& a) : std::list<T, pool_allocator<T> >(a) {}
+    TList(size_type i): std::list<T, pool_allocator<T> >(i) {}
 };
-
-// This is called TStlSet, because TSet is taken by an existing compiler class.
-template <class T, class CMP> class TStlSet : public std::set<T, CMP, pool_allocator<T> > {
-    // No pool allocator versions of constructors in std::set.
-};
-
 
 template <class K, class D, class CMP = std::less<K> > 
-class TMap : public TBaseMap<K, D, CMP, pool_allocator<std::pair<K, D> > > {
+class TMap : public std::map<K, D, CMP, pool_allocator<std::pair<K, D> > > {
 public:
     typedef pool_allocator<std::pair <K, D> > tAllocator;
 
-    TMap() : TBaseMap<K, D, CMP, tAllocator >() {}
+    TMap() : std::map<K, D, CMP, tAllocator >() {}
     // use correct two-stage name lookup supported in gcc 3.4 and above
-    TMap(const tAllocator& a) : TBaseMap<K, D, CMP, tAllocator>(TBaseMap<K, D, CMP, tAllocator >::key_compare(), a) {}
+    TMap(const tAllocator& a) : std::map<K, D, CMP, tAllocator>(TBaseMap<K, D, CMP, tAllocator >::key_compare(), a) {}
+};
+
+template <class K, class D, class HASH = std::hash<K>, class PRED = std::equal_to<K> > 
+class TUnorderedMap : public std::unordered_map<K, D, HASH, PRED, pool_allocator<std::pair<K, D> > > {
+public:
+    typedef pool_allocator<std::pair <K, D> > tAllocator;
+
+    TUnorderedMap() : std::unordered_map<K, D, HASH, PRED, tAllocator >() {}
+    // use correct two-stage name lookup supported in gcc 3.4 and above
+    TUnorderedMap(const tAllocator& a) : std::unordered_map<K, D, HASH, PRED, tAllocator>(TBaseMap<K, D, HASH, PRED, tAllocator >::key_compare(), a) {}
 };
 
 //
@@ -184,7 +191,6 @@ struct TSourceLoc {
 };
 
 typedef TMap<TString, TString> TPragmaTable;
-typedef TMap<TString, TString>::tAllocator TPragmaTableAllocator;
 
 const int GlslangMaxTokenLength = 1024;
 

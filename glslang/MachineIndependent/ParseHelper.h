@@ -48,10 +48,10 @@
 namespace glslang {
 
 struct TPragma {
-	TPragma(bool o, bool d) : optimize(o), debug(d) { }
-	bool optimize;
-	bool debug;
-	TPragmaTable pragmaTable;
+    TPragma(bool o, bool d) : optimize(o), debug(d) { }
+    bool optimize;
+    bool debug;
+    TPragmaTable pragmaTable;
 };
 
 class TScanContext;
@@ -306,7 +306,7 @@ protected:
     TInputScanner* currentScanner;
     int numErrors;               // number of compile-time errors encountered
     bool parsingBuiltins;        // true if parsing built-in symbols/functions
-    TMap<TString, TExtensionBehavior> extensionBehavior;    // for each extension string, what its current behavior is set to
+    std::unordered_map<TString, TExtensionBehavior> extensionBehavior;    // for each extension string, what its current behavior is set to
     static const int maxSamplerIndex = EsdNumDims * (EbtNumTypes * (2 * 2 * 2)); // see computeSamplerTypeIndex()
     TPrecisionQualifier defaultSamplerPrecision[maxSamplerIndex];
     bool afterEOF;

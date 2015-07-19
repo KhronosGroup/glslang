@@ -441,7 +441,7 @@ void TParseContext::requireExtensions(TSourceLoc loc, int numExtensions, const c
 
 TExtensionBehavior TParseContext::getExtensionBehavior(const char* extension)
 {
-    TMap<TString, TExtensionBehavior>::iterator iter = extensionBehavior.find(TString(extension));
+    auto iter = extensionBehavior.find(TString(extension));
     if (iter == extensionBehavior.end())
         return EBhMissing;
     else
@@ -527,19 +527,18 @@ void TParseContext::updateExtensionBehavior(int line, const char* extension, con
 void TParseContext::updateExtensionBehavior(const char* extension, TExtensionBehavior behavior)
 {
     // Update the current behavior
-    TMap<TString, TExtensionBehavior>::iterator iter;
     if (strcmp(extension, "all") == 0) {
         // special case for the 'all' extension; apply it to every extension present
         if (behavior == EBhRequire || behavior == EBhEnable) {
             error(getCurrentLoc(), "extension 'all' cannot have 'require' or 'enable' behavior", "#extension", "");
             return;
         } else {
-            for (iter = extensionBehavior.begin(); iter != extensionBehavior.end(); ++iter)
+            for (auto iter = extensionBehavior.begin(); iter != extensionBehavior.end(); ++iter)
                 iter->second = behavior;
         }
     } else {
         // Do the update for this single extension
-        iter = extensionBehavior.find(TString(extension));
+        auto iter = extensionBehavior.find(TString(extension));
         if (iter == extensionBehavior.end()) {
             switch (behavior) {
             case EBhRequire:

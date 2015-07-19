@@ -78,6 +78,8 @@ NVIDIA HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef PPCONTEXT_H
 #define PPCONTEXT_H
 
+#include <unordered_map>
+
 #include "../ParseHelper.h"
 
 #pragma warning(disable : 4127)
@@ -190,7 +192,7 @@ public:
     };
 
     MemoryPool *pool;
-    typedef std::map<int, Symbol*> TSymbolMap;
+    typedef TUnorderedMap<int, Symbol*> TSymbolMap;
     TSymbolMap symbols; // this has light use... just defined macros
 
 protected:
@@ -459,7 +461,7 @@ protected:
     //
     // From PpAtom.cpp
     //
-    typedef std::map<const TString, int> TAtomMap;
+    typedef TUnorderedMap<const TString, int, TStringHash> TAtomMap;
     typedef TVector<const TString*> TStringMap;
     TAtomMap atomMap;
     TStringMap stringMap;

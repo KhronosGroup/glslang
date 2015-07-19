@@ -39,6 +39,8 @@
 //
 
 #include <string.h>
+#include <unordered_map>
+#include <unordered_set>
 
 #include "../Include/Types.h"
 #include "SymbolTable.h"
@@ -293,8 +295,8 @@ namespace {
 
 // A single global usable by all threads, by all versions, by all languages.
 // After a single process-level initialization, this is read only and thread safe
-std::map<std::string, int>* KeywordMap = 0;
-std::set<std::string>* ReservedSet = 0;
+std::unordered_map<std::string, int>* KeywordMap = 0;
+std::unordered_set<std::string>* ReservedSet = 0;
 
 };
 
@@ -307,7 +309,7 @@ void TScanContext::fillInKeywordMap()
         // but, the only risk is if two threads called simultaneously
         return;
     }
-    KeywordMap = new std::map<std::string, int>;
+    KeywordMap = new std::unordered_map<std::string, int>;
 
     (*KeywordMap)["const"] =                   CONST;
     (*KeywordMap)["uniform"] =                 UNIFORM;
@@ -476,7 +478,7 @@ void TScanContext::fillInKeywordMap()
     (*KeywordMap)["resource"] =                RESOURCE;
     (*KeywordMap)["superp"] =                  SUPERP;
 
-    ReservedSet = new std::set<std::string>;
+    ReservedSet = new std::unordered_set<std::string>;
     
     ReservedSet->insert("common");
     ReservedSet->insert("partition");
@@ -610,7 +612,7 @@ int TScanContext::tokenizeIdentifier()
     if (ReservedSet->find(tokenText) != ReservedSet->end())
         return reservedWord();
 
-    std::map<std::string, int>::const_iterator it = KeywordMap->find(tokenText);
+    auto it = KeywordMap->find(tokenText);
     if (it == KeywordMap->end()) {
         // Should have an identifier of some sort
         return identifierOrType();

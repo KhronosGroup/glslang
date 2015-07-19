@@ -649,7 +649,7 @@ void TIntermediate::output(TInfoSink& infoSink, bool tree)
 {
     infoSink.debug << "Shader version: " << version << "\n";
     if (requestedExtensions.size() > 0) {
-        for (std::set<std::string>::const_iterator extIt = requestedExtensions.begin(); extIt != requestedExtensions.end(); ++extIt)
+        for (auto extIt = requestedExtensions.begin(); extIt != requestedExtensions.end(); ++extIt)
             infoSink.debug << "Requested " << *extIt << "\n";
     }
 
