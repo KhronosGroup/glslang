@@ -505,6 +505,13 @@ int TPpContext::eval(int token, int precedence, bool shortCircuit, int& res, boo
 
         token = scanToken(ppToken);
         token = eval(token, binop[op].precedence, shortCircuit, res, err, ppToken);
+
+        if (binop[op].op == op_div || binop[op].op == op_mod) {
+            if (res == 0) {
+                parseContext.ppError(loc, "division by 0", "preprocessor evaluation", "");
+                res = 1;
+            }
+        }
         res = binop[op].op(leftSide, res);
     }
 

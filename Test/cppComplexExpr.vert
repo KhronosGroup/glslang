@@ -171,6 +171,13 @@ float c = foobar(1.1, 2.2
 #undef __VERSION__
 #undef GL_SOME_EXTENSION
 
+#line 4000
+#line 200 % 0     // ERROR, div by 0
+#if __LINE__ / 0  // ERROR, div by 0
+#endif
+
+#if 7%            // ERROR incomplete expression
+
 #line 10000
 #if 0
 // ERROR, EOF

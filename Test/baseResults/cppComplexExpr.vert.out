@@ -42,8 +42,12 @@ ERROR: 0:3006: '#undef' : predefined names can't be (un)defined: __LINE__
 ERROR: 0:3007: '#undef' : predefined names can't be (un)defined: __FILE__
 ERROR: 0:3008: '#undef' : predefined names can't be (un)defined: __VERSION__
 ERROR: 0:3009: '#undef' : names beginning with "GL_" can't be (un)defined: GL_SOME_EXTENSION
+ERROR: 0:4000: 'preprocessor evaluation' : division by 0 
+ERROR: 0:0: 'preprocessor evaluation' : division by 0 
+ERROR: 0:3: 'preprocessor evaluation' : bad expression 
+ERROR: 0:3: 'preprocessor evaluation' : division by 0 
 ERROR: 0:10001: '' : missing #endif 
-ERROR: 44 compilation errors.  No code generated.
+ERROR: 48 compilation errors.  No code generated.
 
 
 Shader version: 300
