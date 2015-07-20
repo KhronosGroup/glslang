@@ -93,9 +93,9 @@ typedef pool_allocator<char> TStringAllocator;
 typedef std::basic_string <char, std::char_traits<char>, TStringAllocator> TString;
 
 // Repackage the std::hash for use by unordered map/set with a TString key.
-struct TStringHash {
-    size_t operator()(const TString& string) const { return std::hash<TString>()(string); }
-};
+//struct TStringHash {
+//    size_t operator()(const TString& string) const { return std::hash<TString>()(string); }
+//};
 
 inline TString* NewPoolTString(const char* s)
 {
@@ -128,31 +128,14 @@ public:
 };
 
 template <class T> class TList  : public std::list<T, pool_allocator<T> > {
-public:
-    typedef typename std::list<T, pool_allocator<T> >::size_type size_type;
-    TList() : std::list<T, pool_allocator<T> >() {}
-    TList(const pool_allocator<T>& a) : std::list<T, pool_allocator<T> >(a) {}
-    TList(size_type i): std::list<T, pool_allocator<T> >(i) {}
 };
 
 template <class K, class D, class CMP = std::less<K> > 
 class TMap : public std::map<K, D, CMP, pool_allocator<std::pair<K, D> > > {
-public:
-    typedef pool_allocator<std::pair <K, D> > tAllocator;
-
-    TMap() : std::map<K, D, CMP, tAllocator >() {}
-    // use correct two-stage name lookup supported in gcc 3.4 and above
-    TMap(const tAllocator& a) : std::map<K, D, CMP, tAllocator>(TBaseMap<K, D, CMP, tAllocator >::key_compare(), a) {}
 };
 
-template <class K, class D, class HASH = std::hash<K>, class PRED = std::equal_to<K> > 
+template <class K, class D, class HASH = std::hash<K>, class PRED = std::equal_to<K> >
 class TUnorderedMap : public std::unordered_map<K, D, HASH, PRED, pool_allocator<std::pair<K, D> > > {
-public:
-    typedef pool_allocator<std::pair <K, D> > tAllocator;
-
-    TUnorderedMap() : std::unordered_map<K, D, HASH, PRED, tAllocator >() {}
-    // use correct two-stage name lookup supported in gcc 3.4 and above
-    TUnorderedMap(const tAllocator& a) : std::unordered_map<K, D, HASH, PRED, tAllocator>(TBaseMap<K, D, HASH, PRED, tAllocator >::key_compare(), a) {}
 };
 
 //

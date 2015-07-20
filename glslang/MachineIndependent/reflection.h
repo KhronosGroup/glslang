@@ -108,7 +108,8 @@ public:
 protected:
     friend class glslang::TLiveTraverser;
 
-    typedef std::unordered_map<TString, int> TNameToIndex;
+    // Need a TString hash: typedef std::unordered_map<TString, int> TNameToIndex;
+    typedef std::map<TString, int> TNameToIndex;
     typedef std::vector<TObjectReflection> TMapIndexToReflection;
 
     TObjectReflection badReflection; // return for queries of -1 or generally out of range; has expected descriptions with in it for this
