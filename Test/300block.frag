@@ -43,4 +43,16 @@ void main()
 {
     texture(s.sampler, vec3(inst.ni, bv.y, insts[2].nbv.z));
     insts[s.v.x];         // ERROR
+    fooBlock;             // ERROR
+    mat4(s);              // ERROR
+    int insts;
+    float barBlock;
+    mat4(barBlock);
+    mat4(unreferenced);   // ERROR, bad type
+    ++s;                  // ERROR
+    inst - 1;             // ERROR
+    ++barBlock;
+    2 * barBlockArray;    // ERROR
 }
+
+int fooBlock;             // ERROR, redef.
