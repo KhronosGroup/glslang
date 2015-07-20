@@ -448,8 +448,16 @@ TIntermTyped* TParseContext::handleVariable(TSourceLoc loc, TSymbol* symbol, con
         // The symbol table search was done in the lexical phase.
         // See if it was a variable.
         variable = symbol ? symbol->getAsVariable() : 0;
-        if (symbol && ! variable)
-            error(loc, "variable name expected", string->c_str(), "");
+        if (variable) {
+            if ((variable->getType().getBasicType() == EbtBlock ||
+                 variable->getType().getBasicType() == EbtStruct) && variable->getType().getStruct() == nullptr) {
+                error(loc, "cannot be used (maybe an instance name is needed)", string->c_str(), "");
+                variable = nullptr;
+            }
+        } else {
+            if (symbol)
+                error(loc, "variable name expected", string->c_str(), "");
+        }
 
         // Recovery, if it wasn't found or was not a variable.
         if (! variable)
