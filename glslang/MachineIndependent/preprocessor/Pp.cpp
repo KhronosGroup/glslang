@@ -620,13 +620,7 @@ int TPpContext::CPPinclude(TPpToken* ppToken)
                     std::ostringstream content;
                     content << "#line " << forNextLine << " " << "\"" << sourceName << "\"\n";
                     content << replacement << (replacement.back() == '\n' ? "" : "\n");
-                    content << "#line " << directiveLoc.line + forNextLine << " ";
-                    if (directiveLoc.name != nullptr) {
-                        content << "\"" << directiveLoc.name << "\"";
-                    } else {
-                        content << directiveLoc.string;
-                    }
-                    content << "\n";
+                    content << "#line " << directiveLoc.line + forNextLine << " " << directiveLoc.getStringNameOrNum() << "\n";
                     pushInput(new TokenizableString(directiveLoc, content.str(), this));
                 }
                 // At EOF, there's no "current" location anymore.
@@ -1015,13 +1009,9 @@ int TPpContext::MacroExpand(int atom, TPpToken* ppToken, bool expandUndef, bool 
         return 1;
 
     case PpAtomFileMacro: {
-        if (const char* current_file = parseContext.getCurrentLoc().name) {
+        if (parseContext.getCurrentLoc().name)
             parseContext.ppRequireExtensions(ppToken->loc, 1, &E_GL_GOOGLE_cpp_style_line_directive, "filename-based __FILE__");
-            sprintf(ppToken->name, "\"%s\"", current_file);
-        } else {
-            ppToken->ival = parseContext.getCurrentLoc().string;
-            sprintf(ppToken->name, "%d", ppToken->ival);
-        }
+        sprintf(ppToken->name, "%s", ppToken->loc.getStringNameOrNum().c_str());
         UngetToken(PpAtomConstInt, ppToken);
         return 1;
     }
