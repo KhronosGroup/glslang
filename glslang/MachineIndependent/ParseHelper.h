@@ -306,8 +306,7 @@ protected:
     TInputScanner* currentScanner;
     int numErrors;               // number of compile-time errors encountered
     bool parsingBuiltins;        // true if parsing built-in symbols/functions
-//  need portable TStringHash  TUnorderedMap<TString, TExtensionBehavior, TStringHash> extensionBehavior;    // for each extension string, what its current behavior is set to
-    TMap<TString, TExtensionBehavior> extensionBehavior;    // for each extension string, what its current behavior is set to
+    TUnorderedMap<TString, TExtensionBehavior> extensionBehavior;    // for each extension string, what its current behavior is set to
     static const int maxSamplerIndex = EsdNumDims * (EbtNumTypes * (2 * 2 * 2)); // see computeSamplerTypeIndex()
     TPrecisionQualifier defaultSamplerPrecision[maxSamplerIndex];
     bool afterEOF;

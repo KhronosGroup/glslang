@@ -192,7 +192,6 @@ public:
     };
 
     MemoryPool *pool;
-    // need portable hash typedef TUnorderedMap<int, Symbol*> TSymbolMap;
     typedef TMap<int, Symbol*> TSymbolMap;
     TSymbolMap symbols; // this has light use... just defined macros
 
@@ -437,8 +436,7 @@ protected:
     //
     // From PpAtom.cpp
     //
-    // need portable TStringHash typedef TUnorderedMap<const TString, int, TStringHash> TAtomMap;
-    typedef TMap<const TString, int> TAtomMap;
+    typedef TUnorderedMap<TString, int> TAtomMap;
     typedef TVector<const TString*> TStringMap;
     TAtomMap atomMap;
     TStringMap stringMap;

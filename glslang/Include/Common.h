@@ -86,16 +86,37 @@
 
 namespace glslang {
 
-//
-// Pool version of string.
-//
-typedef pool_allocator<char> TStringAllocator;
-typedef std::basic_string <char, std::char_traits<char>, TStringAllocator> TString;
+    //
+    // Pool version of string.
+    //
+    typedef pool_allocator<char> TStringAllocator;
+    typedef std::basic_string <char, std::char_traits<char>, TStringAllocator> TString;
+
+} // end namespace glslang
 
 // Repackage the std::hash for use by unordered map/set with a TString key.
-//struct TStringHash {
-//    size_t operator()(const TString& string) const { return std::hash<TString>()(string); }
-//};
+namespace std {
+
+    template<> struct hash<glslang::TString> {
+        std::size_t operator()(const glslang::TString& s) const
+        {
+            const unsigned _FNV_offset_basis = 2166136261U;
+            const unsigned _FNV_prime = 16777619U;
+            unsigned _Val = _FNV_offset_basis;
+            unsigned _Count = s.size();
+            const char* _First = s.c_str();
+            for (unsigned _Next = 0; _Next < _Count; ++_Next)
+            {
+                _Val ^= (unsigned)_First[_Next];
+                _Val *= _FNV_prime;
+            }
+
+            return _Val;
+        }
+    };
+}
+
+namespace glslang {
 
 inline TString* NewPoolTString(const char* s)
 {
