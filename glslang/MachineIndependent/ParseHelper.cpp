@@ -1973,6 +1973,10 @@ bool TParseContext::constructorError(TSourceLoc loc, TIntermNode* node, TFunctio
         type.getQualifier().storage = EvqConst;
 
     if (type.isArray()) {
+        if (function.getParamCount() == 0) {
+            error(loc, "array constructor must have at least one argument", "constructor", "");
+            return true;
+        }
         if (type.isImplicitlySizedArray()) {
             // auto adapt the constructor type to the number of arguments
             type.changeArraySize(function.getParamCount());
@@ -1992,7 +1996,7 @@ bool TParseContext::constructorError(TSourceLoc loc, TIntermNode* node, TFunctio
 
         // "If a matrix argument is given to a matrix constructor,
         // it is a compile-time error to have any other arguments."
-        if (function.getParamCount() > 1)
+        if (function.getParamCount() != 1)
             error(loc, "matrix constructed from matrix can only have one argument", "constructor", "");
         return false;
     }

@@ -100,3 +100,5 @@ void foo3()
     resize2.length();
     resize2[5] = 4.0;  // ERROR
 }
+
+int[] i = int[](); // ERROR, need constructor arguments
