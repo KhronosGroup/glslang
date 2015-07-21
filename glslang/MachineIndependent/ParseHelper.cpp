@@ -1239,10 +1239,14 @@ void TParseContext::addInputArgumentConversions(const TFunction& function, TInte
                 // convert to the correct type.
                 arg = intermediate.addConversion(EOpFunctionCall, *function[i].type, arg);
                 if (arg) {
-                    if (aggregate)
-                        aggregate->getSequence()[i] = arg;
-                    else
+                    if (function.getParamCount() == 1)
                         arguments = arg;
+                    else {
+                        if (aggregate)
+                            aggregate->getSequence()[i] = arg;
+                        else
+                            arguments = arg;
+                    }
                 }
             }
         }

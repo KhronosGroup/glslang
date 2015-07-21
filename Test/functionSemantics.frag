@@ -61,3 +61,10 @@ void main()
 
     gl_FragColor = vec4(color);
 }
+
+vec3 m(vec2);
+void aggCall()
+{
+    float F;
+    m(ivec2(F));  // test input conversion of single argument that's an aggregate; other function tests in 120.vert
+}
