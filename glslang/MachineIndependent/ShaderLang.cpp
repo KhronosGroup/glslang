@@ -450,6 +450,7 @@ bool ProcessDeferred(
     const char* const shaderStrings[],
     const int numStrings,
     const int* inputLengths,
+    const char* const stringNames[],
     const char* customPreamble,
     const EShOptimizationLevel optLevel,
     const TBuiltInResource* resources,
@@ -485,14 +486,23 @@ bool ProcessDeferred(
     //   string numStrings+2:     "int;"
     const int numPre = 2;
     const int numPost = requireNonempty? 1 : 0;
-    size_t* lengths = new size_t[numStrings + numPre + numPost];
-    const char** strings = new const char*[numStrings + numPre + numPost];
+    const int numTotal = numPre + numStrings + numPost;
+    size_t* lengths = new size_t[numTotal];
+    const char** strings = new const char*[numTotal];
+    const char** names = new const char*[numTotal];
     for (int s = 0; s < numStrings; ++s) {
         strings[s + numPre] = shaderStrings[s];
         if (inputLengths == 0 || inputLengths[s] < 0)
             lengths[s + numPre] = strlen(shaderStrings[s]);
         else
             lengths[s + numPre] = inputLengths[s];
+    }
+    if (stringNames != nullptr) {
+        for (int s = 0; s < numStrings; ++s)
+            names[s + numPre] = stringNames[s];
+    } else {
+        for (int s = 0; s < numStrings; ++s)
+            names[s + numPre] = nullptr;
     }
 
     // First, without using the preprocessor or parser, find the #version, so we know what
@@ -573,14 +583,18 @@ bool ProcessDeferred(
     // Fill in the strings as outlined above.
     strings[0] = parseContext.getPreamble();
     lengths[0] = strlen(strings[0]);
+    names[0] = nullptr;
     strings[1] = customPreamble;
     lengths[1] = strlen(strings[1]);
+    names[1] = nullptr;
     assert(2 == numPre);
     if (requireNonempty) {
-        strings[numStrings + numPre] = "\n int;";
-        lengths[numStrings + numPre] = strlen(strings[numStrings + numPre]);
+        const int postIndex = numStrings + numPre;
+        strings[postIndex] = "\n int;";
+        lengths[postIndex] = strlen(strings[numStrings + numPre]);
+        names[postIndex] = nullptr;
     }
-    TInputScanner fullInput(numStrings + numPre + numPost, strings, lengths, numPre, numPost);
+    TInputScanner fullInput(numStrings + numPre + numPost, strings, lengths, names, numPre, numPost);
 
     // Push a new symbol allocation scope that will get used for the shader's globals.
     symbolTable.push();
@@ -595,6 +609,7 @@ bool ProcessDeferred(
 
     delete [] lengths;
     delete [] strings;
+    delete [] names;
 
     return success;
 }
@@ -814,6 +829,7 @@ bool PreprocessDeferred(
     const char* const shaderStrings[],
     const int numStrings,
     const int* inputLengths,
+    const char* const stringNames[],
     const char* preamble,
     const EShOptimizationLevel optLevel,
     const TBuiltInResource* resources,
@@ -826,8 +842,9 @@ bool PreprocessDeferred(
     std::string* outputString)
 {
     DoPreprocessing parser(outputString);
-    return ProcessDeferred(compiler, shaderStrings, numStrings, inputLengths,
-                           preamble, optLevel, resources, defaultVersion, defaultProfile, forceDefaultVersionAndProfile,
+    return ProcessDeferred(compiler, shaderStrings, numStrings, inputLengths, stringNames,
+                           preamble, optLevel, resources, defaultVersion,
+                           defaultProfile, forceDefaultVersionAndProfile,
                            forwardCompatible, messages, intermediate, parser, false);
 }
 
@@ -848,6 +865,7 @@ bool CompileDeferred(
     const char* const shaderStrings[],
     const int numStrings,
     const int* inputLengths,
+    const char* const stringNames[],
     const char* preamble,
     const EShOptimizationLevel optLevel,
     const TBuiltInResource* resources,
@@ -859,8 +877,9 @@ bool CompileDeferred(
     TIntermediate& intermediate) // returned tree, etc.
 {
     DoFullParse parser;
-    return ProcessDeferred(compiler, shaderStrings, numStrings, inputLengths,
-                           preamble, optLevel, resources, defaultVersion, defaultProfile, forceDefaultVersionAndProfile,
+    return ProcessDeferred(compiler, shaderStrings, numStrings, inputLengths, stringNames,
+                           preamble, optLevel, resources, defaultVersion,
+                           defaultProfile, forceDefaultVersionAndProfile,
                            forwardCompatible, messages, intermediate, parser, true);
 }
 
@@ -1003,7 +1022,9 @@ int ShCompile(
     compiler->infoSink.debug.erase();
 
     TIntermediate intermediate(compiler->getLanguage());
-    bool success = CompileDeferred(compiler, shaderStrings, numStrings, inputLengths, "", optLevel, resources, defaultVersion, ENoProfile, false, forwardCompatible, messages, intermediate);
+    bool success = CompileDeferred(compiler, shaderStrings, numStrings, inputLengths, nullptr,
+                                   "", optLevel, resources, defaultVersion, ENoProfile, false,
+                                   forwardCompatible, messages, intermediate);
 
     //
     // Call the machine dependent compiler
@@ -1262,7 +1283,7 @@ public:
 };
 
 TShader::TShader(EShLanguage s) 
-    : pool(0), stage(s), preamble(""), lengths(nullptr)
+    : pool(0), stage(s), preamble(""), lengths(nullptr), stringNames(nullptr)
 {
     infoSink = new TInfoSink;
     compiler = new TDeferredCompiler(stage, *infoSink);
@@ -1290,6 +1311,16 @@ void TShader::setStringsWithLengths(const char* const* s, const int* l, int n)
     numStrings = n;
     lengths = l;
 }
+
+void TShader::setStringsWithLengthsAndNames(
+    const char* const* s, const int* l, const char* const* names, int n)
+{
+    strings = s;
+    numStrings = n;
+    lengths = l;
+    stringNames = names;
+}
+
 //
 // Turn the shader strings into a parse tree in the TIntermediate.
 //
@@ -1306,7 +1337,10 @@ bool TShader::parse(const TBuiltInResource* builtInResources, int defaultVersion
     if (! preamble)
         preamble = "";
 
-    return CompileDeferred(compiler, strings, numStrings, lengths, preamble, EShOptNone, builtInResources, defaultVersion, defaultProfile, forceDefaultVersionAndProfile, forwardCompatible, messages, *intermediate);
+    return CompileDeferred(compiler, strings, numStrings, lengths, stringNames,
+                           preamble, EShOptNone, builtInResources, defaultVersion,
+                           defaultProfile, forceDefaultVersionAndProfile,
+                           forwardCompatible, messages, *intermediate);
 }
 
 bool TShader::parse(const TBuiltInResource* builtInResources, int defaultVersion, bool forwardCompatible, EShMessages messages)
@@ -1329,10 +1363,10 @@ bool TShader::preprocess(const TBuiltInResource* builtInResources,
     if (! preamble)
         preamble = "";
 
-    return PreprocessDeferred(compiler, strings, numStrings,
-                              lengths, preamble, EShOptNone, builtInResources,
-                              defaultVersion, defaultProfile, forceDefaultVersionAndProfile, forwardCompatible, message,
-                              *intermediate, output_string);
+    return PreprocessDeferred(compiler, strings, numStrings, lengths, stringNames, preamble,
+                              EShOptNone, builtInResources, defaultVersion,
+                              defaultProfile, forceDefaultVersionAndProfile,
+                              forwardCompatible, message, *intermediate, output_string);
 }
 
 const char* TShader::getInfoLog()
