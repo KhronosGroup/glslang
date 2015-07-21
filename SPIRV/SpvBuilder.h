@@ -524,6 +524,7 @@ protected:
 
     // Data that needs to be kept in order to properly handle loops.
     struct Loop {
+        Loop() : header(nullptr), merge(nullptr), body(nullptr), testFirst(false), isFirstIteration(nullptr), function(nullptr) { }
         // The header is the first block generated for the loop.
         // It dominates all the blocks in the loop, i.e. it is always
         // executed before any others.

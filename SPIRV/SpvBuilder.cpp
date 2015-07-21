@@ -1738,7 +1738,7 @@ void Builder::endSwitch(std::vector<Block*>& /*segmentBlock*/)
 // Comments in header
 void Builder::makeNewLoop(bool loopTestFirst)
 {
-    loops.push({ });
+    loops.push(Loop());
     Loop& loop = loops.top();
 
     loop.function  = &getBuildPoint()->getParent();
