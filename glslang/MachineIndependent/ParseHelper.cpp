@@ -5352,4 +5352,11 @@ void TParseContext::notifyLineDirective(int curLineNo, int newLineNo, bool hasSo
     }
 }
 
+void TParseContext::notifyExtensionDirective(int line, const char* extension, const char* behavior)
+{
+    if (extensionCallback) {
+        extensionCallback(line, extension, behavior);
+    }
+}
+
 } // end namespace glslang
