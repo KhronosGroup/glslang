@@ -1947,9 +1947,7 @@ bool TParseContext::constructorError(TSourceLoc loc, TIntermNode* node, TFunctio
     }
 
     //
-    // Note: It's okay to have too many components available, but not okay to have unused
-    // arguments.  'full' will go to true when enough args have been seen.  If we loop
-    // again, there is an extra argument, so 'overfull' will become true.
+    // Walk the arguments for first-pass checks and collection of information.
     //
 
     int size = 0;
@@ -1958,19 +1956,32 @@ bool TParseContext::constructorError(TSourceLoc loc, TIntermNode* node, TFunctio
     bool overFull = false;
     bool matrixInMatrix = false;
     bool arrayArg = false;
-    for (int i = 0; i < function.getParamCount(); ++i) {
-        size += function[i].type->computeNumComponents();
-
-        if (constructingMatrix && function[i].type->isMatrix())
+    for (int arg = 0; arg < function.getParamCount(); ++arg) {
+        if (function[arg].type->isArray()) {
+            if (! function[arg].type->isExplicitlySizedArray()) {
+                // Can't construct from an unsized array.
+                error(loc, "array argument must be sized", "constructor", "");
+                return true;
+            }
+            arrayArg = true;
+        }
+        if (constructingMatrix && function[arg].type->isMatrix())
             matrixInMatrix = true;
-        if (full)
+
+        // 'full' will go to true when enough args have been seen.  If we loop
+        // again, there is an extra argument.
+        if (full) {
+            // For vectors and matrices, it's okay to have too many components
+            // available, but not okay to have unused arguments.
             overFull = true;
+        }
+
+        size += function[arg].type->computeNumComponents();
         if (op != EOpConstructStruct && ! type.isArray() && size >= type.computeNumComponents())
             full = true;
-        if (function[i].type->getQualifier().storage != EvqConst)
+
+        if (function[arg].type->getQualifier().storage != EvqConst)
             constType = false;
-        if (function[i].type->isArray())
-            arrayArg = true;
     }
 
     if (constType)
