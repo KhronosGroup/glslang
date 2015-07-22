@@ -10,7 +10,7 @@ AEP
  - GL_OES_texture_storage_multisample_2d_array
  + GL_EXT_geometry_shader
  + GL_EXT_geometry_point_size
- - GL_EXT_gpu_shader5
+ + GL_EXT_gpu_shader5
  - GL_EXT_primitive_bounding_box
  + GL_EXT_shader_io_blocks
  + GL_EXT_tessellation_shader
