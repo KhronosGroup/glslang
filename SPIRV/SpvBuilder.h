@@ -532,7 +532,6 @@ protected:
         // the first iteration of the loop.  The phi instruction is initialized
         // with no values or predecessor operands.
         Loop(Builder& builder, bool testFirst);
-        Loop(const Loop&) = default;
 
         // The function containing the loop.
         Function* const function;
