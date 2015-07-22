@@ -1,5 +1,10 @@
 Current Compilation Full-Functionality Level: ESSL 1.00-3.00, GLSL 1.10-3.30
 
+Key:
+  + means something got completed
+  - means something has not yet been done
+  [Name] means Name is working on it
+
 Summary of main missing features:
 
 AEP
@@ -19,7 +24,7 @@ AEP
  - GL_EXT_texture_cube_map_array
 
 Missing features in ES 3.1
- - Arrays of arrays
+ [johnkslang] Arrays of arrays
  - .length() on run-time array
 
 Missing desktop features that are in EAP
