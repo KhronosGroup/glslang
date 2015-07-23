@@ -238,7 +238,7 @@ public:
     Id createUnaryOp(Op, Id typeId, Id operand);
     Id createBinOp(Op, Id typeId, Id operand1, Id operand2);
     Id createTriOp(Op, Id typeId, Id operand1, Id operand2, Id operand3);
-    Id createTernaryOp(Op, Id typeId, Id operand1, Id operand2, Id operand3);
+    Id createOp(Op, Id typeId, std::vector<Id>& operands);
     Id createFunctionCall(spv::Function*, std::vector<spv::Id>&);
 
     // Take an rvalue (source) and a set of channels to extract from it to
@@ -564,8 +564,11 @@ protected:
     std::stack<Loop> loops;
 };  // end Builder class
 
+// Use for non-fatal notes about what's not complete
+void TbdFunctionality(const char*);
+
+// Use for fatal missing functionality
 void MissingFunctionality(const char*);
-void ValidationError(const char* error);
 
 };  // end spv namespace
 

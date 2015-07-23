@@ -45,6 +45,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#include <unordered_set>
+
 #include "SpvBuilder.h"
 
 #ifndef _WIN32
@@ -989,12 +991,11 @@ Id Builder::createTriOp(Op opCode, Id typeId, Id op1, Id op2, Id op3)
     return op->getResultId();
 }
 
-Id Builder::createTernaryOp(Op opCode, Id typeId, Id op1, Id op2, Id op3)
+Id Builder::createOp(Op opCode, Id typeId, std::vector<Id>& operands)
 {
     Instruction* op = new Instruction(getUniqueId(), typeId, opCode);
-    op->addIdOperand(op1);
-    op->addIdOperand(op2);
-    op->addIdOperand(op3);
+    for (auto operand : operands)
+        op->addIdOperand(operand);
     buildPoint->addInstruction(op);
 
     return op->getResultId();
@@ -2172,15 +2173,20 @@ void Builder::dumpInstructions(std::vector<unsigned int>& out, const std::vector
     }
 }
 
+void TbdFunctionality(const char* tbd)
+{
+    static std::unordered_set<const char*> issued;
+
+    if (issued.find(tbd) == issued.end()) {
+        printf("TBD functionality: %s\n", tbd);
+        issued.insert(tbd);
+    }
+}
+
 void MissingFunctionality(const char* fun)
 {
     printf("Missing functionality: %s\n", fun);
     exit(1);
-}
-
-void ValidationError(const char* error)
-{
-    printf("Validation Error: %s\n", error);
 }
 
 Builder::Loop::Loop(Builder& builder, bool testFirstArg)

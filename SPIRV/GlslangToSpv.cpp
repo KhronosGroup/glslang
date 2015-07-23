@@ -99,6 +99,7 @@ protected:
     spv::Id createUnaryOperation(glslang::TOperator op, spv::Decoration precision, spv::Id typeId, spv::Id operand, bool isFloat);
     spv::Id createConversion(glslang::TOperator op, spv::Decoration precision, spv::Id destTypeId, spv::Id operand);
     spv::Id makeSmearedConstant(spv::Id constant, int vectorSize);
+    spv::Id createAtomicOperation(glslang::TOperator op, spv::Decoration precision, spv::Id typeId, std::vector<spv::Id>& operands);
     spv::Id createMiscOperation(glslang::TOperator op, spv::Decoration precision, spv::Id typeId, std::vector<spv::Id>& operands);
     spv::Id createNoArgOperation(glslang::TOperator op);
     spv::Id getSymbolId(const glslang::TIntermSymbol* node);
@@ -718,6 +719,16 @@ bool TGlslangToSpvTraverser::visitUnary(glslang::TVisit /* visit */, glslang::TI
         builder.createNoResultOp(spv::OpEndStreamPrimitive, operand);
         return false;
 
+    case glslang::EOpAtomicCounterIncrement:
+    case glslang::EOpAtomicCounterDecrement:
+    case glslang::EOpAtomicCounter:
+    {
+        // Handle all of the atomics in one place, in createAtomicOperation()
+        std::vector<spv::Id> operands;
+        operands.push_back(operand);
+        result = createAtomicOperation(node->getOp(), precision, convertGlslangToSpvType(node->getType()), operands);
+        return false;
+    }
     default:
         spv::MissingFunctionality("glslang unary");
         break;
@@ -733,6 +744,7 @@ bool TGlslangToSpvTraverser::visitAggregate(glslang::TVisit visit, glslang::TInt
     bool reduceComparison = true;
     bool isMatrix = false;
     bool noReturnValue = false;
+    bool atomic = false;
 
     assert(node->getOp());
 
@@ -952,6 +964,17 @@ bool TGlslangToSpvTraverser::visitAggregate(glslang::TVisit visit, glslang::TInt
         // These all have 0 operands and will naturally finish up in the code below for 0 operands
         break;
 
+    case glslang::EOpAtomicAdd:
+    case glslang::EOpAtomicMin:
+    case glslang::EOpAtomicMax:
+    case glslang::EOpAtomicAnd:
+    case glslang::EOpAtomicOr:
+    case glslang::EOpAtomicXor:
+    case glslang::EOpAtomicExchange:
+    case glslang::EOpAtomicCompSwap:
+        atomic = true;
+        break;
+
     default:
         break;
     }
@@ -959,7 +982,6 @@ bool TGlslangToSpvTraverser::visitAggregate(glslang::TVisit visit, glslang::TInt
     //
     // See if it maps to a regular operation.
     //
-
     if (binOp != glslang::EOpNull) {
         glslang::TIntermTyped* left = node->getSequence()[0]->getAsTyped();
         glslang::TIntermTyped* right = node->getSequence()[1]->getAsTyped();
@@ -987,6 +1009,9 @@ bool TGlslangToSpvTraverser::visitAggregate(glslang::TVisit visit, glslang::TInt
         return false;
     }
 
+    //
+    // Create the list of operands.
+    //
     glslang::TIntermSequence& glslangOperands = node->getSequence();
     std::vector<spv::Id> operands;
     for (int arg = 0; arg < (int)glslangOperands.size(); ++arg) {
@@ -1012,16 +1037,23 @@ bool TGlslangToSpvTraverser::visitAggregate(glslang::TVisit visit, glslang::TInt
         else
             operands.push_back(builder.accessChainLoad(TranslatePrecisionDecoration(glslangOperands[arg]->getAsTyped()->getType())));
     }
-    switch (glslangOperands.size()) {
-    case 0:
-        result = createNoArgOperation(node->getOp());
-        break;
-    case 1:
-        result = createUnaryOperation(node->getOp(), precision, convertGlslangToSpvType(node->getType()), operands.front(), node->getType().getBasicType() == glslang::EbtFloat || node->getType().getBasicType() == glslang::EbtDouble);
-        break;
-    default:
-        result = createMiscOperation(node->getOp(), precision, convertGlslangToSpvType(node->getType()), operands);
-        break;
+
+    if (atomic) {
+        // Handle all atomics
+        result = createAtomicOperation(node->getOp(), precision, convertGlslangToSpvType(node->getType()), operands);
+    } else {
+        // Pass through to generic operations.
+        switch (glslangOperands.size()) {
+        case 0:
+            result = createNoArgOperation(node->getOp());
+            break;
+        case 1:
+            result = createUnaryOperation(node->getOp(), precision, convertGlslangToSpvType(node->getType()), operands.front(), node->getType().getBasicType() == glslang::EbtFloat || node->getType().getBasicType() == glslang::EbtDouble);
+            break;
+        default:
+            result = createMiscOperation(node->getOp(), precision, convertGlslangToSpvType(node->getType()), operands);
+            break;
+        }
     }
 
     if (noReturnValue)
@@ -1270,6 +1302,10 @@ spv::Id TGlslangToSpvTraverser::convertGlslangToSpvType(const glslang::TType& ty
         spvType = builder.makeIntType(32);
         break;
     case glslang::EbtUint:
+        spvType = builder.makeUintType(32);
+        break;
+    case glslang::EbtAtomicUint:
+        spv::TbdFunctionality("Is atomic_uint an opaque handle in the uniform storage class, or an addresses in the atomic storage class?");
         spvType = builder.makeUintType(32);
         break;
     case glslang::EbtSampler:
@@ -2245,6 +2281,67 @@ spv::Id TGlslangToSpvTraverser::makeSmearedConstant(spv::Id constant, int vector
     return builder.makeCompositeConstant(vectorTypeId, components);
 }
 
+// For glslang ops that map to SPV atomic opCodes
+spv::Id TGlslangToSpvTraverser::createAtomicOperation(glslang::TOperator op, spv::Decoration precision, spv::Id typeId, std::vector<spv::Id>& operands)
+{
+    spv::Op opCode = spv::OpNop;
+
+    switch (op) {
+    case glslang::EOpAtomicAdd:
+        opCode = spv::OpAtomicIAdd;
+        break;
+    case glslang::EOpAtomicMin:
+        opCode = spv::OpAtomicIMin;
+        break;
+    case glslang::EOpAtomicMax:
+        opCode = spv::OpAtomicIMax;
+        break;
+    case glslang::EOpAtomicAnd:
+        opCode = spv::OpAtomicAnd;
+        break;
+    case glslang::EOpAtomicOr:
+        opCode = spv::OpAtomicOr;
+        break;
+    case glslang::EOpAtomicXor:
+        opCode = spv::OpAtomicXor;
+        break;
+    case glslang::EOpAtomicExchange:
+        opCode = spv::OpAtomicExchange;
+        break;
+    case glslang::EOpAtomicCompSwap:
+        opCode = spv::OpAtomicCompareExchange;
+        break;
+    case glslang::EOpAtomicCounterIncrement:
+        opCode = spv::OpAtomicIIncrement;
+        break;
+    case glslang::EOpAtomicCounterDecrement:
+        opCode = spv::OpAtomicIDecrement;
+        break;
+    case glslang::EOpAtomicCounter:
+        opCode = spv::OpAtomicLoad;
+        break;
+    default:
+        spv::MissingFunctionality("missing nested atomic");
+        break;
+    }
+
+    // Sort out the operands
+    //  - mapping from glslang -> SPV
+    //  - there are extra SPV operands with no glslang source
+    std::vector<spv::Id> spvAtomicOperands;  // hold the spv operands
+    auto opIt = operands.begin();            // walk the glslang operands
+    spvAtomicOperands.push_back(*(opIt++));
+    spvAtomicOperands.push_back(spv::ExecutionScopeDevice);     // TBD: what is the correct scope?
+    spvAtomicOperands.push_back( spv::MemorySemanticsMaskNone); // TBD: what are the correct memory semantics?
+
+    // Add the rest of the operands, skipping the first one, which was dealt with above.
+    // For some ops, there are none, for some 1, for compare-exchange, 2.
+    for (; opIt != operands.end(); ++opIt)
+        spvAtomicOperands.push_back(*opIt);
+
+    return builder.createOp(opCode, typeId, spvAtomicOperands);
+}
+
 spv::Id TGlslangToSpvTraverser::createMiscOperation(glslang::TOperator op, spv::Decoration precision, spv::Id typeId, std::vector<spv::Id>& operands)
 {
     spv::Op opCode = spv::OpNop;
@@ -2298,6 +2395,7 @@ spv::Id TGlslangToSpvTraverser::createMiscOperation(glslang::TOperator op, spv::
     case glslang::EOpRefract:
         libCall = GLSL_STD_450::Refract;
         break;
+
     default:
         return 0;
     }
@@ -2319,7 +2417,7 @@ spv::Id TGlslangToSpvTraverser::createMiscOperation(glslang::TOperator op, spv::
             id = builder.createBinOp(opCode, typeId, operands[0], operands[1]);
             break;
         case 3:
-            id = builder.createTernaryOp(opCode, typeId, operands[0], operands[1], operands[2]);
+            id = builder.createTriOp(opCode, typeId, operands[0], operands[1], operands[2]);
             break;
         default:
             // These do not exist yet
