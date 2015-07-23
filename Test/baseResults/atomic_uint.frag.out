@@ -28,7 +28,7 @@ ERROR: node is still EOpNull!
 0:5      'c' (in atomic_uint)
 0:7    Sequence
 0:7      Branch: Return with expression
-0:7        Function Call: atomicCounterIncrement(au1; (global uint)
+0:7        AtomicCounterIncrement (global uint)
 0:7          'c' (in atomic_uint)
 0:10  Function Definition: func2(au1; (global uint)
 0:10    Function Parameters: 
@@ -37,7 +37,7 @@ ERROR: node is still EOpNull!
 0:12      Branch: Return with expression
 0:12        'counter' (layout(binding=0 offset=0 ) uniform atomic_uint)
 0:13      Branch: Return with expression
-0:13        Function Call: atomicCounter(au1; (global uint)
+0:13        AtomicCounter (global uint)
 0:13          'counter' (layout(binding=0 offset=0 ) uniform atomic_uint)
 0:16  Function Definition: main( (global void)
 0:16    Function Parameters: 
@@ -45,9 +45,9 @@ ERROR: node is still EOpNull!
 0:19      Sequence
 0:19        move second child to first child (temp uint)
 0:19          'val' (temp uint)
-0:19          Function Call: atomicCounter(au1; (global uint)
+0:19          AtomicCounter (global uint)
 0:19            'counter' (layout(binding=0 offset=0 ) uniform atomic_uint)
-0:20      Function Call: atomicCounterDecrement(au1; (global uint)
+0:20      AtomicCounterDecrement (global uint)
 0:20        'counter' (layout(binding=0 offset=0 ) uniform atomic_uint)
 0:26  Function Definition: opac( (global void)
 0:26    Function Parameters: 
@@ -91,7 +91,7 @@ ERROR: node is still EOpNull!
 0:5      'c' (in atomic_uint)
 0:7    Sequence
 0:7      Branch: Return with expression
-0:7        Function Call: atomicCounterIncrement(au1; (global uint)
+0:7        AtomicCounterIncrement (global uint)
 0:7          'c' (in atomic_uint)
 0:10  Function Definition: func2(au1; (global uint)
 0:10    Function Parameters: 
@@ -100,7 +100,7 @@ ERROR: node is still EOpNull!
 0:12      Branch: Return with expression
 0:12        'counter' (layout(binding=0 offset=0 ) uniform atomic_uint)
 0:13      Branch: Return with expression
-0:13        Function Call: atomicCounter(au1; (global uint)
+0:13        AtomicCounter (global uint)
 0:13          'counter' (layout(binding=0 offset=0 ) uniform atomic_uint)
 0:16  Function Definition: main( (global void)
 0:16    Function Parameters: 
@@ -108,9 +108,9 @@ ERROR: node is still EOpNull!
 0:19      Sequence
 0:19        move second child to first child (temp uint)
 0:19          'val' (temp uint)
-0:19          Function Call: atomicCounter(au1; (global uint)
+0:19          AtomicCounter (global uint)
 0:19            'counter' (layout(binding=0 offset=0 ) uniform atomic_uint)
-0:20      Function Call: atomicCounterDecrement(au1; (global uint)
+0:20      AtomicCounterDecrement (global uint)
 0:20        'counter' (layout(binding=0 offset=0 ) uniform atomic_uint)
 0:26  Function Definition: opac( (global void)
 0:26    Function Parameters: 

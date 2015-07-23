@@ -3133,6 +3133,19 @@ void IdentifyBuiltIns(int version, EProfile profile, EShLanguage language, TSymb
     symbolTable.relateToOperator("memoryBarrierBuffer",        EOpMemoryBarrierBuffer);
     symbolTable.relateToOperator("memoryBarrierImage",         EOpMemoryBarrierImage);
 
+    symbolTable.relateToOperator("atomicAdd",      EOpAtomicAdd);
+    symbolTable.relateToOperator("atomicMin",      EOpAtomicMin);
+    symbolTable.relateToOperator("atomicMax",      EOpAtomicMax);
+    symbolTable.relateToOperator("atomicAnd",      EOpAtomicAnd);
+    symbolTable.relateToOperator("atomicOr",       EOpAtomicOr);
+    symbolTable.relateToOperator("atomicXor",      EOpAtomicXor);
+    symbolTable.relateToOperator("atomicExchange", EOpAtomicExchange);
+    symbolTable.relateToOperator("atomicCompSwap", EOpAtomicCompSwap);
+
+    symbolTable.relateToOperator("atomicCounterIncrement", EOpAtomicCounterIncrement);
+    symbolTable.relateToOperator("atomicCounterDecrement", EOpAtomicCounterDecrement);
+    symbolTable.relateToOperator("atomicCounter",          EOpAtomicCounter);
+
     if (PureOperatorBuiltins) {
         symbolTable.relateToOperator("imageQuerySize",          EImageQuerySize);
         symbolTable.relateToOperator("imageQuerySamples",       EImageQuerySamples);

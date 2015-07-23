@@ -289,6 +289,10 @@ bool TOutputTraverser::visitUnary(TVisit /* visit */, TIntermUnary* node)
     case EOpEmitStreamVertex:   out.debug << "EmitStreamVertex";   break;
     case EOpEndStreamPrimitive: out.debug << "EndStreamPrimitive"; break;
 
+    case EOpAtomicCounterIncrement: out.debug << "AtomicCounterIncrement";break;
+    case EOpAtomicCounterDecrement: out.debug << "AtomicCounterDecrement";break;
+    case EOpAtomicCounter:          out.debug << "AtomicCounter";         break;
+
     default: out.debug.message(EPrefixError, "Bad unary op");
     }
 
@@ -394,6 +398,15 @@ bool TOutputTraverser::visitAggregate(TVisit /* visit */, TIntermAggregate* node
     case EOpMemoryBarrierImage:         out.debug << "MemoryBarrierImage";         break;
     case EOpMemoryBarrierShared:        out.debug << "MemoryBarrierShared";        break;
     case EOpGroupMemoryBarrier:         out.debug << "GroupMemoryBarrier";         break;
+
+    case EOpAtomicAdd:                  out.debug << "AtomicAdd";             break;
+    case EOpAtomicMin:                  out.debug << "AtomicMin";             break;
+    case EOpAtomicMax:                  out.debug << "AtomicMax";             break;
+    case EOpAtomicAnd:                  out.debug << "AtomicAnd";             break;
+    case EOpAtomicOr:                   out.debug << "AtomicOr";              break;
+    case EOpAtomicXor:                  out.debug << "AtomicXor";             break;
+    case EOpAtomicExchange:             out.debug << "AtomicExchange";        break;
+    case EOpAtomicCompSwap:             out.debug << "AtomicCompSwap";        break;
 
     case EImageQuerySize:               out.debug << "imageQuerySize";        break;
     case EImageQuerySamples:            out.debug << "imageQuerySamples";     break;

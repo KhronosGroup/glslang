@@ -187,7 +187,7 @@ ERROR: node is still EOpNull!
 0:123      'c' (in highp atomic_uint)
 0:125    Sequence
 0:125      Branch: Return with expression
-0:125        Function Call: atomicCounterIncrement(au1; (global highp uint)
+0:125        AtomicCounterIncrement (global highp uint)
 0:125          'c' (in highp atomic_uint)
 0:128  Function Definition: func2(au1; (global highp uint)
 0:128    Function Parameters: 
@@ -196,7 +196,7 @@ ERROR: node is still EOpNull!
 0:130      Branch: Return with expression
 0:130        'counter' (layout(binding=0 offset=0 ) uniform highp atomic_uint)
 0:131      Branch: Return with expression
-0:131        Function Call: atomicCounter(au1; (global highp uint)
+0:131        AtomicCounter (global highp uint)
 0:131          'counter' (layout(binding=0 offset=0 ) uniform highp atomic_uint)
 0:134  Function Definition: mainAC( (global void)
 0:134    Function Parameters: 
@@ -204,9 +204,9 @@ ERROR: node is still EOpNull!
 0:137      Sequence
 0:137        move second child to first child (temp highp uint)
 0:137          'val' (temp highp uint)
-0:137          Function Call: atomicCounter(au1; (global highp uint)
+0:137          AtomicCounter (global highp uint)
 0:137            'counter' (layout(binding=0 offset=0 ) uniform highp atomic_uint)
-0:138      Function Call: atomicCounterDecrement(au1; (global highp uint)
+0:138      AtomicCounterDecrement (global highp uint)
 0:138        'counter' (layout(binding=0 offset=0 ) uniform highp atomic_uint)
 0:146  Function Definition: opac( (global void)
 0:146    Function Parameters: 
@@ -227,26 +227,26 @@ ERROR: node is still EOpNull!
 0:159      Sequence
 0:159        move second child to first child (temp highp int)
 0:159          'origi' (temp highp int)
-0:159          Function Call: atomicAdd(i1;i1; (global highp int)
+0:159          AtomicAdd (global highp int)
 0:159            'atomi' (shared highp int)
 0:159            Constant:
 0:159              3 (const int)
 0:160      Sequence
 0:160        move second child to first child (temp highp uint)
 0:160          'origu' (temp highp uint)
-0:160          Function Call: atomicAnd(u1;u1; (global highp uint)
+0:160          AtomicAnd (global highp uint)
 0:160            'atomu' (shared highp uint)
 0:160            Constant:
 0:160              7 (const uint)
 0:161      move second child to first child (temp highp int)
 0:161        'origi' (temp highp int)
-0:161        Function Call: atomicExchange(i1;i1; (global highp int)
+0:161        AtomicExchange (global highp int)
 0:161          'atomi' (shared highp int)
 0:161          Constant:
 0:161            4 (const int)
 0:162      move second child to first child (temp highp uint)
 0:162        'origu' (temp highp uint)
-0:162        Function Call: atomicCompSwap(u1;u1;u1; (global highp uint)
+0:162        AtomicCompSwap (global highp uint)
 0:162          'atomu' (shared highp uint)
 0:162          Constant:
 0:162            10 (const uint)
@@ -599,7 +599,7 @@ ERROR: node is still EOpNull!
 0:123      'c' (in highp atomic_uint)
 0:125    Sequence
 0:125      Branch: Return with expression
-0:125        Function Call: atomicCounterIncrement(au1; (global highp uint)
+0:125        AtomicCounterIncrement (global highp uint)
 0:125          'c' (in highp atomic_uint)
 0:128  Function Definition: func2(au1; (global highp uint)
 0:128    Function Parameters: 
@@ -608,7 +608,7 @@ ERROR: node is still EOpNull!
 0:130      Branch: Return with expression
 0:130        'counter' (layout(binding=0 offset=0 ) uniform highp atomic_uint)
 0:131      Branch: Return with expression
-0:131        Function Call: atomicCounter(au1; (global highp uint)
+0:131        AtomicCounter (global highp uint)
 0:131          'counter' (layout(binding=0 offset=0 ) uniform highp atomic_uint)
 0:134  Function Definition: mainAC( (global void)
 0:134    Function Parameters: 
@@ -616,9 +616,9 @@ ERROR: node is still EOpNull!
 0:137      Sequence
 0:137        move second child to first child (temp highp uint)
 0:137          'val' (temp highp uint)
-0:137          Function Call: atomicCounter(au1; (global highp uint)
+0:137          AtomicCounter (global highp uint)
 0:137            'counter' (layout(binding=0 offset=0 ) uniform highp atomic_uint)
-0:138      Function Call: atomicCounterDecrement(au1; (global highp uint)
+0:138      AtomicCounterDecrement (global highp uint)
 0:138        'counter' (layout(binding=0 offset=0 ) uniform highp atomic_uint)
 0:146  Function Definition: opac( (global void)
 0:146    Function Parameters: 
@@ -639,26 +639,26 @@ ERROR: node is still EOpNull!
 0:159      Sequence
 0:159        move second child to first child (temp highp int)
 0:159          'origi' (temp highp int)
-0:159          Function Call: atomicAdd(i1;i1; (global highp int)
+0:159          AtomicAdd (global highp int)
 0:159            'atomi' (shared highp int)
 0:159            Constant:
 0:159              3 (const int)
 0:160      Sequence
 0:160        move second child to first child (temp highp uint)
 0:160          'origu' (temp highp uint)
-0:160          Function Call: atomicAnd(u1;u1; (global highp uint)
+0:160          AtomicAnd (global highp uint)
 0:160            'atomu' (shared highp uint)
 0:160            Constant:
 0:160              7 (const uint)
 0:161      move second child to first child (temp highp int)
 0:161        'origi' (temp highp int)
-0:161        Function Call: atomicExchange(i1;i1; (global highp int)
+0:161        AtomicExchange (global highp int)
 0:161          'atomi' (shared highp int)
 0:161          Constant:
 0:161            4 (const int)
 0:162      move second child to first child (temp highp uint)
 0:162        'origu' (temp highp uint)
-0:162        Function Call: atomicCompSwap(u1;u1;u1; (global highp uint)
+0:162        AtomicCompSwap (global highp uint)
 0:162          'atomu' (shared highp uint)
 0:162          Constant:
 0:162            10 (const uint)

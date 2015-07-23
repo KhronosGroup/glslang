@@ -234,7 +234,7 @@ enum TOperator {
     EOpMemoryBarrierShared,  // compute only
     EOpGroupMemoryBarrier,   // compute only
 
-    EOpAtomicAdd,            // TODO: AST functionality: hook these up
+    EOpAtomicAdd,
     EOpAtomicMin,
     EOpAtomicMax,
     EOpAtomicAnd,
@@ -242,6 +242,10 @@ enum TOperator {
     EOpAtomicXor,
     EOpAtomicExchange,
     EOpAtomicCompSwap,
+
+    EOpAtomicCounterIncrement,
+    EOpAtomicCounterDecrement,
+    EOpAtomicCounter,
 
     EOpAny,
     EOpAll,
