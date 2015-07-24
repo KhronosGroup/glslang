@@ -606,9 +606,9 @@ class SourceLineSynchronizer {
 public:
     SourceLineSynchronizer(const std::function<int()>& lastSourceIndex,
                            std::stringstream* output)
-      : getLastSourceIndex(lastSourceIndex), output(output) {}
-    SourceLineSynchronizer(const SourceLineSynchronizer&) = delete;
-    SourceLineSynchronizer& operator=(const SourceLineSynchronizer&) = delete;
+      : getLastSourceIndex(lastSourceIndex), output(output), lastSource(-1), lastLine(0) {}
+//    SourceLineSynchronizer(const SourceLineSynchronizer&) = delete;
+//    SourceLineSynchronizer& operator=(const SourceLineSynchronizer&) = delete;
 
     // Sets the internally tracked source string index to that of the most
     // recently read token. If we switched to a new source string, returns
@@ -653,12 +653,12 @@ private:
     // processed. It is tracked in order for newlines to be inserted when a new
     // source string starts. -1 means we haven't started processing any source
     // string.
-    int lastSource = -1;
+    int lastSource;
     // lastLine is the line number (starting from 1) of the last token processed.
     // It is tracked in order for newlines to be inserted when a token appears
     // on a new line. 0 means we haven't started processing any line in the
     // current source string.
-    int lastLine = 0;
+    int lastLine;
 };
 
 // DoPreprocessing is a valid ProcessingContext template argument,
