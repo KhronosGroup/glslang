@@ -156,7 +156,7 @@ class TMap : public std::map<K, D, CMP, pool_allocator<std::pair<K, D> > > {
 };
 
 template <class K, class D, class HASH = std::hash<K>, class PRED = std::equal_to<K> >
-class TUnorderedMap : public std::unordered_map<K, D, HASH, PRED, pool_allocator<std::pair<K, D> > > {
+class TUnorderedMap : public std::unordered_map<K, D, HASH, PRED, pool_allocator<std::pair<K const, D> > > {
 };
 
 //
