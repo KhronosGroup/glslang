@@ -748,7 +748,7 @@ int TPpContext::CPPextension(TPpToken* ppToken)
 {
     int line = ppToken->loc.line;
     int token = scanToken(ppToken);
-    char extensionName[80];
+    char extensionName[MaxTokenLength + 1];
 
     if (token=='\n') {
         parseContext.ppError(ppToken->loc, "extension name not specified", "#extension", "");
@@ -758,6 +758,7 @@ int TPpContext::CPPextension(TPpToken* ppToken)
     if (token != PpAtomIdentifier)
         parseContext.ppError(ppToken->loc, "extension name expected", "#extension", "");
 
+    assert(strlen(ppToken->name) <= MaxTokenLength);
     strcpy(extensionName, ppToken->name);
 
     token = scanToken(ppToken);

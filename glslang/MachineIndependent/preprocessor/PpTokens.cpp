@@ -196,7 +196,7 @@ int TPpContext::ReadToken(TokenStream *pTok, TPpToken *ppToken)
         len = 0;
         ch = lReadByte(pTok);
         while (ch != 0) {
-            if (len < TPpToken::maxTokenLength) {
+            if (len < MaxTokenLength) {
                 tokenText[len] = (char)ch;
                 len++;
                 ch = lReadByte(pTok);

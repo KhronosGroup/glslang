@@ -347,7 +347,7 @@ void TParseContext::outputMessage(TSourceLoc loc, const char* szReason,
                                   const char* szExtraInfoFormat,
                                   TPrefixType prefix, va_list args)
 {
-    const int maxSize = GlslangMaxTokenLength + 200;
+    const int maxSize = MaxTokenLength + 200;
     char szExtraInfo[maxSize];
 
     safe_vsprintf(szExtraInfo, maxSize, szExtraInfoFormat, args);

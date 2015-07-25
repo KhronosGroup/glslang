@@ -102,15 +102,13 @@ public:
     }
     bool operator!=(const TPpToken& right) { return ! operator==(right); }
 
-    static const int maxTokenLength = 1024;
-
     TSourceLoc loc;
     int    token;
     bool   space;  // true if a space (for white space or a removed comment) should also be recognized, in front of the token returned
     int    ival;
     double dval;
     int    atom;
-    char   name[maxTokenLength+1];
+    char   name[MaxTokenLength + 1];
 };
 
 class TInputScanner;

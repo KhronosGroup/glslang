@@ -129,7 +129,7 @@ int TPpContext::lFloatConst(int len, int ch, TPpToken* ppToken)
         str[len++] = (char)ch;
         ch = getChar();
         while (ch >= '0' && ch <= '9') {
-            if (len < TPpToken::maxTokenLength) {
+            if (len < MaxTokenLength) {
                 declen++;
                 if (len > 0 || ch != '0') {
                     str[len] = (char)ch;
@@ -149,7 +149,7 @@ int TPpContext::lFloatConst(int len, int ch, TPpToken* ppToken)
 
     if (ch == 'e' || ch == 'E') {
         HasDecimalOrExponent = true;
-        if (len >= TPpToken::maxTokenLength) {
+        if (len >= MaxTokenLength) {
             parseContext.ppError(ppToken->loc, "float literal too long", "", "");
             len = 1;
             str_len = 1;
@@ -165,7 +165,7 @@ int TPpContext::lFloatConst(int len, int ch, TPpToken* ppToken)
             }
             if (ch >= '0' && ch <= '9') {
                 while (ch >= '0' && ch <= '9') {
-                    if (len < TPpToken::maxTokenLength) {
+                    if (len < MaxTokenLength) {
                         str[len++] = (char)ch;
                         ch = getChar();
                     } else {
@@ -193,7 +193,7 @@ int TPpContext::lFloatConst(int len, int ch, TPpToken* ppToken)
                 ungetChar();
                 ungetChar();
             } else {
-                if (len < TPpToken::maxTokenLength) {
+                if (len < MaxTokenLength) {
                     str[len++] = (char)ch;
                     str[len++] = (char)ch2;
                     isDouble = 1;
@@ -208,7 +208,7 @@ int TPpContext::lFloatConst(int len, int ch, TPpToken* ppToken)
                 parseContext.profileRequires(ppToken->loc, ~EEsProfile, 120, nullptr, "floating-point suffix");
             if (! HasDecimalOrExponent)
                 parseContext.ppError(ppToken->loc, "float literal needs a decimal point or exponent", "", "");
-            if (len < TPpToken::maxTokenLength)
+            if (len < MaxTokenLength)
                 str[len++] = (char)ch;
             else {
                 parseContext.ppError(ppToken->loc, "float literal too long", "", "");
@@ -272,7 +272,7 @@ int TPpContext::tStringInput::scan(TPpToken* ppToken)
         case 'u': case 'v': case 'w': case 'x': case 'y':
         case 'z':
             do {
-                if (len < TPpToken::maxTokenLength) {
+                if (len < MaxTokenLength) {
                     tokenText[len++] = (char)ch;
                     ch = pp->getChar();
                 } else {
@@ -336,7 +336,7 @@ int TPpContext::tStringInput::scan(TPpToken* ppToken)
                     pp->parseContext.ppError(ppToken->loc, "bad digit in hexidecimal literal", "", "");
                 }
                 if (ch == 'u' || ch == 'U') {
-                    if (len < TPpToken::maxTokenLength)
+                    if (len < MaxTokenLength)
                         ppToken->name[len++] = (char)ch;
                     isUnsigned = true;
                 } else
@@ -358,7 +358,7 @@ int TPpContext::tStringInput::scan(TPpToken* ppToken)
 
                 // see how much octal-like stuff we can read
                 while (ch >= '0' && ch <= '7') {
-                    if (len < TPpToken::maxTokenLength)
+                    if (len < MaxTokenLength)
                         ppToken->name[len++] = (char)ch;
                     else if (! AlreadyComplained) {
                         pp->parseContext.ppError(ppToken->loc, "numeric literal too long", "", "");
@@ -376,7 +376,7 @@ int TPpContext::tStringInput::scan(TPpToken* ppToken)
                 if (ch == '8' || ch == '9') {
                     nonOctal = true;
                     do {
-                        if (len < TPpToken::maxTokenLength)
+                        if (len < MaxTokenLength)
                             ppToken->name[len++] = (char)ch;
                         else if (! AlreadyComplained) {
                             pp->parseContext.ppError(ppToken->loc, "numeric literal too long", "", "");
@@ -393,7 +393,7 @@ int TPpContext::tStringInput::scan(TPpToken* ppToken)
                     pp->parseContext.ppError(ppToken->loc, "octal literal digit too large", "", "");
 
                 if (ch == 'u' || ch == 'U') {
-                    if (len < TPpToken::maxTokenLength)
+                    if (len < MaxTokenLength)
                         ppToken->name[len++] = (char)ch;
                     isUnsigned = true;
                 } else
@@ -416,7 +416,7 @@ int TPpContext::tStringInput::scan(TPpToken* ppToken)
             // can't be hexidecimal or octal, is either decimal or floating point
 
             do {
-                if (len < TPpToken::maxTokenLength)
+                if (len < MaxTokenLength)
                     ppToken->name[len++] = (char)ch;
                 else if (! AlreadyComplained) {
                     pp->parseContext.ppError(ppToken->loc, "numeric literal too long", "", "");
@@ -431,7 +431,7 @@ int TPpContext::tStringInput::scan(TPpToken* ppToken)
                 int numericLen = len;
                 bool uint = false;
                 if (ch == 'u' || ch == 'U') {
-                    if (len < TPpToken::maxTokenLength)
+                    if (len < MaxTokenLength)
                         ppToken->name[len++] = (char)ch;
                     uint = true;
                 } else
@@ -627,7 +627,7 @@ int TPpContext::tStringInput::scan(TPpToken* ppToken)
         case '"':
             ch = pp->getChar();
             while (ch != '"' && ch != '\n' && ch != EOF) {
-                if (len < TPpToken::maxTokenLength) {
+                if (len < MaxTokenLength) {
                     tokenText[len] = (char)ch;
                     len++;
                     ch = pp->getChar();

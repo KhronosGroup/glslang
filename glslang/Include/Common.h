@@ -197,7 +197,7 @@ struct TSourceLoc {
 
 typedef TMap<TString, TString> TPragmaTable;
 
-const int GlslangMaxTokenLength = 1024;
+const int MaxTokenLength = 1024;
 
 template <class T> bool IsPow2(T powerOf2)
 {
