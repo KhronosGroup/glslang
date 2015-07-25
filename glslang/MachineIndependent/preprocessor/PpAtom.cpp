@@ -175,7 +175,7 @@ void TPpContext::AddAtomFixed(const char* s, int atom)
 void TPpContext::InitAtomTable()
 {
     // Add single character tokens to the atom table:
-    const char* s = "~!%^&*()-+=|,.<>/?;:[]{}#";
+    const char* s = "~!%^&*()-+=|,.<>/?;:[]{}#\\";
     char t[2];
 
     t[1] = '\0';

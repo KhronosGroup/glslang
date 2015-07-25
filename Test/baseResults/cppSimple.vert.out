@@ -82,8 +82,17 @@ ERROR: 12:9014: '=' :  cannot convert from 'temp float' to 'global int'
 ERROR: 12:9015: 'macro expansion' : expected '(' following FOOOM
 ERROR: 12:9016: 'preprocessor evaluation' : can't evaluate expression 
 ERROR: 12:9016: 'preprocessor evaluation' : bad expression 
+ERROR: 12:9500: 'preprocessor evaluation' : bad expression 
+ERROR: 12:9500: '#if' : unexpected tokens following directive 
+ERROR: 12:9502: 'preprocessor evaluation' : bad expression 
+ERROR: 12:9502: '#if' : unexpected tokens following directive 
+ERROR: 12:9504: 'preprocessor evaluation' : bad expression 
+ERROR: 12:9504: '#if' : unexpected tokens following directive 
+ERROR: 12:9506: '#error' : \ 377  
+ERROR: 12:9507: '#error' : \ 376  
+ERROR: 12:9508: '#error' : \ 377  
 ERROR: 12:10002: '' : missing #endif 
-ERROR: 79 compilation errors.  No code generated.
+ERROR: 88 compilation errors.  No code generated.
 
 
 Shader version: 400

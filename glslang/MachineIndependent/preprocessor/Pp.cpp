@@ -462,8 +462,8 @@ int TPpContext::eval(int token, int precedence, bool shortCircuit, int& res, boo
             token = scanToken(ppToken);
         }
     } else {
-        int op;
-        for (op = NUM_ELEMENTS(unop) - 1; op >= 0; op--) {
+        int op = NUM_ELEMENTS(unop) - 1;
+        for (; op >= 0; op--) {
             if (unop[op].token == token)
                 break;
         }

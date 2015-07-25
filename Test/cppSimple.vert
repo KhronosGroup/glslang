@@ -326,6 +326,17 @@ int aoeua = FOOOM;
 #if FOOOM
 #endif
 
+#line 9500
+#if\376
+#endif
+#if \376
+#endif
+#if \377
+#endif
+#error\377
+#error \ 376
+#error \377
+
 #line 10000
 #if 1
 #else
