@@ -365,7 +365,7 @@ void C_DECL TParseContext::error(TSourceLoc loc, const char* szReason, const cha
                                  const char* szExtraInfoFormat, ...)
 {
     if (messages & EShMsgOnlyPreprocessor)
-      return;
+        return;
     va_list args;
     va_start(args, szExtraInfoFormat);
     outputMessage(loc, szReason, szToken, szExtraInfoFormat, EPrefixError, args);
@@ -1626,12 +1626,13 @@ void TParseContext::variableCheck(TIntermTyped*& nodePtr)
         error(symbol->getLoc(), "undeclared identifier", symbol->getName().c_str(), "");
 
         // Add to symbol table to prevent future error messages on the same name
+        if (symbol->getName().size() > 0) {
+            TVariable* fakeVariable = new TVariable(&symbol->getName(), TType(EbtFloat));
+            symbolTable.insert(*fakeVariable);
 
-        TVariable* fakeVariable = new TVariable(&symbol->getName(), TType(EbtFloat));
-        symbolTable.insert(*fakeVariable);
-
-        // substitute a symbol node for this new variable
-        nodePtr = intermediate.addSymbol(*fakeVariable, symbol->getLoc());
+            // substitute a symbol node for this new variable
+            nodePtr = intermediate.addSymbol(*fakeVariable, symbol->getLoc());
+        }
     } else {
         switch (symbol->getQualifier().storage) {
         case EvqPointCoord:
