@@ -81,10 +81,10 @@ bool TInputScanner::consumeComment()
         get();  // consume the second '/'
         c = get();
         do {
-            while (c > 0 && c != '\\' && c != '\r' && c != '\n')
+            while (c != EndOfInput && c != '\\' && c != '\r' && c != '\n')
                 c = get();
 
-            if (c <= 0 || c == '\r' || c == '\n') {
+            if (c == EndOfInput || c == '\r' || c == '\n') {
                 while (c == '\r' || c == '\n')
                     c = get();
 
@@ -104,7 +104,7 @@ bool TInputScanner::consumeComment()
         } while (true);
 
         // put back the last non-comment character
-        if (c > 0)
+        if (c != EndOfInput)
             unget();
 
         return true;
@@ -114,7 +114,7 @@ bool TInputScanner::consumeComment()
         get();  // consume the '*'
         c = get();
         do {
-            while (c > 0 && c != '*')
+            while (c != EndOfInput && c != '*')
                 c = get();
             if (c == '*') {
                 c = get();
@@ -142,7 +142,7 @@ void TInputScanner::consumeWhitespaceComment(bool& foundNonSpaceTab)
  
         // if not starting a comment now, then done
         int c = peek();
-        if (c != '/' || c < 0)
+        if (c != '/' || c == EndOfInput)
             return;
 
         // skip potential comment 
@@ -188,10 +188,10 @@ bool TInputScanner::scanVersion(int& version, EProfile& profile, bool& notFirstT
             } else
                 do {
                     c = get();
-                } while (c > 0 && c != '\n' && c != '\r');
+                } while (c != EndOfInput && c != '\n' && c != '\r');
                 while (peek() == '\n' || peek() == '\r')
                     get();
-                if (peek() < 0)
+                if (peek() == EndOfInput)
                     return true;
         }
         lookingInMiddle = true;
@@ -249,12 +249,12 @@ bool TInputScanner::scanVersion(int& version, EProfile& profile, bool& notFirstT
         char profileString[maxProfileLength];
         int profileLength;
         for (profileLength = 0; profileLength < maxProfileLength; ++profileLength) {
-            if (c < 0 || c == ' ' || c == '\t' || c == '\n' || c == '\r')
+            if (c == EndOfInput || c == ' ' || c == '\t' || c == '\n' || c == '\r')
                 break;
             profileString[profileLength] = (char)c;
             c = get();
         }
-        if (c > 0 && c != ' ' && c != '\t' && c != '\n' && c != '\r') {
+        if (c != EndOfInput && c != ' ' && c != '\t' && c != '\n' && c != '\r') {
             versionNotFirst = true;
             continue;
         }
@@ -600,8 +600,8 @@ int TScanContext::tokenize(TPpContext* pp, TParserToken& token)
         case PpAtomConstDouble:        parserToken->sType.lex.d = ppToken.dval;       return DOUBLECONSTANT;
         case PpAtomIdentifier:         return tokenizeIdentifier();
 
-        case EOF:                       return 0;
-                                   
+        case EndOfInput:               return 0;
+
         default:
             char buf[2];
             buf[0] = (char)ppToken.token;

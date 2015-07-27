@@ -144,18 +144,12 @@ int TPpContext::LookUpAddString(const char* s)
 //
 const char* TPpContext::GetAtomString(int atom)
 {
-    if (atom == 0)
-        return "<null atom>";
-    if (atom < 0)
-        return "<EOF>";
-    if ((size_t)atom < stringMap.size()) {
-        if (stringMap[atom] == 0)
-            return "<invalid atom>";
-        else
-            return stringMap[atom]->c_str();
-    }
+    if ((size_t)atom >= stringMap.size())
+        return "<bad token>";
 
-    return "<invalid atom>";
+    const TString* atomString = stringMap[atom];
+
+    return atomString ? atomString->c_str() : "<bad token>";
 }
 
 //

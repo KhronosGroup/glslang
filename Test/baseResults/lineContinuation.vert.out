@@ -13,10 +13,10 @@ ERROR: 0:49: '$' : unexpected token
 ERROR: 0:50: '@' : unexpected token 
 ERROR: 0:55: '#error' : good continuation  
 WARNING: 0:62: 'line continuation' : used at end of comment; the following line is still part of the comment 
-ERROR: 0:111: 'macro expansion' : end of line in macro substitution: FOOM
+ERROR: 0:111: 'macro expansion' : End of line in macro substitution: FOOM
 ERROR: 0:112: 'preprocessor evaluation' : can't evaluate expression 
 ERROR: 0:112: '#if' : unexpected tokens following directive 
-ERROR: 0:117: 'macro expansion' : end of line in macro substitution: FOOM
+ERROR: 0:117: 'macro expansion' : End of line in macro substitution: FOOM
 ERROR: 0:118: 'preprocessor evaluation' : can't evaluate expression 
 ERROR: 0:118: '#if' : unexpected tokens following directive 
 ERROR: 0:150: '' :  syntax error

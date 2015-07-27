@@ -168,7 +168,7 @@ void TParseContext::parserError(const char* s)
 {
     if (afterEOF) {
         if (tokensBeforeEOF == 1)
-            error(getCurrentLoc(), "", "pre-mature EOF", s, "");
+            error(getCurrentLoc(), "", "premature end of input", s, "");
     } else
         error(getCurrentLoc(), "", "", s, "");
 }

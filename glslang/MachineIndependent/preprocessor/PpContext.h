@@ -134,8 +134,6 @@ public:
         virtual int getch() = 0;
         virtual void ungetch() = 0;
 
-        static const int endOfInput = -2;
-
     protected:
         bool done;
         TPpContext* pp;
@@ -210,20 +208,17 @@ protected:
 
     // Get the next token from *stack* of input sources, popping input sources
     // that are out of tokens, down until an input sources is found that has a token.
-    // Return EOF when there are no more tokens to be found by doing this.
+    // Return EndOfInput when there are no more tokens to be found by doing this.
     int scanToken(TPpToken* ppToken)
     {
-        int token = EOF;
+        int token = EndOfInput;
 
         while (! inputStack.empty()) {
             token = inputStack.back()->scan(ppToken);
-            if (token != tInput::endOfInput)
+            if (token != EndOfInput)
                 break;
             popInput();
         }
-
-        if (token == tInput::endOfInput)
-            return EOF;
 
         return token;
     }
@@ -248,7 +243,7 @@ protected:
         }
 
         virtual int scan(TPpToken*);
-        virtual int getch() { assert(0); return endOfInput; }
+        virtual int getch() { assert(0); return EndOfInput; }
         virtual void ungetch() { assert(0); }
         MacroSymbol *mac;
         TVector<TokenStream*> args;
@@ -260,12 +255,12 @@ protected:
         virtual int scan(TPpToken*)
         {
             if (done)
-                return endOfInput;
+                return EndOfInput;
             done = true;
 
             return marker;
         }
-        virtual int getch() { assert(0); return endOfInput; }
+        virtual int getch() { assert(0); return EndOfInput; }
         virtual void ungetch() { assert(0); }
         static const int marker = -3;
     };
@@ -274,7 +269,7 @@ protected:
     public:
         tZeroInput(TPpContext* pp) : tInput(pp) { }
         virtual int scan(TPpToken*);
-        virtual int getch() { assert(0); return endOfInput; }
+        virtual int getch() { assert(0); return EndOfInput; }
         virtual void ungetch() { assert(0); }
     };
 
@@ -328,7 +323,7 @@ protected:
     public:
         tTokenInput(TPpContext* pp, TokenStream* t) : tInput(pp), tokens(t) { }
         virtual int scan(TPpToken *);
-        virtual int getch() { assert(0); return endOfInput; }
+        virtual int getch() { assert(0); return EndOfInput; }
         virtual void ungetch() { assert(0); }
     protected:
         TokenStream *tokens;
@@ -338,7 +333,7 @@ protected:
     public:
         tUngotTokenInput(TPpContext* pp, int t, TPpToken* p) : tInput(pp), token(t), lval(*p) { }
         virtual int scan(TPpToken *);
-        virtual int getch() { assert(0); return endOfInput; }
+        virtual int getch() { assert(0); return EndOfInput; }
         virtual void ungetch() { assert(0); }
     protected:
         int token;

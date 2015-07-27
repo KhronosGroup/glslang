@@ -5,19 +5,19 @@ ERROR: 0:66: '#define' : Macro redefined; different substitutions: BIG
 ERROR: 0:81: 'preprocessor evaluation' : bad expression 
 ERROR: 0:81: '#if' : unexpected tokens following directive 
 ERROR: 0:82: '#error' : good macro  
-ERROR: 0:87: 'macro expansion' : end of line in macro substitution: foobar
+ERROR: 0:87: 'macro expansion' : End of line in macro substitution: foobar
 ERROR: 0:88: 'preprocessor evaluation' : can't evaluate expression 
 ERROR: 0:88: 'preprocessor evaluation' : bad expression 
 ERROR: 0:88: '#if' : unexpected tokens following directive 
-ERROR: 0:92: 'macro expansion' : end of line in macro substitution: foobar
+ERROR: 0:92: 'macro expansion' : End of line in macro substitution: foobar
 ERROR: 0:93: 'preprocessor evaluation' : can't evaluate expression 
 ERROR: 0:93: 'preprocessor evaluation' : bad expression 
 ERROR: 0:93: '#if' : unexpected tokens following directive 
-ERROR: 0:99: 'macro expansion' : end of line in macro substitution: foobar
+ERROR: 0:99: 'macro expansion' : End of line in macro substitution: foobar
 ERROR: 0:100: 'preprocessor evaluation' : can't evaluate expression 
 ERROR: 0:100: 'preprocessor evaluation' : bad expression 
 ERROR: 0:100: '#if' : unexpected tokens following directive 
-ERROR: 0:101: 'macro expansion' : end of line in macro substitution: foobar
+ERROR: 0:101: 'macro expansion' : End of line in macro substitution: foobar
 ERROR: 0:102: 'preprocessor evaluation' : can't evaluate expression 
 ERROR: 0:102: 'preprocessor evaluation' : bad expression 
 ERROR: 0:102: '#if' : unexpected tokens following directive 

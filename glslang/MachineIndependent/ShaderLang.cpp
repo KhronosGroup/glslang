@@ -731,7 +731,7 @@ struct DoPreprocessing {
                 outputStream << "#error " << errorMessage;
         });
 
-        int lastToken = EOF; // lastToken records the last token processed.
+        int lastToken = EndOfInput; // lastToken records the last token processed.
         while (const char* tok = ppContext.tokenize(&token)) {
             bool isNewString = lineSync.syncToMostRecentString();
             bool isNewLine = lineSync.syncToLine(token.loc.line);
@@ -746,7 +746,7 @@ struct DoPreprocessing {
             // Output a space in between tokens, but not at the start of a line,
             // and also not around special tokens. This helps with readability
             // and consistency.
-            if (!isNewString && !isNewLine && lastToken != -1 &&
+            if (!isNewString && !isNewLine && lastToken != EndOfInput &&
                 (unNeededSpaceTokens.find((char)token.token) == std::string::npos) &&
                 (unNeededSpaceTokens.find((char)lastToken) == std::string::npos) &&
                 (noSpaceBeforeTokens.find((char)token.token) == std::string::npos)) {

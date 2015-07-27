@@ -109,7 +109,7 @@ int TPpContext::lReadByte(TokenStream *pTok)
     if (pTok->current < pTok->data.size())
         return pTok->data[pTok->current++];
     else
-        return tInput::endOfInput;
+        return EndOfInput;
 }
 
 void TPpContext::lUnreadByte(TokenStream *pTok)
@@ -249,7 +249,7 @@ void TPpContext::pushTokenStreamInput(TokenStream* ts)
 int TPpContext::tUngotTokenInput::scan(TPpToken* ppToken)
 {
     if (done)
-        return endOfInput;
+        return EndOfInput;
 
     int ret = token;
     *ppToken = lval;

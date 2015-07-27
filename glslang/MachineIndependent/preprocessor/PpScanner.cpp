@@ -253,11 +253,8 @@ int TPpContext::tStringInput::scan(TPpToken* ppToken)
         len = 0;
         switch (ch) {
         default:
-            // Single character token, including '#' and '\' (escaped newlines are handled at a lower level, so this is just a '\' token)
+            // Single character token, including EndOfInput, '#' and '\' (escaped newlines are handled at a lower level, so this is just a '\' token)
             return ch;
-
-        case EOF:
-            return endOfInput;
 
         case 'A': case 'B': case 'C': case 'D': case 'E':
         case 'F': case 'G': case 'H': case 'I': case 'J':
@@ -590,28 +587,25 @@ int TPpContext::tStringInput::scan(TPpToken* ppToken)
                 pp->inComment = true;
                 do {
                     ch = pp->getChar();
-                } while (ch != '\n' && ch != EOF);
+                } while (ch != '\n' && ch != EndOfInput);
                 ppToken->space = true;
                 pp->inComment = false;
-
-                if (ch == EOF)
-                    return endOfInput;
 
                 return ch;
             } else if (ch == '*') {
                 ch = pp->getChar();
                 do {
                     while (ch != '*') {
-                        if (ch == EOF) {
-                            pp->parseContext.ppError(ppToken->loc, "EOF in comment", "comment", "");
-                            return endOfInput;
+                        if (ch == EndOfInput) {
+                            pp->parseContext.ppError(ppToken->loc, "End of input in comment", "comment", "");
+                            return ch;
                         }
                         ch = pp->getChar();
                     }
                     ch = pp->getChar();
-                    if (ch == EOF) {
-                        pp->parseContext.ppError(ppToken->loc, "EOF in comment", "comment", "");
-                        return endOfInput;
+                    if (ch == EndOfInput) {
+                        pp->parseContext.ppError(ppToken->loc, "End of input in comment", "comment", "");
+                        return ch;
                     }
                 } while (ch != '/');
                 ppToken->space = true;
@@ -626,7 +620,7 @@ int TPpContext::tStringInput::scan(TPpToken* ppToken)
             break;
         case '"':
             ch = pp->getChar();
-            while (ch != '"' && ch != '\n' && ch != EOF) {
+            while (ch != '"' && ch != '\n' && ch != EndOfInput) {
                 if (len < MaxTokenLength) {
                     tokenText[len] = (char)ch;
                     len++;
@@ -637,7 +631,7 @@ int TPpContext::tStringInput::scan(TPpToken* ppToken)
             tokenText[len] = '\0';
             if (ch != '"') {
                 pp->ungetChar();
-                pp->parseContext.ppError(ppToken->loc, "end of line in string", "string", "");
+                pp->parseContext.ppError(ppToken->loc, "End of line in string", "string", "");
             }
             return PpAtomConstString;
         }
@@ -660,14 +654,14 @@ const char* TPpContext::tokenize(TPpToken* ppToken)
     for(;;) {
         token = scanToken(ppToken);
         ppToken->token = token;
-        if (token == EOF) {
+        if (token == EndOfInput) {
             missingEndifCheck();
             return nullptr;
         }
         if (token == '#') {
             if (previous_token == '\n') {
                 token = readCPPline(ppToken);
-                if (token == EOF) {
+                if (token == EndOfInput) {
                     missingEndifCheck();
                     return nullptr;
                 }

@@ -150,7 +150,7 @@ int TPpContext::CPPdefine(TPpToken* ppToken)
             }
             token = scanToken(ppToken);
         } while (token == ',');
-        if (token != ')') {            
+        if (token != ')') {
             parseContext.ppError(ppToken->loc, "missing parenthesis", "#define", "");
 
             return token;
@@ -164,7 +164,7 @@ int TPpContext::CPPdefine(TPpToken* ppToken)
     // record the definition of the macro
     TSourceLoc defineLoc = ppToken->loc; // because ppToken is going to go to the next line before we report errors
     mac.body = new TokenStream;
-    while (token != '\n') {
+    while (token != '\n' && token != EndOfInput) {
         RecordToken(mac.body, token, ppToken);
         token = scanToken(ppToken);
         if (token != '\n' && ppToken->space)
@@ -245,13 +245,13 @@ int TPpContext::CPPelse(int matchelse, TPpToken* ppToken)
     int depth = 0;
     int token = scanToken(ppToken);
 
-    while (token != EOF) {
+    while (token != EndOfInput) {
         if (token != '#') {
-            while (token != '\n' && token != EOF)
+            while (token != '\n' && token != EndOfInput)
                 token = scanToken(ppToken);
             
-            if (token == EOF)
-                return EOF;
+            if (token == EndOfInput)
+                return token;
 
             token = scanToken(ppToken);
             continue;
@@ -314,7 +314,7 @@ int TPpContext::CPPelse(int matchelse, TPpToken* ppToken)
 // Call when there should be no more tokens left on a line.
 int TPpContext::extraTokenCheck(int atom, TPpToken* ppToken, int token)
 {
-    if (token != '\n') {
+    if (token != '\n' && token != EndOfInput) {
         static const char* message = "unexpected tokens following directive";
 
         const char* label;
@@ -336,7 +336,7 @@ int TPpContext::extraTokenCheck(int atom, TPpToken* ppToken, int token)
         else
             parseContext.ppError(ppToken->loc, message, label, "");
 
-        while (token != '\n')
+        while (token != '\n' && token != EndOfInput)
             token = scanToken(ppToken);
     }
 
@@ -586,7 +586,7 @@ int TPpContext::CPPifdef(int defined, TPpToken* ppToken)
         token = scanToken(ppToken);
         if (token != '\n') {
             parseContext.ppError(ppToken->loc, "unexpected tokens following #ifdef directive - expected a newline", "#ifdef", "");
-            while (token != '\n')
+            while (token != '\n' && token != EndOfInput)
                 token = scanToken(ppToken);
         }
         if (((s && !s->mac.undef) ? 1 : 0) != defined)
@@ -648,7 +648,7 @@ int TPpContext::CPPerror(TPpToken* ppToken)
     std::string message;
     TSourceLoc loc = ppToken->loc;
 
-    while (token != '\n') {
+    while (token != '\n' && token != EndOfInput) {
         if (token == PpAtomConstInt || token == PpAtomConstUint ||
             token == PpAtomConstFloat || token == PpAtomConstDouble) {
                 message.append(ppToken->name);
@@ -675,7 +675,7 @@ int TPpContext::CPPpragma(TPpToken* ppToken)
 
     TSourceLoc loc = ppToken->loc;  // because we go to the next line before processing
     int token = scanToken(ppToken);
-    while (token != '\n' && token != EOF) {
+    while (token != '\n' && token != EndOfInput) {
         switch (token) {
         case PpAtomIdentifier:
         case PpAtomConstInt:
@@ -692,7 +692,7 @@ int TPpContext::CPPpragma(TPpToken* ppToken)
         token = scanToken(ppToken);
     }
 
-    if (token == EOF)
+    if (token == EndOfInput)
         parseContext.ppError(loc, "directive must end with a newline", "#pragma", "");
     else
         parseContext.handlePragma(loc, tokens);
@@ -810,7 +810,7 @@ int TPpContext::readCPPline(TPpToken* ppToken)
                 parseContext.ppError(ppToken->loc, "#elif after #else", "#elif", "");
             // this token is really a dont care, but we still need to eat the tokens
             token = scanToken(ppToken); 
-            while (token != '\n')
+            while (token != '\n' && token != EndOfInput)
                 token = scanToken(ppToken);
             token = CPPelse(0, ppToken);
             break;
@@ -854,10 +854,10 @@ int TPpContext::readCPPline(TPpToken* ppToken)
             parseContext.ppError(ppToken->loc, "invalid directive:", "#", ppToken->name);
             break;
         }
-    } else if (token != '\n' && token != EOF)
+    } else if (token != '\n' && token != EndOfInput)
         parseContext.ppError(ppToken->loc, "invalid directive", "#", "");
 
-    while (token != '\n' && token != 0 && token != EOF)
+    while (token != '\n' && token != EndOfInput)
         token = scanToken(ppToken);
 
     return token;
@@ -872,9 +872,9 @@ TPpContext::TokenStream* TPpContext::PrescanMacroArg(TokenStream* a, TPpToken* p
         token = ReadToken(a, ppToken);
         if (token == PpAtomIdentifier && LookUpSymbol(ppToken->atom))
             break;
-    } while (token != tInput::endOfInput);
+    } while (token != EndOfInput);
 
-    if (token == tInput::endOfInput)
+    if (token == EndOfInput)
         return a;
 
     n = new TokenStream;
@@ -914,17 +914,17 @@ int TPpContext::tMacroInput::scan(TPpToken* ppToken)
         }
     }
 
-    if (token == endOfInput)
+    if (token == EndOfInput)
         mac->busy = 0;
         
     return token;
 }
 
-// return a zero, for scanning a macro that was never defined
+// return a textual zero, for scanning a macro that was never defined
 int TPpContext::tZeroInput::scan(TPpToken* ppToken)
 {
     if (done)
-        return endOfInput;
+        return EndOfInput;
 
     strcpy(ppToken->name, "0");
     ppToken->ival = 0;
@@ -1013,14 +1013,14 @@ int TPpContext::MacroExpand(int atom, TPpToken* ppToken, bool expandUndef, bool 
             depth = 0;
             while (1) {
                 token = scanToken(ppToken);
-                if (token == EOF) {
-                    parseContext.ppError(loc, "EOF in macro", "macro expansion", GetAtomString(atom));
+                if (token == EndOfInput) {
+                    parseContext.ppError(loc, "End of input in macro", "macro expansion", GetAtomString(atom));
                     delete in;
                     return 0;
                 }
                 if (token == '\n') {
                     if (! newLineOkay) {
-                        parseContext.ppError(loc, "end of line in macro substitution:", "macro expansion", GetAtomString(atom));
+                        parseContext.ppError(loc, "End of line in macro substitution:", "macro expansion", GetAtomString(atom));
                         delete in;
                         return 0;
                     }
@@ -1055,7 +1055,7 @@ int TPpContext::MacroExpand(int atom, TPpToken* ppToken, bool expandUndef, bool 
             parseContext.ppError(loc, "Too few args in Macro", "macro expansion", GetAtomString(atom));
         else if (token != ')') {
             depth=0;
-            while (token != EOF && (depth > 0 || token != ')')) {
+            while (token != EndOfInput && (depth > 0 || token != ')')) {
                 if (token == ')')
                     depth--;
                 token = scanToken(ppToken);
@@ -1063,8 +1063,8 @@ int TPpContext::MacroExpand(int atom, TPpToken* ppToken, bool expandUndef, bool 
                     depth++;
             }
 
-            if (token == EOF) {
-                parseContext.ppError(loc, "EOF in macro", "macro expansion", GetAtomString(atom));
+            if (token == EndOfInput) {
+                parseContext.ppError(loc, "End of input in macro", "macro expansion", GetAtomString(atom));
                 delete in;
                 return 0;
             }

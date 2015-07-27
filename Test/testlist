@@ -25,6 +25,7 @@ cppSimple.vert
 cppIndent.vert
 cppNest.vert
 cppComplexExpr.vert
+badChars.frag
 pointCoord.frag
 array.frag
 array100.frag
