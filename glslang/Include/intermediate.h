@@ -407,8 +407,8 @@ public:
     POOL_ALLOCATOR_NEW_DELETE(glslang::GetThreadPoolAllocator())
 
     TIntermNode() { loc.init(); }
-    virtual glslang::TSourceLoc getLoc() const { return loc; }
-    virtual void setLoc(glslang::TSourceLoc l) { loc = l; }
+    virtual const glslang::TSourceLoc& getLoc() const { return loc; }
+    virtual void setLoc(const glslang::TSourceLoc& l) { loc = l; }
     virtual void traverse(glslang::TIntermTraverser*) = 0;
     virtual       glslang::TIntermTyped*         getAsTyped()               { return 0; }
     virtual       glslang::TIntermOperator*      getAsOperator()            { return 0; }

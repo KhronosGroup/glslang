@@ -798,7 +798,7 @@ public:
     const TType* userDef;
     TSourceLoc loc;
 
-    void initType(TSourceLoc l)
+    void initType(const TSourceLoc& l)
     {
         basicType = EbtVoid;
         vectorSize = 1;
@@ -816,7 +816,7 @@ public:
             qualifier.storage = EvqGlobal;
     }
 
-    void init(TSourceLoc loc, bool global = false)
+    void init(const TSourceLoc& loc, bool global = false)
     {
         initType(loc);
         sampler.clear();

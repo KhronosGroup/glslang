@@ -95,7 +95,7 @@ public:
         default:                   append("UNKOWN ERROR: ");   break;
         }
     }
-    void location(TSourceLoc loc) {
+    void location(const TSourceLoc& loc) {
         const int maxSize = 24;
         char locText[maxSize];
         if (loc.name != nullptr) {
@@ -112,7 +112,7 @@ public:
         append(s);
         append("\n");
     }
-    void message(TPrefixType message, const char* s, TSourceLoc loc) {
+    void message(TPrefixType message, const char* s, const TSourceLoc& loc) {
         prefix(message);
         location(loc);
         append(s);
