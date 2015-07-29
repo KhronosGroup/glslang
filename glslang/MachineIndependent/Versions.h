@@ -129,6 +129,8 @@ const char* const E_GL_EXT_tessellation_point_size              = "GL_EXT_tessel
 const char* const E_GL_EXT_texture_buffer                       = "GL_EXT_texture_buffer";
 const char* const E_GL_EXT_texture_cube_map_array               = "GL_EXT_texture_cube_map_array";
 
+const char* const E_GL_GOOGLE_cpp_style_line_directive          = "GL_GOOGLE_cpp_style_line_directive";
+
 // OES matching AEP
 const char* const E_GL_OES_geometry_shader                      = "GL_OES_geometry_shader";
 const char* const E_GL_OES_geometry_point_size                  = "GL_OES_geometry_point_size";

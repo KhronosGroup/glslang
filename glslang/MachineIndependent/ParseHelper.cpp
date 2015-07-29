@@ -173,7 +173,7 @@ void TParseContext::parserError(const char* s)
         error(getCurrentLoc(), "", "", s, "");
 }
 
-void TParseContext::handlePragma(TSourceLoc loc, const TVector<TString>& tokens)
+void TParseContext::handlePragma(const TSourceLoc& loc, const TVector<TString>& tokens)
 {
     if (pragmaCallback)
         pragmaCallback(loc.line, tokens);
@@ -244,7 +244,7 @@ void TParseContext::handlePragma(TSourceLoc loc, const TVector<TString>& tokens)
 //
 // Returns true if there is no error.
 //
-bool TParseContext::parseVectorFields(TSourceLoc loc, const TString& compString, int vecSize, TVectorFields& fields)
+bool TParseContext::parseVectorFields(const TSourceLoc& loc, const TString& compString, int vecSize, TVectorFields& fields)
 {
     fields.num = (int) compString.size();
     if (fields.num > 4) {
@@ -342,7 +342,7 @@ bool TParseContext::parseVectorFields(TSourceLoc loc, const TString& compString,
 // Used to output syntax, parsing, and semantic errors.
 //
 
-void TParseContext::outputMessage(TSourceLoc loc, const char* szReason,
+void TParseContext::outputMessage(const TSourceLoc& loc, const char* szReason,
                                   const char* szToken,
                                   const char* szExtraInfoFormat,
                                   TPrefixType prefix, va_list args)
@@ -361,7 +361,7 @@ void TParseContext::outputMessage(TSourceLoc loc, const char* szReason,
     }
 }
 
-void C_DECL TParseContext::error(TSourceLoc loc, const char* szReason, const char* szToken,
+void C_DECL TParseContext::error(const TSourceLoc& loc, const char* szReason, const char* szToken,
                                  const char* szExtraInfoFormat, ...)
 {
     if (messages & EShMsgOnlyPreprocessor)
@@ -372,7 +372,7 @@ void C_DECL TParseContext::error(TSourceLoc loc, const char* szReason, const cha
     va_end(args);
 }
 
-void C_DECL TParseContext::warn(TSourceLoc loc, const char* szReason, const char* szToken,
+void C_DECL TParseContext::warn(const TSourceLoc& loc, const char* szReason, const char* szToken,
                                  const char* szExtraInfoFormat, ...)
 {
     if (suppressWarnings())
@@ -383,7 +383,7 @@ void C_DECL TParseContext::warn(TSourceLoc loc, const char* szReason, const char
     va_end(args);
 }
 
-void C_DECL TParseContext::ppError(TSourceLoc loc, const char* szReason, const char* szToken,
+void C_DECL TParseContext::ppError(const TSourceLoc& loc, const char* szReason, const char* szToken,
                                  const char* szExtraInfoFormat, ...)
 {
     va_list args;
@@ -392,7 +392,7 @@ void C_DECL TParseContext::ppError(TSourceLoc loc, const char* szReason, const c
     va_end(args);
 }
 
-void C_DECL TParseContext::ppWarn(TSourceLoc loc, const char* szReason, const char* szToken,
+void C_DECL TParseContext::ppWarn(const TSourceLoc& loc, const char* szReason, const char* szToken,
                                  const char* szExtraInfoFormat, ...)
 {
     va_list args;
@@ -404,7 +404,7 @@ void C_DECL TParseContext::ppWarn(TSourceLoc loc, const char* szReason, const ch
 //
 // Handle seeing a variable identifier in the grammar.
 //
-TIntermTyped* TParseContext::handleVariable(TSourceLoc loc, TSymbol* symbol, const TString* string)
+TIntermTyped* TParseContext::handleVariable(const TSourceLoc& loc, TSymbol* symbol, const TString* string)
 {
     TIntermTyped* node = 0;
 
@@ -478,7 +478,7 @@ TIntermTyped* TParseContext::handleVariable(TSourceLoc loc, TSymbol* symbol, con
 //
 // Handle seeing a base[index] dereference in the grammar.
 //
-TIntermTyped* TParseContext::handleBracketDereference(TSourceLoc loc, TIntermTyped* base, TIntermTyped* index)
+TIntermTyped* TParseContext::handleBracketDereference(const TSourceLoc& loc, TIntermTyped* base, TIntermTyped* index)
 {
     TIntermTyped* result = 0;
 
@@ -552,7 +552,7 @@ TIntermTyped* TParseContext::handleBracketDereference(TSourceLoc loc, TIntermTyp
     return result;
 }
 
-void TParseContext::checkIndex(TSourceLoc loc, const TType& type, int& index)
+void TParseContext::checkIndex(const TSourceLoc& loc, const TType& type, int& index)
 {
     if (index < 0) {
         error(loc, "", "[", "index out of range '%d'", index);
@@ -576,7 +576,7 @@ void TParseContext::checkIndex(TSourceLoc loc, const TType& type, int& index)
 }
 
 // for ES 2.0 (version 100) limitations for almost all index operations except vertex-shader uniforms
-void TParseContext::handleIndexLimits(TSourceLoc /*loc*/, TIntermTyped* base, TIntermTyped* index)
+void TParseContext::handleIndexLimits(const TSourceLoc& /*loc*/, TIntermTyped* base, TIntermTyped* index)
 {
     if ((! limits.generalSamplerIndexing && base->getBasicType() == EbtSampler) ||
         (! limits.generalUniformIndexing && base->getQualifier().isUniformOrBuffer() && language != EShLangVertex) ||
@@ -618,7 +618,7 @@ bool TParseContext::isIoResizeArray(const TType& type) const
 }
 
 // If an array is not isIoResizeArray() but is an io array, make sure it has the right size
-void TParseContext::fixIoArraySize(TSourceLoc loc, TType& type)
+void TParseContext::fixIoArraySize(const TSourceLoc& loc, TType& type)
 {
     if (! type.isArray() || type.getQualifier().patch || symbolTable.atBuiltInLevel())
         return;
@@ -640,7 +640,7 @@ void TParseContext::fixIoArraySize(TSourceLoc loc, TType& type)
 // Issue any errors if the non-array object is missing arrayness WRT
 // shader I/O that has array requirements.
 // All arrayness checking is handled in array paths, this is for 
-void TParseContext::ioArrayCheck(TSourceLoc loc, const TType& type, const TString& identifier)
+void TParseContext::ioArrayCheck(const TSourceLoc& loc, const TType& type, const TString& identifier)
 {
     if (! type.isArray() && ! symbolTable.atBuiltInLevel()) {
         if (type.getQualifier().isArrayedIo(language))
@@ -651,7 +651,7 @@ void TParseContext::ioArrayCheck(TSourceLoc loc, const TType& type, const TStrin
 // Handle a dereference of a geometry shader input array or tessellation control output array.
 // See ioArraySymbolResizeList comment in ParseHelper.h.
 //
-void TParseContext::handleIoResizeArrayAccess(TSourceLoc /*loc*/, TIntermTyped* base)
+void TParseContext::handleIoResizeArrayAccess(const TSourceLoc& /*loc*/, TIntermTyped* base)
 {
     TIntermSymbol* symbolNode = base->getAsSymbolNode();
     assert(symbolNode);
@@ -674,7 +674,7 @@ void TParseContext::handleIoResizeArrayAccess(TSourceLoc /*loc*/, TIntermTyped* 
 // Types without an array size will be given one.
 // Types already having a size that is wrong will get an error.
 //
-void TParseContext::checkIoArraysConsistency(TSourceLoc loc, bool tailOnly)
+void TParseContext::checkIoArraysConsistency(const TSourceLoc& loc, bool tailOnly)
 {
     int requiredSize = getIoArrayImplicitSize();
     if (requiredSize == 0)
@@ -707,7 +707,7 @@ int TParseContext::getIoArrayImplicitSize() const
         return 0;
 }
 
-void TParseContext::checkIoArrayConsistency(TSourceLoc loc, int requiredSize, const char* feature, TType& type, const TString& name)
+void TParseContext::checkIoArrayConsistency(const TSourceLoc& loc, int requiredSize, const char* feature, TType& type, const TString& name)
 {
     if (type.isImplicitlySizedArray())
         type.changeArraySize(requiredSize);
@@ -722,7 +722,7 @@ void TParseContext::checkIoArrayConsistency(TSourceLoc loc, int requiredSize, co
 }
 
 // Handle seeing a binary node with a math operation.
-TIntermTyped* TParseContext::handleBinaryMath(TSourceLoc loc, const char* str, TOperator op, TIntermTyped* left, TIntermTyped* right)
+TIntermTyped* TParseContext::handleBinaryMath(const TSourceLoc& loc, const char* str, TOperator op, TIntermTyped* left, TIntermTyped* right)
 {
     rValueErrorCheck(loc, str, left->getAsTyped());
     rValueErrorCheck(loc, str, right->getAsTyped());
@@ -735,7 +735,7 @@ TIntermTyped* TParseContext::handleBinaryMath(TSourceLoc loc, const char* str, T
 }
 
 // Handle seeing a unary node with a math operation.
-TIntermTyped* TParseContext::handleUnaryMath(TSourceLoc loc, const char* str, TOperator op, TIntermTyped* childNode)
+TIntermTyped* TParseContext::handleUnaryMath(const TSourceLoc& loc, const char* str, TOperator op, TIntermTyped* childNode)
 {
     rValueErrorCheck(loc, str, childNode);
 
@@ -752,7 +752,7 @@ TIntermTyped* TParseContext::handleUnaryMath(TSourceLoc loc, const char* str, TO
 //
 // Handle seeing a base.field dereference in the grammar.
 //
-TIntermTyped* TParseContext::handleDotDereference(TSourceLoc loc, TIntermTyped* base, const TString& field)
+TIntermTyped* TParseContext::handleDotDereference(const TSourceLoc& loc, TIntermTyped* base, const TString& field)
 {
     variableCheck(base);
 
@@ -853,7 +853,7 @@ TIntermTyped* TParseContext::handleDotDereference(TSourceLoc loc, TIntermTyped* 
     return result;
 }
 
-void TParseContext::blockMemberExtensionCheck(TSourceLoc loc, const TIntermTyped* /*base*/, const TString& field)
+void TParseContext::blockMemberExtensionCheck(const TSourceLoc& loc, const TIntermTyped* /*base*/, const TString& field)
 {
     if (profile == EEsProfile && field == "gl_PointSize") {
         if (language == EShLangGeometry)
@@ -867,7 +867,7 @@ void TParseContext::blockMemberExtensionCheck(TSourceLoc loc, const TIntermTyped
 // Handle seeing a function declarator in the grammar.  This is the precursor
 // to recognizing a function prototype or function definition.
 //
-TFunction* TParseContext::handleFunctionDeclarator(TSourceLoc loc, TFunction& function, bool prototype)
+TFunction* TParseContext::handleFunctionDeclarator(const TSourceLoc& loc, TFunction& function, bool prototype)
 {
     // ES can't declare prototypes inside functions
     if (! symbolTable.atGlobalLevel())
@@ -935,7 +935,7 @@ TFunction* TParseContext::handleFunctionDeclarator(TSourceLoc loc, TFunction& fu
 // Handle seeing the function prototype in front of a function definition in the grammar.  
 // The body is handled after this function returns.
 //
-TIntermAggregate* TParseContext::handleFunctionDefinition(TSourceLoc loc, TFunction& function)
+TIntermAggregate* TParseContext::handleFunctionDefinition(const TSourceLoc& loc, TFunction& function)
 {
     currentCaller = function.getMangledName();
     TSymbol* symbol = symbolTable.find(function.getMangledName());
@@ -1025,7 +1025,7 @@ TIntermAggregate* TParseContext::handleFunctionDefinition(TSourceLoc loc, TFunct
 //  - user function
 //  - subroutine call (not implemented yet)
 //
-TIntermTyped* TParseContext::handleFunctionCall(TSourceLoc loc, TFunction* function, TIntermNode* arguments)
+TIntermTyped* TParseContext::handleFunctionCall(const TSourceLoc& loc, TFunction* function, TIntermNode* arguments)
 {
     TIntermTyped* result = 0;
 
@@ -1151,7 +1151,7 @@ TIntermTyped* TParseContext::handleFunctionCall(TSourceLoc loc, TFunction* funct
 }
 
 // See if the operation is being done in an illegal location.
-void TParseContext::checkLocation(TSourceLoc loc, TOperator op)
+void TParseContext::checkLocation(const TSourceLoc& loc, TOperator op)
 {
     switch (op) {
     case EOpBarrier:
@@ -1174,7 +1174,7 @@ void TParseContext::checkLocation(TSourceLoc loc, TOperator op)
 // function syntax "()" is recognized.
 //
 // Return resulting tree node.
-TIntermTyped* TParseContext::handleLengthMethod(TSourceLoc loc, TFunction* function, TIntermNode* intermNode)
+TIntermTyped* TParseContext::handleLengthMethod(const TSourceLoc& loc, TFunction* function, TIntermNode* intermNode)
 {
     int length = 0;
 
@@ -1330,7 +1330,7 @@ TIntermTyped* TParseContext::addOutputArgumentConversions(const TFunction& funct
 //
 // Assumes there has been a semantically correct match to a built-in function.
 //
-void TParseContext::nonOpBuiltInCheck(TSourceLoc loc, const TFunction& fnCandidate, TIntermAggregate& callNode)
+void TParseContext::nonOpBuiltInCheck(const TSourceLoc& loc, const TFunction& fnCandidate, TIntermAggregate& callNode)
 {
     // built-in texturing functions get their return value precision from the precision of the sampler
     if (fnCandidate.getType().getQualifier().precision == EpqNone &&
@@ -1436,7 +1436,7 @@ void TParseContext::nonOpBuiltInCheck(TSourceLoc loc, const TFunction& fnCandida
 //
 // Handle seeing a built-in constructor in a grammar production.
 //
-TFunction* TParseContext::handleConstructorCall(TSourceLoc loc, const TPublicType& publicType)
+TFunction* TParseContext::handleConstructorCall(const TSourceLoc& loc, const TPublicType& publicType)
 {
     TType type(publicType);
     type.getQualifier().precision = EpqNone;
@@ -1584,7 +1584,7 @@ TOperator TParseContext::mapTypeToConstructorOp(const TType& type) const
 //
 // Same error message for all places assignments don't work.
 //
-void TParseContext::assignError(TSourceLoc loc, const char* op, TString left, TString right)
+void TParseContext::assignError(const TSourceLoc& loc, const char* op, TString left, TString right)
 {
     error(loc, "", op, "cannot convert from '%s' to '%s'",
           right.c_str(), left.c_str());
@@ -1593,7 +1593,7 @@ void TParseContext::assignError(TSourceLoc loc, const char* op, TString left, TS
 //
 // Same error message for all places unary operations don't work.
 //
-void TParseContext::unaryOpError(TSourceLoc loc, const char* op, TString operand)
+void TParseContext::unaryOpError(const TSourceLoc& loc, const char* op, TString operand)
 {
    error(loc, " wrong operand type", op,
           "no operation '%s' exists that takes an operand of type %s (or there is no acceptable conversion)",
@@ -1603,7 +1603,7 @@ void TParseContext::unaryOpError(TSourceLoc loc, const char* op, TString operand
 //
 // Same error message for all binary operations don't work.
 //
-void TParseContext::binaryOpError(TSourceLoc loc, const char* op, TString left, TString right)
+void TParseContext::binaryOpError(const TSourceLoc& loc, const char* op, TString left, TString right)
 {
     error(loc, " wrong operand types:", op,
             "no operation '%s' exists that takes a left-hand operand of type '%s' and "
@@ -1649,7 +1649,7 @@ void TParseContext::variableCheck(TIntermTyped*& nodePtr)
 //
 // Returns true if the was an error.
 //
-bool TParseContext::lValueErrorCheck(TSourceLoc loc, const char* op, TIntermTyped* node)
+bool TParseContext::lValueErrorCheck(const TSourceLoc& loc, const char* op, TIntermTyped* node)
 {
     TIntermBinary* binaryNode = node->getAsBinaryNode();
 
@@ -1761,7 +1761,7 @@ bool TParseContext::lValueErrorCheck(TSourceLoc loc, const char* op, TIntermType
 }
 
 // Test for and give an error if the node can't be read from.
-void TParseContext::rValueErrorCheck(TSourceLoc loc, const char* op, TIntermTyped* node)
+void TParseContext::rValueErrorCheck(const TSourceLoc& loc, const char* op, TIntermTyped* node)
 {
     if (! node)
         return;
@@ -1812,7 +1812,7 @@ void TParseContext::integerCheck(const TIntermTyped* node, const char* token)
 // Both test, and if necessary spit out an error, to see if we are currently
 // globally scoped.
 //
-void TParseContext::globalCheck(TSourceLoc loc, const char* token)
+void TParseContext::globalCheck(const TSourceLoc& loc, const char* token)
 {
     if (! symbolTable.atGlobalLevel())
         error(loc, "not allowed in nested scope", token, "");
@@ -1821,7 +1821,7 @@ void TParseContext::globalCheck(TSourceLoc loc, const char* token)
 //
 // Reserved errors for GLSL.
 //
-void TParseContext::reservedErrorCheck(TSourceLoc loc, const TString& identifier)
+void TParseContext::reservedErrorCheck(const TSourceLoc& loc, const TString& identifier)
 {
     // "Identifiers starting with "gl_" are reserved for use by OpenGL, and may not be
     // declared in a shader; this results in a compile-time error."
@@ -1846,7 +1846,7 @@ void TParseContext::reservedErrorCheck(TSourceLoc loc, const TString& identifier
 //
 // Reserved errors for the preprocessor.
 //
-void TParseContext::reservedPpErrorCheck(TSourceLoc loc, const char* identifier, const char* op)
+void TParseContext::reservedPpErrorCheck(const TSourceLoc& loc, const char* identifier, const char* op)
 {
     // "__" are not supposed to be an error.  ES 310 (and desktop) added the clarification:
     // "All macro names containing two consecutive underscores ( __ ) are reserved;
@@ -1877,7 +1877,7 @@ void TParseContext::reservedPpErrorCheck(TSourceLoc loc, const char* identifier,
 //
 // Returns true if a line continuation should be done.
 //
-bool TParseContext::lineContinuationCheck(TSourceLoc loc, bool endOfComment)
+bool TParseContext::lineContinuationCheck(const TSourceLoc& loc, bool endOfComment)
 {
     const char* message = "line continuation";
 
@@ -1917,7 +1917,7 @@ bool TParseContext::builtInName(const TString& identifier)
 //
 // Returns true if there was an error in construction.
 //
-bool TParseContext::constructorError(TSourceLoc loc, TIntermNode* node, TFunction& function, TOperator op, TType& type)
+bool TParseContext::constructorError(const TSourceLoc& loc, TIntermNode* node, TFunction& function, TOperator op, TType& type)
 {
     type.shallowCopy(function.getType());
 
@@ -2058,7 +2058,7 @@ bool TParseContext::constructorError(TSourceLoc loc, TIntermNode* node, TFunctio
 //
 // returns true in case of an error
 //
-bool TParseContext::voidErrorCheck(TSourceLoc loc, const TString& identifier, const TBasicType basicType)
+bool TParseContext::voidErrorCheck(const TSourceLoc& loc, const TString& identifier, const TBasicType basicType)
 {
     if (basicType == EbtVoid) {
         error(loc, "illegal use of type 'void'", identifier.c_str(), "");
@@ -2069,20 +2069,20 @@ bool TParseContext::voidErrorCheck(TSourceLoc loc, const TString& identifier, co
 }
 
 // Checks to see if the node (for the expression) contains a scalar boolean expression or not
-void TParseContext::boolCheck(TSourceLoc loc, const TIntermTyped* type)
+void TParseContext::boolCheck(const TSourceLoc& loc, const TIntermTyped* type)
 {
     if (type->getBasicType() != EbtBool || type->isArray() || type->isMatrix() || type->isVector())
         error(loc, "boolean expression expected", "", "");
 }
 
 // This function checks to see if the node (for the expression) contains a scalar boolean expression or not
-void TParseContext::boolCheck(TSourceLoc loc, const TPublicType& pType)
+void TParseContext::boolCheck(const TSourceLoc& loc, const TPublicType& pType)
 {
     if (pType.basicType != EbtBool || pType.arraySizes || pType.matrixCols > 1 || (pType.vectorSize > 1))
         error(loc, "boolean expression expected", "", "");
 }
 
-void TParseContext::samplerCheck(TSourceLoc loc, const TType& type, const TString& identifier)
+void TParseContext::samplerCheck(const TSourceLoc& loc, const TType& type, const TString& identifier)
 {
     if (type.getQualifier().storage == EvqUniform)
         return;
@@ -2093,7 +2093,7 @@ void TParseContext::samplerCheck(TSourceLoc loc, const TType& type, const TStrin
         error(loc, "sampler/image types can only be used in uniform variables or function parameters:", type.getBasicTypeString().c_str(), identifier.c_str());
 }
 
-void TParseContext::atomicUintCheck(TSourceLoc loc, const TType& type, const TString& identifier)
+void TParseContext::atomicUintCheck(const TSourceLoc& loc, const TType& type, const TString& identifier)
 {
     if (type.getQualifier().storage == EvqUniform)
         return;
@@ -2107,7 +2107,7 @@ void TParseContext::atomicUintCheck(TSourceLoc loc, const TType& type, const TSt
 //
 // Check/fix just a full qualifier (no variables or types yet, but qualifier is complete) at global level.
 //
-void TParseContext::globalQualifierFixCheck(TSourceLoc loc, TQualifier& qualifier)
+void TParseContext::globalQualifierFixCheck(const TSourceLoc& loc, TQualifier& qualifier)
 {
     // move from parameter/unknown qualifiers to pipeline in/out qualifiers
     switch (qualifier.storage) {
@@ -2135,7 +2135,7 @@ void TParseContext::globalQualifierFixCheck(TSourceLoc loc, TQualifier& qualifie
 //
 // Check a full qualifier and type (no variable yet) at global level.
 //
-void TParseContext::globalQualifierTypeCheck(TSourceLoc loc, const TQualifier& qualifier, const TPublicType& publicType)
+void TParseContext::globalQualifierTypeCheck(const TSourceLoc& loc, const TQualifier& qualifier, const TPublicType& publicType)
 {
     if (! symbolTable.atGlobalLevel())
         return;
@@ -2271,7 +2271,7 @@ void TParseContext::globalQualifierTypeCheck(TSourceLoc loc, const TQualifier& q
 // 'dst', for the purpose of error checking order for versions
 // that require specific orderings of qualifiers.
 //
-void TParseContext::mergeQualifiers(TSourceLoc loc, TQualifier& dst, const TQualifier& src, bool force)
+void TParseContext::mergeQualifiers(const TSourceLoc& loc, TQualifier& dst, const TQualifier& src, bool force)
 {
     // Multiple auxiliary qualifiers (mostly done later by 'individual qualifiers')
     if (src.isAuxiliary() && dst.isAuxiliary())
@@ -2342,7 +2342,7 @@ void TParseContext::mergeQualifiers(TSourceLoc loc, TQualifier& dst, const TQual
         error(loc, "replicated qualifiers", "", "");
 }
 
-void TParseContext::setDefaultPrecision(TSourceLoc loc, TPublicType& publicType, TPrecisionQualifier qualifier)
+void TParseContext::setDefaultPrecision(const TSourceLoc& loc, TPublicType& publicType, TPrecisionQualifier qualifier)
 {
     TBasicType basicType = publicType.basicType;
 
@@ -2391,7 +2391,7 @@ TPrecisionQualifier TParseContext::getDefaultPrecision(TPublicType& publicType)
         return defaultPrecision[publicType.basicType];
 }
 
-void TParseContext::precisionQualifierCheck(TSourceLoc loc, TBasicType baseType, TQualifier& qualifier)
+void TParseContext::precisionQualifierCheck(const TSourceLoc& loc, TBasicType baseType, TQualifier& qualifier)
 {
     // Built-in symbols are allowed some ambiguous precisions, to be pinned down
     // later by context.
@@ -2414,7 +2414,7 @@ void TParseContext::precisionQualifierCheck(TSourceLoc loc, TBasicType baseType,
         error(loc, "type cannot have precision qualifier", TType::getBasicString(baseType), "");
 }
 
-void TParseContext::parameterTypeCheck(TSourceLoc loc, TStorageQualifier qualifier, const TType& type)
+void TParseContext::parameterTypeCheck(const TSourceLoc& loc, TStorageQualifier qualifier, const TType& type)
 {
     if ((qualifier == EvqOut || qualifier == EvqInOut) && (type.getBasicType() == EbtSampler || type.getBasicType() == EbtAtomicUint))
         error(loc, "samplers and atomic_uints cannot be output parameters", type.getBasicTypeString().c_str(), "");
@@ -2439,7 +2439,7 @@ bool TParseContext::containsFieldWithBasicType(const TType& type, TBasicType bas
 //
 // Do size checking for an array type's size.
 //
-void TParseContext::arraySizeCheck(TSourceLoc loc, TIntermTyped* expr, int& size)
+void TParseContext::arraySizeCheck(const TSourceLoc& loc, TIntermTyped* expr, int& size)
 {
     TIntermConstantUnion* constant = expr->getAsConstantUnion();
     if (constant == 0 || (constant->getBasicType() != EbtInt && constant->getBasicType() != EbtUint)) {
@@ -2464,7 +2464,7 @@ void TParseContext::arraySizeCheck(TSourceLoc loc, TIntermTyped* expr, int& size
 //
 // Returns true if there is an error.
 //
-bool TParseContext::arrayQualifierError(TSourceLoc loc, const TQualifier& qualifier)
+bool TParseContext::arrayQualifierError(const TSourceLoc& loc, const TQualifier& qualifier)
 {
     if (qualifier.storage == EvqConst) {
         profileRequires(loc, ENoProfile, 120, E_GL_3DL_array_objects, "const array");
@@ -2485,7 +2485,7 @@ bool TParseContext::arrayQualifierError(TSourceLoc loc, const TQualifier& qualif
 //
 // Returns true if there is an error.
 //
-bool TParseContext::arrayError(TSourceLoc loc, const TType& type)
+bool TParseContext::arrayError(const TSourceLoc& loc, const TType& type)
 {
     if (type.getQualifier().storage == EvqVaryingOut && language == EShLangVertex) {
         if (type.isArrayOfArrays())
@@ -2506,13 +2506,13 @@ bool TParseContext::arrayError(TSourceLoc loc, const TType& type)
 //
 // Require array to have size
 //
-void TParseContext::arraySizeRequiredCheck(TSourceLoc loc, int size)
+void TParseContext::arraySizeRequiredCheck(const TSourceLoc& loc, int size)
 {
     if (size == 0)
         error(loc, "array size required", "", "");
 }
 
-void TParseContext::structArrayCheck(TSourceLoc /*loc*/, const TType& type)
+void TParseContext::structArrayCheck(const TSourceLoc& /*loc*/, const TType& type)
 {
     const TTypeList& structure = *type.getStruct();
     for (int m = 0; m < (int)structure.size(); ++m) {
@@ -2522,7 +2522,7 @@ void TParseContext::structArrayCheck(TSourceLoc /*loc*/, const TType& type)
     }
 }
 
-void TParseContext::arrayUnsizedCheck(TSourceLoc loc, const TQualifier& qualifier, int size, bool initializer)
+void TParseContext::arrayUnsizedCheck(const TSourceLoc& loc, const TQualifier& qualifier, int size, bool initializer)
 {
     // desktop always allows unsized variable arrays,
     // ES always allows them if there is an initializer present to get the size from
@@ -2556,7 +2556,7 @@ void TParseContext::arrayUnsizedCheck(TSourceLoc loc, const TQualifier& qualifie
     arraySizeRequiredCheck(loc, size);
 }
 
-void TParseContext::arrayOfArrayVersionCheck(TSourceLoc loc)
+void TParseContext::arrayOfArrayVersionCheck(const TSourceLoc& loc)
 {
     const char* feature = "arrays of arrays";
 
@@ -2571,7 +2571,7 @@ void TParseContext::arrayOfArrayVersionCheck(TSourceLoc loc)
     }
 }
 
-void TParseContext::arrayDimCheck(TSourceLoc loc, TArraySizes* sizes1, TArraySizes* sizes2)
+void TParseContext::arrayDimCheck(const TSourceLoc& loc, TArraySizes* sizes1, TArraySizes* sizes2)
 {
     if ((sizes1 && sizes2) ||
         (sizes1 && sizes1->getNumDims() > 1) ||
@@ -2579,7 +2579,7 @@ void TParseContext::arrayDimCheck(TSourceLoc loc, TArraySizes* sizes1, TArraySiz
         arrayOfArrayVersionCheck(loc);
 }
 
-void TParseContext::arrayDimCheck(TSourceLoc loc, const TType* type, TArraySizes* sizes2)
+void TParseContext::arrayDimCheck(const TSourceLoc& loc, const TType* type, TArraySizes* sizes2)
 {
     if ((type && type->isArray() && sizes2) ||
         (sizes2 && sizes2->getNumDims() > 1))
@@ -2592,7 +2592,7 @@ void TParseContext::arrayDimCheck(TSourceLoc loc, const TType* type, TArraySizes
 //
 // size == 0 means no specified size.
 //
-void TParseContext::declareArray(TSourceLoc loc, TString& identifier, const TType& type, TSymbol*& symbol, bool& newDeclaration)
+void TParseContext::declareArray(const TSourceLoc& loc, TString& identifier, const TType& type, TSymbol*& symbol, bool& newDeclaration)
 {
     if (! symbol) {
         bool currentScope;
@@ -2664,7 +2664,7 @@ void TParseContext::declareArray(TSourceLoc loc, TString& identifier, const TTyp
         checkIoArraysConsistency(loc);
 }
 
-void TParseContext::updateImplicitArraySize(TSourceLoc loc, TIntermNode *node, int index)
+void TParseContext::updateImplicitArraySize(const TSourceLoc& loc, TIntermNode *node, int index)
 {
     // maybe there is nothing to do...
     TIntermTyped* typedNode = node->getAsTyped();
@@ -2726,7 +2726,7 @@ bool TParseContext::lineDirectiveShouldSetNextLine() const {
 //
 // Enforce non-initializer type/qualifier rules.
 //
-void TParseContext::nonInitConstCheck(TSourceLoc loc, TString& identifier, TType& type)
+void TParseContext::nonInitConstCheck(const TSourceLoc& loc, TString& identifier, TType& type)
 {
     //
     // Make the qualifier make sense, given that there is an initializer.
@@ -2748,7 +2748,7 @@ void TParseContext::nonInitConstCheck(TSourceLoc loc, TString& identifier, TType
 //
 // Returns a redeclared and type-modified variable if a redeclarated occurred.
 //
-TSymbol* TParseContext::redeclareBuiltinVariable(TSourceLoc loc, const TString& identifier, const TQualifier& qualifier, const TShaderQualifiers& publicType, bool& newDeclaration)
+TSymbol* TParseContext::redeclareBuiltinVariable(const TSourceLoc& loc, const TString& identifier, const TQualifier& qualifier, const TShaderQualifiers& publicType, bool& newDeclaration)
 {
     if (! builtInName(identifier) || symbolTable.atBuiltInLevel() || ! symbolTable.atGlobalLevel())
         return 0;
@@ -2873,7 +2873,7 @@ TSymbol* TParseContext::redeclareBuiltinVariable(TSourceLoc loc, const TString& 
 // Either redeclare the requested block, or give an error message why it can't be done.
 //
 // TODO: functionality: explicitly sizing members of redeclared blocks is not giving them an explicit size
-void TParseContext::redeclareBuiltinBlock(TSourceLoc loc, TTypeList& newTypeList, const TString& blockName, const TString* instanceName, TArraySizes* arraySizes)
+void TParseContext::redeclareBuiltinBlock(const TSourceLoc& loc, TTypeList& newTypeList, const TString& blockName, const TString* instanceName, TArraySizes* arraySizes)
 {
     const char* feature = "built-in block redeclaration";
     profileRequires(loc, EEsProfile, 0, Num_AEP_shader_io_blocks, AEP_shader_io_blocks, feature);
@@ -3014,7 +3014,7 @@ void TParseContext::redeclareBuiltinBlock(TSourceLoc loc, TTypeList& newTypeList
     intermediate.addSymbolLinkageNode(linkage, *block);
 }
 
-void TParseContext::paramCheckFix(TSourceLoc loc, const TStorageQualifier& qualifier, TType& type)
+void TParseContext::paramCheckFix(const TSourceLoc& loc, const TStorageQualifier& qualifier, TType& type)
 {
     switch (qualifier) {
     case EvqConst:
@@ -3037,7 +3037,7 @@ void TParseContext::paramCheckFix(TSourceLoc loc, const TStorageQualifier& quali
     }
 }
 
-void TParseContext::paramCheckFix(TSourceLoc loc, const TQualifier& qualifier, TType& type)
+void TParseContext::paramCheckFix(const TSourceLoc& loc, const TQualifier& qualifier, TType& type)
 {
     if (qualifier.isMemory()) {
         type.getQualifier().volatil   = qualifier.volatil;
@@ -3057,21 +3057,21 @@ void TParseContext::paramCheckFix(TSourceLoc loc, const TQualifier& qualifier, T
     paramCheckFix(loc, qualifier.storage, type);
 }
 
-void TParseContext::nestedBlockCheck(TSourceLoc loc)
+void TParseContext::nestedBlockCheck(const TSourceLoc& loc)
 {
     if (structNestingLevel > 0)
         error(loc, "cannot nest a block definition inside a structure or block", "", "");
     ++structNestingLevel;
 }
 
-void TParseContext::nestedStructCheck(TSourceLoc loc)
+void TParseContext::nestedStructCheck(const TSourceLoc& loc)
 {
     if (structNestingLevel > 0)
         error(loc, "cannot nest a structure definition inside a structure or block", "", "");
     ++structNestingLevel;
 }
 
-void TParseContext::arrayObjectCheck(TSourceLoc loc, const TType& type, const char* op)
+void TParseContext::arrayObjectCheck(const TSourceLoc& loc, const TType& type, const char* op)
 {
     // Some versions don't allow comparing arrays or structures containing arrays
     if (type.containsArray()) {
@@ -3080,20 +3080,20 @@ void TParseContext::arrayObjectCheck(TSourceLoc loc, const TType& type, const ch
     }
 }
 
-void TParseContext::opaqueCheck(TSourceLoc loc, const TType& type, const char* op)
+void TParseContext::opaqueCheck(const TSourceLoc& loc, const TType& type, const char* op)
 {
     if (containsFieldWithBasicType(type, EbtSampler))
         error(loc, "can't use with samplers or structs containing samplers", op, "");
 }
 
-void TParseContext::structTypeCheck(TSourceLoc /*loc*/, TPublicType& publicType)
+void TParseContext::structTypeCheck(const TSourceLoc& /*loc*/, TPublicType& publicType)
 {
     const TTypeList& typeList = *publicType.userDef->getStruct();
 
     // fix and check for member storage qualifiers and types that don't belong within a structure
     for (unsigned int member = 0; member < typeList.size(); ++member) {
         TQualifier& memberQualifier = typeList[member].type->getQualifier();        
-        TSourceLoc memberLoc = typeList[member].loc;
+        const TSourceLoc& memberLoc = typeList[member].loc;
         if (memberQualifier.isAuxiliary() ||
             memberQualifier.isInterpolation() ||
             (memberQualifier.storage != EvqTemporary && memberQualifier.storage != EvqGlobal))
@@ -3127,7 +3127,7 @@ void TParseContext::structTypeCheck(TSourceLoc /*loc*/, TPublicType& publicType)
 //
 // The body is handled in an AST traversal.
 //
-void TParseContext::inductiveLoopCheck(TSourceLoc loc, TIntermNode* init, TIntermLoop* loop)
+void TParseContext::inductiveLoopCheck(const TSourceLoc& loc, TIntermNode* init, TIntermLoop* loop)
 {
     // loop index init must exist and be a declaration, which shows up in the AST as an aggregate of size 1 of the declaration
     bool badInit = false;
@@ -3227,7 +3227,7 @@ void TParseContext::inductiveLoopCheck(TSourceLoc loc, TIntermNode* init, TInter
 }
 
 // Do limit checks against for all built-in arrays.
-void TParseContext::arrayLimitCheck(TSourceLoc loc, const TString& identifier, int size)
+void TParseContext::arrayLimitCheck(const TSourceLoc& loc, const TString& identifier, int size)
 {
     if (identifier.compare("gl_TexCoord") == 0)
         limitCheck(loc, size, "gl_MaxTextureCoords", "gl_TexCoord array size");
@@ -3237,7 +3237,7 @@ void TParseContext::arrayLimitCheck(TSourceLoc loc, const TString& identifier, i
 
 // See if the provided value is less than the symbol indicated by limit,
 // which should be a constant in the symbol table.
-void TParseContext::limitCheck(TSourceLoc loc, int value, const char* limit, const char* feature)
+void TParseContext::limitCheck(const TSourceLoc& loc, int value, const char* limit, const char* feature)
 {
     TSymbol* symbol = symbolTable.find(limit);
     assert(symbol->getAsVariable());
@@ -3288,7 +3288,7 @@ void TParseContext::finalErrorCheck()
 
 // Put the id's layout qualification into the public type, for qualifiers not having a number set.
 // This is before we know any type information for error checking.
-void TParseContext::setLayoutQualifier(TSourceLoc loc, TPublicType& publicType, TString& id)
+void TParseContext::setLayoutQualifier(const TSourceLoc& loc, TPublicType& publicType, TString& id)
 {
     std::transform(id.begin(), id.end(), id.begin(), ::tolower);
 
@@ -3440,7 +3440,7 @@ void TParseContext::setLayoutQualifier(TSourceLoc loc, TPublicType& publicType, 
 
 // Put the id's layout qualifier value into the public type, for qualifiers having a number set.
 // This is before we know any type information for error checking.
-void TParseContext::setLayoutQualifier(TSourceLoc loc, TPublicType& publicType, TString& id, const TIntermTyped* node)
+void TParseContext::setLayoutQualifier(const TSourceLoc& loc, TPublicType& publicType, TString& id, const TIntermTyped* node)
 {
     const char* feature = "layout-id value";
     const char* nonLiteralFeature = "non-literal layout-id value";
@@ -3677,7 +3677,7 @@ void TParseContext::mergeObjectLayoutQualifiers(TQualifier& dst, const TQualifie
 }
 
 // Do error layout error checking given a full variable/block declaration.
-void TParseContext::layoutObjectCheck(TSourceLoc loc, const TSymbol& symbol)
+void TParseContext::layoutObjectCheck(const TSourceLoc& loc, const TSymbol& symbol)
 {
     const TType& type = symbol.getType();
     const TQualifier& qualifier = type.getQualifier();
@@ -3725,7 +3725,7 @@ void TParseContext::layoutObjectCheck(TSourceLoc loc, const TSymbol& symbol)
 }
 
 // Do layout error checking with respect to a type.
-void TParseContext::layoutTypeCheck(TSourceLoc loc, const TType& type)
+void TParseContext::layoutTypeCheck(const TSourceLoc& loc, const TType& type)
 {
     const TQualifier& qualifier = type.getQualifier();
 
@@ -3859,7 +3859,7 @@ void TParseContext::layoutTypeCheck(TSourceLoc loc, const TType& type)
 
 // Do layout error checking that can be done within a layout qualifier proper, not needing to know
 // if there are blocks, atomic counters, variables, etc.
-void TParseContext::layoutQualifierCheck(TSourceLoc loc, const TQualifier& qualifier)
+void TParseContext::layoutQualifierCheck(const TSourceLoc& loc, const TQualifier& qualifier)
 {
     if (qualifier.storage == EvqShared && qualifier.hasLayout())
         error(loc, "cannot apply layout qualifiers to a shared variable", "shared", "");
@@ -3952,7 +3952,7 @@ void TParseContext::layoutQualifierCheck(TSourceLoc loc, const TQualifier& quali
 }
 
 // For places that can't have shader-level layout qualifiers
-void TParseContext::checkNoShaderLayouts(TSourceLoc loc, const TShaderQualifiers& shaderQualifiers)
+void TParseContext::checkNoShaderLayouts(const TSourceLoc& loc, const TShaderQualifiers& shaderQualifiers)
 {
     const char* message = "can only apply to a standalone qualifier";
 
@@ -3975,7 +3975,7 @@ void TParseContext::checkNoShaderLayouts(TSourceLoc loc, const TShaderQualifiers
 }
 
 // Correct and/or advance an object's offset layout qualifier.
-void TParseContext::fixOffset(TSourceLoc loc, TSymbol& symbol)
+void TParseContext::fixOffset(const TSourceLoc& loc, TSymbol& symbol)
 {
     const TQualifier& qualifier = symbol.getType().getQualifier();
     if (symbol.getType().getBasicType() == EbtAtomicUint) {
@@ -4008,7 +4008,7 @@ void TParseContext::fixOffset(TSourceLoc loc, TSymbol& symbol)
 //
 // Return the function symbol if found, otherwise 0.
 //
-const TFunction* TParseContext::findFunction(TSourceLoc loc, const TFunction& call, bool& builtIn)
+const TFunction* TParseContext::findFunction(const TSourceLoc& loc, const TFunction& call, bool& builtIn)
 {
     const TFunction* function = 0;
 
@@ -4028,7 +4028,7 @@ const TFunction* TParseContext::findFunction(TSourceLoc loc, const TFunction& ca
 }
 
 // Function finding algorithm for ES and desktop 110.
-const TFunction* TParseContext::findFunctionExact(TSourceLoc loc, const TFunction& call, bool& builtIn)
+const TFunction* TParseContext::findFunctionExact(const TSourceLoc& loc, const TFunction& call, bool& builtIn)
 {
     TSymbol* symbol = symbolTable.find(call.getMangledName(), &builtIn);
     if (symbol == 0) {
@@ -4041,7 +4041,7 @@ const TFunction* TParseContext::findFunctionExact(TSourceLoc loc, const TFunctio
 }
 
 // Function finding algorithm for desktop versions 120 through 330.
-const TFunction* TParseContext::findFunction120(TSourceLoc loc, const TFunction& call, bool& builtIn)
+const TFunction* TParseContext::findFunction120(const TSourceLoc& loc, const TFunction& call, bool& builtIn)
 {
     // first, look for an exact match
     TSymbol* symbol = symbolTable.find(call.getMangledName(), &builtIn);
@@ -4109,7 +4109,7 @@ const TFunction* TParseContext::findFunction120(TSourceLoc loc, const TFunction&
 }
 
 // Function finding algorithm for desktop version 400 and above.
-const TFunction* TParseContext::findFunction400(TSourceLoc loc, const TFunction& call, bool& builtIn)
+const TFunction* TParseContext::findFunction400(const TSourceLoc& loc, const TFunction& call, bool& builtIn)
 {
     // TODO: 4.00 functionality: findFunction400()
     return findFunction120(loc, call, builtIn);
@@ -4117,7 +4117,7 @@ const TFunction* TParseContext::findFunction400(TSourceLoc loc, const TFunction&
 
 // When a declaration includes a type, but not a variable name, it can be 
 // to establish defaults.
-void TParseContext::declareTypeDefaults(TSourceLoc loc, const TPublicType& publicType)
+void TParseContext::declareTypeDefaults(const TSourceLoc& loc, const TPublicType& publicType)
 {
     if (publicType.basicType == EbtAtomicUint && publicType.qualifier.hasBinding() && publicType.qualifier.hasOffset()) {
         if (publicType.qualifier.layoutBinding >= (unsigned int)resources.maxAtomicCounterBindings) {
@@ -4140,7 +4140,7 @@ void TParseContext::declareTypeDefaults(TSourceLoc loc, const TPublicType& publi
 // Returns a subtree node that computes an initializer, if needed.
 // Returns 0 if there is no code to execute for initialization.
 //
-TIntermNode* TParseContext::declareVariable(TSourceLoc loc, TString& identifier, const TPublicType& publicType, TArraySizes* arraySizes, TIntermTyped* initializer)
+TIntermNode* TParseContext::declareVariable(const TSourceLoc& loc, TString& identifier, const TPublicType& publicType, TArraySizes* arraySizes, TIntermTyped* initializer)
 {
     TType type(publicType);
 
@@ -4252,7 +4252,7 @@ TVariable* TParseContext::makeInternalVariable(const char* name, const TType& ty
 //
 // Return the successfully declared variable.
 //
-TVariable* TParseContext::declareNonArray(TSourceLoc loc, TString& identifier, TType& type, bool& newDeclaration)
+TVariable* TParseContext::declareNonArray(const TSourceLoc& loc, TString& identifier, TType& type, bool& newDeclaration)
 {
     // make a new variable
     TVariable* variable = new TVariable(&identifier, type);
@@ -4274,7 +4274,7 @@ TVariable* TParseContext::declareNonArray(TSourceLoc loc, TString& identifier, T
 // Returning 0 just means there is no code to execute to handle the
 // initializer, which will, for example, be the case for constant initializers.
 //
-TIntermNode* TParseContext::executeInitializer(TSourceLoc loc, TIntermTyped* initializer, TVariable* variable)
+TIntermNode* TParseContext::executeInitializer(const TSourceLoc& loc, TIntermTyped* initializer, TVariable* variable)
 {
     //
     // Identifier must be of type constant, a global, or a temporary, and
@@ -4373,7 +4373,7 @@ TIntermNode* TParseContext::executeInitializer(TSourceLoc loc, TIntermTyped* ini
 // creating a constructor-style initializer, ensuring we get the
 // same form.
 //
-TIntermTyped* TParseContext::convertInitializerList(TSourceLoc loc, const TType& type, TIntermTyped* initializer)
+TIntermTyped* TParseContext::convertInitializerList(const TSourceLoc& loc, const TType& type, TIntermTyped* initializer)
 {
     // Will operate recursively.  Once a subtree is found that is constructor style,
     // everything below it is already good: Only the "top part" of the initializer
@@ -4444,7 +4444,7 @@ TIntermTyped* TParseContext::convertInitializerList(TSourceLoc loc, const TType&
 //
 // Returns 0 for an error or the constructed node (aggregate or typed) for no error.
 //
-TIntermTyped* TParseContext::addConstructor(TSourceLoc loc, TIntermNode* node, const TType& type, TOperator op)
+TIntermTyped* TParseContext::addConstructor(const TSourceLoc& loc, TIntermNode* node, const TType& type, TOperator op)
 {
     if (node == 0 || node->getAsTyped() == 0)
         return 0;
@@ -4527,7 +4527,7 @@ TIntermTyped* TParseContext::addConstructor(TSourceLoc loc, TIntermNode* node, c
 //
 // Returns 0 for an error or the constructed node.
 //
-TIntermTyped* TParseContext::constructBuiltIn(const TType& type, TOperator op, TIntermTyped* node, TSourceLoc loc, bool subset)
+TIntermTyped* TParseContext::constructBuiltIn(const TType& type, TOperator op, TIntermTyped* node, const TSourceLoc& loc, bool subset)
 {
     TIntermTyped* newNode;
     TOperator basicOp;
@@ -4617,7 +4617,7 @@ TIntermTyped* TParseContext::constructBuiltIn(const TType& type, TOperator op, T
 //
 // Returns 0 for an error or the input node itself if the expected and the given parameter types match.
 //
-TIntermTyped* TParseContext::constructStruct(TIntermNode* node, const TType& type, int paramCount, TSourceLoc loc)
+TIntermTyped* TParseContext::constructStruct(TIntermNode* node, const TType& type, int paramCount, const TSourceLoc& loc)
 {
     TIntermTyped* converted = intermediate.addConversion(EOpConstructStruct, type, node->getAsTyped());
     if (! converted || converted->getType() != type) {
@@ -4633,7 +4633,7 @@ TIntermTyped* TParseContext::constructStruct(TIntermNode* node, const TType& typ
 //
 // Do everything needed to add an interface block.
 //
-void TParseContext::declareBlock(TSourceLoc loc, TTypeList& typeList, const TString* instanceName, TArraySizes* arraySizes)
+void TParseContext::declareBlock(const TSourceLoc& loc, TTypeList& typeList, const TString* instanceName, TArraySizes* arraySizes)
 {
     blockStageIoCheck(loc, currentBlockQualifier);
     blockQualifierCheck(loc, currentBlockQualifier);
@@ -4645,7 +4645,7 @@ void TParseContext::declareBlock(TSourceLoc loc, TTypeList& typeList, const TStr
     for (unsigned int member = 0; member < typeList.size(); ++member) {
         TType& memberType = *typeList[member].type;
         TQualifier& memberQualifier = memberType.getQualifier();
-        TSourceLoc memberLoc = typeList[member].loc;
+        const TSourceLoc& memberLoc = typeList[member].loc;
         globalQualifierFixCheck(memberLoc, memberQualifier);
         if (memberQualifier.storage != EvqTemporary && memberQualifier.storage != EvqGlobal && memberQualifier.storage != currentBlockQualifier.storage)
             error(memberLoc, "member storage qualifier cannot contradict block storage qualifier", memberType.getFieldName().c_str(), "");
@@ -4708,7 +4708,7 @@ void TParseContext::declareBlock(TSourceLoc loc, TTypeList& typeList, const TStr
     bool memberWithoutLocation = false;
     for (unsigned int member = 0; member < typeList.size(); ++member) {
         TQualifier& memberQualifier = typeList[member].type->getQualifier();
-        TSourceLoc memberLoc = typeList[member].loc;
+        const TSourceLoc& memberLoc = typeList[member].loc;
         if (memberQualifier.hasStream()) {
             if (defaultQualification.layoutStream != memberQualifier.layoutStream)
                 error(memberLoc, "member cannot contradict block", "stream", "");
@@ -4830,7 +4830,7 @@ void TParseContext::declareBlock(TSourceLoc loc, TTypeList& typeList, const TStr
 
 // Do all block-declaration checking regarding the combination of in/out/uniform/buffer
 // with a particular stage.
-void TParseContext::blockStageIoCheck(TSourceLoc loc, const TQualifier& qualifier)
+void TParseContext::blockStageIoCheck(const TSourceLoc& loc, const TQualifier& qualifier)
 {
     switch (qualifier.storage) {
     case EvqUniform:
@@ -4866,7 +4866,7 @@ void TParseContext::blockStageIoCheck(TSourceLoc loc, const TQualifier& qualifie
 }
 
 // Do all block-declaration checking regarding its qualifers.
-void TParseContext::blockQualifierCheck(TSourceLoc loc, const TQualifier& qualifier)
+void TParseContext::blockQualifierCheck(const TSourceLoc& loc, const TQualifier& qualifier)
 {
     // The 4.5 specification says:
     //
@@ -4902,7 +4902,7 @@ void TParseContext::blockQualifierCheck(TSourceLoc loc, const TQualifier& qualif
 // declaration. Subsequent members are again assigned consecutive locations, based on the newest location, 
 // until the next member declared with a location qualifier. The values used for locations do not have to be 
 // declared in increasing order."
-void TParseContext::fixBlockLocations(TSourceLoc loc, TQualifier& qualifier, TTypeList& typeList, bool memberWithLocation, bool memberWithoutLocation)
+void TParseContext::fixBlockLocations(const TSourceLoc& loc, TQualifier& qualifier, TTypeList& typeList, bool memberWithLocation, bool memberWithoutLocation)
 {
     // "If a block has no block-level location layout qualifier, it is required that either all or none of its members 
     // have a location layout qualifier, or a compile-time error results."
@@ -4925,7 +4925,7 @@ void TParseContext::fixBlockLocations(TSourceLoc loc, TQualifier& qualifier, TTy
             }
             for (unsigned int member = 0; member < typeList.size(); ++member) {
                 TQualifier& memberQualifier = typeList[member].type->getQualifier();
-                TSourceLoc memberLoc = typeList[member].loc;
+                const TSourceLoc& memberLoc = typeList[member].loc;
                 if (! memberQualifier.hasLocation()) {
                     if (nextLocation >= TQualifier::layoutLocationEnd)
                         error(memberLoc, "location is too large", "location", "");
@@ -4986,7 +4986,7 @@ void TParseContext::fixBlockUniformOffsets(TQualifier& qualifier, TTypeList& typ
     int memberSize;
     for (unsigned int member = 0; member < typeList.size(); ++member) {
         TQualifier& memberQualifier = typeList[member].type->getQualifier();
-        TSourceLoc memberLoc = typeList[member].loc;
+        const TSourceLoc& memberLoc = typeList[member].loc;
 
         // "When align is applied to an array, it effects only the start of the array, not the array's internal stride."
         
@@ -5024,7 +5024,7 @@ void TParseContext::fixBlockUniformOffsets(TQualifier& qualifier, TTypeList& typ
 }
 
 // For an identifier that is already declared, add more qualification to it.
-void TParseContext::addQualifierToExisting(TSourceLoc loc, TQualifier qualifier, const TString& identifier)
+void TParseContext::addQualifierToExisting(const TSourceLoc& loc, TQualifier qualifier, const TString& identifier)
 {
     TSymbol* symbol = symbolTable.find(identifier);
     if (! symbol) {
@@ -5060,13 +5060,13 @@ void TParseContext::addQualifierToExisting(TSourceLoc loc, TQualifier qualifier,
         warn(loc, "unknown requalification", "", "");
 }
 
-void TParseContext::addQualifierToExisting(TSourceLoc loc, TQualifier qualifier, TIdentifierList& identifiers)
+void TParseContext::addQualifierToExisting(const TSourceLoc& loc, TQualifier qualifier, TIdentifierList& identifiers)
 {
     for (unsigned int i = 0; i < identifiers.size(); ++i)
         addQualifierToExisting(loc, qualifier, *identifiers[i]);
 }
 
-void TParseContext::invariantCheck(TSourceLoc loc, const TQualifier& qualifier)
+void TParseContext::invariantCheck(const TSourceLoc& loc, const TQualifier& qualifier)
 {
     if (! qualifier.invariant)
         return;
@@ -5086,7 +5086,7 @@ void TParseContext::invariantCheck(TSourceLoc loc, const TQualifier& qualifier)
 // Updating default qualifier for the case of a declaration with just a qualifier,
 // no type, block, or identifier.
 //
-void TParseContext::updateStandaloneQualifierDefaults(TSourceLoc loc, const TPublicType& publicType)
+void TParseContext::updateStandaloneQualifierDefaults(const TSourceLoc& loc, const TPublicType& publicType)
 {
     if (publicType.shaderQualifiers.vertices) {
         assert(language == EShLangTessControl || language == EShLangGeometry);
@@ -5289,7 +5289,7 @@ void TParseContext::wrapupSwitchSubsequence(TIntermAggregate* statements, TInter
 // Turn the top-level node sequence built up of wrapupSwitchSubsequence9)
 // into a switch node.
 //
-TIntermNode* TParseContext::addSwitch(TSourceLoc loc, TIntermTyped* expression, TIntermAggregate* lastStatements)
+TIntermNode* TParseContext::addSwitch(const TSourceLoc& loc, TIntermTyped* expression, TIntermAggregate* lastStatements)
 {
     profileRequires(loc, EEsProfile, 300, nullptr, "switch statements");
     profileRequires(loc, ENoProfile, 130, nullptr, "switch statements");
@@ -5346,10 +5346,10 @@ void TParseContext::notifyErrorDirective(int line, const char* error_message)
     }
 }
 
-void TParseContext::notifyLineDirective(int curLineNo, int newLineNo, bool hasSource, int sourceNum)
+void TParseContext::notifyLineDirective(int curLineNo, int newLineNo, bool hasSource, int sourceNum, const char* sourceName)
 {
     if (lineCallback) {
-        lineCallback(curLineNo, newLineNo, hasSource, sourceNum);
+        lineCallback(curLineNo, newLineNo, hasSource, sourceNum, sourceName);
     }
 }
 

@@ -604,7 +604,7 @@ int TPpContext::CPPline(TPpToken* ppToken)
     // "#line line source-string-number"
 
     int token = scanToken(ppToken);
-    const int directiveLoc = ppToken->loc.line;
+    const TSourceLoc directiveLoc = ppToken->loc;
     if (token == '\n') {
         parseContext.ppError(ppToken->loc, "must by followed by an integral literal", "#line", "");
         return token;
@@ -612,8 +612,9 @@ int TPpContext::CPPline(TPpToken* ppToken)
 
     int lineRes = 0; // Line number after macro expansion.
     int lineToken = 0;
-    int fileRes = 0; // Source file number after macro expansion.
     bool hasFile = false;
+    int fileRes = 0; // Source file number after macro expansion.
+    const char* sourceName = nullptr; // Optional source file name.
     bool lineErr = false;
     bool fileErr = false;
     token = eval(token, MIN_PRECEDENCE, false, lineRes, lineErr, ppToken);
@@ -627,14 +628,26 @@ int TPpContext::CPPline(TPpToken* ppToken)
         parseContext.setCurrentLine(lineRes);
 
         if (token != '\n') {
-            token = eval(token, MIN_PRECEDENCE, false, fileRes, fileErr, ppToken);
-            if (! fileErr)
-                parseContext.setCurrentString(fileRes);
+            if (token == PpAtomConstString) {
+                parseContext.requireExtensions(directiveLoc, 1, &E_GL_GOOGLE_cpp_style_line_directive, "filename-based #line");
+                // We need to save a copy of the string instead of pointing
+                // to the name field of the token since the name field
+                // will likely be overwritten by the next token scan.
+                sourceName = GetAtomString(LookUpAddString(ppToken->name));
+                parseContext.setCurrentSourceName(sourceName);
                 hasFile = true;
+                token = scanToken(ppToken);
+            } else {
+                token = eval(token, MIN_PRECEDENCE, false, fileRes, fileErr, ppToken);
+                if (! fileErr) {
+                    parseContext.setCurrentString(fileRes);
+                    hasFile = true;
+                }
+            }
         }
     }
     if (!fileErr && !lineErr) {
-        parseContext.notifyLineDirective(directiveLoc, lineToken, hasFile, fileRes);
+        parseContext.notifyLineDirective(directiveLoc.line, lineToken, hasFile, fileRes, sourceName);
     }
     token = extraTokenCheck(PpAtomLine, ppToken, token);
 
@@ -952,11 +965,17 @@ int TPpContext::MacroExpand(int atom, TPpToken* ppToken, bool expandUndef, bool 
         UngetToken(PpAtomConstInt, ppToken);
         return 1;
 
-    case PpAtomFileMacro:
-        ppToken->ival = parseContext.getCurrentLoc().string;
-        sprintf(ppToken->name, "%d", ppToken->ival);
+    case PpAtomFileMacro: {
+        if (const char* current_file = parseContext.getCurrentLoc().name) {
+            parseContext.requireExtensions(ppToken->loc, 1, &E_GL_GOOGLE_cpp_style_line_directive, "filename-based __FILE__");
+            sprintf(ppToken->name, "\"%s\"", current_file);
+        } else {
+            ppToken->ival = parseContext.getCurrentLoc().string;
+            sprintf(ppToken->name, "%d", ppToken->ival);
+        }
         UngetToken(PpAtomConstInt, ppToken);
         return 1;
+    }
 
     case PpAtomVersionMacro:
         ppToken->ival = parseContext.version;

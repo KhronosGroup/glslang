@@ -190,6 +190,7 @@ void TParseContext::initializeExtensionBehavior()
     extensionBehavior[E_GL_EXT_tessellation_point_size]              = EBhDisable;
     extensionBehavior[E_GL_EXT_texture_buffer]                       = EBhDisablePartial;
     extensionBehavior[E_GL_EXT_texture_cube_map_array]               = EBhDisablePartial;
+    extensionBehavior[E_GL_GOOGLE_cpp_style_line_directive]          = EBhDisable;
 
     // OES matching AEP
     extensionBehavior[E_GL_OES_geometry_shader]          = EBhDisable;
@@ -233,6 +234,7 @@ const char* TParseContext::getPreamble()
             "#define GL_EXT_tessellation_point_size 1\n"
             "#define GL_EXT_texture_buffer 1\n"
             "#define GL_EXT_texture_cube_map_array 1\n"
+            "#define GL_GOOGLE_cpp_style_line_directive 1\n"
 
             // OES matching AEP
             "#define GL_OES_geometry_shader 1\n"
@@ -264,6 +266,7 @@ const char* TParseContext::getPreamble()
             "#define GL_ARB_derivative_control 1\n"
             "#define GL_ARB_shader_texture_image_samples 1\n"
             "#define GL_ARB_viewport_array 1\n"
+            "#define GL_GOOGLE_cpp_style_line_directive 1\n"
 //            "#define GL_ARB_cull_distance 1\n"    // present for 4.5, but need extension control over block members
             ;
     }
@@ -278,7 +281,7 @@ const char* TParseContext::getPreamble()
 // Operation:  If the current profile is not one of the profileMask,
 // give an error message.
 //
-void TParseContext::requireProfile(TSourceLoc loc, int profileMask, const char* featureDesc)
+void TParseContext::requireProfile(const TSourceLoc& loc, int profileMask, const char* featureDesc)
 {
     if (! (profile & profileMask))
         error(loc, "not supported with this profile:", featureDesc, ProfileName(profile));
@@ -317,7 +320,7 @@ const char* StageName(EShLanguage stage)
 //
 
 // entry point that takes multiple extensions
-void TParseContext::profileRequires(TSourceLoc loc, int profileMask, int minVersion, int numExtensions, const char* const extensions[], const char* featureDesc)
+void TParseContext::profileRequires(const TSourceLoc& loc, int profileMask, int minVersion, int numExtensions, const char* const extensions[], const char* featureDesc)
 {
     if (profile & profileMask) {
         bool okay = false;
@@ -342,7 +345,7 @@ void TParseContext::profileRequires(TSourceLoc loc, int profileMask, int minVers
 }
 
 // entry point for the above that takes a single extension
-void TParseContext::profileRequires(TSourceLoc loc, int profileMask, int minVersion, const char* extension, const char* featureDesc)
+void TParseContext::profileRequires(const TSourceLoc& loc, int profileMask, int minVersion, const char* extension, const char* featureDesc)
 {
     profileRequires(loc, profileMask, minVersion, extension ? 1 : 0, &extension, featureDesc);
 }
@@ -354,7 +357,7 @@ void TParseContext::profileRequires(TSourceLoc loc, int profileMask, int minVers
 //
 // Operation: If the current stage is not present, give an error message.
 //
-void TParseContext::requireStage(TSourceLoc loc, EShLanguageMask languageMask, const char* featureDesc)
+void TParseContext::requireStage(const TSourceLoc& loc, EShLanguageMask languageMask, const char* featureDesc)
 {
     if (((1 << language) & languageMask) == 0)
         error(loc, "not supported in this stage:", featureDesc, StageName(language));
@@ -362,7 +365,7 @@ void TParseContext::requireStage(TSourceLoc loc, EShLanguageMask languageMask, c
 
 // If only one stage supports a feature, this can be called.  But, all supporting stages
 // must be specified with one call.
-void TParseContext::requireStage(TSourceLoc loc, EShLanguage stage, const char* featureDesc)
+void TParseContext::requireStage(const TSourceLoc& loc, EShLanguage stage, const char* featureDesc)
 {
     requireStage(loc, static_cast<EShLanguageMask>(1 << stage), featureDesc);
 }
@@ -371,7 +374,7 @@ void TParseContext::requireStage(TSourceLoc loc, EShLanguage stage, const char* 
 // Within a set of profiles, see if a feature is deprecated and give an error or warning based on whether
 // a future compatibility context is being use.
 //
-void TParseContext::checkDeprecated(TSourceLoc loc, int profileMask, int depVersion, const char* featureDesc)
+void TParseContext::checkDeprecated(const TSourceLoc& loc, int profileMask, int depVersion, const char* featureDesc)
 {
     if (profile & profileMask) {
         if (version >= depVersion) {
@@ -388,7 +391,7 @@ void TParseContext::checkDeprecated(TSourceLoc loc, int profileMask, int depVers
 // Within a set of profiles, see if a feature has now been removed and if so, give an error.
 // The version argument is the first version no longer having the feature.
 //
-void TParseContext::requireNotRemoved(TSourceLoc loc, int profileMask, int removedVersion, const char* featureDesc)
+void TParseContext::requireNotRemoved(const TSourceLoc& loc, int profileMask, int removedVersion, const char* featureDesc)
 {
     if (profile & profileMask) {
         if (version >= removedVersion) {
@@ -404,7 +407,7 @@ void TParseContext::requireNotRemoved(TSourceLoc loc, int profileMask, int remov
 // Use when there are no profile/version to check, it's just an error if one of the
 // extensions is not present.
 //
-void TParseContext::requireExtensions(TSourceLoc loc, int numExtensions, const char* const extensions[], const char* featureDesc)
+void TParseContext::requireExtensions(const TSourceLoc& loc, int numExtensions, const char* const extensions[], const char* featureDesc)
 {
     // First, see if any of the extensions are enabled
     for (int i = 0; i < numExtensions; ++i) {
@@ -564,7 +567,7 @@ void TParseContext::updateExtensionBehavior(const char* extension, TExtensionBeh
 //
 // Call for any operation needing full GLSL integer data-type support.
 //
-void TParseContext::fullIntegerCheck(TSourceLoc loc, const char* op)
+void TParseContext::fullIntegerCheck(const TSourceLoc& loc, const char* op)
 {
     profileRequires(loc, ENoProfile, 130, nullptr, op); 
     profileRequires(loc, EEsProfile, 300, nullptr, op);
@@ -573,7 +576,7 @@ void TParseContext::fullIntegerCheck(TSourceLoc loc, const char* op)
 //
 // Call for any operation needing GLSL double data-type support.
 //
-void TParseContext::doubleCheck(TSourceLoc loc, const char* op)
+void TParseContext::doubleCheck(const TSourceLoc& loc, const char* op)
 {
     requireProfile(loc, ECoreProfile | ECompatibilityProfile, op);
     profileRequires(loc, ECoreProfile, 400, nullptr, op);

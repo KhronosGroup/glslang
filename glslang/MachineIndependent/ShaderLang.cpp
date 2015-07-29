@@ -690,12 +690,17 @@ struct DoPreprocessing {
         });
 
         parseContext.setLineCallback([&lineSync, &outputStream, &parseContext](
-            int curLineNum, int newLineNum, bool hasSource, int sourceNum) {
+            int curLineNum, int newLineNum, bool hasSource, int sourceNum, const char* sourceName) {
             // SourceNum is the number of the source-string that is being parsed.
             lineSync.syncToLine(curLineNum);
             outputStream << "#line " << newLineNum;
             if (hasSource) {
-                outputStream << " " << sourceNum;
+                outputStream << " ";
+                if (sourceName != nullptr) {
+                    outputStream << "\"" << sourceName << "\"";
+                } else {
+                    outputStream << sourceNum;
+                }
             }
             if (parseContext.lineDirectiveShouldSetNextLine()) {
                 // newLineNum is the new line number for the line following the #line

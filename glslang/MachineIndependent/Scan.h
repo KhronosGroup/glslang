@@ -57,6 +57,9 @@ public:
         lengths(L), currentSource(0), currentChar(0), stringBias(b), finale(f)
     {
         loc = new TSourceLoc[numSources];
+        for (int i = 0; i < numSources; ++i) {
+            loc[i].init();
+        }
         loc[currentSource].string = -stringBias;
         loc[currentSource].line = 1;
         loc[currentSource].column = 0;
@@ -140,7 +143,12 @@ public:
 
     // for #line override
     void setLine(int newLine) { loc[getLastValidSourceIndex()].line = newLine; }
-    void setString(int newString) { loc[getLastValidSourceIndex()].string = newString; }
+    void setFile(const char* filename) { loc[getLastValidSourceIndex()].name = filename; }
+    void setString(int newString)
+    {
+        loc[getLastValidSourceIndex()].string = newString;
+        loc[getLastValidSourceIndex()].name = nullptr;
+    }
 
     const TSourceLoc& getSourceLoc() const { return loc[std::max(0, std::min(currentSource, numSources - finale - 1))]; }
     // Returns the index (starting from 0) of the most recent valid source string we are reading from.

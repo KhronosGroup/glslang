@@ -189,7 +189,8 @@ inline const TString String(const int i, const int base = 10)
 }
 
 struct TSourceLoc {
-    void init() { string = 0; line = 0; column = 0; }
+    void init() { name = nullptr; string = 0; line = 0; column = 0; }
+    const char* name; // descriptive name for this string
     int string;
     int line;
     int column;
