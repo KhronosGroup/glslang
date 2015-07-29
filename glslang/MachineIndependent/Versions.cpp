@@ -174,6 +174,8 @@ void TParseContext::initializeExtensionBehavior()
     extensionBehavior[E_GL_ARB_viewport_array]               = EBhDisable;
 //    extensionBehavior[E_GL_ARB_cull_distance]                = EBhDisable;    // present for 4.5, but need extension control over block members
 
+    extensionBehavior[E_GL_GOOGLE_cpp_style_line_directive]          = EBhDisable;
+
     // AEP
     extensionBehavior[E_GL_ANDROID_extension_pack_es31a]             = EBhDisablePartial;
     extensionBehavior[E_GL_KHR_blend_equation_advanced]              = EBhDisablePartial;
@@ -190,7 +192,6 @@ void TParseContext::initializeExtensionBehavior()
     extensionBehavior[E_GL_EXT_tessellation_point_size]              = EBhDisable;
     extensionBehavior[E_GL_EXT_texture_buffer]                       = EBhDisablePartial;
     extensionBehavior[E_GL_EXT_texture_cube_map_array]               = EBhDisablePartial;
-    extensionBehavior[E_GL_GOOGLE_cpp_style_line_directive]          = EBhDisable;
 
     // OES matching AEP
     extensionBehavior[E_GL_OES_geometry_shader]          = EBhDisable;
@@ -218,6 +219,8 @@ const char* TParseContext::getPreamble()
             "#define GL_OES_EGL_image_external 1\n"
             "#define GL_EXT_shader_texture_lod 1\n"
 
+            "#define GL_GOOGLE_cpp_style_line_directive 1\n"
+
             // AEP
             "#define GL_ANDROID_extension_pack_es31a 1\n"
             "#define GL_KHR_blend_equation_advanced 1\n"
@@ -234,7 +237,6 @@ const char* TParseContext::getPreamble()
             "#define GL_EXT_tessellation_point_size 1\n"
             "#define GL_EXT_texture_buffer 1\n"
             "#define GL_EXT_texture_cube_map_array 1\n"
-            "#define GL_GOOGLE_cpp_style_line_directive 1\n"
 
             // OES matching AEP
             "#define GL_OES_geometry_shader 1\n"
@@ -266,6 +268,7 @@ const char* TParseContext::getPreamble()
             "#define GL_ARB_derivative_control 1\n"
             "#define GL_ARB_shader_texture_image_samples 1\n"
             "#define GL_ARB_viewport_array 1\n"
+
             "#define GL_GOOGLE_cpp_style_line_directive 1\n"
 //            "#define GL_ARB_cull_distance 1\n"    // present for 4.5, but need extension control over block members
             ;

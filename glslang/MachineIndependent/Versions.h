@@ -112,6 +112,8 @@ const char* const E_GL_ARB_shader_texture_image_samples = "GL_ARB_shader_texture
 const char* const E_GL_ARB_viewport_array               = "GL_ARB_viewport_array";
 //const char* const E_GL_ARB_cull_distance            = "GL_ARB_cull_distance";  // present for 4.5, but need extension control over block members
 
+const char* const E_GL_GOOGLE_cpp_style_line_directive          = "GL_GOOGLE_cpp_style_line_directive";
+
 // AEP
 const char* const E_GL_ANDROID_extension_pack_es31a             = "GL_ANDROID_extension_pack_es31a";
 const char* const E_GL_KHR_blend_equation_advanced              = "GL_KHR_blend_equation_advanced";
@@ -128,8 +130,6 @@ const char* const E_GL_EXT_tessellation_shader                  = "GL_EXT_tessel
 const char* const E_GL_EXT_tessellation_point_size              = "GL_EXT_tessellation_point_size";
 const char* const E_GL_EXT_texture_buffer                       = "GL_EXT_texture_buffer";
 const char* const E_GL_EXT_texture_cube_map_array               = "GL_EXT_texture_cube_map_array";
-
-const char* const E_GL_GOOGLE_cpp_style_line_directive          = "GL_GOOGLE_cpp_style_line_directive";
 
 // OES matching AEP
 const char* const E_GL_OES_geometry_shader                      = "GL_OES_geometry_shader";
