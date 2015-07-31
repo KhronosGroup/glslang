@@ -285,6 +285,8 @@ public:
     virtual ~TShader();
     void setStrings(const char* const* s, int n);
     void setStringsWithLengths(const char* const* s, const int* l, int n);
+    void setStringsWithLengthsAndNames(
+        const char* const* s, const int* l, const char* const* names, int n);
     void setPreamble(const char* s) { preamble = s; }
     bool parse(const TBuiltInResource*, int defaultVersion, EProfile defaultProfile, bool forceDefaultVersionAndProfile, bool forwardCompatible, EShMessages);
     // Equivalent to parse() without a default profile and without forcing defaults.
@@ -312,8 +314,12 @@ protected:
     //         integers containing the length of the associated strings.
     //         if lengths is null or lengths[n] < 0  the associated strings[n] is
     //         assumed to be null-terminated.
+    // stringNames is the optional names for all the strings. If stringNames
+    // is null, then none of the strings has name. If a certain element in
+    // stringNames is null, then the corresponding string does not have name.
     const char* const* strings;
     const int* lengths;
+    const char* const* stringNames;
     const char* preamble;
     int numStrings;
 

@@ -51,7 +51,7 @@ const int EndOfInput = -1;
 //
 class TInputScanner {
 public:
-    TInputScanner(int n, const char* const s[], size_t L[], int b = 0, int f = 0) : 
+    TInputScanner(int n, const char* const s[], size_t L[], const char* const* names = nullptr, int b = 0, int f = 0) :
         numSources(n),
         sources(reinterpret_cast<const unsigned char* const *>(s)), // up to this point, common usage is "char*", but now we need positive 8-bit characters
         lengths(L), currentSource(0), currentChar(0), stringBias(b), finale(f)
@@ -59,6 +59,10 @@ public:
         loc = new TSourceLoc[numSources];
         for (int i = 0; i < numSources; ++i) {
             loc[i].init();
+        }
+        if (names != nullptr) {
+            for (int i = 0; i < numSources; ++i)
+                loc[i].name = names[i];
         }
         loc[currentSource].string = -stringBias;
         loc[currentSource].line = 1;
