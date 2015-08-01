@@ -39,6 +39,7 @@
 
 #include "Worklist.h"
 #include "./../glslang/Include/ShHandle.h"
+#include "./../glslang/Include/revision.h"
 #include "./../glslang/Public/ShaderLang.h"
 #include "../SPIRV/GlslangToSpv.h"
 #include "../SPIRV/GLSL450Lib.h"
@@ -782,12 +783,13 @@ int C_DECL main(int argc, char* argv[])
             return ESuccess;
     }
 
-    if (Options & EOptionDumpVersions) {        
+    if (Options & EOptionDumpVersions) {
+        printf("Glslang Version: %s %s\n", GLSLANG_REVISION, GLSLANG_DATE);
         printf("ESSL Version: %s\n", glslang::GetEsslVersionString());
         printf("GLSL Version: %s\n", glslang::GetGlslVersionString());
         std::string spirvVersion;
         glslang::GetSpirvVersion(spirvVersion);
-        printf("SPIR-V Version %s\n", spirvVersion.c_str());  // TODO: move to consume source-generated data
+        printf("SPIR-V Version %s\n", spirvVersion.c_str());
         if (Worklist.empty())
             return ESuccess;
     }
