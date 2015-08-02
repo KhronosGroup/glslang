@@ -790,6 +790,7 @@ int C_DECL main(int argc, char* argv[])
         std::string spirvVersion;
         glslang::GetSpirvVersion(spirvVersion);
         printf("SPIR-V Version %s\n", spirvVersion.c_str());
+        printf("GLSL.std.450 Version %d, Revision %d\n", GLSL_STD_450::Version, GLSL_STD_450::Revision);
         if (Worklist.empty())
             return ESuccess;
     }
