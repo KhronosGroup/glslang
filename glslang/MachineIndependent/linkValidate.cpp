@@ -540,7 +540,6 @@ void TIntermediate::checkCallGraphCycles(TInfoSink& infoSink)
 void TIntermediate::inOutLocationCheck(TInfoSink& infoSink)
 {
     // ES 3.0 requires all outputs to have location qualifiers if there is more than one output
-    bool fragOutHasLocation = false;
     bool fragOutWithNoLocation = false;
     int numFragOut = 0;
 
@@ -553,9 +552,7 @@ void TIntermediate::inOutLocationCheck(TInfoSink& infoSink)
         if (language == EShLangFragment) {
             if (qualifier.storage == EvqVaryingOut) {
                 ++numFragOut;
-                if (qualifier.hasAnyLocation())
-                    fragOutHasLocation = true;
-                else
+                if (!qualifier.hasAnyLocation())
                     fragOutWithNoLocation = true;
             }
         }
