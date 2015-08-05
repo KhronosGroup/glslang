@@ -83,6 +83,7 @@ NVIDIA HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <stdarg.h>
 #include <stdio.h>
+#include <sstream>
 #include <stdlib.h>
 #include <string.h>
 #include <ctype.h>
@@ -596,6 +597,51 @@ int TPpContext::CPPifdef(int defined, TPpToken* ppToken)
     return token;
 }
 
+// Handle #include
+int TPpContext::CPPinclude(TPpToken* ppToken)
+{
+    const TSourceLoc directiveLoc = ppToken->loc;
+    int token = scanToken(ppToken);
+    if (token != PpAtomConstString) {
+        // TODO: handle angle brackets.
+        parseContext.ppError(directiveLoc, "must be followed by a file designation", "#include", "");
+    } else {
+        // Make a copy of the name because it will be overwritten by the next token scan.
+        const std::string filename = ppToken->name;
+        token = scanToken(ppToken);
+        if (token != '\n' && token != EndOfInput) {
+            parseContext.ppError(ppToken->loc, "extra content after file designation", "#include", "");
+        } else {
+            std::string sourceName;
+            std::string replacement;
+            std::tie(sourceName, replacement) = includer.include(filename.c_str());
+            if (!sourceName.empty()) {
+                if (!replacement.empty()) {
+                    const bool forNextLine = parseContext.lineDirectiveShouldSetNextLine();
+                    std::ostringstream content;
+                    content << "#line " << forNextLine << " " << "\"" << sourceName << "\"\n";
+                    content << replacement << (replacement.back() == '\n' ? "" : "\n");
+                    content << "#line " << directiveLoc.line + forNextLine << " ";
+                    if (directiveLoc.name != nullptr) {
+                        content << "\"" << directiveLoc.name << "\"";
+                    } else {
+                        content << directiveLoc.string;
+                    }
+                    content << "\n";
+                    pushInput(new TokenizableString(directiveLoc, content.str(), this));
+                }
+                // At EOF, there's no "current" location anymore.
+                if (token != EndOfInput) parseContext.setCurrentColumn(0);
+                // Don't accidentally return EndOfInput, which will end all preprocessing.
+                return '\n';
+            } else {
+                parseContext.ppError(directiveLoc, replacement.c_str(), "#include", "");
+            }
+        }
+    }
+    return token;
+}
+
 // Handle #line
 int TPpContext::CPPline(TPpToken* ppToken) 
 {
@@ -629,7 +675,7 @@ int TPpContext::CPPline(TPpToken* ppToken)
 
         if (token != '\n') {
             if (token == PpAtomConstString) {
-                parseContext.requireExtensions(directiveLoc, 1, &E_GL_GOOGLE_cpp_style_line_directive, "filename-based #line");
+                parseContext.ppRequireExtensions(directiveLoc, 1, &E_GL_GOOGLE_cpp_style_line_directive, "filename-based #line");
                 // We need to save a copy of the string instead of pointing
                 // to the name field of the token since the name field
                 // will likely be overwritten by the next token scan.
@@ -845,6 +891,10 @@ int TPpContext::readCPPline(TPpToken* ppToken)
         case PpAtomIfndef:
             token = CPPifdef(0, ppToken);
             break;
+        case PpAtomInclude:
+            parseContext.ppRequireExtensions(ppToken->loc, 1, &E_GL_GOOGLE_include_directive, "#include");
+            token = CPPinclude(ppToken);
+            break;
         case PpAtomLine:
             token = CPPline(ppToken);
             break;
@@ -967,7 +1017,7 @@ int TPpContext::MacroExpand(int atom, TPpToken* ppToken, bool expandUndef, bool 
 
     case PpAtomFileMacro: {
         if (const char* current_file = parseContext.getCurrentLoc().name) {
-            parseContext.requireExtensions(ppToken->loc, 1, &E_GL_GOOGLE_cpp_style_line_directive, "filename-based __FILE__");
+            parseContext.ppRequireExtensions(ppToken->loc, 1, &E_GL_GOOGLE_cpp_style_line_directive, "filename-based __FILE__");
             sprintf(ppToken->name, "\"%s\"", current_file);
         } else {
             ppToken->ival = parseContext.getCurrentLoc().string;

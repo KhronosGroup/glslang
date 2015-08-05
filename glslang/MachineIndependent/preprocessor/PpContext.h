@@ -118,7 +118,7 @@ class TInputScanner;
 // Don't expect too much in terms of OO design.
 class TPpContext {
 public:
-    TPpContext(TParseContext&);
+    TPpContext(TParseContext&, const TShader::Includer&);
     virtual ~TPpContext();
 
     void setPreamble(const char* preamble, size_t length);
@@ -134,6 +134,10 @@ public:
         virtual int getch() = 0;
         virtual void ungetch() = 0;
 
+        // Will be called when we start reading tokens from this instance
+        virtual void notifyActivated() {}
+        // Will be called when we do not read tokens from this instance anymore
+        virtual void notifyDeleted() {}
     protected:
         bool done;
         TPpContext* pp;
@@ -144,9 +148,11 @@ public:
     void pushInput(tInput* in)
     {
         inputStack.push_back(in);
+        in->notifyActivated();
     }
     void popInput()
     {
+        inputStack.back()->notifyDeleted();
         delete inputStack.back();
         inputStack.pop_back();
     }
@@ -281,6 +287,8 @@ protected:
     // from Pp.cpp
     //
     TSourceLoc ifloc; /* outermost #if */
+    // Used to obtain #include content.
+    const TShader::Includer& includer;
 
     int InitCPP();
     int CPPdefine(TPpToken * ppToken);
@@ -291,6 +299,7 @@ protected:
     int evalToToken(int token, bool shortCircuit, int& res, bool& err, TPpToken * ppToken);
     int CPPif (TPpToken * ppToken); 
     int CPPifdef(int defined, TPpToken * ppToken);
+    int CPPinclude(TPpToken * ppToken);
     int CPPline(TPpToken * ppToken); 
     int CPPerror(TPpToken * ppToken); 
     int CPPpragma(TPpToken * ppToken);
@@ -417,6 +426,51 @@ protected:
 
     protected:
         TInputScanner* input;
+    };
+
+    // Holds a string that can be tokenized via the tInput interface.
+    class TokenizableString : public tInput {
+    public:
+        // Copies str, which must be non-empty.
+        TokenizableString(const TSourceLoc& startLoc, const std::string& str, TPpContext* pp)
+            : tInput(pp),
+              str_(str),
+              strings(str_.data()),
+              length(str_.size()),
+              scanner(1, &strings, &length),
+              prevScanner(nullptr),
+              stringInput(pp, scanner) {
+                  scanner.setLine(startLoc.line);
+                  scanner.setString(startLoc.string);
+                  scanner.setFile(startLoc.name);
+        }
+
+        // tInput methods:
+        int scan(TPpToken* t) override { return stringInput.scan(t); }
+        int getch() override { return stringInput.getch(); }
+        void ungetch() override { stringInput.ungetch(); }
+
+        void notifyActivated() override
+        {
+            prevScanner = pp->parseContext.getScanner();
+            pp->parseContext.setScanner(&scanner);
+        }
+        void notifyDeleted() override { pp->parseContext.setScanner(prevScanner); }
+
+    private:
+        // Stores the titular string.
+        const std::string str_;
+        // Will point to str_[0] and be passed to scanner constructor.
+        const char* const strings;
+        // Length of str_, passed to scanner constructor.
+        size_t length;
+        // Scans over str_.
+        TInputScanner scanner;
+        // The previous effective scanner before the scanner in this instance
+        // has been activated.
+        TInputScanner* prevScanner;
+        // Delegate object implementing the tInput interface.
+        tStringInput stringInput;
     };
 
     int InitScanner();

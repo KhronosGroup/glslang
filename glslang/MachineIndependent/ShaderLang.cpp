@@ -130,7 +130,7 @@ bool InitializeSymbolTable(const TString& builtIns, int version, EProfile profil
     TIntermediate intermediate(language, version, profile);
     
     TParseContext parseContext(symbolTable, intermediate, true, version, profile, language, infoSink);
-    TPpContext ppContext(parseContext);
+    TPpContext ppContext(parseContext, TShader::ForbidInclude());
     TScanContext scanContext(parseContext);
     parseContext.setScanContext(&scanContext);
     parseContext.setPpContext(&ppContext);
@@ -463,7 +463,8 @@ bool ProcessDeferred(
     EShMessages messages,       // warnings/errors/AST; things to print out
     TIntermediate& intermediate, // returned tree, etc.
     ProcessingContext& processingContext,
-    bool requireNonempty
+    bool requireNonempty,
+    const TShader::Includer& includer
     )
 {
     if (! InitThread())
@@ -565,7 +566,7 @@ bool ProcessDeferred(
 
     TParseContext parseContext(symbolTable, intermediate, false, version, profile, compiler->getLanguage(), compiler->infoSink, forwardCompatible, messages);
     glslang::TScanContext scanContext(parseContext);
-    TPpContext ppContext(parseContext);
+    TPpContext ppContext(parseContext, includer);
     parseContext.setScanContext(&scanContext);
     parseContext.setPpContext(&ppContext);
     parseContext.setLimits(*resources);
@@ -838,6 +839,7 @@ bool PreprocessDeferred(
     bool forceDefaultVersionAndProfile,
     bool forwardCompatible,     // give errors for use of deprecated features
     EShMessages messages,       // warnings/errors/AST; things to print out
+    const TShader::Includer& includer,
     TIntermediate& intermediate, // returned tree, etc.
     std::string* outputString)
 {
@@ -845,7 +847,8 @@ bool PreprocessDeferred(
     return ProcessDeferred(compiler, shaderStrings, numStrings, inputLengths, stringNames,
                            preamble, optLevel, resources, defaultVersion,
                            defaultProfile, forceDefaultVersionAndProfile,
-                           forwardCompatible, messages, intermediate, parser, false);
+                           forwardCompatible, messages, intermediate, parser,
+                           false, includer);
 }
 
 
@@ -874,13 +877,15 @@ bool CompileDeferred(
     bool forceDefaultVersionAndProfile,
     bool forwardCompatible,     // give errors for use of deprecated features
     EShMessages messages,       // warnings/errors/AST; things to print out
-    TIntermediate& intermediate) // returned tree, etc.
+    TIntermediate& intermediate,// returned tree, etc.
+    const TShader::Includer& includer)
 {
     DoFullParse parser;
     return ProcessDeferred(compiler, shaderStrings, numStrings, inputLengths, stringNames,
                            preamble, optLevel, resources, defaultVersion,
                            defaultProfile, forceDefaultVersionAndProfile,
-                           forwardCompatible, messages, intermediate, parser, true);
+                           forwardCompatible, messages, intermediate, parser,
+                           true, includer);
 }
 
 } // end anonymous namespace for local functions
@@ -1024,7 +1029,7 @@ int ShCompile(
     TIntermediate intermediate(compiler->getLanguage());
     bool success = CompileDeferred(compiler, shaderStrings, numStrings, inputLengths, nullptr,
                                    "", optLevel, resources, defaultVersion, ENoProfile, false,
-                                   forwardCompatible, messages, intermediate);
+                                   forwardCompatible, messages, intermediate, TShader::ForbidInclude());
 
     //
     // Call the machine dependent compiler
@@ -1327,7 +1332,7 @@ void TShader::setStringsWithLengthsAndNames(
 // Returns true for success.
 //
 bool TShader::parse(const TBuiltInResource* builtInResources, int defaultVersion, EProfile defaultProfile, bool forceDefaultVersionAndProfile,
-                    bool forwardCompatible, EShMessages messages)
+                    bool forwardCompatible, EShMessages messages, const Includer& includer)
 {
     if (! InitThread())
         return false;
@@ -1340,7 +1345,7 @@ bool TShader::parse(const TBuiltInResource* builtInResources, int defaultVersion
     return CompileDeferred(compiler, strings, numStrings, lengths, stringNames,
                            preamble, EShOptNone, builtInResources, defaultVersion,
                            defaultProfile, forceDefaultVersionAndProfile,
-                           forwardCompatible, messages, *intermediate);
+                           forwardCompatible, messages, *intermediate, includer);
 }
 
 bool TShader::parse(const TBuiltInResource* builtInResources, int defaultVersion, bool forwardCompatible, EShMessages messages)
@@ -1351,9 +1356,11 @@ bool TShader::parse(const TBuiltInResource* builtInResources, int defaultVersion
 // Fill in a string with the result of preprocessing ShaderStrings
 // Returns true if all extensions, pragmas and version strings were valid.
 bool TShader::preprocess(const TBuiltInResource* builtInResources,
-                         int defaultVersion, EProfile defaultProfile, bool forceDefaultVersionAndProfile,
-                         bool forwardCompatible,
-                         EShMessages message, std::string* output_string)
+                         int defaultVersion, EProfile defaultProfile,
+                         bool forceDefaultVersionAndProfile,
+                         bool forwardCompatible, EShMessages message,
+                         std::string* output_string,
+                         const TShader::Includer& includer)
 {
     if (! InitThread())
         return false;
@@ -1366,7 +1373,7 @@ bool TShader::preprocess(const TBuiltInResource* builtInResources,
     return PreprocessDeferred(compiler, strings, numStrings, lengths, stringNames, preamble,
                               EShOptNone, builtInResources, defaultVersion,
                               defaultProfile, forceDefaultVersionAndProfile,
-                              forwardCompatible, message, *intermediate, output_string);
+                              forwardCompatible, message, includer, *intermediate, output_string);
 }
 
 const char* TShader::getInfoLog()
