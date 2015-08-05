@@ -236,7 +236,8 @@ public:
     void requireStage(const TSourceLoc&, EShLanguage, const char* featureDesc);
     void checkDeprecated(const TSourceLoc&, int queryProfiles, int depVersion, const char* featureDesc);
     void requireNotRemoved(const TSourceLoc&, int queryProfiles, int removedVersion, const char* featureDesc);
-    void requireExtensions(const TSourceLoc&, int numExtensions, const char* const extensions[], const char* featureDesc, bool requiredByPreprocessor = false);
+    void requireExtensions(const TSourceLoc&, int numExtensions, const char* const extensions[], const char* featureDesc);
+    void ppRequireExtensions(const TSourceLoc&, int numExtensions, const char* const extensions[], const char* featureDesc);
     TExtensionBehavior getExtensionBehavior(const char*);
     bool extensionTurnedOn(const char* const extension);
     bool extensionsTurnedOn(int numExtensions, const char* const extensions[]);
@@ -252,13 +253,14 @@ public:
 
 protected:
     void nonInitConstCheck(const TSourceLoc&, TString& identifier, TType& type);
-	void inheritGlobalDefaults(TQualifier& dst) const;
+    void inheritGlobalDefaults(TQualifier& dst) const;
     TVariable* makeInternalVariable(const char* name, const TType&) const;
     TVariable* declareNonArray(const TSourceLoc&, TString& identifier, TType&, bool& newDeclaration);
     void declareArray(const TSourceLoc&, TString& identifier, const TType&, TSymbol*&, bool& newDeclaration);
     TIntermNode* executeInitializer(const TSourceLoc&, TIntermTyped* initializer, TVariable* variable);
     TIntermTyped* convertInitializerList(const TSourceLoc&, const TType&, TIntermTyped* initializer);
     TOperator mapTypeToConstructorOp(const TType&) const;
+    bool checkExtensionsRequested(const TSourceLoc&, int numExtensions, const char* const extensions[], const char* featureDesc);
     void updateExtensionBehavior(const char* const extension, TExtensionBehavior);
     void finalErrorCheck();
     void outputMessage(const TSourceLoc&, const char* szReason, const char* szToken,

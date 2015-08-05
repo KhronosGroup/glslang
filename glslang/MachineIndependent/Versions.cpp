@@ -411,17 +411,15 @@ void TParseContext::requireNotRemoved(const TSourceLoc& loc, int profileMask, in
     }
 }
 
-//
-// Use when there are no profile/version to check, it's just an error if one of the
-// extensions is not present.
-//
-void TParseContext::requireExtensions(const TSourceLoc& loc, int numExtensions, const char* const extensions[], const char* featureDesc, bool requiredByPreprocessor)
+// Returns true if at least one of the extensions in the extensions parameter is requested. Otherwise, returns false.
+// Warns appropriately if the requested behavior of an extension is "warn".
+bool TParseContext::checkExtensionsRequested(const TSourceLoc& loc, int numExtensions, const char* const extensions[], const char* featureDesc)
 {
     // First, see if any of the extensions are enabled
     for (int i = 0; i < numExtensions; ++i) {
         TExtensionBehavior behavior = getExtensionBehavior(extensions[i]);
         if (behavior == EBhEnable || behavior == EBhRequire)
-            return;
+            return true;
     }
 
     // See if any extensions want to give a warning on use; give warnings for all such extensions
@@ -438,19 +436,41 @@ void TParseContext::requireExtensions(const TSourceLoc& loc, int numExtensions, 
         }
     }
     if (warned)
-        return;
+        return true;
+    return false;
+}
+
+//
+// Use when there are no profile/version to check, it's just an error if one of the
+// extensions is not present.
+//
+void TParseContext::requireExtensions(const TSourceLoc& loc, int numExtensions, const char* const extensions[], const char* featureDesc)
+{
+    if (checkExtensionsRequested(loc, numExtensions, extensions, featureDesc)) return;
 
     // If we get this far, give errors explaining what extensions are needed
     if (numExtensions == 1)
-        if (requiredByPreprocessor)
-            ppError(loc, "required extension not requested:", featureDesc, extensions[0]);
-        else
-            error(loc, "required extension not requested:", featureDesc, extensions[0]);
+        error(loc, "required extension not requested:", featureDesc, extensions[0]);
     else {
-        if (requiredByPreprocessor)
-            ppError(loc, "required extension not requested:", featureDesc, "Possible extensions include:");
-        else
-            error(loc, "required extension not requested:", featureDesc, "Possible extensions include:");
+        error(loc, "required extension not requested:", featureDesc, "Possible extensions include:");
+        for (int i = 0; i < numExtensions; ++i)
+            infoSink.info.message(EPrefixNone, extensions[i]);
+    }
+}
+
+//
+// Use by preprocessor when there are no profile/version to check, it's just an error if one of the
+// extensions is not present.
+//
+void TParseContext::ppRequireExtensions(const TSourceLoc& loc, int numExtensions, const char* const extensions[], const char* featureDesc)
+{
+    if (checkExtensionsRequested(loc, numExtensions, extensions, featureDesc)) return;
+
+    // If we get this far, give errors explaining what extensions are needed
+    if (numExtensions == 1)
+        ppError(loc, "required extension not requested:", featureDesc, extensions[0]);
+    else {
+        ppError(loc, "required extension not requested:", featureDesc, "Possible extensions include:");
         for (int i = 0; i < numExtensions; ++i)
             infoSink.info.message(EPrefixNone, extensions[i]);
     }
