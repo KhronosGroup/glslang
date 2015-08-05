@@ -237,7 +237,6 @@ protected:
     int ifdepth;                  // current #if-#else-#endif nesting in the cpp.c file (pre-processor)    
     bool elseSeen[maxIfNesting];  // Keep a track of whether an else has been seen at a particular depth
     int elsetracker;              // #if-#else and #endif constructs...Counter.
-    const char* ErrMsg;
 
     class tMacroInput : public tInput {
     public:
@@ -286,7 +285,7 @@ protected:
     //
     // from Pp.cpp
     //
-    TSourceLoc ifloc; /* outermost #if */
+
     // Used to obtain #include content.
     const TShader::Includer& includer;
 
