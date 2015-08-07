@@ -1288,7 +1288,7 @@ public:
 };
 
 TShader::TShader(EShLanguage s) 
-    : pool(0), stage(s), preamble(""), lengths(nullptr), stringNames(nullptr)
+    : pool(0), stage(s), lengths(nullptr), stringNames(nullptr), preamble("")
 {
     infoSink = new TInfoSink;
     compiler = new TDeferredCompiler(stage, *infoSink);

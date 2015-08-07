@@ -82,7 +82,10 @@ NVIDIA HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "../ParseHelper.h"
 
-#pragma warning(disable : 4127)
+/* windows only pragma */
+#ifdef _MSC_VER
+    #pragma warning(disable : 4127)
+#endif
 
 namespace glslang {
 

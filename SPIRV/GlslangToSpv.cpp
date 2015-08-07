@@ -1371,7 +1371,7 @@ spv::Id TGlslangToSpvTraverser::convertGlslangToSpvType(const glslang::TType& ty
 
                     // built-in variable decorations
                     int builtIn = TranslateBuiltInDecoration(glslangType.getQualifier().builtIn);
-                    if (builtIn != spv::BadValue)
+                    if ((unsigned int)builtIn != spv::BadValue)
                         builder.addMemberDecoration(spvType, member, spv::DecorationBuiltIn, builtIn);
                 }
             }
@@ -2519,7 +2519,7 @@ spv::Id TGlslangToSpvTraverser::getSymbolId(const glslang::TIntermSymbol* symbol
 
     // built-in variable decorations
     int builtIn = TranslateBuiltInDecoration(symbol->getQualifier().builtIn);
-    if (builtIn != spv::BadValue)
+    if ((unsigned int)builtIn != spv::BadValue)
         builder.addDecoration(id, spv::DecorationBuiltIn, builtIn);
 
     if (linkageOnly)
