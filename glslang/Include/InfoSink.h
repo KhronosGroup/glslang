@@ -98,12 +98,8 @@ public:
     void location(const TSourceLoc& loc) {
         const int maxSize = 24;
         char locText[maxSize];
-        if (loc.name != nullptr) {
-            append(loc.name);
-            snprintf(locText, maxSize, ":%d", loc.line);
-        } else {
-            snprintf(locText, maxSize, "%d:%d", loc.string, loc.line);
-        }
+        snprintf(locText, maxSize, ":%d", loc.line);
+        append(loc.getStringNameOrNum(false).c_str());
         append(locText);
         append(": ");
     }

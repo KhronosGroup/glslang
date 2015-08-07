@@ -190,6 +190,13 @@ inline const TString String(const int i, const int base = 10)
 
 struct TSourceLoc {
     void init() { name = nullptr; string = 0; line = 0; column = 0; }
+    // Returns the name if it exists. Otherwise, returns the string number.
+    std::string getStringNameOrNum(bool quoteStringName = true) const
+    {
+        if (name != nullptr)
+            return quoteStringName ? ("\"" + std::string(name) + "\"") : name;
+        return std::to_string(string);
+    }
     const char* name; // descriptive name for this string
     int string;
     int line;
