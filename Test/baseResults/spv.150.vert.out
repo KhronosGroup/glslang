@@ -8,9 +8,10 @@ Linked vertex stage:
 // Id's are bound by 53
 
                               Source GLSL 150
+                              Capability Shader
                1:             ExtInstImport  "GLSL.std.450"
                               MemoryModel Logical GLSL450
-                              EntryPoint Vertex 4
+                              EntryPoint Vertex 4  "main"
                               Name 4  "main"
                               Name 14  "gl_PerVertex"
                               MemberName 14(gl_PerVertex) 0  "gl_Position"
@@ -38,19 +39,18 @@ Linked vertex stage:
                               Name 49  "ui"
                               Name 51  "gl_VertexID"
                               Name 52  "gl_InstanceID"
-                              MemberDecorate 14(gl_PerVertex) 0 Invariant 
+                              MemberDecorate 14(gl_PerVertex) 0 Invariant
                               MemberDecorate 14(gl_PerVertex) 0 BuiltIn Position
                               MemberDecorate 14(gl_PerVertex) 1 BuiltIn PointSize
                               MemberDecorate 14(gl_PerVertex) 2 BuiltIn ClipDistance
-                              MemberDecorate 14(gl_PerVertex) 3 BuiltIn ClipVertex
-                              Decorate 14(gl_PerVertex) Block 
-                              Decorate 49(ui) NoStaticUse 
+                              Decorate 14(gl_PerVertex) Block
+                              Decorate 49(ui) NoStaticUse
                               Decorate 51(gl_VertexID) BuiltIn VertexId
-                              Decorate 51(gl_VertexID) NoStaticUse 
+                              Decorate 51(gl_VertexID) NoStaticUse
                               Decorate 52(gl_InstanceID) BuiltIn InstanceId
-                              Decorate 52(gl_InstanceID) NoStaticUse 
+                              Decorate 52(gl_InstanceID) NoStaticUse
                2:             TypeVoid
-               3:             TypeFunction 2 
+               3:             TypeFunction 2
                7:             TypeFloat 32
                8:             TypeVector 7(float) 4
                9:             TypeInt 32 0
@@ -60,15 +60,15 @@ Linked vertex stage:
               13:             TypeArray 8(fvec4) 12
 14(gl_PerVertex):             TypeStruct 8(fvec4) 7(float) 11 8(fvec4) 8(fvec4) 8(fvec4) 8(fvec4) 8(fvec4) 13 7(float)
               15:             TypePointer Output 14(gl_PerVertex)
-              16:     15(ptr) Variable Output 
+              16:     15(ptr) Variable Output
               17:             TypeInt 32 1
               18:     17(int) Constant 0
               19:             TypePointer Input 8(fvec4)
-         20(iv4):     19(ptr) Variable Input 
+         20(iv4):     19(ptr) Variable Input
               22:             TypePointer Output 8(fvec4)
               24:     17(int) Constant 1
               25:             TypePointer UniformConstant 7(float)
-          26(ps):     25(ptr) Variable UniformConstant 
+          26(ps):     25(ptr) Variable UniformConstant
               28:             TypePointer Output 7(float)
               30:     17(int) Constant 2
               34:      9(int) Constant 3
@@ -77,32 +77,32 @@ Linked vertex stage:
               37:             TypeArray 36(s1) 10
           38(s2):             TypeStruct 17(int) 37
               39:             TypePointer Output 38(s2)
-       40(s2out):     39(ptr) Variable Output 
+       40(s2out):     39(ptr) Variable Output
               41:             TypePointer Function 17(int)
               48:             TypePointer UniformConstant 17(int)
-          49(ui):     48(ptr) Variable UniformConstant 
+          49(ui):     48(ptr) Variable UniformConstant
               50:             TypePointer Input 17(int)
- 51(gl_VertexID):     50(ptr) Variable Input 
-52(gl_InstanceID):     50(ptr) Variable Input 
+ 51(gl_VertexID):     50(ptr) Variable Input
+52(gl_InstanceID):     50(ptr) Variable Input
          4(main):           2 Function None 3
                5:             Label
-           42(i):     41(ptr) Variable Function 
-              21:    8(fvec4) Load 20(iv4) 
+           42(i):     41(ptr) Variable Function
+              21:    8(fvec4) Load 20(iv4)
               23:     22(ptr) AccessChain 16 18
-                              Store 23 21 
-              27:    7(float) Load 26(ps) 
+                              Store 23 21
+              27:    7(float) Load 26(ps)
               29:     28(ptr) AccessChain 16 24
-                              Store 29 27 
-              31:    8(fvec4) Load 20(iv4) 
+                              Store 29 27
+              31:    8(fvec4) Load 20(iv4)
               32:    7(float) CompositeExtract 31 0
               33:     28(ptr) AccessChain 16 30 30
-                              Store 33 32 
-              43:     17(int) Load 42(i) 
-              44:    7(float) Load 26(ps) 
+                              Store 33 32
+              43:     17(int) Load 42(i)
+              44:    7(float) Load 26(ps)
               45:     22(ptr) AccessChain 40(s2out) 24 43 30 30
-              46:    8(fvec4) Load 45 
+              46:    8(fvec4) Load 45
               47:    8(fvec4) CompositeInsert 44 46 3
-                              Store 45 47 
+                              Store 45 47
                               Branch 6
                6:             Label
                               Return

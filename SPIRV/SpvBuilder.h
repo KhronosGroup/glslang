@@ -48,7 +48,7 @@
 #ifndef SpvBuilder_H
 #define SpvBuilder_H
 
-#include "spirv.h"
+#include "spirv.hpp"
 #include "spvIR.h"
 
 #include <algorithm>
@@ -77,6 +77,8 @@ public:
         memoryModel = mem;
     }
 
+    void addCapability(spv::Capability cap) { capabilities.push_back(cap); }
+
     // To get a new <id> for anything needing a new one.
     Id getUniqueId() { return ++uniqueId; }
 
@@ -101,12 +103,8 @@ public:
     Id makeMatrixType(Id component, int cols, int rows);
     Id makeArrayType(Id element, unsigned size);
     Id makeFunctionType(Id returnType, std::vector<Id>& paramTypes);
-    enum samplerContent {
-        samplerContentTexture,
-        samplerContentImage,
-        samplerContentTextureFilter
-    };
-    Id makeSampler(Id sampledType, Dim, samplerContent, bool arrayed, bool shadow, bool ms);
+    Id makeImageType(Id sampledType, Dim, bool depth, bool arrayed, bool ms, unsigned sampled, ImageFormat format);
+    Id makeSampledImageType(Id imageType);
 
     // For querying about types.
     Id getTypeId(Id resultId) const { return module.getTypeId(resultId); }
@@ -133,7 +131,9 @@ public:
     bool isStructType(Id typeId)    const { return getTypeClass(typeId) == OpTypeStruct; }
     bool isArrayType(Id typeId)     const { return getTypeClass(typeId) == OpTypeArray; }
     bool isAggregateType(Id typeId) const { return isArrayType(typeId) || isStructType(typeId); }
+    bool isImageType(Id typeId)     const { return getTypeClass(typeId) == OpTypeImage; }
     bool isSamplerType(Id typeId)   const { return getTypeClass(typeId) == OpTypeSampler; }
+    bool isSampledImageType(Id typeId)   const { return getTypeClass(typeId) == OpTypeSampledImage; }
 
     bool isConstantScalar(Id resultId) const { return getOpCode(resultId) == OpConstant; }
     unsigned int getConstantScalar(Id resultId) const { return module.getInstruction(resultId)->getImmediateOperand(0); }
@@ -151,15 +151,20 @@ public:
     }
     int getNumRows(Id resultId) const { return getTypeNumRows(getTypeId(resultId)); }
 
-    Dim getDimensionality(Id resultId) const
+    Dim getTypeDimensionality(Id typeId) const
     {
-        assert(isSamplerType(getTypeId(resultId)));
-        return (Dim)module.getInstruction(getTypeId(resultId))->getImmediateOperand(1);
+        assert(isImageType(typeId));
+        return (Dim)module.getInstruction(typeId)->getImmediateOperand(1);
     }
-    bool isArrayedSampler(Id resultId) const
+    Id getImageType(Id resultId) const
     {
-        assert(isSamplerType(getTypeId(resultId)));
-        return module.getInstruction(getTypeId(resultId))->getImmediateOperand(3) != 0;
+        assert(isSampledImageType(getTypeId(resultId)));
+        return module.getInstruction(getTypeId(resultId))->getIdOperand(0);
+    }
+    bool isArrayedImageType(Id typeId) const
+    {
+        assert(isImageType(typeId));
+        return module.getInstruction(typeId)->getImmediateOperand(3) != 0;
     }
 
     // For making new constants (will return old constant if the requested one was already made).
@@ -174,7 +179,7 @@ public:
     Id makeCompositeConstant(Id type, std::vector<Id>& comps);
 
     // Methods for adding information outside the CFG.
-    void addEntryPoint(ExecutionModel, Function*);
+    void addEntryPoint(ExecutionModel, Function*, const char* name);
     void addExecutionMode(Function*, ExecutionMode mode, int value = -1);
     void addName(Id, const char* name);
     void addMemberName(Id, int member, const char* name);
@@ -233,12 +238,12 @@ public:
 
     void createNoResultOp(Op);
     void createNoResultOp(Op, Id operand);
-    void createControlBarrier(unsigned executionScope);
+    void createControlBarrier(Scope execution, Scope memory, MemorySemanticsMask);
     void createMemoryBarrier(unsigned executionScope, unsigned memorySemantics);
     Id createUnaryOp(Op, Id typeId, Id operand);
     Id createBinOp(Op, Id typeId, Id operand1, Id operand2);
     Id createTriOp(Op, Id typeId, Id operand1, Id operand2, Id operand3);
-    Id createOp(Op, Id typeId, std::vector<Id>& operands);
+    Id createOp(Op, Id typeId, const std::vector<Id>& operands);
     Id createFunctionCall(spv::Function*, std::vector<spv::Id>&);
 
     // Take an rvalue (source) and a set of channels to extract from it to
@@ -283,8 +288,10 @@ public:
         Id lod;
         Id Dref;
         Id offset;
+        Id offsets;
         Id gradX;
         Id gradY;
+        Id sample;
     };
 
     // Select the correct texture operation based on all inputs, and emit the correct instruction
@@ -497,6 +504,7 @@ protected:
     std::vector<const char*> extensions;
     AddressingModel addressModel;
     MemoryModel memoryModel;
+    std::vector<spv::Capability> capabilities;
     int builderNumber;
     Module module;
     Block* buildPoint;

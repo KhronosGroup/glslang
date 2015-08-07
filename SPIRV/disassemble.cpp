@@ -1,5 +1,5 @@
 //
-//Copyright (C) 2014 LunarG, Inc.
+//Copyright (C) 2014-2015 LunarG, Inc.
 //
 //All rights reserved.
 //
@@ -21,16 +21,16 @@
 //
 //THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
 //"AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
-//LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTAstreamITY AND FITNESS
+//LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
 //FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
 //COPYRIGHT HOLDERS OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT,
 //INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,
 //BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
 //LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
-//CAUSED AND ON ANY THEORY OF LIAstreamITY, WHETHER IN CONTRACT, STRICT
-//LIAstreamITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN
+//CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
+//LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN
 //ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
-//POSSIstreamITY OF SUCH DAMAGE.
+//POSSIBILITY OF SUCH DAMAGE.
 
 //
 // Author: John Kessenich, LunarG
@@ -41,24 +41,33 @@
 //
 
 #include <stdlib.h>
+#include <string.h>
 #include <assert.h>
 #include <iomanip>
 #include <stack>
 #include <sstream>
-
-#include "GLSL450Lib.h"
-extern const char* GlslStd450DebugNames[GLSL_STD_450::Count];
+#include <cstring>
 
 #include "disassemble.h"
 #include "doc.h"
 
 namespace spv {
 
+#include "GLSL.std.450.h"
+
+const char* GlslStd450DebugNames[spv::GLSLstd450Count];
+
 void Kill(std::ostream& out, const char* message)
 {
     out << std::endl << "Disassembly failed: " << message << std::endl;
     exit(1);
 }
+
+// used to identify the extended instruction library imported when printing
+enum ExtInstSet {
+    GLSL450Inst,
+    OpenCLExtInst,
+};
 
 // Container class for a single instance of a SPIR-V stream, with methods for disassembly.
 class SpirvStream {
@@ -70,9 +79,8 @@ public:
     void processInstructions();
 
 protected:
-    SpirvStream(SpirvStream&);
-    SpirvStream& operator=(SpirvStream&);
-
+    SpirvStream(const SpirvStream&);
+    SpirvStream& operator=(const SpirvStream&);
     Op getOpCode(int id) const { return idInstruction[id] ? (Op)(stream[idInstruction[id]] & OpCodeMask) : OpNop; }
 
     // Output methods
@@ -81,6 +89,7 @@ protected:
     void outputResultId(Id id);
     void outputTypeId(Id id);
     void outputId(Id id);
+    void outputMask(OperandClass operandClass, unsigned mask);
     void disassembleImmediates(int numOperands);
     void disassembleIds(int numOperands);
     void disassembleString();
@@ -241,6 +250,18 @@ void SpirvStream::outputId(Id id)
         out << "(" << idDescriptor[id] << ")";
 }
 
+void SpirvStream::outputMask(OperandClass operandClass, unsigned mask)
+{
+    if (mask == 0)
+        out << "None";
+    else {
+        for (int m = 0; m < OperandClassParams[operandClass].ceiling; ++m) {
+            if (mask & (1 << m))
+                out << OperandClassParams[operandClass].getName(m) << " ";
+        }
+    }
+}
+
 void SpirvStream::disassembleImmediates(int numOperands)
 {
     for (int i = 0; i < numOperands; ++i) {
@@ -294,8 +315,9 @@ void SpirvStream::disassembleInstruction(Id resultId, Id /*typeId*/, Op opCode, 
             nestedControl.push(nextNestedControl);
             nextNestedControl = 0;
         }
-    } else if (opCode == OpExtInstImport)
+    } else if (opCode == OpExtInstImport) {
         idDescriptor[resultId] = (char*)(&stream[word]);
+    }
     else {
         if (idDescriptor[resultId].size() == 0) {
             switch (opCode) {
@@ -337,27 +359,35 @@ void SpirvStream::disassembleInstruction(Id resultId, Id /*typeId*/, Op opCode, 
     // Process the operands.  Note, a new context-dependent set could be
     // swapped in mid-traversal.
 
-    // Handle textures specially, so can put out helpful strings.
-    if (opCode == OpTypeSampler) {
+    // Handle images specially, so can put out helpful strings.
+    if (opCode == OpTypeImage) {
+        out << " ";
         disassembleIds(1);
         out << " " << DimensionString((Dim)stream[word++]);
-        switch (stream[word++]) {
-        case 0: out << " texture";        break;
-        case 1: out << " image";          break;
-        case 2: out << " filter+texture"; break;
-        }
-        out << (stream[word++] != 0 ? " array" : "");
         out << (stream[word++] != 0 ? " depth" : "");
+        out << (stream[word++] != 0 ? " array" : "");
         out << (stream[word++] != 0 ? " multi-sampled" : "");
+        switch (stream[word++]) {
+        case 0: out << " runtime";    break;
+        case 1: out << " sampled";    break;
+        case 2: out << " nonsampled"; break;
+        }
+        out << " format:" << ImageFormatString((ImageFormat)stream[word++]);
+
+        if (numOperands == 8) {
+            out << " " << AccessQualifierString(stream[word++]);
+        }
         return;
     }
 
     // Handle all the parameterized operands
-    for (int op = 0; op < InstructionDesc[opCode].operands.getNum(); ++op) {
+    for (int op = 0; op < InstructionDesc[opCode].operands.getNum() && numOperands > 0; ++op) {
         out << " ";
         OperandClass operandClass = InstructionDesc[opCode].operands.getClass(op);
         switch (operandClass) {
         case OperandId:
+        case OperandScope:
+        case OperandMemorySemantics:
             disassembleIds(1);
             // Get names for printing "(XXX)" for readability, *after* this id
             if (opCode == OpName)
@@ -367,14 +397,33 @@ void SpirvStream::disassembleInstruction(Id resultId, Id /*typeId*/, Op opCode, 
         case OperandVariableIds:
             disassembleIds(numOperands);
             return;
+        case OperandOptionalImage:
+            outputMask(operandClass, stream[word++]);
+            --numOperands;
+            disassembleIds(numOperands);
+            return;
+        case OperandOptionalLiteral:
         case OperandVariableLiterals:
-            if ((opCode == OpDecorate && stream[word - 1] == DecorationBuiltIn) ||
-                (opCode == OpMemberDecorate && stream[word - 1] == DecorationBuiltIn)) {
+            if (opCode == OpDecorate && stream[word - 1] == DecorationBuiltIn ||
+                opCode == OpMemberDecorate && stream[word - 1] == DecorationBuiltIn) {
                 out << BuiltInString(stream[word++]);
                 --numOperands;
                 ++op;
             }
             disassembleImmediates(numOperands);
+            return;
+        case OperandVariableIdLiteral:
+            while (numOperands > 0) {
+                out << std::endl;
+                outputResultId(0);
+                outputTypeId(0);
+                outputIndent();
+                out << "     Type ";
+                disassembleIds(1);
+                out << ", member ";
+                disassembleImmediates(1);
+                numOperands -= 2;
+            }
             return;
         case OperandVariableLiteralId:
             while (numOperands > 0) {
@@ -392,9 +441,16 @@ void SpirvStream::disassembleInstruction(Id resultId, Id /*typeId*/, Op opCode, 
         case OperandLiteralNumber:
             disassembleImmediates(1);
             if (opCode == OpExtInst) {
+                ExtInstSet extInstSet = GLSL450Inst;
+                if (0 == memcmp("OpenCL", (char*)(idDescriptor[stream[word-2]].c_str()), 6)) {
+                    extInstSet = OpenCLExtInst;
+                }
                 unsigned entrypoint = stream[word - 1];
-                if (entrypoint < GLSL_STD_450::Count)
-                    out << "(" << GlslStd450DebugNames[entrypoint] << ")";
+                if (extInstSet == GLSL450Inst) {
+                    if (entrypoint < spv::GLSLstd450Count) {
+                        out << "(" << GlslStd450DebugNames[entrypoint] << ")";
+                    }
+                }
             }
             break;
         case OperandLiteralString:
@@ -403,18 +459,9 @@ void SpirvStream::disassembleInstruction(Id resultId, Id /*typeId*/, Op opCode, 
         default:
             assert(operandClass >= OperandSource && operandClass < OperandOpcode);
 
-            if (OperandClassParams[operandClass].bitmask) {
-                unsigned int mask = stream[word++];
-                if (mask == 0)
-                    out << "None";
-                else {
-                    for (int m = 0; m < OperandClassParams[operandClass].ceiling; ++m) {
-                        if (mask & (1 << m))
-                            out << OperandClassParams[operandClass].getName(m) << " ";
-                    }
-                }
-                break;
-            } else
+            if (OperandClassParams[operandClass].bitmask)
+                outputMask(operandClass, stream[word++]);
+            else
                 out << OperandClassParams[operandClass].getName(stream[word++]);
 
             break;
@@ -425,9 +472,97 @@ void SpirvStream::disassembleInstruction(Id resultId, Id /*typeId*/, Op opCode, 
     return;
 }
 
+void GLSLstd450GetDebugNames(const char** names)
+{
+    for (int i = 0; i < GLSLstd450Count; ++i)
+        names[i] = "Unknown";
+
+    names[GLSLstd450Round]                   = "Round";
+    names[GLSLstd450RoundEven]               = "RoundEven";
+    names[GLSLstd450Trunc]                   = "Trunc";
+    names[GLSLstd450FAbs]                    = "FAbs";
+    names[GLSLstd450SAbs]                    = "SAbs";
+    names[GLSLstd450FSign]                   = "FSign";
+    names[GLSLstd450SSign]                   = "SSign";
+    names[GLSLstd450Floor]                   = "Floor";
+    names[GLSLstd450Ceil]                    = "Ceil";
+    names[GLSLstd450Fract]                   = "Fract";
+    names[GLSLstd450Radians]                 = "Radians";
+    names[GLSLstd450Degrees]                 = "Degrees";
+    names[GLSLstd450Sin]                     = "Sin";
+    names[GLSLstd450Cos]                     = "Cos";
+    names[GLSLstd450Tan]                     = "Tan";
+    names[GLSLstd450Asin]                    = "Asin";
+    names[GLSLstd450Acos]                    = "Acos";
+    names[GLSLstd450Atan]                    = "Atan";
+    names[GLSLstd450Sinh]                    = "Sinh";
+    names[GLSLstd450Cosh]                    = "Cosh";
+    names[GLSLstd450Tanh]                    = "Tanh";
+    names[GLSLstd450Asinh]                   = "Asinh";
+    names[GLSLstd450Acosh]                   = "Acosh";
+    names[GLSLstd450Atanh]                   = "Atanh";
+    names[GLSLstd450Atan2]                   = "Atan2";
+    names[GLSLstd450Pow]                     = "Pow";
+    names[GLSLstd450Exp]                     = "Exp";
+    names[GLSLstd450Log]                     = "Log";
+    names[GLSLstd450Exp2]                    = "Exp2";
+    names[GLSLstd450Log2]                    = "Log2";
+    names[GLSLstd450Sqrt]                    = "Sqrt";
+    names[GLSLstd450InverseSqrt]             = "Inversesqrt";
+    names[GLSLstd450Determinant]             = "Determinant";
+    names[GLSLstd450MatrixInverse]           = "Inverse";
+    names[GLSLstd450Modf]                    = "Modf";
+    names[GLSLstd450ModfStruct]              = "ModfStruct";
+    names[GLSLstd450FMin]                    = "FMin";
+    names[GLSLstd450SMin]                    = "SMin";
+    names[GLSLstd450UMin]                    = "UMin";
+    names[GLSLstd450FMax]                    = "FMax";
+    names[GLSLstd450SMax]                    = "SMax";
+    names[GLSLstd450UMax]                    = "UMax";
+    names[GLSLstd450FClamp]                  = "FClamp";
+    names[GLSLstd450SClamp]                  = "SClamp";
+    names[GLSLstd450UClamp]                  = "UClamp";
+    names[GLSLstd450Mix]                     = "Mix";
+    names[GLSLstd450Step]                    = "Step";
+    names[GLSLstd450SmoothStep]              = "Smoothstep";
+    names[GLSLstd450Fma]                     = "Fma";
+    names[GLSLstd450Frexp]                   = "Frexp";
+    names[GLSLstd450FrexpStruct]             = "FrexpStruct";
+    names[GLSLstd450Ldexp]                   = "Ldexp";
+    names[GLSLstd450PackSnorm4x8]            = "PackSnorm4x8";
+    names[GLSLstd450PackUnorm4x8]            = "PackUnorm4x8";
+    names[GLSLstd450PackSnorm2x16]           = "PackSnorm2x16";
+    names[GLSLstd450PackUnorm2x16]           = "PackUnorm2x16";
+    names[GLSLstd450PackHalf2x16]            = "PackHalf2x16";
+    names[GLSLstd450PackDouble2x32]          = "PackDouble2x32";
+    names[GLSLstd450UnpackSnorm2x16]         = "UnpackSnorm2x16";
+    names[GLSLstd450UnpackUnorm2x16]         = "UnpackUnorm2x16";
+    names[GLSLstd450UnpackHalf2x16]          = "UnpackHalf2x16";
+    names[GLSLstd450UnpackSnorm4x8]          = "UnpackSnorm4x8";
+    names[GLSLstd450UnpackUnorm4x8]          = "UnpackUnorm4x8";
+    names[GLSLstd450UnpackDouble2x32]        = "UnpackDouble2x32";
+    names[GLSLstd450Length]                  = "Length";
+    names[GLSLstd450Distance]                = "Distance";
+    names[GLSLstd450Cross]                   = "Cross";
+    names[GLSLstd450Normalize]               = "Normalize";
+    names[GLSLstd450FaceForward]             = "Faceforward";
+    names[GLSLstd450Reflect]                 = "Reflect";
+    names[GLSLstd450Refract]                 = "Refract";
+    names[GLSLstd450AddCarry]                = "UaddCarry";
+    names[GLSLstd450SubBorrow]               = "UsubBorrow";
+    names[GLSLstd450MulExtended]             = "UmulExtended";
+    names[GLSLstd450FindILSB]                = "FindILsb";
+    names[GLSLstd450FindSMSB]                = "FindSMsb";
+    names[GLSLstd450FindUMSB]                = "FindUMsb";
+    names[GLSLstd450InterpolateAtCentroid]   = "InterpolateAtCentroid";
+    names[GLSLstd450InterpolateAtSample]     = "InterpolateAtSample";
+    names[GLSLstd450InterpolateAtOffset]     = "InterpolateAtOffset";
+}
+
 void Disassemble(std::ostream& out, const std::vector<unsigned int>& stream)
 {
     SpirvStream SpirvStream(out, stream);
+    GLSLstd450GetDebugNames(GlslStd450DebugNames);
     SpirvStream.validate();
     SpirvStream.processInstructions();
 }

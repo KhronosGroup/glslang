@@ -10,9 +10,11 @@ Linked fragment stage:
 // Id's are bound by 198
 
                               Source GLSL 420
+                              Capability Shader
                1:             ExtInstImport  "GLSL.std.450"
                               MemoryModel Logical GLSL450
-                              EntryPoint Fragment 4
+                              EntryPoint Fragment 4  "main"
+                              ExecutionMode 4 OriginLowerLeft
                               Name 4  "main"
                               Name 9  "S"
                               MemberName 9(S) 0  "color"
@@ -71,7 +73,7 @@ Linked fragment stage:
                               Name 195  "param"
                               Decorate 66(OutColor) Location 0
                2:             TypeVoid
-               3:             TypeFunction 2 
+               3:             TypeFunction 2
                7:             TypeFloat 32
                8:             TypeVector 7(float) 3
             9(S):             TypeStruct 8(fvec3)
@@ -80,7 +82,7 @@ Linked fragment stage:
               15:             TypePointer Function 14(int)
               16:             TypeFunction 2 9(S) 15(ptr)
               65:             TypePointer Output 8(fvec3)
-    66(OutColor):     65(ptr) Variable Output 
+    66(OutColor):     65(ptr) Variable Output
               67:     14(int) Constant 0
               68:             TypeInt 32 0
               69:     68(int) Constant 0
@@ -90,72 +92,72 @@ Linked fragment stage:
              143:    8(fvec3) ConstantComposite 142 142 142
              144:             TypePointer Function 9(S)
              149:             TypePointer UniformConstant 14(int)
-          150(u):    149(ptr) Variable UniformConstant 
+          150(u):    149(ptr) Variable UniformConstant
          4(main):           2 Function None 3
                5:             Label
-          145(s):    144(ptr) Variable Function 
-      151(param):     15(ptr) Variable Function 
-      155(param):     15(ptr) Variable Function 
-      159(param):     15(ptr) Variable Function 
-      163(param):     15(ptr) Variable Function 
-      167(param):     15(ptr) Variable Function 
-      171(param):     15(ptr) Variable Function 
-      175(param):     15(ptr) Variable Function 
-      179(param):     15(ptr) Variable Function 
-      183(param):     15(ptr) Variable Function 
-      187(param):     15(ptr) Variable Function 
-      191(param):     15(ptr) Variable Function 
-      195(param):     15(ptr) Variable Function 
-                              Store 66(OutColor) 143 
-             146:        9(S) Load 145(s) 
+          145(s):    144(ptr) Variable Function
+      151(param):     15(ptr) Variable Function
+      155(param):     15(ptr) Variable Function
+      159(param):     15(ptr) Variable Function
+      163(param):     15(ptr) Variable Function
+      167(param):     15(ptr) Variable Function
+      171(param):     15(ptr) Variable Function
+      175(param):     15(ptr) Variable Function
+      179(param):     15(ptr) Variable Function
+      183(param):     15(ptr) Variable Function
+      187(param):     15(ptr) Variable Function
+      191(param):     15(ptr) Variable Function
+      195(param):     15(ptr) Variable Function
+                              Store 66(OutColor) 143
+             146:        9(S) Load 145(s)
              147:           2 FunctionCall 12(GetColor1(struct-S-vf31;) 146
-             148:        9(S) Load 145(s) 
-             152:     14(int) Load 150(u) 
-                              Store 151(param) 152 
+             148:        9(S) Load 145(s)
+             152:     14(int) Load 150(u)
+                              Store 151(param) 152
              153:           2 FunctionCall 19(GetColor2(struct-S-vf31;i1;) 148 151(param)
-             154:        9(S) Load 145(s) 
-             156:     14(int) Load 150(u) 
-                              Store 155(param) 156 
+             154:        9(S) Load 145(s)
+             156:     14(int) Load 150(u)
+                              Store 155(param) 156
              157:           2 FunctionCall 23(GetColor3(struct-S-vf31;i1;) 154 155(param)
-             158:        9(S) Load 145(s) 
-             160:     14(int) Load 150(u) 
-                              Store 159(param) 160 
+             158:        9(S) Load 145(s)
+             160:     14(int) Load 150(u)
+                              Store 159(param) 160
              161:           2 FunctionCall 27(GetColor4(struct-S-vf31;i1;) 158 159(param)
-             162:        9(S) Load 145(s) 
-             164:     14(int) Load 150(u) 
-                              Store 163(param) 164 
+             162:        9(S) Load 145(s)
+             164:     14(int) Load 150(u)
+                              Store 163(param) 164
              165:           2 FunctionCall 31(GetColor5(struct-S-vf31;i1;) 162 163(param)
-             166:        9(S) Load 145(s) 
-             168:     14(int) Load 150(u) 
-                              Store 167(param) 168 
+             166:        9(S) Load 145(s)
+             168:     14(int) Load 150(u)
+                              Store 167(param) 168
              169:           2 FunctionCall 35(GetColor6(struct-S-vf31;i1;) 166 167(param)
-             170:        9(S) Load 145(s) 
-             172:     14(int) Load 150(u) 
-                              Store 171(param) 172 
+             170:        9(S) Load 145(s)
+             172:     14(int) Load 150(u)
+                              Store 171(param) 172
              173:           2 FunctionCall 39(GetColor7(struct-S-vf31;i1;) 170 171(param)
-             174:        9(S) Load 145(s) 
-             176:     14(int) Load 150(u) 
-                              Store 175(param) 176 
+             174:        9(S) Load 145(s)
+             176:     14(int) Load 150(u)
+                              Store 175(param) 176
              177:           2 FunctionCall 43(GetColor8(struct-S-vf31;i1;) 174 175(param)
-             178:        9(S) Load 145(s) 
-             180:     14(int) Load 150(u) 
-                              Store 179(param) 180 
+             178:        9(S) Load 145(s)
+             180:     14(int) Load 150(u)
+                              Store 179(param) 180
              181:           2 FunctionCall 47(GetColor9(struct-S-vf31;i1;) 178 179(param)
-             182:        9(S) Load 145(s) 
-             184:     14(int) Load 150(u) 
-                              Store 183(param) 184 
+             182:        9(S) Load 145(s)
+             184:     14(int) Load 150(u)
+                              Store 183(param) 184
              185:           2 FunctionCall 51(GetColor10(struct-S-vf31;i1;) 182 183(param)
-             186:        9(S) Load 145(s) 
-             188:     14(int) Load 150(u) 
-                              Store 187(param) 188 
+             186:        9(S) Load 145(s)
+             188:     14(int) Load 150(u)
+                              Store 187(param) 188
              189:           2 FunctionCall 55(GetColor11(struct-S-vf31;i1;) 186 187(param)
-             190:        9(S) Load 145(s) 
-             192:     14(int) Load 150(u) 
-                              Store 191(param) 192 
+             190:        9(S) Load 145(s)
+             192:     14(int) Load 150(u)
+                              Store 191(param) 192
              193:           2 FunctionCall 59(GetColor12(struct-S-vf31;i1;) 190 191(param)
-             194:        9(S) Load 145(s) 
-             196:     14(int) Load 150(u) 
-                              Store 195(param) 196 
+             194:        9(S) Load 145(s)
+             196:     14(int) Load 150(u)
+                              Store 195(param) 196
              197:           2 FunctionCall 63(GetColor13(struct-S-vf31;i1;) 194 195(param)
                               Branch 6
                6:             Label
@@ -165,49 +167,49 @@ Linked fragment stage:
            11(i):        9(S) FunctionParameter
               13:             Label
               70:    7(float) CompositeExtract 11(i) 0 0
-              71:    8(fvec3) Load 66(OutColor) 
+              71:    8(fvec3) Load 66(OutColor)
               72:    8(fvec3) CompositeConstruct 70 70 70
               73:    8(fvec3) FAdd 71 72
-                              Store 66(OutColor) 73 
+                              Store 66(OutColor) 73
                               Return
                               FunctionEnd
 19(GetColor2(struct-S-vf31;i1;):           2 Function None 16
            17(i):        9(S) FunctionParameter
         18(comp):     15(ptr) FunctionParameter
               20:             Label
-              74:     14(int) Load 18(comp) 
+              74:     14(int) Load 18(comp)
               75:    8(fvec3) CompositeExtract 17(i) 0
               76:    7(float) VectorExtractDynamic 75 74
-              77:    8(fvec3) Load 66(OutColor) 
+              77:    8(fvec3) Load 66(OutColor)
               78:    8(fvec3) CompositeConstruct 76 76 76
               79:    8(fvec3) FAdd 77 78
-                              Store 66(OutColor) 79 
+                              Store 66(OutColor) 79
                               Return
                               FunctionEnd
 23(GetColor3(struct-S-vf31;i1;):           2 Function None 16
            21(i):        9(S) FunctionParameter
         22(comp):     15(ptr) FunctionParameter
               24:             Label
-              80:     14(int) Load 22(comp) 
+              80:     14(int) Load 22(comp)
               81:    8(fvec3) CompositeExtract 21(i) 0
               82:    7(float) VectorExtractDynamic 81 80
-              83:    8(fvec3) Load 66(OutColor) 
+              83:    8(fvec3) Load 66(OutColor)
               84:    8(fvec3) CompositeConstruct 82 82 82
               85:    8(fvec3) FAdd 83 84
-                              Store 66(OutColor) 85 
+                              Store 66(OutColor) 85
                               Return
                               FunctionEnd
 27(GetColor4(struct-S-vf31;i1;):           2 Function None 16
            25(i):        9(S) FunctionParameter
         26(comp):     15(ptr) FunctionParameter
               28:             Label
-              86:     14(int) Load 26(comp) 
+              86:     14(int) Load 26(comp)
               87:    8(fvec3) CompositeExtract 25(i) 0
               88:    7(float) VectorExtractDynamic 87 86
-              89:    8(fvec3) Load 66(OutColor) 
+              89:    8(fvec3) Load 66(OutColor)
               90:    8(fvec3) CompositeConstruct 88 88 88
               91:    8(fvec3) FAdd 89 90
-                              Store 66(OutColor) 91 
+                              Store 66(OutColor) 91
                               Return
                               FunctionEnd
 31(GetColor5(struct-S-vf31;i1;):           2 Function None 16
@@ -215,23 +217,23 @@ Linked fragment stage:
         30(comp):     15(ptr) FunctionParameter
               32:             Label
               92:    8(fvec3) CompositeExtract 29(i) 0
-              93:    8(fvec3) Load 66(OutColor) 
+              93:    8(fvec3) Load 66(OutColor)
               94:    8(fvec3) FAdd 93 92
-                              Store 66(OutColor) 94 
+                              Store 66(OutColor) 94
                               Return
                               FunctionEnd
 35(GetColor6(struct-S-vf31;i1;):           2 Function None 16
            33(i):        9(S) FunctionParameter
         34(comp):     15(ptr) FunctionParameter
               36:             Label
-              95:     14(int) Load 34(comp) 
+              95:     14(int) Load 34(comp)
               96:    8(fvec3) CompositeExtract 33(i) 0
               98:   97(fvec2) VectorShuffle 96 96 1 0
               99:    7(float) VectorExtractDynamic 98 95
-             100:    8(fvec3) Load 66(OutColor) 
+             100:    8(fvec3) Load 66(OutColor)
              101:    8(fvec3) CompositeConstruct 99 99 99
              102:    8(fvec3) FAdd 100 101
-                              Store 66(OutColor) 102 
+                              Store 66(OutColor) 102
                               Return
                               FunctionEnd
 39(GetColor7(struct-S-vf31;i1;):           2 Function None 16
@@ -240,12 +242,12 @@ Linked fragment stage:
               40:             Label
              103:    8(fvec3) CompositeExtract 37(i) 0
              104:   97(fvec2) VectorShuffle 103 103 0 1
-             105:    8(fvec3) Load 66(OutColor) 
+             105:    8(fvec3) Load 66(OutColor)
              106:   97(fvec2) VectorShuffle 105 105 0 1
              107:   97(fvec2) FAdd 106 104
-             108:    8(fvec3) Load 66(OutColor) 
+             108:    8(fvec3) Load 66(OutColor)
              109:    8(fvec3) VectorShuffle 108 107 3 4 2
-                              Store 66(OutColor) 109 
+                              Store 66(OutColor) 109
                               Return
                               FunctionEnd
 43(GetColor8(struct-S-vf31;i1;):           2 Function None 16
@@ -253,10 +255,10 @@ Linked fragment stage:
         42(comp):     15(ptr) FunctionParameter
               44:             Label
              111:    7(float) CompositeExtract 41(i) 0 2
-             112:    8(fvec3) Load 66(OutColor) 
+             112:    8(fvec3) Load 66(OutColor)
              113:    8(fvec3) CompositeConstruct 111 111 111
              114:    8(fvec3) FAdd 112 113
-                              Store 66(OutColor) 114 
+                              Store 66(OutColor) 114
                               Return
                               FunctionEnd
 47(GetColor9(struct-S-vf31;i1;):           2 Function None 16
@@ -264,12 +266,12 @@ Linked fragment stage:
         46(comp):     15(ptr) FunctionParameter
               48:             Label
              115:    8(fvec3) CompositeExtract 45(i) 0
-             116:    8(fvec3) Load 66(OutColor) 
+             116:    8(fvec3) Load 66(OutColor)
              117:    8(fvec3) VectorShuffle 116 116 2 0 1
              118:    8(fvec3) FAdd 117 115
-             119:    8(fvec3) Load 66(OutColor) 
+             119:    8(fvec3) Load 66(OutColor)
              120:    8(fvec3) VectorShuffle 119 118 4 5 3
-                              Store 66(OutColor) 120 
+                              Store 66(OutColor) 120
                               Return
                               FunctionEnd
 51(GetColor10(struct-S-vf31;i1;):           2 Function None 16
@@ -278,12 +280,12 @@ Linked fragment stage:
               52:             Label
              121:    8(fvec3) CompositeExtract 49(i) 0
              122:   97(fvec2) VectorShuffle 121 121 0 1
-             123:    8(fvec3) Load 66(OutColor) 
+             123:    8(fvec3) Load 66(OutColor)
              124:   97(fvec2) VectorShuffle 123 123 2 1
              125:   97(fvec2) FAdd 124 122
-             126:    8(fvec3) Load 66(OutColor) 
+             126:    8(fvec3) Load 66(OutColor)
              127:    8(fvec3) VectorShuffle 126 125 0 4 3
-                              Store 66(OutColor) 127 
+                              Store 66(OutColor) 127
                               Return
                               FunctionEnd
 55(GetColor11(struct-S-vf31;i1;):           2 Function None 16
@@ -292,26 +294,26 @@ Linked fragment stage:
               56:             Label
              128:    8(fvec3) CompositeExtract 53(i) 0
              129:   97(fvec2) VectorShuffle 128 128 0 1
-             130:    8(fvec3) Load 66(OutColor) 
+             130:    8(fvec3) Load 66(OutColor)
              131:   97(fvec2) VectorShuffle 130 130 0 2
              132:   97(fvec2) FAdd 131 129
-             133:    8(fvec3) Load 66(OutColor) 
+             133:    8(fvec3) Load 66(OutColor)
              134:    8(fvec3) VectorShuffle 133 132 3 1 4
-                              Store 66(OutColor) 134 
+                              Store 66(OutColor) 134
                               Return
                               FunctionEnd
 59(GetColor12(struct-S-vf31;i1;):           2 Function None 16
            57(i):        9(S) FunctionParameter
         58(comp):     15(ptr) FunctionParameter
               60:             Label
-             135:     14(int) Load 58(comp) 
+             135:     14(int) Load 58(comp)
              136:    7(float) CompositeExtract 57(i) 0 0
-             137:    8(fvec3) Load 66(OutColor) 
+             137:    8(fvec3) Load 66(OutColor)
              138:    7(float) VectorExtractDynamic 137 135
              139:    7(float) FAdd 138 136
-             140:    8(fvec3) Load 66(OutColor) 
+             140:    8(fvec3) Load 66(OutColor)
              141:    8(fvec3) VectorInsertDynamic 140 139 135
-                              Store 66(OutColor) 141 
+                              Store 66(OutColor) 141
                               Return
                               FunctionEnd
 63(GetColor13(struct-S-vf31;i1;):           2 Function None 16

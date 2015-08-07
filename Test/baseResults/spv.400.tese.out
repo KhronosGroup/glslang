@@ -11,10 +11,11 @@ Linked tessellation evaluation stage:
 
                               Source GLSL 400
                               SourceExtension  "GL_ARB_separate_shader_objects"
+                              Capability Tessellation
                1:             ExtInstImport  "GLSL.std.450"
                               MemoryModel Logical GLSL450
-                              EntryPoint TessellationEvaluation 4
-                              ExecutionMode 4 InputTriangles 
+                              EntryPoint TessellationEvaluation 4  "main"
+                              ExecutionMode 4 InputTriangles
                               Name 4  "main"
                               Name 9  "a"
                               Name 14  "p"
@@ -52,34 +53,34 @@ Linked tessellation evaluation stage:
                               Name 94  "ivla"
                               Name 95  "ivlb"
                               Name 98  "ovla"
-                              Decorate 18(gl_PerVertex) Block 
+                              Decorate 18(gl_PerVertex) Block
                               Decorate 39(gl_PatchVerticesIn) BuiltIn PatchVertices
                               Decorate 42(gl_PrimitiveID) BuiltIn PrimitiveId
                               Decorate 48(gl_TessCoord) BuiltIn TessCoord
-                              Decorate 54(gl_TessLevelOuter) Patch 
+                              Decorate 54(gl_TessLevelOuter) Patch
                               Decorate 54(gl_TessLevelOuter) BuiltIn TessLevelOuter
-                              Decorate 62(gl_TessLevelInner) Patch 
+                              Decorate 62(gl_TessLevelInner) Patch
                               Decorate 62(gl_TessLevelInner) BuiltIn TessLevelInner
                               MemberDecorate 67(gl_PerVertex) 0 BuiltIn Position
                               MemberDecorate 67(gl_PerVertex) 1 BuiltIn PointSize
                               MemberDecorate 67(gl_PerVertex) 2 BuiltIn ClipDistance
-                              Decorate 67(gl_PerVertex) Block 
-                              Decorate 78(patchIn) Patch 
-                              Decorate 78(patchIn) NoStaticUse 
-                              Decorate 82(inb) NoStaticUse 
-                              Decorate 83(ind) NoStaticUse 
-                              Decorate 84(testblb) Block 
-                              Decorate 87(blb) NoStaticUse 
-                              Decorate 88(testbld) Block 
-                              Decorate 91(bld) NoStaticUse 
+                              Decorate 67(gl_PerVertex) Block
+                              Decorate 78(patchIn) Patch
+                              Decorate 78(patchIn) NoStaticUse
+                              Decorate 82(inb) NoStaticUse
+                              Decorate 83(ind) NoStaticUse
+                              Decorate 84(testblb) Block
+                              Decorate 87(blb) NoStaticUse
+                              Decorate 88(testbld) Block
+                              Decorate 91(bld) NoStaticUse
                               Decorate 94(ivla) Location 23
-                              Decorate 94(ivla) NoStaticUse 
+                              Decorate 94(ivla) NoStaticUse
                               Decorate 95(ivlb) Location 24
-                              Decorate 95(ivlb) NoStaticUse 
+                              Decorate 95(ivlb) NoStaticUse
                               Decorate 98(ovla) Location 23
-                              Decorate 98(ovla) NoStaticUse 
+                              Decorate 98(ovla) NoStaticUse
                2:             TypeVoid
-               3:             TypeFunction 2 
+               3:             TypeFunction 2
                7:             TypeInt 32 1
                8:             TypePointer Function 7(int)
               10:      7(int) Constant 1512
@@ -93,7 +94,7 @@ Linked tessellation evaluation stage:
               19:     15(int) Constant 32
               20:             TypeArray 18(gl_PerVertex) 19
               21:             TypePointer Input 20
-       22(gl_in):     21(ptr) Variable Input 
+       22(gl_in):     21(ptr) Variable Input
               23:      7(int) Constant 1
               24:      7(int) Constant 0
               25:             TypePointer Input 12(fvec4)
@@ -101,91 +102,91 @@ Linked tessellation evaluation stage:
               30:             TypePointer Input 11(float)
               34:      7(int) Constant 2
               38:             TypePointer Input 7(int)
-39(gl_PatchVerticesIn):     38(ptr) Variable Input 
-42(gl_PrimitiveID):     38(ptr) Variable Input 
+39(gl_PatchVerticesIn):     38(ptr) Variable Input
+42(gl_PrimitiveID):     38(ptr) Variable Input
               44:             TypeVector 11(float) 3
               45:             TypePointer Function 44(fvec3)
               47:             TypePointer Input 44(fvec3)
-48(gl_TessCoord):     47(ptr) Variable Input 
+48(gl_TessCoord):     47(ptr) Variable Input
               51:     15(int) Constant 4
               52:             TypeArray 11(float) 51
               53:             TypePointer Input 52
-54(gl_TessLevelOuter):     53(ptr) Variable Input 
+54(gl_TessLevelOuter):     53(ptr) Variable Input
               55:      7(int) Constant 3
               59:     15(int) Constant 2
               60:             TypeArray 11(float) 59
               61:             TypePointer Input 60
-62(gl_TessLevelInner):     61(ptr) Variable Input 
+62(gl_TessLevelInner):     61(ptr) Variable Input
               65:     15(int) Constant 3
               66:             TypeArray 11(float) 65
 67(gl_PerVertex):             TypeStruct 12(fvec4) 11(float) 66
               68:             TypePointer Output 67(gl_PerVertex)
-              69:     68(ptr) Variable Output 
+              69:     68(ptr) Variable Output
               71:             TypePointer Output 12(fvec4)
               74:             TypePointer Output 11(float)
-     78(patchIn):     25(ptr) Variable Input 
+     78(patchIn):     25(ptr) Variable Input
               79:             TypeVector 11(float) 2
               80:             TypeArray 79(fvec2) 19
               81:             TypePointer Input 80
-         82(inb):     81(ptr) Variable Input 
-         83(ind):     81(ptr) Variable Input 
+         82(inb):     81(ptr) Variable Input
+         83(ind):     81(ptr) Variable Input
      84(testblb):             TypeStruct 7(int)
               85:             TypeArray 84(testblb) 19
               86:             TypePointer Input 85
-         87(blb):     86(ptr) Variable Input 
+         87(blb):     86(ptr) Variable Input
      88(testbld):             TypeStruct 7(int)
               89:             TypeArray 88(testbld) 19
               90:             TypePointer Input 89
-         91(bld):     90(ptr) Variable Input 
+         91(bld):     90(ptr) Variable Input
               92:             TypeArray 12(fvec4) 19
               93:             TypePointer Input 92
-        94(ivla):     93(ptr) Variable Input 
-        95(ivlb):     93(ptr) Variable Input 
+        94(ivla):     93(ptr) Variable Input
+        95(ivlb):     93(ptr) Variable Input
               96:             TypeArray 12(fvec4) 59
               97:             TypePointer Output 96
-        98(ovla):     97(ptr) Variable Output 
+        98(ovla):     97(ptr) Variable Output
          4(main):           2 Function None 3
                5:             Label
-            9(a):      8(ptr) Variable Function 
-           14(p):     13(ptr) Variable Function 
-          29(ps):     28(ptr) Variable Function 
-          33(cd):     28(ptr) Variable Function 
-         37(pvi):      8(ptr) Variable Function 
-         41(pid):      8(ptr) Variable Function 
-          46(tc):     45(ptr) Variable Function 
-         50(tlo):     28(ptr) Variable Function 
-         58(tli):     28(ptr) Variable Function 
-                              Store 9(a) 10 
+            9(a):      8(ptr) Variable Function
+           14(p):     13(ptr) Variable Function
+          29(ps):     28(ptr) Variable Function
+          33(cd):     28(ptr) Variable Function
+         37(pvi):      8(ptr) Variable Function
+         41(pid):      8(ptr) Variable Function
+          46(tc):     45(ptr) Variable Function
+         50(tlo):     28(ptr) Variable Function
+         58(tli):     28(ptr) Variable Function
+                              Store 9(a) 10
               26:     25(ptr) AccessChain 22(gl_in) 23 24
-              27:   12(fvec4) Load 26 
-                              Store 14(p) 27 
+              27:   12(fvec4) Load 26
+                              Store 14(p) 27
               31:     30(ptr) AccessChain 22(gl_in) 23 23
-              32:   11(float) Load 31 
-                              Store 29(ps) 32 
+              32:   11(float) Load 31
+                              Store 29(ps) 32
               35:     30(ptr) AccessChain 22(gl_in) 23 34 34
-              36:   11(float) Load 35 
-                              Store 33(cd) 36 
-              40:      7(int) Load 39(gl_PatchVerticesIn) 
-                              Store 37(pvi) 40 
-              43:      7(int) Load 42(gl_PrimitiveID) 
-                              Store 41(pid) 43 
-              49:   44(fvec3) Load 48(gl_TessCoord) 
-                              Store 46(tc) 49 
+              36:   11(float) Load 35
+                              Store 33(cd) 36
+              40:      7(int) Load 39(gl_PatchVerticesIn)
+                              Store 37(pvi) 40
+              43:      7(int) Load 42(gl_PrimitiveID)
+                              Store 41(pid) 43
+              49:   44(fvec3) Load 48(gl_TessCoord)
+                              Store 46(tc) 49
               56:     30(ptr) AccessChain 54(gl_TessLevelOuter) 55
-              57:   11(float) Load 56 
-                              Store 50(tlo) 57 
+              57:   11(float) Load 56
+                              Store 50(tlo) 57
               63:     30(ptr) AccessChain 62(gl_TessLevelInner) 23
-              64:   11(float) Load 63 
-                              Store 58(tli) 64 
-              70:   12(fvec4) Load 14(p) 
+              64:   11(float) Load 63
+                              Store 58(tli) 64
+              70:   12(fvec4) Load 14(p)
               72:     71(ptr) AccessChain 69 24
-                              Store 72 70 
-              73:   11(float) Load 29(ps) 
+                              Store 72 70
+              73:   11(float) Load 29(ps)
               75:     74(ptr) AccessChain 69 23
-                              Store 75 73 
-              76:   11(float) Load 33(cd) 
+                              Store 75 73
+              76:   11(float) Load 33(cd)
               77:     74(ptr) AccessChain 69 34 34
-                              Store 77 76 
+                              Store 77 76
                               Branch 6
                6:             Label
                               Return

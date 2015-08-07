@@ -1,5 +1,5 @@
 //
-//Copyright (C) 2014 LunarG, Inc.
+//Copyright (C) 2014-2015 LunarG, Inc.
 //
 //All rights reserved.
 //
@@ -40,7 +40,7 @@
 // Parameterize the SPIR-V enumerants.
 //
 
-#include "spirv.h"
+#include "spirv.hpp"
 
 #include <vector>
 
@@ -64,6 +64,10 @@ const char* LoopControlString(int);
 const char* FunctionControlString(int);
 const char* SamplerAddressingModeString(int);
 const char* SamplerFilterModeString(int);
+const char* ImageFormatString(int);
+const char* ImageChannelOrderString(int);
+const char* ImageChannelTypeString(int);
+const char* ImageOperands(int);
 const char* FPFastMathString(int);
 const char* FPRoundingModeString(int);
 const char* LinkageTypeString(int);
@@ -75,11 +79,12 @@ const char* ExecutionScopeString(int);
 const char* GroupOperationString(int);
 const char* KernelEnqueueFlagsString(int);
 const char* KernelProfilingInfoString(int);
+const char* CapabilityString(int);
 const char* OpcodeString(int);
 
 // For grouping opcodes into subsections
 enum OpcodeClass {
-    OpClassMisc,            // default, until opcode is classified
+    OpClassMisc,
     OpClassDebug,
     OpClassAnnotate,
     OpClassExtension,
@@ -88,10 +93,11 @@ enum OpcodeClass {
     OpClassConstant,
     OpClassMemory,
     OpClassFunction,
-    OpClassTexture,
+    OpClassImage,
     OpClassConvert,
     OpClassComposite,
     OpClassArithmetic,
+    OpClassBit,
     OpClassRelationalLogical,
     OpClassDerivative,
     OpClassFlowControl,
@@ -102,7 +108,8 @@ enum OpcodeClass {
     OpClassDeviceSideEnqueue,
     OpClassPipe,
 
-    OpClassCount
+    OpClassCount,
+    OpClassMissing             // all instructions start out as missing
 };
 
 // For parameterizing operands.
@@ -110,8 +117,11 @@ enum OperandClass {
     OperandNone,
     OperandId,
     OperandOptionalId,
+    OperandOptionalImage,
     OperandVariableIds,
+    OperandOptionalLiteral,
     OperandVariableLiterals,
+    OperandVariableIdLiteral,
     OperandVariableLiteralId,
     OperandLiteralNumber,
     OperandLiteralString,
@@ -124,6 +134,10 @@ enum OperandClass {
     OperandDimensionality,
     OperandSamplerAddressingMode,
     OperandSamplerFilterMode,
+    OperandSamplerImageFormat,
+    OperandImageChannelOrder,
+    OperandImageChannelDataType,
+    OperandImageOperands,
     OperandFPFastMath,
     OperandFPRoundingMode,
     OperandLinkageType,
@@ -136,27 +150,15 @@ enum OperandClass {
     OperandFunction,
     OperandMemorySemantics,
     OperandMemoryAccess,
-    OperandExecutionScope,
+    OperandScope,
 	OperandGroupOperation,
     OperandKernelEnqueueFlags,
     OperandKernelProfilingInfo,
+    OperandCapability,
 
     OperandOpcode,
 
     OperandCount
-};
-
-// Set of capabilities.  Generally, something is assumed to be in core,
-// if nothing else is said.  So, these are used to identify when something
-// requires a specific capability to be declared.
-enum Capability {
-    CapMatrix,
-    CapShader,
-    CapGeom,
-    CapTess,
-    CapAddr,
-    CapLink,
-    CapKernel
 };
 
 // Any specific enum can have a set of capabilities that allow it:
@@ -213,8 +215,8 @@ public:
 class InstructionParameters {
 public:
     InstructionParameters() :
-        opDesc(0),
-        opClass(OpClassMisc),
+        opDesc("TBD"),
+        opClass(OpClassMissing),
         typePresent(true),         // most normal, only exceptions have to be spelled out
         resultPresent(true)        // most normal, only exceptions have to be spelled out
     { }
@@ -238,7 +240,7 @@ protected:
     int resultPresent : 1;
 };
 
-const int OpcodeCeiling = 267;
+const int OpcodeCeiling = 305;
 
 // The set of objects that hold all the instruction/operand
 // parameterization information.

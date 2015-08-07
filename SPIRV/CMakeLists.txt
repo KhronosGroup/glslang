@@ -10,7 +10,8 @@ set(SOURCES
     disassemble.cpp)
 
 set(HEADERS
-    spirv.h
+    spirv.hpp
+    GLSL.std.450.h
     GlslangToSpv.h
     SpvBuilder.h
     SPVRemapper.h

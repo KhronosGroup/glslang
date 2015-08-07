@@ -82,6 +82,8 @@ namespace spv {
         case spv::OpTypeFloat:        // fall through...
         case spv::OpTypePointer:      return range_t(2, 3);
         case spv::OpTypeInt:          return range_t(2, 4);
+        // TODO: case spv::OpTypeImage:
+        // TODO: case spv::OpTypeSampledImage:
         case spv::OpTypeSampler:      return range_t(3, 8);
         case spv::OpTypeVector:       // fall through
         case spv::OpTypeMatrix:       // ...
@@ -164,8 +166,8 @@ namespace spv {
         case spv::OpTypeFloat:
         case spv::OpTypeVector:
         case spv::OpTypeMatrix:
+        case spv::OpTypeImage:
         case spv::OpTypeSampler:
-        case spv::OpTypeFilter:
         case spv::OpTypeArray:
         case spv::OpTypeRuntimeArray:
         case spv::OpTypeStruct:
@@ -184,12 +186,11 @@ namespace spv {
     bool spirvbin_t::isConstOp(spv::Op opCode) const
     {
         switch (opCode) {
-        case spv::OpConstantNullObject: error("unimplemented constant type");
+        case spv::OpConstantNull:       error("unimplemented constant type");
         case spv::OpConstantSampler:    error("unimplemented constant type");
 
         case spv::OpConstantTrue:
         case spv::OpConstantFalse:
-        case spv::OpConstantNullPointer:
         case spv::OpConstantComposite:
         case spv::OpConstant:         return true;
         default:                      return false;
@@ -486,7 +487,7 @@ namespace spv {
             case spv::OperandFunction:
             case spv::OperandMemorySemantics:
             case spv::OperandMemoryAccess:
-            case spv::OperandExecutionScope:
+            case spv::OperandScope:
             case spv::OperandGroupOperation:
             case spv::OperandKernelEnqueueFlags:
             case spv::OperandKernelProfilingInfo:
@@ -610,19 +611,14 @@ namespace spv {
                     fnId = asId(start + 2);
                     break;
 
-                case spv::OpTextureSample:
-                case spv::OpTextureSampleDref:
-                case spv::OpTextureSampleLod:
-                case spv::OpTextureSampleProj:
-                case spv::OpTextureSampleGrad:
-                case spv::OpTextureSampleOffset:
-                case spv::OpTextureSampleProjLod:
-                case spv::OpTextureSampleProjGrad:
-                case spv::OpTextureSampleLodOffset:
-                case spv::OpTextureSampleProjOffset:
-                case spv::OpTextureSampleGradOffset:                     
-                case spv::OpTextureSampleProjLodOffset:
-                case spv::OpTextureSampleProjGradOffset:
+                case spv::OpImageSampleImplicitLod:
+                case spv::OpImageSampleExplicitLod:
+                case spv::OpImageSampleDrefImplicitLod:
+                case spv::OpImageSampleDrefExplicitLod:
+                case spv::OpImageSampleProjImplicitLod:
+                case spv::OpImageSampleProjExplicitLod:
+                case spv::OpImageSampleProjDrefImplicitLod:
+                case spv::OpImageSampleProjDrefExplicitLod:
                 case spv::OpDot:
                 case spv::OpCompositeExtract:
                 case spv::OpCompositeInsert:
@@ -668,7 +664,7 @@ namespace spv {
         process(
             [&](spv::Op opCode, unsigned start) {
                 // Add inputs and uniforms to the map
-                if (((opCode == spv::OpVariable && asWordCount(start) == 4) || (opCode == spv::OpVariableArray)) &&
+                if ((opCode == spv::OpVariable && asWordCount(start) == 4) &&
                     (spv[start+3] == spv::StorageClassUniform ||
                     spv[start+3] == spv::StorageClassUniformConstant ||
                     spv[start+3] == spv::StorageClassInput))
@@ -695,7 +691,7 @@ namespace spv {
         process(
             [&](spv::Op opCode, unsigned start) {
                 // Add inputs and uniforms to the map
-                if (((opCode == spv::OpVariable && asWordCount(start) == 4) || (opCode == spv::OpVariableArray)) &&
+                if ((opCode == spv::OpVariable && asWordCount(start) == 4) &&
                     (spv[start+3] == spv::StorageClassOutput))
                     fnLocalVars.insert(asId(start+2));
 
@@ -729,8 +725,7 @@ namespace spv {
                 const int wordCount = asWordCount(start);
 
                 // Add local variables to the map
-                if ((opCode == spv::OpVariable && spv[start+3] == spv::StorageClassFunction && asWordCount(start) == 4) ||
-                    (opCode == spv::OpVariableArray && spv[start+3] == spv::StorageClassFunction))
+                if ((opCode == spv::OpVariable && spv[start+3] == spv::StorageClassFunction && asWordCount(start) == 4))
                     fnLocalVars.insert(asId(start+2));
 
                 // Ignore process vars referenced via access chain
@@ -1008,14 +1003,14 @@ namespace spv {
             return 6 + hashType(typePos(spv[typeStart+2])) * (spv[typeStart+3] - 1);
         case spv::OpTypeMatrix:
             return 30 + hashType(typePos(spv[typeStart+2])) * (spv[typeStart+3] - 1);
-        case spv::OpTypeSampler:
+        case spv::OpTypeImage:
             return 120 + hashType(typePos(spv[typeStart+2])) +
                 spv[typeStart+3] +            // dimensionality
-                spv[typeStart+4] * 8 * 16 +   // content
+                spv[typeStart+4] * 8 * 16 +   // depth
                 spv[typeStart+5] * 4 * 16 +   // arrayed
-                spv[typeStart+6] * 2 * 16 +   // compare
-                spv[typeStart+7] * 1 * 16;    // multisampled
-        case spv::OpTypeFilter:
+                spv[typeStart+6] * 2 * 16 +   // multisampled
+                spv[typeStart+7] * 1 * 16;    // format
+        case spv::OpTypeSampler:
             return 500;
         case spv::OpTypeArray:
             return 501 + hashType(typePos(spv[typeStart+2])) * spv[typeStart+3];
@@ -1045,12 +1040,11 @@ namespace spv {
         case spv::OpTypeQueue:           return 300003;
         case spv::OpTypePipe:            return 300004;
 
-        case spv::OpConstantNullObject:  return 300005;
+        case spv::OpConstantNull:        return 300005;
         case spv::OpConstantSampler:     return 300006;
 
         case spv::OpConstantTrue:        return 300007;
         case spv::OpConstantFalse:       return 300008;
-        case spv::OpConstantNullPointer: return 300009;
         case spv::OpConstantComposite:
             {
                 std::uint32_t hash = 300011 + hashType(typePos(spv[typeStart+1]));

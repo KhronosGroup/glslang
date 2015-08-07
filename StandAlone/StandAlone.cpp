@@ -42,7 +42,7 @@
 #include "./../glslang/Include/revision.h"
 #include "./../glslang/Public/ShaderLang.h"
 #include "../SPIRV/GlslangToSpv.h"
-#include "../SPIRV/GLSL450Lib.h"
+#include "../SPIRV/GLSL.std.450.h"
 #include "../SPIRV/doc.h"
 #include "../SPIRV/disassemble.h"
 #include <string.h>
@@ -644,8 +644,6 @@ CompileShaders(void*)
     return 0;
 }
 
-const char* GlslStd450DebugNames[GLSL_STD_450::Count];
-
 // Outputs the given string, but only if it is non-null and non-empty.
 // This prevents erroneous newlines from appearing.
 void PutsIfNonEmpty(const char* str)
@@ -754,7 +752,6 @@ void CompileAndLinkShaders()
                     glslang::OutputSpv(spirv, GetBinaryName((EShLanguage)stage));
                     if (Options & EOptionHumanReadableSpv) {
                         spv::Parameterize();
-                        GLSL_STD_450::GetDebugNames(GlslStd450DebugNames);
                         spv::Disassemble(std::cout, spirv);
                     }
                 }
@@ -790,7 +787,7 @@ int C_DECL main(int argc, char* argv[])
         std::string spirvVersion;
         glslang::GetSpirvVersion(spirvVersion);
         printf("SPIR-V Version %s\n", spirvVersion.c_str());
-        printf("GLSL.std.450 Version %d, Revision %d\n", GLSL_STD_450::Version, GLSL_STD_450::Revision);
+        printf("GLSL.std.450 Version %d, Revision %d\n", GLSLstd450Version, GLSLstd450Revision);
         if (Worklist.empty())
             return ESuccess;
     }

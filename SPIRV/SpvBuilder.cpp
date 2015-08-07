@@ -295,31 +295,54 @@ Id Builder::makeFunctionType(Id returnType, std::vector<Id>& paramTypes)
     return type->getResultId();
 }
 
-Id Builder::makeSampler(Id sampledType, Dim dim, samplerContent content, bool arrayed, bool shadow, bool ms)
+Id Builder::makeImageType(Id sampledType, Dim dim, bool depth, bool arrayed, bool ms, unsigned sampled, ImageFormat format)
 {
     // try to find it
     Instruction* type;
-    for (int t = 0; t < (int)groupedTypes[OpTypeSampler].size(); ++t) {
-        type = groupedTypes[OpTypeSampler][t];
+    for (int t = 0; t < (int)groupedTypes[OpTypeImage].size(); ++t) {
+        type = groupedTypes[OpTypeImage][t];
         if (type->getIdOperand(0) == sampledType &&
             type->getImmediateOperand(1) == (unsigned int)dim &&
-            type->getImmediateOperand(2) == (unsigned int)content &&
+            type->getImmediateOperand(2) == (  depth ? 1u : 0u) &&
             type->getImmediateOperand(3) == (arrayed ? 1u : 0u) &&
-            type->getImmediateOperand(4) == ( shadow ? 1u : 0u) &&
-            type->getImmediateOperand(5) == (     ms ? 1u : 0u))
+            type->getImmediateOperand(4) == (     ms ? 1u : 0u) &&
+            type->getImmediateOperand(5) == sampled &&
+            type->getImmediateOperand(6) == (unsigned int)format)
             return type->getResultId();
     }
 
     // not found, make it
-    type = new Instruction(getUniqueId(), NoType, OpTypeSampler);
+    type = new Instruction(getUniqueId(), NoType, OpTypeImage);
     type->addIdOperand(sampledType);
     type->addImmediateOperand(   dim);
-    type->addImmediateOperand(content);
+    type->addImmediateOperand(  depth ? 1 : 0);
     type->addImmediateOperand(arrayed ? 1 : 0);
-    type->addImmediateOperand( shadow ? 1 : 0);
     type->addImmediateOperand(     ms ? 1 : 0);
+    type->addImmediateOperand(sampled);
+    type->addImmediateOperand((unsigned int)format);
 
-    groupedTypes[OpTypeSampler].push_back(type);
+    groupedTypes[OpTypeImage].push_back(type);
+    constantsTypesGlobals.push_back(type);
+    module.mapInstruction(type);
+
+    return type->getResultId();
+}
+
+Id Builder::makeSampledImageType(Id imageType)
+{
+    // try to find it
+    Instruction* type;
+    for (int t = 0; t < (int)groupedTypes[OpTypeSampledImage].size(); ++t) {
+        type = groupedTypes[OpTypeSampledImage][t];
+        if (type->getIdOperand(0) == imageType)
+            return type->getResultId();
+    }
+
+    // not found, make it
+    type = new Instruction(getUniqueId(), NoType, OpTypeSampledImage);
+    type->addIdOperand(imageType);
+
+    groupedTypes[OpTypeSampledImage].push_back(type);
     constantsTypesGlobals.push_back(type);
     module.mapInstruction(type);
 
@@ -606,11 +629,12 @@ Id Builder::makeCompositeConstant(Id typeId, std::vector<Id>& members)
     return c->getResultId();
 }
 
-void Builder::addEntryPoint(ExecutionModel model, Function* function)
+void Builder::addEntryPoint(ExecutionModel model, Function* function, const char* name)
 {
     Instruction* entryPoint = new Instruction(OpEntryPoint);
     entryPoint->addImmediateOperand(model);
     entryPoint->addIdOperand(function->getId());
+    entryPoint->addStringOperand(name);
 
     entryPoints.push_back(entryPoint);
 }
@@ -945,18 +969,20 @@ void Builder::createNoResultOp(Op opCode, Id operand)
     buildPoint->addInstruction(op);
 }
 
-void Builder::createControlBarrier(unsigned executionScope)
+void Builder::createControlBarrier(Scope execution, Scope memory, MemorySemanticsMask semantics)
 {
     Instruction* op = new Instruction(OpControlBarrier);
-    op->addImmediateOperand(executionScope);
+    op->addImmediateOperand(makeUintConstant(execution));
+    op->addImmediateOperand(makeUintConstant(memory));
+    op->addImmediateOperand(makeUintConstant(semantics));
     buildPoint->addInstruction(op);
 }
 
 void Builder::createMemoryBarrier(unsigned executionScope, unsigned memorySemantics)
 {
     Instruction* op = new Instruction(OpMemoryBarrier);
-    op->addImmediateOperand(executionScope);
-    op->addImmediateOperand(memorySemantics);
+    op->addImmediateOperand(makeUintConstant(executionScope));
+    op->addImmediateOperand(makeUintConstant(memorySemantics));
     buildPoint->addInstruction(op);
 }
 
@@ -991,7 +1017,7 @@ Id Builder::createTriOp(Op opCode, Id typeId, Id op1, Id op2, Id op3)
     return op->getResultId();
 }
 
-Id Builder::createOp(Op opCode, Id typeId, std::vector<Id>& operands)
+Id Builder::createOp(Op opCode, Id typeId, const std::vector<Id>& operands)
 {
     Instruction* op = new Instruction(getUniqueId(), typeId, opCode);
     for (auto operand : operands)
@@ -1107,64 +1133,95 @@ Id Builder::createBuiltinCall(Decoration /*precision*/, Id resultType, Id builti
 // Create the correct instruction based on the inputs, and make the call.
 Id Builder::createTextureCall(Decoration precision, Id resultType, bool proj, const TextureParameters& parameters)
 {
-    static const int maxTextureArgs = 5;
+    static const int maxTextureArgs = 10;
     Id texArgs[maxTextureArgs] = {};
 
     //
-    // Set up the arguments
+    // Set up the fixed arguments
     //
-
     int numArgs = 0;
+    bool xplicit = false;
     texArgs[numArgs++] = parameters.sampler;
     texArgs[numArgs++] = parameters.coords;
-
-    if (parameters.gradX) {
-        texArgs[numArgs++] = parameters.gradX;
-        texArgs[numArgs++] = parameters.gradY;
-    }
-    if (parameters.lod)
-        texArgs[numArgs++] = parameters.lod;
-    if (parameters.offset)
-        texArgs[numArgs++] = parameters.offset;
-    if (parameters.bias)
-        texArgs[numArgs++] = parameters.bias;
     if (parameters.Dref)
         texArgs[numArgs++] = parameters.Dref;
 
     //
+    // Set up the optional arguments
+    //
+    int optArgNum = numArgs;                        // track which operand, if it exists, is the mask of optional arguments
+    ++numArgs;                                      // speculatively make room for the mask operand
+    ImageOperandsMask mask = ImageOperandsMaskNone; // the mask operand
+    if (parameters.bias) {
+        mask = (ImageOperandsMask)(mask | ImageOperandsBiasMask);
+        texArgs[numArgs++] = parameters.bias;
+    }
+    if (parameters.lod) {
+        mask = (ImageOperandsMask)(mask | ImageOperandsLodMask);
+        texArgs[numArgs++] = parameters.lod;
+        xplicit = true;
+    }
+    if (parameters.gradX) {
+        mask = (ImageOperandsMask)(mask | ImageOperandsGradMask);
+        texArgs[numArgs++] = parameters.gradX;
+        texArgs[numArgs++] = parameters.gradY;
+        xplicit = true;
+    }
+    if (parameters.offset) {
+        mask = (ImageOperandsMask)(mask | ImageOperandsOffsetMask);
+        texArgs[numArgs++] = parameters.offset;
+    }
+    // TBD: if Offset is constant, use ImageOperandsConstOffsetMask
+    if (parameters.offsets) {
+        mask = (ImageOperandsMask)(mask | ImageOperandsConstOffsetsMask);
+        texArgs[numArgs++] = parameters.offsets;
+    }
+    if (parameters.sample) {
+        mask = (ImageOperandsMask)(mask | ImageOperandsSampleMask);
+        texArgs[numArgs++] = parameters.sample;
+    }
+    if (mask == ImageOperandsMaskNone)
+        --numArgs;  // undo speculative reservation for the mask argument
+    else
+        texArgs[optArgNum] = mask;
+
+    //
     // Set up the instruction
     //
-
     Op opCode;
-    if (proj && parameters.gradX && parameters.offset)
-        opCode = OpTextureSampleProjGradOffset;
-    else if (proj && parameters.lod && parameters.offset)
-        opCode = OpTextureSampleProjLodOffset;
-    else if (parameters.gradX && parameters.offset)
-        opCode = OpTextureSampleGradOffset;
-    else if (proj && parameters.offset)
-        opCode = OpTextureSampleProjOffset;
-    else if (parameters.lod && parameters.offset)
-        opCode = OpTextureSampleLodOffset;
-    else if (proj && parameters.gradX)
-        opCode = OpTextureSampleProjGrad;
-    else if (proj && parameters.lod)
-        opCode = OpTextureSampleProjLod;
-    else if (parameters.offset)
-        opCode = OpTextureSampleOffset;
-    else if (parameters.gradX)
-        opCode = OpTextureSampleGrad;
-    else if (proj)
-        opCode = OpTextureSampleProj;
-    else if (parameters.lod)
-        opCode = OpTextureSampleLod;
-    else if (parameters.Dref)
-        opCode = OpTextureSampleDref;
-    else
-        opCode = OpTextureSample;
+    opCode = OpImageSampleImplicitLod;
+    if (xplicit) {
+        if (parameters.Dref) {
+            if (proj)
+                opCode = OpImageSampleProjDrefExplicitLod;
+            else
+                opCode = OpImageSampleDrefExplicitLod;
+        } else {
+            if (proj)
+                opCode = OpImageSampleProjExplicitLod;
+            else
+                opCode = OpImageSampleExplicitLod;
+        }
+    } else {
+        if (parameters.Dref) {
+            if (proj)
+                opCode = OpImageSampleProjDrefImplicitLod;
+            else
+                opCode = OpImageSampleDrefImplicitLod;
+        } else {
+            if (proj)
+                opCode = OpImageSampleProjImplicitLod;
+            else
+                opCode = OpImageSampleImplicitLod;
+        }
+    }
 
     Instruction* textureInst = new Instruction(getUniqueId(), resultType, opCode);
-    for (int op = 0; op < numArgs; ++op)
+    for (int op = 0; op < optArgNum; ++op)
+        textureInst->addIdOperand(texArgs[op]);
+    if (optArgNum < numArgs)
+        textureInst->addImmediateOperand(texArgs[optArgNum]);
+    for (int op = optArgNum + 1; op < numArgs; ++op)
         textureInst->addIdOperand(texArgs[op]);
     setPrecision(textureInst->getResultId(), precision);
     buildPoint->addInstruction(textureInst);
@@ -1176,13 +1233,13 @@ Id Builder::createTextureCall(Decoration precision, Id resultType, bool proj, co
 Id Builder::createTextureQueryCall(Op opCode, const TextureParameters& parameters)
 {
     // Figure out the result type
-    Id resultType = NoType;
+    Id resultType = 0;
     switch (opCode) {
-    case OpTextureQuerySize:
-    case OpTextureQuerySizeLod:
+    case OpImageQuerySize:
+    case OpImageQuerySizeLod:
     {
         int numComponents;
-        switch (getDimensionality(parameters.sampler)) {
+        switch (getTypeDimensionality(getImageType(parameters.sampler))) {
         case Dim1D:
         case DimBuffer:
             numComponents = 1;
@@ -1199,7 +1256,7 @@ Id Builder::createTextureQueryCall(Op opCode, const TextureParameters& parameter
             MissingFunctionality("texture query dimensionality");
             break;
         }
-        if (isArrayedSampler(parameters.sampler))
+        if (isArrayedImageType(getImageType(parameters.sampler)))
             ++numComponents;
         if (numComponents == 1)
             resultType = makeIntType(32);
@@ -1208,11 +1265,11 @@ Id Builder::createTextureQueryCall(Op opCode, const TextureParameters& parameter
 
         break;
     }
-    case OpTextureQueryLod:
+    case OpImageQueryLod:
         resultType = makeVectorType(makeFloatType(32), 2);
         break;
-    case OpTextureQueryLevels:
-    case OpTextureQuerySamples:
+    case OpImageQueryLevels:
+    case OpImageQuerySamples:
         resultType = makeIntType(32);
         break;
     default:
@@ -2040,7 +2097,16 @@ void Builder::dump(std::vector<unsigned int>& out) const
         extInst.addStringOperand(extensions[e]);
         extInst.dump(out);
     }
+
     // TBD: OpExtension ...
+
+    // Capabilities
+    for (auto cap : capabilities) {
+        Instruction capInst(0, 0, OpCapability);
+        capInst.addImmediateOperand(cap);
+        capInst.dump(out);
+    }
+
     dumpInstructions(out, imports);
     Instruction memInst(0, 0, OpMemoryModel);
     memInst.addImmediateOperand(addressModel);

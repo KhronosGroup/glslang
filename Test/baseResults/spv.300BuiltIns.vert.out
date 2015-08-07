@@ -8,9 +8,10 @@ Linked vertex stage:
 // Id's are bound by 41
 
                               Source ESSL 300
+                              Capability Shader
                1:             ExtInstImport  "GLSL.std.450"
                               MemoryModel Logical GLSL450
-                              EntryPoint Vertex 4
+                              EntryPoint Vertex 4  "main"
                               Name 4  "main"
                               Name 9  "i"
                               Name 12  "gl_VertexID"
@@ -19,63 +20,59 @@ Linked vertex stage:
                               Name 26  "ps"
                               Name 34  "gl_PointSize"
                               Name 40  "gl_InstanceID"
-                              Decorate 9(i) PrecisionMedium 
-                              Decorate 12(gl_VertexID) PrecisionHigh 
+                              Decorate 9(i) RelaxedPrecision
                               Decorate 12(gl_VertexID) BuiltIn VertexId
-                              Decorate 17(j) PrecisionMedium 
-                              Decorate 24(gl_Position) PrecisionHigh 
-                              Decorate 24(gl_Position) Invariant 
+                              Decorate 17(j) RelaxedPrecision
+                              Decorate 24(gl_Position) Invariant
                               Decorate 24(gl_Position) BuiltIn Position
-                              Decorate 26(ps) PrecisionMedium 
-                              Decorate 34(gl_PointSize) PrecisionHigh 
+                              Decorate 26(ps) RelaxedPrecision
                               Decorate 34(gl_PointSize) BuiltIn PointSize
-                              Decorate 40(gl_InstanceID) PrecisionHigh 
                               Decorate 40(gl_InstanceID) BuiltIn InstanceId
-                              Decorate 40(gl_InstanceID) NoStaticUse 
+                              Decorate 40(gl_InstanceID) NoStaticUse
                2:             TypeVoid
-               3:             TypeFunction 2 
+               3:             TypeFunction 2
                7:             TypeInt 32 1
                8:             TypePointer Function 7(int)
               10:      7(int) Constant 4
               11:             TypePointer Input 7(int)
- 12(gl_VertexID):     11(ptr) Variable Input 
+ 12(gl_VertexID):     11(ptr) Variable Input
               15:      7(int) Constant 10
               21:             TypeFloat 32
               22:             TypeVector 21(float) 4
               23:             TypePointer Output 22(fvec4)
- 24(gl_Position):     23(ptr) Variable Output 
+ 24(gl_Position):     23(ptr) Variable Output
               25:             TypePointer Input 21(float)
-          26(ps):     25(ptr) Variable Input 
+          26(ps):     25(ptr) Variable Input
               33:             TypePointer Output 21(float)
-34(gl_PointSize):     33(ptr) Variable Output 
-40(gl_InstanceID):     11(ptr) Variable Input 
+34(gl_PointSize):     33(ptr) Variable Output
+40(gl_InstanceID):     11(ptr) Variable Input
          4(main):           2 Function None 3
                5:             Label
-            9(i):      8(ptr) Variable Function 
-           17(j):      8(ptr) Variable Function 
-              13:      7(int) Load 12(gl_VertexID) 
+            9(i):      8(ptr) Variable Function
+           17(j):      8(ptr) Variable Function
+              13:      7(int) Load 12(gl_VertexID)
               14:      7(int) IMul 10 13
               16:      7(int) ISub 14 15
-                              Store 9(i) 16 
-              18:      7(int) Load 12(gl_VertexID) 
+                              Store 9(i) 16
+              18:      7(int) Load 12(gl_VertexID)
               19:      7(int) IMul 10 18
               20:      7(int) ISub 19 15
-                              Store 17(j) 20 
-              27:   21(float) Load 26(ps) 
+                              Store 17(j) 20
+              27:   21(float) Load 26(ps)
               28:   22(fvec4) CompositeConstruct 27 27 27 27
-                              Store 24(gl_Position) 28 
-              29:      7(int) Load 9(i) 
+                              Store 24(gl_Position) 28
+              29:      7(int) Load 9(i)
               30:   21(float) ConvertSToF 29
-              31:   22(fvec4) Load 24(gl_Position) 
+              31:   22(fvec4) Load 24(gl_Position)
               32:   22(fvec4) VectorTimesScalar 31 30
-                              Store 24(gl_Position) 32 
-              35:   21(float) Load 26(ps) 
-                              Store 34(gl_PointSize) 35 
-              36:      7(int) Load 17(j) 
+                              Store 24(gl_Position) 32
+              35:   21(float) Load 26(ps)
+                              Store 34(gl_PointSize) 35
+              36:      7(int) Load 17(j)
               37:   21(float) ConvertSToF 36
-              38:   21(float) Load 34(gl_PointSize) 
+              38:   21(float) Load 34(gl_PointSize)
               39:   21(float) FMul 38 37
-                              Store 34(gl_PointSize) 39 
+                              Store 34(gl_PointSize) 39
                               Branch 6
                6:             Label
                               Return

@@ -101,7 +101,7 @@ public:
 #include <set>
 #include <cassert>
 
-#include "spirv.h"
+#include "spirv.hpp"
 #include "spvIR.h"
 
 namespace spv {

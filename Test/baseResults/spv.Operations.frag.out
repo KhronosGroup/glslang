@@ -8,9 +8,11 @@ Linked fragment stage:
 // Id's are bound by 399
 
                               Source GLSL 130
+                              Capability Shader
                1:             ExtInstImport  "GLSL.std.450"
                               MemoryModel Logical GLSL450
-                              EntryPoint Fragment 4
+                              EntryPoint Fragment 4  "main"
+                              ExecutionMode 4 OriginLowerLeft
                               Name 4  "main"
                               Name 10  "v"
                               Name 12  "uv4"
@@ -25,27 +27,27 @@ Linked fragment stage:
                               Name 396  "uiv4"
                               Name 398  "ub"
                               Decorate 378(gl_FragColor) BuiltIn FragColor
-                              Decorate 396(uiv4) NoStaticUse 
-                              Decorate 398(ub) NoStaticUse 
+                              Decorate 396(uiv4) NoStaticUse
+                              Decorate 398(ub) NoStaticUse
                2:             TypeVoid
-               3:             TypeFunction 2 
+               3:             TypeFunction 2
                7:             TypeFloat 32
                8:             TypeVector 7(float) 4
                9:             TypePointer Function 8(fvec4)
               11:             TypePointer UniformConstant 8(fvec4)
-         12(uv4):     11(ptr) Variable UniformConstant 
+         12(uv4):     11(ptr) Variable UniformConstant
               19:             TypeInt 32 1
               20:             TypePointer Function 19(int)
               22:             TypePointer UniformConstant 19(int)
-          23(ui):     22(ptr) Variable UniformConstant 
+          23(ui):     22(ptr) Variable UniformConstant
              169:             TypePointer UniformConstant 7(float)
-         170(uf):    169(ptr) Variable UniformConstant 
+         170(uf):    169(ptr) Variable UniformConstant
              215:             TypeBool
              216:             TypePointer Function 215(bool)
              220:             TypeVector 215(bool) 4
              242:             TypePointer UniformConstant 220(bvec4)
-       243(ub41):    242(ptr) Variable UniformConstant 
-       245(ub42):    242(ptr) Variable UniformConstant 
+       243(ub41):    242(ptr) Variable UniformConstant
+       245(ub42):    242(ptr) Variable UniformConstant
              292:     19(int) Constant 2
              299:     19(int) Constant 1
              301:             TypePointer Function 7(float)
@@ -55,458 +57,458 @@ Linked fragment stage:
              359:     19(int) Constant 66
              365:     19(int) Constant 17
              377:             TypePointer Output 8(fvec4)
-378(gl_FragColor):    377(ptr) Variable Output 
+378(gl_FragColor):    377(ptr) Variable Output
              394:             TypeVector 19(int) 4
              395:             TypePointer UniformConstant 394(ivec4)
-       396(uiv4):    395(ptr) Variable UniformConstant 
+       396(uiv4):    395(ptr) Variable UniformConstant
              397:             TypePointer UniformConstant 215(bool)
-         398(ub):    397(ptr) Variable UniformConstant 
+         398(ub):    397(ptr) Variable UniformConstant
          4(main):           2 Function None 3
                5:             Label
-           10(v):      9(ptr) Variable Function 
-           21(i):     20(ptr) Variable Function 
-          217(b):    216(ptr) Variable Function 
-          302(f):    301(ptr) Variable Function 
-             379:      9(ptr) Variable Function 
-              13:    8(fvec4) Load 12(uv4) 
-              14:    8(fvec4) ExtInst 1(GLSL.std.450) 8(radians) 13
-                              Store 10(v) 14 
-              15:    8(fvec4) Load 10(v) 
-              16:    8(fvec4) ExtInst 1(GLSL.std.450) 9(degrees) 15
-              17:    8(fvec4) Load 10(v) 
+           10(v):      9(ptr) Variable Function
+           21(i):     20(ptr) Variable Function
+          217(b):    216(ptr) Variable Function
+          302(f):    301(ptr) Variable Function
+             379:      9(ptr) Variable Function
+              13:    8(fvec4) Load 12(uv4)
+              14:    8(fvec4) ExtInst 1(GLSL.std.450) 11(Radians) 13
+                              Store 10(v) 14
+              15:    8(fvec4) Load 10(v)
+              16:    8(fvec4) ExtInst 1(GLSL.std.450) 12(Degrees) 15
+              17:    8(fvec4) Load 10(v)
               18:    8(fvec4) FAdd 17 16
-                              Store 10(v) 18 
-              24:     19(int) Load 23(ui) 
-              25:     19(int) Load 23(ui) 
+                              Store 10(v) 18
+              24:     19(int) Load 23(ui)
+              25:     19(int) Load 23(ui)
               26:     19(int) IMul 24 25
-                              Store 21(i) 26 
-              27:    8(fvec4) Load 10(v) 
-              28:    8(fvec4) ExtInst 1(GLSL.std.450) 10(sin) 27
-              29:    8(fvec4) Load 10(v) 
+                              Store 21(i) 26
+              27:    8(fvec4) Load 10(v)
+              28:    8(fvec4) ExtInst 1(GLSL.std.450) 13(Sin) 27
+              29:    8(fvec4) Load 10(v)
               30:    8(fvec4) FAdd 29 28
-                              Store 10(v) 30 
-              31:    8(fvec4) Load 10(v) 
-              32:    8(fvec4) ExtInst 1(GLSL.std.450) 11(cos) 31
-              33:    8(fvec4) Load 10(v) 
+                              Store 10(v) 30
+              31:    8(fvec4) Load 10(v)
+              32:    8(fvec4) ExtInst 1(GLSL.std.450) 14(Cos) 31
+              33:    8(fvec4) Load 10(v)
               34:    8(fvec4) FAdd 33 32
-                              Store 10(v) 34 
-              35:    8(fvec4) Load 10(v) 
-              36:    8(fvec4) ExtInst 1(GLSL.std.450) 12(tan) 35
-              37:    8(fvec4) Load 10(v) 
+                              Store 10(v) 34
+              35:    8(fvec4) Load 10(v)
+              36:    8(fvec4) ExtInst 1(GLSL.std.450) 15(Tan) 35
+              37:    8(fvec4) Load 10(v)
               38:    8(fvec4) FAdd 37 36
-                              Store 10(v) 38 
-              39:    8(fvec4) Load 10(v) 
-              40:    8(fvec4) ExtInst 1(GLSL.std.450) 13(asin) 39
-              41:    8(fvec4) Load 10(v) 
+                              Store 10(v) 38
+              39:    8(fvec4) Load 10(v)
+              40:    8(fvec4) ExtInst 1(GLSL.std.450) 16(Asin) 39
+              41:    8(fvec4) Load 10(v)
               42:    8(fvec4) FAdd 41 40
-                              Store 10(v) 42 
-              43:    8(fvec4) Load 10(v) 
-              44:    8(fvec4) ExtInst 1(GLSL.std.450) 14(acos) 43
-              45:    8(fvec4) Load 10(v) 
+                              Store 10(v) 42
+              43:    8(fvec4) Load 10(v)
+              44:    8(fvec4) ExtInst 1(GLSL.std.450) 17(Acos) 43
+              45:    8(fvec4) Load 10(v)
               46:    8(fvec4) FAdd 45 44
-                              Store 10(v) 46 
-              47:    8(fvec4) Load 10(v) 
-              48:    8(fvec4) ExtInst 1(GLSL.std.450) 15(atan) 47
-              49:    8(fvec4) Load 10(v) 
+                              Store 10(v) 46
+              47:    8(fvec4) Load 10(v)
+              48:    8(fvec4) ExtInst 1(GLSL.std.450) 18(Atan) 47
+              49:    8(fvec4) Load 10(v)
               50:    8(fvec4) FAdd 49 48
-                              Store 10(v) 50 
-              51:    8(fvec4) Load 10(v) 
-              52:    8(fvec4) ExtInst 1(GLSL.std.450) 16(sinh) 51
-              53:    8(fvec4) Load 10(v) 
+                              Store 10(v) 50
+              51:    8(fvec4) Load 10(v)
+              52:    8(fvec4) ExtInst 1(GLSL.std.450) 19(Sinh) 51
+              53:    8(fvec4) Load 10(v)
               54:    8(fvec4) FAdd 53 52
-                              Store 10(v) 54 
-              55:    8(fvec4) Load 10(v) 
-              56:    8(fvec4) ExtInst 1(GLSL.std.450) 17(cosh) 55
-              57:    8(fvec4) Load 10(v) 
+                              Store 10(v) 54
+              55:    8(fvec4) Load 10(v)
+              56:    8(fvec4) ExtInst 1(GLSL.std.450) 20(Cosh) 55
+              57:    8(fvec4) Load 10(v)
               58:    8(fvec4) FAdd 57 56
-                              Store 10(v) 58 
-              59:    8(fvec4) Load 10(v) 
-              60:    8(fvec4) ExtInst 1(GLSL.std.450) 18(tanh) 59
-              61:    8(fvec4) Load 10(v) 
+                              Store 10(v) 58
+              59:    8(fvec4) Load 10(v)
+              60:    8(fvec4) ExtInst 1(GLSL.std.450) 21(Tanh) 59
+              61:    8(fvec4) Load 10(v)
               62:    8(fvec4) FAdd 61 60
-                              Store 10(v) 62 
-              63:    8(fvec4) Load 10(v) 
-              64:    8(fvec4) ExtInst 1(GLSL.std.450) 19(asinh) 63
-              65:    8(fvec4) Load 10(v) 
+                              Store 10(v) 62
+              63:    8(fvec4) Load 10(v)
+              64:    8(fvec4) ExtInst 1(GLSL.std.450) 22(Asinh) 63
+              65:    8(fvec4) Load 10(v)
               66:    8(fvec4) FAdd 65 64
-                              Store 10(v) 66 
-              67:    8(fvec4) Load 10(v) 
-              68:    8(fvec4) ExtInst 1(GLSL.std.450) 20(acosh) 67
-              69:    8(fvec4) Load 10(v) 
+                              Store 10(v) 66
+              67:    8(fvec4) Load 10(v)
+              68:    8(fvec4) ExtInst 1(GLSL.std.450) 23(Acosh) 67
+              69:    8(fvec4) Load 10(v)
               70:    8(fvec4) FAdd 69 68
-                              Store 10(v) 70 
-              71:    8(fvec4) Load 10(v) 
-              72:    8(fvec4) ExtInst 1(GLSL.std.450) 21(atanh) 71
-              73:    8(fvec4) Load 10(v) 
+                              Store 10(v) 70
+              71:    8(fvec4) Load 10(v)
+              72:    8(fvec4) ExtInst 1(GLSL.std.450) 24(Atanh) 71
+              73:    8(fvec4) Load 10(v)
               74:    8(fvec4) FAdd 73 72
-                              Store 10(v) 74 
-              75:    8(fvec4) Load 10(v) 
-              76:    8(fvec4) Load 10(v) 
-              77:    8(fvec4) ExtInst 1(GLSL.std.450) 23(pow) 75 76
-              78:    8(fvec4) Load 10(v) 
+                              Store 10(v) 74
+              75:    8(fvec4) Load 10(v)
+              76:    8(fvec4) Load 10(v)
+              77:    8(fvec4) ExtInst 1(GLSL.std.450) 26(Pow) 75 76
+              78:    8(fvec4) Load 10(v)
               79:    8(fvec4) FAdd 78 77
-                              Store 10(v) 79 
-              80:    8(fvec4) Load 10(v) 
-              81:    8(fvec4) ExtInst 1(GLSL.std.450) 24(exp) 80
-              82:    8(fvec4) Load 10(v) 
+                              Store 10(v) 79
+              80:    8(fvec4) Load 10(v)
+              81:    8(fvec4) ExtInst 1(GLSL.std.450) 27(Exp) 80
+              82:    8(fvec4) Load 10(v)
               83:    8(fvec4) FAdd 82 81
-                              Store 10(v) 83 
-              84:    8(fvec4) Load 10(v) 
-              85:    8(fvec4) ExtInst 1(GLSL.std.450) 25(log) 84
-              86:    8(fvec4) Load 10(v) 
+                              Store 10(v) 83
+              84:    8(fvec4) Load 10(v)
+              85:    8(fvec4) ExtInst 1(GLSL.std.450) 28(Log) 84
+              86:    8(fvec4) Load 10(v)
               87:    8(fvec4) FAdd 86 85
-                              Store 10(v) 87 
-              88:    8(fvec4) Load 10(v) 
-              89:    8(fvec4) ExtInst 1(GLSL.std.450) 26(exp2) 88
-              90:    8(fvec4) Load 10(v) 
+                              Store 10(v) 87
+              88:    8(fvec4) Load 10(v)
+              89:    8(fvec4) ExtInst 1(GLSL.std.450) 29(Exp2) 88
+              90:    8(fvec4) Load 10(v)
               91:    8(fvec4) FAdd 90 89
-                              Store 10(v) 91 
-              92:    8(fvec4) Load 10(v) 
-              93:    8(fvec4) ExtInst 1(GLSL.std.450) 27(log2) 92
-              94:    8(fvec4) Load 10(v) 
+                              Store 10(v) 91
+              92:    8(fvec4) Load 10(v)
+              93:    8(fvec4) ExtInst 1(GLSL.std.450) 30(Log2) 92
+              94:    8(fvec4) Load 10(v)
               95:    8(fvec4) FAdd 94 93
-                              Store 10(v) 95 
-              96:    8(fvec4) Load 10(v) 
-              97:    8(fvec4) ExtInst 1(GLSL.std.450) 28(sqrt) 96
-              98:    8(fvec4) Load 10(v) 
+                              Store 10(v) 95
+              96:    8(fvec4) Load 10(v)
+              97:    8(fvec4) ExtInst 1(GLSL.std.450) 31(Sqrt) 96
+              98:    8(fvec4) Load 10(v)
               99:    8(fvec4) FAdd 98 97
-                              Store 10(v) 99 
-             100:    8(fvec4) Load 10(v) 
-             101:    8(fvec4) ExtInst 1(GLSL.std.450) 29(inverseSqrt) 100
-             102:    8(fvec4) Load 10(v) 
+                              Store 10(v) 99
+             100:    8(fvec4) Load 10(v)
+             101:    8(fvec4) ExtInst 1(GLSL.std.450) 32(Inversesqrt) 100
+             102:    8(fvec4) Load 10(v)
              103:    8(fvec4) FAdd 102 101
-                              Store 10(v) 103 
-             104:    8(fvec4) Load 10(v) 
-             105:    8(fvec4) ExtInst 1(GLSL.std.450) 3(abs) 104
-             106:    8(fvec4) Load 10(v) 
+                              Store 10(v) 103
+             104:    8(fvec4) Load 10(v)
+             105:    8(fvec4) ExtInst 1(GLSL.std.450) 4(FAbs) 104
+             106:    8(fvec4) Load 10(v)
              107:    8(fvec4) FAdd 106 105
-                              Store 10(v) 107 
-             108:    8(fvec4) Load 10(v) 
-             109:    8(fvec4) ExtInst 1(GLSL.std.450) 4(sign) 108
-             110:    8(fvec4) Load 10(v) 
+                              Store 10(v) 107
+             108:    8(fvec4) Load 10(v)
+             109:    8(fvec4) ExtInst 1(GLSL.std.450) 6(FSign) 108
+             110:    8(fvec4) Load 10(v)
              111:    8(fvec4) FAdd 110 109
-                              Store 10(v) 111 
-             112:    8(fvec4) Load 10(v) 
-             113:    8(fvec4) ExtInst 1(GLSL.std.450) 5(floor) 112
-             114:    8(fvec4) Load 10(v) 
+                              Store 10(v) 111
+             112:    8(fvec4) Load 10(v)
+             113:    8(fvec4) ExtInst 1(GLSL.std.450) 8(Floor) 112
+             114:    8(fvec4) Load 10(v)
              115:    8(fvec4) FAdd 114 113
-                              Store 10(v) 115 
-             116:    8(fvec4) Load 10(v) 
-             117:    8(fvec4) ExtInst 1(GLSL.std.450) 6(ceil) 116
-             118:    8(fvec4) Load 10(v) 
+                              Store 10(v) 115
+             116:    8(fvec4) Load 10(v)
+             117:    8(fvec4) ExtInst 1(GLSL.std.450) 9(Ceil) 116
+             118:    8(fvec4) Load 10(v)
              119:    8(fvec4) FAdd 118 117
-                              Store 10(v) 119 
-             120:    8(fvec4) Load 10(v) 
-             121:    8(fvec4) ExtInst 1(GLSL.std.450) 7(fract) 120
-             122:    8(fvec4) Load 10(v) 
+                              Store 10(v) 119
+             120:    8(fvec4) Load 10(v)
+             121:    8(fvec4) ExtInst 1(GLSL.std.450) 10(Fract) 120
+             122:    8(fvec4) Load 10(v)
              123:    8(fvec4) FAdd 122 121
-                              Store 10(v) 123 
-             124:    8(fvec4) Load 10(v) 
-             125:    8(fvec4) Load 10(v) 
+                              Store 10(v) 123
+             124:    8(fvec4) Load 10(v)
+             125:    8(fvec4) Load 10(v)
              126:    8(fvec4) FMod 124 125
-             127:    8(fvec4) Load 10(v) 
+             127:    8(fvec4) Load 10(v)
              128:    8(fvec4) FAdd 127 126
-                              Store 10(v) 128 
-             129:    8(fvec4) Load 10(v) 
-             130:    8(fvec4) Load 10(v) 
+                              Store 10(v) 128
+             129:    8(fvec4) Load 10(v)
+             130:    8(fvec4) Load 10(v)
              131:    7(float) CompositeExtract 130 0
              132:    8(fvec4) CompositeConstruct 131 131 131 131
              133:    8(fvec4) FMod 129 132
-             134:    8(fvec4) Load 10(v) 
+             134:    8(fvec4) Load 10(v)
              135:    8(fvec4) FAdd 134 133
-                              Store 10(v) 135 
-             136:    8(fvec4) Load 10(v) 
-             137:    8(fvec4) Load 12(uv4) 
-             138:    8(fvec4) ExtInst 1(GLSL.std.450) 33(min) 136 137
-             139:    8(fvec4) Load 10(v) 
+                              Store 10(v) 135
+             136:    8(fvec4) Load 10(v)
+             137:    8(fvec4) Load 12(uv4)
+             138:    8(fvec4) ExtInst 1(GLSL.std.450) 37(FMin) 136 137
+             139:    8(fvec4) Load 10(v)
              140:    8(fvec4) FAdd 139 138
-                              Store 10(v) 140 
-             141:    8(fvec4) Load 10(v) 
-             142:    8(fvec4) Load 12(uv4) 
-             143:    8(fvec4) ExtInst 1(GLSL.std.450) 34(max) 141 142
-             144:    8(fvec4) Load 10(v) 
+                              Store 10(v) 140
+             141:    8(fvec4) Load 10(v)
+             142:    8(fvec4) Load 12(uv4)
+             143:    8(fvec4) ExtInst 1(GLSL.std.450) 40(FMax) 141 142
+             144:    8(fvec4) Load 10(v)
              145:    8(fvec4) FAdd 144 143
-                              Store 10(v) 145 
-             146:    8(fvec4) Load 10(v) 
-             147:    8(fvec4) Load 12(uv4) 
-             148:    8(fvec4) Load 12(uv4) 
-             149:    8(fvec4) ExtInst 1(GLSL.std.450) 35(clamp) 146 147 148
-             150:    8(fvec4) Load 10(v) 
+                              Store 10(v) 145
+             146:    8(fvec4) Load 10(v)
+             147:    8(fvec4) Load 12(uv4)
+             148:    8(fvec4) Load 12(uv4)
+             149:    8(fvec4) ExtInst 1(GLSL.std.450) 43(FClamp) 146 147 148
+             150:    8(fvec4) Load 10(v)
              151:    8(fvec4) FAdd 150 149
-                              Store 10(v) 151 
-             152:    8(fvec4) Load 10(v) 
-             153:    8(fvec4) Load 10(v) 
-             154:    8(fvec4) Load 10(v) 
-             155:    8(fvec4) ExtInst 1(GLSL.std.450) 36(mix) 152 153 154
-             156:    8(fvec4) Load 10(v) 
+                              Store 10(v) 151
+             152:    8(fvec4) Load 10(v)
+             153:    8(fvec4) Load 10(v)
+             154:    8(fvec4) Load 10(v)
+             155:    8(fvec4) ExtInst 1(GLSL.std.450) 46(Mix) 152 153 154
+             156:    8(fvec4) Load 10(v)
              157:    8(fvec4) FAdd 156 155
-                              Store 10(v) 157 
-             158:    8(fvec4) Load 10(v) 
-             159:    8(fvec4) Load 10(v) 
-             160:    8(fvec4) ExtInst 1(GLSL.std.450) 37(step) 158 159
-             161:    8(fvec4) Load 10(v) 
+                              Store 10(v) 157
+             158:    8(fvec4) Load 10(v)
+             159:    8(fvec4) Load 10(v)
+             160:    8(fvec4) ExtInst 1(GLSL.std.450) 47(Step) 158 159
+             161:    8(fvec4) Load 10(v)
              162:    8(fvec4) FAdd 161 160
-                              Store 10(v) 162 
-             163:    8(fvec4) Load 10(v) 
-             164:    8(fvec4) Load 10(v) 
-             165:    8(fvec4) Load 10(v) 
-             166:    8(fvec4) ExtInst 1(GLSL.std.450) 38(smoothStep) 163 164 165
-             167:    8(fvec4) Load 10(v) 
+                              Store 10(v) 162
+             163:    8(fvec4) Load 10(v)
+             164:    8(fvec4) Load 10(v)
+             165:    8(fvec4) Load 10(v)
+             166:    8(fvec4) ExtInst 1(GLSL.std.450) 48(Smoothstep) 163 164 165
+             167:    8(fvec4) Load 10(v)
              168:    8(fvec4) FAdd 167 166
-                              Store 10(v) 168 
-             171:    7(float) Load 170(uf) 
-             172:    8(fvec4) Load 10(v) 
-             173:    8(fvec4) ExtInst 1(GLSL.std.450) 37(step) 171 172
-             174:    8(fvec4) Load 10(v) 
+                              Store 10(v) 168
+             171:    7(float) Load 170(uf)
+             172:    8(fvec4) Load 10(v)
+             173:    8(fvec4) ExtInst 1(GLSL.std.450) 47(Step) 171 172
+             174:    8(fvec4) Load 10(v)
              175:    8(fvec4) FAdd 174 173
-                              Store 10(v) 175 
-             176:    7(float) Load 170(uf) 
-             177:    7(float) Load 170(uf) 
-             178:    8(fvec4) Load 10(v) 
-             179:    8(fvec4) ExtInst 1(GLSL.std.450) 38(smoothStep) 176 177 178
-             180:    8(fvec4) Load 10(v) 
+                              Store 10(v) 175
+             176:    7(float) Load 170(uf)
+             177:    7(float) Load 170(uf)
+             178:    8(fvec4) Load 10(v)
+             179:    8(fvec4) ExtInst 1(GLSL.std.450) 48(Smoothstep) 176 177 178
+             180:    8(fvec4) Load 10(v)
              181:    8(fvec4) FAdd 180 179
-                              Store 10(v) 181 
-             182:    8(fvec4) Load 10(v) 
-             183:    8(fvec4) ExtInst 1(GLSL.std.450) 61(normalize) 182
-             184:    8(fvec4) Load 10(v) 
+                              Store 10(v) 181
+             182:    8(fvec4) Load 10(v)
+             183:    8(fvec4) ExtInst 1(GLSL.std.450) 68(Normalize) 182
+             184:    8(fvec4) Load 10(v)
              185:    8(fvec4) FAdd 184 183
-                              Store 10(v) 185 
-             186:    8(fvec4) Load 10(v) 
-             187:    8(fvec4) Load 10(v) 
-             188:    8(fvec4) Load 10(v) 
-             189:    8(fvec4) ExtInst 1(GLSL.std.450) 63(faceForward) 186 187 188
-             190:    8(fvec4) Load 10(v) 
+                              Store 10(v) 185
+             186:    8(fvec4) Load 10(v)
+             187:    8(fvec4) Load 10(v)
+             188:    8(fvec4) Load 10(v)
+             189:    8(fvec4) ExtInst 1(GLSL.std.450) 69(Faceforward) 186 187 188
+             190:    8(fvec4) Load 10(v)
              191:    8(fvec4) FAdd 190 189
-                              Store 10(v) 191 
-             192:    8(fvec4) Load 10(v) 
-             193:    8(fvec4) Load 10(v) 
-             194:    8(fvec4) ExtInst 1(GLSL.std.450) 64(reflect) 192 193
-             195:    8(fvec4) Load 10(v) 
+                              Store 10(v) 191
+             192:    8(fvec4) Load 10(v)
+             193:    8(fvec4) Load 10(v)
+             194:    8(fvec4) ExtInst 1(GLSL.std.450) 70(Reflect) 192 193
+             195:    8(fvec4) Load 10(v)
              196:    8(fvec4) FAdd 195 194
-                              Store 10(v) 196 
-             197:    8(fvec4) Load 10(v) 
-             198:    8(fvec4) Load 10(v) 
-             199:    7(float) Load 170(uf) 
-             200:    8(fvec4) ExtInst 1(GLSL.std.450) 65(refract) 197 198 199
-             201:    8(fvec4) Load 10(v) 
+                              Store 10(v) 196
+             197:    8(fvec4) Load 10(v)
+             198:    8(fvec4) Load 10(v)
+             199:    7(float) Load 170(uf)
+             200:    8(fvec4) ExtInst 1(GLSL.std.450) 71(Refract) 197 198 199
+             201:    8(fvec4) Load 10(v)
              202:    8(fvec4) FAdd 201 200
-                              Store 10(v) 202 
-             203:    8(fvec4) Load 10(v) 
+                              Store 10(v) 202
+             203:    8(fvec4) Load 10(v)
              204:    8(fvec4) DPdx 203
-             205:    8(fvec4) Load 10(v) 
+             205:    8(fvec4) Load 10(v)
              206:    8(fvec4) FAdd 205 204
-                              Store 10(v) 206 
-             207:    8(fvec4) Load 10(v) 
+                              Store 10(v) 206
+             207:    8(fvec4) Load 10(v)
              208:    8(fvec4) DPdy 207
-             209:    8(fvec4) Load 10(v) 
+             209:    8(fvec4) Load 10(v)
              210:    8(fvec4) FAdd 209 208
-                              Store 10(v) 210 
-             211:    8(fvec4) Load 10(v) 
+                              Store 10(v) 210
+             211:    8(fvec4) Load 10(v)
              212:    8(fvec4) Fwidth 211
-             213:    8(fvec4) Load 10(v) 
+             213:    8(fvec4) Load 10(v)
              214:    8(fvec4) FAdd 213 212
-                              Store 10(v) 214 
-             218:    8(fvec4) Load 10(v) 
-             219:    8(fvec4) Load 12(uv4) 
+                              Store 10(v) 214
+             218:    8(fvec4) Load 10(v)
+             219:    8(fvec4) Load 12(uv4)
              221:  220(bvec4) FOrdLessThan 218 219
              222:   215(bool) Any 221
-                              Store 217(b) 222 
-             223:   215(bool) Load 217(b) 
-             224:    8(fvec4) Load 10(v) 
-             225:    8(fvec4) Load 12(uv4) 
+                              Store 217(b) 222
+             223:   215(bool) Load 217(b)
+             224:    8(fvec4) Load 10(v)
+             225:    8(fvec4) Load 12(uv4)
              226:  220(bvec4) FOrdLessThanEqual 224 225
              227:   215(bool) Any 226
              228:   215(bool) LogicalAnd 223 227
-                              Store 217(b) 228 
-             229:   215(bool) Load 217(b) 
-             230:    8(fvec4) Load 10(v) 
-             231:    8(fvec4) Load 12(uv4) 
+                              Store 217(b) 228
+             229:   215(bool) Load 217(b)
+             230:    8(fvec4) Load 10(v)
+             231:    8(fvec4) Load 12(uv4)
              232:  220(bvec4) FOrdGreaterThan 230 231
              233:   215(bool) Any 232
              234:   215(bool) LogicalAnd 229 233
-                              Store 217(b) 234 
-             235:   215(bool) Load 217(b) 
-             236:    8(fvec4) Load 10(v) 
-             237:    8(fvec4) Load 12(uv4) 
+                              Store 217(b) 234
+             235:   215(bool) Load 217(b)
+             236:    8(fvec4) Load 10(v)
+             237:    8(fvec4) Load 12(uv4)
              238:  220(bvec4) FOrdGreaterThanEqual 236 237
              239:   215(bool) Any 238
              240:   215(bool) LogicalAnd 235 239
-                              Store 217(b) 240 
-             241:   215(bool) Load 217(b) 
-             244:  220(bvec4) Load 243(ub41) 
-             246:  220(bvec4) Load 245(ub42) 
+                              Store 217(b) 240
+             241:   215(bool) Load 217(b)
+             244:  220(bvec4) Load 243(ub41)
+             246:  220(bvec4) Load 245(ub42)
              247:  220(bvec4) IEqual 244 246
              248:   215(bool) Any 247
              249:   215(bool) LogicalAnd 241 248
-                              Store 217(b) 249 
-             250:   215(bool) Load 217(b) 
-             251:  220(bvec4) Load 243(ub41) 
-             252:  220(bvec4) Load 245(ub42) 
+                              Store 217(b) 249
+             250:   215(bool) Load 217(b)
+             251:  220(bvec4) Load 243(ub41)
+             252:  220(bvec4) Load 245(ub42)
              253:  220(bvec4) INotEqual 251 252
              254:   215(bool) Any 253
              255:   215(bool) LogicalAnd 250 254
-                              Store 217(b) 255 
-             256:   215(bool) Load 217(b) 
-             257:  220(bvec4) Load 243(ub41) 
+                              Store 217(b) 255
+             256:   215(bool) Load 217(b)
+             257:  220(bvec4) Load 243(ub41)
              258:   215(bool) Any 257
              259:   215(bool) LogicalAnd 256 258
-                              Store 217(b) 259 
-             260:   215(bool) Load 217(b) 
-             261:  220(bvec4) Load 243(ub41) 
+                              Store 217(b) 259
+             260:   215(bool) Load 217(b)
+             261:  220(bvec4) Load 243(ub41)
              262:   215(bool) All 261
              263:   215(bool) LogicalAnd 260 262
-                              Store 217(b) 263 
-             264:   215(bool) Load 217(b) 
-             265:  220(bvec4) Load 243(ub41) 
-             266:  220(bvec4) Not 265
+                              Store 217(b) 263
+             264:   215(bool) Load 217(b)
+             265:  220(bvec4) Load 243(ub41)
+             266:  220(bvec4) LogicalNot 265
              267:   215(bool) Any 266
              268:   215(bool) LogicalAnd 264 267
-                              Store 217(b) 268 
-             269:     19(int) Load 21(i) 
-             270:     19(int) Load 23(ui) 
+                              Store 217(b) 268
+             269:     19(int) Load 21(i)
+             270:     19(int) Load 23(ui)
              271:     19(int) IAdd 269 270
-             272:     19(int) Load 21(i) 
+             272:     19(int) Load 21(i)
              273:     19(int) IMul 271 272
-             274:     19(int) Load 23(ui) 
+             274:     19(int) Load 23(ui)
              275:     19(int) ISub 273 274
-             276:     19(int) Load 21(i) 
+             276:     19(int) Load 21(i)
              277:     19(int) SDiv 275 276
-                              Store 21(i) 277 
-             278:     19(int) Load 21(i) 
-             279:     19(int) Load 23(ui) 
+                              Store 21(i) 277
+             278:     19(int) Load 21(i)
+             279:     19(int) Load 23(ui)
              280:     19(int) SMod 278 279
-                              Store 21(i) 280 
-             281:     19(int) Load 21(i) 
-             282:     19(int) Load 23(ui) 
+                              Store 21(i) 280
+             281:     19(int) Load 21(i)
+             282:     19(int) Load 23(ui)
              283:   215(bool) IEqual 281 282
-             284:     19(int) Load 21(i) 
-             285:     19(int) Load 23(ui) 
+             284:     19(int) Load 21(i)
+             285:     19(int) Load 23(ui)
              286:   215(bool) INotEqual 284 285
-             287:     19(int) Load 21(i) 
-             288:     19(int) Load 23(ui) 
+             287:     19(int) Load 21(i)
+             288:     19(int) Load 23(ui)
              289:   215(bool) IEqual 287 288
              290:   215(bool) LogicalAnd 286 289
-             291:     19(int) Load 21(i) 
+             291:     19(int) Load 21(i)
              293:   215(bool) INotEqual 291 292
-             294:   215(bool) LogicalXor 290 293
+             294:   215(bool) LogicalNotEqual 290 293
              295:   215(bool) LogicalOr 283 294
                               SelectionMerge 297 None
-                              BranchConditional 295 296 297 
+                              BranchConditional 295 296 297
              296:               Label
-             298:     19(int)   Load 21(i) 
+             298:     19(int)   Load 21(i)
              300:     19(int)   IAdd 298 299
-                                Store 21(i) 300 
+                                Store 21(i) 300
                                 Branch 297
              297:             Label
-             303:    7(float) Load 170(uf) 
-             304:    7(float) Load 170(uf) 
+             303:    7(float) Load 170(uf)
+             304:    7(float) Load 170(uf)
              305:    7(float) FAdd 303 304
-             306:    7(float) Load 170(uf) 
+             306:    7(float) Load 170(uf)
              307:    7(float) FMul 305 306
-             308:    7(float) Load 170(uf) 
+             308:    7(float) Load 170(uf)
              309:    7(float) FSub 307 308
-             310:    7(float) Load 170(uf) 
+             310:    7(float) Load 170(uf)
              311:    7(float) FDiv 309 310
-                              Store 302(f) 311 
-             312:    8(fvec4) Load 10(v) 
-             313:    7(float) ExtInst 1(GLSL.std.450) 58(length) 312
-             314:    7(float) Load 302(f) 
+                              Store 302(f) 311
+             312:    8(fvec4) Load 10(v)
+             313:    7(float) ExtInst 1(GLSL.std.450) 65(Length) 312
+             314:    7(float) Load 302(f)
              315:    7(float) FAdd 314 313
-                              Store 302(f) 315 
-             316:    8(fvec4) Load 10(v) 
-             317:    8(fvec4) Load 10(v) 
-             318:    7(float) ExtInst 1(GLSL.std.450) 59(distance) 316 317
-             319:    7(float) Load 302(f) 
+                              Store 302(f) 315
+             316:    8(fvec4) Load 10(v)
+             317:    8(fvec4) Load 10(v)
+             318:    7(float) ExtInst 1(GLSL.std.450) 66(Distance) 316 317
+             319:    7(float) Load 302(f)
              320:    7(float) FAdd 319 318
-                              Store 302(f) 320 
-             321:    8(fvec4) Load 10(v) 
-             322:    8(fvec4) Load 10(v) 
+                              Store 302(f) 320
+             321:    8(fvec4) Load 10(v)
+             322:    8(fvec4) Load 10(v)
              323:    7(float) Dot 321 322
-             324:    7(float) Load 302(f) 
+             324:    7(float) Load 302(f)
              325:    7(float) FAdd 324 323
-                              Store 302(f) 325 
-             326:    7(float) Load 302(f) 
-             327:    7(float) Load 170(uf) 
+                              Store 302(f) 325
+             326:    7(float) Load 302(f)
+             327:    7(float) Load 170(uf)
              328:    7(float) FMul 326 327
-             329:    7(float) Load 302(f) 
+             329:    7(float) Load 302(f)
              330:    7(float) FAdd 329 328
-                              Store 302(f) 330 
-             331:    8(fvec4) Load 10(v) 
+                              Store 302(f) 330
+             331:    8(fvec4) Load 10(v)
              333:  332(fvec3) VectorShuffle 331 331 0 1 2
-             334:    8(fvec4) Load 10(v) 
+             334:    8(fvec4) Load 10(v)
              335:  332(fvec3) VectorShuffle 334 334 0 1 2
-             336:  332(fvec3) ExtInst 1(GLSL.std.450) 60(cross) 333 335
+             336:  332(fvec3) ExtInst 1(GLSL.std.450) 67(Cross) 333 335
              337:    7(float) CompositeExtract 336 0
-             338:    7(float) Load 302(f) 
+             338:    7(float) Load 302(f)
              339:    7(float) FAdd 338 337
-                              Store 302(f) 339 
-             340:    7(float) Load 302(f) 
-             341:    7(float) Load 170(uf) 
+                              Store 302(f) 339
+             340:    7(float) Load 302(f)
+             341:    7(float) Load 170(uf)
              342:   215(bool) FOrdEqual 340 341
-             343:    7(float) Load 302(f) 
-             344:    7(float) Load 170(uf) 
+             343:    7(float) Load 302(f)
+             344:    7(float) Load 170(uf)
              345:   215(bool) FOrdNotEqual 343 344
-             346:    7(float) Load 302(f) 
+             346:    7(float) Load 302(f)
              348:   215(bool) FOrdNotEqual 346 347
              349:   215(bool) LogicalAnd 345 348
              350:   215(bool) LogicalOr 342 349
                               SelectionMerge 352 None
-                              BranchConditional 350 351 352 
+                              BranchConditional 350 351 352
              351:               Label
-             353:    7(float)   Load 302(f) 
+             353:    7(float)   Load 302(f)
              355:    7(float)   FAdd 353 354
-                                Store 302(f) 355 
+                                Store 302(f) 355
                                 Branch 352
              352:             Label
-             356:     19(int) Load 23(ui) 
-             357:     19(int) Load 21(i) 
+             356:     19(int) Load 23(ui)
+             357:     19(int) Load 21(i)
              358:     19(int) BitwiseAnd 357 356
-                              Store 21(i) 358 
-             360:     19(int) Load 21(i) 
+                              Store 21(i) 358
+             360:     19(int) Load 21(i)
              361:     19(int) BitwiseOr 360 359
-                              Store 21(i) 361 
-             362:     19(int) Load 23(ui) 
-             363:     19(int) Load 21(i) 
+                              Store 21(i) 361
+             362:     19(int) Load 23(ui)
+             363:     19(int) Load 21(i)
              364:     19(int) BitwiseXor 363 362
-                              Store 21(i) 364 
-             366:     19(int) Load 21(i) 
+                              Store 21(i) 364
+             366:     19(int) Load 21(i)
              367:     19(int) SMod 366 365
-                              Store 21(i) 367 
-             368:     19(int) Load 21(i) 
+                              Store 21(i) 367
+             368:     19(int) Load 21(i)
              369:     19(int) ShiftRightArithmetic 368 292
-                              Store 21(i) 369 
-             370:     19(int) Load 23(ui) 
-             371:     19(int) Load 21(i) 
+                              Store 21(i) 369
+             370:     19(int) Load 23(ui)
+             371:     19(int) Load 21(i)
              372:     19(int) ShiftLeftLogical 371 370
-                              Store 21(i) 372 
-             373:     19(int) Load 21(i) 
+                              Store 21(i) 372
+             373:     19(int) Load 21(i)
              374:     19(int) Not 373
-                              Store 21(i) 374 
-             375:   215(bool) Load 217(b) 
-             376:   215(bool) Not 375
-                              Store 217(b) 376 
-             380:   215(bool) Load 217(b) 
+                              Store 21(i) 374
+             375:   215(bool) Load 217(b)
+             376:   215(bool) LogicalNot 375
+                              Store 217(b) 376
+             380:   215(bool) Load 217(b)
                               SelectionMerge 382 None
-                              BranchConditional 380 381 391 
+                              BranchConditional 380 381 391
              381:               Label
-             383:     19(int)   Load 21(i) 
+             383:     19(int)   Load 21(i)
              384:    7(float)   ConvertSToF 383
              385:    8(fvec4)   CompositeConstruct 384 384 384 384
-             386:    7(float)   Load 302(f) 
+             386:    7(float)   Load 302(f)
              387:    8(fvec4)   CompositeConstruct 386 386 386 386
              388:    8(fvec4)   FAdd 385 387
-             389:    8(fvec4)   Load 10(v) 
+             389:    8(fvec4)   Load 10(v)
              390:    8(fvec4)   FAdd 388 389
-                                Store 379 390 
+                                Store 379 390
                                 Branch 382
              391:               Label
-             392:    8(fvec4)   Load 10(v) 
-                                Store 379 392 
+             392:    8(fvec4)   Load 10(v)
+                                Store 379 392
                                 Branch 382
              382:             Label
-             393:    8(fvec4) Load 379 
-                              Store 378(gl_FragColor) 393 
+             393:    8(fvec4) Load 379
+                              Store 378(gl_FragColor) 393
                               Branch 6
                6:             Label
                               Return

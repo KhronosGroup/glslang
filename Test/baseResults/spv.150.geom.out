@@ -8,12 +8,13 @@ Linked geometry stage:
 // Id's are bound by 72
 
                               Source GLSL 150
+                              Capability Geometry
                1:             ExtInstImport  "GLSL.std.450"
                               MemoryModel Logical GLSL450
-                              EntryPoint Geometry 4
-                              ExecutionMode 4 InputTrianglesAdjacency 
+                              EntryPoint Geometry 4  "main"
+                              ExecutionMode 4 InputTrianglesAdjacency
                               ExecutionMode 4 Invocations 0
-                              ExecutionMode 4 OutputTriangleStrip 
+                              ExecutionMode 4 OutputTriangleStrip
                               ExecutionMode 4 OutputVertices 30
                               Name 4  "main"
                               Name 9  "fromVertex"
@@ -38,36 +39,36 @@ Linked geometry stage:
                               Name 69  "toFragment"
                               MemberName 69(toFragment) 0  "color"
                               Name 71  "toF"
-                              Decorate 9(fromVertex) Block 
+                              Decorate 9(fromVertex) Block
                               Decorate 9(fromVertex) Stream 3
                               Decorate 11 Stream 3
-                              Decorate 14(fromVertex) Block 
+                              Decorate 14(fromVertex) Block
                               MemberDecorate 28(gl_PerVertex) 0 BuiltIn Position
                               MemberDecorate 28(gl_PerVertex) 1 BuiltIn PointSize
                               MemberDecorate 28(gl_PerVertex) 2 BuiltIn ClipDistance
-                              Decorate 28(gl_PerVertex) Block 
+                              Decorate 28(gl_PerVertex) Block
                               Decorate 28(gl_PerVertex) Stream 0
                               Decorate 30 Stream 0
                               MemberDecorate 31(gl_PerVertex) 0 BuiltIn Position
                               MemberDecorate 31(gl_PerVertex) 1 BuiltIn PointSize
                               MemberDecorate 31(gl_PerVertex) 2 BuiltIn ClipDistance
-                              Decorate 31(gl_PerVertex) Block 
+                              Decorate 31(gl_PerVertex) Block
                               Decorate 48(gl_PrimitiveID) Stream 0
                               Decorate 48(gl_PrimitiveID) BuiltIn PrimitiveId
                               Decorate 50(gl_PrimitiveIDIn) BuiltIn PrimitiveId
                               Decorate 52(gl_Layer) Stream 0
                               Decorate 52(gl_Layer) BuiltIn Layer
-                              Decorate 69(toFragment) Block 
+                              Decorate 69(toFragment) Block
                               Decorate 69(toFragment) Stream 3
                               Decorate 71(toF) Stream 3
-                              Decorate 71(toF) NoStaticUse 
+                              Decorate 71(toF) NoStaticUse
                2:             TypeVoid
-               3:             TypeFunction 2 
+               3:             TypeFunction 2
                7:             TypeFloat 32
                8:             TypeVector 7(float) 3
    9(fromVertex):             TypeStruct 8(fvec3)
               10:             TypePointer Output 9(fromVertex)
-              11:     10(ptr) Variable Output 
+              11:     10(ptr) Variable Output
               12:             TypeInt 32 1
               13:     12(int) Constant 0
   14(fromVertex):             TypeStruct 8(fvec3)
@@ -75,7 +76,7 @@ Linked geometry stage:
               16:     15(int) Constant 6
               17:             TypeArray 14(fromVertex) 16
               18:             TypePointer Input 17
-       19(fromV):     18(ptr) Variable Input 
+       19(fromV):     18(ptr) Variable Input
               20:             TypePointer Input 8(fvec3)
               23:             TypePointer Output 8(fvec3)
               25:             TypeVector 7(float) 4
@@ -83,11 +84,11 @@ Linked geometry stage:
               27:             TypeArray 7(float) 26
 28(gl_PerVertex):             TypeStruct 25(fvec4) 7(float) 27
               29:             TypePointer Output 28(gl_PerVertex)
-              30:     29(ptr) Variable Output 
+              30:     29(ptr) Variable Output
 31(gl_PerVertex):             TypeStruct 25(fvec4) 7(float) 27
               32:             TypeArray 31(gl_PerVertex) 16
               33:             TypePointer Input 32
-       34(gl_in):     33(ptr) Variable Input 
+       34(gl_in):     33(ptr) Variable Input
               35:             TypePointer Input 25(fvec4)
               38:             TypePointer Output 25(fvec4)
               40:     12(int) Constant 1
@@ -95,52 +96,52 @@ Linked geometry stage:
               42:             TypePointer Input 7(float)
               45:             TypePointer Output 7(float)
               47:             TypePointer Output 12(int)
-48(gl_PrimitiveID):     47(ptr) Variable Output 
+48(gl_PrimitiveID):     47(ptr) Variable Output
               49:             TypePointer Input 12(int)
-50(gl_PrimitiveIDIn):     49(ptr) Variable Input 
-    52(gl_Layer):     47(ptr) Variable Output 
+50(gl_PrimitiveIDIn):     49(ptr) Variable Input
+    52(gl_Layer):     47(ptr) Variable Output
               53:     12(int) Constant 2
               54:    7(float) Constant 1073741824
   69(toFragment):             TypeStruct 8(fvec3)
               70:             TypePointer Output 69(toFragment)
-         71(toF):     70(ptr) Variable Output 
+         71(toF):     70(ptr) Variable Output
          4(main):           2 Function None 3
                5:             Label
               21:     20(ptr) AccessChain 19(fromV) 13 13
-              22:    8(fvec3) Load 21 
+              22:    8(fvec3) Load 21
               24:     23(ptr) AccessChain 11 13
-                              Store 24 22 
+                              Store 24 22
               36:     35(ptr) AccessChain 34(gl_in) 13 13
-              37:   25(fvec4) Load 36 
+              37:   25(fvec4) Load 36
               39:     38(ptr) AccessChain 30 13
-                              Store 39 37 
+                              Store 39 37
               43:     42(ptr) AccessChain 34(gl_in) 41 40
-              44:    7(float) Load 43 
+              44:    7(float) Load 43
               46:     45(ptr) AccessChain 30 40
-                              Store 46 44 
-              51:     12(int) Load 50(gl_PrimitiveIDIn) 
-                              Store 48(gl_PrimitiveID) 51 
-                              Store 52(gl_Layer) 53 
+                              Store 46 44
+              51:     12(int) Load 50(gl_PrimitiveIDIn)
+                              Store 48(gl_PrimitiveID) 51
+                              Store 52(gl_Layer) 53
                               EmitVertex
               55:     20(ptr) AccessChain 19(fromV) 13 13
-              56:    8(fvec3) Load 55 
+              56:    8(fvec3) Load 55
               57:    8(fvec3) VectorTimesScalar 56 54
               58:     23(ptr) AccessChain 11 13
-                              Store 58 57 
+                              Store 58 57
               59:     35(ptr) AccessChain 34(gl_in) 13 13
-              60:   25(fvec4) Load 59 
+              60:   25(fvec4) Load 59
               61:   25(fvec4) VectorTimesScalar 60 54
               62:     38(ptr) AccessChain 30 13
-                              Store 62 61 
+                              Store 62 61
               63:     42(ptr) AccessChain 34(gl_in) 41 40
-              64:    7(float) Load 63 
+              64:    7(float) Load 63
               65:    7(float) FMul 54 64
               66:     45(ptr) AccessChain 30 40
-                              Store 66 65 
-              67:     12(int) Load 50(gl_PrimitiveIDIn) 
+                              Store 66 65
+              67:     12(int) Load 50(gl_PrimitiveIDIn)
               68:     12(int) IAdd 67 40
-                              Store 48(gl_PrimitiveID) 68 
-                              Store 52(gl_Layer) 41 
+                              Store 48(gl_PrimitiveID) 68
+                              Store 52(gl_Layer) 41
                               EmitVertex
                               EndPrimitive
                               Branch 6

@@ -10,33 +10,35 @@ Linked fragment stage:
 // Id's are bound by 21
 
                               Source GLSL 130
+                              Capability Shader
                1:             ExtInstImport  "GLSL.std.450"
                               MemoryModel Logical GLSL450
-                              EntryPoint Fragment 4
+                              EntryPoint Fragment 4  "main"
+                              ExecutionMode 4 OriginLowerLeft
                               Name 4  "main"
                               Name 13  "gl_FragData"
                               Name 17  "Color"
                               Decorate 13(gl_FragData) BuiltIn FragColor
-                              Decorate 17(Color) Smooth 
+                              Decorate 17(Color) Smooth
                2:             TypeVoid
-               3:             TypeFunction 2 
+               3:             TypeFunction 2
                7:             TypeFloat 32
                8:             TypeVector 7(float) 4
                9:             TypeInt 32 0
               10:      9(int) Constant 32
               11:             TypeArray 8(fvec4) 10
               12:             TypePointer Output 11
- 13(gl_FragData):     12(ptr) Variable Output 
+ 13(gl_FragData):     12(ptr) Variable Output
               14:             TypeInt 32 1
               15:     14(int) Constant 1
               16:             TypePointer Input 8(fvec4)
-       17(Color):     16(ptr) Variable Input 
+       17(Color):     16(ptr) Variable Input
               19:             TypePointer Output 8(fvec4)
          4(main):           2 Function None 3
                5:             Label
-              18:    8(fvec4) Load 17(Color) 
+              18:    8(fvec4) Load 17(Color)
               20:     19(ptr) AccessChain 13(gl_FragData) 15
-                              Store 20 18 
+                              Store 20 18
                               Branch 6
                6:             Label
                               Return

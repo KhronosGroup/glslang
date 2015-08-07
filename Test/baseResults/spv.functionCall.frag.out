@@ -10,9 +10,11 @@ Linked fragment stage:
 // Id's are bound by 76
 
                               Source GLSL 130
+                              Capability Shader
                1:             ExtInstImport  "GLSL.std.450"
                               MemoryModel Logical GLSL450
-                              EntryPoint Fragment 4
+                              EntryPoint Fragment 4  "main"
+                              ExecutionMode 4 OriginLowerLeft
                               Name 4  "main"
                               Name 12  "foo(vf4;"
                               Name 11  "bar"
@@ -30,21 +32,21 @@ Linked fragment stage:
                               Name 65  "g"
                               Name 68  "gl_FragColor"
                               Name 75  "bigColor"
-                              Decorate 57(BaseColor) Smooth 
+                              Decorate 57(BaseColor) Smooth
                               Decorate 68(gl_FragColor) BuiltIn FragColor
-                              Decorate 75(bigColor) NoStaticUse 
+                              Decorate 75(bigColor) NoStaticUse
                2:             TypeVoid
-               3:             TypeFunction 2 
+               3:             TypeFunction 2
                7:             TypeFloat 32
                8:             TypeVector 7(float) 4
                9:             TypePointer Function 8(fvec4)
               10:             TypeFunction 7(float) 9(ptr)
-              16:             TypeFunction 7(float) 
+              16:             TypeFunction 7(float)
               21:             TypePointer PrivateGlobal 7(float)
-           22(h):     21(ptr) Variable PrivateGlobal 
+           22(h):     21(ptr) Variable PrivateGlobal
               23:    7(float) Constant 0
               30:             TypePointer UniformConstant 7(float)
-           31(d):     30(ptr) Variable UniformConstant 
+           31(d):     30(ptr) Variable UniformConstant
               33:    7(float) Constant 1082549862
               34:             TypeBool
               38:    7(float) Constant 1067030938
@@ -52,34 +54,34 @@ Linked fragment stage:
               43:             TypePointer Function 7(float)
               51:    7(float) Constant 1081711002
               56:             TypePointer Input 8(fvec4)
-   57(BaseColor):     56(ptr) Variable Input 
+   57(BaseColor):     56(ptr) Variable Input
               67:             TypePointer Output 8(fvec4)
-68(gl_FragColor):     67(ptr) Variable Output 
+68(gl_FragColor):     67(ptr) Variable Output
               74:             TypePointer UniformConstant 8(fvec4)
-    75(bigColor):     74(ptr) Variable UniformConstant 
+    75(bigColor):     74(ptr) Variable UniformConstant
          4(main):           2 Function None 3
                5:             Label
-       55(color):      9(ptr) Variable Function 
-       58(param):      9(ptr) Variable Function 
-           63(f):     43(ptr) Variable Function 
-           65(g):     43(ptr) Variable Function 
-                              Store 22(h) 23 
-              59:    8(fvec4) Load 57(BaseColor) 
-                              Store 58(param) 59 
+       55(color):      9(ptr) Variable Function
+       58(param):      9(ptr) Variable Function
+           63(f):     43(ptr) Variable Function
+           65(g):     43(ptr) Variable Function
+                              Store 22(h) 23
+              59:    8(fvec4) Load 57(BaseColor)
+                              Store 58(param) 59
               60:    7(float) FunctionCall 12(foo(vf4;) 58(param)
               61:    8(fvec4) CompositeConstruct 60 60 60 60
-                              Store 55(color) 61 
-              62:           2 FunctionCall 14(bar() 
-              64:    7(float) FunctionCall 17(unreachableReturn() 
-                              Store 63(f) 64 
-              66:    7(float) FunctionCall 19(missingReturn() 
-                              Store 65(g) 66 
-              69:    8(fvec4) Load 55(color) 
-              70:    7(float) Load 63(f) 
+                              Store 55(color) 61
+              62:           2 FunctionCall 14(bar()
+              64:    7(float) FunctionCall 17(unreachableReturn()
+                              Store 63(f) 64
+              66:    7(float) FunctionCall 19(missingReturn()
+                              Store 65(g) 66
+              69:    8(fvec4) Load 55(color)
+              70:    7(float) Load 63(f)
               71:    8(fvec4) VectorTimesScalar 69 70
-              72:    7(float) Load 22(h) 
+              72:    7(float) Load 22(h)
               73:    8(fvec4) VectorTimesScalar 71 72
-                              Store 68(gl_FragColor) 73 
+                              Store 68(gl_FragColor) 73
                               Branch 6
                6:             Label
                               Return
@@ -87,9 +89,9 @@ Linked fragment stage:
     12(foo(vf4;):    7(float) Function None 10
          11(bar):      9(ptr) FunctionParameter
               13:             Label
-              24:    8(fvec4) Load 11(bar) 
+              24:    8(fvec4) Load 11(bar)
               25:    7(float) CompositeExtract 24 0
-              26:    8(fvec4) Load 11(bar) 
+              26:    8(fvec4) Load 11(bar)
               27:    7(float) CompositeExtract 26 1
               28:    7(float) FAdd 25 27
                               ReturnValue 28
@@ -100,31 +102,31 @@ Linked fragment stage:
                               FunctionEnd
 17(unreachableReturn():    7(float) Function None 16
               18:             Label
- 44(dummyReturn):     43(ptr) Variable Function 
-              32:    7(float) Load 31(d) 
+ 44(dummyReturn):     43(ptr) Variable Function
+              32:    7(float) Load 31(d)
               35:    34(bool) FOrdLessThan 32 33
                               SelectionMerge 37 None
-                              BranchConditional 35 36 40 
+                              BranchConditional 35 36 40
               36:               Label
                                 ReturnValue 38
               40:               Label
                                 ReturnValue 41
               37:             Label
-              45:    7(float) Load 44(dummyReturn) 
+              45:    7(float) Load 44(dummyReturn)
                               ReturnValue 45
                               FunctionEnd
 19(missingReturn():    7(float) Function None 16
               20:             Label
- 53(dummyReturn):     43(ptr) Variable Function 
-              46:    7(float) Load 31(d) 
+ 53(dummyReturn):     43(ptr) Variable Function
+              46:    7(float) Load 31(d)
               47:    34(bool) FOrdLessThan 46 41
                               SelectionMerge 49 None
-                              BranchConditional 47 48 49 
+                              BranchConditional 47 48 49
               48:               Label
-              50:    7(float)   Load 31(d) 
-                                Store 22(h) 50 
+              50:    7(float)   Load 31(d)
+                                Store 22(h) 50
                                 ReturnValue 51
               49:             Label
-              54:    7(float) Load 53(dummyReturn) 
+              54:    7(float) Load 53(dummyReturn)
                               ReturnValue 54
                               FunctionEnd

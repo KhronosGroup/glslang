@@ -10,9 +10,11 @@ Linked fragment stage:
 // Id's are bound by 159
 
                               Source GLSL 400
+                              Capability Shader
                1:             ExtInstImport  "GLSL.std.450"
                               MemoryModel Logical GLSL450
-                              EntryPoint Fragment 4
+                              EntryPoint Fragment 4  "main"
+                              ExecutionMode 4 OriginLowerLeft
                               Name 4  "main"
                               Name 16  "foo(i1;i1;i1;i1;i1;i1;"
                               Name 10  "a"
@@ -48,7 +50,7 @@ Linked fragment stage:
                               Name 155  "gl_FragColor"
                               Decorate 155(gl_FragColor) BuiltIn FragColor
                2:             TypeVoid
-               3:             TypeFunction 2 
+               3:             TypeFunction 2
                7:             TypeInt 32 1
                8:             TypePointer Function 7(int)
                9:             TypeFunction 7(int) 8(ptr) 7(int) 8(ptr) 7(int) 8(ptr) 8(ptr)
@@ -57,13 +59,13 @@ Linked fragment stage:
               20:             TypeVector 18(float) 3
               21:             TypePointer Function 20(fvec3)
               22:             TypeFunction 7(int) 19(ptr) 21(ptr) 8(ptr)
-              28:             TypeFunction 7(int) 
+              28:             TypeFunction 7(int)
               39:      7(int) Constant 64
               44:      7(int) Constant 1024
               62:   18(float) Constant 1077936128
               66:   18(float) Constant 1084227584
               72:             TypePointer UniformConstant 18(float)
-           73(u):     72(ptr) Variable UniformConstant 
+           73(u):     72(ptr) Variable UniformConstant
               75:   18(float) Constant 1078774989
               76:             TypeBool
               81:      7(int) Constant 1000000
@@ -79,89 +81,89 @@ Linked fragment stage:
              102:      7(int) Constant 8
              117:      7(int) Constant 128
              127:             TypePointer PrivateGlobal 7(int)
- 128(tempReturn):    127(ptr) Variable PrivateGlobal 
+ 128(tempReturn):    127(ptr) Variable PrivateGlobal
              129:   18(float) Constant 1082130432
              130:   18(float) Constant 1065353216
              131:   18(float) Constant 1073741824
              132:   20(fvec3) ConstantComposite 130 131 62
              153:             TypeVector 18(float) 4
              154:             TypePointer Output 153(fvec4)
-155(gl_FragColor):    154(ptr) Variable Output 
+155(gl_FragColor):    154(ptr) Variable Output
          4(main):           2 Function None 3
                5:             Label
-           85(t):      8(ptr) Variable Function 
-           90(f):     89(ptr) Variable Function 
-       97(color):      8(ptr) Variable Function 
-          103(e):      8(ptr) Variable Function 
-      104(param):      8(ptr) Variable Function 
-      105(param):      8(ptr) Variable Function 
-      106(param):      8(ptr) Variable Function 
-      107(param):      8(ptr) Variable Function 
-        126(ret):     19(ptr) Variable Function 
-    133(tempArg):      8(ptr) Variable Function 
-      134(param):     19(ptr) Variable Function 
-      135(param):     21(ptr) Variable Function 
-      136(param):      8(ptr) Variable Function 
-        139(arg):     19(ptr) Variable Function 
-                              Store 85(t) 86 
+           85(t):      8(ptr) Variable Function
+           90(f):     89(ptr) Variable Function
+       97(color):      8(ptr) Variable Function
+          103(e):      8(ptr) Variable Function
+      104(param):      8(ptr) Variable Function
+      105(param):      8(ptr) Variable Function
+      106(param):      8(ptr) Variable Function
+      107(param):      8(ptr) Variable Function
+        126(ret):     19(ptr) Variable Function
+    133(tempArg):      8(ptr) Variable Function
+      134(param):     19(ptr) Variable Function
+      135(param):     21(ptr) Variable Function
+      136(param):      8(ptr) Variable Function
+        139(arg):     19(ptr) Variable Function
+                              Store 85(t) 86
               94:     93(ptr) AccessChain 90(f) 91
-              95:   87(ivec4) Load 94 
+              95:   87(ivec4) Load 94
               96:   87(ivec4) CompositeInsert 92 95 1
-                              Store 94 96 
-              99:      7(int) Load 85(t) 
-             100:      7(int) Load 85(t) 
+                              Store 94 96
+              99:      7(int) Load 85(t)
+             100:      7(int) Load 85(t)
              101:      7(int) IAdd 99 100
-                              Store 104(param) 98 
-                              Store 105(param) 101 
+                              Store 104(param) 98
+                              Store 105(param) 101
              108:     93(ptr) AccessChain 90(f) 91
-             109:   87(ivec4) Load 108 
+             109:   87(ivec4) Load 108
              110:      7(int) CompositeExtract 109 1
-                              Store 107(param) 110 
+                              Store 107(param) 110
              111:      7(int) FunctionCall 16(foo(i1;i1;i1;i1;i1;i1;) 104(param) 86 105(param) 102 106(param) 107(param)
-             112:      7(int) Load 106(param) 
-                              Store 103(e) 112 
-             113:      7(int) Load 107(param) 
+             112:      7(int) Load 106(param)
+                              Store 103(e) 112
+             113:      7(int) Load 107(param)
              114:     93(ptr) AccessChain 90(f) 91
-             115:   87(ivec4) Load 114 
+             115:   87(ivec4) Load 114
              116:   87(ivec4) CompositeInsert 113 115 1
-                              Store 114 116 
-                              Store 97(color) 111 
-             118:      7(int) Load 103(e) 
+                              Store 114 116
+                              Store 97(color) 111
+             118:      7(int) Load 103(e)
              119:     93(ptr) AccessChain 90(f) 91
-             120:   87(ivec4) Load 119 
+             120:   87(ivec4) Load 119
              121:      7(int) CompositeExtract 120 1
              122:      7(int) IAdd 118 121
              123:      7(int) IMul 117 122
-             124:      7(int) Load 97(color) 
+             124:      7(int) Load 97(color)
              125:      7(int) IAdd 124 123
-                              Store 97(color) 125 
-                              Store 134(param) 129 
-                              Store 135(param) 132 
+                              Store 97(color) 125
+                              Store 134(param) 129
+                              Store 135(param) 132
              137:      7(int) FunctionCall 26(foo2(f1;vf3;i1;) 134(param) 135(param) 136(param)
-             138:      7(int) Load 136(param) 
-                              Store 133(tempArg) 138 
-                              Store 128(tempReturn) 137 
-             140:      7(int) Load 133(tempArg) 
+             138:      7(int) Load 136(param)
+                              Store 133(tempArg) 138
+                              Store 128(tempReturn) 137
+             140:      7(int) Load 133(tempArg)
              141:   18(float) ConvertSToF 140
-                              Store 139(arg) 141 
-             142:      7(int) Load 128(tempReturn) 
+                              Store 139(arg) 141
+             142:      7(int) Load 128(tempReturn)
              143:   18(float) ConvertSToF 142
-                              Store 126(ret) 143 
-             144:   18(float) Load 126(ret) 
-             145:   18(float) Load 139(arg) 
+                              Store 126(ret) 143
+             144:   18(float) Load 126(ret)
+             145:   18(float) Load 139(arg)
              146:   18(float) FAdd 144 145
              147:      7(int) ConvertFToS 146
-             148:      7(int) Load 97(color) 
+             148:      7(int) Load 97(color)
              149:      7(int) IAdd 148 147
-                              Store 97(color) 149 
-             150:      7(int) FunctionCall 29(foo3() 
-             151:      7(int) Load 97(color) 
+                              Store 97(color) 149
+             150:      7(int) FunctionCall 29(foo3()
+             151:      7(int) Load 97(color)
              152:      7(int) IAdd 151 150
-                              Store 97(color) 152 
-             156:      7(int) Load 97(color) 
+                              Store 97(color) 152
+             156:      7(int) Load 97(color)
              157:   18(float) ConvertSToF 156
              158:  153(fvec4) CompositeConstruct 157 157 157 157
-                              Store 155(gl_FragColor) 158 
+                              Store 155(gl_FragColor) 158
                               Branch 6
                6:             Label
                               Return
@@ -174,40 +176,40 @@ Linked fragment stage:
            14(e):      8(ptr) FunctionParameter
            15(f):      8(ptr) FunctionParameter
               17:             Label
-         31(sum):      8(ptr) Variable Function 
-              32:      7(int) Load 10(a) 
+         31(sum):      8(ptr) Variable Function
+              32:      7(int) Load 10(a)
               33:      7(int) IAdd 32 11(b)
-              34:      7(int) Load 12(c) 
+              34:      7(int) Load 12(c)
               35:      7(int) IAdd 33 34
               36:      7(int) IAdd 35 13(d)
-              37:      7(int) Load 15(f) 
+              37:      7(int) Load 15(f)
               38:      7(int) IAdd 36 37
-                              Store 31(sum) 38 
-              40:      7(int) Load 10(a) 
+                              Store 31(sum) 38
+              40:      7(int) Load 10(a)
               41:      7(int) IMul 40 39
-                              Store 10(a) 41 
-              42:      7(int) Load 12(c) 
+                              Store 10(a) 41
+              42:      7(int) Load 12(c)
               43:      7(int) IMul 42 39
-                              Store 12(c) 43 
-                              Store 14(e) 44 
-              45:      7(int) Load 15(f) 
+                              Store 12(c) 43
+                              Store 14(e) 44
+              45:      7(int) Load 15(f)
               46:      7(int) IMul 45 39
-                              Store 15(f) 46 
-              47:      7(int) Load 10(a) 
+                              Store 15(f) 46
+              47:      7(int) Load 10(a)
               48:      7(int) IMul 39 11(b)
               49:      7(int) IAdd 47 48
-              50:      7(int) Load 12(c) 
+              50:      7(int) Load 12(c)
               51:      7(int) IAdd 49 50
               52:      7(int) IMul 39 13(d)
               53:      7(int) IAdd 51 52
-              54:      7(int) Load 14(e) 
+              54:      7(int) Load 14(e)
               55:      7(int) IAdd 53 54
-              56:      7(int) Load 15(f) 
+              56:      7(int) Load 15(f)
               57:      7(int) IAdd 55 56
-              58:      7(int) Load 31(sum) 
+              58:      7(int) Load 31(sum)
               59:      7(int) IAdd 58 57
-                              Store 31(sum) 59 
-              60:      7(int) Load 31(sum) 
+                              Store 31(sum) 59
+              60:      7(int) Load 31(sum)
                               ReturnValue 60
                               FunctionEnd
 26(foo2(f1;vf3;i1;):      7(int) Function None 22
@@ -215,11 +217,11 @@ Linked fragment stage:
            24(b):     21(ptr) FunctionParameter
            25(r):      8(ptr) FunctionParameter
               27:             Label
-              63:   18(float) Load 23(a) 
+              63:   18(float) Load 23(a)
               64:   18(float) FMul 62 63
               65:      7(int) ConvertFToS 64
-                              Store 25(r) 65 
-              67:   20(fvec3) Load 24(b) 
+                              Store 25(r) 65
+              67:   20(fvec3) Load 24(b)
               68:   18(float) CompositeExtract 67 1
               69:   18(float) FMul 66 68
               70:      7(int) ConvertFToS 69
@@ -227,10 +229,10 @@ Linked fragment stage:
                               FunctionEnd
        29(foo3():      7(int) Function None 28
               30:             Label
-              74:   18(float) Load 73(u) 
+              74:   18(float) Load 73(u)
               77:    76(bool) FOrdGreaterThan 74 75
                               SelectionMerge 79 None
-                              BranchConditional 77 78 79 
+                              BranchConditional 77 78 79
               78:               Label
                                 Kill
               79:             Label

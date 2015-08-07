@@ -8,9 +8,11 @@ Linked fragment stage:
 // Id's are bound by 37
 
                               Source GLSL 110
+                              Capability Shader
                1:             ExtInstImport  "GLSL.std.450"
                               MemoryModel Logical GLSL450
-                              EntryPoint Fragment 4
+                              EntryPoint Fragment 4  "main"
+                              ExecutionMode 4 OriginLowerLeft
                               Name 4  "main"
                               Name 10  "white"
                               Name 13  "black"
@@ -19,10 +21,10 @@ Linked fragment stage:
                               Name 22  "tex_coord"
                               Name 28  "y"
                               Name 35  "gl_FragColor"
-                              Decorate 22(tex_coord) Smooth 
+                              Decorate 22(tex_coord) Smooth
                               Decorate 35(gl_FragColor) BuiltIn FragColor
                2:             TypeVoid
-               3:             TypeFunction 2 
+               3:             TypeFunction 2
                7:             TypeFloat 32
                8:             TypeVector 7(float) 4
                9:             TypePointer Function 8(fvec4)
@@ -33,31 +35,31 @@ Linked fragment stage:
               18:             TypePointer Function 7(float)
               20:             TypeVector 7(float) 2
               21:             TypePointer Input 20(fvec2)
-   22(tex_coord):     21(ptr) Variable Input 
+   22(tex_coord):     21(ptr) Variable Input
               25:    7(float) Constant 1073741824
               34:             TypePointer Output 8(fvec4)
-35(gl_FragColor):     34(ptr) Variable Output 
+35(gl_FragColor):     34(ptr) Variable Output
          4(main):           2 Function None 3
                5:             Label
-       10(white):      9(ptr) Variable Function 
-       13(black):      9(ptr) Variable Function 
-       16(color):      9(ptr) Variable Function 
-           19(x):     18(ptr) Variable Function 
-           28(y):     18(ptr) Variable Function 
-                              Store 10(white) 12 
-                              Store 13(black) 15 
-              17:    8(fvec4) Load 10(white) 
-                              Store 16(color) 17 
-              23:   20(fvec2) Load 22(tex_coord) 
+       10(white):      9(ptr) Variable Function
+       13(black):      9(ptr) Variable Function
+       16(color):      9(ptr) Variable Function
+           19(x):     18(ptr) Variable Function
+           28(y):     18(ptr) Variable Function
+                              Store 10(white) 12
+                              Store 13(black) 15
+              17:    8(fvec4) Load 10(white)
+                              Store 16(color) 17
+              23:   20(fvec2) Load 22(tex_coord)
               24:    7(float) CompositeExtract 23 0
               26:    7(float) FMul 24 25
               27:    7(float) FSub 26 11
-                              Store 19(x) 27 
-              29:   20(fvec2) Load 22(tex_coord) 
+                              Store 19(x) 27
+              29:   20(fvec2) Load 22(tex_coord)
               30:    7(float) CompositeExtract 29 1
               31:    7(float) FMul 30 25
               32:    7(float) FSub 31 11
-                              Store 28(y) 32 
+                              Store 28(y) 32
                               Kill
                6:             Label
                               Return

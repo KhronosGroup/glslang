@@ -11,36 +11,38 @@ Linked fragment stage:
 // Id's are bound by 19
 
                               Source GLSL 130
+                              Capability Shader
                1:             ExtInstImport  "GLSL.std.450"
                               MemoryModel Logical GLSL450
-                              EntryPoint Fragment 4
+                              EntryPoint Fragment 4  "main"
+                              ExecutionMode 4 OriginLowerLeft
                               Name 4  "main"
                               Name 9  "gl_FragDepth"
                               Name 11  "Depth"
                               Name 15  "gl_FragColor"
                               Name 17  "Color"
                               Decorate 9(gl_FragDepth) BuiltIn FragDepth
-                              Decorate 11(Depth) Smooth 
+                              Decorate 11(Depth) Smooth
                               Decorate 15(gl_FragColor) BuiltIn FragColor
-                              Decorate 17(Color) Smooth 
+                              Decorate 17(Color) Smooth
                2:             TypeVoid
-               3:             TypeFunction 2 
+               3:             TypeFunction 2
                7:             TypeFloat 32
                8:             TypePointer Output 7(float)
- 9(gl_FragDepth):      8(ptr) Variable Output 
+ 9(gl_FragDepth):      8(ptr) Variable Output
               10:             TypePointer Input 7(float)
-       11(Depth):     10(ptr) Variable Input 
+       11(Depth):     10(ptr) Variable Input
               13:             TypeVector 7(float) 4
               14:             TypePointer Output 13(fvec4)
-15(gl_FragColor):     14(ptr) Variable Output 
+15(gl_FragColor):     14(ptr) Variable Output
               16:             TypePointer Input 13(fvec4)
-       17(Color):     16(ptr) Variable Input 
+       17(Color):     16(ptr) Variable Input
          4(main):           2 Function None 3
                5:             Label
-              12:    7(float) Load 11(Depth) 
-                              Store 9(gl_FragDepth) 12 
-              18:   13(fvec4) Load 17(Color) 
-                              Store 15(gl_FragColor) 18 
+              12:    7(float) Load 11(Depth)
+                              Store 9(gl_FragDepth) 12
+              18:   13(fvec4) Load 17(Color)
+                              Store 15(gl_FragColor) 18
                               Branch 6
                6:             Label
                               Return

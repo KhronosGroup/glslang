@@ -10,36 +10,38 @@ Linked fragment stage:
 // Id's are bound by 23
 
                               Source GLSL 130
+                              Capability Shader
                1:             ExtInstImport  "GLSL.std.450"
                               MemoryModel Logical GLSL450
-                              EntryPoint Fragment 4
+                              EntryPoint Fragment 4  "main"
+                              ExecutionMode 4 OriginLowerLeft
                               Name 4  "main"
                               Name 13  "gl_FragData"
                               Name 16  "i"
                               Name 19  "Color"
                               Decorate 13(gl_FragData) BuiltIn FragColor
-                              Decorate 19(Color) Smooth 
+                              Decorate 19(Color) Smooth
                2:             TypeVoid
-               3:             TypeFunction 2 
+               3:             TypeFunction 2
                7:             TypeFloat 32
                8:             TypeVector 7(float) 4
                9:             TypeInt 32 0
               10:      9(int) Constant 32
               11:             TypeArray 8(fvec4) 10
               12:             TypePointer Output 11
- 13(gl_FragData):     12(ptr) Variable Output 
+ 13(gl_FragData):     12(ptr) Variable Output
               14:             TypeInt 32 1
               15:             TypePointer UniformConstant 14(int)
-           16(i):     15(ptr) Variable UniformConstant 
+           16(i):     15(ptr) Variable UniformConstant
               18:             TypePointer Input 8(fvec4)
-       19(Color):     18(ptr) Variable Input 
+       19(Color):     18(ptr) Variable Input
               21:             TypePointer Output 8(fvec4)
          4(main):           2 Function None 3
                5:             Label
-              17:     14(int) Load 16(i) 
-              20:    8(fvec4) Load 19(Color) 
+              17:     14(int) Load 16(i)
+              20:    8(fvec4) Load 19(Color)
               22:     21(ptr) AccessChain 13(gl_FragData) 17
-                              Store 22 20 
+                              Store 22 20
                               Branch 6
                6:             Label
                               Return

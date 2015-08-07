@@ -8,9 +8,11 @@ Linked fragment stage:
 // Id's are bound by 43
 
                               Source GLSL 120
+                              Capability Shader
                1:             ExtInstImport  "GLSL.std.450"
                               MemoryModel Logical GLSL450
-                              EntryPoint Fragment 4
+                              EntryPoint Fragment 4  "main"
+                              ExecutionMode 4 OriginLowerLeft
                               Name 4  "main"
                               Name 7  "foo("
                               Name 9  "foo2("
@@ -21,58 +23,58 @@ Linked fragment stage:
                               Name 40  "BaseColor"
                               Name 42  "d"
                               Decorate 36(gl_FragColor) BuiltIn FragColor
-                              Decorate 40(BaseColor) Smooth 
-                              Decorate 40(BaseColor) NoStaticUse 
-                              Decorate 42(d) NoStaticUse 
+                              Decorate 40(BaseColor) Smooth
+                              Decorate 40(BaseColor) NoStaticUse
+                              Decorate 42(d) NoStaticUse
                2:             TypeVoid
-               3:             TypeFunction 2 
+               3:             TypeFunction 2
               11:             TypeFloat 32
               12:             TypePointer PrivateGlobal 11(float)
-         13(bar):     12(ptr) Variable PrivateGlobal 
+         13(bar):     12(ptr) Variable PrivateGlobal
               14:   11(float) Constant 1073741824
               16:   11(float) Constant 1065353216
               21:             TypeVector 11(float) 4
               22:             TypePointer Function 21(fvec4)
               24:             TypePointer UniformConstant 21(fvec4)
-    25(bigColor):     24(ptr) Variable UniformConstant 
+    25(bigColor):     24(ptr) Variable UniformConstant
               35:             TypePointer Output 21(fvec4)
-36(gl_FragColor):     35(ptr) Variable Output 
+36(gl_FragColor):     35(ptr) Variable Output
               39:             TypePointer Input 21(fvec4)
-   40(BaseColor):     39(ptr) Variable Input 
+   40(BaseColor):     39(ptr) Variable Input
               41:             TypePointer UniformConstant 11(float)
-           42(d):     41(ptr) Variable UniformConstant 
+           42(d):     41(ptr) Variable UniformConstant
          4(main):           2 Function None 3
                5:             Label
-    23(outColor):     22(ptr) Variable Function 
-                              Store 13(bar) 14 
-              26:   21(fvec4) Load 25(bigColor) 
-                              Store 23(outColor) 26 
-              27:           2 FunctionCall 7(foo() 
-              28:           2 FunctionCall 9(foo2() 
-              29:   11(float) Load 13(bar) 
-              30:   21(fvec4) Load 23(outColor) 
+    23(outColor):     22(ptr) Variable Function
+                              Store 13(bar) 14
+              26:   21(fvec4) Load 25(bigColor)
+                              Store 23(outColor) 26
+              27:           2 FunctionCall 7(foo()
+              28:           2 FunctionCall 9(foo2()
+              29:   11(float) Load 13(bar)
+              30:   21(fvec4) Load 23(outColor)
               31:   11(float) CompositeExtract 30 0
               32:   11(float) FAdd 31 29
-              33:   21(fvec4) Load 23(outColor) 
+              33:   21(fvec4) Load 23(outColor)
               34:   21(fvec4) CompositeInsert 32 33 0
-                              Store 23(outColor) 34 
-              37:   21(fvec4) Load 23(outColor) 
-                              Store 36(gl_FragColor) 37 
+                              Store 23(outColor) 34
+              37:   21(fvec4) Load 23(outColor)
+                              Store 36(gl_FragColor) 37
                               Branch 6
                6:             Label
                               Return
                               FunctionEnd
          7(foo():           2 Function None 3
                8:             Label
-              15:   11(float) Load 13(bar) 
+              15:   11(float) Load 13(bar)
               17:   11(float) FAdd 15 16
-                              Store 13(bar) 17 
+                              Store 13(bar) 17
                               Return
                               FunctionEnd
         9(foo2():           2 Function None 3
               10:             Label
-              19:   11(float) Load 13(bar) 
+              19:   11(float) Load 13(bar)
               20:   11(float) FAdd 19 16
-                              Store 13(bar) 20 
+                              Store 13(bar) 20
                               Return
                               FunctionEnd

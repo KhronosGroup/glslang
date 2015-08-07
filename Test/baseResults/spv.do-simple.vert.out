@@ -8,22 +8,20 @@ Linked vertex stage:
 // Id's are bound by 30
 
                               Source ESSL 300
+                              Capability Shader
                1:             ExtInstImport  "GLSL.std.450"
                               MemoryModel Logical GLSL450
-                              EntryPoint Vertex 4
+                              EntryPoint Vertex 4  "main"
                               Name 4  "main"
                               Name 9  "i"
                               Name 28  "gl_VertexID"
                               Name 29  "gl_InstanceID"
-                              Decorate 9(i) PrecisionHigh 
-                              Decorate 28(gl_VertexID) PrecisionHigh 
                               Decorate 28(gl_VertexID) BuiltIn VertexId
-                              Decorate 28(gl_VertexID) NoStaticUse 
-                              Decorate 29(gl_InstanceID) PrecisionHigh 
+                              Decorate 28(gl_VertexID) NoStaticUse
                               Decorate 29(gl_InstanceID) BuiltIn InstanceId
-                              Decorate 29(gl_InstanceID) NoStaticUse 
+                              Decorate 29(gl_InstanceID) NoStaticUse
                2:             TypeVoid
-               3:             TypeFunction 2 
+               3:             TypeFunction 2
                7:             TypeInt 32 1
                8:             TypePointer Function 7(int)
               10:      7(int) Constant 0
@@ -33,12 +31,12 @@ Linked vertex stage:
               24:      7(int) Constant 1
               26:    15(bool) ConstantFalse
               27:             TypePointer Input 7(int)
- 28(gl_VertexID):     27(ptr) Variable Input 
-29(gl_InstanceID):     27(ptr) Variable Input 
+ 28(gl_VertexID):     27(ptr) Variable Input
+29(gl_InstanceID):     27(ptr) Variable Input
          4(main):           2 Function None 3
                5:             Label
-            9(i):      8(ptr) Variable Function 
-                              Store 9(i) 10 
+            9(i):      8(ptr) Variable Function
+                              Store 9(i) 10
                               Branch 11
               11:             Label
               14:    15(bool) Phi 16 5 26 13
@@ -46,18 +44,18 @@ Linked vertex stage:
                               Branch 17
               17:             Label
                               SelectionMerge 13 None
-                              BranchConditional 14 13 18 
+                              BranchConditional 14 13 18
               18:               Label
-              19:      7(int)   Load 9(i) 
+              19:      7(int)   Load 9(i)
               21:    15(bool)   SLessThan 19 20
                                 SelectionMerge 22 None
-                                BranchConditional 21 22 12 
+                                BranchConditional 21 22 12
               22:               Label
                                 Branch 13
               13:             Label
-              23:      7(int) Load 9(i) 
+              23:      7(int) Load 9(i)
               25:      7(int) IAdd 23 24
-                              Store 9(i) 25 
+                              Store 9(i) 25
                               Branch 11
               12:             Label
                               Branch 6

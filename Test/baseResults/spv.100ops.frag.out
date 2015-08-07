@@ -8,9 +8,11 @@ Linked fragment stage:
 // Id's are bound by 48
 
                               Source ESSL 100
+                              Capability Shader
                1:             ExtInstImport  "GLSL.std.450"
                               MemoryModel Logical GLSL450
-                              EntryPoint Fragment 4
+                              EntryPoint Fragment 4  "main"
+                              ExecutionMode 4 OriginLowerLeft
                               Name 4  "main"
                               Name 9  "foo("
                               Name 12  "face1"
@@ -19,68 +21,68 @@ Linked fragment stage:
                               Name 22  "low"
                               Name 27  "high"
                               Name 37  "gl_FragColor"
-                              Decorate 12(face1) PrecisionLow 
-                              Decorate 14(face2) PrecisionLow 
-                              Decorate 18(z) PrecisionMedium 
-                              Decorate 22(low) PrecisionMedium 
-                              Decorate 27(high) PrecisionMedium 
-                              Decorate 37(gl_FragColor) PrecisionMedium 
+                              Decorate 12(face1) RelaxedPrecision
+                              Decorate 14(face2) RelaxedPrecision
+                              Decorate 18(z) RelaxedPrecision
+                              Decorate 22(low) RelaxedPrecision
+                              Decorate 27(high) RelaxedPrecision
+                              Decorate 37(gl_FragColor) RelaxedPrecision
                               Decorate 37(gl_FragColor) BuiltIn FragColor
                2:             TypeVoid
-               3:             TypeFunction 2 
+               3:             TypeFunction 2
                7:             TypeFloat 32
-               8:             TypeFunction 7(float) 
+               8:             TypeFunction 7(float)
               11:             TypePointer PrivateGlobal 7(float)
-       12(face1):     11(ptr) Variable PrivateGlobal 
+       12(face1):     11(ptr) Variable PrivateGlobal
               13:    7(float) Constant 1093664768
-       14(face2):     11(ptr) Variable PrivateGlobal 
+       14(face2):     11(ptr) Variable PrivateGlobal
               15:    7(float) Constant 3221225472
               16:             TypeInt 32 1
               17:             TypePointer Function 16(int)
               19:     16(int) Constant 3
               20:     16(int) Constant 2
               21:             TypePointer UniformConstant 16(int)
-         22(low):     21(ptr) Variable UniformConstant 
+         22(low):     21(ptr) Variable UniformConstant
               25:     16(int) Constant 1
-        27(high):     21(ptr) Variable UniformConstant 
+        27(high):     21(ptr) Variable UniformConstant
               29:             TypeBool
               35:             TypeVector 7(float) 4
               36:             TypePointer Output 35(fvec4)
-37(gl_FragColor):     36(ptr) Variable Output 
+37(gl_FragColor):     36(ptr) Variable Output
          4(main):           2 Function None 3
                5:             Label
-           18(z):     17(ptr) Variable Function 
-                              Store 12(face1) 13 
-                              Store 14(face2) 15 
-                              Store 18(z) 19 
-              23:     16(int) Load 22(low) 
+           18(z):     17(ptr) Variable Function
+                              Store 12(face1) 13
+                              Store 14(face2) 15
+                              Store 18(z) 19
+              23:     16(int) Load 22(low)
               24:     16(int) IMul 20 23
               26:     16(int) IAdd 24 25
-              28:     16(int) Load 27(high) 
+              28:     16(int) Load 27(high)
               30:    29(bool) SLessThan 26 28
                               SelectionMerge 32 None
-                              BranchConditional 30 31 32 
+                              BranchConditional 30 31 32
               31:               Label
-              33:     16(int)   Load 18(z) 
+              33:     16(int)   Load 18(z)
               34:     16(int)   IAdd 33 25
-                                Store 18(z) 34 
+                                Store 18(z) 34
                                 Branch 32
               32:             Label
-              38:    7(float) Load 12(face1) 
-              39:     16(int) Load 18(z) 
+              38:    7(float) Load 12(face1)
+              39:     16(int) Load 18(z)
               40:    7(float) ConvertSToF 39
               41:   35(fvec4) CompositeConstruct 40 40 40 40
               42:   35(fvec4) VectorTimesScalar 41 38
-              43:    7(float) FunctionCall 9(foo() 
+              43:    7(float) FunctionCall 9(foo()
               44:   35(fvec4) CompositeConstruct 43 43 43 43
               45:   35(fvec4) FAdd 42 44
-                              Store 37(gl_FragColor) 45 
+                              Store 37(gl_FragColor) 45
                               Branch 6
                6:             Label
                               Return
                               FunctionEnd
          9(foo():    7(float) Function None 8
               10:             Label
-              46:    7(float) Load 14(face2) 
+              46:    7(float) Load 14(face2)
                               ReturnValue 46
                               FunctionEnd
