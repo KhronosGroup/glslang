@@ -1370,9 +1370,9 @@ spv::Id TGlslangToSpvTraverser::convertGlslangToSpvType(const glslang::TType& ty
                         builder.addMemberDecoration(spvType, member, spv::DecorationOffset, glslangType.getQualifier().layoutXfbOffset);
 
                     // built-in variable decorations
-                    int builtIn = TranslateBuiltInDecoration(glslangType.getQualifier().builtIn);
-                    if ((unsigned int)builtIn != spv::BadValue)
-                        builder.addMemberDecoration(spvType, member, spv::DecorationBuiltIn, builtIn);
+                    spv::BuiltIn builtIn = TranslateBuiltInDecoration(glslangType.getQualifier().builtIn);
+                    if (builtIn != spv::BadValue)
+                        builder.addMemberDecoration(spvType, member, spv::DecorationBuiltIn, (int)builtIn);
                 }
             }
 
@@ -2518,9 +2518,9 @@ spv::Id TGlslangToSpvTraverser::getSymbolId(const glslang::TIntermSymbol* symbol
     }
 
     // built-in variable decorations
-    int builtIn = TranslateBuiltInDecoration(symbol->getQualifier().builtIn);
+    spv::BuiltIn builtIn = TranslateBuiltInDecoration(symbol->getQualifier().builtIn);
     if ((unsigned int)builtIn != spv::BadValue)
-        builder.addDecoration(id, spv::DecorationBuiltIn, builtIn);
+        builder.addDecoration(id, spv::DecorationBuiltIn, (int)builtIn);
 
     if (linkageOnly)
         builder.addDecoration(id, spv::DecorationNoStaticUse);

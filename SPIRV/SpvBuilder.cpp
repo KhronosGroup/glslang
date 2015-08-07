@@ -1032,7 +1032,7 @@ Id Builder::createRvalueSwizzle(Id typeId, Id source, std::vector<unsigned>& cha
 // Comments in header
 Id Builder::createLvalueSwizzle(Id typeId, Id target, Id source, std::vector<unsigned>& channels)
 {
-    assert((size_t)getNumComponents(source) == channels.size());
+    assert(getNumComponents(source) == (int)channels.size());
     if (channels.size() == 1 && getNumComponents(source) == 1)
         return createCompositeInsert(source, target, typeId, channels.front());
 
@@ -1471,7 +1471,7 @@ Id Builder::createCompare(Decoration precision, Id value1, Id value2, bool equal
 // OpCompositeConstruct
 Id Builder::createCompositeConstruct(Id typeId, std::vector<Id>& constituents)
 {
-    assert((isAggregateType(typeId) || getNumTypeComponents(typeId) > 1) && (size_t)getNumTypeComponents(typeId) == constituents.size());
+    assert(isAggregateType(typeId) || (getNumTypeComponents(typeId) > 1 && getNumTypeComponents(typeId) == (int)constituents.size()));
 
     Instruction* op = new Instruction(getUniqueId(), typeId, OpCompositeConstruct);
     for (int c = 0; c < (int)constituents.size(); ++c)

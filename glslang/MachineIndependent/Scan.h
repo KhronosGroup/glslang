@@ -172,7 +172,7 @@ protected:
     void advance()
     {
         ++currentChar;
-        if (currentChar >= static_cast<size_t>(lengths[currentSource])) {
+        if (currentChar >= lengths[currentSource]) {
             ++currentSource;
             if (currentSource < numSources) {
                 loc[currentSource].string = loc[currentSource - 1].string + 1;
