@@ -103,9 +103,9 @@ namespace std {
             const unsigned _FNV_offset_basis = 2166136261U;
             const unsigned _FNV_prime = 16777619U;
             unsigned _Val = _FNV_offset_basis;
-            unsigned _Count = s.size();
+            size_t _Count = s.size();
             const char* _First = s.c_str();
-            for (unsigned _Next = 0; _Next < _Count; ++_Next)
+            for (size_t _Next = 0; _Next < _Count; ++_Next)
             {
                 _Val ^= (unsigned)_First[_Next];
                 _Val *= _FNV_prime;
