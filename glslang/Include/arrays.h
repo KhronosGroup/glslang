@@ -43,6 +43,10 @@
 
 namespace glslang {
 
+// This is used to mean there is no size yet, it is waiting to get a size from somewhere else.
+// Historically, this is not fully encapsulated, trying to catch them all...
+const int UnsizedArraySize = 0;
+
 //
 // TSmallArrayVector is used as the container for the set of sizes in TArraySizes.
 // It has generic-container semantics, while TArraySizes has array-of-array semantics.
@@ -56,7 +60,7 @@ struct TSmallArrayVector {
     //
     POOL_ALLOCATOR_NEW_DELETE(GetThreadPoolAllocator())
 
-    TSmallArrayVector() : sizes(0) { }
+    TSmallArrayVector() : sizes(nullptr) { }
     virtual ~TSmallArrayVector() { dealloc(); }
 
     // For breaking into two non-shared copies, independently modifiable.
@@ -72,14 +76,14 @@ struct TSmallArrayVector {
         return *this;
     }
 
-    int size()
+    int size() const
     {
         if (sizes == nullptr)
             return 0;
         return (int)sizes->size();
     }
 
-    unsigned int front()
+    unsigned int front() const
     {
         assert(sizes != nullptr && sizes->size() > 0);
         return sizes->front();
@@ -97,13 +101,13 @@ struct TSmallArrayVector {
         sizes->push_back(e);
     }
 
-    unsigned int operator[](int i)
+    unsigned int operator[](int i) const
     {
         assert(sizes && (int)sizes->size() > i);
         return (*sizes)[i];
     }
 
-    bool operator==(const TSmallArrayVector& rhs)
+    bool operator==(const TSmallArrayVector& rhs) const
     {
         if (sizes == nullptr && rhs.sizes == nullptr)
             return true;
@@ -150,14 +154,14 @@ struct TArraySizes {
     }
 
     // translate from array-of-array semantics to container semantics
-    int getNumDims() { return sizes.size(); }
-    int getOuterSize() { return sizes.front(); }
+    int getNumDims() const { return sizes.size(); }
+    int getOuterSize() const { return sizes.front(); }
     void setOuterSize(int s) { sizes.push_back((unsigned)s); }
     void changeOuterSize(int s) { sizes.changeFront((unsigned)s); }
-    int getImplicitSize() { return (int)implicitArraySize; }
+    int getImplicitSize() const { return (int)implicitArraySize; }
     void setImplicitSize(int s) { implicitArraySize = s; }
-    int operator[](int i) { return sizes[i]; }
-    bool operator==(const TArraySizes& rhs) { return sizes == rhs.sizes; }
+    int operator[](int i) const { return sizes[i]; }
+    bool operator==(const TArraySizes& rhs) const { return sizes == rhs.sizes; }
 
 protected:
     TSmallArrayVector sizes;

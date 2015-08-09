@@ -295,8 +295,8 @@ namespace {
 
 // A single global usable by all threads, by all versions, by all languages.
 // After a single process-level initialization, this is read only and thread safe
-std::unordered_map<std::string, int>* KeywordMap = 0;
-std::unordered_set<std::string>* ReservedSet = 0;
+std::unordered_map<std::string, int>* KeywordMap = nullptr;
+std::unordered_set<std::string>* ReservedSet = nullptr;
 
 };
 
@@ -304,7 +304,7 @@ namespace glslang {
 
 void TScanContext::fillInKeywordMap()
 {
-    if (KeywordMap != 0) {
+    if (KeywordMap != nullptr) {
         // this is really an error, as this should called only once per process
         // but, the only risk is if two threads called simultaneously
         return;
@@ -522,9 +522,9 @@ void TScanContext::fillInKeywordMap()
 void TScanContext::deleteKeywordMap()
 {
     delete KeywordMap;
-    KeywordMap = 0;
+    KeywordMap = nullptr;
     delete ReservedSet;
-    ReservedSet = 0;
+    ReservedSet = nullptr;
 }
 
 int TScanContext::tokenize(TPpContext* pp, TParserToken& token)
@@ -533,7 +533,7 @@ int TScanContext::tokenize(TPpContext* pp, TParserToken& token)
         parserToken = &token;
         TPpToken ppToken;
         tokenText = pp->tokenize(&ppToken);
-        if (tokenText == 0)
+        if (tokenText == nullptr)
             return 0;
 
         loc = ppToken.loc;
