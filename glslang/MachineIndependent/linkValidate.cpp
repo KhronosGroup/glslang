@@ -240,9 +240,7 @@ void TIntermediate::mergeLinkerObjects(TInfoSink& infoSink, TIntermSequence& lin
 void TIntermediate::mergeImplicitArraySizes(TType& type, const TType& unitType)
 {
     if (type.isImplicitlySizedArray() && unitType.isArray()) {
-        int newImplicitArraySize = unitType.getArraySize();
-        if (newImplicitArraySize == 0)
-            newImplicitArraySize = unitType.getImplicitArraySize();
+        int newImplicitArraySize = unitType.isImplicitlySizedArray() ? unitType.getImplicitArraySize() : unitType.getOuterArraySize();
         if (newImplicitArraySize > type.getImplicitArraySize ())
             type.setImplicitArraySize(newImplicitArraySize);
     }
@@ -623,7 +621,7 @@ int TIntermediate::addUsedLocation(const TQualifier& qualifier, const TType& typ
     int size;
     if (qualifier.isUniformOrBuffer()) {
         if (type.isArray())
-            size = type.getArraySize();
+            size = type.getCumulativeArraySize();
         else
             size = 1;
     } else {
@@ -693,12 +691,13 @@ int TIntermediate::computeTypeLocationSize(const TType& type) const
     // "If the declared input is an array of size n and each element takes m locations, it will be assigned m * n 
     // consecutive locations..."
     if (type.isArray()) {
+        // TODO: perf: this can be flattened by using getCumulativeArraySize(), and a deref that discards all arrayness
         TType elementType(type, 0);
         if (type.isImplicitlySizedArray()) {
             // TODO: are there valid cases of having an implicitly-sized array with a location?  If so, running this code too early.
             return computeTypeLocationSize(elementType);
         } else
-            return type.getArraySize() * computeTypeLocationSize(elementType);
+            return type.getOuterArraySize() * computeTypeLocationSize(elementType);
     }
 
     // "The locations consumed by block and structure members are determined by applying the rules above 
@@ -783,10 +782,11 @@ unsigned int TIntermediate::computeTypeXfbSize(const TType& type, bool& contains
     // that component's size.  Aggregate types are flattened down to the component
     // level to get this sequence of components."
 
-    if (type.isArray()) {
+    if (type.isArray()) {        
+        // TODO: perf: this can be flattened by using getCumulativeArraySize(), and a deref that discards all arrayness
         assert(type.isExplicitlySizedArray());
         TType elementType(type, 0);
-        return type.getArraySize() * computeTypeXfbSize(elementType, containsDouble);
+        return type.getOuterArraySize() * computeTypeXfbSize(elementType, containsDouble);
     }
 
     if (type.isStruct()) {
@@ -913,12 +913,13 @@ int TIntermediate::getBaseAlignment(const TType& type, int& size, bool std140)
 
     // rules 4, 6, and 8
     if (type.isArray()) {
+        // TODO: perf: this might be flattened by using getCumulativeArraySize(), and a deref that discards all arrayness
         TType derefType(type, 0);
         alignment = getBaseAlignment(derefType, size, std140);
         if (std140)
             alignment = std::max(baseAlignmentVec4Std140, alignment);
         RoundToPow2(size, alignment);
-        size *= type.getArraySize();
+        size *= type.getOuterArraySize();
         return alignment;
     }
 

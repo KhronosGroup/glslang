@@ -896,15 +896,32 @@ public:
     // and using only shallow copy
     TType(const TType& type, int derefIndex, bool rowMajor = false)
                             {
-                                if (! type.isArray() && (type.basicType == EbtStruct || type.basicType == EbtBlock)) {
+                                if (type.isArray()) {
+                                    shallowCopy(type);
+                                    if (type.getArraySizes()->getNumDims() == 1) {
+                                        arraySizes = nullptr;
+                                    } else {
+                                        // want our own copy of the array, so we can edit it
+                                        arraySizes = new TArraySizes;
+                                        arraySizes->copyDereferenced(*type.arraySizes);
+                                    }
+                                } else if (type.basicType == EbtStruct || type.basicType == EbtBlock) {
                                     // do a structure dereference
                                     const TTypeList& memberList = *type.getStruct();
                                     shallowCopy(*memberList[derefIndex].type);
                                     return;
                                 } else {
-                                    // do an array/vector/matrix dereference
+                                    // do a vector/matrix dereference
                                     shallowCopy(type);
-                                    dereference(rowMajor);
+                                    if (matrixCols > 0) {
+                                        if (rowMajor)
+                                            vectorSize = matrixCols;
+                                        else
+                                            vectorSize = matrixRows;
+                                        matrixCols = 0;
+                                        matrixRows = 0;
+                                    } else if (vectorSize > 1)
+                                        vectorSize = 1;
                                 }
                             }
     // for making structures, ...
@@ -990,26 +1007,11 @@ public:
         qualifier = parentType.qualifier;
         sampler = parentType.sampler;
         if (parentType.arraySizes)
-            setArraySizes(parentType.arraySizes);
+            newArraySizes(*parentType.arraySizes);
         if (parentType.userDef) {
             structure = parentType.userDef->getWritableStruct();
             setTypeName(parentType.userDef->getTypeName());
         }
-    }
-
-    virtual void dereference(bool rowMajor = false)
-    {
-        if (arraySizes)
-            arraySizes = nullptr;
-        else if (matrixCols > 0) {
-            if (rowMajor)
-                vectorSize = matrixCols;
-            else
-                vectorSize = matrixRows;
-            matrixCols = 0;
-            matrixRows = 0;
-        } else if (vectorSize > 1)
-            vectorSize = 1;
     }
 
     virtual void hideMember() { basicType = EbtVoid; vectorSize = 1; }
@@ -1038,17 +1040,20 @@ public:
     virtual int getVectorSize() const { return vectorSize; }
     virtual int getMatrixCols() const { return matrixCols; }
     virtual int getMatrixRows() const { return matrixRows; }
-    virtual int getArraySize()  const { return arraySizes->getOuterSize(); }
+    virtual int getOuterArraySize()  const { return arraySizes->getOuterSize(); }
+    virtual int getCumulativeArraySize()  const { return arraySizes->getCumulativeSize(); }
     virtual bool isArrayOfArrays() const { return arraySizes != nullptr && arraySizes->getNumDims() > 1; }
     virtual int getImplicitArraySize() const { return arraySizes->getImplicitSize(); }
+    virtual const TArraySizes* getArraySizes() const { return arraySizes; }
+    virtual       TArraySizes& getArraySizes()       { assert(arraySizes != nullptr); return *arraySizes; }
 
     virtual bool isScalar() const { return vectorSize == 1 && ! isStruct() && ! isArray(); }
     virtual bool isVector() const { return vectorSize > 1; }
     virtual bool isMatrix() const { return matrixCols ? true : false; }
     virtual bool isArray()  const { return arraySizes != nullptr; }
-    virtual bool isExplicitlySizedArray() const { return isArray() && getArraySize() != UnsizedArraySize; }
-    virtual bool isImplicitlySizedArray() const { return isArray() && getArraySize() == UnsizedArraySize && qualifier.storage != EvqBuffer; }
-    virtual bool isRuntimeSizedArray()    const { return isArray() && getArraySize() == UnsizedArraySize && qualifier.storage == EvqBuffer; }
+    virtual bool isExplicitlySizedArray() const { return isArray() && getOuterArraySize() != UnsizedArraySize; }
+    virtual bool isImplicitlySizedArray() const { return isArray() && getOuterArraySize() == UnsizedArraySize && qualifier.storage != EvqBuffer; }
+    virtual bool isRuntimeSizedArray()    const { return isArray() && getOuterArraySize() == UnsizedArraySize && qualifier.storage == EvqBuffer; }
     virtual bool isStruct() const { return structure != nullptr; }
     virtual bool isImage() const { return basicType == EbtSampler && getSampler().image; }
 
@@ -1125,22 +1130,27 @@ public:
         assert(type.arraySizes != nullptr);
         *arraySizes = *type.arraySizes;
     }
-    void setArraySizes(TArraySizes* s)
+    void newArraySizes(const TArraySizes& s)
     {
         // For setting a fresh new set of array sizes, not yet worrying about sharing.
         arraySizes = new TArraySizes;
-        assert(s != nullptr);
-        *arraySizes = *s;
+        *arraySizes = s;
     }
-    void setArraySizes(const TType& type) { setArraySizes(type.arraySizes); }
-    void changeArraySize(int s) { arraySizes->changeOuterSize(s); }
+    void addArrayOuterSizes(const TArraySizes& s)
+    {
+        if (arraySizes == nullptr)
+            newArraySizes(s);
+        else
+            arraySizes->addOuterSizes(s);
+    }
+    void changeOuterArraySize(int s) { arraySizes->changeOuterSize(s); }
     void setImplicitArraySize (int s) { arraySizes->setImplicitSize(s); }
 
     // Recursively make the implicit array size the explicit array size, through the type tree.
     void adoptImplicitArraySizes()
     {
         if (isImplicitlySizedArray())
-            changeArraySize(getImplicitArraySize());
+            changeOuterArraySize(getImplicitArraySize());
         if (isStruct()) {
             for (int i = 0; i < (int)structure->size(); ++i)
                 (*structure)[i].type->adoptImplicitArraySizes();
@@ -1151,7 +1161,7 @@ public:
     {
         return TType::getBasicString(basicType);
     }
-    
+
     static const char* getBasicString(TBasicType t)
     {
         switch (t) {
@@ -1242,12 +1252,12 @@ public:
             p += snprintf(p, end - p, "writeonly ");
         p += snprintf(p, end - p, "%s ", getStorageQualifierString());
         if (arraySizes) {
-            if (arraySizes->getOuterSize() == UnsizedArraySize) {
-                p += snprintf(p, end - p, "implicitly-sized array of ");
-            } else {
-                for(int i = 0; i < (int)arraySizes->getNumDims() ; ++i) {
-                    p += snprintf(p, end - p, "%d-element array of ", (*arraySizes)[i]);
-                }
+            for(int i = 0; i < (int)arraySizes->getNumDims(); ++i) {
+                int size = arraySizes->getDimSize(i);
+                if (size == 0)
+                    p += snprintf(p, end - p, "implicitly-sized array of ");
+                else
+                    p += snprintf(p, end - p, "%d-element array of ", arraySizes->getDimSize(i));
             }
         }
         if (qualifier.precision != EpqNone)
@@ -1310,10 +1320,8 @@ public:
         else
             components = vectorSize;
 
-        if (isArray()) {
-            // this function can only be used in paths that have a known array size
-            assert(isExplicitlySizedArray());
-            components *= getArraySize();
+        if (arraySizes != nullptr) {
+            components *= arraySizes->getCumulativeSize();
         }
 
         return components;
@@ -1371,7 +1379,14 @@ public:
     bool sameArrayness(const TType& right) const
     {
         return ((arraySizes == nullptr && right.arraySizes == nullptr) ||
-                (arraySizes && right.arraySizes && *arraySizes == *right.arraySizes));
+                (arraySizes != nullptr && right.arraySizes != nullptr && *arraySizes == *right.arraySizes));
+    }
+
+    // See if two type's arrayness match in everything except their outer dimension
+    bool sameInnerArrayness(const TType& right) const
+    {
+        assert(arraySizes != nullptr && right.arraySizes != nullptr);
+        return arraySizes->sameInnerArrayness(*right.arraySizes);
     }
 
     // See if two type's elements match in all ways except basic type

@@ -20,7 +20,7 @@ uniform Transform {  // API uses “Transform[2]” to refer to instance 2
 
 layout(location = 3) in vec4 normal;
 layout(location = 6) in vec4 colors[3];
-layout(location = 9) in mat4 transforms[2];
+layout(location = 9) in mat4 transforms2[2];
 
 layout(location = 3) struct S {
     vec3 a1;

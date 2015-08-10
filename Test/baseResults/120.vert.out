@@ -17,7 +17,6 @@ ERROR: 0:34: '.' : cannot apply to an array: flizbit
 ERROR: 0:34: 'f' : can't use function syntax on variable 
 ERROR: 0:34: 'a4' : redefinition 
 ERROR: 0:35: 'arrays of arrays' : not supported with this profile: none
-WARNING: 0:35: 'Not supported yet.' : arrays of arrays 
 ERROR: 0:36: 'arrays of arrays' : not supported with this profile: none
 ERROR: 0:37: 'arrays of arrays' : not supported with this profile: none
 ERROR: 0:38: 'arrays of arrays' : not supported with this profile: none

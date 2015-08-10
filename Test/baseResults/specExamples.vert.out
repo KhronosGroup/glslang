@@ -1,6 +1,5 @@
 specExamples.vert
 Warning, version 430 is not yet complete; most version-specific features are present, but some are missing.
-ERROR: 0:23: 'transforms' : redeclaration of array with size 
 ERROR: 0:29: 'location' : can only appy to uniform, buffer, in, or out storage qualifiers 
 ERROR: 0:31: 'triangles' : unrecognized layout identifier, or qualifier requires assignment (e.g., binding = 4) 
 ERROR: 0:31: 'invocations' : there is no such layout identifier for this stage taking an assigned value 
@@ -35,11 +34,7 @@ ERROR: 0:134: '' : function does not return a value: funcA
 ERROR: 0:136: '' : function does not return a value: funcB
 ERROR: 0:153: '' : function does not return a value: func3
 ERROR: 0:170: 'coherent' : argument cannot drop memory qualifier when passed to formal parameter 
-WARNING: 0:192: 'Not supported yet.' : arrays of arrays 
-ERROR: 0:192: 'constructor' : constructing from a non-dereferenced array 
-ERROR: 0:193: 'constructor' : constructing from a non-dereferenced array 
-ERROR: 0:194: 'constructor' : constructing from a non-dereferenced array 
-ERROR: 37 compilation errors.  No code generated.
+ERROR: 33 compilation errors.  No code generated.
 
 
 Shader version: 430
@@ -269,18 +264,25 @@ ERROR: node is still EOpNull!
 0:191              1.000000
 0:191              1.000000
 0:191              1.000000
-0:192        Constant:
-0:192          0.000000
-0:193        Constant:
-0:193          0.000000
-0:194        Constant:
-0:194          0.000000
+0:192        Construct vec4 (temp 3-element array of 2-element array of 4-component vector of float)
+0:192          'b' (temp 2-element array of 4-component vector of float)
+0:192          'b' (temp 2-element array of 4-component vector of float)
+0:192          'b' (temp 2-element array of 4-component vector of float)
+0:193        Construct vec4 (temp 3-element array of 2-element array of 4-component vector of float)
+0:193          'b' (temp 2-element array of 4-component vector of float)
+0:193          'b' (temp 2-element array of 4-component vector of float)
+0:193          'b' (temp 2-element array of 4-component vector of float)
+0:194        Construct vec4 (temp 3-element array of 2-element array of 4-component vector of float)
+0:194          'b' (temp 2-element array of 4-component vector of float)
+0:194          'b' (temp 2-element array of 4-component vector of float)
+0:194          'b' (temp 2-element array of 4-component vector of float)
 0:?   Linker Objects
 0:?     'Coords' (out block{out 4-component vector of float Position, out 2-component vector of float Texture})
 0:?     'anon@0' (out block{out 4-component vector of float Color})
 0:?     'transforms' (layout(column_major shared ) uniform 4-element array of block{layout(column_major shared ) uniform 4X4 matrix of float ModelViewMatrix, layout(column_major shared ) uniform 4X4 matrix of float ModelViewProjectionMatrix, layout(column_major shared ) uniform implicitly-sized array of 4-component vector of float a, layout(column_major shared ) uniform float Deformation})
 0:?     'normal' (layout(location=3 ) in 4-component vector of float)
 0:?     'colors' (layout(location=6 ) in 3-element array of 4-component vector of float)
+0:?     'transforms2' (layout(location=9 ) in 2-element array of 4X4 matrix of float)
 0:?     's' (layout(location=3 ) temp structure{global 3-component vector of float a1, global 2X2 matrix of float b, global 2-element array of 4-component vector of float c})
 0:?     'var1' (smooth out 4-component vector of float)
 0:?     'anon@1' (out block{out 4-component vector of float var2, out 2-component vector of float var3, out 3-component vector of float var4})
@@ -546,18 +548,25 @@ ERROR: node is still EOpNull!
 0:191              1.000000
 0:191              1.000000
 0:191              1.000000
-0:192        Constant:
-0:192          0.000000
-0:193        Constant:
-0:193          0.000000
-0:194        Constant:
-0:194          0.000000
+0:192        Construct vec4 (temp 3-element array of 2-element array of 4-component vector of float)
+0:192          'b' (temp 2-element array of 4-component vector of float)
+0:192          'b' (temp 2-element array of 4-component vector of float)
+0:192          'b' (temp 2-element array of 4-component vector of float)
+0:193        Construct vec4 (temp 3-element array of 2-element array of 4-component vector of float)
+0:193          'b' (temp 2-element array of 4-component vector of float)
+0:193          'b' (temp 2-element array of 4-component vector of float)
+0:193          'b' (temp 2-element array of 4-component vector of float)
+0:194        Construct vec4 (temp 3-element array of 2-element array of 4-component vector of float)
+0:194          'b' (temp 2-element array of 4-component vector of float)
+0:194          'b' (temp 2-element array of 4-component vector of float)
+0:194          'b' (temp 2-element array of 4-component vector of float)
 0:?   Linker Objects
 0:?     'Coords' (out block{out 4-component vector of float Position, out 2-component vector of float Texture})
 0:?     'anon@0' (out block{out 4-component vector of float Color})
 0:?     'transforms' (layout(column_major shared ) uniform 4-element array of block{layout(column_major shared ) uniform 4X4 matrix of float ModelViewMatrix, layout(column_major shared ) uniform 4X4 matrix of float ModelViewProjectionMatrix, layout(column_major shared ) uniform 1-element array of 4-component vector of float a, layout(column_major shared ) uniform float Deformation})
 0:?     'normal' (layout(location=3 ) in 4-component vector of float)
 0:?     'colors' (layout(location=6 ) in 3-element array of 4-component vector of float)
+0:?     'transforms2' (layout(location=9 ) in 2-element array of 4X4 matrix of float)
 0:?     's' (layout(location=3 ) temp structure{global 3-component vector of float a1, global 2X2 matrix of float b, global 2-element array of 4-component vector of float c})
 0:?     'var1' (smooth out 4-component vector of float)
 0:?     'anon@1' (out block{out 4-component vector of float var2, out 2-component vector of float var3, out 3-component vector of float var4})

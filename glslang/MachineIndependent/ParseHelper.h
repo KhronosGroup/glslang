@@ -138,10 +138,11 @@ public:
     bool arrayError(const TSourceLoc&, const TType&);
     void arraySizeRequiredCheck(const TSourceLoc&, int size);
     void structArrayCheck(const TSourceLoc&, const TType& structure);
-    void arrayUnsizedCheck(const TSourceLoc&, const TQualifier&, int size, bool initializer);
+    void arrayUnsizedCheck(const TSourceLoc&, const TQualifier&, const TArraySizes*, bool initializer);
     void arrayOfArrayVersionCheck(const TSourceLoc&);
-    void arrayDimCheck(const TSourceLoc&, TArraySizes* sizes1, TArraySizes* sizes2);
-    void arrayDimCheck(const TSourceLoc&, const TType*, TArraySizes*);
+    void arrayDimCheck(const TSourceLoc&, const TArraySizes* sizes1, const TArraySizes* sizes2);
+    void arrayDimCheck(const TSourceLoc&, const TType*, const TArraySizes*);
+    void arrayDimMerge(TType& type, const TArraySizes* sizes);
     bool voidErrorCheck(const TSourceLoc&, const TString&, TBasicType);
     void boolCheck(const TSourceLoc&, const TIntermTyped*);
     void boolCheck(const TSourceLoc&, const TPublicType&);
@@ -189,7 +190,7 @@ public:
     void declareTypeDefaults(const TSourceLoc&, const TPublicType&);
     TIntermNode* declareVariable(const TSourceLoc&, TString& identifier, const TPublicType&, TArraySizes* typeArray = 0, TIntermTyped* initializer = 0);
     TIntermTyped* addConstructor(const TSourceLoc&, TIntermNode*, const TType&, TOperator);
-    TIntermTyped* constructStruct(TIntermNode*, const TType&, int, const TSourceLoc&);
+    TIntermTyped* constructAggregate(TIntermNode*, const TType&, int, const TSourceLoc&);
     TIntermTyped* constructBuiltIn(const TType&, TOperator, TIntermTyped*, const TSourceLoc&, bool subset);
     void declareBlock(const TSourceLoc&, TTypeList& typeList, const TString* instanceName = 0, TArraySizes* arraySizes = 0);
     void blockStageIoCheck(const TSourceLoc&, const TQualifier&);

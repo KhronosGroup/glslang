@@ -113,7 +113,7 @@ void TType::buildMangledName(TString& mangledName)
         const int maxSize = 11;
         char buf[maxSize];
         for (int i = 0; i < arraySizes->getNumDims(); ++i) {
-            snprintf(buf, maxSize, "%d", (*arraySizes)[i]);
+            snprintf(buf, maxSize, "%d", arraySizes->getDimSize(i));
             mangledName += '[';
             mangledName += buf;
             mangledName += ']';

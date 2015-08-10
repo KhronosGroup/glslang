@@ -953,7 +953,7 @@ bool TGlslangToSpvTraverser::visitAggregate(glslang::TVisit visit, glslang::TInt
     {
         glslang::TIntermTyped* typedNode = node->getSequence()[0]->getAsTyped();
         assert(typedNode);
-        spv::Id length = builder.makeIntConstant(typedNode->getType().getArraySize());
+        spv::Id length = builder.makeIntConstant(typedNode->getType().getOuterArraySize());
 
         builder.clearAccessChain();
         builder.setAccessChainRValue(length);
@@ -1428,7 +1428,7 @@ spv::Id TGlslangToSpvTraverser::convertGlslangToSpvType(const glslang::TType& ty
             spv::MissingFunctionality("Unsized array");
             arraySize = 8;
         } else
-            arraySize = type.getArraySize();
+            arraySize = type.getOuterArraySize();
         spvType = builder.makeArrayType(spvType, arraySize);
     }
 
@@ -2637,15 +2637,11 @@ spv::Id TGlslangToSpvTraverser::createSpvConstant(const glslang::TType& glslangT
     spv::Id typeId = convertGlslangToSpvType(glslangType);
 
     if (glslangType.isArray()) {
-        glslang::TType elementType;
-        elementType.deepCopy(glslangType);
-        elementType.dereference();
-        for (int i = 0; i < glslangType.getArraySize(); ++i)
+        glslang::TType elementType(glslangType, 0);
+        for (int i = 0; i < glslangType.getOuterArraySize(); ++i)
             spvConsts.push_back(createSpvConstant(elementType, consts, nextConst));
     } else if (glslangType.isMatrix()) {
-        glslang::TType vectorType;
-        vectorType.shallowCopy(glslangType);
-        vectorType.dereference();
+        glslang::TType vectorType(glslangType, 0);
         for (int col = 0; col < glslangType.getMatrixCols(); ++col)
             spvConsts.push_back(createSpvConstant(vectorType, consts, nextConst));
     } else if (glslangType.getStruct()) {

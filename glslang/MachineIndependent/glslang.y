@@ -691,7 +691,7 @@ declaration
 
         // lazy setting of the previous scope's defaults, has effect only the first time it is called in a particular scope
         parseContext.symbolTable.setPreviousDefaultPrecisions(&parseContext.defaultPrecision[0]);
-		parseContext.setDefaultPrecision($1.loc, $3, $2.qualifier.precision);
+        parseContext.setDefaultPrecision($1.loc, $3, $2.qualifier.precision);
         $$ = 0;
     }
     | block_structure SEMICOLON {
@@ -1240,7 +1240,7 @@ array_specifier
     : LEFT_BRACKET RIGHT_BRACKET {
         $$.loc = $1.loc;
         $$.arraySizes = new TArraySizes;
-        $$.arraySizes->setOuterSize(0);
+        $$.arraySizes->addInnerSize();
     }
     | LEFT_BRACKET constant_expression RIGHT_BRACKET {
         $$.loc = $1.loc;
@@ -1248,18 +1248,18 @@ array_specifier
 
         int size;
         parseContext.arraySizeCheck($2->getLoc(), $2, size);
-        $$.arraySizes->setOuterSize(size);
+        $$.arraySizes->addInnerSize(size);
     }
     | array_specifier LEFT_BRACKET RIGHT_BRACKET {
         $$ = $1;
-        $$.arraySizes->setOuterSize(0);
+        $$.arraySizes->addInnerSize();
     }
     | array_specifier LEFT_BRACKET constant_expression RIGHT_BRACKET {
         $$ = $1;
 
         int size;
         parseContext.arraySizeCheck($3->getLoc(), $3, size);
-        $$.arraySizes->setOuterSize(size);
+        $$.arraySizes->addInnerSize(size);
     }
     ;
 
@@ -1903,19 +1903,19 @@ precision_qualifier
         parseContext.profileRequires($1.loc, ENoProfile, 130, 0, "highp precision qualifier");
         $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
         if (parseContext.profile == EEsProfile)
-		    $$.qualifier.precision = EpqHigh;
+            $$.qualifier.precision = EpqHigh;
     }
     | MEDIUM_PRECISION {
         parseContext.profileRequires($1.loc, ENoProfile, 130, 0, "mediump precision qualifier");
         $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
         if (parseContext.profile == EEsProfile)
-	    	$$.qualifier.precision = EpqMedium;
+            $$.qualifier.precision = EpqMedium;
     }
     | LOW_PRECISION {
         parseContext.profileRequires($1.loc, ENoProfile, 130, 0, "lowp precision qualifier");
         $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
         if (parseContext.profile == EEsProfile)
-    		$$.qualifier.precision = EpqLow;
+            $$.qualifier.precision = EpqLow;
     }
     ;
 
@@ -2020,7 +2020,7 @@ struct_declarator
         $$.type = new TType(EbtVoid);
         $$.loc = $1.loc;
         $$.type->setFieldName(*$1.string);
-        $$.type->setArraySizes($2.arraySizes);
+        $$.type->newArraySizes(*$2.arraySizes);
     }
     ;
 
@@ -2354,7 +2354,7 @@ jump_statement
                 $$ = parseContext.intermediate.addBranch(EOpReturn, $2, $1.loc);
             }
         } else
-		    $$ = parseContext.intermediate.addBranch(EOpReturn, $2, $1.loc);
+            $$ = parseContext.intermediate.addBranch(EOpReturn, $2, $1.loc);
     }
     | DISCARD SEMICOLON {
         parseContext.requireStage($1.loc, EShLangFragment, "discard");

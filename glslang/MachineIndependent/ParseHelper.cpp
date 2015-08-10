@@ -558,9 +558,9 @@ void TParseContext::checkIndex(const TSourceLoc& loc, const TType& type, int& in
         error(loc, "", "[", "index out of range '%d'", index);
         index = 0;
     } else if (type.isArray()) {
-        if (type.isExplicitlySizedArray() && index >= type.getArraySize()) {
+        if (type.isExplicitlySizedArray() && index >= type.getOuterArraySize()) {
             error(loc, "", "[", "array index out of range '%d'", index);
-            index = type.getArraySize() - 1;
+            index = type.getOuterArraySize() - 1;
         }
     } else if (type.isVector()) {
         if (index >= type.getVectorSize()) {
@@ -629,10 +629,10 @@ void TParseContext::fixIoArraySize(const TSourceLoc& loc, TType& type)
         return;
 
     if (language == EShLangTessControl || language == EShLangTessEvaluation) {
-        if (type.getArraySize() != resources.maxPatchVertices) {
+        if (type.getOuterArraySize() != resources.maxPatchVertices) {
             if (type.isExplicitlySizedArray())
                 error(loc, "tessellation input array size must be gl_MaxPatchVertices or implicitly sized", "[]", "");
-            type.changeArraySize(resources.maxPatchVertices);
+            type.changeOuterArraySize(resources.maxPatchVertices);
         }
     }
 }
@@ -662,7 +662,7 @@ void TParseContext::handleIoResizeArrayAccess(const TSourceLoc& /*loc*/, TInterm
     if (symbolNode->getType().isImplicitlySizedArray()) {
         int newSize = getIoArrayImplicitSize();
         if (newSize)
-            symbolNode->getWritableType().changeArraySize(newSize);
+            symbolNode->getWritableType().changeOuterArraySize(newSize);
     }
 }
 
@@ -710,8 +710,8 @@ int TParseContext::getIoArrayImplicitSize() const
 void TParseContext::checkIoArrayConsistency(const TSourceLoc& loc, int requiredSize, const char* feature, TType& type, const TString& name)
 {
     if (type.isImplicitlySizedArray())
-        type.changeArraySize(requiredSize);
-    else if (type.getArraySize() != requiredSize) {
+        type.changeOuterArraySize(requiredSize);
+    else if (type.getOuterArraySize() != requiredSize) {
         if (language == EShLangGeometry)
             error(loc, "inconsistent input primitive for array size of", feature, name.c_str());
         else if (language == EShLangTessControl)
@@ -1203,7 +1203,7 @@ TIntermTyped* TParseContext::handleLengthMethod(const TSourceLoc& loc, TFunction
                         error(loc, "", function->getName().c_str(), "array must be declared with a size before using this method");
                 }
             } else
-                length = type.getArraySize();
+                length = type.getOuterArraySize();
         } else if (type.isMatrix())
             length = type.getMatrixCols();
         else if (type.isVector())
@@ -1993,17 +1993,41 @@ bool TParseContext::constructorError(const TSourceLoc& loc, TIntermNode* node, T
             error(loc, "array constructor must have at least one argument", "constructor", "");
             return true;
         }
+
         if (type.isImplicitlySizedArray()) {
             // auto adapt the constructor type to the number of arguments
-            type.changeArraySize(function.getParamCount());
-        } else if (type.getArraySize() != function.getParamCount()) {
+            type.changeOuterArraySize(function.getParamCount());
+        } else if (type.getOuterArraySize() != function.getParamCount()) {
             error(loc, "array constructor needs one argument per array element", "constructor", "");
             return true;
         }
+
+        if (type.isArrayOfArrays()) {
+            // Types have to match, but we're still making the type.
+            // Finish making the type, and the comparison is done later
+            // when checking for conversion.
+            TArraySizes& arraySizes = type.getArraySizes();
+
+            // At least the dimensionalities have to match.
+            if (! function[0].type->isArray() || arraySizes.getNumDims() != function[0].type->getArraySizes().getNumDims() + 1) {
+                error(loc, "array constructor argument not correct type to construct array element", "constructior", "");
+                return true;
+            }
+
+            if (arraySizes.isInnerImplicit()) {
+                // "Arrays of arrays ..., and the size for any dimension is optional"
+                // That means we need to adopt (from the first argument) the other array sizes into the type.
+                for (int d = 1; d < arraySizes.getNumDims(); ++d) {
+                    if (arraySizes.getDimSize(d) == UnsizedArraySize) {
+                        arraySizes.setDimSize(d, function[0].type->getArraySizes().getDimSize(d - 1));
+                    }
+                }
+            }
+        }
     }
 
-    if (arrayArg && op != EOpConstructStruct) {
-        error(loc, "constructing from a non-dereferenced array", "constructor", "");
+    if (arrayArg && op != EOpConstructStruct && ! type.isArrayOfArrays()) {
+        error(loc, "constructing non-array constituent from array argument", "constructor", "");
         return true;
     }
 
@@ -2490,13 +2514,13 @@ bool TParseContext::arrayError(const TSourceLoc& loc, const TType& type)
     if (type.getQualifier().storage == EvqVaryingOut && language == EShLangVertex) {
         if (type.isArrayOfArrays())
             requireProfile(loc, ~EEsProfile, "vertex-shader array-of-array output");
-        else if (type.getArraySize() && type.isStruct())
+        else if (type.isStruct())
             requireProfile(loc, ~EEsProfile, "vertex-shader array-of-struct output");
     }
     if (type.getQualifier().storage == EvqVaryingIn && language == EShLangFragment) {
         if (type.isArrayOfArrays())
             requireProfile(loc, ~EEsProfile, "fragment-shader array-of-array input");
-        else if (type.getArraySize() && type.isStruct())
+        else if (type.isStruct())
             requireProfile(loc, ~EEsProfile, "fragment-shader array-of-struct input");
     }
 
@@ -2522,11 +2546,24 @@ void TParseContext::structArrayCheck(const TSourceLoc& /*loc*/, const TType& typ
     }
 }
 
-void TParseContext::arrayUnsizedCheck(const TSourceLoc& loc, const TQualifier& qualifier, int size, bool initializer)
+void TParseContext::arrayUnsizedCheck(const TSourceLoc& loc, const TQualifier& qualifier, const TArraySizes* arraySizes, bool initializer)
 {
-    // desktop always allows unsized variable arrays,
-    // ES always allows them if there is an initializer present to get the size from
-    if (parsingBuiltins || profile != EEsProfile || initializer)
+    assert(arraySizes);
+
+    // always allow special built-in ins/outs sized to topologies
+    if (parsingBuiltins)
+        return;
+
+    // always allow an initializer to set any unknown array sizes
+    if (initializer)
+        return;
+
+    // No environment lets any non-outer-dimension that's to be implicitly sized
+    if (arraySizes->isInnerImplicit())
+        error(loc, "only outermost dimension of an array of arrays can be implicitly sized", "[]", "");
+
+    // desktop always allows outer-dimension-unsized variable arrays,
+    if (profile != EEsProfile)
         return;
 
     // for ES, if size isn't coming from an initializer, it has to be explicitly declared now,
@@ -2553,7 +2590,7 @@ void TParseContext::arrayUnsizedCheck(const TSourceLoc& loc, const TQualifier& q
         break;
     }
 
-    arraySizeRequiredCheck(loc, size);
+    arraySizeRequiredCheck(loc, arraySizes->getOuterSize());
 }
 
 void TParseContext::arrayOfArrayVersionCheck(const TSourceLoc& loc)
@@ -2563,15 +2600,9 @@ void TParseContext::arrayOfArrayVersionCheck(const TSourceLoc& loc)
     requireProfile(loc, EEsProfile | ECoreProfile | ECompatibilityProfile, feature);
     profileRequires(loc, EEsProfile, 310, nullptr, feature);
     profileRequires(loc, ECoreProfile | ECompatibilityProfile, 430, nullptr, feature);
-
-    static int once = false;
-    if (! once) {
-        warn(loc, feature, "Not supported yet.", "");
-        once = true;
-    }
 }
 
-void TParseContext::arrayDimCheck(const TSourceLoc& loc, TArraySizes* sizes1, TArraySizes* sizes2)
+void TParseContext::arrayDimCheck(const TSourceLoc& loc, const TArraySizes* sizes1, const TArraySizes* sizes2)
 {
     if ((sizes1 && sizes2) ||
         (sizes1 && sizes1->getNumDims() > 1) ||
@@ -2579,11 +2610,26 @@ void TParseContext::arrayDimCheck(const TSourceLoc& loc, TArraySizes* sizes1, TA
         arrayOfArrayVersionCheck(loc);
 }
 
-void TParseContext::arrayDimCheck(const TSourceLoc& loc, const TType* type, TArraySizes* sizes2)
+void TParseContext::arrayDimCheck(const TSourceLoc& loc, const TType* type, const TArraySizes* sizes2)
 {
+    // skip checking for multiple dimensions on the type; it was caught earlier
     if ((type && type->isArray() && sizes2) ||
         (sizes2 && sizes2->getNumDims() > 1))
         arrayOfArrayVersionCheck(loc);
+}
+
+// Merge array dimensions listed in 'sizes' onto the type's array dimensions.
+//
+// From the spec: "vec4[2] a[3]; // size-3 array of size-2 array of vec4"
+//
+// That means, the 'sizes' go in front of the 'type' as outermost sizes.
+// 'type' is the type part of the declaration (to the left)
+// 'sizes' is the arrayness tagged on the identifier (to the right)
+//
+void TParseContext::arrayDimMerge(TType& type, const TArraySizes* sizes)
+{
+    if (sizes)
+        type.addArrayOuterSizes(*sizes);
 }
 
 //
@@ -2642,19 +2688,25 @@ void TParseContext::declareArray(const TSourceLoc& loc, TString& identifier, con
         error(loc, "redeclaring non-array as array", identifier.c_str(), "");
         return;
     }
+
+    if (! existingType.sameElementType(type)) {
+        error(loc, "redeclaration of array with a different element type", identifier.c_str(), "");
+        return;
+    }
+
+    if (! existingType.sameInnerArrayness(type)) {
+        error(loc, "redeclaration of array with a different array dimensions or sizes", identifier.c_str(), "");
+        return;
+    }
+
     if (existingType.isExplicitlySizedArray()) {
         // be more leniant for input arrays to geometry shaders and tessellation control outputs, where the redeclaration is the same size
-        if (! (isIoResizeArray(type) && existingType.getArraySize() == type.getArraySize()))
+        if (! (isIoResizeArray(type) && existingType.getOuterArraySize() == type.getOuterArraySize()))
             error(loc, "redeclaration of array with size", identifier.c_str(), "");
         return;
     }
 
-    if (! existingType.sameElementType(type)) {
-        error(loc, "redeclaration of array with a different type", identifier.c_str(), "");
-        return;
-    }
-
-    arrayLimitCheck(loc, identifier, type.getArraySize());
+    arrayLimitCheck(loc, identifier, type.getOuterArraySize());
 
     existingType.updateArraySizes(type);
 
@@ -2954,7 +3006,7 @@ void TParseContext::redeclareBuiltinBlock(const TSourceLoc& loc, TTypeList& newT
             else if (! oldType.sameArrayness(newType) && oldType.isExplicitlySizedArray())
                 error(memberLoc, "cannot change array size of redeclared block member", member->type->getFieldName().c_str(), "");
             else if (newType.isArray())
-                arrayLimitCheck(loc, member->type->getFieldName(), newType.getArraySize());
+                arrayLimitCheck(loc, member->type->getFieldName(), newType.getOuterArraySize());
             if (newType.getQualifier().isMemory())
                 error(memberLoc, "cannot add memory qualifier to redeclared block member", member->type->getFieldName().c_str(), "");
             if (newType.getQualifier().hasLayout())
@@ -2990,10 +3042,10 @@ void TParseContext::redeclareBuiltinBlock(const TSourceLoc& loc, TTypeList& newT
     else if (type.isArray()) {
         if (type.isExplicitlySizedArray() && arraySizes->getOuterSize() == UnsizedArraySize)
             error(loc, "block already declared with size, can't redeclare as implicitly-sized", blockName.c_str(), "");
-        else if (type.isExplicitlySizedArray() && type.getArraySize() != arraySizes->getOuterSize())
+        else if (type.isExplicitlySizedArray() && type.getArraySizes() != *arraySizes)
             error(loc, "cannot change array size of redeclared block", blockName.c_str(), "");
         else if (type.isImplicitlySizedArray() && arraySizes->getOuterSize() != UnsizedArraySize)
-            type.changeArraySize(arraySizes->getOuterSize());
+            type.changeOuterArraySize(arraySizes->getOuterSize());
     }
 
     symbolTable.insert(*block);
@@ -3224,7 +3276,7 @@ void TParseContext::inductiveLoopCheck(const TSourceLoc& loc, TIntermNode* init,
     inductiveLoopBodyCheck(loop->getBody(), loopIndex, symbolTable);
 }
 
-// Do limit checks against for all built-in arrays.
+// Do limit checks for built-in arrays.
 void TParseContext::arrayLimitCheck(const TSourceLoc& loc, const TString& identifier, int size)
 {
     if (identifier.compare("gl_TexCoord") == 0)
@@ -3806,7 +3858,7 @@ void TParseContext::layoutTypeCheck(const TSourceLoc& loc, const TType& type)
         if (type.getBasicType() == EbtSampler) {
             int lastBinding = qualifier.layoutBinding;
             if (type.isArray())
-                lastBinding += type.getArraySize();
+                lastBinding += type.getCumulativeArraySize();
             if (lastBinding >= resources.maxCombinedTextureImageUnits)
                 error(loc, "sampler binding not less than gl_MaxCombinedTextureImageUnits", "binding", type.isArray() ? "(using array)" : "");
         }
@@ -3990,7 +4042,7 @@ void TParseContext::fixOffset(const TSourceLoc& loc, TSymbol& symbol)
             // Check for overlap
             int numOffsets = 4;
             if (symbol.getType().isArray())
-                numOffsets *= symbol.getType().getArraySize();
+                numOffsets *= symbol.getType().getCumulativeArraySize();
             int repeated = intermediate.addUsedOffsets(qualifier.layoutBinding, offset, numOffsets);
             if (repeated >= 0)
                 error(loc, "atomic counters sharing the same offset:", "offset", "%d", repeated);
@@ -4138,6 +4190,9 @@ void TParseContext::declareTypeDefaults(const TSourceLoc& loc, const TPublicType
 // Returns a subtree node that computes an initializer, if needed.
 // Returns nullptr if there is no code to execute for initialization.
 //
+// 'publicType' is the type part of the declaration (to the left)
+// 'arraySizes' is the arrayness tagged on the identifier (to the right)
+//
 TIntermNode* TParseContext::declareVariable(const TSourceLoc& loc, TString& identifier, const TPublicType& publicType, TArraySizes* arraySizes, TIntermTyped* initializer)
 {
     TType type(publicType);
@@ -4170,13 +4225,12 @@ TIntermNode* TParseContext::declareVariable(const TSourceLoc& loc, TString& iden
     if (arraySizes || type.isArray()) {
         // Arrayness is potentially coming both from the type and from the 
         // variable: "int[] a[];" or just one or the other.
-        // For now, arrays of arrays aren't supported, so it's just one or the
-        // other.  Move it to the type, so all arrayness is part of the type.
+        // Merge it all to the type, so all arrayness is part of the type.
         arrayDimCheck(loc, &type, arraySizes);
-        if (arraySizes)
-            type.setArraySizes(arraySizes);
+        arrayDimMerge(type, arraySizes);
 
-        arrayUnsizedCheck(loc, type.getQualifier(), type.getArraySize(), initializer != nullptr);
+        // Check that implicit sizing is only where allowed.
+        arrayUnsizedCheck(loc, type.getQualifier(), &type.getArraySizes(), initializer != nullptr);
 
         if (! arrayQualifierError(loc, type.getQualifier()) && ! arrayError(loc, type))
             declareArray(loc, identifier, type, symbol, newDeclaration);
@@ -4299,10 +4353,21 @@ TIntermNode* TParseContext::executeInitializer(const TSourceLoc& loc, TIntermTyp
         return nullptr;
     }
 
-    // Fix arrayness if variable is unsized, getting size from the initializer
-    if (initializer->getType().isArray() && initializer->getType().isExplicitlySizedArray() &&
+    // Fix outer arrayness if variable is unsized, getting size from the initializer
+    if (initializer->getType().isExplicitlySizedArray() &&
         variable->getType().isImplicitlySizedArray())
-        variable->getWritableType().changeArraySize(initializer->getType().getArraySize());
+        variable->getWritableType().changeOuterArraySize(initializer->getType().getOuterArraySize());
+
+    // Inner arrayness can also get set by an initializer
+    if (initializer->getType().isArrayOfArrays() && variable->getType().isArrayOfArrays() &&
+        initializer->getType().getArraySizes()->getNumDims() ==
+           variable->getType().getArraySizes()->getNumDims()) {
+        // adopt unsized sizes from the initializer's sizes
+        for (int d = 1; d < variable->getType().getArraySizes()->getNumDims(); ++d) {
+            if (variable->getType().getArraySizes()->getDimSize(d) == UnsizedArraySize)
+                variable->getWritableType().getArraySizes().setDimSize(d, initializer->getType().getArraySizes()->getDimSize(d));
+        }
+    }
 
     // Uniform and global consts require a constant initializer
     if (qualifier == EvqUniform && initializer->getType().getQualifier().storage != EvqConst) {
@@ -4390,9 +4455,20 @@ TIntermTyped* TParseContext::convertInitializerList(const TSourceLoc& loc, const
         // The type's array might be unsized, which could be okay, so base sizes on the size of the aggregate.
         // Later on, initializer execution code will deal with array size logic.
         TType arrayType;
-        arrayType.shallowCopy(type);
-        arrayType.setArraySizes(type);
-        arrayType.changeArraySize((int)initList->getSequence().size());
+        arrayType.shallowCopy(type);                     // sharing struct stuff is fine
+        arrayType.newArraySizes(*type.getArraySizes());  // but get a fresh copy of the array information, to edit below
+
+        // edit array sizes to fill in unsized dimensions
+        arrayType.changeOuterArraySize((int)initList->getSequence().size());
+        TIntermTyped* firstInit = initList->getSequence()[0]->getAsTyped();
+        if (arrayType.isArrayOfArrays() && firstInit->getType().isArray() &&
+            arrayType.getArraySizes().getNumDims() == firstInit->getType().getArraySizes()->getNumDims() + 1) {
+            for (int d = 1; d < arrayType.getArraySizes().getNumDims(); ++d) {
+                if (arrayType.getArraySizes().getDimSize(d) == UnsizedArraySize)
+                    arrayType.getArraySizes().setDimSize(d, firstInit->getType().getArraySizes()->getDimSize(d - 1));
+            }
+        }
+
         TType elementType(arrayType, 0); // dereferenced type
         for (size_t i = 0; i < initList->getSequence().size(); ++i) {
             initList->getSequence()[i] = convertInitializerList(loc, elementType, initList->getSequence()[i]->getAsTyped());
@@ -4455,9 +4531,11 @@ TIntermTyped* TParseContext::addConstructor(const TSourceLoc& loc, TIntermNode* 
         memberTypes = type.getStruct()->begin();
 
     TType elementType;
-    elementType.shallowCopy(type);
-    if (type.isArray())
-        elementType.dereference();
+    if (type.isArray()) {
+        TType dereferenced(type, 0);
+        elementType.shallowCopy(dereferenced);
+    } else
+        elementType.shallowCopy(type);
 
     bool singleArg;
     if (aggrNode) {
@@ -4471,11 +4549,11 @@ TIntermTyped* TParseContext::addConstructor(const TSourceLoc& loc, TIntermNode* 
     TIntermTyped *newNode;
     if (singleArg) {
         // If structure constructor or array constructor is being called
-        // for only one parameter inside the structure, we need to call constructStruct function once.
+        // for only one parameter inside the structure, we need to call constructAggregate function once.
         if (type.isArray())
-            newNode = constructStruct(node, elementType, 1, node->getLoc());
+            newNode = constructAggregate(node, elementType, 1, node->getLoc());
         else if (op == EOpConstructStruct)
-            newNode = constructStruct(node, *(*memberTypes).type, 1, node->getLoc());
+            newNode = constructAggregate(node, *(*memberTypes).type, 1, node->getLoc());
         else
             newNode = constructBuiltIn(type, op, node->getAsTyped(), node->getLoc(), false);
 
@@ -4501,9 +4579,9 @@ TIntermTyped* TParseContext::addConstructor(const TSourceLoc& loc, TIntermNode* 
     for (TIntermSequence::iterator p = sequenceVector.begin();
                                    p != sequenceVector.end(); p++, paramCount++) {
         if (type.isArray())
-            newNode = constructStruct(*p, elementType, paramCount+1, node->getLoc());
+            newNode = constructAggregate(*p, elementType, paramCount+1, node->getLoc());
         else if (op == EOpConstructStruct)
-            newNode = constructStruct(*p, *(memberTypes[paramCount]).type, paramCount+1, node->getLoc());
+            newNode = constructAggregate(*p, *(memberTypes[paramCount]).type, paramCount+1, node->getLoc());
         else
             newNode = constructBuiltIn(type, op, (*p)->getAsTyped(), node->getLoc(), true);
 
@@ -4610,12 +4688,12 @@ TIntermTyped* TParseContext::constructBuiltIn(const TType& type, TOperator op, T
     return intermediate.setAggregateOperator(newNode, op, type, loc);
 }
 
-// This function tests for the type of the parameters to the structures constructors. Raises
+// This function tests for the type of the parameters to the structure or array constructor. Raises
 // an error message if the expected type does not match the parameter passed to the constructor.
 //
 // Returns nullptr for an error or the input node itself if the expected and the given parameter types match.
 //
-TIntermTyped* TParseContext::constructStruct(TIntermNode* node, const TType& type, int paramCount, const TSourceLoc& loc)
+TIntermTyped* TParseContext::constructAggregate(TIntermNode* node, const TType& type, int paramCount, const TSourceLoc& loc)
 {
     TIntermTyped* converted = intermediate.addConversion(EOpConstructStruct, type, node->getAsTyped());
     if (! converted || converted->getType() != type) {
@@ -4635,9 +4713,10 @@ void TParseContext::declareBlock(const TSourceLoc& loc, TTypeList& typeList, con
 {
     blockStageIoCheck(loc, currentBlockQualifier);
     blockQualifierCheck(loc, currentBlockQualifier);
-    if (arraySizes)
-        arrayUnsizedCheck(loc, currentBlockQualifier, arraySizes->getOuterSize(), false);
-    arrayDimCheck(loc, arraySizes, nullptr);
+    if (arraySizes) {
+        arrayUnsizedCheck(loc, currentBlockQualifier, arraySizes, false);
+        arrayDimCheck(loc, arraySizes, 0);
+    }
 
     // fix and check for member storage qualifiers and types that don't belong within a block
     for (unsigned int member = 0; member < typeList.size(); ++member) {
@@ -4766,7 +4845,7 @@ void TParseContext::declareBlock(const TSourceLoc& loc, TTypeList& typeList, con
 
     TType blockType(&typeList, *blockName, currentBlockQualifier);
     if (arraySizes)
-        blockType.setArraySizes(arraySizes);
+        blockType.newArraySizes(*arraySizes);
     else
         ioArrayCheck(loc, blockType, instanceName ? *instanceName : *blockName);
 
