@@ -218,6 +218,9 @@ public:
     // Create a global or function local or IO variable.
     Id createVariable(StorageClass, Id type, const char* name = 0);
 
+    // Create an imtermediate with an undefined value.
+    Id createUndefined(Id type);
+
     // Store into an Id and return the l-value
     void createStore(Id rValue, Id lValue);
 
