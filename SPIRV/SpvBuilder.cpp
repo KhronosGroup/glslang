@@ -791,9 +791,7 @@ void Builder::leaveFunction(bool main)
             if (function.getReturnType() == makeVoidType())
                 makeReturn(true);
             else {
-                Id retStorage = createVariable(StorageClassFunction, function.getReturnType(), "dummyReturn");
-                Id retValue = createLoad(retStorage);
-                makeReturn(true, retValue);
+                makeReturn(true, createUndefined(function.getReturnType()));
             }
         }
     }
@@ -842,6 +840,14 @@ Id Builder::createVariable(StorageClass storageClass, Id type, const char* name)
         addName(inst->getResultId(), name);
 
     return inst->getResultId();
+}
+
+// Comments in header
+Id Builder::createUndefined(Id type)
+{
+  Instruction* inst = new Instruction(getUniqueId(), type, OpUndef);
+  buildPoint->addInstruction(inst);
+  return inst->getResultId();
 }
 
 // Comments in header
