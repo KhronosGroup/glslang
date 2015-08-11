@@ -178,6 +178,7 @@ namespace spv {
         case spv::OpTypeDeviceEvent:
         case spv::OpTypeReserveId:
         case spv::OpTypeQueue:
+        case spv::OpTypeSampledImage:
         case spv::OpTypePipe:         return true;
         default:                      return false;
         }
@@ -1012,6 +1013,8 @@ namespace spv {
                 spv[typeStart+7] * 1 * 16;    // format
         case spv::OpTypeSampler:
             return 500;
+        case spv::OpTypeSampledImage:
+            return 502;
         case spv::OpTypeArray:
             return 501 + hashType(typePos(spv[typeStart+2])) * spv[typeStart+3];
         case spv::OpTypeRuntimeArray:
