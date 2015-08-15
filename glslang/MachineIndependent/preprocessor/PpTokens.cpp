@@ -80,7 +80,7 @@ NVIDIA HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 // For recording and playing back the stream of tokens in a macro definition.
 //
 
-#ifdef _WIN32
+#if (defined(_MSC_VER) && _MSC_VER < 1900 /*vs2015*/)
 #define _CRT_SECURE_NO_WARNINGS
 #define snprintf sprintf_s
 #endif
