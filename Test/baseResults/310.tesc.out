@@ -37,11 +37,16 @@ GL_OES_gpu_shader5
 ERROR: 0:104: 'sample' : Reserved word. 
 ERROR: 0:106: 'vertices' : can only apply to a standalone qualifier 
 ERROR: 0:107: 'vertices' : inconsistent output number of vertices for array size of misSized
-ERROR: 31 compilation errors.  No code generated.
+ERROR: 0:133: 'gl_BoundingBoxOES' : required extension not requested: Possible extensions include:
+GL_EXT_primitive_bounding_box
+GL_OES_primitive_bounding_box
+ERROR: 0:142: '[' :  array index out of range '2'
+ERROR: 33 compilation errors.  No code generated.
 
 
 Shader version: 310
 Requested GL_ARB_separate_shader_objects
+Requested GL_OES_primitive_bounding_box
 Requested GL_OES_shader_io_blocks
 Requested GL_OES_tessellation_point_size
 Requested GL_OES_tessellation_shader
@@ -216,6 +221,43 @@ ERROR: node is still EOpNull!
 0:115          Constant:
 0:115            1 (const int)
 0:115        'ps' (temp highp float)
+0:131  Function Definition: bbBad( (global void)
+0:131    Function Parameters: 
+0:133    Sequence
+0:133      'gl_BoundingBoxOES' (patch out 2-element array of highp 4-component vector of float BoundingBox)
+0:138  Function Definition: bb( (global void)
+0:138    Function Parameters: 
+0:140    Sequence
+0:140      move second child to first child (temp highp 4-component vector of float)
+0:140        direct index (patch temp highp 4-component vector of float BoundingBox)
+0:140          'gl_BoundingBoxOES' (patch out 2-element array of highp 4-component vector of float BoundingBox)
+0:140          Constant:
+0:140            0 (const int)
+0:140        Constant:
+0:140          0.000000
+0:140          0.000000
+0:140          0.000000
+0:140          0.000000
+0:141      move second child to first child (temp highp 4-component vector of float)
+0:141        direct index (patch temp highp 4-component vector of float BoundingBox)
+0:141          'gl_BoundingBoxOES' (patch out 2-element array of highp 4-component vector of float BoundingBox)
+0:141          Constant:
+0:141            1 (const int)
+0:141        Constant:
+0:141          1.000000
+0:141          1.000000
+0:141          1.000000
+0:141          1.000000
+0:142      move second child to first child (temp highp 4-component vector of float)
+0:142        direct index (patch temp highp 4-component vector of float BoundingBox)
+0:142          'gl_BoundingBoxOES' (patch out 2-element array of highp 4-component vector of float BoundingBox)
+0:142          Constant:
+0:142            2 (const int)
+0:142        Constant:
+0:142          2.000000
+0:142          2.000000
+0:142          2.000000
+0:142          2.000000
 0:?   Linker Objects
 0:?     'gl_out' (out 4-element array of block{out highp 4-component vector of float Position gl_Position, out highp float PointSize gl_PointSize})
 0:?     'outa' (global 4-element array of highp int)
@@ -246,6 +288,7 @@ Linked tessellation control stage:
 
 Shader version: 310
 Requested GL_ARB_separate_shader_objects
+Requested GL_OES_primitive_bounding_box
 Requested GL_OES_shader_io_blocks
 Requested GL_OES_tessellation_point_size
 Requested GL_OES_tessellation_shader
@@ -420,6 +463,43 @@ ERROR: node is still EOpNull!
 0:115          Constant:
 0:115            1 (const int)
 0:115        'ps' (temp highp float)
+0:131  Function Definition: bbBad( (global void)
+0:131    Function Parameters: 
+0:133    Sequence
+0:133      'gl_BoundingBoxOES' (patch out 2-element array of highp 4-component vector of float BoundingBox)
+0:138  Function Definition: bb( (global void)
+0:138    Function Parameters: 
+0:140    Sequence
+0:140      move second child to first child (temp highp 4-component vector of float)
+0:140        direct index (patch temp highp 4-component vector of float BoundingBox)
+0:140          'gl_BoundingBoxOES' (patch out 2-element array of highp 4-component vector of float BoundingBox)
+0:140          Constant:
+0:140            0 (const int)
+0:140        Constant:
+0:140          0.000000
+0:140          0.000000
+0:140          0.000000
+0:140          0.000000
+0:141      move second child to first child (temp highp 4-component vector of float)
+0:141        direct index (patch temp highp 4-component vector of float BoundingBox)
+0:141          'gl_BoundingBoxOES' (patch out 2-element array of highp 4-component vector of float BoundingBox)
+0:141          Constant:
+0:141            1 (const int)
+0:141        Constant:
+0:141          1.000000
+0:141          1.000000
+0:141          1.000000
+0:141          1.000000
+0:142      move second child to first child (temp highp 4-component vector of float)
+0:142        direct index (patch temp highp 4-component vector of float BoundingBox)
+0:142          'gl_BoundingBoxOES' (patch out 2-element array of highp 4-component vector of float BoundingBox)
+0:142          Constant:
+0:142            2 (const int)
+0:142        Constant:
+0:142          2.000000
+0:142          2.000000
+0:142          2.000000
+0:142          2.000000
 0:?   Linker Objects
 0:?     'gl_out' (out 4-element array of block{out highp 4-component vector of float Position gl_Position, out highp float PointSize gl_PointSize})
 0:?     'outa' (global 4-element array of highp int)

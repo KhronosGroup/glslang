@@ -1636,6 +1636,7 @@ void TBuiltIns::initialize(int version, EProfile profile)
 
             "patch out highp float gl_TessLevelOuter[4];"
             "patch out highp float gl_TessLevelInner[2];"
+            "patch out highp vec4 gl_BoundingBoxOES[2];"
             "\n");
     }
 
@@ -2839,6 +2840,13 @@ void IdentifyBuiltIns(int version, EProfile profile, EShLanguage language, TSymb
         // Fall through
 
     case EShLangTessControl:
+        if (profile == EEsProfile && version >= 310) {
+            symbolTable.setVariableExtensions("gl_BoundingBoxOES", Num_AEP_primitive_bounding_box, AEP_primitive_bounding_box);
+            BuiltInVariable("gl_BoundingBoxOES", EbvBoundingBox, symbolTable);
+        }
+
+        // Fall through
+
     case EShLangTessEvaluation:
     case EShLangGeometry:
         SpecialQualifier("gl_Position",   EvqPosition,   EbvPosition,   symbolTable);

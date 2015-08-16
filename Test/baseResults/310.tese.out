@@ -47,11 +47,13 @@ ERROR: 0:105: 'gl_TessLevelOuter' : identifiers starting with "gl_" are reserved
 ERROR: 0:113: 'sample' : Reserved word. 
 ERROR: 0:119: 'gl_PointSize' : no such field in structure 
 ERROR: 0:119: '=' :  cannot convert from 'temp block{in highp 4-component vector of float gl_Position}' to 'temp highp float'
-ERROR: 43 compilation errors.  No code generated.
+ERROR: 0:127: 'gl_BoundingBoxOES' : undeclared identifier 
+ERROR: 44 compilation errors.  No code generated.
 
 
 Shader version: 310
 Requested GL_ARB_separate_shader_objects
+Requested GL_EXT_primitive_bounding_box
 Requested GL_EXT_shader_io_blocks
 Requested GL_EXT_tessellation_shader
 Requested GL_OES_shader_io_blocks
@@ -148,6 +150,10 @@ ERROR: node is still EOpNull!
 0:120          Constant:
 0:120            1 (const uint)
 0:120        'ps' (temp highp float)
+0:125  Function Definition: bbbad( (global void)
+0:125    Function Parameters: 
+0:127    Sequence
+0:127      'gl_BoundingBoxOES' (temp float)
 0:?   Linker Objects
 0:?     'patchIn' (patch in highp 4-component vector of float)
 0:?     'patchOut' (patch out highp 4-component vector of float)
@@ -180,6 +186,7 @@ Linked tessellation evaluation stage:
 
 Shader version: 310
 Requested GL_ARB_separate_shader_objects
+Requested GL_EXT_primitive_bounding_box
 Requested GL_EXT_shader_io_blocks
 Requested GL_EXT_tessellation_shader
 Requested GL_OES_shader_io_blocks
@@ -276,6 +283,10 @@ ERROR: node is still EOpNull!
 0:120          Constant:
 0:120            1 (const uint)
 0:120        'ps' (temp highp float)
+0:125  Function Definition: bbbad( (global void)
+0:125    Function Parameters: 
+0:127    Sequence
+0:127      'gl_BoundingBoxOES' (temp float)
 0:?   Linker Objects
 0:?     'patchIn' (patch in highp 4-component vector of float)
 0:?     'patchOut' (patch out highp 4-component vector of float)

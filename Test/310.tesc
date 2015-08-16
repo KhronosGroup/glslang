@@ -127,3 +127,17 @@ void pointSize2()
 //    d = fma(d, d, d);
 //}
 //
+
+void bbBad()
+{
+    gl_BoundingBoxOES;  // ERROR without GL_OES_primitive_bounding_box 
+}
+
+#extension GL_OES_primitive_bounding_box : enable
+
+void bb()
+{
+    gl_BoundingBoxOES[0] = vec4(0.0);
+    gl_BoundingBoxOES[1] = vec4(1.0);
+    gl_BoundingBoxOES[2] = vec4(2.0);  // ERROR, overflow
+}

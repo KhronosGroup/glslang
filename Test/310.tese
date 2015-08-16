@@ -119,3 +119,10 @@ void pointSize2()
     float ps = gl_in[1].gl_PointSize;  // ERROR, not in the redeclaration, but no error on use of gl_PointSize
     gl_PointSize = ps;
 }
+
+#extension GL_EXT_primitive_bounding_box : enable
+
+void bbbad()
+{
+    gl_BoundingBoxOES; // ERROR, wrong stage
+}
