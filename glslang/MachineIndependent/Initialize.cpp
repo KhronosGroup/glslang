@@ -1827,6 +1827,8 @@ void TBuiltIns::add2ndGenerationSamplingImaging(int version, EProfile profile)
     //
 
     TBasicType bTypes[3] = { EbtFloat, EbtInt, EbtUint };
+    bool skipBuffer = (profile == EEsProfile && version < 310) || (profile != EEsProfile && version < 140);
+    bool skipCubeArrayed = (profile == EEsProfile || version < 130);
 
     // enumerate all the types
     for (int image = 0; image <= 1; ++image) { // loop over "bool" image vs sampler
@@ -1854,9 +1856,9 @@ void TBuiltIns::add2ndGenerationSamplingImaging(int version, EProfile profile)
                             continue;
                         if (dim == Esd3D && shadow)
                             continue;
-                        if (dim == EsdCube && arrayed && (profile == EEsProfile || version < 130))
+                        if (dim == EsdCube && arrayed && skipCubeArrayed)
                             continue;
-                        if (dim == EsdBuffer && (profile == EEsProfile || version < 140))
+                        if (dim == EsdBuffer && skipBuffer)
                             continue;
                         if (dim == EsdBuffer && (shadow || arrayed || ms))
                             continue;

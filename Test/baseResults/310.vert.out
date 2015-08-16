@@ -40,12 +40,32 @@ GL_EXT_gpu_shader5
 GL_OES_gpu_shader5
 ERROR: 0:177: 'variable indexing buffer block array' : not supported with this profile: es
 ERROR: 0:182: 'textureGatherOffsets(...)' : must be a compile-time constant: offsets argument
-ERROR: 36 compilation errors.  No code generated.
+ERROR: 0:185: 'samplerBuffer' : Reserved word. 
+ERROR: 0:185: 'sampler/image' : type requires declaration of default precision qualifier 
+ERROR: 0:186: 'isamplerBuffer' : Reserved word. 
+ERROR: 0:186: 'sampler/image' : type requires declaration of default precision qualifier 
+ERROR: 0:187: 'usamplerBuffer' : Reserved word. 
+ERROR: 0:187: 'sampler/image' : type requires declaration of default precision qualifier 
+ERROR: 0:188: 'imageBuffer' : Reserved word. 
+ERROR: 0:188: 'sampler/image' : type requires declaration of default precision qualifier 
+ERROR: 0:189: 'iimageBuffer' : Reserved word. 
+ERROR: 0:189: 'sampler/image' : type requires declaration of default precision qualifier 
+ERROR: 0:190: 'uimageBuffer' : Reserved word. 
+ERROR: 0:190: 'sampler/image' : type requires declaration of default precision qualifier 
+ERROR: 0:195: 'sampler/image' : type requires declaration of default precision qualifier 
+ERROR: 0:196: 'sampler/image' : type requires declaration of default precision qualifier 
+ERROR: 0:197: 'sampler/image' : type requires declaration of default precision qualifier 
+ERROR: 0:198: 'sampler/image' : type requires declaration of default precision qualifier 
+ERROR: 0:199: 'sampler/image' : type requires declaration of default precision qualifier 
+ERROR: 0:200: 'sampler/image' : type requires declaration of default precision qualifier 
+ERROR: 54 compilation errors.  No code generated.
 
 
 Shader version: 310
+Requested GL_EXT_texture_buffer
 Requested GL_OES_gpu_shader5
 Requested GL_OES_shader_io_blocks
+Requested GL_OES_texture_buffer
 ERROR: node is still EOpNull!
 0:12  Function Definition: main( (global void)
 0:12    Function Parameters: 
@@ -364,6 +384,57 @@ ERROR: node is still EOpNull!
 0:182          0.100000
 0:182          0.100000
 0:182        'offsets' (uniform 4-element array of highp 2-component vector of int)
+0:220  Function Definition: bufferT( (global void)
+0:220    Function Parameters: 
+0:222    Sequence
+0:222      Sequence
+0:222        move second child to first child (temp highp int)
+0:222          's1' (temp highp int)
+0:222          Function Call: textureSize(sB1; (global highp int)
+0:222            'bufSamp1' (uniform highp samplerBuffer)
+0:223      Sequence
+0:223        move second child to first child (temp highp int)
+0:223          's2' (temp highp int)
+0:223          Function Call: textureSize(isB1; (global highp int)
+0:223            'bufSamp2' (uniform highp isamplerBuffer)
+0:224      Sequence
+0:224        move second child to first child (temp highp int)
+0:224          's3' (temp highp int)
+0:224          Function Call: textureSize(usB1; (global highp int)
+0:224            'bufSamp3' (uniform highp usamplerBuffer)
+0:226      Sequence
+0:226        move second child to first child (temp highp int)
+0:226          's4' (temp highp int)
+0:226          Function Call: imageSize(IB1; (global highp int)
+0:226            'bufSamp4' (writeonly uniform highp imageBuffer)
+0:227      Sequence
+0:227        move second child to first child (temp highp int)
+0:227          's5' (temp highp int)
+0:227          Function Call: imageSize(iIB1; (global highp int)
+0:227            'bufSamp5' (writeonly uniform highp iimageBuffer)
+0:228      Sequence
+0:228        move second child to first child (temp highp int)
+0:228          's6' (temp highp int)
+0:228          Function Call: imageSize(uIB1; (global highp int)
+0:228            'bufSamp6' (writeonly uniform highp uimageBuffer)
+0:230      Sequence
+0:230        move second child to first child (temp highp 4-component vector of float)
+0:230          'f1' (temp highp 4-component vector of float)
+0:230          Function Call: texelFetch(sB1;i1; (global highp 4-component vector of float)
+0:230            'bufSamp1' (uniform highp samplerBuffer)
+0:230            's1' (temp highp int)
+0:231      Sequence
+0:231        move second child to first child (temp highp 4-component vector of int)
+0:231          'f2' (temp highp 4-component vector of int)
+0:231          Function Call: texelFetch(isB1;i1; (global highp 4-component vector of int)
+0:231            'bufSamp2' (uniform highp isamplerBuffer)
+0:231            's2' (temp highp int)
+0:232      Sequence
+0:232        move second child to first child (temp highp 4-component vector of uint)
+0:232          'f3' (temp highp 4-component vector of uint)
+0:232          Function Call: texelFetch(usB1;i1; (global highp 4-component vector of uint)
+0:232            'bufSamp3' (uniform highp usamplerBuffer)
+0:232            's3' (temp highp int)
 0:?   Linker Objects
 0:?     's' (shared highp 4-component vector of float)
 0:?     'v' (buffer highp 4-component vector of float)
@@ -413,6 +484,24 @@ ERROR: node is still EOpNull!
 0:?       0 (const int)
 0:?       0 (const int)
 0:?       0 (const int)
+0:?     'badSamp1' (uniform mediump samplerBuffer)
+0:?     'badSamp2' (uniform mediump isamplerBuffer)
+0:?     'badSamp3' (uniform mediump usamplerBuffer)
+0:?     'badSamp4' (writeonly uniform mediump imageBuffer)
+0:?     'badSamp5' (writeonly uniform mediump iimageBuffer)
+0:?     'badSamp6' (writeonly uniform mediump uimageBuffer)
+0:?     'noPreSamp1' (uniform mediump samplerBuffer)
+0:?     'noPreSamp2' (uniform mediump isamplerBuffer)
+0:?     'noPreSamp3' (uniform mediump usamplerBuffer)
+0:?     'noPreSamp4' (writeonly uniform mediump imageBuffer)
+0:?     'noPreSamp5' (writeonly uniform mediump iimageBuffer)
+0:?     'noPreSamp6' (writeonly uniform mediump uimageBuffer)
+0:?     'bufSamp1' (uniform highp samplerBuffer)
+0:?     'bufSamp2' (uniform highp isamplerBuffer)
+0:?     'bufSamp3' (uniform highp usamplerBuffer)
+0:?     'bufSamp4' (writeonly uniform highp imageBuffer)
+0:?     'bufSamp5' (writeonly uniform highp iimageBuffer)
+0:?     'bufSamp6' (writeonly uniform highp uimageBuffer)
 0:?     'gl_VertexID' (gl_VertexId highp int VertexId)
 0:?     'gl_InstanceID' (gl_InstanceId highp int InstanceId)
 
@@ -421,8 +510,10 @@ Linked vertex stage:
 
 
 Shader version: 310
+Requested GL_EXT_texture_buffer
 Requested GL_OES_gpu_shader5
 Requested GL_OES_shader_io_blocks
+Requested GL_OES_texture_buffer
 ERROR: node is still EOpNull!
 0:12  Function Definition: main( (global void)
 0:12    Function Parameters: 
@@ -741,6 +832,57 @@ ERROR: node is still EOpNull!
 0:182          0.100000
 0:182          0.100000
 0:182        'offsets' (uniform 4-element array of highp 2-component vector of int)
+0:220  Function Definition: bufferT( (global void)
+0:220    Function Parameters: 
+0:222    Sequence
+0:222      Sequence
+0:222        move second child to first child (temp highp int)
+0:222          's1' (temp highp int)
+0:222          Function Call: textureSize(sB1; (global highp int)
+0:222            'bufSamp1' (uniform highp samplerBuffer)
+0:223      Sequence
+0:223        move second child to first child (temp highp int)
+0:223          's2' (temp highp int)
+0:223          Function Call: textureSize(isB1; (global highp int)
+0:223            'bufSamp2' (uniform highp isamplerBuffer)
+0:224      Sequence
+0:224        move second child to first child (temp highp int)
+0:224          's3' (temp highp int)
+0:224          Function Call: textureSize(usB1; (global highp int)
+0:224            'bufSamp3' (uniform highp usamplerBuffer)
+0:226      Sequence
+0:226        move second child to first child (temp highp int)
+0:226          's4' (temp highp int)
+0:226          Function Call: imageSize(IB1; (global highp int)
+0:226            'bufSamp4' (writeonly uniform highp imageBuffer)
+0:227      Sequence
+0:227        move second child to first child (temp highp int)
+0:227          's5' (temp highp int)
+0:227          Function Call: imageSize(iIB1; (global highp int)
+0:227            'bufSamp5' (writeonly uniform highp iimageBuffer)
+0:228      Sequence
+0:228        move second child to first child (temp highp int)
+0:228          's6' (temp highp int)
+0:228          Function Call: imageSize(uIB1; (global highp int)
+0:228            'bufSamp6' (writeonly uniform highp uimageBuffer)
+0:230      Sequence
+0:230        move second child to first child (temp highp 4-component vector of float)
+0:230          'f1' (temp highp 4-component vector of float)
+0:230          Function Call: texelFetch(sB1;i1; (global highp 4-component vector of float)
+0:230            'bufSamp1' (uniform highp samplerBuffer)
+0:230            's1' (temp highp int)
+0:231      Sequence
+0:231        move second child to first child (temp highp 4-component vector of int)
+0:231          'f2' (temp highp 4-component vector of int)
+0:231          Function Call: texelFetch(isB1;i1; (global highp 4-component vector of int)
+0:231            'bufSamp2' (uniform highp isamplerBuffer)
+0:231            's2' (temp highp int)
+0:232      Sequence
+0:232        move second child to first child (temp highp 4-component vector of uint)
+0:232          'f3' (temp highp 4-component vector of uint)
+0:232          Function Call: texelFetch(usB1;i1; (global highp 4-component vector of uint)
+0:232            'bufSamp3' (uniform highp usamplerBuffer)
+0:232            's3' (temp highp int)
 0:?   Linker Objects
 0:?     's' (shared highp 4-component vector of float)
 0:?     'v' (buffer highp 4-component vector of float)
@@ -790,6 +932,24 @@ ERROR: node is still EOpNull!
 0:?       0 (const int)
 0:?       0 (const int)
 0:?       0 (const int)
+0:?     'badSamp1' (uniform mediump samplerBuffer)
+0:?     'badSamp2' (uniform mediump isamplerBuffer)
+0:?     'badSamp3' (uniform mediump usamplerBuffer)
+0:?     'badSamp4' (writeonly uniform mediump imageBuffer)
+0:?     'badSamp5' (writeonly uniform mediump iimageBuffer)
+0:?     'badSamp6' (writeonly uniform mediump uimageBuffer)
+0:?     'noPreSamp1' (uniform mediump samplerBuffer)
+0:?     'noPreSamp2' (uniform mediump isamplerBuffer)
+0:?     'noPreSamp3' (uniform mediump usamplerBuffer)
+0:?     'noPreSamp4' (writeonly uniform mediump imageBuffer)
+0:?     'noPreSamp5' (writeonly uniform mediump iimageBuffer)
+0:?     'noPreSamp6' (writeonly uniform mediump uimageBuffer)
+0:?     'bufSamp1' (uniform highp samplerBuffer)
+0:?     'bufSamp2' (uniform highp isamplerBuffer)
+0:?     'bufSamp3' (uniform highp usamplerBuffer)
+0:?     'bufSamp4' (writeonly uniform highp imageBuffer)
+0:?     'bufSamp5' (writeonly uniform highp iimageBuffer)
+0:?     'bufSamp6' (writeonly uniform highp uimageBuffer)
 0:?     'gl_VertexID' (gl_VertexId highp int VertexId)
 0:?     'gl_InstanceID' (gl_InstanceId highp int InstanceId)
 

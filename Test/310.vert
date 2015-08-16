@@ -181,3 +181,53 @@ void pfoo()
     textureGatherOffsets(sArray[0], vec2(0.1), constOffsets);
     textureGatherOffsets(sArray[0], vec2(0.1), offsets);   // ERROR, offset not constant
 }
+
+uniform samplerBuffer  badSamp1;             // ERROR, reserved
+uniform isamplerBuffer badSamp2;             // ERROR, reserved
+uniform usamplerBuffer badSamp3;             // ERROR, reserved
+uniform writeonly imageBuffer    badSamp4;   // ERROR, reserved
+uniform writeonly iimageBuffer   badSamp5;   // ERROR, reserved
+uniform writeonly uimageBuffer   badSamp6;   // ERROR, reserved
+
+#extension GL_OES_texture_buffer : enable
+#extension GL_EXT_texture_buffer : enable
+
+uniform samplerBuffer  noPreSamp1;            // ERROR, no default precision
+uniform isamplerBuffer noPreSamp2;            // ERROR, no default precision
+uniform usamplerBuffer noPreSamp3;            // ERROR, no default precision
+uniform writeonly imageBuffer    noPreSamp4;  // ERROR, no default precision
+uniform writeonly iimageBuffer   noPreSamp5;  // ERROR, no default precision
+uniform writeonly uimageBuffer   noPreSamp6;  // ERROR, no default precision
+
+precision highp samplerBuffer; 
+precision highp isamplerBuffer;
+precision highp usamplerBuffer;
+precision highp imageBuffer;   
+precision highp iimageBuffer;  
+precision highp uimageBuffer;  
+
+#ifdef GL_OES_texture_buffer
+uniform samplerBuffer  bufSamp1;          
+uniform isamplerBuffer bufSamp2;          
+uniform usamplerBuffer bufSamp3;          
+#endif
+#ifdef GL_EXT_texture_buffer
+uniform writeonly imageBuffer    bufSamp4;
+uniform writeonly iimageBuffer   bufSamp5;
+uniform writeonly uimageBuffer   bufSamp6;
+#endif
+
+void bufferT()
+{
+    highp int s1 = textureSize(bufSamp1);
+    highp int s2 = textureSize(bufSamp2);
+    highp int s3 = textureSize(bufSamp3);
+
+    highp int s4 = imageSize(bufSamp4);
+    highp int s5 = imageSize(bufSamp5);
+    highp int s6 = imageSize(bufSamp6);
+    
+    highp vec4 f1 = texelFetch(bufSamp1, s1);
+    highp ivec4 f2 = texelFetch(bufSamp2, s2);
+    highp uvec4 f3 = texelFetch(bufSamp3, s3);
+}

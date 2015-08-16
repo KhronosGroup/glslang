@@ -192,7 +192,7 @@ void TParseContext::initializeExtensionBehavior()
     extensionBehavior[E_GL_EXT_shader_io_blocks]                     = EBhDisable;
     extensionBehavior[E_GL_EXT_tessellation_shader]                  = EBhDisable;
     extensionBehavior[E_GL_EXT_tessellation_point_size]              = EBhDisable;
-    extensionBehavior[E_GL_EXT_texture_buffer]                       = EBhDisablePartial;
+    extensionBehavior[E_GL_EXT_texture_buffer]                       = EBhDisable;
     extensionBehavior[E_GL_EXT_texture_cube_map_array]               = EBhDisablePartial;
 
     // OES matching AEP
@@ -203,7 +203,7 @@ void TParseContext::initializeExtensionBehavior()
     extensionBehavior[E_GL_OES_shader_io_blocks]         = EBhDisable;
     extensionBehavior[E_GL_OES_tessellation_shader]      = EBhDisable;
     extensionBehavior[E_GL_OES_tessellation_point_size]  = EBhDisable;
-    extensionBehavior[E_GL_OES_texture_buffer]           = EBhDisablePartial;
+    extensionBehavior[E_GL_OES_texture_buffer]           = EBhDisable;
     extensionBehavior[E_GL_OES_texture_cube_map_array]   = EBhDisablePartial;
 }
 

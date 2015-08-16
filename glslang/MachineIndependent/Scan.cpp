@@ -781,9 +781,13 @@ int TScanContext::tokenizeIdentifier()
     case IMAGE2DRECT:
     case IIMAGE2DRECT:
     case UIMAGE2DRECT:
+        return firstGenerationImage(false);
+
     case IMAGEBUFFER:
     case IIMAGEBUFFER:
     case UIMAGEBUFFER:
+        if (parseContext.extensionsTurnedOn(Num_AEP_texture_buffer, AEP_texture_buffer))
+            return keyword;
         return firstGenerationImage(false);
 
     case IMAGE2D:
@@ -834,7 +838,6 @@ int TScanContext::tokenizeIdentifier()
     case SAMPLER1DARRAYSHADOW:
     case USAMPLER1D:
     case USAMPLER1DARRAY:
-    case SAMPLERBUFFER:
         afterType = true;
         return es30ReservedFromGLSL(130);
 
@@ -858,9 +861,20 @@ int TScanContext::tokenizeIdentifier()
         
     case ISAMPLER2DRECT:
     case USAMPLER2DRECT:
+        afterType = true;
+        return es30ReservedFromGLSL(140);
+
+    case SAMPLERBUFFER:
+        afterType = true;
+        if (parseContext.extensionsTurnedOn(Num_AEP_texture_buffer, AEP_texture_buffer))
+            return keyword;
+        return es30ReservedFromGLSL(130);
+
     case ISAMPLERBUFFER:
     case USAMPLERBUFFER:
         afterType = true;
+        if (parseContext.extensionsTurnedOn(Num_AEP_texture_buffer, AEP_texture_buffer))
+            return keyword;
         return es30ReservedFromGLSL(140);
         
     case SAMPLER2DMS:
