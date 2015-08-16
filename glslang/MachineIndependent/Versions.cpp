@@ -193,7 +193,7 @@ void TParseContext::initializeExtensionBehavior()
     extensionBehavior[E_GL_EXT_tessellation_shader]                  = EBhDisable;
     extensionBehavior[E_GL_EXT_tessellation_point_size]              = EBhDisable;
     extensionBehavior[E_GL_EXT_texture_buffer]                       = EBhDisable;
-    extensionBehavior[E_GL_EXT_texture_cube_map_array]               = EBhDisablePartial;
+    extensionBehavior[E_GL_EXT_texture_cube_map_array]               = EBhDisable;
 
     // OES matching AEP
     extensionBehavior[E_GL_OES_geometry_shader]          = EBhDisable;
@@ -204,7 +204,7 @@ void TParseContext::initializeExtensionBehavior()
     extensionBehavior[E_GL_OES_tessellation_shader]      = EBhDisable;
     extensionBehavior[E_GL_OES_tessellation_point_size]  = EBhDisable;
     extensionBehavior[E_GL_OES_texture_buffer]           = EBhDisable;
-    extensionBehavior[E_GL_OES_texture_cube_map_array]   = EBhDisablePartial;
+    extensionBehavior[E_GL_OES_texture_cube_map_array]   = EBhDisable;
 }
 
 // Get code that is not part of a shared symbol table, is specific to this shader,

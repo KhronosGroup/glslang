@@ -75,6 +75,7 @@ ERROR: 62 compilation errors.  No code generated.
 
 Shader version: 310
 Requested GL_EXT_shader_io_blocks
+Requested GL_EXT_texture_cube_map_array
 Requested GL_OES_geometry_shader
 Requested GL_OES_gpu_shader5
 Requested GL_OES_shader_io_blocks
@@ -443,6 +444,45 @@ ERROR: node is still EOpNull!
 0:223          0.100000
 0:223          0.100000
 0:223        'offsets' (uniform 4-element array of mediump 2-component vector of int)
+0:248  Function Definition: CAT( (global void)
+0:248    Function Parameters: 
+0:250    Sequence
+0:250      Sequence
+0:250        move second child to first child (temp highp 4-component vector of float)
+0:250          'b4' (temp highp 4-component vector of float)
+0:250          Function Call: texture(sAC1;vf4;f1; (global highp 4-component vector of float)
+0:250            'CA4' (uniform highp samplerCubeArray)
+0:250            Constant:
+0:250              0.500000
+0:250              0.500000
+0:250              0.500000
+0:250              0.500000
+0:250            Constant:
+0:250              0.240000
+0:251      Sequence
+0:251        move second child to first child (temp highp 4-component vector of int)
+0:251          'b6' (temp highp 4-component vector of int)
+0:251          Function Call: texture(isAC1;vf4;f1; (global mediump 4-component vector of int)
+0:251            'CA6' (uniform highp isamplerCubeArray)
+0:251            Constant:
+0:251              0.500000
+0:251              0.500000
+0:251              0.500000
+0:251              0.500000
+0:251            Constant:
+0:251              0.260000
+0:252      Sequence
+0:252        move second child to first child (temp highp 4-component vector of uint)
+0:252          'b7' (temp highp 4-component vector of uint)
+0:252          Function Call: texture(usAC1;vf4;f1; (global mediump 4-component vector of uint)
+0:252            'CA7' (uniform highp usamplerCubeArray)
+0:252            Constant:
+0:252              0.500000
+0:252              0.500000
+0:252              0.500000
+0:252              0.500000
+0:252            Constant:
+0:252              0.270000
 0:?   Linker Objects
 0:?     'gl_FragCoord' (smooth in mediump 4-component vector of float)
 0:?     'v3' (layout(location=2 ) smooth in mediump 3-component vector of float)
@@ -509,6 +549,13 @@ ERROR: node is still EOpNull!
 0:?       0 (const int)
 0:?       0 (const int)
 0:?       0 (const int)
+0:?     'CA1' (writeonly uniform highp imageCubeArray)
+0:?     'CA2' (writeonly uniform highp iimageCubeArray)
+0:?     'CA3' (writeonly uniform highp uimageCubeArray)
+0:?     'CA4' (uniform highp samplerCubeArray)
+0:?     'CA5' (uniform highp samplerCubeArrayShadow)
+0:?     'CA6' (uniform highp isamplerCubeArray)
+0:?     'CA7' (uniform highp usamplerCubeArray)
 
 
 Linked fragment stage:
@@ -517,6 +564,7 @@ ERROR: Linking fragment stage: when more than one fragment shader output, all mu
 
 Shader version: 310
 Requested GL_EXT_shader_io_blocks
+Requested GL_EXT_texture_cube_map_array
 Requested GL_OES_geometry_shader
 Requested GL_OES_gpu_shader5
 Requested GL_OES_shader_io_blocks
@@ -885,6 +933,45 @@ ERROR: node is still EOpNull!
 0:223          0.100000
 0:223          0.100000
 0:223        'offsets' (uniform 4-element array of mediump 2-component vector of int)
+0:248  Function Definition: CAT( (global void)
+0:248    Function Parameters: 
+0:250    Sequence
+0:250      Sequence
+0:250        move second child to first child (temp highp 4-component vector of float)
+0:250          'b4' (temp highp 4-component vector of float)
+0:250          Function Call: texture(sAC1;vf4;f1; (global highp 4-component vector of float)
+0:250            'CA4' (uniform highp samplerCubeArray)
+0:250            Constant:
+0:250              0.500000
+0:250              0.500000
+0:250              0.500000
+0:250              0.500000
+0:250            Constant:
+0:250              0.240000
+0:251      Sequence
+0:251        move second child to first child (temp highp 4-component vector of int)
+0:251          'b6' (temp highp 4-component vector of int)
+0:251          Function Call: texture(isAC1;vf4;f1; (global mediump 4-component vector of int)
+0:251            'CA6' (uniform highp isamplerCubeArray)
+0:251            Constant:
+0:251              0.500000
+0:251              0.500000
+0:251              0.500000
+0:251              0.500000
+0:251            Constant:
+0:251              0.260000
+0:252      Sequence
+0:252        move second child to first child (temp highp 4-component vector of uint)
+0:252          'b7' (temp highp 4-component vector of uint)
+0:252          Function Call: texture(usAC1;vf4;f1; (global mediump 4-component vector of uint)
+0:252            'CA7' (uniform highp usamplerCubeArray)
+0:252            Constant:
+0:252              0.500000
+0:252              0.500000
+0:252              0.500000
+0:252              0.500000
+0:252            Constant:
+0:252              0.270000
 0:?   Linker Objects
 0:?     'gl_FragCoord' (smooth in mediump 4-component vector of float)
 0:?     'v3' (layout(location=2 ) smooth in mediump 3-component vector of float)
@@ -951,4 +1038,11 @@ ERROR: node is still EOpNull!
 0:?       0 (const int)
 0:?       0 (const int)
 0:?       0 (const int)
+0:?     'CA1' (writeonly uniform highp imageCubeArray)
+0:?     'CA2' (writeonly uniform highp iimageCubeArray)
+0:?     'CA3' (writeonly uniform highp uimageCubeArray)
+0:?     'CA4' (uniform highp samplerCubeArray)
+0:?     'CA5' (uniform highp samplerCubeArrayShadow)
+0:?     'CA6' (uniform highp isamplerCubeArray)
+0:?     'CA7' (uniform highp usamplerCubeArray)
 

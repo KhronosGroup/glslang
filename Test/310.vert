@@ -231,3 +231,77 @@ void bufferT()
     highp ivec4 f2 = texelFetch(bufSamp2, s2);
     highp uvec4 f3 = texelFetch(bufSamp3, s3);
 }
+
+uniform writeonly imageCubeArray  badCA1;  // ERROR, reserved
+uniform writeonly iimageCubeArray badCA2;  // ERROR, reserved
+uniform writeonly uimageCubeArray badCA3;  // ERROR, reserved
+
+uniform samplerCubeArray          badCA4;  // ERROR, reserved
+uniform samplerCubeArrayShadow    badCA5;  // ERROR, reserved
+uniform isamplerCubeArray         badCA6;  // ERROR, reserved
+uniform usamplerCubeArray         badCA7;  // ERROR, reserved
+
+#extension GL_OES_texture_cube_map_array : enable
+
+uniform writeonly imageCubeArray  noPreCA1;   // ERROR, no default precision
+uniform writeonly iimageCubeArray noPreCA2;   // ERROR, no default precision
+uniform writeonly uimageCubeArray noPreCA3;   // ERROR, no default precision
+
+uniform samplerCubeArray          noPreCA4;   // ERROR, no default precision
+uniform samplerCubeArrayShadow    noPreCA5;   // ERROR, no default precision
+uniform isamplerCubeArray         noPreCA6;   // ERROR, no default precision
+uniform usamplerCubeArray         noPreCA7;   // ERROR, no default precision
+
+precision highp imageCubeArray        ;
+precision highp iimageCubeArray       ;
+precision highp uimageCubeArray       ;
+
+precision highp samplerCubeArray      ;
+precision highp samplerCubeArrayShadow;
+precision highp isamplerCubeArray     ;
+precision highp usamplerCubeArray     ;
+
+uniform writeonly imageCubeArray  CA1;
+uniform writeonly iimageCubeArray CA2;
+uniform writeonly uimageCubeArray CA3;
+
+#ifdef GL_OES_texture_cube_map_array
+uniform samplerCubeArray          CA4;
+uniform samplerCubeArrayShadow    CA5;
+uniform isamplerCubeArray         CA6;
+uniform usamplerCubeArray         CA7;
+#endif
+
+void CAT()
+{
+    highp ivec3 s4 = textureSize(CA4, 1);
+    highp ivec3 s5 = textureSize(CA5, 1);
+    highp ivec3 s6 = textureSize(CA6, 1);
+    highp ivec3 s7 = textureSize(CA7, 1);
+    
+    highp vec4 t4 = texture(CA4, vec4(0.5));
+    highp float t5 = texture(CA5, vec4(0.5), 3.0);
+    highp ivec4 t6 = texture(CA6, vec4(0.5));
+    highp uvec4 t7 = texture(CA7, vec4(0.5));
+
+    highp vec4 L4 = textureLod(CA4, vec4(0.5), 0.24);
+    highp ivec4 L6 = textureLod(CA6, vec4(0.5), 0.26);
+    highp uvec4 L7 = textureLod(CA7, vec4(0.5), 0.27);
+
+    highp vec4 g4 = textureGrad(CA4, vec4(0.5), vec3(0.1), vec3(0.2));
+    highp ivec4 g6 = textureGrad(CA6, vec4(0.5), vec3(0.1), vec3(0.2));
+    highp uvec4 g7 = textureGrad(CA7, vec4(0.5), vec3(0.1), vec3(0.2));
+
+    highp vec4 gath4 = textureGather(CA4, vec4(0.5));
+    highp vec4 gathC4 = textureGather(CA4, vec4(0.5), 2);
+    highp ivec4 gath6 = textureGather(CA6, vec4(0.5));
+    highp ivec4 gathC6 = textureGather(CA6, vec4(0.5), 1);
+    highp uvec4 gath7 = textureGather(CA7, vec4(0.5));
+    highp uvec4 gathC7 = textureGather(CA7, vec4(0.5), 0);
+
+    highp vec4 gath5 = textureGather(CA5, vec4(0.5), 2.5);
+
+    highp ivec3 s1 = imageSize(CA1);
+    highp ivec3 s2 = imageSize(CA2);
+    highp ivec3 s3 = imageSize(CA3);
+}

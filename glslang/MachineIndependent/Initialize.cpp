@@ -1828,7 +1828,7 @@ void TBuiltIns::add2ndGenerationSamplingImaging(int version, EProfile profile)
 
     TBasicType bTypes[3] = { EbtFloat, EbtInt, EbtUint };
     bool skipBuffer = (profile == EEsProfile && version < 310) || (profile != EEsProfile && version < 140);
-    bool skipCubeArrayed = (profile == EEsProfile || version < 130);
+    bool skipCubeArrayed = (profile == EEsProfile && version < 310) || (profile != EEsProfile && version < 130);
 
     // enumerate all the types
     for (int image = 0; image <= 1; ++image) { // loop over "bool" image vs sampler

@@ -222,3 +222,32 @@ void pfoo()
     textureGatherOffsets(sArray[0], vec2(0.1), constOffsets);
     textureGatherOffsets(sArray[0], vec2(0.1), offsets);       // ERROR, offset not constant
 }
+
+#extension GL_EXT_texture_cube_map_array : enable
+
+precision highp imageCubeArray        ;
+precision highp iimageCubeArray       ;
+precision highp uimageCubeArray       ;
+
+precision highp samplerCubeArray      ;
+precision highp samplerCubeArrayShadow;
+precision highp isamplerCubeArray     ;
+precision highp usamplerCubeArray     ;
+
+uniform writeonly imageCubeArray  CA1;
+uniform writeonly iimageCubeArray CA2;
+uniform writeonly uimageCubeArray CA3;
+
+#ifdef GL_EXT_texture_cube_map_array
+uniform samplerCubeArray          CA4;
+uniform samplerCubeArrayShadow    CA5;
+uniform isamplerCubeArray         CA6;
+uniform usamplerCubeArray         CA7;
+#endif
+
+void CAT()
+{
+    highp vec4 b4 = texture(CA4, vec4(0.5), 0.24);
+    highp ivec4 b6 = texture(CA6, vec4(0.5), 0.26);
+    highp uvec4 b7 = texture(CA7, vec4(0.5), 0.27);
+}
