@@ -70,7 +70,12 @@ ERROR: 0:212: 'textureGatherOffsets' : required extension not requested: Possibl
 GL_EXT_gpu_shader5
 GL_OES_gpu_shader5
 ERROR: 0:223: 'textureGatherOffsets(...)' : must be a compile-time constant: offsets argument
-ERROR: 62 compilation errors.  No code generated.
+ERROR: 0:257: 'gl_SampleID' : required extension not requested: GL_OES_sample_variables
+ERROR: 0:258: 'gl_SamplePosition' : required extension not requested: GL_OES_sample_variables
+ERROR: 0:259: 'gl_SampleMaskIn' : required extension not requested: GL_OES_sample_variables
+ERROR: 0:260: 'gl_SampleMask' : required extension not requested: GL_OES_sample_variables
+ERROR: 0:261: 'gl_NumSamples' : required extension not requested: GL_OES_sample_variables
+ERROR: 67 compilation errors.  No code generated.
 
 
 Shader version: 310
@@ -78,6 +83,7 @@ Requested GL_EXT_shader_io_blocks
 Requested GL_EXT_texture_cube_map_array
 Requested GL_OES_geometry_shader
 Requested GL_OES_gpu_shader5
+Requested GL_OES_sample_variables
 Requested GL_OES_shader_io_blocks
 gl_FragCoord pixel center is integer
 gl_FragCoord origin is upper left
@@ -483,6 +489,67 @@ ERROR: node is still EOpNull!
 0:252              0.500000
 0:252            Constant:
 0:252              0.270000
+0:255  Function Definition: badSample( (global void)
+0:255    Function Parameters: 
+0:257    Sequence
+0:257      Sequence
+0:257        move second child to first child (temp lowp int)
+0:257          'a1' (temp lowp int)
+0:257          'gl_SampleID' (flat in lowp int SampleId)
+0:258      Sequence
+0:258        move second child to first child (temp mediump 2-component vector of float)
+0:258          'a2' (temp mediump 2-component vector of float)
+0:258          'gl_SamplePosition' (smooth in mediump 2-component vector of float SamplePosition)
+0:259      Sequence
+0:259        move second child to first child (temp highp int)
+0:259          'a3' (temp highp int)
+0:259          direct index (flat temp highp int SampleMaskIn)
+0:259            'gl_SampleMaskIn' (flat in implicitly-sized array of highp int SampleMaskIn)
+0:259            Constant:
+0:259              0 (const int)
+0:260      move second child to first child (temp highp int)
+0:260        direct index (temp highp int SampleMaskIn)
+0:260          'gl_SampleMask' (out implicitly-sized array of highp int SampleMaskIn)
+0:260          Constant:
+0:260            0 (const int)
+0:260        'a3' (temp highp int)
+0:261      Sequence
+0:261        move second child to first child (temp mediump int)
+0:261          'n' (temp mediump int)
+0:261          'gl_NumSamples' (uniform lowp int)
+0:268  Function Definition: goodSample( (global void)
+0:268    Function Parameters: 
+0:270    Sequence
+0:270      Sequence
+0:270        move second child to first child (temp lowp int)
+0:270          'a1' (temp lowp int)
+0:270          'gl_SampleID' (flat in lowp int SampleId)
+0:271      Sequence
+0:271        move second child to first child (temp mediump 2-component vector of float)
+0:271          'a2' (temp mediump 2-component vector of float)
+0:271          'gl_SamplePosition' (smooth in mediump 2-component vector of float SamplePosition)
+0:272      Sequence
+0:272        move second child to first child (temp highp int)
+0:272          'a3' (temp highp int)
+0:272          direct index (flat temp highp int SampleMaskIn)
+0:272            'gl_SampleMaskIn' (flat in implicitly-sized array of highp int SampleMaskIn)
+0:272            Constant:
+0:272              0 (const int)
+0:273      move second child to first child (temp highp int)
+0:273        direct index (temp highp int SampleMaskIn)
+0:273          'gl_SampleMask' (out implicitly-sized array of highp int SampleMaskIn)
+0:273          Constant:
+0:273            0 (const int)
+0:273        'a3' (temp highp int)
+0:274      Sequence
+0:274        move second child to first child (temp mediump int)
+0:274          'n1' (temp mediump int)
+0:274          Constant:
+0:274            4 (const int)
+0:275      Sequence
+0:275        move second child to first child (temp mediump int)
+0:275          'n2' (temp mediump int)
+0:275          'gl_NumSamples' (uniform lowp int)
 0:?   Linker Objects
 0:?     'gl_FragCoord' (smooth in mediump 4-component vector of float)
 0:?     'v3' (layout(location=2 ) smooth in mediump 3-component vector of float)
@@ -556,6 +623,8 @@ ERROR: node is still EOpNull!
 0:?     'CA5' (uniform highp samplerCubeArrayShadow)
 0:?     'CA6' (uniform highp isamplerCubeArray)
 0:?     'CA7' (uniform highp usamplerCubeArray)
+0:?     'gl_SampleMaskIn' (flat in implicitly-sized array of highp int SampleMaskIn)
+0:?     'gl_SampleMask' (out implicitly-sized array of highp int SampleMaskIn)
 
 
 Linked fragment stage:
@@ -567,6 +636,7 @@ Requested GL_EXT_shader_io_blocks
 Requested GL_EXT_texture_cube_map_array
 Requested GL_OES_geometry_shader
 Requested GL_OES_gpu_shader5
+Requested GL_OES_sample_variables
 Requested GL_OES_shader_io_blocks
 gl_FragCoord pixel center is integer
 gl_FragCoord origin is upper left
@@ -972,6 +1042,67 @@ ERROR: node is still EOpNull!
 0:252              0.500000
 0:252            Constant:
 0:252              0.270000
+0:255  Function Definition: badSample( (global void)
+0:255    Function Parameters: 
+0:257    Sequence
+0:257      Sequence
+0:257        move second child to first child (temp lowp int)
+0:257          'a1' (temp lowp int)
+0:257          'gl_SampleID' (flat in lowp int SampleId)
+0:258      Sequence
+0:258        move second child to first child (temp mediump 2-component vector of float)
+0:258          'a2' (temp mediump 2-component vector of float)
+0:258          'gl_SamplePosition' (smooth in mediump 2-component vector of float SamplePosition)
+0:259      Sequence
+0:259        move second child to first child (temp highp int)
+0:259          'a3' (temp highp int)
+0:259          direct index (flat temp highp int SampleMaskIn)
+0:259            'gl_SampleMaskIn' (flat in 1-element array of highp int SampleMaskIn)
+0:259            Constant:
+0:259              0 (const int)
+0:260      move second child to first child (temp highp int)
+0:260        direct index (temp highp int SampleMaskIn)
+0:260          'gl_SampleMask' (out 1-element array of highp int SampleMaskIn)
+0:260          Constant:
+0:260            0 (const int)
+0:260        'a3' (temp highp int)
+0:261      Sequence
+0:261        move second child to first child (temp mediump int)
+0:261          'n' (temp mediump int)
+0:261          'gl_NumSamples' (uniform lowp int)
+0:268  Function Definition: goodSample( (global void)
+0:268    Function Parameters: 
+0:270    Sequence
+0:270      Sequence
+0:270        move second child to first child (temp lowp int)
+0:270          'a1' (temp lowp int)
+0:270          'gl_SampleID' (flat in lowp int SampleId)
+0:271      Sequence
+0:271        move second child to first child (temp mediump 2-component vector of float)
+0:271          'a2' (temp mediump 2-component vector of float)
+0:271          'gl_SamplePosition' (smooth in mediump 2-component vector of float SamplePosition)
+0:272      Sequence
+0:272        move second child to first child (temp highp int)
+0:272          'a3' (temp highp int)
+0:272          direct index (flat temp highp int SampleMaskIn)
+0:272            'gl_SampleMaskIn' (flat in 1-element array of highp int SampleMaskIn)
+0:272            Constant:
+0:272              0 (const int)
+0:273      move second child to first child (temp highp int)
+0:273        direct index (temp highp int SampleMaskIn)
+0:273          'gl_SampleMask' (out 1-element array of highp int SampleMaskIn)
+0:273          Constant:
+0:273            0 (const int)
+0:273        'a3' (temp highp int)
+0:274      Sequence
+0:274        move second child to first child (temp mediump int)
+0:274          'n1' (temp mediump int)
+0:274          Constant:
+0:274            4 (const int)
+0:275      Sequence
+0:275        move second child to first child (temp mediump int)
+0:275          'n2' (temp mediump int)
+0:275          'gl_NumSamples' (uniform lowp int)
 0:?   Linker Objects
 0:?     'gl_FragCoord' (smooth in mediump 4-component vector of float)
 0:?     'v3' (layout(location=2 ) smooth in mediump 3-component vector of float)
@@ -1045,4 +1176,6 @@ ERROR: node is still EOpNull!
 0:?     'CA5' (uniform highp samplerCubeArrayShadow)
 0:?     'CA6' (uniform highp isamplerCubeArray)
 0:?     'CA7' (uniform highp usamplerCubeArray)
+0:?     'gl_SampleMaskIn' (flat in 1-element array of highp int SampleMaskIn)
+0:?     'gl_SampleMask' (out 1-element array of highp int SampleMaskIn)
 

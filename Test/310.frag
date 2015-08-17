@@ -251,3 +251,26 @@ void CAT()
     highp ivec4 b6 = texture(CA6, vec4(0.5), 0.26);
     highp uvec4 b7 = texture(CA7, vec4(0.5), 0.27);
 }
+
+void badSample()
+{
+    lowp     int  a1 = gl_SampleID;         // ERROR, need extension
+    mediump  vec2 a2 = gl_SamplePosition;   // ERROR, need extension
+    highp    int  a3 = gl_SampleMaskIn[0];  // ERROR, need extension
+    gl_SampleMask[0] = a3;                  // ERROR, need extension
+    mediump int n = gl_NumSamples;          // ERROR, need extension
+}
+
+#ifdef GL_OES_sample_variables
+#extension GL_OES_sample_variables : enable
+#endif
+
+void goodSample()
+{
+    lowp     int  a1 = gl_SampleID;       
+    mediump  vec2 a2 = gl_SamplePosition; 
+    highp    int  a3 = gl_SampleMaskIn[0];
+    gl_SampleMask[0] = a3;
+    mediump int n1 = gl_MaxSamples;
+    mediump int n2 = gl_NumSamples;
+}

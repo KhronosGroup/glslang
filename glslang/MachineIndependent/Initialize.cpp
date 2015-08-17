@@ -1766,6 +1766,7 @@ void TBuiltIns::initialize(int version, EProfile profile)
                 "     in  vec2 gl_SamplePosition;"
                 "flat in  int  gl_SampleMaskIn[];"
                 "     out int  gl_SampleMask[];"
+                "uniform int gl_NumSamples;"
                 );
 
         if (version >= 430)
@@ -1782,26 +1783,36 @@ void TBuiltIns::initialize(int version, EProfile profile)
     } else {
         // ES profile
 
-        if (version == 100)
+        if (version == 100) {
             stageBuiltins[EShLangFragment].append(
                 "mediump vec4 gl_FragCoord;"    // needs qualifier fixed later
                 "        bool gl_FrontFacing;"  // needs qualifier fixed later
                 "mediump vec4 gl_FragColor;"    // needs qualifier fixed later
                 "mediump vec2 gl_PointCoord;"   // needs qualifier fixed later
                 );
-        else if (version >= 300) {
+        }
+        if (version >= 300) {
             stageBuiltins[EShLangFragment].append(
                 "highp   vec4  gl_FragCoord;"    // needs qualifier fixed later
                 "        bool  gl_FrontFacing;"  // needs qualifier fixed later
                 "mediump vec2  gl_PointCoord;"   // needs qualifier fixed later
                 "highp   float gl_FragDepth;"    // needs qualifier fixed later
                 );
-            if (version >= 310)
-                stageBuiltins[EShLangFragment].append(
-                    "bool gl_HelperInvocation;"    // needs qualifier fixed later
-                    "flat in highp int gl_PrimitiveID;"  // needs qualifier fixed later
-                    "flat in highp int gl_Layer;"        // needs qualifier fixed later
-                    );
+        }
+        if (version >= 310) {
+            stageBuiltins[EShLangFragment].append(
+                "bool gl_HelperInvocation;"          // needs qualifier fixed later
+                "flat in highp int gl_PrimitiveID;"  // needs qualifier fixed later
+                "flat in highp int gl_Layer;"        // needs qualifier fixed later
+                );
+
+            stageBuiltins[EShLangFragment].append(  // GL_OES_sample_variables
+                "flat lowp    in  int  gl_SampleID;"
+                "     mediump in  vec2 gl_SamplePosition;"
+                "flat highp   in  int  gl_SampleMaskIn[];"
+                "     highp   out int  gl_SampleMask[];"
+                "uniform lowp int gl_NumSamples;"
+                );
         }
         stageBuiltins[EShLangFragment].append(
             "highp float gl_FragDepthEXT;"       // GL_EXT_frag_depth
@@ -2719,7 +2730,8 @@ void TBuiltIns::initialize(const TBuiltInResource &resources, int version, EProf
     }
 
     // GL_ARB_ES3_1_compatibility
-    if (profile != EEsProfile && version >= 450) {
+    if ((profile != EEsProfile && version >= 450) ||
+        (profile == EEsProfile && version >= 310)) {
         snprintf(builtInConstant, maxSize, "const int gl_MaxSamples = %d;", resources.maxSamples);
         s.append(builtInConstant);
     }
@@ -2935,10 +2947,22 @@ void IdentifyBuiltIns(int version, EProfile profile, EShLanguage language, TSymb
         BuiltInVariable("gl_ClipDistance",    EbvClipDistance,   symbolTable);
         BuiltInVariable("gl_CullDistance",    EbvCullDistance,   symbolTable);
         BuiltInVariable("gl_PrimitiveID",     EbvPrimitiveId,    symbolTable);
-        BuiltInVariable("gl_SampleID",        EbvSampleId,       symbolTable);
-        BuiltInVariable("gl_SamplePosition",  EbvSamplePosition, symbolTable);
-        BuiltInVariable("gl_SampleMaskIn",    EbvSampleMask,     symbolTable);
-        BuiltInVariable("gl_SampleMask",      EbvSampleMask,     symbolTable);
+
+        if ((profile != EEsProfile && version >= 400) ||
+            (profile == EEsProfile && version >= 310)) {
+            BuiltInVariable("gl_SampleID",        EbvSampleId,       symbolTable);
+            BuiltInVariable("gl_SamplePosition",  EbvSamplePosition, symbolTable);
+            BuiltInVariable("gl_SampleMaskIn",    EbvSampleMask,     symbolTable);
+            BuiltInVariable("gl_SampleMask",      EbvSampleMask,     symbolTable);
+            if (profile == EEsProfile) {
+                symbolTable.setVariableExtensions("gl_SampleID",       1, &E_GL_OES_sample_variables);
+                symbolTable.setVariableExtensions("gl_SamplePosition", 1, &E_GL_OES_sample_variables);
+                symbolTable.setVariableExtensions("gl_SampleMaskIn",   1, &E_GL_OES_sample_variables);
+                symbolTable.setVariableExtensions("gl_SampleMask",     1, &E_GL_OES_sample_variables);
+                symbolTable.setVariableExtensions("gl_NumSamples",     1, &E_GL_OES_sample_variables);
+            }
+        }
+        
         BuiltInVariable("gl_Layer",           EbvLayer,          symbolTable);
         BuiltInVariable("gl_ViewportIndex",   EbvViewportIndex,  symbolTable);
 
