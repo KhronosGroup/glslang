@@ -79,7 +79,18 @@ ERROR: 0:250: 'sampler/image' : type requires declaration of default precision q
 ERROR: 0:251: 'sampler/image' : type requires declaration of default precision qualifier 
 ERROR: 0:252: 'sampler/image' : type requires declaration of default precision qualifier 
 ERROR: 0:253: 'sampler/image' : type requires declaration of default precision qualifier 
-ERROR: 75 compilation errors.  No code generated.
+ERROR: 0:309: 'sampler2DMSArray' : Reserved word. 
+ERROR: 0:309: 'sampler/image' : type requires declaration of default precision qualifier 
+ERROR: 0:310: 'isampler2DMSArray' : Reserved word. 
+ERROR: 0:310: 'sampler/image' : type requires declaration of default precision qualifier 
+ERROR: 0:311: 'usampler2DMSArray' : Reserved word. 
+ERROR: 0:311: 'sampler/image' : type requires declaration of default precision qualifier 
+ERROR: 0:317: 'sampler/image' : type requires declaration of default precision qualifier 
+ERROR: 0:318: 'sampler/image' : type requires declaration of default precision qualifier 
+ERROR: 0:319: 'sampler/image' : type requires declaration of default precision qualifier 
+ERROR: 0:339: 'textureSize' : no matching overloaded function found 
+ERROR: 0:339: '=' :  cannot convert from 'const float' to 'temp highp 3-component vector of int'
+ERROR: 86 compilation errors.  No code generated.
 
 
 Shader version: 310
@@ -88,6 +99,7 @@ Requested GL_OES_gpu_shader5
 Requested GL_OES_shader_io_blocks
 Requested GL_OES_texture_buffer
 Requested GL_OES_texture_cube_map_array
+Requested GL_OES_texture_storage_multisample_2d_array
 ERROR: node is still EOpNull!
 0:12  Function Definition: main( (global void)
 0:12    Function Parameters: 
@@ -713,6 +725,57 @@ ERROR: node is still EOpNull!
 0:306          's3' (temp highp 3-component vector of int)
 0:306          Function Call: imageSize(uIAC1; (global highp 3-component vector of int)
 0:306            'CA3' (writeonly uniform highp uimageCubeArray)
+0:331  Function Definition: MSA( (global void)
+0:331    Function Parameters: 
+0:333    Sequence
+0:333      Sequence
+0:333        move second child to first child (temp highp 4-component vector of float)
+0:333          'tf' (temp highp 4-component vector of float)
+0:333          Function Call: texelFetch(sA2M1;vi3;i1; (global highp 4-component vector of float)
+0:333            'samp2DMSA' (uniform highp sampler2DMSArray)
+0:333            Constant:
+0:333              5 (const int)
+0:333              5 (const int)
+0:333              5 (const int)
+0:333            Constant:
+0:333              2 (const int)
+0:334      Sequence
+0:334        move second child to first child (temp highp 4-component vector of int)
+0:334          'tfi' (temp highp 4-component vector of int)
+0:334          Function Call: texelFetch(isA2M1;vi3;i1; (global highp 4-component vector of int)
+0:334            'samp2DMSAi' (uniform highp isampler2DMSArray)
+0:334            Constant:
+0:334              5 (const int)
+0:334              5 (const int)
+0:334              5 (const int)
+0:334            Constant:
+0:334              2 (const int)
+0:335      Sequence
+0:335        move second child to first child (temp highp 4-component vector of uint)
+0:335          'tfu' (temp highp 4-component vector of uint)
+0:335          Function Call: texelFetch(usA2M1;vi3;i1; (global highp 4-component vector of uint)
+0:335            'samp2DMSAu' (uniform highp usampler2DMSArray)
+0:335            Constant:
+0:335              5 (const int)
+0:335              5 (const int)
+0:335              5 (const int)
+0:335            Constant:
+0:335              2 (const int)
+0:337      Sequence
+0:337        move second child to first child (temp highp 3-component vector of int)
+0:337          'tfs' (temp highp 3-component vector of int)
+0:337          Function Call: textureSize(sA2M1; (global highp 3-component vector of int)
+0:337            'samp2DMSA' (uniform highp sampler2DMSArray)
+0:338      Sequence
+0:338        move second child to first child (temp highp 3-component vector of int)
+0:338          'tfsi' (temp highp 3-component vector of int)
+0:338          Function Call: textureSize(isA2M1; (global highp 3-component vector of int)
+0:338            'samp2DMSAi' (uniform highp isampler2DMSArray)
+0:340      Sequence
+0:340        move second child to first child (temp highp 3-component vector of int)
+0:340          'tfsu' (temp highp 3-component vector of int)
+0:340          Function Call: textureSize(usA2M1; (global highp 3-component vector of int)
+0:340            'samp2DMSAu' (uniform highp usampler2DMSArray)
 0:?   Linker Objects
 0:?     's' (shared highp 4-component vector of float)
 0:?     'v' (buffer highp 4-component vector of float)
@@ -801,6 +864,15 @@ ERROR: node is still EOpNull!
 0:?     'CA5' (uniform highp samplerCubeArrayShadow)
 0:?     'CA6' (uniform highp isamplerCubeArray)
 0:?     'CA7' (uniform highp usamplerCubeArray)
+0:?     'bad2DMS' (uniform mediump sampler2DMSArray)
+0:?     'bad2DMSi' (uniform mediump isampler2DMSArray)
+0:?     'bad2DMSu' (uniform mediump usampler2DMSArray)
+0:?     'noPrec2DMS' (uniform mediump sampler2DMSArray)
+0:?     'noPrec2DMSi' (uniform mediump isampler2DMSArray)
+0:?     'noPrec2DMSu' (uniform mediump usampler2DMSArray)
+0:?     'samp2DMSA' (uniform highp sampler2DMSArray)
+0:?     'samp2DMSAi' (uniform highp isampler2DMSArray)
+0:?     'samp2DMSAu' (uniform highp usampler2DMSArray)
 0:?     'gl_VertexID' (gl_VertexId highp int VertexId)
 0:?     'gl_InstanceID' (gl_InstanceId highp int InstanceId)
 
@@ -814,6 +886,7 @@ Requested GL_OES_gpu_shader5
 Requested GL_OES_shader_io_blocks
 Requested GL_OES_texture_buffer
 Requested GL_OES_texture_cube_map_array
+Requested GL_OES_texture_storage_multisample_2d_array
 ERROR: node is still EOpNull!
 0:12  Function Definition: main( (global void)
 0:12    Function Parameters: 
@@ -1439,6 +1512,57 @@ ERROR: node is still EOpNull!
 0:306          's3' (temp highp 3-component vector of int)
 0:306          Function Call: imageSize(uIAC1; (global highp 3-component vector of int)
 0:306            'CA3' (writeonly uniform highp uimageCubeArray)
+0:331  Function Definition: MSA( (global void)
+0:331    Function Parameters: 
+0:333    Sequence
+0:333      Sequence
+0:333        move second child to first child (temp highp 4-component vector of float)
+0:333          'tf' (temp highp 4-component vector of float)
+0:333          Function Call: texelFetch(sA2M1;vi3;i1; (global highp 4-component vector of float)
+0:333            'samp2DMSA' (uniform highp sampler2DMSArray)
+0:333            Constant:
+0:333              5 (const int)
+0:333              5 (const int)
+0:333              5 (const int)
+0:333            Constant:
+0:333              2 (const int)
+0:334      Sequence
+0:334        move second child to first child (temp highp 4-component vector of int)
+0:334          'tfi' (temp highp 4-component vector of int)
+0:334          Function Call: texelFetch(isA2M1;vi3;i1; (global highp 4-component vector of int)
+0:334            'samp2DMSAi' (uniform highp isampler2DMSArray)
+0:334            Constant:
+0:334              5 (const int)
+0:334              5 (const int)
+0:334              5 (const int)
+0:334            Constant:
+0:334              2 (const int)
+0:335      Sequence
+0:335        move second child to first child (temp highp 4-component vector of uint)
+0:335          'tfu' (temp highp 4-component vector of uint)
+0:335          Function Call: texelFetch(usA2M1;vi3;i1; (global highp 4-component vector of uint)
+0:335            'samp2DMSAu' (uniform highp usampler2DMSArray)
+0:335            Constant:
+0:335              5 (const int)
+0:335              5 (const int)
+0:335              5 (const int)
+0:335            Constant:
+0:335              2 (const int)
+0:337      Sequence
+0:337        move second child to first child (temp highp 3-component vector of int)
+0:337          'tfs' (temp highp 3-component vector of int)
+0:337          Function Call: textureSize(sA2M1; (global highp 3-component vector of int)
+0:337            'samp2DMSA' (uniform highp sampler2DMSArray)
+0:338      Sequence
+0:338        move second child to first child (temp highp 3-component vector of int)
+0:338          'tfsi' (temp highp 3-component vector of int)
+0:338          Function Call: textureSize(isA2M1; (global highp 3-component vector of int)
+0:338            'samp2DMSAi' (uniform highp isampler2DMSArray)
+0:340      Sequence
+0:340        move second child to first child (temp highp 3-component vector of int)
+0:340          'tfsu' (temp highp 3-component vector of int)
+0:340          Function Call: textureSize(usA2M1; (global highp 3-component vector of int)
+0:340            'samp2DMSAu' (uniform highp usampler2DMSArray)
 0:?   Linker Objects
 0:?     's' (shared highp 4-component vector of float)
 0:?     'v' (buffer highp 4-component vector of float)
@@ -1527,6 +1651,15 @@ ERROR: node is still EOpNull!
 0:?     'CA5' (uniform highp samplerCubeArrayShadow)
 0:?     'CA6' (uniform highp isamplerCubeArray)
 0:?     'CA7' (uniform highp usamplerCubeArray)
+0:?     'bad2DMS' (uniform mediump sampler2DMSArray)
+0:?     'bad2DMSi' (uniform mediump isampler2DMSArray)
+0:?     'bad2DMSu' (uniform mediump usampler2DMSArray)
+0:?     'noPrec2DMS' (uniform mediump sampler2DMSArray)
+0:?     'noPrec2DMSi' (uniform mediump isampler2DMSArray)
+0:?     'noPrec2DMSu' (uniform mediump usampler2DMSArray)
+0:?     'samp2DMSA' (uniform highp sampler2DMSArray)
+0:?     'samp2DMSAi' (uniform highp isampler2DMSArray)
+0:?     'samp2DMSAu' (uniform highp usampler2DMSArray)
 0:?     'gl_VertexID' (gl_VertexId highp int VertexId)
 0:?     'gl_InstanceID' (gl_InstanceId highp int InstanceId)
 

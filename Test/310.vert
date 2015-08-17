@@ -305,3 +305,37 @@ void CAT()
     highp ivec3 s2 = imageSize(CA2);
     highp ivec3 s3 = imageSize(CA3);
 }
+
+uniform sampler2DMSArray  bad2DMS;    // ERROR, reserved
+uniform isampler2DMSArray bad2DMSi;   // ERROR, reserved
+uniform usampler2DMSArray bad2DMSu;   // ERROR, reserved
+
+#extension GL_OES_texture_storage_multisample_2d_array : enable
+
+#ifdef GL_OES_texture_storage_multisample_2d_array
+
+uniform sampler2DMSArray  noPrec2DMS;    // ERROR, no default
+uniform isampler2DMSArray noPrec2DMSi;   // ERROR, no default
+uniform usampler2DMSArray noPrec2DMSu;   // ERROR, no default
+
+#endif
+
+precision highp sampler2DMSArray;
+precision highp isampler2DMSArray;
+precision highp usampler2DMSArray;
+
+uniform sampler2DMSArray  samp2DMSA;
+uniform isampler2DMSArray samp2DMSAi;
+uniform usampler2DMSArray samp2DMSAu;
+
+void MSA()
+{
+    vec4 tf = texelFetch(samp2DMSA, ivec3(5), 2);
+    ivec4 tfi = texelFetch(samp2DMSAi, ivec3(5), 2);
+    uvec4 tfu = texelFetch(samp2DMSAu, ivec3(5), 2);
+    
+    ivec3 tfs = textureSize(samp2DMSA);
+    ivec3 tfsi = textureSize(samp2DMSAi);
+    ivec3 tfsb = textureSize(samp2DMSAi, 4);  // ERROR, no lod
+    ivec3 tfsu = textureSize(samp2DMSAu);
+}

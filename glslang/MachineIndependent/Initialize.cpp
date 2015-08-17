@@ -1862,7 +1862,7 @@ void TBuiltIns::add2ndGenerationSamplingImaging(int version, EProfile profile)
                             continue;
                         if (dim == EsdBuffer && (shadow || arrayed || ms))
                             continue;
-                        if (ms && arrayed && profile == EEsProfile)
+                        if (ms && arrayed && profile == EEsProfile && version < 310)
                             continue;
 
                         for (int bType = 0; bType < 3; ++bType) { // float, int, uint results

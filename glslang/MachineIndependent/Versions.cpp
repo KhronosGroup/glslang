@@ -184,7 +184,7 @@ void TParseContext::initializeExtensionBehavior()
     extensionBehavior[E_GL_OES_sample_variables]                     = EBhDisablePartial;
     extensionBehavior[E_GL_OES_shader_image_atomic]                  = EBhDisablePartial;
     extensionBehavior[E_GL_OES_shader_multisample_interpolation]     = EBhDisablePartial;
-    extensionBehavior[E_GL_OES_texture_storage_multisample_2d_array] = EBhDisablePartial;
+    extensionBehavior[E_GL_OES_texture_storage_multisample_2d_array] = EBhDisable;
     extensionBehavior[E_GL_EXT_geometry_shader]                      = EBhDisable;
     extensionBehavior[E_GL_EXT_geometry_point_size]                  = EBhDisable;
     extensionBehavior[E_GL_EXT_gpu_shader5]                          = EBhDisable;
