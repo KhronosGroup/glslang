@@ -339,3 +339,37 @@ void MSA()
     ivec3 tfsb = textureSize(samp2DMSAi, 4);  // ERROR, no lod
     ivec3 tfsu = textureSize(samp2DMSAu);
 }
+
+#ifdef GL_OES_shader_image_atomic 
+#extension GL_OES_shader_image_atomic : enable
+#endif
+
+uniform layout(r32f)  highp  image2D im2Df;
+uniform layout(r32ui) highp uimage2D im2Du;
+uniform layout(r32i)  highp iimage2D im2Di;
+uniform ivec2 P;
+
+void goodImageAtom()
+{
+    float datf;
+    int dati;
+    uint datu;
+
+    imageAtomicAdd(     im2Di, P, dati);
+    imageAtomicAdd(     im2Du, P, datu);
+    imageAtomicMin(     im2Di, P, dati);
+    imageAtomicMin(     im2Du, P, datu);
+    imageAtomicMax(     im2Di, P, dati);
+    imageAtomicMax(     im2Du, P, datu);
+    imageAtomicAnd(     im2Di, P, dati);
+    imageAtomicAnd(     im2Du, P, datu);
+    imageAtomicOr(      im2Di, P, dati);
+    imageAtomicOr(      im2Du, P, datu);
+    imageAtomicXor(     im2Di, P, dati);
+    imageAtomicXor(     im2Du, P, datu);
+    imageAtomicExchange(im2Di, P, dati);
+    imageAtomicExchange(im2Du, P, datu);
+    imageAtomicExchange(im2Df, P, datf);
+    imageAtomicCompSwap(im2Di, P,  3, dati);
+    imageAtomicCompSwap(im2Du, P, 5u, datu);
+}

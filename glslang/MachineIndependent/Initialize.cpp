@@ -1990,7 +1990,8 @@ void TBuiltIns::addImageFunctions(TSampler sampler, TString& typeName, int versi
     commonBuiltins.append(prefixes[sampler.type]);
     commonBuiltins.append("vec4);\n");
 
-    if (profile != EEsProfile) {
+    if ( profile != EEsProfile ||
+        (profile == EEsProfile && version >= 310)) {
         if (sampler.type == EbtInt || sampler.type == EbtUint) {
             const char* dataType = sampler.type == EbtInt ? "int" : "uint";
 
@@ -2027,7 +2028,8 @@ void TBuiltIns::addImageFunctions(TSampler sampler, TString& typeName, int versi
             // not int or uint
             // GL_ARB_ES3_1_compatibility
             // TODO: spec issue: are there restrictions on the kind of layout() that can be used?  what about dropping memory qualifiers?
-            if (version >= 450) {
+            if ((profile != EEsProfile && version >= 450) ||
+                (profile == EEsProfile && version >= 310)) {
                 commonBuiltins.append("float imageAtomicExchange(volatile coherent ");
                 commonBuiltins.append(imageParams);
                 commonBuiltins.append(", float);\n");
@@ -2852,6 +2854,17 @@ void IdentifyBuiltIns(int version, EProfile profile, EShLanguage language, TSymb
                 symbolTable.setFunctionExtensions("fma", Num_AEP_gpu_shader5, AEP_gpu_shader5);
         }
 
+        if (profile == EEsProfile) {
+            symbolTable.setFunctionExtensions("imageAtomicAdd",      1, &E_GL_OES_shader_image_atomic);
+            symbolTable.setFunctionExtensions("imageAtomicMin",      1, &E_GL_OES_shader_image_atomic);
+            symbolTable.setFunctionExtensions("imageAtomicMax",      1, &E_GL_OES_shader_image_atomic);
+            symbolTable.setFunctionExtensions("imageAtomicAnd",      1, &E_GL_OES_shader_image_atomic);
+            symbolTable.setFunctionExtensions("imageAtomicOr",       1, &E_GL_OES_shader_image_atomic);
+            symbolTable.setFunctionExtensions("imageAtomicXor",      1, &E_GL_OES_shader_image_atomic);
+            symbolTable.setFunctionExtensions("imageAtomicExchange", 1, &E_GL_OES_shader_image_atomic);
+            symbolTable.setFunctionExtensions("imageAtomicCompSwap", 1, &E_GL_OES_shader_image_atomic);
+        }
+
         // Fall through
 
     case EShLangTessControl:
@@ -3053,6 +3066,17 @@ void IdentifyBuiltIns(int version, EProfile profile, EShLanguage language, TSymb
         symbolTable.setVariableExtensions("gl_FragDepthEXT", 1, &E_GL_EXT_frag_depth);
         symbolTable.setVariableExtensions("gl_PrimitiveID",  Num_AEP_geometry_shader, AEP_geometry_shader);
         symbolTable.setVariableExtensions("gl_Layer",        Num_AEP_geometry_shader, AEP_geometry_shader);
+
+        if (profile == EEsProfile) {
+            symbolTable.setFunctionExtensions("imageAtomicAdd",      1, &E_GL_OES_shader_image_atomic);
+            symbolTable.setFunctionExtensions("imageAtomicMin",      1, &E_GL_OES_shader_image_atomic);
+            symbolTable.setFunctionExtensions("imageAtomicMax",      1, &E_GL_OES_shader_image_atomic);
+            symbolTable.setFunctionExtensions("imageAtomicAnd",      1, &E_GL_OES_shader_image_atomic);
+            symbolTable.setFunctionExtensions("imageAtomicOr",       1, &E_GL_OES_shader_image_atomic);
+            symbolTable.setFunctionExtensions("imageAtomicXor",      1, &E_GL_OES_shader_image_atomic);
+            symbolTable.setFunctionExtensions("imageAtomicExchange", 1, &E_GL_OES_shader_image_atomic);
+            symbolTable.setFunctionExtensions("imageAtomicCompSwap", 1, &E_GL_OES_shader_image_atomic);
+        }
         break;
 
     case EShLangCompute:

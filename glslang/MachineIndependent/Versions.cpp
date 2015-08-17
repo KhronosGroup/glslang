@@ -182,7 +182,7 @@ void TParseContext::initializeExtensionBehavior()
     extensionBehavior[E_GL_ANDROID_extension_pack_es31a]             = EBhDisablePartial;
     extensionBehavior[E_GL_KHR_blend_equation_advanced]              = EBhDisablePartial;
     extensionBehavior[E_GL_OES_sample_variables]                     = EBhDisable;
-    extensionBehavior[E_GL_OES_shader_image_atomic]                  = EBhDisablePartial;
+    extensionBehavior[E_GL_OES_shader_image_atomic]                  = EBhDisable;
     extensionBehavior[E_GL_OES_shader_multisample_interpolation]     = EBhDisablePartial;
     extensionBehavior[E_GL_OES_texture_storage_multisample_2d_array] = EBhDisable;
     extensionBehavior[E_GL_EXT_geometry_shader]                      = EBhDisable;

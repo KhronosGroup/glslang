@@ -274,3 +274,70 @@ void goodSample()
     mediump int n1 = gl_MaxSamples;
     mediump int n2 = gl_NumSamples;
 }
+
+uniform layout(r32f)  highp  image2D im2Df;
+uniform layout(r32ui) highp uimage2D im2Du;
+uniform layout(r32i)  highp iimage2D im2Di;
+uniform ivec2 P;
+
+void badImageAtom()
+{
+    float datf;
+    int dati;
+    uint datu;
+
+    imageAtomicAdd(     im2Di, P, dati);        // ERROR, need extension
+    imageAtomicAdd(     im2Du, P, datu);        // ERROR, need extension
+    imageAtomicMin(     im2Di, P, dati);        // ERROR, need extension
+    imageAtomicMin(     im2Du, P, datu);        // ERROR, need extension
+    imageAtomicMax(     im2Di, P, dati);        // ERROR, need extension
+    imageAtomicMax(     im2Du, P, datu);        // ERROR, need extension
+    imageAtomicAnd(     im2Di, P, dati);        // ERROR, need extension
+    imageAtomicAnd(     im2Du, P, datu);        // ERROR, need extension
+    imageAtomicOr(      im2Di, P, dati);        // ERROR, need extension
+    imageAtomicOr(      im2Du, P, datu);        // ERROR, need extension
+    imageAtomicXor(     im2Di, P, dati);        // ERROR, need extension
+    imageAtomicXor(     im2Du, P, datu);        // ERROR, need extension
+    imageAtomicExchange(im2Di, P, dati);        // ERROR, need extension
+    imageAtomicExchange(im2Du, P, datu);        // ERROR, need extension
+    imageAtomicExchange(im2Df, P, datf);        // ERROR, need extension
+    imageAtomicCompSwap(im2Di, P,  3, dati);    // ERROR, need extension
+    imageAtomicCompSwap(im2Du, P, 5u, datu);    // ERROR, need extension
+}
+
+#ifdef GL_OES_shader_image_atomic 
+#extension GL_OES_shader_image_atomic : enable
+#endif
+
+uniform layout(rgba32f)  highp  image2D badIm2Df;  // ERROR, needs readonly or writeonly
+uniform layout(rgba8ui) highp uimage2D badIm2Du;   // ERROR, needs readonly or writeonly
+uniform layout(rgba16i)  highp iimage2D badIm2Di;  // ERROR, needs readonly or writeonly
+
+void goodImageAtom()
+{
+    float datf;
+    int dati;
+    uint datu;
+
+    imageAtomicAdd(     im2Di, P, dati);
+    imageAtomicAdd(     im2Du, P, datu);
+    imageAtomicMin(     im2Di, P, dati);
+    imageAtomicMin(     im2Du, P, datu);
+    imageAtomicMax(     im2Di, P, dati);
+    imageAtomicMax(     im2Du, P, datu);
+    imageAtomicAnd(     im2Di, P, dati);
+    imageAtomicAnd(     im2Du, P, datu);
+    imageAtomicOr(      im2Di, P, dati);
+    imageAtomicOr(      im2Du, P, datu);
+    imageAtomicXor(     im2Di, P, dati);
+    imageAtomicXor(     im2Du, P, datu);
+    imageAtomicExchange(im2Di, P, dati);
+    imageAtomicExchange(im2Du, P, datu);
+    imageAtomicExchange(im2Df, P, datf);
+    imageAtomicCompSwap(im2Di, P,  3, dati);
+    imageAtomicCompSwap(im2Du, P, 5u, datu);
+
+    imageAtomicMax(badIm2Di, P, dati);      // ERROR, not an allowed layout() on the image
+    imageAtomicMax(badIm2Du, P, datu);      // ERROR, not an allowed layout() on the image
+    imageAtomicExchange(badIm2Df, P, datf); // ERROR, not an allowed layout() on the image
+}

@@ -17,9 +17,11 @@ ERROR: 0:61: 'assign' :  l-value required "ro" (can't modify a readonly buffer)
 ERROR: 0:66: 'buffer' : buffers can be declared only as blocks 
 ERROR: 0:68: 'sampler/image' : type requires declaration of default precision qualifier 
 ERROR: 0:76: '' : image variables not declared 'writeonly' must have a format layout qualifier 
-ERROR: 0:87: 'imageAtomicCompSwap' : no matching overloaded function found 
-ERROR: 0:88: 'imageAtomicAdd' : no matching overloaded function found 
-ERROR: 0:89: 'imageAtomicMin' : no matching overloaded function found 
+ERROR: 0:87: 'imageAtomicCompSwap' : required extension not requested: GL_OES_shader_image_atomic
+ERROR: 0:88: 'imageAtomicAdd' : required extension not requested: GL_OES_shader_image_atomic
+ERROR: 0:89: 'imageAtomicMin' : required extension not requested: GL_OES_shader_image_atomic
+ERROR: 0:89: 'readonly' : argument cannot drop memory qualifier when passed to formal parameter 
+ERROR: 0:89: 'imageAtomicMin' : only supported on image with format r32i or r32ui 
 ERROR: 0:90: 'imageAtomicMax' : no matching overloaded function found 
 ERROR: 0:94: 'writeonly' : argument cannot drop memory qualifier when passed to formal parameter 
 ERROR: 0:97: '' : memory qualifiers cannot be used on this type 
@@ -76,7 +78,7 @@ ERROR: 0:227: 'input block' : not supported in this stage: compute
 ERROR: 0:231: 'output block' : not supported in this stage: compute
 WARNING: 0:235: 't__' : identifiers containing consecutive underscores ("__") are reserved 
 WARNING: 0:238: '#define' : names containing consecutive underscores are reserved: __D
-ERROR: 74 compilation errors.  No code generated.
+ERROR: 76 compilation errors.  No code generated.
 
 
 Shader version: 310
@@ -132,12 +134,26 @@ ERROR: node is still EOpNull!
 0:86          'i' (temp highp int)
 0:86          Constant:
 0:86            4 (const int)
-0:87      Constant:
-0:87        0.000000
-0:88      Constant:
-0:88        0.000000
-0:89      Constant:
-0:89        0.000000
+0:87      Function Call: imageAtomicCompSwap(iI21;vi2;i1;i1; (global highp int)
+0:87        'iimg2D' (layout(r32i ) uniform highp iimage2D)
+0:87        Construct ivec2 (temp 2-component vector of int)
+0:87          'i' (temp highp int)
+0:87          'i' (temp highp int)
+0:87        'i' (temp highp int)
+0:87        'i' (temp highp int)
+0:88      Function Call: imageAtomicAdd(uI21;vi2;u1; (global highp uint)
+0:88        'uimg2D' (layout(r32ui ) uniform highp uimage2D)
+0:88        Construct ivec2 (temp 2-component vector of int)
+0:88          'i' (temp highp int)
+0:88          'i' (temp highp int)
+0:88        Convert int to uint (temp uint)
+0:88          'i' (temp highp int)
+0:89      Function Call: imageAtomicMin(iI21;vi2;i1; (global highp int)
+0:89        'iimg2Drgba' (layout(rgba32i ) readonly uniform highp iimage2D)
+0:89        Construct ivec2 (temp 2-component vector of int)
+0:89          'i' (temp highp int)
+0:89          'i' (temp highp int)
+0:89        'i' (temp highp int)
 0:90      Constant:
 0:90        0.000000
 0:91      Sequence
@@ -544,12 +560,26 @@ ERROR: node is still EOpNull!
 0:86          'i' (temp highp int)
 0:86          Constant:
 0:86            4 (const int)
-0:87      Constant:
-0:87        0.000000
-0:88      Constant:
-0:88        0.000000
-0:89      Constant:
-0:89        0.000000
+0:87      Function Call: imageAtomicCompSwap(iI21;vi2;i1;i1; (global highp int)
+0:87        'iimg2D' (layout(r32i ) uniform highp iimage2D)
+0:87        Construct ivec2 (temp 2-component vector of int)
+0:87          'i' (temp highp int)
+0:87          'i' (temp highp int)
+0:87        'i' (temp highp int)
+0:87        'i' (temp highp int)
+0:88      Function Call: imageAtomicAdd(uI21;vi2;u1; (global highp uint)
+0:88        'uimg2D' (layout(r32ui ) uniform highp uimage2D)
+0:88        Construct ivec2 (temp 2-component vector of int)
+0:88          'i' (temp highp int)
+0:88          'i' (temp highp int)
+0:88        Convert int to uint (temp uint)
+0:88          'i' (temp highp int)
+0:89      Function Call: imageAtomicMin(iI21;vi2;i1; (global highp int)
+0:89        'iimg2Drgba' (layout(rgba32i ) readonly uniform highp iimage2D)
+0:89        Construct ivec2 (temp 2-component vector of int)
+0:89          'i' (temp highp int)
+0:89          'i' (temp highp int)
+0:89        'i' (temp highp int)
 0:90      Constant:
 0:90        0.000000
 0:91      Sequence

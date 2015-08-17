@@ -1428,8 +1428,12 @@ void TParseContext::nonOpBuiltInCheck(const TSourceLoc& loc, const TFunction& fn
         if (imageType.getSampler().type == EbtInt || imageType.getSampler().type == EbtUint) {
             if (imageType.getQualifier().layoutFormat != ElfR32i && imageType.getQualifier().layoutFormat != ElfR32ui)
                 error(loc, "only supported on image with format r32i or r32ui", fnCandidate.getName().c_str(), "");
-        } else if (fnCandidate.getName().compare(0, 19, "imageAtomicExchange") != 0) 
-            error(loc, "only supported on integer images", fnCandidate.getName().c_str(), "");
+        } else {
+            if (fnCandidate.getName().compare(0, 19, "imageAtomicExchange") != 0) 
+                error(loc, "only supported on integer images", fnCandidate.getName().c_str(), "");
+            else if (imageType.getQualifier().layoutFormat != ElfR32f && profile == EEsProfile)
+                error(loc, "only supported on image with format r32f", fnCandidate.getName().c_str(), "");
+        }
     }
 }
 
