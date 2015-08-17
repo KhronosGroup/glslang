@@ -24,7 +24,9 @@ set(LIBRARIES
 if(WIN32)
     set(LIBRARIES ${LIBRARIES} psapi)
 elseif(UNIX)
-    set(LIBRARIES ${LIBRARIES} pthread)
+    if(NOT ANDROID)
+        set(LIBRARIES ${LIBRARIES} pthread)
+    endif()
 endif(WIN32)
 
 target_link_libraries(glslangValidator ${LIBRARIES})

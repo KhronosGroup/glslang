@@ -51,6 +51,17 @@
     #define UINT_PTR uintptr_t
 #endif
 
+#ifdef __ANDROID__
+#include <sstream>
+namespace std {
+template<typename T>
+std::string to_string(const T& val) {
+  std::ostringstream os;
+  os << val;
+  return os.str();
+}
+}
+#endif
 /* windows only pragma */
 #ifdef _MSC_VER
     #pragma warning(disable : 4786) // Don't warn about too long identifiers
