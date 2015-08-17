@@ -204,13 +204,13 @@ ERROR: node is still EOpNull!
 0:117      Sequence
 0:117        move second child to first child (temp 4-component vector of float)
 0:117          'col' (temp 4-component vector of float)
-0:117          Function Call: imageLoad(I21;vi2;i1; (global 4-component vector of float)
+0:117          Function Call: imageLoad(I2M1;vi2;i1; (global 4-component vector of float)
 0:117            'img2DMS' (uniform image2DMS)
 0:117            Construct ivec2 (temp 2-component vector of int)
 0:117              'i' (temp int)
 0:117              'i' (temp int)
 0:117            'i' (temp int)
-0:118      Function Call: imageStore(I21;vi2;i1;vf4; (global void)
+0:118      Function Call: imageStore(I2M1;vi2;i1;vf4; (global void)
 0:118        'img2DMSWO' (writeonly uniform image2DMS)
 0:118        Construct ivec2 (temp 2-component vector of int)
 0:118          'i' (temp int)
@@ -221,7 +221,7 @@ ERROR: node is still EOpNull!
 0:118          0.000000
 0:118          0.000000
 0:118          0.000000
-0:119      Function Call: imageLoad(I21;vi2;i1; (global 4-component vector of float)
+0:119      Function Call: imageLoad(I2M1;vi2;i1; (global 4-component vector of float)
 0:119        'img2DMSWO' (writeonly uniform image2DMS)
 0:119        Construct ivec2 (temp 2-component vector of int)
 0:119          'i' (temp int)
@@ -449,13 +449,13 @@ ERROR: node is still EOpNull!
 0:117      Sequence
 0:117        move second child to first child (temp 4-component vector of float)
 0:117          'col' (temp 4-component vector of float)
-0:117          Function Call: imageLoad(I21;vi2;i1; (global 4-component vector of float)
+0:117          Function Call: imageLoad(I2M1;vi2;i1; (global 4-component vector of float)
 0:117            'img2DMS' (uniform image2DMS)
 0:117            Construct ivec2 (temp 2-component vector of int)
 0:117              'i' (temp int)
 0:117              'i' (temp int)
 0:117            'i' (temp int)
-0:118      Function Call: imageStore(I21;vi2;i1;vf4; (global void)
+0:118      Function Call: imageStore(I2M1;vi2;i1;vf4; (global void)
 0:118        'img2DMSWO' (writeonly uniform image2DMS)
 0:118        Construct ivec2 (temp 2-component vector of int)
 0:118          'i' (temp int)
@@ -466,7 +466,7 @@ ERROR: node is still EOpNull!
 0:118          0.000000
 0:118          0.000000
 0:118          0.000000
-0:119      Function Call: imageLoad(I21;vi2;i1; (global 4-component vector of float)
+0:119      Function Call: imageLoad(I2M1;vi2;i1; (global 4-component vector of float)
 0:119        'img2DMSWO' (writeonly uniform image2DMS)
 0:119        Construct ivec2 (temp 2-component vector of int)
 0:119          'i' (temp int)

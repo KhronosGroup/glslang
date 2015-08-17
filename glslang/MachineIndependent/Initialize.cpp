@@ -2152,8 +2152,9 @@ void TBuiltIns::addSamplingFunctions(TSampler sampler, TString& typeName, int /*
                                 if (bias && compare)
                                     continue;
 
-                                // non-optional lod argument (lod that's not driven by lod loop)
-                                if (fetch && sampler.dim != EsdBuffer && sampler.dim != EsdRect && !sampler.ms)
+                                // non-optional lod argument (lod that's not driven by lod loop) or sample
+                                if ((fetch && sampler.dim != EsdBuffer && sampler.dim != EsdRect && !sampler.ms) ||
+                                    (sampler.ms && fetch))
                                     s.append(",int");
 
                                 // non-optional lod

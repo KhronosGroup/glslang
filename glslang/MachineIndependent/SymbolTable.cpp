@@ -89,6 +89,8 @@ void TType::buildMangledName(TString& mangledName)
         case EsdBuffer:   mangledName += "B";  break;
         default: break; // some compilers want this
         }
+        if (sampler.ms)
+            mangledName += "M";
         break;
     case EbtStruct:
         mangledName += "struct-";
