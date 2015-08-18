@@ -115,18 +115,18 @@ void pointSize2()
     gl_out[1].gl_PointSize = ps;
 }
 
-// for testing with gpu_shader5
-//precise vec3 pv3;
-//
-//void foop()
-//{
-//    precise double d;
-//
-//    pv3 *= pv3;
-//    pv3 = fma(pv3, pv3, pv3);
-//    d = fma(d, d, d);
-//}
-//
+#extension GL_OES_gpu_shader5 : enable
+
+precise vec3 pv3;
+
+void goodfoop()
+{
+    precise float d;
+
+    pv3 *= pv3;
+    pv3 = fma(pv3, pv3, pv3);
+    d = fma(d, d, d);
+}
 
 void bbBad()
 {

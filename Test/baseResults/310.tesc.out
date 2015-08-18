@@ -46,6 +46,7 @@ ERROR: 33 compilation errors.  No code generated.
 
 Shader version: 310
 Requested GL_ARB_separate_shader_objects
+Requested GL_OES_gpu_shader5
 Requested GL_OES_primitive_bounding_box
 Requested GL_OES_shader_io_blocks
 Requested GL_OES_tessellation_point_size
@@ -221,6 +222,24 @@ ERROR: node is still EOpNull!
 0:115          Constant:
 0:115            1 (const int)
 0:115        'ps' (temp highp float)
+0:122  Function Definition: goodfoop( (global void)
+0:122    Function Parameters: 
+0:?     Sequence
+0:126      multiply second child into first child (temp highp 3-component vector of float)
+0:126        'pv3' (temp highp 3-component vector of float)
+0:126        'pv3' (temp highp 3-component vector of float)
+0:127      move second child to first child (temp highp 3-component vector of float)
+0:127        'pv3' (temp highp 3-component vector of float)
+0:127        Function Call: fma(vf3;vf3;vf3; (global highp 3-component vector of float)
+0:127          'pv3' (temp highp 3-component vector of float)
+0:127          'pv3' (temp highp 3-component vector of float)
+0:127          'pv3' (temp highp 3-component vector of float)
+0:128      move second child to first child (temp highp float)
+0:128        'd' (temp highp float)
+0:128        Function Call: fma(f1;f1;f1; (global highp float)
+0:128          'd' (temp highp float)
+0:128          'd' (temp highp float)
+0:128          'd' (temp highp float)
 0:131  Function Definition: bbBad( (global void)
 0:131    Function Parameters: 
 0:133    Sequence
@@ -281,6 +300,7 @@ ERROR: node is still EOpNull!
 0:?     'badlay' (out 4-element array of highp float)
 0:?     'misSized' (out 5-element array of highp float)
 0:?     'okaySize' (out 4-element array of highp float)
+0:?     'pv3' (temp highp 3-component vector of float)
 
 
 Linked tessellation control stage:
@@ -288,6 +308,7 @@ Linked tessellation control stage:
 
 Shader version: 310
 Requested GL_ARB_separate_shader_objects
+Requested GL_OES_gpu_shader5
 Requested GL_OES_primitive_bounding_box
 Requested GL_OES_shader_io_blocks
 Requested GL_OES_tessellation_point_size
@@ -463,6 +484,24 @@ ERROR: node is still EOpNull!
 0:115          Constant:
 0:115            1 (const int)
 0:115        'ps' (temp highp float)
+0:122  Function Definition: goodfoop( (global void)
+0:122    Function Parameters: 
+0:?     Sequence
+0:126      multiply second child into first child (temp highp 3-component vector of float)
+0:126        'pv3' (temp highp 3-component vector of float)
+0:126        'pv3' (temp highp 3-component vector of float)
+0:127      move second child to first child (temp highp 3-component vector of float)
+0:127        'pv3' (temp highp 3-component vector of float)
+0:127        Function Call: fma(vf3;vf3;vf3; (global highp 3-component vector of float)
+0:127          'pv3' (temp highp 3-component vector of float)
+0:127          'pv3' (temp highp 3-component vector of float)
+0:127          'pv3' (temp highp 3-component vector of float)
+0:128      move second child to first child (temp highp float)
+0:128        'd' (temp highp float)
+0:128        Function Call: fma(f1;f1;f1; (global highp float)
+0:128          'd' (temp highp float)
+0:128          'd' (temp highp float)
+0:128          'd' (temp highp float)
 0:131  Function Definition: bbBad( (global void)
 0:131    Function Parameters: 
 0:133    Sequence
@@ -523,4 +562,5 @@ ERROR: node is still EOpNull!
 0:?     'badlay' (out 4-element array of highp float)
 0:?     'misSized' (out 5-element array of highp float)
 0:?     'okaySize' (out 4-element array of highp float)
+0:?     'pv3' (temp highp 3-component vector of float)
 
