@@ -140,7 +140,7 @@ enum TOperator {
     EOpMethod,
 
     //
-    // Built-in functions potentially mapped to operators
+    // Built-in functions mapped to operators
     //
 
     EOpRadians,
@@ -185,6 +185,11 @@ enum TOperator {
     EOpIsNan,
     EOpIsInf,
 
+    EOpFma,
+
+    EFrexp,
+    ELdexp,
+
     EOpFloatBitsToInt,
     EOpFloatBitsToUint,
     EOpIntBitsToFloat,
@@ -193,8 +198,14 @@ enum TOperator {
     EOpUnpackSnorm2x16,
     EOpPackUnorm2x16,
     EOpUnpackUnorm2x16,
+    EOpPackSnorm4x8,
+    EOpUnpackSnorm4x8,
+    EOpPackUnorm4x8,
+    EOpUnpackUnorm4x8,
     EOpPackHalf2x16,
     EOpUnpackHalf2x16,
+    EOpPackDouble2x32,
+    EOpUnpackDouble2x32,
 
     EOpLength,
     EOpDistance,
@@ -220,6 +231,8 @@ enum TOperator {
     EOpDeterminant,
     EOpMatrixInverse,
     EOpTranspose,
+
+    EOpFtransform,
 
     EOpEmitVertex,           // geometry only
     EOpEndPrimitive,         // geometry only
@@ -340,46 +353,61 @@ enum TOperator {
     // N.B. The following is not being used yet, pending input, as switching
     //      to it from the current text-based approach will break existing consumers.
 
-    EImageQuerySize,
-    EImageQuerySamples,
-    EImageLoad,
-    EImageStore,
-    EImageAtomicAdd,
-    EImageAtomicMin,
-    EImageAtomicMax,
-    EImageAtomicAnd,
-    EImageAtomicOr,
-    EImageAtomicXor,
-    EImageAtomicExchange,
-    EImageAtomicCompSwap,
+    EOpImageQuerySize,
+    EOpImageQuerySamples,
+    EOpImageLoad,
+    EOpImageStore,
+    EOpImageAtomicAdd,
+    EOpImageAtomicMin,
+    EOpImageAtomicMax,
+    EOpImageAtomicAnd,
+    EOpImageAtomicOr,
+    EOpImageAtomicXor,
+    EOpImageAtomicExchange,
+    EOpImageAtomicCompSwap,
 
     //
     // Texture operations
     //
 
-    ETextureGuardBegin,
-    ETextureQuerySize,
-    ETextureQueryLod,
-    ETextureQueryLevels,
-    ETextureQuerySamples,
-    ETexture,
-    ETextureProj,
-    ETextureLod,
-    ETextureOffset,
-    ETextureFetch,
-    ETextureFetchOffset,
-    ETextureProjOffset,
-    ETextureLodOffset,
-    ETextureProjLod,
-    ETextureProjLodOffset,
-    ETextureGrad,
-    ETextureGradOffset,
-    ETextureProjGrad,
-    ETextureProjGradOffset,
-    ETextureGather,
-    ETextureGatherOffset,
-    ETextureGatherOffsets,
-    ETextureGuardEnd,
+    EOpTextureGuardBegin,
+    EOpTextureQuerySize,
+    EOpTextureQueryLod,
+    EOpTextureQueryLevels,
+    EOpTextureQuerySamples,
+    EOpTexture,
+    EOpTextureProj,
+    EOpTextureLod,
+    EOpTextureOffset,
+    EOpTextureFetch,
+    EOpTextureFetchOffset,
+    EOpTextureProjOffset,
+    EOpTextureLodOffset,
+    EOpTextureProjLod,
+    EOpTextureProjLodOffset,
+    EOpTextureGrad,
+    EOpTextureGradOffset,
+    EOpTextureProjGrad,
+    EOpTextureProjGradOffset,
+    EOpTextureGather,
+    EOpTextureGatherOffset,
+    EOpTextureGatherOffsets,
+    EOpTextureGuardEnd,
+
+    //
+    // Integer operations
+    //
+
+    EOpAddCarry,
+    EOpSubBorrow,
+    EOpUMulExtended,
+    EOpIMulExtended,
+    EOpBitfieldExtract,
+    EOpBitfieldInsert,
+    EOpBitFieldReverse,
+    EOpBitCount,
+    EOpFindLSB,
+    EOpFindMSB,
 };
 
 class TIntermTraverser;

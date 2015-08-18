@@ -57,7 +57,9 @@ namespace glslang {
 bool ARBCompatibility = true;
 
 const bool ForwardCompatibility = false;
-const bool PureOperatorBuiltins = false;  // could break backward compatibility; pending feedback
+
+// change this back to false if depending on textual spellings of texturing calls when consuming the AST
+const bool PureOperatorBuiltins = false;
 
 inline bool IncludeLegacy(int version, EProfile profile)
 {
@@ -3167,10 +3169,20 @@ void IdentifyBuiltIns(int version, EProfile profile, EShLanguage language, TSymb
     symbolTable.relateToOperator("floatBitsToUint", EOpFloatBitsToUint);
     symbolTable.relateToOperator("intBitsToFloat",  EOpIntBitsToFloat);
     symbolTable.relateToOperator("uintBitsToFloat", EOpUintBitsToFloat);
+
     symbolTable.relateToOperator("packSnorm2x16",   EOpPackSnorm2x16);
     symbolTable.relateToOperator("unpackSnorm2x16", EOpUnpackSnorm2x16);
     symbolTable.relateToOperator("packUnorm2x16",   EOpPackUnorm2x16);
     symbolTable.relateToOperator("unpackUnorm2x16", EOpUnpackUnorm2x16);
+
+    symbolTable.relateToOperator("packSnorm4x8",    EOpPackSnorm4x8);
+    symbolTable.relateToOperator("unpackSnorm4x8",  EOpUnpackSnorm4x8);
+    symbolTable.relateToOperator("packUnorm4x8",    EOpPackUnorm4x8);
+    symbolTable.relateToOperator("unpackUnorm4x8",  EOpUnpackUnorm4x8);
+
+    symbolTable.relateToOperator("packDouble2x32",    EOpPackUnorm4x8);
+    symbolTable.relateToOperator("unpackDouble2x32",  EOpUnpackUnorm4x8);
+
     symbolTable.relateToOperator("packHalf2x16",    EOpPackHalf2x16);
     symbolTable.relateToOperator("unpackHalf2x16",  EOpUnpackHalf2x16);
 
@@ -3205,66 +3217,80 @@ void IdentifyBuiltIns(int version, EProfile profile, EShLanguage language, TSymb
     symbolTable.relateToOperator("atomicCounterDecrement", EOpAtomicCounterDecrement);
     symbolTable.relateToOperator("atomicCounter",          EOpAtomicCounter);
 
-    if (PureOperatorBuiltins) {
-        symbolTable.relateToOperator("imageQuerySize",          EImageQuerySize);
-        symbolTable.relateToOperator("imageQuerySamples",       EImageQuerySamples);
-        symbolTable.relateToOperator("imageLoad",               EImageLoad);
-        symbolTable.relateToOperator("imageStore",              EImageStore);
-        symbolTable.relateToOperator("imageAtomicAdd",          EImageAtomicAdd);
-        symbolTable.relateToOperator("imageAtomicMin",          EImageAtomicMin);
-        symbolTable.relateToOperator("imageAtomicMax",          EImageAtomicMax);
-        symbolTable.relateToOperator("imageAtomicAnd",          EImageAtomicAnd);
-        symbolTable.relateToOperator("imageAtomicOr",           EImageAtomicOr);
-        symbolTable.relateToOperator("imageAtomicXor",          EImageAtomicXor);
-        symbolTable.relateToOperator("imageAtomicExchange",     EImageAtomicExchange);
-        symbolTable.relateToOperator("imageAtomicCompSwap",     EImageAtomicCompSwap);
+    symbolTable.relateToOperator("fma",               EOpFma);
+    symbolTable.relateToOperator("frexp",             EFrexp);
+    symbolTable.relateToOperator("ldexp",             ELdexp);
+    symbolTable.relateToOperator("uaddCarry",         EOpAddCarry);
+    symbolTable.relateToOperator("usubBorrow",        EOpSubBorrow);
+    symbolTable.relateToOperator("umulExtended",      EOpUMulExtended);
+    symbolTable.relateToOperator("imulExtended",      EOpIMulExtended);
+    symbolTable.relateToOperator("bitfieldExtract",   EOpBitfieldExtract);
+    symbolTable.relateToOperator("bitfieldInsert",    EOpBitfieldInsert);
+    symbolTable.relateToOperator("bitfieldReverse",   EOpBitFieldReverse);
+    symbolTable.relateToOperator("bitCount",          EOpBitCount);
+    symbolTable.relateToOperator("findLSB",           EOpFindLSB);
+    symbolTable.relateToOperator("findMSB",           EOpFindMSB);
 
-        symbolTable.relateToOperator("textureSize",             ETextureQuerySize);
-        symbolTable.relateToOperator("textureQueryLod",         ETextureQueryLod);
-        symbolTable.relateToOperator("textureQueryLevels",      ETextureQueryLevels);
-        symbolTable.relateToOperator("textureSamples",          ETextureQuerySamples);
-        symbolTable.relateToOperator("texture",                 ETexture);
-        symbolTable.relateToOperator("textureProj",             ETextureProj);
-        symbolTable.relateToOperator("textureLod",              ETextureLod);
-        symbolTable.relateToOperator("textureOffset",           ETextureOffset);
-        symbolTable.relateToOperator("textureFetch",            ETextureFetch);
-        symbolTable.relateToOperator("textureFetchOffset",      ETextureFetchOffset);
-        symbolTable.relateToOperator("textureProjOffset",       ETextureProjOffset);
-        symbolTable.relateToOperator("textureLodOffset",        ETextureLodOffset);
-        symbolTable.relateToOperator("textureProjLod",          ETextureProjLod);
-        symbolTable.relateToOperator("textureProjLodOffset",    ETextureProjLodOffset);
-        symbolTable.relateToOperator("textureGrad",             ETextureGrad);
-        symbolTable.relateToOperator("textureGradOffset",       ETextureGradOffset);
-        symbolTable.relateToOperator("textureProjGrad",         ETextureProjGrad);
-        symbolTable.relateToOperator("textureProjGradOffset",   ETextureProjGradOffset);
-        symbolTable.relateToOperator("textureGather",           ETextureGather);
-        symbolTable.relateToOperator("textureGatherOffset",     ETextureGatherOffset);
-        symbolTable.relateToOperator("textureGatherOffsets",    ETextureGatherOffsets);
+    if (PureOperatorBuiltins) {
+        symbolTable.relateToOperator("imageSize",               EOpImageQuerySize);
+        symbolTable.relateToOperator("imageSamples",            EOpImageQuerySamples);
+        symbolTable.relateToOperator("imageLoad",               EOpImageLoad);
+        symbolTable.relateToOperator("imageStore",              EOpImageStore);
+        symbolTable.relateToOperator("imageAtomicAdd",          EOpImageAtomicAdd);
+        symbolTable.relateToOperator("imageAtomicMin",          EOpImageAtomicMin);
+        symbolTable.relateToOperator("imageAtomicMax",          EOpImageAtomicMax);
+        symbolTable.relateToOperator("imageAtomicAnd",          EOpImageAtomicAnd);
+        symbolTable.relateToOperator("imageAtomicOr",           EOpImageAtomicOr);
+        symbolTable.relateToOperator("imageAtomicXor",          EOpImageAtomicXor);
+        symbolTable.relateToOperator("imageAtomicExchange",     EOpImageAtomicExchange);
+        symbolTable.relateToOperator("imageAtomicCompSwap",     EOpImageAtomicCompSwap);
+
+        symbolTable.relateToOperator("textureSize",             EOpTextureQuerySize);
+        symbolTable.relateToOperator("textureQueryLod",         EOpTextureQueryLod);
+        symbolTable.relateToOperator("textureQueryLevels",      EOpTextureQueryLevels);
+        symbolTable.relateToOperator("textureSamples",          EOpTextureQuerySamples);
+        symbolTable.relateToOperator("texture",                 EOpTexture);
+        symbolTable.relateToOperator("textureProj",             EOpTextureProj);
+        symbolTable.relateToOperator("textureLod",              EOpTextureLod);
+        symbolTable.relateToOperator("textureOffset",           EOpTextureOffset);
+        symbolTable.relateToOperator("texelFetch",              EOpTextureFetch);
+        symbolTable.relateToOperator("texelFetchOffset",        EOpTextureFetchOffset);
+        symbolTable.relateToOperator("textureProjOffset",       EOpTextureProjOffset);
+        symbolTable.relateToOperator("textureLodOffset",        EOpTextureLodOffset);
+        symbolTable.relateToOperator("textureProjLod",          EOpTextureProjLod);
+        symbolTable.relateToOperator("textureProjLodOffset",    EOpTextureProjLodOffset);
+        symbolTable.relateToOperator("textureGrad",             EOpTextureGrad);
+        symbolTable.relateToOperator("textureGradOffset",       EOpTextureGradOffset);
+        symbolTable.relateToOperator("textureProjGrad",         EOpTextureProjGrad);
+        symbolTable.relateToOperator("textureProjGradOffset",   EOpTextureProjGradOffset);
+        symbolTable.relateToOperator("textureGather",           EOpTextureGather);
+        symbolTable.relateToOperator("textureGatherOffset",     EOpTextureGatherOffset);
+        symbolTable.relateToOperator("textureGatherOffsets",    EOpTextureGatherOffsets);
 
         if (IncludeLegacy(version, profile)) {
             // TBD: add ftransform(), any others?
-            symbolTable.relateToOperator("texture1D",         ETexture);
-            symbolTable.relateToOperator("texture1DProj",     ETextureProj);
-            symbolTable.relateToOperator("texture1DLod",      ETextureLod);
-            symbolTable.relateToOperator("texture1DProjLod",  ETextureProjLod);
-            symbolTable.relateToOperator("texture2D",         ETexture);
-            symbolTable.relateToOperator("texture2DProj",     ETextureProj);
-            symbolTable.relateToOperator("texture2DLod",      ETextureLod);
-            symbolTable.relateToOperator("texture2DProjLod",  ETextureProjLod);
-            symbolTable.relateToOperator("texture3D",         ETexture);
-            symbolTable.relateToOperator("texture3DProj",     ETextureProj);
-            symbolTable.relateToOperator("texture3DLod",      ETextureLod);
-            symbolTable.relateToOperator("texture3DProjLod",  ETextureProjLod);
-            symbolTable.relateToOperator("textureCube",       ETexture);
-            symbolTable.relateToOperator("textureCubeLod",    ETextureLod);
-            symbolTable.relateToOperator("shadow1D",          ETexture);
-            symbolTable.relateToOperator("shadow2D",          ETexture);
-            symbolTable.relateToOperator("shadow1DProj",      ETextureProj);
-            symbolTable.relateToOperator("shadow2DProj",      ETextureProj);
-            symbolTable.relateToOperator("shadow1DLod",       ETextureLod);
-            symbolTable.relateToOperator("shadow2DLod",       ETextureLod);
-            symbolTable.relateToOperator("shadow1DProjLod",   ETextureProjLod);
-            symbolTable.relateToOperator("shadow2DProjLod",   ETextureProjLod);
+            symbolTable.relateToOperator("texture1D",         EOpTexture);
+            symbolTable.relateToOperator("texture1DProj",     EOpTextureProj);
+            symbolTable.relateToOperator("texture1DLod",      EOpTextureLod);
+            symbolTable.relateToOperator("texture1DProjLod",  EOpTextureProjLod);
+            symbolTable.relateToOperator("texture2D",         EOpTexture);
+            symbolTable.relateToOperator("texture2DProj",     EOpTextureProj);
+            symbolTable.relateToOperator("texture2DLod",      EOpTextureLod);
+            symbolTable.relateToOperator("texture2DProjLod",  EOpTextureProjLod);
+            symbolTable.relateToOperator("texture3D",         EOpTexture);
+            symbolTable.relateToOperator("texture3DProj",     EOpTextureProj);
+            symbolTable.relateToOperator("texture3DLod",      EOpTextureLod);
+            symbolTable.relateToOperator("texture3DProjLod",  EOpTextureProjLod);
+            symbolTable.relateToOperator("textureCube",       EOpTexture);
+            symbolTable.relateToOperator("textureCubeLod",    EOpTextureLod);
+            symbolTable.relateToOperator("shadow1D",          EOpTexture);
+            symbolTable.relateToOperator("shadow2D",          EOpTexture);
+            symbolTable.relateToOperator("shadow1DProj",      EOpTextureProj);
+            symbolTable.relateToOperator("shadow2DProj",      EOpTextureProj);
+            symbolTable.relateToOperator("shadow1DLod",       EOpTextureLod);
+            symbolTable.relateToOperator("shadow2DLod",       EOpTextureLod);
+            symbolTable.relateToOperator("shadow1DProjLod",   EOpTextureProjLod);
+            symbolTable.relateToOperator("shadow2DProjLod",   EOpTextureProjLod);
         }
     }
 

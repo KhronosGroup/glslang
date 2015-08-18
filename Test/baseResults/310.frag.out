@@ -398,7 +398,7 @@ ERROR: node is still EOpNull!
 0:?     Sequence
 0:210      move second child to first child (temp mediump 2-component vector of float)
 0:210        'h' (temp mediump 2-component vector of float)
-0:210        Function Call: fma(vf2;vf2;vf2; (global mediump 2-component vector of float)
+0:210        fma (global mediump 2-component vector of float)
 0:210          'inf' (smooth in mediump 2-component vector of float)
 0:210          'ing' (smooth in mediump 2-component vector of float)
 0:210          'h' (temp mediump 2-component vector of float)
@@ -434,7 +434,7 @@ ERROR: node is still EOpNull!
 0:?     Sequence
 0:220      move second child to first child (temp mediump 2-component vector of float)
 0:220        'h' (temp mediump 2-component vector of float)
-0:220        Function Call: fma(vf2;vf2;vf2; (global mediump 2-component vector of float)
+0:220        fma (global mediump 2-component vector of float)
 0:220          'inf' (smooth in mediump 2-component vector of float)
 0:220          'ing' (smooth in mediump 2-component vector of float)
 0:220          'h' (temp mediump 2-component vector of float)
@@ -1121,7 +1121,7 @@ ERROR: node is still EOpNull!
 0:?     Sequence
 0:210      move second child to first child (temp mediump 2-component vector of float)
 0:210        'h' (temp mediump 2-component vector of float)
-0:210        Function Call: fma(vf2;vf2;vf2; (global mediump 2-component vector of float)
+0:210        fma (global mediump 2-component vector of float)
 0:210          'inf' (smooth in mediump 2-component vector of float)
 0:210          'ing' (smooth in mediump 2-component vector of float)
 0:210          'h' (temp mediump 2-component vector of float)
@@ -1157,7 +1157,7 @@ ERROR: node is still EOpNull!
 0:?     Sequence
 0:220      move second child to first child (temp mediump 2-component vector of float)
 0:220        'h' (temp mediump 2-component vector of float)
-0:220        Function Call: fma(vf2;vf2;vf2; (global mediump 2-component vector of float)
+0:220        fma (global mediump 2-component vector of float)
 0:220          'inf' (smooth in mediump 2-component vector of float)
 0:220          'ing' (smooth in mediump 2-component vector of float)
 0:220          'h' (temp mediump 2-component vector of float)
