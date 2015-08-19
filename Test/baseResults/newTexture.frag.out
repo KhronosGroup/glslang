@@ -49,7 +49,9 @@ Shader version: 430
 0:43          'ic2D' (flat in 2-component vector of int)
 0:43          Constant:
 0:43            4 (const int)
-0:43          'ic2D' (flat in 2-component vector of int)
+0:43          Constant:
+0:43            3 (const int)
+0:43            3 (const int)
 0:44      add second child into first child (temp float)
 0:44        direct index (temp float)
 0:44          'v' (temp 4-component vector of float)
@@ -301,7 +303,9 @@ Shader version: 430
 0:43          'ic2D' (flat in 2-component vector of int)
 0:43          Constant:
 0:43            4 (const int)
-0:43          'ic2D' (flat in 2-component vector of int)
+0:43          Constant:
+0:43            3 (const int)
+0:43            3 (const int)
 0:44      add second child into first child (temp float)
 0:44        direct index (temp float)
 0:44          'v' (temp 4-component vector of float)

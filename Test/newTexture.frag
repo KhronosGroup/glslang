@@ -40,7 +40,7 @@ void main()
     v += textureLod(s2DArray, c3D, 1.2);
     v.y += textureOffset(s2DShadow, c3D, ivec2(3), c1D);
     v += texelFetch(s3D, ic3D, ic1D);
-    v += texelFetchOffset(s2D, ic2D, 4, ic2D);
+    v += texelFetchOffset(s2D, ic2D, 4, ivec2(3));
     v.y += textureLodOffset(s2DShadow, c3D, c1D, ivec2(3));
     v += textureProjLodOffset(s2D, c3D, c1D, ivec2(3));
     v += textureGrad(sCube, c3D, c3D, c3D);

@@ -59,7 +59,7 @@ bool ARBCompatibility = true;
 const bool ForwardCompatibility = false;
 
 // change this back to false if depending on textual spellings of texturing calls when consuming the AST
-const bool PureOperatorBuiltins = false;
+bool PureOperatorBuiltins = false;
 
 inline bool IncludeLegacy(int version, EProfile profile)
 {
@@ -3097,7 +3097,7 @@ void IdentifyBuiltIns(int version, EProfile profile, EShLanguage language, TSymb
 
     //
     // Next, identify which built-ins have a mapping to an operator.
-    // Those that are not identified as such are
+    // If PureOperatorBuiltins is false, those that are not identified as such are
     // expected to be resolved through a library of functions, versus as
     // operations.
     //
@@ -3267,30 +3267,59 @@ void IdentifyBuiltIns(int version, EProfile profile, EShLanguage language, TSymb
         symbolTable.relateToOperator("textureGatherOffset",     EOpTextureGatherOffset);
         symbolTable.relateToOperator("textureGatherOffsets",    EOpTextureGatherOffsets);
 
-        if (IncludeLegacy(version, profile)) {
-            // TBD: add ftransform(), any others?
-            symbolTable.relateToOperator("texture1D",         EOpTexture);
-            symbolTable.relateToOperator("texture1DProj",     EOpTextureProj);
-            symbolTable.relateToOperator("texture1DLod",      EOpTextureLod);
-            symbolTable.relateToOperator("texture1DProjLod",  EOpTextureProjLod);
-            symbolTable.relateToOperator("texture2D",         EOpTexture);
-            symbolTable.relateToOperator("texture2DProj",     EOpTextureProj);
-            symbolTable.relateToOperator("texture2DLod",      EOpTextureLod);
-            symbolTable.relateToOperator("texture2DProjLod",  EOpTextureProjLod);
-            symbolTable.relateToOperator("texture3D",         EOpTexture);
-            symbolTable.relateToOperator("texture3DProj",     EOpTextureProj);
-            symbolTable.relateToOperator("texture3DLod",      EOpTextureLod);
-            symbolTable.relateToOperator("texture3DProjLod",  EOpTextureProjLod);
-            symbolTable.relateToOperator("textureCube",       EOpTexture);
-            symbolTable.relateToOperator("textureCubeLod",    EOpTextureLod);
-            symbolTable.relateToOperator("shadow1D",          EOpTexture);
-            symbolTable.relateToOperator("shadow2D",          EOpTexture);
-            symbolTable.relateToOperator("shadow1DProj",      EOpTextureProj);
-            symbolTable.relateToOperator("shadow2DProj",      EOpTextureProj);
-            symbolTable.relateToOperator("shadow1DLod",       EOpTextureLod);
-            symbolTable.relateToOperator("shadow2DLod",       EOpTextureLod);
-            symbolTable.relateToOperator("shadow1DProjLod",   EOpTextureProjLod);
-            symbolTable.relateToOperator("shadow2DProjLod",   EOpTextureProjLod);
+        if (IncludeLegacy(version, profile) || (profile == EEsProfile && version == 100)) {
+            symbolTable.relateToOperator("ftransform",               EOpFtransform);
+
+            symbolTable.relateToOperator("texture1D",                EOpTexture);
+            symbolTable.relateToOperator("texture1DGradARB",         EOpTextureGrad);
+            symbolTable.relateToOperator("texture1DProj",            EOpTextureProj);
+            symbolTable.relateToOperator("texture1DProjGradARB",     EOpTextureProjGrad);
+            symbolTable.relateToOperator("texture1DLod",             EOpTextureLod);
+            symbolTable.relateToOperator("texture1DProjLod",         EOpTextureProjLod);
+
+            symbolTable.relateToOperator("texture2DRect",            EOpTexture);
+            symbolTable.relateToOperator("texture2DRectProj",        EOpTextureProj);
+            symbolTable.relateToOperator("texture2DRectGradARB",     EOpTextureGrad);
+            symbolTable.relateToOperator("texture2DRectProjGradARB", EOpTextureProjGrad);
+            symbolTable.relateToOperator("shadow2DRect",             EOpTexture);
+            symbolTable.relateToOperator("shadow2DRectProj",         EOpTextureProj);
+            symbolTable.relateToOperator("shadow2DRectGradARB",      EOpTextureGrad);
+            symbolTable.relateToOperator("shadow2DRectProjGradARB",  EOpTextureProjGrad);
+
+            symbolTable.relateToOperator("texture2D",                EOpTexture);
+            symbolTable.relateToOperator("texture2DProj",            EOpTextureProj);
+            symbolTable.relateToOperator("texture2DGradEXT",         EOpTextureGrad);
+            symbolTable.relateToOperator("texture2DGradARB",         EOpTextureGrad);
+            symbolTable.relateToOperator("texture2DProjGradEXT",     EOpTextureProjGrad);
+            symbolTable.relateToOperator("texture2DProjGradARB",     EOpTextureProjGrad);
+            symbolTable.relateToOperator("texture2DLod",             EOpTextureLod);
+            symbolTable.relateToOperator("texture2DLodEXT",          EOpTextureLod);
+            symbolTable.relateToOperator("texture2DProjLod",         EOpTextureProjLod);
+            symbolTable.relateToOperator("texture2DProjLodEXT",      EOpTextureProjLod);
+
+            symbolTable.relateToOperator("texture3D",                EOpTexture);
+            symbolTable.relateToOperator("texture3DGradARB",         EOpTextureGrad);
+            symbolTable.relateToOperator("texture3DProj",            EOpTextureProj);
+            symbolTable.relateToOperator("texture3DProjGradARB",     EOpTextureProjGrad);
+            symbolTable.relateToOperator("texture3DLod",             EOpTextureLod);
+            symbolTable.relateToOperator("texture3DProjLod",         EOpTextureProjLod);
+            symbolTable.relateToOperator("textureCube",              EOpTexture);
+            symbolTable.relateToOperator("textureCubeGradEXT",       EOpTextureGrad);
+            symbolTable.relateToOperator("textureCubeGradARB",       EOpTextureGrad);
+            symbolTable.relateToOperator("textureCubeLod",           EOpTextureLod);
+            symbolTable.relateToOperator("textureCubeLodEXT",        EOpTextureLod);
+            symbolTable.relateToOperator("shadow1D",                 EOpTexture);
+            symbolTable.relateToOperator("shadow1DGradARB",          EOpTextureGrad);
+            symbolTable.relateToOperator("shadow2D",                 EOpTexture);
+            symbolTable.relateToOperator("shadow2DGradARB",          EOpTextureGrad);
+            symbolTable.relateToOperator("shadow1DProj",             EOpTextureProj);
+            symbolTable.relateToOperator("shadow2DProj",             EOpTextureProj);
+            symbolTable.relateToOperator("shadow1DProjGradARB",      EOpTextureProjGrad);
+            symbolTable.relateToOperator("shadow2DProjGradARB",      EOpTextureProjGrad);
+            symbolTable.relateToOperator("shadow1DLod",              EOpTextureLod);
+            symbolTable.relateToOperator("shadow2DLod",              EOpTextureLod);
+            symbolTable.relateToOperator("shadow1DProjLod",          EOpTextureProjLod);
+            symbolTable.relateToOperator("shadow2DProjLod",          EOpTextureProjLod);
         }
     }
 

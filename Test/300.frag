@@ -59,7 +59,7 @@ void main()
     v = textureLod(s2DArray, c3D, 1.2);
     f = textureOffset(s2DShadow, c3D, ic2D, c1D);  // ERROR, offset argument not constant
     v = texelFetch(s3D, ic3D, ic1D);
-    v = texelFetchOffset(arrayedSampler[2], ic2D, 4, ic2D);
+    v = texelFetchOffset(arrayedSampler[2], ic2D, 4, ic2D);   // ERROR, offset argument not constant
     f = textureLodOffset(s2DShadow, c3D, c1D, ic2D);
     v = textureProjLodOffset(s2D, c3D, c1D, ic2D);
     v = textureGrad(sCube, c3D, c3D, c3D);

@@ -1107,11 +1107,14 @@ TIntermTyped* TParseContext::handleFunctionCall(const TSourceLoc& loc, TFunction
                 result = intermediate.addBuiltInFunctionCall(loc, op, fnCandidate->getParamCount() == 1, arguments, fnCandidate->getType());
                 if (result == nullptr)  {
                     error(arguments->getLoc(), " wrong operand type", "Internal Error",
-                                        "built in unary operator function.  Type: %s",
-                                        static_cast<TIntermTyped*>(arguments)->getCompleteString().c_str());
+                                               "built in unary operator function.  Type: %s",
+                                               static_cast<TIntermTyped*>(arguments)->getCompleteString().c_str());
+                } else if (result->getAsOperator()) {
+                    builtInOpCheck(loc, *fnCandidate, *result->getAsOperator());
                 }
             } else {
-                // This is a function call not mapped to built-in operator, but it could still be a built-in function
+                // This is a function call not mapped to built-in operator.
+                // It could still be a built-in function, but only if PureOperatorBuiltins == false.
                 result = intermediate.setAggregateOperator(arguments, EOpFunctionCall, fnCandidate->getType(), loc);
                 TIntermAggregate* call = result->getAsAggregate();
                 call->setName(fnCandidate->getMangledName());
@@ -1325,6 +1328,173 @@ TIntermTyped* TParseContext::addOutputArgumentConversions(const TFunction& funct
 }
 
 //
+// Do additional checking of built-in function calls that is not caught
+// by normal semantic checks on argument type, extension tagging, etc.
+//
+// Assumes there has been a semantically correct match to a built-in function prototype.
+//
+void TParseContext::builtInOpCheck(const TSourceLoc& loc, const TFunction& fnCandidate, TIntermOperator& callNode)
+{
+    // Set up convenience accessors to the argument(s).  There is almost always
+    // multiple arguments for the cases below, but when there might be one,
+    // check the unaryArg first.
+    const TIntermSequence* argp = nullptr;   // confusing to use [] syntax on a pointer, so this is to help get a reference
+    const TIntermTyped* unaryArg = nullptr;
+    const TIntermTyped* arg0 = nullptr;
+    if (callNode.getAsAggregate()) {
+        argp = &callNode.getAsAggregate()->getSequence();
+        if (argp->size() > 0)
+            arg0 = (*argp)[0]->getAsTyped();
+    } else {
+        assert(callNode.getAsUnaryNode());
+        unaryArg = callNode.getAsUnaryNode()->getOperand();
+        arg0 = unaryArg;
+    }
+    const TIntermSequence& aggArgs = *argp;  // only valid when unaryArg is nullptr
+
+    // built-in texturing functions get their return value precision from the precision of the sampler
+    if (fnCandidate.getType().getQualifier().precision == EpqNone &&
+        fnCandidate.getParamCount() > 0 && fnCandidate[0].type->getBasicType() == EbtSampler)
+        callNode.getQualifier().precision = arg0->getQualifier().precision;
+
+    switch (callNode.getOp()) {
+    case EOpTextureGather:
+    case EOpTextureGatherOffset:
+    case EOpTextureGatherOffsets:
+    {
+        // Figure out which variants are allowed by what extensions,
+        // and what arguments must be constant for which situations.
+
+        TString featureString = fnCandidate.getName() + "(...)";
+        const char* feature = featureString.c_str();
+        profileRequires(loc, EEsProfile, 310, nullptr, feature);
+        int compArg = -1;  // track which argument, if any, is the constant component argument
+        switch (callNode.getOp()) {
+        case EOpTextureGather:
+            // More than two arguments needs gpu_shader5, and rectangular or shadow needs gpu_shader5,
+            // otherwise, need GL_ARB_texture_gather.
+            if (fnCandidate.getParamCount() > 2 || fnCandidate[0].type->getSampler().dim == EsdRect || fnCandidate[0].type->getSampler().shadow) {
+                profileRequires(loc, ~EEsProfile, 400, E_GL_ARB_gpu_shader5, feature);
+                if (! fnCandidate[0].type->getSampler().shadow)
+                    compArg = 2;
+            } else
+                profileRequires(loc, ~EEsProfile, 400, E_GL_ARB_texture_gather, feature);
+            break;
+        case EOpTextureGatherOffset:
+            // GL_ARB_texture_gather is good enough for 2D non-shadow textures with no component argument
+            if (fnCandidate[0].type->getSampler().dim == Esd2D && ! fnCandidate[0].type->getSampler().shadow && fnCandidate.getParamCount() == 3)
+                profileRequires(loc, ~EEsProfile, 400, E_GL_ARB_texture_gather, feature);
+            else
+                profileRequires(loc, ~EEsProfile, 400, E_GL_ARB_gpu_shader5, feature);
+            if (! aggArgs[fnCandidate[0].type->getSampler().shadow ? 3 : 2]->getAsConstantUnion())
+                profileRequires(loc, EEsProfile, 0, Num_AEP_gpu_shader5, AEP_gpu_shader5, "non-constant offset argument");
+            if (! fnCandidate[0].type->getSampler().shadow)
+                compArg = 3;
+            break;
+        case EOpTextureGatherOffsets:
+            profileRequires(loc, ~EEsProfile, 400, E_GL_ARB_gpu_shader5, feature);
+            if (! fnCandidate[0].type->getSampler().shadow)
+                compArg = 3;
+            // check for constant offsets
+            if (! aggArgs[fnCandidate[0].type->getSampler().shadow ? 3 : 2]->getAsConstantUnion())
+                error(loc, "must be a compile-time constant:", feature, "offsets argument");
+            break;
+        default:
+            break;
+        }
+
+        if (compArg > 0 && compArg < fnCandidate.getParamCount()) {
+            if (aggArgs[compArg]->getAsConstantUnion()) {
+                int value = aggArgs[compArg]->getAsConstantUnion()->getConstArray()[0].getIConst();
+                if (value < 0 || value > 3)
+                    error(loc, "must be 0, 1, 2, or 3:", feature, "component argument");
+            } else
+                error(loc, "must be a compile-time constant:", feature, "component argument");
+        }
+
+        break;
+    }
+
+    case EOpTextureOffset:
+    case EOpTextureFetchOffset:
+    case EOpTextureProjOffset:
+    case EOpTextureLodOffset:
+    case EOpTextureProjLodOffset:
+    case EOpTextureGradOffset:
+    case EOpTextureProjGradOffset:
+    {
+        // Handle texture-offset limits checking
+        // Pick which argument has to hold constant offsets
+        int arg = -1;
+        switch (callNode.getOp()) {
+        case EOpTextureOffset:          arg = 2;  break;
+        case EOpTextureFetchOffset:     arg = 3;  break;
+        case EOpTextureProjOffset:      arg = 2;  break;
+        case EOpTextureLodOffset:       arg = 3;  break;
+        case EOpTextureProjLodOffset:   arg = 3;  break;
+        case EOpTextureGradOffset:      arg = 4;  break;
+        case EOpTextureProjGradOffset:  arg = 4;  break;
+        default:
+            assert(0);
+            break;
+        }
+
+        if (arg > 0) {
+            if (! aggArgs[arg]->getAsConstantUnion())
+                error(loc, "argument must be compile-time constant", "texel offset", "");
+            else {
+                const TType& type = aggArgs[arg]->getAsTyped()->getType();
+                for (int c = 0; c < type.getVectorSize(); ++c) {
+                    int offset = aggArgs[arg]->getAsConstantUnion()->getConstArray()[c].getIConst();
+                    if (offset > resources.maxProgramTexelOffset || offset < resources.minProgramTexelOffset)
+                        error(loc, "value is out of range:", "texel offset", "[gl_MinProgramTexelOffset, gl_MaxProgramTexelOffset]");
+                }
+            }
+        }
+
+        break;
+    }
+
+    case EOpTextureQuerySamples:
+    case EOpImageQuerySamples:
+        // GL_ARB_shader_texture_image_samples
+        profileRequires(loc, ~EEsProfile, 450, E_GL_ARB_shader_texture_image_samples, "textureSamples and imageSamples");
+        break;
+
+    case EOpImageAtomicAdd:
+    case EOpImageAtomicMin:
+    case EOpImageAtomicMax:
+    case EOpImageAtomicAnd:
+    case EOpImageAtomicOr:
+    case EOpImageAtomicXor:
+    case EOpImageAtomicExchange:
+    case EOpImageAtomicCompSwap:
+    {
+        // Make sure the image types have the correct layout() format and correct argument types
+        const TType& imageType = arg0->getType();
+        if (imageType.getSampler().type == EbtInt || imageType.getSampler().type == EbtUint) {
+            if (imageType.getQualifier().layoutFormat != ElfR32i && imageType.getQualifier().layoutFormat != ElfR32ui)
+                error(loc, "only supported on image with format r32i or r32ui", fnCandidate.getName().c_str(), "");
+        } else {
+            if (fnCandidate.getName().compare(0, 19, "imageAtomicExchange") != 0) 
+                error(loc, "only supported on integer images", fnCandidate.getName().c_str(), "");
+            else if (imageType.getQualifier().layoutFormat != ElfR32f && profile == EEsProfile)
+                error(loc, "only supported on image with format r32f", fnCandidate.getName().c_str(), "");
+        }
+
+        break;
+    }
+
+    default:
+        break;
+    }
+}
+
+extern bool PureOperatorBuiltins;
+
+// Deprecated!  Use PureOperatorBuiltins == true instead, in which case this
+// functionality is handled in builtInOpCheck() instead of here.
+//
 // Do additional checking of built-in function calls that were not mapped
 // to built-in operations (e.g., texturing functions).
 //
@@ -1332,10 +1502,18 @@ TIntermTyped* TParseContext::addOutputArgumentConversions(const TFunction& funct
 //
 void TParseContext::nonOpBuiltInCheck(const TSourceLoc& loc, const TFunction& fnCandidate, TIntermAggregate& callNode)
 {
+    // Further maintainance of this function is deprecated, because the "correct" 
+    // future-oriented design is to not have to do string compares on function names.
+
+    // If PureOperatorBuiltins == true, then all built-ins should be mapped
+    // to a TOperator, and this function would then never get called.
+
+    assert(PureOperatorBuiltins == false);
+
     // built-in texturing functions get their return value precision from the precision of the sampler
     if (fnCandidate.getType().getQualifier().precision == EpqNone &&
         fnCandidate.getParamCount() > 0 && fnCandidate[0].type->getBasicType() == EbtSampler)
-        callNode.getQualifier().precision = callNode.getAsAggregate()->getSequence()[0]->getAsTyped()->getQualifier().precision;
+        callNode.getQualifier().precision = callNode.getSequence()[0]->getAsTyped()->getQualifier().precision;
 
     if (fnCandidate.getName().compare(0, 7, "texture") == 0) {
         if (fnCandidate.getName().compare(0, 13, "textureGather") == 0) {
