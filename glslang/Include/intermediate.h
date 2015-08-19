@@ -350,8 +350,7 @@ enum TOperator {
     // Image operations
     //
 
-    // N.B. The following is not being used yet, pending input, as switching
-    //      to it from the current text-based approach will break existing consumers.
+    EOpImageGuardBegin,
 
     EOpImageQuerySize,
     EOpImageQuerySamples,
@@ -366,11 +365,14 @@ enum TOperator {
     EOpImageAtomicExchange,
     EOpImageAtomicCompSwap,
 
+    EOpImageGuardEnd,
+
     //
     // Texture operations
     //
 
     EOpTextureGuardBegin,
+
     EOpTextureQuerySize,
     EOpTextureQueryLod,
     EOpTextureQueryLevels,
@@ -392,6 +394,7 @@ enum TOperator {
     EOpTextureGather,
     EOpTextureGatherOffset,
     EOpTextureGatherOffsets,
+
     EOpTextureGuardEnd,
 
     //
@@ -605,6 +608,18 @@ protected:
     bool literal;  // true if node represents a literal in the source code
 };
 
+// Represent the independent aspects of a texturing TOperator
+struct TCrackedTextureOp {
+    bool query;
+    bool proj;
+    bool lod;
+    bool fetch;
+    bool offset;
+    bool offsets;
+    bool gather;
+    bool grad;
+};
+
 //
 // Intermediate class for node types that hold operators.
 //
@@ -613,9 +628,98 @@ public:
     virtual       TIntermOperator* getAsOperator()       { return this; }
     virtual const TIntermOperator* getAsOperator() const { return this; }
     TOperator getOp() const { return op; }
+    virtual bool promote() { return true; }
     bool modifiesState() const;
     bool isConstructor() const;
-    virtual bool promote() { return true; }
+    bool isTexture() const { return op > EOpTextureGuardBegin && op < EOpTextureGuardEnd; }
+    bool isImage()   const { return op > EOpImageGuardBegin   && op < EOpImageGuardEnd; }
+
+    // Crack the op into the individual dimensions of texturing operation.
+    void crackTexture(TCrackedTextureOp& cracked) const
+    {
+        cracked.query = false;
+        cracked.proj = false;
+        cracked.lod = false;
+        cracked.fetch = false;
+        cracked.offset = false;
+        cracked.offsets = false;
+        cracked.gather = false;
+        cracked.grad = false;
+
+        switch (op) {
+        case EOpTextureQuerySize:
+        case EOpTextureQueryLod:
+        case EOpTextureQueryLevels:
+        case EOpTextureQuerySamples:
+            cracked.query = true;
+            break;
+        case EOpTexture:
+            break;
+        case EOpTextureProj:
+            cracked.proj = true;
+            break;
+        case EOpTextureLod:
+            cracked.lod = true;
+            break;
+        case EOpTextureOffset:
+            cracked.offset = true;
+            break;
+        case EOpTextureFetch:
+            cracked.fetch = true;
+            break;
+        case EOpTextureFetchOffset:
+            cracked.fetch = true;
+            cracked.offset = true;
+            break;
+        case EOpTextureProjOffset:
+            cracked.offset = true;
+            cracked.proj = true;
+            break;
+        case EOpTextureLodOffset:
+            cracked.offset = true;
+            cracked.lod = true;
+            break;
+        case EOpTextureProjLod:
+            cracked.lod = true;
+            cracked.proj = true;
+            break;
+        case EOpTextureProjLodOffset:
+            cracked.offset = true;
+            cracked.lod = true;
+            cracked.proj = true;
+            break;
+        case EOpTextureGrad:
+            cracked.grad = true;
+            break;
+        case EOpTextureGradOffset:
+            cracked.grad = true;
+            cracked.offset = true;
+            break;
+        case EOpTextureProjGrad:
+            cracked.grad = true;
+            cracked.proj = true;
+            break;
+        case EOpTextureProjGradOffset:
+            cracked.grad = true;
+            cracked.offset = true;
+            cracked.proj = true;
+            break;
+        case EOpTextureGather:
+            cracked.gather = true;
+            break;
+        case EOpTextureGatherOffset:
+            cracked.gather = true;
+            cracked.offset = true;
+            break;
+        case EOpTextureGatherOffsets:
+            cracked.gather = true;
+            cracked.offsets = true;
+            break;
+        default:
+            break;
+        }
+    }
+
 protected:
     TIntermOperator(TOperator o) : TIntermTyped(EbtFloat), op(o) {}
     TIntermOperator(TOperator o, TType& t) : TIntermTyped(t), op(o) {}
@@ -651,7 +755,8 @@ public:
     TIntermUnary(TOperator o) : TIntermOperator(o), operand(0) {}
     virtual void traverse(TIntermTraverser*);
     virtual void setOperand(TIntermTyped* o) { operand = o; }
-    virtual TIntermTyped* getOperand() { return operand; }
+    virtual       TIntermTyped* getOperand() { return operand; }
+    virtual const TIntermTyped* getOperand() const { return operand; }
     virtual       TIntermUnary* getAsUnaryNode()       { return this; }
     virtual const TIntermUnary* getAsUnaryNode() const { return this; }
     virtual bool promote();
