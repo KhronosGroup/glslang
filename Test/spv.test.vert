@@ -10,5 +10,5 @@ out vec2 uv;
 void main()
 {
     uv = uv_in;
-    gl_Position = position + ftransform();
+    gl_Position = transform * position;
 }

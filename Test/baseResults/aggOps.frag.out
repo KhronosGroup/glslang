@@ -67,13 +67,13 @@ Shader version: 130
 0:30        true case
 0:31        move second child to first child (temp 4-component vector of float)
 0:31          'v' (temp 4-component vector of float)
-0:31          Function Call: texture2D(s21;vf2; (global 4-component vector of float)
+0:31          texture (global 4-component vector of float)
 0:31            'sampler' (uniform sampler2D)
 0:31            'coord' (smooth in 2-component vector of float)
 0:30        false case
 0:33        move second child to first child (temp 4-component vector of float)
 0:33          'v' (temp 4-component vector of float)
-0:33          Function Call: texture2D(s21;vf2; (global 4-component vector of float)
+0:33          texture (global 4-component vector of float)
 0:33            'sampler' (uniform sampler2D)
 0:33            vector-scale (temp 2-component vector of float)
 0:33              Constant:
@@ -216,13 +216,13 @@ Shader version: 130
 0:30        true case
 0:31        move second child to first child (temp 4-component vector of float)
 0:31          'v' (temp 4-component vector of float)
-0:31          Function Call: texture2D(s21;vf2; (global 4-component vector of float)
+0:31          texture (global 4-component vector of float)
 0:31            'sampler' (uniform sampler2D)
 0:31            'coord' (smooth in 2-component vector of float)
 0:30        false case
 0:33        move second child to first child (temp 4-component vector of float)
 0:33          'v' (temp 4-component vector of float)
-0:33          Function Call: texture2D(s21;vf2; (global 4-component vector of float)
+0:33          texture (global 4-component vector of float)
 0:33            'sampler' (uniform sampler2D)
 0:33            vector-scale (temp 2-component vector of float)
 0:33              Constant:

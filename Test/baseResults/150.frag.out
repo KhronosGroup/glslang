@@ -28,51 +28,51 @@ ERROR: node is still EOpNull!
 0:33      Sequence
 0:33        move second child to first child (temp 2-component vector of int)
 0:33          't11' (temp 2-component vector of int)
-0:33          Function Call: textureSize(s2M1; (global 2-component vector of int)
+0:33          textureSize (global 2-component vector of int)
 0:33            'sms' (uniform sampler2DMS)
 0:34      Sequence
 0:34        move second child to first child (temp 2-component vector of int)
 0:34          't12' (temp 2-component vector of int)
-0:34          Function Call: textureSize(is2M1; (global 2-component vector of int)
+0:34          textureSize (global 2-component vector of int)
 0:34            'isms' (uniform isampler2DMS)
 0:35      Sequence
 0:35        move second child to first child (temp 2-component vector of int)
 0:35          't13' (temp 2-component vector of int)
-0:35          Function Call: textureSize(us2M1; (global 2-component vector of int)
+0:35          textureSize (global 2-component vector of int)
 0:35            'usms' (uniform usampler2DMS)
 0:36      Sequence
 0:36        move second child to first child (temp 3-component vector of int)
 0:36          't21' (temp 3-component vector of int)
-0:36          Function Call: textureSize(sA2M1; (global 3-component vector of int)
+0:36          textureSize (global 3-component vector of int)
 0:36            'smsa' (uniform sampler2DMSArray)
 0:37      Sequence
 0:37        move second child to first child (temp 3-component vector of int)
 0:37          't22' (temp 3-component vector of int)
-0:37          Function Call: textureSize(isA2M1; (global 3-component vector of int)
+0:37          textureSize (global 3-component vector of int)
 0:37            'ismsa' (uniform isampler2DMSArray)
 0:38      Sequence
 0:38        move second child to first child (temp 3-component vector of int)
 0:38          't23' (temp 3-component vector of int)
-0:38          Function Call: textureSize(usA2M1; (global 3-component vector of int)
+0:38          textureSize (global 3-component vector of int)
 0:38            'usmsa' (uniform usampler2DMSArray)
 0:39      Sequence
 0:39        move second child to first child (temp 4-component vector of float)
 0:39          't31' (temp 4-component vector of float)
-0:39          Function Call: texelFetch(s2M1;vi2;i1; (global 4-component vector of float)
+0:39          textureFetch (global 4-component vector of float)
 0:39            'sms' (uniform sampler2DMS)
 0:39            'p2' (flat in 2-component vector of int)
 0:39            'samp' (flat in int)
 0:40      Sequence
 0:40        move second child to first child (temp 4-component vector of int)
 0:40          't32' (temp 4-component vector of int)
-0:40          Function Call: texelFetch(is2M1;vi2;i1; (global 4-component vector of int)
+0:40          textureFetch (global 4-component vector of int)
 0:40            'isms' (uniform isampler2DMS)
 0:40            'p2' (flat in 2-component vector of int)
 0:40            'samp' (flat in int)
 0:41      Sequence
 0:41        move second child to first child (temp 4-component vector of uint)
 0:41          't33' (temp 4-component vector of uint)
-0:41          Function Call: texelFetch(us2M1;vi2;i1; (global 4-component vector of uint)
+0:41          textureFetch (global 4-component vector of uint)
 0:41            'usms' (uniform usampler2DMS)
 0:41            'p2' (flat in 2-component vector of int)
 0:41            Constant:
@@ -80,14 +80,14 @@ ERROR: node is still EOpNull!
 0:42      Sequence
 0:42        move second child to first child (temp 4-component vector of float)
 0:42          't41' (temp 4-component vector of float)
-0:42          Function Call: texelFetch(sA2M1;vi3;i1; (global 4-component vector of float)
+0:42          textureFetch (global 4-component vector of float)
 0:42            'smsa' (uniform sampler2DMSArray)
 0:42            'p3' (flat in 3-component vector of int)
 0:42            'samp' (flat in int)
 0:43      Sequence
 0:43        move second child to first child (temp 4-component vector of int)
 0:43          't42' (temp 4-component vector of int)
-0:43          Function Call: texelFetch(isA2M1;vi3;i1; (global 4-component vector of int)
+0:43          textureFetch (global 4-component vector of int)
 0:43            'ismsa' (uniform isampler2DMSArray)
 0:43            Constant:
 0:43              2 (const int)
@@ -97,7 +97,7 @@ ERROR: node is still EOpNull!
 0:44      Sequence
 0:44        move second child to first child (temp 4-component vector of uint)
 0:44          't43' (temp 4-component vector of uint)
-0:44          Function Call: texelFetch(usA2M1;vi3;i1; (global 4-component vector of uint)
+0:44          textureFetch (global 4-component vector of uint)
 0:44            'usmsa' (uniform usampler2DMSArray)
 0:44            'p3' (flat in 3-component vector of int)
 0:44            'samp' (flat in int)
@@ -143,51 +143,51 @@ ERROR: node is still EOpNull!
 0:33      Sequence
 0:33        move second child to first child (temp 2-component vector of int)
 0:33          't11' (temp 2-component vector of int)
-0:33          Function Call: textureSize(s2M1; (global 2-component vector of int)
+0:33          textureSize (global 2-component vector of int)
 0:33            'sms' (uniform sampler2DMS)
 0:34      Sequence
 0:34        move second child to first child (temp 2-component vector of int)
 0:34          't12' (temp 2-component vector of int)
-0:34          Function Call: textureSize(is2M1; (global 2-component vector of int)
+0:34          textureSize (global 2-component vector of int)
 0:34            'isms' (uniform isampler2DMS)
 0:35      Sequence
 0:35        move second child to first child (temp 2-component vector of int)
 0:35          't13' (temp 2-component vector of int)
-0:35          Function Call: textureSize(us2M1; (global 2-component vector of int)
+0:35          textureSize (global 2-component vector of int)
 0:35            'usms' (uniform usampler2DMS)
 0:36      Sequence
 0:36        move second child to first child (temp 3-component vector of int)
 0:36          't21' (temp 3-component vector of int)
-0:36          Function Call: textureSize(sA2M1; (global 3-component vector of int)
+0:36          textureSize (global 3-component vector of int)
 0:36            'smsa' (uniform sampler2DMSArray)
 0:37      Sequence
 0:37        move second child to first child (temp 3-component vector of int)
 0:37          't22' (temp 3-component vector of int)
-0:37          Function Call: textureSize(isA2M1; (global 3-component vector of int)
+0:37          textureSize (global 3-component vector of int)
 0:37            'ismsa' (uniform isampler2DMSArray)
 0:38      Sequence
 0:38        move second child to first child (temp 3-component vector of int)
 0:38          't23' (temp 3-component vector of int)
-0:38          Function Call: textureSize(usA2M1; (global 3-component vector of int)
+0:38          textureSize (global 3-component vector of int)
 0:38            'usmsa' (uniform usampler2DMSArray)
 0:39      Sequence
 0:39        move second child to first child (temp 4-component vector of float)
 0:39          't31' (temp 4-component vector of float)
-0:39          Function Call: texelFetch(s2M1;vi2;i1; (global 4-component vector of float)
+0:39          textureFetch (global 4-component vector of float)
 0:39            'sms' (uniform sampler2DMS)
 0:39            'p2' (flat in 2-component vector of int)
 0:39            'samp' (flat in int)
 0:40      Sequence
 0:40        move second child to first child (temp 4-component vector of int)
 0:40          't32' (temp 4-component vector of int)
-0:40          Function Call: texelFetch(is2M1;vi2;i1; (global 4-component vector of int)
+0:40          textureFetch (global 4-component vector of int)
 0:40            'isms' (uniform isampler2DMS)
 0:40            'p2' (flat in 2-component vector of int)
 0:40            'samp' (flat in int)
 0:41      Sequence
 0:41        move second child to first child (temp 4-component vector of uint)
 0:41          't33' (temp 4-component vector of uint)
-0:41          Function Call: texelFetch(us2M1;vi2;i1; (global 4-component vector of uint)
+0:41          textureFetch (global 4-component vector of uint)
 0:41            'usms' (uniform usampler2DMS)
 0:41            'p2' (flat in 2-component vector of int)
 0:41            Constant:
@@ -195,14 +195,14 @@ ERROR: node is still EOpNull!
 0:42      Sequence
 0:42        move second child to first child (temp 4-component vector of float)
 0:42          't41' (temp 4-component vector of float)
-0:42          Function Call: texelFetch(sA2M1;vi3;i1; (global 4-component vector of float)
+0:42          textureFetch (global 4-component vector of float)
 0:42            'smsa' (uniform sampler2DMSArray)
 0:42            'p3' (flat in 3-component vector of int)
 0:42            'samp' (flat in int)
 0:43      Sequence
 0:43        move second child to first child (temp 4-component vector of int)
 0:43          't42' (temp 4-component vector of int)
-0:43          Function Call: texelFetch(isA2M1;vi3;i1; (global 4-component vector of int)
+0:43          textureFetch (global 4-component vector of int)
 0:43            'ismsa' (uniform isampler2DMSArray)
 0:43            Constant:
 0:43              2 (const int)
@@ -212,7 +212,7 @@ ERROR: node is still EOpNull!
 0:44      Sequence
 0:44        move second child to first child (temp 4-component vector of uint)
 0:44          't43' (temp 4-component vector of uint)
-0:44          Function Call: texelFetch(usA2M1;vi3;i1; (global 4-component vector of uint)
+0:44          textureFetch (global 4-component vector of uint)
 0:44            'usmsa' (uniform usampler2DMSArray)
 0:44            'p3' (flat in 3-component vector of int)
 0:44            'samp' (flat in int)

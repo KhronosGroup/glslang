@@ -52,7 +52,7 @@ ERROR: node is still EOpNull!
 0:40      Sequence
 0:40        move second child to first child (temp 4-component vector of float)
 0:40          'v' (temp 4-component vector of float)
-0:40          Function Call: textureGatherOffset(s21;vf2;vi2; (global 4-component vector of float)
+0:40          textureGatherOffset (global 4-component vector of float)
 0:40            's2D' (uniform sampler2D)
 0:40            direct index (temp 2-component vector of float)
 0:40              'coord' (in 3-element array of 2-component vector of float)
@@ -179,7 +179,7 @@ ERROR: node is still EOpNull!
 0:40      Sequence
 0:40        move second child to first child (temp 4-component vector of float)
 0:40          'v' (temp 4-component vector of float)
-0:40          Function Call: textureGatherOffset(s21;vf2;vi2; (global 4-component vector of float)
+0:40          textureGatherOffset (global 4-component vector of float)
 0:40            's2D' (uniform sampler2D)
 0:40            direct index (temp 2-component vector of float)
 0:40              'coord' (in 3-element array of 2-component vector of float)

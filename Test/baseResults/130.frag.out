@@ -58,7 +58,7 @@ ERROR: node is still EOpNull!
 0:25      Sequence
 0:25        move second child to first child (temp 4-component vector of float)
 0:25          's' (temp 4-component vector of float)
-0:25          Function Call: textureGather(sC1;vf3; (global 4-component vector of float)
+0:25          textureGather (global 4-component vector of float)
 0:25            'sampC' (uniform samplerCube)
 0:25            Constant:
 0:25              0.200000
@@ -70,7 +70,7 @@ ERROR: node is still EOpNull!
 0:32      Sequence
 0:32        move second child to first child (temp 4-component vector of float)
 0:32          's' (temp 4-component vector of float)
-0:32          Function Call: textureGather(sC1;vf3; (global 4-component vector of float)
+0:32          textureGather (global 4-component vector of float)
 0:32            'sampC' (uniform samplerCube)
 0:32            Constant:
 0:32              0.200000
@@ -82,7 +82,7 @@ ERROR: node is still EOpNull!
 0:45      Sequence
 0:45        move second child to first child (temp 4-component vector of float)
 0:45          's' (temp 4-component vector of float)
-0:45          Function Call: textureGather(sC1;vf3; (global 4-component vector of float)
+0:45          textureGather (global 4-component vector of float)
 0:45            'sampC' (uniform samplerCube)
 0:45            Constant:
 0:45              0.200000
@@ -129,7 +129,7 @@ ERROR: node is still EOpNull!
 0:80      's' (temp 4-component vector of float)
 0:81      move second child to first child (temp 4-component vector of float)
 0:81        's' (temp 4-component vector of float)
-0:81        Function Call: textureGatherOffset(sR21;vf2;vi2; (global 4-component vector of float)
+0:81        textureGatherOffset (global 4-component vector of float)
 0:81          'samp2DR' (uniform sampler2DRect)
 0:81          Constant:
 0:81            0.300000
@@ -139,7 +139,7 @@ ERROR: node is still EOpNull!
 0:81            1 (const int)
 0:82      move second child to first child (temp 4-component vector of float)
 0:82        's' (temp 4-component vector of float)
-0:82        Function Call: textureGatherOffset(s21;vf2;vi2; (global 4-component vector of float)
+0:82        textureGatherOffset (global 4-component vector of float)
 0:82          'samp2D' (uniform sampler2D)
 0:82          Constant:
 0:82            0.300000
@@ -149,7 +149,7 @@ ERROR: node is still EOpNull!
 0:82            1 (const int)
 0:83      move second child to first child (temp 4-component vector of float)
 0:83        's' (temp 4-component vector of float)
-0:83        Function Call: textureGatherOffset(sA21;vf3;vi2; (global 4-component vector of float)
+0:83        textureGatherOffset (global 4-component vector of float)
 0:83          'samp2DA' (uniform sampler2DArray)
 0:83          Constant:
 0:83            0.300000
@@ -160,7 +160,7 @@ ERROR: node is still EOpNull!
 0:83            1 (const int)
 0:84      move second child to first child (temp 4-component vector of float)
 0:84        's' (temp 4-component vector of float)
-0:84        Function Call: textureGatherOffset(sS21;vf2;f1;vi2; (global 4-component vector of float)
+0:84        textureGatherOffset (global 4-component vector of float)
 0:84          'samp2DS' (uniform sampler2DShadow)
 0:84          Constant:
 0:84            0.300000
@@ -172,7 +172,7 @@ ERROR: node is still EOpNull!
 0:84            1 (const int)
 0:85      move second child to first child (temp 4-component vector of float)
 0:85        's' (temp 4-component vector of float)
-0:85        Function Call: textureGatherOffset(s21;vf2;vi2;i1; (global 4-component vector of float)
+0:85        textureGatherOffset (global 4-component vector of float)
 0:85          'samp2D' (uniform sampler2D)
 0:85          Constant:
 0:85            0.300000
@@ -187,7 +187,7 @@ ERROR: node is still EOpNull!
 0:?     Sequence
 0:93      move second child to first child (temp 4-component vector of float)
 0:93        's' (temp 4-component vector of float)
-0:93        Function Call: textureGatherOffset(s21;vf2;vi2; (global 4-component vector of float)
+0:93        textureGatherOffset (global 4-component vector of float)
 0:93          'samp2D' (uniform sampler2D)
 0:93          Constant:
 0:93            0.300000
@@ -197,7 +197,7 @@ ERROR: node is still EOpNull!
 0:93            1 (const int)
 0:94      move second child to first child (temp 4-component vector of float)
 0:94        's' (temp 4-component vector of float)
-0:94        Function Call: textureGatherOffset(sA21;vf3;vi2; (global 4-component vector of float)
+0:94        textureGatherOffset (global 4-component vector of float)
 0:94          'samp2DA' (uniform sampler2DArray)
 0:94          Constant:
 0:94            0.300000
@@ -208,7 +208,7 @@ ERROR: node is still EOpNull!
 0:94            1 (const int)
 0:95      move second child to first child (temp 4-component vector of float)
 0:95        's' (temp 4-component vector of float)
-0:95        Function Call: textureGatherOffset(sR21;vf2;vi2; (global 4-component vector of float)
+0:95        textureGatherOffset (global 4-component vector of float)
 0:95          'samp2DR' (uniform sampler2DRect)
 0:95          Constant:
 0:95            0.300000
@@ -218,7 +218,7 @@ ERROR: node is still EOpNull!
 0:95            1 (const int)
 0:96      move second child to first child (temp 4-component vector of float)
 0:96        's' (temp 4-component vector of float)
-0:96        Function Call: textureGatherOffset(sS21;vf2;f1;vi2; (global 4-component vector of float)
+0:96        textureGatherOffset (global 4-component vector of float)
 0:96          'samp2DS' (uniform sampler2DShadow)
 0:96          Constant:
 0:96            0.300000
@@ -230,7 +230,7 @@ ERROR: node is still EOpNull!
 0:96            1 (const int)
 0:97      move second child to first child (temp 4-component vector of float)
 0:97        's' (temp 4-component vector of float)
-0:97        Function Call: textureGatherOffset(s21;vf2;vi2;i1; (global 4-component vector of float)
+0:97        textureGatherOffset (global 4-component vector of float)
 0:97          'samp2D' (uniform sampler2D)
 0:97          Constant:
 0:97            0.300000
@@ -246,20 +246,20 @@ ERROR: node is still EOpNull!
 0:109      Sequence
 0:109        move second child to first child (temp 3-component vector of int)
 0:109          'a' (temp 3-component vector of int)
-0:109          Function Call: textureSize(sAC1;i1; (global 3-component vector of int)
+0:109          textureSize (global 3-component vector of int)
 0:109            'Sca' (uniform samplerCubeArray)
 0:109            Constant:
 0:109              3 (const int)
 0:110      Sequence
 0:110        move second child to first child (temp 4-component vector of float)
 0:110          'b' (temp 4-component vector of float)
-0:110          Function Call: texture(sAC1;vf4; (global 4-component vector of float)
+0:110          texture (global 4-component vector of float)
 0:110            'Sca' (uniform samplerCubeArray)
 0:110            'i' (smooth in 4-component vector of float)
 0:111      Sequence
 0:111        move second child to first child (temp 4-component vector of int)
 0:111          'c' (temp 4-component vector of int)
-0:111          Function Call: texture(isAC1;vf4;f1; (global 4-component vector of int)
+0:111          texture (global 4-component vector of int)
 0:111            'Isca' (uniform isamplerCubeArray)
 0:111            'i' (smooth in 4-component vector of float)
 0:111            Constant:
@@ -267,19 +267,19 @@ ERROR: node is still EOpNull!
 0:112      Sequence
 0:112        move second child to first child (temp 4-component vector of uint)
 0:112          'd' (temp 4-component vector of uint)
-0:112          Function Call: texture(usAC1;vf4; (global 4-component vector of uint)
+0:112          texture (global 4-component vector of uint)
 0:112            'Usca' (uniform usamplerCubeArray)
 0:112            'i' (smooth in 4-component vector of float)
 0:114      move second child to first child (temp 4-component vector of float)
 0:114        'b' (temp 4-component vector of float)
-0:114        Function Call: textureLod(sAC1;vf4;f1; (global 4-component vector of float)
+0:114        textureLod (global 4-component vector of float)
 0:114          'Sca' (uniform samplerCubeArray)
 0:114          'i' (smooth in 4-component vector of float)
 0:114          Constant:
 0:114            1.700000
 0:115      move second child to first child (temp 3-component vector of int)
 0:115        'a' (temp 3-component vector of int)
-0:115        Function Call: textureSize(sASC1;i1; (global 3-component vector of int)
+0:115        textureSize (global 3-component vector of int)
 0:115          'Scas' (uniform samplerCubeArrayShadow)
 0:115          direct index (temp int)
 0:115            'a' (temp 3-component vector of int)
@@ -288,7 +288,7 @@ ERROR: node is still EOpNull!
 0:116      Sequence
 0:116        move second child to first child (temp float)
 0:116          'f' (temp float)
-0:116          Function Call: texture(sASC1;vf4;f1; (global float)
+0:116          texture (global float)
 0:116            'Scas' (uniform samplerCubeArrayShadow)
 0:116            'i' (smooth in 4-component vector of float)
 0:116            direct index (temp float)
@@ -297,7 +297,7 @@ ERROR: node is still EOpNull!
 0:116                1 (const int)
 0:117      move second child to first child (temp 4-component vector of int)
 0:117        'c' (temp 4-component vector of int)
-0:117        Function Call: textureGrad(isAC1;vf4;vf3;vf3; (global 4-component vector of int)
+0:117        textureGrad (global 4-component vector of int)
 0:117          'Isca' (uniform isamplerCubeArray)
 0:117          'i' (smooth in 4-component vector of float)
 0:117          Constant:
@@ -357,7 +357,7 @@ ERROR: node is still EOpNull!
 0:162  Function Definition: qux2( (global void)
 0:162    Function Parameters: 
 0:?     Sequence
-0:165      Function Call: imageAtomicCompSwap(iI21;vi2;i1;i1; (global int)
+0:165      imageAtomicCompSwap (global int)
 0:165        'iimg2D' (layout(r32i ) uniform iimage2D)
 0:165        Construct ivec2 (temp 2-component vector of int)
 0:165          'i' (temp int)
@@ -367,7 +367,7 @@ ERROR: node is still EOpNull!
 0:166      Sequence
 0:166        move second child to first child (temp 4-component vector of int)
 0:166          'pos' (temp 4-component vector of int)
-0:166          Function Call: imageLoad(iI21;vi2; (global 4-component vector of int)
+0:166          imageLoad (global 4-component vector of int)
 0:166            'iimg2D' (layout(r32i ) uniform iimage2D)
 0:166            Construct ivec2 (temp 2-component vector of int)
 0:166              'i' (temp int)
@@ -434,7 +434,7 @@ ERROR: node is still EOpNull!
 0:25      Sequence
 0:25        move second child to first child (temp 4-component vector of float)
 0:25          's' (temp 4-component vector of float)
-0:25          Function Call: textureGather(sC1;vf3; (global 4-component vector of float)
+0:25          textureGather (global 4-component vector of float)
 0:25            'sampC' (uniform samplerCube)
 0:25            Constant:
 0:25              0.200000
@@ -446,7 +446,7 @@ ERROR: node is still EOpNull!
 0:32      Sequence
 0:32        move second child to first child (temp 4-component vector of float)
 0:32          's' (temp 4-component vector of float)
-0:32          Function Call: textureGather(sC1;vf3; (global 4-component vector of float)
+0:32          textureGather (global 4-component vector of float)
 0:32            'sampC' (uniform samplerCube)
 0:32            Constant:
 0:32              0.200000
@@ -458,7 +458,7 @@ ERROR: node is still EOpNull!
 0:45      Sequence
 0:45        move second child to first child (temp 4-component vector of float)
 0:45          's' (temp 4-component vector of float)
-0:45          Function Call: textureGather(sC1;vf3; (global 4-component vector of float)
+0:45          textureGather (global 4-component vector of float)
 0:45            'sampC' (uniform samplerCube)
 0:45            Constant:
 0:45              0.200000
@@ -505,7 +505,7 @@ ERROR: node is still EOpNull!
 0:80      's' (temp 4-component vector of float)
 0:81      move second child to first child (temp 4-component vector of float)
 0:81        's' (temp 4-component vector of float)
-0:81        Function Call: textureGatherOffset(sR21;vf2;vi2; (global 4-component vector of float)
+0:81        textureGatherOffset (global 4-component vector of float)
 0:81          'samp2DR' (uniform sampler2DRect)
 0:81          Constant:
 0:81            0.300000
@@ -515,7 +515,7 @@ ERROR: node is still EOpNull!
 0:81            1 (const int)
 0:82      move second child to first child (temp 4-component vector of float)
 0:82        's' (temp 4-component vector of float)
-0:82        Function Call: textureGatherOffset(s21;vf2;vi2; (global 4-component vector of float)
+0:82        textureGatherOffset (global 4-component vector of float)
 0:82          'samp2D' (uniform sampler2D)
 0:82          Constant:
 0:82            0.300000
@@ -525,7 +525,7 @@ ERROR: node is still EOpNull!
 0:82            1 (const int)
 0:83      move second child to first child (temp 4-component vector of float)
 0:83        's' (temp 4-component vector of float)
-0:83        Function Call: textureGatherOffset(sA21;vf3;vi2; (global 4-component vector of float)
+0:83        textureGatherOffset (global 4-component vector of float)
 0:83          'samp2DA' (uniform sampler2DArray)
 0:83          Constant:
 0:83            0.300000
@@ -536,7 +536,7 @@ ERROR: node is still EOpNull!
 0:83            1 (const int)
 0:84      move second child to first child (temp 4-component vector of float)
 0:84        's' (temp 4-component vector of float)
-0:84        Function Call: textureGatherOffset(sS21;vf2;f1;vi2; (global 4-component vector of float)
+0:84        textureGatherOffset (global 4-component vector of float)
 0:84          'samp2DS' (uniform sampler2DShadow)
 0:84          Constant:
 0:84            0.300000
@@ -548,7 +548,7 @@ ERROR: node is still EOpNull!
 0:84            1 (const int)
 0:85      move second child to first child (temp 4-component vector of float)
 0:85        's' (temp 4-component vector of float)
-0:85        Function Call: textureGatherOffset(s21;vf2;vi2;i1; (global 4-component vector of float)
+0:85        textureGatherOffset (global 4-component vector of float)
 0:85          'samp2D' (uniform sampler2D)
 0:85          Constant:
 0:85            0.300000
@@ -563,7 +563,7 @@ ERROR: node is still EOpNull!
 0:?     Sequence
 0:93      move second child to first child (temp 4-component vector of float)
 0:93        's' (temp 4-component vector of float)
-0:93        Function Call: textureGatherOffset(s21;vf2;vi2; (global 4-component vector of float)
+0:93        textureGatherOffset (global 4-component vector of float)
 0:93          'samp2D' (uniform sampler2D)
 0:93          Constant:
 0:93            0.300000
@@ -573,7 +573,7 @@ ERROR: node is still EOpNull!
 0:93            1 (const int)
 0:94      move second child to first child (temp 4-component vector of float)
 0:94        's' (temp 4-component vector of float)
-0:94        Function Call: textureGatherOffset(sA21;vf3;vi2; (global 4-component vector of float)
+0:94        textureGatherOffset (global 4-component vector of float)
 0:94          'samp2DA' (uniform sampler2DArray)
 0:94          Constant:
 0:94            0.300000
@@ -584,7 +584,7 @@ ERROR: node is still EOpNull!
 0:94            1 (const int)
 0:95      move second child to first child (temp 4-component vector of float)
 0:95        's' (temp 4-component vector of float)
-0:95        Function Call: textureGatherOffset(sR21;vf2;vi2; (global 4-component vector of float)
+0:95        textureGatherOffset (global 4-component vector of float)
 0:95          'samp2DR' (uniform sampler2DRect)
 0:95          Constant:
 0:95            0.300000
@@ -594,7 +594,7 @@ ERROR: node is still EOpNull!
 0:95            1 (const int)
 0:96      move second child to first child (temp 4-component vector of float)
 0:96        's' (temp 4-component vector of float)
-0:96        Function Call: textureGatherOffset(sS21;vf2;f1;vi2; (global 4-component vector of float)
+0:96        textureGatherOffset (global 4-component vector of float)
 0:96          'samp2DS' (uniform sampler2DShadow)
 0:96          Constant:
 0:96            0.300000
@@ -606,7 +606,7 @@ ERROR: node is still EOpNull!
 0:96            1 (const int)
 0:97      move second child to first child (temp 4-component vector of float)
 0:97        's' (temp 4-component vector of float)
-0:97        Function Call: textureGatherOffset(s21;vf2;vi2;i1; (global 4-component vector of float)
+0:97        textureGatherOffset (global 4-component vector of float)
 0:97          'samp2D' (uniform sampler2D)
 0:97          Constant:
 0:97            0.300000
@@ -622,20 +622,20 @@ ERROR: node is still EOpNull!
 0:109      Sequence
 0:109        move second child to first child (temp 3-component vector of int)
 0:109          'a' (temp 3-component vector of int)
-0:109          Function Call: textureSize(sAC1;i1; (global 3-component vector of int)
+0:109          textureSize (global 3-component vector of int)
 0:109            'Sca' (uniform samplerCubeArray)
 0:109            Constant:
 0:109              3 (const int)
 0:110      Sequence
 0:110        move second child to first child (temp 4-component vector of float)
 0:110          'b' (temp 4-component vector of float)
-0:110          Function Call: texture(sAC1;vf4; (global 4-component vector of float)
+0:110          texture (global 4-component vector of float)
 0:110            'Sca' (uniform samplerCubeArray)
 0:110            'i' (smooth in 4-component vector of float)
 0:111      Sequence
 0:111        move second child to first child (temp 4-component vector of int)
 0:111          'c' (temp 4-component vector of int)
-0:111          Function Call: texture(isAC1;vf4;f1; (global 4-component vector of int)
+0:111          texture (global 4-component vector of int)
 0:111            'Isca' (uniform isamplerCubeArray)
 0:111            'i' (smooth in 4-component vector of float)
 0:111            Constant:
@@ -643,19 +643,19 @@ ERROR: node is still EOpNull!
 0:112      Sequence
 0:112        move second child to first child (temp 4-component vector of uint)
 0:112          'd' (temp 4-component vector of uint)
-0:112          Function Call: texture(usAC1;vf4; (global 4-component vector of uint)
+0:112          texture (global 4-component vector of uint)
 0:112            'Usca' (uniform usamplerCubeArray)
 0:112            'i' (smooth in 4-component vector of float)
 0:114      move second child to first child (temp 4-component vector of float)
 0:114        'b' (temp 4-component vector of float)
-0:114        Function Call: textureLod(sAC1;vf4;f1; (global 4-component vector of float)
+0:114        textureLod (global 4-component vector of float)
 0:114          'Sca' (uniform samplerCubeArray)
 0:114          'i' (smooth in 4-component vector of float)
 0:114          Constant:
 0:114            1.700000
 0:115      move second child to first child (temp 3-component vector of int)
 0:115        'a' (temp 3-component vector of int)
-0:115        Function Call: textureSize(sASC1;i1; (global 3-component vector of int)
+0:115        textureSize (global 3-component vector of int)
 0:115          'Scas' (uniform samplerCubeArrayShadow)
 0:115          direct index (temp int)
 0:115            'a' (temp 3-component vector of int)
@@ -664,7 +664,7 @@ ERROR: node is still EOpNull!
 0:116      Sequence
 0:116        move second child to first child (temp float)
 0:116          'f' (temp float)
-0:116          Function Call: texture(sASC1;vf4;f1; (global float)
+0:116          texture (global float)
 0:116            'Scas' (uniform samplerCubeArrayShadow)
 0:116            'i' (smooth in 4-component vector of float)
 0:116            direct index (temp float)
@@ -673,7 +673,7 @@ ERROR: node is still EOpNull!
 0:116                1 (const int)
 0:117      move second child to first child (temp 4-component vector of int)
 0:117        'c' (temp 4-component vector of int)
-0:117        Function Call: textureGrad(isAC1;vf4;vf3;vf3; (global 4-component vector of int)
+0:117        textureGrad (global 4-component vector of int)
 0:117          'Isca' (uniform isamplerCubeArray)
 0:117          'i' (smooth in 4-component vector of float)
 0:117          Constant:
@@ -733,7 +733,7 @@ ERROR: node is still EOpNull!
 0:162  Function Definition: qux2( (global void)
 0:162    Function Parameters: 
 0:?     Sequence
-0:165      Function Call: imageAtomicCompSwap(iI21;vi2;i1;i1; (global int)
+0:165      imageAtomicCompSwap (global int)
 0:165        'iimg2D' (layout(r32i ) uniform iimage2D)
 0:165        Construct ivec2 (temp 2-component vector of int)
 0:165          'i' (temp int)
@@ -743,7 +743,7 @@ ERROR: node is still EOpNull!
 0:166      Sequence
 0:166        move second child to first child (temp 4-component vector of int)
 0:166          'pos' (temp 4-component vector of int)
-0:166          Function Call: imageLoad(iI21;vi2; (global 4-component vector of int)
+0:166          imageLoad (global 4-component vector of int)
 0:166            'iimg2D' (layout(r32i ) uniform iimage2D)
 0:166            Construct ivec2 (temp 2-component vector of int)
 0:166              'i' (temp int)

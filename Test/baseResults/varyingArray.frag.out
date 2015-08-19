@@ -12,7 +12,7 @@ Shader version: 130
 0:12      Sequence
 0:12        move second child to first child (temp 4-component vector of float)
 0:12          'texColor' (temp 4-component vector of float)
-0:12          Function Call: texture2D(s21;vf2; (global 4-component vector of float)
+0:12          texture (global 4-component vector of float)
 0:12            'texSampler2D' (uniform sampler2D)
 0:12            Construct vec2 (temp 2-component vector of float)
 0:12              add (temp 4-component vector of float)
@@ -71,7 +71,7 @@ Shader version: 130
 0:12      Sequence
 0:12        move second child to first child (temp 4-component vector of float)
 0:12          'texColor' (temp 4-component vector of float)
-0:12          Function Call: texture2D(s21;vf2; (global 4-component vector of float)
+0:12          texture (global 4-component vector of float)
 0:12            'texSampler2D' (uniform sampler2D)
 0:12            Construct vec2 (temp 2-component vector of float)
 0:12              add (temp 4-component vector of float)

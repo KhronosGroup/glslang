@@ -183,7 +183,7 @@ ERROR: node is still EOpNull!
 0:98        0.000000
 0:100      Constant:
 0:100        0.841471
-0:101      Function Call: texture2D(s21;vf2; (global 4-component vector of float)
+0:101      texture (global 4-component vector of float)
 0:101        's2D' (uniform sampler2D)
 0:101        Constant:
 0:101          0.000000
@@ -502,7 +502,7 @@ ERROR: node is still EOpNull!
 0:98        0.000000
 0:100      Constant:
 0:100        0.841471
-0:101      Function Call: texture2D(s21;vf2; (global 4-component vector of float)
+0:101      texture (global 4-component vector of float)
 0:101        's2D' (uniform sampler2D)
 0:101        Constant:
 0:101          0.000000

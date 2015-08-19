@@ -74,7 +74,7 @@ Shader version: 130
 0:43        'gl_FragColor' (fragColor 4-component vector of float FragColor)
 0:43        vector-scale (temp 4-component vector of float)
 0:43          'scale' (temp float)
-0:43          Function Call: texture2D(s21;vf2; (global 4-component vector of float)
+0:43          texture (global 4-component vector of float)
 0:43            'sampler' (uniform sampler2D)
 0:43            'coord' (smooth in 2-component vector of float)
 0:45      Sequence
@@ -187,7 +187,7 @@ Shader version: 130
 0:43        'gl_FragColor' (fragColor 4-component vector of float FragColor)
 0:43        vector-scale (temp 4-component vector of float)
 0:43          'scale' (temp float)
-0:43          Function Call: texture2D(s21;vf2; (global 4-component vector of float)
+0:43          texture (global 4-component vector of float)
 0:43            'sampler' (uniform sampler2D)
 0:43            'coord' (smooth in 2-component vector of float)
 0:45      Sequence

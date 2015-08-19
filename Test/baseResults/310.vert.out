@@ -224,16 +224,16 @@ ERROR: node is still EOpNull!
 0:?     Sequence
 0:63      move second child to first child (temp highp 2-component vector of int)
 0:63        'v2' (temp highp 2-component vector of int)
-0:63        Function Call: textureSize(s2M1; (global highp 2-component vector of int)
+0:63        textureSize (global highp 2-component vector of int)
 0:63          's2dms' (uniform highp sampler2DMS)
 0:64      move second child to first child (temp highp 2-component vector of int)
 0:64        'v2' (temp highp 2-component vector of int)
-0:64        Function Call: textureSize(us2M1; (global highp 2-component vector of int)
+0:64        textureSize (global highp 2-component vector of int)
 0:64          'us2dms' (uniform highp usampler2DMS)
 0:65      Sequence
 0:65        move second child to first child (temp highp 4-component vector of float)
 0:65          'v4' (temp highp 4-component vector of float)
-0:65          Function Call: texelFetch(s2M1;vi2;i1; (global highp 4-component vector of float)
+0:65          textureFetch (global highp 4-component vector of float)
 0:65            's2dms' (uniform highp sampler2DMS)
 0:65            'v2' (temp highp 2-component vector of int)
 0:65            Constant:
@@ -241,7 +241,7 @@ ERROR: node is still EOpNull!
 0:66      Sequence
 0:66        move second child to first child (temp highp 4-component vector of int)
 0:66          'iv4' (temp highp 4-component vector of int)
-0:66          Function Call: texelFetch(is2M1;vi2;i1; (global highp 4-component vector of int)
+0:66          textureFetch (global highp 4-component vector of int)
 0:66            'is2dms' (uniform highp isampler2DMS)
 0:66            'v2' (temp highp 2-component vector of int)
 0:66            Constant:
@@ -319,7 +319,7 @@ ERROR: node is still EOpNull!
 0:164          'sIndex' (uniform highp int)
 0:164          Constant:
 0:164            2 (const int)
-0:165      Function Call: textureGatherOffset(s21;vf2;vi2; (global highp 4-component vector of float)
+0:165      textureGatherOffset (global highp 4-component vector of float)
 0:165        direct index (temp highp sampler2D)
 0:165          'sArray' (uniform 4-element array of highp sampler2D)
 0:165          Constant:
@@ -327,9 +327,9 @@ ERROR: node is still EOpNull!
 0:165        Constant:
 0:165          0.100000
 0:165          0.100000
-0:165        Convert float to int (temp 2-component vector of int)
+0:165        Convert float to int (temp highp 2-component vector of int)
 0:165          'inf' (in highp 2-component vector of float)
-0:166      Function Call: textureGatherOffsets(s21;vf2;vi2[4]; (global highp 4-component vector of float)
+0:166      textureGatherOffsets (global highp 4-component vector of float)
 0:166        direct index (temp highp sampler2D)
 0:166          'sArray' (uniform 4-element array of highp sampler2D)
 0:166          Constant:
@@ -383,7 +383,7 @@ ERROR: node is still EOpNull!
 0:179          'sIndex' (uniform highp int)
 0:179          Constant:
 0:179            2 (const int)
-0:180      Function Call: textureGatherOffset(s21;vf2;vi2; (global highp 4-component vector of float)
+0:180      textureGatherOffset (global highp 4-component vector of float)
 0:180        direct index (temp highp sampler2D)
 0:180          'sArray' (uniform 4-element array of highp sampler2D)
 0:180          Constant:
@@ -391,9 +391,9 @@ ERROR: node is still EOpNull!
 0:180        Constant:
 0:180          0.100000
 0:180          0.100000
-0:180        Convert float to int (temp 2-component vector of int)
+0:180        Convert float to int (temp highp 2-component vector of int)
 0:180          'inf' (in highp 2-component vector of float)
-0:181      Function Call: textureGatherOffsets(s21;vf2;vi2[4]; (global highp 4-component vector of float)
+0:181      textureGatherOffsets (global highp 4-component vector of float)
 0:181        direct index (temp highp sampler2D)
 0:181          'sArray' (uniform 4-element array of highp sampler2D)
 0:181          Constant:
@@ -410,7 +410,7 @@ ERROR: node is still EOpNull!
 0:181          0 (const int)
 0:181          0 (const int)
 0:181          0 (const int)
-0:182      Function Call: textureGatherOffsets(s21;vf2;vi2[4]; (global highp 4-component vector of float)
+0:182      textureGatherOffsets (global highp 4-component vector of float)
 0:182        direct index (temp highp sampler2D)
 0:182          'sArray' (uniform 4-element array of highp sampler2D)
 0:182          Constant:
@@ -425,49 +425,49 @@ ERROR: node is still EOpNull!
 0:222      Sequence
 0:222        move second child to first child (temp highp int)
 0:222          's1' (temp highp int)
-0:222          Function Call: textureSize(sB1; (global highp int)
+0:222          textureSize (global highp int)
 0:222            'bufSamp1' (uniform highp samplerBuffer)
 0:223      Sequence
 0:223        move second child to first child (temp highp int)
 0:223          's2' (temp highp int)
-0:223          Function Call: textureSize(isB1; (global highp int)
+0:223          textureSize (global highp int)
 0:223            'bufSamp2' (uniform highp isamplerBuffer)
 0:224      Sequence
 0:224        move second child to first child (temp highp int)
 0:224          's3' (temp highp int)
-0:224          Function Call: textureSize(usB1; (global highp int)
+0:224          textureSize (global highp int)
 0:224            'bufSamp3' (uniform highp usamplerBuffer)
 0:226      Sequence
 0:226        move second child to first child (temp highp int)
 0:226          's4' (temp highp int)
-0:226          Function Call: imageSize(IB1; (global highp int)
+0:226          imageQuerySize (global highp int)
 0:226            'bufSamp4' (writeonly uniform highp imageBuffer)
 0:227      Sequence
 0:227        move second child to first child (temp highp int)
 0:227          's5' (temp highp int)
-0:227          Function Call: imageSize(iIB1; (global highp int)
+0:227          imageQuerySize (global highp int)
 0:227            'bufSamp5' (writeonly uniform highp iimageBuffer)
 0:228      Sequence
 0:228        move second child to first child (temp highp int)
 0:228          's6' (temp highp int)
-0:228          Function Call: imageSize(uIB1; (global highp int)
+0:228          imageQuerySize (global highp int)
 0:228            'bufSamp6' (writeonly uniform highp uimageBuffer)
 0:230      Sequence
 0:230        move second child to first child (temp highp 4-component vector of float)
 0:230          'f1' (temp highp 4-component vector of float)
-0:230          Function Call: texelFetch(sB1;i1; (global highp 4-component vector of float)
+0:230          textureFetch (global highp 4-component vector of float)
 0:230            'bufSamp1' (uniform highp samplerBuffer)
 0:230            's1' (temp highp int)
 0:231      Sequence
 0:231        move second child to first child (temp highp 4-component vector of int)
 0:231          'f2' (temp highp 4-component vector of int)
-0:231          Function Call: texelFetch(isB1;i1; (global highp 4-component vector of int)
+0:231          textureFetch (global highp 4-component vector of int)
 0:231            'bufSamp2' (uniform highp isamplerBuffer)
 0:231            's2' (temp highp int)
 0:232      Sequence
 0:232        move second child to first child (temp highp 4-component vector of uint)
 0:232          'f3' (temp highp 4-component vector of uint)
-0:232          Function Call: texelFetch(usB1;i1; (global highp 4-component vector of uint)
+0:232          textureFetch (global highp 4-component vector of uint)
 0:232            'bufSamp3' (uniform highp usamplerBuffer)
 0:232            's3' (temp highp int)
 0:275  Function Definition: CAT( (global void)
@@ -476,35 +476,35 @@ ERROR: node is still EOpNull!
 0:277      Sequence
 0:277        move second child to first child (temp highp 3-component vector of int)
 0:277          's4' (temp highp 3-component vector of int)
-0:277          Function Call: textureSize(sAC1;i1; (global highp 3-component vector of int)
+0:277          textureSize (global highp 3-component vector of int)
 0:277            'CA4' (uniform highp samplerCubeArray)
 0:277            Constant:
 0:277              1 (const int)
 0:278      Sequence
 0:278        move second child to first child (temp highp 3-component vector of int)
 0:278          's5' (temp highp 3-component vector of int)
-0:278          Function Call: textureSize(sASC1;i1; (global highp 3-component vector of int)
+0:278          textureSize (global highp 3-component vector of int)
 0:278            'CA5' (uniform highp samplerCubeArrayShadow)
 0:278            Constant:
 0:278              1 (const int)
 0:279      Sequence
 0:279        move second child to first child (temp highp 3-component vector of int)
 0:279          's6' (temp highp 3-component vector of int)
-0:279          Function Call: textureSize(isAC1;i1; (global highp 3-component vector of int)
+0:279          textureSize (global highp 3-component vector of int)
 0:279            'CA6' (uniform highp isamplerCubeArray)
 0:279            Constant:
 0:279              1 (const int)
 0:280      Sequence
 0:280        move second child to first child (temp highp 3-component vector of int)
 0:280          's7' (temp highp 3-component vector of int)
-0:280          Function Call: textureSize(usAC1;i1; (global highp 3-component vector of int)
+0:280          textureSize (global highp 3-component vector of int)
 0:280            'CA7' (uniform highp usamplerCubeArray)
 0:280            Constant:
 0:280              1 (const int)
 0:282      Sequence
 0:282        move second child to first child (temp highp 4-component vector of float)
 0:282          't4' (temp highp 4-component vector of float)
-0:282          Function Call: texture(sAC1;vf4; (global highp 4-component vector of float)
+0:282          texture (global highp 4-component vector of float)
 0:282            'CA4' (uniform highp samplerCubeArray)
 0:282            Constant:
 0:282              0.500000
@@ -514,7 +514,7 @@ ERROR: node is still EOpNull!
 0:283      Sequence
 0:283        move second child to first child (temp highp float)
 0:283          't5' (temp highp float)
-0:283          Function Call: texture(sASC1;vf4;f1; (global highp float)
+0:283          texture (global highp float)
 0:283            'CA5' (uniform highp samplerCubeArrayShadow)
 0:283            Constant:
 0:283              0.500000
@@ -526,7 +526,7 @@ ERROR: node is still EOpNull!
 0:284      Sequence
 0:284        move second child to first child (temp highp 4-component vector of int)
 0:284          't6' (temp highp 4-component vector of int)
-0:284          Function Call: texture(isAC1;vf4; (global highp 4-component vector of int)
+0:284          texture (global highp 4-component vector of int)
 0:284            'CA6' (uniform highp isamplerCubeArray)
 0:284            Constant:
 0:284              0.500000
@@ -536,7 +536,7 @@ ERROR: node is still EOpNull!
 0:285      Sequence
 0:285        move second child to first child (temp highp 4-component vector of uint)
 0:285          't7' (temp highp 4-component vector of uint)
-0:285          Function Call: texture(usAC1;vf4; (global highp 4-component vector of uint)
+0:285          texture (global highp 4-component vector of uint)
 0:285            'CA7' (uniform highp usamplerCubeArray)
 0:285            Constant:
 0:285              0.500000
@@ -546,7 +546,7 @@ ERROR: node is still EOpNull!
 0:287      Sequence
 0:287        move second child to first child (temp highp 4-component vector of float)
 0:287          'L4' (temp highp 4-component vector of float)
-0:287          Function Call: textureLod(sAC1;vf4;f1; (global highp 4-component vector of float)
+0:287          textureLod (global highp 4-component vector of float)
 0:287            'CA4' (uniform highp samplerCubeArray)
 0:287            Constant:
 0:287              0.500000
@@ -558,7 +558,7 @@ ERROR: node is still EOpNull!
 0:288      Sequence
 0:288        move second child to first child (temp highp 4-component vector of int)
 0:288          'L6' (temp highp 4-component vector of int)
-0:288          Function Call: textureLod(isAC1;vf4;f1; (global highp 4-component vector of int)
+0:288          textureLod (global highp 4-component vector of int)
 0:288            'CA6' (uniform highp isamplerCubeArray)
 0:288            Constant:
 0:288              0.500000
@@ -570,7 +570,7 @@ ERROR: node is still EOpNull!
 0:289      Sequence
 0:289        move second child to first child (temp highp 4-component vector of uint)
 0:289          'L7' (temp highp 4-component vector of uint)
-0:289          Function Call: textureLod(usAC1;vf4;f1; (global highp 4-component vector of uint)
+0:289          textureLod (global highp 4-component vector of uint)
 0:289            'CA7' (uniform highp usamplerCubeArray)
 0:289            Constant:
 0:289              0.500000
@@ -582,7 +582,7 @@ ERROR: node is still EOpNull!
 0:291      Sequence
 0:291        move second child to first child (temp highp 4-component vector of float)
 0:291          'g4' (temp highp 4-component vector of float)
-0:291          Function Call: textureGrad(sAC1;vf4;vf3;vf3; (global highp 4-component vector of float)
+0:291          textureGrad (global highp 4-component vector of float)
 0:291            'CA4' (uniform highp samplerCubeArray)
 0:291            Constant:
 0:291              0.500000
@@ -600,7 +600,7 @@ ERROR: node is still EOpNull!
 0:292      Sequence
 0:292        move second child to first child (temp highp 4-component vector of int)
 0:292          'g6' (temp highp 4-component vector of int)
-0:292          Function Call: textureGrad(isAC1;vf4;vf3;vf3; (global highp 4-component vector of int)
+0:292          textureGrad (global highp 4-component vector of int)
 0:292            'CA6' (uniform highp isamplerCubeArray)
 0:292            Constant:
 0:292              0.500000
@@ -618,7 +618,7 @@ ERROR: node is still EOpNull!
 0:293      Sequence
 0:293        move second child to first child (temp highp 4-component vector of uint)
 0:293          'g7' (temp highp 4-component vector of uint)
-0:293          Function Call: textureGrad(usAC1;vf4;vf3;vf3; (global highp 4-component vector of uint)
+0:293          textureGrad (global highp 4-component vector of uint)
 0:293            'CA7' (uniform highp usamplerCubeArray)
 0:293            Constant:
 0:293              0.500000
@@ -636,7 +636,7 @@ ERROR: node is still EOpNull!
 0:295      Sequence
 0:295        move second child to first child (temp highp 4-component vector of float)
 0:295          'gath4' (temp highp 4-component vector of float)
-0:295          Function Call: textureGather(sAC1;vf4; (global highp 4-component vector of float)
+0:295          textureGather (global highp 4-component vector of float)
 0:295            'CA4' (uniform highp samplerCubeArray)
 0:295            Constant:
 0:295              0.500000
@@ -646,7 +646,7 @@ ERROR: node is still EOpNull!
 0:296      Sequence
 0:296        move second child to first child (temp highp 4-component vector of float)
 0:296          'gathC4' (temp highp 4-component vector of float)
-0:296          Function Call: textureGather(sAC1;vf4;i1; (global highp 4-component vector of float)
+0:296          textureGather (global highp 4-component vector of float)
 0:296            'CA4' (uniform highp samplerCubeArray)
 0:296            Constant:
 0:296              0.500000
@@ -658,7 +658,7 @@ ERROR: node is still EOpNull!
 0:297      Sequence
 0:297        move second child to first child (temp highp 4-component vector of int)
 0:297          'gath6' (temp highp 4-component vector of int)
-0:297          Function Call: textureGather(isAC1;vf4; (global highp 4-component vector of int)
+0:297          textureGather (global highp 4-component vector of int)
 0:297            'CA6' (uniform highp isamplerCubeArray)
 0:297            Constant:
 0:297              0.500000
@@ -668,7 +668,7 @@ ERROR: node is still EOpNull!
 0:298      Sequence
 0:298        move second child to first child (temp highp 4-component vector of int)
 0:298          'gathC6' (temp highp 4-component vector of int)
-0:298          Function Call: textureGather(isAC1;vf4;i1; (global highp 4-component vector of int)
+0:298          textureGather (global highp 4-component vector of int)
 0:298            'CA6' (uniform highp isamplerCubeArray)
 0:298            Constant:
 0:298              0.500000
@@ -680,7 +680,7 @@ ERROR: node is still EOpNull!
 0:299      Sequence
 0:299        move second child to first child (temp highp 4-component vector of uint)
 0:299          'gath7' (temp highp 4-component vector of uint)
-0:299          Function Call: textureGather(usAC1;vf4; (global highp 4-component vector of uint)
+0:299          textureGather (global highp 4-component vector of uint)
 0:299            'CA7' (uniform highp usamplerCubeArray)
 0:299            Constant:
 0:299              0.500000
@@ -690,7 +690,7 @@ ERROR: node is still EOpNull!
 0:300      Sequence
 0:300        move second child to first child (temp highp 4-component vector of uint)
 0:300          'gathC7' (temp highp 4-component vector of uint)
-0:300          Function Call: textureGather(usAC1;vf4;i1; (global highp 4-component vector of uint)
+0:300          textureGather (global highp 4-component vector of uint)
 0:300            'CA7' (uniform highp usamplerCubeArray)
 0:300            Constant:
 0:300              0.500000
@@ -702,7 +702,7 @@ ERROR: node is still EOpNull!
 0:302      Sequence
 0:302        move second child to first child (temp highp 4-component vector of float)
 0:302          'gath5' (temp highp 4-component vector of float)
-0:302          Function Call: textureGather(sASC1;vf4;f1; (global highp 4-component vector of float)
+0:302          textureGather (global highp 4-component vector of float)
 0:302            'CA5' (uniform highp samplerCubeArrayShadow)
 0:302            Constant:
 0:302              0.500000
@@ -714,17 +714,17 @@ ERROR: node is still EOpNull!
 0:304      Sequence
 0:304        move second child to first child (temp highp 3-component vector of int)
 0:304          's1' (temp highp 3-component vector of int)
-0:304          Function Call: imageSize(IAC1; (global highp 3-component vector of int)
+0:304          imageQuerySize (global highp 3-component vector of int)
 0:304            'CA1' (writeonly uniform highp imageCubeArray)
 0:305      Sequence
 0:305        move second child to first child (temp highp 3-component vector of int)
 0:305          's2' (temp highp 3-component vector of int)
-0:305          Function Call: imageSize(iIAC1; (global highp 3-component vector of int)
+0:305          imageQuerySize (global highp 3-component vector of int)
 0:305            'CA2' (writeonly uniform highp iimageCubeArray)
 0:306      Sequence
 0:306        move second child to first child (temp highp 3-component vector of int)
 0:306          's3' (temp highp 3-component vector of int)
-0:306          Function Call: imageSize(uIAC1; (global highp 3-component vector of int)
+0:306          imageQuerySize (global highp 3-component vector of int)
 0:306            'CA3' (writeonly uniform highp uimageCubeArray)
 0:331  Function Definition: MSA( (global void)
 0:331    Function Parameters: 
@@ -732,7 +732,7 @@ ERROR: node is still EOpNull!
 0:333      Sequence
 0:333        move second child to first child (temp highp 4-component vector of float)
 0:333          'tf' (temp highp 4-component vector of float)
-0:333          Function Call: texelFetch(sA2M1;vi3;i1; (global highp 4-component vector of float)
+0:333          textureFetch (global highp 4-component vector of float)
 0:333            'samp2DMSA' (uniform highp sampler2DMSArray)
 0:333            Constant:
 0:333              5 (const int)
@@ -743,7 +743,7 @@ ERROR: node is still EOpNull!
 0:334      Sequence
 0:334        move second child to first child (temp highp 4-component vector of int)
 0:334          'tfi' (temp highp 4-component vector of int)
-0:334          Function Call: texelFetch(isA2M1;vi3;i1; (global highp 4-component vector of int)
+0:334          textureFetch (global highp 4-component vector of int)
 0:334            'samp2DMSAi' (uniform highp isampler2DMSArray)
 0:334            Constant:
 0:334              5 (const int)
@@ -754,7 +754,7 @@ ERROR: node is still EOpNull!
 0:335      Sequence
 0:335        move second child to first child (temp highp 4-component vector of uint)
 0:335          'tfu' (temp highp 4-component vector of uint)
-0:335          Function Call: texelFetch(usA2M1;vi3;i1; (global highp 4-component vector of uint)
+0:335          textureFetch (global highp 4-component vector of uint)
 0:335            'samp2DMSAu' (uniform highp usampler2DMSArray)
 0:335            Constant:
 0:335              5 (const int)
@@ -765,88 +765,88 @@ ERROR: node is still EOpNull!
 0:337      Sequence
 0:337        move second child to first child (temp highp 3-component vector of int)
 0:337          'tfs' (temp highp 3-component vector of int)
-0:337          Function Call: textureSize(sA2M1; (global highp 3-component vector of int)
+0:337          textureSize (global highp 3-component vector of int)
 0:337            'samp2DMSA' (uniform highp sampler2DMSArray)
 0:338      Sequence
 0:338        move second child to first child (temp highp 3-component vector of int)
 0:338          'tfsi' (temp highp 3-component vector of int)
-0:338          Function Call: textureSize(isA2M1; (global highp 3-component vector of int)
+0:338          textureSize (global highp 3-component vector of int)
 0:338            'samp2DMSAi' (uniform highp isampler2DMSArray)
 0:340      Sequence
 0:340        move second child to first child (temp highp 3-component vector of int)
 0:340          'tfsu' (temp highp 3-component vector of int)
-0:340          Function Call: textureSize(usA2M1; (global highp 3-component vector of int)
+0:340          textureSize (global highp 3-component vector of int)
 0:340            'samp2DMSAu' (uniform highp usampler2DMSArray)
 0:352  Function Definition: goodImageAtom( (global void)
 0:352    Function Parameters: 
 0:?     Sequence
-0:358      Function Call: imageAtomicAdd(iI21;vi2;i1; (global highp int)
+0:358      imageAtomicAdd (global highp int)
 0:358        'im2Di' (layout(r32i ) uniform highp iimage2D)
 0:358        'P' (uniform highp 2-component vector of int)
 0:358        'dati' (temp highp int)
-0:359      Function Call: imageAtomicAdd(uI21;vi2;u1; (global highp uint)
+0:359      imageAtomicAdd (global highp uint)
 0:359        'im2Du' (layout(r32ui ) uniform highp uimage2D)
 0:359        'P' (uniform highp 2-component vector of int)
 0:359        'datu' (temp highp uint)
-0:360      Function Call: imageAtomicMin(iI21;vi2;i1; (global highp int)
+0:360      imageAtomicMin (global highp int)
 0:360        'im2Di' (layout(r32i ) uniform highp iimage2D)
 0:360        'P' (uniform highp 2-component vector of int)
 0:360        'dati' (temp highp int)
-0:361      Function Call: imageAtomicMin(uI21;vi2;u1; (global highp uint)
+0:361      imageAtomicMin (global highp uint)
 0:361        'im2Du' (layout(r32ui ) uniform highp uimage2D)
 0:361        'P' (uniform highp 2-component vector of int)
 0:361        'datu' (temp highp uint)
-0:362      Function Call: imageAtomicMax(iI21;vi2;i1; (global highp int)
+0:362      imageAtomicMax (global highp int)
 0:362        'im2Di' (layout(r32i ) uniform highp iimage2D)
 0:362        'P' (uniform highp 2-component vector of int)
 0:362        'dati' (temp highp int)
-0:363      Function Call: imageAtomicMax(uI21;vi2;u1; (global highp uint)
+0:363      imageAtomicMax (global highp uint)
 0:363        'im2Du' (layout(r32ui ) uniform highp uimage2D)
 0:363        'P' (uniform highp 2-component vector of int)
 0:363        'datu' (temp highp uint)
-0:364      Function Call: imageAtomicAnd(iI21;vi2;i1; (global highp int)
+0:364      imageAtomicAnd (global highp int)
 0:364        'im2Di' (layout(r32i ) uniform highp iimage2D)
 0:364        'P' (uniform highp 2-component vector of int)
 0:364        'dati' (temp highp int)
-0:365      Function Call: imageAtomicAnd(uI21;vi2;u1; (global highp uint)
+0:365      imageAtomicAnd (global highp uint)
 0:365        'im2Du' (layout(r32ui ) uniform highp uimage2D)
 0:365        'P' (uniform highp 2-component vector of int)
 0:365        'datu' (temp highp uint)
-0:366      Function Call: imageAtomicOr(iI21;vi2;i1; (global highp int)
+0:366      imageAtomicOr (global highp int)
 0:366        'im2Di' (layout(r32i ) uniform highp iimage2D)
 0:366        'P' (uniform highp 2-component vector of int)
 0:366        'dati' (temp highp int)
-0:367      Function Call: imageAtomicOr(uI21;vi2;u1; (global highp uint)
+0:367      imageAtomicOr (global highp uint)
 0:367        'im2Du' (layout(r32ui ) uniform highp uimage2D)
 0:367        'P' (uniform highp 2-component vector of int)
 0:367        'datu' (temp highp uint)
-0:368      Function Call: imageAtomicXor(iI21;vi2;i1; (global highp int)
+0:368      imageAtomicXor (global highp int)
 0:368        'im2Di' (layout(r32i ) uniform highp iimage2D)
 0:368        'P' (uniform highp 2-component vector of int)
 0:368        'dati' (temp highp int)
-0:369      Function Call: imageAtomicXor(uI21;vi2;u1; (global highp uint)
+0:369      imageAtomicXor (global highp uint)
 0:369        'im2Du' (layout(r32ui ) uniform highp uimage2D)
 0:369        'P' (uniform highp 2-component vector of int)
 0:369        'datu' (temp highp uint)
-0:370      Function Call: imageAtomicExchange(iI21;vi2;i1; (global highp int)
+0:370      imageAtomicExchange (global highp int)
 0:370        'im2Di' (layout(r32i ) uniform highp iimage2D)
 0:370        'P' (uniform highp 2-component vector of int)
 0:370        'dati' (temp highp int)
-0:371      Function Call: imageAtomicExchange(uI21;vi2;u1; (global highp uint)
+0:371      imageAtomicExchange (global highp uint)
 0:371        'im2Du' (layout(r32ui ) uniform highp uimage2D)
 0:371        'P' (uniform highp 2-component vector of int)
 0:371        'datu' (temp highp uint)
-0:372      Function Call: imageAtomicExchange(I21;vi2;f1; (global highp float)
+0:372      imageAtomicExchange (global highp float)
 0:372        'im2Df' (layout(r32f ) uniform highp image2D)
 0:372        'P' (uniform highp 2-component vector of int)
 0:372        'datf' (temp highp float)
-0:373      Function Call: imageAtomicCompSwap(iI21;vi2;i1;i1; (global highp int)
+0:373      imageAtomicCompSwap (global highp int)
 0:373        'im2Di' (layout(r32i ) uniform highp iimage2D)
 0:373        'P' (uniform highp 2-component vector of int)
 0:373        Constant:
 0:373          3 (const int)
 0:373        'dati' (temp highp int)
-0:374      Function Call: imageAtomicCompSwap(uI21;vi2;u1;u1; (global highp uint)
+0:374      imageAtomicCompSwap (global highp uint)
 0:374        'im2Du' (layout(r32ui ) uniform highp uimage2D)
 0:374        'P' (uniform highp 2-component vector of int)
 0:374        Constant:
@@ -1091,16 +1091,16 @@ ERROR: node is still EOpNull!
 0:?     Sequence
 0:63      move second child to first child (temp highp 2-component vector of int)
 0:63        'v2' (temp highp 2-component vector of int)
-0:63        Function Call: textureSize(s2M1; (global highp 2-component vector of int)
+0:63        textureSize (global highp 2-component vector of int)
 0:63          's2dms' (uniform highp sampler2DMS)
 0:64      move second child to first child (temp highp 2-component vector of int)
 0:64        'v2' (temp highp 2-component vector of int)
-0:64        Function Call: textureSize(us2M1; (global highp 2-component vector of int)
+0:64        textureSize (global highp 2-component vector of int)
 0:64          'us2dms' (uniform highp usampler2DMS)
 0:65      Sequence
 0:65        move second child to first child (temp highp 4-component vector of float)
 0:65          'v4' (temp highp 4-component vector of float)
-0:65          Function Call: texelFetch(s2M1;vi2;i1; (global highp 4-component vector of float)
+0:65          textureFetch (global highp 4-component vector of float)
 0:65            's2dms' (uniform highp sampler2DMS)
 0:65            'v2' (temp highp 2-component vector of int)
 0:65            Constant:
@@ -1108,7 +1108,7 @@ ERROR: node is still EOpNull!
 0:66      Sequence
 0:66        move second child to first child (temp highp 4-component vector of int)
 0:66          'iv4' (temp highp 4-component vector of int)
-0:66          Function Call: texelFetch(is2M1;vi2;i1; (global highp 4-component vector of int)
+0:66          textureFetch (global highp 4-component vector of int)
 0:66            'is2dms' (uniform highp isampler2DMS)
 0:66            'v2' (temp highp 2-component vector of int)
 0:66            Constant:
@@ -1186,7 +1186,7 @@ ERROR: node is still EOpNull!
 0:164          'sIndex' (uniform highp int)
 0:164          Constant:
 0:164            2 (const int)
-0:165      Function Call: textureGatherOffset(s21;vf2;vi2; (global highp 4-component vector of float)
+0:165      textureGatherOffset (global highp 4-component vector of float)
 0:165        direct index (temp highp sampler2D)
 0:165          'sArray' (uniform 4-element array of highp sampler2D)
 0:165          Constant:
@@ -1194,9 +1194,9 @@ ERROR: node is still EOpNull!
 0:165        Constant:
 0:165          0.100000
 0:165          0.100000
-0:165        Convert float to int (temp 2-component vector of int)
+0:165        Convert float to int (temp highp 2-component vector of int)
 0:165          'inf' (in highp 2-component vector of float)
-0:166      Function Call: textureGatherOffsets(s21;vf2;vi2[4]; (global highp 4-component vector of float)
+0:166      textureGatherOffsets (global highp 4-component vector of float)
 0:166        direct index (temp highp sampler2D)
 0:166          'sArray' (uniform 4-element array of highp sampler2D)
 0:166          Constant:
@@ -1250,7 +1250,7 @@ ERROR: node is still EOpNull!
 0:179          'sIndex' (uniform highp int)
 0:179          Constant:
 0:179            2 (const int)
-0:180      Function Call: textureGatherOffset(s21;vf2;vi2; (global highp 4-component vector of float)
+0:180      textureGatherOffset (global highp 4-component vector of float)
 0:180        direct index (temp highp sampler2D)
 0:180          'sArray' (uniform 4-element array of highp sampler2D)
 0:180          Constant:
@@ -1258,9 +1258,9 @@ ERROR: node is still EOpNull!
 0:180        Constant:
 0:180          0.100000
 0:180          0.100000
-0:180        Convert float to int (temp 2-component vector of int)
+0:180        Convert float to int (temp highp 2-component vector of int)
 0:180          'inf' (in highp 2-component vector of float)
-0:181      Function Call: textureGatherOffsets(s21;vf2;vi2[4]; (global highp 4-component vector of float)
+0:181      textureGatherOffsets (global highp 4-component vector of float)
 0:181        direct index (temp highp sampler2D)
 0:181          'sArray' (uniform 4-element array of highp sampler2D)
 0:181          Constant:
@@ -1277,7 +1277,7 @@ ERROR: node is still EOpNull!
 0:181          0 (const int)
 0:181          0 (const int)
 0:181          0 (const int)
-0:182      Function Call: textureGatherOffsets(s21;vf2;vi2[4]; (global highp 4-component vector of float)
+0:182      textureGatherOffsets (global highp 4-component vector of float)
 0:182        direct index (temp highp sampler2D)
 0:182          'sArray' (uniform 4-element array of highp sampler2D)
 0:182          Constant:
@@ -1292,49 +1292,49 @@ ERROR: node is still EOpNull!
 0:222      Sequence
 0:222        move second child to first child (temp highp int)
 0:222          's1' (temp highp int)
-0:222          Function Call: textureSize(sB1; (global highp int)
+0:222          textureSize (global highp int)
 0:222            'bufSamp1' (uniform highp samplerBuffer)
 0:223      Sequence
 0:223        move second child to first child (temp highp int)
 0:223          's2' (temp highp int)
-0:223          Function Call: textureSize(isB1; (global highp int)
+0:223          textureSize (global highp int)
 0:223            'bufSamp2' (uniform highp isamplerBuffer)
 0:224      Sequence
 0:224        move second child to first child (temp highp int)
 0:224          's3' (temp highp int)
-0:224          Function Call: textureSize(usB1; (global highp int)
+0:224          textureSize (global highp int)
 0:224            'bufSamp3' (uniform highp usamplerBuffer)
 0:226      Sequence
 0:226        move second child to first child (temp highp int)
 0:226          's4' (temp highp int)
-0:226          Function Call: imageSize(IB1; (global highp int)
+0:226          imageQuerySize (global highp int)
 0:226            'bufSamp4' (writeonly uniform highp imageBuffer)
 0:227      Sequence
 0:227        move second child to first child (temp highp int)
 0:227          's5' (temp highp int)
-0:227          Function Call: imageSize(iIB1; (global highp int)
+0:227          imageQuerySize (global highp int)
 0:227            'bufSamp5' (writeonly uniform highp iimageBuffer)
 0:228      Sequence
 0:228        move second child to first child (temp highp int)
 0:228          's6' (temp highp int)
-0:228          Function Call: imageSize(uIB1; (global highp int)
+0:228          imageQuerySize (global highp int)
 0:228            'bufSamp6' (writeonly uniform highp uimageBuffer)
 0:230      Sequence
 0:230        move second child to first child (temp highp 4-component vector of float)
 0:230          'f1' (temp highp 4-component vector of float)
-0:230          Function Call: texelFetch(sB1;i1; (global highp 4-component vector of float)
+0:230          textureFetch (global highp 4-component vector of float)
 0:230            'bufSamp1' (uniform highp samplerBuffer)
 0:230            's1' (temp highp int)
 0:231      Sequence
 0:231        move second child to first child (temp highp 4-component vector of int)
 0:231          'f2' (temp highp 4-component vector of int)
-0:231          Function Call: texelFetch(isB1;i1; (global highp 4-component vector of int)
+0:231          textureFetch (global highp 4-component vector of int)
 0:231            'bufSamp2' (uniform highp isamplerBuffer)
 0:231            's2' (temp highp int)
 0:232      Sequence
 0:232        move second child to first child (temp highp 4-component vector of uint)
 0:232          'f3' (temp highp 4-component vector of uint)
-0:232          Function Call: texelFetch(usB1;i1; (global highp 4-component vector of uint)
+0:232          textureFetch (global highp 4-component vector of uint)
 0:232            'bufSamp3' (uniform highp usamplerBuffer)
 0:232            's3' (temp highp int)
 0:275  Function Definition: CAT( (global void)
@@ -1343,35 +1343,35 @@ ERROR: node is still EOpNull!
 0:277      Sequence
 0:277        move second child to first child (temp highp 3-component vector of int)
 0:277          's4' (temp highp 3-component vector of int)
-0:277          Function Call: textureSize(sAC1;i1; (global highp 3-component vector of int)
+0:277          textureSize (global highp 3-component vector of int)
 0:277            'CA4' (uniform highp samplerCubeArray)
 0:277            Constant:
 0:277              1 (const int)
 0:278      Sequence
 0:278        move second child to first child (temp highp 3-component vector of int)
 0:278          's5' (temp highp 3-component vector of int)
-0:278          Function Call: textureSize(sASC1;i1; (global highp 3-component vector of int)
+0:278          textureSize (global highp 3-component vector of int)
 0:278            'CA5' (uniform highp samplerCubeArrayShadow)
 0:278            Constant:
 0:278              1 (const int)
 0:279      Sequence
 0:279        move second child to first child (temp highp 3-component vector of int)
 0:279          's6' (temp highp 3-component vector of int)
-0:279          Function Call: textureSize(isAC1;i1; (global highp 3-component vector of int)
+0:279          textureSize (global highp 3-component vector of int)
 0:279            'CA6' (uniform highp isamplerCubeArray)
 0:279            Constant:
 0:279              1 (const int)
 0:280      Sequence
 0:280        move second child to first child (temp highp 3-component vector of int)
 0:280          's7' (temp highp 3-component vector of int)
-0:280          Function Call: textureSize(usAC1;i1; (global highp 3-component vector of int)
+0:280          textureSize (global highp 3-component vector of int)
 0:280            'CA7' (uniform highp usamplerCubeArray)
 0:280            Constant:
 0:280              1 (const int)
 0:282      Sequence
 0:282        move second child to first child (temp highp 4-component vector of float)
 0:282          't4' (temp highp 4-component vector of float)
-0:282          Function Call: texture(sAC1;vf4; (global highp 4-component vector of float)
+0:282          texture (global highp 4-component vector of float)
 0:282            'CA4' (uniform highp samplerCubeArray)
 0:282            Constant:
 0:282              0.500000
@@ -1381,7 +1381,7 @@ ERROR: node is still EOpNull!
 0:283      Sequence
 0:283        move second child to first child (temp highp float)
 0:283          't5' (temp highp float)
-0:283          Function Call: texture(sASC1;vf4;f1; (global highp float)
+0:283          texture (global highp float)
 0:283            'CA5' (uniform highp samplerCubeArrayShadow)
 0:283            Constant:
 0:283              0.500000
@@ -1393,7 +1393,7 @@ ERROR: node is still EOpNull!
 0:284      Sequence
 0:284        move second child to first child (temp highp 4-component vector of int)
 0:284          't6' (temp highp 4-component vector of int)
-0:284          Function Call: texture(isAC1;vf4; (global highp 4-component vector of int)
+0:284          texture (global highp 4-component vector of int)
 0:284            'CA6' (uniform highp isamplerCubeArray)
 0:284            Constant:
 0:284              0.500000
@@ -1403,7 +1403,7 @@ ERROR: node is still EOpNull!
 0:285      Sequence
 0:285        move second child to first child (temp highp 4-component vector of uint)
 0:285          't7' (temp highp 4-component vector of uint)
-0:285          Function Call: texture(usAC1;vf4; (global highp 4-component vector of uint)
+0:285          texture (global highp 4-component vector of uint)
 0:285            'CA7' (uniform highp usamplerCubeArray)
 0:285            Constant:
 0:285              0.500000
@@ -1413,7 +1413,7 @@ ERROR: node is still EOpNull!
 0:287      Sequence
 0:287        move second child to first child (temp highp 4-component vector of float)
 0:287          'L4' (temp highp 4-component vector of float)
-0:287          Function Call: textureLod(sAC1;vf4;f1; (global highp 4-component vector of float)
+0:287          textureLod (global highp 4-component vector of float)
 0:287            'CA4' (uniform highp samplerCubeArray)
 0:287            Constant:
 0:287              0.500000
@@ -1425,7 +1425,7 @@ ERROR: node is still EOpNull!
 0:288      Sequence
 0:288        move second child to first child (temp highp 4-component vector of int)
 0:288          'L6' (temp highp 4-component vector of int)
-0:288          Function Call: textureLod(isAC1;vf4;f1; (global highp 4-component vector of int)
+0:288          textureLod (global highp 4-component vector of int)
 0:288            'CA6' (uniform highp isamplerCubeArray)
 0:288            Constant:
 0:288              0.500000
@@ -1437,7 +1437,7 @@ ERROR: node is still EOpNull!
 0:289      Sequence
 0:289        move second child to first child (temp highp 4-component vector of uint)
 0:289          'L7' (temp highp 4-component vector of uint)
-0:289          Function Call: textureLod(usAC1;vf4;f1; (global highp 4-component vector of uint)
+0:289          textureLod (global highp 4-component vector of uint)
 0:289            'CA7' (uniform highp usamplerCubeArray)
 0:289            Constant:
 0:289              0.500000
@@ -1449,7 +1449,7 @@ ERROR: node is still EOpNull!
 0:291      Sequence
 0:291        move second child to first child (temp highp 4-component vector of float)
 0:291          'g4' (temp highp 4-component vector of float)
-0:291          Function Call: textureGrad(sAC1;vf4;vf3;vf3; (global highp 4-component vector of float)
+0:291          textureGrad (global highp 4-component vector of float)
 0:291            'CA4' (uniform highp samplerCubeArray)
 0:291            Constant:
 0:291              0.500000
@@ -1467,7 +1467,7 @@ ERROR: node is still EOpNull!
 0:292      Sequence
 0:292        move second child to first child (temp highp 4-component vector of int)
 0:292          'g6' (temp highp 4-component vector of int)
-0:292          Function Call: textureGrad(isAC1;vf4;vf3;vf3; (global highp 4-component vector of int)
+0:292          textureGrad (global highp 4-component vector of int)
 0:292            'CA6' (uniform highp isamplerCubeArray)
 0:292            Constant:
 0:292              0.500000
@@ -1485,7 +1485,7 @@ ERROR: node is still EOpNull!
 0:293      Sequence
 0:293        move second child to first child (temp highp 4-component vector of uint)
 0:293          'g7' (temp highp 4-component vector of uint)
-0:293          Function Call: textureGrad(usAC1;vf4;vf3;vf3; (global highp 4-component vector of uint)
+0:293          textureGrad (global highp 4-component vector of uint)
 0:293            'CA7' (uniform highp usamplerCubeArray)
 0:293            Constant:
 0:293              0.500000
@@ -1503,7 +1503,7 @@ ERROR: node is still EOpNull!
 0:295      Sequence
 0:295        move second child to first child (temp highp 4-component vector of float)
 0:295          'gath4' (temp highp 4-component vector of float)
-0:295          Function Call: textureGather(sAC1;vf4; (global highp 4-component vector of float)
+0:295          textureGather (global highp 4-component vector of float)
 0:295            'CA4' (uniform highp samplerCubeArray)
 0:295            Constant:
 0:295              0.500000
@@ -1513,7 +1513,7 @@ ERROR: node is still EOpNull!
 0:296      Sequence
 0:296        move second child to first child (temp highp 4-component vector of float)
 0:296          'gathC4' (temp highp 4-component vector of float)
-0:296          Function Call: textureGather(sAC1;vf4;i1; (global highp 4-component vector of float)
+0:296          textureGather (global highp 4-component vector of float)
 0:296            'CA4' (uniform highp samplerCubeArray)
 0:296            Constant:
 0:296              0.500000
@@ -1525,7 +1525,7 @@ ERROR: node is still EOpNull!
 0:297      Sequence
 0:297        move second child to first child (temp highp 4-component vector of int)
 0:297          'gath6' (temp highp 4-component vector of int)
-0:297          Function Call: textureGather(isAC1;vf4; (global highp 4-component vector of int)
+0:297          textureGather (global highp 4-component vector of int)
 0:297            'CA6' (uniform highp isamplerCubeArray)
 0:297            Constant:
 0:297              0.500000
@@ -1535,7 +1535,7 @@ ERROR: node is still EOpNull!
 0:298      Sequence
 0:298        move second child to first child (temp highp 4-component vector of int)
 0:298          'gathC6' (temp highp 4-component vector of int)
-0:298          Function Call: textureGather(isAC1;vf4;i1; (global highp 4-component vector of int)
+0:298          textureGather (global highp 4-component vector of int)
 0:298            'CA6' (uniform highp isamplerCubeArray)
 0:298            Constant:
 0:298              0.500000
@@ -1547,7 +1547,7 @@ ERROR: node is still EOpNull!
 0:299      Sequence
 0:299        move second child to first child (temp highp 4-component vector of uint)
 0:299          'gath7' (temp highp 4-component vector of uint)
-0:299          Function Call: textureGather(usAC1;vf4; (global highp 4-component vector of uint)
+0:299          textureGather (global highp 4-component vector of uint)
 0:299            'CA7' (uniform highp usamplerCubeArray)
 0:299            Constant:
 0:299              0.500000
@@ -1557,7 +1557,7 @@ ERROR: node is still EOpNull!
 0:300      Sequence
 0:300        move second child to first child (temp highp 4-component vector of uint)
 0:300          'gathC7' (temp highp 4-component vector of uint)
-0:300          Function Call: textureGather(usAC1;vf4;i1; (global highp 4-component vector of uint)
+0:300          textureGather (global highp 4-component vector of uint)
 0:300            'CA7' (uniform highp usamplerCubeArray)
 0:300            Constant:
 0:300              0.500000
@@ -1569,7 +1569,7 @@ ERROR: node is still EOpNull!
 0:302      Sequence
 0:302        move second child to first child (temp highp 4-component vector of float)
 0:302          'gath5' (temp highp 4-component vector of float)
-0:302          Function Call: textureGather(sASC1;vf4;f1; (global highp 4-component vector of float)
+0:302          textureGather (global highp 4-component vector of float)
 0:302            'CA5' (uniform highp samplerCubeArrayShadow)
 0:302            Constant:
 0:302              0.500000
@@ -1581,17 +1581,17 @@ ERROR: node is still EOpNull!
 0:304      Sequence
 0:304        move second child to first child (temp highp 3-component vector of int)
 0:304          's1' (temp highp 3-component vector of int)
-0:304          Function Call: imageSize(IAC1; (global highp 3-component vector of int)
+0:304          imageQuerySize (global highp 3-component vector of int)
 0:304            'CA1' (writeonly uniform highp imageCubeArray)
 0:305      Sequence
 0:305        move second child to first child (temp highp 3-component vector of int)
 0:305          's2' (temp highp 3-component vector of int)
-0:305          Function Call: imageSize(iIAC1; (global highp 3-component vector of int)
+0:305          imageQuerySize (global highp 3-component vector of int)
 0:305            'CA2' (writeonly uniform highp iimageCubeArray)
 0:306      Sequence
 0:306        move second child to first child (temp highp 3-component vector of int)
 0:306          's3' (temp highp 3-component vector of int)
-0:306          Function Call: imageSize(uIAC1; (global highp 3-component vector of int)
+0:306          imageQuerySize (global highp 3-component vector of int)
 0:306            'CA3' (writeonly uniform highp uimageCubeArray)
 0:331  Function Definition: MSA( (global void)
 0:331    Function Parameters: 
@@ -1599,7 +1599,7 @@ ERROR: node is still EOpNull!
 0:333      Sequence
 0:333        move second child to first child (temp highp 4-component vector of float)
 0:333          'tf' (temp highp 4-component vector of float)
-0:333          Function Call: texelFetch(sA2M1;vi3;i1; (global highp 4-component vector of float)
+0:333          textureFetch (global highp 4-component vector of float)
 0:333            'samp2DMSA' (uniform highp sampler2DMSArray)
 0:333            Constant:
 0:333              5 (const int)
@@ -1610,7 +1610,7 @@ ERROR: node is still EOpNull!
 0:334      Sequence
 0:334        move second child to first child (temp highp 4-component vector of int)
 0:334          'tfi' (temp highp 4-component vector of int)
-0:334          Function Call: texelFetch(isA2M1;vi3;i1; (global highp 4-component vector of int)
+0:334          textureFetch (global highp 4-component vector of int)
 0:334            'samp2DMSAi' (uniform highp isampler2DMSArray)
 0:334            Constant:
 0:334              5 (const int)
@@ -1621,7 +1621,7 @@ ERROR: node is still EOpNull!
 0:335      Sequence
 0:335        move second child to first child (temp highp 4-component vector of uint)
 0:335          'tfu' (temp highp 4-component vector of uint)
-0:335          Function Call: texelFetch(usA2M1;vi3;i1; (global highp 4-component vector of uint)
+0:335          textureFetch (global highp 4-component vector of uint)
 0:335            'samp2DMSAu' (uniform highp usampler2DMSArray)
 0:335            Constant:
 0:335              5 (const int)
@@ -1632,88 +1632,88 @@ ERROR: node is still EOpNull!
 0:337      Sequence
 0:337        move second child to first child (temp highp 3-component vector of int)
 0:337          'tfs' (temp highp 3-component vector of int)
-0:337          Function Call: textureSize(sA2M1; (global highp 3-component vector of int)
+0:337          textureSize (global highp 3-component vector of int)
 0:337            'samp2DMSA' (uniform highp sampler2DMSArray)
 0:338      Sequence
 0:338        move second child to first child (temp highp 3-component vector of int)
 0:338          'tfsi' (temp highp 3-component vector of int)
-0:338          Function Call: textureSize(isA2M1; (global highp 3-component vector of int)
+0:338          textureSize (global highp 3-component vector of int)
 0:338            'samp2DMSAi' (uniform highp isampler2DMSArray)
 0:340      Sequence
 0:340        move second child to first child (temp highp 3-component vector of int)
 0:340          'tfsu' (temp highp 3-component vector of int)
-0:340          Function Call: textureSize(usA2M1; (global highp 3-component vector of int)
+0:340          textureSize (global highp 3-component vector of int)
 0:340            'samp2DMSAu' (uniform highp usampler2DMSArray)
 0:352  Function Definition: goodImageAtom( (global void)
 0:352    Function Parameters: 
 0:?     Sequence
-0:358      Function Call: imageAtomicAdd(iI21;vi2;i1; (global highp int)
+0:358      imageAtomicAdd (global highp int)
 0:358        'im2Di' (layout(r32i ) uniform highp iimage2D)
 0:358        'P' (uniform highp 2-component vector of int)
 0:358        'dati' (temp highp int)
-0:359      Function Call: imageAtomicAdd(uI21;vi2;u1; (global highp uint)
+0:359      imageAtomicAdd (global highp uint)
 0:359        'im2Du' (layout(r32ui ) uniform highp uimage2D)
 0:359        'P' (uniform highp 2-component vector of int)
 0:359        'datu' (temp highp uint)
-0:360      Function Call: imageAtomicMin(iI21;vi2;i1; (global highp int)
+0:360      imageAtomicMin (global highp int)
 0:360        'im2Di' (layout(r32i ) uniform highp iimage2D)
 0:360        'P' (uniform highp 2-component vector of int)
 0:360        'dati' (temp highp int)
-0:361      Function Call: imageAtomicMin(uI21;vi2;u1; (global highp uint)
+0:361      imageAtomicMin (global highp uint)
 0:361        'im2Du' (layout(r32ui ) uniform highp uimage2D)
 0:361        'P' (uniform highp 2-component vector of int)
 0:361        'datu' (temp highp uint)
-0:362      Function Call: imageAtomicMax(iI21;vi2;i1; (global highp int)
+0:362      imageAtomicMax (global highp int)
 0:362        'im2Di' (layout(r32i ) uniform highp iimage2D)
 0:362        'P' (uniform highp 2-component vector of int)
 0:362        'dati' (temp highp int)
-0:363      Function Call: imageAtomicMax(uI21;vi2;u1; (global highp uint)
+0:363      imageAtomicMax (global highp uint)
 0:363        'im2Du' (layout(r32ui ) uniform highp uimage2D)
 0:363        'P' (uniform highp 2-component vector of int)
 0:363        'datu' (temp highp uint)
-0:364      Function Call: imageAtomicAnd(iI21;vi2;i1; (global highp int)
+0:364      imageAtomicAnd (global highp int)
 0:364        'im2Di' (layout(r32i ) uniform highp iimage2D)
 0:364        'P' (uniform highp 2-component vector of int)
 0:364        'dati' (temp highp int)
-0:365      Function Call: imageAtomicAnd(uI21;vi2;u1; (global highp uint)
+0:365      imageAtomicAnd (global highp uint)
 0:365        'im2Du' (layout(r32ui ) uniform highp uimage2D)
 0:365        'P' (uniform highp 2-component vector of int)
 0:365        'datu' (temp highp uint)
-0:366      Function Call: imageAtomicOr(iI21;vi2;i1; (global highp int)
+0:366      imageAtomicOr (global highp int)
 0:366        'im2Di' (layout(r32i ) uniform highp iimage2D)
 0:366        'P' (uniform highp 2-component vector of int)
 0:366        'dati' (temp highp int)
-0:367      Function Call: imageAtomicOr(uI21;vi2;u1; (global highp uint)
+0:367      imageAtomicOr (global highp uint)
 0:367        'im2Du' (layout(r32ui ) uniform highp uimage2D)
 0:367        'P' (uniform highp 2-component vector of int)
 0:367        'datu' (temp highp uint)
-0:368      Function Call: imageAtomicXor(iI21;vi2;i1; (global highp int)
+0:368      imageAtomicXor (global highp int)
 0:368        'im2Di' (layout(r32i ) uniform highp iimage2D)
 0:368        'P' (uniform highp 2-component vector of int)
 0:368        'dati' (temp highp int)
-0:369      Function Call: imageAtomicXor(uI21;vi2;u1; (global highp uint)
+0:369      imageAtomicXor (global highp uint)
 0:369        'im2Du' (layout(r32ui ) uniform highp uimage2D)
 0:369        'P' (uniform highp 2-component vector of int)
 0:369        'datu' (temp highp uint)
-0:370      Function Call: imageAtomicExchange(iI21;vi2;i1; (global highp int)
+0:370      imageAtomicExchange (global highp int)
 0:370        'im2Di' (layout(r32i ) uniform highp iimage2D)
 0:370        'P' (uniform highp 2-component vector of int)
 0:370        'dati' (temp highp int)
-0:371      Function Call: imageAtomicExchange(uI21;vi2;u1; (global highp uint)
+0:371      imageAtomicExchange (global highp uint)
 0:371        'im2Du' (layout(r32ui ) uniform highp uimage2D)
 0:371        'P' (uniform highp 2-component vector of int)
 0:371        'datu' (temp highp uint)
-0:372      Function Call: imageAtomicExchange(I21;vi2;f1; (global highp float)
+0:372      imageAtomicExchange (global highp float)
 0:372        'im2Df' (layout(r32f ) uniform highp image2D)
 0:372        'P' (uniform highp 2-component vector of int)
 0:372        'datf' (temp highp float)
-0:373      Function Call: imageAtomicCompSwap(iI21;vi2;i1;i1; (global highp int)
+0:373      imageAtomicCompSwap (global highp int)
 0:373        'im2Di' (layout(r32i ) uniform highp iimage2D)
 0:373        'P' (uniform highp 2-component vector of int)
 0:373        Constant:
 0:373          3 (const int)
 0:373        'dati' (temp highp int)
-0:374      Function Call: imageAtomicCompSwap(uI21;vi2;u1;u1; (global highp uint)
+0:374      imageAtomicCompSwap (global highp uint)
 0:374        'im2Du' (layout(r32ui ) uniform highp uimage2D)
 0:374        'P' (uniform highp 2-component vector of int)
 0:374        Constant:

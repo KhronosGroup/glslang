@@ -173,7 +173,7 @@ ERROR: node is still EOpNull!
 0:120      Sequence
 0:120        move second child to first child (temp highp 2-component vector of int)
 0:120          'x1' (temp highp 2-component vector of int)
-0:120          Function Call: textureSize(s21;i1; (global highp 2-component vector of int)
+0:120          textureSize (global highp 2-component vector of int)
 0:120            's2D' (uniform lowp sampler2D)
 0:120            Constant:
 0:120              2 (const int)
@@ -182,7 +182,7 @@ ERROR: node is still EOpNull!
 0:122      Sequence
 0:122        move second child to first child (temp highp 3-component vector of int)
 0:122          'x3' (temp highp 3-component vector of int)
-0:122          Function Call: textureSize(sAS21;i1; (global highp 3-component vector of int)
+0:122          textureSize (global highp 3-component vector of int)
 0:122            's2DAS' (uniform lowp sampler2DArrayShadow)
 0:122            Constant:
 0:122              -1 (const int)
@@ -191,7 +191,7 @@ ERROR: node is still EOpNull!
 0:124      Sequence
 0:124        move second child to first child (temp highp 4-component vector of float)
 0:124          'x4' (temp highp 4-component vector of float)
-0:124          Function Call: texture(s21;vf2; (global highp 4-component vector of float)
+0:124          texture (global highp 4-component vector of float)
 0:124            's2D' (uniform lowp sampler2D)
 0:124            'c2D' (in highp 2-component vector of float)
 0:125      Constant:
@@ -199,7 +199,7 @@ ERROR: node is still EOpNull!
 0:126      Sequence
 0:126        move second child to first child (temp highp 4-component vector of float)
 0:126          'x5' (temp highp 4-component vector of float)
-0:126          Function Call: textureProjOffset(s31;vf4;vi3; (global highp 4-component vector of float)
+0:126          textureProjOffset (global highp 4-component vector of float)
 0:126            's3D' (uniform lowp sampler3D)
 0:126            Constant:
 0:126              0.200000
@@ -215,7 +215,7 @@ ERROR: node is still EOpNull!
 0:128      Sequence
 0:128        move second child to first child (temp highp float)
 0:128          'x6' (temp highp float)
-0:128          Function Call: textureProjGradOffset(sS21;vf4;vf2;vf2;vi2; (global highp float)
+0:128          textureProjGradOffset (global highp float)
 0:128            's2DS' (uniform lowp sampler2DShadow)
 0:128            'invIn' (invariant in highp 4-component vector of float)
 0:128            Constant:
@@ -432,7 +432,7 @@ ERROR: node is still EOpNull!
 0:120      Sequence
 0:120        move second child to first child (temp highp 2-component vector of int)
 0:120          'x1' (temp highp 2-component vector of int)
-0:120          Function Call: textureSize(s21;i1; (global highp 2-component vector of int)
+0:120          textureSize (global highp 2-component vector of int)
 0:120            's2D' (uniform lowp sampler2D)
 0:120            Constant:
 0:120              2 (const int)
@@ -441,7 +441,7 @@ ERROR: node is still EOpNull!
 0:122      Sequence
 0:122        move second child to first child (temp highp 3-component vector of int)
 0:122          'x3' (temp highp 3-component vector of int)
-0:122          Function Call: textureSize(sAS21;i1; (global highp 3-component vector of int)
+0:122          textureSize (global highp 3-component vector of int)
 0:122            's2DAS' (uniform lowp sampler2DArrayShadow)
 0:122            Constant:
 0:122              -1 (const int)
@@ -450,7 +450,7 @@ ERROR: node is still EOpNull!
 0:124      Sequence
 0:124        move second child to first child (temp highp 4-component vector of float)
 0:124          'x4' (temp highp 4-component vector of float)
-0:124          Function Call: texture(s21;vf2; (global highp 4-component vector of float)
+0:124          texture (global highp 4-component vector of float)
 0:124            's2D' (uniform lowp sampler2D)
 0:124            'c2D' (in highp 2-component vector of float)
 0:125      Constant:
@@ -458,7 +458,7 @@ ERROR: node is still EOpNull!
 0:126      Sequence
 0:126        move second child to first child (temp highp 4-component vector of float)
 0:126          'x5' (temp highp 4-component vector of float)
-0:126          Function Call: textureProjOffset(s31;vf4;vi3; (global highp 4-component vector of float)
+0:126          textureProjOffset (global highp 4-component vector of float)
 0:126            's3D' (uniform lowp sampler3D)
 0:126            Constant:
 0:126              0.200000
@@ -474,7 +474,7 @@ ERROR: node is still EOpNull!
 0:128      Sequence
 0:128        move second child to first child (temp highp float)
 0:128          'x6' (temp highp float)
-0:128          Function Call: textureProjGradOffset(sS21;vf4;vf2;vf2;vi2; (global highp float)
+0:128          textureProjGradOffset (global highp float)
 0:128            's2DS' (uniform lowp sampler2DShadow)
 0:128            'invIn' (invariant in highp 4-component vector of float)
 0:128            Constant:

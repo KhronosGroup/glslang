@@ -192,7 +192,7 @@ Shader version: 130
 0:71              indirect index (temp float)
 0:71                'a' (temp 16-element array of float)
 0:71                'x' (temp int)
-0:71          Function Call: texture2D(s21;vf2; (global 4-component vector of float)
+0:71          texture (global 4-component vector of float)
 0:71            'sampler' (uniform sampler2D)
 0:71            'coord' (smooth in 2-component vector of float)
 0:?   Linker Objects
@@ -399,7 +399,7 @@ Shader version: 130
 0:71              indirect index (temp float)
 0:71                'a' (temp 16-element array of float)
 0:71                'x' (temp int)
-0:71          Function Call: texture2D(s21;vf2; (global 4-component vector of float)
+0:71          texture (global 4-component vector of float)
 0:71            'sampler' (uniform sampler2D)
 0:71            'coord' (smooth in 2-component vector of float)
 0:?   Linker Objects

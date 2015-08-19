@@ -59,7 +59,8 @@ bool ARBCompatibility = true;
 const bool ForwardCompatibility = false;
 
 // change this back to false if depending on textual spellings of texturing calls when consuming the AST
-bool PureOperatorBuiltins = false;
+// Using PureOperatorBuiltins=false is deprecated.
+bool PureOperatorBuiltins = true;
 
 inline bool IncludeLegacy(int version, EProfile profile)
 {

@@ -81,7 +81,7 @@ Shader version: 120
 0:28        move second child to first child (temp float)
 0:28          'i' (temp float)
 0:28          direct index (temp float)
-0:28            Function Call: texture2D(s21;vf2; (global 4-component vector of float)
+0:28            texture (global 4-component vector of float)
 0:28              'sampler' (uniform sampler2D)
 0:28              Constant:
 0:28                0.500000
@@ -225,7 +225,7 @@ Shader version: 120
 0:28        move second child to first child (temp float)
 0:28          'i' (temp float)
 0:28          direct index (temp float)
-0:28            Function Call: texture2D(s21;vf2; (global 4-component vector of float)
+0:28            texture (global 4-component vector of float)
 0:28              'sampler' (uniform sampler2D)
 0:28              Constant:
 0:28                0.500000

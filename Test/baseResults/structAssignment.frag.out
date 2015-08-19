@@ -39,7 +39,7 @@ Shader version: 130
 0:38                2 (const int)
 0:38            Constant:
 0:38              1 (const int)
-0:38          Function Call: texture2D(s21;vf2; (global 4-component vector of float)
+0:38          texture (global 4-component vector of float)
 0:38            'sampler' (uniform sampler2D)
 0:38            'coord' (smooth in 2-component vector of float)
 0:?   Linker Objects
@@ -91,7 +91,7 @@ Shader version: 130
 0:38                2 (const int)
 0:38            Constant:
 0:38              1 (const int)
-0:38          Function Call: texture2D(s21;vf2; (global 4-component vector of float)
+0:38          texture (global 4-component vector of float)
 0:38            'sampler' (uniform sampler2D)
 0:38            'coord' (smooth in 2-component vector of float)
 0:?   Linker Objects

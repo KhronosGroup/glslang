@@ -99,17 +99,17 @@ ERROR: node is still EOpNull!
 0:65                  'level1_high' (temp highp int)
 0:65            Constant:
 0:65              0 (const int)
-0:67      Function Call: texture2D(s21;vf2; (global lowp 4-component vector of float)
+0:67      texture (global lowp 4-component vector of float)
 0:67        'samplerLow' (uniform lowp sampler2D)
 0:67        Constant:
 0:67          0.100000
 0:67          0.200000
-0:68      Function Call: texture2D(s21;vf2; (global mediump 4-component vector of float)
+0:68      texture (global mediump 4-component vector of float)
 0:68        'samplerMed' (uniform mediump sampler2D)
 0:68        Constant:
 0:68          0.100000
 0:68          0.200000
-0:69      Function Call: texture2D(s21;vf2; (global highp 4-component vector of float)
+0:69      texture (global highp 4-component vector of float)
 0:69        'samplerHigh' (uniform highp sampler2D)
 0:69        Constant:
 0:69          0.100000
@@ -218,17 +218,17 @@ ERROR: node is still EOpNull!
 0:65                  'level1_high' (temp highp int)
 0:65            Constant:
 0:65              0 (const int)
-0:67      Function Call: texture2D(s21;vf2; (global lowp 4-component vector of float)
+0:67      texture (global lowp 4-component vector of float)
 0:67        'samplerLow' (uniform lowp sampler2D)
 0:67        Constant:
 0:67          0.100000
 0:67          0.200000
-0:68      Function Call: texture2D(s21;vf2; (global mediump 4-component vector of float)
+0:68      texture (global mediump 4-component vector of float)
 0:68        'samplerMed' (uniform mediump sampler2D)
 0:68        Constant:
 0:68          0.100000
 0:68          0.200000
-0:69      Function Call: texture2D(s21;vf2; (global highp 4-component vector of float)
+0:69      texture (global highp 4-component vector of float)
 0:69        'samplerHigh' (uniform highp sampler2D)
 0:69        Constant:
 0:69          0.100000
