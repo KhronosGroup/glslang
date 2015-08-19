@@ -187,8 +187,8 @@ enum TOperator {
 
     EOpFma,
 
-    EFrexp,
-    ELdexp,
+    EOpFrexp,
+    EOpLdexp,
 
     EOpFloatBitsToInt,
     EOpFloatBitsToUint,

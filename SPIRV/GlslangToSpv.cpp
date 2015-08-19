@@ -1008,8 +1008,8 @@ bool TGlslangToSpvTraverser::visitAggregate(glslang::TVisit visit, glslang::TInt
         break;
 
     case glslang::EOpFma:
-    case glslang::EFrexp:
-    case glslang::ELdexp:
+    case glslang::EOpFrexp:
+    case glslang::EOpLdexp:
         spv::MissingFunctionality("fma/frexp/ldexp aggregate");
         break;
 

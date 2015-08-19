@@ -3219,8 +3219,8 @@ void IdentifyBuiltIns(int version, EProfile profile, EShLanguage language, TSymb
     symbolTable.relateToOperator("atomicCounter",          EOpAtomicCounter);
 
     symbolTable.relateToOperator("fma",               EOpFma);
-    symbolTable.relateToOperator("frexp",             EFrexp);
-    symbolTable.relateToOperator("ldexp",             ELdexp);
+    symbolTable.relateToOperator("frexp",             EOpFrexp);
+    symbolTable.relateToOperator("ldexp",             EOpLdexp);
     symbolTable.relateToOperator("uaddCarry",         EOpAddCarry);
     symbolTable.relateToOperator("usubBorrow",        EOpSubBorrow);
     symbolTable.relateToOperator("umulExtended",      EOpUMulExtended);

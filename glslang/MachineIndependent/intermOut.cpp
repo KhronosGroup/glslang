@@ -473,8 +473,8 @@ bool TOutputTraverser::visitAggregate(TVisit /* visit */, TIntermAggregate* node
     case EOpBitfieldInsert:             out.debug << "bitfieldInsert";        break;
 
     case EOpFma:                        out.debug << "fma";                   break;
-    case EFrexp:                        out.debug << "frexp";                 break;
-    case ELdexp:                        out.debug << "ldexp";                 break;
+    case EOpFrexp:                        out.debug << "frexp";                 break;
+    case EOpLdexp:                        out.debug << "ldexp";                 break;
 
     default: out.debug.message(EPrefixError, "Bad aggregation op");
     }
