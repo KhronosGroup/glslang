@@ -2063,6 +2063,8 @@ void TParseContext::reservedPpErrorCheck(const TSourceLoc& loc, const char* iden
     // however, before that, ES tests required an error.
     if (strncmp(identifier, "GL_", 3) == 0)
         ppError(loc, "names beginning with \"GL_\" can't be (un)defined:", op,  identifier);
+    else if (strncmp(identifier, "defined", 8) == 0)
+        ppError(loc, "\"defined\" can't be (un)defined:", op,  identifier);
     else if (strstr(identifier, "__") != 0) {
         if (profile == EEsProfile && version >= 300 &&
             (strcmp(identifier, "__LINE__") == 0 ||
