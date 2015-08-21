@@ -548,7 +548,7 @@ void TIntermediate::inOutLocationCheck(TInfoSink& infoSink)
         const TType& type = linkObjects[i]->getAsTyped()->getType();
         const TQualifier& qualifier = type.getQualifier();
         if (language == EShLangFragment) {
-            if (qualifier.storage == EvqVaryingOut) {
+            if (qualifier.storage == EvqVaryingOut && qualifier.builtIn == EbvNone) {
                 ++numFragOut;
                 if (!qualifier.hasAnyLocation())
                     fragOutWithNoLocation = true;
