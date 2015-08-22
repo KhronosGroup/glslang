@@ -138,3 +138,10 @@ layout(std430, align = 128) uniform block24301 {
 
 int aconst[gl_MaxTransformFeedbackBuffers];
 int bconst[gl_MaxTransformFeedbackInterleavedComponents];
+
+sample in vec3 sampInArray[4];
+
+void interp()
+{
+    interpolateAtCentroid(sampInArray[2].xy);
+}

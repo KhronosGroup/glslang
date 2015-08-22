@@ -226,6 +226,10 @@ enum TOperator {
     EOpDPdyCoarse,      // Fragment only
     EOpFwidthCoarse,    // Fragment only
 
+    EOpInterpolateAtCentroid, // Fragment only
+    EOpInterpolateAtSample,   // Fragment only
+    EOpInterpolateAtOffset,   // Fragment only
+
     EOpMatrixTimesMatrix,
     EOpOuterProduct,
     EOpDeterminant,

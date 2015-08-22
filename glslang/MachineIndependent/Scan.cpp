@@ -738,6 +738,10 @@ int TScanContext::tokenizeIdentifier()
         return es30ReservedFromGLSL(400);
 
     case SAMPLE:
+        if (parseContext.extensionsTurnedOn(1, &E_GL_OES_shader_multisample_interpolation))
+            return keyword;
+        return es30ReservedFromGLSL(400);
+
     case SUBROUTINE:
         return es30ReservedFromGLSL(400);
 

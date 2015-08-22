@@ -53,6 +53,20 @@ ERROR: 48 compilation errors.  No code generated.
 
 Shader version: 440
 ERROR: node is still EOpNull!
+0:144  Function Definition: interp( (global void)
+0:144    Function Parameters: 
+0:146    Sequence
+0:146      interpolateAtCentroid (global 2-component vector of float)
+0:146        vector swizzle (temp 2-component vector of float)
+0:146          direct index (smooth sample temp 3-component vector of float)
+0:146            'sampInArray' (smooth sample in 4-element array of 3-component vector of float)
+0:146            Constant:
+0:146              2 (const int)
+0:146          Sequence
+0:146            Constant:
+0:146              0 (const int)
+0:146            Constant:
+0:146              1 (const int)
 0:?   Linker Objects
 0:?     'a' (layout(location=4 component=2 ) smooth in 2-component vector of float)
 0:?     'b' (layout(location=4 component=1 ) smooth in float)
@@ -88,6 +102,7 @@ ERROR: node is still EOpNull!
 0:?     'specExample4301' (layout(column_major std430 align=128 ) uniform block{layout(column_major std430 offset=0 align=128 ) uniform 4-component vector of float a, layout(column_major std430 offset=128 align=128 ) uniform 3-component vector of float b, layout(column_major std430 offset=256 align=128 ) uniform 2-component vector of float d, layout(column_major std430 offset=512 align=128 ) uniform float e, layout(column_major std430 offset=520 align=8 ) uniform double f, layout(column_major std430 offset=640 align=128 ) uniform float h, layout(column_major std430 offset=768 align=128 ) uniform 3-component vector of double i})
 0:?     'aconst' (global 4-element array of int)
 0:?     'bconst' (global 64-element array of int)
+0:?     'sampInArray' (smooth sample in 4-element array of 3-component vector of float)
 
 
 Linked fragment stage:
@@ -96,6 +111,20 @@ ERROR: Linking fragment stage: Missing entry point: Each stage requires one "voi
 
 Shader version: 440
 ERROR: node is still EOpNull!
+0:144  Function Definition: interp( (global void)
+0:144    Function Parameters: 
+0:146    Sequence
+0:146      interpolateAtCentroid (global 2-component vector of float)
+0:146        vector swizzle (temp 2-component vector of float)
+0:146          direct index (smooth sample temp 3-component vector of float)
+0:146            'sampInArray' (smooth sample in 4-element array of 3-component vector of float)
+0:146            Constant:
+0:146              2 (const int)
+0:146          Sequence
+0:146            Constant:
+0:146              0 (const int)
+0:146            Constant:
+0:146              1 (const int)
 0:?   Linker Objects
 0:?     'a' (layout(location=4 component=2 ) smooth in 2-component vector of float)
 0:?     'b' (layout(location=4 component=1 ) smooth in float)
@@ -131,4 +160,5 @@ ERROR: node is still EOpNull!
 0:?     'specExample4301' (layout(column_major std430 align=128 ) uniform block{layout(column_major std430 offset=0 align=128 ) uniform 4-component vector of float a, layout(column_major std430 offset=128 align=128 ) uniform 3-component vector of float b, layout(column_major std430 offset=256 align=128 ) uniform 2-component vector of float d, layout(column_major std430 offset=512 align=128 ) uniform float e, layout(column_major std430 offset=520 align=8 ) uniform double f, layout(column_major std430 offset=640 align=128 ) uniform float h, layout(column_major std430 offset=768 align=128 ) uniform 3-component vector of double i})
 0:?     'aconst' (global 4-element array of int)
 0:?     'bconst' (global 64-element array of int)
+0:?     'sampInArray' (smooth sample in 4-element array of 3-component vector of float)
 

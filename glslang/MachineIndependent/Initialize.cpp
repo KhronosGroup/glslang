@@ -1185,6 +1185,28 @@ void TBuiltIns::initialize(int version, EProfile profile)
             "\n");
     }
 
+    // GL_OES_shader_multisample_interpolation
+    if ((profile == EEsProfile && version >= 310) ||
+        (profile != EEsProfile && version >= 400)) {
+        stageBuiltins[EShLangFragment].append(
+            "float interpolateAtCentroid(float);"
+            "vec2  interpolateAtCentroid(vec2);"
+            "vec3  interpolateAtCentroid(vec3);"
+            "vec4  interpolateAtCentroid(vec4);"
+
+            "float interpolateAtSample(float, int);"
+            "vec2  interpolateAtSample(vec2,  int);"
+            "vec3  interpolateAtSample(vec3,  int);"
+            "vec4  interpolateAtSample(vec4,  int);"
+
+            "float interpolateAtOffset(float, vec2);"
+            "vec2  interpolateAtOffset(vec2,  vec2);"
+            "vec3  interpolateAtOffset(vec3,  vec2);"
+            "vec4  interpolateAtOffset(vec4,  vec2);"
+
+            "\n");
+    }
+
     //============================================================================
     //
     // Standard Uniforms
@@ -3009,8 +3031,12 @@ void IdentifyBuiltIns(int version, EProfile profile, EShLanguage language, TSymb
                 symbolTable.setFunctionExtensions("dFdy",   1, &E_GL_OES_standard_derivatives);
                 symbolTable.setFunctionExtensions("fwidth", 1, &E_GL_OES_standard_derivatives);
             }
-            if (version >= 310)
+            if (version >= 310) {
                 symbolTable.setFunctionExtensions("fma", Num_AEP_gpu_shader5, AEP_gpu_shader5);
+                symbolTable.setFunctionExtensions("interpolateAtCentroid", 1, &E_GL_OES_shader_multisample_interpolation);
+                symbolTable.setFunctionExtensions("interpolateAtSample",   1, &E_GL_OES_shader_multisample_interpolation);
+                symbolTable.setFunctionExtensions("interpolateAtOffset",   1, &E_GL_OES_shader_multisample_interpolation);
+            }
         } else if (version < 130) {
             symbolTable.setFunctionExtensions("texture1DLod",        1, &E_GL_ARB_shader_texture_lod);
             symbolTable.setFunctionExtensions("texture2DLod",        1, &E_GL_ARB_shader_texture_lod);
@@ -3351,6 +3377,9 @@ void IdentifyBuiltIns(int version, EProfile profile, EShLanguage language, TSymb
             symbolTable.relateToOperator("dFdyCoarse",   EOpDPdyCoarse);
             symbolTable.relateToOperator("fwidthCoarse", EOpFwidthCoarse);
         }
+        symbolTable.relateToOperator("interpolateAtCentroid", EOpInterpolateAtCentroid);
+        symbolTable.relateToOperator("interpolateAtSample",   EOpInterpolateAtSample);
+        symbolTable.relateToOperator("interpolateAtOffset",   EOpInterpolateAtOffset);
         break;
 
     case EShLangCompute:

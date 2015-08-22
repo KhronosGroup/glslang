@@ -99,3 +99,43 @@ void foodc2()
     d = packDouble2x32(u2);
     u2 = unpackDouble2x32(d);
 }
+
+sample in vec4 colorSampIn;
+sample out vec4 colorSampleBad;     // ERROR
+noperspective in vec4 colorfsi;
+sample in vec3 sampInArray[4];
+smooth in float scalarIn;
+flat centroid in vec2 colorfc;
+
+struct S {
+    float x;
+};
+
+in S s1;
+sample S s2;
+
+void interp()
+{
+    interpolateAtCentroid(colorfc);
+    interpolateAtCentroid(colorSampIn);
+    interpolateAtCentroid(colorfsi);
+    interpolateAtCentroid(scalarIn);
+    interpolateAtCentroid(sampInArray);         // ERROR
+    interpolateAtCentroid(sampInArray[2]);
+    interpolateAtCentroid(sampInArray[2].xy);   // ERROR
+
+    interpolateAtSample(sampInArray, 1);        // ERROR
+    interpolateAtSample(sampInArray[i], 0);
+    interpolateAtSample(s1.x, 2);               // ERROR
+    interpolateAtSample(scalarIn, 1);
+
+    interpolateAtOffset(sampInArray, vec2(0.2));         // ERROR
+    interpolateAtOffset(sampInArray[2], vec2(0.2));
+    interpolateAtOffset(sampInArray[2].xy, vec2(0.2));   // ERROR, no swizzle
+    interpolateAtOffset(scalarIn + scalarIn, vec2(0.2)); // ERROR, no binary ops other than dereference
+    interpolateAtOffset(s2.x, vec2(0.2));      // ERROR
+
+    float f;
+    interpolateAtCentroid(f);           // ERROR, not interpolant
+    interpolateAtSample(outp, 0);       // ERROR, not interpolant
+}

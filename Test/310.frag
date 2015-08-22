@@ -341,3 +341,59 @@ void goodImageAtom()
     imageAtomicMax(badIm2Du, P, datu);      // ERROR, not an allowed layout() on the image
     imageAtomicExchange(badIm2Df, P, datf); // ERROR, not an allowed layout() on the image
 }
+
+sample in vec4 colorSampInBad;       // ERROR, reserved
+centroid out vec4 colorCentroidBad;  // ERROR
+flat out vec4 colorBadFlat;          // ERROR
+smooth out vec4 colorBadSmooth;      // ERROR
+noperspective out vec4 colorBadNo;   // ERROR
+flat centroid in vec2 colorfc;
+in float scalarIn;
+
+void badInterp()
+{
+    interpolateAtCentroid(colorfc);             // ERROR, need extension
+    interpolateAtSample(colorfc, 1);            // ERROR, need extension
+    interpolateAtOffset(colorfc, vec2(0.2));    // ERROR, need extension
+}
+
+#if defined GL_OES_shader_multisample_interpolation
+#extension GL_OES_shader_multisample_interpolation : enable
+#endif
+
+sample in vec4 colorSampIn;
+sample out vec4 colorSampleBad;     // ERROR
+flat sample in vec4 colorfsi;
+sample in vec3 sampInArray[4];
+
+void interp()
+{
+    float res;
+    vec2 res2;
+    vec3 res3;
+    vec4 res4;
+
+    res2 = interpolateAtCentroid(colorfc);
+    res4 = interpolateAtCentroid(colorSampIn);
+    res4 = interpolateAtCentroid(colorfsi);
+    res  = interpolateAtCentroid(scalarIn);
+    res3 = interpolateAtCentroid(sampInArray);         // ERROR
+    res3 = interpolateAtCentroid(sampInArray[2]);
+    res2 = interpolateAtCentroid(sampInArray[2].xy);   // ERROR
+
+    res3 = interpolateAtSample(sampInArray, 1);        // ERROR
+    res3 = interpolateAtSample(sampInArray[i], 0);
+    res2 = interpolateAtSample(sampInArray[2].xy, 2);  // ERROR
+    res  = interpolateAtSample(scalarIn, 1);
+
+    res3 = interpolateAtOffset(sampInArray, vec2(0.2));         // ERROR
+    res3 = interpolateAtOffset(sampInArray[2], vec2(0.2));
+    res2 = interpolateAtOffset(sampInArray[2].xy, vec2(0.2));   // ERROR, no swizzle
+    res  = interpolateAtOffset(scalarIn + scalarIn, vec2(0.2)); // ERROR, no binary ops other than dereference
+    res  = interpolateAtOffset(scalarIn, vec2(0.2));
+
+    float f;
+    res  = interpolateAtCentroid(f);           // ERROR, not interpolant
+    res4 = interpolateAtSample(outp, 0);       // ERROR, not interpolant
+}
+

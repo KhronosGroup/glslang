@@ -15,11 +15,22 @@ ERROR: 0:54: 'texel offset' : value is out of range: [gl_MinProgramTexelOffset, 
 ERROR: 0:54: 'texel offset' : value is out of range: [gl_MinProgramTexelOffset, gl_MaxProgramTexelOffset]
 ERROR: 0:57: 'patch' : not supported in this stage: fragment
 ERROR: 0:58: 'patch' : not supported in this stage: fragment
+ERROR: 0:58: 'centroid/sample/patch' : can't use auxiliary qualifier on a fragment output 
 ERROR: 0:73: 'dFdxFine' : required extension not requested: GL_ARB_derivative_control
 ERROR: 0:74: 'dFdyCoarse' : required extension not requested: GL_ARB_derivative_control
 ERROR: 0:75: 'fwidthCoarse' : required extension not requested: GL_ARB_derivative_control
 ERROR: 0:75: 'fwidthFine' : required extension not requested: GL_ARB_derivative_control
-ERROR: 19 compilation errors.  No code generated.
+ERROR: 0:104: 'centroid/sample/patch' : can't use auxiliary qualifier on a fragment output 
+ERROR: 0:123: 'interpolateAtCentroid' : no matching overloaded function found 
+ERROR: 0:125: 'interpolateAtCentroid' : first argument must be an interpolant, or interpolant-array element 
+ERROR: 0:127: 'interpolateAtSample' : no matching overloaded function found 
+ERROR: 0:132: 'interpolateAtOffset' : no matching overloaded function found 
+ERROR: 0:134: 'interpolateAtOffset' : first argument must be an interpolant, or interpolant-array element 
+ERROR: 0:135: 'interpolateAtOffset' : first argument must be an interpolant, or interpolant-array element 
+ERROR: 0:136: 'interpolateAtOffset' : first argument must be an interpolant, or interpolant-array element 
+ERROR: 0:139: 'interpolateAtCentroid' : first argument must be an interpolant, or interpolant-array element 
+ERROR: 0:140: 'interpolateAtSample' : first argument must be an interpolant, or interpolant-array element 
+ERROR: 30 compilation errors.  No code generated.
 
 
 Shader version: 400
@@ -298,6 +309,99 @@ ERROR: node is still EOpNull!
 0:100        'u2' (temp 2-component vector of uint)
 0:100        UnpackUnorm4x8 (global 2-component vector of uint)
 0:100          'd' (temp double)
+0:117  Function Definition: interp( (global void)
+0:117    Function Parameters: 
+0:119    Sequence
+0:119      interpolateAtCentroid (global 2-component vector of float)
+0:119        'colorfc' (centroid flat in 2-component vector of float)
+0:120      interpolateAtCentroid (global 4-component vector of float)
+0:120        'colorSampIn' (smooth sample in 4-component vector of float)
+0:121      interpolateAtCentroid (global 4-component vector of float)
+0:121        'colorfsi' (noperspective in 4-component vector of float)
+0:122      interpolateAtCentroid (global float)
+0:122        'scalarIn' (smooth in float)
+0:123      Constant:
+0:123        0.000000
+0:124      interpolateAtCentroid (global 3-component vector of float)
+0:124        direct index (smooth sample temp 3-component vector of float)
+0:124          'sampInArray' (smooth sample in 4-element array of 3-component vector of float)
+0:124          Constant:
+0:124            2 (const int)
+0:125      interpolateAtCentroid (global 2-component vector of float)
+0:125        vector swizzle (temp 2-component vector of float)
+0:125          direct index (smooth sample temp 3-component vector of float)
+0:125            'sampInArray' (smooth sample in 4-element array of 3-component vector of float)
+0:125            Constant:
+0:125              2 (const int)
+0:125          Sequence
+0:125            Constant:
+0:125              0 (const int)
+0:125            Constant:
+0:125              1 (const int)
+0:127      Constant:
+0:127        0.000000
+0:128      interpolateAtSample (global 3-component vector of float)
+0:128        indirect index (smooth sample temp 3-component vector of float)
+0:128          'sampInArray' (smooth sample in 4-element array of 3-component vector of float)
+0:128          'i' (flat in int)
+0:128        Constant:
+0:128          0 (const int)
+0:129      interpolateAtSample (global float)
+0:129        x: direct index for structure (global float)
+0:129          's1' (smooth in structure{global float x})
+0:129          Constant:
+0:129            0 (const int)
+0:129        Constant:
+0:129          2 (const int)
+0:130      interpolateAtSample (global float)
+0:130        'scalarIn' (smooth in float)
+0:130        Constant:
+0:130          1 (const int)
+0:132      Constant:
+0:132        0.000000
+0:133      interpolateAtOffset (global 3-component vector of float)
+0:133        direct index (smooth sample temp 3-component vector of float)
+0:133          'sampInArray' (smooth sample in 4-element array of 3-component vector of float)
+0:133          Constant:
+0:133            2 (const int)
+0:133        Constant:
+0:133          0.200000
+0:133          0.200000
+0:134      interpolateAtOffset (global 2-component vector of float)
+0:134        vector swizzle (temp 2-component vector of float)
+0:134          direct index (smooth sample temp 3-component vector of float)
+0:134            'sampInArray' (smooth sample in 4-element array of 3-component vector of float)
+0:134            Constant:
+0:134              2 (const int)
+0:134          Sequence
+0:134            Constant:
+0:134              0 (const int)
+0:134            Constant:
+0:134              1 (const int)
+0:134        Constant:
+0:134          0.200000
+0:134          0.200000
+0:135      interpolateAtOffset (global float)
+0:135        add (temp float)
+0:135          'scalarIn' (smooth in float)
+0:135          'scalarIn' (smooth in float)
+0:135        Constant:
+0:135          0.200000
+0:135          0.200000
+0:136      interpolateAtOffset (global float)
+0:136        x: direct index for structure (global float)
+0:136          's2' (sample temp structure{global float x})
+0:136          Constant:
+0:136            0 (const int)
+0:136        Constant:
+0:136          0.200000
+0:136          0.200000
+0:139      interpolateAtCentroid (global float)
+0:139        'f' (temp float)
+0:140      interpolateAtSample (global 4-component vector of float)
+0:140        'outp' (out 4-component vector of float)
+0:140        Constant:
+0:140          0 (const int)
 0:?   Linker Objects
 0:?     'c2D' (smooth in 2-component vector of float)
 0:?     'i' (flat in int)
@@ -320,6 +424,14 @@ ERROR: node is still EOpNull!
 0:?     'in2' (smooth in 2-component vector of float)
 0:?     'in3' (smooth in 3-component vector of float)
 0:?     'in4' (smooth in 4-component vector of float)
+0:?     'colorSampIn' (smooth sample in 4-component vector of float)
+0:?     'colorSampleBad' (sample out 4-component vector of float)
+0:?     'colorfsi' (noperspective in 4-component vector of float)
+0:?     'sampInArray' (smooth sample in 4-element array of 3-component vector of float)
+0:?     'scalarIn' (smooth in float)
+0:?     'colorfc' (centroid flat in 2-component vector of float)
+0:?     's1' (smooth in structure{global float x})
+0:?     's2' (sample temp structure{global float x})
 
 
 Linked fragment stage:
@@ -601,6 +713,99 @@ ERROR: node is still EOpNull!
 0:100        'u2' (temp 2-component vector of uint)
 0:100        UnpackUnorm4x8 (global 2-component vector of uint)
 0:100          'd' (temp double)
+0:117  Function Definition: interp( (global void)
+0:117    Function Parameters: 
+0:119    Sequence
+0:119      interpolateAtCentroid (global 2-component vector of float)
+0:119        'colorfc' (centroid flat in 2-component vector of float)
+0:120      interpolateAtCentroid (global 4-component vector of float)
+0:120        'colorSampIn' (smooth sample in 4-component vector of float)
+0:121      interpolateAtCentroid (global 4-component vector of float)
+0:121        'colorfsi' (noperspective in 4-component vector of float)
+0:122      interpolateAtCentroid (global float)
+0:122        'scalarIn' (smooth in float)
+0:123      Constant:
+0:123        0.000000
+0:124      interpolateAtCentroid (global 3-component vector of float)
+0:124        direct index (smooth sample temp 3-component vector of float)
+0:124          'sampInArray' (smooth sample in 4-element array of 3-component vector of float)
+0:124          Constant:
+0:124            2 (const int)
+0:125      interpolateAtCentroid (global 2-component vector of float)
+0:125        vector swizzle (temp 2-component vector of float)
+0:125          direct index (smooth sample temp 3-component vector of float)
+0:125            'sampInArray' (smooth sample in 4-element array of 3-component vector of float)
+0:125            Constant:
+0:125              2 (const int)
+0:125          Sequence
+0:125            Constant:
+0:125              0 (const int)
+0:125            Constant:
+0:125              1 (const int)
+0:127      Constant:
+0:127        0.000000
+0:128      interpolateAtSample (global 3-component vector of float)
+0:128        indirect index (smooth sample temp 3-component vector of float)
+0:128          'sampInArray' (smooth sample in 4-element array of 3-component vector of float)
+0:128          'i' (flat in int)
+0:128        Constant:
+0:128          0 (const int)
+0:129      interpolateAtSample (global float)
+0:129        x: direct index for structure (global float)
+0:129          's1' (smooth in structure{global float x})
+0:129          Constant:
+0:129            0 (const int)
+0:129        Constant:
+0:129          2 (const int)
+0:130      interpolateAtSample (global float)
+0:130        'scalarIn' (smooth in float)
+0:130        Constant:
+0:130          1 (const int)
+0:132      Constant:
+0:132        0.000000
+0:133      interpolateAtOffset (global 3-component vector of float)
+0:133        direct index (smooth sample temp 3-component vector of float)
+0:133          'sampInArray' (smooth sample in 4-element array of 3-component vector of float)
+0:133          Constant:
+0:133            2 (const int)
+0:133        Constant:
+0:133          0.200000
+0:133          0.200000
+0:134      interpolateAtOffset (global 2-component vector of float)
+0:134        vector swizzle (temp 2-component vector of float)
+0:134          direct index (smooth sample temp 3-component vector of float)
+0:134            'sampInArray' (smooth sample in 4-element array of 3-component vector of float)
+0:134            Constant:
+0:134              2 (const int)
+0:134          Sequence
+0:134            Constant:
+0:134              0 (const int)
+0:134            Constant:
+0:134              1 (const int)
+0:134        Constant:
+0:134          0.200000
+0:134          0.200000
+0:135      interpolateAtOffset (global float)
+0:135        add (temp float)
+0:135          'scalarIn' (smooth in float)
+0:135          'scalarIn' (smooth in float)
+0:135        Constant:
+0:135          0.200000
+0:135          0.200000
+0:136      interpolateAtOffset (global float)
+0:136        x: direct index for structure (global float)
+0:136          's2' (sample temp structure{global float x})
+0:136          Constant:
+0:136            0 (const int)
+0:136        Constant:
+0:136          0.200000
+0:136          0.200000
+0:139      interpolateAtCentroid (global float)
+0:139        'f' (temp float)
+0:140      interpolateAtSample (global 4-component vector of float)
+0:140        'outp' (out 4-component vector of float)
+0:140        Constant:
+0:140          0 (const int)
 0:?   Linker Objects
 0:?     'c2D' (smooth in 2-component vector of float)
 0:?     'i' (flat in int)
@@ -623,4 +828,12 @@ ERROR: node is still EOpNull!
 0:?     'in2' (smooth in 2-component vector of float)
 0:?     'in3' (smooth in 3-component vector of float)
 0:?     'in4' (smooth in 4-component vector of float)
+0:?     'colorSampIn' (smooth sample in 4-component vector of float)
+0:?     'colorSampleBad' (sample out 4-component vector of float)
+0:?     'colorfsi' (noperspective in 4-component vector of float)
+0:?     'sampInArray' (smooth sample in 4-element array of 3-component vector of float)
+0:?     'scalarIn' (smooth in float)
+0:?     'colorfc' (centroid flat in 2-component vector of float)
+0:?     's1' (smooth in structure{global float x})
+0:?     's2' (sample temp structure{global float x})
 

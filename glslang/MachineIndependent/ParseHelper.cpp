@@ -1485,6 +1485,30 @@ void TParseContext::builtInOpCheck(const TSourceLoc& loc, const TFunction& fnCan
         break;
     }
 
+    case EOpInterpolateAtCentroid:
+    case EOpInterpolateAtSample:
+    case EOpInterpolateAtOffset:
+        // "For the interpolateAt* functions, the call will return a precision
+        // qualification matching the precision of the 'interpolant' argument to
+        // the function call."
+        callNode.getQualifier().precision = arg0->getQualifier().precision;
+
+        // Make sure the first argument is an interpolant, or an array element of an interpolant
+        if (arg0->getType().getQualifier().storage != EvqVaryingIn) {
+            // It might still be an array element.
+            //
+            // We could check more, but the semantics of the first argument are already met; the
+            // only way to turn an array into a float/vec* is array dereference and swizzle.
+            //
+            // ES and desktop 4.3 and earlier:  swizzles may not be used
+            // desktop 4.4 and later: swizzles may be used
+            bool swizzleOkay = (profile != EEsProfile) && (version >= 440);
+            const TIntermTyped* base = TIntermediate::findLValueBase(arg0, swizzleOkay);
+            if (base == nullptr || base->getType().getQualifier().storage != EvqVaryingIn)
+                error(loc, "first argument must be an interpolant, or interpolant-array element", fnCandidate.getName().c_str(), "");
+        }
+        break;
+
     default:
         break;
     }
@@ -2456,6 +2480,10 @@ void TParseContext::globalQualifierTypeCheck(const TSourceLoc& loc, const TQuali
                 error(loc, "cannot be a matrix", GetStorageQualifierString(qualifier.storage), "");
                 return;
             }
+            if (qualifier.isAuxiliary())
+                error(loc, "can't use auxiliary qualifier on a fragment output", "centroid/sample/patch", "");
+            if (qualifier.isInterpolation())
+                error(loc, "can't use interpolation qualifier on a fragment output", "flat/smooth/noperspective", "");
         break;
 
         case EShLangCompute:

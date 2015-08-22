@@ -192,6 +192,9 @@ public:
     TIntermTyped* foldDereference(TIntermTyped* node, int index, const TSourceLoc&);
     TIntermTyped* foldSwizzle(TIntermTyped* node, TVectorFields& fields, const TSourceLoc&);
 
+    // Tree ops
+    static const TIntermTyped* findLValueBase(const TIntermTyped*, bool swizzleOkay);
+
     // Linkage related
     void addSymbolLinkageNodes(TIntermAggregate*& linkage, EShLanguage, TSymbolTable&);
     void addSymbolLinkageNode(TIntermAggregate*& linkage, TSymbolTable&, const TString&);

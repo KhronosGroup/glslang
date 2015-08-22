@@ -286,6 +286,9 @@ bool TOutputTraverser::visitUnary(TVisit /* visit */, TIntermUnary* node)
     case EOpDPdxCoarse:     out.debug << "dPdxCoarse";           break;
     case EOpDPdyCoarse:     out.debug << "dPdyCoarse";           break;
     case EOpFwidthCoarse:   out.debug << "fwidthCoarse";         break;
+
+    case EOpInterpolateAtCentroid: out.debug << "interpolateAtCentroid";  break;
+
     case EOpDeterminant:    out.debug << "determinant";          break;
     case EOpMatrixInverse:  out.debug << "inverse";              break;
     case EOpTranspose:      out.debug << "transpose";            break;
@@ -473,8 +476,11 @@ bool TOutputTraverser::visitAggregate(TVisit /* visit */, TIntermAggregate* node
     case EOpBitfieldInsert:             out.debug << "bitfieldInsert";        break;
 
     case EOpFma:                        out.debug << "fma";                   break;
-    case EOpFrexp:                        out.debug << "frexp";                 break;
-    case EOpLdexp:                        out.debug << "ldexp";                 break;
+    case EOpFrexp:                      out.debug << "frexp";                 break;
+    case EOpLdexp:                      out.debug << "ldexp";                 break;
+
+    case EOpInterpolateAtSample:   out.debug << "interpolateAtSample";    break;
+    case EOpInterpolateAtOffset:   out.debug << "interpolateAtOffset";    break;
 
     default: out.debug.message(EPrefixError, "Bad aggregation op");
     }

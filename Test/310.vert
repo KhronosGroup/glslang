@@ -373,3 +373,19 @@ void goodImageAtom()
     imageAtomicCompSwap(im2Di, P,  3, dati);
     imageAtomicCompSwap(im2Du, P, 5u, datu);
 }
+
+sample out vec4 colorSampInBad;       // ERROR, reserved
+
+#extension GL_OES_shader_multisample_interpolation : enable
+
+sample out vec4 colorSample;
+flat sample out vec4 colorfsi;
+sample out vec3 sampInArray[4];
+in vec4 inv4;
+
+void badInterp()
+{
+    interpolateAtCentroid(inv4);             // ERROR, wrong stage
+    interpolateAtSample(inv4, 1);            // ERROR, need extension
+    interpolateAtOffset(inv4, vec2(0.2));    // ERROR, need extension
+}

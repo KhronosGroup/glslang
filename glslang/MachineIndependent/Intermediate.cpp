@@ -861,6 +861,35 @@ TIntermTyped* TIntermediate::addSwizzle(TVectorFields& fields, const TSourceLoc&
 }
 
 //
+// Follow the left branches down to the root of an l-value
+// expression (just "." and []).
+//
+// Return the base of the l-value (where following indexing quits working).
+// Return nullptr if a chain following dereferences cannot be followed.
+//
+// 'swizzleOkay' says whether or not it is okay to consider a swizzle 
+// a valid part of the dereference chain.
+//
+const TIntermTyped* TIntermediate::findLValueBase(const TIntermTyped* node, bool swizzleOkay)
+{
+    do {
+        const TIntermBinary* binary = node->getAsBinaryNode();
+        if (binary == nullptr)
+            return node;
+        TOperator op = binary->getOp();
+        if (op != EOpIndexDirect && op != EOpIndexIndirect && op != EOpIndexDirectStruct && op != EOpVectorSwizzle)
+            return nullptr;
+        if (! swizzleOkay) {
+            if (op == EOpVectorSwizzle)
+                return nullptr;
+            if ((op == EOpIndexDirect || op == EOpIndexIndirect) && binary->getLeft()->getType().isVector() && ! binary->getLeft()->getType().isArray())
+                return nullptr;
+        }
+        node = node->getAsBinaryNode()->getLeft();
+    } while (true);
+}
+
+//
 // Create loop nodes.
 //
 TIntermLoop* TIntermediate::addLoop(TIntermNode* body, TIntermTyped* test, TIntermTyped* terminal, bool testFirst, const TSourceLoc& loc)
