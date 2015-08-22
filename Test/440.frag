@@ -144,4 +144,5 @@ sample in vec3 sampInArray[4];
 void interp()
 {
     interpolateAtCentroid(sampInArray[2].xy);
+    interpolateAtSample(sampInArray[2].x.x, 2);
 }

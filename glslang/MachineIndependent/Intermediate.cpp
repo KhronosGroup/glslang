@@ -882,7 +882,9 @@ const TIntermTyped* TIntermediate::findLValueBase(const TIntermTyped* node, bool
         if (! swizzleOkay) {
             if (op == EOpVectorSwizzle)
                 return nullptr;
-            if ((op == EOpIndexDirect || op == EOpIndexIndirect) && binary->getLeft()->getType().isVector() && ! binary->getLeft()->getType().isArray())
+            if ((op == EOpIndexDirect || op == EOpIndexIndirect) && 
+                (binary->getLeft()->getType().isVector() || binary->getLeft()->getType().isScalar()) && 
+                ! binary->getLeft()->getType().isArray())
                 return nullptr;
         }
         node = node->getAsBinaryNode()->getLeft();
