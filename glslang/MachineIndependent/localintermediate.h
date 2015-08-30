@@ -127,7 +127,7 @@ public:
     explicit TIntermediate(EShLanguage l, int v = 0, EProfile p = ENoProfile) : language(l), treeRoot(0), profile(p), version(v), 
         numMains(0), numErrors(0), recursive(false),
         invocations(0), vertices(0), inputPrimitive(ElgNone), outputPrimitive(ElgNone), pixelCenterInteger(false), originUpperLeft(false),
-        vertexSpacing(EvsNone), vertexOrder(EvoNone), pointMode(false), earlyFragmentTests(false), depthLayout(EldNone), xfbMode(false)
+        vertexSpacing(EvsNone), vertexOrder(EvoNone), pointMode(false), earlyFragmentTests(false), depthLayout(EldNone), blendEquations(0), xfbMode(false)
     {
         localSize[0] = 1;
         localSize[1] = 1;
@@ -277,6 +277,9 @@ public:
     }
     TLayoutDepth getDepth() const { return depthLayout; }
 
+    void addBlendEquation(TBlendEquationShift b) { blendEquations |= (1 << b); }
+    unsigned int getBlendEquations() const { return blendEquations; }
+
     void addToCallGraph(TInfoSink&, const TString& caller, const TString& callee);
     void merge(TInfoSink&, TIntermediate&);
     void finalCheck(TInfoSink&);
@@ -332,6 +335,7 @@ protected:
     int localSize[3];
     bool earlyFragmentTests;
     TLayoutDepth depthLayout;
+    int blendEquations;        // an 'or'ing of masks of shifts of TBlendEquationShift
     bool xfbMode;
 
     typedef std::list<TCall> TGraph;

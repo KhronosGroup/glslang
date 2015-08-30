@@ -121,12 +121,21 @@ ERROR: 0:391: 'interpolateAtOffset' : first argument must be an interpolant, or 
 ERROR: 0:392: 'interpolateAtOffset' : first argument must be an interpolant, or interpolant-array element 
 ERROR: 0:396: 'interpolateAtCentroid' : first argument must be an interpolant, or interpolant-array element 
 ERROR: 0:397: 'interpolateAtSample' : first argument must be an interpolant, or interpolant-array element 
-ERROR: 113 compilation errors.  No code generated.
+ERROR: 0:400: 'blend equation' : required extension not requested: GL_KHR_blend_equation_advanced
+ERROR: 0:423: 'blend equation' : can only apply to 'out' 
+ERROR: 0:424: 'blend equation' : can only apply to a standalone qualifier 
+ERROR: 0:425: 'blend equation' : can only apply to a standalone qualifier 
+ERROR: 0:426: 'blend equation' : can only apply to a standalone qualifier 
+ERROR: 0:427: 'blend equation' : can only apply to a standalone qualifier 
+ERROR: 0:428: 'blend equation' : can only apply to a standalone qualifier 
+ERROR: 0:429: 'blend_support' : unknown blend equation 
+ERROR: 121 compilation errors.  No code generated.
 
 
 Shader version: 310
 Requested GL_EXT_shader_io_blocks
 Requested GL_EXT_texture_cube_map_array
+Requested GL_KHR_blend_equation_advanced
 Requested GL_OES_geometry_shader
 Requested GL_OES_gpu_shader5
 Requested GL_OES_sample_variables
@@ -137,6 +146,7 @@ gl_FragCoord pixel center is integer
 gl_FragCoord origin is upper left
 using early_fragment_tests
 using depth_any
+using blend_support_multiply blend_support_screen blend_support_overlay blend_support_darken blend_support_lighten blend_support_colordodge blend_support_colorburn blend_support_hardlight blend_support_softlight blend_support_difference blend_support_exclusion blend_support_hsl_hue blend_support_hsl_saturation blend_support_hsl_color blend_support_hsl_luminosity blend_support_all_equations
 ERROR: node is still EOpNull!
 0:21  Function Definition: main( (global void)
 0:21    Function Parameters: 
@@ -897,6 +907,11 @@ ERROR: node is still EOpNull!
 0:397          'outp' (out mediump 4-component vector of float)
 0:397          Constant:
 0:397            0 (const int)
+0:427  Function Definition: blendFoo( (temp void)
+0:427    Function Parameters: 
+0:428  Function Definition: blendFoo(vf3; (global void)
+0:428    Function Parameters: 
+0:428      'v' (in mediump 3-component vector of float)
 0:?   Linker Objects
 0:?     'gl_FragCoord' (smooth in mediump 4-component vector of float)
 0:?     'v3' (layout(location=2 ) smooth in mediump 3-component vector of float)
@@ -990,6 +1005,7 @@ ERROR: node is still EOpNull!
 0:?     'colorSampleBad' (sample out mediump 4-component vector of float)
 0:?     'colorfsi' (flat sample in mediump 4-component vector of float)
 0:?     'sampInArray' (smooth sample in 4-element array of mediump 3-component vector of float)
+0:?     'badout' (out mediump 4-component vector of float)
 
 
 Linked fragment stage:
@@ -999,6 +1015,7 @@ ERROR: Linking fragment stage: when more than one fragment shader output, all mu
 Shader version: 310
 Requested GL_EXT_shader_io_blocks
 Requested GL_EXT_texture_cube_map_array
+Requested GL_KHR_blend_equation_advanced
 Requested GL_OES_geometry_shader
 Requested GL_OES_gpu_shader5
 Requested GL_OES_sample_variables
@@ -1009,6 +1026,7 @@ gl_FragCoord pixel center is integer
 gl_FragCoord origin is upper left
 using early_fragment_tests
 using depth_any
+using blend_support_multiply blend_support_screen blend_support_overlay blend_support_darken blend_support_lighten blend_support_colordodge blend_support_colorburn blend_support_hardlight blend_support_softlight blend_support_difference blend_support_exclusion blend_support_hsl_hue blend_support_hsl_saturation blend_support_hsl_color blend_support_hsl_luminosity blend_support_all_equations
 ERROR: node is still EOpNull!
 0:21  Function Definition: main( (global void)
 0:21    Function Parameters: 
@@ -1769,6 +1787,11 @@ ERROR: node is still EOpNull!
 0:397          'outp' (out mediump 4-component vector of float)
 0:397          Constant:
 0:397            0 (const int)
+0:427  Function Definition: blendFoo( (temp void)
+0:427    Function Parameters: 
+0:428  Function Definition: blendFoo(vf3; (global void)
+0:428    Function Parameters: 
+0:428      'v' (in mediump 3-component vector of float)
 0:?   Linker Objects
 0:?     'gl_FragCoord' (smooth in mediump 4-component vector of float)
 0:?     'v3' (layout(location=2 ) smooth in mediump 3-component vector of float)
@@ -1862,4 +1885,5 @@ ERROR: node is still EOpNull!
 0:?     'colorSampleBad' (sample out mediump 4-component vector of float)
 0:?     'colorfsi' (flat sample in mediump 4-component vector of float)
 0:?     'sampInArray' (smooth sample in 4-element array of mediump 3-component vector of float)
+0:?     'badout' (out mediump 4-component vector of float)
 

@@ -2379,6 +2379,9 @@ void TParseContext::globalQualifierTypeCheck(const TSourceLoc& loc, const TQuali
     if (qualifier.storage != EvqVaryingIn && qualifier.storage != EvqVaryingOut)
         return;
 
+    if (publicType.shaderQualifiers.blendEquation)
+        error(loc, "can only be applied to a standalone 'out'", "blend equation", "");
+
     // now, knowing it is a shader in/out, do all the in/out semantic checks
 
     if (publicType.basicType == EbtBool) {
@@ -3694,6 +3697,21 @@ void TParseContext::setLayoutQualifier(const TSourceLoc& loc, TPublicType& publi
                 return;
             }
         }
+        if (id.compare(0, 13, "blend_support") == 0) {
+            bool found = false;
+            for (TBlendEquationShift be = (TBlendEquationShift)0; be < EBlendCount; be = (TBlendEquationShift)(be + 1)) {
+                if (id == TQualifier::getBlendEquationString(be)) {
+                    requireExtensions(loc, 1, &E_GL_KHR_blend_equation_advanced, "blend equation");
+                    intermediate.addBlendEquation(be);
+                    publicType.shaderQualifiers.blendEquation = true;
+                    found = true;
+                    break;
+                }
+            }
+            if (! found)
+                error(loc, "unknown blend equation", "blend_support", "");
+            return;
+        }
     }
     error(loc, "unrecognized layout identifier, or qualifier requires assignment (e.g., binding = 4)", id.c_str(), "");
 }
@@ -4232,6 +4250,9 @@ void TParseContext::checkNoShaderLayouts(const TSourceLoc& loc, const TShaderQua
         if (shaderQualifiers.localSize[i] > 1)
             error(loc, message, "local_size", "");
     }
+    if (shaderQualifiers.blendEquation)
+        error(loc, message, "blend equation", "");
+    // TBD: correctness: are any of these missing?  pixelCenterInteger, originUpperLeft, spacing, order, pointmode, earlyfragment, depth
 }
 
 // Correct and/or advance an object's offset layout qualifier.
@@ -5479,6 +5500,10 @@ void TParseContext::updateStandaloneQualifierDefaults(const TSourceLoc& loc, con
             intermediate.setEarlyFragmentTests();
         else
             error(loc, "can only apply to 'in'", "early_fragment_tests", "");
+    }
+    if (publicType.shaderQualifiers.blendEquation) {
+        if (publicType.qualifier.storage != EvqVaryingOut)
+            error(loc, "can only apply to 'out'", "blend equation", "");
     }
 
     const TQualifier& qualifier = publicType.qualifier;

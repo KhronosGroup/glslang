@@ -740,6 +740,15 @@ void TIntermediate::output(TInfoSink& infoSink, bool tree)
             infoSink.debug << "using early_fragment_tests\n";
         if (depthLayout != EldNone)
             infoSink.debug << "using " << TQualifier::getLayoutDepthString(depthLayout) << "\n";
+        if (blendEquations != 0) {
+            infoSink.debug << "using";
+            // blendEquations is a mask, decode it
+            for (TBlendEquationShift be = (TBlendEquationShift)0; be < EBlendCount; be = (TBlendEquationShift)(be + 1)) {
+                if (blendEquations & (1 << be))
+                    infoSink.debug << " " << TQualifier::getBlendEquationString(be);
+            }
+            infoSink.debug << "\n";
+        }
         break;
 
     case EShLangCompute:

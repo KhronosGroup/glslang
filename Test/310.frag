@@ -397,3 +397,33 @@ void interp()
     res4 = interpolateAtSample(outp, 0);       // ERROR, not interpolant
 }
 
+layout(blend_support_softlight) out;           // ERROR, need extension
+
+#ifdef GL_KHR_blend_equation_advanced
+#extension GL_KHR_blend_equation_advanced : enable
+#endif
+
+layout(blend_support_multiply) out;
+layout(blend_support_screen) out;
+layout(blend_support_overlay) out;
+layout(blend_support_darken, blend_support_lighten) out;
+layout(blend_support_colordodge) layout(blend_support_colorburn) out;
+layout(blend_support_hardlight) out;
+layout(blend_support_softlight) out;
+layout(blend_support_difference) out;
+layout(blend_support_exclusion) out;
+layout(blend_support_hsl_hue) out;
+layout(blend_support_hsl_saturation) out;
+layout(blend_support_hsl_color) out;
+layout(blend_support_hsl_luminosity) out;
+layout(blend_support_all_equations) out;
+
+layout(blend_support_hsl_luminosity) out;              // okay to repeat
+
+layout(blend_support_hsl_luminosity) in;                       // ERROR, only on "out"
+layout(blend_support_hsl_luminosity) out vec4;                 // ERROR, only on standalone
+layout(blend_support_hsl_luminosity) out vec4 badout;          // ERROR, only on standalone
+layout(blend_support_hsl_luminosity) struct badS {int i;};     // ERROR, only on standalone
+layout(blend_support_hsl_luminosity) void blendFoo() { }       // ERROR, only on standalone
+void blendFoo(layout(blend_support_hsl_luminosity) vec3 v) { } // ERROR, only on standalone
+layout(blend_support_flizbit) out;                             // ERROR, no flizbit

@@ -294,6 +294,30 @@ enum TLayoutDepth {
     EldCount
 };
 
+enum TBlendEquationShift {
+    // No 'EBlendNone':
+    // These are used as bit-shift amounts.  A mask of such shifts will have type 'int',
+    // and in that space, 0 means no bits set, or none.  In this enum, 0 means (1 << 0), a bit is set.
+    EBlendMultiply,
+    EBlendScreen,
+    EBlendOverlay,
+    EBlendDarken,
+    EBlendLighten,
+    EBlendColordodge,
+    EBlendColorburn,
+    EBlendHardlight,
+    EBlendSoftlight,
+    EBlendDifference,
+    EBlendExclusion,
+    EBlendHslHue,
+    EBlendHslSaturation,
+    EBlendHslColor,
+    EBlendHslLuminosity,
+    EBlendAllEquations,
+
+    EBlendCount
+};
+
 class TQualifier {
 public:
     void clear()
@@ -669,6 +693,28 @@ public:
         default:           return "none";
         }
     }
+    static const char* getBlendEquationString(TBlendEquationShift e)
+    {
+        switch (e) {
+        case EBlendMultiply:      return "blend_support_multiply";
+        case EBlendScreen:        return "blend_support_screen";
+        case EBlendOverlay:       return "blend_support_overlay";
+        case EBlendDarken:        return "blend_support_darken";
+        case EBlendLighten:       return "blend_support_lighten";
+        case EBlendColordodge:    return "blend_support_colordodge";
+        case EBlendColorburn:     return "blend_support_colorburn";
+        case EBlendHardlight:     return "blend_support_hardlight";
+        case EBlendSoftlight:     return "blend_support_softlight";
+        case EBlendDifference:    return "blend_support_difference";
+        case EBlendExclusion:     return "blend_support_exclusion";
+        case EBlendHslHue:        return "blend_support_hsl_hue";
+        case EBlendHslSaturation: return "blend_support_hsl_saturation";
+        case EBlendHslColor:      return "blend_support_hsl_color";
+        case EBlendHslLuminosity: return "blend_support_hsl_luminosity";
+        case EBlendAllEquations:  return "blend_support_all_equations";
+        default:                  return "unknown";
+        }
+    }
     static const char* getGeometryString(TLayoutGeometry geometry)
     {
         switch (geometry) {
@@ -728,6 +774,7 @@ struct TShaderQualifiers {
     int localSize[3];         // compute shader
     bool earlyFragmentTests;  // fragment input
     TLayoutDepth layoutDepth;
+    bool blendEquation;       // true if any blend equation was specified
 
     void init()
     {
@@ -744,6 +791,7 @@ struct TShaderQualifiers {
         localSize[2] = 1;
         earlyFragmentTests = false;
         layoutDepth = EldNone;
+        blendEquation = false;
     }
 
     // Merge in characteristics from the 'src' qualifier.  They can override when
@@ -774,6 +822,8 @@ struct TShaderQualifiers {
             earlyFragmentTests = true;
         if (src.layoutDepth)
             layoutDepth = src.layoutDepth;
+        if (src.blendEquation)
+            blendEquation = src.blendEquation;
     }
 };
 
