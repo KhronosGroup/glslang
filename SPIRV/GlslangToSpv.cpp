@@ -88,6 +88,8 @@ protected:
     spv::Id createSpvVariable(const glslang::TIntermSymbol*);
     spv::Id getSampledType(const glslang::TSampler&);
     spv::Id convertGlslangToSpvType(const glslang::TType& type);
+    int getArrayStride(const glslang::TType& arrayType);
+    int getMatrixStride(const glslang::TType& matrixType);
     void updateMemberOffset(const glslang::TType& structType, const glslang::TType& memberType, int& currentOffset, int& nextOffset);
 
     bool isShaderEntrypoint(const glslang::TIntermAggregate* node);
@@ -1418,6 +1420,10 @@ spv::Id TGlslangToSpvTraverser::convertGlslangToSpvType(const glslang::TType& ty
                         offset = nextOffset;
                     }
 
+                    if (glslangType.isMatrix()) {
+                        builder.addMemberDecoration(spvType, member, spv::DecorationMatrixStride, getMatrixStride(glslangType));
+                    }
+
                     // built-in variable decorations
                     spv::BuiltIn builtIn = TranslateBuiltInDecoration(glslangType.getQualifier().builtIn);
                     if (builtIn != spv::BadValue)
@@ -1459,9 +1465,27 @@ spv::Id TGlslangToSpvTraverser::convertGlslangToSpvType(const glslang::TType& ty
         } else
             arraySize = type.getOuterArraySize();
         spvType = builder.makeArrayType(spvType, arraySize);
+        builder.addDecoration(spvType, spv::DecorationArrayStride, getArrayStride(type));
     }
 
     return spvType;
+}
+
+// Given an array type, returns the integer stride required for that array
+int TGlslangToSpvTraverser::getArrayStride(const glslang::TType& arrayType)
+{
+    glslang::TType derefType(arrayType, 0);
+    int size;
+    glslangIntermediate->getBaseAlignment(derefType, size, true);
+    return size;
+}
+
+// Given a matrix type, returns the integer stride required for that matrix
+// when used as a member of an interface block
+int TGlslangToSpvTraverser::getMatrixStride(const glslang::TType& matrixType)
+{
+    int size;
+    return glslangIntermediate->getBaseAlignment(matrixType, size, true);
 }
 
 // Given a member type of a struct, realign the current offset for it, and compute
