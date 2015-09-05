@@ -1666,8 +1666,6 @@ spv::Id TGlslangToSpvTraverser::createImageTextureFunctionCall(glslang::TIntermO
 
     // This is no longer a query....
 
-    if (cracked.fetch)
-        spv::MissingFunctionality("texel fetch");
     if (cracked.gather)
         spv::MissingFunctionality("texture gather");
 
@@ -1723,7 +1721,7 @@ spv::Id TGlslangToSpvTraverser::createImageTextureFunctionCall(glslang::TIntermO
         ++extraArgs;
     }
 
-    return builder.createTextureCall(precision, convertGlslangToSpvType(node->getType()), cracked.proj, params);
+    return builder.createTextureCall(precision, convertGlslangToSpvType(node->getType()), cracked.fetch, cracked.proj, params);
 }
 
 spv::Id TGlslangToSpvTraverser::handleUserFunctionCall(const glslang::TIntermAggregate* node)
