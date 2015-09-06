@@ -4078,7 +4078,7 @@ void TParseContext::layoutTypeCheck(const TSourceLoc& loc, const TType& type)
         // "If the binding point for any uniform or shader storage block instance is less than zero, or greater than or
         // equal to the implementation-dependent maximum number of uniform buffer bindings, a compile-time
         // error will occur. When the binding identifier is used with a uniform or shader storage block instanced as
-        // an array of size N, all elements of the array from binding through binding + N – 1 must be within this
+        // an array of size N, all elements of the array from binding through binding + N - 1 must be within this
         // range."
         //
         if (type.getBasicType() != EbtSampler && type.getBasicType() != EbtBlock && type.getBasicType() != EbtAtomicUint)
