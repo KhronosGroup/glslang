@@ -1064,6 +1064,17 @@ bool TGlslangToSpvTraverser::visitAggregate(glslang::TVisit visit, glslang::TInt
             if (arg == 1)
                 lvalue = true;
             break;
+        case glslang::EOpAtomicAdd:
+        case glslang::EOpAtomicMin:
+        case glslang::EOpAtomicMax:
+        case glslang::EOpAtomicAnd:
+        case glslang::EOpAtomicOr:
+        case glslang::EOpAtomicXor:
+        case glslang::EOpAtomicExchange:
+        case glslang::EOpAtomicCompSwap:
+            if (arg == 0)
+                lvalue = true;
+            break;
         //case glslang::EOpUAddCarry:
         //case glslang::EOpUSubBorrow:
         //case glslang::EOpUMulExtended:
@@ -2470,8 +2481,8 @@ spv::Id TGlslangToSpvTraverser::createAtomicOperation(glslang::TOperator op, spv
     std::vector<spv::Id> spvAtomicOperands;  // hold the spv operands
     auto opIt = operands.begin();            // walk the glslang operands
     spvAtomicOperands.push_back(*(opIt++));
-    spvAtomicOperands.push_back(builder.makeUintConstant(spv::ScopeDevice));     // TBD: what is the correct scope?
-    spvAtomicOperands.push_back(builder.makeUintConstant(spv::MemorySemanticsMaskNone)); // TBD: what are the correct memory semantics?
+    spvAtomicOperands.push_back(spv::ScopeDevice);     // TBD: what is the correct scope?
+    spvAtomicOperands.push_back(spv::MemorySemanticsMaskNone); // TBD: what are the correct memory semantics?
 
     // Add the rest of the operands, skipping the first one, which was dealt with above.
     // For some ops, there are none, for some 1, for compare-exchange, 2.

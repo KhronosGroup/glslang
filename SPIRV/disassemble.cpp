@@ -386,8 +386,6 @@ void SpirvStream::disassembleInstruction(Id resultId, Id /*typeId*/, Op opCode, 
         OperandClass operandClass = InstructionDesc[opCode].operands.getClass(op);
         switch (operandClass) {
         case OperandId:
-        case OperandScope:
-        case OperandMemorySemantics:
             disassembleIds(1);
             // Get names for printing "(XXX)" for readability, *after* this id
             if (opCode == OpName)
