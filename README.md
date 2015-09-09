@@ -25,8 +25,6 @@ Things left to do:  See `Todo.txt`
 Execution of Standalone Wrapper
 -------------------------------
 
-There are binaries in the `Install/Windows` and `Install/Linux` directories.
-
 To use the standalone binary form, execute `glslangValidator`, and it will print
 a usage statement.  Basic operation is to give it a file containing a shader,
 and it will print out warnings/errors and optionally an AST.
