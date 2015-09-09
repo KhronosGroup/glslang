@@ -19,7 +19,6 @@ Linked fragment stage:
                               Name 13  "gl_FragData"
                               Name 16  "i"
                               Name 19  "Color"
-                              Decorate 11 ArrayStride 16
                               Decorate 13(gl_FragData) BuiltIn FragColor
                               Decorate 19(Color) Smooth
                2:             TypeVoid

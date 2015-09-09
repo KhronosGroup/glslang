@@ -47,44 +47,29 @@ Linked tessellation control stage:
                               Name 86  "ivlb"
                               Name 89  "ovla"
                               Name 90  "ovlb"
-                              Decorate 19 ArrayStride 4
                               Decorate 20(gl_PerVertex) Block
-                              Decorate 22 ArrayStride 16
-                              Decorate 19 ArrayStride 4
                               Decorate 41(gl_PatchVerticesIn) BuiltIn PatchVertices
                               Decorate 44(gl_PrimitiveID) BuiltIn PrimitiveId
                               Decorate 47(gl_InvocationID) BuiltIn InvocationId
-                              Decorate 19 ArrayStride 4
                               MemberDecorate 49(gl_PerVertex) 0 BuiltIn Position
                               MemberDecorate 49(gl_PerVertex) 1 BuiltIn PointSize
                               MemberDecorate 49(gl_PerVertex) 2 BuiltIn ClipDistance
                               Decorate 49(gl_PerVertex) Block
-                              Decorate 51 ArrayStride 16
-                              Decorate 19 ArrayStride 4
-                              Decorate 62 ArrayStride 4
                               Decorate 64(gl_TessLevelOuter) Patch
                               Decorate 64(gl_TessLevelOuter) BuiltIn TessLevelOuter
-                              Decorate 69 ArrayStride 4
                               Decorate 71(gl_TessLevelInner) Patch
                               Decorate 71(gl_TessLevelInner) BuiltIn TessLevelInner
-                              Decorate 74 ArrayStride 4
                               Decorate 76(outa) NoStaticUse
                               Decorate 77(patchOut) Patch
                               Decorate 77(patchOut) NoStaticUse
-                              Decorate 79 ArrayStride 8
                               Decorate 81(inb) NoStaticUse
-                              Decorate 79 ArrayStride 8
                               Decorate 82(ind) NoStaticUse
-                              Decorate 83 ArrayStride 16
                               Decorate 85(ivla) Location 3
                               Decorate 85(ivla) NoStaticUse
-                              Decorate 83 ArrayStride 16
                               Decorate 86(ivlb) Location 4
                               Decorate 86(ivlb) NoStaticUse
-                              Decorate 87 ArrayStride 16
                               Decorate 89(ovla) Location 3
                               Decorate 89(ovla) NoStaticUse
-                              Decorate 87 ArrayStride 16
                               Decorate 90(ovlb) Location 4
                               Decorate 90(ovlb) NoStaticUse
                2:             TypeVoid

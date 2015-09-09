@@ -43,20 +43,16 @@ Linked geometry stage:
                               Decorate 9(fromVertex) Stream 3
                               Decorate 11 Stream 3
                               Decorate 14(fromVertex) Block
-                              Decorate 17 ArrayStride 16
-                              Decorate 27 ArrayStride 4
                               MemberDecorate 28(gl_PerVertex) 0 BuiltIn Position
                               MemberDecorate 28(gl_PerVertex) 1 BuiltIn PointSize
                               MemberDecorate 28(gl_PerVertex) 2 BuiltIn ClipDistance
                               Decorate 28(gl_PerVertex) Block
                               Decorate 28(gl_PerVertex) Stream 0
                               Decorate 30 Stream 0
-                              Decorate 27 ArrayStride 4
                               MemberDecorate 31(gl_PerVertex) 0 BuiltIn Position
                               MemberDecorate 31(gl_PerVertex) 1 BuiltIn PointSize
                               MemberDecorate 31(gl_PerVertex) 2 BuiltIn ClipDistance
                               Decorate 31(gl_PerVertex) Block
-                              Decorate 32 ArrayStride 16
                               Decorate 48(gl_PrimitiveID) Stream 0
                               Decorate 48(gl_PrimitiveID) BuiltIn PrimitiveId
                               Decorate 50(gl_PrimitiveIDIn) BuiltIn PrimitiveId

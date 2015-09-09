@@ -53,44 +53,30 @@ Linked tessellation evaluation stage:
                               Name 94  "ivla"
                               Name 95  "ivlb"
                               Name 98  "ovla"
-                              Decorate 17 ArrayStride 4
                               Decorate 18(gl_PerVertex) Block
-                              Decorate 20 ArrayStride 16
-                              Decorate 17 ArrayStride 4
                               Decorate 39(gl_PatchVerticesIn) BuiltIn PatchVertices
                               Decorate 42(gl_PrimitiveID) BuiltIn PrimitiveId
                               Decorate 48(gl_TessCoord) BuiltIn TessCoord
-                              Decorate 52 ArrayStride 4
                               Decorate 54(gl_TessLevelOuter) Patch
                               Decorate 54(gl_TessLevelOuter) BuiltIn TessLevelOuter
-                              Decorate 60 ArrayStride 4
                               Decorate 62(gl_TessLevelInner) Patch
                               Decorate 62(gl_TessLevelInner) BuiltIn TessLevelInner
-                              Decorate 66 ArrayStride 4
                               MemberDecorate 67(gl_PerVertex) 0 BuiltIn Position
                               MemberDecorate 67(gl_PerVertex) 1 BuiltIn PointSize
                               MemberDecorate 67(gl_PerVertex) 2 BuiltIn ClipDistance
                               Decorate 67(gl_PerVertex) Block
-                              Decorate 66 ArrayStride 4
                               Decorate 78(patchIn) Patch
                               Decorate 78(patchIn) NoStaticUse
-                              Decorate 80 ArrayStride 8
                               Decorate 82(inb) NoStaticUse
-                              Decorate 80 ArrayStride 8
                               Decorate 83(ind) NoStaticUse
                               Decorate 84(testblb) Block
-                              Decorate 85 ArrayStride 16
                               Decorate 87(blb) NoStaticUse
                               Decorate 88(testbld) Block
-                              Decorate 89 ArrayStride 16
                               Decorate 91(bld) NoStaticUse
-                              Decorate 92 ArrayStride 16
                               Decorate 94(ivla) Location 23
                               Decorate 94(ivla) NoStaticUse
-                              Decorate 92 ArrayStride 16
                               Decorate 95(ivlb) Location 24
                               Decorate 95(ivlb) NoStaticUse
-                              Decorate 96 ArrayStride 16
                               Decorate 98(ovla) Location 23
                               Decorate 98(ovla) NoStaticUse
                2:             TypeVoid

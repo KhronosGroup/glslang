@@ -24,14 +24,6 @@ Linked fragment stage:
                               Name 67  "z"
                               Name 74  "v"
                               Name 93  "gl_FragColor"
-                              Decorate 14 ArrayStride 4
-                              Decorate 14 ArrayStride 4
-                              Decorate 14 ArrayStride 4
-                              Decorate 14 ArrayStride 4
-                              Decorate 14 ArrayStride 4
-                              Decorate 14 ArrayStride 4
-                              Decorate 14 ArrayStride 4
-                              Decorate 14 ArrayStride 4
                               Decorate 93(gl_FragColor) BuiltIn FragColor
                2:             TypeVoid
                3:             TypeFunction 2

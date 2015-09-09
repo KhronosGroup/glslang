@@ -32,11 +32,9 @@ Linked fragment stage:
                               MemberName 90(bn) 4  "matrdef"
                               Name 92  ""
                               Decorate 17(gl_FrontFacing) BuiltIn FrontFacing
-                              Decorate 32 ArrayStride 4
                               Decorate 34(gl_ClipDistance) Smooth
                               Decorate 34(gl_ClipDistance) BuiltIn ClipDistance
                               Decorate 43(k) Smooth
-                              Decorate 84 ArrayStride 4
                               Decorate 86(samp2Da) NoStaticUse
                               Decorate 89 ArrayStride 64
                               Decorate 89 ArrayStride 64

@@ -32,13 +32,9 @@ TBD functionality: Is atomic_uint an opaque handle in the uniform storage class,
                               Name 73  "arrY"
                               Name 74  "arrZ"
                               Decorate 22(counter) Binding 0
-                              Decorate 28 ArrayStride 4
                               Decorate 30(countArr) Binding 0
-                              Decorate 70 ArrayStride 4
                               Decorate 72(arrX) NoStaticUse
-                              Decorate 70 ArrayStride 4
                               Decorate 73(arrY) NoStaticUse
-                              Decorate 70 ArrayStride 4
                               Decorate 74(arrZ) NoStaticUse
                2:             TypeVoid
                3:             TypeFunction 2

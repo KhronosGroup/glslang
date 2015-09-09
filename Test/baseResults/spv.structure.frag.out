@@ -30,16 +30,6 @@ Linked fragment stage:
                               Name 52  "sampler"
                               Name 56  "coord"
                               Name 61  "foo"
-                              Decorate 14 ArrayStride 4
-                              Decorate 16 ArrayStride 4
-                              Decorate 18 ArrayStride 16
-                              Decorate 21 ArrayStride 160
-                              Decorate 23 ArrayStride 1216
-                              Decorate 14 ArrayStride 4
-                              Decorate 21 ArrayStride 160
-                              Decorate 18 ArrayStride 16
-                              Decorate 21 ArrayStride 160
-                              Decorate 16 ArrayStride 4
                               Decorate 47(gl_FragColor) BuiltIn FragColor
                               Decorate 56(coord) Smooth
                               Decorate 61(foo) NoStaticUse

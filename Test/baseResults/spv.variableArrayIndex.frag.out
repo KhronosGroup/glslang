@@ -38,15 +38,8 @@ Linked fragment stage:
                               Name 60  "sampler"
                               Name 64  "coord"
                               Name 70  "constructed"
-                              Decorate 18 ArrayStride 24
-                              Decorate 18 ArrayStride 24
-                              Decorate 33 ArrayStride 24
-                              Decorate 18 ArrayStride 24
-                              Decorate 18 ArrayStride 24
                               Decorate 55(gl_FragColor) BuiltIn FragColor
                               Decorate 64(coord) Smooth
-                              Decorate 68 ArrayStride 8
-                              Decorate 68 ArrayStride 8
                2:             TypeVoid
                3:             TypeFunction 2
                7:             TypeInt 32 1
