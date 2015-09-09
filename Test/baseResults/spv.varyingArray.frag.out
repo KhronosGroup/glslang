@@ -26,10 +26,12 @@ Linked fragment stage:
                               Name 40  "alpha"
                               Name 45  "gl_FragColor"
                               Name 49  "foo"
+                              Decorate 18 ArrayStride 16
                               Decorate 20(gl_TexCoord) Smooth
                               Decorate 35(color) Smooth
                               Decorate 40(alpha) Smooth
                               Decorate 45(gl_FragColor) BuiltIn FragColor
+                              Decorate 47 ArrayStride 16
                               Decorate 49(foo) Smooth
                2:             TypeVoid
                3:             TypeFunction 2

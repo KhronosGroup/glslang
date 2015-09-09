@@ -46,11 +46,16 @@ Linked fragment stage:
                               Name 131  "foo"
                               Name 132  "foo2"
                               Name 134  "uFloatArray"
+                              Decorate 35 ArrayStride 4
                               Decorate 41(coord) Smooth
+                              Decorate 46 ArrayStride 4
+                              Decorate 35 ArrayStride 4
+                              Decorate 35 ArrayStride 4
                               Decorate 95(color) Smooth
                               Decorate 105(gl_FragColor) BuiltIn FragColor
                               Decorate 131(foo) NoStaticUse
                               Decorate 132(foo2) NoStaticUse
+                              Decorate 35 ArrayStride 4
                               Decorate 134(uFloatArray) NoStaticUse
                2:             TypeVoid
                3:             TypeFunction 2

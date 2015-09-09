@@ -23,6 +23,7 @@ Linked vertex stage:
                               Name 43  "gl_InstanceID"
                               Decorate 10(glPos) Smooth
                               Decorate 20(f) Smooth
+                              Decorate 33 ArrayStride 64
                               Decorate 42(gl_VertexID) BuiltIn VertexId
                               Decorate 42(gl_VertexID) NoStaticUse
                               Decorate 43(gl_InstanceID) BuiltIn InstanceId

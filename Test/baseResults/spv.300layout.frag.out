@@ -28,6 +28,7 @@ Linked fragment stage:
                               Decorate 12(color) Smooth
                               MemberDecorate 14(S) 0 RelaxedPrecision
                               MemberDecorate 14(S) 1 RelaxedPrecision
+                              Decorate 25 ArrayStride 16
                               Decorate 27(p) RelaxedPrecision
                               Decorate 27(p) Location 3
                               Decorate 30(pos) RelaxedPrecision

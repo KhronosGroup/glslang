@@ -18,8 +18,10 @@ Linked fragment stage:
                               Name 15  "v"
                               Name 27  "gl_FragColor"
                               Name 33  "u"
+                              Decorate 13 ArrayStride 8
                               Decorate 15(v) Smooth
                               Decorate 27(gl_FragColor) BuiltIn FragColor
+                              Decorate 31 ArrayStride 16
                               Decorate 33(u) NoStaticUse
                2:             TypeVoid
                3:             TypeFunction 2

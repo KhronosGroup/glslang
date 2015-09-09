@@ -35,9 +35,13 @@ Linked vertex stage:
                               Name 59  "sampb4"
                               Name 61  "gl_VertexID"
                               Name 62  "gl_InstanceID"
+                              Decorate 10 ArrayStride 4
                               MemberDecorate 11(gl_PerVertex) 0 BuiltIn ClipDistance
                               Decorate 11(gl_PerVertex) Block
+                              Decorate 10 ArrayStride 4
+                              Decorate 22 ArrayStride 16
                               Decorate 35(badorder3) Flat
+                              Decorate 10 ArrayStride 4
                               Decorate 43(uv4) Location 4
                               Decorate 43(uv4) NoStaticUse
                               Decorate 29 NoStaticUse
@@ -56,6 +60,7 @@ Linked vertex stage:
                               Decorate 51 NoStaticUse
                               Decorate 55(sampb1) Binding 4
                               Decorate 55(sampb1) NoStaticUse
+                              Decorate 56 ArrayStride 4
                               Decorate 58(sampb2) Binding 5
                               Decorate 58(sampb2) NoStaticUse
                               Decorate 59(sampb4) Binding 31

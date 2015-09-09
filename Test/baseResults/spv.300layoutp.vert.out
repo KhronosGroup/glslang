@@ -46,24 +46,33 @@ Linked vertex stage:
                               Decorate 12(p) Location 3
                               MemberDecorate 18(Transform) 0 RowMajor
                               MemberDecorate 18(Transform) 0 Offset 0
+                              MemberDecorate 18(Transform) 0 MatrixStride 16
                               MemberDecorate 18(Transform) 1 ColMajor
                               MemberDecorate 18(Transform) 1 Offset 64
+                              MemberDecorate 18(Transform) 1 MatrixStride 16
                               MemberDecorate 18(Transform) 2 RowMajor
                               MemberDecorate 18(Transform) 2 Offset 128
+                              MemberDecorate 18(Transform) 2 MatrixStride 16
                               MemberDecorate 18(Transform) 3 Offset 176
                               Decorate 18(Transform) Block
+                              Decorate 33 ArrayStride 12
                               MemberDecorate 34(T3) 0 ColMajor
+                              MemberDecorate 34(T3) 0 MatrixStride 16
                               MemberDecorate 34(T3) 1 RowMajor
+                              MemberDecorate 34(T3) 1 MatrixStride 16
                               MemberDecorate 34(T3) 2 ColMajor
+                              MemberDecorate 34(T3) 2 MatrixStride 16
                               Decorate 34(T3) GLSLShared
                               Decorate 34(T3) Block
                               MemberDecorate 44(T2) 1 RowMajor
+                              MemberDecorate 44(T2) 1 MatrixStride 16
                               Decorate 44(T2) GLSLShared
                               Decorate 44(T2) Block
                               Decorate 52(color) Smooth
                               Decorate 54(c) Location 7
                               Decorate 62(iout) Flat
                               Decorate 74(aiv2) Location 9
+                              Decorate 33 ArrayStride 12
                               Decorate 110(gl_VertexID) BuiltIn VertexId
                               Decorate 110(gl_VertexID) NoStaticUse
                               Decorate 111(gl_InstanceID) BuiltIn InstanceId

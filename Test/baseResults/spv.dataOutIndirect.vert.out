@@ -21,6 +21,7 @@ Linked vertex stage:
                               Name 27  "color"
                               Name 33  "gl_Position"
                               Name 38  "gl_VertexID"
+                              Decorate 22 ArrayStride 16
                               Decorate 24(colorOut) Smooth
                               Decorate 33(gl_Position) BuiltIn Position
                               Decorate 38(gl_VertexID) BuiltIn VertexId
