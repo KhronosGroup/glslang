@@ -137,6 +137,11 @@ public:
 
     bool isConstantScalar(Id resultId) const { return getOpCode(resultId) == OpConstant; }
     unsigned int getConstantScalar(Id resultId) const { return module.getInstruction(resultId)->getImmediateOperand(0); }
+    bool isSignedType(Id typeId) const
+    {
+        assert(getTypeClass(typeId) == OpTypeInt);
+        return module.getInstruction(typeId)->getImmediateOperand(1) == 0u;
+    }
 
     int getTypeNumColumns(Id typeId) const
     {
@@ -241,6 +246,7 @@ public:
 
     void createNoResultOp(Op);
     void createNoResultOp(Op, Id operand);
+    void createNoResultOp(Op, const std::vector<Id>& operands);
     void createControlBarrier(Scope execution, Scope memory, MemorySemanticsMask);
     void createMemoryBarrier(unsigned executionScope, unsigned memorySemantics);
     Id createUnaryOp(Op, Id typeId, Id operand);

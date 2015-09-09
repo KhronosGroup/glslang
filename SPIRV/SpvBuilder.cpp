@@ -822,6 +822,7 @@ Id Builder::createVariable(StorageClass storageClass, Id type, const char* name)
     case StorageClassWorkgroupLocal:
     case StorageClassPrivateGlobal:
     case StorageClassWorkgroupGlobal:
+    case StorageClassAtomicCounter:
         constantsTypesGlobals.push_back(inst);
         module.mapInstruction(inst);
         break;
@@ -972,6 +973,15 @@ void Builder::createNoResultOp(Op opCode, Id operand)
 {
     Instruction* op = new Instruction(opCode);
     op->addIdOperand(operand);
+    buildPoint->addInstruction(op);
+}
+
+// An opcode that has one operand, no result id, and no type
+void Builder::createNoResultOp(Op opCode, const std::vector<Id>& operands)
+{
+    Instruction* op = new Instruction(opCode);
+    for (auto operand : operands)
+        op->addIdOperand(operand);
     buildPoint->addInstruction(op);
 }
 

@@ -95,7 +95,7 @@ protected:
     void makeGlobalInitializers(const glslang::TIntermSequence&);
     void visitFunctions(const glslang::TIntermSequence&);
     void handleFunctionEntry(const glslang::TIntermAggregate* node);
-    void translateArguments(const glslang::TIntermSequence& glslangArguments, std::vector<spv::Id>& arguments);
+    void translateArguments(glslang::TIntermAggregate& node, std::vector<spv::Id>& arguments);
     void translateArguments(glslang::TIntermUnary& node, std::vector<spv::Id>& arguments);
     spv::Id createImageTextureFunctionCall(glslang::TIntermOperator* node);
     spv::Id handleUserFunctionCall(const glslang::TIntermAggregate*);
@@ -177,6 +177,8 @@ spv::StorageClass TranslateStorageClass(const glslang::TType& type)
     else if (type.getQualifier().isUniformOrBuffer()) {
         if (type.getBasicType() == glslang::EbtBlock)
             return spv::StorageClassUniform;
+        else if (type.getBasicType() == glslang::EbtAtomicUint)
+            return spv::StorageClassAtomicCounter;
         else
             return spv::StorageClassUniformConstant;
         // TODO: how are we distuingishing between default and non-default non-writable uniforms?  Do default uniforms even exist?
@@ -340,6 +342,56 @@ spv::BuiltIn TranslateBuiltInDecoration(glslang::TBuiltInVariable builtIn)
     case glslang::EbvLocalInvocationIndex: return spv::BuiltInLocalInvocationIndex;
     case glslang::EbvGlobalInvocationId:   return spv::BuiltInGlobalInvocationId;
     default:                               return (spv::BuiltIn)spv::BadValue;
+    }
+}
+
+// Translate glslang image layout format to SPIR-V image format.
+spv::ImageFormat TranslateImageFormat(const glslang::TType& type)
+{
+    assert(type.getBasicType() == glslang::EbtSampler);
+
+    switch (type.getQualifier().layoutFormat) {
+    case glslang::ElfNone:          return spv::ImageFormatUnknown;
+    case glslang::ElfRgba32f:       return spv::ImageFormatRgba32f;
+    case glslang::ElfRgba16f:       return spv::ImageFormatRgba16f;
+    case glslang::ElfR32f:          return spv::ImageFormatR32f;
+    case glslang::ElfRgba8:         return spv::ImageFormatRgba8;
+    case glslang::ElfRgba8Snorm:    return spv::ImageFormatRgba8Snorm;
+    case glslang::ElfRg32f:         return spv::ImageFormatRg32f;
+    case glslang::ElfRg16f:         return spv::ImageFormatRg16f;
+    case glslang::ElfR11fG11fB10f:  return spv::ImageFormatR11fG11fB10f;
+    case glslang::ElfR16f:          return spv::ImageFormatR16f;
+    case glslang::ElfRgba16:        return spv::ImageFormatRgba16;
+    case glslang::ElfRgb10A2:       return spv::ImageFormatRgb10A2;
+    case glslang::ElfRg16:          return spv::ImageFormatRg16;
+    case glslang::ElfRg8:           return spv::ImageFormatRg8;
+    case glslang::ElfR16:           return spv::ImageFormatR16;
+    case glslang::ElfR8:            return spv::ImageFormatR8;
+    case glslang::ElfRgba16Snorm:   return spv::ImageFormatRgba16Snorm;
+    case glslang::ElfRg16Snorm:     return spv::ImageFormatRg16Snorm;
+    case glslang::ElfRg8Snorm:      return spv::ImageFormatRg8Snorm;
+    case glslang::ElfR16Snorm:      return spv::ImageFormatR16Snorm;
+    case glslang::ElfR8Snorm:       return spv::ImageFormatR8Snorm;
+    case glslang::ElfRgba32i:       return spv::ImageFormatRgba32i;
+    case glslang::ElfRgba16i:       return spv::ImageFormatRgba16i;
+    case glslang::ElfRgba8i:        return spv::ImageFormatRgba8i;
+    case glslang::ElfR32i:          return spv::ImageFormatR32i;
+    case glslang::ElfRg32i:         return spv::ImageFormatRg32i;
+    case glslang::ElfRg16i:         return spv::ImageFormatRg16i;
+    case glslang::ElfRg8i:          return spv::ImageFormatRg8i;
+    case glslang::ElfR16i:          return spv::ImageFormatR16i;
+    case glslang::ElfR8i:           return spv::ImageFormatR8i;
+    case glslang::ElfRgba32ui:      return spv::ImageFormatRgba32ui;
+    case glslang::ElfRgba16ui:      return spv::ImageFormatRgba16ui;
+    case glslang::ElfRgba8ui:       return spv::ImageFormatRgba8ui;
+    case glslang::ElfR32ui:         return spv::ImageFormatR32ui;
+    case glslang::ElfRg32ui:        return spv::ImageFormatRg32ui;
+    case glslang::ElfRg16ui:        return spv::ImageFormatRg16ui;
+    case glslang::ElfRgb10a2ui:     return spv::ImageFormatRgb10a2ui;
+    case glslang::ElfRg8ui:         return spv::ImageFormatRg8ui;
+    case glslang::ElfR16ui:         return spv::ImageFormatR16ui;
+    case glslang::ElfR8ui:          return spv::ImageFormatR8ui;
+    default:                        return (spv::ImageFormat)spv::BadValue;
     }
 }
 
@@ -680,7 +732,14 @@ bool TGlslangToSpvTraverser::visitUnary(glslang::TVisit /* visit */, glslang::TI
 
     builder.clearAccessChain();
     node->getOperand()->traverse(this);
-    spv::Id operand = builder.accessChainLoad(TranslatePrecisionDecoration(node->getOperand()->getType()));
+    spv::Id operand = spv::NoResult;
+
+    if (node->getOp() == glslang::EOpAtomicCounterIncrement ||
+        node->getOp() == glslang::EOpAtomicCounterDecrement ||
+        node->getOp() == glslang::EOpAtomicCounter)
+        operand = builder.accessChainGetLValue(); // Special case l-value operands
+    else
+        operand = builder.accessChainLoad(TranslatePrecisionDecoration(node->getOperand()->getType()));
 
     spv::Decoration precision = TranslatePrecisionDecoration(node->getType());
 
@@ -762,6 +821,11 @@ bool TGlslangToSpvTraverser::visitAggregate(glslang::TVisit visit, glslang::TInt
         builder.clearAccessChain();
         builder.setAccessChainRValue(result);
 
+        return false;
+    }
+    else if (node->getOp() == glslang::EOpImageStore)
+    {
+        // "imageStore" is a special case, which has no result
         return false;
     }
 
@@ -901,7 +965,7 @@ bool TGlslangToSpvTraverser::visitAggregate(glslang::TVisit visit, glslang::TInt
     case glslang::EOpConstructStruct:
     {
         std::vector<spv::Id> arguments;
-        translateArguments(node->getSequence(), arguments);
+        translateArguments(*node, arguments);
         spv::Id resultTypeId = convertGlslangToSpvType(node->getType());
         spv::Id constructed;
         if (node->getOp() == glslang::EOpConstructStruct || node->getType().isArray()) {
@@ -1361,7 +1425,7 @@ spv::Id TGlslangToSpvTraverser::convertGlslangToSpvType(const glslang::TType& ty
         {
             const glslang::TSampler& sampler = type.getSampler();
             spvType = builder.makeImageType(getSampledType(sampler), TranslateDimensionality(sampler), sampler.shadow, sampler.arrayed, sampler.ms,
-                                            sampler.image ? 2 : 1, spv::ImageFormatUnknown);  // TODO: translate format, needed for GLSL image ops
+                                            sampler.image ? 2 : 1, TranslateImageFormat(type));
             // OpenGL "textures" need to be combined with a sampler
             if (! sampler.image)
                 spvType = builder.makeSampledImageType(spvType);
@@ -1609,12 +1673,37 @@ void TGlslangToSpvTraverser::handleFunctionEntry(const glslang::TIntermAggregate
     builder.setBuildPoint(functionBlock);
 }
 
-void TGlslangToSpvTraverser::translateArguments(const glslang::TIntermSequence& glslangArguments, std::vector<spv::Id>& arguments)
+void TGlslangToSpvTraverser::translateArguments(glslang::TIntermAggregate& node, std::vector<spv::Id>& arguments)
 {
+    const glslang::TIntermSequence& glslangArguments = node.getSequence();
     for (int i = 0; i < (int)glslangArguments.size(); ++i) {
         builder.clearAccessChain();
         glslangArguments[i]->traverse(this);
-        arguments.push_back(builder.accessChainLoad(TranslatePrecisionDecoration(glslangArguments[i]->getAsTyped()->getType())));
+
+        // Special case l-value operands
+        bool lvalue = false;
+        switch (node.getOp()) {
+        case glslang::EOpImageAtomicAdd:
+        case glslang::EOpImageAtomicMin:
+        case glslang::EOpImageAtomicMax:
+        case glslang::EOpImageAtomicAnd:
+        case glslang::EOpImageAtomicOr:
+        case glslang::EOpImageAtomicXor:
+        case glslang::EOpImageAtomicExchange:
+        case glslang::EOpImageAtomicCompSwap:
+            if (i == 0)
+                lvalue = true;
+            break;
+        default:
+            break;
+        }
+
+        if (lvalue) {
+            arguments.push_back(builder.accessChainGetLValue());
+        }
+        else {
+            arguments.push_back(builder.accessChainLoad(TranslatePrecisionDecoration(glslangArguments[i]->getAsTyped()->getType())));
+        }
     }
 }
 
@@ -1627,10 +1716,7 @@ void TGlslangToSpvTraverser::translateArguments(glslang::TIntermUnary& node, std
 
 spv::Id TGlslangToSpvTraverser::createImageTextureFunctionCall(glslang::TIntermOperator* node)
 {
-    if (node->isImage()) {
-        spv::MissingFunctionality("GLSL image function");
-        return spv::NoResult;
-    } else if (! node->isTexture()) {
+    if (! node->isImage() && ! node->isTexture()) {
         return spv::NoResult;
     }
 
@@ -1643,7 +1729,7 @@ spv::Id TGlslangToSpvTraverser::createImageTextureFunctionCall(glslang::TIntermO
                                                              : node->getAsUnaryNode()->getOperand()->getAsTyped()->getType().getSampler();
     std::vector<spv::Id> arguments;
     if (node->getAsAggregate())
-        translateArguments(node->getAsAggregate()->getSequence(), arguments);
+        translateArguments(*node->getAsAggregate(), arguments);
     else
         translateArguments(*node->getAsUnaryNode(), arguments);
     spv::Decoration precision = TranslatePrecisionDecoration(node->getType());
@@ -1675,8 +1761,37 @@ spv::Id TGlslangToSpvTraverser::createImageTextureFunctionCall(glslang::TIntermO
         }
     }
 
-    // This is no longer a query....
+    // Check for image functions other than queries
+    if (node->isImage()) {
+        if (node->getOp() == glslang::EOpImageLoad) {
+            return builder.createOp(spv::OpImageRead, convertGlslangToSpvType(node->getType()), arguments);
+        }
+        else if (node->getOp() == glslang::EOpImageStore) {
+            builder.createNoResultOp(spv::OpImageWrite, arguments);
+            return spv::NoResult;
+        }
+        else {
+            // Process image atomic operations. GLSL "IMAGE_PARAMS" will involve in constructing an image texel
+            // pointer and this pointer, as the first source operand, is required by SPIR-V atomic operations.
+            std::vector<spv::Id> imageParams;
+            auto opIt = arguments.begin();
+            imageParams.push_back(*(opIt++));
+            imageParams.push_back(*(opIt++));
+            imageParams.push_back(sampler.ms ? *(opIt++) : 0); // For non-MS, the value should be 0
 
+            spv::Id resultTypeId = builder.makePointer(spv::StorageClassImage, convertGlslangToSpvType(node->getType()));
+            spv::Id pointer = builder.createOp(spv::OpImageTexelPointer, resultTypeId, imageParams);
+
+            std::vector<spv::Id> operands;
+            operands.push_back(pointer);
+            for (; opIt != arguments.end(); ++opIt)
+                operands.push_back(*opIt);
+
+            return createAtomicOperation(node->getOp(), precision, convertGlslangToSpvType(node->getType()), operands);
+        }
+    }
+
+    // Check for texture functions other than queries
     if (cracked.fetch)
         spv::MissingFunctionality("texel fetch");
     if (cracked.gather)
@@ -2438,27 +2553,35 @@ spv::Id TGlslangToSpvTraverser::createAtomicOperation(glslang::TOperator op, spv
 
     switch (op) {
     case glslang::EOpAtomicAdd:
+    case glslang::EOpImageAtomicAdd:
         opCode = spv::OpAtomicIAdd;
         break;
     case glslang::EOpAtomicMin:
-        opCode = spv::OpAtomicSMin;
+    case glslang::EOpImageAtomicMin:
+        opCode = builder.isSignedType(typeId) ? spv::OpAtomicUMin : spv::OpAtomicSMin;
         break;
     case glslang::EOpAtomicMax:
-        opCode = spv::OpAtomicSMax;
+    case glslang::EOpImageAtomicMax:
+        opCode = builder.isSignedType(typeId) ? spv::OpAtomicUMax : spv::OpAtomicSMax;
         break;
     case glslang::EOpAtomicAnd:
+    case glslang::EOpImageAtomicAnd:
         opCode = spv::OpAtomicAnd;
         break;
     case glslang::EOpAtomicOr:
+    case glslang::EOpImageAtomicOr:
         opCode = spv::OpAtomicOr;
         break;
     case glslang::EOpAtomicXor:
+    case glslang::EOpImageAtomicXor:
         opCode = spv::OpAtomicXor;
         break;
     case glslang::EOpAtomicExchange:
+    case glslang::EOpImageAtomicExchange:
         opCode = spv::OpAtomicExchange;
         break;
     case glslang::EOpAtomicCompSwap:
+    case glslang::EOpImageAtomicCompSwap:
         opCode = spv::OpAtomicCompareExchange;
         break;
     case glslang::EOpAtomicCounterIncrement:
