@@ -46,10 +46,13 @@ Linked vertex stage:
                               Decorate 12(p) Location 3
                               MemberDecorate 18(Transform) 0 RowMajor
                               MemberDecorate 18(Transform) 0 Offset 0
+                              MemberDecorate 18(Transform) 0 MatrixStride 16
                               MemberDecorate 18(Transform) 1 ColMajor
                               MemberDecorate 18(Transform) 1 Offset 64
+                              MemberDecorate 18(Transform) 1 MatrixStride 16
                               MemberDecorate 18(Transform) 2 RowMajor
                               MemberDecorate 18(Transform) 2 Offset 128
+                              MemberDecorate 18(Transform) 2 MatrixStride 16
                               MemberDecorate 18(Transform) 3 Offset 176
                               Decorate 18(Transform) Block
                               MemberDecorate 34(T3) 0 ColMajor

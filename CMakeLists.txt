@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 2.8)
 
-set(CMAKE_INSTALL_PREFIX "install" CACHE STRING "prefix" FORCE)
+set(CMAKE_INSTALL_PREFIX "install" CACHE STRING "prefix")
 
 project(glslang)
 

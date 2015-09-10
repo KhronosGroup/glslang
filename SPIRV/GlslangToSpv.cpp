@@ -88,6 +88,10 @@ protected:
     spv::Id createSpvVariable(const glslang::TIntermSymbol*);
     spv::Id getSampledType(const glslang::TSampler&);
     spv::Id convertGlslangToSpvType(const glslang::TType& type);
+    spv::Id convertGlslangToSpvType(const glslang::TType& type, bool explicitLayout);
+    bool requiresExplicitLayout(const glslang::TType& type) const;
+    int getArrayStride(const glslang::TType& arrayType);
+    int getMatrixStride(const glslang::TType& matrixType);
     void updateMemberOffset(const glslang::TType& structType, const glslang::TType& memberType, int& currentOffset, int& nextOffset);
 
     bool isShaderEntrypoint(const glslang::TIntermAggregate* node);
@@ -1316,8 +1320,16 @@ spv::Id TGlslangToSpvTraverser::getSampledType(const glslang::TSampler& sampler)
     }
 }
 
-// Do full recursive conversion of an arbitrary glslang type to a SPIR-V Id.
+// Convert from a glslang type to an SPV type, by calling into
+// recursive version of this function.
 spv::Id TGlslangToSpvTraverser::convertGlslangToSpvType(const glslang::TType& type)
+{
+    return convertGlslangToSpvType(type, requiresExplicitLayout(type));
+}
+
+// Do full recursive conversion of an arbitrary glslang type to a SPIR-V Id.
+// explicitLayout can be kept the same throughout the heirarchical recursive walk.
+spv::Id TGlslangToSpvTraverser::convertGlslangToSpvType(const glslang::TType& type, bool explicitLayout)
 {
     spv::Id spvType = 0;
 
@@ -1381,7 +1393,7 @@ spv::Id TGlslangToSpvTraverser::convertGlslangToSpvType(const glslang::TType& ty
                 } else {
                     if (type.getBasicType() == glslang::EbtBlock)
                         memberRemapper[glslangStruct][i] = i - memberDelta;
-                    structFields.push_back(convertGlslangToSpvType(glslangType));
+                    structFields.push_back(convertGlslangToSpvType(glslangType, explicitLayout));
                 }
             }
 
@@ -1409,13 +1421,17 @@ spv::Id TGlslangToSpvTraverser::convertGlslangToSpvType(const glslang::TType& ty
                         builder.addMemberDecoration(spvType, member, spv::DecorationComponent, glslangType.getQualifier().layoutComponent);
                     if (glslangType.getQualifier().hasXfbOffset())
                         builder.addMemberDecoration(spvType, member, spv::DecorationOffset, glslangType.getQualifier().layoutXfbOffset);
-                    else {
+                    else if (explicitLayout) {
                         // figure out what to do with offset, which is accumulating
                         int nextOffset;
                         updateMemberOffset(type, glslangType, offset, nextOffset);
                         if (offset >= 0)
                             builder.addMemberDecoration(spvType, member, spv::DecorationOffset, glslangType.getQualifier().layoutOffset);
                         offset = nextOffset;
+                    }
+
+                    if (glslangType.isMatrix() && explicitLayout) {
+                        builder.addMemberDecoration(spvType, member, spv::DecorationMatrixStride, getMatrixStride(glslangType));
                     }
 
                     // built-in variable decorations
@@ -1459,9 +1475,38 @@ spv::Id TGlslangToSpvTraverser::convertGlslangToSpvType(const glslang::TType& ty
         } else
             arraySize = type.getOuterArraySize();
         spvType = builder.makeArrayType(spvType, arraySize);
+
+        if (explicitLayout)
+            builder.addDecoration(spvType, spv::DecorationArrayStride, getArrayStride(type));
     }
 
     return spvType;
+}
+
+bool TGlslangToSpvTraverser::requiresExplicitLayout(const glslang::TType& type) const
+{
+    return type.getBasicType() == glslang::EbtBlock &&
+           type.getQualifier().layoutPacking != glslang::ElpShared &&
+           type.getQualifier().layoutPacking != glslang::ElpPacked &&
+           (type.getQualifier().storage == glslang::EvqUniform ||
+            type.getQualifier().storage == glslang::EvqBuffer);
+}
+
+// Given an array type, returns the integer stride required for that array
+int TGlslangToSpvTraverser::getArrayStride(const glslang::TType& arrayType)
+{
+    glslang::TType derefType(arrayType, 0);
+    int size;
+    glslangIntermediate->getBaseAlignment(derefType, size, true);
+    return size;
+}
+
+// Given a matrix type, returns the integer stride required for that matrix
+// when used as a member of an interface block
+int TGlslangToSpvTraverser::getMatrixStride(const glslang::TType& matrixType)
+{
+    int size;
+    return glslangIntermediate->getBaseAlignment(matrixType, size, true);
 }
 
 // Given a member type of a struct, realign the current offset for it, and compute
@@ -1666,8 +1711,6 @@ spv::Id TGlslangToSpvTraverser::createImageTextureFunctionCall(glslang::TIntermO
 
     // This is no longer a query....
 
-    if (cracked.fetch)
-        spv::MissingFunctionality("texel fetch");
     if (cracked.gather)
         spv::MissingFunctionality("texture gather");
 
@@ -1723,7 +1766,7 @@ spv::Id TGlslangToSpvTraverser::createImageTextureFunctionCall(glslang::TIntermO
         ++extraArgs;
     }
 
-    return builder.createTextureCall(precision, convertGlslangToSpvType(node->getType()), cracked.proj, params);
+    return builder.createTextureCall(precision, convertGlslangToSpvType(node->getType()), cracked.fetch, cracked.proj, params);
 }
 
 spv::Id TGlslangToSpvTraverser::handleUserFunctionCall(const glslang::TIntermAggregate* node)
