@@ -20,7 +20,7 @@ buffer ShaderStorageBlock
 
 buffer InvalidShaderStorageBlock
 {
-    float values[];  // ERROR
+    float values[];
     int value;
 } invalid;
 

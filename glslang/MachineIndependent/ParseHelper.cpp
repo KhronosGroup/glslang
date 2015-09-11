@@ -2738,16 +2738,20 @@ bool TParseContext::arrayError(const TSourceLoc& loc, const TType& type)
         else if (type.isStruct())
             requireProfile(loc, ~EEsProfile, "fragment-shader array-of-struct input");
     }
+    if (type.getQualifier().storage == EvqVaryingOut && language == EShLangFragment) {
+        if (type.isArrayOfArrays())
+            requireProfile(loc, ~EEsProfile, "fragment-shader array-of-array output");
+    }
 
     return false;
 }
 
 //
-// Require array to have size
+// Require array to be completely sized
 //
-void TParseContext::arraySizeRequiredCheck(const TSourceLoc& loc, int size)
+void TParseContext::arraySizeRequiredCheck(const TSourceLoc& loc, const TArraySizes& arraySizes)
 {
-    if (size == UnsizedArraySize)
+    if (arraySizes.isImplicit())
         error(loc, "array size required", "", "");
 }
 
@@ -2756,12 +2760,12 @@ void TParseContext::structArrayCheck(const TSourceLoc& /*loc*/, const TType& typ
     const TTypeList& structure = *type.getStruct();
     for (int m = 0; m < (int)structure.size(); ++m) {
         const TType& member = *structure[m].type;
-        if (member.isArray() && ! member.isExplicitlySizedArray())
-            arraySizeRequiredCheck(structure[m].loc, 0);
+        if (member.isArray())
+            arraySizeRequiredCheck(structure[m].loc, *member.getArraySizes());
     }
 }
 
-void TParseContext::arrayUnsizedCheck(const TSourceLoc& loc, const TQualifier& qualifier, const TArraySizes* arraySizes, bool initializer)
+void TParseContext::arrayUnsizedCheck(const TSourceLoc& loc, const TQualifier& qualifier, const TArraySizes* arraySizes, bool initializer, bool lastMember)
 {
     assert(arraySizes);
 
@@ -2783,6 +2787,12 @@ void TParseContext::arrayUnsizedCheck(const TSourceLoc& loc, const TQualifier& q
 
     // for ES, if size isn't coming from an initializer, it has to be explicitly declared now,
     // with very few exceptions
+
+    // last member of ssbo block exception:
+    if (qualifier.storage == EvqBuffer && lastMember)
+        return;
+
+    // implicitly-sized io exceptions:
     switch (language) {
     case EShLangGeometry:
         if (qualifier.storage == EvqVaryingIn)
@@ -2805,7 +2815,7 @@ void TParseContext::arrayUnsizedCheck(const TSourceLoc& loc, const TQualifier& q
         break;
     }
 
-    arraySizeRequiredCheck(loc, arraySizes->getOuterSize());
+    arraySizeRequiredCheck(loc, *arraySizes);
 }
 
 void TParseContext::arrayOfArrayVersionCheck(const TSourceLoc& loc)
@@ -4463,7 +4473,7 @@ TIntermNode* TParseContext::declareVariable(const TSourceLoc& loc, TString& iden
         arrayDimMerge(type, arraySizes);
 
         // Check that implicit sizing is only where allowed.
-        arrayUnsizedCheck(loc, type.getQualifier(), &type.getArraySizes(), initializer != nullptr);
+        arrayUnsizedCheck(loc, type.getQualifier(), &type.getArraySizes(), initializer != nullptr, false);
 
         if (! arrayQualifierError(loc, type.getQualifier()) && ! arrayError(loc, type))
             declareArray(loc, identifier, type, symbol, newDeclaration);
@@ -4947,8 +4957,10 @@ void TParseContext::declareBlock(const TSourceLoc& loc, TTypeList& typeList, con
     blockStageIoCheck(loc, currentBlockQualifier);
     blockQualifierCheck(loc, currentBlockQualifier);
     if (arraySizes) {
-        arrayUnsizedCheck(loc, currentBlockQualifier, arraySizes, false);
+        arrayUnsizedCheck(loc, currentBlockQualifier, arraySizes, false, false);
         arrayDimCheck(loc, arraySizes, 0);
+        if (arraySizes->getNumDims() > 1)
+            requireProfile(loc, ~EEsProfile, "array-of-array of block");
     }
 
     // fix and check for member storage qualifiers and types that don't belong within a block
@@ -4962,10 +4974,8 @@ void TParseContext::declareBlock(const TSourceLoc& loc, TTypeList& typeList, con
         memberQualifier.storage = currentBlockQualifier.storage;
         if ((currentBlockQualifier.storage == EvqUniform || currentBlockQualifier.storage == EvqBuffer) && (memberQualifier.isInterpolation() || memberQualifier.isAuxiliary()))
             error(memberLoc, "member of uniform or buffer block cannot have an auxiliary or interpolation qualifier", memberType.getFieldName().c_str(), "");
-        if (memberType.isRuntimeSizedArray() && member < typeList.size() - 1)
-            error(memberLoc, "only the last member of a buffer block can be run-time sized", memberType.getFieldName().c_str(), "");
-        if (memberType.isImplicitlySizedArray())
-            requireProfile(memberLoc, ~EEsProfile, "implicitly-sized array in a block");
+        if (memberType.isArray())
+            arrayUnsizedCheck(memberLoc, currentBlockQualifier, &memberType.getArraySizes(), false, member == typeList.size() - 1);
         if (memberQualifier.hasOffset()) {
             requireProfile(memberLoc, ~EEsProfile, "offset on block member");
             profileRequires(memberLoc, ~EEsProfile, 440, E_GL_ARB_enhanced_layouts, "offset on block member");

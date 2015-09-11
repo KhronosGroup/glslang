@@ -236,3 +236,5 @@ float t__;  // ERROR, no __ until revision 310
 
     // ERROR, no __ until revision 310
 #define __D
+
+shared vec4 arr[2][3][4];
