@@ -1426,7 +1426,7 @@ spv::Id TGlslangToSpvTraverser::convertGlslangToSpvType(const glslang::TType& ty
                         int nextOffset;
                         updateMemberOffset(type, glslangType, offset, nextOffset);
                         if (offset >= 0)
-                            builder.addMemberDecoration(spvType, member, spv::DecorationOffset, glslangType.getQualifier().layoutOffset);
+                            builder.addMemberDecoration(spvType, member, spv::DecorationOffset, offset);
                         offset = nextOffset;
                     }
 
