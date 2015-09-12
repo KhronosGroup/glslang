@@ -680,6 +680,24 @@ bool TGlslangToSpvTraverser::visitUnary(glslang::TVisit /* visit */, glslang::TI
     }
 
     // Non-texturing.
+
+    if (node->getOp() == glslang::EOpArrayLength) {
+        // Quite special; won't want to evaluate the operand.
+
+        // Normal .length() would have been constant folded by the front-end.
+        // So, this has to be block.lastMember.length().
+        // SPV wants "block" as the operand, go get it.
+        assert(node->getOperand()->getType().isRuntimeSizedArray());
+        glslang::TIntermTyped* block = node->getOperand()->getAsBinaryNode()->getLeft();
+        block->traverse(this);
+        spv::Id length = builder.createUnaryOp(spv::OpArrayLength, builder.makeIntType(32), builder.accessChainGetLValue());
+
+        builder.clearAccessChain();
+        builder.setAccessChainRValue(length);
+
+        return false;
+    }
+
     // Start by evaluating the operand
 
     builder.clearAccessChain();
@@ -967,17 +985,6 @@ bool TGlslangToSpvTraverser::visitAggregate(glslang::TVisit visit, glslang::TInt
         // which can be emitted by the one in createBinaryOperation()
         binOp = glslang::EOpMod;
         break;
-    case glslang::EOpArrayLength:
-    {
-        glslang::TIntermTyped* typedNode = node->getSequence()[0]->getAsTyped();
-        assert(typedNode);
-        spv::Id length = builder.makeIntConstant(typedNode->getType().getOuterArraySize());
-
-        builder.clearAccessChain();
-        builder.setAccessChainRValue(length);
-
-        return false;
-    }
     case glslang::EOpEmitVertex:
     case glslang::EOpEndPrimitive:
     case glslang::EOpBarrier:
@@ -1468,14 +1475,23 @@ spv::Id TGlslangToSpvTraverser::convertGlslangToSpvType(const glslang::TType& ty
     }
 
     if (type.isArray()) {
-        unsigned arraySize;
-        if (! type.isExplicitlySizedArray()) {
-            spv::MissingFunctionality("Unsized array");
-            arraySize = 8;
-        } else
-            arraySize = type.getOuterArraySize();
-        spvType = builder.makeArrayType(spvType, arraySize);
+        // Do all but the outer dimension
+        for (int dim = type.getArraySizes()->getNumDims() - 1; dim > 0; --dim) {
+            assert(type.getArraySizes()->getDimSize(dim) > 0);
+            spvType = builder.makeArrayType(spvType, type.getArraySizes()->getDimSize(dim));
+        }
 
+        // Do the outer dimension, which might not be known for a runtime-sized array
+        if (type.isRuntimeSizedArray()) {
+            spvType = builder.makeRuntimeArray(spvType);
+        } else {
+            assert(type.getOuterArraySize() > 0);
+            spvType = builder.makeArrayType(spvType, type.getOuterArraySize());
+        }
+
+        // TODO: layout still needs to be done hierarchically for arrays of arrays, which 
+        // may still require additional "link time" support from the front-end 
+        // for arrays of arrays
         if (explicitLayout)
             builder.addDecoration(spvType, spv::DecorationArrayStride, getArrayStride(type));
     }

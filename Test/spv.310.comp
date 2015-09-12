@@ -11,9 +11,7 @@ buffer outb {
     float f;
     float g;
     float h;
-    vec3 uns[];  // this makes it look like the "second" set of 3 floats in a struct, which LLVM
-                 // takes advantage of when optimizing, giving confusing results, like thinking
-                 // &outbname.uns[18].x == &outbname[9].uns.x
+    vec3 uns[];
 } outbname;
 
 buffer outbna {
@@ -22,6 +20,7 @@ buffer outbna {
 } outbnamena;
 
 buffer outs {
+    int s;
     vec4 va[];
 } outnames;
 
@@ -30,8 +29,9 @@ void main()
     barrier();
     outbname.f = s;
     outbnamena.na = vec4(s);
-    s = outbname.uns[18].x;           // TODO: see note above
-    //outbname.uns[17] = vec3(3.0);   // TODO: see note above, this one bitcasts, which isn't handled
+    s = outbname.uns[18].x;
+    outbname.uns[17] = vec3(3.0);
     outbname.uns[i] = vec3(s);
     outnames.va[gl_LocalInvocationID.x] = vec4(s);
+    outnames.s = outbname.uns.length();
 }

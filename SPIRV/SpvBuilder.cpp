@@ -264,6 +264,16 @@ Id Builder::makeArrayType(Id element, unsigned size)
     return type->getResultId();
 }
 
+Id Builder::makeRuntimeArray(Id element)
+{
+    Instruction* type = new Instruction(getUniqueId(), NoType, OpTypeRuntimeArray);
+    type->addIdOperand(element);
+    constantsTypesGlobals.push_back(type);
+    module.mapInstruction(type);
+
+    return type->getResultId();
+}
+
 Id Builder::makeFunctionType(Id returnType, std::vector<Id>& paramTypes)
 {
     // try to find it
@@ -280,7 +290,7 @@ Id Builder::makeFunctionType(Id returnType, std::vector<Id>& paramTypes)
             }
         }
         if (! mismatch)
-            return type->getResultId();            
+            return type->getResultId();
     }
 
     // not found, make it
