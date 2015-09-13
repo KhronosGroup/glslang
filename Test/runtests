@@ -2,7 +2,7 @@
 
 TARGETDIR=localResults
 BASEDIR=baseResults
-EXE=../build/install/bin/glslangValidator
+EXE=../build/StandAlone/glslangValidator
 HASERROR=0
 mkdir -p localResults
 
