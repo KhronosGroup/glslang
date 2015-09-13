@@ -431,7 +431,7 @@ public:
         Id instr;                    // the instruction that generates this access chain
         std::vector<unsigned> swizzle;
         Id component;                // a dynamic component index, can coexist with a swizzle, done after the swizzle
-        Id resultType;               // dereferenced type, to be exclusive of swizzles
+        Id preSwizzleBaseType;       // dereferenced type, before swizzle or component is applied; NoType unless a swizzle or component is present
         bool isRValue;
     };
 
@@ -452,7 +452,6 @@ public:
     {
         assert(isPointer(lValue));
         accessChain.base = lValue;
-        accessChain.resultType = getContainedTypeId(getTypeId(lValue));
     }
 
     // set new base value as an r-value
@@ -460,27 +459,30 @@ public:
     {
         accessChain.isRValue = true;
         accessChain.base = rValue;
-        accessChain.resultType = getTypeId(rValue);
     }
 
     // push offset onto the end of the chain
-    void accessChainPush(Id offset, Id newType)
+    void accessChainPush(Id offset)
     {
         accessChain.indexChain.push_back(offset);
-        accessChain.resultType = newType;
     }
 
     // push new swizzle onto the end of any existing swizzle, merging into a single swizzle
-    void accessChainPushSwizzle(std::vector<unsigned>& swizzle);
+    void accessChainPushSwizzle(std::vector<unsigned>& swizzle, Id preSwizzleBaseType);
 
     // push a variable component selection onto the access chain; supporting only one, so unsided
-    void accessChainPushComponent(Id component) { accessChain.component = component; }
+    void accessChainPushComponent(Id component, Id preSwizzleBaseType)
+    {
+        accessChain.component = component;
+        if (accessChain.preSwizzleBaseType == NoType)
+            accessChain.preSwizzleBaseType = preSwizzleBaseType;
+    }
 
     // use accessChain and swizzle to store value
     void accessChainStore(Id rvalue);
 
     // use accessChain and swizzle to load an r-value
-    Id accessChainLoad(Decoration precision);
+    Id accessChainLoad(Id ResultType);
 
     // get the direct pointer for an l-value
     Id accessChainGetLValue();
