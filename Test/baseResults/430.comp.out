@@ -2,7 +2,6 @@
 Warning, version 430 is not yet complete; most version-specific features are present, but some are missing.
 ERROR: 0:4: 'local_size' : cannot change previously set size 
 ERROR: 0:5: 'local_size' : too large; see gl_MaxComputeWorkGroupSize 
-ERROR: 0:23: 'values' : only the last member of a buffer block can be run-time sized 
 ERROR: 0:43: 'in' : global storage input qualifier cannot be used in a compute shader 
 ERROR: 0:43: 'location qualifier on input' : not supported in this stage: compute
 ERROR: 0:44: 'in' : global storage input qualifier cannot be used in a compute shader 
@@ -17,7 +16,7 @@ ERROR: 0:65: 'assign' :  l-value required "ro" (can't modify a readonly buffer)
 ERROR: 0:77: '=' :  cannot convert from 'temp double' to 'temp int'
 ERROR: 0:81: 'input block' : not supported in this stage: compute
 ERROR: 0:85: 'output block' : not supported in this stage: compute
-ERROR: 17 compilation errors.  No code generated.
+ERROR: 16 compilation errors.  No code generated.
 
 
 Shader version: 430

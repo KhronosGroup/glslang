@@ -57,7 +57,7 @@ Linked compute stage:
               25:             TypeVector 24(int) 3
               26:             TypePointer Input 25(ivec3)
 27(gl_GlobalInvocationID):     26(ptr) Variable Input
-              29:             TypeVector 24(int) 2
+              28:             TypeVector 24(int) 2
               32:             TypePointer Function 8(float)
 34(gl_LocalInvocationID):     26(ptr) Variable Input
               38:     12(int) Constant 8
@@ -86,12 +86,12 @@ Linked compute stage:
                               Store 16 14
               20:     19(ptr) AccessChain 11(bufInst) 17
                               Store 20 18
-              28:   25(ivec3) Load 27(gl_GlobalInvocationID)
-              30:   29(ivec2) VectorShuffle 28 28 0 1
+              29:   25(ivec3) Load 27(gl_GlobalInvocationID)
+              30:   28(ivec2) VectorShuffle 29 29 0 1
               31:   21(ivec2) Bitcast 30
                               Store 23(storePos) 31
               35:   25(ivec3) Load 34(gl_LocalInvocationID)
-              36:   29(ivec2) VectorShuffle 35 35 0 1
+              36:   28(ivec2) VectorShuffle 35 35 0 1
               37:   21(ivec2) Bitcast 36
               39:   21(ivec2) CompositeConstruct 38 38
               40:   21(ivec2) ISub 37 39

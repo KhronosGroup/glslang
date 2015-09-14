@@ -264,6 +264,16 @@ Id Builder::makeArrayType(Id element, unsigned size)
     return type->getResultId();
 }
 
+Id Builder::makeRuntimeArray(Id element)
+{
+    Instruction* type = new Instruction(getUniqueId(), NoType, OpTypeRuntimeArray);
+    type->addIdOperand(element);
+    constantsTypesGlobals.push_back(type);
+    module.mapInstruction(type);
+
+    return type->getResultId();
+}
+
 Id Builder::makeFunctionType(Id returnType, std::vector<Id>& paramTypes)
 {
     // try to find it
@@ -280,7 +290,7 @@ Id Builder::makeFunctionType(Id returnType, std::vector<Id>& paramTypes)
             }
         }
         if (! mismatch)
-            return type->getResultId();            
+            return type->getResultId();
     }
 
     // not found, make it
@@ -1147,7 +1157,7 @@ Id Builder::createBuiltinCall(Decoration /*precision*/, Id resultType, Id builti
 
 // Accept all parameters needed to create a texture instruction.
 // Create the correct instruction based on the inputs, and make the call.
-Id Builder::createTextureCall(Decoration precision, Id resultType, bool proj, const TextureParameters& parameters)
+Id Builder::createTextureCall(Decoration precision, Id resultType, bool fetch, bool proj, const TextureParameters& parameters)
 {
     static const int maxTextureArgs = 10;
     Id texArgs[maxTextureArgs] = {};
@@ -1206,7 +1216,9 @@ Id Builder::createTextureCall(Decoration precision, Id resultType, bool proj, co
     //
     Op opCode;
     opCode = OpImageSampleImplicitLod;
-    if (xplicit) {
+    if (fetch) {
+        opCode = OpImageFetch;
+    } else if (xplicit) {
         if (parameters.Dref) {
             if (proj)
                 opCode = OpImageSampleProjDrefExplicitLod;
@@ -1955,18 +1967,23 @@ void Builder::createBranchToLoopHeaderFromInside(const Loop& loop)
 
 void Builder::clearAccessChain()
 {
-    accessChain.base = 0;
+    accessChain.base = NoResult;
     accessChain.indexChain.clear();
-    accessChain.instr = 0;
+    accessChain.instr = NoResult;
     accessChain.swizzle.clear();
-    accessChain.component = 0;
-    accessChain.resultType = NoType;
+    accessChain.component = NoResult;
+    accessChain.preSwizzleBaseType = NoType;
     accessChain.isRValue = false;
 }
 
 // Comments in header
-void Builder::accessChainPushSwizzle(std::vector<unsigned>& swizzle)
+void Builder::accessChainPushSwizzle(std::vector<unsigned>& swizzle, Id preSwizzleBaseType)
 {
+    // swizzles can be stacked in GLSL, but simplified to a single
+    // one here; the base type doesn't change
+    if (accessChain.preSwizzleBaseType == NoType)
+        accessChain.preSwizzleBaseType = preSwizzleBaseType;
+
     // if needed, propagate the swizzle for the current access chain
     if (accessChain.swizzle.size()) {
         std::vector<unsigned> oldSwizzle = accessChain.swizzle;
@@ -1988,7 +2005,7 @@ void Builder::accessChainStore(Id rvalue)
 
     Id base = collapseAccessChain();
 
-    if (accessChain.swizzle.size() && accessChain.component)
+    if (accessChain.swizzle.size() && accessChain.component != NoResult)
         MissingFunctionality("simultaneous l-value swizzle and dynamic component selection");
 
     // If swizzle exists, it is out-of-order or not full, we must load the target vector,
@@ -2000,7 +2017,7 @@ void Builder::accessChainStore(Id rvalue)
     }
 
     // dynamic component selection
-    if (accessChain.component) {
+    if (accessChain.component != NoResult) {
         Id tempBaseId = (source == NoResult) ? createLoad(base) : source;
         source = createVectorInsertDynamic(tempBaseId, getTypeId(tempBaseId), rvalue, accessChain.component);
     }
@@ -2012,13 +2029,15 @@ void Builder::accessChainStore(Id rvalue)
 }
 
 // Comments in header
-Id Builder::accessChainLoad(Decoration /*precision*/)
+Id Builder::accessChainLoad(Id resultType)
 {
     Id id;
 
     if (accessChain.isRValue) {
         if (accessChain.indexChain.size() > 0) {
             mergeAccessChainSwizzle();  // TODO: optimization: look at applying this optimization more widely
+            Id swizzleBase = accessChain.preSwizzleBaseType != NoType ? accessChain.preSwizzleBaseType : resultType;
+        
             // if all the accesses are constants, we can use OpCompositeExtract
             std::vector<unsigned> indexes;
             bool constant = true;
@@ -2032,7 +2051,7 @@ Id Builder::accessChainLoad(Decoration /*precision*/)
             }
 
             if (constant)
-                id = createCompositeExtract(accessChain.base, accessChain.resultType, indexes);
+                id = createCompositeExtract(accessChain.base, swizzleBase, indexes);
             else {
                 // make a new function variable for this r-value
                 Id lValue = createVariable(StorageClassFunction, getTypeId(accessChain.base), "indexable");
@@ -2055,24 +2074,22 @@ Id Builder::accessChainLoad(Decoration /*precision*/)
     }
 
     // Done, unless there are swizzles to do
-    if (accessChain.swizzle.size() == 0 && accessChain.component == 0)
+    if (accessChain.swizzle.size() == 0 && accessChain.component == NoResult)
         return id;
-
-    Id componentType = getScalarTypeId(accessChain.resultType);
 
     // Do remaining swizzling
     // First, static swizzling
     if (accessChain.swizzle.size()) {
         // static swizzle
-        Id resultType = componentType;
+        Id swizzledType = getScalarTypeId(getTypeId(id));
         if (accessChain.swizzle.size() > 1)
-            resultType = makeVectorType(componentType, (int)accessChain.swizzle.size());
-        id = createRvalueSwizzle(resultType, id, accessChain.swizzle);
+            swizzledType = makeVectorType(swizzledType, (int)accessChain.swizzle.size());
+        id = createRvalueSwizzle(swizzledType, id, accessChain.swizzle);
     }
 
     // dynamic single-component selection
-    if (accessChain.component)
-        id = createVectorExtractDynamic(id, componentType, accessChain.component);
+    if (accessChain.component != NoResult)
+        id = createVectorExtractDynamic(id, resultType, accessChain.component);
 
     return id;
 }
@@ -2087,7 +2104,7 @@ Id Builder::accessChainGetLValue()
     // extract and insert elements to perform writeMask and/or swizzle.  This does not
     // go with getting a direct l-value pointer.
     assert(accessChain.swizzle.size() == 0);
-    assert(accessChain.component == spv::NoResult);
+    assert(accessChain.component == NoResult);
 
     return lvalue;
 }
@@ -2168,7 +2185,7 @@ void Builder::simplifyAccessChainSwizzle()
 {
     // If the swizzle has fewer components than the vector, it is subsetting, and must stay
     // to preserve that fact.
-    if (getNumTypeComponents(accessChain.resultType) > (int)accessChain.swizzle.size())
+    if (getNumTypeComponents(accessChain.preSwizzleBaseType) > (int)accessChain.swizzle.size())
         return;
 
     // if components are out of order, it is a swizzle
@@ -2179,6 +2196,8 @@ void Builder::simplifyAccessChainSwizzle()
 
     // otherwise, there is no need to track this swizzle
     accessChain.swizzle.clear();
+    if (accessChain.component == NoResult)
+        accessChain.preSwizzleBaseType = NoType;
 }
 
 // clear out swizzle if it can become part of the indexes
@@ -2186,12 +2205,12 @@ void Builder::mergeAccessChainSwizzle()
 {
     // is there even a chance of doing something?  Need a single-component swizzle
     if ((accessChain.swizzle.size() > 1) ||
-        (accessChain.swizzle.size() == 0 && accessChain.component == 0))
+        (accessChain.swizzle.size() == 0 && accessChain.component == NoResult))
         return;
 
     // TODO: optimization: remove this, but for now confine this to non-dynamic accesses
     // (the above test is correct when this is removed.)
-    if (accessChain.component)
+    if (accessChain.component != NoResult)
         return;
 
     // move the swizzle over to the indexes
@@ -2199,10 +2218,10 @@ void Builder::mergeAccessChainSwizzle()
         accessChain.indexChain.push_back(makeUintConstant(accessChain.swizzle.front()));
     else
         accessChain.indexChain.push_back(accessChain.component);
-    accessChain.resultType = getScalarTypeId(accessChain.resultType);
 
     // now there is no need to track this swizzle
     accessChain.component = NoResult;
+    accessChain.preSwizzleBaseType = NoType;
     accessChain.swizzle.clear();
 }
 

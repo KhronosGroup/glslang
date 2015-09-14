@@ -129,7 +129,8 @@ ERROR: 0:426: 'blend equation' : can only apply to a standalone qualifier
 ERROR: 0:427: 'blend equation' : can only apply to a standalone qualifier 
 ERROR: 0:428: 'blend equation' : can only apply to a standalone qualifier 
 ERROR: 0:429: 'blend_support' : unknown blend equation 
-ERROR: 121 compilation errors.  No code generated.
+ERROR: 0:431: 'fragment-shader array-of-array output' : not supported with this profile: es
+ERROR: 122 compilation errors.  No code generated.
 
 
 Shader version: 310
@@ -1006,6 +1007,7 @@ ERROR: node is still EOpNull!
 0:?     'colorfsi' (flat sample in mediump 4-component vector of float)
 0:?     'sampInArray' (smooth sample in 4-element array of mediump 3-component vector of float)
 0:?     'badout' (out mediump 4-component vector of float)
+0:?     'outAA' (out 2-element array of 2-element array of mediump 4-component vector of float)
 
 
 Linked fragment stage:
@@ -1886,4 +1888,5 @@ ERROR: node is still EOpNull!
 0:?     'colorfsi' (flat sample in mediump 4-component vector of float)
 0:?     'sampInArray' (smooth sample in 4-element array of mediump 3-component vector of float)
 0:?     'badout' (out mediump 4-component vector of float)
+0:?     'outAA' (out 2-element array of 2-element array of mediump 4-component vector of float)
 

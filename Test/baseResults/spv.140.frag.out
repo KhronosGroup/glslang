@@ -36,16 +36,23 @@ Linked fragment stage:
                               Decorate 34(gl_ClipDistance) BuiltIn ClipDistance
                               Decorate 43(k) Smooth
                               Decorate 86(samp2Da) NoStaticUse
+                              Decorate 89 ArrayStride 64
+                              Decorate 89 ArrayStride 64
                               MemberDecorate 90(bn) 0 RowMajor
                               MemberDecorate 90(bn) 0 Offset 0
+                              MemberDecorate 90(bn) 0 MatrixStride 16
                               MemberDecorate 90(bn) 1 ColMajor
                               MemberDecorate 90(bn) 1 Offset 256
+                              MemberDecorate 90(bn) 1 MatrixStride 16
                               MemberDecorate 90(bn) 2 RowMajor
                               MemberDecorate 90(bn) 2 Offset 512
+                              MemberDecorate 90(bn) 2 MatrixStride 16
                               MemberDecorate 90(bn) 3 ColMajor
                               MemberDecorate 90(bn) 3 Offset 576
+                              MemberDecorate 90(bn) 3 MatrixStride 16
                               MemberDecorate 90(bn) 4 RowMajor
                               MemberDecorate 90(bn) 4 Offset 640
+                              MemberDecorate 90(bn) 4 MatrixStride 16
                               Decorate 90(bn) Block
                               Decorate 92 NoStaticUse
                2:             TypeVoid

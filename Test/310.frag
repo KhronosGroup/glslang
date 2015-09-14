@@ -427,3 +427,5 @@ layout(blend_support_hsl_luminosity) struct badS {int i;};     // ERROR, only on
 layout(blend_support_hsl_luminosity) void blendFoo() { }       // ERROR, only on standalone
 void blendFoo(layout(blend_support_hsl_luminosity) vec3 v) { } // ERROR, only on standalone
 layout(blend_support_flizbit) out;                             // ERROR, no flizbit
+
+out vec4 outAA[2][2];  // ERROR

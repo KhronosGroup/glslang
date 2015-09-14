@@ -86,7 +86,7 @@ Linked fragment stage:
               67:     14(int) Constant 0
               68:             TypeInt 32 0
               69:     68(int) Constant 0
-              97:             TypeVector 7(float) 2
+              96:             TypeVector 7(float) 2
              110:     68(int) Constant 2
              142:    7(float) Constant 0
              143:    8(fvec3) ConstantComposite 142 142 142
@@ -227,8 +227,8 @@ Linked fragment stage:
         34(comp):     15(ptr) FunctionParameter
               36:             Label
               95:     14(int) Load 34(comp)
-              96:    8(fvec3) CompositeExtract 33(i) 0
-              98:   97(fvec2) VectorShuffle 96 96 1 0
+              97:    8(fvec3) CompositeExtract 33(i) 0
+              98:   96(fvec2) VectorShuffle 97 97 1 0
               99:    7(float) VectorExtractDynamic 98 95
              100:    8(fvec3) Load 66(OutColor)
              101:    8(fvec3) CompositeConstruct 99 99 99
@@ -241,10 +241,10 @@ Linked fragment stage:
         38(comp):     15(ptr) FunctionParameter
               40:             Label
              103:    8(fvec3) CompositeExtract 37(i) 0
-             104:   97(fvec2) VectorShuffle 103 103 0 1
+             104:   96(fvec2) VectorShuffle 103 103 0 1
              105:    8(fvec3) Load 66(OutColor)
-             106:   97(fvec2) VectorShuffle 105 105 0 1
-             107:   97(fvec2) FAdd 106 104
+             106:   96(fvec2) VectorShuffle 105 105 0 1
+             107:   96(fvec2) FAdd 106 104
              108:    8(fvec3) Load 66(OutColor)
              109:    8(fvec3) VectorShuffle 108 107 3 4 2
                               Store 66(OutColor) 109
@@ -279,10 +279,10 @@ Linked fragment stage:
         50(comp):     15(ptr) FunctionParameter
               52:             Label
              121:    8(fvec3) CompositeExtract 49(i) 0
-             122:   97(fvec2) VectorShuffle 121 121 0 1
+             122:   96(fvec2) VectorShuffle 121 121 0 1
              123:    8(fvec3) Load 66(OutColor)
-             124:   97(fvec2) VectorShuffle 123 123 2 1
-             125:   97(fvec2) FAdd 124 122
+             124:   96(fvec2) VectorShuffle 123 123 2 1
+             125:   96(fvec2) FAdd 124 122
              126:    8(fvec3) Load 66(OutColor)
              127:    8(fvec3) VectorShuffle 126 125 0 4 3
                               Store 66(OutColor) 127
@@ -293,10 +293,10 @@ Linked fragment stage:
         54(comp):     15(ptr) FunctionParameter
               56:             Label
              128:    8(fvec3) CompositeExtract 53(i) 0
-             129:   97(fvec2) VectorShuffle 128 128 0 1
+             129:   96(fvec2) VectorShuffle 128 128 0 1
              130:    8(fvec3) Load 66(OutColor)
-             131:   97(fvec2) VectorShuffle 130 130 0 2
-             132:   97(fvec2) FAdd 131 129
+             131:   96(fvec2) VectorShuffle 130 130 0 2
+             132:   96(fvec2) FAdd 131 129
              133:    8(fvec3) Load 66(OutColor)
              134:    8(fvec3) VectorShuffle 133 132 3 1 4
                               Store 66(OutColor) 134
