@@ -58,7 +58,7 @@ Linked fragment stage:
               50:             TypePointer UniformConstant 49(ivec4)
           51(v4):     50(ptr) Variable UniformConstant
               71:     48(int) Constant 4
-              86:             TypeVector 7(float) 3
+              85:             TypeVector 7(float) 3
               97:             TypePointer Input 7(float)
            98(f):     97(ptr) Variable Input
              116:     14(int) Constant 16
@@ -145,8 +145,8 @@ Linked fragment stage:
               82:    8(fvec4) Load 36(gl_FragColor)
               83:    8(fvec4) FAdd 82 81
                               Store 36(gl_FragColor) 83
-              85:    8(fvec4) Load 12(BaseColor)
-              87:   86(fvec3) VectorShuffle 85 85 0 1 2
+              86:    8(fvec4) Load 12(BaseColor)
+              87:   85(fvec3) VectorShuffle 86 86 0 1 2
               88:    8(fvec4) Load 84(r)
               89:    8(fvec4) VectorShuffle 88 87 4 5 6 3
                               Store 84(r) 89
@@ -169,10 +169,10 @@ Linked fragment stage:
                                 Branch 91
               92:             Label
              104:    8(fvec4) Load 84(r)
-             105:   86(fvec3) VectorShuffle 104 104 0 1 2
+             105:   85(fvec3) VectorShuffle 104 104 0 1 2
              106:    8(fvec4) Load 36(gl_FragColor)
-             107:   86(fvec3) VectorShuffle 106 106 0 1 2
-             108:   86(fvec3) FAdd 107 105
+             107:   85(fvec3) VectorShuffle 106 106 0 1 2
+             108:   85(fvec3) FAdd 107 105
              109:    8(fvec4) Load 36(gl_FragColor)
              110:    8(fvec4) VectorShuffle 109 108 4 5 6 3
                               Store 36(gl_FragColor) 110

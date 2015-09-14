@@ -2,7 +2,7 @@
 Warning, version 310 is not yet complete; most version-specific features are present, but some are missing.
 ERROR: 0:4: 'local_size' : cannot change previously set size 
 ERROR: 0:5: 'local_size' : too large; see gl_MaxComputeWorkGroupSize 
-ERROR: 0:23: 'values' : only the last member of a buffer block can be run-time sized 
+ERROR: 0:23: '' : array size required 
 ERROR: 0:39: 'in' : global storage input qualifier cannot be used in a compute shader 
 ERROR: 0:39: 'location qualifier on input' : not supported in this stage: compute
 ERROR: 0:40: 'in' : global storage input qualifier cannot be used in a compute shader 
@@ -502,6 +502,7 @@ ERROR: node is still EOpNull!
 0:?     'inbi' (in block{in highp int a})
 0:?     'outbi' (out block{out highp int a})
 0:?     't__' (global highp float)
+0:?     'arr' (shared 2-element array of 3-element array of 4-element array of highp 4-component vector of float)
 
 
 Linked compute stage:
@@ -928,4 +929,5 @@ ERROR: node is still EOpNull!
 0:?     'inbi' (in block{in highp int a})
 0:?     'outbi' (out block{out highp int a})
 0:?     't__' (global highp float)
+0:?     'arr' (shared 2-element array of 3-element array of 4-element array of highp 4-component vector of float)
 

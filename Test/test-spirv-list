@@ -79,3 +79,4 @@ spv.varyingArrayIndirect.frag
 spv.voidFunction.frag
 spv.whileLoop.frag
 spv.atomic.comp
+spv.AofA.frag
