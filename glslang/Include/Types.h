@@ -574,7 +574,7 @@ public:
     }
     bool hasLocation() const
     {
-        return layoutLocation  != layoutLocationEnd;
+        return layoutLocation != layoutLocationEnd;
     }
     bool hasComponent() const
     {

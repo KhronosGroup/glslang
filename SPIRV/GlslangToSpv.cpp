@@ -454,7 +454,7 @@ TGlslangToSpvTraverser::~TGlslangToSpvTraverser()
     if (! mainTerminated) {
         spv::Block* lastMainBlock = shaderEntry->getLastBlock();
         builder.setBuildPoint(lastMainBlock);
-        builder.leaveFunction(true);
+        builder.leaveFunction();
     }
 }
 
@@ -854,7 +854,7 @@ bool TGlslangToSpvTraverser::visitAggregate(glslang::TVisit visit, glslang::TInt
         } else {
             if (inMain)
                 mainTerminated = true;
-            builder.leaveFunction(inMain);
+            builder.leaveFunction();
             inMain = false;
         }
 
@@ -1276,12 +1276,10 @@ bool TGlslangToSpvTraverser::visitBranch(glslang::TVisit /* visit */, glslang::T
         builder.createLoopContinue();
         break;
     case glslang::EOpReturn:
-        if (inMain)
-            builder.makeMainReturn();
-        else if (node->getExpression())
+        if (node->getExpression())
             builder.makeReturn(false, builder.accessChainLoad(convertGlslangToSpvType(node->getExpression()->getType())));
         else
-            builder.makeReturn();
+            builder.makeReturn(false);
 
         builder.clearAccessChain();
         break;
