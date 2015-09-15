@@ -1214,6 +1214,23 @@ Id Builder::createTextureCall(Decoration precision, Id resultType, bool fetch, b
         }
     }
 
+    // See if the result type is expecting a smeared result.
+    // This happens when a legacy shadow*() call is made, which
+    // gets a vec4 back instead of a float.
+    Id smearedType = resultType;
+    if (! isScalarType(resultType)) {
+        switch (opCode) {
+        case OpImageSampleDrefImplicitLod:
+        case OpImageSampleDrefExplicitLod:
+        case OpImageSampleProjDrefImplicitLod:
+        case OpImageSampleProjDrefExplicitLod:
+            resultType = getScalarTypeId(resultType);
+            break;
+        default:
+            break;
+        }
+    }
+
     Instruction* textureInst = new Instruction(getUniqueId(), resultType, opCode);
     for (int op = 0; op < optArgNum; ++op)
         textureInst->addIdOperand(texArgs[op]);
@@ -1224,7 +1241,14 @@ Id Builder::createTextureCall(Decoration precision, Id resultType, bool fetch, b
     setPrecision(textureInst->getResultId(), precision);
     buildPoint->addInstruction(textureInst);
 
-    return textureInst->getResultId();
+    Id resultId = textureInst->getResultId();
+
+    // When a smear is needed, do it, as per what was computed
+    // above when resultType was changed to a scalar type.
+    if (resultType != smearedType)
+        resultId = smearScalar(precision, resultId, smearedType);
+
+    return resultId;
 }
 
 // Comments in header
