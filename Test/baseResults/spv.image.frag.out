@@ -329,24 +329,24 @@ Linked fragment stage:
                               ImageWrite 209 210 211
              212:          95 Load 97(i2DMS)
              213:   27(ivec2) Load 143(ic2D)
-             215:  126(fvec4) ImageRead 212 213 214
+             215:  126(fvec4) ImageRead 212 213
              216:  126(fvec4) Load 128(v)
              217:  126(fvec4) FAdd 216 215
                               Store 128(v) 217
              218:          95 Load 97(i2DMS)
              219:   27(ivec2) Load 143(ic2D)
              221:  126(fvec4) Load 128(v)
-                              ImageWrite 218 219 221 220
+                              ImageWrite 218 219 220
              222:         105 Load 107(i2DMSArray)
              223:    7(ivec3) Load 153(ic3D)
-             225:  126(fvec4) ImageRead 222 223 224
+             225:  126(fvec4) ImageRead 222 223
              226:  126(fvec4) Load 128(v)
              227:  126(fvec4) FAdd 226 225
                               Store 128(v) 227
              228:         105 Load 107(i2DMSArray)
              229:    7(ivec3) Load 153(ic3D)
              231:  126(fvec4) Load 128(v)
-                              ImageWrite 228 229 231 230
+                              ImageWrite 228 229 230
                               Store 234(ui) 235
              239:      6(int) Load 133(ic1D)
              242:    241(ptr) ImageTexelPointer 238(ii1D) 239 0

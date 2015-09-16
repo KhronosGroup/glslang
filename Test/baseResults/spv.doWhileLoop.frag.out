@@ -28,13 +28,13 @@ Linked fragment stage:
                8:             TypePointer Function 7(fvec4)
               10:             TypePointer Input 7(fvec4)
    11(BaseColor):     10(ptr) Variable Input
-              16:             TypeBool
-              18:    16(bool) ConstantTrue
+              17:             TypeBool
+              18:    17(bool) ConstantTrue
               23:             TypePointer UniformConstant 6(float)
            24(d):     23(ptr) Variable UniformConstant
               28:             TypePointer UniformConstant 7(fvec4)
     29(bigColor):     28(ptr) Variable UniformConstant
-              33:    16(bool) ConstantFalse
+              33:    17(bool) ConstantFalse
               34:             TypePointer Output 7(fvec4)
 35(gl_FragColor):     34(ptr) Variable Output
          4(main):           2 Function None 3
@@ -44,17 +44,17 @@ Linked fragment stage:
                               Store 9(color) 12
                               Branch 13
               13:             Label
-              17:    16(bool) Phi 18 5 33 15
+              16:    17(bool) Phi 18 5 33 15
                               LoopMerge 14 None
                               Branch 19
               19:             Label
                               SelectionMerge 15 None
-                              BranchConditional 17 15 20
+                              BranchConditional 16 15 20
               20:               Label
               21:    7(fvec4)   Load 9(color)
               22:    6(float)   CompositeExtract 21 0
               25:    6(float)   Load 24(d)
-              26:    16(bool)   FOrdLessThan 22 25
+              26:    17(bool)   FOrdLessThan 22 25
                                 SelectionMerge 27 None
                                 BranchConditional 26 27 14
               27:               Label

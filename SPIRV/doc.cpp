@@ -1635,12 +1635,10 @@ void Parameterize()
 
     InstructionDesc[OpImageRead].operands.push(OperandId, "'Image'");
     InstructionDesc[OpImageRead].operands.push(OperandId, "'Coordinate'");
-    InstructionDesc[OpImageRead].operands.push(OperandOptionalImage, "");
 
     InstructionDesc[OpImageWrite].operands.push(OperandId, "'Image'");
     InstructionDesc[OpImageWrite].operands.push(OperandId, "'Coordinate'");
     InstructionDesc[OpImageWrite].operands.push(OperandId, "'Texel'");
-    InstructionDesc[OpImageWrite].operands.push(OperandOptionalImage, "");
 
     InstructionDesc[OpImageSampleImplicitLod].operands.push(OperandId, "'Sampled Image'");
     InstructionDesc[OpImageSampleImplicitLod].operands.push(OperandId, "'Coordinate'");
