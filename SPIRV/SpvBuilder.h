@@ -138,11 +138,6 @@ public:
 
     bool isConstantScalar(Id resultId) const { return getOpCode(resultId) == OpConstant; }
     unsigned int getConstantScalar(Id resultId) const { return module.getInstruction(resultId)->getImmediateOperand(0); }
-    bool isSignedType(Id typeId) const
-    {
-        assert(getTypeClass(typeId) == OpTypeInt);
-        return module.getInstruction(typeId)->getImmediateOperand(1) == 0u;
-    }
 
     int getTypeNumColumns(Id typeId) const
     {
