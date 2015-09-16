@@ -506,7 +506,7 @@ TGlslangToSpvTraverser::~TGlslangToSpvTraverser()
     if (! mainTerminated) {
         spv::Block* lastMainBlock = shaderEntry->getLastBlock();
         builder.setBuildPoint(lastMainBlock);
-        builder.leaveFunction(true);
+        builder.leaveFunction();
     }
 }
 
@@ -918,7 +918,7 @@ bool TGlslangToSpvTraverser::visitAggregate(glslang::TVisit visit, glslang::TInt
         } else {
             if (inMain)
                 mainTerminated = true;
-            builder.leaveFunction(inMain);
+            builder.leaveFunction();
             inMain = false;
         }
 
@@ -1351,12 +1351,10 @@ bool TGlslangToSpvTraverser::visitBranch(glslang::TVisit /* visit */, glslang::T
         builder.createLoopContinue();
         break;
     case glslang::EOpReturn:
-        if (inMain)
-            builder.makeMainReturn();
-        else if (node->getExpression())
+        if (node->getExpression())
             builder.makeReturn(false, builder.accessChainLoad(convertGlslangToSpvType(node->getExpression()->getType())));
         else
-            builder.makeReturn();
+            builder.makeReturn(false);
 
         builder.clearAccessChain();
         break;
@@ -2664,20 +2662,23 @@ spv::Id TGlslangToSpvTraverser::createAtomicOperation(glslang::TOperator op, spv
     // Sort out the operands
     //  - mapping from glslang -> SPV
     //  - there are extra SPV operands with no glslang source
+    //  - compare-exchange swaps the value and comparator
+    //  - compare-exchange has an extra memory semantics
     std::vector<spv::Id> spvAtomicOperands;  // hold the spv operands
     auto opIt = operands.begin();            // walk the glslang operands
     spvAtomicOperands.push_back(*(opIt++));
-
-    // Add scope and memory semantics
     spvAtomicOperands.push_back(builder.makeUintConstant(spv::ScopeDevice));     // TBD: what is the correct scope?
     spvAtomicOperands.push_back(builder.makeUintConstant(spv::MemorySemanticsMaskNone)); // TBD: what are the correct memory semantics?
     if (opCode == spv::OpAtomicCompareExchange) {
-        // There are 2 memory semantics for compare-exchange
+        // There are 2 memory semantics for compare-exchange. And the operand order of "comparator" and "new value" in GLSL
+        // differs from that in SPIR-V. Hence, special processing is required.
         spvAtomicOperands.push_back(builder.makeUintConstant(spv::MemorySemanticsMaskNone));
+        spvAtomicOperands.push_back(*(opIt + 1));
+        spvAtomicOperands.push_back(*opIt);
+        opIt += 2;
     }
 
-    // Add the rest of the operands, skipping the first one, which was dealt with above.
-    // For some ops, there are none, for some 1, for compare-exchange, 2.
+    // Add the rest of the operands, skipping any that were dealt with above.
     for (; opIt != operands.end(); ++opIt)
         spvAtomicOperands.push_back(*opIt);
 

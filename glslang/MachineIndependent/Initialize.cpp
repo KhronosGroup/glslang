@@ -1848,7 +1848,8 @@ void TBuiltIns::initialize(int version, EProfile profile)
     if (version >= 130)
         add2ndGenerationSamplingImaging(version, profile);
 
-    // printf("%s\n", commonBuiltins.c_str());
+    //printf("%s\n", commonBuiltins.c_str());
+    //printf("%s\n", stageBuiltins[EShLangFragment].c_str());
 }
 
 //
@@ -1946,21 +1947,21 @@ void TBuiltIns::add2ndGenerationSamplingImaging(int version, EProfile profile)
 //
 void TBuiltIns::addQueryFunctions(TSampler sampler, TString& typeName, int version, EProfile profile)
 {
-    //
-    // textureSize
-    //
-
     if (sampler.image && ((profile == EEsProfile && version < 310) || (profile != EEsProfile && version < 430)))
         return;
 
+    //
+    // textureSize() and imageSize()
+    //
+
+    int sizeDims = dimMap[sampler.dim] + (sampler.arrayed ? 1 : 0) - (sampler.dim == EsdCube ? 1 : 0);
     if (profile == EEsProfile)
         commonBuiltins.append("highp ");
-    int dims = dimMap[sampler.dim] + (sampler.arrayed ? 1 : 0) - (sampler.dim == EsdCube ? 1 : 0);
-    if (dims == 1)
+    if (sizeDims == 1)
         commonBuiltins.append("int");
     else {
         commonBuiltins.append("ivec");
-        commonBuiltins.append(postfixes[dims]);
+        commonBuiltins.append(postfixes[sizeDims]);
     }
     if (sampler.image)
         commonBuiltins.append(" imageSize(readonly writeonly volatile coherent ");
@@ -1972,6 +1973,10 @@ void TBuiltIns::addQueryFunctions(TSampler sampler, TString& typeName, int versi
     else
         commonBuiltins.append(");\n");
 
+    //
+    // textureSamples() and imageSamples()
+    //
+
     // GL_ARB_shader_texture_image_samples
     // TODO: spec issue? there are no memory qualifiers; how to query a writeonly/readonly image, etc?
     if (profile != EEsProfile && version >= 430 && sampler.ms) {
@@ -1980,6 +1985,32 @@ void TBuiltIns::addQueryFunctions(TSampler sampler, TString& typeName, int versi
             commonBuiltins.append("imageSamples(readonly writeonly volatile coherent ");
         else
             commonBuiltins.append("textureSamples(");
+        commonBuiltins.append(typeName);
+        commonBuiltins.append(");\n");
+    }
+
+    //
+    // textureQueryLod(), fragment stage only
+    //
+
+    if (profile != EEsProfile && version >= 400 && ! sampler.image && sampler.dim != EsdRect && ! sampler.ms && sampler.dim != EsdBuffer) {
+        stageBuiltins[EShLangFragment].append("vec2 textureQueryLod(");
+        stageBuiltins[EShLangFragment].append(typeName);
+        if (dimMap[sampler.dim] == 1)
+            stageBuiltins[EShLangFragment].append(", float");
+        else {
+            stageBuiltins[EShLangFragment].append(", vec");
+            stageBuiltins[EShLangFragment].append(postfixes[dimMap[sampler.dim]]);
+        }
+        stageBuiltins[EShLangFragment].append(");\n");
+    }
+
+    //
+    // textureQueryLevels()
+    //
+
+    if (profile != EEsProfile && version >= 430 && ! sampler.image && sampler.dim != EsdRect && ! sampler.ms && sampler.dim != EsdBuffer) {
+        commonBuiltins.append("int textureQueryLevels(");
         commonBuiltins.append(typeName);
         commonBuiltins.append(");\n");
     }

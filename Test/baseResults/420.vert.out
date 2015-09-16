@@ -49,7 +49,11 @@ ERROR: 0:142: 'r8_snorm' : does not apply to signed integer images
 ERROR: 0:143: 'rgba32ui' : does not apply to signed integer images 
 ERROR: 0:144: 'r8ui' : does not apply to signed integer images 
 ERROR: 0:147: 'offset on block member' : not supported for this version or the enabled extensions 
-ERROR: 48 compilation errors.  No code generated.
+ERROR: 0:157: 'textureQueryLevels' : no matching overloaded function found 
+ERROR: 0:157: 'assign' :  cannot convert from 'const float' to 'temp int'
+ERROR: 0:158: 'textureQueryLevels' : no matching overloaded function found 
+ERROR: 0:158: 'assign' :  cannot convert from 'const float' to 'temp int'
+ERROR: 52 compilation errors.  No code generated.
 
 
 Shader version: 420
@@ -239,6 +243,11 @@ ERROR: node is still EOpNull!
 0:135        'qualim2' (layout(r32i ) coherent volatile readonly uniform iimage2D)
 0:136      Function Call: passr(iI21; (global void)
 0:136        'iimg2D' (layout(r32i ) uniform iimage2D)
+0:153  Function Definition: qlod( (global void)
+0:153    Function Parameters: 
+0:?     Sequence
+0:157      'levels' (temp int)
+0:158      'levels' (temp int)
 0:?   Linker Objects
 0:?     'v2' (smooth out 2-component vector of float)
 0:?     'bad' (in 10-element array of 4-component vector of float)
@@ -290,6 +299,8 @@ ERROR: node is still EOpNull!
 0:?     'i5bad' (layout(rgba32ui ) uniform iimage2D)
 0:?     'i6bad' (layout(r8ui ) uniform iimage2D)
 0:?     'offcheckI' (layout(column_major shared ) uniform block{layout(column_major shared offset=16 ) uniform int foo})
+0:?     'samp1D' (uniform sampler1D)
+0:?     'samp1Ds' (uniform sampler1DShadow)
 0:?     'gl_VertexID' (gl_VertexId int VertexId)
 0:?     'gl_InstanceID' (gl_InstanceId int InstanceId)
 
@@ -484,6 +495,11 @@ ERROR: node is still EOpNull!
 0:135        'qualim2' (layout(r32i ) coherent volatile readonly uniform iimage2D)
 0:136      Function Call: passr(iI21; (global void)
 0:136        'iimg2D' (layout(r32i ) uniform iimage2D)
+0:153  Function Definition: qlod( (global void)
+0:153    Function Parameters: 
+0:?     Sequence
+0:157      'levels' (temp int)
+0:158      'levels' (temp int)
 0:?   Linker Objects
 0:?     'v2' (smooth out 2-component vector of float)
 0:?     'bad' (in 10-element array of 4-component vector of float)
@@ -535,6 +551,8 @@ ERROR: node is still EOpNull!
 0:?     'i5bad' (layout(rgba32ui ) uniform iimage2D)
 0:?     'i6bad' (layout(r8ui ) uniform iimage2D)
 0:?     'offcheckI' (layout(column_major shared ) uniform block{layout(column_major shared offset=16 ) uniform int foo})
+0:?     'samp1D' (uniform sampler1D)
+0:?     'samp1Ds' (uniform sampler1DShadow)
 0:?     'gl_VertexID' (gl_VertexId int VertexId)
 0:?     'gl_InstanceID' (gl_InstanceId int InstanceId)
 

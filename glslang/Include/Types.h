@@ -513,8 +513,8 @@ public:
     int layoutOffset;
     int layoutAlign;
 
-                 unsigned int layoutLocation         : 7;
-    static const unsigned int layoutLocationEnd =   0x3F;
+                 unsigned int layoutLocation         :12;
+    static const unsigned int layoutLocationEnd =  0xFFF;
 
                  unsigned int layoutComponent        : 3;
     static const unsigned int layoutComponentEnd =     4;
@@ -574,7 +574,7 @@ public:
     }
     bool hasLocation() const
     {
-        return layoutLocation  != layoutLocationEnd;
+        return layoutLocation != layoutLocationEnd;
     }
     bool hasComponent() const
     {

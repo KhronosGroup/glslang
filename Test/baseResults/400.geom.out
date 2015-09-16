@@ -19,7 +19,11 @@ ERROR: 0:65: 'invocations' : can only apply to 'in'
 ERROR: 0:67: 'in' : type must be an array: inbls
 ERROR: 0:71: 'triangles' : inconsistent input primitive for array size of inbla
 ERROR: 0:103: 'index' : there is no such layout identifier for this stage taking an assigned value 
-ERROR: 19 compilation errors.  No code generated.
+ERROR: 0:115: 'textureQueryLod' : no matching overloaded function found 
+ERROR: 0:115: 'assign' :  cannot convert from 'const float' to 'temp 2-component vector of float'
+ERROR: 0:116: 'textureQueryLod' : no matching overloaded function found 
+ERROR: 0:116: 'assign' :  cannot convert from 'const float' to 'temp 2-component vector of float'
+ERROR: 23 compilation errors.  No code generated.
 
 
 Shader version: 400
@@ -165,6 +169,11 @@ ERROR: node is still EOpNull!
 0:100        'i2' (temp 2-component vector of int)
 0:100        findMSB (global 2-component vector of int)
 0:100          'u2' (temp 2-component vector of uint)
+0:108  Function Definition: qlod( (global void)
+0:108    Function Parameters: 
+0:?     Sequence
+0:115      'lod' (temp 2-component vector of float)
+0:116      'lod' (temp 2-component vector of float)
 0:?   Linker Objects
 0:?     'bn' (in 3-element array of block{in int a})
 0:?     'gl_in' (in 3-element array of block{in 4-component vector of float Position gl_Position, in float PointSize gl_PointSize})
@@ -182,6 +191,8 @@ ERROR: node is still EOpNull!
 0:?     'inbls' (in block{in int a})
 0:?     'inbla' (in 17-element array of block{in int a})
 0:?     'indexedOut' (layout(location=7 stream=0 ) out 4-component vector of float)
+0:?     'samp1D' (uniform sampler1D)
+0:?     'samp2Ds' (uniform sampler2DShadow)
 
 
 Linked geometry stage:
@@ -331,6 +342,11 @@ ERROR: node is still EOpNull!
 0:100        'i2' (temp 2-component vector of int)
 0:100        findMSB (global 2-component vector of int)
 0:100          'u2' (temp 2-component vector of uint)
+0:108  Function Definition: qlod( (global void)
+0:108    Function Parameters: 
+0:?     Sequence
+0:115      'lod' (temp 2-component vector of float)
+0:116      'lod' (temp 2-component vector of float)
 0:?   Linker Objects
 0:?     'bn' (in 3-element array of block{in int a})
 0:?     'gl_in' (in 3-element array of block{in 4-component vector of float Position gl_Position, in float PointSize gl_PointSize})
@@ -348,4 +364,6 @@ ERROR: node is still EOpNull!
 0:?     'inbls' (in block{in int a})
 0:?     'inbla' (in 17-element array of block{in int a})
 0:?     'indexedOut' (layout(location=7 stream=0 ) out 4-component vector of float)
+0:?     'samp1D' (uniform sampler1D)
+0:?     'samp2Ds' (uniform sampler2DShadow)
 

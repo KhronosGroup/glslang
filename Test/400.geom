@@ -101,3 +101,17 @@ void bits()
 }
 
 layout(location = 7, index = 1) out vec4 indexedOut;
+
+uniform sampler1D samp1D;
+uniform sampler2DShadow samp2Ds;
+
+void qlod()
+{
+    vec2 lod;
+    float pf;
+    vec2 pf2;
+    vec3 pf3;
+
+    lod = textureQueryLod(samp1D, pf);      // ERROR, only in fragment
+    lod = textureQueryLod(samp2Ds, pf2);    // ERROR, only in fragment
+}

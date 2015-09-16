@@ -180,3 +180,44 @@ void fooq2()
     s += imageSamples(ii2dms);    
     s += imageSamples(i2dmsa);    
 }
+
+uniform sampler1D samp1D;
+uniform usampler2D usamp2D;
+uniform isampler3D isamp3D;
+uniform isamplerCube isampCube; 
+uniform isampler1DArray isamp1DA;
+uniform sampler2DArray samp2DA;
+uniform usamplerCubeArray usampCubeA;
+
+uniform sampler1DShadow samp1Ds;
+uniform sampler2DShadow samp2Ds;
+uniform samplerCubeShadow sampCubes;
+uniform sampler1DArrayShadow samp1DAs;
+uniform sampler2DArrayShadow samp2DAs;
+uniform samplerCubeArrayShadow sampCubeAs;
+
+uniform samplerBuffer sampBuf;
+uniform sampler2DRect sampRect;
+
+void qlod()
+{
+    int levels;
+
+    levels = textureQueryLevels(samp1D);
+    levels = textureQueryLevels(usamp2D);
+    levels = textureQueryLevels(isamp3D);
+    levels = textureQueryLevels(isampCube);
+    levels = textureQueryLevels(isamp1DA);
+    levels = textureQueryLevels(samp2DA);
+    levels = textureQueryLevels(usampCubeA);
+
+    levels = textureQueryLevels(samp1Ds);
+    levels = textureQueryLevels(samp2Ds);
+    levels = textureQueryLevels(sampCubes);
+    levels = textureQueryLevels(samp1DAs);
+    levels = textureQueryLevels(samp2DAs);
+    levels = textureQueryLevels(sampCubeAs);
+
+    levels = textureQueryLevels(sampBuf);    // ERROR
+    levels = textureQueryLevels(sampRect);   // ERROR
+}
