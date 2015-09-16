@@ -768,7 +768,7 @@ TIntermTyped* TIntermediate::fold(TIntermAggregate* aggrNode)
             }
             break;
         case EOpReflect:
-            // I – 2 * dot(N, I) * N:  Arguments are (I, N).
+            // I - 2 * dot(N, I) * N:  Arguments are (I, N).
             dot = childConstUnions[0].dot(childConstUnions[1]);
             dot *= 2.0;
             for (int comp = 0; comp < numComps; ++comp)

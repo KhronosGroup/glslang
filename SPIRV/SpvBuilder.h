@@ -159,8 +159,9 @@ public:
     }
     Id getImageType(Id resultId) const
     {
-        assert(isSampledImageType(getTypeId(resultId)));
-        return module.getInstruction(getTypeId(resultId))->getIdOperand(0);
+        Id typeId = getTypeId(resultId);
+        assert(isImageType(typeId) || isSampledImageType(typeId));
+        return isSampledImageType(typeId) ? module.getInstruction(typeId)->getIdOperand(0) : typeId;
     }
     bool isArrayedImageType(Id typeId) const
     {
@@ -235,6 +236,7 @@ public:
 
     void createNoResultOp(Op);
     void createNoResultOp(Op, Id operand);
+    void createNoResultOp(Op, const std::vector<Id>& operands);
     void createControlBarrier(Scope execution, Scope memory, MemorySemanticsMask);
     void createMemoryBarrier(unsigned executionScope, unsigned memorySemantics);
     Id createUnaryOp(Op, Id typeId, Id operand);
