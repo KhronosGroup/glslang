@@ -65,8 +65,7 @@ Builder::Builder(unsigned int userNumber) :
     builderNumber(userNumber << 16 | SpvBuilderMagic),
     buildPoint(0),
     uniqueId(0),
-    mainFunction(0),
-    stageExit(0)
+    mainFunction(0)
 {
     clearAccessChain();
 }
@@ -723,17 +722,8 @@ Function* Builder::makeMain()
     std::vector<Id> params;
 
     mainFunction = makeFunctionEntry(makeVoidType(), "main", params, &entry);
-    stageExit = new Block(getUniqueId(), *mainFunction);
 
     return mainFunction;
-}
-
-// Comments in header
-void Builder::closeMain()
-{
-    setBuildPoint(stageExit);
-    stageExit->addInstruction(new Instruction(NoResult, NoType, OpReturn));
-    mainFunction->addBlock(stageExit);
 }
 
 // Comments in header
@@ -756,14 +746,9 @@ Function* Builder::makeFunctionEntry(Id returnType, const char* name, std::vecto
 }
 
 // Comments in header
-void Builder::makeReturn(bool implicit, Id retVal, bool isMain)
+void Builder::makeReturn(bool implicit, Id retVal)
 {
-    if (isMain && retVal)
-        MissingFunctionality("return value from main()");
-
-    if (isMain)
-        createBranch(stageExit);
-    else if (retVal) {
+    if (retVal) {
         Instruction* inst = new Instruction(NoResult, NoType, OpReturnValue);
         inst->addIdOperand(retVal);
         buildPoint->addInstruction(inst);
@@ -775,7 +760,7 @@ void Builder::makeReturn(bool implicit, Id retVal, bool isMain)
 }
 
 // Comments in header
-void Builder::leaveFunction(bool main)
+void Builder::leaveFunction()
 {
     Block* block = buildPoint;
     Function& function = buildPoint->getParent();
@@ -791,10 +776,8 @@ void Builder::leaveFunction(bool main)
             // Given that this block is at the end of a function, it must be right after an
             // explicit return, just remove it.
             function.popBlock(block);
-        } else if (main)
-            makeMainReturn(true);
-        else {
-            // We're get a return instruction at the end of the current block,
+        } else {
+            // We'll add a return instruction at the end of the current block,
             // which for a non-void function is really error recovery (?), as the source
             // being translated should have had an explicit return, which would have been
             // followed by an unreachable block, which was handled above.
@@ -805,9 +788,6 @@ void Builder::leaveFunction(bool main)
             }
         }
     }
-
-    if (main)
-        closeMain();
 }
 
 // Comments in header
@@ -1234,6 +1214,23 @@ Id Builder::createTextureCall(Decoration precision, Id resultType, bool fetch, b
         }
     }
 
+    // See if the result type is expecting a smeared result.
+    // This happens when a legacy shadow*() call is made, which
+    // gets a vec4 back instead of a float.
+    Id smearedType = resultType;
+    if (! isScalarType(resultType)) {
+        switch (opCode) {
+        case OpImageSampleDrefImplicitLod:
+        case OpImageSampleDrefExplicitLod:
+        case OpImageSampleProjDrefImplicitLod:
+        case OpImageSampleProjDrefExplicitLod:
+            resultType = getScalarTypeId(resultType);
+            break;
+        default:
+            break;
+        }
+    }
+
     Instruction* textureInst = new Instruction(getUniqueId(), resultType, opCode);
     for (int op = 0; op < optArgNum; ++op)
         textureInst->addIdOperand(texArgs[op]);
@@ -1244,7 +1241,14 @@ Id Builder::createTextureCall(Decoration precision, Id resultType, bool fetch, b
     setPrecision(textureInst->getResultId(), precision);
     buildPoint->addInstruction(textureInst);
 
-    return textureInst->getResultId();
+    Id resultId = textureInst->getResultId();
+
+    // When a smear is needed, do it, as per what was computed
+    // above when resultType was changed to a scalar type.
+    if (resultType != smearedType)
+        resultId = smearScalar(precision, resultId, smearedType);
+
+    return resultId;
 }
 
 // Comments in header

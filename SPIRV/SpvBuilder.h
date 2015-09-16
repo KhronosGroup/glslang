@@ -195,23 +195,16 @@ public:
     // Make the main function.
     Function* makeMain();
 
-    // Return from main. Implicit denotes a return at the very end of main.
-    void makeMainReturn(bool implicit = false) { makeReturn(implicit, 0, true); }
-
-    // Close the main function.
-    void closeMain();
-
     // Make a shader-style function, and create its entry block if entry is non-zero.
     // Return the function, pass back the entry.
     Function* makeFunctionEntry(Id returnType, const char* name, std::vector<Id>& paramTypes, Block **entry = 0);
 
-    // Create a return. Pass whether it is a return form main, and the return
-    // value (if applicable). In the case of an implicit return, no post-return
-    // block is inserted.
-    void makeReturn(bool implicit = false, Id retVal = 0, bool isMain = false);
+    // Create a return. An 'implicit' return is one not appearing in the source
+    // code.  In the case of an implicit return, no post-return block is inserted.
+    void makeReturn(bool implicit, Id retVal = 0);
 
     // Generate all the code needed to finish up a function.
-    void leaveFunction(bool main);
+    void leaveFunction();
 
     // Create a discard.
     void makeDiscard();
@@ -516,7 +509,6 @@ protected:
     Block* buildPoint;
     Id uniqueId;
     Function* mainFunction;
-    Block* stageExit;
     AccessChain accessChain;
 
     // special blocks of instructions for output

@@ -146,3 +146,14 @@ layout(r8ui) uniform iimage2D i6bad;     // ERROR, type mismatch
 uniform offcheck {
     layout(offset = 16) int foo;   // ERROR
 } offcheckI;
+
+uniform sampler1D samp1D;
+uniform sampler1DShadow samp1Ds;
+
+void qlod()
+{
+    int levels;
+
+    levels = textureQueryLevels(samp1D);   // ERROR, not until 430
+    levels = textureQueryLevels(samp1Ds);  // ERROR, not until 430
+}
