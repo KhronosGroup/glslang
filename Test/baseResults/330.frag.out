@@ -33,7 +33,11 @@ ERROR: 0:126: 'index' : can only be used on an output
 ERROR: 0:126: 'location/component/index' : cannot declare a default, use a full declaration 
 ERROR: 0:127: 'location/component/index' : cannot declare a default, use a full declaration 
 ERROR: 0:128: 'output block' : not supported in this stage: fragment
-ERROR: 34 compilation errors.  No code generated.
+ERROR: 0:140: 'textureQueryLod' : no matching overloaded function found 
+ERROR: 0:140: 'assign' :  cannot convert from 'const float' to 'temp 2-component vector of float'
+ERROR: 0:141: 'textureQueryLod' : no matching overloaded function found 
+ERROR: 0:141: 'assign' :  cannot convert from 'const float' to 'temp 2-component vector of float'
+ERROR: 38 compilation errors.  No code generated.
 
 
 Shader version: 330
@@ -70,6 +74,11 @@ ERROR: node is still EOpNull!
 0:24      move second child to first child (temp 4-component vector of float)
 0:24        'outVar' (layout(location=0 index=0 ) out 4-component vector of float)
 0:24        'inVar' (smooth in 4-component vector of float)
+0:133  Function Definition: qlod( (global void)
+0:133    Function Parameters: 
+0:?     Sequence
+0:140      'lod' (temp 2-component vector of float)
+0:141      'lod' (temp 2-component vector of float)
 0:?   Linker Objects
 0:?     'inVar' (smooth in 4-component vector of float)
 0:?     'outVar' (layout(location=0 index=0 ) out 4-component vector of float)
@@ -102,6 +111,8 @@ ERROR: node is still EOpNull!
 0:?     'outVar4' (layout(location=0 index=1 ) out 4-component vector of float)
 0:?     'indexIn' (layout(location=27 index=0 ) smooth in 4-component vector of float)
 0:?     'indexBlockI' (layout(location=26 index=0 ) out block{out int a})
+0:?     'samp1D' (uniform sampler1D)
+0:?     'samp2Ds' (uniform sampler2DShadow)
 
 
 Linked fragment stage:
@@ -143,6 +154,11 @@ ERROR: node is still EOpNull!
 0:24      move second child to first child (temp 4-component vector of float)
 0:24        'outVar' (layout(location=0 index=0 ) out 4-component vector of float)
 0:24        'inVar' (smooth in 4-component vector of float)
+0:133  Function Definition: qlod( (global void)
+0:133    Function Parameters: 
+0:?     Sequence
+0:140      'lod' (temp 2-component vector of float)
+0:141      'lod' (temp 2-component vector of float)
 0:?   Linker Objects
 0:?     'inVar' (smooth in 4-component vector of float)
 0:?     'outVar' (layout(location=0 index=0 ) out 4-component vector of float)
@@ -175,4 +191,6 @@ ERROR: node is still EOpNull!
 0:?     'outVar4' (layout(location=0 index=1 ) out 4-component vector of float)
 0:?     'indexIn' (layout(location=27 index=0 ) smooth in 4-component vector of float)
 0:?     'indexBlockI' (layout(location=26 index=0 ) out block{out int a})
+0:?     'samp1D' (uniform sampler1D)
+0:?     'samp2Ds' (uniform sampler2DShadow)
 
