@@ -14,6 +14,7 @@ Linked compute stage:
                1:             ExtInstImport  "GLSL.std.450"
                               MemoryModel Logical GLSL450
                               EntryPoint GLCompute 4  "main"
+                              ExecutionMode 4 LocalSize 1 1 1
                               Name 4  "main"
                               Name 8  "bufName"
                               MemberName 8(bufName) 0  "f"

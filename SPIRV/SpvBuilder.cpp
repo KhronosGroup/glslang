@@ -648,14 +648,18 @@ void Builder::addEntryPoint(ExecutionModel model, Function* function, const char
     entryPoints.push_back(entryPoint);
 }
 
-void Builder::addExecutionMode(Function* entryPoint, ExecutionMode mode, int value)
+// Currently relying on the fact that all 'value' of interest are small non-negative values.
+void Builder::addExecutionMode(Function* entryPoint, ExecutionMode mode, int value1, int value2, int value3)
 {
-    // TODO: handle multiple optional arguments
     Instruction* instr = new Instruction(OpExecutionMode);
     instr->addIdOperand(entryPoint->getId());
     instr->addImmediateOperand(mode);
-    if (value >= 0)
-        instr->addImmediateOperand(value);
+    if (value1 >= 0)
+        instr->addImmediateOperand(value1);
+    if (value2 >= 0)
+        instr->addImmediateOperand(value2);
+    if (value3 >= 0)
+        instr->addImmediateOperand(value3);
 
     executionModes.push_back(instr);
 }

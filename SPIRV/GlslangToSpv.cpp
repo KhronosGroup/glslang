@@ -493,6 +493,9 @@ TGlslangToSpvTraverser::TGlslangToSpvTraverser(const glslang::TIntermediate* gls
 
     case EShLangCompute:
         builder.addCapability(spv::CapabilityShader);
+        builder.addExecutionMode(shaderEntry, spv::ExecutionModeLocalSize, glslangIntermediate->getLocalSize(0),
+                                                                           glslangIntermediate->getLocalSize(1),
+                                                                           glslangIntermediate->getLocalSize(2));
         break;
 
     default:

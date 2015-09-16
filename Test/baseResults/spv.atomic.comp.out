@@ -15,6 +15,7 @@ TBD functionality: Is atomic_uint an opaque handle in the uniform storage class,
                1:             ExtInstImport  "GLSL.std.450"
                               MemoryModel Logical GLSL450
                               EntryPoint GLCompute 4  "main"
+                              ExecutionMode 4 LocalSize 1 1 1
                               Name 4  "main"
                               Name 10  "func(au1;"
                               Name 9  "c"

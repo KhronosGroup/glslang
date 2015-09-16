@@ -182,7 +182,7 @@ public:
 
     // Methods for adding information outside the CFG.
     void addEntryPoint(ExecutionModel, Function*, const char* name);
-    void addExecutionMode(Function*, ExecutionMode mode, int value = -1);
+    void addExecutionMode(Function*, ExecutionMode mode, int value1 = -1, int value2 = -1, int value3 = -1);
     void addName(Id, const char* name);
     void addMemberName(Id, int member, const char* name);
     void addLine(Id target, Id fileName, int line, int column);
