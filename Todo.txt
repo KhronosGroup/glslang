@@ -8,27 +8,27 @@ Key:
 Summary of main missing features:
 
 AEP
- - GL_KHR_blend_equation_advanced
- - GL_OES_sample_variables
- - GL_OES_shader_image_atomic
- - GL_OES_shader_multisample_interpolation
- - GL_OES_texture_storage_multisample_2d_array
+ + GL_KHR_blend_equation_advanced
+ + GL_OES_sample_variables
+ + GL_OES_shader_image_atomic
+ + GL_OES_shader_multisample_interpolation
+ + GL_OES_texture_storage_multisample_2d_array
  + GL_EXT_geometry_shader
  + GL_EXT_geometry_point_size
  + GL_EXT_gpu_shader5
- - GL_EXT_primitive_bounding_box
+ + GL_EXT_primitive_bounding_box
  + GL_EXT_shader_io_blocks
  + GL_EXT_tessellation_shader
  + GL_EXT_tessellation_point_size
- - GL_EXT_texture_buffer
- - GL_EXT_texture_cube_map_array
+ + GL_EXT_texture_buffer
+ + GL_EXT_texture_cube_map_array
 
 Missing features in ES 3.1
- [johnkslang] Arrays of arrays
- - .length() on run-time array
+ + Arrays of arrays
+ + .length() on run-time array
 
 Missing desktop features that are in EAP
- - per-sample shading
+ + per-sample shading
  - "precise"
  
 Missing desktop features, non AEP
@@ -36,7 +36,7 @@ Missing desktop features, non AEP
  - built-in functions for type 'double'
  - second-generation function-overloading disambiguation algorithm (version 400)
  - Preprocessor token pasting (##), ## does macro expansion after pasting not before
- - textureQueryLevels and textureQueryLod
+ + textureQueryLevels and textureQueryLod
  
 Bugs
  - implicitly-sized gl_ClipDistance[] (at least in tessellation shaders) with sizes greater than one are not getting sizes greater than one
@@ -196,7 +196,7 @@ Shader Functionality to Implement/Finish
          + bitfieldExtract() and bitfieldInsert()
          + bitfieldReverse()
          + bitCount(), findLSB(), andfindMSB()
-      - New built-in to query LOD, textureQueryLod().
+      + New built-in to query LOD, textureQueryLod().
       - New overloaded function matching algorithm, handling selection from many valid multiple choices.
       + Texture gather functions that return four texels with a single call.
          + textureGather()
@@ -286,7 +286,7 @@ Shader Functionality to Implement/Finish
       - For layout qualifiers,
             + make negative output locations a compile-time error, once integer expressions are allowed in layouts
             - make indexes outside the range [0,1] a compile-time error.
-      - Add textureQueryLevels() built-ins to query the number of mipmap levels, as per the 
+      + Add textureQueryLevels() built-ins to query the number of mipmap levels, as per the 
         GL_ARB_texture_query_levels extension.
       + Make gl_Layer and gl_ViewportIndex also be inputs to the fragment shader, as per the 
         GL_ARB_fragment_layer_viewport extension.
