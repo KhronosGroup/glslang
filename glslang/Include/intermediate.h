@@ -617,7 +617,6 @@ struct TCrackedTextureOp {
     bool query;
     bool proj;
     bool lod;
-    bool sample;
     bool fetch;
     bool offset;
     bool offsets;
@@ -645,7 +644,6 @@ public:
         cracked.query = false;
         cracked.proj = false;
         cracked.lod = false;
-        cracked.sample = false;
         cracked.fetch = false;
         cracked.offset = false;
         cracked.offsets = false;
@@ -653,6 +651,8 @@ public:
         cracked.grad = false;
 
         switch (op) {
+        case EOpImageQuerySize:
+        case EOpImageQuerySamples:
         case EOpTextureQuerySize:
         case EOpTextureQueryLod:
         case EOpTextureQueryLevels:
@@ -672,22 +672,14 @@ public:
             break;
         case EOpTextureFetch:
             cracked.fetch = true;
-            if (sampler.dim == Esd1D || sampler.dim == Esd2D || sampler.dim == Esd3D) {
-                if (sampler.ms)
-                    cracked.sample = true;
-                else
-                    cracked.lod = true;
-            }
+            if (sampler.dim == Esd1D || (sampler.dim == Esd2D && ! sampler.ms) || sampler.dim == Esd3D)
+                cracked.lod = true;
             break;
         case EOpTextureFetchOffset:
             cracked.fetch = true;
             cracked.offset = true;
-            if (sampler.dim == Esd1D || sampler.dim == Esd2D || sampler.dim == Esd3D) {
-                if (sampler.ms)
-                    cracked.sample = true;
-                else
-                    cracked.lod = true;
-            }
+            if (sampler.dim == Esd1D || (sampler.dim == Esd2D && ! sampler.ms) || sampler.dim == Esd3D)
+                cracked.lod = true;
             break;
         case EOpTextureProjOffset:
             cracked.offset = true;

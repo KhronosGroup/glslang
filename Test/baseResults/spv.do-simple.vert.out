@@ -25,11 +25,11 @@ Linked vertex stage:
                6:             TypeInt 32 1
                7:             TypePointer Function 6(int)
                9:      6(int) Constant 0
-              14:             TypeBool
-              15:    14(bool) ConstantTrue
+              13:             TypeBool
+              15:    13(bool) ConstantTrue
               19:      6(int) Constant 10
               23:      6(int) Constant 1
-              25:    14(bool) ConstantFalse
+              25:    13(bool) ConstantFalse
               26:             TypePointer Input 6(int)
  27(gl_VertexID):     26(ptr) Variable Input
 28(gl_InstanceID):     26(ptr) Variable Input
@@ -39,15 +39,15 @@ Linked vertex stage:
                               Store 8(i) 9
                               Branch 10
               10:             Label
-              13:    14(bool) Phi 15 5 25 12
+              14:    13(bool) Phi 15 5 25 12
                               LoopMerge 11 None
                               Branch 16
               16:             Label
                               SelectionMerge 12 None
-                              BranchConditional 13 12 17
+                              BranchConditional 14 12 17
               17:               Label
               18:      6(int)   Load 8(i)
-              20:    14(bool)   SLessThan 18 19
+              20:    13(bool)   SLessThan 18 19
                                 SelectionMerge 21 None
                                 BranchConditional 20 21 11
               21:               Label

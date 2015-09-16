@@ -1757,11 +1757,10 @@ void TGlslangToSpvTraverser::translateArguments(const glslang::TIntermAggregate&
             break;
         }
 
-        if (lvalue) {
+        if (lvalue)
             arguments.push_back(builder.accessChainGetLValue());
-        } else {
+        else
             arguments.push_back(builder.accessChainLoad(convertGlslangToSpvType(glslangArguments[i]->getAsTyped()->getType())));
-        }
     }
 }
 
@@ -1820,16 +1819,37 @@ spv::Id TGlslangToSpvTraverser::createImageTextureFunctionCall(glslang::TIntermO
 
     // Check for image functions other than queries
     if (node->isImage()) {
-        if (node->getOp() == glslang::EOpImageLoad) {
-            return builder.createOp(spv::OpImageRead, convertGlslangToSpvType(node->getType()), arguments);
-        }
-        else if (node->getOp() == glslang::EOpImageStore) {
-            builder.createNoResultOp(spv::OpImageWrite, arguments);
-            return spv::NoResult;
-        }
-        else {
-            // Process image atomic operations. GLSL "IMAGE_PARAMS" will involve in constructing an image texel
-            // pointer and this pointer, as the first source operand, is required by SPIR-V atomic operations.
+        // Process image load/store
+        if (node->getOp() == glslang::EOpImageLoad ||
+            node->getOp() == glslang::EOpImageStore) {
+            std::vector<spv::Id> operands;
+            auto opIt = arguments.begin();
+            operands.push_back(*(opIt++));
+            operands.push_back(*(opIt++));
+            if (sampler.ms) {
+                // For MS, image operand mask has to be added to indicate the presence of "sample" operand.
+                spv::Id sample = *(opIt++);
+                for (; opIt != arguments.end(); ++opIt)
+                    operands.push_back(*opIt);
+
+                operands.push_back(spv::ImageOperandsSampleMask);
+                operands.push_back(sample);
+            } else {
+                for (; opIt != arguments.end(); ++opIt)
+                    operands.push_back(*opIt);
+            }
+
+            if (node->getOp() == glslang::EOpImageLoad)
+                return builder.createOp(spv::OpImageRead, convertGlslangToSpvType(node->getType()), operands);
+            else {
+                builder.createNoResultOp(spv::OpImageWrite, operands);
+                return spv::NoResult;
+            }
+        } else {
+            // Process image atomic operations
+
+            // GLSL "IMAGE_PARAMS" will involve in constructing an image texel pointer and this pointer,
+            // as the first source operand, is required by SPIR-V atomic operations.
             std::vector<spv::Id> imageParams;
             auto opIt = arguments.begin();
             imageParams.push_back(*(opIt++));
@@ -1885,8 +1905,8 @@ spv::Id TGlslangToSpvTraverser::createImageTextureFunctionCall(glslang::TIntermO
     if (cracked.lod) {
         params.lod = arguments[2];
         ++extraArgs;
-    } else if (cracked.sample) {
-        params.sample = arguments[2]; // For MS, sample should be specified
+    } else if (sampler.ms) {
+        params.sample = arguments[2]; // For MS, "sample" should be specified
         ++extraArgs;
     }
     if (cracked.grad) {

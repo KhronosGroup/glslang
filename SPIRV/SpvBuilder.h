@@ -159,8 +159,9 @@ public:
     }
     Id getImageType(Id resultId) const
     {
-        assert(isSampledImageType(getTypeId(resultId)));
-        return module.getInstruction(getTypeId(resultId))->getIdOperand(0);
+        Id typeId = getTypeId(resultId);
+        assert(isImageType(typeId) || isSampledImageType(typeId));
+        return isSampledImageType(typeId) ? module.getInstruction(typeId)->getIdOperand(0) : typeId;
     }
     bool isArrayedImageType(Id typeId) const
     {

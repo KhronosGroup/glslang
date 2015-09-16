@@ -310,7 +310,7 @@ Linked fragment stage:
              214:          70 Load 72(texSampler2D)
              215:  205(ivec2) Load 207(iCoords2D)
              216:    204(int) Load 212(iLod)
-             217:   22(fvec4) ImageFetch 214 215
+             217:   22(fvec4) ImageFetch 214 215 216
              218:   22(fvec4) Load 26(color)
              219:   22(fvec4) FAdd 218 217
                               Store 26(color) 219

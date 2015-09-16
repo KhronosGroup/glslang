@@ -70,6 +70,7 @@ spv.test.frag
 spv.test.vert
 spv.texture.frag
 spv.texture.vert
+spv.image.frag
 spv.types.frag
 spv.uint.frag
 spv.uniformArray.frag

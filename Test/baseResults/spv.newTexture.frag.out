@@ -196,13 +196,13 @@ Linked fragment stage:
               64:          21 Load 23(s3D)
               68:   65(ivec3) Load 67(ic3D)
               71:     50(int) Load 70(ic1D)
-              72:    7(fvec4) ImageFetch 64 68
+              72:    7(fvec4) ImageFetch 64 68 71
               73:    7(fvec4) Load 9(v)
               74:    7(fvec4) FAdd 73 72
                               Store 9(v) 74
               75:          11 Load 13(s2D)
               78:   51(ivec2) Load 77(ic2D)
-              80:    7(fvec4) ImageFetch 75 78 79
+              80:    7(fvec4) ImageFetch 75 78 79 53
               81:    7(fvec4) Load 9(v)
               82:    7(fvec4) FAdd 81 80
                               Store 9(v) 82
@@ -321,7 +321,7 @@ Linked fragment stage:
              205:         202 Load 204(is2DArray)
              206:   65(ivec3) Load 67(ic3D)
              207:     50(int) Load 70(ic1D)
-             208:  139(ivec4) ImageFetch 205 206
+             208:  139(ivec4) ImageFetch 205 206 207
                               Store 141(iv) 208
              209:  139(ivec4) Load 141(iv)
              210:    7(fvec4) ConvertSToF 209
