@@ -1011,6 +1011,7 @@ int TPpContext::MacroExpand(int atom, TPpToken* ppToken, bool expandUndef, bool 
     case PpAtomFileMacro: {
         if (parseContext.getCurrentLoc().name)
             parseContext.ppRequireExtensions(ppToken->loc, 1, &E_GL_GOOGLE_cpp_style_line_directive, "filename-based __FILE__");
+        ppToken->ival = parseContext.getCurrentLoc().string;
         sprintf(ppToken->name, "%s", ppToken->loc.getStringNameOrNum().c_str());
         UngetToken(PpAtomConstInt, ppToken);
         return 1;
