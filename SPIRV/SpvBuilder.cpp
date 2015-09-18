@@ -2304,9 +2304,18 @@ Builder::Loop::Loop(Builder& builder, bool testFirstArg)
     merge(new Block(builder.getUniqueId(), *function)),
     body(new Block(builder.getUniqueId(), *function)),
     testFirst(testFirstArg),
-    isFirstIteration(testFirst
-                     ? nullptr
-                     : new Instruction(builder.getUniqueId(), builder.makeBoolType(), OpPhi))
-  {}
+    isFirstIteration(nullptr)
+{
+    if (!testFirst)
+    {
+// You may be tempted to rewrite this as
+// new Instruction(builder.getUniqueId(), builder.makeBoolType(), OpPhi);
+// This will cause subtle test failures because builder.getUniqueId(),
+// and builder.makeBoolType() can then get run in a compiler-specific
+// order making tests fail for certain configurations.
+        Id instructionId = builder.getUniqueId();
+        isFirstIteration = new Instruction(instructionId, builder.makeBoolType(), OpPhi);
+    }
+}
 
 }; // end spv namespace

@@ -564,8 +564,9 @@ protected:
         const bool testFirst;
         // When the test executes after the body, this is defined as the phi
         // instruction that tells us whether we are on the first iteration of
-        // the loop.  Otherwise this is null.
-        Instruction* const isFirstIteration;
+        // the loop.  Otherwise this is null. This is non-const because
+        // it has to be initialized outside of the initializer-list.
+        Instruction* isFirstIteration;
     };
 
     // Our loop stack.
