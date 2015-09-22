@@ -741,11 +741,12 @@ bool TGlslangToSpvTraverser::visitUnary(glslang::TVisit /* visit */, glslang::TI
 
         // Normal .length() would have been constant folded by the front-end.
         // So, this has to be block.lastMember.length().
-        // SPV wants "block" as the operand, go get it.
+        // SPV wants "block" and member number as the operands, go get them.
         assert(node->getOperand()->getType().isRuntimeSizedArray());
         glslang::TIntermTyped* block = node->getOperand()->getAsBinaryNode()->getLeft();
         block->traverse(this);
-        spv::Id length = builder.createUnaryOp(spv::OpArrayLength, builder.makeIntType(32), builder.accessChainGetLValue());
+        unsigned int member = node->getOperand()->getAsBinaryNode()->getRight()->getAsConstantUnion()->getConstArray()[0].getUConst();
+        spv::Id length = builder.createArrayLength(builder.accessChainGetLValue(), member);
 
         builder.clearAccessChain();
         builder.setAccessChainRValue(length);

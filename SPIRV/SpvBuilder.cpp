@@ -890,6 +890,16 @@ Id Builder::createAccessChain(StorageClass storageClass, Id base, std::vector<Id
     return chain->getResultId();
 }
 
+Id Builder::createArrayLength(Id base, unsigned int member)
+{
+    Instruction* length = new Instruction(getUniqueId(), makeIntType(32), OpArrayLength);
+    length->addIdOperand(base);
+    length->addImmediateOperand(member);
+    buildPoint->addInstruction(length);
+
+    return length->getResultId();
+}
+
 Id Builder::createCompositeExtract(Id composite, Id typeId, unsigned index)
 {
     Instruction* extract = new Instruction(getUniqueId(), typeId, OpCompositeExtract);

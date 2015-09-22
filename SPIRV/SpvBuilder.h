@@ -225,6 +225,9 @@ public:
     // Create an OpAccessChain instruction
     Id createAccessChain(StorageClass, Id base, std::vector<Id>& offsets);
 
+    // Create an OpArrayLength instruction
+    Id createArrayLength(Id base, unsigned int member);
+
     // Create an OpCompositeExtract instruction
     Id createCompositeExtract(Id composite, Id typeId, unsigned index);
     Id createCompositeExtract(Id composite, Id typeId, std::vector<unsigned>& indexes);

@@ -113,7 +113,7 @@ Linked compute stage:
               58:   23(fvec4) CompositeConstruct 57 57 57 57
               59:     30(ptr) AccessChain 51(outnames) 27 56
                               Store 59 58
-              60:     16(int) ArrayLength 15(outbname)
+              60:     16(int) ArrayLength 15(outbname) 3
               62:     61(ptr) AccessChain 51(outnames) 17
                               Store 62 60
                               Return
