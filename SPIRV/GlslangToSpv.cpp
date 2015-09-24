@@ -321,6 +321,9 @@ spv::BuiltIn TranslateBuiltInDecoration(glslang::TBuiltInVariable builtIn)
     case glslang::EbvCullDistance:         return spv::BuiltInCullDistance;
     case glslang::EbvVertexId:             return spv::BuiltInVertexId;
     case glslang::EbvInstanceId:           return spv::BuiltInInstanceId;
+    case glslang::EbvBaseVertex:
+    case glslang::EbvBaseInstance:
+    case glslang::EbvDrawId:               spv::MissingFunctionality("Draw parameters"); return (spv::BuiltIn)spv::BadValue; // TODO: Add SPIR-V builtin ID.
     case glslang::EbvPrimitiveId:          return spv::BuiltInPrimitiveId;
     case glslang::EbvInvocationId:         return spv::BuiltInInvocationId;
     case glslang::EbvLayer:                return spv::BuiltInLayer;

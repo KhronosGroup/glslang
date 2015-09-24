@@ -61,10 +61,10 @@ void main()
     imageStore(i2DArray, ic3D, v);
     v += imageLoad(iBuffer, ic1D);
     imageStore(iBuffer, ic1D, v);
-    v += imageLoad(i2DMS, ic2D, 1);
-    imageStore(i2DMS, ic2D, 2, v);
-    v += imageLoad(i2DMSArray, ic3D, 3);
-    imageStore(i2DMSArray, ic3D, 4, v);
+    // v += imageLoad(i2DMS, ic2D, 1);
+    // imageStore(i2DMS, ic2D, 2, v);
+    // v += imageLoad(i2DMSArray, ic3D, 3);
+    // imageStore(i2DMSArray, ic3D, 4, v);
 
     uint ui = 0;
     iv.x    += imageAtomicAdd(ii1D, ic1D, 10);

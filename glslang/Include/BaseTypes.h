@@ -126,6 +126,9 @@ enum TBuiltInVariable {
     EbvLocalInvocationIndex,
     EbvVertexId,
     EbvInstanceId,
+    EbvBaseVertex,
+    EbvBaseInstance,
+    EbvDrawId,
     EbvPosition,
     EbvPointSize,
     EbvClipVertex,
@@ -176,28 +179,28 @@ enum TBuiltInVariable {
 __inline const char* GetStorageQualifierString(TStorageQualifier q) 
 {
     switch (q) {
-    case EvqTemporary:      return "temp";           break;
-    case EvqGlobal:         return "global";         break;
-    case EvqConst:          return "const";          break;
+    case EvqTemporary:      return "temp";              break;
+    case EvqGlobal:         return "global";            break;
+    case EvqConst:          return "const";             break;
     case EvqConstReadOnly:  return "const (read only)"; break;
-    case EvqVaryingIn:      return "in";             break;
-    case EvqVaryingOut:     return "out";            break;
-    case EvqUniform:        return "uniform";        break;
-    case EvqBuffer:         return "buffer";         break;
-    case EvqShared:         return "shared";         break;
-    case EvqIn:             return "in";             break;
-    case EvqOut:            return "out";            break;
-    case EvqInOut:          return "inout";          break;
-    case EvqVertexId:       return "gl_VertexId";    break;
-    case EvqInstanceId:     return "gl_InstanceId";  break;
-    case EvqPosition:       return "gl_Position";    break;
-    case EvqPointSize:      return "gl_PointSize";   break;
-    case EvqClipVertex:     return "gl_ClipVertex";  break;
-    case EvqFace:           return "gl_FrontFacing"; break;
-    case EvqFragCoord:      return "gl_FragCoord";   break;
-    case EvqPointCoord:     return "gl_PointCoord";  break;
-    case EvqFragColor:      return "fragColor";      break;
-    case EvqFragDepth:      return "gl_FragDepth";   break;
+    case EvqVaryingIn:      return "in";                break;
+    case EvqVaryingOut:     return "out";               break;
+    case EvqUniform:        return "uniform";           break;
+    case EvqBuffer:         return "buffer";            break;
+    case EvqShared:         return "shared";            break;
+    case EvqIn:             return "in";                break;
+    case EvqOut:            return "out";               break;
+    case EvqInOut:          return "inout";             break;
+    case EvqVertexId:       return "gl_VertexId";       break;
+    case EvqInstanceId:     return "gl_InstanceId";     break;
+    case EvqPosition:       return "gl_Position";       break;
+    case EvqPointSize:      return "gl_PointSize";      break;
+    case EvqClipVertex:     return "gl_ClipVertex";     break;
+    case EvqFace:           return "gl_FrontFacing";    break;
+    case EvqFragCoord:      return "gl_FragCoord";      break;
+    case EvqPointCoord:     return "gl_PointCoord";     break;
+    case EvqFragColor:      return "fragColor";         break;
+    case EvqFragDepth:      return "gl_FragDepth";      break;
     default:                return "unknown qualifier";
     }
 }
@@ -214,6 +217,9 @@ __inline const char* GetBuiltInVariableString(TBuiltInVariable v)
     case EbvLocalInvocationIndex: return "LocalInvocationIndex";
     case EbvVertexId:             return "VertexId";
     case EbvInstanceId:           return "InstanceId";
+    case EbvBaseVertex:           return "BaseVertex";
+    case EbvBaseInstance:         return "BaseInstance";
+    case EbvDrawId:               return "DrawId";
     case EbvPosition:             return "Position";
     case EbvPointSize:            return "PointSize";
     case EbvClipVertex:           return "ClipVertex";
