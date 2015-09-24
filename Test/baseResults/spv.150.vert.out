@@ -44,11 +44,8 @@ Linked vertex stage:
                               MemberDecorate 13(gl_PerVertex) 1 BuiltIn PointSize
                               MemberDecorate 13(gl_PerVertex) 2 BuiltIn ClipDistance
                               Decorate 13(gl_PerVertex) Block
-                              Decorate 48(ui) NoStaticUse
                               Decorate 50(gl_VertexID) BuiltIn VertexId
-                              Decorate 50(gl_VertexID) NoStaticUse
                               Decorate 51(gl_InstanceID) BuiltIn InstanceId
-                              Decorate 51(gl_InstanceID) NoStaticUse
                2:             TypeVoid
                3:             TypeFunction 2
                6:             TypeFloat 32

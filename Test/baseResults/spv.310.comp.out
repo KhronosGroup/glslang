@@ -41,7 +41,6 @@ Linked compute stage:
                               Decorate 49(outs) BufferBlock
                               Decorate 54(gl_LocalInvocationID) BuiltIn LocalInvocationId
                               Decorate 66 BuiltIn WorkgroupSize
-                              Decorate 66 NoStaticUse
                2:             TypeVoid
                3:             TypeFunction 2
                6:             TypeInt 32 0

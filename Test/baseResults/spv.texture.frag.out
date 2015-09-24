@@ -43,9 +43,7 @@ Linked fragment stage:
                               Name 289  "t"
                               Decorate 47(coords2D) Smooth
                               Decorate 276(gl_FragColor) BuiltIn FragColor
-                              Decorate 288(scale) NoStaticUse
                               Decorate 289(t) Smooth
-                              Decorate 289(t) NoStaticUse
                2:             TypeVoid
                3:             TypeFunction 2
                6:             TypeFloat 32
@@ -375,7 +373,7 @@ Linked fragment stage:
              283:    6(float) Load 282(blend)
              284:    6(float) Load 8(blendscale)
              285:    6(float) FMul 283 284
-             286:   22(fvec4) ExtInst 1(GLSL.std.450) 46(Mix) 277 280 285
+             286:   22(fvec4) ExtInst 1(GLSL.std.450) 46(FMix) 277 280 285
                               Store 276(gl_FragColor) 286
                               Return
                               FunctionEnd

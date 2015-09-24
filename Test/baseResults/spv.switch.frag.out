@@ -218,7 +218,7 @@ Linked fragment stage:
              155:             Label
              158:      9(int) Load 153(i)
              161:   160(bool) SLessThan 158 159
-                              LoopMerge 156 None
+                              LoopMerge 156 155 None
                               BranchConditional 161 157 156
              157:               Label
              162:      9(int)   Load 60(c)
@@ -237,7 +237,7 @@ Linked fragment stage:
              173:                 Label
              176:      9(int)     Load 171(j)
              178:   160(bool)     SLessThan 176 177
-                                  LoopMerge 174 None
+                                  LoopMerge 174 173 None
                                   BranchConditional 178 175 174
              175:                   Label
              179:    6(float)       Load 71(f)

@@ -28,7 +28,6 @@ Linked vertex stage:
                               Decorate 25(ps) RelaxedPrecision
                               Decorate 33(gl_PointSize) BuiltIn PointSize
                               Decorate 39(gl_InstanceID) BuiltIn InstanceId
-                              Decorate 39(gl_InstanceID) NoStaticUse
                2:             TypeVoid
                3:             TypeFunction 2
                6:             TypeInt 32 1

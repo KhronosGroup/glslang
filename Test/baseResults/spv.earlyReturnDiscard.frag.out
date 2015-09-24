@@ -31,7 +31,6 @@ Linked fragment stage:
                               Decorate 11(BaseColor) Smooth
                               Decorate 18(c) Smooth
                               Decorate 106(gl_FragColor) BuiltIn FragColor
-                              Decorate 110(threshhold3) NoStaticUse
                2:             TypeVoid
                3:             TypeFunction 2
                6:             TypeFloat 32

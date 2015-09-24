@@ -49,9 +49,6 @@ Linked fragment stage:
                               Decorate 40(coord) Smooth
                               Decorate 94(color) Smooth
                               Decorate 104(gl_FragColor) BuiltIn FragColor
-                              Decorate 130(foo) NoStaticUse
-                              Decorate 131(foo2) NoStaticUse
-                              Decorate 133(uFloatArray) NoStaticUse
                2:             TypeVoid
                3:             TypeFunction 2
                6:             TypeInt 32 1
@@ -165,7 +162,7 @@ Linked fragment stage:
               74:             Label
               77:      6(int) Load 73(i)
               79:    23(bool) SLessThan 77 78
-                              LoopMerge 75 None
+                              LoopMerge 75 74 None
                               BranchConditional 79 76 75
               76:               Label
               81:      6(int)   Load 73(i)

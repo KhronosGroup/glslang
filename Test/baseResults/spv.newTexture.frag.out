@@ -51,13 +51,7 @@ Linked fragment stage:
                               Decorate 67(ic3D) Flat
                               Decorate 70(ic1D) Flat
                               Decorate 77(ic2D) Flat
-                              Decorate 235(is2Dms) NoStaticUse
-                              Decorate 240(us2D) NoStaticUse
-                              Decorate 244(us3D) NoStaticUse
-                              Decorate 248(usCube) NoStaticUse
-                              Decorate 252(us2DArray) NoStaticUse
                               Decorate 254(ic4D) Flat
-                              Decorate 254(ic4D) NoStaticUse
                2:             TypeVoid
                3:             TypeFunction 2
                6:             TypeFloat 32

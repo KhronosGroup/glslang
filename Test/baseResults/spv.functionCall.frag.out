@@ -32,7 +32,6 @@ Linked fragment stage:
                               Name 72  "bigColor"
                               Decorate 53(BaseColor) Smooth
                               Decorate 65(gl_FragColor) BuiltIn FragColor
-                              Decorate 72(bigColor) NoStaticUse
                2:             TypeVoid
                3:             TypeFunction 2
                6:             TypeFloat 32

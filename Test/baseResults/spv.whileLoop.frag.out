@@ -46,7 +46,7 @@ Linked fragment stage:
               17:    6(float) CompositeExtract 16 0
               20:    6(float) Load 19(d)
               22:    21(bool) FOrdLessThan 17 20
-                              LoopMerge 14 None
+                              LoopMerge 14 13 None
                               BranchConditional 22 15 14
               15:               Label
               25:    7(fvec4)   Load 24(bigColor)

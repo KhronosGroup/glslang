@@ -67,49 +67,6 @@ Linked fragment stage:
                               Name 194  "Count"
                               Decorate 11(BaseColor) Smooth
                               Decorate 148(gl_FragColor) BuiltIn FragColor
-                              Decorate 150(bigColor) NoStaticUse
-                              Decorate 151(bigColor1_1) NoStaticUse
-                              Decorate 152(bigColor1_2) NoStaticUse
-                              Decorate 153(bigColor1_3) NoStaticUse
-                              Decorate 154(bigColor2) NoStaticUse
-                              Decorate 155(bigColor3) NoStaticUse
-                              Decorate 156(bigColor5) NoStaticUse
-                              Decorate 157(bigColor6) NoStaticUse
-                              Decorate 158(bigColor7) NoStaticUse
-                              Decorate 159(bigColor8) NoStaticUse
-                              Decorate 160(d) NoStaticUse
-                              Decorate 161(d2) NoStaticUse
-                              Decorate 162(d3) NoStaticUse
-                              Decorate 163(d5) NoStaticUse
-                              Decorate 164(d6) NoStaticUse
-                              Decorate 165(d7) NoStaticUse
-                              Decorate 166(d8) NoStaticUse
-                              Decorate 167(d9) NoStaticUse
-                              Decorate 168(d10) NoStaticUse
-                              Decorate 169(d11) NoStaticUse
-                              Decorate 170(d12) NoStaticUse
-                              Decorate 171(d14) NoStaticUse
-                              Decorate 172(d15) NoStaticUse
-                              Decorate 173(d16) NoStaticUse
-                              Decorate 174(d17) NoStaticUse
-                              Decorate 175(d18) NoStaticUse
-                              Decorate 176(d19) NoStaticUse
-                              Decorate 177(d20) NoStaticUse
-                              Decorate 178(d21) NoStaticUse
-                              Decorate 179(d22) NoStaticUse
-                              Decorate 180(d23) NoStaticUse
-                              Decorate 181(d24) NoStaticUse
-                              Decorate 182(d25) NoStaticUse
-                              Decorate 183(d26) NoStaticUse
-                              Decorate 184(d27) NoStaticUse
-                              Decorate 185(d28) NoStaticUse
-                              Decorate 186(d29) NoStaticUse
-                              Decorate 187(d30) NoStaticUse
-                              Decorate 188(d31) NoStaticUse
-                              Decorate 189(d32) NoStaticUse
-                              Decorate 190(d33) NoStaticUse
-                              Decorate 191(d34) NoStaticUse
-                              Decorate 194(Count) NoStaticUse
                2:             TypeVoid
                3:             TypeFunction 2
                6:             TypeFloat 32
@@ -182,7 +139,7 @@ Linked fragment stage:
                               Branch 13
               13:             Label
               16:    17(bool) Phi 18 5 57 49 57 64
-                              LoopMerge 14 None
+                              LoopMerge 14 13 None
                               Branch 19
               19:             Label
                               SelectionMerge 15 None
@@ -264,7 +221,7 @@ Linked fragment stage:
               82:    6(float) CompositeExtract 81 3
               84:    6(float) Load 83(d13)
               85:    17(bool) FOrdLessThan 82 84
-                              LoopMerge 79 None
+                              LoopMerge 79 78 None
                               BranchConditional 85 80 79
               80:               Label
               86:    7(fvec4)   Load 9(color)

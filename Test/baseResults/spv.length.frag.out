@@ -20,7 +20,6 @@ Linked fragment stage:
                               Name 32  "u"
                               Decorate 14(v) Smooth
                               Decorate 26(gl_FragColor) BuiltIn FragColor
-                              Decorate 32(u) NoStaticUse
                2:             TypeVoid
                3:             TypeFunction 2
                6:             TypeFloat 32

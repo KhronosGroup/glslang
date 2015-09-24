@@ -45,7 +45,7 @@ Linked fragment stage:
                               Branch 13
               13:             Label
               16:    17(bool) Phi 18 5 33 15
-                              LoopMerge 14 None
+                              LoopMerge 14 13 None
                               Branch 19
               19:             Label
                               SelectionMerge 15 None

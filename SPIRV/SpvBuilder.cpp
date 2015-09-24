@@ -1764,7 +1764,7 @@ void Builder::If::makeEndIf()
 
     // Go back to the headerBlock and make the flow control split
     builder.setBuildPoint(headerBlock);
-    builder.createMerge(OpSelectionMerge, mergeBlock, SelectionControlMaskNone);
+    builder.createSelectionMerge(mergeBlock, SelectionControlMaskNone);
     if (elseBlock)
         builder.createConditionalBranch(condition, thenBlock, elseBlock);
     else
@@ -1788,7 +1788,7 @@ void Builder::makeSwitch(Id selector, int numSegments, std::vector<int>& caseVal
     Block* mergeBlock = new Block(getUniqueId(), function);
 
     // make and insert the switch's selection-merge instruction
-    createMerge(OpSelectionMerge, mergeBlock, SelectionControlMaskNone);
+    createSelectionMerge(mergeBlock, SelectionControlMaskNone);
 
     // make the switch instruction
     Instruction* switchInst = new Instruction(NoResult, NoType, OpSwitch);
@@ -1872,7 +1872,7 @@ void Builder::makeNewLoop(bool loopTestFirst)
         getBuildPoint()->addInstruction(loop.isFirstIteration);
 
         // Mark the end of the structured loop. This must exist in the loop header block.
-        createMerge(OpLoopMerge, loop.merge, LoopControlMaskNone);
+        createLoopMerge(loop.merge, loop.header, LoopControlMaskNone);
 
         // Generate code to see if this is the first iteration of the loop.
         // It needs to be in its own block, since the loop merge and
@@ -1886,7 +1886,7 @@ void Builder::makeNewLoop(bool loopTestFirst)
         // Control flow after this "if" normally reconverges at the loop body.
         // However, the loop test has a "break branch" out of this selection
         // construct because it can transfer control to the loop merge block.
-        createMerge(OpSelectionMerge, loop.body, SelectionControlMaskNone);
+        createSelectionMerge(loop.body, SelectionControlMaskNone);
 
         Block* loopTest = new Block(getUniqueId(), *loop.function);
         createConditionalBranch(loop.isFirstIteration->getResultId(), loop.body, loopTest);
@@ -1904,7 +1904,7 @@ void Builder::createLoopTestBranch(Id condition)
     // the body, then this is a loop merge.  Otherwise the loop merge
     // has already been generated and this is a conditional merge.
     if (loop.testFirst) {
-        createMerge(OpLoopMerge, loop.merge, LoopControlMaskNone);
+        createLoopMerge(loop.merge, loop.header, LoopControlMaskNone);
         // Branching to the "body" block will keep control inside
         // the loop.
         createConditionalBranch(condition, loop.body, loop.merge);
@@ -1917,7 +1917,7 @@ void Builder::createLoopTestBranch(Id condition)
         // of a merge instruction, and a block can't be the target of more
         // than one merge instruction, we need to make an intermediate block.
         Block* stayInLoopBlock = new Block(getUniqueId(), *loop.function);
-        createMerge(OpSelectionMerge, stayInLoopBlock, SelectionControlMaskNone);
+        createSelectionMerge(stayInLoopBlock, SelectionControlMaskNone);
 
         // This is the loop test.
         createConditionalBranch(condition, stayInLoopBlock, loop.merge);
@@ -2266,10 +2266,19 @@ void Builder::createBranch(Block* block)
     block->addPredecessor(buildPoint);
 }
 
-void Builder::createMerge(Op mergeCode, Block* mergeBlock, unsigned int control)
+void Builder::createSelectionMerge(Block* mergeBlock, unsigned int control)
 {
-    Instruction* merge = new Instruction(mergeCode);
+    Instruction* merge = new Instruction(OpSelectionMerge);
     merge->addIdOperand(mergeBlock->getId());
+    merge->addImmediateOperand(control);
+    buildPoint->addInstruction(merge);
+}
+
+void Builder::createLoopMerge(Block* mergeBlock, Block* continueBlock, unsigned int control)
+{
+    Instruction* merge = new Instruction(OpLoopMerge);
+    merge->addIdOperand(mergeBlock->getId());
+    merge->addIdOperand(continueBlock->getId());
     merge->addImmediateOperand(control);
     buildPoint->addInstruction(merge);
 }

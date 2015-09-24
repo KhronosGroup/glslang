@@ -27,8 +27,6 @@ Linked fragment stage:
                               Name 395  "uiv4"
                               Name 397  "ub"
                               Decorate 377(gl_FragColor) BuiltIn FragColor
-                              Decorate 395(uiv4) NoStaticUse
-                              Decorate 397(ub) NoStaticUse
                2:             TypeVoid
                3:             TypeFunction 2
                6:             TypeFloat 32
@@ -174,7 +172,7 @@ Linked fragment stage:
               98:    7(fvec4) FAdd 97 96
                               Store 9(v) 98
               99:    7(fvec4) Load 9(v)
-             100:    7(fvec4) ExtInst 1(GLSL.std.450) 32(Inversesqrt) 99
+             100:    7(fvec4) ExtInst 1(GLSL.std.450) 32(InverseSqrt) 99
              101:    7(fvec4) Load 9(v)
              102:    7(fvec4) FAdd 101 100
                               Store 9(v) 102
@@ -239,58 +237,58 @@ Linked fragment stage:
              151:    7(fvec4) Load 9(v)
              152:    7(fvec4) Load 9(v)
              153:    7(fvec4) Load 9(v)
-             154:    7(fvec4) ExtInst 1(GLSL.std.450) 46(Mix) 151 152 153
+             154:    7(fvec4) ExtInst 1(GLSL.std.450) 46(FMix) 151 152 153
              155:    7(fvec4) Load 9(v)
              156:    7(fvec4) FAdd 155 154
                               Store 9(v) 156
              157:    7(fvec4) Load 9(v)
              158:    7(fvec4) Load 9(v)
-             159:    7(fvec4) ExtInst 1(GLSL.std.450) 47(Step) 157 158
+             159:    7(fvec4) ExtInst 1(GLSL.std.450) 48(Step) 157 158
              160:    7(fvec4) Load 9(v)
              161:    7(fvec4) FAdd 160 159
                               Store 9(v) 161
              162:    7(fvec4) Load 9(v)
              163:    7(fvec4) Load 9(v)
              164:    7(fvec4) Load 9(v)
-             165:    7(fvec4) ExtInst 1(GLSL.std.450) 48(Smoothstep) 162 163 164
+             165:    7(fvec4) ExtInst 1(GLSL.std.450) 49(SmoothStep) 162 163 164
              166:    7(fvec4) Load 9(v)
              167:    7(fvec4) FAdd 166 165
                               Store 9(v) 167
              170:    6(float) Load 169(uf)
              171:    7(fvec4) Load 9(v)
-             172:    7(fvec4) ExtInst 1(GLSL.std.450) 47(Step) 170 171
+             172:    7(fvec4) ExtInst 1(GLSL.std.450) 48(Step) 170 171
              173:    7(fvec4) Load 9(v)
              174:    7(fvec4) FAdd 173 172
                               Store 9(v) 174
              175:    6(float) Load 169(uf)
              176:    6(float) Load 169(uf)
              177:    7(fvec4) Load 9(v)
-             178:    7(fvec4) ExtInst 1(GLSL.std.450) 48(Smoothstep) 175 176 177
+             178:    7(fvec4) ExtInst 1(GLSL.std.450) 49(SmoothStep) 175 176 177
              179:    7(fvec4) Load 9(v)
              180:    7(fvec4) FAdd 179 178
                               Store 9(v) 180
              181:    7(fvec4) Load 9(v)
-             182:    7(fvec4) ExtInst 1(GLSL.std.450) 68(Normalize) 181
+             182:    7(fvec4) ExtInst 1(GLSL.std.450) 69(Normalize) 181
              183:    7(fvec4) Load 9(v)
              184:    7(fvec4) FAdd 183 182
                               Store 9(v) 184
              185:    7(fvec4) Load 9(v)
              186:    7(fvec4) Load 9(v)
              187:    7(fvec4) Load 9(v)
-             188:    7(fvec4) ExtInst 1(GLSL.std.450) 69(Faceforward) 185 186 187
+             188:    7(fvec4) ExtInst 1(GLSL.std.450) 70(FaceForward) 185 186 187
              189:    7(fvec4) Load 9(v)
              190:    7(fvec4) FAdd 189 188
                               Store 9(v) 190
              191:    7(fvec4) Load 9(v)
              192:    7(fvec4) Load 9(v)
-             193:    7(fvec4) ExtInst 1(GLSL.std.450) 70(Reflect) 191 192
+             193:    7(fvec4) ExtInst 1(GLSL.std.450) 71(Reflect) 191 192
              194:    7(fvec4) Load 9(v)
              195:    7(fvec4) FAdd 194 193
                               Store 9(v) 195
              196:    7(fvec4) Load 9(v)
              197:    7(fvec4) Load 9(v)
              198:    6(float) Load 169(uf)
-             199:    7(fvec4) ExtInst 1(GLSL.std.450) 71(Refract) 196 197 198
+             199:    7(fvec4) ExtInst 1(GLSL.std.450) 72(Refract) 196 197 198
              200:    7(fvec4) Load 9(v)
              201:    7(fvec4) FAdd 200 199
                               Store 9(v) 201
@@ -412,13 +410,13 @@ Linked fragment stage:
              310:    6(float) FDiv 308 309
                               Store 301(f) 310
              311:    7(fvec4) Load 9(v)
-             312:    6(float) ExtInst 1(GLSL.std.450) 65(Length) 311
+             312:    6(float) ExtInst 1(GLSL.std.450) 66(Length) 311
              313:    6(float) Load 301(f)
              314:    6(float) FAdd 313 312
                               Store 301(f) 314
              315:    7(fvec4) Load 9(v)
              316:    7(fvec4) Load 9(v)
-             317:    6(float) ExtInst 1(GLSL.std.450) 66(Distance) 315 316
+             317:    6(float) ExtInst 1(GLSL.std.450) 67(Distance) 315 316
              318:    6(float) Load 301(f)
              319:    6(float) FAdd 318 317
                               Store 301(f) 319
@@ -438,7 +436,7 @@ Linked fragment stage:
              332:  330(fvec3) VectorShuffle 331 331 0 1 2
              333:    7(fvec4) Load 9(v)
              334:  330(fvec3) VectorShuffle 333 333 0 1 2
-             335:  330(fvec3) ExtInst 1(GLSL.std.450) 67(Cross) 332 334
+             335:  330(fvec3) ExtInst 1(GLSL.std.450) 68(Cross) 332 334
              336:    6(float) CompositeExtract 335 0
              337:    6(float) Load 301(f)
              338:    6(float) FAdd 337 336

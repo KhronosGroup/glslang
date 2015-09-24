@@ -83,7 +83,7 @@ Linked fragment stage:
               51:    6(float) Load 50(blend)
               52:    6(float) Load 8(blendscale)
               53:    6(float) FMul 51 52
-              54:   10(fvec4) ExtInst 1(GLSL.std.450) 46(Mix) 45 48 53
+              54:   10(fvec4) ExtInst 1(GLSL.std.450) 46(FMix) 45 48 53
                               Store 44(gl_FragColor) 54
                               Return
                               FunctionEnd

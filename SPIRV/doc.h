@@ -120,6 +120,7 @@ enum OperandClass {
     OperandOptionalImage,
     OperandVariableIds,
     OperandOptionalLiteral,
+    OperandOptionalLiteralString,
     OperandVariableLiterals,
     OperandVariableIdLiteral,
     OperandVariableLiteralId,
@@ -240,7 +241,7 @@ protected:
     int resultPresent : 1;
 };
 
-const int OpcodeCeiling = 305;
+const int OpcodeCeiling = 320;
 
 // The set of objects that hold all the instruction/operand
 // parameterization information.

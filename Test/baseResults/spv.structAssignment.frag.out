@@ -37,7 +37,6 @@ Linked fragment stage:
                               Name 49  "foo"
                               Decorate 31(gl_FragColor) BuiltIn FragColor
                               Decorate 44(coord) Smooth
-                              Decorate 49(foo) NoStaticUse
                2:             TypeVoid
                3:             TypeFunction 2
                6:             TypeInt 32 1

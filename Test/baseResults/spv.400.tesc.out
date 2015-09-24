@@ -59,19 +59,11 @@ Linked tessellation control stage:
                               Decorate 63(gl_TessLevelOuter) BuiltIn TessLevelOuter
                               Decorate 70(gl_TessLevelInner) Patch
                               Decorate 70(gl_TessLevelInner) BuiltIn TessLevelInner
-                              Decorate 75(outa) NoStaticUse
                               Decorate 76(patchOut) Patch
-                              Decorate 76(patchOut) NoStaticUse
-                              Decorate 80(inb) NoStaticUse
-                              Decorate 81(ind) NoStaticUse
                               Decorate 84(ivla) Location 3
-                              Decorate 84(ivla) NoStaticUse
                               Decorate 85(ivlb) Location 4
-                              Decorate 85(ivlb) NoStaticUse
                               Decorate 88(ovla) Location 3
-                              Decorate 88(ovla) NoStaticUse
                               Decorate 89(ovlb) Location 4
-                              Decorate 89(ovlb) NoStaticUse
                2:             TypeVoid
                3:             TypeFunction 2
                6:             TypeInt 32 0

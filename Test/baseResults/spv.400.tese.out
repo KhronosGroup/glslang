@@ -66,19 +66,11 @@ Linked tessellation evaluation stage:
                               MemberDecorate 66(gl_PerVertex) 2 BuiltIn ClipDistance
                               Decorate 66(gl_PerVertex) Block
                               Decorate 77(patchIn) Patch
-                              Decorate 77(patchIn) NoStaticUse
-                              Decorate 81(inb) NoStaticUse
-                              Decorate 82(ind) NoStaticUse
                               Decorate 83(testblb) Block
-                              Decorate 86(blb) NoStaticUse
                               Decorate 87(testbld) Block
-                              Decorate 90(bld) NoStaticUse
                               Decorate 93(ivla) Location 23
-                              Decorate 93(ivla) NoStaticUse
                               Decorate 94(ivlb) Location 24
-                              Decorate 94(ivlb) NoStaticUse
                               Decorate 97(ovla) Location 23
-                              Decorate 97(ovla) NoStaticUse
                2:             TypeVoid
                3:             TypeFunction 2
                6:             TypeInt 32 1

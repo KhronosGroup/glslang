@@ -21,9 +21,6 @@ Linked vertex stage:
                               Name 28  "gl_Position"
                               Name 55  "v4"
                               Decorate 28(gl_Position) BuiltIn Position
-                              Decorate 74 NoStaticUse
-                              Decorate 78 NoStaticUse
-                              Decorate 89 NoStaticUse
                2:             TypeVoid
                3:             TypeFunction 2
                6:             TypeFloat 32

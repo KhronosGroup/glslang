@@ -35,7 +35,6 @@ Linked fragment stage:
                               Decorate 33(gl_ClipDistance) Smooth
                               Decorate 33(gl_ClipDistance) BuiltIn ClipDistance
                               Decorate 42(k) Smooth
-                              Decorate 85(samp2Da) NoStaticUse
                               Decorate 88 ArrayStride 64
                               Decorate 88 ArrayStride 64
                               MemberDecorate 89(bn) 0 RowMajor
@@ -54,7 +53,6 @@ Linked fragment stage:
                               MemberDecorate 89(bn) 4 Offset 640
                               MemberDecorate 89(bn) 4 MatrixStride 16
                               Decorate 89(bn) Block
-                              Decorate 91 NoStaticUse
                2:             TypeVoid
                3:             TypeFunction 2
                6:             TypeFloat 32

@@ -26,12 +26,10 @@ Linked vertex stage:
                               Decorate 9(outVc) Smooth
                               Decorate 13(outVs) Smooth
                               Decorate 15(outVf) Flat
-                              Decorate 17(outVn) Noperspective
-                              Decorate 19(outVcn) Noperspective
+                              Decorate 17(outVn) NoPerspective
+                              Decorate 19(outVcn) NoPerspective
                               Decorate 23(gl_VertexID) BuiltIn VertexId
-                              Decorate 23(gl_VertexID) NoStaticUse
                               Decorate 24(gl_InstanceID) BuiltIn InstanceId
-                              Decorate 24(gl_InstanceID) NoStaticUse
                2:             TypeVoid
                3:             TypeFunction 2
                6:             TypeFloat 32

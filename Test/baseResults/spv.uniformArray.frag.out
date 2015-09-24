@@ -21,7 +21,6 @@ Linked fragment stage:
                               Name 46  "gl_FragColor"
                               Name 51  "texSampler2D"
                               Decorate 46(gl_FragColor) BuiltIn FragColor
-                              Decorate 51(texSampler2D) NoStaticUse
                2:             TypeVoid
                3:             TypeFunction 2
                6:             TypeFloat 32

@@ -39,31 +39,19 @@ Linked vertex stage:
                               Decorate 10(gl_PerVertex) Block
                               Decorate 34(badorder3) Flat
                               Decorate 42(uv4) Location 4
-                              Decorate 42(uv4) NoStaticUse
-                              Decorate 28 NoStaticUse
-                              Decorate 28 NoStaticUse
-                              Decorate 43(badorder) NoStaticUse
                               Decorate 44(badorder2) Smooth
                               Decorate 44(badorder2) Invariant
-                              Decorate 44(badorder2) NoStaticUse
                               Decorate 45(boundblock) GLSLShared
                               Decorate 45(boundblock) Block
                               Decorate 47(boundInst) Binding 3
-                              Decorate 47(boundInst) NoStaticUse
                               Decorate 48(anonblock) GLSLShared
                               Decorate 48(anonblock) Block
                               Decorate 50 Binding 7
-                              Decorate 50 NoStaticUse
                               Decorate 54(sampb1) Binding 4
-                              Decorate 54(sampb1) NoStaticUse
                               Decorate 57(sampb2) Binding 5
-                              Decorate 57(sampb2) NoStaticUse
                               Decorate 58(sampb4) Binding 31
-                              Decorate 58(sampb4) NoStaticUse
                               Decorate 60(gl_VertexID) BuiltIn VertexId
-                              Decorate 60(gl_VertexID) NoStaticUse
                               Decorate 61(gl_InstanceID) BuiltIn InstanceId
-                              Decorate 61(gl_InstanceID) NoStaticUse
                2:             TypeVoid
                3:             TypeFunction 2
                6:             TypeFloat 32

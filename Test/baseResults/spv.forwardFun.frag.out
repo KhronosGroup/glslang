@@ -33,7 +33,6 @@ Linked fragment stage:
                               Decorate 30(gl_FragColor) BuiltIn FragColor
                               Decorate 36(d) RelaxedPrecision
                               Decorate 56(bigColor) RelaxedPrecision
-                              Decorate 56(bigColor) NoStaticUse
                2:             TypeVoid
                3:             TypeFunction 2
                8:             TypeFloat 32

@@ -32,12 +32,6 @@ Linked compute stage:
                               Decorate 8(bufName) BufferBlock
                               Decorate 26(gl_GlobalInvocationID) BuiltIn GlobalInvocationId
                               Decorate 33(gl_LocalInvocationID) BuiltIn LocalInvocationId
-                              Decorate 13 NoStaticUse
-                              Decorate 56 NoStaticUse
-                              Decorate 13 NoStaticUse
-                              Decorate 13 NoStaticUse
-                              Decorate 58(roll) NoStaticUse
-                              Decorate 61(destTex) NoStaticUse
                2:             TypeVoid
                3:             TypeFunction 2
                6:             TypeFloat 32
@@ -99,7 +93,7 @@ Linked compute stage:
               41:   40(fvec2) ConvertSToF 39
               43:   40(fvec2) CompositeConstruct 42 42
               44:   40(fvec2) FDiv 41 43
-              45:    6(float) ExtInst 1(GLSL.std.450) 65(Length) 44
+              45:    6(float) ExtInst 1(GLSL.std.450) 66(Length) 44
               46:    7(float) FConvert 45
                               Store 32(localCoef) 46
                               Store 49(aa) 53

@@ -289,7 +289,7 @@ spv::Decoration TranslateInterpolationDecoration(const glslang::TType& type)
     if (type.getQualifier().smooth)
         return spv::DecorationSmooth;
     if (type.getQualifier().nopersp)
-        return spv::DecorationNoperspective;
+        return spv::DecorationNoPerspective;
     else if (type.getQualifier().patch)
         return spv::DecorationPatch;
     else if (type.getQualifier().flat)
@@ -2480,11 +2480,11 @@ spv::Id TGlslangToSpvTraverser::createUnaryOperation(glslang::TOperator op, spv:
         unaryOp = spv::OpBitCount;
         break;
     case glslang::EOpFindLSB:
-        libCall = spv::GLSLstd450FindILSB;
+        libCall = spv::GLSLstd450FindILsb;
         break;
     case glslang::EOpFindMSB:
         spv::MissingFunctionality("signed vs. unsigned FindMSB");
-        libCall = spv::GLSLstd450FindSMSB;
+        libCall = spv::GLSLstd450FindSMsb;
         break;
 
     default:
@@ -2736,7 +2736,10 @@ spv::Id TGlslangToSpvTraverser::createMiscOperation(glslang::TOperator op, spv::
             libCall = spv::GLSLstd450SClamp;
         break;
     case glslang::EOpMix:
-        libCall = spv::GLSLstd450Mix;
+        if (isFloat)
+            libCall = spv::GLSLstd450FMix;
+        else
+            libCall = spv::GLSLstd450IMix;
         break;
     case glslang::EOpStep:
         libCall = spv::GLSLstd450Step;
@@ -2886,9 +2889,6 @@ spv::Id TGlslangToSpvTraverser::getSymbolId(const glslang::TIntermSymbol* symbol
     spv::BuiltIn builtIn = TranslateBuiltInDecoration(symbol->getQualifier().builtIn);
     if (builtIn != spv::BadValue)
         builder.addDecoration(id, spv::DecorationBuiltIn, (int)builtIn);
-
-    if (linkageOnly)
-        builder.addDecoration(id, spv::DecorationNoStaticUse);
 
     return id;
 }

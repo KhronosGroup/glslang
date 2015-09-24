@@ -55,12 +55,8 @@ Linked fragment stage:
                               Decorate 159(mask4) RelaxedPrecision
                               Decorate 199(f) RelaxedPrecision
                               Decorate 199(f) Smooth
-                              Decorate 199(f) NoStaticUse
                               Decorate 201(v) RelaxedPrecision
-                              Decorate 201(v) NoStaticUse
                               Decorate 203(i) RelaxedPrecision
-                              Decorate 203(i) NoStaticUse
-                              Decorate 205(b) NoStaticUse
                2:             TypeVoid
                3:             TypeFunction 2
                6:             TypeInt 32 1

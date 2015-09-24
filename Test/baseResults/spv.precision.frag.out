@@ -108,10 +108,10 @@ Linked fragment stage:
                               Store 53(arg2) 54
               58:    6(float) Load 57(lowfin)
               60:    6(float) Load 59(mediumfin)
-              61:    6(float) ExtInst 1(GLSL.std.450) 66(Distance) 58 60
+              61:    6(float) ExtInst 1(GLSL.std.450) 67(Distance) 58 60
                               Store 55(d) 61
               64:   21(fvec4) Load 23(highfin)
-              65:    6(float) ExtInst 1(GLSL.std.450) 65(Length) 64
+              65:    6(float) ExtInst 1(GLSL.std.450) 66(Length) 64
                               Store 63(global_highp) 65
               68:    6(float) Load 63(global_highp)
               69:   21(fvec4) CompositeConstruct 68 68 68 68

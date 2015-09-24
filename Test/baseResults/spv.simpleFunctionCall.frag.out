@@ -23,8 +23,6 @@ Linked fragment stage:
                               Name 21  "d"
                               Decorate 12(BaseColor) Smooth
                               Decorate 16(gl_FragColor) BuiltIn FragColor
-                              Decorate 19(bigColor) NoStaticUse
-                              Decorate 21(d) NoStaticUse
                2:             TypeVoid
                3:             TypeFunction 2
                6:             TypeFloat 32

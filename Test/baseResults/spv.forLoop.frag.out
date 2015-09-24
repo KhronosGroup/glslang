@@ -81,7 +81,7 @@ Linked fragment stage:
               20:     13(int) Load 15(i)
               23:     13(int) Load 22(Count)
               25:    24(bool) SLessThan 20 23
-                              LoopMerge 18 None
+                              LoopMerge 18 17 None
                               BranchConditional 25 19 18
               19:               Label
               28:    7(fvec4)   Load 27(bigColor)
@@ -101,7 +101,7 @@ Linked fragment stage:
               41:             Label
               44:     13(int) Load 40(i)
               46:    24(bool) SLessThan 44 45
-                              LoopMerge 42 None
+                              LoopMerge 42 41 None
                               BranchConditional 46 43 42
               43:               Label
               51:     13(int)   Load 40(i)
@@ -121,7 +121,7 @@ Linked fragment stage:
               60:             Label
               63:     13(int) Load 59(i)
               64:    24(bool) SLessThan 63 45
-                              LoopMerge 61 None
+                              LoopMerge 61 60 None
                               BranchConditional 64 62 61
               62:               Label
               66:     13(int)   Load 59(i)
@@ -156,7 +156,7 @@ Linked fragment stage:
               93:     13(int) Load 89(i)
               94:     13(int) Load 22(Count)
               95:    24(bool) SLessThan 93 94
-                              LoopMerge 91 None
+                              LoopMerge 91 90 None
                               BranchConditional 95 92 91
               92:               Label
               98:    6(float)   Load 97(f)
@@ -181,7 +181,7 @@ Linked fragment stage:
              111:             Label
              114:     13(int) Load 110(i)
              116:    24(bool) SLessThan 114 115
-                              LoopMerge 112 None
+                              LoopMerge 112 111 None
                               BranchConditional 116 113 112
              113:               Label
              117:    6(float)   Load 97(f)

@@ -29,7 +29,6 @@ Linked vertex stage:
                               Name 144  "gl_VertexID"
                               Decorate 140(gl_Position) BuiltIn Position
                               Decorate 144(gl_VertexID) BuiltIn VertexId
-                              Decorate 144(gl_VertexID) NoStaticUse
                2:             TypeVoid
                3:             TypeFunction 2
                6:             TypeFloat 32

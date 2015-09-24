@@ -57,27 +57,11 @@ Linked fragment stage:
                               Decorate 53(i_f) Smooth
                               Decorate 157(i_i4) Flat
                               Decorate 312(gl_FragColor) BuiltIn FragColor
-                              Decorate 416(u_b) NoStaticUse
-                              Decorate 418(u_b2) NoStaticUse
-                              Decorate 420(u_b3) NoStaticUse
-                              Decorate 422(u_b4) NoStaticUse
-                              Decorate 424(u_i2) NoStaticUse
-                              Decorate 426(u_i3) NoStaticUse
-                              Decorate 428(u_i4) NoStaticUse
-                              Decorate 429(i_b) NoStaticUse
-                              Decorate 430(i_b2) NoStaticUse
-                              Decorate 431(i_b3) NoStaticUse
-                              Decorate 432(i_b4) NoStaticUse
                               Decorate 434(i_i2) Flat
-                              Decorate 434(i_i2) NoStaticUse
                               Decorate 436(i_i3) Flat
-                              Decorate 436(i_i3) NoStaticUse
                               Decorate 438(i_f2) Smooth
-                              Decorate 438(i_f2) NoStaticUse
                               Decorate 440(i_f3) Smooth
-                              Decorate 440(i_f3) NoStaticUse
                               Decorate 442(i_f4) Smooth
-                              Decorate 442(i_f4) NoStaticUse
                2:             TypeVoid
                3:             TypeFunction 2
                6:             TypeBool

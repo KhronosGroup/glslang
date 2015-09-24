@@ -73,23 +73,6 @@ Linked fragment stage:
                               Name 748  "d34"
                               Decorate 11(BaseColor) Smooth
                               Decorate 627(gl_FragColor) BuiltIn FragColor
-                              Decorate 732(d13) NoStaticUse
-                              Decorate 733(d19) NoStaticUse
-                              Decorate 734(d20) NoStaticUse
-                              Decorate 735(d21) NoStaticUse
-                              Decorate 736(d22) NoStaticUse
-                              Decorate 737(d23) NoStaticUse
-                              Decorate 738(d24) NoStaticUse
-                              Decorate 739(d25) NoStaticUse
-                              Decorate 740(d26) NoStaticUse
-                              Decorate 741(d27) NoStaticUse
-                              Decorate 742(d28) NoStaticUse
-                              Decorate 743(d29) NoStaticUse
-                              Decorate 744(d30) NoStaticUse
-                              Decorate 745(d31) NoStaticUse
-                              Decorate 746(d32) NoStaticUse
-                              Decorate 747(d33) NoStaticUse
-                              Decorate 748(d34) NoStaticUse
                2:             TypeVoid
                3:             TypeFunction 2
                6:             TypeFloat 32
@@ -182,7 +165,7 @@ Linked fragment stage:
                               Store 9(color) 12
                               Branch 13
               13:             Label
-                              LoopMerge 14 None
+                              LoopMerge 14 13 None
                               BranchConditional 17 15 14
               15:               Label
               18:    7(fvec4)   Load 9(color)
@@ -218,7 +201,7 @@ Linked fragment stage:
               45:    6(float) CompositeExtract 44 0
               48:    6(float) Load 47(d)
               49:    16(bool) FOrdLessThan 45 48
-                              LoopMerge 42 None
+                              LoopMerge 42 41 None
                               BranchConditional 49 43 42
               43:               Label
               52:    7(fvec4)   Load 51(bigColor)
@@ -233,7 +216,7 @@ Linked fragment stage:
               59:    6(float) CompositeExtract 58 2
               60:    6(float) Load 47(d)
               61:    16(bool) FOrdLessThan 59 60
-                              LoopMerge 56 None
+                              LoopMerge 56 55 None
                               BranchConditional 61 57 56
               57:               Label
               63:    7(fvec4)   Load 62(bigColor1_1)
@@ -260,7 +243,7 @@ Linked fragment stage:
               79:    7(fvec4) Load 9(color)
               80:    6(float) CompositeExtract 79 0
               82:    16(bool) FOrdLessThan 80 81
-                              LoopMerge 77 None
+                              LoopMerge 77 76 None
                               BranchConditional 82 78 77
               78:               Label
               83:    7(fvec4)   Load 9(color)
@@ -280,7 +263,7 @@ Linked fragment stage:
               98:    6(float) Load 97(d3)
               99:    16(bool) FOrdLessThan 96 98
              100:    16(bool) LogicalAnd 94 99
-                              LoopMerge 88 None
+                              LoopMerge 88 87 None
                               BranchConditional 100 89 88
               89:               Label
              102:    7(fvec4)   Load 101(bigColor1_2)
@@ -295,7 +278,7 @@ Linked fragment stage:
              109:    6(float) CompositeExtract 108 2
              110:    6(float) Load 97(d3)
              111:    16(bool) FOrdLessThan 109 110
-                              LoopMerge 106 None
+                              LoopMerge 106 105 None
                               BranchConditional 111 107 106
              107:               Label
              113:    7(fvec4)   Load 112(bigColor1_3)
@@ -323,7 +306,7 @@ Linked fragment stage:
              134:    127(int) Load 129(i)
              137:    127(int) Load 136(Count)
              138:    16(bool) SLessThan 134 137
-                              LoopMerge 132 None
+                              LoopMerge 132 131 None
                               BranchConditional 138 133 132
              133:               Label
              140:    7(fvec4)   Load 139(bigColor2)
@@ -338,7 +321,7 @@ Linked fragment stage:
                               Branch 146
              146:             Label
              149:    16(bool) Phi 17 132 161 148
-                              LoopMerge 147 None
+                              LoopMerge 147 146 None
                               Branch 150
              150:             Label
                               SelectionMerge 148 None
@@ -364,7 +347,7 @@ Linked fragment stage:
              163:             Label
              166:    127(int) Load 162(i)
              168:    16(bool) SLessThan 166 167
-                              LoopMerge 164 None
+                              LoopMerge 164 163 None
                               BranchConditional 168 165 164
              165:               Label
              169:    6(float)   Load 97(d3)
@@ -384,7 +367,7 @@ Linked fragment stage:
              178:             Label
              181:    127(int) Load 177(i)
              183:    16(bool) SLessThan 181 182
-                              LoopMerge 179 None
+                              LoopMerge 179 178 None
                               BranchConditional 183 180 179
              180:               Label
              184:    7(fvec4)   Load 9(color)
@@ -437,7 +420,7 @@ Linked fragment stage:
              216:             Label
              219:    127(int) Load 215(i)
              221:    16(bool) SLessThan 219 220
-                              LoopMerge 217 None
+                              LoopMerge 217 216 None
                               BranchConditional 221 218 217
              218:               Label
              222:    7(fvec4)   Load 9(color)
@@ -472,7 +455,7 @@ Linked fragment stage:
              241:             Label
              244:    127(int) Load 240(i)
              245:    16(bool) SLessThan 244 167
-                              LoopMerge 242 None
+                              LoopMerge 242 241 None
                               BranchConditional 245 243 242
              243:               Label
              246:    6(float)   Load 97(d3)
@@ -510,7 +493,7 @@ Linked fragment stage:
              269:             Label
              272:    127(int) Load 268(i)
              273:    16(bool) SLessThan 272 167
-                              LoopMerge 270 None
+                              LoopMerge 270 269 None
                               BranchConditional 273 271 270
              271:               Label
              274:    6(float)   Load 97(d3)
@@ -543,7 +526,7 @@ Linked fragment stage:
                               Branch 294
              294:             Label
              297:    16(bool) Phi 17 270 161 313 161 321
-                              LoopMerge 295 None
+                              LoopMerge 295 294 None
                               Branch 298
              298:             Label
                               SelectionMerge 296 None
@@ -601,7 +584,7 @@ Linked fragment stage:
                               Branch 335
              335:             Label
              338:    16(bool) Phi 17 295 161 356
-                              LoopMerge 336 None
+                              LoopMerge 336 335 None
                               Branch 339
              339:             Label
                               SelectionMerge 337 None
@@ -651,7 +634,7 @@ Linked fragment stage:
              374:    6(float)   CompositeExtract 373 1
              375:    6(float)   Load 365(d6)
              376:    16(bool)   FOrdLessThan 374 375
-                                LoopMerge 371 None
+                                LoopMerge 371 370 None
                                 BranchConditional 376 372 371
              372:                 Label
              378:    7(fvec4)     Load 377(bigColor6)
@@ -668,7 +651,7 @@ Linked fragment stage:
              386:    6(float)   CompositeExtract 385 2
              387:    6(float)   Load 365(d6)
              388:    16(bool)   FOrdLessThan 386 387
-                                LoopMerge 383 None
+                                LoopMerge 383 382 None
                                 BranchConditional 388 384 383
              384:                 Label
              389:    7(fvec4)     Load 377(bigColor6)
@@ -696,7 +679,7 @@ Linked fragment stage:
              406:    6(float)   CompositeExtract 405 1
              407:    6(float)   Load 365(d6)
              408:    16(bool)   FOrdLessThan 406 407
-                                LoopMerge 403 None
+                                LoopMerge 403 402 None
                                 BranchConditional 408 404 403
              404:                 Label
              409:    7(fvec4)     Load 377(bigColor6)
@@ -720,7 +703,7 @@ Linked fragment stage:
              423:    6(float)   CompositeExtract 422 2
              424:    6(float)   Load 365(d6)
              425:    16(bool)   FOrdLessThan 423 424
-                                LoopMerge 420 None
+                                LoopMerge 420 419 None
                                 BranchConditional 425 421 420
              421:                 Label
              426:    7(fvec4)     Load 377(bigColor6)
@@ -738,7 +721,7 @@ Linked fragment stage:
                               Branch 433
              433:             Label
              436:    16(bool) Phi 17 401 161 453
-                              LoopMerge 434 None
+                              LoopMerge 434 433 None
                               Branch 437
              437:             Label
                               SelectionMerge 435 None
@@ -782,7 +765,7 @@ Linked fragment stage:
                               Branch 463
              463:             Label
              466:    16(bool) Phi 17 434 161 486
-                              LoopMerge 464 None
+                              LoopMerge 464 463 None
                               Branch 467
              467:             Label
                               SelectionMerge 465 None
@@ -854,7 +837,7 @@ Linked fragment stage:
              516:    6(float) CompositeExtract 515 3
              518:    6(float) Load 517(d9)
              519:    16(bool) FOrdLessThan 516 518
-                              LoopMerge 513 None
+                              LoopMerge 513 512 None
                               BranchConditional 519 514 513
              514:               Label
              520:    6(float)   Load 517(d9)
@@ -898,7 +881,7 @@ Linked fragment stage:
              548:    6(float) CompositeExtract 547 2
              550:    6(float) Load 549(d10)
              551:    16(bool) FOrdLessThan 548 550
-                              LoopMerge 545 None
+                              LoopMerge 545 544 None
                               BranchConditional 551 546 545
              546:               Label
              552:    7(fvec4)   Load 9(color)
@@ -956,7 +939,7 @@ Linked fragment stage:
              595:    7(fvec4) Load 9(color)
              596:    6(float) CompositeExtract 595 0
              598:    16(bool) FOrdLessThan 596 597
-                              LoopMerge 593 None
+                              LoopMerge 593 592 None
                               BranchConditional 598 594 593
              594:               Label
              600:    7(fvec4)   Load 599(bigColor8)
@@ -1003,7 +986,7 @@ Linked fragment stage:
              633:    6(float) CompositeExtract 632 0
              635:    6(float) Load 634(d14)
              636:    16(bool) FOrdLessThan 633 635
-                              LoopMerge 630 None
+                              LoopMerge 630 629 None
                               BranchConditional 636 631 630
              631:               Label
              637:    7(fvec4)   Load 9(color)
@@ -1033,7 +1016,7 @@ Linked fragment stage:
              656:    6(float) CompositeExtract 655 3
              658:    6(float) Load 657(d16)
              659:    16(bool) FOrdLessThan 656 658
-                              LoopMerge 653 None
+                              LoopMerge 653 652 None
                               BranchConditional 659 654 653
              654:               Label
              660:    7(fvec4)   Load 9(color)
@@ -1055,7 +1038,7 @@ Linked fragment stage:
              674:    6(float) Load 97(d3)
              675:    16(bool) FOrdLessThan 673 674
              676:    16(bool) LogicalAnd 671 675
-                              LoopMerge 666 None
+                              LoopMerge 666 665 None
                               BranchConditional 676 667 666
              667:               Label
              677:    7(fvec4)   Load 101(bigColor1_2)
@@ -1076,7 +1059,7 @@ Linked fragment stage:
                               Branch 687
              687:             Label
              690:    16(bool) Phi 17 666 161 705
-                              LoopMerge 688 None
+                              LoopMerge 688 687 None
                               Branch 691
              691:             Label
                               SelectionMerge 689 None
@@ -1112,7 +1095,7 @@ Linked fragment stage:
              714:    6(float) CompositeExtract 713 1
              715:    6(float) Load 657(d16)
              716:    16(bool) FOrdLessThan 714 715
-                              LoopMerge 711 None
+                              LoopMerge 711 710 None
                               BranchConditional 716 712 711
              712:               Label
              717:    7(fvec4)   Load 9(color)

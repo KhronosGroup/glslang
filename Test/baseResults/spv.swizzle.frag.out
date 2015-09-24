@@ -30,7 +30,6 @@ Linked fragment stage:
                               Name 110  "blend"
                               Decorate 29(t) Smooth
                               Decorate 69(gl_FragColor) BuiltIn FragColor
-                              Decorate 110(blend) NoStaticUse
                2:             TypeVoid
                3:             TypeFunction 2
                6:             TypeFloat 32
@@ -138,7 +137,7 @@ Linked fragment stage:
               76:   10(fvec4) FMul 74 75
               77:   10(fvec4) Load 22(w_flow)
               78:   10(fvec4) FMul 76 77
-              79:   10(fvec4) ExtInst 1(GLSL.std.450) 46(Mix) 70 71 78
+              79:   10(fvec4) ExtInst 1(GLSL.std.450) 46(FMix) 70 71 78
                               Store 69(gl_FragColor) 79
               82:   27(fvec2) Load 29(t)
                               Store 81(c) 82

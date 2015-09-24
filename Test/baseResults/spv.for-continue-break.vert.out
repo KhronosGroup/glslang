@@ -24,9 +24,7 @@ Linked vertex stage:
                               Name 46  "gl_VertexID"
                               Name 47  "gl_InstanceID"
                               Decorate 46(gl_VertexID) BuiltIn VertexId
-                              Decorate 46(gl_VertexID) NoStaticUse
                               Decorate 47(gl_InstanceID) BuiltIn InstanceId
-                              Decorate 47(gl_InstanceID) NoStaticUse
                2:             TypeVoid
                3:             TypeFunction 2
                6:             TypeInt 32 1
@@ -57,7 +55,7 @@ Linked vertex stage:
               10:             Label
               13:      6(int) Load 8(i)
               16:    15(bool) SLessThan 13 14
-                              LoopMerge 11 None
+                              LoopMerge 11 10 None
                               BranchConditional 16 12 11
               12:               Label
                                 Store 17(A) 18

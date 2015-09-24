@@ -61,7 +61,6 @@ Linked geometry stage:
                               Decorate 68(toFragment) Block
                               Decorate 68(toFragment) Stream 3
                               Decorate 70(toF) Stream 3
-                              Decorate 70(toF) NoStaticUse
                2:             TypeVoid
                3:             TypeFunction 2
                6:             TypeFloat 32

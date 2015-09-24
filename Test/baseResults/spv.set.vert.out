@@ -29,11 +29,8 @@ Linked vertex stage:
                               Decorate 12(setBufInst) Binding 8
                               Decorate 21(sampler) DescriptorSet 4
                               Decorate 21(sampler) Binding 7
-                              Decorate 21(sampler) NoStaticUse
                               Decorate 23(gl_VertexID) BuiltIn VertexId
-                              Decorate 23(gl_VertexID) NoStaticUse
                               Decorate 24(gl_InstanceID) BuiltIn InstanceId
-                              Decorate 24(gl_InstanceID) NoStaticUse
                2:             TypeVoid
                3:             TypeFunction 2
                6:             TypeFloat 32

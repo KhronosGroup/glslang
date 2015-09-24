@@ -41,8 +41,6 @@ Linked fragment stage:
                               Name 176  "usampCubeA"
                               Name 206  "sampBuf"
                               Name 210  "sampRect"
-                              Decorate 206(sampBuf) NoStaticUse
-                              Decorate 210(sampRect) NoStaticUse
                2:             TypeVoid
                3:             TypeFunction 2
                6:             TypeFloat 32

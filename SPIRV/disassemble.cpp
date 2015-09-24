@@ -48,14 +48,16 @@
 #include <sstream>
 #include <cstring>
 
+namespace spv {
+    // Include C-based headers that don't have a namespace
+    #include "SPIRV/GLSL.std.450.h"
+}
+const char* GlslStd450DebugNames[spv::GLSLstd450Count];
+
 #include "disassemble.h"
 #include "doc.h"
 
 namespace spv {
-
-#include "GLSL.std.450.h"
-
-const char* GlslStd450DebugNames[spv::GLSLstd450Count];
 
 void Kill(std::ostream& out, const char* message)
 {
@@ -447,12 +449,13 @@ void SpirvStream::disassembleInstruction(Id resultId, Id /*typeId*/, Op opCode, 
                 }
                 unsigned entrypoint = stream[word - 1];
                 if (extInstSet == GLSL450Inst) {
-                    if (entrypoint < spv::GLSLstd450Count) {
+                    if (entrypoint < GLSLstd450Count) {
                         out << "(" << GlslStd450DebugNames[entrypoint] << ")";
                     }
                 }
             }
             break;
+        case OperandOptionalLiteralString:
         case OperandLiteralString:
             disassembleString();
             return;
@@ -508,9 +511,9 @@ void GLSLstd450GetDebugNames(const char** names)
     names[GLSLstd450Exp2]                    = "Exp2";
     names[GLSLstd450Log2]                    = "Log2";
     names[GLSLstd450Sqrt]                    = "Sqrt";
-    names[GLSLstd450InverseSqrt]             = "Inversesqrt";
+    names[GLSLstd450InverseSqrt]             = "InverseSqrt";
     names[GLSLstd450Determinant]             = "Determinant";
-    names[GLSLstd450MatrixInverse]           = "Inverse";
+    names[GLSLstd450MatrixInverse]           = "MatrixInverse";
     names[GLSLstd450Modf]                    = "Modf";
     names[GLSLstd450ModfStruct]              = "ModfStruct";
     names[GLSLstd450FMin]                    = "FMin";
@@ -522,9 +525,10 @@ void GLSLstd450GetDebugNames(const char** names)
     names[GLSLstd450FClamp]                  = "FClamp";
     names[GLSLstd450SClamp]                  = "SClamp";
     names[GLSLstd450UClamp]                  = "UClamp";
-    names[GLSLstd450Mix]                     = "Mix";
+    names[GLSLstd450FMix]                    = "FMix";
+    names[GLSLstd450IMix]                    = "IMix";
     names[GLSLstd450Step]                    = "Step";
-    names[GLSLstd450SmoothStep]              = "Smoothstep";
+    names[GLSLstd450SmoothStep]              = "SmoothStep";
     names[GLSLstd450Fma]                     = "Fma";
     names[GLSLstd450Frexp]                   = "Frexp";
     names[GLSLstd450FrexpStruct]             = "FrexpStruct";
@@ -545,15 +549,12 @@ void GLSLstd450GetDebugNames(const char** names)
     names[GLSLstd450Distance]                = "Distance";
     names[GLSLstd450Cross]                   = "Cross";
     names[GLSLstd450Normalize]               = "Normalize";
-    names[GLSLstd450FaceForward]             = "Faceforward";
+    names[GLSLstd450FaceForward]             = "FaceForward";
     names[GLSLstd450Reflect]                 = "Reflect";
     names[GLSLstd450Refract]                 = "Refract";
-    names[GLSLstd450AddCarry]                = "UaddCarry";
-    names[GLSLstd450SubBorrow]               = "UsubBorrow";
-    names[GLSLstd450MulExtended]             = "UmulExtended";
-    names[GLSLstd450FindILSB]                = "FindILsb";
-    names[GLSLstd450FindSMSB]                = "FindSMsb";
-    names[GLSLstd450FindUMSB]                = "FindUMsb";
+    names[GLSLstd450FindILsb]                = "FindILsb";
+    names[GLSLstd450FindSMsb]                = "FindSMsb";
+    names[GLSLstd450FindUMsb]                = "FindUMsb";
     names[GLSLstd450InterpolateAtCentroid]   = "InterpolateAtCentroid";
     names[GLSLstd450InterpolateAtSample]     = "InterpolateAtSample";
     names[GLSLstd450InterpolateAtOffset]     = "InterpolateAtOffset";
