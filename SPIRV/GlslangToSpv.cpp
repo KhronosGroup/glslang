@@ -166,7 +166,7 @@ spv::ExecutionModel TranslateExecutionModel(EShLanguage stage)
     case EShLangFragment:         return spv::ExecutionModelFragment;
     case EShLangCompute:          return spv::ExecutionModelGLCompute;
     default:
-        spv::MissingFunctionality("GLSL stage");
+        assert(0);
         return spv::ExecutionModelFragment;
     }
 }
@@ -193,7 +193,7 @@ spv::StorageClass TranslateStorageClass(const glslang::TType& type)
         case glslang::EvqConstReadOnly: return spv::StorageClassFunction;
         case glslang::EvqTemporary:     return spv::StorageClassFunction;
         default: 
-            spv::MissingFunctionality("unknown glslang storage class");
+            assert(0);
             return spv::StorageClassFunction;
         }
     }
@@ -210,7 +210,7 @@ spv::Dim TranslateDimensionality(const glslang::TSampler& sampler)
     case glslang::EsdRect:   return spv::DimRect;
     case glslang::EsdBuffer: return spv::DimBuffer;
     default:
-        spv::MissingFunctionality("unknown sampler dimension");
+        assert(0);
         return spv::Dim2D;
     }
 }
@@ -237,7 +237,7 @@ spv::Decoration TranslateBlockDecoration(const glslang::TType& type)
         case glslang::EvqVaryingIn:    return spv::DecorationBlock;
         case glslang::EvqVaryingOut:   return spv::DecorationBlock;
         default:
-            spv::MissingFunctionality("kind of block");
+            assert(0);
             break;
         }
     }
@@ -272,11 +272,10 @@ spv::Decoration TranslateLayoutDecoration(const glslang::TType& type)
                 }
             case glslang::EvqVaryingIn:
             case glslang::EvqVaryingOut:
-                if (type.getQualifier().layoutPacking != glslang::ElpNone)
-                    spv::MissingFunctionality("in/out block layout");
+                assert(type.getQualifier().layoutPacking == glslang::ElpNone);
                 return (spv::Decoration)spv::BadValue;
             default:
-                spv::MissingFunctionality("block storage qualification");
+                assert(0);
                 return (spv::Decoration)spv::BadValue;
             }
         }
@@ -598,8 +597,7 @@ bool TGlslangToSpvTraverser::visitBinary(glslang::TVisit /* visit */, glslang::T
                                                node->getType().getBasicType());
 
                 // these all need their counterparts in createBinaryOperation()
-                if (rValue == 0)
-                    spv::MissingFunctionality("createBinaryOperation");
+                assert(rValue != spv::NoResult);
             }
 
             // store the result
@@ -619,20 +617,13 @@ bool TGlslangToSpvTraverser::visitBinary(glslang::TVisit /* visit */, glslang::T
 
             // Add the next element in the chain
 
-            int index = 0;
-            if (node->getRight()->getAsConstantUnion() == 0)
-                spv::MissingFunctionality("direct index without a constant node");
-            else 
-                index = node->getRight()->getAsConstantUnion()->getConstArray()[0].getIConst();
-
+            int index = node->getRight()->getAsConstantUnion()->getConstArray()[0].getIConst();
             if (node->getLeft()->getBasicType() == glslang::EbtBlock && node->getOp() == glslang::EOpIndexDirectStruct) {
                 // This may be, e.g., an anonymous block-member selection, which generally need
                 // index remapping due to hidden members in anonymous blocks.
                 std::vector<int>& remapper = memberRemapper[node->getLeft()->getType().getStruct()];
-                if (remapper.size() == 0)
-                    spv::MissingFunctionality("block without member remapping");
-                else
-                    index = remapper[index];
+                assert(remapper.size() > 0);
+                index = remapper[index];
             }
 
             if (! node->getLeft()->getType().isArray() &&
@@ -710,7 +701,7 @@ bool TGlslangToSpvTraverser::visitBinary(glslang::TVisit /* visit */, glslang::T
                                    node->getLeft()->getType().getBasicType());
 
     if (! result) {
-        spv::MissingFunctionality("glslang binary operation");
+        spv::MissingFunctionality("unknown glslang binary operation");
     } else {
         builder.clearAccessChain();
         builder.setAccessChainRValue(result);
@@ -806,8 +797,7 @@ bool TGlslangToSpvTraverser::visitUnary(glslang::TVisit /* visit */, glslang::TI
             spv::Id result = createBinaryOperation(op, TranslatePrecisionDecoration(node->getType()), 
                                                      convertGlslangToSpvType(node->getType()), operand, one, 
                                                      node->getType().getBasicType());
-            if (result == 0)
-                spv::MissingFunctionality("createBinaryOperation for unary");
+            assert(result != spv::NoResult);
 
             // The result of operation is always stored, but conditionally the
             // consumed result.  The consumed result is always an r-value.
@@ -830,7 +820,7 @@ bool TGlslangToSpvTraverser::visitUnary(glslang::TVisit /* visit */, glslang::TI
         return false;
 
     default:
-        spv::MissingFunctionality("glslang unary");
+        spv::MissingFunctionality("unknown glslang unary");
         break;
     }
 
@@ -934,13 +924,7 @@ bool TGlslangToSpvTraverser::visitAggregate(glslang::TVisit visit, glslang::TInt
     {
         if (node->isUserDefined())
             result = handleUserFunctionCall(node);
-
-        if (! result) {
-            spv::MissingFunctionality("glslang function call");
-            glslang::TConstUnionArray emptyConsts;
-            int nextConst = 0;
-            result = createSpvConstant(node->getType(), emptyConsts, nextConst);
-        }
+        assert(result);
         builder.clearAccessChain();
         builder.setAccessChainRValue(result);
 
@@ -1100,9 +1084,7 @@ bool TGlslangToSpvTraverser::visitAggregate(glslang::TVisit visit, glslang::TInt
                                        left->getType().getBasicType(), reduceComparison);
 
         // code above should only make binOp that exists in createBinaryOperation
-        if (result == 0)
-            spv::MissingFunctionality("createBinaryOperation for aggregate");
-
+        assert(result != spv::NoResult);
         builder.clearAccessChain();
         builder.setAccessChainRValue(result);
 
@@ -1178,7 +1160,7 @@ bool TGlslangToSpvTraverser::visitAggregate(glslang::TVisit visit, glslang::TInt
         return false;
 
     if (! result) {
-        spv::MissingFunctionality("glslang aggregate");
+        spv::MissingFunctionality("unknown glslang aggregate");
         return true;
     } else {
         builder.clearAccessChain();
@@ -1354,7 +1336,7 @@ bool TGlslangToSpvTraverser::visitBranch(glslang::TVisit /* visit */, glslang::T
         break;
 
     default:
-        spv::MissingFunctionality("branch type");
+        assert(0);
         break;
     }
 
@@ -1389,7 +1371,7 @@ spv::Id TGlslangToSpvTraverser::getSampledType(const glslang::TSampler& sampler)
         case glslang::EbtInt:      return builder.makeIntType(32);
         case glslang::EbtUint:     return builder.makeUintType(32);
         default:
-            spv::MissingFunctionality("sampled type");
+            assert(0);
             return builder.makeFloatType(32);
     }
 }
@@ -1410,8 +1392,7 @@ spv::Id TGlslangToSpvTraverser::convertGlslangToSpvType(const glslang::TType& ty
     switch (type.getBasicType()) {
     case glslang::EbtVoid:
         spvType = builder.makeVoidType();
-        if (type.isArray())
-            spv::MissingFunctionality("array of void");
+        assert (! type.isArray());
         break;
     case glslang::EbtFloat:
         spvType = builder.makeFloatType(32);
@@ -1529,7 +1510,7 @@ spv::Id TGlslangToSpvTraverser::convertGlslangToSpvType(const glslang::TType& ty
         }
         break;
     default:
-        spv::MissingFunctionality("basic type");
+        assert(0);
         break;
     }
 
@@ -2664,7 +2645,7 @@ spv::Id TGlslangToSpvTraverser::createAtomicOperation(glslang::TOperator op, spv
         opCode = spv::OpAtomicLoad;
         break;
     default:
-        spv::MissingFunctionality("missing nested atomic");
+        assert(0);
         break;
     }
 
@@ -2906,7 +2887,7 @@ spv::Id TGlslangToSpvTraverser::createNoArgOperation(glslang::TOperator op)
         builder.createMemoryBarrier(spv::ScopeDevice, spv::MemorySemanticsWorkgroupGlobalMemoryMask);
         return 0;
     default:
-        spv::MissingFunctionality("operation with no arguments");
+        spv::MissingFunctionality("unknown operation with no arguments");
         return 0;
     }
 }
@@ -3023,7 +3004,7 @@ spv::Id TGlslangToSpvTraverser::createSpvConstant(const glslang::TType& glslangT
                 spvConsts.push_back(builder.makeBoolConstant(zero ? false : consts[nextConst].getBConst()));
                 break;
             default:
-                spv::MissingFunctionality("constant vector type");
+                assert(0);
                 break;
             }
             ++nextConst;
@@ -3049,7 +3030,7 @@ spv::Id TGlslangToSpvTraverser::createSpvConstant(const glslang::TType& glslangT
             scalar = builder.makeBoolConstant(zero ? false : consts[nextConst].getBConst());
             break;
         default:
-            spv::MissingFunctionality("constant scalar type");
+            assert(0);
             break;
         }
         ++nextConst;

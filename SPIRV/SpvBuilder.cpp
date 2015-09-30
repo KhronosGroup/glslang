@@ -418,7 +418,7 @@ Op Builder::getMostBasicTypeClass(Id typeId) const
     case OpTypePointer:
         return getMostBasicTypeClass(instr->getIdOperand(1));
     default:
-        MissingFunctionality("getMostBasicTypeClass");
+        assert(0);
         return OpTypeFloat;
     }
 }
@@ -437,7 +437,7 @@ int Builder::getNumTypeComponents(Id typeId) const
     case OpTypeMatrix:
         return instr->getImmediateOperand(1);
     default:
-        MissingFunctionality("getNumTypeComponents on non bool/int/float/vector/matrix");
+        assert(0);
         return 1;
     }
 }
@@ -465,7 +465,7 @@ Id Builder::getScalarTypeId(Id typeId) const
     case OpTypePointer:
         return getScalarTypeId(getContainedTypeId(typeId));
     default:
-        MissingFunctionality("getScalarTypeId");
+        assert(0);
         return NoResult;
     }
 }
@@ -488,7 +488,7 @@ Id Builder::getContainedTypeId(Id typeId, int member) const
     case OpTypeStruct:
         return instr->getIdOperand(member);
     default:
-        MissingFunctionality("getContainedTypeId");
+        assert(0);
         return NoResult;
     }
 }
@@ -651,7 +651,7 @@ Id Builder::makeCompositeConstant(Id typeId, std::vector<Id>& members)
     case OpTypeMatrix:
         break;
     default:
-        MissingFunctionality("Constant composite type in Builder");
+        assert(0);
         return makeFloatConstant(0.0);
     }
 
@@ -840,25 +840,14 @@ Id Builder::createVariable(StorageClass storageClass, Id type, const char* name)
     inst->addImmediateOperand(storageClass);
 
     switch (storageClass) {
-    case StorageClassUniformConstant:
-    case StorageClassUniform:
-    case StorageClassInput:
-    case StorageClassOutput:
-    case StorageClassWorkgroupLocal:
-    case StorageClassPrivateGlobal:
-    case StorageClassWorkgroupGlobal:
-    case StorageClassAtomicCounter:
-        constantsTypesGlobals.push_back(inst);
-        module.mapInstruction(inst);
-        break;
-
     case StorageClassFunction:
         // Validation rules require the declaration in the entry block
         buildPoint->getParent().addLocalVariable(inst);
         break;
 
     default:
-        MissingFunctionality("storage class in createVariable");
+        constantsTypesGlobals.push_back(inst);
+        module.mapInstruction(inst);
         break;
     }
 
@@ -1336,8 +1325,12 @@ Id Builder::createTextureQueryCall(Op opCode, const TextureParameters& parameter
         case Dim3D:
             numComponents = 3;
             break;
+        case DimInputTarget:
+            MissingFunctionality("input-attachment dim");
+            break;
+
         default:
-            MissingFunctionality("texture query dimensionality");
+            assert(0);
             break;
         }
         if (isArrayedImageType(getImageType(parameters.sampler)))
@@ -1357,7 +1350,8 @@ Id Builder::createTextureQueryCall(Op opCode, const TextureParameters& parameter
         resultType = makeIntType(32);
         break;
     default:
-        MissingFunctionality("Texture query op code");
+        assert(0);
+        break;
     }
 
     Instruction* query = new Instruction(getUniqueId(), resultType, opCode);
@@ -1370,57 +1364,6 @@ Id Builder::createTextureQueryCall(Op opCode, const TextureParameters& parameter
 
     return query->getResultId();
 }
-
-// Comments in header
-//Id Builder::createSamplePositionCall(Decoration precision, Id returnType, Id sampleIdx)
-//{
-//    // Return type is only flexible type
-//    Function* opCode = (fSamplePosition, returnType);
-//
-//    Instruction* instr = (opCode, sampleIdx);
-//    setPrecision(instr, precision);
-//
-//    return instr;
-//}
-
-// Comments in header
-//Id Builder::createBitFieldExtractCall(Decoration precision, Id id, Id offset, Id bits, bool isSigned)
-//{
-//    Op opCode = isSigned ? sBitFieldExtract
-//                                               : uBitFieldExtract;
-//
-//    if (isScalar(offset) == false || isScalar(bits) == false)
-//        MissingFunctionality("bitFieldExtract operand types");
-//
-//    // Dest and value are matching flexible types
-//    Function* opCode = (opCode, id->getType(), id->getType());
-//
-//    assert(opCode);
-//
-//    Instruction* instr = (opCode, id, offset, bits);
-//    setPrecision(instr, precision);
-//
-//    return instr;
-//}
-
-// Comments in header
-//Id Builder::createBitFieldInsertCall(Decoration precision, Id base, Id insert, Id offset, Id bits)
-//{
-//    Op opCode = bitFieldInsert;
-//
-//    if (isScalar(offset) == false || isScalar(bits) == false)
-//        MissingFunctionality("bitFieldInsert operand types");
-//
-//    // Dest, base, and insert are matching flexible types
-//    Function* opCode = (opCode, base->getType(), base->getType(), base->getType());
-//
-//    assert(opCode);
-//
-//    Instruction* instr = (opCode, base, insert, offset, bits);
-//    setPrecision(instr, precision);
-//
-//    return instr;
-//}
 
 // Comments in header
 Id Builder::createCompare(Decoration precision, Id value1, Id value2, bool equal)
@@ -1500,115 +1443,6 @@ Id Builder::createCompare(Decoration precision, Id value1, Id value2, bool equal
     //return result;
 }
 
-// Comments in header
-//Id Builder::createOperation(Decoration precision, Op opCode, Id operand)
-//{
-//    Op* opCode = 0;
-//
-//    // Handle special return types here.  Things that don't have same result type as parameter
-//    switch (opCode) {
-//    case fIsNan:
-//    case fIsInf:
-//        break;
-//    case fFloatBitsToInt:
-//        break;
-//    case fIntBitsTofloat:
-//        break;
-//    case fPackSnorm2x16:
-//    case fPackUnorm2x16:
-//    case fPackHalf2x16:
-//        break;
-//    case fUnpackUnorm2x16:
-//    case fUnpackSnorm2x16:
-//    case fUnpackHalf2x16:
-//        break;
-//
-//    case fFrexp:
-//    case fLdexp:
-//    case fPackUnorm4x8:
-//    case fPackSnorm4x8:
-//    case fUnpackUnorm4x8:
-//    case fUnpackSnorm4x8:
-//    case fPackDouble2x32:
-//    case fUnpackDouble2x32:
-//        break;
-//    case fLength:
-//       // scalar result type
-//       break;
-//    case any:
-//    case all:
-//        // fixed result type
-//        break;
-//    case fModF:
-//        // modf() will return a struct that the caller must decode
-//        break;
-//    default:
-//        // Unary operations that have operand and dest with same flexible type
-//        break;
-//    }
-//
-//    assert(opCode);
-//
-//    Instruction* instr = (opCode, operand);
-//    setPrecision(instr, precision);
-//
-//    return instr;
-//}
-//
-//// Comments in header
-//Id Builder::createOperation(Decoration precision, Op opCode, Id operand0, Id operand1)
-//{
-//    Function* opCode = 0;
-//
-//    // Handle special return types here.  Things that don't have same result type as parameter
-//    switch (opCode) {
-//    case fDistance:
-//    case fDot2:
-//    case fDot3:
-//    case fDot4:
-//        // scalar result type
-//        break;
-//    case fStep:
-//        // first argument can be scalar, return and second argument match
-//        break;
-//    case fSmoothStep:
-//        // first argument can be scalar, return and second argument match
-//        break;
-//    default:
-//        // Binary operations that have operand and dest with same flexible type
-//        break;
-//    }
-//
-//    assert(opCode);
-//
-//    Instruction* instr = (opCode, operand0, operand1);
-//    setPrecision(instr, precision);
-//
-//    return instr;
-//}
-//
-//Id Builder::createOperation(Decoration precision, Op opCode, Id operand0, Id operand1, Id operand2)
-//{
-//    Function* opCode;
-//
-//    // Handle special return types here.  Things that don't have same result type as parameter
-//    switch (opCode) {
-//    case fSmoothStep:
-//        // first argument can be scalar, return and second argument match
-//        break;
-//    default:
-//        // Use operand0 type as result type
-//        break;
-//    }
-//
-//    assert(opCode);
-//
-//    Instruction* instr = (opCode, operand0, operand1, operand2);
-//    setPrecision(instr, precision);
-//
-//    return instr;
-//}
-
 // OpCompositeConstruct
 Id Builder::createCompositeConstruct(Id typeId, std::vector<Id>& constituents)
 {
@@ -1637,11 +1471,8 @@ Id Builder::createConstructor(Decoration precision, const std::vector<Id>& sourc
     Id scalarTypeId = getScalarTypeId(resultTypeId);
     std::vector<Id> constituents;  // accumulate the arguments for OpCompositeConstruct
     for (unsigned int i = 0; i < sources.size(); ++i) {
-        if (isAggregate(sources[i]))
-            MissingFunctionality("aggregate in vector constructor");
-
+        assert(! isAggregate(sources[i]));
         unsigned int sourceSize = getNumComponents(sources[i]);
-
         unsigned int sourcesToUse = sourceSize;
         if (sourcesToUse + targetComponent > numTargetComponents)
             sourcesToUse = numTargetComponents - targetComponent;
