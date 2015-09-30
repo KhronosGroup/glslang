@@ -333,7 +333,7 @@ Linked vertex stage:
              244:    7(ivec4) CompositeInsert 242 243 0
                               Store 9(iout) 244
              245:   24(ivec2) Load 26(u2)
-             246:  145(ivec2) ExtInst 1(GLSL.std.450) 74(FindSMsb) 245
+             246:  145(ivec2) ExtInst 1(GLSL.std.450) 75(FindUMsb) 245
              247:    7(ivec4) Load 9(iout)
              248:  145(ivec2) VectorShuffle 247 247 0 1
              249:  145(ivec2) IAdd 248 246
