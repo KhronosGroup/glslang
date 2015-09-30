@@ -1075,21 +1075,6 @@ bool TGlslangToSpvTraverser::visitAggregate(glslang::TVisit visit, glslang::TInt
         atomic = true;
         break;
 
-    case glslang::EOpAddCarry:
-    case glslang::EOpSubBorrow:
-    case glslang::EOpUMulExtended:
-    case glslang::EOpIMulExtended:
-    case glslang::EOpBitfieldExtract:
-    case glslang::EOpBitfieldInsert:
-        spv::MissingFunctionality("integer aggregate");
-        break;
-
-    case glslang::EOpFma:
-    case glslang::EOpFrexp:
-    case glslang::EOpLdexp:
-        spv::MissingFunctionality("fma/frexp/ldexp aggregate");
-        break;
-
     default:
         break;
     }
@@ -1136,7 +1121,7 @@ bool TGlslangToSpvTraverser::visitAggregate(glslang::TVisit visit, glslang::TInt
         // special case l-value operands; there are just a few
         bool lvalue = false;
         switch (node->getOp()) {
-        //case glslang::EOpFrexp:
+        case glslang::EOpFrexp:
         case glslang::EOpModf:
             if (arg == 1)
                 lvalue = true;
@@ -1152,9 +1137,16 @@ bool TGlslangToSpvTraverser::visitAggregate(glslang::TVisit visit, glslang::TInt
             if (arg == 0)
                 lvalue = true;
             break;
-        //case glslang::EOpUAddCarry:
-        //case glslang::EOpUSubBorrow:
-        //case glslang::EOpUMulExtended:
+        case glslang::EOpAddCarry:
+        case glslang::EOpSubBorrow:
+            if (arg == 2)
+                lvalue = true;
+            break;
+        case glslang::EOpUMulExtended:
+        case glslang::EOpIMulExtended:
+            if (arg >= 2)
+                lvalue = true;
+            break;
         default:
             break;
         }
@@ -2250,6 +2242,7 @@ spv::Id TGlslangToSpvTraverser::createUnaryOperation(glslang::TOperator op, spv:
 {
     spv::Op unaryOp = spv::OpNop;
     int libCall = -1;
+    bool isUnsigned = typeProxy == glslang::EbtUint;
     bool isFloat = typeProxy == glslang::EbtFloat || typeProxy == glslang::EbtDouble;
 
     switch (op) {
@@ -2483,8 +2476,10 @@ spv::Id TGlslangToSpvTraverser::createUnaryOperation(glslang::TOperator op, spv:
         libCall = spv::GLSLstd450FindILsb;
         break;
     case glslang::EOpFindMSB:
-        spv::MissingFunctionality("signed vs. unsigned FindMSB");
-        libCall = spv::GLSLstd450FindSMsb;
+        if (isUnsigned)
+            libCall = spv::GLSLstd450FindUMsb;
+        else
+            libCall = spv::GLSLstd450FindSMsb;
         break;
 
     default:
@@ -2696,6 +2691,11 @@ spv::Id TGlslangToSpvTraverser::createMiscOperation(glslang::TOperator op, spv::
 
     spv::Op opCode = spv::OpNop;
     int libCall = -1;
+    int consumedOperands = operands.size();
+    spv::Id typeId0 = 0;
+    if (consumedOperands > 0)
+        typeId0 = builder.getTypeId(operands[0]);
+    spv::Id frexpIntType = 0;
 
     switch (op) {
     case glslang::EOpMin:
@@ -2764,6 +2764,52 @@ spv::Id TGlslangToSpvTraverser::createMiscOperation(glslang::TOperator op, spv::
         libCall = spv::GLSLstd450Refract;
         break;
 
+    case glslang::EOpAddCarry:
+        opCode = spv::OpIAddCarry;
+        typeId = builder.makeStructResultType(typeId0, typeId0);
+        consumedOperands = 2;
+        break;
+    case glslang::EOpSubBorrow:
+        opCode = spv::OpISubBorrow;
+        typeId = builder.makeStructResultType(typeId0, typeId0);
+        consumedOperands = 2;
+        break;
+    case glslang::EOpUMulExtended:
+        opCode = spv::OpUMulExtended;
+        typeId = builder.makeStructResultType(typeId0, typeId0);
+        consumedOperands = 2;
+        break;
+    case glslang::EOpIMulExtended:
+        opCode = spv::OpSMulExtended;
+        typeId = builder.makeStructResultType(typeId0, typeId0);
+        consumedOperands = 2;
+        break;
+    case glslang::EOpBitfieldExtract:
+        if (isUnsigned)
+            opCode = spv::OpBitFieldUExtract;
+        else
+            opCode = spv::OpBitFieldSExtract;
+        break;
+    case glslang::EOpBitfieldInsert:
+        opCode = spv::OpBitFieldInsert;
+        break;
+
+    case glslang::EOpFma:
+        libCall = spv::GLSLstd450Fma;
+        break;
+    case glslang::EOpFrexp:
+        libCall = spv::GLSLstd450FrexpStruct;
+        if (builder.getNumComponents(operands[0]) == 1)
+            frexpIntType = builder.makeIntegerType(32, true);
+        else
+            frexpIntType = builder.makeVectorType(builder.makeIntegerType(32, true), builder.getNumComponents(operands[0]));
+        typeId = builder.makeStructResultType(typeId0, frexpIntType);
+        consumedOperands = 1;
+        break;
+    case glslang::EOpLdexp:
+        libCall = spv::GLSLstd450Ldexp;
+        break;
+
     default:
         return 0;
     }
@@ -2772,7 +2818,7 @@ spv::Id TGlslangToSpvTraverser::createMiscOperation(glslang::TOperator op, spv::
     if (libCall >= 0)
         id = builder.createBuiltinCall(precision, typeId, stdBuiltins, libCall, operands);
     else {
-        switch (operands.size()) {
+        switch (consumedOperands) {
         case 0:
             // should all be handled by visitAggregate and createNoArgOperation
             assert(0);
@@ -2784,14 +2830,30 @@ spv::Id TGlslangToSpvTraverser::createMiscOperation(glslang::TOperator op, spv::
         case 2:
             id = builder.createBinOp(opCode, typeId, operands[0], operands[1]);
             break;
-        case 3:
-            id = builder.createTriOp(opCode, typeId, operands[0], operands[1], operands[2]);
-            break;
         default:
-            // These do not exist yet
-            assert(0 && "operation with more than 3 operands");
+            // anything 3 or over doesn't have l-value operands, so all should be consumed
+            assert(consumedOperands == operands.size());
+            id = builder.createOp(opCode, typeId, operands);
             break;
         }
+    }
+
+    // Decode the return types that were structures
+    switch (op) {
+    case glslang::EOpAddCarry:
+    case glslang::EOpSubBorrow:
+        builder.createStore(builder.createCompositeExtract(id, typeId0, 1), operands[2]);
+        id = builder.createCompositeExtract(id, typeId0, 0);
+        break;
+    case glslang::EOpUMulExtended:
+    case glslang::EOpIMulExtended:
+        builder.createStore(builder.createCompositeExtract(id, typeId0, 0), operands[3]);
+        builder.createStore(builder.createCompositeExtract(id, typeId0, 1), operands[2]);
+        break;
+    case glslang::EOpFrexp:
+        builder.createStore(builder.createCompositeExtract(id, frexpIntType, 1), operands[1]);
+        id = builder.createCompositeExtract(id, typeId0, 0);
+        break;
     }
 
     builder.setPrecision(id, precision);

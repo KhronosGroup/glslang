@@ -176,8 +176,15 @@ Id Builder::makeFloatType(int width)
     return type->getResultId();
 }
 
+// Make a struct without checking for duplication.
+// See makeStructResultType() for non-decorated structs
+// needed as the result of some instructions, which does
+// check for duplicates.
 Id Builder::makeStructType(std::vector<Id>& members, const char* name)
 {
+    // Don't look for previous one, because in the general case,
+    // structs can be duplicated except for decorations.
+
     // not found, make it
     Instruction* type = new Instruction(getUniqueId(), NoType, OpTypeStruct);
     for (int op = 0; op < (int)members.size(); ++op)
@@ -188,6 +195,30 @@ Id Builder::makeStructType(std::vector<Id>& members, const char* name)
     addName(type->getResultId(), name);
 
     return type->getResultId();
+}
+
+// Make a struct for the simple results of several instructions,
+// checking for duplication.
+Id Builder::makeStructResultType(Id type0, Id type1)
+{
+    // try to find it
+    Instruction* type;
+    for (int t = 0; t < (int)groupedTypes[OpTypeStruct].size(); ++t) {
+        type = groupedTypes[OpTypeStruct][t];
+        if (type->getNumOperands() != 2)
+            continue;
+        if (type->getIdOperand(0) != type0 || 
+            type->getIdOperand(1) != type1)
+            continue;
+        return type->getResultId();
+    }
+
+    // not found, make it
+    std::vector<spv::Id> members;
+    members.push_back(type0);
+    members.push_back(type1);
+
+    return makeStructType(members, "ResType");
 }
 
 Id Builder::makeVectorType(Id component, int size)

@@ -56,6 +56,7 @@ spv.matrix2.frag
 spv.newTexture.frag
 spv.nonSquare.vert
 spv.Operations.frag
+spv.intOps.vert
 spv.precision.frag
 spv.prepost.frag
 spv.qualifiers.vert

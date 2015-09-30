@@ -99,6 +99,7 @@ public:
     Id makeUintType(int width) { return makeIntegerType(width, false); }
     Id makeFloatType(int width);
     Id makeStructType(std::vector<Id>& members, const char*);
+    Id makeStructResultType(Id type0, Id type1);
     Id makeVectorType(Id component, int size);
     Id makeMatrixType(Id component, int cols, int rows);
     Id makeArrayType(Id element, unsigned size);
