@@ -1182,7 +1182,7 @@ Id Builder::createBuiltinCall(Decoration /*precision*/, Id resultType, Id builti
 
 // Accept all parameters needed to create a texture instruction.
 // Create the correct instruction based on the inputs, and make the call.
-Id Builder::createTextureCall(Decoration precision, Id resultType, bool fetch, bool proj, const TextureParameters& parameters)
+Id Builder::createTextureCall(Decoration precision, Id resultType, bool fetch, bool proj, bool gather, const TextureParameters& parameters)
 {
     static const int maxTextureArgs = 10;
     Id texArgs[maxTextureArgs] = {};
@@ -1196,6 +1196,8 @@ Id Builder::createTextureCall(Decoration precision, Id resultType, bool fetch, b
     texArgs[numArgs++] = parameters.coords;
     if (parameters.Dref)
         texArgs[numArgs++] = parameters.Dref;
+    if (parameters.comp)
+        texArgs[numArgs++] = parameters.comp;
 
     //
     // Set up the optional arguments
@@ -1219,11 +1221,10 @@ Id Builder::createTextureCall(Decoration precision, Id resultType, bool fetch, b
         xplicit = true;
     }
     if (parameters.offset) {
+        // TBD: if Offset is constant, use ImageOperandsConstOffsetMask
         mask = (ImageOperandsMask)(mask | ImageOperandsOffsetMask);
         texArgs[numArgs++] = parameters.offset;
-    }
-    // TBD: if Offset is constant, use ImageOperandsConstOffsetMask
-    if (parameters.offsets) {
+    } else if (parameters.offsets) {
         mask = (ImageOperandsMask)(mask | ImageOperandsConstOffsetsMask);
         texArgs[numArgs++] = parameters.offsets;
     }
@@ -1243,6 +1244,11 @@ Id Builder::createTextureCall(Decoration precision, Id resultType, bool fetch, b
     opCode = OpImageSampleImplicitLod;
     if (fetch) {
         opCode = OpImageFetch;
+    } else if (gather) {
+        if (parameters.Dref)
+            opCode = OpImageDrefGather;
+        else
+            opCode = OpImageGather;
     } else if (xplicit) {
         if (parameters.Dref) {
             if (proj)
@@ -1286,6 +1292,7 @@ Id Builder::createTextureCall(Decoration precision, Id resultType, bool fetch, b
         }
     }
 
+    // Build the SPIR-V instruction
     Instruction* textureInst = new Instruction(getUniqueId(), resultType, opCode);
     for (int op = 0; op < optArgNum; ++op)
         textureInst->addIdOperand(texArgs[op]);
