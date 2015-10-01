@@ -265,6 +265,10 @@ uniform writeonly imageCubeArray  CA1;
 uniform writeonly iimageCubeArray CA2;
 uniform writeonly uimageCubeArray CA3;
 
+layout(rgba16f) uniform readonly imageCubeArray  rCA1;
+layout(rgba32i) uniform readonly iimageCubeArray rCA2;
+layout(r32ui) uniform readonly uimageCubeArray rCA3;
+
 #ifdef GL_OES_texture_cube_map_array
 uniform samplerCubeArray          CA4;
 uniform samplerCubeArrayShadow    CA5;
@@ -304,6 +308,14 @@ void CAT()
     highp ivec3 s1 = imageSize(CA1);
     highp ivec3 s2 = imageSize(CA2);
     highp ivec3 s3 = imageSize(CA3);
+
+    imageStore(CA1, s3, vec4(1));
+    imageStore(CA2, s3, ivec4(1));
+    imageStore(CA3, s3, uvec4(1));
+
+    highp vec4 cl1 = imageLoad(rCA1, s3);
+    highp ivec4 cl2 = imageLoad(rCA2, s3);
+    highp uvec4 cl3 = imageLoad(rCA3, s3);
 }
 
 uniform sampler2DMSArray  bad2DMS;    // ERROR, reserved
