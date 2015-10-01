@@ -39,3 +39,8 @@ float foo()
 {
     return i1 + i2;
 }
+
+// test arrayed block
+layout(std140) uniform bi {
+    vec3 v[2];
+} bname[4];

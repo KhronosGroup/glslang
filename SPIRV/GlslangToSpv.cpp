@@ -1537,10 +1537,14 @@ spv::Id TGlslangToSpvTraverser::convertGlslangToSpvType(const glslang::TType& ty
             spvType = builder.makeArrayType(spvType, type.getOuterArraySize());
         }
 
-        // TODO: layout still needs to be done hierarchically for arrays of arrays, which 
+        // TODO: explicit layout still needs to be done hierarchically for arrays of arrays, which 
         // may still require additional "link time" support from the front-end 
         // for arrays of arrays
-        if (explicitLayout)
+
+        // We need to decorate array strides for types needing explicit layout,
+        // except for the very top if it is an array of blocks; that array is
+        // not laid out in memory in a way needing a stride.
+        if (explicitLayout && type.getBasicType() != glslang::EbtBlock)
             builder.addDecoration(spvType, spv::DecorationArrayStride, getArrayStride(type));
     }
 
