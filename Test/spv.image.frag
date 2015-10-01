@@ -51,8 +51,8 @@ void main()
     imageStore(i3D, ic3D, v);
     v += imageLoad(iCube, ic3D);
     imageStore(iCube, ic3D, v);
-    v += imageLoad(iCubeArray, ic4D);
-    imageStore(iCubeArray, ic4D, v);
+    v += imageLoad(iCubeArray, ic3D);
+    imageStore(iCubeArray, ic3D, v);
     v += imageLoad(i2DRect, ic2D);
     imageStore(i2DRect, ic2D, v);
     v += imageLoad(i1DArray, ic2D);

@@ -2024,7 +2024,11 @@ void TBuiltIns::addQueryFunctions(TSampler sampler, TString& typeName, int versi
 //
 void TBuiltIns::addImageFunctions(TSampler sampler, TString& typeName, int version, EProfile profile)
 {
-    int dims = dimMap[sampler.dim] + (sampler.arrayed ? 1 : 0);
+    int dims = dimMap[sampler.dim];
+    // most things with an array add a dimension, except for cubemaps
+    if (sampler.arrayed && sampler.dim != EsdCube)
+        ++dims;
+
     TString imageParams = typeName;
     if (dims == 1)
         imageParams.append(", int");
