@@ -1,7 +1,8 @@
 300block.frag
 ERROR: 0:10: '' : cannot nest a structure definition inside a structure or block 
 ERROR: 0:21: '' : cannot nest a structure definition inside a structure or block 
-ERROR: 0:20: 'sampler' : member of block cannot be a sampler type 
+ERROR: 0:20: 'sampler' : member of block cannot be or contain a sampler, image, or atomic_uint type 
+ERROR: 0:24: 'fbs' : member of block cannot be or contain a sampler, image, or atomic_uint type 
 ERROR: 0:45: 'variable indexing uniform block array' : not supported for this version or the enabled extensions 
 ERROR: 0:46: 'fooBlock' : cannot be used (maybe an instance name is needed) 
 ERROR: 0:46: 'fooBlock' : undeclared identifier 
@@ -15,7 +16,7 @@ ERROR: 0:55: 'barBlockArray' : cannot be used (maybe an instance name is needed)
 ERROR: 0:55: 'barBlockArray' : undeclared identifier 
 ERROR: 0:55: '*' :  wrong operand types: no operation '*' exists that takes a left-hand operand of type 'const int' and a right operand of type 'temp float' (or there is no acceptable conversion)
 ERROR: 0:58: 'fooBlock' : redefinition 
-ERROR: 16 compilation errors.  No code generated.
+ERROR: 17 compilation errors.  No code generated.
 
 
 Shader version: 300

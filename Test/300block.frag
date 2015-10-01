@@ -18,10 +18,10 @@ uniform fooBlock {
     uvec4 bv;
     uniform mat2 bm2;
     lowp isampler2D sampler;   // ERROR
-    struct T2 {           // ERROR
+    struct T2 {                // ERROR
         int a;
     } t;
-    S fbs;
+    S fbs;                     // ERROR, contains a sampler
 };
 
 uniform barBlock {

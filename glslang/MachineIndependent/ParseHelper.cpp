@@ -4981,9 +4981,8 @@ void TParseContext::declareBlock(const TSourceLoc& loc, TTypeList& typeList, con
             profileRequires(memberLoc, ~EEsProfile, 440, E_GL_ARB_enhanced_layouts, "offset on block member");
         }
 
-        TBasicType basicType = memberType.getBasicType();
-        if (basicType == EbtSampler)
-            error(memberLoc, "member of block cannot be a sampler type", typeList[member].type->getFieldName().c_str(), "");
+        if (memberType.containsOpaque())
+            error(memberLoc, "member of block cannot be or contain a sampler, image, or atomic_uint type", typeList[member].type->getFieldName().c_str(), "");
     }
 
     // This might be a redeclaration of a built-in block.  If so, redeclareBuiltinBlock() will
