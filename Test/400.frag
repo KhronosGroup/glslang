@@ -183,3 +183,5 @@ void qlod()
     lod = textureQueryLod(sampBuf, pf);     // ERROR
     lod = textureQueryLod(sampRect, pf2);   // ERROR
 }
+
+struct SKeyMem { int precise; } KeyMem;     // ERROR, keyword can't be a member

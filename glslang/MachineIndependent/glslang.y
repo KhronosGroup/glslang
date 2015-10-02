@@ -162,7 +162,6 @@ extern int yylex(YYSTYPE*, TParseContext&);
 
 %token <lex> IDENTIFIER TYPE_NAME
 %token <lex> FLOATCONSTANT DOUBLECONSTANT INTCONSTANT UINTCONSTANT BOOLCONSTANT
-%token <lex> FIELD_SELECTION
 %token <lex> LEFT_OP RIGHT_OP
 %token <lex> INC_OP DEC_OP LE_OP GE_OP EQ_OP NE_OP
 %token <lex> AND_OP OR_OP XOR_OP MUL_ASSIGN DIV_ASSIGN ADD_ASSIGN
@@ -266,7 +265,7 @@ postfix_expression
     | function_call {
         $$ = $1;
     }
-    | postfix_expression DOT FIELD_SELECTION {
+    | postfix_expression DOT IDENTIFIER {
         $$ = parseContext.handleDotDereference($3.loc, $1, *$3.string);
     }
     | postfix_expression INC_OP {

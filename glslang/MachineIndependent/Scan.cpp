@@ -598,7 +598,12 @@ int TScanContext::tokenize(TPpContext* pp, TParserToken& token)
         case PpAtomConstUint:          parserToken->sType.lex.i = ppToken.ival;       return UINTCONSTANT;
         case PpAtomConstFloat:         parserToken->sType.lex.d = ppToken.dval;       return FLOATCONSTANT;
         case PpAtomConstDouble:        parserToken->sType.lex.d = ppToken.dval;       return DOUBLECONSTANT;
-        case PpAtomIdentifier:         return tokenizeIdentifier();
+        case PpAtomIdentifier:
+        {
+            int token = tokenizeIdentifier();
+            field = false;
+            return token;
+        }
 
         case EndOfInput:               return 0;
 
@@ -623,7 +628,6 @@ int TScanContext::tokenizeIdentifier()
         return identifierOrType();
     }
     keyword = it->second;
-    field = false;
 
     switch (keyword) {
     case CONST:
@@ -1020,11 +1024,8 @@ int TScanContext::tokenizeIdentifier()
 int TScanContext::identifierOrType()
 {
     parserToken->sType.lex.string = NewPoolTString(tokenText);
-    if (field) {
-        field = false;
- 
-        return FIELD_SELECTION;
-    }
+    if (field)
+        return IDENTIFIER;
 
     parserToken->sType.lex.symbol = parseContext.symbolTable.find(*parserToken->sType.lex.string);
     if (afterType == false && parserToken->sType.lex.symbol) {

@@ -79,6 +79,13 @@ ERROR: node is still EOpNull!
 0:?     Sequence
 0:140      'lod' (temp 2-component vector of float)
 0:141      'lod' (temp 2-component vector of float)
+0:147  Function Definition: fooKeyMem( (global void)
+0:147    Function Parameters: 
+0:149    Sequence
+0:149      precise: direct index for structure (global int)
+0:149        'KeyMem' (global structure{global int precise})
+0:149        Constant:
+0:149          0 (const int)
 0:?   Linker Objects
 0:?     'inVar' (smooth in 4-component vector of float)
 0:?     'outVar' (layout(location=0 index=0 ) out 4-component vector of float)
@@ -113,6 +120,8 @@ ERROR: node is still EOpNull!
 0:?     'indexBlockI' (layout(location=26 index=0 ) out block{out int a})
 0:?     'samp1D' (uniform sampler1D)
 0:?     'samp2Ds' (uniform sampler2DShadow)
+0:?     'precise' (global int)
+0:?     'KeyMem' (global structure{global int precise})
 
 
 Linked fragment stage:
@@ -159,6 +168,13 @@ ERROR: node is still EOpNull!
 0:?     Sequence
 0:140      'lod' (temp 2-component vector of float)
 0:141      'lod' (temp 2-component vector of float)
+0:147  Function Definition: fooKeyMem( (global void)
+0:147    Function Parameters: 
+0:149    Sequence
+0:149      precise: direct index for structure (global int)
+0:149        'KeyMem' (global structure{global int precise})
+0:149        Constant:
+0:149          0 (const int)
 0:?   Linker Objects
 0:?     'inVar' (smooth in 4-component vector of float)
 0:?     'outVar' (layout(location=0 index=0 ) out 4-component vector of float)
@@ -193,4 +209,6 @@ ERROR: node is still EOpNull!
 0:?     'indexBlockI' (layout(location=26 index=0 ) out block{out int a})
 0:?     'samp1D' (uniform sampler1D)
 0:?     'samp2Ds' (uniform sampler2DShadow)
+0:?     'precise' (global int)
+0:?     'KeyMem' (global structure{global int precise})
 
