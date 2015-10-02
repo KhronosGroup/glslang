@@ -28,9 +28,9 @@ void main()
     b = s1[3](s1(17, 17.0), s1(int(w.x), w.y), s1(int(w.z), w.w));
 
     if (foo2a == foo2b)
-        v = texture2D(sampler, coord);
+        v = texture(sampler, coord);
     else
-        v = texture2D(sampler, 2.0*coord);
+        v = texture(sampler, 2.0*coord);
 
     if (u == v)
         v *= 3.0;

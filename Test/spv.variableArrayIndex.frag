@@ -40,7 +40,7 @@ void main()
     //	scale += foo2[i].f;
     //}
 
-    gl_FragColor =  scale * texture2D(sampler, coord);
+    gl_FragColor =  scale * texture(sampler, coord);
 
     vec2[3] constructed = vec2[3](coord, vec2(scale), vec2(1.0, 2.0));
     gl_FragColor += vec4(constructed[foo.i], constructed[foo.i]);

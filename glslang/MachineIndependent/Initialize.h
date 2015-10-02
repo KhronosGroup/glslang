@@ -59,8 +59,8 @@ public:
     POOL_ALLOCATOR_NEW_DELETE(GetThreadPoolAllocator())
     TBuiltIns();
     virtual ~TBuiltIns();
-    void initialize(int version, EProfile);
-	void initialize(const TBuiltInResource& resources, int version, EProfile, EShLanguage);
+    void initialize(int version, EProfile, int spv);
+	void initialize(const TBuiltInResource& resources, int version, EProfile, int spv, EShLanguage);
     const TString& getCommonString() const { return commonBuiltins; }
     const TString& getStageString(EShLanguage language) const { return stageBuiltins[language]; }
 
@@ -81,8 +81,8 @@ protected:
     int dimMap[EsdNumDims];
 };
 
-void IdentifyBuiltIns(int version, EProfile profile, EShLanguage, TSymbolTable&);
-void IdentifyBuiltIns(int version, EProfile profile, EShLanguage, TSymbolTable&, const TBuiltInResource &resources);
+void IdentifyBuiltIns(int version, EProfile profile, int spv, EShLanguage, TSymbolTable&);
+void IdentifyBuiltIns(int version, EProfile profile, int spv, EShLanguage, TSymbolTable&, const TBuiltInResource &resources);
 
 } // end namespace glslang
 

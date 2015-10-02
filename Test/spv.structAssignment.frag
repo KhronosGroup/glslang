@@ -35,5 +35,5 @@ void main()
 	else
 		locals2 = foo2;
 
-	gl_FragColor =  locals2.s1_1.f * texture2D(sampler, coord);
+	gl_FragColor =  locals2.s1_1.f * texture(sampler, coord);
 }

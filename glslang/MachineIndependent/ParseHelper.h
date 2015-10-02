@@ -65,7 +65,7 @@ typedef std::set<int> TIdSetType;
 //
 class TParseContext {
 public:
-    TParseContext(TSymbolTable&, TIntermediate&, bool parsingBuiltins, int version, EProfile, EShLanguage, TInfoSink&,
+    TParseContext(TSymbolTable&, TIntermediate&, bool parsingBuiltins, int version, EProfile, int spv, EShLanguage, TInfoSink&,
                   bool forwardCompatible = false, EShMessages messages = EShMsgDefault);
     virtual ~TParseContext();
 
@@ -85,8 +85,6 @@ public:
 
     bool relaxedErrors()    const { return (messages & EShMsgRelaxedErrors)    != 0; }
     bool suppressWarnings() const { return (messages & EShMsgSuppressWarnings) != 0; }
-    bool vulkanRules()      const { return (messages & EShMsgVulkanRules)      != 0; }
-    bool spirvRules()       const { return (messages & EShMsgSpvRules)         != 0; }
 
     void reservedErrorCheck(const TSourceLoc&, const TString&);
     void reservedPpErrorCheck(const TSourceLoc&, const char* name, const char* op);
@@ -282,6 +280,7 @@ public:
     EShLanguage language;        // vertex or fragment language
     int version;                 // version, updated by #version in the shader
     EProfile profile;            // the declared profile in the shader (core by default)
+    int spv;                     // SPIR-V version; 0 means not SPIR-V
     bool forwardCompatible;      // true if errors are to be given for use of deprecated features
 
     // Current state of parsing

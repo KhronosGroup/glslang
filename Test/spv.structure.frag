@@ -26,6 +26,6 @@ void main()
 	else
 		scale = foo2[3].s1_1[2].f[3];
 
-	gl_FragColor =  scale * texture2D(sampler, coord);
+	gl_FragColor =  scale * texture(sampler, coord);
 }
 
