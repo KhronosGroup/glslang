@@ -34,7 +34,8 @@ ERROR: 0:183: 'textureQueryLod' : no matching overloaded function found
 ERROR: 0:183: 'assign' :  cannot convert from 'const float' to 'temp 2-component vector of float'
 ERROR: 0:184: 'textureQueryLod' : no matching overloaded function found 
 ERROR: 0:184: 'assign' :  cannot convert from 'const float' to 'temp 2-component vector of float'
-ERROR: 34 compilation errors.  No code generated.
+ERROR: 0:187: '' :  syntax error
+ERROR: 35 compilation errors.  No code generated.
 
 
 Shader version: 400

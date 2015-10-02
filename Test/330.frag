@@ -140,3 +140,11 @@ void qlod()
     lod = textureQueryLod(samp1D, pf);      // ERROR, not until 400
     lod = textureQueryLod(samp2Ds, pf2);    // ERROR, not until 400
 }
+
+int precise;                // okay, not a keyword yet
+struct SKeyMem { int precise; } KeyMem; // okay, not a keyword yet
+
+void fooKeyMem()
+{
+    KeyMem.precise;
+}
