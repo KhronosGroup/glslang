@@ -1,6 +1,6 @@
 #version 130
 
-uniform sampler2D sampler;
+uniform sampler2D samp2D;
 varying vec2 coord;
 varying vec4 color;
 
@@ -68,5 +68,5 @@ void main()
 	locals2.bleh = color;
 	locals2.bleh.z = coord.y;
 
-	gl_FragColor = locals2.bleh * (localFArray[4] + locals2.s1_1.f + localArray[x] + a[x]) * texture(sampler, coord);
+	gl_FragColor = locals2.bleh * (localFArray[4] + locals2.s1_1.f + localArray[x] + a[x]) * texture(samp2D, coord);
 }

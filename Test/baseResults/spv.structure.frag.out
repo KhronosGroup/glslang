@@ -27,7 +27,7 @@ Linked fragment stage:
                               MemberName 21(lunarStruct2) 2  "s1_1"
                               Name 24  "foo2"
                               Name 46  "gl_FragColor"
-                              Name 51  "sampler"
+                              Name 51  "samp2D"
                               Name 55  "coord"
                               Name 60  "foo"
                               Decorate 46(gl_FragColor) BuiltIn FragColor
@@ -66,7 +66,7 @@ Linked fragment stage:
               48:             TypeImage 6(float) 2D sampled format:Unknown
               49:             TypeSampledImage 48
               50:             TypePointer UniformConstant 49
-     51(sampler):     50(ptr) Variable UniformConstant
+      51(samp2D):     50(ptr) Variable UniformConstant
               53:             TypeVector 6(float) 2
               54:             TypePointer Input 53(fvec2)
        55(coord):     54(ptr) Variable Input
@@ -94,7 +94,7 @@ Linked fragment stage:
                                 Branch 34
               34:             Label
               47:    6(float) Load 8(scale)
-              52:          49 Load 51(sampler)
+              52:          49 Load 51(samp2D)
               56:   53(fvec2) Load 55(coord)
               57:   16(fvec4) ImageSampleImplicitLod 52 56
               58:   16(fvec4) VectorTimesScalar 57 47

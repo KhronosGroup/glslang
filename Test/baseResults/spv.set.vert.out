@@ -19,7 +19,7 @@ Linked vertex stage:
                               Name 10  "setBuf"
                               MemberName 10(setBuf) 0  "color"
                               Name 12  "setBufInst"
-                              Name 21  "sampler"
+                              Name 21  "samp2D"
                               Name 23  "gl_VertexID"
                               Name 24  "gl_InstanceID"
                               Decorate 9(color) Smooth
@@ -27,8 +27,8 @@ Linked vertex stage:
                               Decorate 10(setBuf) BufferBlock
                               Decorate 12(setBufInst) DescriptorSet 0
                               Decorate 12(setBufInst) Binding 8
-                              Decorate 21(sampler) DescriptorSet 4
-                              Decorate 21(sampler) Binding 7
+                              Decorate 21(samp2D) DescriptorSet 4
+                              Decorate 21(samp2D) Binding 7
                               Decorate 23(gl_VertexID) BuiltIn VertexId
                               Decorate 24(gl_InstanceID) BuiltIn InstanceId
                2:             TypeVoid
@@ -46,7 +46,7 @@ Linked vertex stage:
               18:             TypeImage 6(float) 2D sampled format:Unknown
               19:             TypeSampledImage 18
               20:             TypePointer UniformConstant 19
-     21(sampler):     20(ptr) Variable UniformConstant
+      21(samp2D):     20(ptr) Variable UniformConstant
               22:             TypePointer Input 13(int)
  23(gl_VertexID):     22(ptr) Variable Input
 24(gl_InstanceID):     22(ptr) Variable Input

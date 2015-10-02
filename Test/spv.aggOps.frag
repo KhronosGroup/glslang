@@ -1,6 +1,6 @@
 #version 130
 
-uniform sampler2D sampler;
+uniform sampler2D samp2D;
 varying mediump vec2 coord;
 
 varying vec4 u, w;
@@ -28,9 +28,9 @@ void main()
     b = s1[3](s1(17, 17.0), s1(int(w.x), w.y), s1(int(w.z), w.w));
 
     if (foo2a == foo2b)
-        v = texture(sampler, coord);
+        v = texture(samp2D, coord);
     else
-        v = texture(sampler, 2.0*coord);
+        v = texture(samp2D, 2.0*coord);
 
     if (u == v)
         v *= 3.0;

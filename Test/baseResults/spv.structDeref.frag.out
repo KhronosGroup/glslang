@@ -44,7 +44,7 @@ Linked fragment stage:
                               Name 68  "foo0"
                               Name 83  "foo00"
                               Name 96  "gl_FragColor"
-                              Name 113  "sampler"
+                              Name 113  "samp2D"
                               Name 119  "foo2"
                               Decorate 61(coord) Smooth
                               Decorate 96(gl_FragColor) BuiltIn FragColor
@@ -109,7 +109,7 @@ Linked fragment stage:
              110:             TypeImage 7(float) 2D sampled format:Unknown
              111:             TypeSampledImage 110
              112:             TypePointer UniformConstant 111
-    113(sampler):    112(ptr) Variable UniformConstant
+     113(samp2D):    112(ptr) Variable UniformConstant
              118:             TypePointer UniformConstant 10(s2)
        119(foo2):    118(ptr) Variable UniformConstant
          4(main):           2 Function None 3
@@ -182,7 +182,7 @@ Linked fragment stage:
              107:     30(ptr) AccessChain 27(locals2) 32 28
              108:    7(float) Load 107
              109:    7(float) FAdd 106 108
-             114:         111 Load 113(sampler)
+             114:         111 Load 113(samp2D)
              115:   59(fvec2) Load 61(coord)
              116:   94(fvec4) ImageSampleImplicitLod 114 115
              117:   94(fvec4) VectorTimesScalar 116 109

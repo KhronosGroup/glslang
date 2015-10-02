@@ -345,8 +345,6 @@ void TScanContext::fillInKeywordMap()
     (*KeywordMap)["mat2"] =                    MAT2;
     (*KeywordMap)["mat3"] =                    MAT3;
     (*KeywordMap)["mat4"] =                    MAT4;
-    (*KeywordMap)["sampler2D"] =               SAMPLER2D;
-    (*KeywordMap)["samplerCube"] =             SAMPLERCUBE;
     (*KeywordMap)["true"] =                    BOOLCONSTANT;
     (*KeywordMap)["false"] =                   BOOLCONSTANT;
     (*KeywordMap)["attribute"] =               ATTRIBUTE;
@@ -425,6 +423,13 @@ void TScanContext::fillInKeywordMap()
     (*KeywordMap)["dvec2"] =                   DVEC2;
     (*KeywordMap)["dvec3"] =                   DVEC3;
     (*KeywordMap)["dvec4"] =                   DVEC4;
+    (*KeywordMap)["uint"] =                    UINT;
+    (*KeywordMap)["uvec2"] =                   UVEC2;
+    (*KeywordMap)["uvec3"] =                   UVEC3;
+    (*KeywordMap)["uvec4"] =                   UVEC4;
+
+    (*KeywordMap)["sampler2D"] =               SAMPLER2D;
+    (*KeywordMap)["samplerCube"] =             SAMPLERCUBE;
     (*KeywordMap)["samplerCubeArray"] =        SAMPLERCUBEARRAY;
     (*KeywordMap)["samplerCubeArrayShadow"] =  SAMPLERCUBEARRAYSHADOW;
     (*KeywordMap)["isamplerCubeArray"] =       ISAMPLERCUBEARRAY;
@@ -435,10 +440,6 @@ void TScanContext::fillInKeywordMap()
     (*KeywordMap)["isampler1D"] =              ISAMPLER1D;
     (*KeywordMap)["usampler1DArray"] =         USAMPLER1DARRAY;
     (*KeywordMap)["samplerBuffer"] =           SAMPLERBUFFER;
-    (*KeywordMap)["uint"] =                    UINT;
-    (*KeywordMap)["uvec2"] =                   UVEC2;
-    (*KeywordMap)["uvec3"] =                   UVEC3;
-    (*KeywordMap)["uvec4"] =                   UVEC4;
     (*KeywordMap)["samplerCubeShadow"] =       SAMPLERCUBESHADOW;
     (*KeywordMap)["sampler2DArray"] =          SAMPLER2DARRAY;
     (*KeywordMap)["sampler2DArrayShadow"] =    SAMPLER2DARRAYSHADOW;
@@ -467,7 +468,52 @@ void TScanContext::fillInKeywordMap()
     (*KeywordMap)["sampler2DRect"] =           SAMPLER2DRECT;
     (*KeywordMap)["sampler2DRectShadow"] =     SAMPLER2DRECTSHADOW;
     (*KeywordMap)["sampler1DArray"] =          SAMPLER1DARRAY;
+
     (*KeywordMap)["samplerExternalOES"] =      SAMPLEREXTERNALOES; // GL_OES_EGL_image_external
+
+    (*KeywordMap)["sampler"] =                 SAMPLER;
+
+    (*KeywordMap)["texture2D"] =               TEXTURE2D;
+    (*KeywordMap)["textureCube"] =             TEXTURECUBE;
+    (*KeywordMap)["textureCubeArray"] =        TEXTURECUBEARRAY;
+    (*KeywordMap)["textureCubeArrayShadow"] =  TEXTURECUBEARRAYSHADOW;
+    (*KeywordMap)["itextureCubeArray"] =       ITEXTURECUBEARRAY;
+    (*KeywordMap)["utextureCubeArray"] =       UTEXTURECUBEARRAY;
+    (*KeywordMap)["texture1DArrayShadow"] =    TEXTURE1DARRAYSHADOW;
+    (*KeywordMap)["itexture1DArray"] =         ITEXTURE1DARRAY;
+    (*KeywordMap)["utexture1D"] =              UTEXTURE1D;
+    (*KeywordMap)["itexture1D"] =              ITEXTURE1D;
+    (*KeywordMap)["utexture1DArray"] =         UTEXTURE1DARRAY;
+    (*KeywordMap)["textureBuffer"] =           TEXTUREBUFFER;
+    (*KeywordMap)["textureCubeShadow"] =       TEXTURECUBESHADOW;
+    (*KeywordMap)["texture2DArray"] =          TEXTURE2DARRAY;
+    (*KeywordMap)["texture2DArrayShadow"] =    TEXTURE2DARRAYSHADOW;
+    (*KeywordMap)["itexture2D"] =              ITEXTURE2D;
+    (*KeywordMap)["itexture3D"] =              ITEXTURE3D;
+    (*KeywordMap)["itextureCube"] =            ITEXTURECUBE;
+    (*KeywordMap)["itexture2DArray"] =         ITEXTURE2DARRAY;
+    (*KeywordMap)["utexture2D"] =              UTEXTURE2D;
+    (*KeywordMap)["utexture3D"] =              UTEXTURE3D;
+    (*KeywordMap)["utextureCube"] =            UTEXTURECUBE;
+    (*KeywordMap)["utexture2DArray"] =         UTEXTURE2DARRAY;
+    (*KeywordMap)["itexture2DRect"] =          ITEXTURE2DRECT;
+    (*KeywordMap)["utexture2DRect"] =          UTEXTURE2DRECT;
+    (*KeywordMap)["itextureBuffer"] =          ITEXTUREBUFFER;
+    (*KeywordMap)["utextureBuffer"] =          UTEXTUREBUFFER;
+    (*KeywordMap)["texture2DMS"] =             TEXTURE2DMS;
+    (*KeywordMap)["itexture2DMS"] =            ITEXTURE2DMS;
+    (*KeywordMap)["utexture2DMS"] =            UTEXTURE2DMS;
+    (*KeywordMap)["texture2DMSArray"] =        TEXTURE2DMSARRAY;
+    (*KeywordMap)["itexture2DMSArray"] =       ITEXTURE2DMSARRAY;
+    (*KeywordMap)["utexture2DMSArray"] =       UTEXTURE2DMSARRAY;
+    (*KeywordMap)["texture1D"] =               TEXTURE1D;
+    (*KeywordMap)["texture1DShadow"] =         TEXTURE1DSHADOW;
+    (*KeywordMap)["texture3D"] =               TEXTURE3D;
+    (*KeywordMap)["texture2DShadow"] =         TEXTURE2DSHADOW;
+    (*KeywordMap)["texture2DRect"] =           TEXTURE2DRECT;
+    (*KeywordMap)["texture2DRectShadow"] =     TEXTURE2DRECTSHADOW;
+    (*KeywordMap)["texture1DArray"] =          TEXTURE1DARRAY;
+
     (*KeywordMap)["noperspective"] =           NOPERSPECTIVE;
     (*KeywordMap)["smooth"] =                  SMOOTH;
     (*KeywordMap)["flat"] =                    FLAT;
@@ -956,6 +1002,52 @@ int TScanContext::tokenizeIdentifier()
         if (parseContext.symbolTable.atBuiltInLevel() || parseContext.extensionTurnedOn(E_GL_OES_EGL_image_external))
             return keyword;
         return identifierOrType();
+
+    case TEXTURE2D:
+    case TEXTURECUBE:
+    case TEXTURECUBEARRAY:
+    case TEXTURECUBEARRAYSHADOW:
+    case ITEXTURECUBEARRAY:
+    case UTEXTURECUBEARRAY:
+    case TEXTURE1DARRAYSHADOW:
+    case ITEXTURE1DARRAY:
+    case UTEXTURE1D:
+    case ITEXTURE1D:
+    case UTEXTURE1DARRAY:
+    case TEXTUREBUFFER:
+    case TEXTURECUBESHADOW:
+    case TEXTURE2DARRAY:
+    case TEXTURE2DARRAYSHADOW:
+    case ITEXTURE2D:
+    case ITEXTURE3D:
+    case ITEXTURECUBE:
+    case ITEXTURE2DARRAY:
+    case UTEXTURE2D:
+    case UTEXTURE3D:
+    case UTEXTURECUBE:
+    case UTEXTURE2DARRAY:
+    case ITEXTURE2DRECT:
+    case UTEXTURE2DRECT:
+    case ITEXTUREBUFFER:
+    case UTEXTUREBUFFER:
+    case TEXTURE2DMS:
+    case ITEXTURE2DMS:
+    case UTEXTURE2DMS:
+    case TEXTURE2DMSARRAY:
+    case ITEXTURE2DMSARRAY:
+    case UTEXTURE2DMSARRAY:
+    case TEXTURE1D:
+    case TEXTURE1DSHADOW:
+    case TEXTURE3D:
+    case TEXTURE2DSHADOW:
+    case TEXTURE2DRECT:
+    case TEXTURE2DRECTSHADOW:
+    case TEXTURE1DARRAY:
+    case SAMPLER:
+        if (parseContext.spv >= 100)
+            return keyword;
+        else
+            return identifierOrType();
 
     case NOPERSPECTIVE:
         return es30ReservedFromGLSL(130);

@@ -1,5 +1,5 @@
 #version 130
-uniform sampler2D sampler;
+uniform sampler2D samp2D;
 varying vec2 coord;
 
 struct lunarStruct1 {
@@ -26,6 +26,6 @@ void main()
 	else
 		scale = foo2[3].s1_1[2].f[3];
 
-	gl_FragColor =  scale * texture(sampler, coord);
+	gl_FragColor =  scale * texture(samp2D, coord);
 }
 

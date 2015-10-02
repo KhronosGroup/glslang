@@ -66,13 +66,15 @@ enum TSamplerDim {
     EsdNumDims
 };
 
-struct TSampler {
+struct TSampler {   // misnomer now; includes images, textures without sampler, and textures with sampler
     TBasicType type : 8;  // type returned by sampler
     TSamplerDim dim : 8;
     bool    arrayed : 1;
     bool     shadow : 1;
     bool         ms : 1;
-    bool      image : 1;
+    bool      image : 1;  // image, combined should be false
+    bool   combined : 1;  // true means texture is combined with a sampler, false means texture with no sampler
+    bool    sampler : 1;  // true means a pure sampler, other fields should be clear()
     bool   external : 1;  // GL_OES_EGL_image_external
 
     void clear()
@@ -83,29 +85,51 @@ struct TSampler {
         shadow = false;
         ms = false;
         image = false;
+        combined = false;
+        sampler = false;
         external = false;
     }
 
+    // make a combined sampler and texture
     void set(TBasicType t, TSamplerDim d, bool a = false, bool s = false, bool m = false)
     {
+        clear();
         type = t;
         dim = d;
         arrayed = a;
         shadow = s;
         ms = m;
-        image = false;
-        external = false;
+        combined = true;
     }
 
+    // make an image
     void setImage(TBasicType t, TSamplerDim d, bool a = false, bool s = false, bool m = false)
     {
+        clear();
         type = t;
         dim = d;
         arrayed = a;
         shadow = s;
         ms = m;
         image = true;
-        external = false;
+    }
+
+    // make a texture with no sampler
+    void setTexture(TBasicType t, TSamplerDim d, bool a = false, bool s = false, bool m = false)
+    {
+        clear();
+        type = t;
+        dim = d;
+        arrayed = a;
+        shadow = s;
+        ms = m;
+    }
+
+    // make a pure sampler, no texture, no image, nothing combined, the 'sampler' keyword
+    void setPureSampler()
+    {
+        clear();
+        sampler = true;
     }
 
     bool operator==(const TSampler& right) const
@@ -116,12 +140,19 @@ struct TSampler {
              shadow == right.shadow &&
                  ms == right.ms &&
               image == right.image &&
+           combined == right.combined &&
+            sampler == right.sampler &&
            external == right.external;
     }
 
     TString getString() const
     {
         TString s;
+
+        if (sampler) {
+            s.append("sampler");
+            return s;
+        }
 
         switch (type) {
         case EbtFloat:               break;
@@ -131,8 +162,10 @@ struct TSampler {
         }
         if (image)
             s.append("image");
-        else
+        else if (combined)
             s.append("sampler");
+        else
+            s.append("texture");
         if (external) {
             s.append("ExternalOES");
             return s;
