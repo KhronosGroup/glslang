@@ -125,6 +125,7 @@ public:
     bool isVector(Id resultId)      const { return isVectorType(getTypeId(resultId)); }
     bool isMatrix(Id resultId)      const { return isMatrixType(getTypeId(resultId)); }
     bool isAggregate(Id resultId)   const { return isAggregateType(getTypeId(resultId)); }
+    bool isBoolType(Id typeId)      const { return groupedTypes[OpTypeBool].size() > 0 && typeId == groupedTypes[OpTypeBool].back()->getResultId(); }
 
     bool isPointerType(Id typeId)   const { return getTypeClass(typeId) == OpTypePointer; }
     bool isScalarType(Id typeId)    const { return getTypeClass(typeId) == OpTypeFloat  || getTypeClass(typeId) == OpTypeInt || getTypeClass(typeId) == OpTypeBool; }
@@ -426,13 +427,13 @@ public:
     //
 
     struct AccessChain {
-        Id base;                     // for l-values, pointer to the base object, for r-values, the base object
+        Id base;                       // for l-values, pointer to the base object, for r-values, the base object
         std::vector<Id> indexChain;
-        Id instr;                    // the instruction that generates this access chain
-        std::vector<unsigned> swizzle;
-        Id component;                // a dynamic component index, can coexist with a swizzle, done after the swizzle
-        Id preSwizzleBaseType;       // dereferenced type, before swizzle or component is applied; NoType unless a swizzle or component is present
-        bool isRValue;
+        Id instr;                      // cache the instruction that generates this access chain
+        std::vector<unsigned> swizzle; // each std::vector element selects the next GLSL component number
+        Id component;                  // a dynamic component index, can coexist with a swizzle, done after the swizzle, NoResult if not present
+        Id preSwizzleBaseType;         // dereferenced type, before swizzle or component is applied; NoType unless a swizzle or component is present
+        bool isRValue;                 // true if 'base' is an r-value, otherwise, base is an l-value
     };
 
     //
@@ -494,8 +495,8 @@ protected:
     Id findScalarConstant(Op typeClass, Id typeId, unsigned v1, unsigned v2) const;
     Id findCompositeConstant(Op typeClass, std::vector<Id>& comps) const;
     Id collapseAccessChain();
+    void transferAccessChainSwizzle(bool dynamic);
     void simplifyAccessChainSwizzle();
-    void mergeAccessChainSwizzle();
     void createAndSetNoPredecessorBlock(const char*);
     void createBranch(Block* block);
     void createSelectionMerge(Block* mergeBlock, unsigned int control);

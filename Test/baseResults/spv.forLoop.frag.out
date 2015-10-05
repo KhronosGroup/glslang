@@ -23,8 +23,8 @@ Linked fragment stage:
                               Name 38  "sum"
                               Name 40  "i"
                               Name 50  "v4"
-                              Name 59  "i"
-                              Name 65  "tv4"
+                              Name 60  "i"
+                              Name 66  "tv4"
                               Name 83  "r"
                               Name 89  "i"
                               Name 97  "f"
@@ -57,10 +57,12 @@ Linked fragment stage:
               48:             TypeVector 47(int) 4
               49:             TypePointer UniformConstant 48(ivec4)
           50(v4):     49(ptr) Variable UniformConstant
-              70:     47(int) Constant 4
+              52:             TypePointer UniformConstant 47(int)
+              71:     47(int) Constant 4
               84:             TypeVector 6(float) 3
               96:             TypePointer Input 6(float)
            97(f):     96(ptr) Variable Input
+              99:     47(int) Constant 3
              115:     13(int) Constant 16
          4(main):           2 Function None 3
                5:             Label
@@ -68,8 +70,8 @@ Linked fragment stage:
            15(i):     14(ptr) Variable Function
          38(sum):     37(ptr) Variable Function
            40(i):     14(ptr) Variable Function
-           59(i):     14(ptr) Variable Function
-         65(tv4):      8(ptr) Variable Function
+           60(i):     14(ptr) Variable Function
+         66(tv4):      8(ptr) Variable Function
            83(r):      8(ptr) Variable Function
            89(i):     14(ptr) Variable Function
           110(i):     14(ptr) Variable Function
@@ -105,42 +107,41 @@ Linked fragment stage:
                               BranchConditional 46 43 42
               43:               Label
               51:     13(int)   Load 40(i)
-              52:   48(ivec4)   Load 50(v4)
-              53:     47(int)   VectorExtractDynamic 52 51
-              54:    6(float)   ConvertUToF 53
-              55:    6(float)   Load 38(sum)
-              56:    6(float)   FAdd 55 54
-                                Store 38(sum) 56
-              57:     13(int)   Load 40(i)
-              58:     13(int)   IAdd 57 32
-                                Store 40(i) 58
+              53:     52(ptr)   AccessChain 50(v4) 51
+              54:     47(int)   Load 53
+              55:    6(float)   ConvertUToF 54
+              56:    6(float)   Load 38(sum)
+              57:    6(float)   FAdd 56 55
+                                Store 38(sum) 57
+              58:     13(int)   Load 40(i)
+              59:     13(int)   IAdd 58 32
+                                Store 40(i) 59
                                 Branch 41
               42:             Label
-                              Store 59(i) 16
-                              Branch 60
-              60:             Label
-              63:     13(int) Load 59(i)
-              64:    24(bool) SLessThan 63 45
-                              LoopMerge 61 60 None
-                              BranchConditional 64 62 61
-              62:               Label
-              66:     13(int)   Load 59(i)
-              67:     13(int)   Load 59(i)
-              68:   48(ivec4)   Load 50(v4)
-              69:     47(int)   VectorExtractDynamic 68 67
-              71:     47(int)   IMul 69 70
-              72:    6(float)   ConvertUToF 71
-              73:    7(fvec4)   Load 65(tv4)
-              74:    7(fvec4)   VectorInsertDynamic 73 72 66
-                                Store 65(tv4) 74
-              75:     13(int)   Load 59(i)
-              76:     13(int)   IAdd 75 32
-                                Store 59(i) 76
-                                Branch 60
+                              Store 60(i) 16
+                              Branch 61
               61:             Label
+              64:     13(int) Load 60(i)
+              65:    24(bool) SLessThan 64 45
+                              LoopMerge 62 61 None
+                              BranchConditional 65 63 62
+              63:               Label
+              67:     13(int)   Load 60(i)
+              68:     13(int)   Load 60(i)
+              69:     52(ptr)   AccessChain 50(v4) 68
+              70:     47(int)   Load 69
+              72:     47(int)   IMul 70 71
+              73:    6(float)   ConvertUToF 72
+              74:     37(ptr)   AccessChain 66(tv4) 67
+                                Store 74 73
+              75:     13(int)   Load 60(i)
+              76:     13(int)   IAdd 75 32
+                                Store 60(i) 76
+                                Branch 61
+              62:             Label
               77:    6(float) Load 38(sum)
               78:    7(fvec4) CompositeConstruct 77 77 77 77
-              79:    7(fvec4) Load 65(tv4)
+              79:    7(fvec4) Load 66(tv4)
               80:    7(fvec4) FAdd 78 79
               81:    7(fvec4) Load 35(gl_FragColor)
               82:    7(fvec4) FAdd 81 80
@@ -160,9 +161,8 @@ Linked fragment stage:
                               BranchConditional 95 92 91
               92:               Label
               98:    6(float)   Load 97(f)
-              99:    7(fvec4)   Load 83(r)
-             100:    7(fvec4)   CompositeInsert 98 99 3
-                                Store 83(r) 100
+             100:     37(ptr)   AccessChain 83(r) 99
+                                Store 100 98
              101:     13(int)   Load 89(i)
              102:     13(int)   IAdd 101 32
                                 Store 89(i) 102

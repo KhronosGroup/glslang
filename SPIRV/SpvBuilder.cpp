@@ -1890,12 +1890,13 @@ void Builder::accessChainStore(Id rvalue)
 {
     assert(accessChain.isRValue == false);
 
+    transferAccessChainSwizzle(true);
     Id base = collapseAccessChain();
 
     if (accessChain.swizzle.size() && accessChain.component != NoResult)
         MissingFunctionality("simultaneous l-value swizzle and dynamic component selection");
 
-    // If swizzle exists, it is out-of-order or not full, we must load the target vector,
+    // If swizzle still exists, it is out-of-order or not full, we must load the target vector,
     // extract and insert elements to perform writeMask and/or swizzle.
     Id source = NoResult;
     if (accessChain.swizzle.size()) {
@@ -1921,8 +1922,9 @@ Id Builder::accessChainLoad(Id resultType)
     Id id;
 
     if (accessChain.isRValue) {
+        // transfer access chain, but keep it static, so we can stay in registers
+        transferAccessChainSwizzle(false);
         if (accessChain.indexChain.size() > 0) {
-            mergeAccessChainSwizzle();  // TODO: optimization: look at applying this optimization more widely
             Id swizzleBase = accessChain.preSwizzleBaseType != NoType ? accessChain.preSwizzleBaseType : resultType;
         
             // if all the accesses are constants, we can use OpCompositeExtract
@@ -1956,6 +1958,7 @@ Id Builder::accessChainLoad(Id resultType)
         } else
             id = accessChain.base;
     } else {
+        transferAccessChainSwizzle(true);
         // load through the access chain
         id = createLoad(collapseAccessChain());
     }
@@ -1985,6 +1988,7 @@ Id Builder::accessChainGetLValue()
 {
     assert(accessChain.isRValue == false);
 
+    transferAccessChainSwizzle(true);
     Id lvalue = collapseAccessChain();
 
     // If swizzle exists, it is out-of-order or not full, we must load the target vector,
@@ -2050,10 +2054,13 @@ void Builder::dump(std::vector<unsigned int>& out) const
 // Protected methods.
 //
 
+// Turn the described access chain in 'accessChain' into an instruction
+// computing its address.  This *cannot* include complex swizzles, which must
+// be handled after this is called, but it does include swizzles that select
+// an individual element, as a single address of a scalar type can be
+// computed by an OpAccessChain instruction.
 Id Builder::collapseAccessChain()
 {
-    // TODO: bring in an individual component swizzle here, so that a pointer 
-    // all the way to the component level can be created.
     assert(accessChain.isRValue == false);
 
     if (accessChain.indexChain.size() > 0) {
@@ -2065,9 +2072,12 @@ Id Builder::collapseAccessChain()
         return accessChain.instr;
     } else
         return accessChain.base;
+
+    // note that non-trivial swizzling is left pending...
 }
 
-// clear out swizzle if it is redundant
+// clear out swizzle if it is redundant, that is reselecting the same components
+// that would be present without the swizzle.
 void Builder::simplifyAccessChainSwizzle()
 {
     // If the swizzle has fewer components than the vector, it is subsetting, and must stay
@@ -2087,29 +2097,45 @@ void Builder::simplifyAccessChainSwizzle()
         accessChain.preSwizzleBaseType = NoType;
 }
 
-// clear out swizzle if it can become part of the indexes
-void Builder::mergeAccessChainSwizzle()
+// To the extent any swizzling can become part of the chain
+// of accesses instead of a post operation, make it so.
+// If 'dynamic' is true, include transfering a non-static component index,
+// otherwise, only transfer static indexes.
+//
+// Also, Boolean vectors are likely to be special.  While
+// for external storage, they should only be integer types,
+// function-local bool vectors could use sub-word indexing,
+// so keep that as a separate Insert/Extract on a loaded vector.
+void Builder::transferAccessChainSwizzle(bool dynamic)
 {
-    // is there even a chance of doing something?  Need a single-component swizzle
-    if ((accessChain.swizzle.size() > 1) ||
-        (accessChain.swizzle.size() == 0 && accessChain.component == NoResult))
+    // too complex?
+    if (accessChain.swizzle.size() > 1)
         return;
 
-    // TODO: optimization: remove this, but for now confine this to non-dynamic accesses
-    // (the above test is correct when this is removed.)
-    if (accessChain.component != NoResult)
+    // non existent?
+    if (accessChain.swizzle.size() == 0 && accessChain.component == NoResult)
         return;
 
-    // move the swizzle over to the indexes
-    if (accessChain.swizzle.size() == 1)
+    // single component...
+
+    // skip doing it for Boolean vectors
+    if (isBoolType(getContainedTypeId(accessChain.preSwizzleBaseType)))
+        return;
+
+    if (accessChain.swizzle.size() == 1) {
+        // handle static component
         accessChain.indexChain.push_back(makeUintConstant(accessChain.swizzle.front()));
-    else
+        accessChain.swizzle.clear();
+        // note, the only valid remaining dynamic access would be to this one
+        // component, so don't bother even looking at accessChain.component
+        accessChain.preSwizzleBaseType = NoType;
+        accessChain.component = NoResult;
+    } else if (dynamic && accessChain.component != NoResult) {
+        // handle dynamic component
         accessChain.indexChain.push_back(accessChain.component);
-
-    // now there is no need to track this swizzle
-    accessChain.component = NoResult;
-    accessChain.preSwizzleBaseType = NoType;
-    accessChain.swizzle.clear();
+        accessChain.preSwizzleBaseType = NoType;
+        accessChain.component = NoResult;
+    }
 }
 
 // Utility method for creating a new block and setting the insert point to

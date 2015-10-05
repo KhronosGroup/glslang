@@ -27,19 +27,19 @@ Linked compute stage:
                               MemberName 24(outbna) 0  "k"
                               MemberName 24(outbna) 1  "na"
                               Name 26  "outbnamena"
-                              Name 43  "i"
-                              Name 49  "outs"
-                              MemberName 49(outs) 0  "s"
-                              MemberName 49(outs) 1  "va"
-                              Name 51  "outnames"
-                              Name 54  "gl_LocalInvocationID"
+                              Name 42  "i"
+                              Name 48  "outs"
+                              MemberName 48(outs) 0  "s"
+                              MemberName 48(outs) 1  "va"
+                              Name 50  "outnames"
+                              Name 53  "gl_LocalInvocationID"
                               Decorate 13(outb) GLSLShared
                               Decorate 13(outb) BufferBlock
                               Decorate 24(outbna) GLSLShared
                               Decorate 24(outbna) BufferBlock
-                              Decorate 49(outs) GLSLShared
-                              Decorate 49(outs) BufferBlock
-                              Decorate 54(gl_LocalInvocationID) BuiltIn LocalInvocationId
+                              Decorate 48(outs) GLSLShared
+                              Decorate 48(outs) BufferBlock
+                              Decorate 53(gl_LocalInvocationID) BuiltIn LocalInvocationId
                               Decorate 66 BuiltIn WorkgroupSize
                2:             TypeVoid
                3:             TypeFunction 2
@@ -66,24 +66,25 @@ Linked compute stage:
               30:             TypePointer Uniform 23(fvec4)
               32:     16(int) Constant 3
               33:     16(int) Constant 18
-              34:             TypePointer Uniform 11(fvec3)
-              38:     16(int) Constant 17
-              39:   10(float) Constant 1077936128
-              40:   11(fvec3) ConstantComposite 39 39 39
-              42:             TypePointer WorkgroupLocal 16(int)
-           43(i):     42(ptr) Variable WorkgroupLocal
-              48:             TypeRuntimeArray 23(fvec4)
-        49(outs):             TypeStruct 16(int) 48
-              50:             TypePointer Uniform 49(outs)
-    51(outnames):     50(ptr) Variable Uniform
-              52:             TypeVector 6(int) 3
-              53:             TypePointer Input 52(ivec3)
-54(gl_LocalInvocationID):     53(ptr) Variable Input
+              36:     16(int) Constant 17
+              37:   10(float) Constant 1077936128
+              38:   11(fvec3) ConstantComposite 37 37 37
+              39:             TypePointer Uniform 11(fvec3)
+              41:             TypePointer WorkgroupLocal 16(int)
+           42(i):     41(ptr) Variable WorkgroupLocal
+              47:             TypeRuntimeArray 23(fvec4)
+        48(outs):             TypeStruct 16(int) 47
+              49:             TypePointer Uniform 48(outs)
+    50(outnames):     49(ptr) Variable Uniform
+              51:             TypeVector 6(int) 3
+              52:             TypePointer Input 51(ivec3)
+53(gl_LocalInvocationID):     52(ptr) Variable Input
+              54:             TypePointer Input 6(int)
               61:             TypePointer Uniform 16(int)
               63:      6(int) Constant 16
               64:      6(int) Constant 32
               65:      6(int) Constant 4
-              66:   52(ivec3) ConstantComposite 63 64 65
+              66:   51(ivec3) ConstantComposite 63 64 65
          4(main):           2 Function None 3
                5:             Label
                               MemoryBarrier 7 8
@@ -95,25 +96,24 @@ Linked compute stage:
               29:   23(fvec4) CompositeConstruct 28 28 28 28
               31:     30(ptr) AccessChain 26(outbnamena) 27
                               Store 31 29
-              35:     34(ptr) AccessChain 15(outbname) 32 33
-              36:   11(fvec3) Load 35
-              37:   10(float) CompositeExtract 36 0
-                              Store 19(s) 37
-              41:     34(ptr) AccessChain 15(outbname) 32 38
-                              Store 41 40
-              44:     16(int) Load 43(i)
-              45:   10(float) Load 19(s)
-              46:   11(fvec3) CompositeConstruct 45 45 45
-              47:     34(ptr) AccessChain 15(outbname) 32 44
-                              Store 47 46
-              55:   52(ivec3) Load 54(gl_LocalInvocationID)
-              56:      6(int) CompositeExtract 55 0
+              34:     21(ptr) AccessChain 15(outbname) 32 33 9
+              35:   10(float) Load 34
+                              Store 19(s) 35
+              40:     39(ptr) AccessChain 15(outbname) 32 36
+                              Store 40 38
+              43:     16(int) Load 42(i)
+              44:   10(float) Load 19(s)
+              45:   11(fvec3) CompositeConstruct 44 44 44
+              46:     39(ptr) AccessChain 15(outbname) 32 43
+                              Store 46 45
+              55:     54(ptr) AccessChain 53(gl_LocalInvocationID) 9
+              56:      6(int) Load 55
               57:   10(float) Load 19(s)
               58:   23(fvec4) CompositeConstruct 57 57 57 57
-              59:     30(ptr) AccessChain 51(outnames) 27 56
+              59:     30(ptr) AccessChain 50(outnames) 27 56
                               Store 59 58
               60:     16(int) ArrayLength 15(outbname) 3
-              62:     61(ptr) AccessChain 51(outnames) 17
+              62:     61(ptr) AccessChain 50(outnames) 17
                               Store 62 60
                               Return
                               FunctionEnd

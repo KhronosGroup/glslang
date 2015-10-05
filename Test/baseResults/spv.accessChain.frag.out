@@ -88,6 +88,7 @@ Linked fragment stage:
               68:     67(int) Constant 0
               95:             TypeVector 6(float) 2
              109:     67(int) Constant 2
+             136:             TypePointer Output 6(float)
              141:    6(float) Constant 0
              142:    7(fvec3) ConstantComposite 141 141 141
              143:             TypePointer Function 8(S)
@@ -306,12 +307,11 @@ Linked fragment stage:
               59:             Label
              134:     13(int) Load 57(comp)
              135:    6(float) CompositeExtract 56(i) 0 0
-             136:    7(fvec3) Load 65(OutColor)
-             137:    6(float) VectorExtractDynamic 136 134
-             138:    6(float) FAdd 137 135
-             139:    7(fvec3) Load 65(OutColor)
-             140:    7(fvec3) VectorInsertDynamic 139 138 134
-                              Store 65(OutColor) 140
+             137:    136(ptr) AccessChain 65(OutColor) 134
+             138:    6(float) Load 137
+             139:    6(float) FAdd 138 135
+             140:    136(ptr) AccessChain 65(OutColor) 134
+                              Store 140 139
                               Return
                               FunctionEnd
 62(GetColor13(struct-S-vf31;i1;):           2 Function None 15
