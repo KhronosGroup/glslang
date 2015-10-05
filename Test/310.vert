@@ -3,7 +3,7 @@
 shared vec4 s;   // ERROR
 layout(local_size_x = 2) out;  // ERROR
 buffer vec4 v;  // ERROR
-
+in int ini;
 layout(location = 2) uniform mat4 x;
 layout(location = 3) uniform mat4 y;
 layout(location = 2) out mat4 xi;
@@ -65,8 +65,8 @@ void foo()
     vec4 v4 = texelFetch(s2dms, v2, 2);
     ivec4 iv4 = texelFetch(is2dms, v2, 2);
     textureSamples(s2dms);   // ERROR
-
-
+    float f;
+    frexp(f, ini);     // ERROR, i not writable
 }
 
 out bool outb;         // ERROR

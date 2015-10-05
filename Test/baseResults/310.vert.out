@@ -7,6 +7,8 @@ ERROR: 0:10: 'location' : overlapping use of location 3
 ERROR: 0:58: 'usampler2DMSArray' : Reserved word. 
 ERROR: 0:58: 'sampler/image' : type requires declaration of default precision qualifier 
 ERROR: 0:67: 'textureSamples' : no matching overloaded function found 
+ERROR: 0:69: 'assign' :  l-value required "ini" (can't modify shader input)
+ERROR: 0:69: 'out' : Non-L-value cannot be passed for 'out' or 'inout' parameters. 
 ERROR: 0:72: 'out' : cannot be bool 
 ERROR: 0:73: 'sampler2D' : sampler/image types can only be used in uniform variables or function parameters: outo
 ERROR: 0:75: 'vertex-shader array-of-array output' : not supported with this profile: es
@@ -94,7 +96,7 @@ ERROR: 0:389: 'sample' : Reserved word.
 ERROR: 0:400: 'interpolateAtCentroid' : no matching overloaded function found 
 ERROR: 0:401: 'interpolateAtSample' : no matching overloaded function found 
 ERROR: 0:402: 'interpolateAtOffset' : no matching overloaded function found 
-ERROR: 90 compilation errors.  No code generated.
+ERROR: 92 compilation errors.  No code generated.
 
 
 Shader version: 310
@@ -253,6 +255,9 @@ ERROR: node is still EOpNull!
 0:66              2 (const int)
 0:67      Constant:
 0:67        0.000000
+0:69      frexp (global highp float)
+0:69        'f' (temp highp float)
+0:69        'ini' (in highp int)
 0:114  Function Definition: foo_IO( (global void)
 0:114    Function Parameters: 
 0:116    Sequence
@@ -911,6 +916,7 @@ ERROR: node is still EOpNull!
 0:?   Linker Objects
 0:?     's' (shared highp 4-component vector of float)
 0:?     'v' (buffer highp 4-component vector of float)
+0:?     'ini' (in highp int)
 0:?     'x' (layout(location=2 ) uniform highp 4X4 matrix of float)
 0:?     'y' (layout(location=3 ) uniform highp 4X4 matrix of float)
 0:?     'xi' (layout(location=2 ) smooth out highp 4X4 matrix of float)
@@ -1180,6 +1186,9 @@ ERROR: node is still EOpNull!
 0:66              2 (const int)
 0:67      Constant:
 0:67        0.000000
+0:69      frexp (global highp float)
+0:69        'f' (temp highp float)
+0:69        'ini' (in highp int)
 0:114  Function Definition: foo_IO( (global void)
 0:114    Function Parameters: 
 0:116    Sequence
@@ -1838,6 +1847,7 @@ ERROR: node is still EOpNull!
 0:?   Linker Objects
 0:?     's' (shared highp 4-component vector of float)
 0:?     'v' (buffer highp 4-component vector of float)
+0:?     'ini' (in highp int)
 0:?     'x' (layout(location=2 ) uniform highp 4X4 matrix of float)
 0:?     'y' (layout(location=3 ) uniform highp 4X4 matrix of float)
 0:?     'xi' (layout(location=2 ) smooth out highp 4X4 matrix of float)
