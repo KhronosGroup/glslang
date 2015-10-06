@@ -1124,7 +1124,10 @@ TIntermTyped* TParseContext::handleFunctionCall(const TSourceLoc& loc, TFunction
                 // if builtIn == true, it's definitely a built-in function with EOpNull
                 if (! builtIn) {
                     call->setUserDefined();
-                    intermediate.addToCallGraph(infoSink, currentCaller, fnCandidate->getMangledName());
+                    if (symbolTable.atGlobalLevel())
+                        error(loc, "can't call user function from global scope", fnCandidate->getName().c_str(), "");
+                    else
+                        intermediate.addToCallGraph(infoSink, currentCaller, fnCandidate->getMangledName());
                 }
 
                 if (builtIn)

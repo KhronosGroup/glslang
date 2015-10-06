@@ -1,8 +1,9 @@
 110scope.vert
 ERROR: 0:5: 'a' : redefinition 
+ERROR: 0:34: 'f' : can't call user function from global scope 
 ERROR: 0:57: 'z' : undeclared identifier 
 ERROR: 0:57: 'z' : redefinition 
-ERROR: 3 compilation errors.  No code generated.
+ERROR: 4 compilation errors.  No code generated.
 
 
 Shader version: 110
@@ -38,6 +39,16 @@ ERROR: node is still EOpNull!
 0:31      Branch: Return with expression
 0:31        Constant:
 0:31          true (const bool)
+0:34  Sequence
+0:34    move second child to first child (temp int)
+0:34      'gi' (global int)
+0:34      Function Call: f(i1;i1;i1; (global int)
+0:34        Constant:
+0:34          1 (const int)
+0:34        Constant:
+0:34          2 (const int)
+0:34        Constant:
+0:34          3 (const int)
 0:36  Function Definition: main( (global void)
 0:36    Function Parameters: 
 0:?     Sequence
@@ -115,6 +126,7 @@ ERROR: node is still EOpNull!
 0:?     'c' (global bool)
 0:?     'f' (global float)
 0:?     'tan' (global float)
+0:?     'gi' (global int)
 
 
 Linked vertex stage:
@@ -153,6 +165,16 @@ ERROR: node is still EOpNull!
 0:31      Branch: Return with expression
 0:31        Constant:
 0:31          true (const bool)
+0:34  Sequence
+0:34    move second child to first child (temp int)
+0:34      'gi' (global int)
+0:34      Function Call: f(i1;i1;i1; (global int)
+0:34        Constant:
+0:34          1 (const int)
+0:34        Constant:
+0:34          2 (const int)
+0:34        Constant:
+0:34          3 (const int)
 0:36  Function Definition: main( (global void)
 0:36    Function Parameters: 
 0:?     Sequence
@@ -230,4 +252,5 @@ ERROR: node is still EOpNull!
 0:?     'c' (global bool)
 0:?     'f' (global float)
 0:?     'tan' (global float)
+0:?     'gi' (global int)
 
