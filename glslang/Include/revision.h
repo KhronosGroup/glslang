@@ -3,4 +3,4 @@
 // For the date, it uses the current date (when then script is run).
 
 #define GLSLANG_REVISION "3.0.791"
-#define GLSLANG_DATE "08-Oct-2015"
+#define GLSLANG_DATE "09-Oct-2015"
