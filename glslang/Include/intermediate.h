@@ -322,6 +322,7 @@ enum TOperator {
     EOpConstructDMat4x3,
     EOpConstructDMat4x4,
     EOpConstructStruct,
+    EOpConstructTextureSampler,
     EOpConstructGuardEnd,
 
     //

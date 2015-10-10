@@ -381,8 +381,9 @@ bool TOutputTraverser::visitAggregate(TVisit /* visit */, TIntermAggregate* node
     case EOpConstructDMat3x4: out.debug << "Construct dmat3x4"; break;
     case EOpConstructDMat4x2: out.debug << "Construct dmat4x2"; break;
     case EOpConstructDMat4x3: out.debug << "Construct dmat4x3"; break;
-    case EOpConstructDMat4x4: out.debug << "Construct dmat4";  break;
+    case EOpConstructDMat4x4: out.debug << "Construct dmat4";   break;
     case EOpConstructStruct:  out.debug << "Construct structure";  break;
+    case EOpConstructTextureSampler: out.debug << "Construct combined texture-sampler"; break;
 
     case EOpLessThan:         out.debug << "Compare Less Than";             break;
     case EOpGreaterThan:      out.debug << "Compare Greater Than";          break;

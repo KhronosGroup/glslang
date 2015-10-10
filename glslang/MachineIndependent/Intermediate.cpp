@@ -379,36 +379,40 @@ TIntermTyped* TIntermediate::setAggregateOperator(TIntermNode* node, TOperator o
 TIntermTyped* TIntermediate::addConversion(TOperator op, const TType& type, TIntermTyped* node) const
 {
     //
-    // Does the base type allow operation?
+    // Does the base type even allow the operation?
     //
     switch (node->getBasicType()) {
     case EbtVoid:
         return 0;
     case EbtAtomicUint:
     case EbtSampler:
-        if (op != EOpFunctionCall)
-            return 0;
-        break;
+        // opaque types can be passed to functions
+        if (op == EOpFunction)
+            break;
+        // samplers can get assigned via a sampler constructor
+        if (node->getBasicType() == EbtSampler && op == EOpAssign && 
+            node->getAsOperator() != nullptr && node->getAsOperator()->getOp() == EOpConstructTextureSampler)
+            break;
+        // otherwise, opaque types can't even be operated on, let alone converted
+        return 0;
     default:
         break;
     }
 
-    //
     // Otherwise, if types are identical, no problem
-    //
     if (type == node->getType())
         return node;
 
-    //
     // If one's a structure, then no conversions.
-    //
     if (type.isStruct() || node->isStruct())
         return 0;
 
-    //
     // If one's an array, then no conversions.
-    //
     if (type.isArray() || node->getType().isArray())
+        return 0;
+
+    // If one's a sampler, then no conversions.
+    if (type.getBasicType() == EbtSampler || node->getBasicType() == EbtSampler)
         return 0;
 
     // Note: callers are responsible for other aspects of shape, 
@@ -1140,13 +1144,19 @@ bool TIntermBinary::promote()
     setType(left->getType());
     type.getQualifier().clear();
 
-    // Finish all array and structure operations.
-    if (left->isArray() || left->getBasicType() == EbtStruct) {
+    // Composite and opaque types don't having pending operator changes, e.g.,
+    // array, structure, and samplers.  Just establish final type and correctness.
+    if (left->isArray() || left->getBasicType() == EbtStruct || left->getBasicType() == EbtSampler) {
         switch (op) {
         case EOpEqual:
         case EOpNotEqual:
-            // Promote to conditional
-            setType(TType(EbtBool));
+            if (left->getBasicType() == EbtSampler) {
+                // can't compare samplers
+                return false;
+            } else {
+                // Promote to conditional
+                setType(TType(EbtBool));
+            }
 
             return true;
 

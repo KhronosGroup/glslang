@@ -106,6 +106,7 @@ public:
     Id makeRuntimeArray(Id element);
     Id makeFunctionType(Id returnType, std::vector<Id>& paramTypes);
     Id makeImageType(Id sampledType, Dim, bool depth, bool arrayed, bool ms, unsigned sampled, ImageFormat format);
+    Id makeSamplerType();
     Id makeSampledImageType(Id imageType);
 
     // For querying about types.

@@ -112,6 +112,20 @@ Id Builder::makeBoolType()
     return type->getResultId();
 }
 
+Id Builder::makeSamplerType()
+{
+    Instruction* type;
+    if (groupedTypes[OpTypeSampler].size() == 0) {
+        type = new Instruction(getUniqueId(), NoType, OpTypeSampler);
+        groupedTypes[OpTypeSampler].push_back(type);
+        constantsTypesGlobals.push_back(type);
+        module.mapInstruction(type);
+    } else
+        type = groupedTypes[OpTypeSampler].back();
+
+    return type->getResultId();
+}
+
 Id Builder::makePointer(StorageClass storageClass, Id pointee)
 {
     // try to find it

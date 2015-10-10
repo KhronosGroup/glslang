@@ -1671,11 +1671,16 @@ TFunction* TParseContext::handleConstructorCall(const TSourceLoc& loc, const TPu
 //
 TOperator TParseContext::mapTypeToConstructorOp(const TType& type) const
 {
-    if (type.isStruct())
-        return EOpConstructStruct;
-
     TOperator op = EOpNull;
+ 
     switch (type.getBasicType()) {
+    case EbtStruct:
+        op = EOpConstructStruct;
+        break;
+    case EbtSampler:
+        if (type.getSampler().combined)
+            op = EOpConstructTextureSampler;
+        break;
     case EbtFloat:
         if (type.isMatrix()) {
             switch (type.getMatrixCols()) {
@@ -2131,6 +2136,8 @@ bool TParseContext::constructorError(const TSourceLoc& loc, TIntermNode* node, T
 
     bool constructingMatrix = false;
     switch(op) {
+    case EOpConstructTextureSampler:
+        return constructorTextureSamplerError(loc, function);
     case EOpConstructMat2x2:
     case EOpConstructMat2x3:
     case EOpConstructMat2x4:
@@ -2286,6 +2293,57 @@ bool TParseContext::constructorError(const TSourceLoc& loc, TIntermNode* node, T
     return false;
 }
 
+// Verify all the correct semantics for constructing a combined texture/sampler.
+// Return true if the semantics are incorrect.
+bool TParseContext::constructorTextureSamplerError(const TSourceLoc& loc, const TFunction& function)
+{
+    TString constructorName = function.getType().getBasicTypeString();  // TODO: performance: should not be making copy; interface needs to change
+    const char* token = constructorName.c_str();
+
+    // exactly two arguments needed
+    if (function.getParamCount() != 2) {
+        error(loc, "sampler-constructor requires two arguments", token, "");
+        return true;
+    }
+
+    // first argument
+    //   * the constructor's first argument must be a texture type or array of texture type
+    //   * the dimensionality (2D, 3D, Shadow, Array, etc.) of the texture must
+    //       match the dimensionality of the sampler (that is, the type of the
+    //       first argument and the type of the constructor will be spelled the
+    //       same way, except for the constructor starting "sampler" and the type
+    //       of the argument starting with "texture"
+    //   * the array size of the first argument must match the array size of
+    //     the declared variable
+    if (function[0].type->getBasicType() != EbtSampler ||
+        function[0].type->getSampler().combined ||
+        function[0].type->getSampler().sampler ||
+        function[0].type->getSampler().image) {
+        error(loc, "sampler-constructor first argument must be a textureXXX type", token, "");
+        return true;
+    }
+    TSampler texture = function[0].type->getSampler();
+    texture.combined = true;  // to make a good comparison to what we are trying to construct
+    if (texture != function.getType().getSampler())
+        error(loc, "sampler-constructor first argument must match type and dimensionality of constructor type", token, "");
+    if (function[0].type->isArray() != function.getType().isArray())
+        error(loc, "sampler-constructor first argument arrayness must match constructor arrayness", token, "");
+    if (function[0].type->isArray() && function.getType().isArray() &&
+        function[0].type->getArraySizes() != *function.getType().getArraySizes())
+        error(loc, "sampler-constructor first argument array size must match constructor array size", token, "");
+
+    // second argument
+    //   * the constructor's second argument must be a scalar of type *sampler*
+    if (  function[1].type->getBasicType() != EbtSampler ||
+        ! function[1].type->getSampler().sampler ||
+          function[1].type->isArray()) {
+        error(loc, "sampler-constructor second argument must be a scalar type 'sampler'", token, "");
+        return true;
+    }
+
+    return false;
+}
+
 // Checks to see if a void variable has been declared and raise an error message for such a case
 //
 // returns true in case of an error
@@ -2314,15 +2372,19 @@ void TParseContext::boolCheck(const TSourceLoc& loc, const TPublicType& pType)
         error(loc, "boolean expression expected", "", "");
 }
 
-void TParseContext::samplerCheck(const TSourceLoc& loc, const TType& type, const TString& identifier)
+void TParseContext::samplerCheck(const TSourceLoc& loc, const TType& type, const TString& identifier, TIntermTyped* initializer)
 {
     if (type.getQualifier().storage == EvqUniform)
         return;
 
     if (type.getBasicType() == EbtStruct && containsFieldWithBasicType(type, EbtSampler))
         error(loc, "non-uniform struct contains a sampler or image:", type.getBasicTypeString().c_str(), identifier.c_str());
-    else if (type.getBasicType() == EbtSampler && type.getQualifier().storage != EvqUniform)
-        error(loc, "sampler/image types can only be used in uniform variables or function parameters:", type.getBasicTypeString().c_str(), identifier.c_str());
+    else if (type.getBasicType() == EbtSampler && type.getQualifier().storage != EvqUniform) {
+        // non-uniform sampler
+        // okay if it has an initializer
+        if (! initializer)
+            error(loc, "sampler/image types can only be used in uniform variables or function parameters:", type.getBasicTypeString().c_str(), identifier.c_str());
+    }
 }
 
 void TParseContext::atomicUintCheck(const TSourceLoc& loc, const TType& type, const TString& identifier)
@@ -4448,7 +4510,7 @@ TIntermNode* TParseContext::declareVariable(const TSourceLoc& loc, TString& iden
     else
         nonInitConstCheck(loc, identifier, type);
 
-    samplerCheck(loc, type, identifier);
+    samplerCheck(loc, type, identifier, initializer);
     atomicUintCheck(loc, type, identifier);
 
     if (identifier != "gl_FragCoord" && (publicType.shaderQualifiers.originUpperLeft || publicType.shaderQualifiers.pixelCenterInteger))
@@ -4768,6 +4830,11 @@ TIntermTyped* TParseContext::addConstructor(const TSourceLoc& loc, TIntermNode* 
     rValueErrorCheck(loc, "constructor", node->getAsTyped());
 
     TIntermAggregate* aggrNode = node->getAsAggregate();
+
+    // Combined texture-sampler constructors are completely semantic checked
+    // in constructorTextureSamplerError()
+    if (op == EOpConstructTextureSampler)
+        return intermediate.setAggregateOperator(aggrNode, op, type, loc);
 
     TTypeList::const_iterator memberTypes;
     if (op == EOpConstructStruct)

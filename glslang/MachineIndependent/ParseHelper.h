@@ -132,6 +132,7 @@ public:
     void integerCheck(const TIntermTyped* node, const char* token);
     void globalCheck(const TSourceLoc&, const char* token);
     bool constructorError(const TSourceLoc&, TIntermNode*, TFunction&, TOperator, TType&);
+    bool constructorTextureSamplerError(const TSourceLoc&, const TFunction&);
     void arraySizeCheck(const TSourceLoc&, TIntermTyped* expr, int& size);
     bool arrayQualifierError(const TSourceLoc&, const TQualifier&);
     bool arrayError(const TSourceLoc&, const TType&);
@@ -145,7 +146,7 @@ public:
     bool voidErrorCheck(const TSourceLoc&, const TString&, TBasicType);
     void boolCheck(const TSourceLoc&, const TIntermTyped*);
     void boolCheck(const TSourceLoc&, const TPublicType&);
-    void samplerCheck(const TSourceLoc&, const TType&, const TString& identifier);
+    void samplerCheck(const TSourceLoc&, const TType&, const TString& identifier, TIntermTyped* initializer);
     void atomicUintCheck(const TSourceLoc&, const TType&, const TString& identifier);
     void globalQualifierFixCheck(const TSourceLoc&, TQualifier&);
     void globalQualifierTypeCheck(const TSourceLoc&, const TQualifier&, const TPublicType&);

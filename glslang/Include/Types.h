@@ -145,6 +145,11 @@ struct TSampler {   // misnomer now; includes images, textures without sampler, 
            external == right.external;
     }
 
+    bool operator!=(const TSampler& right) const
+    {
+        return ! operator==(right);
+    }
+
     TString getString() const
     {
         TString s;

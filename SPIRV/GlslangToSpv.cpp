@@ -971,22 +971,23 @@ bool TGlslangToSpvTraverser::visitAggregate(glslang::TVisit visit, glslang::TInt
     case glslang::EOpConstructUVec3:
     case glslang::EOpConstructUVec4:
     case glslang::EOpConstructStruct:
+    case glslang::EOpConstructTextureSampler:
     {
         std::vector<spv::Id> arguments;
         translateArguments(*node, arguments);
         spv::Id resultTypeId = convertGlslangToSpvType(node->getType());
         spv::Id constructed;
-        if (node->getOp() == glslang::EOpConstructStruct || node->getType().isArray()) {
+        if (node->getOp() == glslang::EOpConstructTextureSampler)
+            constructed = builder.createOp(spv::OpSampledImage, resultTypeId, arguments);
+        else if (node->getOp() == glslang::EOpConstructStruct || node->getType().isArray()) {
             std::vector<spv::Id> constituents;
             for (int c = 0; c < (int)arguments.size(); ++c)
                 constituents.push_back(arguments[c]);
             constructed = builder.createCompositeConstruct(resultTypeId, constituents);
-        } else {
-            if (isMatrix)
-                constructed = builder.createMatrixConstructor(precision, arguments, resultTypeId);
-            else
-                constructed = builder.createConstructor(precision, arguments, resultTypeId);
-        }
+        } else if (isMatrix)
+            constructed = builder.createMatrixConstructor(precision, arguments, resultTypeId);
+        else
+            constructed = builder.createConstructor(precision, arguments, resultTypeId);
 
         builder.clearAccessChain();
         builder.setAccessChainRValue(constructed);
@@ -1416,11 +1417,18 @@ spv::Id TGlslangToSpvTraverser::convertGlslangToSpvType(const glslang::TType& ty
     case glslang::EbtSampler:
         {
             const glslang::TSampler& sampler = type.getSampler();
-            spvType = builder.makeImageType(getSampledType(sampler), TranslateDimensionality(sampler), sampler.shadow, sampler.arrayed, sampler.ms,
-                                            sampler.image ? 2 : 1, TranslateImageFormat(type));
-            // OpenGL "textures" need to be combined with a sampler
-            if (! sampler.image)
-                spvType = builder.makeSampledImageType(spvType);
+            if (sampler.sampler) {
+                // pure sampler
+                spvType = builder.makeSamplerType();
+            } else {
+                // an image is present, make its type
+                spvType = builder.makeImageType(getSampledType(sampler), TranslateDimensionality(sampler), sampler.shadow, sampler.arrayed, sampler.ms,
+                                                sampler.image ? 2 : 1, TranslateImageFormat(type));
+                if (sampler.combined) {
+                    // already has both image and sampler, make the combined type
+                    spvType = builder.makeSampledImageType(spvType);
+                }
+            }
         }
         break;
     case glslang::EbtStruct:
