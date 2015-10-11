@@ -1188,7 +1188,10 @@ Id Builder::createTextureCall(Decoration precision, Id resultType, bool fetch, b
         xplicit = true;
     }
     if (parameters.offset) {
-        mask = (ImageOperandsMask)(mask | ImageOperandsOffsetMask);
+        if (isConstant(parameters.offset))
+            mask = (ImageOperandsMask)(mask | ImageOperandsConstOffsetMask);
+        else
+            mask = (ImageOperandsMask)(mask | ImageOperandsOffsetMask);
         texArgs[numArgs++] = parameters.offset;
     }
     // TBD: if Offset is constant, use ImageOperandsConstOffsetMask
