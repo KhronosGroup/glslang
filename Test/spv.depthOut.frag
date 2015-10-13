@@ -1,7 +1,9 @@
-#version 130
+#version 450
 
-varying vec4 Color;
-varying float Depth;
+in vec4 Color;
+in float Depth;
+
+layout(depth_any) out float gl_FragDepth;
 
 void main()
 {

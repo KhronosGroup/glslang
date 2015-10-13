@@ -1921,6 +1921,7 @@ bool TParseContext::lValueErrorCheck(const TSourceLoc& loc, const char* op, TInt
             message = "can't modify a readonly buffer";
         break;
     case EvqFragDepth:
+        intermediate.setDepthReplacing();
         // "In addition, it is an error to statically write to gl_FragDepth in the fragment shader."
         if (profile == EEsProfile && intermediate.getEarlyFragmentTests())
             message = "can't modify gl_FragDepth if using early_fragment_tests";

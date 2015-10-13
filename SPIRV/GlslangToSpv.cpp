@@ -445,15 +445,30 @@ TGlslangToSpvTraverser::TGlslangToSpvTraverser(const glslang::TIntermediate* gls
         case glslang::ElgTriangles:           mode = spv::ExecutionModeInputTriangles;     break;
         case glslang::ElgQuads:               mode = spv::ExecutionModeInputQuads;         break;
         case glslang::ElgIsolines:            mode = spv::ExecutionModeInputIsolines;      break;
-        default:                              mode = spv::BadValue;    break;
+        default:                              mode = spv::BadValue;                        break;
         }
         if (mode != spv::BadValue)
             builder.addExecutionMode(shaderEntry, (spv::ExecutionMode)mode);
 
-        // TODO
-        //builder.addExecutionMode(spv::VertexSpacingMdName, glslangIntermediate->getVertexSpacing());
-        //builder.addExecutionMode(spv::VertexOrderMdName, glslangIntermediate->getVertexOrder());
-        //builder.addExecutionMode(spv::PointModeMdName, glslangIntermediate->getPointMode());
+        switch (glslangIntermediate->getVertexSpacing()) {
+        case glslang::EvsEqual:            mode = spv::ExecutionModeSpacingEqual;          break;
+        case glslang::EvsFractionalEven:   mode = spv::ExecutionModeSpacingFractionalEven; break;
+        case glslang::EvsFractionalOdd:    mode = spv::ExecutionModeSpacingFractionalOdd;  break;
+        default:                           mode = spv::BadValue;                           break;
+        }
+        if (mode != spv::BadValue)
+            builder.addExecutionMode(shaderEntry, (spv::ExecutionMode)mode);
+
+        switch (glslangIntermediate->getVertexOrder()) {
+        case glslang::EvoCw:     mode = spv::ExecutionModeVertexOrderCw;  break;
+        case glslang::EvoCcw:    mode = spv::ExecutionModeVertexOrderCcw; break;
+        default:                 mode = spv::BadValue;                    break;
+        }
+        if (mode != spv::BadValue)
+            builder.addExecutionMode(shaderEntry, (spv::ExecutionMode)mode);
+
+        if (glslangIntermediate->getPointMode())
+            builder.addExecutionMode(shaderEntry, spv::ExecutionModePointMode);
         break;
 
     case EShLangGeometry:
@@ -468,6 +483,7 @@ TGlslangToSpvTraverser::TGlslangToSpvTraverser(const glslang::TIntermediate* gls
         }
         if (mode != spv::BadValue)
             builder.addExecutionMode(shaderEntry, (spv::ExecutionMode)mode);
+
         builder.addExecutionMode(shaderEntry, spv::ExecutionModeInvocations, glslangIntermediate->getInvocations());
 
         switch (glslangIntermediate->getOutputPrimitive()) {
@@ -485,10 +501,26 @@ TGlslangToSpvTraverser::TGlslangToSpvTraverser(const glslang::TIntermediate* gls
         builder.addCapability(spv::CapabilityShader);
         if (glslangIntermediate->getPixelCenterInteger())
             builder.addExecutionMode(shaderEntry, spv::ExecutionModePixelCenterInteger);
+
         if (glslangIntermediate->getOriginUpperLeft())
             builder.addExecutionMode(shaderEntry, spv::ExecutionModeOriginUpperLeft);
         else
             builder.addExecutionMode(shaderEntry, spv::ExecutionModeOriginLowerLeft);
+
+        if (glslangIntermediate->getEarlyFragmentTests())
+            builder.addExecutionMode(shaderEntry, spv::ExecutionModeEarlyFragmentTests);
+
+        switch(glslangIntermediate->getDepth()) {
+        case glslang::EldAny:      mode = spv::ExecutionModeDepthAny;     break;
+        case glslang::EldGreater:  mode = spv::ExecutionModeDepthGreater; break;
+        case glslang::EldLess:     mode = spv::ExecutionModeDepthLess;    break;
+        default:                   mode = spv::BadValue;                  break;
+        }
+        if (mode != spv::BadValue)
+            builder.addExecutionMode(shaderEntry, (spv::ExecutionMode)mode);
+
+        if (glslangIntermediate->getDepth() != glslang::EldUnchanged && glslangIntermediate->isDepthReplacing())
+            builder.addExecutionMode(shaderEntry, spv::ExecutionModeDepthReplacing);
         break;
 
     case EShLangCompute:

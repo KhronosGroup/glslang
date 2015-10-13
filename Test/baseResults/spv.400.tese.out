@@ -16,6 +16,9 @@ Linked tessellation evaluation stage:
                               MemoryModel Logical GLSL450
                               EntryPoint TessellationEvaluation 4  "main"
                               ExecutionMode 4 InputTriangles
+                              ExecutionMode 4 SpacingFractionalOdd
+                              ExecutionMode 4 VertexOrderCcw
+                              ExecutionMode 4 PointMode
                               Name 4  "main"
                               Name 8  "a"
                               Name 13  "p"
