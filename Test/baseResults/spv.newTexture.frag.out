@@ -184,7 +184,7 @@ Linked fragment stage:
                               Store 9(v) 30
               35:          32 Load 34(s2DArray)
               39:   36(fvec3) Load 38(c3D)
-              41:    7(fvec4) ImageSampleExplicitLod 35 39 40
+              41:    7(fvec4) ImageSampleExplicitLod 35 39 Lod 40
               42:    7(fvec4) Load 9(v)
               43:    7(fvec4) FAdd 42 41
                               Store 9(v) 43
@@ -192,7 +192,7 @@ Linked fragment stage:
               49:   36(fvec3) Load 38(c3D)
               56:    6(float) Load 55(c1D)
               57:    6(float) CompositeExtract 49 2
-              58:    6(float) ImageSampleDrefImplicitLod 48 49 57 56 53
+              58:    6(float) ImageSampleDrefImplicitLod 48 49 57 Bias ConstOffset 56 53
               59:    7(fvec4) Load 9(v)
               60:    6(float) CompositeExtract 59 1
               61:    6(float) FAdd 60 58
@@ -202,19 +202,19 @@ Linked fragment stage:
               64:          21 Load 23(s3D)
               68:   65(ivec3) Load 67(ic3D)
               71:     50(int) Load 70(ic1D)
-              72:    7(fvec4) ImageFetch 64 68 71
+              72:    7(fvec4) ImageFetch 64 68 Lod 71
               73:    7(fvec4) Load 9(v)
               74:    7(fvec4) FAdd 73 72
                               Store 9(v) 74
               75:          11 Load 13(s2D)
               78:   51(ivec2) Load 77(ic2D)
-              80:    7(fvec4) ImageFetch 75 78 79 53
+              80:    7(fvec4) ImageFetch 75 78 Lod ConstOffset 79 53
               81:    7(fvec4) Load 9(v)
               82:    7(fvec4) FAdd 81 80
                               Store 9(v) 82
               87:          84 Load 86(sr)
               88:   51(ivec2) Load 77(ic2D)
-              90:    7(fvec4) ImageFetch 87 88 89
+              90:    7(fvec4) ImageFetch 87 88 ConstOffset 89
               91:    7(fvec4) Load 9(v)
               92:    7(fvec4) FAdd 91 90
                               Store 9(v) 92
@@ -222,7 +222,7 @@ Linked fragment stage:
               94:   36(fvec3) Load 38(c3D)
               95:    6(float) Load 55(c1D)
               96:    6(float) CompositeExtract 94 2
-              97:    6(float) ImageSampleDrefExplicitLod 93 94 96 95 53
+              97:    6(float) ImageSampleDrefExplicitLod 93 94 96 Lod ConstOffset 95 53
               98:    7(fvec4) Load 9(v)
               99:    6(float) CompositeExtract 98 1
              100:    6(float) FAdd 99 97
@@ -232,7 +232,7 @@ Linked fragment stage:
              103:          11 Load 13(s2D)
              104:   36(fvec3) Load 38(c3D)
              105:    6(float) Load 55(c1D)
-             106:    7(fvec4) ImageSampleProjExplicitLod 103 104 105 53
+             106:    7(fvec4) ImageSampleProjExplicitLod 103 104 Lod ConstOffset 105 53
              107:    7(fvec4) Load 9(v)
              108:    7(fvec4) FAdd 107 106
                               Store 9(v) 108
@@ -240,7 +240,7 @@ Linked fragment stage:
              114:   36(fvec3) Load 38(c3D)
              115:   36(fvec3) Load 38(c3D)
              116:   36(fvec3) Load 38(c3D)
-             117:    7(fvec4) ImageSampleExplicitLod 113 114 115 116
+             117:    7(fvec4) ImageSampleExplicitLod 113 114 Grad 115 116
              118:    7(fvec4) Load 9(v)
              119:    7(fvec4) FAdd 118 117
                               Store 9(v) 119
@@ -249,7 +249,7 @@ Linked fragment stage:
              126:   15(fvec2) Load 17(c2D)
              127:   15(fvec2) Load 17(c2D)
              128:    6(float) CompositeExtract 125 3
-             129:    6(float) ImageSampleDrefExplicitLod 124 125 128 126 127 53
+             129:    6(float) ImageSampleDrefExplicitLod 124 125 128 Grad ConstOffset 126 127 53
              130:    7(fvec4) Load 9(v)
              131:    6(float) CompositeExtract 130 0
              132:    6(float) FAdd 131 129
@@ -260,7 +260,7 @@ Linked fragment stage:
              136:    7(fvec4) Load 26(c4D)
              137:   36(fvec3) Load 38(c3D)
              138:   36(fvec3) Load 38(c3D)
-             139:    7(fvec4) ImageSampleProjExplicitLod 135 136 137 138
+             139:    7(fvec4) ImageSampleProjExplicitLod 135 136 Grad 137 138
              140:    7(fvec4) Load 9(v)
              141:    7(fvec4) FAdd 140 139
                               Store 9(v) 141
@@ -268,7 +268,7 @@ Linked fragment stage:
              143:   36(fvec3) Load 38(c3D)
              144:   15(fvec2) Load 17(c2D)
              145:   15(fvec2) Load 17(c2D)
-             146:    7(fvec4) ImageSampleProjExplicitLod 142 143 144 145 53
+             146:    7(fvec4) ImageSampleProjExplicitLod 142 143 Grad ConstOffset 144 145 53
              147:    7(fvec4) Load 9(v)
              148:    7(fvec4) FAdd 147 146
                               Store 9(v) 148
@@ -283,7 +283,7 @@ Linked fragment stage:
                               Store 9(v) 162
              163:         153 Load 155(is2D)
              164:    7(fvec4) Load 26(c4D)
-             165:  149(ivec4) ImageSampleProjImplicitLod 163 164 53
+             165:  149(ivec4) ImageSampleProjImplicitLod 163 164 ConstOffset 53
                               Store 151(iv) 165
              166:  149(ivec4) Load 151(iv)
              167:    7(fvec4) ConvertSToF 166
@@ -293,7 +293,7 @@ Linked fragment stage:
              170:         153 Load 155(is2D)
              171:   36(fvec3) Load 38(c3D)
              172:    6(float) Load 55(c1D)
-             173:  149(ivec4) ImageSampleProjExplicitLod 170 171 172
+             173:  149(ivec4) ImageSampleProjExplicitLod 170 171 Lod 172
                               Store 151(iv) 173
              174:  149(ivec4) Load 151(iv)
              175:    7(fvec4) ConvertSToF 174
@@ -304,7 +304,7 @@ Linked fragment stage:
              179:   36(fvec3) Load 38(c3D)
              180:   15(fvec2) Load 17(c2D)
              181:   15(fvec2) Load 17(c2D)
-             182:  149(ivec4) ImageSampleProjExplicitLod 178 179 180 181
+             182:  149(ivec4) ImageSampleProjExplicitLod 178 179 Grad 180 181
                               Store 151(iv) 182
              183:  149(ivec4) Load 151(iv)
              184:    7(fvec4) ConvertSToF 183
@@ -313,7 +313,7 @@ Linked fragment stage:
                               Store 9(v) 186
              191:         188 Load 190(is3D)
              192:   36(fvec3) Load 38(c3D)
-             194:  149(ivec4) ImageSampleImplicitLod 191 192 193
+             194:  149(ivec4) ImageSampleImplicitLod 191 192 Bias 193
                               Store 151(iv) 194
              195:  149(ivec4) Load 151(iv)
              196:    7(fvec4) ConvertSToF 195
@@ -323,7 +323,7 @@ Linked fragment stage:
              203:         200 Load 202(isCube)
              204:   36(fvec3) Load 38(c3D)
              205:    6(float) Load 55(c1D)
-             206:  149(ivec4) ImageSampleExplicitLod 203 204 205
+             206:  149(ivec4) ImageSampleExplicitLod 203 204 Lod 205
                               Store 151(iv) 206
              207:  149(ivec4) Load 151(iv)
              208:    7(fvec4) ConvertSToF 207
@@ -333,7 +333,7 @@ Linked fragment stage:
              215:         212 Load 214(is2DArray)
              216:   65(ivec3) Load 67(ic3D)
              217:     50(int) Load 70(ic1D)
-             218:  149(ivec4) ImageFetch 215 216 217
+             218:  149(ivec4) ImageFetch 215 216 Lod 217
                               Store 151(iv) 218
              219:  149(ivec4) Load 151(iv)
              220:    7(fvec4) ConvertSToF 219

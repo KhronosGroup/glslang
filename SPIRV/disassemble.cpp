@@ -398,7 +398,7 @@ void SpirvStream::disassembleInstruction(Id resultId, Id /*typeId*/, Op opCode, 
             disassembleIds(numOperands);
             return;
         case OperandOptionalImage:
-            outputMask(operandClass, stream[word++]);
+            outputMask(OperandImageOperands, stream[word++]);
             --numOperands;
             disassembleIds(numOperands);
             return;

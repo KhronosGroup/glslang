@@ -142,7 +142,7 @@ Linked fragment stage:
               38:          30 Load 32(texSampler1D)
               39:    6(float) Load 15(coords1D)
               40:    6(float) Load 10(bias)
-              41:   22(fvec4) ImageSampleImplicitLod 38 39 40
+              41:   22(fvec4) ImageSampleImplicitLod 38 39 Bias 40
               42:   22(fvec4) Load 26(color)
               43:   22(fvec4) FAdd 42 41
                               Store 26(color) 43
@@ -161,14 +161,14 @@ Linked fragment stage:
               57:          30 Load 32(texSampler1D)
               58:   45(fvec2) Load 47(coords2D)
               59:    6(float) Load 10(bias)
-              60:   22(fvec4) ImageSampleProjImplicitLod 57 58 59
+              60:   22(fvec4) ImageSampleProjImplicitLod 57 58 Bias 59
               61:   22(fvec4) Load 26(color)
               62:   22(fvec4) FAdd 61 60
                               Store 26(color) 62
               63:          30 Load 32(texSampler1D)
               64:   22(fvec4) Load 24(coords4D)
               65:    6(float) Load 10(bias)
-              66:   22(fvec4) ImageSampleProjImplicitLod 63 64 65
+              66:   22(fvec4) ImageSampleProjImplicitLod 63 64 Bias 65
               67:   22(fvec4) Load 26(color)
               68:   22(fvec4) FAdd 67 66
                               Store 26(color) 68
@@ -181,7 +181,7 @@ Linked fragment stage:
               78:          70 Load 72(texSampler2D)
               79:   45(fvec2) Load 47(coords2D)
               80:    6(float) Load 10(bias)
-              81:   22(fvec4) ImageSampleImplicitLod 78 79 80
+              81:   22(fvec4) ImageSampleImplicitLod 78 79 Bias 80
               82:   22(fvec4) Load 26(color)
               83:   22(fvec4) FAdd 82 81
                               Store 26(color) 83
@@ -194,7 +194,7 @@ Linked fragment stage:
               89:          70 Load 72(texSampler2D)
               90:   22(fvec4) Load 24(coords4D)
               91:    6(float) Load 10(bias)
-              92:   22(fvec4) ImageSampleProjImplicitLod 89 90 91
+              92:   22(fvec4) ImageSampleProjImplicitLod 89 90 Bias 91
               93:   22(fvec4) Load 26(color)
               94:   22(fvec4) FAdd 93 92
                               Store 26(color) 94
@@ -207,7 +207,7 @@ Linked fragment stage:
              104:          96 Load 98(texSampler3D)
              105:   16(fvec3) Load 18(coords3D)
              106:    6(float) Load 10(bias)
-             107:   22(fvec4) ImageSampleImplicitLod 104 105 106
+             107:   22(fvec4) ImageSampleImplicitLod 104 105 Bias 106
              108:   22(fvec4) Load 26(color)
              109:   22(fvec4) FAdd 108 107
                               Store 26(color) 109
@@ -220,7 +220,7 @@ Linked fragment stage:
              115:          96 Load 98(texSampler3D)
              116:   22(fvec4) Load 24(coords4D)
              117:    6(float) Load 10(bias)
-             118:   22(fvec4) ImageSampleProjImplicitLod 115 116 117
+             118:   22(fvec4) ImageSampleProjImplicitLod 115 116 Bias 117
              119:   22(fvec4) Load 26(color)
              120:   22(fvec4) FAdd 119 118
                               Store 26(color) 120
@@ -233,7 +233,7 @@ Linked fragment stage:
              130:         122 Load 124(texSamplerCube)
              131:   16(fvec3) Load 18(coords3D)
              132:    6(float) Load 10(bias)
-             133:   22(fvec4) ImageSampleImplicitLod 130 131 132
+             133:   22(fvec4) ImageSampleImplicitLod 130 131 Bias 132
              134:   22(fvec4) Load 26(color)
              135:   22(fvec4) FAdd 134 133
                               Store 26(color) 135
@@ -249,7 +249,7 @@ Linked fragment stage:
              148:   16(fvec3) Load 18(coords3D)
              149:    6(float) Load 10(bias)
              150:    6(float) CompositeExtract 148 2
-             151:    6(float) ImageSampleDrefImplicitLod 147 148 150 149
+             151:    6(float) ImageSampleDrefImplicitLod 147 148 150 Bias 149
              152:   22(fvec4) CompositeConstruct 151 151 151 151
              153:   22(fvec4) Load 26(color)
              154:   22(fvec4) FAdd 153 152
@@ -266,7 +266,7 @@ Linked fragment stage:
              167:   16(fvec3) Load 18(coords3D)
              168:    6(float) Load 10(bias)
              169:    6(float) CompositeExtract 167 2
-             170:    6(float) ImageSampleDrefImplicitLod 166 167 169 168
+             170:    6(float) ImageSampleDrefImplicitLod 166 167 169 Bias 168
              171:   22(fvec4) CompositeConstruct 170 170 170 170
              172:   22(fvec4) Load 26(color)
              173:   22(fvec4) FAdd 172 171
@@ -283,7 +283,7 @@ Linked fragment stage:
              182:   22(fvec4) Load 24(coords4D)
              183:    6(float) Load 10(bias)
              184:    6(float) CompositeExtract 182 3
-             185:    6(float) ImageSampleProjDrefImplicitLod 181 182 184 183
+             185:    6(float) ImageSampleProjDrefImplicitLod 181 182 184 Bias 183
              186:   22(fvec4) CompositeConstruct 185 185 185 185
              187:   22(fvec4) Load 26(color)
              188:   22(fvec4) FAdd 187 186
@@ -300,7 +300,7 @@ Linked fragment stage:
              197:   22(fvec4) Load 24(coords4D)
              198:    6(float) Load 10(bias)
              199:    6(float) CompositeExtract 197 3
-             200:    6(float) ImageSampleProjDrefImplicitLod 196 197 199 198
+             200:    6(float) ImageSampleProjDrefImplicitLod 196 197 199 Bias 198
              201:   22(fvec4) CompositeConstruct 200 200 200 200
              202:   22(fvec4) Load 26(color)
              203:   22(fvec4) FAdd 202 201
@@ -310,7 +310,7 @@ Linked fragment stage:
              214:          70 Load 72(texSampler2D)
              215:  205(ivec2) Load 207(iCoords2D)
              216:    204(int) Load 212(iLod)
-             217:   22(fvec4) ImageFetch 214 215 216
+             217:   22(fvec4) ImageFetch 214 215 Lod 216
              218:   22(fvec4) Load 26(color)
              219:   22(fvec4) FAdd 218 217
                               Store 26(color) 219
@@ -324,7 +324,7 @@ Linked fragment stage:
              228:   45(fvec2) Load 47(coords2D)
              229:   45(fvec2) Load 221(gradX)
              230:   45(fvec2) Load 224(gradY)
-             231:   22(fvec4) ImageSampleExplicitLod 227 228 229 230
+             231:   22(fvec4) ImageSampleExplicitLod 227 228 Grad 229 230
              232:   22(fvec4) Load 26(color)
              233:   22(fvec4) FAdd 232 231
                               Store 26(color) 233
@@ -336,7 +336,7 @@ Linked fragment stage:
              239:   16(fvec3) CompositeConstruct 237 238 236
              240:   45(fvec2) Load 221(gradX)
              241:   45(fvec2) Load 224(gradY)
-             242:   22(fvec4) ImageSampleProjExplicitLod 234 239 240 241
+             242:   22(fvec4) ImageSampleProjExplicitLod 234 239 Grad 240 241
              243:   22(fvec4) Load 26(color)
              244:   22(fvec4) FAdd 243 242
                               Store 26(color) 244
@@ -344,7 +344,7 @@ Linked fragment stage:
              246:   45(fvec2) Load 47(coords2D)
              247:   45(fvec2) Load 221(gradX)
              248:   45(fvec2) Load 224(gradY)
-             252:   22(fvec4) ImageSampleExplicitLod 245 246 247 248 251
+             252:   22(fvec4) ImageSampleExplicitLod 245 246 Grad ConstOffset 247 248 251
              253:   22(fvec4) Load 26(color)
              254:   22(fvec4) FAdd 253 252
                               Store 26(color) 254
@@ -352,7 +352,7 @@ Linked fragment stage:
              256:   16(fvec3) Load 18(coords3D)
              257:   45(fvec2) Load 221(gradX)
              258:   45(fvec2) Load 224(gradY)
-             259:   22(fvec4) ImageSampleProjExplicitLod 255 256 257 258 251
+             259:   22(fvec4) ImageSampleProjExplicitLod 255 256 Grad ConstOffset 257 258 251
              260:   22(fvec4) Load 26(color)
              261:   22(fvec4) FAdd 260 259
                               Store 26(color) 261
@@ -365,7 +365,7 @@ Linked fragment stage:
              268:   45(fvec2) Load 221(gradX)
              269:   45(fvec2) Load 224(gradY)
              270:    6(float) CompositeExtract 267 2
-             271:    6(float) ImageSampleDrefExplicitLod 262 267 270 268 269
+             271:    6(float) ImageSampleDrefExplicitLod 262 267 270 Grad 268 269
              272:   22(fvec4) Load 26(color)
              273:   22(fvec4) CompositeConstruct 271 271 271 271
              274:   22(fvec4) FAdd 272 273
