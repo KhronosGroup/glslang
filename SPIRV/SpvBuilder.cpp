@@ -545,6 +545,30 @@ Id Builder::findScalarConstant(Op typeClass, Id typeId, unsigned v1, unsigned v2
     return 0;
 }
 
+// Return true if consuming 'opcode' means consuming a constant.
+// "constant" here means after final transform to executable code,
+// the value consumed will be a constant, so includes specialization.
+bool Builder::isConstantOpCode(Op opcode) const
+{
+    switch (opcode) {
+    case OpUndef: 
+    case OpConstantTrue:
+    case OpConstantFalse:
+    case OpConstant:
+    case OpConstantComposite:
+    case OpConstantSampler:
+    case OpConstantNull:
+    case OpSpecConstantTrue:
+    case OpSpecConstantFalse:
+    case OpSpecConstant:
+    case OpSpecConstantComposite:
+    case OpSpecConstantOp:
+        return true;
+    default:
+        return false;
+    }
+}
+
 Id Builder::makeBoolConstant(bool b)
 {
     Id typeId = makeBoolType();
@@ -1224,10 +1248,13 @@ Id Builder::createTextureCall(Decoration precision, Id resultType, bool fetch, b
         xplicit = true;
     }
     if (parameters.offset) {
-        // TBD: if Offset is constant, use ImageOperandsConstOffsetMask
-        mask = (ImageOperandsMask)(mask | ImageOperandsOffsetMask);
+        if (isConstant(parameters.offset))
+            mask = (ImageOperandsMask)(mask | ImageOperandsConstOffsetMask);
+        else
+            mask = (ImageOperandsMask)(mask | ImageOperandsOffsetMask);
         texArgs[numArgs++] = parameters.offset;
-    } else if (parameters.offsets) {
+    }
+    if (parameters.offsets) {
         mask = (ImageOperandsMask)(mask | ImageOperandsConstOffsetsMask);
         texArgs[numArgs++] = parameters.offsets;
     }

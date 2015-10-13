@@ -31,7 +31,7 @@ bool radians(bool x) // okay, can overload built-in functions
     return true;
 }
 
-
+int gi = f(1,2,3);  // ERROR, can't call user-defined function from global scope
 
 void main()
 {

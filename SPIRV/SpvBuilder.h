@@ -139,6 +139,8 @@ public:
     bool isSamplerType(Id typeId)   const { return getTypeClass(typeId) == OpTypeSampler; }
     bool isSampledImageType(Id typeId)   const { return getTypeClass(typeId) == OpTypeSampledImage; }
 
+    bool isConstantOpCode(Op opcode) const;
+    bool isConstant(Id resultId) const { return isConstantOpCode(getOpCode(resultId)); }
     bool isConstantScalar(Id resultId) const { return getOpCode(resultId) == OpConstant; }
     unsigned int getConstantScalar(Id resultId) const { return module.getInstruction(resultId)->getImmediateOperand(0); }
 

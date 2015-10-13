@@ -342,7 +342,7 @@ Linked fragment stage:
              246:   45(fvec2) Load 47(coords2D)
              247:   45(fvec2) Load 221(gradX)
              248:   45(fvec2) Load 224(gradY)
-             252:   22(fvec4) ImageSampleExplicitLod 245 246 Grad Offset 247 248 251
+             252:   22(fvec4) ImageSampleExplicitLod 245 246 Grad ConstOffset 247 248 251
              253:   22(fvec4) Load 26(color)
              254:   22(fvec4) FAdd 253 252
                               Store 26(color) 254
@@ -350,7 +350,7 @@ Linked fragment stage:
              256:   16(fvec3) Load 18(coords3D)
              257:   45(fvec2) Load 221(gradX)
              258:   45(fvec2) Load 224(gradY)
-             259:   22(fvec4) ImageSampleProjExplicitLod 255 256 Grad Offset 257 258 251
+             259:   22(fvec4) ImageSampleProjExplicitLod 255 256 Grad ConstOffset 257 258 251
              260:   22(fvec4) Load 26(color)
              261:   22(fvec4) FAdd 260 259
                               Store 26(color) 261

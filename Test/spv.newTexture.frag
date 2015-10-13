@@ -1,6 +1,7 @@
 #version 430
 
 uniform sampler2D s2D;
+uniform sampler2DRect sr;
 uniform sampler3D s3D;
 uniform samplerCube sCube;
 uniform samplerCubeShadow sCubeShadow;
@@ -39,6 +40,7 @@ void main()
     v.y += textureOffset(s2DShadow, c3D, ivec2(3), c1D);
     v += texelFetch(s3D, ic3D, ic1D);
     v += texelFetchOffset(s2D, ic2D, 4, ivec2(3));
+    v += texelFetchOffset(sr, ic2D, ivec2(4));
     v.y += textureLodOffset(s2DShadow, c3D, c1D, ivec2(3));
     v += textureProjLodOffset(s2D, c3D, c1D, ivec2(3));
     v += textureGrad(sCube, c3D, c3D, c3D);

@@ -204,12 +204,12 @@ Linked fragment stage:
         6(bar3():           2 Function None 3
                7:             Label
               22:          19 Load 21(samp2D)
-              31:   15(fvec4) ImageGather 22 25 30 Offset 29
+              31:   15(fvec4) ImageGather 22 25 30 ConstOffset 29
               32:   15(fvec4) Load 17(o)
               33:   15(fvec4) FAdd 32 31
                               Store 17(o) 33
               38:          35 Load 37(samp2DA)
-              41:   15(fvec4) ImageGather 38 40 30 Offset 29
+              41:   15(fvec4) ImageGather 38 40 30 ConstOffset 29
               42:   15(fvec4) Load 17(o)
               43:   15(fvec4) FAdd 42 41
                               Store 17(o) 43
@@ -218,17 +218,17 @@ Linked fragment stage:
         8(bar4():           2 Function None 3
                9:             Label
               48:          45 Load 47(samp2DR)
-              49:   15(fvec4) ImageGather 48 25 30 Offset 29
+              49:   15(fvec4) ImageGather 48 25 30 ConstOffset 29
               50:   15(fvec4) Load 17(o)
               51:   15(fvec4) FAdd 50 49
                               Store 17(o) 51
               56:          53 Load 55(samp2DS)
-              58:   15(fvec4) ImageDrefGather 56 25 57 Offset 29
+              58:   15(fvec4) ImageDrefGather 56 25 57 ConstOffset 29
               59:   15(fvec4) Load 17(o)
               60:   15(fvec4) FAdd 59 58
                               Store 17(o) 60
               61:          19 Load 21(samp2D)
-              63:   15(fvec4) ImageGather 61 25 62 Offset 29
+              63:   15(fvec4) ImageGather 61 25 62 ConstOffset 29
               64:   15(fvec4) Load 17(o)
               65:   15(fvec4) FAdd 64 63
                               Store 17(o) 65

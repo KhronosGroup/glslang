@@ -41,6 +41,7 @@ void main()
     v.y += textureOffset(s2DShadow, c3D, ivec2(3), c1D);
     v += texelFetch(s3D, ic3D, ic1D);
     v += texelFetchOffset(s2D, ic2D, 4, ivec2(3));
+    v += texelFetchOffset(sr, ic2D, ivec2(4));
     v.y += textureLodOffset(s2DShadow, c3D, c1D, ivec2(3));
     v += textureProjLodOffset(s2D, c3D, c1D, ivec2(3));
     v += textureGrad(sCube, c3D, c3D, c3D);
@@ -62,7 +63,6 @@ void main()
     v += vec4(iv);
     iv = texelFetch(is2DArray, ic3D, ic1D);
     v += vec4(iv);
-
     iv += texelFetch(is2Dms, ic2D, ic1D);
     v += vec4(iv);
     v += texelFetch(sb, ic1D);

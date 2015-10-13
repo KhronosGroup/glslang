@@ -1124,7 +1124,10 @@ TIntermTyped* TParseContext::handleFunctionCall(const TSourceLoc& loc, TFunction
                 // if builtIn == true, it's definitely a built-in function with EOpNull
                 if (! builtIn) {
                     call->setUserDefined();
-                    intermediate.addToCallGraph(infoSink, currentCaller, fnCandidate->getMangledName());
+                    if (symbolTable.atGlobalLevel())
+                        error(loc, "can't call user function from global scope", fnCandidate->getName().c_str(), "");
+                    else
+                        intermediate.addToCallGraph(infoSink, currentCaller, fnCandidate->getMangledName());
                 }
 
                 if (builtIn)
@@ -1428,7 +1431,7 @@ void TParseContext::builtInOpCheck(const TSourceLoc& loc, const TFunction& fnCan
         int arg = -1;
         switch (callNode.getOp()) {
         case EOpTextureOffset:          arg = 2;  break;
-        case EOpTextureFetchOffset:     arg = 3;  break;
+        case EOpTextureFetchOffset:     arg = (arg0->getType().getSampler().dim != EsdRect) ? 3 : 2; break;
         case EOpTextureProjOffset:      arg = 2;  break;
         case EOpTextureLodOffset:       arg = 3;  break;
         case EOpTextureProjLodOffset:   arg = 3;  break;
