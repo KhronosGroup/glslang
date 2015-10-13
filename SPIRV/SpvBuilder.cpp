@@ -500,6 +500,9 @@ Id Builder::findScalarConstant(Op typeClass, Id typeId, unsigned v1, unsigned v2
     return 0;
 }
 
+// Return true if consuming 'opcode' means consuming a constant.
+// "constant" here means after final transform to executable code,
+// the value consumed will be a constant, so includes specialization.
 bool Builder::isConstantOpCode(Op opcode) const
 {
     switch (opcode) {
