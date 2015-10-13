@@ -3463,6 +3463,27 @@ void IdentifyBuiltIns(int version, EProfile profile, EShLanguage language, TSymb
         }
         break;
 
+    case EShLangTessControl:
+    case EShLangTessEvaluation:
+        // Because of the context-dependent array size (gl_MaxPatchVertices),
+        // these variables were added later than the others and need to be mapped now.
+
+        // standard members
+        BuiltInVariable("gl_in", "gl_Position",     EbvPosition,     symbolTable);
+        BuiltInVariable("gl_in", "gl_PointSize",    EbvPointSize,    symbolTable);
+        BuiltInVariable("gl_in", "gl_ClipDistance", EbvClipDistance, symbolTable);
+        BuiltInVariable("gl_in", "gl_CullDistance", EbvCullDistance, symbolTable);
+
+        // compatibility members
+        BuiltInVariable("gl_in", "gl_ClipVertex",          EbvClipVertex,          symbolTable);
+        BuiltInVariable("gl_in", "gl_FrontColor",          EbvFrontColor,          symbolTable);
+        BuiltInVariable("gl_in", "gl_BackColor",           EbvBackColor,           symbolTable);
+        BuiltInVariable("gl_in", "gl_FrontSecondaryColor", EbvFrontSecondaryColor, symbolTable);
+        BuiltInVariable("gl_in", "gl_BackSecondaryColor",  EbvBackSecondaryColor,  symbolTable);
+        BuiltInVariable("gl_in", "gl_TexCoord",            EbvTexCoord,            symbolTable);
+        BuiltInVariable("gl_in", "gl_FogFragCoord",        EbvFogFragCoord,        symbolTable);
+        break;
+
     default:
         break;
     }

@@ -46,7 +46,7 @@ ERROR: 0:103: 'location' : overlapping use of location 24
 ERROR: 0:105: 'gl_TessLevelOuter' : identifiers starting with "gl_" are reserved 
 ERROR: 0:113: 'sample' : Reserved word. 
 ERROR: 0:119: 'gl_PointSize' : no such field in structure 
-ERROR: 0:119: '=' :  cannot convert from 'temp block{in highp 4-component vector of float gl_Position}' to 'temp highp float'
+ERROR: 0:119: '=' :  cannot convert from 'temp block{in highp 4-component vector of float Position gl_Position}' to 'temp highp float'
 ERROR: 0:127: 'gl_BoundingBoxOES' : undeclared identifier 
 ERROR: 44 compilation errors.  No code generated.
 
@@ -77,9 +77,9 @@ ERROR: node is still EOpNull!
 0:36      Sequence
 0:36        move second child to first child (temp highp 4-component vector of float)
 0:36          'p' (temp highp 4-component vector of float)
-0:36          gl_Position: direct index for structure (in highp 4-component vector of float)
-0:36            direct index (temp block{in highp 4-component vector of float gl_Position, in highp float gl_PointSize})
-0:36              'gl_in' (in 32-element array of block{in highp 4-component vector of float gl_Position, in highp float gl_PointSize})
+0:36          gl_Position: direct index for structure (in highp 4-component vector of float Position)
+0:36            direct index (temp block{in highp 4-component vector of float Position gl_Position, in highp float PointSize gl_PointSize})
+0:36              'gl_in' (in 32-element array of block{in highp 4-component vector of float Position gl_Position, in highp float PointSize gl_PointSize})
 0:36              Constant:
 0:36                1 (const int)
 0:36            Constant:
@@ -87,9 +87,9 @@ ERROR: node is still EOpNull!
 0:37      Sequence
 0:37        move second child to first child (temp highp float)
 0:37          'ps' (temp highp float)
-0:37          gl_PointSize: direct index for structure (in highp float)
-0:37            direct index (temp block{in highp 4-component vector of float gl_Position, in highp float gl_PointSize})
-0:37              'gl_in' (in 32-element array of block{in highp 4-component vector of float gl_Position, in highp float gl_PointSize})
+0:37          gl_PointSize: direct index for structure (in highp float PointSize)
+0:37            direct index (temp block{in highp 4-component vector of float Position gl_Position, in highp float PointSize gl_PointSize})
+0:37              'gl_in' (in 32-element array of block{in highp 4-component vector of float Position gl_Position, in highp float PointSize gl_PointSize})
 0:37              Constant:
 0:37                1 (const int)
 0:37            Constant:
@@ -161,7 +161,7 @@ ERROR: node is still EOpNull!
 0:?     'badp2' (flat patch in highp 4-component vector of float)
 0:?     'badp3' (noperspective patch in highp 4-component vector of float)
 0:?     'badp4' (patch sample in highp 3-component vector of float)
-0:?     'gl_in' (in 32-element array of block{in highp 4-component vector of float gl_Position})
+0:?     'gl_in' (in 32-element array of block{in highp 4-component vector of float Position gl_Position})
 0:?     'ina' (in highp 2-component vector of float)
 0:?     'inb' (in 32-element array of highp 2-component vector of float)
 0:?     'inc' (in 32-element array of highp 2-component vector of float)
@@ -210,9 +210,9 @@ ERROR: node is still EOpNull!
 0:36      Sequence
 0:36        move second child to first child (temp highp 4-component vector of float)
 0:36          'p' (temp highp 4-component vector of float)
-0:36          gl_Position: direct index for structure (in highp 4-component vector of float)
-0:36            direct index (temp block{in highp 4-component vector of float gl_Position, in highp float gl_PointSize})
-0:36              'gl_in' (in 32-element array of block{in highp 4-component vector of float gl_Position, in highp float gl_PointSize})
+0:36          gl_Position: direct index for structure (in highp 4-component vector of float Position)
+0:36            direct index (temp block{in highp 4-component vector of float Position gl_Position, in highp float PointSize gl_PointSize})
+0:36              'gl_in' (in 32-element array of block{in highp 4-component vector of float Position gl_Position, in highp float PointSize gl_PointSize})
 0:36              Constant:
 0:36                1 (const int)
 0:36            Constant:
@@ -220,9 +220,9 @@ ERROR: node is still EOpNull!
 0:37      Sequence
 0:37        move second child to first child (temp highp float)
 0:37          'ps' (temp highp float)
-0:37          gl_PointSize: direct index for structure (in highp float)
-0:37            direct index (temp block{in highp 4-component vector of float gl_Position, in highp float gl_PointSize})
-0:37              'gl_in' (in 32-element array of block{in highp 4-component vector of float gl_Position, in highp float gl_PointSize})
+0:37          gl_PointSize: direct index for structure (in highp float PointSize)
+0:37            direct index (temp block{in highp 4-component vector of float Position gl_Position, in highp float PointSize gl_PointSize})
+0:37              'gl_in' (in 32-element array of block{in highp 4-component vector of float Position gl_Position, in highp float PointSize gl_PointSize})
 0:37              Constant:
 0:37                1 (const int)
 0:37            Constant:
@@ -294,7 +294,7 @@ ERROR: node is still EOpNull!
 0:?     'badp2' (flat patch in highp 4-component vector of float)
 0:?     'badp3' (noperspective patch in highp 4-component vector of float)
 0:?     'badp4' (patch sample in highp 3-component vector of float)
-0:?     'gl_in' (in 32-element array of block{in highp 4-component vector of float gl_Position})
+0:?     'gl_in' (in 32-element array of block{in highp 4-component vector of float Position gl_Position})
 0:?     'ina' (in highp 2-component vector of float)
 0:?     'inb' (in 32-element array of highp 2-component vector of float)
 0:?     'inc' (in 32-element array of highp 2-component vector of float)

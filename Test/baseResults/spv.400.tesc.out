@@ -47,6 +47,9 @@ Linked tessellation control stage:
                               Name 85  "ivlb"
                               Name 88  "ovla"
                               Name 89  "ovlb"
+                              MemberDecorate 19(gl_PerVertex) 0 BuiltIn Position
+                              MemberDecorate 19(gl_PerVertex) 1 BuiltIn PointSize
+                              MemberDecorate 19(gl_PerVertex) 2 BuiltIn ClipDistance
                               Decorate 19(gl_PerVertex) Block
                               Decorate 40(gl_PatchVerticesIn) BuiltIn PatchVertices
                               Decorate 43(gl_PrimitiveID) BuiltIn PrimitiveId

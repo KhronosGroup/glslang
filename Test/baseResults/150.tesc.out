@@ -15,9 +15,9 @@ vertices = 4
 0:20      Sequence
 0:20        move second child to first child (temp 4-component vector of float)
 0:20          'p' (temp 4-component vector of float)
-0:20          gl_Position: direct index for structure (in 4-component vector of float)
-0:20            direct index (temp block{in 4-component vector of float gl_Position, in float gl_PointSize, in implicitly-sized array of float gl_ClipDistance})
-0:20              'gl_in' (in 32-element array of block{in 4-component vector of float gl_Position, in float gl_PointSize, in implicitly-sized array of float gl_ClipDistance})
+0:20          gl_Position: direct index for structure (in 4-component vector of float Position)
+0:20            direct index (temp block{in 4-component vector of float Position gl_Position, in float PointSize gl_PointSize, in implicitly-sized array of float ClipDistance gl_ClipDistance})
+0:20              'gl_in' (in 32-element array of block{in 4-component vector of float Position gl_Position, in float PointSize gl_PointSize, in implicitly-sized array of float ClipDistance gl_ClipDistance})
 0:20              Constant:
 0:20                1 (const int)
 0:20            Constant:
@@ -25,9 +25,9 @@ vertices = 4
 0:21      Sequence
 0:21        move second child to first child (temp float)
 0:21          'ps' (temp float)
-0:21          gl_PointSize: direct index for structure (in float)
-0:21            direct index (temp block{in 4-component vector of float gl_Position, in float gl_PointSize, in implicitly-sized array of float gl_ClipDistance})
-0:21              'gl_in' (in 32-element array of block{in 4-component vector of float gl_Position, in float gl_PointSize, in implicitly-sized array of float gl_ClipDistance})
+0:21          gl_PointSize: direct index for structure (in float PointSize)
+0:21            direct index (temp block{in 4-component vector of float Position gl_Position, in float PointSize gl_PointSize, in implicitly-sized array of float ClipDistance gl_ClipDistance})
+0:21              'gl_in' (in 32-element array of block{in 4-component vector of float Position gl_Position, in float PointSize gl_PointSize, in implicitly-sized array of float ClipDistance gl_ClipDistance})
 0:21              Constant:
 0:21                1 (const int)
 0:21            Constant:
@@ -35,10 +35,10 @@ vertices = 4
 0:22      Sequence
 0:22        move second child to first child (temp float)
 0:22          'cd' (temp float)
-0:22          direct index (temp float)
-0:22            gl_ClipDistance: direct index for structure (in implicitly-sized array of float)
-0:22              direct index (temp block{in 4-component vector of float gl_Position, in float gl_PointSize, in implicitly-sized array of float gl_ClipDistance})
-0:22                'gl_in' (in 32-element array of block{in 4-component vector of float gl_Position, in float gl_PointSize, in implicitly-sized array of float gl_ClipDistance})
+0:22          direct index (temp float ClipDistance)
+0:22            gl_ClipDistance: direct index for structure (in implicitly-sized array of float ClipDistance)
+0:22              direct index (temp block{in 4-component vector of float Position gl_Position, in float PointSize gl_PointSize, in implicitly-sized array of float ClipDistance gl_ClipDistance})
+0:22                'gl_in' (in 32-element array of block{in 4-component vector of float Position gl_Position, in float PointSize gl_PointSize, in implicitly-sized array of float ClipDistance gl_ClipDistance})
 0:22                Constant:
 0:22                  1 (const int)
 0:22              Constant:
@@ -131,9 +131,9 @@ ERROR: node is still EOpNull!
 0:22      Sequence
 0:22        move second child to first child (temp 4-component vector of float)
 0:22          'p' (temp 4-component vector of float)
-0:22          gl_Position: direct index for structure (in 4-component vector of float)
-0:22            direct index (temp block{in 4-component vector of float gl_Position, in float gl_PointSize, in implicitly-sized array of float gl_ClipDistance})
-0:22              'gl_in' (in 32-element array of block{in 4-component vector of float gl_Position, in float gl_PointSize, in implicitly-sized array of float gl_ClipDistance})
+0:22          gl_Position: direct index for structure (in 4-component vector of float Position)
+0:22            direct index (temp block{in 4-component vector of float Position gl_Position, in float PointSize gl_PointSize, in implicitly-sized array of float ClipDistance gl_ClipDistance})
+0:22              'gl_in' (in 32-element array of block{in 4-component vector of float Position gl_Position, in float PointSize gl_PointSize, in implicitly-sized array of float ClipDistance gl_ClipDistance})
 0:22              Constant:
 0:22                1 (const int)
 0:22            Constant:
@@ -141,9 +141,9 @@ ERROR: node is still EOpNull!
 0:23      Sequence
 0:23        move second child to first child (temp float)
 0:23          'ps' (temp float)
-0:23          gl_PointSize: direct index for structure (in float)
-0:23            direct index (temp block{in 4-component vector of float gl_Position, in float gl_PointSize, in implicitly-sized array of float gl_ClipDistance})
-0:23              'gl_in' (in 32-element array of block{in 4-component vector of float gl_Position, in float gl_PointSize, in implicitly-sized array of float gl_ClipDistance})
+0:23          gl_PointSize: direct index for structure (in float PointSize)
+0:23            direct index (temp block{in 4-component vector of float Position gl_Position, in float PointSize gl_PointSize, in implicitly-sized array of float ClipDistance gl_ClipDistance})
+0:23              'gl_in' (in 32-element array of block{in 4-component vector of float Position gl_Position, in float PointSize gl_PointSize, in implicitly-sized array of float ClipDistance gl_ClipDistance})
 0:23              Constant:
 0:23                1 (const int)
 0:23            Constant:
@@ -151,10 +151,10 @@ ERROR: node is still EOpNull!
 0:24      Sequence
 0:24        move second child to first child (temp float)
 0:24          'cd' (temp float)
-0:24          direct index (temp float)
-0:24            gl_ClipDistance: direct index for structure (in implicitly-sized array of float)
-0:24              direct index (temp block{in 4-component vector of float gl_Position, in float gl_PointSize, in implicitly-sized array of float gl_ClipDistance})
-0:24                'gl_in' (in 32-element array of block{in 4-component vector of float gl_Position, in float gl_PointSize, in implicitly-sized array of float gl_ClipDistance})
+0:24          direct index (temp float ClipDistance)
+0:24            gl_ClipDistance: direct index for structure (in implicitly-sized array of float ClipDistance)
+0:24              direct index (temp block{in 4-component vector of float Position gl_Position, in float PointSize gl_PointSize, in implicitly-sized array of float ClipDistance gl_ClipDistance})
+0:24                'gl_in' (in 32-element array of block{in 4-component vector of float Position gl_Position, in float PointSize gl_PointSize, in implicitly-sized array of float ClipDistance gl_ClipDistance})
 0:24                Constant:
 0:24                  1 (const int)
 0:24              Constant:
@@ -251,9 +251,9 @@ ERROR: node is still EOpNull!
 0:23      Sequence
 0:23        move second child to first child (temp 4-component vector of float)
 0:23          'p' (temp 4-component vector of float)
-0:23          gl_Position: direct index for structure (in 4-component vector of float)
-0:23            direct index (temp block{in 4-component vector of float gl_Position, in float gl_PointSize, in implicitly-sized array of float gl_ClipDistance})
-0:23              'gl_in' (in 32-element array of block{in 4-component vector of float gl_Position, in float gl_PointSize, in implicitly-sized array of float gl_ClipDistance})
+0:23          gl_Position: direct index for structure (in 4-component vector of float Position)
+0:23            direct index (temp block{in 4-component vector of float Position gl_Position, in float PointSize gl_PointSize, in implicitly-sized array of float ClipDistance gl_ClipDistance})
+0:23              'gl_in' (in 32-element array of block{in 4-component vector of float Position gl_Position, in float PointSize gl_PointSize, in implicitly-sized array of float ClipDistance gl_ClipDistance})
 0:23              Constant:
 0:23                1 (const int)
 0:23            Constant:
@@ -261,9 +261,9 @@ ERROR: node is still EOpNull!
 0:24      Sequence
 0:24        move second child to first child (temp float)
 0:24          'ps' (temp float)
-0:24          gl_PointSize: direct index for structure (in float)
-0:24            direct index (temp block{in 4-component vector of float gl_Position, in float gl_PointSize, in implicitly-sized array of float gl_ClipDistance})
-0:24              'gl_in' (in 32-element array of block{in 4-component vector of float gl_Position, in float gl_PointSize, in implicitly-sized array of float gl_ClipDistance})
+0:24          gl_PointSize: direct index for structure (in float PointSize)
+0:24            direct index (temp block{in 4-component vector of float Position gl_Position, in float PointSize gl_PointSize, in implicitly-sized array of float ClipDistance gl_ClipDistance})
+0:24              'gl_in' (in 32-element array of block{in 4-component vector of float Position gl_Position, in float PointSize gl_PointSize, in implicitly-sized array of float ClipDistance gl_ClipDistance})
 0:24              Constant:
 0:24                1 (const int)
 0:24            Constant:
@@ -271,10 +271,10 @@ ERROR: node is still EOpNull!
 0:25      Sequence
 0:25        move second child to first child (temp float)
 0:25          'cd' (temp float)
-0:25          direct index (temp float)
-0:25            gl_ClipDistance: direct index for structure (in implicitly-sized array of float)
-0:25              direct index (temp block{in 4-component vector of float gl_Position, in float gl_PointSize, in implicitly-sized array of float gl_ClipDistance})
-0:25                'gl_in' (in 32-element array of block{in 4-component vector of float gl_Position, in float gl_PointSize, in implicitly-sized array of float gl_ClipDistance})
+0:25          direct index (temp float ClipDistance)
+0:25            gl_ClipDistance: direct index for structure (in implicitly-sized array of float ClipDistance)
+0:25              direct index (temp block{in 4-component vector of float Position gl_Position, in float PointSize gl_PointSize, in implicitly-sized array of float ClipDistance gl_ClipDistance})
+0:25                'gl_in' (in 32-element array of block{in 4-component vector of float Position gl_Position, in float PointSize gl_PointSize, in implicitly-sized array of float ClipDistance gl_ClipDistance})
 0:25                Constant:
 0:25                  1 (const int)
 0:25              Constant:
@@ -484,9 +484,9 @@ ERROR: node is still EOpNull!
 0:32      Sequence
 0:32        move second child to first child (temp 4-component vector of float)
 0:32          'p' (temp 4-component vector of float)
-0:32          gl_Position: direct index for structure (in 4-component vector of float)
-0:32            direct index (temp block{in 4-component vector of float gl_Position, in float gl_PointSize, in implicitly-sized array of float gl_ClipDistance})
-0:32              'gl_in' (in 32-element array of block{in 4-component vector of float gl_Position, in float gl_PointSize, in implicitly-sized array of float gl_ClipDistance})
+0:32          gl_Position: direct index for structure (in 4-component vector of float Position)
+0:32            direct index (temp block{in 4-component vector of float Position gl_Position, in float PointSize gl_PointSize, in implicitly-sized array of float ClipDistance gl_ClipDistance})
+0:32              'gl_in' (in 32-element array of block{in 4-component vector of float Position gl_Position, in float PointSize gl_PointSize, in implicitly-sized array of float ClipDistance gl_ClipDistance})
 0:32              Constant:
 0:32                1 (const int)
 0:32            Constant:
@@ -494,9 +494,9 @@ ERROR: node is still EOpNull!
 0:33      Sequence
 0:33        move second child to first child (temp float)
 0:33          'ps' (temp float)
-0:33          gl_PointSize: direct index for structure (in float)
-0:33            direct index (temp block{in 4-component vector of float gl_Position, in float gl_PointSize, in implicitly-sized array of float gl_ClipDistance})
-0:33              'gl_in' (in 32-element array of block{in 4-component vector of float gl_Position, in float gl_PointSize, in implicitly-sized array of float gl_ClipDistance})
+0:33          gl_PointSize: direct index for structure (in float PointSize)
+0:33            direct index (temp block{in 4-component vector of float Position gl_Position, in float PointSize gl_PointSize, in implicitly-sized array of float ClipDistance gl_ClipDistance})
+0:33              'gl_in' (in 32-element array of block{in 4-component vector of float Position gl_Position, in float PointSize gl_PointSize, in implicitly-sized array of float ClipDistance gl_ClipDistance})
 0:33              Constant:
 0:33                1 (const int)
 0:33            Constant:
@@ -504,10 +504,10 @@ ERROR: node is still EOpNull!
 0:34      Sequence
 0:34        move second child to first child (temp float)
 0:34          'cd' (temp float)
-0:34          direct index (temp float)
-0:34            gl_ClipDistance: direct index for structure (in implicitly-sized array of float)
-0:34              direct index (temp block{in 4-component vector of float gl_Position, in float gl_PointSize, in implicitly-sized array of float gl_ClipDistance})
-0:34                'gl_in' (in 32-element array of block{in 4-component vector of float gl_Position, in float gl_PointSize, in implicitly-sized array of float gl_ClipDistance})
+0:34          direct index (temp float ClipDistance)
+0:34            gl_ClipDistance: direct index for structure (in implicitly-sized array of float ClipDistance)
+0:34              direct index (temp block{in 4-component vector of float Position gl_Position, in float PointSize gl_PointSize, in implicitly-sized array of float ClipDistance gl_ClipDistance})
+0:34                'gl_in' (in 32-element array of block{in 4-component vector of float Position gl_Position, in float PointSize gl_PointSize, in implicitly-sized array of float ClipDistance gl_ClipDistance})
 0:34                Constant:
 0:34                  1 (const int)
 0:34              Constant:
@@ -569,7 +569,7 @@ ERROR: node is still EOpNull!
 0:?     'badp2' (flat patch in 4-component vector of float)
 0:?     'badp3' (noperspective patch in 4-component vector of float)
 0:?     'badp4' (patch sample in 3-component vector of float)
-0:?     'gl_in' (in 32-element array of block{in implicitly-sized array of float gl_ClipDistance})
+0:?     'gl_in' (in 32-element array of block{in implicitly-sized array of float ClipDistance gl_ClipDistance})
 0:?     'ina' (in 2-component vector of float)
 0:?     'inb' (in 32-element array of 2-component vector of float)
 0:?     'inc' (in 32-element array of 2-component vector of float)
@@ -622,9 +622,9 @@ ERROR: node is still EOpNull!
 0:17      Sequence
 0:17        move second child to first child (temp 4-component vector of float)
 0:17          'p' (temp 4-component vector of float)
-0:17          gl_Position: direct index for structure (in 4-component vector of float)
-0:17            direct index (temp block{in 4-component vector of float gl_Position, in float gl_PointSize, in implicitly-sized array of float gl_ClipDistance})
-0:17              'gl_in' (in 32-element array of block{in 4-component vector of float gl_Position, in float gl_PointSize, in implicitly-sized array of float gl_ClipDistance})
+0:17          gl_Position: direct index for structure (in 4-component vector of float Position)
+0:17            direct index (temp block{in 4-component vector of float Position gl_Position, in float PointSize gl_PointSize, in implicitly-sized array of float ClipDistance gl_ClipDistance})
+0:17              'gl_in' (in 32-element array of block{in 4-component vector of float Position gl_Position, in float PointSize gl_PointSize, in implicitly-sized array of float ClipDistance gl_ClipDistance})
 0:17              Constant:
 0:17                1 (const int)
 0:17            Constant:
@@ -632,9 +632,9 @@ ERROR: node is still EOpNull!
 0:18      Sequence
 0:18        move second child to first child (temp float)
 0:18          'ps' (temp float)
-0:18          gl_PointSize: direct index for structure (in float)
-0:18            direct index (temp block{in 4-component vector of float gl_Position, in float gl_PointSize, in implicitly-sized array of float gl_ClipDistance})
-0:18              'gl_in' (in 32-element array of block{in 4-component vector of float gl_Position, in float gl_PointSize, in implicitly-sized array of float gl_ClipDistance})
+0:18          gl_PointSize: direct index for structure (in float PointSize)
+0:18            direct index (temp block{in 4-component vector of float Position gl_Position, in float PointSize gl_PointSize, in implicitly-sized array of float ClipDistance gl_ClipDistance})
+0:18              'gl_in' (in 32-element array of block{in 4-component vector of float Position gl_Position, in float PointSize gl_PointSize, in implicitly-sized array of float ClipDistance gl_ClipDistance})
 0:18              Constant:
 0:18                1 (const int)
 0:18            Constant:
@@ -642,10 +642,10 @@ ERROR: node is still EOpNull!
 0:19      Sequence
 0:19        move second child to first child (temp float)
 0:19          'cd' (temp float)
-0:19          direct index (temp float)
-0:19            gl_ClipDistance: direct index for structure (in implicitly-sized array of float)
-0:19              direct index (temp block{in 4-component vector of float gl_Position, in float gl_PointSize, in implicitly-sized array of float gl_ClipDistance})
-0:19                'gl_in' (in 32-element array of block{in 4-component vector of float gl_Position, in float gl_PointSize, in implicitly-sized array of float gl_ClipDistance})
+0:19          direct index (temp float ClipDistance)
+0:19            gl_ClipDistance: direct index for structure (in implicitly-sized array of float ClipDistance)
+0:19              direct index (temp block{in 4-component vector of float Position gl_Position, in float PointSize gl_PointSize, in implicitly-sized array of float ClipDistance gl_ClipDistance})
+0:19                'gl_in' (in 32-element array of block{in 4-component vector of float Position gl_Position, in float PointSize gl_PointSize, in implicitly-sized array of float ClipDistance gl_ClipDistance})
 0:19                Constant:
 0:19                  1 (const int)
 0:19              Constant:
@@ -938,9 +938,9 @@ vertices = 4
 0:20      Sequence
 0:20        move second child to first child (temp 4-component vector of float)
 0:20          'p' (temp 4-component vector of float)
-0:20          gl_Position: direct index for structure (in 4-component vector of float)
-0:20            direct index (temp block{in 4-component vector of float gl_Position, in float gl_PointSize, in 1-element array of float gl_ClipDistance})
-0:20              'gl_in' (in 32-element array of block{in 4-component vector of float gl_Position, in float gl_PointSize, in 1-element array of float gl_ClipDistance})
+0:20          gl_Position: direct index for structure (in 4-component vector of float Position)
+0:20            direct index (temp block{in 4-component vector of float Position gl_Position, in float PointSize gl_PointSize, in 1-element array of float ClipDistance gl_ClipDistance})
+0:20              'gl_in' (in 32-element array of block{in 4-component vector of float Position gl_Position, in float PointSize gl_PointSize, in 1-element array of float ClipDistance gl_ClipDistance})
 0:20              Constant:
 0:20                1 (const int)
 0:20            Constant:
@@ -948,9 +948,9 @@ vertices = 4
 0:21      Sequence
 0:21        move second child to first child (temp float)
 0:21          'ps' (temp float)
-0:21          gl_PointSize: direct index for structure (in float)
-0:21            direct index (temp block{in 4-component vector of float gl_Position, in float gl_PointSize, in 1-element array of float gl_ClipDistance})
-0:21              'gl_in' (in 32-element array of block{in 4-component vector of float gl_Position, in float gl_PointSize, in 1-element array of float gl_ClipDistance})
+0:21          gl_PointSize: direct index for structure (in float PointSize)
+0:21            direct index (temp block{in 4-component vector of float Position gl_Position, in float PointSize gl_PointSize, in 1-element array of float ClipDistance gl_ClipDistance})
+0:21              'gl_in' (in 32-element array of block{in 4-component vector of float Position gl_Position, in float PointSize gl_PointSize, in 1-element array of float ClipDistance gl_ClipDistance})
 0:21              Constant:
 0:21                1 (const int)
 0:21            Constant:
@@ -958,10 +958,10 @@ vertices = 4
 0:22      Sequence
 0:22        move second child to first child (temp float)
 0:22          'cd' (temp float)
-0:22          direct index (temp float)
-0:22            gl_ClipDistance: direct index for structure (in 1-element array of float)
-0:22              direct index (temp block{in 4-component vector of float gl_Position, in float gl_PointSize, in 1-element array of float gl_ClipDistance})
-0:22                'gl_in' (in 32-element array of block{in 4-component vector of float gl_Position, in float gl_PointSize, in 1-element array of float gl_ClipDistance})
+0:22          direct index (temp float ClipDistance)
+0:22            gl_ClipDistance: direct index for structure (in 1-element array of float ClipDistance)
+0:22              direct index (temp block{in 4-component vector of float Position gl_Position, in float PointSize gl_PointSize, in 1-element array of float ClipDistance gl_ClipDistance})
+0:22                'gl_in' (in 32-element array of block{in 4-component vector of float Position gl_Position, in float PointSize gl_PointSize, in 1-element array of float ClipDistance gl_ClipDistance})
 0:22                Constant:
 0:22                  1 (const int)
 0:22              Constant:
@@ -1036,9 +1036,9 @@ vertices = 4
 0:23      Sequence
 0:23        move second child to first child (temp 4-component vector of float)
 0:23          'p' (temp 4-component vector of float)
-0:23          gl_Position: direct index for structure (in 4-component vector of float)
-0:23            direct index (temp block{in 4-component vector of float gl_Position, in float gl_PointSize, in 1-element array of float gl_ClipDistance})
-0:23              'gl_in' (in 32-element array of block{in 4-component vector of float gl_Position, in float gl_PointSize, in 1-element array of float gl_ClipDistance})
+0:23          gl_Position: direct index for structure (in 4-component vector of float Position)
+0:23            direct index (temp block{in 4-component vector of float Position gl_Position, in float PointSize gl_PointSize, in 1-element array of float ClipDistance gl_ClipDistance})
+0:23              'gl_in' (in 32-element array of block{in 4-component vector of float Position gl_Position, in float PointSize gl_PointSize, in 1-element array of float ClipDistance gl_ClipDistance})
 0:23              Constant:
 0:23                1 (const int)
 0:23            Constant:
@@ -1046,9 +1046,9 @@ vertices = 4
 0:24      Sequence
 0:24        move second child to first child (temp float)
 0:24          'ps' (temp float)
-0:24          gl_PointSize: direct index for structure (in float)
-0:24            direct index (temp block{in 4-component vector of float gl_Position, in float gl_PointSize, in 1-element array of float gl_ClipDistance})
-0:24              'gl_in' (in 32-element array of block{in 4-component vector of float gl_Position, in float gl_PointSize, in 1-element array of float gl_ClipDistance})
+0:24          gl_PointSize: direct index for structure (in float PointSize)
+0:24            direct index (temp block{in 4-component vector of float Position gl_Position, in float PointSize gl_PointSize, in 1-element array of float ClipDistance gl_ClipDistance})
+0:24              'gl_in' (in 32-element array of block{in 4-component vector of float Position gl_Position, in float PointSize gl_PointSize, in 1-element array of float ClipDistance gl_ClipDistance})
 0:24              Constant:
 0:24                1 (const int)
 0:24            Constant:
@@ -1056,10 +1056,10 @@ vertices = 4
 0:25      Sequence
 0:25        move second child to first child (temp float)
 0:25          'cd' (temp float)
-0:25          direct index (temp float)
-0:25            gl_ClipDistance: direct index for structure (in 1-element array of float)
-0:25              direct index (temp block{in 4-component vector of float gl_Position, in float gl_PointSize, in 1-element array of float gl_ClipDistance})
-0:25                'gl_in' (in 32-element array of block{in 4-component vector of float gl_Position, in float gl_PointSize, in 1-element array of float gl_ClipDistance})
+0:25          direct index (temp float ClipDistance)
+0:25            gl_ClipDistance: direct index for structure (in 1-element array of float ClipDistance)
+0:25              direct index (temp block{in 4-component vector of float Position gl_Position, in float PointSize gl_PointSize, in 1-element array of float ClipDistance gl_ClipDistance})
+0:25                'gl_in' (in 32-element array of block{in 4-component vector of float Position gl_Position, in float PointSize gl_PointSize, in 1-element array of float ClipDistance gl_ClipDistance})
 0:25                Constant:
 0:25                  1 (const int)
 0:25              Constant:
@@ -1204,9 +1204,9 @@ vertices = 4
 0:17      Sequence
 0:17        move second child to first child (temp 4-component vector of float)
 0:17          'p' (temp 4-component vector of float)
-0:17          gl_Position: direct index for structure (in 4-component vector of float)
-0:17            direct index (temp block{in 4-component vector of float gl_Position, in float gl_PointSize, in 1-element array of float gl_ClipDistance})
-0:17              'gl_in' (in 32-element array of block{in 4-component vector of float gl_Position, in float gl_PointSize, in 1-element array of float gl_ClipDistance})
+0:17          gl_Position: direct index for structure (in 4-component vector of float Position)
+0:17            direct index (temp block{in 4-component vector of float Position gl_Position, in float PointSize gl_PointSize, in 1-element array of float ClipDistance gl_ClipDistance})
+0:17              'gl_in' (in 32-element array of block{in 4-component vector of float Position gl_Position, in float PointSize gl_PointSize, in 1-element array of float ClipDistance gl_ClipDistance})
 0:17              Constant:
 0:17                1 (const int)
 0:17            Constant:
@@ -1214,9 +1214,9 @@ vertices = 4
 0:18      Sequence
 0:18        move second child to first child (temp float)
 0:18          'ps' (temp float)
-0:18          gl_PointSize: direct index for structure (in float)
-0:18            direct index (temp block{in 4-component vector of float gl_Position, in float gl_PointSize, in 1-element array of float gl_ClipDistance})
-0:18              'gl_in' (in 32-element array of block{in 4-component vector of float gl_Position, in float gl_PointSize, in 1-element array of float gl_ClipDistance})
+0:18          gl_PointSize: direct index for structure (in float PointSize)
+0:18            direct index (temp block{in 4-component vector of float Position gl_Position, in float PointSize gl_PointSize, in 1-element array of float ClipDistance gl_ClipDistance})
+0:18              'gl_in' (in 32-element array of block{in 4-component vector of float Position gl_Position, in float PointSize gl_PointSize, in 1-element array of float ClipDistance gl_ClipDistance})
 0:18              Constant:
 0:18                1 (const int)
 0:18            Constant:
@@ -1224,10 +1224,10 @@ vertices = 4
 0:19      Sequence
 0:19        move second child to first child (temp float)
 0:19          'cd' (temp float)
-0:19          direct index (temp float)
-0:19            gl_ClipDistance: direct index for structure (in 1-element array of float)
-0:19              direct index (temp block{in 4-component vector of float gl_Position, in float gl_PointSize, in 1-element array of float gl_ClipDistance})
-0:19                'gl_in' (in 32-element array of block{in 4-component vector of float gl_Position, in float gl_PointSize, in 1-element array of float gl_ClipDistance})
+0:19          direct index (temp float ClipDistance)
+0:19            gl_ClipDistance: direct index for structure (in 1-element array of float ClipDistance)
+0:19              direct index (temp block{in 4-component vector of float Position gl_Position, in float PointSize gl_PointSize, in 1-element array of float ClipDistance gl_ClipDistance})
+0:19                'gl_in' (in 32-element array of block{in 4-component vector of float Position gl_Position, in float PointSize gl_PointSize, in 1-element array of float ClipDistance gl_ClipDistance})
 0:19                Constant:
 0:19                  1 (const int)
 0:19              Constant:
@@ -1338,9 +1338,9 @@ ERROR: node is still EOpNull!
 0:22      Sequence
 0:22        move second child to first child (temp 4-component vector of float)
 0:22          'p' (temp 4-component vector of float)
-0:22          gl_Position: direct index for structure (in 4-component vector of float)
-0:22            direct index (temp block{in 4-component vector of float gl_Position, in float gl_PointSize, in 1-element array of float gl_ClipDistance})
-0:22              'gl_in' (in 32-element array of block{in 4-component vector of float gl_Position, in float gl_PointSize, in 1-element array of float gl_ClipDistance})
+0:22          gl_Position: direct index for structure (in 4-component vector of float Position)
+0:22            direct index (temp block{in 4-component vector of float Position gl_Position, in float PointSize gl_PointSize, in 1-element array of float ClipDistance gl_ClipDistance})
+0:22              'gl_in' (in 32-element array of block{in 4-component vector of float Position gl_Position, in float PointSize gl_PointSize, in 1-element array of float ClipDistance gl_ClipDistance})
 0:22              Constant:
 0:22                1 (const int)
 0:22            Constant:
@@ -1348,9 +1348,9 @@ ERROR: node is still EOpNull!
 0:23      Sequence
 0:23        move second child to first child (temp float)
 0:23          'ps' (temp float)
-0:23          gl_PointSize: direct index for structure (in float)
-0:23            direct index (temp block{in 4-component vector of float gl_Position, in float gl_PointSize, in 1-element array of float gl_ClipDistance})
-0:23              'gl_in' (in 32-element array of block{in 4-component vector of float gl_Position, in float gl_PointSize, in 1-element array of float gl_ClipDistance})
+0:23          gl_PointSize: direct index for structure (in float PointSize)
+0:23            direct index (temp block{in 4-component vector of float Position gl_Position, in float PointSize gl_PointSize, in 1-element array of float ClipDistance gl_ClipDistance})
+0:23              'gl_in' (in 32-element array of block{in 4-component vector of float Position gl_Position, in float PointSize gl_PointSize, in 1-element array of float ClipDistance gl_ClipDistance})
 0:23              Constant:
 0:23                1 (const int)
 0:23            Constant:
@@ -1358,10 +1358,10 @@ ERROR: node is still EOpNull!
 0:24      Sequence
 0:24        move second child to first child (temp float)
 0:24          'cd' (temp float)
-0:24          direct index (temp float)
-0:24            gl_ClipDistance: direct index for structure (in 1-element array of float)
-0:24              direct index (temp block{in 4-component vector of float gl_Position, in float gl_PointSize, in 1-element array of float gl_ClipDistance})
-0:24                'gl_in' (in 32-element array of block{in 4-component vector of float gl_Position, in float gl_PointSize, in 1-element array of float gl_ClipDistance})
+0:24          direct index (temp float ClipDistance)
+0:24            gl_ClipDistance: direct index for structure (in 1-element array of float ClipDistance)
+0:24              direct index (temp block{in 4-component vector of float Position gl_Position, in float PointSize gl_PointSize, in 1-element array of float ClipDistance gl_ClipDistance})
+0:24                'gl_in' (in 32-element array of block{in 4-component vector of float Position gl_Position, in float PointSize gl_PointSize, in 1-element array of float ClipDistance gl_ClipDistance})
 0:24                Constant:
 0:24                  1 (const int)
 0:24              Constant:
@@ -1428,9 +1428,9 @@ ERROR: node is still EOpNull!
 0:32      Sequence
 0:32        move second child to first child (temp 4-component vector of float)
 0:32          'p' (temp 4-component vector of float)
-0:32          gl_Position: direct index for structure (in 4-component vector of float)
-0:32            direct index (temp block{in 4-component vector of float gl_Position, in float gl_PointSize, in 1-element array of float gl_ClipDistance})
-0:32              'gl_in' (in 32-element array of block{in 4-component vector of float gl_Position, in float gl_PointSize, in 1-element array of float gl_ClipDistance})
+0:32          gl_Position: direct index for structure (in 4-component vector of float Position)
+0:32            direct index (temp block{in 4-component vector of float Position gl_Position, in float PointSize gl_PointSize, in 1-element array of float ClipDistance gl_ClipDistance})
+0:32              'gl_in' (in 32-element array of block{in 4-component vector of float Position gl_Position, in float PointSize gl_PointSize, in 1-element array of float ClipDistance gl_ClipDistance})
 0:32              Constant:
 0:32                1 (const int)
 0:32            Constant:
@@ -1438,9 +1438,9 @@ ERROR: node is still EOpNull!
 0:33      Sequence
 0:33        move second child to first child (temp float)
 0:33          'ps' (temp float)
-0:33          gl_PointSize: direct index for structure (in float)
-0:33            direct index (temp block{in 4-component vector of float gl_Position, in float gl_PointSize, in 1-element array of float gl_ClipDistance})
-0:33              'gl_in' (in 32-element array of block{in 4-component vector of float gl_Position, in float gl_PointSize, in 1-element array of float gl_ClipDistance})
+0:33          gl_PointSize: direct index for structure (in float PointSize)
+0:33            direct index (temp block{in 4-component vector of float Position gl_Position, in float PointSize gl_PointSize, in 1-element array of float ClipDistance gl_ClipDistance})
+0:33              'gl_in' (in 32-element array of block{in 4-component vector of float Position gl_Position, in float PointSize gl_PointSize, in 1-element array of float ClipDistance gl_ClipDistance})
 0:33              Constant:
 0:33                1 (const int)
 0:33            Constant:
@@ -1448,10 +1448,10 @@ ERROR: node is still EOpNull!
 0:34      Sequence
 0:34        move second child to first child (temp float)
 0:34          'cd' (temp float)
-0:34          direct index (temp float)
-0:34            gl_ClipDistance: direct index for structure (in 1-element array of float)
-0:34              direct index (temp block{in 4-component vector of float gl_Position, in float gl_PointSize, in 1-element array of float gl_ClipDistance})
-0:34                'gl_in' (in 32-element array of block{in 4-component vector of float gl_Position, in float gl_PointSize, in 1-element array of float gl_ClipDistance})
+0:34          direct index (temp float ClipDistance)
+0:34            gl_ClipDistance: direct index for structure (in 1-element array of float ClipDistance)
+0:34              direct index (temp block{in 4-component vector of float Position gl_Position, in float PointSize gl_PointSize, in 1-element array of float ClipDistance gl_ClipDistance})
+0:34                'gl_in' (in 32-element array of block{in 4-component vector of float Position gl_Position, in float PointSize gl_PointSize, in 1-element array of float ClipDistance gl_ClipDistance})
 0:34                Constant:
 0:34                  1 (const int)
 0:34              Constant:
@@ -1587,7 +1587,7 @@ ERROR: node is still EOpNull!
 0:?     'badp2' (flat patch in 4-component vector of float)
 0:?     'badp3' (noperspective patch in 4-component vector of float)
 0:?     'badp4' (patch sample in 3-component vector of float)
-0:?     'gl_in' (in 32-element array of block{in 1-element array of float gl_ClipDistance})
+0:?     'gl_in' (in 32-element array of block{in 1-element array of float ClipDistance gl_ClipDistance})
 0:?     'ina' (in 2-component vector of float)
 0:?     'inb' (in 32-element array of 2-component vector of float)
 0:?     'inc' (in 32-element array of 2-component vector of float)
