@@ -169,6 +169,7 @@ void TParseContext::initializeExtensionBehavior()
     extensionBehavior[E_GL_ARB_explicit_attrib_location]     = EBhDisable;
     extensionBehavior[E_GL_ARB_shader_image_load_store]      = EBhDisable;
     extensionBehavior[E_GL_ARB_shader_atomic_counters]       = EBhDisable;
+    extensionBehavior[E_GL_ARB_shader_draw_parameters]       = EBhDisable;
     extensionBehavior[E_GL_ARB_derivative_control]           = EBhDisable;
     extensionBehavior[E_GL_ARB_shader_texture_image_samples] = EBhDisable;
     extensionBehavior[E_GL_ARB_viewport_array]               = EBhDisable;
@@ -269,6 +270,7 @@ const char* TParseContext::getPreamble()
             "#define GL_ARB_explicit_attrib_location 1\n"
             "#define GL_ARB_shader_image_load_store 1\n"
             "#define GL_ARB_shader_atomic_counters 1\n"
+            "#define GL_ARB_shader_draw_parameters 1\n"
             "#define GL_ARB_derivative_control 1\n"
             "#define GL_ARB_shader_texture_image_samples 1\n"
             "#define GL_ARB_viewport_array 1\n"

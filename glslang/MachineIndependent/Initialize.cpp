@@ -1483,6 +1483,13 @@ void TBuiltIns::initialize(int version, EProfile profile)
             stageBuiltins[EShLangVertex].append(
                 "int gl_InstanceID;"          // needs qualifier fixed later
                 );
+        if (version >= 440) {
+            stageBuiltins[EShLangVertex].append(
+                "in int gl_BaseVertexARB;"
+                "in int gl_BaseInstanceARB;"
+                "in int gl_DrawIDARB;"
+                );
+        }
     } else {
         // ES profile
         if (version == 100) {
@@ -2890,6 +2897,16 @@ void IdentifyBuiltIns(int version, EProfile profile, EShLanguage language, TSymb
 
     switch(language) {
     case EShLangVertex:
+        if (profile != EEsProfile && version >= 440) {
+            symbolTable.setVariableExtensions("gl_BaseVertexARB",   1, &E_GL_ARB_shader_draw_parameters);
+            symbolTable.setVariableExtensions("gl_BaseInstanceARB", 1, &E_GL_ARB_shader_draw_parameters);
+            symbolTable.setVariableExtensions("gl_DrawIDARB",       1, &E_GL_ARB_shader_draw_parameters);
+
+            BuiltInVariable("gl_BaseVertexARB",   EbvBaseVertex,   symbolTable);
+            BuiltInVariable("gl_BaseInstanceARB", EbvBaseInstance, symbolTable);
+            BuiltInVariable("gl_DrawIDARB",       EbvDrawId,       symbolTable);
+        }
+
         // Compatibility variables, vertex only
         BuiltInVariable("gl_Color",          EbvColor,          symbolTable);
         BuiltInVariable("gl_SecondaryColor", EbvSecondaryColor, symbolTable);

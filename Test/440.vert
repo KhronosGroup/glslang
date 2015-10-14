@@ -159,3 +159,19 @@ out layout(xfb_buffer=7, xfb_offset=0) bblck10 {  // link ERROR, implicit stride
     dmat4x4 m2;
     float f;
 } bbinst10;
+
+int drawParamsBad()
+{
+    return gl_BaseVertexARB + gl_BaseInstanceARB + gl_DrawIDARB; // ERROR, extension not requested
+}
+
+#extension GL_ARB_shader_draw_parameters: enable
+
+int drawParams()
+{
+    return gl_BaseVertexARB + gl_BaseInstanceARB + gl_DrawIDARB;
+    gl_BaseVertexARB = 3;       // ERROR, can't write to shader 'in'
+    gl_BaseInstanceARB = 3;     // ERROR, can't write to shader 'in'
+    gl_DrawIDARB = 3;           // ERROR, can't write to shader 'in'
+    glBaseInstanceARB;          // ERROR, not defined
+}

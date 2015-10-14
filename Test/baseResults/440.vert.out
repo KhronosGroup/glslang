@@ -42,12 +42,51 @@ ERROR: 0:152: 'xfb_buffer' : buffer is too large: gl_MaxTransformFeedbackBuffers
 ERROR: 0:155: 'xfb_buffer' : buffer is too large: gl_MaxTransformFeedbackBuffers is 4
 ERROR: 0:155: 'xfb_stride' : 1/4 stride is too large: gl_MaxTransformFeedbackInterleavedComponents is 64
 ERROR: 0:157: 'xfb_buffer' : buffer is too large: gl_MaxTransformFeedbackBuffers is 4
-ERROR: 42 compilation errors.  No code generated.
+ERROR: 0:165: 'gl_BaseVertexARB' : required extension not requested: GL_ARB_shader_draw_parameters
+ERROR: 0:165: 'gl_BaseInstanceARB' : required extension not requested: GL_ARB_shader_draw_parameters
+ERROR: 0:165: 'gl_DrawIDARB' : required extension not requested: GL_ARB_shader_draw_parameters
+ERROR: 0:173: 'assign' :  l-value required "gl_BaseVertexARB" (can't modify shader input)
+ERROR: 0:174: 'assign' :  l-value required "gl_BaseInstanceARB" (can't modify shader input)
+ERROR: 0:175: 'assign' :  l-value required "gl_DrawIDARB" (can't modify shader input)
+ERROR: 0:176: 'glBaseInstanceARB' : undeclared identifier 
+ERROR: 49 compilation errors.  No code generated.
 
 
 Shader version: 440
+Requested GL_ARB_shader_draw_parameters
 in xfb mode
 ERROR: node is still EOpNull!
+0:163  Function Definition: drawParamsBad( (global int)
+0:163    Function Parameters: 
+0:165    Sequence
+0:165      Branch: Return with expression
+0:165        add (temp int)
+0:165          add (temp int)
+0:165            'gl_BaseVertexARB' (in int BaseVertex)
+0:165            'gl_BaseInstanceARB' (in int BaseInstance)
+0:165          'gl_DrawIDARB' (in int DrawId)
+0:170  Function Definition: drawParams( (global int)
+0:170    Function Parameters: 
+0:172    Sequence
+0:172      Branch: Return with expression
+0:172        add (temp int)
+0:172          add (temp int)
+0:172            'gl_BaseVertexARB' (in int BaseVertex)
+0:172            'gl_BaseInstanceARB' (in int BaseInstance)
+0:172          'gl_DrawIDARB' (in int DrawId)
+0:173      move second child to first child (temp int)
+0:173        'gl_BaseVertexARB' (in int BaseVertex)
+0:173        Constant:
+0:173          3 (const int)
+0:174      move second child to first child (temp int)
+0:174        'gl_BaseInstanceARB' (in int BaseInstance)
+0:174        Constant:
+0:174          3 (const int)
+0:175      move second child to first child (temp int)
+0:175        'gl_DrawIDARB' (in int DrawId)
+0:175        Constant:
+0:175          3 (const int)
+0:176      'glBaseInstanceARB' (temp float)
 0:?   Linker Objects
 0:?     'a' (layout(location=2 component=2 ) in 2-component vector of float)
 0:?     'b' (layout(location=2 component=1 ) in float)
@@ -114,8 +153,40 @@ ERROR: Linking vertex stage: xfb_stride is too large:
 ERROR:     xfb_buffer 7, components (1/4 stride) needed are 66, gl_MaxTransformFeedbackInterleavedComponents is 64
 
 Shader version: 440
+Requested GL_ARB_shader_draw_parameters
 in xfb mode
 ERROR: node is still EOpNull!
+0:163  Function Definition: drawParamsBad( (global int)
+0:163    Function Parameters: 
+0:165    Sequence
+0:165      Branch: Return with expression
+0:165        add (temp int)
+0:165          add (temp int)
+0:165            'gl_BaseVertexARB' (in int BaseVertex)
+0:165            'gl_BaseInstanceARB' (in int BaseInstance)
+0:165          'gl_DrawIDARB' (in int DrawId)
+0:170  Function Definition: drawParams( (global int)
+0:170    Function Parameters: 
+0:172    Sequence
+0:172      Branch: Return with expression
+0:172        add (temp int)
+0:172          add (temp int)
+0:172            'gl_BaseVertexARB' (in int BaseVertex)
+0:172            'gl_BaseInstanceARB' (in int BaseInstance)
+0:172          'gl_DrawIDARB' (in int DrawId)
+0:173      move second child to first child (temp int)
+0:173        'gl_BaseVertexARB' (in int BaseVertex)
+0:173        Constant:
+0:173          3 (const int)
+0:174      move second child to first child (temp int)
+0:174        'gl_BaseInstanceARB' (in int BaseInstance)
+0:174        Constant:
+0:174          3 (const int)
+0:175      move second child to first child (temp int)
+0:175        'gl_DrawIDARB' (in int DrawId)
+0:175        Constant:
+0:175          3 (const int)
+0:176      'glBaseInstanceARB' (temp float)
 0:?   Linker Objects
 0:?     'a' (layout(location=2 component=2 ) in 2-component vector of float)
 0:?     'b' (layout(location=2 component=1 ) in float)
