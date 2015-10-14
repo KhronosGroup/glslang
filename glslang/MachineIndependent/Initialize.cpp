@@ -1483,6 +1483,13 @@ void TBuiltIns::initialize(int version, EProfile profile)
             stageBuiltins[EShLangVertex].append(
                 "int gl_InstanceID;"          // needs qualifier fixed later
                 );
+        if (version >= 440) {
+            stageBuiltins[EShLangVertex].append(
+                "int gl_BaseVertexARB;"       // needs qualifier fixed later
+                "int gl_BaseInstanceARB;"
+                "int gl_DrawIDARB;"
+                );
+        }
     } else {
         // ES profile
         if (version == 100) {
@@ -2890,6 +2897,19 @@ void IdentifyBuiltIns(int version, EProfile profile, EShLanguage language, TSymb
 
     switch(language) {
     case EShLangVertex:
+        SpecialQualifier("gl_VertexID",        EvqVertexId,     EbvVertexId,     symbolTable);
+        SpecialQualifier("gl_InstanceID",      EvqInstanceId,   EbvInstanceId,   symbolTable);
+
+        if (profile != EEsProfile && version >= 440) {
+            SpecialQualifier("gl_BaseVertexARB",   EvqVaryingIn, EbvBaseVertex,   symbolTable);
+            SpecialQualifier("gl_BaseInstanceARB", EvqVaryingIn, EbvBaseInstance, symbolTable);
+            SpecialQualifier("gl_DrawIDARB",       EvqVaryingIn, EbvDrawId,       symbolTable);
+
+            symbolTable.setVariableExtensions("gl_BaseVertexARB",   1, &E_GL_ARB_shader_draw_parameters);
+            symbolTable.setVariableExtensions("gl_BaseInstanceARB", 1, &E_GL_ARB_shader_draw_parameters);
+            symbolTable.setVariableExtensions("gl_DrawIDARB",       1, &E_GL_ARB_shader_draw_parameters);
+        }
+
         // Compatibility variables, vertex only
         BuiltInVariable("gl_Color",          EbvColor,          symbolTable);
         BuiltInVariable("gl_SecondaryColor", EbvSecondaryColor, symbolTable);
@@ -2940,8 +2960,6 @@ void IdentifyBuiltIns(int version, EProfile profile, EShLanguage language, TSymb
         SpecialQualifier("gl_Position",   EvqPosition,   EbvPosition,   symbolTable);
         SpecialQualifier("gl_PointSize",  EvqPointSize,  EbvPointSize,  symbolTable);
         SpecialQualifier("gl_ClipVertex", EvqClipVertex, EbvClipVertex, symbolTable);
-        SpecialQualifier("gl_VertexID",   EvqVertexId,   EbvVertexId,   symbolTable);
-        SpecialQualifier("gl_InstanceID", EvqInstanceId, EbvInstanceId, symbolTable);
 
         BuiltInVariable("gl_in",  "gl_Position",     EbvPosition,     symbolTable);
         BuiltInVariable("gl_in",  "gl_PointSize",    EbvPointSize,    symbolTable);

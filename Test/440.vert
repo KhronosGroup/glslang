@@ -159,3 +159,16 @@ out layout(xfb_buffer=7, xfb_offset=0) bblck10 {  // link ERROR, implicit stride
     dmat4x4 m2;
     float f;
 } bbinst10;
+
+int drawParamsBad()
+{
+    return gl_BaseVertexARB + glBaseInstanceARB + gl_DrawIDARB; // ERROR, extension not requested
+}
+
+#extension GL_ARB_shader_draw_parameters: enable
+
+int drawParams()
+{
+    return gl_BaseVertexARB + glBaseInstanceARB + gl_DrawIDARB;
+}
+

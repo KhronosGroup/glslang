@@ -1907,15 +1907,15 @@ bool TParseContext::lValueErrorCheck(const TSourceLoc& loc, const char* op, TInt
 
     const char* message = nullptr;
     switch (node->getQualifier().storage) {
-    case EvqConst:          message = "can't modify a const";        break;
-    case EvqConstReadOnly:  message = "can't modify a const";        break;
-    case EvqVaryingIn:      message = "can't modify shader input";   break;
-    case EvqInstanceId:     message = "can't modify gl_InstanceID";  break;
-    case EvqVertexId:       message = "can't modify gl_VertexID";    break;
-    case EvqFace:           message = "can't modify gl_FrontFace";   break;
-    case EvqFragCoord:      message = "can't modify gl_FragCoord";   break;
-    case EvqPointCoord:     message = "can't modify gl_PointCoord";  break;
-    case EvqUniform:        message = "can't modify a uniform";      break;
+    case EvqConst:          message = "can't modify a const";               break;
+    case EvqConstReadOnly:  message = "can't modify a const";               break;
+    case EvqVaryingIn:      message = "can't modify shader input";          break;
+    case EvqInstanceId:     message = "can't modify gl_InstanceID";         break;
+    case EvqVertexId:       message = "can't modify gl_VertexID";           break;
+    case EvqFace:           message = "can't modify gl_FrontFace";          break;
+    case EvqFragCoord:      message = "can't modify gl_FragCoord";          break;
+    case EvqPointCoord:     message = "can't modify gl_PointCoord";         break;
+    case EvqUniform:        message = "can't modify a uniform";             break;
     case EvqBuffer:
         if (node->getQualifier().readonly)
             message = "can't modify a readonly buffer";
