@@ -115,6 +115,9 @@ protected:
     void addDecoration(spv::Id id, spv::Decoration dec);
     void addMemberDecoration(spv::Id id, int member, spv::Decoration dec);
     spv::Id createSpvConstant(const glslang::TType& type, const glslang::TConstUnionArray&, int& nextConst);
+    bool isTrivialLeaf(const glslang::TIntermTyped* node);
+    bool isTrivial(const glslang::TIntermTyped* node);
+    spv::Id createShortCircuit(glslang::TOperator, glslang::TIntermTyped& left, glslang::TIntermTyped& right);
 
     spv::Function* shaderEntry;
     int sequenceDepth;
@@ -723,6 +726,21 @@ bool TGlslangToSpvTraverser::visitBinary(glslang::TVisit /* visit */, glslang::T
             for (int i = 0; i < (int)swizzleSequence.size(); ++i)
                 swizzle.push_back(swizzleSequence[i]->getAsConstantUnion()->getConstArray()[0].getIConst());
             builder.accessChainPushSwizzle(swizzle, convertGlslangToSpvType(node->getLeft()->getType()));
+        }
+        return false;
+    case glslang::EOpLogicalOr:
+    case glslang::EOpLogicalAnd:
+        {
+
+            // These may require short circuiting, but can sometimes be done as straight
+            // binary operations.  The right operand must be short circuited if it has
+            // side effects, and should probably be if it is complex.
+            if (isTrivial(node->getRight()->getAsTyped()))
+                break; // handle below as a normal binary operation
+            // otherwise, we need to do dynamic short circuiting on the right operand
+            spv::Id result = createShortCircuit(node->getOp(), *node->getLeft()->getAsTyped(), *node->getRight()->getAsTyped());
+            builder.clearAccessChain();
+            builder.setAccessChainRValue(result);
         }
         return false;
     default:
@@ -2177,7 +2195,9 @@ spv::Id TGlslangToSpvTraverser::createBinaryOperation(glslang::TOperator op, spv
         break;
     }
 
+    // handle mapped binary operations (should be non-comparison)
     if (binOp != spv::OpNop) {
+        assert(comparison == false);
         if (builder.isMatrix(left) || builder.isMatrix(right)) {
             switch (binOp) {
             case spv::OpMatrixTimesScalar:
@@ -2215,7 +2235,7 @@ spv::Id TGlslangToSpvTraverser::createBinaryOperation(glslang::TOperator op, spv
     if (! comparison)
         return 0;
 
-    // Comparison instructions
+    // Handle comparison instructions
 
     if (reduceComparison && (builder.isVector(left) || builder.isMatrix(left) || builder.isAggregate(left))) {
         assert(op == glslang::EOpEqual || op == glslang::EOpNotEqual);
@@ -3023,6 +3043,133 @@ spv::Id TGlslangToSpvTraverser::createSpvConstant(const glslang::TType& glslangT
     }
 
     return builder.makeCompositeConstant(typeId, spvConsts);
+}
+
+// Return true if the node is a constant or symbol whose reading has no
+// non-trivial observable cost or effect.
+bool TGlslangToSpvTraverser::isTrivialLeaf(const glslang::TIntermTyped* node)
+{
+    // don't know what this is
+    if (node == nullptr)
+        return false;
+
+    // a constant is safe
+    if (node->getAsConstantUnion() != nullptr)
+        return true;
+
+    // not a symbol means non-trivial
+    if (node->getAsSymbolNode() == nullptr)
+        return false;
+
+    // a symbol, depends on what's being read
+    switch (node->getType().getQualifier().storage) {
+    case glslang::EvqTemporary:
+    case glslang::EvqGlobal:
+    case glslang::EvqIn:
+    case glslang::EvqInOut:
+    case glslang::EvqConst:
+    case glslang::EvqConstReadOnly:
+    case glslang::EvqUniform:
+        return true;
+    default:
+        return false;
+    }
+} 
+
+// A node is trivial if it is a single operation with no side effects.
+// Error on the side of saying non-trivial.
+// Return true if trivial.
+bool TGlslangToSpvTraverser::isTrivial(const glslang::TIntermTyped* node)
+{
+    if (node == nullptr)
+        return false;
+
+    // symbols and constants are trivial
+    if (isTrivialLeaf(node))
+        return true;
+
+    // otherwise, it needs to be a simple operation or one or two leaf nodes
+
+    // not a simple operation
+    const glslang::TIntermBinary* binaryNode = node->getAsBinaryNode();
+    const glslang::TIntermUnary* unaryNode = node->getAsUnaryNode();
+    if (binaryNode == nullptr && unaryNode == nullptr)
+        return false;
+
+    // not on leaf nodes
+    if (binaryNode && (! isTrivialLeaf(binaryNode->getLeft()) || ! isTrivialLeaf(binaryNode->getRight())))
+        return false;
+
+    if (unaryNode && ! isTrivialLeaf(unaryNode->getOperand())) {
+        return false;
+    }
+
+    switch (node->getAsOperator()->getOp()) {
+    case glslang::EOpLogicalNot:
+    case glslang::EOpConvIntToBool:
+    case glslang::EOpConvUintToBool:
+    case glslang::EOpConvFloatToBool:
+    case glslang::EOpConvDoubleToBool:
+    case glslang::EOpEqual:
+    case glslang::EOpNotEqual:
+    case glslang::EOpLessThan:
+    case glslang::EOpGreaterThan:
+    case glslang::EOpLessThanEqual:
+    case glslang::EOpGreaterThanEqual:
+    case glslang::EOpIndexDirect:
+    case glslang::EOpIndexDirectStruct:
+    case glslang::EOpLogicalXor:
+    case glslang::EOpAny:
+    case glslang::EOpAll:
+        return true;
+    default:
+        return false;
+    }
+}
+
+// Emit short-circuiting code, where 'right' is never evaluated unless
+// the left side is true (for &&) or false (for ||).
+spv::Id TGlslangToSpvTraverser::createShortCircuit(glslang::TOperator op, glslang::TIntermTyped& left, glslang::TIntermTyped& right)
+{
+    spv::Id boolTypeId = builder.makeBoolType();
+
+    // emit left operand
+    builder.clearAccessChain();
+    left.traverse(this);
+    spv::Id leftId = builder.accessChainLoad(boolTypeId);
+
+    // Operands to accumulate OpPhi operands
+    std::vector<spv::Id> phiOperands;
+    // accumulate left operand's phi information
+    phiOperands.push_back(leftId);
+    phiOperands.push_back(builder.getBuildPoint()->getId());
+
+    // Make the two kinds of operation symmetric with a "!"
+    //   || => emit "if (! left) result = right"
+    //   && => emit "if (  left) result = right"
+    //
+    // TODO: this runtime "not" for || could be avoided by adding functionality
+    // to 'builder' to have an "else" without an "then"
+    if (op == glslang::EOpLogicalOr)
+        leftId = builder.createUnaryOp(spv::OpLogicalNot, boolTypeId, leftId);
+
+    // make an "if" based on the left value
+    spv::Builder::If ifBuilder(leftId, builder);
+
+    // emit right operand as the "then" part of the "if"
+    builder.clearAccessChain();
+    right.traverse(this);
+    spv::Id rightId = builder.accessChainLoad(boolTypeId);
+
+    // accumulate left operand's phi information
+    phiOperands.push_back(rightId);
+    phiOperands.push_back(builder.getBuildPoint()->getId());
+
+    // finish the "if"
+    ifBuilder.makeEndIf();
+
+    // phi together the two results
+    return builder.createOp(spv::OpPhi, boolTypeId, phiOperands);
 }
 
 };  // end anonymous namespace
