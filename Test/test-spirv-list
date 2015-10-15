@@ -83,5 +83,3 @@ spv.atomic.comp
 spv.AofA.frag
 spv.queryL.frag
 spv.shortCircuit.frag
-# GLSL-level semantics
-vulkan.frag
