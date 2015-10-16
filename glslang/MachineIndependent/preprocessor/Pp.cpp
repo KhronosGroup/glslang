@@ -1004,7 +1004,7 @@ int TPpContext::MacroExpand(int atom, TPpToken* ppToken, bool expandUndef, bool 
     switch (atom) {
     case PpAtomLineMacro:
         ppToken->ival = parseContext.getCurrentLoc().line;
-        sprintf(ppToken->name, "%d", ppToken->ival);
+        snprintf(ppToken->name, sizeof(ppToken->name), "%d", ppToken->ival);
         UngetToken(PpAtomConstInt, ppToken);
         return 1;
 
@@ -1012,14 +1012,14 @@ int TPpContext::MacroExpand(int atom, TPpToken* ppToken, bool expandUndef, bool 
         if (parseContext.getCurrentLoc().name)
             parseContext.ppRequireExtensions(ppToken->loc, 1, &E_GL_GOOGLE_cpp_style_line_directive, "filename-based __FILE__");
         ppToken->ival = parseContext.getCurrentLoc().string;
-        sprintf(ppToken->name, "%s", ppToken->loc.getStringNameOrNum().c_str());
+        snprintf(ppToken->name, sizeof(ppToken->name), "%s", ppToken->loc.getStringNameOrNum().c_str());
         UngetToken(PpAtomConstInt, ppToken);
         return 1;
     }
 
     case PpAtomVersionMacro:
         ppToken->ival = parseContext.version;
-        sprintf(ppToken->name, "%d", ppToken->ival);
+        snprintf(ppToken->name, sizeof(ppToken->name), "%d", ppToken->ival);
         UngetToken(PpAtomConstInt, ppToken);
         return 1;
 
