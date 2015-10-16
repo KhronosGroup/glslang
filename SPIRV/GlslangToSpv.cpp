@@ -1909,10 +1909,8 @@ spv::Id TGlslangToSpvTraverser::createImageTextureFunctionCall(glslang::TIntermO
     }
 
     // Check for texture functions other than queries
-    if (cracked.gather)
-        spv::MissingFunctionality("texture gather");
 
-    // check for bias argument
+    // Check for bias argument
     bool bias = false;
     if (! cracked.lod && ! cracked.gather && ! cracked.grad && ! cracked.fetch) {
         int nonBiasArgCount = 2;
@@ -1925,22 +1923,38 @@ spv::Id TGlslangToSpvTraverser::createImageTextureFunctionCall(glslang::TIntermO
             bias = true;
     }
 
+    // Check for comp argument
+    bool comp = false;
+    if (cracked.gather && ! sampler.shadow) {
+        int nonCompArgCount = 2;
+        if (cracked.offset || cracked.offsets)
+            ++nonCompArgCount;
+
+        if ((int)arguments.size() > nonCompArgCount)
+            comp = true;
+    }
+
+    // Set the rest of the arguments
     bool cubeCompare = sampler.dim == glslang::EsdCube && sampler.arrayed && sampler.shadow;
 
-    // set the rest of the arguments
     params.coords = arguments[1];
     int extraArgs = 0;
     if (cubeCompare)
         params.Dref = arguments[2];
     else if (sampler.shadow) {
-        std::vector<spv::Id> indexes;
-        int comp;
-        if (cracked.proj)
-            comp = 3;
-        else
-            comp = builder.getNumComponents(params.coords) - 1;
-        indexes.push_back(comp);
-        params.Dref = builder.createCompositeExtract(params.coords, builder.getScalarTypeId(builder.getTypeId(params.coords)), indexes);
+        if (cracked.gather) {
+            params.Dref = arguments[2];
+            ++extraArgs;
+        } else {
+            std::vector<spv::Id> indexes;
+            int comp;
+            if (cracked.proj)
+                comp = 3;
+            else
+                comp = builder.getNumComponents(params.coords) - 1;
+            indexes.push_back(comp);
+            params.Dref = builder.createCompositeExtract(params.coords, builder.getScalarTypeId(builder.getTypeId(params.coords)), indexes);
+        }
     }
     if (cracked.lod) {
         params.lod = arguments[2];
@@ -1954,20 +1968,27 @@ spv::Id TGlslangToSpvTraverser::createImageTextureFunctionCall(glslang::TIntermO
         params.gradY = arguments[3 + extraArgs];
         extraArgs += 2;
     }
-    //if (gather && compare) {
-    //    params.compare = arguments[2 + extraArgs];
-    //    ++extraArgs;
-    //}
-    if (cracked.offset || cracked.offsets) {
+    if (cracked.offset) {
         params.offset = arguments[2 + extraArgs];
+        ++extraArgs;
+    } else if (cracked.offsets) {
+        params.offsets = arguments[2 + extraArgs];
         ++extraArgs;
     }
     if (bias) {
         params.bias = arguments[2 + extraArgs];
         ++extraArgs;
     }
+    if (cracked.gather && ! sampler.shadow) {
+        // comp argument is only valid for texture gather
+        if (comp) {
+            params.comp = arguments[2 + extraArgs];
+            ++extraArgs;
+        } else
+            params.comp = builder.makeIntConstant(0);
+    }
 
-    return builder.createTextureCall(precision, convertGlslangToSpvType(node->getType()), cracked.fetch, cracked.proj, params);
+    return builder.createTextureCall(precision, convertGlslangToSpvType(node->getType()), cracked.fetch, cracked.gather, cracked.proj, params);
 }
 
 spv::Id TGlslangToSpvTraverser::handleUserFunctionCall(const glslang::TIntermAggregate* node)

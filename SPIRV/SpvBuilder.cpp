@@ -1175,8 +1175,10 @@ Id Builder::createBuiltinCall(Decoration /*precision*/, Id resultType, Id builti
 
 // Accept all parameters needed to create a texture instruction.
 // Create the correct instruction based on the inputs, and make the call.
-Id Builder::createTextureCall(Decoration precision, Id resultType, bool fetch, bool proj, const TextureParameters& parameters)
+Id Builder::createTextureCall(Decoration precision, Id resultType, bool fetch, bool gather, bool proj, const TextureParameters& parameters)
 {
+    assert(! (fetch && gather));
+
     static const int maxTextureArgs = 10;
     Id texArgs[maxTextureArgs] = {};
 
@@ -1189,6 +1191,8 @@ Id Builder::createTextureCall(Decoration precision, Id resultType, bool fetch, b
     texArgs[numArgs++] = parameters.coords;
     if (parameters.Dref)
         texArgs[numArgs++] = parameters.Dref;
+    else if (parameters.comp)
+        texArgs[numArgs++] = parameters.comp;
 
     //
     // Set up the optional arguments
@@ -1238,6 +1242,11 @@ Id Builder::createTextureCall(Decoration precision, Id resultType, bool fetch, b
     opCode = OpImageSampleImplicitLod;
     if (fetch) {
         opCode = OpImageFetch;
+    } else if (gather) {
+        if (parameters.Dref)
+            opCode = OpImageDrefGather;
+        else
+            opCode = OpImageGather;
     } else if (xplicit) {
         if (parameters.Dref) {
             if (proj)
