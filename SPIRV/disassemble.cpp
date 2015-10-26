@@ -316,7 +316,7 @@ void SpirvStream::disassembleInstruction(Id resultId, Id /*typeId*/, Op opCode, 
             nextNestedControl = 0;
         }
     } else if (opCode == OpExtInstImport) {
-        idDescriptor[resultId] = (char*)(&stream[word]);
+        idDescriptor[resultId] = (const char*)(&stream[word]);
     }
     else {
         if (idDescriptor[resultId].size() == 0) {
@@ -391,7 +391,7 @@ void SpirvStream::disassembleInstruction(Id resultId, Id /*typeId*/, Op opCode, 
             disassembleIds(1);
             // Get names for printing "(XXX)" for readability, *after* this id
             if (opCode == OpName)
-                idDescriptor[stream[word - 1]] = (char*)(&stream[word]);
+                idDescriptor[stream[word - 1]] = (const char*)(&stream[word]);
             break;
         case OperandOptionalId:
         case OperandVariableIds:
@@ -404,8 +404,8 @@ void SpirvStream::disassembleInstruction(Id resultId, Id /*typeId*/, Op opCode, 
             return;
         case OperandOptionalLiteral:
         case OperandVariableLiterals:
-            if (opCode == OpDecorate && stream[word - 1] == DecorationBuiltIn ||
-                opCode == OpMemberDecorate && stream[word - 1] == DecorationBuiltIn) {
+            if ((opCode == OpDecorate && stream[word - 1] == DecorationBuiltIn) ||
+                (opCode == OpMemberDecorate && stream[word - 1] == DecorationBuiltIn)) {
                 out << BuiltInString(stream[word++]);
                 --numOperands;
                 ++op;
@@ -442,7 +442,7 @@ void SpirvStream::disassembleInstruction(Id resultId, Id /*typeId*/, Op opCode, 
             disassembleImmediates(1);
             if (opCode == OpExtInst) {
                 ExtInstSet extInstSet = GLSL450Inst;
-                if (0 == memcmp("OpenCL", (char*)(idDescriptor[stream[word-2]].c_str()), 6)) {
+                if (0 == memcmp("OpenCL", (const char*)(idDescriptor[stream[word-2]].c_str()), 6)) {
                     extInstSet = OpenCLExtInst;
                 }
                 unsigned entrypoint = stream[word - 1];
