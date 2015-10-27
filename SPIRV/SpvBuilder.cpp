@@ -2162,11 +2162,20 @@ void Builder::dump(std::vector<unsigned int>& out) const
     out.push_back(uniqueId + 1);
     out.push_back(0);
 
+    // First instructions, some created on the spot here:
+    if (source != SourceLanguageUnknown) {
+        Instruction sourceInst(0, 0, OpSource);
+        sourceInst.addImmediateOperand(source);
+        sourceInst.addImmediateOperand(sourceVersion);
+        sourceInst.dump(out);
+    }
     for (int e = 0; e < (int)extensions.size(); ++e) {
         Instruction extInst(0, 0, OpSourceExtension);
         extInst.addStringOperand(extensions[e]);
         extInst.dump(out);
     }
+
+    // TBD: OpExtension ...
 
     // Capabilities
     for (auto cap : capabilities) {
@@ -2174,8 +2183,6 @@ void Builder::dump(std::vector<unsigned int>& out) const
         capInst.addImmediateOperand(cap);
         capInst.dump(out);
     }
-
-    // TBD: OpExtension ...
 
     dumpInstructions(out, imports);
     Instruction memInst(0, 0, OpMemoryModel);
@@ -2186,20 +2193,9 @@ void Builder::dump(std::vector<unsigned int>& out) const
     // Instructions saved up while building:
     dumpInstructions(out, entryPoints);
     dumpInstructions(out, executionModes);
-
-    // Debug instructions
-    if (source != SourceLanguageUnknown) {
-        Instruction sourceInst(0, 0, OpSource);
-        sourceInst.addImmediateOperand(source);
-        sourceInst.addImmediateOperand(sourceVersion);
-        sourceInst.dump(out);
-    }
     dumpInstructions(out, names);
     dumpInstructions(out, lines);
-
-    // Annotation instructions
     dumpInstructions(out, decorations);
-
     dumpInstructions(out, constantsTypesGlobals);
     dumpInstructions(out, externals);
 
