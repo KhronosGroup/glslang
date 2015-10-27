@@ -63,7 +63,6 @@ set(HEADERS
     MachineIndependent/Scan.h
     MachineIndependent/ScanContext.h
     MachineIndependent/SymbolTable.h
-    MachineIndependent/unistd.h
     MachineIndependent/Versions.h
     MachineIndependent/preprocessor/PpContext.h
     MachineIndependent/preprocessor/PpTokens.h)

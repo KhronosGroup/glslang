@@ -165,9 +165,6 @@
     <ClInclude Include="glslang\Include\intermediate.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="glslang\MachineIndependent\unistd.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="glslang\Public\ShaderLang.h">
       <Filter>Public</Filter>
     </ClInclude>

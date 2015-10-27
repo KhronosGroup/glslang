@@ -643,7 +643,6 @@ xcopy /y $(IntDir)$(TargetName)$(TargetExt) Test</Command>
     <ClInclude Include="glslang\MachineIndependent\SymbolTable.h" />
     <ClInclude Include="glslang\Include\Types.h" />
     <ClInclude Include="glslang\Include\intermediate.h" />
-    <ClInclude Include="glslang\MachineIndependent\unistd.h" />
     <ClInclude Include="glslang\Public\ShaderLang.h" />
     <ClInclude Include="glslang\OSDependent\Windows\osinclude.h" />
     <ClInclude Include="glslang\OSDependent\Linux\osinclude.h" />
