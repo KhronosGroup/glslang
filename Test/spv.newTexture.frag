@@ -34,6 +34,8 @@ out vec4 FragData;
 
 void main()
 {
+    const ivec2 offsets[4] = { ivec2(1), ivec2(2), ivec2(3), ivec2(4) };
+
     vec4 v = texture(s2D, c2D);
     v += textureProj(s3D, c4D);
     v += textureLod(s2DArray, c3D, 1.2);
@@ -47,6 +49,12 @@ void main()
     v.x += textureGradOffset(s2DArrayShadow, c4D, c2D, c2D, ivec2(3));
     v += textureProjGrad(s3D, c4D, c3D, c3D);
     v += textureProjGradOffset(s2D, c3D, c2D, c2D, ivec2(3));
+    v += textureGather(s2D, c2D, 2);
+    v += textureGather(s2DShadow, c2D, 0.4);
+    v += textureGatherOffset(s2D, c2D, ic2D);
+    v += textureGatherOffset(s2DShadow, c2D, 0.5, ivec2(1));
+    v += textureGatherOffsets(s2D, c2D, offsets);
+    v += textureGatherOffsets(s2DShadow, c2D, 0.6, offsets);
 
     ivec4 iv = texture(is2D, c2D);
     v += vec4(iv);
@@ -64,7 +72,7 @@ void main()
     v += vec4(iv);
 
     ivec2 iv2 = textureSize(sCubeShadow, 2);
-    // iv2 += textureSize(is2Dms);
+    iv2 += textureSize(is2Dms);
 
     FragData = v + vec4(iv2, 0.0, 0.0);
 }
