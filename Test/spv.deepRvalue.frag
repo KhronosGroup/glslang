@@ -1,6 +1,6 @@
-#version 120
+#version 330
 
-uniform sampler2D sampler;
+uniform sampler2D samp2D;
 
 vec4 v1 = vec4(2.0, 3.0, 5.0, 7.0);
 vec4 v2 = vec4(11.0, 13.0, 17.0, 19.0);
@@ -25,7 +25,7 @@ void main()
 
     float h = str(1, vec2[3](vec2(2.0, 3.0), vec2(4.0, 5.0), vec2(6.0, 7.0)), true).b[1][1];  // should be 5.0
 
-    float i = texture2D(sampler, vec2(0.5,0.5)).y;
+    float i = texture(samp2D, vec2(0.5,0.5)).y;
 
     i += (i > 0.1 ? v1 : v2)[3];
 

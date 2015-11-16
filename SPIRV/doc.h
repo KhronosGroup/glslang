@@ -116,10 +116,9 @@ enum OpcodeClass {
 enum OperandClass {
     OperandNone,
     OperandId,
-    OperandOptionalId,
-    OperandOptionalImage,
     OperandVariableIds,
     OperandOptionalLiteral,
+    OperandOptionalLiteralString,
     OperandVariableLiterals,
     OperandVariableIdLiteral,
     OperandVariableLiteralId,
@@ -168,18 +167,22 @@ typedef std::vector<Capability> EnumCaps;
 class OperandParameters {
 public:
     OperandParameters() { }
-    void push(OperandClass oc, const char* d)
+    void push(OperandClass oc, const char* d, bool opt = false)
     {
         opClass.push_back(oc);
         desc.push_back(d);
+        optional.push_back(opt);
     }
+    void setOptional();
     OperandClass getClass(int op) const { return opClass[op]; }
     const char* getDesc(int op) const { return desc[op]; }
+    bool isOptional(int op) const { return optional[op]; }
     int getNum() const { return (int)opClass.size(); }
 
 protected:
     std::vector<OperandClass> opClass;
     std::vector<const char*> desc;
+    std::vector<bool> optional;
 };
 
 // Parameterize an enumerant
@@ -240,7 +243,7 @@ protected:
     int resultPresent : 1;
 };
 
-const int OpcodeCeiling = 305;
+const int OpcodeCeiling = 320;
 
 // The set of objects that hold all the instruction/operand
 // parameterization information.

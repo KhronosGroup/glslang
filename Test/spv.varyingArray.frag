@@ -9,7 +9,7 @@ varying vec4 foo[3];
 
 void main()
 {
-	vec4 texColor = texture2D(texSampler2D, vec2(gl_TexCoord[4] + gl_TexCoord[5]));
+	vec4 texColor = texture(texSampler2D, vec2(gl_TexCoord[4] + gl_TexCoord[5]));
 
 	texColor += color;
 

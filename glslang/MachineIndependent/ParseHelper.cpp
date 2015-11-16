@@ -47,10 +47,10 @@ extern int yyparse(glslang::TParseContext*);
 
 namespace glslang {
 
-TParseContext::TParseContext(TSymbolTable& symt, TIntermediate& interm, bool pb, int v, EProfile p, EShLanguage L, TInfoSink& is,
+TParseContext::TParseContext(TSymbolTable& symt, TIntermediate& interm, bool pb, int v, EProfile p, int spv, EShLanguage L, TInfoSink& is,
                              bool fc, EShMessages m) :
             intermediate(interm), symbolTable(symt), infoSink(is), language(L),
-            version(v), profile(p), forwardCompatible(fc), 
+            version(v), profile(p), spv(spv), forwardCompatible(fc), 
             contextPragma(true, false), loopNestingLevel(0), structNestingLevel(0), controlFlowNestingLevel(0), statementNestingLevel(0),
             postMainReturn(false),
             tokensBeforeEOF(false), limits(resources.limits), messages(m), currentScanner(nullptr),
@@ -1674,11 +1674,14 @@ TFunction* TParseContext::handleConstructorCall(const TSourceLoc& loc, const TPu
 //
 TOperator TParseContext::mapTypeToConstructorOp(const TType& type) const
 {
-    if (type.isStruct())
-        return EOpConstructStruct;
-
     TOperator op = EOpNull;
+ 
     switch (type.getBasicType()) {
+    case EbtStruct:
+        op = EOpConstructStruct;
+        break;
+    case EbtSampler:
+        break;
     case EbtFloat:
         if (type.isMatrix()) {
             switch (type.getMatrixCols()) {
@@ -2325,8 +2328,9 @@ void TParseContext::samplerCheck(const TSourceLoc& loc, const TType& type, const
 
     if (type.getBasicType() == EbtStruct && containsFieldWithBasicType(type, EbtSampler))
         error(loc, "non-uniform struct contains a sampler or image:", type.getBasicTypeString().c_str(), identifier.c_str());
-    else if (type.getBasicType() == EbtSampler && type.getQualifier().storage != EvqUniform)
+    else if (type.getBasicType() == EbtSampler && type.getQualifier().storage != EvqUniform) {
         error(loc, "sampler/image types can only be used in uniform variables or function parameters:", type.getBasicTypeString().c_str(), identifier.c_str());
+    }
 }
 
 void TParseContext::atomicUintCheck(const TSourceLoc& loc, const TType& type, const TString& identifier)
@@ -3598,6 +3602,7 @@ void TParseContext::setLayoutQualifier(const TSourceLoc& loc, TPublicType& publi
         publicType.qualifier.layoutPacking = ElpStd430;
         return;
     }
+    // TODO: compile-time performance: may need to stop doing linear searches
     for (TLayoutFormat format = (TLayoutFormat)(ElfNone + 1); format < ElfCount; format = (TLayoutFormat)(format + 1)) {
         if (id == TQualifier::getLayoutFormatString(format)) {
             if ((format > ElfEsFloatGuard && format < ElfFloatGuard) ||
