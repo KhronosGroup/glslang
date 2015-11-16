@@ -47,10 +47,6 @@ CMake: The currently maintained and preferred way of building is through CMake.
 In MSVC, after running CMake, you may need to use the Configuration Manager to
 check the INSTALL project.
 
-Note there are some legacy build methods still intermingled within the directory
-structure (make, MSVC), but these are no longer maintained, having been
-replaced with CMake.
-
 Programmatic Interfaces
 -----------------------
 
