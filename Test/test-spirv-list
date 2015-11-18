@@ -10,7 +10,6 @@ spv.while-simple.vert
 # vulkan-specific tests
 spv.set.vert
 spv.double.comp
-# snapshot of some LunarGLASS tests, so glslang can stand on its own and tests can now evolve separately
 spv.100ops.frag
 spv.130.frag
 spv.140.frag
@@ -56,6 +55,7 @@ spv.matrix2.frag
 spv.newTexture.frag
 spv.nonSquare.vert
 spv.Operations.frag
+spv.intOps.vert
 spv.precision.frag
 spv.prepost.frag
 spv.qualifiers.vert

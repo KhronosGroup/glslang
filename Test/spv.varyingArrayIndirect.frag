@@ -11,7 +11,7 @@ uniform int a, b;
 
 void main()
 {
-	vec4 texColor = texture2D(texSampler2D, vec2(userIn[b] + gl_TexCoord[a] + gl_TexCoord[5]));
+	vec4 texColor = texture(texSampler2D, vec2(userIn[b] + gl_TexCoord[a] + gl_TexCoord[5]));
 
 	texColor += color;
 

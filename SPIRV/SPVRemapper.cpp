@@ -446,7 +446,6 @@ namespace spv {
                 idFn(asId(word++));
                 break;
 
-            case spv::OperandOptionalId:
             case spv::OperandVariableIds:
                 for (unsigned i = 0; i < numOperands; ++i)
                     idFn(asId(word++));

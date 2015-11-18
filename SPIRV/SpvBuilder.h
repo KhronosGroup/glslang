@@ -99,12 +99,14 @@ public:
     Id makeUintType(int width) { return makeIntegerType(width, false); }
     Id makeFloatType(int width);
     Id makeStructType(std::vector<Id>& members, const char*);
+    Id makeStructResultType(Id type0, Id type1);
     Id makeVectorType(Id component, int size);
     Id makeMatrixType(Id component, int cols, int rows);
     Id makeArrayType(Id element, unsigned size);
     Id makeRuntimeArray(Id element);
     Id makeFunctionType(Id returnType, std::vector<Id>& paramTypes);
     Id makeImageType(Id sampledType, Dim, bool depth, bool arrayed, bool ms, unsigned sampled, ImageFormat format);
+    Id makeSamplerType();
     Id makeSampledImageType(Id imageType);
 
     // For querying about types.
@@ -118,12 +120,14 @@ public:
     Id getScalarTypeId(Id typeId) const;
     Id getContainedTypeId(Id typeId) const;
     Id getContainedTypeId(Id typeId, int) const;
+    StorageClass getTypeStorageClass(Id typeId) const { return module.getStorageClass(typeId); }
 
     bool isPointer(Id resultId)     const { return isPointerType(getTypeId(resultId)); }
     bool isScalar(Id resultId)      const { return isScalarType(getTypeId(resultId)); }
     bool isVector(Id resultId)      const { return isVectorType(getTypeId(resultId)); }
     bool isMatrix(Id resultId)      const { return isMatrixType(getTypeId(resultId)); }
     bool isAggregate(Id resultId)   const { return isAggregateType(getTypeId(resultId)); }
+    bool isBoolType(Id typeId)      const { return groupedTypes[OpTypeBool].size() > 0 && typeId == groupedTypes[OpTypeBool].back()->getResultId(); }
 
     bool isPointerType(Id typeId)   const { return getTypeClass(typeId) == OpTypePointer; }
     bool isScalarType(Id typeId)    const { return getTypeClass(typeId) == OpTypeFloat  || getTypeClass(typeId) == OpTypeInt || getTypeClass(typeId) == OpTypeBool; }
@@ -140,6 +144,7 @@ public:
     bool isConstant(Id resultId) const { return isConstantOpCode(getOpCode(resultId)); }
     bool isConstantScalar(Id resultId) const { return getOpCode(resultId) == OpConstant; }
     unsigned int getConstantScalar(Id resultId) const { return module.getInstruction(resultId)->getImmediateOperand(0); }
+    StorageClass getStorageClass(Id resultId) const { return getTypeStorageClass(getTypeId(resultId)); }
 
     int getTypeNumColumns(Id typeId) const
     {
@@ -172,18 +177,17 @@ public:
     }
 
     // For making new constants (will return old constant if the requested one was already made).
-    Id makeBoolConstant(bool b);
-    Id makeIntConstant(Id typeId, unsigned value);
-    Id makeIntConstant(int i)         { return makeIntConstant(makeIntType(32),  (unsigned)i); }
-    Id makeUintConstant(unsigned u)   { return makeIntConstant(makeUintType(32),           u); }
-    Id makeFloatConstant(float f);
-    Id makeDoubleConstant(double d);
+    Id makeBoolConstant(bool b, bool specConstant = false);
+    Id makeIntConstant(int i, bool specConstant = false)         { return makeIntConstant(makeIntType(32),  (unsigned)i, specConstant); }
+    Id makeUintConstant(unsigned u, bool specConstant = false)   { return makeIntConstant(makeUintType(32),           u, specConstant); }
+    Id makeFloatConstant(float f, bool specConstant = false);
+    Id makeDoubleConstant(double d, bool specConstant = false);
 
     // Turn the array of constants into a proper spv constant of the requested type.
     Id makeCompositeConstant(Id type, std::vector<Id>& comps);
 
     // Methods for adding information outside the CFG.
-    void addEntryPoint(ExecutionModel, Function*, const char* name);
+    Instruction* addEntryPoint(ExecutionModel, Function*, const char* name);
     void addExecutionMode(Function*, ExecutionMode mode, int value1 = -1, int value2 = -1, int value3 = -1);
     void addName(Id, const char* name);
     void addMemberName(Id, int member, const char* name);
@@ -296,10 +300,11 @@ public:
         Id gradX;
         Id gradY;
         Id sample;
+        Id comp;
     };
 
     // Select the correct texture operation based on all inputs, and emit the correct instruction
-    Id createTextureCall(Decoration precision, Id resultType, bool fetch, bool proj, const TextureParameters&);
+    Id createTextureCall(Decoration precision, Id resultType, bool fetch, bool proj, bool gather, const TextureParameters&);
 
     // Emit the OpTextureQuery* instruction that was passed in.
     // Figure out the right return value and type, and return it.
@@ -426,13 +431,13 @@ public:
     //
 
     struct AccessChain {
-        Id base;                     // for l-values, pointer to the base object, for r-values, the base object
+        Id base;                       // for l-values, pointer to the base object, for r-values, the base object
         std::vector<Id> indexChain;
-        Id instr;                    // the instruction that generates this access chain
-        std::vector<unsigned> swizzle;
-        Id component;                // a dynamic component index, can coexist with a swizzle, done after the swizzle
-        Id preSwizzleBaseType;       // dereferenced type, before swizzle or component is applied; NoType unless a swizzle or component is present
-        bool isRValue;
+        Id instr;                      // cache the instruction that generates this access chain
+        std::vector<unsigned> swizzle; // each std::vector element selects the next GLSL component number
+        Id component;                  // a dynamic component index, can coexist with a swizzle, done after the swizzle, NoResult if not present
+        Id preSwizzleBaseType;         // dereferenced type, before swizzle or component is applied; NoType unless a swizzle or component is present
+        bool isRValue;                 // true if 'base' is an r-value, otherwise, base is an l-value
     };
 
     //
@@ -490,15 +495,17 @@ public:
     void dump(std::vector<unsigned int>&) const;
 
 protected:
-    Id findScalarConstant(Op typeClass, Id typeId, unsigned value) const;
-    Id findScalarConstant(Op typeClass, Id typeId, unsigned v1, unsigned v2) const;
+    Id makeIntConstant(Id typeId, unsigned value, bool specConstant);
+    Id findScalarConstant(Op typeClass, Op opcode, Id typeId, unsigned value) const;
+    Id findScalarConstant(Op typeClass, Op opcode, Id typeId, unsigned v1, unsigned v2) const;
     Id findCompositeConstant(Op typeClass, std::vector<Id>& comps) const;
     Id collapseAccessChain();
+    void transferAccessChainSwizzle(bool dynamic);
     void simplifyAccessChainSwizzle();
-    void mergeAccessChainSwizzle();
     void createAndSetNoPredecessorBlock(const char*);
     void createBranch(Block* block);
-    void createMerge(Op, Block*, unsigned int control);
+    void createSelectionMerge(Block* mergeBlock, unsigned int control);
+    void createLoopMerge(Block* mergeBlock, Block* continueBlock, unsigned int control);
     void createConditionalBranch(Id condition, Block* thenBlock, Block* elseBlock);
     void dumpInstructions(std::vector<unsigned int>&, const std::vector<Instruction*>&) const;
 

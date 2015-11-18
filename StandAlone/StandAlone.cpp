@@ -788,6 +788,7 @@ int C_DECL main(int argc, char* argv[])
         glslang::GetSpirvVersion(spirvVersion);
         printf("SPIR-V Version %s\n", spirvVersion.c_str());
         printf("GLSL.std.450 Version %d, Revision %d\n", GLSLstd450Version, GLSLstd450Revision);
+        printf("Khronos Tool ID %d\n", glslang::GetKhronosToolId());
         if (Worklist.empty())
             return ESuccess;
     }

@@ -17,23 +17,23 @@ void main()
     vec4  coords4D   = vec4(1.789, 2.718, 3.453, 2.0);
     vec4  color      = vec4(0.0, 0.0, 0.0, 0.0);
 
-    color += texture1DLod(texSampler1D, coords1D, lod);
-    color += texture1DProjLod(texSampler1D, coords2D, lod);
-    color += texture1DProjLod(texSampler1D, coords4D, lod);
+    color += textureLod(texSampler1D, coords1D, lod);
+    color += textureProjLod(texSampler1D, coords2D, lod);
+    color += textureProjLod(texSampler1D, coords4D, lod);
     
-    color += texture2DLod     (texSampler2D, coords2D, lod);
-    color += texture2DProjLod (texSampler2D, coords3D, lod);
-    color += texture2DProjLod (texSampler2D, coords4D, lod);
+    color += textureLod     (texSampler2D, coords2D, lod);
+    color += textureProjLod (texSampler2D, coords3D, lod);
+    color += textureProjLod (texSampler2D, coords4D, lod);
 
-    color += texture3DLod     (texSampler3D, coords3D, lod);
-    color += texture3DProjLod (texSampler3D, coords4D, lod);
+    color += textureLod     (texSampler3D, coords3D, lod);
+    color += textureProjLod (texSampler3D, coords4D, lod);
     
-    color += textureCubeLod (texSamplerCube, coords3D, lod);
+    color += textureLod (texSamplerCube, coords3D, lod);
 
-    color += shadow1DLod    (shadowSampler1D, coords3D, lod);
-    color += shadow2DLod    (shadowSampler2D, coords3D, lod);
-    color += shadow1DProjLod(shadowSampler1D, coords4D, lod);
-    color += shadow2DProjLod(shadowSampler2D, coords4D, lod);
+    color += textureLod    (shadowSampler1D, coords3D, lod);
+    color += textureLod    (shadowSampler2D, coords3D, lod);
+    color += textureProjLod(shadowSampler1D, coords4D, lod);
+    color += textureProjLod(shadowSampler2D, coords4D, lod);
 
     gl_Position = color;
 }
