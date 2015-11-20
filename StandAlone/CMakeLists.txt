@@ -1,14 +1,5 @@
 cmake_minimum_required(VERSION 2.8)
 
-include_directories(.)
-if(WIN32)
-    include_directories(../glslang/OSDependent/Windows)
-elseif(UNIX)
-    include_directories(../glslang/OSDependent/Linux)
-else(WIN32)
-    message("unkown platform")
-endif(WIN32)
-
 set(SOURCES StandAlone.cpp)
 set(REMAPPER_SOURCES spirv-remap.cpp)
 
