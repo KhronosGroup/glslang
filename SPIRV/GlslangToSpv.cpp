@@ -1901,9 +1901,11 @@ spv::Id TGlslangToSpvTraverser::createImageTextureFunctionCall(glslang::TIntermO
 
     // Check for texture functions other than queries
 
+    bool cubeCompare = sampler.dim == glslang::EsdCube && sampler.arrayed && sampler.shadow;
+
     // check for bias argument
     bool bias = false;
-    if (! cracked.lod && ! cracked.gather && ! cracked.grad && ! cracked.fetch) {
+    if (! cracked.lod && ! cracked.gather && ! cracked.grad && ! cracked.fetch && ! cubeCompare) {
         int nonBiasArgCount = 2;
         if (cracked.offset)
             ++nonBiasArgCount;
