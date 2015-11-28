@@ -518,8 +518,9 @@ TIntermTyped* TParseContext::handleBracketDereference(const TSourceLoc& loc, TIn
                     requireProfile(base->getLoc(), ~EEsProfile, "variable indexing buffer block array");
                 else if (base->getQualifier().storage == EvqUniform)
                     profileRequires(base->getLoc(), EEsProfile, 0, Num_AEP_gpu_shader5, AEP_gpu_shader5, "variable indexing uniform block array");
-                else
-                    requireProfile(base->getLoc(), ~EEsProfile, "variable indexing in/out block array");
+                else {
+                    // input/output blocks either don't exist or can be variable indexed
+                }
             } else if (language == EShLangFragment && base->getQualifier().isPipeOutput())
                 requireProfile(base->getLoc(), ~EEsProfile, "variable indexing fragment shader ouput array");
             else if (base->getBasicType() == EbtSampler && version >= 130) {
@@ -1871,6 +1872,21 @@ bool TParseContext::lValueErrorCheck(const TSourceLoc& loc, const char* op, TInt
         switch(binaryNode->getOp()) {
         case EOpIndexDirect:
         case EOpIndexIndirect:
+            // ...  tessellation control shader ...
+            // If a per-vertex output variable is used as an l-value, it is a
+            // compile-time or link-time error if the expression indicating the
+            // vertex index is not the identifier gl_InvocationID.
+            if (language == EShLangTessControl) {
+                const TType& leftType = binaryNode->getLeft()->getType();
+                if (leftType.getQualifier().storage == EvqVaryingOut && ! leftType.getQualifier().patch && binaryNode->getLeft()->getAsSymbolNode()) {
+                    // we have a per-vertex output
+                    const TIntermSymbol* rightSymbol = binaryNode->getRight()->getAsSymbolNode();
+                    if (! rightSymbol || rightSymbol->getQualifier().builtIn != EbvInvocationId)
+                        error(loc, "tessellation-control per-vertex output l-value must be indexed with gl_InvocationID", "[]", "");
+                }
+            }
+
+            // fall through
         case EOpIndexDirectStruct:
             return lValueErrorCheck(loc, op, binaryNode->getLeft());
         case EOpVectorSwizzle:

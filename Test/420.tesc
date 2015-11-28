@@ -22,8 +22,8 @@ void main()
     int pid = gl_PrimitiveID;
     int iid = gl_InvocationID;
 
-    gl_out[1].gl_Position = p;
-    gl_out[1].gl_PointSize = ps;        // ERROR
+    gl_out[gl_InvocationID].gl_Position = p;
+    gl_out[gl_InvocationID].gl_PointSize = ps;        // ERROR
 }
 
 out float outf;  // ERROR, no array

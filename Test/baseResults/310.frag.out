@@ -49,7 +49,6 @@ ERROR: 0:148: 'inbname2' : Cannot reuse block name within the same interface: in
 ERROR: 0:153: 'badmember' : nameless block contains a member that already has a name at global scope 
 ERROR: 0:157: 'inbname' : redefinition 
 ERROR: 0:159: 'vAnon' : redefinition 
-ERROR: 0:169: 'variable indexing in/out block array' : not supported with this profile: es
 ERROR: 0:173: 'origin_upper_left' : not supported with this profile: es
 ERROR: 0:173: 'pixel_center_integer' : not supported with this profile: es
 ERROR: 0:173: 'redeclaration' : cannot redeclare with different qualification: gl_FragCoord
@@ -130,7 +129,7 @@ ERROR: 0:427: 'blend equation' : can only apply to a standalone qualifier
 ERROR: 0:428: 'blend equation' : can only apply to a standalone qualifier 
 ERROR: 0:429: 'blend_support' : unknown blend equation 
 ERROR: 0:431: 'fragment-shader array-of-array output' : not supported with this profile: es
-ERROR: 122 compilation errors.  No code generated.
+ERROR: 121 compilation errors.  No code generated.
 
 
 Shader version: 310

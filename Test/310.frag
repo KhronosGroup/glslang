@@ -166,7 +166,7 @@ void fooIO()
 {
     vec4 v = inbinst.v + vAnon;
     v *= arrayedInst[2].f;
-    v *= arrayedInst[i].f;       // ERROR, not constant
+    v *= arrayedInst[i].f;
 }
 
 in vec4 gl_FragCoord;
