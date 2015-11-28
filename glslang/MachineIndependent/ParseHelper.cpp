@@ -4447,7 +4447,13 @@ void TParseContext::declareTypeDefaults(const TSourceLoc& loc, const TPublicType
 //
 TIntermNode* TParseContext::declareVariable(const TSourceLoc& loc, TString& identifier, const TPublicType& publicType, TArraySizes* arraySizes, TIntermTyped* initializer)
 {
-    TType type(publicType);
+    TType type(publicType);  // shallow copy; 'type' shares the arrayness and structure definition with 'publicType'
+    if (type.isImplicitlySizedArray()) {
+        // Because "int[] a = int[2](...), b = int[3](...)" makes two arrays a and b
+        // of different sizes, for this case sharing the shallow copy of arrayness
+        // with the publicType oversubscribes it, so get a deep copy of the arrayness.
+        type.newArraySizes(*publicType.arraySizes);
+    }
 
     if (voidErrorCheck(loc, identifier, type.getBasicType()))
         return nullptr;
