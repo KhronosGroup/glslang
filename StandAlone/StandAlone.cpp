@@ -49,7 +49,7 @@
 #include <stdlib.h>
 #include <math.h>
 
-#include "../glslang/OSDependent/osinclude.h"
+#include "osinclude.h"
 
 extern "C" {
     SH_IMPORT_EXPORT void ShOutputHtml();

@@ -37,7 +37,7 @@
 #include "ParseHelper.h"
 #include "Scan.h"
 
-#include "../OSDependent/osinclude.h"
+#include "osinclude.h"
 #include <stdarg.h>
 #include <algorithm>
 

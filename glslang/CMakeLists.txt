@@ -1,13 +1,5 @@
 cmake_minimum_required(VERSION 2.8)
 
-if(WIN32)
-    add_subdirectory(OSDependent/Windows)
-elseif(UNIX)
-    add_subdirectory(OSDependent/Unix)
-else(WIN32)
-    message("unkown platform")
-endif(WIN32)
-
 set(SOURCES
     MachineIndependent/glslang.y
     MachineIndependent/Constant.cpp
@@ -35,7 +27,8 @@ set(SOURCES
     MachineIndependent/preprocessor/PpSymbols.cpp
     MachineIndependent/preprocessor/PpTokens.cpp
     GenericCodeGen/CodeGen.cpp
-    GenericCodeGen/Link.cpp)
+    GenericCodeGen/Link.cpp
+    OSDependent/${OSDEPENDENT_DIR}/ossource.cpp)
 
 set(HEADERS
     Public/ShaderLang.h
@@ -62,7 +55,8 @@ set(HEADERS
     MachineIndependent/SymbolTable.h
     MachineIndependent/Versions.h
     MachineIndependent/preprocessor/PpContext.h
-    MachineIndependent/preprocessor/PpTokens.h)
+    MachineIndependent/preprocessor/PpTokens.h
+    OSDependent/${OSDEPENDENT_DIR}/osinclude.h)
 
 find_package(BISON)
 if(NOT BISON_FOUND)
@@ -87,6 +81,7 @@ if(WIN32)
     source_group("Include" REGULAR_EXPRESSION "Include/[^/]*")
     source_group("GenericCodeGen" REGULAR_EXPRESSION "GenericCodeGen/*")
     source_group("MachineIndependent\\Preprocessor" REGULAR_EXPRESSION "MachineIndependent/preprocessor/*")
+    source_group("OSDependent" REGULAR_EXPRESSION "OSDependent/*")
 endif(WIN32)
 
 install(TARGETS glslang 
