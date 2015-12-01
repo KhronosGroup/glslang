@@ -36,7 +36,7 @@
 #include "../Include/Common.h"
 
 #include "../Include/InitializeGlobals.h"
-#include "../OSDependent/osinclude.h"
+#include "osinclude.h"
 
 namespace glslang {
 

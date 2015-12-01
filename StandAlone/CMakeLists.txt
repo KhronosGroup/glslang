@@ -9,7 +9,6 @@ add_executable(spirv-remap ${REMAPPER_SOURCES})
 set(LIBRARIES
     glslang
     OGLCompiler
-    OSDependent
     SPIRV)
 
 if(WIN32)

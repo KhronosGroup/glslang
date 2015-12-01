@@ -35,7 +35,7 @@
 #ifndef WORKLIST_H_INCLUDED
 #define WORKLIST_H_INCLUDED
 
-#include "../glslang/OSDependent/osinclude.h"
+#include "osinclude.h"
 #include <string>
 #include <list>
 
