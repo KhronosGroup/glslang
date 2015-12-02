@@ -488,14 +488,24 @@ TIntermTyped* TIntermediate::addConversion(TOperator op, const TType& type, TInt
     case EOpRightShift:
     case EOpLeftShiftAssign:
     case EOpRightShiftAssign:
+
         if ((type.getBasicType() == EbtInt || 
              type.getBasicType() == EbtUint) &&
             (node->getType().getBasicType() == EbtInt || 
-             node->getType().getBasicType() == EbtUint))
+             node->getType().getBasicType() == EbtUint)) {
 
-            return node;
+            if (type.getBasicType() == node->getType().getBasicType() ||
+                type.getVectorSize() == node->getType().getVectorSize())
+                return node;
+            else
+                // If neither the basic type nor the vector size is identical, convert types
+                // to make the smear operation correct.
+                promoteTo = type.getBasicType();
+        }
         else
             return 0;
+
+        break;
 
     default:
         // default is to require a match; all exceptions should have case statements above

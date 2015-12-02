@@ -3165,8 +3165,11 @@ void IdentifyBuiltIns(int version, EProfile profile, int spv, EShLanguage langua
         }
 
         symbolTable.setVariableExtensions("gl_FragDepthEXT", 1, &E_GL_EXT_frag_depth);
-        symbolTable.setVariableExtensions("gl_PrimitiveID",  Num_AEP_geometry_shader, AEP_geometry_shader);
-        symbolTable.setVariableExtensions("gl_Layer",        Num_AEP_geometry_shader, AEP_geometry_shader);
+
+        if (profile == EEsProfile) {
+            symbolTable.setVariableExtensions("gl_PrimitiveID",  Num_AEP_geometry_shader, AEP_geometry_shader);
+            symbolTable.setVariableExtensions("gl_Layer",        Num_AEP_geometry_shader, AEP_geometry_shader);
+        }
 
         if (profile == EEsProfile) {
             symbolTable.setFunctionExtensions("imageAtomicAdd",      1, &E_GL_OES_shader_image_atomic);
@@ -3279,8 +3282,8 @@ void IdentifyBuiltIns(int version, EProfile profile, int spv, EShLanguage langua
     symbolTable.relateToOperator("packUnorm4x8",    EOpPackUnorm4x8);
     symbolTable.relateToOperator("unpackUnorm4x8",  EOpUnpackUnorm4x8);
 
-    symbolTable.relateToOperator("packDouble2x32",    EOpPackUnorm4x8);
-    symbolTable.relateToOperator("unpackDouble2x32",  EOpUnpackUnorm4x8);
+    symbolTable.relateToOperator("packDouble2x32",    EOpPackDouble2x32);
+    symbolTable.relateToOperator("unpackDouble2x32",  EOpUnpackDouble2x32);
 
     symbolTable.relateToOperator("packHalf2x16",    EOpPackHalf2x16);
     symbolTable.relateToOperator("unpackHalf2x16",  EOpUnpackHalf2x16);

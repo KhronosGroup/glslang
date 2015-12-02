@@ -96,7 +96,7 @@ layout(std140) uniform block2 {
     layout(offset = 164, align = 8) float  j;     // j takes offsets 168-171
 } specExample;
 
-layout(std430) uniform block430 {
+layout(std430) buffer block430 {
                         vec4   a;     // a takes offsets 0-15
     layout(offset = 32) vec3   b;     // b takes offsets 32-43
     layout(offset = 40) vec2   c;     // ERROR, lies within previous member
@@ -105,7 +105,7 @@ layout(std430) uniform block430 {
     layout(align = 0)   double i;     // ERROR, 0 not a power of 2
 } specExampleErrors430;
 
-layout(std430) uniform block2430 {
+layout(std430) buffer block2430 {
                         vec4   a;     // a takes offsets 0-15
     layout(offset = 32) vec3   b;     // b takes offsets 32-43
     layout(offset = 48) vec2   d;     // d takes offsets 48-55
@@ -116,7 +116,7 @@ layout(std430) uniform block2430 {
     layout(offset = 164, align = 8) float  j;     // j takes offsets 168-171
 } specExample430;
 
-layout(std430, align = 128) uniform block24300 {
+layout(std430, align = 128) buffer block24300 {
     vec4   a;
     vec3   b;
     vec2   d;
@@ -126,7 +126,7 @@ layout(std430, align = 128) uniform block24300 {
     dvec3  i;
 } specExample4300;
 
-layout(std430, align = 128) uniform block24301 {
+layout(std430, align = 128) buffer block24301 {
     vec4   a;
     vec3   b;
     vec2   d;
