@@ -621,11 +621,7 @@ void SetMessageOptions(EShMessages& messages)
 //
 // Return 0 for failure, 1 for success.
 //
-unsigned int
-#ifdef _WIN32
-    __stdcall
-#endif
-CompileShaders(void*)
+unsigned int CompileShaders(void*)
 {
     glslang::TWorkItem* workItem;
     while (Worklist.remove(workItem)) {
