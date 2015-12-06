@@ -5187,7 +5187,7 @@ void TParseContext::blockStageIoCheck(const TSourceLoc& loc, const TQualifier& q
         profileRequires(loc, EEsProfile, 300, nullptr, "uniform block");
         profileRequires(loc, ENoProfile, 140, nullptr, "uniform block");
         if (currentBlockQualifier.layoutPacking == ElpStd430)
-            requireProfile(loc, ~EEsProfile, "std430 on a uniform block");
+            error(loc, "requires buffer storage qualifier", "std430", "");
         break;
     case EvqBuffer:
         requireProfile(loc, EEsProfile | ECoreProfile | ECompatibilityProfile, "buffer block");

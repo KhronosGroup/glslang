@@ -598,10 +598,12 @@ void TGlslangToSpvTraverser::visitSymbol(glslang::TIntermSymbol* symbol)
         else
             builder.setAccessChainLValue(id);
     } else {
-        // finish off the entry-point SPV instruction by adding the Input/Output <id>
-        spv::StorageClass sc = builder.getStorageClass(id);
-        if (sc == spv::StorageClassInput || sc == spv::StorageClassOutput)
-            entryPoint->addIdOperand(id);
+        if (symbol->getQualifier().storage != glslang::EvqConst) {
+            // finish off the entry-point SPV instruction by adding the Input/Output <id>
+            spv::StorageClass sc = builder.getStorageClass(id);
+            if (sc == spv::StorageClassInput || sc == spv::StorageClassOutput)
+                entryPoint->addIdOperand(id);
+        }
     }
 }
 
@@ -1630,9 +1632,11 @@ bool TGlslangToSpvTraverser::requiresExplicitLayout(const glslang::TType& type) 
 // Given an array type, returns the integer stride required for that array
 int TGlslangToSpvTraverser::getArrayStride(const glslang::TType& arrayType)
 {
-    glslang::TType derefType(arrayType, 0);
+    assert(arrayType.getQualifier().layoutPacking == glslang::ElpStd140 ||
+           arrayType.getQualifier().layoutPacking == glslang::ElpStd430);
     int size;
-    glslangIntermediate->getBaseAlignment(derefType, size, true);
+    glslangIntermediate->getBaseAlignment(arrayType, size, arrayType.getQualifier().layoutPacking == glslang::ElpStd140);
+    size /= arrayType.getOuterArraySize();
     return size;
 }
 
@@ -1640,8 +1644,10 @@ int TGlslangToSpvTraverser::getArrayStride(const glslang::TType& arrayType)
 // when used as a member of an interface block
 int TGlslangToSpvTraverser::getMatrixStride(const glslang::TType& matrixType)
 {
+    assert(matrixType.getQualifier().layoutPacking == glslang::ElpStd140 ||
+           matrixType.getQualifier().layoutPacking == glslang::ElpStd430);
     int size;
-    return glslangIntermediate->getBaseAlignment(matrixType, size, true);
+    return glslangIntermediate->getBaseAlignment(matrixType, size, matrixType.getQualifier().layoutPacking == glslang::ElpStd140);
 }
 
 // Given a member type of a struct, realign the current offset for it, and compute
@@ -2884,8 +2890,14 @@ spv::Id TGlslangToSpvTraverser::createMiscOperation(glslang::TOperator op, spv::
     }
 
     spv::Id id = 0;
-    if (libCall >= 0)
-        id = builder.createBuiltinCall(precision, typeId, stdBuiltins, libCall, operands);
+    if (libCall >= 0) {
+        if (libCall != spv::GLSLstd450FrexpStruct)
+            id = builder.createBuiltinCall(precision, typeId, stdBuiltins, libCall, operands);
+        else {
+            std::vector<spv::Id> operand(1, operands[0]);
+            id = builder.createBuiltinCall(precision, typeId, stdBuiltins, libCall, operand);
+        }
+    }
     else {
         switch (consumedOperands) {
         case 0:

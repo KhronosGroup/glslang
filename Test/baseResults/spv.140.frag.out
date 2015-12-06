@@ -54,7 +54,7 @@ Linked fragment stage:
                               MemberDecorate 88(bn) 4 Offset 640
                               MemberDecorate 88(bn) 4 MatrixStride 16
                               Decorate 88(bn) Block
-                              Decorate 92 ArrayStride 12
+                              Decorate 92 ArrayStride 16
                               MemberDecorate 93(bi) 0 Offset 0
                               Decorate 93(bi) Block
                2:             TypeVoid
