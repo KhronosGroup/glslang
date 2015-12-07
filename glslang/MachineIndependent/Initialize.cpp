@@ -3279,8 +3279,8 @@ void IdentifyBuiltIns(int version, EProfile profile, int spv, EShLanguage langua
     symbolTable.relateToOperator("packUnorm4x8",    EOpPackUnorm4x8);
     symbolTable.relateToOperator("unpackUnorm4x8",  EOpUnpackUnorm4x8);
 
-    symbolTable.relateToOperator("packDouble2x32",    EOpPackUnorm4x8);
-    symbolTable.relateToOperator("unpackDouble2x32",  EOpUnpackUnorm4x8);
+    symbolTable.relateToOperator("packDouble2x32",    EOpPackDouble2x32);
+    symbolTable.relateToOperator("unpackDouble2x32",  EOpUnpackDouble2x32);
 
     symbolTable.relateToOperator("packHalf2x16",    EOpPackHalf2x16);
     symbolTable.relateToOperator("unpackHalf2x16",  EOpUnpackHalf2x16);
