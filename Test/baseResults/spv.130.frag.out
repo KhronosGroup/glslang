@@ -268,7 +268,7 @@ Linked fragment stage:
              124:   15(fvec4) Load 78(i)
              127:    126(ptr) AccessChain 78(i) 125
              128:   14(float) Load 127
-             129:   14(float) ImageSampleDrefImplicitLod 123 124 128 Bias 128
+             129:   14(float) ImageSampleDrefImplicitLod 123 124 128
                               Store 122(f) 129
              132:          84 Load 86(Isca)
              133:   15(fvec4) Load 78(i)

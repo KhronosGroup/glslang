@@ -39,9 +39,11 @@ ERROR: 0:168: 'Binst' : cannot add storage, auxiliary, memory, interpolation, la
 ERROR: 0:169: 'Bblock' : cannot add storage, auxiliary, memory, interpolation, layout, or precision qualifier to an existing variable 
 ERROR: 0:170: 'Bfoo' : cannot add storage, auxiliary, memory, interpolation, layout, or precision qualifier to an existing variable 
 ERROR: 0:172: 'std430' : not supported for this version or the enabled extensions 
-ERROR: 0:172: 'std430 on a uniform block' : not supported with this profile: es
+ERROR: 0:172: 'std430' : requires the 'buffer' storage qualifier 
 ERROR: 0:175: '' : array size required 
-ERROR: 42 compilation errors.  No code generated.
+ERROR: 0:185: 'assign' :  cannot convert from 'temp 4-element array of highp float' to 'temp 3-element array of highp float'
+ERROR: 0:186: 'assign' :  cannot convert from 'temp 3-element array of highp float' to 'temp 4-element array of highp float'
+ERROR: 44 compilation errors.  No code generated.
 
 
 Shader version: 300
@@ -262,6 +264,31 @@ ERROR: node is still EOpNull!
 0:158      Branch: Return with expression
 0:158        Constant:
 0:158          2 (const int)
+0:178  Function Definition: fooDeeparray( (global void)
+0:178    Function Parameters: 
+0:181    Sequence
+0:181      Sequence
+0:180        move second child to first child (temp 3-element array of highp float)
+0:180          'x' (temp 3-element array of highp float)
+0:180          Constant:
+0:180            1.000000
+0:180            2.000000
+0:180            3.000000
+0:181        move second child to first child (temp 4-element array of highp float)
+0:181          'y' (temp 4-element array of highp float)
+0:181          Constant:
+0:181            1.000000
+0:181            2.000000
+0:181            3.000000
+0:181            4.000000
+0:183      move second child to first child (temp 3-element array of highp float)
+0:183        'xp' (temp 3-element array of highp float)
+0:183        'x' (temp 3-element array of highp float)
+0:184      move second child to first child (temp 4-element array of highp float)
+0:184        'yp' (temp 4-element array of highp float)
+0:184        'y' (temp 4-element array of highp float)
+0:185      'xp' (temp 3-element array of highp float)
+0:186      'yp' (temp 4-element array of highp float)
 0:?   Linker Objects
 0:?     'm43' (uniform highp 4X3 matrix of float)
 0:?     'm33' (uniform highp 3X3 matrix of float)
@@ -521,6 +548,31 @@ ERROR: node is still EOpNull!
 0:158      Branch: Return with expression
 0:158        Constant:
 0:158          2 (const int)
+0:178  Function Definition: fooDeeparray( (global void)
+0:178    Function Parameters: 
+0:181    Sequence
+0:181      Sequence
+0:180        move second child to first child (temp 3-element array of highp float)
+0:180          'x' (temp 3-element array of highp float)
+0:180          Constant:
+0:180            1.000000
+0:180            2.000000
+0:180            3.000000
+0:181        move second child to first child (temp 4-element array of highp float)
+0:181          'y' (temp 4-element array of highp float)
+0:181          Constant:
+0:181            1.000000
+0:181            2.000000
+0:181            3.000000
+0:181            4.000000
+0:183      move second child to first child (temp 3-element array of highp float)
+0:183        'xp' (temp 3-element array of highp float)
+0:183        'x' (temp 3-element array of highp float)
+0:184      move second child to first child (temp 4-element array of highp float)
+0:184        'yp' (temp 4-element array of highp float)
+0:184        'y' (temp 4-element array of highp float)
+0:185      'xp' (temp 3-element array of highp float)
+0:186      'yp' (temp 4-element array of highp float)
 0:?   Linker Objects
 0:?     'm43' (uniform highp 4X3 matrix of float)
 0:?     'm33' (uniform highp 3X3 matrix of float)

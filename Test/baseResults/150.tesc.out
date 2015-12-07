@@ -59,29 +59,26 @@ vertices = 4
 0:26          'gl_InvocationID' (in int InvocationID)
 0:28      move second child to first child (temp 4-component vector of float)
 0:28        gl_Position: direct index for structure (out 4-component vector of float Position)
-0:28          direct index (temp block{out 4-component vector of float Position gl_Position, out float PointSize gl_PointSize, out implicitly-sized array of float ClipDistance gl_ClipDistance})
+0:28          indirect index (temp block{out 4-component vector of float Position gl_Position, out float PointSize gl_PointSize, out implicitly-sized array of float ClipDistance gl_ClipDistance})
 0:28            'gl_out' (out 4-element array of block{out 4-component vector of float Position gl_Position, out float PointSize gl_PointSize, out implicitly-sized array of float ClipDistance gl_ClipDistance})
-0:28            Constant:
-0:28              1 (const int)
+0:28            'gl_InvocationID' (in int InvocationID)
 0:28          Constant:
 0:28            0 (const int)
 0:28        'p' (temp 4-component vector of float)
 0:29      move second child to first child (temp float)
 0:29        gl_PointSize: direct index for structure (out float PointSize)
-0:29          direct index (temp block{out 4-component vector of float Position gl_Position, out float PointSize gl_PointSize, out implicitly-sized array of float ClipDistance gl_ClipDistance})
+0:29          indirect index (temp block{out 4-component vector of float Position gl_Position, out float PointSize gl_PointSize, out implicitly-sized array of float ClipDistance gl_ClipDistance})
 0:29            'gl_out' (out 4-element array of block{out 4-component vector of float Position gl_Position, out float PointSize gl_PointSize, out implicitly-sized array of float ClipDistance gl_ClipDistance})
-0:29            Constant:
-0:29              1 (const int)
+0:29            'gl_InvocationID' (in int InvocationID)
 0:29          Constant:
 0:29            1 (const int)
 0:29        'ps' (temp float)
 0:30      move second child to first child (temp float)
 0:30        direct index (temp float ClipDistance)
 0:30          gl_ClipDistance: direct index for structure (out implicitly-sized array of float ClipDistance)
-0:30            direct index (temp block{out 4-component vector of float Position gl_Position, out float PointSize gl_PointSize, out implicitly-sized array of float ClipDistance gl_ClipDistance})
+0:30            indirect index (temp block{out 4-component vector of float Position gl_Position, out float PointSize gl_PointSize, out implicitly-sized array of float ClipDistance gl_ClipDistance})
 0:30              'gl_out' (out 4-element array of block{out 4-component vector of float Position gl_Position, out float PointSize gl_PointSize, out implicitly-sized array of float ClipDistance gl_ClipDistance})
-0:30              Constant:
-0:30                1 (const int)
+0:30              'gl_InvocationID' (in int InvocationID)
 0:30            Constant:
 0:30              2 (const int)
 0:30          Constant:
@@ -295,29 +292,26 @@ ERROR: node is still EOpNull!
 0:29          'gl_InvocationID' (in int InvocationID)
 0:31      move second child to first child (temp 4-component vector of float)
 0:31        gl_Position: direct index for structure (out 4-component vector of float Position)
-0:31          direct index (temp block{out 4-component vector of float Position gl_Position, out float PointSize gl_PointSize, out implicitly-sized array of float ClipDistance gl_ClipDistance})
+0:31          indirect index (temp block{out 4-component vector of float Position gl_Position, out float PointSize gl_PointSize, out implicitly-sized array of float ClipDistance gl_ClipDistance})
 0:31            'gl_out' (out 4-element array of block{out 4-component vector of float Position gl_Position, out float PointSize gl_PointSize, out implicitly-sized array of float ClipDistance gl_ClipDistance})
-0:31            Constant:
-0:31              1 (const int)
+0:31            'gl_InvocationID' (in int InvocationID)
 0:31          Constant:
 0:31            0 (const int)
 0:31        'p' (temp 4-component vector of float)
 0:32      move second child to first child (temp float)
 0:32        gl_PointSize: direct index for structure (out float PointSize)
-0:32          direct index (temp block{out 4-component vector of float Position gl_Position, out float PointSize gl_PointSize, out implicitly-sized array of float ClipDistance gl_ClipDistance})
+0:32          indirect index (temp block{out 4-component vector of float Position gl_Position, out float PointSize gl_PointSize, out implicitly-sized array of float ClipDistance gl_ClipDistance})
 0:32            'gl_out' (out 4-element array of block{out 4-component vector of float Position gl_Position, out float PointSize gl_PointSize, out implicitly-sized array of float ClipDistance gl_ClipDistance})
-0:32            Constant:
-0:32              1 (const int)
+0:32            'gl_InvocationID' (in int InvocationID)
 0:32          Constant:
 0:32            1 (const int)
 0:32        'ps' (temp float)
 0:33      move second child to first child (temp float)
 0:33        direct index (temp float ClipDistance)
 0:33          gl_ClipDistance: direct index for structure (out implicitly-sized array of float ClipDistance)
-0:33            direct index (temp block{out 4-component vector of float Position gl_Position, out float PointSize gl_PointSize, out implicitly-sized array of float ClipDistance gl_ClipDistance})
+0:33            indirect index (temp block{out 4-component vector of float Position gl_Position, out float PointSize gl_PointSize, out implicitly-sized array of float ClipDistance gl_ClipDistance})
 0:33              'gl_out' (out 4-element array of block{out 4-component vector of float Position gl_Position, out float PointSize gl_PointSize, out implicitly-sized array of float ClipDistance gl_ClipDistance})
-0:33              Constant:
-0:33                1 (const int)
+0:33              'gl_InvocationID' (in int InvocationID)
 0:33            Constant:
 0:33              2 (const int)
 0:33          Constant:
@@ -666,17 +660,15 @@ ERROR: node is still EOpNull!
 0:23          'gl_InvocationID' (in int InvocationID)
 0:25      move second child to first child (temp 4-component vector of float)
 0:25        gl_Position: direct index for structure (out 4-component vector of float Position)
-0:25          direct index (temp block{out 4-component vector of float Position gl_Position})
+0:25          indirect index (temp block{out 4-component vector of float Position gl_Position})
 0:25            'gl_out' (out 3-element array of block{out 4-component vector of float Position gl_Position})
-0:25            Constant:
-0:25              1 (const int)
+0:25            'gl_InvocationID' (in int InvocationID)
 0:25          Constant:
 0:25            0 (const int)
 0:25        'p' (temp 4-component vector of float)
-0:26      direct index (temp block{out 4-component vector of float Position gl_Position})
+0:26      indirect index (temp block{out 4-component vector of float Position gl_Position})
 0:26        'gl_out' (out 3-element array of block{out 4-component vector of float Position gl_Position})
-0:26        Constant:
-0:26          1 (const int)
+0:26        'gl_InvocationID' (in int InvocationID)
 0:34  Function Definition: foo( (global void)
 0:34    Function Parameters: 
 0:36    Sequence
@@ -982,29 +974,26 @@ vertices = 4
 0:26          'gl_InvocationID' (in int InvocationID)
 0:28      move second child to first child (temp 4-component vector of float)
 0:28        gl_Position: direct index for structure (out 4-component vector of float Position)
-0:28          direct index (temp block{out 4-component vector of float Position gl_Position, out float PointSize gl_PointSize, out 1-element array of float ClipDistance gl_ClipDistance})
+0:28          indirect index (temp block{out 4-component vector of float Position gl_Position, out float PointSize gl_PointSize, out 1-element array of float ClipDistance gl_ClipDistance})
 0:28            'gl_out' (out 4-element array of block{out 4-component vector of float Position gl_Position, out float PointSize gl_PointSize, out 1-element array of float ClipDistance gl_ClipDistance})
-0:28            Constant:
-0:28              1 (const int)
+0:28            'gl_InvocationID' (in int InvocationID)
 0:28          Constant:
 0:28            0 (const int)
 0:28        'p' (temp 4-component vector of float)
 0:29      move second child to first child (temp float)
 0:29        gl_PointSize: direct index for structure (out float PointSize)
-0:29          direct index (temp block{out 4-component vector of float Position gl_Position, out float PointSize gl_PointSize, out 1-element array of float ClipDistance gl_ClipDistance})
+0:29          indirect index (temp block{out 4-component vector of float Position gl_Position, out float PointSize gl_PointSize, out 1-element array of float ClipDistance gl_ClipDistance})
 0:29            'gl_out' (out 4-element array of block{out 4-component vector of float Position gl_Position, out float PointSize gl_PointSize, out 1-element array of float ClipDistance gl_ClipDistance})
-0:29            Constant:
-0:29              1 (const int)
+0:29            'gl_InvocationID' (in int InvocationID)
 0:29          Constant:
 0:29            1 (const int)
 0:29        'ps' (temp float)
 0:30      move second child to first child (temp float)
 0:30        direct index (temp float ClipDistance)
 0:30          gl_ClipDistance: direct index for structure (out 1-element array of float ClipDistance)
-0:30            direct index (temp block{out 4-component vector of float Position gl_Position, out float PointSize gl_PointSize, out 1-element array of float ClipDistance gl_ClipDistance})
+0:30            indirect index (temp block{out 4-component vector of float Position gl_Position, out float PointSize gl_PointSize, out 1-element array of float ClipDistance gl_ClipDistance})
 0:30              'gl_out' (out 4-element array of block{out 4-component vector of float Position gl_Position, out float PointSize gl_PointSize, out 1-element array of float ClipDistance gl_ClipDistance})
-0:30              Constant:
-0:30                1 (const int)
+0:30              'gl_InvocationID' (in int InvocationID)
 0:30            Constant:
 0:30              2 (const int)
 0:30          Constant:
@@ -1080,29 +1069,26 @@ vertices = 4
 0:29          'gl_InvocationID' (in int InvocationID)
 0:31      move second child to first child (temp 4-component vector of float)
 0:31        gl_Position: direct index for structure (out 4-component vector of float Position)
-0:31          direct index (temp block{out 4-component vector of float Position gl_Position, out float PointSize gl_PointSize, out 1-element array of float ClipDistance gl_ClipDistance})
+0:31          indirect index (temp block{out 4-component vector of float Position gl_Position, out float PointSize gl_PointSize, out 1-element array of float ClipDistance gl_ClipDistance})
 0:31            'gl_out' (out 4-element array of block{out 4-component vector of float Position gl_Position, out float PointSize gl_PointSize, out 1-element array of float ClipDistance gl_ClipDistance})
-0:31            Constant:
-0:31              1 (const int)
+0:31            'gl_InvocationID' (in int InvocationID)
 0:31          Constant:
 0:31            0 (const int)
 0:31        'p' (temp 4-component vector of float)
 0:32      move second child to first child (temp float)
 0:32        gl_PointSize: direct index for structure (out float PointSize)
-0:32          direct index (temp block{out 4-component vector of float Position gl_Position, out float PointSize gl_PointSize, out 1-element array of float ClipDistance gl_ClipDistance})
+0:32          indirect index (temp block{out 4-component vector of float Position gl_Position, out float PointSize gl_PointSize, out 1-element array of float ClipDistance gl_ClipDistance})
 0:32            'gl_out' (out 4-element array of block{out 4-component vector of float Position gl_Position, out float PointSize gl_PointSize, out 1-element array of float ClipDistance gl_ClipDistance})
-0:32            Constant:
-0:32              1 (const int)
+0:32            'gl_InvocationID' (in int InvocationID)
 0:32          Constant:
 0:32            1 (const int)
 0:32        'ps' (temp float)
 0:33      move second child to first child (temp float)
 0:33        direct index (temp float ClipDistance)
 0:33          gl_ClipDistance: direct index for structure (out 1-element array of float ClipDistance)
-0:33            direct index (temp block{out 4-component vector of float Position gl_Position, out float PointSize gl_PointSize, out 1-element array of float ClipDistance gl_ClipDistance})
+0:33            indirect index (temp block{out 4-component vector of float Position gl_Position, out float PointSize gl_PointSize, out 1-element array of float ClipDistance gl_ClipDistance})
 0:33              'gl_out' (out 4-element array of block{out 4-component vector of float Position gl_Position, out float PointSize gl_PointSize, out 1-element array of float ClipDistance gl_ClipDistance})
-0:33              Constant:
-0:33                1 (const int)
+0:33              'gl_InvocationID' (in int InvocationID)
 0:33            Constant:
 0:33              2 (const int)
 0:33          Constant:
@@ -1248,17 +1234,15 @@ vertices = 4
 0:23          'gl_InvocationID' (in int InvocationID)
 0:25      move second child to first child (temp 4-component vector of float)
 0:25        gl_Position: direct index for structure (out 4-component vector of float Position)
-0:25          direct index (temp block{out 4-component vector of float Position gl_Position})
+0:25          indirect index (temp block{out 4-component vector of float Position gl_Position})
 0:25            'gl_out' (out 3-element array of block{out 4-component vector of float Position gl_Position})
-0:25            Constant:
-0:25              1 (const int)
+0:25            'gl_InvocationID' (in int InvocationID)
 0:25          Constant:
 0:25            0 (const int)
 0:25        'p' (temp 4-component vector of float)
-0:26      direct index (temp block{out 4-component vector of float Position gl_Position})
+0:26      indirect index (temp block{out 4-component vector of float Position gl_Position})
 0:26        'gl_out' (out 3-element array of block{out 4-component vector of float Position gl_Position})
-0:26        Constant:
-0:26          1 (const int)
+0:26        'gl_InvocationID' (in int InvocationID)
 0:34  Function Definition: foo( (global void)
 0:34    Function Parameters: 
 0:36    Sequence

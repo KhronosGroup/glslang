@@ -3,7 +3,7 @@
 #extension GL_OES_tessellation_shader : enable
 
 layout(vertices = 4) out;
-int outa[gl_out.length()];
+out int outa[gl_out.length()];
 
 layout(quads) in;                   // ERROR
 layout(ccw) out;                    // ERROR
@@ -30,9 +30,9 @@ void main()
     int pid = gl_PrimitiveID;
     int iid = gl_InvocationID;
 
-    gl_out[1].gl_Position = p;
-    gl_out[1].gl_PointSize = ps;        // ERROR, need point_size extension
-    gl_out[1].gl_ClipDistance[1] = cd;  // ERROR, not in ES
+    gl_out[gl_InvocationID].gl_Position = p;
+    gl_out[gl_InvocationID].gl_PointSize = ps;        // ERROR, need point_size extension
+    gl_out[gl_InvocationID].gl_ClipDistance[1] = cd;  // ERROR, not in ES
 
     gl_TessLevelOuter[3] = 3.2;
     gl_TessLevelInner[1] = 1.3;
@@ -112,7 +112,7 @@ out float okaySize[4];
 void pointSize2()
 {
     float ps = gl_in[1].gl_PointSize;
-    gl_out[1].gl_PointSize = ps;
+    gl_out[gl_InvocationID].gl_PointSize = ps;
 }
 
 #extension GL_OES_gpu_shader5 : enable
@@ -140,4 +140,30 @@ void bb()
     gl_BoundingBoxOES[0] = vec4(0.0);
     gl_BoundingBoxOES[1] = vec4(1.0);
     gl_BoundingBoxOES[2] = vec4(2.0);  // ERROR, overflow
+}
+
+out patch badpatchBName {  // ERROR, array size required
+    float f;
+} badpatchIName[];
+
+out patch patchBName {
+    float f;
+} patchIName[4];
+
+void outputtingOutparam(out int a)
+{
+    a = 2;
+}
+
+void outputting()
+{
+    outa[gl_InvocationID] = 2;
+    outa[1] = 2;                         // ERROR, not gl_InvocationID
+    gl_out[0].gl_Position = vec4(1.0);   // ERROR, not gl_InvocationID
+    outa[1];
+    gl_out[0];
+    outputtingOutparam(outa[0]);         // ERROR, not gl_InvocationID
+    outputtingOutparam(outa[gl_InvocationID]);
+    patchIName[1].f = 3.14;
+    outa[(gl_InvocationID)] = 2;
 }

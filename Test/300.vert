@@ -174,3 +174,14 @@ layout(std430) uniform B430 { int a; } B430i;     // ERROR
 struct SNA {
     int a[];             // ERROR
 };
+
+void fooDeeparray()
+{
+    float[] x = float[] (1.0, 2.0, 3.0),
+            y = float[] (1.0, 2.0, 3.0, 4.0);
+    float xp[3], yp[4];
+    xp = x;
+    yp = y;
+    xp = y; // ERROR, wrong size
+    yp = x; // ERROR, wrong size
+}

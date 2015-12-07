@@ -41,7 +41,11 @@ ERROR: 0:133: 'gl_BoundingBoxOES' : required extension not requested: Possible e
 GL_EXT_primitive_bounding_box
 GL_OES_primitive_bounding_box
 ERROR: 0:142: '[' :  array index out of range '2'
-ERROR: 33 compilation errors.  No code generated.
+ERROR: 0:145: '' : array size required 
+ERROR: 0:161: '[]' : tessellation-control per-vertex output l-value must be indexed with gl_InvocationID 
+ERROR: 0:162: '[]' : tessellation-control per-vertex output l-value must be indexed with gl_InvocationID 
+ERROR: 0:165: '[]' : tessellation-control per-vertex output l-value must be indexed with gl_InvocationID 
+ERROR: 37 compilation errors.  No code generated.
 
 
 Shader version: 310
@@ -101,19 +105,17 @@ ERROR: node is still EOpNull!
 0:31          'gl_InvocationID' (in highp int InvocationID)
 0:33      move second child to first child (temp highp 4-component vector of float)
 0:33        gl_Position: direct index for structure (out highp 4-component vector of float Position)
-0:33          direct index (temp block{out highp 4-component vector of float Position gl_Position, out highp float PointSize gl_PointSize})
+0:33          indirect index (temp block{out highp 4-component vector of float Position gl_Position, out highp float PointSize gl_PointSize})
 0:33            'gl_out' (out 4-element array of block{out highp 4-component vector of float Position gl_Position, out highp float PointSize gl_PointSize})
-0:33            Constant:
-0:33              1 (const int)
+0:33            'gl_InvocationID' (in highp int InvocationID)
 0:33          Constant:
 0:33            0 (const int)
 0:33        'p' (temp highp 4-component vector of float)
 0:34      move second child to first child (temp highp float)
 0:34        gl_PointSize: direct index for structure (out highp float PointSize)
-0:34          direct index (temp block{out highp 4-component vector of float Position gl_Position, out highp float PointSize gl_PointSize})
+0:34          indirect index (temp block{out highp 4-component vector of float Position gl_Position, out highp float PointSize gl_PointSize})
 0:34            'gl_out' (out 4-element array of block{out highp 4-component vector of float Position gl_Position, out highp float PointSize gl_PointSize})
-0:34            Constant:
-0:34              1 (const int)
+0:34            'gl_InvocationID' (in highp int InvocationID)
 0:34          Constant:
 0:34            1 (const int)
 0:34        'ps' (temp highp float)
@@ -215,10 +217,9 @@ ERROR: node is still EOpNull!
 0:114              1 (const int)
 0:115      move second child to first child (temp highp float)
 0:115        gl_PointSize: direct index for structure (out highp float PointSize)
-0:115          direct index (temp block{out highp 4-component vector of float Position gl_Position, out highp float PointSize gl_PointSize})
+0:115          indirect index (temp block{out highp 4-component vector of float Position gl_Position, out highp float PointSize gl_PointSize})
 0:115            'gl_out' (out 4-element array of block{out highp 4-component vector of float Position gl_Position, out highp float PointSize gl_PointSize})
-0:115            Constant:
-0:115              1 (const int)
+0:115            'gl_InvocationID' (in highp int InvocationID)
 0:115          Constant:
 0:115            1 (const int)
 0:115        'ps' (temp highp float)
@@ -277,9 +278,79 @@ ERROR: node is still EOpNull!
 0:142          2.000000
 0:142          2.000000
 0:142          2.000000
+0:153  Function Definition: outputtingOutparam(i1; (global void)
+0:153    Function Parameters: 
+0:153      'a' (out highp int)
+0:155    Sequence
+0:155      move second child to first child (temp highp int)
+0:155        'a' (out highp int)
+0:155        Constant:
+0:155          2 (const int)
+0:158  Function Definition: outputting( (global void)
+0:158    Function Parameters: 
+0:160    Sequence
+0:160      move second child to first child (temp highp int)
+0:160        indirect index (temp highp int)
+0:160          'outa' (out 4-element array of highp int)
+0:160          'gl_InvocationID' (in highp int InvocationID)
+0:160        Constant:
+0:160          2 (const int)
+0:161      move second child to first child (temp highp int)
+0:161        direct index (temp highp int)
+0:161          'outa' (out 4-element array of highp int)
+0:161          Constant:
+0:161            1 (const int)
+0:161        Constant:
+0:161          2 (const int)
+0:162      move second child to first child (temp highp 4-component vector of float)
+0:162        gl_Position: direct index for structure (out highp 4-component vector of float Position)
+0:162          direct index (temp block{out highp 4-component vector of float Position gl_Position, out highp float PointSize gl_PointSize})
+0:162            'gl_out' (out 4-element array of block{out highp 4-component vector of float Position gl_Position, out highp float PointSize gl_PointSize})
+0:162            Constant:
+0:162              0 (const int)
+0:162          Constant:
+0:162            0 (const int)
+0:162        Constant:
+0:162          1.000000
+0:162          1.000000
+0:162          1.000000
+0:162          1.000000
+0:163      direct index (temp highp int)
+0:163        'outa' (out 4-element array of highp int)
+0:163        Constant:
+0:163          1 (const int)
+0:164      direct index (temp block{out highp 4-component vector of float Position gl_Position, out highp float PointSize gl_PointSize})
+0:164        'gl_out' (out 4-element array of block{out highp 4-component vector of float Position gl_Position, out highp float PointSize gl_PointSize})
+0:164        Constant:
+0:164          0 (const int)
+0:165      Function Call: outputtingOutparam(i1; (global void)
+0:165        direct index (temp highp int)
+0:165          'outa' (out 4-element array of highp int)
+0:165          Constant:
+0:165            0 (const int)
+0:166      Function Call: outputtingOutparam(i1; (global void)
+0:166        indirect index (temp highp int)
+0:166          'outa' (out 4-element array of highp int)
+0:166          'gl_InvocationID' (in highp int InvocationID)
+0:167      move second child to first child (temp highp float)
+0:167        f: direct index for structure (out highp float)
+0:167          direct index (patch temp block{out highp float f})
+0:167            'patchIName' (patch out 4-element array of block{out highp float f})
+0:167            Constant:
+0:167              1 (const int)
+0:167          Constant:
+0:167            0 (const int)
+0:167        Constant:
+0:167          3.140000
+0:168      move second child to first child (temp highp int)
+0:168        indirect index (temp highp int)
+0:168          'outa' (out 4-element array of highp int)
+0:168          'gl_InvocationID' (in highp int InvocationID)
+0:168        Constant:
+0:168          2 (const int)
 0:?   Linker Objects
 0:?     'gl_out' (out 4-element array of block{out highp 4-component vector of float Position gl_Position, out highp float PointSize gl_PointSize})
-0:?     'outa' (global 4-element array of highp int)
+0:?     'outa' (out 4-element array of highp int)
 0:?     'patchIn' (patch in highp 4-component vector of float)
 0:?     'patchOut' (patch out highp 4-component vector of float)
 0:?     'ina' (in highp 2-component vector of float)
@@ -301,6 +372,8 @@ ERROR: node is still EOpNull!
 0:?     'misSized' (out 5-element array of highp float)
 0:?     'okaySize' (out 4-element array of highp float)
 0:?     'pv3' (temp highp 3-component vector of float)
+0:?     'badpatchIName' (patch out implicitly-sized array of block{out highp float f})
+0:?     'patchIName' (patch out 4-element array of block{out highp float f})
 
 
 Linked tessellation control stage:
@@ -363,19 +436,17 @@ ERROR: node is still EOpNull!
 0:31          'gl_InvocationID' (in highp int InvocationID)
 0:33      move second child to first child (temp highp 4-component vector of float)
 0:33        gl_Position: direct index for structure (out highp 4-component vector of float Position)
-0:33          direct index (temp block{out highp 4-component vector of float Position gl_Position, out highp float PointSize gl_PointSize})
+0:33          indirect index (temp block{out highp 4-component vector of float Position gl_Position, out highp float PointSize gl_PointSize})
 0:33            'gl_out' (out 4-element array of block{out highp 4-component vector of float Position gl_Position, out highp float PointSize gl_PointSize})
-0:33            Constant:
-0:33              1 (const int)
+0:33            'gl_InvocationID' (in highp int InvocationID)
 0:33          Constant:
 0:33            0 (const int)
 0:33        'p' (temp highp 4-component vector of float)
 0:34      move second child to first child (temp highp float)
 0:34        gl_PointSize: direct index for structure (out highp float PointSize)
-0:34          direct index (temp block{out highp 4-component vector of float Position gl_Position, out highp float PointSize gl_PointSize})
+0:34          indirect index (temp block{out highp 4-component vector of float Position gl_Position, out highp float PointSize gl_PointSize})
 0:34            'gl_out' (out 4-element array of block{out highp 4-component vector of float Position gl_Position, out highp float PointSize gl_PointSize})
-0:34            Constant:
-0:34              1 (const int)
+0:34            'gl_InvocationID' (in highp int InvocationID)
 0:34          Constant:
 0:34            1 (const int)
 0:34        'ps' (temp highp float)
@@ -477,10 +548,9 @@ ERROR: node is still EOpNull!
 0:114              1 (const int)
 0:115      move second child to first child (temp highp float)
 0:115        gl_PointSize: direct index for structure (out highp float PointSize)
-0:115          direct index (temp block{out highp 4-component vector of float Position gl_Position, out highp float PointSize gl_PointSize})
+0:115          indirect index (temp block{out highp 4-component vector of float Position gl_Position, out highp float PointSize gl_PointSize})
 0:115            'gl_out' (out 4-element array of block{out highp 4-component vector of float Position gl_Position, out highp float PointSize gl_PointSize})
-0:115            Constant:
-0:115              1 (const int)
+0:115            'gl_InvocationID' (in highp int InvocationID)
 0:115          Constant:
 0:115            1 (const int)
 0:115        'ps' (temp highp float)
@@ -539,9 +609,79 @@ ERROR: node is still EOpNull!
 0:142          2.000000
 0:142          2.000000
 0:142          2.000000
+0:153  Function Definition: outputtingOutparam(i1; (global void)
+0:153    Function Parameters: 
+0:153      'a' (out highp int)
+0:155    Sequence
+0:155      move second child to first child (temp highp int)
+0:155        'a' (out highp int)
+0:155        Constant:
+0:155          2 (const int)
+0:158  Function Definition: outputting( (global void)
+0:158    Function Parameters: 
+0:160    Sequence
+0:160      move second child to first child (temp highp int)
+0:160        indirect index (temp highp int)
+0:160          'outa' (out 4-element array of highp int)
+0:160          'gl_InvocationID' (in highp int InvocationID)
+0:160        Constant:
+0:160          2 (const int)
+0:161      move second child to first child (temp highp int)
+0:161        direct index (temp highp int)
+0:161          'outa' (out 4-element array of highp int)
+0:161          Constant:
+0:161            1 (const int)
+0:161        Constant:
+0:161          2 (const int)
+0:162      move second child to first child (temp highp 4-component vector of float)
+0:162        gl_Position: direct index for structure (out highp 4-component vector of float Position)
+0:162          direct index (temp block{out highp 4-component vector of float Position gl_Position, out highp float PointSize gl_PointSize})
+0:162            'gl_out' (out 4-element array of block{out highp 4-component vector of float Position gl_Position, out highp float PointSize gl_PointSize})
+0:162            Constant:
+0:162              0 (const int)
+0:162          Constant:
+0:162            0 (const int)
+0:162        Constant:
+0:162          1.000000
+0:162          1.000000
+0:162          1.000000
+0:162          1.000000
+0:163      direct index (temp highp int)
+0:163        'outa' (out 4-element array of highp int)
+0:163        Constant:
+0:163          1 (const int)
+0:164      direct index (temp block{out highp 4-component vector of float Position gl_Position, out highp float PointSize gl_PointSize})
+0:164        'gl_out' (out 4-element array of block{out highp 4-component vector of float Position gl_Position, out highp float PointSize gl_PointSize})
+0:164        Constant:
+0:164          0 (const int)
+0:165      Function Call: outputtingOutparam(i1; (global void)
+0:165        direct index (temp highp int)
+0:165          'outa' (out 4-element array of highp int)
+0:165          Constant:
+0:165            0 (const int)
+0:166      Function Call: outputtingOutparam(i1; (global void)
+0:166        indirect index (temp highp int)
+0:166          'outa' (out 4-element array of highp int)
+0:166          'gl_InvocationID' (in highp int InvocationID)
+0:167      move second child to first child (temp highp float)
+0:167        f: direct index for structure (out highp float)
+0:167          direct index (patch temp block{out highp float f})
+0:167            'patchIName' (patch out 4-element array of block{out highp float f})
+0:167            Constant:
+0:167              1 (const int)
+0:167          Constant:
+0:167            0 (const int)
+0:167        Constant:
+0:167          3.140000
+0:168      move second child to first child (temp highp int)
+0:168        indirect index (temp highp int)
+0:168          'outa' (out 4-element array of highp int)
+0:168          'gl_InvocationID' (in highp int InvocationID)
+0:168        Constant:
+0:168          2 (const int)
 0:?   Linker Objects
 0:?     'gl_out' (out 4-element array of block{out highp 4-component vector of float Position gl_Position, out highp float PointSize gl_PointSize})
-0:?     'outa' (global 4-element array of highp int)
+0:?     'outa' (out 4-element array of highp int)
 0:?     'patchIn' (patch in highp 4-component vector of float)
 0:?     'patchOut' (patch out highp 4-component vector of float)
 0:?     'ina' (in highp 2-component vector of float)
@@ -563,4 +703,6 @@ ERROR: node is still EOpNull!
 0:?     'misSized' (out 5-element array of highp float)
 0:?     'okaySize' (out 4-element array of highp float)
 0:?     'pv3' (temp highp 3-component vector of float)
+0:?     'badpatchIName' (patch out 1-element array of block{out highp float f})
+0:?     'patchIName' (patch out 4-element array of block{out highp float f})
 

@@ -1630,10 +1630,18 @@ bool TGlslangToSpvTraverser::requiresExplicitLayout(const glslang::TType& type) 
 // Given an array type, returns the integer stride required for that array
 int TGlslangToSpvTraverser::getArrayStride(const glslang::TType& arrayType)
 {
-    glslang::TType derefType(arrayType, 0);
     int size;
-    glslangIntermediate->getBaseAlignment(derefType, size, true);
-    return size;
+    int stride = glslangIntermediate->getBaseAlignment(arrayType, size, arrayType.getQualifier().layoutPacking == glslang::ElpStd140);
+    if (arrayType.isMatrix()) {
+        // GLSL strides are set to alignments of the matrix flattened to individual rows/cols,
+        // but SPV needs an array stride for the whole matrix, not the rows/cols
+        if (arrayType.getQualifier().layoutMatrix == glslang::ElmRowMajor)
+            stride *= arrayType.getMatrixRows();
+        else
+            stride *= arrayType.getMatrixCols();
+    }
+
+    return stride;
 }
 
 // Given a matrix type, returns the integer stride required for that matrix
@@ -1641,7 +1649,7 @@ int TGlslangToSpvTraverser::getArrayStride(const glslang::TType& arrayType)
 int TGlslangToSpvTraverser::getMatrixStride(const glslang::TType& matrixType)
 {
     int size;
-    return glslangIntermediate->getBaseAlignment(matrixType, size, true);
+    return glslangIntermediate->getBaseAlignment(matrixType, size, matrixType.getQualifier().layoutPacking == glslang::ElpStd140);
 }
 
 // Given a member type of a struct, realign the current offset for it, and compute
@@ -1901,9 +1909,11 @@ spv::Id TGlslangToSpvTraverser::createImageTextureFunctionCall(glslang::TIntermO
 
     // Check for texture functions other than queries
 
+    bool cubeCompare = sampler.dim == glslang::EsdCube && sampler.arrayed && sampler.shadow;
+
     // check for bias argument
     bool bias = false;
-    if (! cracked.lod && ! cracked.gather && ! cracked.grad && ! cracked.fetch) {
+    if (! cracked.lod && ! cracked.gather && ! cracked.grad && ! cracked.fetch && ! cubeCompare) {
         int nonBiasArgCount = 2;
         if (cracked.offset)
             ++nonBiasArgCount;
@@ -2882,9 +2892,11 @@ spv::Id TGlslangToSpvTraverser::createMiscOperation(glslang::TOperator op, spv::
     }
 
     spv::Id id = 0;
-    if (libCall >= 0)
+    if (libCall >= 0) {
+        while (consumedOperands < (int)operands.size())
+            operands.pop_back();
         id = builder.createBuiltinCall(precision, typeId, stdBuiltins, libCall, operands);
-    else {
+    } else {
         switch (consumedOperands) {
         case 0:
             // should all be handled by visitAggregate and createNoArgOperation

@@ -23,9 +23,9 @@ void main()
     int pid = gl_PrimitiveID;
     int iid = gl_InvocationID;
 
-    gl_out[1].gl_Position = p;
-    gl_out[1].gl_PointSize = ps;
-    gl_out[1].gl_ClipDistance[1] = cd;
+    gl_out[gl_InvocationID].gl_Position = p;
+    gl_out[gl_InvocationID].gl_PointSize = ps;
+    gl_out[gl_InvocationID].gl_ClipDistance[1] = cd;
 
     gl_TessLevelOuter[3] = 3.2;
     gl_TessLevelInner[1] = 1.3;

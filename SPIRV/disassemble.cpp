@@ -50,7 +50,7 @@
 
 namespace spv {
     // Include C-based headers that don't have a namespace
-    #include "SPIRV/GLSL.std.450.h"
+    #include "GLSL.std.450.h"
 }
 const char* GlslStd450DebugNames[spv::GLSLstd450Count];
 

@@ -63,17 +63,15 @@ ERROR: node is still EOpNull!
 0:23          'gl_InvocationID' (in int InvocationID)
 0:25      move second child to first child (temp 4-component vector of float)
 0:25        gl_Position: direct index for structure (out 4-component vector of float Position)
-0:25          direct index (temp block{out 4-component vector of float Position gl_Position})
+0:25          indirect index (temp block{out 4-component vector of float Position gl_Position})
 0:25            'gl_out' (out 3-element array of block{out 4-component vector of float Position gl_Position})
-0:25            Constant:
-0:25              1 (const int)
+0:25            'gl_InvocationID' (in int InvocationID)
 0:25          Constant:
 0:25            0 (const int)
 0:25        'p' (temp 4-component vector of float)
-0:26      direct index (temp block{out 4-component vector of float Position gl_Position})
+0:26      indirect index (temp block{out 4-component vector of float Position gl_Position})
 0:26        'gl_out' (out 3-element array of block{out 4-component vector of float Position gl_Position})
-0:26        Constant:
-0:26          1 (const int)
+0:26        'gl_InvocationID' (in int InvocationID)
 0:34  Function Definition: foo( (global void)
 0:34    Function Parameters: 
 0:36    Sequence
@@ -176,17 +174,15 @@ ERROR: node is still EOpNull!
 0:23          'gl_InvocationID' (in int InvocationID)
 0:25      move second child to first child (temp 4-component vector of float)
 0:25        gl_Position: direct index for structure (out 4-component vector of float Position)
-0:25          direct index (temp block{out 4-component vector of float Position gl_Position})
+0:25          indirect index (temp block{out 4-component vector of float Position gl_Position})
 0:25            'gl_out' (out 3-element array of block{out 4-component vector of float Position gl_Position})
-0:25            Constant:
-0:25              1 (const int)
+0:25            'gl_InvocationID' (in int InvocationID)
 0:25          Constant:
 0:25            0 (const int)
 0:25        'p' (temp 4-component vector of float)
-0:26      direct index (temp block{out 4-component vector of float Position gl_Position})
+0:26      indirect index (temp block{out 4-component vector of float Position gl_Position})
 0:26        'gl_out' (out 3-element array of block{out 4-component vector of float Position gl_Position})
-0:26        Constant:
-0:26          1 (const int)
+0:26        'gl_InvocationID' (in int InvocationID)
 0:34  Function Definition: foo( (global void)
 0:34    Function Parameters: 
 0:36    Sequence

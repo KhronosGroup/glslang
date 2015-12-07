@@ -930,7 +930,7 @@ public:
                                 qualifier.precision = p;
                                 assert(p >= 0 && p <= EpqHigh);
                             }
-    // for turning a TPublicType into a TType
+    // for turning a TPublicType into a TType, using a shallow copy
     explicit TType(const TPublicType& p) :
                             basicType(p.basicType), vectorSize(p.vectorSize), matrixCols(p.matrixCols), matrixRows(p.matrixRows), arraySizes(p.arraySizes),
                             structure(nullptr), fieldName(nullptr), typeName(nullptr)
