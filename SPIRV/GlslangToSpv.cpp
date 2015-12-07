@@ -2893,9 +2893,11 @@ spv::Id TGlslangToSpvTraverser::createMiscOperation(glslang::TOperator op, spv::
 
     spv::Id id = 0;
     if (libCall >= 0) {
-        while (consumedOperands < (int)operands.size())
-            operands.pop_back();
-        id = builder.createBuiltinCall(precision, typeId, stdBuiltins, libCall, operands);
+        // Use an extended instruction from the standard library.
+        // Construct the call arguments, without modifying the original operands vector.
+        // We might need the remaining arguments, e.g. in the EOpFrexp case.
+        std::vector<spv::Id> callArguments(operands.begin(), operands.begin() + consumedOperands);
+        id = builder.createBuiltinCall(precision, typeId, stdBuiltins, libCall, callArguments);
     } else {
         switch (consumedOperands) {
         case 0:
@@ -2930,6 +2932,7 @@ spv::Id TGlslangToSpvTraverser::createMiscOperation(glslang::TOperator op, spv::
         builder.createStore(builder.createCompositeExtract(id, typeId0, 1), operands[2]);
         break;
     case glslang::EOpFrexp:
+        assert(operands.size() == 2);
         builder.createStore(builder.createCompositeExtract(id, frexpIntType, 1), operands[1]);
         id = builder.createCompositeExtract(id, typeId0, 0);
         break;
