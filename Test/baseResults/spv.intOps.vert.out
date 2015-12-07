@@ -193,7 +193,7 @@ Linked vertex stage:
               97:    7(ivec4) IAdd 96 95
                               Store 9(iout) 97
              101:   98(fvec3) Load 100(v3)
-             106:105(ResType) ExtInst 1(GLSL.std.450) 52(FrexpStruct) 101 104(i3out)
+             106:105(ResType) ExtInst 1(GLSL.std.450) 52(FrexpStruct) 101
              107:  102(ivec3) CompositeExtract 106 1
                               Store 104(i3out) 107
              108:   98(fvec3) CompositeExtract 106 0
@@ -211,7 +211,7 @@ Linked vertex stage:
              119:    7(ivec4) VectorShuffle 118 117 4 5 6 3
                               Store 9(iout) 119
              122:   18(float) Load 121(v1)
-             126:125(ResType) ExtInst 1(GLSL.std.450) 52(FrexpStruct) 122 124(i1out)
+             126:125(ResType) ExtInst 1(GLSL.std.450) 52(FrexpStruct) 122
              127:      6(int) CompositeExtract 126 1
                               Store 124(i1out) 127
              128:   18(float) CompositeExtract 126 0

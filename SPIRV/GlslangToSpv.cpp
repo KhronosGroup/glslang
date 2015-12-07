@@ -2892,9 +2892,11 @@ spv::Id TGlslangToSpvTraverser::createMiscOperation(glslang::TOperator op, spv::
     }
 
     spv::Id id = 0;
-    if (libCall >= 0)
+    if (libCall >= 0) {
+        while (consumedOperands < (int)operands.size())
+            operands.pop_back();
         id = builder.createBuiltinCall(precision, typeId, stdBuiltins, libCall, operands);
-    else {
+    } else {
         switch (consumedOperands) {
         case 0:
             // should all be handled by visitAggregate and createNoArgOperation
