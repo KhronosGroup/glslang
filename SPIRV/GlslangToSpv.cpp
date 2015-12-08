@@ -822,7 +822,8 @@ bool TGlslangToSpvTraverser::visitUnary(glslang::TVisit /* visit */, glslang::TI
 
     if (node->getOp() == glslang::EOpAtomicCounterIncrement ||
         node->getOp() == glslang::EOpAtomicCounterDecrement ||
-        node->getOp() == glslang::EOpAtomicCounter)
+        node->getOp() == glslang::EOpAtomicCounter          ||
+        node->getOp() == glslang::EOpInterpolateAtCentroid)
         operand = builder.accessChainGetLValue(); // Special case l-value operands
     else
         operand = builder.accessChainLoad(convertGlslangToSpvType(node->getOperand()->getType()));
@@ -1172,6 +1173,11 @@ bool TGlslangToSpvTraverser::visitAggregate(glslang::TVisit visit, glslang::TInt
         case glslang::EOpFrexp:
         case glslang::EOpModf:
             if (arg == 1)
+                lvalue = true;
+            break;
+        case glslang::EOpInterpolateAtSample:
+        case glslang::EOpInterpolateAtOffset:
+            if (arg == 0)
                 lvalue = true;
             break;
         case glslang::EOpAtomicAdd:
@@ -2508,7 +2514,9 @@ spv::Id TGlslangToSpvTraverser::createUnaryOperation(glslang::TOperator op, spv:
     case glslang::EOpFwidthCoarse:
         unaryOp = spv::OpFwidthCoarse;
         break;
-
+    case glslang::EOpInterpolateAtCentroid:
+        libCall = spv::GLSLstd450InterpolateAtCentroid;
+        break;
     case glslang::EOpAny:
         unaryOp = spv::OpAny;
         break;
@@ -2840,7 +2848,12 @@ spv::Id TGlslangToSpvTraverser::createMiscOperation(glslang::TOperator op, spv::
     case glslang::EOpRefract:
         libCall = spv::GLSLstd450Refract;
         break;
-
+    case glslang::EOpInterpolateAtSample:
+        libCall = spv::GLSLstd450InterpolateAtSample;
+        break;
+    case glslang::EOpInterpolateAtOffset:
+        libCall = spv::GLSLstd450InterpolateAtOffset;
+        break;
     case glslang::EOpAddCarry:
         opCode = spv::OpIAddCarry;
         typeId = builder.makeStructResultType(typeId0, typeId0);
