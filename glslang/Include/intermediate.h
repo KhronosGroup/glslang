@@ -905,7 +905,7 @@ public:
     void incrementDepth(TIntermNode *current)
     {
         depth++;
-        maxDepth = std::max(maxDepth, depth);
+        maxDepth = (std::max)(maxDepth, depth);
         path.push_back(current);
     }
 
