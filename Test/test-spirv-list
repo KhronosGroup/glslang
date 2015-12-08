@@ -60,6 +60,7 @@ spv.intOps.vert
 spv.precision.frag
 spv.prepost.frag
 spv.qualifiers.vert
+spv.shiftOps.frag
 spv.simpleFunctionCall.frag
 spv.simpleMat.vert
 spv.structAssignment.frag
