@@ -598,10 +598,12 @@ void TGlslangToSpvTraverser::visitSymbol(glslang::TIntermSymbol* symbol)
         else
             builder.setAccessChainLValue(id);
     } else {
-        // finish off the entry-point SPV instruction by adding the Input/Output <id>
-        spv::StorageClass sc = builder.getStorageClass(id);
-        if (sc == spv::StorageClassInput || sc == spv::StorageClassOutput)
-            entryPoint->addIdOperand(id);
+        if (symbol->getQualifier().storage != glslang::EvqConst) {
+            // finish off the entry-point SPV instruction by adding the Input/Output <id>
+            spv::StorageClass sc = builder.getStorageClass(id);
+            if (sc == spv::StorageClassInput || sc == spv::StorageClassOutput)
+                entryPoint->addIdOperand(id);
+        }
     }
 }
 

@@ -45,6 +45,7 @@ spv.forLoop.frag
 spv.forwardFun.frag
 spv.functionCall.frag
 spv.functionSemantics.frag
+spv.globalConstBool.frag
 spv.length.frag
 spv.localAggregates.frag
 spv.loops.frag
@@ -59,6 +60,7 @@ spv.intOps.vert
 spv.precision.frag
 spv.prepost.frag
 spv.qualifiers.vert
+spv.shiftOps.frag
 spv.simpleFunctionCall.frag
 spv.simpleMat.vert
 spv.structAssignment.frag
