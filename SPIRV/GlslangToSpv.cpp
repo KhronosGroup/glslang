@@ -599,9 +599,11 @@ void TGlslangToSpvTraverser::visitSymbol(glslang::TIntermSymbol* symbol)
             builder.setAccessChainLValue(id);
     } else {
         // finish off the entry-point SPV instruction by adding the Input/Output <id>
-        spv::StorageClass sc = builder.getStorageClass(id);
-        if (sc == spv::StorageClassInput || sc == spv::StorageClassOutput)
-            entryPoint->addIdOperand(id);
+        if (builder.isPointer(id)) {
+            spv::StorageClass sc = builder.getStorageClass(id);
+            if (sc == spv::StorageClassInput || sc == spv::StorageClassOutput)
+                entryPoint->addIdOperand(id);
+        }
     }
 }
 
