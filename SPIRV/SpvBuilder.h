@@ -122,23 +122,24 @@ public:
     Id getContainedTypeId(Id typeId, int) const;
     StorageClass getTypeStorageClass(Id typeId) const { return module.getStorageClass(typeId); }
 
-    bool isPointer(Id resultId)     const { return isPointerType(getTypeId(resultId)); }
-    bool isScalar(Id resultId)      const { return isScalarType(getTypeId(resultId)); }
-    bool isVector(Id resultId)      const { return isVectorType(getTypeId(resultId)); }
-    bool isMatrix(Id resultId)      const { return isMatrixType(getTypeId(resultId)); }
-    bool isAggregate(Id resultId)   const { return isAggregateType(getTypeId(resultId)); }
-    bool isBoolType(Id typeId)      const { return groupedTypes[OpTypeBool].size() > 0 && typeId == groupedTypes[OpTypeBool].back()->getResultId(); }
+    bool isPointer(Id resultId)      const { return isPointerType(getTypeId(resultId)); }
+    bool isScalar(Id resultId)       const { return isScalarType(getTypeId(resultId)); }
+    bool isVector(Id resultId)       const { return isVectorType(getTypeId(resultId)); }
+    bool isMatrix(Id resultId)       const { return isMatrixType(getTypeId(resultId)); }
+    bool isAggregate(Id resultId)    const { return isAggregateType(getTypeId(resultId)); }
+    bool isSampledImage(Id resultId) const { return isSampledImageType(getTypeId(resultId)); }
 
-    bool isPointerType(Id typeId)   const { return getTypeClass(typeId) == OpTypePointer; }
-    bool isScalarType(Id typeId)    const { return getTypeClass(typeId) == OpTypeFloat  || getTypeClass(typeId) == OpTypeInt || getTypeClass(typeId) == OpTypeBool; }
-    bool isVectorType(Id typeId)    const { return getTypeClass(typeId) == OpTypeVector; }
-    bool isMatrixType(Id typeId)    const { return getTypeClass(typeId) == OpTypeMatrix; }
-    bool isStructType(Id typeId)    const { return getTypeClass(typeId) == OpTypeStruct; }
-    bool isArrayType(Id typeId)     const { return getTypeClass(typeId) == OpTypeArray; }
-    bool isAggregateType(Id typeId) const { return isArrayType(typeId) || isStructType(typeId); }
-    bool isImageType(Id typeId)     const { return getTypeClass(typeId) == OpTypeImage; }
-    bool isSamplerType(Id typeId)   const { return getTypeClass(typeId) == OpTypeSampler; }
-    bool isSampledImageType(Id typeId)   const { return getTypeClass(typeId) == OpTypeSampledImage; }
+    bool isBoolType(Id typeId)         const { return groupedTypes[OpTypeBool].size() > 0 && typeId == groupedTypes[OpTypeBool].back()->getResultId(); }
+    bool isPointerType(Id typeId)      const { return getTypeClass(typeId) == OpTypePointer; }
+    bool isScalarType(Id typeId)       const { return getTypeClass(typeId) == OpTypeFloat  || getTypeClass(typeId) == OpTypeInt || getTypeClass(typeId) == OpTypeBool; }
+    bool isVectorType(Id typeId)       const { return getTypeClass(typeId) == OpTypeVector; }
+    bool isMatrixType(Id typeId)       const { return getTypeClass(typeId) == OpTypeMatrix; }
+    bool isStructType(Id typeId)       const { return getTypeClass(typeId) == OpTypeStruct; }
+    bool isArrayType(Id typeId)        const { return getTypeClass(typeId) == OpTypeArray; }
+    bool isAggregateType(Id typeId)    const { return isArrayType(typeId) || isStructType(typeId); }
+    bool isImageType(Id typeId)        const { return getTypeClass(typeId) == OpTypeImage; }
+    bool isSamplerType(Id typeId)      const { return getTypeClass(typeId) == OpTypeSampler; }
+    bool isSampledImageType(Id typeId) const { return getTypeClass(typeId) == OpTypeSampledImage; }
 
     bool isConstantOpCode(Op opcode) const;
     bool isConstant(Id resultId) const { return isConstantOpCode(getOpCode(resultId)); }

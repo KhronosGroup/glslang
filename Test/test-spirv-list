@@ -30,6 +30,7 @@ spv.accessChain.frag
 spv.aggOps.frag
 spv.always-discard.frag
 spv.always-discard2.frag
+spv.bool.vert
 spv.conditionalDiscard.frag
 spv.conversion.frag
 spv.dataOut.frag
@@ -45,6 +46,7 @@ spv.forLoop.frag
 spv.forwardFun.frag
 spv.functionCall.frag
 spv.functionSemantics.frag
+spv.interpOps.frag
 spv.length.frag
 spv.localAggregates.frag
 spv.loops.frag
