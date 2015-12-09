@@ -1855,6 +1855,9 @@ spv::Id TGlslangToSpvTraverser::createImageTextureFunctionCall(glslang::TIntermO
 
     // Check for queries
     if (cracked.query) {
+        // a sampled image needs to have the image extracted first
+        if (builder.isSampledImage(params.sampler))
+            params.sampler = builder.createUnaryOp(spv::OpImage, builder.getImageType(params.sampler), params.sampler);
         switch (node->getOp()) {
         case glslang::EOpImageQuerySize:
         case glslang::EOpTextureQuerySize:
