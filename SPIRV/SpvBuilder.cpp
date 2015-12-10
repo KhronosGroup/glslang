@@ -1190,6 +1190,10 @@ Id Builder::smearScalar(Decoration /*precision*/, Id scalar, Id vectorType)
     if (numComponents == 1)
         return scalar;
 
+    // Make new vector type if the provided one is incompatible with type of the scalar
+    if (getTypeId(scalar) != getScalarTypeId(vectorType))
+        vectorType = makeVectorType(getTypeId(scalar), numComponents);
+
     Instruction* smear = new Instruction(getUniqueId(), vectorType, OpCompositeConstruct);
     for (int c = 0; c < numComponents; ++c)
         smear->addIdOperand(scalar);
