@@ -146,3 +146,8 @@ void interp()
     interpolateAtCentroid(sampInArray[2].xy);
     interpolateAtSample(sampInArray[2].x.x, 2);
 }
+
+int layer()
+{
+    return gl_Layer;
+}

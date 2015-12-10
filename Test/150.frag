@@ -43,3 +43,8 @@ void barWxyz()
     ivec4 t42 = texelFetch(ismsa, ivec3(2), samp);
     uvec4 t43 = texelFetch(usmsa, p3, samp);
 }
+
+int primitiveID()
+{
+   return gl_PrimitiveID;
+}
