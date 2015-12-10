@@ -279,12 +279,17 @@ public:
     //   - promoteScalar(scalar, scalar)  // do nothing
     // Other forms are not allowed.
     //
+    // Generally, the type of 'scalar' does not need to be the same type as the components in 'vector'.
+    // The type of the created vector is a vector of components of the same type as the scalar.
+    //
     // Note: One of the arguments will change, with the result coming back that way rather than 
     // through the return value.
     void promoteScalar(Decoration precision, Id& left, Id& right);
 
-    // make a value by smearing the scalar to fill the type
-    Id smearScalar(Decoration precision, Id scalarVal, Id);
+    // Make a value by smearing the scalar to fill the type.
+    // vectorType should be the correct type for making a vector of scalarVal.
+    // (No conversions are done.)
+    Id smearScalar(Decoration precision, Id scalarVal, Id vectorType);
 
     // Create a call to a built-in function.
     Id createBuiltinCall(Decoration precision, Id resultType, Id builtins, int entryPoint, std::vector<Id>& args);

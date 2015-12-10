@@ -1174,9 +1174,9 @@ void Builder::promoteScalar(Decoration precision, Id& left, Id& right)
     int direction = getNumComponents(right) - getNumComponents(left);
 
     if (direction > 0)
-        left = smearScalar(precision, left, getTypeId(right));
+        left = smearScalar(precision, left, makeVectorType(getTypeId(left), getNumComponents(right)));
     else if (direction < 0)
-        right = smearScalar(precision, right, getTypeId(left));
+        right = smearScalar(precision, right, makeVectorType(getTypeId(right), getNumComponents(left)));
 
     return;
 }
@@ -1185,14 +1185,11 @@ void Builder::promoteScalar(Decoration precision, Id& left, Id& right)
 Id Builder::smearScalar(Decoration /*precision*/, Id scalar, Id vectorType)
 {
     assert(getNumComponents(scalar) == 1);
+    assert(getTypeId(scalar) == getScalarTypeId(vectorType));
 
     int numComponents = getNumTypeComponents(vectorType);
     if (numComponents == 1)
         return scalar;
-
-    // Make new vector type if the provided one is incompatible with type of the scalar
-    if (getTypeId(scalar) != getScalarTypeId(vectorType))
-        vectorType = makeVectorType(getTypeId(scalar), numComponents);
 
     Instruction* smear = new Instruction(getUniqueId(), vectorType, OpCompositeConstruct);
     for (int c = 0; c < numComponents; ++c)
