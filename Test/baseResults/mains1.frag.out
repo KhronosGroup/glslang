@@ -19,7 +19,7 @@ ERROR: 1 compilation errors.  No code generated.
 
 Shader version: 150
 invocations = 0
-max_vertices = 0
+max_vertices = -1
 input primitive = none
 output primitive = points
 ERROR: node is still EOpNull!
@@ -30,7 +30,7 @@ ERROR: node is still EOpNull!
 noMain2.geom
 Shader version: 150
 invocations = 0
-max_vertices = 0
+max_vertices = -1
 input primitive = none
 output primitive = line_strip
 0:? Sequence
@@ -53,7 +53,7 @@ ERROR: Linking fragment stage: Multiple function bodies in multiple compilation 
 
 Shader version: 150
 invocations = 0
-max_vertices = 0
+max_vertices = -1
 input primitive = none
 output primitive = points
 ERROR: node is still EOpNull!

@@ -2,7 +2,7 @@
 Warning, version 450 is not yet complete; most version-specific features are present, but some are missing.
 
 Shader version: 450
-vertices = 0
+vertices = -1
 0:? Sequence
 0:11  Function Definition: main( (global void)
 0:11    Function Parameters: 
@@ -37,7 +37,7 @@ Linked tessellation control stage:
 ERROR: Linking tessellation control stage: At least one shader must specify an output layout(vertices=...)
 
 Shader version: 450
-vertices = 0
+vertices = -1
 0:? Sequence
 0:11  Function Definition: main( (global void)
 0:11    Function Parameters: 

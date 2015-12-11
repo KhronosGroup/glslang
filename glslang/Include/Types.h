@@ -327,6 +327,8 @@ enum TBlendEquationShift {
 
 class TQualifier {
 public:
+    static const int layoutNotSet = -1;
+
     void clear()
     {
         precision = EpqNone;
@@ -489,8 +491,8 @@ public:
     {
         layoutMatrix = ElmNone;
         layoutPacking = ElpNone;
-        layoutOffset = -1;
-        layoutAlign = -1;
+        layoutOffset = layoutNotSet;
+        layoutAlign = layoutNotSet;
 
         layoutLocation = layoutLocationEnd;
         layoutComponent = layoutComponentEnd;
@@ -567,11 +569,11 @@ public:
     }
     bool hasOffset() const
     {
-        return layoutOffset != -1;
+        return layoutOffset != layoutNotSet;
     }
     bool hasAlign() const
     {
-        return layoutAlign != -1;
+        return layoutAlign != layoutNotSet;
     }
     bool hasAnyLocation() const
     {
@@ -789,7 +791,7 @@ struct TShaderQualifiers {
         originUpperLeft = false;
         pixelCenterInteger = false;
         invocations = 0;        // 0 means no declaration
-        vertices = 0;
+        vertices = TQualifier::layoutNotSet;
         spacing = EvsNone;
         order = EvoNone;
         pointMode = false;
@@ -813,7 +815,7 @@ struct TShaderQualifiers {
             originUpperLeft = src.originUpperLeft;
         if (src.invocations != 0)
             invocations = src.invocations;
-        if (src.vertices != 0)
+        if (src.vertices != TQualifier::layoutNotSet)
             vertices = src.vertices;
         if (src.spacing != EvsNone)
             spacing = src.spacing;

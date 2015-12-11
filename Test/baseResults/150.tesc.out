@@ -586,7 +586,7 @@ ERROR: 1 compilation errors.  No code generated.
 
 
 Shader version: 400
-vertices = 0
+vertices = -1
 ERROR: node is still EOpNull!
 0:8  Function Definition: main( (global void)
 0:8    Function Parameters: 
@@ -603,7 +603,8 @@ ERROR: 0:12: 'vertices' : inconsistent output number of vertices for array size 
 ERROR: 0:26: 'gl_PointSize' : no such field in structure 
 ERROR: 0:26: 'assign' :  cannot convert from 'temp float' to 'temp block{out 4-component vector of float Position gl_Position}'
 ERROR: 0:29: 'out' : type must be an array: outf
-ERROR: 6 compilation errors.  No code generated.
+ERROR: 0:43: 'vertices' : must be greater than 0 
+ERROR: 7 compilation errors.  No code generated.
 
 
 Shader version: 420
