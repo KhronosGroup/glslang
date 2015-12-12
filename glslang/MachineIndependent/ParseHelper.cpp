@@ -662,7 +662,7 @@ void TParseContext::handleIoResizeArrayAccess(const TSourceLoc& /*loc*/, TInterm
     // fix array size, if it can be fixed and needs to be fixed (will allow variable indexing)
     if (symbolNode->getType().isImplicitlySizedArray()) {
         int newSize = getIoArrayImplicitSize();
-        if (newSize)
+        if (newSize > 0)
             symbolNode->getWritableType().changeOuterArraySize(newSize);
     }
 }
@@ -703,7 +703,7 @@ int TParseContext::getIoArrayImplicitSize() const
     if (language == EShLangGeometry)
         return TQualifier::mapGeometryToSize(intermediate.getInputPrimitive());
     else if (language == EShLangTessControl)
-        return intermediate.getVertices();
+        return intermediate.getVertices() != TQualifier::layoutNotSet ? intermediate.getVertices() : 0;
     else
         return 0;
 }
@@ -3875,7 +3875,10 @@ void TParseContext::setLayoutQualifier(const TSourceLoc& loc, TPublicType& publi
 
     case EShLangTessControl:
         if (id == "vertices") {
-            publicType.shaderQualifiers.vertices = value;
+            if (value == 0)
+                error(loc, "must be greater than 0", "vertices", "");
+            else
+                publicType.shaderQualifiers.vertices = value;
             return;
         }
         break;
@@ -4275,7 +4278,7 @@ void TParseContext::checkNoShaderLayouts(const TSourceLoc& loc, const TShaderQua
         error(loc, message, TQualifier::getGeometryString(shaderQualifiers.geometry), "");
     if (shaderQualifiers.invocations > 0)
         error(loc, message, "invocations", "");
-    if (shaderQualifiers.vertices > 0) {
+    if (shaderQualifiers.vertices != TQualifier::layoutNotSet) {
         if (language == EShLangGeometry)
             error(loc, message, "max_vertices", "");
         else if (language == EShLangTessControl)
@@ -5438,7 +5441,7 @@ void TParseContext::invariantCheck(const TSourceLoc& loc, const TQualifier& qual
 //
 void TParseContext::updateStandaloneQualifierDefaults(const TSourceLoc& loc, const TPublicType& publicType)
 {
-    if (publicType.shaderQualifiers.vertices) {
+    if (publicType.shaderQualifiers.vertices != TQualifier::layoutNotSet) {
         assert(language == EShLangTessControl || language == EShLangGeometry);
         const char* id = (language == EShLangTessControl) ? "vertices" : "max_vertices";
 

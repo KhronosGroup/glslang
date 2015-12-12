@@ -39,3 +39,5 @@ void foo()
         ;
     }
 }
+
+layout(vertices = 0) out;  // ERROR, can't be 0

@@ -6,7 +6,7 @@ ERROR: 1 compilation errors.  No code generated.
 
 Shader version: 420
 invocations = 0
-max_vertices = 0
+max_vertices = -1
 input primitive = triangles
 output primitive = none
 ERROR: node is still EOpNull!
@@ -45,7 +45,7 @@ ERROR: Linking geometry stage: At least one shader must specify a layout(max_ver
 
 Shader version: 420
 invocations = 0
-max_vertices = 0
+max_vertices = -1
 input primitive = triangles
 output primitive = none
 ERROR: node is still EOpNull!

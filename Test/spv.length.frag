@@ -2,11 +2,7 @@
 
 uniform vec4 u[3];
 
-#ifdef TEST_POST_110
-varying vec2 v[];
-#else
 varying vec2 v[2];
-#endif
 
 void main()
 {

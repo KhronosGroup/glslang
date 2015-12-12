@@ -100,7 +100,7 @@ void TIntermediate::merge(TInfoSink& infoSink, TIntermediate& unit)
     else if (outputPrimitive != unit.outputPrimitive)
         error(infoSink, "Contradictory output layout primitives");
     
-    if (vertices == 0)
+    if (vertices == TQualifier::layoutNotSet)
         vertices = unit.vertices;
     else if (vertices != unit.vertices) {
         if (language == EShLangGeometry)
@@ -409,7 +409,7 @@ void TIntermediate::finalCheck(TInfoSink& infoSink)
     case EShLangVertex:
         break;
     case EShLangTessControl:
-        if (vertices == 0)
+        if (vertices == TQualifier::layoutNotSet)
             error(infoSink, "At least one shader must specify an output layout(vertices=...)");
         break;
     case EShLangTessEvaluation:
@@ -425,7 +425,7 @@ void TIntermediate::finalCheck(TInfoSink& infoSink)
             error(infoSink, "At least one shader must specify an input layout primitive");
         if (outputPrimitive == ElgNone)
             error(infoSink, "At least one shader must specify an output layout primitive");
-        if (vertices == 0)
+        if (vertices == TQualifier::layoutNotSet)
             error(infoSink, "At least one shader must specify a layout(max_vertices = value)");
         break;
     case EShLangFragment:

@@ -3,7 +3,7 @@ Warning, version 450 is not yet complete; most version-specific features are pre
 
 Shader version: 450
 invocations = 0
-max_vertices = 0
+max_vertices = -1
 input primitive = none
 output primitive = none
 0:? Sequence
@@ -41,7 +41,7 @@ ERROR: Linking geometry stage: At least one shader must specify a layout(max_ver
 
 Shader version: 450
 invocations = 0
-max_vertices = 0
+max_vertices = -1
 input primitive = none
 output primitive = none
 0:? Sequence
