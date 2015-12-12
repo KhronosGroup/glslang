@@ -1,18 +1,18 @@
 #version 150
 
-uniform mat3 colorTransform;
-varying vec3 Color;
-uniform mat4 m, n;
+in mat3 colorTransform;
+in vec3 Color;
+in mat4 m, n;
 
-uniform mat4x3 um43;
-uniform mat3x4 un34;
-uniform mat2 um2;
-uniform mat3 um3;
-uniform mat4 um4;
+in mat4x3 um43;
+in mat3x4 un34;
+in mat2 um2;
+in mat3 um3;
+in mat4 um4;
 
-varying vec4 v;
+in vec4 v;
 
-varying vec3 u;
+in vec3 u;
 
 out vec4 FragColor;
 
