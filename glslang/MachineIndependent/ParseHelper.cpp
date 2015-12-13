@@ -3889,7 +3889,10 @@ void TParseContext::setLayoutQualifier(const TSourceLoc& loc, TPublicType& publi
     case EShLangGeometry:
         if (id == "invocations") {
             profileRequires(loc, ECompatibilityProfile | ECoreProfile, 400, nullptr, "invocations");
-            publicType.shaderQualifiers.invocations = value;
+            if (value == 0)
+                error(loc, "must be at least 1", "invocations", "");
+            else
+                publicType.shaderQualifiers.invocations = value;
             return;
         }
         if (id == "max_vertices") {
@@ -4276,7 +4279,7 @@ void TParseContext::checkNoShaderLayouts(const TSourceLoc& loc, const TShaderQua
 
     if (shaderQualifiers.geometry != ElgNone)
         error(loc, message, TQualifier::getGeometryString(shaderQualifiers.geometry), "");
-    if (shaderQualifiers.invocations > 0)
+    if (shaderQualifiers.invocations != TQualifier::layoutNotSet)
         error(loc, message, "invocations", "");
     if (shaderQualifiers.vertices != TQualifier::layoutNotSet) {
         if (language == EShLangGeometry)
@@ -5453,7 +5456,7 @@ void TParseContext::updateStandaloneQualifierDefaults(const TSourceLoc& loc, con
         if (language == EShLangTessControl)
             checkIoArraysConsistency(loc);
     }
-    if (publicType.shaderQualifiers.invocations) {
+    if (publicType.shaderQualifiers.invocations != TQualifier::layoutNotSet) {
         if (publicType.qualifier.storage != EvqVaryingIn)
             error(loc, "can only apply to 'in'", "invocations", "");
         if (! intermediate.setInvocations(publicType.shaderQualifiers.invocations))

@@ -775,7 +775,7 @@ struct TShaderQualifiers {
     TLayoutGeometry geometry; // geometry/tessellation shader in/out primitives
     bool pixelCenterInteger;  // fragment shader
     bool originUpperLeft;     // fragment shader
-    int invocations;          // 0 means no declaration
+    int invocations;
     int vertices;             // both for tessellation "vertices" and geometry "max_vertices"
     TVertexSpacing spacing;
     TVertexOrder order;
@@ -790,7 +790,7 @@ struct TShaderQualifiers {
         geometry = ElgNone;
         originUpperLeft = false;
         pixelCenterInteger = false;
-        invocations = 0;        // 0 means no declaration
+        invocations = TQualifier::layoutNotSet;
         vertices = TQualifier::layoutNotSet;
         spacing = EvsNone;
         order = EvoNone;
@@ -813,7 +813,7 @@ struct TShaderQualifiers {
             pixelCenterInteger = src.pixelCenterInteger;
         if (src.originUpperLeft)
             originUpperLeft = src.originUpperLeft;
-        if (src.invocations != 0)
+        if (src.invocations != TQualifier::layoutNotSet)
             invocations = src.invocations;
         if (src.vertices != TQualifier::layoutNotSet)
             vertices = src.vertices;

@@ -12,7 +12,7 @@ Linked geometry stage:
                               MemoryModel Logical GLSL450
                               EntryPoint Geometry 4  "main" 18 70 10 29 33
                               ExecutionMode 4 InputTrianglesAdjacency
-                              ExecutionMode 4 Invocations 0
+                              ExecutionMode 4 Invocations 1
                               ExecutionMode 4 OutputTriangleStrip
                               ExecutionMode 4 OutputVertices 30
                               Source GLSL 150
