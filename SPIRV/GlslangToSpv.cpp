@@ -1951,7 +1951,7 @@ spv::Id TGlslangToSpvTraverser::createImageTextureFunctionCall(glslang::TIntermO
         std::vector<spv::Id> indexes;
         int comp;
         if (cracked.proj)
-            comp = 3;
+            comp = 2;  // "The resulting 3rd component of P in the shadow forms is used as Dref"
         else
             comp = builder.getNumComponents(params.coords) - 1;
         indexes.push_back(comp);
@@ -2871,6 +2871,7 @@ spv::Id TGlslangToSpvTraverser::createMiscOperation(glslang::TOperator op, spv::
             libCall = spv::GLSLstd450UMin;
         else
             libCall = spv::GLSLstd450SMin;
+        builder.promoteScalar(precision, operands.front(), operands.back());
         break;
     case glslang::EOpModf:
         libCall = spv::GLSLstd450Modf;
@@ -2882,6 +2883,7 @@ spv::Id TGlslangToSpvTraverser::createMiscOperation(glslang::TOperator op, spv::
             libCall = spv::GLSLstd450UMax;
         else
             libCall = spv::GLSLstd450SMax;
+        builder.promoteScalar(precision, operands.front(), operands.back());
         break;
     case glslang::EOpPow:
         libCall = spv::GLSLstd450Pow;
@@ -2900,18 +2902,24 @@ spv::Id TGlslangToSpvTraverser::createMiscOperation(glslang::TOperator op, spv::
             libCall = spv::GLSLstd450UClamp;
         else
             libCall = spv::GLSLstd450SClamp;
+        builder.promoteScalar(precision, operands.front(), operands[1]);
+        builder.promoteScalar(precision, operands.front(), operands[2]);
         break;
     case glslang::EOpMix:
         if (isFloat)
             libCall = spv::GLSLstd450FMix;
         else
             libCall = spv::GLSLstd450IMix;
+        builder.promoteScalar(precision, operands.front(), operands.back());
         break;
     case glslang::EOpStep:
         libCall = spv::GLSLstd450Step;
+        builder.promoteScalar(precision, operands.front(), operands.back());
         break;
     case glslang::EOpSmoothStep:
         libCall = spv::GLSLstd450SmoothStep;
+        builder.promoteScalar(precision, operands[0], operands[2]);
+        builder.promoteScalar(precision, operands[1], operands[2]);
         break;
 
     case glslang::EOpDistance:

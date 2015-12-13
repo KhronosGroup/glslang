@@ -1,6 +1,6 @@
 max_vertices_0.geom
 Shader version: 330
-invocations = 0
+invocations = -1
 max_vertices = 0
 input primitive = points
 output primitive = triangle_strip
@@ -19,7 +19,7 @@ Linked geometry stage:
 
 
 Shader version: 330
-invocations = 0
+invocations = 1
 max_vertices = 0
 input primitive = points
 output primitive = triangle_strip

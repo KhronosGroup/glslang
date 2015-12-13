@@ -359,6 +359,10 @@ void TIntermediate::finalCheck(TInfoSink& infoSink)
     // overlap/alias/missing I/O, etc.
     inOutLocationCheck(infoSink);
 
+    // invocations
+    if (invocations == TQualifier::layoutNotSet)
+        invocations = 1;
+
     if (inIoAccessed("gl_ClipDistance") && inIoAccessed("gl_ClipVertex"))
         error(infoSink, "Can only use one of gl_ClipDistance or gl_ClipVertex (gl_ClipDistance is preferred)");
 
@@ -561,7 +565,7 @@ void TIntermediate::inOutLocationCheck(TInfoSink& infoSink)
     if (profile == EEsProfile) {
         if (numFragOut > 1 && fragOutWithNoLocation)
             error(infoSink, "when more than one fragment shader output, all must have location qualifiers");
-    }        
+    }
 }
 
 TIntermSequence& TIntermediate::findLinkerObjects() const

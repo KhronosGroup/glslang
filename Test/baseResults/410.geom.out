@@ -12,7 +12,7 @@ ERROR: 7 compilation errors.  No code generated.
 
 
 Shader version: 410
-invocations = 0
+invocations = -1
 max_vertices = -1
 input primitive = none
 output primitive = none
@@ -65,7 +65,7 @@ ERROR: Linking geometry stage: At least one shader must specify an output layout
 ERROR: Linking geometry stage: At least one shader must specify a layout(max_vertices = value)
 
 Shader version: 410
-invocations = 0
+invocations = 1
 max_vertices = -1
 input primitive = none
 output primitive = none
