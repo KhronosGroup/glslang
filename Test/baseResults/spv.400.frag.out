@@ -163,7 +163,7 @@ Linked fragment stage:
                7:             Label
               16:          13 Load 15(u2drs)
               17:    9(fvec4) Load 11(outp)
-              26:    8(float) CompositeExtract 17 3
+              26:    8(float) CompositeExtract 17 2
               27:    8(float) ImageSampleProjDrefExplicitLod 16 17 26 Grad ConstOffset 20 20 25
               31:     30(ptr) AccessChain 11(outp) 29
               32:    8(float) Load 31

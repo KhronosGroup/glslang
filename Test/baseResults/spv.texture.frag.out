@@ -268,7 +268,7 @@ Linked fragment stage:
                               Store 26(color) 173
              174:         137 Load 139(shadowSampler1D)
              175:   22(fvec4) Load 24(coords4D)
-             176:    6(float) CompositeExtract 175 3
+             176:    6(float) CompositeExtract 175 2
              177:    6(float) ImageSampleProjDrefImplicitLod 174 175 176
              178:   22(fvec4) Load 26(color)
              179:   22(fvec4) CompositeConstruct 177 177 177 177
@@ -277,7 +277,7 @@ Linked fragment stage:
              181:         137 Load 139(shadowSampler1D)
              182:   22(fvec4) Load 24(coords4D)
              183:    6(float) Load 10(bias)
-             184:    6(float) CompositeExtract 182 3
+             184:    6(float) CompositeExtract 182 2
              185:    6(float) ImageSampleProjDrefImplicitLod 181 182 184 Bias 183
              186:   22(fvec4) Load 26(color)
              187:   22(fvec4) CompositeConstruct 185 185 185 185
@@ -285,7 +285,7 @@ Linked fragment stage:
                               Store 26(color) 188
              189:         156 Load 158(shadowSampler2D)
              190:   22(fvec4) Load 24(coords4D)
-             191:    6(float) CompositeExtract 190 3
+             191:    6(float) CompositeExtract 190 2
              192:    6(float) ImageSampleProjDrefImplicitLod 189 190 191
              193:   22(fvec4) Load 26(color)
              194:   22(fvec4) CompositeConstruct 192 192 192 192
@@ -294,7 +294,7 @@ Linked fragment stage:
              196:         156 Load 158(shadowSampler2D)
              197:   22(fvec4) Load 24(coords4D)
              198:    6(float) Load 10(bias)
-             199:    6(float) CompositeExtract 197 3
+             199:    6(float) CompositeExtract 197 2
              200:    6(float) ImageSampleProjDrefImplicitLod 196 197 199 Bias 198
              201:   22(fvec4) Load 26(color)
              202:   22(fvec4) CompositeConstruct 200 200 200 200

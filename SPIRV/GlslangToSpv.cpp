@@ -1951,7 +1951,7 @@ spv::Id TGlslangToSpvTraverser::createImageTextureFunctionCall(glslang::TIntermO
         std::vector<spv::Id> indexes;
         int comp;
         if (cracked.proj)
-            comp = 3;
+            comp = 2;  // "The resulting 3rd component of P in the shadow forms is used as Dref"
         else
             comp = builder.getNumComponents(params.coords) - 1;
         indexes.push_back(comp);
