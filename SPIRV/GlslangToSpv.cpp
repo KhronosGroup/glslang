@@ -2531,6 +2531,13 @@ spv::Id TGlslangToSpvTraverser::createUnaryOperation(glslang::TOperator op, spv:
         unaryOp = spv::OpIsInf;
         break;
 
+    case glslang::EOpFloatBitsToInt:
+    case glslang::EOpFloatBitsToUint:
+    case glslang::EOpIntBitsToFloat:
+    case glslang::EOpUintBitsToFloat:
+        unaryOp = spv::OpBitcast;
+        break;
+
     case glslang::EOpPackSnorm2x16:
         libCall = spv::GLSLstd450PackSnorm2x16;
         break;

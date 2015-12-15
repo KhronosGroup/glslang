@@ -30,6 +30,7 @@ spv.accessChain.frag
 spv.aggOps.frag
 spv.always-discard.frag
 spv.always-discard2.frag
+spv.bitCast.frag
 spv.bool.vert
 spv.conditionalDiscard.frag
 spv.conversion.frag
