@@ -827,7 +827,7 @@ int C_DECL main(int argc, char* argv[])
         // Print out all the resulting infologs
         for (int w = 0; w < NumWorkItems; ++w) {
             if (Work[w]) {
-                if (printShaderNames)
+                if (printShaderNames || Work[w]->results.size() > 0)
                     PutsIfNonEmpty(Work[w]->name.c_str());
                 PutsIfNonEmpty(Work[w]->results.c_str());
                 delete Work[w];
