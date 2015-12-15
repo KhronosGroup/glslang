@@ -1889,15 +1889,19 @@ spv::Id TGlslangToSpvTraverser::createImageTextureFunctionCall(glslang::TIntermO
         auto opIt = arguments.begin();
         operands.push_back(*(opIt++));
         operands.push_back(*(opIt++));
-        if (node->getOp() == glslang::EOpImageStore)
-            operands.push_back(*(opIt++));
         if (node->getOp() == glslang::EOpImageLoad) {
             if (sampler.ms) {
                 operands.push_back(spv::ImageOperandsSampleMask);
-                operands.push_back(*(opIt++));
+                operands.push_back(*opIt);
             }
             return builder.createOp(spv::OpImageRead, convertGlslangToSpvType(node->getType()), operands);
         } else if (node->getOp() == glslang::EOpImageStore) {
+            if (sampler.ms) {
+                operands.push_back(*(opIt + 1));
+                operands.push_back(spv::ImageOperandsSampleMask);
+                operands.push_back(*opIt);
+            } else
+                operands.push_back(*opIt);
             builder.createNoResultOp(spv::OpImageWrite, operands);
             return spv::NoResult;
         } else {
