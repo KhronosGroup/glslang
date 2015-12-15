@@ -229,7 +229,7 @@ spv::Dim TranslateDimensionality(const glslang::TSampler& sampler)
 spv::Decoration TranslatePrecisionDecoration(const glslang::TType& type)
 {
     switch (type.getQualifier().precision) {
-    case glslang::EpqLow:    return spv::DecorationRelaxedPrecision; // TODO: Map instead to 16-bit types?
+    case glslang::EpqLow:    return spv::DecorationRelaxedPrecision;
     case glslang::EpqMedium: return spv::DecorationRelaxedPrecision;
     case glslang::EpqHigh:   return spv::NoPrecision;
     default:
