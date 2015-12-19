@@ -48,6 +48,7 @@ spv.forwardFun.frag
 spv.functionCall.frag
 spv.functionSemantics.frag
 spv.interpOps.frag
+spv.layoutNested.vert
 spv.length.frag
 spv.localAggregates.frag
 spv.loops.frag
