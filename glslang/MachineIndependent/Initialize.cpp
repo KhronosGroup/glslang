@@ -3048,7 +3048,7 @@ void IdentifyBuiltIns(int version, EProfile profile, int spv, EShLanguage langua
         SpecialQualifier("gl_FragColor",        EvqFragColor,  EbvFragColor,        symbolTable);
         SpecialQualifier("gl_FragDepth",        EvqFragDepth,  EbvFragDepth,        symbolTable);
         SpecialQualifier("gl_FragDepthEXT",     EvqFragDepth,  EbvFragDepth,        symbolTable);
-        SpecialQualifier("gl_HelperInvocation", EvqIn,         EbvHelperInvocation, symbolTable);
+        SpecialQualifier("gl_HelperInvocation", EvqVaryingIn,  EbvHelperInvocation, symbolTable);
 
         BuiltInVariable("gl_ClipDistance",    EbvClipDistance,   symbolTable);
         BuiltInVariable("gl_CullDistance",    EbvCullDistance,   symbolTable);
