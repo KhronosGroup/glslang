@@ -2,5 +2,5 @@
 // For the version, it uses the latest git tag followed by the number of commits.
 // For the date, it uses the current date (when then script is run).
 
-#define GLSLANG_REVISION "SPIRV99.845"
-#define GLSLANG_DATE "13-Dec-2015"
+#define GLSLANG_REVISION "SPIRV99.861"
+#define GLSLANG_DATE "20-Dec-2015"

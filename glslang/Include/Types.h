@@ -186,15 +186,15 @@ enum TLayoutPacking {
     ElpShared,      // default, but different than saying nothing
     ElpStd140,
     ElpStd430,
-    ElpPacked
-    // If expanding, see bitfield width below
+    ElpPacked,
+    ElpCount        // If expanding, see bitfield width below
 };
 
 enum TLayoutMatrix {
     ElmNone,
     ElmRowMajor,
-    ElmColumnMajor  // default, but different than saying nothing
-    // If expanding, see bitfield width below
+    ElmColumnMajor, // default, but different than saying nothing
+    ElmCount        // If expanding, see bitfield width below
 };
 
 // Union of geometry shader and tessellation shader geometry types.

@@ -257,6 +257,19 @@ ERROR: node is still EOpNull!
 0:120                1.000000
 0:120          Constant:
 0:120            3 (const int)
+0:126  Function Definition: foo3( (global void)
+0:126    Function Parameters: 
+0:128    Sequence
+0:128      Sequence
+0:128        move second child to first child (temp 3X2 matrix of float)
+0:128          'r32' (temp 3X2 matrix of float)
+0:128          Constant:
+0:128            43.000000
+0:128            64.000000
+0:128            51.000000
+0:128            76.000000
+0:128            59.000000
+0:128            88.000000
 0:?   Linker Objects
 0:?     'a' (const int)
 0:?       1 (const int)
@@ -331,6 +344,18 @@ ERROR: node is still EOpNull!
 0:?       4.000000
 0:?       5.000000
 0:?     'a4' (global 2-element array of float)
+0:?     'mm2' (const 2X2 matrix of float)
+0:?       1.000000
+0:?       2.000000
+0:?       3.000000
+0:?       4.000000
+0:?     'mm32' (const 3X2 matrix of float)
+0:?       10.000000
+0:?       11.000000
+0:?       12.000000
+0:?       13.000000
+0:?       14.000000
+0:?       15.000000
 
 
 Linked fragment stage:
@@ -584,6 +609,19 @@ ERROR: node is still EOpNull!
 0:120                1.000000
 0:120          Constant:
 0:120            3 (const int)
+0:126  Function Definition: foo3( (global void)
+0:126    Function Parameters: 
+0:128    Sequence
+0:128      Sequence
+0:128        move second child to first child (temp 3X2 matrix of float)
+0:128          'r32' (temp 3X2 matrix of float)
+0:128          Constant:
+0:128            43.000000
+0:128            64.000000
+0:128            51.000000
+0:128            76.000000
+0:128            59.000000
+0:128            88.000000
 0:?   Linker Objects
 0:?     'a' (const int)
 0:?       1 (const int)
@@ -658,4 +696,16 @@ ERROR: node is still EOpNull!
 0:?       4.000000
 0:?       5.000000
 0:?     'a4' (global 2-element array of float)
+0:?     'mm2' (const 2X2 matrix of float)
+0:?       1.000000
+0:?       2.000000
+0:?       3.000000
+0:?       4.000000
+0:?     'mm32' (const 3X2 matrix of float)
+0:?       10.000000
+0:?       11.000000
+0:?       12.000000
+0:?       13.000000
+0:?       14.000000
+0:?       15.000000
 

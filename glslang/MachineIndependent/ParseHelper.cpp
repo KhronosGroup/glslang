@@ -5345,8 +5345,11 @@ void TParseContext::fixBlockUniformOffsets(TQualifier& qualifier, TTypeList& typ
         const TSourceLoc& memberLoc = typeList[member].loc;
 
         // "When align is applied to an array, it effects only the start of the array, not the array's internal stride."
-        
-        int memberAlignment = intermediate.getBaseAlignment(*typeList[member].type, memberSize, qualifier.layoutPacking == ElpStd140);
+
+        // modify just the children's view of matrix layout, if there is one for this member
+        TLayoutMatrix subMatrixLayout = typeList[member].type->getQualifier().layoutMatrix;
+        int memberAlignment = intermediate.getBaseAlignment(*typeList[member].type, memberSize, qualifier.layoutPacking == ElpStd140,
+                                                            subMatrixLayout != ElmNone ? subMatrixLayout == ElmRowMajor : qualifier.layoutMatrix == ElmRowMajor);
         if (memberQualifier.hasOffset()) {
             // "The specified offset must be a multiple 
             // of the base alignment of the type of the block member it qualifies, or a compile-time error results."

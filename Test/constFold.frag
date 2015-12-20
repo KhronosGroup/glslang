@@ -119,3 +119,11 @@ void foo2()
     float f = vec4(7.8 < 2.4 ? -1.333 : 1.444).a;
     f = vec4(inv.x < 2.4 ? -1.0 : 1.0).a;  // not folded, ensuring no propagation
 }
+
+const mat2 mm2 = mat2(1.0, 2.0, 3.0, 4.0);
+const mat3x2 mm32 = mat3x2(10.0, 11.0, 12.0, 13.0, 14.0, 15.0);
+
+void foo3()
+{
+    mat3x2 r32 = mm2 * mm32;
+}
