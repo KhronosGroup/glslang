@@ -859,7 +859,7 @@ int TIntermediate::getBaseAlignmentScalar(const TType& type, int& size)
 //
 // The size is returned in the 'size' parameter
 // Return value is the alignment of the type.
-int TIntermediate::getBaseAlignment(const TType& type, int& size, bool std140)
+int TIntermediate::getBaseAlignment(const TType& type, int& size, bool std140, bool rowMajor)
 {
     int alignment;
 
@@ -921,7 +921,7 @@ int TIntermediate::getBaseAlignment(const TType& type, int& size, bool std140)
     if (type.isArray()) {
         // TODO: perf: this might be flattened by using getCumulativeArraySize(), and a deref that discards all arrayness
         TType derefType(type, 0);
-        alignment = getBaseAlignment(derefType, size, std140);
+        alignment = getBaseAlignment(derefType, size, std140, rowMajor);
         if (std140)
             alignment = std::max(baseAlignmentVec4Std140, alignment);
         RoundToPow2(size, alignment);
@@ -937,7 +937,10 @@ int TIntermediate::getBaseAlignment(const TType& type, int& size, bool std140)
         int maxAlignment = std140 ? baseAlignmentVec4Std140 : 0;
         for (size_t m = 0; m < memberList.size(); ++m) {
             int memberSize;
-            int memberAlignment = getBaseAlignment(*memberList[m].type, memberSize, std140);
+            // modify just the children's view of matrix layout, if there is one for this member
+            TLayoutMatrix subMatrixLayout = memberList[m].type->getQualifier().layoutMatrix;
+            int memberAlignment = getBaseAlignment(*memberList[m].type, memberSize, std140,
+                                                   (subMatrixLayout != ElmNone) ? (subMatrixLayout == ElmRowMajor) : rowMajor);
             maxAlignment = std::max(maxAlignment, memberAlignment);
             RoundToPow2(size, memberAlignment);         
             size += memberSize;
@@ -968,11 +971,11 @@ int TIntermediate::getBaseAlignment(const TType& type, int& size, bool std140)
         // rule 5: deref to row, not to column, meaning the size of vector is num columns instead of num rows
         TType derefType(type, 0, type.getQualifier().layoutMatrix == ElmRowMajor);
             
-        alignment = getBaseAlignment(derefType, size, std140);
+        alignment = getBaseAlignment(derefType, size, std140, rowMajor);
         if (std140)
             alignment = std::max(baseAlignmentVec4Std140, alignment);
         RoundToPow2(size, alignment);
-        if (type.getQualifier().layoutMatrix == ElmRowMajor)
+        if (rowMajor)
             size *= type.getMatrixRows();
         else
             size *= type.getMatrixCols();
