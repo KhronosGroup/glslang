@@ -85,7 +85,7 @@ public:
     bool visitLoop(glslang::TVisit, glslang::TIntermLoop*);
     bool visitBranch(glslang::TVisit visit, glslang::TIntermBranch*);
 
-    void dumpSpv(std::vector<unsigned int>& out) { builder.dump(out); }
+    void dumpSpv(std::vector<unsigned int>& out);
 
 protected:
     spv::Id createSpvVariable(const glslang::TIntermSymbol*);
@@ -133,7 +133,8 @@ protected:
     spv::Builder builder;
     bool inMain;
     bool mainTerminated;
-    bool linkageOnly;
+    bool linkageOnly;                  // true when visiting the set of objects in the AST present only for establishing interface, whether or not they were statically used
+    std::unordered_set<spv::Id> iOSet; // all input/output variables from either static use or declaration of interface
     const glslang::TIntermediate* glslangIntermediate;
     spv::Id stdBuiltins;
 
@@ -555,6 +556,16 @@ TGlslangToSpvTraverser::TGlslangToSpvTraverser(const glslang::TIntermediate* gls
 
 }
 
+// Finish everything and dump
+void TGlslangToSpvTraverser::dumpSpv(std::vector<unsigned int>& out)
+{
+    // finish off the entry-point SPV instruction by adding the Input/Output <id>
+    for (auto it : iOSet)
+        entryPoint->addIdOperand(it);
+
+    builder.dump(out);
+}
+
 TGlslangToSpvTraverser::~TGlslangToSpvTraverser()
 {
     if (! mainTerminated) {
@@ -584,7 +595,15 @@ void TGlslangToSpvTraverser::visitSymbol(glslang::TIntermSymbol* symbol)
     // getSymbolId() will set up all the IO decorations on the first call.
     // Formal function parameters were mapped during makeFunctions().
     spv::Id id = getSymbolId(symbol);
-    
+
+    // Include all "static use" and "linkage only" interface variables on the OpEntryPoint instruction
+    if (builder.isPointer(id)) {
+        spv::StorageClass sc = builder.getStorageClass(id);
+        if (sc == spv::StorageClassInput || sc == spv::StorageClassOutput)
+            iOSet.insert(id);
+    }
+
+    // Only process non-linkage-only nodes for generating actual static uses
     if (! linkageOnly) {
         // Prepare to generate code for the access
 
@@ -601,13 +620,6 @@ void TGlslangToSpvTraverser::visitSymbol(glslang::TIntermSymbol* symbol)
             builder.setAccessChainRValue(id);
         else
             builder.setAccessChainLValue(id);
-    } else {
-        // finish off the entry-point SPV instruction by adding the Input/Output <id>
-        if (builder.isPointer(id)) {
-            spv::StorageClass sc = builder.getStorageClass(id);
-            if (sc == spv::StorageClassInput || sc == spv::StorageClassOutput)
-                entryPoint->addIdOperand(id);
-        }
     }
 }
 
