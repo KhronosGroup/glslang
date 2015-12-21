@@ -10,7 +10,7 @@ Linked geometry stage:
                               Capability Geometry
                1:             ExtInstImport  "GLSL.std.450"
                               MemoryModel Logical GLSL450
-                              EntryPoint Geometry 4  "main" 18 70 10 29 33
+                              EntryPoint Geometry 4  "main" 18 10 29 49 33 47 51 70
                               ExecutionMode 4 InputTrianglesAdjacency
                               ExecutionMode 4 Invocations 1
                               ExecutionMode 4 OutputTriangleStrip

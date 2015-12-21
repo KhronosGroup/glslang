@@ -10,7 +10,7 @@ Linked fragment stage:
                               Capability Shader
                1:             ExtInstImport  "GLSL.std.450"
                               MemoryModel Logical GLSL450
-                              EntryPoint Fragment 4  "main" 210 38 211 212 87 65 150 173 139 12 16 37
+                              EntryPoint Fragment 4  "main" 12 16 173 37 150 38 65 87 139 210 211 212
                               ExecutionMode 4 OriginLowerLeft
                               Source GLSL 150
                               Name 4  "main"
