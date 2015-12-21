@@ -134,7 +134,7 @@ protected:
     bool inMain;
     bool mainTerminated;
     bool linkageOnly;                  // true when visiting the set of objects in the AST present only for establishing interface, whether or not they were statically used
-    std::unordered_set<spv::Id> iOSet; // all input/output variables from either static use or declaration of interface
+    std::set<spv::Id> iOSet;           // all input/output variables from either static use or declaration of interface
     const glslang::TIntermediate* glslangIntermediate;
     spv::Id stdBuiltins;
 
