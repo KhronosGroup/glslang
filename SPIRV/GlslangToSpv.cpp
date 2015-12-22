@@ -2274,7 +2274,7 @@ spv::Id TGlslangToSpvTraverser::createBinaryOperation(glslang::TOperator op, spv
     if (reduceComparison && (builder.isVector(left) || builder.isMatrix(left) || builder.isAggregate(left))) {
         assert(op == glslang::EOpEqual || op == glslang::EOpNotEqual);
 
-        return builder.createCompare(precision, left, right, op == glslang::EOpEqual);
+        return builder.createCompositeCompare(precision, left, right, op == glslang::EOpEqual);
     }
 
     switch (op) {

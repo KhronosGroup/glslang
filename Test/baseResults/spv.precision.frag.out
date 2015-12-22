@@ -168,7 +168,7 @@ Linked fragment stage:
          18(bv2):     16(ptr) FunctionParameter
               20:             Label
               27:   15(bvec2) Load 18(bv2)
-              31:   15(bvec2) IEqual 27 30
+              31:   15(bvec2) LogicalEqual 27 30
               32:    14(bool) All 31
                               ReturnValue 32
                               FunctionEnd
