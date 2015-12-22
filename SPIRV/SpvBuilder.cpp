@@ -1369,13 +1369,11 @@ Id Builder::createTextureQueryCall(Op opCode, const TextureParameters& parameter
         case Dim2D:
         case DimCube:
         case DimRect:
+        case DimSubpassData:
             numComponents = 2;
             break;
         case Dim3D:
             numComponents = 3;
-            break;
-        case DimSubpassData:
-            MissingFunctionality("input-attachment dim");
             break;
 
         default:
@@ -2251,7 +2249,6 @@ void TbdFunctionality(const char* tbd)
 void MissingFunctionality(const char* fun)
 {
     printf("Missing functionality: %s\n", fun);
-    exit(1);
 }
 
 Builder::Loop::Loop(Builder& builder, bool testFirstArg)
