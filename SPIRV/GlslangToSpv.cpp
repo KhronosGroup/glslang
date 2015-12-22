@@ -134,7 +134,7 @@ protected:
     bool inMain;
     bool mainTerminated;
     bool linkageOnly;                  // true when visiting the set of objects in the AST present only for establishing interface, whether or not they were statically used
-    std::unordered_set<spv::Id> iOSet; // all input/output variables from either static use or declaration of interface
+    std::set<spv::Id> iOSet;           // all input/output variables from either static use or declaration of interface
     const glslang::TIntermediate* glslangIntermediate;
     spv::Id stdBuiltins;
 
@@ -786,16 +786,14 @@ bool TGlslangToSpvTraverser::visitBinary(glslang::TVisit /* visit */, glslang::T
                                    convertGlslangToSpvType(node->getType()), left, right,
                                    node->getLeft()->getType().getBasicType());
 
+    builder.clearAccessChain();
     if (! result) {
         spv::MissingFunctionality("unknown glslang binary operation");
+        return true;  // pick up a child as the place-holder result
     } else {
-        builder.clearAccessChain();
         builder.setAccessChainRValue(result);
-
         return false;
     }
-
-    return true;
 }
 
 bool TGlslangToSpvTraverser::visitUnary(glslang::TVisit /* visit */, glslang::TIntermUnary* node)
@@ -908,10 +906,8 @@ bool TGlslangToSpvTraverser::visitUnary(glslang::TVisit /* visit */, glslang::TI
 
     default:
         spv::MissingFunctionality("unknown glslang unary");
-        break;
+        return true;  // pick up operand as placeholder result
     }
-
-    return true;
 }
 
 bool TGlslangToSpvTraverser::visitAggregate(glslang::TVisit visit, glslang::TIntermAggregate* node)
@@ -1251,7 +1247,7 @@ bool TGlslangToSpvTraverser::visitAggregate(glslang::TVisit visit, glslang::TInt
 
     if (! result) {
         spv::MissingFunctionality("unknown glslang aggregate");
-        return true;
+        return true;  // pick up a child as a placeholder operand
     } else {
         builder.clearAccessChain();
         builder.setAccessChainRValue(result);
@@ -2274,7 +2270,7 @@ spv::Id TGlslangToSpvTraverser::createBinaryOperation(glslang::TOperator op, spv
     if (reduceComparison && (builder.isVector(left) || builder.isMatrix(left) || builder.isAggregate(left))) {
         assert(op == glslang::EOpEqual || op == glslang::EOpNotEqual);
 
-        return builder.createCompare(precision, left, right, op == glslang::EOpEqual);
+        return builder.createCompositeCompare(precision, left, right, op == glslang::EOpEqual);
     }
 
     switch (op) {

@@ -116,7 +116,8 @@ public:
     Op getTypeClass(Id typeId) const { return getOpCode(typeId); }
     Op getMostBasicTypeClass(Id typeId) const;
     int getNumComponents(Id resultId) const { return getNumTypeComponents(getTypeId(resultId)); }
-    int getNumTypeComponents(Id typeId) const;
+    int getNumTypeConstituents(Id typeId) const;
+    int getNumTypeComponents(Id typeId) const { return getNumTypeConstituents(typeId); }
     Id getScalarTypeId(Id typeId) const;
     Id getContainedTypeId(Id typeId) const;
     Id getContainedTypeId(Id typeId, int) const;
@@ -150,7 +151,7 @@ public:
     int getTypeNumColumns(Id typeId) const
     {
         assert(isMatrixType(typeId));
-        return getNumTypeComponents(typeId);
+        return getNumTypeConstituents(typeId);
     }
     int getNumColumns(Id resultId) const { return getTypeNumColumns(getTypeId(resultId)); }
     int getTypeNumRows(Id typeId) const
@@ -265,11 +266,13 @@ public:
     // (No true lvalue or stores are used.)
     Id createLvalueSwizzle(Id typeId, Id target, Id source, std::vector<unsigned>& channels);
 
-    // If the value passed in is an instruction and the precision is not EMpNone,
+    // If the value passed in is an instruction and the precision is not NoPrecision,
     // it gets tagged with the requested precision.
-    void setPrecision(Id /* value */, Decoration /* precision */)
+    void setPrecision(Id /* value */, Decoration precision)
     {
-        // TODO
+        if (precision != NoPrecision) {
+            ;// TODO
+        }
     }
 
     // Can smear a scalar to a vector for the following forms:
@@ -322,7 +325,7 @@ public:
     Id createBitFieldInsertCall(Decoration precision, Id, Id, Id, Id);
 
     // Reduction comparision for composites:  For equal and not-equal resulting in a scalar.
-    Id createCompare(Decoration precision, Id, Id, bool /* true if for equal, fales if for not-equal */);
+    Id createCompositeCompare(Decoration precision, Id, Id, bool /* true if for equal, false if for not-equal */);
 
     // OpCompositeConstruct
     Id createCompositeConstruct(Id typeId, std::vector<Id>& constituents);
