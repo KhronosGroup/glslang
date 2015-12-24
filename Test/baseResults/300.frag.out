@@ -4,6 +4,7 @@ ERROR: 0:30: 'noperspective' : Reserved word.
 ERROR: 0:30: 'noperspective' : not supported with this profile: es
 ERROR: 0:31: 'sampler2D' : sampler/image types can only be used in uniform variables or function parameters: bads
 ERROR: 0:32: 'uint' : cannot apply precision statement to this type; use 'float', 'int' or a sampler type 
+ERROR: 0:39: 'structure' : must be qualified as flat in
 ERROR: 0:39: 'structure' : non-uniform struct contains a sampler or image: badout
 ERROR: 0:60: 'texel offset' : argument must be compile-time constant 
 ERROR: 0:62: 'texel offset' : argument must be compile-time constant 
@@ -43,7 +44,7 @@ ERROR: 0:157: 'invariant' : can only apply to an output
 ERROR: 0:158: 'invariant' : can only apply to an output 
 ERROR: 0:160: 'imageBuffer' : Reserved word. 
 ERROR: 0:160: '' :  syntax error
-ERROR: 44 compilation errors.  No code generated.
+ERROR: 45 compilation errors.  No code generated.
 
 
 Shader version: 300
