@@ -1,6 +1,6 @@
 #version 450
 
-// should get 3 SPV types for S: no layout, 140, and 430
+// should get 3 SPV types for S: no layout, 140, and 430, plus extras for interpolation or invariant differences
 struct S
 {
 	highp uvec3 a;
@@ -71,3 +71,6 @@ layout(set = 1, binding = 0, std430) buffer bBt3
 void main()
 {
 }
+
+flat out S sout;
+invariant out S soutinv;
