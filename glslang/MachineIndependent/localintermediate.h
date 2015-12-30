@@ -305,7 +305,7 @@ public:
     }
     int addXfbBufferOffset(const TType&);
     unsigned int computeTypeXfbSize(const TType&, bool& containsDouble) const;
-    static int getBaseAlignment(const TType&, int& size, bool std140, bool rowMajor);
+    static int getBaseAlignment(const TType&, int& size, int& stride, bool std140, bool rowMajor);
 
 protected:
     void error(TInfoSink& infoSink, const char*);

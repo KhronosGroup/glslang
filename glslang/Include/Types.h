@@ -1206,6 +1206,10 @@ public:
         arraySizes = new TArraySizes;
         *arraySizes = s;
     }
+    void clearArraySizes()
+    {
+        arraySizes = 0;
+    }
     void addArrayOuterSizes(const TArraySizes& s)
     {
         if (arraySizes == nullptr)
