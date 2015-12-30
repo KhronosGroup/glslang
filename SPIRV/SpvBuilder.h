@@ -102,7 +102,7 @@ public:
     Id makeStructResultType(Id type0, Id type1);
     Id makeVectorType(Id component, int size);
     Id makeMatrixType(Id component, int cols, int rows);
-    Id makeArrayType(Id element, unsigned size);
+    Id makeArrayType(Id element, unsigned size, int stride);  // 0 means no stride decoration
     Id makeRuntimeArray(Id element);
     Id makeFunctionType(Id returnType, std::vector<Id>& paramTypes);
     Id makeImageType(Id sampledType, Dim, bool depth, bool arrayed, bool ms, unsigned sampled, ImageFormat format);

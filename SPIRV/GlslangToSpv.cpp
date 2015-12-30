@@ -1651,10 +1651,37 @@ spv::Id TGlslangToSpvTraverser::convertGlslangToSpvType(const glslang::TType& ty
     }
 
     if (type.isArray()) {
+        int stride = 0;  // keep this 0 unless doing an explicit layout; 0 will mean no decoration, no stride
+
         // Do all but the outer dimension
-        for (int dim = type.getArraySizes()->getNumDims() - 1; dim > 0; --dim) {
-            assert(type.getArraySizes()->getDimSize(dim) > 0);
-            spvType = builder.makeArrayType(spvType, type.getArraySizes()->getDimSize(dim));
+        if (type.getArraySizes()->getNumDims() > 1) {
+            if (explicitLayout != glslang::ElpNone) {
+                // Use a dummy glslang type for querying internal strides of
+                // arrays of arrays, but using just a one-dimensional array.
+                glslang::TType simpleArrayType(type, 0); // deference type of the array
+                while (simpleArrayType.getArraySizes().getNumDims() > 1)
+                    simpleArrayType.getArraySizes().dereference();
+
+                // Will compute the higher-order strides here, rather than making a whole
+                // pile of types and doing repetitive recursion on their contents.
+                stride = getArrayStride(simpleArrayType, explicitLayout, qualifier.layoutMatrix);
+            }
+            for (int dim = type.getArraySizes()->getNumDims() - 1; dim > 0; --dim) {
+                int size = type.getArraySizes()->getDimSize(dim);
+                assert(size > 0);
+                spvType = builder.makeArrayType(spvType, size, stride);
+                if (stride > 0)
+                    builder.addDecoration(spvType, spv::DecorationArrayStride, stride);
+                stride *= size;
+            }
+        } else {
+            // single-dimensional array, and don't yet have stride
+
+            // We need to decorate array strides for types needing explicit layout,
+            // except for the very top if it is an array of blocks; that array is
+            // not laid out in memory in a way needing a stride.
+            if (explicitLayout != glslang::ElpNone && type.getBasicType() != glslang::EbtBlock)
+                stride = getArrayStride(type, explicitLayout, qualifier.layoutMatrix);
         }
 
         // Do the outer dimension, which might not be known for a runtime-sized array
@@ -1662,18 +1689,10 @@ spv::Id TGlslangToSpvTraverser::convertGlslangToSpvType(const glslang::TType& ty
             spvType = builder.makeRuntimeArray(spvType);
         } else {
             assert(type.getOuterArraySize() > 0);
-            spvType = builder.makeArrayType(spvType, type.getOuterArraySize());
+            spvType = builder.makeArrayType(spvType, type.getOuterArraySize(), stride);
         }
-
-        // TODO: explicit layout still needs to be done hierarchically for arrays of arrays, which 
-        // may still require additional "link time" support from the front-end 
-        // for arrays of arrays
-
-        // We need to decorate array strides for types needing explicit layout,
-        // except for the very top if it is an array of blocks; that array is
-        // not laid out in memory in a way needing a stride.
-        if (explicitLayout && type.getBasicType() != glslang::EbtBlock)
-            builder.addDecoration(spvType, spv::DecorationArrayStride, getArrayStride(type, explicitLayout, qualifier.layoutMatrix));
+        if (stride > 0)
+            builder.addDecoration(spvType, spv::DecorationArrayStride, stride);
     }
 
     return spvType;

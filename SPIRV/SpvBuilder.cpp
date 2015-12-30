@@ -281,18 +281,23 @@ Id Builder::makeMatrixType(Id component, int cols, int rows)
     return type->getResultId();
 }
 
-Id Builder::makeArrayType(Id element, unsigned size)
+// TODO: performance: track arrays per stride
+// If a stride is supplied (non-zero) make an array.
+// If no stride (0), reuse previous array types.
+Id Builder::makeArrayType(Id element, unsigned size, int stride)
 {
     // First, we need a constant instruction for the size
     Id sizeId = makeUintConstant(size);
 
-    // try to find existing type
     Instruction* type;
-    for (int t = 0; t < (int)groupedTypes[OpTypeArray].size(); ++t) {
-        type = groupedTypes[OpTypeArray][t];
-        if (type->getIdOperand(0) == element &&
-            type->getIdOperand(1) == sizeId)
-            return type->getResultId();
+    if (stride == 0) {
+        // try to find existing type
+        for (int t = 0; t < (int)groupedTypes[OpTypeArray].size(); ++t) {
+            type = groupedTypes[OpTypeArray][t];
+            if (type->getIdOperand(0) == element &&
+                type->getIdOperand(1) == sizeId)
+                return type->getResultId();
+        }
     }
 
     // not found, make it
