@@ -1707,25 +1707,25 @@ glslang::TLayoutPacking TGlslangToSpvTraverser::getExplicitLayout(const glslang:
 int TGlslangToSpvTraverser::getArrayStride(const glslang::TType& arrayType, glslang::TLayoutPacking explicitLayout, glslang::TLayoutMatrix matrixLayout)
 {
     int size;
-    int stride = glslangIntermediate->getBaseAlignment(arrayType, size, explicitLayout == glslang::ElpStd140, matrixLayout == glslang::ElmRowMajor);
-    if (arrayType.isMatrix()) {
-        // GLSL strides are set to alignments of the matrix flattened to individual rows/cols,
-        // but SPV needs an array stride for the whole matrix, not the rows/cols
-        if (matrixLayout == glslang::ElmRowMajor)
-            stride *= arrayType.getMatrixRows();
-        else
-            stride *= arrayType.getMatrixCols();
-    }
+    int stride;
+    glslangIntermediate->getBaseAlignment(arrayType, size, stride, explicitLayout == glslang::ElpStd140, matrixLayout == glslang::ElmRowMajor);
 
     return stride;
 }
 
-// Given a matrix type, returns the integer stride required for that matrix
+// Given a matrix type, or array (of array) of matrixes type, returns the integer stride required for that matrix
 // when used as a member of an interface block
 int TGlslangToSpvTraverser::getMatrixStride(const glslang::TType& matrixType, glslang::TLayoutPacking explicitLayout, glslang::TLayoutMatrix matrixLayout)
 {
+    glslang::TType elementType;
+    elementType.shallowCopy(matrixType);
+    elementType.clearArraySizes();
+
     int size;
-    return glslangIntermediate->getBaseAlignment(matrixType, size, explicitLayout == glslang::ElpStd140, matrixLayout == glslang::ElmRowMajor);
+    int stride;
+    glslangIntermediate->getBaseAlignment(elementType, size, stride, explicitLayout == glslang::ElpStd140, matrixLayout == glslang::ElmRowMajor);
+
+    return stride;
 }
 
 // Given a member type of a struct, realign the current offset for it, and compute
@@ -1764,7 +1764,8 @@ void TGlslangToSpvTraverser::updateMemberOffset(const glslang::TType& structType
     // but possibly not yet correctly aligned.
 
     int memberSize;
-    int memberAlignment = glslangIntermediate->getBaseAlignment(memberType, memberSize, explicitLayout == glslang::ElpStd140, matrixLayout == glslang::ElmRowMajor);
+    int dummyStride;
+    int memberAlignment = glslangIntermediate->getBaseAlignment(memberType, memberSize, dummyStride, explicitLayout == glslang::ElpStd140, matrixLayout == glslang::ElmRowMajor);
     glslang::RoundToPow2(currentOffset, memberAlignment);
     nextOffset = currentOffset + memberSize;
 }

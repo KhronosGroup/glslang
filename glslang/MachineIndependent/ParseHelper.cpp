@@ -5353,7 +5353,8 @@ void TParseContext::fixBlockUniformOffsets(TQualifier& qualifier, TTypeList& typ
 
         // modify just the children's view of matrix layout, if there is one for this member
         TLayoutMatrix subMatrixLayout = typeList[member].type->getQualifier().layoutMatrix;
-        int memberAlignment = intermediate.getBaseAlignment(*typeList[member].type, memberSize, qualifier.layoutPacking == ElpStd140,
+        int dummyStride;
+        int memberAlignment = intermediate.getBaseAlignment(*typeList[member].type, memberSize, dummyStride, qualifier.layoutPacking == ElpStd140,
                                                             subMatrixLayout != ElmNone ? subMatrixLayout == ElmRowMajor : qualifier.layoutMatrix == ElmRowMajor);
         if (memberQualifier.hasOffset()) {
             // "The specified offset must be a multiple 
