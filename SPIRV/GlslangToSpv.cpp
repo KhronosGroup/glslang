@@ -1884,6 +1884,14 @@ void TGlslangToSpvTraverser::handleFunctionEntry(const glslang::TIntermAggregate
 void TGlslangToSpvTraverser::translateArguments(const glslang::TIntermAggregate& node, std::vector<spv::Id>& arguments)
 {
     const glslang::TIntermSequence& glslangArguments = node.getSequence();
+
+    glslang::TSampler sampler = {};
+    bool cubeCompare = false;
+    if (node.isTexture()) {
+        sampler = glslangArguments[0]->getAsTyped()->getType().getSampler();
+        cubeCompare = sampler.dim == glslang::EsdCube && sampler.arrayed && sampler.shadow;
+    }
+
     for (int i = 0; i < (int)glslangArguments.size(); ++i) {
         builder.clearAccessChain();
         glslangArguments[i]->traverse(this);
@@ -1900,6 +1908,51 @@ void TGlslangToSpvTraverser::translateArguments(const glslang::TIntermAggregate&
         case glslang::EOpImageAtomicExchange:
         case glslang::EOpImageAtomicCompSwap:
             if (i == 0)
+                lvalue = true;
+            break;
+        case glslang::EOpSparseTexture:
+            if ((cubeCompare && i == 3) || (! cubeCompare && i == 2))
+                lvalue = true;
+            break;
+        case glslang::EOpSparseTextureClamp:
+            if ((cubeCompare && i == 4) || (! cubeCompare && i == 3))
+                lvalue = true;
+            break;
+        case glslang::EOpSparseTextureLod:
+        case glslang::EOpSparseTextureOffset:
+            if (i == 3)
+                lvalue = true;
+            break;
+        case glslang::EOpSparseTextureFetch:
+            if ((sampler.dim != glslang::EsdRect && i == 3) || (sampler.dim == glslang::EsdRect && i == 2))
+                lvalue = true;
+            break;
+        case glslang::EOpSparseTextureFetchOffset:
+            if ((sampler.dim != glslang::EsdRect && i == 4) || (sampler.dim == glslang::EsdRect && i == 3))
+                lvalue = true;
+            break;
+        case glslang::EOpSparseTextureLodOffset:
+        case glslang::EOpSparseTextureGrad:
+        case glslang::EOpSparseTextureOffsetClamp:
+            if (i == 4)
+                lvalue = true;
+            break;
+        case glslang::EOpSparseTextureGradOffset:
+        case glslang::EOpSparseTextureGradClamp:
+            if (i == 5)
+                lvalue = true;
+            break;
+        case glslang::EOpSparseTextureGradOffsetClamp:
+            if (i == 6)
+                lvalue = true;
+            break;
+         case glslang::EOpSparseTextureGather:
+            if ((sampler.shadow && i == 3) || (! sampler.shadow && i == 2))
+                lvalue = true;
+            break;
+        case glslang::EOpSparseTextureGatherOffset:
+        case glslang::EOpSparseTextureGatherOffsets:
+            if ((sampler.shadow && i == 4) || (! sampler.shadow && i == 3))
                 lvalue = true;
             break;
         default:
@@ -1963,6 +2016,8 @@ spv::Id TGlslangToSpvTraverser::createImageTextureFunctionCall(glslang::TIntermO
             return builder.createTextureQueryCall(spv::OpImageQueryLod, params);
         case glslang::EOpTextureQueryLevels:
             return builder.createTextureQueryCall(spv::OpImageQueryLevels, params);
+        case glslang::EOpSparseTexelsResident:
+            return builder.createUnaryOp(spv::OpImageSparseTexelsResident, builder.makeBoolType(), arguments[0]);
         default:
             assert(0);
             break;
@@ -1990,7 +2045,11 @@ spv::Id TGlslangToSpvTraverser::createImageTextureFunctionCall(glslang::TIntermO
                 operands.push_back(*opIt);
             builder.createNoResultOp(spv::OpImageWrite, operands);
             return spv::NoResult;
-        } else {
+        } else if (node->isSparseImage()) {
+            spv::MissingFunctionality("sparse image functions");
+            return spv::NoResult;
+        }
+        else {
             // Process image atomic operations
 
             // GLSL "IMAGE_PARAMS" will involve in constructing an image texel pointer and this pointer,
@@ -2010,7 +2069,7 @@ spv::Id TGlslangToSpvTraverser::createImageTextureFunctionCall(glslang::TIntermO
     }
 
     // Check for texture functions other than queries
-
+    bool sparse = node->isSparseTexture();
     bool cubeCompare = sampler.dim == glslang::EsdCube && sampler.arrayed && sampler.shadow;
 
     // check for bias argument
@@ -2021,6 +2080,10 @@ spv::Id TGlslangToSpvTraverser::createImageTextureFunctionCall(glslang::TIntermO
             ++nonBiasArgCount;
         if (cracked.grad)
             nonBiasArgCount += 2;
+        if (cracked.lodClamp)
+            ++nonBiasArgCount;
+        if (sparse)
+            ++nonBiasArgCount;
 
         if ((int)arguments.size() > nonBiasArgCount)
             bias = true;
@@ -2032,9 +2095,10 @@ spv::Id TGlslangToSpvTraverser::createImageTextureFunctionCall(glslang::TIntermO
     int extraArgs = 0;
 
     // sort out where Dref is coming from
-    if (sampler.shadow && sampler.dim == glslang::EsdCube && sampler.arrayed)
+    if (cubeCompare) {
         params.Dref = arguments[2];
-    else if (sampler.shadow && cracked.gather) {
+        ++extraArgs;
+    } else if (sampler.shadow && cracked.gather) {
         params.Dref = arguments[2];
         ++extraArgs;
     } else if (sampler.shadow) {
@@ -2066,6 +2130,14 @@ spv::Id TGlslangToSpvTraverser::createImageTextureFunctionCall(glslang::TIntermO
         params.offsets = arguments[2 + extraArgs];
         ++extraArgs;
     }
+    if (cracked.lodClamp) {
+        params.lodClamp = arguments[2 + extraArgs];
+        ++extraArgs;
+    }
+    if (sparse) {
+        params.texelOut = arguments[2 + extraArgs];
+        ++extraArgs;
+    }
     if (bias) {
         params.bias = arguments[2 + extraArgs];
         ++extraArgs;
@@ -2080,7 +2152,7 @@ spv::Id TGlslangToSpvTraverser::createImageTextureFunctionCall(glslang::TIntermO
         }
     }
 
-    return builder.createTextureCall(precision, convertGlslangToSpvType(node->getType()), cracked.fetch, cracked.proj, cracked.gather, params);
+    return builder.createTextureCall(precision, convertGlslangToSpvType(node->getType()), sparse, cracked.fetch, cracked.proj, cracked.gather, params);
 }
 
 spv::Id TGlslangToSpvTraverser::handleUserFunctionCall(const glslang::TIntermAggregate* node)
