@@ -64,22 +64,6 @@ set(HEADERS
     MachineIndependent/preprocessor/PpContext.h
     MachineIndependent/preprocessor/PpTokens.h)
 
-find_package(BISON)
-if(NOT BISON_FOUND)
-    if (WIN32)
-        set(BISON_EXECUTABLE ../tools/bison.exe)
-        message("bison not found. Assuming it is at ${BISON_EXECUTABLE}")
-    else()
-        message(FATAL_ERROR "bison required but not found. Please install via your package management tool.")
-    endif()
-endif()
-
-# Always use a custom command since our use of --defines isn't assumed by CMake's BISON_TARGET,
-# which ends up causing the target to always be rebuilt.
-add_custom_command(OUTPUT ${CMAKE_CURRENT_SOURCE_DIR}/MachineIndependent/glslang_tab.cpp ${CMAKE_CURRENT_SOURCE_DIR}/MachineIndependent/glslang_tab.cpp.h
-                   COMMAND ${BISON_EXECUTABLE} --defines=${CMAKE_CURRENT_SOURCE_DIR}/MachineIndependent/glslang_tab.cpp.h -t ${CMAKE_CURRENT_SOURCE_DIR}/MachineIndependent/glslang.y -o ${CMAKE_CURRENT_SOURCE_DIR}/MachineIndependent/glslang_tab.cpp
-                   MAIN_DEPENDENCY MachineIndependent/glslang.y
-                   WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
 set(BISON_GLSLParser_OUTPUT_SOURCE ${CMAKE_CURRENT_SOURCE_DIR}/MachineIndependent/glslang_tab.cpp)
 
 add_library(glslang STATIC ${BISON_GLSLParser_OUTPUT_SOURCE} ${SOURCES} ${HEADERS})
