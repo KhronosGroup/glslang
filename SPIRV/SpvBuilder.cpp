@@ -1423,7 +1423,6 @@ Id Builder::createCompositeCompare(Decoration precision, Id value1, Id value2, b
 {
     Id boolType = makeBoolType();
     Id valueType = getTypeId(value1);
-    assert(valueType == getTypeId(value2));
 
     Id resultId;
 
@@ -1432,6 +1431,7 @@ Id Builder::createCompositeCompare(Decoration precision, Id value1, Id value2, b
     // Scalars and Vectors
 
     if (isScalarType(valueType) || isVectorType(valueType)) {
+        assert(valueType == getTypeId(value2));
         // These just need a single comparison, just have
         // to figure out what it is.
         Op op;
@@ -1470,9 +1470,10 @@ Id Builder::createCompositeCompare(Decoration precision, Id value1, Id value2, b
     // Compare each pair of constituents
     for (int constituent = 0; constituent < numConstituents; ++constituent) {
         std::vector<unsigned> indexes(1, constituent);
-        Id constituentType = getContainedTypeId(valueType, constituent);
-        Id constituent1 = createCompositeExtract(value1, constituentType, indexes);
-        Id constituent2 = createCompositeExtract(value2, constituentType, indexes);
+        Id constituentType1 = getContainedTypeId(getTypeId(value1), constituent);
+        Id constituentType2 = getContainedTypeId(getTypeId(value2), constituent);
+        Id constituent1 = createCompositeExtract(value1, constituentType1, indexes);
+        Id constituent2 = createCompositeExtract(value2, constituentType2, indexes);
 
         Id subResultId = createCompositeCompare(precision, constituent1, constituent2, equal);
 

@@ -1655,7 +1655,8 @@ spv::Id TGlslangToSpvTraverser::convertGlslangToSpvType(const glslang::TType& ty
 
         // Do all but the outer dimension
         if (type.getArraySizes()->getNumDims() > 1) {
-            if (explicitLayout != glslang::ElpNone) {
+            // We need to decorate array strides for types needing explicit layout, except blocks.
+            if (explicitLayout != glslang::ElpNone && type.getBasicType() != glslang::EbtBlock) {
                 // Use a dummy glslang type for querying internal strides of
                 // arrays of arrays, but using just a one-dimensional array.
                 glslang::TType simpleArrayType(type, 0); // deference type of the array
@@ -1666,6 +1667,8 @@ spv::Id TGlslangToSpvTraverser::convertGlslangToSpvType(const glslang::TType& ty
                 // pile of types and doing repetitive recursion on their contents.
                 stride = getArrayStride(simpleArrayType, explicitLayout, qualifier.layoutMatrix);
             }
+
+            // make the arrays
             for (int dim = type.getArraySizes()->getNumDims() - 1; dim > 0; --dim) {
                 int size = type.getArraySizes()->getDimSize(dim);
                 assert(size > 0);
@@ -1677,9 +1680,7 @@ spv::Id TGlslangToSpvTraverser::convertGlslangToSpvType(const glslang::TType& ty
         } else {
             // single-dimensional array, and don't yet have stride
 
-            // We need to decorate array strides for types needing explicit layout,
-            // except for the very top if it is an array of blocks; that array is
-            // not laid out in memory in a way needing a stride.
+            // We need to decorate array strides for types needing explicit layout, except blocks.
             if (explicitLayout != glslang::ElpNone && type.getBasicType() != glslang::EbtBlock)
                 stride = getArrayStride(type, explicitLayout, qualifier.layoutMatrix);
         }
