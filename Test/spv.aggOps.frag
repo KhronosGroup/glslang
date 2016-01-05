@@ -1,9 +1,10 @@
-#version 130
+#version 450
 
 uniform sampler2D samp2D;
-varying mediump vec2 coord;
+in mediump vec2 coord;
 
-varying vec4 u, w;
+in vec4 u, w;
+out vec4 color;
 
 struct s1 {
     int i;
@@ -19,6 +20,10 @@ struct s2 {
 uniform s1 foo1;
 uniform s2 foo2a;
 uniform s2 foo2b;
+
+layout(std140) uniform bn {
+    s2 foo2a;
+} bi;
 
 void main()
 {
@@ -47,5 +52,8 @@ void main()
     if (a != b)
         v *= 7.0;
 
-	gl_FragColor =  v;
+    if (bi.foo2a != foo2a)
+        v *= 8.0;
+
+	color =  v;
 }
