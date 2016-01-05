@@ -481,6 +481,7 @@ namespace spv {
             case spv::OperandExecutionMode:
             case spv::OperandStorage:
             case spv::OperandDimensionality:
+            case spv::OperandImageOperands:
             case spv::OperandDecoration:
             case spv::OperandBuiltIn:
             case spv::OperandSelect:
