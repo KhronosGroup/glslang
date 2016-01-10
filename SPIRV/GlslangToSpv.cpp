@@ -1342,33 +1342,51 @@ void TGlslangToSpvTraverser::visitConstantUnion(glslang::TIntermConstantUnion* n
 
 bool TGlslangToSpvTraverser::visitLoop(glslang::TVisit /* visit */, glslang::TIntermLoop* node)
 {
-    // body emission needs to know what the for-loop terminal is when it sees a "continue"
-    loopTerminal.push(node->getTerminal());
+    auto blocks = builder.makeNewLoop();
+    if (node->testFirst() && node->getTest()) {
+        spv::Block& head = builder.makeNewBlock();
+        builder.createBranch(&head);
 
-    builder.makeNewLoop(node->testFirst());
-
-    if (node->getTest()) {
+        builder.setBuildPoint(&head);
         node->getTest()->traverse(this);
-        // the AST only contained the test computation, not the branch, we have to add it
-        spv::Id condition = builder.accessChainLoad(convertGlslangToSpvType(node->getTest()->getType()));
-        builder.createLoopTestBranch(condition);
+        spv::Id condition =
+            builder.accessChainLoad(convertGlslangToSpvType(node->getTest()->getType()));
+        builder.createLoopMerge(&blocks.merge, &blocks.continue_target, spv::LoopControlMaskNone);
+        builder.createConditionalBranch(condition, &blocks.body, &blocks.merge);
+
+        builder.setBuildPoint(&blocks.body);
+        if (node->getBody())
+            node->getBody()->traverse(this);  // continue->cont, break->exit
+        builder.createBranch(&blocks.continue_target);
+
+        builder.setBuildPoint(&blocks.continue_target);
+        if (node->getTerminal())
+            node->getTerminal()->traverse(this);
+        builder.createBranch(&head);
     } else {
-        builder.createBranchToBody();
+        builder.createBranch(&blocks.body);
+
+        builder.setBuildPoint(&blocks.body);
+        if (node->getBody())
+            node->getBody()->traverse(this);  // continue->cont, break->exit
+        builder.createBranch(&blocks.continue_target);
+
+        builder.setBuildPoint(&blocks.continue_target);
+        if (node->getTerminal())
+            node->getTerminal()->traverse(this);
+        if (node->getTest()) {
+            node->getTest()->traverse(this);
+            spv::Id condition =
+                builder.accessChainLoad(convertGlslangToSpvType(node->getTest()->getType()));
+            builder.createLoopMerge(&blocks.merge, &blocks.continue_target,
+                                    spv::LoopControlMaskNone);
+            builder.createConditionalBranch(condition, &blocks.body, &blocks.merge);
+        } else {
+            builder.createBranch(&blocks.body);
+        }
     }
 
-    if (node->getBody()) {
-        breakForLoop.push(true);
-        node->getBody()->traverse(this);
-        breakForLoop.pop();
-    }
-
-    if (loopTerminal.top())
-        loopTerminal.top()->traverse(this);
-
-    builder.closeLoop();
-
-    loopTerminal.pop();
-
+    builder.setBuildPoint(&blocks.merge);
     return false;
 }
 

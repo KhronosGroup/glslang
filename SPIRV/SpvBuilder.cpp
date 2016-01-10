@@ -1753,6 +1753,19 @@ void Builder::endSwitch(std::vector<Block*>& /*segmentBlock*/)
     switchMerges.pop();
 }
 
+Block& Builder::makeNewBlock()
+{
+    Function& function = buildPoint->getParent();
+    auto block = new Block(getUniqueId(), function);
+    function.addBlock(block);
+    return *block;
+}
+
+Builder::LoopBlocks Builder::makeNewLoop()
+{
+    return {makeNewBlock(), makeNewBlock(), makeNewBlock()};
+}
+
 // Comments in header
 void Builder::makeNewLoop(bool loopTestFirst)
 {

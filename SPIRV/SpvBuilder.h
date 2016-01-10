@@ -378,6 +378,13 @@ public:
     // The loopTestFirst parameter is true when the loop test executes before
     // the body.  (It is false for do-while loops.)
     void makeNewLoop(bool loopTestFirst);
+    struct LoopBlocks {
+        Block &body, &merge, &continue_target;
+    };
+    LoopBlocks makeNewLoop();
+
+    // Create a new block in the function containing the build point.
+    Block& makeNewBlock();
 
     // Add the branch for the loop test, based on the given condition.
     // The true branch goes to the first block in the loop body, and
@@ -494,7 +501,11 @@ public:
 
     void dump(std::vector<unsigned int>&) const;
 
-protected:
+    void createBranch(Block* block);
+    void createConditionalBranch(Id condition, Block* thenBlock, Block* elseBlock);
+    void createLoopMerge(Block* mergeBlock, Block* continueBlock, unsigned int control);
+
+ protected:
     Id makeIntConstant(Id typeId, unsigned value, bool specConstant);
     Id findScalarConstant(Op typeClass, Op opcode, Id typeId, unsigned value) const;
     Id findScalarConstant(Op typeClass, Op opcode, Id typeId, unsigned v1, unsigned v2) const;
@@ -503,10 +514,7 @@ protected:
     void transferAccessChainSwizzle(bool dynamic);
     void simplifyAccessChainSwizzle();
     void createAndSetNoPredecessorBlock(const char*);
-    void createBranch(Block* block);
     void createSelectionMerge(Block* mergeBlock, unsigned int control);
-    void createLoopMerge(Block* mergeBlock, Block* continueBlock, unsigned int control);
-    void createConditionalBranch(Id condition, Block* thenBlock, Block* elseBlock);
     void dumpInstructions(std::vector<unsigned int>&, const std::vector<Instruction*>&) const;
 
     struct Loop; // Defined below.
