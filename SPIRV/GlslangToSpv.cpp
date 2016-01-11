@@ -142,7 +142,6 @@ protected:
     std::unordered_map<const glslang::TTypeList*, spv::Id> structMap;
     std::unordered_map<const glslang::TTypeList*, std::vector<int> > memberRemapper;  // for mapping glslang block indices to spv indices (e.g., due to hidden members)
     std::stack<bool> breakForLoop;  // false means break for switch
-    std::stack<glslang::TIntermTyped*> loopTerminal;  // code from the last part of a for loop: for(...; ...; terminal), needed for e.g., continue };
 };
 
 //
@@ -1354,10 +1353,12 @@ bool TGlslangToSpvTraverser::visitLoop(glslang::TVisit /* visit */, glslang::TIn
         builder.createLoopMerge(&blocks.merge, &blocks.continue_target, spv::LoopControlMaskNone);
         builder.createConditionalBranch(condition, &blocks.body, &blocks.merge);
 
+        breakForLoop.push(true);
         builder.setBuildPoint(&blocks.body);
         if (node->getBody())
             node->getBody()->traverse(this);
         builder.createBranch(&blocks.continue_target);
+        breakForLoop.pop();
 
         builder.setBuildPoint(&blocks.continue_target);
         if (node->getTerminal())
@@ -1366,10 +1367,12 @@ bool TGlslangToSpvTraverser::visitLoop(glslang::TVisit /* visit */, glslang::TIn
     } else {
         builder.createBranch(&blocks.body);
 
+        breakForLoop.push(true);
         builder.setBuildPoint(&blocks.body);
         if (node->getBody())
             node->getBody()->traverse(this);
         builder.createBranch(&blocks.continue_target);
+        breakForLoop.pop();
 
         builder.setBuildPoint(&blocks.continue_target);
         if (node->getTerminal())
@@ -1387,6 +1390,7 @@ bool TGlslangToSpvTraverser::visitLoop(glslang::TVisit /* visit */, glslang::TIn
     }
 
     builder.setBuildPoint(&blocks.merge);
+    builder.closeLoop();
     return false;
 }
 
@@ -1406,8 +1410,6 @@ bool TGlslangToSpvTraverser::visitBranch(glslang::TVisit /* visit */, glslang::T
             builder.addSwitchBreak();
         break;
     case glslang::EOpContinue:
-        if (loopTerminal.top())
-            loopTerminal.top()->traverse(this);
         builder.createLoopContinue();
         break;
     case glslang::EOpReturn:
