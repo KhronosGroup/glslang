@@ -37,7 +37,7 @@ struct s {
 };
 
 in s badout;               // ERROR, can't contain a sampler
-
+                           // ERROR, can't have int in struct without flat
 struct S2 {
     vec3 c;
     float f;

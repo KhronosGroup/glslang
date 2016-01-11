@@ -3048,7 +3048,7 @@ void IdentifyBuiltIns(int version, EProfile profile, int spv, EShLanguage langua
         SpecialQualifier("gl_FragColor",        EvqFragColor,  EbvFragColor,        symbolTable);
         SpecialQualifier("gl_FragDepth",        EvqFragDepth,  EbvFragDepth,        symbolTable);
         SpecialQualifier("gl_FragDepthEXT",     EvqFragDepth,  EbvFragDepth,        symbolTable);
-        SpecialQualifier("gl_HelperInvocation", EvqIn,         EbvHelperInvocation, symbolTable);
+        SpecialQualifier("gl_HelperInvocation", EvqVaryingIn,  EbvHelperInvocation, symbolTable);
 
         BuiltInVariable("gl_ClipDistance",    EbvClipDistance,   symbolTable);
         BuiltInVariable("gl_CullDistance",    EbvCullDistance,   symbolTable);
@@ -3165,8 +3165,11 @@ void IdentifyBuiltIns(int version, EProfile profile, int spv, EShLanguage langua
         }
 
         symbolTable.setVariableExtensions("gl_FragDepthEXT", 1, &E_GL_EXT_frag_depth);
-        symbolTable.setVariableExtensions("gl_PrimitiveID",  Num_AEP_geometry_shader, AEP_geometry_shader);
-        symbolTable.setVariableExtensions("gl_Layer",        Num_AEP_geometry_shader, AEP_geometry_shader);
+
+        if (profile == EEsProfile) {
+            symbolTable.setVariableExtensions("gl_PrimitiveID",  Num_AEP_geometry_shader, AEP_geometry_shader);
+            symbolTable.setVariableExtensions("gl_Layer",        Num_AEP_geometry_shader, AEP_geometry_shader);
+        }
 
         if (profile == EEsProfile) {
             symbolTable.setFunctionExtensions("imageAtomicAdd",      1, &E_GL_OES_shader_image_atomic);

@@ -10,7 +10,7 @@ Linked vertex stage:
                               Capability Shader
                1:             ExtInstImport  "GLSL.std.450"
                               MemoryModel Logical GLSL450
-                              EntryPoint Vertex 4  "main" 39 144
+                              EntryPoint Vertex 4  "main" 39 140 144
                               Source GLSL 130
                               Name 4  "main"
                               Name 8  "lod"
@@ -174,7 +174,7 @@ Linked vertex stage:
              123:         100 Load 102(shadowSampler1D)
              124:   18(fvec4) Load 20(coords4D)
              125:    6(float) Load 8(lod)
-             126:    6(float) CompositeExtract 124 3
+             126:    6(float) CompositeExtract 124 2
              127:    6(float) ImageSampleProjDrefExplicitLod 123 124 126 Lod 125
              128:   18(fvec4) Load 23(color)
              129:   18(fvec4) CompositeConstruct 127 127 127 127
@@ -183,7 +183,7 @@ Linked vertex stage:
              131:         112 Load 114(shadowSampler2D)
              132:   18(fvec4) Load 20(coords4D)
              133:    6(float) Load 8(lod)
-             134:    6(float) CompositeExtract 132 3
+             134:    6(float) CompositeExtract 132 2
              135:    6(float) ImageSampleProjDrefExplicitLod 131 132 134 Lod 133
              136:   18(fvec4) Load 23(color)
              137:   18(fvec4) CompositeConstruct 135 135 135 135

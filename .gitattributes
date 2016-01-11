@@ -12,3 +12,6 @@
 *.c text eof=lf
 *.cpp text eof=lf
 *.y text eof=lf
+*.out text eof=lf
+*.conf text eof=lf
+*.err text eof=lf

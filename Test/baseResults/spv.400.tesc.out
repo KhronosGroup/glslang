@@ -12,7 +12,7 @@ Linked tessellation control stage:
                               Capability Tessellation
                1:             ExtInstImport  "GLSL.std.450"
                               MemoryModel Logical GLSL450
-                              EntryPoint TessellationControl 4  "main" 52 79 83 84 87 88 91 92
+                              EntryPoint TessellationControl 4  "main" 23 40 43 46 52 66 73 79 83 84 87 88 91 92
                               ExecutionMode 4 OutputVertices 4
                               Source GLSL 400
                               SourceExtension  "GL_ARB_separate_shader_objects"

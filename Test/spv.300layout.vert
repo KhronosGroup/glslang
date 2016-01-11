@@ -7,7 +7,7 @@ out vec4 pos;
 out vec3 color;
 flat out int iout;
 
-layout(shared, column_major, row_major) uniform; // default is now shared and row_major
+layout(row_major) uniform; // default is now row_major
 
 layout(std140) uniform Transform { // layout of this block is std140
     mat4 M1; // row_major

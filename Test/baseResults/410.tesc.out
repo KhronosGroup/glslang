@@ -5,7 +5,7 @@ ERROR: 1 compilation errors.  No code generated.
 
 
 Shader version: 400
-vertices = 0
+vertices = -1
 ERROR: node is still EOpNull!
 0:8  Function Definition: main( (global void)
 0:8    Function Parameters: 
@@ -20,7 +20,7 @@ Linked tessellation control stage:
 ERROR: Linking tessellation control stage: At least one shader must specify an output layout(vertices=...)
 
 Shader version: 400
-vertices = 0
+vertices = -1
 ERROR: node is still EOpNull!
 0:8  Function Definition: main( (global void)
 0:8    Function Parameters: 

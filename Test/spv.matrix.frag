@@ -1,55 +1,45 @@
 #version 130
 
-//#define TEST_POST_110
+in mat3x4 m1;
+in mat3x4 m2;
+in float f;
+in vec3 v3;
+in vec4 v4;
 
-uniform mat3 colorTransform;
-varying vec3 Color;
-uniform mat4 m, n;
-
-#ifdef TEST_POST_110
-uniform mat4x3 um43;
-uniform mat3x4 un34;
-#else
-uniform mat4 um43;
-uniform mat4 un34;
-#endif
-
-varying vec4 v;
-
-#ifdef TEST_POST_110
-varying vec3 u;
-#else
-varying vec4 u;
-#endif
+out vec4 color;
 
 void main()
 {
-    gl_FragColor = vec4(un34[1]);
-    gl_FragColor += vec4(Color * colorTransform, 1.0);
+    mat3x4 sum34;
+    vec3 sum3;
+    vec4 sum4;
 
-    if (m != n)
-        gl_FragColor += v;
-   else {
-        gl_FragColor += m * v;
-        gl_FragColor += v * (m - n);
-   }
-    
-#ifdef TEST_POST_110
-    mat3x4 m34 = outerProduct(v, u);
-    m34 += mat4(v.x);
-    m34 += mat4(u, u.x, u, u.x, u, u.x, u.x);
-#else
-    mat4 m34 = mat4(v.x*u.x, v.x*u.y, v.x*u.z, v.x*u.w, 
-                    v.y*u.x, v.y*u.y, v.y*u.z, v.y*u.w, 
-                    v.z*u.x, v.z*u.y, v.z*u.z, v.z*u.w, 
-                    v.w*u.x, v.w*u.y, v.w*u.z, v.w*u.w);
-    m34 += mat4(v.x);
-    m34 += mat4(u, u.x, u, u.x, u, u.x, u.x);
+    sum34 = m1 - m2;
+    sum34 += m1 * f;
+    sum34 += f * m1;
+    sum34 /= matrixCompMult(m1, m2);
+    sum34 += m1 / f;
+    sum34 += f / m1;
+    sum34 += f;
+    sum34 -= f;
 
-#endif
+    sum3 = v4 * m2;
+    sum4 = m2 * v3;
 
-    if (m34 == un34)
-        gl_FragColor += m34 * u;
-    else
-        gl_FragColor += (un34 * um43) * v;
+    mat4x3 m43 = transpose(sum34);
+    mat4 m4 = m1 * m43;
+
+    sum4 = v4 * m4;
+
+    color = sum4;
+
+//spv    if (m1 != sum34)
+        ++sum34;
+//    else
+        --sum34;
+
+    sum34 += mat3x4(f);
+    sum34 += mat3x4(v3, f, v3, f, v3, f);
+
+    color += sum3 * m43 + sum4;
 }

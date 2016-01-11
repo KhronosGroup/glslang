@@ -10,7 +10,7 @@ Linked vertex stage:
                               Capability Shader
                1:             ExtInstImport  "GLSL.std.450"
                               MemoryModel Logical GLSL450
-                              EntryPoint Vertex 4  "main" 15 23 34 19 9 40 41
+                              EntryPoint Vertex 4  "main" 9 15 19 23 34 40 41
                               Source GLSL 330
                               Name 4  "main"
                               Name 9  "glPos"

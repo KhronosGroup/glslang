@@ -1,4 +1,4 @@
-#version 130
+#version 450
 
 uniform ivec4 uiv4;
 uniform vec4 uv4;
@@ -7,10 +7,10 @@ uniform bvec4 ub41, ub42;
 uniform float uf;
 uniform int ui;
 
-#ifdef TEST_POST_110
 uniform uvec4 uuv4;
-uniform unsigned int uui;
-#endif
+uniform uint uui;
+
+out vec4 FragColor;
 
 void main()
 {
@@ -19,9 +19,7 @@ void main()
 	bool b;
 	bvec4 bv4;
 	int i;
-#ifdef TEST_POST_110
 	uint u;
-#endif
 
 	// floating point
     v = radians(uv4);
@@ -51,37 +49,29 @@ void main()
     v += sign(v);
     v += floor(v);
 
-#ifdef TEST_POST_110
     v += trunc(v);
     v += round(v);
     v += roundEven(v);
-#endif
 
     v += ceil(v);
     v += fract(v);
     v += mod(v, v);
 	v += mod(v, v.x);
 
-#ifdef TEST_POST_110
     v += modf(v, v);
-#endif
 
     v += min(v, uv4);
     v += max(v, uv4);
     v += clamp(v, uv4, uv4);
     v += mix(v,v,v);
 
-#ifdef TEST_POST_110
-    v += mix(v,v,ub);
-    v += intBitsToFloat(v);
-    v += uintBitsToFloat(v);
-    v += fma(v);
-    v += frexp(v);
-    v += ldexp(v);
-    v += unpackUnorm2x16(v);
-    v += unpackUnorm4x8(v);
-    v += unpackSnorm4x8(v);
-#endif
+    v += mix(v,v,ub41);
+    v += mix(v,v,f);
+//spv    v += intBitsToFloat(ui);
+//    v += uintBitsToFloat(uui);
+//    i += floatBitsToInt(f);
+//    u += floatBitsToUint(f);
+    v += fma(v, uv4, v);
 
     v += step(v,v);
     v += smoothstep(v,v,v);
@@ -94,9 +84,7 @@ void main()
     v += dFdx(v);
     v += dFdy(v);
     v += fwidth(v);
-	//noise*(v);
 
-#ifdef TEST_POST_110
 	// signed integer
 	i += abs(ui);
 	i += sign(i);
@@ -104,29 +92,14 @@ void main()
 	i += max(i, ui);
 	i += clamp(i, ui, ui);
 
-	floatsBitsToInt(v);
-	packUnorm2x16(v);
-	packUnorm4x8(v);
-	packSnorm4x8(v);
-
 	// unsigned integer
-    u = abs(uui);
-    u += sign(u);
     u += min(u, uui);
     u += max(u, uui);
     u += clamp(u, uui, uui);
-    u += floatsBitToInt(v);
-    u += packUnorm2x16(v);
-    u += packUnorm4x8(v);
-    u += packSnorm4x8(v);
-    u += floatBitsToUInt(v);
-#endif
 
-	// bool
-#ifdef TEST_POST_110
+	//// bool
 	b = isnan(uf);
-    b = isinf(v);
-#endif
+    b = isinf(f);
 	b = any(lessThan(v, uv4));
 	b = (b && any(lessThanEqual(v, uv4)));
     b = (b && any(greaterThan(v, uv4)));
@@ -162,5 +135,5 @@ void main()
     i = ~i;
     b = !b;
 
-    gl_FragColor = b ? vec4(i) + vec4(f) + v : v;
+    FragColor = b ? vec4(i) + vec4(f) + v : v;
 }
