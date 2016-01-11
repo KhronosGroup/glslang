@@ -52,6 +52,7 @@
 
 #include "spirv.hpp"
 
+#include <algorithm>
 #include <vector>
 #include <iostream>
 #include <assert.h>
@@ -235,7 +236,13 @@ public:
     Id getParamId(int p) { return parameterInstructions[p]->getResultId(); }
 
     void addBlock(Block* block) { blocks.push_back(block); }
-    void popBlock(Block*) { blocks.pop_back(); }
+    void removeBlock(Block* block)
+    {
+        auto found = find(blocks.begin(), blocks.end(), block);
+        assert(found != blocks.end());
+        blocks.erase(found);
+        delete block;
+    }
 
     Module& getParent() const { return parent; }
     Block* getEntryBlock() const { return blocks.front(); }

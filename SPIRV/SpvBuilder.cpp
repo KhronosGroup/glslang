@@ -852,7 +852,7 @@ void Builder::leaveFunction()
         if (unreachable) {
             // Given that this block is at the end of a function, it must be right after an
             // explicit return, just remove it.
-            function.popBlock(block);
+            function.removeBlock(block);
         } else {
             // We'll add a return instruction at the end of the current block,
             // which for a non-void function is really error recovery (?), as the source

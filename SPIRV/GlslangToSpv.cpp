@@ -1356,7 +1356,7 @@ bool TGlslangToSpvTraverser::visitLoop(glslang::TVisit /* visit */, glslang::TIn
 
         builder.setBuildPoint(&blocks.body);
         if (node->getBody())
-            node->getBody()->traverse(this);  // continue->cont, break->exit
+            node->getBody()->traverse(this);
         builder.createBranch(&blocks.continue_target);
 
         builder.setBuildPoint(&blocks.continue_target);
@@ -1368,7 +1368,7 @@ bool TGlslangToSpvTraverser::visitLoop(glslang::TVisit /* visit */, glslang::TIn
 
         builder.setBuildPoint(&blocks.body);
         if (node->getBody())
-            node->getBody()->traverse(this);  // continue->cont, break->exit
+            node->getBody()->traverse(this);
         builder.createBranch(&blocks.continue_target);
 
         builder.setBuildPoint(&blocks.continue_target);
