@@ -1,11 +1,11 @@
 //
-//Copyright (C) 2014 LunarG, Inc.
+// Copyright (C) 2014 LunarG, Inc.
 //
-//All rights reserved.
+// All rights reserved.
 //
-//Redistribution and use in source and binary forms, with or without
-//modification, are permitted provided that the following conditions
-//are met:
+// Redistribution and use in source and binary forms, with or without
+// modification, are permitted provided that the following conditions
+// are met:
 //
 //    Redistributions of source code must retain the above copyright
 //    notice, this list of conditions and the following disclaimer.
@@ -19,18 +19,18 @@
 //    contributors may be used to endorse or promote products derived
 //    from this software without specific prior written permission.
 //
-//THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
 //"AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
-//LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
-//FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
-//COPYRIGHT HOLDERS OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT,
-//INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,
-//BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
-//LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
-//CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
-//LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN
-//ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
-//POSSIBILITY OF SUCH DAMAGE.
+// LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
+// FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
+// COPYRIGHT HOLDERS OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT,
+// INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,
+// BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+// LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+// CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
+// LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN
+// ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+// POSSIBILITY OF SUCH DAMAGE.
 
 //
 // Author: John Kessenich, LunarG
@@ -52,8 +52,8 @@
 #include "spvIR.h"
 
 #include <algorithm>
-#include <stack>
 #include <map>
+#include <stack>
 
 namespace spv {
 
@@ -78,10 +78,8 @@ public:
     }
 
     void addCapability(spv::Capability cap) { capabilities.push_back(cap); }
-
     // To get a new <id> for anything needing a new one.
     Id getUniqueId() { return ++uniqueId; }
-
     // To get a set of new <id>s, e.g., for a set of function parameters
     Id getUniqueIds(int numIds)
     {
@@ -94,7 +92,7 @@ public:
     Id makeVoidType();
     Id makeBoolType();
     Id makePointer(StorageClass, Id type);
-    Id makeIntegerType(int width, bool hasSign);   // generic
+    Id makeIntegerType(int width, bool hasSign);  // generic
     Id makeIntType(int width) { return makeIntegerType(width, true); }
     Id makeUintType(int width) { return makeIntegerType(width, false); }
     Id makeFloatType(int width);
@@ -105,7 +103,8 @@ public:
     Id makeArrayType(Id element, unsigned size, int stride);  // 0 means no stride decoration
     Id makeRuntimeArray(Id element);
     Id makeFunctionType(Id returnType, std::vector<Id>& paramTypes);
-    Id makeImageType(Id sampledType, Dim, bool depth, bool arrayed, bool ms, unsigned sampled, ImageFormat format);
+    Id makeImageType(Id sampledType, Dim, bool depth, bool arrayed, bool ms, unsigned sampled,
+                     ImageFormat format);
     Id makeSamplerType();
     Id makeSampledImageType(Id imageType);
 
@@ -122,31 +121,42 @@ public:
     Id getContainedTypeId(Id typeId) const;
     Id getContainedTypeId(Id typeId, int) const;
     StorageClass getTypeStorageClass(Id typeId) const { return module.getStorageClass(typeId); }
-
-    bool isPointer(Id resultId)      const { return isPointerType(getTypeId(resultId)); }
-    bool isScalar(Id resultId)       const { return isScalarType(getTypeId(resultId)); }
-    bool isVector(Id resultId)       const { return isVectorType(getTypeId(resultId)); }
-    bool isMatrix(Id resultId)       const { return isMatrixType(getTypeId(resultId)); }
-    bool isAggregate(Id resultId)    const { return isAggregateType(getTypeId(resultId)); }
+    bool isPointer(Id resultId) const { return isPointerType(getTypeId(resultId)); }
+    bool isScalar(Id resultId) const { return isScalarType(getTypeId(resultId)); }
+    bool isVector(Id resultId) const { return isVectorType(getTypeId(resultId)); }
+    bool isMatrix(Id resultId) const { return isMatrixType(getTypeId(resultId)); }
+    bool isAggregate(Id resultId) const { return isAggregateType(getTypeId(resultId)); }
     bool isSampledImage(Id resultId) const { return isSampledImageType(getTypeId(resultId)); }
-
-    bool isBoolType(Id typeId)         const { return groupedTypes[OpTypeBool].size() > 0 && typeId == groupedTypes[OpTypeBool].back()->getResultId(); }
-    bool isPointerType(Id typeId)      const { return getTypeClass(typeId) == OpTypePointer; }
-    bool isScalarType(Id typeId)       const { return getTypeClass(typeId) == OpTypeFloat  || getTypeClass(typeId) == OpTypeInt || getTypeClass(typeId) == OpTypeBool; }
-    bool isVectorType(Id typeId)       const { return getTypeClass(typeId) == OpTypeVector; }
-    bool isMatrixType(Id typeId)       const { return getTypeClass(typeId) == OpTypeMatrix; }
-    bool isStructType(Id typeId)       const { return getTypeClass(typeId) == OpTypeStruct; }
-    bool isArrayType(Id typeId)        const { return getTypeClass(typeId) == OpTypeArray; }
-    bool isAggregateType(Id typeId)    const { return isArrayType(typeId) || isStructType(typeId); }
-    bool isImageType(Id typeId)        const { return getTypeClass(typeId) == OpTypeImage; }
-    bool isSamplerType(Id typeId)      const { return getTypeClass(typeId) == OpTypeSampler; }
+    bool isBoolType(Id typeId) const
+    {
+        return groupedTypes[OpTypeBool].size() > 0 &&
+               typeId == groupedTypes[OpTypeBool].back()->getResultId();
+    }
+    bool isPointerType(Id typeId) const { return getTypeClass(typeId) == OpTypePointer; }
+    bool isScalarType(Id typeId) const
+    {
+        return getTypeClass(typeId) == OpTypeFloat || getTypeClass(typeId) == OpTypeInt ||
+               getTypeClass(typeId) == OpTypeBool;
+    }
+    bool isVectorType(Id typeId) const { return getTypeClass(typeId) == OpTypeVector; }
+    bool isMatrixType(Id typeId) const { return getTypeClass(typeId) == OpTypeMatrix; }
+    bool isStructType(Id typeId) const { return getTypeClass(typeId) == OpTypeStruct; }
+    bool isArrayType(Id typeId) const { return getTypeClass(typeId) == OpTypeArray; }
+    bool isAggregateType(Id typeId) const { return isArrayType(typeId) || isStructType(typeId); }
+    bool isImageType(Id typeId) const { return getTypeClass(typeId) == OpTypeImage; }
+    bool isSamplerType(Id typeId) const { return getTypeClass(typeId) == OpTypeSampler; }
     bool isSampledImageType(Id typeId) const { return getTypeClass(typeId) == OpTypeSampledImage; }
-
     bool isConstantOpCode(Op opcode) const;
     bool isConstant(Id resultId) const { return isConstantOpCode(getOpCode(resultId)); }
     bool isConstantScalar(Id resultId) const { return getOpCode(resultId) == OpConstant; }
-    unsigned int getConstantScalar(Id resultId) const { return module.getInstruction(resultId)->getImmediateOperand(0); }
-    StorageClass getStorageClass(Id resultId) const { return getTypeStorageClass(getTypeId(resultId)); }
+    unsigned int getConstantScalar(Id resultId) const
+    {
+        return module.getInstruction(resultId)->getImmediateOperand(0);
+    }
+    StorageClass getStorageClass(Id resultId) const
+    {
+        return getTypeStorageClass(getTypeId(resultId));
+    }
 
     int getTypeNumColumns(Id typeId) const
     {
@@ -160,7 +170,6 @@ public:
         return getNumTypeComponents(getContainedTypeId(typeId));
     }
     int getNumRows(Id resultId) const { return getTypeNumRows(getTypeId(resultId)); }
-
     Dim getTypeDimensionality(Id typeId) const
     {
         assert(isImageType(typeId));
@@ -180,8 +189,14 @@ public:
 
     // For making new constants (will return old constant if the requested one was already made).
     Id makeBoolConstant(bool b, bool specConstant = false);
-    Id makeIntConstant(int i, bool specConstant = false)         { return makeIntConstant(makeIntType(32),  (unsigned)i, specConstant); }
-    Id makeUintConstant(unsigned u, bool specConstant = false)   { return makeIntConstant(makeUintType(32),           u, specConstant); }
+    Id makeIntConstant(int i, bool specConstant = false)
+    {
+        return makeIntConstant(makeIntType(32), (unsigned)i, specConstant);
+    }
+    Id makeUintConstant(unsigned u, bool specConstant = false)
+    {
+        return makeIntConstant(makeUintType(32), u, specConstant);
+    }
     Id makeFloatConstant(float f, bool specConstant = false);
     Id makeDoubleConstant(double d, bool specConstant = false);
 
@@ -190,7 +205,8 @@ public:
 
     // Methods for adding information outside the CFG.
     Instruction* addEntryPoint(ExecutionModel, Function*, const char* name);
-    void addExecutionMode(Function*, ExecutionMode mode, int value1 = -1, int value2 = -1, int value3 = -1);
+    void addExecutionMode(Function*, ExecutionMode mode, int value1 = -1, int value2 = -1,
+                          int value3 = -1);
     void addName(Id, const char* name);
     void addMemberName(Id, int member, const char* name);
     void addLine(Id target, Id fileName, int line, int column);
@@ -200,13 +216,13 @@ public:
     // At the end of what block do the next create*() instructions go?
     void setBuildPoint(Block* bp) { buildPoint = bp; }
     Block* getBuildPoint() const { return buildPoint; }
-
     // Make the main function.
     Function* makeMain();
 
     // Make a shader-style function, and create its entry block if entry is non-zero.
     // Return the function, pass back the entry.
-    Function* makeFunctionEntry(Id returnType, const char* name, std::vector<Id>& paramTypes, Block **entry = 0);
+    Function* makeFunctionEntry(Id returnType, const char* name, std::vector<Id>& paramTypes,
+                                Block** entry = 0);
 
     // Create a return. An 'implicit' return is one not appearing in the source
     // code.  In the case of an implicit return, no post-return block is inserted.
@@ -271,7 +287,7 @@ public:
     void setPrecision(Id /* value */, Decoration precision)
     {
         if (precision != NoPrecision) {
-            ;// TODO
+            ;  // TODO
         }
     }
 
@@ -282,10 +298,11 @@ public:
     //   - promoteScalar(scalar, scalar)  // do nothing
     // Other forms are not allowed.
     //
-    // Generally, the type of 'scalar' does not need to be the same type as the components in 'vector'.
+    // Generally, the type of 'scalar' does not need to be the same type as the components in
+    // 'vector'.
     // The type of the created vector is a vector of components of the same type as the scalar.
     //
-    // Note: One of the arguments will change, with the result coming back that way rather than 
+    // Note: One of the arguments will change, with the result coming back that way rather than
     // through the return value.
     void promoteScalar(Decoration precision, Id& left, Id& right);
 
@@ -295,7 +312,8 @@ public:
     Id smearScalar(Decoration precision, Id scalarVal, Id vectorType);
 
     // Create a call to a built-in function.
-    Id createBuiltinCall(Decoration precision, Id resultType, Id builtins, int entryPoint, std::vector<Id>& args);
+    Id createBuiltinCall(Decoration precision, Id resultType, Id builtins, int entryPoint,
+                         std::vector<Id>& args);
 
     // List of parameters used to create a texture operation
     struct TextureParameters {
@@ -313,7 +331,8 @@ public:
     };
 
     // Select the correct texture operation based on all inputs, and emit the correct instruction
-    Id createTextureCall(Decoration precision, Id resultType, bool fetch, bool proj, bool gather, const TextureParameters&);
+    Id createTextureCall(Decoration precision, Id resultType, bool fetch, bool proj, bool gather,
+                         const TextureParameters&);
 
     // Emit the OpTextureQuery* instruction that was passed in.
     // Figure out the right return value and type, and return it.
@@ -325,7 +344,8 @@ public:
     Id createBitFieldInsertCall(Decoration precision, Id, Id, Id, Id);
 
     // Reduction comparision for composites:  For equal and not-equal resulting in a scalar.
-    Id createCompositeCompare(Decoration precision, Id, Id, bool /* true if for equal, false if for not-equal */);
+    Id createCompositeCompare(Decoration precision, Id, Id,
+                              bool /* true if for equal, false if for not-equal */);
 
     // OpCompositeConstruct
     Id createCompositeConstruct(Id typeId, std::vector<Id>& constituents);
@@ -334,14 +354,14 @@ public:
     Id createConstructor(Decoration precision, const std::vector<Id>& sources, Id resultTypeId);
 
     // matrix constructor
-    Id createMatrixConstructor(Decoration precision, const std::vector<Id>& sources, Id constructee);
+    Id createMatrixConstructor(Decoration precision, const std::vector<Id>& sources,
+                               Id constructee);
 
     // Helper to use for building nested control flow with if-then-else.
     class If {
     public:
         If(Id condition, Builder& builder);
         ~If() {}
-
         void makeBeginElse();
         void makeEndIf();
 
@@ -370,7 +390,8 @@ public:
     // Returns the right set of basic blocks to start each code segment with, so that the caller's
     // recursion stack can hold the memory for it.
     //
-    void makeSwitch(Id condition, int numSegments, std::vector<int>& caseValues, std::vector<int>& valueToSegment, int defaultSegment,
+    void makeSwitch(Id condition, int numSegments, std::vector<int>& caseValues,
+                    std::vector<int>& valueToSegment, int defaultSegment,
                     std::vector<Block*>& segmentBB);  // return argument
 
     // Add a branch to the innermost switch's merge block.
@@ -440,13 +461,16 @@ public:
     //
 
     struct AccessChain {
-        Id base;                       // for l-values, pointer to the base object, for r-values, the base object
+        Id base;  // for l-values, pointer to the base object, for r-values, the base object
         std::vector<Id> indexChain;
-        Id instr;                      // cache the instruction that generates this access chain
-        std::vector<unsigned> swizzle; // each std::vector element selects the next GLSL component number
-        Id component;                  // a dynamic component index, can coexist with a swizzle, done after the swizzle, NoResult if not present
-        Id preSwizzleBaseType;         // dereferenced type, before swizzle or component is applied; NoType unless a swizzle or component is present
-        bool isRValue;                 // true if 'base' is an r-value, otherwise, base is an l-value
+        Id instr;  // cache the instruction that generates this access chain
+        std::vector<unsigned>
+            swizzle;   // each std::vector element selects the next GLSL component number
+        Id component;  // a dynamic component index, can coexist with a swizzle, done after the
+                       // swizzle, NoResult if not present
+        Id preSwizzleBaseType;  // dereferenced type, before swizzle or component is applied; NoType
+                                // unless a swizzle or component is present
+        bool isRValue;          // true if 'base' is an r-value, otherwise, base is an l-value
     };
 
     //
@@ -457,7 +481,6 @@ public:
     // for external save and restore
     AccessChain getAccessChain() { return accessChain; }
     void setAccessChain(AccessChain newChain) { accessChain = newChain; }
-
     // clear accessChain
     void clearAccessChain();
 
@@ -476,11 +499,7 @@ public:
     }
 
     // push offset onto the end of the chain
-    void accessChainPush(Id offset)
-    {
-        accessChain.indexChain.push_back(offset);
-    }
-
+    void accessChainPush(Id offset) { accessChain.indexChain.push_back(offset); }
     // push new swizzle onto the end of any existing swizzle, merging into a single swizzle
     void accessChainPushSwizzle(std::vector<unsigned>& swizzle, Id preSwizzleBaseType);
 
@@ -518,7 +537,7 @@ protected:
     void createConditionalBranch(Id condition, Block* thenBlock, Block* elseBlock);
     void dumpInstructions(std::vector<unsigned int>&, const std::vector<Instruction*>&) const;
 
-    struct Loop; // Defined below.
+    struct Loop;  // Defined below.
     void createBranchToLoopHeaderFromInside(const Loop& loop);
 
     SourceLanguage source;
@@ -544,7 +563,7 @@ protected:
     std::vector<Instruction*> constantsTypesGlobals;
     std::vector<Instruction*> externals;
 
-     // not output, internally used for quick & dirty canonical (unique) creation
+    // not output, internally used for quick & dirty canonical (unique) creation
     std::vector<Instruction*> groupedConstants[OpConstant];  // all types appear before OpConstant
     std::vector<Instruction*> groupedTypes[OpConstant];
 
@@ -602,4 +621,4 @@ void MissingFunctionality(const char*);
 
 };  // end spv namespace
 
-#endif // SpvBuilder_H
+#endif  // SpvBuilder_H
