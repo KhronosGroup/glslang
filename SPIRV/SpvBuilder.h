@@ -373,35 +373,24 @@ public:
     // Finish off the innermost switch.
     void endSwitch(std::vector<Block*>& segmentBB);
 
-    // Start the beginning of a new loop, and prepare the builder to
-    // generate code for the loop test.
-    // The loopTestFirst parameter is true when the loop test executes before
-    // the body.  (It is false for do-while loops.)
-    void makeNewLoop(bool loopTestFirst);
     struct LoopBlocks {
         Block &body, &merge, &continue_target;
     };
-    LoopBlocks makeNewLoop();
 
-    // Create a new block in the function containing the build point.
+    // Start a new loop and prepare the builder to generate code for it.  Until
+    // closeLoop() is called for this loop, createLoopContinue() and
+    // createLoopExit() will target its corresponding blocks.
+    LoopBlocks& makeNewLoop();
+
+    // Create a new block in the function containing the build point.  Memory is
+    // owned by the function object.
     Block& makeNewBlock();
 
-    // Add the branch for the loop test, based on the given condition.
-    // The true branch goes to the first block in the loop body, and
-    // the false branch goes to the loop's merge block.  The builder insertion
-    // point will be placed at the start of the body.
-    void createLoopTestBranch(Id condition);
-
-    // Generate an unconditional branch to the loop body.  The builder insertion
-    // point will be placed at the start of the body.  Use this when there is
-    // no loop test.
-    void createBranchToBody();
-
-    // Add a branch to the test of the current (innermost) loop.
-    // The way we generate code, that's also the loop header.
+    // Add a branch to the continue_target of the current (innermost) loop.
     void createLoopContinue();
 
-    // Add an exit (e.g. "break") for the innermost loop that you're in
+    // Add an exit (e.g. "break") from the innermost loop that we're currently
+    // in.
     void createLoopExit();
 
     // Close the innermost loop that you're in
@@ -517,9 +506,6 @@ public:
     void createSelectionMerge(Block* mergeBlock, unsigned int control);
     void dumpInstructions(std::vector<unsigned int>&, const std::vector<Instruction*>&) const;
 
-    struct Loop; // Defined below.
-    void createBranchToLoopHeaderFromInside(const Loop& loop);
-
     SourceLanguage source;
     int sourceVersion;
     std::vector<const char*> extensions;
@@ -550,47 +536,8 @@ public:
     // stack of switches
     std::stack<Block*> switchMerges;
 
-    // Data that needs to be kept in order to properly handle loops.
-    struct Loop {
-        // Constructs a default Loop structure containing new header, merge, and
-        // body blocks for the current function.
-        // The testFirst argument indicates whether the loop test executes at
-        // the top of the loop rather than at the bottom.  In the latter case,
-        // also create a phi instruction whose value indicates whether we're on
-        // the first iteration of the loop.  The phi instruction is initialized
-        // with no values or predecessor operands.
-        Loop(Builder& builder, bool testFirst);
-
-        // The function containing the loop.
-        Function* const function;
-        // The header is the first block generated for the loop.
-        // It dominates all the blocks in the loop, i.e. it is always
-        // executed before any others.
-        // If the loop test is executed before the body (as in "while" and
-        // "for" loops), then the header begins with the test code.
-        // Otherwise, the loop is a "do-while" loop and the header contains the
-        // start of the body of the loop (if the body exists).
-        Block* const header;
-        // The merge block marks the end of the loop.  Control is transferred
-        // to the merge block when either the loop test fails, or when a
-        // nested "break" is encountered.
-        Block* const merge;
-        // The body block is the first basic block in the body of the loop, i.e.
-        // the code that is to be repeatedly executed, aside from loop control.
-        // This member is null until we generate code that references the loop
-        // body block.
-        Block* const body;
-        // True when the loop test executes before the body.
-        const bool testFirst;
-        // When the test executes after the body, this is defined as the phi
-        // instruction that tells us whether we are on the first iteration of
-        // the loop.  Otherwise this is null. This is non-const because
-        // it has to be initialized outside of the initializer-list.
-        Instruction* isFirstIteration;
-    };
-
     // Our loop stack.
-    std::stack<Loop> loops;
+    std::stack<LoopBlocks> loops;
 };  // end Builder class
 
 // Use for non-fatal notes about what's not complete

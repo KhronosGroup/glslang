@@ -1761,153 +1761,29 @@ Block& Builder::makeNewBlock()
     return *block;
 }
 
-Builder::LoopBlocks Builder::makeNewLoop()
+Builder::LoopBlocks& Builder::makeNewLoop()
 {
-    return {makeNewBlock(), makeNewBlock(), makeNewBlock()};
-}
-
-// Comments in header
-void Builder::makeNewLoop(bool loopTestFirst)
-{
-    loops.push(Loop(*this, loopTestFirst));
-    const Loop& loop = loops.top();
-
-    // The loop test is always emitted before the loop body.
-    // But if the loop test executes at the bottom of the loop, then
-    // execute the test only on the second and subsequent iterations.
-
-    // Remember the block that branches to the loop header.  This
-    // is required for the test-after-body case.
-    Block* preheader = getBuildPoint();
-
-    // Branch into the loop
-    createBranch(loop.header);
-
-    // Set ourselves inside the loop
-    loop.function->addBlock(loop.header);
-    setBuildPoint(loop.header);
-
-    if (!loopTestFirst) {
-        // Generate code to defer the loop test until the second and
-        // subsequent iterations.
-
-        // It's always the first iteration when coming from the preheader.
-        // All other branches to this loop header will need to indicate "false",
-        // but we don't yet know where they will come from.
-        loop.isFirstIteration->addIdOperand(makeBoolConstant(true));
-        loop.isFirstIteration->addIdOperand(preheader->getId());
-        getBuildPoint()->addInstruction(loop.isFirstIteration);
-
-        // Mark the end of the structured loop. This must exist in the loop header block.
-        createLoopMerge(loop.merge, loop.header, LoopControlMaskNone);
-
-        // Generate code to see if this is the first iteration of the loop.
-        // It needs to be in its own block, since the loop merge and
-        // the selection merge instructions can't both be in the same
-        // (header) block.
-        Block* firstIterationCheck = new Block(getUniqueId(), *loop.function);
-        createBranch(firstIterationCheck);
-        loop.function->addBlock(firstIterationCheck);
-        setBuildPoint(firstIterationCheck);
-
-        // Control flow after this "if" normally reconverges at the loop body.
-        // However, the loop test has a "break branch" out of this selection
-        // construct because it can transfer control to the loop merge block.
-        createSelectionMerge(loop.body, SelectionControlMaskNone);
-
-        Block* loopTest = new Block(getUniqueId(), *loop.function);
-        createConditionalBranch(loop.isFirstIteration->getResultId(), loop.body, loopTest);
-
-        loop.function->addBlock(loopTest);
-        setBuildPoint(loopTest);
-    }
-}
-
-void Builder::createLoopTestBranch(Id condition)
-{
-    const Loop& loop = loops.top();
-
-    // Generate the merge instruction. If the loop test executes before
-    // the body, then this is a loop merge.  Otherwise the loop merge
-    // has already been generated and this is a conditional merge.
-    if (loop.testFirst) {
-        createLoopMerge(loop.merge, loop.header, LoopControlMaskNone);
-        // Branching to the "body" block will keep control inside
-        // the loop.
-        createConditionalBranch(condition, loop.body, loop.merge);
-        loop.function->addBlock(loop.body);
-        setBuildPoint(loop.body);
-    } else {
-        // The branch to the loop merge block is the allowed exception
-        // to the structured control flow.  Otherwise, control flow will
-        // continue to loop.body block.  Since that is already the target
-        // of a merge instruction, and a block can't be the target of more
-        // than one merge instruction, we need to make an intermediate block.
-        Block* stayInLoopBlock = new Block(getUniqueId(), *loop.function);
-        createSelectionMerge(stayInLoopBlock, SelectionControlMaskNone);
-
-        // This is the loop test.
-        createConditionalBranch(condition, stayInLoopBlock, loop.merge);
-
-        // The dummy block just branches to the real loop body.
-        loop.function->addBlock(stayInLoopBlock);
-        setBuildPoint(stayInLoopBlock);
-        createBranchToBody();
-    }
-}
-
-void Builder::createBranchToBody()
-{
-    const Loop& loop = loops.top();
-    assert(loop.body);
-
-    // This is a reconvergence of control flow, so no merge instruction
-    // is required.
-    createBranch(loop.body);
-    loop.function->addBlock(loop.body);
-    setBuildPoint(loop.body);
+    loops.push({makeNewBlock(), makeNewBlock(), makeNewBlock()});
+    return loops.top();
 }
 
 void Builder::createLoopContinue()
 {
-    createBranchToLoopHeaderFromInside(loops.top());
+    createBranch(&loops.top().continue_target);
     // Set up a block for dead code.
     createAndSetNoPredecessorBlock("post-loop-continue");
 }
 
-// Add an exit (e.g. "break") for the innermost loop that you're in
 void Builder::createLoopExit()
 {
-    createBranch(loops.top().merge);
+    createBranch(&loops.top().merge);
     // Set up a block for dead code.
     createAndSetNoPredecessorBlock("post-loop-break");
 }
 
-// Close the innermost loop
 void Builder::closeLoop()
 {
-    const Loop& loop = loops.top();
-
-    // Branch back to the top
-    createBranchToLoopHeaderFromInside(loop);
-
-    // Add the merge block and set the build point to it
-    loop.function->addBlock(loop.merge);
-    setBuildPoint(loop.merge);
-
     loops.pop();
-}
-
-// Create a branch to the header of the given loop, from inside
-// the loop body.
-// Adjusts the phi node for the first-iteration value if needeed.
-void Builder::createBranchToLoopHeaderFromInside(const Loop& loop)
-{
-    createBranch(loop.header);
-    if (loop.isFirstIteration) {
-        loop.isFirstIteration->addIdOperand(makeBoolConstant(false));
-        loop.isFirstIteration->addIdOperand(getBuildPoint()->getId());
-    }
 }
 
 void Builder::clearAccessChain()
@@ -2271,26 +2147,6 @@ void MissingFunctionality(const char* fun)
 {
     printf("Missing functionality: %s\n", fun);
     exit(1);
-}
-
-Builder::Loop::Loop(Builder& builder, bool testFirstArg)
-  : function(&builder.getBuildPoint()->getParent()),
-    header(new Block(builder.getUniqueId(), *function)),
-    merge(new Block(builder.getUniqueId(), *function)),
-    body(new Block(builder.getUniqueId(), *function)),
-    testFirst(testFirstArg),
-    isFirstIteration(nullptr)
-{
-    if (!testFirst)
-    {
-// You may be tempted to rewrite this as
-// new Instruction(builder.getUniqueId(), builder.makeBoolType(), OpPhi);
-// This will cause subtle test failures because builder.getUniqueId(),
-// and builder.makeBoolType() can then get run in a compiler-specific
-// order making tests fail for certain configurations.
-        Id instructionId = builder.getUniqueId();
-        isFirstIteration = new Instruction(instructionId, builder.makeBoolType(), OpPhi);
-    }
 }
 
 }; // end spv namespace
