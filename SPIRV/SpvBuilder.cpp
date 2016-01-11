@@ -1763,7 +1763,7 @@ Block& Builder::makeNewBlock()
 
 Builder::LoopBlocks& Builder::makeNewLoop()
 {
-    loops.push({makeNewBlock(), makeNewBlock(), makeNewBlock()});
+    loops.push({makeNewBlock(), makeNewBlock(), makeNewBlock(), makeNewBlock()});
     return loops.top();
 }
 

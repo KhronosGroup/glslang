@@ -44,45 +44,45 @@ Linked vertex stage:
            28(C):      7(ptr) Variable Function
            38(D):      7(ptr) Variable Function
                               Store 8(i) 9
-                              Branch 13
+                              Branch 10
               10:             Label
-                              Store 18(A) 19
-              20:      6(int) Load 8(i)
-              22:      6(int) SMod 20 21
-              23:    16(bool) IEqual 22 9
-                              SelectionMerge 25 None
-                              BranchConditional 23 24 25
+              14:      6(int) Load 8(i)
+              17:    16(bool) SLessThan 14 15
+                              LoopMerge 12 13 None
+                              BranchConditional 17 11 12
               11:               Label
-                                Store 38(D) 39
-                                Return
-              12:               Label
-                                Branch 13
-              13:               Label
-              14:      6(int)   Load 8(i)
-              17:    16(bool)   SLessThan 14 15
-                                LoopMerge 11 12 None
-                                BranchConditional 17 10 11
+                                Store 18(A) 19
+              20:      6(int)   Load 8(i)
+              22:      6(int)   SMod 20 21
+              23:    16(bool)   IEqual 22 9
+                                SelectionMerge 25 None
+                                BranchConditional 23 24 25
+              12:                 Label
+                                  Store 38(D) 39
+                                  Return
+              13:                 Label
+                                  Branch 10
               24:                 Label
                                   Store 26(B) 21
-                                  Branch 12
+                                  Branch 13
               27:                 Label
                                   Store 28(C) 21
                                   Branch 25
-              25:                 Label
-              29:      6(int)     Load 8(i)
-              31:      6(int)     SMod 29 30
-              32:    16(bool)     IEqual 31 9
-                                  SelectionMerge 34 None
-                                  BranchConditional 32 33 34
-              33:                   Label
-                                    Store 26(B) 21
-                                    Branch 11
-              35:                   Label
-                                    Store 28(C) 21
-                                    Branch 34
-              34:                 Label
-              36:      6(int)     Load 8(i)
-              37:      6(int)     IAdd 36 19
-                                  Store 8(i) 37
+              25:               Label
+              29:      6(int)   Load 8(i)
+              31:      6(int)   SMod 29 30
+              32:    16(bool)   IEqual 31 9
+                                SelectionMerge 34 None
+                                BranchConditional 32 33 34
+              33:                 Label
+                                  Store 26(B) 21
                                   Branch 12
-                                  FunctionEnd
+              35:                 Label
+                                  Store 28(C) 21
+                                  Branch 34
+              34:               Label
+              36:      6(int)   Load 8(i)
+              37:      6(int)   IAdd 36 19
+                                Store 8(i) 37
+                                Branch 13
+                                FunctionEnd

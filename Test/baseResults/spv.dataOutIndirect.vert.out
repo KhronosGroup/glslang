@@ -48,26 +48,26 @@ Linked vertex stage:
                5:             Label
             8(i):      7(ptr) Variable Function
                               Store 8(i) 9
-                              Branch 13
+                              Branch 10
               10:             Label
-              25:      6(int) Load 8(i)
-              28:   19(fvec4) Load 27(color)
-              30:     29(ptr) AccessChain 24(colorOut) 25
-                              Store 30 28
-                              Branch 12
-              11:             Label
+              14:      6(int) Load 8(i)
+              17:    16(bool) SLessThan 14 15
+                              LoopMerge 12 13 None
+                              BranchConditional 17 11 12
+              11:               Label
+              25:      6(int)   Load 8(i)
+              28:   19(fvec4)   Load 27(color)
+              30:     29(ptr)   AccessChain 24(colorOut) 25
+                                Store 30 28
+                                Branch 13
+              12:             Label
               35:     29(ptr) AccessChain 24(colorOut) 34
               36:   19(fvec4) Load 35
                               Store 33(gl_Position) 36
                               Return
-              12:             Label
+              13:             Label
               31:      6(int) Load 8(i)
               32:      6(int) IAdd 31 9
                               Store 8(i) 32
-                              Branch 13
-              13:             Label
-              14:      6(int) Load 8(i)
-              17:    16(bool) SLessThan 14 15
-                              LoopMerge 11 12 None
-                              BranchConditional 17 10 11
-                                FunctionEnd
+                              Branch 10
+                              FunctionEnd

@@ -374,7 +374,7 @@ public:
     void endSwitch(std::vector<Block*>& segmentBB);
 
     struct LoopBlocks {
-        Block &body, &merge, &continue_target;
+        Block &head, &body, &merge, &continue_target;
     };
 
     // Start a new loop and prepare the builder to generate code for it.  Until

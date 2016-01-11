@@ -75,31 +75,36 @@ Linked fragment stage:
               12:    7(fvec4) Load 11(BaseColor)
                               Store 9(color) 12
                               Store 15(i) 16
-                              Branch 20
+                              Branch 17
               17:             Label
-              29:    7(fvec4) Load 28(bigColor)
-              30:    7(fvec4) Load 9(color)
-              31:    7(fvec4) FAdd 30 29
-                              Store 9(color) 31
-                              Branch 19
-              18:             Label
+              21:     13(int) Load 15(i)
+              24:     13(int) Load 23(Count)
+              26:    25(bool) SLessThan 21 24
+                              LoopMerge 19 20 None
+                              BranchConditional 26 18 19
+              18:               Label
+              29:    7(fvec4)   Load 28(bigColor)
+              30:    7(fvec4)   Load 9(color)
+              31:    7(fvec4)   FAdd 30 29
+                                Store 9(color) 31
+                                Branch 20
+              19:             Label
               37:    7(fvec4) Load 9(color)
                               Store 36(gl_FragColor) 37
                               Store 39(sum) 40
                               Store 41(i) 16
-                              Branch 45
-              19:             Label
+                              Branch 42
+              20:             Label
               32:     13(int) Load 15(i)
               34:     13(int) IAdd 32 33
                               Store 15(i) 34
-                              Branch 20
-              20:             Label
-              21:     13(int) Load 15(i)
-              24:     13(int) Load 23(Count)
-              26:    25(bool) SLessThan 21 24
-                              LoopMerge 18 19 None
-                              BranchConditional 26 17 18
-              42:               Label
+                              Branch 17
+              42:             Label
+              46:     13(int) Load 41(i)
+              48:    25(bool) SLessThan 46 47
+                              LoopMerge 44 45 None
+                              BranchConditional 48 43 44
+              43:               Label
               53:     13(int)   Load 41(i)
               55:     54(ptr)   AccessChain 52(v4) 53
               56:     49(int)   Load 55
@@ -107,98 +112,93 @@ Linked fragment stage:
               58:    6(float)   Load 39(sum)
               59:    6(float)   FAdd 58 57
                                 Store 39(sum) 59
-                                Branch 44
-              43:               Label
-                                Store 62(i) 16
-                                Branch 66
-              44:               Label
-              60:     13(int)   Load 41(i)
-              61:     13(int)   IAdd 60 33
-                                Store 41(i) 61
                                 Branch 45
-              45:               Label
-              46:     13(int)   Load 41(i)
-              48:    25(bool)   SLessThan 46 47
-                                LoopMerge 43 44 None
-                                BranchConditional 48 42 43
-              63:                 Label
-              70:     13(int)     Load 62(i)
-              71:     13(int)     Load 62(i)
-              72:     54(ptr)     AccessChain 52(v4) 71
-              73:     49(int)     Load 72
-              75:     49(int)     IMul 73 74
-              76:    6(float)     ConvertUToF 75
-              77:     38(ptr)     AccessChain 69(tv4) 70
-                                  Store 77 76
-                                  Branch 65
-              64:                 Label
-              80:    6(float)     Load 39(sum)
-              81:    7(fvec4)     CompositeConstruct 80 80 80 80
-              82:    7(fvec4)     Load 69(tv4)
-              83:    7(fvec4)     FAdd 81 82
-              84:    7(fvec4)     Load 36(gl_FragColor)
-              85:    7(fvec4)     FAdd 84 83
-                                  Store 36(gl_FragColor) 85
-              88:    7(fvec4)     Load 11(BaseColor)
-              89:   87(fvec3)     VectorShuffle 88 88 0 1 2
-              90:    7(fvec4)     Load 86(r)
-              91:    7(fvec4)     VectorShuffle 90 89 4 5 6 3
-                                  Store 86(r) 91
-                                  Store 92(i) 16
-                                  Branch 96
-              65:                 Label
-              78:     13(int)     Load 62(i)
-              79:     13(int)     IAdd 78 33
-                                  Store 62(i) 79
-                                  Branch 66
-              66:                 Label
-              67:     13(int)     Load 62(i)
-              68:    25(bool)     SLessThan 67 47
-                                  LoopMerge 64 65 None
-                                  BranchConditional 68 63 64
-              93:                   Label
-             102:    6(float)       Load 101(f)
-             104:     38(ptr)       AccessChain 86(r) 103
-                                    Store 104 102
-                                    Branch 95
-              94:                   Label
-             107:    7(fvec4)       Load 86(r)
-             108:   87(fvec3)       VectorShuffle 107 107 0 1 2
-             109:    7(fvec4)       Load 36(gl_FragColor)
-             110:   87(fvec3)       VectorShuffle 109 109 0 1 2
-             111:   87(fvec3)       FAdd 110 108
-             112:    7(fvec4)       Load 36(gl_FragColor)
-             113:    7(fvec4)       VectorShuffle 112 111 4 5 6 3
-                                    Store 36(gl_FragColor) 113
-                                    Store 114(i) 16
-                                    Branch 118
-              95:                   Label
-             105:     13(int)       Load 92(i)
-             106:     13(int)       IAdd 105 33
-                                    Store 92(i) 106
-                                    Branch 96
-              96:                   Label
-              97:     13(int)       Load 92(i)
-              98:     13(int)       Load 23(Count)
-              99:    25(bool)       SLessThan 97 98
-                                    LoopMerge 94 95 None
-                                    BranchConditional 99 93 94
-             115:                     Label
-             122:    6(float)         Load 101(f)
-             123:    7(fvec4)         Load 36(gl_FragColor)
-             124:    7(fvec4)         VectorTimesScalar 123 122
-                                      Store 36(gl_FragColor) 124
-                                      Branch 117
-             116:                     Label
-                                      Return
-             117:                     Label
-             125:     13(int)         Load 114(i)
-             126:     13(int)         IAdd 125 47
-                                      Store 114(i) 126
-                                      Branch 118
-             118:                     Label
-             119:     13(int)         Load 114(i)
-             121:    25(bool)         SLessThan 119 120
-                                      LoopMerge 116 117 None
-                                      BranchConditional 121 115 116
-                                        FunctionEnd
+              44:             Label
+                              Store 62(i) 16
+                              Branch 63
+              45:             Label
+              60:     13(int) Load 41(i)
+              61:     13(int) IAdd 60 33
+                              Store 41(i) 61
+                              Branch 42
+              63:             Label
+              67:     13(int) Load 62(i)
+              68:    25(bool) SLessThan 67 47
+                              LoopMerge 65 66 None
+                              BranchConditional 68 64 65
+              64:               Label
+              70:     13(int)   Load 62(i)
+              71:     13(int)   Load 62(i)
+              72:     54(ptr)   AccessChain 52(v4) 71
+              73:     49(int)   Load 72
+              75:     49(int)   IMul 73 74
+              76:    6(float)   ConvertUToF 75
+              77:     38(ptr)   AccessChain 69(tv4) 70
+                                Store 77 76
+                                Branch 66
+              65:             Label
+              80:    6(float) Load 39(sum)
+              81:    7(fvec4) CompositeConstruct 80 80 80 80
+              82:    7(fvec4) Load 69(tv4)
+              83:    7(fvec4) FAdd 81 82
+              84:    7(fvec4) Load 36(gl_FragColor)
+              85:    7(fvec4) FAdd 84 83
+                              Store 36(gl_FragColor) 85
+              88:    7(fvec4) Load 11(BaseColor)
+              89:   87(fvec3) VectorShuffle 88 88 0 1 2
+              90:    7(fvec4) Load 86(r)
+              91:    7(fvec4) VectorShuffle 90 89 4 5 6 3
+                              Store 86(r) 91
+                              Store 92(i) 16
+                              Branch 93
+              66:             Label
+              78:     13(int) Load 62(i)
+              79:     13(int) IAdd 78 33
+                              Store 62(i) 79
+                              Branch 63
+              93:             Label
+              97:     13(int) Load 92(i)
+              98:     13(int) Load 23(Count)
+              99:    25(bool) SLessThan 97 98
+                              LoopMerge 95 96 None
+                              BranchConditional 99 94 95
+              94:               Label
+             102:    6(float)   Load 101(f)
+             104:     38(ptr)   AccessChain 86(r) 103
+                                Store 104 102
+                                Branch 96
+              95:             Label
+             107:    7(fvec4) Load 86(r)
+             108:   87(fvec3) VectorShuffle 107 107 0 1 2
+             109:    7(fvec4) Load 36(gl_FragColor)
+             110:   87(fvec3) VectorShuffle 109 109 0 1 2
+             111:   87(fvec3) FAdd 110 108
+             112:    7(fvec4) Load 36(gl_FragColor)
+             113:    7(fvec4) VectorShuffle 112 111 4 5 6 3
+                              Store 36(gl_FragColor) 113
+                              Store 114(i) 16
+                              Branch 115
+              96:             Label
+             105:     13(int) Load 92(i)
+             106:     13(int) IAdd 105 33
+                              Store 92(i) 106
+                              Branch 93
+             115:             Label
+             119:     13(int) Load 114(i)
+             121:    25(bool) SLessThan 119 120
+                              LoopMerge 117 118 None
+                              BranchConditional 121 116 117
+             116:               Label
+             122:    6(float)   Load 101(f)
+             123:    7(fvec4)   Load 36(gl_FragColor)
+             124:    7(fvec4)   VectorTimesScalar 123 122
+                                Store 36(gl_FragColor) 124
+                                Branch 118
+             117:             Label
+                              Return
+             118:             Label
+             125:     13(int) Load 114(i)
+             126:     13(int) IAdd 125 47
+                              Store 114(i) 126
+                              Branch 115
+                              FunctionEnd

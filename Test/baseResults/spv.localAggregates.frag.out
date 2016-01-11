@@ -159,59 +159,59 @@ Linked fragment stage:
               74:     30(ptr) AccessChain 70(localArray) 71
                               Store 74 73
                               Store 75(i) 16
-                              Branch 79
+                              Branch 76
               76:             Label
-              84:      6(int) Load 75(i)
-              86:     30(ptr) AccessChain 83(a) 84
-                              Store 86 85
-                              Branch 78
-              77:             Label
+              80:      6(int) Load 75(i)
+              82:    23(bool) SLessThan 80 81
+                              LoopMerge 78 79 None
+                              BranchConditional 82 77 78
+              77:               Label
+              84:      6(int)   Load 75(i)
+              86:     30(ptr)   AccessChain 83(a) 84
+                                Store 86 85
+                                Branch 79
+              78:             Label
               90:      6(int) Load 89(condition)
               91:    23(bool) IEqual 90 28
                               SelectionMerge 93 None
                               BranchConditional 91 92 93
-              78:               Label
+              79:               Label
               87:      6(int)   Load 75(i)
               88:      6(int)   IAdd 87 28
                                 Store 75(i) 88
-                                Branch 79
-              79:               Label
-              80:      6(int)   Load 75(i)
-              82:    23(bool)   SLessThan 80 81
-                                LoopMerge 77 78 None
-                                BranchConditional 82 76 77
-              92:                 Label
-              94:          34     Load 70(localArray)
-                                  Store 83(a) 94
-                                  Branch 93
-              93:                 Label
-              98:    9(fvec4)     Load 97(color)
-             100:     99(ptr)     AccessChain 12(locals2) 95
-                                  Store 100 98
-             102:     42(ptr)     AccessChain 40(coord) 101
-             103:    7(float)     Load 102
-             105:     30(ptr)     AccessChain 12(locals2) 95 104
-                                  Store 105 103
-             108:     99(ptr)     AccessChain 12(locals2) 95
-             109:    9(fvec4)     Load 108
-             110:     30(ptr)     AccessChain 36(localFArray) 37
-             111:    7(float)     Load 110
-             112:     30(ptr)     AccessChain 12(locals2) 27 28
-             113:    7(float)     Load 112
-             114:    7(float)     FAdd 111 113
-             115:      6(int)     Load 68(x)
-             116:     30(ptr)     AccessChain 70(localArray) 115
-             117:    7(float)     Load 116
-             118:    7(float)     FAdd 114 117
-             119:      6(int)     Load 68(x)
-             120:     30(ptr)     AccessChain 83(a) 119
-             121:    7(float)     Load 120
-             122:    7(float)     FAdd 118 121
-             123:    9(fvec4)     VectorTimesScalar 109 122
-             128:         125     Load 127(samp2D)
-             129:   38(fvec2)     Load 40(coord)
-             130:    9(fvec4)     ImageSampleImplicitLod 128 129
-             131:    9(fvec4)     FMul 123 130
-                                  Store 107(gl_FragColor) 131
-                                  Return
-                                  FunctionEnd
+                                Branch 76
+              92:               Label
+              94:          34   Load 70(localArray)
+                                Store 83(a) 94
+                                Branch 93
+              93:             Label
+              98:    9(fvec4) Load 97(color)
+             100:     99(ptr) AccessChain 12(locals2) 95
+                              Store 100 98
+             102:     42(ptr) AccessChain 40(coord) 101
+             103:    7(float) Load 102
+             105:     30(ptr) AccessChain 12(locals2) 95 104
+                              Store 105 103
+             108:     99(ptr) AccessChain 12(locals2) 95
+             109:    9(fvec4) Load 108
+             110:     30(ptr) AccessChain 36(localFArray) 37
+             111:    7(float) Load 110
+             112:     30(ptr) AccessChain 12(locals2) 27 28
+             113:    7(float) Load 112
+             114:    7(float) FAdd 111 113
+             115:      6(int) Load 68(x)
+             116:     30(ptr) AccessChain 70(localArray) 115
+             117:    7(float) Load 116
+             118:    7(float) FAdd 114 117
+             119:      6(int) Load 68(x)
+             120:     30(ptr) AccessChain 83(a) 119
+             121:    7(float) Load 120
+             122:    7(float) FAdd 118 121
+             123:    9(fvec4) VectorTimesScalar 109 122
+             128:         125 Load 127(samp2D)
+             129:   38(fvec2) Load 40(coord)
+             130:    9(fvec4) ImageSampleImplicitLod 128 129
+             131:    9(fvec4) FMul 123 130
+                              Store 107(gl_FragColor) 131
+                              Return
+                              FunctionEnd

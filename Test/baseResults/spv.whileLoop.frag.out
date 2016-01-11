@@ -41,24 +41,24 @@ Linked fragment stage:
         9(color):      8(ptr) Variable Function
               12:    7(fvec4) Load 11(BaseColor)
                               Store 9(color) 12
-                              Branch 16
+                              Branch 13
               13:             Label
-              29:    7(fvec4) Load 28(bigColor)
-              30:    7(fvec4) Load 9(color)
-              31:    7(fvec4) FAdd 30 29
-                              Store 9(color) 31
-                              Branch 15
-              14:             Label
-              34:    7(fvec4) Load 9(color)
-                              Store 33(gl_FragColor) 34
-                              Return
-              15:             Label
-                              Branch 16
-              16:             Label
               20:     19(ptr) AccessChain 9(color) 18
               21:    6(float) Load 20
               24:    6(float) Load 23(d)
               26:    25(bool) FOrdLessThan 21 24
-                              LoopMerge 14 15 None
-                              BranchConditional 26 13 14
-                                FunctionEnd
+                              LoopMerge 15 16 None
+                              BranchConditional 26 14 15
+              14:               Label
+              29:    7(fvec4)   Load 28(bigColor)
+              30:    7(fvec4)   Load 9(color)
+              31:    7(fvec4)   FAdd 30 29
+                                Store 9(color) 31
+                                Branch 16
+              15:             Label
+              34:    7(fvec4) Load 9(color)
+                              Store 33(gl_FragColor) 34
+                              Return
+              16:             Label
+                              Branch 13
+                              FunctionEnd
