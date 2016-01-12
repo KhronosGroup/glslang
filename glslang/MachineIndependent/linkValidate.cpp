@@ -959,6 +959,11 @@ int TIntermediate::getBaseAlignment(const TType& type, int& size, int& stride, b
             size += memberSize;
         }
 
+        // The structure may have padding at the end; the base offset of
+        // the member following the sub-structure is rounded up to the next
+        // multiple of the base alignment of the structure.
+        RoundToPow2(size, maxAlignment);
+
         return maxAlignment;
     }
 
