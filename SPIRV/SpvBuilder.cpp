@@ -77,7 +77,7 @@ Id Builder::import(const char* name)
     Instruction* import = new Instruction(getUniqueId(), NoType, OpExtInstImport);
     import->addStringOperand(name);
     
-    imports.push_back(import);
+    imports.push_back(std::unique_ptr<Instruction>(import));
     return import->getResultId();
 }
 
@@ -88,7 +88,7 @@ Id Builder::makeVoidType()
     if (groupedTypes[OpTypeVoid].size() == 0) {
         type = new Instruction(getUniqueId(), NoType, OpTypeVoid);
         groupedTypes[OpTypeVoid].push_back(type);
-        constantsTypesGlobals.push_back(type);
+        constantsTypesGlobals.push_back(std::unique_ptr<Instruction>(type));
         module.mapInstruction(type);
     } else
         type = groupedTypes[OpTypeVoid].back();
@@ -102,7 +102,7 @@ Id Builder::makeBoolType()
     if (groupedTypes[OpTypeBool].size() == 0) {
         type = new Instruction(getUniqueId(), NoType, OpTypeBool);
         groupedTypes[OpTypeBool].push_back(type);
-        constantsTypesGlobals.push_back(type);
+        constantsTypesGlobals.push_back(std::unique_ptr<Instruction>(type));
         module.mapInstruction(type);
     } else
         type = groupedTypes[OpTypeBool].back();
@@ -116,7 +116,7 @@ Id Builder::makeSamplerType()
     if (groupedTypes[OpTypeSampler].size() == 0) {
         type = new Instruction(getUniqueId(), NoType, OpTypeSampler);
         groupedTypes[OpTypeSampler].push_back(type);
-        constantsTypesGlobals.push_back(type);
+        constantsTypesGlobals.push_back(std::unique_ptr<Instruction>(type));
         module.mapInstruction(type);
     } else
         type = groupedTypes[OpTypeSampler].back();
@@ -140,7 +140,7 @@ Id Builder::makePointer(StorageClass storageClass, Id pointee)
     type->addImmediateOperand(storageClass);
     type->addIdOperand(pointee);
     groupedTypes[OpTypePointer].push_back(type);
-    constantsTypesGlobals.push_back(type);
+    constantsTypesGlobals.push_back(std::unique_ptr<Instruction>(type));
     module.mapInstruction(type);
 
     return type->getResultId();
@@ -162,7 +162,7 @@ Id Builder::makeIntegerType(int width, bool hasSign)
     type->addImmediateOperand(width);
     type->addImmediateOperand(hasSign ? 1 : 0);
     groupedTypes[OpTypeInt].push_back(type);
-    constantsTypesGlobals.push_back(type);
+    constantsTypesGlobals.push_back(std::unique_ptr<Instruction>(type));
     module.mapInstruction(type);
 
     return type->getResultId();
@@ -182,7 +182,7 @@ Id Builder::makeFloatType(int width)
     type = new Instruction(getUniqueId(), NoType, OpTypeFloat);
     type->addImmediateOperand(width);
     groupedTypes[OpTypeFloat].push_back(type);
-    constantsTypesGlobals.push_back(type);
+    constantsTypesGlobals.push_back(std::unique_ptr<Instruction>(type));
     module.mapInstruction(type);
 
     return type->getResultId();
@@ -202,7 +202,7 @@ Id Builder::makeStructType(std::vector<Id>& members, const char* name)
     for (int op = 0; op < (int)members.size(); ++op)
         type->addIdOperand(members[op]);
     groupedTypes[OpTypeStruct].push_back(type);
-    constantsTypesGlobals.push_back(type);
+    constantsTypesGlobals.push_back(std::unique_ptr<Instruction>(type));
     module.mapInstruction(type);
     addName(type->getResultId(), name);
 
@@ -249,7 +249,7 @@ Id Builder::makeVectorType(Id component, int size)
     type->addIdOperand(component);
     type->addImmediateOperand(size);
     groupedTypes[OpTypeVector].push_back(type);
-    constantsTypesGlobals.push_back(type);
+    constantsTypesGlobals.push_back(std::unique_ptr<Instruction>(type));
     module.mapInstruction(type);
 
     return type->getResultId();
@@ -275,7 +275,7 @@ Id Builder::makeMatrixType(Id component, int cols, int rows)
     type->addIdOperand(column);
     type->addImmediateOperand(cols);
     groupedTypes[OpTypeMatrix].push_back(type);
-    constantsTypesGlobals.push_back(type);
+    constantsTypesGlobals.push_back(std::unique_ptr<Instruction>(type));
     module.mapInstruction(type);
 
     return type->getResultId();
@@ -305,7 +305,7 @@ Id Builder::makeArrayType(Id element, unsigned size, int stride)
     type->addIdOperand(element);
     type->addIdOperand(sizeId);
     groupedTypes[OpTypeArray].push_back(type);
-    constantsTypesGlobals.push_back(type);
+    constantsTypesGlobals.push_back(std::unique_ptr<Instruction>(type));
     module.mapInstruction(type);
 
     return type->getResultId();
@@ -315,7 +315,7 @@ Id Builder::makeRuntimeArray(Id element)
 {
     Instruction* type = new Instruction(getUniqueId(), NoType, OpTypeRuntimeArray);
     type->addIdOperand(element);
-    constantsTypesGlobals.push_back(type);
+    constantsTypesGlobals.push_back(std::unique_ptr<Instruction>(type));
     module.mapInstruction(type);
 
     return type->getResultId();
@@ -346,7 +346,7 @@ Id Builder::makeFunctionType(Id returnType, std::vector<Id>& paramTypes)
     for (int p = 0; p < (int)paramTypes.size(); ++p)
         type->addIdOperand(paramTypes[p]);
     groupedTypes[OpTypeFunction].push_back(type);
-    constantsTypesGlobals.push_back(type);
+    constantsTypesGlobals.push_back(std::unique_ptr<Instruction>(type));
     module.mapInstruction(type);
 
     return type->getResultId();
@@ -379,7 +379,7 @@ Id Builder::makeImageType(Id sampledType, Dim dim, bool depth, bool arrayed, boo
     type->addImmediateOperand((unsigned int)format);
 
     groupedTypes[OpTypeImage].push_back(type);
-    constantsTypesGlobals.push_back(type);
+    constantsTypesGlobals.push_back(std::unique_ptr<Instruction>(type));
     module.mapInstruction(type);
 
     return type->getResultId();
@@ -400,7 +400,7 @@ Id Builder::makeSampledImageType(Id imageType)
     type->addIdOperand(imageType);
 
     groupedTypes[OpTypeSampledImage].push_back(type);
-    constantsTypesGlobals.push_back(type);
+    constantsTypesGlobals.push_back(std::unique_ptr<Instruction>(type));
     module.mapInstruction(type);
 
     return type->getResultId();
@@ -594,7 +594,7 @@ Id Builder::makeBoolConstant(bool b, bool specConstant)
 
     // Make it
     Instruction* c = new Instruction(getUniqueId(), typeId, opcode);
-    constantsTypesGlobals.push_back(c);
+    constantsTypesGlobals.push_back(std::unique_ptr<Instruction>(c));
     groupedConstants[OpTypeBool].push_back(c);
     module.mapInstruction(c);
 
@@ -610,7 +610,7 @@ Id Builder::makeIntConstant(Id typeId, unsigned value, bool specConstant)
 
     Instruction* c = new Instruction(getUniqueId(), typeId, opcode);
     c->addImmediateOperand(value);
-    constantsTypesGlobals.push_back(c);
+    constantsTypesGlobals.push_back(std::unique_ptr<Instruction>(c));
     groupedConstants[OpTypeInt].push_back(c);
     module.mapInstruction(c);
 
@@ -628,7 +628,7 @@ Id Builder::makeFloatConstant(float f, bool specConstant)
 
     Instruction* c = new Instruction(getUniqueId(), typeId, opcode);
     c->addImmediateOperand(value);
-    constantsTypesGlobals.push_back(c);
+    constantsTypesGlobals.push_back(std::unique_ptr<Instruction>(c));
     groupedConstants[OpTypeFloat].push_back(c);
     module.mapInstruction(c);
 
@@ -649,7 +649,7 @@ Id Builder::makeDoubleConstant(double d, bool specConstant)
     Instruction* c = new Instruction(getUniqueId(), typeId, opcode);
     c->addImmediateOperand(op1);
     c->addImmediateOperand(op2);
-    constantsTypesGlobals.push_back(c);
+    constantsTypesGlobals.push_back(std::unique_ptr<Instruction>(c));
     groupedConstants[OpTypeFloat].push_back(c);
     module.mapInstruction(c);
 
@@ -708,7 +708,7 @@ Id Builder::makeCompositeConstant(Id typeId, std::vector<Id>& members)
     Instruction* c = new Instruction(getUniqueId(), typeId, OpConstantComposite);
     for (int op = 0; op < (int)members.size(); ++op)
         c->addIdOperand(members[op]);
-    constantsTypesGlobals.push_back(c);
+    constantsTypesGlobals.push_back(std::unique_ptr<Instruction>(c));
     groupedConstants[typeClass].push_back(c);
     module.mapInstruction(c);
 
@@ -722,7 +722,7 @@ Instruction* Builder::addEntryPoint(ExecutionModel model, Function* function, co
     entryPoint->addIdOperand(function->getId());
     entryPoint->addStringOperand(name);
 
-    entryPoints.push_back(entryPoint);
+    entryPoints.push_back(std::unique_ptr<Instruction>(entryPoint));
 
     return entryPoint;
 }
@@ -740,7 +740,7 @@ void Builder::addExecutionMode(Function* entryPoint, ExecutionMode mode, int val
     if (value3 >= 0)
         instr->addImmediateOperand(value3);
 
-    executionModes.push_back(instr);
+    executionModes.push_back(std::unique_ptr<Instruction>(instr));
 }
 
 void Builder::addName(Id id, const char* string)
@@ -749,7 +749,7 @@ void Builder::addName(Id id, const char* string)
     name->addIdOperand(id);
     name->addStringOperand(string);
 
-    names.push_back(name);
+    names.push_back(std::unique_ptr<Instruction>(name));
 }
 
 void Builder::addMemberName(Id id, int memberNumber, const char* string)
@@ -759,7 +759,7 @@ void Builder::addMemberName(Id id, int memberNumber, const char* string)
     name->addImmediateOperand(memberNumber);
     name->addStringOperand(string);
 
-    names.push_back(name);
+    names.push_back(std::unique_ptr<Instruction>(name));
 }
 
 void Builder::addLine(Id target, Id fileName, int lineNum, int column)
@@ -770,7 +770,7 @@ void Builder::addLine(Id target, Id fileName, int lineNum, int column)
     line->addImmediateOperand(lineNum);
     line->addImmediateOperand(column);
 
-    lines.push_back(line);
+    lines.push_back(std::unique_ptr<Instruction>(line));
 }
 
 void Builder::addDecoration(Id id, Decoration decoration, int num)
@@ -783,7 +783,7 @@ void Builder::addDecoration(Id id, Decoration decoration, int num)
     if (num >= 0)
         dec->addImmediateOperand(num);
 
-    decorations.push_back(dec);
+    decorations.push_back(std::unique_ptr<Instruction>(dec));
 }
 
 void Builder::addMemberDecoration(Id id, unsigned int member, Decoration decoration, int num)
@@ -795,7 +795,7 @@ void Builder::addMemberDecoration(Id id, unsigned int member, Decoration decorat
     if (num >= 0)
         dec->addImmediateOperand(num);
 
-    decorations.push_back(dec);
+    decorations.push_back(std::unique_ptr<Instruction>(dec));
 }
 
 // Comments in header
@@ -826,6 +826,8 @@ Function* Builder::makeFunctionEntry(Id returnType, const char* name, std::vecto
 
     if (name)
         addName(function->getId(), name);
+
+    functions.push_back(std::unique_ptr<Function>(function));
 
     return function;
 }
@@ -896,7 +898,7 @@ Id Builder::createVariable(StorageClass storageClass, Id type, const char* name)
         break;
 
     default:
-        constantsTypesGlobals.push_back(inst);
+        constantsTypesGlobals.push_back(std::unique_ptr<Instruction>(inst));
         module.mapInstruction(inst);
         break;
     }
@@ -2235,7 +2237,7 @@ void Builder::createConditionalBranch(Id condition, Block* thenBlock, Block* els
     elseBlock->addPredecessor(buildPoint);
 }
 
-void Builder::dumpInstructions(std::vector<unsigned int>& out, const std::vector<Instruction*>& instructions) const
+void Builder::dumpInstructions(std::vector<unsigned int>& out, const std::vector<std::unique_ptr<Instruction> >& instructions) const
 {
     for (int i = 0; i < (int)instructions.size(); ++i) {
         instructions[i]->dump(out);

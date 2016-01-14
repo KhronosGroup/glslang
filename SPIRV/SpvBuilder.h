@@ -52,6 +52,7 @@
 #include "spvIR.h"
 
 #include <algorithm>
+#include <memory>
 #include <stack>
 #include <map>
 
@@ -201,11 +202,13 @@ public:
     void setBuildPoint(Block* bp) { buildPoint = bp; }
     Block* getBuildPoint() const { return buildPoint; }
 
-    // Make the main function.
+    // Make the main function. The returned pointer is only valid
+    // for the lifetime of this builder.
     Function* makeMain();
 
     // Make a shader-style function, and create its entry block if entry is non-zero.
     // Return the function, pass back the entry.
+	// The returned pointer is only valid for the lifetime of this builder.
     Function* makeFunctionEntry(Id returnType, const char* name, std::vector<Id>& paramTypes, Block **entry = 0);
 
     // Create a return. An 'implicit' return is one not appearing in the source
@@ -516,7 +519,7 @@ protected:
     void createSelectionMerge(Block* mergeBlock, unsigned int control);
     void createLoopMerge(Block* mergeBlock, Block* continueBlock, unsigned int control);
     void createConditionalBranch(Id condition, Block* thenBlock, Block* elseBlock);
-    void dumpInstructions(std::vector<unsigned int>&, const std::vector<Instruction*>&) const;
+    void dumpInstructions(std::vector<unsigned int>&, const std::vector<std::unique_ptr<Instruction> >&) const;
 
     struct Loop; // Defined below.
     void createBranchToLoopHeaderFromInside(const Loop& loop);
@@ -535,14 +538,15 @@ protected:
     AccessChain accessChain;
 
     // special blocks of instructions for output
-    std::vector<Instruction*> imports;
-    std::vector<Instruction*> entryPoints;
-    std::vector<Instruction*> executionModes;
-    std::vector<Instruction*> names;
-    std::vector<Instruction*> lines;
-    std::vector<Instruction*> decorations;
-    std::vector<Instruction*> constantsTypesGlobals;
-    std::vector<Instruction*> externals;
+    std::vector<std::unique_ptr<Instruction> > imports;
+    std::vector<std::unique_ptr<Instruction> > entryPoints;
+    std::vector<std::unique_ptr<Instruction> > executionModes;
+    std::vector<std::unique_ptr<Instruction> > names;
+    std::vector<std::unique_ptr<Instruction> > lines;
+    std::vector<std::unique_ptr<Instruction> > decorations;
+    std::vector<std::unique_ptr<Instruction> > constantsTypesGlobals;
+    std::vector<std::unique_ptr<Instruction> > externals;
+    std::vector<std::unique_ptr<Function> > functions;
 
      // not output, internally used for quick & dirty canonical (unique) creation
     std::vector<Instruction*> groupedConstants[OpConstant];  // all types appear before OpConstant

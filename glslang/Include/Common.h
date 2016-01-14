@@ -160,14 +160,20 @@ public:
 };
 
 template <class T> class TList  : public std::list<T, pool_allocator<T> > {
+ public:
+    POOL_ALLOCATOR_NEW_DELETE(GetThreadPoolAllocator())
 };
 
 template <class K, class D, class CMP = std::less<K> > 
 class TMap : public std::map<K, D, CMP, pool_allocator<std::pair<K, D> > > {
+ public:
+    POOL_ALLOCATOR_NEW_DELETE(GetThreadPoolAllocator())
 };
 
 template <class K, class D, class HASH = std::hash<K>, class PRED = std::equal_to<K> >
 class TUnorderedMap : public std::unordered_map<K, D, HASH, PRED, pool_allocator<std::pair<K const, D> > > {
+ public:
+    POOL_ALLOCATOR_NEW_DELETE(GetThreadPoolAllocator())
 };
 
 //

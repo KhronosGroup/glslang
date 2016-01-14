@@ -54,6 +54,7 @@
 
 #include <vector>
 #include <iostream>
+#include <memory>
 #include <assert.h>
 
 namespace spv {
@@ -155,15 +156,16 @@ public:
     Block(Id id, Function& parent);
     virtual ~Block()
     {
-        // TODO: free instructions
     }
     
     Id getId() { return instructions.front()->getResultId(); }
 
     Function& getParent() const { return parent; }
+    // addInstruction takes ownership of the instruction once it has
+    // been passed in. It will be destroyed when the Block is destroyed.
     void addInstruction(Instruction* inst);
     void addPredecessor(Block* pred) { predecessors.push_back(pred); }
-    void addLocalVariable(Instruction* inst) { localVariables.push_back(inst); }
+    void addLocalVariable(Instruction* inst) { localVariables.push_back(std::unique_ptr<Instruction>(inst)); }
     int getNumPredecessors() const { return (int)predecessors.size(); }
     void setUnreachable() { unreachable = true; }
     bool isUnreachable() const { return unreachable; }
@@ -205,9 +207,9 @@ protected:
     // To enforce keeping parent and ownership in sync:
     friend Function;
 
-    std::vector<Instruction*> instructions;
+    std::vector<std::unique_ptr<Instruction> > instructions;
     std::vector<Block*> predecessors;
-    std::vector<Instruction*> localVariables;
+    std::vector<std::unique_ptr<Instruction> > localVariables;
     Function& parent;
 
     // track whether this block is known to be uncreachable (not necessarily 
@@ -349,12 +351,12 @@ __inline void Function::addLocalVariable(Instruction* inst)
 
 __inline Block::Block(Id id, Function& parent) : parent(parent), unreachable(false)
 {
-    instructions.push_back(new Instruction(id, NoType, OpLabel));
+    instructions.push_back(std::unique_ptr<Instruction>(new Instruction(id, NoType, OpLabel)));
 }
 
 __inline void Block::addInstruction(Instruction* inst)
 {
-    instructions.push_back(inst);
+    instructions.push_back(std::unique_ptr<Instruction>(inst));
     if (inst->getResultId())
         parent.getParent().mapInstruction(inst);
 }

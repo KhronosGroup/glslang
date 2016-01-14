@@ -218,6 +218,7 @@ void ProcessConfigFile()
 {
     char** configStrings = 0;
     char* config = 0;
+    bool allocated_config = false;
     if (ConfigFile.size() > 0) {
         configStrings = ReadFileData(ConfigFile.c_str());
         if (configStrings)
@@ -230,6 +231,7 @@ void ProcessConfigFile()
 
     if (config == 0) {
         config = new char[strlen(DefaultConfig) + 1];
+        allocated_config = true;
         strcpy(config, DefaultConfig);
     }
 
@@ -435,6 +437,8 @@ void ProcessConfigFile()
     }
     if (configStrings)
         FreeFileData(configStrings);
+    if (allocated_config)
+        delete[] config;
 }
 
 // thread-safe list of shaders to asynchronously grab and compile
@@ -805,6 +809,11 @@ int C_DECL main(int argc, char* argv[])
         glslang::InitializeProcess();
         CompileAndLinkShaders();
         glslang::FinalizeProcess();
+        for (int w = 0; w < NumWorkItems; ++w) {
+          if (Work[w]) {
+            delete Work[w];
+          }
+        }
     } else {
         ShInitialize();
 
@@ -836,6 +845,8 @@ int C_DECL main(int argc, char* argv[])
 
         ShFinalize();
     }
+
+    delete[] Work;
 
     if (CompileFailed)
         return EFailCompile;
