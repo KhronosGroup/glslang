@@ -218,7 +218,6 @@ void ProcessConfigFile()
 {
     char** configStrings = 0;
     char* config = 0;
-    bool allocated_config = false;
     if (ConfigFile.size() > 0) {
         configStrings = ReadFileData(ConfigFile.c_str());
         if (configStrings)
@@ -231,7 +230,6 @@ void ProcessConfigFile()
 
     if (config == 0) {
         config = new char[strlen(DefaultConfig) + 1];
-        allocated_config = true;
         strcpy(config, DefaultConfig);
     }
 
@@ -437,7 +435,7 @@ void ProcessConfigFile()
     }
     if (configStrings)
         FreeFileData(configStrings);
-    if (allocated_config)
+    else
         delete[] config;
 }
 
