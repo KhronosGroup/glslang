@@ -2954,7 +2954,7 @@ spv::Id TGlslangToSpvTraverser::createMiscOperation(glslang::TOperator op, spv::
 
     spv::Op opCode = spv::OpNop;
     int libCall = -1;
-    int consumedOperands = operands.size();
+    size_t consumedOperands = operands.size();
     spv::Id typeId0 = 0;
     if (consumedOperands > 0)
         typeId0 = builder.getTypeId(operands[0]);
