@@ -838,9 +838,9 @@ void Builder::makeReturn(bool implicit, Id retVal)
     if (retVal) {
         Instruction* inst = new Instruction(NoResult, NoType, OpReturnValue);
         inst->addIdOperand(retVal);
-        buildPoint->addInstruction(inst);
+        buildPoint->addInstruction(std::unique_ptr<Instruction>(inst));
     } else
-        buildPoint->addInstruction(new Instruction(NoResult, NoType, OpReturn));
+        buildPoint->addInstruction(std::unique_ptr<Instruction>(new Instruction(NoResult, NoType, OpReturn)));
 
     if (! implicit)
         createAndSetNoPredecessorBlock("post-return");
@@ -880,7 +880,7 @@ void Builder::leaveFunction()
 // Comments in header
 void Builder::makeDiscard()
 {
-    buildPoint->addInstruction(new Instruction(OpKill));
+    buildPoint->addInstruction(std::unique_ptr<Instruction>(new Instruction(OpKill)));
     createAndSetNoPredecessorBlock("post-discard");
 }
 
@@ -894,7 +894,7 @@ Id Builder::createVariable(StorageClass storageClass, Id type, const char* name)
     switch (storageClass) {
     case StorageClassFunction:
         // Validation rules require the declaration in the entry block
-        buildPoint->getParent().addLocalVariable(inst);
+        buildPoint->getParent().addLocalVariable(std::unique_ptr<Instruction>(inst));
         break;
 
     default:
@@ -913,7 +913,7 @@ Id Builder::createVariable(StorageClass storageClass, Id type, const char* name)
 Id Builder::createUndefined(Id type)
 {
   Instruction* inst = new Instruction(getUniqueId(), type, OpUndef);
-  buildPoint->addInstruction(inst);
+  buildPoint->addInstruction(std::unique_ptr<Instruction>(inst));
   return inst->getResultId();
 }
 
@@ -923,7 +923,7 @@ void Builder::createStore(Id rValue, Id lValue)
     Instruction* store = new Instruction(OpStore);
     store->addIdOperand(lValue);
     store->addIdOperand(rValue);
-    buildPoint->addInstruction(store);
+    buildPoint->addInstruction(std::unique_ptr<Instruction>(store));
 }
 
 // Comments in header
@@ -931,7 +931,7 @@ Id Builder::createLoad(Id lValue)
 {
     Instruction* load = new Instruction(getUniqueId(), getDerefTypeId(lValue), OpLoad);
     load->addIdOperand(lValue);
-    buildPoint->addInstruction(load);
+    buildPoint->addInstruction(std::unique_ptr<Instruction>(load));
 
     return load->getResultId();
 }
@@ -957,7 +957,7 @@ Id Builder::createAccessChain(StorageClass storageClass, Id base, std::vector<Id
     chain->addIdOperand(base);
     for (int i = 0; i < (int)offsets.size(); ++i)
         chain->addIdOperand(offsets[i]);
-    buildPoint->addInstruction(chain);
+    buildPoint->addInstruction(std::unique_ptr<Instruction>(chain));
 
     return chain->getResultId();
 }
@@ -967,7 +967,7 @@ Id Builder::createArrayLength(Id base, unsigned int member)
     Instruction* length = new Instruction(getUniqueId(), makeIntType(32), OpArrayLength);
     length->addIdOperand(base);
     length->addImmediateOperand(member);
-    buildPoint->addInstruction(length);
+    buildPoint->addInstruction(std::unique_ptr<Instruction>(length));
 
     return length->getResultId();
 }
@@ -977,7 +977,7 @@ Id Builder::createCompositeExtract(Id composite, Id typeId, unsigned index)
     Instruction* extract = new Instruction(getUniqueId(), typeId, OpCompositeExtract);
     extract->addIdOperand(composite);
     extract->addImmediateOperand(index);
-    buildPoint->addInstruction(extract);
+    buildPoint->addInstruction(std::unique_ptr<Instruction>(extract));
 
     return extract->getResultId();
 }
@@ -988,7 +988,7 @@ Id Builder::createCompositeExtract(Id composite, Id typeId, std::vector<unsigned
     extract->addIdOperand(composite);
     for (int i = 0; i < (int)indexes.size(); ++i)
         extract->addImmediateOperand(indexes[i]);
-    buildPoint->addInstruction(extract);
+    buildPoint->addInstruction(std::unique_ptr<Instruction>(extract));
 
     return extract->getResultId();
 }
@@ -999,7 +999,7 @@ Id Builder::createCompositeInsert(Id object, Id composite, Id typeId, unsigned i
     insert->addIdOperand(object);
     insert->addIdOperand(composite);
     insert->addImmediateOperand(index);
-    buildPoint->addInstruction(insert);
+    buildPoint->addInstruction(std::unique_ptr<Instruction>(insert));
 
     return insert->getResultId();
 }
@@ -1011,7 +1011,7 @@ Id Builder::createCompositeInsert(Id object, Id composite, Id typeId, std::vecto
     insert->addIdOperand(composite);
     for (int i = 0; i < (int)indexes.size(); ++i)
         insert->addImmediateOperand(indexes[i]);
-    buildPoint->addInstruction(insert);
+    buildPoint->addInstruction(std::unique_ptr<Instruction>(insert));
 
     return insert->getResultId();
 }
@@ -1021,7 +1021,7 @@ Id Builder::createVectorExtractDynamic(Id vector, Id typeId, Id componentIndex)
     Instruction* extract = new Instruction(getUniqueId(), typeId, OpVectorExtractDynamic);
     extract->addIdOperand(vector);
     extract->addIdOperand(componentIndex);
-    buildPoint->addInstruction(extract);
+    buildPoint->addInstruction(std::unique_ptr<Instruction>(extract));
 
     return extract->getResultId();
 }
@@ -1032,7 +1032,7 @@ Id Builder::createVectorInsertDynamic(Id vector, Id typeId, Id component, Id com
     insert->addIdOperand(vector);
     insert->addIdOperand(component);
     insert->addIdOperand(componentIndex);
-    buildPoint->addInstruction(insert);
+    buildPoint->addInstruction(std::unique_ptr<Instruction>(insert));
 
     return insert->getResultId();
 }
@@ -1041,7 +1041,7 @@ Id Builder::createVectorInsertDynamic(Id vector, Id typeId, Id component, Id com
 void Builder::createNoResultOp(Op opCode)
 {
     Instruction* op = new Instruction(opCode);
-    buildPoint->addInstruction(op);
+    buildPoint->addInstruction(std::unique_ptr<Instruction>(op));
 }
 
 // An opcode that has one operand, no result id, and no type
@@ -1049,7 +1049,7 @@ void Builder::createNoResultOp(Op opCode, Id operand)
 {
     Instruction* op = new Instruction(opCode);
     op->addIdOperand(operand);
-    buildPoint->addInstruction(op);
+    buildPoint->addInstruction(std::unique_ptr<Instruction>(op));
 }
 
 // An opcode that has one operand, no result id, and no type
@@ -1058,7 +1058,7 @@ void Builder::createNoResultOp(Op opCode, const std::vector<Id>& operands)
     Instruction* op = new Instruction(opCode);
     for (auto operand : operands)
         op->addIdOperand(operand);
-    buildPoint->addInstruction(op);
+    buildPoint->addInstruction(std::unique_ptr<Instruction>(op));
 }
 
 void Builder::createControlBarrier(Scope execution, Scope memory, MemorySemanticsMask semantics)
@@ -1067,7 +1067,7 @@ void Builder::createControlBarrier(Scope execution, Scope memory, MemorySemantic
     op->addImmediateOperand(makeUintConstant(execution));
     op->addImmediateOperand(makeUintConstant(memory));
     op->addImmediateOperand(makeUintConstant(semantics));
-    buildPoint->addInstruction(op);
+    buildPoint->addInstruction(std::unique_ptr<Instruction>(op));
 }
 
 void Builder::createMemoryBarrier(unsigned executionScope, unsigned memorySemantics)
@@ -1075,7 +1075,7 @@ void Builder::createMemoryBarrier(unsigned executionScope, unsigned memorySemant
     Instruction* op = new Instruction(OpMemoryBarrier);
     op->addImmediateOperand(makeUintConstant(executionScope));
     op->addImmediateOperand(makeUintConstant(memorySemantics));
-    buildPoint->addInstruction(op);
+    buildPoint->addInstruction(std::unique_ptr<Instruction>(op));
 }
 
 // An opcode that has one operands, a result id, and a type
@@ -1083,7 +1083,7 @@ Id Builder::createUnaryOp(Op opCode, Id typeId, Id operand)
 {
     Instruction* op = new Instruction(getUniqueId(), typeId, opCode);
     op->addIdOperand(operand);
-    buildPoint->addInstruction(op);
+    buildPoint->addInstruction(std::unique_ptr<Instruction>(op));
 
     return op->getResultId();
 }
@@ -1093,7 +1093,7 @@ Id Builder::createBinOp(Op opCode, Id typeId, Id left, Id right)
     Instruction* op = new Instruction(getUniqueId(), typeId, opCode);
     op->addIdOperand(left);
     op->addIdOperand(right);
-    buildPoint->addInstruction(op);
+    buildPoint->addInstruction(std::unique_ptr<Instruction>(op));
 
     return op->getResultId();
 }
@@ -1104,7 +1104,7 @@ Id Builder::createTriOp(Op opCode, Id typeId, Id op1, Id op2, Id op3)
     op->addIdOperand(op1);
     op->addIdOperand(op2);
     op->addIdOperand(op3);
-    buildPoint->addInstruction(op);
+    buildPoint->addInstruction(std::unique_ptr<Instruction>(op));
 
     return op->getResultId();
 }
@@ -1114,7 +1114,7 @@ Id Builder::createOp(Op opCode, Id typeId, const std::vector<Id>& operands)
     Instruction* op = new Instruction(getUniqueId(), typeId, opCode);
     for (auto operand : operands)
         op->addIdOperand(operand);
-    buildPoint->addInstruction(op);
+    buildPoint->addInstruction(std::unique_ptr<Instruction>(op));
 
     return op->getResultId();
 }
@@ -1125,7 +1125,7 @@ Id Builder::createFunctionCall(spv::Function* function, std::vector<spv::Id>& ar
     op->addIdOperand(function->getId());
     for (int a = 0; a < (int)args.size(); ++a)
         op->addIdOperand(args[a]);
-    buildPoint->addInstruction(op);
+    buildPoint->addInstruction(std::unique_ptr<Instruction>(op));
 
     return op->getResultId();
 }
@@ -1142,7 +1142,7 @@ Id Builder::createRvalueSwizzle(Id typeId, Id source, std::vector<unsigned>& cha
     swizzle->addIdOperand(source);
     for (int i = 0; i < (int)channels.size(); ++i)
         swizzle->addImmediateOperand(channels[i]);
-    buildPoint->addInstruction(swizzle);
+    buildPoint->addInstruction(std::unique_ptr<Instruction>(swizzle));
 
     return swizzle->getResultId();
 }
@@ -1173,7 +1173,7 @@ Id Builder::createLvalueSwizzle(Id typeId, Id target, Id source, std::vector<uns
     // finish the instruction with these components selectors
     for (int i = 0; i < numTargetComponents; ++i)
         swizzle->addImmediateOperand(components[i]);
-    buildPoint->addInstruction(swizzle);
+    buildPoint->addInstruction(std::unique_ptr<Instruction>(swizzle));
 
     return swizzle->getResultId();
 }
@@ -1204,7 +1204,7 @@ Id Builder::smearScalar(Decoration /*precision*/, Id scalar, Id vectorType)
     Instruction* smear = new Instruction(getUniqueId(), vectorType, OpCompositeConstruct);
     for (int c = 0; c < numComponents; ++c)
         smear->addIdOperand(scalar);
-    buildPoint->addInstruction(smear);
+    buildPoint->addInstruction(std::unique_ptr<Instruction>(smear));
 
     return smear->getResultId();
 }
@@ -1218,7 +1218,7 @@ Id Builder::createBuiltinCall(Decoration /*precision*/, Id resultType, Id builti
     for (int arg = 0; arg < (int)args.size(); ++arg)
         inst->addIdOperand(args[arg]);
 
-    buildPoint->addInstruction(inst);
+    buildPoint->addInstruction(std::unique_ptr<Instruction>(inst));
     return inst->getResultId();
 }
 
@@ -1346,7 +1346,7 @@ Id Builder::createTextureCall(Decoration precision, Id resultType, bool fetch, b
     for (int op = optArgNum + 1; op < numArgs; ++op)
         textureInst->addIdOperand(texArgs[op]);
     setPrecision(textureInst->getResultId(), precision);
-    buildPoint->addInstruction(textureInst);
+    buildPoint->addInstruction(std::unique_ptr<Instruction>(textureInst));
 
     Id resultId = textureInst->getResultId();
 
@@ -1414,7 +1414,7 @@ Id Builder::createTextureQueryCall(Op opCode, const TextureParameters& parameter
         query->addIdOperand(parameters.coords);
     if (parameters.lod)
         query->addIdOperand(parameters.lod);
-    buildPoint->addInstruction(query);
+    buildPoint->addInstruction(std::unique_ptr<Instruction>(query));
 
     return query->getResultId();
 }
@@ -1496,7 +1496,7 @@ Id Builder::createCompositeConstruct(Id typeId, std::vector<Id>& constituents)
     Instruction* op = new Instruction(getUniqueId(), typeId, OpCompositeConstruct);
     for (int c = 0; c < (int)constituents.size(); ++c)
         op->addIdOperand(constituents[c]);
-    buildPoint->addInstruction(op);
+    buildPoint->addInstruction(std::unique_ptr<Instruction>(op));
 
     return op->getResultId();
 }
@@ -1712,7 +1712,7 @@ void Builder::makeSwitch(Id selector, int numSegments, std::vector<int>& caseVal
         switchInst->addImmediateOperand(caseValues[i]);
         switchInst->addIdOperand(segmentBlocks[valueIndexToSegment[i]]->getId());
     }
-    buildPoint->addInstruction(switchInst);
+    buildPoint->addInstruction(std::unique_ptr<Instruction>(switchInst));
 
     // push the merge block
     switchMerges.push(mergeBlock);
@@ -1783,7 +1783,7 @@ void Builder::makeNewLoop(bool loopTestFirst)
         // but we don't yet know where they will come from.
         loop.isFirstIteration->addIdOperand(makeBoolConstant(true));
         loop.isFirstIteration->addIdOperand(preheader->getId());
-        getBuildPoint()->addInstruction(loop.isFirstIteration);
+        getBuildPoint()->addInstruction(std::unique_ptr<Instruction>(loop.isFirstIteration));
 
         // Mark the end of the structured loop. This must exist in the loop header block.
         createLoopMerge(loop.merge, loop.header, LoopControlMaskNone);
@@ -2205,7 +2205,7 @@ void Builder::createBranch(Block* block)
 {
     Instruction* branch = new Instruction(OpBranch);
     branch->addIdOperand(block->getId());
-    buildPoint->addInstruction(branch);
+    buildPoint->addInstruction(std::unique_ptr<Instruction>(branch));
     block->addPredecessor(buildPoint);
 }
 
@@ -2214,7 +2214,7 @@ void Builder::createSelectionMerge(Block* mergeBlock, unsigned int control)
     Instruction* merge = new Instruction(OpSelectionMerge);
     merge->addIdOperand(mergeBlock->getId());
     merge->addImmediateOperand(control);
-    buildPoint->addInstruction(merge);
+    buildPoint->addInstruction(std::unique_ptr<Instruction>(merge));
 }
 
 void Builder::createLoopMerge(Block* mergeBlock, Block* continueBlock, unsigned int control)
@@ -2223,7 +2223,7 @@ void Builder::createLoopMerge(Block* mergeBlock, Block* continueBlock, unsigned 
     merge->addIdOperand(mergeBlock->getId());
     merge->addIdOperand(continueBlock->getId());
     merge->addImmediateOperand(control);
-    buildPoint->addInstruction(merge);
+    buildPoint->addInstruction(std::unique_ptr<Instruction>(merge));
 }
 
 void Builder::createConditionalBranch(Id condition, Block* thenBlock, Block* elseBlock)
@@ -2232,7 +2232,7 @@ void Builder::createConditionalBranch(Id condition, Block* thenBlock, Block* els
     branch->addIdOperand(condition);
     branch->addIdOperand(thenBlock->getId());
     branch->addIdOperand(elseBlock->getId());
-    buildPoint->addInstruction(branch);
+    buildPoint->addInstruction(std::unique_ptr<Instruction>(branch));
     thenBlock->addPredecessor(buildPoint);
     elseBlock->addPredecessor(buildPoint);
 }
