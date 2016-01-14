@@ -987,7 +987,7 @@ int TIntermediate::getBaseAlignment(const TType& type, int& size, int& stride, b
     // rules 5 and 7
     if (type.isMatrix()) {
         // rule 5: deref to row, not to column, meaning the size of vector is num columns instead of num rows
-        TType derefType(type, 0, type.getQualifier().layoutMatrix == ElmRowMajor);
+        TType derefType(type, 0, rowMajor);
             
         alignment = getBaseAlignment(derefType, size, dummyStride, std140, rowMajor);
         if (std140)
