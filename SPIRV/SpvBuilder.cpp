@@ -1365,7 +1365,7 @@ Id Builder::createTextureQueryCall(Op opCode, const TextureParameters& parameter
     case OpImageQuerySize:
     case OpImageQuerySizeLod:
     {
-        int numComponents;
+        int numComponents = 0;
         switch (getTypeDimensionality(getImageType(parameters.sampler))) {
         case Dim1D:
         case DimBuffer:
