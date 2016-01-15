@@ -1222,7 +1222,7 @@ Id Builder::createBuiltinCall(Decoration /*precision*/, Id resultType, Id builti
 
 // Accept all parameters needed to create a texture instruction.
 // Create the correct instruction based on the inputs, and make the call.
-Id Builder::createTextureCall(Decoration precision, Id resultType, bool fetch, bool proj, bool gather, const TextureParameters& parameters)
+Id Builder::createTextureCall(Decoration precision, Id resultType, bool sparse, bool fetch, bool proj, bool gather, const TextureParameters& parameters)
 {
     static const int maxTextureArgs = 10;
     Id texArgs[maxTextureArgs] = {};
@@ -1275,6 +1275,10 @@ Id Builder::createTextureCall(Decoration precision, Id resultType, bool fetch, b
         mask = (ImageOperandsMask)(mask | ImageOperandsSampleMask);
         texArgs[numArgs++] = parameters.sample;
     }
+    if (parameters.lodClamp) {
+        mask = (ImageOperandsMask)(mask | ImageOperandsMinLodMask);
+        texArgs[numArgs++] = parameters.lodClamp;
+    }
     if (mask == ImageOperandsMaskNone)
         --numArgs;  // undo speculative reservation for the mask argument
     else
@@ -1286,35 +1290,68 @@ Id Builder::createTextureCall(Decoration precision, Id resultType, bool fetch, b
     Op opCode;
     opCode = OpImageSampleImplicitLod;
     if (fetch) {
-        opCode = OpImageFetch;
+        if (sparse)
+            opCode = OpImageSparseFetch;
+        else
+            opCode = OpImageFetch;
     } else if (gather) {
         if (parameters.Dref)
-            opCode = OpImageDrefGather;
+            if (sparse)
+                opCode = OpImageSparseDrefGather;
+            else
+                opCode = OpImageDrefGather;
         else
-            opCode = OpImageGather;
+            if (sparse)
+                opCode = OpImageSparseGather;
+            else
+                opCode = OpImageGather;
     } else if (xplicit) {
         if (parameters.Dref) {
             if (proj)
-                opCode = OpImageSampleProjDrefExplicitLod;
+                if (sparse)
+                    opCode = OpImageSparseSampleProjDrefExplicitLod;
+                else
+                    opCode = OpImageSampleProjDrefExplicitLod;
             else
-                opCode = OpImageSampleDrefExplicitLod;
+                if (sparse)
+                    opCode = OpImageSparseSampleDrefExplicitLod;
+                else
+                    opCode = OpImageSampleDrefExplicitLod;
         } else {
             if (proj)
-                opCode = OpImageSampleProjExplicitLod;
+                if (sparse)
+                    opCode = OpImageSparseSampleProjExplicitLod;
+                else
+                    opCode = OpImageSampleProjExplicitLod;
             else
-                opCode = OpImageSampleExplicitLod;
+                if (sparse)
+                    opCode = OpImageSparseSampleExplicitLod;
+                else
+                    opCode = OpImageSampleExplicitLod;
         }
     } else {
         if (parameters.Dref) {
             if (proj)
-                opCode = OpImageSampleProjDrefImplicitLod;
+                if (sparse)
+                    opCode = OpImageSparseSampleProjDrefImplicitLod;
+                else
+                    opCode = OpImageSampleProjDrefImplicitLod;
             else
-                opCode = OpImageSampleDrefImplicitLod;
+                if (sparse)
+                    opCode = OpImageSparseSampleDrefImplicitLod;
+                else
+                    opCode = OpImageSampleDrefImplicitLod;
         } else {
             if (proj)
-                opCode = OpImageSampleProjImplicitLod;
+                if (sparse)
+                    opCode = OpImageSparseSampleProjImplicitLod;
+                else
+                    opCode = OpImageSampleProjImplicitLod;
             else
-                opCode = OpImageSampleImplicitLod;
+                if (sparse)
+                    opCode = OpImageSparseSampleImplicitLod;
+                else
+                    opCode = OpImageSampleImplicitLod;
         }
     }
 
@@ -1335,6 +1372,15 @@ Id Builder::createTextureCall(Decoration precision, Id resultType, bool fetch, b
         }
     }
 
+    Id typeId0 = 0;
+    Id typeId1 = 0;
+
+    if (sparse) {
+        typeId0 = resultType;
+        typeId1 = getDerefTypeId(parameters.texelOut);
+        resultType = makeStructResultType(typeId0, typeId1);
+    }
+
     // Build the SPIR-V instruction
     Instruction* textureInst = new Instruction(getUniqueId(), resultType, opCode);
     for (int op = 0; op < optArgNum; ++op)
@@ -1348,10 +1394,16 @@ Id Builder::createTextureCall(Decoration precision, Id resultType, bool fetch, b
 
     Id resultId = textureInst->getResultId();
 
-    // When a smear is needed, do it, as per what was computed
-    // above when resultType was changed to a scalar type.
-    if (resultType != smearedType)
-        resultId = smearScalar(precision, resultId, smearedType);
+    if (sparse) {
+        // Decode the return type that was a special structure
+        createStore(createCompositeExtract(resultId, typeId1, 1), parameters.texelOut);
+        resultId = createCompositeExtract(resultId, typeId0, 0);
+    } else {
+        // When a smear is needed, do it, as per what was computed
+        // above when resultType was changed to a scalar type.
+        if (resultType != smearedType)
+            resultId = smearScalar(precision, resultId, smearedType);
+    }
 
     return resultId;
 }
