@@ -60,7 +60,7 @@ patch out vec4 patchOut;            // ERROR
 void foo24()
 {
     dvec3 df, di;
-    df = modf(outp.xyz, di);
+    df = modf(dvec3(outp.xyz), di);
 }
 
 in float in1;

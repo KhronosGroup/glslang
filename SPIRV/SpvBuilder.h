@@ -310,10 +310,12 @@ public:
         Id gradY;
         Id sample;
         Id comp;
+        Id texelOut;
+        Id lodClamp;
     };
 
     // Select the correct texture operation based on all inputs, and emit the correct instruction
-    Id createTextureCall(Decoration precision, Id resultType, bool fetch, bool proj, bool gather, const TextureParameters&);
+    Id createTextureCall(Decoration precision, Id resultType, bool sparse, bool fetch, bool proj, bool gather, const TextureParameters&);
 
     // Emit the OpTextureQuery* instruction that was passed in.
     // Figure out the right return value and type, and return it.

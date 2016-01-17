@@ -658,17 +658,27 @@ void StderrIfNonEmpty(const char* str)
     }
 }
 
+// Simple bundling of what makes a compilation unit for ease in passing around,
+// and separation of handling file IO versus API (programmatic) compilation.
+struct ShaderCompUnit {
+    EShLanguage stage;
+    std::string fileName;
+    char** text;           // memory owned/managed externally
+};
+
 //
-// For linking mode: Will independently parse each item in the worklist, but then put them
-// in the same program and link them together.
+// For linking mode: Will independently parse each compilation unit, but then put them
+// in the same program and link them together, making at most one linked module per
+// pipeline stage.
 //
 // Uses the new C++ interface instead of the old handle-based interface.
 //
-void CompileAndLinkShaders()
+
+void CompileAndLinkShaderUnits(std::vector<ShaderCompUnit> compUnits)
 {
     // keep track of what to free
     std::list<glslang::TShader*> shaders;
-    
+
     EShMessages messages = EShMsgDefault;
     SetMessageOptions(messages);
 
@@ -677,22 +687,13 @@ void CompileAndLinkShaders()
     //
 
     glslang::TProgram& program = *new glslang::TProgram;
-    glslang::TWorkItem* workItem;
-    while (Worklist.remove(workItem)) {
-        EShLanguage stage = FindLanguage(workItem->name);
-        glslang::TShader* shader = new glslang::TShader(stage);
+    for (auto compUnit : compUnits) {
+        glslang::TShader* shader = new glslang::TShader(compUnit.stage);
+        shader->setStrings(compUnit.text, 1);
         shaders.push_back(shader);
-    
-        char** shaderStrings = ReadFileData(workItem->name.c_str());
-        if (! shaderStrings) {
-            usage();
-            delete &program;
 
-            return;
-        }
         const int defaultVersion = Options & EOptionDefaultDesktop? 110: 100;
 
-        shader->setStrings(shaderStrings, 1);
         if (Options & EOptionOutputPreprocessed) {
             std::string str;
             if (shader->preprocess(&Resources, defaultVersion, ENoProfile, false, false,
@@ -703,7 +704,6 @@ void CompileAndLinkShaders()
             }
             StderrIfNonEmpty(shader->getInfoLog());
             StderrIfNonEmpty(shader->getInfoDebugLog());
-            FreeFileData(shaderStrings);
             continue;
         }
         if (! shader->parse(&Resources, defaultVersion, false, messages))
@@ -711,13 +711,12 @@ void CompileAndLinkShaders()
 
         program.addShader(shader);
 
-        if (! (Options & EOptionSuppressInfolog)) {
-            PutsIfNonEmpty(workItem->name.c_str());
+        if (! (Options & EOptionSuppressInfolog) &&
+            ! (Options & EOptionMemoryLeakMode)) {
+            PutsIfNonEmpty(compUnit.fileName.c_str());
             PutsIfNonEmpty(shader->getInfoLog());
             PutsIfNonEmpty(shader->getInfoDebugLog());
         }
-
-        FreeFileData(shaderStrings);
     }
 
     //
@@ -727,7 +726,8 @@ void CompileAndLinkShaders()
     if (! (Options & EOptionOutputPreprocessed) && ! program.link(messages))
         LinkFailed = true;
 
-    if (! (Options & EOptionSuppressInfolog)) {
+    if (! (Options & EOptionSuppressInfolog) &&
+        ! (Options & EOptionMemoryLeakMode)) {
         PutsIfNonEmpty(program.getInfoLog());
         PutsIfNonEmpty(program.getInfoDebugLog());
     }
@@ -745,10 +745,15 @@ void CompileAndLinkShaders()
                 if (program.getIntermediate((EShLanguage)stage)) {
                     std::vector<unsigned int> spirv;
                     glslang::GlslangToSpv(*program.getIntermediate((EShLanguage)stage), spirv);
-                    glslang::OutputSpv(spirv, GetBinaryName((EShLanguage)stage));
-                    if (Options & EOptionHumanReadableSpv) {
-                        spv::Parameterize();
-                        spv::Disassemble(std::cout, spirv);
+
+                    // Dump the spv to a file or stdout, etc., but only if not doing
+                    // memory/perf testing, as it's not internal to programmatic use.
+                    if (! (Options & EOptionMemoryLeakMode)) {
+                        glslang::OutputSpv(spirv, GetBinaryName((EShLanguage)stage));
+                        if (Options & EOptionHumanReadableSpv) {
+                            spv::Parameterize();
+                            spv::Disassemble(std::cout, spirv);
+                        }
                     }
                 }
             }
@@ -764,6 +769,59 @@ void CompileAndLinkShaders()
         delete shaders.back();
         shaders.pop_back();
     }
+}
+
+//
+// Do file IO part of compile and link, handing off the pure
+// API/programmatic mode to CompileAndLinkShaderUnits(), which can
+// be put in a loop for testing memory footprint and performance.
+//
+// This is just for linking mode: meaning all the shaders will be put into the
+// the same program linked together.
+//
+// This means there are a limited number of work items (not multi-threading mode)
+// and that the point is testing at the linking level. Hence, to enable
+// performance and memory testing, the actual compile/link can be put in
+// a loop, independent of processing the work items and file IO.
+//
+void CompileAndLinkShaderFiles()
+{
+    std::vector<ShaderCompUnit> compUnits;
+
+    // Transfer all the work items from to a simple list of
+    // of compilation units.  (We don't care about the thread
+    // work-item distribution properties in this path, which
+    // is okay due to the limited number of shaders, know since
+    // they are all getting linked together.)
+    glslang::TWorkItem* workItem;
+    while (Worklist.remove(workItem)) {
+        ShaderCompUnit compUnit = {
+            FindLanguage(workItem->name),
+            workItem->name,
+            ReadFileData(workItem->name.c_str())
+        };
+
+        if (! compUnit.text) {
+            usage();
+            return;
+        }
+
+        compUnits.push_back(compUnit);
+    }
+
+    // Actual call to programmatic processing of compile and link,
+    // in a loop for testing memory and performance.  This part contains
+    // all the perf/memory that a programmatic consumer will care about.
+    for (int i = 0; i < ((Options & EOptionMemoryLeakMode) ? 100 : 1); ++i) {
+        for (int j = 0; j < ((Options & EOptionMemoryLeakMode) ? 100 : 1); ++j)
+           CompileAndLinkShaderUnits(compUnits);
+
+        if (Options & EOptionMemoryLeakMode)
+            glslang::OS_DumpMemoryCounters();
+    }
+
+    for (auto c : compUnits)
+        FreeFileData(c.text);
 }
 
 int C_DECL main(int argc, char* argv[])
@@ -803,7 +861,7 @@ int C_DECL main(int argc, char* argv[])
     if (Options & EOptionLinkProgram ||
         Options & EOptionOutputPreprocessed) {
         glslang::InitializeProcess();
-        CompileAndLinkShaders();
+        CompileAndLinkShaderFiles();
         glslang::FinalizeProcess();
     } else {
         ShInitialize();

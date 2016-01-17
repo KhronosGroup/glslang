@@ -66,6 +66,8 @@ spv.qualifiers.vert
 spv.shiftOps.frag
 spv.simpleFunctionCall.frag
 spv.simpleMat.vert
+spv.sparseTexture.frag
+spv.sparseTextureClamp.frag
 spv.structAssignment.frag
 spv.structDeref.frag
 spv.structure.frag

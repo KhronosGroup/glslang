@@ -218,26 +218,18 @@ ERROR: node is still EOpNull!
 0:?     Sequence
 0:63      move second child to first child (temp 3-component vector of double)
 0:63        'df' (temp 3-component vector of double)
-0:63        Convert float to double (temp 3-component vector of double)
-0:63          Comma (global 3-component vector of float)
-0:63            move second child to first child (temp 3-component vector of float)
-0:63              'tempReturn' (global 3-component vector of float)
-0:63              modf (global 3-component vector of float)
-0:63                vector swizzle (temp 3-component vector of float)
-0:63                  'outp' (out 4-component vector of float)
-0:63                  Sequence
-0:63                    Constant:
-0:63                      0 (const int)
-0:63                    Constant:
-0:63                      1 (const int)
-0:63                    Constant:
-0:63                      2 (const int)
-0:63                'tempArg' (temp 3-component vector of float)
-0:63            move second child to first child (temp 3-component vector of double)
-0:63              'di' (temp 3-component vector of double)
-0:63              Convert float to double (temp 3-component vector of double)
-0:63                'tempArg' (temp 3-component vector of float)
-0:63            'tempReturn' (global 3-component vector of float)
+0:63        modf (global 3-component vector of double)
+0:63          Convert float to double (temp 3-component vector of double)
+0:63            vector swizzle (temp 3-component vector of float)
+0:63              'outp' (out 4-component vector of float)
+0:63              Sequence
+0:63                Constant:
+0:63                  0 (const int)
+0:63                Constant:
+0:63                  1 (const int)
+0:63                Constant:
+0:63                  2 (const int)
+0:63          'di' (temp 3-component vector of double)
 0:71  Function Definition: foodc1( (global void)
 0:71    Function Parameters: 
 0:73    Sequence
@@ -707,26 +699,18 @@ ERROR: node is still EOpNull!
 0:?     Sequence
 0:63      move second child to first child (temp 3-component vector of double)
 0:63        'df' (temp 3-component vector of double)
-0:63        Convert float to double (temp 3-component vector of double)
-0:63          Comma (global 3-component vector of float)
-0:63            move second child to first child (temp 3-component vector of float)
-0:63              'tempReturn' (global 3-component vector of float)
-0:63              modf (global 3-component vector of float)
-0:63                vector swizzle (temp 3-component vector of float)
-0:63                  'outp' (out 4-component vector of float)
-0:63                  Sequence
-0:63                    Constant:
-0:63                      0 (const int)
-0:63                    Constant:
-0:63                      1 (const int)
-0:63                    Constant:
-0:63                      2 (const int)
-0:63                'tempArg' (temp 3-component vector of float)
-0:63            move second child to first child (temp 3-component vector of double)
-0:63              'di' (temp 3-component vector of double)
-0:63              Convert float to double (temp 3-component vector of double)
-0:63                'tempArg' (temp 3-component vector of float)
-0:63            'tempReturn' (global 3-component vector of float)
+0:63        modf (global 3-component vector of double)
+0:63          Convert float to double (temp 3-component vector of double)
+0:63            vector swizzle (temp 3-component vector of float)
+0:63              'outp' (out 4-component vector of float)
+0:63              Sequence
+0:63                Constant:
+0:63                  0 (const int)
+0:63                Constant:
+0:63                  1 (const int)
+0:63                Constant:
+0:63                  2 (const int)
+0:63          'di' (temp 3-component vector of double)
 0:71  Function Definition: foodc1( (global void)
 0:71    Function Parameters: 
 0:73    Sequence
