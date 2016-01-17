@@ -419,6 +419,214 @@ void TBuiltIns::initialize(int version, EProfile profile, int spv)
             "\n");
     }
 
+    //
+    // double functions added to desktop 4.00, but not fma, frexp, ldexp, or pack/unpack
+    //
+    if (profile != EEsProfile && version >= 400) {
+        commonBuiltins.append(
+
+            "double sqrt(double);"
+            "dvec2  sqrt(dvec2);"
+            "dvec3  sqrt(dvec3);"
+            "dvec4  sqrt(dvec4);"
+
+            "double inversesqrt(double);"
+            "dvec2  inversesqrt(dvec2);"
+            "dvec3  inversesqrt(dvec3);"
+            "dvec4  inversesqrt(dvec4);"
+
+            "double abs(double);"
+            "dvec2  abs(dvec2);"
+            "dvec3  abs(dvec3);"
+            "dvec4  abs(dvec4);"
+
+            "double sign(double);"
+            "dvec2  sign(dvec2);"
+            "dvec3  sign(dvec3);"
+            "dvec4  sign(dvec4);"
+
+            "double floor(double);"
+            "dvec2  floor(dvec2);"
+            "dvec3  floor(dvec3);"
+            "dvec4  floor(dvec4);"
+
+            "double trunc(double);"
+            "dvec2  trunc(dvec2);"
+            "dvec3  trunc(dvec3);"
+            "dvec4  trunc(dvec4);"
+
+            "double round(double);"
+            "dvec2  round(dvec2);"
+            "dvec3  round(dvec3);"
+            "dvec4  round(dvec4);"
+
+            "double roundEven(double);"
+            "dvec2  roundEven(dvec2);"
+            "dvec3  roundEven(dvec3);"
+            "dvec4  roundEven(dvec4);"
+
+            "double ceil(double);"
+            "dvec2  ceil(dvec2);"
+            "dvec3  ceil(dvec3);"
+            "dvec4  ceil(dvec4);"
+
+            "double fract(double);"
+            "dvec2  fract(dvec2);"
+            "dvec3  fract(dvec3);"
+            "dvec4  fract(dvec4);"
+
+            "double mod(double, double);"
+            "dvec2  mod(dvec2 , double);"
+            "dvec3  mod(dvec3 , double);"
+            "dvec4  mod(dvec4 , double);"
+            "dvec2  mod(dvec2 , dvec2);"
+            "dvec3  mod(dvec3 , dvec3);"
+            "dvec4  mod(dvec4 , dvec4);"
+
+            "double modf(double, out double);"
+            "dvec2  modf(dvec2,  out dvec2);"
+            "dvec3  modf(dvec3,  out dvec3);"
+            "dvec4  modf(dvec4,  out dvec4);"
+
+            "double min(double, double);"
+            "dvec2  min(dvec2,  double);"
+            "dvec3  min(dvec3,  double);"
+            "dvec4  min(dvec4,  double);"
+            "dvec2  min(dvec2,  dvec2);"
+            "dvec3  min(dvec3,  dvec3);"
+            "dvec4  min(dvec4,  dvec4);"
+
+            "double max(double, double);"
+            "dvec2  max(dvec2 , double);"
+            "dvec3  max(dvec3 , double);"
+            "dvec4  max(dvec4 , double);"
+            "dvec2  max(dvec2 , dvec2);"
+            "dvec3  max(dvec3 , dvec3);"
+            "dvec4  max(dvec4 , dvec4);"
+
+            "double clamp(double, double, double);"
+            "dvec2  clamp(dvec2 , double, double);"
+            "dvec3  clamp(dvec3 , double, double);"
+            "dvec4  clamp(dvec4 , double, double);"
+            "dvec2  clamp(dvec2 , dvec2 , dvec2);"
+            "dvec3  clamp(dvec3 , dvec3 , dvec3);"
+            "dvec4  clamp(dvec4 , dvec4 , dvec4);"
+
+            "double mix(double, double, double);"
+            "dvec2  mix(dvec2,  dvec2,  double);"
+            "dvec3  mix(dvec3,  dvec3,  double);"
+            "dvec4  mix(dvec4,  dvec4,  double);"
+            "dvec2  mix(dvec2,  dvec2,  dvec2);"
+            "dvec3  mix(dvec3,  dvec3,  dvec3);"
+            "dvec4  mix(dvec4,  dvec4,  dvec4);"
+            "double mix(double, double, bool);"
+            "dvec2  mix(dvec2,  dvec2,  bvec2);"
+            "dvec3  mix(dvec3,  dvec3,  bvec3);"
+            "dvec4  mix(dvec4,  dvec4,  bvec4);"
+
+            "double step(double, double);"
+            "dvec2  step(dvec2 , dvec2);"
+            "dvec3  step(dvec3 , dvec3);"
+            "dvec4  step(dvec4 , dvec4);"
+            "dvec2  step(double, dvec2);"
+            "dvec3  step(double, dvec3);"
+            "dvec4  step(double, dvec4);"
+
+            "double smoothstep(double, double, double);"
+            "dvec2  smoothstep(dvec2 , dvec2 , dvec2);"
+            "dvec3  smoothstep(dvec3 , dvec3 , dvec3);"
+            "dvec4  smoothstep(dvec4 , dvec4 , dvec4);"
+            "dvec2  smoothstep(double, double, dvec2);"
+            "dvec3  smoothstep(double, double, dvec3);"
+            "dvec4  smoothstep(double, double, dvec4);"
+
+            "bool  isnan(double);"
+            "bvec2 isnan(dvec2);"
+            "bvec3 isnan(dvec3);"
+            "bvec4 isnan(dvec4);"
+
+            "bool  isinf(double);"
+            "bvec2 isinf(dvec2);"
+            "bvec3 isinf(dvec3);"
+            "bvec4 isinf(dvec4);"
+
+            "double length(double);"
+            "double length(dvec2);"
+            "double length(dvec3);"
+            "double length(dvec4);"
+
+            "double distance(double, double);"
+            "double distance(dvec2 , dvec2);"
+            "double distance(dvec3 , dvec3);"
+            "double distance(dvec4 , dvec4);"
+
+            "double dot(double, double);"
+            "double dot(dvec2 , dvec2);"
+            "double dot(dvec3 , dvec3);"
+            "double dot(dvec4 , dvec4);"
+
+            "dvec3 cross(dvec3, dvec3);"
+
+            "double normalize(double);"
+            "dvec2  normalize(dvec2);"
+            "dvec3  normalize(dvec3);"
+            "dvec4  normalize(dvec4);"
+
+            "double faceforward(double, double, double);"
+            "dvec2  faceforward(dvec2,  dvec2,  dvec2);"
+            "dvec3  faceforward(dvec3,  dvec3,  dvec3);"
+            "dvec4  faceforward(dvec4,  dvec4,  dvec4);"
+                 
+            "double reflect(double, double);"
+            "dvec2  reflect(dvec2 , dvec2 );"
+            "dvec3  reflect(dvec3 , dvec3 );"
+            "dvec4  reflect(dvec4 , dvec4 );"
+                 
+            "double refract(double, double, double);"
+            "dvec2  refract(dvec2 , dvec2 , double);"
+            "dvec3  refract(dvec3 , dvec3 , double);"
+            "dvec4  refract(dvec4 , dvec4 , double);"
+
+            "dmat2 matrixCompMult(dmat2, dmat2);"
+            "dmat3 matrixCompMult(dmat3, dmat3);"
+            "dmat4 matrixCompMult(dmat4, dmat4);"
+            "dmat2x3 matrixCompMult(dmat2x3, dmat2x3);"
+            "dmat2x4 matrixCompMult(dmat2x4, dmat2x4);"
+            "dmat3x2 matrixCompMult(dmat3x2, dmat3x2);"
+            "dmat3x4 matrixCompMult(dmat3x4, dmat3x4);"
+            "dmat4x2 matrixCompMult(dmat4x2, dmat4x2);"
+            "dmat4x3 matrixCompMult(dmat4x3, dmat4x3);"
+
+            "dmat2   outerProduct(dvec2, dvec2);"
+            "dmat3   outerProduct(dvec3, dvec3);"
+            "dmat4   outerProduct(dvec4, dvec4);"
+            "dmat2x3 outerProduct(dvec3, dvec2);"
+            "dmat3x2 outerProduct(dvec2, dvec3);"
+            "dmat2x4 outerProduct(dvec4, dvec2);"
+            "dmat4x2 outerProduct(dvec2, dvec4);"
+            "dmat3x4 outerProduct(dvec4, dvec3);"
+            "dmat4x3 outerProduct(dvec3, dvec4);"
+
+            "dmat2   transpose(dmat2);"
+            "dmat3   transpose(dmat3);"
+            "dmat4   transpose(dmat4);"
+            "dmat2x3 transpose(dmat3x2);"
+            "dmat3x2 transpose(dmat2x3);"
+            "dmat2x4 transpose(dmat4x2);"
+            "dmat4x2 transpose(dmat2x4);"
+            "dmat3x4 transpose(dmat4x3);"
+            "dmat4x3 transpose(dmat3x4);"
+
+            "double determinant(dmat2);"
+            "double determinant(dmat3);"
+            "double determinant(dmat4);"
+
+            "dmat2 inverse(dmat2);"
+            "dmat3 inverse(dmat3);"
+            "dmat4 inverse(dmat4);"
+        );
+    }
+
     if ((profile == EEsProfile && version >= 310) ||
         (profile != EEsProfile && version >= 430)) {
         commonBuiltins.append(
