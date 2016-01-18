@@ -1613,13 +1613,7 @@ TIntermTyped* TIntermediate::promoteConstantUnion(TBasicType promoteTo, TIntermC
 void TIntermAggregate::addToPragmaTable(const TPragmaTable& pTable)
 {
     assert(!pragmaTable);
-
-    // We allocate this with the thread-pool allocator because the destructors
-    // for TIntermNode's are never called. When TIntermNodes are no longer
-    // needed, the pool allocator destroys all memory at once without
-    // destruction.
-    void* memory = GetThreadPoolAllocator().allocate(sizeof(TPragmaTable));
-    pragmaTable = new(memory) TPragmaTable();
+    pragmaTable = new TPragmaTable();
     *pragmaTable = pTable;
 }
 

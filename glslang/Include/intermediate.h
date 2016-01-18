@@ -847,9 +847,7 @@ class TIntermAggregate : public TIntermOperator {
 public:
     TIntermAggregate() : TIntermOperator(EOpNull), userDefined(false), pragmaTable(0) { }
     TIntermAggregate(TOperator o) : TIntermOperator(o), pragmaTable(0) { }
-    // Since pragmaTable is allocated with the PoolAllocator, we
-    // only want to destroy it, not free the associated memory.
-    ~TIntermAggregate() { pragmaTable->~TPragmaTable(); }
+    ~TIntermAggregate() { delete pragmaTable; }
     virtual       TIntermAggregate* getAsAggregate()       { return this; }
     virtual const TIntermAggregate* getAsAggregate() const { return this; }
     virtual void setOperator(TOperator o) { op = o; }
