@@ -54,6 +54,7 @@
 
 #include <vector>
 #include <iostream>
+#include <memory>
 #include <assert.h>
 
 namespace spv {
@@ -155,15 +156,14 @@ public:
     Block(Id id, Function& parent);
     virtual ~Block()
     {
-        // TODO: free instructions
     }
     
     Id getId() { return instructions.front()->getResultId(); }
 
     Function& getParent() const { return parent; }
-    void addInstruction(Instruction* inst);
+    void addInstruction(std::unique_ptr<Instruction> inst);
     void addPredecessor(Block* pred) { predecessors.push_back(pred); }
-    void addLocalVariable(Instruction* inst) { localVariables.push_back(inst); }
+    void addLocalVariable(std::unique_ptr<Instruction> inst) { localVariables.push_back(std::move(inst)); }
     int getNumPredecessors() const { return (int)predecessors.size(); }
     void setUnreachable() { unreachable = true; }
     bool isUnreachable() const { return unreachable; }
@@ -205,9 +205,9 @@ protected:
     // To enforce keeping parent and ownership in sync:
     friend Function;
 
-    std::vector<Instruction*> instructions;
+    std::vector<std::unique_ptr<Instruction> > instructions;
     std::vector<Block*> predecessors;
-    std::vector<Instruction*> localVariables;
+    std::vector<std::unique_ptr<Instruction> > localVariables;
     Function& parent;
 
     // track whether this block is known to be uncreachable (not necessarily 
@@ -240,7 +240,7 @@ public:
     Module& getParent() const { return parent; }
     Block* getEntryBlock() const { return blocks.front(); }
     Block* getLastBlock() const { return blocks.back(); }
-    void addLocalVariable(Instruction* inst);
+    void addLocalVariable(std::unique_ptr<Instruction> inst);
     Id getReturnType() const { return functionInstruction.getTypeId(); }
     void dump(std::vector<unsigned int>& out) const
     {
@@ -341,22 +341,24 @@ __inline Function::Function(Id id, Id resultType, Id functionType, Id firstParam
     }
 }
 
-__inline void Function::addLocalVariable(Instruction* inst)
+__inline void Function::addLocalVariable(std::unique_ptr<Instruction> inst)
 {
-    blocks[0]->addLocalVariable(inst);
-    parent.mapInstruction(inst);
+    Instruction* raw_instruction = inst.get();
+    blocks[0]->addLocalVariable(std::move(inst));
+    parent.mapInstruction(raw_instruction);
 }
 
 __inline Block::Block(Id id, Function& parent) : parent(parent), unreachable(false)
 {
-    instructions.push_back(new Instruction(id, NoType, OpLabel));
+    instructions.push_back(std::unique_ptr<Instruction>(new Instruction(id, NoType, OpLabel)));
 }
 
-__inline void Block::addInstruction(Instruction* inst)
+__inline void Block::addInstruction(std::unique_ptr<Instruction> inst)
 {
-    instructions.push_back(inst);
-    if (inst->getResultId())
-        parent.getParent().mapInstruction(inst);
+  Instruction* raw_instruction = inst.get();
+    instructions.push_back(std::move(inst));
+    if (raw_instruction->getResultId())
+        parent.getParent().mapInstruction(raw_instruction);
 }
 
 };  // end spv namespace
