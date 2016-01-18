@@ -435,6 +435,8 @@ void ProcessConfigFile()
     }
     if (configStrings)
         FreeFileData(configStrings);
+    else
+        delete[] config;
 }
 
 // thread-safe list of shaders to asynchronously grab and compile
@@ -863,6 +865,11 @@ int C_DECL main(int argc, char* argv[])
         glslang::InitializeProcess();
         CompileAndLinkShaderFiles();
         glslang::FinalizeProcess();
+        for (int w = 0; w < NumWorkItems; ++w) {
+          if (Work[w]) {
+            delete Work[w];
+          }
+        }
     } else {
         ShInitialize();
 
@@ -894,6 +901,8 @@ int C_DECL main(int argc, char* argv[])
 
         ShFinalize();
     }
+
+    delete[] Work;
 
     if (CompileFailed)
         return EFailCompile;
