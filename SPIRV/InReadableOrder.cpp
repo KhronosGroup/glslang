@@ -39,7 +39,7 @@ void spv::inReadableOrder(Block* root, std::function<void(Block*)> callback) {
   // Prerequisites for a merge block; must be completed prior to visiting the
   // merge block.
   std::unordered_map<Id, BlockSet> prereqs;
-  IdToBool visited;               // Whether a block has already been visited.
+  IdToBool visited;             // Whether a block has already been visited.
   std::deque<Block*> worklist;  // DFS worklist
   worklist.push_back(root);
   while (!worklist.empty()) {
@@ -48,18 +48,22 @@ void spv::inReadableOrder(Block* root, std::function<void(Block*)> callback) {
     // Nodes may be pushed repeadetly (before they're first visited) if they
     // have multiple predecessors.  Skip the already-visited ones.
     if (visited[current->getId()]) continue;
+    if (delay(prereqs[current->getId()], visited)) {
+      // Not every prerequisite has been visited -- push it off for later.
+      worklist.push_back(current);
+      continue;
+    }
     callback(current);
     visited[current->getId()] = true;
     if (auto merge = current->getMergeInstruction()) {
-      auto& mergePrereqs = prereqs[merge->getIdOperand(0)];
+      Id mergeId = merge->getIdOperand(0);
+      auto& mergePrereqs = prereqs[mergeId];
       // Delay visiting merge blocks until all branches are visited.
       for (const auto succ : current->getSuccessors())
-        mergePrereqs.insert(succ->getId());
+        if (succ->getId() != mergeId) mergePrereqs.insert(succ->getId());
     }
     for (auto succ : current->getSuccessors()) {
-      if (!visited[succ->getId()] && !delay(prereqs[succ->getId()], visited)) {
-        worklist.push_back(succ);
-      }
+      if (!visited[succ->getId()]) worklist.push_back(succ);
     }
   }
 }
