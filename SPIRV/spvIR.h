@@ -52,10 +52,11 @@
 
 #include "spirv.hpp"
 
-#include <vector>
+#include <cassert>
+#include <functional>
 #include <iostream>
 #include <memory>
-#include <assert.h>
+#include <vector>
 
 namespace spv {
 
@@ -157,7 +158,7 @@ public:
     virtual ~Block()
     {
     }
-    
+
     Id getId() { return instructions.front()->getResultId(); }
 
     Function& getParent() const { return parent; }
@@ -168,6 +169,19 @@ public:
     const std::vector<Block*> getSuccessors() const { return successors; }
     void setUnreachable() { unreachable = true; }
     bool isUnreachable() const { return unreachable; }
+    // Returns the block's merge instruction, if one exists (otherwise null).
+    const Instruction* getMergeInstruction() const {
+        if (instructions.size() < 2) return nullptr;
+        const Instruction* nextToLast = *(instructions.cend() - 2);
+        switch (nextToLast->getOpCode()) {
+            case OpSelectionMerge:
+            case OpLoopMerge:
+                return nextToLast;
+            default:
+                return nullptr;
+        }
+        return nullptr;
+    }
 
     bool isTerminated() const
     {
@@ -217,6 +231,11 @@ protected:
     bool unreachable;
 };
 
+// Traverses the control-flow graph rooted at root in an order suited for
+// readable code generation.  Invokes callback at every node in the traversal
+// order.
+void inReadableOrder(Block* root, std::function<void(Block*)> callback);
+
 //
 // SPIR-V IR Function.
 //
@@ -253,8 +272,7 @@ public:
             parameterInstructions[p]->dump(out);
 
         // Blocks
-        for (int b = 0; b < (int)blocks.size(); ++b)
-            blocks[b]->dump(out);
+        inReadableOrder(blocks[0], [&out](const Block* b) { b->dump(out); });
         Instruction end(0, 0, OpFunctionEnd);
         end.dump(out);
     }
