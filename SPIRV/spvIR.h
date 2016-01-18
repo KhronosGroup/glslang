@@ -162,9 +162,10 @@ public:
 
     Function& getParent() const { return parent; }
     void addInstruction(std::unique_ptr<Instruction> inst);
-    void addPredecessor(Block* pred) { predecessors.push_back(pred); }
+    void addPredecessor(Block* pred) { predecessors.push_back(pred); pred->successors.push_back(this);}
     void addLocalVariable(std::unique_ptr<Instruction> inst) { localVariables.push_back(std::move(inst)); }
-    int getNumPredecessors() const { return (int)predecessors.size(); }
+    const std::vector<Block*> getPredecessors() const { return predecessors; }
+    const std::vector<Block*> getSuccessors() const { return successors; }
     void setUnreachable() { unreachable = true; }
     bool isUnreachable() const { return unreachable; }
 
@@ -206,7 +207,7 @@ protected:
     friend Function;
 
     std::vector<std::unique_ptr<Instruction> > instructions;
-    std::vector<Block*> predecessors;
+    std::vector<Block*> predecessors, successors;
     std::vector<std::unique_ptr<Instruction> > localVariables;
     Function& parent;
 

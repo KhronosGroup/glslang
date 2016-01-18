@@ -857,7 +857,7 @@ void Builder::leaveFunction()
     if (! block->isTerminated()) {
 
         // Whether we're in an unreachable (non-entry) block.
-        bool unreachable = function.getEntryBlock() != block && block->getNumPredecessors() == 0;
+        bool unreachable = function.getEntryBlock() != block && block->getPredecessors().empty();
 
         if (unreachable) {
             // Given that this block is at the end of a function, it must be right after an
