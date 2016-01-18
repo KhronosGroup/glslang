@@ -27,10 +27,11 @@ using BlockSet = std::unordered_set<Id>;
 using IdToBool = std::unordered_map<Id, bool>;
 
 namespace {
-// True if any of prerequisites have not yet been visited.
-bool delay(const BlockSet& prereqs, const IdToBool& visited) {
+// True if any of prerequisites have not yet been visited.  May add new,
+// zero-initialized, values to visited, but doesn't modify any existing values.
+bool delay(const BlockSet& prereqs, IdToBool& visited) {
   return std::any_of(prereqs.begin(), prereqs.end(),
-                     [&visited](Id b) { return !visited.count(b); });
+                     [&visited](Id b) { return !visited[b]; });
 }
 }
 
