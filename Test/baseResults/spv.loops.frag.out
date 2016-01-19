@@ -197,6 +197,8 @@ Linked fragment stage:
               43:    7(fvec4)   FAdd 42 28
                                 Store 9(color) 43
                                 Branch 15
+              16:               Label
+                                Branch 13
               15:             Label
                               Branch 45
               45:             Label
@@ -236,14 +238,14 @@ Linked fragment stage:
                                 BranchConditional 77 78 79
               78:                 Label
                                   Branch 63
-              63:                 Label
-                                  Branch 60
               79:               Label
               81:    7(fvec4)   Load 69(bigColor1_1)
               82:    7(fvec4)   Load 9(color)
               83:    7(fvec4)   FAdd 82 81
                                 Store 9(color) 83
                                 Branch 63
+              63:               Label
+                                Branch 60
               62:             Label
                               Branch 84
               84:             Label
@@ -482,17 +484,17 @@ Linked fragment stage:
                                 BranchConditional 260 261 262
              261:                 Label
                                   Branch 249
-             249:                 Label
-             267:    141(int)     Load 245(i)
-             268:    141(int)     IAdd 267 159
-                                  Store 245(i) 268
-                                  Branch 246
              262:               Label
              264:     21(ptr)   AccessChain 9(color) 73
              265:    6(float)   Load 264
              266:    6(float)   FAdd 265 93
                                 Store 264 266
                                 Branch 249
+             249:               Label
+             267:    141(int)   Load 245(i)
+             268:    141(int)   IAdd 267 159
+                                Store 245(i) 268
+                                Branch 246
              248:             Label
                               Store 269(i) 144
                               Branch 270
@@ -545,12 +547,6 @@ Linked fragment stage:
                               BranchConditional 304 305 306
              305:               Label
                                 Branch 296
-             296:               Label
-             325:     21(ptr)   AccessChain 9(color) 64
-             326:    6(float)   Load 325
-             327:    6(float)   Load 132(d4)
-             328:    17(bool)   FOrdLessThan 326 327
-                                BranchConditional 328 293 295
              306:             Label
              308:     21(ptr) AccessChain 9(color) 107
              309:    6(float) Load 308
@@ -576,6 +572,12 @@ Linked fragment stage:
                                 Branch 313
              313:             Label
                               Branch 296
+             296:             Label
+             325:     21(ptr) AccessChain 9(color) 64
+             326:    6(float) Load 325
+             327:    6(float) Load 132(d4)
+             328:    17(bool) FOrdLessThan 326 327
+                              BranchConditional 328 293 295
              295:             Label
                               Branch 329
              329:             Label
@@ -891,14 +893,14 @@ Linked fragment stage:
                                     Branch 549
              549:                 Label
                                   Branch 524
-             524:                 Label
-                                  Branch 521
              539:               Label
              558:    7(fvec4)   Load 9(color)
              559:    7(fvec4)   CompositeConstruct 93 93 93 93
              560:    7(fvec4)   FAdd 558 559
                                 Store 9(color) 560
                                 Branch 523
+             524:               Label
+                                Branch 521
              523:             Label
                               Branch 562
              562:             Label
@@ -927,8 +929,6 @@ Linked fragment stage:
                                   BranchConditional 583 584 585
              584:                   Label
                                     Branch 565
-             565:                   Label
-                                    Branch 562
              585:                 Label
                                   Branch 579
              579:               Label
@@ -940,6 +940,8 @@ Linked fragment stage:
              592:     21(ptr)   AccessChain 9(color) 107
                                 Store 592 591
                                 Branch 565
+             565:               Label
+                                Branch 562
              564:             Label
              593:    7(fvec4) Load 9(color)
              594:    7(fvec4) CompositeConstruct 93 93 93 93

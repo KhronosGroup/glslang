@@ -171,12 +171,6 @@ Linked fragment stage:
               49:    6(float)     FAdd 47 48
                                   Store 46 49
                                   Branch 16
-              16:                 Label
-              69:     24(ptr)     AccessChain 9(color) 35
-              70:    6(float)     Load 69
-              71:    6(float)     Load 28(d4)
-              72:    30(bool)     FOrdLessThan 70 71
-                                  BranchConditional 72 13 15
               45:               Label
                                 Branch 33
               33:             Label
@@ -204,6 +198,12 @@ Linked fragment stage:
                                 Branch 57
               57:             Label
                               Branch 16
+              16:             Label
+              69:     24(ptr) AccessChain 9(color) 35
+              70:    6(float) Load 69
+              71:    6(float) Load 28(d4)
+              72:    30(bool) FOrdLessThan 70 71
+                              BranchConditional 72 13 15
               15:             Label
                               Branch 73
               73:             Label
@@ -261,8 +261,6 @@ Linked fragment stage:
              117:    6(float)       FAdd 116 48
                                     Store 115 117
                                     Branch 76
-              76:                   Label
-                                    Branch 73
              114:                 Label
                                   Branch 104
              104:               Label
@@ -290,6 +288,8 @@ Linked fragment stage:
                                   Branch 124
              124:               Label
                                 Branch 76
+              76:               Label
+                                Branch 73
               75:             Label
              136:    7(fvec4) Load 9(color)
              137:    7(fvec4) CompositeConstruct 48 48 48 48

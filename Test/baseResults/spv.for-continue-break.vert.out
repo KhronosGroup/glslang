@@ -67,11 +67,6 @@ Linked vertex stage:
               24:                 Label
                                   Store 26(B) 19
                                   Branch 13
-              13:                 Label
-              40:      6(int)     Load 8(i)
-              41:      6(int)     IAdd 40 19
-                                  Store 8(i) 41
-                                  Branch 10
               25:               Label
               29:      6(int)   Load 8(i)
               31:      6(int)   SMod 29 30
@@ -84,6 +79,11 @@ Linked vertex stage:
               34:               Label
                                 Store 38(F) 39
                                 Branch 13
+              13:               Label
+              40:      6(int)   Load 8(i)
+              41:      6(int)   IAdd 40 19
+                                Store 8(i) 41
+                                Branch 10
               12:             Label
                               Store 42(G) 43
                               Return
