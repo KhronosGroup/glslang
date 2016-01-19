@@ -176,7 +176,7 @@ public:
     // Returns the block's merge instruction, if one exists (otherwise null).
     const Instruction* getMergeInstruction() const {
         if (instructions.size() < 2) return nullptr;
-        const Instruction* nextToLast = *(instructions.cend() - 2);
+        const Instruction* nextToLast = (instructions.cend() - 2)->get();
         switch (nextToLast->getOpCode()) {
             case OpSelectionMerge:
             case OpLoopMerge:
@@ -375,7 +375,7 @@ __inline Block::Block(Id id, Function& parent) : parent(parent), unreachable(fal
 {
     instructions.push_back(std::unique_ptr<Instruction>(new Instruction(id, NoType, OpLabel)));
     instructions.back()->setBlock(this);
-    parent.getParent().mapInstruction(instructions.back());
+    parent.getParent().mapInstruction(instructions.back().get());
 }
 
 __inline void Block::addInstruction(std::unique_ptr<Instruction> inst)
