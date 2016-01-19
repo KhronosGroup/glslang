@@ -857,7 +857,7 @@ void Builder::leaveFunction()
     if (! block->isTerminated()) {
 
         // Whether we're in an unreachable (non-entry) block.
-        bool unreachable = function.getEntryBlock() != block && block->getNumPredecessors() == 0;
+        bool unreachable = function.getEntryBlock() != block && block->getPredecessors().empty();
 
         if (unreachable) {
             // Given that this block is at the end of a function, it must be right after an
@@ -1759,10 +1759,13 @@ void Builder::makeSwitch(Id selector, int numSegments, std::vector<int>& caseVal
     // make the switch instruction
     Instruction* switchInst = new Instruction(NoResult, NoType, OpSwitch);
     switchInst->addIdOperand(selector);
-    switchInst->addIdOperand(defaultSegment >= 0 ? segmentBlocks[defaultSegment]->getId() : mergeBlock->getId());
+    auto defaultOrMerge = (defaultSegment >= 0) ? segmentBlocks[defaultSegment] : mergeBlock;
+    switchInst->addIdOperand(defaultOrMerge->getId());
+    defaultOrMerge->addPredecessor(buildPoint);
     for (int i = 0; i < (int)caseValues.size(); ++i) {
         switchInst->addImmediateOperand(caseValues[i]);
         switchInst->addIdOperand(segmentBlocks[valueIndexToSegment[i]]->getId());
+        segmentBlocks[valueIndexToSegment[i]]->addPredecessor(buildPoint);
     }
     buildPoint->addInstruction(std::unique_ptr<Instruction>(switchInst));
 

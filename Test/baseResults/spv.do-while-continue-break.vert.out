@@ -81,9 +81,6 @@ Linked vertex stage:
               28:               Label
                                 Store 30(B) 19
                                 Branch 10
-              32:               Label
-                                Store 33(C) 26
-                                Branch 29
               29:             Label
               34:      6(int) Load 8(i)
               36:    14(bool) IEqual 34 35
@@ -92,9 +89,6 @@ Linked vertex stage:
               37:               Label
                                 Store 39(D) 40
                                 Branch 11
-              41:               Label
-                                Store 42(E) 43
-                                Branch 38
               38:             Label
                               Store 44(F) 45
                               Branch 10
