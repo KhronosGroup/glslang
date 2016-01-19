@@ -34,6 +34,7 @@ spv.always-discard.frag
 spv.always-discard2.frag
 spv.bitCast.frag
 spv.bool.vert
+spv.branch-return.vert
 spv.conditionalDiscard.frag
 spv.conversion.frag
 spv.dataOut.frag
@@ -58,6 +59,7 @@ spv.loopsArtificial.frag
 spv.matFun.vert
 spv.matrix.frag
 spv.matrix2.frag
+spv.merge-unreachable.frag
 spv.newTexture.frag
 spv.nonSquare.vert
 spv.Operations.frag
@@ -68,6 +70,8 @@ spv.qualifiers.vert
 spv.shiftOps.frag
 spv.simpleFunctionCall.frag
 spv.simpleMat.vert
+spv.sparseTexture.frag
+spv.sparseTextureClamp.frag
 spv.structAssignment.frag
 spv.structDeref.frag
 spv.structure.frag

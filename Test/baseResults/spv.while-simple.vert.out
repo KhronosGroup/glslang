@@ -44,8 +44,8 @@ Linked vertex stage:
               20:      6(int)   IAdd 18 19
                                 Store 8(i) 20
                                 Branch 13
+              13:               Label
+                                Branch 10
               12:             Label
                               Return
-              13:             Label
-                              Branch 10
                               FunctionEnd

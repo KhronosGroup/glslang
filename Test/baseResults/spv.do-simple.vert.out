@@ -42,10 +42,10 @@ Linked vertex stage:
               16:      6(int) IAdd 14 15
                               Store 8(i) 16
                               Branch 13
-              12:             Label
-                              Return
               13:             Label
               17:      6(int) Load 8(i)
               20:    19(bool) SLessThan 17 18
                               BranchConditional 20 10 12
-                                FunctionEnd
+              12:             Label
+                              Return
+                              FunctionEnd

@@ -45,11 +45,11 @@ Linked vertex stage:
               11:               Label
                                 Store 18(j) 19
                                 Branch 13
+              13:               Label
+              20:      6(int)   Load 8(i)
+              22:      6(int)   IAdd 20 21
+                                Store 8(i) 22
+                                Branch 10
               12:             Label
                               Return
-              13:             Label
-              20:      6(int) Load 8(i)
-              22:      6(int) IAdd 20 21
-                              Store 8(i) 22
-                              Branch 10
                               FunctionEnd

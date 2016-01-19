@@ -64,20 +64,14 @@ Linked vertex stage:
               23:    16(bool)   IEqual 22 9
                                 SelectionMerge 25 None
                                 BranchConditional 23 24 25
-              12:                 Label
-                                  Store 42(G) 43
-                                  Return
+              24:                 Label
+                                  Store 26(B) 19
+                                  Branch 13
               13:                 Label
               40:      6(int)     Load 8(i)
               41:      6(int)     IAdd 40 19
                                   Store 8(i) 41
                                   Branch 10
-              24:                 Label
-                                  Store 26(B) 19
-                                  Branch 13
-              27:                 Label
-                                  Store 28(C) 19
-                                  Branch 25
               25:               Label
               29:      6(int)   Load 8(i)
               31:      6(int)   SMod 29 30
@@ -87,10 +81,10 @@ Linked vertex stage:
               33:                 Label
                                   Store 35(D) 19
                                   Branch 12
-              36:                 Label
-                                  Store 37(E) 19
-                                  Branch 34
               34:               Label
                                 Store 38(F) 39
                                 Branch 13
-                                FunctionEnd
+              12:             Label
+                              Store 42(G) 43
+                              Return
+                              FunctionEnd

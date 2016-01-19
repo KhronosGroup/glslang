@@ -88,17 +88,17 @@ Linked fragment stage:
               31:    7(fvec4)   FAdd 30 29
                                 Store 9(color) 31
                                 Branch 20
+              20:               Label
+              32:     13(int)   Load 15(i)
+              34:     13(int)   IAdd 32 33
+                                Store 15(i) 34
+                                Branch 17
               19:             Label
               37:    7(fvec4) Load 9(color)
                               Store 36(gl_FragColor) 37
                               Store 39(sum) 40
                               Store 41(i) 16
                               Branch 42
-              20:             Label
-              32:     13(int) Load 15(i)
-              34:     13(int) IAdd 32 33
-                              Store 15(i) 34
-                              Branch 17
               42:             Label
               46:     13(int) Load 41(i)
               48:    25(bool) SLessThan 46 47
@@ -113,14 +113,14 @@ Linked fragment stage:
               59:    6(float)   FAdd 58 57
                                 Store 39(sum) 59
                                 Branch 45
+              45:               Label
+              60:     13(int)   Load 41(i)
+              61:     13(int)   IAdd 60 33
+                                Store 41(i) 61
+                                Branch 42
               44:             Label
                               Store 62(i) 16
                               Branch 63
-              45:             Label
-              60:     13(int) Load 41(i)
-              61:     13(int) IAdd 60 33
-                              Store 41(i) 61
-                              Branch 42
               63:             Label
               67:     13(int) Load 62(i)
               68:    25(bool) SLessThan 67 47
@@ -136,6 +136,11 @@ Linked fragment stage:
               77:     38(ptr)   AccessChain 69(tv4) 70
                                 Store 77 76
                                 Branch 66
+              66:               Label
+              78:     13(int)   Load 62(i)
+              79:     13(int)   IAdd 78 33
+                                Store 62(i) 79
+                                Branch 63
               65:             Label
               80:    6(float) Load 39(sum)
               81:    7(fvec4) CompositeConstruct 80 80 80 80
@@ -151,11 +156,6 @@ Linked fragment stage:
                               Store 86(r) 91
                               Store 92(i) 16
                               Branch 93
-              66:             Label
-              78:     13(int) Load 62(i)
-              79:     13(int) IAdd 78 33
-                              Store 62(i) 79
-                              Branch 63
               93:             Label
               97:     13(int) Load 92(i)
               98:     13(int) Load 23(Count)
@@ -167,6 +167,11 @@ Linked fragment stage:
              104:     38(ptr)   AccessChain 86(r) 103
                                 Store 104 102
                                 Branch 96
+              96:               Label
+             105:     13(int)   Load 92(i)
+             106:     13(int)   IAdd 105 33
+                                Store 92(i) 106
+                                Branch 93
               95:             Label
              107:    7(fvec4) Load 86(r)
              108:   87(fvec3) VectorShuffle 107 107 0 1 2
@@ -178,11 +183,6 @@ Linked fragment stage:
                               Store 36(gl_FragColor) 113
                               Store 114(i) 16
                               Branch 115
-              96:             Label
-             105:     13(int) Load 92(i)
-             106:     13(int) IAdd 105 33
-                              Store 92(i) 106
-                              Branch 93
              115:             Label
              119:     13(int) Load 114(i)
              121:    25(bool) SLessThan 119 120
@@ -194,11 +194,11 @@ Linked fragment stage:
              124:    7(fvec4)   VectorTimesScalar 123 122
                                 Store 36(gl_FragColor) 124
                                 Branch 118
+             118:               Label
+             125:     13(int)   Load 114(i)
+             126:     13(int)   IAdd 125 47
+                                Store 114(i) 126
+                                Branch 115
              117:             Label
                               Return
-             118:             Label
-             125:     13(int) Load 114(i)
-             126:     13(int) IAdd 125 47
-                              Store 114(i) 126
-                              Branch 115
                               FunctionEnd

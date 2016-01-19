@@ -176,10 +176,6 @@ Linked fragment stage:
               25:    17(bool)   FOrdLessThan 23 24
                                 SelectionMerge 27 None
                                 BranchConditional 25 26 27
-              15:                 Label
-                                  Branch 45
-              16:                 Label
-                                  Branch 13
               26:                 Label
               29:    7(fvec4)     Load 9(color)
               30:    7(fvec4)     FAdd 29 28
@@ -201,898 +197,900 @@ Linked fragment stage:
               43:    7(fvec4)   FAdd 42 28
                                 Store 9(color) 43
                                 Branch 15
-              45:               Label
-              49:     21(ptr)   AccessChain 9(color) 20
-              50:    6(float)   Load 49
-              53:    6(float)   Load 52(d)
-              54:    17(bool)   FOrdLessThan 50 53
-                                LoopMerge 47 48 None
-                                BranchConditional 54 46 47
-              46:                 Label
-              57:    7(fvec4)     Load 56(bigColor)
-              58:    7(fvec4)     Load 9(color)
-              59:    7(fvec4)     FAdd 58 57
-                                  Store 9(color) 59
-                                  Branch 48
-              47:               Label
-                                Branch 60
+              15:             Label
+                              Branch 45
+              45:             Label
+              49:     21(ptr) AccessChain 9(color) 20
+              50:    6(float) Load 49
+              53:    6(float) Load 52(d)
+              54:    17(bool) FOrdLessThan 50 53
+                              LoopMerge 47 48 None
+                              BranchConditional 54 46 47
+              46:               Label
+              57:    7(fvec4)   Load 56(bigColor)
+              58:    7(fvec4)   Load 9(color)
+              59:    7(fvec4)   FAdd 58 57
+                                Store 9(color) 59
+                                Branch 48
               48:               Label
                                 Branch 45
-              60:               Label
-              65:     21(ptr)   AccessChain 9(color) 64
-              66:    6(float)   Load 65
-              67:    6(float)   Load 52(d)
-              68:    17(bool)   FOrdLessThan 66 67
-                                LoopMerge 62 63 None
-                                BranchConditional 68 61 62
-              61:                 Label
-              70:    7(fvec4)     Load 69(bigColor1_1)
-              71:    7(fvec4)     Load 9(color)
-              72:    7(fvec4)     FAdd 71 70
-                                  Store 9(color) 72
-              74:     21(ptr)     AccessChain 9(color) 73
-              75:    6(float)     Load 74
-              76:    6(float)     Load 52(d)
-              77:    17(bool)     FOrdLessThan 75 76
-                                  SelectionMerge 79 None
-                                  BranchConditional 77 78 79
-              62:                   Label
-                                    Branch 84
-              63:                   Label
-                                    Branch 60
-              78:                   Label
-                                    Branch 63
-              79:                 Label
-              81:    7(fvec4)     Load 69(bigColor1_1)
-              82:    7(fvec4)     Load 9(color)
-              83:    7(fvec4)     FAdd 82 81
-                                  Store 9(color) 83
+              47:             Label
+                              Branch 60
+              60:             Label
+              65:     21(ptr) AccessChain 9(color) 64
+              66:    6(float) Load 65
+              67:    6(float) Load 52(d)
+              68:    17(bool) FOrdLessThan 66 67
+                              LoopMerge 62 63 None
+                              BranchConditional 68 61 62
+              61:               Label
+              70:    7(fvec4)   Load 69(bigColor1_1)
+              71:    7(fvec4)   Load 9(color)
+              72:    7(fvec4)   FAdd 71 70
+                                Store 9(color) 72
+              74:     21(ptr)   AccessChain 9(color) 73
+              75:    6(float)   Load 74
+              76:    6(float)   Load 52(d)
+              77:    17(bool)   FOrdLessThan 75 76
+                                SelectionMerge 79 None
+                                BranchConditional 77 78 79
+              78:                 Label
                                   Branch 63
-              84:                 Label
-              88:     21(ptr)     AccessChain 9(color) 20
-              89:    6(float)     Load 88
-              91:    17(bool)     FOrdLessThan 89 90
-                                  LoopMerge 86 87 None
-                                  BranchConditional 91 85 86
-              85:                   Label
-              92:    7(fvec4)       Load 9(color)
-              94:    7(fvec4)       CompositeConstruct 93 93 93 93
-              95:    7(fvec4)       FAdd 92 94
-                                    Store 9(color) 95
-                                    Branch 87
-              86:                 Label
-                                  Branch 96
-              87:                 Label
-                                  Branch 84
-              96:                 Label
-             100:     21(ptr)     AccessChain 9(color) 73
-             101:    6(float)     Load 100
-             103:    6(float)     Load 102(d2)
-             104:    17(bool)     FOrdLessThan 101 103
-                                  SelectionMerge 106 None
-                                  BranchConditional 104 105 106
-              97:                   Label
-             115:    7(fvec4)       Load 114(bigColor1_2)
-             116:    7(fvec4)       Load 9(color)
-             117:    7(fvec4)       FAdd 116 115
-                                    Store 9(color) 117
-                                    Branch 99
-              98:                   Label
-                                    Branch 118
-              99:                   Label
-                                    Branch 96
-             105:                   Label
-             108:     21(ptr)       AccessChain 9(color) 107
-             109:    6(float)       Load 108
-             111:    6(float)       Load 110(d3)
-             112:    17(bool)       FOrdLessThan 109 111
-                                    Branch 106
-             106:                 Label
-             113:    17(bool)     Phi 104 96 112 105
-                                  LoopMerge 98 99 None
-                                  BranchConditional 113 97 98
-             118:                   Label
-             122:     21(ptr)       AccessChain 9(color) 64
-             123:    6(float)       Load 122
-             124:    6(float)       Load 110(d3)
-             125:    17(bool)       FOrdLessThan 123 124
-                                    LoopMerge 120 121 None
-                                    BranchConditional 125 119 120
-             119:                     Label
-             127:    7(fvec4)         Load 126(bigColor1_3)
-             128:    7(fvec4)         Load 9(color)
-             129:    7(fvec4)         FAdd 128 127
-                                      Store 9(color) 129
-             130:     21(ptr)         AccessChain 9(color) 107
-             131:    6(float)         Load 130
-             133:    6(float)         Load 132(d4)
-             134:    17(bool)         FOrdLessThan 131 133
-                                      SelectionMerge 136 None
-                                      BranchConditional 134 135 136
-             120:                       Label
-                                        Store 143(i) 144
-                                        Branch 145
-             121:                       Label
-                                        Branch 118
-             135:                       Label
-                                        Branch 120
-             136:                     Label
-             138:    7(fvec4)         Load 126(bigColor1_3)
-             139:    7(fvec4)         Load 9(color)
-             140:    7(fvec4)         FAdd 139 138
-                                      Store 9(color) 140
-                                      Branch 121
-             145:                     Label
-             149:    141(int)         Load 143(i)
-             152:    141(int)         Load 151(Count)
-             153:    17(bool)         SLessThan 149 152
-                                      LoopMerge 147 148 None
-                                      BranchConditional 153 146 147
-             146:                       Label
-             155:    7(fvec4)           Load 154(bigColor2)
-             156:    7(fvec4)           Load 9(color)
-             157:    7(fvec4)           FAdd 156 155
-                                        Store 9(color) 157
-                                        Branch 148
-             147:                     Label
-                                      Branch 161
-             148:                     Label
-             158:    141(int)         Load 143(i)
-             160:    141(int)         IAdd 158 159
-                                      Store 143(i) 160
-                                      Branch 145
-             161:                     Label
-                                      LoopMerge 163 164 None
-                                      Branch 162
-             162:                     Label
-             166:    7(fvec4)         Load 165(bigColor3)
-             167:    7(fvec4)         Load 9(color)
-             168:    7(fvec4)         FAdd 167 166
-                                      Store 9(color) 168
-                                      Branch 164
-             163:                     Label
-                                      Store 173(i) 144
-                                      Branch 174
-             164:                     Label
-             169:     21(ptr)         AccessChain 9(color) 20
-             170:    6(float)         Load 169
-             171:    6(float)         Load 102(d2)
-             172:    17(bool)         FOrdLessThan 170 171
-                                      BranchConditional 172 161 163
-             174:                       Label
-             178:    141(int)           Load 173(i)
-             180:    17(bool)           SLessThan 178 179
-                                        LoopMerge 176 177 None
-                                        BranchConditional 180 175 176
-             175:                         Label
-             181:    6(float)             Load 110(d3)
-             182:     21(ptr)             AccessChain 9(color) 64
-             183:    6(float)             Load 182
-             184:    6(float)             FAdd 183 181
-             185:     21(ptr)             AccessChain 9(color) 64
-                                          Store 185 184
-                                          Branch 177
-             176:                       Label
-                                        Store 188(i) 144
-                                        Branch 189
-             177:                       Label
-             186:    141(int)           Load 173(i)
-             187:    141(int)           IAdd 186 159
-                                        Store 173(i) 187
-                                        Branch 174
-             189:                       Label
-             193:    141(int)           Load 188(i)
-             195:    17(bool)           SLessThan 193 194
-                                        LoopMerge 191 192 None
-                                        BranchConditional 195 190 191
-             190:                         Label
-             196:     21(ptr)             AccessChain 9(color) 64
-             197:    6(float)             Load 196
-             199:    17(bool)             FOrdLessThan 197 198
-                                          SelectionMerge 201 None
-                                          BranchConditional 199 200 205
-             191:                           Label
-                                            Store 223(i) 144
-                                            Branch 224
-             192:                           Label
-             221:    141(int)               Load 188(i)
-             222:    141(int)               IAdd 221 159
-                                            Store 188(i) 222
-                                            Branch 189
-             200:                           Label
-             202:     21(ptr)               AccessChain 9(color) 20
-             203:    6(float)               Load 202
-             204:    6(float)               FAdd 203 93
-                                            Store 202 204
-                                            Branch 201
-             205:                           Label
-             206:     21(ptr)               AccessChain 9(color) 107
-             207:    6(float)               Load 206
-             208:    6(float)               FAdd 207 93
-                                            Store 206 208
-                                            Branch 201
-             201:                         Label
-             209:     21(ptr)             AccessChain 9(color) 73
-             210:    6(float)             Load 209
-             211:    17(bool)             FOrdLessThan 210 198
-                                          SelectionMerge 213 None
-                                          BranchConditional 211 212 213
-             212:                           Label
-             214:     21(ptr)               AccessChain 9(color) 64
-             215:    6(float)               Load 214
-             216:     21(ptr)               AccessChain 9(color) 107
-             217:    6(float)               Load 216
-             218:    17(bool)               FOrdGreaterThan 215 217
-                                            SelectionMerge 220 None
-                                            BranchConditional 218 219 220
-             219:                             Label
-                                              Branch 220
-             220:                           Label
-                                            Branch 213
-             213:                         Label
-                                          Branch 192
-             224:                         Label
-             228:    141(int)             Load 223(i)
-             230:    17(bool)             SLessThan 228 229
-                                          LoopMerge 226 227 None
-                                          BranchConditional 230 225 226
-             225:                           Label
-             231:     21(ptr)               AccessChain 9(color) 64
-             232:    6(float)               Load 231
-             233:    17(bool)               FOrdLessThan 232 198
-                                            SelectionMerge 235 None
-                                            BranchConditional 233 234 239
-             226:                             Label
-                                              Store 245(i) 144
-                                              Branch 246
-             227:                             Label
-             243:    141(int)                 Load 223(i)
-             244:    141(int)                 IAdd 243 159
-                                              Store 223(i) 244
-                                              Branch 224
-             234:                             Label
-             236:     21(ptr)                 AccessChain 9(color) 20
-             237:    6(float)                 Load 236
-             238:    6(float)                 FAdd 237 93
-                                              Store 236 238
-                                              Branch 235
-             239:                             Label
-             240:     21(ptr)                 AccessChain 9(color) 107
-             241:    6(float)                 Load 240
-             242:    6(float)                 FAdd 241 93
-                                              Store 240 242
-                                              Branch 235
-             235:                           Label
-                                            Branch 227
-             246:                           Label
-             250:    141(int)               Load 245(i)
-             251:    17(bool)               SLessThan 250 179
-                                            LoopMerge 248 249 None
-                                            BranchConditional 251 247 248
-             247:                             Label
-             252:    6(float)                 Load 110(d3)
-             253:     21(ptr)                 AccessChain 9(color) 64
-             254:    6(float)                 Load 253
-             255:    6(float)                 FAdd 254 252
-             256:     21(ptr)                 AccessChain 9(color) 64
-                                              Store 256 255
-             257:     21(ptr)                 AccessChain 9(color) 20
-             258:    6(float)                 Load 257
-             259:    6(float)                 Load 132(d4)
-             260:    17(bool)                 FOrdLessThan 258 259
-                                              SelectionMerge 262 None
-                                              BranchConditional 260 261 262
-             248:                               Label
-                                                Store 269(i) 144
-                                                Branch 270
-             249:                               Label
-             267:    141(int)                   Load 245(i)
-             268:    141(int)                   IAdd 267 159
-                                                Store 245(i) 268
-                                                Branch 246
-             261:                               Label
-                                                Branch 249
-             262:                             Label
-             264:     21(ptr)                 AccessChain 9(color) 73
-             265:    6(float)                 Load 264
-             266:    6(float)                 FAdd 265 93
-                                              Store 264 266
-                                              Branch 249
-             270:                             Label
-             274:    141(int)                 Load 269(i)
-             275:    17(bool)                 SLessThan 274 179
-                                              LoopMerge 272 273 None
-                                              BranchConditional 275 271 272
-             271:                               Label
-             276:    6(float)                   Load 110(d3)
-             277:     21(ptr)                   AccessChain 9(color) 64
-             278:    6(float)                   Load 277
-             279:    6(float)                   FAdd 278 276
-             280:     21(ptr)                   AccessChain 9(color) 64
-                                                Store 280 279
-             281:     21(ptr)                   AccessChain 9(color) 20
-             282:    6(float)                   Load 281
-             283:    6(float)                   Load 132(d4)
-             284:    17(bool)                   FOrdLessThan 282 283
-                                                SelectionMerge 286 None
-                                                BranchConditional 284 285 286
-             272:                                 Label
-                                                  Branch 293
-             273:                                 Label
-             291:    141(int)                     Load 269(i)
-             292:    141(int)                     IAdd 291 159
-                                                  Store 269(i) 292
-                                                  Branch 270
-             285:                                 Label
-                                                  Branch 272
-             286:                               Label
-             288:     21(ptr)                   AccessChain 9(color) 73
-             289:    6(float)                   Load 288
-             290:    6(float)                   FAdd 289 93
-                                                Store 288 290
-                                                Branch 273
-             293:                               Label
-                                                LoopMerge 295 296 None
-                                                Branch 294
-             294:                               Label
-             298:    7(fvec4)                   Load 297(bigColor4)
-             299:    7(fvec4)                   Load 9(color)
-             300:    7(fvec4)                   FAdd 299 298
-                                                Store 9(color) 300
-             301:     21(ptr)                   AccessChain 9(color) 20
-             302:    6(float)                   Load 301
-             303:    6(float)                   Load 132(d4)
-             304:    17(bool)                   FOrdLessThan 302 303
-                                                SelectionMerge 306 None
-                                                BranchConditional 304 305 306
-             295:                                 Label
-                                                  Branch 329
-             296:                                 Label
-             325:     21(ptr)                     AccessChain 9(color) 64
-             326:    6(float)                     Load 325
-             327:    6(float)                     Load 132(d4)
-             328:    17(bool)                     FOrdLessThan 326 327
-                                                  BranchConditional 328 293 295
-             305:                                 Label
-                                                  Branch 296
-             306:                               Label
-             308:     21(ptr)                   AccessChain 9(color) 107
-             309:    6(float)                   Load 308
-             310:    6(float)                   Load 132(d4)
-             311:    17(bool)                   FOrdLessThan 309 310
-                                                SelectionMerge 313 None
-                                                BranchConditional 311 312 319
-             312:                                 Label
-             314:    6(float)                     Load 132(d4)
-             315:     21(ptr)                     AccessChain 9(color) 107
-             316:    6(float)                     Load 315
-             317:    6(float)                     FAdd 316 314
-             318:     21(ptr)                     AccessChain 9(color) 107
-                                                  Store 318 317
-                                                  Branch 313
-             319:                                 Label
-             320:    6(float)                     Load 132(d4)
-             321:     21(ptr)                     AccessChain 9(color) 20
-             322:    6(float)                     Load 321
-             323:    6(float)                     FAdd 322 320
-             324:     21(ptr)                     AccessChain 9(color) 20
-                                                  Store 324 323
-                                                  Branch 313
-             313:                               Label
-                                                Branch 296
-             329:                               Label
-                                                LoopMerge 331 332 None
-                                                Branch 330
-             330:                               Label
-             334:    7(fvec4)                   Load 333(bigColor5)
-             335:    7(fvec4)                   Load 9(color)
-             336:    7(fvec4)                   FAdd 335 334
-                                                Store 9(color) 336
-             337:     21(ptr)                   AccessChain 9(color) 107
-             338:    6(float)                   Load 337
-             340:    6(float)                   Load 339(d5)
-             341:    17(bool)                   FOrdLessThan 338 340
-                                                SelectionMerge 343 None
-                                                BranchConditional 341 342 343
-             331:                                 Label
-             353:     21(ptr)                     AccessChain 9(color) 20
-             354:    6(float)                     Load 353
-             356:    6(float)                     Load 355(d6)
-             357:    17(bool)                     FOrdLessThan 354 356
-                                                  SelectionMerge 359 None
-                                                  BranchConditional 357 358 372
-             332:                                   Label
-             349:     21(ptr)                       AccessChain 9(color) 20
-             350:    6(float)                       Load 349
-             351:    6(float)                       Load 339(d5)
-             352:    17(bool)                       FOrdLessThan 350 351
-                                                    BranchConditional 352 329 331
-             342:                                   Label
-             344:    6(float)                       Load 339(d5)
-             345:     21(ptr)                       AccessChain 9(color) 107
-             346:    6(float)                       Load 345
-             347:    6(float)                       FAdd 346 344
-             348:     21(ptr)                       AccessChain 9(color) 107
-                                                    Store 348 347
-                                                    Branch 343
-             343:                                   Label
-                                                    Branch 332
-             358:                                   Label
-                                                    Branch 360
-             360:                                   Label
-             364:     21(ptr)                       AccessChain 9(color) 107
-             365:    6(float)                       Load 364
-             366:    6(float)                       Load 355(d6)
-             367:    17(bool)                       FOrdLessThan 365 366
-                                                    LoopMerge 362 363 None
-                                                    BranchConditional 367 361 362
-             361:                                     Label
-             369:    7(fvec4)                         Load 368(bigColor6)
-             370:    7(fvec4)                         Load 9(color)
-             371:    7(fvec4)                         FAdd 370 369
-                                                      Store 9(color) 371
-                                                      Branch 363
-             362:                                   Label
-                                                    Branch 359
-             363:                                   Label
-                                                    Branch 360
-             372:                                   Label
-                                                    Branch 373
-             373:                                   Label
-             377:     21(ptr)                       AccessChain 9(color) 64
-             378:    6(float)                       Load 377
-             379:    6(float)                       Load 355(d6)
-             380:    17(bool)                       FOrdLessThan 378 379
-                                                    LoopMerge 375 376 None
-                                                    BranchConditional 380 374 375
-             374:                                     Label
-             381:     51(ptr)                         AccessChain 368(bigColor6) 64
-             382:    6(float)                         Load 381
-             383:     21(ptr)                         AccessChain 9(color) 64
-             384:    6(float)                         Load 383
-             385:    6(float)                         FAdd 384 382
-             386:     21(ptr)                         AccessChain 9(color) 64
-                                                      Store 386 385
-                                                      Branch 376
-             375:                                   Label
-                                                    Branch 359
-             376:                                   Label
-                                                    Branch 373
-             359:                                 Label
-             387:     21(ptr)                     AccessChain 9(color) 20
-             388:    6(float)                     Load 387
-             389:    6(float)                     Load 355(d6)
-             390:    17(bool)                     FOrdLessThan 388 389
-                                                  SelectionMerge 392 None
-                                                  BranchConditional 390 391 410
-             391:                                   Label
-                                                    Branch 393
-             393:                                   Label
-             397:     21(ptr)                       AccessChain 9(color) 107
-             398:    6(float)                       Load 397
-             399:    6(float)                       Load 355(d6)
-             400:    17(bool)                       FOrdLessThan 398 399
-                                                    LoopMerge 395 396 None
-                                                    BranchConditional 400 394 395
-             394:                                     Label
-             401:    7(fvec4)                         Load 368(bigColor6)
-             402:    7(fvec4)                         Load 9(color)
-             403:    7(fvec4)                         FAdd 402 401
-                                                      Store 9(color) 403
-             405:    6(float)                         Load 404(d7)
-             406:    17(bool)                         FOrdLessThan 405 93
-                                                      SelectionMerge 408 None
-                                                      BranchConditional 406 407 408
-             395:                                       Label
-                                                        Branch 392
-             396:                                       Label
-                                                        Branch 393
-             407:                                       Label
-                                                        Branch 395
-             408:                                     Label
-                                                      Branch 396
-             410:                                     Label
-                                                      Branch 411
-             411:                                     Label
-             415:     21(ptr)                         AccessChain 9(color) 64
-             416:    6(float)                         Load 415
-             417:    6(float)                         Load 355(d6)
-             418:    17(bool)                         FOrdLessThan 416 417
-                                                      LoopMerge 413 414 None
-                                                      BranchConditional 418 412 413
-             412:                                       Label
-             419:     51(ptr)                           AccessChain 368(bigColor6) 64
-             420:    6(float)                           Load 419
-             421:     21(ptr)                           AccessChain 9(color) 64
-             422:    6(float)                           Load 421
-             423:    6(float)                           FAdd 422 420
-             424:     21(ptr)                           AccessChain 9(color) 64
-                                                        Store 424 423
-                                                        Branch 414
-             413:                                     Label
-                                                      Branch 392
-             414:                                     Label
-                                                      Branch 411
-             392:                                     Label
-                                                      Branch 425
-             425:                                     Label
-                                                      LoopMerge 427 428 None
-                                                      Branch 426
-             426:                                     Label
-             429:    6(float)                         Load 404(d7)
-             431:    17(bool)                         FOrdLessThan 429 430
-                                                      SelectionMerge 433 None
-                                                      BranchConditional 431 432 433
-             427:                                       Label
-                                                        Branch 450
-             428:                                       Label
-                                                        BranchConditional 18 425 427
-             432:                                       Label
-                                                        Branch 427
-             433:                                     Label
-             436:    7(fvec4)                         Load 435(bigColor7)
-             437:    7(fvec4)                         Load 9(color)
-             438:    7(fvec4)                         FAdd 437 436
-                                                      Store 9(color) 438
-             439:    6(float)                         Load 404(d7)
-             440:    17(bool)                         FOrdLessThan 439 93
-                                                      SelectionMerge 442 None
-                                                      BranchConditional 440 441 442
-             441:                                       Label
-             443:     21(ptr)                           AccessChain 9(color) 64
-             444:    6(float)                           Load 443
-             445:    6(float)                           FAdd 444 93
-                                                        Store 443 445
-                                                        Branch 427
-             442:                                     Label
-             447:    7(fvec4)                         Load 11(BaseColor)
-             448:    7(fvec4)                         Load 9(color)
-             449:    7(fvec4)                         FAdd 448 447
-                                                      Store 9(color) 449
-                                                      Branch 428
-             450:                                     Label
-                                                      LoopMerge 452 453 None
-                                                      Branch 451
-             451:                                     Label
-             455:    6(float)                         Load 454(d8)
-             456:    17(bool)                         FOrdLessThan 455 430
-                                                      SelectionMerge 458 None
-                                                      BranchConditional 456 457 458
-             452:                                       Label
-                                                        Branch 490
-             453:                                       Label
-             486:     21(ptr)                           AccessChain 9(color) 64
-             487:    6(float)                           Load 486
-             488:    6(float)                           Load 454(d8)
-             489:    17(bool)                           FOrdLessThan 487 488
-                                                        BranchConditional 489 450 452
-             457:                                       Label
-                                                        Branch 452
-             458:                                     Label
-             460:    7(fvec4)                         Load 435(bigColor7)
-             461:    7(fvec4)                         Load 9(color)
-             462:    7(fvec4)                         FAdd 461 460
-                                                      Store 9(color) 462
-             463:    6(float)                         Load 454(d8)
-             464:    17(bool)                         FOrdLessThan 463 93
-                                                      SelectionMerge 466 None
-                                                      BranchConditional 464 465 466
-             465:                                       Label
-             467:     21(ptr)                           AccessChain 9(color) 64
-             468:    6(float)                           Load 467
-             469:    6(float)                           FAdd 468 93
-                                                        Store 467 469
-             470:    6(float)                           Load 454(d8)
-             472:    17(bool)                           FOrdLessThan 470 471
-                                                        SelectionMerge 474 None
-                                                        BranchConditional 472 473 478
-             473:                                         Label
-             475:     21(ptr)                             AccessChain 9(color) 107
-             476:    6(float)                             Load 475
-             477:    6(float)                             FAdd 476 93
-                                                          Store 475 477
-                                                          Branch 474
-             478:                                         Label
-             479:     21(ptr)                             AccessChain 9(color) 20
-             480:    6(float)                             Load 479
-             481:    6(float)                             FAdd 480 93
-                                                          Store 479 481
-                                                          Branch 474
-             474:                                       Label
-                                                        Branch 452
-             466:                                     Label
-             483:    7(fvec4)                         Load 11(BaseColor)
-             484:    7(fvec4)                         Load 9(color)
-             485:    7(fvec4)                         FAdd 484 483
-                                                      Store 9(color) 485
-                                                      Branch 453
-             490:                                     Label
-             494:     21(ptr)                         AccessChain 9(color) 73
-             495:    6(float)                         Load 494
-             497:    6(float)                         Load 496(d9)
-             498:    17(bool)                         FOrdLessThan 495 497
-                                                      LoopMerge 492 493 None
-                                                      BranchConditional 498 491 492
-             491:                                       Label
-             499:    6(float)                           Load 496(d9)
-             500:    6(float)                           Load 454(d8)
-             501:    17(bool)                           FOrdGreaterThan 499 500
-                                                        SelectionMerge 503 None
-                                                        BranchConditional 501 502 503
-             492:                                         Label
-                                                          Branch 521
-             493:                                         Label
-                                                          Branch 490
-             502:                                         Label
-             504:     21(ptr)                             AccessChain 9(color) 20
-             505:    6(float)                             Load 504
-             506:    6(float)                             Load 404(d7)
-             507:    17(bool)                             FOrdLessThanEqual 505 506
-                                                          SelectionMerge 509 None
-                                                          BranchConditional 507 508 509
-             508:                                           Label
-             510:     21(ptr)                               AccessChain 9(color) 64
-             511:    6(float)                               Load 510
-             513:    17(bool)                               FOrdEqual 511 512
-                                                            SelectionMerge 515 None
-                                                            BranchConditional 513 514 519
-             514:                                             Label
-             516:     21(ptr)                                 AccessChain 9(color) 73
-             517:    6(float)                                 Load 516
-             518:    6(float)                                 FAdd 517 93
-                                                              Store 516 518
-                                                              Branch 515
-             519:                                             Label
-                                                              Branch 492
-             515:                                           Label
-                                                            Branch 509
-             509:                                         Label
-                                                          Branch 503
-             503:                                       Label
-                                                        Branch 493
-             521:                                       Label
-             525:     21(ptr)                           AccessChain 9(color) 64
-             526:    6(float)                           Load 525
-             528:    6(float)                           Load 527(d10)
-             529:    17(bool)                           FOrdLessThan 526 528
-                                                        LoopMerge 523 524 None
-                                                        BranchConditional 529 522 523
-             522:                                         Label
-             530:     21(ptr)                             AccessChain 9(color) 107
-             531:    6(float)                             Load 530
-             532:    6(float)                             FAdd 531 93
-                                                          Store 530 532
-             533:     21(ptr)                             AccessChain 9(color) 107
-             534:    6(float)                             Load 533
-             536:    6(float)                             Load 535(d11)
-             537:    17(bool)                             FOrdLessThan 534 536
-                                                          SelectionMerge 539 None
-                                                          BranchConditional 537 538 539
-             523:                                           Label
-                                                            Branch 562
-             524:                                           Label
-                                                            Branch 521
-             538:                                           Label
-             540:     21(ptr)                               AccessChain 9(color) 64
-             541:    6(float)                               Load 540
-             542:    6(float)                               FAdd 541 93
-                                                            Store 540 542
-             543:     21(ptr)                               AccessChain 9(color) 73
-             544:    6(float)                               Load 543
-             546:    6(float)                               Load 545(d12)
-             547:    17(bool)                               FOrdLessThan 544 546
-                                                            SelectionMerge 549 None
-                                                            BranchConditional 547 548 553
-             548:                                             Label
-             550:     21(ptr)                                 AccessChain 9(color) 73
-             551:    6(float)                                 Load 550
-             552:    6(float)                                 FAdd 551 93
-                                                              Store 550 552
-                                                              Branch 549
-             553:                                             Label
-             554:     21(ptr)                                 AccessChain 9(color) 20
-             555:    6(float)                                 Load 554
-             556:    6(float)                                 FAdd 555 93
-                                                              Store 554 556
-                                                              Branch 549
-             549:                                           Label
-                                                            Branch 524
-             539:                                         Label
-             558:    7(fvec4)                             Load 9(color)
-             559:    7(fvec4)                             CompositeConstruct 93 93 93 93
-             560:    7(fvec4)                             FAdd 558 559
-                                                          Store 9(color) 560
-                                                          Branch 523
-             562:                                         Label
-             566:     21(ptr)                             AccessChain 9(color) 20
-             567:    6(float)                             Load 566
-             569:    17(bool)                             FOrdLessThan 567 568
-                                                          LoopMerge 564 565 None
-                                                          BranchConditional 569 563 564
-             563:                                           Label
-             571:    7(fvec4)                               Load 570(bigColor8)
-             572:    7(fvec4)                               Load 9(color)
-             573:    7(fvec4)                               FAdd 572 571
-                                                            Store 9(color) 573
-             574:     21(ptr)                               AccessChain 9(color) 64
-             575:    6(float)                               Load 574
-             576:    6(float)                               Load 454(d8)
-             577:    17(bool)                               FOrdLessThan 575 576
-                                                            SelectionMerge 579 None
-                                                            BranchConditional 577 578 579
-             564:                                             Label
-             593:    7(fvec4)                                 Load 9(color)
-             594:    7(fvec4)                                 CompositeConstruct 93 93 93 93
-             595:    7(fvec4)                                 FAdd 593 594
-                                                              Store 9(color) 595
-             598:    7(fvec4)                                 Load 9(color)
-                                                              Store 597(gl_FragColor) 598
-                                                              Branch 599
-             565:                                             Label
-                                                              Branch 562
-             578:                                             Label
-             580:     21(ptr)                                 AccessChain 9(color) 73
-             581:    6(float)                                 Load 580
-             582:    6(float)                                 Load 355(d6)
-             583:    17(bool)                                 FOrdLessThan 581 582
-                                                              SelectionMerge 585 None
-                                                              BranchConditional 583 584 585
-             584:                                               Label
-                                                                Branch 565
-             585:                                             Label
-                                                              Branch 579
-             579:                                           Label
-             587:     51(ptr)                               AccessChain 570(bigColor8) 20
-             588:    6(float)                               Load 587
-             589:     21(ptr)                               AccessChain 9(color) 107
-             590:    6(float)                               Load 589
-             591:    6(float)                               FAdd 590 588
-             592:     21(ptr)                               AccessChain 9(color) 107
-                                                            Store 592 591
-                                                            Branch 565
-             599:                                           Label
-             603:     21(ptr)                               AccessChain 9(color) 20
-             604:    6(float)                               Load 603
-             606:    6(float)                               Load 605(d14)
-             607:    17(bool)                               FOrdLessThan 604 606
-                                                            LoopMerge 601 602 None
-                                                            BranchConditional 607 600 601
-             600:                                             Label
-             608:     21(ptr)                                 AccessChain 9(color) 107
-             609:    6(float)                                 Load 608
-             611:    6(float)                                 Load 610(d15)
-             612:    17(bool)                                 FOrdLessThan 609 611
-                                                              SelectionMerge 614 None
-                                                              BranchConditional 612 613 616
-             601:                                               Label
-             620:    7(fvec4)                                   Load 9(color)
-             621:    7(fvec4)                                   CompositeConstruct 93 93 93 93
-             622:    7(fvec4)                                   FAdd 620 621
-                                                                Store 9(color) 622
-                                                                Branch 623
-             602:                                               Label
-                                                                Branch 599
-             613:                                               Label
-                                                                Return
-             616:                                               Label
-             617:    7(fvec4)                                   Load 9(color)
-             618:    7(fvec4)                                   CompositeConstruct 93 93 93 93
-             619:    7(fvec4)                                   FAdd 617 618
-                                                                Store 9(color) 619
-                                                                Branch 614
-             614:                                             Label
-                                                              Branch 602
-             623:                                             Label
-             627:     21(ptr)                                 AccessChain 9(color) 73
-             628:    6(float)                                 Load 627
-             630:    6(float)                                 Load 629(d16)
-             631:    17(bool)                                 FOrdLessThan 628 630
-                                                              LoopMerge 625 626 None
-                                                              BranchConditional 631 624 625
-             624:                                               Label
-             632:     21(ptr)                                   AccessChain 9(color) 73
-             633:    6(float)                                   Load 632
-             634:    6(float)                                   FAdd 633 93
-                                                                Store 632 634
-                                                                Branch 626
-             625:                                             Label
-                                                              Branch 635
-             626:                                             Label
-                                                              Branch 623
-             635:                                             Label
-             639:     21(ptr)                                 AccessChain 9(color) 73
-             640:    6(float)                                 Load 639
-             641:    6(float)                                 Load 102(d2)
-             642:    17(bool)                                 FOrdLessThan 640 641
-                                                              SelectionMerge 644 None
-                                                              BranchConditional 642 643 644
-             636:                                               Label
-             650:    7(fvec4)                                   Load 114(bigColor1_2)
-             651:    7(fvec4)                                   Load 9(color)
-             652:    7(fvec4)                                   FAdd 651 650
-                                                                Store 9(color) 652
-             653:     21(ptr)                                   AccessChain 9(color) 64
-             654:    6(float)                                   Load 653
-             655:    6(float)                                   Load 110(d3)
-             656:    17(bool)                                   FOrdLessThan 654 655
-                                                                SelectionMerge 658 None
-                                                                BranchConditional 656 657 658
-             637:                                                 Label
-                                                                  Branch 660
-             638:                                                 Label
-                                                                  Branch 635
-             643:                                                 Label
-             645:     21(ptr)                                     AccessChain 9(color) 107
-             646:    6(float)                                     Load 645
-             647:    6(float)                                     Load 110(d3)
-             648:    17(bool)                                     FOrdLessThan 646 647
-                                                                  Branch 644
-             644:                                                 Label
-             649:    17(bool)                                     Phi 642 635 648 643
-                                                                  LoopMerge 637 638 None
-                                                                  BranchConditional 649 636 637
-             657:                                                   Label
-                                                                    Return
-             658:                                                   Label
-                                                                    Branch 638
-             660:                                                   Label
-                                                                    LoopMerge 662 663 None
-                                                                    Branch 661
-             661:                                                   Label
-             664:     21(ptr)                                       AccessChain 9(color) 107
-             665:    6(float)                                       Load 664
-             667:    6(float)                                       Load 666(d18)
-             668:    17(bool)                                       FOrdLessThan 665 667
-                                                                    SelectionMerge 670 None
-                                                                    BranchConditional 668 669 670
-             662:                                                     Label
-                                                                      Branch 680
-             663:                                                     Label
-             675:     21(ptr)                                         AccessChain 9(color) 20
-             676:    6(float)                                         Load 675
-             678:    6(float)                                         Load 677(d17)
-             679:    17(bool)                                         FOrdLessThan 676 678
-                                                                      BranchConditional 679 660 662
-             669:                                                     Label
-                                                                      Return
-             670:                                                   Label
-             672:    7(fvec4)                                       Load 9(color)
-             673:    7(fvec4)                                       CompositeConstruct 93 93 93 93
-             674:    7(fvec4)                                       FAdd 672 673
-                                                                    Store 9(color) 674
-                                                                    Branch 663
-             680:                                                   Label
-             684:     21(ptr)                                       AccessChain 9(color) 107
-             685:    6(float)                                       Load 684
-             686:    6(float)                                       Load 629(d16)
-             687:    17(bool)                                       FOrdLessThan 685 686
-                                                                    LoopMerge 682 683 None
-                                                                    BranchConditional 687 681 682
-             681:                                                     Label
-             688:     21(ptr)                                         AccessChain 9(color) 73
-             689:    6(float)                                         Load 688
-             690:    6(float)                                         Load 629(d16)
-             691:    17(bool)                                         FOrdLessThan 689 690
-                                                                      SelectionMerge 693 None
-                                                                      BranchConditional 691 692 695
-             682:                                                       Label
-             699:    7(fvec4)                                           Load 9(color)
-             700:    7(fvec4)                                           CompositeConstruct 93 93 93 93
-             701:    7(fvec4)                                           FAdd 699 700
-                                                                        Store 9(color) 701
-             702:    7(fvec4)                                           Load 9(color)
-                                                                        Store 597(gl_FragColor) 702
-                                                                        Return
-             683:                                                       Label
-                                                                        Branch 680
-             692:                                                       Label
-                                                                        Kill
-             695:                                                       Label
-             696:    7(fvec4)                                           Load 9(color)
-             697:    7(fvec4)                                           CompositeConstruct 93 93 93 93
-             698:    7(fvec4)                                           FAdd 696 697
-                                                                        Store 9(color) 698
-                                                                        Branch 693
-             693:                                                     Label
-                                                                      Branch 683
-                                                                      FunctionEnd
+              63:                 Label
+                                  Branch 60
+              79:               Label
+              81:    7(fvec4)   Load 69(bigColor1_1)
+              82:    7(fvec4)   Load 9(color)
+              83:    7(fvec4)   FAdd 82 81
+                                Store 9(color) 83
+                                Branch 63
+              62:             Label
+                              Branch 84
+              84:             Label
+              88:     21(ptr) AccessChain 9(color) 20
+              89:    6(float) Load 88
+              91:    17(bool) FOrdLessThan 89 90
+                              LoopMerge 86 87 None
+                              BranchConditional 91 85 86
+              85:               Label
+              92:    7(fvec4)   Load 9(color)
+              94:    7(fvec4)   CompositeConstruct 93 93 93 93
+              95:    7(fvec4)   FAdd 92 94
+                                Store 9(color) 95
+                                Branch 87
+              87:               Label
+                                Branch 84
+              86:             Label
+                              Branch 96
+              96:             Label
+             100:     21(ptr) AccessChain 9(color) 73
+             101:    6(float) Load 100
+             103:    6(float) Load 102(d2)
+             104:    17(bool) FOrdLessThan 101 103
+                              SelectionMerge 106 None
+                              BranchConditional 104 105 106
+             105:               Label
+             108:     21(ptr)   AccessChain 9(color) 107
+             109:    6(float)   Load 108
+             111:    6(float)   Load 110(d3)
+             112:    17(bool)   FOrdLessThan 109 111
+                                Branch 106
+             106:             Label
+             113:    17(bool) Phi 104 96 112 105
+                              LoopMerge 98 99 None
+                              BranchConditional 113 97 98
+              97:               Label
+             115:    7(fvec4)   Load 114(bigColor1_2)
+             116:    7(fvec4)   Load 9(color)
+             117:    7(fvec4)   FAdd 116 115
+                                Store 9(color) 117
+                                Branch 99
+              99:               Label
+                                Branch 96
+              98:             Label
+                              Branch 118
+             118:             Label
+             122:     21(ptr) AccessChain 9(color) 64
+             123:    6(float) Load 122
+             124:    6(float) Load 110(d3)
+             125:    17(bool) FOrdLessThan 123 124
+                              LoopMerge 120 121 None
+                              BranchConditional 125 119 120
+             119:               Label
+             127:    7(fvec4)   Load 126(bigColor1_3)
+             128:    7(fvec4)   Load 9(color)
+             129:    7(fvec4)   FAdd 128 127
+                                Store 9(color) 129
+             130:     21(ptr)   AccessChain 9(color) 107
+             131:    6(float)   Load 130
+             133:    6(float)   Load 132(d4)
+             134:    17(bool)   FOrdLessThan 131 133
+                                SelectionMerge 136 None
+                                BranchConditional 134 135 136
+             135:                 Label
+                                  Branch 120
+             136:               Label
+             138:    7(fvec4)   Load 126(bigColor1_3)
+             139:    7(fvec4)   Load 9(color)
+             140:    7(fvec4)   FAdd 139 138
+                                Store 9(color) 140
+                                Branch 121
+             121:               Label
+                                Branch 118
+             120:             Label
+                              Store 143(i) 144
+                              Branch 145
+             145:             Label
+             149:    141(int) Load 143(i)
+             152:    141(int) Load 151(Count)
+             153:    17(bool) SLessThan 149 152
+                              LoopMerge 147 148 None
+                              BranchConditional 153 146 147
+             146:               Label
+             155:    7(fvec4)   Load 154(bigColor2)
+             156:    7(fvec4)   Load 9(color)
+             157:    7(fvec4)   FAdd 156 155
+                                Store 9(color) 157
+                                Branch 148
+             148:               Label
+             158:    141(int)   Load 143(i)
+             160:    141(int)   IAdd 158 159
+                                Store 143(i) 160
+                                Branch 145
+             147:             Label
+                              Branch 161
+             161:             Label
+                              LoopMerge 163 164 None
+                              Branch 162
+             162:             Label
+             166:    7(fvec4) Load 165(bigColor3)
+             167:    7(fvec4) Load 9(color)
+             168:    7(fvec4) FAdd 167 166
+                              Store 9(color) 168
+                              Branch 164
+             164:             Label
+             169:     21(ptr) AccessChain 9(color) 20
+             170:    6(float) Load 169
+             171:    6(float) Load 102(d2)
+             172:    17(bool) FOrdLessThan 170 171
+                              BranchConditional 172 161 163
+             163:             Label
+                              Store 173(i) 144
+                              Branch 174
+             174:             Label
+             178:    141(int) Load 173(i)
+             180:    17(bool) SLessThan 178 179
+                              LoopMerge 176 177 None
+                              BranchConditional 180 175 176
+             175:               Label
+             181:    6(float)   Load 110(d3)
+             182:     21(ptr)   AccessChain 9(color) 64
+             183:    6(float)   Load 182
+             184:    6(float)   FAdd 183 181
+             185:     21(ptr)   AccessChain 9(color) 64
+                                Store 185 184
+                                Branch 177
+             177:               Label
+             186:    141(int)   Load 173(i)
+             187:    141(int)   IAdd 186 159
+                                Store 173(i) 187
+                                Branch 174
+             176:             Label
+                              Store 188(i) 144
+                              Branch 189
+             189:             Label
+             193:    141(int) Load 188(i)
+             195:    17(bool) SLessThan 193 194
+                              LoopMerge 191 192 None
+                              BranchConditional 195 190 191
+             190:               Label
+             196:     21(ptr)   AccessChain 9(color) 64
+             197:    6(float)   Load 196
+             199:    17(bool)   FOrdLessThan 197 198
+                                SelectionMerge 201 None
+                                BranchConditional 199 200 205
+             200:                 Label
+             202:     21(ptr)     AccessChain 9(color) 20
+             203:    6(float)     Load 202
+             204:    6(float)     FAdd 203 93
+                                  Store 202 204
+                                  Branch 201
+             205:                 Label
+             206:     21(ptr)     AccessChain 9(color) 107
+             207:    6(float)     Load 206
+             208:    6(float)     FAdd 207 93
+                                  Store 206 208
+                                  Branch 201
+             201:               Label
+             209:     21(ptr)   AccessChain 9(color) 73
+             210:    6(float)   Load 209
+             211:    17(bool)   FOrdLessThan 210 198
+                                SelectionMerge 213 None
+                                BranchConditional 211 212 213
+             212:                 Label
+             214:     21(ptr)     AccessChain 9(color) 64
+             215:    6(float)     Load 214
+             216:     21(ptr)     AccessChain 9(color) 107
+             217:    6(float)     Load 216
+             218:    17(bool)     FOrdGreaterThan 215 217
+                                  SelectionMerge 220 None
+                                  BranchConditional 218 219 220
+             219:                   Label
+                                    Branch 220
+             220:                 Label
+                                  Branch 213
+             213:               Label
+                                Branch 192
+             192:               Label
+             221:    141(int)   Load 188(i)
+             222:    141(int)   IAdd 221 159
+                                Store 188(i) 222
+                                Branch 189
+             191:             Label
+                              Store 223(i) 144
+                              Branch 224
+             224:             Label
+             228:    141(int) Load 223(i)
+             230:    17(bool) SLessThan 228 229
+                              LoopMerge 226 227 None
+                              BranchConditional 230 225 226
+             225:               Label
+             231:     21(ptr)   AccessChain 9(color) 64
+             232:    6(float)   Load 231
+             233:    17(bool)   FOrdLessThan 232 198
+                                SelectionMerge 235 None
+                                BranchConditional 233 234 239
+             234:                 Label
+             236:     21(ptr)     AccessChain 9(color) 20
+             237:    6(float)     Load 236
+             238:    6(float)     FAdd 237 93
+                                  Store 236 238
+                                  Branch 235
+             239:                 Label
+             240:     21(ptr)     AccessChain 9(color) 107
+             241:    6(float)     Load 240
+             242:    6(float)     FAdd 241 93
+                                  Store 240 242
+                                  Branch 235
+             235:               Label
+                                Branch 227
+             227:               Label
+             243:    141(int)   Load 223(i)
+             244:    141(int)   IAdd 243 159
+                                Store 223(i) 244
+                                Branch 224
+             226:             Label
+                              Store 245(i) 144
+                              Branch 246
+             246:             Label
+             250:    141(int) Load 245(i)
+             251:    17(bool) SLessThan 250 179
+                              LoopMerge 248 249 None
+                              BranchConditional 251 247 248
+             247:               Label
+             252:    6(float)   Load 110(d3)
+             253:     21(ptr)   AccessChain 9(color) 64
+             254:    6(float)   Load 253
+             255:    6(float)   FAdd 254 252
+             256:     21(ptr)   AccessChain 9(color) 64
+                                Store 256 255
+             257:     21(ptr)   AccessChain 9(color) 20
+             258:    6(float)   Load 257
+             259:    6(float)   Load 132(d4)
+             260:    17(bool)   FOrdLessThan 258 259
+                                SelectionMerge 262 None
+                                BranchConditional 260 261 262
+             261:                 Label
+                                  Branch 249
+             249:                 Label
+             267:    141(int)     Load 245(i)
+             268:    141(int)     IAdd 267 159
+                                  Store 245(i) 268
+                                  Branch 246
+             262:               Label
+             264:     21(ptr)   AccessChain 9(color) 73
+             265:    6(float)   Load 264
+             266:    6(float)   FAdd 265 93
+                                Store 264 266
+                                Branch 249
+             248:             Label
+                              Store 269(i) 144
+                              Branch 270
+             270:             Label
+             274:    141(int) Load 269(i)
+             275:    17(bool) SLessThan 274 179
+                              LoopMerge 272 273 None
+                              BranchConditional 275 271 272
+             271:               Label
+             276:    6(float)   Load 110(d3)
+             277:     21(ptr)   AccessChain 9(color) 64
+             278:    6(float)   Load 277
+             279:    6(float)   FAdd 278 276
+             280:     21(ptr)   AccessChain 9(color) 64
+                                Store 280 279
+             281:     21(ptr)   AccessChain 9(color) 20
+             282:    6(float)   Load 281
+             283:    6(float)   Load 132(d4)
+             284:    17(bool)   FOrdLessThan 282 283
+                                SelectionMerge 286 None
+                                BranchConditional 284 285 286
+             285:                 Label
+                                  Branch 272
+             286:               Label
+             288:     21(ptr)   AccessChain 9(color) 73
+             289:    6(float)   Load 288
+             290:    6(float)   FAdd 289 93
+                                Store 288 290
+                                Branch 273
+             273:               Label
+             291:    141(int)   Load 269(i)
+             292:    141(int)   IAdd 291 159
+                                Store 269(i) 292
+                                Branch 270
+             272:             Label
+                              Branch 293
+             293:             Label
+                              LoopMerge 295 296 None
+                              Branch 294
+             294:             Label
+             298:    7(fvec4) Load 297(bigColor4)
+             299:    7(fvec4) Load 9(color)
+             300:    7(fvec4) FAdd 299 298
+                              Store 9(color) 300
+             301:     21(ptr) AccessChain 9(color) 20
+             302:    6(float) Load 301
+             303:    6(float) Load 132(d4)
+             304:    17(bool) FOrdLessThan 302 303
+                              SelectionMerge 306 None
+                              BranchConditional 304 305 306
+             305:               Label
+                                Branch 296
+             296:               Label
+             325:     21(ptr)   AccessChain 9(color) 64
+             326:    6(float)   Load 325
+             327:    6(float)   Load 132(d4)
+             328:    17(bool)   FOrdLessThan 326 327
+                                BranchConditional 328 293 295
+             306:             Label
+             308:     21(ptr) AccessChain 9(color) 107
+             309:    6(float) Load 308
+             310:    6(float) Load 132(d4)
+             311:    17(bool) FOrdLessThan 309 310
+                              SelectionMerge 313 None
+                              BranchConditional 311 312 319
+             312:               Label
+             314:    6(float)   Load 132(d4)
+             315:     21(ptr)   AccessChain 9(color) 107
+             316:    6(float)   Load 315
+             317:    6(float)   FAdd 316 314
+             318:     21(ptr)   AccessChain 9(color) 107
+                                Store 318 317
+                                Branch 313
+             319:               Label
+             320:    6(float)   Load 132(d4)
+             321:     21(ptr)   AccessChain 9(color) 20
+             322:    6(float)   Load 321
+             323:    6(float)   FAdd 322 320
+             324:     21(ptr)   AccessChain 9(color) 20
+                                Store 324 323
+                                Branch 313
+             313:             Label
+                              Branch 296
+             295:             Label
+                              Branch 329
+             329:             Label
+                              LoopMerge 331 332 None
+                              Branch 330
+             330:             Label
+             334:    7(fvec4) Load 333(bigColor5)
+             335:    7(fvec4) Load 9(color)
+             336:    7(fvec4) FAdd 335 334
+                              Store 9(color) 336
+             337:     21(ptr) AccessChain 9(color) 107
+             338:    6(float) Load 337
+             340:    6(float) Load 339(d5)
+             341:    17(bool) FOrdLessThan 338 340
+                              SelectionMerge 343 None
+                              BranchConditional 341 342 343
+             342:               Label
+             344:    6(float)   Load 339(d5)
+             345:     21(ptr)   AccessChain 9(color) 107
+             346:    6(float)   Load 345
+             347:    6(float)   FAdd 346 344
+             348:     21(ptr)   AccessChain 9(color) 107
+                                Store 348 347
+                                Branch 343
+             343:             Label
+                              Branch 332
+             332:             Label
+             349:     21(ptr) AccessChain 9(color) 20
+             350:    6(float) Load 349
+             351:    6(float) Load 339(d5)
+             352:    17(bool) FOrdLessThan 350 351
+                              BranchConditional 352 329 331
+             331:             Label
+             353:     21(ptr) AccessChain 9(color) 20
+             354:    6(float) Load 353
+             356:    6(float) Load 355(d6)
+             357:    17(bool) FOrdLessThan 354 356
+                              SelectionMerge 359 None
+                              BranchConditional 357 358 372
+             358:               Label
+                                Branch 360
+             360:               Label
+             364:     21(ptr)   AccessChain 9(color) 107
+             365:    6(float)   Load 364
+             366:    6(float)   Load 355(d6)
+             367:    17(bool)   FOrdLessThan 365 366
+                                LoopMerge 362 363 None
+                                BranchConditional 367 361 362
+             361:                 Label
+             369:    7(fvec4)     Load 368(bigColor6)
+             370:    7(fvec4)     Load 9(color)
+             371:    7(fvec4)     FAdd 370 369
+                                  Store 9(color) 371
+                                  Branch 363
+             363:                 Label
+                                  Branch 360
+             362:               Label
+                                Branch 359
+             372:               Label
+                                Branch 373
+             373:               Label
+             377:     21(ptr)   AccessChain 9(color) 64
+             378:    6(float)   Load 377
+             379:    6(float)   Load 355(d6)
+             380:    17(bool)   FOrdLessThan 378 379
+                                LoopMerge 375 376 None
+                                BranchConditional 380 374 375
+             374:                 Label
+             381:     51(ptr)     AccessChain 368(bigColor6) 64
+             382:    6(float)     Load 381
+             383:     21(ptr)     AccessChain 9(color) 64
+             384:    6(float)     Load 383
+             385:    6(float)     FAdd 384 382
+             386:     21(ptr)     AccessChain 9(color) 64
+                                  Store 386 385
+                                  Branch 376
+             376:                 Label
+                                  Branch 373
+             375:               Label
+                                Branch 359
+             359:             Label
+             387:     21(ptr) AccessChain 9(color) 20
+             388:    6(float) Load 387
+             389:    6(float) Load 355(d6)
+             390:    17(bool) FOrdLessThan 388 389
+                              SelectionMerge 392 None
+                              BranchConditional 390 391 410
+             391:               Label
+                                Branch 393
+             393:               Label
+             397:     21(ptr)   AccessChain 9(color) 107
+             398:    6(float)   Load 397
+             399:    6(float)   Load 355(d6)
+             400:    17(bool)   FOrdLessThan 398 399
+                                LoopMerge 395 396 None
+                                BranchConditional 400 394 395
+             394:                 Label
+             401:    7(fvec4)     Load 368(bigColor6)
+             402:    7(fvec4)     Load 9(color)
+             403:    7(fvec4)     FAdd 402 401
+                                  Store 9(color) 403
+             405:    6(float)     Load 404(d7)
+             406:    17(bool)     FOrdLessThan 405 93
+                                  SelectionMerge 408 None
+                                  BranchConditional 406 407 408
+             407:                   Label
+                                    Branch 395
+             408:                 Label
+                                  Branch 396
+             396:                 Label
+                                  Branch 393
+             395:               Label
+                                Branch 392
+             410:               Label
+                                Branch 411
+             411:               Label
+             415:     21(ptr)   AccessChain 9(color) 64
+             416:    6(float)   Load 415
+             417:    6(float)   Load 355(d6)
+             418:    17(bool)   FOrdLessThan 416 417
+                                LoopMerge 413 414 None
+                                BranchConditional 418 412 413
+             412:                 Label
+             419:     51(ptr)     AccessChain 368(bigColor6) 64
+             420:    6(float)     Load 419
+             421:     21(ptr)     AccessChain 9(color) 64
+             422:    6(float)     Load 421
+             423:    6(float)     FAdd 422 420
+             424:     21(ptr)     AccessChain 9(color) 64
+                                  Store 424 423
+                                  Branch 414
+             414:                 Label
+                                  Branch 411
+             413:               Label
+                                Branch 392
+             392:             Label
+                              Branch 425
+             425:             Label
+                              LoopMerge 427 428 None
+                              Branch 426
+             426:             Label
+             429:    6(float) Load 404(d7)
+             431:    17(bool) FOrdLessThan 429 430
+                              SelectionMerge 433 None
+                              BranchConditional 431 432 433
+             432:               Label
+                                Branch 427
+             433:             Label
+             436:    7(fvec4) Load 435(bigColor7)
+             437:    7(fvec4) Load 9(color)
+             438:    7(fvec4) FAdd 437 436
+                              Store 9(color) 438
+             439:    6(float) Load 404(d7)
+             440:    17(bool) FOrdLessThan 439 93
+                              SelectionMerge 442 None
+                              BranchConditional 440 441 442
+             441:               Label
+             443:     21(ptr)   AccessChain 9(color) 64
+             444:    6(float)   Load 443
+             445:    6(float)   FAdd 444 93
+                                Store 443 445
+                                Branch 427
+             442:             Label
+             447:    7(fvec4) Load 11(BaseColor)
+             448:    7(fvec4) Load 9(color)
+             449:    7(fvec4) FAdd 448 447
+                              Store 9(color) 449
+                              Branch 428
+             428:             Label
+                              BranchConditional 18 425 427
+             427:             Label
+                              Branch 450
+             450:             Label
+                              LoopMerge 452 453 None
+                              Branch 451
+             451:             Label
+             455:    6(float) Load 454(d8)
+             456:    17(bool) FOrdLessThan 455 430
+                              SelectionMerge 458 None
+                              BranchConditional 456 457 458
+             457:               Label
+                                Branch 452
+             458:             Label
+             460:    7(fvec4) Load 435(bigColor7)
+             461:    7(fvec4) Load 9(color)
+             462:    7(fvec4) FAdd 461 460
+                              Store 9(color) 462
+             463:    6(float) Load 454(d8)
+             464:    17(bool) FOrdLessThan 463 93
+                              SelectionMerge 466 None
+                              BranchConditional 464 465 466
+             465:               Label
+             467:     21(ptr)   AccessChain 9(color) 64
+             468:    6(float)   Load 467
+             469:    6(float)   FAdd 468 93
+                                Store 467 469
+             470:    6(float)   Load 454(d8)
+             472:    17(bool)   FOrdLessThan 470 471
+                                SelectionMerge 474 None
+                                BranchConditional 472 473 478
+             473:                 Label
+             475:     21(ptr)     AccessChain 9(color) 107
+             476:    6(float)     Load 475
+             477:    6(float)     FAdd 476 93
+                                  Store 475 477
+                                  Branch 474
+             478:                 Label
+             479:     21(ptr)     AccessChain 9(color) 20
+             480:    6(float)     Load 479
+             481:    6(float)     FAdd 480 93
+                                  Store 479 481
+                                  Branch 474
+             474:               Label
+                                Branch 452
+             466:             Label
+             483:    7(fvec4) Load 11(BaseColor)
+             484:    7(fvec4) Load 9(color)
+             485:    7(fvec4) FAdd 484 483
+                              Store 9(color) 485
+                              Branch 453
+             453:             Label
+             486:     21(ptr) AccessChain 9(color) 64
+             487:    6(float) Load 486
+             488:    6(float) Load 454(d8)
+             489:    17(bool) FOrdLessThan 487 488
+                              BranchConditional 489 450 452
+             452:             Label
+                              Branch 490
+             490:             Label
+             494:     21(ptr) AccessChain 9(color) 73
+             495:    6(float) Load 494
+             497:    6(float) Load 496(d9)
+             498:    17(bool) FOrdLessThan 495 497
+                              LoopMerge 492 493 None
+                              BranchConditional 498 491 492
+             491:               Label
+             499:    6(float)   Load 496(d9)
+             500:    6(float)   Load 454(d8)
+             501:    17(bool)   FOrdGreaterThan 499 500
+                                SelectionMerge 503 None
+                                BranchConditional 501 502 503
+             502:                 Label
+             504:     21(ptr)     AccessChain 9(color) 20
+             505:    6(float)     Load 504
+             506:    6(float)     Load 404(d7)
+             507:    17(bool)     FOrdLessThanEqual 505 506
+                                  SelectionMerge 509 None
+                                  BranchConditional 507 508 509
+             508:                   Label
+             510:     21(ptr)       AccessChain 9(color) 64
+             511:    6(float)       Load 510
+             513:    17(bool)       FOrdEqual 511 512
+                                    SelectionMerge 515 None
+                                    BranchConditional 513 514 519
+             514:                     Label
+             516:     21(ptr)         AccessChain 9(color) 73
+             517:    6(float)         Load 516
+             518:    6(float)         FAdd 517 93
+                                      Store 516 518
+                                      Branch 515
+             519:                     Label
+                                      Branch 492
+             515:                   Label
+                                    Branch 509
+             509:                 Label
+                                  Branch 503
+             503:               Label
+                                Branch 493
+             493:               Label
+                                Branch 490
+             492:             Label
+                              Branch 521
+             521:             Label
+             525:     21(ptr) AccessChain 9(color) 64
+             526:    6(float) Load 525
+             528:    6(float) Load 527(d10)
+             529:    17(bool) FOrdLessThan 526 528
+                              LoopMerge 523 524 None
+                              BranchConditional 529 522 523
+             522:               Label
+             530:     21(ptr)   AccessChain 9(color) 107
+             531:    6(float)   Load 530
+             532:    6(float)   FAdd 531 93
+                                Store 530 532
+             533:     21(ptr)   AccessChain 9(color) 107
+             534:    6(float)   Load 533
+             536:    6(float)   Load 535(d11)
+             537:    17(bool)   FOrdLessThan 534 536
+                                SelectionMerge 539 None
+                                BranchConditional 537 538 539
+             538:                 Label
+             540:     21(ptr)     AccessChain 9(color) 64
+             541:    6(float)     Load 540
+             542:    6(float)     FAdd 541 93
+                                  Store 540 542
+             543:     21(ptr)     AccessChain 9(color) 73
+             544:    6(float)     Load 543
+             546:    6(float)     Load 545(d12)
+             547:    17(bool)     FOrdLessThan 544 546
+                                  SelectionMerge 549 None
+                                  BranchConditional 547 548 553
+             548:                   Label
+             550:     21(ptr)       AccessChain 9(color) 73
+             551:    6(float)       Load 550
+             552:    6(float)       FAdd 551 93
+                                    Store 550 552
+                                    Branch 549
+             553:                   Label
+             554:     21(ptr)       AccessChain 9(color) 20
+             555:    6(float)       Load 554
+             556:    6(float)       FAdd 555 93
+                                    Store 554 556
+                                    Branch 549
+             549:                 Label
+                                  Branch 524
+             524:                 Label
+                                  Branch 521
+             539:               Label
+             558:    7(fvec4)   Load 9(color)
+             559:    7(fvec4)   CompositeConstruct 93 93 93 93
+             560:    7(fvec4)   FAdd 558 559
+                                Store 9(color) 560
+                                Branch 523
+             523:             Label
+                              Branch 562
+             562:             Label
+             566:     21(ptr) AccessChain 9(color) 20
+             567:    6(float) Load 566
+             569:    17(bool) FOrdLessThan 567 568
+                              LoopMerge 564 565 None
+                              BranchConditional 569 563 564
+             563:               Label
+             571:    7(fvec4)   Load 570(bigColor8)
+             572:    7(fvec4)   Load 9(color)
+             573:    7(fvec4)   FAdd 572 571
+                                Store 9(color) 573
+             574:     21(ptr)   AccessChain 9(color) 64
+             575:    6(float)   Load 574
+             576:    6(float)   Load 454(d8)
+             577:    17(bool)   FOrdLessThan 575 576
+                                SelectionMerge 579 None
+                                BranchConditional 577 578 579
+             578:                 Label
+             580:     21(ptr)     AccessChain 9(color) 73
+             581:    6(float)     Load 580
+             582:    6(float)     Load 355(d6)
+             583:    17(bool)     FOrdLessThan 581 582
+                                  SelectionMerge 585 None
+                                  BranchConditional 583 584 585
+             584:                   Label
+                                    Branch 565
+             565:                   Label
+                                    Branch 562
+             585:                 Label
+                                  Branch 579
+             579:               Label
+             587:     51(ptr)   AccessChain 570(bigColor8) 20
+             588:    6(float)   Load 587
+             589:     21(ptr)   AccessChain 9(color) 107
+             590:    6(float)   Load 589
+             591:    6(float)   FAdd 590 588
+             592:     21(ptr)   AccessChain 9(color) 107
+                                Store 592 591
+                                Branch 565
+             564:             Label
+             593:    7(fvec4) Load 9(color)
+             594:    7(fvec4) CompositeConstruct 93 93 93 93
+             595:    7(fvec4) FAdd 593 594
+                              Store 9(color) 595
+             598:    7(fvec4) Load 9(color)
+                              Store 597(gl_FragColor) 598
+                              Branch 599
+             599:             Label
+             603:     21(ptr) AccessChain 9(color) 20
+             604:    6(float) Load 603
+             606:    6(float) Load 605(d14)
+             607:    17(bool) FOrdLessThan 604 606
+                              LoopMerge 601 602 None
+                              BranchConditional 607 600 601
+             600:               Label
+             608:     21(ptr)   AccessChain 9(color) 107
+             609:    6(float)   Load 608
+             611:    6(float)   Load 610(d15)
+             612:    17(bool)   FOrdLessThan 609 611
+                                SelectionMerge 614 None
+                                BranchConditional 612 613 616
+             613:                 Label
+                                  Return
+             616:                 Label
+             617:    7(fvec4)     Load 9(color)
+             618:    7(fvec4)     CompositeConstruct 93 93 93 93
+             619:    7(fvec4)     FAdd 617 618
+                                  Store 9(color) 619
+                                  Branch 614
+             614:               Label
+                                Branch 602
+             602:               Label
+                                Branch 599
+             601:             Label
+             620:    7(fvec4) Load 9(color)
+             621:    7(fvec4) CompositeConstruct 93 93 93 93
+             622:    7(fvec4) FAdd 620 621
+                              Store 9(color) 622
+                              Branch 623
+             623:             Label
+             627:     21(ptr) AccessChain 9(color) 73
+             628:    6(float) Load 627
+             630:    6(float) Load 629(d16)
+             631:    17(bool) FOrdLessThan 628 630
+                              LoopMerge 625 626 None
+                              BranchConditional 631 624 625
+             624:               Label
+             632:     21(ptr)   AccessChain 9(color) 73
+             633:    6(float)   Load 632
+             634:    6(float)   FAdd 633 93
+                                Store 632 634
+                                Branch 626
+             626:               Label
+                                Branch 623
+             625:             Label
+                              Branch 635
+             635:             Label
+             639:     21(ptr) AccessChain 9(color) 73
+             640:    6(float) Load 639
+             641:    6(float) Load 102(d2)
+             642:    17(bool) FOrdLessThan 640 641
+                              SelectionMerge 644 None
+                              BranchConditional 642 643 644
+             643:               Label
+             645:     21(ptr)   AccessChain 9(color) 107
+             646:    6(float)   Load 645
+             647:    6(float)   Load 110(d3)
+             648:    17(bool)   FOrdLessThan 646 647
+                                Branch 644
+             644:             Label
+             649:    17(bool) Phi 642 635 648 643
+                              LoopMerge 637 638 None
+                              BranchConditional 649 636 637
+             636:               Label
+             650:    7(fvec4)   Load 114(bigColor1_2)
+             651:    7(fvec4)   Load 9(color)
+             652:    7(fvec4)   FAdd 651 650
+                                Store 9(color) 652
+             653:     21(ptr)   AccessChain 9(color) 64
+             654:    6(float)   Load 653
+             655:    6(float)   Load 110(d3)
+             656:    17(bool)   FOrdLessThan 654 655
+                                SelectionMerge 658 None
+                                BranchConditional 656 657 658
+             657:                 Label
+                                  Return
+             658:               Label
+                                Branch 638
+             638:               Label
+                                Branch 635
+             637:             Label
+                              Branch 660
+             660:             Label
+                              LoopMerge 662 663 None
+                              Branch 661
+             661:             Label
+             664:     21(ptr) AccessChain 9(color) 107
+             665:    6(float) Load 664
+             667:    6(float) Load 666(d18)
+             668:    17(bool) FOrdLessThan 665 667
+                              SelectionMerge 670 None
+                              BranchConditional 668 669 670
+             669:               Label
+                                Return
+             670:             Label
+             672:    7(fvec4) Load 9(color)
+             673:    7(fvec4) CompositeConstruct 93 93 93 93
+             674:    7(fvec4) FAdd 672 673
+                              Store 9(color) 674
+                              Branch 663
+             663:             Label
+             675:     21(ptr) AccessChain 9(color) 20
+             676:    6(float) Load 675
+             678:    6(float) Load 677(d17)
+             679:    17(bool) FOrdLessThan 676 678
+                              BranchConditional 679 660 662
+             662:             Label
+                              Branch 680
+             680:             Label
+             684:     21(ptr) AccessChain 9(color) 107
+             685:    6(float) Load 684
+             686:    6(float) Load 629(d16)
+             687:    17(bool) FOrdLessThan 685 686
+                              LoopMerge 682 683 None
+                              BranchConditional 687 681 682
+             681:               Label
+             688:     21(ptr)   AccessChain 9(color) 73
+             689:    6(float)   Load 688
+             690:    6(float)   Load 629(d16)
+             691:    17(bool)   FOrdLessThan 689 690
+                                SelectionMerge 693 None
+                                BranchConditional 691 692 695
+             692:                 Label
+                                  Kill
+             695:                 Label
+             696:    7(fvec4)     Load 9(color)
+             697:    7(fvec4)     CompositeConstruct 93 93 93 93
+             698:    7(fvec4)     FAdd 696 697
+                                  Store 9(color) 698
+                                  Branch 693
+             693:               Label
+                                Branch 683
+             683:               Label
+                                Branch 680
+             682:             Label
+             699:    7(fvec4) Load 9(color)
+             700:    7(fvec4) CompositeConstruct 93 93 93 93
+             701:    7(fvec4) FAdd 699 700
+                              Store 9(color) 701
+             702:    7(fvec4) Load 9(color)
+                              Store 597(gl_FragColor) 702
+                              Return
+                              FunctionEnd

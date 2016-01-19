@@ -51,14 +51,14 @@ Linked fragment stage:
               21:    7(fvec4) FAdd 20 19
                               Store 9(color) 21
                               Branch 16
-              15:             Label
-              34:    7(fvec4) Load 9(color)
-                              Store 33(gl_FragColor) 34
-                              Return
               16:             Label
               25:     24(ptr) AccessChain 9(color) 23
               26:    6(float) Load 25
               29:    6(float) Load 28(d)
               31:    30(bool) FOrdLessThan 26 29
                               BranchConditional 31 13 15
-                                FunctionEnd
+              15:             Label
+              34:    7(fvec4) Load 9(color)
+                              Store 33(gl_FragColor) 34
+                              Return
+                              FunctionEnd

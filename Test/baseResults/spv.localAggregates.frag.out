@@ -170,16 +170,16 @@ Linked fragment stage:
               86:     30(ptr)   AccessChain 83(a) 84
                                 Store 86 85
                                 Branch 79
-              78:             Label
-              90:      6(int) Load 89(condition)
-              91:    23(bool) IEqual 90 28
-                              SelectionMerge 93 None
-                              BranchConditional 91 92 93
               79:               Label
               87:      6(int)   Load 75(i)
               88:      6(int)   IAdd 87 28
                                 Store 75(i) 88
                                 Branch 76
+              78:             Label
+              90:      6(int) Load 89(condition)
+              91:    23(bool) IEqual 90 28
+                              SelectionMerge 93 None
+                              BranchConditional 91 92 93
               92:               Label
               94:          34   Load 70(localArray)
                                 Store 83(a) 94

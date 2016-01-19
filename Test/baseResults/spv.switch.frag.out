@@ -106,6 +106,11 @@ Linked fragment stage:
                               Switch 65 68 
                                      case 1: 66
                                      case 2: 67
+              68:               Label
+              80:    6(float)   Load 73(x)
+              81:    6(float)   ExtInst 1(GLSL.std.450) 15(Tan) 80
+                                Store 71(f) 81
+                                Branch 69
               66:               Label
               74:    6(float)   Load 73(x)
               75:    6(float)   ExtInst 1(GLSL.std.450) 13(Sin) 74
@@ -116,17 +121,19 @@ Linked fragment stage:
               78:    6(float)   ExtInst 1(GLSL.std.450) 14(Cos) 77
                                 Store 71(f) 78
                                 Branch 69
-              68:               Label
-              80:    6(float)   Load 73(x)
-              81:    6(float)   ExtInst 1(GLSL.std.450) 15(Tan) 80
-                                Store 71(f) 81
-                                Branch 69
               69:             Label
               83:      9(int) Load 60(c)
                               SelectionMerge 87 None
                               Switch 83 86 
                                      case 1: 84
                                      case 2: 85
+              86:               Label
+              97:    6(float)   Load 73(x)
+              98:    6(float)   ExtInst 1(GLSL.std.450) 15(Tan) 97
+              99:    6(float)   Load 71(f)
+             100:    6(float)   FAdd 99 98
+                                Store 71(f) 100
+                                Branch 87
               84:               Label
               88:    6(float)   Load 73(x)
               89:    6(float)   ExtInst 1(GLSL.std.450) 13(Sin) 88
@@ -140,13 +147,6 @@ Linked fragment stage:
               94:    6(float)   Load 71(f)
               95:    6(float)   FAdd 94 93
                                 Store 71(f) 95
-                                Branch 87
-              86:               Label
-              97:    6(float)   Load 73(x)
-              98:    6(float)   ExtInst 1(GLSL.std.450) 15(Tan) 97
-              99:    6(float)   Load 71(f)
-             100:    6(float)   FAdd 99 98
-                                Store 71(f) 100
                                 Branch 87
               87:             Label
              102:      9(int) Load 60(c)
@@ -174,6 +174,13 @@ Linked fragment stage:
                               Switch 117 120 
                                      case 1: 118
                                      case 2: 119
+             120:               Label
+             148:    6(float)   Load 73(x)
+             149:    6(float)   ExtInst 1(GLSL.std.450) 15(Tan) 148
+             150:    6(float)   Load 71(f)
+             151:    6(float)   FAdd 150 149
+                                Store 71(f) 151
+                                Branch 121
              118:               Label
              122:    6(float)   Load 73(x)
              123:    6(float)   ExtInst 1(GLSL.std.450) 13(Sin) 122
@@ -207,13 +214,6 @@ Linked fragment stage:
                                   Branch 131
              131:               Label
                                 Branch 121
-             120:               Label
-             148:    6(float)   Load 73(x)
-             149:    6(float)   ExtInst 1(GLSL.std.450) 15(Tan) 148
-             150:    6(float)   Load 71(f)
-             151:    6(float)   FAdd 150 149
-                                Store 71(f) 151
-                                Branch 121
              121:             Label
                               Store 153(i) 154
                               Branch 155
@@ -228,177 +228,177 @@ Linked fragment stage:
                                 Switch 163 166 
                                        case 1: 164
                                        case 2: 165
-             157:                 Label
-             211:      9(int)     Load 60(c)
-                                  SelectionMerge 214 None
-                                  Switch 211 214 
-                                         case 1: 212
-                                         case 2: 213
-             158:                   Label
-             209:      9(int)       Load 153(i)
-             210:      9(int)       IAdd 209 63
-                                    Store 153(i) 210
-                                    Branch 155
-             164:                   Label
-             168:    6(float)       Load 73(x)
-             169:    6(float)       ExtInst 1(GLSL.std.450) 13(Sin) 168
-             170:    6(float)       Load 71(f)
-             171:    6(float)       FAdd 170 169
-                                    Store 71(f) 171
-                                    Store 172(j) 173
+             166:                 Label
+             198:    6(float)     Load 73(x)
+             199:    6(float)     ExtInst 1(GLSL.std.450) 15(Tan) 198
+             200:    6(float)     Load 71(f)
+             201:    6(float)     FAdd 200 199
+                                  Store 71(f) 201
+                                  Branch 167
+             164:                 Label
+             168:    6(float)     Load 73(x)
+             169:    6(float)     ExtInst 1(GLSL.std.450) 13(Sin) 168
+             170:    6(float)     Load 71(f)
+             171:    6(float)     FAdd 170 169
+                                  Store 71(f) 171
+                                  Store 172(j) 173
+                                  Branch 174
+             174:                 Label
+             178:      9(int)     Load 172(j)
+             180:   161(bool)     SLessThan 178 179
+                                  LoopMerge 176 177 None
+                                  BranchConditional 180 175 176
+             175:                   Label
+             181:    6(float)       Load 71(f)
+             182:    6(float)       FAdd 181 47
+                                    Store 71(f) 182
+             183:    6(float)       Load 71(f)
+             185:   161(bool)       FOrdLessThan 183 184
+                                    SelectionMerge 187 None
+                                    BranchConditional 185 186 187
+             186:                     Label
+                                      Branch 176
+             187:                   Label
+                                    Branch 177
+             177:                   Label
+             189:      9(int)       Load 172(j)
+             190:      9(int)       IAdd 189 63
+                                    Store 172(j) 190
                                     Branch 174
-             174:                   Label
-             178:      9(int)       Load 172(j)
-             180:   161(bool)       SLessThan 178 179
-                                    LoopMerge 176 177 None
-                                    BranchConditional 180 175 176
-             175:                     Label
-             181:    6(float)         Load 71(f)
-             182:    6(float)         FAdd 181 47
-                                      Store 71(f) 182
-             183:    6(float)         Load 71(f)
-             185:   161(bool)         FOrdLessThan 183 184
-                                      SelectionMerge 187 None
-                                      BranchConditional 185 186 187
-             176:                       Label
-                                        Branch 167
-             177:                       Label
-             189:      9(int)           Load 172(j)
-             190:      9(int)           IAdd 189 63
-                                        Store 172(j) 190
-                                        Branch 174
-             186:                       Label
-                                        Branch 176
-             187:                     Label
-                                      Branch 177
-             165:                     Label
-             192:    6(float)         Load 73(x)
-             193:    6(float)         ExtInst 1(GLSL.std.450) 14(Cos) 192
-             194:    6(float)         Load 71(f)
-             195:    6(float)         FAdd 194 193
-                                      Store 71(f) 195
-                                      Branch 167
-             166:                     Label
-             198:    6(float)         Load 73(x)
-             199:    6(float)         ExtInst 1(GLSL.std.450) 15(Tan) 198
-             200:    6(float)         Load 71(f)
-             201:    6(float)         FAdd 200 199
-                                      Store 71(f) 201
-                                      Branch 167
-             167:                     Label
-             203:    6(float)         Load 71(f)
-             205:   161(bool)         FOrdLessThan 203 204
-                                      SelectionMerge 207 None
-                                      BranchConditional 205 206 207
-             206:                       Label
-                                        Branch 157
-             207:                     Label
-                                      Branch 158
-             212:                     Label
-             215:    6(float)         Load 73(x)
-             216:    6(float)         ExtInst 1(GLSL.std.450) 13(Sin) 215
-             217:    6(float)         Load 71(f)
-             218:    6(float)         FAdd 217 216
-                                      Store 71(f) 218
-                                      Branch 214
-             213:                     Label
-                                      Branch 214
-             214:                     Label
-             224:    6(float)         Load 71(f)
-             225:      9(int)         Load 58(local)
-             226:    6(float)         ConvertSToF 225
-             227:    6(float)         FAdd 224 226
-                                      Store 223(color) 227
-             231:    7(fvec4)         Load 229(v)
-                                      Store 230(param) 231
-             233:    7(fvec4)         Load 229(v)
-                                      Store 232(param) 233
-             235:      9(int)         Load 60(c)
-                                      Store 234(param) 235
-             236:    7(fvec4)         FunctionCall 15(foo1(vf4;vf4;i1;) 230(param) 232(param) 234(param)
-             239:    6(float)         CompositeExtract 236 1
-             240:    6(float)         Load 223(color)
-             241:    6(float)         FAdd 240 239
-                                      Store 223(color) 241
-             243:    7(fvec4)         Load 229(v)
-                                      Store 242(param) 243
-             245:    7(fvec4)         Load 229(v)
-                                      Store 244(param) 245
-             247:      9(int)         Load 60(c)
-                                      Store 246(param) 247
-             248:    7(fvec4)         FunctionCall 20(foo2(vf4;vf4;i1;) 242(param) 244(param) 246(param)
-             250:    6(float)         CompositeExtract 248 2
-             251:    6(float)         Load 223(color)
-             252:    6(float)         FAdd 251 250
-                                      Store 223(color) 252
-             253:      9(int)         Load 60(c)
-                                      SelectionMerge 256 None
-                                      Switch 253 255 
-                                             case 0: 254
-             254:                       Label
-                                        Branch 256
-             255:                       Label
-                                        Branch 256
-             256:                     Label
-             260:      9(int)         Load 60(c)
-                                      SelectionMerge 262 None
-                                      Switch 260 261
-             261:                       Label
-                                        Branch 262
-             262:                     Label
-                                      Return
-                                      FunctionEnd
-15(foo1(vf4;vf4;i1;):    7(fvec4)         Function None 11
-          12(v1):      8(ptr)         FunctionParameter
-          13(v2):      8(ptr)         FunctionParameter
-          14(i1):     10(ptr)         FunctionParameter
-              16:                     Label
-              22:      9(int)         Load 14(i1)
-                                      SelectionMerge 26 None
-                                      Switch 22 26 
-                                             case 0: 23
-                                             case 2: 24
-                                             case 1: 24
-                                             case 3: 25
-              23:                       Label
-              27:    7(fvec4)           Load 12(v1)
-                                        ReturnValue 27
-              24:                       Label
-              29:    7(fvec4)           Load 13(v2)
-                                        ReturnValue 29
-              25:                       Label
-              31:    7(fvec4)           Load 12(v1)
-              32:    7(fvec4)           Load 13(v2)
-              33:    7(fvec4)           FMul 31 32
-                                        ReturnValue 33
-              26:                     Label
-                                      ReturnValue 37
-                                      FunctionEnd
-20(foo2(vf4;vf4;i1;):    7(fvec4)         Function None 11
-          17(v1):      8(ptr)         FunctionParameter
-          18(v2):      8(ptr)         FunctionParameter
-          19(i1):     10(ptr)         FunctionParameter
-              21:                     Label
-              39:      9(int)         Load 19(i1)
-                                      SelectionMerge 44 None
-                                      Switch 39 44 
-                                             case 0: 40
-                                             case 2: 41
-                                             case 1: 42
-                                             case 3: 43
-              40:                       Label
-              45:    7(fvec4)           Load 17(v1)
-                                        ReturnValue 45
-              41:                       Label
-                                        ReturnValue 48
-              42:                       Label
-              50:    7(fvec4)           Load 18(v2)
-                                        ReturnValue 50
-              43:                       Label
-              52:    7(fvec4)           Load 17(v1)
-              53:    7(fvec4)           Load 18(v2)
-              54:    7(fvec4)           FMul 52 53
-                                        ReturnValue 54
-              44:                     Label
-                                      ReturnValue 37
-                                      FunctionEnd
+             176:                 Label
+                                  Branch 167
+             165:                 Label
+             192:    6(float)     Load 73(x)
+             193:    6(float)     ExtInst 1(GLSL.std.450) 14(Cos) 192
+             194:    6(float)     Load 71(f)
+             195:    6(float)     FAdd 194 193
+                                  Store 71(f) 195
+                                  Branch 167
+             167:               Label
+             203:    6(float)   Load 71(f)
+             205:   161(bool)   FOrdLessThan 203 204
+                                SelectionMerge 207 None
+                                BranchConditional 205 206 207
+             206:                 Label
+                                  Branch 157
+             207:               Label
+                                Branch 158
+             158:               Label
+             209:      9(int)   Load 153(i)
+             210:      9(int)   IAdd 209 63
+                                Store 153(i) 210
+                                Branch 155
+             157:             Label
+             211:      9(int) Load 60(c)
+                              SelectionMerge 214 None
+                              Switch 211 214 
+                                     case 1: 212
+                                     case 2: 213
+             212:               Label
+             215:    6(float)   Load 73(x)
+             216:    6(float)   ExtInst 1(GLSL.std.450) 13(Sin) 215
+             217:    6(float)   Load 71(f)
+             218:    6(float)   FAdd 217 216
+                                Store 71(f) 218
+                                Branch 214
+             213:               Label
+                                Branch 214
+             214:             Label
+             224:    6(float) Load 71(f)
+             225:      9(int) Load 58(local)
+             226:    6(float) ConvertSToF 225
+             227:    6(float) FAdd 224 226
+                              Store 223(color) 227
+             231:    7(fvec4) Load 229(v)
+                              Store 230(param) 231
+             233:    7(fvec4) Load 229(v)
+                              Store 232(param) 233
+             235:      9(int) Load 60(c)
+                              Store 234(param) 235
+             236:    7(fvec4) FunctionCall 15(foo1(vf4;vf4;i1;) 230(param) 232(param) 234(param)
+             239:    6(float) CompositeExtract 236 1
+             240:    6(float) Load 223(color)
+             241:    6(float) FAdd 240 239
+                              Store 223(color) 241
+             243:    7(fvec4) Load 229(v)
+                              Store 242(param) 243
+             245:    7(fvec4) Load 229(v)
+                              Store 244(param) 245
+             247:      9(int) Load 60(c)
+                              Store 246(param) 247
+             248:    7(fvec4) FunctionCall 20(foo2(vf4;vf4;i1;) 242(param) 244(param) 246(param)
+             250:    6(float) CompositeExtract 248 2
+             251:    6(float) Load 223(color)
+             252:    6(float) FAdd 251 250
+                              Store 223(color) 252
+             253:      9(int) Load 60(c)
+                              SelectionMerge 256 None
+                              Switch 253 255 
+                                     case 0: 254
+             255:               Label
+                                Branch 256
+             254:               Label
+                                Branch 256
+             256:             Label
+             260:      9(int) Load 60(c)
+                              SelectionMerge 262 None
+                              Switch 260 261
+             261:               Label
+                                Branch 262
+             262:             Label
+                              Return
+                              FunctionEnd
+15(foo1(vf4;vf4;i1;):    7(fvec4) Function None 11
+          12(v1):      8(ptr) FunctionParameter
+          13(v2):      8(ptr) FunctionParameter
+          14(i1):     10(ptr) FunctionParameter
+              16:             Label
+              22:      9(int) Load 14(i1)
+                              SelectionMerge 26 None
+                              Switch 22 26 
+                                     case 0: 23
+                                     case 2: 24
+                                     case 1: 24
+                                     case 3: 25
+              23:               Label
+              27:    7(fvec4)   Load 12(v1)
+                                ReturnValue 27
+              24:               Label
+              29:    7(fvec4)   Load 13(v2)
+                                ReturnValue 29
+              25:               Label
+              31:    7(fvec4)   Load 12(v1)
+              32:    7(fvec4)   Load 13(v2)
+              33:    7(fvec4)   FMul 31 32
+                                ReturnValue 33
+              26:             Label
+                              ReturnValue 37
+                              FunctionEnd
+20(foo2(vf4;vf4;i1;):    7(fvec4) Function None 11
+          17(v1):      8(ptr) FunctionParameter
+          18(v2):      8(ptr) FunctionParameter
+          19(i1):     10(ptr) FunctionParameter
+              21:             Label
+              39:      9(int) Load 19(i1)
+                              SelectionMerge 44 None
+                              Switch 39 44 
+                                     case 0: 40
+                                     case 2: 41
+                                     case 1: 42
+                                     case 3: 43
+              40:               Label
+              45:    7(fvec4)   Load 17(v1)
+                                ReturnValue 45
+              41:               Label
+                                ReturnValue 48
+              42:               Label
+              50:    7(fvec4)   Load 18(v2)
+                                ReturnValue 50
+              43:               Label
+              52:    7(fvec4)   Load 17(v1)
+              53:    7(fvec4)   Load 18(v2)
+              54:    7(fvec4)   FMul 52 53
+                                ReturnValue 54
+              44:             Label
+                              ReturnValue 37
+                              FunctionEnd

@@ -60,14 +60,14 @@ Linked vertex stage:
               30:     29(ptr)   AccessChain 24(colorOut) 25
                                 Store 30 28
                                 Branch 13
+              13:               Label
+              31:      6(int)   Load 8(i)
+              32:      6(int)   IAdd 31 9
+                                Store 8(i) 32
+                                Branch 10
               12:             Label
               35:     29(ptr) AccessChain 24(colorOut) 34
               36:   19(fvec4) Load 35
                               Store 33(gl_Position) 36
                               Return
-              13:             Label
-              31:      6(int) Load 8(i)
-              32:      6(int) IAdd 31 9
-                              Store 8(i) 32
-                              Branch 10
                               FunctionEnd
