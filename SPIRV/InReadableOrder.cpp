@@ -1,5 +1,5 @@
 //
-//Copyright (C) 2016 LunarG, Inc.
+//Copyright (C) 2016 Google, Inc.
 //
 //All rights reserved.
 //
