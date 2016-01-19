@@ -110,7 +110,7 @@ public:
         }
     }
     void setBlock(Block* b) { block = b; }
-    Block* getBlock() { return block; }
+    Block* getBlock() const { return block; }
     Op getOpCode() const { return opCode; }
     int getNumOperands() const { return (int)operands.size(); }
     Id getResultId() const { return resultId; }
