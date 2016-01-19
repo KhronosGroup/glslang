@@ -84,8 +84,7 @@ class ReadableOrderTraverser {
           block->getParent().getParent().getInstruction(mergeId)->getBlock();
       delayed_[mergeBlock] = true;
     }
-    for (const auto succ : block->getSuccessors())
-      if (succ != mergeBlock) visit(succ);
+    for (const auto succ : block->getSuccessors()) visit(succ);
     if (mergeBlock) {
       delayed_[mergeBlock] = false;
       visit(mergeBlock);
