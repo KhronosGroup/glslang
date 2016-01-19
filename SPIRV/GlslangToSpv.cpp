@@ -144,7 +144,6 @@ protected:
     std::unordered_map<const glslang::TTypeList*, spv::Id> structMap[glslang::ElpCount][glslang::ElmCount];
     std::unordered_map<const glslang::TTypeList*, std::vector<int> > memberRemapper;  // for mapping glslang block indices to spv indices (e.g., due to hidden members)
     std::stack<bool> breakForLoop;  // false means break for switch
-    std::stack<glslang::TIntermTyped*> loopTerminal;  // code from the last part of a for loop: for(...; ...; terminal), needed for e.g., continue };
 };
 
 //
@@ -1390,33 +1389,63 @@ void TGlslangToSpvTraverser::visitConstantUnion(glslang::TIntermConstantUnion* n
 
 bool TGlslangToSpvTraverser::visitLoop(glslang::TVisit /* visit */, glslang::TIntermLoop* node)
 {
-    // body emission needs to know what the for-loop terminal is when it sees a "continue"
-    loopTerminal.push(node->getTerminal());
-
-    builder.makeNewLoop(node->testFirst());
-
-    if (node->getTest()) {
+    auto blocks = builder.makeNewLoop();
+    builder.createBranch(&blocks.head);
+    if (node->testFirst() && node->getTest()) {
+        builder.setBuildPoint(&blocks.head);
         node->getTest()->traverse(this);
-        // the AST only contained the test computation, not the branch, we have to add it
-        spv::Id condition = builder.accessChainLoad(convertGlslangToSpvType(node->getTest()->getType()));
-        builder.createLoopTestBranch(condition);
-    } else {
-        builder.createBranchToBody();
-    }
+        spv::Id condition =
+            builder.accessChainLoad(convertGlslangToSpvType(node->getTest()->getType()));
+        builder.createLoopMerge(&blocks.merge, &blocks.continue_target, spv::LoopControlMaskNone);
+        builder.createConditionalBranch(condition, &blocks.body, &blocks.merge);
 
-    if (node->getBody()) {
+        builder.setBuildPoint(&blocks.body);
         breakForLoop.push(true);
-        node->getBody()->traverse(this);
+        if (node->getBody())
+            node->getBody()->traverse(this);
+        builder.createBranch(&blocks.continue_target);
         breakForLoop.pop();
+
+        builder.setBuildPoint(&blocks.continue_target);
+        if (node->getTerminal())
+            node->getTerminal()->traverse(this);
+        builder.createBranch(&blocks.head);
+    } else {
+        // Spec requires back edges to target header blocks, and every header
+        // block must dominate its merge block.  Create an empty header block
+        // here to ensure these conditions are met even when body contains
+        // non-trivial control flow.
+        builder.setBuildPoint(&blocks.head);
+        builder.createLoopMerge(&blocks.merge, &blocks.continue_target, spv::LoopControlMaskNone);
+        builder.createBranch(&blocks.body);
+
+        breakForLoop.push(true);
+        builder.setBuildPoint(&blocks.body);
+        if (node->getBody())
+            node->getBody()->traverse(this);
+        builder.createBranch(&blocks.continue_target);
+        breakForLoop.pop();
+
+        builder.setBuildPoint(&blocks.continue_target);
+        if (node->getTerminal())
+            node->getTerminal()->traverse(this);
+        if (node->getTest()) {
+            node->getTest()->traverse(this);
+            spv::Id condition =
+                builder.accessChainLoad(convertGlslangToSpvType(node->getTest()->getType()));
+            builder.createConditionalBranch(condition, &blocks.head, &blocks.merge);
+        } else {
+            // TODO: unless there was a break instruction somewhere in the body,
+            // this is an infinite loop, so we should abort code generation with
+            // a warning.  As it stands now, nothing will jump to the merge
+            // block, and it may be dropped as unreachable by the SPIR-V dumper.
+            // That, in turn, will result in a non-existing %ID in the LoopMerge
+            // above.
+            builder.createBranch(&blocks.head);
+        }
     }
-
-    if (loopTerminal.top())
-        loopTerminal.top()->traverse(this);
-
+    builder.setBuildPoint(&blocks.merge);
     builder.closeLoop();
-
-    loopTerminal.pop();
-
     return false;
 }
 
@@ -1436,8 +1465,6 @@ bool TGlslangToSpvTraverser::visitBranch(glslang::TVisit /* visit */, glslang::T
             builder.addSwitchBreak();
         break;
     case glslang::EOpContinue:
-        if (loopTerminal.top())
-            loopTerminal.top()->traverse(this);
         builder.createLoopContinue();
         break;
     case glslang::EOpReturn:

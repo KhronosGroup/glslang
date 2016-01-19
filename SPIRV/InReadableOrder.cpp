@@ -67,8 +67,9 @@ class ReadableOrderTraverser {
 public:
     explicit ReadableOrderTraverser(std::function<void(Block*)> callback) : callback_(callback) {}
     // Visits the block if it hasn't been visited already and isn't currently
-    // being delayed.  Invokes callback(block), then descends into its successors.
-    // Delays merge-block processing until all the branches have been completed.
+    // being delayed.  Invokes callback(block), then descends into its
+    // successors.  Delays merge-block and continue-block processing until all
+    // the branches have been completed.
     void visit(Block* block)
     {
         assert(block);
@@ -77,14 +78,25 @@ public:
         callback_(block);
         visited_[block] = true;
         Block* mergeBlock = nullptr;
+        Block* continueBlock = nullptr;
         auto mergeInst = block->getMergeInstruction();
         if (mergeInst) {
             Id mergeId = mergeInst->getIdOperand(0);
             mergeBlock = block->getParent().getParent().getInstruction(mergeId)->getBlock();
             delayed_[mergeBlock] = true;
+            if (mergeInst->getOpCode() == spv::OpLoopMerge) {
+                Id continueId = mergeInst->getIdOperand(1);
+                continueBlock =
+                    block->getParent().getParent().getInstruction(continueId)->getBlock();
+                delayed_[continueBlock] = true;
+            }
         }
         for (const auto succ : block->getSuccessors())
             visit(succ);
+        if (continueBlock) {
+            delayed_[continueBlock] = false;
+            visit(continueBlock);
+        }
         if (mergeBlock) {
             delayed_[mergeBlock] = false;
             visit(mergeBlock);
