@@ -77,8 +77,8 @@ const MemorySemanticsMask MemorySemanticsAllMemory = (MemorySemanticsMask)0x3FF;
 
 class Instruction {
 public:
-    Instruction(Id resultId, Id typeId, Op opCode) : resultId(resultId), typeId(typeId), opCode(opCode) { }
-    explicit Instruction(Op opCode) : resultId(NoResult), typeId(NoType), opCode(opCode) { }
+    Instruction(Id resultId, Id typeId, Op opCode) : resultId(resultId), typeId(typeId), opCode(opCode), block(nullptr) { }
+    explicit Instruction(Op opCode) : resultId(NoResult), typeId(NoType), opCode(opCode), block(nullptr) { }
     virtual ~Instruction() {}
     void addIdOperand(Id id) { operands.push_back(id); }
     void addImmediateOperand(unsigned int immediate) { operands.push_back(immediate); }
