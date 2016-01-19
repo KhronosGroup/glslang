@@ -17,53 +17,52 @@
 #include "spvIR.h"
 
 #include <algorithm>
+#include <cassert>
 #include <deque>
 #include <unordered_map>
-#include <unordered_set>
 
 using spv::Block;
 using spv::Id;
-using BlockSet = std::unordered_set<Id>;
-using IdToBool = std::unordered_map<Id, bool>;
 
 namespace {
-// True if any of prerequisites have not yet been visited.  May add new,
-// zero-initialized, values to visited, but doesn't modify any existing values.
-bool delay(const BlockSet& prereqs, IdToBool& visited) {
-  return std::any_of(prereqs.begin(), prereqs.end(),
-                     [&visited](Id b) { return !visited[b]; });
-}
+// Traverses CFG in a readable order, invoking a pre-set callback on each block.
+// Use by calling visit() on the root block.
+class ReadableOrderTraverser {
+ public:
+  explicit ReadableOrderTraverser(std::function<void(Block*)> callback)
+      : callback_(callback) {}
+
+  // Visits the block if it hasn't been visited already and isn't currently
+  // being delayed.  Invokes callback(block), then descends into its successors.
+  // Delays merge-block processing until all the branches have been completed.
+  void visit(Block* block) {
+    assert(block);
+    if (visited_[block] || delayed_[block]) return;
+    callback_(block);
+    visited_[block] = true;
+    Block* mergeBlock = nullptr;
+    auto mergeInst = block->getMergeInstruction();
+    if (mergeInst) {
+      Id mergeId = mergeInst->getIdOperand(0);
+      mergeBlock =
+          block->getParent().getParent().getInstruction(mergeId)->getBlock();
+      delayed_[mergeBlock] = true;
+    }
+    for (const auto succ : block->getSuccessors())
+      if (succ != mergeBlock) visit(succ);
+    if (mergeBlock) {
+      delayed_[mergeBlock] = false;
+      visit(mergeBlock);
+    }
+  }
+
+ private:
+  std::function<void(Block*)> callback_;
+  // Whether a block has already been visited or is being delayed.
+  std::unordered_map<Block*, bool> visited_, delayed_;
+};
 }
 
 void spv::inReadableOrder(Block* root, std::function<void(Block*)> callback) {
-  // Prerequisites for a merge block; must be completed prior to visiting the
-  // merge block.
-  std::unordered_map<Id, BlockSet> prereqs;
-  IdToBool visited;             // Whether a block has already been visited.
-  std::deque<Block*> worklist;  // DFS worklist
-  worklist.push_back(root);
-  while (!worklist.empty()) {
-    Block* current = worklist.front();
-    worklist.pop_front();
-    // Nodes may be pushed repeadetly (before they're first visited) if they
-    // have multiple predecessors.  Skip the already-visited ones.
-    if (visited[current->getId()]) continue;
-    if (delay(prereqs[current->getId()], visited)) {
-      // Not every prerequisite has been visited -- push it off for later.
-      worklist.push_back(current);
-      continue;
-    }
-    callback(current);
-    visited[current->getId()] = true;
-    if (auto merge = current->getMergeInstruction()) {
-      Id mergeId = merge->getIdOperand(0);
-      auto& mergePrereqs = prereqs[mergeId];
-      // Delay visiting merge blocks until all branches are visited.
-      for (const auto succ : current->getSuccessors())
-        if (succ->getId() != mergeId) mergePrereqs.insert(succ->getId());
-    }
-    for (auto succ : current->getSuccessors()) {
-      if (!visited[succ->getId()]) worklist.push_back(succ);
-    }
-  }
+  ReadableOrderTraverser(callback).visit(root);
 }

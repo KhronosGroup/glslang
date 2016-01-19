@@ -60,9 +60,6 @@ Linked vertex stage:
               23:                 Label
                                   Store 25(B) 20
                                   Branch 10
-              26:                 Label
-                                  Store 27(C) 20
-                                  Branch 24
               24:               Label
               28:      6(int)   Load 8(i)
               30:      6(int)   SMod 28 29
@@ -72,9 +69,6 @@ Linked vertex stage:
               32:                 Label
                                   Store 25(B) 20
                                   Branch 11
-              34:                 Label
-                                  Store 27(C) 20
-                                  Branch 33
               33:               Label
               35:      6(int)   Load 8(i)
               36:      6(int)   IAdd 35 18

@@ -60,6 +60,7 @@
 
 namespace spv {
 
+class Block;
 class Function;
 class Module;
 
@@ -108,6 +109,8 @@ public:
             addImmediateOperand(word);
         }
     }
+    void setBlock(Block* b) { block = b; }
+    Block* getBlock() { return block; }
     Op getOpCode() const { return opCode; }
     int getNumOperands() const { return (int)operands.size(); }
     Id getResultId() const { return resultId; }
@@ -146,6 +149,7 @@ protected:
     Op opCode;
     std::vector<Id> operands;
     std::string originalString;        // could be optimized away; convenience for getting string operand
+    Block* block;
 };
 
 //
@@ -165,8 +169,8 @@ public:
     void addInstruction(std::unique_ptr<Instruction> inst);
     void addPredecessor(Block* pred) { predecessors.push_back(pred); pred->successors.push_back(this);}
     void addLocalVariable(std::unique_ptr<Instruction> inst) { localVariables.push_back(std::move(inst)); }
-    const std::vector<Block*> getPredecessors() const { return predecessors; }
-    const std::vector<Block*> getSuccessors() const { return successors; }
+    const std::vector<Block*>& getPredecessors() const { return predecessors; }
+    const std::vector<Block*>& getSuccessors() const { return successors; }
     void setUnreachable() { unreachable = true; }
     bool isUnreachable() const { return unreachable; }
     // Returns the block's merge instruction, if one exists (otherwise null).
@@ -370,12 +374,15 @@ __inline void Function::addLocalVariable(std::unique_ptr<Instruction> inst)
 __inline Block::Block(Id id, Function& parent) : parent(parent), unreachable(false)
 {
     instructions.push_back(std::unique_ptr<Instruction>(new Instruction(id, NoType, OpLabel)));
+    instructions.back()->setBlock(this);
+    parent.getParent().mapInstruction(instructions.back());
 }
 
 __inline void Block::addInstruction(std::unique_ptr<Instruction> inst)
 {
-  Instruction* raw_instruction = inst.get();
+    Instruction* raw_instruction = inst.get();
     instructions.push_back(std::move(inst));
+    raw_instruction->setBlock(this);
     if (raw_instruction->getResultId())
         parent.getParent().mapInstruction(raw_instruction);
 }

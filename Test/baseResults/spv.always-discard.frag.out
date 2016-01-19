@@ -110,23 +110,4 @@ Linked fragment stage:
                                 Branch 49
               49:             Label
                               Kill
-              69:             Label
-              70:    6(float) Load 36(radius)
-              72:    46(bool) FOrdGreaterThanEqual 70 71
-                              SelectionMerge 74 None
-                              BranchConditional 72 73 74
-              73:               Label
-              75:    6(float)   Load 36(radius)
-              77:    6(float)   ExtInst 1(GLSL.std.450) 26(Pow) 75 76
-              78:    6(float)   FDiv 77 27
-              79:    6(float)   ExtInst 1(GLSL.std.450) 4(FAbs) 78
-              80:    7(fvec4)   Load 15(color)
-              81:    7(fvec4)   CompositeConstruct 79 79 79 79
-              82:    7(fvec4)   FSub 80 81
-                                Store 15(color) 82
-                                Branch 74
-              74:             Label
-              83:    7(fvec4) Load 15(color)
-                              Store 59(gl_FragColor) 83
-                              Return
                               FunctionEnd
