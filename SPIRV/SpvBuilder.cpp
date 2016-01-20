@@ -1804,7 +1804,9 @@ Block& Builder::makeNewBlock()
 
 Builder::LoopBlocks& Builder::makeNewLoop()
 {
-    loops.push({makeNewBlock(), makeNewBlock(), makeNewBlock(), makeNewBlock()});
+    // Older MSVC versions don't allow inlining of blocks below.
+    LoopBlocks blocks = {makeNewBlock(), makeNewBlock(), makeNewBlock(), makeNewBlock()};
+    loops.push(blocks);
     return loops.top();
 }
 
