@@ -205,12 +205,6 @@ public:
 
     void dump(std::vector<unsigned int>& out) const
     {
-        // skip the degenerate unreachable blocks
-        // TODO: code gen: skip all unreachable blocks (transitive closure)
-        //                 (but, until that's done safer to keep non-degenerate unreachable blocks, in case others depend on something)
-        if (unreachable && instructions.size() <= 2)
-            return;
-
         instructions[0]->dump(out);
         for (int i = 0; i < (int)localVariables.size(); ++i)
             localVariables[i]->dump(out);
