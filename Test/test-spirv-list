@@ -3,6 +3,7 @@
 # goes to the innermost target.
 spv.do-simple.vert
 spv.do-while-continue-break.vert
+spv.for-complex-condition.vert
 spv.for-continue-break.vert
 spv.for-simple.vert
 spv.for-notest.vert
