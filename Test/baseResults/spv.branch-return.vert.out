@@ -60,4 +60,4 @@ Linked vertex stage:
               33:     29(ptr) AccessChain 19(gl_Position) 28
                               Store 33 32
                               Return
-                                FunctionEnd
+                              FunctionEnd
