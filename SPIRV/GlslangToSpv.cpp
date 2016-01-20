@@ -1391,12 +1391,22 @@ bool TGlslangToSpvTraverser::visitLoop(glslang::TVisit /* visit */, glslang::TIn
 {
     auto blocks = builder.makeNewLoop();
     builder.createBranch(&blocks.head);
+    // Spec requires back edges to target header blocks, and every header block
+    // must dominate its merge block.  Make a header block first to ensure these
+    // conditions are met.  By definition, it will contain OpLoopMerge, followed
+    // by a block-ending branch.  But we don't want to put any other body/test
+    // instructions in it, since the body/test may have arbitrary instructions,
+    // including merges of its own.
+    builder.setBuildPoint(&blocks.head);
+    builder.createLoopMerge(&blocks.merge, &blocks.continue_target, spv::LoopControlMaskNone);
     if (node->testFirst() && node->getTest()) {
-        builder.setBuildPoint(&blocks.head);
+        spv::Block& test = builder.makeNewBlock();
+        builder.createBranch(&test);
+
+        builder.setBuildPoint(&test);
         node->getTest()->traverse(this);
         spv::Id condition =
             builder.accessChainLoad(convertGlslangToSpvType(node->getTest()->getType()));
-        builder.createLoopMerge(&blocks.merge, &blocks.continue_target, spv::LoopControlMaskNone);
         builder.createConditionalBranch(condition, &blocks.body, &blocks.merge);
 
         builder.setBuildPoint(&blocks.body);
@@ -1411,14 +1421,6 @@ bool TGlslangToSpvTraverser::visitLoop(glslang::TVisit /* visit */, glslang::TIn
             node->getTerminal()->traverse(this);
         builder.createBranch(&blocks.head);
     } else {
-        // Spec requires back edges to target header blocks, and every header
-        // block must dominate its merge block.  Make a header block first to
-        // ensure these conditions are met.  By definition, it will contain
-        // OpLoopMerge, followed by a block-ending branch.  But we don't want to
-        // put any other body instructions in it, since the body may have
-        // arbitrary instructions, including merges of its own.
-        builder.setBuildPoint(&blocks.head);
-        builder.createLoopMerge(&blocks.merge, &blocks.continue_target, spv::LoopControlMaskNone);
         builder.createBranch(&blocks.body);
 
         breakForLoop.push(true);
