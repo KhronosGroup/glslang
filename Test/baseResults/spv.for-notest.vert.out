@@ -50,4 +50,6 @@ Linked vertex stage:
               19:      6(int) IAdd 17 18
                               Store 8(i) 19
                               Branch 10
+              12:             Label
+                              Return
                               FunctionEnd

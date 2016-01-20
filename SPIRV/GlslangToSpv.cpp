@@ -1412,9 +1412,11 @@ bool TGlslangToSpvTraverser::visitLoop(glslang::TVisit /* visit */, glslang::TIn
         builder.createBranch(&blocks.head);
     } else {
         // Spec requires back edges to target header blocks, and every header
-        // block must dominate its merge block.  Create an empty header block
-        // here to ensure these conditions are met even when body contains
-        // non-trivial control flow.
+        // block must dominate its merge block.  Make a header block first to
+        // ensure these conditions are met.  By definition, it will contain
+        // OpLoopMerge, followed by a block-ending branch.  But we don't want to
+        // put any other body instructions in it, since the body may have
+        // arbitrary instructions, including merges of its own.
         builder.setBuildPoint(&blocks.head);
         builder.createLoopMerge(&blocks.merge, &blocks.continue_target, spv::LoopControlMaskNone);
         builder.createBranch(&blocks.body);
@@ -1435,12 +1437,9 @@ bool TGlslangToSpvTraverser::visitLoop(glslang::TVisit /* visit */, glslang::TIn
                 builder.accessChainLoad(convertGlslangToSpvType(node->getTest()->getType()));
             builder.createConditionalBranch(condition, &blocks.head, &blocks.merge);
         } else {
-            // TODO: unless there was a break instruction somewhere in the body,
-            // this is an infinite loop, so we should abort code generation with
-            // a warning.  As it stands now, nothing will jump to the merge
-            // block, and it may be dropped as unreachable by the SPIR-V dumper.
-            // That, in turn, will result in a non-existing %ID in the LoopMerge
-            // above.
+            // TODO: unless there was a break/return/discard instruction
+            // somewhere in the body, this is an infinite loop, so we should
+            // issue a warning.
             builder.createBranch(&blocks.head);
         }
     }

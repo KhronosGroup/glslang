@@ -855,24 +855,10 @@ void Builder::leaveFunction()
 
     // If our function did not contain a return, add a return void now.
     if (! block->isTerminated()) {
-
-        // Whether we're in an unreachable (non-entry) block.
-        bool unreachable = function.getEntryBlock() != block && block->getPredecessors().empty();
-
-        if (unreachable) {
-            // Given that this block is at the end of a function, it must be right after an
-            // explicit return, just remove it.
-            function.removeBlock(block);
-        } else {
-            // We'll add a return instruction at the end of the current block,
-            // which for a non-void function is really error recovery (?), as the source
-            // being translated should have had an explicit return, which would have been
-            // followed by an unreachable block, which was handled above.
-            if (function.getReturnType() == makeVoidType())
-                makeReturn(true);
-            else {
-                makeReturn(true, createUndefined(function.getReturnType()));
-            }
+        if (function.getReturnType() == makeVoidType())
+            makeReturn(true);
+        else {
+            makeReturn(true, createUndefined(function.getReturnType()));
         }
     }
 }
