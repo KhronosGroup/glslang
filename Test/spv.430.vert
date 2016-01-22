@@ -30,3 +30,7 @@ layout(binding = 7) uniform anonblock { int aoeu; } ;
 layout(binding = 4) uniform sampler2D sampb1;
 layout(binding = 5) uniform sampler2D sampb2[10];
 layout(binding = 31) uniform sampler2D sampb4;
+
+struct S { mediump float a; highp uvec2 b; highp vec3 c; };
+struct SS { vec4 b; S s; vec4 c; };
+layout(location = 0) flat out SS var;
