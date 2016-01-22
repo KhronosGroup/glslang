@@ -346,7 +346,7 @@ Linked fragment stage:
                               ImageWrite 224 225 227 Sample 226
                               Store 229(ui) 19
              233:      6(int) Load 132(ic1D)
-             236:    235(ptr) ImageTexelPointer 232(ii1D) 233 0
+             236:    235(ptr) ImageTexelPointer 232(ii1D) 233 19
              238:      6(int) AtomicIAdd 236 237 19 234
              239:     20(ptr) AccessChain 9(iv) 19
              240:      6(int) Load 239
@@ -355,13 +355,13 @@ Linked fragment stage:
                               Store 242 241
              246:   29(ivec2) Load 142(ic2D)
              249:     18(int) Load 248(value)
-             251:    250(ptr) ImageTexelPointer 245(ui2D) 246 0
+             251:    250(ptr) ImageTexelPointer 245(ui2D) 246 19
              252:     18(int) AtomicIAdd 251 237 19 249
              253:     18(int) Load 229(ui)
              254:     18(int) IAdd 253 252
                               Store 229(ui) 254
              255:      6(int) Load 132(ic1D)
-             257:    235(ptr) ImageTexelPointer 232(ii1D) 255 0
+             257:    235(ptr) ImageTexelPointer 232(ii1D) 255 19
              258:      6(int) AtomicSMin 257 237 19 256
              259:     20(ptr) AccessChain 9(iv) 19
              260:      6(int) Load 259
@@ -370,13 +370,13 @@ Linked fragment stage:
                               Store 262 261
              263:   29(ivec2) Load 142(ic2D)
              264:     18(int) Load 248(value)
-             265:    250(ptr) ImageTexelPointer 245(ui2D) 263 0
+             265:    250(ptr) ImageTexelPointer 245(ui2D) 263 19
              266:     18(int) AtomicUMin 265 237 19 264
              267:     18(int) Load 229(ui)
              268:     18(int) IAdd 267 266
                               Store 229(ui) 268
              269:      6(int) Load 132(ic1D)
-             271:    235(ptr) ImageTexelPointer 232(ii1D) 269 0
+             271:    235(ptr) ImageTexelPointer 232(ii1D) 269 19
              272:      6(int) AtomicSMax 271 237 19 270
              273:     20(ptr) AccessChain 9(iv) 19
              274:      6(int) Load 273
@@ -385,13 +385,13 @@ Linked fragment stage:
                               Store 276 275
              277:   29(ivec2) Load 142(ic2D)
              278:     18(int) Load 248(value)
-             279:    250(ptr) ImageTexelPointer 245(ui2D) 277 0
+             279:    250(ptr) ImageTexelPointer 245(ui2D) 277 19
              280:     18(int) AtomicUMax 279 237 19 278
              281:     18(int) Load 229(ui)
              282:     18(int) IAdd 281 280
                               Store 229(ui) 282
              283:      6(int) Load 132(ic1D)
-             285:    235(ptr) ImageTexelPointer 232(ii1D) 283 0
+             285:    235(ptr) ImageTexelPointer 232(ii1D) 283 19
              286:      6(int) AtomicAnd 285 237 19 284
              287:     20(ptr) AccessChain 9(iv) 19
              288:      6(int) Load 287
@@ -400,13 +400,13 @@ Linked fragment stage:
                               Store 290 289
              291:   29(ivec2) Load 142(ic2D)
              292:     18(int) Load 248(value)
-             293:    250(ptr) ImageTexelPointer 245(ui2D) 291 0
+             293:    250(ptr) ImageTexelPointer 245(ui2D) 291 19
              294:     18(int) AtomicAnd 293 237 19 292
              295:     18(int) Load 229(ui)
              296:     18(int) IAdd 295 294
                               Store 229(ui) 296
              297:      6(int) Load 132(ic1D)
-             299:    235(ptr) ImageTexelPointer 232(ii1D) 297 0
+             299:    235(ptr) ImageTexelPointer 232(ii1D) 297 19
              300:      6(int) AtomicOr 299 237 19 298
              301:     20(ptr) AccessChain 9(iv) 19
              302:      6(int) Load 301
@@ -415,13 +415,13 @@ Linked fragment stage:
                               Store 304 303
              305:   29(ivec2) Load 142(ic2D)
              306:     18(int) Load 248(value)
-             307:    250(ptr) ImageTexelPointer 245(ui2D) 305 0
+             307:    250(ptr) ImageTexelPointer 245(ui2D) 305 19
              308:     18(int) AtomicOr 307 237 19 306
              309:     18(int) Load 229(ui)
              310:     18(int) IAdd 309 308
                               Store 229(ui) 310
              311:      6(int) Load 132(ic1D)
-             313:    235(ptr) ImageTexelPointer 232(ii1D) 311 0
+             313:    235(ptr) ImageTexelPointer 232(ii1D) 311 19
              314:      6(int) AtomicXor 313 237 19 312
              315:     20(ptr) AccessChain 9(iv) 19
              316:      6(int) Load 315
@@ -430,13 +430,13 @@ Linked fragment stage:
                               Store 318 317
              319:   29(ivec2) Load 142(ic2D)
              320:     18(int) Load 248(value)
-             321:    250(ptr) ImageTexelPointer 245(ui2D) 319 0
+             321:    250(ptr) ImageTexelPointer 245(ui2D) 319 19
              322:     18(int) AtomicXor 321 237 19 320
              323:     18(int) Load 229(ui)
              324:     18(int) IAdd 323 322
                               Store 229(ui) 324
              325:      6(int) Load 132(ic1D)
-             327:    235(ptr) ImageTexelPointer 232(ii1D) 325 0
+             327:    235(ptr) ImageTexelPointer 232(ii1D) 325 19
              328:      6(int) AtomicExchange 327 237 19 326
              329:     20(ptr) AccessChain 9(iv) 19
              330:      6(int) Load 329
@@ -445,13 +445,13 @@ Linked fragment stage:
                               Store 332 331
              333:   29(ivec2) Load 142(ic2D)
              334:     18(int) Load 248(value)
-             335:    250(ptr) ImageTexelPointer 245(ui2D) 333 0
+             335:    250(ptr) ImageTexelPointer 245(ui2D) 333 19
              336:     18(int) AtomicExchange 335 237 19 334
              337:     18(int) Load 229(ui)
              338:     18(int) IAdd 337 336
                               Store 229(ui) 338
              339:      6(int) Load 132(ic1D)
-             342:    235(ptr) ImageTexelPointer 232(ii1D) 339 0
+             342:    235(ptr) ImageTexelPointer 232(ii1D) 339 19
              343:      6(int) AtomicCompareExchange 342 237 19 19 341 340
              344:     20(ptr) AccessChain 9(iv) 19
              345:      6(int) Load 344
@@ -460,7 +460,7 @@ Linked fragment stage:
                               Store 347 346
              348:   29(ivec2) Load 142(ic2D)
              350:     18(int) Load 248(value)
-             351:    250(ptr) ImageTexelPointer 245(ui2D) 348 0
+             351:    250(ptr) ImageTexelPointer 245(ui2D) 348 19
              352:     18(int) AtomicCompareExchange 351 237 19 19 350 349
              353:     18(int) Load 229(ui)
              354:     18(int) IAdd 353 352

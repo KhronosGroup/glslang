@@ -71,7 +71,7 @@ Linked tessellation control stage:
                3:             TypeFunction 2
                6:             TypeInt 32 0
                7:      6(int) Constant 1
-               8:      6(int) Constant 1023
+               8:      6(int) Constant 4062
                9:      6(int) Constant 0
               10:             TypeInt 32 1
               11:             TypePointer Function 10(int)
