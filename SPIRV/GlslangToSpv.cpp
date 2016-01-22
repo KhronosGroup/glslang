@@ -2087,13 +2087,12 @@ spv::Id TGlslangToSpvTraverser::createImageTextureFunctionCall(glslang::TIntermO
         } else if (node->isSparseImage()) {
             spv::MissingFunctionality("sparse image functions");
             return spv::NoResult;
-        }
-        else {
+        } else {
             // Process image atomic operations
 
             // GLSL "IMAGE_PARAMS" will involve in constructing an image texel pointer and this pointer,
             // as the first source operand, is required by SPIR-V atomic operations.
-            operands.push_back(sampler.ms ? *(opIt++) : 0); // For non-MS, the value should be 0
+            operands.push_back(sampler.ms ? *(opIt++) : builder.makeUintConstant(0)); // For non-MS, the value should be 0
 
             spv::Id resultTypeId = builder.makePointer(spv::StorageClassImage, convertGlslangToSpvType(node->getType()));
             spv::Id pointer = builder.createOp(spv::OpImageTexelPointer, resultTypeId, operands);
