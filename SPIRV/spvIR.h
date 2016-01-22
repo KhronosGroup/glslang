@@ -70,7 +70,17 @@ const Id NoType = 0;
 
 const unsigned int BadValue = 0xFFFFFFFF;
 const Decoration NoPrecision = (Decoration)BadValue;
-const MemorySemanticsMask MemorySemanticsAllMemory = (MemorySemanticsMask)0x3FF;
+const MemorySemanticsMask MemorySemanticsAllMemory = 
+                (MemorySemanticsMask)(MemorySemanticsAcquireMask |
+                                      MemorySemanticsReleaseMask |
+                                      MemorySemanticsAcquireReleaseMask |
+                                      MemorySemanticsSequentiallyConsistentMask |
+                                      MemorySemanticsUniformMemoryMask |
+                                      MemorySemanticsSubgroupMemoryMask |
+                                      MemorySemanticsWorkgroupMemoryMask |
+                                      MemorySemanticsCrossWorkgroupMemoryMask |
+                                      MemorySemanticsAtomicCounterMemoryMask |
+                                      MemorySemanticsImageMemoryMask);
 
 //
 // SPIR-V IR instruction.
