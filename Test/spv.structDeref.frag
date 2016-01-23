@@ -1,7 +1,7 @@
-#version 130
+#version 140
 
 uniform sampler2D samp2D;
-varying vec2 coord;
+in vec2 coord;
 
 struct s0 {
     int i;

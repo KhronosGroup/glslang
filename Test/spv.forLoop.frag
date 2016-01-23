@@ -1,4 +1,4 @@
-#version 130
+#version 140
 
 uniform vec4 bigColor;
 in vec4 BaseColor;

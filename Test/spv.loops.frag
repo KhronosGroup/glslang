@@ -1,4 +1,4 @@
-#version 130
+#version 140
 uniform vec4 bigColor;
 uniform vec4 bigColor1_1;
 uniform vec4 bigColor1_2;
@@ -11,7 +11,7 @@ uniform vec4 bigColor6;
 uniform vec4 bigColor7;
 uniform vec4 bigColor8;
 
-varying vec4 BaseColor;
+in vec4 BaseColor;
 
 uniform float d;
 uniform float d2;

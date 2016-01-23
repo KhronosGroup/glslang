@@ -1,8 +1,8 @@
-#version 130
+#version 140
 
 uniform sampler2D samp2D;
-varying vec2 coord;
-varying vec4 color;
+in vec2 coord;
+in vec4 color;
 
 struct s1 {
     int i;

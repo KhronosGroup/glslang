@@ -1,4 +1,4 @@
-#version 120
+#version 140
 
 attribute vec3 v3;
 attribute vec4 v4;

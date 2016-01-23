@@ -1,4 +1,6 @@
 spv.precision.frag
+Warning, version 310 is not yet complete; most version-specific features are present, but some are missing.
+
 
 Linked fragment stage:
 
@@ -12,7 +14,7 @@ Linked fragment stage:
                               MemoryModel Logical GLSL450
                               EntryPoint Fragment 4  "main" 23 59 61 73
                               ExecutionMode 4 OriginLowerLeft
-                              Source ESSL 300
+                              Source ESSL 310
                               Name 4  "main"
                               Name 12  "foo(vf3;"
                               Name 11  "mv3"

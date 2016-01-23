@@ -1,4 +1,6 @@
 spv.100ops.frag
+Warning, version 310 is not yet complete; most version-specific features are present, but some are missing.
+
 
 Linked fragment stage:
 
@@ -12,7 +14,7 @@ Linked fragment stage:
                               MemoryModel Logical GLSL450
                               EntryPoint Fragment 4  "main" 36
                               ExecutionMode 4 OriginLowerLeft
-                              Source ESSL 100
+                              Source ESSL 310
                               Name 4  "main"
                               Name 8  "foo("
                               Name 11  "face1"
@@ -20,13 +22,13 @@ Linked fragment stage:
                               Name 17  "z"
                               Name 21  "low"
                               Name 26  "high"
-                              Name 36  "gl_FragColor"
+                              Name 36  "Color"
                               Decorate 11(face1) RelaxedPrecision
                               Decorate 13(face2) RelaxedPrecision
                               Decorate 17(z) RelaxedPrecision
                               Decorate 21(low) RelaxedPrecision
                               Decorate 26(high) RelaxedPrecision
-                              Decorate 36(gl_FragColor) RelaxedPrecision
+                              Decorate 36(Color) RelaxedPrecision
                2:             TypeVoid
                3:             TypeFunction 2
                6:             TypeFloat 32
@@ -47,7 +49,7 @@ Linked fragment stage:
               28:             TypeBool
               34:             TypeVector 6(float) 4
               35:             TypePointer Output 34(fvec4)
-36(gl_FragColor):     35(ptr) Variable Output
+       36(Color):     35(ptr) Variable Output
          4(main):           2 Function None 3
                5:             Label
            17(z):     16(ptr) Variable Function
@@ -75,7 +77,7 @@ Linked fragment stage:
               42:    6(float) FunctionCall 8(foo()
               43:   34(fvec4) CompositeConstruct 42 42 42 42
               44:   34(fvec4) FAdd 41 43
-                              Store 36(gl_FragColor) 44
+                              Store 36(Color) 44
                               Return
                               FunctionEnd
          8(foo():    6(float) Function None 7

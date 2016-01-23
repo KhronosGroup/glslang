@@ -1,4 +1,6 @@
 spv.300layout.vert
+Warning, version 310 is not yet complete; most version-specific features are present, but some are missing.
+
 
 Linked vertex stage:
 
@@ -11,7 +13,7 @@ Linked vertex stage:
                1:             ExtInstImport  "GLSL.std.450"
                               MemoryModel Logical GLSL450
                               EntryPoint Vertex 4  "main" 9 11 99 101 109 121 129 163 164
-                              Source ESSL 300
+                              Source ESSL 310
                               Name 4  "main"
                               Name 9  "pos"
                               Name 11  "p"

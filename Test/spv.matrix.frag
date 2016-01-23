@@ -1,4 +1,4 @@
-#version 130
+#version 140
 
 in mat3x4 m1;
 in mat3x4 m2;

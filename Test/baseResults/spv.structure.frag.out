@@ -1,6 +1,4 @@
 spv.structure.frag
-WARNING: 0:3: varying deprecated in version 130; may be removed in future release
-
 
 Linked fragment stage:
 
@@ -14,7 +12,7 @@ Linked fragment stage:
                               MemoryModel Logical GLSL450
                               EntryPoint Fragment 4  "main" 45 54
                               ExecutionMode 4 OriginLowerLeft
-                              Source GLSL 130
+                              Source GLSL 140
                               Name 4  "main"
                               Name 8  "scale"
                               Name 18  "lunarStruct1"
