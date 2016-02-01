@@ -127,3 +127,15 @@ void foo3()
 {
     mat3x2 r32 = mm2 * mm32;
 }
+
+struct cag {
+    int   i;
+    float f;
+    bool  b;
+};
+const cag a0[3] = cag[3](cag(3, 2.0, true), cag(1, 5.0, true), cag(1, 9.0, false));
+
+void foo4()
+{
+    int a = int(a0[2].f);
+}
