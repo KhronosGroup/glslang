@@ -10,6 +10,8 @@ Linked tessellation control stage:
 // Id's are bound by 93
 
                               Capability Tessellation
+                              Capability TessellationPointSize
+                              Capability ClipDistance
                1:             ExtInstImport  "GLSL.std.450"
                               MemoryModel Logical GLSL450
                               EntryPoint TessellationControl 4  "main" 23 40 43 46 52 66 73 79 83 84 87 88 91 92

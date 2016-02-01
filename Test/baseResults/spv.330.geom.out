@@ -8,6 +8,8 @@ Linked geometry stage:
 // Id's are bound by 32
 
                               Capability Geometry
+                              Capability ClipDistance
+                              Capability GeometryStreams
                1:             ExtInstImport  "GLSL.std.450"
                               MemoryModel Logical GLSL450
                               EntryPoint Geometry 4  "main" 13 20

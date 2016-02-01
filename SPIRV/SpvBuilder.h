@@ -55,6 +55,7 @@
 #include <memory>
 #include <stack>
 #include <map>
+#include <set>
 
 namespace spv {
 
@@ -78,7 +79,7 @@ public:
         memoryModel = mem;
     }
 
-    void addCapability(spv::Capability cap) { capabilities.push_back(cap); }
+    void addCapability(spv::Capability cap) { capabilities.insert(cap); }
 
     // To get a new <id> for anything needing a new one.
     Id getUniqueId() { return ++uniqueId; }
@@ -525,7 +526,7 @@ public:
     std::vector<const char*> extensions;
     AddressingModel addressModel;
     MemoryModel memoryModel;
-    std::vector<spv::Capability> capabilities;
+    std::set<spv::Capability> capabilities;
     int builderNumber;
     Module module;
     Block* buildPoint;
