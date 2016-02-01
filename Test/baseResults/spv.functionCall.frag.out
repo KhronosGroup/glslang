@@ -1,6 +1,4 @@
 spv.functionCall.frag
-WARNING: 0:4: varying deprecated in version 130; may be removed in future release
-
 
 Linked fragment stage:
 
@@ -14,7 +12,7 @@ Linked fragment stage:
                               MemoryModel Logical GLSL450
                               EntryPoint Fragment 4  "main" 58 69
                               ExecutionMode 4 OriginLowerLeft
-                              Source GLSL 130
+                              Source GLSL 140
                               Name 4  "main"
                               Name 11  "foo(vf4;"
                               Name 10  "bar"

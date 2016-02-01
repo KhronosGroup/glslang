@@ -1,7 +1,7 @@
-#version 120
+#version 140
 
 uniform vec4 bigColor;
-varying vec4 BaseColor;
+in vec4 BaseColor;
 uniform float d;
 
 float bar = 2.0;

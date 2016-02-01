@@ -1,7 +1,7 @@
-#version 130
+#version 140
 
 uniform sampler2D samp2D;
-varying mediump vec2 coord;
+in mediump vec2 coord;
 
 struct lunarStruct1 {
     int i;

@@ -1,4 +1,4 @@
-#version 130
+#version 140
 uniform sampler2D texSampler2D;
 uniform vec3 inColor;
 uniform vec4 color[6];

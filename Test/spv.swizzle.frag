@@ -1,10 +1,10 @@
-#version 110
+#version 140
 
 uniform float blend;
 uniform vec4 u;
 uniform bool p;
 
-varying vec2 t;
+in vec2 t;
 
 void main()
 {

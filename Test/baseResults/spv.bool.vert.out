@@ -10,6 +10,8 @@ Linked vertex stage:
 // Id's are bound by 50
 
                               Capability Shader
+                              Capability ClipDistance
+                              Capability CullDistance
                1:             ExtInstImport  "GLSL.std.450"
                               MemoryModel Logical GLSL450
                               EntryPoint Vertex 4  "main" 24 48 49

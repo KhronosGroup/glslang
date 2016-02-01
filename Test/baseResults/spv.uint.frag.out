@@ -1,4 +1,6 @@
 spv.uint.frag
+Warning, version 310 is not yet complete; most version-specific features are present, but some are missing.
+
 
 Linked fragment stage:
 
@@ -12,7 +14,7 @@ Linked fragment stage:
                               MemoryModel Logical GLSL450
                               EntryPoint Fragment 4  "main" 15 68 77 200
                               ExecutionMode 4 OriginLowerLeft
-                              Source ESSL 300
+                              Source ESSL 310
                               Name 4  "main"
                               Name 8  "count"
                               Name 12  "u"

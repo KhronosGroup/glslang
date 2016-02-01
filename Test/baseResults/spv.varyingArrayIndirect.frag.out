@@ -1,9 +1,4 @@
 spv.varyingArrayIndirect.frag
-WARNING: 0:3: varying deprecated in version 130; may be removed in future release
-WARNING: 0:4: varying deprecated in version 130; may be removed in future release
-WARNING: 0:6: varying deprecated in version 130; may be removed in future release
-WARNING: 0:8: varying deprecated in version 130; may be removed in future release
-
 
 Linked fragment stage:
 
@@ -17,13 +12,13 @@ Linked fragment stage:
                               MemoryModel Logical GLSL450
                               EntryPoint Fragment 4  "main" 19 30 45 50 56
                               ExecutionMode 4 OriginLowerLeft
-                              Source GLSL 130
+                              Source GLSL 140
                               Name 4  "main"
                               Name 9  "texColor"
                               Name 13  "texSampler2D"
                               Name 19  "userIn"
                               Name 22  "b"
-                              Name 30  "gl_TexCoord"
+                              Name 30  "TexCoord"
                               Name 31  "a"
                               Name 45  "color"
                               Name 50  "alpha"
@@ -49,7 +44,7 @@ Linked fragment stage:
               27:     15(int) Constant 6
               28:             TypeArray 7(fvec4) 27
               29:             TypePointer Input 28
- 30(gl_TexCoord):     29(ptr) Variable Input
+    30(TexCoord):     29(ptr) Variable Input
            31(a):     21(ptr) Variable UniformConstant
               36:     20(int) Constant 5
               40:             TypeVector 6(float) 2
@@ -69,10 +64,10 @@ Linked fragment stage:
               25:     24(ptr) AccessChain 19(userIn) 23
               26:    7(fvec4) Load 25
               32:     20(int) Load 31(a)
-              33:     24(ptr) AccessChain 30(gl_TexCoord) 32
+              33:     24(ptr) AccessChain 30(TexCoord) 32
               34:    7(fvec4) Load 33
               35:    7(fvec4) FAdd 26 34
-              37:     24(ptr) AccessChain 30(gl_TexCoord) 36
+              37:     24(ptr) AccessChain 30(TexCoord) 36
               38:    7(fvec4) Load 37
               39:    7(fvec4) FAdd 35 38
               41:    6(float) CompositeExtract 39 0
@@ -87,10 +82,10 @@ Linked fragment stage:
               51:    6(float) Load 50(alpha)
               54:     53(ptr) AccessChain 9(texColor) 52
                               Store 54 51
-              58:     24(ptr) AccessChain 30(gl_TexCoord) 57
+              58:     24(ptr) AccessChain 30(TexCoord) 57
               59:    7(fvec4) Load 58
               60:     20(int) Load 22(b)
-              61:     24(ptr) AccessChain 30(gl_TexCoord) 60
+              61:     24(ptr) AccessChain 30(TexCoord) 60
               62:    7(fvec4) Load 61
               63:    7(fvec4) FAdd 59 62
               64:    7(fvec4) Load 9(texColor)

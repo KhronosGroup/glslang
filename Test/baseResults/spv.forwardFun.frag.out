@@ -12,7 +12,7 @@ Linked fragment stage:
                               MemoryModel Logical GLSL450
                               EntryPoint Fragment 4  "main" 20 30
                               ExecutionMode 4 OriginLowerLeft
-                              Source ESSL 100
+                              Source GLSL 140
                               Name 4  "main"
                               Name 6  "bar("
                               Name 10  "unreachableReturn("
@@ -25,12 +25,6 @@ Linked fragment stage:
                               Name 30  "gl_FragColor"
                               Name 36  "d"
                               Name 60  "bigColor"
-                              Decorate 18(color) RelaxedPrecision
-                              Decorate 20(BaseColor) RelaxedPrecision
-                              Decorate 27(f) RelaxedPrecision
-                              Decorate 30(gl_FragColor) RelaxedPrecision
-                              Decorate 36(d) RelaxedPrecision
-                              Decorate 60(bigColor) RelaxedPrecision
                2:             TypeVoid
                3:             TypeFunction 2
                8:             TypeFloat 32

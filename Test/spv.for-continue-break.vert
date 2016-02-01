@@ -1,4 +1,4 @@
-#version 300 es
+#version 310 es
 void main() {
   int i;
   int A, B, C, D, E, F, G;

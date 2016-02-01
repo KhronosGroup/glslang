@@ -1,4 +1,4 @@
-#version 130
+#version 140
 
 uniform bool  u_b;
 uniform bvec2 u_b2;

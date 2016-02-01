@@ -1,19 +1,19 @@
-#version 130
+#version 140
 uniform sampler2D texSampler2D;
-varying vec4 color;
-varying float alpha;
+in  vec4 color;
+in  float alpha;
 
-varying vec4 gl_TexCoord[6];
+in  vec4 TexCoord[6];
 
-varying vec4 foo[3];
+in  vec4 foo[3];
 
 void main()
 {
-	vec4 texColor = texture(texSampler2D, vec2(gl_TexCoord[4] + gl_TexCoord[5]));
+	vec4 texColor = texture(texSampler2D, vec2(TexCoord[4] + TexCoord[5]));
 
 	texColor += color;
 
 	texColor.a = alpha;
 
-    gl_FragColor = foo[1] + gl_TexCoord[0] + gl_TexCoord[4] + texColor;
+    gl_FragColor = foo[1] + TexCoord[0] + TexCoord[4] + texColor;
 }

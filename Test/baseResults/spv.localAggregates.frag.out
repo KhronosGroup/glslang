@@ -1,7 +1,4 @@
 spv.localAggregates.frag
-WARNING: 0:4: varying deprecated in version 130; may be removed in future release
-WARNING: 0:5: varying deprecated in version 130; may be removed in future release
-
 
 Linked fragment stage:
 
@@ -15,7 +12,7 @@ Linked fragment stage:
                               MemoryModel Logical GLSL450
                               EntryPoint Fragment 4  "main" 40 98 108
                               ExecutionMode 4 OriginLowerLeft
-                              Source GLSL 130
+                              Source GLSL 140
                               Name 4  "main"
                               Name 8  "s1"
                               MemberName 8(s1) 0  "i"

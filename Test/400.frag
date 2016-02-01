@@ -185,3 +185,13 @@ void qlod()
 }
 
 struct SKeyMem { int precise; } KeyMem;     // ERROR, keyword can't be a member
+
+uniform uint uu;
+out int iout;
+
+void bitwiseConv()
+{
+    iout = uu & i;
+    iout += uu ^ i;
+    iout += i | uu;
+}

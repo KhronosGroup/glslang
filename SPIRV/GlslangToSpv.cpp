@@ -88,6 +88,7 @@ public:
     void dumpSpv(std::vector<unsigned int>& out);
 
 protected:
+    spv::BuiltIn TranslateBuiltInDecoration(glslang::TBuiltInVariable);
     spv::Id createSpvVariable(const glslang::TIntermSymbol*);
     spv::Id getSampledType(const glslang::TSampler&);
     spv::Id convertGlslangToSpvType(const glslang::TType& type);
@@ -120,6 +121,7 @@ protected:
     void addDecoration(spv::Id id, spv::Decoration dec);
     void addDecoration(spv::Id id, spv::Decoration dec, unsigned value);
     void addMemberDecoration(spv::Id id, int member, spv::Decoration dec);
+    void addMemberDecoration(spv::Id id, int member, spv::Decoration dec, unsigned value);
     spv::Id createSpvSpecConstant(const glslang::TIntermTyped&);
     spv::Id createSpvConstant(const glslang::TType& type, const glslang::TConstUnionArray&, int& nextConst, bool specConstant);
     bool isTrivialLeaf(const glslang::TIntermTyped* node);
@@ -319,7 +321,7 @@ spv::Decoration TranslateInterpolationDecoration(const glslang::TQualifier& qual
         return (spv::Decoration)spv::BadValue;
 }
 
-// If glslang type is invaraiant, return SPIR-V invariant decoration.
+// If glslang type is invariant, return SPIR-V invariant decoration.
 spv::Decoration TranslateInvariantDecoration(const glslang::TQualifier& qualifier)
 {
     if (qualifier.invariant)
@@ -329,13 +331,34 @@ spv::Decoration TranslateInvariantDecoration(const glslang::TQualifier& qualifie
 }
 
 // Translate glslang built-in variable to SPIR-V built in decoration.
-spv::BuiltIn TranslateBuiltInDecoration(glslang::TBuiltInVariable builtIn)
+spv::BuiltIn TGlslangToSpvTraverser::TranslateBuiltInDecoration(glslang::TBuiltInVariable builtIn)
 {
     switch (builtIn) {
+    case glslang::EbvPointSize:
+        switch (glslangIntermediate->getStage()) {
+        case EShLangGeometry:
+            builder.addCapability(spv::CapabilityGeometryPointSize);
+            break;
+        case EShLangTessControl:
+        case EShLangTessEvaluation:
+            builder.addCapability(spv::CapabilityTessellationPointSize);
+            break;
+        }
+        return spv::BuiltInPointSize;
+
+    case glslang::EbvClipDistance:
+        builder.addCapability(spv::CapabilityClipDistance);
+        return spv::BuiltInClipDistance;
+
+    case glslang::EbvCullDistance:
+        builder.addCapability(spv::CapabilityCullDistance);
+        return spv::BuiltInCullDistance;
+
+    case glslang::EbvViewportIndex:
+        // TODO: builder.addCapability(spv::CapabilityMultiViewport);
+        return spv::BuiltInViewportIndex;
+
     case glslang::EbvPosition:             return spv::BuiltInPosition;
-    case glslang::EbvPointSize:            return spv::BuiltInPointSize;
-    case glslang::EbvClipDistance:         return spv::BuiltInClipDistance;
-    case glslang::EbvCullDistance:         return spv::BuiltInCullDistance;
     case glslang::EbvVertexId:             return spv::BuiltInVertexId;
     case glslang::EbvInstanceId:           return spv::BuiltInInstanceId;
     case glslang::EbvBaseVertex:
@@ -347,7 +370,6 @@ spv::BuiltIn TranslateBuiltInDecoration(glslang::TBuiltInVariable builtIn)
     case glslang::EbvPrimitiveId:          return spv::BuiltInPrimitiveId;
     case glslang::EbvInvocationId:         return spv::BuiltInInvocationId;
     case glslang::EbvLayer:                return spv::BuiltInLayer;
-    case glslang::EbvViewportIndex:        return spv::BuiltInViewportIndex;
     case glslang::EbvTessLevelInner:       return spv::BuiltInTessLevelInner;
     case glslang::EbvTessLevelOuter:       return spv::BuiltInTessLevelOuter;
     case glslang::EbvTessCoord:            return spv::BuiltInTessCoord;
@@ -476,8 +498,10 @@ TGlslangToSpvTraverser::TGlslangToSpvTraverser(const glslang::TIntermediate* gls
 
     // Add the top-level modes for this shader.
 
-    if (glslangIntermediate->getXfbMode())
+    if (glslangIntermediate->getXfbMode()) {
+        builder.addCapability(spv::CapabilityTransformFeedback);
         builder.addExecutionMode(shaderEntry, spv::ExecutionModeXfb);
+    }
 
     unsigned int mode;
     switch (glslangIntermediate->getStage()) {
@@ -1659,16 +1683,19 @@ spv::Id TGlslangToSpvTraverser::convertGlslangToSpvType(const glslang::TType& ty
                     // built-in variable decorations
                     spv::BuiltIn builtIn = TranslateBuiltInDecoration(glslangType.getQualifier().builtIn);
                     if (builtIn != spv::BadValue)
-                        builder.addMemberDecoration(spvType, member, spv::DecorationBuiltIn, (int)builtIn);
+                        addMemberDecoration(spvType, member, spv::DecorationBuiltIn, (int)builtIn);
                 }
             }
 
             // Decorate the structure
             addDecoration(spvType, TranslateLayoutDecoration(type, qualifier.layoutMatrix));
             addDecoration(spvType, TranslateBlockDecoration(type));
-            if (type.getQualifier().hasStream())
+            if (type.getQualifier().hasStream()) {
+                builder.addCapability(spv::CapabilityGeometryStreams);
                 builder.addDecoration(spvType, spv::DecorationStream, type.getQualifier().layoutStream);
+            }
             if (glslangIntermediate->getXfbMode()) {
+                builder.addCapability(spv::CapabilityTransformFeedback);
                 if (type.getQualifier().hasXfbStride())
                     builder.addDecoration(spvType, spv::DecorationXfbStride, type.getQualifier().layoutXfbStride);
                 if (type.getQualifier().hasXfbBuffer())
@@ -2787,24 +2814,31 @@ spv::Id TGlslangToSpvTraverser::createUnaryOperation(glslang::TOperator op, spv:
         unaryOp = spv::OpFwidth;
         break;
     case glslang::EOpDPdxFine:
+        builder.addCapability(spv::CapabilityDerivativeControl);
         unaryOp = spv::OpDPdxFine;
         break;
     case glslang::EOpDPdyFine:
+        builder.addCapability(spv::CapabilityDerivativeControl);
         unaryOp = spv::OpDPdyFine;
         break;
     case glslang::EOpFwidthFine:
+        builder.addCapability(spv::CapabilityDerivativeControl);
         unaryOp = spv::OpFwidthFine;
         break;
     case glslang::EOpDPdxCoarse:
+        builder.addCapability(spv::CapabilityDerivativeControl);
         unaryOp = spv::OpDPdxCoarse;
         break;
     case glslang::EOpDPdyCoarse:
+        builder.addCapability(spv::CapabilityDerivativeControl);
         unaryOp = spv::OpDPdyCoarse;
         break;
     case glslang::EOpFwidthCoarse:
+        builder.addCapability(spv::CapabilityDerivativeControl);
         unaryOp = spv::OpFwidthCoarse;
         break;
     case glslang::EOpInterpolateAtCentroid:
+        builder.addCapability(spv::CapabilityInterpolationFunction);
         libCall = spv::GLSLstd450InterpolateAtCentroid;
         break;
     case glslang::EOpAny:
@@ -3180,9 +3214,11 @@ spv::Id TGlslangToSpvTraverser::createMiscOperation(glslang::TOperator op, spv::
         libCall = spv::GLSLstd450Refract;
         break;
     case glslang::EOpInterpolateAtSample:
+        builder.addCapability(spv::CapabilityInterpolationFunction);
         libCall = spv::GLSLstd450InterpolateAtSample;
         break;
     case glslang::EOpInterpolateAtOffset:
+        builder.addCapability(spv::CapabilityInterpolationFunction);
         libCall = spv::GLSLstd450InterpolateAtOffset;
         break;
     case glslang::EOpAddCarry:
@@ -3352,6 +3388,7 @@ spv::Id TGlslangToSpvTraverser::getSymbolId(const glslang::TIntermSymbol* symbol
         if (symbol->getQualifier().hasComponent())
             builder.addDecoration(id, spv::DecorationComponent, symbol->getQualifier().layoutComponent);
         if (glslangIntermediate->getXfbMode()) {
+            builder.addCapability(spv::CapabilityTransformFeedback);
             if (symbol->getQualifier().hasXfbStride())
                 builder.addDecoration(id, spv::DecorationXfbStride, symbol->getQualifier().layoutXfbStride);
             if (symbol->getQualifier().hasXfbBuffer())
@@ -3362,13 +3399,16 @@ spv::Id TGlslangToSpvTraverser::getSymbolId(const glslang::TIntermSymbol* symbol
     }
 
     addDecoration(id, TranslateInvariantDecoration(symbol->getType().getQualifier()));
-    if (symbol->getQualifier().hasStream())
+    if (symbol->getQualifier().hasStream()) {
+        builder.addCapability(spv::CapabilityGeometryStreams);
         builder.addDecoration(id, spv::DecorationStream, symbol->getQualifier().layoutStream);
+    }
     if (symbol->getQualifier().hasSet())
         builder.addDecoration(id, spv::DecorationDescriptorSet, symbol->getQualifier().layoutSet);
     if (symbol->getQualifier().hasBinding())
         builder.addDecoration(id, spv::DecorationBinding, symbol->getQualifier().layoutBinding);
     if (glslangIntermediate->getXfbMode()) {
+        builder.addCapability(spv::CapabilityTransformFeedback);
         if (symbol->getQualifier().hasXfbStride())
             builder.addDecoration(id, spv::DecorationXfbStride, symbol->getQualifier().layoutXfbStride);
         if (symbol->getQualifier().hasXfbBuffer())
@@ -3378,7 +3418,7 @@ spv::Id TGlslangToSpvTraverser::getSymbolId(const glslang::TIntermSymbol* symbol
     // built-in variable decorations
     spv::BuiltIn builtIn = TranslateBuiltInDecoration(symbol->getQualifier().builtIn);
     if (builtIn != spv::BadValue)
-        builder.addDecoration(id, spv::DecorationBuiltIn, (int)builtIn);
+        addDecoration(id, spv::DecorationBuiltIn, (int)builtIn);
 
     return id;
 }
@@ -3402,6 +3442,13 @@ void TGlslangToSpvTraverser::addMemberDecoration(spv::Id id, int member, spv::De
 {
     if (dec != spv::BadValue)
         builder.addMemberDecoration(id, (unsigned)member, dec);
+}
+
+// If 'dec' is valid, add a one-operand decoration to a struct member
+void TGlslangToSpvTraverser::addMemberDecoration(spv::Id id, int member, spv::Decoration dec, unsigned value)
+{
+    if (dec != spv::BadValue)
+        builder.addMemberDecoration(id, (unsigned)member, dec, value);
 }
 
 // Make a full tree of instructions to build a SPIR-V specialization constant,
