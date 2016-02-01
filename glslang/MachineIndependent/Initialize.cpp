@@ -1720,7 +1720,7 @@ void TBuiltIns::initialize(int version, EProfile profile, int spv)
                 "highp int gl_VertexID;"      // needs qualifier fixed later
                 "highp int gl_InstanceID;"    // needs qualifier fixed later
                 );
-            if (version < 310)
+            if (version <= 310)
                 stageBuiltins[EShLangVertex].append(
                     "highp vec4  gl_Position;"    // needs qualifier fixed later
                     "highp float gl_PointSize;"   // needs qualifier fixed later
