@@ -140,20 +140,17 @@ namespace spv {
         }
     }
 
-    bool spirvbin_t::isFlowCtrlOpen(spv::Op opCode) const
+    bool spirvbin_t::isFlowCtrl(spv::Op opCode) const
     {
         switch (opCode) {
         case spv::OpBranchConditional:
-        case spv::OpSwitch:         return true;
-        default:                    return false;
-        }
-    }
-
-    bool spirvbin_t::isFlowCtrlClose(spv::Op opCode) const
-    {
-        switch (opCode) {
+        case spv::OpBranch:
+        case spv::OpSwitch:
         case spv::OpLoopMerge:
-        case spv::OpSelectionMerge: return true;
+        case spv::OpSelectionMerge:
+        case spv::OpLabel:
+        case spv::OpFunction:
+        case spv::OpFunctionEnd:    return true;
         default:                    return false;
         }
     }
@@ -468,20 +465,36 @@ namespace spv {
                 }
                 return nextInst;
 
-            case spv::OperandLiteralString:
-                // word += literalStringWords(literalString(word)); // for clarity
+            case spv::OperandLiteralString: {
+                const int stringWordCount = literalStringWords(literalString(word));
+                word += stringWordCount;
+                numOperands -= (stringWordCount-1); // -1 because for() header post-decrements
+                break;
+            }
+
+            // Execution mode might have extra literal operands.  Skip them.
+            case spv::OperandExecutionMode:
                 return nextInst;
 
-                // Single word operands we simply ignore, as they hold no IDs
+            // Single word operands we simply ignore, as they hold no IDs
             case spv::OperandLiteralNumber:
             case spv::OperandSource:
             case spv::OperandExecutionModel:
             case spv::OperandAddressing:
             case spv::OperandMemory:
-            case spv::OperandExecutionMode:
             case spv::OperandStorage:
             case spv::OperandDimensionality:
+            case spv::OperandSamplerAddressingMode:
+            case spv::OperandSamplerFilterMode:
+            case spv::OperandSamplerImageFormat:
+            case spv::OperandImageChannelOrder:
+            case spv::OperandImageChannelDataType:
             case spv::OperandImageOperands:
+            case spv::OperandFPFastMath:
+            case spv::OperandFPRoundingMode:
+            case spv::OperandLinkageType:
+            case spv::OperandAccessQualifier:
+            case spv::OperandFuncParamAttr:
             case spv::OperandDecoration:
             case spv::OperandBuiltIn:
             case spv::OperandSelect:
@@ -493,6 +506,7 @@ namespace spv {
             case spv::OperandGroupOperation:
             case spv::OperandKernelEnqueueFlags:
             case spv::OperandKernelProfilingInfo:
+            case spv::OperandCapability:
                 ++word;
                 break;
 
@@ -560,7 +574,7 @@ namespace spv {
 
         // Window size for context-sensitive canonicalization values
         // Emperical best size from a single data set.  TODO: Would be a good tunable.
-        // We essentially performa a little convolution around each instruction,
+        // We essentially perform a little convolution around each instruction,
         // to capture the flavor of nearby code, to hopefully match to similar
         // code in other modules.
         static const unsigned windowSize = 2;
@@ -715,17 +729,22 @@ namespace spv {
         strip();          // strip out data we decided to eliminate
     }
 
-    // remove bodies of uncalled functions
+    // optimize loads and stores
     void spirvbin_t::optLoadStore()
     {
-        idset_t fnLocalVars;
-        // Map of load result IDs to what they load
-        idmap_t idMap;
+        idset_t    fnLocalVars;  // candidates for removal (only locals)
+        idmap_t    idMap;        // Map of load result IDs to what they load
+        blockmap_t blockMap;     // Map of IDs to blocks they first appear in
+        int        blockNum = 0; // block count, to avoid crossing flow control
 
         // Find all the function local pointers stored at most once, and not via access chains
         process(
             [&](spv::Op opCode, unsigned start) {
                 const int wordCount = asWordCount(start);
+
+                // Count blocks, so we can avoid crossing flow control
+                if (isFlowCtrl(opCode))
+                    ++blockNum;
 
                 // Add local variables to the map
                 if ((opCode == spv::OpVariable && spv[start+3] == spv::StorageClassFunction && asWordCount(start) == 4)) {
@@ -741,27 +760,40 @@ namespace spv {
                 }
 
                 if (opCode == spv::OpLoad && fnLocalVars.count(asId(start+3)) > 0) {
-                    // Avoid loads before stores (TODO: why?  Crashes driver, but seems like it shouldn't).
-                    if (idMap.find(asId(start+3)) == idMap.end()) {
-                        fnLocalVars.erase(asId(start+3));
-                        idMap.erase(asId(start+3));
+                    const spv::Id varId = asId(start+3);
+
+                    // Avoid loads before stores
+                    if (idMap.find(varId) == idMap.end()) {
+                        fnLocalVars.erase(varId);
+                        idMap.erase(varId);
                     }
 
                     // don't do for volatile references
                     if (wordCount > 4 && (spv[start+4] & spv::MemoryAccessVolatileMask)) {
-                        fnLocalVars.erase(asId(start+3));
-                        idMap.erase(asId(start+3));
+                        fnLocalVars.erase(varId);
+                        idMap.erase(varId);
                     }
+
+                    // Handle flow control
+                    if (blockMap.find(varId) == blockMap.end()) {
+                        blockMap[varId] = blockNum;  // track block we found it in.
+                    } else if (blockMap[varId] != blockNum) {
+                        fnLocalVars.erase(varId);  // Ignore if crosses flow control
+                        idMap.erase(varId);
+                    }
+
                     return true;
                 }
 
                 if (opCode == spv::OpStore && fnLocalVars.count(asId(start+1)) > 0) {
-                    if (idMap.find(asId(start+1)) == idMap.end()) {
-                        idMap[asId(start+1)] = asId(start+2);
+                    const spv::Id varId = asId(start+1);
+
+                    if (idMap.find(varId) == idMap.end()) {
+                        idMap[varId] = asId(start+2);
                     } else {
                         // Remove if it has more than one store to the same pointer
-                        fnLocalVars.erase(asId(start+1));
-                        idMap.erase(asId(start+1));
+                        fnLocalVars.erase(varId);
+                        idMap.erase(varId);
                     }
 
                     // don't do for volatile references
@@ -769,6 +801,15 @@ namespace spv {
                         fnLocalVars.erase(asId(start+3));
                         idMap.erase(asId(start+3));
                     }
+
+                    // Handle flow control
+                    if (blockMap.find(varId) == blockMap.end()) {
+                        blockMap[varId] = blockNum;  // track block we found it in.
+                    } else if (blockMap[varId] != blockNum) {
+                        fnLocalVars.erase(varId);  // Ignore if crosses flow control
+                        idMap.erase(varId);
+                    }
+
                     return true;
                 }
 
@@ -792,12 +833,27 @@ namespace spv {
             },
             op_fn_nop);
 
+        // Chase replacements to their origins, in case there is a chain such as:
+        //   2 = store 1
+        //   3 = load 2
+        //   4 = store 3
+        //   5 = load 4
+        // We want to replace uses of 5 with 1.
+        for (const auto& idPair : idMap) {
+            spv::Id id = idPair.first;
+            while (idMap.find(id) != idMap.end())  // Chase to end of chain
+                id = idMap[id];
+
+            idMap[idPair.first] = id;              // replace with final result
+        }
+
         // Remove the load/store/variables for the ones we've discovered
         process(
             [&](spv::Op opCode, unsigned start) {
                 if ((opCode == spv::OpLoad  && fnLocalVars.count(asId(start+3)) > 0) ||
                     (opCode == spv::OpStore && fnLocalVars.count(asId(start+1)) > 0) ||
                     (opCode == spv::OpVariable && fnLocalVars.count(asId(start+2)) > 0)) {
+
                     stripInst(start);
                     return true;
                 }
@@ -805,7 +861,9 @@ namespace spv {
                 return false;
             },
 
-            [&](spv::Id& id) { if (idMap.find(id) != idMap.end()) id = idMap[id]; }
+            [&](spv::Id& id) {
+                if (idMap.find(id) != idMap.end()) id = idMap[id];
+            }
         );
 
         strip();          // strip out data we decided to eliminate
