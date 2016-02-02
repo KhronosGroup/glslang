@@ -1464,7 +1464,7 @@ Id Builder::createCompositeCompare(Decoration precision, Id value1, Id value2, b
     Id boolType = makeBoolType();
     Id valueType = getTypeId(value1);
 
-    Id resultId;
+    Id resultId = NoResult;
 
     int numConstituents = getNumTypeConstituents(valueType);
 
@@ -1480,6 +1480,7 @@ Id Builder::createCompositeCompare(Decoration precision, Id value1, Id value2, b
             op = equal ? OpFOrdEqual : OpFOrdNotEqual;
             break;
         case OpTypeInt:
+        default:
             op = equal ? OpIEqual : OpINotEqual;
             break;
         case OpTypeBool:
