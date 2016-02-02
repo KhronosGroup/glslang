@@ -3696,6 +3696,11 @@ void IdentifyBuiltIns(int version, EProfile profile, int spv, EShLanguage langua
         symbolTable.relateToOperator("textureGatherOffset",     EOpTextureGatherOffset);
         symbolTable.relateToOperator("textureGatherOffsets",    EOpTextureGatherOffsets);
 
+        symbolTable.relateToOperator("noise1", EOpNoise);
+        symbolTable.relateToOperator("noise2", EOpNoise);
+        symbolTable.relateToOperator("noise3", EOpNoise);
+        symbolTable.relateToOperator("noise4", EOpNoise);
+
         if (spv == 0 && (IncludeLegacy(version, profile, spv) || (profile == EEsProfile && version == 100))) {
             symbolTable.relateToOperator("ftransform",               EOpFtransform);
 

@@ -238,6 +238,8 @@ enum TOperator {
 
     EOpFtransform,
 
+    EOpNoise,
+
     EOpEmitVertex,           // geometry only
     EOpEndPrimitive,         // geometry only
     EOpEmitStreamVertex,     // geometry only

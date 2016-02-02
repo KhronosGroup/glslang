@@ -42,15 +42,137 @@ Linked fragment stage:
                               Name 246  "param"
                               Name 248  "param"
                               Name 250  "param"
+                              Decorate 15(foo1(vf4;vf4;i1;) RelaxedPrecision
+                              Decorate 12(v1) RelaxedPrecision
+                              Decorate 13(v2) RelaxedPrecision
+                              Decorate 14(i1) RelaxedPrecision
+                              Decorate 20(foo2(vf4;vf4;i1;) RelaxedPrecision
+                              Decorate 17(v1) RelaxedPrecision
+                              Decorate 18(v2) RelaxedPrecision
+                              Decorate 19(i1) RelaxedPrecision
+                              Decorate 22 RelaxedPrecision
+                              Decorate 27 RelaxedPrecision
+                              Decorate 29 RelaxedPrecision
+                              Decorate 31 RelaxedPrecision
+                              Decorate 32 RelaxedPrecision
+                              Decorate 33 RelaxedPrecision
+                              Decorate 40 RelaxedPrecision
+                              Decorate 46 RelaxedPrecision
+                              Decorate 51 RelaxedPrecision
+                              Decorate 53 RelaxedPrecision
+                              Decorate 54 RelaxedPrecision
+                              Decorate 55 RelaxedPrecision
                               Decorate 60(local) RelaxedPrecision
                               Decorate 62(c) RelaxedPrecision
+                              Decorate 63 RelaxedPrecision
+                              Decorate 64 RelaxedPrecision
+                              Decorate 66 RelaxedPrecision
+                              Decorate 67 RelaxedPrecision
                               Decorate 73(f) RelaxedPrecision
                               Decorate 75(x) RelaxedPrecision
+                              Decorate 76 RelaxedPrecision
+                              Decorate 77 RelaxedPrecision
+                              Decorate 79 RelaxedPrecision
+                              Decorate 80 RelaxedPrecision
+                              Decorate 82 RelaxedPrecision
+                              Decorate 83 RelaxedPrecision
+                              Decorate 85 RelaxedPrecision
+                              Decorate 90 RelaxedPrecision
+                              Decorate 91 RelaxedPrecision
+                              Decorate 92 RelaxedPrecision
+                              Decorate 93 RelaxedPrecision
+                              Decorate 94 RelaxedPrecision
+                              Decorate 95 RelaxedPrecision
+                              Decorate 96 RelaxedPrecision
+                              Decorate 97 RelaxedPrecision
+                              Decorate 99 RelaxedPrecision
+                              Decorate 100 RelaxedPrecision
+                              Decorate 101 RelaxedPrecision
+                              Decorate 102 RelaxedPrecision
+                              Decorate 104 RelaxedPrecision
+                              Decorate 108 RelaxedPrecision
+                              Decorate 109 RelaxedPrecision
+                              Decorate 110 RelaxedPrecision
+                              Decorate 111 RelaxedPrecision
+                              Decorate 113 RelaxedPrecision
+                              Decorate 114 RelaxedPrecision
+                              Decorate 115 RelaxedPrecision
+                              Decorate 116 RelaxedPrecision
+                              Decorate 119 RelaxedPrecision
+                              Decorate 124 RelaxedPrecision
+                              Decorate 125 RelaxedPrecision
+                              Decorate 126 RelaxedPrecision
+                              Decorate 127 RelaxedPrecision
                               Decorate 129(d) RelaxedPrecision
+                              Decorate 130 RelaxedPrecision
+                              Decorate 134 RelaxedPrecision
+                              Decorate 135 RelaxedPrecision
+                              Decorate 136 RelaxedPrecision
+                              Decorate 137 RelaxedPrecision
+                              Decorate 138 RelaxedPrecision
+                              Decorate 139 RelaxedPrecision
+                              Decorate 140 RelaxedPrecision
+                              Decorate 142 RelaxedPrecision
+                              Decorate 143 RelaxedPrecision
+                              Decorate 144 RelaxedPrecision
+                              Decorate 145 RelaxedPrecision
+                              Decorate 146 RelaxedPrecision
+                              Decorate 150 RelaxedPrecision
+                              Decorate 151 RelaxedPrecision
+                              Decorate 152 RelaxedPrecision
+                              Decorate 153 RelaxedPrecision
                               Decorate 155(i) RelaxedPrecision
+                              Decorate 162 RelaxedPrecision
+                              Decorate 166 RelaxedPrecision
+                              Decorate 171 RelaxedPrecision
+                              Decorate 172 RelaxedPrecision
+                              Decorate 173 RelaxedPrecision
+                              Decorate 174 RelaxedPrecision
                               Decorate 175(j) RelaxedPrecision
+                              Decorate 182 RelaxedPrecision
+                              Decorate 185 RelaxedPrecision
+                              Decorate 186 RelaxedPrecision
+                              Decorate 187 RelaxedPrecision
+                              Decorate 193 RelaxedPrecision
+                              Decorate 194 RelaxedPrecision
+                              Decorate 196 RelaxedPrecision
+                              Decorate 197 RelaxedPrecision
+                              Decorate 198 RelaxedPrecision
+                              Decorate 199 RelaxedPrecision
+                              Decorate 202 RelaxedPrecision
+                              Decorate 203 RelaxedPrecision
+                              Decorate 204 RelaxedPrecision
+                              Decorate 205 RelaxedPrecision
+                              Decorate 207 RelaxedPrecision
+                              Decorate 213 RelaxedPrecision
+                              Decorate 214 RelaxedPrecision
+                              Decorate 215 RelaxedPrecision
+                              Decorate 219 RelaxedPrecision
+                              Decorate 220 RelaxedPrecision
+                              Decorate 221 RelaxedPrecision
+                              Decorate 222 RelaxedPrecision
                               Decorate 227(color) RelaxedPrecision
+                              Decorate 228 RelaxedPrecision
+                              Decorate 229 RelaxedPrecision
+                              Decorate 230 RelaxedPrecision
+                              Decorate 231 RelaxedPrecision
                               Decorate 233(v) RelaxedPrecision
+                              Decorate 235 RelaxedPrecision
+                              Decorate 237 RelaxedPrecision
+                              Decorate 239 RelaxedPrecision
+                              Decorate 240 RelaxedPrecision
+                              Decorate 243 RelaxedPrecision
+                              Decorate 244 RelaxedPrecision
+                              Decorate 245 RelaxedPrecision
+                              Decorate 247 RelaxedPrecision
+                              Decorate 249 RelaxedPrecision
+                              Decorate 251 RelaxedPrecision
+                              Decorate 252 RelaxedPrecision
+                              Decorate 254 RelaxedPrecision
+                              Decorate 255 RelaxedPrecision
+                              Decorate 256 RelaxedPrecision
+                              Decorate 257 RelaxedPrecision
+                              Decorate 264 RelaxedPrecision
                2:             TypeVoid
                3:             TypeFunction 2
                6:             TypeFloat 32

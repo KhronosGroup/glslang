@@ -46,6 +46,8 @@ Linked vertex stage:
                               Name 247  "v4"
                               Name 268  "gl_VertexID"
                               Name 269  "gl_InstanceID"
+                              Decorate 261 RelaxedPrecision
+                              Decorate 265 RelaxedPrecision
                               Decorate 268(gl_VertexID) BuiltIn VertexId
                               Decorate 269(gl_InstanceID) BuiltIn InstanceId
                2:             TypeVoid

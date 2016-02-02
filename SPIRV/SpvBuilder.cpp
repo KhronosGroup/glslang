@@ -192,7 +192,7 @@ Id Builder::makeFloatType(int width)
 // See makeStructResultType() for non-decorated structs
 // needed as the result of some instructions, which does
 // check for duplicates.
-Id Builder::makeStructType(std::vector<Id>& members, const char* name)
+Id Builder::makeStructType(const std::vector<Id>& members, const char* name)
 {
     // Don't look for previous one, because in the general case,
     // structs can be duplicated except for decorations.
@@ -321,7 +321,7 @@ Id Builder::makeRuntimeArray(Id element)
     return type->getResultId();
 }
 
-Id Builder::makeFunctionType(Id returnType, std::vector<Id>& paramTypes)
+Id Builder::makeFunctionType(Id returnType, const std::vector<Id>& paramTypes)
 {
     // try to find it
     Instruction* type;
@@ -805,19 +805,28 @@ Function* Builder::makeMain()
 
     Block* entry;
     std::vector<Id> params;
+    std::vector<Decoration> precisions;
 
-    mainFunction = makeFunctionEntry(makeVoidType(), "main", params, &entry);
+    mainFunction = makeFunctionEntry(NoPrecision, makeVoidType(), "main", params, precisions, &entry);
 
     return mainFunction;
 }
 
 // Comments in header
-Function* Builder::makeFunctionEntry(Id returnType, const char* name, std::vector<Id>& paramTypes, Block **entry)
+Function* Builder::makeFunctionEntry(Decoration precision, Id returnType, const char* name,
+                                     const std::vector<Id>& paramTypes, const std::vector<Decoration>& precisions, Block **entry)
 {
+    // Make the function and initial instructions in it
     Id typeId = makeFunctionType(returnType, paramTypes);
     Id firstParamId = paramTypes.size() == 0 ? 0 : getUniqueIds((int)paramTypes.size());
     Function* function = new Function(getUniqueId(), returnType, typeId, firstParamId, module);
 
+    // Set up the precisions
+    setPrecision(function->getId(), precision);
+    for (unsigned p = 0; p < (unsigned)precisions.size(); ++p)
+        setPrecision(firstParamId + p, precisions[p]);
+
+    // CFG
     if (entry) {
         *entry = new Block(getUniqueId(), *function);
         function->addBlock(*entry);
@@ -1117,10 +1126,10 @@ Id Builder::createFunctionCall(spv::Function* function, std::vector<spv::Id>& ar
 }
 
 // Comments in header
-Id Builder::createRvalueSwizzle(Id typeId, Id source, std::vector<unsigned>& channels)
+Id Builder::createRvalueSwizzle(Decoration precision, Id typeId, Id source, std::vector<unsigned>& channels)
 {
     if (channels.size() == 1)
-        return createCompositeExtract(source, typeId, channels.front());
+        return setPrecision(createCompositeExtract(source, typeId, channels.front()), precision);
 
     Instruction* swizzle = new Instruction(getUniqueId(), typeId, OpVectorShuffle);
     assert(isVector(source));
@@ -1130,7 +1139,7 @@ Id Builder::createRvalueSwizzle(Id typeId, Id source, std::vector<unsigned>& cha
         swizzle->addImmediateOperand(channels[i]);
     buildPoint->addInstruction(std::unique_ptr<Instruction>(swizzle));
 
-    return swizzle->getResultId();
+    return setPrecision(swizzle->getResultId(), precision);
 }
 
 // Comments in header
@@ -1178,7 +1187,7 @@ void Builder::promoteScalar(Decoration precision, Id& left, Id& right)
 }
 
 // Comments in header
-Id Builder::smearScalar(Decoration /*precision*/, Id scalar, Id vectorType)
+Id Builder::smearScalar(Decoration precision, Id scalar, Id vectorType)
 {
     assert(getNumComponents(scalar) == 1);
     assert(getTypeId(scalar) == getScalarTypeId(vectorType));
@@ -1192,11 +1201,11 @@ Id Builder::smearScalar(Decoration /*precision*/, Id scalar, Id vectorType)
         smear->addIdOperand(scalar);
     buildPoint->addInstruction(std::unique_ptr<Instruction>(smear));
 
-    return smear->getResultId();
+    return setPrecision(smear->getResultId(), precision);
 }
 
 // Comments in header
-Id Builder::createBuiltinCall(Decoration /*precision*/, Id resultType, Id builtins, int entryPoint, std::vector<Id>& args)
+Id Builder::createBuiltinCall(Id resultType, Id builtins, int entryPoint, std::vector<Id>& args)
 {
     Instruction* inst = new Instruction(getUniqueId(), resultType, OpExtInst);
     inst->addIdOperand(builtins);
@@ -1205,6 +1214,7 @@ Id Builder::createBuiltinCall(Decoration /*precision*/, Id resultType, Id builti
         inst->addIdOperand(args[arg]);
 
     buildPoint->addInstruction(std::unique_ptr<Instruction>(inst));
+
     return inst->getResultId();
 }
 
@@ -1386,6 +1396,7 @@ Id Builder::createTextureCall(Decoration precision, Id resultType, bool sparse, 
         // Decode the return type that was a special structure
         createStore(createCompositeExtract(resultId, typeId1, 1), parameters.texelOut);
         resultId = createCompositeExtract(resultId, typeId0, 0);
+        setPrecision(resultId, precision);
     } else {
         // When a smear is needed, do it, as per what was computed
         // above when resultType was changed to a scalar type.
@@ -1464,7 +1475,7 @@ Id Builder::createCompositeCompare(Decoration precision, Id value1, Id value2, b
     Id boolType = makeBoolType();
     Id valueType = getTypeId(value1);
 
-    Id resultId;
+    Id resultId = NoResult;
 
     int numConstituents = getNumTypeConstituents(valueType);
 
@@ -1480,6 +1491,7 @@ Id Builder::createCompositeCompare(Decoration precision, Id value1, Id value2, b
             op = equal ? OpFOrdEqual : OpFOrdNotEqual;
             break;
         case OpTypeInt:
+        default:
             op = equal ? OpIEqual : OpINotEqual;
             break;
         case OpTypeBool:
@@ -1491,7 +1503,6 @@ Id Builder::createCompositeCompare(Decoration precision, Id value1, Id value2, b
         if (isScalarType(valueType)) {
             // scalar
             resultId = createBinOp(op, boolType, value1, value2);
-            setPrecision(resultId, precision);
         } else {
             // vector
             resultId = createBinOp(op, makeVectorType(boolType, numConstituents), value1, value2);
@@ -1500,7 +1511,7 @@ Id Builder::createCompositeCompare(Decoration precision, Id value1, Id value2, b
             resultId = createUnaryOp(equal ? OpAll : OpAny, boolType, resultId);
         }
 
-        return resultId;
+        return setPrecision(resultId, precision);
     }
 
     // Only structs, arrays, and matrices should be left.
@@ -1520,7 +1531,7 @@ Id Builder::createCompositeCompare(Decoration precision, Id value1, Id value2, b
         if (constituent == 0)
             resultId = subResultId;
         else
-            resultId = createBinOp(equal ? OpLogicalAnd : OpLogicalOr, boolType, resultId, subResultId);
+            resultId = setPrecision(createBinOp(equal ? OpLogicalAnd : OpLogicalOr, boolType, resultId, subResultId), precision);
     }
 
     return resultId;
@@ -1542,7 +1553,7 @@ Id Builder::createCompositeConstruct(Id typeId, std::vector<Id>& constituents)
 // Vector or scalar constructor
 Id Builder::createConstructor(Decoration precision, const std::vector<Id>& sources, Id resultTypeId)
 {
-    Id result = 0;
+    Id result = NoResult;
     unsigned int numTargetComponents = getNumTypeComponents(resultTypeId);
     unsigned int targetComponent = 0;
 
@@ -1565,7 +1576,7 @@ Id Builder::createConstructor(Decoration precision, const std::vector<Id>& sourc
             if (sourceSize > 1) {
                 std::vector<unsigned> swiz;
                 swiz.push_back(s);
-                arg = createRvalueSwizzle(scalarTypeId, arg, swiz);
+                arg = createRvalueSwizzle(precision, scalarTypeId, arg, swiz);
             }
 
             if (numTargetComponents > 1)
@@ -1582,9 +1593,7 @@ Id Builder::createConstructor(Decoration precision, const std::vector<Id>& sourc
     if (constituents.size() > 0)
         result = createCompositeConstruct(resultTypeId, constituents);
 
-    setPrecision(result, precision);
-
-    return result;
+    return setPrecision(result, precision);
 }
 
 // Comments in header
@@ -1665,11 +1674,13 @@ Id Builder::createMatrixConstructor(Decoration precision, const std::vector<Id>&
         std::vector<Id> vectorComponents;
         for (int row = 0; row < numRows; ++row)
             vectorComponents.push_back(ids[col][row]);
-        matrixColumns.push_back(createCompositeConstruct(columnTypeId, vectorComponents));
+        Id column = createCompositeConstruct(columnTypeId, vectorComponents);
+        setPrecision(column, precision);
+        matrixColumns.push_back(column);
     }
 
     // make the matrix
-    return createCompositeConstruct(resultTypeId, matrixColumns);
+    return setPrecision(createCompositeConstruct(resultTypeId, matrixColumns), precision);
 }
 
 // Comments in header
@@ -1894,7 +1905,7 @@ void Builder::accessChainStore(Id rvalue)
 }
 
 // Comments in header
-Id Builder::accessChainLoad(Id resultType)
+Id Builder::accessChainLoad(Decoration precision, Id resultType)
 {
     Id id;
 
@@ -1903,7 +1914,7 @@ Id Builder::accessChainLoad(Id resultType)
         transferAccessChainSwizzle(false);
         if (accessChain.indexChain.size() > 0) {
             Id swizzleBase = accessChain.preSwizzleBaseType != NoType ? accessChain.preSwizzleBaseType : resultType;
-        
+
             // if all the accesses are constants, we can use OpCompositeExtract
             std::vector<unsigned> indexes;
             bool constant = true;
@@ -1932,12 +1943,14 @@ Id Builder::accessChainLoad(Id resultType)
                 // load through the access chain
                 id = createLoad(collapseAccessChain());
             }
+            setPrecision(id, precision);
         } else
-            id = accessChain.base;
+            id = accessChain.base;  // no precision, it was set when this was defined
     } else {
         transferAccessChainSwizzle(true);
         // load through the access chain
         id = createLoad(collapseAccessChain());
+        setPrecision(id, precision);
     }
 
     // Done, unless there are swizzles to do
@@ -1951,12 +1964,12 @@ Id Builder::accessChainLoad(Id resultType)
         Id swizzledType = getScalarTypeId(getTypeId(id));
         if (accessChain.swizzle.size() > 1)
             swizzledType = makeVectorType(swizzledType, (int)accessChain.swizzle.size());
-        id = createRvalueSwizzle(swizzledType, id, accessChain.swizzle);
+        id = createRvalueSwizzle(precision, swizzledType, id, accessChain.swizzle);
     }
 
     // dynamic single-component selection
     if (accessChain.component != NoResult)
-        id = createVectorExtractDynamic(id, resultType, accessChain.component);
+        id = setPrecision(createVectorExtractDynamic(id, resultType, accessChain.component), precision);
 
     return id;
 }

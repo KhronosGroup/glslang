@@ -23,6 +23,13 @@ bool boolfun(bvec2 bv2)
     return bv2 == bvec2(false, true);
 }
 
+struct S {
+    highp float a;
+    lowp float b;
+};
+
+in S s;
+
 void main()
 {
     lowp int sum = uniform_medium + uniform_high;
@@ -47,4 +54,7 @@ void main()
 
     if (boolfun(ub2))
         ++mediumfout;
+    
+    mediumfout *= s.a;
+    mediumfout *= s.b;
 }
