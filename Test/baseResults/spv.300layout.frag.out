@@ -27,11 +27,17 @@ Linked fragment stage:
                               Decorate 9(c) RelaxedPrecision
                               Decorate 9(c) Location 7
                               Decorate 11(color) RelaxedPrecision
+                              Decorate 12 RelaxedPrecision
                               MemberDecorate 13(S) 0 RelaxedPrecision
                               MemberDecorate 13(S) 1 RelaxedPrecision
+                              Decorate 19 RelaxedPrecision
+                              Decorate 20 RelaxedPrecision
                               Decorate 26(p) RelaxedPrecision
                               Decorate 26(p) Location 3
                               Decorate 29(pos) RelaxedPrecision
+                              Decorate 30 RelaxedPrecision
+                              Decorate 33 RelaxedPrecision
+                              Decorate 34 RelaxedPrecision
                2:             TypeVoid
                3:             TypeFunction 2
                6:             TypeFloat 32

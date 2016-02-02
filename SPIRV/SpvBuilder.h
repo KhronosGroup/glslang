@@ -100,13 +100,13 @@ public:
     Id makeIntType(int width) { return makeIntegerType(width, true); }
     Id makeUintType(int width) { return makeIntegerType(width, false); }
     Id makeFloatType(int width);
-    Id makeStructType(std::vector<Id>& members, const char*);
+    Id makeStructType(const std::vector<Id>& members, const char*);
     Id makeStructResultType(Id type0, Id type1);
     Id makeVectorType(Id component, int size);
     Id makeMatrixType(Id component, int cols, int rows);
     Id makeArrayType(Id element, unsigned size, int stride);  // 0 means no stride decoration
     Id makeRuntimeArray(Id element);
-    Id makeFunctionType(Id returnType, std::vector<Id>& paramTypes);
+    Id makeFunctionType(Id returnType, const std::vector<Id>& paramTypes);
     Id makeImageType(Id sampledType, Dim, bool depth, bool arrayed, bool ms, unsigned sampled, ImageFormat format);
     Id makeSamplerType();
     Id makeSampledImageType(Id imageType);
@@ -210,7 +210,8 @@ public:
     // Make a shader-style function, and create its entry block if entry is non-zero.
     // Return the function, pass back the entry.
     // The returned pointer is only valid for the lifetime of this builder.
-    Function* makeFunctionEntry(Id returnType, const char* name, std::vector<Id>& paramTypes, Block **entry = 0);
+    Function* makeFunctionEntry(Decoration precision, Id returnType, const char* name, const std::vector<Id>& paramTypes,
+                                const std::vector<Decoration>& precisions, Block **entry = 0);
 
     // Create a return. An 'implicit' return is one not appearing in the source
     // code.  In the case of an implicit return, no post-return block is inserted.
@@ -225,7 +226,7 @@ public:
     // Create a global or function local or IO variable.
     Id createVariable(StorageClass, Id type, const char* name = 0);
 
-    // Create an imtermediate with an undefined value.
+    // Create an intermediate with an undefined value.
     Id createUndefined(Id type);
 
     // Store into an Id and return the l-value
@@ -262,7 +263,7 @@ public:
 
     // Take an rvalue (source) and a set of channels to extract from it to
     // make a new rvalue, which is returned.
-    Id createRvalueSwizzle(Id typeId, Id source, std::vector<unsigned>& channels);
+    Id createRvalueSwizzle(Decoration precision, Id typeId, Id source, std::vector<unsigned>& channels);
 
     // Take a copy of an lvalue (target) and a source of components, and set the
     // source components into the lvalue where the 'channels' say to put them.
@@ -270,13 +271,15 @@ public:
     // (No true lvalue or stores are used.)
     Id createLvalueSwizzle(Id typeId, Id target, Id source, std::vector<unsigned>& channels);
 
-    // If the value passed in is an instruction and the precision is not NoPrecision,
-    // it gets tagged with the requested precision.
-    void setPrecision(Id /* value */, Decoration precision)
+    // If both the id and precision are valid, the id
+    // gets tagged with the requested precision.
+    // The passed in id is always the returned id, to simplify use patterns.
+    Id setPrecision(Id id, Decoration precision)
     {
-        if (precision != NoPrecision) {
-            ;// TODO
-        }
+        if (precision != NoPrecision && id != NoResult)
+            addDecoration(id, precision);
+
+        return id;
     }
 
     // Can smear a scalar to a vector for the following forms:
@@ -299,7 +302,7 @@ public:
     Id smearScalar(Decoration precision, Id scalarVal, Id vectorType);
 
     // Create a call to a built-in function.
-    Id createBuiltinCall(Decoration precision, Id resultType, Id builtins, int entryPoint, std::vector<Id>& args);
+    Id createBuiltinCall(Id resultType, Id builtins, int entryPoint, std::vector<Id>& args);
 
     // List of parameters used to create a texture operation
     struct TextureParameters {
@@ -330,7 +333,7 @@ public:
     Id createBitFieldExtractCall(Decoration precision, Id, Id, Id, bool isSigned);
     Id createBitFieldInsertCall(Decoration precision, Id, Id, Id, Id);
 
-    // Reduction comparision for composites:  For equal and not-equal resulting in a scalar.
+    // Reduction comparison for composites:  For equal and not-equal resulting in a scalar.
     Id createCompositeCompare(Decoration precision, Id, Id, bool /* true if for equal, false if for not-equal */);
 
     // OpCompositeConstruct
@@ -498,7 +501,7 @@ public:
     void accessChainStore(Id rvalue);
 
     // use accessChain and swizzle to load an r-value
-    Id accessChainLoad(Id ResultType);
+    Id accessChainLoad(Decoration precision, Id ResultType);
 
     // get the direct pointer for an l-value
     Id accessChainGetLValue();

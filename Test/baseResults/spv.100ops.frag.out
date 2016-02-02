@@ -23,12 +23,28 @@ Linked fragment stage:
                               Name 21  "low"
                               Name 26  "high"
                               Name 36  "Color"
+                              Decorate 8(foo() RelaxedPrecision
                               Decorate 11(face1) RelaxedPrecision
                               Decorate 13(face2) RelaxedPrecision
                               Decorate 17(z) RelaxedPrecision
                               Decorate 21(low) RelaxedPrecision
+                              Decorate 22 RelaxedPrecision
+                              Decorate 23 RelaxedPrecision
+                              Decorate 25 RelaxedPrecision
                               Decorate 26(high) RelaxedPrecision
+                              Decorate 27 RelaxedPrecision
+                              Decorate 32 RelaxedPrecision
+                              Decorate 33 RelaxedPrecision
                               Decorate 36(Color) RelaxedPrecision
+                              Decorate 37 RelaxedPrecision
+                              Decorate 38 RelaxedPrecision
+                              Decorate 39 RelaxedPrecision
+                              Decorate 40 RelaxedPrecision
+                              Decorate 41 RelaxedPrecision
+                              Decorate 42 RelaxedPrecision
+                              Decorate 43 RelaxedPrecision
+                              Decorate 44 RelaxedPrecision
+                              Decorate 45 RelaxedPrecision
                2:             TypeVoid
                3:             TypeFunction 2
                6:             TypeFloat 32
