@@ -131,6 +131,7 @@ private:
    // Local to global, or global to local ID map
    typedef std::unordered_map<spv::Id, spv::Id> idmap_t;
    typedef std::unordered_set<spv::Id>          idset_t;
+   typedef std::unordered_map<spv::Id, int>     blockmap_t;
 
    void remap(std::uint32_t opts = DO_EVERYTHING);
 
@@ -164,8 +165,7 @@ private:
    bool    isConstOp(spv::Op opCode)       const;
    bool    isTypeOp(spv::Op opCode)        const;
    bool    isStripOp(spv::Op opCode)       const;
-   bool    isFlowCtrlOpen(spv::Op opCode)  const;
-   bool    isFlowCtrlClose(spv::Op opCode) const;
+   bool    isFlowCtrl(spv::Op opCode)      const;
    range_t literalRange(spv::Op opCode)    const;
    range_t typeRange(spv::Op opCode)       const;
    range_t constRange(spv::Op opCode)      const;
