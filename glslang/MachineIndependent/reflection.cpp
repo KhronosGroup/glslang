@@ -39,6 +39,8 @@
 
 #include "gl_types.h"
 
+typedef enum { UNIFORM_AGGREGATE, VARYING_AGGREGATE, ATTRIBUTE_AGGREGATE } aggregateType_t;
+
 //
 // Grow the reflection database through a friend traverser class of TReflection and a
 // collection of functions to do a liveness traversal that note what uniforms are used
@@ -76,7 +78,7 @@ namespace glslang {
 
 class TLiveTraverser : public TIntermTraverser {
 public:
-    TLiveTraverser(const TIntermediate& i, TReflection& r) : intermediate(i), reflection(r) { }
+    TLiveTraverser(const TIntermediate& i, TReflection& r, EShLanguage s) : intermediate(i), reflection(r), language(s) { }
 
     virtual bool visitAggregate(TVisit, TIntermAggregate* node);
     virtual bool visitBinary(TVisit, TIntermBinary* node);
@@ -104,9 +106,36 @@ public:
             // Use a degenerate (empty) set of dereferences to immediately put as at the end of
             // the dereference change expected by blowUpActiveAggregate.
             TList<TIntermBinary*> derefs;
-            blowUpActiveAggregate(base.getType(), base.getName(), derefs, derefs.end(), -1, -1, 0);
+            blowUpActiveAggregate(base.getType(), base.getName(), derefs, derefs.end(), -1, -1, 0, UNIFORM_AGGREGATE);
         }
     }
+
+    // Add a simple reference to a attribute variable to the attribute database, no dereference involved.
+    // However, no dereference doesn't mean simple... it could be a complex aggregate.
+    void addAttribute(const TIntermSymbol& base)
+    {
+        if (processedDerefs.find(&base) == processedDerefs.end()) {
+            processedDerefs.insert(&base);
+
+            // Use a degenerate (empty) set of dereferences to immediately put as at the end of
+            // the dereference change expected by blowUpActiveAggregate.
+            TList<TIntermBinary*> derefs;
+            blowUpActiveAggregate(base.getType(), base.getName(), derefs, derefs.end(), -1, -1, 0, ATTRIBUTE_AGGREGATE);
+        }
+    }
+
+    void addVarying(const TIntermSymbol& base)
+    {
+        if (processedDerefs.find(&base) == processedDerefs.end()) {
+            processedDerefs.insert(&base);
+
+            // Use a degenerate (empty) set of dereferences to immediately put as at the end of
+            // the dereference change expected by blowUpActiveAggregate.
+            TList<TIntermBinary*> derefs;
+            blowUpActiveAggregate(base.getType(), base.getName(), derefs, derefs.end(), -1, -1, 0, VARYING_AGGREGATE);
+        }
+    }
+
 
     // Lookup or calculate the offset of a block member, using the recursively
     // defined block offset rules.
@@ -160,7 +189,7 @@ public:
     // arraySize tracks, just for the final dereference in the chain, if there was a specific known size.
     // A value of 0 for arraySize will mean to use the full array's size.
     void blowUpActiveAggregate(const TType& baseType, const TString& baseName, const TList<TIntermBinary*>& derefs,
-                               TList<TIntermBinary*>::const_iterator deref, int offset, int blockIndex, int arraySize)
+                               TList<TIntermBinary*>::const_iterator deref, int offset, int blockIndex, int arraySize, aggregateType_t aggregateType)
     {
         // process the part of the derefence chain that was explicit in the shader
         TString name = baseName;
@@ -179,7 +208,7 @@ public:
                     TList<TIntermBinary*>::const_iterator nextDeref = deref;
                     ++nextDeref;
                     TType derefType(*terminalType, 0);
-                    blowUpActiveAggregate(derefType, newBaseName, derefs, nextDeref, offset, blockIndex, arraySize);
+                    blowUpActiveAggregate(derefType, newBaseName, derefs, nextDeref, offset, blockIndex, arraySize, aggregateType);
                 }
 
                 // it was all completed in the recursive calls above
@@ -211,7 +240,7 @@ public:
                     TString newBaseName = name;
                     newBaseName.append(TString("[") + String(i) + "]");
                     TType derefType(*terminalType, 0);
-                    blowUpActiveAggregate(derefType, newBaseName, derefs, derefs.end(), offset, blockIndex, 0);
+                    blowUpActiveAggregate(derefType, newBaseName, derefs, derefs.end(), offset, blockIndex, 0, aggregateType);
                 }
             } else {
                 // Visit all members of this aggregate, and for each one,
@@ -221,7 +250,7 @@ public:
                     TString newBaseName = name;
                     newBaseName.append(TString(".") + typeList[i].type->getFieldName());
                     TType derefType(*terminalType, i);
-                    blowUpActiveAggregate(derefType, newBaseName, derefs, derefs.end(), offset, blockIndex, 0);
+                    blowUpActiveAggregate(derefType, newBaseName, derefs, derefs.end(), offset, blockIndex, 0, aggregateType);
                 }
             }
 
@@ -236,13 +265,53 @@ public:
         if (arraySize == 0)
             arraySize = mapToGlArraySize(*terminalType);
 
+        switch(aggregateType) {
+        case UNIFORM_AGGREGATE: {
         TReflection::TNameToIndex::const_iterator it = reflection.nameToIndex.find(name);
+
+            /// Name does not exist. Add it.
         if (it == reflection.nameToIndex.end()) {
             reflection.nameToIndex[name] = (int)reflection.indexToUniform.size();
             reflection.indexToUniform.push_back(TObjectReflection(name, offset, mapToGlType(*terminalType), arraySize, blockIndex));
+                reflection.uniformQualifiers.push_back(&baseType.getQualifier());
         } else if (arraySize > 1) {
             int& reflectedArraySize = reflection.indexToUniform[it->second].size;
             reflectedArraySize = std::max(arraySize, reflectedArraySize);
+        }
+            break;
+        }
+
+        case ATTRIBUTE_AGGREGATE: {
+            TReflection::TNameToIndex::const_iterator it = reflection.attributeNameToIndex.find(name);
+
+            if (it == reflection.attributeNameToIndex.end()) {
+                reflection.attributeNameToIndex[name] = (int)reflection.indexToAttribute.size();
+                reflection.indexToAttribute.push_back(TObjectReflection(name, offset, mapToGlType(*terminalType), arraySize, blockIndex));
+                reflection.attributQualifiers.push_back(&baseType.getQualifier());
+            } else if (arraySize > 1) {
+                int& reflectedArraySize = reflection.indexToAttribute[it->second].size;
+                reflectedArraySize = std::max(arraySize, reflectedArraySize);
+            }
+            break;
+        }
+
+        case VARYING_AGGREGATE: {
+            TReflection::TNameToIndex::const_iterator it = reflection.varyingNameToIndex.find(name);
+
+            if (it == reflection.varyingNameToIndex.end()) {
+                reflection.varyingNameToIndex[name] = (int)reflection.indexToVarying.size();
+                reflection.indexToVarying.push_back(TObjectReflection(name, offset, mapToGlType(*terminalType), arraySize, blockIndex));
+                reflection.varyingQualifiers.push_back(&baseType.getQualifier());
+            } else if (arraySize > 1) {
+                int& reflectedArraySize = reflection.indexToVarying[it->second].size;
+                reflectedArraySize = std::max(arraySize, reflectedArraySize);
+            }
+            break;
+        }
+
+        default:
+            assert(0);
+            break;
         }
     }
 
@@ -325,7 +394,7 @@ public:
             else
                 baseName = base->getName();
         }
-        blowUpActiveAggregate(base->getType(), baseName, derefs, derefs.begin(), offset, blockIndex, arraySize);
+        blowUpActiveAggregate(base->getType(), baseName, derefs, derefs.begin(), offset, blockIndex, arraySize, UNIFORM_AGGREGATE);
     }
 
     int addBlockName(const TString& name, int size)
@@ -624,6 +693,7 @@ public:
     const TIntermediate& intermediate;
     TReflection& reflection;
     std::set<const TIntermNode*> processedDerefs;
+    EShLanguage language;
 
 protected:
     TLiveTraverser(TLiveTraverser&);
@@ -665,8 +735,22 @@ bool TLiveTraverser::visitBinary(TVisit /* visit */, TIntermBinary* node)
 // To reflect non-dereferenced objects.
 void TLiveTraverser::visitSymbol(TIntermSymbol* base)
 {
-    if (base->getQualifier().storage == EvqUniform)
+    // Do not add anonymous symbols
+    if(IsAnonymous(base->getName())) {
+        return;
+    }
+
+    if (base->getQualifier().storage == EvqUniform) {
         addUniform(*base);
+    } else if(base->getQualifier().storage == EvqVaryingIn) {
+        if(language == EShLangVertex) {
+            addAttribute(*base);
+        } else {
+            addVarying(*base);
+        }
+    } else if(base->getQualifier().storage == EvqVaryingOut) {
+        addVarying(*base);
+    }
 }
 
 // To prune semantically dead paths.
@@ -692,12 +776,12 @@ bool TLiveTraverser::visitSelection(TVisit /* visit */,  TIntermSelection* node)
 // Merge live symbols from 'intermediate' into the existing reflection database.
 //
 // Returns false if the input is too malformed to do this.
-bool TReflection::addStage(EShLanguage, const TIntermediate& intermediate)
+bool TReflection::addStage(EShLanguage s, const TIntermediate& intermediate)
 {
     if (intermediate.getNumMains() != 1 || intermediate.isRecursive())
         return false;
 
-    TLiveTraverser it(intermediate, *this);
+    TLiveTraverser it(intermediate, *this, s);
 
     // put main() on functions to process
     it.pushFunction("main(");

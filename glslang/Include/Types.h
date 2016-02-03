@@ -522,7 +522,7 @@ public:
     int layoutOffset;
     int layoutAlign;
 
-                 unsigned int layoutLocation            :12;
+         mutable unsigned int layoutLocation            :12;
     static const unsigned int layoutLocationEnd    =  0xFFF;
 
                  unsigned int layoutComponent           : 3;
@@ -531,7 +531,7 @@ public:
                  unsigned int layoutSet                 : 7;
     static const unsigned int layoutSetEnd         =   0x3F;
 
-                 unsigned int layoutBinding             : 8;
+         mutable unsigned int layoutBinding          : 8;
     static const unsigned int layoutBindingEnd    =    0xFF;
 
                  unsigned int layoutIndex              :  8;
@@ -585,6 +585,10 @@ public:
     {
         return layoutLocation != layoutLocationEnd;
     }
+    void setLocation(unsigned int location) const
+    {
+        layoutLocation = location;
+    }
     bool hasComponent() const
     {
         return layoutComponent != layoutComponentEnd;
@@ -600,6 +604,10 @@ public:
     bool hasBinding() const
     {
         return layoutBinding != layoutBindingEnd;
+    }
+    void setBinding(unsigned int binding) const
+    {
+        layoutBinding = binding;
     }
     bool hasStream() const
     {

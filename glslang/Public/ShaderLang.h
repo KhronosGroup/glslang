@@ -366,6 +366,8 @@ public:
     virtual ~TProgram();
     void addShader(TShader* shader) { stages[shader->stage].push_back(shader); }
 
+    bool hasReflection(void) const { return (bool)!!reflection; }
+
     // Link Validation interface
     bool link(EShMessages);
     const char* getInfoLog();
@@ -374,17 +376,47 @@ public:
     TIntermediate* getIntermediate(EShLanguage stage) const { return intermediate[stage]; }
 
     // Reflection Interface
-    bool buildReflection();                          // call first, to do liveness analysis, index mapping, etc.; returns false on failure
-    int getNumLiveUniformVariables();                // can be used for glGetProgramiv(GL_ACTIVE_UNIFORMS)
-    int getNumLiveUniformBlocks();                   // can be used for glGetProgramiv(GL_ACTIVE_UNIFORM_BLOCKS)
-    const char* getUniformName(int index);           // can be used for "name" part of glGetActiveUniform()
-    const char* getUniformBlockName(int blockIndex); // can be used for glGetActiveUniformBlockName()
-    int getUniformBlockSize(int blockIndex);         // can be used for glGetActiveUniformBlockiv(UNIFORM_BLOCK_DATA_SIZE)
-    int getUniformIndex(const char* name);           // can be used for glGetUniformIndices()
-    int getUniformBlockIndex(int index);             // can be used for glGetActiveUniformsiv(GL_UNIFORM_BLOCK_INDEX)
-    int getUniformType(int index);                   // can be used for glGetActiveUniformsiv(GL_UNIFORM_TYPE)
-    int getUniformBufferOffset(int index);           // can be used for glGetActiveUniformsiv(GL_UNIFORM_OFFSET)
-    int getUniformArraySize(int index);              // can be used for glGetActiveUniformsiv(GL_UNIFORM_SIZE)
+    bool buildReflection();                                 // call first, to do liveness analysis, index mapping, etc.; returns false on failure
+    int getNumLiveUniformVariables();                       // can be used for glGetProgramiv(GL_ACTIVE_UNIFORMS)
+    int getNumLiveUniformBlocks();                          // can be used for glGetProgramiv(GL_ACTIVE_UNIFORM_BLOCKS)
+    const char* getUniformName(int index);                  // can be used for "name" part of glGetActiveUniform()
+    const char* getUniformBlockName(int blockIndex);        // can be used for glGetActiveUniformBlockName()
+    int getUniformBlockSize(int blockIndex);                // can be used for glGetActiveUniformBlockiv(UNIFORM_BLOCK_DATA_SIZE)
+    int getUniformIndex(const char* name);                  // can be used for glGetUniformIndices()
+    int getUniformBlockIndex(int index);                    // can be used for glGetActiveUniformsiv(GL_UNIFORM_BLOCK_INDEX)
+    int getUniformType(int index);                          // can be used for glGetActiveUniformsiv(GL_UNIFORM_TYPE)
+    int getUniformBufferOffset(int index);                  // can be used for glGetActiveUniformsiv(GL_UNIFORM_OFFSET)
+    int getUniformArraySize(int index);                     // can be used for glGetActiveUniformsiv(GL_UNIFORM_SIZE)
+
+    bool getUniformHasLocation(int index);
+    bool getUniformHasBinding(int index);
+    int getUniformLocation(int index);
+    int getUniformBinding(int index);
+
+    void setUniformBinding(int index, int binding);
+
+    int getNumLiveAttributeVariables();                     // can be used for glGetProgramiv(GL_ACTIVE_ATTRIBUTES)
+    const char* getAttributeName(int index);                // can be used for glGetActiveAttrib()
+    int getAttributeIndex(const char* name);
+    int getAttributeType(int index);                        // can be used for glGetActiveAttrib()
+
+    bool getAttributeHasLocation(int index);
+    bool getAttributeHasBinding(int index);
+    int getAttributeLocation(int index);
+    int getAttributeBinding(int index);
+
+    void setAttributeLocation(int index, int location);     // can be used for glBindAttribLocation()
+
+    int getNumLiveVaryingVariables();
+    const char* getVaryingName(int index);
+    int getVaryingIndex(const char* name);
+    int getVaryingType(int index);
+
+    bool getVaryingHasLocation(int index);
+    bool getVaryingHasBinding(int index);
+    int getVaryingLocation(int index);
+    int getVaryingBinding(int index);
+
     void dumpReflection();
 
 protected:

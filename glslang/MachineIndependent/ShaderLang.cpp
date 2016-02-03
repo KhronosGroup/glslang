@@ -1527,17 +1527,53 @@ bool TProgram::buildReflection()
     return true;
 }
 
-int TProgram::getNumLiveUniformVariables()           { return reflection->getNumUniforms(); }
-int TProgram::getNumLiveUniformBlocks()              { return reflection->getNumUniformBlocks(); }
-const char* TProgram::getUniformName(int index)      { return reflection->getUniform(index).name.c_str(); }
-const char* TProgram::getUniformBlockName(int index) { return reflection->getUniformBlock(index).name.c_str(); }
-int TProgram::getUniformBlockSize(int index)         { return reflection->getUniformBlock(index).size; }
-int TProgram::getUniformIndex(const char* name)      { return reflection->getIndex(name); }
-int TProgram::getUniformBlockIndex(int index)        { return reflection->getUniform(index).index; }
-int TProgram::getUniformType(int index)              { return reflection->getUniform(index).glDefineType; }
-int TProgram::getUniformBufferOffset(int index)      { return reflection->getUniform(index).offset; }
-int TProgram::getUniformArraySize(int index)         { return reflection->getUniform(index).size; }
+/// Uniforms and uniform blocks
+int TProgram::getNumLiveUniformVariables()                   { return reflection->getNumUniforms(); }
+int TProgram::getNumLiveUniformBlocks()                      { return reflection->getNumUniformBlocks(); }
+const char* TProgram::getUniformName(int index)              { return reflection->getUniform(index).name.c_str(); }
+const char* TProgram::getUniformBlockName(int index)         { return reflection->getUniformBlock(index).name.c_str(); }
+int TProgram::getUniformBlockSize(int index)                 { return reflection->getUniformBlock(index).size; }
+int TProgram::getUniformIndex(const char* name)              { return reflection->getIndex(name); }
+int TProgram::getUniformBlockIndex(int index)                { return reflection->getUniform(index).index; }
+int TProgram::getUniformType(int index)                      { return reflection->getUniform(index).glDefineType; }
+int TProgram::getUniformBufferOffset(int index)              { return reflection->getUniform(index).offset; }
+int TProgram::getUniformArraySize(int index)                 { return reflection->getUniform(index).size; }
 
-void TProgram::dumpReflection()                      { reflection->dump(); }
+/// layout information
+bool TProgram::getUniformHasLocation(int index)              { return reflection->getUniformQualifier(index)->hasLocation(); }
+bool TProgram::getUniformHasBinding(int index)               { return reflection->getUniformQualifier(index)->hasBinding(); }
+int TProgram::getUniformLocation(int index)                  { return reflection->getUniformQualifier(index)->layoutLocation; }
+int TProgram::getUniformBinding(int index)                   { return reflection->getUniformQualifier(index)->layoutBinding; }
+
+void TProgram::setUniformBinding(int index, int binding)     { reflection->setUniformBinding(index, binding); }
+
+/// Vertex attributes
+int TProgram::getNumLiveAttributeVariables()                 { return reflection->getNumAttributes(); }
+const char* TProgram::getAttributeName(int index)            { return reflection->getAttribute(index).name.c_str(); }
+int TProgram::getAttributeIndex(const char* name)            { return reflection->getAttributeIndex(name); }
+int TProgram::getAttributeType(int index)                    { return reflection->getAttribute(index).glDefineType; }
+
+/// layout information
+bool TProgram::getAttributeHasLocation(int index)            { return reflection->getAttributeQualifier(index)->hasLocation(); }
+bool TProgram::getAttributeHasBinding(int index)             { return reflection->getAttributeQualifier(index)->hasBinding(); }
+int TProgram::getAttributeLocation(int index)                { return reflection->getAttributeQualifier(index)->layoutLocation; }
+int TProgram::getAttributeBinding(int index)                 { return reflection->getAttributeQualifier(index)->layoutBinding; }
+
+void TProgram::setAttributeLocation(int index, int location) { reflection->setAttributeLocation(index, location); }
+
+/// Varyings
+int TProgram::getNumLiveVaryingVariables()                   { return reflection->getNumVaryings(); }
+const char* TProgram::getVaryingName(int index)              { return reflection->getVarying(index).name.c_str(); }
+int TProgram::getVaryingIndex(const char* name)              { return reflection->getVaryingIndex(name); }
+int TProgram::getVaryingType(int index)                      { return reflection->getVarying(index).glDefineType; }
+
+/// layout information
+bool TProgram::getVaryingHasLocation(int index)              { return reflection->getVaryingQualifier(index)->hasLocation(); }
+bool TProgram::getVaryingHasBinding(int index)               { return reflection->getVaryingQualifier(index)->hasBinding(); }
+int TProgram::getVaryingLocation(int index)                  { return reflection->getVaryingQualifier(index)->layoutLocation; }
+int TProgram::getVaryingBinding(int index)                   { return reflection->getVaryingQualifier(index)->layoutBinding; }
+
+
+void TProgram::dumpReflection()                              { reflection->dump(); }
 
 } // end namespace glslang
