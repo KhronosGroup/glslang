@@ -506,6 +506,10 @@ public:
     // get the direct pointer for an l-value
     Id accessChainGetLValue();
 
+    // Get the inferred SPIR-V type of the result of the current access chain,
+    // based on the type of the base and the chain of dereferences.
+    Id accessChainGetInferredType();
+
     void dump(std::vector<unsigned int>&) const;
 
     void createBranch(Block* block);

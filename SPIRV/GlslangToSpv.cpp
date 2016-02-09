@@ -1570,7 +1570,12 @@ spv::Id TGlslangToSpvTraverser::convertGlslangToSpvType(const glslang::TType& ty
         spvType = builder.makeFloatType(64);
         break;
     case glslang::EbtBool:
-        spvType = builder.makeBoolType();
+        // "transparent" bool doesn't exist in SPIR-V.  The GLSL convention is
+        // a 32-bit int where non-0 means true.
+        if (explicitLayout != glslang::ElpNone)
+            spvType = builder.makeUintType(32);
+        else
+            spvType = builder.makeBoolType();
         break;
     case glslang::EbtInt:
         spvType = builder.makeIntType(32);
@@ -1764,9 +1769,21 @@ spv::Id TGlslangToSpvTraverser::convertGlslangToSpvType(const glslang::TType& ty
     return spvType;
 }
 
+// Wrap the builder's accessChainLoad to:
+//  - localize handling of RelaxedPrecision
+//  - use the SPIR-V inferred type instead of another conversion of the glslang type
+//    (avoids unnecessary work and possible type punning for structures)
+//  - do conversion of concrete to abstract type
 spv::Id TGlslangToSpvTraverser::accessChainLoad(const glslang::TType& type)
 {
-    return builder.accessChainLoad(TranslatePrecisionDecoration(type), convertGlslangToSpvType(type));
+    spv::Id nominalTypeId = builder.accessChainGetInferredType();
+    spv::Id loadedId = builder.accessChainLoad(TranslatePrecisionDecoration(type), nominalTypeId);
+
+    // Need to convert to abstract types when necessary
+    if (builder.isScalarType(nominalTypeId) && type.getBasicType() == glslang::EbtBool && nominalTypeId != builder.makeBoolType())
+        loadedId = builder.createBinOp(spv::OpINotEqual, builder.makeBoolType(), loadedId, builder.makeUintConstant(0));
+
+    return loadedId;
 }
 
 // Decide whether or not this type should be
