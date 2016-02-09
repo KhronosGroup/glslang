@@ -1990,6 +1990,39 @@ Id Builder::accessChainGetLValue()
     return lvalue;
 }
 
+// comment in header
+Id Builder::accessChainGetInferredType()
+{
+    // anything to operate on?
+    if (accessChain.base == NoResult)
+        return NoType;
+    Id type = getTypeId(accessChain.base);
+
+    // do initial dereference
+    if (! accessChain.isRValue)
+        type = getContainedTypeId(type);
+
+    // dereference each index
+    for (auto deref : accessChain.indexChain) {
+        if (isStructType(type))
+            type = getContainedTypeId(type, getConstantScalar(deref));
+        else
+            type = getContainedTypeId(type);
+    }
+
+    // dereference swizzle
+    if (accessChain.swizzle.size() == 1)
+        type = getContainedTypeId(type);
+    else if (accessChain.swizzle.size() > 1)
+        type = makeVectorType(getContainedTypeId(type), accessChain.swizzle.size());
+
+    // dereference component selection
+    if (accessChain.component)
+        type = getContainedTypeId(type);
+
+    return type;
+}
+
 void Builder::dump(std::vector<unsigned int>& out) const
 {
     // Header, before first instructions:
