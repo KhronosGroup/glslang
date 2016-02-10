@@ -2121,7 +2121,7 @@ Id Builder::accessChainGetInferredType()
     if (accessChain.swizzle.size() == 1)
         type = getContainedTypeId(type);
     else if (accessChain.swizzle.size() > 1)
-        type = makeVectorType(getContainedTypeId(type), accessChain.swizzle.size());
+        type = makeVectorType(getContainedTypeId(type), (int)accessChain.swizzle.size());
 
     // dereference component selection
     if (accessChain.component)
