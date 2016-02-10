@@ -351,6 +351,8 @@ spv::BuiltIn TGlslangToSpvTraverser::TranslateBuiltInDecoration(glslang::TBuiltI
         case EShLangTessEvaluation:
             builder.addCapability(spv::CapabilityTessellationPointSize);
             break;
+        default:
+            break;
         }
         return spv::BuiltInPointSize;
 
