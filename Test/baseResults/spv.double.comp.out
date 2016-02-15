@@ -10,6 +10,7 @@ Linked compute stage:
 // Id's are bound by 62
 
                               Capability Shader
+                              Capability Float64
                1:             ExtInstImport  "GLSL.std.450"
                               MemoryModel Logical GLSL450
                               EntryPoint GLCompute 4  "main" 26 33

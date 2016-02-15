@@ -8,6 +8,7 @@ Linked fragment stage:
 // Id's are bound by 291
 
                               Capability Shader
+                              Capability Sampled1D
                1:             ExtInstImport  "GLSL.std.450"
                               MemoryModel Logical GLSL450
                               EntryPoint Fragment 4  "main" 47 276 290
