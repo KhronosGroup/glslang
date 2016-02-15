@@ -15,6 +15,7 @@ Linked fragment stage:
                               Capability SampledCubeArray
                               Capability SampledBuffer
                               Capability ImageMSArray
+                              Capability ImageQuery
                1:             ExtInstImport  "GLSL.std.450"
                               MemoryModel Logical GLSL450
                               EntryPoint Fragment 4  "main" 356

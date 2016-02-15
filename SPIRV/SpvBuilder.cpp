@@ -1340,6 +1340,9 @@ Id Builder::createTextureCall(Decoration precision, Id resultType, bool sparse, 
         texArgs[numArgs++] = parameters.sample;
     }
     if (parameters.lodClamp) {
+        // capability if this bit is used
+        addCapability(CapabilityMinLod);
+
         mask = (ImageOperandsMask)(mask | ImageOperandsMinLodMask);
         texArgs[numArgs++] = parameters.lodClamp;
     }
@@ -1459,6 +1462,9 @@ Id Builder::createTextureCall(Decoration precision, Id resultType, bool sparse, 
     Id resultId = textureInst->getResultId();
 
     if (sparse) {
+        // set capability
+        addCapability(CapabilitySparseResidency);
+
         // Decode the return type that was a special structure
         createStore(createCompositeExtract(resultId, typeId1, 1), parameters.texelOut);
         resultId = createCompositeExtract(resultId, typeId0, 0);
@@ -1476,6 +1482,9 @@ Id Builder::createTextureCall(Decoration precision, Id resultType, bool sparse, 
 // Comments in header
 Id Builder::createTextureQueryCall(Op opCode, const TextureParameters& parameters)
 {
+    // All these need a capability
+    addCapability(CapabilityImageQuery);
+
     // Figure out the result type
     Id resultType = 0;
     switch (opCode) {

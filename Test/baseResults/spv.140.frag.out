@@ -11,6 +11,7 @@ Linked fragment stage:
                               Capability ClipDistance
                               Capability SampledRect
                               Capability SampledBuffer
+                              Capability ImageQuery
                1:             ExtInstImport  "GLSL.std.450"
                               MemoryModel Logical GLSL450
                               EntryPoint Fragment 4  "main" 16 28 33 43

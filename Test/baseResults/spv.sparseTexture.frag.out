@@ -11,6 +11,7 @@ Linked fragment stage:
 
                               Capability Shader
                               Capability SampledRect
+                              Capability SparseResidency
                               Capability SampledCubeArray
                1:             ExtInstImport  "GLSL.std.450"
                               MemoryModel Logical GLSL450

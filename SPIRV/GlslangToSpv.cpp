@@ -88,6 +88,7 @@ public:
     void dumpSpv(std::vector<unsigned int>& out);
 
 protected:
+    spv::Decoration TranslateInterpolationDecoration(const glslang::TQualifier& qualifier);
     spv::BuiltIn TranslateBuiltInDecoration(glslang::TBuiltInVariable);
     spv::Id createSpvVariable(const glslang::TIntermSymbol*);
     spv::Id getSampledType(const glslang::TSampler&);
@@ -301,7 +302,7 @@ spv::Decoration TranslateLayoutDecoration(const glslang::TType& type, glslang::T
 // Translate glslang type to SPIR-V interpolation decorations.
 // Returns spv::Decoration(spv::BadValue) when no decoration
 // should be applied.
-spv::Decoration TranslateInterpolationDecoration(const glslang::TQualifier& qualifier)
+spv::Decoration TGlslangToSpvTraverser::TranslateInterpolationDecoration(const glslang::TQualifier& qualifier)
 {
     if (qualifier.smooth) {
         // Smooth decoration doesn't exist in SPIR-V 1.0
@@ -315,9 +316,10 @@ spv::Decoration TranslateInterpolationDecoration(const glslang::TQualifier& qual
         return spv::DecorationFlat;
     else if (qualifier.centroid)
         return spv::DecorationCentroid;
-    else if (qualifier.sample)
+    else if (qualifier.sample) {
+        builder.addCapability(spv::CapabilitySampleRateShading);
         return spv::DecorationSample;
-    else
+    } else
         return (spv::Decoration)spv::BadValue;
 }
 
@@ -358,6 +360,18 @@ spv::BuiltIn TGlslangToSpvTraverser::TranslateBuiltInDecoration(glslang::TBuiltI
         // TODO: builder.addCapability(spv::CapabilityMultiViewport);
         return spv::BuiltInViewportIndex;
 
+    case glslang::EbvSampleId:
+        builder.addCapability(spv::CapabilitySampleRateShading);
+        return spv::BuiltInSampleId;
+
+    case glslang::EbvSamplePosition:
+        builder.addCapability(spv::CapabilitySampleRateShading);
+        return spv::BuiltInSamplePosition;
+
+    case glslang::EbvSampleMask:
+        builder.addCapability(spv::CapabilitySampleRateShading);
+        return spv::BuiltInSampleMask;
+
     case glslang::EbvPosition:             return spv::BuiltInPosition;
     case glslang::EbvVertexId:             return spv::BuiltInVertexId;
     case glslang::EbvInstanceId:           return spv::BuiltInInstanceId;
@@ -377,9 +391,6 @@ spv::BuiltIn TGlslangToSpvTraverser::TranslateBuiltInDecoration(glslang::TBuiltI
     case glslang::EbvFragCoord:            return spv::BuiltInFragCoord;
     case glslang::EbvPointCoord:           return spv::BuiltInPointCoord;
     case glslang::EbvFace:                 return spv::BuiltInFrontFacing;
-    case glslang::EbvSampleId:             return spv::BuiltInSampleId;
-    case glslang::EbvSamplePosition:       return spv::BuiltInSamplePosition;
-    case glslang::EbvSampleMask:           return spv::BuiltInSampleMask;
     case glslang::EbvFragDepth:            return spv::BuiltInFragDepth;
     case glslang::EbvHelperInvocation:     return spv::BuiltInHelperInvocation;
     case glslang::EbvNumWorkGroups:        return spv::BuiltInNumWorkgroups;
