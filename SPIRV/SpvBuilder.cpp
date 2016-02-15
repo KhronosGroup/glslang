@@ -1286,7 +1286,7 @@ Id Builder::createBuiltinCall(Id resultType, Id builtins, int entryPoint, std::v
 
 // Accept all parameters needed to create a texture instruction.
 // Create the correct instruction based on the inputs, and make the call.
-Id Builder::createTextureCall(Decoration precision, Id resultType, bool sparse, bool fetch, bool proj, bool gather, const TextureParameters& parameters)
+Id Builder::createTextureCall(Decoration precision, Id resultType, bool sparse, bool fetch, bool proj, bool gather, bool noImplicitLod, const TextureParameters& parameters)
 {
     static const int maxTextureArgs = 10;
     Id texArgs[maxTextureArgs] = {};
@@ -1295,7 +1295,7 @@ Id Builder::createTextureCall(Decoration precision, Id resultType, bool sparse, 
     // Set up the fixed arguments
     //
     int numArgs = 0;
-    bool xplicit = false;
+    bool explicitLod = false;
     texArgs[numArgs++] = parameters.sampler;
     texArgs[numArgs++] = parameters.coords;
     if (parameters.Dref)
@@ -1316,13 +1316,18 @@ Id Builder::createTextureCall(Decoration precision, Id resultType, bool sparse, 
     if (parameters.lod) {
         mask = (ImageOperandsMask)(mask | ImageOperandsLodMask);
         texArgs[numArgs++] = parameters.lod;
-        xplicit = true;
-    }
-    if (parameters.gradX) {
+        explicitLod = true;
+    } else if (parameters.gradX) {
         mask = (ImageOperandsMask)(mask | ImageOperandsGradMask);
         texArgs[numArgs++] = parameters.gradX;
         texArgs[numArgs++] = parameters.gradY;
-        xplicit = true;
+        explicitLod = true;
+    } else if (noImplicitLod && ! fetch && ! gather) {
+        // have to explicitly use lod of 0 if not allowed to have them be implicit, and
+        // we would otherwise be about to issue an implicit instruction
+        mask = (ImageOperandsMask)(mask | ImageOperandsLodMask);
+        texArgs[numArgs++] = makeFloatConstant(0.0);
+        explicitLod = true;
     }
     if (parameters.offset) {
         if (isConstant(parameters.offset))
@@ -1354,8 +1359,7 @@ Id Builder::createTextureCall(Decoration precision, Id resultType, bool sparse, 
     //
     // Set up the instruction
     //
-    Op opCode;
-    opCode = OpImageSampleImplicitLod;
+    Op opCode = OpNop;  // All paths below need to set this
     if (fetch) {
         if (sparse)
             opCode = OpImageSparseFetch;
@@ -1372,7 +1376,7 @@ Id Builder::createTextureCall(Decoration precision, Id resultType, bool sparse, 
                 opCode = OpImageSparseGather;
             else
                 opCode = OpImageGather;
-    } else if (xplicit) {
+    } else if (explicitLod) {
         if (parameters.Dref) {
             if (proj)
                 if (sparse)

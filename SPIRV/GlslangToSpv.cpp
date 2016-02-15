@@ -2236,6 +2236,7 @@ spv::Id TGlslangToSpvTraverser::createImageTextureFunctionCall(glslang::TIntermO
 
     params.coords = arguments[1];
     int extraArgs = 0;
+    bool noImplicitLod = false;
 
     // sort out where Dref is coming from
     if (cubeCompare) {
@@ -2257,7 +2258,11 @@ spv::Id TGlslangToSpvTraverser::createImageTextureFunctionCall(glslang::TIntermO
     if (cracked.lod) {
         params.lod = arguments[2];
         ++extraArgs;
-    } else if (sampler.ms) {
+    } else if (glslangIntermediate->getStage() != EShLangFragment) {
+        // we need to invent the default lod for an explicit lod instruction for a non-fragment stage
+        noImplicitLod = true;
+    }
+    if (sampler.ms) {
         params.sample = arguments[2]; // For MS, "sample" should be specified
         ++extraArgs;
     }
@@ -2295,7 +2300,7 @@ spv::Id TGlslangToSpvTraverser::createImageTextureFunctionCall(glslang::TIntermO
         }
     }
 
-    return builder.createTextureCall(precision, convertGlslangToSpvType(node->getType()), sparse, cracked.fetch, cracked.proj, cracked.gather, params);
+    return builder.createTextureCall(precision, convertGlslangToSpvType(node->getType()), sparse, cracked.fetch, cracked.proj, cracked.gather, noImplicitLod, params);
 }
 
 spv::Id TGlslangToSpvTraverser::handleUserFunctionCall(const glslang::TIntermAggregate* node)
