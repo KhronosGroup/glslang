@@ -165,6 +165,18 @@ Id Builder::makeIntegerType(int width, bool hasSign)
     constantsTypesGlobals.push_back(std::unique_ptr<Instruction>(type));
     module.mapInstruction(type);
 
+    // deal with capabilities
+    switch (width) {
+    case 16:
+        addCapability(CapabilityInt16);
+        break;
+    case 64:
+        addCapability(CapabilityInt64);
+        break;
+    default:
+        break;
+    }
+
     return type->getResultId();
 }
 
@@ -184,6 +196,18 @@ Id Builder::makeFloatType(int width)
     groupedTypes[OpTypeFloat].push_back(type);
     constantsTypesGlobals.push_back(std::unique_ptr<Instruction>(type));
     module.mapInstruction(type);
+
+    // deal with capabilities
+    switch (width) {
+    case 16:
+        addCapability(CapabilityFloat16);
+        break;
+    case 64:
+        addCapability(CapabilityFloat64);
+        break;
+    default:
+        break;
+    }
 
     return type->getResultId();
 }
