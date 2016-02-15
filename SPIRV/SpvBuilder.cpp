@@ -406,6 +406,48 @@ Id Builder::makeImageType(Id sampledType, Dim dim, bool depth, bool arrayed, boo
     constantsTypesGlobals.push_back(std::unique_ptr<Instruction>(type));
     module.mapInstruction(type);
 
+    // deal with capabilities
+    switch (dim) {
+    case DimBuffer:
+        if (sampled)
+            addCapability(CapabilitySampledBuffer);
+        else
+            addCapability(CapabilityImageBuffer);
+        break;
+    case Dim1D:
+        if (sampled)
+            addCapability(CapabilitySampled1D);
+        else
+            addCapability(CapabilityImage1D);
+        break;
+    case DimCube:
+        if (arrayed) {
+            if (sampled)
+                addCapability(CapabilitySampledCubeArray);
+            else
+                addCapability(CapabilityImageCubeArray);
+        }
+        break;
+    case DimRect:
+        if (sampled)
+            addCapability(CapabilitySampledRect);
+        else
+            addCapability(CapabilityImageRect);
+        break;
+    case DimSubpassData:
+        addCapability(CapabilityInputAttachment);
+        break;
+    default:
+        break;
+    }
+
+    if (ms) {
+        if (arrayed)
+            addCapability(CapabilityImageMSArray);
+        if (! sampled)
+            addCapability(CapabilityStorageImageMultisample);
+    }
+
     return type->getResultId();
 }
 

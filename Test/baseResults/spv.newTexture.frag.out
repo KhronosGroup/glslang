@@ -10,6 +10,8 @@ Linked fragment stage:
 // Id's are bound by 278
 
                               Capability Shader
+                              Capability SampledRect
+                              Capability SampledCubeArray
                1:             ExtInstImport  "GLSL.std.450"
                               MemoryModel Logical GLSL450
                               EntryPoint Fragment 4  "main" 17 26 29 55 81 84 91 247 277

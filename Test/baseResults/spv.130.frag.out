@@ -11,6 +11,9 @@ Linked fragment stage:
 
                               Capability Shader
                               Capability ClipDistance
+                              Capability SampledRect
+                              Capability Sampled1D
+                              Capability SampledCubeArray
                1:             ExtInstImport  "GLSL.std.450"
                               MemoryModel Logical GLSL450
                               EntryPoint Fragment 4  "main" 17 68 79 99 173 184 185 186
