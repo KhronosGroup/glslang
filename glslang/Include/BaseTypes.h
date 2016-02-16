@@ -130,6 +130,8 @@ enum TBuiltInVariable {
     EbvLocalInvocationIndex,
     EbvVertexId,
     EbvInstanceId,
+    EbvVertexIndex,
+    EbvInstanceIndex,
     EbvBaseVertex,
     EbvBaseInstance,
     EbvDrawId,
@@ -221,6 +223,8 @@ __inline const char* GetBuiltInVariableString(TBuiltInVariable v)
     case EbvLocalInvocationIndex: return "LocalInvocationIndex";
     case EbvVertexId:             return "VertexId";
     case EbvInstanceId:           return "InstanceId";
+    case EbvVertexIndex:          return "VertexIndex";
+    case EbvInstanceIndex:        return "InstanceIndex";
     case EbvBaseVertex:           return "BaseVertex";
     case EbvBaseInstance:         return "BaseInstance";
     case EbvDrawId:               return "DrawId";

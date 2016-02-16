@@ -437,7 +437,7 @@ namespace spv {
         }
 
         // Store IDs from instruction in our map
-        for (int op = 0; op < spv::InstructionDesc[opCode].operands.getNum(); ++op, --numOperands) {
+        for (int op = 0; numOperands > 0; ++op, --numOperands) {
             switch (spv::InstructionDesc[opCode].operands.getClass(op)) {
             case spv::OperandId:
                 idFn(asId(word++));

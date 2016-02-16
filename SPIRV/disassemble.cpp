@@ -473,6 +473,7 @@ void SpirvStream::disassembleInstruction(Id resultId, Id /*typeId*/, Op opCode, 
             else
                 out << OperandClassParams[operandClass].getName(stream[word++]);
             --numOperands;
+
             break;
         }
     }
@@ -531,7 +532,6 @@ void GLSLstd450GetDebugNames(const char** names)
     names[GLSLstd450SClamp]                  = "SClamp";
     names[GLSLstd450UClamp]                  = "UClamp";
     names[GLSLstd450FMix]                    = "FMix";
-    names[GLSLstd450IMix]                    = "IMix";
     names[GLSLstd450Step]                    = "Step";
     names[GLSLstd450SmoothStep]              = "SmoothStep";
     names[GLSLstd450Fma]                     = "Fma";

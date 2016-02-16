@@ -15,7 +15,7 @@ Linked fragment stage:
                1:             ExtInstImport  "GLSL.std.450"
                               MemoryModel Logical GLSL450
                               EntryPoint Fragment 4  "main" 16 28 33 43
-                              ExecutionMode 4 OriginLowerLeft
+                              ExecutionMode 4 OriginUpperLeft
                               Source GLSL 140
                               Name 4  "main"
                               Name 8  "foo("
@@ -40,6 +40,9 @@ Linked fragment stage:
                               Name 100  "bname"
                               Decorate 16(gl_FrontFacing) BuiltIn FrontFacing
                               Decorate 33(gl_ClipDistance) BuiltIn ClipDistance
+                              Decorate 55(sampR) DescriptorSet 0
+                              Decorate 63(sampB) DescriptorSet 0
+                              Decorate 87(samp2Da) DescriptorSet 0
                               Decorate 90 ArrayStride 64
                               Decorate 91 ArrayStride 64
                               MemberDecorate 92(bn) 0 RowMajor
@@ -58,9 +61,11 @@ Linked fragment stage:
                               MemberDecorate 92(bn) 4 Offset 640
                               MemberDecorate 92(bn) 4 MatrixStride 16
                               Decorate 92(bn) Block
+                              Decorate 94 DescriptorSet 0
                               Decorate 96 ArrayStride 16
                               MemberDecorate 97(bi) 0 Offset 0
                               Decorate 97(bi) Block
+                              Decorate 100(bname) DescriptorSet 0
                2:             TypeVoid
                3:             TypeFunction 2
                6:             TypeFloat 32

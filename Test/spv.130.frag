@@ -82,11 +82,6 @@ uniform sampler2DRectShadow s2DRS;
 uniform sampler1D s1D;
 uniform sampler2DShadow s2DS;
 
-uniform float f;
-uniform vec2 v2;
-uniform vec3 v3;
-uniform vec4 v4;
-
 void main()
 {
     o = textureGather(sampC, vec3(0.2));

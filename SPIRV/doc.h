@@ -243,7 +243,7 @@ protected:
     int resultPresent : 1;
 };
 
-const int OpcodeCeiling = 320;
+const int OpcodeCeiling = 321;
 
 // The set of objects that hold all the instruction/operand
 // parameterization information.

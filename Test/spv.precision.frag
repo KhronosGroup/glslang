@@ -4,10 +4,10 @@ in lowp float lowfin;
 in mediump float mediumfin;
 in highp vec4 highfin;
 
-uniform highp int uniform_high;
-uniform mediump int uniform_medium;
-uniform lowp int uniform_low;
-uniform bvec2 ub2;
+highp int uniform_high;
+mediump int uniform_medium;
+lowp int uniform_low;
+bvec2 ub2;
 
 out mediump vec4 mediumfout;
 

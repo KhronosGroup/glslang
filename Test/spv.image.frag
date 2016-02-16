@@ -15,14 +15,14 @@ layout(rgba32f, binding = 10)   uniform image2DMSArray  i2DMSArray;
 layout(r32i,    binding = 11)   uniform iimage1D        ii1D;
 layout(r32ui,   binding = 12)   uniform uimage2D        ui2D;
 
+flat in int     ic1D;
+flat in ivec2   ic2D;
+flat in ivec3   ic3D;
+flat in ivec4   ic4D;
+
 writeonly layout(binding = 1)   uniform image2D         wo2D;
 
-uniform int     ic1D;
-uniform ivec2   ic2D;
-uniform ivec3   ic3D;
-uniform ivec4   ic4D;
-
-uniform uint value;
+flat in uint value;
 
 out vec4 fragData;
 

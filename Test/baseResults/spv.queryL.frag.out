@@ -18,7 +18,7 @@ Linked fragment stage:
                1:             ExtInstImport  "GLSL.std.450"
                               MemoryModel Logical GLSL450
                               EntryPoint Fragment 4  "main"
-                              ExecutionMode 4 OriginLowerLeft
+                              ExecutionMode 4 OriginUpperLeft
                               Source GLSL 430
                               Name 4  "main"
                               Name 9  "lod"
@@ -46,6 +46,26 @@ Linked fragment stage:
                               Name 195  "usampCubeA"
                               Name 232  "sampBuf"
                               Name 236  "sampRect"
+                              Decorate 13(samp1D) DescriptorSet 0
+                              Decorate 24(isamp2D) DescriptorSet 0
+                              Decorate 36(usamp3D) DescriptorSet 0
+                              Decorate 49(sampCube) DescriptorSet 0
+                              Decorate 59(isamp1DA) DescriptorSet 0
+                              Decorate 69(usamp2DA) DescriptorSet 0
+                              Decorate 79(isampCubeA) DescriptorSet 0
+                              Decorate 89(samp1Ds) DescriptorSet 0
+                              Decorate 99(samp2Ds) DescriptorSet 0
+                              Decorate 109(sampCubes) DescriptorSet 0
+                              Decorate 119(samp1DAs) DescriptorSet 0
+                              Decorate 129(samp2DAs) DescriptorSet 0
+                              Decorate 139(sampCubeAs) DescriptorSet 0
+                              Decorate 154(usamp2D) DescriptorSet 0
+                              Decorate 163(isamp3D) DescriptorSet 0
+                              Decorate 172(isampCube) DescriptorSet 0
+                              Decorate 186(samp2DA) DescriptorSet 0
+                              Decorate 195(usampCubeA) DescriptorSet 0
+                              Decorate 232(sampBuf) DescriptorSet 0
+                              Decorate 236(sampRect) DescriptorSet 0
                2:             TypeVoid
                3:             TypeFunction 2
                6:             TypeFloat 32

@@ -3,9 +3,9 @@
 uniform sampler2D texSampler2D;
 uniform sampler3D texSampler3D;
 
-uniform float blend;
-uniform vec2 scale;
-uniform vec4 u;
+in float blend;
+in vec2 scale;
+in vec4 u;
 
 in vec2 t;
 in vec3 coords;

@@ -1,6 +1,6 @@
 #version 430 core
 
-layout(location = 4) uniform vec4 uv4;
+
 
 out gl_PerVertex {
     float gl_ClipDistance[];
@@ -13,7 +13,7 @@ highp in vec4 badorder;
 out invariant vec4 badorder2;
 out flat vec4 badorder3;
 
-uniform float f;
+in float f;
 
 void main()
 {

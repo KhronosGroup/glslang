@@ -20,8 +20,8 @@ Linked fragment stage:
                               Capability StorageImageWriteWithoutFormat
                1:             ExtInstImport  "GLSL.std.450"
                               MemoryModel Logical GLSL450
-                              EntryPoint Fragment 4  "main" 362
-                              ExecutionMode 4 OriginLowerLeft
+                              EntryPoint Fragment 4  "main" 132 142 152 248 362 377
+                              ExecutionMode 4 OriginUpperLeft
                               Source GLSL 450
                               Name 4  "main"
                               Name 9  "iv"
@@ -47,20 +47,39 @@ Linked fragment stage:
                               Name 357  "wo2D"
                               Name 362  "fragData"
                               Name 377  "ic4D"
+                              Decorate 15(i1D) DescriptorSet 0
                               Decorate 15(i1D) Binding 0
+                              Decorate 27(i2D) DescriptorSet 0
                               Decorate 27(i2D) Binding 1
+                              Decorate 38(i3D) DescriptorSet 0
                               Decorate 38(i3D) Binding 2
+                              Decorate 45(iCube) DescriptorSet 0
                               Decorate 45(iCube) Binding 3
+                              Decorate 55(iCubeArray) DescriptorSet 0
                               Decorate 55(iCubeArray) Binding 4
+                              Decorate 62(i2DRect) DescriptorSet 0
                               Decorate 62(i2DRect) Binding 5
+                              Decorate 72(i1DArray) DescriptorSet 0
                               Decorate 72(i1DArray) Binding 6
+                              Decorate 82(i2DArray) DescriptorSet 0
                               Decorate 82(i2DArray) Binding 7
+                              Decorate 89(iBuffer) DescriptorSet 0
                               Decorate 89(iBuffer) Binding 8
+                              Decorate 98(i2DMS) DescriptorSet 0
                               Decorate 98(i2DMS) Binding 9
+                              Decorate 108(i2DMSArray) DescriptorSet 0
                               Decorate 108(i2DMSArray) Binding 10
+                              Decorate 132(ic1D) Flat
+                              Decorate 142(ic2D) Flat
+                              Decorate 152(ic3D) Flat
+                              Decorate 232(ii1D) DescriptorSet 0
                               Decorate 232(ii1D) Binding 11
+                              Decorate 245(ui2D) DescriptorSet 0
                               Decorate 245(ui2D) Binding 12
+                              Decorate 248(value) Flat
+                              Decorate 357(wo2D) DescriptorSet 0
                               Decorate 357(wo2D) Binding 1
+                              Decorate 377(ic4D) Flat
                2:             TypeVoid
                3:             TypeFunction 2
                6:             TypeInt 32 1
@@ -110,12 +129,12 @@ Linked fragment stage:
              126:             TypePointer Function 125(fvec4)
              128:   12(float) Constant 0
              129:  125(fvec4) ConstantComposite 128 128 128 128
-             131:             TypePointer UniformConstant 6(int)
-       132(ic1D):    131(ptr) Variable UniformConstant
-             141:             TypePointer UniformConstant 29(ivec2)
-       142(ic2D):    141(ptr) Variable UniformConstant
-             151:             TypePointer UniformConstant 7(ivec3)
-       152(ic3D):    151(ptr) Variable UniformConstant
+             131:             TypePointer Input 6(int)
+       132(ic1D):    131(ptr) Variable Input
+             141:             TypePointer Input 29(ivec2)
+       142(ic2D):    141(ptr) Variable Input
+             151:             TypePointer Input 7(ivec3)
+       152(ic3D):    151(ptr) Variable Input
              210:      6(int) Constant 1
              216:      6(int) Constant 2
              220:      6(int) Constant 3
@@ -130,8 +149,8 @@ Linked fragment stage:
              243:             TypeImage 18(int) 2D nonsampled format:R32ui
              244:             TypePointer UniformConstant 243
        245(ui2D):    244(ptr) Variable UniformConstant
-             247:             TypePointer UniformConstant 18(int)
-      248(value):    247(ptr) Variable UniformConstant
+             247:             TypePointer Input 18(int)
+      248(value):    247(ptr) Variable Input
              250:             TypePointer Image 18(int)
              256:      6(int) Constant 11
              270:      6(int) Constant 12
@@ -149,8 +168,8 @@ Linked fragment stage:
    362(fragData):    361(ptr) Variable Output
              368:             TypeBool
              375:             TypeVector 6(int) 4
-             376:             TypePointer UniformConstant 375(ivec4)
-       377(ic4D):    376(ptr) Variable UniformConstant
+             376:             TypePointer Input 375(ivec4)
+       377(ic4D):    376(ptr) Variable Input
          4(main):           2 Function None 3
                5:             Label
            9(iv):      8(ptr) Variable Function

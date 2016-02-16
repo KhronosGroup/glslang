@@ -6,12 +6,9 @@ invariant gl_Position;
 
 void main()
 {
-    mediump int i = (4 * gl_VertexID - 10);
-    mediump int j = (4 * gl_VertexID - 10);
-
     gl_Position = vec4(ps);
-    gl_Position *= float(i);
+    gl_Position *= float(4 - gl_VertexIndex);
 
     gl_PointSize = ps; 
-    gl_PointSize *= float(j);
+    gl_PointSize *= float(5 - gl_InstanceIndex);
 }

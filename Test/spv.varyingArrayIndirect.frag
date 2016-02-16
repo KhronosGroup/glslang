@@ -7,7 +7,7 @@ in vec4 TexCoord[6];
 
 in  vec4 userIn[2];
 
-uniform int a, b;
+flat in int a, b;
 
 void main()
 {
