@@ -66,8 +66,12 @@ set(HEADERS
 
 find_package(BISON)
 if(NOT BISON_FOUND)
-    set(BISON_EXECUTABLE ../tools/bison.exe)
-    message("bison not found. Assuming it is at ${BISON_EXECUTABLE}")
+    if (WIN32)
+        set(BISON_EXECUTABLE ../tools/bison.exe)
+        message("bison not found. Assuming it is at ${BISON_EXECUTABLE}")
+    else()
+        message(FATAL_ERROR "bison required but not found. Please install via your package management tool.")
+    endif()
 endif()
 
 # Always use a custom command since our use of --defines isn't assumed by CMake's BISON_TARGET,
