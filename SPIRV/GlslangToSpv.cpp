@@ -2087,7 +2087,7 @@ void TGlslangToSpvTraverser::translateArguments(const glslang::TIntermAggregate&
 
     glslang::TSampler sampler = {};
     bool cubeCompare = false;
-    if (node.isTexture()) {
+    if (node.isTexture() || node.isImage()) {
         sampler = glslangArguments[0]->getAsTyped()->getType().getSampler();
         cubeCompare = sampler.dim == glslang::EsdCube && sampler.arrayed && sampler.shadow;
     }
@@ -2108,6 +2108,10 @@ void TGlslangToSpvTraverser::translateArguments(const glslang::TIntermAggregate&
         case glslang::EOpImageAtomicExchange:
         case glslang::EOpImageAtomicCompSwap:
             if (i == 0)
+                lvalue = true;
+            break;
+        case glslang::EOpSparseImageLoad:
+            if ((sampler.ms && i == 3) || (! sampler.ms && i == 2))
                 lvalue = true;
             break;
         case glslang::EOpSparseTexture:
@@ -2253,9 +2257,9 @@ spv::Id TGlslangToSpvTraverser::createImageTextureFunctionCall(glslang::TIntermO
                 operands.push_back(spv::ImageOperandsSampleMask);
                 operands.push_back(*opIt);
             }
-            return builder.createOp(spv::OpImageRead, convertGlslangToSpvType(node->getType()), operands);
             if (builder.getImageTypeFormat(builder.getImageType(operands.front())) == spv::ImageFormatUnknown)
                 builder.addCapability(spv::CapabilityStorageImageReadWithoutFormat);
+            return builder.createOp(spv::OpImageRead, convertGlslangToSpvType(node->getType()), operands);
         } else if (node->getOp() == glslang::EOpImageStore) {
             if (sampler.ms) {
                 operands.push_back(*(opIt + 1));
@@ -2267,9 +2271,27 @@ spv::Id TGlslangToSpvTraverser::createImageTextureFunctionCall(glslang::TIntermO
             if (builder.getImageTypeFormat(builder.getImageType(operands.front())) == spv::ImageFormatUnknown)
                 builder.addCapability(spv::CapabilityStorageImageWriteWithoutFormat);
             return spv::NoResult;
-        } else if (node->isSparseImage()) {
-            spv::MissingFunctionality("sparse image functions");
-            return spv::NoResult;
+        } else if (node->getOp() == glslang::EOpSparseImageLoad) {
+            builder.addCapability(spv::CapabilitySparseResidency);
+            if (builder.getImageTypeFormat(builder.getImageType(operands.front())) == spv::ImageFormatUnknown)
+                builder.addCapability(spv::CapabilityStorageImageReadWithoutFormat);
+
+            if (sampler.ms) {
+                operands.push_back(spv::ImageOperandsSampleMask);
+                operands.push_back(*opIt++);
+            }
+
+            // Create the return type that was a special structure
+            spv::Id texelOut = *opIt;
+            spv::Id typeId0 = convertGlslangToSpvType(node->getType());
+            spv::Id typeId1 = builder.getDerefTypeId(texelOut);
+            spv::Id resultTypeId = builder.makeStructResultType(typeId0, typeId1);
+
+            spv::Id resultId = builder.createOp(spv::OpImageSparseRead, resultTypeId, operands);
+
+            // Decode the return type
+            builder.createStore(builder.createCompositeExtract(resultId, typeId1, 1), texelOut);
+            return builder.createCompositeExtract(resultId, typeId0, 0);
         } else {
             // Process image atomic operations
 
