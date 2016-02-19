@@ -71,7 +71,7 @@ enum TStorageQualifier {
     EvqGlobal,        // For globals read/write
     EvqConst,         // User-defined constant values, will be semantically constant and constant folded
     EvqVaryingIn,     // pipeline input, read only, also supercategory for all built-ins not included in this enum (see TBuiltInVariable)
-    EvqVaryingOut,    // pipeline ouput, read/write, also supercategory for all built-ins not included in this enum (see TBuiltInVariable)
+    EvqVaryingOut,    // pipeline output, read/write, also supercategory for all built-ins not included in this enum (see TBuiltInVariable)
     EvqUniform,       // read only, shared with app
     EvqBuffer,        // read/write, shared with app
     EvqShared,        // compute shader's read/write 'shared' qualifier

@@ -535,8 +535,6 @@ void InheritQualifiers(glslang::TQualifier& child, const glslang::TQualifier& pa
         child.patch = true;
     if (parent.sample)
         child.sample = true;
-
-    child.layoutLocation = parent.layoutLocation;
 }
 
 bool HasNonLayoutQualifiers(const glslang::TQualifier& qualifier)
@@ -1723,10 +1721,14 @@ spv::Id TGlslangToSpvTraverser::convertGlslangToSpvType(const glslang::TType& ty
                     // modify just this child's view of the qualifier
                     glslang::TQualifier subQualifier = glslangType.getQualifier();
                     InheritQualifiers(subQualifier, qualifier);
-                    if (qualifier.hasLocation()) {
-                        subQualifier.layoutLocation += locationOffset;
+
+                    // manually inherit location; it's more complex
+                    if (! subQualifier.hasLocation() && qualifier.hasLocation())
+                        subQualifier.layoutLocation = qualifier.layoutLocation + locationOffset;
+                    if (qualifier.hasLocation())
                         locationOffset += glslangIntermediate->computeTypeLocationSize(glslangType);
-                    }
+
+                    // recurse
                     structFields.push_back(convertGlslangToSpvType(glslangType, explicitLayout, subQualifier));
                 }
             }
@@ -1756,10 +1758,22 @@ spv::Id TGlslangToSpvTraverser::convertGlslangToSpvType(const glslang::TType& ty
                     addMemberDecoration(spvType, member, TranslatePrecisionDecoration(glslangType));
                     addMemberDecoration(spvType, member, TranslateInterpolationDecoration(subQualifier));
                     addMemberDecoration(spvType, member, TranslateInvariantDecoration(subQualifier));
-                    if (qualifier.hasLocation()) {
-                        builder.addMemberDecoration(spvType, member, spv::DecorationLocation, qualifier.layoutLocation + locationOffset);
+
+                    // compute location decoration; tricky based on whether inheritance is at play
+                    // TODO: This algorithm (and it's cousin above doing almost the same thing) should
+                    //       probably move to the linker stage of the front end proper, and just have the
+                    //       answer sitting already distributed throughout the individual member locations.
+                    int location = -1;                // will only decorate if present or inherited
+                    if (subQualifier.hasLocation())   // no inheritance, or override of inheritance
+                        location = subQualifier.layoutLocation;
+                    else if (qualifier.hasLocation()) // inheritance
+                        location = qualifier.layoutLocation + locationOffset;
+                    if (qualifier.hasLocation())      // track for upcoming inheritance
                         locationOffset += glslangIntermediate->computeTypeLocationSize(glslangType);
-                    }
+                    if (location >= 0)
+                        builder.addMemberDecoration(spvType, member, spv::DecorationLocation, location);
+
+                    // component, XFB, others
                     if (glslangType.getQualifier().hasComponent())
                         builder.addMemberDecoration(spvType, member, spv::DecorationComponent, glslangType.getQualifier().layoutComponent);
                     if (glslangType.getQualifier().hasXfbOffset())

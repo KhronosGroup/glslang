@@ -1,4 +1,4 @@
-#version 430 core
+#version 450 core
 
 
 
@@ -34,3 +34,4 @@ layout(binding = 31) uniform sampler2D sampb4;
 struct S { mediump float a; highp uvec2 b; highp vec3 c; };
 struct SS { vec4 b; S s; vec4 c; };
 layout(location = 0) flat out SS var;
+out MS { layout(location = 17) float f; } outMS;
