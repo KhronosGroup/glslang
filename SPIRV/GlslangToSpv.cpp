@@ -265,6 +265,21 @@ spv::Decoration TranslateBlockDecoration(const glslang::TType& type)
     return (spv::Decoration)spv::BadValue;
 }
 
+// Translate glslang type to SPIR-V memory decorations.
+void TranslateMemoryDecoration(const glslang::TQualifier& qualifier, std::vector<spv::Decoration>& memory)
+{
+    if (qualifier.coherent)
+        memory.push_back(spv::DecorationCoherent);
+    if (qualifier.volatil)
+        memory.push_back(spv::DecorationVolatile);
+    if (qualifier.restrict)
+        memory.push_back(spv::DecorationRestrict);
+    if (qualifier.readonly)
+        memory.push_back(spv::DecorationNonWritable);
+    if (qualifier.writeonly)
+       memory.push_back(spv::DecorationNonReadable);
+}
+
 // Translate glslang type to SPIR-V layout decorations.
 spv::Decoration TranslateLayoutDecoration(const glslang::TType& type, glslang::TLayoutMatrix matrixLayout)
 {
@@ -535,6 +550,16 @@ void InheritQualifiers(glslang::TQualifier& child, const glslang::TQualifier& pa
         child.patch = true;
     if (parent.sample)
         child.sample = true;
+    if (parent.coherent)
+        child.coherent = true;
+    if (parent.volatil)
+        child.volatil = true;
+    if (parent.restrict)
+        child.restrict = true;
+    if (parent.readonly)
+        child.readonly = true;
+    if (parent.writeonly)
+        child.writeonly = true;
 }
 
 bool HasNonLayoutQualifiers(const glslang::TQualifier& qualifier)
@@ -1758,6 +1783,13 @@ spv::Id TGlslangToSpvTraverser::convertGlslangToSpvType(const glslang::TType& ty
                     addMemberDecoration(spvType, member, TranslatePrecisionDecoration(glslangType));
                     addMemberDecoration(spvType, member, TranslateInterpolationDecoration(subQualifier));
                     addMemberDecoration(spvType, member, TranslateInvariantDecoration(subQualifier));
+
+                    if (qualifier.storage == glslang::EvqBuffer) {
+                        std::vector<spv::Decoration> memory;
+                        TranslateMemoryDecoration(subQualifier, memory);
+                        for (unsigned int i = 0; i < memory.size(); ++i)
+                            addMemberDecoration(spvType, member, memory[i]);
+                    }
 
                     // compute location decoration; tricky based on whether inheritance is at play
                     // TODO: This algorithm (and it's cousin above doing almost the same thing) should
@@ -3573,6 +3605,13 @@ spv::Id TGlslangToSpvTraverser::getSymbolId(const glslang::TIntermSymbol* symbol
             builder.addDecoration(id, spv::DecorationXfbStride, symbol->getQualifier().layoutXfbStride);
         if (symbol->getQualifier().hasXfbBuffer())
             builder.addDecoration(id, spv::DecorationXfbBuffer, symbol->getQualifier().layoutXfbBuffer);
+    }
+
+    if (symbol->getType().isImage()) {
+        std::vector<spv::Decoration> memory;
+        TranslateMemoryDecoration(symbol->getType().getQualifier(), memory);
+        for (unsigned int i = 0; i < memory.size(); ++i)
+            addDecoration(id, memory[i]);
     }
 
     // built-in variable decorations

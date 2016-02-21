@@ -60,6 +60,7 @@ spv.loopsArtificial.frag
 spv.matFun.vert
 spv.matrix.frag
 spv.matrix2.frag
+spv.memoryQualifier.frag
 spv.merge-unreachable.frag
 spv.newTexture.frag
 spv.nonSquare.vert
