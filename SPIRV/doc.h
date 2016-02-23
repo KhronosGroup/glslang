@@ -67,6 +67,8 @@ const char* SamplerFilterModeString(int);
 const char* ImageFormatString(int);
 const char* ImageChannelOrderString(int);
 const char* ImageChannelTypeString(int);
+const char* ImageChannelDataTypeString(int type);
+const char* ImageOperandsString(int format);
 const char* ImageOperands(int);
 const char* FPFastMathString(int);
 const char* FPRoundingModeString(int);
@@ -81,6 +83,7 @@ const char* KernelEnqueueFlagsString(int);
 const char* KernelProfilingInfoString(int);
 const char* CapabilityString(int);
 const char* OpcodeString(int);
+const char* ScopeString(int mem);
 
 // For grouping opcodes into subsections
 enum OpcodeClass {

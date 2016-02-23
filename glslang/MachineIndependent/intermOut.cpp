@@ -96,7 +96,7 @@ protected:
 // Helper functions for printing, not part of traversing.
 //
 
-void OutputTreeText(TInfoSink& infoSink, const TIntermNode* node, const int depth)
+static void OutputTreeText(TInfoSink& infoSink, const TIntermNode* node, const int depth)
 {
     int i;
 
@@ -529,7 +529,7 @@ bool TOutputTraverser::visitSelection(TVisit /* visit */, TIntermSelection* node
     return false;
 }
 
-void OutputConstantUnion(TInfoSink& out, const TIntermTyped* node, const TConstUnionArray& constUnion, int depth)
+static void OutputConstantUnion(TInfoSink& out, const TIntermTyped* node, const TConstUnionArray& constUnion, int depth)
 {
     int size = node->getType().computeNumComponents();
 
