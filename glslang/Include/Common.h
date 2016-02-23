@@ -206,7 +206,7 @@ struct TSourceLoc {
     {
         if (name != nullptr)
             return quoteStringName ? ("\"" + std::string(name) + "\"") : name;
-        return std::to_string(string);
+        return std::to_string((long long)string);
     }
     const char* name; // descriptive name for this string
     int string;

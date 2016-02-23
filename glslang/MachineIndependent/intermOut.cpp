@@ -757,13 +757,9 @@ void TIntermediate::output(TInfoSink& infoSink, bool tree)
     case EShLangCompute:
         infoSink.debug << "local_size = (" << localSize[0] << ", " << localSize[1] << ", " << localSize[2] << ")\n";
         {
-            bool dumpSpecIds = false;
-            for (auto c : localSizeSpecId) {
-                if (c != TQualifier::layoutNotSet)
-                    dumpSpecIds = true;
-            }
-
-            if (dumpSpecIds) {
+            if (localSizeSpecId[0] != TQualifier::layoutNotSet ||
+                localSizeSpecId[1] != TQualifier::layoutNotSet ||
+                localSizeSpecId[2] != TQualifier::layoutNotSet) {
                 infoSink.debug << "local_size ids = (" <<
                     localSizeSpecId[0] << ", " <<
                     localSizeSpecId[1] << ", " <<

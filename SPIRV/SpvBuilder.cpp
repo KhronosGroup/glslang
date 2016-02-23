@@ -1141,8 +1141,8 @@ void Builder::createNoResultOp(Op opCode, Id operand)
 void Builder::createNoResultOp(Op opCode, const std::vector<Id>& operands)
 {
     Instruction* op = new Instruction(opCode);
-    for (auto operand : operands)
-        op->addIdOperand(operand);
+    for (auto it = operands.cbegin(); it != operands.cend(); ++it)
+        op->addIdOperand(*it);
     buildPoint->addInstruction(std::unique_ptr<Instruction>(op));
 }
 
@@ -1197,8 +1197,8 @@ Id Builder::createTriOp(Op opCode, Id typeId, Id op1, Id op2, Id op3)
 Id Builder::createOp(Op opCode, Id typeId, const std::vector<Id>& operands)
 {
     Instruction* op = new Instruction(getUniqueId(), typeId, opCode);
-    for (auto operand : operands)
-        op->addIdOperand(operand);
+    for (auto it = operands.cbegin(); it != operands.cend(); ++it)
+        op->addIdOperand(*it);
     buildPoint->addInstruction(std::unique_ptr<Instruction>(op));
 
     return op->getResultId();
@@ -2106,9 +2106,9 @@ Id Builder::accessChainGetInferredType()
         type = getContainedTypeId(type);
 
     // dereference each index
-    for (auto deref : accessChain.indexChain) {
+    for (auto it = accessChain.indexChain.cbegin(); it != accessChain.indexChain.cend(); ++it) {
         if (isStructType(type))
-            type = getContainedTypeId(type, getConstantScalar(deref));
+            type = getContainedTypeId(type, getConstantScalar(*it));
         else
             type = getContainedTypeId(type);
     }
@@ -2136,9 +2136,9 @@ void Builder::dump(std::vector<unsigned int>& out) const
     out.push_back(0);
 
     // Capabilities
-    for (auto cap : capabilities) {
+    for (auto it = capabilities.cbegin(); it != capabilities.cend(); ++it) {
         Instruction capInst(0, 0, OpCapability);
-        capInst.addImmediateOperand(cap);
+        capInst.addImmediateOperand(*it);
         capInst.dump(out);
     }
 

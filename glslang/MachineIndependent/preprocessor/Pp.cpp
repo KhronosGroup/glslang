@@ -611,9 +611,9 @@ int TPpContext::CPPinclude(TPpToken* ppToken)
         if (token != '\n' && token != EndOfInput) {
             parseContext.ppError(ppToken->loc, "extra content after file designation", "#include", "");
         } else {
-            std::string sourceName;
-            std::string replacement;
-            std::tie(sourceName, replacement) = includer.include(filename.c_str());
+            auto include = includer.include(filename.c_str());
+            std::string sourceName = include.first;
+            std::string replacement = include.second;
             if (!sourceName.empty()) {
                 if (!replacement.empty()) {
                     const bool forNextLine = parseContext.lineDirectiveShouldSetNextLine();
