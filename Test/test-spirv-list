@@ -35,6 +35,7 @@ spv.always-discard.frag
 spv.always-discard2.frag
 spv.bitCast.frag
 spv.bool.vert
+spv.boolInBlock.frag
 spv.branch-return.vert
 spv.conditionalDiscard.frag
 spv.conversion.frag
