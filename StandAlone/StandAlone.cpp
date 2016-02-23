@@ -753,7 +753,6 @@ void CompileAndLinkShaderUnits(std::vector<ShaderCompUnit> compUnits)
                     if (! (Options & EOptionMemoryLeakMode)) {
                         glslang::OutputSpv(spirv, GetBinaryName((EShLanguage)stage));
                         if (Options & EOptionHumanReadableSpv) {
-                            spv::Parameterize();
                             spv::Disassemble(std::cout, spirv);
                         }
                     }

@@ -568,6 +568,7 @@ void GLSLstd450GetDebugNames(const char** names)
 void Disassemble(std::ostream& out, const std::vector<unsigned int>& stream)
 {
     SpirvStream SpirvStream(out, stream);
+    spv::Parameterize();
     GLSLstd450GetDebugNames(GlslStd450DebugNames);
     SpirvStream.validate();
     SpirvStream.processInstructions();
