@@ -48,7 +48,7 @@ namespace {
 bool is_positive_infinity(double x) {
 #ifdef _MSC_VER
   return _fpclass(x) == _FPCLASS_PINF;
-#elif defined __ANDROID__
+#elif defined __ANDROID__ || defined __linux__
   return std::isinf(x) && (x >= 0);
 #else
   return isinf(x) && (x >= 0);
