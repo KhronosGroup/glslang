@@ -3175,7 +3175,7 @@ void TBuiltIns::initialize(const TBuiltInResource &resources, int version, EProf
 // New built-in variables should use a generic (textually declarable) qualifier in
 // TStoraregQualifier and only call BuiltInVariable().
 //
-void SpecialQualifier(const char* name, TStorageQualifier qualifier, TBuiltInVariable builtIn, TSymbolTable& symbolTable)
+static void SpecialQualifier(const char* name, TStorageQualifier qualifier, TBuiltInVariable builtIn, TSymbolTable& symbolTable)
 {
     TSymbol* symbol = symbolTable.find(name);
     if (symbol) {
@@ -3195,7 +3195,7 @@ void SpecialQualifier(const char* name, TStorageQualifier qualifier, TBuiltInVar
 //
 // Safe to call even if name is not present.
 //
-void BuiltInVariable(const char* name, TBuiltInVariable builtIn, TSymbolTable& symbolTable)
+static void BuiltInVariable(const char* name, TBuiltInVariable builtIn, TSymbolTable& symbolTable)
 {
     TSymbol* symbol = symbolTable.find(name);
     if (! symbol)
@@ -3212,7 +3212,7 @@ void BuiltInVariable(const char* name, TBuiltInVariable builtIn, TSymbolTable& s
 //
 // See comments above for other detail.
 //
-void BuiltInVariable(const char* blockName, const char* name, TBuiltInVariable builtIn, TSymbolTable& symbolTable)
+static void BuiltInVariable(const char* blockName, const char* name, TBuiltInVariable builtIn, TSymbolTable& symbolTable)
 {
     TSymbol* symbol = symbolTable.find(blockName);
     if (! symbol)

@@ -698,7 +698,9 @@ Id Builder::makeFloatConstant(float f, bool specConstant)
 {
     Op opcode = specConstant ? OpSpecConstant : OpConstant;
     Id typeId = makeFloatType(32);
-    unsigned value = *(unsigned int*)&f;
+    union { float fl; unsigned int ui; } u;
+    u.fl = f;
+    unsigned value = u.ui;
 
     // See if we already made it. Applies only to regular constants, because specialization constants
     // must remain distinct for the purpose of applying a SpecId decoration.
@@ -721,7 +723,9 @@ Id Builder::makeDoubleConstant(double d, bool specConstant)
 {
     Op opcode = specConstant ? OpSpecConstant : OpConstant;
     Id typeId = makeFloatType(64);
-    unsigned long long value = *(unsigned long long*)&d;
+    union { double db; unsigned long long ull; } u;
+    u.db = d;
+    unsigned long long value = u.ull;
     unsigned op1 = value & 0xFFFFFFFF;
     unsigned op2 = value >> 32;
 

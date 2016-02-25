@@ -59,7 +59,7 @@ const char* GlslStd450DebugNames[spv::GLSLstd450Count];
 
 namespace spv {
 
-void Kill(std::ostream& out, const char* message)
+static void Kill(std::ostream& out, const char* message)
 {
     out << std::endl << "Disassembly failed: " << message << std::endl;
     exit(1);
@@ -481,7 +481,7 @@ void SpirvStream::disassembleInstruction(Id resultId, Id /*typeId*/, Op opCode, 
     return;
 }
 
-void GLSLstd450GetDebugNames(const char** names)
+static void GLSLstd450GetDebugNames(const char** names)
 {
     for (int i = 0; i < GLSLstd450Count; ++i)
         names[i] = "Unknown";

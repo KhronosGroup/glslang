@@ -53,8 +53,11 @@
 #include "preprocessor/PpContext.h"
 #include "preprocessor/PpTokens.h"
 
-namespace glslang {
+// Required to avoid missing prototype warnings for some compilers
+int yylex(YYSTYPE*, glslang::TParseContext&);
     
+namespace glslang {
+
 // read past any white space
 void TInputScanner::consumeWhiteSpace(bool& foundNonSpaceTab)
 {
