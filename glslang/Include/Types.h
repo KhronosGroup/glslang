@@ -388,6 +388,7 @@ public:
     {
         precision = EpqNone;
         invariant = false;
+        precise = false;
         makeTemporary();
     }
 
@@ -427,6 +428,7 @@ public:
     bool readonly     : 1;
     bool writeonly    : 1;
     bool specConstant : 1;  // having a constant_id is not sufficient: expressions have no id, but are still specConstant
+    bool precise      : 1;
 
     bool isMemory() const
     {
@@ -1482,6 +1484,8 @@ public:
             p += snprintf(p, end - p, "writeonly ");
         if (qualifier.specConstant)
             p += snprintf(p, end - p, "specialization-constant ");
+        if (qualifier.precise)
+            p += snprintf(p, end - p, "precise ");
         p += snprintf(p, end - p, "%s ", getStorageQualifierString());
         if (arraySizes) {
             for(int i = 0; i < (int)arraySizes->getNumDims(); ++i) {

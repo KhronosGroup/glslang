@@ -2697,6 +2697,7 @@ void TParseContext::mergeQualifiers(const TSourceLoc& loc, TQualifier& dst, cons
     MERGE_SINGLETON(readonly);
     MERGE_SINGLETON(writeonly);
     MERGE_SINGLETON(specConstant);
+    MERGE_SINGLETON(precise);
 
     if (repeated)
         error(loc, "replicated qualifiers", "", "");
@@ -3378,6 +3379,7 @@ void TParseContext::redeclareBuiltinBlock(const TSourceLoc& loc, TTypeList& newT
             oldType.getQualifier().smooth = newType.getQualifier().smooth;
             oldType.getQualifier().flat = newType.getQualifier().flat;
             oldType.getQualifier().nopersp = newType.getQualifier().nopersp;
+            oldType.getQualifier().precise = newType.getQualifier().precise;
 
             // go to next member
             ++member;
@@ -5642,6 +5644,10 @@ void TParseContext::addQualifierToExisting(const TSourceLoc& loc, TQualifier qua
             error(loc, "cannot change qualification after use", "invariant", "");
         symbol->getWritableType().getQualifier().invariant = true;
         invariantCheck(loc, symbol->getType().getQualifier());
+    } else if (qualifier.precise) {
+        if (intermediate.inIoAccessed(identifier))
+            error(loc, "cannot change qualification after use", "precise", "");
+        symbol->getWritableType().getQualifier().precise = true;
     } else
         warn(loc, "unknown requalification", "", "");
 }

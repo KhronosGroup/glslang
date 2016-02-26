@@ -45,6 +45,7 @@ ERROR: 0:143: 'binding' : atomic_uint binding is too large; see gl_MaxAtomicCoun
 ERROR: 0:149: '[]' : scalar integer expression required 
 ERROR: 0:166: 'precision' : can only apply highp to atomic_uint 
 ERROR: 0:168: 'precise' : Reserved word. 
+ERROR: 0:168: 'precise' : not supported for this version or the enabled extensions 
 ERROR: 0:170: 'dmat2x4' : Reserved word. 
 ERROR: 0:170: 'double matrix' : not supported with this profile: es
 ERROR: 0:171: 'samplerCubeArray' : Reserved word. 
@@ -78,7 +79,7 @@ ERROR: 0:227: 'input block' : not supported in this stage: compute
 ERROR: 0:231: 'output block' : not supported in this stage: compute
 WARNING: 0:235: 't__' : identifiers containing consecutive underscores ("__") are reserved 
 WARNING: 0:238: '#define' : names containing consecutive underscores are reserved: __D
-ERROR: 76 compilation errors.  No code generated.
+ERROR: 77 compilation errors.  No code generated.
 
 
 Shader version: 310
@@ -484,7 +485,7 @@ ERROR: node is still EOpNull!
 0:?     'i' (uniform highp int)
 0:?     'atomi' (shared highp int)
 0:?     'atomu' (shared highp uint)
-0:?     'pfoo' (temp highp int)
+0:?     'pfoo' (precise temp highp int)
 0:?     'dm' (global 2X4 matrix of double)
 0:?     'sca' (uniform mediump samplerCubeArray)
 0:?     'i2dr' (uniform mediump iimage2DRect)
@@ -911,7 +912,7 @@ ERROR: node is still EOpNull!
 0:?     'i' (uniform highp int)
 0:?     'atomi' (shared highp int)
 0:?     'atomu' (shared highp uint)
-0:?     'pfoo' (temp highp int)
+0:?     'pfoo' (precise temp highp int)
 0:?     'dm' (global 2X4 matrix of double)
 0:?     'sca' (uniform mediump samplerCubeArray)
 0:?     'i2dr' (uniform mediump iimage2DRect)

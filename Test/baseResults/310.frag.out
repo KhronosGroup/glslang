@@ -61,6 +61,7 @@ ERROR: 0:183: 'gl_PrimitiveID' : required extension not requested: Possible exte
 GL_EXT_geometry_shader
 GL_OES_geometry_shader
 ERROR: 0:209: 'precise' : Reserved word. 
+ERROR: 0:209: 'precise' : not supported for this version or the enabled extensions 
 ERROR: 0:210: 'fma' : required extension not requested: Possible extensions include:
 GL_EXT_gpu_shader5
 GL_OES_gpu_shader5
@@ -129,7 +130,7 @@ ERROR: 0:427: 'blend equation' : can only apply to a standalone qualifier
 ERROR: 0:428: 'blend equation' : can only apply to a standalone qualifier 
 ERROR: 0:429: 'blend_support' : unknown blend equation 
 ERROR: 0:431: 'fragment-shader array-of-array output' : not supported with this profile: es
-ERROR: 121 compilation errors.  No code generated.
+ERROR: 122 compilation errors.  No code generated.
 
 
 Shader version: 310
@@ -431,11 +432,11 @@ ERROR: node is still EOpNull!
 0:207    Function Parameters: 
 0:?     Sequence
 0:210      move second child to first child (temp mediump 2-component vector of float)
-0:210        'h' (temp mediump 2-component vector of float)
+0:210        'h' (precise temp mediump 2-component vector of float)
 0:210        fma (global mediump 2-component vector of float)
 0:210          'inf' (smooth in mediump 2-component vector of float)
 0:210          'ing' (smooth in mediump 2-component vector of float)
-0:210          'h' (temp mediump 2-component vector of float)
+0:210          'h' (precise temp mediump 2-component vector of float)
 0:211      textureGatherOffset (global highp 4-component vector of float)
 0:211        direct index (temp highp sampler2D)
 0:211          'sArray' (uniform 4-element array of highp sampler2D)
@@ -467,11 +468,11 @@ ERROR: node is still EOpNull!
 0:217    Function Parameters: 
 0:?     Sequence
 0:220      move second child to first child (temp mediump 2-component vector of float)
-0:220        'h' (temp mediump 2-component vector of float)
+0:220        'h' (precise temp mediump 2-component vector of float)
 0:220        fma (global mediump 2-component vector of float)
 0:220          'inf' (smooth in mediump 2-component vector of float)
 0:220          'ing' (smooth in mediump 2-component vector of float)
-0:220          'h' (temp mediump 2-component vector of float)
+0:220          'h' (precise temp mediump 2-component vector of float)
 0:221      textureGatherOffset (global highp 4-component vector of float)
 0:221        direct index (temp highp sampler2D)
 0:221          'sArray' (uniform 4-element array of highp sampler2D)
@@ -1312,11 +1313,11 @@ ERROR: node is still EOpNull!
 0:207    Function Parameters: 
 0:?     Sequence
 0:210      move second child to first child (temp mediump 2-component vector of float)
-0:210        'h' (temp mediump 2-component vector of float)
+0:210        'h' (precise temp mediump 2-component vector of float)
 0:210        fma (global mediump 2-component vector of float)
 0:210          'inf' (smooth in mediump 2-component vector of float)
 0:210          'ing' (smooth in mediump 2-component vector of float)
-0:210          'h' (temp mediump 2-component vector of float)
+0:210          'h' (precise temp mediump 2-component vector of float)
 0:211      textureGatherOffset (global highp 4-component vector of float)
 0:211        direct index (temp highp sampler2D)
 0:211          'sArray' (uniform 4-element array of highp sampler2D)
@@ -1348,11 +1349,11 @@ ERROR: node is still EOpNull!
 0:217    Function Parameters: 
 0:?     Sequence
 0:220      move second child to first child (temp mediump 2-component vector of float)
-0:220        'h' (temp mediump 2-component vector of float)
+0:220        'h' (precise temp mediump 2-component vector of float)
 0:220        fma (global mediump 2-component vector of float)
 0:220          'inf' (smooth in mediump 2-component vector of float)
 0:220          'ing' (smooth in mediump 2-component vector of float)
-0:220          'h' (temp mediump 2-component vector of float)
+0:220          'h' (precise temp mediump 2-component vector of float)
 0:221      textureGatherOffset (global highp 4-component vector of float)
 0:221        direct index (temp highp sampler2D)
 0:221          'sArray' (uniform 4-element array of highp sampler2D)
