@@ -98,6 +98,7 @@ protected:
     spv::Id convertGlslangToSpvType(const glslang::TType& type, glslang::TLayoutPacking, const glslang::TQualifier&);
     spv::Id makeArraySizeId(const glslang::TArraySizes&, int dim);
     spv::Id accessChainLoad(const glslang::TType& type);
+    void    accessChainStore(const glslang::TType& type, spv::Id rvalue);
     glslang::TLayoutPacking getExplicitLayout(const glslang::TType& type) const;
     int getArrayStride(const glslang::TType& arrayType, glslang::TLayoutPacking, glslang::TLayoutMatrix);
     int getMatrixStride(const glslang::TType& matrixType, glslang::TLayoutPacking, glslang::TLayoutMatrix);
@@ -807,7 +808,7 @@ bool TGlslangToSpvTraverser::visitBinary(glslang::TVisit /* visit */, glslang::T
 
             // store the result
             builder.setAccessChain(lValue);
-            builder.accessChainStore(rValue);
+            accessChainStore(node->getType(), rValue);
 
             // assignments are expressions having an rValue after they are evaluated...
             builder.clearAccessChain();
@@ -1906,10 +1907,53 @@ spv::Id TGlslangToSpvTraverser::accessChainLoad(const glslang::TType& type)
     spv::Id loadedId = builder.accessChainLoad(TranslatePrecisionDecoration(type), nominalTypeId);
 
     // Need to convert to abstract types when necessary
-    if (builder.isScalarType(nominalTypeId) && type.getBasicType() == glslang::EbtBool && nominalTypeId != builder.makeBoolType())
-        loadedId = builder.createBinOp(spv::OpINotEqual, builder.makeBoolType(), loadedId, builder.makeUintConstant(0));
+    if (type.getBasicType() == glslang::EbtBool) {
+        if (builder.isScalarType(nominalTypeId)) {
+            // Conversion for bool
+            spv::Id boolType = builder.makeBoolType();
+            if (nominalTypeId != boolType)
+                loadedId = builder.createBinOp(spv::OpINotEqual, boolType, loadedId, builder.makeUintConstant(0));
+        } else if (builder.isVectorType(nominalTypeId)) {
+            // Conversion for bvec
+            int vecSize = builder.getNumTypeComponents(nominalTypeId);
+            spv::Id bvecType = builder.makeVectorType(builder.makeBoolType(), vecSize);
+            if (nominalTypeId != bvecType)
+                loadedId = builder.createBinOp(spv::OpINotEqual, bvecType, loadedId, makeSmearedConstant(builder.makeUintConstant(0), vecSize));
+        }
+    }
 
     return loadedId;
+}
+
+// Wrap the builder's accessChainStore to:
+//  - do conversion of concrete to abstract type
+void TGlslangToSpvTraverser::accessChainStore(const glslang::TType& type, spv::Id rvalue)
+{
+    // Need to convert to abstract types when necessary
+    if (type.getBasicType() == glslang::EbtBool) {
+        spv::Id nominalTypeId = builder.accessChainGetInferredType();
+
+        if (builder.isScalarType(nominalTypeId)) {
+            // Conversion for bool
+            spv::Id boolType = builder.makeBoolType();
+            if (nominalTypeId != boolType) {
+                spv::Id zero = builder.makeUintConstant(0);
+                spv::Id one  = builder.makeUintConstant(1);
+                rvalue = builder.createTriOp(spv::OpSelect, nominalTypeId, rvalue, one, zero);
+            }
+        } else if (builder.isVectorType(nominalTypeId)) {
+            // Conversion for bvec
+            int vecSize = builder.getNumTypeComponents(nominalTypeId);
+            spv::Id bvecType = builder.makeVectorType(builder.makeBoolType(), vecSize);
+            if (nominalTypeId != bvecType) {
+                spv::Id zero = makeSmearedConstant(builder.makeUintConstant(0), vecSize);
+                spv::Id one  = makeSmearedConstant(builder.makeUintConstant(1), vecSize);
+                rvalue = builder.createTriOp(spv::OpSelect, nominalTypeId, rvalue, one, zero);
+            }
+        }
+    }
+
+    builder.accessChainStore(rvalue);
 }
 
 // Decide whether or not this type should be
@@ -2472,7 +2516,7 @@ spv::Id TGlslangToSpvTraverser::handleUserFunctionCall(const glslang::TIntermAgg
             if (qualifiers[a] == glslang::EvqOut || qualifiers[a] == glslang::EvqInOut) {
                 spv::Id copy = builder.createLoad(spvArgs[a]);
                 builder.setAccessChain(lValues[lValueCount]);
-                builder.accessChainStore(copy);
+                accessChainStore(glslangArgs[a]->getAsTyped()->getType(), copy);
             }
             ++lValueCount;
         }
