@@ -267,7 +267,7 @@ public:
         localSizeSpecId[dim] = id;
         return true;
     }
-    unsigned int getLocalSizeSpecId(int dim) const { return localSizeSpecId[dim]; }
+    int getLocalSizeSpecId(int dim) const { return localSizeSpecId[dim]; }
 
     void setXfbMode() { xfbMode = true; }
     bool getXfbMode() const { return xfbMode; }
