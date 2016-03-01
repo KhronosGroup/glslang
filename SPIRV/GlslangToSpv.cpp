@@ -339,6 +339,15 @@ spv::Decoration TranslateInvariantDecoration(const glslang::TQualifier& qualifie
         return (spv::Decoration)spv::BadValue;
 }
 
+// If glslang type is precise, return SPIR-V NoContraction decoration.
+spv::Decoration TranslateNoContractionDecoration(const glslang::TQualifier& qualifier)
+{
+    if (qualifier.precise)
+        return spv::DecorationNoContraction;
+    else
+        return (spv::Decoration)spv::BadValue;
+}
+
 // Translate glslang built-in variable to SPIR-V built in decoration.
 spv::BuiltIn TGlslangToSpvTraverser::TranslateBuiltInDecoration(glslang::TBuiltInVariable builtIn)
 {
@@ -538,6 +547,8 @@ void InheritQualifiers(glslang::TQualifier& child, const glslang::TQualifier& pa
         child.patch = true;
     if (parent.sample)
         child.sample = true;
+    if (parent.precise)
+        child.precise = true;
 }
 
 bool HasNonLayoutQualifiers(const glslang::TQualifier& qualifier)
@@ -546,7 +557,8 @@ bool HasNonLayoutQualifiers(const glslang::TQualifier& qualifier)
     // - struct members can inherit from a struct declaration
     // - effect decorations on the struct members (note smooth does not, and expecting something like volatile to effect the whole object)
     // - are not part of the offset/st430/etc or row/column-major layout
-    return qualifier.invariant || qualifier.nopersp || qualifier.flat || qualifier.centroid || qualifier.patch || qualifier.sample || qualifier.hasLocation();
+    return qualifier.invariant || qualifier.nopersp || qualifier.flat || qualifier.centroid || qualifier.patch || qualifier.sample || qualifier.hasLocation() ||
+           qualifier.precise;
 }
 
 //
@@ -1761,6 +1773,7 @@ spv::Id TGlslangToSpvTraverser::convertGlslangToSpvType(const glslang::TType& ty
                     addMemberDecoration(spvType, member, TranslatePrecisionDecoration(glslangType));
                     addMemberDecoration(spvType, member, TranslateInterpolationDecoration(subQualifier));
                     addMemberDecoration(spvType, member, TranslateInvariantDecoration(subQualifier));
+                    addMemberDecoration(spvType, member, TranslateNoContractionDecoration(subQualifier));
 
                     // compute location decoration; tricky based on whether inheritance is at play
                     // TODO: This algorithm (and it's cousin above doing almost the same thing) should
@@ -3599,6 +3612,7 @@ spv::Id TGlslangToSpvTraverser::getSymbolId(const glslang::TIntermSymbol* symbol
     }
 
     addDecoration(id, TranslateInvariantDecoration(symbol->getType().getQualifier()));
+    addDecoration(id, TranslateNoContractionDecoration(symbol->getType().getQualifier()));
     if (symbol->getQualifier().hasStream()) {
         builder.addCapability(spv::CapabilityGeometryStreams);
         builder.addDecoration(id, spv::DecorationStream, symbol->getQualifier().layoutStream);

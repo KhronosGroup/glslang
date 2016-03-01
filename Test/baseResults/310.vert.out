@@ -29,6 +29,7 @@ ERROR: 0:131: 'flat/smooth/noperspective' : cannot use interpolation qualifiers 
 ERROR: 0:135: 'centroid' : cannot use centroid qualifier on an interface block 
 ERROR: 0:139: 'invariant' : cannot use invariant qualifier on an interface block 
 ERROR: 0:155: 'precise' : Reserved word. 
+ERROR: 0:155: 'precise' : not supported for this version or the enabled extensions 
 ERROR: 0:156: 'fma' : required extension not requested: Possible extensions include:
 GL_EXT_gpu_shader5
 GL_OES_gpu_shader5
@@ -96,7 +97,7 @@ ERROR: 0:389: 'sample' : Reserved word.
 ERROR: 0:400: 'interpolateAtCentroid' : no matching overloaded function found 
 ERROR: 0:401: 'interpolateAtSample' : no matching overloaded function found 
 ERROR: 0:402: 'interpolateAtOffset' : no matching overloaded function found 
-ERROR: 92 compilation errors.  No code generated.
+ERROR: 93 compilation errors.  No code generated.
 
 
 Shader version: 310
@@ -285,11 +286,11 @@ ERROR: node is still EOpNull!
 0:153    Function Parameters: 
 0:?     Sequence
 0:156      move second child to first child (temp highp 2-component vector of float)
-0:156        'h' (temp highp 2-component vector of float)
+0:156        'h' (precise temp highp 2-component vector of float)
 0:156        fma (global highp 2-component vector of float)
 0:156          'inf' (in highp 2-component vector of float)
 0:156          'ing' (in highp 2-component vector of float)
-0:156          'h' (temp highp 2-component vector of float)
+0:156          'h' (precise temp highp 2-component vector of float)
 0:157      indirect index (temp highp sampler2D)
 0:157        'sArray' (uniform 4-element array of highp sampler2D)
 0:157        add (temp highp int)
@@ -360,11 +361,11 @@ ERROR: node is still EOpNull!
 0:171    Function Parameters: 
 0:?     Sequence
 0:174      move second child to first child (temp highp 2-component vector of float)
-0:174        'h' (temp highp 2-component vector of float)
+0:174        'h' (precise temp highp 2-component vector of float)
 0:174        fma (global highp 2-component vector of float)
 0:174          'inf' (in highp 2-component vector of float)
 0:174          'ing' (in highp 2-component vector of float)
-0:174          'h' (temp highp 2-component vector of float)
+0:174          'h' (precise temp highp 2-component vector of float)
 0:175      indirect index (temp highp sampler2D)
 0:175        'sArray' (uniform 4-element array of highp sampler2D)
 0:175        add (temp highp int)
@@ -1216,11 +1217,11 @@ ERROR: node is still EOpNull!
 0:153    Function Parameters: 
 0:?     Sequence
 0:156      move second child to first child (temp highp 2-component vector of float)
-0:156        'h' (temp highp 2-component vector of float)
+0:156        'h' (precise temp highp 2-component vector of float)
 0:156        fma (global highp 2-component vector of float)
 0:156          'inf' (in highp 2-component vector of float)
 0:156          'ing' (in highp 2-component vector of float)
-0:156          'h' (temp highp 2-component vector of float)
+0:156          'h' (precise temp highp 2-component vector of float)
 0:157      indirect index (temp highp sampler2D)
 0:157        'sArray' (uniform 4-element array of highp sampler2D)
 0:157        add (temp highp int)
@@ -1291,11 +1292,11 @@ ERROR: node is still EOpNull!
 0:171    Function Parameters: 
 0:?     Sequence
 0:174      move second child to first child (temp highp 2-component vector of float)
-0:174        'h' (temp highp 2-component vector of float)
+0:174        'h' (precise temp highp 2-component vector of float)
 0:174        fma (global highp 2-component vector of float)
 0:174          'inf' (in highp 2-component vector of float)
 0:174          'ing' (in highp 2-component vector of float)
-0:174          'h' (temp highp 2-component vector of float)
+0:174          'h' (precise temp highp 2-component vector of float)
 0:175      indirect index (temp highp sampler2D)
 0:175        'sArray' (uniform 4-element array of highp sampler2D)
 0:175        add (temp highp int)
