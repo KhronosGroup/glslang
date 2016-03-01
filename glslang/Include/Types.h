@@ -786,7 +786,7 @@ public:
         case ElfRgba8ui:      return "rgba8ui";
         case ElfRg32ui:       return "rg32ui";
         case ElfRg16ui:       return "rg16ui";
-        case ElfRgb10a2ui:    return "rgb10a2ui";
+        case ElfRgb10a2ui:    return "rgb10_a2ui";
         case ElfRg8ui:        return "rg8ui";
         case ElfR32ui:        return "r32ui";
         case ElfR16ui:        return "r16ui";
