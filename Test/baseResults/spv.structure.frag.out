@@ -11,7 +11,7 @@ Linked fragment stage:
                1:             ExtInstImport  "GLSL.std.450"
                               MemoryModel Logical GLSL450
                               EntryPoint Fragment 4  "main" 45 54
-                              ExecutionMode 4 OriginLowerLeft
+                              ExecutionMode 4 OriginUpperLeft
                               Source GLSL 140
                               Name 4  "main"
                               Name 8  "scale"
@@ -28,6 +28,7 @@ Linked fragment stage:
                               Name 50  "samp2D"
                               Name 54  "coord"
                               Name 59  "foo"
+                              Decorate 50(samp2D) DescriptorSet 0
                2:             TypeVoid
                3:             TypeFunction 2
                6:             TypeFloat 32
@@ -46,16 +47,16 @@ Linked fragment stage:
               20:             TypeArray 18(lunarStruct1) 19
 21(lunarStruct2):             TypeStruct 13 6(float) 20
               22:             TypeArray 21(lunarStruct2) 12
-              23:             TypePointer UniformConstant 22
-        24(foo2):     23(ptr) Variable UniformConstant
+              23:             TypePointer Private 22
+        24(foo2):     23(ptr) Variable Private
               25:     10(int) Constant 3
               26:     10(int) Constant 0
               27:     10(int) Constant 4
-              28:             TypePointer UniformConstant 10(int)
+              28:             TypePointer Private 10(int)
               31:             TypeBool
               35:     10(int) Constant 2
               36:     11(int) Constant 0
-              37:             TypePointer UniformConstant 6(float)
+              37:             TypePointer Private 6(float)
               41:     10(int) Constant 1
               44:             TypePointer Output 16(fvec4)
 45(gl_FragColor):     44(ptr) Variable Output
@@ -66,8 +67,8 @@ Linked fragment stage:
               52:             TypeVector 6(float) 2
               53:             TypePointer Input 52(fvec2)
        54(coord):     53(ptr) Variable Input
-              58:             TypePointer UniformConstant 18(lunarStruct1)
-         59(foo):     58(ptr) Variable UniformConstant
+              58:             TypePointer Private 18(lunarStruct1)
+         59(foo):     58(ptr) Variable Private
          4(main):           2 Function None 3
                5:             Label
         8(scale):      7(ptr) Variable Function

@@ -1,6 +1,6 @@
 #version 400
 
-uniform float u;
+in float u;
 
 int foo(int a, const int b, in int c, const in int d, out int e, inout int f)
 {

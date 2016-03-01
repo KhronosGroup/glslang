@@ -15,11 +15,11 @@ uniform isampler2DArray         is2DArray;
 uniform usamplerCubeArray       usCubeArray;
 uniform usampler2DRect          us2DRect;
 
-uniform vec2 c2;
-uniform vec3 c3;
-uniform vec4 c4;
+in vec2 c2;
+in vec3 c3;
+in vec4 c4;
 
-uniform float lodClamp;
+in float lodClamp;
 
 out vec4 outColor;
 

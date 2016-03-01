@@ -1,132 +1,205 @@
 spv.atomic.comp
 Warning, version 310 is not yet complete; most version-specific features are present, but some are missing.
 
+Shader version: 310
+Requested GL_ARB_gl_spirv
+local_size = (1, 1, 1)
+0:? Sequence
+0:14  Function Definition: func(au1; (global highp uint)
+0:14    Function Parameters: 
+0:14      'c' (in highp atomic_uint)
+0:16    Sequence
+0:16      Branch: Return with expression
+0:16        AtomicCounterIncrement (global highp uint)
+0:16          'c' (in highp atomic_uint)
+0:19  Function Definition: main( (global void)
+0:19    Function Parameters: 
+0:21    Sequence
+0:21      MemoryBarrierAtomicCounter (global void)
+0:22      Function Call: func(au1; (global highp uint)
+0:22        'counter' (layout(binding=0 offset=0 ) uniform highp atomic_uint)
+0:23      Sequence
+0:23        move second child to first child (temp highp uint)
+0:23          'val' (temp highp uint)
+0:23          AtomicCounter (global highp uint)
+0:23            direct index (layout(binding=0 offset=4 ) temp highp atomic_uint)
+0:23              'countArr' (layout(binding=0 offset=4 ) uniform 4-element array of highp atomic_uint)
+0:23              Constant:
+0:23                2 (const int)
+0:24      AtomicCounterDecrement (global highp uint)
+0:24        'counter' (layout(binding=0 offset=0 ) uniform highp atomic_uint)
+0:36  Function Definition: atoms( (global void)
+0:36    Function Parameters: 
+0:38    Sequence
+0:38      Sequence
+0:38        move second child to first child (temp highp int)
+0:38          'origi' (temp highp int)
+0:38          AtomicAdd (global highp int)
+0:38            'atomi' (shared highp int)
+0:38            Constant:
+0:38              3 (const int)
+0:39      Sequence
+0:39        move second child to first child (temp highp uint)
+0:39          'origu' (temp highp uint)
+0:39          AtomicAnd (global highp uint)
+0:39            'atomu' (shared highp uint)
+0:39            'value' (shared highp uint)
+0:40      move second child to first child (temp highp uint)
+0:40        'origu' (temp highp uint)
+0:40        AtomicOr (global highp uint)
+0:40          'atomu' (shared highp uint)
+0:40          Constant:
+0:40            7 (const uint)
+0:41      move second child to first child (temp highp uint)
+0:41        'origu' (temp highp uint)
+0:41        AtomicXor (global highp uint)
+0:41          'atomu' (shared highp uint)
+0:41          Constant:
+0:41            7 (const uint)
+0:42      move second child to first child (temp highp uint)
+0:42        'origu' (temp highp uint)
+0:42        AtomicMin (global highp uint)
+0:42          'atomu' (shared highp uint)
+0:42          'value' (shared highp uint)
+0:43      move second child to first child (temp highp int)
+0:43        'origi' (temp highp int)
+0:43        AtomicMax (global highp int)
+0:43          'atomi' (shared highp int)
+0:43          Constant:
+0:43            7 (const int)
+0:44      move second child to first child (temp highp int)
+0:44        'origi' (temp highp int)
+0:44        AtomicExchange (global highp int)
+0:44          'atomi' (shared highp int)
+0:44          'origi' (temp highp int)
+0:45      move second child to first child (temp highp uint)
+0:45        'origu' (temp highp uint)
+0:45        AtomicCompSwap (global highp uint)
+0:45          'atomu' (shared highp uint)
+0:45          Constant:
+0:45            10 (const uint)
+0:45          'value' (shared highp uint)
+0:46      AtomicAdd (global highp int)
+0:46        direct index (temp highp int)
+0:46          n_frames_rendered: direct index for structure (layout(column_major std140 offset=16 ) buffer highp 4-component vector of int)
+0:46            'result' (layout(binding=0 column_major std140 ) restrict buffer block{layout(column_major std140 offset=0 ) buffer highp float f, layout(column_major std140 offset=16 ) buffer highp 4-component vector of int n_frames_rendered})
+0:46            Constant:
+0:46              1 (const int)
+0:46          Constant:
+0:46            2 (const int)
+0:46        Constant:
+0:46          1 (const int)
+0:?   Linker Objects
+0:?     'counter' (layout(binding=0 offset=0 ) uniform highp atomic_uint)
+0:?     'countArr' (layout(binding=0 offset=4 ) uniform 4-element array of highp atomic_uint)
+0:?     'value' (shared highp uint)
+0:?     'arrX' (global 1-element array of highp int)
+0:?     'arrY' (global 1-element array of highp int)
+0:?     'arrZ' (global 1-element array of highp int)
+0:?     'atomi' (shared highp int)
+0:?     'atomu' (shared highp uint)
+0:?     'result' (layout(binding=0 column_major std140 ) restrict buffer block{layout(column_major std140 offset=0 ) buffer highp float f, layout(column_major std140 offset=16 ) buffer highp 4-component vector of int n_frames_rendered})
+
 
 Linked compute stage:
 
 
-TBD functionality: Is atomic_uint an opaque handle in the uniform storage class, or an addresses in the atomic storage class?
-// Module Version 10000
-// Generated by (magic number): 80001
-// Id's are bound by 75
+Shader version: 310
+Requested GL_ARB_gl_spirv
+local_size = (1, 1, 1)
+0:? Sequence
+0:14  Function Definition: func(au1; (global highp uint)
+0:14    Function Parameters: 
+0:14      'c' (in highp atomic_uint)
+0:16    Sequence
+0:16      Branch: Return with expression
+0:16        AtomicCounterIncrement (global highp uint)
+0:16          'c' (in highp atomic_uint)
+0:19  Function Definition: main( (global void)
+0:19    Function Parameters: 
+0:21    Sequence
+0:21      MemoryBarrierAtomicCounter (global void)
+0:22      Function Call: func(au1; (global highp uint)
+0:22        'counter' (layout(binding=0 offset=0 ) uniform highp atomic_uint)
+0:23      Sequence
+0:23        move second child to first child (temp highp uint)
+0:23          'val' (temp highp uint)
+0:23          AtomicCounter (global highp uint)
+0:23            direct index (layout(binding=0 offset=4 ) temp highp atomic_uint)
+0:23              'countArr' (layout(binding=0 offset=4 ) uniform 4-element array of highp atomic_uint)
+0:23              Constant:
+0:23                2 (const int)
+0:24      AtomicCounterDecrement (global highp uint)
+0:24        'counter' (layout(binding=0 offset=0 ) uniform highp atomic_uint)
+0:36  Function Definition: atoms( (global void)
+0:36    Function Parameters: 
+0:38    Sequence
+0:38      Sequence
+0:38        move second child to first child (temp highp int)
+0:38          'origi' (temp highp int)
+0:38          AtomicAdd (global highp int)
+0:38            'atomi' (shared highp int)
+0:38            Constant:
+0:38              3 (const int)
+0:39      Sequence
+0:39        move second child to first child (temp highp uint)
+0:39          'origu' (temp highp uint)
+0:39          AtomicAnd (global highp uint)
+0:39            'atomu' (shared highp uint)
+0:39            'value' (shared highp uint)
+0:40      move second child to first child (temp highp uint)
+0:40        'origu' (temp highp uint)
+0:40        AtomicOr (global highp uint)
+0:40          'atomu' (shared highp uint)
+0:40          Constant:
+0:40            7 (const uint)
+0:41      move second child to first child (temp highp uint)
+0:41        'origu' (temp highp uint)
+0:41        AtomicXor (global highp uint)
+0:41          'atomu' (shared highp uint)
+0:41          Constant:
+0:41            7 (const uint)
+0:42      move second child to first child (temp highp uint)
+0:42        'origu' (temp highp uint)
+0:42        AtomicMin (global highp uint)
+0:42          'atomu' (shared highp uint)
+0:42          'value' (shared highp uint)
+0:43      move second child to first child (temp highp int)
+0:43        'origi' (temp highp int)
+0:43        AtomicMax (global highp int)
+0:43          'atomi' (shared highp int)
+0:43          Constant:
+0:43            7 (const int)
+0:44      move second child to first child (temp highp int)
+0:44        'origi' (temp highp int)
+0:44        AtomicExchange (global highp int)
+0:44          'atomi' (shared highp int)
+0:44          'origi' (temp highp int)
+0:45      move second child to first child (temp highp uint)
+0:45        'origu' (temp highp uint)
+0:45        AtomicCompSwap (global highp uint)
+0:45          'atomu' (shared highp uint)
+0:45          Constant:
+0:45            10 (const uint)
+0:45          'value' (shared highp uint)
+0:46      AtomicAdd (global highp int)
+0:46        direct index (temp highp int)
+0:46          n_frames_rendered: direct index for structure (layout(column_major std140 offset=16 ) buffer highp 4-component vector of int)
+0:46            'result' (layout(binding=0 column_major std140 ) restrict buffer block{layout(column_major std140 offset=0 ) buffer highp float f, layout(column_major std140 offset=16 ) buffer highp 4-component vector of int n_frames_rendered})
+0:46            Constant:
+0:46              1 (const int)
+0:46          Constant:
+0:46            2 (const int)
+0:46        Constant:
+0:46          1 (const int)
+0:?   Linker Objects
+0:?     'counter' (layout(binding=0 offset=0 ) uniform highp atomic_uint)
+0:?     'countArr' (layout(binding=0 offset=4 ) uniform 4-element array of highp atomic_uint)
+0:?     'value' (shared highp uint)
+0:?     'arrX' (global 1-element array of highp int)
+0:?     'arrY' (global 1-element array of highp int)
+0:?     'arrZ' (global 1-element array of highp int)
+0:?     'atomi' (shared highp int)
+0:?     'atomu' (shared highp uint)
+0:?     'result' (layout(binding=0 column_major std140 ) restrict buffer block{layout(column_major std140 offset=0 ) buffer highp float f, layout(column_major std140 offset=16 ) buffer highp 4-component vector of int n_frames_rendered})
 
-                              Capability Shader
-               1:             ExtInstImport  "GLSL.std.450"
-                              MemoryModel Logical GLSL450
-                              EntryPoint GLCompute 4  "main"
-                              ExecutionMode 4 LocalSize 1 1 1
-                              Source ESSL 310
-                              Name 4  "main"
-                              Name 10  "func(au1;"
-                              Name 9  "c"
-                              Name 12  "atoms("
-                              Name 21  "counter"
-                              Name 22  "param"
-                              Name 25  "val"
-                              Name 29  "countArr"
-                              Name 36  "origi"
-                              Name 38  "atomi"
-                              Name 41  "origu"
-                              Name 43  "atomu"
-                              Name 45  "value"
-                              Name 62  "dataSSB"
-                              MemberName 62(dataSSB) 0  "f"
-                              MemberName 62(dataSSB) 1  "n_frames_rendered"
-                              Name 64  "result"
-                              Name 72  "arrX"
-                              Name 73  "arrY"
-                              Name 74  "arrZ"
-                              Decorate 21(counter) Binding 0
-                              Decorate 29(countArr) Binding 0
-                              MemberDecorate 62(dataSSB) 0 Offset 0
-                              MemberDecorate 62(dataSSB) 1 Offset 16
-                              Decorate 62(dataSSB) BufferBlock
-                              Decorate 64(result) Binding 0
-               2:             TypeVoid
-               3:             TypeFunction 2
-               6:             TypeInt 32 0
-               7:             TypePointer Function 6(int)
-               8:             TypeFunction 6(int) 7(ptr)
-              14:      6(int) Constant 1
-              15:      6(int) Constant 0
-              19:      6(int) Constant 1024
-              20:             TypePointer AtomicCounter 6(int)
-     21(counter):     20(ptr) Variable AtomicCounter
-              26:      6(int) Constant 4
-              27:             TypeArray 6(int) 26
-              28:             TypePointer AtomicCounter 27
-    29(countArr):     28(ptr) Variable AtomicCounter
-              30:             TypeInt 32 1
-              31:     30(int) Constant 2
-              35:             TypePointer Function 30(int)
-              37:             TypePointer Workgroup 30(int)
-       38(atomi):     37(ptr) Variable Workgroup
-              39:     30(int) Constant 3
-              42:             TypePointer Workgroup 6(int)
-       43(atomu):     42(ptr) Variable Workgroup
-              44:             TypePointer UniformConstant 6(int)
-       45(value):     44(ptr) Variable UniformConstant
-              48:      6(int) Constant 7
-              53:     30(int) Constant 7
-              57:      6(int) Constant 10
-              60:             TypeFloat 32
-              61:             TypeVector 30(int) 4
-     62(dataSSB):             TypeStruct 60(float) 61(ivec4)
-              63:             TypePointer Uniform 62(dataSSB)
-      64(result):     63(ptr) Variable Uniform
-              65:     30(int) Constant 1
-              66:      6(int) Constant 2
-              67:             TypePointer Uniform 30(int)
-              70:             TypeArray 30(int) 14
-              71:             TypePointer Private 70
-        72(arrX):     71(ptr) Variable Private
-        73(arrY):     71(ptr) Variable Private
-        74(arrZ):     71(ptr) Variable Private
-         4(main):           2 Function None 3
-               5:             Label
-       22(param):      7(ptr) Variable Function
-         25(val):      7(ptr) Variable Function
-                              MemoryBarrier 14 19
-              23:      6(int) Load 21(counter)
-                              Store 22(param) 23
-              24:      6(int) FunctionCall 10(func(au1;) 22(param)
-              32:     20(ptr) AccessChain 29(countArr) 31
-              33:      6(int) AtomicLoad 32 14 15
-                              Store 25(val) 33
-              34:      6(int) AtomicIDecrement 21(counter) 14 15
-                              Return
-                              FunctionEnd
-   10(func(au1;):      6(int) Function None 8
-            9(c):      7(ptr) FunctionParameter
-              11:             Label
-              16:      6(int) AtomicIIncrement 9(c) 14 15
-                              ReturnValue 16
-                              FunctionEnd
-      12(atoms():           2 Function None 3
-              13:             Label
-       36(origi):     35(ptr) Variable Function
-       41(origu):      7(ptr) Variable Function
-              40:     30(int) AtomicIAdd 38(atomi) 14 15 39
-                              Store 36(origi) 40
-              46:      6(int) Load 45(value)
-              47:      6(int) AtomicAnd 43(atomu) 14 15 46
-                              Store 41(origu) 47
-              49:      6(int) AtomicOr 43(atomu) 14 15 48
-                              Store 41(origu) 49
-              50:      6(int) AtomicXor 43(atomu) 14 15 48
-                              Store 41(origu) 50
-              51:      6(int) Load 45(value)
-              52:      6(int) AtomicUMin 43(atomu) 14 15 51
-                              Store 41(origu) 52
-              54:     30(int) AtomicSMax 38(atomi) 14 15 53
-                              Store 36(origi) 54
-              55:     30(int) Load 36(origi)
-              56:     30(int) AtomicExchange 38(atomi) 14 15 55
-                              Store 36(origi) 56
-              58:      6(int) Load 45(value)
-              59:      6(int) AtomicCompareExchange 43(atomu) 14 15 15 58 57
-                              Store 41(origu) 59
-              68:     67(ptr) AccessChain 64(result) 65 66
-              69:     30(int) AtomicIAdd 68 14 15 65
-                              Return
-                              FunctionEnd

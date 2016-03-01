@@ -14,8 +14,8 @@ struct lunarStruct2 {
 	lunarStruct1 s1_1[7];
 };
 
-uniform lunarStruct1 foo;
-uniform lunarStruct2 foo2[5];
+lunarStruct1 foo;
+lunarStruct2 foo2[5];
 
 void main()
 {

@@ -15,8 +15,8 @@ Linked fragment stage:
                               Capability Shader
                1:             ExtInstImport  "GLSL.std.450"
                               MemoryModel Logical GLSL450
-                              EntryPoint Fragment 4  "main" 75 227
-                              ExecutionMode 4 OriginLowerLeft
+                              EntryPoint Fragment 4  "main" 62 75 129 227 233
+                              ExecutionMode 4 OriginUpperLeft
                               Source ESSL 310
                               Name 4  "main"
                               Name 15  "foo1(vf4;vf4;i1;"
@@ -64,6 +64,7 @@ Linked fragment stage:
                               Decorate 55 RelaxedPrecision
                               Decorate 60(local) RelaxedPrecision
                               Decorate 62(c) RelaxedPrecision
+                              Decorate 62(c) Flat
                               Decorate 63 RelaxedPrecision
                               Decorate 64 RelaxedPrecision
                               Decorate 66 RelaxedPrecision
@@ -104,6 +105,7 @@ Linked fragment stage:
                               Decorate 126 RelaxedPrecision
                               Decorate 127 RelaxedPrecision
                               Decorate 129(d) RelaxedPrecision
+                              Decorate 129(d) Flat
                               Decorate 130 RelaxedPrecision
                               Decorate 134 RelaxedPrecision
                               Decorate 135 RelaxedPrecision
@@ -185,13 +187,13 @@ Linked fragment stage:
               37:    7(fvec4) ConstantComposite 36 36 36 36
               48:    6(float) Constant 1065353216
               49:    7(fvec4) ConstantComposite 48 48 48 48
-              61:             TypePointer UniformConstant 9(int)
-           62(c):     61(ptr) Variable UniformConstant
+              61:             TypePointer Input 9(int)
+           62(c):     61(ptr) Variable Input
               65:      9(int) Constant 1
               72:             TypePointer Function 6(float)
               74:             TypePointer Input 6(float)
            75(x):     74(ptr) Variable Input
-          129(d):     61(ptr) Variable UniformConstant
+          129(d):     61(ptr) Variable Input
              156:      9(int) Constant 0
              163:      9(int) Constant 10
              164:             TypeBool
@@ -201,8 +203,8 @@ Linked fragment stage:
              208:    6(float) Constant 1079739679
              226:             TypePointer Output 6(float)
       227(color):    226(ptr) Variable Output
-             232:             TypePointer UniformConstant 7(fvec4)
-          233(v):    232(ptr) Variable UniformConstant
+             232:             TypePointer Input 7(fvec4)
+          233(v):    232(ptr) Variable Input
              241:             TypeInt 32 0
              242:    241(int) Constant 1
              253:    241(int) Constant 2

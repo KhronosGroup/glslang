@@ -35,6 +35,7 @@ spv.always-discard.frag
 spv.always-discard2.frag
 spv.bitCast.frag
 spv.bool.vert
+spv.boolInBlock.frag
 spv.branch-return.vert
 spv.conditionalDiscard.frag
 spv.conversion.frag
@@ -91,7 +92,15 @@ spv.varyingArray.frag
 spv.varyingArrayIndirect.frag
 spv.voidFunction.frag
 spv.whileLoop.frag
-spv.atomic.comp
 spv.AofA.frag
 spv.queryL.frag
+spv.separate.frag
 spv.shortCircuit.frag
+spv.pushConstant.vert
+spv.subpass.frag
+spv.specConstant.vert
+spv.specConstant.comp
+# GLSL-level semantics
+vulkan.frag
+vulkan.vert
+vulkan.comp

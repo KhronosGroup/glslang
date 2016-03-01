@@ -16,8 +16,8 @@ layout(invocations = 4) in;
 
 uniform sampler2D s2D;
 in vec2 coord[];
-uniform vec4 v4;
-uniform int i;
+
+int i;
 
 void main()
 {

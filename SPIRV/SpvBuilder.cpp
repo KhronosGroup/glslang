@@ -1,5 +1,6 @@
 //
-//Copyright (C) 2014 LunarG, Inc.
+//Copyright (C) 2014-2015 LunarG, Inc.
+//Copyright (C) 2015-2016 Google, Inc.
 //
 //All rights reserved.
 //
@@ -308,11 +309,9 @@ Id Builder::makeMatrixType(Id component, int cols, int rows)
 // TODO: performance: track arrays per stride
 // If a stride is supplied (non-zero) make an array.
 // If no stride (0), reuse previous array types.
-Id Builder::makeArrayType(Id element, unsigned size, int stride)
+// 'size' is an Id of a constant or specialization constant of the array size
+Id Builder::makeArrayType(Id element, Id sizeId, int stride)
 {
-    // First, we need a constant instruction for the size
-    Id sizeId = makeUintConstant(size);
-
     Instruction* type;
     if (stride == 0) {
         // try to find existing type
@@ -518,8 +517,12 @@ int Builder::getNumTypeConstituents(Id typeId) const
         return 1;
     case OpTypeVector:
     case OpTypeMatrix:
-    case OpTypeArray:
         return instr->getImmediateOperand(1);
+    case OpTypeArray:
+    {
+        Id lengthId = instr->getImmediateOperand(1);
+        return module.getInstruction(lengthId)->getImmediateOperand(0);
+    }
     case OpTypeStruct:
         return instr->getNumOperands();
     default:
@@ -647,16 +650,19 @@ Id Builder::makeBoolConstant(bool b, bool specConstant)
     Instruction* constant;
     Op opcode = specConstant ? (b ? OpSpecConstantTrue : OpSpecConstantFalse) : (b ? OpConstantTrue : OpConstantFalse);
 
-    // See if we already made it
-    Id existing = 0;
-    for (int i = 0; i < (int)groupedConstants[OpTypeBool].size(); ++i) {
-        constant = groupedConstants[OpTypeBool][i];
-        if (constant->getTypeId() == typeId && constant->getOpCode() == opcode)
-            existing = constant->getResultId();
-    }
+    // See if we already made it. Applies only to regular constants, because specialization constants
+    // must remain distinct for the purpose of applying a SpecId decoration.
+    if (! specConstant) {
+        Id existing = 0;
+        for (int i = 0; i < (int)groupedConstants[OpTypeBool].size(); ++i) {
+            constant = groupedConstants[OpTypeBool][i];
+            if (constant->getTypeId() == typeId && constant->getOpCode() == opcode)
+                existing = constant->getResultId();
+        }
 
-    if (existing)
-        return existing;
+        if (existing)
+            return existing;
+    }
 
     // Make it
     Instruction* c = new Instruction(getUniqueId(), typeId, opcode);
@@ -670,9 +676,14 @@ Id Builder::makeBoolConstant(bool b, bool specConstant)
 Id Builder::makeIntConstant(Id typeId, unsigned value, bool specConstant)
 {
     Op opcode = specConstant ? OpSpecConstant : OpConstant;
-    Id existing = findScalarConstant(OpTypeInt, opcode, typeId, value);
-    if (existing)
-        return existing;
+
+    // See if we already made it. Applies only to regular constants, because specialization constants
+    // must remain distinct for the purpose of applying a SpecId decoration.
+    if (! specConstant) {
+        Id existing = findScalarConstant(OpTypeInt, opcode, typeId, value);
+        if (existing)
+            return existing;
+    }
 
     Instruction* c = new Instruction(getUniqueId(), typeId, opcode);
     c->addImmediateOperand(value);
@@ -687,10 +698,17 @@ Id Builder::makeFloatConstant(float f, bool specConstant)
 {
     Op opcode = specConstant ? OpSpecConstant : OpConstant;
     Id typeId = makeFloatType(32);
-    unsigned value = *(unsigned int*)&f;
-    Id existing = findScalarConstant(OpTypeFloat, opcode, typeId, value);
-    if (existing)
-        return existing;
+    union { float fl; unsigned int ui; } u;
+    u.fl = f;
+    unsigned value = u.ui;
+
+    // See if we already made it. Applies only to regular constants, because specialization constants
+    // must remain distinct for the purpose of applying a SpecId decoration.
+    if (! specConstant) {
+        Id existing = findScalarConstant(OpTypeFloat, opcode, typeId, value);
+        if (existing)
+            return existing;
+    }
 
     Instruction* c = new Instruction(getUniqueId(), typeId, opcode);
     c->addImmediateOperand(value);
@@ -705,12 +723,19 @@ Id Builder::makeDoubleConstant(double d, bool specConstant)
 {
     Op opcode = specConstant ? OpSpecConstant : OpConstant;
     Id typeId = makeFloatType(64);
-    unsigned long long value = *(unsigned long long*)&d;
+    union { double db; unsigned long long ull; } u;
+    u.db = d;
+    unsigned long long value = u.ull;
     unsigned op1 = value & 0xFFFFFFFF;
     unsigned op2 = value >> 32;
-    Id existing = findScalarConstant(OpTypeFloat, opcode, typeId, op1, op2);
-    if (existing)
-        return existing;
+
+    // See if we already made it. Applies only to regular constants, because specialization constants
+    // must remain distinct for the purpose of applying a SpecId decoration.
+    if (! specConstant) {
+        Id existing = findScalarConstant(OpTypeFloat, opcode, typeId, op1, op2);
+        if (existing)
+            return existing;
+    }
 
     Instruction* c = new Instruction(getUniqueId(), typeId, opcode);
     c->addImmediateOperand(op1);
@@ -751,8 +776,9 @@ Id Builder::findCompositeConstant(Op typeClass, std::vector<Id>& comps) const
 }
 
 // Comments in header
-Id Builder::makeCompositeConstant(Id typeId, std::vector<Id>& members)
+Id Builder::makeCompositeConstant(Id typeId, std::vector<Id>& members, bool specConstant)
 {
+    Op opcode = specConstant ? OpSpecConstantComposite : OpConstantComposite;
     assert(typeId);
     Op typeClass = getTypeClass(typeId);
 
@@ -767,11 +793,13 @@ Id Builder::makeCompositeConstant(Id typeId, std::vector<Id>& members)
         return makeFloatConstant(0.0);
     }
 
-    Id existing = findCompositeConstant(typeClass, members);
-    if (existing)
-        return existing;
+    if (! specConstant) {
+        Id existing = findCompositeConstant(typeClass, members);
+        if (existing)
+            return existing;
+    }
 
-    Instruction* c = new Instruction(getUniqueId(), typeId, OpConstantComposite);
+    Instruction* c = new Instruction(getUniqueId(), typeId, opcode);
     for (int op = 0; op < (int)members.size(); ++op)
         c->addIdOperand(members[op]);
     constantsTypesGlobals.push_back(std::unique_ptr<Instruction>(c));
@@ -1117,8 +1145,8 @@ void Builder::createNoResultOp(Op opCode, Id operand)
 void Builder::createNoResultOp(Op opCode, const std::vector<Id>& operands)
 {
     Instruction* op = new Instruction(opCode);
-    for (auto operand : operands)
-        op->addIdOperand(operand);
+    for (auto it = operands.cbegin(); it != operands.cend(); ++it)
+        op->addIdOperand(*it);
     buildPoint->addInstruction(std::unique_ptr<Instruction>(op));
 }
 
@@ -1173,8 +1201,8 @@ Id Builder::createTriOp(Op opCode, Id typeId, Id op1, Id op2, Id op3)
 Id Builder::createOp(Op opCode, Id typeId, const std::vector<Id>& operands)
 {
     Instruction* op = new Instruction(getUniqueId(), typeId, opCode);
-    for (auto operand : operands)
-        op->addIdOperand(operand);
+    for (auto it = operands.cbegin(); it != operands.cend(); ++it)
+        op->addIdOperand(*it);
     buildPoint->addInstruction(std::unique_ptr<Instruction>(op));
 
     return op->getResultId();
@@ -2082,9 +2110,9 @@ Id Builder::accessChainGetInferredType()
         type = getContainedTypeId(type);
 
     // dereference each index
-    for (auto deref : accessChain.indexChain) {
+    for (auto it = accessChain.indexChain.cbegin(); it != accessChain.indexChain.cend(); ++it) {
         if (isStructType(type))
-            type = getContainedTypeId(type, getConstantScalar(deref));
+            type = getContainedTypeId(type, getConstantScalar(*it));
         else
             type = getContainedTypeId(type);
     }
@@ -2093,7 +2121,7 @@ Id Builder::accessChainGetInferredType()
     if (accessChain.swizzle.size() == 1)
         type = getContainedTypeId(type);
     else if (accessChain.swizzle.size() > 1)
-        type = makeVectorType(getContainedTypeId(type), accessChain.swizzle.size());
+        type = makeVectorType(getContainedTypeId(type), (int)accessChain.swizzle.size());
 
     // dereference component selection
     if (accessChain.component)
@@ -2112,9 +2140,9 @@ void Builder::dump(std::vector<unsigned int>& out) const
     out.push_back(0);
 
     // Capabilities
-    for (auto cap : capabilities) {
+    for (auto it = capabilities.cbegin(); it != capabilities.cend(); ++it) {
         Instruction capInst(0, 0, OpCapability);
-        capInst.addImmediateOperand(cap);
+        capInst.addImmediateOperand(*it);
         capInst.dump(out);
     }
 

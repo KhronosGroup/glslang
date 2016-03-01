@@ -22,9 +22,9 @@ struct lunarStruct3 {
 };
 
 
-uniform lunarStruct1 foo;
-uniform lunarStruct2 foo2;
-uniform lunarStruct3 foo3;
+lunarStruct1 foo;
+lunarStruct2 foo2;
+lunarStruct3 foo3;
 
 void main()
 {

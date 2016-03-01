@@ -2,9 +2,9 @@
 
 precision mediump float;
 
-uniform vec4 bigColor;
+in vec4 bigColor;
 in vec4 BaseColor;
-uniform float d;
+in float d;
 
 void bar();
 float foo(vec4);

@@ -689,7 +689,8 @@ void CompileAndLinkShaderUnits(std::vector<ShaderCompUnit> compUnits)
     //
 
     glslang::TProgram& program = *new glslang::TProgram;
-    for (auto compUnit : compUnits) {
+    for (auto it = compUnits.cbegin(); it != compUnits.cend(); ++it) {
+        const auto &compUnit = *it;
         glslang::TShader* shader = new glslang::TShader(compUnit.stage);
         shader->setStrings(compUnit.text, 1);
         shaders.push_back(shader);
@@ -753,7 +754,6 @@ void CompileAndLinkShaderUnits(std::vector<ShaderCompUnit> compUnits)
                     if (! (Options & EOptionMemoryLeakMode)) {
                         glslang::OutputSpv(spirv, GetBinaryName((EShLanguage)stage));
                         if (Options & EOptionHumanReadableSpv) {
-                            spv::Parameterize();
                             spv::Disassemble(std::cout, spirv);
                         }
                     }
@@ -822,8 +822,8 @@ void CompileAndLinkShaderFiles()
             glslang::OS_DumpMemoryCounters();
     }
 
-    for (auto c : compUnits)
-        FreeFileData(c.text);
+    for (auto it = compUnits.begin(); it != compUnits.end(); ++it)
+        FreeFileData(it->text);
 }
 
 int C_DECL main(int argc, char* argv[])

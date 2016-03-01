@@ -12,8 +12,8 @@ Linked fragment stage:
                               Capability Shader
                1:             ExtInstImport  "GLSL.std.450"
                               MemoryModel Logical GLSL450
-                              EntryPoint Fragment 4  "main" 154
-                              ExecutionMode 4 OriginLowerLeft
+                              EntryPoint Fragment 4  "main" 14 26 37 48 89 98 107 116 122 130 139 148 154
+                              ExecutionMode 4 OriginUpperLeft
                               Source GLSL 450
                               Name 4  "main"
                               Name 9  "idata"
@@ -32,6 +32,14 @@ Linked fragment stage:
                               Name 139  "u3"
                               Name 148  "u4"
                               Name 154  "fragColor"
+                              Decorate 89(i1) Flat
+                              Decorate 98(i2) Flat
+                              Decorate 107(i3) Flat
+                              Decorate 116(i4) Flat
+                              Decorate 122(u1) Flat
+                              Decorate 130(u2) Flat
+                              Decorate 139(u3) Flat
+                              Decorate 148(u4) Flat
                2:             TypeVoid
                3:             TypeFunction 2
                6:             TypeInt 32 1
@@ -40,22 +48,22 @@ Linked fragment stage:
               10:      6(int) Constant 0
               11:    7(ivec4) ConstantComposite 10 10 10 10
               12:             TypeFloat 32
-              13:             TypePointer UniformConstant 12(float)
-          14(f1):     13(ptr) Variable UniformConstant
+              13:             TypePointer Input 12(float)
+          14(f1):     13(ptr) Variable Input
               17:             TypeInt 32 0
               18:     17(int) Constant 0
               19:             TypePointer Function 6(int)
               24:             TypeVector 12(float) 2
-              25:             TypePointer UniformConstant 24(fvec2)
-          26(f2):     25(ptr) Variable UniformConstant
+              25:             TypePointer Input 24(fvec2)
+          26(f2):     25(ptr) Variable Input
               28:             TypeVector 6(int) 2
               35:             TypeVector 12(float) 3
-              36:             TypePointer UniformConstant 35(fvec3)
-          37(f3):     36(ptr) Variable UniformConstant
+              36:             TypePointer Input 35(fvec3)
+          37(f3):     36(ptr) Variable Input
               39:             TypeVector 6(int) 3
               46:             TypeVector 12(float) 4
-              47:             TypePointer UniformConstant 46(fvec4)
-          48(f4):     47(ptr) Variable UniformConstant
+              47:             TypePointer Input 46(fvec4)
+          48(f4):     47(ptr) Variable Input
               53:             TypeVector 17(int) 4
               54:             TypePointer Function 53(ivec4)
               56:   53(ivec4) ConstantComposite 18 18 18 18
@@ -65,23 +73,23 @@ Linked fragment stage:
               84:             TypePointer Function 46(fvec4)
               86:   12(float) Constant 0
               87:   46(fvec4) ConstantComposite 86 86 86 86
-              88:             TypePointer UniformConstant 6(int)
-          89(i1):     88(ptr) Variable UniformConstant
+              88:             TypePointer Input 6(int)
+          89(i1):     88(ptr) Variable Input
               92:             TypePointer Function 12(float)
-              97:             TypePointer UniformConstant 28(ivec2)
-          98(i2):     97(ptr) Variable UniformConstant
-             106:             TypePointer UniformConstant 39(ivec3)
-         107(i3):    106(ptr) Variable UniformConstant
-             115:             TypePointer UniformConstant 7(ivec4)
-         116(i4):    115(ptr) Variable UniformConstant
-             121:             TypePointer UniformConstant 17(int)
-         122(u1):    121(ptr) Variable UniformConstant
-             129:             TypePointer UniformConstant 65(ivec2)
-         130(u2):    129(ptr) Variable UniformConstant
-             138:             TypePointer UniformConstant 73(ivec3)
-         139(u3):    138(ptr) Variable UniformConstant
-             147:             TypePointer UniformConstant 53(ivec4)
-         148(u4):    147(ptr) Variable UniformConstant
+              97:             TypePointer Input 28(ivec2)
+          98(i2):     97(ptr) Variable Input
+             106:             TypePointer Input 39(ivec3)
+         107(i3):    106(ptr) Variable Input
+             115:             TypePointer Input 7(ivec4)
+         116(i4):    115(ptr) Variable Input
+             121:             TypePointer Input 17(int)
+         122(u1):    121(ptr) Variable Input
+             129:             TypePointer Input 65(ivec2)
+         130(u2):    129(ptr) Variable Input
+             138:             TypePointer Input 73(ivec3)
+         139(u3):    138(ptr) Variable Input
+             147:             TypePointer Input 53(ivec4)
+         148(u4):    147(ptr) Variable Input
              153:             TypePointer Output 46(fvec4)
   154(fragColor):    153(ptr) Variable Output
              159:             TypeBool

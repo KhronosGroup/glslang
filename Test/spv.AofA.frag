@@ -12,7 +12,7 @@ float[4][5][6] many[1][2][3];
 float g4[4][7];
 in float g5[5][7];
 
-uniform int i, j, k;
+flat in int i, j, k;
 
 float[4][7] foo(float a[5][7])
 {

@@ -91,8 +91,9 @@ public:
                 delayed_[continueBlock] = true;
             }
         }
-        for (const auto succ : block->getSuccessors())
-            visit(succ);
+        const auto successors = block->getSuccessors();
+        for (auto it = successors.cbegin(); it != successors.cend(); ++it)
+            visit(*it);
         if (continueBlock) {
             delayed_[continueBlock] = false;
             visit(continueBlock);
