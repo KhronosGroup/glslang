@@ -10,10 +10,13 @@ Linked fragment stage:
 // Id's are bound by 399
 
                               Capability Shader
+                              Capability SampledRect
+                              Capability SparseResidency
+                              Capability SampledCubeArray
                1:             ExtInstImport  "GLSL.std.450"
                               MemoryModel Logical GLSL450
-                              EntryPoint Fragment 4  "main" 384
-                              ExecutionMode 4 OriginLowerLeft
+                              EntryPoint Fragment 4  "main" 33 48 89 360 384
+                              ExecutionMode 4 OriginUpperLeft
                               Source GLSL 450
                               SourceExtension  "GL_ARB_sparse_texture2"
                               Name 4  "main"
@@ -42,6 +45,19 @@ Linked fragment stage:
                               Name 289  "s2DRectShadow"
                               Name 360  "offsets"
                               Name 384  "outColor"
+                              Decorate 29(s2D) DescriptorSet 0
+                              Decorate 44(s3D) DescriptorSet 0
+                              Decorate 59(isCube) DescriptorSet 0
+                              Decorate 71(s2DShadow) DescriptorSet 0
+                              Decorate 86(sCubeArrayShadow) DescriptorSet 0
+                              Decorate 108(usCubeArray) DescriptorSet 0
+                              Decorate 140(us2DRect) DescriptorSet 0
+                              Decorate 154(s2DArrayShadow) DescriptorSet 0
+                              Decorate 186(s2DMS) DescriptorSet 0
+                              Decorate 223(is2DArray) DescriptorSet 0
+                              Decorate 256(sCubeShadow) DescriptorSet 0
+                              Decorate 289(s2DRectShadow) DescriptorSet 0
+                              Decorate 360(offsets) Flat
                2:             TypeVoid
                3:             TypeFunction 2
                6:             TypeInt 32 1
@@ -65,16 +81,16 @@ Linked fragment stage:
               28:             TypePointer UniformConstant 27
          29(s2D):     28(ptr) Variable UniformConstant
               31:             TypeVector 10(float) 2
-              32:             TypePointer UniformConstant 31(fvec2)
-          33(c2):     32(ptr) Variable UniformConstant
+              32:             TypePointer Input 31(fvec2)
+          33(c2):     32(ptr) Variable Input
      35(ResType):             TypeStruct 6(int) 11(fvec4)
               41:             TypeImage 10(float) 3D sampled format:Unknown
               42:             TypeSampledImage 41
               43:             TypePointer UniformConstant 42
          44(s3D):     43(ptr) Variable UniformConstant
               46:             TypeVector 10(float) 3
-              47:             TypePointer UniformConstant 46(fvec3)
-          48(c3):     47(ptr) Variable UniformConstant
+              47:             TypePointer Input 46(fvec3)
+          48(c3):     47(ptr) Variable Input
               50:   10(float) Constant 1073741824
               56:             TypeImage 6(int) Cube sampled format:Unknown
               57:             TypeSampledImage 56
@@ -91,8 +107,8 @@ Linked fragment stage:
               84:             TypeSampledImage 83
               85:             TypePointer UniformConstant 84
 86(sCubeArrayShadow):     85(ptr) Variable UniformConstant
-              88:             TypePointer UniformConstant 11(fvec4)
-          89(c4):     88(ptr) Variable UniformConstant
+              88:             TypePointer Input 11(fvec4)
+          89(c4):     88(ptr) Variable Input
               91:   10(float) Constant 1065353216
              105:             TypeImage 20(int) Cube array sampled format:Unknown
              106:             TypeSampledImage 105
@@ -144,8 +160,8 @@ Linked fragment stage:
              335:  143(ivec2) ConstantComposite 190 190
              357:     20(int) Constant 4
              358:             TypeArray 143(ivec2) 357
-             359:             TypePointer UniformConstant 358
-    360(offsets):    359(ptr) Variable UniformConstant
+             359:             TypePointer Input 358
+    360(offsets):    359(ptr) Variable Input
              383:             TypePointer Output 11(fvec4)
    384(outColor):    383(ptr) Variable Output
              387:             TypeBool

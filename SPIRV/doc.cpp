@@ -712,7 +712,7 @@ const char* KernelProfilingInfoString(int info)
     }
 }
 
-const int CapabilityCeiling = 57;
+const int CapabilityCeiling = 58;
 
 const char* CapabilityString(int info)
 {
@@ -775,6 +775,7 @@ const char* CapabilityString(int info)
     case 54: return "GeometryStreams";
     case 55: return "StorageImageReadWithoutFormat";
     case 56: return "StorageImageWriteWithoutFormat";
+    case 57: return "MultiViewport";
 
     case CapabilityCeiling:
     default: return "Bad";
@@ -1104,6 +1105,7 @@ const char* OpcodeString(int op)
     case 317: return "OpNoLine";
     case 318: return "OpAtomicFlagTestAndSet";
     case 319: return "OpAtomicFlagClear";
+    case 320: return "OpImageSparseRead";
 
     case OpcodeCeiling:
     default:
@@ -1311,7 +1313,6 @@ void Parameterize()
     CapabilityParams[CapabilityTessellation].caps.push_back(CapabilityShader);
     CapabilityParams[CapabilityVector16].caps.push_back(CapabilityKernel);
     CapabilityParams[CapabilityFloat16Buffer].caps.push_back(CapabilityKernel);
-    CapabilityParams[CapabilityFloat16].caps.push_back(CapabilityFloat16Buffer);
     CapabilityParams[CapabilityInt64Atomics].caps.push_back(CapabilityInt64);
     CapabilityParams[CapabilityImageBasic].caps.push_back(CapabilityKernel);
     CapabilityParams[CapabilityImageReadWrite].caps.push_back(CapabilityImageBasic);
@@ -1353,6 +1354,7 @@ void Parameterize()
     CapabilityParams[CapabilityGeometryStreams].caps.push_back(CapabilityGeometry);
     CapabilityParams[CapabilityStorageImageReadWithoutFormat].caps.push_back(CapabilityShader);
     CapabilityParams[CapabilityStorageImageWriteWithoutFormat].caps.push_back(CapabilityShader);
+    CapabilityParams[CapabilityMultiViewport].caps.push_back(CapabilityGeometry);
 
     AddressingParams[AddressingModelPhysical32].caps.push_back(CapabilityAddresses);
     AddressingParams[AddressingModelPhysical64].caps.push_back(CapabilityAddresses);
@@ -1362,7 +1364,7 @@ void Parameterize()
     MemoryParams[MemoryModelOpenCL].caps.push_back(CapabilityKernel);
 
     MemorySemanticsParams[MemorySemanticsUniformMemoryShift].caps.push_back(CapabilityShader);
-    MemorySemanticsParams[MemorySemanticsAtomicCounterMemoryShift].caps.push_back(CapabilityShader);
+    MemorySemanticsParams[MemorySemanticsAtomicCounterMemoryShift].caps.push_back(CapabilityAtomicStorage);
 
     ExecutionModelParams[ExecutionModelVertex].caps.push_back(CapabilityShader);
     ExecutionModelParams[ExecutionModelTessellationControl].caps.push_back(CapabilityTessellation);
@@ -1528,7 +1530,7 @@ void Parameterize()
     DecorationParams[DecorationFlat].caps.push_back(CapabilityShader);
     DecorationParams[DecorationPatch].caps.push_back(CapabilityTessellation);
     DecorationParams[DecorationCentroid].caps.push_back(CapabilityShader);
-    DecorationParams[DecorationSample].caps.push_back(CapabilityShader);
+    DecorationParams[DecorationSample].caps.push_back(CapabilitySampleRateShading);
     DecorationParams[DecorationInvariant].caps.push_back(CapabilityShader);
     DecorationParams[DecorationConstant].caps.push_back(CapabilityKernel);
     DecorationParams[DecorationUniform].caps.push_back(CapabilityShader);
@@ -1537,14 +1539,14 @@ void Parameterize()
     DecorationParams[DecorationStream].caps.push_back(CapabilityGeometryStreams);
     DecorationParams[DecorationLocation].caps.push_back(CapabilityShader);
     DecorationParams[DecorationComponent].caps.push_back(CapabilityShader);
+    DecorationParams[DecorationOffset].caps.push_back(CapabilityShader);
     DecorationParams[DecorationIndex].caps.push_back(CapabilityShader);
     DecorationParams[DecorationBinding].caps.push_back(CapabilityShader);
     DecorationParams[DecorationDescriptorSet].caps.push_back(CapabilityShader);
     DecorationParams[DecorationXfbBuffer].caps.push_back(CapabilityTransformFeedback);
     DecorationParams[DecorationXfbStride].caps.push_back(CapabilityTransformFeedback);
     DecorationParams[DecorationArrayStride].caps.push_back(CapabilityShader);
-    DecorationParams[DecorationMatrixStride].caps.push_back(CapabilityShader);
-    DecorationParams[DecorationBuiltIn].caps.push_back(CapabilityShader);
+    DecorationParams[DecorationMatrixStride].caps.push_back(CapabilityMatrix);
     DecorationParams[DecorationFuncParamAttr].caps.push_back(CapabilityKernel);
     DecorationParams[DecorationFPRoundingMode].caps.push_back(CapabilityKernel);
     DecorationParams[DecorationFPFastMathMode].caps.push_back(CapabilityKernel);
@@ -1556,8 +1558,8 @@ void Parameterize()
 
     BuiltInParams[BuiltInPosition].caps.push_back(CapabilityShader);
     BuiltInParams[BuiltInPointSize].caps.push_back(CapabilityShader);
-    BuiltInParams[BuiltInClipDistance].caps.push_back(CapabilityShader);
-    BuiltInParams[BuiltInCullDistance].caps.push_back(CapabilityShader);
+    BuiltInParams[BuiltInClipDistance].caps.push_back(CapabilityClipDistance);
+    BuiltInParams[BuiltInCullDistance].caps.push_back(CapabilityCullDistance);
 
     BuiltInParams[BuiltInVertexId].caps.push_back(CapabilityShader);
     BuiltInParams[BuiltInVertexId].desc = "Vertex ID, which takes on values 0, 1, 2, . . . .";
@@ -1576,7 +1578,7 @@ void Parameterize()
     BuiltInParams[BuiltInInvocationId].caps.push_back(CapabilityGeometry);
     BuiltInParams[BuiltInInvocationId].caps.push_back(CapabilityTessellation);
     BuiltInParams[BuiltInLayer].caps.push_back(CapabilityGeometry);
-    BuiltInParams[BuiltInViewportIndex].caps.push_back(CapabilityGeometry);
+    BuiltInParams[BuiltInViewportIndex].caps.push_back(CapabilityMultiViewport);
     BuiltInParams[BuiltInTessLevelOuter].caps.push_back(CapabilityTessellation);
     BuiltInParams[BuiltInTessLevelInner].caps.push_back(CapabilityTessellation);
     BuiltInParams[BuiltInTessCoord].caps.push_back(CapabilityTessellation);
@@ -1584,9 +1586,9 @@ void Parameterize()
     BuiltInParams[BuiltInFragCoord].caps.push_back(CapabilityShader);
     BuiltInParams[BuiltInPointCoord].caps.push_back(CapabilityShader);
     BuiltInParams[BuiltInFrontFacing].caps.push_back(CapabilityShader);
-    BuiltInParams[BuiltInSampleId].caps.push_back(CapabilityShader);
-    BuiltInParams[BuiltInSamplePosition].caps.push_back(CapabilityShader);
-    BuiltInParams[BuiltInSampleMask].caps.push_back(CapabilityShader);
+    BuiltInParams[BuiltInSampleId].caps.push_back(CapabilitySampleRateShading);
+    BuiltInParams[BuiltInSamplePosition].caps.push_back(CapabilitySampleRateShading);
+    BuiltInParams[BuiltInSampleMask].caps.push_back(CapabilitySampleRateShading);
     BuiltInParams[BuiltInFragDepth].caps.push_back(CapabilityShader);
     BuiltInParams[BuiltInHelperInvocation].caps.push_back(CapabilityShader);
     BuiltInParams[BuiltInWorkDim].caps.push_back(CapabilityKernel);
@@ -1961,6 +1963,12 @@ void Parameterize()
     InstructionDesc[OpImageSparseDrefGather].operands.push(OperandImageOperands, "", true);
     InstructionDesc[OpImageSparseDrefGather].operands.push(OperandVariableIds, "", true);
     InstructionDesc[OpImageSparseDrefGather].capabilities.push_back(CapabilitySparseResidency);
+
+    InstructionDesc[OpImageSparseRead].operands.push(OperandId, "'Image'");
+    InstructionDesc[OpImageSparseRead].operands.push(OperandId, "'Coordinate'");
+    InstructionDesc[OpImageSparseRead].operands.push(OperandImageOperands, "", true);
+    InstructionDesc[OpImageSparseRead].operands.push(OperandVariableIds, "", true);
+    InstructionDesc[OpImageSparseRead].capabilities.push_back(CapabilitySparseResidency);
 
     InstructionDesc[OpImageSparseTexelsResident].operands.push(OperandId, "'Resident Code'");
     InstructionDesc[OpImageSparseTexelsResident].capabilities.push_back(CapabilitySparseResidency);

@@ -11,7 +11,7 @@ Linked fragment stage:
                1:             ExtInstImport  "GLSL.std.450"
                               MemoryModel Logical GLSL450
                               EntryPoint Fragment 4  "main" 19 34 39 45 48
-                              ExecutionMode 4 OriginLowerLeft
+                              ExecutionMode 4 OriginUpperLeft
                               Source GLSL 140
                               Name 4  "main"
                               Name 9  "texColor"
@@ -21,6 +21,7 @@ Linked fragment stage:
                               Name 39  "alpha"
                               Name 45  "gl_FragColor"
                               Name 48  "foo"
+                              Decorate 13(texSampler2D) DescriptorSet 0
                2:             TypeVoid
                3:             TypeFunction 2
                6:             TypeFloat 32

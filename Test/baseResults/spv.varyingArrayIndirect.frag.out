@@ -10,8 +10,8 @@ Linked fragment stage:
                               Capability Shader
                1:             ExtInstImport  "GLSL.std.450"
                               MemoryModel Logical GLSL450
-                              EntryPoint Fragment 4  "main" 19 30 45 50 56
-                              ExecutionMode 4 OriginLowerLeft
+                              EntryPoint Fragment 4  "main" 19 22 30 31 45 50 56
+                              ExecutionMode 4 OriginUpperLeft
                               Source GLSL 140
                               Name 4  "main"
                               Name 9  "texColor"
@@ -23,6 +23,9 @@ Linked fragment stage:
                               Name 45  "color"
                               Name 50  "alpha"
                               Name 56  "gl_FragColor"
+                              Decorate 13(texSampler2D) DescriptorSet 0
+                              Decorate 22(b) Flat
+                              Decorate 31(a) Flat
                2:             TypeVoid
                3:             TypeFunction 2
                6:             TypeFloat 32
@@ -38,14 +41,14 @@ Linked fragment stage:
               18:             TypePointer Input 17
       19(userIn):     18(ptr) Variable Input
               20:             TypeInt 32 1
-              21:             TypePointer UniformConstant 20(int)
-           22(b):     21(ptr) Variable UniformConstant
+              21:             TypePointer Input 20(int)
+           22(b):     21(ptr) Variable Input
               24:             TypePointer Input 7(fvec4)
               27:     15(int) Constant 6
               28:             TypeArray 7(fvec4) 27
               29:             TypePointer Input 28
     30(TexCoord):     29(ptr) Variable Input
-           31(a):     21(ptr) Variable UniformConstant
+           31(a):     21(ptr) Variable Input
               36:     20(int) Constant 5
               40:             TypeVector 6(float) 2
        45(color):     24(ptr) Variable Input

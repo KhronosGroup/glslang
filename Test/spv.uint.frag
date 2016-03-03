@@ -4,9 +4,9 @@ flat in uvec2 t;
 in float f;
 in vec2 tc;
 
-uniform uvec4 v;
-uniform int i;
-uniform bool b;
+flat in uvec4 v;
+flat in int i;
+bool b;
 
 out uvec4 c;
 

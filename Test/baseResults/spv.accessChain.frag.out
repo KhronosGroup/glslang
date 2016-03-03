@@ -12,8 +12,8 @@ Linked fragment stage:
                               Capability Shader
                1:             ExtInstImport  "GLSL.std.450"
                               MemoryModel Logical GLSL450
-                              EntryPoint Fragment 4  "main" 65
-                              ExecutionMode 4 OriginLowerLeft
+                              EntryPoint Fragment 4  "main" 65 149
+                              ExecutionMode 4 OriginUpperLeft
                               Source GLSL 420
                               Name 4  "main"
                               Name 8  "S"
@@ -72,6 +72,7 @@ Linked fragment stage:
                               Name 190  "param"
                               Name 194  "param"
                               Decorate 65(OutColor) Location 0
+                              Decorate 149(u) Flat
                2:             TypeVoid
                3:             TypeFunction 2
                6:             TypeFloat 32
@@ -92,8 +93,8 @@ Linked fragment stage:
              141:    6(float) Constant 0
              142:    7(fvec3) ConstantComposite 141 141 141
              143:             TypePointer Function 8(S)
-             148:             TypePointer UniformConstant 13(int)
-          149(u):    148(ptr) Variable UniformConstant
+             148:             TypePointer Input 13(int)
+          149(u):    148(ptr) Variable Input
          4(main):           2 Function None 3
                5:             Label
           144(s):    143(ptr) Variable Function

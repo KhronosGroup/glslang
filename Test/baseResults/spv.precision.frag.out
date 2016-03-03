@@ -13,7 +13,7 @@ Linked fragment stage:
                1:             ExtInstImport  "GLSL.std.450"
                               MemoryModel Logical GLSL450
                               EntryPoint Fragment 4  "main" 23 59 61 73 116
-                              ExecutionMode 4 OriginLowerLeft
+                              ExecutionMode 4 OriginUpperLeft
                               Source ESSL 310
                               Name 4  "main"
                               Name 12  "foo(vf3;"
@@ -106,10 +106,10 @@ Linked fragment stage:
               31:   15(bvec2) ConstantComposite 29 30
               36:             TypeInt 32 1
               37:             TypePointer Function 36(int)
-              39:             TypePointer UniformConstant 36(int)
-40(uniform_medium):     39(ptr) Variable UniformConstant
-42(uniform_high):     39(ptr) Variable UniformConstant
- 48(uniform_low):     39(ptr) Variable UniformConstant
+              39:             TypePointer Private 36(int)
+40(uniform_medium):     39(ptr) Variable Private
+42(uniform_high):     39(ptr) Variable Private
+ 48(uniform_low):     39(ptr) Variable Private
               52:             TypePointer Function 6(float)
               54:    6(float) Constant 1078774989
               56:    6(float) Constant 1232730691
@@ -125,8 +125,8 @@ Linked fragment stage:
               84:             TypeVector 36(int) 2
               92:             TypeInt 32 0
               93:     92(int) Constant 0
-             103:             TypePointer UniformConstant 15(bvec2)
-        104(ub2):    103(ptr) Variable UniformConstant
+             103:             TypePointer Private 15(bvec2)
+        104(ub2):    103(ptr) Variable Private
              111:    6(float) Constant 1065353216
           114(S):             TypeStruct 6(float) 6(float)
              115:             TypePointer Input 114(S)

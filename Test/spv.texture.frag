@@ -7,9 +7,9 @@ uniform samplerCube	    texSamplerCube;
 uniform sampler1DShadow shadowSampler1D;
 uniform sampler2DShadow shadowSampler2D;
 
-uniform float blend;
-uniform vec2 scale;
-uniform vec4 u;
+varying float blend;
+varying vec2 scale;
+varying vec4 u;
 
 in  vec2 t;
 in  vec2 coords2D;

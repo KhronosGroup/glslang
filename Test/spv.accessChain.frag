@@ -7,7 +7,7 @@ struct S
 
 layout(location = 0) out vec3 OutColor;
 
-uniform int u;
+flat in int u;
 
 void GetColor1(const S i) 
 { 
