@@ -128,7 +128,8 @@ public:
         numMains(0), numErrors(0), numPushConstants(0), recursive(false),
         invocations(TQualifier::layoutNotSet), vertices(TQualifier::layoutNotSet), inputPrimitive(ElgNone), outputPrimitive(ElgNone),
         pixelCenterInteger(false), originUpperLeft(false),
-        vertexSpacing(EvsNone), vertexOrder(EvoNone), pointMode(false), earlyFragmentTests(false), depthLayout(EldNone), depthReplacing(false), blendEquations(0), xfbMode(false)
+        vertexSpacing(EvsNone), vertexOrder(EvoNone), pointMode(false), earlyFragmentTests(false), depthLayout(EldNone), depthReplacing(false), blendEquations(0),
+        multiStream(false), xfbMode(false)
     {
         localSize[0] = 1;
         localSize[1] = 1;
@@ -271,6 +272,8 @@ public:
 
     void setXfbMode() { xfbMode = true; }
     bool getXfbMode() const { return xfbMode; }
+    void setMultiStream() { multiStream = true; }
+    bool isMultiStream() const { return multiStream; }
     bool setOutputPrimitive(TLayoutGeometry p)
     {
         if (outputPrimitive != ElgNone)
@@ -361,6 +364,7 @@ protected:
     bool depthReplacing;
     int blendEquations;        // an 'or'ing of masks of shifts of TBlendEquationShift
     bool xfbMode;
+    bool multiStream;
 
     typedef std::list<TCall> TGraph;
     TGraph callGraph;

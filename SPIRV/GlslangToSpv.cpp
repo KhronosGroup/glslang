@@ -1803,7 +1803,7 @@ spv::Id TGlslangToSpvTraverser::convertGlslangToSpvType(const glslang::TType& ty
             // Decorate the structure
             addDecoration(spvType, TranslateLayoutDecoration(type, qualifier.layoutMatrix));
             addDecoration(spvType, TranslateBlockDecoration(type));
-            if (type.getQualifier().hasStream()) {
+            if (type.getQualifier().hasStream() && glslangIntermediate->isMultiStream()) {
                 builder.addCapability(spv::CapabilityGeometryStreams);
                 builder.addDecoration(spvType, spv::DecorationStream, type.getQualifier().layoutStream);
             }
@@ -3599,7 +3599,7 @@ spv::Id TGlslangToSpvTraverser::getSymbolId(const glslang::TIntermSymbol* symbol
     }
 
     addDecoration(id, TranslateInvariantDecoration(symbol->getType().getQualifier()));
-    if (symbol->getQualifier().hasStream()) {
+    if (symbol->getQualifier().hasStream() && glslangIntermediate->isMultiStream()) {
         builder.addCapability(spv::CapabilityGeometryStreams);
         builder.addDecoration(id, spv::DecorationStream, symbol->getQualifier().layoutStream);
     }
