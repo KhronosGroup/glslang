@@ -1803,7 +1803,7 @@ spv::Id TGlslangToSpvTraverser::convertGlslangToSpvType(const glslang::TType& ty
             // Decorate the structure
             addDecoration(spvType, TranslateLayoutDecoration(type, qualifier.layoutMatrix));
             addDecoration(spvType, TranslateBlockDecoration(type));
-            if (type.getQualifier().hasStream()) {
+            if (type.getQualifier().hasStream() && glslangIntermediate->isMultiStream()) {
                 builder.addCapability(spv::CapabilityGeometryStreams);
                 builder.addDecoration(spvType, spv::DecorationStream, type.getQualifier().layoutStream);
             }
@@ -3599,7 +3599,7 @@ spv::Id TGlslangToSpvTraverser::getSymbolId(const glslang::TIntermSymbol* symbol
     }
 
     addDecoration(id, TranslateInvariantDecoration(symbol->getType().getQualifier()));
-    if (symbol->getQualifier().hasStream()) {
+    if (symbol->getQualifier().hasStream() && glslangIntermediate->isMultiStream()) {
         builder.addCapability(spv::CapabilityGeometryStreams);
         builder.addDecoration(id, spv::DecorationStream, symbol->getQualifier().layoutStream);
     }
@@ -3878,7 +3878,7 @@ spv::Id TGlslangToSpvTraverser::createShortCircuit(glslang::TOperator op, glslan
     // emit left operand
     builder.clearAccessChain();
     left.traverse(this);
-    spv::Id leftId = builder.accessChainLoad(spv::NoPrecision, boolTypeId);
+    spv::Id leftId = accessChainLoad(left.getType());
 
     // Operands to accumulate OpPhi operands
     std::vector<spv::Id> phiOperands;
@@ -3901,7 +3901,7 @@ spv::Id TGlslangToSpvTraverser::createShortCircuit(glslang::TOperator op, glslan
     // emit right operand as the "then" part of the "if"
     builder.clearAccessChain();
     right.traverse(this);
-    spv::Id rightId = builder.accessChainLoad(spv::NoPrecision, boolTypeId);
+    spv::Id rightId = accessChainLoad(right.getType());
 
     // accumulate left operand's phi information
     phiOperands.push_back(rightId);
