@@ -115,9 +115,6 @@ TParseContext::TParseContext(TSymbolTable& symt, TIntermediate& interm, bool pb,
         language == EShLangTessEvaluation ||
         language == EShLangGeometry)
         globalOutputDefaults.layoutXfbBuffer = 0;
-
-    if (language == EShLangGeometry)
-        globalOutputDefaults.layoutStream = 0;
 }
 
 TParseContext::~TParseContext()
