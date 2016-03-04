@@ -1,5 +1,13 @@
 cmake_minimum_required(VERSION 2.8)
 
+add_library(glslang-default-resource-limits
+    ${CMAKE_CURRENT_SOURCE_DIR}/DefaultResourceLimits.cpp
+)
+target_include_directories(glslang-default-resource-limits
+    PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}
+    PUBLIC ${PROJECT_SOURCE_DIR}
+)
+
 set(SOURCES StandAlone.cpp)
 set(REMAPPER_SOURCES spirv-remap.cpp)
 
@@ -10,7 +18,8 @@ set(LIBRARIES
     glslang
     OGLCompiler
     OSDependent
-    SPIRV)
+    SPIRV
+    glslang-default-resource-limits)
 
 if(WIN32)
     set(LIBRARIES ${LIBRARIES} psapi)

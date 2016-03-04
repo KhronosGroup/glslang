@@ -61,6 +61,12 @@ bison --defines=MachineIndependent/glslang_tab.cpp.h
       -o MachineIndependent/glslang_tab.cpp
 ```
 
+Glslang is adding the ability to test with
+[Google Test](https://github.com/google/googletest) framework. If you want to
+build and run those tests, please make sure you have a copy of Google Tests
+checked out in the `External/` directory:
+`git clone https://github.com/google/googletest.git`.
+
 Programmatic Interfaces
 -----------------------
 
@@ -118,7 +124,11 @@ Testing
 -------
 
 Test results should always be included with a pull request that modifies
-functionality. There is a simple process for doing this, described here:
+functionality. And since glslang is adding the ability to test with
+[Google Test](https://github.com/google/googletest) framework,
+please write your new tests using Google Test.
+
+The old (deprecated) testing process is:
 
 `Test` is an active test directory that contains test input and a
 subdirectory `baseResults` that contains the expected results of the
