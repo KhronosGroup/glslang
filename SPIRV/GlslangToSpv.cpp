@@ -381,7 +381,7 @@ spv::BuiltIn TGlslangToSpvTraverser::TranslateBuiltInDecoration(glslang::TBuiltI
         return spv::BuiltInCullDistance;
 
     case glslang::EbvViewportIndex:
-        // TODO: builder.addCapability(spv::CapabilityMultiViewport);
+        builder.addCapability(spv::CapabilityMultiViewport);
         return spv::BuiltInViewportIndex;
 
     case glslang::EbvSampleId:
