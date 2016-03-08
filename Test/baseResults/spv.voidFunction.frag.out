@@ -60,12 +60,16 @@ Linked fragment stage:
               38:   20(fvec4) Load 22(outColor)
                               Store 37(gl_FragColor) 38
                               Return
+              39:             Label
+                              Return
                               FunctionEnd
          6(foo():           2 Function None 3
                7:             Label
               14:   10(float) Load 12(bar)
               16:   10(float) FAdd 14 15
                               Store 12(bar) 16
+                              Return
+              17:             Label
                               Return
                               FunctionEnd
         8(foo2():           2 Function None 3

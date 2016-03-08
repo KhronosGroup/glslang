@@ -57,6 +57,7 @@
 #include <functional>
 #include <iostream>
 #include <memory>
+#include <unordered_set>
 #include <vector>
 
 namespace spv {
@@ -287,7 +288,17 @@ public:
             parameterInstructions[p]->dump(out);
 
         // Blocks
-        inReadableOrder(blocks[0], [&out](const Block* b) { b->dump(out); });
+        // Dump the reachable blocks in readable order first.
+        // Unreachable blocks which are terminated with branch/return
+        // instructions will be dumped after.
+        std::unordered_set<const Block*> dumped;
+        inReadableOrder(blocks[0], [&out, &dumped](const Block* b) {
+          b->dump(out);
+          dumped.insert(b);
+        });
+        for (auto b : blocks) {
+          if (!dumped.count(b) && b->isTerminated()) b->dump(out);
+        }
         Instruction end(0, 0, OpFunctionEnd);
         end.dump(out);
     }

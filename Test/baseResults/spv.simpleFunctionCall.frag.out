@@ -36,4 +36,7 @@ Linked fragment stage:
               10:             Label
               13:    7(fvec4) Load 12(BaseColor)
                               ReturnValue 13
+              14:             Label
+              15:    7(fvec4) Undef
+                              ReturnValue 15
                               FunctionEnd

@@ -1105,4 +1105,46 @@ Linked fragment stage:
              724:    7(fvec4) Load 9(color)
                               Store 615(gl_FragColor) 724
                               Return
+              32:             Label
+                              Branch 28
+              42:             Label
+                              Branch 38
+              45:             Label
+                              Branch 16
+              82:             Label
+                              Branch 81
+             142:             Label
+                              Branch 141
+             273:             Label
+                              Branch 272
+             298:             Label
+                              Branch 297
+             318:             Label
+                              Branch 317
+             423:             Label
+                              Branch 422
+             449:             Label
+                              Branch 448
+             461:             Label
+                              Branch 457
+             474:             Label
+                              Branch 473
+             497:             Label
+                              Branch 481
+             536:             Label
+                              Branch 531
+             574:             Label
+                              Branch 556
+             578:             Label
+                              Branch 540
+             604:             Label
+                              Branch 603
+             634:             Label
+                              Branch 633
+             680:             Label
+                              Branch 679
+             692:             Label
+                              Branch 691
+             716:             Label
+                              Branch 715
                               FunctionEnd

@@ -93,4 +93,7 @@ Linked vertex stage:
               12:     6(bool) Load 9(b)
               14:     6(bool) INotEqual 12 13
                               ReturnValue 14
+              15:             Label
+              16:     6(bool) Undef
+                              ReturnValue 16
                               FunctionEnd

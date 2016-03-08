@@ -44,4 +44,8 @@ Linked fragment stage:
                                 Return
               21:             Label
                               Return
+              22:             Label
+                              Branch 21
+              24:             Label
+                              Branch 21
                               FunctionEnd

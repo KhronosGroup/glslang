@@ -475,6 +475,44 @@ Linked fragment stage:
                                 Branch 266
              266:             Label
                               Return
+              78:             Label
+                              Branch 69
+              81:             Label
+                              Branch 70
+              98:             Label
+                              Branch 88
+             112:             Label
+                              Branch 106
+             117:             Label
+                              Branch 107
+             128:             Label
+                              Branch 121
+             141:             Label
+                              Branch 132
+             147:             Label
+                              Branch 133
+             149:             Label
+                              Branch 122
+             192:             Label
+                              Branch 191
+             195:             Label
+                              Branch 168
+             200:             Label
+                              Branch 170
+             201:             Label
+                              Branch 169
+             212:             Label
+                              Branch 211
+             223:             Label
+                              Branch 217
+             224:             Label
+                              Branch 218
+             261:             Label
+                              Branch 259
+             262:             Label
+                              Branch 260
+             267:             Label
+                              Branch 266
                               FunctionEnd
 15(foo1(vf4;vf4;i1;):    7(fvec4) Function None 11
           12(v1):      8(ptr) FunctionParameter
@@ -501,6 +539,15 @@ Linked fragment stage:
                                 ReturnValue 33
               26:             Label
                               ReturnValue 37
+              28:             Label
+                              Branch 24
+              30:             Label
+                              Branch 25
+              34:             Label
+                              Branch 26
+              38:             Label
+              39:    7(fvec4) Undef
+                              ReturnValue 39
                               FunctionEnd
 20(foo2(vf4;vf4;i1;):    7(fvec4) Function None 11
           17(v1):      8(ptr) FunctionParameter
@@ -529,4 +576,15 @@ Linked fragment stage:
                                 ReturnValue 55
               45:             Label
                               ReturnValue 37
+              47:             Label
+                              Branch 42
+              50:             Label
+                              Branch 43
+              52:             Label
+                              Branch 44
+              56:             Label
+                              Branch 45
+              58:             Label
+              59:    7(fvec4) Undef
+                              ReturnValue 59
                               FunctionEnd

@@ -170,4 +170,16 @@ Linked fragment stage:
              108:    7(fvec4) FMul 106 107
                               Store 105(gl_FragColor) 108
                               Return
+              44:             Label
+                              Branch 43
+              56:             Label
+                              Branch 55
+              74:             Label
+                              Branch 73
+              92:             Label
+                              Branch 91
+             101:             Label
+                              Branch 100
+             103:             Label
+                              Branch 100
                               FunctionEnd

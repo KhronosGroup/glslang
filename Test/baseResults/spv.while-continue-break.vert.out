@@ -76,4 +76,10 @@ Linked vertex stage:
               12:             Label
                               Store 39(D) 40
                               Return
+              28:             Label
+                              Store 29(C) 22
+                              Branch 26
+              36:             Label
+                              Store 29(C) 22
+                              Branch 35
                               FunctionEnd

@@ -178,4 +178,7 @@ Linked fragment stage:
               79:    6(float) Load 24(i2)
               80:    6(float) FAdd 78 79
                               ReturnValue 80
+              81:             Label
+              82:    6(float) Undef
+                              ReturnValue 82
                               FunctionEnd

@@ -120,6 +120,9 @@ Linked vertex stage:
               29:           8 Load 12(m)
               30:    7(fvec3) VectorTimesMatrix 28 29
                               ReturnValue 30
+              31:             Label
+              32:    7(fvec3) Undef
+                              ReturnValue 32
                               FunctionEnd
   21(Mat3(mf44;):           8 Function None 19
            20(m):     18(ptr) FunctionParameter
@@ -147,6 +150,9 @@ Linked vertex stage:
               60:    7(fvec3) CompositeConstruct 55 56 57
               61:           8 CompositeConstruct 58 59 60
                               ReturnValue 61
+              62:             Label
+              63:           8 Undef
+                              ReturnValue 63
                               FunctionEnd
 26(mxv(mf44;vf3;):    7(fvec3) Function None 23
           24(m4):     18(ptr) FunctionParameter
@@ -159,4 +165,7 @@ Linked vertex stage:
               67:           8 FunctionCall 21(Mat3(mf44;) 65(param)
               68:    7(fvec3) VectorTimesMatrix 64 67
                               ReturnValue 68
+              69:             Label
+              70:    7(fvec3) Undef
+                              ReturnValue 70
                               FunctionEnd

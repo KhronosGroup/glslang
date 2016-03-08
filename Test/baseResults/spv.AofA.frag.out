@@ -153,4 +153,7 @@ Linked fragment stage:
               34:           9 Load 33
               35:          14 CompositeConstruct 27 30 31 34
                               ReturnValue 35
+              36:             Label
+              37:          14 Undef
+                              ReturnValue 37
                               FunctionEnd

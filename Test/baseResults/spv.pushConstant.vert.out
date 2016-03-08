@@ -65,4 +65,10 @@ Linked vertex stage:
                                 Branch 21
               21:             Label
                               Return
+              27:             Label
+                              Branch 19
+              30:             Label
+                              Branch 20
+              33:             Label
+                              Branch 21
                               FunctionEnd

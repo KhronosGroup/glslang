@@ -101,4 +101,7 @@ Linked fragment stage:
                9:             Label
               46:    6(float) Load 13(face2)
                               ReturnValue 46
+              47:             Label
+              48:    6(float) Undef
+                              ReturnValue 48
                               FunctionEnd

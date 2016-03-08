@@ -238,4 +238,7 @@ Linked fragment stage:
               16:   10(float) Load 12(of1)
               18:     6(bool) FOrdGreaterThan 16 17
                               ReturnValue 18
+              19:             Label
+              20:     6(bool) Undef
+                              ReturnValue 20
                               FunctionEnd
