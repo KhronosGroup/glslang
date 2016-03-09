@@ -35,3 +35,5 @@ void foo()
     if (a1 == a2) // ERROR, can't compare either
         ++color;
 }
+
+layout(set = 1, push_constant) uniform badpc { int a; } badpcI;  // ERROR, no descriptor set with push_constant

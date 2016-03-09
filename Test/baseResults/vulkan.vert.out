@@ -22,7 +22,8 @@ ERROR: 0:25: 'packed' : not allowed when using GLSL for Vulkan
 ERROR: 0:32: 'initializer' : can't use with types containing arrays sized with a specialization constant 
 ERROR: 0:34: '=' : can't use with types containing arrays sized with a specialization constant 
 ERROR: 0:35: '==' : can't use with types containing arrays sized with a specialization constant 
-ERROR: 22 compilation errors.  No code generated.
+ERROR: 0:39: 'set' : cannot be used with push_constant 
+ERROR: 23 compilation errors.  No code generated.
 
 
 

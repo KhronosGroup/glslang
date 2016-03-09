@@ -12,6 +12,7 @@ Linked geometry stage:
                               Capability Geometry
                               Capability GeometryPointSize
                               Capability GeometryStreams
+                              Capability MultiViewport
                1:             ExtInstImport  "GLSL.std.450"
                               MemoryModel Logical GLSL450
                               EntryPoint Geometry 4  "main" 14 23 28 33 46

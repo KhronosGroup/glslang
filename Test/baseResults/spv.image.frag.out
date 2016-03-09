@@ -79,6 +79,7 @@ Linked fragment stage:
                               Decorate 248(value) Flat
                               Decorate 357(wo2D) DescriptorSet 0
                               Decorate 357(wo2D) Binding 1
+                              Decorate 357(wo2D) NonReadable
                               Decorate 377(ic4D) Flat
                2:             TypeVoid
                3:             TypeFunction 2

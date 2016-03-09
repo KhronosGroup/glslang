@@ -47,6 +47,20 @@ CMake: The currently maintained and preferred way of building is through CMake.
 In MSVC, after running CMake, you may need to use the Configuration Manager to
 check the INSTALL project.
 
+The grammar in glslang/MachineIndependent/glslang.y has to be recompiled with
+bison if it changes, the output files are committed to the repo to avoid every
+developer needing to have bison configured to compile the project when grammar
+changes are quite infrequent. For windows you can get binaries from
+[GnuWin32](http://gnuwin32.sourceforge.net/packages/bison.htm).
+
+The command to rebuild is:
+
+```
+bison --defines=MachineIndependent/glslang_tab.cpp.h
+      -t MachineIndependent/glslang.y
+      -o MachineIndependent/glslang_tab.cpp
+```
+
 Programmatic Interfaces
 -----------------------
 
