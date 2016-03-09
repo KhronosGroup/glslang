@@ -4483,6 +4483,8 @@ void TParseContext::layoutQualifierCheck(const TSourceLoc& loc, const TQualifier
     if (qualifier.layoutPushConstant) {
         if (qualifier.storage != EvqUniform)
             error(loc, "can only be used with a uniform", "push_constant", "");
+        if (qualifier.hasSet())
+            error(loc, "cannot be used with push_constant", "set", "");
     }
 }
 

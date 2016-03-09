@@ -521,9 +521,9 @@ spv::ImageFormat TGlslangToSpvTraverser::TranslateImageFormat(const glslang::TTy
 // descriptor set.
 bool IsDescriptorResource(const glslang::TType& type)
 {
-    // uniform and buffer blocks are included
+    // uniform and buffer blocks are included, unless it is a push_constant
     if (type.getBasicType() == glslang::EbtBlock)
-        return type.getQualifier().isUniformOrBuffer();
+        return type.getQualifier().isUniformOrBuffer() && ! type.getQualifier().layoutPushConstant;
 
     // non block...
     // basically samplerXXX/subpass/sampler/texture are all included
