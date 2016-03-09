@@ -395,27 +395,21 @@ public:
 
     void setUniformBinding(int index, int binding);
 
-    int getNumLiveAttributeVariables();                     // can be used for glGetProgramiv(GL_ACTIVE_ATTRIBUTES)
-    const char* getAttributeName(int index);                // can be used for glGetActiveAttrib()
-    int getAttributeIndex(const char* name);
-    int getAttributeType(int index);                        // can be used for glGetActiveAttrib()
-
-    bool getAttributeHasLocation(int index);
-    bool getAttributeHasBinding(int index);
-    int getAttributeLocation(int index);
-    int getAttributeBinding(int index);
-
-    void setAttributeLocation(int index, int location);     // can be used for glBindAttribLocation()
-
     int getNumLiveVaryingVariables();
     const char* getVaryingName(int index);
     int getVaryingIndex(const char* name);
     int getVaryingType(int index);
 
-    bool getVaryingHasLocation(int index);
-    bool getVaryingHasBinding(int index);
+    bool isVaryingIn(int index);
+    bool isVaryingOut(int index);
+
     int getVaryingLocation(int index);
     int getVaryingBinding(int index);
+
+    bool getVaryingHasLocation(int index);
+    bool getVaryingHasBinding(int index);
+
+    void setVaryingLocation(int index, int location);
 
     void dumpReflection();
 

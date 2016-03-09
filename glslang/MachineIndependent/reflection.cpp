@@ -39,8 +39,6 @@
 
 #include "gl_types.h"
 
-typedef enum { UNIFORM_AGGREGATE, VARYING_AGGREGATE, ATTRIBUTE_AGGREGATE } aggregateType_t;
-
 //
 // Grow the reflection database through a friend traverser class of TReflection and a
 // collection of functions to do a liveness traversal that note what uniforms are used
@@ -106,36 +104,9 @@ public:
             // Use a degenerate (empty) set of dereferences to immediately put as at the end of
             // the dereference change expected by blowUpActiveAggregate.
             TList<TIntermBinary*> derefs;
-            blowUpActiveAggregate(base.getType(), base.getName(), derefs, derefs.end(), -1, -1, 0, UNIFORM_AGGREGATE);
+            blowUpActiveAggregate(base.getType(), base.getName(), derefs, derefs.end(), -1, -1, 0);
         }
     }
-
-    // Add a simple reference to a attribute variable to the attribute database, no dereference involved.
-    // However, no dereference doesn't mean simple... it could be a complex aggregate.
-    void addAttribute(const TIntermSymbol& base)
-    {
-        if (processedDerefs.find(&base) == processedDerefs.end()) {
-            processedDerefs.insert(&base);
-
-            // Use a degenerate (empty) set of dereferences to immediately put as at the end of
-            // the dereference change expected by blowUpActiveAggregate.
-            TList<TIntermBinary*> derefs;
-            blowUpActiveAggregate(base.getType(), base.getName(), derefs, derefs.end(), -1, -1, 0, ATTRIBUTE_AGGREGATE);
-        }
-    }
-
-    void addVarying(const TIntermSymbol& base)
-    {
-        if (processedDerefs.find(&base) == processedDerefs.end()) {
-            processedDerefs.insert(&base);
-
-            // Use a degenerate (empty) set of dereferences to immediately put as at the end of
-            // the dereference change expected by blowUpActiveAggregate.
-            TList<TIntermBinary*> derefs;
-            blowUpActiveAggregate(base.getType(), base.getName(), derefs, derefs.end(), -1, -1, 0, VARYING_AGGREGATE);
-        }
-    }
-
 
     // Lookup or calculate the offset of a block member, using the recursively
     // defined block offset rules.
@@ -189,7 +160,7 @@ public:
     // arraySize tracks, just for the final dereference in the chain, if there was a specific known size.
     // A value of 0 for arraySize will mean to use the full array's size.
     void blowUpActiveAggregate(const TType& baseType, const TString& baseName, const TList<TIntermBinary*>& derefs,
-                               TList<TIntermBinary*>::const_iterator deref, int offset, int blockIndex, int arraySize, aggregateType_t aggregateType)
+                               TList<TIntermBinary*>::const_iterator deref, int offset, int blockIndex, int arraySize)
     {
         // process the part of the derefence chain that was explicit in the shader
         TString name = baseName;
@@ -208,7 +179,7 @@ public:
                     TList<TIntermBinary*>::const_iterator nextDeref = deref;
                     ++nextDeref;
                     TType derefType(*terminalType, 0);
-                    blowUpActiveAggregate(derefType, newBaseName, derefs, nextDeref, offset, blockIndex, arraySize, aggregateType);
+                    blowUpActiveAggregate(derefType, newBaseName, derefs, nextDeref, offset, blockIndex, arraySize);
                 }
 
                 // it was all completed in the recursive calls above
@@ -240,7 +211,7 @@ public:
                     TString newBaseName = name;
                     newBaseName.append(TString("[") + String(i) + "]");
                     TType derefType(*terminalType, 0);
-                    blowUpActiveAggregate(derefType, newBaseName, derefs, derefs.end(), offset, blockIndex, 0, aggregateType);
+                    blowUpActiveAggregate(derefType, newBaseName, derefs, derefs.end(), offset, blockIndex, 0);
                 }
             } else {
                 // Visit all members of this aggregate, and for each one,
@@ -250,7 +221,7 @@ public:
                     TString newBaseName = name;
                     newBaseName.append(TString(".") + typeList[i].type->getFieldName());
                     TType derefType(*terminalType, i);
-                    blowUpActiveAggregate(derefType, newBaseName, derefs, derefs.end(), offset, blockIndex, 0, aggregateType);
+                    blowUpActiveAggregate(derefType, newBaseName, derefs, derefs.end(), offset, blockIndex, 0);
                 }
             }
 
@@ -265,39 +236,12 @@ public:
         if (arraySize == 0)
             arraySize = mapToGlArraySize(*terminalType);
 
-        switch(aggregateType) {
-        case UNIFORM_AGGREGATE: {
-        TReflection::TNameToIndex::const_iterator it = reflection.nameToIndex.find(name);
-
-            /// Name does not exist. Add it.
-        if (it == reflection.nameToIndex.end()) {
-            reflection.nameToIndex[name] = (int)reflection.indexToUniform.size();
-            reflection.indexToUniform.push_back(TObjectReflection(name, offset, mapToGlType(*terminalType), arraySize, blockIndex));
-                reflection.uniformQualifiers.push_back(&baseType.getQualifier());
-        } else if (arraySize > 1) {
-            int& reflectedArraySize = reflection.indexToUniform[it->second].size;
-            reflectedArraySize = std::max(arraySize, reflectedArraySize);
-        }
-            break;
-        }
-
-        case ATTRIBUTE_AGGREGATE: {
-            TReflection::TNameToIndex::const_iterator it = reflection.attributeNameToIndex.find(name);
-
-            if (it == reflection.attributeNameToIndex.end()) {
-                reflection.attributeNameToIndex[name] = (int)reflection.indexToAttribute.size();
-                reflection.indexToAttribute.push_back(TObjectReflection(name, offset, mapToGlType(*terminalType), arraySize, blockIndex));
-                reflection.attributQualifiers.push_back(&baseType.getQualifier());
-            } else if (arraySize > 1) {
-                int& reflectedArraySize = reflection.indexToAttribute[it->second].size;
-                reflectedArraySize = std::max(arraySize, reflectedArraySize);
-            }
-            break;
-        }
-
-        case VARYING_AGGREGATE: {
+        switch(baseType.getQualifier().storage) {
+        case EvqVaryingIn:
+        case EvqVaryingOut: {
             TReflection::TNameToIndex::const_iterator it = reflection.varyingNameToIndex.find(name);
 
+                /// Name does not exist. Add it.
             if (it == reflection.varyingNameToIndex.end()) {
                 reflection.varyingNameToIndex[name] = (int)reflection.indexToVarying.size();
                 reflection.indexToVarying.push_back(TObjectReflection(name, offset, mapToGlType(*terminalType), arraySize, blockIndex));
@@ -306,12 +250,26 @@ public:
                 int& reflectedArraySize = reflection.indexToVarying[it->second].size;
                 reflectedArraySize = std::max(arraySize, reflectedArraySize);
             }
-            break;
-        }
 
-        default:
-            assert(0);
             break;
+            }
+
+//        case EvqUniform:
+        default: {
+            TReflection::TNameToIndex::const_iterator it = reflection.nameToIndex.find(name);
+
+                /// Name does not exist. Add it.
+            if (it == reflection.nameToIndex.end()) {
+                reflection.nameToIndex[name] = (int)reflection.indexToUniform.size();
+                reflection.indexToUniform.push_back(TObjectReflection(name, offset, mapToGlType(*terminalType), arraySize, blockIndex));
+                reflection.uniformQualifiers.push_back(&baseType.getQualifier());
+            } else if (arraySize > 1) {
+                int& reflectedArraySize = reflection.indexToUniform[it->second].size;
+                reflectedArraySize = std::max(arraySize, reflectedArraySize);
+            }
+
+            break;
+            }
         }
     }
 
@@ -394,7 +352,7 @@ public:
             else
                 baseName = base->getName();
         }
-        blowUpActiveAggregate(base->getType(), baseName, derefs, derefs.begin(), offset, blockIndex, arraySize, UNIFORM_AGGREGATE);
+        blowUpActiveAggregate(base->getType(), baseName, derefs, derefs.begin(), offset, blockIndex, arraySize);
     }
 
     int addBlockName(const TString& name, int size)
@@ -740,16 +698,10 @@ void TLiveTraverser::visitSymbol(TIntermSymbol* base)
         return;
     }
 
-    if (base->getQualifier().storage == EvqUniform) {
+    if (base->getQualifier().storage == EvqUniform ||
+        base->getQualifier().storage == EvqVaryingIn ||
+        base->getQualifier().storage == EvqVaryingOut) {
         addUniform(*base);
-    } else if(base->getQualifier().storage == EvqVaryingIn) {
-        if(language == EShLangVertex) {
-            addAttribute(*base);
-        } else {
-            addVarying(*base);
-        }
-    } else if(base->getQualifier().storage == EvqVaryingOut) {
-        addVarying(*base);
     }
 }
 

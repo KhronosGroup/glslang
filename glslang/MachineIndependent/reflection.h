@@ -84,15 +84,6 @@ public:
             return badReflection;
     }
 
-    int getNumAttributes() { return (int)indexToAttribute.size(); }
-    const TObjectReflection& getAttribute(int i) const
-    {
-        if (i >= 0 && i < (int)indexToAttribute.size())
-            return indexToAttribute[i];
-        else
-            return badReflection;
-    }
-
     // for mapping a block index to the block's description
     int getNumUniformBlocks() const { return (int)indexToUniformBlock.size(); }
     const TObjectReflection& getUniformBlock(int i) const
@@ -113,22 +104,18 @@ public:
             return it->second;
     }
 
-    int getAttributeIndex(const char* name) const
+    const TQualifier* getUniformQualifier(int i) const
     {
-        TNameToIndex::const_iterator it = attributeNameToIndex.find(name);
-        if (it == attributeNameToIndex.end())
-            return -1;
+        if(i >=0 && i < (int)indexToUniform.size())
+            return uniformQualifiers[i];
         else
-            return it->second;
+            return &badQualifier;
     }
 
-     int getVaryingIndex(const char* name) const
+    void setUniformBinding(int i, int binding)
     {
-        TNameToIndex::const_iterator it = varyingNameToIndex.find(name);
-        if (it == varyingNameToIndex.end())
-            return -1;
-        else
-            return it->second;
+        if(i >= 0 && i < (int)indexToUniform.size())
+            uniformQualifiers[i]->setBinding(binding);
     }
 
     int getNumVaryings() { return (int)indexToVarying.size(); }
@@ -140,45 +127,27 @@ public:
             return badReflection;
     }
 
-    const TQualifier* getUniformQualifier(int i) const
+    int getVaryingIndex(const char* name) const
     {
-        if(i >=0 && i < (int)indexToUniform.size()) {
-            return uniformQualifiers[i];
-        } else {
-            return &badQualifier;
-        }
-    }
-
-    const TQualifier* getAttributeQualifier(int i) const
-    {
-        if(i >=0 && i < (int)indexToAttribute.size()) {
-            return attributQualifiers[i];
-        } else {
-            return &badQualifier;
-        }
+        TNameToIndex::const_iterator it = varyingNameToIndex.find(name);
+        if (it == varyingNameToIndex.end())
+            return -1;
+        else
+            return it->second;
     }
 
     const TQualifier* getVaryingQualifier(int i) const
     {
-        if(i >=0 && i < (int)indexToVarying.size()) {
+        if(i >=0 && i < (int)indexToVarying.size())
             return varyingQualifiers[i];
-        } else {
+        else
             return &badQualifier;
-        }
     }
 
-    void setUniformBinding(int i, int binding)
+    void setVaryingLocation(int i, int location)
     {
-        if(i >=0 && i < (int)indexToUniform.size()) {
-            uniformQualifiers[i]->setBinding(binding);
-        }
-    }
-
-    void setAttributeLocation(int i, int location)
-    {
-        if(i >=0 && i < (int)indexToAttribute.size()) {
-            attributQualifiers[i]->setLocation(location);
-        }
+        if(i >= 0 && i < (int)indexToVarying.size())
+            varyingQualifiers[i]->setLocation(location);
     }
 
     void dump();
@@ -192,15 +161,11 @@ protected:
 
     TObjectReflection               badReflection;          // return for queries of -1 or generally out of range; has expected descriptions with in it for this
     TQualifier                      badQualifier;
-    TNameToIndex                    nameToIndex;            // maps names to indexes; can hold all types of data: uniform/buffer and which function names have been processed
 
+    TNameToIndex                    nameToIndex;            // maps names to indexes; can hold all types of data: uniform/buffer and which function names have been processed
     TMapIndexToReflection           indexToUniform;
     TMapIndexToReflection           indexToUniformBlock;
     std::vector<const TQualifier *> uniformQualifiers;
-
-    TNameToIndex                    attributeNameToIndex;
-    TMapIndexToReflection           indexToAttribute;
-    std::vector<const TQualifier *> attributQualifiers;
 
     TNameToIndex                    varyingNameToIndex;
     TMapIndexToReflection           indexToVarying;
