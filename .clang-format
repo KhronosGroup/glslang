@@ -3,6 +3,7 @@ IndentWidth: 4
 BreakBeforeBraces: Custom
 BraceWrapping: { AfterFunction: true }
 IndentCaseLabels: false
+ReflowComments: false
 ColumnLimit: 100
 AccessModifierOffset: -4
 AlignTrailingComments: true
