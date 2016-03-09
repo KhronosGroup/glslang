@@ -293,11 +293,11 @@ public:
         // instructions will be dumped after.
         std::unordered_set<const Block*> dumped;
         inReadableOrder(blocks[0], [&out, &dumped](const Block* b) {
-          b->dump(out);
-          dumped.insert(b);
+            b->dump(out);
+            dumped.insert(b);
         });
         for (auto b : blocks) {
-          if (!dumped.count(b) && b->isTerminated()) b->dump(out);
+            if (!dumped.count(b) && b->isTerminated()) b->dump(out);
         }
         Instruction end(0, 0, OpFunctionEnd);
         end.dump(out);
