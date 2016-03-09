@@ -237,17 +237,32 @@ public:
             arraySize = mapToGlArraySize(*terminalType);
 
         switch(baseType.getQualifier().storage) {
-        case EvqVaryingIn:
-        case EvqVaryingOut: {
-            TReflection::TNameToIndex::const_iterator it = reflection.varyingNameToIndex.find(name);
+        case EvqVaryingIn: {
+            TReflection::TNameToIndex::const_iterator it = reflection.varyingInNameToIndex.find(name);
 
                 /// Name does not exist. Add it.
-            if (it == reflection.varyingNameToIndex.end()) {
-                reflection.varyingNameToIndex[name] = (int)reflection.indexToVarying.size();
-                reflection.indexToVarying.push_back(TObjectReflection(name, offset, mapToGlType(*terminalType), arraySize, blockIndex));
-                reflection.varyingQualifiers.push_back(&baseType.getQualifier());
+            if (it == reflection.varyingInNameToIndex.end()) {
+                reflection.varyingInNameToIndex[name] = (int)reflection.indexToVaryingIn.size();
+                reflection.indexToVaryingIn.push_back(TObjectReflection(name, offset, mapToGlType(*terminalType), arraySize, blockIndex));
+                reflection.varyingInQualifiers.push_back(&baseType.getQualifier());
             } else if (arraySize > 1) {
-                int& reflectedArraySize = reflection.indexToVarying[it->second].size;
+                int& reflectedArraySize = reflection.indexToVaryingIn[it->second].size;
+                reflectedArraySize = std::max(arraySize, reflectedArraySize);
+            }
+
+            break;
+            }
+
+        case EvqVaryingOut: {
+            TReflection::TNameToIndex::const_iterator it = reflection.varyingOutNameToIndex.find(name);
+
+                /// Name does not exist. Add it.
+            if (it == reflection.varyingOutNameToIndex.end()) {
+                reflection.varyingOutNameToIndex[name] = (int)reflection.indexToVaryingOut.size();
+                reflection.indexToVaryingOut.push_back(TObjectReflection(name, offset, mapToGlType(*terminalType), arraySize, blockIndex));
+                reflection.varyingOutQualifiers.push_back(&baseType.getQualifier());
+            } else if (arraySize > 1) {
+                int& reflectedArraySize = reflection.indexToVaryingOut[it->second].size;
                 reflectedArraySize = std::max(arraySize, reflectedArraySize);
             }
 

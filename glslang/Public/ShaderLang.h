@@ -395,21 +395,27 @@ public:
 
     void setUniformBinding(int index, int binding);
 
-    int getNumLiveVaryingVariables();
-    const char* getVaryingName(int index);
-    int getVaryingIndex(const char* name);
-    int getVaryingType(int index);
+/// VaryingIns
+    int getNumLiveVaryingInVariables();
+    const char* getVaryingInName(int index);
+    int getVaryingInIndex(const char* name);
+    int getVaryingInType(int index);
 
-    bool isVaryingIn(int index);
-    bool isVaryingOut(int index);
+    int getVaryingInLocation(int index);
+    bool getVaryingInHasLocation(int index);
 
-    int getVaryingLocation(int index);
-    int getVaryingBinding(int index);
+    void setVaryingInLocation(int index, int location);
 
-    bool getVaryingHasLocation(int index);
-    bool getVaryingHasBinding(int index);
+/// VaryingOuts
+    int getNumLiveVaryingOutVariables();
+    const char* getVaryingOutName(int index);
+    int getVaryingOutIndex(const char* name);
+    int getVaryingOutType(int index);
 
-    void setVaryingLocation(int index, int location);
+    int getVaryingOutLocation(int index);
+
+    bool getVaryingOutHasLocation(int index);
+    void setVaryingOutLocation(int index, int location);
 
     void dumpReflection();
 

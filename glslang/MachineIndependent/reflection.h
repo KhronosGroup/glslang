@@ -118,36 +118,70 @@ public:
             uniformQualifiers[i]->setBinding(binding);
     }
 
-    int getNumVaryings() { return (int)indexToVarying.size(); }
-    const TObjectReflection& getVarying(int i) const
+/// VaryingIns
+    int getNumInVaryings() { return (int)indexToVaryingIn.size(); }
+    const TObjectReflection& getVaryingIn(int i) const
     {
-        if (i >= 0 && i < (int)indexToVarying.size())
-            return indexToVarying[i];
+        if (i >= 0 && i < (int)indexToVaryingIn.size())
+            return indexToVaryingIn[i];
         else
             return badReflection;
     }
 
-    int getVaryingIndex(const char* name) const
+    int getVaryingInIndex(const char* name) const
     {
-        TNameToIndex::const_iterator it = varyingNameToIndex.find(name);
-        if (it == varyingNameToIndex.end())
+        TNameToIndex::const_iterator it = varyingInNameToIndex.find(name);
+        if (it == varyingInNameToIndex.end())
             return -1;
         else
             return it->second;
     }
 
-    const TQualifier* getVaryingQualifier(int i) const
+    const TQualifier* getVaryingInQualifier(int i) const
     {
-        if(i >=0 && i < (int)indexToVarying.size())
-            return varyingQualifiers[i];
+        if(i >=0 && i < (int)indexToVaryingIn.size())
+            return varyingInQualifiers[i];
         else
             return &badQualifier;
     }
 
-    void setVaryingLocation(int i, int location)
+    void setVaryingInLocation(int i, int location)
     {
-        if(i >= 0 && i < (int)indexToVarying.size())
-            varyingQualifiers[i]->setLocation(location);
+        if(i >= 0 && i < (int)indexToVaryingIn.size())
+            varyingInQualifiers[i]->setLocation(location);
+    }
+
+/// VaryingOuts
+    int getNumOutVaryings() { return (int)indexToVaryingOut.size(); }
+    const TObjectReflection& getVaryingOut(int i) const
+    {
+        if (i >= 0 && i < (int)indexToVaryingOut.size())
+            return indexToVaryingOut[i];
+        else
+            return badReflection;
+    }
+
+    int getVaryingOutIndex(const char* name) const
+    {
+        TNameToIndex::const_iterator it = varyingOutNameToIndex.find(name);
+        if (it == varyingOutNameToIndex.end())
+            return -1;
+        else
+            return it->second;
+    }
+
+    const TQualifier* getVaryingOutQualifier(int i) const
+    {
+        if(i >=0 && i < (int)indexToVaryingOut.size())
+            return varyingOutQualifiers[i];
+        else
+            return &badQualifier;
+    }
+
+    void setVaryingOutLocation(int i, int location)
+    {
+        if(i >= 0 && i < (int)indexToVaryingOut.size())
+            varyingOutQualifiers[i]->setLocation(location);
     }
 
     void dump();
@@ -167,9 +201,13 @@ protected:
     TMapIndexToReflection           indexToUniformBlock;
     std::vector<const TQualifier *> uniformQualifiers;
 
-    TNameToIndex                    varyingNameToIndex;
-    TMapIndexToReflection           indexToVarying;
-    std::vector<const TQualifier *> varyingQualifiers;
+    TNameToIndex                    varyingInNameToIndex;
+    TMapIndexToReflection           indexToVaryingIn;
+    std::vector<const TQualifier *> varyingInQualifiers;
+
+    TNameToIndex                    varyingOutNameToIndex;
+    TMapIndexToReflection           indexToVaryingOut;
+    std::vector<const TQualifier *> varyingOutQualifiers;
 };
 
 } // end namespace glslang

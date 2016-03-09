@@ -1551,20 +1551,25 @@ int TProgram::getUniformBinding(int index)                      { return reflect
 
 void TProgram::setUniformBinding(int index, int binding)        { reflection->setUniformBinding(index, binding); }
 
-/// Varyings
-int TProgram::getNumLiveVaryingVariables()                      { return reflection->getNumVaryings(); }
-const char* TProgram::getVaryingName(int index)                 { return reflection->getVarying(index).name.c_str(); }
-int TProgram::getVaryingIndex(const char* name)                 { return reflection->getVaryingIndex(name); }
-int TProgram::getVaryingType(int index)                         { return reflection->getVarying(index).glDefineType; }
-bool TProgram::isVaryingIn(int index)                           { return reflection->getVaryingQualifier(index)->storage == EvqVaryingIn; }
-bool TProgram::isVaryingOut(int index)                          { return reflection->getVaryingQualifier(index)->storage == EvqVaryingOut; }
+/// VaryingIns
+int TProgram::getNumLiveVaryingInVariables()                    { return reflection->getNumInVaryings(); }
+const char* TProgram::getVaryingInName(int index)               { return reflection->getVaryingIn(index).name.c_str(); }
+int TProgram::getVaryingInIndex(const char* name)               { return reflection->getVaryingInIndex(name); }
+int TProgram::getVaryingInType(int index)                       { return reflection->getVaryingIn(index).glDefineType; }
 
-bool TProgram::getVaryingHasLocation(int index)                 { return reflection->getVaryingQualifier(index)->hasLocation(); }
-bool TProgram::getVaryingHasBinding(int index)                  { return reflection->getVaryingQualifier(index)->hasBinding(); }
-int TProgram::getVaryingLocation(int index)                     { return reflection->getVaryingQualifier(index)->layoutLocation; }
-int TProgram::getVaryingBinding(int index)                      { return reflection->getVaryingQualifier(index)->layoutBinding; }
+int TProgram::getVaryingInLocation(int index)                   { return reflection->getVaryingInQualifier(index)->layoutLocation; }
+bool TProgram::getVaryingInHasLocation(int index)               { return reflection->getVaryingInQualifier(index)->hasLocation(); }
+void TProgram::setVaryingInLocation(int index, int location)    { reflection->setVaryingInLocation(index, location); }
 
-void TProgram::setVaryingLocation(int index, int location)      { reflection->setVaryingLocation(index, location); }
+/// VaryingOuts
+int TProgram::getNumLiveVaryingOutVariables()                   { return reflection->getNumOutVaryings(); }
+const char* TProgram::getVaryingOutName(int index)              { return reflection->getVaryingOut(index).name.c_str(); }
+int TProgram::getVaryingOutIndex(const char* name)              { return reflection->getVaryingOutIndex(name); }
+int TProgram::getVaryingOutType(int index)                      { return reflection->getVaryingOut(index).glDefineType; }
+
+int TProgram::getVaryingOutLocation(int index)                  { return reflection->getVaryingOutQualifier(index)->layoutLocation; }
+bool TProgram::getVaryingOutHasLocation(int index)              { return reflection->getVaryingOutQualifier(index)->hasLocation(); }
+void TProgram::setVaryingOutLocation(int index, int location)   { reflection->setVaryingOutLocation(index, location); }
 
 void TProgram::dumpReflection()                                 { reflection->dump(); }
 
