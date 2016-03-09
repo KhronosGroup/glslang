@@ -10,8 +10,8 @@ Linked vertex stage:
                               Capability Shader
                1:             ExtInstImport  "GLSL.std.450"
                               MemoryModel Logical GLSL450
-                              EntryPoint Vertex 4  "main" 12 28 55
-                              Source GLSL 120
+                              EntryPoint Vertex 4  "main" 12 22 28 55
+                              Source GLSL 140
                               Name 4  "main"
                               Name 9  "a"
                               Name 12  "v3"
@@ -32,8 +32,8 @@ Linked vertex stage:
               14:             TypeMatrix 10(fvec3) 2
               15:             TypePointer Function 14
               20:             TypeMatrix 7(fvec2) 3
-              21:             TypePointer UniformConstant 20
-         22(m32):     21(ptr) Variable UniformConstant
+              21:             TypePointer Output 20
+         22(m32):     21(ptr) Variable Output
               26:             TypeVector 6(float) 4
               27:             TypePointer Output 26(fvec4)
  28(gl_Position):     27(ptr) Variable Output

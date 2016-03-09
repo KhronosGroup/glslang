@@ -1,9 +1,9 @@
 #version 310 es
 precision mediump float;
-uniform int c, d;
+flat in int c, d;
 in float x;
 out float color;
-uniform vec4 v;
+in vec4 v;
 
 vec4 foo1(vec4 v1, vec4 v2, int i1)
 {

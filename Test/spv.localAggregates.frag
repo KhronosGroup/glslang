@@ -1,8 +1,8 @@
-#version 130
+#version 400
 
 uniform sampler2D samp2D;
-varying vec2 coord;
-varying vec4 color;
+in vec2 coord;
+in vec4 color;
 
 struct s1 {
     int i;
@@ -24,12 +24,12 @@ struct s3 {
 };
 
 
-uniform s1 foo;
-uniform s2 foo2;
-uniform s3 foo3;
+flat in s1 foo;
+flat in s2 foo2;
+flat in s3 foo3;
 
-uniform float[16] uFloatArray;
-uniform int condition;
+
+flat in int condition;
 
 void main()
 {

@@ -1,4 +1,4 @@
-#version 300 es
+#version 310 es
 
 layout(location = 7) in vec3 c;
 layout(LocatioN = 3) in vec4 p;
@@ -28,7 +28,7 @@ layout(column_major) uniform T3 { // shared and column_major
     uvec3 uv3a[4];
 };
 
-uniform uint uiuin;
+in uint uiuin;
 
 struct S {
     vec3 c;

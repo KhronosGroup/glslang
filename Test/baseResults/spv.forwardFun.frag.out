@@ -10,9 +10,9 @@ Linked fragment stage:
                               Capability Shader
                1:             ExtInstImport  "GLSL.std.450"
                               MemoryModel Logical GLSL450
-                              EntryPoint Fragment 4  "main" 20 30
-                              ExecutionMode 4 OriginLowerLeft
-                              Source ESSL 100
+                              EntryPoint Fragment 4  "main" 20 30 36 59
+                              ExecutionMode 4 OriginUpperLeft
+                              Source GLSL 140
                               Name 4  "main"
                               Name 6  "bar("
                               Name 10  "unreachableReturn("
@@ -25,12 +25,6 @@ Linked fragment stage:
                               Name 30  "gl_FragColor"
                               Name 36  "d"
                               Name 59  "bigColor"
-                              Decorate 18(color) RelaxedPrecision
-                              Decorate 20(BaseColor) RelaxedPrecision
-                              Decorate 27(f) RelaxedPrecision
-                              Decorate 30(gl_FragColor) RelaxedPrecision
-                              Decorate 36(d) RelaxedPrecision
-                              Decorate 59(bigColor) RelaxedPrecision
                2:             TypeVoid
                3:             TypeFunction 2
                8:             TypeFloat 32
@@ -43,8 +37,8 @@ Linked fragment stage:
               26:             TypePointer Function 8(float)
               29:             TypePointer Output 12(fvec4)
 30(gl_FragColor):     29(ptr) Variable Output
-              35:             TypePointer UniformConstant 8(float)
-           36(d):     35(ptr) Variable UniformConstant
+              35:             TypePointer Input 8(float)
+           36(d):     35(ptr) Variable Input
               38:    8(float) Constant 1082549862
               39:             TypeBool
               43:    8(float) Constant 1067030938
@@ -52,8 +46,7 @@ Linked fragment stage:
               49:             TypeInt 32 0
               50:     49(int) Constant 0
               53:     49(int) Constant 1
-              58:             TypePointer UniformConstant 12(fvec4)
-    59(bigColor):     58(ptr) Variable UniformConstant
+    59(bigColor):     19(ptr) Variable Input
          4(main):           2 Function None 3
                5:             Label
        18(color):     13(ptr) Variable Function

@@ -1,19 +1,19 @@
 #version 450
 
-uniform int   i1;
-uniform ivec2 i2;
-uniform ivec3 i3;
-uniform ivec4 i4;
+flat in int   i1;
+flat in ivec2 i2;
+flat in ivec3 i3;
+flat in ivec4 i4;
 
-uniform uint  u1;
-uniform uvec2 u2;
-uniform uvec3 u3;
-uniform uvec4 u4;
+flat in uint  u1;
+flat in uvec2 u2;
+flat in uvec3 u3;
+flat in uvec4 u4;
 
-uniform float f1;
-uniform vec2  f2;
-uniform vec3  f3;
-uniform vec4  f4;
+in float f1;
+in vec2  f2;
+in vec3  f3;
+in vec4  f4;
 
 out vec4 fragColor;
 

@@ -1,6 +1,4 @@
 spv.structAssignment.frag
-WARNING: 0:4: varying deprecated in version 130; may be removed in future release
-
 
 Linked fragment stage:
 
@@ -13,8 +11,8 @@ Linked fragment stage:
                1:             ExtInstImport  "GLSL.std.450"
                               MemoryModel Logical GLSL450
                               EntryPoint Fragment 4  "main" 31 44
-                              ExecutionMode 4 OriginLowerLeft
-                              Source GLSL 130
+                              ExecutionMode 4 OriginUpperLeft
+                              Source GLSL 140
                               Name 4  "main"
                               Name 8  "lunarStruct1"
                               MemberName 8(lunarStruct1) 0  "i"
@@ -35,6 +33,7 @@ Linked fragment stage:
                               Name 40  "samp2D"
                               Name 44  "coord"
                               Name 49  "foo"
+                              Decorate 40(samp2D) DescriptorSet 0
                2:             TypeVoid
                3:             TypeFunction 2
                6:             TypeInt 32 1
@@ -42,14 +41,14 @@ Linked fragment stage:
  8(lunarStruct1):             TypeStruct 6(int) 7(float)
  9(lunarStruct2):             TypeStruct 6(int) 7(float) 8(lunarStruct1)
 10(lunarStruct3):             TypeStruct 9(lunarStruct2) 6(int) 7(float) 8(lunarStruct1)
-              11:             TypePointer UniformConstant 10(lunarStruct3)
-        12(foo3):     11(ptr) Variable UniformConstant
+              11:             TypePointer Private 10(lunarStruct3)
+        12(foo3):     11(ptr) Variable Private
               13:      6(int) Constant 0
-              14:             TypePointer UniformConstant 6(int)
+              14:             TypePointer Private 6(int)
               17:             TypeBool
               21:             TypePointer Function 9(lunarStruct2)
-              23:             TypePointer UniformConstant 9(lunarStruct2)
-        27(foo2):     23(ptr) Variable UniformConstant
+              23:             TypePointer Private 9(lunarStruct2)
+        27(foo2):     23(ptr) Variable Private
               29:             TypeVector 7(float) 4
               30:             TypePointer Output 29(fvec4)
 31(gl_FragColor):     30(ptr) Variable Output
@@ -63,8 +62,8 @@ Linked fragment stage:
               42:             TypeVector 7(float) 2
               43:             TypePointer Input 42(fvec2)
        44(coord):     43(ptr) Variable Input
-              48:             TypePointer UniformConstant 8(lunarStruct1)
-         49(foo):     48(ptr) Variable UniformConstant
+              48:             TypePointer Private 8(lunarStruct1)
+         49(foo):     48(ptr) Variable Private
          4(main):           2 Function None 3
                5:             Label
      22(locals2):     21(ptr) Variable Function

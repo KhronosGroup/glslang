@@ -1,6 +1,6 @@
-#version 130
+#version 140
 
-uniform mat4 transform;
+in mat4 transform;
 
 attribute vec4 position;
 in vec2 uv_in;

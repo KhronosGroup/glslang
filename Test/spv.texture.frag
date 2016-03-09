@@ -1,4 +1,4 @@
-#version 130
+#version 140
 
 uniform sampler1D       texSampler1D;
 uniform sampler2D       texSampler2D;
@@ -7,12 +7,12 @@ uniform samplerCube	    texSamplerCube;
 uniform sampler1DShadow shadowSampler1D;
 uniform sampler2DShadow shadowSampler2D;
 
-uniform float blend;
-uniform vec2 scale;
-uniform vec4 u;
+varying float blend;
+varying vec2 scale;
+varying vec4 u;
 
-varying vec2 t;
-varying vec2 coords2D;
+in  vec2 t;
+in  vec2 coords2D;
 
 void main()
 {  

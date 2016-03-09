@@ -1,5 +1,7 @@
 spv.functionCall.frag
+WARNING: 0:3: varying deprecated in version 130; may be removed in future release
 WARNING: 0:4: varying deprecated in version 130; may be removed in future release
+WARNING: 0:5: varying deprecated in version 130; may be removed in future release
 
 
 Linked fragment stage:
@@ -12,9 +14,9 @@ Linked fragment stage:
                               Capability Shader
                1:             ExtInstImport  "GLSL.std.450"
                               MemoryModel Logical GLSL450
-                              EntryPoint Fragment 4  "main" 57 68
-                              ExecutionMode 4 OriginLowerLeft
-                              Source GLSL 130
+                              EntryPoint Fragment 4  "main" 35 58 69 75
+                              ExecutionMode 4 OriginUpperLeft
+                              Source GLSL 140
                               Name 4  "main"
                               Name 11  "foo(vf4;"
                               Name 10  "bar"
@@ -22,13 +24,13 @@ Linked fragment stage:
                               Name 16  "unreachableReturn("
                               Name 18  "missingReturn("
                               Name 21  "h"
-                              Name 34  "d"
-                              Name 55  "color"
-                              Name 57  "BaseColor"
-                              Name 58  "param"
-                              Name 63  "f"
-                              Name 65  "g"
-                              Name 68  "gl_FragColor"
+                              Name 35  "d"
+                              Name 56  "color"
+                              Name 58  "BaseColor"
+                              Name 59  "param"
+                              Name 64  "f"
+                              Name 66  "g"
+                              Name 69  "gl_FragColor"
                               Name 75  "bigColor"
                2:             TypeVoid
                3:             TypeFunction 2
@@ -44,42 +46,41 @@ Linked fragment stage:
               24:     23(int) Constant 0
               25:             TypePointer Function 6(float)
               28:     23(int) Constant 1
-              33:             TypePointer UniformConstant 6(float)
-           34(d):     33(ptr) Variable UniformConstant
-              36:    6(float) Constant 1082549862
-              37:             TypeBool
-              41:    6(float) Constant 1067030938
-              44:    6(float) Constant 1083179008
-              52:    6(float) Constant 1081711002
-              56:             TypePointer Input 7(fvec4)
-   57(BaseColor):     56(ptr) Variable Input
-              67:             TypePointer Output 7(fvec4)
-68(gl_FragColor):     67(ptr) Variable Output
-              74:             TypePointer UniformConstant 7(fvec4)
-    75(bigColor):     74(ptr) Variable UniformConstant
+              34:             TypePointer Input 6(float)
+           35(d):     34(ptr) Variable Input
+              37:    6(float) Constant 1082549862
+              38:             TypeBool
+              42:    6(float) Constant 1067030938
+              45:    6(float) Constant 1083179008
+              53:    6(float) Constant 1081711002
+              57:             TypePointer Input 7(fvec4)
+   58(BaseColor):     57(ptr) Variable Input
+              68:             TypePointer Output 7(fvec4)
+69(gl_FragColor):     68(ptr) Variable Output
+    75(bigColor):     57(ptr) Variable Input
          4(main):           2 Function None 3
                5:             Label
-       55(color):      8(ptr) Variable Function
-       58(param):      8(ptr) Variable Function
-           63(f):     25(ptr) Variable Function
-           65(g):     25(ptr) Variable Function
+       56(color):      8(ptr) Variable Function
+       59(param):      8(ptr) Variable Function
+           64(f):     25(ptr) Variable Function
+           66(g):     25(ptr) Variable Function
                               Store 21(h) 22
-              59:    7(fvec4) Load 57(BaseColor)
-                              Store 58(param) 59
-              60:    6(float) FunctionCall 11(foo(vf4;) 58(param)
-              61:    7(fvec4) CompositeConstruct 60 60 60 60
-                              Store 55(color) 61
-              62:           2 FunctionCall 13(bar()
-              64:    6(float) FunctionCall 16(unreachableReturn()
-                              Store 63(f) 64
-              66:    6(float) FunctionCall 18(missingReturn()
-                              Store 65(g) 66
-              69:    7(fvec4) Load 55(color)
-              70:    6(float) Load 63(f)
-              71:    7(fvec4) VectorTimesScalar 69 70
-              72:    6(float) Load 21(h)
-              73:    7(fvec4) VectorTimesScalar 71 72
-                              Store 68(gl_FragColor) 73
+              60:    7(fvec4) Load 58(BaseColor)
+                              Store 59(param) 60
+              61:    6(float) FunctionCall 11(foo(vf4;) 59(param)
+              62:    7(fvec4) CompositeConstruct 61 61 61 61
+                              Store 56(color) 62
+              63:           2 FunctionCall 13(bar()
+              65:    6(float) FunctionCall 16(unreachableReturn()
+                              Store 64(f) 65
+              67:    6(float) FunctionCall 18(missingReturn()
+                              Store 66(g) 67
+              70:    7(fvec4) Load 56(color)
+              71:    6(float) Load 64(f)
+              72:    7(fvec4) VectorTimesScalar 70 71
+              73:    6(float) Load 21(h)
+              74:    7(fvec4) VectorTimesScalar 72 73
+                              Store 69(gl_FragColor) 74
                               Return
                               FunctionEnd
     11(foo(vf4;):    6(float) Function None 9
@@ -98,29 +99,29 @@ Linked fragment stage:
                               FunctionEnd
 16(unreachableReturn():    6(float) Function None 15
               17:             Label
-              35:    6(float) Load 34(d)
-              38:    37(bool) FOrdLessThan 35 36
-                              SelectionMerge 40 None
-                              BranchConditional 38 39 43
-              39:               Label
-                                ReturnValue 41
-              43:               Label
-                                ReturnValue 44
-              40:             Label
-              46:    6(float) Undef
-                              ReturnValue 46
+              36:    6(float) Load 35(d)
+              39:    38(bool) FOrdLessThan 36 37
+                              SelectionMerge 41 None
+                              BranchConditional 39 40 44
+              40:               Label
+                                ReturnValue 42
+              44:               Label
+                                ReturnValue 45
+              41:             Label
+              47:    6(float) Undef
+                              ReturnValue 47
                               FunctionEnd
 18(missingReturn():    6(float) Function None 15
               19:             Label
-              47:    6(float) Load 34(d)
-              48:    37(bool) FOrdLessThan 47 44
-                              SelectionMerge 50 None
-                              BranchConditional 48 49 50
-              49:               Label
-              51:    6(float)   Load 34(d)
-                                Store 21(h) 51
-                                ReturnValue 52
-              50:             Label
-              54:    6(float) Undef
-                              ReturnValue 54
+              48:    6(float) Load 35(d)
+              49:    38(bool) FOrdLessThan 48 45
+                              SelectionMerge 51 None
+                              BranchConditional 49 50 51
+              50:               Label
+              52:    6(float)   Load 35(d)
+                                Store 21(h) 52
+                                ReturnValue 53
+              51:             Label
+              55:    6(float) Undef
+                              ReturnValue 55
                               FunctionEnd

@@ -1,10 +1,10 @@
-#version 100
+#version 140
 
 precision mediump float;
 
-uniform vec4 bigColor;
-varying vec4 BaseColor;
-uniform float d;
+in vec4 bigColor;
+in vec4 BaseColor;
+in float d;
 
 void bar();
 float foo(vec4);

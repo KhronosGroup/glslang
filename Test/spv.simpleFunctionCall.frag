@@ -1,8 +1,6 @@
 #version 150
 
-uniform vec4 bigColor;
-varying vec4 BaseColor;
-uniform float d;
+in vec4 BaseColor;
 
 vec4 foo()
 {

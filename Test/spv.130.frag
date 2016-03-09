@@ -1,4 +1,4 @@
-#version 130
+#version 140
 #extension GL_ARB_texture_gather : enable
 
 vec3 a;
@@ -14,9 +14,6 @@ smooth in float fsmooth;
 noperspective in float fnop;
 
 uniform samplerCube sampC;
-
-in vec4 gl_Color;
-flat in vec4 gl_Color;
 
 #extension GL_ARB_texture_rectangle : enable
 
@@ -84,11 +81,6 @@ uniform sampler2DRect s2DR;
 uniform sampler2DRectShadow s2DRS;
 uniform sampler1D s1D;
 uniform sampler2DShadow s2DS;
-
-uniform float f;
-uniform vec2 v2;
-uniform vec3 v3;
-uniform vec4 v4;
 
 void main()
 {

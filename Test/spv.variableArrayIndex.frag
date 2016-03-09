@@ -1,6 +1,7 @@
-#version 130
+#version 400
+
 uniform sampler2D samp2D;
-varying vec2 coord;
+in vec2 coord;
 
 struct lunarStruct1 {
     int i;
@@ -21,10 +22,10 @@ struct lunarStruct3 {
 };
 
 
-uniform lunarStruct1 foo;
-uniform lunarStruct2 foo2[5];
-uniform lunarStruct3 foo3;
-uniform int Count;
+flat in lunarStruct1 foo;
+flat in lunarStruct2 foo2[5];
+flat in lunarStruct3 foo3;
+flat in int Count;
 
 void main()
 {

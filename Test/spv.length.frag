@@ -1,8 +1,8 @@
-#version 120
+#version 140
 
-uniform vec4 u[3];
+vec4 u[3];
 
-varying vec2 v[2];
+in vec2 v[2];
 
 void main()
 {

@@ -1,24 +1,21 @@
-#version 130
+#version 140
 
-uniform bool  u_b;
-uniform bvec2 u_b2;
-uniform bvec3 u_b3;
-uniform bvec4 u_b4;
-
-uniform int   u_i;
-uniform ivec2 u_i2;
-uniform ivec3 u_i3;
-uniform ivec4 u_i4;
- 
-uniform float u_f;
-uniform vec2 u_f2;
-uniform vec3 u_f3;
-uniform vec4 u_f4;
-
-uniform bool  i_b;
-uniform bvec2 i_b2;
-uniform bvec3 i_b3;
-uniform bvec4 i_b4;
+bool  u_b;
+bvec2 u_b2;
+bvec3 u_b3;
+bvec4 u_b4;
+flat in int   u_i;
+flat in ivec2 u_i2;
+flat in ivec3 u_i3;
+flat in ivec4 u_i4;
+     in float u_f;
+     in vec2 u_f2;
+     in vec3 u_f3;
+     in vec4 u_f4;
+bool  i_b;
+bvec2 i_b2;
+bvec3 i_b3;
+bvec4 i_b4;
 
 flat in int   i_i;
 flat in ivec2 i_i2;

@@ -1,6 +1,5 @@
 spv.dataOutIndirect.vert
 WARNING: 0:3: attribute deprecated in version 130; may be removed in future release
-WARNING: 0:4: varying deprecated in version 130; may be removed in future release
 
 
 Linked vertex stage:
@@ -13,59 +12,59 @@ Linked vertex stage:
                               Capability Shader
                1:             ExtInstImport  "GLSL.std.450"
                               MemoryModel Logical GLSL450
-                              EntryPoint Vertex 4  "main" 23 26 32 37
-                              Source GLSL 130
+                              EntryPoint Vertex 4  "main" 25 28 34
+                              Source GLSL 140
                               Name 4  "main"
                               Name 8  "i"
-                              Name 23  "colorOut"
-                              Name 26  "color"
-                              Name 32  "gl_Position"
-                              Name 37  "gl_VertexID"
-                              Decorate 32(gl_Position) BuiltIn Position
-                              Decorate 37(gl_VertexID) BuiltIn VertexId
+                              Name 25  "colorOut"
+                              Name 28  "color"
+                              Name 34  "gl_Position"
+                              Decorate 34(gl_Position) BuiltIn Position
                2:             TypeVoid
                3:             TypeFunction 2
                6:             TypeInt 32 1
                7:             TypePointer Function 6(int)
                9:      6(int) Constant 1
-              14:      6(int) Constant 5
-              15:             TypeBool
-              17:             TypeFloat 32
-              18:             TypeVector 17(float) 4
-              19:             TypeInt 32 0
-              20:     19(int) Constant 6
-              21:             TypeArray 18(fvec4) 20
-              22:             TypePointer Output 21
-    23(colorOut):     22(ptr) Variable Output
-              25:             TypePointer Input 18(fvec4)
-       26(color):     25(ptr) Variable Input
-              28:             TypePointer Output 18(fvec4)
- 32(gl_Position):     28(ptr) Variable Output
-              33:      6(int) Constant 2
-              36:             TypePointer Input 6(int)
- 37(gl_VertexID):     36(ptr) Variable Input
+              16:      6(int) Constant 5
+              17:             TypeBool
+              19:             TypeFloat 32
+              20:             TypeVector 19(float) 4
+              21:             TypeInt 32 0
+              22:     21(int) Constant 6
+              23:             TypeArray 20(fvec4) 22
+              24:             TypePointer Output 23
+    25(colorOut):     24(ptr) Variable Output
+              27:             TypePointer Input 20(fvec4)
+       28(color):     27(ptr) Variable Input
+              30:             TypePointer Output 20(fvec4)
+ 34(gl_Position):     30(ptr) Variable Output
+              35:      6(int) Constant 2
          4(main):           2 Function None 3
                5:             Label
             8(i):      7(ptr) Variable Function
                               Store 8(i) 9
                               Branch 10
               10:             Label
-              13:      6(int) Load 8(i)
-              16:    15(bool) SLessThan 13 14
-                              LoopMerge 11 10 None
-                              BranchConditional 16 12 11
-              12:               Label
-              24:      6(int)   Load 8(i)
-              27:   18(fvec4)   Load 26(color)
-              29:     28(ptr)   AccessChain 23(colorOut) 24
-                                Store 29 27
-              30:      6(int)   Load 8(i)
-              31:      6(int)   IAdd 30 9
-                                Store 8(i) 31
+                              LoopMerge 12 13 None
+                              Branch 14
+              14:             Label
+              15:      6(int) Load 8(i)
+              18:    17(bool) SLessThan 15 16
+                              BranchConditional 18 11 12
+              11:               Label
+              26:      6(int)   Load 8(i)
+              29:   20(fvec4)   Load 28(color)
+              31:     30(ptr)   AccessChain 25(colorOut) 26
+                                Store 31 29
+                                Branch 13
+              13:               Label
+              32:      6(int)   Load 8(i)
+              33:      6(int)   IAdd 32 9
+                                Store 8(i) 33
                                 Branch 10
-              11:             Label
-              34:     28(ptr) AccessChain 23(colorOut) 33
-              35:   18(fvec4) Load 34
-                              Store 32(gl_Position) 35
+              12:             Label
+              36:     30(ptr) AccessChain 25(colorOut) 35
+              37:   20(fvec4) Load 36
+                              Store 34(gl_Position) 37
                               Return
                               FunctionEnd

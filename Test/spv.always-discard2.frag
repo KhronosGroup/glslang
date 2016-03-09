@@ -1,5 +1,5 @@
-#version 110
-varying vec2 tex_coord;
+#version 140
+in vec2 tex_coord;
 
 void main (void)
 {

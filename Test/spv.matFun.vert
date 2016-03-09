@@ -1,7 +1,9 @@
-#version 130
+#version 400
 
-uniform mat4 m4;
-uniform mat3 m3;
+uniform bl {
+    uniform mat4 m4;
+    uniform mat3 m3;
+} bName;
 
 in vec3 v3;
 
@@ -22,5 +24,5 @@ vec3 mxv(mat4 m4, vec3 v)
 
 void main()
 {
-    gl_Position = vec4(mxv(m4, v3) + xf(m3, v3), 1.0);
+    gl_Position = vec4(mxv(bName.m4, v3) + xf(bName.m3, v3), 1.0);
 }

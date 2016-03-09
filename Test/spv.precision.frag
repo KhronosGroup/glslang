@@ -1,13 +1,13 @@
-#version 300 es
+#version 310 es
 precision mediump float;
 in lowp float lowfin;
 in mediump float mediumfin;
 in highp vec4 highfin;
 
-uniform highp int uniform_high;
-uniform mediump int uniform_medium;
-uniform lowp int uniform_low;
-uniform bvec2 ub2;
+highp int uniform_high;
+mediump int uniform_medium;
+lowp int uniform_low;
+bvec2 ub2;
 
 out mediump vec4 mediumfout;
 
@@ -22,6 +22,13 @@ bool boolfun(bvec2 bv2)
 {
     return bv2 == bvec2(false, true);
 }
+
+struct S {
+    highp float a;
+    lowp float b;
+};
+
+in S s;
 
 void main()
 {
@@ -47,4 +54,7 @@ void main()
 
     if (boolfun(ub2))
         ++mediumfout;
+    
+    mediumfout *= s.a;
+    mediumfout *= s.b;
 }

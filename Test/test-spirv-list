@@ -3,8 +3,11 @@
 # goes to the innermost target.
 spv.do-simple.vert
 spv.do-while-continue-break.vert
+spv.for-complex-condition.vert
 spv.for-continue-break.vert
 spv.for-simple.vert
+spv.for-notest.vert
+spv.for-nobody.vert
 spv.while-continue-break.vert
 spv.while-simple.vert
 # vulkan-specific tests
@@ -32,6 +35,8 @@ spv.always-discard.frag
 spv.always-discard2.frag
 spv.bitCast.frag
 spv.bool.vert
+spv.boolInBlock.frag
+spv.branch-return.vert
 spv.conditionalDiscard.frag
 spv.conversion.frag
 spv.dataOut.frag
@@ -56,6 +61,8 @@ spv.loopsArtificial.frag
 spv.matFun.vert
 spv.matrix.frag
 spv.matrix2.frag
+spv.memoryQualifier.frag
+spv.merge-unreachable.frag
 spv.newTexture.frag
 spv.nonSquare.vert
 spv.Operations.frag
@@ -66,6 +73,8 @@ spv.qualifiers.vert
 spv.shiftOps.frag
 spv.simpleFunctionCall.frag
 spv.simpleMat.vert
+spv.sparseTexture.frag
+spv.sparseTextureClamp.frag
 spv.structAssignment.frag
 spv.structDeref.frag
 spv.structure.frag
@@ -84,7 +93,15 @@ spv.varyingArray.frag
 spv.varyingArrayIndirect.frag
 spv.voidFunction.frag
 spv.whileLoop.frag
-spv.atomic.comp
 spv.AofA.frag
 spv.queryL.frag
+spv.separate.frag
 spv.shortCircuit.frag
+spv.pushConstant.vert
+spv.subpass.frag
+spv.specConstant.vert
+spv.specConstant.comp
+# GLSL-level semantics
+vulkan.frag
+vulkan.vert
+vulkan.comp

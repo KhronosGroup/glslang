@@ -1,10 +1,12 @@
-#version 130 
+#version 140 
 
-varying vec4 Color;
+in vec4 Color;
 
-uniform int i;
+out vec4 fcolor[4];
+
+uniform b { int i; } bName;
 
 void main()
 {
-    gl_FragData[i] = Color;
+    fcolor[bName.i] = Color;
 }

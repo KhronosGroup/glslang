@@ -33,19 +33,29 @@ Linked compute stage:
                               MemberName 48(outs) 1  "va"
                               Name 50  "outnames"
                               Name 53  "gl_LocalInvocationID"
-                              Decorate 13(outb) GLSLShared
+                              Decorate 12 ArrayStride 16
+                              MemberDecorate 13(outb) 0 Offset 0
+                              MemberDecorate 13(outb) 1 Offset 4
+                              MemberDecorate 13(outb) 2 Offset 8
+                              MemberDecorate 13(outb) 3 Offset 16
                               Decorate 13(outb) BufferBlock
-                              Decorate 24(outbna) GLSLShared
+                              Decorate 15(outbname) DescriptorSet 0
+                              MemberDecorate 24(outbna) 0 Offset 0
+                              MemberDecorate 24(outbna) 1 Offset 16
                               Decorate 24(outbna) BufferBlock
-                              Decorate 48(outs) GLSLShared
+                              Decorate 26(outbnamena) DescriptorSet 0
+                              Decorate 47 ArrayStride 16
+                              MemberDecorate 48(outs) 0 Offset 0
+                              MemberDecorate 48(outs) 1 Offset 16
                               Decorate 48(outs) BufferBlock
+                              Decorate 50(outnames) DescriptorSet 0
                               Decorate 53(gl_LocalInvocationID) BuiltIn LocalInvocationId
                               Decorate 66 BuiltIn WorkgroupSize
                2:             TypeVoid
                3:             TypeFunction 2
                6:             TypeInt 32 0
                7:      6(int) Constant 1
-               8:      6(int) Constant 1023
+               8:      6(int) Constant 4062
                9:      6(int) Constant 0
               10:             TypeFloat 32
               11:             TypeVector 10(float) 3

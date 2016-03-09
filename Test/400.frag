@@ -60,7 +60,7 @@ patch out vec4 patchOut;            // ERROR
 void foo24()
 {
     dvec3 df, di;
-    df = modf(outp.xyz, di);
+    df = modf(dvec3(outp.xyz), di);
 }
 
 in float in1;
@@ -185,3 +185,13 @@ void qlod()
 }
 
 struct SKeyMem { int precise; } KeyMem;     // ERROR, keyword can't be a member
+
+uniform uint uu;
+out int iout;
+
+void bitwiseConv()
+{
+    iout = uu & i;
+    iout += uu ^ i;
+    iout += i | uu;
+}

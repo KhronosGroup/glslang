@@ -17,13 +17,8 @@ struct s2 {
 	s1 s1_1;
 };
 
-uniform s1 foo1;
-uniform s2 foo2a;
-uniform s2 foo2b;
-
-layout(std140) uniform bn {
-    s2 foo2a;
-} bi;
+layout(std140) uniform ub1 { s2 foo2a; } uName1;
+layout(std430) buffer  ub2 { s2 foo2b; } uName2;
 
 void main()
 {
@@ -32,7 +27,7 @@ void main()
     a = s1[3](s1(int(u.x), u.y), s1(int(u.z), u.w), s1(14, 14.0));
     b = s1[3](s1(17, 17.0), s1(int(w.x), w.y), s1(int(w.z), w.w));
 
-    if (foo2a == foo2b)
+    if (uName1.foo2a == uName2.foo2b)
         v = texture(samp2D, coord);
     else
         v = texture(samp2D, 2.0*coord);
@@ -51,9 +46,6 @@ void main()
 
     if (a != b)
         v *= 7.0;
-
-    if (bi.foo2a != foo2a)
-        v *= 8.0;
 
 	color =  v;
 }

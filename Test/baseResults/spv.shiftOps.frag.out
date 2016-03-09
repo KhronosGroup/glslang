@@ -12,8 +12,8 @@ Linked fragment stage:
                               Capability Shader
                1:             ExtInstImport  "GLSL.std.450"
                               MemoryModel Logical GLSL450
-                              EntryPoint Fragment 4  "main" 9 25
-                              ExecutionMode 4 OriginLowerLeft
+                              EntryPoint Fragment 4  "main" 9 11 15 25 27 30
+                              ExecutionMode 4 OriginUpperLeft
                               Source GLSL 450
                               Name 4  "main"
                               Name 9  "icolor"
@@ -22,25 +22,29 @@ Linked fragment stage:
                               Name 25  "ucolor"
                               Name 27  "u3"
                               Name 30  "i1"
+                              Decorate 11(i3) Flat
+                              Decorate 15(u1) Flat
+                              Decorate 27(u3) Flat
+                              Decorate 30(i1) Flat
                2:             TypeVoid
                3:             TypeFunction 2
                6:             TypeInt 32 1
                7:             TypeVector 6(int) 3
                8:             TypePointer Output 7(ivec3)
        9(icolor):      8(ptr) Variable Output
-              10:             TypePointer UniformConstant 7(ivec3)
-          11(i3):     10(ptr) Variable UniformConstant
+              10:             TypePointer Input 7(ivec3)
+          11(i3):     10(ptr) Variable Input
               13:             TypeInt 32 0
-              14:             TypePointer UniformConstant 13(int)
-          15(u1):     14(ptr) Variable UniformConstant
+              14:             TypePointer Input 13(int)
+          15(u1):     14(ptr) Variable Input
               17:             TypeVector 13(int) 3
               20:     13(int) Constant 4
               24:             TypePointer Output 17(ivec3)
       25(ucolor):     24(ptr) Variable Output
-              26:             TypePointer UniformConstant 17(ivec3)
-          27(u3):     26(ptr) Variable UniformConstant
-              29:             TypePointer UniformConstant 6(int)
-          30(i1):     29(ptr) Variable UniformConstant
+              26:             TypePointer Input 17(ivec3)
+          27(u3):     26(ptr) Variable Input
+              29:             TypePointer Input 6(int)
+          30(i1):     29(ptr) Variable Input
               34:      6(int) Constant 5
          4(main):           2 Function None 3
                5:             Label

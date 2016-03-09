@@ -120,7 +120,8 @@ namespace {
         if (fp.fail())
             errHandler(std::string("error opening file for write: ") + outFile);
 
-        for (auto word : spv) {
+        for (auto it = spv.cbegin(); it != spv.cend(); ++it) {
+            SpvWord word = *it;
             fp.write((char *)&word, sizeof(word));
             if (fp.fail())
                 errHandler(std::string("error writing file: ") + outFile);
@@ -157,7 +158,8 @@ namespace {
     void execute(const std::vector<std::string>& inputFile, const std::string& outputDir,
         int opts, int verbosity)
     {
-        for (const auto& filename : inputFile) {
+        for (auto it = inputFile.cbegin(); it != inputFile.cend(); ++it) {
+            const std::string &filename = *it;
             std::vector<SpvWord> spv;
             read(spv, filename, verbosity);
             spv::spirvbin_t(verbosity).remap(spv, opts);

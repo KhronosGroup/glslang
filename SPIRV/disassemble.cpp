@@ -59,7 +59,7 @@ const char* GlslStd450DebugNames[spv::GLSLstd450Count];
 
 namespace spv {
 
-void Kill(std::ostream& out, const char* message)
+static void Kill(std::ostream& out, const char* message)
 {
     out << std::endl << "Disassembly failed: " << message << std::endl;
     exit(1);
@@ -473,6 +473,7 @@ void SpirvStream::disassembleInstruction(Id resultId, Id /*typeId*/, Op opCode, 
             else
                 out << OperandClassParams[operandClass].getName(stream[word++]);
             --numOperands;
+
             break;
         }
     }
@@ -480,7 +481,7 @@ void SpirvStream::disassembleInstruction(Id resultId, Id /*typeId*/, Op opCode, 
     return;
 }
 
-void GLSLstd450GetDebugNames(const char** names)
+static void GLSLstd450GetDebugNames(const char** names)
 {
     for (int i = 0; i < GLSLstd450Count; ++i)
         names[i] = "Unknown";
@@ -531,7 +532,6 @@ void GLSLstd450GetDebugNames(const char** names)
     names[GLSLstd450SClamp]                  = "SClamp";
     names[GLSLstd450UClamp]                  = "UClamp";
     names[GLSLstd450FMix]                    = "FMix";
-    names[GLSLstd450IMix]                    = "IMix";
     names[GLSLstd450Step]                    = "Step";
     names[GLSLstd450SmoothStep]              = "SmoothStep";
     names[GLSLstd450Fma]                     = "Fma";
@@ -568,6 +568,7 @@ void GLSLstd450GetDebugNames(const char** names)
 void Disassemble(std::ostream& out, const std::vector<unsigned int>& stream)
 {
     SpirvStream SpirvStream(out, stream);
+    spv::Parameterize();
     GLSLstd450GetDebugNames(GlslStd450DebugNames);
     SpirvStream.validate();
     SpirvStream.processInstructions();

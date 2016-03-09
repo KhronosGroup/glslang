@@ -1,4 +1,6 @@
 spv.uint.frag
+Warning, version 310 is not yet complete; most version-specific features are present, but some are missing.
+
 
 Linked fragment stage:
 
@@ -10,9 +12,9 @@ Linked fragment stage:
                               Capability Shader
                1:             ExtInstImport  "GLSL.std.450"
                               MemoryModel Logical GLSL450
-                              EntryPoint Fragment 4  "main" 15 68 77 200
-                              ExecutionMode 4 OriginLowerLeft
-                              Source ESSL 300
+                              EntryPoint Fragment 4  "main" 15 68 77 200 202 204
+                              ExecutionMode 4 OriginUpperLeft
+                              Source ESSL 310
                               Name 4  "main"
                               Name 8  "count"
                               Name 12  "u"
@@ -39,22 +41,108 @@ Linked fragment stage:
                               Decorate 12(u) RelaxedPrecision
                               Decorate 15(t) RelaxedPrecision
                               Decorate 15(t) Flat
+                              Decorate 19 RelaxedPrecision
+                              Decorate 21 RelaxedPrecision
+                              Decorate 27 RelaxedPrecision
+                              Decorate 28 RelaxedPrecision
+                              Decorate 32 RelaxedPrecision
+                              Decorate 33 RelaxedPrecision
+                              Decorate 38 RelaxedPrecision
+                              Decorate 39 RelaxedPrecision
+                              Decorate 43 RelaxedPrecision
+                              Decorate 44 RelaxedPrecision
+                              Decorate 48 RelaxedPrecision
+                              Decorate 49 RelaxedPrecision
+                              Decorate 53 RelaxedPrecision
+                              Decorate 54 RelaxedPrecision
                               Decorate 55(shiftedii) RelaxedPrecision
                               Decorate 57(shiftedui) RelaxedPrecision
                               Decorate 59(shiftediu) RelaxedPrecision
                               Decorate 60(shifteduu) RelaxedPrecision
+                              Decorate 61 RelaxedPrecision
+                              Decorate 62 RelaxedPrecision
                               Decorate 68(c) RelaxedPrecision
                               Decorate 72(usampler) RelaxedPrecision
+                              Decorate 72(usampler) DescriptorSet 0
+                              Decorate 73 RelaxedPrecision
                               Decorate 77(tc) RelaxedPrecision
+                              Decorate 78 RelaxedPrecision
+                              Decorate 79 RelaxedPrecision
+                              Decorate 80 RelaxedPrecision
+                              Decorate 81 RelaxedPrecision
+                              Decorate 85 RelaxedPrecision
+                              Decorate 86 RelaxedPrecision
+                              Decorate 88 RelaxedPrecision
+                              Decorate 89 RelaxedPrecision
+                              Decorate 90 RelaxedPrecision
+                              Decorate 91 RelaxedPrecision
+                              Decorate 92 RelaxedPrecision
+                              Decorate 97 RelaxedPrecision
+                              Decorate 98 RelaxedPrecision
+                              Decorate 101 RelaxedPrecision
+                              Decorate 102 RelaxedPrecision
+                              Decorate 105 RelaxedPrecision
                               Decorate 111(af) RelaxedPrecision
+                              Decorate 112 RelaxedPrecision
+                              Decorate 113 RelaxedPrecision
+                              Decorate 116 RelaxedPrecision
                               Decorate 118(ai) RelaxedPrecision
+                              Decorate 119 RelaxedPrecision
+                              Decorate 120 RelaxedPrecision
+                              Decorate 121 RelaxedPrecision
+                              Decorate 122 RelaxedPrecision
+                              Decorate 124 RelaxedPrecision
+                              Decorate 125 RelaxedPrecision
+                              Decorate 126 RelaxedPrecision
+                              Decorate 127 RelaxedPrecision
+                              Decorate 128 RelaxedPrecision
+                              Decorate 129 RelaxedPrecision
+                              Decorate 130 RelaxedPrecision
+                              Decorate 131 RelaxedPrecision
+                              Decorate 135 RelaxedPrecision
+                              Decorate 136 RelaxedPrecision
+                              Decorate 140 RelaxedPrecision
+                              Decorate 141 RelaxedPrecision
+                              Decorate 145 RelaxedPrecision
+                              Decorate 146 RelaxedPrecision
+                              Decorate 150 RelaxedPrecision
+                              Decorate 151 RelaxedPrecision
                               Decorate 152(mask1) RelaxedPrecision
                               Decorate 154(mask2) RelaxedPrecision
                               Decorate 156(mask3) RelaxedPrecision
+                              Decorate 157 RelaxedPrecision
+                              Decorate 159 RelaxedPrecision
                               Decorate 160(mask4) RelaxedPrecision
+                              Decorate 162 RelaxedPrecision
+                              Decorate 163 RelaxedPrecision
+                              Decorate 167 RelaxedPrecision
+                              Decorate 168 RelaxedPrecision
+                              Decorate 169 RelaxedPrecision
+                              Decorate 170 RelaxedPrecision
+                              Decorate 171 RelaxedPrecision
+                              Decorate 175 RelaxedPrecision
+                              Decorate 176 RelaxedPrecision
+                              Decorate 177 RelaxedPrecision
+                              Decorate 178 RelaxedPrecision
+                              Decorate 179 RelaxedPrecision
+                              Decorate 180 RelaxedPrecision
+                              Decorate 184 RelaxedPrecision
+                              Decorate 185 RelaxedPrecision
+                              Decorate 186 RelaxedPrecision
+                              Decorate 187 RelaxedPrecision
+                              Decorate 188 RelaxedPrecision
+                              Decorate 192 RelaxedPrecision
+                              Decorate 193 RelaxedPrecision
+                              Decorate 194 RelaxedPrecision
+                              Decorate 195 RelaxedPrecision
+                              Decorate 196 RelaxedPrecision
+                              Decorate 197 RelaxedPrecision
+                              Decorate 198 RelaxedPrecision
                               Decorate 200(f) RelaxedPrecision
                               Decorate 202(v) RelaxedPrecision
+                              Decorate 202(v) Flat
                               Decorate 204(i) RelaxedPrecision
+                              Decorate 204(i) Flat
                2:             TypeVoid
                3:             TypeFunction 2
                6:             TypeInt 32 1
@@ -107,12 +195,12 @@ Linked fragment stage:
              161:     10(int) Constant 2737
              199:             TypePointer Input 74(float)
           200(f):    199(ptr) Variable Input
-             201:             TypePointer UniformConstant 66(ivec4)
-          202(v):    201(ptr) Variable UniformConstant
-             203:             TypePointer UniformConstant 6(int)
-          204(i):    203(ptr) Variable UniformConstant
-             205:             TypePointer UniformConstant 22(bool)
-          206(b):    205(ptr) Variable UniformConstant
+             201:             TypePointer Input 66(ivec4)
+          202(v):    201(ptr) Variable Input
+             203:             TypePointer Input 6(int)
+          204(i):    203(ptr) Variable Input
+             205:             TypePointer Private 22(bool)
+          206(b):    205(ptr) Variable Private
          4(main):           2 Function None 3
                5:             Label
         8(count):      7(ptr) Variable Function

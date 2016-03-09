@@ -1,6 +1,6 @@
 #version 330
 
-uniform mat4 mvp;
+varying mat4 mvp;
 
 in vec4 v;
 in mat3 am3;

@@ -270,6 +270,14 @@ ERROR: node is still EOpNull!
 0:128            76.000000
 0:128            59.000000
 0:128            88.000000
+0:138  Function Definition: foo4( (global void)
+0:138    Function Parameters: 
+0:140    Sequence
+0:140      Sequence
+0:140        move second child to first child (temp int)
+0:140          'a' (temp int)
+0:140          Constant:
+0:140            9 (const int)
 0:?   Linker Objects
 0:?     'a' (const int)
 0:?       1 (const int)
@@ -356,6 +364,16 @@ ERROR: node is still EOpNull!
 0:?       13.000000
 0:?       14.000000
 0:?       15.000000
+0:?     'a0' (const 3-element array of structure{global int i, global float f, global bool b})
+0:?       3 (const int)
+0:?       2.000000
+0:?       true (const bool)
+0:?       1 (const int)
+0:?       5.000000
+0:?       true (const bool)
+0:?       1 (const int)
+0:?       9.000000
+0:?       false (const bool)
 
 
 Linked fragment stage:
@@ -622,6 +640,14 @@ ERROR: node is still EOpNull!
 0:128            76.000000
 0:128            59.000000
 0:128            88.000000
+0:138  Function Definition: foo4( (global void)
+0:138    Function Parameters: 
+0:140    Sequence
+0:140      Sequence
+0:140        move second child to first child (temp int)
+0:140          'a' (temp int)
+0:140          Constant:
+0:140            9 (const int)
 0:?   Linker Objects
 0:?     'a' (const int)
 0:?       1 (const int)
@@ -708,4 +734,14 @@ ERROR: node is still EOpNull!
 0:?       13.000000
 0:?       14.000000
 0:?       15.000000
+0:?     'a0' (const 3-element array of structure{global int i, global float f, global bool b})
+0:?       3 (const int)
+0:?       2.000000
+0:?       true (const bool)
+0:?       1 (const int)
+0:?       5.000000
+0:?       true (const bool)
+0:?       1 (const int)
+0:?       9.000000
+0:?       false (const bool)
 

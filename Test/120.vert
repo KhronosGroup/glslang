@@ -139,6 +139,14 @@ void foo2()
     bool b = any(lessThan(v4, attv4));  // tests aggregate arg to unary built-in 
 }
 
+void noise()
+{
+    float f1 = noise1(1.0);
+    vec2 f2 = noise2(vec2(1.0));
+    vec3 f3 = noise3(vec3(1.0));
+    vec4 f4 = noise4(vec4(1.0));
+}
+
 // version 130 features
 
 uniform int c;

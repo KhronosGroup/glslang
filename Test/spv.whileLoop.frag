@@ -1,8 +1,8 @@
-#version 110
+#version 140
 
-uniform vec4 bigColor;
-varying vec4 BaseColor;
-uniform float d;
+in vec4 bigColor;
+in vec4 BaseColor;
+in float d;
 
 void main()
 {

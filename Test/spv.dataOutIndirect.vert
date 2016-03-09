@@ -1,7 +1,7 @@
-#version 130
+#version 140
 
 attribute vec4 color;
-varying vec4 colorOut[6];
+out vec4 colorOut[6];
 
 void main()
 {

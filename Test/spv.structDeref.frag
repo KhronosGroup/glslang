@@ -1,7 +1,7 @@
-#version 130
+#version 140
 
 uniform sampler2D samp2D;
-varying vec2 coord;
+in vec2 coord;
 
 struct s0 {
     int i;
@@ -31,12 +31,12 @@ struct s3 {
 };
 
 
-uniform s0 foo0;
-uniform s1 foo1;
-uniform s2 foo2;
-uniform s3 foo3;
+s0 foo0;
+s1 foo1;
+s2 foo2;
+s3 foo3;
 
-uniform s00 foo00;
+s00 foo00;
 
 void main()
 {

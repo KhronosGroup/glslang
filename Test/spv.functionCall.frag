@@ -1,8 +1,8 @@
-#version 130
+#version 140
 
-uniform vec4 bigColor;
+varying vec4 bigColor;
 varying vec4 BaseColor;
-uniform float d;
+varying float d;
 
 float h = 0.0;
 

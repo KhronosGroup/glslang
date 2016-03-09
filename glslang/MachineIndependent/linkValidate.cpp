@@ -71,6 +71,7 @@ void TIntermediate::merge(TInfoSink& infoSink, TIntermediate& unit)
 {
     numMains += unit.numMains;
     numErrors += unit.numErrors;
+    numPushConstants += unit.numPushConstants;
     callGraph.insert(callGraph.end(), unit.callGraph.begin(), unit.callGraph.end());
 
     if ((profile != EEsProfile && unit.profile == EEsProfile) ||
@@ -129,6 +130,11 @@ void TIntermediate::merge(TInfoSink& infoSink, TIntermediate& unit)
             localSize[i] = unit.localSize[i];
         else if (localSize[i] != unit.localSize[i])
             error(infoSink, "Contradictory local size");
+
+        if (localSizeSpecId[i] != TQualifier::layoutNotSet)
+            localSizeSpecId[i] = unit.localSizeSpecId[i];
+        else if (localSizeSpecId[i] != unit.localSizeSpecId[i])
+            error(infoSink, "Contradictory local size specialization ids");
     }
 
     if (unit.xfbMode)
@@ -352,6 +358,9 @@ void TIntermediate::finalCheck(TInfoSink& infoSink)
 {   
     if (numMains < 1)
         error(infoSink, "Missing entry point: Each stage requires one \"void main()\" entry point");
+
+    if (numPushConstants > 1)
+        error(infoSink, "Only one push_constant block is allowed per stage");
 
     // recursion checking
     checkCallGraphCycles(infoSink);
@@ -690,6 +699,19 @@ int TIntermediate::addUsedOffsets(int binding, int offset, int numOffsets)
     return -1; // no collision
 }
 
+// Accumulate used constant_id values.
+//
+// Return false is one was already used.
+bool TIntermediate::addUsedConstantId(int id)
+{
+    if (usedConstantId.find(id) != usedConstantId.end())
+        return false;
+
+    usedConstantId.insert(id);
+
+    return true;
+}
+
 // Recursively figure out how many locations are used up by an input or output type.
 // Return the size of type, as measured by "locations".
 int TIntermediate::computeTypeLocationSize(const TType& type) const
@@ -959,6 +981,11 @@ int TIntermediate::getBaseAlignment(const TType& type, int& size, int& stride, b
             size += memberSize;
         }
 
+        // The structure may have padding at the end; the base offset of
+        // the member following the sub-structure is rounded up to the next
+        // multiple of the base alignment of the structure.
+        RoundToPow2(size, maxAlignment);
+
         return maxAlignment;
     }
 
@@ -982,7 +1009,7 @@ int TIntermediate::getBaseAlignment(const TType& type, int& size, int& stride, b
     // rules 5 and 7
     if (type.isMatrix()) {
         // rule 5: deref to row, not to column, meaning the size of vector is num columns instead of num rows
-        TType derefType(type, 0, type.getQualifier().layoutMatrix == ElmRowMajor);
+        TType derefType(type, 0, rowMajor);
             
         alignment = getBaseAlignment(derefType, size, dummyStride, std140, rowMajor);
         if (std140)

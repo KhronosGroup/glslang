@@ -1,10 +1,9 @@
 #version 450
 
-uniform int   i1;
-uniform uint  u1;
-
-uniform ivec3 i3;
-uniform uvec3 u3;
+flat in int   i1;
+flat in uint  u1;
+flat in ivec3 i3;
+flat in uvec3 u3;
 
 out ivec3 icolor;
 out uvec3 ucolor;

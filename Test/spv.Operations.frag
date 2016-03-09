@@ -1,14 +1,13 @@
 #version 450
 
-uniform ivec4 uiv4;
-uniform vec4 uv4;
-uniform bool ub;
-uniform bvec4 ub41, ub42;
-uniform float uf;
-uniform int ui;
-
-uniform uvec4 uuv4;
-uniform uint uui;
+flat in ivec4 uiv4;
+in vec4 uv4;
+bool ub;
+bvec4 ub41, ub42;
+in float uf;
+flat in int ui;
+flat in uvec4 uuv4;
+flat in uint uui;
 
 out vec4 FragColor;
 

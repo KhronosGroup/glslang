@@ -1,12 +1,12 @@
 #version 400
 
-uniform ivec4 uiv4;
-uniform vec4 uv4;
-uniform bool ub;
-uniform bool uba;
-uniform bvec4 ub41, ub42;
-uniform float uf;
-uniform int ui;
+flat in ivec4 uiv4;
+in vec4 uv4;
+bool ub;
+bool uba;
+bvec4 ub41, ub42;
+in float uf;
+flat in int ui;
 
 out float of1;
 out vec4  of4;

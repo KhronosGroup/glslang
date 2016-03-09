@@ -10,83 +10,81 @@ Linked vertex stage:
 // Id's are bound by 49
 
                               Capability Shader
+                              Capability ClipDistance
+                              Capability CullDistance
                1:             ExtInstImport  "GLSL.std.450"
                               MemoryModel Logical GLSL450
-                              EntryPoint Vertex 4  "main" 23 47 48
+                              EntryPoint Vertex 4  "main" 24
                               Source GLSL 450
                               Name 4  "main"
                               Name 10  "foo(b1;"
                               Name 9  "b"
-                              Name 21  "gl_PerVertex"
-                              MemberName 21(gl_PerVertex) 0  "gl_Position"
-                              MemberName 21(gl_PerVertex) 1  "gl_PointSize"
-                              MemberName 21(gl_PerVertex) 2  "gl_ClipDistance"
-                              MemberName 21(gl_PerVertex) 3  "gl_CullDistance"
-                              Name 23  ""
-                              Name 28  "ubname"
-                              MemberName 28(ubname) 0  "b"
-                              Name 30  "ubinst"
-                              Name 31  "param"
-                              Name 47  "gl_VertexID"
-                              Name 48  "gl_InstanceID"
-                              MemberDecorate 21(gl_PerVertex) 0 BuiltIn Position
-                              MemberDecorate 21(gl_PerVertex) 1 BuiltIn PointSize
-                              MemberDecorate 21(gl_PerVertex) 2 BuiltIn ClipDistance
-                              MemberDecorate 21(gl_PerVertex) 3 BuiltIn CullDistance
-                              Decorate 21(gl_PerVertex) Block
-                              Decorate 28(ubname) GLSLShared
-                              Decorate 28(ubname) Block
-                              Decorate 47(gl_VertexID) BuiltIn VertexId
-                              Decorate 48(gl_InstanceID) BuiltIn InstanceId
+                              Name 22  "gl_PerVertex"
+                              MemberName 22(gl_PerVertex) 0  "gl_Position"
+                              MemberName 22(gl_PerVertex) 1  "gl_PointSize"
+                              MemberName 22(gl_PerVertex) 2  "gl_ClipDistance"
+                              MemberName 22(gl_PerVertex) 3  "gl_CullDistance"
+                              Name 24  ""
+                              Name 29  "ubname"
+                              MemberName 29(ubname) 0  "b"
+                              Name 31  "ubinst"
+                              Name 32  "param"
+                              MemberDecorate 22(gl_PerVertex) 0 BuiltIn Position
+                              MemberDecorate 22(gl_PerVertex) 1 BuiltIn PointSize
+                              MemberDecorate 22(gl_PerVertex) 2 BuiltIn ClipDistance
+                              MemberDecorate 22(gl_PerVertex) 3 BuiltIn CullDistance
+                              Decorate 22(gl_PerVertex) Block
+                              MemberDecorate 29(ubname) 0 Offset 0
+                              Decorate 29(ubname) Block
+                              Decorate 31(ubinst) DescriptorSet 0
                2:             TypeVoid
                3:             TypeFunction 2
                6:             TypeBool
                7:             TypePointer Function 6(bool)
                8:             TypeFunction 6(bool) 7(ptr)
               13:     6(bool) ConstantFalse
-              16:             TypeFloat 32
-              17:             TypeVector 16(float) 4
-              18:             TypeInt 32 0
-              19:     18(int) Constant 1
-              20:             TypeArray 16(float) 19
-21(gl_PerVertex):             TypeStruct 17(fvec4) 16(float) 20 20
-              22:             TypePointer Output 21(gl_PerVertex)
-              23:     22(ptr) Variable Output
-              24:             TypeInt 32 1
-              25:     24(int) Constant 0
-              26:             TypePointer Function 17(fvec4)
-      28(ubname):             TypeStruct 6(bool)
-              29:             TypePointer Uniform 28(ubname)
-      30(ubinst):     29(ptr) Variable Uniform
-              32:             TypePointer Uniform 6(bool)
-              38:   16(float) Constant 0
-              39:   17(fvec4) ConstantComposite 38 38 38 38
-              41:   16(float) Constant 1065353216
-              42:   17(fvec4) ConstantComposite 41 41 41 41
-              44:             TypePointer Output 17(fvec4)
-              46:             TypePointer Input 24(int)
- 47(gl_VertexID):     46(ptr) Variable Input
-48(gl_InstanceID):     46(ptr) Variable Input
+              17:             TypeFloat 32
+              18:             TypeVector 17(float) 4
+              19:             TypeInt 32 0
+              20:     19(int) Constant 1
+              21:             TypeArray 17(float) 20
+22(gl_PerVertex):             TypeStruct 18(fvec4) 17(float) 21 21
+              23:             TypePointer Output 22(gl_PerVertex)
+              24:     23(ptr) Variable Output
+              25:             TypeInt 32 1
+              26:     25(int) Constant 0
+              27:             TypePointer Function 18(fvec4)
+      29(ubname):             TypeStruct 19(int)
+              30:             TypePointer Uniform 29(ubname)
+      31(ubinst):     30(ptr) Variable Uniform
+              33:             TypePointer Uniform 19(int)
+              36:     19(int) Constant 0
+              41:   17(float) Constant 0
+              42:   18(fvec4) ConstantComposite 41 41 41 41
+              44:   17(float) Constant 1065353216
+              45:   18(fvec4) ConstantComposite 44 44 44 44
+              47:             TypePointer Output 18(fvec4)
          4(main):           2 Function None 3
                5:             Label
-              27:     26(ptr) Variable Function
-       31(param):      7(ptr) Variable Function
-              33:     32(ptr) AccessChain 30(ubinst) 25
-              34:     6(bool) Load 33
-                              Store 31(param) 34
-              35:     6(bool) FunctionCall 10(foo(b1;) 31(param)
-                              SelectionMerge 37 None
-                              BranchConditional 35 36 40
-              36:               Label
-                                Store 27 39
-                                Branch 37
-              40:               Label
-                                Store 27 42
-                                Branch 37
-              37:             Label
-              43:   17(fvec4) Load 27
-              45:     44(ptr) AccessChain 23 25
-                              Store 45 43
+              28:     27(ptr) Variable Function
+       32(param):      7(ptr) Variable Function
+              34:     33(ptr) AccessChain 31(ubinst) 26
+              35:     19(int) Load 34
+              37:     6(bool) INotEqual 35 36
+                              Store 32(param) 37
+              38:     6(bool) FunctionCall 10(foo(b1;) 32(param)
+                              SelectionMerge 40 None
+                              BranchConditional 38 39 43
+              39:               Label
+                                Store 28 42
+                                Branch 40
+              43:               Label
+                                Store 28 45
+                                Branch 40
+              40:             Label
+              46:   18(fvec4) Load 28
+              48:     47(ptr) AccessChain 24 26
+                              Store 48 46
                               Return
                               FunctionEnd
      10(foo(b1;):     6(bool) Function None 8

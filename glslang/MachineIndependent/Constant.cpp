@@ -43,22 +43,31 @@ namespace {
 
 using namespace glslang;
 
+typedef union {
+    double d;
+    int i[2];
+} DoubleIntUnion;
+
 // Some helper functions
 
 bool isNan(double x)
 {
+    DoubleIntUnion u;
     // tough to find a platform independent library function, do it directly
-    int bitPatternL = *(int*)&x;
-    int bitPatternH = *((int*)&x + 1);
+    u.d = x;
+    int bitPatternL = u.i[0];
+    int bitPatternH = u.i[1];
     return (bitPatternH & 0x7ff80000) == 0x7ff80000 && 
            ((bitPatternH & 0xFFFFF) != 0 || bitPatternL != 0);
 }
 
 bool isInf(double x)
 {
+    DoubleIntUnion u;
     // tough to find a platform independent library function, do it directly
-    int bitPatternL = *(int*)&x;
-    int bitPatternH = *((int*)&x + 1);
+    u.d = x;
+    int bitPatternL = u.i[0];
+    int bitPatternH = u.i[1];
     return (bitPatternH & 0x7ff00000) == 0x7ff00000 && 
            (bitPatternH & 0xFFFFF) == 0 && bitPatternL == 0;
 }
@@ -173,7 +182,7 @@ TIntermTyped* TIntermConstantUnion::fold(TOperator op, const TIntermTyped* right
             case EbtInt:
                 if (rightUnionArray[i] == 0)
                     newConstArray[i].setIConst(0x7FFFFFFF);
-                else if (rightUnionArray[i].getIConst() == -1 && leftUnionArray[i].getIConst() == 0x80000000)
+                else if (rightUnionArray[i].getIConst() == -1 && leftUnionArray[i].getIConst() == (int)0x80000000)
                     newConstArray[i].setIConst(0x80000000);
                 else
                     newConstArray[i].setIConst(leftUnionArray[i].getIConst() / rightUnionArray[i].getIConst());
@@ -852,7 +861,7 @@ TIntermTyped* TIntermediate::foldConstructor(TIntermAggregate* aggrNode)
 
 //
 // Constant folding of a bracket (array-style) dereference or struct-like dot
-// dereference.  Can handle any thing except a multi-character swizzle, though
+// dereference.  Can handle anything except a multi-character swizzle, though
 // all swizzles may go to foldSwizzle().
 //
 TIntermTyped* TIntermediate::foldDereference(TIntermTyped* node, int index, const TSourceLoc& loc)
@@ -861,14 +870,19 @@ TIntermTyped* TIntermediate::foldDereference(TIntermTyped* node, int index, cons
     dereferencedType.getQualifier().storage = EvqConst;
     TIntermTyped* result = 0;
     int size = dereferencedType.computeNumComponents();
-    
+
+    // arrays, vectors, matrices, all use simple multiplicative math
+    // while structures need to add up heterogeneous members
     int start;
-    if (node->isStruct()) {
+    if (node->isArray() || ! node->isStruct())
+        start = size * index;
+    else {
+        // it is a structure
+        assert(node->isStruct());
         start = 0;
         for (int i = 0; i < index; ++i)
             start += (*node->getType().getStruct())[i].type->computeNumComponents();
-    } else
-        start = size * index;
+    }
 
     result = addConstantUnion(TConstUnionArray(node->getAsConstantUnion()->getConstArray(), start, size), node->getType(), loc);
 

@@ -5,8 +5,8 @@ in vec2  if2;
 in vec3  if3;
 in vec4  if4;
 
-uniform int samp;
-uniform vec2 offset;
+flat in int samp;
+flat in vec2 offset;
 
 out vec4 fragColor;
 

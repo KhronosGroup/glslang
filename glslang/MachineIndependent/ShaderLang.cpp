@@ -1,6 +1,7 @@
 //
 //Copyright (C) 2002-2005  3Dlabs Inc. Ltd.
-//Copyright (C) 2013 LunarG, Inc.
+//Copyright (C) 2013-2015 LunarG, Inc.
+//Copyright (C) 2015-2016 Google, Inc.
 //
 //All rights reserved.
 //
@@ -111,7 +112,7 @@ enum EPrecisionClass {
 // A process-global symbol table per version per profile for built-ins common 
 // to multiple stages (languages), and a process-global symbol table per version 
 // per profile per stage for built-ins unique to each stage.  They will be sparsely
-// populated, so they will only only be generated as needed.
+// populated, so they will only be generated as needed.
 // 
 // Each has a different set of built-ins, and we want to preserve that from
 // compile to compile.
@@ -124,12 +125,12 @@ TPoolAllocator* PerProcessGPA = 0;
 //
 // Parse and add to the given symbol table the content of the given shader string.
 //
-bool InitializeSymbolTable(const TString& builtIns, int version, EProfile profile, int spv, EShLanguage language, TInfoSink& infoSink, 
+bool InitializeSymbolTable(const TString& builtIns, int version, EProfile profile, int spv, int vulkan, EShLanguage language, TInfoSink& infoSink, 
                            TSymbolTable& symbolTable)
 {
     TIntermediate intermediate(language, version, profile);
     
-    TParseContext parseContext(symbolTable, intermediate, true, version, profile, spv, language, infoSink);
+    TParseContext parseContext(symbolTable, intermediate, true, version, profile, spv, vulkan, language, infoSink);
     TPpContext ppContext(parseContext, TShader::ForbidInclude());
     TScanContext scanContext(parseContext);
     parseContext.setScanContext(&scanContext);
@@ -168,11 +169,11 @@ int CommonIndex(EProfile profile, EShLanguage language)
 //
 // To initialize per-stage shared tables, with the common table already complete.
 //
-void InitializeStageSymbolTable(TBuiltIns& builtIns, int version, EProfile profile, int spv, EShLanguage language, TInfoSink& infoSink, TSymbolTable** commonTable, TSymbolTable** symbolTables)
+void InitializeStageSymbolTable(TBuiltIns& builtIns, int version, EProfile profile, int spv, int vulkan, EShLanguage language, TInfoSink& infoSink, TSymbolTable** commonTable, TSymbolTable** symbolTables)
 {
     (*symbolTables[language]).adoptLevels(*commonTable[CommonIndex(profile, language)]);
-    InitializeSymbolTable(builtIns.getStageString(language), version, profile, spv, language, infoSink, *symbolTables[language]);
-    IdentifyBuiltIns(version, profile, spv, language, *symbolTables[language]);
+    InitializeSymbolTable(builtIns.getStageString(language), version, profile, spv, vulkan, language, infoSink, *symbolTables[language]);
+    IdentifyBuiltIns(version, profile, spv, vulkan, language, *symbolTables[language]);
     if (profile == EEsProfile && version >= 300)
         (*symbolTables[language]).setNoBuiltInRedeclarations();
     if (version == 110)
@@ -183,49 +184,49 @@ void InitializeStageSymbolTable(TBuiltIns& builtIns, int version, EProfile profi
 // Initialize the full set of shareable symbol tables;
 // The common (cross-stage) and those shareable per-stage.
 //
-bool InitializeSymbolTables(TInfoSink& infoSink, TSymbolTable** commonTable,  TSymbolTable** symbolTables, int version, EProfile profile, int spv)
+bool InitializeSymbolTables(TInfoSink& infoSink, TSymbolTable** commonTable,  TSymbolTable** symbolTables, int version, EProfile profile, int spv, int vulkan)
 {
     TBuiltIns builtIns;
-    builtIns.initialize(version, profile, spv);
+    builtIns.initialize(version, profile, spv, vulkan);
 
     // do the common tables
-    InitializeSymbolTable(builtIns.getCommonString(), version, profile, spv, EShLangVertex, infoSink, *commonTable[EPcGeneral]);
+    InitializeSymbolTable(builtIns.getCommonString(), version, profile, spv, vulkan, EShLangVertex, infoSink, *commonTable[EPcGeneral]);
     if (profile == EEsProfile)
-        InitializeSymbolTable(builtIns.getCommonString(), version, profile, spv, EShLangFragment, infoSink, *commonTable[EPcFragment]);
+        InitializeSymbolTable(builtIns.getCommonString(), version, profile, spv, vulkan, EShLangFragment, infoSink, *commonTable[EPcFragment]);
 
     // do the per-stage tables
 
     // always have vertex and fragment
-    InitializeStageSymbolTable(builtIns, version, profile, spv, EShLangVertex, infoSink, commonTable, symbolTables);
-    InitializeStageSymbolTable(builtIns, version, profile, spv, EShLangFragment, infoSink, commonTable, symbolTables);
+    InitializeStageSymbolTable(builtIns, version, profile, spv, vulkan, EShLangVertex, infoSink, commonTable, symbolTables);
+    InitializeStageSymbolTable(builtIns, version, profile, spv, vulkan, EShLangFragment, infoSink, commonTable, symbolTables);
 
     // check for tessellation
     if ((profile != EEsProfile && version >= 150) ||
         (profile == EEsProfile && version >= 310)) {
-        InitializeStageSymbolTable(builtIns, version, profile, spv, EShLangTessControl, infoSink, commonTable, symbolTables);
-        InitializeStageSymbolTable(builtIns, version, profile, spv, EShLangTessEvaluation, infoSink, commonTable, symbolTables);
+        InitializeStageSymbolTable(builtIns, version, profile, spv, vulkan, EShLangTessControl, infoSink, commonTable, symbolTables);
+        InitializeStageSymbolTable(builtIns, version, profile, spv, vulkan, EShLangTessEvaluation, infoSink, commonTable, symbolTables);
     }
 
     // check for geometry
     if ((profile != EEsProfile && version >= 150) ||
         (profile == EEsProfile && version >= 310))
-        InitializeStageSymbolTable(builtIns, version, profile, spv, EShLangGeometry, infoSink, commonTable, symbolTables);
+        InitializeStageSymbolTable(builtIns, version, profile, spv, vulkan, EShLangGeometry, infoSink, commonTable, symbolTables);
 
     // check for compute
     if ((profile != EEsProfile && version >= 430) ||
         (profile == EEsProfile && version >= 310))
-        InitializeStageSymbolTable(builtIns, version, profile, spv, EShLangCompute, infoSink, commonTable, symbolTables);
+        InitializeStageSymbolTable(builtIns, version, profile, spv, vulkan, EShLangCompute, infoSink, commonTable, symbolTables);
 
     return true;
 }
 
-bool AddContextSpecificSymbols(const TBuiltInResource* resources, TInfoSink& infoSink, TSymbolTable& symbolTable, int version, EProfile profile, int spv, EShLanguage language)
+bool AddContextSpecificSymbols(const TBuiltInResource* resources, TInfoSink& infoSink, TSymbolTable& symbolTable, int version, EProfile profile, int spv, int vulkan, EShLanguage language)
 {
     TBuiltIns builtIns;
     
-    builtIns.initialize(*resources, version, profile, spv, language);
-    InitializeSymbolTable(builtIns.getCommonString(), version, profile, spv, language, infoSink, symbolTable);
-    IdentifyBuiltIns(version, profile, spv, language, symbolTable, *resources);
+    builtIns.initialize(*resources, version, profile, spv, vulkan, language);
+    InitializeSymbolTable(builtIns.getCommonString(), version, profile, spv, vulkan, language, infoSink, symbolTable);
+    IdentifyBuiltIns(version, profile, spv, vulkan, language, symbolTable, *resources);
 
     return true;
 }
@@ -242,7 +243,7 @@ bool AddContextSpecificSymbols(const TBuiltInResource* resources, TInfoSink& inf
 // This only gets done the first time any thread needs a particular symbol table
 // (lazy evaluation).
 //
-void SetupBuiltinSymbolTable(int version, EProfile profile, int spv)
+void SetupBuiltinSymbolTable(int version, EProfile profile, int spv, int vulkan)
 {
     TInfoSink infoSink;
 
@@ -272,7 +273,7 @@ void SetupBuiltinSymbolTable(int version, EProfile profile, int spv)
         stageTables[stage] = new TSymbolTable;
 
     // Generate the local symbol tables using the new pool
-    InitializeSymbolTables(infoSink, commonTable, stageTables, version, profile, spv);
+    InitializeSymbolTables(infoSink, commonTable, stageTables, version, profile, spv, vulkan);
 
     // Switch to the process-global pool
     SetThreadPoolAllocator(*PerProcessGPA);
@@ -306,7 +307,7 @@ void SetupBuiltinSymbolTable(int version, EProfile profile, int spv)
     glslang::ReleaseGlobalLock();
 }
 
-bool DeduceVersionProfile(TInfoSink& infoSink, EShLanguage stage, bool versionNotFirst, int defaultVersion, int& version, EProfile& profile)
+bool DeduceVersionProfile(TInfoSink& infoSink, EShLanguage stage, bool versionNotFirst, int defaultVersion, int& version, EProfile& profile, int spv)
 {
     const int FirstProfileVersion = 150;
     bool correct = true;
@@ -397,7 +398,24 @@ bool DeduceVersionProfile(TInfoSink& infoSink, EShLanguage stage, bool versionNo
         infoSink.info.message(EPrefixError, "#version: statement must appear first in es-profile shader; before comments or newlines");
     }
 
-    // A metacheck on the condition of the compiler itself...
+    // Check for SPIR-V compatibility
+    if (spv > 0) {
+        if (profile == EEsProfile) {
+            if (version < 310) {
+                correct = false;
+                infoSink.info.message(EPrefixError, "#version: ES shaders for SPIR-V require version 310 or higher");
+                version = 310;
+            }
+        } else {
+            if (version < 140) {
+                correct = false;
+                infoSink.info.message(EPrefixError, "#version: Desktop shaders for SPIR-V require version 140 or higher");
+                version = 140;
+            }
+        }
+    }
+
+    // A meta check on the condition of the compiler itself...
     switch (version) {
 
     // ES versions
@@ -454,7 +472,7 @@ bool ProcessDeferred(
     const char* customPreamble,
     const EShOptimizationLevel optLevel,
     const TBuiltInResource* resources,
-    int defaultVersion,         // use 100 for ES environment, 110 for desktop
+    int defaultVersion,         // use 100 for ES environment, 110 for desktop; this is the GLSL version, not SPIR-V or Vulkan
     EProfile defaultProfile,
     // set version/profile to defaultVersion/defaultProfile regardless of the #version
     // directive in the source code
@@ -532,7 +550,9 @@ bool ProcessDeferred(
         version = defaultVersion;
         profile = defaultProfile;
     }
-    bool goodVersion = DeduceVersionProfile(compiler->infoSink, compiler->getLanguage(), versionNotFirst, defaultVersion, version, profile);
+
+    int spv = (messages & EShMsgSpvRules) ? 100 : 0;         // TODO find path to get real version number here, for now non-0 is what matters
+    bool goodVersion = DeduceVersionProfile(compiler->infoSink, compiler->getLanguage(), versionNotFirst, defaultVersion, version, profile, spv);
     bool versionWillBeError = (versionNotFound || (profile == EEsProfile && version >= 300 && versionNotFirst));
     bool warnVersionNotFirst = false;
     if (! versionWillBeError && versionNotFirstToken) {
@@ -542,11 +562,13 @@ bool ProcessDeferred(
             versionWillBeError = true;
     }
 
-    int spv = (messages & EShMsgSpvRules) ? 100 : 0;
+    int vulkan = (messages & EShMsgVulkanRules) ? 100 : 0;     // TODO find path to get real version number here, for now non-0 is what matters
     intermediate.setVersion(version);
     intermediate.setProfile(profile);
     intermediate.setSpv(spv);
-    SetupBuiltinSymbolTable(version, profile, spv);
+    if (vulkan)
+        intermediate.setOriginUpperLeft();
+    SetupBuiltinSymbolTable(version, profile, spv, vulkan);
     
     TSymbolTable* cachedTable = SharedSymbolTables[MapVersionToIndex(version)]
                                                   [MapProfileToIndex(profile)]
@@ -560,13 +582,13 @@ bool ProcessDeferred(
     
     // Add built-in symbols that are potentially context dependent;
     // they get popped again further down.
-    AddContextSpecificSymbols(resources, compiler->infoSink, symbolTable, version, profile, spv, compiler->getLanguage());
+    AddContextSpecificSymbols(resources, compiler->infoSink, symbolTable, version, profile, spv, vulkan, compiler->getLanguage());
     
     //
     // Now we can process the full shader under proper symbols and rules.
     //
 
-    TParseContext parseContext(symbolTable, intermediate, false, version, profile, spv, compiler->getLanguage(), compiler->infoSink, forwardCompatible, messages);
+    TParseContext parseContext(symbolTable, intermediate, false, version, profile, spv, vulkan, compiler->getLanguage(), compiler->infoSink, forwardCompatible, messages);
     glslang::TScanContext scanContext(parseContext);
     TPpContext ppContext(parseContext, includer);
     parseContext.setScanContext(&scanContext);

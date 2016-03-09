@@ -10,7 +10,7 @@ buffer bufName {
     double d;
 } bufInst;
 
-uniform double roll;
+
 uniform writeonly image2D destTex;
 
 void main()

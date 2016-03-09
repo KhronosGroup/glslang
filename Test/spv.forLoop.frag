@@ -1,11 +1,11 @@
-#version 130
+#version 140
 
-uniform vec4 bigColor;
+in vec4 bigColor;
 in vec4 BaseColor;
 in float f;
 
-uniform int Count;
-uniform uvec4 v4;
+flat in int Count;
+flat in uvec4 v4;
 
 void main()
 {
