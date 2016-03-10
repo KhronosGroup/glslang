@@ -867,12 +867,13 @@ int TPpContext::readCPPline(TPpToken* ppToken)
             token = CPPelse(0, ppToken);
             break;
         case PpAtomEndif:
-            elseSeen[elsetracker] = false;
-            --elsetracker;
             if (! ifdepth)
                 parseContext.ppError(ppToken->loc, "mismatched statements", "#endif", "");
-            else
+            else {
+                elseSeen[elsetracker] = false;
+                --elsetracker;
                 --ifdepth;
+            }
             token = extraTokenCheck(PpAtomEndif, ppToken, scanToken(ppToken));
             break;
         case PpAtomIf:
