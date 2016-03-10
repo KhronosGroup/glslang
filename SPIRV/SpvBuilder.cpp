@@ -2137,14 +2137,21 @@ void Builder::eliminateDeadDecorations() {
     // Collect IDs defined in unreachable blocks. For each function, label the
     // reachable blocks first. Then for each unreachable block, collect the
     // result IDs of the instructions in it.
-    for (auto& f : module.getFunctions()) {
+    for (std::vector<Function*>::const_iterator fi = module.getFunctions().cbegin();
+        fi != module.getFunctions().cend(); fi++) {
+        Function* f = *fi;
         Block* entry = f->getEntryBlock();
         inReadableOrder(entry, [&reachable_blocks](const Block* b) {
             reachable_blocks.insert(b);
         });
-        for (auto& b : f->getBlocks()) {
+        for (std::vector<Block*>::const_iterator bi = f->getBlocks().cbegin();
+            bi != f->getBlocks().cend(); bi++) {
+            Block* b = *bi;
             if (!reachable_blocks.count(b)) {
-                for (auto& i : b->getInstructions()) {
+                for (std::vector<std::unique_ptr<Instruction> >::const_iterator
+                         ii = b->getInstructions().cbegin();
+                    ii != b->getInstructions().cend(); ii++) {
+                    Instruction* i = ii->get();
                     unreachable_definitions.insert(i->getResultId());
                 }
             }
