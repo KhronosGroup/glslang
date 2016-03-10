@@ -719,6 +719,7 @@ void TGlslangToSpvTraverser::dumpSpv(std::vector<unsigned int>& out)
     for (auto it = iOSet.cbegin(); it != iOSet.cend(); ++it)
         entryPoint->addIdOperand(*it);
 
+    builder.eliminateDeadDecorations();
     builder.dump(out);
 }
 
