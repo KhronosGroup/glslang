@@ -512,6 +512,9 @@ public:
     // based on the type of the base and the chain of dereferences.
     Id accessChainGetInferredType();
 
+    // Remove OpDecorate instructions whose operands are defined in unreachable
+    // blocks.
+    void eliminateDeadDecorations();
     void dump(std::vector<unsigned int>&) const;
 
     void createBranch(Block* block);
