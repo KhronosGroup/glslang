@@ -877,7 +877,8 @@ void Builder::addDecoration(Id id, Decoration decoration, int num)
     if (num >= 0)
         dec->addImmediateOperand(num);
 
-    decorations.push_back(std::unique_ptr<Instruction>(dec));
+    decorations.push_back(std::unique_ptr<Instruction>(dec),
+                          module.getInstruction(id));
 }
 
 void Builder::addMemberDecoration(Id id, unsigned int member, Decoration decoration, int num)
@@ -889,7 +890,8 @@ void Builder::addMemberDecoration(Id id, unsigned int member, Decoration decorat
     if (num >= 0)
         dec->addImmediateOperand(num);
 
-    decorations.push_back(std::unique_ptr<Instruction>(dec));
+    decorations.push_back(std::unique_ptr<Instruction>(dec),
+                          module.getInstruction(id));
 }
 
 // Comments in header
@@ -2152,18 +2154,11 @@ void Builder::eliminateDeadDecorations() {
                          ii = b->getInstructions().cbegin();
                     ii != b->getInstructions().cend(); ii++) {
                     Instruction* i = ii->get();
-                    unreachable_definitions.insert(i->getResultId());
+                    decorations.remove_decorations_of(i);
                 }
             }
         }
     }
-    decorations.erase(std::remove_if(decorations.begin(), decorations.end(),
-        [&unreachable_definitions](std::unique_ptr<Instruction>& I) {
-            Instruction* inst = I.get();
-            Id decoration_id = inst->getIdOperand(0);
-            return unreachable_definitions.count(decoration_id) != 0;
-        }),
-        decorations.end());
 }
 
 void Builder::dump(std::vector<unsigned int>& out) const
@@ -2362,6 +2357,13 @@ void Builder::dumpInstructions(std::vector<unsigned int>& out, const std::vector
 {
     for (int i = 0; i < (int)instructions.size(); ++i) {
         instructions[i]->dump(out);
+    }
+}
+
+void Builder::dumpInstructions(std::vector<unsigned int>& out, const DecorationInstList& instructions) const
+{
+    for (auto I = instructions.cbegin(); I != instructions.cend(); I++) {
+        (*I)->dump(out);
     }
 }
 

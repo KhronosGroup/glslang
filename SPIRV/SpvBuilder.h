@@ -57,8 +57,97 @@
 #include <stack>
 #include <map>
 #include <set>
+#include <list>
+#include <unordered_map>
+#include <unordered_set>
 
 namespace spv {
+
+// Store instructions in list and use unordered_map to lower look-up complexity.
+class DecorationInstList {
+    using InstList = std::list<std::unique_ptr<Instruction> >;
+    using iterator = InstList::iterator;
+    using const_iterator = InstList::const_iterator;
+  public:
+    iterator begin() { return inst_list_.begin(); }
+    const_iterator cbegin() const { return inst_list_.cbegin(); }
+    iterator end() { return inst_list_.end(); }
+    const_iterator cend() const { return inst_list_.cend(); }
+
+    void push_back(std::unique_ptr<Instruction>&& decorate_inst,
+                   const Instruction* def_inst) {
+        inst_list_.push_back(std::move(decorate_inst));
+        Instruction* decor_inst = inst_list_.back().get();
+        iterator last = inst_list_.end(); last--;
+        from_decor_to_list_iterator_[decor_inst] = last;
+        from_decor_to_def_[decor_inst] = def_inst;
+        if (!from_def_to_decorations_.count(def_inst)) {
+            from_def_to_decorations_[def_inst] = std::unordered_set<Instruction*>();
+        }
+        from_def_to_decorations_[def_inst].insert(decor_inst);
+
+    }
+
+    iterator erase(iterator first, iterator last) {
+        while (first != last)
+            first = erase(first);
+        return last;
+    }
+
+    // Erase the decorate instruction pointed by iterator: position.
+    iterator erase(iterator position) {
+        Instruction* decor_inst_to_delete = position->get();
+        const Instruction* def_inst = from_decor_to_def_[decor_inst_to_delete];
+        // Maintain the bookkeeping.
+        from_def_to_decorations_[def_inst].erase(decor_inst_to_delete);
+        if (from_def_to_decorations_[def_inst].empty())
+            from_def_to_decorations_.erase(def_inst);
+        from_decor_to_list_iterator_.erase(decor_inst_to_delete);
+        from_decor_to_def_.erase(decor_inst_to_delete);
+        // Remove the decorate instruction from the list.
+        return inst_list_.erase(position);
+    }
+
+    void remove_decorations_of(Instruction* def_inst) {
+        if (!from_def_to_decorations_.count(def_inst)) {
+            return;
+        }
+        std::unordered_set<Instruction*> to_delete_insts;
+        for (auto DI = from_def_to_decorations_[def_inst].begin();
+             DI != from_def_to_decorations_[def_inst].end(); DI++) {
+            Instruction* decor_inst_to_delete = *DI;
+            to_delete_insts.insert(decor_inst_to_delete);
+        }
+        for (auto DI = to_delete_insts.begin(); DI != to_delete_insts.end();
+             DI++) {
+            erase(from_decor_to_list_iterator_[*DI]);
+        }
+    }
+
+  private:
+    // List of OpDecorate/OpMemberDecorate instructions.
+    InstList inst_list_;
+
+    // Hash maps from/to list iterators, ID defining instructions and decorate
+    // instructions:
+
+    // Hash map with key: the definition instuction of the forward-referenced
+    // ID; value: a set of decorate instructions that refer to the defined ID.
+    // This is required as a defined ID may have multiple OpDecorate
+    // instructions that refer to it.
+    std::unordered_map<const Instruction*, std::unordered_set<Instruction*> >
+        from_def_to_decorations_;
+    // Hash map from decorate instruction to the list iterator which points to
+    // itself.
+    std::unordered_map<Instruction*, iterator> from_decor_to_list_iterator_;
+    // Hash map with key: decorate instruction; value: the forward-referenced
+    // ID's definition instruction.
+    // This hash map enable us to update 'from_def_to_decorations_' when we
+    // operate on the instruction list directly, e.g: truncate the decorate
+    // instruction list without using their referencing IDs.
+    std::unordered_map<Instruction*, const Instruction*>
+        from_decor_to_def_;
+};
 
 class Builder {
 public:
@@ -532,6 +621,7 @@ public:
     void createAndSetNoPredecessorBlock(const char*);
     void createSelectionMerge(Block* mergeBlock, unsigned int control);
     void dumpInstructions(std::vector<unsigned int>&, const std::vector<std::unique_ptr<Instruction> >&) const;
+    void dumpInstructions(std::vector<unsigned int>&, const DecorationInstList&) const;
 
     SourceLanguage source;
     int sourceVersion;
@@ -552,7 +642,7 @@ public:
     std::vector<std::unique_ptr<Instruction> > executionModes;
     std::vector<std::unique_ptr<Instruction> > names;
     std::vector<std::unique_ptr<Instruction> > lines;
-    std::vector<std::unique_ptr<Instruction> > decorations;
+    DecorationInstList decorations;
     std::vector<std::unique_ptr<Instruction> > constantsTypesGlobals;
     std::vector<std::unique_ptr<Instruction> > externals;
     std::vector<std::unique_ptr<Function> > functions;
