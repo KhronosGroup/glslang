@@ -64,6 +64,7 @@ spv.matrix2.frag
 spv.memoryQualifier.frag
 spv.merge-unreachable.frag
 spv.newTexture.frag
+spv.noDeadDecorations.vert
 spv.nonSquare.vert
 spv.Operations.frag
 spv.intOps.vert
