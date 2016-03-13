@@ -55,13 +55,14 @@ namespace glslang {
         bool acceptTokenClass(EHlslTokenClass);
 
         bool acceptCompilationUnit();
-        bool acceptDeclaration();
+        bool acceptDeclaration(TIntermNode*& node);
         bool acceptFullySpecifiedType(TType&);
         void acceptQualifier(TQualifier&);
         bool acceptType(TType&);
         bool acceptCompoundStatement();
         bool acceptExpression(TIntermTyped*&);
-        bool acceptArguments(TIntermSequence*&);
+        bool acceptConstructor(TIntermTyped*&);
+        bool acceptArguments(TFunction*, TIntermAggregate*&);
         bool acceptLiteral(TIntermTyped*&);
         bool acceptOperator(TOperator& op);
 

@@ -83,12 +83,13 @@ public:
     TIntermTyped* handleDotDereference(const TSourceLoc&, TIntermTyped* base, const TString& field);
     TFunction* handleFunctionDeclarator(const TSourceLoc&, TFunction& function, bool prototype);
     TIntermAggregate* handleFunctionDefinition(const TSourceLoc&, TFunction&);
+    void handleFunctionArgument(TFunction*, TIntermAggregate*&, TIntermTyped*);
     TIntermTyped* handleFunctionCall(const TSourceLoc&, TFunction*, TIntermNode*);
     TIntermTyped* handleLengthMethod(const TSourceLoc&, TFunction*, TIntermNode*);
     void addInputArgumentConversions(const TFunction&, TIntermNode*&) const;
     TIntermTyped* addOutputArgumentConversions(const TFunction&, TIntermAggregate&) const;
     void builtInOpCheck(const TSourceLoc&, const TFunction&, TIntermOperator&);
-    TFunction* handleConstructorCall(const TSourceLoc&, const TPublicType&);
+    TFunction* handleConstructorCall(const TSourceLoc&, const TType&);
 
     bool parseVectorFields(const TSourceLoc&, const TString&, int vecSize, TVectorFields&);
     void assignError(const TSourceLoc&, const char* op, TString left, TString right);

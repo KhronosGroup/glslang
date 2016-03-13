@@ -754,6 +754,14 @@ TIntermAggregate* HlslParseContext::handleFunctionDefinition(const TSourceLoc& l
     return paramNodes;
 }
 
+void HlslParseContext::handleFunctionArgument(TFunction* function, TIntermAggregate*& arguments, TIntermTyped* arg)
+{
+    TParameter param = { 0, new TType };
+    param.type->shallowCopy(arg->getType());
+    function->addParameter(param);
+    arguments = intermediate.growAggregate(arguments, arg);
+}
+
 //
 // Handle seeing function call syntax in the grammar, which could be any of
 //  - .length() method
@@ -1182,18 +1190,13 @@ void HlslParseContext::builtInOpCheck(const TSourceLoc& loc, const TFunction& fn
 //
 // Handle seeing a built-in constructor in a grammar production.
 //
-TFunction* HlslParseContext::handleConstructorCall(const TSourceLoc& loc, const TPublicType& publicType)
+TFunction* HlslParseContext::handleConstructorCall(const TSourceLoc& loc, const TType& type)
 {
-    TType type(publicType);
-    type.getQualifier().precision = EpqNone;
-
     TOperator op = mapTypeToConstructorOp(type);
 
     if (op == EOpNull) {
         error(loc, "cannot construct this type", type.getBasicString(), "");
-        op = EOpConstructFloat;
-        TType errorType(EbtFloat);
-        type.shallowCopy(errorType);
+        return nullptr;
     }
 
     TString empty("");

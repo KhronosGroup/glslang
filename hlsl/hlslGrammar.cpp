@@ -33,6 +33,23 @@
 //POSSIBILITY OF SUCH DAMAGE.
 //
 
+//
+// This is a set of mutually recursive methods implementing the HLSL grammar.
+// Generally, each returns
+//  - through an argument: a type specifically appropriate to which rule it
+//    recognized
+//  - through the return value: true/false to indicate whether or not it
+//    recognized its rule
+//
+// As much as possible, only grammar recognition should happen in this file,
+// with all other work being farmed out to hlslParseHelper.cpp, which it turn
+// will build the AST.
+//
+// The next token, yet to be "accepted" is always sitting in 'token'.
+// When a method says it accepts a rule, that means all tokens involved
+// in the rule will have been consumed, and none left in 'token'.
+//
+
 #include "hlslTokens.h"
 #include "hlslGrammar.h"
 
@@ -74,10 +91,20 @@ bool HlslGrammar::acceptTokenClass(EHlslTokenClass tokenClass)
 //
 bool HlslGrammar::acceptCompilationUnit()
 {
+    TIntermNode* unitNode = nullptr;
+
     while (token.tokenClass != EHTokNone) {
-        if (! acceptDeclaration())
+        // externalDeclaration
+        TIntermNode* declarationNode;
+        if (! acceptDeclaration(declarationNode))
             return false;
+
+        // hook it up
+        unitNode = parseContext.intermediate.growAggregate(unitNode, declarationNode);
     }
+
+    // set root of AST
+    parseContext.intermediate.setTreeRoot(unitNode);
 
     return true;
 }
@@ -90,8 +117,13 @@ bool HlslGrammar::acceptCompilationUnit()
 //      | fully_specified_type identifier function_parameters ;         // function prototype
 //      | fully_specified_type function_parameters compound_statement   // function definition
 //
-bool HlslGrammar::acceptDeclaration()
+// 'node' could get created if the declaration creates code, like an initializer
+// or a function body.
+//
+bool HlslGrammar::acceptDeclaration(TIntermNode*& node)
 {
+    node = nullptr;
+
     // fully_specified_type
     TType type;
     if (! acceptFullySpecifiedType(type))
@@ -114,7 +146,7 @@ bool HlslGrammar::acceptDeclaration()
 
         // ;
         if (acceptTokenClass(EHTokSemicolon)) {
-            parseContext.declareVariable(declLoc, *declName, type, 0, expressionNode);
+            node = parseContext.declareVariable(declLoc, *declName, type, 0, expressionNode);
             return true;
         }
     }
@@ -252,9 +284,9 @@ bool HlslGrammar::acceptType(TType& type)
 // expression
 //      : identifier
 //      | ( expression )
-//      | type(...) // constructor
+//      | type(...)                 // constructor
 //      | literal
-//      | identifier + identifier
+//      | identifier operator identifier   // to be generalized to all expressions
 //
 bool HlslGrammar::acceptExpression(TIntermTyped*& node)
 {
@@ -282,19 +314,11 @@ bool HlslGrammar::acceptExpression(TIntermTyped*& node)
     if (acceptLiteral(node))
         return true;
 
-    // type(...) // constructor
-    TType type;
-    if (acceptType(type)) {
-        TIntermSequence* arguments;
-        if (! acceptArguments(arguments)) {
-            expected("constructor arguments");
-            return false;
-        }
-
+    // type(...)     // constructor
+    if (acceptConstructor(node))
         return true;
-    }
 
-    // identifier + identifier
+    // identifier operator identifier
     if (token.tokenClass == EHTokIdentifier) {
         TIntermTyped* left = parseContext.handleVariable(token.loc, token.symbol, token.string);
         advanceToken();
@@ -318,22 +342,61 @@ bool HlslGrammar::acceptExpression(TIntermTyped*& node)
     return true;
 }
 
+// constructor
+//      : type arguments
+//
+bool HlslGrammar::acceptConstructor(TIntermTyped*& node)
+{
+    // type
+    TType type;
+    if (acceptType(type)) {
+        TFunction* constructorFunction = parseContext.handleConstructorCall(token.loc, type);
+        if (constructorFunction == nullptr)
+            return false;
+
+        // arguments
+        TIntermAggregate* arguments = nullptr;
+        if (! acceptArguments(constructorFunction, arguments)) {
+            expected("constructor arguments");
+            return false;
+        }
+
+        // hook it up
+        node = parseContext.handleFunctionCall(arguments->getLoc(), constructorFunction, arguments);
+
+        return true;
+    }
+
+    return false;
+}
+
 // arguments
 //      : ( expression , expression, ... )
 //
-bool HlslGrammar::acceptArguments(TIntermSequence*& arguments)
+// The arguments are pushed onto the 'function' argument list and
+// onto the 'arguments' aggregate.
+//
+bool HlslGrammar::acceptArguments(TFunction* function, TIntermAggregate*& arguments)
 {
+    // (
     if (! acceptTokenClass(EHTokLeftParen))
         return false;
 
     do {
+        // expression
         TIntermTyped* arg;
         if (! acceptExpression(arg))
             break;
+
+        // hook it up
+        parseContext.handleFunctionArgument(function, arguments, arg);
+
+        // ,
         if (! acceptTokenClass(EHTokComma))
             break;
     } while (true);
 
+    // )
     if (! acceptTokenClass(EHTokRightParen)) {
         expected("right parenthesis");
         return false;
