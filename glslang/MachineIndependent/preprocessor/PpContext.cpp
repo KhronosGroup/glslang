@@ -83,7 +83,7 @@ NVIDIA HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 namespace glslang {
 
-TPpContext::TPpContext(TParseContext& pc, const TShader::Includer& inclr) : 
+TPpContext::TPpContext(TParseContextBase& pc, const TShader::Includer& inclr) : 
     preamble(0), strings(0), parseContext(pc), includer(inclr), inComment(false)
 {
     InitAtomTable();

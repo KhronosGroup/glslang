@@ -48,14 +48,14 @@ extern int yyparse(glslang::TParseContext*);
 
 namespace glslang {
 
-TParseContext::TParseContext(TSymbolTable& symt, TIntermediate& interm, bool pb, int v, EProfile p, int spv, int vulkan, EShLanguage L, TInfoSink& is,
-                             bool fc, EShMessages m) :
-            intermediate(interm), symbolTable(symt), infoSink(is), language(L),
-            version(v), profile(p), spv(spv), vulkan(vulkan), forwardCompatible(fc), 
+TParseContext::TParseContext(TSymbolTable& symbolTable, TIntermediate& interm, bool parsingBuiltins,
+                             int version, EProfile profile, int spv, int vulkan, EShLanguage language,
+                             TInfoSink& infoSink, bool forwardCompatible, EShMessages messages) :
+            TParseContextBase(symbolTable, interm, version, profile, spv, vulkan, language, infoSink, forwardCompatible, messages), 
             contextPragma(true, false), loopNestingLevel(0), structNestingLevel(0), controlFlowNestingLevel(0), statementNestingLevel(0),
-            postMainReturn(false),
-            tokensBeforeEOF(false), limits(resources.limits), messages(m), currentScanner(nullptr),
-            numErrors(0), parsingBuiltins(pb), afterEOF(false),
+            inMain(false), postMainReturn(false), currentFunctionType(nullptr), blockName(nullptr),
+            limits(resources.limits), parsingBuiltins(parsingBuiltins),
+            afterEOF(false),
             atomicUintOffsets(nullptr), anyIndexLimits(false)
 {
     // ensure we always have a linkage node, even if empty, to simplify tree topology algorithms
@@ -3133,7 +3133,8 @@ void TParseContext::updateImplicitArraySize(const TSourceLoc& loc, TIntermNode *
 // Desktop, version 3.30 and later, and ES:  "After processing this directive
 // (including its new-line), the implementation will behave as if it is compiling at line number line and
 // source string number source-string-number.
-bool TParseContext::lineDirectiveShouldSetNextLine() const {
+bool TParseContext::lineDirectiveShouldSetNextLine() const
+{
     return profile == EEsProfile || version >= 330;
 }
 
@@ -5939,34 +5940,6 @@ TIntermNode* TParseContext::addSwitch(const TSourceLoc& loc, TIntermTyped* expre
     switchNode->setLoc(loc);
 
     return switchNode;
-}
-
-void TParseContext::notifyVersion(int line, int version, const char* type_string)
-{
-    if (versionCallback) {
-        versionCallback(line, version, type_string);
-    }
-}
-
-void TParseContext::notifyErrorDirective(int line, const char* error_message)
-{
-    if (errorCallback) {
-        errorCallback(line, error_message);
-    }
-}
-
-void TParseContext::notifyLineDirective(int curLineNo, int newLineNo, bool hasSource, int sourceNum, const char* sourceName)
-{
-    if (lineCallback) {
-        lineCallback(curLineNo, newLineNo, hasSource, sourceNum, sourceName);
-    }
-}
-
-void TParseContext::notifyExtensionDirective(int line, const char* extension, const char* behavior)
-{
-    if (extensionCallback) {
-        extensionCallback(line, extension, behavior);
-    }
 }
 
 } // end namespace glslang

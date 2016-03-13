@@ -121,7 +121,7 @@ class TInputScanner;
 // Don't expect too much in terms of OO design.
 class TPpContext {
 public:
-    TPpContext(TParseContext&, const TShader::Includer&);
+    TPpContext(TParseContextBase&, const TShader::Includer&);
     virtual ~TPpContext();
 
     void setPreamble(const char* preamble, size_t length);
@@ -213,7 +213,7 @@ protected:
 
     // Scanner data:
     int previous_token;
-    TParseContext& parseContext;
+    TParseContextBase& parseContext;
 
     // Get the next token from *stack* of input sources, popping input sources
     // that are out of tokens, down until an input sources is found that has a token.

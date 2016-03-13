@@ -464,7 +464,7 @@ bool DeduceVersionProfile(TInfoSink& infoSink, EShLanguage stage, bool versionNo
 // This is the common setup and cleanup code for PreprocessDeferred and
 // CompileDeferred.
 // It takes any callable with a signature of
-//  bool (TParseContext& parseContext, TPpContext& ppContext,
+//  bool (TParseContextBase& parseContext, TPpContext& ppContext,
 //                  TInputScanner& input, bool versionWillBeError,
 //                  TSymbolTable& , TIntermediate& ,
 //                  EShOptimizationLevel , EShMessages );
@@ -717,7 +717,7 @@ private:
 // It places the result in the "string" argument to its constructor.
 struct DoPreprocessing {
     explicit DoPreprocessing(std::string* string): outputString(string) {}
-    bool operator()(TParseContext& parseContext, TPpContext& ppContext,
+    bool operator()(TParseContextBase& parseContext, TPpContext& ppContext,
                     TInputScanner& input, bool versionWillBeError,
                     TSymbolTable& , TIntermediate& ,
                     EShOptimizationLevel , EShMessages )
@@ -828,7 +828,7 @@ struct DoPreprocessing {
 // DoFullParse is a valid ProcessingConext template argument for fully
 // parsing the shader.  It populates the "intermediate" with the AST.
 struct DoFullParse{
-  bool operator()(TParseContext& parseContext, TPpContext& ppContext,
+  bool operator()(TParseContextBase& parseContext, TPpContext& ppContext,
                   TInputScanner& fullInput, bool versionWillBeError,
                   TSymbolTable& symbolTable, TIntermediate& intermediate,
                   EShOptimizationLevel optLevel, EShMessages messages) 
@@ -837,13 +837,13 @@ struct DoFullParse{
         // Parse the full shader.
         if (! parseContext.parseShaderStrings(ppContext, fullInput, versionWillBeError))
             success = false;
-        intermediate.addSymbolLinkageNodes(parseContext.linkage, parseContext.language, symbolTable);
+        intermediate.addSymbolLinkageNodes(parseContext.getLinkage(), parseContext.getLanguage(), symbolTable);
 
         if (success && intermediate.getTreeRoot()) {
             if (optLevel == EShOptNoGeneration)
                 parseContext.infoSink.info.message(EPrefixNone, "No errors.  No code generation or linking was requested.");
             else
-                success = intermediate.postProcess(intermediate.getTreeRoot(), parseContext.language);
+                success = intermediate.postProcess(intermediate.getTreeRoot(), parseContext.getLanguage());
         } else if (! success) {
             parseContext.infoSink.info.prefix(EPrefixError);
             parseContext.infoSink.info << parseContext.getNumErrors() << " compilation errors.  No code generated.\n\n";
