@@ -307,10 +307,18 @@ void SetupBuiltinSymbolTable(int version, EProfile profile, int spv, int vulkan)
     glslang::ReleaseGlobalLock();
 }
 
-bool DeduceVersionProfile(TInfoSink& infoSink, EShLanguage stage, bool versionNotFirst, int defaultVersion, int& version, EProfile& profile, int spv)
+// Return true if the shader was correctly specified for version/profile/stage.
+bool DeduceVersionProfile(TInfoSink& infoSink, EShLanguage stage, bool versionNotFirst, int defaultVersion,
+                          EShSource source, int& version, EProfile& profile, int spv)
 {
     const int FirstProfileVersion = 150;
     bool correct = true;
+
+    if (source == EShSourceHlsl) {
+        version = defaultVersion;
+        profile = ENoProfile;
+        return correct;
+    }
 
     // Get a good version...
     if (version == 0) {
@@ -552,7 +560,8 @@ bool ProcessDeferred(
     }
 
     int spv = (messages & EShMsgSpvRules) ? 100 : 0;         // TODO find path to get real version number here, for now non-0 is what matters
-    bool goodVersion = DeduceVersionProfile(compiler->infoSink, compiler->getLanguage(), versionNotFirst, defaultVersion, version, profile, spv);
+    EShSource source = (messages & EShMsgReadHlsl) ? EShSourceHlsl : EShSourceGlsl;
+    bool goodVersion = DeduceVersionProfile(compiler->infoSink, compiler->getLanguage(), versionNotFirst, defaultVersion, source, version, profile, spv);
     bool versionWillBeError = (versionNotFound || (profile == EEsProfile && version >= 300 && versionNotFirst));
     bool warnVersionNotFirst = false;
     if (! versionWillBeError && versionNotFirstToken) {
@@ -563,6 +572,7 @@ bool ProcessDeferred(
     }
 
     int vulkan = (messages & EShMsgVulkanRules) ? 100 : 0;     // TODO find path to get real version number here, for now non-0 is what matters
+    intermediate.setSource(source);
     intermediate.setVersion(version);
     intermediate.setProfile(profile);
     intermediate.setSpv(spv);

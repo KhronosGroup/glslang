@@ -64,7 +64,7 @@ namespace spv {
 //    (for non-sparse mask enums, this is the number of enumurants)
 //
 
-const int SourceLanguageCeiling = 5;
+const int SourceLanguageCeiling = 6; // HLSL todo: need official enumerant
 
 const char* SourceString(int source)
 {
@@ -74,6 +74,7 @@ const char* SourceString(int source)
     case 2:  return "GLSL";
     case 3:  return "OpenCL_C";
     case 4:  return "OpenCL_CPP";
+    case 5:  return "HLSL";
 
     case SourceLanguageCeiling:
     default: return "Bad";

@@ -86,7 +86,7 @@ typedef enum {
     EShLangFragment,
     EShLangCompute,
     EShLangCount,
-} EShLanguage;
+} EShLanguage;         // would be better as stage, but this is ancient now
 
 typedef enum {
     EShLangVertexMask         = (1 << EShLangVertex),
@@ -98,6 +98,12 @@ typedef enum {
 } EShLanguageMask;
 
 namespace glslang {
+
+typedef enum {
+    EShSourceNone,
+    EShSourceGlsl,
+    EShSourceHlsl,
+} EShSource;          // if EShLanguage were EShStage, this could be EShLanguage instead
 
 const char* StageName(EShLanguage);
 
@@ -132,6 +138,7 @@ enum EShMessages {
     EShMsgSpvRules         = (1 << 3),  // issue messages for SPIR-V generation
     EShMsgVulkanRules      = (1 << 4),  // issue messages for Vulkan-requirements of GLSL for SPIR-V
     EShMsgOnlyPreprocessor = (1 << 5),  // only print out errors produced by the preprocessor
+    EShMsgReadHlsl         = (1 << 6),  // use HLSL parsing rules and semantics
 };
 
 //

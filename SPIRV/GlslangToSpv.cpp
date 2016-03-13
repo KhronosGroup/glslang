@@ -160,15 +160,22 @@ protected:
 //
 
 // Translate glslang profile to SPIR-V source language.
-spv::SourceLanguage TranslateSourceLanguage(EProfile profile)
+spv::SourceLanguage TranslateSourceLanguage(glslang::EShSource source, EProfile profile)
 {
-    switch (profile) {
-    case ENoProfile:
-    case ECoreProfile:
-    case ECompatibilityProfile:
-        return spv::SourceLanguageGLSL;
-    case EEsProfile:
-        return spv::SourceLanguageESSL;
+    switch (source) {
+    case glslang::EShSourceGlsl:
+        switch (profile) {
+        case ENoProfile:
+        case ECoreProfile:
+        case ECompatibilityProfile:
+            return spv::SourceLanguageGLSL;
+        case EEsProfile:
+            return spv::SourceLanguageESSL;
+        default:
+            return spv::SourceLanguageUnknown;
+        }
+    case glslang::EShSourceHlsl:
+        return spv::SourceLanguageHLSL;
     default:
         return spv::SourceLanguageUnknown;
     }
@@ -587,7 +594,7 @@ TGlslangToSpvTraverser::TGlslangToSpvTraverser(const glslang::TIntermediate* gls
     spv::ExecutionModel executionModel = TranslateExecutionModel(glslangIntermediate->getStage());
 
     builder.clearAccessChain();
-    builder.setSource(TranslateSourceLanguage(glslangIntermediate->getProfile()), glslangIntermediate->getVersion());
+    builder.setSource(TranslateSourceLanguage(glslangIntermediate->getSource(), glslangIntermediate->getProfile()), glslangIntermediate->getVersion());
     stdBuiltins = builder.import("GLSL.std.450");
     builder.setMemoryModel(spv::AddressingModelLogical, spv::MemoryModelGLSL450);
     shaderEntry = builder.makeEntrypoint(glslangIntermediate->getEntryPoint().c_str());

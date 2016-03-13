@@ -124,7 +124,8 @@ class TVariable;
 //
 class TIntermediate {
 public:
-    explicit TIntermediate(EShLanguage l, int v = 0, EProfile p = ENoProfile) : language(l), treeRoot(0), profile(p), version(v), spv(0),
+    explicit TIntermediate(EShLanguage l, int v = 0, EProfile p = ENoProfile) :
+        source(EShSourceNone), language(l), profile(p), version(v), spv(0), treeRoot(0),
         numMains(0), numErrors(0), numPushConstants(0), recursive(false),
         invocations(TQualifier::layoutNotSet), vertices(TQualifier::layoutNotSet), inputPrimitive(ElgNone), outputPrimitive(ElgNone),
         pixelCenterInteger(false), originUpperLeft(false),
@@ -143,8 +144,10 @@ public:
 
     bool postProcess(TIntermNode*, EShLanguage);
     void output(TInfoSink&, bool tree);
-	void removeTree();
+    void removeTree();
 
+    void setSource(EShSource s) { source = s; }
+    EShSource getSource() const { return source; }
     void setEntryPoint(const char* ep) { entryPoint = ep; }
     const TString& getEntryPoint() const { return entryPoint; }
     void setVersion(int v) { version = v; }
@@ -339,12 +342,13 @@ protected:
     bool userOutputUsed() const;
     static int getBaseAlignmentScalar(const TType&, int& size);
 
-    const EShLanguage language;
+    const EShLanguage language;  // stage, known at construction time
+    EShSource source;            // source language, known a bit later
     TString entryPoint;
-    TIntermNode* treeRoot;
     EProfile profile;
     int version;
     int spv;
+    TIntermNode* treeRoot;
     std::set<std::string> requestedExtensions;  // cumulation of all enabled or required extensions; not connected to what subset of the shader used them
     TBuiltInResource resources;
     int numMains;

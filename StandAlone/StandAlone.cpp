@@ -74,6 +74,7 @@ enum TOptions {
     EOptionVulkanRules        = 0x2000,
     EOptionDefaultDesktop     = 0x4000,
     EOptionOutputPreprocessed = 0x8000,
+    EOptionReadHlsl          = 0x10000,
 };
 
 //
@@ -538,6 +539,9 @@ void ProcessArguments(int argc, char* argv[])
             case 'd':
                 Options |= EOptionDefaultDesktop;
                 break;
+            case 'D':
+                Options |= EOptionReadHlsl;
+                break;
             case 'e':
                 // HLSL todo: entry point handle needs much more sophistication.
                 // This is okay for one compilation unit with one entry point.
@@ -627,6 +631,8 @@ void SetMessageOptions(EShMessages& messages)
         messages = (EShMessages)(messages | EShMsgVulkanRules);
     if (Options & EOptionOutputPreprocessed)
         messages = (EShMessages)(messages | EShMsgOnlyPreprocessor);
+    if (Options & EOptionReadHlsl)
+        messages = (EShMessages)(messages | EShMsgReadHlsl);
 }
 
 //
@@ -1047,6 +1053,7 @@ void usage()
            "              creates the default configuration file (redirect to a .conf file)\n"
            "  -d          default to desktop (#version 110) when there is no shader #version\n"
            "              (default is ES version 100)\n"
+           "  -D          input is HLSL\n"
            "  -e          specify entry-point name\n"
            "  -h          print this usage message\n"
            "  -i          intermediate tree (glslang AST) is printed out\n"
