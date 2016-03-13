@@ -893,7 +893,7 @@ void Builder::addMemberDecoration(Id id, unsigned int member, Decoration decorat
 }
 
 // Comments in header
-Function* Builder::makeMain()
+Function* Builder::makeEntrypoint(const char* entryPoint)
 {
     assert(! mainFunction);
 
@@ -901,7 +901,7 @@ Function* Builder::makeMain()
     std::vector<Id> params;
     std::vector<Decoration> precisions;
 
-    mainFunction = makeFunctionEntry(NoPrecision, makeVoidType(), "main", params, precisions, &entry);
+    mainFunction = makeFunctionEntry(NoPrecision, makeVoidType(), entryPoint, params, precisions, &entry);
 
     return mainFunction;
 }

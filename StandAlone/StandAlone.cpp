@@ -449,6 +449,7 @@ int NumWorkItems = 0;
 int Options = 0;
 const char* ExecutableName = nullptr;
 const char* binaryFileName = nullptr;
+const char* entryPointName = nullptr;
 
 //
 // Create the default name for saving a binary if -o is not provided.
@@ -536,6 +537,16 @@ void ProcessArguments(int argc, char* argv[])
                 break;
             case 'd':
                 Options |= EOptionDefaultDesktop;
+                break;
+            case 'e':
+                // HLSL todo: entry point handle needs much more sophistication.
+                // This is okay for one compilation unit with one entry point.
+                entryPointName = argv[1];
+                if (argc > 0) {
+                    argc--;
+                    argv++;
+                } else
+                    Error("no <entry-point> provided for -e");
                 break;
             case 'h':
                 usage();
@@ -693,6 +704,8 @@ void CompileAndLinkShaderUnits(std::vector<ShaderCompUnit> compUnits)
         const auto &compUnit = *it;
         glslang::TShader* shader = new glslang::TShader(compUnit.stage);
         shader->setStrings(compUnit.text, 1);
+        if (entryPointName) // HLSL todo: this needs to be tracked per compUnits
+            shader->setEntryPoint(entryPointName);
         shaders.push_back(shader);
 
         const int defaultVersion = Options & EOptionDefaultDesktop? 110: 100;
@@ -726,20 +739,24 @@ void CompileAndLinkShaderUnits(std::vector<ShaderCompUnit> compUnits)
     // Program-level processing...
     //
 
+    // Link
     if (! (Options & EOptionOutputPreprocessed) && ! program.link(messages))
         LinkFailed = true;
 
+    // Report
     if (! (Options & EOptionSuppressInfolog) &&
         ! (Options & EOptionMemoryLeakMode)) {
         PutsIfNonEmpty(program.getInfoLog());
         PutsIfNonEmpty(program.getInfoDebugLog());
     }
 
+    // Reflect
     if (Options & EOptionDumpReflection) {
         program.buildReflection();
         program.dumpReflection();
     }
 
+    // Dump SPIR-V
     if (Options & EOptionSpv) {
         if (CompileFailed || LinkFailed)
             printf("SPIR-V is not generated for failed compile or link\n");
@@ -1030,6 +1047,7 @@ void usage()
            "              creates the default configuration file (redirect to a .conf file)\n"
            "  -d          default to desktop (#version 110) when there is no shader #version\n"
            "              (default is ES version 100)\n"
+           "  -e          specify entry-point name\n"
            "  -h          print this usage message\n"
            "  -i          intermediate tree (glslang AST) is printed out\n"
            "  -l          link all input files together to form a single module\n"

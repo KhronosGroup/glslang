@@ -145,6 +145,8 @@ public:
     void output(TInfoSink&, bool tree);
 	void removeTree();
 
+    void setEntryPoint(const char* ep) { entryPoint = ep; }
+    const TString& getEntryPoint() const { return entryPoint; }
     void setVersion(int v) { version = v; }
     int getVersion() const { return version; }
     void setProfile(EProfile p) { profile = p; }
@@ -338,6 +340,7 @@ protected:
     static int getBaseAlignmentScalar(const TType&, int& size);
 
     const EShLanguage language;
+    TString entryPoint;
     TIntermNode* treeRoot;
     EProfile profile;
     int version;

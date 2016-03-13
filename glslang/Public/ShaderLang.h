@@ -290,6 +290,7 @@ public:
     void setStringsWithLengthsAndNames(
         const char* const* s, const int* l, const char* const* names, int n);
     void setPreamble(const char* s) { preamble = s; }
+    void setEntryPoint(const char* entryPoint);
 
     // Interface to #include handlers.
     class Includer {

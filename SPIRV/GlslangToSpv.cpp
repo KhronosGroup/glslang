@@ -590,8 +590,8 @@ TGlslangToSpvTraverser::TGlslangToSpvTraverser(const glslang::TIntermediate* gls
     builder.setSource(TranslateSourceLanguage(glslangIntermediate->getProfile()), glslangIntermediate->getVersion());
     stdBuiltins = builder.import("GLSL.std.450");
     builder.setMemoryModel(spv::AddressingModelLogical, spv::MemoryModelGLSL450);
-    shaderEntry = builder.makeMain();
-    entryPoint = builder.addEntryPoint(executionModel, shaderEntry, "main");
+    shaderEntry = builder.makeEntrypoint(glslangIntermediate->getEntryPoint().c_str());
+    entryPoint = builder.addEntryPoint(executionModel, shaderEntry, glslangIntermediate->getEntryPoint().c_str());
 
     // Add the source extensions
     const auto& sourceExtensions = glslangIntermediate->getRequestedExtensions();
@@ -2082,7 +2082,9 @@ void TGlslangToSpvTraverser::updateMemberOffset(const glslang::TType& /*structTy
 
 bool TGlslangToSpvTraverser::isShaderEntrypoint(const glslang::TIntermAggregate* node)
 {
-    return node->getName() == "main(";
+    // have to ignore mangling and just look at the base name
+    int firstOpen = node->getName().find('(');
+    return node->getName().compare(0, firstOpen, glslangIntermediate->getEntryPoint()) == 0;
 }
 
 // Make all the functions, skeletally, without actually visiting their bodies.

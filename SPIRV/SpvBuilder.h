@@ -205,9 +205,9 @@ public:
     void setBuildPoint(Block* bp) { buildPoint = bp; }
     Block* getBuildPoint() const { return buildPoint; }
 
-    // Make the main function. The returned pointer is only valid
+    // Make the entry-point function. The returned pointer is only valid
     // for the lifetime of this builder.
-    Function* makeMain();
+    Function* makeEntrypoint(const char*);
 
     // Make a shader-style function, and create its entry block if entry is non-zero.
     // Return the function, pass back the entry.

@@ -588,6 +588,7 @@ bool ProcessDeferred(
     // Now we can process the full shader under proper symbols and rules.
     //
 
+    intermediate.setEntryPoint("main");
     TParseContext parseContext(symbolTable, intermediate, false, version, profile, spv, vulkan, compiler->getLanguage(), compiler->infoSink, forwardCompatible, messages);
     glslang::TScanContext scanContext(parseContext);
     TPpContext ppContext(parseContext, includer);
@@ -1353,6 +1354,11 @@ void TShader::setStringsWithLengthsAndNames(
     numStrings = n;
     lengths = l;
     stringNames = names;
+}
+
+void TShader::setEntryPoint(const char* entryPoint)
+{
+    intermediate->setEntryPoint(entryPoint);
 }
 
 //

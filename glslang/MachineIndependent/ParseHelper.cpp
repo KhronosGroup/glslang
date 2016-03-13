@@ -975,7 +975,7 @@ TIntermAggregate* TParseContext::handleFunctionDefinition(const TSourceLoc& loc,
     //
     // Raise error message if main function takes any parameters or returns anything other than void
     //
-    if (function.getName() == "main") {
+    if (function.getName() == intermediate.getEntryPoint()) {
         if (function.getParamCount() > 0)
             error(loc, "function cannot take any parameter(s)", function.getName().c_str(), "");
         if (function.getType().getBasicType() != EbtVoid)
