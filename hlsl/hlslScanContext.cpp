@@ -239,34 +239,36 @@ void HlslScanContext::fillInKeywordMap()
     // TODO: get correct set here
     ReservedSet = new std::unordered_set<const char*, str_hash, str_eq>;
     
-    ReservedSet->insert("common");
-    ReservedSet->insert("partition");
-    ReservedSet->insert("active");
-    ReservedSet->insert("asm");
+    ReservedSet->insert("auto");
+    ReservedSet->insert("catch");
+    ReservedSet->insert("char");
     ReservedSet->insert("class");
-    ReservedSet->insert("union");
+    ReservedSet->insert("const_cast");
     ReservedSet->insert("enum");
+    ReservedSet->insert("explicit");
+    ReservedSet->insert("friend");
+    ReservedSet->insert("goto");
+    ReservedSet->insert("long");
+    ReservedSet->insert("mutable");
+    ReservedSet->insert("new");
+    ReservedSet->insert("operator");
+    ReservedSet->insert("private");
+    ReservedSet->insert("protected");
+    ReservedSet->insert("public");
+    ReservedSet->insert("reinterpret_cast");
+    ReservedSet->insert("short");
+    ReservedSet->insert("signed");
+    ReservedSet->insert("sizeof");
+    ReservedSet->insert("static_cast");
     ReservedSet->insert("template");
     ReservedSet->insert("this");
-    ReservedSet->insert("goto");
-    ReservedSet->insert("inline");
-    ReservedSet->insert("noinline");
-    ReservedSet->insert("public");
-    ReservedSet->insert("extern");
-    ReservedSet->insert("external");
-    ReservedSet->insert("interface");
-    ReservedSet->insert("long");
-    ReservedSet->insert("short");
-    ReservedSet->insert("half");
-    ReservedSet->insert("fixed");
+    ReservedSet->insert("throw");
+    ReservedSet->insert("try");
+    ReservedSet->insert("typename");
+    ReservedSet->insert("union");
     ReservedSet->insert("unsigned");
-    ReservedSet->insert("input");
-    ReservedSet->insert("output");
-    ReservedSet->insert("filter");
-    ReservedSet->insert("sizeof");
-    ReservedSet->insert("cast");
-    ReservedSet->insert("namespace");
     ReservedSet->insert("using");
+    ReservedSet->insert("virtual");
 }
 
 void HlslScanContext::deleteKeywordMap()
