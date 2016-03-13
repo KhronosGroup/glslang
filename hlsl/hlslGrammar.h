@@ -59,12 +59,16 @@ namespace glslang {
         bool acceptFullySpecifiedType(TType&);
         void acceptQualifier(TQualifier&);
         bool acceptType(TType&);
-        bool acceptCompoundStatement();
+        bool acceptFunctionParameters(TFunction&);
+        bool acceptParameterDeclaration(TFunction&);
+        bool acceptFunctionDefinition(TFunction&, TIntermNode*&);
         bool acceptExpression(TIntermTyped*&);
         bool acceptConstructor(TIntermTyped*&);
         bool acceptArguments(TFunction*, TIntermAggregate*&);
         bool acceptLiteral(TIntermTyped*&);
         bool acceptOperator(TOperator& op);
+        bool acceptCompoundStatement(TIntermAggregate*&);
+        bool acceptStatement(TIntermNode*&);
 
         HlslScanContext& scanContext;
         HlslParseContext& parseContext;
