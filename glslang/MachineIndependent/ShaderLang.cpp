@@ -46,6 +46,7 @@
 #include <sstream>
 #include "SymbolTable.h"
 #include "ParseHelper.h"
+#include "../../hlsl/hlslParseHelper.h"
 #include "Scan.h"
 #include "ScanContext.h"
 
@@ -598,26 +599,37 @@ bool ProcessDeferred(
     // Now we can process the full shader under proper symbols and rules.
     //
 
-    intermediate.setEntryPoint("main");
-    TParseContext parseContext(symbolTable, intermediate, false, version, profile, spv, vulkan, compiler->getLanguage(), compiler->infoSink, forwardCompatible, messages);
-    glslang::TScanContext scanContext(parseContext);
-    TPpContext ppContext(parseContext, includer);
-    parseContext.setScanContext(&scanContext);
-    parseContext.setPpContext(&ppContext);
-    parseContext.setLimits(*resources);
+    TParseContextBase* parseContext;
+    if (source == EShSourceHlsl) {
+        parseContext = new HlslParseContext(symbolTable, intermediate, false, version, profile, spv, vulkan,
+                                             compiler->getLanguage(), compiler->infoSink, forwardCompatible, messages);
+    }
+    else {
+        intermediate.setEntryPoint("main");
+        parseContext = new TParseContext(symbolTable, intermediate, false, version, profile, spv, vulkan,
+                                         compiler->getLanguage(), compiler->infoSink, forwardCompatible, messages);
+    }
+    TPpContext ppContext(*parseContext, includer);
+
+    // only GLSL (bison triggered, really) needs an externally set scan context
+    glslang::TScanContext scanContext(*parseContext);
+    if ((messages & EShMsgReadHlsl) == 0)
+        parseContext->setScanContext(&scanContext);
+
+    parseContext->setPpContext(&ppContext);
+    parseContext->setLimits(*resources);
     if (! goodVersion)
-        parseContext.addError();
+        parseContext->addError();
     if (warnVersionNotFirst) {
         TSourceLoc loc;
         loc.init();
-        parseContext.warn(loc, "Illegal to have non-comment, non-whitespace tokens before #version", "#version", "");
+        parseContext->warn(loc, "Illegal to have non-comment, non-whitespace tokens before #version", "#version", "");
     }
 
-    parseContext.initializeExtensionBehavior();
-
+    parseContext->initializeExtensionBehavior();
     
     // Fill in the strings as outlined above.
-    strings[0] = parseContext.getPreamble();
+    strings[0] = parseContext->getPreamble();
     lengths[0] = strlen(strings[0]);
     names[0] = nullptr;
     strings[1] = customPreamble;
@@ -635,14 +647,14 @@ bool ProcessDeferred(
     // Push a new symbol allocation scope that will get used for the shader's globals.
     symbolTable.push();
 
-    bool success = processingContext(parseContext, ppContext, fullInput,
+    bool success = processingContext(*parseContext, ppContext, fullInput,
                                      versionWillBeError, symbolTable,
                                      intermediate, optLevel, messages);
 
     // Clean up the symbol table. The AST is self-sufficient now.
     delete symbolTableMemory;
 
-
+    delete parseContext;
     delete [] lengths;
     delete [] strings;
     delete [] names;

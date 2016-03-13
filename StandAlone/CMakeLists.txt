@@ -10,6 +10,7 @@ set(LIBRARIES
     glslang
     OGLCompiler
     OSDependent
+    HLSL
     SPIRV)
 
 if(WIN32)

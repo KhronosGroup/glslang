@@ -56,6 +56,24 @@ done < test-spirv-list
 rm -f comp.spv frag.spv geom.spv tesc.spv tese.spv vert.spv
 
 #
+# HLSL -> SPIR-V code generation tests
+#
+while read t; do
+  case $t in
+    \#*)
+      # Skip comment lines in the test list file.
+      ;;
+    *)
+      echo Running HLSL-to-SPIR-V $t...
+      b=`basename $t`
+      $EXE -D -e PixelShaderFunction -H $t > $TARGETDIR/$b.out
+      diff -b $BASEDIR/$b.out $TARGETDIR/$b.out || HASERROR=1
+      ;;
+  esac
+done < test-hlsl-spirv-list
+rm -f comp.spv frag.spv geom.spv tesc.spv tese.spv vert.spv
+
+#
 # Preprocessor tests
 #
 while read t; do
