@@ -41,10 +41,13 @@
 
 namespace glslang {
 
+    // Should just be the grammar aspect of HLSL.
+    // Described in more detail in hlslGrammar.cpp.
+
     class HlslGrammar {
     public:
-        HlslGrammar(HlslScanContext& scanContext, HlslParseContext& parseContext)
-            : scanContext(scanContext), parseContext(parseContext) { }
+        HlslGrammar(HlslScanContext& scanner, HlslParseContext& parseContext)
+            : scanner(scanner), parseContext(parseContext), intermediate(parseContext.intermediate) { }
         virtual ~HlslGrammar() { }
 
         bool parse();
@@ -53,6 +56,8 @@ namespace glslang {
         void expected(const char*);
         void advanceToken();
         bool acceptTokenClass(EHlslTokenClass);
+        bool peekTokenClass(EHlslTokenClass);
+        bool lookAheadTokenClass(EHlslTokenClass);
 
         bool acceptCompilationUnit();
         bool acceptDeclaration(TIntermNode*& node);
@@ -69,11 +74,13 @@ namespace glslang {
         bool acceptOperator(TOperator& op);
         bool acceptCompoundStatement(TIntermAggregate*&);
         bool acceptStatement(TIntermNode*&);
+        bool acceptSemantic();
 
-        HlslScanContext& scanContext;
-        HlslParseContext& parseContext;
+        HlslScanContext& scanner;        // lexical scanner, to get next token
+        HlslParseContext& parseContext;  // state of parsing and helper functions for building the intermediate
+        TIntermediate& intermediate;     // the final product, the intermediate representation, includes the AST
 
-        HlslToken token;
+        HlslToken token;                 // the current token we are processing
     };
 
 } // end namespace glslang
