@@ -57,7 +57,7 @@ namespace glslang {
         void advanceToken();
         bool acceptTokenClass(EHlslTokenClass);
         bool peekTokenClass(EHlslTokenClass);
-        bool lookAheadTokenClass(EHlslTokenClass);
+        bool acceptIdentifier(HlslToken&);
 
         bool acceptCompilationUnit();
         bool acceptDeclaration(TIntermNode*& node);

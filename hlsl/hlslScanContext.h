@@ -34,8 +34,8 @@
 //
 
 //
-// This holds context specific to the GLSL scanner, which
-// sits between the preprocessor scanner and parser.
+// This holds context specific to the HLSL scanner, which
+// sits between the preprocessor scanner and HLSL parser.
 //
 
 #ifndef HLSLSCANCONTEXT_H_
@@ -49,20 +49,30 @@ namespace glslang {
 class TPpContext;
 class TPpToken;
 
+
+//
+// Everything needed to fully describe a token.
+//
 struct HlslToken {
-    TSourceLoc loc;
-    EHlslTokenClass tokenClass;
-    bool isType;
-    union {
-        glslang::TString *string;
-        int i;
+    HlslToken() : isType(false), string(nullptr), symbol(nullptr) { loc.init(); }
+    TSourceLoc loc;                // location of token in the source
+    EHlslTokenClass tokenClass;    // what kind of token it is
+    bool isType;                   // true if the token represents a user type
+    union {                        // what data the token holds
+        glslang::TString *string;  // for identifiers
+        int i;                     // for literals
         unsigned int u;
         bool b;
         double d;
     };
-    glslang::TSymbol* symbol;
+    glslang::TSymbol* symbol;      // if a symbol table lookup was done already, this is the result
 };
 
+//
+// The state of scanning and translating raw tokens to slightly richer
+// semantics, like knowing if an identifier is an existing symbol, or
+// user-defined type.
+//
 class HlslScanContext {
 public:
     HlslScanContext(TParseContextBase& parseContext, TPpContext& ppContext)

@@ -93,6 +93,19 @@ bool HlslGrammar::peekTokenClass(EHlslTokenClass tokenClass)
     return token.tokenClass == tokenClass;
 }
 
+// Only process the next token if it is an identifier.
+// Return true if it was an identifier.
+bool HlslGrammar::acceptIdentifier(HlslToken& idToken)
+{
+    if (peekTokenClass(EHTokIdentifier)) {
+        idToken = token;
+        advanceToken();
+        return true;
+    }
+
+    return false;
+}
+
 // compilationUnit
 //      : list of externalDeclaration
 //
@@ -137,11 +150,8 @@ bool HlslGrammar::acceptDeclaration(TIntermNode*& node)
         return false;
 
     // identifier
-    if (peekTokenClass(EHTokIdentifier)) {
-        TSourceLoc declLoc = token.loc;
-        TString* declName = token.string;
-        advanceToken();
-
+    HlslToken idToken;
+    if (acceptIdentifier(idToken)) {
         // = expression
         TIntermTyped* expressionNode = nullptr;
         if (acceptTokenClass(EHTokEqual)) {
@@ -153,12 +163,12 @@ bool HlslGrammar::acceptDeclaration(TIntermNode*& node)
 
         // SEMICOLON
         if (acceptTokenClass(EHTokSemicolon)) {
-            node = parseContext.declareVariable(declLoc, *declName, type, 0, expressionNode);
+            node = parseContext.declareVariable(idToken.loc, *idToken.string, type, 0, expressionNode);
             return true;
         }
 
         // function_parameters
-        TFunction* function = new TFunction(declName, type);
+        TFunction* function = new TFunction(idToken.string, type);
         if (acceptFunctionParameters(*function)) {
             // COLON semantic
             acceptSemantic();
@@ -345,13 +355,10 @@ bool HlslGrammar::acceptParameterDeclaration(TFunction& function)
         return false;
 
     // identifier
-    TString name;
-    if (peekTokenClass(EHTokIdentifier)) {
-        name = *token.string;
-        advanceToken();
-    }
+    HlslToken idToken;
+    acceptIdentifier(idToken);
 
-    TParameter param = { token.string, type };
+    TParameter param = { idToken.string, type };
     function.addParameter(param);
 
     return true;
@@ -390,9 +397,9 @@ bool HlslGrammar::acceptFunctionDefinition(TFunction& function, TIntermNode*& no
 bool HlslGrammar::acceptExpression(TIntermTyped*& node)
 {
     // identifier
-    if (peekTokenClass(EHTokIdentifier)) {
-        TIntermTyped* left = parseContext.handleVariable(token.loc, token.symbol, token.string);
-        advanceToken();
+    HlslToken idToken;
+    if (acceptIdentifier(idToken)) {
+        TIntermTyped* left = parseContext.handleVariable(idToken.loc, idToken.symbol, token.string);
 
         // operator?
         TOperator op;
@@ -401,9 +408,8 @@ bool HlslGrammar::acceptExpression(TIntermTyped*& node)
         TSourceLoc loc = token.loc;
 
         // identifier
-        if (peekTokenClass(EHTokIdentifier)) {
-            TIntermTyped* right = parseContext.handleVariable(token.loc, token.symbol, token.string);
-            advanceToken();
+        if (acceptIdentifier(idToken)) {
+            TIntermTyped* right = parseContext.handleVariable(idToken.loc, idToken.symbol, token.string);
             node = intermediate.addBinaryMath(op, left, right, loc);
             return true;
         }
@@ -624,10 +630,8 @@ bool HlslGrammar::acceptSemantic()
     // COLON
     if (acceptTokenClass(EHTokColon)) {
         // semantic
-        if (peekTokenClass(EHTokIdentifier)) {
-            TString* semantic = token.string;
-            advanceToken();
-        } else {
+        HlslToken idToken;
+        if (! acceptIdentifier(idToken)) {
             expected("semantic");
             return false;
         }
