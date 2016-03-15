@@ -719,28 +719,28 @@ Linked fragment stage:
              424:   37(float) Load 39(doublev)
              425:   37(float) Load 39(doublev)
              429:   426(bool) Load 428(boolv)
-             430:   37(float) ExtInst 1(GLSL.std.450) 46(FMix) 424 425 429
+             430:   37(float) Select 429 425 424
              431:   37(float) Load 39(doublev)
              432:   37(float) FAdd 431 430
                               Store 39(doublev) 432
              433:   41(fvec2) Load 43(dvec2v)
              434:   41(fvec2) Load 43(dvec2v)
              438:  435(bvec2) Load 437(bvec2v)
-             439:   41(fvec2) ExtInst 1(GLSL.std.450) 46(FMix) 433 434 438
+             439:   41(fvec2) Select 438 434 433
              440:   41(fvec2) Load 43(dvec2v)
              441:   41(fvec2) FAdd 440 439
                               Store 43(dvec2v) 441
              442:   46(fvec3) Load 48(dvec3v)
              443:   46(fvec3) Load 48(dvec3v)
              447:  444(bvec3) Load 446(bvec3v)
-             448:   46(fvec3) ExtInst 1(GLSL.std.450) 46(FMix) 442 443 447
+             448:   46(fvec3) Select 447 443 442
              449:   46(fvec3) Load 48(dvec3v)
              450:   46(fvec3) FAdd 449 448
                               Store 48(dvec3v) 450
              451:   51(fvec4) Load 53(dvec4v)
              452:   51(fvec4) Load 53(dvec4v)
              456:  453(bvec4) Load 455(bvec4v)
-             457:   51(fvec4) ExtInst 1(GLSL.std.450) 46(FMix) 451 452 456
+             457:   51(fvec4) Select 456 452 451
              458:   51(fvec4) Load 53(dvec4v)
              459:   51(fvec4) FAdd 458 457
                               Store 53(dvec4v) 459

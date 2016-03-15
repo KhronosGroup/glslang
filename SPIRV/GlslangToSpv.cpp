@@ -3435,11 +3435,12 @@ spv::Id TGlslangToSpvTraverser::createMiscOperation(glslang::TOperator op, spv::
         builder.promoteScalar(precision, operands.front(), operands[2]);
         break;
     case glslang::EOpMix:
-        if (isFloat)
+        if (! builder.isBoolType(builder.getScalarTypeId(builder.getTypeId(operands.back())))) {
+            assert(isFloat);
             libCall = spv::GLSLstd450FMix;
-        else {
+        } else {
             opCode = spv::OpSelect;
-            spv::MissingFunctionality("translating integer mix to OpSelect");
+            std::swap(operands.front(), operands.back());
         }
         builder.promoteScalar(precision, operands.front(), operands.back());
         break;
