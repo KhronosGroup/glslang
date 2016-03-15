@@ -281,7 +281,7 @@ Linked fragment stage:
              176:    7(fvec4) Load 9(v)
              177:    7(fvec4) Load 9(v)
              182:  179(bvec4) Load 181(ub41)
-             183:    7(fvec4) ExtInst 1(GLSL.std.450) 46(FMix) 176 177 182
+             183:    7(fvec4) Select 182 177 176
              184:    7(fvec4) Load 9(v)
              185:    7(fvec4) FAdd 184 183
                               Store 9(v) 185
