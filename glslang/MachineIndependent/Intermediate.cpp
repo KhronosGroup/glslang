@@ -1019,6 +1019,9 @@ void TIntermediate::addSymbolLinkageNode(TIntermAggregate*& linkage, const TSymb
     }
     TIntermSymbol* node = new TIntermSymbol(variable->getUniqueId(), variable->getName(), variable->getType());
     node->setConstArray(variable->getConstArray());
+    // Pass the constant initializer subtree to the intermediate node just
+    // created.
+    node->setConstInitializerSubTree(variable->getConstInitializerSubTree());
     linkage = growAggregate(linkage, node);
 }
 

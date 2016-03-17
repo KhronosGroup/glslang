@@ -144,7 +144,7 @@ protected:
 //
 class TVariable : public TSymbol {
 public:
-    TVariable(const TString *name, const TType& t, bool uT = false ) : TSymbol(name), userType(uT) { type.shallowCopy(t); }
+    TVariable(const TString *name, const TType& t, bool uT = false ) : TSymbol(name), userType(uT), constInitializerSubTree(nullptr) { type.shallowCopy(t); }
     virtual TVariable* clone() const;
     virtual ~TVariable() { }
 
@@ -156,6 +156,8 @@ public:
     virtual const TConstUnionArray& getConstArray() const { return unionArray; }
     virtual TConstUnionArray& getWritableConstArray() { assert(writable); return unionArray; }
     virtual void setConstArray(const TConstUnionArray& constArray) { unionArray = constArray; }
+    void setConstInitializerSubTree(TIntermTyped* subTree) { constInitializerSubTree = subTree; }
+    TIntermTyped* getConstInitializerSubTree() const { return constInitializerSubTree; }
 
     virtual void dump(TInfoSink &infoSink) const;
 
@@ -168,6 +170,8 @@ protected:
     // we are assuming that Pool Allocator will free the memory allocated to unionArray
     // when this object is destroyed
     TConstUnionArray unionArray;
+
+    TIntermTyped* constInitializerSubTree;
 };
 
 //

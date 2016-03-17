@@ -613,7 +613,7 @@ public:
     // per process threadPoolAllocator, then it causes increased memory usage per compile
     // it is essential to use "symbol = sym" to assign to symbol
     TIntermSymbol(int i, const TString& n, const TType& t) : 
-        TIntermTyped(t), id(i) { name = n;} 
+        TIntermTyped(t), id(i), constInitializerSubTree(nullptr) { name = n;} 
     virtual int getId() const { return id; }
     virtual const TString& getName() const { return name; }
     virtual void traverse(TIntermTraverser*);
@@ -621,10 +621,13 @@ public:
     virtual const TIntermSymbol* getAsSymbolNode() const { return this; }
     void setConstArray(const TConstUnionArray& c) { unionArray = c; }
     const TConstUnionArray& getConstArray() const { return unionArray; }
+    void setConstInitializerSubTree(TIntermTyped* subTree) { constInitializerSubTree = subTree; }
+    TIntermTyped* getConstInitializerSubTree() const { return constInitializerSubTree; }
 protected:
     int id;                      // the unique id of the symbol this node represents
     TString name;                // the name of the symbol this node represents
     TConstUnionArray unionArray; // if the symbol is a front-end compile-time constant, this is its value
+    TIntermTyped* constInitializerSubTree;
 };
 
 class TIntermConstantUnion : public TIntermTyped {
