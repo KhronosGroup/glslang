@@ -495,7 +495,7 @@ TIntermTyped* TParseContext::handleBracketDereference(const TSourceLoc& loc, TIn
             error(loc, " left of '[' is not of type array, matrix, or vector ", base->getAsSymbolNode()->getName().c_str(), "");
         else
             error(loc, " left of '[' is not of type array, matrix, or vector ", "expression", "");
-    } else if (base->getType().getQualifier().storage == EvqConst && index->getQualifier().storage == EvqConst)
+    } else if (base->getType().getQualifier().storage == EvqConst && index->getQualifier().storage == EvqConst && !base->getType().getQualifier().isSpecConstant())
         return intermediate.foldDereference(base, indexValue, loc);
     else {
         // at least one of base and index is variable...
@@ -849,9 +849,10 @@ TIntermTyped* TParseContext::handleDotDereference(const TSourceLoc& loc, TInterm
             }
         }
         if (fieldFound) {
-            if (base->getType().getQualifier().storage == EvqConst)
+            if (base->getType().getQualifier().storage == EvqConst
+                && !base->getType().getQualifier().isSpecConstant()) {
                 result = intermediate.foldDereference(base, member, loc);
-            else {
+            } else {
                 blockMemberExtensionCheck(loc, base, field);
                 TIntermTyped* index = intermediate.addConstantUnion(member, loc);
                 result = intermediate.addIndex(EOpIndexDirectStruct, base, index, loc);
