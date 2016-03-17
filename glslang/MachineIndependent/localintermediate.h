@@ -163,7 +163,7 @@ public:
     void addPushConstantCount() { ++numPushConstants; }
     bool isRecursive() const { return recursive; }
     
-    TIntermSymbol* addSymbol(int Id, const TString&, const TType&, const TConstUnionArray&, const TSourceLoc&);
+    TIntermSymbol* addSymbol(int Id, const TString&, const TType&, const TConstUnionArray&, const TIntermTyped*, const TSourceLoc&);
     TIntermSymbol* addSymbol(int Id, const TString&, const TType&, const TSourceLoc&);
     TIntermSymbol* addSymbol(const TVariable&, const TSourceLoc&);
     TIntermTyped* addConversion(TOperator, const TType&, TIntermTyped*) const;

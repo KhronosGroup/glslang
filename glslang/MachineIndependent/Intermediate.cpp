@@ -69,17 +69,18 @@ TIntermSymbol* TIntermediate::addSymbol(int id, const TString& name, const TType
     return node;
 }
 
-TIntermSymbol* TIntermediate::addSymbol(int id, const TString& name, const TType& type, const TConstUnionArray& constArray, const TSourceLoc& loc)
+TIntermSymbol* TIntermediate::addSymbol(int id, const TString& name, const TType& type, const TConstUnionArray& constArray, const TIntermTyped* constSubTree, const TSourceLoc& loc)
 {
     TIntermSymbol* node = addSymbol(id, name, type, loc);
     node->setConstArray(constArray);
+    node->setConstInitializerSubTree(constSubTree);
 
     return node;
 }
 
 TIntermSymbol* TIntermediate::addSymbol(const TVariable& variable, const TSourceLoc& loc)
 {
-    return addSymbol(variable.getUniqueId(), variable.getName(), variable.getType(), variable.getConstArray(), loc);
+    return addSymbol(variable.getUniqueId(), variable.getName(), variable.getType(), variable.getConstArray(), variable.getConstInitializerSubTree(), loc);
 }
 
 //

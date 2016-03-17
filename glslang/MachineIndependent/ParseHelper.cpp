@@ -4993,6 +4993,17 @@ TIntermNode* TParseContext::executeInitializer(const TSourceLoc& loc, TIntermTyp
             // when TGlslangToSpvTraverser is traversing intermediate symbol
             // nodes.
             variable->setConstInitializerSubTree(initializer);
+
+            // If this constant is not declared at global level, declareVariable()
+            // won't add this constant to AST as a symbol. This is fine for ConstantUnion-like
+            // constants, but not for SpecConstants, as SpecConstants are more symbol-like and
+            // needs a symbol node to represent itself.
+            if (!symbolTable.atGlobalLevel()) {
+                TIntermSymbol* sn = intermediate.addSymbol(*variable, loc);
+                sn->setConstInitializerSubTree(initializer);
+                return sn;
+            }
+
             return nullptr;
           }
         }
