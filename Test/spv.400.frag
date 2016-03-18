@@ -2,6 +2,8 @@
 
 in vec2 c2D;
 flat in int i;
+flat in uint u;
+out uint uo;
 out vec4 outp;
 out ivec4 ioutp;
 out uvec4 uoutp;
@@ -254,6 +256,7 @@ void main()
     ioutp += textureGatherOffset(isamp2DA, vec3(0.1), ivec2(i));
 
     outp += gl_FragCoord + vl2;
+    uo = u % i;
     foo23();
     doubles();
 }

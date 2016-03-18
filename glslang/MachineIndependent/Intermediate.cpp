@@ -474,6 +474,7 @@ TIntermTyped* TIntermediate::addConversion(TOperator op, const TType& type, TInt
     case EOpSub:
     case EOpMul:
     case EOpDiv:
+    case EOpMod:
 
     case EOpVectorTimesScalar:
     case EOpVectorTimesMatrix:
