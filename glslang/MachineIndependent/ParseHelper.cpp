@@ -484,7 +484,7 @@ TIntermTyped* TParseContext::handleBracketDereference(const TSourceLoc& loc, TIn
     TIntermTyped* result = nullptr;
 
     int indexValue = 0;
-    if (index->getQualifier().storage == EvqConst) {
+    if (index->getQualifier().isFrontEndConstant()) {
         indexValue = index->getAsConstantUnion()->getConstArray()[0].getIConst();
         checkIndex(loc, base->getType(), indexValue);
     }
@@ -495,15 +495,15 @@ TIntermTyped* TParseContext::handleBracketDereference(const TSourceLoc& loc, TIn
             error(loc, " left of '[' is not of type array, matrix, or vector ", base->getAsSymbolNode()->getName().c_str(), "");
         else
             error(loc, " left of '[' is not of type array, matrix, or vector ", "expression", "");
-    } else if (base->getType().getQualifier().storage == EvqConst && index->getQualifier().storage == EvqConst && !base->getType().getQualifier().isSpecConstant())
+    } else if (base->getType().getQualifier().isFrontEndConstant() == EvqConst && index->getQualifier().isFrontEndConstant() == EvqConst)
         return intermediate.foldDereference(base, indexValue, loc);
     else {
-        // at least one of base and index is variable...
+        // at least one of base and index is variable or specialization constant...
 
         if (base->getAsSymbolNode() && isIoResizeArray(base->getType()))
             handleIoResizeArrayAccess(loc, base);
 
-        if (index->getQualifier().storage == EvqConst) {
+        if (index->getQualifier().isFrontEndConstant()) {
             if (base->getType().isImplicitlySizedArray())
                 updateImplicitArraySize(loc, base, indexValue);
             result = intermediate.addIndex(EOpIndexDirect, base, index, loc);
@@ -541,10 +541,14 @@ TIntermTyped* TParseContext::handleBracketDereference(const TSourceLoc& loc, TIn
     } else {
         // Insert valid dereferenced result
         TType newType(base->getType(), 0);  // dereferenced type
-        if (base->getType().getQualifier().storage == EvqConst && index->getQualifier().storage == EvqConst)
+        if (base->getType().getQualifier().storage == EvqConst && index->getQualifier().storage == EvqConst) {
             newType.getQualifier().storage = EvqConst;
-        else
+            if (base->getType().getQualifier().isSpecConstant() || index->getQualifier().isSpecConstant()) {
+                newType.getQualifier().makeSpecConstant();
+            }
+        } else {
             newType.getQualifier().storage = EvqTemporary;
+        }
         result->setType(newType);
 
         if (anyIndexLimits)
@@ -849,8 +853,7 @@ TIntermTyped* TParseContext::handleDotDereference(const TSourceLoc& loc, TInterm
             }
         }
         if (fieldFound) {
-            if (base->getType().getQualifier().storage == EvqConst
-                && !base->getType().getQualifier().isSpecConstant()) {
+            if (base->getType().getQualifier().isFrontEndConstant()) {
                 result = intermediate.foldDereference(base, member, loc);
             } else {
                 blockMemberExtensionCheck(loc, base, field);
@@ -1221,6 +1224,8 @@ TIntermTyped* TParseContext::handleLengthMethod(const TSourceLoc& loc, TFunction
                     else
                         error(loc, "", function->getName().c_str(), "array must be declared with a size before using this method");
                 }
+            } else if (type.getOuterArrayNode()) {
+                return type.getOuterArrayNode();
             } else
                 length = type.getOuterArraySize();
         } else if (type.isMatrix())
