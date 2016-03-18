@@ -495,7 +495,7 @@ TIntermTyped* TParseContext::handleBracketDereference(const TSourceLoc& loc, TIn
             error(loc, " left of '[' is not of type array, matrix, or vector ", base->getAsSymbolNode()->getName().c_str(), "");
         else
             error(loc, " left of '[' is not of type array, matrix, or vector ", "expression", "");
-    } else if (base->getType().getQualifier().isFrontEndConstant() == EvqConst && index->getQualifier().isFrontEndConstant() == EvqConst)
+    } else if (base->getType().getQualifier().isFrontEndConstant() && index->getQualifier().isFrontEndConstant())
         return intermediate.foldDereference(base, indexValue, loc);
     else {
         // at least one of base and index is variable or specialization constant...
