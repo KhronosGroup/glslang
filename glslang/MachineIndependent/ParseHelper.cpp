@@ -484,7 +484,7 @@ TIntermTyped* TParseContext::handleBracketDereference(const TSourceLoc& loc, TIn
     TIntermTyped* result = nullptr;
 
     int indexValue = 0;
-    if (index->getQualifier().storage == EvqConst) {
+    if (index->getQualifier().isFrontEndConstant()) {
         indexValue = index->getAsConstantUnion()->getConstArray()[0].getIConst();
         checkIndex(loc, base->getType(), indexValue);
     }
@@ -495,15 +495,15 @@ TIntermTyped* TParseContext::handleBracketDereference(const TSourceLoc& loc, TIn
             error(loc, " left of '[' is not of type array, matrix, or vector ", base->getAsSymbolNode()->getName().c_str(), "");
         else
             error(loc, " left of '[' is not of type array, matrix, or vector ", "expression", "");
-    } else if (base->getType().getQualifier().storage == EvqConst && index->getQualifier().storage == EvqConst)
+    } else if (base->getType().getQualifier().isFrontEndConstant() && index->getQualifier().isFrontEndConstant())
         return intermediate.foldDereference(base, indexValue, loc);
     else {
-        // at least one of base and index is variable...
+        // at least one of base and index is variable or specialization constant...
 
         if (base->getAsSymbolNode() && isIoResizeArray(base->getType()))
             handleIoResizeArrayAccess(loc, base);
 
-        if (index->getQualifier().storage == EvqConst) {
+        if (index->getQualifier().isFrontEndConstant()) {
             if (base->getType().isImplicitlySizedArray())
                 updateImplicitArraySize(loc, base, indexValue);
             result = intermediate.addIndex(EOpIndexDirect, base, index, loc);
@@ -541,10 +541,14 @@ TIntermTyped* TParseContext::handleBracketDereference(const TSourceLoc& loc, TIn
     } else {
         // Insert valid dereferenced result
         TType newType(base->getType(), 0);  // dereferenced type
-        if (base->getType().getQualifier().storage == EvqConst && index->getQualifier().storage == EvqConst)
+        if (base->getType().getQualifier().storage == EvqConst && index->getQualifier().storage == EvqConst) {
             newType.getQualifier().storage = EvqConst;
-        else
+            if (base->getType().getQualifier().isSpecConstant() || index->getQualifier().isSpecConstant()) {
+                newType.getQualifier().makeSpecConstant();
+            }
+        } else {
             newType.getQualifier().storage = EvqTemporary;
+        }
         result->setType(newType);
 
         if (anyIndexLimits)
@@ -849,9 +853,9 @@ TIntermTyped* TParseContext::handleDotDereference(const TSourceLoc& loc, TInterm
             }
         }
         if (fieldFound) {
-            if (base->getType().getQualifier().storage == EvqConst)
+            if (base->getType().getQualifier().isFrontEndConstant()) {
                 result = intermediate.foldDereference(base, member, loc);
-            else {
+            } else {
                 blockMemberExtensionCheck(loc, base, field);
                 TIntermTyped* index = intermediate.addConstantUnion(member, loc);
                 result = intermediate.addIndex(EOpIndexDirectStruct, base, index, loc);
@@ -1220,6 +1224,8 @@ TIntermTyped* TParseContext::handleLengthMethod(const TSourceLoc& loc, TFunction
                     else
                         error(loc, "", function->getName().c_str(), "array must be declared with a size before using this method");
                 }
+            } else if (type.getOuterArrayNode()) {
+                return type.getOuterArrayNode();
             } else
                 length = type.getOuterArraySize();
         } else if (type.isMatrix())
@@ -4819,6 +4825,68 @@ TVariable* TParseContext::declareNonArray(const TSourceLoc& loc, TString& identi
     }
 }
 
+namespace {
+
+// Traverse all the child nodes of a given node. propagate 'SpecConstant' label
+// from bottom up.
+// The given node will be labelled with EvqConst storage and 'SpecConstant' iff
+//  1) All of its child nodes are constants, either ConstantUnion or symbols
+//     with constant storage and 'SpecConstant' label.
+//  2) At least one of its child should be 'SpecConstant'.
+void propagateSpecConstant(TIntermTyped* node) {
+  if (TIntermBinary* bn = node->getAsBinaryNode()) {
+    propagateSpecConstant(bn->getLeft());
+    propagateSpecConstant(bn->getRight());
+
+    // Binary node, both operands should be const, and at least one of them
+    // should be SpecConst (so that the binary node is not folded).
+    if (bn->getLeft()->getType().getQualifier().isConstant() &&
+        bn->getRight()->getType().getQualifier().isConstant() &&
+        (bn->getLeft()->getType().getQualifier().isSpecConstant() ||
+         bn->getRight()->getType().getQualifier().isSpecConstant())) {
+      node->getWritableType().getQualifier().makeSpecConstant();
+      node->getWritableType().getQualifier().storage = EvqConst;
+    }
+    return;
+
+  } else if (TIntermUnary* un = node->getAsUnaryNode()) {
+    propagateSpecConstant(un->getOperand());
+
+    // Unary node, the operand must be SpecConst, so that it is not folded.
+    if (un->getOperand()->getType().getQualifier().isSpecConstant()) {
+      node->getWritableType().getQualifier().makeSpecConstant();
+      node->getWritableType().getQualifier().storage = EvqConst;
+    }
+    return;
+  } else if (TIntermAggregate* an = node->getAsAggregate()) {
+    for (auto SI = an->getSequence().begin(); SI != an->getSequence().end();
+         SI++) {
+      if (auto* tn = (*SI)->getAsTyped()) propagateSpecConstant(tn);
+    }
+
+    // Aggregate node, all the elements should be const, and at least one
+    // of them should be SpecConst (so that it is not folded).
+    bool all_const = true;
+    bool has_spec_const = false;
+    for (auto SI = an->getSequence().begin(); SI != an->getSequence().end();
+         SI++) {
+      if (!(*SI)->getAsTyped()->getType().getQualifier().isConstant()) {
+        all_const = false;
+      }
+      if ((*SI)->getAsTyped()->getType().getQualifier().isSpecConstant()) {
+        has_spec_const = true;
+      }
+    }
+    if (has_spec_const && all_const) {
+      node->getWritableType().getQualifier().storage = EvqConst;
+      node->getWritableType().getQualifier().makeSpecConstant();
+    }
+  } else {
+    return;
+  }
+}
+}
+
 //
 // Handle all types of initializers from the grammar.
 //
@@ -4851,6 +4919,10 @@ TIntermNode* TParseContext::executeInitializer(const TSourceLoc& loc, TIntermTyp
             variable->getWritableType().getQualifier().storage = EvqTemporary;
         return nullptr;
     }
+
+    // Check if the initializer subtree is a specialization constants. Change
+    // its storage class to EvqConst and label it as 'SpecConstant' if it is.
+    propagateSpecConstant(initializer);
 
     // Fix outer arrayness if variable is unsized, getting size from the initializer
     if (initializer->getType().isExplicitlySizedArray() &&
@@ -4906,15 +4978,50 @@ TIntermNode* TParseContext::executeInitializer(const TSourceLoc& loc, TIntermTyp
     if (qualifier == EvqConst || qualifier == EvqUniform) {
         // Compile-time tagging of the variable with its constant value...
 
-        initializer = intermediate.addConversion(EOpAssign, variable->getType(), initializer);
-        if (! initializer || ! initializer->getAsConstantUnion() || variable->getType() != initializer->getType()) {
-            error(loc, "non-matching or non-convertible constant type for const initializer",
-                  variable->getType().getStorageQualifierString(), "");
-            variable->getWritableType().getQualifier().storage = EvqTemporary;
+        initializer = intermediate.addConversion(EOpAssign, variable->getType(),
+                                                 initializer);
+        if (initializer && variable->getType() == initializer->getType()) {
+          if (initializer->getAsConstantUnion()) {
+            // const variable initialized with ConstantUnionArray.
+            variable->setConstArray(
+                initializer->getAsConstantUnion()->getConstArray());
             return nullptr;
+          } else if (initializer->getQualifier().isSpecConstant()) {
+            // const variable initialized with Symbol-like operands. This
+            // is only allowd for specialization constants which have other
+            // specialization constants in its initializer.
+
+            // Label this TVariable as SpecConstant, this label will be
+            // propagate to the intermediate node created from this TVariable.
+            variable->getWritableType().getQualifier().makeSpecConstant();
+            // Store the initializer subtree, the tree will be passed to the
+            // intermediate node created from this TVariable, and then be used
+            // when TGlslangToSpvTraverser is traversing intermediate symbol
+            // nodes.
+            variable->setConstInitializerSubTree(initializer);
+
+            // If this constant is not declared at global level, declareVariable()
+            // won't add this constant to AST as a symbol. This is fine for ConstantUnion-like
+            // constants, but not for SpecConstants, as SpecConstants are more symbol-like and
+            // needs a symbol node to represent itself.
+            if (!symbolTable.atGlobalLevel()) {
+                TIntermSymbol* sn = intermediate.addSymbol(*variable, loc);
+                sn->setConstInitializerSubTree(initializer);
+                return sn;
+            }
+
+            return nullptr;
+          }
         }
 
-        variable->setConstArray(initializer->getAsConstantUnion()->getConstArray());
+        // Can not find initializer for current const variable.
+        error(loc,
+              "non-matching or non-convertible constant type for const "
+              "initializer",
+              variable->getType().getStorageQualifierString(), "");
+        variable->getWritableType().getQualifier().storage = EvqTemporary;
+        return nullptr;
+
     } else {
         // normal assigning of a value to a variable...
         specializationCheck(loc, initializer->getType(), "initializer");

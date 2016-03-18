@@ -621,10 +621,13 @@ public:
     virtual const TIntermSymbol* getAsSymbolNode() const { return this; }
     void setConstArray(const TConstUnionArray& c) { unionArray = c; }
     const TConstUnionArray& getConstArray() const { return unionArray; }
+    void setConstInitializerSubTree(const TIntermTyped* subTree) { constInitializerSubTree = subTree; }
+    const TIntermTyped* getConstInitializerSubTree() const { return constInitializerSubTree; }
 protected:
     int id;                      // the unique id of the symbol this node represents
     TString name;                // the name of the symbol this node represents
     TConstUnionArray unionArray; // if the symbol is a front-end compile-time constant, this is its value
+    const TIntermTyped* constInitializerSubTree;
 };
 
 class TIntermConstantUnion : public TIntermTyped {

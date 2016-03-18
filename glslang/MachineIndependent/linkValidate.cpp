@@ -223,8 +223,10 @@ void TIntermediate::mergeLinkerObjects(TInfoSink& infoSink, TIntermSequence& lin
 
                 // but if one has an initializer and the other does not, update
                 // the initializer
-                if (symbol->getConstArray().empty() && ! unitSymbol->getConstArray().empty())
+                if (symbol->getConstArray().empty() && ! unitSymbol->getConstArray().empty()) {
                     symbol->setConstArray(unitSymbol->getConstArray());
+                    symbol->setConstInitializerSubTree(unitSymbol->getConstInitializerSubTree());
+                }
 
                 // Similarly for binding
                 if (! symbol->getQualifier().hasBinding() && unitSymbol->getQualifier().hasBinding())
