@@ -1629,7 +1629,7 @@ spv::Id TGlslangToSpvTraverser::createSpvVariable(const glslang::TIntermSymbol* 
     // First, steer off constants, which are not SPIR-V variables, but 
     // can still have a mapping to a SPIR-V Id.
     // This includes specialization constants.
-    if (node->getQualifier().storage == glslang::EvqConst) {
+    if (node->getQualifier().isConstant()) {
         return createSpvSpecConstant(*node);
     }
 
@@ -3732,7 +3732,7 @@ void TGlslangToSpvTraverser::addMemberDecoration(spv::Id id, int member, spv::De
 //  - when running into a non-spec-constant, switch to createSpvConstant()
 spv::Id TGlslangToSpvTraverser::createSpvSpecConstant(const glslang::TIntermTyped& node)
 {
-    assert(node.getQualifier().storage == glslang::EvqConst);
+    assert(node.getQualifier().isConstant());
 
     if (! node.getQualifier().specConstant) {
         // hand off to the non-spec-constant path
