@@ -61,11 +61,13 @@ namespace glslang {
 // Returns the added node.
 //
 
-TIntermSymbol* TIntermediate::addSymbol(int id, const TString& name, const TType& type, const TConstUnionArray& constArray, const TSourceLoc& loc)
+TIntermSymbol* TIntermediate::addSymbol(int id, const TString& name, const TType& type, const TConstUnionArray& constArray,
+                                        TIntermTyped* constSubtree, const TSourceLoc& loc)
 {
     TIntermSymbol* node = new TIntermSymbol(id, name, type);
     node->setLoc(loc);
     node->setConstArray(constArray);
+    node->setConstSubtree(constSubtree);
 
     return node;
 }
@@ -80,14 +82,14 @@ TIntermSymbol* TIntermediate::addSymbol(const TVariable& variable)
 
 TIntermSymbol* TIntermediate::addSymbol(const TVariable& variable, const TSourceLoc& loc)
 {
-    return addSymbol(variable.getUniqueId(), variable.getName(), variable.getType(), variable.getConstArray(), loc);
+    return addSymbol(variable.getUniqueId(), variable.getName(), variable.getType(), variable.getConstArray(), variable.getConstSubtree(), loc);
 }
 
 TIntermSymbol* TIntermediate::addSymbol(const TType& type, const TSourceLoc& loc)
 {
     TConstUnionArray unionArray;  // just a null constant
 
-    return addSymbol(0, "", type, unionArray, loc);
+    return addSymbol(0, "", type, unionArray, nullptr, loc);
 }
 
 //

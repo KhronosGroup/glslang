@@ -3763,6 +3763,7 @@ spv::Id TGlslangToSpvTraverser::createSpvSpecConstant(const glslang::TIntermType
             return builder.makeCompositeConstant(builder.makeVectorType(builder.makeUintType(32), 3), dimConstId, true);
         } else {
             spv::MissingFunctionality("specialization-constant expression trees");
+            exit(1);
             return spv::NoResult;
         }
     }

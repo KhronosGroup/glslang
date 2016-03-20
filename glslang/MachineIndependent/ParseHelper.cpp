@@ -4914,14 +4914,27 @@ TIntermNode* TParseContext::executeInitializer(const TSourceLoc& loc, TIntermTyp
         // Compile-time tagging of the variable with its constant value...
 
         initializer = intermediate.addConversion(EOpAssign, variable->getType(), initializer);
-        if (! initializer || ! initializer->getAsConstantUnion() || variable->getType() != initializer->getType()) {
+        if (! initializer || ! initializer->getType().getQualifier().isConstant() || variable->getType() != initializer->getType()) {
             error(loc, "non-matching or non-convertible constant type for const initializer",
                   variable->getType().getStorageQualifierString(), "");
             variable->getWritableType().getQualifier().makeTemporary();
             return nullptr;
         }
 
-        variable->setConstArray(initializer->getAsConstantUnion()->getConstArray());
+        // We either have a folded constant in getAsConstantUnion, or we have to use
+        // the initializer's subtree in the AST to represent the computation of a
+        // specialization constant.
+        assert(initializer->getAsConstantUnion() || initializer->getType().getQualifier().isSpecConstant());
+        if (initializer->getAsConstantUnion())
+            variable->setConstArray(initializer->getAsConstantUnion()->getConstArray());
+        else {
+            // It's a specialization constant.
+            variable->getWritableType().getQualifier().makeSpecConstant();
+
+            // Keep the subtree that computes the specialization constant with the variable.
+            // Later, a symbol node will adopt the subtree from the variable.
+            variable->setConstSubtree(initializer);
+        }
     } else {
         // normal assigning of a value to a variable...
         specializationCheck(loc, initializer->getType(), "initializer");

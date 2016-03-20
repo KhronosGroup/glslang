@@ -605,6 +605,11 @@ void TOutputTraverser::visitSymbol(TIntermSymbol* node)
 
     if (! node->getConstArray().empty())
         OutputConstantUnion(infoSink, node, node->getConstArray(), depth + 1);
+    else if (node->getConstSubtree()) {
+        incrementDepth(node);
+        node->getConstSubtree()->traverse(this);
+        decrementDepth();
+    }
 }
 
 bool TOutputTraverser::visitLoop(TVisit /* visit */, TIntermLoop* node)
