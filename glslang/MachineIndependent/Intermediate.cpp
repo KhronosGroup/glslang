@@ -61,25 +61,33 @@ namespace glslang {
 // Returns the added node.
 //
 
-TIntermSymbol* TIntermediate::addSymbol(int id, const TString& name, const TType& type, const TSourceLoc& loc)
+TIntermSymbol* TIntermediate::addSymbol(int id, const TString& name, const TType& type, const TConstUnionArray& constArray, const TSourceLoc& loc)
 {
     TIntermSymbol* node = new TIntermSymbol(id, name, type);
     node->setLoc(loc);
-
-    return node;
-}
-
-TIntermSymbol* TIntermediate::addSymbol(int id, const TString& name, const TType& type, const TConstUnionArray& constArray, const TSourceLoc& loc)
-{
-    TIntermSymbol* node = addSymbol(id, name, type, loc);
     node->setConstArray(constArray);
 
     return node;
 }
 
+TIntermSymbol* TIntermediate::addSymbol(const TVariable& variable)
+{
+    glslang::TSourceLoc loc; // just a null location
+    loc.init();
+
+    return addSymbol(variable, loc);
+}
+
 TIntermSymbol* TIntermediate::addSymbol(const TVariable& variable, const TSourceLoc& loc)
 {
     return addSymbol(variable.getUniqueId(), variable.getName(), variable.getType(), variable.getConstArray(), loc);
+}
+
+TIntermSymbol* TIntermediate::addSymbol(const TType& type, const TSourceLoc& loc)
+{
+    TConstUnionArray unionArray;  // just a null constant
+
+    return addSymbol(0, "", type, unionArray, loc);
 }
 
 //
@@ -1018,8 +1026,7 @@ void TIntermediate::addSymbolLinkageNode(TIntermAggregate*& linkage, const TSymb
         const TAnonMember* anon = symbol.getAsAnonMember();
         variable = &anon->getAnonContainer();
     }
-    TIntermSymbol* node = new TIntermSymbol(variable->getUniqueId(), variable->getName(), variable->getType());
-    node->setConstArray(variable->getConstArray());
+    TIntermSymbol* node = addSymbol(*variable);
     linkage = growAggregate(linkage, node);
 }
 
