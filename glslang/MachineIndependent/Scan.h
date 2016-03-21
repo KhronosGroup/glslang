@@ -170,6 +170,14 @@ public:
         loc[getLastValidSourceIndex()].name = filename;
     }
 
+    void setFile(const char* filename, size_t i)
+    {
+        if (i == getLastValidSourceIndex()) {
+            logicalSourceLoc.name = filename;
+        }
+        loc[i].name = filename;
+    }
+
     void setString(int newString)
     {
         logicalSourceLoc.string = newString;

@@ -447,19 +447,24 @@ protected:
               prologue_(prologue),
               includedFile_(includedFile),
               epilogue_(epilogue),
-              strings({prologue_.data(), includedFile_->file_data, epilogue_.data()}),
-              lengths({prologue_.size(), includedFile_->file_length, epilogue_.size()}),
-              names({
-                      includedFile_->file_name.c_str(),
-                      includedFile_->file_name.c_str(),
-                      includedFile_->file_name.c_str()
-              }),
               scanner(3, strings, lengths, names, 0, 0, true),
               prevScanner(nullptr),
-              stringInput(pp, scanner) {
-                  scanner.setLine(startLoc.line);
-                  scanner.setString(startLoc.string);
-                  scanner.setFile(startLoc.name);
+              stringInput(pp, scanner)
+        {
+              strings[0] = prologue_.data();
+              strings[1] = includedFile_->file_data;
+              strings[2] = epilogue_.data();
+
+              lengths[0] = prologue_.size();
+              lengths[1] = includedFile_->file_length;
+              lengths[2] = epilogue_.size();
+
+              scanner.setLine(startLoc.line);
+              scanner.setString(startLoc.string);
+
+              scanner.setFile(startLoc.name, 0);
+              scanner.setFile(startLoc.name, 1);
+              scanner.setFile(startLoc.name, 2);
         }
 
         // tInput methods:
