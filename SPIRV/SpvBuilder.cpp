@@ -64,7 +64,8 @@ Builder::Builder(unsigned int magicNumber) :
     builderNumber(magicNumber),
     buildPoint(0),
     uniqueId(0),
-    mainFunction(0)
+    mainFunction(0),
+    generatingOpCodeForSpecConst(false)
 {
     clearAccessChain();
 }
@@ -1063,6 +1064,11 @@ Id Builder::createArrayLength(Id base, unsigned int member)
 
 Id Builder::createCompositeExtract(Id composite, Id typeId, unsigned index)
 {
+    // Generate code for spec constants if in spec constant operation
+    // generation mode.
+    if (generatingOpCodeForSpecConst) {
+        return createSpecConstantOp(OpCompositeExtract, typeId, {composite}, {index});
+    }
     Instruction* extract = new Instruction(getUniqueId(), typeId, OpCompositeExtract);
     extract->addIdOperand(composite);
     extract->addImmediateOperand(index);
@@ -1073,6 +1079,11 @@ Id Builder::createCompositeExtract(Id composite, Id typeId, unsigned index)
 
 Id Builder::createCompositeExtract(Id composite, Id typeId, std::vector<unsigned>& indexes)
 {
+    // Generate code for spec constants if in spec constant operation
+    // generation mode.
+    if (generatingOpCodeForSpecConst) {
+        return createSpecConstantOp(OpCompositeExtract, typeId, {composite}, indexes);
+    }
     Instruction* extract = new Instruction(getUniqueId(), typeId, OpCompositeExtract);
     extract->addIdOperand(composite);
     for (int i = 0; i < (int)indexes.size(); ++i)
@@ -1170,6 +1181,11 @@ void Builder::createMemoryBarrier(unsigned executionScope, unsigned memorySemant
 // An opcode that has one operands, a result id, and a type
 Id Builder::createUnaryOp(Op opCode, Id typeId, Id operand)
 {
+    // Generate code for spec constants if in spec constant operation
+    // generation mode.
+    if (generatingOpCodeForSpecConst) {
+        return createSpecConstantOp(opCode, typeId, {operand}, {});
+    }
     Instruction* op = new Instruction(getUniqueId(), typeId, opCode);
     op->addIdOperand(operand);
     buildPoint->addInstruction(std::unique_ptr<Instruction>(op));
@@ -1179,6 +1195,11 @@ Id Builder::createUnaryOp(Op opCode, Id typeId, Id operand)
 
 Id Builder::createBinOp(Op opCode, Id typeId, Id left, Id right)
 {
+    // Generate code for spec constants if in spec constant operation
+    // generation mode.
+    if (generatingOpCodeForSpecConst) {
+        return createSpecConstantOp(opCode, typeId, {left, right}, {});
+    }
     Instruction* op = new Instruction(getUniqueId(), typeId, opCode);
     op->addIdOperand(left);
     op->addIdOperand(right);
@@ -1208,6 +1229,102 @@ Id Builder::createOp(Op opCode, Id typeId, const std::vector<Id>& operands)
     return op->getResultId();
 }
 
+Id Builder::createSpecConstantOp(Op opCode, Id typeId, const std::vector<Id>& operands, const std::vector<unsigned>& literals) {
+    switch(opCode) {
+        // OpCodes that do not need any capababilities.
+        case OpSConvert:
+        case OpFConvert:
+        case OpSNegate:
+        case OpNot:
+        case OpIAdd:
+        case OpISub:
+        case OpIMul:
+        case OpUDiv:
+        case OpSDiv:
+        case OpUMod:
+        case OpSRem:
+        case OpSMod:
+        case OpShiftRightLogical:
+        case OpShiftRightArithmetic:
+        case OpShiftLeftLogical:
+        case OpBitwiseOr:
+        case OpBitwiseXor:
+        case OpBitwiseAnd:
+        case OpVectorShuffle:
+        case OpCompositeExtract:
+        case OpCompositeInsert:
+        case OpLogicalOr:
+        case OpLogicalAnd:
+        case OpLogicalNot:
+        case OpLogicalEqual:
+        case OpLogicalNotEqual:
+        case OpSelect:
+        case OpIEqual:
+        case OpULessThan:
+        case OpSLessThan:
+        case OpUGreaterThan:
+        case OpSGreaterThan:
+        case OpULessThanEqual:
+        case OpSLessThanEqual:
+        case OpUGreaterThanEqual:
+        case OpSGreaterThanEqual:
+        // Added temporarily to enable compsite type spec constants comparison.
+        // Remove this comment after Spec being updated.
+        case OpAll:
+        case OpAny:
+        case OpFOrdEqual:
+        case OpFUnordEqual:
+        case OpFOrdNotEqual:
+        case OpFUnordNotEqual:
+            break;
+
+        // OpCodes that need Shader capability.
+        case OpQuantizeToF16:
+            addCapability(CapabilityShader);
+            break;
+
+        // OpCodes that need Kernel capability.
+        case OpConvertFToS:
+        case OpConvertSToF:
+        case OpConvertFToU:
+        case OpConvertUToF:
+        case OpUConvert:
+        case OpConvertPtrToU:
+        case OpConvertUToPtr:
+        case OpGenericCastToPtr:
+        case OpPtrCastToGeneric:
+        case OpBitcast:
+        case OpFNegate:
+        case OpFAdd:
+        case OpFSub:
+        case OpFMul:
+        case OpFDiv:
+        case OpFRem:
+        case OpFMod:
+        case OpAccessChain:
+        case OpInBoundsAccessChain:
+        case OpPtrAccessChain:
+        case OpInBoundsPtrAccessChain:
+            addCapability(CapabilityKernel);
+            break;
+
+        default:
+            // Invalid OpCode for Spec Constant operations.
+            return NoResult;
+    }
+
+    Instruction* op = new Instruction(getUniqueId(), typeId, OpSpecConstantOp);
+    op->addImmediateOperand((unsigned) opCode);
+    for (auto it = operands.cbegin(); it != operands.cend(); ++it)
+        op->addIdOperand(*it);
+    for (auto it = literals.cbegin(); it != literals.cend(); ++it)
+        op->addImmediateOperand(*it);
+    module.mapInstruction(op);
+    constantsTypesGlobals.push_back(std::unique_ptr<Instruction>(op));
+
+    return op->getResultId();
+}
+
 Id Builder::createFunctionCall(spv::Function* function, std::vector<spv::Id>& args)
 {
     Instruction* op = new Instruction(getUniqueId(), function->getReturnType(), OpFunctionCall);
@@ -1225,6 +1342,9 @@ Id Builder::createRvalueSwizzle(Decoration precision, Id typeId, Id source, std:
     if (channels.size() == 1)
         return setPrecision(createCompositeExtract(source, typeId, channels.front()), precision);
 
+    if (generatingOpCodeForSpecConst) {
+        return setPrecision(createSpecConstantOp(OpVectorShuffle, typeId, {source, source}, channels), precision);
+    }
     Instruction* swizzle = new Instruction(getUniqueId(), typeId, OpVectorShuffle);
     assert(isVector(source));
     swizzle->addIdOperand(source);
@@ -1290,10 +1410,23 @@ Id Builder::smearScalar(Decoration precision, Id scalar, Id vectorType)
     if (numComponents == 1)
         return scalar;
 
-    Instruction* smear = new Instruction(getUniqueId(), vectorType, OpCompositeConstruct);
-    for (int c = 0; c < numComponents; ++c)
-        smear->addIdOperand(scalar);
-    buildPoint->addInstruction(std::unique_ptr<Instruction>(smear));
+    Instruction* smear = nullptr;
+    if (generatingOpCodeForSpecConst) {
+        auto members = std::vector<spv::Id>(numComponents, scalar);
+        // 'scalar' can not be spec constant here. All spec constant involved
+        // promotion is done in createSpvConstantFromConstUnionArray().  This
+        // 'if' branch is only accessed when 'scalar' is used in the def-chain
+        // of other vector type spec constants. In such cases, all the
+        // instructions needed to promote 'scalar' to a vector type constants
+        // should be added at module level.
+        auto result_id = makeCompositeConstant(vectorType, members, false);
+        smear = module.getInstruction(result_id);
+    } else {
+        smear = new Instruction(getUniqueId(), vectorType, OpCompositeConstruct);
+        for (int c = 0; c < numComponents; ++c)
+            smear->addIdOperand(scalar);
+        buildPoint->addInstruction(std::unique_ptr<Instruction>(smear));
+    }
 
     return setPrecision(smear->getResultId(), precision);
 }
