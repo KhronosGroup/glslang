@@ -699,8 +699,9 @@ void CompileAndLinkShaderUnits(std::vector<ShaderCompUnit> compUnits)
 
         if (Options & EOptionOutputPreprocessed) {
             std::string str;
+            glslang::TShader::ForbidInclude includer;
             if (shader->preprocess(&Resources, defaultVersion, ENoProfile, false, false,
-                                   messages, &str, glslang::TShader::ForbidInclude())) {
+                                   messages, &str, includer)) {
                 PutsIfNonEmpty(str.c_str());
             } else {
                 CompileFailed = true;
