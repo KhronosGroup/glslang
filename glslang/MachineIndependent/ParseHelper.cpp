@@ -820,6 +820,9 @@ TIntermTyped* TParseContext::handleDotDereference(const TSourceLoc& loc, TInterm
                 return result;
             else {
                 TType type(base->getBasicType(), EvqTemporary, fields.num);
+                // Swizzle operations propagate specialization-constantness
+                if (base->getQualifier().isSpecConstant())
+                    type.getQualifier().makeSpecConstant();
                 return addConstructor(loc, base, type, mapTypeToConstructorOp(type));
             }
         }
@@ -837,6 +840,9 @@ TIntermTyped* TParseContext::handleDotDereference(const TSourceLoc& loc, TInterm
                 result = intermediate.addIndex(EOpVectorSwizzle, base, index, loc);
                 result->setType(TType(base->getBasicType(), EvqTemporary, base->getType().getQualifier().precision, (int) vectorString.size()));
             }
+            // Swizzle operations propagate specialization-constantness
+            if (base->getType().getQualifier().isSpecConstant())
+                result->getWritableType().getQualifier().makeSpecConstant();
         }
     } else if (base->getBasicType() == EbtStruct || base->getBasicType() == EbtBlock) {
         const TTypeList* fields = base->getType().getStruct();

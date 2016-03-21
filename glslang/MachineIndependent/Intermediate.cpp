@@ -262,6 +262,7 @@ TIntermTyped* TIntermediate::addUnaryMath(TOperator op, TIntermTyped* child, TSo
 
     //
     // For constructors, we are now done, it was all in the conversion.
+    // TODO: but, did this bypass constant folding?
     //
     switch (op) {
     case EOpConstructInt:
@@ -291,7 +292,7 @@ TIntermTyped* TIntermediate::addUnaryMath(TOperator op, TIntermTyped* child, TSo
     if (child->getAsConstantUnion())
         return child->getAsConstantUnion()->fold(op, node->getType());
 
-    // If it's a specialiation constant, the result is too.
+    // If it's a specialization constant, the result is too.
     if (child->getType().getQualifier().isSpecConstant())
         node->getWritableType().getQualifier().makeSpecConstant();
 
@@ -616,6 +617,12 @@ TIntermTyped* TIntermediate::addConversion(TOperator op, const TType& type, TInt
     newNode->setLoc(node->getLoc());
     newNode->setOperand(node);
 
+    // TODO: it seems that some unary folding operations should occur here, but are not
+
+    // Propagate specialization-constant-ness.
+    if (node->getType().getQualifier().isSpecConstant())
+        newNode->getWritableType().getQualifier().makeSpecConstant();
+
     return newNode;
 }
 
@@ -883,7 +890,6 @@ TIntermConstantUnion* TIntermediate::addConstantUnion(double d, TBasicType baseT
 
 TIntermTyped* TIntermediate::addSwizzle(TVectorFields& fields, const TSourceLoc& loc)
 {
-
     TIntermAggregate* node = new TIntermAggregate(EOpSequence);
 
     node->setLoc(loc);

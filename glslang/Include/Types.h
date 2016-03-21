@@ -740,6 +740,7 @@ public:
     }
     void makeSpecConstant()
     {
+        storage = EvqConst;
         specConstant = true;
     }
     static const char* getLayoutPackingString(TLayoutPacking packing)
