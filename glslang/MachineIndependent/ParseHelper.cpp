@@ -2210,7 +2210,7 @@ bool TParseContext::constructorError(const TSourceLoc& loc, TIntermNode* node, T
 
     int size = 0;
     bool constType = true;
-    bool specConstType = true;
+    bool specConstType = false;   // value is only valid if constType is true
     bool full = false;
     bool overFull = false;
     bool matrixInMatrix = false;
@@ -2241,14 +2241,15 @@ bool TParseContext::constructorError(const TSourceLoc& loc, TIntermNode* node, T
 
         if (! function[arg].type->getQualifier().isConstant())
             constType = false;
-        if (! function[arg].type->getQualifier().isSpecConstant())
-            specConstType = false;
+        if (function[arg].type->getQualifier().isSpecConstant())
+            specConstType = true;
     }
 
     if (constType) {
-        type.getQualifier().storage = EvqConst;
         if (specConstType)
-            type.getQualifier().specConstant = true;
+            type.getQualifier().makeSpecConstant();
+        else
+            type.getQualifier().storage = EvqConst;
     }
 
     if (type.isArray()) {
@@ -5101,11 +5102,15 @@ TIntermTyped* TParseContext::addConstructor(const TSourceLoc& loc, TIntermNode* 
     // if the structure constructor contains more than one parameter, then construct
     // each parameter
 
-    int paramCount = 0;  // keeps a track of the constructor parameter number being checked
+    int paramCount = 0;  // keeps track of the constructor parameter number being checked
 
     // for each parameter to the constructor call, check to see if the right type is passed or convert them
     // to the right type if possible (and allowed).
     // for structure constructors, just check if the right type is passed, no conversion is allowed.
+
+    // We don't know "top down" whether type is a specialization constant,
+    // but a const becomes a specialization constant if any of its children are.
+    bool specConst = false;
 
     for (TIntermSequence::iterator p = sequenceVector.begin();
                                    p != sequenceVector.end(); p++, paramCount++) {
@@ -5116,13 +5121,17 @@ TIntermTyped* TParseContext::addConstructor(const TSourceLoc& loc, TIntermNode* 
         else
             newNode = constructBuiltIn(type, op, (*p)->getAsTyped(), node->getLoc(), true);
 
-        if (newNode)
+        if (newNode) {
             *p = newNode;
-        else
+            if (newNode->getType().getQualifier().isSpecConstant())
+                specConst = true;
+        } else
             return nullptr;
     }
 
     TIntermTyped* constructor = intermediate.setAggregateOperator(aggrNode, op, type, loc);
+    if (constructor->getType().getQualifier().isConstant() && specConst)
+        constructor->getWritableType().getQualifier().makeSpecConstant();
 
     return constructor;
 }
