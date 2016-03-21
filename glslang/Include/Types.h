@@ -1223,6 +1223,7 @@ public:
     virtual int getMatrixCols() const { return matrixCols; }
     virtual int getMatrixRows() const { return matrixRows; }
     virtual int getOuterArraySize()  const { return arraySizes->getOuterSize(); }
+    virtual TIntermTyped*  getOuterArrayNode() const { return arraySizes->getOuterNode(); }
     virtual int getCumulativeArraySize()  const { return arraySizes->getCumulativeSize(); }
     virtual bool isArrayOfArrays() const { return arraySizes != nullptr && arraySizes->getNumDims() > 1; }
     virtual int getImplicitArraySize() const { return arraySizes->getImplicitSize(); }

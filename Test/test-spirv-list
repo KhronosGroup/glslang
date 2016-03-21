@@ -102,6 +102,7 @@ spv.pushConstant.vert
 spv.subpass.frag
 spv.specConstant.vert
 spv.specConstant.comp
+spv.specConstantComposite.vert
 # GLSL-level semantics
 vulkan.frag
 vulkan.vert
