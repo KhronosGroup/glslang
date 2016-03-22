@@ -357,8 +357,9 @@ public:
         {
             static const char unexpected_include[] =
                 "unexpected include directive";
-            return new IncludeResult(
-                {"", unexpected_include, sizeof(unexpected_include) - 1, nullptr});
+            static const IncludeResult unexpectedIncludeResult =
+                {"", unexpected_include, sizeof(unexpected_include) - 1, nullptr};
+            return new IncludeResult(unexpectedIncludeResult);
         }
         virtual void releaseInclude(IncludeResult* result) override
         {
