@@ -484,7 +484,7 @@ TIntermTyped* TParseContext::handleBracketDereference(const TSourceLoc& loc, TIn
     TIntermTyped* result = nullptr;
 
     int indexValue = 0;
-    if (index->getQualifier().isConstant()) {
+    if (index->getQualifier().isFrontEndConstant()) {
         indexValue = index->getAsConstantUnion()->getConstArray()[0].getIConst();
         checkIndex(loc, base->getType(), indexValue);
     }
@@ -503,7 +503,7 @@ TIntermTyped* TParseContext::handleBracketDereference(const TSourceLoc& loc, TIn
         if (base->getAsSymbolNode() && isIoResizeArray(base->getType()))
             handleIoResizeArrayAccess(loc, base);
 
-        if (index->getQualifier().isConstant()) {
+        if (index->getQualifier().isFrontEndConstant()) {
             if (base->getType().isImplicitlySizedArray())
                 updateImplicitArraySize(loc, base, indexValue);
             result = intermediate.addIndex(EOpIndexDirect, base, index, loc);
@@ -541,10 +541,15 @@ TIntermTyped* TParseContext::handleBracketDereference(const TSourceLoc& loc, TIn
     } else {
         // Insert valid dereferenced result
         TType newType(base->getType(), 0);  // dereferenced type
-        if (base->getType().getQualifier().isFrontEndConstant() && index->getQualifier().isFrontEndConstant())
+        if (base->getType().getQualifier().isConstant() && index->getQualifier().isConstant()) {
             newType.getQualifier().storage = EvqConst;
-        else
+            // If base or index is a specialization constant, the result should also be a specialization constant.
+            if (base->getType().getQualifier().isSpecConstant() || index->getQualifier().isSpecConstant()) {
+                newType.getQualifier().makeSpecConstant();
+            }
+        } else {
             newType.getQualifier().makePartialTemporary();
+        }
         result->setType(newType);
 
         if (anyIndexLimits)
@@ -1226,6 +1231,11 @@ TIntermTyped* TParseContext::handleLengthMethod(const TSourceLoc& loc, TFunction
                     else
                         error(loc, "", function->getName().c_str(), "array must be declared with a size before using this method");
                 }
+            } else if (type.getOuterArrayNode()) {
+                // If the array's outer size is specified by an intermediate node, it means the array's length
+                // was specified by a specialization constant. In such a case, we should return the node of the
+                // specialization constants to represent the length.
+                return type.getOuterArrayNode();
             } else
                 length = type.getOuterArraySize();
         } else if (type.isMatrix())
@@ -5110,7 +5120,8 @@ TIntermTyped* TParseContext::addConstructor(const TSourceLoc& loc, TIntermNode* 
 
     // We don't know "top down" whether type is a specialization constant,
     // but a const becomes a specialization constant if any of its children are.
-    bool specConst = false;
+    bool hasSpecConst = false;
+    bool isConstConstrutor = true;
 
     for (TIntermSequence::iterator p = sequenceVector.begin();
                                    p != sequenceVector.end(); p++, paramCount++) {
@@ -5123,14 +5134,16 @@ TIntermTyped* TParseContext::addConstructor(const TSourceLoc& loc, TIntermNode* 
 
         if (newNode) {
             *p = newNode;
+            if (! newNode->getType().getQualifier().isConstant())
+                isConstConstrutor = false;
             if (newNode->getType().getQualifier().isSpecConstant())
-                specConst = true;
+                hasSpecConst = true;
         } else
             return nullptr;
     }
 
     TIntermTyped* constructor = intermediate.setAggregateOperator(aggrNode, op, type, loc);
-    if (constructor->getType().getQualifier().isConstant() && specConst)
+    if (isConstConstrutor && hasSpecConst)
         constructor->getWritableType().getQualifier().makeSpecConstant();
 
     return constructor;
