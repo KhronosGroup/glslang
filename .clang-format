@@ -1,7 +1,7 @@
 Language: Cpp
 IndentWidth: 4
 BreakBeforeBraces: Custom
-BraceWrapping: { AfterFunction: true }
+BraceWrapping: { AfterFunction: true, AfterControlStatement: true }
 IndentCaseLabels: false
 ReflowComments: false
 ColumnLimit: 100
