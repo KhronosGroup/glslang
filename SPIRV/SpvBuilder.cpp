@@ -2234,6 +2234,45 @@ Id Builder::accessChainGetInferredType()
     return type;
 }
 
+// comment in header
+void Builder::eliminateDeadDecorations()
+{
+    std::unordered_set<const Block*> reachable_blocks;
+    std::unordered_set<Id> unreachable_definitions;
+    // Collect IDs defined in unreachable blocks. For each function, label the
+    // reachable blocks first. Then for each unreachable block, collect the
+    // result IDs of the instructions in it.
+    for (std::vector<Function*>::const_iterator fi = module.getFunctions().cbegin();
+         fi != module.getFunctions().cend(); fi++)
+    {
+        Function* f = *fi;
+        Block* entry = f->getEntryBlock();
+        inReadableOrder(entry, [&reachable_blocks](const Block* b) { reachable_blocks.insert(b); });
+        for (std::vector<Block*>::const_iterator bi = f->getBlocks().cbegin();
+             bi != f->getBlocks().cend(); bi++)
+        {
+            Block* b = *bi;
+            if (!reachable_blocks.count(b))
+            {
+                for (std::vector<std::unique_ptr<Instruction> >::const_iterator ii =
+                         b->getInstructions().cbegin();
+                     ii != b->getInstructions().cend(); ii++)
+                {
+                    Instruction* i = ii->get();
+                    unreachable_definitions.insert(i->getResultId());
+                }
+            }
+        }
+    }
+    decorations.erase(std::remove_if(decorations.begin(), decorations.end(),
+                                     [&unreachable_definitions](std::unique_ptr<Instruction>& I) {
+                                         Instruction* inst = I.get();
+                                         Id decoration_id = inst->getIdOperand(0);
+                                         return unreachable_definitions.count(decoration_id) != 0;
+                                     }),
+                      decorations.end());
+}
+
 void Builder::dump(std::vector<unsigned int>& out) const
 {
     // Header, before first instructions:
