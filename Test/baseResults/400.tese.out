@@ -179,8 +179,8 @@ ERROR: node is still EOpNull!
 0:32        move second child to first child (temp 4-component vector of float)
 0:32          'p' (temp 4-component vector of float)
 0:32          gl_Position: direct index for structure (in 4-component vector of float Position)
-0:32            direct index (temp block{in 4-component vector of float Position gl_Position, in float PointSize gl_PointSize, in 1-element array of float ClipDistance gl_ClipDistance})
-0:32              'gl_in' (in 32-element array of block{in 4-component vector of float Position gl_Position, in float PointSize gl_PointSize, in 1-element array of float ClipDistance gl_ClipDistance})
+0:32            direct index (temp block{in 4-component vector of float Position gl_Position, in float PointSize gl_PointSize, in 3-element array of float ClipDistance gl_ClipDistance})
+0:32              'gl_in' (in 32-element array of block{in 4-component vector of float Position gl_Position, in float PointSize gl_PointSize, in 3-element array of float ClipDistance gl_ClipDistance})
 0:32              Constant:
 0:32                1 (const int)
 0:32            Constant:
@@ -189,8 +189,8 @@ ERROR: node is still EOpNull!
 0:33        move second child to first child (temp float)
 0:33          'ps' (temp float)
 0:33          gl_PointSize: direct index for structure (in float PointSize)
-0:33            direct index (temp block{in 4-component vector of float Position gl_Position, in float PointSize gl_PointSize, in 1-element array of float ClipDistance gl_ClipDistance})
-0:33              'gl_in' (in 32-element array of block{in 4-component vector of float Position gl_Position, in float PointSize gl_PointSize, in 1-element array of float ClipDistance gl_ClipDistance})
+0:33            direct index (temp block{in 4-component vector of float Position gl_Position, in float PointSize gl_PointSize, in 3-element array of float ClipDistance gl_ClipDistance})
+0:33              'gl_in' (in 32-element array of block{in 4-component vector of float Position gl_Position, in float PointSize gl_PointSize, in 3-element array of float ClipDistance gl_ClipDistance})
 0:33              Constant:
 0:33                1 (const int)
 0:33            Constant:
@@ -199,9 +199,9 @@ ERROR: node is still EOpNull!
 0:34        move second child to first child (temp float)
 0:34          'cd' (temp float)
 0:34          direct index (temp float ClipDistance)
-0:34            gl_ClipDistance: direct index for structure (in 1-element array of float ClipDistance)
-0:34              direct index (temp block{in 4-component vector of float Position gl_Position, in float PointSize gl_PointSize, in 1-element array of float ClipDistance gl_ClipDistance})
-0:34                'gl_in' (in 32-element array of block{in 4-component vector of float Position gl_Position, in float PointSize gl_PointSize, in 1-element array of float ClipDistance gl_ClipDistance})
+0:34            gl_ClipDistance: direct index for structure (in 3-element array of float ClipDistance)
+0:34              direct index (temp block{in 4-component vector of float Position gl_Position, in float PointSize gl_PointSize, in 3-element array of float ClipDistance gl_ClipDistance})
+0:34                'gl_in' (in 32-element array of block{in 4-component vector of float Position gl_Position, in float PointSize gl_PointSize, in 3-element array of float ClipDistance gl_ClipDistance})
 0:34                Constant:
 0:34                  1 (const int)
 0:34              Constant:
@@ -263,7 +263,7 @@ ERROR: node is still EOpNull!
 0:?     'badp2' (flat patch in 4-component vector of float)
 0:?     'badp3' (noperspective patch in 4-component vector of float)
 0:?     'badp4' (patch sample in 3-component vector of float)
-0:?     'gl_in' (in 32-element array of block{in 1-element array of float ClipDistance gl_ClipDistance})
+0:?     'gl_in' (in 32-element array of block{in 3-element array of float ClipDistance gl_ClipDistance})
 0:?     'ina' (in 2-component vector of float)
 0:?     'inb' (in 32-element array of 2-component vector of float)
 0:?     'inc' (in 32-element array of 2-component vector of float)
