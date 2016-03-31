@@ -3122,16 +3122,27 @@ void TParseContext::updateImplicitArraySize(const TSourceLoc& loc, TIntermNode *
         // This has to be the result of a block dereference, unless it's bad shader code
         // If it's a uniform block, then an error will be issued elsewhere, but
         // return early now to avoid crashing later in this function.
-        if (! deref->getLeft()->getAsSymbolNode() || deref->getLeft()->getBasicType() != EbtBlock ||
+        if (deref->getLeft()->getBasicType() != EbtBlock ||
             deref->getLeft()->getType().getQualifier().storage == EvqUniform ||
             deref->getRight()->getAsConstantUnion() == nullptr)
             return;
 
-        blockIndex = deref->getRight()->getAsConstantUnion()->getConstArray()[0].getIConst();
+        const TIntermTyped* left  = deref->getLeft();
+        const TIntermTyped* right = deref->getRight();
 
-        lookupName = &deref->getLeft()->getAsSymbolNode()->getName();
+        if (left->getAsBinaryNode()) {
+            left = left->getAsBinaryNode()->getLeft(); // Block array access
+            assert(left->isArray());
+        }
+
+        if (! left->getAsSymbolNode())
+            return;
+
+        blockIndex = right->getAsConstantUnion()->getConstArray()[0].getIConst();
+
+        lookupName = &left->getAsSymbolNode()->getName();
         if (IsAnonymous(*lookupName))
-            lookupName = &(*deref->getLeft()->getType().getStruct())[blockIndex].type->getFieldName();
+            lookupName = &(*left->getType().getStruct())[blockIndex].type->getFieldName();
     }
 
     // Lookup the symbol, should only fail if shader code is incorrect
@@ -3144,7 +3155,10 @@ void TParseContext::updateImplicitArraySize(const TSourceLoc& loc, TIntermNode *
         return;
     }
 
-    symbol->getWritableType().setImplicitArraySize(index + 1);
+    if (symbol->getType().isStruct() && blockIndex != -1)
+        (*symbol->getWritableType().getStruct())[blockIndex].type->setImplicitArraySize(index + 1);
+    else
+        symbol->getWritableType().setImplicitArraySize(index + 1);
 }
 
 // Returns true if the first argument to the #line directive is the line number for the next line.
