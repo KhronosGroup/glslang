@@ -3855,21 +3855,19 @@ spv::Id TGlslangToSpvTraverser::createSpvConstantFromConstUnionArray(const glsla
 }
 
 namespace {
-class SpecConstOpCodeGenerationSettingGuard{
-  public:
-    SpecConstOpCodeGenerationSettingGuard(spv::Builder* builder,
-                                         bool shouldGeneratingForSpecConst)
+class SpecConstantOpModeGuard {
+public:
+    SpecConstantOpModeGuard(spv::Builder* builder)
         : builder_(builder) {
         previous_flag_ = builder->isInSpecConstCodeGenMode();
-        shouldGeneratingForSpecConst ? builder->setToSpecConstCodeGenMode()
-                                     : builder->setToNormalCodeGenMode();
+        builder->setToSpecConstCodeGenMode();
     }
-    ~SpecConstOpCodeGenerationSettingGuard() {
+    ~SpecConstantOpModeGuard() {
         previous_flag_ ? builder_->setToSpecConstCodeGenMode()
                        : builder_->setToNormalCodeGenMode();
     }
 
-  private:
+private:
     spv::Builder* builder_;
     bool previous_flag_;
 };
@@ -3877,7 +3875,8 @@ class SpecConstOpCodeGenerationSettingGuard{
 
 // Create constant ID from const initializer sub tree.
 spv::Id TGlslangToSpvTraverser::createSpvConstantFromConstSubTree(
-    glslang::TIntermTyped* subTree) {
+    glslang::TIntermTyped* subTree)
+{
     const glslang::TType& glslangType = subTree->getType();
     spv::Id typeId = convertGlslangToSpvType(glslangType);
     bool is_spec_const = subTree->getType().getQualifier().isSpecConstant();
@@ -3909,7 +3908,7 @@ spv::Id TGlslangToSpvTraverser::createSpvConstantFromConstSubTree(
 
         // Spec constants defined with binary operations and other constants requires
         // OpSpecConstantOp instruction.
-        SpecConstOpCodeGenerationSettingGuard set_to_spec_const_mode(&builder, true);
+        SpecConstantOpModeGuard set_to_spec_const_mode(&builder);
 
         bn->traverse(this);
         return accessChainLoad(bn->getType());
@@ -3920,7 +3919,7 @@ spv::Id TGlslangToSpvTraverser::createSpvConstantFromConstSubTree(
 
         // Spec constants defined with unary operations and other constants requires
         // OpSpecConstantOp instruction.
-        SpecConstOpCodeGenerationSettingGuard set_to_spec_const_mode(&builder, true);
+        SpecConstantOpModeGuard set_to_spec_const_mode(&builder);
 
         un->traverse(this);
         return accessChainLoad(un->getType());
