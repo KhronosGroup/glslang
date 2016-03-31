@@ -262,6 +262,7 @@ public:
     Id createTriOp(Op, Id typeId, Id operand1, Id operand2, Id operand3);
     Id createOp(Op, Id typeId, const std::vector<Id>& operands);
     Id createFunctionCall(spv::Function*, std::vector<spv::Id>&);
+    Id createSpecConstantOp(Op, Id typeId, const std::vector<spv::Id>& operands, const std::vector<unsigned>& literals);
 
     // Take an rvalue (source) and a set of channels to extract from it to
     // make a new rvalue, which is returned.
@@ -521,6 +522,13 @@ public:
     void createConditionalBranch(Id condition, Block* thenBlock, Block* elseBlock);
     void createLoopMerge(Block* mergeBlock, Block* continueBlock, unsigned int control);
 
+    // Sets to generate opcode for specialization constants.
+    void setToSpecConstCodeGenMode() { generatingOpCodeForSpecConst = true; }
+    // Sets to generate opcode for non-specialization constants (normal mode).
+    void setToNormalCodeGenMode() { generatingOpCodeForSpecConst = false; }
+    // Check if the builder is generating code for spec constants.
+    bool isInSpecConstCodeGenMode() { return generatingOpCodeForSpecConst; }
+
  protected:
     Id makeIntConstant(Id typeId, unsigned value, bool specConstant);
     Id findScalarConstant(Op typeClass, Op opcode, Id typeId, unsigned value) const;
@@ -544,6 +552,7 @@ public:
     Block* buildPoint;
     Id uniqueId;
     Function* mainFunction;
+    bool generatingOpCodeForSpecConst;
     AccessChain accessChain;
 
     // special blocks of instructions for output

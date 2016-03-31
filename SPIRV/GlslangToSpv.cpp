@@ -130,7 +130,7 @@ protected:
     void addMemberDecoration(spv::Id id, int member, spv::Decoration dec, unsigned value);
     spv::Id createSpvConstant(const glslang::TIntermTyped&);
     spv::Id createSpvConstantFromConstUnionArray(const glslang::TType& type, const glslang::TConstUnionArray&, int& nextConst, bool specConstant);
-    spv::Id createSpvConstantFromConstSubTree(const glslang::TIntermTyped* subTree);
+    spv::Id createSpvConstantFromConstSubTree(glslang::TIntermTyped* subTree);
     bool isTrivialLeaf(const glslang::TIntermTyped* node);
     bool isTrivial(const glslang::TIntermTyped* node);
     spv::Id createShortCircuit(glslang::TOperator, glslang::TIntermTyped& left, glslang::TIntermTyped& right);
@@ -3854,15 +3854,36 @@ spv::Id TGlslangToSpvTraverser::createSpvConstantFromConstUnionArray(const glsla
     return builder.makeCompositeConstant(typeId, spvConsts);
 }
 
+namespace {
+class SpecConstantOpModeGuard {
+public:
+    SpecConstantOpModeGuard(spv::Builder* builder)
+        : builder_(builder) {
+        previous_flag_ = builder->isInSpecConstCodeGenMode();
+        builder->setToSpecConstCodeGenMode();
+    }
+    ~SpecConstantOpModeGuard() {
+        previous_flag_ ? builder_->setToSpecConstCodeGenMode()
+                       : builder_->setToNormalCodeGenMode();
+    }
+
+private:
+    spv::Builder* builder_;
+    bool previous_flag_;
+};
+}
+
 // Create constant ID from const initializer sub tree.
 spv::Id TGlslangToSpvTraverser::createSpvConstantFromConstSubTree(
-    const glslang::TIntermTyped* subTree) {
+    glslang::TIntermTyped* subTree)
+{
     const glslang::TType& glslangType = subTree->getType();
     spv::Id typeId = convertGlslangToSpvType(glslangType);
     bool is_spec_const = subTree->getType().getQualifier().isSpecConstant();
     if (const glslang::TIntermAggregate* an = subTree->getAsAggregate()) {
         // Aggregate node, we should generate OpConstantComposite or
         // OpSpecConstantComposite instruction.
+
         std::vector<spv::Id> const_constituents;
         for (auto NI = an->getSequence().begin(); NI != an->getSequence().end();
              NI++) {
@@ -3881,17 +3902,27 @@ spv::Id TGlslangToSpvTraverser::createSpvConstantFromConstSubTree(
             return const_constituents.front();
         }
 
-    } else if (const glslang::TIntermBinary* bn = subTree->getAsBinaryNode()) {
+    } else if (glslang::TIntermBinary* bn = subTree->getAsBinaryNode()) {
         // Binary operation node, we should generate OpSpecConstantOp <binary op>
         // This case should only happen when Specialization Constants are involved.
-        spv::MissingFunctionality("OpSpecConstantOp <binary op> not implemented");
-        return spv::NoResult;
 
-    } else if (const glslang::TIntermUnary* un = subTree->getAsUnaryNode()) {
+        // Spec constants defined with binary operations and other constants requires
+        // OpSpecConstantOp instruction.
+        SpecConstantOpModeGuard set_to_spec_const_mode(&builder);
+
+        bn->traverse(this);
+        return accessChainLoad(bn->getType());
+
+    } else if (glslang::TIntermUnary* un = subTree->getAsUnaryNode()) {
         // Unary operation node, similar to binary operation node, should only
         // happen when specialization constants are involved.
-        spv::MissingFunctionality("OpSpecConstantOp <unary op> not implemented");
-        return spv::NoResult;
+
+        // Spec constants defined with unary operations and other constants requires
+        // OpSpecConstantOp instruction.
+        SpecConstantOpModeGuard set_to_spec_const_mode(&builder);
+
+        un->traverse(this);
+        return accessChainLoad(un->getType());
 
     } else if (const glslang::TIntermConstantUnion* cn = subTree->getAsConstantUnion()) {
         // ConstantUnion node, should redirect to
