@@ -86,5 +86,10 @@ const ivec2 iv_yx = iv.yx;
 const ivec3 iv_zyx = iv.zyx;
 const ivec4 iv_yzxw = iv.yzxw;
 
+int non_const_array_size_from_spec_const() {
+    int array[sp_int + 2];
+    return array[sp_int + 1];
+}
+
 void main() {}
 

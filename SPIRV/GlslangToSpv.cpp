@@ -66,6 +66,25 @@ namespace {
 // or a different instruction sequence to do something gets used).
 const int GeneratorVersion = 1;
 
+namespace {
+class SpecConstantOpModeGuard {
+public:
+    SpecConstantOpModeGuard(spv::Builder* builder)
+        : builder_(builder) {
+        previous_flag_ = builder->isInSpecConstCodeGenMode();
+        builder->setToSpecConstCodeGenMode();
+    }
+    ~SpecConstantOpModeGuard() {
+        previous_flag_ ? builder_->setToSpecConstCodeGenMode()
+                       : builder_->setToNormalCodeGenMode();
+    }
+
+private:
+    spv::Builder* builder_;
+    bool previous_flag_;
+};
+}
+
 //
 // The main holder of information for translating glslang to SPIR-V.
 //
@@ -1927,6 +1946,7 @@ spv::Id TGlslangToSpvTraverser::makeArraySizeId(const glslang::TArraySizes& arra
     glslang::TIntermTyped* specNode = arraySizes.getDimNode(dim);
     if (specNode != nullptr) {
         builder.clearAccessChain();
+        SpecConstantOpModeGuard set_to_spec_const_mode(&builder);
         specNode->traverse(this);
         return accessChainLoad(specNode->getAsTyped()->getType());
     }
@@ -3866,25 +3886,6 @@ spv::Id TGlslangToSpvTraverser::createSpvConstantFromConstUnionArray(const glsla
     }
 
     return builder.makeCompositeConstant(typeId, spvConsts);
-}
-
-namespace {
-class SpecConstantOpModeGuard {
-public:
-    SpecConstantOpModeGuard(spv::Builder* builder)
-        : builder_(builder) {
-        previous_flag_ = builder->isInSpecConstCodeGenMode();
-        builder->setToSpecConstCodeGenMode();
-    }
-    ~SpecConstantOpModeGuard() {
-        previous_flag_ ? builder_->setToSpecConstCodeGenMode()
-                       : builder_->setToNormalCodeGenMode();
-    }
-
-private:
-    spv::Builder* builder_;
-    bool previous_flag_;
-};
 }
 
 // Create constant ID from const initializer sub tree.
