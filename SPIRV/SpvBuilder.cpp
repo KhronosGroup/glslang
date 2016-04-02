@@ -2213,7 +2213,7 @@ void Builder::eliminateDeadDecorations() {
         }
     }
     decorations.erase(std::remove_if(decorations.begin(), decorations.end(),
-        [&unreachable_definitions](std::unique_ptr<Instruction>& I) {
+        [&unreachable_definitions](std::unique_ptr<Instruction>& I) -> bool {
             Instruction* inst = I.get();
             Id decoration_id = inst->getIdOperand(0);
             return unreachable_definitions.count(decoration_id) != 0;
