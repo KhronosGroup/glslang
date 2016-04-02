@@ -112,7 +112,7 @@ TBuiltInResource Resources;
 std::string ConfigFile;
 
 //
-// Parse either a .conf file provided by the user or the default string above.
+// Parse either a .conf file provided by the user or the default from glslang::DefaultTBuiltInResource
 //
 void ProcessConfigFile()
 {
