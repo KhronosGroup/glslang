@@ -13,7 +13,7 @@ elseif(UNIX)
     add_definitions(-fPIC)
     add_definitions(-DGLSLANG_OSINCLUDE_UNIX)
 else(WIN32)
-    message("unkown platform")
+    message("unknown platform")
 endif(WIN32)
 
 if(CMAKE_COMPILER_IS_GNUCXX)

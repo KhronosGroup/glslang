@@ -103,7 +103,7 @@ class TProgram
 See `ShaderLang.h` and the usage of it in `StandAlone/StandAlone.cpp` for more
 details.
 
-### C Functional Interface (orginal)
+### C Functional Interface (orignal)
 
 This interface is in roughly the first 2/3 of `ShaderLang.h`, and referred to
 as the `Sh*()` interface, as all the entry points start `Sh`.
@@ -118,7 +118,7 @@ ShCompile(shader, compiler) -> compiler(AST) -> <back end>
 ```
 
 In practice, `ShCompile()` takes shader strings, default version, and
-warning/error and other options for controling compilation.
+warning/error and other options for controlling compilation.
 
 Testing
 -------

@@ -1067,7 +1067,7 @@ Id Builder::createCompositeExtract(Id composite, Id typeId, unsigned index)
     // Generate code for spec constants if in spec constant operation
     // generation mode.
     if (generatingOpCodeForSpecConst) {
-        return createSpecConstantOp(OpCompositeExtract, typeId, {composite}, {index});
+        return createSpecConstantOp(OpCompositeExtract, typeId, std::vector<Id>(1, composite), std::vector<Id>(1, index));
     }
     Instruction* extract = new Instruction(getUniqueId(), typeId, OpCompositeExtract);
     extract->addIdOperand(composite);
@@ -1082,7 +1082,7 @@ Id Builder::createCompositeExtract(Id composite, Id typeId, std::vector<unsigned
     // Generate code for spec constants if in spec constant operation
     // generation mode.
     if (generatingOpCodeForSpecConst) {
-        return createSpecConstantOp(OpCompositeExtract, typeId, {composite}, indexes);
+        return createSpecConstantOp(OpCompositeExtract, typeId, std::vector<Id>(1, composite), indexes);
     }
     Instruction* extract = new Instruction(getUniqueId(), typeId, OpCompositeExtract);
     extract->addIdOperand(composite);
@@ -1184,7 +1184,7 @@ Id Builder::createUnaryOp(Op opCode, Id typeId, Id operand)
     // Generate code for spec constants if in spec constant operation
     // generation mode.
     if (generatingOpCodeForSpecConst) {
-        return createSpecConstantOp(opCode, typeId, {operand}, {});
+        return createSpecConstantOp(opCode, typeId, std::vector<Id>(1, operand), std::vector<Id>());
     }
     Instruction* op = new Instruction(getUniqueId(), typeId, opCode);
     op->addIdOperand(operand);
@@ -1198,7 +1198,9 @@ Id Builder::createBinOp(Op opCode, Id typeId, Id left, Id right)
     // Generate code for spec constants if in spec constant operation
     // generation mode.
     if (generatingOpCodeForSpecConst) {
-        return createSpecConstantOp(opCode, typeId, {left, right}, {});
+        std::vector<Id> operands(2);
+        operands[0] = left; operands[1] = right;
+        return createSpecConstantOp(opCode, typeId, operands, std::vector<Id>());
     }
     Instruction* op = new Instruction(getUniqueId(), typeId, opCode);
     op->addIdOperand(left);
@@ -1261,7 +1263,9 @@ Id Builder::createRvalueSwizzle(Decoration precision, Id typeId, Id source, std:
         return setPrecision(createCompositeExtract(source, typeId, channels.front()), precision);
 
     if (generatingOpCodeForSpecConst) {
-        return setPrecision(createSpecConstantOp(OpVectorShuffle, typeId, {source, source}, channels), precision);
+        std::vector<Id> operands(2);
+        operands[0] = operands[1] = source;
+        return setPrecision(createSpecConstantOp(OpVectorShuffle, typeId, operands, channels), precision);
     }
     Instruction* swizzle = new Instruction(getUniqueId(), typeId, OpVectorShuffle);
     assert(isVector(source));
@@ -2209,7 +2213,7 @@ void Builder::eliminateDeadDecorations() {
         }
     }
     decorations.erase(std::remove_if(decorations.begin(), decorations.end(),
-        [&unreachable_definitions](std::unique_ptr<Instruction>& I) {
+        [&unreachable_definitions](std::unique_ptr<Instruction>& I) -> bool {
             Instruction* inst = I.get();
             Id decoration_id = inst->getIdOperand(0);
             return unreachable_definitions.count(decoration_id) != 0;
@@ -2319,7 +2323,7 @@ void Builder::simplifyAccessChainSwizzle()
 
 // To the extent any swizzling can become part of the chain
 // of accesses instead of a post operation, make it so.
-// If 'dynamic' is true, include transfering a non-static component index,
+// If 'dynamic' is true, include transferring a non-static component index,
 // otherwise, only transfer static indexes.
 //
 // Also, Boolean vectors are likely to be special.  While
