@@ -2319,7 +2319,7 @@ void Builder::simplifyAccessChainSwizzle()
 
 // To the extent any swizzling can become part of the chain
 // of accesses instead of a post operation, make it so.
-// If 'dynamic' is true, include transfering a non-static component index,
+// If 'dynamic' is true, include transferring a non-static component index,
 // otherwise, only transfer static indexes.
 //
 // Also, Boolean vectors are likely to be special.  While
