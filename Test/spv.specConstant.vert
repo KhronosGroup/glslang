@@ -8,6 +8,8 @@ layout(constant_id = 18) const float spFloat = 3.14;
 layout(constant_id = 19) const double spDouble = 3.1415926535897932384626433832795;
 layout(constant_id = 22) const uint scale = 2;
 
+layout(constant_id = 24) gl_MaxImageUnits;
+
 out vec4 color;
 out int size;
 
@@ -40,4 +42,10 @@ void foo(vec4 p[arraySize])
     if (spDupBool)
         color *= dupScale;
     color += float(spDupDouble / spDupFloat);
+}
+
+int builtin_spec_constant()
+{
+    int result = gl_MaxImageUnits;
+    return result;
 }
