@@ -58,17 +58,25 @@ Linked vertex stage:
               30:    29(bool) SpecConstantTrue
               33:             TypeInt 32 0
               34:     33(int) SpecConstant 2
+              35:    6(float) SpecConstantOp 112 34
               38:             TypeFloat 64
               39:   38(float) SpecConstant 1413754136 1074340347
               40:    6(float) SpecConstant 1078523331
+              41:   38(float) SpecConstantOp 115 40
+              42:   38(float) SpecConstantOp 136 39 41
+              43:    6(float) SpecConstantOp 115 42
               50:      8(int) SpecConstant 12
               51:             TypeArray 7(fvec4) 50
               52:             TypePointer Input 51
      53(dupUcol):     52(ptr) Variable Input
               60:    29(bool) SpecConstantTrue
               63:     33(int) SpecConstant 2
+              64:    6(float) SpecConstantOp 112 63
               67:   38(float) SpecConstant 1413754136 1074340347
               68:    6(float) SpecConstant 1078523331
+              69:   38(float) SpecConstantOp 115 68
+              70:   38(float) SpecConstantOp 136 67 69
+              71:    6(float) SpecConstantOp 115 70
               75:             TypePointer Function 8(int)
               77:      8(int) SpecConstant 8
          4(main):           2 Function None 3
@@ -81,15 +89,11 @@ Linked vertex stage:
                               SelectionMerge 32 None
                               BranchConditional 30 31 32
               31:               Label
-              35:    6(float)   ConvertUToF 34
               36:    7(fvec4)   Load 20(color)
               37:    7(fvec4)   VectorTimesScalar 36 35
                                 Store 20(color) 37
                                 Branch 32
               32:             Label
-              41:   38(float) FConvert 40
-              42:   38(float) FDiv 39 41
-              43:    6(float) FConvert 42
               44:    7(fvec4) Load 20(color)
               45:    7(fvec4) CompositeConstruct 43 43 43 43
               46:    7(fvec4) FAdd 44 45
@@ -113,15 +117,11 @@ Linked vertex stage:
                               SelectionMerge 62 None
                               BranchConditional 60 61 62
               61:               Label
-              64:    6(float)   ConvertUToF 63
               65:    7(fvec4)   Load 20(color)
               66:    7(fvec4)   VectorTimesScalar 65 64
                                 Store 20(color) 66
                                 Branch 62
               62:             Label
-              69:   38(float) FConvert 68
-              70:   38(float) FDiv 67 69
-              71:    6(float) FConvert 70
               72:    7(fvec4) Load 20(color)
               73:    7(fvec4) CompositeConstruct 71 71 71 71
               74:    7(fvec4) FAdd 72 73

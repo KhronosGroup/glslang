@@ -32,6 +32,7 @@ Linked vertex stage:
               13:             TypeArray 6(int) 12
               14:             TypePointer Function 13
               16:      6(int) Constant 1
+              17:      6(int) SpecConstantOp 128 10 16
               18:             TypePointer Function 6(int)
               23:             TypeFloat 32
               24:   23(float) SpecConstant 1078530010
@@ -111,20 +112,19 @@ Linked vertex stage:
               98:   68(ivec4) ConstantComposite 97 97 97 97
               99:   68(ivec4) SpecConstantOp 198 71 98
              100:     25(int) Constant 0
-             101:      6(int) SpecConstantOp 81 67 0
              102:             TypeVector 6(int) 2
-             103:  102(ivec2) SpecConstantOp 79 67 67 1(GLSL.std.450) 0
              104:             TypeVector 6(int) 3
-             105:  104(ivec3) SpecConstantOp 79 67 67 2 1(GLSL.std.450) 0
-             106:   65(ivec4) SpecConstantOp 79 67 67 1(GLSL.std.450) 2 0 3
          4(main):           2 Function None 3
                5:             Label
                               Return
+             101:      6(int) CompositeExtract 67 0
+             103:  102(ivec2) VectorShuffle 67 67 1 0
+             105:  104(ivec3) VectorShuffle 67 67 2 1 0
+             106:   65(ivec4) VectorShuffle 67 67 1 2 0 3
                               FunctionEnd
 8(non_const_array_size_from_spec_const():      6(int) Function None 7
                9:             Label
        15(array):     14(ptr) Variable Function
-              17:      6(int) IAdd 10 16
               19:     18(ptr) AccessChain 15(array) 17
               20:      6(int) Load 19
                               ReturnValue 20
