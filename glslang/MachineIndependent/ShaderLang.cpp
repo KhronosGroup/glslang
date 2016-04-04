@@ -132,7 +132,8 @@ bool InitializeSymbolTable(const TString& builtIns, int version, EProfile profil
     TIntermediate intermediate(language, version, profile);
     
     TParseContext parseContext(symbolTable, intermediate, true, version, profile, spv, vulkan, language, infoSink);
-    TPpContext ppContext(parseContext, TShader::ForbidInclude());
+    TShader::ForbidInclude includer;
+    TPpContext ppContext(parseContext, "", includer);
     TScanContext scanContext(parseContext);
     parseContext.setScanContext(&scanContext);
     parseContext.setPpContext(&ppContext);
@@ -491,7 +492,7 @@ bool ProcessDeferred(
     TIntermediate& intermediate, // returned tree, etc.
     ProcessingContext& processingContext,
     bool requireNonempty,
-    const TShader::Includer& includer
+    TShader::Includer& includer
     )
 {
     if (! InitThread())
@@ -559,7 +560,6 @@ bool ProcessDeferred(
         version = defaultVersion;
         profile = defaultProfile;
     }
-
     int spv = (messages & EShMsgSpvRules) ? 100 : 0;         // TODO find path to get real version number here, for now non-0 is what matters
     EShSource source = (messages & EShMsgReadHlsl) ? EShSourceHlsl : EShSourceGlsl;
     bool goodVersion = DeduceVersionProfile(compiler->infoSink, compiler->getLanguage(), versionNotFirst, defaultVersion, source, version, profile, spv);
@@ -609,7 +609,7 @@ bool ProcessDeferred(
         parseContext = new TParseContext(symbolTable, intermediate, false, version, profile, spv, vulkan,
                                          compiler->getLanguage(), compiler->infoSink, forwardCompatible, messages);
     }
-    TPpContext ppContext(*parseContext, includer);
+    TPpContext ppContext(*parseContext, names[numPre]? names[numPre]: "", includer);
 
     // only GLSL (bison triggered, really) needs an externally set scan context
     glslang::TScanContext scanContext(*parseContext);
@@ -886,7 +886,7 @@ bool PreprocessDeferred(
     bool forceDefaultVersionAndProfile,
     bool forwardCompatible,     // give errors for use of deprecated features
     EShMessages messages,       // warnings/errors/AST; things to print out
-    const TShader::Includer& includer,
+    TShader::Includer& includer,
     TIntermediate& intermediate, // returned tree, etc.
     std::string* outputString)
 {
@@ -925,7 +925,7 @@ bool CompileDeferred(
     bool forwardCompatible,     // give errors for use of deprecated features
     EShMessages messages,       // warnings/errors/AST; things to print out
     TIntermediate& intermediate,// returned tree, etc.
-    const TShader::Includer& includer)
+    TShader::Includer& includer)
 {
     DoFullParse parser;
     return ProcessDeferred(compiler, shaderStrings, numStrings, inputLengths, stringNames,
@@ -1074,9 +1074,10 @@ int ShCompile(
     compiler->infoSink.debug.erase();
 
     TIntermediate intermediate(compiler->getLanguage());
+    TShader::ForbidInclude includer;
     bool success = CompileDeferred(compiler, shaderStrings, numStrings, inputLengths, nullptr,
                                    "", optLevel, resources, defaultVersion, ENoProfile, false,
-                                   forwardCompatible, messages, intermediate, TShader::ForbidInclude());
+                                   forwardCompatible, messages, intermediate, includer);
 
     //
     // Call the machine dependent compiler
@@ -1389,7 +1390,7 @@ void TShader::setEntryPoint(const char* entryPoint)
 // Returns true for success.
 //
 bool TShader::parse(const TBuiltInResource* builtInResources, int defaultVersion, EProfile defaultProfile, bool forceDefaultVersionAndProfile,
-                    bool forwardCompatible, EShMessages messages, const Includer& includer)
+                    bool forwardCompatible, EShMessages messages, Includer& includer)
 {
     if (! InitThread())
         return false;
@@ -1417,7 +1418,7 @@ bool TShader::preprocess(const TBuiltInResource* builtInResources,
                          bool forceDefaultVersionAndProfile,
                          bool forwardCompatible, EShMessages message,
                          std::string* output_string,
-                         const TShader::Includer& includer)
+                         Includer& includer)
 {
     if (! InitThread())
         return false;

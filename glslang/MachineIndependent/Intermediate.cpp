@@ -61,25 +61,35 @@ namespace glslang {
 // Returns the added node.
 //
 
-TIntermSymbol* TIntermediate::addSymbol(int id, const TString& name, const TType& type, const TSourceLoc& loc)
+TIntermSymbol* TIntermediate::addSymbol(int id, const TString& name, const TType& type, const TConstUnionArray& constArray,
+                                        TIntermTyped* constSubtree, const TSourceLoc& loc)
 {
     TIntermSymbol* node = new TIntermSymbol(id, name, type);
     node->setLoc(loc);
+    node->setConstArray(constArray);
+    node->setConstSubtree(constSubtree);
 
     return node;
 }
 
-TIntermSymbol* TIntermediate::addSymbol(int id, const TString& name, const TType& type, const TConstUnionArray& constArray, const TSourceLoc& loc)
+TIntermSymbol* TIntermediate::addSymbol(const TVariable& variable)
 {
-    TIntermSymbol* node = addSymbol(id, name, type, loc);
-    node->setConstArray(constArray);
+    glslang::TSourceLoc loc; // just a null location
+    loc.init();
 
-    return node;
+    return addSymbol(variable, loc);
 }
 
 TIntermSymbol* TIntermediate::addSymbol(const TVariable& variable, const TSourceLoc& loc)
 {
-    return addSymbol(variable.getUniqueId(), variable.getName(), variable.getType(), variable.getConstArray(), loc);
+    return addSymbol(variable.getUniqueId(), variable.getName(), variable.getType(), variable.getConstArray(), variable.getConstSubtree(), loc);
+}
+
+TIntermSymbol* TIntermediate::addSymbol(const TType& type, const TSourceLoc& loc)
+{
+    TConstUnionArray unionArray;  // just a null constant
+
+    return addSymbol(0, "", type, unionArray, nullptr, loc);
 }
 
 //
@@ -252,6 +262,7 @@ TIntermTyped* TIntermediate::addUnaryMath(TOperator op, TIntermTyped* child, TSo
 
     //
     // For constructors, we are now done, it was all in the conversion.
+    // TODO: but, did this bypass constant folding?
     //
     switch (op) {
     case EOpConstructInt:
@@ -281,7 +292,7 @@ TIntermTyped* TIntermediate::addUnaryMath(TOperator op, TIntermTyped* child, TSo
     if (child->getAsConstantUnion())
         return child->getAsConstantUnion()->fold(op, node->getType());
 
-    // If it's a specialiation constant, the result is too.
+    // If it's a specialization constant, the result is too.
     if (child->getType().getQualifier().isSpecConstant())
         node->getWritableType().getQualifier().makeSpecConstant();
 
@@ -474,6 +485,7 @@ TIntermTyped* TIntermediate::addConversion(TOperator op, const TType& type, TInt
     case EOpSub:
     case EOpMul:
     case EOpDiv:
+    case EOpMod:
 
     case EOpVectorTimesScalar:
     case EOpVectorTimesMatrix:
@@ -604,6 +616,12 @@ TIntermTyped* TIntermediate::addConversion(TOperator op, const TType& type, TInt
     newNode = new TIntermUnary(newOp, newType);
     newNode->setLoc(node->getLoc());
     newNode->setOperand(node);
+
+    // TODO: it seems that some unary folding operations should occur here, but are not
+
+    // Propagate specialization-constant-ness.
+    if (node->getType().getQualifier().isSpecConstant())
+        newNode->getWritableType().getQualifier().makeSpecConstant();
 
     return newNode;
 }
@@ -813,7 +831,7 @@ TIntermTyped* TIntermediate::addSelection(TIntermTyped* cond, TIntermTyped* true
     // Make a selection node.
     //
     TIntermSelection* node = new TIntermSelection(cond, trueBlock, falseBlock, trueBlock->getType());
-    node->getQualifier().storage = EvqTemporary;
+    node->getQualifier().makeTemporary();
     node->setLoc(loc);
     node->getQualifier().precision = std::max(trueBlock->getQualifier().precision, falseBlock->getQualifier().precision);
 
@@ -872,7 +890,6 @@ TIntermConstantUnion* TIntermediate::addConstantUnion(double d, TBasicType baseT
 
 TIntermTyped* TIntermediate::addSwizzle(TVectorFields& fields, const TSourceLoc& loc)
 {
-
     TIntermAggregate* node = new TIntermAggregate(EOpSequence);
 
     node->setLoc(loc);
@@ -1017,8 +1034,7 @@ void TIntermediate::addSymbolLinkageNode(TIntermAggregate*& linkage, const TSymb
         const TAnonMember* anon = symbol.getAsAnonMember();
         variable = &anon->getAnonContainer();
     }
-    TIntermSymbol* node = new TIntermSymbol(variable->getUniqueId(), variable->getName(), variable->getType());
-    node->setConstArray(variable->getConstArray());
+    TIntermSymbol* node = addSymbol(*variable);
     linkage = growAggregate(linkage, node);
 }
 

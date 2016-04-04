@@ -337,7 +337,7 @@ ERROR: node is still EOpNull!
 0:201              1 (const int)
 0:201          Constant:
 0:201            2 (const int)
-0:202      Test condition and select (layout(column_major shared ) temp highp float)
+0:202      Test condition and select (temp highp float)
 0:202        Condition
 0:202        'b' (temp bool)
 0:202        true case
@@ -764,7 +764,7 @@ ERROR: node is still EOpNull!
 0:201              1 (const int)
 0:201          Constant:
 0:201            2 (const int)
-0:202      Test condition and select (layout(column_major shared ) temp highp float)
+0:202      Test condition and select (temp highp float)
 0:202        Condition
 0:202        'b' (temp bool)
 0:202        true case

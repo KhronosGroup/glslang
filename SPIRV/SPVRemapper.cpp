@@ -573,7 +573,7 @@ namespace spv {
             op_fn_nop);
 
         // Window size for context-sensitive canonicalization values
-        // Emperical best size from a single data set.  TODO: Would be a good tunable.
+        // Empirical best size from a single data set.  TODO: Would be a good tunable.
         // We essentially perform a little convolution around each instruction,
         // to capture the flavor of nearby code, to hopefully match to similar
         // code in other modules.

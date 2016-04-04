@@ -167,10 +167,10 @@ public:
     int getNumErrors() const { return numErrors; }
     void addPushConstantCount() { ++numPushConstants; }
     bool isRecursive() const { return recursive; }
-    
-    TIntermSymbol* addSymbol(int Id, const TString&, const TType&, const TConstUnionArray&, const TSourceLoc&);
-    TIntermSymbol* addSymbol(int Id, const TString&, const TType&, const TSourceLoc&);
+
+    TIntermSymbol* addSymbol(const TVariable&);
     TIntermSymbol* addSymbol(const TVariable&, const TSourceLoc&);
+    TIntermSymbol* addSymbol(const TType&, const TSourceLoc&);
     TIntermTyped* addConversion(TOperator, const TType&, TIntermTyped*) const;
     TIntermTyped* addBinaryMath(TOperator, TIntermTyped* left, TIntermTyped* right, TSourceLoc);
     TIntermTyped* addAssign(TOperator op, TIntermTyped* left, TIntermTyped* right, TSourceLoc);
@@ -331,6 +331,7 @@ public:
     static int getBaseAlignment(const TType&, int& size, int& stride, bool std140, bool rowMajor);
 
 protected:
+    TIntermSymbol* addSymbol(int Id, const TString&, const TType&, const TConstUnionArray&, TIntermTyped* subtree, const TSourceLoc&);
     void error(TInfoSink& infoSink, const char*);
     void mergeBodies(TInfoSink&, TIntermSequence& globals, const TIntermSequence& unitGlobals);
     void mergeLinkerObjects(TInfoSink&, TIntermSequence& linkerObjects, const TIntermSequence& unitLinkerObjects);

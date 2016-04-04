@@ -61,6 +61,12 @@ bison --defines=MachineIndependent/glslang_tab.cpp.h
       -o MachineIndependent/glslang_tab.cpp
 ```
 
+Glslang is adding the ability to test with
+[Google Test](https://github.com/google/googletest) framework. If you want to
+build and run those tests, please make sure you have a copy of Google Tests
+checked out in the `External/` directory:
+`git clone https://github.com/google/googletest.git`.
+
 Programmatic Interfaces
 -----------------------
 
@@ -97,7 +103,7 @@ class TProgram
 See `ShaderLang.h` and the usage of it in `StandAlone/StandAlone.cpp` for more
 details.
 
-### C Functional Interface (orginal)
+### C Functional Interface (orignal)
 
 This interface is in roughly the first 2/3 of `ShaderLang.h`, and referred to
 as the `Sh*()` interface, as all the entry points start `Sh`.
@@ -112,13 +118,17 @@ ShCompile(shader, compiler) -> compiler(AST) -> <back end>
 ```
 
 In practice, `ShCompile()` takes shader strings, default version, and
-warning/error and other options for controling compilation.
+warning/error and other options for controlling compilation.
 
 Testing
 -------
 
 Test results should always be included with a pull request that modifies
-functionality. There is a simple process for doing this, described here:
+functionality. And since glslang is adding the ability to test with
+[Google Test](https://github.com/google/googletest) framework,
+please write your new tests using Google Test.
+
+The old (deprecated) testing process is:
 
 `Test` is an active test directory that contains test input and a
 subdirectory `baseResults` that contains the expected results of the

@@ -48,7 +48,7 @@ namespace {
 bool is_positive_infinity(double x) {
 #ifdef _MSC_VER
   return _fpclass(x) == _FPCLASS_PINF;
-#elif defined __ANDROID__ || defined __linux__
+#elif defined __ANDROID__ || defined __linux__ || __MINGW32__ || __MINGW64__
   return std::isinf(x) && (x >= 0);
 #else
   return isinf(x) && (x >= 0);
@@ -605,6 +605,11 @@ void TOutputTraverser::visitSymbol(TIntermSymbol* node)
 
     if (! node->getConstArray().empty())
         OutputConstantUnion(infoSink, node, node->getConstArray(), depth + 1);
+    else if (node->getConstSubtree()) {
+        incrementDepth(node);
+        node->getConstSubtree()->traverse(this);
+        decrementDepth();
+    }
 }
 
 bool TOutputTraverser::visitLoop(TVisit /* visit */, TIntermLoop* node)
