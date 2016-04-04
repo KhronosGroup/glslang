@@ -3744,6 +3744,7 @@ spv::Id TGlslangToSpvTraverser::createSpvConstant(const glslang::TIntermTyped& n
 {
     assert(node.getQualifier().isConstant());
 
+    // Handle front-end constants first (non-specialization constants).
     if (! node.getQualifier().specConstant) {
         // hand off to the non-spec-constant path
         assert(node.getAsConstantUnion() != nullptr || node.getAsSymbolNode() != nullptr);
@@ -3754,31 +3755,35 @@ spv::Id TGlslangToSpvTraverser::createSpvConstant(const glslang::TIntermTyped& n
 
     // We now know we have a specialization constant to build
 
-    if (node.getAsSymbolNode() && node.getQualifier().hasSpecConstantId()) {
-        // this is a direct literal assigned to a layout(constant_id=) declaration
-        int nextConst = 0;
-        return createSpvConstantFromConstUnionArray(node.getType(), node.getAsConstantUnion() ? node.getAsConstantUnion()->getConstArray() : node.getAsSymbolNode()->getConstArray(),
-                                 nextConst, true);
-    } else {
-        // gl_WorkgroupSize is a special case until the front-end handles hierarchical specialization constants,
-        // even then, it's specialization ids are handled by special case syntax in GLSL: layout(local_size_x = ...
-        if (node.getType().getQualifier().builtIn == glslang::EbvWorkGroupSize) {
-            std::vector<spv::Id> dimConstId;
-            for (int dim = 0; dim < 3; ++dim) {
-                bool specConst = (glslangIntermediate->getLocalSizeSpecId(dim) != glslang::TQualifier::layoutNotSet);
-                dimConstId.push_back(builder.makeUintConstant(glslangIntermediate->getLocalSize(dim), specConst));
-                if (specConst)
-                    addDecoration(dimConstId.back(), spv::DecorationSpecId, glslangIntermediate->getLocalSizeSpecId(dim));
-            }
-            return builder.makeCompositeConstant(builder.makeVectorType(builder.makeUintType(32), 3), dimConstId, true);
-        } else if (auto* sn = node.getAsSymbolNode()){
-            return createSpvConstantFromConstSubTree(sn->getConstSubtree());
-        } else {
-            spv::MissingFunctionality("Neither a front-end constant nor a spec constant.");
-            exit(1);
-            return spv::NoResult;
+    // gl_WorkgroupSize is a special case until the front-end handles hierarchical specialization constants,
+    // even then, it's specialization ids are handled by special case syntax in GLSL: layout(local_size_x = ...
+    if (node.getType().getQualifier().builtIn == glslang::EbvWorkGroupSize) {
+        std::vector<spv::Id> dimConstId;
+        for (int dim = 0; dim < 3; ++dim) {
+            bool specConst = (glslangIntermediate->getLocalSizeSpecId(dim) != glslang::TQualifier::layoutNotSet);
+            dimConstId.push_back(builder.makeUintConstant(glslangIntermediate->getLocalSize(dim), specConst));
+            if (specConst)
+                addDecoration(dimConstId.back(), spv::DecorationSpecId, glslangIntermediate->getLocalSizeSpecId(dim));
+        }
+        return builder.makeCompositeConstant(builder.makeVectorType(builder.makeUintType(32), 3), dimConstId, true);
+    }
+
+    // An AST node labelled as specialization constant should be a symbol node.
+    // Its initializer should either be a sub tree with constant nodes, or a constant union array.
+    if (auto* sn = node.getAsSymbolNode()) {
+        if (auto* sub_tree = sn->getConstSubtree()) {
+            return createSpvConstantFromConstSubTree(sub_tree);
+        } else if (auto* const_union_array = &sn->getConstArray()){
+            int nextConst = 0;
+            return createSpvConstantFromConstUnionArray(sn->getType(), *const_union_array, nextConst, true);
         }
     }
+
+    // Neither a front-end constant node, nor a specialization constant node with constant union array or
+    // constant sub tree as initializer.
+    spv::MissingFunctionality("Neither a front-end constant nor a spec constant.");
+    exit(1);
+    return spv::NoResult;
 }
 
 // Use 'consts' as the flattened glslang source of scalar constants to recursively

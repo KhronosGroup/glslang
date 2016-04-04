@@ -5714,6 +5714,10 @@ void TParseContext::addQualifierToExisting(const TSourceLoc& loc, TQualifier qua
             error(loc, "cannot change qualification after use", "invariant", "");
         symbol->getWritableType().getQualifier().invariant = true;
         invariantCheck(loc, symbol->getType().getQualifier());
+    } else if (qualifier.specConstant) {
+        symbol->getWritableType().getQualifier().makeSpecConstant();
+        if (qualifier.hasSpecConstantId())
+            symbol->getWritableType().getQualifier().layoutSpecConstantId = qualifier.layoutSpecConstantId;
     } else
         warn(loc, "unknown requalification", "", "");
 }
