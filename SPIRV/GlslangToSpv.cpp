@@ -778,6 +778,10 @@ TGlslangToSpvTraverser::~TGlslangToSpvTraverser()
 //
 void TGlslangToSpvTraverser::visitSymbol(glslang::TIntermSymbol* symbol)
 {
+    SpecConstantOpModeGuard spec_constant_op_mode_setter(&builder);
+    if (symbol->getType().getQualifier().isSpecConstant())
+        spec_constant_op_mode_setter.turnOnSpecConstantOpMode();
+
     // getSymbolId() will set up all the IO decorations on the first call.
     // Formal function parameters were mapped during makeFunctions().
     spv::Id id = getSymbolId(symbol);
