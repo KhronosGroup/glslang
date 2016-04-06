@@ -51,7 +51,6 @@ Linked vertex stage:
               26:             TypePointer Output 25(fvec4)
        27(color):     26(ptr) Variable Output
               28:     14(int) SpecConstant 3
-              29:   24(float) SpecConstantOp 111 28
               32:   24(float) SpecConstant 1078523331
               33:   25(fvec4) SpecConstantComposite 32 32 32 32
               36:   24(float) Constant 1133908460
@@ -77,7 +76,6 @@ Linked vertex stage:
               70:          68 SpecConstantComposite 28 28 63 46 69
               71:             TypePointer Function 68
               73:             TypePointer Function 14(int)
-              79:   24(float) SpecConstantOp 111 78
               87:   24(float) Constant 1106321080
               88:41(flat_struct) SpecConstantComposite 69 87 43 21
               89:     14(int) Constant 10
@@ -101,6 +99,7 @@ Linked vertex stage:
                               SelectionMerge 23 None
                               BranchConditional 21 22 23
               22:               Label
+              29:   24(float)   ConvertSToF 28
               30:   25(fvec4)   Load 27(color)
               31:   25(fvec4)   VectorTimesScalar 30 29
                                 Store 27(color) 31
@@ -147,6 +146,7 @@ Linked vertex stage:
                               Store 76(indexable) 70
               77:     73(ptr) AccessChain 76(indexable) 75
               78:     14(int) Load 77
+              79:   24(float) ConvertSToF 78
               80:   25(fvec4) Load 27(color)
               81:   25(fvec4) CompositeConstruct 79 79 79 79
               82:   25(fvec4) FDiv 80 81

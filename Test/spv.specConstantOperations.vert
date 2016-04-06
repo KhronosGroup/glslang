@@ -11,8 +11,8 @@ layout(constant_id = 203) const int sp_sint = -10;
 //
 
 // Size convert
-const double float_to_double = double(sp_float);
-const float double_to_float = float(float_to_double);
+//const double float_to_double = double(sp_float);
+//const float double_to_float = float(float_to_double);
 
 // Negate and Not
 const int negate_int = -sp_int;
@@ -55,8 +55,8 @@ const uvec4 uv = uvec4(sp_uint, sp_uint, -1, -2);
 const vec4 fv = vec4(sp_float, 1.25, sp_float, 1.25);
 
 // Size convert
-const dvec4 fv_to_dv = dvec4(fv);
-const vec4 dv_to_fv = vec4(fv_to_dv);
+//const dvec4 fv_to_dv = dvec4(fv);
+//const vec4 dv_to_fv = vec4(fv_to_dv);
 
 // Negate and Not
 const ivec4 not_iv = ~iv;

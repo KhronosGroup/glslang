@@ -145,10 +145,12 @@ TIntermTyped* TIntermediate::addBinaryMath(TOperator op, TIntermTyped* left, TIn
 
     // If either is a specialization constant, while the other is 
     // a constant (or specialization constant), the result is still
-    // a specialization constant.
+    // a specialization constant, if the operation is an allowed
+    // specialization-constant operation.
     if (( left->getType().getQualifier().isSpecConstant() && right->getType().getQualifier().isConstant()) ||
         (right->getType().getQualifier().isSpecConstant() &&  left->getType().getQualifier().isConstant()))
-        node->getWritableType().getQualifier().makeSpecConstant();
+        if (isSpecializationOperation(*node))
+            node->getWritableType().getQualifier().makeSpecConstant();
 
     return node;
 }
@@ -292,8 +294,9 @@ TIntermTyped* TIntermediate::addUnaryMath(TOperator op, TIntermTyped* child, TSo
     if (child->getAsConstantUnion())
         return child->getAsConstantUnion()->fold(op, node->getType());
 
-    // If it's a specialization constant, the result is too.
-    if (child->getType().getQualifier().isSpecConstant())
+    // If it's a specialization constant, the result is too,
+    // if the operation is allowed for specialization constants.
+    if (child->getType().getQualifier().isSpecConstant() && isSpecializationOperation(*node))
         node->getWritableType().getQualifier().makeSpecConstant();
 
     return node;
@@ -619,8 +622,8 @@ TIntermTyped* TIntermediate::addConversion(TOperator op, const TType& type, TInt
 
     // TODO: it seems that some unary folding operations should occur here, but are not
 
-    // Propagate specialization-constant-ness.
-    if (node->getType().getQualifier().isSpecConstant())
+    // Propagate specialization-constant-ness, if allowed
+    if (node->getType().getQualifier().isSpecConstant() && isSpecializationOperation(*newNode))
         newNode->getWritableType().getQualifier().makeSpecConstant();
 
     return newNode;
@@ -1063,6 +1066,87 @@ void TIntermediate::removeTree()
 {
     if (treeRoot)
         RemoveAllTreeNodes(treeRoot);
+}
+
+//
+// Implement the part of KHR_vulkan_glsl that lists the set of operations
+// that can result in a specialization constant operation.
+//
+// "5.x Specialization Constant Operations"
+//
+// ...
+//
+// It also needs to allow basic construction, swizzling, and indexing
+// operations.
+//
+bool TIntermediate::isSpecializationOperation(const TIntermOperator& node) const
+{
+    // allow construction
+    if (node.isConstructor())
+        return true;
+
+    // The set for floating point is quite limited
+    if (node.getBasicType() == EbtFloat ||
+        node.getBasicType() == EbtDouble) {
+        switch (node.getOp()) {
+        case EOpIndexDirect:
+        case EOpIndexIndirect:
+        case EOpIndexDirectStruct:
+        case EOpVectorSwizzle:
+            return true;
+        default:
+            return false;
+        }
+    }
+
+    // Floating-point is out of the way.
+    // Now check for integer/bool-based operations
+    switch (node.getOp()) {
+
+    // dereference/swizzle
+    case EOpIndexDirect:
+    case EOpIndexIndirect:
+    case EOpIndexDirectStruct:
+    case EOpVectorSwizzle:
+
+    // conversion constructors
+    case EOpConvIntToBool:
+    case EOpConvUintToBool:
+    case EOpConvUintToInt:
+    case EOpConvBoolToInt:
+    case EOpConvIntToUint:
+    case EOpConvBoolToUint:
+
+    // unary operations
+    case EOpNegative:
+    case EOpLogicalNot:
+    case EOpBitwiseNot:
+
+    // binary operations
+    case EOpAdd:
+    case EOpSub:
+    case EOpMul:
+    case EOpVectorTimesScalar:
+    case EOpDiv:
+    case EOpMod:
+    case EOpRightShift:
+    case EOpLeftShift:
+    case EOpAnd:
+    case EOpInclusiveOr:
+    case EOpExclusiveOr:
+    case EOpLogicalOr:
+    case EOpLogicalXor:
+    case EOpLogicalAnd:
+    case EOpEqual:
+    case EOpNotEqual:
+    case EOpLessThan:
+    case EOpGreaterThan:
+    case EOpLessThanEqual:
+    case EOpGreaterThanEqual:
+        return true;
+    default:
+        return false;
+    }
 }
 
 ////////////////////////////////////////////////////////////////
