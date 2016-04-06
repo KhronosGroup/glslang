@@ -66,6 +66,27 @@ namespace {
 // or a different instruction sequence to do something gets used).
 const int GeneratorVersion = 1;
 
+namespace {
+class SpecConstantOpModeGuard {
+public:
+    SpecConstantOpModeGuard(spv::Builder* builder)
+        : builder_(builder) {
+        previous_flag_ = builder->isInSpecConstCodeGenMode();
+    }
+    ~SpecConstantOpModeGuard() {
+        previous_flag_ ? builder_->setToSpecConstCodeGenMode()
+                       : builder_->setToNormalCodeGenMode();
+    }
+    void turnOnSpecConstantOpMode() {
+        builder_->setToSpecConstCodeGenMode();
+    }
+
+private:
+    spv::Builder* builder_;
+    bool previous_flag_;
+};
+}
+
 //
 // The main holder of information for translating glslang to SPIR-V.
 //
@@ -757,6 +778,10 @@ TGlslangToSpvTraverser::~TGlslangToSpvTraverser()
 //
 void TGlslangToSpvTraverser::visitSymbol(glslang::TIntermSymbol* symbol)
 {
+    SpecConstantOpModeGuard spec_constant_op_mode_setter(&builder);
+    if (symbol->getType().getQualifier().isSpecConstant())
+        spec_constant_op_mode_setter.turnOnSpecConstantOpMode();
+
     // getSymbolId() will set up all the IO decorations on the first call.
     // Formal function parameters were mapped during makeFunctions().
     spv::Id id = getSymbolId(symbol);
@@ -794,6 +819,10 @@ void TGlslangToSpvTraverser::visitSymbol(glslang::TIntermSymbol* symbol)
 
 bool TGlslangToSpvTraverser::visitBinary(glslang::TVisit /* visit */, glslang::TIntermBinary* node)
 {
+    SpecConstantOpModeGuard spec_constant_op_mode_setter(&builder);
+    if (node->getType().getQualifier().isSpecConstant())
+        spec_constant_op_mode_setter.turnOnSpecConstantOpMode();
+
     // First, handle special cases
     switch (node->getOp()) {
     case glslang::EOpAssign:
@@ -966,6 +995,10 @@ bool TGlslangToSpvTraverser::visitBinary(glslang::TVisit /* visit */, glslang::T
 
 bool TGlslangToSpvTraverser::visitUnary(glslang::TVisit /* visit */, glslang::TIntermUnary* node)
 {
+    SpecConstantOpModeGuard spec_constant_op_mode_setter(&builder);
+    if (node->getType().getQualifier().isSpecConstant())
+        spec_constant_op_mode_setter.turnOnSpecConstantOpMode();
+
     spv::Id result = spv::NoResult;
 
     // try texturing first
@@ -1927,6 +1960,7 @@ spv::Id TGlslangToSpvTraverser::makeArraySizeId(const glslang::TArraySizes& arra
     glslang::TIntermTyped* specNode = arraySizes.getDimNode(dim);
     if (specNode != nullptr) {
         builder.clearAccessChain();
+        // SpecConstantOpModeGuard set_to_spec_const_mode(&builder);
         specNode->traverse(this);
         return accessChainLoad(specNode->getAsTyped()->getType());
     }
@@ -3868,25 +3902,6 @@ spv::Id TGlslangToSpvTraverser::createSpvConstantFromConstUnionArray(const glsla
     return builder.makeCompositeConstant(typeId, spvConsts);
 }
 
-namespace {
-class SpecConstantOpModeGuard {
-public:
-    SpecConstantOpModeGuard(spv::Builder* builder)
-        : builder_(builder) {
-        previous_flag_ = builder->isInSpecConstCodeGenMode();
-        builder->setToSpecConstCodeGenMode();
-    }
-    ~SpecConstantOpModeGuard() {
-        previous_flag_ ? builder_->setToSpecConstCodeGenMode()
-                       : builder_->setToNormalCodeGenMode();
-    }
-
-private:
-    spv::Builder* builder_;
-    bool previous_flag_;
-};
-}
-
 // Create constant ID from const initializer sub tree.
 spv::Id TGlslangToSpvTraverser::createSpvConstantFromConstSubTree(
     glslang::TIntermTyped* subTree)
@@ -3919,22 +3934,12 @@ spv::Id TGlslangToSpvTraverser::createSpvConstantFromConstSubTree(
     } else if (glslang::TIntermBinary* bn = subTree->getAsBinaryNode()) {
         // Binary operation node, we should generate OpSpecConstantOp <binary op>
         // This case should only happen when Specialization Constants are involved.
-
-        // Spec constants defined with binary operations and other constants requires
-        // OpSpecConstantOp instruction.
-        SpecConstantOpModeGuard set_to_spec_const_mode(&builder);
-
         bn->traverse(this);
         return accessChainLoad(bn->getType());
 
     } else if (glslang::TIntermUnary* un = subTree->getAsUnaryNode()) {
         // Unary operation node, similar to binary operation node, should only
         // happen when specialization constants are involved.
-
-        // Spec constants defined with unary operations and other constants requires
-        // OpSpecConstantOp instruction.
-        SpecConstantOpModeGuard set_to_spec_const_mode(&builder);
-
         un->traverse(this);
         return accessChainLoad(un->getType());
 
