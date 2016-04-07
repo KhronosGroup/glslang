@@ -124,7 +124,7 @@ Testing
 -------
 
 Test results should always be included with a pull request that modifies
-functionality. And since glslang is adding the ability to test with
+functionality. And since glslang added the ability to test with
 [Google Test](https://github.com/google/googletest) framework,
 please write your new tests using Google Test.
 
