@@ -1212,6 +1212,14 @@ Id Builder::createBinOp(Op opCode, Id typeId, Id left, Id right)
 
 Id Builder::createTriOp(Op opCode, Id typeId, Id op1, Id op2, Id op3)
 {
+    // Generate code for spec constants if in spec constant operation
+    // generation mode.
+    if (generatingOpCodeForSpecConst) {
+        std::vector<Id> operands(3);
+        operands[0] = op1; operands[1] = op2; operands[2] = op3;
+        return createSpecConstantOp(
+            opCode, typeId, operands, std::vector<Id>());
+    }
     Instruction* op = new Instruction(getUniqueId(), typeId, opCode);
     op->addIdOperand(op1);
     op->addIdOperand(op2);
