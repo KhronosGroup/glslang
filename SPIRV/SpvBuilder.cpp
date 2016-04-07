@@ -1067,7 +1067,7 @@ Id Builder::createCompositeExtract(Id composite, Id typeId, unsigned index)
     // Generate code for spec constants if in spec constant operation
     // generation mode.
     if (generatingOpCodeForSpecConst) {
-        return createSpecConstantOp(OpCompositeExtract, typeId, std::vector<Id>(1, composite), std::vector<Id>(1, index));
+        return createSpecConstantOp(OpCompositeExtract, typeId, {composite}, {index});
     }
     Instruction* extract = new Instruction(getUniqueId(), typeId, OpCompositeExtract);
     extract->addIdOperand(composite);
@@ -1082,7 +1082,7 @@ Id Builder::createCompositeExtract(Id composite, Id typeId, std::vector<unsigned
     // Generate code for spec constants if in spec constant operation
     // generation mode.
     if (generatingOpCodeForSpecConst) {
-        return createSpecConstantOp(OpCompositeExtract, typeId, std::vector<Id>(1, composite), indexes);
+        return createSpecConstantOp(OpCompositeExtract, typeId, {composite}, indexes);
     }
     Instruction* extract = new Instruction(getUniqueId(), typeId, OpCompositeExtract);
     extract->addIdOperand(composite);
@@ -1184,7 +1184,8 @@ Id Builder::createUnaryOp(Op opCode, Id typeId, Id operand)
     // Generate code for spec constants if in spec constant operation
     // generation mode.
     if (generatingOpCodeForSpecConst) {
-        return createSpecConstantOp(opCode, typeId, std::vector<Id>(1, operand), std::vector<Id>());
+        return createSpecConstantOp(opCode, typeId, {operand} /* operands */,
+                                    {} /* literals */);
     }
     Instruction* op = new Instruction(getUniqueId(), typeId, opCode);
     op->addIdOperand(operand);
@@ -1198,9 +1199,8 @@ Id Builder::createBinOp(Op opCode, Id typeId, Id left, Id right)
     // Generate code for spec constants if in spec constant operation
     // generation mode.
     if (generatingOpCodeForSpecConst) {
-        std::vector<Id> operands(2);
-        operands[0] = left; operands[1] = right;
-        return createSpecConstantOp(opCode, typeId, operands, std::vector<Id>());
+        return createSpecConstantOp(
+            opCode, typeId, {left, right} /* operands */, {} /* literals */);
     }
     Instruction* op = new Instruction(getUniqueId(), typeId, opCode);
     op->addIdOperand(left);
@@ -1212,6 +1212,12 @@ Id Builder::createBinOp(Op opCode, Id typeId, Id left, Id right)
 
 Id Builder::createTriOp(Op opCode, Id typeId, Id op1, Id op2, Id op3)
 {
+    // Generate code for spec constants if in spec constant operation
+    // generation mode.
+    if (generatingOpCodeForSpecConst) {
+        return createSpecConstantOp(
+            opCode, typeId, {op1, op2, op3} /* operands */, {} /* literals */);
+    }
     Instruction* op = new Instruction(getUniqueId(), typeId, opCode);
     op->addIdOperand(op1);
     op->addIdOperand(op2);
@@ -1263,9 +1269,7 @@ Id Builder::createRvalueSwizzle(Decoration precision, Id typeId, Id source, std:
         return setPrecision(createCompositeExtract(source, typeId, channels.front()), precision);
 
     if (generatingOpCodeForSpecConst) {
-        std::vector<Id> operands(2);
-        operands[0] = operands[1] = source;
-        return setPrecision(createSpecConstantOp(OpVectorShuffle, typeId, operands, channels), precision);
+        return setPrecision(createSpecConstantOp(OpVectorShuffle, typeId, {source, source}, channels), precision);
     }
     Instruction* swizzle = new Instruction(getUniqueId(), typeId, OpVectorShuffle);
     assert(isVector(source));
