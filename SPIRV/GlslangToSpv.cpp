@@ -2126,7 +2126,7 @@ bool TGlslangToSpvTraverser::isShaderEntrypoint(const glslang::TIntermAggregate*
 {
     // have to ignore mangling and just look at the base name
     int firstOpen = node->getName().find('(');
-    return node->getName().compare(0, firstOpen, glslangIntermediate->getEntryPoint()) == 0;
+    return node->getName().compare(0, firstOpen, glslangIntermediate->getEntryPoint().c_str()) == 0;
 }
 
 // Make all the functions, skeletally, without actually visiting their bodies.

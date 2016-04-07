@@ -709,7 +709,7 @@ TIntermAggregate* HlslParseContext::handleFunctionDefinition(const TSourceLoc& l
         currentFunctionType = new TType(EbtVoid);
     functionReturnsValue = false;
 
-    inEntrypoint = (function.getName() == intermediate.getEntryPoint());
+    inEntrypoint = (function.getName() == intermediate.getEntryPoint().c_str());
 
     //
     // New symbol table scope for body of function plus its arguments
