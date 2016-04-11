@@ -2125,7 +2125,7 @@ void TGlslangToSpvTraverser::updateMemberOffset(const glslang::TType& /*structTy
 bool TGlslangToSpvTraverser::isShaderEntrypoint(const glslang::TIntermAggregate* node)
 {
     // have to ignore mangling and just look at the base name
-    int firstOpen = node->getName().find('(');
+    size_t firstOpen = node->getName().find('(');
     return node->getName().compare(0, firstOpen, glslangIntermediate->getEntryPoint().c_str()) == 0;
 }
 
