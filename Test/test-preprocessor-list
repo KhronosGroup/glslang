@@ -13,3 +13,4 @@ preprocessor.simple.vert
 preprocessor.success_if_parse_would_fail.vert
 preprocessor.defined.vert
 preprocessor.many.endif.vert
+preprocessor.eof_missing.vert
