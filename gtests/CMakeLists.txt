@@ -26,7 +26,7 @@ if (TARGET gmock)
     ${gmock_SOURCE_DIR}/include
     ${gtest_SOURCE_DIR}/include)
   target_link_libraries(glslangtests PRIVATE
-    glslang OSDependent OGLCompiler glslang
+    glslang OSDependent OGLCompiler HLSL glslang
     SPIRV glslang-default-resource-limits gmock)
   add_test(NAME glslang-gtests COMMAND glslangtests)
 endif()
