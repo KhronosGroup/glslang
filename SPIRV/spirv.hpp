@@ -400,13 +400,6 @@ enum BuiltIn {
     BuiltInSubgroupLocalInvocationId = 41,
     BuiltInVertexIndex = 42,
     BuiltInInstanceIndex = 43,
-#ifndef NO_GL_ARB_SHADER_BALLOT
-    BuiltInSubgroupEqMaskARB = 44,
-    BuiltInSubgroupGeMaskARB = 45,
-    BuiltInSubgroupGtMaskARB = 46,
-    BuiltInSubgroupLeMaskARB = 47,
-    BuiltInSubgroupLtMaskARB = 48,
-#endif /* NO_GL_ARB_SHADER_BALLOT */
 };
 
 enum SelectionControlShift {

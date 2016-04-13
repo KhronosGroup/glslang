@@ -117,7 +117,7 @@ extern int yylex(YYSTYPE*, TParseContext&);
 %expect 1     // One shift reduce conflict because of if | else
 
 %token <lex> ATTRIBUTE VARYING
-%token <lex> CONST BOOL FLOAT DOUBLE INT UINT UINT64 INT64
+%token <lex> CONST BOOL FLOAT DOUBLE INT UINT
 %token <lex> BREAK CONTINUE DO ELSE FOR IF DISCARD RETURN SWITCH CASE DEFAULT SUBROUTINE
 %token <lex> BVEC2 BVEC3 BVEC4 IVEC2 IVEC3 IVEC4 UVEC2 UVEC3 UVEC4 VEC2 VEC3 VEC4
 %token <lex> MAT2 MAT3 MAT4 CENTROID IN OUT INOUT
@@ -1308,14 +1308,6 @@ type_specifier_nonarray
         parseContext.fullIntegerCheck($1.loc, "unsigned integer");
         $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
         $$.basicType = EbtUint;
-    }
-    | INT64 {
-        $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
-        $$.basicType = EbtInt64;
-    }
-    | UINT64 {
-        $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
-        $$.basicType = EbtUint64;
     }
     | BOOL {
         $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());

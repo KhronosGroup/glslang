@@ -177,12 +177,6 @@ void TParseVersions::initializeExtensionBehavior()
     extensionBehavior[E_GL_ARB_gl_spirv]                     = EBhDisable;
     extensionBehavior[E_GL_ARB_sparse_texture2]              = EBhDisable;
     extensionBehavior[E_GL_ARB_sparse_texture_clamp]         = EBhDisable;
-#ifndef NO_GL_ARB_GPU_SHADER_INT64
-    extensionBehavior[E_GL_ARB_gpu_shader_int64]             = EBhDisable;
-#endif  /* NO_GL_ARB_SHADER_INT64 */
-#ifndef NO_GL_ARB_SHADER_BALLOT
-    extensionBehavior[E_GL_ARB_shader_ballot]                = EBhDisable;
-#endif  /* NO_GL_ARB_SHADER_BALLOT */
 //    extensionBehavior[E_GL_ARB_cull_distance]                = EBhDisable;    // present for 4.5, but need extension control over block members
 
     // #line and #include
@@ -287,12 +281,6 @@ const char* TParseVersions::getPreamble()
             "#define GL_ARB_gl_spirv 1\n"
             "#define GL_ARB_sparse_texture2 1\n"
             "#define GL_ARB_sparse_texture_clamp 1\n"
-#ifndef NO_GL_ARB_GPU_SHADER_INT64
-            "#define GL_ARB_gpu_shader_int64 1\n"
-#endif  /* NO_GL_ARB_SHADER_INT64 */
-#ifndef NO_GL_ARB_SHADER_BALLOT
-            "#define GL_ARB_shader_ballot 1\n"
-#endif  /* NO_GL_ARB_SHADER_BALLOT */
 
             "#define GL_GOOGLE_cpp_style_line_directive 1\n"
             "#define GL_GOOGLE_include_directive 1\n"
