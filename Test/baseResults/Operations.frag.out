@@ -11,7 +11,9 @@ ERROR: 0:107: 'floatsBitsToInt' : no matching overloaded function found
 ERROR: 0:108: 'packUnorm2x16' : no matching overloaded function found 
 ERROR: 0:109: 'packUnorm4x8' : no matching overloaded function found 
 ERROR: 0:110: 'packSnorm4x8' : no matching overloaded function found 
+ERROR: 0:113: 'abs' : ambiguous function signature match: multiple signatures match under implicit type conversion 
 ERROR: 0:113: 'assign' :  cannot convert from 'global float' to 'temp uint'
+ERROR: 0:114: 'sign' : ambiguous function signature match: multiple signatures match under implicit type conversion 
 ERROR: 0:114: 'assign' :  cannot convert from 'global float' to 'temp uint'
 ERROR: 0:118: 'floatsBitToInt' : no matching overloaded function found 
 ERROR: 0:118: 'assign' :  cannot convert from 'const float' to 'temp uint'
@@ -19,12 +21,7 @@ ERROR: 0:119: 'packUnorm2x16' : no matching overloaded function found
 ERROR: 0:119: 'assign' :  cannot convert from 'const float' to 'temp uint'
 ERROR: 0:120: 'packUnorm4x8' : no matching overloaded function found 
 ERROR: 0:120: 'assign' :  cannot convert from 'const float' to 'temp uint'
-ERROR: 0:121: '&' :  wrong operand types: no operation '&' exists that takes a left-hand operand of type 'uniform uint' and a right operand of type 'temp int' (or there is no acceptable conversion)
-ERROR: 0:121: 'assign' :  cannot convert from 'uniform uint' to 'temp int'
-ERROR: 0:122: '^' :  wrong operand types: no operation '^' exists that takes a left-hand operand of type 'uniform uint' and a right operand of type 'temp int' (or there is no acceptable conversion)
-ERROR: 0:122: 'assign' :  cannot convert from 'uniform uint' to 'temp int'
-ERROR: 0:123: '|' :  wrong operand types: no operation '|' exists that takes a left-hand operand of type 'temp int' and a right operand of type 'uniform uint' (or there is no acceptable conversion)
-ERROR: 25 compilation errors.  No code generated.
+ERROR: 22 compilation errors.  No code generated.
 
 
 Shader version: 130
@@ -341,11 +338,24 @@ ERROR: node is still EOpNull!
 0:118      'u' (temp uint)
 0:119      'u' (temp uint)
 0:120      'u' (temp uint)
-0:121      'i' (temp int)
-0:122      'i' (temp int)
+0:121      add second child into first child (temp int)
+0:121        'i' (temp int)
+0:121        bitwise and (temp int)
+0:121          Convert uint to int (temp int)
+0:121            'uui' (uniform uint)
+0:121          'i' (temp int)
+0:122      add second child into first child (temp int)
+0:122        'i' (temp int)
+0:122        exclusive-or (temp int)
+0:122          Convert uint to int (temp int)
+0:122            'uui' (uniform uint)
+0:122          'i' (temp int)
 0:123      add second child into first child (temp int)
 0:123        'i' (temp int)
-0:123        'i' (temp int)
+0:123        inclusive-or (temp int)
+0:123          'i' (temp int)
+0:123          Convert uint to int (temp int)
+0:123            'uui' (uniform uint)
 0:127      move second child to first child (temp bool)
 0:127        'b' (temp bool)
 0:127        isnan (global bool)
@@ -904,11 +914,24 @@ ERROR: node is still EOpNull!
 0:118      'u' (temp uint)
 0:119      'u' (temp uint)
 0:120      'u' (temp uint)
-0:121      'i' (temp int)
-0:122      'i' (temp int)
+0:121      add second child into first child (temp int)
+0:121        'i' (temp int)
+0:121        bitwise and (temp int)
+0:121          Convert uint to int (temp int)
+0:121            'uui' (uniform uint)
+0:121          'i' (temp int)
+0:122      add second child into first child (temp int)
+0:122        'i' (temp int)
+0:122        exclusive-or (temp int)
+0:122          Convert uint to int (temp int)
+0:122            'uui' (uniform uint)
+0:122          'i' (temp int)
 0:123      add second child into first child (temp int)
 0:123        'i' (temp int)
-0:123        'i' (temp int)
+0:123        inclusive-or (temp int)
+0:123          'i' (temp int)
+0:123          Convert uint to int (temp int)
+0:123            'uui' (uniform uint)
 0:127      move second child to first child (temp bool)
 0:127        'b' (temp bool)
 0:127        isnan (global bool)

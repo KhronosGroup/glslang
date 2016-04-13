@@ -669,7 +669,7 @@ bool TIntermediate::canImplicitlyPromote(TBasicType from, TBasicType to) const
         }
     case EbtInt:
         switch (from) {
-        case EbtInt:
+        case EbtUint:
             return true;
         default:
             return false;
