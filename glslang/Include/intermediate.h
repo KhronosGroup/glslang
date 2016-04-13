@@ -447,6 +447,12 @@ enum TOperator {
     EOpBitCount,
     EOpFindLSB,
     EOpFindMSB,
+
+#ifndef NO_GL_ARB_SHADER_BALLOT
+    EOpballotARB,
+    EOpreadInvocationARB,
+    EOpreadFirstInvocationARB,
+#endif  /* NO_GL_ARB_SHADER_BALLOT */
 };
 
 class TIntermTraverser;

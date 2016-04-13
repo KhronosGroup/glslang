@@ -359,6 +359,9 @@ void TScanContext::fillInKeywordMap()
     (*KeywordMap)["bool"] =                    BOOL;
     (*KeywordMap)["float"] =                   FLOAT;
     (*KeywordMap)["int"] =                     INT;
+#ifndef NO_GL_ARB_GPU_SHADER_INT64
+    (*KeywordMap)["int64_t"] =                 INT64;
+#endif  /* NO_GL_ARB_GPU_SHADER_INT64 */
     (*KeywordMap)["bvec2"] =                   BVEC2;
     (*KeywordMap)["bvec3"] =                   BVEC3;
     (*KeywordMap)["bvec4"] =                   BVEC4;
@@ -453,6 +456,9 @@ void TScanContext::fillInKeywordMap()
     (*KeywordMap)["uvec2"] =                   UVEC2;
     (*KeywordMap)["uvec3"] =                   UVEC3;
     (*KeywordMap)["uvec4"] =                   UVEC4;
+#ifndef NO_GL_ARB_GPU_SHADER_INT64
+    (*KeywordMap)["uint64_t"] =                UINT64;
+#endif  /* NO_GL_ARB_GPU_SHADER_INT64 */
 
     (*KeywordMap)["sampler2D"] =               SAMPLER2D;
     (*KeywordMap)["samplerCube"] =             SAMPLERCUBE;
@@ -748,6 +754,16 @@ int TScanContext::tokenizeIdentifier()
     case SAMPLERCUBE:
         afterType = true;
         return keyword;
+#ifndef NO_GL_ARB_GPU_SHADER_INT64
+    case INT64:
+    case UINT64:
+        if (parseContext.symbolTable.atBuiltInLevel() ||
+            parseContext.extensionTurnedOn(E_GL_ARB_gpu_shader_int64)) {
+            afterType = true;
+            return keyword;
+        }
+        return identifierOrType();
+#endif  /* NO_GL_ARB_GPU_SHADER_INT64 */
 
     case BOOLCONSTANT:
         if (strcmp("true", tokenText) == 0)

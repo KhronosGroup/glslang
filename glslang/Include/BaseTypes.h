@@ -53,7 +53,11 @@ enum TBasicType {
     EbtSampler,
     EbtStruct,
     EbtBlock,
-    EbtNumTypes
+    EbtNumTypes,
+#ifndef NO_GL_ARB_GPU_SHADER_INT64
+    EbtInt64,
+    EbtUint64,
+#endif /* NO_GL_ARB_GPU_SHADER_INT64 */
 };
 
 //
@@ -177,6 +181,15 @@ enum TBuiltInVariable {
     EbvSamplePosition,
     EbvSampleMask,
     EbvHelperInvocation,
+#ifndef NO_GL_ARB_SHADER_BALLOT
+    EbvSubGroupSizeARB,
+    EbvSubGroupInvocationARB,
+    EbvSubGroupEqMaskARB,
+    EbvSubGroupGeMaskARB,
+    EbvSubGroupGtMaskARB,
+    EbvSubGroupLeMaskARB,
+    EbvSubGroupLtMaskARB,
+#endif /* NO_GL_ARB_SHADER_BALLOT */
 
     EbvLast
 };
