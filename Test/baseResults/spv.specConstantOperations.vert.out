@@ -50,7 +50,7 @@ Linked vertex stage:
               48:     41(int) Constant 1
               49:     41(int) SpecConstantOp 169 45 48 44
               50:     41(int) SpecConstantOp 128 43 44
-              51:      6(int) SpecConstantOp 128 42 12
+              51:      6(int) SpecConstantOp 128 42 44
               52:      6(int) SpecConstantOp 126 19
               53:      6(int) SpecConstantOp 200 19
               54:      6(int) SpecConstantOp 128 19 20
@@ -104,7 +104,7 @@ Linked vertex stage:
              102:   88(ivec4) ConstantComposite 48 48 48 48
              103:   88(ivec4) SpecConstantOp 169 97 102 96
              104:   88(ivec4) SpecConstantOp 128 87 96
-             105:   85(ivec4) SpecConstantOp 128 91 99
+             105:   85(ivec4) SpecConstantOp 128 91 96
              106:   85(ivec4) SpecConstantOp 200 87
              107:   85(ivec4) SpecConstantOp 126 87
              108:   85(ivec4) ConstantComposite 20 20 20 20

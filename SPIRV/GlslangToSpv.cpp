@@ -3306,22 +3306,11 @@ spv::Id TGlslangToSpvTraverser::createConversion(glslang::TOperator op, spv::Dec
         break;
 
     case glslang::EOpConvUintToInt:
-        if (builder.isInSpecConstCodeGenMode()) {
-            // Build zero scalar or vector for OpIAdd to do the conversion when
-            // generating for OpSpecConstantOp instruction.
-            zero = builder.makeIntConstant(0);
-            zero = makeSmearedConstant(zero, vectorSize);
-        }
-        // Don't 'break' here as this case should be grouped together with
-        // EOpConvIntToUint when generating normal run-time conversion
-        // instruction.
     case glslang::EOpConvIntToUint:
         if (builder.isInSpecConstCodeGenMode()) {
             // Build zero scalar or vector for OpIAdd.
-            if (zero == 0) {
-                zero = builder.makeUintConstant(0);
-                zero = makeSmearedConstant(zero, vectorSize);
-            }
+            zero = builder.makeUintConstant(0);
+            zero = makeSmearedConstant(zero, vectorSize);
             // Use OpIAdd, instead of OpBitcast to do the conversion when
             // generating for OpSpecConstantOp instruction.
             return builder.createBinOp(spv::OpIAdd, destType, operand, zero);
