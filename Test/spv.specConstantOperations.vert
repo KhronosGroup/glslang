@@ -4,25 +4,48 @@ layout(constant_id = 200) const float sp_float = 3.1415926;
 layout(constant_id = 201) const int sp_int = 10;
 layout(constant_id = 202) const uint sp_uint = 100;
 layout(constant_id = 203) const int sp_sint = -10;
+layout(constant_id = 204) const bool sp_bool = true;
 
 
 //
 // Scalars
 //
 
-// uint/int <-> bool conversion
+// uint/int <-> bool explicit conversion
 const bool bool_from_int = bool(sp_int);
 const bool bool_from_uint = bool(sp_uint);
 const int int_from_bool = int(bool_from_int);
 const uint uint_from_bool = uint(bool_from_int);
 
-// uint <-> int
+// uint <-> int explicit conversion
 const uint sp_uint_from_sint = uint(sp_sint);
 const int sp_sint_from_uint = int(sp_uint);
 
 // Negate and Not
 const int negate_int = -sp_int;
-const int not_int = ~sp_int;
+const bool not_sp_bool = !sp_bool;
+
+// Boolean scalar comparison
+const bool sp_bool_is_true = sp_bool == true;
+const bool sp_bool_is_not_true = sp_bool != true;
+const bool logical_and = sp_bool_is_true && sp_bool;
+const bool logical_or = sp_bool_is_true || sp_bool;
+const bool logical_not_eq = sp_bool ^^ sp_bool_is_true;
+
+// Int scalar comparison
+const bool sint_gt = sp_sint > 222;
+const bool sint_lt = sp_sint < 222;
+const bool sint_ge = sp_sint >= 222;
+const bool sint_le = sp_sint <= 222;
+const bool sint_eq = sp_sint == 222;
+const bool sint_neq = sp_sint != 222;
+
+const bool uint_gt = sp_uint > 222;
+const bool uint_lt = sp_uint < 222;
+const bool uint_ge = sp_uint >= 222;
+const bool uint_le = sp_uint <= 222;
+const bool uint_eq = sp_uint == 222;
+const bool uint_neq = sp_uint != 222;
 
 // Add and Subtract
 const int sp_int_add_two = sp_int + 2;
@@ -48,10 +71,10 @@ const uint sp_uint_shift_left = sp_uint << 2;
 const int sp_sint_or_256 = sp_sint | 0x100;
 const uint sp_uint_xor_512 = sp_uint ^ 0x200;
 
-/* // Scalar comparison */
-const bool sp_int_lt_sp_sint = sp_int < sp_sint;
-const bool sp_uint_equal_sp_uint = sp_uint == sp_uint;
+// Implicit conversion int <-> uint
 const bool sp_int_gt_sp_sint = sp_int > sp_sint;
+const int ci = sp_uint;
+const uint cu = sp_int + 2;
 
 //
 // Vectors
@@ -72,7 +95,6 @@ const ivec4 iv_from_uv = ivec4(uv);
 
 // Negate and Not
 const ivec4 not_iv = ~iv;
-const ivec4 negate_iv = -iv;
 
 // Add and Subtract
 const ivec4 iv_add_two = iv + 2;
@@ -105,6 +127,10 @@ int non_const_array_size_from_spec_const() {
     }
     return array[sp_int + 1];
 }
+
+// Implicit conversion int <-> uint
+const ivec4 civ = uv;
+const uvec4 cuv = iv + 2;
 
 void main() {}
 
