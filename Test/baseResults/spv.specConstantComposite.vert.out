@@ -93,7 +93,7 @@ Linked vertex stage:
              106:             TypeMatrix 105(fvec3) 2
              107:   24(float) Constant 0
              108:  105(fvec3) SpecConstantComposite 32 32 32
-             109:  105(fvec3) SpecConstantComposite 102 103 104
+             109:  105(fvec3) ConstantComposite 102 103 104
              110:         106 SpecConstantComposite 108 109
              111:  105(fvec3) SpecConstantComposite 32 107 107
              112:  105(fvec3) SpecConstantComposite 107 32 107
