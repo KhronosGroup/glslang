@@ -433,7 +433,7 @@ spv::BuiltIn TGlslangToSpvTraverser::TranslateBuiltInDecoration(glslang::TBuiltI
     case glslang::EbvBaseInstance:
     case glslang::EbvDrawId:
         // TODO: Add SPIR-V builtin ID.
-        spv::MissingFunctionality("Draw parameters");
+        spv::MissingFunctionality("shader draw parameters");
         return (spv::BuiltIn)spv::BadValue;
     case glslang::EbvPrimitiveId:          return spv::BuiltInPrimitiveId;
     case glslang::EbvInvocationId:         return spv::BuiltInInvocationId;
@@ -453,6 +453,16 @@ spv::BuiltIn TGlslangToSpvTraverser::TranslateBuiltInDecoration(glslang::TBuiltI
     case glslang::EbvLocalInvocationId:    return spv::BuiltInLocalInvocationId;
     case glslang::EbvLocalInvocationIndex: return spv::BuiltInLocalInvocationIndex;
     case glslang::EbvGlobalInvocationId:   return spv::BuiltInGlobalInvocationId;
+    case glslang::EbvSubGroupSize:
+    case glslang::EbvSubGroupInvocation:
+    case glslang::EbvSubGroupEqMask:
+    case glslang::EbvSubGroupGeMask:
+    case glslang::EbvSubGroupGtMask:
+    case glslang::EbvSubGroupLeMask:
+    case glslang::EbvSubGroupLtMask:
+        // TODO: Add SPIR-V builtin ID.
+        spv::MissingFunctionality("shader ballot");
+        return (spv::BuiltIn)spv::BadValue;
     default:                               return (spv::BuiltIn)spv::BadValue;
     }
 }
@@ -3234,6 +3244,12 @@ spv::Id TGlslangToSpvTraverser::createUnaryOperation(glslang::TOperator op, spv:
             libCall = spv::GLSLstd450FindSMsb;
         break;
 
+    case glslang::EOpBallot:
+    case glslang::EOpReadFirstInvocation:
+        spv::MissingFunctionality("shader ballot");
+        libCall = spv::GLSLstd450Bad;
+        break;
+
     default:
         return 0;
     }
@@ -3685,6 +3701,11 @@ spv::Id TGlslangToSpvTraverser::createMiscOperation(glslang::TOperator op, spv::
         break;
     case glslang::EOpLdexp:
         libCall = spv::GLSLstd450Ldexp;
+        break;
+
+    case glslang::EOpReadInvocation:
+        spv::MissingFunctionality("shader ballot");
+        libCall = spv::GLSLstd450Bad;
         break;
 
     default:
