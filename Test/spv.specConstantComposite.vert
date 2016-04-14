@@ -42,6 +42,11 @@ const vec4 spec_vec4_all_spec =
     vec4(spec_float, spec_float, spec_float, spec_float);
 const vec4 spec_vec4_partial_spec =
     vec4(spec_float, spec_float, 300.14, 300.14);
+const vec4 spec_vec4_from_one_scalar = vec4(spec_float);
+
+// Matrix constructor
+const mat2x3 spec_mat2x3 = mat2x3(spec_float, spec_float, spec_float, 1.1, 2.2, 3.3);
+const mat2x3 spec_mat2x3_from_one_scalar = mat2x3(spec_float);
 
 // Struct nesting constructor
 const nesting_struct spec_nesting_struct_all_spec = {

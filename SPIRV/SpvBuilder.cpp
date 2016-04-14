@@ -645,6 +645,21 @@ bool Builder::isConstantOpCode(Op opcode) const
     }
 }
 
+// Return true if consuming 'opcode' means consuming a specialization constant.
+bool Builder::isSpecConstantOpCode(Op opcode) const
+{
+    switch (opcode) {
+    case OpSpecConstantTrue:
+    case OpSpecConstantFalse:
+    case OpSpecConstant:
+    case OpSpecConstantComposite:
+    case OpSpecConstantOp:
+        return true;
+    default:
+        return false;
+    }
+}
+
 Id Builder::makeBoolConstant(bool b, bool specConstant)
 {
     Id typeId = makeBoolType();
@@ -1345,13 +1360,9 @@ Id Builder::smearScalar(Decoration precision, Id scalar, Id vectorType)
     Instruction* smear = nullptr;
     if (generatingOpCodeForSpecConst) {
         auto members = std::vector<spv::Id>(numComponents, scalar);
-        // 'scalar' can not be spec constant here. All spec constant involved
-        // promotion is done in createSpvConstantFromConstUnionArray().  This
-        // 'if' branch is only accessed when 'scalar' is used in the def-chain
-        // of other vector type spec constants. In such cases, all the
-        // instructions needed to promote 'scalar' to a vector type constants
-        // should be added at module level.
-        auto result_id = makeCompositeConstant(vectorType, members, false);
+        // "generatingOpCodeForSpecConst == true" does not mean the generated vector
+        // is a spec constant vector. It depends on the scalar.
+        auto result_id = makeCompositeConstant(vectorType, members, isSpecConstant(scalar));
         smear = module.getInstruction(result_id);
     } else {
         smear = new Instruction(getUniqueId(), vectorType, OpCompositeConstruct);
@@ -1713,6 +1724,10 @@ Id Builder::createCompositeCompare(Decoration precision, Id value1, Id value2, b
 Id Builder::createCompositeConstruct(Id typeId, std::vector<Id>& constituents)
 {
     assert(isAggregateType(typeId) || (getNumTypeConstituents(typeId) > 1 && getNumTypeConstituents(typeId) == (int)constituents.size()));
+
+    if (generatingOpCodeForSpecConst) {
+        return makeCompositeConstant(typeId, constituents, true);
+    }
 
     Instruction* op = new Instruction(getUniqueId(), typeId, OpCompositeConstruct);
     for (int c = 0; c < (int)constituents.size(); ++c)

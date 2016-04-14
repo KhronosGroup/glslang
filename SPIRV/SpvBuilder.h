@@ -147,8 +147,10 @@ public:
     bool isSampledImageType(Id typeId) const { return getTypeClass(typeId) == OpTypeSampledImage; }
 
     bool isConstantOpCode(Op opcode) const;
+    bool isSpecConstantOpCode(Op opcode) const;
     bool isConstant(Id resultId) const { return isConstantOpCode(getOpCode(resultId)); }
     bool isConstantScalar(Id resultId) const { return getOpCode(resultId) == OpConstant; }
+    bool isSpecConstant(Id resultId) const { return isSpecConstantOpCode(getOpCode(resultId)); }
     unsigned int getConstantScalar(Id resultId) const { return module.getInstruction(resultId)->getImmediateOperand(0); }
     StorageClass getStorageClass(Id resultId) const { return getTypeStorageClass(getTypeId(resultId)); }
 

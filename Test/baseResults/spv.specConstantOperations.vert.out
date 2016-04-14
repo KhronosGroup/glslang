@@ -84,55 +84,55 @@ Linked vertex stage:
               82:    22(bool) SpecConstantOp 177 19 43
               83:    22(bool) SpecConstantOp 170 42 42
               84:    22(bool) SpecConstantOp 173 19 43
-              85:             TypeVector 6(int) 4
-              86:      6(int) Constant 30
-              87:   85(ivec4) SpecConstantComposite 74 86 19 19
-              88:             TypeVector 41(int) 4
-              89:     41(int) Constant 4294967295
-              90:     41(int) Constant 4294967294
-              91:   88(ivec4) SpecConstantComposite 42 42 89 90
-              92:             TypeVector 39(float) 4
-              93:   39(float) Constant 1067450368
-              94:   92(fvec4) SpecConstantComposite 40 93 40 93
+              85:      6(int) Constant 30
+              86:             TypeVector 6(int) 4
+              87:   86(ivec4) SpecConstantComposite 74 85 19 19
+              88:     41(int) Constant 4294967295
+              89:     41(int) Constant 4294967294
+              90:             TypeVector 41(int) 4
+              91:   90(ivec4) SpecConstantComposite 42 42 88 89
+              92:   39(float) Constant 1067450368
+              93:             TypeVector 39(float) 4
+              94:   93(fvec4) SpecConstantComposite 40 92 40 92
               95:             TypeVector 22(bool) 4
-              96:   88(ivec4) ConstantComposite 44 44 44 44
+              96:   90(ivec4) ConstantComposite 44 44 44 44
               97:   95(bvec4) SpecConstantOp 171 87 96
               98:   95(bvec4) SpecConstantOp 171 91 96
-              99:   85(ivec4) ConstantComposite 12 12 12 12
-             100:   85(ivec4) ConstantComposite 32 32 32 32
-             101:   85(ivec4) SpecConstantOp 169 97 100 99
-             102:   88(ivec4) ConstantComposite 48 48 48 48
-             103:   88(ivec4) SpecConstantOp 169 97 102 96
-             104:   88(ivec4) SpecConstantOp 128 87 96
-             105:   85(ivec4) SpecConstantOp 128 91 96
-             106:   85(ivec4) SpecConstantOp 200 87
-             107:   85(ivec4) SpecConstantOp 126 87
-             108:   85(ivec4) ConstantComposite 20 20 20 20
-             109:   85(ivec4) SpecConstantOp 128 87 108
-             110:   85(ivec4) SpecConstantOp 128 87 108
-             111:   85(ivec4) ConstantComposite 56 56 56 56
-             112:   85(ivec4) SpecConstantOp 130 110 111
-             113:   85(ivec4) ConstantComposite 58 58 58 58
-             114:   85(ivec4) SpecConstantOp 130 112 113
-             115:   85(ivec4) SpecConstantOp 132 87 108
-             116:   85(ivec4) ConstantComposite 63 63 63 63
-             117:   85(ivec4) SpecConstantOp 135 115 116
-             118:   85(ivec4) SpecConstantOp 139 87 113
-             119:   85(ivec4) ConstantComposite 72 72 72 72
-             120:   85(ivec4) SpecConstantOp 195 87 119
-             121:   85(ivec4) SpecConstantOp 196 87 108
+              99:   86(ivec4) ConstantComposite 12 12 12 12
+             100:   86(ivec4) ConstantComposite 32 32 32 32
+             101:   86(ivec4) SpecConstantOp 169 97 100 99
+             102:   90(ivec4) ConstantComposite 48 48 48 48
+             103:   90(ivec4) SpecConstantOp 169 97 102 96
+             104:   90(ivec4) SpecConstantOp 128 87 96
+             105:   86(ivec4) SpecConstantOp 128 91 96
+             106:   86(ivec4) SpecConstantOp 200 87
+             107:   86(ivec4) SpecConstantOp 126 87
+             108:   86(ivec4) ConstantComposite 20 20 20 20
+             109:   86(ivec4) SpecConstantOp 128 87 108
+             110:   86(ivec4) SpecConstantOp 128 87 108
+             111:   86(ivec4) ConstantComposite 56 56 56 56
+             112:   86(ivec4) SpecConstantOp 130 110 111
+             113:   86(ivec4) ConstantComposite 58 58 58 58
+             114:   86(ivec4) SpecConstantOp 130 112 113
+             115:   86(ivec4) SpecConstantOp 132 87 108
+             116:   86(ivec4) ConstantComposite 63 63 63 63
+             117:   86(ivec4) SpecConstantOp 135 115 116
+             118:   86(ivec4) SpecConstantOp 139 87 113
+             119:   86(ivec4) ConstantComposite 72 72 72 72
+             120:   86(ivec4) SpecConstantOp 195 87 119
+             121:   86(ivec4) SpecConstantOp 196 87 108
              122:      6(int) Constant 1024
-             123:   85(ivec4) ConstantComposite 122 122 122 122
-             124:   85(ivec4) SpecConstantOp 197 87 123
+             123:   86(ivec4) ConstantComposite 122 122 122 122
+             124:   86(ivec4) SpecConstantOp 197 87 123
              125:     41(int) Constant 2048
-             126:   88(ivec4) ConstantComposite 125 125 125 125
-             127:   88(ivec4) SpecConstantOp 198 91 126
+             126:   90(ivec4) ConstantComposite 125 125 125 125
+             127:   90(ivec4) SpecConstantOp 198 91 126
              128:      6(int) SpecConstantOp 81 87 0
              129:             TypeVector 6(int) 2
              130:  129(ivec2) SpecConstantOp 79 87 87 1(GLSL.std.450) 0
              131:             TypeVector 6(int) 3
              132:  131(ivec3) SpecConstantOp 79 87 87 2 1(GLSL.std.450) 0
-             133:   85(ivec4) SpecConstantOp 79 87 87 1(GLSL.std.450) 2 0 3
+             133:   86(ivec4) SpecConstantOp 79 87 87 1(GLSL.std.450) 2 0 3
          4(main):           2 Function None 3
                5:             Label
                               Return
