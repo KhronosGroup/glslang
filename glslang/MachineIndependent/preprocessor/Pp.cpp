@@ -611,14 +611,14 @@ int TPpContext::CPPinclude(TPpToken* ppToken)
         if (token != '\n' && token != EndOfInput) {
             parseContext.ppError(ppToken->loc, "extra content after file designation", "#include", "");
         } else {
-            TShader::Includer::IncludeResult* res = includer.include(filename.c_str(), TShader::Includer::EIncludeRelative, currentSourceFile.c_str(), includeStack.size() + 1);
-            if (res && !res->file_name.empty()) {
-                if (res->file_data && res->file_length) {
+            TShader::Includer::IncludeResult res = includer.include(filename.c_str(), TShader::Includer::EIncludeRelative, currentSourceFile.c_str(), includeStack.size() + 1);
+            if (!res.file_name.empty()) {
+                if (res.file_data && res.file_length) {
                     const bool forNextLine = parseContext.lineDirectiveShouldSetNextLine();
                     std::ostringstream prologue;
                     std::ostringstream epilogue;
-                    prologue << "#line " << forNextLine << " " << "\"" << res->file_name << "\"\n";
-                    epilogue << (res->file_data[res->file_length - 1] == '\n'? "" : "\n") << "#line " << directiveLoc.line + forNextLine << " " << directiveLoc.getStringNameOrNum() << "\n";
+                    prologue << "#line " << forNextLine << " " << "\"" << res.file_name << "\"\n";
+                    epilogue << (res.file_data[res.file_length - 1] == '\n'? "" : "\n") << "#line " << directiveLoc.line + forNextLine << " " << directiveLoc.getStringNameOrNum() << "\n";
                     pushInput(new TokenizableIncludeFile(directiveLoc, prologue.str(), res, epilogue.str(), this));
                 }
                 // At EOF, there's no "current" location anymore.
@@ -627,12 +627,10 @@ int TPpContext::CPPinclude(TPpToken* ppToken)
                 return '\n';
             } else {
                 std::string message =
-                    res ? std::string(res->file_data, res->file_length)
+                  res.file_data && res.file_length ? std::string(res.file_data, res.file_length)
                         : std::string("Could not process include directive");
                 parseContext.ppError(directiveLoc, message.c_str(), "#include", "");
-                if (res) {
-                    includer.releaseInclude(res);
-                }
+                includer.releaseInclude(res);
             }
         }
     }

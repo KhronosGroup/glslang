@@ -335,7 +335,7 @@ public:
             // For a failed inclusion, the file_data
             // field points to a string containing error details.
             const char* file_data;
-            const size_t file_length;
+            size_t file_length;
             // Include resolver's context.
             void* user_data;
         };
@@ -349,29 +349,28 @@ public:
         // of the returned IncludeResult value, and those contents must
         // remain valid until the releaseInclude method is called on that
         // IncludeResult object.
-        virtual IncludeResult* include(const char* requested_source,
+        virtual IncludeResult include(const char* requested_source,
                                       IncludeType type,
                                       const char* requesting_source,
                                       size_t inclusion_depth) = 0;
         // Signals that the parser will no longer use the contents of the
         // specified IncludeResult.
-        virtual void releaseInclude(IncludeResult* result) = 0;
+        virtual void releaseInclude(const IncludeResult& result) = 0;
     };
 
     // Returns an error message for any #include directive.
     class ForbidInclude : public Includer {
     public:
-        IncludeResult* include(const char*, IncludeType, const char*, size_t) override
+        IncludeResult include(const char*, IncludeType, const char*, size_t) override
         {
             static const char unexpected_include[] =
                 "unexpected include directive";
             static const IncludeResult unexpectedIncludeResult =
                 {"", unexpected_include, sizeof(unexpected_include) - 1, nullptr};
-            return new IncludeResult(unexpectedIncludeResult);
+            return unexpectedIncludeResult;
         }
-        virtual void releaseInclude(IncludeResult* result) override
+        virtual void releaseInclude(const IncludeResult& result) override
         {
-            delete result;
         }
     };
 
