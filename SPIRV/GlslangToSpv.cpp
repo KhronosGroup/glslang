@@ -151,7 +151,6 @@ protected:
     void addMemberDecoration(spv::Id id, int member, spv::Decoration dec, unsigned value);
     spv::Id createSpvConstant(const glslang::TIntermTyped&);
     spv::Id createSpvConstantFromConstUnionArray(const glslang::TType& type, const glslang::TConstUnionArray&, int& nextConst, bool specConstant);
-    spv::Id createSpvConstantFromConstSubTree(glslang::TIntermTyped* subTree);
     bool isTrivialLeaf(const glslang::TIntermTyped* node);
     bool isTrivial(const glslang::TIntermTyped* node);
     spv::Id createShortCircuit(glslang::TOperator, glslang::TIntermTyped& left, glslang::TIntermTyped& right);
@@ -1113,6 +1112,10 @@ bool TGlslangToSpvTraverser::visitUnary(glslang::TVisit /* visit */, glslang::TI
 
 bool TGlslangToSpvTraverser::visitAggregate(glslang::TVisit visit, glslang::TIntermAggregate* node)
 {
+    SpecConstantOpModeGuard spec_constant_op_mode_setter(&builder);
+    if (node->getType().getQualifier().isSpecConstant())
+        spec_constant_op_mode_setter.turnOnSpecConstantOpMode();
+
     spv::Id result = spv::NoResult;
 
     // try texturing
@@ -3814,7 +3817,11 @@ spv::Id TGlslangToSpvTraverser::createSpvConstant(const glslang::TIntermTyped& n
     // Its initializer should either be a sub tree with constant nodes, or a constant union array.
     if (auto* sn = node.getAsSymbolNode()) {
         if (auto* sub_tree = sn->getConstSubtree()) {
-            return createSpvConstantFromConstSubTree(sub_tree);
+            // Traverse the constant constructor sub tree like generating normal run-time instructions.
+            // During the AST traversal, if the node is marked as 'specConstant', SpecConstantOpModeGuard
+            // will set the builder into spec constant op instruction generating mode.
+            sub_tree->traverse(this);
+            return accessChainLoad(sub_tree->getType());
         } else if (auto* const_union_array = &sn->getConstArray()){
             int nextConst = 0;
             return createSpvConstantFromConstUnionArray(sn->getType(), *const_union_array, nextConst, true);
@@ -3908,68 +3915,6 @@ spv::Id TGlslangToSpvTraverser::createSpvConstantFromConstUnionArray(const glsla
     }
 
     return builder.makeCompositeConstant(typeId, spvConsts);
-}
-
-// Create constant ID from const initializer sub tree.
-spv::Id TGlslangToSpvTraverser::createSpvConstantFromConstSubTree(
-    glslang::TIntermTyped* subTree)
-{
-    const glslang::TType& glslangType = subTree->getType();
-    spv::Id typeId = convertGlslangToSpvType(glslangType);
-    bool is_spec_const = subTree->getType().getQualifier().isSpecConstant();
-    if (const glslang::TIntermAggregate* an = subTree->getAsAggregate()) {
-        // Aggregate node, we should generate OpConstantComposite or
-        // OpSpecConstantComposite instruction.
-
-        std::vector<spv::Id> const_constituents;
-        for (auto NI = an->getSequence().begin(); NI != an->getSequence().end();
-             NI++) {
-            const_constituents.push_back(
-                createSpvConstantFromConstSubTree((*NI)->getAsTyped()));
-        }
-        // Note that constructors are aggregate nodes, so expressions like:
-        // float x = float(y) will become an aggregate node. If 'x' is declared
-        // as a constant, the aggregate node representing 'float(y)' will be
-        // processed here.
-        if (builder.isVectorType(typeId) || builder.isMatrixType(typeId) ||
-            builder.isAggregateType(typeId)) {
-            return builder.makeCompositeConstant(typeId, const_constituents, is_spec_const);
-        } else {
-            assert(builder.isScalarType(typeId) && const_constituents.size() == 1);
-            return const_constituents.front();
-        }
-
-    } else if (glslang::TIntermBinary* bn = subTree->getAsBinaryNode()) {
-        // Binary operation node, we should generate OpSpecConstantOp <binary op>
-        // This case should only happen when Specialization Constants are involved.
-        bn->traverse(this);
-        return accessChainLoad(bn->getType());
-
-    } else if (glslang::TIntermUnary* un = subTree->getAsUnaryNode()) {
-        // Unary operation node, similar to binary operation node, should only
-        // happen when specialization constants are involved.
-        un->traverse(this);
-        return accessChainLoad(un->getType());
-
-    } else if (const glslang::TIntermConstantUnion* cn = subTree->getAsConstantUnion()) {
-        // ConstantUnion node, should redirect to
-        // createSpvConstantFromConstUnionArray
-        int nextConst = 0;
-        return createSpvConstantFromConstUnionArray(
-            glslangType, cn->getConstArray(), nextConst, is_spec_const);
-
-    } else if (const glslang::TIntermSymbol* sn = subTree->getAsSymbolNode()) {
-        // Symbol node. Call getSymbolId(). This should cover both cases 1) the
-        // symbol has already been assigned an ID, 2) need a new ID for this
-        // symbol.
-        return getSymbolId(sn);
-
-    } else {
-        spv::MissingFunctionality(
-            "createSpvConstantFromConstSubTree() not covered TIntermTyped* const "
-            "initializer subtree.");
-        return spv::NoResult;
-    }
 }
 
 // Return true if the node is a constant or symbol whose reading has no

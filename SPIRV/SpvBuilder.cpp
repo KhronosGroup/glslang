@@ -47,6 +47,7 @@
 #include <stdlib.h>
 
 #include <unordered_set>
+#include <algorithm>
 
 #include "SpvBuilder.h"
 
@@ -634,6 +635,21 @@ bool Builder::isConstantOpCode(Op opcode) const
     case OpConstantComposite:
     case OpConstantSampler:
     case OpConstantNull:
+    case OpSpecConstantTrue:
+    case OpSpecConstantFalse:
+    case OpSpecConstant:
+    case OpSpecConstantComposite:
+    case OpSpecConstantOp:
+        return true;
+    default:
+        return false;
+    }
+}
+
+// Return true if consuming 'opcode' means consuming a specialization constant.
+bool Builder::isSpecConstantOpCode(Op opcode) const
+{
+    switch (opcode) {
     case OpSpecConstantTrue:
     case OpSpecConstantFalse:
     case OpSpecConstant:
@@ -1345,13 +1361,15 @@ Id Builder::smearScalar(Decoration precision, Id scalar, Id vectorType)
     Instruction* smear = nullptr;
     if (generatingOpCodeForSpecConst) {
         auto members = std::vector<spv::Id>(numComponents, scalar);
-        // 'scalar' can not be spec constant here. All spec constant involved
-        // promotion is done in createSpvConstantFromConstUnionArray().  This
-        // 'if' branch is only accessed when 'scalar' is used in the def-chain
-        // of other vector type spec constants. In such cases, all the
-        // instructions needed to promote 'scalar' to a vector type constants
-        // should be added at module level.
-        auto result_id = makeCompositeConstant(vectorType, members, false);
+        // Sometime even in spec-constant-op mode, the temporary vector created by
+        // promoting a scalar might not be a spec constant. This should depend on
+        // the scalar.
+        // e.g.:
+        //  const vec2 spec_const_result = a_spec_const_vec2 + a_front_end_const_scalar;
+        // In such cases, the temporary vector created from a_front_end_const_scalar
+        // is not a spec constant vector, even though the binary operation node is marked
+        // as 'specConstant' and we are in spec-constant-op mode.
+        auto result_id = makeCompositeConstant(vectorType, members, isSpecConstant(scalar));
         smear = module.getInstruction(result_id);
     } else {
         smear = new Instruction(getUniqueId(), vectorType, OpCompositeConstruct);
@@ -1713,6 +1731,20 @@ Id Builder::createCompositeCompare(Decoration precision, Id value1, Id value2, b
 Id Builder::createCompositeConstruct(Id typeId, std::vector<Id>& constituents)
 {
     assert(isAggregateType(typeId) || (getNumTypeConstituents(typeId) > 1 && getNumTypeConstituents(typeId) == (int)constituents.size()));
+
+    if (generatingOpCodeForSpecConst) {
+        // Sometime, even in spec-constant-op mode, the constant composite to be
+        // constructed may not be a specialization constant.
+        // e.g.:
+        //  const mat2 m2 = mat2(a_spec_const, a_front_end_const, another_front_end_const, third_front_end_const);
+        // The first column vector should be a spec constant one, as a_spec_const is a spec constant.
+        // The second column vector should NOT be spec constant, as it does not contain any spec constants.
+        // To handle such cases, we check the constituents of the constant vector to determine whether this
+        // vector should be created as a spec constant.
+        return makeCompositeConstant(typeId, constituents,
+                                     std::any_of(constituents.begin(), constituents.end(),
+                                                 [&](spv::Id id) { return isSpecConstant(id); }));
+    }
 
     Instruction* op = new Instruction(getUniqueId(), typeId, OpCompositeConstruct);
     for (int c = 0; c < (int)constituents.size(); ++c)
