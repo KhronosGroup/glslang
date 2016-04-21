@@ -35,7 +35,7 @@
 #ifndef GLSLANG_GTESTS_INITIALIZER_H
 #define GLSLANG_GTESTS_INITIALIZER_H
 
-#include <mutex>
+#include "Mutex.h"
 
 #include "glslang/Public/ShaderLang.h"
 
@@ -111,7 +111,7 @@ private:
     friend class InitializationToken;
 
     EShMessages lastMessages;
-    std::mutex stateLock;
+    mutex stateLock;
 };
 
 }  // namespace glslangtest
