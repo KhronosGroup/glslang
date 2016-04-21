@@ -4,6 +4,7 @@ if (TARGET gmock)
   set(TEST_SOURCES
     # Framework related source files
     ${CMAKE_CURRENT_SOURCE_DIR}/Initializer.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/Mutex.h
     ${CMAKE_CURRENT_SOURCE_DIR}/main.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/Settings.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/Settings.h
@@ -15,6 +16,7 @@ if (TARGET gmock)
     ${CMAKE_CURRENT_SOURCE_DIR}/BuiltInResource.FromFile.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/Pp.FromFile.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/Spv.FromFile.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/Mutex.Test.cpp
   )
 
   add_executable(glslangtests ${TEST_SOURCES})
