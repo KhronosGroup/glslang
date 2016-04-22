@@ -606,7 +606,7 @@ Id Builder::findScalarConstant(Op typeClass, Op opcode, Id typeId, unsigned valu
     return 0;
 }
 
-// Version of findScalarConstant (see above) for scalars that take two operands (e.g. a 'double').
+// Version of findScalarConstant (see above) for scalars that take two operands (e.g. a 'double' or 'int64').
 Id Builder::findScalarConstant(Op typeClass, Op opcode, Id typeId, unsigned v1, unsigned v2) const
 {
     Instruction* constant;
@@ -704,6 +704,31 @@ Id Builder::makeIntConstant(Id typeId, unsigned value, bool specConstant)
 
     Instruction* c = new Instruction(getUniqueId(), typeId, opcode);
     c->addImmediateOperand(value);
+    constantsTypesGlobals.push_back(std::unique_ptr<Instruction>(c));
+    groupedConstants[OpTypeInt].push_back(c);
+    module.mapInstruction(c);
+
+    return c->getResultId();
+}
+
+Id Builder::makeInt64Constant(Id typeId, unsigned long long value, bool specConstant)
+{
+    Op opcode = specConstant ? OpSpecConstant : OpConstant;
+
+    unsigned op1 = value & 0xFFFFFFFF;
+    unsigned op2 = value >> 32;
+
+    // See if we already made it. Applies only to regular constants, because specialization constants
+    // must remain distinct for the purpose of applying a SpecId decoration.
+    if (! specConstant) {
+        Id existing = findScalarConstant(OpTypeInt, opcode, typeId, op1, op2);
+        if (existing)
+            return existing;
+    }
+
+    Instruction* c = new Instruction(getUniqueId(), typeId, opcode);
+    c->addImmediateOperand(op1);
+    c->addImmediateOperand(op2);
     constantsTypesGlobals.push_back(std::unique_ptr<Instruction>(c));
     groupedConstants[OpTypeInt].push_back(c);
     module.mapInstruction(c);

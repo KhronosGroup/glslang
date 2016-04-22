@@ -540,6 +540,8 @@ public:
             case EbtDouble:     return GL_DOUBLE_VEC2                 + offset;
             case EbtInt:        return GL_INT_VEC2                    + offset;
             case EbtUint:       return GL_UNSIGNED_INT_VEC2           + offset;
+            case EbtInt64:      return GL_INT64_ARB                   + offset;
+            case EbtUint64:     return GL_UNSIGNED_INT64_ARB          + offset;
             case EbtBool:       return GL_BOOL_VEC2                   + offset;
             case EbtAtomicUint: return GL_UNSIGNED_INT_ATOMIC_COUNTER + offset;
             default:            return 0;
@@ -605,6 +607,8 @@ public:
             case EbtDouble:     return GL_DOUBLE;
             case EbtInt:        return GL_INT;
             case EbtUint:       return GL_UNSIGNED_INT;
+            case EbtInt64:      return GL_INT64_ARB;
+            case EbtUint64:     return GL_UNSIGNED_INT64_ARB;
             case EbtBool:       return GL_BOOL;
             case EbtAtomicUint: return GL_UNSIGNED_INT_ATOMIC_COUNTER;
             default:            return 0;
