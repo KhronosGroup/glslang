@@ -35,8 +35,6 @@
 #ifndef GLSLANG_GTESTS_INITIALIZER_H
 #define GLSLANG_GTESTS_INITIALIZER_H
 
-#include <mutex>
-
 #include "glslang/Public/ShaderLang.h"
 
 namespace glslangtest {
@@ -63,55 +61,25 @@ public:
     // A token indicates that the glslang is reinitialized (if necessary) to the
     // required semantics. And that won't change until the token is destroyed.
     class InitializationToken {
-    public:
-        InitializationToken() : initializer(nullptr) {}
-        ~InitializationToken()
-        {
-            if (initializer) {
-                initializer->release();
-            }
-        }
-
-        InitializationToken(InitializationToken&& other)
-            : initializer(other.initializer)
-        {
-            other.initializer = nullptr;
-        }
-
-        InitializationToken(const InitializationToken&) = delete;
-
-    private:
-        InitializationToken(GlslangInitializer* initializer)
-            : initializer(initializer) {}
-
-        friend class GlslangInitializer;
-        GlslangInitializer* initializer;
     };
 
-    // Obtains exclusive access to the glslang state. The state remains
-    // exclusive until the Initialization Token has been destroyed.
     // Re-initializes glsl state iff the previous messages and the current
-    // messages are incompatible.
+    // messages are incompatible.  We assume external synchronization, i.e.
+    // there is at most one acquired token at any one time.
     InitializationToken acquire(EShMessages new_messages)
     {
-        stateLock.lock();
-
         if ((lastMessages ^ new_messages) &
             (EShMsgVulkanRules | EShMsgSpvRules)) {
             glslang::FinalizeProcess();
             glslang::InitializeProcess();
         }
         lastMessages = new_messages;
-        return InitializationToken(this);
+        return InitializationToken();
     }
 
 private:
-    void release() { stateLock.unlock(); }
-
-    friend class InitializationToken;
 
     EShMessages lastMessages;
-    std::mutex stateLock;
 };
 
 }  // namespace glslangtest
