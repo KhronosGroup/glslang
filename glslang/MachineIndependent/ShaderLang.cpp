@@ -491,7 +491,7 @@ bool ProcessDeferred(
     TIntermediate& intermediate, // returned tree, etc.
     ProcessingContext& processingContext,
     bool requireNonempty,
-    TShader::Includer& includer
+    TShader::Includer includer
     )
 {
     if (! InitThread())
@@ -608,7 +608,7 @@ bool ProcessDeferred(
         parseContext = new TParseContext(symbolTable, intermediate, false, version, profile, spv, vulkan,
                                          compiler->getLanguage(), compiler->infoSink, forwardCompatible, messages);
     }
-    TPpContext ppContext(*parseContext, names[numPre]? names[numPre]: "", includer);
+    TPpContext ppContext(*parseContext, names[numPre]? names[numPre]: "", std::move(includer));
 
     // only GLSL (bison triggered, really) needs an externally set scan context
     glslang::TScanContext scanContext(*parseContext);
@@ -885,7 +885,7 @@ bool PreprocessDeferred(
     bool forceDefaultVersionAndProfile,
     bool forwardCompatible,     // give errors for use of deprecated features
     EShMessages messages,       // warnings/errors/AST; things to print out
-    TShader::Includer& includer,
+    TShader::Includer includer,
     TIntermediate& intermediate, // returned tree, etc.
     std::string* outputString)
 {
@@ -894,7 +894,7 @@ bool PreprocessDeferred(
                            preamble, optLevel, resources, defaultVersion,
                            defaultProfile, forceDefaultVersionAndProfile,
                            forwardCompatible, messages, intermediate, parser,
-                           false, includer);
+                           false, std::move(includer));
 }
 
 
@@ -931,7 +931,7 @@ bool CompileDeferred(
                            preamble, optLevel, resources, defaultVersion,
                            defaultProfile, forceDefaultVersionAndProfile,
                            forwardCompatible, messages, intermediate, parser,
-                           true, includer);
+                           true, std::move(includer));
 }
 
 } // end anonymous namespace for local functions
