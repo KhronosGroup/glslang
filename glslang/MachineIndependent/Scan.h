@@ -122,7 +122,7 @@ public:
     // go back one character
     void unget()
     {
-        // Do not roll back if we reached the end of the file.
+        // Do not roll back once we've reached the end of the file.
         if (endOfFileReached) return;
 
         if (currentChar > 0) {
@@ -255,7 +255,9 @@ protected:
     bool singleLogical; // treats the strings as a single logical string.
                         // locations will be reported from the first string.
 
-    bool endOfFileReached; // set to true once peak() returns EndOfFile.
+    // set to true once peak() returns EndOfFile, so that we won't roll back
+    // once we've reached EndOfFile.
+    bool endOfFileReached;
 };
 
 } // end namespace glslang
