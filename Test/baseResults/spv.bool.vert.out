@@ -91,6 +91,6 @@ Linked vertex stage:
             9(b):      7(ptr) FunctionParameter
               11:             Label
               12:     6(bool) Load 9(b)
-              14:     6(bool) INotEqual 12 13
+              14:     6(bool) LogicalNotEqual 12 13
                               ReturnValue 14
                               FunctionEnd
