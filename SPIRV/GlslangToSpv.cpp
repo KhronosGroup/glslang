@@ -2633,6 +2633,7 @@ spv::Id TGlslangToSpvTraverser::createBinaryOperation(glslang::TOperator op, spv
 {
     bool isUnsigned = typeProxy == glslang::EbtUint;
     bool isFloat = typeProxy == glslang::EbtFloat || typeProxy == glslang::EbtDouble;
+    bool isBool = typeProxy == glslang::EbtBool;
 
     spv::Op binOp = spv::OpNop;
     bool needMatchingVectors = true;  // for non-matrix ops, would a scalar need to smear to match a vector?
@@ -2820,6 +2821,8 @@ spv::Id TGlslangToSpvTraverser::createBinaryOperation(glslang::TOperator op, spv
     case glslang::EOpVectorEqual:
         if (isFloat)
             binOp = spv::OpFOrdEqual;
+        else if (isBool)
+            binOp = spv::OpLogicalEqual;
         else
             binOp = spv::OpIEqual;
         break;
@@ -2827,6 +2830,8 @@ spv::Id TGlslangToSpvTraverser::createBinaryOperation(glslang::TOperator op, spv
     case glslang::EOpVectorNotEqual:
         if (isFloat)
             binOp = spv::OpFOrdNotEqual;
+        else if (isBool)
+            binOp = spv::OpLogicalNotEqual;
         else
             binOp = spv::OpINotEqual;
         break;
