@@ -48,6 +48,8 @@ enum TBasicType {
     EbtDouble,
     EbtInt,
     EbtUint,
+    EbtInt64,
+    EbtUint64,
     EbtBool,
     EbtAtomicUint,
     EbtSampler,

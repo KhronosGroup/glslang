@@ -880,6 +880,8 @@ const int baseAlignmentVec4Std140 = 16;
 int TIntermediate::getBaseAlignmentScalar(const TType& type, int& size)
 {
     switch (type.getBasicType()) {
+    case EbtInt64:
+    case EbtUint64:
     case EbtDouble:  size = 8; return 8;
     default:         size = 4; return 4;
     }

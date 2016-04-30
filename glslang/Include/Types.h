@@ -182,6 +182,8 @@ struct TSampler {   // misnomer now; includes images, textures without sampler, 
         case EbtFloat:               break;
         case EbtInt:  s.append("i"); break;
         case EbtUint: s.append("u"); break;
+        case EbtInt64:  s.append("i64"); break;
+        case EbtUint64: s.append("u64"); break;
         default:  break;  // some compilers want this
         }
         if (image) {
@@ -1319,6 +1321,8 @@ public:
         case EbtDouble:
         case EbtInt:
         case EbtUint:
+        case EbtInt64:
+        case EbtUint64:
         case EbtBool:
             return true;
         default:
@@ -1409,6 +1413,8 @@ public:
         case EbtDouble:            return "double";
         case EbtInt:               return "int";
         case EbtUint:              return "uint";
+        case EbtInt64:             return "int64_t";
+        case EbtUint64:            return "uint64_t";
         case EbtBool:              return "bool";
         case EbtAtomicUint:        return "atomic_uint";
         case EbtSampler:           return "sampler/image";

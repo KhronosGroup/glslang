@@ -174,6 +174,7 @@ void TParseVersions::initializeExtensionBehavior()
     extensionBehavior[E_GL_ARB_derivative_control]           = EBhDisable;
     extensionBehavior[E_GL_ARB_shader_texture_image_samples] = EBhDisable;
     extensionBehavior[E_GL_ARB_viewport_array]               = EBhDisable;
+    extensionBehavior[E_GL_ARB_gpu_shader_int64]             = EBhDisable;
     extensionBehavior[E_GL_ARB_gl_spirv]                     = EBhDisable;
     extensionBehavior[E_GL_ARB_sparse_texture2]              = EBhDisable;
     extensionBehavior[E_GL_ARB_sparse_texture_clamp]         = EBhDisable;
@@ -278,6 +279,7 @@ const char* TParseVersions::getPreamble()
             "#define GL_ARB_derivative_control 1\n"
             "#define GL_ARB_shader_texture_image_samples 1\n"
             "#define GL_ARB_viewport_array 1\n"
+            "#define GL_ARB_gpu_shader_int64 1\n"
             "#define GL_ARB_gl_spirv 1\n"
             "#define GL_ARB_sparse_texture2 1\n"
             "#define GL_ARB_sparse_texture_clamp 1\n"
@@ -625,6 +627,17 @@ void TParseVersions::doubleCheck(const TSourceLoc& loc, const char* op)
     requireProfile(loc, ECoreProfile | ECompatibilityProfile, op);
     profileRequires(loc, ECoreProfile, 400, nullptr, op);
     profileRequires(loc, ECompatibilityProfile, 400, nullptr, op);
+}
+
+// Call for any operation needing GLSL 64-bit integer data-type support.
+void TParseVersions::int64Check(const TSourceLoc& loc, const char* op, bool builtIn)
+{
+    if (! builtIn) {
+        requireExtensions(loc, 1, &E_GL_ARB_gpu_shader_int64, "shader int64");
+        requireProfile(loc, ECoreProfile | ECompatibilityProfile, op);
+        profileRequires(loc, ECoreProfile, 450, nullptr, op);
+        profileRequires(loc, ECompatibilityProfile, 450, nullptr, op);
+    }
 }
 
 // Call for any operation removed because SPIR-V is in use.

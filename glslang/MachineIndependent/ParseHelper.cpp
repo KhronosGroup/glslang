@@ -1812,6 +1812,24 @@ TOperator TParseContext::mapTypeToConstructorOp(const TType& type) const
         default: break; // some compilers want this
         }
         break;
+    case EbtInt64:
+        switch(type.getVectorSize()) {
+        case 1: op = EOpConstructInt64;   break;
+        case 2: op = EOpConstructI64Vec2; break;
+        case 3: op = EOpConstructI64Vec3; break;
+        case 4: op = EOpConstructI64Vec4; break;
+        default: break; // some compilers want this
+        }
+        break;
+    case EbtUint64:
+        switch(type.getVectorSize()) {
+        case 1: op = EOpConstructUint64;  break;
+        case 2: op = EOpConstructU64Vec2; break;
+        case 3: op = EOpConstructU64Vec3; break;
+        case 4: op = EOpConstructU64Vec4; break;
+        default: break; // some compilers want this
+        }
+        break;
     case EbtBool:
         switch(type.getVectorSize()) {
         case 1:  op = EOpConstructBool;  break;
@@ -2534,13 +2552,19 @@ void TParseContext::globalQualifierTypeCheck(const TSourceLoc& loc, const TQuali
         return;
     }
 
-    if (publicType.basicType == EbtInt || publicType.basicType == EbtUint || publicType.basicType == EbtDouble)
+    if (publicType.basicType == EbtInt   || publicType.basicType == EbtUint   ||
+        publicType.basicType == EbtInt64 || publicType.basicType == EbtUint64 ||
+        publicType.basicType == EbtDouble)
         profileRequires(loc, EEsProfile, 300, nullptr, "shader input/output");
 
     if (! qualifier.flat) {
-        if (publicType.basicType == EbtInt || publicType.basicType == EbtUint || publicType.basicType == EbtDouble ||
-            (publicType.userDef && (publicType.userDef->containsBasicType(EbtInt) ||
-                                    publicType.userDef->containsBasicType(EbtUint) || 
+        if (publicType.basicType == EbtInt    || publicType.basicType == EbtUint   ||
+            publicType.basicType == EbtInt64  || publicType.basicType == EbtUint64 ||
+            publicType.basicType == EbtDouble ||
+            (publicType.userDef && (publicType.userDef->containsBasicType(EbtInt)    ||
+                                    publicType.userDef->containsBasicType(EbtUint)   ||
+                                    publicType.userDef->containsBasicType(EbtInt64)  ||
+                                    publicType.userDef->containsBasicType(EbtUint64) ||
                                     publicType.userDef->containsBasicType(EbtDouble)))) {
             if (qualifier.storage == EvqVaryingIn && language == EShLangFragment)
                 error(loc, "must be qualified as flat", TType::getBasicString(publicType.basicType), GetStorageQualifierString(qualifier.storage));
@@ -4415,6 +4439,8 @@ void TParseContext::layoutTypeCheck(const TSourceLoc& loc, const TType& type)
         {
         case EbtInt:
         case EbtUint:
+        case EbtInt64:
+        case EbtUint64:
         case EbtBool:
         case EbtFloat:
         case EbtDouble:
@@ -5224,6 +5250,20 @@ TIntermTyped* TParseContext::constructBuiltIn(const TType& type, TOperator op, T
     case EOpConstructUVec4:
     case EOpConstructUint:
         basicOp = EOpConstructUint;
+        break;
+
+    case EOpConstructI64Vec2:
+    case EOpConstructI64Vec3:
+    case EOpConstructI64Vec4:
+    case EOpConstructInt64:
+        basicOp = EOpConstructInt64;
+        break;
+
+    case EOpConstructU64Vec2:
+    case EOpConstructU64Vec3:
+    case EOpConstructU64Vec4:
+    case EOpConstructUint64:
+        basicOp = EOpConstructUint64;
         break;
 
     case EOpConstructBVec2:

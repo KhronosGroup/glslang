@@ -75,6 +75,8 @@ TBuiltIns::TBuiltIns()
     prefixes[EbtFloat] =  "";
     prefixes[EbtInt]   = "i";
     prefixes[EbtUint]  = "u";
+    prefixes[EbtInt64]  = "i64";
+    prefixes[EbtUint64] = "u64";
     postfixes[2] = "2";
     postfixes[3] = "3";
     postfixes[4] = "4";
@@ -626,6 +628,145 @@ void TBuiltIns::initialize(int version, EProfile profile, int spv, int vulkan)
             "dmat2 inverse(dmat2);"
             "dmat3 inverse(dmat3);"
             "dmat4 inverse(dmat4);"
+
+            "\n");
+    }
+
+    if (profile != EEsProfile && version >= 450) {
+        commonBuiltins.append(
+
+            "int64_t abs(int64_t);"
+            "i64vec2 abs(i64vec2);"
+            "i64vec3 abs(i64vec3);"
+            "i64vec4 abs(i64vec4);"
+
+            "int64_t sign(int64_t);"
+            "i64vec2 sign(i64vec2);"
+            "i64vec3 sign(i64vec3);"
+            "i64vec4 sign(i64vec4);"
+
+            "int64_t  min(int64_t,  int64_t);"
+            "i64vec2  min(i64vec2,  int64_t);"
+            "i64vec3  min(i64vec3,  int64_t);"
+            "i64vec4  min(i64vec4,  int64_t);"
+            "i64vec2  min(i64vec2,  i64vec2);"
+            "i64vec3  min(i64vec3,  i64vec3);"
+            "i64vec4  min(i64vec4,  i64vec4);"
+            "uint64_t min(uint64_t, uint64_t);"
+            "u64vec2  min(u64vec2,  uint64_t);"
+            "u64vec3  min(u64vec3,  uint64_t);"
+            "u64vec4  min(u64vec4,  uint64_t);"
+            "u64vec2  min(u64vec2,  u64vec2);"
+            "u64vec3  min(u64vec3,  u64vec3);"
+            "u64vec4  min(u64vec4,  u64vec4);"
+
+            "int64_t  max(int64_t,  int64_t);"
+            "i64vec2  max(i64vec2,  int64_t);"
+            "i64vec3  max(i64vec3,  int64_t);"
+            "i64vec4  max(i64vec4,  int64_t);"
+            "i64vec2  max(i64vec2,  i64vec2);"
+            "i64vec3  max(i64vec3,  i64vec3);"
+            "i64vec4  max(i64vec4,  i64vec4);"
+            "uint64_t max(uint64_t, uint64_t);"
+            "u64vec2  max(u64vec2,  uint64_t);"
+            "u64vec3  max(u64vec3,  uint64_t);"
+            "u64vec4  max(u64vec4,  uint64_t);"
+            "u64vec2  max(u64vec2,  u64vec2);"
+            "u64vec3  max(u64vec3,  u64vec3);"
+            "u64vec4  max(u64vec4,  u64vec4);"
+
+            "int64_t  clamp(int64_t,  int64_t,  int64_t);"
+            "i64vec2  clamp(i64vec2,  int64_t,  int64_t);"
+            "i64vec3  clamp(i64vec3,  int64_t,  int64_t);"
+            "i64vec4  clamp(i64vec4,  int64_t,  int64_t);"
+            "i64vec2  clamp(i64vec2,  i64vec2,  i64vec2);"
+            "i64vec3  clamp(i64vec3,  i64vec3,  i64vec3);"
+            "i64vec4  clamp(i64vec4,  i64vec4,  i64vec4);"
+            "uint64_t clamp(uint64_t, uint64_t, uint64_t);"
+            "u64vec2  clamp(u64vec2,  uint64_t, uint64_t);"
+            "u64vec3  clamp(u64vec3,  uint64_t, uint64_t);"
+            "u64vec4  clamp(u64vec4,  uint64_t, uint64_t);"
+            "u64vec2  clamp(u64vec2,  u64vec2,  u64vec2);"
+            "u64vec3  clamp(u64vec3,  u64vec3,  u64vec3);"
+            "u64vec4  clamp(u64vec4,  u64vec4,  u64vec4);"
+
+            "int64_t  mix(int64_t,  int64_t,  bool);"
+            "i64vec2  mix(i64vec2,  i64vec2,  bvec2);"
+            "i64vec3  mix(i64vec3,  i64vec3,  bvec3);"
+            "i64vec4  mix(i64vec4,  i64vec4,  bvec4);"
+            "uint64_t mix(uint64_t, uint64_t, bool);"
+            "u64vec2  mix(u64vec2,  u64vec2,  bvec2);"
+            "u64vec3  mix(u64vec3,  u64vec3,  bvec3);"
+            "u64vec4  mix(u64vec4,  u64vec4,  bvec4);"
+
+            "int64_t doubleBitsToInt64(double);"
+            "i64vec2 doubleBitsToInt64(dvec2);"
+            "i64vec3 doubleBitsToInt64(dvec3);"
+            "i64vec4 doubleBitsToInt64(dvec4);"
+
+            "uint64_t doubleBitsToUint64(double);"
+            "u64vec2  doubleBitsToUint64(dvec2);"
+            "u64vec3  doubleBitsToUint64(dvec3);"
+            "u64vec4  doubleBitsToUint64(dvec4);"
+
+            "double int64BitsToDouble(int64_t);"
+            "dvec2  int64BitsToDouble(i64vec2);"
+            "dvec3  int64BitsToDouble(i64vec3);"
+            "dvec4  int64BitsToDouble(i64vec4);"
+
+            "double uint64BitsToDouble(uint64_t);"
+            "dvec2  uint64BitsToDouble(u64vec2);"
+            "dvec3  uint64BitsToDouble(u64vec3);"
+            "dvec4  uint64BitsToDouble(u64vec4);"
+
+            "int64_t  packInt2x32(ivec2);"
+            "uint64_t packUint2x32(uvec2);"
+            "ivec2    unpackInt2x32(int64_t);"
+            "uvec2    unpackUint2x32(uint64_t);"
+
+            "bvec2 lessThan(i64vec2, i64vec2);"
+            "bvec3 lessThan(i64vec3, i64vec3);"
+            "bvec4 lessThan(i64vec4, i64vec4);"
+            "bvec2 lessThan(u64vec2, u64vec2);"
+            "bvec3 lessThan(u64vec3, u64vec3);"
+            "bvec4 lessThan(u64vec4, u64vec4);"
+
+            "bvec2 lessThanEqual(i64vec2, i64vec2);"
+            "bvec3 lessThanEqual(i64vec3, i64vec3);"
+            "bvec4 lessThanEqual(i64vec4, i64vec4);"
+            "bvec2 lessThanEqual(u64vec2, u64vec2);"
+            "bvec3 lessThanEqual(u64vec3, u64vec3);"
+            "bvec4 lessThanEqual(u64vec4, u64vec4);"
+
+            "bvec2 greaterThan(i64vec2, i64vec2);"
+            "bvec3 greaterThan(i64vec3, i64vec3);"
+            "bvec4 greaterThan(i64vec4, i64vec4);"
+            "bvec2 greaterThan(u64vec2, u64vec2);"
+            "bvec3 greaterThan(u64vec3, u64vec3);"
+            "bvec4 greaterThan(u64vec4, u64vec4);"
+
+            "bvec2 greaterThanEqual(i64vec2, i64vec2);"
+            "bvec3 greaterThanEqual(i64vec3, i64vec3);"
+            "bvec4 greaterThanEqual(i64vec4, i64vec4);"
+            "bvec2 greaterThanEqual(u64vec2, u64vec2);"
+            "bvec3 greaterThanEqual(u64vec3, u64vec3);"
+            "bvec4 greaterThanEqual(u64vec4, u64vec4);"
+
+            "bvec2 equal(i64vec2, i64vec2);"
+            "bvec3 equal(i64vec3, i64vec3);"
+            "bvec4 equal(i64vec4, i64vec4);"
+            "bvec2 equal(u64vec2, u64vec2);"
+            "bvec3 equal(u64vec3, u64vec3);"
+            "bvec4 equal(u64vec4, u64vec4);"
+
+            "bvec2 notEqual(i64vec2, i64vec2);"
+            "bvec3 notEqual(i64vec3, i64vec3);"
+            "bvec4 notEqual(i64vec4, i64vec4);"
+            "bvec2 notEqual(u64vec2, u64vec2);"
+            "bvec3 notEqual(u64vec3, u64vec3);"
+            "bvec4 notEqual(u64vec4, u64vec4);"
+
+            "\n"
         );
     }
 
@@ -3650,6 +3791,10 @@ void IdentifyBuiltIns(int version, EProfile profile, int spv, int vulkan, EShLan
     symbolTable.relateToOperator("floatBitsToUint", EOpFloatBitsToUint);
     symbolTable.relateToOperator("intBitsToFloat",  EOpIntBitsToFloat);
     symbolTable.relateToOperator("uintBitsToFloat", EOpUintBitsToFloat);
+    symbolTable.relateToOperator("doubleBitsToInt64",  EOpDoubleBitsToInt64);
+    symbolTable.relateToOperator("doubleBitsToUint64", EOpDoubleBitsToUint64);
+    symbolTable.relateToOperator("int64BitsToDouble",  EOpInt64BitsToDouble);
+    symbolTable.relateToOperator("uint64BitsToDouble", EOpUint64BitsToDouble);
 
     symbolTable.relateToOperator("packSnorm2x16",   EOpPackSnorm2x16);
     symbolTable.relateToOperator("unpackSnorm2x16", EOpUnpackSnorm2x16);
@@ -3666,6 +3811,11 @@ void IdentifyBuiltIns(int version, EProfile profile, int spv, int vulkan, EShLan
 
     symbolTable.relateToOperator("packHalf2x16",    EOpPackHalf2x16);
     symbolTable.relateToOperator("unpackHalf2x16",  EOpUnpackHalf2x16);
+
+    symbolTable.relateToOperator("packInt2x32",     EOpPackInt2x32);
+    symbolTable.relateToOperator("unpackInt2x32",   EOpUnpackInt2x32);
+    symbolTable.relateToOperator("packUint2x32",    EOpPackUint2x32);
+    symbolTable.relateToOperator("unpackUint2x32",  EOpUnpackUint2x32);
 
     symbolTable.relateToOperator("length",       EOpLength);
     symbolTable.relateToOperator("distance",     EOpDistance);

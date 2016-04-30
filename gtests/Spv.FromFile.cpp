@@ -119,6 +119,7 @@ INSTANTIATE_TEST_CASE_P(
         "spv.functionCall.frag",
         "spv.functionSemantics.frag",
         "spv.interpOps.frag",
+        "spv.int64.frag",
         "spv.layoutNested.vert",
         "spv.length.frag",
         "spv.localAggregates.frag",
