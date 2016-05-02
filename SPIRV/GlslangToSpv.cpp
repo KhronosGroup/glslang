@@ -109,6 +109,8 @@ public:
 
     void dumpSpv(std::vector<unsigned int>& out);
 
+    std::string getWarningsAndErrors() const { return warningsErrors.str(); }
+
 protected:
     spv::Decoration TranslateInterpolationDecoration(const glslang::TQualifier& qualifier);
     spv::BuiltIn TranslateBuiltInDecoration(glslang::TBuiltInVariable);
@@ -158,6 +160,8 @@ protected:
     spv::Function* shaderEntry;
     spv::Instruction* entryPoint;
     int sequenceDepth;
+
+    std::ostringstream warningsErrors;
 
     // There is a 1:1 mapping between a spv builder and a module; this is thread safe
     spv::Builder builder;
@@ -433,7 +437,7 @@ spv::BuiltIn TGlslangToSpvTraverser::TranslateBuiltInDecoration(glslang::TBuiltI
     case glslang::EbvBaseInstance:
     case glslang::EbvDrawId:
         // TODO: Add SPIR-V builtin ID.
-        spv::MissingFunctionality("Draw parameters");
+        spv::MissingFunctionality(warningsErrors, "Draw parameters");
         return (spv::BuiltIn)spv::BadValue;
     case glslang::EbvPrimitiveId:          return spv::BuiltInPrimitiveId;
     case glslang::EbvInvocationId:         return spv::BuiltInInvocationId;
@@ -608,7 +612,7 @@ bool HasNonLayoutQualifiers(const glslang::TQualifier& qualifier)
 
 TGlslangToSpvTraverser::TGlslangToSpvTraverser(const glslang::TIntermediate* glslangIntermediate)
     : TIntermTraverser(true, false, true), shaderEntry(0), sequenceDepth(0),
-      builder((glslang::GetKhronosToolId() << 16) | GeneratorVersion),
+      builder((glslang::GetKhronosToolId() << 16) | GeneratorVersion, warningsErrors),
       inMain(false), mainTerminated(false), linkageOnly(false),
       glslangIntermediate(glslangIntermediate)
 {
@@ -984,7 +988,7 @@ bool TGlslangToSpvTraverser::visitBinary(glslang::TVisit /* visit */, glslang::T
 
     builder.clearAccessChain();
     if (! result) {
-        spv::MissingFunctionality("unknown glslang binary operation");
+        spv::MissingFunctionality(warningsErrors, "unknown glslang binary operation");
         return true;  // pick up a child as the place-holder result
     } else {
         builder.setAccessChainRValue(result);
@@ -1109,7 +1113,7 @@ bool TGlslangToSpvTraverser::visitUnary(glslang::TVisit /* visit */, glslang::TI
         return false;
 
     default:
-        spv::MissingFunctionality("unknown glslang unary");
+        spv::MissingFunctionality(warningsErrors, "unknown glslang unary");
         return true;  // pick up operand as placeholder result
     }
 }
@@ -1220,7 +1224,7 @@ bool TGlslangToSpvTraverser::visitAggregate(glslang::TVisit visit, glslang::TInt
             builder.clearAccessChain();
             builder.setAccessChainRValue(result);
         } else
-            spv::MissingFunctionality("missing user function; linker needs to catch that");
+            spv::MissingFunctionality(warningsErrors, "missing user function; linker needs to catch that");
 
         return false;
     }
@@ -1468,7 +1472,7 @@ bool TGlslangToSpvTraverser::visitAggregate(glslang::TVisit visit, glslang::TInt
         return false;
 
     if (! result) {
-        spv::MissingFunctionality("unknown glslang aggregate");
+        spv::MissingFunctionality(warningsErrors, "unknown glslang aggregate");
         return true;  // pick up a child as a placeholder operand
     } else {
         builder.clearAccessChain();
@@ -1761,7 +1765,7 @@ spv::Id TGlslangToSpvTraverser::convertGlslangToSpvType(const glslang::TType& ty
         spvType = builder.makeUintType(64);
         break;
     case glslang::EbtAtomicUint:
-        spv::TbdFunctionality("Is atomic_uint an opaque handle in the uniform storage class, or an addresses in the atomic storage class?");
+        spv::TbdFunctionality(warningsErrors, "Is atomic_uint an opaque handle in the uniform storage class, or an addresses in the atomic storage class?");
         spvType = builder.makeUintType(32);
         break;
     case glslang::EbtSampler:
@@ -3147,7 +3151,7 @@ spv::Id TGlslangToSpvTraverser::createUnaryOperation(glslang::TOperator op, spv:
     case glslang::EOpUnpackInt2x32:
     case glslang::EOpPackUint2x32:
     case glslang::EOpUnpackUint2x32:
-        spv::MissingFunctionality("shader int64");
+        spv::MissingFunctionality(warningsErrors, "shader int64");
         libCall = spv::GLSLstd450Bad; // TODO: This is a placeholder.
         break;
 
@@ -3778,7 +3782,7 @@ spv::Id TGlslangToSpvTraverser::createNoArgOperation(glslang::TOperator op)
         builder.createMemoryBarrier(spv::ScopeDevice, spv::MemorySemanticsCrossWorkgroupMemoryMask);
         return 0;
     default:
-        spv::MissingFunctionality("unknown operation with no arguments");
+        spv::MissingFunctionality(warningsErrors, "unknown operation with no arguments");
         return 0;
     }
 }
@@ -3939,7 +3943,7 @@ spv::Id TGlslangToSpvTraverser::createSpvConstant(const glslang::TIntermTyped& n
 
     // Neither a front-end constant node, nor a specialization constant node with constant union array or
     // constant sub tree as initializer.
-    spv::MissingFunctionality("Neither a front-end constant nor a spec constant.");
+    spv::MissingFunctionality(warningsErrors, "Neither a front-end constant nor a spec constant.");
     exit(1);
     return spv::NoResult;
 }
@@ -4194,6 +4198,11 @@ void OutputSpv(const std::vector<unsigned int>& spirv, const char* baseName)
 //
 void GlslangToSpv(const glslang::TIntermediate& intermediate, std::vector<unsigned int>& spirv)
 {
+    GlslangToSpv(intermediate, spirv, nullptr);
+}
+
+void GlslangToSpv(const glslang::TIntermediate& intermediate, std::vector<unsigned int>& spirv, std::string* messages)
+{
     TIntermNode* root = intermediate.getTreeRoot();
 
     if (root == 0)
@@ -4206,6 +4215,8 @@ void GlslangToSpv(const glslang::TIntermediate& intermediate, std::vector<unsign
     root->traverse(&it);
 
     it.dumpSpv(spirv);
+
+    if (messages != nullptr) *messages = it.getWarningsAndErrors();
 
     glslang::GetThreadPoolAllocator().pop();
 }

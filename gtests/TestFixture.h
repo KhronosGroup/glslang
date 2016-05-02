@@ -156,6 +156,7 @@ public:
         const std::string compilationError;
         const std::string linkingOutput;
         const std::string linkingError;
+        const std::string spirvWarningsErrors;
         const std::string spirv;  // Optional SPIR-V disassembly text.
     };
 
@@ -187,20 +188,23 @@ public:
         program.addShader(&shader);
         success &= program.link(messages);
 
+        std::string spirvWarningsErrors;
+
         if (success && target == Target::Spirv) {
             std::vector<uint32_t> spirv_binary;
             glslang::GlslangToSpv(*program.getIntermediate(language),
-                                  spirv_binary);
+                                  spirv_binary, &spirvWarningsErrors);
 
             std::ostringstream disassembly_stream;
             spv::Parameterize();
             spv::Disassemble(disassembly_stream, spirv_binary);
             return {shader.getInfoLog(), shader.getInfoDebugLog(),
                     program.getInfoLog(), program.getInfoDebugLog(),
-                    disassembly_stream.str()};
+                    spirvWarningsErrors, disassembly_stream.str()};
         } else {
             return {shader.getInfoLog(), shader.getInfoDebugLog(),
-                    program.getInfoLog(), program.getInfoDebugLog(), ""};
+                    program.getInfoLog(), program.getInfoDebugLog(),
+                    "", ""};
         }
     }
 
@@ -231,6 +235,7 @@ public:
         outputIfNotEmpty(result.compilationError);
         outputIfNotEmpty(result.linkingOutput);
         outputIfNotEmpty(result.linkingError);
+        stream << result.spirvWarningsErrors;
         if (target == Target::Spirv) {
             stream
                 << (result.spirv.empty()

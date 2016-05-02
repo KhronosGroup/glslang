@@ -671,11 +671,13 @@ void CompileAndLinkShaderUnits(std::vector<ShaderCompUnit> compUnits)
             for (int stage = 0; stage < EShLangCount; ++stage) {
                 if (program.getIntermediate((EShLanguage)stage)) {
                     std::vector<unsigned int> spirv;
-                    glslang::GlslangToSpv(*program.getIntermediate((EShLanguage)stage), spirv);
+                    std::string warningsErrors;
+                    glslang::GlslangToSpv(*program.getIntermediate((EShLanguage)stage), spirv, &warningsErrors);
 
                     // Dump the spv to a file or stdout, etc., but only if not doing
                     // memory/perf testing, as it's not internal to programmatic use.
                     if (! (Options & EOptionMemoryLeakMode)) {
+                      printf("%s", warningsErrors.c_str());
                         glslang::OutputSpv(spirv, GetBinaryName((EShLanguage)stage));
                         if (Options & EOptionHumanReadableSpv) {
                             spv::Disassemble(std::cout, spirv);
