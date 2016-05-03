@@ -70,7 +70,11 @@ TParseContext::TParseContext(TSymbolTable& symbolTable, TIntermediate& interm, b
         defaultSamplerPrecision[type] = EpqNone;
 
     // replace with real defaults for those that have them
-    if (profile == EEsProfile) {
+
+	// do not set default precision for build ins: build-in functions 
+	// precision depends on arguments, build in values precision should be set
+	// in declaration
+    if (profile == EEsProfile && !parsingBuiltins) {
         TSampler sampler;
         sampler.set(EbtFloat, Esd2D);
         defaultSamplerPrecision[computeSamplerTypeIndex(sampler)] = EpqLow;
@@ -4831,6 +4835,13 @@ TIntermNode* TParseContext::declareVariable(const TSourceLoc& loc, TString& iden
     // see if it's a linker-level object to track
     if (newDeclaration && symbolTable.atGlobalLevel())
         intermediate.addSymbolLinkageNode(linkage, *symbol);
+
+	// check if all build-in variables have precision set on ES profile
+	assert(profile != EEsProfile || !parsingBuiltins ||
+		symbol->getType().getBasicType() != EbtUint  ||
+		symbol->getType().getBasicType() != EbtInt   ||
+		symbol->getType().getBasicType() != EbtFloat ||
+		symbol->getType().getQualifier().precision != EpqNone);
 
     return initNode;
 }
