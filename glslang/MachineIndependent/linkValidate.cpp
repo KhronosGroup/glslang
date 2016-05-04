@@ -309,6 +309,12 @@ void TIntermediate::mergeErrorCheck(TInfoSink& infoSink, const TIntermSymbol& sy
         writeTypeComparison = true;
     }
 
+    // Precise...
+    if (! crossStage && symbol.getQualifier().noContraction != unitSymbol.getQualifier().noContraction) {
+        error(infoSink, "Presence of precise qualifier must match:");
+        writeTypeComparison = true;
+    }
+
     // Auxiliary and interpolation...
     if (symbol.getQualifier().centroid  != unitSymbol.getQualifier().centroid ||
         symbol.getQualifier().smooth    != unitSymbol.getQualifier().smooth ||

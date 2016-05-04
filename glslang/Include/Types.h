@@ -390,6 +390,7 @@ public:
     {
         precision = EpqNone;
         invariant = false;
+        noContraction = false;
         makeTemporary();
     }
 
@@ -429,7 +430,8 @@ public:
     TStorageQualifier   storage   : 6;
     TBuiltInVariable    builtIn   : 8;
     TPrecisionQualifier precision : 3;
-    bool invariant    : 1;
+    bool invariant    : 1; // require canonical treatment for cross-shader invariance
+    bool noContraction: 1; // prevent contraction and reassociation, e.g., for 'precise' keyword, and expressions it affects
     bool centroid     : 1;
     bool smooth       : 1;
     bool flat         : 1;
@@ -1479,6 +1481,8 @@ public:
 
         if (qualifier.invariant)
             p += snprintf(p, end - p, "invariant ");
+        if (qualifier.noContraction)
+            p += snprintf(p, end - p, "noContraction ");
         if (qualifier.centroid)
             p += snprintf(p, end - p, "centroid ");
         if (qualifier.smooth)
