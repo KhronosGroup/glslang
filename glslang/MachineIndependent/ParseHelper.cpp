@@ -781,7 +781,7 @@ TIntermTyped* TParseContext::handleDotDereference(const TSourceLoc& loc, TInterm
 
     //
     // .length() can't be resolved until we later see the function-calling syntax.
-    // Save away the name in the AST for now.  Processing is compeleted in 
+    // Save away the name in the AST for now.  Processing is completed in 
     // handleLengthMethod().
     //
     if (field == "length") {
@@ -878,6 +878,10 @@ TIntermTyped* TParseContext::handleDotDereference(const TSourceLoc& loc, TInterm
             error(loc, "no such field in structure", field.c_str(), "");
     } else
         error(loc, "does not apply to this type:", field.c_str(), base->getType().getCompleteString().c_str());
+
+    // Propagate noContraction up the dereference chain
+    if (base->getQualifier().noContraction)
+        result->getWritableType().getQualifier().noContraction = true;
 
     return result;
 }

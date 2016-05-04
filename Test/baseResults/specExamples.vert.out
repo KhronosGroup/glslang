@@ -110,7 +110,7 @@ ERROR: node is still EOpNull!
 0:161              'c' (in 4-component vector of float)
 0:161              'd' (in 4-component vector of float)
 0:162      move second child to first child (temp 3-component vector of float)
-0:162        vector swizzle (temp 3-component vector of float)
+0:162        vector swizzle (noContraction temp 3-component vector of float)
 0:162          'v' (noContraction smooth out 4-component vector of float)
 0:162          Sequence
 0:162            Constant:
@@ -123,7 +123,7 @@ ERROR: node is still EOpNull!
 0:162          'r' (temp 3-component vector of float)
 0:162          's' (temp 3-component vector of float)
 0:163      move second child to first child (temp float)
-0:163        direct index (temp float)
+0:163        direct index (noContraction temp float)
 0:163          'v' (noContraction smooth out 4-component vector of float)
 0:163          Constant:
 0:163            3 (const int)
@@ -147,7 +147,7 @@ ERROR: node is still EOpNull!
 0:163              Constant:
 0:163                3 (const int)
 0:164      move second child to first child (temp float)
-0:164        direct index (temp float)
+0:164        direct index (noContraction temp float)
 0:164          'v' (noContraction smooth out 4-component vector of float)
 0:164          Constant:
 0:164            0 (const int)
@@ -169,7 +169,7 @@ ERROR: node is still EOpNull!
 0:164            Constant:
 0:164              0 (const int)
 0:166      move second child to first child (temp float)
-0:166        direct index (temp float)
+0:166        direct index (noContraction temp float)
 0:166          'v' (noContraction smooth out 4-component vector of float)
 0:166          Constant:
 0:166            0 (const int)
@@ -209,7 +209,7 @@ ERROR: node is still EOpNull!
 0:167            'd' (in 4-component vector of float)
 0:167            Constant:
 0:167              0 (const int)
-0:167        direct index (temp float)
+0:167        direct index (noContraction temp float)
 0:167          'v' (noContraction smooth out 4-component vector of float)
 0:167          Constant:
 0:167            0 (const int)
@@ -394,7 +394,7 @@ ERROR: node is still EOpNull!
 0:161              'c' (in 4-component vector of float)
 0:161              'd' (in 4-component vector of float)
 0:162      move second child to first child (temp 3-component vector of float)
-0:162        vector swizzle (temp 3-component vector of float)
+0:162        vector swizzle (noContraction temp 3-component vector of float)
 0:162          'v' (noContraction smooth out 4-component vector of float)
 0:162          Sequence
 0:162            Constant:
@@ -407,7 +407,7 @@ ERROR: node is still EOpNull!
 0:162          'r' (temp 3-component vector of float)
 0:162          's' (temp 3-component vector of float)
 0:163      move second child to first child (temp float)
-0:163        direct index (temp float)
+0:163        direct index (noContraction temp float)
 0:163          'v' (noContraction smooth out 4-component vector of float)
 0:163          Constant:
 0:163            3 (const int)
@@ -431,7 +431,7 @@ ERROR: node is still EOpNull!
 0:163              Constant:
 0:163                3 (const int)
 0:164      move second child to first child (temp float)
-0:164        direct index (temp float)
+0:164        direct index (noContraction temp float)
 0:164          'v' (noContraction smooth out 4-component vector of float)
 0:164          Constant:
 0:164            0 (const int)
@@ -453,7 +453,7 @@ ERROR: node is still EOpNull!
 0:164            Constant:
 0:164              0 (const int)
 0:166      move second child to first child (temp float)
-0:166        direct index (temp float)
+0:166        direct index (noContraction temp float)
 0:166          'v' (noContraction smooth out 4-component vector of float)
 0:166          Constant:
 0:166            0 (const int)
@@ -493,7 +493,7 @@ ERROR: node is still EOpNull!
 0:167            'd' (in 4-component vector of float)
 0:167            Constant:
 0:167              0 (const int)
-0:167        direct index (temp float)
+0:167        direct index (noContraction temp float)
 0:167          'v' (noContraction smooth out 4-component vector of float)
 0:167          Constant:
 0:167            0 (const int)
