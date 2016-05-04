@@ -37,6 +37,7 @@
 #define HLSLGRAMMAR_H_
 
 #include "hlslParseHelper.h"
+#include "hlslOpMap.h"
 #include "hlslTokenStream.h"
 
 namespace glslang {
@@ -64,10 +65,14 @@ namespace glslang {
         bool acceptParameterDeclaration(TFunction&);
         bool acceptFunctionDefinition(TFunction&, TIntermNode*&);
         bool acceptExpression(TIntermTyped*&);
+        bool acceptAssignmentExpression(TIntermTyped*&);
+        bool acceptBinaryExpression(TIntermTyped*&, PrecedenceLevel);
+        bool acceptUnaryExpression(TIntermTyped*&);
+        bool acceptPostfixExpression(TIntermTyped*&);
         bool acceptConstructor(TIntermTyped*&);
+        bool acceptFunctionCall(HlslToken, TIntermTyped*&);
         bool acceptArguments(TFunction*, TIntermAggregate*&);
         bool acceptLiteral(TIntermTyped*&);
-        bool acceptOperator(TOperator& op);
         bool acceptCompoundStatement(TIntermAggregate*&);
         bool acceptStatement(TIntermNode*&);
         bool acceptSemantic();

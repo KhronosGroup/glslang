@@ -3,6 +3,7 @@ cmake_minimum_required(VERSION 2.8)
 set(SOURCES
     hlslParseHelper.cpp
     hlslScanContext.cpp
+    hlslOpMap.cpp
     hlslTokenStream.cpp
     hlslGrammar.cpp)
 
@@ -10,6 +11,7 @@ set(HEADERS
     hlslParseHelper.h
     hlslTokens.h
     hlslScanContext.h
+    hlslOpMap.h
     hlslTokenStream.h
     hlslGrammar.h)
 

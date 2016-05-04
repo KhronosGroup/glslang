@@ -129,7 +129,7 @@ bool HlslGrammar::acceptDeclaration(TIntermNode*& node)
     if (acceptIdentifier(idToken)) {
         // = expression
         TIntermTyped* expressionNode = nullptr;
-        if (acceptTokenClass(EHTokEqual)) {
+        if (acceptTokenClass(EHTokAssign)) {
             if (! acceptExpression(expressionNode)) {
                 expected("initializer");
                 return false;
@@ -362,35 +362,170 @@ bool HlslGrammar::acceptFunctionDefinition(TFunction& function, TIntermNode*& no
     return false;
 }
 
+// The top-level full expression recognizer.
+//
 // expression
-//      : identifier
-//      | identifier operator identifier       // todo: generalize to all expressions
-//      | LEFT_PAREN expression RIGHT_PAREN
-//      | constructor
-//      | literal
+//      : assignment_expression COMMA assignment_expression COMMA assignment_expression ...
 //
 bool HlslGrammar::acceptExpression(TIntermTyped*& node)
 {
-    // identifier
-    HlslToken idToken;
-    if (acceptIdentifier(idToken)) {
-        TIntermTyped* left = parseContext.handleVariable(idToken.loc, idToken.symbol, token.string);
+    // assignment_expression
+    if (! acceptAssignmentExpression(node))
+        return false;
 
-        // operator?
-        TOperator op;
-        if (! acceptOperator(op))
-            return true;
+    if (! peekTokenClass(EHTokComma))
+        return true;
+
+    do {
+        // ... COMMA
         TSourceLoc loc = token.loc;
+        advanceToken();
 
-        // identifier
-        if (acceptIdentifier(idToken)) {
-            TIntermTyped* right = parseContext.handleVariable(idToken.loc, idToken.symbol, token.string);
-            node = intermediate.addBinaryMath(op, left, right, loc);
-            return true;
+        // ... assignment_expression
+        TIntermTyped* rightNode = nullptr;
+        if (! acceptAssignmentExpression(rightNode)) {
+            expected("assignment expression");
+            return false;
         }
 
+        node = intermediate.addComma(node, rightNode, loc);
+
+        if (! peekTokenClass(EHTokComma))
+            return true;
+    } while (true);
+}
+
+// Accept an assignment expression, where assignment operations
+// associate right-to-left.  This is, it is implicit, for example
+//
+//    a op (b op (c op d))
+//
+// assigment_expression
+//      : binary_expression op binary_expression op binary_expression ...
+//
+bool HlslGrammar::acceptAssignmentExpression(TIntermTyped*& node)
+{
+    if (! acceptBinaryExpression(node, PlLogicalOr))
+        return false;
+
+    TOperator assignOp = HlslOpMap::assignment(peek());
+    if (assignOp == EOpNull)
+        return true;
+
+    // ... op
+    TSourceLoc loc = token.loc;
+    advanceToken();
+
+    // ... binary_expression
+    // But, done by recursing this function, which automatically
+    // gets the right-to-left associativity.
+    TIntermTyped* rightNode = nullptr;
+    if (! acceptAssignmentExpression(rightNode)) {
+        expected("assignment expression");
         return false;
     }
+
+    node = intermediate.addAssign(assignOp, node, rightNode, loc);
+
+    if (! peekTokenClass(EHTokComma))
+        return true;
+
+    return true;
+}
+
+// Accept a binary expression, for binary operations that
+// associate left-to-right.  This is, it is implicit, for example
+//
+//    ((a op b) op c) op d
+//
+// binary_expression
+//      : expression op expression op expression ...
+//
+// where 'expression' is the next higher level in precedence.
+//
+bool HlslGrammar::acceptBinaryExpression(TIntermTyped*& node, PrecedenceLevel precedenceLevel)
+{
+    if (precedenceLevel > PlMul)
+        return acceptUnaryExpression(node);
+
+    // assignment_expression
+    if (! acceptBinaryExpression(node, (PrecedenceLevel)(precedenceLevel + 1)))
+        return false;
+
+    TOperator op = HlslOpMap::binary(peek());
+    PrecedenceLevel tokenLevel = HlslOpMap::precedenceLevel(op);
+    if (tokenLevel < precedenceLevel)
+        return true;
+
+    do {
+        // ... op
+        TSourceLoc loc = token.loc;
+        advanceToken();
+
+        // ... expression
+        TIntermTyped* rightNode = nullptr;
+        if (! acceptBinaryExpression(rightNode, (PrecedenceLevel)(precedenceLevel + 1))) {
+            expected("expression");
+            return false;
+        }
+
+        node = intermediate.addBinaryMath(op, node, rightNode, loc);
+
+        if (! peekTokenClass(EHTokComma))
+            return true;
+    } while (true);
+}
+
+// unary_expression
+//      : + unary_expression
+//      | - unary_expression
+//      | ! unary_expression
+//      | ~ unary_expression
+//      | ++ unary_expression
+//      | -- unary_expression
+//      | postfix_expression
+//
+bool HlslGrammar::acceptUnaryExpression(TIntermTyped*& node)
+{
+    TOperator unaryOp = HlslOpMap::preUnary(peek());
+    
+    // postfix_expression
+    if (unaryOp == EOpNull)
+        return acceptPostfixExpression(node);
+
+    // op unary_expression
+    TSourceLoc loc = token.loc;
+    advanceToken();
+    if (! acceptUnaryExpression(node))
+        return false;
+
+    // + is a no-op
+    if (unaryOp == EOpAdd)
+        return true;
+
+    node = intermediate.addUnaryMath(unaryOp, node, loc);
+
+    return node != nullptr;
+}
+
+// postfix_expression
+//      : LEFT_PAREN expression RIGHT_PAREN
+//      | literal
+//      | constructor
+//      | identifier
+//      | function_call
+//      | postfix_expression LEFT_BRACKET integer_expression RIGHT_BRACKET
+//      | postfix_expression DOT IDENTIFIER
+//      | postfix_expression INC_OP
+//      | postfix_expression DEC_OP
+//
+bool HlslGrammar::acceptPostfixExpression(TIntermTyped*& node)
+{
+    // Not implemented as self-recursive:
+    // The logical "right recursion" is done with an loop at the end
+
+    // idToken will pick up either a variable or a function name in a function call
+    HlslToken idToken;
 
     // LEFT_PAREN expression RIGHT_PAREN
     if (acceptTokenClass(EHTokLeftParen)) {
@@ -402,19 +537,62 @@ bool HlslGrammar::acceptExpression(TIntermTyped*& node)
             expected("right parenthesis");
             return false;
         }
-
-        return true;
+    } else if (acceptLiteral(node)) {
+        // literal (nothing else to do yet), go on to the 
+    } else if (acceptConstructor(node)) {
+        // constructor (nothing else to do yet)
+    } else if (acceptIdentifier(idToken)) {
+        // identifier or function_call name
+        if (! peekTokenClass(EHTokLeftParen)) {
+            node = parseContext.handleVariable(idToken.loc, idToken.symbol, token.string);
+        } else if (acceptFunctionCall(idToken, node)) {
+            // function_call (nothing else to do yet)
+        } else {
+            expected("function call arguments");
+            return false;
+        }
     }
 
-    // literal
-    if (acceptLiteral(node))
-        return true;
+    do {
+        TSourceLoc loc = token.loc;
+        TOperator postOp = HlslOpMap::postUnary(peek());
 
-    // constructor
-    if (acceptConstructor(node))
-        return true;
+        // Consume only a valid post-unary operator, otherwise we are done.
+        switch (postOp) {
+        case EOpIndexDirectStruct:
+        case EOpIndexIndirect:
+        case EOpPostIncrement:
+        case EOpPostDecrement:
+            advanceToken();
+            break;
+        default:
+            return true;
+        }
 
-    return false;
+        // We have a valid post-unary operator, process it.
+        switch (postOp) {
+        case EOpIndexDirectStruct:
+            // todo
+            break;
+        case EOpIndexIndirect:
+        {
+            TIntermTyped* indexNode = nullptr;
+            if (! acceptExpression(indexNode) ||
+                ! peekTokenClass(EHTokRightBracket)) {
+                expected("expression followed by ']'");
+                return false;
+            }
+            // todo:      node = intermediate.addBinaryMath(
+        }
+        case EOpPostIncrement:
+        case EOpPostDecrement:
+            node = intermediate.addUnaryMath(postOp, node, loc);
+            break;
+        default:
+            assert(0);
+            break;
+        }
+    } while (true);
 }
 
 // constructor
@@ -442,6 +620,17 @@ bool HlslGrammar::acceptConstructor(TIntermTyped*& node)
         return true;
     }
 
+    return false;
+}
+
+// The function_call identifier was already recognized, and passed in as idToken.
+//
+// function_call
+//      : [idToken] arguments
+//
+bool HlslGrammar::acceptFunctionCall(HlslToken idToken, TIntermTyped*&)
+{
+    // todo
     return false;
 }
 
@@ -505,41 +694,12 @@ bool HlslGrammar::acceptLiteral(TIntermTyped*& node)
     return true;
 }
 
-// operator
-//      : PLUS | DASH | STAR | SLASH | ...
-bool HlslGrammar::acceptOperator(TOperator& op)
-{
-    switch (token.tokenClass) {
-    case EHTokEqual:
-        op = EOpAssign;
-        break;
-    case EHTokPlus:
-        op = EOpAdd;
-        break;
-    case EHTokDash:
-        op = EOpSub;
-        break;
-    case EHTokStar:
-        op = EOpMul;
-        break;
-    case EHTokSlash:
-        op = EOpDiv;
-        break;
-    default:
-        return false;
-    }
-
-    advanceToken();
-
-    return true;
-}
-
 // compound_statement
-//      : { statement statement ... }
+//      : LEFT_CURLY statement statement ... RIGHT_CURLY
 //
 bool HlslGrammar::acceptCompoundStatement(TIntermAggregate*& compoundStatement)
 {
-    // {
+    // LEFT_CURLY
     if (! acceptTokenClass(EHTokLeftBrace))
         return false;
 
@@ -549,9 +709,10 @@ bool HlslGrammar::acceptCompoundStatement(TIntermAggregate*& compoundStatement)
         // hook it up
         compoundStatement = intermediate.growAggregate(compoundStatement, statement);
     }
-    compoundStatement->setOperator(EOpSequence);
+    if (compoundStatement)
+        compoundStatement->setOperator(EOpSequence);
 
-    // }
+    // RIGHT_CURLY
     return acceptTokenClass(EHTokRightBrace);
 }
 

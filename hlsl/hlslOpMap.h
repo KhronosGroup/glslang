@@ -33,32 +33,37 @@
 //POSSIBILITY OF SUCH DAMAGE.
 //
 
-#ifndef HLSLTOKENSTREAM_H_
-#define HLSLTOKENSTREAM_H_
+#ifndef HLSLOPMAP_H_
+#define HLSLOPMAP_H_
 
 #include "hlslScanContext.h"
 
 namespace glslang {
 
-    class HlslTokenStream {
-    public:
-        explicit HlslTokenStream(HlslScanContext& scanner)
-            : scanner(scanner) { }
-        virtual ~HlslTokenStream() { }
+    enum PrecedenceLevel {
+        PlBad,
+        PlLogicalOr,
+        PlLogicalXor,
+        PlLogicalAnd,
+        PlBitwiseOr,
+        PlBitwiseXor,
+        PlBitwiseAnd,
+        PlEquality,
+        PlRelational,
+        PlShift,
+        PlAdd,
+        PlMul
+    };
 
+    class HlslOpMap {
     public:
-        void advanceToken();
-        bool acceptTokenClass(EHlslTokenClass);
-        EHlslTokenClass peek() const;
-        bool peekTokenClass(EHlslTokenClass) const;
-
-    protected:
-        HlslToken token;                 // the current token we are processing
-    
-    private:
-        HlslScanContext& scanner;        // lexical scanner, to get next token
+        static TOperator assignment(EHlslTokenClass op);
+        static TOperator binary(EHlslTokenClass op);
+        static TOperator preUnary(EHlslTokenClass op);
+        static TOperator postUnary(EHlslTokenClass op);
+        static PrecedenceLevel precedenceLevel(TOperator);
     };
 
 } // end namespace glslang
 
-#endif // HLSLTOKENSTREAM_H_
+#endif // HLSLOPMAP_H_

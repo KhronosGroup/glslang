@@ -309,7 +309,7 @@ EHlslTokenClass HlslScanContext::tokenizeClass(HlslToken& token)
         case ';':  afterType = false;   return EHTokSemicolon;
         case ',':  afterType = false;   return EHTokComma;
         case ':':                       return EHTokColon;
-        case '=':  afterType = false;   return EHTokEqual;
+        case '=':  afterType = false;   return EHTokAssign;
         case '(':  afterType = false;   return EHTokLeftParen;
         case ')':  afterType = false;   return EHTokRightParen;
         case '.':  field = true;        return EHTokDot;

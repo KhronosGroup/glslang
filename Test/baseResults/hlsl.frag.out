@@ -2,23 +2,41 @@ hlsl.frag
 Shader version: 100
 gl_FragCoord origin is upper left
 0:? Sequence
-0:1  move second child to first child (temp 4-component vector of float)
-0:1    'AmbientColor' (temp 4-component vector of float)
-0:?     Constant:
-0:?       1.000000
-0:?       0.500000
-0:?       0.000000
-0:?       1.000000
-0:8  Function Definition: PixelShaderFunction(vf4; (temp 4-component vector of float)
+0:12  Function Definition: PixelShaderFunction(vf4; (temp 4-component vector of float)
 0:5    Function Parameters: 
 0:5      'input' (temp 4-component vector of float)
 0:?     Sequence
-0:6      Branch: Return with expression
-0:6        add (temp 4-component vector of float)
-0:6          'input' (temp 4-component vector of float)
-0:6          'AmbientColor' (temp 4-component vector of float)
+0:7      Branch: Return with expression
+0:7        add (temp 4-component vector of float)
+0:7          component-wise multiply (temp 4-component vector of float)
+0:7            'input' (temp 4-component vector of float)
+0:7            'input' (temp 4-component vector of float)
+0:7          component-wise multiply (temp 4-component vector of float)
+0:7            'input' (temp 4-component vector of float)
+0:7            'input' (temp 4-component vector of float)
+0:8      Branch: Return with expression
+0:8        add (temp 4-component vector of float)
+0:8          add (temp 4-component vector of float)
+0:8            'input' (temp 4-component vector of float)
+0:8            component-wise multiply (temp 4-component vector of float)
+0:8              'input' (temp 4-component vector of float)
+0:8              'input' (temp 4-component vector of float)
+0:8          'input' (temp 4-component vector of float)
+0:9      Branch: Return with expression
+0:9        component-wise multiply (temp 4-component vector of float)
+0:9          Pre-Increment (temp 4-component vector of float)
+0:9            'input' (temp 4-component vector of float)
+0:9          Negate value (temp 4-component vector of float)
+0:9            Negate value (temp 4-component vector of float)
+0:9              Pre-Decrement (temp 4-component vector of float)
+0:9                'input' (temp 4-component vector of float)
+0:10      Branch: Return with expression
+0:10        add (temp 4-component vector of float)
+0:10          Post-Increment (temp 4-component vector of float)
+0:10            'input' (temp 4-component vector of float)
+0:10          Pre-Increment (temp 4-component vector of float)
+0:10            'input' (temp 4-component vector of float)
 0:?   Linker Objects
-0:?     'AmbientColor' (temp 4-component vector of float)
 
 
 Linked fragment stage:
@@ -27,27 +45,45 @@ Linked fragment stage:
 Shader version: 100
 gl_FragCoord origin is upper left
 0:? Sequence
-0:1  move second child to first child (temp 4-component vector of float)
-0:1    'AmbientColor' (temp 4-component vector of float)
-0:?     Constant:
-0:?       1.000000
-0:?       0.500000
-0:?       0.000000
-0:?       1.000000
-0:8  Function Definition: PixelShaderFunction(vf4; (temp 4-component vector of float)
+0:12  Function Definition: PixelShaderFunction(vf4; (temp 4-component vector of float)
 0:5    Function Parameters: 
 0:5      'input' (temp 4-component vector of float)
 0:?     Sequence
-0:6      Branch: Return with expression
-0:6        add (temp 4-component vector of float)
-0:6          'input' (temp 4-component vector of float)
-0:6          'AmbientColor' (temp 4-component vector of float)
+0:7      Branch: Return with expression
+0:7        add (temp 4-component vector of float)
+0:7          component-wise multiply (temp 4-component vector of float)
+0:7            'input' (temp 4-component vector of float)
+0:7            'input' (temp 4-component vector of float)
+0:7          component-wise multiply (temp 4-component vector of float)
+0:7            'input' (temp 4-component vector of float)
+0:7            'input' (temp 4-component vector of float)
+0:8      Branch: Return with expression
+0:8        add (temp 4-component vector of float)
+0:8          add (temp 4-component vector of float)
+0:8            'input' (temp 4-component vector of float)
+0:8            component-wise multiply (temp 4-component vector of float)
+0:8              'input' (temp 4-component vector of float)
+0:8              'input' (temp 4-component vector of float)
+0:8          'input' (temp 4-component vector of float)
+0:9      Branch: Return with expression
+0:9        component-wise multiply (temp 4-component vector of float)
+0:9          Pre-Increment (temp 4-component vector of float)
+0:9            'input' (temp 4-component vector of float)
+0:9          Negate value (temp 4-component vector of float)
+0:9            Negate value (temp 4-component vector of float)
+0:9              Pre-Decrement (temp 4-component vector of float)
+0:9                'input' (temp 4-component vector of float)
+0:10      Branch: Return with expression
+0:10        add (temp 4-component vector of float)
+0:10          Post-Increment (temp 4-component vector of float)
+0:10            'input' (temp 4-component vector of float)
+0:10          Pre-Increment (temp 4-component vector of float)
+0:10            'input' (temp 4-component vector of float)
 0:?   Linker Objects
-0:?     'AmbientColor' (temp 4-component vector of float)
 
 // Module Version 10000
 // Generated by (magic number): 80001
-// Id's are bound by 15
+// Id's are bound by 45
 
                               Capability Shader
                1:             ExtInstImport  "GLSL.std.450"
@@ -57,18 +93,21 @@ gl_FragCoord origin is upper left
                               Source HLSL 100
                               Name 4  "PixelShaderFunction"
                               Name 9  "input"
-                              Name 11  "AmbientColor"
                2:             TypeVoid
                3:             TypeFunction 2
                6:             TypeFloat 32
                7:             TypeVector 6(float) 4
                8:             TypePointer Function 7(fvec4)
+              27:    6(float) Constant 1065353216
 4(PixelShaderFunction):           2 Function None 3
                5:             Label
         9(input):      8(ptr) Variable Function
-11(AmbientColor):      8(ptr) Variable Function
               10:    7(fvec4) Load 9(input)
-              12:    7(fvec4) Load 11(AmbientColor)
-              13:    7(fvec4) FAdd 10 12
-                              ReturnValue 13
+              11:    7(fvec4) Load 9(input)
+              12:    7(fvec4) FMul 10 11
+              13:    7(fvec4) Load 9(input)
+              14:    7(fvec4) Load 9(input)
+              15:    7(fvec4) FMul 13 14
+              16:    7(fvec4) FAdd 12 15
+                              ReturnValue 16
                               FunctionEnd
