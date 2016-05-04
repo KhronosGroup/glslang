@@ -8,6 +8,8 @@ regarding the feature level of glslang.
 glslang
 =======
 
+[![Build Status](https://travis-ci.org/KhronosGroup/glslang.svg?branch=master)](https://travis-ci.org/KhronosGroup/glslang)
+
 An OpenGL and OpenGL ES shader front end and validator.
 
 There are two components:
