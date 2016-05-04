@@ -778,16 +778,16 @@ void TBuiltIns::initialize(int version, EProfile profile, int spv, int vulkan)
 
             "uint atomicMin(coherent volatile inout uint, uint);"
             " int atomicMin(coherent volatile inout  int,  int);"
-            
+
             "uint atomicMax(coherent volatile inout uint, uint);"
             " int atomicMax(coherent volatile inout  int,  int);"
-            
+
             "uint atomicAnd(coherent volatile inout uint, uint);"
             " int atomicAnd(coherent volatile inout  int,  int);"
-            
+
             "uint atomicOr (coherent volatile inout uint, uint);"
             " int atomicOr (coherent volatile inout  int,  int);"
-            
+
             "uint atomicXor(coherent volatile inout uint, uint);"
             " int atomicXor(coherent volatile inout  int,  int);"
 
@@ -1242,15 +1242,15 @@ void TBuiltIns::initialize(int version, EProfile profile, int spv, int vulkan)
     if ((profile == EEsProfile && version >= 310) ||
         (profile != EEsProfile && version >= 400)) {
         commonBuiltins.append(
-            " uint uaddCarry( uint,  uint, out  uint carry);"
-            "uvec2 uaddCarry(uvec2, uvec2, out uvec2 carry);"
-            "uvec3 uaddCarry(uvec3, uvec3, out uvec3 carry);"
-            "uvec4 uaddCarry(uvec4, uvec4, out uvec4 carry);"
+            "highp  uint uaddCarry( uint,  uint, out  uint carry);"
+            "highp uvec2 uaddCarry(uvec2, uvec2, out uvec2 carry);"
+            "highp uvec3 uaddCarry(uvec3, uvec3, out uvec3 carry);"
+            "highp uvec4 uaddCarry(uvec4, uvec4, out uvec4 carry);"
 
-            " uint usubBorrow( uint,  uint, out  uint borrow);"
-            "uvec2 usubBorrow(uvec2, uvec2, out uvec2 borrow);"
-            "uvec3 usubBorrow(uvec3, uvec3, out uvec3 borrow);"
-            "uvec4 usubBorrow(uvec4, uvec4, out uvec4 borrow);"
+            "highp  uint usubBorrow( uint,  uint, out  uint borrow);"
+            "highp uvec2 usubBorrow(uvec2, uvec2, out uvec2 borrow);"
+            "highp uvec3 usubBorrow(uvec3, uvec3, out uvec3 borrow);"
+            "highp uvec4 usubBorrow(uvec4, uvec4, out uvec4 borrow);"
 
             "void umulExtended( uint,  uint, out  uint, out  uint lsb);"
             "void umulExtended(uvec2, uvec2, out uvec2, out uvec2 lsb);"
@@ -1302,15 +1302,15 @@ void TBuiltIns::initialize(int version, EProfile profile, int spv, int vulkan)
             "ivec3 bitCount(uvec3);"
             "ivec4 bitCount(uvec4);"
 
-            "  int findLSB(  int);"
-            "ivec2 findLSB(ivec2);"
-            "ivec3 findLSB(ivec3);"
-            "ivec4 findLSB(ivec4);"
+            "lowp   int findLSB(  int);"
+            "lowp ivec2 findLSB(ivec2);"
+            "lowp ivec3 findLSB(ivec3);"
+            "lowp ivec4 findLSB(ivec4);"
 
-            "  int findLSB( uint);"
-            "ivec2 findLSB(uvec2);"
-            "ivec3 findLSB(uvec3);"
-            "ivec4 findLSB(uvec4);"
+            "lowp   int findLSB( uint);"
+            "lowp ivec2 findLSB(uvec2);"
+            "lowp ivec3 findLSB(uvec3);"
+            "lowp ivec4 findLSB(uvec4);"
 
             "  int findMSB(  int);"
             "ivec2 findMSB(ivec2);"
@@ -1731,14 +1731,14 @@ void TBuiltIns::initialize(int version, EProfile profile, int spv, int vulkan)
     if ((profile != EEsProfile && version >= 430) ||
         (profile == EEsProfile && version >= 310)) {
         stageBuiltins[EShLangCompute].append(
-            "in uvec3 gl_NumWorkGroups;"
-            "const uvec3 gl_WorkGroupSize = uvec3(1,1,1);"
+            "in    highp uvec3 gl_NumWorkGroups;"
+            "const highp uvec3 gl_WorkGroupSize = uvec3(1,1,1);"
 
-            "in uvec3 gl_WorkGroupID;"
-            "in uvec3 gl_LocalInvocationID;"
+            "in highp uvec3 gl_WorkGroupID;"
+            "in highp uvec3 gl_LocalInvocationID;"
 
-            "in uvec3 gl_GlobalInvocationID;"
-            "in uint gl_LocalInvocationIndex;"
+            "in highp uvec3 gl_GlobalInvocationID;"
+            "in highp uint gl_LocalInvocationIndex;"
 
             "\n");
     }
@@ -1976,12 +1976,12 @@ void TBuiltIns::initialize(int version, EProfile profile, int spv, int vulkan)
             "in highp int gl_InvocationID;"
             "\n"
             "out gl_PerVertex {"
-                "vec4 gl_Position;"
-                "float gl_PointSize;"
+                "highp vec4 gl_Position;"
+                "highp float gl_PointSize;"
             "};"
             "\n"
-            "out int gl_PrimitiveID;"
-            "out int gl_Layer;"
+            "out highp int gl_PrimitiveID;"
+            "out highp int gl_Layer;"
             "\n"
             );
     }
@@ -2102,8 +2102,8 @@ void TBuiltIns::initialize(int version, EProfile profile, int spv, int vulkan)
             "patch in highp float gl_TessLevelInner[2];"
                 
             "out gl_PerVertex {"
-                "vec4 gl_Position;"
-                "float gl_PointSize;"
+                "highp vec4 gl_Position;"
+                "highp float gl_PointSize;"
             );
         stageBuiltins[EShLangTessEvaluation].append(
             "};"
@@ -2444,6 +2444,8 @@ void TBuiltIns::addImageFunctions(TSampler sampler, TString& typeName, int versi
     if (sampler.ms)
         imageParams.append(", int");
 
+    if (profile == EEsProfile)
+        commonBuiltins.append("highp ");
     commonBuiltins.append(prefixes[sampler.type]);
     commonBuiltins.append("vec4 imageLoad(readonly volatile coherent ");
     commonBuiltins.append(imageParams);
@@ -2467,7 +2469,7 @@ void TBuiltIns::addImageFunctions(TSampler sampler, TString& typeName, int versi
     if ( profile != EEsProfile ||
         (profile == EEsProfile && version >= 310)) {
         if (sampler.type == EbtInt || sampler.type == EbtUint) {
-            const char* dataType = sampler.type == EbtInt ? "int" : "uint";
+            const char* dataType = sampler.type == EbtInt ? "highp int" : "highp uint";
 
             const int numBuiltins = 7;
 

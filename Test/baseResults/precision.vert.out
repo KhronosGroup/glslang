@@ -13,7 +13,7 @@ ERROR: node is still EOpNull!
 0:20      Sequence
 0:20        move second child to first child (temp highp 4-component vector of float)
 0:20          't' (temp highp 4-component vector of float)
-0:20          texture (global highp 4-component vector of float)
+0:20          texture (global lowp 4-component vector of float)
 0:20            's2D' (uniform lowp sampler2D)
 0:20            Constant:
 0:20              0.100000
@@ -27,7 +27,7 @@ ERROR: node is still EOpNull!
 0:21            0.200000
 0:22      add second child into first child (temp highp 4-component vector of float)
 0:22        't' (temp highp 4-component vector of float)
-0:22        texture (global highp float)
+0:22        texture (global mediump float)
 0:22          's2dAS' (uniform mediump sampler2DArrayShadow)
 0:22          Constant:
 0:22            0.500000
@@ -61,7 +61,7 @@ ERROR: node is still EOpNull!
 0:20      Sequence
 0:20        move second child to first child (temp highp 4-component vector of float)
 0:20          't' (temp highp 4-component vector of float)
-0:20          texture (global highp 4-component vector of float)
+0:20          texture (global lowp 4-component vector of float)
 0:20            's2D' (uniform lowp sampler2D)
 0:20            Constant:
 0:20              0.100000
@@ -75,7 +75,7 @@ ERROR: node is still EOpNull!
 0:21            0.200000
 0:22      add second child into first child (temp highp 4-component vector of float)
 0:22        't' (temp highp 4-component vector of float)
-0:22        texture (global highp float)
+0:22        texture (global mediump float)
 0:22          's2dAS' (uniform mediump sampler2DArrayShadow)
 0:22          Constant:
 0:22            0.500000

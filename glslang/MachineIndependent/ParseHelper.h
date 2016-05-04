@@ -334,7 +334,7 @@ protected:
     TParseContext(TParseContext&);
     TParseContext& operator=(TParseContext&);
 
-    bool parsingBuiltins;        // true if parsing built-in symbols/functions
+    const bool parsingBuiltins;        // true if parsing built-in symbols/functions
     static const int maxSamplerIndex = EsdNumDims * (EbtNumTypes * (2 * 2 * 2)); // see computeSamplerTypeIndex()
     TPrecisionQualifier defaultSamplerPrecision[maxSamplerIndex];
     bool afterEOF;

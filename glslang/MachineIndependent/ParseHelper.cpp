@@ -69,7 +69,7 @@ TParseContext::TParseContext(TSymbolTable& symbolTable, TIntermediate& interm, b
     for (int type = 0; type < maxSamplerIndex; ++type)
         defaultSamplerPrecision[type] = EpqNone;
 
-    // replace with real defaults for those that have them
+    // replace with real precision defaults for those that have them
     if (profile == EEsProfile) {
         TSampler sampler;
         sampler.set(EbtFloat, Esd2D);
@@ -80,16 +80,22 @@ TParseContext::TParseContext(TSymbolTable& symbolTable, TIntermediate& interm, b
         sampler.external = true;
         defaultSamplerPrecision[computeSamplerTypeIndex(sampler)] = EpqLow;
 
-        switch (language) {
-        case EShLangFragment:
-            defaultPrecision[EbtInt] = EpqMedium;
-            defaultPrecision[EbtUint] = EpqMedium;
-            break;
-        default:
-            defaultPrecision[EbtInt] = EpqHigh;
-            defaultPrecision[EbtUint] = EpqHigh;
-            defaultPrecision[EbtFloat] = EpqHigh;
-            break;
+        // If we are parsing built-in computational variables/functions, it is meaningful to record
+        // whether the built-in has no precision qualifier, as that ambiguity
+        // is used to resolve the precision from the supplied arguments/operands instead.
+        // So, we don't actually want to replace EpqNone with a default precision for built-ins.
+        if (! parsingBuiltins) {
+            switch (language) {
+            case EShLangFragment:
+                defaultPrecision[EbtInt] = EpqMedium;
+                defaultPrecision[EbtUint] = EpqMedium;
+                break;
+            default:
+                defaultPrecision[EbtInt] = EpqHigh;
+                defaultPrecision[EbtUint] = EpqHigh;
+                defaultPrecision[EbtFloat] = EpqHigh;
+                break;
+            }
         }
 
         defaultPrecision[EbtSampler] = EpqLow;
