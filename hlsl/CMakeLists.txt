@@ -3,12 +3,14 @@ cmake_minimum_required(VERSION 2.8)
 set(SOURCES
     hlslParseHelper.cpp
     hlslScanContext.cpp
+    hlslTokenStream.cpp
     hlslGrammar.cpp)
 
 set(HEADERS
     hlslParseHelper.h
     hlslTokens.h
     hlslScanContext.h
+    hlslTokenStream.h
     hlslGrammar.h)
 
 add_library(HLSL STATIC ${SOURCES} ${HEADERS})

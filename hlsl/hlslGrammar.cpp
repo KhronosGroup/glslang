@@ -68,31 +68,6 @@ void HlslGrammar::expected(const char* syntax)
     parseContext.error(token.loc, "Expected", syntax, "");
 }
 
-// Load 'token' with the next token in the stream of tokens.
-void HlslGrammar::advanceToken()
-{
-    scanner.tokenize(token);
-}
-
-// Return true and advance to the next token if the current token is the
-// expected (passed in) token class.
-bool HlslGrammar::acceptTokenClass(EHlslTokenClass tokenClass)
-{
-    if (token.tokenClass == tokenClass) {
-        advanceToken();
-        return true;
-    }
-
-    return false;
-}
-
-// Return true, without advancing to the next token, if the current token is
-// the expected (passed in) token class.
-bool HlslGrammar::peekTokenClass(EHlslTokenClass tokenClass)
-{
-    return token.tokenClass == tokenClass;
-}
-
 // Only process the next token if it is an identifier.
 // Return true if it was an identifier.
 bool HlslGrammar::acceptIdentifier(HlslToken& idToken)
@@ -113,7 +88,7 @@ bool HlslGrammar::acceptCompilationUnit()
 {
     TIntermNode* unitNode = nullptr;
 
-    while (token.tokenClass != EHTokNone) {
+    while (! peekTokenClass(EHTokNone)) {
         // externalDeclaration
         TIntermNode* declarationNode;
         if (! acceptDeclaration(declarationNode))
@@ -215,7 +190,7 @@ bool HlslGrammar::acceptFullySpecifiedType(TType& type)
 // qualifier.  Otherwise, return false, and don't advance.
 void HlslGrammar::acceptQualifier(TQualifier& qualifier)
 {
-    switch (token.tokenClass) {
+    switch (peek()) {
     case EHTokUniform:
         qualifier.storage = EvqUniform;
         break;
@@ -237,7 +212,7 @@ bool HlslGrammar::acceptType(TType& type)
     if (! token.isType)
         return false;
 
-    switch (token.tokenClass) {
+    switch (peek()) {
     case EHTokInt:
     case EHTokInt1:
     case EHTokDword:

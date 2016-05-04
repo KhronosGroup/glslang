@@ -33,49 +33,39 @@
 //POSSIBILITY OF SUCH DAMAGE.
 //
 
-#ifndef HLSLGRAMMAR_H_
-#define HLSLGRAMMAR_H_
-
-#include "hlslParseHelper.h"
 #include "hlslTokenStream.h"
 
 namespace glslang {
 
-    // Should just be the grammar aspect of HLSL.
-    // Described in more detail in hlslGrammar.cpp.
+// Load 'token' with the next token in the stream of tokens.
+void HlslTokenStream::advanceToken()
+{
+    scanner.tokenize(token);
+}
 
-    class HlslGrammar : public HlslTokenStream {
-    public:
-        HlslGrammar(HlslScanContext& scanner, HlslParseContext& parseContext)
-            : HlslTokenStream(scanner), parseContext(parseContext), intermediate(parseContext.intermediate) { }
-        virtual ~HlslGrammar() { }
+// Return the current token class.
+EHlslTokenClass HlslTokenStream::peek() const
+{
+    return token.tokenClass;
+}
 
-        bool parse();
+// Return true, without advancing to the next token, if the current token is
+// the expected (passed in) token class.
+bool HlslTokenStream::peekTokenClass(EHlslTokenClass tokenClass) const
+{
+    return peek() == tokenClass;
+}
 
-    protected:
-        void expected(const char*);
-        bool acceptIdentifier(HlslToken&);
-        bool acceptCompilationUnit();
-        bool acceptDeclaration(TIntermNode*& node);
-        bool acceptFullySpecifiedType(TType&);
-        void acceptQualifier(TQualifier&);
-        bool acceptType(TType&);
-        bool acceptFunctionParameters(TFunction&);
-        bool acceptParameterDeclaration(TFunction&);
-        bool acceptFunctionDefinition(TFunction&, TIntermNode*&);
-        bool acceptExpression(TIntermTyped*&);
-        bool acceptConstructor(TIntermTyped*&);
-        bool acceptArguments(TFunction*, TIntermAggregate*&);
-        bool acceptLiteral(TIntermTyped*&);
-        bool acceptOperator(TOperator& op);
-        bool acceptCompoundStatement(TIntermAggregate*&);
-        bool acceptStatement(TIntermNode*&);
-        bool acceptSemantic();
+// Return true and advance to the next token if the current token is the
+// expected (passed in) token class.
+bool HlslTokenStream::acceptTokenClass(EHlslTokenClass tokenClass)
+{
+    if (peekTokenClass(tokenClass)) {
+        advanceToken();
+        return true;
+    }
 
-        HlslParseContext& parseContext;  // state of parsing and helper functions for building the intermediate
-        TIntermediate& intermediate;     // the final product, the intermediate representation, includes the AST
-    };
+    return false;
+}
 
 } // end namespace glslang
-
-#endif // HLSLGRAMMAR_H_

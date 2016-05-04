@@ -33,49 +33,32 @@
 //POSSIBILITY OF SUCH DAMAGE.
 //
 
-#ifndef HLSLGRAMMAR_H_
-#define HLSLGRAMMAR_H_
+#ifndef HLSLTOKENSTREAM_H_
+#define HLSLTOKENSTREAM_H_
 
-#include "hlslParseHelper.h"
-#include "hlslTokenStream.h"
+#include "hlslScanContext.h"
 
 namespace glslang {
 
-    // Should just be the grammar aspect of HLSL.
-    // Described in more detail in hlslGrammar.cpp.
-
-    class HlslGrammar : public HlslTokenStream {
+    class HlslTokenStream {
     public:
-        HlslGrammar(HlslScanContext& scanner, HlslParseContext& parseContext)
-            : HlslTokenStream(scanner), parseContext(parseContext), intermediate(parseContext.intermediate) { }
-        virtual ~HlslGrammar() { }
+        HlslTokenStream(HlslScanContext& scanner)
+            : scanner(scanner) { }
+        virtual ~HlslTokenStream() { }
 
-        bool parse();
+    public:
+        void advanceToken();
+        bool acceptTokenClass(EHlslTokenClass);
+        EHlslTokenClass peek() const;
+        bool peekTokenClass(EHlslTokenClass) const;
 
     protected:
-        void expected(const char*);
-        bool acceptIdentifier(HlslToken&);
-        bool acceptCompilationUnit();
-        bool acceptDeclaration(TIntermNode*& node);
-        bool acceptFullySpecifiedType(TType&);
-        void acceptQualifier(TQualifier&);
-        bool acceptType(TType&);
-        bool acceptFunctionParameters(TFunction&);
-        bool acceptParameterDeclaration(TFunction&);
-        bool acceptFunctionDefinition(TFunction&, TIntermNode*&);
-        bool acceptExpression(TIntermTyped*&);
-        bool acceptConstructor(TIntermTyped*&);
-        bool acceptArguments(TFunction*, TIntermAggregate*&);
-        bool acceptLiteral(TIntermTyped*&);
-        bool acceptOperator(TOperator& op);
-        bool acceptCompoundStatement(TIntermAggregate*&);
-        bool acceptStatement(TIntermNode*&);
-        bool acceptSemantic();
-
-        HlslParseContext& parseContext;  // state of parsing and helper functions for building the intermediate
-        TIntermediate& intermediate;     // the final product, the intermediate representation, includes the AST
+        HlslToken token;                 // the current token we are processing
+    
+    private:
+        HlslScanContext& scanner;        // lexical scanner, to get next token
     };
 
 } // end namespace glslang
 
-#endif // HLSLGRAMMAR_H_
+#endif // HLSLTOKENSTREAM_H_
