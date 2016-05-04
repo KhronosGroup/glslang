@@ -215,10 +215,10 @@ void TParseVersions::initializeExtensionBehavior()
 
 // Get code that is not part of a shared symbol table, is specific to this shader,
 // or needed by the preprocessor (which does not use a shared symbol table).
-const char* TParseVersions::getPreamble()
+void TParseVersions::getPreamble(std::string& preamble)
 {
     if (profile == EEsProfile) {
-        return
+        preamble = 
             "#define GL_ES 1\n"
             "#define GL_FRAGMENT_PRECISION_HIGH 1\n"
             "#define GL_OES_texture_3D 1\n"
@@ -226,10 +226,6 @@ const char* TParseVersions::getPreamble()
             "#define GL_EXT_frag_depth 1\n"
             "#define GL_OES_EGL_image_external 1\n"
             "#define GL_EXT_shader_texture_lod 1\n"
-
-            // #line and #include
-            "#define GL_GOOGLE_cpp_style_line_directive 1\n"
-            "#define GL_GOOGLE_include_directive 1\n"
 
             // AEP
             "#define GL_ANDROID_extension_pack_es31a 1\n"
@@ -260,7 +256,7 @@ const char* TParseVersions::getPreamble()
             "#define GL_OES_texture_cube_map_array 1\n"
             ;
     } else {
-        return
+        preamble = 
             "#define GL_FRAGMENT_PRECISION_HIGH 1\n"
             "#define GL_ARB_texture_rectangle 1\n"
             "#define GL_ARB_shading_language_420pack 1\n"
@@ -283,12 +279,18 @@ const char* TParseVersions::getPreamble()
             "#define GL_ARB_gl_spirv 1\n"
             "#define GL_ARB_sparse_texture2 1\n"
             "#define GL_ARB_sparse_texture_clamp 1\n"
-
-            "#define GL_GOOGLE_cpp_style_line_directive 1\n"
-            "#define GL_GOOGLE_include_directive 1\n"
 //            "#define GL_ARB_cull_distance 1\n"    // present for 4.5, but need extension control over block members
             ;
     }
+
+    // #line and #include
+    preamble += 
+            "#define GL_GOOGLE_cpp_style_line_directive 1\n"
+            "#define GL_GOOGLE_include_directive 1\n"
+            ;
+
+    if (vulkan > 0)
+        preamble += "#define VULKAN 100\n";
 }
 
 //

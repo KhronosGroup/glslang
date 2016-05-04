@@ -48,7 +48,7 @@ public:
     virtual ~HlslParseContext();
     void setLimits(const TBuiltInResource&);
     bool parseShaderStrings(TPpContext&, TInputScanner& input, bool versionWillBeError = false);
-    const char* getPreamble();
+    void getPreamble(std::string&);
 
     void C_DECL error(const TSourceLoc&, const char* szReason, const char* szToken,
         const char* szExtraInfoFormat, ...);

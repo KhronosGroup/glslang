@@ -629,7 +629,9 @@ bool ProcessDeferred(
     parseContext->initializeExtensionBehavior();
     
     // Fill in the strings as outlined above.
-    strings[0] = parseContext->getPreamble();
+    std::string preamble;
+    parseContext->getPreamble(preamble);
+    strings[0] = preamble.c_str();
     lengths[0] = strlen(strings[0]);
     names[0] = nullptr;
     strings[1] = customPreamble;
