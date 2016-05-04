@@ -1,5 +1,3 @@
-cmake_minimum_required(VERSION 2.8)
-
 add_library(glslang-default-resource-limits
     ${CMAKE_CURRENT_SOURCE_DIR}/DefaultResourceLimits.cpp
 )
