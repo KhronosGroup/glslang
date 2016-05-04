@@ -1,5 +1,3 @@
-cmake_minimum_required(VERSION 2.8)
-
 set(SOURCES ossource.cpp ../osinclude.h)
 
 add_library(OSDependent STATIC ${SOURCES})
