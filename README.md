@@ -63,6 +63,12 @@ bison --defines=MachineIndependent/glslang_tab.cpp.h
       -o MachineIndependent/glslang_tab.cpp
 ```
 
+The above command is also available in the bash script at:
+
+```
+glslang/updateGrammar
+```
+
 Glslang is adding the ability to test with
 [Google Test](https://github.com/google/googletest) framework. If you want to
 build and run those tests, please make sure you have a copy of Google Tests
