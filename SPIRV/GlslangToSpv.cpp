@@ -385,6 +385,15 @@ spv::Decoration TranslateInvariantDecoration(const glslang::TQualifier& qualifie
         return (spv::Decoration)spv::BadValue;
 }
 
+// If glslang type is noContraction, return SPIR-V NoContraction decoration.
+spv::Decoration TranslateNoContractionDecoration(const glslang::TQualifier& qualifier)
+{
+    if (qualifier.noContraction)
+        return spv::DecorationNoContraction;
+    else
+        return (spv::Decoration)spv::BadValue;
+}
+
 // Translate glslang built-in variable to SPIR-V built in decoration.
 spv::BuiltIn TGlslangToSpvTraverser::TranslateBuiltInDecoration(glslang::TBuiltInVariable builtIn)
 {
@@ -612,7 +621,8 @@ bool HasNonLayoutQualifiers(const glslang::TQualifier& qualifier)
     // - struct members can inherit from a struct declaration
     // - effect decorations on the struct members (note smooth does not, and expecting something like volatile to effect the whole object)
     // - are not part of the offset/st430/etc or row/column-major layout
-    return qualifier.invariant || qualifier.nopersp || qualifier.flat || qualifier.centroid || qualifier.patch || qualifier.sample || qualifier.hasLocation();
+    return qualifier.invariant || qualifier.nopersp || qualifier.flat || qualifier.centroid || qualifier.patch || qualifier.sample || qualifier.hasLocation() ||
+           qualifier.noContraction;
 }
 
 //
@@ -877,6 +887,9 @@ bool TGlslangToSpvTraverser::visitBinary(glslang::TVisit /* visit */, glslang::T
                                                convertGlslangToSpvType(node->getType()), leftRValue, rValue,
                                                node->getType().getBasicType());
 
+                // Decorate this instruction, if this node has 'noContraction' qualifier.
+                addDecoration(rValue, TranslateNoContractionDecoration(node->getType().getQualifier()));
+
                 // these all need their counterparts in createBinaryOperation()
                 assert(rValue != spv::NoResult);
             }
@@ -1000,6 +1013,8 @@ bool TGlslangToSpvTraverser::visitBinary(glslang::TVisit /* visit */, glslang::T
         logger->missingFunctionality("unknown glslang binary operation");
         return true;  // pick up a child as the place-holder result
     } else {
+        // Decorate this instruction, if this node has 'noContraction' qualifier.
+        addDecoration(result, TranslateNoContractionDecoration(node->getType().getQualifier()));
         builder.setAccessChainRValue(result);
         return false;
     }
@@ -1068,6 +1083,8 @@ bool TGlslangToSpvTraverser::visitUnary(glslang::TVisit /* visit */, glslang::TI
         result = createUnaryOperation(node->getOp(), precision, convertGlslangToSpvType(node->getType()), operand, node->getOperand()->getBasicType());
 
     if (result) {
+        // Decorate this instruction, if this node has 'noContraction' qualifier.
+        addDecoration(result, TranslateNoContractionDecoration(node->getType().getQualifier()));
         builder.clearAccessChain();
         builder.setAccessChainRValue(result);
 
@@ -1100,6 +1117,8 @@ bool TGlslangToSpvTraverser::visitUnary(glslang::TVisit /* visit */, glslang::TI
                                                    convertGlslangToSpvType(node->getType()), operand, one,
                                                    node->getType().getBasicType());
             assert(result != spv::NoResult);
+            // Decorate this instruction, if this node has 'noContraction' qualifier.
+            addDecoration(result, TranslateNoContractionDecoration(node->getType().getQualifier()));
 
             // The result of operation is always stored, but conditionally the
             // consumed result.  The consumed result is always an r-value.

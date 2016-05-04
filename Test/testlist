@@ -129,3 +129,5 @@ voidFunction.frag
 whileLoop.frag
 nonVulkan.frag
 spv.atomic.comp
+precise.tesc
+precise_struct_block.vert

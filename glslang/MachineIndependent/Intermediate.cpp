@@ -42,6 +42,7 @@
 #include "localintermediate.h"
 #include "RemoveTree.h"
 #include "SymbolTable.h"
+#include "propagateNoContraction.h"
 
 #include <float.h>
 
@@ -1065,6 +1066,9 @@ bool TIntermediate::postProcess(TIntermNode* root, EShLanguage /*language*/)
     TIntermAggregate* aggRoot = root->getAsAggregate();
     if (aggRoot && aggRoot->getOp() == EOpNull)
         aggRoot->setOperator(EOpSequence);
+
+    // Propagate 'noContraction' label in backward from 'precise' variables.
+    glslang::PropagateNoContraction(*this);
 
     return true;
 }
