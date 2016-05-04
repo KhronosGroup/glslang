@@ -1,6 +1,7 @@
 set(SOURCES
     GlslangToSpv.cpp
     InReadableOrder.cpp
+    Logger.cpp
     SpvBuilder.cpp
     SPVRemapper.cpp
     doc.cpp
@@ -10,6 +11,7 @@ set(HEADERS
     spirv.hpp
     GLSL.std.450.h
     GlslangToSpv.h
+    Logger.h
     SpvBuilder.h
     SPVRemapper.h
     spvIR.h

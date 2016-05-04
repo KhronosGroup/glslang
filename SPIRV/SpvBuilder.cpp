@@ -56,7 +56,7 @@
 
 namespace spv {
 
-Builder::Builder(unsigned int magicNumber, std::ostringstream& warnError) :
+Builder::Builder(unsigned int magicNumber, SpvBuildLogger* buildLogger) :
     source(SourceLanguageUnknown),
     sourceVersion(0),
     addressModel(AddressingModelLogical),
@@ -66,7 +66,7 @@ Builder::Builder(unsigned int magicNumber, std::ostringstream& warnError) :
     uniqueId(0),
     mainFunction(0),
     generatingOpCodeForSpecConst(false),
-    warningsErrors(warnError)
+    logger(buildLogger)
 {
     clearAccessChain();
 }
@@ -2111,7 +2111,7 @@ void Builder::accessChainStore(Id rvalue)
     Id base = collapseAccessChain();
 
     if (accessChain.swizzle.size() && accessChain.component != NoResult)
-        MissingFunctionality(warningsErrors, "simultaneous l-value swizzle and dynamic component selection");
+        logger->missingFunctionality("simultaneous l-value swizzle and dynamic component selection");
 
     // If swizzle still exists, it is out-of-order or not full, we must load the target vector,
     // extract and insert elements to perform writeMask and/or swizzle.
@@ -2485,21 +2485,6 @@ void Builder::dumpInstructions(std::vector<unsigned int>& out, const std::vector
     for (int i = 0; i < (int)instructions.size(); ++i) {
         instructions[i]->dump(out);
     }
-}
-
-void TbdFunctionality(std::ostringstream& stream, const char* tbd)
-{
-    static std::unordered_set<const char*> issued;
-
-    if (issued.find(tbd) == issued.end()) {
-        stream << "TBD functionality: " << tbd << "\n";
-        issued.insert(tbd);
-    }
-}
-
-void MissingFunctionality(std::ostringstream& stream, const char* fun)
-{
-    stream << "Missing functionality: " << fun << "\n";
 }
 
 }; // end spv namespace

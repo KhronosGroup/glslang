@@ -188,19 +188,19 @@ public:
         program.addShader(&shader);
         success &= program.link(messages);
 
-        std::string spirvWarningsErrors;
+        spv::SpvBuildLogger logger;
 
         if (success && target == Target::Spirv) {
             std::vector<uint32_t> spirv_binary;
             glslang::GlslangToSpv(*program.getIntermediate(language),
-                                  spirv_binary, &spirvWarningsErrors);
+                                  spirv_binary, &logger);
 
             std::ostringstream disassembly_stream;
             spv::Parameterize();
             spv::Disassemble(disassembly_stream, spirv_binary);
             return {shader.getInfoLog(), shader.getInfoDebugLog(),
                     program.getInfoLog(), program.getInfoDebugLog(),
-                    spirvWarningsErrors, disassembly_stream.str()};
+                    logger.getAllMessages(), disassembly_stream.str()};
         } else {
             return {shader.getInfoLog(), shader.getInfoDebugLog(),
                     program.getInfoLog(), program.getInfoDebugLog(),
