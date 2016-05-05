@@ -45,35 +45,139 @@ There is also a non-shader extension
 Building
 --------
 
-CMake: The currently maintained and preferred way of building is through CMake.
-In MSVC, after running CMake, you may need to use the Configuration Manager to
-check the INSTALL project.
+### Dependencies
 
-The grammar in glslang/MachineIndependent/glslang.y has to be recompiled with
+* [CMake][cmake]: for generating compilation targets.
+* [bison][bison]: _optional_, for regenerating grammar (if changes).
+
+### Build steps
+
+1) Check out external projects:
+
+```bash
+git clone https://github.com/google/googletest.git External/googletest
+```
+
+2) Configure. Assume the source directory is `$SOURCE_DIR` and
+the build directory is `$BUILD_DIR`:
+
+```bash
+cd $BUILD_DIR
+
+# for building on Linux (assuming using the Ninja generator):
+cmake -GNinja -DCMAKE_BUILD_TYPE={Debug|Release|RelWithDebInfo} \
+      -DCMAKE_INSTALL_PREFIX=`pwd`/install $SOURCE_DIR
+
+# for building on Windows:
+cmake $SOURCE_DIR -DCMAKE_INSTALL_PREFIX=`pwd`/install
+
+# The CMAKE_INSTALL_PREFIX part is for testing (explained later).
+```
+
+3) Build and install.
+
+```bash
+# for Linux:
+ninja install
+
+# for Windows:
+cmake --build . --config {Release|Debug|MinSizeRel|RelWithDebInfo} \
+      --target install
+```
+
+If using MSVC, after running CMake to configure, you may need to use the
+Configuration Manager to check the `INSTALL` project.
+
+### If you need to change the GLSL grammar
+
+The grammar in `glslang/MachineIndependent/glslang.y` has to be recompiled with
 bison if it changes, the output files are committed to the repo to avoid every
 developer needing to have bison configured to compile the project when grammar
 changes are quite infrequent. For windows you can get binaries from
-[GnuWin32](http://gnuwin32.sourceforge.net/packages/bison.htm).
+[GnuWin32][bison-gnu-win32].
 
 The command to rebuild is:
 
-```
+```bash
 bison --defines=MachineIndependent/glslang_tab.cpp.h
       -t MachineIndependent/glslang.y
       -o MachineIndependent/glslang_tab.cpp
 ```
 
-The above command is also available in the bash script at:
+The above command is also available in the bash script at
+`glslang/updateGrammar`.
 
-```
-glslang/updateGrammar
+Testing
+-------
+
+Right now, there are two test harnesses existing in glslang: one is [Google
+Test](gtests/), one is the [`runtests` script](Test/runtests). The former
+runs unit tests and single-shader single-threaded integration tests, while
+the latter runs multiple-shader linking tests and multi-threaded tests.
+
+### Running tests
+
+The [`runtests` script](Test/runtests) requires compiled binaries to be
+installed into `$BUILD_DIR/install`. Please make sure you have supplied the
+correct configuration to CMake (using `-DCMAKE_INSTALL_PREFIX`) when building;
+otherwise, you may want to modify the path in the `runtests` script.
+
+Running Google Test-backed tests:
+
+```bash
+cd $BUILD_DIR
+
+# for Linux:
+ctest
+
+# for Windows:
+ctest -C {Debug|Release|RelWithDebInfo|MinSizeRel}
+
+# or, run the test binary directly
+# (which gives more fine-grained control like filtering):
+<dir-to-glslangtests-in-build-dir>/glslangtests
 ```
 
-Glslang is adding the ability to test with
-[Google Test](https://github.com/google/googletest) framework. If you want to
-build and run those tests, please make sure you have a copy of Google Tests
-checked out in the `External/` directory:
-`git clone https://github.com/google/googletest.git`.
+Running `runtests` script-backed tests:
+
+```bash
+cd $SOURCE_DIR/Test && ./runtests
+```
+
+### Contributing tests
+
+Test results should always be included with a pull request that modifies
+functionality.
+
+If you are writing unit tests, please use the Google Test framework and
+place the tests under the `gtests/` directory.
+
+Integration tests are placed in the `Test/` directory. It contains test input
+and a subdirectory `baseResults/` that contains the expected results of the
+tests.  Both the tests and `baseResults/` are under source-code control.
+
+Google Test runs those integration tests by reading the test input, compiling
+them, and then compare against the expected results in `baseResults/`. The
+integration tests to run via Google Test is registered in various
+`gtests/*.FromFile.cpp` source files. `glslangtests` provides a command-line
+option `--update-mode`, which, if supplied, will overwrite the golden files
+under the `baseResults/` directory with real output from that invocation.
+For more information, please check `gtests/` directory's
+[README](gtests/README.md).
+
+For the `runtests` script, it will generate current results in the
+`localResults/` directory and `diff` them against the `baseResults/`.
+The integration tests to run via the `runtests` script is registered
+via various `Test/test-*` text files and `Test/testlist`.
+When you want to update the tracked test results, they need to be
+copied from `localResults/` to `baseResults/`.  This can be done by
+the `bump` shell script.
+
+The list of files tested comes from `testlist`, and lists input shaders
+in this directory, which must all be public for this to work.  However,
+you can add your own private list of tests, not tracked here, by using
+`localtestlist` to list non-tracked tests.  This is automatically read
+by `runtests` and included in the `diff` and `bump` process.
 
 Programmatic Interfaces
 -----------------------
@@ -128,32 +232,6 @@ ShCompile(shader, compiler) -> compiler(AST) -> <back end>
 In practice, `ShCompile()` takes shader strings, default version, and
 warning/error and other options for controlling compilation.
 
-Testing
--------
-
-Test results should always be included with a pull request that modifies
-functionality. And since glslang added the ability to test with
-[Google Test](https://github.com/google/googletest) framework,
-please write your new tests using Google Test.
-
-The old (deprecated) testing process is:
-
-`Test` is an active test directory that contains test input and a
-subdirectory `baseResults` that contains the expected results of the
-tests.  Both the tests and `baseResults` are under source-code control.
-Executing the script `./runtests` will generate current results in
-the `localResults` directory and `diff` them against the `baseResults`.
-
-When you want to update the tracked test results, they need to be
-copied from `localResults` to `baseResults`.  This can be done by
-the `bump` shell script.
-
-The list of files tested comes from `testlist`, and lists input shaders
-in this directory, which must all be public for this to work.  However,
-you can add your own private list of tests, not tracked here, by using
-`localtestlist` to list non-tracked tests.  This is automatically read
-by `runtests` and included in the `diff` and `bump` process.
-
 Basic Internal Operation
 ------------------------
 
@@ -201,3 +279,9 @@ Basic Internal Operation
 
   - the object does not come from the pool, and you have to do normal
     C++ memory management of what you `new`
+
+
+[cmake]: https://cmake.org/
+[bison]: https://www.gnu.org/software/bison/
+[googletest]: https://github.com/google/googletest
+[bison-gnu-win32]: http://gnuwin32.sourceforge.net/packages/bison.htm
