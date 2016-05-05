@@ -58,26 +58,35 @@ Building
 git clone https://github.com/google/googletest.git External/googletest
 ```
 
-2) Configure and build. Assume the source directory is `$SOURCE_DIR` and
+2) Configure. Assume the source directory is `$SOURCE_DIR` and
 the build directory is `$BUILD_DIR`:
 
 ```bash
-# for building on Linux (assuming using the Ninja generator):
 cd $BUILD_DIR
+
+# for building on Linux (assuming using the Ninja generator):
 cmake -GNinja -DCMAKE_BUILD_TYPE={Debug|Release|RelWithDebInfo} \
       -DCMAKE_INSTALL_PREFIX=`pwd`/install $SOURCE_DIR
-ninja
 
 # for building on Windows:
-cd $BUILD_DIR
 cmake $SOURCE_DIR -DCMAKE_INSTALL_PREFIX=`pwd`/install
-cmake --build . --config {Release|Debug|MinSizeRel|RelWithDebInfo}
 
-# The CMAKE_INSTALL_PREFIX part is for testing (explained latter).
+# The CMAKE_INSTALL_PREFIX part is for testing (explained later).
 ```
 
-In MSVC, after running CMake, you may need to use the Configuration Manager to
-check the INSTALL project.
+3) Build and install.
+
+```bash
+# for Linux:
+ninja install
+
+# for Windows:
+cmake --build . --config {Release|Debug|MinSizeRel|RelWithDebInfo} \
+      --target install
+```
+
+If using MSVC, after running CMake to configure, you may need to use the
+Configuration Manager to check the `INSTALL` project.
 
 ### If you need to change the GLSL grammar
 
@@ -116,8 +125,14 @@ otherwise, you may want to modify the path in the `runtests` script.
 Running Google Test-backed tests:
 
 ```bash
-# assuming we are in the build directory:
+cd $BUILD_DIR
+
+# for Linux:
 ctest
+
+# for Windows:
+ctest -C {Debug|Release|RelWithDebInfo|MinSizeRel}
+
 # or, run the test binary directly
 # (which gives more fine-grained control like filtering):
 <dir-to-glslangtests-in-build-dir>/glslangtests
@@ -126,8 +141,7 @@ ctest
 Running `runtests` script-backed tests:
 
 ```bash
-# assuming we are in the source directory:
-cd Test && ./runtests
+cd $SOURCE_DIR/Test && ./runtests
 ```
 
 ### Contributing tests
