@@ -341,18 +341,18 @@ vertices = -1
 0:96  Function Definition: precise_func_parameter(f1;f1; (global float)
 0:96    Function Parameters: 
 0:96      'b' (in float)
-0:96      'c' (out float)
+0:96      'c' (noContraction out float)
 0:97    Sequence
 0:97      Sequence
 0:97        move second child to first child (temp float)
-0:97          'a' (temp float)
+0:97          'a' (noContraction temp float)
 0:97          Constant:
 0:97            0.500000
 0:98      move second child to first child (temp float)
-0:98        'c' (out float)
-0:98        add (temp float)
-0:98          'a' (temp float)
-0:98          'b' (in float)
+0:98        'c' (noContraction out float)
+0:98        add (noContraction temp float)
+0:98          'a' (noContraction temp float)
+0:98          'b' (noContraction in float)
 0:99      Branch: Return with expression
 0:99        subtract (temp float)
 0:99          'a' (temp float)
@@ -706,18 +706,18 @@ vertices = -1
 0:96  Function Definition: precise_func_parameter(f1;f1; (global float)
 0:96    Function Parameters: 
 0:96      'b' (in float)
-0:96      'c' (out float)
+0:96      'c' (noContraction out float)
 0:97    Sequence
 0:97      Sequence
 0:97        move second child to first child (temp float)
-0:97          'a' (temp float)
+0:97          'a' (noContraction temp float)
 0:97          Constant:
 0:97            0.500000
 0:98      move second child to first child (temp float)
-0:98        'c' (out float)
-0:98        add (temp float)
-0:98          'a' (temp float)
-0:98          'b' (in float)
+0:98        'c' (noContraction out float)
+0:98        add (noContraction temp float)
+0:98          'a' (noContraction temp float)
+0:98          'b' (noContraction in float)
 0:99      Branch: Return with expression
 0:99        subtract (temp float)
 0:99          'a' (temp float)
