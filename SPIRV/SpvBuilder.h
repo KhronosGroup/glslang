@@ -49,20 +49,22 @@
 #ifndef SpvBuilder_H
 #define SpvBuilder_H
 
+#include "Logger.h"
 #include "spirv.hpp"
 #include "spvIR.h"
 
 #include <algorithm>
-#include <memory>
-#include <stack>
 #include <map>
+#include <memory>
 #include <set>
+#include <sstream>
+#include <stack>
 
 namespace spv {
 
 class Builder {
 public:
-    Builder(unsigned int userNumber);
+    Builder(unsigned int userNumber, SpvBuildLogger* logger);
     virtual ~Builder();
 
     static const int maxMatrixSize = 4;
@@ -580,13 +582,10 @@ public:
 
     // Our loop stack.
     std::stack<LoopBlocks> loops;
+
+    // The stream for outputing warnings and errors.
+    SpvBuildLogger* logger;
 };  // end Builder class
-
-// Use for non-fatal notes about what's not complete
-void TbdFunctionality(const char*);
-
-// Use for fatal missing functionality
-void MissingFunctionality(const char*);
 
 };  // end spv namespace
 

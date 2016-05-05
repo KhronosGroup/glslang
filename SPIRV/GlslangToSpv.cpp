@@ -52,12 +52,12 @@ namespace spv {
 #include "../glslang/MachineIndependent/SymbolTable.h"
 #include "../glslang/Include/Common.h"
 
-#include <string>
-#include <map>
-#include <list>
-#include <vector>
-#include <stack>
 #include <fstream>
+#include <list>
+#include <map>
+#include <stack>
+#include <string>
+#include <vector>
 
 namespace {
 
@@ -94,7 +94,7 @@ private:
 //
 class TGlslangToSpvTraverser : public glslang::TIntermTraverser {
 public:
-    TGlslangToSpvTraverser(const glslang::TIntermediate*);
+    TGlslangToSpvTraverser(const glslang::TIntermediate*, spv::SpvBuildLogger* logger);
     virtual ~TGlslangToSpvTraverser();
 
     bool visitAggregate(glslang::TVisit, glslang::TIntermAggregate*);
@@ -158,6 +158,8 @@ protected:
     spv::Function* shaderEntry;
     spv::Instruction* entryPoint;
     int sequenceDepth;
+
+    spv::SpvBuildLogger* logger;
 
     // There is a 1:1 mapping between a spv builder and a module; this is thread safe
     spv::Builder builder;
@@ -433,7 +435,7 @@ spv::BuiltIn TGlslangToSpvTraverser::TranslateBuiltInDecoration(glslang::TBuiltI
     case glslang::EbvBaseInstance:
     case glslang::EbvDrawId:
         // TODO: Add SPIR-V builtin ID.
-        spv::MissingFunctionality("Draw parameters");
+        logger->missingFunctionality("Draw parameters");
         return (spv::BuiltIn)spv::BadValue;
     case glslang::EbvPrimitiveId:          return spv::BuiltInPrimitiveId;
     case glslang::EbvInvocationId:         return spv::BuiltInInvocationId;
@@ -606,9 +608,9 @@ bool HasNonLayoutQualifiers(const glslang::TQualifier& qualifier)
 // Implement the TGlslangToSpvTraverser class.
 //
 
-TGlslangToSpvTraverser::TGlslangToSpvTraverser(const glslang::TIntermediate* glslangIntermediate)
-    : TIntermTraverser(true, false, true), shaderEntry(0), sequenceDepth(0),
-      builder((glslang::GetKhronosToolId() << 16) | GeneratorVersion),
+TGlslangToSpvTraverser::TGlslangToSpvTraverser(const glslang::TIntermediate* glslangIntermediate, spv::SpvBuildLogger* buildLogger)
+    : TIntermTraverser(true, false, true), shaderEntry(0), sequenceDepth(0), logger(buildLogger),
+      builder((glslang::GetKhronosToolId() << 16) | GeneratorVersion, logger),
       inMain(false), mainTerminated(false), linkageOnly(false),
       glslangIntermediate(glslangIntermediate)
 {
@@ -984,7 +986,7 @@ bool TGlslangToSpvTraverser::visitBinary(glslang::TVisit /* visit */, glslang::T
 
     builder.clearAccessChain();
     if (! result) {
-        spv::MissingFunctionality("unknown glslang binary operation");
+        logger->missingFunctionality("unknown glslang binary operation");
         return true;  // pick up a child as the place-holder result
     } else {
         builder.setAccessChainRValue(result);
@@ -1109,7 +1111,7 @@ bool TGlslangToSpvTraverser::visitUnary(glslang::TVisit /* visit */, glslang::TI
         return false;
 
     default:
-        spv::MissingFunctionality("unknown glslang unary");
+        logger->missingFunctionality("unknown glslang unary");
         return true;  // pick up operand as placeholder result
     }
 }
@@ -1220,7 +1222,7 @@ bool TGlslangToSpvTraverser::visitAggregate(glslang::TVisit visit, glslang::TInt
             builder.clearAccessChain();
             builder.setAccessChainRValue(result);
         } else
-            spv::MissingFunctionality("missing user function; linker needs to catch that");
+            logger->missingFunctionality("missing user function; linker needs to catch that");
 
         return false;
     }
@@ -1468,7 +1470,7 @@ bool TGlslangToSpvTraverser::visitAggregate(glslang::TVisit visit, glslang::TInt
         return false;
 
     if (! result) {
-        spv::MissingFunctionality("unknown glslang aggregate");
+        logger->missingFunctionality("unknown glslang aggregate");
         return true;  // pick up a child as a placeholder operand
     } else {
         builder.clearAccessChain();
@@ -1761,7 +1763,7 @@ spv::Id TGlslangToSpvTraverser::convertGlslangToSpvType(const glslang::TType& ty
         spvType = builder.makeUintType(64);
         break;
     case glslang::EbtAtomicUint:
-        spv::TbdFunctionality("Is atomic_uint an opaque handle in the uniform storage class, or an addresses in the atomic storage class?");
+        logger->tbdFunctionality("Is atomic_uint an opaque handle in the uniform storage class, or an addresses in the atomic storage class?");
         spvType = builder.makeUintType(32);
         break;
     case glslang::EbtSampler:
@@ -3147,7 +3149,7 @@ spv::Id TGlslangToSpvTraverser::createUnaryOperation(glslang::TOperator op, spv:
     case glslang::EOpUnpackInt2x32:
     case glslang::EOpPackUint2x32:
     case glslang::EOpUnpackUint2x32:
-        spv::MissingFunctionality("shader int64");
+        logger->missingFunctionality("shader int64");
         libCall = spv::GLSLstd450Bad; // TODO: This is a placeholder.
         break;
 
@@ -3778,7 +3780,7 @@ spv::Id TGlslangToSpvTraverser::createNoArgOperation(glslang::TOperator op)
         builder.createMemoryBarrier(spv::ScopeDevice, spv::MemorySemanticsCrossWorkgroupMemoryMask);
         return 0;
     default:
-        spv::MissingFunctionality("unknown operation with no arguments");
+        logger->missingFunctionality("unknown operation with no arguments");
         return 0;
     }
 }
@@ -3939,7 +3941,7 @@ spv::Id TGlslangToSpvTraverser::createSpvConstant(const glslang::TIntermTyped& n
 
     // Neither a front-end constant node, nor a specialization constant node with constant union array or
     // constant sub tree as initializer.
-    spv::MissingFunctionality("Neither a front-end constant nor a spec constant.");
+    logger->missingFunctionality("Neither a front-end constant nor a spec constant.");
     exit(1);
     return spv::NoResult;
 }
@@ -4194,6 +4196,12 @@ void OutputSpv(const std::vector<unsigned int>& spirv, const char* baseName)
 //
 void GlslangToSpv(const glslang::TIntermediate& intermediate, std::vector<unsigned int>& spirv)
 {
+    spv::SpvBuildLogger logger;
+    GlslangToSpv(intermediate, spirv, &logger);
+}
+
+void GlslangToSpv(const glslang::TIntermediate& intermediate, std::vector<unsigned int>& spirv, spv::SpvBuildLogger* logger)
+{
     TIntermNode* root = intermediate.getTreeRoot();
 
     if (root == 0)
@@ -4201,7 +4209,7 @@ void GlslangToSpv(const glslang::TIntermediate& intermediate, std::vector<unsign
 
     glslang::GetThreadPoolAllocator().push();
 
-    TGlslangToSpvTraverser it(&intermediate);
+    TGlslangToSpvTraverser it(&intermediate, logger);
 
     root->traverse(&it);
 
