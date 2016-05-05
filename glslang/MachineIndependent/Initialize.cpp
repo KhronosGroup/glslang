@@ -1325,6 +1325,44 @@ void TBuiltIns::initialize(int version, EProfile profile, int spv, int vulkan)
             "\n");
     }
 
+    // GL_ARB_shader_ballot
+    if (profile != EEsProfile && version >= 450) {
+        commonBuiltins.append(
+            "uint64_t ballotARB(bool);"
+
+            "float readInvocationARB(float, uint);"
+            "vec2  readInvocationARB(vec2,  uint);"
+            "vec3  readInvocationARB(vec3,  uint);"
+            "vec4  readInvocationARB(vec4,  uint);"
+
+            "int   readInvocationARB(int,   uint);"
+            "ivec2 readInvocationARB(ivec2, uint);"
+            "ivec3 readInvocationARB(ivec3, uint);"
+            "ivec4 readInvocationARB(ivec4, uint);"
+
+            "uint  readInvocationARB(uint,  uint);"
+            "uvec2 readInvocationARB(uvec2, uint);"
+            "uvec3 readInvocationARB(uvec3, uint);"
+            "uvec4 readInvocationARB(uvec4, uint);"
+
+            "float readFirstInvocationARB(float);"
+            "vec2  readFirstInvocationARB(vec2);"
+            "vec3  readFirstInvocationARB(vec3);"
+            "vec4  readFirstInvocationARB(vec4);"
+
+            "int   readFirstInvocationARB(int);"
+            "ivec2 readFirstInvocationARB(ivec2);"
+            "ivec3 readFirstInvocationARB(ivec3);"
+            "ivec4 readFirstInvocationARB(ivec4);"
+
+            "uint  readFirstInvocationARB(uint);"
+            "uvec2 readFirstInvocationARB(uvec2);"
+            "uvec3 readFirstInvocationARB(uvec3);"
+            "uvec4 readFirstInvocationARB(uvec4);"
+
+            "\n");
+    }
+
     //============================================================================
     //
     // Prototypes for built-in functions seen by vertex shaders only.
@@ -2231,6 +2269,21 @@ void TBuiltIns::initialize(int version, EProfile profile, int spv, int vulkan)
 
     if (version >= 130)
         add2ndGenerationSamplingImaging(version, profile, spv, vulkan);
+
+    // GL_ARB_shader_ballot
+    if (profile != EEsProfile && version >= 450) {
+        commonBuiltins.append(
+            "uniform uint gl_SubGroupSizeARB;"
+
+            "in uint     gl_SubGroupInvocationARB;"
+            "in uint64_t gl_SubGroupEqMaskARB;"
+            "in uint64_t gl_SubGroupGeMaskARB;"
+            "in uint64_t gl_SubGroupGtMaskARB;"
+            "in uint64_t gl_SubGroupLeMaskARB;"
+            "in uint64_t gl_SubGroupLtMaskARB;"
+
+            "\n");
+    }
 
     //printf("%s\n", commonBuiltins.c_str());
     //printf("%s\n", stageBuiltins[EShLangFragment].c_str());
@@ -3394,7 +3447,7 @@ void IdentifyBuiltIns(int version, EProfile profile, int spv, int vulkan, EShLan
 
     switch(language) {
     case EShLangVertex:
-        if (profile != EEsProfile && version >= 440) {
+        if (profile != EEsProfile) {
             symbolTable.setVariableExtensions("gl_BaseVertexARB",   1, &E_GL_ARB_shader_draw_parameters);
             symbolTable.setVariableExtensions("gl_BaseInstanceARB", 1, &E_GL_ARB_shader_draw_parameters);
             symbolTable.setVariableExtensions("gl_DrawIDARB",       1, &E_GL_ARB_shader_draw_parameters);
@@ -3402,6 +3455,28 @@ void IdentifyBuiltIns(int version, EProfile profile, int spv, int vulkan, EShLan
             BuiltInVariable("gl_BaseVertexARB",   EbvBaseVertex,   symbolTable);
             BuiltInVariable("gl_BaseInstanceARB", EbvBaseInstance, symbolTable);
             BuiltInVariable("gl_DrawIDARB",       EbvDrawId,       symbolTable);
+        }
+
+        if (profile != EEsProfile) {
+            symbolTable.setVariableExtensions("gl_SubGroupSizeARB",       1, &E_GL_ARB_shader_ballot);
+            symbolTable.setVariableExtensions("gl_SubGroupInvocationARB", 1, &E_GL_ARB_shader_ballot);
+            symbolTable.setVariableExtensions("gl_SubGroupEqMaskARB",     1, &E_GL_ARB_shader_ballot);
+            symbolTable.setVariableExtensions("gl_SubGroupGeMaskARB",     1, &E_GL_ARB_shader_ballot);
+            symbolTable.setVariableExtensions("gl_SubGroupGtMaskARB",     1, &E_GL_ARB_shader_ballot);
+            symbolTable.setVariableExtensions("gl_SubGroupLeMaskARB",     1, &E_GL_ARB_shader_ballot);
+            symbolTable.setVariableExtensions("gl_SubGroupLtMaskARB",     1, &E_GL_ARB_shader_ballot);
+
+            symbolTable.setFunctionExtensions("ballotARB",              1, &E_GL_ARB_shader_ballot);
+            symbolTable.setFunctionExtensions("readInvocationARB",      1, &E_GL_ARB_shader_ballot);
+            symbolTable.setFunctionExtensions("readFirstInvocationARB", 1, &E_GL_ARB_shader_ballot);
+
+            BuiltInVariable("gl_SubGroupSizeARB",       EbvSubGroupSize,       symbolTable);
+            BuiltInVariable("gl_SubGroupInvocationARB", EbvSubGroupInvocation, symbolTable);
+            BuiltInVariable("gl_SubGroupEqMaskARB",     EbvSubGroupEqMask,     symbolTable);
+            BuiltInVariable("gl_SubGroupGeMaskARB",     EbvSubGroupGeMask,     symbolTable);
+            BuiltInVariable("gl_SubGroupGtMaskARB",     EbvSubGroupGtMask,     symbolTable);
+            BuiltInVariable("gl_SubGroupLeMaskARB",     EbvSubGroupLeMask,     symbolTable);
+            BuiltInVariable("gl_SubGroupLtMaskARB",     EbvSubGroupLtMask,     symbolTable);
         }
 
         // Compatibility variables, vertex only
@@ -3963,8 +4038,7 @@ void IdentifyBuiltIns(int version, EProfile profile, int spv, int vulkan, EShLan
             symbolTable.relateToOperator("shadow2DProjLod",          EOpTextureProjLod);
         }
 
-        if (profile != EEsProfile)
-        {
+        if (profile != EEsProfile) {
             symbolTable.relateToOperator("sparseTextureARB",                EOpSparseTexture);
             symbolTable.relateToOperator("sparseTextureLodARB",             EOpSparseTextureLod);
             symbolTable.relateToOperator("sparseTextureOffsetARB",          EOpSparseTextureOffset);
@@ -3987,6 +4061,10 @@ void IdentifyBuiltIns(int version, EProfile profile, int spv, int vulkan, EShLan
             symbolTable.relateToOperator("textureOffsetClampARB",           EOpTextureOffsetClamp);
             symbolTable.relateToOperator("textureGradClampARB",             EOpTextureGradClamp);
             symbolTable.relateToOperator("textureGradOffsetClampARB",       EOpTextureGradOffsetClamp);
+
+            symbolTable.relateToOperator("ballotARB",                       EOpBallot);
+            symbolTable.relateToOperator("readInvocationARB",               EOpReadInvocation);
+            symbolTable.relateToOperator("readFirstInvocationARB",          EOpReadFirstInvocation);
         }
     }
 
@@ -4023,8 +4101,8 @@ void IdentifyBuiltIns(int version, EProfile profile, int spv, int vulkan, EShLan
         break;
 
     case EShLangCompute:
-        symbolTable.relateToOperator("memoryBarrierShared", EOpMemoryBarrierShared);
-        symbolTable.relateToOperator("groupMemoryBarrier",  EOpGroupMemoryBarrier);
+        symbolTable.relateToOperator("memoryBarrierShared",     EOpMemoryBarrierShared);
+        symbolTable.relateToOperator("groupMemoryBarrier",      EOpGroupMemoryBarrier);
         break;
 
     default:

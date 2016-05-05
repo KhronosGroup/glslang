@@ -351,6 +351,9 @@ bool TOutputTraverser::visitUnary(TVisit /* visit */, TIntermUnary* node)
 
     case EOpNoise:                  out.debug << "noise";                 break;
 
+    case EOpBallot:                 out.debug << "ballot";                break;
+    case EOpReadFirstInvocation:    out.debug << "readFirstInvocation";   break;
+
     default: out.debug.message(EPrefixError, "Bad unary op");
     }
 
@@ -465,6 +468,8 @@ bool TOutputTraverser::visitAggregate(TVisit /* visit */, TIntermAggregate* node
     case EOpMemoryBarrierImage:         out.debug << "MemoryBarrierImage";         break;
     case EOpMemoryBarrierShared:        out.debug << "MemoryBarrierShared";        break;
     case EOpGroupMemoryBarrier:         out.debug << "GroupMemoryBarrier";         break;
+
+    case EOpReadInvocation:             out.debug << "readInvocation";        break;
 
     case EOpAtomicAdd:                  out.debug << "AtomicAdd";             break;
     case EOpAtomicMin:                  out.debug << "AtomicMin";             break;

@@ -130,6 +130,13 @@ enum TBuiltInVariable {
     EbvLocalInvocationId,
     EbvGlobalInvocationId,
     EbvLocalInvocationIndex,
+    EbvSubGroupSize,
+    EbvSubGroupInvocation,
+    EbvSubGroupEqMask,
+    EbvSubGroupGeMask,
+    EbvSubGroupGtMask,
+    EbvSubGroupLeMask,
+    EbvSubGroupLtMask,
     EbvVertexId,
     EbvInstanceId,
     EbvVertexIndex,
@@ -223,6 +230,13 @@ __inline const char* GetBuiltInVariableString(TBuiltInVariable v)
     case EbvLocalInvocationId:    return "LocalInvocationID";
     case EbvGlobalInvocationId:   return "GlobalInvocationID";
     case EbvLocalInvocationIndex: return "LocalInvocationIndex";
+    case EbvSubGroupSize:         return "SubGroupSize";
+    case EbvSubGroupInvocation:   return "SubGroupInvocation";
+    case EbvSubGroupEqMask:       return "SubGroupEqMask";
+    case EbvSubGroupGeMask:       return "SubGroupGeMask";
+    case EbvSubGroupGtMask:       return "SubGroupGtMask";
+    case EbvSubGroupLeMask:       return "SubGroupLeMask";
+    case EbvSubGroupLtMask:       return "SubGroupLtMask";
     case EbvVertexId:             return "VertexId";
     case EbvInstanceId:           return "InstanceId";
     case EbvVertexIndex:          return "VertexIndex";
