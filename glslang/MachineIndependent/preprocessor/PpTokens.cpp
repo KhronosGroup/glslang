@@ -235,11 +235,11 @@ int TPpContext::ReadToken(TokenStream *pTok, TPpToken *ppToken)
         case PpAtomConstUint64:
             if (len > 0 && tokenText[0] == '0') {
                 if (len > 1 && (tokenText[1] == 'x' || tokenText[1] == 'X'))
-                    ppToken->i64val = std::stoll(ppToken->name, 0, 16);
+                    ppToken->i64val = strtoll(ppToken->name, nullptr, 16);
                 else
-                    ppToken->i64val = std::stoll(ppToken->name, 0, 8);
+                    ppToken->i64val = strtoll(ppToken->name, nullptr, 8);
             } else
-                ppToken->i64val = std::stoll(ppToken->name);
+                ppToken->i64val = atoll(ppToken->name);
             break;
         }
     }
