@@ -83,10 +83,10 @@ ERROR: node is still EOpNull!
 0:153    Function Parameters: 
 0:153      'i' (in float)
 0:153      'j' (in float)
-0:153      'k' (out float)
+0:153      'k' (noContraction out float)
 0:155    Sequence
 0:155      move second child to first child (temp float)
-0:155        'k' (out float)
+0:155        'k' (noContraction out float)
 0:155        add (temp float)
 0:155          component-wise multiply (temp float)
 0:155            'i' (in float)
@@ -367,10 +367,10 @@ ERROR: node is still EOpNull!
 0:153    Function Parameters: 
 0:153      'i' (in float)
 0:153      'j' (in float)
-0:153      'k' (out float)
+0:153      'k' (noContraction out float)
 0:155    Sequence
 0:155      move second child to first child (temp float)
-0:155        'k' (out float)
+0:155        'k' (noContraction out float)
 0:155        add (temp float)
 0:155          component-wise multiply (temp float)
 0:155            'i' (in float)

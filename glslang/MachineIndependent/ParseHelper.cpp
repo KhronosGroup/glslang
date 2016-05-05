@@ -3538,6 +3538,7 @@ void TParseContext::paramCheckFix(const TSourceLoc& loc, const TQualifier& quali
         type.getQualifier().writeonly = qualifier.writeonly;
         type.getQualifier().restrict  = qualifier.restrict;
     }
+
     if (qualifier.isAuxiliary() ||
         qualifier.isInterpolation())
         error(loc, "cannot use auxiliary or interpolation qualifiers on a function parameter", "", "");
@@ -3545,8 +3546,12 @@ void TParseContext::paramCheckFix(const TSourceLoc& loc, const TQualifier& quali
         error(loc, "cannot use layout qualifiers on a function parameter", "", "");
     if (qualifier.invariant)
         error(loc, "cannot use invariant qualifier on a function parameter", "", "");
-    if (qualifier.noContraction && qualifier.storage != EvqOut && qualifier.storage != EvqInOut)
-        warn(loc, "qualifier has no effect on non-output parameters", "precise", "");
+    if (qualifier.noContraction) {
+        if (qualifier.storage == EvqOut || qualifier.storage == EvqInOut)
+            type.getQualifier().noContraction = true;
+        else
+            warn(loc, "qualifier has no effect on non-output parameters", "precise", "");
+    }
 
     paramCheckFix(loc, qualifier.storage, type);
 }
