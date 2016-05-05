@@ -142,6 +142,7 @@ protected:
     spv::Id createConversion(glslang::TOperator op, spv::Decoration precision, spv::Id destTypeId, spv::Id operand);
     spv::Id makeSmearedConstant(spv::Id constant, int vectorSize);
     spv::Id createAtomicOperation(glslang::TOperator op, spv::Decoration precision, spv::Id typeId, std::vector<spv::Id>& operands, glslang::TBasicType typeProxy);
+    spv::Id createInvocationsOperation(glslang::TOperator, spv::Id typeId, spv::Id operand);
     spv::Id createMiscOperation(glslang::TOperator op, spv::Decoration precision, spv::Id typeId, std::vector<spv::Id>& operands, glslang::TBasicType typeProxy);
     spv::Id createNoArgOperation(glslang::TOperator op);
     spv::Id getSymbolId(const glslang::TIntermSymbol* node);
@@ -3253,16 +3254,9 @@ spv::Id TGlslangToSpvTraverser::createUnaryOperation(glslang::TOperator op, spv:
         break;
 
     case glslang::EOpAnyInvocation:
-        builder.addCapability(spv::CapabilityGroups);
-        unaryOp = spv::OpGroupAny;
-        break;
     case glslang::EOpAllInvocations:
-        builder.addCapability(spv::CapabilityGroups);
-        unaryOp = spv::OpGroupAll;
-        break;
     case glslang::EOpAllInvocationsEqual:
-        builder.addCapability(spv::CapabilityGroups);
-        break;
+        return createInvocationsOperation(op, typeId, operand);
 
     default:
         return 0;
@@ -3274,25 +3268,7 @@ spv::Id TGlslangToSpvTraverser::createUnaryOperation(glslang::TOperator op, spv:
         args.push_back(operand);
         id = builder.createBuiltinCall(typeId, stdBuiltins, libCall, args);
     } else {
-        if (op == glslang::EOpAnyInvocation || op == glslang::EOpAllInvocations || op == glslang::EOpAllInvocationsEqual) {
-            std::vector<spv::Id> operands;
-            operands.push_back(builder.makeUintConstant(spv::ScopeSubgroup));
-            operands.push_back(operand);
-
-            if (op == glslang::EOpAnyInvocation || op == glslang::EOpAllInvocations)
-                id = builder.createOp(unaryOp, typeId, operands);
-            else if (op == glslang::EOpAllInvocationsEqual) {
-                spv::Id groupAll = builder.createOp(spv::OpGroupAll, typeId, operands);
-                spv::Id groupAny = builder.createOp(spv::OpGroupAny, typeId, operands);
-
-                id  = builder.createBinOp(spv::OpLogicalOr,
-                                          typeId,
-                                          groupAll,
-                                          builder.createUnaryOp(spv::OpLogicalNot, typeId, groupAny));
-            }
-        }
-        else
-            id = builder.createUnaryOp(unaryOp, typeId, operand);
+        id = builder.createUnaryOp(unaryOp, typeId, operand);
     }
 
     return builder.setPrecision(id, precision);
@@ -3590,6 +3566,34 @@ spv::Id TGlslangToSpvTraverser::createAtomicOperation(glslang::TOperator op, spv
         spvAtomicOperands.push_back(*opIt);
 
     return builder.createOp(opCode, typeId, spvAtomicOperands);
+}
+
+// Create group invocation operations.
+spv::Id TGlslangToSpvTraverser::createInvocationsOperation(glslang::TOperator op, spv::Id typeId, spv::Id operand)
+{
+    builder.addCapability(spv::CapabilityGroups);
+
+    std::vector<spv::Id> operands;
+    operands.push_back(builder.makeUintConstant(spv::ScopeSubgroup));
+    operands.push_back(operand);
+
+    switch (op) {
+    case glslang::EOpAnyInvocation:
+    case glslang::EOpAllInvocations:
+        return builder.createOp(op == glslang::EOpAnyInvocation ? spv::OpGroupAny : spv::OpGroupAll, typeId, operands);
+
+    case glslang::EOpAllInvocationsEqual:
+    {
+        spv::Id groupAll = builder.createOp(spv::OpGroupAll, typeId, operands);
+        spv::Id groupAny = builder.createOp(spv::OpGroupAny, typeId, operands);
+
+        return builder.createBinOp(spv::OpLogicalOr, typeId, groupAll,
+                                   builder.createUnaryOp(spv::OpLogicalNot, typeId, groupAny));
+    }
+    default:
+        logger->missingFunctionality("invocation operation");
+        return spv::NoResult;
+    }
 }
 
 spv::Id TGlslangToSpvTraverser::createMiscOperation(glslang::TOperator op, spv::Decoration precision, spv::Id typeId, std::vector<spv::Id>& operands, glslang::TBasicType typeProxy)
