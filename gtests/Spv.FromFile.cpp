@@ -139,6 +139,7 @@ INSTANTIATE_TEST_CASE_P(
         "spv.prepost.frag",
         "spv.qualifiers.vert",
         "spv.shaderBallot.comp",
+        "spv.shaderGroupVote.comp",
         "spv.shiftOps.frag",
         "spv.simpleFunctionCall.frag",
         "spv.simpleMat.vert",

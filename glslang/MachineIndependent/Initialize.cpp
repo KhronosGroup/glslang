@@ -1363,6 +1363,16 @@ void TBuiltIns::initialize(int version, EProfile profile, int spv, int vulkan)
             "\n");
     }
 
+        // GL_ARB_shader_group_vote
+    if (profile != EEsProfile && version >= 430) {
+        commonBuiltins.append(
+            "bool anyInvocationARB(bool);"
+            "bool allInvocationsARB(bool);"
+            "bool allInvocationsEqualARB(bool);"
+
+            "\n");
+    }
+
     //============================================================================
     //
     // Prototypes for built-in functions seen by vertex shaders only.
@@ -3477,6 +3487,10 @@ void IdentifyBuiltIns(int version, EProfile profile, int spv, int vulkan, EShLan
             BuiltInVariable("gl_SubGroupGtMaskARB",     EbvSubGroupGtMask,     symbolTable);
             BuiltInVariable("gl_SubGroupLeMaskARB",     EbvSubGroupLeMask,     symbolTable);
             BuiltInVariable("gl_SubGroupLtMaskARB",     EbvSubGroupLtMask,     symbolTable);
+
+            symbolTable.setFunctionExtensions("anyInvocationARB",       1, &E_GL_ARB_shader_group_vote);
+            symbolTable.setFunctionExtensions("allInvocationsARB",      1, &E_GL_ARB_shader_group_vote);
+            symbolTable.setFunctionExtensions("allInvocationsEqualARB", 1, &E_GL_ARB_shader_group_vote);
         }
 
         // Compatibility variables, vertex only
@@ -4065,6 +4079,10 @@ void IdentifyBuiltIns(int version, EProfile profile, int spv, int vulkan, EShLan
             symbolTable.relateToOperator("ballotARB",                       EOpBallot);
             symbolTable.relateToOperator("readInvocationARB",               EOpReadInvocation);
             symbolTable.relateToOperator("readFirstInvocationARB",          EOpReadFirstInvocation);
+
+            symbolTable.relateToOperator("anyInvocationARB",                EOpAnyInvocation);
+            symbolTable.relateToOperator("allInvocationsARB",               EOpAllInvocations);
+            symbolTable.relateToOperator("allInvocationsEqualARB",          EOpAllInvocationsEqual);
         }
     }
 

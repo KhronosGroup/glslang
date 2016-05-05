@@ -353,6 +353,9 @@ bool TOutputTraverser::visitUnary(TVisit /* visit */, TIntermUnary* node)
 
     case EOpBallot:                 out.debug << "ballot";                break;
     case EOpReadFirstInvocation:    out.debug << "readFirstInvocation";   break;
+    case EOpAnyInvocation:          out.debug << "anyInvocation";         break;
+    case EOpAllInvocations:         out.debug << "allInvocations";        break;
+    case EOpAllInvocationsEqual:    out.debug << "allInvocationsEqual";   break;
 
     default: out.debug.message(EPrefixError, "Bad unary op");
     }
