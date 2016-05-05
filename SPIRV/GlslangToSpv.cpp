@@ -3234,6 +3234,18 @@ spv::Id TGlslangToSpvTraverser::createUnaryOperation(glslang::TOperator op, spv:
             libCall = spv::GLSLstd450FindSMsb;
         break;
 
+    case glslang::EOpAnyInvocation:
+        builder.addCapability(spv::CapabilityGroups);
+        unaryOp = spv::OpGroupAny;
+        break;
+    case glslang::EOpAllInvocations:
+        builder.addCapability(spv::CapabilityGroups);
+        unaryOp = spv::OpGroupAll;
+        break;
+    case glslang::EOpAllInvocationsEqual:
+        builder.addCapability(spv::CapabilityGroups);
+        break;
+
     default:
         return 0;
     }
@@ -3243,8 +3255,27 @@ spv::Id TGlslangToSpvTraverser::createUnaryOperation(glslang::TOperator op, spv:
         std::vector<spv::Id> args;
         args.push_back(operand);
         id = builder.createBuiltinCall(typeId, stdBuiltins, libCall, args);
-    } else
-        id = builder.createUnaryOp(unaryOp, typeId, operand);
+    } else {
+        if (op == glslang::EOpAnyInvocation || op == glslang::EOpAllInvocations || op == glslang::EOpAllInvocationsEqual) {
+            std::vector<spv::Id> operands;
+            operands.push_back(builder.makeUintConstant(spv::ScopeSubgroup));
+            operands.push_back(operand);
+
+            if (op == glslang::EOpAnyInvocation || op == glslang::EOpAllInvocations)
+                id = builder.createOp(unaryOp, typeId, operands);
+            else if (op == glslang::EOpAllInvocationsEqual) {
+                spv::Id groupAll = builder.createOp(spv::OpGroupAll, typeId, operands);
+                spv::Id groupAny = builder.createOp(spv::OpGroupAny, typeId, operands);
+
+                id  = builder.createBinOp(spv::OpLogicalOr,
+                                          typeId,
+                                          groupAll,
+                                          builder.createUnaryOp(spv::OpLogicalNot, typeId, groupAny));
+            }
+        }
+        else
+            id = builder.createUnaryOp(unaryOp, typeId, operand);
+    }
 
     return builder.setPrecision(id, precision);
 }

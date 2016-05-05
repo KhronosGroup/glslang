@@ -283,6 +283,10 @@ enum TOperator {
     EOpMemoryBarrierShared,  // compute only
     EOpGroupMemoryBarrier,   // compute only
 
+    EOpAnyInvocation,
+    EOpAllInvocations,
+    EOpAllInvocationsEqual,
+
     EOpAtomicAdd,
     EOpAtomicMin,
     EOpAtomicMax,

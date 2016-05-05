@@ -1325,6 +1325,16 @@ void TBuiltIns::initialize(int version, EProfile profile, int spv, int vulkan)
             "\n");
     }
 
+    // GL_ARB_shader_group_vote
+    if (profile != EEsProfile && version >= 430) {
+        commonBuiltins.append(
+            "bool anyInvocationARB(bool);"
+            "bool allInvocationsARB(bool);"
+            "bool allInvocationsEqualARB(bool);"
+
+            "\n");
+    }
+
     //============================================================================
     //
     // Prototypes for built-in functions seen by vertex shaders only.
@@ -3394,7 +3404,7 @@ void IdentifyBuiltIns(int version, EProfile profile, int spv, int vulkan, EShLan
 
     switch(language) {
     case EShLangVertex:
-        if (profile != EEsProfile && version >= 440) {
+        if (profile != EEsProfile) {
             symbolTable.setVariableExtensions("gl_BaseVertexARB",   1, &E_GL_ARB_shader_draw_parameters);
             symbolTable.setVariableExtensions("gl_BaseInstanceARB", 1, &E_GL_ARB_shader_draw_parameters);
             symbolTable.setVariableExtensions("gl_DrawIDARB",       1, &E_GL_ARB_shader_draw_parameters);
@@ -3402,6 +3412,12 @@ void IdentifyBuiltIns(int version, EProfile profile, int spv, int vulkan, EShLan
             BuiltInVariable("gl_BaseVertexARB",   EbvBaseVertex,   symbolTable);
             BuiltInVariable("gl_BaseInstanceARB", EbvBaseInstance, symbolTable);
             BuiltInVariable("gl_DrawIDARB",       EbvDrawId,       symbolTable);
+        }
+
+        if (profile != EEsProfile) {
+            symbolTable.setFunctionExtensions("anyInvocationARB",       1, &E_GL_ARB_shader_group_vote);
+            symbolTable.setFunctionExtensions("allInvocationsARB",      1, &E_GL_ARB_shader_group_vote);
+            symbolTable.setFunctionExtensions("allInvocationsEqualARB", 1, &E_GL_ARB_shader_group_vote);
         }
 
         // Compatibility variables, vertex only
@@ -3987,6 +4003,10 @@ void IdentifyBuiltIns(int version, EProfile profile, int spv, int vulkan, EShLan
             symbolTable.relateToOperator("textureOffsetClampARB",           EOpTextureOffsetClamp);
             symbolTable.relateToOperator("textureGradClampARB",             EOpTextureGradClamp);
             symbolTable.relateToOperator("textureGradOffsetClampARB",       EOpTextureGradOffsetClamp);
+
+            symbolTable.relateToOperator("anyInvocationARB",                EOpAnyInvocation);
+            symbolTable.relateToOperator("allInvocationsARB",               EOpAllInvocations);
+            symbolTable.relateToOperator("allInvocationsEqualARB",          EOpAllInvocationsEqual);
         }
     }
 
