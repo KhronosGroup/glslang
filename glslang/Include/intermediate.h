@@ -287,6 +287,10 @@ enum TOperator {
     EOpReadInvocation,
     EOpReadFirstInvocation,
 
+    EOpAnyInvocation,
+    EOpAllInvocations,
+    EOpAllInvocationsEqual,
+
     EOpAtomicAdd,
     EOpAtomicMin,
     EOpAtomicMax,
