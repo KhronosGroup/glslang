@@ -1,6 +1,7 @@
 set(SOURCES ossource.cpp ../osinclude.h)
 
 add_library(OSDependent STATIC ${SOURCES})
+set_property(TARGET OSDependent PROPERTY FOLDER glslang)
 
 # MinGW GCC complains about function pointer casts to void*.
 # Turn that off with -fpermissive.

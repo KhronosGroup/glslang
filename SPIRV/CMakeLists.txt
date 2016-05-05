@@ -17,6 +17,7 @@ set(HEADERS
     disassemble.h)
 
 add_library(SPIRV STATIC ${SOURCES} ${HEADERS})
+set_property(TARGET SPIRV PROPERTY FOLDER glslang)
 
 if(WIN32)
     source_group("Source" FILES ${SOURCES} ${HEADERS})

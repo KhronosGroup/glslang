@@ -75,6 +75,7 @@ set(HEADERS
 # set(BISON_GLSLParser_OUTPUT_SOURCE ${CMAKE_CURRENT_SOURCE_DIR}/MachineIndependent/glslang_tab.cpp)
 
 add_library(glslang STATIC ${BISON_GLSLParser_OUTPUT_SOURCE} ${SOURCES} ${HEADERS})
+set_property(TARGET glslang PROPERTY FOLDER glslang)
 
 if(WIN32)
     source_group("Public" REGULAR_EXPRESSION "Public/*")

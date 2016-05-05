@@ -1,6 +1,8 @@
 add_library(glslang-default-resource-limits
     ${CMAKE_CURRENT_SOURCE_DIR}/DefaultResourceLimits.cpp
 )
+set_property(TARGET glslang-default-resource-limits PROPERTY FOLDER glslang)
+
 target_include_directories(glslang-default-resource-limits
     PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}
     PUBLIC ${PROJECT_SOURCE_DIR}
@@ -11,6 +13,8 @@ set(REMAPPER_SOURCES spirv-remap.cpp)
 
 add_executable(glslangValidator ${SOURCES})
 add_executable(spirv-remap ${REMAPPER_SOURCES})
+set_property(TARGET glslangValidator PROPERTY FOLDER tools)
+set_property(TARGET spirv-remap PROPERTY FOLDER tools)
 
 set(LIBRARIES
     glslang

@@ -18,6 +18,7 @@ if (TARGET gmock)
   )
 
   add_executable(glslangtests ${TEST_SOURCES})
+  set_property(TARGET glslangtests PROPERTY FOLDER tests)
   target_compile_definitions(glslangtests
     PRIVATE GLSLANG_TEST_DIRECTORY="${CMAKE_CURRENT_SOURCE_DIR}/../Test")
   target_include_directories(glslangtests PRIVATE
