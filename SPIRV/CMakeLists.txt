@@ -18,6 +18,11 @@ set(HEADERS
     doc.h
     disassemble.h)
 
+if(ENABLE_AMD_EXTENSIONS)
+    set(HEADERS
+        GLSL.ext.AMD.h)
+endif(ENABLE_AMD_EXTENSIONS)
+
 add_library(SPIRV STATIC ${SOURCES} ${HEADERS})
 set_property(TARGET SPIRV PROPERTY FOLDER glslang)
 

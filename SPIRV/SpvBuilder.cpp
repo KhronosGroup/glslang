@@ -2312,7 +2312,11 @@ void Builder::dump(std::vector<unsigned int>& out) const
         capInst.dump(out);
     }
 
-    // TBD: OpExtension ...
+    for (int e = 0; e < (int)extensions.size(); ++e) {
+        Instruction extInst(0, 0, OpExtension);
+        extInst.addStringOperand(extensions[e]);
+        extInst.dump(out);
+    }
 
     dumpInstructions(out, imports);
     Instruction memInst(0, 0, OpMemoryModel);
@@ -2331,10 +2335,10 @@ void Builder::dump(std::vector<unsigned int>& out) const
         sourceInst.addImmediateOperand(sourceVersion);
         sourceInst.dump(out);
     }
-    for (int e = 0; e < (int)extensions.size(); ++e) {
-        Instruction extInst(0, 0, OpSourceExtension);
-        extInst.addStringOperand(extensions[e]);
-        extInst.dump(out);
+    for (int e = 0; e < (int)sourceExtensions.size(); ++e) {
+        Instruction sourceExtInst(0, 0, OpSourceExtension);
+        sourceExtInst.addStringOperand(sourceExtensions[e]);
+        sourceExtInst.dump(out);
     }
     dumpInstructions(out, names);
     dumpInstructions(out, lines);

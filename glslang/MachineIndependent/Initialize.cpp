@@ -801,9 +801,84 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
             "bvec3 notEqual(u64vec3, u64vec3);"
             "bvec4 notEqual(u64vec4, u64vec4);"
 
+#ifdef AMD_EXTENSIONS
+            "int   findLSB(int64_t);"
+            "ivec2 findLSB(i64vec2);"
+            "ivec3 findLSB(i64vec3);"
+            "ivec4 findLSB(i64vec4);"
+
+            "int   findLSB(uint64_t);"
+            "ivec2 findLSB(u64vec2);"
+            "ivec3 findLSB(u64vec3);"
+            "ivec4 findLSB(u64vec4);"
+
+            "int   findMSB(int64_t);"
+            "ivec2 findMSB(i64vec2);"
+            "ivec3 findMSB(i64vec3);"
+            "ivec4 findMSB(i64vec4);"
+
+            "int   findMSB(uint64_t);"
+            "ivec2 findMSB(u64vec2);"
+            "ivec3 findMSB(u64vec3);"
+            "ivec4 findMSB(u64vec4);"
+#endif
             "\n"
         );
     }
+
+#ifdef AMD_EXTENSIONS
+    // GL_AMD_shader_trinary_minmax
+    if (profile != EEsProfile && version >= 430) {
+        commonBuiltins.append(
+            "float min3(float, float, float);"
+            "vec2  min3(vec2,  vec2,  vec2);"
+            "vec3  min3(vec3,  vec3,  vec3);"
+            "vec4  min3(vec4,  vec4,  vec4);"
+
+            "int   min3(int,   int,   int);"
+            "ivec2 min3(ivec2, ivec2, ivec2);"
+            "ivec3 min3(ivec3, ivec3, ivec3);"
+            "ivec4 min3(ivec4, ivec4, ivec4);"
+
+            "uint  min3(uint,  uint,  uint);"
+            "uvec2 min3(uvec2, uvec2, uvec2);"
+            "uvec3 min3(uvec3, uvec3, uvec3);"
+            "uvec4 min3(uvec4, uvec4, uvec4);"
+
+            "float max3(float, float, float);"
+            "vec2  max3(vec2,  vec2,  vec2);"
+            "vec3  max3(vec3,  vec3,  vec3);"
+            "vec4  max3(vec4,  vec4,  vec4);"
+
+            "int   max3(int,   int,   int);"
+            "ivec2 max3(ivec2, ivec2, ivec2);"
+            "ivec3 max3(ivec3, ivec3, ivec3);"
+            "ivec4 max3(ivec4, ivec4, ivec4);"
+
+            "uint  max3(uint,  uint,  uint);"
+            "uvec2 max3(uvec2, uvec2, uvec2);"
+            "uvec3 max3(uvec3, uvec3, uvec3);"
+            "uvec4 max3(uvec4, uvec4, uvec4);"
+
+            "float mid3(float, float, float);"
+            "vec2  mid3(vec2,  vec2,  vec2);"
+            "vec3  mid3(vec3,  vec3,  vec3);"
+            "vec4  mid3(vec4,  vec4,  vec4);"
+
+            "int   mid3(int,   int,   int);"
+            "ivec2 mid3(ivec2, ivec2, ivec2);"
+            "ivec3 mid3(ivec3, ivec3, ivec3);"
+            "ivec4 mid3(ivec4, ivec4, ivec4);"
+
+            "uint  mid3(uint,  uint,  uint);"
+            "uvec2 mid3(uvec2, uvec2, uvec2);"
+            "uvec3 mid3(uvec3, uvec3, uvec3);"
+            "uvec4 mid3(uvec4, uvec4, uvec4);"
+
+            "\n"
+        );
+    }
+#endif
 
     if ((profile == EEsProfile && version >= 310) ||
         (profile != EEsProfile && version >= 430)) {
@@ -1468,6 +1543,161 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
             "\n");
     }
 
+#ifdef AMD_EXTENSIONS
+    // GL_AMD_shader_ballot
+    if (profile != EEsProfile && version >= 450) {
+        commonBuiltins.append(
+            "float minInvocationsAMD(float);"
+            "vec2  minInvocationsAMD(vec2);"
+            "vec3  minInvocationsAMD(vec3);"
+            "vec4  minInvocationsAMD(vec4);"
+
+            "int   minInvocationsAMD(int);"
+            "ivec2 minInvocationsAMD(ivec2);"
+            "ivec3 minInvocationsAMD(ivec3);"
+            "ivec4 minInvocationsAMD(ivec4);"
+
+            "uint  minInvocationsAMD(uint);"
+            "uvec2 minInvocationsAMD(uvec2);"
+            "uvec3 minInvocationsAMD(uvec3);"
+            "uvec4 minInvocationsAMD(uvec4);"
+
+            "float maxInvocationsAMD(float);"
+            "vec2  maxInvocationsAMD(vec2);"
+            "vec3  maxInvocationsAMD(vec3);"
+            "vec4  maxInvocationsAMD(vec4);"
+
+            "int   maxInvocationsAMD(int);"
+            "ivec2 maxInvocationsAMD(ivec2);"
+            "ivec3 maxInvocationsAMD(ivec3);"
+            "ivec4 maxInvocationsAMD(ivec4);"
+
+            "uint  maxInvocationsAMD(uint);"
+            "uvec2 maxInvocationsAMD(uvec2);"
+            "uvec3 maxInvocationsAMD(uvec3);"
+            "uvec4 maxInvocationsAMD(uvec4);"
+
+            "float addInvocationsAMD(float);"
+            "vec2  addInvocationsAMD(vec2);"
+            "vec3  addInvocationsAMD(vec3);"
+            "vec4  addInvocationsAMD(vec4);"
+
+            "int   addInvocationsAMD(int);"
+            "ivec2 addInvocationsAMD(ivec2);"
+            "ivec3 addInvocationsAMD(ivec3);"
+            "ivec4 addInvocationsAMD(ivec4);"
+
+            "uint  addInvocationsAMD(uint);"
+            "uvec2 addInvocationsAMD(uvec2);"
+            "uvec3 addInvocationsAMD(uvec3);"
+            "uvec4 addInvocationsAMD(uvec4);"
+
+            "float minInvocationsNonUniformAMD(float);"
+            "vec2  minInvocationsNonUniformAMD(vec2);"
+            "vec3  minInvocationsNonUniformAMD(vec3);"
+            "vec4  minInvocationsNonUniformAMD(vec4);"
+
+            "int   minInvocationsNonUniformAMD(int);"
+            "ivec2 minInvocationsNonUniformAMD(ivec2);"
+            "ivec3 minInvocationsNonUniformAMD(ivec3);"
+            "ivec4 minInvocationsNonUniformAMD(ivec4);"
+
+            "uint  minInvocationsNonUniformAMD(uint);"
+            "uvec2 minInvocationsNonUniformAMD(uvec2);"
+            "uvec3 minInvocationsNonUniformAMD(uvec3);"
+            "uvec4 minInvocationsNonUniformAMD(uvec4);"
+
+            "float maxInvocationsNonUniformAMD(float);"
+            "vec2  maxInvocationsNonUniformAMD(vec2);"
+            "vec3  maxInvocationsNonUniformAMD(vec3);"
+            "vec4  maxInvocationsNonUniformAMD(vec4);"
+
+            "int   maxInvocationsNonUniformAMD(int);"
+            "ivec2 maxInvocationsNonUniformAMD(ivec2);"
+            "ivec3 maxInvocationsNonUniformAMD(ivec3);"
+            "ivec4 maxInvocationsNonUniformAMD(ivec4);"
+
+            "uint  maxInvocationsNonUniformAMD(uint);"
+            "uvec2 maxInvocationsNonUniformAMD(uvec2);"
+            "uvec3 maxInvocationsNonUniformAMD(uvec3);"
+            "uvec4 maxInvocationsNonUniformAMD(uvec4);"
+
+            "float addInvocationsNonUniformAMD(float);"
+            "vec2  addInvocationsNonUniformAMD(vec2);"
+            "vec3  addInvocationsNonUniformAMD(vec3);"
+            "vec4  addInvocationsNonUniformAMD(vec4);"
+
+            "int   addInvocationsNonUniformAMD(int);"
+            "ivec2 addInvocationsNonUniformAMD(ivec2);"
+            "ivec3 addInvocationsNonUniformAMD(ivec3);"
+            "ivec4 addInvocationsNonUniformAMD(ivec4);"
+
+            "uint  addInvocationsNonUniformAMD(uint);"
+            "uvec2 addInvocationsNonUniformAMD(uvec2);"
+            "uvec3 addInvocationsNonUniformAMD(uvec3);"
+            "uvec4 addInvocationsNonUniformAMD(uvec4);"
+
+            "float swizzleInvocationsAMD(float, uvec4);"
+            "vec2  swizzleInvocationsAMD(vec2,  uvec4);"
+            "vec3  swizzleInvocationsAMD(vec3,  uvec4);"
+            "vec4  swizzleInvocationsAMD(vec4,  uvec4);"
+
+            "int   swizzleInvocationsAMD(int,   uvec4);"
+            "ivec2 swizzleInvocationsAMD(ivec2, uvec4);"
+            "ivec3 swizzleInvocationsAMD(ivec3, uvec4);"
+            "ivec4 swizzleInvocationsAMD(ivec4, uvec4);"
+
+            "uint  swizzleInvocationsAMD(uint,  uvec4);"
+            "uvec2 swizzleInvocationsAMD(uvec2, uvec4);"
+            "uvec3 swizzleInvocationsAMD(uvec3, uvec4);"
+            "uvec4 swizzleInvocationsAMD(uvec4, uvec4);"
+
+            "float swizzleInvocationsMaskedAMD(float, uvec3);"
+            "vec2  swizzleInvocationsMaskedAMD(vec2,  uvec3);"
+            "vec3  swizzleInvocationsMaskedAMD(vec3,  uvec3);"
+            "vec4  swizzleInvocationsMaskedAMD(vec4,  uvec3);"
+
+            "int   swizzleInvocationsMaskedAMD(int,   uvec3);"
+            "ivec2 swizzleInvocationsMaskedAMD(ivec2, uvec3);"
+            "ivec3 swizzleInvocationsMaskedAMD(ivec3, uvec3);"
+            "ivec4 swizzleInvocationsMaskedAMD(ivec4, uvec3);"
+
+            "uint  swizzleInvocationsMaskedAMD(uint,  uvec3);"
+            "uvec2 swizzleInvocationsMaskedAMD(uvec2, uvec3);"
+            "uvec3 swizzleInvocationsMaskedAMD(uvec3, uvec3);"
+            "uvec4 swizzleInvocationsMaskedAMD(uvec4, uvec3);"
+
+            "float writeInvocationAMD(float, float, uint);"
+            "vec2  writeInvocationAMD(vec2,  vec2,  uint);"
+            "vec3  writeInvocationAMD(vec3,  vec3,  uint);"
+            "vec4  writeInvocationAMD(vec4,  vec4,  uint);"
+
+            "int   writeInvocationAMD(int,   int,   uint);"
+            "ivec2 writeInvocationAMD(ivec2, ivec2, uint);"
+            "ivec3 writeInvocationAMD(ivec3, ivec3, uint);"
+            "ivec4 writeInvocationAMD(ivec4, ivec4, uint);"
+
+            "uint  writeInvocationAMD(uint,  uint,  uint);"
+            "uvec2 writeInvocationAMD(uvec2, uvec2, uint);"
+            "uvec3 writeInvocationAMD(uvec3, uvec3, uint);"
+            "uvec4 writeInvocationAMD(uvec4, uvec4, uint);"
+
+            "uint mbcntAMD(uint64_t);"
+
+            "\n");
+    }
+
+    // GL_AMD_gcn_shader
+    if (profile != EEsProfile && version >= 450) {
+        commonBuiltins.append(
+            "float cubeFaceIndexAMD(vec3);"
+            "vec2 cubeFaceCoordAMD(vec3);"
+            "uint64_t timeAMD();"
+
+            "\n");
+    }
+#endif
+
     //============================================================================
     //
     // Prototypes for built-in functions seen by vertex shaders only.
@@ -1712,6 +1942,29 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
 
             "\n");
     }
+
+#ifdef AMD_EXTENSIONS
+    // GL_AMD_shader_explicit_vertex_parameter
+    if (profile != EEsProfile && version >= 450) {
+        stageBuiltins[EShLangFragment].append(
+            "float interpolateAtVertexAMD(float, uint);"
+            "vec2  interpolateAtVertexAMD(vec2,  uint);"
+            "vec3  interpolateAtVertexAMD(vec3,  uint);"
+            "vec4  interpolateAtVertexAMD(vec4,  uint);"
+
+            "int   interpolateAtVertexAMD(int,   uint);"
+            "ivec2 interpolateAtVertexAMD(ivec2, uint);"
+            "ivec3 interpolateAtVertexAMD(ivec3, uint);"
+            "ivec4 interpolateAtVertexAMD(ivec4, uint);"
+
+            "uint  interpolateAtVertexAMD(uint,  uint);"
+            "uvec2 interpolateAtVertexAMD(uvec2, uint);"
+            "uvec3 interpolateAtVertexAMD(uvec3, uint);"
+            "uvec4 interpolateAtVertexAMD(uvec4, uint);"
+
+            "\n");
+    }
+#endif
 
     //============================================================================
     //
@@ -2332,6 +2585,19 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
                 "in float gl_CullDistance[];"
                 "bool gl_HelperInvocation;"     // needs qualifier fixed later
                 );
+
+#ifdef AMD_EXTENSIONS
+        if (version >= 450)
+            stageBuiltins[EShLangFragment].append(
+                "in vec2 gl_BaryCoordNoPerspAMD;"
+                "in vec2 gl_BaryCoordNoPerspCentroidAMD;"
+                "in vec2 gl_BaryCoordNoPerspSampleAMD;"
+                "in vec2 gl_BaryCoordSmoothAMD;"
+                "in vec2 gl_BaryCoordSmoothCentroidAMD;"
+                "in vec2 gl_BaryCoordSmoothSampleAMD;"
+                "in vec3 gl_BaryCoordPullModelAMD;"
+                );
+#endif
     } else {
         // ES profile
 
@@ -3460,6 +3726,14 @@ void TBuiltIns::initialize(const TBuiltInResource &resources, int version, EProf
         s.append(builtInConstant);
     }
 
+#ifdef AMD_EXTENSIONS
+    // GL_AMD_gcn_shader
+    if (profile != EEsProfile && version >= 450) {
+        snprintf(builtInConstant, maxSize, "const int gl_SIMDGroupSizeAMD = 64;");
+        s.append(builtInConstant);
+    }
+#endif
+
     s.append("\n");
 }
 
@@ -3587,6 +3861,33 @@ void TBuiltIns::identifyBuiltIns(int version, EProfile profile, const SpvVersion
             symbolTable.setFunctionExtensions("allInvocationsARB",      1, &E_GL_ARB_shader_group_vote);
             symbolTable.setFunctionExtensions("allInvocationsEqualARB", 1, &E_GL_ARB_shader_group_vote);
         }
+
+#ifdef AMD_EXTENSIONS
+        if (profile != EEsProfile) {
+            symbolTable.setFunctionExtensions("minInvocationsAMD",                1, &E_GL_AMD_shader_ballot);
+            symbolTable.setFunctionExtensions("maxInvocationsAMD",                1, &E_GL_AMD_shader_ballot);
+            symbolTable.setFunctionExtensions("addInvocationsAMD",                1, &E_GL_AMD_shader_ballot);
+            symbolTable.setFunctionExtensions("minInvocationsNonUniformAMD",      1, &E_GL_AMD_shader_ballot);
+            symbolTable.setFunctionExtensions("maxInvocationsNonUniformAMD",      1, &E_GL_AMD_shader_ballot);
+            symbolTable.setFunctionExtensions("addInvocationsNonUniformAMD",      1, &E_GL_AMD_shader_ballot);
+            symbolTable.setFunctionExtensions("swizzleInvocationsAMD",            1, &E_GL_AMD_shader_ballot);
+            symbolTable.setFunctionExtensions("swizzleInvocationsWithPatternAMD", 1, &E_GL_AMD_shader_ballot);
+            symbolTable.setFunctionExtensions("writeInvocationAMD",               1, &E_GL_AMD_shader_ballot);
+            symbolTable.setFunctionExtensions("mbcntAMD",                         1, &E_GL_AMD_shader_ballot);
+        }
+
+        if (profile != EEsProfile) {
+            symbolTable.setFunctionExtensions("min3", 1, &E_GL_AMD_shader_trinary_minmax);
+            symbolTable.setFunctionExtensions("max3", 1, &E_GL_AMD_shader_trinary_minmax);
+            symbolTable.setFunctionExtensions("mid3", 1, &E_GL_AMD_shader_trinary_minmax);
+        }
+
+        if (profile != EEsProfile) {
+            symbolTable.setFunctionExtensions("cubeFaceIndexAMD", 1, &E_GL_AMD_gcn_shader);
+            symbolTable.setFunctionExtensions("cubeFaceCoordAMD", 1, &E_GL_AMD_gcn_shader);
+            symbolTable.setFunctionExtensions("timeAMD",          1, &E_GL_AMD_gcn_shader);
+        }
+#endif
 
         // Compatibility variables, vertex only
         if (spvVersion.spv == 0) {
@@ -3871,6 +4172,29 @@ void TBuiltIns::identifyBuiltIns(int version, EProfile profile, const SpvVersion
             symbolTable.setFunctionExtensions("textureGradClampARB",                1, &E_GL_ARB_sparse_texture_clamp);
             symbolTable.setFunctionExtensions("textureGradOffsetClampARB",          1, &E_GL_ARB_sparse_texture_clamp);
         }
+
+#ifdef AMD_EXTENSIONS
+        // E_GL_AMD_shader_explicit_vertex_parameter
+        if (profile != EEsProfile) {
+            symbolTable.setVariableExtensions("gl_BaryCoordNoPerspAMD",         1, &E_GL_AMD_shader_explicit_vertex_parameter);
+            symbolTable.setVariableExtensions("gl_BaryCoordNoPerspCentroidAMD", 1, &E_GL_AMD_shader_explicit_vertex_parameter);
+            symbolTable.setVariableExtensions("gl_BaryCoordNoPerspSampleAMD",   1, &E_GL_AMD_shader_explicit_vertex_parameter);
+            symbolTable.setVariableExtensions("gl_BaryCoordSmoothAMD",          1, &E_GL_AMD_shader_explicit_vertex_parameter);
+            symbolTable.setVariableExtensions("gl_BaryCoordSmoothCentroidAMD",  1, &E_GL_AMD_shader_explicit_vertex_parameter);
+            symbolTable.setVariableExtensions("gl_BaryCoordSmoothSampleAMD",    1, &E_GL_AMD_shader_explicit_vertex_parameter);
+            symbolTable.setVariableExtensions("gl_BaryCoordPullModelAMD",       1, &E_GL_AMD_shader_explicit_vertex_parameter);
+
+            symbolTable.setFunctionExtensions("interpolateAtVertexAMD",         1, &E_GL_AMD_shader_explicit_vertex_parameter);
+
+            BuiltInVariable("gl_BaryCoordNoPerspAMD",           EbvBaryCoordNoPersp,         symbolTable);
+            BuiltInVariable("gl_BaryCoordNoPerspCentroidAMD",   EbvBaryCoordNoPerspCentroid, symbolTable);
+            BuiltInVariable("gl_BaryCoordNoPerspSampleAMD",     EbvBaryCoordNoPerspSample,   symbolTable);
+            BuiltInVariable("gl_BaryCoordSmoothAMD",            EbvBaryCoordSmooth,          symbolTable);
+            BuiltInVariable("gl_BaryCoordSmoothCentroidAMD",    EbvBaryCoordSmoothCentroid,  symbolTable);
+            BuiltInVariable("gl_BaryCoordSmoothSampleAMD",      EbvBaryCoordSmoothSample,    symbolTable);
+            BuiltInVariable("gl_BaryCoordPullModelAMD",         EbvBaryCoordPullModel,       symbolTable);
+        }
+#endif
 
         symbolTable.setVariableExtensions("gl_FragDepthEXT", 1, &E_GL_EXT_frag_depth);
 
@@ -4205,6 +4529,27 @@ void TBuiltIns::identifyBuiltIns(int version, EProfile profile, const SpvVersion
             symbolTable.relateToOperator("anyInvocationARB",                EOpAnyInvocation);
             symbolTable.relateToOperator("allInvocationsARB",               EOpAllInvocations);
             symbolTable.relateToOperator("allInvocationsEqualARB",          EOpAllInvocationsEqual);
+
+#ifdef AMD_EXTENSIONS
+            symbolTable.relateToOperator("minInvocationsAMD",               EOpMinInvocations);
+            symbolTable.relateToOperator("maxInvocationsAMD",               EOpMaxInvocations);
+            symbolTable.relateToOperator("addInvocationsAMD",               EOpAddInvocations);
+            symbolTable.relateToOperator("minInvocationsNonUniformAMD",     EOpMinInvocationsNonUniform);
+            symbolTable.relateToOperator("maxInvocationsNonUniformAMD",     EOpMaxInvocationsNonUniform);
+            symbolTable.relateToOperator("addInvocationsNonUniformAMD",     EOpAddInvocationsNonUniform);
+            symbolTable.relateToOperator("swizzleInvocationsAMD",           EOpSwizzleInvocations);
+            symbolTable.relateToOperator("swizzleInvocationsMaskedAMD",     EOpSwizzleInvocationsMasked);
+            symbolTable.relateToOperator("writeInvocationAMD",              EOpWriteInvocation);
+            symbolTable.relateToOperator("mbcntAMD",                        EOpMbcnt);
+
+            symbolTable.relateToOperator("min3",    EOpMin3);
+            symbolTable.relateToOperator("max3",    EOpMax3);
+            symbolTable.relateToOperator("mid3",    EOpMid3);
+
+            symbolTable.relateToOperator("cubeFaceIndexAMD",    EOpCubeFaceIndex);
+            symbolTable.relateToOperator("cubeFaceCoordAMD",    EOpCubeFaceCoord);
+            symbolTable.relateToOperator("timeAMD",             EOpTime);
+#endif
         }
     }
 
@@ -4238,7 +4583,12 @@ void TBuiltIns::identifyBuiltIns(int version, EProfile profile, const SpvVersion
         symbolTable.relateToOperator("interpolateAtCentroid", EOpInterpolateAtCentroid);
         symbolTable.relateToOperator("interpolateAtSample",   EOpInterpolateAtSample);
         symbolTable.relateToOperator("interpolateAtOffset",   EOpInterpolateAtOffset);
+
+#ifdef AMD_EXTENSIONS
+        if (profile != EEsProfile)
+            symbolTable.relateToOperator("interpolateAtVertexAMD", EOpInterpolateAtVertex);
         break;
+#endif
 
     case EShLangCompute:
         symbolTable.relateToOperator("memoryBarrierShared",     EOpMemoryBarrierShared);
