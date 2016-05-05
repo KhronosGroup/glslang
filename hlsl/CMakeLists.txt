@@ -14,6 +14,7 @@ set(HEADERS
     hlslGrammar.h)
 
 add_library(HLSL STATIC ${SOURCES} ${HEADERS})
+set_property(TARGET HLSL PROPERTY FOLDER hlsl)
 
 if(WIN32)
     source_group("Source" FILES ${SOURCES} ${HEADERS})
