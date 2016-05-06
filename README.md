@@ -48,33 +48,42 @@ Building
 ### Dependencies
 
 * [CMake][cmake]: for generating compilation targets.
-* [bison][bison]: _optional_, for regenerating grammar (if changes).
+* [bison][bison]: _optional_, but needed when changing the grammar (glslang.y).
+* [googletest][googletest]: _optional_, but should use if making any changes to glslang.
 
 ### Build steps
 
-1) Check out external projects:
+#### 1) Check-Out External Projects
 
 ```bash
+cd <the directory glslang was cloned to, External will be a subdirectory>
 git clone https://github.com/google/googletest.git External/googletest
 ```
 
-2) Configure. Assume the source directory is `$SOURCE_DIR` and
+#### 2) Configure
+
+Assume the source directory is `$SOURCE_DIR` and
 the build directory is `$BUILD_DIR`:
+
+For building on Linux (assuming using the Ninja generator):
 
 ```bash
 cd $BUILD_DIR
 
-# for building on Linux (assuming using the Ninja generator):
 cmake -GNinja -DCMAKE_BUILD_TYPE={Debug|Release|RelWithDebInfo} \
       -DCMAKE_INSTALL_PREFIX=`pwd`/install $SOURCE_DIR
+```
 
-# for building on Windows:
+For building on Windows:
+
+```bash
 cmake $SOURCE_DIR -DCMAKE_INSTALL_PREFIX=`pwd`/install
-
 # The CMAKE_INSTALL_PREFIX part is for testing (explained later).
 ```
 
-3) Build and install.
+The CMake GUI also works for Windows (version 3.4.1 tested).
+
+#### 3) Build and Install
 
 ```bash
 # for Linux:
@@ -85,7 +94,7 @@ cmake --build . --config {Release|Debug|MinSizeRel|RelWithDebInfo} \
       --target install
 ```
 
-If using MSVC, after running CMake to configure, you may need to use the
+If using MSVC, after running CMake to configure, use the
 Configuration Manager to check the `INSTALL` project.
 
 ### If you need to change the GLSL grammar
