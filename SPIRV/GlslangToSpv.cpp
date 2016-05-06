@@ -34,8 +34,6 @@
 //POSSIBILITY OF SUCH DAMAGE.
 
 //
-// Author: John Kessenich, LunarG
-//
 // Visit the nodes in the glslang intermediate tree representation to
 // translate them to SPIR-V.
 //
@@ -135,10 +133,10 @@ protected:
     spv::Id createImageTextureFunctionCall(glslang::TIntermOperator* node);
     spv::Id handleUserFunctionCall(const glslang::TIntermAggregate*);
 
-    spv::Id createBinaryOperation(glslang::TOperator op, spv::Decoration precision, spv::Id typeId, spv::Id left, spv::Id right, glslang::TBasicType typeProxy, bool reduceComparison = true);
-    spv::Id createBinaryMatrixOperation(spv::Op, spv::Decoration precision, spv::Id typeId, spv::Id left, spv::Id right);
-    spv::Id createUnaryOperation(glslang::TOperator op, spv::Decoration precision, spv::Id typeId, spv::Id operand,glslang::TBasicType typeProxy);
-    spv::Id createUnaryMatrixOperation(spv::Op, spv::Decoration precision, spv::Id typeId, spv::Id operand,glslang::TBasicType typeProxy);
+    spv::Id createBinaryOperation(glslang::TOperator op, spv::Decoration precision, spv::Decoration noContraction, spv::Id typeId, spv::Id left, spv::Id right, glslang::TBasicType typeProxy, bool reduceComparison = true);
+    spv::Id createBinaryMatrixOperation(spv::Op, spv::Decoration precision, spv::Decoration noContraction, spv::Id typeId, spv::Id left, spv::Id right);
+    spv::Id createUnaryOperation(glslang::TOperator op, spv::Decoration precision, spv::Decoration noContraction, spv::Id typeId, spv::Id operand,glslang::TBasicType typeProxy);
+    spv::Id createUnaryMatrixOperation(spv::Op, spv::Decoration precision, spv::Decoration noContraction, spv::Id typeId, spv::Id operand,glslang::TBasicType typeProxy);
     spv::Id createConversion(glslang::TOperator op, spv::Decoration precision, spv::Id destTypeId, spv::Id operand);
     spv::Id makeSmearedConstant(spv::Id constant, int vectorSize);
     spv::Id createAtomicOperation(glslang::TOperator op, spv::Decoration precision, spv::Id typeId, std::vector<spv::Id>& operands, glslang::TBasicType typeProxy);
@@ -244,7 +242,7 @@ spv::StorageClass TranslateStorageClass(const glslang::TType& type)
         case glslang::EvqGlobal:        return spv::StorageClassPrivate;
         case glslang::EvqConstReadOnly: return spv::StorageClassFunction;
         case glslang::EvqTemporary:     return spv::StorageClassFunction;
-        default: 
+        default:
             assert(0);
             return spv::StorageClassFunction;
         }
@@ -567,7 +565,7 @@ spv::ImageFormat TGlslangToSpvTraverser::TranslateImageFormat(const glslang::TTy
     }
 }
 
-// Return whether or not the given type is something that should be tied to a 
+// Return whether or not the given type is something that should be tied to a
 // descriptor set.
 bool IsDescriptorResource(const glslang::TType& type)
 {
@@ -621,8 +619,7 @@ bool HasNonLayoutQualifiers(const glslang::TQualifier& qualifier)
     // - struct members can inherit from a struct declaration
     // - effect decorations on the struct members (note smooth does not, and expecting something like volatile to effect the whole object)
     // - are not part of the offset/st430/etc or row/column-major layout
-    return qualifier.invariant || qualifier.nopersp || qualifier.flat || qualifier.centroid || qualifier.patch || qualifier.sample || qualifier.hasLocation() ||
-           qualifier.noContraction;
+    return qualifier.invariant || qualifier.nopersp || qualifier.flat || qualifier.centroid || qualifier.patch || qualifier.sample || qualifier.hasLocation();
 }
 
 //
@@ -792,7 +789,7 @@ TGlslangToSpvTraverser::~TGlslangToSpvTraverser()
 //
 
 //
-// Symbols can turn into 
+// Symbols can turn into
 //  - uniform/input reads
 //  - output writes
 //  - complex lvalue base setups:  foo.bar[3]....  , where we see foo and start up an access chain
@@ -883,12 +880,10 @@ bool TGlslangToSpvTraverser::visitBinary(glslang::TVisit /* visit */, glslang::T
                 spv::Id leftRValue = accessChainLoad(node->getLeft()->getType());
 
                 // do the operation
-                rValue = createBinaryOperation(node->getOp(), TranslatePrecisionDecoration(node->getType()), 
+                rValue = createBinaryOperation(node->getOp(), TranslatePrecisionDecoration(node->getType()),
+                                               TranslateNoContractionDecoration(node->getType().getQualifier()),
                                                convertGlslangToSpvType(node->getType()), leftRValue, rValue,
                                                node->getType().getBasicType());
-
-                // Decorate this instruction, if this node has 'noContraction' qualifier.
-                addDecoration(rValue, TranslateNoContractionDecoration(node->getType().getQualifier()));
 
                 // these all need their counterparts in createBinaryOperation()
                 assert(rValue != spv::NoResult);
@@ -1005,6 +1000,7 @@ bool TGlslangToSpvTraverser::visitBinary(glslang::TVisit /* visit */, glslang::T
 
     // get result
     spv::Id result = createBinaryOperation(node->getOp(), TranslatePrecisionDecoration(node->getType()),
+                                           TranslateNoContractionDecoration(node->getType().getQualifier()),
                                            convertGlslangToSpvType(node->getType()), left, right,
                                            node->getLeft()->getType().getBasicType());
 
@@ -1013,8 +1009,6 @@ bool TGlslangToSpvTraverser::visitBinary(glslang::TVisit /* visit */, glslang::T
         logger->missingFunctionality("unknown glslang binary operation");
         return true;  // pick up a child as the place-holder result
     } else {
-        // Decorate this instruction, if this node has 'noContraction' qualifier.
-        addDecoration(result, TranslateNoContractionDecoration(node->getType().getQualifier()));
         builder.setAccessChainRValue(result);
         return false;
     }
@@ -1073,6 +1067,7 @@ bool TGlslangToSpvTraverser::visitUnary(glslang::TVisit /* visit */, glslang::TI
         operand = accessChainLoad(node->getOperand()->getType());
 
     spv::Decoration precision = TranslatePrecisionDecoration(node->getType());
+    spv::Decoration noContraction = TranslateNoContractionDecoration(node->getType().getQualifier());
 
     // it could be a conversion
     if (! result)
@@ -1080,11 +1075,9 @@ bool TGlslangToSpvTraverser::visitUnary(glslang::TVisit /* visit */, glslang::TI
 
     // if not, then possibly an operation
     if (! result)
-        result = createUnaryOperation(node->getOp(), precision, convertGlslangToSpvType(node->getType()), operand, node->getOperand()->getBasicType());
+        result = createUnaryOperation(node->getOp(), precision, noContraction, convertGlslangToSpvType(node->getType()), operand, node->getOperand()->getBasicType());
 
     if (result) {
-        // Decorate this instruction, if this node has 'noContraction' qualifier.
-        addDecoration(result, TranslateNoContractionDecoration(node->getType().getQualifier()));
         builder.clearAccessChain();
         builder.setAccessChainRValue(result);
 
@@ -1113,12 +1106,11 @@ bool TGlslangToSpvTraverser::visitUnary(glslang::TVisit /* visit */, glslang::TI
             else
                 op = glslang::EOpSub;
 
-            spv::Id result = createBinaryOperation(op, TranslatePrecisionDecoration(node->getType()), 
+            spv::Id result = createBinaryOperation(op, TranslatePrecisionDecoration(node->getType()),
+                                                   TranslateNoContractionDecoration(node->getType().getQualifier()),
                                                    convertGlslangToSpvType(node->getType()), operand, one,
                                                    node->getType().getBasicType());
             assert(result != spv::NoResult);
-            // Decorate this instruction, if this node has 'noContraction' qualifier.
-            addDecoration(result, TranslateNoContractionDecoration(node->getType().getQualifier()));
 
             // The result of operation is always stored, but conditionally the
             // consumed result.  The consumed result is always an r-value.
@@ -1350,7 +1342,7 @@ bool TGlslangToSpvTraverser::visitAggregate(glslang::TVisit visit, glslang::TInt
         break;
     }
     case glslang::EOpMul:
-        // compontent-wise matrix multiply      
+        // compontent-wise matrix multiply
         binOp = glslang::EOpMul;
         break;
     case glslang::EOpOuterProduct:
@@ -1359,7 +1351,7 @@ bool TGlslangToSpvTraverser::visitAggregate(glslang::TVisit visit, glslang::TInt
         break;
     case glslang::EOpDot:
     {
-        // for scalar dot product, use multiply        
+        // for scalar dot product, use multiply
         glslang::TIntermSequence& glslangOperands = node->getSequence();
         if (! glslangOperands[0]->getAsTyped()->isVector())
             binOp = glslang::EOpMul;
@@ -1414,8 +1406,8 @@ bool TGlslangToSpvTraverser::visitAggregate(glslang::TVisit visit, glslang::TInt
         right->traverse(this);
         spv::Id rightId = accessChainLoad(right->getType());
 
-        result = createBinaryOperation(binOp, precision, 
-                                       convertGlslangToSpvType(node->getType()), leftId, rightId, 
+        result = createBinaryOperation(binOp, precision, TranslateNoContractionDecoration(node->getType().getQualifier()),
+                                       convertGlslangToSpvType(node->getType()), leftId, rightId,
                                        left->getType().getBasicType(), reduceComparison);
 
         // code above should only make binOp that exists in createBinaryOperation
@@ -1488,7 +1480,11 @@ bool TGlslangToSpvTraverser::visitAggregate(glslang::TVisit visit, glslang::TInt
             result = createNoArgOperation(node->getOp());
             break;
         case 1:
-            result = createUnaryOperation(node->getOp(), precision, convertGlslangToSpvType(node->getType()), operands.front(), glslangOperands[0]->getAsTyped()->getBasicType());
+            result = createUnaryOperation(
+                node->getOp(), precision,
+                TranslateNoContractionDecoration(node->getType().getQualifier()),
+                convertGlslangToSpvType(node->getType()), operands.front(),
+                glslangOperands[0]->getAsTyped()->getBasicType());
             break;
         default:
             result = createMiscOperation(node->getOp(), precision, convertGlslangToSpvType(node->getType()), operands, node->getBasicType());
@@ -1579,7 +1575,7 @@ bool TGlslangToSpvTraverser::visitSwitch(glslang::TVisit /* visit */, glslang::T
             codeSegments.push_back(child);
     }
 
-    // handle the case where the last code segment is missing, due to no code 
+    // handle the case where the last code segment is missing, due to no code
     // statements between the last case and the end of the switch statement
     if ((caseValues.size() && (int)codeSegments.size() == valueIndexToSegment[caseValues.size() - 1]) ||
         (int)codeSegments.size() == defaultSegment)
@@ -1714,7 +1710,7 @@ bool TGlslangToSpvTraverser::visitBranch(glslang::TVisit /* visit */, glslang::T
 
 spv::Id TGlslangToSpvTraverser::createSpvVariable(const glslang::TIntermSymbol* node)
 {
-    // First, steer off constants, which are not SPIR-V variables, but 
+    // First, steer off constants, which are not SPIR-V variables, but
     // can still have a mapping to a SPIR-V Id.
     // This includes specialization constants.
     if (node->getQualifier().isConstant()) {
@@ -2018,7 +2014,7 @@ spv::Id TGlslangToSpvTraverser::makeArraySizeId(const glslang::TArraySizes& arra
         specNode->traverse(this);
         return accessChainLoad(specNode->getAsTyped()->getType());
     }
-    
+
     // Otherwise, need a compile-time (front end) size, get it:
     int size = arraySizes.getDimSize(dim);
     assert(size > 0);
@@ -2165,7 +2161,7 @@ void TGlslangToSpvTraverser::updateMemberOffset(const glslang::TType& /*structTy
     // Getting this far means we need explicit offsets
     if (currentOffset < 0)
         currentOffset = 0;
-    
+
     // Now, currentOffset is valid (either 0, or from a previous nextOffset),
     // but possibly not yet correctly aligned.
 
@@ -2195,7 +2191,7 @@ void TGlslangToSpvTraverser::makeFunctions(const glslang::TIntermSequence& glslF
         // so that it's available to call.
         // Translating the body will happen later.
         //
-        // Typically (except for a "const in" parameter), an address will be passed to the 
+        // Typically (except for a "const in" parameter), an address will be passed to the
         // function.  What it is an address of varies:
         //
         // - "in" parameters not marked as "const" can be written to without modifying the argument,
@@ -2265,7 +2261,7 @@ void TGlslangToSpvTraverser::visitFunctions(const glslang::TIntermSequence& glsl
 
 void TGlslangToSpvTraverser::handleFunctionEntry(const glslang::TIntermAggregate* node)
 {
-    // SPIR-V functions should already be in the functionMap from the prepass 
+    // SPIR-V functions should already be in the functionMap from the prepass
     // that called makeFunctions().
     spv::Function* function = functionMap[node->getName().c_str()];
     spv::Block* functionBlock = function->getEntryBlock();
@@ -2679,7 +2675,8 @@ spv::Id TGlslangToSpvTraverser::handleUserFunctionCall(const glslang::TIntermAgg
 }
 
 // Translate AST operation to SPV operation, already having SPV-based operands/types.
-spv::Id TGlslangToSpvTraverser::createBinaryOperation(glslang::TOperator op, spv::Decoration precision, 
+spv::Id TGlslangToSpvTraverser::createBinaryOperation(glslang::TOperator op, spv::Decoration precision,
+                                                      spv::Decoration noContraction,
                                                       spv::Id typeId, spv::Id left, spv::Id right,
                                                       glslang::TBasicType typeProxy, bool reduceComparison)
 {
@@ -2816,13 +2813,15 @@ spv::Id TGlslangToSpvTraverser::createBinaryOperation(glslang::TOperator op, spv
     if (binOp != spv::OpNop) {
         assert(comparison == false);
         if (builder.isMatrix(left) || builder.isMatrix(right))
-            return createBinaryMatrixOperation(binOp, precision, typeId, left, right);
+            return createBinaryMatrixOperation(binOp, precision, noContraction, typeId, left, right);
 
         // No matrix involved; make both operands be the same number of components, if needed
         if (needMatchingVectors)
             builder.promoteScalar(precision, left, right);
 
-        return builder.setPrecision(builder.createBinOp(binOp, typeId, left, right), precision);
+        spv::Id result = builder.createBinOp(binOp, typeId, left, right);
+        addDecoration(result, noContraction);
+        return builder.setPrecision(result, precision);
     }
 
     if (! comparison)
@@ -2891,8 +2890,11 @@ spv::Id TGlslangToSpvTraverser::createBinaryOperation(glslang::TOperator op, spv
         break;
     }
 
-    if (binOp != spv::OpNop)
-        return builder.setPrecision(builder.createBinOp(binOp, typeId, left, right), precision);
+    if (binOp != spv::OpNop) {
+        spv::Id result = builder.createBinOp(binOp, typeId, left, right);
+        addDecoration(result, noContraction);
+        return builder.setPrecision(result, precision);
+    }
 
     return 0;
 }
@@ -2911,7 +2913,7 @@ spv::Id TGlslangToSpvTraverser::createBinaryOperation(glslang::TOperator op, spv
 //   matrix op scalar    op in {+, -, /}
 //   scalar op matrix    op in {+, -, /}
 //
-spv::Id TGlslangToSpvTraverser::createBinaryMatrixOperation(spv::Op op, spv::Decoration precision, spv::Id typeId, spv::Id left, spv::Id right)
+spv::Id TGlslangToSpvTraverser::createBinaryMatrixOperation(spv::Op op, spv::Decoration precision, spv::Decoration noContraction, spv::Id typeId, spv::Id left, spv::Id right)
 {
     bool firstClass = true;
 
@@ -2947,8 +2949,11 @@ spv::Id TGlslangToSpvTraverser::createBinaryMatrixOperation(spv::Op op, spv::Dec
         break;
     }
 
-    if (firstClass)
-        return builder.setPrecision(builder.createBinOp(op, typeId, left, right), precision);
+    if (firstClass) {
+        spv::Id result = builder.createBinOp(op, typeId, left, right);
+        addDecoration(result, noContraction);
+        return builder.setPrecision(result, precision);
+    }
 
     // Handle component-wise +, -, *, and / for all combinations of type.
     // The result type of all of them is the same type as the (a) matrix operand.
@@ -2983,8 +2988,9 @@ spv::Id TGlslangToSpvTraverser::createBinaryMatrixOperation(spv::Op op, spv::Dec
             indexes.push_back(c);
             spv::Id  leftVec =  leftMat ? builder.createCompositeExtract( left, vecType, indexes) : smearVec;
             spv::Id rightVec = rightMat ? builder.createCompositeExtract(right, vecType, indexes) : smearVec;
-            results.push_back(builder.createBinOp(op, vecType, leftVec, rightVec));
-            builder.setPrecision(results.back(), precision);
+            spv::Id result = builder.createBinOp(op, vecType, leftVec, rightVec);
+            addDecoration(result, noContraction);
+            results.push_back(builder.setPrecision(result, precision));
         }
 
         // put the pieces together
@@ -2996,7 +3002,7 @@ spv::Id TGlslangToSpvTraverser::createBinaryMatrixOperation(spv::Op op, spv::Dec
     }
 }
 
-spv::Id TGlslangToSpvTraverser::createUnaryOperation(glslang::TOperator op, spv::Decoration precision, spv::Id typeId, spv::Id operand, glslang::TBasicType typeProxy)
+spv::Id TGlslangToSpvTraverser::createUnaryOperation(glslang::TOperator op, spv::Decoration precision, spv::Decoration noContraction, spv::Id typeId, spv::Id operand, glslang::TBasicType typeProxy)
 {
     spv::Op unaryOp = spv::OpNop;
     int libCall = -1;
@@ -3008,7 +3014,7 @@ spv::Id TGlslangToSpvTraverser::createUnaryOperation(glslang::TOperator op, spv:
         if (isFloat) {
             unaryOp = spv::OpFNegate;
             if (builder.isMatrixType(typeId))
-                return createUnaryMatrixOperation(unaryOp, precision, typeId, operand, typeProxy);
+                return createUnaryMatrixOperation(unaryOp, precision, noContraction, typeId, operand, typeProxy);
         } else
             unaryOp = spv::OpSNegate;
         break;
@@ -3290,11 +3296,12 @@ spv::Id TGlslangToSpvTraverser::createUnaryOperation(glslang::TOperator op, spv:
         id = builder.createUnaryOp(unaryOp, typeId, operand);
     }
 
+    addDecoration(id, noContraction);
     return builder.setPrecision(id, precision);
 }
 
 // Create a unary operation on a matrix
-spv::Id TGlslangToSpvTraverser::createUnaryMatrixOperation(spv::Op op, spv::Decoration precision, spv::Id typeId, spv::Id operand, glslang::TBasicType /* typeProxy */)
+spv::Id TGlslangToSpvTraverser::createUnaryMatrixOperation(spv::Op op, spv::Decoration precision, spv::Decoration noContraction, spv::Id typeId, spv::Id operand, glslang::TBasicType /* typeProxy */)
 {
     // Handle unary operations vector by vector.
     // The result type is the same type as the original type.
@@ -3315,8 +3322,9 @@ spv::Id TGlslangToSpvTraverser::createUnaryMatrixOperation(spv::Op op, spv::Deco
         std::vector<unsigned int> indexes;
         indexes.push_back(c);
         spv::Id vec =  builder.createCompositeExtract(operand, vecType, indexes);
-        results.push_back(builder.createUnaryOp(op, vecType, vec));
-        builder.setPrecision(results.back(), precision);
+        spv::Id vec_result = builder.createUnaryOp(op, vecType, vec);
+        addDecoration(vec_result, noContraction);
+        results.push_back(builder.setPrecision(vec_result, precision));
     }
 
     // put the pieces together
@@ -4144,7 +4152,7 @@ bool TGlslangToSpvTraverser::isTrivialLeaf(const glslang::TIntermTyped* node)
     default:
         return false;
     }
-} 
+}
 
 // A node is trivial if it is a single operation with no side effects.
 // Error on the side of saying non-trivial.
