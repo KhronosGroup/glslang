@@ -357,8 +357,32 @@ vertices = -1
 0:99        subtract (temp float)
 0:99          'a' (temp float)
 0:99          'b' (in float)
-0:102  Function Definition: main( (global void)
+0:102  Function Definition: matrix(mf23;mf32; (global 3X3 matrix of float)
 0:102    Function Parameters: 
+0:102      'a' (in 2X3 matrix of float)
+0:102      'b' (in 3X2 matrix of float)
+0:103    Sequence
+0:103      Sequence
+0:103        move second child to first child (temp 2X3 matrix of float)
+0:103          'c' (noContraction temp 2X3 matrix of float)
+0:103          Constant:
+0:103            1.000000
+0:103            2.000000
+0:103            3.000000
+0:103            4.000000
+0:103            5.000000
+0:103            6.000000
+0:105      move second child to first child (temp 3X3 matrix of float)
+0:105        'result' (noContraction temp 3X3 matrix of float)
+0:105        matrix-multiply (noContraction temp 3X3 matrix of float)
+0:105          add (noContraction temp 2X3 matrix of float)
+0:105            'a' (noContraction in 2X3 matrix of float)
+0:105            'c' (noContraction temp 2X3 matrix of float)
+0:105          'b' (noContraction in 3X2 matrix of float)
+0:106      Branch: Return with expression
+0:106        'result' (noContraction temp 3X3 matrix of float)
+0:109  Function Definition: main( (global void)
+0:109    Function Parameters: 
 0:?   Linker Objects
 
 
@@ -722,7 +746,31 @@ vertices = -1
 0:99        subtract (temp float)
 0:99          'a' (temp float)
 0:99          'b' (in float)
-0:102  Function Definition: main( (global void)
+0:102  Function Definition: matrix(mf23;mf32; (global 3X3 matrix of float)
 0:102    Function Parameters: 
+0:102      'a' (in 2X3 matrix of float)
+0:102      'b' (in 3X2 matrix of float)
+0:103    Sequence
+0:103      Sequence
+0:103        move second child to first child (temp 2X3 matrix of float)
+0:103          'c' (noContraction temp 2X3 matrix of float)
+0:103          Constant:
+0:103            1.000000
+0:103            2.000000
+0:103            3.000000
+0:103            4.000000
+0:103            5.000000
+0:103            6.000000
+0:105      move second child to first child (temp 3X3 matrix of float)
+0:105        'result' (noContraction temp 3X3 matrix of float)
+0:105        matrix-multiply (noContraction temp 3X3 matrix of float)
+0:105          add (noContraction temp 2X3 matrix of float)
+0:105            'a' (noContraction in 2X3 matrix of float)
+0:105            'c' (noContraction temp 2X3 matrix of float)
+0:105          'b' (noContraction in 3X2 matrix of float)
+0:106      Branch: Return with expression
+0:106        'result' (noContraction temp 3X3 matrix of float)
+0:109  Function Definition: main( (global void)
+0:109    Function Parameters: 
 0:?   Linker Objects
 

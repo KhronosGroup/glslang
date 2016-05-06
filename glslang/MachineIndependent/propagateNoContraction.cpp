@@ -61,7 +61,7 @@ using ObjectAccessChain = std::string;
 
 // The delimiter used in the ObjectAccessChain string to separate symbol ID and
 // different level of struct indices.
-const char OBJECT_ACCESSCHAIN_DELIMITER = '/';
+const char ObjectAccesschainDelimiter = '/';
 
 // Mapping from Symbol IDs of symbol nodes, to their defining operation
 // nodes.
@@ -169,6 +169,7 @@ bool isArithmeticOperation(glslang::TOperator op)
     case glslang::EOpVectorTimesMatrix:
     case glslang::EOpMatrixTimesVector:
     case glslang::EOpMatrixTimesScalar:
+    case glslang::EOpMatrixTimesMatrix:
 
     case glslang::EOpDot:
 
@@ -207,14 +208,14 @@ private:
 // A helper function to get the front element from a given ObjectAccessChain
 ObjectAccessChain getFrontElement(const ObjectAccessChain& chain)
 {
-    size_t pos_delimiter = chain.find(OBJECT_ACCESSCHAIN_DELIMITER);
+    size_t pos_delimiter = chain.find(ObjectAccesschainDelimiter);
     return pos_delimiter == std::string::npos ? chain : chain.substr(0, pos_delimiter);
 }
 
 // A helper function to get the accesschain starting from the second element.
 ObjectAccessChain subAccessChainFromSecondElement(const ObjectAccessChain& chain)
 {
-    size_t pos_delimiter = chain.find(OBJECT_ACCESSCHAIN_DELIMITER);
+    size_t pos_delimiter = chain.find(ObjectAccesschainDelimiter);
     return pos_delimiter == std::string::npos ? "" : chain.substr(pos_delimiter + 1);
 }
 
@@ -224,7 +225,7 @@ ObjectAccessChain getSubAccessChainAfterPrefix(const ObjectAccessChain& chain,
 {
     size_t pos = chain.find(prefix);
     if (pos != 0) return chain;
-    return chain.substr(prefix.length() + sizeof(OBJECT_ACCESSCHAIN_DELIMITER));
+    return chain.substr(prefix.length() + sizeof(ObjectAccesschainDelimiter));
 }
 
 //
@@ -415,7 +416,7 @@ bool TSymbolDefinitionCollectingTraverser::visitBinary(glslang::TVisit /* visit 
         // object. We need to record the accesschain information of the current
         // node into its object id.
         unsigned struct_dereference_index = getStructIndexFromConstantUnion(node->getRight());
-        object_to_be_defined_.push_back(OBJECT_ACCESSCHAIN_DELIMITER);
+        object_to_be_defined_.push_back(ObjectAccesschainDelimiter);
         object_to_be_defined_.append(std::to_string(struct_dereference_index));
         accesschain_mapping_[node] = object_to_be_defined_;
 
@@ -728,7 +729,7 @@ protected:
             if (remained_accesschain_.empty()) {
                 node->getWritableType().getQualifier().noContraction = true;
             } else {
-                new_precise_accesschain += OBJECT_ACCESSCHAIN_DELIMITER + remained_accesschain_;
+                new_precise_accesschain += ObjectAccesschainDelimiter + remained_accesschain_;
             }
             // Cache the accesschain as added precise object, so we won't add the
             // same object to the worklist again.
@@ -777,7 +778,7 @@ protected:
         if (remained_accesschain_.empty()) {
             node->getWritableType().getQualifier().noContraction = true;
         } else {
-            new_precise_accesschain += OBJECT_ACCESSCHAIN_DELIMITER + remained_accesschain_;
+            new_precise_accesschain += ObjectAccesschainDelimiter + remained_accesschain_;
         }
         // Add the new 'precise' accesschain to the worklist and make sure we
         // don't visit it again.

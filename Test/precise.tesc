@@ -99,4 +99,11 @@ float precise_func_parameter(float b, precise out float c) {
   return a - b; // Not noContraction
 }
 
+mat3 matrix (mat2x3 a, mat3x2 b) {
+  mat2x3 c = mat2x3(1.0, 2.0, 3.0, 4.0, 5.0, 6.0);
+  precise mat3 result;
+  result = (a + c) * b; // should be noContraction
+  return result;
+}
+
 void main(){}
