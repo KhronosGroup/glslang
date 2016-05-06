@@ -211,6 +211,14 @@ ObjectAccessChain subAccessChainFromSecondElement(const ObjectAccessChain& chain
     return pos_delimiter == std::string::npos ? "" : chain.substr(pos_delimiter + 1);
 }
 
+// A helper function to get the accesschain after removing a given prefix.
+ObjectAccessChain getSubAccessChainAfterPrefix(const ObjectAccessChain &chain, const ObjectAccessChain &prefix)
+{
+    size_t pos = chain.find(prefix);
+    if (pos != 0) return chain;
+    return chain.substr(prefix.length() + sizeof(StructAccessChainDelimiter));
+}
+
 //
 // A traverser which traverses the whole AST and populates:
 //  1) A mapping from symbol nodes' IDs to their defining operation nodes.
@@ -466,8 +474,9 @@ class TNoContractionAssigneeCheckingTraverser : public glslang::TIntermTraverser
     };
 
 public:
-    TNoContractionAssigneeCheckingTraverser()
-        : TIntermTraverser(true, false, false), accesschain_to_precise_object_(), decision_(Mixed) {}
+    TNoContractionAssigneeCheckingTraverser(const AccessChainMapping &accesschain_mapping)
+        : TIntermTraverser(true, false, false), accesschain_mapping_(accesschain_mapping),
+          precise_object_(nullptr) {}
 
     // Checks the precise'ness of a given assignment node with a precise object
     // represented as accesschain. The precise object shares the same symbol
@@ -488,125 +497,127 @@ public:
                                              const ObjectAccessChain &precise_object)
     {
         assert(isAssignOperation(node->getOp()));
-        accesschain_to_precise_object_ = precise_object;
-        decision_ = Mixed;
-        node->traverse(this);
-        return make_tuple(decision_ != NotPreicse, accesschain_to_precise_object_);
+        precise_object_ = &precise_object;
+        ObjectAccessChain assignee_object;
+        if (glslang::TIntermBinary* BN = node->getAsBinaryNode()) {
+            // This is a binary assignment node, we need to check the
+            // precise'ness of the left node.
+            if (!accesschain_mapping_.count(BN->getLeft())) {
+                // If the left node is not an object node, it can not be
+                // 'precise'.
+                return make_tuple(false, ObjectAccessChain());
+            }
+            // The left node (assignee node) is an object node, traverse the
+            // node to let the 'precise' of nesting objects being transfered to
+            // nested objects.
+            BN->getLeft()->traverse(this);
+            // After traversing the left node, if the left node is 'precise',
+            // we can conclude this assignment should propagate 'precise'.
+            if (isPreciseObjectNode(BN->getLeft())) {
+                return make_tuple(true, ObjectAccessChain());
+            }
+            // If the precise'ness of the left node (assignee node) can not
+            // be determined by now, we need to compare the accesschain string
+            // of the assignee object with the given precise object.
+            assignee_object = accesschain_mapping_.at(BN->getLeft());
+
+        } else if (glslang::TIntermUnary* UN = node->getAsUnaryNode()) {
+            // This is a unary assignment node, we need to check the
+            // precise'ness of the operand node. For unary assignment node, the
+            // operand node should always be an object node.
+            if (!accesschain_mapping_.count(UN->getOperand())) {
+                // If the operand node is not an object node, it can not be
+                // 'precise'.
+                return make_tuple(false, ObjectAccessChain());
+            }
+            // Traverse the operand node to let the 'precise' being propagated
+            // from lower nodes to upper nodes.
+            UN->getOperand()->traverse(this);
+            // After traversing the operand node, if the operand node is
+            // 'precise', this assignment should propagate 'precise'.
+            if (isPreciseObjectNode(UN->getOperand())) {
+                return make_tuple(true, ObjectAccessChain());
+            }
+            // If the precise'ness of the operand node (assignee node) can not
+            // be determined by now, we need to compare the accesschain string
+            // of the assignee object with the given precise object.
+            assignee_object = accesschain_mapping_.at(UN->getOperand());
+        } else {
+            // Not a binary or unary node, should not happen.
+            assert(false);
+        }
+
+        // Compare the accesschain string of the assignee node with the given
+        // precise object to determine if this assignment should propagate
+        // 'precise'.
+        if (assignee_object.find(precise_object) == 0) {
+            // The accesschain string of the given precise object is a prefix
+            // of assignee's accesschain string. The assignee should be
+            // 'precise'.
+            return make_tuple(true, ObjectAccessChain());
+        } else if (precise_object.find(assignee_object) == 0) {
+            // The assignee's accesschain string is a prefix of the given
+            // precise object, the assignee object contains 'precise' object,
+            // and we need to pass the remained accesschain to the object nodes
+            // in the right.
+            return make_tuple(true, getSubAccessChainAfterPrefix(precise_object, assignee_object));
+        } else {
+            // The accesschain strings do not match, the assignee object can
+            // not be labelled as 'precise' according to the given precise
+            // object.
+            return make_tuple(false, ObjectAccessChain());
+        }
     }
 
 protected:
     bool visitBinary(glslang::TVisit, glslang::TIntermBinary *node) override;
-    bool visitUnary(glslang::TVisit, glslang::TIntermUnary *node) override;
     void visitSymbol(glslang::TIntermSymbol *node) override;
 
-    // The accesschain toward the given precise object. It will be iniailized
-    // with the accesschain of a given precise object, then trimmed along the
-    // traversal of the assignee subtree. The remained accesschain at the end
-    // of traversal shows the path from the assignee node to its nested
-    // 'precise' object.  If the assignee node is 'precise' object object, this
-    // should be empty.
-    ObjectAccessChain accesschain_to_precise_object_;
-    // A state to tell the precise'ness of the assignee node according to the
-    // accesschain of the given precise object:
-    //
-    // 'Mixed': contains both 'precise' and 'non-precise' object
-    // (accesschain_to_precise_object_ is not empty),
-    //
-    // 'Precise': is precise object (accesschain_to_precise_object is empty),
-    //
-    // 'NotPrecise': is not precise object (mismatch in the struct dereference
-    // indices).
-    DecisionStatus decision_;
+    // A map from object nodes to their accesschain string (used as object ID).
+    const AccessChainMapping &accesschain_mapping_;
+    // A given precise object, represented in it accesschain string. This
+    // precise object is used to be compared with the assignee node to tell if
+    // the assignee node is 'precise', contains 'precise' object or not
+    // 'precise'.
+    const ObjectAccessChain *precise_object_;
 };
 
-// Visit a binary node. As this traverser's job is to check the precise'ness of
-// the assignee node in an assignment operation, it only needs to traverse the
-// object nodes along the left branches. For struct type object nodes, it needs
-// to obtain the struct dereference index from the right node to build the
-// accesschain for this node.
+// Visit a binary node. If the node is an object node, it must be a dereference
+// node. In such cases, if the left node is 'precise', this node should also be
+// 'precise'.
 bool TNoContractionAssigneeCheckingTraverser::visitBinary(glslang::TVisit,
                                                           glslang::TIntermBinary *node)
 {
+    // Traverses the left so that we transfer the 'precise' from nesting object
+    // to its nested object.
     node->getLeft()->traverse(this);
-    // For dereference operation nodes, we may need to check if the accesschain
-    // of the given precise object matches with the struct dereference indices
-    // of the assignee subtree.
-    if (isDereferenceOperation(node->getOp())) {
+    // If this binary node is an object node, we should have it in the
+    // accesschain_mapping_.
+    if (accesschain_mapping_.count(node)) {
+        // A binary object node must be a dereference node.
+        assert(isDereferenceOperation(node->getOp()));
+        // If the left node is 'precise', this node should also be precise,
+        // otherwise, compare with the given precise_object_. If the
+        // accesschain of this node matches with the given precise_object_,
+        // this node should be marked as 'precise'.
         if (isPreciseObjectNode(node->getLeft())) {
-            // The left node is 'precise', which means the object node in the
-            // left contains the object represented in this node. If the left node
-            // is 'precise', this object node should also be 'precise' and no need
-            // to check the accesschain and struct deference indices anymore.
             node->getWritableType().getQualifier().noContraction = true;
-            decision_ = Precise;
-            return false;
-        }
-        if (node->getOp() == glslang::EOpIndexDirectStruct && decision_ == Mixed) {
-            std::string struct_index =
-                std::to_string(getStructIndexFromConstantUnion(node->getRight()));
-            ObjectAccessChain precise_struct_index = getFrontElement(accesschain_to_precise_object_);
-            if (precise_struct_index == struct_index) {
-                // The struct dereference index matches with the record in the
-                // accesschain to the precise object. Pop the front access
-                // chain index from the precise object access chain.
-                accesschain_to_precise_object_ =
-                    subAccessChainFromSecondElement(accesschain_to_precise_object_);
-                // If the given access chain to precise object is empty now,
-                // it means we've found the corresponding precise object in
-                // the assignee subtree.
-                if (accesschain_to_precise_object_.empty()) {
-                    node->getWritableType().getQualifier().noContraction = true;
-                    decision_ = Precise;
-                }
-            } else {
-                // The access chain index does not match with the record in the precise object id.
-                // This object should not be labelled as 'precise' here.
-                decision_ = NotPreicse;
-            }
+        } else if (accesschain_mapping_.at(node) == *precise_object_){
+            node->getWritableType().getQualifier().noContraction = true;
         }
     }
     return false;
 }
 
-// Visits an unary node, traverses its operand. If the node is an assignment node,
-// determines the precise'ness of the assignee directly based on the assignee node's
-// precise'ness.
-bool TNoContractionAssigneeCheckingTraverser::visitUnary(glslang::TVisit,
-                                                         glslang::TIntermUnary *node)
-{
-    node->getOperand()->traverse(this);
-    if (isAssignOperation(node->getOp())) {
-        if (isPreciseObjectNode(node->getOperand())) {
-            decision_ = Precise;
-            // As the assignee node is 'precise', all (if any) the
-            // member objects the that node should also be 'precise'. This means
-            // we won't need to propagate extra access chain info.
-            accesschain_to_precise_object_.clear();
-        } else {
-            decision_ = NotPreicse;
-        }
-    }
-    return false;
-}
-
-// Visits a symbol node. The symbol ID of this node should match with the symbol ID, which is
-// the front element, in the accesschain of the given 'precise' object.
+// Visit a symbol node, if the symbol node ID (its accesschain string) matches
+// with the given precise object, this node should be 'precise'.
 void TNoContractionAssigneeCheckingTraverser::visitSymbol(glslang::TIntermSymbol *node)
 {
-    ObjectAccessChain symbol_id = generateSymbolLabel(node);
-    // The root symbol of the given access chain should be the same with the one represented by the symbol node here.
-    assert(symbol_id == getFrontElement(accesschain_to_precise_object_));
-    // Pop the symbol node part from the front end of the accesschain string.
-    accesschain_to_precise_object_ =
-        subAccessChainFromSecondElement(accesschain_to_precise_object_);
-    if (accesschain_to_precise_object_.empty()) {
+    // A symbol node should always be an object node, and should have been added
+    // to the map from object nodes to their accesschain strings.
+    assert(accesschain_mapping_.count(node));
+    if (accesschain_mapping_.at(node) == *precise_object_) {
         node->getWritableType().getQualifier().noContraction = true;
-        decision_ = Precise;
-    }
-    // If this symbol node is 'precise', all its members should be 'precise' so the assignee of the processing
-    // assignment operations is 'precise'.
-    if (isPreciseObjectNode(node)) {
-        decision_ = Precise;
     }
 }
 
@@ -833,7 +844,7 @@ void PropagateNoContraction(const glslang::TIntermediate &intermediate)
     //  expression to mark arithmetic operations as 'noContration' and update
     //  'precise' accesschain worklist with new found object nodes.
     // Repeat above steps until the worklist is empty.
-    TNoContractionAssigneeCheckingTraverser checker;
+    TNoContractionAssigneeCheckingTraverser checker(accesschain_mapping);
     TNoContractionPropagator propagator(&precise_object_accesschains,
                                         accesschain_mapping);
 
