@@ -33,10 +33,6 @@
 //POSSIBILITY OF SUCH DAMAGE.
 
 //
-// Author: John Kessenich, LunarG
-//
-
-//
 // 1) Programatically fill in instruction/operand information.
 //    This can be used for disassembly, printing documentation, etc.
 //

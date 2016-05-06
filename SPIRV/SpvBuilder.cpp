@@ -34,10 +34,6 @@
 //POSSIBILITY OF SUCH DAMAGE.
 
 //
-// Author: John Kessenich, LunarG
-//
-
-//
 // Helper for making SPIR-V IR.  Generally, this is documented in the header
 // SpvBuilder.h.
 //

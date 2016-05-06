@@ -34,10 +34,6 @@
 //POSSIBILITY OF SUCH DAMAGE.
 
 //
-// Author: John Kessenich, LunarG
-//
-
-//
 // "Builder" is an interface to fully build SPIR-V IR.   Allocate one of
 // these to build (a thread safe) internal SPIR-V representation (IR),
 // and then dump it as a binary stream according to the SPIR-V specification.

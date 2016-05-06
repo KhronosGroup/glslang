@@ -32,10 +32,6 @@
 //ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 //POSSIBILITY OF SUCH DAMAGE.
 
-//
-// Author: John Kessenich, LunarG
-//
-
 // SPIRV-IR
 //
 // Simple in-memory representation (IR) of SPIRV.  Just for holding

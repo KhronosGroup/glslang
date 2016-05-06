@@ -1002,6 +1002,11 @@ enum TVisit
 // If you only want post-visits, explicitly turn off preVisit (and inVisit) 
 // and turn on postVisit.
 //
+// In general, for the visit*() methods, return true from interior nodes 
+// to have the traversal continue on to children.
+//
+// If you process children yourself, or don't want them processed, return false.
+//
 class TIntermTraverser {
 public:
     POOL_ALLOCATOR_NEW_DELETE(glslang::GetThreadPoolAllocator())
