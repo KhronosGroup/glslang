@@ -60,7 +60,7 @@ float complex_array_struct() {
 
     for(int j=0; j<6; j++) {
       for(int k = 0; k<3; k++) {
-        t3[i].t2.t1c[j].t1_array[k] = i * j + k; // NoContraction
+        t3[i].t2.t1c[j].t1_array[k] = i * j + k; // Not NoContraction because all operands are integers
       }
       t3[i].t2.t1c[j].t1_scalar = j * 2.0 / i; // Not NoContraction
     }

@@ -14,17 +14,17 @@ float minimal() {
 
 void continuous_assignment() {
   precise float result = 5.0;
-  int a = 10;
-  int b = 20;
+  float a = 10.0;
+  float b = 20.0;
   result = a = b + 4; // b + 4 should be 'noContraction'.
 }
 
 void convert() {
-  precise float result;
-  int a = 10;
-  int b = 20;
+  precise double result;
+  float a = 10.0;
+  float b = 20.0;
   b = a + b; //  a + b should be 'noContraction'.
-  result  = float(b); // convert operation should not be 'noContraction'.
+  result  = double(b); // convert operation should not be 'noContraction'.
 }
 
 float loop_for() {
@@ -43,13 +43,13 @@ float loop_for() {
 }
 
 void loop_array(void) {
-  precise int result = 5;
+  precise float result;
 
   int x = 22;
   int y = 33;
 
-  int a0[3];
-  result += x + y; // x + y should be 'noContraction' also result + rvalue.
+  float a0[3];
+  result += float(x) + float(y); // x + y should be 'noContraction' also result + rvalue.
 
   for (int i = 0; i < 3; ++i) {
     // a's dereference + 2 should be 'noContraction'.
@@ -66,7 +66,7 @@ void loop_while() {
   while (result < 10) {
     result += 3.12 + b; // result + 3.12 should be 'noContraction'.
   }
-  result = a + b + 5; // b + 5 should be 'noCtraction' and also a + rvalue.
+  result = a + b + 5; // b + 5 should not be 'noCtraction' because all operands are integers.
   result = 11.1;
 }
 

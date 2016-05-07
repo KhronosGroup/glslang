@@ -55,46 +55,45 @@ vertices = -1
 0:16          Constant:
 0:16            5.000000
 0:17      Sequence
-0:17        move second child to first child (temp int)
-0:17          'a' (noContraction temp int)
+0:17        move second child to first child (temp float)
+0:17          'a' (noContraction temp float)
 0:17          Constant:
-0:17            10 (const int)
+0:17            10.000000
 0:18      Sequence
-0:18        move second child to first child (temp int)
-0:18          'b' (noContraction temp int)
+0:18        move second child to first child (temp float)
+0:18          'b' (noContraction temp float)
 0:18          Constant:
-0:18            20 (const int)
+0:18            20.000000
 0:19      move second child to first child (temp float)
 0:19        'result' (noContraction temp float)
-0:19        Convert int to float (temp float)
-0:19          move second child to first child (temp int)
-0:19            'a' (noContraction temp int)
-0:19            add (noContraction temp int)
-0:19              'b' (noContraction temp int)
-0:19              Constant:
-0:19                4 (const int)
+0:19        move second child to first child (temp float)
+0:19          'a' (noContraction temp float)
+0:19          add (noContraction temp float)
+0:19            'b' (noContraction temp float)
+0:19            Constant:
+0:19              4.000000
 0:22  Function Definition: convert( (global void)
 0:22    Function Parameters: 
 0:?     Sequence
 0:24      Sequence
-0:24        move second child to first child (temp int)
-0:24          'a' (noContraction temp int)
+0:24        move second child to first child (temp float)
+0:24          'a' (noContraction temp float)
 0:24          Constant:
-0:24            10 (const int)
+0:24            10.000000
 0:25      Sequence
-0:25        move second child to first child (temp int)
-0:25          'b' (noContraction temp int)
+0:25        move second child to first child (temp float)
+0:25          'b' (noContraction temp float)
 0:25          Constant:
-0:25            20 (const int)
-0:26      move second child to first child (temp int)
-0:26        'b' (noContraction temp int)
-0:26        add (noContraction temp int)
-0:26          'a' (noContraction temp int)
-0:26          'b' (noContraction temp int)
-0:27      move second child to first child (temp float)
-0:27        'result' (noContraction temp float)
-0:27        Convert int to float (temp float)
-0:27          'b' (noContraction temp int)
+0:25            20.000000
+0:26      move second child to first child (temp float)
+0:26        'b' (noContraction temp float)
+0:26        add (noContraction temp float)
+0:26          'a' (noContraction temp float)
+0:26          'b' (noContraction temp float)
+0:27      move second child to first child (temp double)
+0:27        'result' (noContraction temp double)
+0:27        Convert float to double (temp double)
+0:27          'b' (noContraction temp float)
 0:30  Function Definition: loop_for( (global float)
 0:30    Function Parameters: 
 0:31    Sequence
@@ -168,12 +167,7 @@ vertices = -1
 0:42            'r2' (noContraction temp float)
 0:45  Function Definition: loop_array( (global void)
 0:45    Function Parameters: 
-0:46    Sequence
-0:46      Sequence
-0:46        move second child to first child (temp int)
-0:46          'result' (noContraction temp int)
-0:46          Constant:
-0:46            5 (const int)
+0:?     Sequence
 0:48      Sequence
 0:48        move second child to first child (temp int)
 0:48          'x' (noContraction temp int)
@@ -184,11 +178,13 @@ vertices = -1
 0:49          'y' (noContraction temp int)
 0:49          Constant:
 0:49            33 (const int)
-0:52      add second child into first child (noContraction temp int)
-0:52        'result' (noContraction temp int)
-0:52        add (noContraction temp int)
-0:52          'x' (noContraction temp int)
-0:52          'y' (noContraction temp int)
+0:52      add second child into first child (noContraction temp float)
+0:52        'result' (noContraction temp float)
+0:52        add (noContraction temp float)
+0:52          Convert int to float (temp float)
+0:52            'x' (noContraction temp int)
+0:52          Convert int to float (temp float)
+0:52            'y' (noContraction temp int)
 0:54      Sequence
 0:54        Sequence
 0:54          move second child to first child (temp int)
@@ -203,23 +199,23 @@ vertices = -1
 0:54              3 (const int)
 0:54          Loop Body
 0:56          Sequence
-0:56            add second child into first child (noContraction temp int)
-0:56              'result' (noContraction temp int)
-0:56              add (noContraction temp int)
-0:56                indirect index (noContraction temp int)
-0:56                  'a0' (temp 3-element array of int)
+0:56            add second child into first child (noContraction temp float)
+0:56              'result' (noContraction temp float)
+0:56              add (noContraction temp float)
+0:56                indirect index (noContraction temp float)
+0:56                  'a0' (temp 3-element array of float)
 0:56                  'i' (temp int)
 0:56                Constant:
-0:56                  2 (const int)
-0:58            move second child to first child (temp int)
-0:58              indirect index (noContraction temp int)
-0:58                'a0' (noContraction temp 3-element array of int)
+0:56                  2.000000
+0:58            move second child to first child (temp float)
+0:58              indirect index (noContraction temp float)
+0:58                'a0' (noContraction temp 3-element array of float)
 0:58                'i' (temp int)
-0:58              subtract (noContraction temp int)
+0:58              subtract (noContraction temp float)
 0:58                Constant:
-0:58                  3 (const int)
-0:58                Post-Increment (noContraction temp int)
-0:58                  'result' (noContraction temp int)
+0:58                  3.000000
+0:58                Post-Increment (noContraction temp float)
+0:58                  'result' (noContraction temp float)
 0:54          Loop Terminal Expression
 0:54          Pre-Increment (temp int)
 0:54            'i' (temp int)
@@ -259,8 +255,8 @@ vertices = -1
 0:69      move second child to first child (temp float)
 0:69        'result' (noContraction temp float)
 0:69        Convert int to float (temp float)
-0:69          add (noContraction temp int)
-0:69            add (noContraction temp int)
+0:69          add (temp int)
+0:69            add (temp int)
 0:69              'a' (noContraction temp int)
 0:69              'b' (noContraction temp int)
 0:69            Constant:
@@ -444,46 +440,45 @@ vertices = -1
 0:16          Constant:
 0:16            5.000000
 0:17      Sequence
-0:17        move second child to first child (temp int)
-0:17          'a' (noContraction temp int)
+0:17        move second child to first child (temp float)
+0:17          'a' (noContraction temp float)
 0:17          Constant:
-0:17            10 (const int)
+0:17            10.000000
 0:18      Sequence
-0:18        move second child to first child (temp int)
-0:18          'b' (noContraction temp int)
+0:18        move second child to first child (temp float)
+0:18          'b' (noContraction temp float)
 0:18          Constant:
-0:18            20 (const int)
+0:18            20.000000
 0:19      move second child to first child (temp float)
 0:19        'result' (noContraction temp float)
-0:19        Convert int to float (temp float)
-0:19          move second child to first child (temp int)
-0:19            'a' (noContraction temp int)
-0:19            add (noContraction temp int)
-0:19              'b' (noContraction temp int)
-0:19              Constant:
-0:19                4 (const int)
+0:19        move second child to first child (temp float)
+0:19          'a' (noContraction temp float)
+0:19          add (noContraction temp float)
+0:19            'b' (noContraction temp float)
+0:19            Constant:
+0:19              4.000000
 0:22  Function Definition: convert( (global void)
 0:22    Function Parameters: 
 0:?     Sequence
 0:24      Sequence
-0:24        move second child to first child (temp int)
-0:24          'a' (noContraction temp int)
+0:24        move second child to first child (temp float)
+0:24          'a' (noContraction temp float)
 0:24          Constant:
-0:24            10 (const int)
+0:24            10.000000
 0:25      Sequence
-0:25        move second child to first child (temp int)
-0:25          'b' (noContraction temp int)
+0:25        move second child to first child (temp float)
+0:25          'b' (noContraction temp float)
 0:25          Constant:
-0:25            20 (const int)
-0:26      move second child to first child (temp int)
-0:26        'b' (noContraction temp int)
-0:26        add (noContraction temp int)
-0:26          'a' (noContraction temp int)
-0:26          'b' (noContraction temp int)
-0:27      move second child to first child (temp float)
-0:27        'result' (noContraction temp float)
-0:27        Convert int to float (temp float)
-0:27          'b' (noContraction temp int)
+0:25            20.000000
+0:26      move second child to first child (temp float)
+0:26        'b' (noContraction temp float)
+0:26        add (noContraction temp float)
+0:26          'a' (noContraction temp float)
+0:26          'b' (noContraction temp float)
+0:27      move second child to first child (temp double)
+0:27        'result' (noContraction temp double)
+0:27        Convert float to double (temp double)
+0:27          'b' (noContraction temp float)
 0:30  Function Definition: loop_for( (global float)
 0:30    Function Parameters: 
 0:31    Sequence
@@ -557,12 +552,7 @@ vertices = -1
 0:42            'r2' (noContraction temp float)
 0:45  Function Definition: loop_array( (global void)
 0:45    Function Parameters: 
-0:46    Sequence
-0:46      Sequence
-0:46        move second child to first child (temp int)
-0:46          'result' (noContraction temp int)
-0:46          Constant:
-0:46            5 (const int)
+0:?     Sequence
 0:48      Sequence
 0:48        move second child to first child (temp int)
 0:48          'x' (noContraction temp int)
@@ -573,11 +563,13 @@ vertices = -1
 0:49          'y' (noContraction temp int)
 0:49          Constant:
 0:49            33 (const int)
-0:52      add second child into first child (noContraction temp int)
-0:52        'result' (noContraction temp int)
-0:52        add (noContraction temp int)
-0:52          'x' (noContraction temp int)
-0:52          'y' (noContraction temp int)
+0:52      add second child into first child (noContraction temp float)
+0:52        'result' (noContraction temp float)
+0:52        add (noContraction temp float)
+0:52          Convert int to float (temp float)
+0:52            'x' (noContraction temp int)
+0:52          Convert int to float (temp float)
+0:52            'y' (noContraction temp int)
 0:54      Sequence
 0:54        Sequence
 0:54          move second child to first child (temp int)
@@ -592,23 +584,23 @@ vertices = -1
 0:54              3 (const int)
 0:54          Loop Body
 0:56          Sequence
-0:56            add second child into first child (noContraction temp int)
-0:56              'result' (noContraction temp int)
-0:56              add (noContraction temp int)
-0:56                indirect index (noContraction temp int)
-0:56                  'a0' (temp 3-element array of int)
+0:56            add second child into first child (noContraction temp float)
+0:56              'result' (noContraction temp float)
+0:56              add (noContraction temp float)
+0:56                indirect index (noContraction temp float)
+0:56                  'a0' (temp 3-element array of float)
 0:56                  'i' (temp int)
 0:56                Constant:
-0:56                  2 (const int)
-0:58            move second child to first child (temp int)
-0:58              indirect index (noContraction temp int)
-0:58                'a0' (noContraction temp 3-element array of int)
+0:56                  2.000000
+0:58            move second child to first child (temp float)
+0:58              indirect index (noContraction temp float)
+0:58                'a0' (noContraction temp 3-element array of float)
 0:58                'i' (temp int)
-0:58              subtract (noContraction temp int)
+0:58              subtract (noContraction temp float)
 0:58                Constant:
-0:58                  3 (const int)
-0:58                Post-Increment (noContraction temp int)
-0:58                  'result' (noContraction temp int)
+0:58                  3.000000
+0:58                Post-Increment (noContraction temp float)
+0:58                  'result' (noContraction temp float)
 0:54          Loop Terminal Expression
 0:54          Pre-Increment (temp int)
 0:54            'i' (temp int)
@@ -648,8 +640,8 @@ vertices = -1
 0:69      move second child to first child (temp float)
 0:69        'result' (noContraction temp float)
 0:69        Convert int to float (temp float)
-0:69          add (noContraction temp int)
-0:69            add (noContraction temp int)
+0:69          add (temp int)
+0:69            add (temp int)
 0:69              'a' (noContraction temp int)
 0:69              'b' (noContraction temp int)
 0:69            Constant:

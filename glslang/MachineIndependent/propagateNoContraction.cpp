@@ -712,7 +712,7 @@ protected:
             return false;
         }
         // If this is an arithmetic operation, marks this node as 'noContraction'.
-        if (isArithmeticOperation(node->getOp())) {
+        if (isArithmeticOperation(node->getOp()) && node->getBasicType() != glslang::EbtInt) {
             node->getWritableType().getQualifier().noContraction = true;
         }
         // As this node is not an object node, need to traverse the children nodes.
