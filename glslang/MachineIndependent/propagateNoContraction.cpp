@@ -333,9 +333,7 @@ bool TSymbolDefinitionCollectingTraverser::visitUnary(glslang::TVisit /* visit *
     node->getOperand()->traverse(this);
     if (isAssignOperation(node->getOp())) {
         // We should always be able to get an accesschain of the operand node.
-        // But we have some tests in which it is intented to have invalid operand
-        // nodes, so just return for now.
-        if (object_to_be_defined_.empty()) return false;
+        assert(!object_to_be_defined_.empty());
 
         // If the operand node object is 'precise', we collect its accesschain
         // for the initial set of 'precise' objects.
@@ -367,9 +365,7 @@ bool TSymbolDefinitionCollectingTraverser::visitBinary(glslang::TVisit /* visit 
 
     if (isAssignOperation(node->getOp())) {
         // We should always be able to get an accesschain for the left node.
-        // But we have some tests in which it is intented to have invalid left
-        // nodes, so just return false in such cases for now.
-        if (object_to_be_defined_.empty()) return false;
+        assert(!object_to_be_defined_.empty());
 
         // If the left node object is 'precise', it is an initial precise object
         // specified in the shader source. Adds it to the initial worklist to
@@ -391,44 +387,26 @@ bool TSymbolDefinitionCollectingTraverser::visitBinary(glslang::TVisit /* visit 
         object_to_be_defined_.clear();
         node->getRight()->traverse(this);
 
-        return false;
     } else if (isDereferenceOperation(node->getOp())) {
-        // If the left node is 'precise' object node, this node should also
-        // be 'precise' object node, and all the members of this node too. There
-        // is no need to append accesschain information into the object id.
-        if (isPreciseObjectNode(node->getLeft())) {
-            node->getWritableType().getQualifier().noContraction = true;
-            accesschain_mapping_[node] = object_to_be_defined_;
-            return false;
+        // The left node (parent node) is a struct type object. We need to
+        // record the accesschain information of the current node into its
+        // object id.
+        if (node->getOp() == glslang::EOpIndexDirectStruct) {
+            unsigned struct_dereference_index = getStructIndexFromConstantUnion(node->getRight());
+            object_to_be_defined_.push_back(ObjectAccesschainDelimiter);
+            object_to_be_defined_.append(std::to_string(struct_dereference_index));
         }
-
-        // If the opcode is not EOpIndexDirectStruct, the left node is not be a
-        // struct type object, hence there is no need to append dereference
-        // indices. For other composite type objects, the precise'ness of
-        // members should always matches with the 'precise'ness of the
-        // composite type object.
-        if (node->getOp() != glslang::EOpIndexDirectStruct) {
-            accesschain_mapping_[node] = object_to_be_defined_;
-            return false;
-        }
-
-        // The left node (parent node) is not 'precise' and it is a struct type
-        // object. We need to record the accesschain information of the current
-        // node into its object id.
-        unsigned struct_dereference_index = getStructIndexFromConstantUnion(node->getRight());
-        object_to_be_defined_.push_back(ObjectAccesschainDelimiter);
-        object_to_be_defined_.append(std::to_string(struct_dereference_index));
         accesschain_mapping_[node] = object_to_be_defined_;
 
         // For dereference node, there is no need to traverse the right child
         // node as the right node should always be an integer type object.
-        return false;
+
     } else {
         // For other binary nodes, still traverse the right node.
         object_to_be_defined_.clear();
         node->getRight()->traverse(this);
-        return false;
     }
+    return false;
 }
 
 // Traverses the AST and returns a tuple of three members:
@@ -511,11 +489,7 @@ public:
         if (glslang::TIntermBinary* BN = node->getAsBinaryNode()) {
             // This is a binary assignment node, we need to check the
             // precise'ness of the left node.
-            if (!accesschain_mapping_.count(BN->getLeft())) {
-                // If the left node is not an object node, it can not be
-                // 'precise'.
-                return make_tuple(false, ObjectAccessChain());
-            }
+            assert(accesschain_mapping_.count(BN->getLeft()));
             // The left node (assignee node) is an object node, traverse the
             // node to let the 'precise' of nesting objects being transfered to
             // nested objects.
@@ -534,11 +508,7 @@ public:
             // This is a unary assignment node, we need to check the
             // precise'ness of the operand node. For unary assignment node, the
             // operand node should always be an object node.
-            if (!accesschain_mapping_.count(UN->getOperand())) {
-                // If the operand node is not an object node, it can not be
-                // 'precise'.
-                return make_tuple(false, ObjectAccessChain());
-            }
+            assert(accesschain_mapping_.count(UN->getOperand()));
             // Traverse the operand node to let the 'precise' being propagated
             // from lower nodes to upper nodes.
             UN->getOperand()->traverse(this);
