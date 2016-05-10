@@ -253,7 +253,7 @@ protected:
     ReturnBranchNodeSet& precise_return_nodes_;
     // A temporary cache of the symbol node whose defining node is to be found
     // currently along traversing the AST.
-    ObjectAccessChain current_object__;
+    ObjectAccessChain current_object_;
     // A map from object node to its accesschain. This traverser stores
     // the built accesschains into this map for each object node it has
     // visited.
@@ -269,18 +269,18 @@ TSymbolDefinitionCollectingTraverser::TSymbolDefinitionCollectingTraverser(
     ObjectAccesschainSet* precise_objects,
     std::unordered_set<glslang::TIntermBranch*>* precise_return_nodes)
     : TIntermTraverser(true, false, false), symbol_definition_mapping_(*symbol_definition_mapping),
-      precise_objects_(*precise_objects), current_object__(),
+      precise_objects_(*precise_objects), current_object_(),
       accesschain_mapping_(*accesschain_mapping), current_function_definition_node_(nullptr),
       precise_return_nodes_(*precise_return_nodes) {}
 
-// Visits a symbol node, set the current_object__ to the
+// Visits a symbol node, set the current_object_ to the
 // current node symbol ID, and record a mapping from this node to the current
-// current_object__, which is the just obtained symbol
+// current_object_, which is the just obtained symbol
 // ID.
 void TSymbolDefinitionCollectingTraverser::visitSymbol(glslang::TIntermSymbol* node)
 {
-    current_object__ = generateSymbolLabel(node);
-    accesschain_mapping_[node] = current_object__;
+    current_object_ = generateSymbolLabel(node);
+    accesschain_mapping_[node] = current_object_;
 }
 
 // Visits an aggregate node, traverses all of its children.
@@ -300,7 +300,7 @@ bool TSymbolDefinitionCollectingTraverser::visitAggregate(glslang::TVisit,
     // Traverse the items in the sequence.
     glslang::TIntermSequence& seq = node->getSequence();
     for (int i = 0; i < (int)seq.size(); ++i) {
-        current_object__.clear();
+        current_object_.clear();
         seq[i]->traverse(this);
     }
     return false;
@@ -325,11 +325,11 @@ bool TSymbolDefinitionCollectingTraverser::visitBranch(glslang::TVisit,
 bool TSymbolDefinitionCollectingTraverser::visitUnary(glslang::TVisit /* visit */,
                                                       glslang::TIntermUnary* node)
 {
-    current_object__.clear();
+    current_object_.clear();
     node->getOperand()->traverse(this);
     if (isAssignOperation(node->getOp())) {
         // We should always be able to get an accesschain of the operand node.
-        assert(!current_object__.empty());
+        assert(!current_object_.empty());
 
         // If the operand node object is 'precise', we collect its accesschain
         // for the initial set of 'precise' objects.
@@ -337,16 +337,16 @@ bool TSymbolDefinitionCollectingTraverser::visitUnary(glslang::TVisit /* visit *
             // The operand node is an 'precise' object node, add its
             // accesschain to the set of 'precise' objects. This is to collect
             // the initial set of 'precise' objects.
-            precise_objects_.insert(current_object__);
+            precise_objects_.insert(current_object_);
         }
         // Gets the symbol ID from the object's accesschain.
-        ObjectAccessChain id_symbol = getFrontElement(current_object__);
+        ObjectAccessChain id_symbol = getFrontElement(current_object_);
         // Add a mapping from the symbol ID to this assignment operation node.
         symbol_definition_mapping_.insert(std::make_pair(id_symbol, node));
     }
     // Unary node is not a dereference node, so we clear the accesschain which
     // is under construction.
-    current_object__.clear();
+    current_object_.clear();
     return false;
 }
 
@@ -356,12 +356,12 @@ bool TSymbolDefinitionCollectingTraverser::visitBinary(glslang::TVisit /* visit 
                                                        glslang::TIntermBinary* node)
 {
     // Traverses the left node to build the accesschain info for the object.
-    current_object__.clear();
+    current_object_.clear();
     node->getLeft()->traverse(this);
 
     if (isAssignOperation(node->getOp())) {
         // We should always be able to get an accesschain for the left node.
-        assert(!current_object__.empty());
+        assert(!current_object_.empty());
 
         // If the left node object is 'precise', it is an initial precise object
         // specified in the shader source. Adds it to the initial worklist to
@@ -370,17 +370,17 @@ bool TSymbolDefinitionCollectingTraverser::visitBinary(glslang::TVisit /* visit 
             // The left node is an 'precise' object node, add its accesschain to
             // the set of 'precise' objects. This is to collect the initial set
             // of 'precise' objects.
-            precise_objects_.insert(current_object__);
+            precise_objects_.insert(current_object_);
         }
         // Gets the symbol ID from the object accesschain, which should be the
         // first element recorded in the accesschain.
-        ObjectAccessChain id_symbol = getFrontElement(current_object__);
+        ObjectAccessChain id_symbol = getFrontElement(current_object_);
         // Adds a mapping from the symbol ID to this assignment operation node.
         symbol_definition_mapping_.insert(std::make_pair(id_symbol, node));
 
         // Traverses the right node, there may be other 'assignment'
         // operatrions in the right.
-        current_object__.clear();
+        current_object_.clear();
         node->getRight()->traverse(this);
 
     } else if (isDereferenceOperation(node->getOp())) {
@@ -389,17 +389,17 @@ bool TSymbolDefinitionCollectingTraverser::visitBinary(glslang::TVisit /* visit 
         // object id.
         if (node->getOp() == glslang::EOpIndexDirectStruct) {
             unsigned struct_dereference_index = getStructIndexFromConstantUnion(node->getRight());
-            current_object__.push_back(ObjectAccesschainDelimiter);
-            current_object__.append(std::to_string(struct_dereference_index));
+            current_object_.push_back(ObjectAccesschainDelimiter);
+            current_object_.append(std::to_string(struct_dereference_index));
         }
-        accesschain_mapping_[node] = current_object__;
+        accesschain_mapping_[node] = current_object_;
 
         // For dereference node, there is no need to traverse the right child
         // node as the right node should always be an integer type object.
 
     } else {
         // For other binary nodes, still traverse the right node.
-        current_object__.clear();
+        current_object_.clear();
         return true;
     }
     return false;
