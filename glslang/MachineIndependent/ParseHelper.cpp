@@ -2869,13 +2869,14 @@ bool TParseContext::containsFieldWithBasicType(const TType& type, TBasicType bas
 void TParseContext::arraySizeCheck(const TSourceLoc& loc, TIntermTyped* expr, TArraySize& sizePair)
 {
     bool isConst = false;
-    sizePair.size = 1;
     sizePair.node = nullptr;
+
+    int size = 1;
 
     TIntermConstantUnion* constant = expr->getAsConstantUnion();
     if (constant) {
         // handle true (non-specialization) constant
-        sizePair.size = constant->getConstArray()[0].getIConst();
+        size = constant->getConstArray()[0].getIConst();
         isConst = true;
     } else {
         // see if it's a specialization constant instead
@@ -2884,16 +2885,18 @@ void TParseContext::arraySizeCheck(const TSourceLoc& loc, TIntermTyped* expr, TA
             sizePair.node = expr;
             TIntermSymbol* symbol = expr->getAsSymbolNode();
             if (symbol && symbol->getConstArray().size() > 0)
-                sizePair.size = symbol->getConstArray()[0].getIConst();
+                size = symbol->getConstArray()[0].getIConst();
         }
     }
+
+    sizePair.size = size;
 
     if (! isConst || (expr->getBasicType() != EbtInt && expr->getBasicType() != EbtUint)) {
         error(loc, "array size must be a constant integer expression", "", "");
         return;
     }
 
-    if (sizePair.size <= 0) {
+    if (size <= 0) {
         error(loc, "array size must be a positive integer", "", "");
         return;
     }

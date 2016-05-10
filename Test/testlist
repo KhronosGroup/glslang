@@ -128,4 +128,5 @@ varyingArrayIndirect.frag
 voidFunction.frag
 whileLoop.frag
 nonVulkan.frag
+negativeArraySize.comp
 spv.atomic.comp
