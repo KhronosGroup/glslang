@@ -40,13 +40,13 @@
 
 namespace spv {
 
-void SpvBuildLogger::tbdFunctionality(const char* f)
+void SpvBuildLogger::tbdFunctionality(const std::string& f)
 {
     if (std::find(std::begin(tbdFeatures), std::end(tbdFeatures), f) == std::end(tbdFeatures))
         tbdFeatures.push_back(f);
 }
 
-void SpvBuildLogger::missingFunctionality(const char* f)
+void SpvBuildLogger::missingFunctionality(const std::string& f)
 {
     if (std::find(std::begin(missingFeatures), std::end(missingFeatures), f) == std::end(missingFeatures))
         missingFeatures.push_back(f);
