@@ -33,6 +33,7 @@ set(SOURCES
     MachineIndependent/preprocessor/PpScanner.cpp
     MachineIndependent/preprocessor/PpSymbols.cpp
     MachineIndependent/preprocessor/PpTokens.cpp
+    MachineIndependent/propagateNoContraction.cpp
     GenericCodeGen/CodeGen.cpp
     GenericCodeGen/Link.cpp)
 
@@ -62,6 +63,7 @@ set(HEADERS
     MachineIndependent/SymbolTable.h
     MachineIndependent/Versions.h
     MachineIndependent/parseVersions.h
+    MachineIndependent/propagateNoContraction.h
     MachineIndependent/preprocessor/PpContext.h
     MachineIndependent/preprocessor/PpTokens.h)
 

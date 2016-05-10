@@ -107,6 +107,8 @@ spv.specConstant.vert
 spv.specConstant.comp
 spv.specConstantComposite.vert
 spv.specConstantOperations.vert
+spv.precise.tese
+spv.precise.tesc
 # GLSL-level semantics
 vulkan.frag
 vulkan.vert
