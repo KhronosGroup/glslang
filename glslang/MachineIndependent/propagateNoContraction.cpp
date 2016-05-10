@@ -39,6 +39,7 @@
 
 #include "propagateNoContraction.h"
 
+#include <cstdlib>
 #include <string>
 #include <tuple>
 #include <unordered_map>
@@ -663,7 +664,7 @@ protected:
             // Gets the struct dereference index that leads to 'precise' object.
             ObjectAccessChain precise_accesschain_index_str =
                 getFrontElement(remained_accesschain_);
-            unsigned precise_accesschain_index = std::stoul(precise_accesschain_index_str);
+            unsigned precise_accesschain_index = strtoul(precise_accesschain_index_str.c_str(), nullptr, 10);
             // Gets the node pointed by the accesschain index extracted before.
             glslang::TIntermTyped* potential_precise_node =
                 node->getSequence()[precise_accesschain_index]->getAsTyped();
