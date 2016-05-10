@@ -48,9 +48,9 @@ public:
     SpvBuildLogger(const SpvBuildLogger&) = delete;
 
     // Registers a TBD functionality.
-    void tbdFunctionality(const char* f);
+    void tbdFunctionality(const std::string& f);
     // Registers a missing functionality.
-    void missingFunctionality(const char* f);
+    void missingFunctionality(const std::string& f);
 
     // Logs a warning.
     void warning(const std::string& w) { warnings.push_back(w); }
@@ -62,8 +62,8 @@ public:
     std::string getAllMessages() const;
 
 private:
-    std::vector<const char*> tbdFeatures;
-    std::vector<const char*> missingFeatures;
+    std::vector<std::string> tbdFeatures;
+    std::vector<std::string> missingFeatures;
     std::vector<std::string> warnings;
     std::vector<std::string> errors;
 };
