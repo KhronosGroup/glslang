@@ -3465,6 +3465,9 @@ void TParseContext::redeclareBuiltinBlock(const TSourceLoc& loc, TTypeList& newT
             oldType.getQualifier().flat = newType.getQualifier().flat;
             oldType.getQualifier().nopersp = newType.getQualifier().nopersp;
 
+            if (oldType.isImplicitlySizedArray() && newType.isExplicitlySizedArray())
+                oldType.changeOuterArraySize(newType.getOuterArraySize());
+
             // go to next member
             ++member;
         } else {    

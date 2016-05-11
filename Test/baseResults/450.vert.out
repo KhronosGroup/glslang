@@ -12,8 +12,8 @@ ERROR: node is still EOpNull!
 0:9    Sequence
 0:9      move second child to first child (temp float)
 0:9        direct index (temp float CullDistance)
-0:9          gl_CullDistance: direct index for structure (out implicitly-sized array of float CullDistance)
-0:9            'anon@0' (out block{out implicitly-sized array of float CullDistance gl_CullDistance})
+0:9          gl_CullDistance: direct index for structure (out 3-element array of float CullDistance)
+0:9            'anon@0' (out block{out 3-element array of float CullDistance gl_CullDistance})
 0:9            Constant:
 0:9              10 (const uint)
 0:9          Constant:
@@ -21,7 +21,7 @@ ERROR: node is still EOpNull!
 0:9        Constant:
 0:9          4.500000
 0:?   Linker Objects
-0:?     'anon@0' (out block{out implicitly-sized array of float CullDistance gl_CullDistance})
+0:?     'anon@0' (out block{out 3-element array of float CullDistance gl_CullDistance})
 0:?     'outb' (smooth out bool)
 0:?     'outo' (smooth out sampler2D)
 0:?     'outa' (smooth out 4-element array of float)
