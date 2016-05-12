@@ -611,28 +611,29 @@ int TPpContext::CPPinclude(TPpToken* ppToken)
         if (token != '\n' && token != EndOfInput) {
             parseContext.ppError(ppToken->loc, "extra content after file designation", "#include", "");
         } else {
-            TShader::Includer::IncludeResult* res = includer.include(filename.c_str(), TShader::Includer::EIncludeRelative, currentSourceFile.c_str(), includeStack.size() + 1);
-            if (res && !res->file_name.empty()) {
-                if (res->file_data && res->file_length) {
+            TShader::IncludeResult res = includer(filename, TShader::IncludeType::EIncludeRelative, currentSourceFile, includeStack.size() + 1);
+            if (res && res->isValid()) {
+                size_t contentsSize = res->getFileContentsSize();
+                if (contentsSize) {
+                    const char* contents = res->getFileContents();
                     const bool forNextLine = parseContext.lineDirectiveShouldSetNextLine();
                     std::ostringstream prologue;
                     std::ostringstream epilogue;
-                    prologue << "#line " << forNextLine << " " << "\"" << res->file_name << "\"\n";
-                    epilogue << (res->file_data[res->file_length - 1] == '\n'? "" : "\n") << "#line " << directiveLoc.line + forNextLine << " " << directiveLoc.getStringNameOrNum() << "\n";
-                    pushInput(new TokenizableIncludeFile(directiveLoc, prologue.str(), res, epilogue.str(), this));
+                    prologue << "#line " << forNextLine << " " << "\"" << res->getFullFilePath() << "\"\n";
+                    epilogue << ( contents[contentsSize - 1] == '\n'? "" : "\n") << "#line " << directiveLoc.line + forNextLine << " " << directiveLoc.getStringNameOrNum() << "\n";
+                    pushInput(new TokenizableIncludeFile(directiveLoc, prologue.str(), std::move(res), epilogue.str(), this));
                 }
                 // At EOF, there's no "current" location anymore.
                 if (token != EndOfInput) parseContext.setCurrentColumn(0);
                 // Don't accidentally return EndOfInput, which will end all preprocessing.
                 return '\n';
             } else {
-                std::string message =
-                    res ? std::string(res->file_data, res->file_length)
-                        : std::string("Could not process include directive");
-                parseContext.ppError(directiveLoc, message.c_str(), "#include", "");
-                if (res) {
-                    includer.releaseInclude(res);
-                }
+                parseContext.ppError(directiveLoc,
+                                      res ?
+                                      res->getErrorMessage() :
+                                      "Could not process include directive",
+                                      "#include",
+                                      "");
             }
         }
     }

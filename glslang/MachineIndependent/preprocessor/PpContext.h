@@ -123,7 +123,7 @@ class TInputScanner;
 // Don't expect too much in terms of OO design.
 class TPpContext {
 public:
-    TPpContext(TParseContextBase&, const std::string& rootFileName, TShader::Includer&);
+    TPpContext(TParseContextBase&, const std::string& rootFileName, TShader::Includer);
     virtual ~TPpContext();
 
     void setPreamble(const char* preamble, size_t length);
@@ -292,7 +292,7 @@ protected:
     //
 
     // Used to obtain #include content.
-    TShader::Includer& includer;
+    TShader::Includer includer;
 
     int InitCPP();
     int CPPdefine(TPpToken * ppToken);
@@ -441,23 +441,23 @@ protected:
         // until this TokenizableIncludeFile is no longer used.
         TokenizableIncludeFile(const TSourceLoc& startLoc,
                           const std::string& prologue,
-                          TShader::Includer::IncludeResult* includedFile,
+                          TShader::IncludeResult includedFile,
                           const std::string& epilogue,
                           TPpContext* pp)
             : tInput(pp),
               prologue_(prologue),
-              includedFile_(includedFile),
+              includedFile_(std::move(includedFile)),
               epilogue_(epilogue),
               scanner(3, strings, lengths, names, 0, 0, true),
               prevScanner(nullptr),
               stringInput(pp, scanner)
         {
               strings[0] = prologue_.data();
-              strings[1] = includedFile_->file_data;
+              strings[1] = includedFile_->getFileContents();
               strings[2] = epilogue_.data();
 
               lengths[0] = prologue_.size();
-              lengths[1] = includedFile_->file_length;
+              lengths[1] = includedFile_->getFileContentsSize();
               lengths[2] = epilogue_.size();
 
               scanner.setLine(startLoc.line);
@@ -477,13 +477,13 @@ protected:
         {
             prevScanner = pp->parseContext.getScanner();
             pp->parseContext.setScanner(&scanner);
-            pp->push_include(includedFile_);
+            pp->push_include(std::move(includedFile_));
         }
 
         void notifyDeleted() override
         {
             pp->parseContext.setScanner(prevScanner);
-            pp->pop_include();
+            includedFile_ = pp->pop_include();
         }
 
     private:
@@ -493,8 +493,8 @@ protected:
         // Stores the epilogue for this string.
         const std::string epilogue_;
 
-        // Points to the IncludeResult that this TokenizableIncludeFile represents.
-        TShader::Includer::IncludeResult* includedFile_;
+        // Stores to the IncludeResult that this TokenizableIncludeFile represents.
+        TShader::IncludeResult includedFile_;
 
         // Will point to prologue_, includedFile_->file_data and epilogue_
         // This is passed to scanner constructor.
@@ -519,22 +519,22 @@ protected:
     void missingEndifCheck();
     int lFloatConst(int len, int ch, TPpToken* ppToken);
 
-    void push_include(TShader::Includer::IncludeResult* result)
+    void push_include(TShader::IncludeResult result)
     {
-        currentSourceFile = result->file_name;
-        includeStack.push(result);
+        currentSourceFile = result->getFullFilePath();
+        includeStack.push(std::move(result));
     }
 
-    void pop_include()
+    TShader::IncludeResult pop_include()
     {
-        TShader::Includer::IncludeResult* include = includeStack.top();
+        TShader::IncludeResult include = std::move(includeStack.top());
         includeStack.pop();
-        includer.releaseInclude(include);
         if (includeStack.empty()) {
             currentSourceFile = rootFileName;
         } else {
-            currentSourceFile = includeStack.top()->file_name;
+            currentSourceFile = includeStack.top()->getFullFilePath();
         }
+        return std::move(include);
     }
 
     bool inComment;
@@ -547,7 +547,7 @@ protected:
 
     TAtomMap atomMap;
     TStringMap stringMap;
-    std::stack<TShader::Includer::IncludeResult*> includeStack;
+    std::stack<TShader::IncludeResult> includeStack;
     std::string currentSourceFile;
     std::string rootFileName;
     int nextAtom;

@@ -257,6 +257,8 @@ SH_IMPORT_EXPORT int ShGetUniformLocation(const ShHandle uniformMap, const char*
 #include <list>
 #include <string>
 #include <utility>
+#include <memory>
+#include <functional>
 
 class TCompiler;
 class TInfoSink;
@@ -299,91 +301,75 @@ public:
     void setPreamble(const char* s) { preamble = s; }
     void setEntryPoint(const char* entryPoint);
 
-    // Interface to #include handlers.
-    //
-    // To support #include, a client of Glslang does the following:
-    // 1. Call setStringsWithNames to set the source strings and associated
-    //    names.  For example, the names could be the names of the files
-    //    containing the shader sources.
-    // 2. Call parse with an Includer.
-    //
-    // When the Glslang parser encounters an #include directive, it calls
-    // the Includer's include method with the the requested include name
-    // together with the current string name.  The returned IncludeResult
-    // contains the fully resolved name of the included source, together
-    // with the source text that should replace the #include directive
-    // in the source stream.  After parsing that source, Glslang will
-    // release the IncludeResult object.
-    class Includer {
-    public:
-        typedef enum {
-          EIncludeRelative, // For #include "something"
-          EIncludeStandard  // Reserved. For #include <something>
-        } IncludeType;
-
-        // An IncludeResult contains the resolved name and content of a source
-        // inclusion.
-        struct IncludeResult {
-            // For a successful inclusion, the fully resolved name of the requested
-            // include.  For example, in a filesystem-based includer, full resolution
-            // should convert a relative path name into an absolute path name.
-            // For a failed inclusion, this is an empty string.
-            std::string file_name;
-            // The content and byte length of the requested inclusion.  The
-            // Includer producing this IncludeResult retains ownership of the
-            // storage.
-            // For a failed inclusion, the file_data
-            // field points to a string containing error details.
-            const char* file_data;
-            const size_t file_length;
-            // Include resolver's context.
-            void* user_data;
-        };
-
-        // Resolves an inclusion request by name, type, current source name,
-        // and include depth.
-        // On success, returns an IncludeResult containing the resolved name
-        // and content of the include.  On failure, returns an IncludeResult
-        // with an empty string for the file_name and error details in the
-        // file_data field.  The Includer retains ownership of the contents
-        // of the returned IncludeResult value, and those contents must
-        // remain valid until the releaseInclude method is called on that
-        // IncludeResult object.
-        virtual IncludeResult* include(const char* requested_source,
-                                      IncludeType type,
-                                      const char* requesting_source,
-                                      size_t inclusion_depth) = 0;
-        // Signals that the parser will no longer use the contents of the
-        // specified IncludeResult.
-        virtual void releaseInclude(IncludeResult* result) = 0;
+    enum class IncludeType {
+      EIncludeRelative, // For #include "something"
+      EIncludeStandard  // Reserved. For #include <something>
     };
 
-    // Returns an error message for any #include directive.
-    class ForbidInclude : public Includer {
-    public:
-        IncludeResult* include(const char*, IncludeType, const char*, size_t) override
-        {
-            static const char unexpected_include[] =
-                "unexpected include directive";
-            static const IncludeResult unexpectedIncludeResult =
-                {"", unexpected_include, sizeof(unexpected_include) - 1, nullptr};
-            return new IncludeResult(unexpectedIncludeResult);
-        }
-        virtual void releaseInclude(IncludeResult* result) override
-        {
-            delete result;
-        }
+    struct IncludeResultInterface {
+      virtual ~IncludeResultInterface() = default;
+      // isValid() has to return true if a inclusion request was successfull and
+      // this instance references a valid include file.
+      // Otherwhise it has to return false.
+      virtual bool isValid() = 0;
+      // When isValid() returns true, then getFullFilePath() has to return
+      // a pointer to a null terminated string which contains the full path
+      // of the file included.
+      // When isValid() returns false, then calling getFullFilePath() is
+      // invalid and the return value is undefined.
+      virtual const char* getFullFilePath() = 0;
+      // When isValid() returns true, then getFileContents() has to return
+      // a pointer to the contents of the included file.
+      // When isValid() returns false, then calling getFileContents() is
+      // invalid and the return value is undefined.
+      virtual const char* getFileContents() = 0;
+      // When isValid() returns true, then getFileContentsSize() has to return
+      // the size of the contents that is returned by getFileContents().
+      // When isValid() returns false, then calling getFileContentsSize() is
+      // invalid and the return value is undefined.
+      virtual size_t getFileContentsSize() = 0;
+      // When isValid() returns false, then getErrorMessage() has to return
+      // a pointer to a null terminated string which contains a error message
+      // describing the reason for the failure.
+      // When isValid() returns true, then calling getErrorMessage() is
+      // invalid and the return value is undefined.
+      virtual const char* getErrorMessage() = 0;
     };
+    // Handler type for deleteion of a IncludeResultInterface instance.
+    typedef std::function<void( IncludeResultInterface* obj )> IncludeResultInterfaceDeleter;
+    // Value holder that references a IncludeResultInterface instance.
+    typedef std::unique_ptr<IncludeResultInterface, IncludeResultInterfaceDeleter> IncludeResult;
+    // Include request handler type, on success it has to return a IncludeResult containig a instance of IncludeResultInterface.
+    // On Failure it can return a empty IncludeResult or a IncludeResult that contains a instance of IncludeResultInterface
+    // that provides a error message, describing why it failed.
+    typedef std::function<IncludeResult( const std::string& requested_name, IncludeType type, const std::string& requested_in, size_t inclusion_depth )> Includer;
+    // Reference implementation of a include handler that will always return a valid IncludeResultInterface instance
+    // which represents a failed include result, with a appropiate error message.
+    static IncludeResult forbidInclude( const std::string&, IncludeType, const std::string&, size_t ) {
+      struct ForbiddenIncludeResult : IncludeResultInterface {
+        bool isValid() override { return false; }
+        const char* getFullFilePath() override { return nullptr; }
+        const char* getFileContents() override { return nullptr; }
+        size_t getFileContentsSize() override { return 0; }
+        const char* getErrorMessage() override {
+          static const char unexpected_include[] =
+            "unexpected include directive";
+          return unexpected_include;
+        }
+      };
+      static ForbiddenIncludeResult forbiddenInclude;
+      // returns a pointer to a static instance of ForbiddenIncludeResult and provides a deleter that does nothing
+      return IncludeResult( &forbiddenInclude, []( IncludeResultInterface* ) {} );
+    }
 
     bool parse(const TBuiltInResource* res, int defaultVersion, EProfile defaultProfile, bool forceDefaultVersionAndProfile,
                bool forwardCompatible, EShMessages messages)
     {
-        TShader::ForbidInclude includer;
-        return parse(res, defaultVersion, defaultProfile, forceDefaultVersionAndProfile, forwardCompatible, messages, includer);
+        return parse(res, defaultVersion, defaultProfile, forceDefaultVersionAndProfile, forwardCompatible, messages, &forbidInclude );
     }
 
     bool parse(const TBuiltInResource*, int defaultVersion, EProfile defaultProfile, bool forceDefaultVersionAndProfile,
-               bool forwardCompatible, EShMessages, Includer&);
+               bool forwardCompatible, EShMessages, Includer);
 
     // Equivalent to parse() without a default profile and without forcing defaults.
     // Provided for backwards compatibility.
@@ -391,7 +377,7 @@ public:
     bool preprocess(const TBuiltInResource* builtInResources,
                     int defaultVersion, EProfile defaultProfile, bool forceDefaultVersionAndProfile,
                     bool forwardCompatible, EShMessages message, std::string* outputString,
-                    Includer& includer);
+                    Includer includer);
 
     const char* getInfoLog();
     const char* getInfoDebugLog();

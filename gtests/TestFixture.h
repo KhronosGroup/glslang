@@ -259,11 +259,10 @@ public:
         glslang::TShader shader(EShLangVertex);
         shader.setStringsWithLengths(&shaderStrings, &shaderLengths, 1);
         std::string ppShader;
-        glslang::TShader::ForbidInclude includer;
         const bool success = shader.preprocess(
             &glslang::DefaultTBuiltInResource, defaultVersion, defaultProfile,
             forceVersionProfile, isForwardCompatible, EShMsgOnlyPreprocessor,
-            &ppShader, includer);
+            &ppShader, &glslang::TShader::forbidInclude);
 
         std::string log = shader.getInfoLog();
         log += shader.getInfoDebugLog();
