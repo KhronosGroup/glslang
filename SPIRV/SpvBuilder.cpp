@@ -1464,8 +1464,10 @@ Id Builder::createTextureCall(Decoration precision, Id resultType, bool sparse, 
     if (parameters.offset) {
         if (isConstant(parameters.offset))
             mask = (ImageOperandsMask)(mask | ImageOperandsConstOffsetMask);
-        else
+        else {
+            addCapability(CapabilityImageGatherExtended);
             mask = (ImageOperandsMask)(mask | ImageOperandsOffsetMask);
+        }
         texArgs[numArgs++] = parameters.offset;
     }
     if (parameters.offsets) {
