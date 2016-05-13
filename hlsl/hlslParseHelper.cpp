@@ -754,12 +754,15 @@ TIntermAggregate* HlslParseContext::handleFunctionDefinition(const TSourceLoc& l
     return paramNodes;
 }
 
-void HlslParseContext::handleFunctionArgument(TFunction* function, TIntermAggregate*& arguments, TIntermTyped* arg)
+void HlslParseContext::handleFunctionArgument(TFunction* function, TIntermTyped*& arguments, TIntermTyped* newArg)
 {
     TParameter param = { 0, new TType };
-    param.type->shallowCopy(arg->getType());
+    param.type->shallowCopy(newArg->getType());
     function->addParameter(param);
-    arguments = intermediate.growAggregate(arguments, arg);
+    if (arguments)
+        arguments = intermediate.growAggregate(arguments, newArg);
+    else
+        arguments = newArg;
 }
 
 //

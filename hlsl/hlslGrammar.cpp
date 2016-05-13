@@ -608,7 +608,7 @@ bool HlslGrammar::acceptConstructor(TIntermTyped*& node)
             return false;
 
         // arguments
-        TIntermAggregate* arguments = nullptr;
+        TIntermTyped* arguments = nullptr;
         if (! acceptArguments(constructorFunction, arguments)) {
             expected("constructor arguments");
             return false;
@@ -628,10 +628,17 @@ bool HlslGrammar::acceptConstructor(TIntermTyped*& node)
 // function_call
 //      : [idToken] arguments
 //
-bool HlslGrammar::acceptFunctionCall(HlslToken idToken, TIntermTyped*&)
+bool HlslGrammar::acceptFunctionCall(HlslToken idToken, TIntermTyped*& node)
 {
-    // todo
-    return false;
+    // arguments
+    TFunction* function = new TFunction(idToken.string, TType(EbtVoid));
+    TIntermTyped* arguments = nullptr;
+    if (! acceptArguments(function, arguments))
+        return false;
+
+    node = parseContext.handleFunctionCall(idToken.loc, function, arguments);
+
+    return true;
 }
 
 // arguments
@@ -640,7 +647,7 @@ bool HlslGrammar::acceptFunctionCall(HlslToken idToken, TIntermTyped*&)
 // The arguments are pushed onto the 'function' argument list and
 // onto the 'arguments' aggregate.
 //
-bool HlslGrammar::acceptArguments(TFunction* function, TIntermAggregate*& arguments)
+bool HlslGrammar::acceptArguments(TFunction* function, TIntermTyped*& arguments)
 {
     // LEFT_PAREN
     if (! acceptTokenClass(EHTokLeftParen))
@@ -649,7 +656,7 @@ bool HlslGrammar::acceptArguments(TFunction* function, TIntermAggregate*& argume
     do {
         // expression
         TIntermTyped* arg;
-        if (! acceptExpression(arg))
+        if (! acceptAssignmentExpression(arg))
             break;
 
         // hook it up

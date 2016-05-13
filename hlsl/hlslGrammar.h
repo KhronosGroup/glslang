@@ -71,7 +71,7 @@ namespace glslang {
         bool acceptPostfixExpression(TIntermTyped*&);
         bool acceptConstructor(TIntermTyped*&);
         bool acceptFunctionCall(HlslToken, TIntermTyped*&);
-        bool acceptArguments(TFunction*, TIntermAggregate*&);
+        bool acceptArguments(TFunction*, TIntermTyped*&);
         bool acceptLiteral(TIntermTyped*&);
         bool acceptCompoundStatement(TIntermAggregate*&);
         bool acceptStatement(TIntermNode*&);
