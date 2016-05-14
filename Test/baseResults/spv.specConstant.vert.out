@@ -16,7 +16,7 @@ Linked vertex stage:
                               EntryPoint Vertex 4  "main" 20 22 28 53
                               Source GLSL 400
                               Name 4  "main"
-                              Name 14  "foo(vf4[s1498];"
+                              Name 14  "foo(vf4[s1516];"
                               Name 13  "p"
                               Name 17  "builtin_spec_constant("
                               Name 20  "color"
@@ -96,10 +96,10 @@ Linked vertex stage:
                               Store 20(color) 46
               48:          10 Load 22(ucol)
                               Store 47(param) 48
-              49:           2 FunctionCall 14(foo(vf4[s1498];) 47(param)
+              49:           2 FunctionCall 14(foo(vf4[s1516];) 47(param)
                               Return
                               FunctionEnd
-14(foo(vf4[s1498];):           2 Function None 12
+14(foo(vf4[s1516];):           2 Function None 12
            13(p):     11(ptr) FunctionParameter
               15:             Label
               54:     24(ptr) AccessChain 53(dupUcol) 23
