@@ -71,7 +71,12 @@ TEST_P(HlslCompileTest, FromFile)
 INSTANTIATE_TEST_CASE_P(
     ToSpirv, HlslCompileTest,
     ::testing::ValuesIn(std::vector<FileNameEntryPointPair>{
-        {"hlsl.frag", "PixelShaderFunction"},
+        {"hlsl.assoc.frag", "PixelShaderFunction"},
+        {"hlsl.float4.frag", "PixelShaderFunction"},
+        {"hlsl.max.frag", "PixelShaderFunction"},
+        {"hlsl.precedence.frag", "PixelShaderFunction"},
+        {"hlsl.precedence2.frag", "PixelShaderFunction"},
+        {"hlsl.sin.frag", "PixelShaderFunction"},
     }),
     FileNameAsCustomTestSuffix
 );
