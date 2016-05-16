@@ -36,7 +36,7 @@
 
 namespace glslangtest {
 
-std::string FileNameAsCustomTestName(
+std::string FileNameAsCustomTestSuffix(
     const ::testing::TestParamInfo<std::string>& info)
 {
     std::string name = info.param;
@@ -46,7 +46,7 @@ std::string FileNameAsCustomTestName(
     return name;
 }
 
-EShLanguage GetGlslLanguageForStage(const std::string& stage)
+EShLanguage GetShaderStage(const std::string& stage)
 {
     if (stage == "vert") {
         return EShLangVertex;
@@ -66,17 +66,27 @@ EShLanguage GetGlslLanguageForStage(const std::string& stage)
     }
 }
 
-EShMessages GetSpirvMessageOptionsForSemanticsAndTarget(Semantics semantics,
-                                                        Target target)
+EShMessages DeriveOptions(Source source, Semantics semantics, Target target)
 {
     EShMessages result = EShMsgDefault;
 
+    switch (source) {
+        case Source::GLSL:
+            break;
+        case Source::HLSL:
+            result = EShMsgReadHlsl;
+            break;
+    }
+
     switch (target) {
         case Target::AST:
-            result = EShMsgAST;
+            result = static_cast<EShMessages>(result | EShMsgAST);
             break;
-        case Target::Spirv:
-            result = EShMsgSpvRules;
+        case Target::Spv:
+            result = static_cast<EShMessages>(result | EShMsgSpvRules);
+            break;
+        case Target::BothASTAndSpv:
+            result = static_cast<EShMessages>(result | EShMsgSpvRules | EShMsgAST);
             break;
     };
 

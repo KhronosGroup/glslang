@@ -13,6 +13,7 @@ if (TARGET gmock)
     # Test related source files
     ${CMAKE_CURRENT_SOURCE_DIR}/AST.FromFile.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/BuiltInResource.FromFile.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/Hlsl.FromFile.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/Pp.FromFile.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/Spv.FromFile.cpp
   )

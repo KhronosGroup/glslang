@@ -39,33 +39,40 @@
 namespace glslangtest {
 namespace {
 
-using PreprocessingTest = GlslangTest<::testing::TestWithParam<std::string>>;
+struct FileNameEntryPointPair {
+  const char* fileName;
+  const char* entryPoint;
+};
 
-TEST_P(PreprocessingTest, FromFile)
+// We are using FileNameEntryPointPair objects as parameters for instantiating
+// the template, so the global FileNameAsCustomTestSuffix() won't work since
+// it assumes std::string as parameters. Thus, an overriding one here.
+std::string FileNameAsCustomTestSuffix(
+    const ::testing::TestParamInfo<FileNameEntryPointPair>& info) {
+    std::string name = info.param.fileName;
+    // A valid test case suffix cannot have '.' and '-' inside.
+    std::replace(name.begin(), name.end(), '.', '_');
+    std::replace(name.begin(), name.end(), '-', '_');
+    return name;
+}
+
+using HlslCompileTest = GlslangTest<::testing::TestWithParam<FileNameEntryPointPair>>;
+
+// Compiling HLSL to SPIR-V under Vulkan semantics. Expected to successfully
+// generate SPIR-V.
+TEST_P(HlslCompileTest, FromFile)
 {
-    loadFilePreprocessAndCheck(GLSLANG_TEST_DIRECTORY, GetParam());
+    loadFileCompileAndCheck(GLSLANG_TEST_DIRECTORY, GetParam().fileName,
+                            Source::HLSL, Semantics::Vulkan,
+                            Target::BothASTAndSpv, GetParam().entryPoint);
 }
 
 // clang-format off
 INSTANTIATE_TEST_CASE_P(
-    Glsl, PreprocessingTest,
-    ::testing::ValuesIn(std::vector<std::string>({
-        "preprocessor.cpp_style_line_directive.vert",
-        "preprocessor.cpp_style___FILE__.vert",
-        "preprocessor.edge_cases.vert",
-        "preprocessor.errors.vert",
-        "preprocessor.extensions.vert",
-        "preprocessor.function_macro.vert",
-        "preprocessor.include.enabled.vert",
-        "preprocessor.include.disabled.vert",
-        "preprocessor.line.vert",
-        "preprocessor.line.frag",
-        "preprocessor.pragma.vert",
-        "preprocessor.simple.vert",
-        "preprocessor.success_if_parse_would_fail.vert",
-        "preprocessor.defined.vert",
-        "preprocessor.many.endif.vert",
-    })),
+    ToSpirv, HlslCompileTest,
+    ::testing::ValuesIn(std::vector<FileNameEntryPointPair>{
+        {"hlsl.frag", "PixelShaderFunction"},
+    }),
     FileNameAsCustomTestSuffix
 );
 // clang-format on
