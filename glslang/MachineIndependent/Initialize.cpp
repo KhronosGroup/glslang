@@ -629,6 +629,30 @@ void TBuiltIns::initialize(int version, EProfile profile, int spv, int vulkan)
             "dmat3 inverse(dmat3);"
             "dmat4 inverse(dmat4);"
 
+            "bvec2 lessThan(dvec2, dvec2);"
+            "bvec3 lessThan(dvec3, dvec3);"
+            "bvec4 lessThan(dvec4, dvec4);"
+
+            "bvec2 lessThanEqual(dvec2, dvec2);"
+            "bvec3 lessThanEqual(dvec3, dvec3);"
+            "bvec4 lessThanEqual(dvec4, dvec4);"
+
+            "bvec2 greaterThan(dvec2, dvec2);"
+            "bvec3 greaterThan(dvec3, dvec3);"
+            "bvec4 greaterThan(dvec4, dvec4);"
+
+            "bvec2 greaterThanEqual(dvec2, dvec2);"
+            "bvec3 greaterThanEqual(dvec3, dvec3);"
+            "bvec4 greaterThanEqual(dvec4, dvec4);"
+
+            "bvec2 equal(dvec2, dvec2);"
+            "bvec3 equal(dvec3, dvec3);"
+            "bvec4 equal(dvec4, dvec4);"
+
+            "bvec2 notEqual(dvec2, dvec2);"
+            "bvec3 notEqual(dvec3, dvec3);"
+            "bvec4 notEqual(dvec4, dvec4);"
+
             "\n");
     }
 
