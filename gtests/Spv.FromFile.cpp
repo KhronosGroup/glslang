@@ -49,7 +49,8 @@ using VulkanSemantics = GlslangTest<::testing::TestWithParam<std::string>>;
 TEST_P(CompileToSpirvTest, FromFile)
 {
     loadFileCompileAndCheck(GLSLANG_TEST_DIRECTORY, GetParam(),
-                            Semantics::Vulkan, Target::Spirv);
+                            Source::GLSL, Semantics::Vulkan,
+                            Target::Spv);
 }
 
 // GLSL-level Vulkan semantics test. Expected to error out before generating
@@ -57,7 +58,8 @@ TEST_P(CompileToSpirvTest, FromFile)
 TEST_P(VulkanSemantics, FromFile)
 {
     loadFileCompileAndCheck(GLSLANG_TEST_DIRECTORY, GetParam(),
-                            Semantics::Vulkan, Target::Spirv);
+                            Source::GLSL, Semantics::Vulkan,
+                            Target::Spv);
 }
 
 // clang-format off
@@ -173,7 +175,7 @@ INSTANTIATE_TEST_CASE_P(
         "spv.specConstant.comp",
         "spv.specConstantComposite.vert",
     })),
-    FileNameAsCustomTestName
+    FileNameAsCustomTestSuffix
 );
 
 INSTANTIATE_TEST_CASE_P(
@@ -183,7 +185,7 @@ INSTANTIATE_TEST_CASE_P(
         "vulkan.vert",
         "vulkan.comp",
     })),
-    FileNameAsCustomTestName
+    FileNameAsCustomTestSuffix
 );
 // clang-format on
 

@@ -65,8 +65,13 @@ namespace glslangtest {
 // This function is used to provide custom test name suffixes based on the
 // shader source file names. Otherwise, the test name suffixes will just be
 // numbers, which are not quite obvious.
-std::string FileNameAsCustomTestName(
+std::string FileNameAsCustomTestSuffix(
     const ::testing::TestParamInfo<std::string>& info);
+
+enum class Source {
+  GLSL,
+  HLSL,
+};
 
 // Enum for shader compilation semantics.
 enum class Semantics {
@@ -77,13 +82,13 @@ enum class Semantics {
 // Enum for compilation target.
 enum class Target {
     AST,
-    Spirv,
+    Spv,
+    BothASTAndSpv,
 };
 
-EShLanguage GetGlslLanguageForStage(const std::string& stage);
+EShLanguage GetShaderStage(const std::string& stage);
 
-EShMessages GetSpirvMessageOptionsForSemanticsAndTarget(Semantics semantics,
-                                                        Target target);
+EShMessages DeriveOptions(Source, Semantics, Target);
 
 // Reads the content of the file at the given |path|. On success, returns true
 // and the contents; otherwise, returns false and an empty string.
@@ -160,23 +165,23 @@ public:
         const std::string spirv;  // Optional SPIR-V disassembly text.
     };
 
-    // Compiles and linkes the given GLSL |source| code of the given shader
+    // Compiles and linkes the given source |code| of the given shader
     // |stage| into the given |target| under the given |semantics|. Returns
     // a GlslangResult instance containing all the information generated
     // during the process. If |target| is Target::Spirv, also disassembles
     // the result and returns disassembly text.
-    GlslangResult compileGlsl(const std::string& source,
-                              const std::string& stage, Semantics semantics,
-                              Target target)
+    GlslangResult compile(const std::string& code, Source source,
+                          const std::string& stage, Semantics semantics,
+                          Target target, const std::string& entryPointName)
     {
-        const char* shaderStrings = source.data();
-        const int shaderLengths = static_cast<int>(source.size());
-        const EShLanguage language = GetGlslLanguageForStage(stage);
+        const char* shaderStrings = code.data();
+        const int shaderLengths = static_cast<int>(code.size());
+        const EShLanguage kind = GetShaderStage(stage);
 
-        glslang::TShader shader(language);
+        glslang::TShader shader(kind);
         shader.setStringsWithLengths(&shaderStrings, &shaderLengths, 1);
-        const EShMessages messages =
-            GetSpirvMessageOptionsForSemanticsAndTarget(semantics, target);
+        if (!entryPointName.empty()) shader.setEntryPoint(entryPointName.c_str());
+        const EShMessages messages = DeriveOptions(source, semantics, target);
         // Reinitialize glslang if the semantics change.
         GlslangInitializer::InitializationToken token =
             GlobalTestSettings.initializer->acquire(messages);
@@ -190,9 +195,9 @@ public:
 
         spv::SpvBuildLogger logger;
 
-        if (success && target == Target::Spirv) {
+        if (success && (target == Target::Spv || target == Target::BothASTAndSpv)) {
             std::vector<uint32_t> spirv_binary;
-            glslang::GlslangToSpv(*program.getIntermediate(language),
+            glslang::GlslangToSpv(*program.getIntermediate(kind),
                                   spirv_binary, &logger);
 
             std::ostringstream disassembly_stream;
@@ -210,7 +215,10 @@ public:
 
     void loadFileCompileAndCheck(const std::string& testDir,
                                  const std::string& testName,
-                                 Semantics semantics, Target target)
+                                 Source source,
+                                 Semantics semantics,
+                                 Target target,
+                                 const std::string& entryPointName="")
     {
         const std::string inputFname = testDir + "/" + testName;
         const std::string expectedOutputFname =
@@ -221,7 +229,8 @@ public:
         tryLoadFile(expectedOutputFname, "expected output", &expectedOutput);
 
         GlslangResult result =
-            compileGlsl(input, GetSuffix(testName), semantics, target);
+            compile(input, source, GetSuffix(testName),
+                    semantics, target, entryPointName);
 
         // Generate the hybrid output in the way of glslangValidator.
         std::ostringstream stream;
@@ -236,7 +245,7 @@ public:
         outputIfNotEmpty(result.linkingOutput);
         outputIfNotEmpty(result.linkingError);
         stream << result.spirvWarningsErrors;
-        if (target == Target::Spirv) {
+        if (target == Target::Spv || target == Target::BothASTAndSpv) {
             stream
                 << (result.spirv.empty()
                         ? "SPIR-V is not generated for failed compile or link\n"
@@ -247,10 +256,10 @@ public:
                                     expectedOutputFname);
     }
 
-    // Preprocesses the given GLSL |source| code. On success, returns true, the
+    // Preprocesses the given |source| code. On success, returns true, the
     // preprocessed shader, and warning messages. Otherwise, returns false, an
     // empty string, and error messages.
-    std::tuple<bool, std::string, std::string> preprocessGlsl(
+    std::tuple<bool, std::string, std::string> preprocess(
         const std::string& source)
     {
         const char* shaderStrings = source.data();
@@ -290,7 +299,7 @@ public:
 
         bool ppOk;
         std::string output, error;
-        std::tie(ppOk, output, error) = preprocessGlsl(input);
+        std::tie(ppOk, output, error) = preprocess(input);
         if (!output.empty()) output += '\n';
         if (!error.empty()) error += '\n';
 

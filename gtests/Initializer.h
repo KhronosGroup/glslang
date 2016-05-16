@@ -69,7 +69,7 @@ public:
     InitializationToken acquire(EShMessages new_messages)
     {
         if ((lastMessages ^ new_messages) &
-            (EShMsgVulkanRules | EShMsgSpvRules)) {
+            (EShMsgVulkanRules | EShMsgSpvRules | EShMsgReadHlsl)) {
             glslang::FinalizeProcess();
             glslang::InitializeProcess();
         }
