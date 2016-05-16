@@ -51,7 +51,7 @@
     #define UINT_PTR uintptr_t
 #endif
 
-#ifdef __ANDROID__
+#if defined(__ANDROID__) || _MSC_VER < 1700
 #include <sstream>
 namespace std {
 template<typename T>
