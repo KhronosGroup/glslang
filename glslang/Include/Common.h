@@ -62,6 +62,18 @@ std::string to_string(const T& val) {
 }
 }
 #endif
+
+#if _MSC_VER < 1700
+inline long long int strtoll (const char* str, char** endptr, int base)
+{
+  return _strtoi64(str, endptr, base); 
+}
+inline long long int atoll (const char* str)
+{
+  return strtoll(str, NULL, 10);
+}
+#endif
+
 /* windows only pragma */
 #ifdef _MSC_VER
     #pragma warning(disable : 4786) // Don't warn about too long identifiers
