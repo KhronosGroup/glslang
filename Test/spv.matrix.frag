@@ -1,4 +1,4 @@
-#version 140
+#version 420
 
 in mat3x4 m1;
 in mat3x4 m2;
@@ -11,6 +11,7 @@ out vec4 color;
 void main()
 {
     mat3x4 sum34;
+    dmat3x4 dm;
     vec3 sum3;
     vec4 sum4;
 
@@ -22,6 +23,8 @@ void main()
     sum34 += f / m1;
     sum34 += f;
     sum34 -= f;
+    dm = dmat3x4(sum34);
+    sum34 = mat3x4(dm);
 
     sum3 = v4 * m2;
     sum4 = m2 * v3;
@@ -33,10 +36,8 @@ void main()
 
     color = sum4;
 
-//spv    if (m1 != sum34)
-        ++sum34;
-//    else
-        --sum34;
+    ++sum34;
+    --sum34;
 
     sum34 += mat3x4(f);
     sum34 += mat3x4(v3, f, v3, f, v3, f);

@@ -137,7 +137,7 @@ protected:
     spv::Id createBinaryMatrixOperation(spv::Op, spv::Decoration precision, spv::Decoration noContraction, spv::Id typeId, spv::Id left, spv::Id right);
     spv::Id createUnaryOperation(glslang::TOperator op, spv::Decoration precision, spv::Decoration noContraction, spv::Id typeId, spv::Id operand,glslang::TBasicType typeProxy);
     spv::Id createUnaryMatrixOperation(spv::Op, spv::Decoration precision, spv::Decoration noContraction, spv::Id typeId, spv::Id operand,glslang::TBasicType typeProxy);
-    spv::Id createConversion(glslang::TOperator op, spv::Decoration precision, spv::Id destTypeId, spv::Id operand);
+    spv::Id createConversion(glslang::TOperator op, spv::Decoration precision, spv::Decoration noContraction, spv::Id destTypeId, spv::Id operand, glslang::TBasicType typeProxy);
     spv::Id makeSmearedConstant(spv::Id constant, int vectorSize);
     spv::Id createAtomicOperation(glslang::TOperator op, spv::Decoration precision, spv::Id typeId, std::vector<spv::Id>& operands, glslang::TBasicType typeProxy);
     spv::Id createInvocationsOperation(glslang::TOperator, spv::Id typeId, spv::Id operand);
@@ -1071,7 +1071,7 @@ bool TGlslangToSpvTraverser::visitUnary(glslang::TVisit /* visit */, glslang::TI
 
     // it could be a conversion
     if (! result)
-        result = createConversion(node->getOp(), precision, convertGlslangToSpvType(node->getType()), operand);
+        result = createConversion(node->getOp(), precision, noContraction, convertGlslangToSpvType(node->getType()), operand, node->getOperand()->getBasicType());
 
     // if not, then possibly an operation
     if (! result)
@@ -3331,7 +3331,7 @@ spv::Id TGlslangToSpvTraverser::createUnaryMatrixOperation(spv::Op op, spv::Deco
     return builder.setPrecision(builder.createCompositeConstruct(typeId, results), precision);
 }
 
-spv::Id TGlslangToSpvTraverser::createConversion(glslang::TOperator op, spv::Decoration precision, spv::Id destType, spv::Id operand)
+spv::Id TGlslangToSpvTraverser::createConversion(glslang::TOperator op, spv::Decoration precision, spv::Decoration noContraction, spv::Id destType, spv::Id operand, glslang::TBasicType typeProxy)
 {
     spv::Op convOp = spv::OpNop;
     spv::Id zero = 0;
@@ -3400,6 +3400,8 @@ spv::Id TGlslangToSpvTraverser::createConversion(glslang::TOperator op, spv::Dec
     case glslang::EOpConvDoubleToFloat:
     case glslang::EOpConvFloatToDouble:
         convOp = spv::OpFConvert;
+        if (builder.isMatrixType(destType))
+            return createUnaryMatrixOperation(convOp, precision, noContraction, destType, operand, typeProxy);
         break;
 
     case glslang::EOpConvFloatToInt:
