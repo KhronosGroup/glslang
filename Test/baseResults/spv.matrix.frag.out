@@ -195,20 +195,20 @@ Linked fragment stage:
              135:           8 CompositeConstruct 130 132 134
                               Store 10(sum34) 135
              141:           8 Load 10(sum34)
-             142:  137(fvec4) CompositeExtract 141 0
+             142:    7(fvec4) CompositeExtract 141 0
              143:  137(fvec4) FConvert 142
-             144:  137(fvec4) CompositeExtract 141 1
+             144:    7(fvec4) CompositeExtract 141 1
              145:  137(fvec4) FConvert 144
-             146:  137(fvec4) CompositeExtract 141 2
+             146:    7(fvec4) CompositeExtract 141 2
              147:  137(fvec4) FConvert 146
              148:         138 CompositeConstruct 143 145 147
                               Store 140(dm) 148
              149:         138 Load 140(dm)
-             150:    7(fvec4) CompositeExtract 149 0
+             150:  137(fvec4) CompositeExtract 149 0
              151:    7(fvec4) FConvert 150
-             152:    7(fvec4) CompositeExtract 149 1
+             152:  137(fvec4) CompositeExtract 149 1
              153:    7(fvec4) FConvert 152
-             154:    7(fvec4) CompositeExtract 149 2
+             154:  137(fvec4) CompositeExtract 149 2
              155:    7(fvec4) FConvert 154
              156:           8 CompositeConstruct 151 153 155
                               Store 10(sum34) 156
