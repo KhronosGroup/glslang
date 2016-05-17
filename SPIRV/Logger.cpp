@@ -54,14 +54,14 @@ void SpvBuildLogger::missingFunctionality(const std::string& f)
 
 std::string SpvBuildLogger::getAllMessages() const {
     std::ostringstream messages;
-    for (const auto& f : tbdFeatures)
-        messages << "TBD functionality: " << f << "\n";
-    for (const auto& f : missingFeatures)
-        messages << "Missing functionality: " << f << "\n";
-    for (const auto& w : warnings)
-        messages << "warning: " << w << "\n";
-    for (const auto& e : errors)
-        messages << "error: " << e << "\n";
+    for (auto it = tbdFeatures.cbegin(); it != tbdFeatures.cend(); ++it)
+        messages << "TBD functionality: " << *it << "\n";
+    for (auto it = missingFeatures.cbegin(); it != missingFeatures.cend(); ++it)
+        messages << "Missing functionality: " << *it << "\n";
+    for (auto it = warnings.cbegin(); it != warnings.cend(); ++it)
+        messages << "warning: " << *it << "\n";
+    for (auto it = errors.cbegin(); it != errors.cend(); ++it)
+        messages << "error: " << *it << "\n";
     return messages.str();
 }
 

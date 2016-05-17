@@ -44,8 +44,7 @@ namespace spv {
 // missing/TBD functionalities, warnings, and errors.
 class SpvBuildLogger {
 public:
-    SpvBuildLogger() = default;
-    SpvBuildLogger(const SpvBuildLogger&) = delete;
+    SpvBuildLogger() {}
 
     // Registers a TBD functionality.
     void tbdFunctionality(const std::string& f);
@@ -62,6 +61,8 @@ public:
     std::string getAllMessages() const;
 
 private:
+    SpvBuildLogger(const SpvBuildLogger&);
+
     std::vector<std::string> tbdFeatures;
     std::vector<std::string> missingFeatures;
     std::vector<std::string> warnings;

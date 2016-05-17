@@ -58,7 +58,7 @@ namespace {
 // For members of vector, matrix and arrays, they will be represented with the
 // same symbol ID of their container symbol objects. This is because their
 // precise'ness is always the same as their container symbol objects.
-using ObjectAccessChain = std::string;
+typedef std::string ObjectAccessChain;
 
 // The delimiter used in the ObjectAccessChain string to separate symbol ID and
 // different level of struct indices.
@@ -66,14 +66,14 @@ const char ObjectAccesschainDelimiter = '/';
 
 // Mapping from Symbol IDs of symbol nodes, to their defining operation
 // nodes.
-using NodeMapping = std::unordered_multimap<ObjectAccessChain, glslang::TIntermOperator*>;
+typedef std::unordered_multimap<ObjectAccessChain, glslang::TIntermOperator*> NodeMapping;
 // Mapping from object nodes to their accesschain info string.
-using AccessChainMapping = std::unordered_map<glslang::TIntermTyped*, ObjectAccessChain>;
+typedef std::unordered_map<glslang::TIntermTyped*, ObjectAccessChain> AccessChainMapping;
 
 // Set of object IDs.
-using ObjectAccesschainSet = std::unordered_set<ObjectAccessChain>;
+typedef std::unordered_set<ObjectAccessChain> ObjectAccesschainSet;
 // Set of return branch nodes.
-using ReturnBranchNodeSet = std::unordered_set<glslang::TIntermBranch*>;
+typedef std::unordered_set<glslang::TIntermBranch*> ReturnBranchNodeSet;
 
 // A helper function to tell whether a node is 'noContraction'. Returns true if
 // the node has 'noContraction' qualifier, otherwise false.
