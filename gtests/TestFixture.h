@@ -129,14 +129,13 @@ public:
     }
 
     // Checks the equality of |expected| and |real|. If they are not equal,
-    // write
-    // |real| to the given file named as |fname| if update mode is on.
+    // write |real| to the given file named as |fname| if update mode is on.
     void checkEqAndUpdateIfRequested(const std::string& expected,
                                      const std::string& real,
                                      const std::string& fname)
     {
-        // In order to output the message we want under proper circumstances, we
-        // need the following operator<< stuff.
+        // In order to output the message we want under proper circumstances,
+        // we need the following operator<< stuff.
         EXPECT_EQ(expected, real)
             << (GlobalTestSettings.updateMode
                     ? ("Mismatch found and update mode turned on - "
@@ -145,10 +144,8 @@ public:
 
         // Update the expected output file if requested.
         // It looks weird to duplicate the comparison between expected_output
-        // and
-        // stream.str(). However, if creating a variable for the comparison
-        // result,
-        // we cannot have pretty print of the string diff in the above.
+        // and stream.str(). However, if creating a variable for the comparison
+        // result, we cannot have pretty print of the string diff in the above.
         if (GlobalTestSettings.updateMode && expected != real) {
             EXPECT_TRUE(WriteFile(fname, real)) << "Flushing failed";
         }
@@ -165,7 +162,7 @@ public:
         const std::string spirv;  // Optional SPIR-V disassembly text.
     };
 
-    // Compiles and linkes the given source |code| of the given shader
+    // Compiles and links the given source |code| of the given shader
     // |stage| into the given |target| under the given |semantics|. Returns
     // a GlslangResult instance containing all the information generated
     // during the process. If |target| is Target::Spirv, also disassembles

@@ -59,7 +59,7 @@ std::string FileNameAsCustomTestSuffix(
 using HlslCompileTest = GlslangTest<::testing::TestWithParam<FileNameEntryPointPair>>;
 
 // Compiling HLSL to SPIR-V under Vulkan semantics. Expected to successfully
-// generate SPIR-V.
+// generate both AST and SPIR-V.
 TEST_P(HlslCompileTest, FromFile)
 {
     loadFileCompileAndCheck(GLSLANG_TEST_DIRECTORY, GetParam().fileName,
