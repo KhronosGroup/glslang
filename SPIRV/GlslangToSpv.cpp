@@ -3334,18 +3334,18 @@ spv::Id TGlslangToSpvTraverser::createUnaryMatrixOperation(spv::Op op, spv::Deco
     // get the types sorted out
     int numCols = builder.getNumColumns(operand);
     int numRows = builder.getNumRows(operand);
-    spv::Id scalarType = builder.getScalarTypeId(typeId);
-    spv::Id vecType = builder.makeVectorType(scalarType, numRows);
+    spv::Id srcVecType  = builder.makeVectorType(builder.getScalarTypeId(builder.getTypeId(operand)), numRows);
+    spv::Id destVecType = builder.makeVectorType(builder.getScalarTypeId(typeId), numRows);
     std::vector<spv::Id> results;
 
     // do each vector op
     for (int c = 0; c < numCols; ++c) {
         std::vector<unsigned int> indexes;
         indexes.push_back(c);
-        spv::Id vec =  builder.createCompositeExtract(operand, vecType, indexes);
-        spv::Id vec_result = builder.createUnaryOp(op, vecType, vec);
-        addDecoration(vec_result, noContraction);
-        results.push_back(builder.setPrecision(vec_result, precision));
+        spv::Id srcVec  = builder.createCompositeExtract(operand, srcVecType, indexes);
+        spv::Id destVec = builder.createUnaryOp(op, destVecType, srcVec);
+        addDecoration(destVec, noContraction);
+        results.push_back(builder.setPrecision(destVec, precision));
     }
 
     // put the pieces together
