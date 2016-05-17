@@ -108,6 +108,22 @@ public:
         }
     }
 
+    void addAttribute(const TIntermSymbol& base)
+    {
+        if (processedDerefs.find(&base) == processedDerefs.end()) {
+            processedDerefs.insert(&base);
+
+            const TString &name = base.getName();
+            const TType &type = base.getType();
+
+            TReflection::TNameToIndex::const_iterator it = reflection.nameToIndex.find(name);
+            if (it == reflection.nameToIndex.end()) {
+                reflection.nameToIndex[name] = (int)reflection.indexToAttribute.size();
+                reflection.indexToAttribute.push_back(TObjectReflection(name, 0, mapToGlType(type), 0, 0));
+            }
+        }
+    }
+
     // Lookup or calculate the offset of a block member, using the recursively
     // defined block offset rules.
     int getOffset(const TType& type, int index)
@@ -671,6 +687,9 @@ void TLiveTraverser::visitSymbol(TIntermSymbol* base)
 {
     if (base->getQualifier().storage == EvqUniform)
         addUniform(*base);
+
+    if (intermediate.getStage() == EShLangVertex && base->getQualifier().isPipeInput())
+        addAttribute(*base);
 }
 
 // To prune semantically dead paths.
@@ -726,6 +745,11 @@ void TReflection::dump()
     printf("Uniform block reflection:\n");
     for (size_t i = 0; i < indexToUniformBlock.size(); ++i)
         indexToUniformBlock[i].dump();
+    printf("\n");
+
+    printf("Vertex attribute reflection:\n");
+    for (size_t i = 0; i < indexToAttribute.size(); ++i)
+        indexToAttribute[i].dump();
     printf("\n");
 
     //printf("Live names\n");

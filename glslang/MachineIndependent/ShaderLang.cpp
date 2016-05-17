@@ -1572,6 +1572,9 @@ int TProgram::getUniformBlockIndex(int index)        { return reflection->getUni
 int TProgram::getUniformType(int index)              { return reflection->getUniform(index).glDefineType; }
 int TProgram::getUniformBufferOffset(int index)      { return reflection->getUniform(index).offset; }
 int TProgram::getUniformArraySize(int index)         { return reflection->getUniform(index).size; }
+int TProgram::getNumLiveAttributes()                 { return reflection->getNumAttributes(); }
+const char* TProgram::getAttributeName(int index)    { return reflection->getAttribute(index).name.c_str(); }
+int TProgram::getAttributeType(int index)            { return reflection->getAttribute(index).glDefineType; }
 
 void TProgram::dumpReflection()                      { reflection->dump(); }
 
