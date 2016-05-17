@@ -52,19 +52,10 @@ Linked fragment stage:
                               Name 67  "coord"
                               Name 73  "constructed"
                               Decorate 10(Count) Flat
-                              MemberDecorate 13(lunarStruct1) 0 Flat
-                              MemberDecorate 13(lunarStruct1) 1 Flat
-                              MemberDecorate 14(lunarStruct2) 0 Flat
-                              MemberDecorate 14(lunarStruct2) 1 Flat
-                              MemberDecorate 14(lunarStruct2) 2 Flat
-                              MemberDecorate 18(lunarStruct1) 0 Flat
-                              MemberDecorate 18(lunarStruct1) 1 Flat
                               MemberDecorate 19(lunarStruct3) 0 Flat
                               MemberDecorate 19(lunarStruct3) 1 Flat
                               MemberDecorate 19(lunarStruct3) 2 Flat
                               MemberDecorate 19(lunarStruct3) 3 Flat
-                              MemberDecorate 32(lunarStruct1) 0 Flat
-                              MemberDecorate 32(lunarStruct1) 1 Flat
                               MemberDecorate 33(lunarStruct2) 0 Flat
                               MemberDecorate 33(lunarStruct2) 1 Flat
                               MemberDecorate 33(lunarStruct2) 2 Flat
