@@ -109,7 +109,7 @@ public:
 
 protected:
     spv::Decoration TranslateInterpolationDecoration(const glslang::TQualifier& qualifier);
-    spv::BuiltIn TranslateBuiltInDecoration(glslang::TBuiltInVariable);
+    spv::BuiltIn TranslateBuiltInDecoration(glslang::TBuiltInVariable, bool member);
     spv::ImageFormat TranslateImageFormat(const glslang::TType& type);
     spv::Id createSpvVariable(const glslang::TIntermSymbol*);
     spv::Id getSampledType(const glslang::TSampler&);
@@ -122,6 +122,7 @@ protected:
     int getArrayStride(const glslang::TType& arrayType, glslang::TLayoutPacking, glslang::TLayoutMatrix);
     int getMatrixStride(const glslang::TType& matrixType, glslang::TLayoutPacking, glslang::TLayoutMatrix);
     void updateMemberOffset(const glslang::TType& structType, const glslang::TType& memberType, int& currentOffset, int& nextOffset, glslang::TLayoutPacking, glslang::TLayoutMatrix);
+    void declareClipCullCapability(const glslang::TTypeList& members, int member);
 
     bool isShaderEntrypoint(const glslang::TIntermAggregate* node);
     void makeFunctions(const glslang::TIntermSequence&);
@@ -393,7 +394,7 @@ spv::Decoration TranslateNoContractionDecoration(const glslang::TQualifier& qual
 }
 
 // Translate glslang built-in variable to SPIR-V built in decoration.
-spv::BuiltIn TGlslangToSpvTraverser::TranslateBuiltInDecoration(glslang::TBuiltInVariable builtIn)
+spv::BuiltIn TGlslangToSpvTraverser::TranslateBuiltInDecoration(glslang::TBuiltInVariable builtIn, bool member)
 {
     switch (builtIn) {
     case glslang::EbvPointSize:
@@ -410,12 +411,20 @@ spv::BuiltIn TGlslangToSpvTraverser::TranslateBuiltInDecoration(glslang::TBuiltI
         }
         return spv::BuiltInPointSize;
 
+    // These *Distance capabilities logically belong here, but if the member is declared and
+    // then never used, consumers of SPIR-V prefer the capability not be declared.
+    // They are now generated when used, rather than here when declared.
+    // Potentially, the specification should be more clear what the minimum
+    // use needed is to trigger the capability.
+    //
     case glslang::EbvClipDistance:
-        builder.addCapability(spv::CapabilityClipDistance);
+        if (! member)
+            builder.addCapability(spv::CapabilityClipDistance);
         return spv::BuiltInClipDistance;
 
     case glslang::EbvCullDistance:
-        builder.addCapability(spv::CapabilityCullDistance);
+        if (! member)
+            builder.addCapability(spv::CapabilityCullDistance);
         return spv::BuiltInCullDistance;
 
     case glslang::EbvViewportIndex:
@@ -926,6 +935,10 @@ bool TGlslangToSpvTraverser::visitBinary(glslang::TVisit /* visit */, glslang::T
             } else {
                 // normal case for indexing array or structure or block
                 builder.accessChainPush(builder.makeIntConstant(index));
+
+                // Add capabilities here for accessing clip/cull distance
+                if (node->getLeft()->getType().isStruct() && ! node->getLeft()->getType().isArray())
+                    declareClipCullCapability(*node->getLeft()->getType().getStruct(), index);
             }
         }
         return false;
@@ -1919,7 +1932,7 @@ spv::Id TGlslangToSpvTraverser::convertGlslangToSpvType(const glslang::TType& ty
                         builder.addMemberDecoration(spvType, member, spv::DecorationMatrixStride, getMatrixStride(glslangType, explicitLayout, subQualifier.layoutMatrix));
 
                     // built-in variable decorations
-                    spv::BuiltIn builtIn = TranslateBuiltInDecoration(glslangType.getQualifier().builtIn);
+                    spv::BuiltIn builtIn = TranslateBuiltInDecoration(glslangType.getQualifier().builtIn, true);
                     if (builtIn != spv::BadValue)
                         addMemberDecoration(spvType, member, spv::DecorationBuiltIn, (int)builtIn);
                 }
@@ -2170,6 +2183,14 @@ void TGlslangToSpvTraverser::updateMemberOffset(const glslang::TType& /*structTy
     int memberAlignment = glslangIntermediate->getBaseAlignment(memberType, memberSize, dummyStride, explicitLayout == glslang::ElpStd140, matrixLayout == glslang::ElmRowMajor);
     glslang::RoundToPow2(currentOffset, memberAlignment);
     nextOffset = currentOffset + memberSize;
+}
+
+void TGlslangToSpvTraverser::declareClipCullCapability(const glslang::TTypeList& members, int member)
+{
+    if (members[member].type->getQualifier().builtIn == glslang::EbvClipDistance)
+        builder.addCapability(spv::CapabilityClipDistance);
+    if (members[member].type->getQualifier().builtIn == glslang::EbvCullDistance)
+        builder.addCapability(spv::CapabilityCullDistance);
 }
 
 bool TGlslangToSpvTraverser::isShaderEntrypoint(const glslang::TIntermAggregate* node)
@@ -3936,7 +3957,7 @@ spv::Id TGlslangToSpvTraverser::getSymbolId(const glslang::TIntermSymbol* symbol
     }
 
     // built-in variable decorations
-    spv::BuiltIn builtIn = TranslateBuiltInDecoration(symbol->getQualifier().builtIn);
+    spv::BuiltIn builtIn = TranslateBuiltInDecoration(symbol->getQualifier().builtIn, false);
     if (builtIn != spv::BadValue)
         addDecoration(id, spv::DecorationBuiltIn, (int)builtIn);
 
