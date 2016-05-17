@@ -1890,7 +1890,11 @@ spv::Id TGlslangToSpvTraverser::convertGlslangToSpvType(const glslang::TType& ty
                     builder.addMemberName(spvType, member, glslangType.getFieldName().c_str());
                     addMemberDecoration(spvType, member, TranslateLayoutDecoration(glslangType, subQualifier.layoutMatrix));
                     addMemberDecoration(spvType, member, TranslatePrecisionDecoration(glslangType));
-                    addMemberDecoration(spvType, member, TranslateInterpolationDecoration(subQualifier));
+                    // Add interpolation decorations only to top-level members of Input and Output storage classes
+                    if (type.getQualifier().storage == glslang::EvqVaryingIn || type.getQualifier().storage == glslang::EvqVaryingOut)
+                    {
+                        addMemberDecoration(spvType, member, TranslateInterpolationDecoration(subQualifier));
+                    }
                     addMemberDecoration(spvType, member, TranslateInvariantDecoration(subQualifier));
 
                     if (qualifier.storage == glslang::EvqBuffer) {
@@ -1906,7 +1910,16 @@ spv::Id TGlslangToSpvTraverser::convertGlslangToSpvType(const glslang::TType& ty
                     //       answer sitting already distributed throughout the individual member locations.
                     int location = -1;                // will only decorate if present or inherited
                     if (subQualifier.hasLocation())   // no inheritance, or override of inheritance
+                    {
+                        // struct members should not have explicit locations
+                        assert(type.getBasicType() != glslang::EbtStruct);
                         location = subQualifier.layoutLocation;
+                    }
+                    else if (type.getBasicType() != glslang::EbtBlock)
+                    {
+                        //  If it is a not a Block, (...) Its members are assigned consecutive locations (...)
+                        //  The members, and their nested types, must not themselves have Location decorations.
+                    }
                     else if (qualifier.hasLocation()) // inheritance
                         location = qualifier.layoutLocation + locationOffset;
                     if (qualifier.hasLocation())      // track for upcoming inheritance

@@ -66,14 +66,6 @@ Linked fragment stage:
                               MemberName 140(s2) 2  "s1_1"
                               MemberName 140(s2) 3  "bleh"
                               Name 142  "foo2"
-                              MemberDecorate 13(s1) 0 Flat
-                              MemberDecorate 13(s1) 1 Flat
-                              MemberDecorate 14(s2) 0 Flat
-                              MemberDecorate 14(s2) 1 Flat
-                              MemberDecorate 14(s2) 2 Flat
-                              MemberDecorate 14(s2) 3 Flat
-                              MemberDecorate 15(s1) 0 Flat
-                              MemberDecorate 15(s1) 1 Flat
                               MemberDecorate 16(s3) 0 Flat
                               MemberDecorate 16(s3) 1 Flat
                               MemberDecorate 16(s3) 2 Flat
@@ -82,8 +74,6 @@ Linked fragment stage:
                               Decorate 131(samp2D) DescriptorSet 0
                               MemberDecorate 136(s1) 0 Flat
                               MemberDecorate 136(s1) 1 Flat
-                              MemberDecorate 139(s1) 0 Flat
-                              MemberDecorate 139(s1) 1 Flat
                               MemberDecorate 140(s2) 0 Flat
                               MemberDecorate 140(s2) 1 Flat
                               MemberDecorate 140(s2) 2 Flat
