@@ -1891,8 +1891,7 @@ spv::Id TGlslangToSpvTraverser::convertGlslangToSpvType(const glslang::TType& ty
                     addMemberDecoration(spvType, member, TranslateLayoutDecoration(glslangType, subQualifier.layoutMatrix));
                     addMemberDecoration(spvType, member, TranslatePrecisionDecoration(glslangType));
                     // Add interpolation decorations only to top-level members of Input and Output storage classes
-                    if (type.getQualifier().storage == glslang::EvqVaryingIn || type.getQualifier().storage == glslang::EvqVaryingOut)
-                    {
+                    if (type.getQualifier().storage == glslang::EvqVaryingIn || type.getQualifier().storage == glslang::EvqVaryingOut) {
                         addMemberDecoration(spvType, member, TranslateInterpolationDecoration(subQualifier));
                     }
                     addMemberDecoration(spvType, member, TranslateInvariantDecoration(subQualifier));
@@ -1909,14 +1908,11 @@ spv::Id TGlslangToSpvTraverser::convertGlslangToSpvType(const glslang::TType& ty
                     //       probably move to the linker stage of the front end proper, and just have the
                     //       answer sitting already distributed throughout the individual member locations.
                     int location = -1;                // will only decorate if present or inherited
-                    if (subQualifier.hasLocation())   // no inheritance, or override of inheritance
-                    {
+                    if (subQualifier.hasLocation()) { // no inheritance, or override of inheritance
                         // struct members should not have explicit locations
                         assert(type.getBasicType() != glslang::EbtStruct);
                         location = subQualifier.layoutLocation;
-                    }
-                    else if (type.getBasicType() != glslang::EbtBlock)
-                    {
+                    } else if (type.getBasicType() != glslang::EbtBlock) {
                         //  If it is a not a Block, (...) Its members are assigned consecutive locations (...)
                         //  The members, and their nested types, must not themselves have Location decorations.
                     }
