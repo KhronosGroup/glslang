@@ -151,48 +151,61 @@ public:
         }
     }
 
+    struct ShaderResult {
+        std::string shaderName;
+        std::string output;
+        std::string error;
+    };
+
     // A struct for holding all the information returned by glslang compilation
     // and linking.
     struct GlslangResult {
-        const std::string compilationOutput;
-        const std::string compilationError;
-        const std::string linkingOutput;
-        const std::string linkingError;
-        const std::string spirvWarningsErrors;
-        const std::string spirv;  // Optional SPIR-V disassembly text.
+        std::vector<ShaderResult> shaderResults;
+        std::string linkingOutput;
+        std::string linkingError;
+        std::string spirvWarningsErrors;
+        std::string spirv;  // Optional SPIR-V disassembly text.
     };
 
-    // Compiles and links the given source |code| of the given shader
-    // |stage| into the given |target| under the given |semantics|. Returns
-    // a GlslangResult instance containing all the information generated
-    // during the process. If |target| is Target::Spirv, also disassembles
-    // the result and returns disassembly text.
-    GlslangResult compile(const std::string& code, Source source,
-                          const std::string& stage, Semantics semantics,
-                          Target target, const std::string& entryPointName)
+    // Compiles and the given source |code| of the given shader |stage| into
+    // the target under the semantics conveyed via |controls|. Returns true
+    // and modifies |shader| on success.
+    bool compile(glslang::TShader* shader, const std::string& code,
+                 const std::string& entryPointName, EShMessages controls)
     {
         const char* shaderStrings = code.data();
         const int shaderLengths = static_cast<int>(code.size());
-        const EShLanguage kind = GetShaderStage(stage);
 
-        glslang::TShader shader(kind);
-        shader.setStringsWithLengths(&shaderStrings, &shaderLengths, 1);
-        if (!entryPointName.empty()) shader.setEntryPoint(entryPointName.c_str());
-        const EShMessages messages = DeriveOptions(source, semantics, target);
+        shader->setStringsWithLengths(&shaderStrings, &shaderLengths, 1);
+        if (!entryPointName.empty()) shader->setEntryPoint(entryPointName.c_str());
         // Reinitialize glslang if the semantics change.
         GlslangInitializer::InitializationToken token =
-            GlobalTestSettings.initializer->acquire(messages);
-        bool success =
-            shader.parse(&glslang::DefaultTBuiltInResource, defaultVersion,
-                         isForwardCompatible, messages);
+            GlobalTestSettings.initializer->acquire(controls);
+        return shader->parse(&glslang::DefaultTBuiltInResource, defaultVersion,
+                             isForwardCompatible, controls);
+    }
+
+    // Compiles and links the given source |code| of the given shader
+    // |stage| into the target under the semantics specified via |controls|.
+    // Returns a GlslangResult instance containing all the information generated
+    // during the process. If the target includes SPIR-V, also disassembles
+    // the result and returns disassembly text.
+    GlslangResult compileAndLink(
+            const std::string shaderName, const std::string& code,
+            const std::string& entryPointName, EShMessages controls)
+    {
+        const EShLanguage kind = GetShaderStage(GetSuffix(shaderName));
+
+        glslang::TShader shader(kind);
+        bool success = compile(&shader, code, entryPointName, controls);
 
         glslang::TProgram program;
         program.addShader(&shader);
-        success &= program.link(messages);
+        success &= program.link(controls);
 
         spv::SpvBuildLogger logger;
 
-        if (success && (target == Target::Spv || target == Target::BothASTAndSpv)) {
+        if (success && (controls & EShMsgSpvRules)) {
             std::vector<uint32_t> spirv_binary;
             glslang::GlslangToSpv(*program.getIntermediate(kind),
                                   spirv_binary, &logger);
@@ -200,13 +213,37 @@ public:
             std::ostringstream disassembly_stream;
             spv::Parameterize();
             spv::Disassemble(disassembly_stream, spirv_binary);
-            return {shader.getInfoLog(), shader.getInfoDebugLog(),
+            return {{{shaderName, shader.getInfoLog(), shader.getInfoDebugLog()},},
                     program.getInfoLog(), program.getInfoDebugLog(),
                     logger.getAllMessages(), disassembly_stream.str()};
         } else {
-            return {shader.getInfoLog(), shader.getInfoDebugLog(),
-                    program.getInfoLog(), program.getInfoDebugLog(),
-                    "", ""};
+            return {{{shaderName, shader.getInfoLog(), shader.getInfoDebugLog()},},
+                    program.getInfoLog(), program.getInfoDebugLog(), "", ""};
+        }
+    }
+
+    void outputResultToStream(std::ostringstream* stream,
+                              const GlslangResult& result,
+                              EShMessages controls)
+    {
+        const auto outputIfNotEmpty = [&stream](const std::string& str) {
+            if (!str.empty()) *stream << str << "\n";
+        };
+
+        for (const auto& shaderResult : result.shaderResults) {
+            *stream << shaderResult.shaderName << "\n";
+            outputIfNotEmpty(shaderResult.output);
+            outputIfNotEmpty(shaderResult.error);
+        }
+        outputIfNotEmpty(result.linkingOutput);
+        outputIfNotEmpty(result.linkingError);
+        *stream << result.spirvWarningsErrors;
+
+        if (controls & EShMsgSpvRules) {
+            *stream
+                << (result.spirv.empty()
+                        ? "SPIR-V is not generated for failed compile or link\n"
+                        : result.spirv);
         }
     }
 
@@ -225,29 +262,13 @@ public:
         tryLoadFile(inputFname, "input", &input);
         tryLoadFile(expectedOutputFname, "expected output", &expectedOutput);
 
+        const EShMessages controls = DeriveOptions(source, semantics, target);
         GlslangResult result =
-            compile(input, source, GetSuffix(testName),
-                    semantics, target, entryPointName);
+            compileAndLink(testName, input, entryPointName, controls);
 
         // Generate the hybrid output in the way of glslangValidator.
         std::ostringstream stream;
-
-        const auto outputIfNotEmpty = [&stream](const std::string& str) {
-            if (!str.empty()) stream << str << "\n";
-        };
-
-        stream << testName << "\n";
-        outputIfNotEmpty(result.compilationOutput);
-        outputIfNotEmpty(result.compilationError);
-        outputIfNotEmpty(result.linkingOutput);
-        outputIfNotEmpty(result.linkingError);
-        stream << result.spirvWarningsErrors;
-        if (target == Target::Spv || target == Target::BothASTAndSpv) {
-            stream
-                << (result.spirv.empty()
-                        ? "SPIR-V is not generated for failed compile or link\n"
-                        : result.spirv);
-        }
+        outputResultToStream(&stream, result, controls);
 
         checkEqAndUpdateIfRequested(expectedOutput, stream.str(),
                                     expectedOutputFname);
