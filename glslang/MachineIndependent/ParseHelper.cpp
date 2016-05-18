@@ -3268,6 +3268,7 @@ TSymbol* TParseContext::redeclareBuiltinVariable(const TSourceLoc& loc, const TS
         (identifier == "gl_FragDepth"           && ((nonEsRedecls && version >= 420) || esRedecls)) ||
         (identifier == "gl_FragCoord"           && ((nonEsRedecls && version >= 150) || esRedecls)) ||
          identifier == "gl_ClipDistance"                                                            ||
+         identifier == "gl_CullDistance"                                                            ||
          identifier == "gl_FrontColor"                                                              ||
          identifier == "gl_BackColor"                                                               ||
          identifier == "gl_FrontSecondaryColor"                                                     ||
@@ -3320,8 +3321,9 @@ TSymbol* TParseContext::redeclareBuiltinVariable(const TSourceLoc& loc, const TS
                 error(loc, "cannot apply layout qualifier to", "redeclaration", symbol->getName().c_str());
             if (qualifier.isMemory() || qualifier.isAuxiliary() || symbol->getType().getQualifier().storage != qualifier.storage)
                 error(loc, "cannot change storage, memory, or auxiliary qualification of", "redeclaration", symbol->getName().c_str());
-        } else if (identifier == "gl_TexCoord" ||
-                   identifier == "gl_ClipDistance") {
+        } else if (identifier == "gl_TexCoord"     ||
+                   identifier == "gl_ClipDistance" ||
+                   identifier == "gl_CullDistance") {
             if (qualifier.hasLayout() || qualifier.isMemory() || qualifier.isAuxiliary() ||
                 qualifier.nopersp != symbolQualifier.nopersp || qualifier.flat != symbolQualifier.flat ||
                 symbolQualifier.storage != qualifier.storage)
@@ -3744,6 +3746,8 @@ void TParseContext::arrayLimitCheck(const TSourceLoc& loc, const TString& identi
         limitCheck(loc, size, "gl_MaxTextureCoords", "gl_TexCoord array size");
     else if (identifier.compare("gl_ClipDistance") == 0)
         limitCheck(loc, size, "gl_MaxClipDistances", "gl_ClipDistance array size");
+    else if (identifier.compare("gl_CullDistance") == 0)
+        limitCheck(loc, size, "gl_MaxCullDistances", "gl_CullDistance array size");
 }
 
 // See if the provided value is less than the symbol indicated by limit,
