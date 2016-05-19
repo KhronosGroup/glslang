@@ -14,7 +14,7 @@ $EXE -c > $TARGETDIR/test.conf
 diff -b $BASEDIR/test.conf $TARGETDIR/test.conf || HASERROR=1
 $EXE -i -l $TARGETDIR/test.conf specExamples.vert > $TARGETDIR/specExamples.vert.out
 diff -b $BASEDIR/specExamples.vert.out $TARGETDIR || HASERROR=1
-$EXE 100Limits.vert 100.conf >  $TARGETDIR/100LimitsConf.vert.out
+$EXE -l 100Limits.vert 100.conf >  $TARGETDIR/100LimitsConf.vert.out
 diff -b $BASEDIR/100LimitsConf.vert.out $TARGETDIR/100LimitsConf.vert.out || HASERROR=1
 
 #

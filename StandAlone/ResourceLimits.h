@@ -49,6 +49,9 @@ extern const TBuiltInResource DefaultTBuiltInResource;
 // Returns the DefaultTBuiltInResource as a human-readable string.
 std::string GetDefaultTBuiltInResourceString();
 
+// Decodes the resource limits from |config| to |resources|.
+void DecodeResourceLimits(TBuiltInResource* resources, char* config);
+
 }  // end namespace glslang
 
 #endif  // _STAND_ALONE_RESOURCE_LIMITS_INCLUDED_

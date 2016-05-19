@@ -171,7 +171,8 @@ public:
     // the target under the semantics conveyed via |controls|. Returns true
     // and modifies |shader| on success.
     bool compile(glslang::TShader* shader, const std::string& code,
-                 const std::string& entryPointName, EShMessages controls)
+                 const std::string& entryPointName, EShMessages controls,
+                 const TBuiltInResource* resources=nullptr)
     {
         const char* shaderStrings = code.data();
         const int shaderLengths = static_cast<int>(code.size());
@@ -181,8 +182,9 @@ public:
         // Reinitialize glslang if the semantics change.
         GlslangInitializer::InitializationToken token =
             GlobalTestSettings.initializer->acquire(controls);
-        return shader->parse(&glslang::DefaultTBuiltInResource, defaultVersion,
-                             isForwardCompatible, controls);
+        return shader->parse(
+                (resources ? resources : &glslang::DefaultTBuiltInResource),
+                defaultVersion, isForwardCompatible, controls);
     }
 
     // Compiles and links the given source |code| of the given shader
