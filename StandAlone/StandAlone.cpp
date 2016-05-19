@@ -37,7 +37,7 @@
 // this only applies to the standalone wrapper, not the front end in general
 #define _CRT_SECURE_NO_WARNINGS
 
-#include "DefaultResourceLimits.h"
+#include "ResourceLimits.h"
 #include "Worklist.h"
 #include "./../glslang/Include/ShHandle.h"
 #include "./../glslang/Include/revision.h"

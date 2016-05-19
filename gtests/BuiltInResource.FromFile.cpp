@@ -36,7 +36,7 @@
 
 #include <gtest/gtest.h>
 
-#include "StandAlone/DefaultResourceLimits.h"
+#include "StandAlone/ResourceLimits.h"
 #include "TestFixture.h"
 
 namespace glslangtest {

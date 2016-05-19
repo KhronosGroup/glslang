@@ -46,7 +46,7 @@
 #include "SPIRV/GlslangToSpv.h"
 #include "SPIRV/disassemble.h"
 #include "SPIRV/doc.h"
-#include "StandAlone/DefaultResourceLimits.h"
+#include "StandAlone/ResourceLimits.h"
 #include "glslang/Public/ShaderLang.h"
 
 #include "Initializer.h"
