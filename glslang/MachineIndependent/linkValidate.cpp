@@ -392,6 +392,8 @@ void TIntermediate::finalCheck(TInfoSink& infoSink)
 
     if (inIoAccessed("gl_ClipDistance") && inIoAccessed("gl_ClipVertex"))
         error(infoSink, "Can only use one of gl_ClipDistance or gl_ClipVertex (gl_ClipDistance is preferred)");
+    if (inIoAccessed("gl_CullDistance") && inIoAccessed("gl_ClipVertex"))
+        error(infoSink, "Can only use one of gl_CullDistance or gl_ClipVertex (gl_ClipDistance is preferred)");
 
     if (userOutputUsed() && (inIoAccessed("gl_FragColor") || inIoAccessed("gl_FragData")))
         error(infoSink, "Cannot use gl_FragColor or gl_FragData when using user-defined outputs");
