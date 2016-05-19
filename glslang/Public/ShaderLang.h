@@ -461,6 +461,9 @@ public:
     int getUniformType(int index);                   // can be used for glGetActiveUniformsiv(GL_UNIFORM_TYPE)
     int getUniformBufferOffset(int index);           // can be used for glGetActiveUniformsiv(GL_UNIFORM_OFFSET)
     int getUniformArraySize(int index);              // can be used for glGetActiveUniformsiv(GL_UNIFORM_SIZE)
+    int getNumLiveAttributes();                      // can be used for glGetProgramiv(GL_ACTIVE_ATTRIBUTES)
+    const char *getAttributeName(int index);         // can be used for glGetActiveAttrib()
+    int getAttributeType(int index);                 // can be used for glGetActiveAttrib()
     void dumpReflection();
 
 protected:
