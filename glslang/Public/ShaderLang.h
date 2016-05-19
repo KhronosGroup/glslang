@@ -222,7 +222,6 @@ SH_IMPORT_EXPORT const char* ShGetInfoLog(const ShHandle);
 SH_IMPORT_EXPORT const void* ShGetExecutable(const ShHandle);
 SH_IMPORT_EXPORT int ShSetVirtualAttributeBindings(const ShHandle, const ShBindingTable*);   // to detect user aliasing
 SH_IMPORT_EXPORT int ShSetFixedAttributeBindings(const ShHandle, const ShBindingTable*);     // to force any physical mappings
-SH_IMPORT_EXPORT int ShGetPhysicalAttributeBindings(const ShHandle, const ShBindingTable**); // for all attributes
 //
 // Tell the linker to never assign a vertex attribute to this list of physical attributes
 //
