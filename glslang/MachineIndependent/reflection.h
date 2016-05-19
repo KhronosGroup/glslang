@@ -37,6 +37,7 @@
 #define _REFLECTION_INCLUDED
 
 #include "../Public/ShaderLang.h"
+#include "../Include/Types.h"
 
 #include <list>
 #include <set>
@@ -54,7 +55,7 @@ class TLiveTraverser;
 // Data needed for just a single object at the granularity exchanged by the reflection API
 class TObjectReflection {
 public:
-    TObjectReflection(const TString& pName, int pOffset, int pGLDefineType, int pSize, int pIndex) : 
+    TObjectReflection(const TString& pName, int pOffset, int pGLDefineType, int pSize, int pIndex) :
         name(pName), offset(pOffset), glDefineType(pGLDefineType), size(pSize), index(pIndex) { }
     void dump() const { printf("%s: offset %d, type %x, size %d, index %d\n", name.c_str(), offset, glDefineType, size, index); }
     TString name;
@@ -67,7 +68,7 @@ public:
 // The full reflection database
 class TReflection {
 public:
-    TReflection() : badReflection("__bad__", -1, -1, -1, -1) {}
+    TReflection() : badReflection("__bad__", -1, -1, -1, -1) { badQualifier.clear(); }
     virtual ~TReflection() {}
 
     // grow the reflection stage by stage
@@ -85,7 +86,7 @@ public:
 
     // for mapping a block index to the block's description
     int getNumUniformBlocks() const { return (int)indexToUniformBlock.size(); }
-    const TObjectReflection& getUniformBlock(int i) const 
+    const TObjectReflection& getUniformBlock(int i) const
     {
         if (i >= 0 && i < (int)indexToUniformBlock.size())
             return indexToUniformBlock[i];
@@ -94,13 +95,93 @@ public:
     }
 
     // for mapping any name to its index (both block names and uniforms names)
-    int getIndex(const char* name) const 
+    int getIndex(const char* name) const
     {
         TNameToIndex::const_iterator it = nameToIndex.find(name);
         if (it == nameToIndex.end())
             return -1;
         else
             return it->second;
+    }
+
+    const TQualifier* getUniformQualifier(int i) const
+    {
+        if(i >=0 && i < (int)indexToUniform.size())
+            return uniformQualifiers[i];
+        else
+            return &badQualifier;
+    }
+
+    void setUniformBinding(int i, int binding)
+    {
+        if(i >= 0 && i < (int)indexToUniform.size())
+            uniformQualifiers[i]->setBinding(binding);
+    }
+
+/// VaryingIns
+    int getNumInVaryings() { return (int)indexToVaryingIn.size(); }
+    const TObjectReflection& getVaryingIn(int i) const
+    {
+        if (i >= 0 && i < (int)indexToVaryingIn.size())
+            return indexToVaryingIn[i];
+        else
+            return badReflection;
+    }
+
+    int getVaryingInIndex(const char* name) const
+    {
+        TNameToIndex::const_iterator it = varyingInNameToIndex.find(name);
+        if (it == varyingInNameToIndex.end())
+            return -1;
+        else
+            return it->second;
+    }
+
+    const TQualifier* getVaryingInQualifier(int i) const
+    {
+        if(i >=0 && i < (int)indexToVaryingIn.size())
+            return varyingInQualifiers[i];
+        else
+            return &badQualifier;
+    }
+
+    void setVaryingInLocation(int i, int location)
+    {
+        if(i >= 0 && i < (int)indexToVaryingIn.size())
+            varyingInQualifiers[i]->setLocation(location);
+    }
+
+/// VaryingOuts
+    int getNumOutVaryings() { return (int)indexToVaryingOut.size(); }
+    const TObjectReflection& getVaryingOut(int i) const
+    {
+        if (i >= 0 && i < (int)indexToVaryingOut.size())
+            return indexToVaryingOut[i];
+        else
+            return badReflection;
+    }
+
+    int getVaryingOutIndex(const char* name) const
+    {
+        TNameToIndex::const_iterator it = varyingOutNameToIndex.find(name);
+        if (it == varyingOutNameToIndex.end())
+            return -1;
+        else
+            return it->second;
+    }
+
+    const TQualifier* getVaryingOutQualifier(int i) const
+    {
+        if(i >=0 && i < (int)indexToVaryingOut.size())
+            return varyingOutQualifiers[i];
+        else
+            return &badQualifier;
+    }
+
+    void setVaryingOutLocation(int i, int location)
+    {
+        if(i >= 0 && i < (int)indexToVaryingOut.size())
+            varyingOutQualifiers[i]->setLocation(location);
     }
 
     void dump();
@@ -112,10 +193,21 @@ protected:
     typedef std::map<TString, int> TNameToIndex;
     typedef std::vector<TObjectReflection> TMapIndexToReflection;
 
-    TObjectReflection badReflection; // return for queries of -1 or generally out of range; has expected descriptions with in it for this
-    TNameToIndex nameToIndex;        // maps names to indexes; can hold all types of data: uniform/buffer and which function names have been processed
-    TMapIndexToReflection indexToUniform;
-    TMapIndexToReflection indexToUniformBlock;
+    TObjectReflection               badReflection;          // return for queries of -1 or generally out of range; has expected descriptions with in it for this
+    TQualifier                      badQualifier;
+
+    TNameToIndex                    nameToIndex;            // maps names to indexes; can hold all types of data: uniform/buffer and which function names have been processed
+    TMapIndexToReflection           indexToUniform;
+    TMapIndexToReflection           indexToUniformBlock;
+    std::vector<const TQualifier *> uniformQualifiers;
+
+    TNameToIndex                    varyingInNameToIndex;
+    TMapIndexToReflection           indexToVaryingIn;
+    std::vector<const TQualifier *> varyingInQualifiers;
+
+    TNameToIndex                    varyingOutNameToIndex;
+    TMapIndexToReflection           indexToVaryingOut;
+    std::vector<const TQualifier *> varyingOutQualifiers;
 };
 
 } // end namespace glslang

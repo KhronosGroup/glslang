@@ -76,7 +76,7 @@ namespace glslang {
 
 class TLiveTraverser : public TIntermTraverser {
 public:
-    TLiveTraverser(const TIntermediate& i, TReflection& r) : intermediate(i), reflection(r) { }
+    TLiveTraverser(const TIntermediate& i, TReflection& r, EShLanguage s) : intermediate(i), reflection(r), language(s) { }
 
     virtual bool visitAggregate(TVisit, TIntermAggregate* node);
     virtual bool visitBinary(TVisit, TIntermBinary* node);
@@ -236,13 +236,55 @@ public:
         if (arraySize == 0)
             arraySize = mapToGlArraySize(*terminalType);
 
-        TReflection::TNameToIndex::const_iterator it = reflection.nameToIndex.find(name);
-        if (it == reflection.nameToIndex.end()) {
-            reflection.nameToIndex[name] = (int)reflection.indexToUniform.size();
-            reflection.indexToUniform.push_back(TObjectReflection(name, offset, mapToGlType(*terminalType), arraySize, blockIndex));
-        } else if (arraySize > 1) {
-            int& reflectedArraySize = reflection.indexToUniform[it->second].size;
-            reflectedArraySize = std::max(arraySize, reflectedArraySize);
+        switch(baseType.getQualifier().storage) {
+        case EvqVaryingIn: {
+            TReflection::TNameToIndex::const_iterator it = reflection.varyingInNameToIndex.find(name);
+
+                /// Name does not exist. Add it.
+            if (it == reflection.varyingInNameToIndex.end()) {
+                reflection.varyingInNameToIndex[name] = (int)reflection.indexToVaryingIn.size();
+                reflection.indexToVaryingIn.push_back(TObjectReflection(name, offset, mapToGlType(*terminalType), arraySize, blockIndex));
+                reflection.varyingInQualifiers.push_back(&baseType.getQualifier());
+            } else if (arraySize > 1) {
+                int& reflectedArraySize = reflection.indexToVaryingIn[it->second].size;
+                reflectedArraySize = std::max(arraySize, reflectedArraySize);
+            }
+
+            break;
+            }
+
+        case EvqVaryingOut: {
+            TReflection::TNameToIndex::const_iterator it = reflection.varyingOutNameToIndex.find(name);
+
+                /// Name does not exist. Add it.
+            if (it == reflection.varyingOutNameToIndex.end()) {
+                reflection.varyingOutNameToIndex[name] = (int)reflection.indexToVaryingOut.size();
+                reflection.indexToVaryingOut.push_back(TObjectReflection(name, offset, mapToGlType(*terminalType), arraySize, blockIndex));
+                reflection.varyingOutQualifiers.push_back(&baseType.getQualifier());
+            } else if (arraySize > 1) {
+                int& reflectedArraySize = reflection.indexToVaryingOut[it->second].size;
+                reflectedArraySize = std::max(arraySize, reflectedArraySize);
+            }
+
+            break;
+            }
+
+//        case EvqUniform:
+        default: {
+            TReflection::TNameToIndex::const_iterator it = reflection.nameToIndex.find(name);
+
+                /// Name does not exist. Add it.
+            if (it == reflection.nameToIndex.end()) {
+                reflection.nameToIndex[name] = (int)reflection.indexToUniform.size();
+                reflection.indexToUniform.push_back(TObjectReflection(name, offset, mapToGlType(*terminalType), arraySize, blockIndex));
+                reflection.uniformQualifiers.push_back(&baseType.getQualifier());
+            } else if (arraySize > 1) {
+                int& reflectedArraySize = reflection.indexToUniform[it->second].size;
+                reflectedArraySize = std::max(arraySize, reflectedArraySize);
+            }
+
+            break;
+            }
         }
     }
 
@@ -628,6 +670,7 @@ public:
     const TIntermediate& intermediate;
     TReflection& reflection;
     std::set<const TIntermNode*> processedDerefs;
+    EShLanguage language;
 
 protected:
     TLiveTraverser(TLiveTraverser&);
@@ -669,8 +712,16 @@ bool TLiveTraverser::visitBinary(TVisit /* visit */, TIntermBinary* node)
 // To reflect non-dereferenced objects.
 void TLiveTraverser::visitSymbol(TIntermSymbol* base)
 {
-    if (base->getQualifier().storage == EvqUniform)
+    // Do not add anonymous symbols
+    if(IsAnonymous(base->getName())) {
+        return;
+    }
+
+    if (base->getQualifier().storage == EvqUniform ||
+        base->getQualifier().storage == EvqVaryingIn ||
+        base->getQualifier().storage == EvqVaryingOut) {
         addUniform(*base);
+    }
 }
 
 // To prune semantically dead paths.
@@ -696,12 +747,12 @@ bool TLiveTraverser::visitSelection(TVisit /* visit */,  TIntermSelection* node)
 // Merge live symbols from 'intermediate' into the existing reflection database.
 //
 // Returns false if the input is too malformed to do this.
-bool TReflection::addStage(EShLanguage, const TIntermediate& intermediate)
+bool TReflection::addStage(EShLanguage s, const TIntermediate& intermediate)
 {
     if (intermediate.getNumMains() != 1 || intermediate.isRecursive())
         return false;
 
-    TLiveTraverser it(intermediate, *this);
+    TLiveTraverser it(intermediate, *this, s);
 
     // put main() on functions to process
     it.pushFunction("main(");
