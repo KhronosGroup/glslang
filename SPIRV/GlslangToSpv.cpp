@@ -1961,6 +1961,14 @@ spv::Id TGlslangToSpvTraverser::convertGlslangToSpvType(const glslang::TType& ty
                 if (type.getQualifier().hasXfbBuffer())
                     builder.addDecoration(spvType, spv::DecorationXfbBuffer, type.getQualifier().layoutXfbBuffer);
             }
+
+            if (type.getBasicType() != glslang::EbtBlock && (type.getQualifier().storage == glslang::EvqVaryingIn || type.getQualifier().storage == glslang::EvqVaryingOut))
+            {
+                // The layout of a structure type used as an Input or Output depends on whether it is also a Block (i.e. has a Block decoration).
+                // If it is a not a Block, then the structure type must have a Location decoration.
+                if (type.getQualifier().hasLocation())
+                    builder.addDecoration(spvType, spv::DecorationLocation, type.getQualifier().layoutLocation);
+            }
         }
         break;
     default:
@@ -3918,8 +3926,6 @@ spv::Id TGlslangToSpvTraverser::getSymbolId(const glslang::TIntermSymbol* symbol
         addDecoration(id, TranslateInterpolationDecoration(symbol->getType().getQualifier()));
         if (symbol->getType().getQualifier().hasSpecConstantId())
             addDecoration(id, spv::DecorationSpecId, symbol->getType().getQualifier().layoutSpecConstantId);
-        if (symbol->getQualifier().hasLocation())
-            builder.addDecoration(id, spv::DecorationLocation, symbol->getQualifier().layoutLocation);
         if (symbol->getQualifier().hasIndex())
             builder.addDecoration(id, spv::DecorationIndex, symbol->getQualifier().layoutIndex);
         if (symbol->getQualifier().hasComponent())
@@ -3935,6 +3941,8 @@ spv::Id TGlslangToSpvTraverser::getSymbolId(const glslang::TIntermSymbol* symbol
         }
     }
 
+    if (symbol->getQualifier().hasLocation())
+        builder.addDecoration(id, spv::DecorationLocation, symbol->getQualifier().layoutLocation);
     addDecoration(id, TranslateInvariantDecoration(symbol->getType().getQualifier()));
     if (symbol->getQualifier().hasStream() && glslangIntermediate->isMultiStream()) {
         builder.addCapability(spv::CapabilityGeometryStreams);
