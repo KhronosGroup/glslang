@@ -1629,8 +1629,10 @@ bool TIntermBinary::promote()
             return false;
         if (left->isVector() && right->isVector() && left->getVectorSize() != right->getVectorSize())
             return false;
-        if (right->isVector() || right->isMatrix())
-            setType(TType(basicType, EvqTemporary, right->getVectorSize(), right->getMatrixCols(), right->getMatrixRows()));
+        if (right->isVector() || right->isMatrix()) {
+            type.shallowCopy(right->getType());
+            type.getQualifier().makeTemporary();
+        }
         break;
 
     default:

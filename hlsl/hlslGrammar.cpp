@@ -219,8 +219,12 @@ bool HlslGrammar::acceptType(TType& type)
         new(&type) TType(EbtInt);
         break;
     case EHTokFloat:
+        new(&type) TType(EbtFloat);
+        break;
+
     case EHTokFloat1:
         new(&type) TType(EbtFloat);
+        type.makeVector();
         break;
 
     case EHTokFloat2:

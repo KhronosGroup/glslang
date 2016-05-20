@@ -1655,13 +1655,6 @@ void HlslParseContext::boolCheck(const TSourceLoc& loc, const TIntermTyped* type
         error(loc, "boolean expression expected", "", "");
 }
 
-// This function checks to see if the node (for the expression) contains a scalar boolean expression or not
-void HlslParseContext::boolCheck(const TSourceLoc& loc, const TPublicType& pType)
-{
-    if (pType.basicType != EbtBool || pType.arraySizes || pType.matrixCols > 1 || (pType.vectorSize > 1))
-        error(loc, "boolean expression expected", "", "");
-}
-
 //
 // Fix just a full qualifier (no variables or types yet, but qualifier is complete) at global level.
 //
