@@ -32,8 +32,8 @@
 // ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 // POSSIBILITY OF SUCH DAMAGE.
 
-#ifndef _DEFAULT_RESOURCE_LIMITS_INCLUDED_
-#define _DEFAULT_RESOURCE_LIMITS_INCLUDED_
+#ifndef _STAND_ALONE_RESOURCE_LIMITS_INCLUDED_
+#define _STAND_ALONE_RESOURCE_LIMITS_INCLUDED_
 
 #include <string>
 
@@ -49,6 +49,9 @@ extern const TBuiltInResource DefaultTBuiltInResource;
 // Returns the DefaultTBuiltInResource as a human-readable string.
 std::string GetDefaultTBuiltInResourceString();
 
+// Decodes the resource limits from |config| to |resources|.
+void DecodeResourceLimits(TBuiltInResource* resources, char* config);
+
 }  // end namespace glslang
 
-#endif  // _DEFAULT_RESOURCE_LIMITS_INCLUDED_
+#endif  // _STAND_ALONE_RESOURCE_LIMITS_INCLUDED_
