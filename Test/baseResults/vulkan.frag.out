@@ -31,7 +31,9 @@ ERROR: 0:66: 'non-opaque uniforms outside a block' : not allowed when using GLSL
 ERROR: 0:67: 'subroutine' : not allowed when generating SPIR-V 
 ERROR: 0:67: 'uniform' : no qualifiers allowed for function return 
 ERROR: 0:69: 'non-opaque uniforms outside a block' : not allowed when using GLSL for Vulkan 
-ERROR: 31 compilation errors.  No code generated.
+ERROR: 0:73: 'texture' : no matching overloaded function found 
+ERROR: 0:74: 'imageStore' : no matching overloaded function found 
+ERROR: 33 compilation errors.  No code generated.
 
 
 

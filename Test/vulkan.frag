@@ -67,3 +67,9 @@ subroutine int fooS;                              // ERROR, not in SPV
 subroutine int fooSub();                          // ERROR, not in SPV
 
 uniform vec4 dv4;                                 // ERROR, no default uniforms
+
+void fooTex()
+{
+    texture(t2d, vec2(1.0));                 // ERROR, need a sampler, not a pure texture
+    imageStore(t2d, ivec2(4, 5), vec4(1.2)); // ERROR, need an image, not a pure texture
+}
