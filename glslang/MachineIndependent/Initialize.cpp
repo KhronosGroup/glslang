@@ -1,6 +1,6 @@
 //
 //Copyright (C) 2002-2005  3Dlabs Inc. Ltd.
-//Copyright (C) 2012-2015 LunarG, Inc.
+//Copyright (C) 2012-2016 LunarG, Inc.
 //Copyright (C) 2015-2016 Google, Inc.
 //
 //All rights reserved.
@@ -43,9 +43,9 @@
 // Where to put a built-in:
 //   TBuiltIns::initialize(version,profile)       context-independent textual built-ins; add them to the right string
 //   TBuiltIns::initialize(resources,...)         context-dependent textual built-ins; add them to the right string
-//   IdentifyBuiltIns(...,symbolTable)            context-independent programmatic additions/mappings to the symbol table,
+//   TBuiltIns::identifyBuiltIns(...,symbolTable) context-independent programmatic additions/mappings to the symbol table,
 //                                                including identifying what extensions are needed if a version does not allow a symbol
-//   IdentifyBuiltIns(...,symbolTable, resources) context-dependent programmatic additions/mappings to the symbol table,
+//   TBuiltIns::identifyBuiltIns(...,symbolTable, resources) context-dependent programmatic additions/mappings to the symbol table,
 //                                                including identifying what extensions are needed if a version does not allow a symbol
 //
 
@@ -66,6 +66,16 @@ bool PureOperatorBuiltins = true;
 inline bool IncludeLegacy(int version, EProfile profile, int spv)
 {
     return profile != EEsProfile && (version <= 130 || (spv == 0 && ARBCompatibility) || profile == ECompatibilityProfile);
+}
+
+// Construct TBuiltInParseables base class.  This can be used for language-common constructs.
+TBuiltInParseables::TBuiltInParseables()
+{
+}
+
+// Destroy TBuiltInParseables.
+TBuiltInParseables::~TBuiltInParseables()
+{
 }
 
 TBuiltIns::TBuiltIns()
@@ -94,6 +104,7 @@ TBuiltIns::TBuiltIns()
 TBuiltIns::~TBuiltIns()
 {
 }
+
 
 //
 // Add all context-independent built-in functions and variables that are present
@@ -3525,7 +3536,7 @@ static void BuiltInVariable(const char* blockName, const char* name, TBuiltInVar
 // 3) Tag extension-related symbols added to their base version with their extensions, so
 //    that if an early version has the extension turned off, there is an error reported on use.
 //
-void IdentifyBuiltIns(int version, EProfile profile, int spv, int vulkan, EShLanguage language, TSymbolTable& symbolTable)
+void TBuiltIns::identifyBuiltIns(int version, EProfile profile, int spv, int vulkan, EShLanguage language, TSymbolTable& symbolTable)
 {
     //
     // Tag built-in variables and functions with additional qualifier and extension information
@@ -4221,7 +4232,7 @@ void IdentifyBuiltIns(int version, EProfile profile, int spv, int vulkan, EShLan
 // 2) Tag extension-related symbols added to their base version with their extensions, so
 //    that if an early version has the extension turned off, there is an error reported on use.
 //
-void IdentifyBuiltIns(int version, EProfile profile, int spv, int /*vulkan*/, EShLanguage language, TSymbolTable& symbolTable, const TBuiltInResource &resources)
+void TBuiltIns::identifyBuiltIns(int version, EProfile profile, int spv, int /*vulkan*/, EShLanguage language, TSymbolTable& symbolTable, const TBuiltInResource &resources)
 {
     if (profile != EEsProfile && version >= 430 && version < 440) {
         symbolTable.setVariableExtensions("gl_MaxTransformFeedbackBuffers", 1, &E_GL_ARB_enhanced_layouts);
