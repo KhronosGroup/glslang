@@ -74,6 +74,7 @@ INSTANTIATE_TEST_CASE_P(
         {"hlsl.assoc.frag", "PixelShaderFunction"},
         {"hlsl.float1.frag", "PixelShaderFunction"},
         {"hlsl.float4.frag", "PixelShaderFunction"},
+        {"hlsl.matType.frag", "PixelShaderFunction"},
         {"hlsl.max.frag", "PixelShaderFunction"},
         {"hlsl.precedence.frag", "PixelShaderFunction"},
         {"hlsl.precedence2.frag", "PixelShaderFunction"},
