@@ -65,7 +65,6 @@ Linked vertex stage:
                               MemberDecorate 60(SS) 0 Flat
                               MemberDecorate 60(SS) 1 Flat
                               MemberDecorate 60(SS) 2 Flat
-                              Decorate 60(SS) Location 0
                               Decorate 62(var) Location 0
                               MemberDecorate 63(MS) 0 Location 17
                               Decorate 63(MS) Block

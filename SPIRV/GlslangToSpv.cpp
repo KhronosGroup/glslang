@@ -1961,14 +1961,6 @@ spv::Id TGlslangToSpvTraverser::convertGlslangToSpvType(const glslang::TType& ty
                 if (type.getQualifier().hasXfbBuffer())
                     builder.addDecoration(spvType, spv::DecorationXfbBuffer, type.getQualifier().layoutXfbBuffer);
             }
-
-            if (type.getBasicType() != glslang::EbtBlock && (type.getQualifier().storage == glslang::EvqVaryingIn || type.getQualifier().storage == glslang::EvqVaryingOut))
-            {
-                // The layout of a structure type used as an Input or Output depends on whether it is also a Block (i.e. has a Block decoration).
-                // If it is a not a Block, then the structure type must have a Location decoration.
-                if (type.getQualifier().hasLocation())
-                    builder.addDecoration(spvType, spv::DecorationLocation, type.getQualifier().layoutLocation);
-            }
         }
         break;
     default:
