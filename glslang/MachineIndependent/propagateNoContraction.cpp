@@ -401,7 +401,8 @@ bool TSymbolDefinitionCollectingTraverser::visitBinary(glslang::TVisit /* visit 
     } else {
         // For other binary nodes, still traverse the right node.
         current_object_.clear();
-        return true;
+        node->getRight()->traverse(this);
+        return false;
     }
     return false;
 }
