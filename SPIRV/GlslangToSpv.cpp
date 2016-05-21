@@ -108,7 +108,7 @@ public:
     void dumpSpv(std::vector<unsigned int>& out);
 
 protected:
-    spv::Decoration TranslateInterpolationDecoration(const glslang::TQualifier& qualifier);
+    spv::Decoration TranslateAuxiliaryStorageDecoration(const glslang::TQualifier& qualifier);
     spv::BuiltIn TranslateBuiltInDecoration(glslang::TBuiltInVariable, bool member);
     spv::ImageFormat TranslateImageFormat(const glslang::TType& type);
     spv::Id createSpvVariable(const glslang::TIntermSymbol*);
@@ -354,18 +354,26 @@ spv::Decoration TranslateLayoutDecoration(const glslang::TType& type, glslang::T
 // Translate glslang type to SPIR-V interpolation decorations.
 // Returns spv::Decoration(spv::BadValue) when no decoration
 // should be applied.
-spv::Decoration TGlslangToSpvTraverser::TranslateInterpolationDecoration(const glslang::TQualifier& qualifier)
+spv::Decoration TranslateInterpolationDecoration(const glslang::TQualifier& qualifier)
 {
-    if (qualifier.smooth) {
+    if (qualifier.smooth)
         // Smooth decoration doesn't exist in SPIR-V 1.0
         return (spv::Decoration)spv::BadValue;
-    }
-    if (qualifier.nopersp)
+    else if (qualifier.nopersp)
         return spv::DecorationNoPerspective;
-    else if (qualifier.patch)
-        return spv::DecorationPatch;
     else if (qualifier.flat)
         return spv::DecorationFlat;
+    else
+        return (spv::Decoration)spv::BadValue;
+}
+
+// Translate glslang type to SPIR-V auxiliary storage decorations.
+// Returns spv::Decoration(spv::BadValue) when no decoration
+// should be applied.
+spv::Decoration TGlslangToSpvTraverser::TranslateAuxiliaryStorageDecoration(const glslang::TQualifier& qualifier)
+{
+    if (qualifier.patch)
+        return spv::DecorationPatch;
     else if (qualifier.centroid)
         return spv::DecorationCentroid;
     else if (qualifier.sample) {
@@ -1890,9 +1898,10 @@ spv::Id TGlslangToSpvTraverser::convertGlslangToSpvType(const glslang::TType& ty
                     builder.addMemberName(spvType, member, glslangType.getFieldName().c_str());
                     addMemberDecoration(spvType, member, TranslateLayoutDecoration(glslangType, subQualifier.layoutMatrix));
                     addMemberDecoration(spvType, member, TranslatePrecisionDecoration(glslangType));
-                    // Add interpolation decorations only to top-level members of Input and Output storage classes
+                    // Add interpolation and auxiliary storage decorations only to top-level members of Input and Output storage classes
                     if (type.getQualifier().storage == glslang::EvqVaryingIn || type.getQualifier().storage == glslang::EvqVaryingOut) {
                         addMemberDecoration(spvType, member, TranslateInterpolationDecoration(subQualifier));
+                        addMemberDecoration(spvType, member, TranslateAuxiliaryStorageDecoration(subQualifier));
                     }
                     addMemberDecoration(spvType, member, TranslateInvariantDecoration(subQualifier));
 
@@ -3917,6 +3926,7 @@ spv::Id TGlslangToSpvTraverser::getSymbolId(const glslang::TIntermSymbol* symbol
     if (! symbol->getType().isStruct()) {
         addDecoration(id, TranslatePrecisionDecoration(symbol->getType()));
         addDecoration(id, TranslateInterpolationDecoration(symbol->getType().getQualifier()));
+        addDecoration(id, TranslateAuxiliaryStorageDecoration(symbol->getType().getQualifier()));
         if (symbol->getType().getQualifier().hasSpecConstantId())
             addDecoration(id, spv::DecorationSpecId, symbol->getType().getQualifier().layoutSpecConstantId);
         if (symbol->getQualifier().hasIndex())
