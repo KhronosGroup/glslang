@@ -3,7 +3,8 @@ set(SOURCES
     hlslScanContext.cpp
     hlslOpMap.cpp
     hlslTokenStream.cpp
-    hlslGrammar.cpp)
+    hlslGrammar.cpp
+    hlslParseables.cpp)
 
 set(HEADERS
     hlslParseHelper.h
@@ -11,7 +12,8 @@ set(HEADERS
     hlslScanContext.h
     hlslOpMap.h
     hlslTokenStream.h
-    hlslGrammar.h)
+    hlslGrammar.h
+    hlslParseables.h)
 
 add_library(HLSL STATIC ${SOURCES} ${HEADERS})
 set_property(TARGET HLSL PROPERTY FOLDER hlsl)
