@@ -43,6 +43,7 @@ namespace {
 
 using CompileToSpirvTest = GlslangTest<::testing::TestWithParam<std::string>>;
 using VulkanSemantics = GlslangTest<::testing::TestWithParam<std::string>>;
+using VulkanAstSemantics = GlslangTest<::testing::TestWithParam<std::string>>;
 
 // Compiling GLSL to SPIR-V under Vulkan semantics. Expected to successfully
 // generate SPIR-V.
@@ -60,6 +61,14 @@ TEST_P(VulkanSemantics, FromFile)
     loadFileCompileAndCheck(GLSLANG_TEST_DIRECTORY, GetParam(),
                             Source::GLSL, Semantics::Vulkan,
                             Target::Spv);
+}
+
+// GLSL-level Vulkan semantics test that need to see the AST for validation.
+TEST_P(VulkanAstSemantics, FromFile)
+{
+    loadFileCompileAndCheck(GLSLANG_TEST_DIRECTORY, GetParam(),
+                            Source::GLSL, Semantics::Vulkan,
+                            Target::AST);
 }
 
 // clang-format off
@@ -184,6 +193,14 @@ INSTANTIATE_TEST_CASE_P(
         "vulkan.frag",
         "vulkan.vert",
         "vulkan.comp",
+    })),
+    FileNameAsCustomTestSuffix
+);
+
+INSTANTIATE_TEST_CASE_P(
+    Glsl, VulkanAstSemantics,
+    ::testing::ValuesIn(std::vector<std::string>({
+        "vulkan.ast.vert",
     })),
     FileNameAsCustomTestSuffix
 );

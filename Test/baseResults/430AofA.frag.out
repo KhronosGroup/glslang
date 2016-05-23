@@ -6,7 +6,7 @@ ERROR: 0:15: 'constructior' : array constructor argument not correct type to con
 ERROR: 0:28: '[' :  array index out of range '4'
 ERROR: 0:56: 'constructor' :  cannot convert parameter 2 from 'const 3-element array of 4-component vector of float' to 'temp 2-element array of 4-component vector of float'
 ERROR: 0:60: 'constructor' :  cannot convert parameter 2 from 'const 2-element array of 4-component vector of float' to 'temp 3-element array of 4-component vector of float'
-ERROR: 0:64: '=' :  cannot convert from 'temp 3-element array of 2-element array of 4-component vector of float' to 'temp 4-element array of 2-element array of 4-component vector of float'
+ERROR: 0:64: '=' :  cannot convert from 'const 3-element array of 2-element array of 4-component vector of float' to 'temp 4-element array of 2-element array of 4-component vector of float'
 ERROR: 0:70: 'assign' :  cannot convert from 'global 4-element array of 7-element array of float' to 'global 5-element array of 7-element array of float'
 ERROR: 0:71: 'assign' :  cannot convert from 'global 4-element array of 7-element array of float' to 'global implicitly-sized array of 7-element array of float'
 ERROR: 0:73: 'foo' : no matching overloaded function found 

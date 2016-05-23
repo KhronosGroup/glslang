@@ -2208,6 +2208,18 @@ bool TParseContext::builtInName(const TString& identifier)
 // constructor to build something of the type of the constructor.  Also returns
 // the type of the constructor.
 //
+// Part of establishing type is establishing specialization-constness.
+// We don't yet know "top down" whether type is a specialization constant,
+// but a const constructor can becomes a specialization constant if any of
+// its children are, subject to KHR_vulkan_glsl rules:
+//
+//     - int(), uint(), and bool() constructors for type conversions
+//       from any of the following types to any of the following types:
+//         * int
+//         * uint
+//         * bool
+//     - vector versions of the above conversion constructors
+//
 // Returns true if there was an error in construction.
 //
 bool TParseContext::constructorError(const TSourceLoc& loc, TIntermNode* node, TFunction& function, TOperator op, TType& type)
@@ -2253,6 +2265,7 @@ bool TParseContext::constructorError(const TSourceLoc& loc, TIntermNode* node, T
     bool overFull = false;
     bool matrixInMatrix = false;
     bool arrayArg = false;
+    bool floatArgument = false;
     for (int arg = 0; arg < function.getParamCount(); ++arg) {
         if (function[arg].type->isArray()) {
             if (! function[arg].type->isExplicitlySizedArray()) {
@@ -2281,11 +2294,52 @@ bool TParseContext::constructorError(const TSourceLoc& loc, TIntermNode* node, T
             constType = false;
         if (function[arg].type->getQualifier().isSpecConstant())
             specConstType = true;
+        if (function[arg].type->isFloatingDomain())
+            floatArgument = true;
     }
 
+    // inherit constness from children
     if (constType) {
-        if (specConstType)
+        bool makeSpecConst;
+        // Finish pinning down spec-const semantics
+        if (specConstType) {
+            switch (op) {
+            case EOpConstructInt:
+            case EOpConstructUint:
+            case EOpConstructInt64:
+            case EOpConstructUint64:
+            case EOpConstructBool:
+            case EOpConstructBVec2:
+            case EOpConstructBVec3:
+            case EOpConstructBVec4:
+            case EOpConstructIVec2:
+            case EOpConstructIVec3:
+            case EOpConstructIVec4:
+            case EOpConstructUVec2:
+            case EOpConstructUVec3:
+            case EOpConstructUVec4:
+            case EOpConstructI64Vec2:
+            case EOpConstructI64Vec3:
+            case EOpConstructI64Vec4:
+            case EOpConstructU64Vec2:
+            case EOpConstructU64Vec3:
+            case EOpConstructU64Vec4:
+                // This was the list of valid ones, if they aren't converting from float
+                // and aren't making an array.
+                makeSpecConst = ! floatArgument && ! type.isArray();
+                break;
+            default:
+                // anything else wasn't white-listed in the spec as a conversion
+                makeSpecConst = false;
+                break;
+            }
+        } else
+            makeSpecConst = false;
+
+        if (makeSpecConst)
             type.getQualifier().makeSpecConstant();
+        else if (specConstType)
+            type.getQualifier().makeTemporary();
         else
             type.getQualifier().storage = EvqConst;
     }
@@ -4941,7 +4995,14 @@ TIntermNode* TParseContext::executeInitializer(const TSourceLoc& loc, TIntermTyp
     // constructor-style subtree, allowing the rest of the code to operate
     // identically for both kinds of initializers.
     //
-    initializer = convertInitializerList(loc, variable->getType(), initializer);
+    // Type can't be deduced from the initializer list, so a skeletal type to
+    // follow has to be passed in.  Constness and specialization-constness
+    // should be deduced bottom up, not dictated by the skeletal type.
+    //
+    TType skeletalType;
+    skeletalType.shallowCopy(variable->getType());
+    skeletalType.getQualifier().makeTemporary();
+    initializer = convertInitializerList(loc, skeletalType, initializer);
     if (! initializer) {
         // error recovery; don't leave const without constant values
         if (qualifier == EvqConst)
@@ -5030,7 +5091,7 @@ TIntermNode* TParseContext::executeInitializer(const TSourceLoc& loc, TIntermTyp
         // normal assigning of a value to a variable...
         specializationCheck(loc, initializer->getType(), "initializer");
         TIntermSymbol* intermSymbol = intermediate.addSymbol(*variable, loc);
-        TIntermNode* initNode = intermediate.addAssign(EOpAssign, intermSymbol, initializer, loc);
+        TIntermTyped* initNode = intermediate.addAssign(EOpAssign, intermSymbol, initializer, loc);
         if (! initNode)
             assignError(loc, "=", intermSymbol->getCompleteString(), initializer->getCompleteString());
 
@@ -5041,11 +5102,14 @@ TIntermNode* TParseContext::executeInitializer(const TSourceLoc& loc, TIntermTyp
 }
 
 //
-// Reprocess any initializer-list { ... } parts of the initializer.
+// Reprocess any initializer-list (the  "{ ... }" syntax) parts of the
+// initializer.
+//
 // Need to hierarchically assign correct types and implicit
 // conversions. Will do this mimicking the same process used for
 // creating a constructor-style initializer, ensuring we get the
-// same form.
+// same form.  However, it has to in parallel walk the 'type'
+// passed in, as type cannot be deduced from an initializer list.
 //
 TIntermTyped* TParseContext::convertInitializerList(const TSourceLoc& loc, const TType& type, TIntermTyped* initializer)
 {
@@ -5191,12 +5255,6 @@ TIntermTyped* TParseContext::addConstructor(const TSourceLoc& loc, TIntermNode* 
     // for each parameter to the constructor call, check to see if the right type is passed or convert them
     // to the right type if possible (and allowed).
     // for structure constructors, just check if the right type is passed, no conversion is allowed.
-
-    // We don't know "top down" whether type is a specialization constant,
-    // but a const becomes a specialization constant if any of its children are.
-    bool hasSpecConst = false;
-    bool isConstConstrutor = true;
-
     for (TIntermSequence::iterator p = sequenceVector.begin();
                                    p != sequenceVector.end(); p++, paramCount++) {
         if (type.isArray())
@@ -5206,21 +5264,13 @@ TIntermTyped* TParseContext::addConstructor(const TSourceLoc& loc, TIntermNode* 
         else
             newNode = constructBuiltIn(type, op, (*p)->getAsTyped(), node->getLoc(), true);
 
-        if (newNode) {
+        if (newNode)
             *p = newNode;
-            if (! newNode->getType().getQualifier().isConstant())
-                isConstConstrutor = false;
-            if (newNode->getType().getQualifier().isSpecConstant())
-                hasSpecConst = true;
-        } else
+        else
             return nullptr;
     }
 
-    TIntermTyped* constructor = intermediate.setAggregateOperator(aggrNode, op, type, loc);
-    if (isConstConstrutor && hasSpecConst)
-        constructor->getWritableType().getQualifier().makeSpecConstant();
-
-    return constructor;
+    return intermediate.setAggregateOperator(aggrNode, op, type, loc);
 }
 
 // Function for constructor implementation. Calls addUnaryMath with appropriate EOp value
