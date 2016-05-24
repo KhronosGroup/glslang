@@ -18,8 +18,6 @@ Linked fragment stage:
 
 ERROR: Linking fragment stage: Cannot mix ES profile with non-ES profile shaders
 
-ERROR: Linking fragment stage: Cannot mix ES profile with non-ES profile shaders
-
 ERROR: Linking fragment stage: Missing entry point: Each stage requires one "void main()" entry point
 
 Shader version: 110
