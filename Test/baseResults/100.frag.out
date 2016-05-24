@@ -2,7 +2,6 @@
 ERROR: 0:3: '{ } style initializers' : not supported with this profile: es
 ERROR: 0:3: 'initializer' : not supported for this version or the enabled extensions 
 ERROR: 0:3: 'array initializer' : not supported for this version or the enabled extensions 
-ERROR: 0:3: 'non-constant global initializer' : not supported with this profile: es
 ERROR: 0:4: '#version' : must occur first in shader 
 ERROR: 0:7: 'attribute' : not supported in this stage: fragment
 ERROR: 0:7: 'float' : type requires declaration of default precision qualifier 
@@ -86,7 +85,7 @@ ERROR: 0:194: 'a' : can't use function syntax on variable
 ERROR: 0:214: 'non-constant global initializer' : not supported with this profile: es
 ERROR: 0:3000: '#error' : line of this error should be 3000  
 ERROR: 0:3002: '' :  syntax error
-ERROR: 78 compilation errors.  No code generated.
+ERROR: 77 compilation errors.  No code generated.
 
 
 Shader version: 100

@@ -58,7 +58,7 @@ const bool sp_int_gt_sp_sint = sp_int > sp_sint;
 //
 const ivec4 iv = ivec4(20, 30, sp_int, sp_int);
 const uvec4 uv = uvec4(sp_uint, sp_uint, -1, -2);
-const vec4 fv = vec4(sp_float, 1.25, sp_float, 1.25);
+//const vec4 fv = vec4(sp_float, 1.25, sp_float, 1.25);
 
 // uint/int <-> bool conversion
 const bvec4 bv_from_iv = bvec4(iv);

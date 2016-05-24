@@ -94,7 +94,7 @@ EShMessages DeriveOptions(Source source, Semantics semantics, Target target)
         case Semantics::OpenGL:
             break;
         case Semantics::Vulkan:
-            result = static_cast<EShMessages>(result | EShMsgVulkanRules);
+            result = static_cast<EShMessages>(result | EShMsgVulkanRules | EShMsgSpvRules);
             break;
     }
 
