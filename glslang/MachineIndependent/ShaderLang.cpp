@@ -1530,10 +1530,13 @@ bool TProgram::linkStage(EShLanguage stage, EShMessages messages)
     // Be efficient for the common single compilation unit per stage case,
     // reusing it's TIntermediate instead of merging into a new one.
     //
+    TIntermediate *firstIntermediate = stages[stage].front()->intermediate;
     if (stages[stage].size() == 1)
-        intermediate[stage] = stages[stage].front()->intermediate;
+        intermediate[stage] = firstIntermediate;
     else {
-        intermediate[stage] = new TIntermediate(stage);
+        intermediate[stage] = new TIntermediate(stage,
+                                                firstIntermediate->getVersion(),
+                                                firstIntermediate->getProfile());
         newedIntermediate[stage] = true;
     }
 
