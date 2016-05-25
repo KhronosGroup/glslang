@@ -327,13 +327,13 @@ public:
             // include.  For example, in a filesystem-based includer, full resolution
             // should convert a relative path name into an absolute path name.
             // For a failed inclusion, this is an empty string.
-            std::string file_name;
+            const std::string file_name;
             // The content and byte length of the requested inclusion.  The
             // Includer producing this IncludeResult retains ownership of the
             // storage.
             // For a failed inclusion, the file_data
             // field points to a string containing error details.
-            const char* file_data;
+            const char* const file_data;
             const size_t file_length;
             // Include resolver's context.
             void* user_data;
