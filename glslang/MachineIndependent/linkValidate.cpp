@@ -86,10 +86,6 @@ void TIntermediate::merge(TInfoSink& infoSink, TIntermediate& unit)
     numPushConstants += unit.numPushConstants;
     callGraph.insert(callGraph.end(), unit.callGraph.begin(), unit.callGraph.end());
 
-    if ((profile != EEsProfile && unit.profile == EEsProfile) ||
-        (profile == EEsProfile && unit.profile != EEsProfile))
-        error(infoSink, "Cannot mix ES profile with non-ES profile shaders\n");
-
     if (originUpperLeft != unit.originUpperLeft || pixelCenterInteger != unit.pixelCenterInteger)
         error(infoSink, "gl_FragCoord redeclarations must match across shaders\n");
 

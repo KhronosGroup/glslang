@@ -1526,6 +1526,23 @@ bool TProgram::linkStage(EShLanguage stage, EShMessages messages)
     if (stages[stage].size() == 0)
         return true;
 
+    int numEsShaders = 0, numNonEsShaders = 0;
+    for (auto it = stages[stage].begin(); it != stages[stage].end(); ++it) {
+        if ((*it)->intermediate->getProfile() == EEsProfile) {
+            numEsShaders++;
+        } else {
+            numNonEsShaders++;
+        }
+    }
+
+    if (numEsShaders > 0 && numNonEsShaders > 0) {
+        infoSink->info.message(EPrefixError, "Cannot mix ES profile with non-ES profile shaders");
+        return false;
+    } else if (numEsShaders > 1) {
+        infoSink->info.message(EPrefixError, "Cannot attach multiple ES shaders of the same type to a single program");
+        return false;
+    }
+
     //
     // Be efficient for the common single compilation unit per stage case,
     // reusing it's TIntermediate instead of merging into a new one.
