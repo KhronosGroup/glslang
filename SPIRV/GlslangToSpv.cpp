@@ -2652,12 +2652,13 @@ spv::Id TGlslangToSpvTraverser::handleUserFunctionCall(const glslang::TIntermAgg
     std::vector<spv::Id> rValues;
     std::vector<const glslang::TType*> argTypes;
     for (int a = 0; a < (int)glslangArgs.size(); ++a) {
+        const glslang::TType& paramType = glslangArgs[a]->getAsTyped()->getType();
         // build l-value
         builder.clearAccessChain();
         glslangArgs[a]->traverse(this);
-        argTypes.push_back(&glslangArgs[a]->getAsTyped()->getType());
-        // keep outputs as l-values, evaluate input-only as r-values
-        if (qualifiers[a] != glslang::EvqConstReadOnly) {
+        argTypes.push_back(&paramType);
+        // keep outputs as and samplers l-values, evaluate input-only as r-values
+        if (qualifiers[a] != glslang::EvqConstReadOnly || paramType.getBasicType() == glslang::EbtSampler) {
             // save l-value
             lValues.push_back(builder.getAccessChain());
         } else {
@@ -2674,10 +2675,14 @@ spv::Id TGlslangToSpvTraverser::handleUserFunctionCall(const glslang::TIntermAgg
     int rValueCount = 0;
     std::vector<spv::Id> spvArgs;
     for (int a = 0; a < (int)glslangArgs.size(); ++a) {
+        const glslang::TType& paramType = glslangArgs[a]->getAsTyped()->getType();
         spv::Id arg;
-        if (qualifiers[a] != glslang::EvqConstReadOnly) {
+        if (paramType.getBasicType() == glslang::EbtSampler) {
+            builder.setAccessChain(lValues[lValueCount]);
+            arg = builder.accessChainGetLValue();
+            ++lValueCount;
+        } else if (qualifiers[a] != glslang::EvqConstReadOnly) {
             // need space to hold the copy
-            const glslang::TType& paramType = glslangArgs[a]->getAsTyped()->getType();
             arg = builder.createVariable(spv::StorageClassFunction, convertGlslangToSpvType(paramType), "param");
             if (qualifiers[a] == glslang::EvqIn || qualifiers[a] == glslang::EvqInOut) {
                 // need to copy the input into output space
