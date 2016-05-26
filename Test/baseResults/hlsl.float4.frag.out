@@ -1,5 +1,5 @@
 hlsl.float4.frag
-Shader version: 100
+Shader version: 450
 gl_FragCoord origin is upper left
 0:? Sequence
 0:1  move second child to first child (temp 4-component vector of float)
@@ -24,7 +24,7 @@ gl_FragCoord origin is upper left
 Linked fragment stage:
 
 
-Shader version: 100
+Shader version: 450
 gl_FragCoord origin is upper left
 0:? Sequence
 0:1  move second child to first child (temp 4-component vector of float)
@@ -54,7 +54,7 @@ gl_FragCoord origin is upper left
                               MemoryModel Logical GLSL450
                               EntryPoint Fragment 4  "PixelShaderFunction"
                               ExecutionMode 4 OriginUpperLeft
-                              Source HLSL 100
+                              Source HLSL 450
                               Name 4  "PixelShaderFunction"
                               Name 11  "ShaderFunction(vf4;"
                               Name 10  "input"

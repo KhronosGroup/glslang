@@ -69,9 +69,6 @@ using namespace glslang;
 // Create a language specific version of parseables.
 TBuiltInParseables* CreateBuiltInParseables(TInfoSink& infoSink, EShSource source)
 {
-    // TODO: hardcode to the GLSL path, until HLSL intrinsics are available.
-    source = EShSourceGlsl; // REMOVE
-
     switch (source) {
     case EShSourceGlsl: return new TBuiltIns();              // GLSL builtIns
     case EShSourceHlsl: return new TBuiltInParseablesHlsl(); // HLSL intrinsics
@@ -81,7 +78,7 @@ TBuiltInParseables* CreateBuiltInParseables(TInfoSink& infoSink, EShSource sourc
         return nullptr;
     }
 }
-    
+
 // Local mapping functions for making arrays of symbol tables....
 
 int MapVersionToIndex(int version)
@@ -169,6 +166,9 @@ bool InitializeSymbolTable(const TString& builtIns, int version, EProfile profil
     builtInShaders[0] = builtIns.c_str();
     builtInLengths[0] = builtIns.size();
 
+    if (builtInLengths[0] == 0)
+        return true;
+    
     TInputScanner input(1, builtInShaders, builtInLengths);
     if (! parseContext.parseShaderStrings(ppContext, input) != 0) {
         infoSink.info.message(EPrefixInternalError, "Unable to parse built-ins");
@@ -338,7 +338,7 @@ bool DeduceVersionProfile(TInfoSink& infoSink, EShLanguage stage, bool versionNo
     bool correct = true;
 
     if (source == EShSourceHlsl) {
-        version = defaultVersion;
+        version = 450;         // TODO: GLSL parser is still used for builtins.
         profile = ENoProfile;
         return correct;
     }

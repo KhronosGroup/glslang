@@ -1,5 +1,5 @@
 hlsl.assoc.frag
-Shader version: 100
+Shader version: 450
 gl_FragCoord origin is upper left
 0:? Sequence
 0:12  Function Definition: PixelShaderFunction(vf4;vf4;vf4;vf4;vf4; (temp 4-component vector of float)
@@ -35,7 +35,7 @@ gl_FragCoord origin is upper left
 Linked fragment stage:
 
 
-Shader version: 100
+Shader version: 450
 gl_FragCoord origin is upper left
 0:? Sequence
 0:12  Function Definition: PixelShaderFunction(vf4;vf4;vf4;vf4;vf4; (temp 4-component vector of float)
@@ -76,7 +76,7 @@ gl_FragCoord origin is upper left
                               MemoryModel Logical GLSL450
                               EntryPoint Fragment 4  "PixelShaderFunction"
                               ExecutionMode 4 OriginUpperLeft
-                              Source HLSL 100
+                              Source HLSL 450
                               Name 4  "PixelShaderFunction"
                               Name 9  "a1"
                               Name 10  "a2"
