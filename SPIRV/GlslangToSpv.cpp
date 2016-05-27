@@ -49,8 +49,10 @@ namespace spv {
 #include "../glslang/MachineIndependent/localintermediate.h"
 #include "../glslang/MachineIndependent/SymbolTable.h"
 #include "../glslang/Include/Common.h"
+#include "../glslang/Include/revision.h"
 
 #include <fstream>
+#include <iomanip>
 #include <list>
 #include <map>
 #include <stack>
@@ -4311,13 +4313,34 @@ void GetSpirvVersion(std::string& version)
 }
 
 // Write SPIR-V out to a binary file
-void OutputSpv(const std::vector<unsigned int>& spirv, const char* baseName)
+void OutputSpvBin(const std::vector<unsigned int>& spirv, const char* baseName)
 {
     std::ofstream out;
     out.open(baseName, std::ios::binary | std::ios::out);
     for (int i = 0; i < (int)spirv.size(); ++i) {
         unsigned int word = spirv[i];
         out.write((const char*)&word, 4);
+    }
+    out.close();
+}
+
+// Write SPIR-V out to a text file with 32-bit hexadecimal words
+void OutputSpvHex(const std::vector<unsigned int>& spirv, const char* baseName)
+{
+    std::ofstream out;
+    out.open(baseName, std::ios::binary | std::ios::out);
+    out << "\t// " GLSLANG_REVISION " " GLSLANG_DATE << std::endl;
+    const int WORDS_PER_LINE = 8;
+    for (int i = 0; i < (int)spirv.size(); i += WORDS_PER_LINE) {
+        out << "\t";
+        for (int j = 0; j < WORDS_PER_LINE && i + j < (int)spirv.size(); ++j) {
+            const unsigned int word = spirv[i + j];
+            out << "0x" << std::hex << std::setw(8) << std::setfill('0') << word;
+            if (i + j + 1 < (int)spirv.size()) {
+                out << ",";
+            }
+        }
+        out << std::endl;
     }
     out.close();
 }
