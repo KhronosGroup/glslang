@@ -113,6 +113,7 @@ INSTANTIATE_TEST_CASE_P(
         "110scope.vert",
         "300scope.vert",
         "400.frag",
+        "420.comp",
         "420.frag",
         "420.vert",
         "420.geom",

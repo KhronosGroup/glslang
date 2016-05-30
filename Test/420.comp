@@ -1,0 +1,7 @@
+#version 420
+
+layout(local_size_x = 2) in;  // ERROR, no compute
+
+#extension GL_ARB_compute_shader : enable
+
+layout(local_size_x = 2) in;

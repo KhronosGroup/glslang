@@ -1871,7 +1871,7 @@ void TBuiltIns::initialize(int version, EProfile profile, int spv, int vulkan)
     //
     //============================================================================
 
-    if ((profile != EEsProfile && version >= 430) ||
+    if ((profile != EEsProfile && version >= 420) ||
         (profile == EEsProfile && version >= 310)) {
         stageBuiltins[EShLangCompute].append(
             "in    highp uvec3 gl_NumWorkGroups;"
@@ -3896,6 +3896,15 @@ void TBuiltIns::identifyBuiltIns(int version, EProfile profile, int spv, int vul
         BuiltInVariable("gl_LocalInvocationID",     EbvLocalInvocationId,    symbolTable);
         BuiltInVariable("gl_GlobalInvocationID",    EbvGlobalInvocationId,   symbolTable);
         BuiltInVariable("gl_LocalInvocationIndex",  EbvLocalInvocationIndex, symbolTable);
+
+        if (profile != EEsProfile && version < 430) {
+            symbolTable.setVariableExtensions("gl_NumWorkGroups",        1, &E_GL_ARB_compute_shader);
+            symbolTable.setVariableExtensions("gl_WorkGroupSize",        1, &E_GL_ARB_compute_shader);
+            symbolTable.setVariableExtensions("gl_WorkGroupID",          1, &E_GL_ARB_compute_shader);
+            symbolTable.setVariableExtensions("gl_LocalInvocationID",    1, &E_GL_ARB_compute_shader);
+            symbolTable.setVariableExtensions("gl_GlobalInvocationID",   1, &E_GL_ARB_compute_shader);
+            symbolTable.setVariableExtensions("gl_LocalInvocationIndex", 1, &E_GL_ARB_compute_shader);
+        }
         break;
 
     default:

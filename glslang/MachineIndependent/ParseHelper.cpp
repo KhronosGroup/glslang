@@ -622,10 +622,20 @@ void TParseContext::makeEditable(TSymbol*& symbol)
     intermediate.addSymbolLinkageNode(linkage, *symbol);
 }
 
+// Return a writable version of the variable 'name'.
+//
+// Return nullptr if 'name' is not found.  This should mean
+// something is seriously wrong (e.g., compiler asking self for
+// built-in that doesn't exist).
 TVariable* TParseContext::getEditableVariable(const char* name)
 {
     bool builtIn;
     TSymbol* symbol = symbolTable.find(name, &builtIn);
+    
+    assert(symbol != nullptr);
+    if (symbol == nullptr)
+        return nullptr;
+
     if (builtIn)
         makeEditable(symbol);
 
@@ -3844,7 +3854,7 @@ void TParseContext::finalErrorCheck()
         break;
     case EShLangCompute:
         if (profile != EEsProfile && version < 430)
-            requireExtensions(getCurrentLoc(), 1, &E_GL_ARB_compute_shader, "tessellation shaders");
+            requireExtensions(getCurrentLoc(), 1, &E_GL_ARB_compute_shader, "compute shaders");
         break;
     default:
         break;
@@ -4222,6 +4232,8 @@ void TParseContext::setLayoutQualifier(const TSourceLoc& loc, TPublicType& publi
 
     case EShLangCompute:
         if (id.compare(0, 11, "local_size_") == 0) {
+            profileRequires(loc, EEsProfile, 310, 0, "gl_WorkgroupSize");
+            profileRequires(loc, ~EEsProfile, 430, E_GL_ARB_compute_shader, "gl_WorkgroupSize");
             if (id == "local_size_x") {
                 publicType.shaderQualifiers.localSize[0] = value;
                 return;
@@ -5967,7 +5979,8 @@ void TParseContext::updateStandaloneQualifierDefaults(const TSourceLoc& loc, con
 
                     // Fix the existing constant gl_WorkGroupSize with this new information.
                     TVariable* workGroupSize = getEditableVariable("gl_WorkGroupSize");
-                    workGroupSize->getWritableConstArray()[i].setUConst(intermediate.getLocalSize(i));
+                    if (workGroupSize != nullptr)
+                        workGroupSize->getWritableConstArray()[i].setUConst(intermediate.getLocalSize(i));
                 }
             } else
                 error(loc, "can only apply to 'in'", "local_size", "");
@@ -5980,7 +5993,8 @@ void TParseContext::updateStandaloneQualifierDefaults(const TSourceLoc& loc, con
                 error(loc, "can only apply to 'in'", "local_size id", "");
             // Set the workgroup built-in variable as a specialization constant
             TVariable* workGroupSize = getEditableVariable("gl_WorkGroupSize");
-            workGroupSize->getWritableType().getQualifier().specConstant = true;
+            if (workGroupSize != nullptr)
+                workGroupSize->getWritableType().getQualifier().specConstant = true;
         }
     }
     if (publicType.shaderQualifiers.earlyFragmentTests) {

@@ -235,10 +235,10 @@ bool InitializeSymbolTables(TInfoSink& infoSink, TSymbolTable** commonTable,  TS
         InitializeStageSymbolTable(*builtInParseables, version, profile, spv, vulkan, EShLangGeometry, infoSink, commonTable, symbolTables);
 
     // check for compute
-    if ((profile != EEsProfile && version >= 430) ||
+    if ((profile != EEsProfile && version >= 420) ||
         (profile == EEsProfile && version >= 310))
         InitializeStageSymbolTable(*builtInParseables, version, profile, spv, vulkan, EShLangCompute, infoSink, commonTable, symbolTables);
-    
+
     return true;
 }
 
@@ -417,7 +417,7 @@ bool DeduceVersionProfile(TInfoSink& infoSink, EShLanguage stage, bool versionNo
             (profile != EEsProfile && version < 420)) {
             correct = false;
             infoSink.info.message(EPrefixError, "#version: compute shaders require es profile with version 310 or above, or non-es profile with version 420 or above");
-            version = profile == EEsProfile ? 310 : 430; // 420 supports the extension, correction is to 430 which does not
+            version = profile == EEsProfile ? 310 : 420;
         }
         break;
     default:

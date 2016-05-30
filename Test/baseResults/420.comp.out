@@ -1,0 +1,32 @@
+420.comp
+Warning, version 420 is not yet complete; most version-specific features are present, but some are missing.
+ERROR: 0:3: 'gl_WorkgroupSize' : not supported for this version or the enabled extensions 
+WARNING: 0:5: '#extension' : extension is only partially supported: GL_ARB_compute_shader
+ERROR: 1 compilation errors.  No code generated.
+
+
+Shader version: 420
+Requested GL_ARB_compute_shader
+local_size = (2, 1, 1)
+ERROR: node is still EOpNull!
+0:?   Linker Objects
+0:?     'gl_WorkGroupSize' (const 3-component vector of uint WorkGroupSize)
+0:?       2 (const uint)
+0:?       1 (const uint)
+0:?       1 (const uint)
+
+
+Linked compute stage:
+
+ERROR: Linking compute stage: Missing entry point: Each stage requires one "void main()" entry point
+
+Shader version: 420
+Requested GL_ARB_compute_shader
+local_size = (2, 1, 1)
+ERROR: node is still EOpNull!
+0:?   Linker Objects
+0:?     'gl_WorkGroupSize' (const 3-component vector of uint WorkGroupSize)
+0:?       2 (const uint)
+0:?       1 (const uint)
+0:?       1 (const uint)
+
