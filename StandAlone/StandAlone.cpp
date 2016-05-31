@@ -297,12 +297,6 @@ void ProcessArguments(int argc, char* argv[])
                 break;
             case 'x':
                 Options |= EOptionOutputHexadecimal;
-                binaryFileName = argv[1];
-                if (argc > 0) {
-                    argc--;
-                    argv++;
-                } else
-                    Error("no <file> provided for -x");
                 break;
             default:
                 usage();
@@ -785,7 +779,7 @@ void usage()
            "  -t          multi-threaded mode\n"
            "  -v          print version strings\n"
            "  -w          suppress warnings (except as required by #extension : warn)\n"
-           "  -x  <file>  save 32-bit hex numbers as text to <file>, requires a binary option (e.g., -V)\n"
+           "  -x          save 32-bit hexadecimal numbers as text, requires a binary option (e.g., -V)\n"
            );
 
     exit(EFailUsage);
