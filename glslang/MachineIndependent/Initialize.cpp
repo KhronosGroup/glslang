@@ -3421,7 +3421,7 @@ void TBuiltIns::initialize(const TBuiltInResource &resources, int version, EProf
 
 
     // compute
-    if ((profile == EEsProfile && version >= 310) || (profile != EEsProfile && version >= 430)) {
+    if ((profile == EEsProfile && version >= 310) || (profile != EEsProfile && version >= 420)) {
         snprintf(builtInConstant, maxSize, "const ivec3 gl_MaxComputeWorkGroupCount = ivec3(%d,%d,%d);", resources.maxComputeWorkGroupCountX,
                                                                                                          resources.maxComputeWorkGroupCountY,
                                                                                                          resources.maxComputeWorkGroupCountZ);                
@@ -3904,6 +3904,14 @@ void TBuiltIns::identifyBuiltIns(int version, EProfile profile, int spv, int vul
             symbolTable.setVariableExtensions("gl_LocalInvocationID",    1, &E_GL_ARB_compute_shader);
             symbolTable.setVariableExtensions("gl_GlobalInvocationID",   1, &E_GL_ARB_compute_shader);
             symbolTable.setVariableExtensions("gl_LocalInvocationIndex", 1, &E_GL_ARB_compute_shader);
+
+            symbolTable.setVariableExtensions("gl_MaxComputeWorkGroupCount",       1, &E_GL_ARB_compute_shader);
+            symbolTable.setVariableExtensions("gl_MaxComputeWorkGroupSize",        1, &E_GL_ARB_compute_shader);
+            symbolTable.setVariableExtensions("gl_MaxComputeUniformComponents",    1, &E_GL_ARB_compute_shader);
+            symbolTable.setVariableExtensions("gl_MaxComputeTextureImageUnits",    1, &E_GL_ARB_compute_shader);
+            symbolTable.setVariableExtensions("gl_MaxComputeImageUniforms",        1, &E_GL_ARB_compute_shader);
+            symbolTable.setVariableExtensions("gl_MaxComputeAtomicCounters",       1, &E_GL_ARB_compute_shader);
+            symbolTable.setVariableExtensions("gl_MaxComputeAtomicCounterBuffers", 1, &E_GL_ARB_compute_shader);
         }
         break;
 

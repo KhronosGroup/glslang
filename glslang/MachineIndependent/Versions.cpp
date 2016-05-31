@@ -162,7 +162,7 @@ void TParseVersions::initializeExtensionBehavior()
     extensionBehavior[E_GL_ARB_texture_gather]               = EBhDisable;
     extensionBehavior[E_GL_ARB_gpu_shader5]                  = EBhDisablePartial;
     extensionBehavior[E_GL_ARB_separate_shader_objects]      = EBhDisable;
-    extensionBehavior[E_GL_ARB_compute_shader]               = EBhDisablePartial;
+    extensionBehavior[E_GL_ARB_compute_shader]               = EBhDisable;
     extensionBehavior[E_GL_ARB_tessellation_shader]          = EBhDisable;
     extensionBehavior[E_GL_ARB_enhanced_layouts]             = EBhDisable;
     extensionBehavior[E_GL_ARB_texture_cube_map_array]       = EBhDisable;

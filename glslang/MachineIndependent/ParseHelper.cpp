@@ -4232,8 +4232,8 @@ void TParseContext::setLayoutQualifier(const TSourceLoc& loc, TPublicType& publi
 
     case EShLangCompute:
         if (id.compare(0, 11, "local_size_") == 0) {
-            profileRequires(loc, EEsProfile, 310, 0, "gl_WorkgroupSize");
-            profileRequires(loc, ~EEsProfile, 430, E_GL_ARB_compute_shader, "gl_WorkgroupSize");
+            profileRequires(loc, EEsProfile, 310, 0, "gl_WorkGroupSize");
+            profileRequires(loc, ~EEsProfile, 430, E_GL_ARB_compute_shader, "gl_WorkGroupSize");
             if (id == "local_size_x") {
                 publicType.shaderQualifiers.localSize[0] = value;
                 return;

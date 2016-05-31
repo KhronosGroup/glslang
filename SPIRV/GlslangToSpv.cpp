@@ -4042,7 +4042,7 @@ spv::Id TGlslangToSpvTraverser::createSpvConstant(const glslang::TIntermTyped& n
 
     // We now know we have a specialization constant to build
 
-    // gl_WorkgroupSize is a special case until the front-end handles hierarchical specialization constants,
+    // gl_WorkGroupSize is a special case until the front-end handles hierarchical specialization constants,
     // even then, it's specialization ids are handled by special case syntax in GLSL: layout(local_size_x = ...
     if (node.getType().getQualifier().builtIn == glslang::EbvWorkGroupSize) {
         std::vector<spv::Id> dimConstId;
