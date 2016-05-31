@@ -19,4 +19,12 @@ void main()
             gl_MaxComputeImageUniforms +
             gl_MaxComputeAtomicCounters +
             gl_MaxComputeAtomicCounterBuffers;
+
+    barrier();
+    memoryBarrier();
+    memoryBarrierAtomicCounter();
+    memoryBarrierBuffer();
+    memoryBarrierImage();
+    memoryBarrierShared();
+    groupMemoryBarrier();
 }

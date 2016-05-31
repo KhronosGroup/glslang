@@ -46,6 +46,13 @@ ERROR: node is still EOpNull!
 0:17        'sfoo' (shared 3-component vector of float)
 0:17        Constant:
 0:17          1057.000000
+0:23      Barrier (global void)
+0:24      MemoryBarrier (global void)
+0:25      MemoryBarrierAtomicCounter (global void)
+0:26      MemoryBarrierBuffer (global void)
+0:27      MemoryBarrierImage (global void)
+0:28      MemoryBarrierShared (global void)
+0:29      GroupMemoryBarrier (global void)
 0:?   Linker Objects
 0:?     'gl_WorkGroupSize' (const 3-component vector of uint WorkGroupSize)
 0:?       2 (const uint)
@@ -99,6 +106,13 @@ ERROR: node is still EOpNull!
 0:17        'sfoo' (shared 3-component vector of float)
 0:17        Constant:
 0:17          1057.000000
+0:23      Barrier (global void)
+0:24      MemoryBarrier (global void)
+0:25      MemoryBarrierAtomicCounter (global void)
+0:26      MemoryBarrierBuffer (global void)
+0:27      MemoryBarrierImage (global void)
+0:28      MemoryBarrierShared (global void)
+0:29      GroupMemoryBarrier (global void)
 0:?   Linker Objects
 0:?     'gl_WorkGroupSize' (const 3-component vector of uint WorkGroupSize)
 0:?       2 (const uint)

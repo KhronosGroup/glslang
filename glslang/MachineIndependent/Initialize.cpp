@@ -1572,7 +1572,7 @@ void TBuiltIns::initialize(int version, EProfile profile, int spv, int vulkan)
         stageBuiltins[EShLangTessControl].append(
             "void barrier();"
             );
-    if ((profile != EEsProfile && version >= 430) || esBarrier)
+    if ((profile != EEsProfile && version >= 420) || esBarrier)
         stageBuiltins[EShLangCompute].append(
             "void barrier();"
             );
@@ -1580,7 +1580,7 @@ void TBuiltIns::initialize(int version, EProfile profile, int spv, int vulkan)
         commonBuiltins.append(
             "void memoryBarrier();"
             );
-    if ((profile != EEsProfile && version >= 430) || esBarrier) {
+    if ((profile != EEsProfile && version >= 420) || esBarrier) {
         commonBuiltins.append(
             "void memoryBarrierAtomicCounter();"
             "void memoryBarrierBuffer();"
@@ -3912,6 +3912,13 @@ void TBuiltIns::identifyBuiltIns(int version, EProfile profile, int spv, int vul
             symbolTable.setVariableExtensions("gl_MaxComputeImageUniforms",        1, &E_GL_ARB_compute_shader);
             symbolTable.setVariableExtensions("gl_MaxComputeAtomicCounters",       1, &E_GL_ARB_compute_shader);
             symbolTable.setVariableExtensions("gl_MaxComputeAtomicCounterBuffers", 1, &E_GL_ARB_compute_shader);
+
+            symbolTable.setFunctionExtensions("barrier",                    1, &E_GL_ARB_compute_shader);
+            symbolTable.setFunctionExtensions("memoryBarrierAtomicCounter", 1, &E_GL_ARB_compute_shader);
+            symbolTable.setFunctionExtensions("memoryBarrierBuffer",        1, &E_GL_ARB_compute_shader);
+            symbolTable.setFunctionExtensions("memoryBarrierImage",         1, &E_GL_ARB_compute_shader);
+            symbolTable.setFunctionExtensions("memoryBarrierShared",        1, &E_GL_ARB_compute_shader);
+            symbolTable.setFunctionExtensions("groupMemoryBarrier",         1, &E_GL_ARB_compute_shader);
         }
         break;
 
