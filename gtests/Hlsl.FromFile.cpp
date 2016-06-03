@@ -75,13 +75,15 @@ INSTANTIATE_TEST_CASE_P(
         {"hlsl.assoc.frag", "PixelShaderFunction"},
         {"hlsl.float1.frag", "PixelShaderFunction"},
         {"hlsl.float4.frag", "PixelShaderFunction"},
+        {"hlsl.intrinsics.frag", "PixelShaderFunction"},
+        {"hlsl.intrinsics.negative.frag", "PixelShaderFunction"},
+        {"hlsl.intrinsics.negative.vert", "VertexShaderFunction"},
+        {"hlsl.intrinsics.vert", "VertexShaderFunction"},
         {"hlsl.matType.frag", "PixelShaderFunction"},
         {"hlsl.max.frag", "PixelShaderFunction"},
         {"hlsl.precedence.frag", "PixelShaderFunction"},
         {"hlsl.precedence2.frag", "PixelShaderFunction"},
         {"hlsl.sin.frag", "PixelShaderFunction"},
-        {"hlsl.intrinsics.frag", "PixelShaderFunction"},
-        {"hlsl.intrinsics.vert", "VertexShaderFunction"},
     }),
     FileNameAsCustomTestSuffix
 );
