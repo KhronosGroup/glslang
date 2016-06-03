@@ -2558,6 +2558,13 @@ spv::Id TGlslangToSpvTraverser::createImageTextureFunctionCall(glslang::TIntermO
             bias = true;
     }
 
+    // See if the sampler param should really be just the SPV image part
+    if (cracked.fetch) {
+        // a fetch needs to have the image extracted first
+        if (builder.isSampledImage(params.sampler))
+            params.sampler = builder.createUnaryOp(spv::OpImage, builder.getImageType(params.sampler), params.sampler);
+    }
+
     // set the rest of the arguments
 
     params.coords = arguments[1];
