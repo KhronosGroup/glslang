@@ -1,5 +1,6 @@
 //
 // Copyright (C) 2016 Google, Inc.
+// Copyright (C) 2016 LunarG, Inc.
 //
 // All rights reserved.
 //
@@ -79,6 +80,8 @@ INSTANTIATE_TEST_CASE_P(
         {"hlsl.precedence.frag", "PixelShaderFunction"},
         {"hlsl.precedence2.frag", "PixelShaderFunction"},
         {"hlsl.sin.frag", "PixelShaderFunction"},
+        {"hlsl.intrinsics.frag", "PixelShaderFunction"},
+        {"hlsl.intrinsics.vert", "VertexShaderFunction"},
     }),
     FileNameAsCustomTestSuffix
 );
