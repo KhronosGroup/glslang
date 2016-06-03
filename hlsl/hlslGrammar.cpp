@@ -602,7 +602,8 @@ bool HlslGrammar::acceptBinaryExpression(TIntermTyped*& node, PrecedenceLevel pr
 }
 
 // unary_expression
-//      : + unary_expression
+//      : (type) unary_expression
+//      | + unary_expression
 //      | - unary_expression
 //      | ! unary_expression
 //      | ~ unary_expression
@@ -612,9 +613,46 @@ bool HlslGrammar::acceptBinaryExpression(TIntermTyped*& node, PrecedenceLevel pr
 //
 bool HlslGrammar::acceptUnaryExpression(TIntermTyped*& node)
 {
+    // (type) unary_expression
+    // Have to look two steps ahead, because this could be, e.g., a
+    // postfix_expression instead, since that also starts with at "(".
+    if (acceptTokenClass(EHTokLeftParen)) {
+        TType castType;
+        if (acceptType(castType)) {
+            if (! acceptTokenClass(EHTokRightParen)) {
+                expected("right parenthesis");
+                return false;
+            }
+
+            // We've matched "(type)" now, get the expression to cast
+            TSourceLoc loc = token.loc;
+            if (! acceptUnaryExpression(node))
+                return false;
+
+            // Hook it up like a constructor
+            TFunction* constructorFunction = parseContext.handleConstructorCall(loc, castType);
+            if (constructorFunction == nullptr) {
+                expected("type that can be constructed");
+                return false;
+            }
+            TIntermTyped* arguments = nullptr;
+            parseContext.handleFunctionArgument(constructorFunction, arguments, node);
+            node = parseContext.handleFunctionCall(loc, constructorFunction, arguments);
+
+            return true;
+        } else {
+            // This isn't a type cast, but it still started "(", so if it is a
+            // unary expression, it can only be a postfix_expression, so try that.
+            // Back it up first.
+            recedeToken();
+            return acceptPostfixExpression(node);
+        }
+    }
+
+    // peek for "op unary_expression"
     TOperator unaryOp = HlslOpMap::preUnary(peek());
     
-    // postfix_expression
+    // postfix_expression (if no unary operator)
     if (unaryOp == EOpNull)
         return acceptPostfixExpression(node);
 

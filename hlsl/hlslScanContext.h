@@ -57,7 +57,7 @@ struct HlslToken {
     HlslToken() : isType(false), string(nullptr), symbol(nullptr) { loc.init(); }
     TSourceLoc loc;                // location of token in the source
     EHlslTokenClass tokenClass;    // what kind of token it is
-    bool isType;                   // true if the token represents a user type
+    bool isType;                   // true if the token represents a type
     union {                        // what data the token holds
         glslang::TString *string;  // for identifiers
         int i;                     // for literals
