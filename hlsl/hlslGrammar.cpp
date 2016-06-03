@@ -492,6 +492,8 @@ bool HlslGrammar::acceptFunctionDefinition(TFunction& function, TIntermNode*& no
 //
 bool HlslGrammar::acceptExpression(TIntermTyped*& node)
 {
+    node = nullptr;
+
     // assignment_expression
     if (! acceptAssignmentExpression(node))
         return false;
