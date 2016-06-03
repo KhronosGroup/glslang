@@ -298,7 +298,7 @@ float4 VertexShaderFunction(float4 inF0, float4 inF1, float4 inF2)
 float2x2 VertexShaderFunction(float2x2 inF0, float2x2 inF1, float2x2 inF2)
 {
     // TODO: FXC doesn't accept this with (), but glslang doesn't accept it without.
-    MATFNS()
+    MATFNS();
 
     // TODO: ... add when float1 prototypes are generated
     return float2x2(2,2,2,2);
@@ -307,7 +307,7 @@ float2x2 VertexShaderFunction(float2x2 inF0, float2x2 inF1, float2x2 inF2)
 float3x3 VertexShaderFunction(float3x3 inF0, float3x3 inF1, float3x3 inF2)
 {
     // TODO: FXC doesn't accept this with (), but glslang doesn't accept it without.
-    MATFNS()
+    MATFNS();
 
     // TODO: ... add when float1 prototypes are generated
     return float3x3(3,3,3,3,3,3,3,3,3);
@@ -316,7 +316,7 @@ float3x3 VertexShaderFunction(float3x3 inF0, float3x3 inF1, float3x3 inF2)
 float4x4 VertexShaderFunction(float4x4 inF0, float4x4 inF1, float4x4 inF2)
 {
     // TODO: FXC doesn't accept this with (), but glslang doesn't accept it without.
-    MATFNS()
+    MATFNS();
 
     // TODO: ... add when float1 prototypes are generated
     return float4x4(4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4);
