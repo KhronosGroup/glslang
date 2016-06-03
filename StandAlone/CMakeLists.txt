@@ -15,6 +15,8 @@ add_executable(glslangValidator ${SOURCES})
 add_executable(spirv-remap ${REMAPPER_SOURCES})
 set_property(TARGET glslangValidator PROPERTY FOLDER tools)
 set_property(TARGET spirv-remap PROPERTY FOLDER tools)
+glslang_set_link_args(glslangValidator)
+glslang_set_link_args(spirv-remap)
 
 set(LIBRARIES
     glslang

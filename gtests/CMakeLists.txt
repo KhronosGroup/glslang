@@ -22,6 +22,7 @@ if (TARGET gmock)
 
   add_executable(glslangtests ${TEST_SOURCES})
   set_property(TARGET glslangtests PROPERTY FOLDER tests)
+  glslang_set_link_args(glslangtests)
   install(TARGETS glslangtests
         RUNTIME DESTINATION bin)
 
