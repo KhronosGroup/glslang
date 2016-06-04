@@ -73,8 +73,15 @@ namespace glslang {
         bool acceptFunctionCall(HlslToken, TIntermTyped*&);
         bool acceptArguments(TFunction*, TIntermTyped*&);
         bool acceptLiteral(TIntermTyped*&);
-        bool acceptCompoundStatement(TIntermAggregate*&);
+        bool acceptCompoundStatement(TIntermNode*&);
         bool acceptStatement(TIntermNode*&);
+        void acceptAttributes();
+        bool acceptSelectionStatement(TIntermNode*&);
+        bool acceptSwitchStatement(TIntermNode*&);
+        bool acceptIterationStatement(TIntermNode*&);
+        bool acceptJumpStatement(TIntermNode*&);
+        bool acceptCaseLabel(TIntermNode*&);
+
         bool acceptSemantic();
 
         HlslParseContext& parseContext;  // state of parsing and helper functions for building the intermediate

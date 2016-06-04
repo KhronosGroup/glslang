@@ -472,7 +472,7 @@ bool HlslGrammar::acceptFunctionDefinition(TFunction& function, TIntermNode*& no
     node = parseContext.handleFunctionDefinition(token.loc, *functionDeclarator);
 
     // compound_statement
-    TIntermAggregate* functionBody = nullptr;
+    TIntermNode* functionBody = nullptr;
     if (acceptCompoundStatement(functionBody)) {
         node = intermediate.growAggregate(node, functionBody);
         intermediate.setAggregateOperator(node, EOpFunction, functionDeclarator->getType(), token.loc);
@@ -690,8 +690,10 @@ bool HlslGrammar::acceptPostfixExpression(TIntermTyped*& node)
     // idToken will pick up either a variable or a function name in a function call
     HlslToken idToken;
 
-    // LEFT_PAREN expression RIGHT_PAREN
+    // Find something before the postfix operations, as they can't operate
+    // on nothing.  So, no "return true", they fall through, only "return false".
     if (acceptTokenClass(EHTokLeftParen)) {
+        // LEFT_PAREN expression RIGHT_PAREN
         if (! acceptExpression(node)) {
             expected("expression");
             return false;
@@ -714,8 +716,12 @@ bool HlslGrammar::acceptPostfixExpression(TIntermTyped*& node)
             expected("function call arguments");
             return false;
         }
+    } else {
+        // nothing found, can't post operate
+        return false;
     }
 
+    // Something was found, chain as many postfix operations as exist.
     do {
         TSourceLoc loc = token.loc;
         TOperator postOp = HlslOpMap::postUnary(peek());
@@ -867,8 +873,10 @@ bool HlslGrammar::acceptLiteral(TIntermTyped*& node)
 // compound_statement
 //      : LEFT_CURLY statement statement ... RIGHT_CURLY
 //
-bool HlslGrammar::acceptCompoundStatement(TIntermAggregate*& compoundStatement)
+bool HlslGrammar::acceptCompoundStatement(TIntermNode*& retStatement)
 {
+    TIntermAggregate* compoundStatement = nullptr;
+
     // LEFT_CURLY
     if (! acceptTokenClass(EHTokLeftBrace))
         return false;
@@ -882,52 +890,168 @@ bool HlslGrammar::acceptCompoundStatement(TIntermAggregate*& compoundStatement)
     if (compoundStatement)
         compoundStatement->setOperator(EOpSequence);
 
+    retStatement = compoundStatement;
+
     // RIGHT_CURLY
     return acceptTokenClass(EHTokRightBrace);
 }
 
 // statement
+//      : attributes attributed_statement
+//
+// attributed_statement
 //      : compound_statement
-//      | return SEMICOLON
-//      | return expression SEMICOLON
+//      | SEMICOLON
 //      | expression SEMICOLON
+//      | declaration_statement
+//      | selection_statement
+//      | switch_statement
+//      | case_label
+//      | iteration_statement
+//      | jump_statement
 //
 bool HlslGrammar::acceptStatement(TIntermNode*& statement)
 {
-    // compound_statement
-    TIntermAggregate* compoundStatement = nullptr;
-    if (acceptCompoundStatement(compoundStatement)) {
-        statement = compoundStatement;
-        return true;
-    }
+    statement = nullptr;
 
-    // RETURN
-    if (acceptTokenClass(EHTokReturn)) {
-        // expression
-        TIntermTyped* node;
-        if (acceptExpression(node)) {
-            // hook it up
-            statement = intermediate.addBranch(EOpReturn, node, token.loc);
-        } else
-            statement = intermediate.addBranch(EOpReturn, token.loc);
+    // attributes
+    acceptAttributes();
 
-        // SEMICOLON
-        if (! acceptTokenClass(EHTokSemicolon))
-            return false;
+    // attributed_statement
+    switch (peek()) {
+    case EHTokLeftBrace:
+        return acceptCompoundStatement(statement);
 
-        return true;
-    }
+    case EHTokIf:
+        return acceptSelectionStatement(statement);
 
-    // expression
-    TIntermTyped* node;
-    if (acceptExpression(node))
-        statement = node;
+    case EHTokSwitch:
+        return acceptSwitchStatement(statement);
 
-    // SEMICOLON
-    if (! acceptTokenClass(EHTokSemicolon))
+    case EHTokFor:
+    case EHTokDo:
+    case EHTokWhile:
+        return acceptIterationStatement(statement);
+
+    case EHTokContinue:
+    case EHTokBreak:
+    case EHTokDiscard:
+    case EHTokReturn:
+        return acceptJumpStatement(statement);
+
+    case EHTokCase:
+        return acceptCaseLabel(statement);
+
+    case EHTokSemicolon:
+        return acceptTokenClass(EHTokSemicolon);
+
+    case EHTokRightBrace:
+        // Performance: not strictly necessary, but stops a bunch of hunting early,
+        // and is how sequences of statements end.
         return false;
 
+    default:
+        {
+            // declaration
+            if (acceptDeclaration(statement))
+                return true;
+
+            // expression
+            TIntermTyped* node;
+            if (acceptExpression(node))
+                statement = node;
+            else
+                return false;
+
+            // SEMICOLON (following an expression)
+            if (! acceptTokenClass(EHTokSemicolon)) {
+                expected("semicolon");
+                return false;
+            }
+        }
+    }
+
     return true;
+}
+
+// attributes
+//      : list of zero or more of:  LEFT_BRACKET attribute RIGHT_BRACKET
+//
+// attribute:
+//      : UNROLL
+//      | UNROLL LEFT_PAREN literal RIGHT_PAREN
+//      | FASTOPT
+//      | ALLOW_UAV_CONDITION
+//      | BRANCH
+//      | FLATTEN
+//      | FORCECASE
+//      | CALL
+//
+void HlslGrammar::acceptAttributes()
+{
+    // TODO
+}
+
+bool HlslGrammar::acceptSelectionStatement(TIntermNode*& statement)
+{
+    return false;
+}
+
+bool HlslGrammar::acceptSwitchStatement(TIntermNode*& statement)
+{
+    return false;
+}
+
+bool HlslGrammar::acceptIterationStatement(TIntermNode*& statement)
+{
+    return false;
+}
+
+// jump_statement
+//      : CONTINUE SEMICOLON
+//      | BREAK SEMICOLON
+//      | DISCARD SEMICOLON
+//      | RETURN SEMICOLON
+//      | RETURN expression SEMICOLON
+//
+bool HlslGrammar::acceptJumpStatement(TIntermNode*& statement)
+{
+    switch (peek()) {
+    case EHTokContinue:
+    case EHTokBreak:
+    case EHTokDiscard:
+        // TODO
+        return false;
+
+    case EHTokReturn:
+        // return
+        if (acceptTokenClass(EHTokReturn)) {
+            // expression
+            TIntermTyped* node;
+            if (acceptExpression(node)) {
+                // hook it up
+                statement = intermediate.addBranch(EOpReturn, node, token.loc);
+            } else
+                statement = intermediate.addBranch(EOpReturn, token.loc);
+
+            // SEMICOLON
+            if (! acceptTokenClass(EHTokSemicolon)) {
+                expected("semicolon");
+                return false;
+            }
+
+            return true;
+        }
+
+    default:
+        return false;
+    }
+}
+
+
+bool HlslGrammar::acceptCaseLabel(TIntermNode*& statement)
+{
+    return false;
 }
 
 // COLON semantic
