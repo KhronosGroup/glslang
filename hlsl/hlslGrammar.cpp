@@ -1119,9 +1119,128 @@ bool HlslGrammar::acceptSwitchStatement(TIntermNode*& statement)
     return false;
 }
 
+// iteration_statement
+//      : WHILE LEFT_PAREN condition RIGHT_PAREN statement
+//      | DO LEFT_BRACE statement RIGHT_BRACE WHILE LEFT_PAREN expression RIGHT_PAREN SEMICOLON
+//      | FOR LEFT_PAREN for_init_statement for_rest_statement RIGHT_PAREN statement
+//
+// Non-speculative, only call if it needs to be found; WHILE or DO or FOR already seen.
 bool HlslGrammar::acceptIterationStatement(TIntermNode*& statement)
 {
-    return false;
+    TSourceLoc loc = token.loc;
+    TIntermTyped* condition = nullptr;
+
+    EHlslTokenClass loop = peek();
+    assert(loop == EHTokDo || loop == EHTokFor || loop == EHTokWhile);
+
+    //  WHILE or DO or FOR
+    advanceToken();
+
+    switch (loop) {
+    case EHTokWhile:
+        // so that something declared in the condition is scoped to the lifetime
+        // of the while sub-statement
+        parseContext.pushScope();
+        parseContext.nestLooping();
+
+        // LEFT_PAREN condition RIGHT_PAREN
+        if (! acceptParenExpression(condition))
+            return false;
+
+        // statement
+        if (! acceptScopedStatement(statement)) {
+            expected("while sub-statement");
+            return false;
+        }
+
+        parseContext.unnestLooping();
+        parseContext.popScope();
+
+        statement = intermediate.addLoop(statement, condition, nullptr, true, loc);
+
+        return true;
+
+    case EHTokDo:
+        parseContext.nestLooping();
+
+        if (! acceptTokenClass(EHTokLeftBrace))
+            expected("{");
+
+        // statement
+        if (! peekTokenClass(EHTokRightBrace) && ! acceptScopedStatement(statement)) {
+            expected("do sub-statement");
+            return false;
+        }
+
+        if (! acceptTokenClass(EHTokRightBrace))
+            expected("}");
+
+        // WHILE
+        if (! acceptTokenClass(EHTokWhile)) {
+            expected("while");
+            return false;
+        }
+
+        // LEFT_PAREN condition RIGHT_PAREN
+        TIntermTyped* condition;
+        if (! acceptParenExpression(condition))
+            return false;
+
+        if (! acceptTokenClass(EHTokSemicolon))
+            expected(";");
+
+        parseContext.unnestLooping();
+
+        statement = intermediate.addLoop(statement, condition, 0, false, loc);
+
+        return true;
+
+    case EHTokFor:
+    {
+        // LEFT_PAREN
+        if (! acceptTokenClass(EHTokLeftParen))
+            expected("(");
+
+        // so that something declared in the condition is scoped to the lifetime
+        // of the for sub-statement
+        parseContext.pushScope();
+
+        // initializer SEMI_COLON
+        TIntermTyped* initializer = nullptr; // TODO, "for (initializer" needs to support decl. statement
+        acceptExpression(initializer);
+        if (! acceptTokenClass(EHTokSemicolon))
+            expected(";");
+
+        parseContext.nestLooping();
+
+        // condition SEMI_COLON
+        acceptExpression(condition);
+        if (! acceptTokenClass(EHTokSemicolon))
+            expected(";");
+
+        // iterator SEMI_COLON
+        TIntermTyped* iterator = nullptr;
+        acceptExpression(iterator);
+        if (! acceptTokenClass(EHTokRightParen))
+            expected(")");
+
+        // statement
+        if (! acceptScopedStatement(statement)) {
+            expected("for sub-statement");
+            return false;
+        }
+
+        statement = intermediate.addForLoop(statement, initializer, condition, iterator, true, loc);
+
+        parseContext.popScope();
+        parseContext.unnestLooping();
+
+        return true;
+    }
+
+    default:
+        return false;
+    }
 }
 
 // jump_statement

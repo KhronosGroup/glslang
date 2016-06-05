@@ -141,6 +141,8 @@ public:
 
     void nestStatement()   { ++statementNestingLevel; }
     void unnestStatement() { --statementNestingLevel; }
+    void nestLooping()     { ++loopNestingLevel; }
+    void unnestLooping()   { --loopNestingLevel; }
     void pushScope()       { symbolTable.push(); }
     void popScope()        { symbolTable.pop(0); }
 
