@@ -4225,6 +4225,13 @@ void TParseContext::setLayoutQualifier(const TSourceLoc& loc, TPublicType& publi
             requireProfile(loc, ECompatibilityProfile | ECoreProfile, "index layout qualifier on fragment output");
             const char* exts[2] = { E_GL_ARB_separate_shader_objects, E_GL_ARB_explicit_attrib_location };
             profileRequires(loc, ECompatibilityProfile | ECoreProfile, 330, 2, exts, "index layout qualifier on fragment output");
+
+            // "It is also a compile-time error if a fragment shader sets a layout index to less than 0 or greater than 1."
+            if (value < 0 || value > 1) {
+                value = 0;
+                error(loc, "value must be 0 or 1", "index", "");
+            }
+
             publicType.qualifier.layoutIndex = value;
             return;
         }
