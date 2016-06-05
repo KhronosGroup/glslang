@@ -64,6 +64,7 @@ namespace glslang {
         bool acceptFunctionParameters(TFunction&);
         bool acceptParameterDeclaration(TFunction&);
         bool acceptFunctionDefinition(TFunction&, TIntermNode*&);
+        bool acceptParenExpression(TIntermTyped*&);
         bool acceptExpression(TIntermTyped*&);
         bool acceptAssignmentExpression(TIntermTyped*&);
         bool acceptBinaryExpression(TIntermTyped*&, PrecedenceLevel);
@@ -75,6 +76,8 @@ namespace glslang {
         bool acceptLiteral(TIntermTyped*&);
         bool acceptCompoundStatement(TIntermNode*&);
         bool acceptStatement(TIntermNode*&);
+        bool acceptScopedStatement(TIntermNode*&);
+        bool acceptNestedStatement(TIntermNode*&);
         void acceptAttributes();
         bool acceptSelectionStatement(TIntermNode*&);
         bool acceptSwitchStatement(TIntermNode*&);

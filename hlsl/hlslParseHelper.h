@@ -139,6 +139,11 @@ public:
 
     void updateImplicitArraySize(const TSourceLoc&, TIntermNode*, int index);
 
+    void nestStatement()   { ++statementNestingLevel; }
+    void unnestStatement() { --statementNestingLevel; }
+    void pushScope()       { symbolTable.push(); }
+    void popScope()        { symbolTable.pop(0); }
+
 protected:
     void inheritGlobalDefaults(TQualifier& dst) const;
     TVariable* makeInternalVariable(const char* name, const TType&) const;

@@ -434,7 +434,7 @@ bool HlslGrammar::acceptFunctionParameters(TFunction& function)
 
     // RIGHT_PAREN
     if (! acceptTokenClass(EHTokRightParen)) {
-        expected("right parenthesis");
+        expected(")");
         return false;
     }
 
@@ -483,6 +483,31 @@ bool HlslGrammar::acceptFunctionDefinition(TFunction& function, TIntermNode*& no
     }
 
     return false;
+}
+
+// Accept an expression with parenthesis around it, where
+// the parenthesis ARE NOT expression parenthesis, but the
+// syntactically required ones like in "if ( expression )"
+//
+// Note this one is not set up to be speculative; as it gives
+// errors if not found.
+//
+bool HlslGrammar::acceptParenExpression(TIntermTyped*& expression)
+{
+    // LEFT_PAREN
+    if (! acceptTokenClass(EHTokLeftParen))
+        expected("(");
+
+    if (! acceptExpression(expression)) {
+        expected("expression");
+        return false;
+    }
+
+    // RIGHT_PAREN
+    if (! acceptTokenClass(EHTokRightParen))
+        expected(")");
+
+    return true;
 }
 
 // The top-level full expression recognizer.
@@ -620,7 +645,7 @@ bool HlslGrammar::acceptUnaryExpression(TIntermTyped*& node)
         TType castType;
         if (acceptType(castType)) {
             if (! acceptTokenClass(EHTokRightParen)) {
-                expected("right parenthesis");
+                expected(")");
                 return false;
             }
 
@@ -699,7 +724,7 @@ bool HlslGrammar::acceptPostfixExpression(TIntermTyped*& node)
             return false;
         }
         if (! acceptTokenClass(EHTokRightParen)) {
-            expected("right parenthesis");
+            expected(")");
             return false;
         }
     } else if (acceptLiteral(node)) {
@@ -838,7 +863,7 @@ bool HlslGrammar::acceptArguments(TFunction* function, TIntermTyped*& arguments)
 
     // RIGHT_PAREN
     if (! acceptTokenClass(EHTokRightParen)) {
-        expected("right parenthesis");
+        expected(")");
         return false;
     }
 
@@ -894,6 +919,24 @@ bool HlslGrammar::acceptCompoundStatement(TIntermNode*& retStatement)
 
     // RIGHT_CURLY
     return acceptTokenClass(EHTokRightBrace);
+}
+
+bool HlslGrammar::acceptScopedStatement(TIntermNode*& statement)
+{
+    parseContext.pushScope();
+    bool result = acceptNestedStatement(statement);
+    parseContext.popScope();
+
+    return result;
+}
+
+bool HlslGrammar::acceptNestedStatement(TIntermNode*& statement)
+{
+    parseContext.nestStatement();
+    bool result = acceptStatement(statement);
+    parseContext.unnestStatement();
+
+    return result;
 }
 
 // statement
@@ -965,7 +1008,7 @@ bool HlslGrammar::acceptStatement(TIntermNode*& statement)
 
             // SEMICOLON (following an expression)
             if (! acceptTokenClass(EHTokSemicolon)) {
-                expected("semicolon");
+                expected(";");
                 return false;
             }
         }
@@ -989,12 +1032,86 @@ bool HlslGrammar::acceptStatement(TIntermNode*& statement)
 //
 void HlslGrammar::acceptAttributes()
 {
-    // TODO
+    // For now, accept the [ XXX(X) ] syntax, but drop.
+    // TODO: subset to correct set?  Pass on?
+    do {
+        // LEFT_BRACKET?
+        if (! acceptTokenClass(EHTokLeftBracket))
+            return;
+
+        // attribute
+        if (peekTokenClass(EHTokIdentifier)) {
+            // 'token.string' is the attribute
+            advanceToken();
+        } else if (! peekTokenClass(EHTokRightBracket)) {
+            expected("identifier");
+            advanceToken();
+        }
+
+        // (x)
+        if (acceptTokenClass(EHTokLeftParen)) {
+            TIntermTyped* node;
+            if (! acceptLiteral(node))
+                expected("literal");
+            // 'node' has the literal in it
+            if (! acceptTokenClass(EHTokRightParen))
+                expected(")");
+        }
+
+        // RIGHT_BRACKET
+        if (acceptTokenClass(EHTokRightBracket))
+            continue;
+
+        expected("]");
+        return;
+
+    } while (true);
 }
 
+// selection_statement
+//      : IF LEFT_PAREN expression RIGHT_PAREN statement
+//      : IF LEFT_PAREN expression RIGHT_PAREN statement ELSE statement
+//
 bool HlslGrammar::acceptSelectionStatement(TIntermNode*& statement)
 {
-    return false;
+    TSourceLoc loc = token.loc;
+
+    // IF
+    if (! acceptTokenClass(EHTokIf))
+        return false;
+
+    // so that something declared in the condition is scoped to the lifetimes
+    // of the then-else statements
+    parseContext.pushScope();
+
+    // LEFT_PAREN expression RIGHT_PAREN
+    TIntermTyped* condition;
+    if (! acceptParenExpression(condition))
+        return false;
+
+    // create the child statements
+    TIntermNodePair thenElse = { nullptr, nullptr };
+
+    // then statement
+    if (! acceptScopedStatement(thenElse.node1)) {
+        expected("then statement");
+        return false;
+    }
+
+    // ELSE
+    if (acceptTokenClass(EHTokElse)) {
+        // else statement
+        if (! acceptScopedStatement(thenElse.node2)) {
+            expected("else statement");
+            return false;
+        }
+    }
+
+    // Put the pieces together
+    statement = intermediate.addSelection(condition, thenElse, loc);
+    parseContext.popScope();
+
+    return true;
 }
 
 bool HlslGrammar::acceptSwitchStatement(TIntermNode*& statement)
@@ -1036,7 +1153,7 @@ bool HlslGrammar::acceptJumpStatement(TIntermNode*& statement)
 
             // SEMICOLON
             if (! acceptTokenClass(EHTokSemicolon)) {
-                expected("semicolon");
+                expected(";");
                 return false;
             }
 

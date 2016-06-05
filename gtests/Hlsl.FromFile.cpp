@@ -73,9 +73,11 @@ INSTANTIATE_TEST_CASE_P(
     ToSpirv, HlslCompileTest,
     ::testing::ValuesIn(std::vector<FileNameEntryPointPair>{
         {"hlsl.assoc.frag", "PixelShaderFunction"},
+        {"hlsl.attribute.frag", "PixelShaderFunction"},
         {"hlsl.cast.frag", "PixelShaderFunction"},
         {"hlsl.float1.frag", "PixelShaderFunction"},
         {"hlsl.float4.frag", "PixelShaderFunction"},
+        {"hlsl.if.frag", "PixelShaderFunction"},
         {"hlsl.intrinsics.frag", "PixelShaderFunction"},
         {"hlsl.intrinsics.negative.frag", "PixelShaderFunction"},
         {"hlsl.intrinsics.negative.vert", "VertexShaderFunction"},
