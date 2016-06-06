@@ -2661,6 +2661,8 @@ void TParseContext::globalQualifierTypeCheck(const TSourceLoc& loc, const TQuali
                 requireProfile(loc, ~EEsProfile, "vertex input arrays");
                 profileRequires(loc, ENoProfile, 150, nullptr, "vertex input arrays");
             }
+            if (publicType.basicType == EbtDouble)
+                profileRequires(loc, ~EEsProfile, 410, nullptr, "vertex-shader `double` type input");
             if (qualifier.isAuxiliary() || qualifier.isInterpolation() || qualifier.isMemory() || qualifier.invariant)
                 error(loc, "vertex input cannot be further qualified", "", "");
             break;
@@ -2735,6 +2737,8 @@ void TParseContext::globalQualifierTypeCheck(const TSourceLoc& loc, const TQuali
                 error(loc, "can't use auxiliary qualifier on a fragment output", "centroid/sample/patch", "");
             if (qualifier.isInterpolation())
                 error(loc, "can't use interpolation qualifier on a fragment output", "flat/smooth/noperspective", "");
+            if (publicType.basicType == EbtDouble)
+                error(loc, "cannot contain a double", GetStorageQualifierString(qualifier.storage), "");
         break;
 
         case EShLangCompute:
