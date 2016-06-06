@@ -4,7 +4,7 @@ BreakBeforeBraces: Custom
 BraceWrapping: { AfterFunction: true, AfterControlStatement: true }
 IndentCaseLabels: false
 ReflowComments: false
-ColumnLimit: 100
+ColumnLimit: 120
 AccessModifierOffset: -4
 AlignTrailingComments: true
 AllowShortBlocksOnASingleLine: false
