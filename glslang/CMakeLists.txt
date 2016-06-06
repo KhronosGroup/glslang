@@ -1,5 +1,3 @@
-cmake_minimum_required(VERSION 2.8)
-
 if(WIN32)
     add_subdirectory(OSDependent/Windows)
 elseif(UNIX)
@@ -35,6 +33,7 @@ set(SOURCES
     MachineIndependent/preprocessor/PpScanner.cpp
     MachineIndependent/preprocessor/PpSymbols.cpp
     MachineIndependent/preprocessor/PpTokens.cpp
+    MachineIndependent/propagateNoContraction.cpp
     GenericCodeGen/CodeGen.cpp
     GenericCodeGen/Link.cpp)
 
@@ -63,6 +62,8 @@ set(HEADERS
     MachineIndependent/ScanContext.h
     MachineIndependent/SymbolTable.h
     MachineIndependent/Versions.h
+    MachineIndependent/parseVersions.h
+    MachineIndependent/propagateNoContraction.h
     MachineIndependent/preprocessor/PpContext.h
     MachineIndependent/preprocessor/PpTokens.h)
 
@@ -76,6 +77,7 @@ set(HEADERS
 # set(BISON_GLSLParser_OUTPUT_SOURCE ${CMAKE_CURRENT_SOURCE_DIR}/MachineIndependent/glslang_tab.cpp)
 
 add_library(glslang STATIC ${BISON_GLSLParser_OUTPUT_SOURCE} ${SOURCES} ${HEADERS})
+set_property(TARGET glslang PROPERTY FOLDER glslang)
 
 if(WIN32)
     source_group("Public" REGULAR_EXPRESSION "Public/*")

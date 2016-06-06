@@ -470,7 +470,7 @@ Linked fragment stage:
              339:               Label
              341:  179(bvec4)   Load 181(ub41)
              343:  179(bvec4)   Load 342(ub42)
-             344:  179(bvec4)   IEqual 341 343
+             344:  179(bvec4)   LogicalEqual 341 343
              345:   178(bool)   Any 344
                                 Branch 340
              340:             Label
@@ -482,7 +482,7 @@ Linked fragment stage:
              348:               Label
              350:  179(bvec4)   Load 181(ub41)
              351:  179(bvec4)   Load 342(ub42)
-             352:  179(bvec4)   INotEqual 350 351
+             352:  179(bvec4)   LogicalNotEqual 350 351
              353:   178(bool)   Any 352
                                 Branch 349
              349:             Label

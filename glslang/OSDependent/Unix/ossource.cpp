@@ -61,7 +61,7 @@ static void DetachThreadLinux(void *)
 
 
 //
-// Registers cleanup handler, sets cancel type and state, and excecutes the thread specific
+// Registers cleanup handler, sets cancel type and state, and executes the thread specific
 // cleanup handler.  This function will be called in the Standalone.cpp for regression 
 // testing.  When OpenGL applications are run with the driver code, Linux OS does the 
 // thread cleanup.
@@ -69,7 +69,7 @@ static void DetachThreadLinux(void *)
 void OS_CleanupThreadData(void)
 {
 #ifdef __ANDROID__
-  DetachThread();
+	DetachThreadLinux(NULL);
 #else
 	int old_cancel_state, old_cancel_type;
 	void *cleanupArg = NULL;

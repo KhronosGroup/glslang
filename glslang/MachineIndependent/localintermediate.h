@@ -124,7 +124,8 @@ class TVariable;
 //
 class TIntermediate {
 public:
-    explicit TIntermediate(EShLanguage l, int v = 0, EProfile p = ENoProfile) : language(l), treeRoot(0), profile(p), version(v), spv(0),
+    explicit TIntermediate(EShLanguage l, int v = 0, EProfile p = ENoProfile) :
+        source(EShSourceNone), language(l), profile(p), version(v), spv(0), treeRoot(0),
         numMains(0), numErrors(0), numPushConstants(0), recursive(false),
         invocations(TQualifier::layoutNotSet), vertices(TQualifier::layoutNotSet), inputPrimitive(ElgNone), outputPrimitive(ElgNone),
         pixelCenterInteger(false), originUpperLeft(false),
@@ -143,8 +144,12 @@ public:
 
     bool postProcess(TIntermNode*, EShLanguage);
     void output(TInfoSink&, bool tree);
-	void removeTree();
+    void removeTree();
 
+    void setSource(EShSource s) { source = s; }
+    EShSource getSource() const { return source; }
+    void setEntryPoint(const char* ep) { entryPoint = ep; }
+    const std::string& getEntryPoint() const { return entryPoint; }
     void setVersion(int v) { version = v; }
     int getVersion() const { return version; }
     void setProfile(EProfile p) { profile = p; }
@@ -186,11 +191,14 @@ public:
     TIntermConstantUnion* addConstantUnion(const TConstUnionArray&, const TType&, const TSourceLoc&, bool literal = false) const;
     TIntermConstantUnion* addConstantUnion(int, const TSourceLoc&, bool literal = false) const;
     TIntermConstantUnion* addConstantUnion(unsigned int, const TSourceLoc&, bool literal = false) const;
+    TIntermConstantUnion* addConstantUnion(long long, const TSourceLoc&, bool literal = false) const;
+    TIntermConstantUnion* addConstantUnion(unsigned long long, const TSourceLoc&, bool literal = false) const;
     TIntermConstantUnion* addConstantUnion(bool, const TSourceLoc&, bool literal = false) const;
     TIntermConstantUnion* addConstantUnion(double, TBasicType, const TSourceLoc&, bool literal = false) const;
     TIntermTyped* promoteConstantUnion(TBasicType, TIntermConstantUnion*) const;
     bool parseConstTree(TIntermNode*, TConstUnionArray, TOperator, const TType&, bool singleConstantParam = false);
     TIntermLoop* addLoop(TIntermNode*, TIntermTyped*, TIntermTyped*, bool testFirst, const TSourceLoc&);
+    TIntermAggregate* addForLoop(TIntermNode*, TIntermNode*, TIntermTyped*, TIntermTyped*, bool testFirst, const TSourceLoc&);
     TIntermBranch* addBranch(TOperator, const TSourceLoc&);
     TIntermBranch* addBranch(TOperator, TIntermTyped*, const TSourceLoc&);
     TIntermTyped* addSwizzle(TVectorFields&, const TSourceLoc&);
@@ -337,12 +345,15 @@ protected:
     TIntermSequence& findLinkerObjects() const;
     bool userOutputUsed() const;
     static int getBaseAlignmentScalar(const TType&, int& size);
+    bool isSpecializationOperation(const TIntermOperator&) const;
 
-    const EShLanguage language;
-    TIntermNode* treeRoot;
+    const EShLanguage language;  // stage, known at construction time
+    EShSource source;            // source language, known a bit later
+    std::string entryPoint;
     EProfile profile;
     int version;
     int spv;
+    TIntermNode* treeRoot;
     std::set<std::string> requestedExtensions;  // cumulation of all enabled or required extensions; not connected to what subset of the shader used them
     TBuiltInResource resources;
     int numMains;

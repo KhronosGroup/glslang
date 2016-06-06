@@ -11,6 +11,7 @@ Linked fragment stage:
 
                               Capability Shader
                               Capability Float64
+                              Capability ImageGatherExtended
                               Capability ClipDistance
                               Capability SampledRect
                1:             ExtInstImport  "GLSL.std.450"

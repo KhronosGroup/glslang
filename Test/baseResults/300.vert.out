@@ -3,7 +3,7 @@ ERROR: 0:8: 'varying' : Reserved word.
 ERROR: 0:8: 'varying' : no longer supported in es profile; removed in version 300
 ERROR: 0:9: 'vertex input arrays' : not supported with this profile: es
 ERROR: 0:10: '' : precision qualifier must appear as last qualifier 
-ERROR: 0:11: '' : invariant qualifier must appear first 
+ERROR: 0:11: '' : invariant qualifier must appear before interpolation, storage, and precision qualifiers  
 ERROR: 0:12: '' : Auxiliary qualifiers (centroid, patch, and sample) must appear before storage and precision qualifiers 
 ERROR: 0:12: '' : vertex input cannot be further qualified 
 ERROR: 0:13: '' : interpolation qualifiers must appear before storage and precision qualifiers 
@@ -193,7 +193,7 @@ ERROR: node is still EOpNull!
 0:124      Sequence
 0:124        move second child to first child (temp highp 4-component vector of float)
 0:124          'x4' (temp highp 4-component vector of float)
-0:124          texture (global highp 4-component vector of float)
+0:124          texture (global lowp 4-component vector of float)
 0:124            's2D' (uniform lowp sampler2D)
 0:124            'c2D' (in highp 2-component vector of float)
 0:125      Constant:
@@ -201,7 +201,7 @@ ERROR: node is still EOpNull!
 0:126      Sequence
 0:126        move second child to first child (temp highp 4-component vector of float)
 0:126          'x5' (temp highp 4-component vector of float)
-0:126          textureProjOffset (global highp 4-component vector of float)
+0:126          textureProjOffset (global lowp 4-component vector of float)
 0:126            's3D' (uniform lowp sampler3D)
 0:126            Constant:
 0:126              0.200000
@@ -217,7 +217,7 @@ ERROR: node is still EOpNull!
 0:128      Sequence
 0:128        move second child to first child (temp highp float)
 0:128          'x6' (temp highp float)
-0:128          textureProjGradOffset (global highp float)
+0:128          textureProjGradOffset (global lowp float)
 0:128            's2DS' (uniform lowp sampler2DShadow)
 0:128            'invIn' (invariant in highp 4-component vector of float)
 0:128            Constant:
@@ -477,7 +477,7 @@ ERROR: node is still EOpNull!
 0:124      Sequence
 0:124        move second child to first child (temp highp 4-component vector of float)
 0:124          'x4' (temp highp 4-component vector of float)
-0:124          texture (global highp 4-component vector of float)
+0:124          texture (global lowp 4-component vector of float)
 0:124            's2D' (uniform lowp sampler2D)
 0:124            'c2D' (in highp 2-component vector of float)
 0:125      Constant:
@@ -485,7 +485,7 @@ ERROR: node is still EOpNull!
 0:126      Sequence
 0:126        move second child to first child (temp highp 4-component vector of float)
 0:126          'x5' (temp highp 4-component vector of float)
-0:126          textureProjOffset (global highp 4-component vector of float)
+0:126          textureProjOffset (global lowp 4-component vector of float)
 0:126            's3D' (uniform lowp sampler3D)
 0:126            Constant:
 0:126              0.200000
@@ -501,7 +501,7 @@ ERROR: node is still EOpNull!
 0:128      Sequence
 0:128        move second child to first child (temp highp float)
 0:128          'x6' (temp highp float)
-0:128          textureProjGradOffset (global highp float)
+0:128          textureProjGradOffset (global lowp float)
 0:128            's2DS' (uniform lowp sampler2DShadow)
 0:128            'invIn' (invariant in highp 4-component vector of float)
 0:128            Constant:

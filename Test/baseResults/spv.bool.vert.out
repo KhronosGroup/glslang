@@ -10,8 +10,6 @@ Linked vertex stage:
 // Id's are bound by 49
 
                               Capability Shader
-                              Capability ClipDistance
-                              Capability CullDistance
                1:             ExtInstImport  "GLSL.std.450"
                               MemoryModel Logical GLSL450
                               EntryPoint Vertex 4  "main" 24
@@ -91,6 +89,6 @@ Linked vertex stage:
             9(b):      7(ptr) FunctionParameter
               11:             Label
               12:     6(bool) Load 9(b)
-              14:     6(bool) INotEqual 12 13
+              14:     6(bool) LogicalNotEqual 12 13
                               ReturnValue 14
                               FunctionEnd

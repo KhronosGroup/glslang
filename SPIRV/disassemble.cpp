@@ -33,10 +33,6 @@
 //POSSIBILITY OF SUCH DAMAGE.
 
 //
-// Author: John Kessenich, LunarG
-//
-
-//
 // Disassembler for SPIR-V.
 //
 

@@ -53,6 +53,7 @@ spv.forwardFun.frag
 spv.functionCall.frag
 spv.functionSemantics.frag
 spv.interpOps.frag
+spv.int64.frag
 spv.layoutNested.vert
 spv.length.frag
 spv.localAggregates.frag
@@ -71,6 +72,8 @@ spv.intOps.vert
 spv.precision.frag
 spv.prepost.frag
 spv.qualifiers.vert
+spv.shaderBallot.comp
+spv.shaderGroupVote.comp
 spv.shiftOps.frag
 spv.simpleFunctionCall.frag
 spv.simpleMat.vert
@@ -103,6 +106,9 @@ spv.subpass.frag
 spv.specConstant.vert
 spv.specConstant.comp
 spv.specConstantComposite.vert
+spv.specConstantOperations.vert
+spv.precise.tese
+spv.precise.tesc
 # GLSL-level semantics
 vulkan.frag
 vulkan.vert

@@ -61,6 +61,7 @@ ERROR: 0:183: 'gl_PrimitiveID' : required extension not requested: Possible exte
 GL_EXT_geometry_shader
 GL_OES_geometry_shader
 ERROR: 0:209: 'precise' : Reserved word. 
+ERROR: 0:209: 'precise' : not supported for this version or the enabled extensions 
 ERROR: 0:210: 'fma' : required extension not requested: Possible extensions include:
 GL_EXT_gpu_shader5
 GL_OES_gpu_shader5
@@ -129,7 +130,7 @@ ERROR: 0:427: 'blend equation' : can only apply to a standalone qualifier
 ERROR: 0:428: 'blend equation' : can only apply to a standalone qualifier 
 ERROR: 0:429: 'blend_support' : unknown blend equation 
 ERROR: 0:431: 'fragment-shader array-of-array output' : not supported with this profile: es
-ERROR: 121 compilation errors.  No code generated.
+ERROR: 122 compilation errors.  No code generated.
 
 
 Shader version: 310
@@ -169,9 +170,9 @@ ERROR: node is still EOpNull!
 0:28                0 (const int)
 0:28            'c2D' (smooth in mediump 2-component vector of float)
 0:29      Sequence
-0:29        move second child to first child (temp mediump 4-component vector of int)
+0:29        move second child to first child (temp highp 4-component vector of int)
 0:29          'iv4' (temp mediump 4-component vector of int)
-0:29          textureGatherOffset (global mediump 4-component vector of int)
+0:29          textureGatherOffset (global highp 4-component vector of int)
 0:29            'isamp2DA' (uniform highp isampler2DArray)
 0:29            Constant:
 0:29              0.100000
@@ -182,9 +183,9 @@ ERROR: node is still EOpNull!
 0:29              1 (const int)
 0:29            Constant:
 0:29              3 (const int)
-0:30      move second child to first child (temp mediump 4-component vector of int)
+0:30      move second child to first child (temp highp 4-component vector of int)
 0:30        'iv4' (temp mediump 4-component vector of int)
-0:30        textureGatherOffset (global mediump 4-component vector of int)
+0:30        textureGatherOffset (global highp 4-component vector of int)
 0:30          'isamp2DA' (uniform highp isampler2DArray)
 0:30          Constant:
 0:30            0.100000
@@ -194,9 +195,9 @@ ERROR: node is still EOpNull!
 0:30            1 (const int)
 0:30            1 (const int)
 0:30          'i' (uniform mediump int)
-0:31      move second child to first child (temp mediump 4-component vector of int)
+0:31      move second child to first child (temp highp 4-component vector of int)
 0:31        'iv4' (temp mediump 4-component vector of int)
-0:31        textureGatherOffset (global mediump 4-component vector of int)
+0:31        textureGatherOffset (global highp 4-component vector of int)
 0:31          'isamp2DA' (uniform highp isampler2DArray)
 0:31          Constant:
 0:31            0.100000
@@ -207,9 +208,9 @@ ERROR: node is still EOpNull!
 0:31            1 (const int)
 0:31          Constant:
 0:31            4 (const int)
-0:32      move second child to first child (temp mediump 4-component vector of int)
+0:32      move second child to first child (temp highp 4-component vector of int)
 0:32        'iv4' (temp mediump 4-component vector of int)
-0:32        textureGatherOffset (global mediump 4-component vector of int)
+0:32        textureGatherOffset (global highp 4-component vector of int)
 0:32          'isamp2DA' (uniform highp isampler2DArray)
 0:32          Constant:
 0:32            0.100000
@@ -220,9 +221,9 @@ ERROR: node is still EOpNull!
 0:32            1 (const int)
 0:32          Constant:
 0:32            3 (const int)
-0:33      move second child to first child (temp mediump 4-component vector of int)
+0:33      move second child to first child (temp highp 4-component vector of int)
 0:33        'iv4' (temp mediump 4-component vector of int)
-0:33        textureGatherOffset (global mediump 4-component vector of int)
+0:33        textureGatherOffset (global highp 4-component vector of int)
 0:33          'isamp2DA' (uniform highp isampler2DArray)
 0:33          Constant:
 0:33            0.100000
@@ -231,20 +232,20 @@ ERROR: node is still EOpNull!
 0:33          Constant:
 0:33            0 (const int)
 0:33            0 (const int)
-0:34      move second child to first child (temp mediump 4-component vector of int)
+0:34      move second child to first child (temp highp 4-component vector of int)
 0:34        'iv4' (temp mediump 4-component vector of int)
-0:34        textureGatherOffset (global mediump 4-component vector of int)
+0:34        textureGatherOffset (global highp 4-component vector of int)
 0:34          'isamp2DA' (uniform highp isampler2DArray)
 0:34          Constant:
 0:34            0.100000
 0:34            0.100000
 0:34            0.100000
-0:34          Construct ivec2 (temp mediump 2-component vector of int)
+0:34          Construct ivec2 (temp highp 2-component vector of int)
 0:34            'i' (uniform mediump int)
 0:38  Function Definition: foo23( (global void)
 0:38    Function Parameters: 
 0:?     Sequence
-0:42      textureProjGradOffset (global mediump 4-component vector of uint)
+0:42      textureProjGradOffset (global highp 4-component vector of uint)
 0:42        'usamp2d' (uniform highp usampler2D)
 0:42        'outp' (out mediump 4-component vector of float)
 0:42        Constant:
@@ -253,9 +254,9 @@ ERROR: node is still EOpNull!
 0:42        Constant:
 0:42          0.000000
 0:42          0.000000
-0:42        Convert float to int (temp mediump 2-component vector of int)
+0:42        Convert float to int (temp highp 2-component vector of int)
 0:42          'c2D' (smooth in mediump 2-component vector of float)
-0:43      textureProjGradOffset (global mediump 4-component vector of uint)
+0:43      textureProjGradOffset (global highp 4-component vector of uint)
 0:43        'usamp2d' (uniform highp usampler2D)
 0:43        'outp' (out mediump 4-component vector of float)
 0:43        Constant:
@@ -267,7 +268,7 @@ ERROR: node is still EOpNull!
 0:43        Constant:
 0:43          3 (const int)
 0:43          4 (const int)
-0:44      textureProjGradOffset (global mediump 4-component vector of uint)
+0:44      textureProjGradOffset (global highp 4-component vector of uint)
 0:44        'usamp2d' (uniform highp usampler2D)
 0:44        'outp' (out mediump 4-component vector of float)
 0:44        Constant:
@@ -279,7 +280,7 @@ ERROR: node is still EOpNull!
 0:44        Constant:
 0:44          15 (const int)
 0:44          16 (const int)
-0:45      textureProjGradOffset (global mediump 4-component vector of uint)
+0:45      textureProjGradOffset (global highp 4-component vector of uint)
 0:45        'usamp2d' (uniform highp usampler2D)
 0:45        'outp' (out mediump 4-component vector of float)
 0:45        Constant:
@@ -431,11 +432,11 @@ ERROR: node is still EOpNull!
 0:207    Function Parameters: 
 0:?     Sequence
 0:210      move second child to first child (temp mediump 2-component vector of float)
-0:210        'h' (temp mediump 2-component vector of float)
+0:210        'h' (noContraction temp mediump 2-component vector of float)
 0:210        fma (global mediump 2-component vector of float)
 0:210          'inf' (smooth in mediump 2-component vector of float)
 0:210          'ing' (smooth in mediump 2-component vector of float)
-0:210          'h' (temp mediump 2-component vector of float)
+0:210          'h' (noContraction temp mediump 2-component vector of float)
 0:211      textureGatherOffset (global highp 4-component vector of float)
 0:211        direct index (temp highp sampler2D)
 0:211          'sArray' (uniform 4-element array of highp sampler2D)
@@ -467,11 +468,11 @@ ERROR: node is still EOpNull!
 0:217    Function Parameters: 
 0:?     Sequence
 0:220      move second child to first child (temp mediump 2-component vector of float)
-0:220        'h' (temp mediump 2-component vector of float)
+0:220        'h' (noContraction temp mediump 2-component vector of float)
 0:220        fma (global mediump 2-component vector of float)
 0:220          'inf' (smooth in mediump 2-component vector of float)
 0:220          'ing' (smooth in mediump 2-component vector of float)
-0:220          'h' (temp mediump 2-component vector of float)
+0:220          'h' (noContraction temp mediump 2-component vector of float)
 0:221      textureGatherOffset (global highp 4-component vector of float)
 0:221        direct index (temp highp sampler2D)
 0:221          'sArray' (uniform 4-element array of highp sampler2D)
@@ -526,7 +527,7 @@ ERROR: node is still EOpNull!
 0:251      Sequence
 0:251        move second child to first child (temp highp 4-component vector of int)
 0:251          'b6' (temp highp 4-component vector of int)
-0:251          texture (global mediump 4-component vector of int)
+0:251          texture (global highp 4-component vector of int)
 0:251            'CA6' (uniform highp isamplerCubeArray)
 0:251            Constant:
 0:251              0.500000
@@ -538,7 +539,7 @@ ERROR: node is still EOpNull!
 0:252      Sequence
 0:252        move second child to first child (temp highp 4-component vector of uint)
 0:252          'b7' (temp highp 4-component vector of uint)
-0:252          texture (global mediump 4-component vector of uint)
+0:252          texture (global highp 4-component vector of uint)
 0:252            'CA7' (uniform highp usamplerCubeArray)
 0:252            Constant:
 0:252              0.500000
@@ -611,59 +612,59 @@ ERROR: node is still EOpNull!
 0:283  Function Definition: badImageAtom( (global void)
 0:283    Function Parameters: 
 0:?     Sequence
-0:289      imageAtomicAdd (global mediump int)
+0:289      imageAtomicAdd (global highp int)
 0:289        'im2Di' (layout(r32i ) uniform highp iimage2D)
 0:289        'P' (uniform mediump 2-component vector of int)
 0:289        'dati' (temp mediump int)
-0:290      imageAtomicAdd (global mediump uint)
+0:290      imageAtomicAdd (global highp uint)
 0:290        'im2Du' (layout(r32ui ) uniform highp uimage2D)
 0:290        'P' (uniform mediump 2-component vector of int)
 0:290        'datu' (temp mediump uint)
-0:291      imageAtomicMin (global mediump int)
+0:291      imageAtomicMin (global highp int)
 0:291        'im2Di' (layout(r32i ) uniform highp iimage2D)
 0:291        'P' (uniform mediump 2-component vector of int)
 0:291        'dati' (temp mediump int)
-0:292      imageAtomicMin (global mediump uint)
+0:292      imageAtomicMin (global highp uint)
 0:292        'im2Du' (layout(r32ui ) uniform highp uimage2D)
 0:292        'P' (uniform mediump 2-component vector of int)
 0:292        'datu' (temp mediump uint)
-0:293      imageAtomicMax (global mediump int)
+0:293      imageAtomicMax (global highp int)
 0:293        'im2Di' (layout(r32i ) uniform highp iimage2D)
 0:293        'P' (uniform mediump 2-component vector of int)
 0:293        'dati' (temp mediump int)
-0:294      imageAtomicMax (global mediump uint)
+0:294      imageAtomicMax (global highp uint)
 0:294        'im2Du' (layout(r32ui ) uniform highp uimage2D)
 0:294        'P' (uniform mediump 2-component vector of int)
 0:294        'datu' (temp mediump uint)
-0:295      imageAtomicAnd (global mediump int)
+0:295      imageAtomicAnd (global highp int)
 0:295        'im2Di' (layout(r32i ) uniform highp iimage2D)
 0:295        'P' (uniform mediump 2-component vector of int)
 0:295        'dati' (temp mediump int)
-0:296      imageAtomicAnd (global mediump uint)
+0:296      imageAtomicAnd (global highp uint)
 0:296        'im2Du' (layout(r32ui ) uniform highp uimage2D)
 0:296        'P' (uniform mediump 2-component vector of int)
 0:296        'datu' (temp mediump uint)
-0:297      imageAtomicOr (global mediump int)
+0:297      imageAtomicOr (global highp int)
 0:297        'im2Di' (layout(r32i ) uniform highp iimage2D)
 0:297        'P' (uniform mediump 2-component vector of int)
 0:297        'dati' (temp mediump int)
-0:298      imageAtomicOr (global mediump uint)
+0:298      imageAtomicOr (global highp uint)
 0:298        'im2Du' (layout(r32ui ) uniform highp uimage2D)
 0:298        'P' (uniform mediump 2-component vector of int)
 0:298        'datu' (temp mediump uint)
-0:299      imageAtomicXor (global mediump int)
+0:299      imageAtomicXor (global highp int)
 0:299        'im2Di' (layout(r32i ) uniform highp iimage2D)
 0:299        'P' (uniform mediump 2-component vector of int)
 0:299        'dati' (temp mediump int)
-0:300      imageAtomicXor (global mediump uint)
+0:300      imageAtomicXor (global highp uint)
 0:300        'im2Du' (layout(r32ui ) uniform highp uimage2D)
 0:300        'P' (uniform mediump 2-component vector of int)
 0:300        'datu' (temp mediump uint)
-0:301      imageAtomicExchange (global mediump int)
+0:301      imageAtomicExchange (global highp int)
 0:301        'im2Di' (layout(r32i ) uniform highp iimage2D)
 0:301        'P' (uniform mediump 2-component vector of int)
 0:301        'dati' (temp mediump int)
-0:302      imageAtomicExchange (global mediump uint)
+0:302      imageAtomicExchange (global highp uint)
 0:302        'im2Du' (layout(r32ui ) uniform highp uimage2D)
 0:302        'P' (uniform mediump 2-component vector of int)
 0:302        'datu' (temp mediump uint)
@@ -671,13 +672,13 @@ ERROR: node is still EOpNull!
 0:303        'im2Df' (layout(r32f ) uniform highp image2D)
 0:303        'P' (uniform mediump 2-component vector of int)
 0:303        'datf' (temp mediump float)
-0:304      imageAtomicCompSwap (global mediump int)
+0:304      imageAtomicCompSwap (global highp int)
 0:304        'im2Di' (layout(r32i ) uniform highp iimage2D)
 0:304        'P' (uniform mediump 2-component vector of int)
 0:304        Constant:
 0:304          3 (const int)
 0:304        'dati' (temp mediump int)
-0:305      imageAtomicCompSwap (global mediump uint)
+0:305      imageAtomicCompSwap (global highp uint)
 0:305        'im2Du' (layout(r32ui ) uniform highp uimage2D)
 0:305        'P' (uniform mediump 2-component vector of int)
 0:305        Constant:
@@ -686,59 +687,59 @@ ERROR: node is still EOpNull!
 0:316  Function Definition: goodImageAtom( (global void)
 0:316    Function Parameters: 
 0:?     Sequence
-0:322      imageAtomicAdd (global mediump int)
+0:322      imageAtomicAdd (global highp int)
 0:322        'im2Di' (layout(r32i ) uniform highp iimage2D)
 0:322        'P' (uniform mediump 2-component vector of int)
 0:322        'dati' (temp mediump int)
-0:323      imageAtomicAdd (global mediump uint)
+0:323      imageAtomicAdd (global highp uint)
 0:323        'im2Du' (layout(r32ui ) uniform highp uimage2D)
 0:323        'P' (uniform mediump 2-component vector of int)
 0:323        'datu' (temp mediump uint)
-0:324      imageAtomicMin (global mediump int)
+0:324      imageAtomicMin (global highp int)
 0:324        'im2Di' (layout(r32i ) uniform highp iimage2D)
 0:324        'P' (uniform mediump 2-component vector of int)
 0:324        'dati' (temp mediump int)
-0:325      imageAtomicMin (global mediump uint)
+0:325      imageAtomicMin (global highp uint)
 0:325        'im2Du' (layout(r32ui ) uniform highp uimage2D)
 0:325        'P' (uniform mediump 2-component vector of int)
 0:325        'datu' (temp mediump uint)
-0:326      imageAtomicMax (global mediump int)
+0:326      imageAtomicMax (global highp int)
 0:326        'im2Di' (layout(r32i ) uniform highp iimage2D)
 0:326        'P' (uniform mediump 2-component vector of int)
 0:326        'dati' (temp mediump int)
-0:327      imageAtomicMax (global mediump uint)
+0:327      imageAtomicMax (global highp uint)
 0:327        'im2Du' (layout(r32ui ) uniform highp uimage2D)
 0:327        'P' (uniform mediump 2-component vector of int)
 0:327        'datu' (temp mediump uint)
-0:328      imageAtomicAnd (global mediump int)
+0:328      imageAtomicAnd (global highp int)
 0:328        'im2Di' (layout(r32i ) uniform highp iimage2D)
 0:328        'P' (uniform mediump 2-component vector of int)
 0:328        'dati' (temp mediump int)
-0:329      imageAtomicAnd (global mediump uint)
+0:329      imageAtomicAnd (global highp uint)
 0:329        'im2Du' (layout(r32ui ) uniform highp uimage2D)
 0:329        'P' (uniform mediump 2-component vector of int)
 0:329        'datu' (temp mediump uint)
-0:330      imageAtomicOr (global mediump int)
+0:330      imageAtomicOr (global highp int)
 0:330        'im2Di' (layout(r32i ) uniform highp iimage2D)
 0:330        'P' (uniform mediump 2-component vector of int)
 0:330        'dati' (temp mediump int)
-0:331      imageAtomicOr (global mediump uint)
+0:331      imageAtomicOr (global highp uint)
 0:331        'im2Du' (layout(r32ui ) uniform highp uimage2D)
 0:331        'P' (uniform mediump 2-component vector of int)
 0:331        'datu' (temp mediump uint)
-0:332      imageAtomicXor (global mediump int)
+0:332      imageAtomicXor (global highp int)
 0:332        'im2Di' (layout(r32i ) uniform highp iimage2D)
 0:332        'P' (uniform mediump 2-component vector of int)
 0:332        'dati' (temp mediump int)
-0:333      imageAtomicXor (global mediump uint)
+0:333      imageAtomicXor (global highp uint)
 0:333        'im2Du' (layout(r32ui ) uniform highp uimage2D)
 0:333        'P' (uniform mediump 2-component vector of int)
 0:333        'datu' (temp mediump uint)
-0:334      imageAtomicExchange (global mediump int)
+0:334      imageAtomicExchange (global highp int)
 0:334        'im2Di' (layout(r32i ) uniform highp iimage2D)
 0:334        'P' (uniform mediump 2-component vector of int)
 0:334        'dati' (temp mediump int)
-0:335      imageAtomicExchange (global mediump uint)
+0:335      imageAtomicExchange (global highp uint)
 0:335        'im2Du' (layout(r32ui ) uniform highp uimage2D)
 0:335        'P' (uniform mediump 2-component vector of int)
 0:335        'datu' (temp mediump uint)
@@ -746,23 +747,23 @@ ERROR: node is still EOpNull!
 0:336        'im2Df' (layout(r32f ) uniform highp image2D)
 0:336        'P' (uniform mediump 2-component vector of int)
 0:336        'datf' (temp mediump float)
-0:337      imageAtomicCompSwap (global mediump int)
+0:337      imageAtomicCompSwap (global highp int)
 0:337        'im2Di' (layout(r32i ) uniform highp iimage2D)
 0:337        'P' (uniform mediump 2-component vector of int)
 0:337        Constant:
 0:337          3 (const int)
 0:337        'dati' (temp mediump int)
-0:338      imageAtomicCompSwap (global mediump uint)
+0:338      imageAtomicCompSwap (global highp uint)
 0:338        'im2Du' (layout(r32ui ) uniform highp uimage2D)
 0:338        'P' (uniform mediump 2-component vector of int)
 0:338        Constant:
 0:338          5 (const uint)
 0:338        'datu' (temp mediump uint)
-0:340      imageAtomicMax (global mediump int)
+0:340      imageAtomicMax (global highp int)
 0:340        'badIm2Di' (layout(rgba16i ) uniform highp iimage2D)
 0:340        'P' (uniform mediump 2-component vector of int)
 0:340        'dati' (temp mediump int)
-0:341      imageAtomicMax (global mediump uint)
+0:341      imageAtomicMax (global highp uint)
 0:341        'badIm2Du' (layout(rgba8ui ) uniform highp uimage2D)
 0:341        'P' (uniform mediump 2-component vector of int)
 0:341        'datu' (temp mediump uint)
@@ -1050,9 +1051,9 @@ ERROR: node is still EOpNull!
 0:28                0 (const int)
 0:28            'c2D' (smooth in mediump 2-component vector of float)
 0:29      Sequence
-0:29        move second child to first child (temp mediump 4-component vector of int)
+0:29        move second child to first child (temp highp 4-component vector of int)
 0:29          'iv4' (temp mediump 4-component vector of int)
-0:29          textureGatherOffset (global mediump 4-component vector of int)
+0:29          textureGatherOffset (global highp 4-component vector of int)
 0:29            'isamp2DA' (uniform highp isampler2DArray)
 0:29            Constant:
 0:29              0.100000
@@ -1063,9 +1064,9 @@ ERROR: node is still EOpNull!
 0:29              1 (const int)
 0:29            Constant:
 0:29              3 (const int)
-0:30      move second child to first child (temp mediump 4-component vector of int)
+0:30      move second child to first child (temp highp 4-component vector of int)
 0:30        'iv4' (temp mediump 4-component vector of int)
-0:30        textureGatherOffset (global mediump 4-component vector of int)
+0:30        textureGatherOffset (global highp 4-component vector of int)
 0:30          'isamp2DA' (uniform highp isampler2DArray)
 0:30          Constant:
 0:30            0.100000
@@ -1075,9 +1076,9 @@ ERROR: node is still EOpNull!
 0:30            1 (const int)
 0:30            1 (const int)
 0:30          'i' (uniform mediump int)
-0:31      move second child to first child (temp mediump 4-component vector of int)
+0:31      move second child to first child (temp highp 4-component vector of int)
 0:31        'iv4' (temp mediump 4-component vector of int)
-0:31        textureGatherOffset (global mediump 4-component vector of int)
+0:31        textureGatherOffset (global highp 4-component vector of int)
 0:31          'isamp2DA' (uniform highp isampler2DArray)
 0:31          Constant:
 0:31            0.100000
@@ -1088,9 +1089,9 @@ ERROR: node is still EOpNull!
 0:31            1 (const int)
 0:31          Constant:
 0:31            4 (const int)
-0:32      move second child to first child (temp mediump 4-component vector of int)
+0:32      move second child to first child (temp highp 4-component vector of int)
 0:32        'iv4' (temp mediump 4-component vector of int)
-0:32        textureGatherOffset (global mediump 4-component vector of int)
+0:32        textureGatherOffset (global highp 4-component vector of int)
 0:32          'isamp2DA' (uniform highp isampler2DArray)
 0:32          Constant:
 0:32            0.100000
@@ -1101,9 +1102,9 @@ ERROR: node is still EOpNull!
 0:32            1 (const int)
 0:32          Constant:
 0:32            3 (const int)
-0:33      move second child to first child (temp mediump 4-component vector of int)
+0:33      move second child to first child (temp highp 4-component vector of int)
 0:33        'iv4' (temp mediump 4-component vector of int)
-0:33        textureGatherOffset (global mediump 4-component vector of int)
+0:33        textureGatherOffset (global highp 4-component vector of int)
 0:33          'isamp2DA' (uniform highp isampler2DArray)
 0:33          Constant:
 0:33            0.100000
@@ -1112,20 +1113,20 @@ ERROR: node is still EOpNull!
 0:33          Constant:
 0:33            0 (const int)
 0:33            0 (const int)
-0:34      move second child to first child (temp mediump 4-component vector of int)
+0:34      move second child to first child (temp highp 4-component vector of int)
 0:34        'iv4' (temp mediump 4-component vector of int)
-0:34        textureGatherOffset (global mediump 4-component vector of int)
+0:34        textureGatherOffset (global highp 4-component vector of int)
 0:34          'isamp2DA' (uniform highp isampler2DArray)
 0:34          Constant:
 0:34            0.100000
 0:34            0.100000
 0:34            0.100000
-0:34          Construct ivec2 (temp mediump 2-component vector of int)
+0:34          Construct ivec2 (temp highp 2-component vector of int)
 0:34            'i' (uniform mediump int)
 0:38  Function Definition: foo23( (global void)
 0:38    Function Parameters: 
 0:?     Sequence
-0:42      textureProjGradOffset (global mediump 4-component vector of uint)
+0:42      textureProjGradOffset (global highp 4-component vector of uint)
 0:42        'usamp2d' (uniform highp usampler2D)
 0:42        'outp' (out mediump 4-component vector of float)
 0:42        Constant:
@@ -1134,9 +1135,9 @@ ERROR: node is still EOpNull!
 0:42        Constant:
 0:42          0.000000
 0:42          0.000000
-0:42        Convert float to int (temp mediump 2-component vector of int)
+0:42        Convert float to int (temp highp 2-component vector of int)
 0:42          'c2D' (smooth in mediump 2-component vector of float)
-0:43      textureProjGradOffset (global mediump 4-component vector of uint)
+0:43      textureProjGradOffset (global highp 4-component vector of uint)
 0:43        'usamp2d' (uniform highp usampler2D)
 0:43        'outp' (out mediump 4-component vector of float)
 0:43        Constant:
@@ -1148,7 +1149,7 @@ ERROR: node is still EOpNull!
 0:43        Constant:
 0:43          3 (const int)
 0:43          4 (const int)
-0:44      textureProjGradOffset (global mediump 4-component vector of uint)
+0:44      textureProjGradOffset (global highp 4-component vector of uint)
 0:44        'usamp2d' (uniform highp usampler2D)
 0:44        'outp' (out mediump 4-component vector of float)
 0:44        Constant:
@@ -1160,7 +1161,7 @@ ERROR: node is still EOpNull!
 0:44        Constant:
 0:44          15 (const int)
 0:44          16 (const int)
-0:45      textureProjGradOffset (global mediump 4-component vector of uint)
+0:45      textureProjGradOffset (global highp 4-component vector of uint)
 0:45        'usamp2d' (uniform highp usampler2D)
 0:45        'outp' (out mediump 4-component vector of float)
 0:45        Constant:
@@ -1312,11 +1313,11 @@ ERROR: node is still EOpNull!
 0:207    Function Parameters: 
 0:?     Sequence
 0:210      move second child to first child (temp mediump 2-component vector of float)
-0:210        'h' (temp mediump 2-component vector of float)
+0:210        'h' (noContraction temp mediump 2-component vector of float)
 0:210        fma (global mediump 2-component vector of float)
 0:210          'inf' (smooth in mediump 2-component vector of float)
 0:210          'ing' (smooth in mediump 2-component vector of float)
-0:210          'h' (temp mediump 2-component vector of float)
+0:210          'h' (noContraction temp mediump 2-component vector of float)
 0:211      textureGatherOffset (global highp 4-component vector of float)
 0:211        direct index (temp highp sampler2D)
 0:211          'sArray' (uniform 4-element array of highp sampler2D)
@@ -1348,11 +1349,11 @@ ERROR: node is still EOpNull!
 0:217    Function Parameters: 
 0:?     Sequence
 0:220      move second child to first child (temp mediump 2-component vector of float)
-0:220        'h' (temp mediump 2-component vector of float)
+0:220        'h' (noContraction temp mediump 2-component vector of float)
 0:220        fma (global mediump 2-component vector of float)
 0:220          'inf' (smooth in mediump 2-component vector of float)
 0:220          'ing' (smooth in mediump 2-component vector of float)
-0:220          'h' (temp mediump 2-component vector of float)
+0:220          'h' (noContraction temp mediump 2-component vector of float)
 0:221      textureGatherOffset (global highp 4-component vector of float)
 0:221        direct index (temp highp sampler2D)
 0:221          'sArray' (uniform 4-element array of highp sampler2D)
@@ -1407,7 +1408,7 @@ ERROR: node is still EOpNull!
 0:251      Sequence
 0:251        move second child to first child (temp highp 4-component vector of int)
 0:251          'b6' (temp highp 4-component vector of int)
-0:251          texture (global mediump 4-component vector of int)
+0:251          texture (global highp 4-component vector of int)
 0:251            'CA6' (uniform highp isamplerCubeArray)
 0:251            Constant:
 0:251              0.500000
@@ -1419,7 +1420,7 @@ ERROR: node is still EOpNull!
 0:252      Sequence
 0:252        move second child to first child (temp highp 4-component vector of uint)
 0:252          'b7' (temp highp 4-component vector of uint)
-0:252          texture (global mediump 4-component vector of uint)
+0:252          texture (global highp 4-component vector of uint)
 0:252            'CA7' (uniform highp usamplerCubeArray)
 0:252            Constant:
 0:252              0.500000
@@ -1492,59 +1493,59 @@ ERROR: node is still EOpNull!
 0:283  Function Definition: badImageAtom( (global void)
 0:283    Function Parameters: 
 0:?     Sequence
-0:289      imageAtomicAdd (global mediump int)
+0:289      imageAtomicAdd (global highp int)
 0:289        'im2Di' (layout(r32i ) uniform highp iimage2D)
 0:289        'P' (uniform mediump 2-component vector of int)
 0:289        'dati' (temp mediump int)
-0:290      imageAtomicAdd (global mediump uint)
+0:290      imageAtomicAdd (global highp uint)
 0:290        'im2Du' (layout(r32ui ) uniform highp uimage2D)
 0:290        'P' (uniform mediump 2-component vector of int)
 0:290        'datu' (temp mediump uint)
-0:291      imageAtomicMin (global mediump int)
+0:291      imageAtomicMin (global highp int)
 0:291        'im2Di' (layout(r32i ) uniform highp iimage2D)
 0:291        'P' (uniform mediump 2-component vector of int)
 0:291        'dati' (temp mediump int)
-0:292      imageAtomicMin (global mediump uint)
+0:292      imageAtomicMin (global highp uint)
 0:292        'im2Du' (layout(r32ui ) uniform highp uimage2D)
 0:292        'P' (uniform mediump 2-component vector of int)
 0:292        'datu' (temp mediump uint)
-0:293      imageAtomicMax (global mediump int)
+0:293      imageAtomicMax (global highp int)
 0:293        'im2Di' (layout(r32i ) uniform highp iimage2D)
 0:293        'P' (uniform mediump 2-component vector of int)
 0:293        'dati' (temp mediump int)
-0:294      imageAtomicMax (global mediump uint)
+0:294      imageAtomicMax (global highp uint)
 0:294        'im2Du' (layout(r32ui ) uniform highp uimage2D)
 0:294        'P' (uniform mediump 2-component vector of int)
 0:294        'datu' (temp mediump uint)
-0:295      imageAtomicAnd (global mediump int)
+0:295      imageAtomicAnd (global highp int)
 0:295        'im2Di' (layout(r32i ) uniform highp iimage2D)
 0:295        'P' (uniform mediump 2-component vector of int)
 0:295        'dati' (temp mediump int)
-0:296      imageAtomicAnd (global mediump uint)
+0:296      imageAtomicAnd (global highp uint)
 0:296        'im2Du' (layout(r32ui ) uniform highp uimage2D)
 0:296        'P' (uniform mediump 2-component vector of int)
 0:296        'datu' (temp mediump uint)
-0:297      imageAtomicOr (global mediump int)
+0:297      imageAtomicOr (global highp int)
 0:297        'im2Di' (layout(r32i ) uniform highp iimage2D)
 0:297        'P' (uniform mediump 2-component vector of int)
 0:297        'dati' (temp mediump int)
-0:298      imageAtomicOr (global mediump uint)
+0:298      imageAtomicOr (global highp uint)
 0:298        'im2Du' (layout(r32ui ) uniform highp uimage2D)
 0:298        'P' (uniform mediump 2-component vector of int)
 0:298        'datu' (temp mediump uint)
-0:299      imageAtomicXor (global mediump int)
+0:299      imageAtomicXor (global highp int)
 0:299        'im2Di' (layout(r32i ) uniform highp iimage2D)
 0:299        'P' (uniform mediump 2-component vector of int)
 0:299        'dati' (temp mediump int)
-0:300      imageAtomicXor (global mediump uint)
+0:300      imageAtomicXor (global highp uint)
 0:300        'im2Du' (layout(r32ui ) uniform highp uimage2D)
 0:300        'P' (uniform mediump 2-component vector of int)
 0:300        'datu' (temp mediump uint)
-0:301      imageAtomicExchange (global mediump int)
+0:301      imageAtomicExchange (global highp int)
 0:301        'im2Di' (layout(r32i ) uniform highp iimage2D)
 0:301        'P' (uniform mediump 2-component vector of int)
 0:301        'dati' (temp mediump int)
-0:302      imageAtomicExchange (global mediump uint)
+0:302      imageAtomicExchange (global highp uint)
 0:302        'im2Du' (layout(r32ui ) uniform highp uimage2D)
 0:302        'P' (uniform mediump 2-component vector of int)
 0:302        'datu' (temp mediump uint)
@@ -1552,13 +1553,13 @@ ERROR: node is still EOpNull!
 0:303        'im2Df' (layout(r32f ) uniform highp image2D)
 0:303        'P' (uniform mediump 2-component vector of int)
 0:303        'datf' (temp mediump float)
-0:304      imageAtomicCompSwap (global mediump int)
+0:304      imageAtomicCompSwap (global highp int)
 0:304        'im2Di' (layout(r32i ) uniform highp iimage2D)
 0:304        'P' (uniform mediump 2-component vector of int)
 0:304        Constant:
 0:304          3 (const int)
 0:304        'dati' (temp mediump int)
-0:305      imageAtomicCompSwap (global mediump uint)
+0:305      imageAtomicCompSwap (global highp uint)
 0:305        'im2Du' (layout(r32ui ) uniform highp uimage2D)
 0:305        'P' (uniform mediump 2-component vector of int)
 0:305        Constant:
@@ -1567,59 +1568,59 @@ ERROR: node is still EOpNull!
 0:316  Function Definition: goodImageAtom( (global void)
 0:316    Function Parameters: 
 0:?     Sequence
-0:322      imageAtomicAdd (global mediump int)
+0:322      imageAtomicAdd (global highp int)
 0:322        'im2Di' (layout(r32i ) uniform highp iimage2D)
 0:322        'P' (uniform mediump 2-component vector of int)
 0:322        'dati' (temp mediump int)
-0:323      imageAtomicAdd (global mediump uint)
+0:323      imageAtomicAdd (global highp uint)
 0:323        'im2Du' (layout(r32ui ) uniform highp uimage2D)
 0:323        'P' (uniform mediump 2-component vector of int)
 0:323        'datu' (temp mediump uint)
-0:324      imageAtomicMin (global mediump int)
+0:324      imageAtomicMin (global highp int)
 0:324        'im2Di' (layout(r32i ) uniform highp iimage2D)
 0:324        'P' (uniform mediump 2-component vector of int)
 0:324        'dati' (temp mediump int)
-0:325      imageAtomicMin (global mediump uint)
+0:325      imageAtomicMin (global highp uint)
 0:325        'im2Du' (layout(r32ui ) uniform highp uimage2D)
 0:325        'P' (uniform mediump 2-component vector of int)
 0:325        'datu' (temp mediump uint)
-0:326      imageAtomicMax (global mediump int)
+0:326      imageAtomicMax (global highp int)
 0:326        'im2Di' (layout(r32i ) uniform highp iimage2D)
 0:326        'P' (uniform mediump 2-component vector of int)
 0:326        'dati' (temp mediump int)
-0:327      imageAtomicMax (global mediump uint)
+0:327      imageAtomicMax (global highp uint)
 0:327        'im2Du' (layout(r32ui ) uniform highp uimage2D)
 0:327        'P' (uniform mediump 2-component vector of int)
 0:327        'datu' (temp mediump uint)
-0:328      imageAtomicAnd (global mediump int)
+0:328      imageAtomicAnd (global highp int)
 0:328        'im2Di' (layout(r32i ) uniform highp iimage2D)
 0:328        'P' (uniform mediump 2-component vector of int)
 0:328        'dati' (temp mediump int)
-0:329      imageAtomicAnd (global mediump uint)
+0:329      imageAtomicAnd (global highp uint)
 0:329        'im2Du' (layout(r32ui ) uniform highp uimage2D)
 0:329        'P' (uniform mediump 2-component vector of int)
 0:329        'datu' (temp mediump uint)
-0:330      imageAtomicOr (global mediump int)
+0:330      imageAtomicOr (global highp int)
 0:330        'im2Di' (layout(r32i ) uniform highp iimage2D)
 0:330        'P' (uniform mediump 2-component vector of int)
 0:330        'dati' (temp mediump int)
-0:331      imageAtomicOr (global mediump uint)
+0:331      imageAtomicOr (global highp uint)
 0:331        'im2Du' (layout(r32ui ) uniform highp uimage2D)
 0:331        'P' (uniform mediump 2-component vector of int)
 0:331        'datu' (temp mediump uint)
-0:332      imageAtomicXor (global mediump int)
+0:332      imageAtomicXor (global highp int)
 0:332        'im2Di' (layout(r32i ) uniform highp iimage2D)
 0:332        'P' (uniform mediump 2-component vector of int)
 0:332        'dati' (temp mediump int)
-0:333      imageAtomicXor (global mediump uint)
+0:333      imageAtomicXor (global highp uint)
 0:333        'im2Du' (layout(r32ui ) uniform highp uimage2D)
 0:333        'P' (uniform mediump 2-component vector of int)
 0:333        'datu' (temp mediump uint)
-0:334      imageAtomicExchange (global mediump int)
+0:334      imageAtomicExchange (global highp int)
 0:334        'im2Di' (layout(r32i ) uniform highp iimage2D)
 0:334        'P' (uniform mediump 2-component vector of int)
 0:334        'dati' (temp mediump int)
-0:335      imageAtomicExchange (global mediump uint)
+0:335      imageAtomicExchange (global highp uint)
 0:335        'im2Du' (layout(r32ui ) uniform highp uimage2D)
 0:335        'P' (uniform mediump 2-component vector of int)
 0:335        'datu' (temp mediump uint)
@@ -1627,23 +1628,23 @@ ERROR: node is still EOpNull!
 0:336        'im2Df' (layout(r32f ) uniform highp image2D)
 0:336        'P' (uniform mediump 2-component vector of int)
 0:336        'datf' (temp mediump float)
-0:337      imageAtomicCompSwap (global mediump int)
+0:337      imageAtomicCompSwap (global highp int)
 0:337        'im2Di' (layout(r32i ) uniform highp iimage2D)
 0:337        'P' (uniform mediump 2-component vector of int)
 0:337        Constant:
 0:337          3 (const int)
 0:337        'dati' (temp mediump int)
-0:338      imageAtomicCompSwap (global mediump uint)
+0:338      imageAtomicCompSwap (global highp uint)
 0:338        'im2Du' (layout(r32ui ) uniform highp uimage2D)
 0:338        'P' (uniform mediump 2-component vector of int)
 0:338        Constant:
 0:338          5 (const uint)
 0:338        'datu' (temp mediump uint)
-0:340      imageAtomicMax (global mediump int)
+0:340      imageAtomicMax (global highp int)
 0:340        'badIm2Di' (layout(rgba16i ) uniform highp iimage2D)
 0:340        'P' (uniform mediump 2-component vector of int)
 0:340        'dati' (temp mediump int)
-0:341      imageAtomicMax (global mediump uint)
+0:341      imageAtomicMax (global highp uint)
 0:341        'badIm2Du' (layout(rgba8ui ) uniform highp uimage2D)
 0:341        'P' (uniform mediump 2-component vector of int)
 0:341        'datu' (temp mediump uint)

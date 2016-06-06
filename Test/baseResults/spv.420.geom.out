@@ -11,6 +11,7 @@ Linked geometry stage:
 
                               Capability Geometry
                               Capability GeometryPointSize
+                              Capability ImageGatherExtended
                               Capability GeometryStreams
                               Capability MultiViewport
                1:             ExtInstImport  "GLSL.std.450"

@@ -111,6 +111,7 @@ public:
     bool   space;  // true if a space (for white space or a removed comment) should also be recognized, in front of the token returned
     int    ival;
     double dval;
+    long long i64val;
     int    atom;
     char   name[MaxTokenLength + 1];
 };
@@ -122,7 +123,7 @@ class TInputScanner;
 // Don't expect too much in terms of OO design.
 class TPpContext {
 public:
-    TPpContext(TParseContext&, const std::string& rootFileName, TShader::Includer&);
+    TPpContext(TParseContextBase&, const std::string& rootFileName, TShader::Includer&);
     virtual ~TPpContext();
 
     void setPreamble(const char* preamble, size_t length);
@@ -214,7 +215,7 @@ protected:
 
     // Scanner data:
     int previous_token;
-    TParseContext& parseContext;
+    TParseContextBase& parseContext;
 
     // Get the next token from *stack* of input sources, popping input sources
     // that are out of tokens, down until an input sources is found that has a token.

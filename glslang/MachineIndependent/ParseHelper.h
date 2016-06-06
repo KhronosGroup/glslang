@@ -33,10 +33,18 @@
 //ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 //POSSIBILITY OF SUCH DAMAGE.
 //
+
+//
+// This header defines a two-level parse-helper hierarchy, derived from
+// TParseVersions:
+//  - TParseContextBase:  sharable across multiple parsers
+//  - TParseContext:      GLSL specific helper
+//
+
 #ifndef _PARSER_HELPER_INCLUDED_
 #define _PARSER_HELPER_INCLUDED_
 
-#include "Versions.h"
+#include "parseVersions.h"
 #include "../Include/ShHandle.h"
 #include "SymbolTable.h"
 #include "localintermediate.h"
@@ -60,10 +68,88 @@ class TPpContext;
 typedef std::set<int> TIdSetType;
 
 //
-// The following are extra variables needed during parsing, grouped together so
-// they can be passed to the parser without needing a global.
+// Sharable code (as well as what's in TParseVersions) across
+// parse helpers.
 //
-class TParseContext {
+class TParseContextBase : public TParseVersions {
+public:
+    TParseContextBase(TSymbolTable& symbolTable, TIntermediate& interm, int version,
+                      EProfile profile, int spv, int vulkan, EShLanguage language,
+                      TInfoSink& infoSink, bool forwardCompatible, EShMessages messages)
+          : TParseVersions(interm, version, profile, spv, vulkan, language, infoSink, forwardCompatible, messages),
+            symbolTable(symbolTable), tokensBeforeEOF(false),
+            linkage(nullptr), scanContext(nullptr), ppContext(nullptr) { }
+    virtual ~TParseContextBase() { }
+    
+    virtual void setLimits(const TBuiltInResource&) = 0;
+    
+    EShLanguage getLanguage() const { return language; }
+    TIntermAggregate*& getLinkage() { return linkage; }
+    void setScanContext(TScanContext* c) { scanContext = c; }
+    TScanContext* getScanContext() const { return scanContext; }
+    void setPpContext(TPpContext* c) { ppContext = c; }
+    TPpContext* getPpContext() const { return ppContext; }
+
+    virtual void setLineCallback(const std::function<void(int, int, bool, int, const char*)>& func) { lineCallback = func; }
+    virtual void setExtensionCallback(const std::function<void(int, const char*, const char*)>& func) { extensionCallback = func; }
+    virtual void setVersionCallback(const std::function<void(int, int, const char*)>& func) { versionCallback = func; }
+    virtual void setPragmaCallback(const std::function<void(int, const TVector<TString>&)>& func) { pragmaCallback = func; }
+    virtual void setErrorCallback(const std::function<void(int, const char*)>& func) { errorCallback = func; }
+
+    virtual void reservedPpErrorCheck(const TSourceLoc&, const char* name, const char* op) = 0;
+    virtual bool lineContinuationCheck(const TSourceLoc&, bool endOfComment) = 0;
+    virtual bool lineDirectiveShouldSetNextLine() const = 0;
+    virtual void handlePragma(const TSourceLoc&, const TVector<TString>&) = 0;
+
+    virtual bool parseShaderStrings(TPpContext&, TInputScanner& input, bool versionWillBeError = false) = 0;
+
+    virtual void notifyVersion(int line, int version, const char* type_string)
+    {
+        if (versionCallback)
+            versionCallback(line, version, type_string);
+    }
+    virtual void notifyErrorDirective(int line, const char* error_message)
+    {
+        if (errorCallback)
+            errorCallback(line, error_message);
+    }
+    virtual void notifyLineDirective(int curLineNo, int newLineNo, bool hasSource, int sourceNum, const char* sourceName)
+    {
+        if (lineCallback)
+            lineCallback(curLineNo, newLineNo, hasSource, sourceNum, sourceName);
+    }
+    virtual void notifyExtensionDirective(int line, const char* extension, const char* behavior)
+    {
+        if (extensionCallback)
+            extensionCallback(line, extension, behavior);
+    }
+
+    TSymbolTable& symbolTable;   // symbol table that goes with the current language, version, and profile
+    bool tokensBeforeEOF;
+
+protected:
+    TParseContextBase(TParseContextBase&);
+    TParseContextBase& operator=(TParseContextBase&);
+
+    TIntermAggregate* linkage;   // aggregate node of objects the linker may need, if not referenced by the rest of the AST
+    TScanContext* scanContext;
+    TPpContext* ppContext;
+
+    // These, if set, will be called when a line, pragma ... is preprocessed.
+    // They will be called with any parameters to the original directive.
+    std::function<void(int, int, bool, int, const char*)> lineCallback;
+    std::function<void(int, const TVector<TString>&)> pragmaCallback;
+    std::function<void(int, int, const char*)> versionCallback;
+    std::function<void(int, const char*, const char*)> extensionCallback;
+    std::function<void(int, const char*)> errorCallback;
+};
+
+//
+// GLSL-specific parse helper.  Should have GLSL in the name, but that's
+// too big of a change for comparing branches at the moment, and perhaps
+// impacts downstream consumers as well.
+//
+class TParseContext : public TParseContextBase {
 public:
     TParseContext(TSymbolTable&, TIntermediate&, bool parsingBuiltins, int version, EProfile, int spv, int vulkan, EShLanguage, TInfoSink&,
                   bool forwardCompatible = false, EShMessages messages = EShMsgDefault);
@@ -72,7 +158,6 @@ public:
     void setLimits(const TBuiltInResource&);
     bool parseShaderStrings(TPpContext&, TInputScanner& input, bool versionWillBeError = false);
     void parserError(const char* s);     // for bison's yyerror
-    const char* getPreamble();
 
     void C_DECL error(const TSourceLoc&, const char* szReason, const char* szToken,
                       const char* szExtraInfoFormat, ...);
@@ -83,12 +168,10 @@ public:
     void C_DECL ppWarn(const TSourceLoc&, const char* szReason, const char* szToken,
                       const char* szExtraInfoFormat, ...);
 
-    bool relaxedErrors()    const { return (messages & EShMsgRelaxedErrors)    != 0; }
-    bool suppressWarnings() const { return (messages & EShMsgSuppressWarnings) != 0; }
-
     void reservedErrorCheck(const TSourceLoc&, const TString&);
     void reservedPpErrorCheck(const TSourceLoc&, const char* name, const char* op);
     bool lineContinuationCheck(const TSourceLoc&, bool endOfComment);
+    bool lineDirectiveShouldSetNextLine() const;
     bool builtInName(const TString&);
 
     void handlePragma(const TSourceLoc&, const TVector<TString>&);
@@ -210,55 +293,6 @@ public:
 
     void updateImplicitArraySize(const TSourceLoc&, TIntermNode*, int index);
 
-    void setScanContext(TScanContext* c) { scanContext = c; }
-    TScanContext* getScanContext() const { return scanContext; }
-    void setPpContext(TPpContext* c) { ppContext = c; }
-    TPpContext* getPpContext() const { return ppContext; }
-    void addError() { ++numErrors; }
-    int getNumErrors() const { return numErrors; }
-    const TSourceLoc& getCurrentLoc() const { return currentScanner->getSourceLoc(); }
-    void setCurrentLine(int line) { currentScanner->setLine(line); }
-    void setCurrentColumn(int col) { currentScanner->setColumn(col); }
-    void setCurrentSourceName(const char* name) { currentScanner->setFile(name); }
-    void setCurrentString(int string) { currentScanner->setString(string); }
-    void setScanner(TInputScanner* scanner) { currentScanner  = scanner; }
-    TInputScanner* getScanner() const { return currentScanner; }
-
-    bool lineDirectiveShouldSetNextLine() const;
-
-    void notifyVersion(int line, int version, const char* type_string);
-    void notifyErrorDirective(int line, const char* error_message);
-    void notifyLineDirective(int curLineNo, int newLineNo, bool hasSource, int sourceNum, const char* sourceName);
-    void notifyExtensionDirective(int line, const char* extension, const char* behavior);
-
-    // The following are implemented in Versions.cpp to localize version/profile/stage/extensions control
-    void initializeExtensionBehavior();
-    void requireProfile(const TSourceLoc&, int queryProfiles, const char* featureDesc);
-    void profileRequires(const TSourceLoc&, int queryProfiles, int minVersion, int numExtensions, const char* const extensions[], const char* featureDesc);
-    void profileRequires(const TSourceLoc&, int queryProfiles, int minVersion, const char* const extension, const char* featureDesc);
-    void requireStage(const TSourceLoc&, EShLanguageMask, const char* featureDesc);
-    void requireStage(const TSourceLoc&, EShLanguage, const char* featureDesc);
-    void checkDeprecated(const TSourceLoc&, int queryProfiles, int depVersion, const char* featureDesc);
-    void requireNotRemoved(const TSourceLoc&, int queryProfiles, int removedVersion, const char* featureDesc);
-    void requireExtensions(const TSourceLoc&, int numExtensions, const char* const extensions[], const char* featureDesc);
-    void ppRequireExtensions(const TSourceLoc&, int numExtensions, const char* const extensions[], const char* featureDesc);
-    TExtensionBehavior getExtensionBehavior(const char*);
-    bool extensionTurnedOn(const char* const extension);
-    bool extensionsTurnedOn(int numExtensions, const char* const extensions[]);
-    void updateExtensionBehavior(int line, const char* const extension, const char* behavior);
-    void fullIntegerCheck(const TSourceLoc&, const char* op);
-    void doubleCheck(const TSourceLoc&, const char* op);
-    void spvRemoved(const TSourceLoc&, const char* op);
-    void vulkanRemoved(const TSourceLoc&, const char* op);
-    void requireVulkan(const TSourceLoc&, const char* op);
-    void requireSpv(const TSourceLoc&, const char* op);
-
-    void setVersionCallback(const std::function<void(int, int, const char*)>& func) { versionCallback = func; }
-    void setPragmaCallback(const std::function<void(int, const TVector<TString>&)>& func) { pragmaCallback = func; }
-    void setLineCallback(const std::function<void(int, int, bool, int, const char*)>& func) { lineCallback = func; }
-    void setExtensionCallback(const std::function<void(int, const char*, const char*)>& func) { extensionCallback = func; }
-    void setErrorCallback(const std::function<void(int, const char*)>& func) { errorCallback = func; }
-
 protected:
     void nonInitConstCheck(const TSourceLoc&, TString& identifier, TType& type);
     void inheritGlobalDefaults(TQualifier& dst) const;
@@ -268,8 +302,6 @@ protected:
     TIntermNode* executeInitializer(const TSourceLoc&, TIntermTyped* initializer, TVariable* variable);
     TIntermTyped* convertInitializerList(const TSourceLoc&, const TType&, TIntermTyped* initializer);
     TOperator mapTypeToConstructorOp(const TType&) const;
-    bool checkExtensionsRequested(const TSourceLoc&, int numExtensions, const char* const extensions[], const char* featureDesc);
-    void updateExtensionBehavior(const char* const extension, TExtensionBehavior);
     void finalErrorCheck();
     void outputMessage(const TSourceLoc&, const char* szReason, const char* szToken,
                        const char* szExtraInfoFormat, TPrefixType prefix,
@@ -279,18 +311,6 @@ public:
     //
     // Generally, bison productions, the scanner, and the PP need read/write access to these; just give them direct access
     //
-
-    TIntermediate& intermediate; // helper for making and hooking up pieces of the parse tree
-    TSymbolTable& symbolTable;   // symbol table that goes with the current language, version, and profile
-    TInfoSink& infoSink;
-
-    // compilation mode
-    EShLanguage language;        // vertex or fragment language
-    int version;                 // version, updated by #version in the shader
-    EProfile profile;            // the declared profile in the shader (core by default)
-    int spv;                     // SPIR-V version; 0 means not SPIR-V
-    int vulkan;                  // Vulkan version; 0 means not vulkan
-    bool forwardCompatible;      // true if errors are to be given for use of deprecated features
 
     // Current state of parsing
     struct TPragma contextPragma;
@@ -306,9 +326,7 @@ public:
     bool functionReturnsValue;   // true if a non-void function has a return
     const TString* blockName;
     TQualifier currentBlockQualifier;
-    TIntermAggregate *linkage;   // aggregate node of objects the linker may need, if not referenced by the rest of the AST
     TPrecisionQualifier defaultPrecision[EbtNumTypes];
-    bool tokensBeforeEOF;
     TBuiltInResource resources;
     TLimits& limits;
 
@@ -316,13 +334,7 @@ protected:
     TParseContext(TParseContext&);
     TParseContext& operator=(TParseContext&);
 
-    EShMessages messages;        // errors/warnings/rule-sets
-    TScanContext* scanContext;
-    TPpContext* ppContext;
-    TInputScanner* currentScanner;
-    int numErrors;               // number of compile-time errors encountered
-    bool parsingBuiltins;        // true if parsing built-in symbols/functions
-    TMap<TString, TExtensionBehavior> extensionBehavior;    // for each extension string, what its current behavior is set to
+    const bool parsingBuiltins;        // true if parsing built-in symbols/functions
     static const int maxSamplerIndex = EsdNumDims * (EbtNumTypes * (2 * 2 * 2)); // see computeSamplerTypeIndex()
     TPrecisionQualifier defaultSamplerPrecision[maxSamplerIndex];
     bool afterEOF;
@@ -369,14 +381,6 @@ protected:
     //    array-sizing declarations
     //
     TVector<TSymbol*> ioArraySymbolResizeList;
-
-    // These, if set, will be called when a line, pragma ... is preprocessed.
-    // They will be called with any parameters to the original directive.
-    std::function<void(int, int, bool, int, const char*)> lineCallback;
-    std::function<void(int, const TVector<TString>&)> pragmaCallback;
-    std::function<void(int, int, const char*)> versionCallback;
-    std::function<void(int, const char*, const char*)> extensionCallback;
-    std::function<void(int, const char*)> errorCallback;
 };
 
 } // end namespace glslang

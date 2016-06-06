@@ -14,7 +14,7 @@ $EXE -c > $TARGETDIR/test.conf
 diff -b $BASEDIR/test.conf $TARGETDIR/test.conf || HASERROR=1
 $EXE -i -l $TARGETDIR/test.conf specExamples.vert > $TARGETDIR/specExamples.vert.out
 diff -b $BASEDIR/specExamples.vert.out $TARGETDIR || HASERROR=1
-$EXE 100Limits.vert 100.conf >  $TARGETDIR/100LimitsConf.vert.out
+$EXE -l 100Limits.vert 100.conf >  $TARGETDIR/100LimitsConf.vert.out
 diff -b $BASEDIR/100LimitsConf.vert.out $TARGETDIR/100LimitsConf.vert.out || HASERROR=1
 
 #
@@ -56,6 +56,24 @@ done < test-spirv-list
 rm -f comp.spv frag.spv geom.spv tesc.spv tese.spv vert.spv
 
 #
+# HLSL -> SPIR-V code generation tests
+#
+while read t; do
+  case $t in
+    \#*)
+      # Skip comment lines in the test list file.
+      ;;
+    *)
+      echo Running HLSL-to-SPIR-V $t...
+      b=`basename $t`
+      $EXE -D -e PixelShaderFunction -H -i $t > $TARGETDIR/$b.out
+      diff -b $BASEDIR/$b.out $TARGETDIR/$b.out || HASERROR=1
+      ;;
+  esac
+done < test-hlsl-spirv-list
+rm -f comp.spv frag.spv geom.spv tesc.spv tese.spv vert.spv
+
+#
 # Preprocessor tests
 #
 while read t; do
@@ -78,6 +96,7 @@ function runBulkTest {
 runBulkTest mains1.frag mains2.frag noMain1.geom noMain2.geom
 runBulkTest noMain.vert mains.frag
 runBulkTest link1.frag link2.frag link3.frag
+runBulkTest es-link1.frag es-link2.frag
 runBulkTest recurse1.vert recurse1.frag recurse2.frag
 runBulkTest 300link.frag
 runBulkTest 300link2.frag

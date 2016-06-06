@@ -37,3 +37,11 @@ void foo()
 }
 
 layout(set = 1, push_constant) uniform badpc { int a; } badpcI;  // ERROR, no descriptor set with push_constant
+
+#ifndef VULKAN
+#error VULKAN should be defined
+#endif
+
+#if VULKAN != 100
+#error VULKAN should be 100
+#endif

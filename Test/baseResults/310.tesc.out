@@ -31,6 +31,7 @@ ERROR: 0:80: '' : array size required
 ERROR: 0:86: 'location' : overlapping use of location 4
 ERROR: 0:90: 'location' : overlapping use of location 4
 ERROR: 0:94: 'precise' : Reserved word. 
+ERROR: 0:94: 'precise' : not supported for this version or the enabled extensions 
 ERROR: 0:95: 'fma' : required extension not requested: Possible extensions include:
 GL_EXT_gpu_shader5
 GL_OES_gpu_shader5
@@ -45,7 +46,7 @@ ERROR: 0:145: '' : array size required
 ERROR: 0:161: '[]' : tessellation-control per-vertex output l-value must be indexed with gl_InvocationID 
 ERROR: 0:162: '[]' : tessellation-control per-vertex output l-value must be indexed with gl_InvocationID 
 ERROR: 0:165: '[]' : tessellation-control per-vertex output l-value must be indexed with gl_InvocationID 
-ERROR: 37 compilation errors.  No code generated.
+ERROR: 38 compilation errors.  No code generated.
 
 
 Shader version: 310
@@ -197,11 +198,11 @@ ERROR: node is still EOpNull!
 0:92    Function Parameters: 
 0:?     Sequence
 0:95      move second child to first child (temp highp float)
-0:95        'd' (temp highp float)
+0:95        'd' (noContraction temp highp float)
 0:95        fma (global highp float)
-0:95          'd' (temp highp float)
-0:95          'd' (temp highp float)
-0:95          'd' (temp highp float)
+0:95          'd' (noContraction temp highp float)
+0:95          'd' (noContraction temp highp float)
+0:95          'd' (noContraction temp highp float)
 0:112  Function Definition: pointSize2( (global void)
 0:112    Function Parameters: 
 0:114    Sequence
@@ -227,20 +228,20 @@ ERROR: node is still EOpNull!
 0:122    Function Parameters: 
 0:?     Sequence
 0:126      multiply second child into first child (temp highp 3-component vector of float)
-0:126        'pv3' (temp highp 3-component vector of float)
-0:126        'pv3' (temp highp 3-component vector of float)
+0:126        'pv3' (noContraction temp highp 3-component vector of float)
+0:126        'pv3' (noContraction temp highp 3-component vector of float)
 0:127      move second child to first child (temp highp 3-component vector of float)
-0:127        'pv3' (temp highp 3-component vector of float)
+0:127        'pv3' (noContraction temp highp 3-component vector of float)
 0:127        fma (global highp 3-component vector of float)
-0:127          'pv3' (temp highp 3-component vector of float)
-0:127          'pv3' (temp highp 3-component vector of float)
-0:127          'pv3' (temp highp 3-component vector of float)
+0:127          'pv3' (noContraction temp highp 3-component vector of float)
+0:127          'pv3' (noContraction temp highp 3-component vector of float)
+0:127          'pv3' (noContraction temp highp 3-component vector of float)
 0:128      move second child to first child (temp highp float)
-0:128        'd' (temp highp float)
+0:128        'd' (noContraction temp highp float)
 0:128        fma (global highp float)
-0:128          'd' (temp highp float)
-0:128          'd' (temp highp float)
-0:128          'd' (temp highp float)
+0:128          'd' (noContraction temp highp float)
+0:128          'd' (noContraction temp highp float)
+0:128          'd' (noContraction temp highp float)
 0:131  Function Definition: bbBad( (global void)
 0:131    Function Parameters: 
 0:133    Sequence
@@ -371,7 +372,7 @@ ERROR: node is still EOpNull!
 0:?     'badlay' (out 4-element array of highp float)
 0:?     'misSized' (out 5-element array of highp float)
 0:?     'okaySize' (out 4-element array of highp float)
-0:?     'pv3' (temp highp 3-component vector of float)
+0:?     'pv3' (noContraction temp highp 3-component vector of float)
 0:?     'badpatchIName' (patch out implicitly-sized array of block{out highp float f})
 0:?     'patchIName' (patch out 4-element array of block{out highp float f})
 
@@ -528,11 +529,11 @@ ERROR: node is still EOpNull!
 0:92    Function Parameters: 
 0:?     Sequence
 0:95      move second child to first child (temp highp float)
-0:95        'd' (temp highp float)
+0:95        'd' (noContraction temp highp float)
 0:95        fma (global highp float)
-0:95          'd' (temp highp float)
-0:95          'd' (temp highp float)
-0:95          'd' (temp highp float)
+0:95          'd' (noContraction temp highp float)
+0:95          'd' (noContraction temp highp float)
+0:95          'd' (noContraction temp highp float)
 0:112  Function Definition: pointSize2( (global void)
 0:112    Function Parameters: 
 0:114    Sequence
@@ -558,20 +559,20 @@ ERROR: node is still EOpNull!
 0:122    Function Parameters: 
 0:?     Sequence
 0:126      multiply second child into first child (temp highp 3-component vector of float)
-0:126        'pv3' (temp highp 3-component vector of float)
-0:126        'pv3' (temp highp 3-component vector of float)
+0:126        'pv3' (noContraction temp highp 3-component vector of float)
+0:126        'pv3' (noContraction temp highp 3-component vector of float)
 0:127      move second child to first child (temp highp 3-component vector of float)
-0:127        'pv3' (temp highp 3-component vector of float)
+0:127        'pv3' (noContraction temp highp 3-component vector of float)
 0:127        fma (global highp 3-component vector of float)
-0:127          'pv3' (temp highp 3-component vector of float)
-0:127          'pv3' (temp highp 3-component vector of float)
-0:127          'pv3' (temp highp 3-component vector of float)
+0:127          'pv3' (noContraction temp highp 3-component vector of float)
+0:127          'pv3' (noContraction temp highp 3-component vector of float)
+0:127          'pv3' (noContraction temp highp 3-component vector of float)
 0:128      move second child to first child (temp highp float)
-0:128        'd' (temp highp float)
+0:128        'd' (noContraction temp highp float)
 0:128        fma (global highp float)
-0:128          'd' (temp highp float)
-0:128          'd' (temp highp float)
-0:128          'd' (temp highp float)
+0:128          'd' (noContraction temp highp float)
+0:128          'd' (noContraction temp highp float)
+0:128          'd' (noContraction temp highp float)
 0:131  Function Definition: bbBad( (global void)
 0:131    Function Parameters: 
 0:133    Sequence
@@ -702,7 +703,7 @@ ERROR: node is still EOpNull!
 0:?     'badlay' (out 4-element array of highp float)
 0:?     'misSized' (out 5-element array of highp float)
 0:?     'okaySize' (out 4-element array of highp float)
-0:?     'pv3' (temp highp 3-component vector of float)
+0:?     'pv3' (noContraction temp highp 3-component vector of float)
 0:?     'badpatchIName' (patch out 1-element array of block{out highp float f})
 0:?     'patchIName' (patch out 4-element array of block{out highp float f})
 
