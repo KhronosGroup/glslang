@@ -39,6 +39,8 @@
 
 #ifdef _MSC_VER
 #include <float.h>
+#elif defined __ANDROID__ || defined __linux__ || __MINGW32__ || __MINGW64__
+#include <cmath>
 #else
 #include <math.h>
 #endif
