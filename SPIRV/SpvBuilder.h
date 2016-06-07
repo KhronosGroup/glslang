@@ -55,6 +55,7 @@
 #include <set>
 #include <sstream>
 #include <stack>
+#include <unordered_set>
 
 namespace spv {
 
@@ -544,6 +545,32 @@ public:
     void createSelectionMerge(Block* mergeBlock, unsigned int control);
     void dumpInstructions(std::vector<unsigned int>&, const std::vector<std::unique_ptr<Instruction> >&) const;
 
+    // A member decoration.
+    struct MemberDecoration {
+         MemberDecoration(Id target_arg, unsigned int member_arg, Decoration decoration_arg, int value_arg)
+             : target(target_arg), member(member_arg), decoration(decoration_arg), value(value_arg) {}
+         spv::Id target;
+         unsigned int member;
+         Decoration decoration;
+         int value;
+    };
+
+    // A hasher for MemberDecoration.
+    struct MemberDecorationHasher {
+        size_t operator()(const MemberDecoration& m) const {
+            // Use a dumb but simple hash algorithm.
+            return static_cast<size_t>(int(m.target) ^ int(m.member) ^ int(m.decoration) ^ m.value);
+        }
+    };
+
+    // An equality tester for MemberDecoration.
+    struct MemberDecorationEqualityChecker {
+         bool operator()(const MemberDecoration& lhs, const MemberDecoration& rhs) const {
+             return lhs.target == rhs.target && lhs.member == rhs.member && lhs.decoration == rhs.decoration
+                 && lhs.value == rhs.value;
+         }
+    };
+
     SourceLanguage source;
     int sourceVersion;
     std::vector<const char*> extensions;
@@ -557,6 +584,8 @@ public:
     Function* mainFunction;
     bool generatingOpCodeForSpecConst;
     AccessChain accessChain;
+    std::unordered_set<MemberDecoration, MemberDecorationHasher, MemberDecorationEqualityChecker>
+        recordedMemberDecorations;
 
     // special blocks of instructions for output
     std::vector<std::unique_ptr<Instruction> > imports;

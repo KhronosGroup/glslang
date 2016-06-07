@@ -59,9 +59,9 @@ Linked tessellation evaluation stage:
                               Name 92  "ivlb"
                               Name 95  "ovla"
                               MemberDecorate 17(gl_PerVertex) 0 BuiltIn Position
+                              Decorate 17(gl_PerVertex) Block
                               MemberDecorate 17(gl_PerVertex) 1 BuiltIn PointSize
                               MemberDecorate 17(gl_PerVertex) 2 BuiltIn ClipDistance
-                              Decorate 17(gl_PerVertex) Block
                               Decorate 38(gl_PatchVerticesIn) BuiltIn PatchVertices
                               Decorate 41(gl_PrimitiveID) BuiltIn PrimitiveId
                               Decorate 47(gl_TessCoord) BuiltIn TessCoord
@@ -70,9 +70,9 @@ Linked tessellation evaluation stage:
                               Decorate 61(gl_TessLevelInner) Patch
                               Decorate 61(gl_TessLevelInner) BuiltIn TessLevelInner
                               MemberDecorate 64(gl_PerVertex) 0 BuiltIn Position
+                              Decorate 64(gl_PerVertex) Block
                               MemberDecorate 64(gl_PerVertex) 1 BuiltIn PointSize
                               MemberDecorate 64(gl_PerVertex) 2 BuiltIn ClipDistance
-                              Decorate 64(gl_PerVertex) Block
                               Decorate 75(patchIn) Patch
                               Decorate 81(testblb) Block
                               Decorate 85(testbld) Block

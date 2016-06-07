@@ -28,9 +28,6 @@ Linked vertex stage:
                               Name 31  "ubinst"
                               Name 32  "param"
                               MemberDecorate 22(gl_PerVertex) 0 BuiltIn Position
-                              MemberDecorate 22(gl_PerVertex) 1 BuiltIn PointSize
-                              MemberDecorate 22(gl_PerVertex) 2 BuiltIn ClipDistance
-                              MemberDecorate 22(gl_PerVertex) 3 BuiltIn CullDistance
                               Decorate 22(gl_PerVertex) Block
                               MemberDecorate 29(ubname) 0 Offset 0
                               Decorate 29(ubname) Block

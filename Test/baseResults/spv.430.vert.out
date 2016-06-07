@@ -10,6 +10,7 @@ Linked vertex stage:
 // Id's are bound by 66
 
                               Capability Shader
+                              Capability ClipDistance
                1:             ExtInstImport  "GLSL.std.450"
                               MemoryModel Logical GLSL450
                               EntryPoint Vertex 4  "main" 12 23 34 38 41 42 62 65
@@ -44,8 +45,8 @@ Linked vertex stage:
                               Name 63  "MS"
                               MemberName 63(MS) 0  "f"
                               Name 65  "outMS"
-                              MemberDecorate 10(gl_PerVertex) 0 BuiltIn ClipDistance
                               Decorate 10(gl_PerVertex) Block
+                              MemberDecorate 10(gl_PerVertex) 0 BuiltIn ClipDistance
                               Decorate 34(badorder3) Flat
                               Decorate 42(badorder2) Invariant
                               MemberDecorate 43(boundblock) 0 Offset 0

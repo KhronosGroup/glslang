@@ -22,7 +22,6 @@ Linked vertex stage:
                               Name 20  ""
                               Decorate 8(gl_InstanceIndex) BuiltIn InstanceIndex
                               MemberDecorate 18(gl_PerVertex) 0 BuiltIn Position
-                              MemberDecorate 18(gl_PerVertex) 1 BuiltIn PointSize
                               Decorate 18(gl_PerVertex) Block
                2:             TypeVoid
                3:             TypeFunction 2
