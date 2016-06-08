@@ -920,6 +920,11 @@ void Builder::addDecoration(Id id, Decoration decoration, int num)
 
 void Builder::addMemberDecoration(Id id, unsigned int member, Decoration decoration, int num)
 {
+    // Only generate a new OpMemberDecoration instruction when we haven't seen this
+    // combination before.
+    if (recordedMemberDecorations.count(MemberDecoration(id, member, decoration, num)))
+	return;
+
     Instruction* dec = new Instruction(OpMemberDecorate);
     dec->addIdOperand(id);
     dec->addImmediateOperand(member);
@@ -928,6 +933,7 @@ void Builder::addMemberDecoration(Id id, unsigned int member, Decoration decorat
         dec->addImmediateOperand(num);
 
     decorations.push_back(std::unique_ptr<Instruction>(dec));
+    recordedMemberDecorations.insert(MemberDecoration(id, member, decoration, num));
 }
 
 // Comments in header

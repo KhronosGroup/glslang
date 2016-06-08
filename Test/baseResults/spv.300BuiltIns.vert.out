@@ -24,11 +24,11 @@ Linked vertex stage:
                               Name 34  "gl_InstanceIndex"
                               MemberDecorate 8(gl_PerVertex) 0 Invariant
                               MemberDecorate 8(gl_PerVertex) 0 BuiltIn Position
-                              MemberDecorate 8(gl_PerVertex) 1 BuiltIn PointSize
                               Decorate 8(gl_PerVertex) Block
                               Decorate 14(ps) RelaxedPrecision
                               Decorate 15 RelaxedPrecision
                               Decorate 21(gl_VertexIndex) BuiltIn VertexIndex
+                              MemberDecorate 8(gl_PerVertex) 1 BuiltIn PointSize
                               Decorate 30 RelaxedPrecision
                               Decorate 34(gl_InstanceIndex) BuiltIn InstanceIndex
                2:             TypeVoid

@@ -109,7 +109,7 @@ public:
 
 protected:
     spv::Decoration TranslateAuxiliaryStorageDecoration(const glslang::TQualifier& qualifier);
-    spv::BuiltIn TranslateBuiltInDecoration(glslang::TBuiltInVariable, bool member);
+    spv::BuiltIn TranslateBuiltInDecoration(glslang::TBuiltInVariable, bool memberDeclaration);
     spv::ImageFormat TranslateImageFormat(const glslang::TType& type);
     spv::Id createSpvVariable(const glslang::TIntermSymbol*);
     spv::Id getSampledType(const glslang::TSampler&);
@@ -122,7 +122,7 @@ protected:
     int getArrayStride(const glslang::TType& arrayType, glslang::TLayoutPacking, glslang::TLayoutMatrix);
     int getMatrixStride(const glslang::TType& matrixType, glslang::TLayoutPacking, glslang::TLayoutMatrix);
     void updateMemberOffset(const glslang::TType& structType, const glslang::TType& memberType, int& currentOffset, int& nextOffset, glslang::TLayoutPacking, glslang::TLayoutMatrix);
-    void declareClipCullCapability(const glslang::TTypeList& members, int member);
+    void declareUseOfStructMember(const glslang::TTypeList* membersPtr, int glslangMember, int spvMember);
 
     bool isShaderEntrypoint(const glslang::TIntermAggregate* node);
     void makeFunctions(const glslang::TIntermSequence&);
@@ -175,6 +175,8 @@ protected:
     std::unordered_map<std::string, spv::Function*> functionMap;
     std::unordered_map<const glslang::TTypeList*, spv::Id> structMap[glslang::ElpCount][glslang::ElmCount];
     std::unordered_map<const glslang::TTypeList*, std::vector<int> > memberRemapper;  // for mapping glslang block indices to spv indices (e.g., due to hidden members)
+    // Map an instance of struct members-list to the associated SPIR-V type ID.
+    std::unordered_map<const glslang::TTypeList*, spv::Id> structMapRaw;
     std::stack<bool> breakForLoop;  // false means break for switch
 };
 
@@ -401,11 +403,17 @@ spv::Decoration TranslateNoContractionDecoration(const glslang::TQualifier& qual
         return (spv::Decoration)spv::BadValue;
 }
 
-// Translate glslang built-in variable to SPIR-V built in decoration.
-spv::BuiltIn TGlslangToSpvTraverser::TranslateBuiltInDecoration(glslang::TBuiltInVariable builtIn, bool member)
+// Translate glslang built-in variable to SPIR-V built in decoration, and
+// if valid and required, generate associated capabilities.
+// Some built-ins are translated to a bad value when handling a struct
+// member declaration.  This is true for PointSize, ClipDistance, and CullDistance.
+spv::BuiltIn TGlslangToSpvTraverser::TranslateBuiltInDecoration(glslang::TBuiltInVariable builtIn, bool memberDeclaration)
 {
     switch (builtIn) {
     case glslang::EbvPointSize:
+	// Defer adding the capability until the builtin is actually used.
+        if (memberDeclaration)
+            return (spv::BuiltIn)spv::BadValue;
         switch (glslangIntermediate->getStage()) {
         case EShLangGeometry:
             builder.addCapability(spv::CapabilityGeometryPointSize);
@@ -426,14 +434,16 @@ spv::BuiltIn TGlslangToSpvTraverser::TranslateBuiltInDecoration(glslang::TBuiltI
     // use needed is to trigger the capability.
     //
     case glslang::EbvClipDistance:
-        if (! member)
-            builder.addCapability(spv::CapabilityClipDistance);
+        if (memberDeclaration)
+            return (spv::BuiltIn)spv::BadValue;
+        builder.addCapability(spv::CapabilityClipDistance);
         return spv::BuiltInClipDistance;
 
     case glslang::EbvCullDistance:
-        if (! member)
-            builder.addCapability(spv::CapabilityCullDistance);
-        return spv::BuiltInCullDistance;
+        if (memberDeclaration)
+            return (spv::BuiltIn)spv::BadValue;
+	builder.addCapability(spv::CapabilityCullDistance);
+	return spv::BuiltInCullDistance;
 
     case glslang::EbvViewportIndex:
         builder.addCapability(spv::CapabilityMultiViewport);
@@ -923,30 +933,32 @@ bool TGlslangToSpvTraverser::visitBinary(glslang::TVisit /* visit */, glslang::T
 
             // Add the next element in the chain
 
-            int index = node->getRight()->getAsConstantUnion()->getConstArray()[0].getIConst();
-            if (node->getLeft()->getBasicType() == glslang::EbtBlock && node->getOp() == glslang::EOpIndexDirectStruct) {
-                // This may be, e.g., an anonymous block-member selection, which generally need
-                // index remapping due to hidden members in anonymous blocks.
-                std::vector<int>& remapper = memberRemapper[node->getLeft()->getType().getStruct()];
-                assert(remapper.size() > 0);
-                index = remapper[index];
-            }
-
+            const int glslangIndex = node->getRight()->getAsConstantUnion()->getConstArray()[0].getIConst();
             if (! node->getLeft()->getType().isArray() &&
                 node->getLeft()->getType().isVector() &&
                 node->getOp() == glslang::EOpIndexDirect) {
                 // This is essentially a hard-coded vector swizzle of size 1,
                 // so short circuit the access-chain stuff with a swizzle.
                 std::vector<unsigned> swizzle;
-                swizzle.push_back(node->getRight()->getAsConstantUnion()->getConstArray()[0].getIConst());
+                swizzle.push_back(glslangIndex);
                 builder.accessChainPushSwizzle(swizzle, convertGlslangToSpvType(node->getLeft()->getType()));
             } else {
-                // normal case for indexing array or structure or block
-                builder.accessChainPush(builder.makeIntConstant(index));
+		int spvIndex = glslangIndex;
+		if (node->getLeft()->getBasicType() == glslang::EbtBlock && node->getOp() == glslang::EOpIndexDirectStruct) {
+		    // This may be, e.g., an anonymous block-member selection, which generally need
+		    // index remapping due to hidden members in anonymous blocks.
+		    std::vector<int>& remapper = memberRemapper[node->getLeft()->getType().getStruct()];
+		    assert(remapper.size() > 0);
+		    spvIndex = remapper[glslangIndex];
+		}
 
-                // Add capabilities here for accessing clip/cull distance
+                // normal case for indexing array or structure or block
+                builder.accessChainPush(builder.makeIntConstant(spvIndex));
+
+                // Add capabilities here for accessing PointSize and clip/cull distance.
+                // We have deferred generation of associated capabilities and member decorations until now.
                 if (node->getLeft()->getType().isStruct() && ! node->getLeft()->getType().isArray())
-                    declareClipCullCapability(*node->getLeft()->getType().getStruct(), index);
+                    declareUseOfStructMember(node->getLeft()->getType().getStruct(), glslangIndex, spvIndex);
             }
         }
         return false;
@@ -1879,6 +1891,7 @@ spv::Id TGlslangToSpvTraverser::convertGlslangToSpvType(const glslang::TType& ty
             spvType = builder.makeStructType(structFields, type.getTypeName().c_str());
             if (! HasNonLayoutQualifiers(qualifier))
                 structMap[explicitLayout][qualifier.layoutMatrix][glslangStruct] = spvType;
+            structMapRaw[glslangStruct] = spvType;
 
             // Name and decorate the non-hidden members
             int offset = -1;
@@ -2203,12 +2216,22 @@ void TGlslangToSpvTraverser::updateMemberOffset(const glslang::TType& /*structTy
     nextOffset = currentOffset + memberSize;
 }
 
-void TGlslangToSpvTraverser::declareClipCullCapability(const glslang::TTypeList& members, int member)
+void TGlslangToSpvTraverser::declareUseOfStructMember(const glslang::TTypeList* membersPtr, int glslangMember, int spvMember)
 {
-    if (members[member].type->getQualifier().builtIn == glslang::EbvClipDistance)
-        builder.addCapability(spv::CapabilityClipDistance);
-    if (members[member].type->getQualifier().builtIn == glslang::EbvCullDistance)
-        builder.addCapability(spv::CapabilityCullDistance);
+    const glslang::TBuiltInVariable glslangBuiltIn = (*membersPtr)[glslangMember].type->getQualifier().builtIn;
+    switch (glslangBuiltIn) {
+        case glslang::EbvClipDistance:
+        case glslang::EbvCullDistance:
+        case glslang::EbvPointSize: {
+	    // Record the member decoration and generate the associated capability.
+	    const spv::BuiltIn builtIn = TranslateBuiltInDecoration(glslangBuiltIn, false);
+	    const spv::Id typeId = structMapRaw[membersPtr];
+            addMemberDecoration(typeId, spvMember, spv::DecorationBuiltIn, (int)builtIn);
+	    break;
+	}
+	default:
+	    break;
+    }
 }
 
 bool TGlslangToSpvTraverser::isShaderEntrypoint(const glslang::TIntermAggregate* node)

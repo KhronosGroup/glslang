@@ -34,9 +34,9 @@ Linked vertex stage:
                               Name 62  "ui"
                               MemberDecorate 11(gl_PerVertex) 0 Invariant
                               MemberDecorate 11(gl_PerVertex) 0 BuiltIn Position
+                              Decorate 11(gl_PerVertex) Block
                               MemberDecorate 11(gl_PerVertex) 1 BuiltIn PointSize
                               MemberDecorate 11(gl_PerVertex) 2 BuiltIn ClipDistance
-                              Decorate 11(gl_PerVertex) Block
                               Decorate 47(s2D) DescriptorSet 0
                2:             TypeVoid
                3:             TypeFunction 2

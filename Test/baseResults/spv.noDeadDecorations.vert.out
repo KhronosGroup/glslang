@@ -27,7 +27,6 @@ Linked vertex stage:
                               Decorate 12 RelaxedPrecision
                               Decorate 13 RelaxedPrecision
                               MemberDecorate 20(gl_PerVertex) 0 BuiltIn Position
-                              MemberDecorate 20(gl_PerVertex) 1 BuiltIn PointSize
                               Decorate 20(gl_PerVertex) Block
                               Decorate 27 RelaxedPrecision
                2:             TypeVoid

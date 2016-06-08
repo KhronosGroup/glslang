@@ -10,7 +10,6 @@ Linked tessellation evaluation stage:
 // Id's are bound by 119
 
                               Capability Tessellation
-                              Capability TessellationPointSize
                1:             ExtInstImport  "GLSL.std.450"
                               MemoryModel Logical GLSL450
                               EntryPoint TessellationEvaluation 4  "main" 12 21 62 112
@@ -53,7 +52,6 @@ Linked tessellation evaluation stage:
                               Decorate 106 NoContraction
                               Decorate 109 NoContraction
                               MemberDecorate 110(gl_PerVertex) 0 BuiltIn Position
-                              MemberDecorate 110(gl_PerVertex) 1 BuiltIn PointSize
                               Decorate 110(gl_PerVertex) Block
                2:             TypeVoid
                3:             TypeFunction 2

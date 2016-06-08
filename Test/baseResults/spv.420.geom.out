@@ -38,12 +38,12 @@ Linked geometry stage:
                               Name 46  "coord"
                               Name 64  "i"
                               Name 67  "indexable"
-                              MemberDecorate 9(gl_PerVertex) 0 BuiltIn PointSize
                               Decorate 9(gl_PerVertex) Block
-                              MemberDecorate 21(gl_PerVertex) 0 BuiltIn PointSize
+                              MemberDecorate 9(gl_PerVertex) 0 BuiltIn PointSize
                               Decorate 21(gl_PerVertex) Block
                               Decorate 21(gl_PerVertex) Stream 0
                               Decorate 23 Stream 0
+                              MemberDecorate 21(gl_PerVertex) 0 BuiltIn PointSize
                               Decorate 28(gl_ViewportIndex) Stream 0
                               Decorate 28(gl_ViewportIndex) BuiltIn ViewportIndex
                               Decorate 33(gl_InvocationID) BuiltIn InvocationId
