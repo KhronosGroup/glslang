@@ -236,12 +236,12 @@ ERROR: node is still EOpNull!
 0:46      Branch: Return with expression
 0:46        Constant:
 0:46          0.000000
-0:58  Function Definition: VertexShaderFunction(vf1;vf1;vf1;i1; (temp 1-component vector of float)
+0:58  Function Definition: VertexShaderFunction(vf1;vf1;vf1;vi1; (temp 1-component vector of float)
 0:50    Function Parameters: 
 0:50      'inF0' (temp 1-component vector of float)
 0:50      'inF1' (temp 1-component vector of float)
 0:50      'inF2' (temp 1-component vector of float)
-0:50      'inI0' (temp int)
+0:50      'inI0' (temp 1-component vector of int)
 0:?     Sequence
 0:53      Constant:
 0:53        0.000000
@@ -681,12 +681,12 @@ ERROR: node is still EOpNull!
 0:46      Branch: Return with expression
 0:46        Constant:
 0:46          0.000000
-0:58  Function Definition: VertexShaderFunction(vf1;vf1;vf1;i1; (temp 1-component vector of float)
+0:58  Function Definition: VertexShaderFunction(vf1;vf1;vf1;vi1; (temp 1-component vector of float)
 0:50    Function Parameters: 
 0:50      'inF0' (temp 1-component vector of float)
 0:50      'inF1' (temp 1-component vector of float)
 0:50      'inF2' (temp 1-component vector of float)
-0:50      'inI0' (temp int)
+0:50      'inI0' (temp 1-component vector of int)
 0:?     Sequence
 0:53      Constant:
 0:53        0.000000

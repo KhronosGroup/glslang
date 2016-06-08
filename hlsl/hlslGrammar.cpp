@@ -213,20 +213,17 @@ bool HlslGrammar::acceptType(TType& type)
         return false;
 
     switch (peek()) {
-    case EHTokInt:
-    case EHTokInt1:
-    case EHTokDword:
-        new(&type) TType(EbtInt);
+    case EHTokVoid:
+        new(&type) TType(EbtVoid);
         break;
+
     case EHTokFloat:
         new(&type) TType(EbtFloat);
         break;
-
     case EHTokFloat1:
         new(&type) TType(EbtFloat);
         type.makeVector();
         break;
-
     case EHTokFloat2:
         new(&type) TType(EbtFloat, EvqTemporary, 2);
         break;
@@ -237,6 +234,31 @@ bool HlslGrammar::acceptType(TType& type)
         new(&type) TType(EbtFloat, EvqTemporary, 4);
         break;
 
+    case EHTokDouble:
+        new(&type) TType(EbtDouble);
+        break;
+    case EHTokDouble1:
+        new(&type) TType(EbtDouble);
+        type.makeVector();
+        break;
+    case EHTokDouble2:
+        new(&type) TType(EbtDouble, EvqTemporary, 2);
+        break;
+    case EHTokDouble3:
+        new(&type) TType(EbtDouble, EvqTemporary, 3);
+        break;
+    case EHTokDouble4:
+        new(&type) TType(EbtDouble, EvqTemporary, 4);
+        break;
+
+    case EHTokInt:
+    case EHTokDword:
+        new(&type) TType(EbtInt);
+        break;
+    case EHTokInt1:
+        new(&type) TType(EbtInt);
+        type.makeVector();
+        break;
     case EHTokInt2:
         new(&type) TType(EbtInt, EvqTemporary, 2);
         break;
@@ -247,6 +269,30 @@ bool HlslGrammar::acceptType(TType& type)
         new(&type) TType(EbtInt, EvqTemporary, 4);
         break;
 
+    case EHTokUint:
+        new(&type) TType(EbtUint);
+        break;
+    case EHTokUint1:
+        new(&type) TType(EbtUint);
+        type.makeVector();
+        break;
+    case EHTokUint2:
+        new(&type) TType(EbtUint, EvqTemporary, 2);
+        break;
+    case EHTokUint3:
+        new(&type) TType(EbtUint, EvqTemporary, 3);
+        break;
+    case EHTokUint4:
+        new(&type) TType(EbtUint, EvqTemporary, 4);
+        break;
+
+    case EHTokBool:
+        new(&type) TType(EbtBool);
+        break;
+    case EHTokBool1:
+        new(&type) TType(EbtBool);
+        type.makeVector();
+        break;
     case EHTokBool2:
         new(&type) TType(EbtBool, EvqTemporary, 2);
         break;
@@ -304,6 +350,104 @@ bool HlslGrammar::acceptType(TType& type)
         break;
     case EHTokInt4x4:
         new(&type) TType(EbtInt, EvqTemporary, 0, 4, 4);
+        break;
+
+    case EHTokUint1x1:
+        new(&type) TType(EbtUint, EvqTemporary, 0, 1, 1);
+        break;
+    case EHTokUint1x2:
+        new(&type) TType(EbtUint, EvqTemporary, 0, 2, 1);
+        break;
+    case EHTokUint1x3:
+        new(&type) TType(EbtUint, EvqTemporary, 0, 3, 1);
+        break;
+    case EHTokUint1x4:
+        new(&type) TType(EbtUint, EvqTemporary, 0, 4, 1);
+        break;
+    case EHTokUint2x1:
+        new(&type) TType(EbtUint, EvqTemporary, 0, 1, 2);
+        break;
+    case EHTokUint2x2:
+        new(&type) TType(EbtUint, EvqTemporary, 0, 2, 2);
+        break;
+    case EHTokUint2x3:
+        new(&type) TType(EbtUint, EvqTemporary, 0, 3, 2);
+        break;
+    case EHTokUint2x4:
+        new(&type) TType(EbtUint, EvqTemporary, 0, 4, 2);
+        break;
+    case EHTokUint3x1:
+        new(&type) TType(EbtUint, EvqTemporary, 0, 1, 3);
+        break;
+    case EHTokUint3x2:
+        new(&type) TType(EbtUint, EvqTemporary, 0, 2, 3);
+        break;
+    case EHTokUint3x3:
+        new(&type) TType(EbtUint, EvqTemporary, 0, 3, 3);
+        break;
+    case EHTokUint3x4:
+        new(&type) TType(EbtUint, EvqTemporary, 0, 4, 3);
+        break;
+    case EHTokUint4x1:
+        new(&type) TType(EbtUint, EvqTemporary, 0, 1, 4);
+        break;
+    case EHTokUint4x2:
+        new(&type) TType(EbtUint, EvqTemporary, 0, 2, 4);
+        break;
+    case EHTokUint4x3:
+        new(&type) TType(EbtUint, EvqTemporary, 0, 3, 4);
+        break;
+    case EHTokUint4x4:
+        new(&type) TType(EbtUint, EvqTemporary, 0, 4, 4);
+        break;
+
+    case EHTokBool1x1:
+        new(&type) TType(EbtBool, EvqTemporary, 0, 1, 1);
+        break;
+    case EHTokBool1x2:
+        new(&type) TType(EbtBool, EvqTemporary, 0, 2, 1);
+        break;
+    case EHTokBool1x3:
+        new(&type) TType(EbtBool, EvqTemporary, 0, 3, 1);
+        break;
+    case EHTokBool1x4:
+        new(&type) TType(EbtBool, EvqTemporary, 0, 4, 1);
+        break;
+    case EHTokBool2x1:
+        new(&type) TType(EbtBool, EvqTemporary, 0, 1, 2);
+        break;
+    case EHTokBool2x2:
+        new(&type) TType(EbtBool, EvqTemporary, 0, 2, 2);
+        break;
+    case EHTokBool2x3:
+        new(&type) TType(EbtBool, EvqTemporary, 0, 3, 2);
+        break;
+    case EHTokBool2x4:
+        new(&type) TType(EbtBool, EvqTemporary, 0, 4, 2);
+        break;
+    case EHTokBool3x1:
+        new(&type) TType(EbtBool, EvqTemporary, 0, 1, 3);
+        break;
+    case EHTokBool3x2:
+        new(&type) TType(EbtBool, EvqTemporary, 0, 2, 3);
+        break;
+    case EHTokBool3x3:
+        new(&type) TType(EbtBool, EvqTemporary, 0, 3, 3);
+        break;
+    case EHTokBool3x4:
+        new(&type) TType(EbtBool, EvqTemporary, 0, 4, 3);
+        break;
+    case EHTokBool4x1:
+        new(&type) TType(EbtBool, EvqTemporary, 0, 1, 4);
+        break;
+    case EHTokBool4x2:
+        new(&type) TType(EbtBool, EvqTemporary, 0, 2, 4);
+        break;
+    case EHTokBool4x3:
+        new(&type) TType(EbtBool, EvqTemporary, 0, 3, 4);
+        break;
+    case EHTokBool4x4:
+        new(&type) TType(EbtBool, EvqTemporary, 0, 4, 4);
         break;
 
     case EHTokFloat1x1:
@@ -415,6 +559,7 @@ bool HlslGrammar::acceptType(TType& type)
 
 // function_parameters
 //      : LEFT_PAREN parameter_declaration COMMA parameter_declaration ... RIGHT_PAREN
+//      | LEFT_PAREN VOID RIGHT_PAREN
 //
 bool HlslGrammar::acceptFunctionParameters(TFunction& function)
 {
@@ -422,15 +567,18 @@ bool HlslGrammar::acceptFunctionParameters(TFunction& function)
     if (! acceptTokenClass(EHTokLeftParen))
         return false;
 
-    do {
-        // parameter_declaration
-        if (! acceptParameterDeclaration(function))
-            break;
+    // VOID RIGHT_PAREN
+    if (! acceptTokenClass(EHTokVoid)) {
+        do {
+            // parameter_declaration
+            if (! acceptParameterDeclaration(function))
+                break;
 
-        // COMMA
-        if (! acceptTokenClass(EHTokComma))
-            break;
-    } while (true);
+            // COMMA
+            if (! acceptTokenClass(EHTokComma))
+                break;
+        } while (true);
+    }
 
     // RIGHT_PAREN
     if (! acceptTokenClass(EHTokRightParen)) {

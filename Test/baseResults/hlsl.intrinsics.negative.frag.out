@@ -144,12 +144,12 @@ ERROR: node is still EOpNull!
 0:32      Branch: Return with expression
 0:32        Constant:
 0:32          0.000000
-0:44  Function Definition: PixelShaderFunction(vf1;vf1;vf1;i1; (temp 1-component vector of float)
+0:44  Function Definition: PixelShaderFunction(vf1;vf1;vf1;vi1; (temp 1-component vector of float)
 0:36    Function Parameters: 
 0:36      'inF0' (temp 1-component vector of float)
 0:36      'inF1' (temp 1-component vector of float)
 0:36      'inF2' (temp 1-component vector of float)
-0:36      'inI0' (temp int)
+0:36      'inI0' (temp 1-component vector of int)
 0:?     Sequence
 0:39      Constant:
 0:39        0.000000
@@ -448,12 +448,12 @@ ERROR: node is still EOpNull!
 0:32      Branch: Return with expression
 0:32        Constant:
 0:32          0.000000
-0:44  Function Definition: PixelShaderFunction(vf1;vf1;vf1;i1; (temp 1-component vector of float)
+0:44  Function Definition: PixelShaderFunction(vf1;vf1;vf1;vi1; (temp 1-component vector of float)
 0:36    Function Parameters: 
 0:36      'inF0' (temp 1-component vector of float)
 0:36      'inF1' (temp 1-component vector of float)
 0:36      'inF2' (temp 1-component vector of float)
-0:36      'inI0' (temp int)
+0:36      'inI0' (temp 1-component vector of int)
 0:?     Sequence
 0:39      Constant:
 0:39        0.000000
