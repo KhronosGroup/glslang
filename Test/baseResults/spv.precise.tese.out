@@ -10,7 +10,6 @@ Linked tessellation evaluation stage:
 // Id's are bound by 119
 
                               Capability Tessellation
-                              Capability TessellationPointSize
                1:             ExtInstImport  "GLSL.std.450"
                               MemoryModel Logical GLSL450
                               EntryPoint TessellationEvaluation 4  "main" 12 21 62 112
