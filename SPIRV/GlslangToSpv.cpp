@@ -109,7 +109,7 @@ public:
 
 protected:
     spv::Decoration TranslateAuxiliaryStorageDecoration(const glslang::TQualifier& qualifier);
-    spv::BuiltIn TranslateBuiltInDecoration(glslang::TBuiltInVariable, bool member);
+    spv::BuiltIn TranslateBuiltInDecoration(glslang::TBuiltInVariable, bool memberDeclaration);
     spv::ImageFormat TranslateImageFormat(const glslang::TType& type);
     spv::Id createSpvVariable(const glslang::TIntermSymbol*);
     spv::Id getSampledType(const glslang::TSampler&);
@@ -122,7 +122,7 @@ protected:
     int getArrayStride(const glslang::TType& arrayType, glslang::TLayoutPacking, glslang::TLayoutMatrix);
     int getMatrixStride(const glslang::TType& matrixType, glslang::TLayoutPacking, glslang::TLayoutMatrix);
     void updateMemberOffset(const glslang::TType& structType, const glslang::TType& memberType, int& currentOffset, int& nextOffset, glslang::TLayoutPacking, glslang::TLayoutMatrix);
-    void declareClipCullCapability(const glslang::TTypeList& members, int member);
+    void declareUseOfStructMember(const glslang::TTypeList& members, int glslangMember);
 
     bool isShaderEntrypoint(const glslang::TIntermAggregate* node);
     void makeFunctions(const glslang::TIntermSequence&);
@@ -401,21 +401,28 @@ spv::Decoration TranslateNoContractionDecoration(const glslang::TQualifier& qual
         return (spv::Decoration)spv::BadValue;
 }
 
-// Translate glslang built-in variable to SPIR-V built in decoration.
-spv::BuiltIn TGlslangToSpvTraverser::TranslateBuiltInDecoration(glslang::TBuiltInVariable builtIn, bool member)
+// Translate a glslang built-in variable to a SPIR-V built in decoration.  Also generate
+// associated capabilities when required.  For some built-in variables, a capability
+// is generated only when using the variable in an executable instruction, but not when
+// just declaring a struct member variable with it.  This is true for PointSize,
+// ClipDistance, and CullDistance.
+spv::BuiltIn TGlslangToSpvTraverser::TranslateBuiltInDecoration(glslang::TBuiltInVariable builtIn, bool memberDeclaration)
 {
     switch (builtIn) {
     case glslang::EbvPointSize:
-        switch (glslangIntermediate->getStage()) {
-        case EShLangGeometry:
-            builder.addCapability(spv::CapabilityGeometryPointSize);
-            break;
-        case EShLangTessControl:
-        case EShLangTessEvaluation:
-            builder.addCapability(spv::CapabilityTessellationPointSize);
-            break;
-        default:
-            break;
+	// Defer adding the capability until the built-in is actually used.
+        if (!memberDeclaration) {
+	    switch (glslangIntermediate->getStage()) {
+	    case EShLangGeometry:
+		builder.addCapability(spv::CapabilityGeometryPointSize);
+		break;
+	    case EShLangTessControl:
+	    case EShLangTessEvaluation:
+		builder.addCapability(spv::CapabilityTessellationPointSize);
+		break;
+	    default:
+		break;
+	    }
         }
         return spv::BuiltInPointSize;
 
@@ -426,13 +433,13 @@ spv::BuiltIn TGlslangToSpvTraverser::TranslateBuiltInDecoration(glslang::TBuiltI
     // use needed is to trigger the capability.
     //
     case glslang::EbvClipDistance:
-        if (! member)
-            builder.addCapability(spv::CapabilityClipDistance);
+        if (!memberDeclaration)
+	    builder.addCapability(spv::CapabilityClipDistance);
         return spv::BuiltInClipDistance;
 
     case glslang::EbvCullDistance:
-        if (! member)
-            builder.addCapability(spv::CapabilityCullDistance);
+        if (!memberDeclaration)
+	    builder.addCapability(spv::CapabilityCullDistance);
         return spv::BuiltInCullDistance;
 
     case glslang::EbvViewportIndex:
@@ -923,30 +930,34 @@ bool TGlslangToSpvTraverser::visitBinary(glslang::TVisit /* visit */, glslang::T
 
             // Add the next element in the chain
 
-            int index = node->getRight()->getAsConstantUnion()->getConstArray()[0].getIConst();
-            if (node->getLeft()->getBasicType() == glslang::EbtBlock && node->getOp() == glslang::EOpIndexDirectStruct) {
-                // This may be, e.g., an anonymous block-member selection, which generally need
-                // index remapping due to hidden members in anonymous blocks.
-                std::vector<int>& remapper = memberRemapper[node->getLeft()->getType().getStruct()];
-                assert(remapper.size() > 0);
-                index = remapper[index];
-            }
-
+            const int glslangIndex = node->getRight()->getAsConstantUnion()->getConstArray()[0].getIConst();
             if (! node->getLeft()->getType().isArray() &&
                 node->getLeft()->getType().isVector() &&
                 node->getOp() == glslang::EOpIndexDirect) {
                 // This is essentially a hard-coded vector swizzle of size 1,
                 // so short circuit the access-chain stuff with a swizzle.
                 std::vector<unsigned> swizzle;
-                swizzle.push_back(node->getRight()->getAsConstantUnion()->getConstArray()[0].getIConst());
+                swizzle.push_back(glslangIndex);
                 builder.accessChainPushSwizzle(swizzle, convertGlslangToSpvType(node->getLeft()->getType()));
             } else {
-                // normal case for indexing array or structure or block
-                builder.accessChainPush(builder.makeIntConstant(index));
+                int spvIndex = glslangIndex;
+                if (node->getLeft()->getBasicType() == glslang::EbtBlock &&
+                    node->getOp() == glslang::EOpIndexDirectStruct)
+                {
+                    // This may be, e.g., an anonymous block-member selection, which generally need
+                    // index remapping due to hidden members in anonymous blocks.
+                    std::vector<int>& remapper = memberRemapper[node->getLeft()->getType().getStruct()];
+                    assert(remapper.size() > 0);
+                    spvIndex = remapper[glslangIndex];
+                }
 
-                // Add capabilities here for accessing clip/cull distance
+                // normal case for indexing array or structure or block
+                builder.accessChainPush(builder.makeIntConstant(spvIndex));
+
+                // Add capabilities here for accessing PointSize and clip/cull distance.
+                // We have deferred generation of associated capabilities until now.
                 if (node->getLeft()->getType().isStruct() && ! node->getLeft()->getType().isArray())
-                    declareClipCullCapability(*node->getLeft()->getType().getStruct(), index);
+                    declareUseOfStructMember(*(node->getLeft()->getType().getStruct()), glslangIndex);
             }
         }
         return false;
@@ -2203,12 +2214,23 @@ void TGlslangToSpvTraverser::updateMemberOffset(const glslang::TType& /*structTy
     nextOffset = currentOffset + memberSize;
 }
 
-void TGlslangToSpvTraverser::declareClipCullCapability(const glslang::TTypeList& members, int member)
+void TGlslangToSpvTraverser::declareUseOfStructMember(const glslang::TTypeList& members, int glslangMember)
 {
-    if (members[member].type->getQualifier().builtIn == glslang::EbvClipDistance)
-        builder.addCapability(spv::CapabilityClipDistance);
-    if (members[member].type->getQualifier().builtIn == glslang::EbvCullDistance)
-        builder.addCapability(spv::CapabilityCullDistance);
+    const glslang::TBuiltInVariable glslangBuiltIn = members[glslangMember].type->getQualifier().builtIn;
+    switch (glslangBuiltIn)
+    {
+    case glslang::EbvClipDistance:
+    case glslang::EbvCullDistance:
+    case glslang::EbvPointSize:
+        // Generate the associated capability.  Delegate to TranslateBuiltInDecoration.
+        // Alternately, we could just call this for any glslang built-in, since the
+        // capability already guards against duplicates.
+        TranslateBuiltInDecoration(glslangBuiltIn, false);
+        break;
+    default:
+        // Capabilities were already generated when the struct was declared.
+        break;
+    }
 }
 
 bool TGlslangToSpvTraverser::isShaderEntrypoint(const glslang::TIntermAggregate* node)
