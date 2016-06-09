@@ -88,6 +88,7 @@ INSTANTIATE_TEST_CASE_P(
         {"hlsl.max.frag", "PixelShaderFunction"},
         {"hlsl.precedence.frag", "PixelShaderFunction"},
         {"hlsl.precedence2.frag", "PixelShaderFunction"},
+        {"hlsl.scope.frag", "PixelShaderFunction"},
         {"hlsl.sin.frag", "PixelShaderFunction"},
         {"hlsl.whileLoop.frag", "PixelShaderFunction"},
         {"hlsl.void.frag", "PixelShaderFunction"},

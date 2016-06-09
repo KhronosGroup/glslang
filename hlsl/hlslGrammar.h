@@ -77,6 +77,7 @@ namespace glslang {
         bool acceptCompoundStatement(TIntermNode*&);
         bool acceptStatement(TIntermNode*&);
         bool acceptScopedStatement(TIntermNode*&);
+        bool acceptScopedCompoundStatement(TIntermNode*&);
         bool acceptNestedStatement(TIntermNode*&);
         void acceptAttributes();
         bool acceptSelectionStatement(TIntermNode*&);

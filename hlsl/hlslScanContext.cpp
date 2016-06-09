@@ -314,11 +314,8 @@ void HlslScanContext::deleteKeywordMap()
 // Wrapper for tokenizeClass()"] =  to get everything inside the token.
 void HlslScanContext::tokenize(HlslToken& token)
 {
-    token.isType = false;
     EHlslTokenClass tokenClass = tokenizeClass(token);
     token.tokenClass = tokenClass;
-    if (token.isType)
-        afterType = true;
 }
 
 //
@@ -338,13 +335,13 @@ EHlslTokenClass HlslScanContext::tokenizeClass(HlslToken& token)
         loc = ppToken.loc;
         parserToken->loc = loc;
         switch (ppToken.token) {
-        case ';':  afterType = false;   return EHTokSemicolon;
-        case ',':  afterType = false;   return EHTokComma;
+        case ';':                       return EHTokSemicolon;
+        case ',':                       return EHTokComma;
         case ':':                       return EHTokColon;
-        case '=':  afterType = false;   return EHTokAssign;
-        case '(':  afterType = false;   return EHTokLeftParen;
-        case ')':  afterType = false;   return EHTokRightParen;
-        case '.':  field = true;        return EHTokDot;
+        case '=':                       return EHTokAssign;
+        case '(':                       return EHTokLeftParen;
+        case ')':                       return EHTokRightParen;
+        case '.':                       return EHTokDot;
         case '!':                       return EHTokBang;
         case '-':                       return EHTokDash;
         case '~':                       return EHTokTilde;
@@ -400,7 +397,6 @@ EHlslTokenClass HlslScanContext::tokenizeClass(HlslToken& token)
         case PpAtomIdentifier:
         {
             EHlslTokenClass token = tokenizeIdentifier();
-            field = false;
             return token;
         }
 
@@ -542,7 +538,6 @@ EHlslTokenClass HlslScanContext::tokenizeIdentifier()
     case EHTokDouble4x2:
     case EHTokDouble4x3:
     case EHTokDouble4x4:
-        parserToken->isType = true;
         return keyword;
 
     // texturing types
@@ -560,7 +555,6 @@ EHlslTokenClass HlslScanContext::tokenizeIdentifier()
     case EHTokTexture2darray:
     case EHTokTexture3d:
     case EHTokTextureCube:
-        parserToken->isType = true;
         return keyword;
 
     // variable, user type, ...
@@ -598,19 +592,6 @@ EHlslTokenClass HlslScanContext::tokenizeIdentifier()
 EHlslTokenClass HlslScanContext::identifierOrType()
 {
     parserToken->string = NewPoolTString(tokenText);
-    if (field)
-        return EHTokIdentifier;
-
-    parserToken->symbol = parseContext.symbolTable.find(*parserToken->string);
-    if (afterType == false && parserToken->symbol) {
-        if (const TVariable* variable = parserToken->symbol->getAsVariable()) {
-            if (variable->isUserType()) {
-                afterType = true;
-
-                return EHTokTypeName;
-            }
-        }
-    }
 
     return EHTokIdentifier;
 }

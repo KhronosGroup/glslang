@@ -65,7 +65,7 @@ public:
     bool builtInName(const TString&);
 
     void handlePragma(const TSourceLoc&, const TVector<TString>&);
-    TIntermTyped* handleVariable(const TSourceLoc&, TSymbol* symbol, const TString* string);
+    TIntermTyped* handleVariable(const TSourceLoc&, const TString* string);
     TIntermTyped* handleBracketDereference(const TSourceLoc&, TIntermTyped* base, TIntermTyped* index);
     void checkIndex(const TSourceLoc&, const TType&, int& index);
 
@@ -139,8 +139,6 @@ public:
 
     void updateImplicitArraySize(const TSourceLoc&, TIntermNode*, int index);
 
-    void nestStatement()   { ++statementNestingLevel; }
-    void unnestStatement() { --statementNestingLevel; }
     void nestLooping()     { ++loopNestingLevel; }
     void unnestLooping()   { --loopNestingLevel; }
     void pushScope()       { symbolTable.push(); }
@@ -163,7 +161,6 @@ protected:
     int loopNestingLevel;        // 0 if outside all loops
     int structNestingLevel;      // 0 if outside blocks and structures
     int controlFlowNestingLevel; // 0 if outside all flow control
-    int statementNestingLevel;   // 0 if outside all flow control or compound statements
     TList<TIntermSequence*> switchSequenceStack;  // case, node, case, case, node, ...; ensure only one node between cases;   stack of them for nesting
     TList<int> switchLevel;      // the statementNestingLevel the current switch statement is at, which must match the level of its case statements
     bool inEntrypoint;           // if inside a function, true if the function is the entry point

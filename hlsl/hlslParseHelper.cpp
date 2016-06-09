@@ -51,7 +51,7 @@ HlslParseContext::HlslParseContext(TSymbolTable& symbolTable, TIntermediate& int
                                    int version, EProfile profile, int spv, int vulkan, EShLanguage language, TInfoSink& infoSink,
                                    bool forwardCompatible, EShMessages messages) :
     TParseContextBase(symbolTable, interm, version, profile, spv, vulkan, language, infoSink, forwardCompatible, messages),
-    contextPragma(true, false), loopNestingLevel(0), structNestingLevel(0), controlFlowNestingLevel(0), statementNestingLevel(0),
+    contextPragma(true, false), loopNestingLevel(0), structNestingLevel(0), controlFlowNestingLevel(0),
     postMainReturn(false),
     limits(resources.limits),
     afterEOF(false)
@@ -282,8 +282,9 @@ void C_DECL HlslParseContext::ppWarn(const TSourceLoc& loc, const char* szReason
 //
 // Handle seeing a variable identifier in the grammar.
 //
-TIntermTyped* HlslParseContext::handleVariable(const TSourceLoc& loc, TSymbol* symbol, const TString* string)
+TIntermTyped* HlslParseContext::handleVariable(const TSourceLoc& loc, const TString* string)
 {
+    TSymbol* symbol = symbolTable.find(*string);
     TIntermTyped* node = nullptr;
 
     // Error check for requiring specific extensions present.
@@ -714,7 +715,7 @@ TIntermAggregate* HlslParseContext::handleFunctionDefinition(const TSourceLoc& l
     //
     // New symbol table scope for body of function plus its arguments
     //
-    symbolTable.push();
+    pushScope();
 
     //
     // Insert parameters into the symbol table.
@@ -747,7 +748,6 @@ TIntermAggregate* HlslParseContext::handleFunctionDefinition(const TSourceLoc& l
     }
     intermediate.setAggregateOperator(paramNodes, EOpParameters, TType(EbtVoid), loc);
     loopNestingLevel = 0;
-    statementNestingLevel = 0;
     controlFlowNestingLevel = 0;
     postMainReturn = false;
 

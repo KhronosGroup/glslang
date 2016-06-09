@@ -209,9 +209,6 @@ void HlslGrammar::acceptQualifier(TQualifier& qualifier)
 // Otherwise, return false, and don't advance
 bool HlslGrammar::acceptType(TType& type)
 {
-    if (! token.isType)
-        return false;
-
     switch (peek()) {
     case EHTokVoid:
         new(&type) TType(EbtVoid);
@@ -616,7 +613,7 @@ bool HlslGrammar::acceptFunctionDefinition(TFunction& function, TIntermNode*& no
 {
     TFunction* functionDeclarator = parseContext.handleFunctionDeclarator(token.loc, function, false /* not prototype */);
 
-    // This does a symbol table push
+    // This does a pushScope()
     node = parseContext.handleFunctionDefinition(token.loc, *functionDeclarator);
 
     // compound_statement
@@ -625,7 +622,7 @@ bool HlslGrammar::acceptFunctionDefinition(TFunction& function, TIntermNode*& no
         node = intermediate.growAggregate(node, functionBody);
         intermediate.setAggregateOperator(node, EOpFunction, functionDeclarator->getType(), token.loc);
         node->getAsAggregate()->setName(functionDeclarator->getMangledName().c_str());
-        parseContext.symbolTable.pop(nullptr);
+        parseContext.popScope();
 
         return true;
     }
@@ -882,7 +879,7 @@ bool HlslGrammar::acceptPostfixExpression(TIntermTyped*& node)
     } else if (acceptIdentifier(idToken)) {
         // identifier or function_call name
         if (! peekTokenClass(EHTokLeftParen)) {
-            node = parseContext.handleVariable(idToken.loc, idToken.symbol, token.string);
+            node = parseContext.handleVariable(idToken.loc, token.string);
         } else if (acceptFunctionCall(idToken, node)) {
             // function_call (nothing else to do yet)
         } else {
@@ -1072,17 +1069,17 @@ bool HlslGrammar::acceptCompoundStatement(TIntermNode*& retStatement)
 bool HlslGrammar::acceptScopedStatement(TIntermNode*& statement)
 {
     parseContext.pushScope();
-    bool result = acceptNestedStatement(statement);
+    bool result = acceptStatement(statement);
     parseContext.popScope();
 
     return result;
 }
 
-bool HlslGrammar::acceptNestedStatement(TIntermNode*& statement)
+bool HlslGrammar::acceptScopedCompoundStatement(TIntermNode*& statement)
 {
-    parseContext.nestStatement();
-    bool result = acceptStatement(statement);
-    parseContext.unnestStatement();
+    parseContext.pushScope();
+    bool result = acceptCompoundStatement(statement);
+    parseContext.popScope();
 
     return result;
 }
@@ -1111,7 +1108,7 @@ bool HlslGrammar::acceptStatement(TIntermNode*& statement)
     // attributed_statement
     switch (peek()) {
     case EHTokLeftBrace:
-        return acceptCompoundStatement(statement);
+        return acceptScopedCompoundStatement(statement);
 
     case EHTokIf:
         return acceptSelectionStatement(statement);
