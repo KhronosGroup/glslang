@@ -493,6 +493,18 @@ enum TOperator {
     EOpBitCount,
     EOpFindLSB,
     EOpFindMSB,
+
+    //
+    // HLSL operations
+    //
+
+    EOpClip,
+    EOpIsFinite,
+    EOpLog10,
+    EOpRcp,
+    EOpSaturate,
+    EOpSinCos,
+    EOpGenMul,  // mul(x,y) on any of mat/vec/scalars
 };
 
 class TIntermTraverser;

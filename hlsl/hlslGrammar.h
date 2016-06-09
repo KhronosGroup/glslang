@@ -1,5 +1,6 @@
 //
 //Copyright (C) 2016 Google, Inc.
+//Copyright (C) 2016 LunarG, Inc.
 //
 //All rights reserved.
 //
@@ -87,6 +88,8 @@ namespace glslang {
         bool acceptCaseLabel(TIntermNode*&);
 
         bool acceptSemantic();
+
+        void decomposeIntrinsic(HlslToken, TIntermTyped*&, TIntermTyped* arguments);
 
         HlslParseContext& parseContext;  // state of parsing and helper functions for building the intermediate
         TIntermediate& intermediate;     // the final product, the intermediate representation, includes the AST

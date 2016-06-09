@@ -3028,7 +3028,7 @@ spv::Id TGlslangToSpvTraverser::createBinaryMatrixOperation(spv::Op op, spv::Dec
         return builder.setPrecision(result, precision);
     }
 
-    // Handle component-wise +, -, *, and / for all combinations of type.
+    // Handle component-wise +, -, *, %, and / for all combinations of type.
     // The result type of all of them is the same type as the (a) matrix operand.
     // The algorithm is to:
     //   - break the matrix(es) into vectors
@@ -3039,6 +3039,7 @@ spv::Id TGlslangToSpvTraverser::createBinaryMatrixOperation(spv::Op op, spv::Dec
     case spv::OpFAdd:
     case spv::OpFSub:
     case spv::OpFDiv:
+    case spv::OpFMod:
     case spv::OpFMul:
     {
         // one time set up...
@@ -3204,6 +3205,9 @@ spv::Id TGlslangToSpvTraverser::createUnaryOperation(glslang::TOperator op, spv:
         break;
     case glslang::EOpIsInf:
         unaryOp = spv::OpIsInf;
+        break;
+    case glslang::EOpIsFinite:
+        unaryOp = spv::OpIsFinite;
         break;
 
     case glslang::EOpFloatBitsToInt:
