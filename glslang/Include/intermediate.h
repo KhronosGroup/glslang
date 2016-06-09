@@ -1,6 +1,6 @@
 //
 //Copyright (C) 2002-2005  3Dlabs Inc. Ltd.
-//Copyright (C) 2012-2013 LunarG, Inc.
+//Copyright (C) 2012-2016 LunarG, Inc.
 //
 //All rights reserved.
 //
@@ -493,6 +493,19 @@ enum TOperator {
     EOpBitCount,
     EOpFindLSB,
     EOpFindMSB,
+
+    //
+    // HLSL operations
+    //
+
+    EOpClip,
+    EOpIsFinite,
+    EOpLog10,
+    EOpRcp,
+    EOpSaturate,
+    EOpSinCos,
+    EOpGenMul,  // mul(x,y) on any of mat/vec/scalars
+    EOpDst,
 };
 
 class TIntermTraverser;
