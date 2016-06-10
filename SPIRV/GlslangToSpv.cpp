@@ -227,13 +227,15 @@ spv::StorageClass TranslateStorageClass(const glslang::TType& type)
         return spv::StorageClassInput;
     else if (type.getQualifier().isPipeOutput())
         return spv::StorageClassOutput;
+    else if (type.getBasicType() == glslang::EbtSampler)
+        return spv::StorageClassUniformConstant;
+    else if (type.getBasicType() == glslang::EbtAtomicUint)
+        return spv::StorageClassAtomicCounter;
     else if (type.getQualifier().isUniformOrBuffer()) {
         if (type.getQualifier().layoutPushConstant)
             return spv::StorageClassPushConstant;
         if (type.getBasicType() == glslang::EbtBlock)
             return spv::StorageClassUniform;
-        else if (type.getBasicType() == glslang::EbtAtomicUint)
-            return spv::StorageClassAtomicCounter;
         else
             return spv::StorageClassUniformConstant;
         // TODO: how are we distuingishing between default and non-default non-writable uniforms?  Do default uniforms even exist?
@@ -2270,7 +2272,9 @@ void TGlslangToSpvTraverser::makeFunctions(const glslang::TIntermSequence& glslF
         for (int p = 0; p < (int)parameters.size(); ++p) {
             const glslang::TType& paramType = parameters[p]->getAsTyped()->getType();
             spv::Id typeId = convertGlslangToSpvType(paramType);
-            if (paramType.getQualifier().storage != glslang::EvqConstReadOnly)
+            if (paramType.isOpaque())
+                typeId = builder.makePointer(TranslateStorageClass(paramType), typeId);
+            else if (paramType.getQualifier().storage != glslang::EvqConstReadOnly)
                 typeId = builder.makePointer(spv::StorageClassFunction, typeId);
             else
                 constReadOnlyParameters.insert(parameters[p]->getAsSymbolNode()->getId());
@@ -2686,8 +2690,8 @@ spv::Id TGlslangToSpvTraverser::handleUserFunctionCall(const glslang::TIntermAgg
         builder.clearAccessChain();
         glslangArgs[a]->traverse(this);
         argTypes.push_back(&paramType);
-        // keep outputs as and samplers l-values, evaluate input-only as r-values
-        if (qualifiers[a] != glslang::EvqConstReadOnly || paramType.getBasicType() == glslang::EbtSampler) {
+        // keep outputs as and opaque objects l-values, evaluate input-only as r-values
+        if (qualifiers[a] != glslang::EvqConstReadOnly || paramType.isOpaque()) {
             // save l-value
             lValues.push_back(builder.getAccessChain());
         } else {
@@ -2706,7 +2710,7 @@ spv::Id TGlslangToSpvTraverser::handleUserFunctionCall(const glslang::TIntermAgg
     for (int a = 0; a < (int)glslangArgs.size(); ++a) {
         const glslang::TType& paramType = glslangArgs[a]->getAsTyped()->getType();
         spv::Id arg;
-        if (paramType.getBasicType() == glslang::EbtSampler) {
+        if (paramType.isOpaque()) {
             builder.setAccessChain(lValues[lValueCount]);
             arg = builder.accessChainGetLValue();
             ++lValueCount;

@@ -1255,6 +1255,8 @@ public:
     virtual bool isStruct() const { return structure != nullptr; }
     virtual bool isFloatingDomain() const { return basicType == EbtFloat || basicType == EbtDouble; }
 
+    virtual bool isOpaque() const { return basicType == EbtSampler || basicType == EbtAtomicUint; }
+
     // "Image" is a superset of "Subpass"
     virtual bool isImage() const   { return basicType == EbtSampler && getSampler().isImage(); }
     virtual bool isSubpass() const { return basicType == EbtSampler && getSampler().isSubpass(); }
@@ -1315,7 +1317,7 @@ public:
 
     virtual bool containsOpaque() const
     {
-        if (basicType == EbtSampler || basicType == EbtAtomicUint)
+        if (isOpaque())
             return true;
         if (! structure)
             return false;
