@@ -1,5 +1,6 @@
 //
 //Copyright (C) 2016 Google, Inc.
+//Copyright (C) 2016 LunarG, Inc.
 //
 //All rights reserved.
 //
@@ -962,6 +963,230 @@ bool HlslGrammar::acceptConstructor(TIntermTyped*& node)
     return false;
 }
 
+// Handle intrinsics that require simple decompositions to AST
+//
+void HlslGrammar::decomposeIntrinsic(HlslToken idToken, TIntermTyped*& node, TIntermTyped* arguments)
+{
+    // HLSL intrinsics can be pass through to native AST opcodes, or decomposed here to existing AST
+    // opcodes for compatibility with existing software stacks.
+    static const bool decomposeHlslIntrinsics = true;
+
+    if (!decomposeHlslIntrinsics || !node->getAsOperator())
+        return;
+    
+    const TIntermAggregate* argAggregate = arguments ? arguments->getAsAggregate() : nullptr;
+    TIntermAggregate* fnAggregate = node->getAsAggregate();
+    TIntermUnary*     fnUnary     = node->getAsUnaryNode();
+
+    const TOperator  op = node->getAsOperator()->getOp();
+
+    switch (op) {
+    case EOpGenMul:
+        {
+            // mul(a,b) -> MatrixTimesMatrix, MatrixTimesVector, MatrixTimesScalar, VectorTimesScalar, Dot, Mul
+            TIntermTyped* arg0 = argAggregate->getSequence()[0]->getAsTyped();
+            TIntermTyped* arg1 = argAggregate->getSequence()[1]->getAsTyped();
+
+            TIntermTyped* mul = nullptr;
+
+            if (arg0->isMatrix() && arg1->isMatrix()) {             // mat * mat
+                mul = new TIntermBinary(EOpMatrixTimesMatrix);
+            } else if (arg0->isMatrix() && arg1->isVector()) {      // mat * vec
+                mul = new TIntermBinary(EOpMatrixTimesVector);
+            } else if (arg0->isVector() && arg1->isMatrix()) {      // vec * mat
+                mul = new TIntermBinary(EOpVectorTimesMatrix);
+            } else if (arg0->isVector() && arg1->isScalar()) {      // vec * scalar
+                mul = new TIntermBinary(EOpVectorTimesScalar);
+            } else if (arg0->isScalar() && arg1->isVector()) {      // scalar * vec
+                mul = new TIntermBinary(EOpVectorTimesScalar);
+                std::swap(arg0, arg1);
+            } else if (arg0->isMatrix() && arg1->isScalar()) {      // mat * scalar
+                mul = new TIntermBinary(EOpMatrixTimesScalar);
+            } else if (arg0->isScalar() && arg1->isMatrix()) {      // scalar * mat
+                mul = new TIntermBinary(EOpMatrixTimesScalar);
+                std::swap(arg0, arg1);
+            } else if (arg0->isVector() && arg1->isVector()) {      // vec * vec
+                fnAggregate->setOperator(EOpDot);
+                mul = fnAggregate;
+            } else if (arg0->isScalar() && arg1->isScalar()) {      // scalar * scalar
+                mul = new TIntermBinary(EOpMul);
+            } else {
+                expected("types in mul()");
+            }
+
+            if (mul->getAsBinaryNode()) {
+                mul->getAsBinaryNode()->setLeft(arg0);
+                mul->getAsBinaryNode()->setRight(arg1);
+            }
+
+            mul->setType(node->getType());
+            mul->setLoc(idToken.loc);
+            node = mul;
+
+            break;
+        }
+
+    case EOpRcp:
+        {
+            // rcp(a) -> 1 / a
+
+            TIntermTyped* arg0 = fnUnary->getOperand();
+            TBasicType   type0 = arg0->getBasicType();
+            TIntermTyped* div = new TIntermBinary(EOpDiv);
+            div->getAsBinaryNode()->setLeft(intermediate.addConstantUnion(1, type0, idToken.loc, true));
+            div->getAsBinaryNode()->setRight(arg0);
+            div->setLoc(idToken.loc);
+
+            div->setType(node->getType());
+            node = div;
+
+            break;
+        }
+
+    case EOpSaturate:
+        {
+            // saturate(a) -> clamp(a,0,1)
+
+            TIntermTyped* arg0 = fnUnary->getOperand();
+            TBasicType   type0 = arg0->getBasicType();
+            TIntermTyped* clamp = new TIntermAggregate(EOpClamp);
+            clamp->getAsAggregate()->getSequence().push_back(arg0);
+            clamp->getAsAggregate()->getSequence().push_back(intermediate.addConstantUnion(0, type0, idToken.loc, true));
+            clamp->getAsAggregate()->getSequence().push_back(intermediate.addConstantUnion(1, type0, idToken.loc, true));
+            clamp->setLoc(idToken.loc);
+
+            clamp->setType(node->getType());
+            node = clamp;
+
+            break;
+        }
+
+    case EOpSinCos:
+        {
+            // sincos(a,b,c) -> b = sin(a), c = cos(a)
+
+            TIntermTyped* arg0 = argAggregate->getSequence()[0]->getAsTyped();
+            TIntermTyped* arg1 = argAggregate->getSequence()[1]->getAsTyped();
+            TIntermTyped* arg2 = argAggregate->getSequence()[2]->getAsTyped();
+
+            TIntermAggregate* compoundStatement = nullptr;
+            TIntermUnary*     sinStatement      = new TIntermUnary(EOpSin);
+            TIntermUnary*     cosStatement      = new TIntermUnary(EOpCos);
+            TIntermBinary*    sinAssign         = new TIntermBinary(EOpAssign);
+            TIntermBinary*    cosAssign         = new TIntermBinary(EOpAssign);
+
+            sinStatement->setOperand(arg0);    // create sin
+            sinStatement->setLoc(idToken.loc);
+            sinStatement->setType(arg0->getType());
+            sinAssign->setLeft(arg1);
+            sinAssign->setRight(sinStatement);
+            sinAssign->setLoc(idToken.loc);
+            sinAssign->setType(arg0->getType());
+
+            cosStatement->setOperand(arg0);    // create cos
+            cosStatement->setLoc(idToken.loc);
+            cosStatement->setType(arg0->getType());
+            cosAssign->setLeft(arg2);
+            cosAssign->setRight(cosStatement);
+            cosAssign->setLoc(idToken.loc);
+            cosAssign->setType(arg0->getType());
+
+            compoundStatement = intermediate.growAggregate(compoundStatement, sinAssign);
+            compoundStatement = intermediate.growAggregate(compoundStatement, cosAssign);
+            compoundStatement->setOperator(EOpSequence);
+            compoundStatement->setLoc(idToken.loc);
+
+            node = compoundStatement;
+
+            break;
+        }
+
+    case EOpClip:
+        {
+            // clip(a) -> if (any(a<0)) discard;
+
+            TIntermTyped*  arg0 = fnUnary->getOperand();
+            TBasicType     type0 = arg0->getBasicType();
+            TIntermTyped*  compareNode = nullptr;
+
+            // For non-scalars: per experiments with FXC compiler, discard if ANY < 0.
+            if (!arg0->isScalar()) {
+                TIntermAggregate* lessNode = new TIntermAggregate(EOpLessThan);
+
+                // compare: a < 0
+                lessNode->getSequence().push_back(arg0);
+                lessNode->setLoc(idToken.loc);
+
+                // make array of bools matching dimensions of input type
+                lessNode->setType(TType(EbtBool, EvqTemporary, 
+                                        arg0->getType().getVectorSize(),
+                                        arg0->getType().getMatrixCols(),
+                                        arg0->getType().getMatrixRows()));
+
+                compareNode = new TIntermUnary(EOpAny);
+                compareNode->getAsUnaryNode()->setOperand(lessNode);
+                compareNode->setLoc(idToken.loc);
+
+                // calculate # of components for comparison const.
+                const int constComponentCount = 
+                    std::max(arg0->getType().getVectorSize(), 1) *
+                    std::max(arg0->getType().getMatrixCols(), 1) *
+                    std::max(arg0->getType().getMatrixRows(), 1);
+
+
+                TConstUnion zero;
+                zero.setDConst(0.0);
+                TConstUnionArray zeros(constComponentCount, zero);
+
+                lessNode->getSequence().push_back(intermediate.addConstantUnion(zeros, arg0->getType(), idToken.loc, true));
+            } else {
+                TIntermBinary* lessNode = new TIntermBinary(EOpLessThan);
+                lessNode->setLeft(arg0);
+                lessNode->setLoc(idToken.loc);
+                
+                lessNode->setRight(intermediate.addConstantUnion(0, type0, idToken.loc, true));
+
+                compareNode = lessNode;
+            }
+
+            compareNode->setType(TType(EbtBool));
+            
+            TIntermBranch* killNode = new TIntermBranch(EOpKill, nullptr);
+            killNode->setLoc(idToken.loc);
+
+            node = new TIntermSelection(compareNode, killNode, nullptr);
+            node->setLoc(idToken.loc);
+            
+            break;
+        }
+
+    case EOpLog10:
+        {
+            // log10(a) -> log2(a) * 0.301029995663981  (== 1/log2(10))
+            TIntermTyped*  arg0 = fnUnary->getOperand();
+
+            TIntermUnary* log2Node = new TIntermUnary(EOpLog2);
+            log2Node->setOperand(arg0);
+            log2Node->setLoc(idToken.loc);
+            log2Node->setType(node->getType());
+
+            TIntermTyped* mul = new TIntermBinary(EOpMul);
+            mul->getAsBinaryNode()->setLeft(log2Node);
+            mul->getAsBinaryNode()->setRight(intermediate.addConstantUnion(0.301029995663981f, EbtFloat, idToken.loc, true));
+            mul->setLoc(idToken.loc);
+
+            mul->setType(node->getType());
+            node = mul;
+
+            break;
+        }
+
+    default:
+        break; // most pass through unchanged
+    }
+}
+
+
 // The function_call identifier was already recognized, and passed in as idToken.
 //
 // function_call
@@ -977,6 +1202,8 @@ bool HlslGrammar::acceptFunctionCall(HlslToken idToken, TIntermTyped*& node)
 
     node = parseContext.handleFunctionCall(idToken.loc, function, arguments);
 
+    decomposeIntrinsic(idToken, node, arguments);
+    
     return true;
 }
 

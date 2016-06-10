@@ -30,6 +30,7 @@ float VertexShaderFunction(float inF0, float inF1, float inF2)
     isnan(inF0);
     ldexp(inF0, inF1);
     log(inF0);
+    log10(inF0);
     log2(inF0);
     max(inF0, inF1);
     min(inF0, inF1);
@@ -39,8 +40,10 @@ float VertexShaderFunction(float inF0, float inF1, float inF2)
     reversebits(2);
     round(inF0);
     rsqrt(inF0);
+    saturate(inF0);
     sign(inF0);
     sin(inF0);
+    sincos(inF0, inF1, inF2);
     sinh(inF0);
     smoothstep(inF0, inF1, inF2);
     sqrt(inF0);
@@ -95,6 +98,7 @@ float2 VertexShaderFunction(float2 inF0, float2 inF1, float2 inF2)
     ldexp(inF0, inF1);
     length(inF0);
     log(inF0);
+    log10(inF0);
     log2(inF0);
     max(inF0, inF1);
     min(inF0, inF1);
@@ -107,8 +111,10 @@ float2 VertexShaderFunction(float2 inF0, float2 inF1, float2 inF2)
     reversebits(int2(1,2));
     round(inF0);
     rsqrt(inF0);
+    saturate(inF0);
     sign(inF0);
     sin(inF0);
+    sincos(inF0, inF1, inF2);
     sinh(inF0);
     smoothstep(inF0, inF1, inF2);
     sqrt(inF0);
@@ -159,6 +165,7 @@ float3 VertexShaderFunction(float3 inF0, float3 inF1, float3 inF2)
     ldexp(inF0, inF1);
     length(inF0);
     log(inF0);
+    log10(inF0);
     log2(inF0);
     max(inF0, inF1);
     min(inF0, inF1);
@@ -171,8 +178,10 @@ float3 VertexShaderFunction(float3 inF0, float3 inF1, float3 inF2)
     reversebits(int3(1,2,3));
     round(inF0);
     rsqrt(inF0);
+    saturate(inF0);
     sign(inF0);
     sin(inF0);
+    sincos(inF0, inF1, inF2);
     sinh(inF0);
     smoothstep(inF0, inF1, inF2);
     sqrt(inF0);
@@ -222,6 +231,7 @@ float4 VertexShaderFunction(float4 inF0, float4 inF1, float4 inF2)
     ldexp(inF0, inF1);
     length(inF0);
     log(inF0);
+    log10(inF0);
     log2(inF0);
     max(inF0, inF1);
     min(inF0, inF1);
@@ -234,8 +244,10 @@ float4 VertexShaderFunction(float4 inF0, float4 inF1, float4 inF2)
     reversebits(int4(1,2,3,4));
     round(inF0);
     rsqrt(inF0);
+    saturate(inF0);
     sign(inF0);
     sin(inF0);
+    sincos(inF0, inF1, inF2);
     sinh(inF0);
     smoothstep(inF0, inF1, inF2);
     sqrt(inF0);
@@ -275,6 +287,7 @@ float4 VertexShaderFunction(float4 inF0, float4 inF1, float4 inF2)
     fwidth(inF0); \
     ldexp(inF0, inF1); \
     log(inF0); \
+    log10(inF0); \
     log2(inF0); \
     max(inF0, inF1); \
     min(inF0, inF1); \
@@ -282,8 +295,10 @@ float4 VertexShaderFunction(float4 inF0, float4 inF1, float4 inF2)
     radians(inF0); \
     round(inF0); \
     rsqrt(inF0); \
+    saturate(inF0); \
     sign(inF0); \
     sin(inF0); \
+    sincos(inF0, inF1, inF2); \
     sinh(inF0); \
     smoothstep(inF0, inF1, inF2); \
     sqrt(inF0); \
@@ -320,4 +335,37 @@ float4x4 VertexShaderFunction(float4x4 inF0, float4x4 inF1, float4x4 inF2)
 
     // TODO: ... add when float1 prototypes are generated
     return float4x4(4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4);
+}
+
+#define TESTGENMUL(ST, VT, MT) \
+    ST r0 = mul(inF0,  inF1);  \
+    VT r1 = mul(inFV0, inF0);  \
+    VT r2 = mul(inF0,  inFV0); \
+    ST r3 = mul(inFV0, inFV1); \
+    VT r4 = mul(inFM0, inFV0); \
+    VT r5 = mul(inFV0, inFM0); \
+    MT r6 = mul(inFM0, inF0);  \
+    MT r7 = mul(inF0, inFM0);  \
+    MT r8 = mul(inFM0, inFM1);
+
+
+void TestGenMul(float inF0, float inF1,
+                float2 inFV0, float2 inFV1,
+                float2x2 inFM0, float2x2 inFM1)
+{
+    TESTGENMUL(float, float2, float2x2);
+}
+
+void TestGenMul(float inF0, float inF1,
+                float3 inFV0, float3 inFV1,
+                float3x3 inFM0, float3x3 inFM1)
+{
+    TESTGENMUL(float, float3, float3x3);
+}
+
+void TestGenMul(float inF0, float inF1,
+                float4 inFV0, float4 inFV1,
+                float4x4 inFM0, float4x4 inFM1)
+{
+    TESTGENMUL(float, float4, float4x4);
 }
