@@ -210,6 +210,22 @@ void HlslGrammar::acceptQualifier(TQualifier& qualifier)
 bool HlslGrammar::acceptType(TType& type)
 {
     switch (peek()) {
+    case EHTokStruct:
+        return acceptStruct(type);
+        break;
+
+    case EHTokIdentifier:
+        // An identifier could be for a user-defined type.
+        // Note we cache the symbol table lookup, to save for a later rule
+        // when this is not a type.
+        token.symbol = parseContext.symbolTable.find(*token.string);
+        if (token.symbol && token.symbol->getAsVariable() && token.symbol->getAsVariable()->isUserType()) {
+            type.shallowCopy(token.symbol->getType());
+            advanceToken();
+            return true;
+        } else
+            return false;
+
     case EHTokVoid:
         new(&type) TType(EbtVoid);
         break;
@@ -554,6 +570,125 @@ bool HlslGrammar::acceptType(TType& type)
     return true;
 }
 
+// struct
+//      : STRUCT IDENTIFIER LEFT_BRACE struct_declaration_list RIGHT_BRACE
+//      | STRUCT            LEFT_BRACE struct_declaration_list RIGHT_BRACE
+//
+bool HlslGrammar::acceptStruct(TType& type)
+{
+    // STRUCT
+    if (! acceptTokenClass(EHTokStruct))
+        return false;
+
+    // IDENTIFIER
+    TString structName = "";
+    if (peekTokenClass(EHTokIdentifier)) {
+        structName = *token.string;
+        advanceToken();
+    }
+
+    // LEFT_BRACE
+    if (! acceptTokenClass(EHTokLeftBrace)) {
+        expected("{");
+        return false;
+    }
+
+    // struct_declaration_list
+    TTypeList* typeList;
+    if (! acceptStructDeclarationList(typeList)) {
+        expected("struct member declarations");
+        return false;
+    }
+
+    // RIGHT_BRACE
+    if (! acceptTokenClass(EHTokRightBrace)) {
+        expected("}");
+        return false;
+    }
+
+    // create the user-defined type
+    new(&type) TType(typeList, structName);
+
+    // If it was named, which means it can be reused later, add
+    // it to the symbol table.
+    if (structName.size() > 0) {
+        TVariable* userTypeDef = new TVariable(&structName, type, true);
+        if (! parseContext.symbolTable.insert(*userTypeDef))
+            parseContext.error(token.loc, "redefinition", structName.c_str(), "struct");
+    }
+
+    return true;
+}
+
+// struct_declaration_list
+//      : struct_declaration SEMI_COLON struct_declaration SEMI_COLON ...
+//
+// struct_declaration
+//      : fully_specified_type struct_declarator COMMA struct_declarator ...
+//
+// struct_declarator
+//      : IDENTIFIER
+//      | IDENTIFIER array_specifier
+//
+bool HlslGrammar::acceptStructDeclarationList(TTypeList*& typeList)
+{
+    typeList = new TTypeList();
+
+    do {
+        // success on seeing the RIGHT_BRACE coming up
+        if (peekTokenClass(EHTokRightBrace))
+            return true;
+
+        // struct_declaration
+
+        // fully_specified_type
+        TType memberType;
+        if (! acceptFullySpecifiedType(memberType)) {
+            expected("member type");
+            return false;
+        }
+
+        // struct_declarator COMMA struct_declarator ...
+        do {
+            // peek IDENTIFIER
+            if (! peekTokenClass(EHTokIdentifier)) {
+                expected("member name");
+                return false;
+            }
+
+            // add it to the list of members
+            TTypeLoc member = { new TType(EbtVoid), token.loc };
+            member.type->shallowCopy(memberType);
+            member.type->setFieldName(*token.string);
+            typeList->push_back(member);
+
+            // accept IDENTIFIER
+            advanceToken();
+
+            // array_specifier
+            // TODO
+
+            // success on seeing the SEMICOLON coming up
+            if (peekTokenClass(EHTokSemicolon))
+                break;
+
+            // COMMA
+            if (! acceptTokenClass(EHTokComma)) {
+                expected(",");
+                return false;
+            }
+
+        } while (true);
+
+        // SEMI_COLON
+        if (! acceptTokenClass(EHTokSemicolon)) {
+            expected(";");
+            return false;
+        }
+
+    } while (true);
+}
+
 // function_parameters
 //      : LEFT_PAREN parameter_declaration COMMA parameter_declaration ... RIGHT_PAREN
 //      | LEFT_PAREN VOID RIGHT_PAREN
@@ -879,7 +1014,7 @@ bool HlslGrammar::acceptPostfixExpression(TIntermTyped*& node)
     } else if (acceptIdentifier(idToken)) {
         // identifier or function_call name
         if (! peekTokenClass(EHTokLeftParen)) {
-            node = parseContext.handleVariable(idToken.loc, token.string);
+            node = parseContext.handleVariable(idToken.loc, idToken.symbol, token.string);
         } else if (acceptFunctionCall(idToken, node)) {
             // function_call (nothing else to do yet)
         } else {

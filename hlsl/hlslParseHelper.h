@@ -65,7 +65,7 @@ public:
     bool builtInName(const TString&);
 
     void handlePragma(const TSourceLoc&, const TVector<TString>&);
-    TIntermTyped* handleVariable(const TSourceLoc&, const TString* string);
+    TIntermTyped* handleVariable(const TSourceLoc&, TSymbol* symbol,  const TString* string);
     TIntermTyped* handleBracketDereference(const TSourceLoc&, TIntermTyped* base, TIntermTyped* index);
     void checkIndex(const TSourceLoc&, const TType&, int& index);
 

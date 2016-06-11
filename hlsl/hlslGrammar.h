@@ -61,6 +61,8 @@ namespace glslang {
         bool acceptFullySpecifiedType(TType&);
         void acceptQualifier(TQualifier&);
         bool acceptType(TType&);
+        bool acceptStruct(TType&);
+        bool acceptStructDeclarationList(TTypeList*&);
         bool acceptFunctionParameters(TFunction&);
         bool acceptParameterDeclaration(TFunction&);
         bool acceptFunctionDefinition(TFunction&, TIntermNode*&);
