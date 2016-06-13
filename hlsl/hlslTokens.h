@@ -49,6 +49,7 @@ enum EHlslTokenClass {
     EHTokExtern,
     EHTokUniform,
     EHTokVolatile,
+    EHTokPrecise,
     EHTokShared,
     EHTokGroupShared,
     EHTokLinear,

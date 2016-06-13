@@ -102,6 +102,7 @@ void HlslScanContext::fillInKeywordMap()
     (*KeywordMap)["extern"] =                  EHTokExtern;
     (*KeywordMap)["uniform"] =                 EHTokUniform;
     (*KeywordMap)["volatile"] =                EHTokVolatile;
+    (*KeywordMap)["precise"] =                 EHTokPrecise;
     (*KeywordMap)["shared"] =                  EHTokShared;
     (*KeywordMap)["groupshared"] =             EHTokGroupShared;
     (*KeywordMap)["linear"] =                  EHTokLinear;

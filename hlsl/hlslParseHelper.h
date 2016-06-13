@@ -90,6 +90,7 @@ public:
     TIntermTyped* addOutputArgumentConversions(const TFunction&, TIntermAggregate&) const;
     void builtInOpCheck(const TSourceLoc&, const TFunction&, TIntermOperator&);
     TFunction* handleConstructorCall(const TSourceLoc&, const TType&);
+    void handleSemantic(TType& type, const TString& semantic);
 
     bool parseVectorFields(const TSourceLoc&, const TString&, int vecSize, TVectorFields&);
     void assignError(const TSourceLoc&, const char* op, TString left, TString right);

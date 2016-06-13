@@ -87,8 +87,7 @@ namespace glslang {
         bool acceptIterationStatement(TIntermNode*&);
         bool acceptJumpStatement(TIntermNode*&);
         bool acceptCaseLabel(TIntermNode*&);
-
-        bool acceptSemantic();
+        void acceptPostDecls(TType&);
 
         HlslParseContext& parseContext;  // state of parsing and helper functions for building the intermediate
         TIntermediate& intermediate;     // the final product, the intermediate representation, includes the AST

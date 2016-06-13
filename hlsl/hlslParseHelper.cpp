@@ -1213,6 +1213,38 @@ TFunction* HlslParseContext::handleConstructorCall(const TSourceLoc& loc, const 
 }
 
 //
+// Handle seeing a "COLON semantic" at the end of a type declaration,
+// by updating the type according to the semantic.
+//
+void HlslParseContext::handleSemantic(TType& type, const TString& semantic)
+{
+    // TODO: need to know if it's an input or an output
+    // The following sketches what needs to be done, but can't be right
+    // without taking into account stage and input/output.
+    
+    if (semantic == "PSIZE")
+        type.getQualifier().builtIn = EbvPointSize;
+    else if (semantic == "POSITION")
+        type.getQualifier().builtIn = EbvPosition;
+    else if (semantic == "FOG")
+        type.getQualifier().builtIn = EbvFogFragCoord;
+    else if (semantic == "DEPTH" || semantic == "SV_Depth")
+        type.getQualifier().builtIn = EbvFragDepth;
+    else if (semantic == "VFACE" || semantic == "SV_IsFrontFace")
+        type.getQualifier().builtIn = EbvFace;
+    else if (semantic == "VPOS" || semantic == "SV_Position")
+        type.getQualifier().builtIn = EbvFragCoord;
+    else if (semantic == "SV_ClipDistance")
+        type.getQualifier().builtIn = EbvClipDistance;
+    else if (semantic == "SV_CullDistance")
+        type.getQualifier().builtIn = EbvCullDistance;
+    else if (semantic == "SV_VertexID")
+        type.getQualifier().builtIn = EbvVertexId;
+    else if (semantic == "SV_ViewportArrayIndex")
+        type.getQualifier().builtIn = EbvViewportIndex;
+}
+
+//
 // Given a type, find what operation would fully construct it.
 //
 TOperator HlslParseContext::mapTypeToConstructorOp(const TType& type) const

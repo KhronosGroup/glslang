@@ -107,10 +107,10 @@ bool HlslGrammar::acceptCompilationUnit()
 // declaration
 //      : SEMICOLON
 //      : fully_specified_type SEMICOLON
-//      | fully_specified_type identifier SEMICOLON
-//      | fully_specified_type identifier = expression SEMICOLON
-//      | fully_specified_type identifier function_parameters SEMICOLON                          // function prototype
-//      | fully_specified_type identifier function_parameters COLON semantic compound_statement  // function definition
+//      | fully_specified_type identifier post_decls SEMICOLON
+//      | fully_specified_type identifier post_decls = expression SEMICOLON
+//      | fully_specified_type identifier function_parameters post_decls SEMICOLON           // function prototype
+//      | fully_specified_type identifier function_parameters post_decls compound_statement  // function definition
 //
 // 'node' could get created if the declaration creates code, like an initializer
 // or a function body.
@@ -127,6 +127,7 @@ bool HlslGrammar::acceptDeclaration(TIntermNode*& node)
     // identifier
     HlslToken idToken;
     if (acceptIdentifier(idToken)) {
+        acceptPostDecls(type);
         // = expression
         TIntermTyped* expressionNode = nullptr;
         if (acceptTokenClass(EHTokAssign)) {
@@ -145,8 +146,8 @@ bool HlslGrammar::acceptDeclaration(TIntermNode*& node)
         // function_parameters
         TFunction* function = new TFunction(idToken.string, type);
         if (acceptFunctionParameters(*function)) {
-            // COLON semantic
-            acceptSemantic();
+            // post_decls
+            acceptPostDecls(type);
 
             // compound_statement
             if (peekTokenClass(EHTokLeftBrace))
@@ -186,22 +187,66 @@ bool HlslGrammar::acceptFullySpecifiedType(TType& type)
     return true;
 }
 
-// If token is a qualifier, return its token class and advance to the next
-// qualifier.  Otherwise, return false, and don't advance.
+// type_qualifier
+//      : qualifier qualifier ...
+//
+// Zero or more of these, so this can't return false.
+//
 void HlslGrammar::acceptQualifier(TQualifier& qualifier)
 {
-    switch (peek()) {
-    case EHTokUniform:
-        qualifier.storage = EvqUniform;
-        break;
-    case EHTokConst:
-        qualifier.storage = EvqConst;
-        break;
-    default:
-        return;
-    }
-
-    advanceToken();
+    do {
+        switch (peek()) {
+        case EHTokStatic:
+            // normal glslang default
+            break;
+        case EHTokExtern:
+            // TODO: no meaning in glslang?
+            break;
+        case EHTokShared:
+            // TODO: hint
+            break;
+        case EHTokGroupShared:
+            qualifier.storage = EvqShared;
+            break;
+        case EHTokUniform:
+            qualifier.storage = EvqUniform;
+            break;
+        case EHTokConst:
+            qualifier.storage = EvqConst;
+            break;
+        case EHTokVolatile:
+            qualifier.volatil = true;
+            break;
+        case EHTokLinear:
+            qualifier.storage = EvqVaryingIn;
+            qualifier.smooth = true;
+            break;
+        case EHTokCentroid:
+            qualifier.centroid = true;
+            break;
+        case EHTokNointerpolation:
+            qualifier.flat = true;
+            break;
+        case EHTokNoperspective:
+            qualifier.nopersp = true;
+            break;
+        case EHTokSample:
+            qualifier.sample = true;
+            break;
+        case EHTokRowMajor:
+            qualifier.layoutMatrix = ElmRowMajor;
+            break;
+        case EHTokColumnMajor:
+            qualifier.layoutMatrix = ElmColumnMajor;
+            break;
+        case EHTokPrecise:
+            qualifier.noContraction = true;
+            break;
+        default:
+            return;
+        }
+        advanceToken();
+    } while (true);
 }
 
 // If token is for a type, update 'type' with the type information,
@@ -627,8 +672,8 @@ bool HlslGrammar::acceptStruct(TType& type)
 //      : fully_specified_type struct_declarator COMMA struct_declarator ...
 //
 // struct_declarator
-//      : IDENTIFIER
-//      | IDENTIFIER array_specifier
+//      : IDENTIFIER post_decls
+//      | IDENTIFIER array_specifier post_decls
 //
 bool HlslGrammar::acceptStructDeclarationList(TTypeList*& typeList)
 {
@@ -667,6 +712,8 @@ bool HlslGrammar::acceptStructDeclarationList(TTypeList*& typeList)
 
             // array_specifier
             // TODO
+
+            acceptPostDecls(*member.type);
 
             // success on seeing the SEMICOLON coming up
             if (peekTokenClass(EHTokSemicolon))
@@ -1570,20 +1617,68 @@ bool HlslGrammar::acceptCaseLabel(TIntermNode*& statement)
     return false;
 }
 
-// COLON semantic
-bool HlslGrammar::acceptSemantic()
+// post_decls
+//      : COLON semantic    // optional
+//        COLON PACKOFFSET LEFT_PAREN ... RIGHT_PAREN  // optional
+//        COLON REGISTER    // optional
+//        annotations       // optional
+//
+void HlslGrammar::acceptPostDecls(TType& type)
 {
-    // COLON
-    if (acceptTokenClass(EHTokColon)) {
-        // semantic
-        HlslToken idToken;
-        if (! acceptIdentifier(idToken)) {
-            expected("semantic");
-            return false;
-        }
-    }
+    do {
+        // COLON 
+        if (acceptTokenClass(EHTokColon)) {
+            HlslToken idToken;
+            if (acceptTokenClass(EHTokPackOffset)) {
+                if (! acceptTokenClass(EHTokLeftParen)) {
+                    expected("(");
+                    return;
+                }
+                acceptTokenClass(EHTokIdentifier);
+                acceptTokenClass(EHTokDot);
+                acceptTokenClass(EHTokIdentifier);
+                if (! acceptTokenClass(EHTokRightParen)) {
+                    expected(")");
+                    break;
+                }
+                // TODO: process the packoffset information
+            } else if (! acceptIdentifier(idToken)) {
+                expected("semantic or packoffset or register");
+                return;
+            } else if (*idToken.string == "register") {
+                if (! acceptTokenClass(EHTokLeftParen)) {
+                    expected("(");
+                    return;
+                }
+                acceptTokenClass(EHTokIdentifier);
+                acceptTokenClass(EHTokComma);
+                acceptTokenClass(EHTokIdentifier);
+                acceptTokenClass(EHTokLeftBracket);
+                if (peekTokenClass(EHTokIntConstant))
+                    advanceToken();
+                acceptTokenClass(EHTokRightBracket);
+                if (! acceptTokenClass(EHTokRightParen)) {
+                    expected(")");
+                    break;
+                }
+                // TODO: process the register information
+            } else {
+                // semantic, in idToken.string
+                parseContext.handleSemantic(type, *idToken.string);
+            }
+        } else if (acceptTokenClass(EHTokLeftAngle)) {
+            // TODO: process annotations, just accepting them for now
+            do {
+                if (peekTokenClass(EHTokNone))
+                    return;
+                if (acceptTokenClass(EHTokRightAngle))
+                    break;
+                advanceToken();
+            } while (true);
+        } else
+            break;
 
-    return true;
+    } while (true);
 }
 
 } // end namespace glslang
