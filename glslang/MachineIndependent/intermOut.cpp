@@ -1,6 +1,6 @@
 //
 //Copyright (C) 2002-2005  3Dlabs Inc. Ltd.
-//Copyright (C) 2012-2013 LunarG, Inc.
+//Copyright (C) 2012-2016 LunarG, Inc.
 //
 //All rights reserved.
 //
@@ -359,6 +359,12 @@ bool TOutputTraverser::visitUnary(TVisit /* visit */, TIntermUnary* node)
     case EOpAllInvocations:         out.debug << "allInvocations";        break;
     case EOpAllInvocationsEqual:    out.debug << "allInvocationsEqual";   break;
 
+    case EOpClip:                   out.debug << "clip";                  break;
+    case EOpIsFinite:               out.debug << "isfinite";              break;
+    case EOpLog10:                  out.debug << "log10";                 break;
+    case EOpRcp:                    out.debug << "rcp";                   break;
+    case EOpSaturate:               out.debug << "saturate";              break;
+
     default: out.debug.message(EPrefixError, "Bad unary op");
     }
 
@@ -533,6 +539,9 @@ bool TOutputTraverser::visitAggregate(TVisit /* visit */, TIntermAggregate* node
 
     case EOpInterpolateAtSample:   out.debug << "interpolateAtSample";    break;
     case EOpInterpolateAtOffset:   out.debug << "interpolateAtOffset";    break;
+
+    case EOpSinCos:                     out.debug << "sincos";                break;
+    case EOpGenMul:                     out.debug << "mul";                   break;
 
     default: out.debug.message(EPrefixError, "Bad aggregation op");
     }
