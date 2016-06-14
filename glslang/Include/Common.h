@@ -175,7 +175,7 @@ template <class T> class TList  : public std::list<T, pool_allocator<T> > {
 };
 
 template <class K, class D, class CMP = std::less<K> > 
-class TMap : public std::map<K, D, CMP, pool_allocator<std::pair<K, D> > > {
+class TMap : public std::map<K, D, CMP, pool_allocator<std::pair<K const, D> > > {
 };
 
 template <class K, class D, class HASH = std::hash<K>, class PRED = std::equal_to<K> >
