@@ -78,16 +78,16 @@ float3 PixelShaderFunction(float3 inF0, float3 inF1, float3 inF2, int3 inI0)
 
 float4 PixelShaderFunction(float4 inF0, float4 inF1, float4 inF2, int4 inI0)
 {
-    CheckAccessFullyMapped(inF0);  // expected error: only valid on scalars
-    countbits(inF0);            // expected error: only integer inputs
-    cross(inF0, inF1);          // expected error: only on float3 inputs
-    determinant(inF0);          // expected error: only valid on mats
-    f16tof32(inF0);             // expected error: only integer inputs
-    firstbithigh(inF0);         // expected error: only integer inputs
-    firstbitlow(inF0);          // expected error: only integer inputs
-    fma(inF0, inF1, inF2);      // expected error: only double inputs
-    reversebits(inF0);          // expected error: only integer inputs
-    transpose(inF0);            // expected error: only valid on mats
+    CheckAccessFullyMapped(inF0); // expected error: only valid on scalars
+    countbits(inF0);              // expected error: only integer inputs
+    cross(inF0, inF1);            // expected error: only on float3 inputs
+    determinant(inF0);            // expected error: only valid on mats
+    f16tof32(inF0);               // expected error: only integer inputs
+    firstbithigh(inF0);           // expected error: only integer inputs
+    firstbitlow(inF0);            // expected error: only integer inputs
+    fma(inF0, inF1, inF2);        // expected error: only double inputs
+    reversebits(inF0);            // expected error: only integer inputs
+    transpose(inF0);              // expected error: only valid on mats
 
     return float4(1,2,3,4);
 }

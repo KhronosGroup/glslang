@@ -1,10 +1,31 @@
-float PixelShaderFunction(float inF0, float inF1, float inF2)
+
+#define gs     // TODO: define as groupshared when available in the grammar
+gs uint gs_ua;
+gs uint gs_ub;
+gs uint gs_uc;
+gs uint2 gs_ua2;
+gs uint2 gs_ub2;
+gs uint2 gs_uc2;
+gs uint3 gs_ua3;
+gs uint3 gs_ub3;
+gs uint3 gs_uc3;
+gs uint4 gs_ua4;
+gs uint4 gs_ub4;
+gs uint4 gs_uc4;
+
+float PixelShaderFunction(float inF0, float inF1, float inF2, uint inU0, uint inU1)
 {
+    uint out_u1;
+
     all(inF0);
     abs(inF0);
     acos(inF0);
     any(inF0);
     asin(inF0);
+    asint(inF0);
+    asuint(inF0);
+    asfloat(inU0);
+    // asdouble(inU0, inU1);  // TODO: enable when HLSL parser used for intrinsics
     atan(inF0);
     atan2(inF0, inF1);
     ceil(inF0);
@@ -69,13 +90,19 @@ float1 PixelShaderFunction(float1 inF0, float1 inF1, float1 inF2)
     return 0.0;
 }
 
-float2 PixelShaderFunction(float2 inF0, float2 inF1, float2 inF2)
+float2 PixelShaderFunction(float2 inF0, float2 inF1, float2 inF2, uint2 inU0, uint2 inU1)
 {
+    uint2 out_u2;
+
     all(inF0);
     abs(inF0);
     acos(inF0);
     any(inF0);
     asin(inF0);
+    asint(inF0);
+    asuint(inF0);
+    asfloat(inU0);
+    // asdouble(inU0, inU1);  // TODO: enable when HLSL parser used for intrinsics
     atan(inF0);
     atan2(inF0, inF1);
     ceil(inF0);
@@ -142,13 +169,19 @@ float2 PixelShaderFunction(float2 inF0, float2 inF1, float2 inF2)
     return float2(1,2);
 }
 
-float3 PixelShaderFunction(float3 inF0, float3 inF1, float3 inF2)
+float3 PixelShaderFunction(float3 inF0, float3 inF1, float3 inF2, uint3 inU0, uint3 inU1)
 {
+    uint3 out_u3;
+    
     all(inF0);
     abs(inF0);
     acos(inF0);
     any(inF0);
     asin(inF0);
+    asint(inF0);
+    asuint(inF0);
+    asfloat(inU0);
+    // asdouble(inU0, inU1);  // TODO: enable when HLSL parser used for intrinsics
     atan(inF0);
     atan2(inF0, inF1);
     ceil(inF0);
@@ -216,13 +249,19 @@ float3 PixelShaderFunction(float3 inF0, float3 inF1, float3 inF2)
     return float3(1,2,3);
 }
 
-float4 PixelShaderFunction(float4 inF0, float4 inF1, float4 inF2)
+float4 PixelShaderFunction(float4 inF0, float4 inF1, float4 inF2, uint4 inU0, uint4 inU1)
 {
+    uint4 out_u4;
+
     all(inF0);
     abs(inF0);
     acos(inF0);
     any(inF0);
     asin(inF0);
+    asint(inF0);
+    asuint(inF0);
+    asfloat(inU0);
+    // asdouble(inU0, inU1);  // TODO: enable when HLSL parser used for intrinsics
     atan(inF0);
     atan2(inF0, inF1);
     ceil(inF0);
@@ -289,6 +328,11 @@ float4 PixelShaderFunction(float4 inF0, float4 inF1, float4 inF2)
     // TODO: ... add when float1 prototypes are generated
     return float4(1,2,3,4);
 }
+
+// TODO: for mats:
+//    asfloat(inU0); \
+//    asint(inF0); \
+//    asuint(inF0); \
 
 // TODO: FXC doesn't accept this with (), but glslang doesn't accept it without.
 #define MATFNS() \

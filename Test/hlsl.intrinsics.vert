@@ -1,10 +1,14 @@
-float VertexShaderFunction(float inF0, float inF1, float inF2)
+float VertexShaderFunction(float inF0, float inF1, float inF2, uint inU0, uint inU1)
 {
     all(inF0);
     abs(inF0);
     acos(inF0);
     any(inF0);
     asin(inF0);
+    asint(inF0);
+    asuint(inF0);
+    asfloat(inU0);
+    // asdouble(inU0, inU1);  // TODO: enable when HLSL parser used for intrinsics
     atan(inF0);
     atan2(inF0, inF1);
     ceil(inF0);
@@ -25,7 +29,6 @@ float VertexShaderFunction(float inF0, float inF1, float inF2)
     fmod(inF0, inF1);
     frac(inF0);
     frexp(inF0, inF1);
-    fwidth(inF0);
     isinf(inF0);
     isnan(inF0);
     ldexp(inF0, inF1);
@@ -62,13 +65,17 @@ float1 VertexShaderFunction(float1 inF0, float1 inF1, float1 inF2)
     return 0.0;
 }
 
-float2 VertexShaderFunction(float2 inF0, float2 inF1, float2 inF2)
+float2 VertexShaderFunction(float2 inF0, float2 inF1, float2 inF2, uint2 inU0, uint2 inU1)
 {
     all(inF0);
     abs(inF0);
     acos(inF0);
     any(inF0);
     asin(inF0);
+    asint(inF0);
+    asuint(inF0);
+    asfloat(inU0);
+    // asdouble(inU0, inU1);  // TODO: enable when HLSL parser used for intrinsics
     atan(inF0);
     atan2(inF0, inF1);
     ceil(inF0);
@@ -92,7 +99,6 @@ float2 VertexShaderFunction(float2 inF0, float2 inF1, float2 inF2)
     fmod(inF0, inF1);
     frac(inF0);
     frexp(inF0, inF1);
-    fwidth(inF0);
     isinf(inF0);
     isnan(inF0);
     ldexp(inF0, inF1);
@@ -128,13 +134,17 @@ float2 VertexShaderFunction(float2 inF0, float2 inF1, float2 inF2)
     return float2(1,2);
 }
 
-float3 VertexShaderFunction(float3 inF0, float3 inF1, float3 inF2)
+float3 VertexShaderFunction(float3 inF0, float3 inF1, float3 inF2, uint3 inU0, uint3 inU1)
 {
     all(inF0);
     abs(inF0);
     acos(inF0);
     any(inF0);
     asin(inF0);
+    asint(inF0);
+    asuint(inF0);
+    asfloat(inU0);
+    // asdouble(inU0, inU1);  // TODO: enable when HLSL parser used for intrinsics
     atan(inF0);
     atan2(inF0, inF1);
     ceil(inF0);
@@ -159,7 +169,6 @@ float3 VertexShaderFunction(float3 inF0, float3 inF1, float3 inF2)
     fmod(inF0, inF1);
     frac(inF0);
     frexp(inF0, inF1);
-    fwidth(inF0);
     isinf(inF0);
     isnan(inF0);
     ldexp(inF0, inF1);
@@ -195,13 +204,17 @@ float3 VertexShaderFunction(float3 inF0, float3 inF1, float3 inF2)
     return float3(1,2,3);
 }
 
-float4 VertexShaderFunction(float4 inF0, float4 inF1, float4 inF2)
+float4 VertexShaderFunction(float4 inF0, float4 inF1, float4 inF2, uint4 inU0, uint4 inU1)
 {
     all(inF0);
     abs(inF0);
     acos(inF0);
     any(inF0);
     asin(inF0);
+    asint(inF0);
+    asuint(inF0);
+    asfloat(inU0);
+    // asdouble(inU0, inU1);  // TODO: enable when HLSL parser used for intrinsics
     atan(inF0);
     atan2(inF0, inF1);
     ceil(inF0);
@@ -226,7 +239,6 @@ float4 VertexShaderFunction(float4 inF0, float4 inF1, float4 inF2)
     fmod(inF0, inF1);
     frac(inF0);
     frexp(inF0, inF1);
-    fwidth(inF0);
     isinf(inF0);
     isnan(inF0);
     ldexp(inF0, inF1);
@@ -262,6 +274,11 @@ float4 VertexShaderFunction(float4 inF0, float4 inF1, float4 inF2)
     return float4(1,2,3,4);
 }
 
+// TODO: for mats:
+//    asfloat(inU0); \
+//    asint(inF0); \
+//    asuint(inF0); \
+
 // TODO: FXC doesn't accept this with (), but glslang doesn't accept it without.
 #define MATFNS() \
     all(inF0); \
@@ -285,7 +302,6 @@ float4 VertexShaderFunction(float4 inF0, float4 inF1, float4 inF2)
     fmod(inF0, inF1); \
     frac(inF0); \
     frexp(inF0, inF1); \
-    fwidth(inF0); \
     ldexp(inF0, inF1); \
     log(inF0); \
     log10(inF0); \

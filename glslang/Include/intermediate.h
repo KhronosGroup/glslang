@@ -498,14 +498,24 @@ enum TOperator {
     // HLSL operations
     //
 
-    EOpClip,
+    EOpClip,                // discard if input value < 0
     EOpIsFinite,
-    EOpLog10,
-    EOpRcp,
-    EOpSaturate,
-    EOpSinCos,
-    EOpGenMul,  // mul(x,y) on any of mat/vec/scalars
-    EOpDst,
+    EOpLog10,               // base 10 log
+    EOpRcp,                 // 1/x
+    EOpSaturate,            // clamp from 0 to 1
+    EOpSinCos,              // sin and cos in out parameters
+    EOpGenMul,              // mul(x,y) on any of mat/vec/scalars
+    EOpDst,                 // x = 1, y=src0.y * src1.y, z=src0.z, w=src1.w
+    EOpInterlockedAdd,      // atomic ops, but uses [optional] out arg instead of return
+    EOpInterlockedAnd,      // ...
+    EOpInterlockedCompareExchange, // ...
+    EOpInterlockedCompareStore,    // ...
+    EOpInterlockedExchange, // ...
+    EOpInterlockedMax,      // ...
+    EOpInterlockedMin,      // ...
+    EOpInterlockedOr,       // ...
+    EOpInterlockedXor,      // ...
+
 };
 
 class TIntermTraverser;

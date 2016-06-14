@@ -296,20 +296,26 @@ void TBuiltInParseablesHlsl::initialize(int version, EProfile profile, int spv, 
         { "fmod",                             nullptr, nullptr,   "SVM,",       "F,",     EShLangAll },
         { "frac",                             nullptr, nullptr,   "SVM",        "F",      EShLangAll },
         { "frexp",                            nullptr, nullptr,   "SVM,",       "F,",     EShLangAll },
-        { "fwidth",                           nullptr, nullptr,   "SVM",        "F",      EShLangAll },
+        { "fwidth",                           nullptr, nullptr,   "SVM",        "F",      EShLangFragmentMask },
         { "GetRenderTargetSampleCount",       "S",     "U",       "-",          "-",      EShLangAll },
         { "GetRenderTargetSamplePosition",    "V2",    "F",       "V1",         "I",      EShLangAll },
         { "GroupMemoryBarrier",               nullptr, nullptr,   "-",          "-",      EShLangComputeMask },
         { "GroupMemoryBarrierWithGroupSync",  nullptr, nullptr,   "-",          "-",      EShLangComputeMask },
         { "InterlockedAdd",                   "-",     "-",       "SVM,,>",     "UI,,",   EShLangFragmentMask | EShLangComputeMask },
+        { "InterlockedAdd",                   "-",     "-",       "SVM,",       "UI,",    EShLangFragmentMask | EShLangComputeMask },
         { "InterlockedAnd",                   "-",     "-",       "SVM,,>",     "UI,,",   EShLangFragmentMask | EShLangComputeMask },
+        { "InterlockedAnd",                   "-",     "-",       "SVM,",       "UI,",    EShLangFragmentMask | EShLangComputeMask },
         { "InterlockedCompareExchange",       "-",     "-",       "SVM,,,>",    "UI,,,",  EShLangFragmentMask | EShLangComputeMask },
         { "InterlockedCompareStore",          "-",     "-",       "SVM,,",      "UI,,",   EShLangFragmentMask | EShLangComputeMask },
         { "InterlockedExchange",              "-",     "-",       "SVM,,>",     "UI,,",   EShLangFragmentMask | EShLangComputeMask },
         { "InterlockedMax",                   "-",     "-",       "SVM,,>",     "UI,,",   EShLangFragmentMask | EShLangComputeMask },
+        { "InterlockedMax",                   "-",     "-",       "SVM,",       "UI,",    EShLangFragmentMask | EShLangComputeMask },
         { "InterlockedMin",                   "-",     "-",       "SVM,,>",     "UI,,",   EShLangFragmentMask | EShLangComputeMask },
+        { "InterlockedMin",                   "-",     "-",       "SVM,",       "UI,",    EShLangFragmentMask | EShLangComputeMask },
         { "InterlockedOr",                    "-",     "-",       "SVM,,>",     "UI,,",   EShLangFragmentMask | EShLangComputeMask },
+        { "InterlockedOr",                    "-",     "-",       "SVM,",       "UI,",    EShLangFragmentMask | EShLangComputeMask },
         { "InterlockedXor",                   "-",     "-",       "SVM,,>",     "UI,,",   EShLangFragmentMask | EShLangComputeMask },
+        { "InterlockedXor",                   "-",     "-",       "SVM,",       "UI,",    EShLangFragmentMask | EShLangComputeMask },
         { "isfinite",                         nullptr, "B" ,      "SVM",        "F",      EShLangAll },
         { "isinf",                            nullptr, "B" ,      "SVM",        "F",      EShLangAll },
         { "isnan",                            nullptr, "B" ,      "SVM",        "F",      EShLangAll },
@@ -516,11 +522,11 @@ void TBuiltInParseablesHlsl::identifyBuiltIns(int version, EProfile profile, int
     // symbolTable.relateToOperator("AllMemoryBarrier");
     // symbolTable.relateToOperator("AllMemoryBarrierWithGroupSync");
     symbolTable.relateToOperator("any",                         EOpAny);
-    // symbolTable.relateToOperator("asdouble");
-    // symbolTable.relateToOperator("asfloat");
+    symbolTable.relateToOperator("asdouble",                    EOpUint64BitsToDouble);
+    symbolTable.relateToOperator("asfloat",                     EOpIntBitsToFloat);
     symbolTable.relateToOperator("asin",                        EOpAsin);
-    // symbolTable.relateToOperator("asint");
-    // symbolTable.relateToOperator("asuint");
+    symbolTable.relateToOperator("asint",                       EOpFloatBitsToInt);
+    symbolTable.relateToOperator("asuint",                      EOpFloatBitsToUint);
     symbolTable.relateToOperator("atan",                        EOpAtan);
     symbolTable.relateToOperator("atan2",                       EOpAtan);
     symbolTable.relateToOperator("ceil",                        EOpCeil);
@@ -566,15 +572,15 @@ void TBuiltInParseablesHlsl::identifyBuiltIns(int version, EProfile profile, int
     // symbolTable.relateToOperator("GetRenderTargetSamplePosition");
     // symbolTable.relateToOperator("GroupMemoryBarrier");
     // symbolTable.relateToOperator("GroupMemoryBarrierWithGroupSync");
-    // symbolTable.relateToOperator("InterlockedAdd");
-    // symbolTable.relateToOperator("InterlockedAnd");
-    // symbolTable.relateToOperator("InterlockedCompareExchange");
-    // symbolTable.relateToOperator("InterlockedCompareStore");
-    // symbolTable.relateToOperator("InterlockedExchange");
-    // symbolTable.relateToOperator("InterlockedMax");
-    // symbolTable.relateToOperator("InterlockedMin");
-    // symbolTable.relateToOperator("InterlockedOr");
-    // symbolTable.relateToOperator("InterlockedXor");
+    symbolTable.relateToOperator("InterlockedAdd",              EOpInterlockedAdd);
+    symbolTable.relateToOperator("InterlockedAnd",              EOpInterlockedAnd);
+    symbolTable.relateToOperator("InterlockedCompareExchange",  EOpInterlockedCompareExchange);
+    symbolTable.relateToOperator("InterlockedCompareStore",     EOpInterlockedCompareStore);
+    symbolTable.relateToOperator("InterlockedExchange",         EOpInterlockedExchange);
+    symbolTable.relateToOperator("InterlockedMax",              EOpInterlockedMax);
+    symbolTable.relateToOperator("InterlockedMin",              EOpInterlockedMin);
+    symbolTable.relateToOperator("InterlockedOr",               EOpInterlockedOr);
+    symbolTable.relateToOperator("InterlockedXor",              EOpInterlockedXor);
     symbolTable.relateToOperator("isfinite",                    EOpIsFinite);
     symbolTable.relateToOperator("isinf",                       EOpIsInf);
     symbolTable.relateToOperator("isnan",                       EOpIsNan);

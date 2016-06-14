@@ -771,6 +771,29 @@ void HlslParseContext::handleFunctionArgument(TFunction* function, TIntermTyped*
         arguments = newArg;
 }
 
+//
+// HLSL atomic operations have slightly different arguments than
+// GLSL/AST/SPIRV.  The semantics are converted below in decomposeIntrinsic.
+// This provides the post-decomposition equivalent opcode.
+//
+TOperator HlslParseContext::mapAtomicOp(const TSourceLoc& loc, TOperator op, bool isImage)
+{
+    switch (op) {
+    case EOpInterlockedAdd:             return isImage ? EOpImageAtomicAdd : EOpAtomicAdd;
+    case EOpInterlockedAnd:             return isImage ? EOpImageAtomicAnd : EOpAtomicAnd;
+    case EOpInterlockedCompareExchange: return isImage ? EOpImageAtomicCompSwap : EOpAtomicCompSwap;
+    case EOpInterlockedMax:             return isImage ? EOpImageAtomicMax : EOpAtomicMax;
+    case EOpInterlockedMin:             return isImage ? EOpImageAtomicMin : EOpAtomicMin;
+    case EOpInterlockedOr:              return isImage ? EOpImageAtomicOr : EOpAtomicOr;
+    case EOpInterlockedXor:             return isImage ? EOpImageAtomicXor : EOpAtomicXor;
+    case EOpInterlockedExchange:        return isImage ? EOpImageAtomicExchange : EOpAtomicExchange;
+    case EOpInterlockedCompareStore:  // TODO: ... 
+    default:
+        error(loc, "unknown atomic operation", "unknown op", "");
+        return EOpNull;
+    }
+}
+
 // Optionally decompose intrinsics to AST opcodes.
 //
 void HlslParseContext::decomposeIntrinsic(const TSourceLoc& loc, TIntermTyped*& node, TIntermNode* arguments)
@@ -825,6 +848,7 @@ void HlslParseContext::decomposeIntrinsic(const TSourceLoc& loc, TIntermTyped*& 
             clamp->getSequence().push_back(intermediate.addConstantUnion(1, type0, loc, true));
             clamp->setLoc(loc);
             clamp->setType(node->getType());
+            clamp->getWritableType().getQualifier().makeTemporary();
             node = clamp;
 
             break;
@@ -941,6 +965,61 @@ void HlslParseContext::decomposeIntrinsic(const TSourceLoc& loc, TIntermTyped*& 
             dst->setLoc(loc);
             node = dst;
 
+            break;
+        }
+
+    case EOpInterlockedAdd: // optional last argument (if present) is assigned from return value
+    case EOpInterlockedMin: // ...
+    case EOpInterlockedMax: // ...
+    case EOpInterlockedAnd: // ...
+    case EOpInterlockedOr:  // ...
+    case EOpInterlockedXor: // ...
+    case EOpInterlockedExchange: // always has output arg
+        {
+            TIntermTyped* arg0 = argAggregate->getSequence()[0]->getAsTyped();
+            TIntermTyped* arg1 = argAggregate->getSequence()[1]->getAsTyped();
+
+            const bool isImage = arg0->getType().isImage();
+            const TOperator atomicOp = mapAtomicOp(loc, op, isImage);
+
+            if (argAggregate->getSequence().size() > 2) {
+                // optional output param is present.  return value goes to arg2.
+                TIntermTyped* arg2 = argAggregate->getSequence()[2]->getAsTyped();
+
+                TIntermAggregate* atomic = new TIntermAggregate(atomicOp);
+                atomic->getSequence().push_back(arg0);
+                atomic->getSequence().push_back(arg1);
+                atomic->setLoc(loc);
+                atomic->setType(arg0->getType());
+                atomic->getWritableType().getQualifier().makeTemporary();
+
+                node = intermediate.addAssign(EOpAssign, arg2, atomic, loc);
+            } else {
+                // Set the matching operator.  Since output is absent, this is all we need to do.
+                node->getAsAggregate()->setOperator(atomicOp);
+            }
+
+            break;
+        }
+
+    case EOpInterlockedCompareExchange:
+        {
+            TIntermTyped* arg0 = argAggregate->getSequence()[0]->getAsTyped();  // dest
+            TIntermTyped* arg1 = argAggregate->getSequence()[1]->getAsTyped();  // cmp
+            TIntermTyped* arg2 = argAggregate->getSequence()[2]->getAsTyped();  // value
+            TIntermTyped* arg3 = argAggregate->getSequence()[3]->getAsTyped();  // orig
+
+            const bool isImage = arg0->getType().isImage();
+            TIntermAggregate* atomic = new TIntermAggregate(mapAtomicOp(loc, op, isImage));
+            atomic->getSequence().push_back(arg0);
+            atomic->getSequence().push_back(arg1);
+            atomic->getSequence().push_back(arg2);
+            atomic->setLoc(loc);
+            atomic->setType(arg2->getType());
+            atomic->getWritableType().getQualifier().makeTemporary();
+
+            node = intermediate.addAssign(EOpAssign, arg3, atomic, loc);
+            
             break;
         }
 
