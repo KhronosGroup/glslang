@@ -543,6 +543,13 @@ bool TOutputTraverser::visitAggregate(TVisit /* visit */, TIntermAggregate* node
     case EOpSinCos:                     out.debug << "sincos";                break;
     case EOpGenMul:                     out.debug << "mul";                   break;
 
+    case EOpAllMemoryBarrier:                 out.debug << "AllMemoryBarrier";                 break;
+    case EOpAllMemoryBarrierWithGroupSync:    out.debug << "AllMemoryBarrierWithGroupSync";    break;
+    case EOpDeviceMemoryBarrier:              out.debug << "DeviceMemoryBarrier";              break;
+    case EOpDeviceMemoryBarrierWithGroupSync: out.debug << "DeviceMemoryBarrierWithGroupSync"; break;
+    case EOpGroupMemoryBarrierHlsl:           out.debug << "GroupMemoryBarrierHlsl";           break;
+    case EOpGroupMemoryBarrierWithGroupSync:  out.debug << "GroupMemoryBarrierWithGroupSync";  break;
+
     default: out.debug.message(EPrefixError, "Bad aggregation op");
     }
 
