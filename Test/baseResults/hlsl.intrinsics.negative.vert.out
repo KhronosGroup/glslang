@@ -1,4 +1,6 @@
 hlsl.intrinsics.negative.vert
+ERROR: 0:18: 'AllMemoryBarrier' : no matching overloaded function found 
+ERROR: 0:19: 'AllMemoryBarrierWithGroupSync' : no matching overloaded function found 
 ERROR: 0:20: 'asdouble' : no matching overloaded function found 
 ERROR: 0:21: 'CheckAccessFullyMapped' : no matching overloaded function found 
 ERROR: 0:22: 'CheckAccessFullyMapped' : no matching overloaded function found 
@@ -6,6 +8,8 @@ ERROR: 0:23: 'clip' : no matching overloaded function found
 ERROR: 0:24: 'countbits' : no matching overloaded function found 
 ERROR: 0:25: 'cross' : no matching overloaded function found 
 ERROR: 0:26: 'D3DCOLORtoUBYTE4' : no matching overloaded function found 
+ERROR: 0:27: 'DeviceMemoryBarrier' : no matching overloaded function found 
+ERROR: 0:28: 'DeviceMemoryBarrierWithGroupSync' : no matching overloaded function found 
 ERROR: 0:29: 'ddx' : no matching overloaded function found 
 ERROR: 0:30: 'ddx_coarse' : no matching overloaded function found 
 ERROR: 0:31: 'ddx_fine' : no matching overloaded function found 
@@ -35,6 +39,8 @@ ERROR: 0:54: 'InterlockedOr' : no matching overloaded function found
 ERROR: 0:55: 'InterlockedOr' : no matching overloaded function found 
 ERROR: 0:56: 'InterlockedXor' : no matching overloaded function found 
 ERROR: 0:57: 'InterlockedXor' : no matching overloaded function found 
+ERROR: 0:58: 'GroupMemoryBarrier' : no matching overloaded function found 
+ERROR: 0:59: 'GroupMemoryBarrierWithGroupSync' : no matching overloaded function found 
 ERROR: 0:60: 'length' : no matching overloaded function found 
 ERROR: 0:61: 'msad4' : no matching overloaded function found 
 ERROR: 0:62: 'normalize' : no matching overloaded function found 
@@ -226,7 +232,7 @@ ERROR: 0:270: 'normalize' : no matching overloaded function found
 ERROR: 0:270: 'reflect' : no matching overloaded function found 
 ERROR: 0:270: 'refract' : no matching overloaded function found 
 ERROR: 0:270: 'reversebits' : no matching overloaded function found 
-ERROR: 227 compilation errors.  No code generated.
+ERROR: 233 compilation errors.  No code generated.
 
 
 Shader version: 450
@@ -238,6 +244,10 @@ ERROR: node is still EOpNull!
 0:15      'inF2' (in float)
 0:15      'inI0' (in int)
 0:?     Sequence
+0:18      Constant:
+0:18        0.000000
+0:19      Constant:
+0:19        0.000000
 0:20      Constant:
 0:20        0.000000
 0:21      Constant:
@@ -252,6 +262,10 @@ ERROR: node is still EOpNull!
 0:25        0.000000
 0:26      Constant:
 0:26        0.000000
+0:27      Constant:
+0:27        0.000000
+0:28      Constant:
+0:28        0.000000
 0:29      Constant:
 0:29        0.000000
 0:30      Constant:
@@ -310,6 +324,10 @@ ERROR: node is still EOpNull!
 0:56        0.000000
 0:57      Constant:
 0:57        0.000000
+0:58      Constant:
+0:58        0.000000
+0:59      Constant:
+0:59        0.000000
 0:60      Constant:
 0:60        0.000000
 0:61      Constant:
@@ -821,6 +839,10 @@ ERROR: node is still EOpNull!
 0:15      'inF2' (in float)
 0:15      'inI0' (in int)
 0:?     Sequence
+0:18      Constant:
+0:18        0.000000
+0:19      Constant:
+0:19        0.000000
 0:20      Constant:
 0:20        0.000000
 0:21      Constant:
@@ -835,6 +857,10 @@ ERROR: node is still EOpNull!
 0:25        0.000000
 0:26      Constant:
 0:26        0.000000
+0:27      Constant:
+0:27        0.000000
+0:28      Constant:
+0:28        0.000000
 0:29      Constant:
 0:29        0.000000
 0:30      Constant:
@@ -893,6 +919,10 @@ ERROR: node is still EOpNull!
 0:56        0.000000
 0:57      Constant:
 0:57        0.000000
+0:58      Constant:
+0:58        0.000000
+0:59      Constant:
+0:59        0.000000
 0:60      Constant:
 0:60        0.000000
 0:61      Constant:
