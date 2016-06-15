@@ -2871,11 +2871,17 @@ void TParseContext::setDefaultPrecision(const TSourceLoc& loc, TPublicType& publ
 // correlates with the declaration of defaultSamplerPrecision[]
 int TParseContext::computeSamplerTypeIndex(TSampler& sampler)
 {
-    int arrayIndex   = sampler.arrayed   ? 1 : 0;
-    int shadowIndex   = sampler.shadow   ? 1 : 0;
-    int externalIndex = sampler.external ? 1 : 0;
+    int arrayIndex    = sampler.arrayed ? 1 : 0;
+    int shadowIndex   = sampler.shadow  ? 1 : 0;
+    int externalIndex = sampler.external? 1 : 0;
+    int imageIndex    = sampler.image   ? 1 : 0;
+    int msIndex       = sampler.ms      ? 1 : 0;
 
-    return EsdNumDims * (EbtNumTypes * (2 * (2 * arrayIndex + shadowIndex) + externalIndex) + sampler.type) + sampler.dim;
+    int flattened = EsdNumDims * (EbtNumTypes * (2 * (2 * (2 * (2 * arrayIndex + msIndex) + imageIndex) + shadowIndex) +
+                                                 externalIndex) + sampler.type) + sampler.dim;
+    assert(flattened < maxSamplerIndex);
+
+    return flattened;
 }
 
 TPrecisionQualifier TParseContext::getDefaultPrecision(TPublicType& publicType)

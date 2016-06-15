@@ -20,9 +20,11 @@ ERROR: 0:45: 'texel offset' : value is out of range: [gl_MinProgramTexelOffset, 
 ERROR: 0:45: 'texel offset' : value is out of range: [gl_MinProgramTexelOffset, gl_MaxProgramTexelOffset]
 ERROR: 0:66: 'sampler/image' : type requires declaration of default precision qualifier 
 ERROR: 0:66: '' : image variables not declared 'writeonly' must have a format layout qualifier 
+ERROR: 0:67: 'sampler/image' : type requires declaration of default precision qualifier 
 ERROR: 0:67: '' : image variables not declared 'writeonly' must have a format layout qualifier 
 ERROR: 0:68: 'sampler/image' : type requires declaration of default precision qualifier 
 ERROR: 0:68: '' : image variables not declared 'writeonly' must have a format layout qualifier 
+ERROR: 0:69: 'sampler/image' : type requires declaration of default precision qualifier 
 ERROR: 0:69: '' : image variables not declared 'writeonly' must have a format layout qualifier 
 ERROR: 0:73: 'binding' : requires block, or sampler/image, or atomic-counter type 
 ERROR: 0:77: 'location' : location is too large 
@@ -31,6 +33,7 @@ ERROR: 0:82: 'location' : too large for fragment output
 ERROR: 0:82: 'location' : overlapping use of location 40
 ERROR: 0:83: 'non-literal layout-id value' : not supported with this profile: es
 ERROR: 0:83: 'layout-id value' : cannot be negative 
+ERROR: 0:96: 'sampler/image' : type requires declaration of default precision qualifier 
 ERROR: 0:110: 'out' : cannot be bool 
 ERROR: 0:111: 'image2D' : sampler/image types can only be used in uniform variables or function parameters: imageOut
 ERROR: 0:111: '' : image variables not declared 'writeonly' must have a format layout qualifier 
@@ -130,7 +133,7 @@ ERROR: 0:427: 'blend equation' : can only apply to a standalone qualifier
 ERROR: 0:428: 'blend equation' : can only apply to a standalone qualifier 
 ERROR: 0:429: 'blend_support' : unknown blend equation 
 ERROR: 0:431: 'fragment-shader array-of-array output' : not supported with this profile: es
-ERROR: 122 compilation errors.  No code generated.
+ERROR: 125 compilation errors.  No code generated.
 
 
 Shader version: 310
@@ -351,7 +354,7 @@ ERROR: node is still EOpNull!
 0:102      move second child to first child (temp highp 2-component vector of int)
 0:102        'v2' (temp highp 2-component vector of int)
 0:102        textureSize (global highp 2-component vector of int)
-0:102          's2dms' (uniform highp sampler2DMS)
+0:102          's2dms' (uniform mediump sampler2DMS)
 0:103      move second child to first child (temp highp 2-component vector of int)
 0:103        'v2' (temp highp 2-component vector of int)
 0:103        imageQuerySize (global highp 2-component vector of int)
@@ -363,7 +366,7 @@ ERROR: node is still EOpNull!
 0:105      move second child to first child (temp highp 2-component vector of int)
 0:105        'v2' (temp highp 2-component vector of int)
 0:105        imageQuerySize (global highp 2-component vector of int)
-0:105          'iCube' (layout(binding=5 ) uniform lowp imageCube)
+0:105          'iCube' (layout(binding=5 ) uniform mediump imageCube)
 0:106      move second child to first child (temp highp 3-component vector of int)
 0:106        'v3' (temp highp 3-component vector of int)
 0:106        imageQuerySize (global highp 3-component vector of int)
@@ -371,7 +374,7 @@ ERROR: node is still EOpNull!
 0:107      move second child to first child (temp highp 2-component vector of int)
 0:107        'v2' (temp highp 2-component vector of int)
 0:107        imageQuerySize (global highp 2-component vector of int)
-0:107          'i2Dqualified' (layout(binding=6 ) coherent volatile restrict uniform highp image2D)
+0:107          'i2Dqualified' (layout(binding=6 ) coherent volatile restrict uniform mediump image2D)
 0:165  Function Definition: fooIO( (global void)
 0:165    Function Parameters: 
 0:167    Sequence
@@ -928,9 +931,9 @@ ERROR: node is still EOpNull!
 0:?     's2' (layout(binding=3 ) uniform highp sampler2D)
 0:?     'i2D' (layout(binding=2 ) writeonly uniform highp image2D)
 0:?     'i3D' (layout(binding=4 ) readonly uniform mediump image3D)
-0:?     'iCube' (layout(binding=5 ) uniform lowp imageCube)
+0:?     'iCube' (layout(binding=5 ) uniform mediump imageCube)
 0:?     'i2DA' (layout(binding=6 ) uniform mediump image2DArray)
-0:?     'i2Dqualified' (layout(binding=6 ) coherent volatile restrict uniform highp image2D)
+0:?     'i2Dqualified' (layout(binding=6 ) coherent volatile restrict uniform mediump image2D)
 0:?     'bbi' (layout(binding=1 column_major shared ) uniform block{layout(column_major shared ) uniform mediump int foo, layout(binding=2 column_major shared ) uniform mediump float f})
 0:?     'centroidIn' (centroid smooth in mediump 4-component vector of float)
 0:?     'bigl' (uniform mediump 4-component vector of float)
@@ -941,7 +944,7 @@ ERROR: node is still EOpNull!
 0:?     'bshari' (layout(column_major shared ) uniform block{layout(column_major shared ) uniform mediump int i})
 0:?     'smoothIn' (smooth in mediump 4-component vector of float)
 0:?     'flatIn' (flat in mediump int)
-0:?     's2dms' (uniform highp sampler2DMS)
+0:?     's2dms' (uniform mediump sampler2DMS)
 0:?     'bout' (out bool)
 0:?     'imageOut' (out highp image2D)
 0:?     'mout' (out mediump 2X3 matrix of float)
@@ -1232,7 +1235,7 @@ ERROR: node is still EOpNull!
 0:102      move second child to first child (temp highp 2-component vector of int)
 0:102        'v2' (temp highp 2-component vector of int)
 0:102        textureSize (global highp 2-component vector of int)
-0:102          's2dms' (uniform highp sampler2DMS)
+0:102          's2dms' (uniform mediump sampler2DMS)
 0:103      move second child to first child (temp highp 2-component vector of int)
 0:103        'v2' (temp highp 2-component vector of int)
 0:103        imageQuerySize (global highp 2-component vector of int)
@@ -1244,7 +1247,7 @@ ERROR: node is still EOpNull!
 0:105      move second child to first child (temp highp 2-component vector of int)
 0:105        'v2' (temp highp 2-component vector of int)
 0:105        imageQuerySize (global highp 2-component vector of int)
-0:105          'iCube' (layout(binding=5 ) uniform lowp imageCube)
+0:105          'iCube' (layout(binding=5 ) uniform mediump imageCube)
 0:106      move second child to first child (temp highp 3-component vector of int)
 0:106        'v3' (temp highp 3-component vector of int)
 0:106        imageQuerySize (global highp 3-component vector of int)
@@ -1252,7 +1255,7 @@ ERROR: node is still EOpNull!
 0:107      move second child to first child (temp highp 2-component vector of int)
 0:107        'v2' (temp highp 2-component vector of int)
 0:107        imageQuerySize (global highp 2-component vector of int)
-0:107          'i2Dqualified' (layout(binding=6 ) coherent volatile restrict uniform highp image2D)
+0:107          'i2Dqualified' (layout(binding=6 ) coherent volatile restrict uniform mediump image2D)
 0:165  Function Definition: fooIO( (global void)
 0:165    Function Parameters: 
 0:167    Sequence
@@ -1809,9 +1812,9 @@ ERROR: node is still EOpNull!
 0:?     's2' (layout(binding=3 ) uniform highp sampler2D)
 0:?     'i2D' (layout(binding=2 ) writeonly uniform highp image2D)
 0:?     'i3D' (layout(binding=4 ) readonly uniform mediump image3D)
-0:?     'iCube' (layout(binding=5 ) uniform lowp imageCube)
+0:?     'iCube' (layout(binding=5 ) uniform mediump imageCube)
 0:?     'i2DA' (layout(binding=6 ) uniform mediump image2DArray)
-0:?     'i2Dqualified' (layout(binding=6 ) coherent volatile restrict uniform highp image2D)
+0:?     'i2Dqualified' (layout(binding=6 ) coherent volatile restrict uniform mediump image2D)
 0:?     'bbi' (layout(binding=1 column_major shared ) uniform block{layout(column_major shared ) uniform mediump int foo, layout(binding=2 column_major shared ) uniform mediump float f})
 0:?     'centroidIn' (centroid smooth in mediump 4-component vector of float)
 0:?     'bigl' (uniform mediump 4-component vector of float)
@@ -1822,7 +1825,7 @@ ERROR: node is still EOpNull!
 0:?     'bshari' (layout(column_major shared ) uniform block{layout(column_major shared ) uniform mediump int i})
 0:?     'smoothIn' (smooth in mediump 4-component vector of float)
 0:?     'flatIn' (flat in mediump int)
-0:?     's2dms' (uniform highp sampler2DMS)
+0:?     's2dms' (uniform mediump sampler2DMS)
 0:?     'bout' (out bool)
 0:?     'imageOut' (out highp image2D)
 0:?     'mout' (out mediump 2X3 matrix of float)

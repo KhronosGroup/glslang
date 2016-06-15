@@ -78,8 +78,8 @@ uniform writeonly iimage2DArray ii2da;
 
 layout(r32i) uniform iimage2D iimg2D;
 layout(rgba32i) uniform readonly iimage2D iimg2Drgba;
-layout(rgba32f) uniform readonly image2D img2Drgba;
-layout(r32ui) uniform uimage2D uimg2D;
+layout(rgba32f) uniform readonly image2D img2Drgba;   // ERROR, no default
+layout(r32ui) uniform uimage2D uimg2D;                // ERROR, no default
 
 void qux()
 {
@@ -111,9 +111,9 @@ void passrc()
     passr(iimg2D);
 }
 
-layout(rg8i)     uniform readonly uimage2D i1bad; // ERROR, type mismatch
-layout(rgba32i)  uniform readonly image2D i2bad;  // ERROR, type mismatch
-layout(rgba32f)  uniform readonly uimage2D i3bad; // ERROR, type mismatch
+highp layout(rg8i)     uniform readonly uimage2D i1bad; // ERROR, type mismatch
+highp layout(rgba32i)  uniform readonly image2D i2bad;  // ERROR, type mismatch
+highp layout(rgba32f)  uniform readonly uimage2D i3bad; // ERROR, type mismatch
 layout(r8_snorm) uniform readonly iimage2D i4bad; // ERROR, type mismatch
 layout(rgba32ui) uniform readonly iimage2D i5bad; // ERROR, type mismatch
 layout(r8ui)     uniform readonly iimage2D i6bad; // ERROR, type mismatch
@@ -170,17 +170,17 @@ precise int pfoo;  // ERROR, reserved
 dmat2x4 dm;                     // ERROR
 uniform samplerCubeArray sca;   // ERROR
 uniform iimage2DRect i2dr;      // ERROR
-uniform image2DMS i2dms;        // ERROR
+highp uniform image2DMS i2dms;  // ERROR
 uniform uimage2DMSArray u2dmsa; // ERROR
 
-layout(r32f)  coherent volatile restrict readonly writeonly uniform  image2D okay1;
-layout(r32i)  coherent volatile restrict readonly           uniform iimage2D okay2;
-layout(r32ui) coherent volatile restrict          writeonly uniform uimage2D okay3;
-layout(r32f)  coherent volatile restrict                    uniform  image2D okay4;
+highp layout(r32f)  coherent volatile restrict readonly writeonly uniform  image2D okay1;
+      layout(r32i)  coherent volatile restrict readonly           uniform iimage2D okay2;
+highp layout(r32ui) coherent volatile restrict          writeonly uniform uimage2D okay3;
+highp layout(r32f)  coherent volatile restrict                    uniform  image2D okay4;
  
-layout(rgba32f)  coherent volatile restrict                 uniform  image2D badQ1;  // ERROR, bad qualifiers
-layout(rgba8i)   coherent volatile restrict                 uniform iimage2D badQ2;  // ERROR, bad qualifiers
-layout(rgba16ui) coherent volatile restrict                 uniform uimage2D badQ3;  // ERROR, bad qualifiers
+highp layout(rgba32f)  coherent volatile restrict                 uniform  image2D badQ1;  // ERROR, bad qualifiers
+      layout(rgba8i)   coherent volatile restrict                 uniform iimage2D badQ2;  // ERROR, bad qualifiers
+highp layout(rgba16ui) coherent volatile restrict                 uniform uimage2D badQ3;  // ERROR, bad qualifiers
 
 writeonly buffer woblock
 {

@@ -291,8 +291,8 @@ ERROR: node is still EOpNull!
 0:156          'inf' (in highp 2-component vector of float)
 0:156          'ing' (in highp 2-component vector of float)
 0:156          'h' (noContraction temp highp 2-component vector of float)
-0:157      indirect index (temp highp sampler2D)
-0:157        'sArray' (uniform 4-element array of highp sampler2D)
+0:157      indirect index (temp lowp sampler2D)
+0:157        'sArray' (uniform 4-element array of lowp sampler2D)
 0:157        add (temp highp int)
 0:157          'sIndex' (uniform highp int)
 0:157          Constant:
@@ -330,19 +330,19 @@ ERROR: node is still EOpNull!
 0:164          'sIndex' (uniform highp int)
 0:164          Constant:
 0:164            2 (const int)
-0:165      textureGatherOffset (global highp 4-component vector of float)
-0:165        direct index (temp highp sampler2D)
-0:165          'sArray' (uniform 4-element array of highp sampler2D)
+0:165      textureGatherOffset (global lowp 4-component vector of float)
+0:165        direct index (temp lowp sampler2D)
+0:165          'sArray' (uniform 4-element array of lowp sampler2D)
 0:165          Constant:
 0:165            0 (const int)
 0:165        Constant:
 0:165          0.100000
 0:165          0.100000
-0:165        Convert float to int (temp highp 2-component vector of int)
+0:165        Convert float to int (temp lowp 2-component vector of int)
 0:165          'inf' (in highp 2-component vector of float)
-0:166      textureGatherOffsets (global highp 4-component vector of float)
-0:166        direct index (temp highp sampler2D)
-0:166          'sArray' (uniform 4-element array of highp sampler2D)
+0:166      textureGatherOffsets (global lowp 4-component vector of float)
+0:166        direct index (temp lowp sampler2D)
+0:166          'sArray' (uniform 4-element array of lowp sampler2D)
 0:166          Constant:
 0:166            0 (const int)
 0:166        Constant:
@@ -366,8 +366,8 @@ ERROR: node is still EOpNull!
 0:174          'inf' (in highp 2-component vector of float)
 0:174          'ing' (in highp 2-component vector of float)
 0:174          'h' (noContraction temp highp 2-component vector of float)
-0:175      indirect index (temp highp sampler2D)
-0:175        'sArray' (uniform 4-element array of highp sampler2D)
+0:175      indirect index (temp lowp sampler2D)
+0:175        'sArray' (uniform 4-element array of lowp sampler2D)
 0:175        add (temp highp int)
 0:175          'sIndex' (uniform highp int)
 0:175          Constant:
@@ -394,19 +394,19 @@ ERROR: node is still EOpNull!
 0:179          'sIndex' (uniform highp int)
 0:179          Constant:
 0:179            2 (const int)
-0:180      textureGatherOffset (global highp 4-component vector of float)
-0:180        direct index (temp highp sampler2D)
-0:180          'sArray' (uniform 4-element array of highp sampler2D)
+0:180      textureGatherOffset (global lowp 4-component vector of float)
+0:180        direct index (temp lowp sampler2D)
+0:180          'sArray' (uniform 4-element array of lowp sampler2D)
 0:180          Constant:
 0:180            0 (const int)
 0:180        Constant:
 0:180          0.100000
 0:180          0.100000
-0:180        Convert float to int (temp highp 2-component vector of int)
+0:180        Convert float to int (temp lowp 2-component vector of int)
 0:180          'inf' (in highp 2-component vector of float)
-0:181      textureGatherOffsets (global highp 4-component vector of float)
-0:181        direct index (temp highp sampler2D)
-0:181          'sArray' (uniform 4-element array of highp sampler2D)
+0:181      textureGatherOffsets (global lowp 4-component vector of float)
+0:181        direct index (temp lowp sampler2D)
+0:181          'sArray' (uniform 4-element array of lowp sampler2D)
 0:181          Constant:
 0:181            0 (const int)
 0:181        Constant:
@@ -421,9 +421,9 @@ ERROR: node is still EOpNull!
 0:181          0 (const int)
 0:181          0 (const int)
 0:181          0 (const int)
-0:182      textureGatherOffsets (global highp 4-component vector of float)
-0:182        direct index (temp highp sampler2D)
-0:182          'sArray' (uniform 4-element array of highp sampler2D)
+0:182      textureGatherOffsets (global lowp 4-component vector of float)
+0:182        direct index (temp lowp sampler2D)
+0:182          'sArray' (uniform 4-element array of lowp sampler2D)
 0:182          Constant:
 0:182            0 (const int)
 0:182        Constant:
@@ -927,7 +927,7 @@ ERROR: node is still EOpNull!
 0:?     'us2dms' (uniform highp usampler2DMS)
 0:?     'us2dmsa' (uniform mediump usampler2DMSArray)
 0:?     'outb' (smooth out bool)
-0:?     'outo' (smooth out highp sampler2D)
+0:?     'outo' (smooth out lowp sampler2D)
 0:?     'outa' (smooth out 4-element array of highp float)
 0:?     'outaa' (smooth out 4-element array of 2-element array of highp float)
 0:?     'outs' (smooth out structure{global highp float f})
@@ -949,7 +949,7 @@ ERROR: node is still EOpNull!
 0:?     'inf' (in highp 2-component vector of float)
 0:?     'ing' (in highp 2-component vector of float)
 0:?     'offsets' (uniform 4-element array of highp 2-component vector of int)
-0:?     'sArray' (uniform 4-element array of highp sampler2D)
+0:?     'sArray' (uniform 4-element array of lowp sampler2D)
 0:?     'sIndex' (uniform highp int)
 0:?     'auArray' (layout(binding=0 offset=0 ) uniform 2-element array of highp atomic_uint)
 0:?     'ubInst' (layout(column_major shared ) uniform 4-element array of block{layout(column_major shared ) uniform highp int i})
@@ -1222,8 +1222,8 @@ ERROR: node is still EOpNull!
 0:156          'inf' (in highp 2-component vector of float)
 0:156          'ing' (in highp 2-component vector of float)
 0:156          'h' (noContraction temp highp 2-component vector of float)
-0:157      indirect index (temp highp sampler2D)
-0:157        'sArray' (uniform 4-element array of highp sampler2D)
+0:157      indirect index (temp lowp sampler2D)
+0:157        'sArray' (uniform 4-element array of lowp sampler2D)
 0:157        add (temp highp int)
 0:157          'sIndex' (uniform highp int)
 0:157          Constant:
@@ -1261,19 +1261,19 @@ ERROR: node is still EOpNull!
 0:164          'sIndex' (uniform highp int)
 0:164          Constant:
 0:164            2 (const int)
-0:165      textureGatherOffset (global highp 4-component vector of float)
-0:165        direct index (temp highp sampler2D)
-0:165          'sArray' (uniform 4-element array of highp sampler2D)
+0:165      textureGatherOffset (global lowp 4-component vector of float)
+0:165        direct index (temp lowp sampler2D)
+0:165          'sArray' (uniform 4-element array of lowp sampler2D)
 0:165          Constant:
 0:165            0 (const int)
 0:165        Constant:
 0:165          0.100000
 0:165          0.100000
-0:165        Convert float to int (temp highp 2-component vector of int)
+0:165        Convert float to int (temp lowp 2-component vector of int)
 0:165          'inf' (in highp 2-component vector of float)
-0:166      textureGatherOffsets (global highp 4-component vector of float)
-0:166        direct index (temp highp sampler2D)
-0:166          'sArray' (uniform 4-element array of highp sampler2D)
+0:166      textureGatherOffsets (global lowp 4-component vector of float)
+0:166        direct index (temp lowp sampler2D)
+0:166          'sArray' (uniform 4-element array of lowp sampler2D)
 0:166          Constant:
 0:166            0 (const int)
 0:166        Constant:
@@ -1297,8 +1297,8 @@ ERROR: node is still EOpNull!
 0:174          'inf' (in highp 2-component vector of float)
 0:174          'ing' (in highp 2-component vector of float)
 0:174          'h' (noContraction temp highp 2-component vector of float)
-0:175      indirect index (temp highp sampler2D)
-0:175        'sArray' (uniform 4-element array of highp sampler2D)
+0:175      indirect index (temp lowp sampler2D)
+0:175        'sArray' (uniform 4-element array of lowp sampler2D)
 0:175        add (temp highp int)
 0:175          'sIndex' (uniform highp int)
 0:175          Constant:
@@ -1325,19 +1325,19 @@ ERROR: node is still EOpNull!
 0:179          'sIndex' (uniform highp int)
 0:179          Constant:
 0:179            2 (const int)
-0:180      textureGatherOffset (global highp 4-component vector of float)
-0:180        direct index (temp highp sampler2D)
-0:180          'sArray' (uniform 4-element array of highp sampler2D)
+0:180      textureGatherOffset (global lowp 4-component vector of float)
+0:180        direct index (temp lowp sampler2D)
+0:180          'sArray' (uniform 4-element array of lowp sampler2D)
 0:180          Constant:
 0:180            0 (const int)
 0:180        Constant:
 0:180          0.100000
 0:180          0.100000
-0:180        Convert float to int (temp highp 2-component vector of int)
+0:180        Convert float to int (temp lowp 2-component vector of int)
 0:180          'inf' (in highp 2-component vector of float)
-0:181      textureGatherOffsets (global highp 4-component vector of float)
-0:181        direct index (temp highp sampler2D)
-0:181          'sArray' (uniform 4-element array of highp sampler2D)
+0:181      textureGatherOffsets (global lowp 4-component vector of float)
+0:181        direct index (temp lowp sampler2D)
+0:181          'sArray' (uniform 4-element array of lowp sampler2D)
 0:181          Constant:
 0:181            0 (const int)
 0:181        Constant:
@@ -1352,9 +1352,9 @@ ERROR: node is still EOpNull!
 0:181          0 (const int)
 0:181          0 (const int)
 0:181          0 (const int)
-0:182      textureGatherOffsets (global highp 4-component vector of float)
-0:182        direct index (temp highp sampler2D)
-0:182          'sArray' (uniform 4-element array of highp sampler2D)
+0:182      textureGatherOffsets (global lowp 4-component vector of float)
+0:182        direct index (temp lowp sampler2D)
+0:182          'sArray' (uniform 4-element array of lowp sampler2D)
 0:182          Constant:
 0:182            0 (const int)
 0:182        Constant:
@@ -1858,7 +1858,7 @@ ERROR: node is still EOpNull!
 0:?     'us2dms' (uniform highp usampler2DMS)
 0:?     'us2dmsa' (uniform mediump usampler2DMSArray)
 0:?     'outb' (smooth out bool)
-0:?     'outo' (smooth out highp sampler2D)
+0:?     'outo' (smooth out lowp sampler2D)
 0:?     'outa' (smooth out 4-element array of highp float)
 0:?     'outaa' (smooth out 4-element array of 2-element array of highp float)
 0:?     'outs' (smooth out structure{global highp float f})
@@ -1880,7 +1880,7 @@ ERROR: node is still EOpNull!
 0:?     'inf' (in highp 2-component vector of float)
 0:?     'ing' (in highp 2-component vector of float)
 0:?     'offsets' (uniform 4-element array of highp 2-component vector of int)
-0:?     'sArray' (uniform 4-element array of highp sampler2D)
+0:?     'sArray' (uniform 4-element array of lowp sampler2D)
 0:?     'sIndex' (uniform highp int)
 0:?     'auArray' (layout(binding=0 offset=0 ) uniform 2-element array of highp atomic_uint)
 0:?     'ubInst' (layout(column_major shared ) uniform 4-element array of block{layout(column_major shared ) uniform highp int i})
