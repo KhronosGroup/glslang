@@ -67,10 +67,7 @@ const Id NoType = 0;
 const unsigned int BadValue = 0xFFFFFFFF;
 const Decoration NoPrecision = (Decoration)BadValue;
 const MemorySemanticsMask MemorySemanticsAllMemory = 
-                (MemorySemanticsMask)(MemorySemanticsAcquireMask |
-                                      MemorySemanticsReleaseMask |
-                                      MemorySemanticsAcquireReleaseMask |
-                                      MemorySemanticsSequentiallyConsistentMask |
+                (MemorySemanticsMask)(MemorySemanticsSequentiallyConsistentMask |
                                       MemorySemanticsUniformMemoryMask |
                                       MemorySemanticsSubgroupMemoryMask |
                                       MemorySemanticsWorkgroupMemoryMask |
