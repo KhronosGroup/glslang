@@ -859,26 +859,26 @@ void TBuiltIns::initialize(int version, EProfile profile, int spv, int vulkan)
     if ((profile == EEsProfile && version >= 300) ||
         (profile != EEsProfile && version >= 330)) {
         commonBuiltins.append(
-            "int   floatBitsToInt(float value);"
-            "ivec2 floatBitsToInt(vec2  value);"
-            "ivec3 floatBitsToInt(vec3  value);"
-            "ivec4 floatBitsToInt(vec4  value);"
+            "highp int   floatBitsToInt(highp float value);"
+            "highp ivec2 floatBitsToInt(highp vec2  value);"
+            "highp ivec3 floatBitsToInt(highp vec3  value);"
+            "highp ivec4 floatBitsToInt(highp vec4  value);"
                      
-            "uint  floatBitsToUint(float value);"
-            "uvec2 floatBitsToUint(vec2  value);"
-            "uvec3 floatBitsToUint(vec3  value);"
-            "uvec4 floatBitsToUint(vec4  value);"
-                     
-            "float intBitsToFloat(int   value);"
-            "vec2  intBitsToFloat(ivec2 value);"
-            "vec3  intBitsToFloat(ivec3 value);"
-            "vec4  intBitsToFloat(ivec4 value);"
-                     
-            "float uintBitsToFloat(uint  value);"
-            "vec2  uintBitsToFloat(uvec2 value);"
-            "vec3  uintBitsToFloat(uvec3 value);"
-            "vec4  uintBitsToFloat(uvec4 value);"
-            
+            "highp uint  floatBitsToUint(highp float value);"
+            "highp uvec2 floatBitsToUint(highp vec2  value);"
+            "highp uvec3 floatBitsToUint(highp vec3  value);"
+            "highp uvec4 floatBitsToUint(highp vec4  value);"
+
+            "highp float intBitsToFloat(highp int   value);"
+            "highp vec2  intBitsToFloat(highp ivec2 value);"
+            "highp vec3  intBitsToFloat(highp ivec3 value);"
+            "highp vec4  intBitsToFloat(highp ivec4 value);"
+
+            "highp float uintBitsToFloat(highp uint  value);"
+            "highp vec2  uintBitsToFloat(highp uvec2 value);"
+            "highp vec3  uintBitsToFloat(highp uvec3 value);"
+            "highp vec4  uintBitsToFloat(highp uvec4 value);"
+
             "\n");
     }
 
