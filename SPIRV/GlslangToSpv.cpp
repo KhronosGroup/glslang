@@ -2677,6 +2677,30 @@ spv::Id TGlslangToSpvTraverser::createImageTextureFunctionCall(glslang::TIntermO
         }
     }
 
+    // projective component (might not to move)
+    // GLSL: "The texture coordinates consumed from P, not including the last component of P,
+    //       are divided by the last component of P."
+    // SPIR-V:  "... (u [, v] [, w], q)... It may be a vector larger than needed, but all
+    //          unused components will appear after all used components."
+    if (cracked.proj) {
+        int projSourceComp = builder.getNumComponents(params.coords) - 1;
+        int projTargetComp;
+        switch (sampler.dim) {
+        case glslang::Esd1D:   projTargetComp = 1;              break;
+        case glslang::Esd2D:   projTargetComp = 2;              break;
+        case glslang::EsdRect: projTargetComp = 2;              break;
+        default:               projTargetComp = projSourceComp; break;
+        }
+        // copy the projective coordinate if we have to
+        if (projTargetComp != projSourceComp) {
+            spv::Id projComp = builder.createCompositeExtract(params.coords, 
+                                                              builder.getScalarTypeId(builder.getTypeId(params.coords)),
+                                                              projSourceComp);
+            params.coords = builder.createCompositeInsert(projComp, params.coords,
+                                                          builder.getTypeId(params.coords), projTargetComp);
+        }
+    }
+
     return builder.createTextureCall(precision, convertGlslangToSpvType(node->getType()), sparse, cracked.fetch, cracked.proj, cracked.gather, noImplicitLod, params);
 }
 
