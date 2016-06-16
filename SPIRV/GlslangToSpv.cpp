@@ -643,9 +643,9 @@ bool HasNonLayoutQualifiers(const glslang::TQualifier& qualifier)
 {
     // This should list qualifiers that simultaneous satisfy:
     // - struct members can inherit from a struct declaration
-    // - effect decorations on the struct members (note smooth does not, and expecting something like volatile to effect the whole object)
+    // - affect decorations on the struct members (note smooth does not, and expecting something like volatile to effect the whole object)
     // - are not part of the offset/st430/etc or row/column-major layout
-    return qualifier.invariant || qualifier.nopersp || qualifier.flat || qualifier.centroid || qualifier.patch || qualifier.sample || qualifier.hasLocation();
+    return qualifier.invariant || qualifier.hasLocation();
 }
 
 //
@@ -1913,8 +1913,10 @@ spv::Id TGlslangToSpvTraverser::convertGlslangToSpvType(const glslang::TType& ty
                     addMemberDecoration(spvType, member, TranslatePrecisionDecoration(glslangType));
                     // Add interpolation and auxiliary storage decorations only to top-level members of Input and Output storage classes
                     if (type.getQualifier().storage == glslang::EvqVaryingIn || type.getQualifier().storage == glslang::EvqVaryingOut) {
-                        addMemberDecoration(spvType, member, TranslateInterpolationDecoration(subQualifier));
-                        addMemberDecoration(spvType, member, TranslateAuxiliaryStorageDecoration(subQualifier));
+                        if (type.getBasicType() == glslang::EbtBlock) {
+                            addMemberDecoration(spvType, member, TranslateInterpolationDecoration(subQualifier));
+                            addMemberDecoration(spvType, member, TranslateAuxiliaryStorageDecoration(subQualifier));
+                        }
                     }
                     addMemberDecoration(spvType, member, TranslateInvariantDecoration(subQualifier));
 
@@ -2606,14 +2608,16 @@ spv::Id TGlslangToSpvTraverser::createImageTextureFunctionCall(glslang::TIntermO
         ++extraArgs;
     } else if (sampler.shadow) {
         std::vector<spv::Id> indexes;
-        int comp;
+        int dRefComp;
         if (cracked.proj)
-            comp = 2;  // "The resulting 3rd component of P in the shadow forms is used as Dref"
+            dRefComp = 2;  // "The resulting 3rd component of P in the shadow forms is used as Dref"
         else
-            comp = builder.getNumComponents(params.coords) - 1;
-        indexes.push_back(comp);
+            dRefComp = builder.getNumComponents(params.coords) - 1;
+        indexes.push_back(dRefComp);
         params.Dref = builder.createCompositeExtract(params.coords, builder.getScalarTypeId(builder.getTypeId(params.coords)), indexes);
     }
+
+    // lod
     if (cracked.lod) {
         params.lod = arguments[2];
         ++extraArgs;
@@ -2621,15 +2625,21 @@ spv::Id TGlslangToSpvTraverser::createImageTextureFunctionCall(glslang::TIntermO
         // we need to invent the default lod for an explicit lod instruction for a non-fragment stage
         noImplicitLod = true;
     }
+
+    // multisample
     if (sampler.ms) {
         params.sample = arguments[2]; // For MS, "sample" should be specified
         ++extraArgs;
     }
+
+    // gradient
     if (cracked.grad) {
         params.gradX = arguments[2 + extraArgs];
         params.gradY = arguments[3 + extraArgs];
         extraArgs += 2;
     }
+
+    // offset and offsets
     if (cracked.offset) {
         params.offset = arguments[2 + extraArgs];
         ++extraArgs;
@@ -2637,25 +2647,33 @@ spv::Id TGlslangToSpvTraverser::createImageTextureFunctionCall(glslang::TIntermO
         params.offsets = arguments[2 + extraArgs];
         ++extraArgs;
     }
+
+    // lod clamp
     if (cracked.lodClamp) {
         params.lodClamp = arguments[2 + extraArgs];
         ++extraArgs;
     }
+
+    // sparse
     if (sparse) {
         params.texelOut = arguments[2 + extraArgs];
         ++extraArgs;
     }
+
+    // bias
     if (bias) {
         params.bias = arguments[2 + extraArgs];
         ++extraArgs;
     }
+
+    // gather component
     if (cracked.gather && ! sampler.shadow) {
         // default component is 0, if missing, otherwise an argument
         if (2 + extraArgs < (int)arguments.size()) {
-            params.comp = arguments[2 + extraArgs];
+            params.component = arguments[2 + extraArgs];
             ++extraArgs;
         } else {
-            params.comp = builder.makeIntConstant(0);
+            params.component = builder.makeIntConstant(0);
         }
     }
 

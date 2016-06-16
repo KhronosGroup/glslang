@@ -321,7 +321,7 @@ public:
         Id gradX;
         Id gradY;
         Id sample;
-        Id comp;
+        Id component;
         Id texelOut;
         Id lodClamp;
     };

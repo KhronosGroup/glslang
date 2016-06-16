@@ -1430,10 +1430,10 @@ Id Builder::createTextureCall(Decoration precision, Id resultType, bool sparse, 
     bool explicitLod = false;
     texArgs[numArgs++] = parameters.sampler;
     texArgs[numArgs++] = parameters.coords;
-    if (parameters.Dref)
+    if (parameters.Dref != NoResult)
         texArgs[numArgs++] = parameters.Dref;
-    if (parameters.comp)
-        texArgs[numArgs++] = parameters.comp;
+    if (parameters.component != NoResult)
+        texArgs[numArgs++] = parameters.component;
 
     //
     // Set up the optional arguments
