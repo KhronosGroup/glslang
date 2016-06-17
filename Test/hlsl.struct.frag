@@ -34,6 +34,7 @@ float4 PixelShaderFunction(float4 input) : COLOR0
     } s3;
 
     s3 == s3;
+    s2.i = s4.ff4;
 
     return input;
 }

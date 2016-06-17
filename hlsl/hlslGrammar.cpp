@@ -1097,8 +1097,16 @@ bool HlslGrammar::acceptPostfixExpression(TIntermTyped*& node)
         // We have a valid post-unary operator, process it.
         switch (postOp) {
         case EOpIndexDirectStruct:
-            // todo
+        {
+            // includes swizzles
+            HlslToken field;
+            if (! acceptIdentifier(field)) {
+                expected("swizzle or member");
+                return false;
+            }
+            node = parseContext.handleDotDereference(field.loc, node, *field.string);
             break;
+        }
         case EOpIndexIndirect:
         {
             TIntermTyped* indexNode = nullptr;
