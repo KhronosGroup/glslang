@@ -769,8 +769,8 @@ bool HlslGrammar::acceptFunctionParameters(TFunction& function)
 }
 
 // parameter_declaration
-//      : fully_specified_type
-//      | fully_specified_type identifier
+//      : fully_specified_type post_decls
+//      | fully_specified_type identifier post_decls
 //
 bool HlslGrammar::acceptParameterDeclaration(TFunction& function)
 {
@@ -782,6 +782,8 @@ bool HlslGrammar::acceptParameterDeclaration(TFunction& function)
     // identifier
     HlslToken idToken;
     acceptIdentifier(idToken);
+
+    acceptPostDecls(*type);
 
     TParameter param = { idToken.string, type };
     function.addParameter(param);
