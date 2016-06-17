@@ -82,7 +82,7 @@ ERROR: 0:192: '.' : cannot apply to an array: nothing
 ERROR: 0:193: '.length' : not supported for this version or the enabled extensions 
 ERROR: 0:194: '.' : cannot apply to an array: method
 ERROR: 0:194: 'a' : can't use function syntax on variable 
-ERROR: 0:214: 'non-constant global initializer' : not supported with this profile: es
+ERROR: 0:214: 'non-constant global initializer (needs GL_EXT_shader_non_constant_global_initializers)' : not supported for this version or the enabled extensions 
 ERROR: 0:3000: '#error' : line of this error should be 3000  
 ERROR: 0:3002: '' :  syntax error
 ERROR: 77 compilation errors.  No code generated.
@@ -90,6 +90,7 @@ ERROR: 77 compilation errors.  No code generated.
 
 Shader version: 100
 Requested GL_EXT_frag_depth
+Requested GL_EXT_shader_non_constant_global_initializers
 Requested GL_EXT_shader_texture_lod
 Requested GL_OES_EGL_image_external
 Requested GL_OES_standard_derivatives
@@ -376,6 +377,18 @@ ERROR: node is still EOpNull!
 0:214        false case
 0:214        Constant:
 0:214          2 (const int)
+0:220  Sequence
+0:220    move second child to first child (temp mediump int)
+0:220      'init2' (global mediump int)
+0:220      Test condition and select (temp mediump int)
+0:220        Condition
+0:220        'gl_FrontFacing' (gl_FrontFacing bool Face)
+0:220        true case
+0:220        Constant:
+0:220          1 (const int)
+0:220        false case
+0:220        Constant:
+0:220          2 (const int)
 0:?   Linker Objects
 0:?     'a' (global 3-element array of mediump int)
 0:?     'uint' (global mediump int)
@@ -407,6 +420,7 @@ ERROR: node is still EOpNull!
 0:?     'fi3' (const mediump float)
 0:?       5.000000
 0:?     'init1' (global mediump int)
+0:?     'init2' (global mediump int)
 
 
 Linked fragment stage:
@@ -414,6 +428,7 @@ Linked fragment stage:
 
 Shader version: 100
 Requested GL_EXT_frag_depth
+Requested GL_EXT_shader_non_constant_global_initializers
 Requested GL_EXT_shader_texture_lod
 Requested GL_OES_EGL_image_external
 Requested GL_OES_standard_derivatives
@@ -700,6 +715,18 @@ ERROR: node is still EOpNull!
 0:214        false case
 0:214        Constant:
 0:214          2 (const int)
+0:220  Sequence
+0:220    move second child to first child (temp mediump int)
+0:220      'init2' (global mediump int)
+0:220      Test condition and select (temp mediump int)
+0:220        Condition
+0:220        'gl_FrontFacing' (gl_FrontFacing bool Face)
+0:220        true case
+0:220        Constant:
+0:220          1 (const int)
+0:220        false case
+0:220        Constant:
+0:220          2 (const int)
 0:?   Linker Objects
 0:?     'a' (global 3-element array of mediump int)
 0:?     'uint' (global mediump int)
@@ -731,4 +758,5 @@ ERROR: node is still EOpNull!
 0:?     'fi3' (const mediump float)
 0:?       5.000000
 0:?     'init1' (global mediump int)
+0:?     'init2' (global mediump int)
 

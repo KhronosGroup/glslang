@@ -5083,11 +5083,13 @@ TIntermNode* TParseContext::executeInitializer(const TSourceLoc& loc, TIntermTyp
         // "In declarations of global variables with no storage qualifier or with a const
         // qualifier any initializer must be a constant expression."
         if (symbolTable.atGlobalLevel() && ! initializer->getType().getQualifier().isConstant()) {
-            const char* initFeature = "non-constant global initializer";
-            if (relaxedErrors())
-                warn(loc, "not allowed in this version", initFeature, "");
-            else
-                requireProfile(loc, ~EEsProfile, initFeature);
+            const char* initFeature = "non-constant global initializer (needs GL_EXT_shader_non_constant_global_initializers)";
+            if (profile == EEsProfile) {
+                if (relaxedErrors() && ! extensionTurnedOn(E_GL_EXT_shader_non_constant_global_initializers))
+                    warn(loc, "not allowed in this version", initFeature, "");
+                else
+                    profileRequires(loc, EEsProfile, 0, E_GL_EXT_shader_non_constant_global_initializers, initFeature);
+            }
         }
     }
 

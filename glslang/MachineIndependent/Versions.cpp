@@ -182,6 +182,8 @@ void TParseVersions::initializeExtensionBehavior()
     extensionBehavior[E_GL_ARB_sparse_texture_clamp]         = EBhDisable;
 //    extensionBehavior[E_GL_ARB_cull_distance]                = EBhDisable;    // present for 4.5, but need extension control over block members
 
+    extensionBehavior[E_GL_EXT_shader_non_constant_global_initializers] = EBhDisable;
+
     // #line and #include
     extensionBehavior[E_GL_GOOGLE_cpp_style_line_directive]          = EBhDisable;
     extensionBehavior[E_GL_GOOGLE_include_directive]                 = EBhDisable;
@@ -256,6 +258,7 @@ void TParseVersions::getPreamble(std::string& preamble)
             "#define GL_OES_tessellation_point_size 1\n"
             "#define GL_OES_texture_buffer 1\n"
             "#define GL_OES_texture_cube_map_array 1\n"
+            "#define GL_EXT_shader_non_constant_global_initializers 1\n"
             ;
     } else {
         preamble = 
@@ -284,6 +287,7 @@ void TParseVersions::getPreamble(std::string& preamble)
             "#define GL_ARB_sparse_texture2 1\n"
             "#define GL_ARB_sparse_texture_clamp 1\n"
 //            "#define GL_ARB_cull_distance 1\n"    // present for 4.5, but need extension control over block members
+            "#define GL_EXT_shader_non_constant_global_initializers 1\n"
             ;
     }
 
