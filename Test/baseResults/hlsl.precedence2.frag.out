@@ -4,27 +4,27 @@ gl_FragCoord origin is upper left
 0:? Sequence
 0:10  Function Definition: PixelShaderFunction(i1;i1;i1;i1; (temp int)
 0:7    Function Parameters: 
-0:7      'a1' (temp int)
-0:7      'a2' (temp int)
-0:7      'a3' (temp int)
-0:7      'a4' (temp int)
+0:7      'a1' (in int)
+0:7      'a2' (in int)
+0:7      'a3' (in int)
+0:7      'a4' (in int)
 0:?     Sequence
 0:8      Branch: Return with expression
 0:8        add (temp int)
 0:8          left-shift (temp int)
 0:8            add (temp int)
 0:8              component-wise multiply (temp int)
-0:8                'a1' (temp int)
-0:8                'a2' (temp int)
-0:8              'a3' (temp int)
-0:8            'a4' (temp int)
+0:8                'a1' (in int)
+0:8                'a2' (in int)
+0:8              'a3' (in int)
+0:8            'a4' (in int)
 0:8          left-shift (temp int)
-0:8            'a1' (temp int)
+0:8            'a1' (in int)
 0:8            add (temp int)
-0:8              'a2' (temp int)
+0:8              'a2' (in int)
 0:8              component-wise multiply (temp int)
-0:8                'a3' (temp int)
-0:8                'a4' (temp int)
+0:8                'a3' (in int)
+0:8                'a4' (in int)
 0:?   Linker Objects
 
 
@@ -36,27 +36,27 @@ gl_FragCoord origin is upper left
 0:? Sequence
 0:10  Function Definition: PixelShaderFunction(i1;i1;i1;i1; (temp int)
 0:7    Function Parameters: 
-0:7      'a1' (temp int)
-0:7      'a2' (temp int)
-0:7      'a3' (temp int)
-0:7      'a4' (temp int)
+0:7      'a1' (in int)
+0:7      'a2' (in int)
+0:7      'a3' (in int)
+0:7      'a4' (in int)
 0:?     Sequence
 0:8      Branch: Return with expression
 0:8        add (temp int)
 0:8          left-shift (temp int)
 0:8            add (temp int)
 0:8              component-wise multiply (temp int)
-0:8                'a1' (temp int)
-0:8                'a2' (temp int)
-0:8              'a3' (temp int)
-0:8            'a4' (temp int)
+0:8                'a1' (in int)
+0:8                'a2' (in int)
+0:8              'a3' (in int)
+0:8            'a4' (in int)
 0:8          left-shift (temp int)
-0:8            'a1' (temp int)
+0:8            'a1' (in int)
 0:8            add (temp int)
-0:8              'a2' (temp int)
+0:8              'a2' (in int)
 0:8              component-wise multiply (temp int)
-0:8                'a3' (temp int)
-0:8                'a4' (temp int)
+0:8                'a3' (in int)
+0:8                'a4' (in int)
 0:?   Linker Objects
 
 // Module Version 10000
@@ -66,7 +66,7 @@ gl_FragCoord origin is upper left
                               Capability Shader
                1:             ExtInstImport  "GLSL.std.450"
                               MemoryModel Logical GLSL450
-                              EntryPoint Fragment 4  "PixelShaderFunction"
+                              EntryPoint Fragment 4  "PixelShaderFunction" 8 10 13 16
                               ExecutionMode 4 OriginUpperLeft
                               Source HLSL 450
                               Name 4  "PixelShaderFunction"
@@ -77,13 +77,13 @@ gl_FragCoord origin is upper left
                2:             TypeVoid
                3:             TypeFunction 2
                6:             TypeInt 32 1
-               7:             TypePointer Function 6(int)
+               7:             TypePointer Input 6(int)
+           8(a1):      7(ptr) Variable Input
+          10(a2):      7(ptr) Variable Input
+          13(a3):      7(ptr) Variable Input
+          16(a4):      7(ptr) Variable Input
 4(PixelShaderFunction):           2 Function None 3
                5:             Label
-           8(a1):      7(ptr) Variable Function
-          10(a2):      7(ptr) Variable Function
-          13(a3):      7(ptr) Variable Function
-          16(a4):      7(ptr) Variable Function
                9:      6(int) Load 8(a1)
               11:      6(int) Load 10(a2)
               12:      6(int) IMul 9 11

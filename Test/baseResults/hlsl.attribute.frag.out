@@ -4,7 +4,7 @@ gl_FragCoord origin is upper left
 0:? Sequence
 0:14  Function Definition: PixelShaderFunction(vf4; (temp 4-component vector of float)
 0:2    Function Parameters: 
-0:2      'input' (temp 4-component vector of float)
+0:2      'input' (in 4-component vector of float)
 0:?     Sequence
 0:11      Test condition and select (temp void)
 0:11        Condition
@@ -22,7 +22,7 @@ gl_FragCoord origin is upper left
 0:? Sequence
 0:14  Function Definition: PixelShaderFunction(vf4; (temp 4-component vector of float)
 0:2    Function Parameters: 
-0:2      'input' (temp 4-component vector of float)
+0:2      'input' (in 4-component vector of float)
 0:?     Sequence
 0:11      Test condition and select (temp void)
 0:11        Condition

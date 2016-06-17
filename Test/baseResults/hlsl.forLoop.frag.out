@@ -4,7 +4,7 @@ gl_FragCoord origin is upper left
 0:? Sequence
 0:9  Function Definition: PixelShaderFunction(vf4; (temp 4-component vector of float)
 0:2    Function Parameters: 
-0:2      'input' (temp 4-component vector of float)
+0:2      'input' (in 4-component vector of float)
 0:?     Sequence
 0:?       Sequence
 0:3        Loop with condition tested first
@@ -12,7 +12,7 @@ gl_FragCoord origin is upper left
 0:3          No loop body
 0:4      Sequence
 0:4        Pre-Increment (temp 4-component vector of float)
-0:4          'input' (temp 4-component vector of float)
+0:4          'input' (in 4-component vector of float)
 0:4        Loop with condition tested first
 0:4          No loop condition
 0:4          No loop body
@@ -20,36 +20,36 @@ gl_FragCoord origin is upper left
 0:5        Loop with condition tested first
 0:5          Loop Condition
 0:5          Compare Not Equal (temp bool)
-0:5            'input' (temp 4-component vector of float)
-0:5            'input' (temp 4-component vector of float)
+0:5            'input' (in 4-component vector of float)
+0:5            'input' (in 4-component vector of float)
 0:5          No loop body
 0:?       Sequence
 0:6        Loop with condition tested first
 0:6          Loop Condition
 0:6          Compare Not Equal (temp bool)
-0:6            'input' (temp 4-component vector of float)
-0:6            'input' (temp 4-component vector of float)
+0:6            'input' (in 4-component vector of float)
+0:6            'input' (in 4-component vector of float)
 0:6          Loop Body
 0:?           Sequence
 0:6            Branch: Return with expression
 0:6              Negate value (temp 4-component vector of float)
-0:6                'input' (temp 4-component vector of float)
+0:6                'input' (in 4-component vector of float)
 0:7      Sequence
 0:7        Pre-Decrement (temp 4-component vector of float)
-0:7          'input' (temp 4-component vector of float)
+0:7          'input' (in 4-component vector of float)
 0:7        Loop with condition tested first
 0:7          Loop Condition
 0:7          Compare Not Equal (temp bool)
-0:7            'input' (temp 4-component vector of float)
-0:7            'input' (temp 4-component vector of float)
+0:7            'input' (in 4-component vector of float)
+0:7            'input' (in 4-component vector of float)
 0:7          Loop Body
 0:?           Sequence
 0:7            Branch: Return with expression
 0:7              Negate value (temp 4-component vector of float)
-0:7                'input' (temp 4-component vector of float)
+0:7                'input' (in 4-component vector of float)
 0:7          Loop Terminal Expression
 0:7          add second child into first child (temp 4-component vector of float)
-0:7            'input' (temp 4-component vector of float)
+0:7            'input' (in 4-component vector of float)
 0:7            Constant:
 0:7              2.000000
 0:?   Linker Objects
@@ -63,7 +63,7 @@ gl_FragCoord origin is upper left
 0:? Sequence
 0:9  Function Definition: PixelShaderFunction(vf4; (temp 4-component vector of float)
 0:2    Function Parameters: 
-0:2      'input' (temp 4-component vector of float)
+0:2      'input' (in 4-component vector of float)
 0:?     Sequence
 0:?       Sequence
 0:3        Loop with condition tested first
@@ -71,7 +71,7 @@ gl_FragCoord origin is upper left
 0:3          No loop body
 0:4      Sequence
 0:4        Pre-Increment (temp 4-component vector of float)
-0:4          'input' (temp 4-component vector of float)
+0:4          'input' (in 4-component vector of float)
 0:4        Loop with condition tested first
 0:4          No loop condition
 0:4          No loop body
@@ -79,36 +79,36 @@ gl_FragCoord origin is upper left
 0:5        Loop with condition tested first
 0:5          Loop Condition
 0:5          Compare Not Equal (temp bool)
-0:5            'input' (temp 4-component vector of float)
-0:5            'input' (temp 4-component vector of float)
+0:5            'input' (in 4-component vector of float)
+0:5            'input' (in 4-component vector of float)
 0:5          No loop body
 0:?       Sequence
 0:6        Loop with condition tested first
 0:6          Loop Condition
 0:6          Compare Not Equal (temp bool)
-0:6            'input' (temp 4-component vector of float)
-0:6            'input' (temp 4-component vector of float)
+0:6            'input' (in 4-component vector of float)
+0:6            'input' (in 4-component vector of float)
 0:6          Loop Body
 0:?           Sequence
 0:6            Branch: Return with expression
 0:6              Negate value (temp 4-component vector of float)
-0:6                'input' (temp 4-component vector of float)
+0:6                'input' (in 4-component vector of float)
 0:7      Sequence
 0:7        Pre-Decrement (temp 4-component vector of float)
-0:7          'input' (temp 4-component vector of float)
+0:7          'input' (in 4-component vector of float)
 0:7        Loop with condition tested first
 0:7          Loop Condition
 0:7          Compare Not Equal (temp bool)
-0:7            'input' (temp 4-component vector of float)
-0:7            'input' (temp 4-component vector of float)
+0:7            'input' (in 4-component vector of float)
+0:7            'input' (in 4-component vector of float)
 0:7          Loop Body
 0:?           Sequence
 0:7            Branch: Return with expression
 0:7              Negate value (temp 4-component vector of float)
-0:7                'input' (temp 4-component vector of float)
+0:7                'input' (in 4-component vector of float)
 0:7          Loop Terminal Expression
 0:7          add second child into first child (temp 4-component vector of float)
-0:7            'input' (temp 4-component vector of float)
+0:7            'input' (in 4-component vector of float)
 0:7            Constant:
 0:7              2.000000
 0:?   Linker Objects
@@ -120,7 +120,7 @@ gl_FragCoord origin is upper left
                               Capability Shader
                1:             ExtInstImport  "GLSL.std.450"
                               MemoryModel Logical GLSL450
-                              EntryPoint Fragment 4  "PixelShaderFunction"
+                              EntryPoint Fragment 4  "PixelShaderFunction" 13
                               ExecutionMode 4 OriginUpperLeft
                               Source HLSL 450
                               Name 4  "PixelShaderFunction"
@@ -129,14 +129,14 @@ gl_FragCoord origin is upper left
                3:             TypeFunction 2
               10:             TypeFloat 32
               11:             TypeVector 10(float) 4
-              12:             TypePointer Function 11(fvec4)
+              12:             TypePointer Input 11(fvec4)
+       13(input):     12(ptr) Variable Input
               15:   10(float) Constant 1065353216
               29:             TypeBool
               30:             TypeVector 29(bool) 4
               60:   10(float) Constant 1073741824
 4(PixelShaderFunction):           2 Function None 3
                5:             Label
-       13(input):     12(ptr) Variable Function
                               Branch 6
                6:             Label
                               LoopMerge 8 9 None

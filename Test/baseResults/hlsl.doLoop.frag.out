@@ -4,7 +4,7 @@ gl_FragCoord origin is upper left
 0:? Sequence
 0:7  Function Definition: PixelShaderFunction(vf4; (temp 4-component vector of float)
 0:2    Function Parameters: 
-0:2      'input' (temp 4-component vector of float)
+0:2      'input' (in 4-component vector of float)
 0:?     Sequence
 0:3      Loop with condition not tested first
 0:3        Loop Condition
@@ -19,11 +19,11 @@ gl_FragCoord origin is upper left
 0:5      Loop with condition not tested first
 0:5        Loop Condition
 0:5        Compare Equal (temp bool)
-0:5          'input' (temp 4-component vector of float)
-0:5          'input' (temp 4-component vector of float)
+0:5          'input' (in 4-component vector of float)
+0:5          'input' (in 4-component vector of float)
 0:5        Loop Body
 0:5        Branch: Return with expression
-0:5          'input' (temp 4-component vector of float)
+0:5          'input' (in 4-component vector of float)
 0:?   Linker Objects
 
 
@@ -35,7 +35,7 @@ gl_FragCoord origin is upper left
 0:? Sequence
 0:7  Function Definition: PixelShaderFunction(vf4; (temp 4-component vector of float)
 0:2    Function Parameters: 
-0:2      'input' (temp 4-component vector of float)
+0:2      'input' (in 4-component vector of float)
 0:?     Sequence
 0:3      Loop with condition not tested first
 0:3        Loop Condition
@@ -50,11 +50,11 @@ gl_FragCoord origin is upper left
 0:5      Loop with condition not tested first
 0:5        Loop Condition
 0:5        Compare Equal (temp bool)
-0:5          'input' (temp 4-component vector of float)
-0:5          'input' (temp 4-component vector of float)
+0:5          'input' (in 4-component vector of float)
+0:5          'input' (in 4-component vector of float)
 0:5        Loop Body
 0:5        Branch: Return with expression
-0:5          'input' (temp 4-component vector of float)
+0:5          'input' (in 4-component vector of float)
 0:?   Linker Objects
 
 // Module Version 10000
@@ -64,7 +64,7 @@ gl_FragCoord origin is upper left
                               Capability Shader
                1:             ExtInstImport  "GLSL.std.450"
                               MemoryModel Logical GLSL450
-                              EntryPoint Fragment 4  "PixelShaderFunction"
+                              EntryPoint Fragment 4  "PixelShaderFunction" 23
                               ExecutionMode 4 OriginUpperLeft
                               Source HLSL 450
                               Name 4  "PixelShaderFunction"
@@ -75,11 +75,11 @@ gl_FragCoord origin is upper left
               11:    10(bool) ConstantFalse
               20:             TypeFloat 32
               21:             TypeVector 20(float) 4
-              22:             TypePointer Function 21(fvec4)
+              22:             TypePointer Input 21(fvec4)
+       23(input):     22(ptr) Variable Input
               28:             TypeVector 10(bool) 4
 4(PixelShaderFunction):           2 Function None 3
                5:             Label
-       23(input):     22(ptr) Variable Function
                               Branch 6
                6:             Label
                               LoopMerge 8 9 None

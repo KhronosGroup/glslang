@@ -8,8 +8,8 @@ gl_FragCoord origin is upper left
 0:1      1.000000
 0:11  Function Definition: ShaderFunction(vf1;f1; (temp 1-component vector of float)
 0:9    Function Parameters: 
-0:9      'inFloat1' (temp 1-component vector of float)
-0:9      'inScalar' (temp float)
+0:9      'inFloat1' (in 1-component vector of float)
+0:9      'inScalar' (in float)
 0:?   Linker Objects
 0:?     'f1' (temp 1-component vector of float)
 0:?     'fmat11' (temp 1X1 matrix of float)
@@ -31,8 +31,8 @@ gl_FragCoord origin is upper left
 0:1      1.000000
 0:11  Function Definition: ShaderFunction(vf1;f1; (temp 1-component vector of float)
 0:9    Function Parameters: 
-0:9      'inFloat1' (temp 1-component vector of float)
-0:9      'inScalar' (temp float)
+0:9      'inFloat1' (in 1-component vector of float)
+0:9      'inScalar' (in float)
 0:?   Linker Objects
 0:?     'f1' (temp 1-component vector of float)
 0:?     'fmat11' (temp 1X1 matrix of float)

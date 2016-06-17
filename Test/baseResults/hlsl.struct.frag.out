@@ -4,13 +4,13 @@ gl_FragCoord origin is upper left
 0:? Sequence
 0:39  Function Definition: PixelShaderFunction(vf4; (temp 4-component vector of float)
 0:31    Function Parameters: 
-0:31      'input' (temp 4-component vector of float)
+0:31      'input' (in 4-component vector of float)
 0:?     Sequence
 0:36      Compare Equal (temp bool)
 0:36        's3' (temp structure{temp 3-component vector of bool b3})
 0:36        's3' (temp structure{temp 3-component vector of bool b3})
 0:38      Branch: Return with expression
-0:38        'input' (temp 4-component vector of float)
+0:38        'input' (in 4-component vector of float)
 0:?   Linker Objects
 0:?     's1' (temp structure{temp bool b, temp bool c, temp 4-component vector of float a, temp 4-component vector of float d})
 0:?     's2' (temp structure{temp 4-component vector of float i})
@@ -25,13 +25,13 @@ gl_FragCoord origin is upper left
 0:? Sequence
 0:39  Function Definition: PixelShaderFunction(vf4; (temp 4-component vector of float)
 0:31    Function Parameters: 
-0:31      'input' (temp 4-component vector of float)
+0:31      'input' (in 4-component vector of float)
 0:?     Sequence
 0:36      Compare Equal (temp bool)
 0:36        's3' (temp structure{temp 3-component vector of bool b3})
 0:36        's3' (temp structure{temp 3-component vector of bool b3})
 0:38      Branch: Return with expression
-0:38        'input' (temp 4-component vector of float)
+0:38        'input' (in 4-component vector of float)
 0:?   Linker Objects
 0:?     's1' (temp structure{temp bool b, temp bool c, temp 4-component vector of float a, temp 4-component vector of float d})
 0:?     's2' (temp structure{temp 4-component vector of float i})
@@ -44,7 +44,7 @@ gl_FragCoord origin is upper left
                               Capability Shader
                1:             ExtInstImport  "GLSL.std.450"
                               MemoryModel Logical GLSL450
-                              EntryPoint Fragment 4  "PixelShaderFunction"
+                              EntryPoint Fragment 4  "PixelShaderFunction" 20
                               ExecutionMode 4 OriginUpperLeft
                               Source HLSL 450
                               Name 4  "PixelShaderFunction"
@@ -81,7 +81,8 @@ gl_FragCoord origin is upper left
                9:             TypePointer Function 8(FS)
               17:             TypeFloat 32
               18:             TypeVector 17(float) 4
-              19:             TypePointer Function 18(fvec4)
+              19:             TypePointer Input 18(fvec4)
+       20(input):     19(ptr) Variable Input
          23(myS):             TypeStruct 6(bool) 6(bool) 18(fvec4) 18(fvec4)
               24:             TypePointer Function 23(myS)
               26:             TypeStruct 18(fvec4)
@@ -92,7 +93,6 @@ gl_FragCoord origin is upper left
 4(PixelShaderFunction):           2 Function None 3
                5:             Label
           10(s3):      9(ptr) Variable Function
-       20(input):     19(ptr) Variable Function
           25(s1):     24(ptr) Variable Function
           28(s2):     27(ptr) Variable Function
           32(s4):     31(ptr) Variable Function

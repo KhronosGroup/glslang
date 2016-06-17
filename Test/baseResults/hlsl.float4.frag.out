@@ -11,11 +11,11 @@ gl_FragCoord origin is upper left
 0:?       1.000000
 0:12  Function Definition: ShaderFunction(vf4; (temp 4-component vector of float)
 0:9    Function Parameters: 
-0:9      'input' (temp 4-component vector of float)
+0:9      'input' (in 4-component vector of float)
 0:?     Sequence
 0:10      Branch: Return with expression
 0:10        component-wise multiply (temp 4-component vector of float)
-0:10          'input' (temp 4-component vector of float)
+0:10          'input' (in 4-component vector of float)
 0:10          'AmbientColor' (temp 4-component vector of float)
 0:?   Linker Objects
 0:?     'AmbientColor' (temp 4-component vector of float)
@@ -40,11 +40,11 @@ gl_FragCoord origin is upper left
 0:?       1.000000
 0:12  Function Definition: ShaderFunction(vf4; (temp 4-component vector of float)
 0:9    Function Parameters: 
-0:9      'input' (temp 4-component vector of float)
+0:9      'input' (in 4-component vector of float)
 0:?     Sequence
 0:10      Branch: Return with expression
 0:10        component-wise multiply (temp 4-component vector of float)
-0:10          'input' (temp 4-component vector of float)
+0:10          'input' (in 4-component vector of float)
 0:10          'AmbientColor' (temp 4-component vector of float)
 0:?   Linker Objects
 0:?     'AmbientColor' (temp 4-component vector of float)

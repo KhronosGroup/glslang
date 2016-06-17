@@ -233,10 +233,10 @@ Shader version: 450
 ERROR: node is still EOpNull!
 0:74  Function Definition: VertexShaderFunction(f1;f1;f1;i1; (temp float)
 0:15    Function Parameters: 
-0:15      'inF0' (temp float)
-0:15      'inF1' (temp float)
-0:15      'inF2' (temp float)
-0:15      'inI0' (temp int)
+0:15      'inF0' (in float)
+0:15      'inF1' (in float)
+0:15      'inF2' (in float)
+0:15      'inI0' (in int)
 0:?     Sequence
 0:20      Constant:
 0:20        0.000000
@@ -331,10 +331,10 @@ ERROR: node is still EOpNull!
 0:71          0.000000
 0:83  Function Definition: VertexShaderFunction(vf1;vf1;vf1;vi1; (temp 1-component vector of float)
 0:75    Function Parameters: 
-0:75      'inF0' (temp 1-component vector of float)
-0:75      'inF1' (temp 1-component vector of float)
-0:75      'inF2' (temp 1-component vector of float)
-0:75      'inI0' (temp 1-component vector of int)
+0:75      'inF0' (in 1-component vector of float)
+0:75      'inF1' (in 1-component vector of float)
+0:75      'inF2' (in 1-component vector of float)
+0:75      'inI0' (in 1-component vector of int)
 0:?     Sequence
 0:78      Constant:
 0:78        0.000000
@@ -343,10 +343,10 @@ ERROR: node is still EOpNull!
 0:80          0.000000
 0:130  Function Definition: VertexShaderFunction(vf2;vf2;vf2;vi2; (temp 2-component vector of float)
 0:84    Function Parameters: 
-0:84      'inF0' (temp 2-component vector of float)
-0:84      'inF1' (temp 2-component vector of float)
-0:84      'inF2' (temp 2-component vector of float)
-0:84      'inI0' (temp 2-component vector of int)
+0:84      'inF0' (in 2-component vector of float)
+0:84      'inF1' (in 2-component vector of float)
+0:84      'inF2' (in 2-component vector of float)
+0:84      'inI0' (in 2-component vector of int)
 0:?     Sequence
 0:87      Constant:
 0:87        0.000000
@@ -428,10 +428,10 @@ ERROR: node is still EOpNull!
 0:?           2.000000
 0:175  Function Definition: VertexShaderFunction(vf3;vf3;vf3;vi3; (temp 3-component vector of float)
 0:131    Function Parameters: 
-0:131      'inF0' (temp 3-component vector of float)
-0:131      'inF1' (temp 3-component vector of float)
-0:131      'inF2' (temp 3-component vector of float)
-0:131      'inI0' (temp 3-component vector of int)
+0:131      'inF0' (in 3-component vector of float)
+0:131      'inF1' (in 3-component vector of float)
+0:131      'inF2' (in 3-component vector of float)
+0:131      'inI0' (in 3-component vector of int)
 0:?     Sequence
 0:134      Constant:
 0:134        0.000000
@@ -510,10 +510,10 @@ ERROR: node is still EOpNull!
 0:?           3.000000
 0:251  Function Definition: VertexShaderFunction(vf4;vf4;vf4;vi4; (temp 4-component vector of float)
 0:176    Function Parameters: 
-0:176      'inF0' (temp 4-component vector of float)
-0:176      'inF1' (temp 4-component vector of float)
-0:176      'inF2' (temp 4-component vector of float)
-0:176      'inI0' (temp 4-component vector of int)
+0:176      'inF0' (in 4-component vector of float)
+0:176      'inF1' (in 4-component vector of float)
+0:176      'inF2' (in 4-component vector of float)
+0:176      'inI0' (in 4-component vector of int)
 0:?     Sequence
 0:179      Constant:
 0:179        0.000000
@@ -593,9 +593,9 @@ ERROR: node is still EOpNull!
 0:?           4.000000
 0:259  Function Definition: VertexShaderFunction(mf22;mf22;mf22; (temp 2X2 matrix of float)
 0:252    Function Parameters: 
-0:252      'inF0' (temp 2X2 matrix of float)
-0:252      'inF1' (temp 2X2 matrix of float)
-0:252      'inF2' (temp 2X2 matrix of float)
+0:252      'inF0' (in 2X2 matrix of float)
+0:252      'inF1' (in 2X2 matrix of float)
+0:252      'inF2' (in 2X2 matrix of float)
 0:?     Sequence
 0:254      Constant:
 0:254        0.000000
@@ -655,9 +655,9 @@ ERROR: node is still EOpNull!
 0:?           2.000000
 0:267  Function Definition: VertexShaderFunction(mf33;mf33;mf33; (temp 3X3 matrix of float)
 0:260    Function Parameters: 
-0:260      'inF0' (temp 3X3 matrix of float)
-0:260      'inF1' (temp 3X3 matrix of float)
-0:260      'inF2' (temp 3X3 matrix of float)
+0:260      'inF0' (in 3X3 matrix of float)
+0:260      'inF1' (in 3X3 matrix of float)
+0:260      'inF2' (in 3X3 matrix of float)
 0:?     Sequence
 0:262      Constant:
 0:262        0.000000
@@ -722,9 +722,9 @@ ERROR: node is still EOpNull!
 0:?           3.000000
 0:274  Function Definition: VertexShaderFunction(mf44;mf44;mf44; (temp 4X4 matrix of float)
 0:268    Function Parameters: 
-0:268      'inF0' (temp 4X4 matrix of float)
-0:268      'inF1' (temp 4X4 matrix of float)
-0:268      'inF2' (temp 4X4 matrix of float)
+0:268      'inF0' (in 4X4 matrix of float)
+0:268      'inF1' (in 4X4 matrix of float)
+0:268      'inF2' (in 4X4 matrix of float)
 0:?     Sequence
 0:270      Constant:
 0:270        0.000000
@@ -816,10 +816,10 @@ Shader version: 450
 ERROR: node is still EOpNull!
 0:74  Function Definition: VertexShaderFunction(f1;f1;f1;i1; (temp float)
 0:15    Function Parameters: 
-0:15      'inF0' (temp float)
-0:15      'inF1' (temp float)
-0:15      'inF2' (temp float)
-0:15      'inI0' (temp int)
+0:15      'inF0' (in float)
+0:15      'inF1' (in float)
+0:15      'inF2' (in float)
+0:15      'inI0' (in int)
 0:?     Sequence
 0:20      Constant:
 0:20        0.000000
@@ -914,10 +914,10 @@ ERROR: node is still EOpNull!
 0:71          0.000000
 0:83  Function Definition: VertexShaderFunction(vf1;vf1;vf1;vi1; (temp 1-component vector of float)
 0:75    Function Parameters: 
-0:75      'inF0' (temp 1-component vector of float)
-0:75      'inF1' (temp 1-component vector of float)
-0:75      'inF2' (temp 1-component vector of float)
-0:75      'inI0' (temp 1-component vector of int)
+0:75      'inF0' (in 1-component vector of float)
+0:75      'inF1' (in 1-component vector of float)
+0:75      'inF2' (in 1-component vector of float)
+0:75      'inI0' (in 1-component vector of int)
 0:?     Sequence
 0:78      Constant:
 0:78        0.000000
@@ -926,10 +926,10 @@ ERROR: node is still EOpNull!
 0:80          0.000000
 0:130  Function Definition: VertexShaderFunction(vf2;vf2;vf2;vi2; (temp 2-component vector of float)
 0:84    Function Parameters: 
-0:84      'inF0' (temp 2-component vector of float)
-0:84      'inF1' (temp 2-component vector of float)
-0:84      'inF2' (temp 2-component vector of float)
-0:84      'inI0' (temp 2-component vector of int)
+0:84      'inF0' (in 2-component vector of float)
+0:84      'inF1' (in 2-component vector of float)
+0:84      'inF2' (in 2-component vector of float)
+0:84      'inI0' (in 2-component vector of int)
 0:?     Sequence
 0:87      Constant:
 0:87        0.000000
@@ -1011,10 +1011,10 @@ ERROR: node is still EOpNull!
 0:?           2.000000
 0:175  Function Definition: VertexShaderFunction(vf3;vf3;vf3;vi3; (temp 3-component vector of float)
 0:131    Function Parameters: 
-0:131      'inF0' (temp 3-component vector of float)
-0:131      'inF1' (temp 3-component vector of float)
-0:131      'inF2' (temp 3-component vector of float)
-0:131      'inI0' (temp 3-component vector of int)
+0:131      'inF0' (in 3-component vector of float)
+0:131      'inF1' (in 3-component vector of float)
+0:131      'inF2' (in 3-component vector of float)
+0:131      'inI0' (in 3-component vector of int)
 0:?     Sequence
 0:134      Constant:
 0:134        0.000000
@@ -1093,10 +1093,10 @@ ERROR: node is still EOpNull!
 0:?           3.000000
 0:251  Function Definition: VertexShaderFunction(vf4;vf4;vf4;vi4; (temp 4-component vector of float)
 0:176    Function Parameters: 
-0:176      'inF0' (temp 4-component vector of float)
-0:176      'inF1' (temp 4-component vector of float)
-0:176      'inF2' (temp 4-component vector of float)
-0:176      'inI0' (temp 4-component vector of int)
+0:176      'inF0' (in 4-component vector of float)
+0:176      'inF1' (in 4-component vector of float)
+0:176      'inF2' (in 4-component vector of float)
+0:176      'inI0' (in 4-component vector of int)
 0:?     Sequence
 0:179      Constant:
 0:179        0.000000
@@ -1176,9 +1176,9 @@ ERROR: node is still EOpNull!
 0:?           4.000000
 0:259  Function Definition: VertexShaderFunction(mf22;mf22;mf22; (temp 2X2 matrix of float)
 0:252    Function Parameters: 
-0:252      'inF0' (temp 2X2 matrix of float)
-0:252      'inF1' (temp 2X2 matrix of float)
-0:252      'inF2' (temp 2X2 matrix of float)
+0:252      'inF0' (in 2X2 matrix of float)
+0:252      'inF1' (in 2X2 matrix of float)
+0:252      'inF2' (in 2X2 matrix of float)
 0:?     Sequence
 0:254      Constant:
 0:254        0.000000
@@ -1238,9 +1238,9 @@ ERROR: node is still EOpNull!
 0:?           2.000000
 0:267  Function Definition: VertexShaderFunction(mf33;mf33;mf33; (temp 3X3 matrix of float)
 0:260    Function Parameters: 
-0:260      'inF0' (temp 3X3 matrix of float)
-0:260      'inF1' (temp 3X3 matrix of float)
-0:260      'inF2' (temp 3X3 matrix of float)
+0:260      'inF0' (in 3X3 matrix of float)
+0:260      'inF1' (in 3X3 matrix of float)
+0:260      'inF2' (in 3X3 matrix of float)
 0:?     Sequence
 0:262      Constant:
 0:262        0.000000
@@ -1305,9 +1305,9 @@ ERROR: node is still EOpNull!
 0:?           3.000000
 0:274  Function Definition: VertexShaderFunction(mf44;mf44;mf44; (temp 4X4 matrix of float)
 0:268    Function Parameters: 
-0:268      'inF0' (temp 4X4 matrix of float)
-0:268      'inF1' (temp 4X4 matrix of float)
-0:268      'inF2' (temp 4X4 matrix of float)
+0:268      'inF0' (in 4X4 matrix of float)
+0:268      'inF1' (in 4X4 matrix of float)
+0:268      'inF2' (in 4X4 matrix of float)
 0:?     Sequence
 0:270      Constant:
 0:270        0.000000

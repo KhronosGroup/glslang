@@ -4,63 +4,63 @@ gl_FragCoord origin is upper left
 0:? Sequence
 0:29  Function Definition: PixelShaderFunction(vf4; (temp 4-component vector of float)
 0:2    Function Parameters: 
-0:2      'input' (temp 4-component vector of float)
+0:2      'input' (in 4-component vector of float)
 0:?     Sequence
 0:3      Test condition and select (temp void)
 0:3        Condition
 0:3        Compare Equal (temp bool)
-0:3          'input' (temp 4-component vector of float)
-0:3          'input' (temp 4-component vector of float)
+0:3          'input' (in 4-component vector of float)
+0:3          'input' (in 4-component vector of float)
 0:3        true case
 0:4        Branch: Return with expression
-0:4          'input' (temp 4-component vector of float)
+0:4          'input' (in 4-component vector of float)
 0:6      Test condition and select (temp void)
 0:6        Condition
 0:6        Compare Equal (temp bool)
-0:6          'input' (temp 4-component vector of float)
-0:6          'input' (temp 4-component vector of float)
+0:6          'input' (in 4-component vector of float)
+0:6          'input' (in 4-component vector of float)
 0:6        true case
 0:7        Branch: Return with expression
-0:7          'input' (temp 4-component vector of float)
+0:7          'input' (in 4-component vector of float)
 0:6        false case
 0:9        Branch: Return with expression
 0:9          Negate value (temp 4-component vector of float)
-0:9            'input' (temp 4-component vector of float)
+0:9            'input' (in 4-component vector of float)
 0:11      Test condition and select (temp void)
 0:11        Condition
 0:11        Compare Equal (temp bool)
-0:11          'input' (temp 4-component vector of float)
-0:11          'input' (temp 4-component vector of float)
+0:11          'input' (in 4-component vector of float)
+0:11          'input' (in 4-component vector of float)
 0:11        true case is null
 0:14      Test condition and select (temp void)
 0:14        Condition
 0:14        Compare Equal (temp bool)
-0:14          'input' (temp 4-component vector of float)
-0:14          'input' (temp 4-component vector of float)
+0:14          'input' (in 4-component vector of float)
+0:14          'input' (in 4-component vector of float)
 0:14        true case is null
 0:19      Test condition and select (temp void)
 0:19        Condition
 0:19        Compare Equal (temp bool)
-0:19          'input' (temp 4-component vector of float)
-0:19          'input' (temp 4-component vector of float)
+0:19          'input' (in 4-component vector of float)
+0:19          'input' (in 4-component vector of float)
 0:19        true case
 0:?         Sequence
 0:20          Branch: Return with expression
-0:20            'input' (temp 4-component vector of float)
+0:20            'input' (in 4-component vector of float)
 0:23      Test condition and select (temp void)
 0:23        Condition
 0:23        Compare Equal (temp bool)
-0:23          'input' (temp 4-component vector of float)
-0:23          'input' (temp 4-component vector of float)
+0:23          'input' (in 4-component vector of float)
+0:23          'input' (in 4-component vector of float)
 0:23        true case
 0:?         Sequence
 0:24          Branch: Return with expression
-0:24            'input' (temp 4-component vector of float)
+0:24            'input' (in 4-component vector of float)
 0:23        false case
 0:?         Sequence
 0:26          Branch: Return with expression
 0:26            Negate value (temp 4-component vector of float)
-0:26              'input' (temp 4-component vector of float)
+0:26              'input' (in 4-component vector of float)
 0:?   Linker Objects
 
 
@@ -72,63 +72,63 @@ gl_FragCoord origin is upper left
 0:? Sequence
 0:29  Function Definition: PixelShaderFunction(vf4; (temp 4-component vector of float)
 0:2    Function Parameters: 
-0:2      'input' (temp 4-component vector of float)
+0:2      'input' (in 4-component vector of float)
 0:?     Sequence
 0:3      Test condition and select (temp void)
 0:3        Condition
 0:3        Compare Equal (temp bool)
-0:3          'input' (temp 4-component vector of float)
-0:3          'input' (temp 4-component vector of float)
+0:3          'input' (in 4-component vector of float)
+0:3          'input' (in 4-component vector of float)
 0:3        true case
 0:4        Branch: Return with expression
-0:4          'input' (temp 4-component vector of float)
+0:4          'input' (in 4-component vector of float)
 0:6      Test condition and select (temp void)
 0:6        Condition
 0:6        Compare Equal (temp bool)
-0:6          'input' (temp 4-component vector of float)
-0:6          'input' (temp 4-component vector of float)
+0:6          'input' (in 4-component vector of float)
+0:6          'input' (in 4-component vector of float)
 0:6        true case
 0:7        Branch: Return with expression
-0:7          'input' (temp 4-component vector of float)
+0:7          'input' (in 4-component vector of float)
 0:6        false case
 0:9        Branch: Return with expression
 0:9          Negate value (temp 4-component vector of float)
-0:9            'input' (temp 4-component vector of float)
+0:9            'input' (in 4-component vector of float)
 0:11      Test condition and select (temp void)
 0:11        Condition
 0:11        Compare Equal (temp bool)
-0:11          'input' (temp 4-component vector of float)
-0:11          'input' (temp 4-component vector of float)
+0:11          'input' (in 4-component vector of float)
+0:11          'input' (in 4-component vector of float)
 0:11        true case is null
 0:14      Test condition and select (temp void)
 0:14        Condition
 0:14        Compare Equal (temp bool)
-0:14          'input' (temp 4-component vector of float)
-0:14          'input' (temp 4-component vector of float)
+0:14          'input' (in 4-component vector of float)
+0:14          'input' (in 4-component vector of float)
 0:14        true case is null
 0:19      Test condition and select (temp void)
 0:19        Condition
 0:19        Compare Equal (temp bool)
-0:19          'input' (temp 4-component vector of float)
-0:19          'input' (temp 4-component vector of float)
+0:19          'input' (in 4-component vector of float)
+0:19          'input' (in 4-component vector of float)
 0:19        true case
 0:?         Sequence
 0:20          Branch: Return with expression
-0:20            'input' (temp 4-component vector of float)
+0:20            'input' (in 4-component vector of float)
 0:23      Test condition and select (temp void)
 0:23        Condition
 0:23        Compare Equal (temp bool)
-0:23          'input' (temp 4-component vector of float)
-0:23          'input' (temp 4-component vector of float)
+0:23          'input' (in 4-component vector of float)
+0:23          'input' (in 4-component vector of float)
 0:23        true case
 0:?         Sequence
 0:24          Branch: Return with expression
-0:24            'input' (temp 4-component vector of float)
+0:24            'input' (in 4-component vector of float)
 0:23        false case
 0:?         Sequence
 0:26          Branch: Return with expression
 0:26            Negate value (temp 4-component vector of float)
-0:26              'input' (temp 4-component vector of float)
+0:26              'input' (in 4-component vector of float)
 0:?   Linker Objects
 
 // Module Version 10000
@@ -138,7 +138,7 @@ gl_FragCoord origin is upper left
                               Capability Shader
                1:             ExtInstImport  "GLSL.std.450"
                               MemoryModel Logical GLSL450
-                              EntryPoint Fragment 4  "PixelShaderFunction"
+                              EntryPoint Fragment 4  "PixelShaderFunction" 9
                               ExecutionMode 4 OriginUpperLeft
                               Source HLSL 450
                               Name 4  "PixelShaderFunction"
@@ -147,12 +147,12 @@ gl_FragCoord origin is upper left
                3:             TypeFunction 2
                6:             TypeFloat 32
                7:             TypeVector 6(float) 4
-               8:             TypePointer Function 7(fvec4)
+               8:             TypePointer Input 7(fvec4)
+        9(input):      8(ptr) Variable Input
               12:             TypeBool
               13:             TypeVector 12(bool) 4
 4(PixelShaderFunction):           2 Function None 3
                5:             Label
-        9(input):      8(ptr) Variable Function
               10:    7(fvec4) Load 9(input)
               11:    7(fvec4) Load 9(input)
               14:   13(bvec4) FOrdEqual 10 11

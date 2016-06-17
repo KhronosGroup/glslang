@@ -4,14 +4,14 @@ local_size = (1, 1, 1)
 0:? Sequence
 0:44  Function Definition: ComputeShaderFunction(f1;f1;f1;u1;u1; (temp float)
 0:17    Function Parameters: 
-0:17      'inF0' (temp float)
-0:17      'inF1' (temp float)
-0:17      'inF2' (temp float)
-0:17      'inU0' (temp uint)
-0:17      'inU1' (temp uint)
+0:17      'inF0' (in float)
+0:17      'inF1' (in float)
+0:17      'inF2' (in float)
+0:17      'inU0' (in uint)
+0:17      'inU1' (in uint)
 0:?     Sequence
 0:21      all (global bool)
-0:21        'inF0' (temp float)
+0:21        'inF0' (in float)
 0:24      AtomicAdd (global void)
 0:24        'gs_ua' (temp uint)
 0:24        'gs_ub' (temp uint)
@@ -76,23 +76,23 @@ local_size = (1, 1, 1)
 0:41          0.000000
 0:50  Function Definition: ComputeShaderFunction(vf1;vf1;vf1; (temp 1-component vector of float)
 0:45    Function Parameters: 
-0:45      'inF0' (temp 1-component vector of float)
-0:45      'inF1' (temp 1-component vector of float)
-0:45      'inF2' (temp 1-component vector of float)
+0:45      'inF0' (in 1-component vector of float)
+0:45      'inF1' (in 1-component vector of float)
+0:45      'inF2' (in 1-component vector of float)
 0:?     Sequence
 0:47      Branch: Return with expression
 0:47        Constant:
 0:47          0.000000
 0:77  Function Definition: ComputeShaderFunction(vf2;vf2;vf2;vu2;vu2; (temp 2-component vector of float)
 0:51    Function Parameters: 
-0:51      'inF0' (temp 2-component vector of float)
-0:51      'inF1' (temp 2-component vector of float)
-0:51      'inF2' (temp 2-component vector of float)
-0:51      'inU0' (temp 2-component vector of uint)
-0:51      'inU1' (temp 2-component vector of uint)
+0:51      'inF0' (in 2-component vector of float)
+0:51      'inF1' (in 2-component vector of float)
+0:51      'inF2' (in 2-component vector of float)
+0:51      'inU0' (in 2-component vector of uint)
+0:51      'inU1' (in 2-component vector of uint)
 0:?     Sequence
 0:55      all (global bool)
-0:55        'inF0' (temp 2-component vector of float)
+0:55        'inF0' (in 2-component vector of float)
 0:58      AtomicAdd (global void)
 0:58        'gs_ua2' (temp 2-component vector of uint)
 0:58        'gs_ub2' (temp 2-component vector of uint)
@@ -158,14 +158,14 @@ local_size = (1, 1, 1)
 0:?           2.000000
 0:104  Function Definition: ComputeShaderFunction(vf3;vf3;vf3;vu3;vu3; (temp 3-component vector of float)
 0:78    Function Parameters: 
-0:78      'inF0' (temp 3-component vector of float)
-0:78      'inF1' (temp 3-component vector of float)
-0:78      'inF2' (temp 3-component vector of float)
-0:78      'inU0' (temp 3-component vector of uint)
-0:78      'inU1' (temp 3-component vector of uint)
+0:78      'inF0' (in 3-component vector of float)
+0:78      'inF1' (in 3-component vector of float)
+0:78      'inF2' (in 3-component vector of float)
+0:78      'inU0' (in 3-component vector of uint)
+0:78      'inU1' (in 3-component vector of uint)
 0:?     Sequence
 0:82      all (global bool)
-0:82        'inF0' (temp 3-component vector of float)
+0:82        'inF0' (in 3-component vector of float)
 0:85      AtomicAdd (global void)
 0:85        'gs_ua3' (temp 3-component vector of uint)
 0:85        'gs_ub3' (temp 3-component vector of uint)
@@ -232,14 +232,14 @@ local_size = (1, 1, 1)
 0:?           3.000000
 0:130  Function Definition: ComputeShaderFunction(vf4;vf4;vf4;vu4;vu4; (temp 4-component vector of float)
 0:105    Function Parameters: 
-0:105      'inF0' (temp 4-component vector of float)
-0:105      'inF1' (temp 4-component vector of float)
-0:105      'inF2' (temp 4-component vector of float)
-0:105      'inU0' (temp 4-component vector of uint)
-0:105      'inU1' (temp 4-component vector of uint)
+0:105      'inF0' (in 4-component vector of float)
+0:105      'inF1' (in 4-component vector of float)
+0:105      'inF2' (in 4-component vector of float)
+0:105      'inU0' (in 4-component vector of uint)
+0:105      'inU1' (in 4-component vector of uint)
 0:?     Sequence
 0:109      all (global bool)
-0:109        'inF0' (temp 4-component vector of float)
+0:109        'inF0' (in 4-component vector of float)
 0:112      AtomicAdd (global void)
 0:112        'gs_ua4' (temp 4-component vector of uint)
 0:112        'gs_ub4' (temp 4-component vector of uint)
@@ -328,14 +328,14 @@ local_size = (1, 1, 1)
 0:? Sequence
 0:44  Function Definition: ComputeShaderFunction(f1;f1;f1;u1;u1; (temp float)
 0:17    Function Parameters: 
-0:17      'inF0' (temp float)
-0:17      'inF1' (temp float)
-0:17      'inF2' (temp float)
-0:17      'inU0' (temp uint)
-0:17      'inU1' (temp uint)
+0:17      'inF0' (in float)
+0:17      'inF1' (in float)
+0:17      'inF2' (in float)
+0:17      'inU0' (in uint)
+0:17      'inU1' (in uint)
 0:?     Sequence
 0:21      all (global bool)
-0:21        'inF0' (temp float)
+0:21        'inF0' (in float)
 0:24      AtomicAdd (global void)
 0:24        'gs_ua' (temp uint)
 0:24        'gs_ub' (temp uint)
@@ -400,23 +400,23 @@ local_size = (1, 1, 1)
 0:41          0.000000
 0:50  Function Definition: ComputeShaderFunction(vf1;vf1;vf1; (temp 1-component vector of float)
 0:45    Function Parameters: 
-0:45      'inF0' (temp 1-component vector of float)
-0:45      'inF1' (temp 1-component vector of float)
-0:45      'inF2' (temp 1-component vector of float)
+0:45      'inF0' (in 1-component vector of float)
+0:45      'inF1' (in 1-component vector of float)
+0:45      'inF2' (in 1-component vector of float)
 0:?     Sequence
 0:47      Branch: Return with expression
 0:47        Constant:
 0:47          0.000000
 0:77  Function Definition: ComputeShaderFunction(vf2;vf2;vf2;vu2;vu2; (temp 2-component vector of float)
 0:51    Function Parameters: 
-0:51      'inF0' (temp 2-component vector of float)
-0:51      'inF1' (temp 2-component vector of float)
-0:51      'inF2' (temp 2-component vector of float)
-0:51      'inU0' (temp 2-component vector of uint)
-0:51      'inU1' (temp 2-component vector of uint)
+0:51      'inF0' (in 2-component vector of float)
+0:51      'inF1' (in 2-component vector of float)
+0:51      'inF2' (in 2-component vector of float)
+0:51      'inU0' (in 2-component vector of uint)
+0:51      'inU1' (in 2-component vector of uint)
 0:?     Sequence
 0:55      all (global bool)
-0:55        'inF0' (temp 2-component vector of float)
+0:55        'inF0' (in 2-component vector of float)
 0:58      AtomicAdd (global void)
 0:58        'gs_ua2' (temp 2-component vector of uint)
 0:58        'gs_ub2' (temp 2-component vector of uint)
@@ -482,14 +482,14 @@ local_size = (1, 1, 1)
 0:?           2.000000
 0:104  Function Definition: ComputeShaderFunction(vf3;vf3;vf3;vu3;vu3; (temp 3-component vector of float)
 0:78    Function Parameters: 
-0:78      'inF0' (temp 3-component vector of float)
-0:78      'inF1' (temp 3-component vector of float)
-0:78      'inF2' (temp 3-component vector of float)
-0:78      'inU0' (temp 3-component vector of uint)
-0:78      'inU1' (temp 3-component vector of uint)
+0:78      'inF0' (in 3-component vector of float)
+0:78      'inF1' (in 3-component vector of float)
+0:78      'inF2' (in 3-component vector of float)
+0:78      'inU0' (in 3-component vector of uint)
+0:78      'inU1' (in 3-component vector of uint)
 0:?     Sequence
 0:82      all (global bool)
-0:82        'inF0' (temp 3-component vector of float)
+0:82        'inF0' (in 3-component vector of float)
 0:85      AtomicAdd (global void)
 0:85        'gs_ua3' (temp 3-component vector of uint)
 0:85        'gs_ub3' (temp 3-component vector of uint)
@@ -556,14 +556,14 @@ local_size = (1, 1, 1)
 0:?           3.000000
 0:130  Function Definition: ComputeShaderFunction(vf4;vf4;vf4;vu4;vu4; (temp 4-component vector of float)
 0:105    Function Parameters: 
-0:105      'inF0' (temp 4-component vector of float)
-0:105      'inF1' (temp 4-component vector of float)
-0:105      'inF2' (temp 4-component vector of float)
-0:105      'inU0' (temp 4-component vector of uint)
-0:105      'inU1' (temp 4-component vector of uint)
+0:105      'inF0' (in 4-component vector of float)
+0:105      'inF1' (in 4-component vector of float)
+0:105      'inF2' (in 4-component vector of float)
+0:105      'inU0' (in 4-component vector of uint)
+0:105      'inU1' (in 4-component vector of uint)
 0:?     Sequence
 0:109      all (global bool)
-0:109        'inF0' (temp 4-component vector of float)
+0:109        'inF0' (in 4-component vector of float)
 0:112      AtomicAdd (global void)
 0:112        'gs_ua4' (temp 4-component vector of uint)
 0:112        'gs_ub4' (temp 4-component vector of uint)
@@ -650,7 +650,7 @@ local_size = (1, 1, 1)
                               Capability Shader
                1:             ExtInstImport  "GLSL.std.450"
                               MemoryModel Logical GLSL450
-                              EntryPoint GLCompute 4  "ComputeShaderFunction"
+                              EntryPoint GLCompute 4  "ComputeShaderFunction" 8 54 98 141
                               ExecutionMode 4 LocalSize 1 1 1
                               Source HLSL 450
                               Name 4  "ComputeShaderFunction"
@@ -677,7 +677,8 @@ local_size = (1, 1, 1)
                2:             TypeVoid
                3:             TypeFunction 2
                6:             TypeFloat 32
-               7:             TypePointer Function 6(float)
+               7:             TypePointer Input 6(float)
+         8(inF0):      7(ptr) Variable Input
               10:             TypeBool
               12:             TypeInt 32 0
               13:             TypePointer Function 12(int)
@@ -685,42 +686,41 @@ local_size = (1, 1, 1)
               18:     12(int) Constant 0
               49:    6(float) Constant 0
               52:             TypeVector 6(float) 2
-              53:             TypePointer Function 52(fvec2)
+              53:             TypePointer Input 52(fvec2)
+        54(inF0):     53(ptr) Variable Input
               57:             TypeVector 12(int) 2
               58:             TypePointer Function 57(ivec2)
               92:    6(float) Constant 1065353216
               93:    6(float) Constant 1073741824
               94:   52(fvec2) ConstantComposite 92 93
               96:             TypeVector 6(float) 3
-              97:             TypePointer Function 96(fvec3)
+              97:             TypePointer Input 96(fvec3)
+        98(inF0):     97(ptr) Variable Input
              101:             TypeVector 12(int) 3
              102:             TypePointer Function 101(ivec3)
              136:    6(float) Constant 1077936128
              137:   96(fvec3) ConstantComposite 92 93 136
              139:             TypeVector 6(float) 4
-             140:             TypePointer Function 139(fvec4)
+             140:             TypePointer Input 139(fvec4)
+       141(inF0):    140(ptr) Variable Input
              144:             TypeVector 12(int) 4
              145:             TypePointer Function 144(ivec4)
              179:    6(float) Constant 1082130432
              180:  139(fvec4) ConstantComposite 92 93 136 179
 4(ComputeShaderFunction):           2 Function None 3
                5:             Label
-         8(inF0):      7(ptr) Variable Function
        14(gs_ua):     13(ptr) Variable Function
        15(gs_ub):     13(ptr) Variable Function
       20(out_u1):     13(ptr) Variable Function
        28(gs_uc):     13(ptr) Variable Function
-        54(inF0):     53(ptr) Variable Function
       59(gs_ua2):     58(ptr) Variable Function
       60(gs_ub2):     58(ptr) Variable Function
       63(out_u2):     58(ptr) Variable Function
       71(gs_uc2):     58(ptr) Variable Function
-        98(inF0):     97(ptr) Variable Function
      103(gs_ua3):    102(ptr) Variable Function
      104(gs_ub3):    102(ptr) Variable Function
      107(out_u3):    102(ptr) Variable Function
      115(gs_uc3):    102(ptr) Variable Function
-       141(inF0):    140(ptr) Variable Function
      146(gs_ua4):    145(ptr) Variable Function
      147(gs_ub4):    145(ptr) Variable Function
      150(out_u4):    145(ptr) Variable Function

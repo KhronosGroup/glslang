@@ -785,6 +785,8 @@ bool HlslGrammar::acceptParameterDeclaration(TFunction& function)
 
     acceptPostDecls(*type);
 
+    parseContext.paramFix(*type);
+
     TParameter param = { idToken.string, type };
     function.addParameter(param);
 

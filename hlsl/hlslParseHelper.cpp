@@ -717,6 +717,11 @@ TIntermAggregate* HlslParseContext::handleFunctionDefinition(const TSourceLoc& l
     functionReturnsValue = false;
 
     inEntrypoint = (function.getName() == intermediate.getEntryPoint().c_str());
+    if (inEntrypoint) {
+        // parameters are actually shader-level inputs
+        for (int i = 0; i < function.getParamCount(); i++)
+            function[i].type->getQualifier().storage = EvqVaryingIn;
+    }
 
     //
     // New symbol table scope for body of function plus its arguments
@@ -2356,40 +2361,19 @@ void HlslParseContext::redeclareBuiltinBlock(const TSourceLoc& loc, TTypeList& n
     intermediate.addSymbolLinkageNode(linkage, *block);
 }
 
-void HlslParseContext::paramCheckFix(const TSourceLoc& loc, const TStorageQualifier& qualifier, TType& type)
+void HlslParseContext::paramFix(TType& type)
 {
-    switch (qualifier) {
+    switch (type.getQualifier().storage) {
     case EvqConst:
-    case EvqConstReadOnly:
         type.getQualifier().storage = EvqConstReadOnly;
-        break;
-    case EvqIn:
-    case EvqOut:
-    case EvqInOut:
-        type.getQualifier().storage = qualifier;
         break;
     case EvqGlobal:
     case EvqTemporary:
         type.getQualifier().storage = EvqIn;
         break;
     default:
-        type.getQualifier().storage = EvqIn;
-        error(loc, "storage qualifier not allowed on function parameter", GetStorageQualifierString(qualifier), "");
         break;
     }
-}
-
-void HlslParseContext::paramCheckFix(const TSourceLoc& loc, const TQualifier& qualifier, TType& type)
-{
-    if (qualifier.isMemory()) {
-        type.getQualifier().volatil = qualifier.volatil;
-        type.getQualifier().coherent = qualifier.coherent;
-        type.getQualifier().readonly = qualifier.readonly;
-        type.getQualifier().writeonly = qualifier.writeonly;
-        type.getQualifier().restrict = qualifier.restrict;
-    }
-
-    paramCheckFix(loc, qualifier.storage, type);
 }
 
 void HlslParseContext::specializationCheck(const TSourceLoc& loc, const TType& type, const char* op)

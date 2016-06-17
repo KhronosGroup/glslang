@@ -158,10 +158,10 @@ local_size = (1, 1, 1)
 ERROR: node is still EOpNull!
 0:56  Function Definition: ComputeShaderFunction(f1;f1;f1;i1; (temp float)
 0:2    Function Parameters: 
-0:2      'inF0' (temp float)
-0:2      'inF1' (temp float)
-0:2      'inF2' (temp float)
-0:2      'inI0' (temp int)
+0:2      'inF0' (in float)
+0:2      'inF1' (in float)
+0:2      'inF2' (in float)
+0:2      'inI0' (in int)
 0:?     Sequence
 0:7      Constant:
 0:7        0.000000
@@ -254,10 +254,10 @@ ERROR: node is still EOpNull!
 0:53          0.000000
 0:65  Function Definition: ComputeShaderFunction(vf1;vf1;vf1;vi1; (temp 1-component vector of float)
 0:57    Function Parameters: 
-0:57      'inF0' (temp 1-component vector of float)
-0:57      'inF1' (temp 1-component vector of float)
-0:57      'inF2' (temp 1-component vector of float)
-0:57      'inI0' (temp 1-component vector of int)
+0:57      'inF0' (in 1-component vector of float)
+0:57      'inF1' (in 1-component vector of float)
+0:57      'inF2' (in 1-component vector of float)
+0:57      'inI0' (in 1-component vector of int)
 0:?     Sequence
 0:60      Constant:
 0:60        0.000000
@@ -266,10 +266,10 @@ ERROR: node is still EOpNull!
 0:62          0.000000
 0:112  Function Definition: ComputeShaderFunction(vf2;vf2;vf2;vi2; (temp 2-component vector of float)
 0:66    Function Parameters: 
-0:66      'inF0' (temp 2-component vector of float)
-0:66      'inF1' (temp 2-component vector of float)
-0:66      'inF2' (temp 2-component vector of float)
-0:66      'inI0' (temp 2-component vector of int)
+0:66      'inF0' (in 2-component vector of float)
+0:66      'inF1' (in 2-component vector of float)
+0:66      'inF2' (in 2-component vector of float)
+0:66      'inI0' (in 2-component vector of int)
 0:?     Sequence
 0:69      Constant:
 0:69        0.000000
@@ -351,10 +351,10 @@ ERROR: node is still EOpNull!
 0:?           2.000000
 0:157  Function Definition: ComputeShaderFunction(vf3;vf3;vf3;vi3; (temp 3-component vector of float)
 0:113    Function Parameters: 
-0:113      'inF0' (temp 3-component vector of float)
-0:113      'inF1' (temp 3-component vector of float)
-0:113      'inF2' (temp 3-component vector of float)
-0:113      'inI0' (temp 3-component vector of int)
+0:113      'inF0' (in 3-component vector of float)
+0:113      'inF1' (in 3-component vector of float)
+0:113      'inF2' (in 3-component vector of float)
+0:113      'inI0' (in 3-component vector of int)
 0:?     Sequence
 0:116      Constant:
 0:116        0.000000
@@ -433,10 +433,10 @@ ERROR: node is still EOpNull!
 0:?           3.000000
 0:202  Function Definition: ComputeShaderFunction(vf4;vf4;vf4;vi4; (temp 4-component vector of float)
 0:158    Function Parameters: 
-0:158      'inF0' (temp 4-component vector of float)
-0:158      'inF1' (temp 4-component vector of float)
-0:158      'inF2' (temp 4-component vector of float)
-0:158      'inI0' (temp 4-component vector of int)
+0:158      'inF0' (in 4-component vector of float)
+0:158      'inF1' (in 4-component vector of float)
+0:158      'inF2' (in 4-component vector of float)
+0:158      'inI0' (in 4-component vector of int)
 0:?     Sequence
 0:161      Constant:
 0:161        0.000000
@@ -525,10 +525,10 @@ local_size = (1, 1, 1)
 ERROR: node is still EOpNull!
 0:56  Function Definition: ComputeShaderFunction(f1;f1;f1;i1; (temp float)
 0:2    Function Parameters: 
-0:2      'inF0' (temp float)
-0:2      'inF1' (temp float)
-0:2      'inF2' (temp float)
-0:2      'inI0' (temp int)
+0:2      'inF0' (in float)
+0:2      'inF1' (in float)
+0:2      'inF2' (in float)
+0:2      'inI0' (in int)
 0:?     Sequence
 0:7      Constant:
 0:7        0.000000
@@ -621,10 +621,10 @@ ERROR: node is still EOpNull!
 0:53          0.000000
 0:65  Function Definition: ComputeShaderFunction(vf1;vf1;vf1;vi1; (temp 1-component vector of float)
 0:57    Function Parameters: 
-0:57      'inF0' (temp 1-component vector of float)
-0:57      'inF1' (temp 1-component vector of float)
-0:57      'inF2' (temp 1-component vector of float)
-0:57      'inI0' (temp 1-component vector of int)
+0:57      'inF0' (in 1-component vector of float)
+0:57      'inF1' (in 1-component vector of float)
+0:57      'inF2' (in 1-component vector of float)
+0:57      'inI0' (in 1-component vector of int)
 0:?     Sequence
 0:60      Constant:
 0:60        0.000000
@@ -633,10 +633,10 @@ ERROR: node is still EOpNull!
 0:62          0.000000
 0:112  Function Definition: ComputeShaderFunction(vf2;vf2;vf2;vi2; (temp 2-component vector of float)
 0:66    Function Parameters: 
-0:66      'inF0' (temp 2-component vector of float)
-0:66      'inF1' (temp 2-component vector of float)
-0:66      'inF2' (temp 2-component vector of float)
-0:66      'inI0' (temp 2-component vector of int)
+0:66      'inF0' (in 2-component vector of float)
+0:66      'inF1' (in 2-component vector of float)
+0:66      'inF2' (in 2-component vector of float)
+0:66      'inI0' (in 2-component vector of int)
 0:?     Sequence
 0:69      Constant:
 0:69        0.000000
@@ -718,10 +718,10 @@ ERROR: node is still EOpNull!
 0:?           2.000000
 0:157  Function Definition: ComputeShaderFunction(vf3;vf3;vf3;vi3; (temp 3-component vector of float)
 0:113    Function Parameters: 
-0:113      'inF0' (temp 3-component vector of float)
-0:113      'inF1' (temp 3-component vector of float)
-0:113      'inF2' (temp 3-component vector of float)
-0:113      'inI0' (temp 3-component vector of int)
+0:113      'inF0' (in 3-component vector of float)
+0:113      'inF1' (in 3-component vector of float)
+0:113      'inF2' (in 3-component vector of float)
+0:113      'inI0' (in 3-component vector of int)
 0:?     Sequence
 0:116      Constant:
 0:116        0.000000
@@ -800,10 +800,10 @@ ERROR: node is still EOpNull!
 0:?           3.000000
 0:202  Function Definition: ComputeShaderFunction(vf4;vf4;vf4;vi4; (temp 4-component vector of float)
 0:158    Function Parameters: 
-0:158      'inF0' (temp 4-component vector of float)
-0:158      'inF1' (temp 4-component vector of float)
-0:158      'inF2' (temp 4-component vector of float)
-0:158      'inI0' (temp 4-component vector of int)
+0:158      'inF0' (in 4-component vector of float)
+0:158      'inF1' (in 4-component vector of float)
+0:158      'inF2' (in 4-component vector of float)
+0:158      'inI0' (in 4-component vector of int)
 0:?     Sequence
 0:161      Constant:
 0:161        0.000000

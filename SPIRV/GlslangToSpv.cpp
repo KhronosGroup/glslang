@@ -238,7 +238,7 @@ spv::StorageClass TranslateStorageClass(const glslang::TType& type)
             return spv::StorageClassUniform;
         else
             return spv::StorageClassUniformConstant;
-        // TODO: how are we distuingishing between default and non-default non-writable uniforms?  Do default uniforms even exist?
+        // TODO: how are we distinguishing between default and non-default non-writable uniforms?  Do default uniforms even exist?
     } else {
         switch (type.getQualifier().storage) {
         case glslang::EvqShared:        return spv::StorageClassWorkgroup;  break;

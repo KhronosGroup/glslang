@@ -116,8 +116,7 @@ public:
     int computeSamplerTypeIndex(TSampler&);
     TSymbol* redeclareBuiltinVariable(const TSourceLoc&, const TString&, const TQualifier&, const TShaderQualifiers&, bool& newDeclaration);
     void redeclareBuiltinBlock(const TSourceLoc&, TTypeList& typeList, const TString& blockName, const TString* instanceName, TArraySizes* arraySizes);
-    void paramCheckFix(const TSourceLoc&, const TStorageQualifier&, TType& type);
-    void paramCheckFix(const TSourceLoc&, const TQualifier&, TType& type);
+    void paramFix(TType& type);
     void specializationCheck(const TSourceLoc&, const TType&, const char* op);
 
     void setLayoutQualifier(const TSourceLoc&, TPublicType&, TString&);
