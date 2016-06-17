@@ -293,8 +293,15 @@ void TParseVersions::getPreamble(std::string& preamble)
             "#define GL_GOOGLE_include_directive 1\n"
             ;
 
-    if (vulkan > 0)
-        preamble += "#define VULKAN 100\n";
+    // #define VULKAN XXXX
+    if (spvVersion.vulkan > 0) {
+        preamble += "#define VULKAN ";
+        char number[12];
+        snprintf(number, 12, "%d", spvVersion.vulkan);
+        preamble += number;
+        preamble += "\n";
+    }
+    // gl_spirv TODO
 }
 
 //
@@ -575,9 +582,6 @@ void TParseVersions::updateExtensionBehavior(int line, const char* extension, co
         updateExtensionBehavior(line, "GL_OES_shader_io_blocks", behaviorString);
     else if (strcmp(extension, "GL_GOOGLE_include_directive") == 0)
         updateExtensionBehavior(line, "GL_GOOGLE_cpp_style_line_directive", behaviorString);
-    // SPIR-V
-    else if (strcmp(extension, "GL_ARB_gl_spirv") == 0)
-        spv = 100;
 }
 
 void TParseVersions::updateExtensionBehavior(const char* extension, TExtensionBehavior behavior)
@@ -649,28 +653,28 @@ void TParseVersions::int64Check(const TSourceLoc& loc, const char* op, bool buil
 // Call for any operation removed because SPIR-V is in use.
 void TParseVersions::spvRemoved(const TSourceLoc& loc, const char* op)
 {
-    if (spv > 0)
+    if (spvVersion.spv != 0)
         error(loc, "not allowed when generating SPIR-V", op, "");
 }
 
 // Call for any operation removed because Vulkan SPIR-V is being generated.
 void TParseVersions::vulkanRemoved(const TSourceLoc& loc, const char* op)
 {
-    if (vulkan > 0)
+    if (spvVersion.vulkan >= 100)
         error(loc, "not allowed when using GLSL for Vulkan", op, "");
 }
 
 // Call for any operation that requires Vulkan.
 void TParseVersions::requireVulkan(const TSourceLoc& loc, const char* op)
 {
-    if (vulkan == 0)
+    if (spvVersion.vulkan == 0)
         error(loc, "only allowed when using GLSL for Vulkan", op, "");
 }
 
 // Call for any operation that requires SPIR-V.
 void TParseVersions::requireSpv(const TSourceLoc& loc, const char* op)
 {
-    if (spv == 0)
+    if (spvVersion.spv == 0)
         error(loc, "only allowed when generating SPIR-V", op, "");
 }
 

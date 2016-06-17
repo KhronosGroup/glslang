@@ -44,7 +44,7 @@ namespace glslang {
 class HlslParseContext : public TParseContextBase {
 public:
     HlslParseContext(TSymbolTable&, TIntermediate&, bool parsingBuiltins,
-                     int version, EProfile, int spv, int vulkan, EShLanguage, TInfoSink&,
+                     int version, EProfile, const SpvVersion& spvVersion, EShLanguage, TInfoSink&,
                      bool forwardCompatible = false, EShMessages messages = EShMsgDefault);
     virtual ~HlslParseContext();
     void setLimits(const TBuiltInResource&);

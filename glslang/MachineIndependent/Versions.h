@@ -72,6 +72,17 @@ inline const char* ProfileName(EProfile profile)
 }
 
 //
+// SPIR-V has versions for multiple things; tie them together.
+// 0 means a target or rule set is not enabled.
+//
+struct SpvVersion {
+    SpvVersion() : spv(0), vulkan(0), openGl(0) {}
+    unsigned int spv; // the version of the targeted SPIR-V, as defined by SPIR-V in word 1 of the SPIR-V binary header
+    int vulkan;       // the version of semantics for Vulkan; e.g., for GLSL from KHR_vulkan_glsl "#define VULKAN"
+    int openGl;       // the version of semantics for OpenGL; gl_spirv TODO
+};
+
+//
 // The behaviors from the GLSL "#extension extension_name : behavior"
 //
 typedef enum {

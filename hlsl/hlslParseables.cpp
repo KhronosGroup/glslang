@@ -218,7 +218,7 @@ TBuiltInParseablesHlsl::TBuiltInParseablesHlsl()
 // Most built-ins variables can be added as simple text strings.  Some need to
 // be added programmatically, which is done later in IdentifyBuiltIns() below.
 //
-void TBuiltInParseablesHlsl::initialize(int version, EProfile profile, int spv, int vulkan)
+void TBuiltInParseablesHlsl::initialize(int version, EProfile profile, const SpvVersion& spvVersion)
 {
     static const EShLanguageMask EShLangAll = EShLanguageMask(EShLangCount - 1);
 
@@ -229,8 +229,8 @@ void TBuiltInParseablesHlsl::initialize(int version, EProfile profile, int spv, 
     // typekey can be:
     //   D = double, F = float, U = uint, I = int, B = bool, S = sampler, - = void
     // An empty order or type key repeats the first one.  E.g: SVM,, means 3 args each of SVM.
-    // '>' as first letter of order creates an output paremeter
-    // '<' as first letter of order creates an input paremeter
+    // '>' as first letter of order creates an output parameter
+    // '<' as first letter of order creates an input parameter
     // '^' as first letter of order takes transpose dimensions
 
     static const struct {
@@ -498,8 +498,8 @@ void TBuiltInParseablesHlsl::initialize(int version, EProfile profile, int spv, 
 // add stage-specific entries to the commonBuiltins, and only if that stage
 // was requested.
 //
-void TBuiltInParseablesHlsl::initialize(const TBuiltInResource &resources, int version, EProfile profile, int spv,
-                                        int vulkan, EShLanguage language)
+void TBuiltInParseablesHlsl::initialize(const TBuiltInResource &resources, int version, EProfile profile,
+                                        const SpvVersion& spvVersion, EShLanguage language)
 {
 }
 
@@ -512,7 +512,7 @@ void TBuiltInParseablesHlsl::initialize(const TBuiltInResource &resources, int v
 // 3) Tag extension-related symbols added to their base version with their extensions, so
 //    that if an early version has the extension turned off, there is an error reported on use.
 //
-void TBuiltInParseablesHlsl::identifyBuiltIns(int version, EProfile profile, int spv, int vulkan, EShLanguage language,
+void TBuiltInParseablesHlsl::identifyBuiltIns(int version, EProfile profile, const SpvVersion& spvVersion, EShLanguage language,
                                               TSymbolTable& symbolTable)
 {
     // symbolTable.relateToOperator("abort",                       EOpAbort);
@@ -660,7 +660,7 @@ void TBuiltInParseablesHlsl::identifyBuiltIns(int version, EProfile profile, int
 // 2) Tag extension-related symbols added to their base version with their extensions, so
 //    that if an early version has the extension turned off, there is an error reported on use.
 //
-void TBuiltInParseablesHlsl::identifyBuiltIns(int version, EProfile profile, int spv, int /*vulkan*/, EShLanguage language,
+void TBuiltInParseablesHlsl::identifyBuiltIns(int version, EProfile profile, const SpvVersion& spvVersion, EShLanguage language,
                                               TSymbolTable& symbolTable, const TBuiltInResource &resources)
 {
 }

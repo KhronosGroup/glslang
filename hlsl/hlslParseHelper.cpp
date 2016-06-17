@@ -49,9 +49,9 @@
 namespace glslang {
 
 HlslParseContext::HlslParseContext(TSymbolTable& symbolTable, TIntermediate& interm, bool /*parsingBuiltins*/,
-                                   int version, EProfile profile, int spv, int vulkan, EShLanguage language, TInfoSink& infoSink,
+                                   int version, EProfile profile, const SpvVersion& spvVersion, EShLanguage language, TInfoSink& infoSink,
                                    bool forwardCompatible, EShMessages messages) :
-    TParseContextBase(symbolTable, interm, version, profile, spv, vulkan, language, infoSink, forwardCompatible, messages),
+    TParseContextBase(symbolTable, interm, version, profile, spvVersion, language, infoSink, forwardCompatible, messages),
     contextPragma(true, false), loopNestingLevel(0), structNestingLevel(0), controlFlowNestingLevel(0),
     postMainReturn(false),
     limits(resources.limits),
@@ -62,11 +62,11 @@ HlslParseContext::HlslParseContext(TSymbolTable& symbolTable, TIntermediate& int
 
     globalUniformDefaults.clear();
     globalUniformDefaults.layoutMatrix = ElmColumnMajor;
-    globalUniformDefaults.layoutPacking = vulkan > 0 ? ElpStd140 : ElpShared;
+    globalUniformDefaults.layoutPacking = ElpStd140;
 
     globalBufferDefaults.clear();
     globalBufferDefaults.layoutMatrix = ElmColumnMajor;
-    globalBufferDefaults.layoutPacking = vulkan > 0 ? ElpStd430 : ElpShared;
+    globalBufferDefaults.layoutPacking = ElpStd430;
 
     globalInputDefaults.clear();
     globalOutputDefaults.clear();
@@ -2416,18 +2416,6 @@ void HlslParseContext::setLayoutQualifier(const TSourceLoc& loc, TPublicType& pu
         publicType.qualifier.layoutMatrix = ElmRowMajor;
         return;
     }
-    if (id == TQualifier::getLayoutPackingString(ElpPacked)) {
-        if (vulkan > 0)
-            vulkanRemoved(loc, "packed");
-        publicType.qualifier.layoutPacking = ElpPacked;
-        return;
-    }
-    if (id == TQualifier::getLayoutPackingString(ElpShared)) {
-        if (vulkan > 0)
-            vulkanRemoved(loc, "shared");
-        publicType.qualifier.layoutPacking = ElpShared;
-        return;
-    }
     if (id == "push_constant") {
         requireVulkan(loc, "push_constant");
         publicType.qualifier.layoutPushConstant = true;
@@ -2714,7 +2702,7 @@ void HlslParseContext::setLayoutQualifier(const TSourceLoc& loc, TPublicType& pu
                 publicType.shaderQualifiers.localSize[2] = value;
                 return;
             }
-            if (spv > 0) {
+            if (spvVersion.spv != 0) {
                 if (id == "local_size_x_id") {
                     publicType.shaderQualifiers.localSizeSpecId[0] = value;
                     return;

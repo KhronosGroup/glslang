@@ -49,9 +49,9 @@ extern int yyparse(glslang::TParseContext*);
 namespace glslang {
 
 TParseContext::TParseContext(TSymbolTable& symbolTable, TIntermediate& interm, bool parsingBuiltins,
-                             int version, EProfile profile, int spv, int vulkan, EShLanguage language,
+                             int version, EProfile profile, const SpvVersion& spvVersion, EShLanguage language,
                              TInfoSink& infoSink, bool forwardCompatible, EShMessages messages) :
-            TParseContextBase(symbolTable, interm, version, profile, spv, vulkan, language, infoSink, forwardCompatible, messages), 
+            TParseContextBase(symbolTable, interm, version, profile, spvVersion, language, infoSink, forwardCompatible, messages), 
             contextPragma(true, false), loopNestingLevel(0), structNestingLevel(0), controlFlowNestingLevel(0), statementNestingLevel(0),
             inMain(false), postMainReturn(false), currentFunctionType(nullptr), blockName(nullptr),
             limits(resources.limits), parsingBuiltins(parsingBuiltins),
@@ -104,11 +104,11 @@ TParseContext::TParseContext(TSymbolTable& symbolTable, TIntermediate& interm, b
 
     globalUniformDefaults.clear();
     globalUniformDefaults.layoutMatrix = ElmColumnMajor;
-    globalUniformDefaults.layoutPacking = vulkan > 0 ? ElpStd140 : ElpShared;
+    globalUniformDefaults.layoutPacking = spvVersion.spv != 0 ? ElpStd140 : ElpShared;
 
     globalBufferDefaults.clear();
     globalBufferDefaults.layoutMatrix = ElmColumnMajor;
-    globalBufferDefaults.layoutPacking = vulkan > 0 ? ElpStd430 : ElpShared;
+    globalBufferDefaults.layoutPacking = spvVersion.spv != 0 ? ElpStd430 : ElpShared;
 
     globalInputDefaults.clear();
     globalOutputDefaults.clear();
@@ -2565,7 +2565,7 @@ void TParseContext::transparentCheck(const TSourceLoc& loc, const TType& type, c
         return;
 
     // Vulkan doesn't allow transparent uniforms outside of blocks
-    if (vulkan == 0 || type.getQualifier().storage != EvqUniform)
+    if (spvVersion.vulkan == 0 || type.getQualifier().storage != EvqUniform)
         return;
     if (type.containsNonOpaque())
         vulkanRemoved(loc, "non-opaque uniforms outside a block");
@@ -3890,14 +3890,14 @@ void TParseContext::setLayoutQualifier(const TSourceLoc& loc, TPublicType& publi
         return;
     }
     if (id == TQualifier::getLayoutPackingString(ElpPacked)) {
-        if (vulkan > 0)
-            vulkanRemoved(loc, "packed");
+        if (spvVersion.spv != 0)
+            spvRemoved(loc, "packed");
         publicType.qualifier.layoutPacking = ElpPacked;
         return;
     }
     if (id == TQualifier::getLayoutPackingString(ElpShared)) {
-        if (vulkan > 0)
-            vulkanRemoved(loc, "shared");
+        if (spvVersion.spv != 0)
+            spvRemoved(loc, "shared");
         publicType.qualifier.layoutPacking = ElpShared;
         return;
     }
@@ -4263,7 +4263,7 @@ void TParseContext::setLayoutQualifier(const TSourceLoc& loc, TPublicType& publi
                 publicType.shaderQualifiers.localSize[2] = value;
                 return;
             }
-            if (spv > 0) {
+            if (spvVersion.spv != 0) {
                 if (id == "local_size_x_id") {
                     publicType.shaderQualifiers.localSizeSpecId[0] = value;
                     return;
