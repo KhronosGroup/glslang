@@ -107,8 +107,7 @@ bool HlslGrammar::acceptCompilationUnit()
 // declaration
 //      : SEMICOLON
 //      : fully_specified_type SEMICOLON
-//      | fully_specified_type identifier post_decls SEMICOLON
-//      | fully_specified_type identifier post_decls = expression SEMICOLON
+//      | fully_specified_type identifier array_specifier post_decls (EQUAL expression)opt SEMICOLON
 //      | fully_specified_type identifier function_parameters post_decls SEMICOLON           // function prototype
 //      | fully_specified_type identifier function_parameters post_decls compound_statement  // function definition
 //
@@ -127,8 +126,14 @@ bool HlslGrammar::acceptDeclaration(TIntermNode*& node)
     // identifier
     HlslToken idToken;
     if (acceptIdentifier(idToken)) {
+        // array_specifier
+        TArraySizes* arraySizes = nullptr;
+        acceptArraySpecifier(arraySizes);
+
+        // post_decls
         acceptPostDecls(type);
-        // = expression
+
+        // EQUAL expression
         TIntermTyped* expressionNode = nullptr;
         if (acceptTokenClass(EHTokAssign)) {
             if (! acceptExpression(expressionNode)) {
@@ -139,7 +144,7 @@ bool HlslGrammar::acceptDeclaration(TIntermNode*& node)
 
         // SEMICOLON
         if (acceptTokenClass(EHTokSemicolon)) {
-            node = parseContext.declareVariable(idToken.loc, *idToken.string, type, 0, expressionNode);
+            node = parseContext.declareVariable(idToken.loc, *idToken.string, type, arraySizes, expressionNode);
             return true;
         }
 
@@ -711,7 +716,10 @@ bool HlslGrammar::acceptStructDeclarationList(TTypeList*& typeList)
             advanceToken();
 
             // array_specifier
-            // TODO
+            TArraySizes* arraySizes = nullptr;
+            acceptArraySpecifier(arraySizes);
+            if (arraySizes)
+                typeList->back().type->newArraySizes(*arraySizes);
 
             acceptPostDecls(*member.type);
 
@@ -770,7 +778,7 @@ bool HlslGrammar::acceptFunctionParameters(TFunction& function)
 
 // parameter_declaration
 //      : fully_specified_type post_decls
-//      | fully_specified_type identifier post_decls
+//      | fully_specified_type identifier array_specifier post_decls
 //
 bool HlslGrammar::acceptParameterDeclaration(TFunction& function)
 {
@@ -783,6 +791,13 @@ bool HlslGrammar::acceptParameterDeclaration(TFunction& function)
     HlslToken idToken;
     acceptIdentifier(idToken);
 
+    // array_specifier
+    TArraySizes* arraySizes = nullptr;
+    acceptArraySpecifier(arraySizes);
+    if (arraySizes)
+        type->newArraySizes(*arraySizes);
+
+    // post_decls
     acceptPostDecls(*type);
 
     parseContext.paramFix(*type);
@@ -1098,7 +1113,9 @@ bool HlslGrammar::acceptPostfixExpression(TIntermTyped*& node)
         switch (postOp) {
         case EOpIndexDirectStruct:
         {
-            // includes swizzles
+            // DOT IDENTIFIER
+            // includes swizzles and struct members
+            // TODO: possibly includes "method" syntax
             HlslToken field;
             if (! acceptIdentifier(field)) {
                 expected("swizzle or member");
@@ -1109,16 +1126,22 @@ bool HlslGrammar::acceptPostfixExpression(TIntermTyped*& node)
         }
         case EOpIndexIndirect:
         {
+            // LEFT_BRACKET integer_expression RIGHT_BRACKET
             TIntermTyped* indexNode = nullptr;
             if (! acceptExpression(indexNode) ||
                 ! peekTokenClass(EHTokRightBracket)) {
                 expected("expression followed by ']'");
                 return false;
             }
-            // todo:      node = intermediate.addBinaryMath(
+            advanceToken();
+            node = parseContext.handleBracketDereference(indexNode->getLoc(), node, indexNode);
+            break;
         }
         case EOpPostIncrement:
+            // INC_OP
+            // fall through
         case EOpPostDecrement:
+            // DEC_OP
             node = intermediate.addUnaryMath(postOp, node, loc);
             break;
         default:
@@ -1627,6 +1650,34 @@ bool HlslGrammar::acceptJumpStatement(TIntermNode*& statement)
 bool HlslGrammar::acceptCaseLabel(TIntermNode*& statement)
 {
     return false;
+}
+
+// array_specifier
+//      : LEFT_BRACKET integer_expression RGHT_BRACKET post_decls // optional
+//
+void HlslGrammar::acceptArraySpecifier(TArraySizes*& arraySizes)
+{
+    arraySizes = nullptr;
+
+    if (! acceptTokenClass(EHTokLeftBracket))
+        return;
+
+    TSourceLoc loc = token.loc;
+    TIntermTyped* sizeExpr;
+    if (! acceptAssignmentExpression(sizeExpr)) {
+        expected("array-sizing expression");
+        return;
+    }
+
+    if (! acceptTokenClass(EHTokRightBracket)) {
+        expected("]");
+        return;
+    }
+
+    TArraySize arraySize;
+    parseContext.arraySizeCheck(loc, sizeExpr, arraySize);
+    arraySizes = new TArraySizes;
+    arraySizes->addInnerSize(arraySize);
 }
 
 // post_decls

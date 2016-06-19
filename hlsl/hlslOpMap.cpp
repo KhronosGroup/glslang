@@ -113,7 +113,7 @@ TOperator HlslOpMap::postUnary(EHlslTokenClass op)
 {
     switch (op) {
     case EHTokDot:         return EOpIndexDirectStruct;
-    case EHTokLeftBracket: return EOpIndexIndirect;   // may need to change later to EOpIndexDirect
+    case EHTokLeftBracket: return EOpIndexIndirect;
     
     case EHTokIncOp:       return EOpPostIncrement;
     case EHTokDecOp:       return EOpPostDecrement;

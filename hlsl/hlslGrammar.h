@@ -87,6 +87,7 @@ namespace glslang {
         bool acceptIterationStatement(TIntermNode*&);
         bool acceptJumpStatement(TIntermNode*&);
         bool acceptCaseLabel(TIntermNode*&);
+        void acceptArraySpecifier(TArraySizes*&);
         void acceptPostDecls(TType&);
 
         HlslParseContext& parseContext;  // state of parsing and helper functions for building the intermediate
