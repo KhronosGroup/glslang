@@ -58,6 +58,7 @@ namespace glslang {
         bool acceptIdentifier(HlslToken&);
         bool acceptCompilationUnit();
         bool acceptDeclaration(TIntermNode*& node);
+        bool acceptControlDeclaration(TIntermNode*& node);
         bool acceptFullySpecifiedType(TType&);
         void acceptQualifier(TQualifier&);
         bool acceptType(TType&);

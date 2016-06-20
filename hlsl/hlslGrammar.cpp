@@ -106,7 +106,7 @@ bool HlslGrammar::acceptCompilationUnit()
 
 // declaration
 //      : SEMICOLON
-//      : fully_specified_type SEMICOLON
+//      | fully_specified_type SEMICOLON
 //      | fully_specified_type identifier array_specifier post_decls (EQUAL expression)opt SEMICOLON
 //      | fully_specified_type identifier function_parameters post_decls SEMICOLON           // function prototype
 //      | fully_specified_type identifier function_parameters post_decls compound_statement  // function definition
@@ -169,6 +169,43 @@ bool HlslGrammar::acceptDeclaration(TIntermNode*& node)
     // SEMICOLON
     if (acceptTokenClass(EHTokSemicolon))
         return true;
+
+    return true;
+}
+
+// control_declaration
+//      : fully_specified_type identifier EQUAL expression
+//
+bool HlslGrammar::acceptControlDeclaration(TIntermNode*& node)
+{
+    node = nullptr;
+
+    // fully_specified_type
+    TType type;
+    if (! acceptFullySpecifiedType(type))
+        return false;
+
+    // identifier
+    HlslToken idToken;
+    if (! acceptIdentifier(idToken)) {
+        expected("identifier");
+        return false;
+    }
+
+    // EQUAL
+    TIntermTyped* expressionNode = nullptr;
+    if (! acceptTokenClass(EHTokAssign)) {
+        expected("=");
+        return false;
+    }
+
+    // expression
+    if (! acceptExpression(expressionNode)) {
+        expected("initializer");
+        return false;
+    }
+
+    node = parseContext.declareVariable(idToken.loc, *idToken.string, type, 0, expressionNode);
 
     return true;
 }
@@ -833,7 +870,9 @@ bool HlslGrammar::acceptFunctionDefinition(TFunction& function, TIntermNode*& no
 
 // Accept an expression with parenthesis around it, where
 // the parenthesis ARE NOT expression parenthesis, but the
-// syntactically required ones like in "if ( expression )"
+// syntactically required ones like in "if ( expression )".
+//
+// Also accepts a declaration expression; "if (int a = expression)".
 //
 // Note this one is not set up to be speculative; as it gives
 // errors if not found.
@@ -844,9 +883,21 @@ bool HlslGrammar::acceptParenExpression(TIntermTyped*& expression)
     if (! acceptTokenClass(EHTokLeftParen))
         expected("(");
 
-    if (! acceptExpression(expression)) {
-        expected("expression");
-        return false;
+    bool decl = false;
+    TIntermNode* declNode = nullptr;
+    decl = acceptControlDeclaration(declNode);
+    if (decl) {
+        if (declNode == nullptr || declNode->getAsTyped() == nullptr) {
+            expected("initialized declaration");
+            return false;
+        } else
+            expression = declNode->getAsTyped();
+    } else {
+        // no declaration
+        if (! acceptExpression(expression)) {
+            expected("expression");
+            return false;
+        }
     }
 
     // RIGHT_PAREN
@@ -1567,9 +1618,14 @@ bool HlslGrammar::acceptIterationStatement(TIntermNode*& statement)
         // of the for sub-statement
         parseContext.pushScope();
 
-        // initializer SEMI_COLON
-        TIntermTyped* initializer = nullptr; // TODO, "for (initializer" needs to support decl. statement
-        acceptExpression(initializer);
+        // initializer
+        TIntermNode* initNode = nullptr;
+        if (! acceptControlDeclaration(initNode)) {
+            TIntermTyped* initExpr = nullptr;
+            acceptExpression(initExpr);
+            initNode = initExpr;
+        }
+        // SEMI_COLON
         if (! acceptTokenClass(EHTokSemicolon))
             expected(";");
 
@@ -1592,7 +1648,7 @@ bool HlslGrammar::acceptIterationStatement(TIntermNode*& statement)
             return false;
         }
 
-        statement = intermediate.addForLoop(statement, initializer, condition, iterator, true, loc);
+        statement = intermediate.addForLoop(statement, initNode, condition, iterator, true, loc);
 
         parseContext.popScope();
         parseContext.unnestLooping();
@@ -1614,38 +1670,53 @@ bool HlslGrammar::acceptIterationStatement(TIntermNode*& statement)
 //
 bool HlslGrammar::acceptJumpStatement(TIntermNode*& statement)
 {
-    switch (peek()) {
+    EHlslTokenClass jump = peek();
+    switch (jump) {
     case EHTokContinue:
     case EHTokBreak:
     case EHTokDiscard:
-        // TODO
-        return false;
-
     case EHTokReturn:
-        // return
-        if (acceptTokenClass(EHTokReturn)) {
-            // expression
-            TIntermTyped* node;
-            if (acceptExpression(node)) {
-                // hook it up
-                statement = intermediate.addBranch(EOpReturn, node, token.loc);
-            } else
-                statement = intermediate.addBranch(EOpReturn, token.loc);
-
-            // SEMICOLON
-            if (! acceptTokenClass(EHTokSemicolon)) {
-                expected(";");
-                return false;
-            }
-
-            return true;
-        }
-
+        advanceToken();
+        break;
     default:
+        // not something we handle in this function
         return false;
     }
-}
 
+    switch (jump) {
+    case EHTokContinue:
+        statement = intermediate.addBranch(EOpContinue, token.loc);
+        break;
+    case EHTokBreak:
+        statement = intermediate.addBranch(EOpBreak, token.loc);
+        break;
+    case EHTokDiscard:
+        statement = intermediate.addBranch(EOpKill, token.loc);
+        break;
+
+    case EHTokReturn:
+    {
+        // expression
+        TIntermTyped* node;
+        if (acceptExpression(node)) {
+            // hook it up
+            statement = intermediate.addBranch(EOpReturn, node, token.loc);
+        } else
+            statement = intermediate.addBranch(EOpReturn, token.loc);
+        break;
+    }
+
+    default:
+        assert(0);
+        return false;
+    }
+
+    // SEMICOLON
+    if (! acceptTokenClass(EHTokSemicolon))
+        expected(";");
+    
+    return true;
+}
 
 bool HlslGrammar::acceptCaseLabel(TIntermNode*& statement)
 {
