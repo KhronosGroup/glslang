@@ -799,6 +799,68 @@ TOperator HlslParseContext::mapAtomicOp(const TSourceLoc& loc, TOperator op, boo
     }
 }
 
+//
+// Change texture parameters to match AST & SPIR-V semantics
+//
+void HlslParseContext::textureParameters(const TSourceLoc& loc, TIntermTyped*& node, TIntermNode* arguments)
+{
+    if (!node || !node->getAsOperator())
+        return;
+
+    const TOperator op  = node->getAsOperator()->getOp();
+    const TIntermAggregate* argAggregate = arguments ? arguments->getAsAggregate() : nullptr;
+
+    switch (op) {
+    case EOpTexture:
+        {
+            // Texture with ddx & ddy is really gradient form
+            if (argAggregate->getSequence().size() == 4) {
+                node->getAsAggregate()->setOperator(EOpTextureGrad);
+                break;
+            }
+
+            break;
+        }
+
+    case EOpTextureBias:
+        {
+            TIntermTyped* arg0 = argAggregate->getSequence()[0]->getAsTyped();  // sampler
+            TIntermTyped* arg1 = argAggregate->getSequence()[1]->getAsTyped();  // coord
+
+            // HLSL puts bias in W component of coordinate.  We extract it and add it to
+            // the argument list, instead
+            TIntermTyped* w = intermediate.addConstantUnion(3, loc, true);
+            TIntermTyped* bias = intermediate.addIndex(EOpIndexDirect, arg1, w, loc);
+
+            TOperator constructOp = EOpNull;
+            switch (arg0->getType().getSampler().dim) {
+            case Esd1D:   constructOp = EOpConstructFloat; break; // 1D
+            case Esd2D:   constructOp = EOpConstructVec2;  break; // 2D
+            case Esd3D:   constructOp = EOpConstructVec3;  break; // 3D
+            case EsdCube: constructOp = EOpConstructVec3;  break; // also 3D
+            default: break;
+            }
+            
+            TIntermAggregate* constructCoord = new TIntermAggregate(constructOp);
+            constructCoord->getSequence().push_back(arg1);
+            constructCoord->setLoc(loc);
+
+            TIntermAggregate* tex = new TIntermAggregate(EOpTexture);
+            tex->getSequence().push_back(arg0);           // sampler
+            tex->getSequence().push_back(constructCoord); // coordinate
+            tex->getSequence().push_back(bias);           // bias
+            tex->setLoc(loc);
+            node = tex;
+
+            break;
+        }
+
+    default:
+        break; // most pass through unchanged
+    }
+}
+
+//
 // Optionally decompose intrinsics to AST opcodes.
 //
 void HlslParseContext::decomposeIntrinsic(const TSourceLoc& loc, TIntermTyped*& node, TIntermNode* arguments)
@@ -875,6 +937,7 @@ void HlslParseContext::decomposeIntrinsic(const TSourceLoc& loc, TIntermTyped*& 
             compoundStatement = intermediate.growAggregate(compoundStatement, cosAssign);
             compoundStatement->setOperator(EOpSequence);
             compoundStatement->setLoc(loc);
+            compoundStatement->setType(TType(EbtVoid));
 
             node = compoundStatement;
 
@@ -1222,6 +1285,7 @@ TIntermTyped* HlslParseContext::handleFunctionCall(const TSourceLoc& loc, TFunct
             }
 
             decomposeIntrinsic(loc, result, arguments);
+            textureParameters(loc, result, arguments);
         }
     }
 

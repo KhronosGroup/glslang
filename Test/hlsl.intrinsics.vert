@@ -32,6 +32,7 @@ float VertexShaderFunction(float inF0, float inF1, float inF2, uint inU0, uint i
     isinf(inF0);
     isnan(inF0);
     ldexp(inF0, inF1);
+    lerp(inF0, inF1, inF2);
     log(inF0);
     log10(inF0);
     log2(inF0);
@@ -102,6 +103,7 @@ float2 VertexShaderFunction(float2 inF0, float2 inF1, float2 inF2, uint2 inU0, u
     isinf(inF0);
     isnan(inF0);
     ldexp(inF0, inF1);
+    lerp(inF0, inF1, inF2);
     length(inF0);
     log(inF0);
     log10(inF0);
@@ -172,6 +174,7 @@ float3 VertexShaderFunction(float3 inF0, float3 inF1, float3 inF2, uint3 inU0, u
     isinf(inF0);
     isnan(inF0);
     ldexp(inF0, inF1);
+    lerp(inF0, inF1, inF2);
     length(inF0);
     log(inF0);
     log10(inF0);
@@ -242,6 +245,7 @@ float4 VertexShaderFunction(float4 inF0, float4 inF1, float4 inF2, uint4 inU0, u
     isinf(inF0);
     isnan(inF0);
     ldexp(inF0, inF1);
+    lerp(inF0, inF1, inF2);
     length(inF0);
     log(inF0);
     log10(inF0);
@@ -303,6 +307,7 @@ float4 VertexShaderFunction(float4 inF0, float4 inF1, float4 inF2, uint4 inU0, u
     frac(inF0); \
     frexp(inF0, inF1); \
     ldexp(inF0, inF1); \
+    lerp(inF0, inF1, inF2); \
     log(inF0); \
     log10(inF0); \
     log2(inF0); \
@@ -385,4 +390,30 @@ void TestGenMul(float inF0, float inF1,
                 float4x4 inFM0, float4x4 inFM1)
 {
     TESTGENMUL(float, float4, float4x4);
+}
+
+// Test some non-square mats
+void TestGenMul(float inF0, float inF1,
+                float2 inFV2, float3 inFV3,
+                float2x3 inFM2x3, float3x2 inFM3x2,
+                float3x3 inFM3x3, float3x4 inFM3x4,
+                float2x4 inFM2x4)
+{
+    float  r00 = mul(inF0,  inF1);  // S=S*S
+    float2 r01 = mul(inFV2, inF0);  // V=V*S
+    float3 r02 = mul(inFV3, inF0);  // V=V*S
+    float2 r03 = mul(inF0,  inFV2); // V=S*V
+    float3 r04 = mul(inF0,  inFV3); // V=S*V
+    float  r05 = mul(inFV2, inFV2); // S=V*V
+    float  r06 = mul(inFV3, inFV3); // S=V*V
+    float3 r07 = mul(inFV2, inFM2x3); // V=V*M (return V dim is Mcols)
+    float2 r08 = mul(inFV3, inFM3x2); // V=V*M (return V dim is Mcols)
+    float2 r09 = mul(inFM2x3, inFV3); // V=M*V (return V dim is Mrows)
+    float3 r10 = mul(inFM3x2, inFV2); // V=M*V (return V dim is Mrows)
+    float2x3 r11 = mul(inFM2x3, inF0);
+    float3x2 r12 = mul(inFM3x2, inF0);
+    float2x2 r13 = mul(inFM2x3, inFM3x2);
+    float2x3 r14 = mul(inFM2x3, inFM3x3);
+    float2x4 r15 = mul(inFM2x3, inFM3x4);
+    float3x4 r16 = mul(inFM3x2, inFM2x4);
 }
