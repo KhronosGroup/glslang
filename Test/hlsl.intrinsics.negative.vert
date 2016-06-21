@@ -15,8 +15,8 @@ float VertexShaderFunction(float inF0, float inF1, float inF2, int inI0)
 {
     uint out_u1;
 
-    // AllMemoryBarrier();              // invalid in fragment stage  TODO: parser currently crashes on empty arg list
-    // AllMemoryBarrierWithGroupSync(); // invalid in fragment stage  TODO: parser currently crashes on empty arg list
+    AllMemoryBarrier();                       // expected error: only valid in compute stage
+    AllMemoryBarrierWithGroupSync();          // expected error: only valid in compute stage
     asdouble(inF0, inF1);                     // expected error: only integer inputs
     CheckAccessFullyMapped(3.0);              // expected error: only valid on integers
     CheckAccessFullyMapped(3);                // expected error: only valid in pixel & compute stages
@@ -24,8 +24,8 @@ float VertexShaderFunction(float inF0, float inF1, float inF2, int inI0)
     countbits(inF0);                          // expected error: only integer inputs
     cross(inF0, inF1);                        // expected error: only on float3 inputs
     D3DCOLORtoUBYTE4(inF0);                   // expected error: only on float4 inputs
-    // DeviceMemoryBarrier();                    // TODO: expected error: only valid in pixel & compute stages
-    // DeviceMemoryBarrierWithGroupSync();       // TODO: expected error: only valid in compute stage
+    DeviceMemoryBarrier();                    // expected error: only valid in pixel & compute stages
+    DeviceMemoryBarrierWithGroupSync();       // expected error: only valid in compute stage
     ddx(inF0);                                // expected error: only valid in pixel stage
     ddx_coarse(inF0);                         // expected error: only valid in pixel stage
     ddx_fine(inF0);                           // expected error: only valid in pixel stage
@@ -55,8 +55,8 @@ float VertexShaderFunction(float inF0, float inF1, float inF2, int inI0)
     InterlockedOr(gs_ua, gs_ub, out_u1);      // expected error: only valid in pixel stage
     InterlockedXor(gs_ua, gs_ub);             // expected error: only valid in pixel stage
     InterlockedXor(gs_ua, gs_ub, out_u1);     // expected error: only valid in pixel stage
-    // GroupMemoryBarrier();               // TODO: expected error: only valid in compute stage
-    // GroupMemoryBarrierWithGroupSync();  // TODO: expected error: only valid in compute stage
+    GroupMemoryBarrier();                     // expected error: only valid in compute stage
+    GroupMemoryBarrierWithGroupSync();        // expected error: only valid in compute stage
     length(inF0);                             // expect error: invalid on scalars
     msad4(inF0, float2(0), float4(0));        // expected error: only integer inputs
     normalize(inF0);                          // expect error: invalid on scalars

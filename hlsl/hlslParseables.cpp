@@ -283,7 +283,7 @@ void TBuiltInParseablesHlsl::initialize(int version, EProfile profile, const Spv
         // { "errorf",                           "-",     "-",       "",         "",     EShLangAll }, TODO: varargs
         { "EvaluateAttributeAtCentroid",      nullptr, nullptr,   "SVM",        "F",      EShLangFragmentMask },
         { "EvaluateAttributeAtSample",        nullptr, nullptr,   "SVM,S",      "F,U",    EShLangFragmentMask },
-        { "EvaluateAttributeSnapped",         nullptr, nullptr,   "SVM,V2",     "F,F",    EShLangFragmentMask },
+        { "EvaluateAttributeSnapped",         nullptr, nullptr,   "SVM,V2",     "F,I",    EShLangFragmentMask },
         { "exp",                              nullptr, nullptr,   "SVM",        "F",      EShLangAll },
         { "exp2",                             nullptr, nullptr,   "SVM",        "F",      EShLangAll },
         { "f16tof32",                         nullptr, "F",       "SV",         "U",      EShLangAll },
@@ -519,8 +519,8 @@ void TBuiltInParseablesHlsl::identifyBuiltIns(int version, EProfile profile, con
     symbolTable.relateToOperator("abs",                         EOpAbs);
     symbolTable.relateToOperator("acos",                        EOpAcos);
     symbolTable.relateToOperator("all",                         EOpAll);
-    // symbolTable.relateToOperator("AllMemoryBarrier");
-    // symbolTable.relateToOperator("AllMemoryBarrierWithGroupSync");
+    symbolTable.relateToOperator("AllMemoryBarrier",            EOpMemoryBarrier);
+    symbolTable.relateToOperator("AllMemoryBarrierWithGroupSync", EOpAllMemoryBarrierWithGroupSync);
     symbolTable.relateToOperator("any",                         EOpAny);
     symbolTable.relateToOperator("asdouble",                    EOpUint64BitsToDouble);
     symbolTable.relateToOperator("asfloat",                     EOpIntBitsToFloat);
@@ -546,19 +546,19 @@ void TBuiltInParseablesHlsl::identifyBuiltIns(int version, EProfile profile, con
     symbolTable.relateToOperator("ddy_fine",                    EOpDPdyFine);
     symbolTable.relateToOperator("degrees",                     EOpDegrees);
     symbolTable.relateToOperator("determinant",                 EOpDeterminant);
-    // symbolTable.relateToOperator("DeviceMemoryBarrier");
-    // symbolTable.relateToOperator("DeviceMemoryBarrierWithGroupSync");
+    symbolTable.relateToOperator("DeviceMemoryBarrier",         EOpGroupMemoryBarrier); // == ScopeDevice+CrossWorkGroup
+    symbolTable.relateToOperator("DeviceMemoryBarrierWithGroupSync", EOpGroupMemoryBarrierWithGroupSync); // ...
     symbolTable.relateToOperator("distance",                    EOpDistance);
     symbolTable.relateToOperator("dot",                         EOpDot);
     symbolTable.relateToOperator("dst",                         EOpDst);
-    // symbolTable.relateToOperator("errorf");
+    // symbolTable.relateToOperator("errorf",                      EOpErrorf);
     symbolTable.relateToOperator("EvaluateAttributeAtCentroid", EOpInterpolateAtCentroid);
     symbolTable.relateToOperator("EvaluateAttributeAtSample",   EOpInterpolateAtSample);
-    // symbolTable.relateToOperator("EvaluateAttributeSnapped");  // TODO: hsnflr positions.  new op?
+    symbolTable.relateToOperator("EvaluateAttributeSnapped",    EOpEvaluateAttributeSnapped);
     symbolTable.relateToOperator("exp",                         EOpExp);
     symbolTable.relateToOperator("exp2",                        EOpExp2);
-    // symbolTable.relateToOperator("f16tof32");
-    // symbolTable.relateToOperator("f32tof16");
+    symbolTable.relateToOperator("f16tof32",                    EOpF16tof32);
+    symbolTable.relateToOperator("f32tof16",                    EOpF32tof16);
     symbolTable.relateToOperator("faceforward",                 EOpFaceForward);
     symbolTable.relateToOperator("firstbithigh",                EOpFindMSB);
     symbolTable.relateToOperator("firstbitlow",                 EOpFindLSB);
@@ -570,8 +570,8 @@ void TBuiltInParseablesHlsl::identifyBuiltIns(int version, EProfile profile, con
     symbolTable.relateToOperator("fwidth",                      EOpFwidth);
     // symbolTable.relateToOperator("GetRenderTargetSampleCount");
     // symbolTable.relateToOperator("GetRenderTargetSamplePosition");
-    // symbolTable.relateToOperator("GroupMemoryBarrier");
-    // symbolTable.relateToOperator("GroupMemoryBarrierWithGroupSync");
+    symbolTable.relateToOperator("GroupMemoryBarrier",          EOpWorkgroupMemoryBarrier);
+    symbolTable.relateToOperator("GroupMemoryBarrierWithGroupSync", EOpWorkgroupMemoryBarrierWithGroupSync);
     symbolTable.relateToOperator("InterlockedAdd",              EOpInterlockedAdd);
     symbolTable.relateToOperator("InterlockedAnd",              EOpInterlockedAnd);
     symbolTable.relateToOperator("InterlockedCompareExchange",  EOpInterlockedCompareExchange);
@@ -586,7 +586,7 @@ void TBuiltInParseablesHlsl::identifyBuiltIns(int version, EProfile profile, con
     symbolTable.relateToOperator("isnan",                       EOpIsNan);
     symbolTable.relateToOperator("ldexp",                       EOpLdexp);
     symbolTable.relateToOperator("length",                      EOpLength);
-    // symbolTable.relateToOperator("lit");
+    symbolTable.relateToOperator("lit",                         EOpLit);
     symbolTable.relateToOperator("log",                         EOpLog);
     symbolTable.relateToOperator("log10",                       EOpLog10);
     symbolTable.relateToOperator("log2",                        EOpLog2);
@@ -599,7 +599,7 @@ void TBuiltInParseablesHlsl::identifyBuiltIns(int version, EProfile profile, con
     // symbolTable.relateToOperator("noise",                    EOpNoise); // TODO: check return type
     symbolTable.relateToOperator("normalize",                   EOpNormalize);
     symbolTable.relateToOperator("pow",                         EOpPow);
-    // symbolTable.relateToOperator("printf");
+    // symbolTable.relateToOperator("printf",                     EOpPrintf);
     // symbolTable.relateToOperator("Process2DQuadTessFactorsAvg");
     // symbolTable.relateToOperator("Process2DQuadTessFactorsMax");
     // symbolTable.relateToOperator("Process2DQuadTessFactorsMin");

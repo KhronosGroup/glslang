@@ -967,6 +967,7 @@ void HlslParseContext::decomposeIntrinsic(const TSourceLoc& loc, TIntermTyped*& 
             dst->getSequence().push_back(handleBinaryMath(loc, "mul", EOpMul, src0y, src1y));
             dst->getSequence().push_back(src0z);
             dst->getSequence().push_back(src1w);
+            dst->setType(TType(EbtFloat, EvqTemporary, 4));
             dst->setLoc(loc);
             node = dst;
 
@@ -1025,6 +1026,90 @@ void HlslParseContext::decomposeIntrinsic(const TSourceLoc& loc, TIntermTyped*& 
 
             node = intermediate.addAssign(EOpAssign, arg3, atomic, loc);
             
+            break;
+        }
+
+    case EOpEvaluateAttributeSnapped:
+        {
+            // SPIR-V InterpolateAtOffset uses float vec2 offset in pixels
+            // HLSL uses int2 offset on a 16x16 grid in [-8..7] on x & y:
+            //   iU = (iU<<28)>>28
+            //   fU = ((float)iU)/16
+            // Targets might handle this natively, in which case they can disable
+            // decompositions.
+
+            TIntermTyped* arg0 = argAggregate->getSequence()[0]->getAsTyped();  // value
+            TIntermTyped* arg1 = argAggregate->getSequence()[1]->getAsTyped();  // offset
+
+            TIntermTyped* i28 = intermediate.addConstantUnion(28, loc, true);
+            TIntermTyped* iU = handleBinaryMath(loc, ">>", EOpRightShift,
+                                                handleBinaryMath(loc, "<<", EOpLeftShift, arg1, i28),
+                                                i28);
+
+            TIntermTyped* recip16 = intermediate.addConstantUnion((1.0/16.0), EbtFloat, loc, true);
+            TIntermTyped* floatOffset = handleBinaryMath(loc, "mul", EOpMul,
+                                                         intermediate.addConversion(EOpConstructFloat,
+                                                                                    TType(EbtFloat, EvqTemporary, 2), iU),
+                                                         recip16);
+            
+            TIntermAggregate* interp = new TIntermAggregate(EOpInterpolateAtOffset);
+            interp->getSequence().push_back(arg0);
+            interp->getSequence().push_back(floatOffset);
+            interp->setLoc(loc);
+            interp->setType(arg0->getType());
+            interp->getWritableType().getQualifier().makeTemporary();
+
+            node = interp;
+
+            break;
+        }
+
+    case EOpLit:
+        {
+            TIntermTyped* n_dot_l = argAggregate->getSequence()[0]->getAsTyped();
+            TIntermTyped* n_dot_h = argAggregate->getSequence()[1]->getAsTyped();
+            TIntermTyped* m = argAggregate->getSequence()[2]->getAsTyped();
+
+            TIntermAggregate* dst = new TIntermAggregate(EOpConstructVec4);
+
+            // Ambient
+            dst->getSequence().push_back(intermediate.addConstantUnion(1.0, EbtFloat, loc, true));
+
+            // Diffuse:
+            TIntermTyped* zero = intermediate.addConstantUnion(0.0, EbtFloat, loc, true);
+            TIntermAggregate* diffuse = new TIntermAggregate(EOpMax);
+            diffuse->getSequence().push_back(n_dot_l);
+            diffuse->getSequence().push_back(zero);
+            diffuse->setLoc(loc);
+            diffuse->setType(TType(EbtFloat));
+            dst->getSequence().push_back(diffuse);
+
+            // Specular:
+            TIntermAggregate* min_ndot = new TIntermAggregate(EOpMin);
+            min_ndot->getSequence().push_back(n_dot_l);
+            min_ndot->getSequence().push_back(n_dot_h);
+            min_ndot->setLoc(loc);
+            min_ndot->setType(TType(EbtFloat));
+
+            TIntermTyped* compare = handleBinaryMath(loc, "<", EOpLessThan, min_ndot, zero);
+            TIntermTyped* n_dot_h_m = handleBinaryMath(loc, "mul", EOpMul, n_dot_h, m);  // n_dot_h * m
+
+            dst->getSequence().push_back(intermediate.addSelection(compare, zero, n_dot_h_m, loc));
+            
+            // One:
+            dst->getSequence().push_back(intermediate.addConstantUnion(1.0, EbtFloat, loc, true));
+
+            dst->setLoc(loc);
+            dst->setType(TType(EbtFloat, EvqTemporary, 4));
+            node = dst;
+            break;
+        }
+
+    case EOpF16tof32:
+    case EOpF32tof16:
+        {
+            // Temporary until decomposition is available.
+            error(loc, "unimplemented intrinsic: handle natively", "f32tof16", "");
             break;
         }
 
