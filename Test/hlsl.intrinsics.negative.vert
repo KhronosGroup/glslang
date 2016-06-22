@@ -39,7 +39,7 @@ float VertexShaderFunction(float inF0, float inF1, float inF2, int inI0)
     f16tof32(inF0);                           // expected error: only integer inputs
     firstbithigh(inF0);                       // expected error: only integer inputs
     firstbitlow(inF0);                        // expected error: only integer inputs
-    fma(inF0, inF1, inF2);                    // expected error: only double inputs
+    // fma(inF0, inF1, inF2); // TODO: this might auto-promote: need to check against FXC
     fwidth(inF0);                             // expected error: only valid in pixel stage
     InterlockedAdd(gs_ua, gs_ub);             // expected error: only valid in pixel stage
     InterlockedAdd(gs_ua, gs_ub, out_u1);     // expected error: only valid in pixel stage
@@ -102,7 +102,7 @@ float2 VertexShaderFunction(float2 inF0, float2 inF1, float2 inF2, int2 inI0)
     f16tof32(inF0);                                             // expected error: only integer inputs
     firstbithigh(inF0);                                         // expected error: only integer inputs
     firstbitlow(inF0);                                          // expected error: only integer inputs
-    fma(inF0, inF1, inF2);                                      // expected error: only double inputs
+    // fma(inF0, inF1, inF2); // TODO: this might auto-promote: need to check against FXC
     fwidth(inF0);                                               // expected error: only valid in pixel stage
     InterlockedAdd(gs_ua2, gs_ub2);                             // expected error: only valid in pixel stage
     InterlockedAdd(gs_ua2, gs_ub2, out_u2);                     // expected error: only valid in pixel stage
@@ -147,7 +147,7 @@ float3 VertexShaderFunction(float3 inF0, float3 inF1, float3 inF2, int3 inI0)
     f16tof32(inF0);                                             // expected error: only integer inputs
     firstbithigh(inF0);                                         // expected error: only integer inputs
     firstbitlow(inF0);                                          // expected error: only integer inputs
-    fma(inF0, inF1, inF2);                                      // expected error: only double inputs
+    // fma(inF0, inF1, inF2); // TODO: this might auto-promote: need to check against FXC
     fwidth(inF0);                                               // expected error: only valid in pixel stage
     InterlockedAdd(gs_ua3, gs_ub3);                             // expected error: only valid in pixel stage
     InterlockedAdd(gs_ua3, gs_ub3, out_u3);                     // expected error: only valid in pixel stage
@@ -192,7 +192,7 @@ float4 VertexShaderFunction(float4 inF0, float4 inF1, float4 inF2, int4 inI0)
     f16tof32(inF0);                                             // expected error: only integer inputs
     firstbithigh(inF0);                                         // expected error: only integer inputs
     firstbitlow(inF0);                                          // expected error: only integer inputs
-    fma(inF0, inF1, inF2);                                      // expected error: only double inputs
+    // fma(inF0, inF1, inF2); // TODO: this might auto-promote: need to check against FXC
     fwidth(inF0);                                               // expected error: only valid in pixel stage
     InterlockedAdd(gs_ua4, gs_ub4);                             // expected error: only valid in pixel stage
     InterlockedAdd(gs_ua4, gs_ub4, out_u4);                     // expected error: only valid in pixel stage
@@ -234,7 +234,6 @@ float4 VertexShaderFunction(float4 inF0, float4 inF1, float4 inF2, int4 inI0)
     f16tof32(inF0);                          \
     firstbithigh(inF0);                      \
     firstbitlow(inF0);                       \
-    fma(inF0, inF1, inF2);                   \
     fwidth(inF0);                            \
     noise(inF0);                             \
     reversebits(inF0);                       \
