@@ -1,5 +1,6 @@
 //
 //Copyright (C) 2016 Google, Inc.
+//Copyright (C) 2016 LunarG, Inc.
 //
 //All rights reserved.
 //
@@ -62,6 +63,9 @@ namespace glslang {
         bool acceptFullySpecifiedType(TType&);
         void acceptQualifier(TQualifier&);
         bool acceptType(TType&);
+        bool acceptBasicType(TBasicType&);
+        bool acceptVectorTemplateType(TType&);
+        bool acceptMatrixTemplateType(TType&);
         bool acceptStruct(TType&);
         bool acceptStructDeclarationList(TTypeList*&);
         bool acceptFunctionParameters(TFunction&);
