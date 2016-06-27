@@ -44,7 +44,7 @@ ERROR: 0:107: 'overloadE' : no matching overloaded function found
 ERROR: 0:108: 'overloadE' : no matching overloaded function found 
 ERROR: 0:111: 'overloadE' : no matching overloaded function found 
 ERROR: 0:117: 'overloadF' : no matching overloaded function found 
-ERROR: 0:121: 'gl_TexCoord array size' : must be less than gl_MaxTextureCoords (32)
+ERROR: 0:121: 'gl_TexCoord array size' : must be less than or equal to gl_MaxTextureCoords (32)
 ERROR: 0:165: 'switch' : Reserved word. 
 ERROR: 0:171: 'default' : Reserved word. 
 ERROR: 0:165: 'switch statements' : not supported for this version or the enabled extensions 
