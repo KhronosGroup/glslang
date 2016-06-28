@@ -523,6 +523,7 @@ enum TOperator {
     EOpF32tof16,                         // HLSL conversion: half of a PackHalf2x16
     EOpF16tof32,                         // HLSL conversion: half of an UnpackHalf2x16
     EOpLit,                              // HLSL lighting coefficient vector
+    EOpTextureBias,                      // HLSL texture bias: will be lowered to EOpTexture
 };
 
 class TIntermTraverser;

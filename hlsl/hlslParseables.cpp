@@ -54,6 +54,8 @@
 
 namespace {  // anonymous namespace functions
 
+const bool UseHlslTypes = false;
+
 const char* BaseTypeName(const char* argOrder, const char* scalarName, const char* vecName, const char* matName)
 {
     switch (*argOrder) {
@@ -74,22 +76,38 @@ const char* BaseTypeName(const char* argOrder, const char* scalarName, const cha
 glslang::TString& AppendTypeName(glslang::TString& s, const char* argOrder, const char* argType, int dim0, int dim1)
 {
     const bool transpose = (argOrder[0] == '^');
+    const bool matMul    = (argOrder[0] == '#');
 
-    // Take transpose of matrix dimensions
-    if (transpose) {
-        std::swap(dim0, dim1);
+    if (transpose) {  // Take transpose of matrix dimensions
+        std::swap(dim0, dim1); 
+        ++argOrder;
+    } else if (matMul) {
+        dim0 = dim1;  // set vector dimension to mat col
         ++argOrder;
     }
 
-    switch (*argType) {
-    case '-': s += "void"; break;
-    case 'F': s += BaseTypeName(argOrder, "float",   "vec",     "mat");  break;
-    case 'D': s += BaseTypeName(argOrder, "double",  "dvec",    "dmat"); break;
-    case 'I': s += BaseTypeName(argOrder, "int",     "ivec",    "imat"); break;
-    case 'U': s += BaseTypeName(argOrder, "uint",    "uvec",    "umat"); break;
-    case 'B': s += BaseTypeName(argOrder, "bool",    "bvec",    "bmat"); break;
-    case 'S': s += BaseTypeName(argOrder, "sampler", "sampler", "sampler"); break; // TODO: 
-    default:  s += "UNKNOWN_TYPE"; break;
+    if (UseHlslTypes) {
+        switch (*argType) {
+        case '-': s += "void";    break;
+        case 'F': s += "float";   break;
+        case 'D': s += "double";  break;
+        case 'I': s += "int";     break;
+        case 'U': s += "uint";    break;
+        case 'B': s += "bool";    break;
+        case 'S': s += "sampler"; break;
+        default:  s += "UNKNOWN_TYPE"; break;
+        }
+    } else {
+        switch (*argType) {
+        case '-': s += "void"; break;
+        case 'F': s += BaseTypeName(argOrder, "float",   "vec",     "mat");  break;
+        case 'D': s += BaseTypeName(argOrder, "double",  "dvec",    "dmat"); break;
+        case 'I': s += BaseTypeName(argOrder, "int",     "ivec",    "imat"); break;
+        case 'U': s += BaseTypeName(argOrder, "uint",    "uvec",    "umat"); break;
+        case 'B': s += BaseTypeName(argOrder, "bool",    "bvec",    "bmat"); break;
+        case 'S': s += BaseTypeName(argOrder, "sampler", "sampler", "sampler"); break; // TODO: 
+        default:  s += "UNKNOWN_TYPE"; break;
+        }
     }
 
     // handle fixed vector sizes, such as float3, and only ever 3.
@@ -119,7 +137,13 @@ glslang::TString& AppendTypeName(glslang::TString& s, const char* argOrder, cons
     case '-': break;  // no dimensions for voids
     case 'S': break;  // no dimensions on scalars
     case 'V': s += ('0' + dim0); break;
-    case 'M': s += ('0' + dim0); s += 'x'; s += ('0' + dim1); break;
+    case 'M': 
+        {
+            if (!UseHlslTypes)  // GLSL has column first for mat types
+                std::swap(dim0, dim1);
+            s += ('0' + dim0); s += 'x'; s += ('0' + dim1);
+            break;
+        }
     }
 
     return s;
@@ -142,7 +166,7 @@ inline bool IsValidGlsl(const char* cname, char retOrder, char retType, char arg
 
     const std::string name(cname);  // for ease of comparison. slow, but temporary, until HLSL parser is online.
                                 
-    if (isMat && dim0 != dim1)  // TODO: avoid mats until we find the right GLSL profile
+    if (isMat && dim1 == 1)  // TODO: avoid mat Nx1 until we find the right GLSL profile
         return false;
 
     if (isMat && (argType == 'I' || argType == 'U' || argType == 'B') ||
@@ -210,6 +234,39 @@ TBuiltInParseablesHlsl::TBuiltInParseablesHlsl()
 {
 }
 
+
+//
+// Handle creation of mat*mat specially, since it doesn't fall conveniently out of
+// the generic prototype creation code below.
+//
+void TBuiltInParseablesHlsl::createMatTimesMat()
+{
+    TString& s = commonBuiltins;
+
+    const int first = (UseHlslTypes ? 1 : 2);
+
+    for (int xRows = first; xRows <=4; xRows++) {
+        for (int xCols = first; xCols <=4; xCols++) {
+            const int yRows = xCols;
+            for (int yCols = first; yCols <=4; yCols++) {
+                const int retRows = xRows;
+                const int retCols = yCols;
+
+                AppendTypeName(s, "M", "F", retRows, retCols);  // add return type
+                s.append(" ");                                  // space between type and name
+                s.append("mul");                                // intrinsic name
+                s.append("(");                                  // open paren
+
+                AppendTypeName(s, "M", "F", xRows, xCols);      // add X input
+                s.append(", ");
+                AppendTypeName(s, "M", "F", yRows, yCols);      // add Y input
+
+                s.append(");\n");                               // close paren
+            }
+        }
+    }
+}
+
 //
 // Add all context-independent built-in functions and variables that are present
 // for the given version and profile.  Share common ones across stages, otherwise
@@ -232,6 +289,7 @@ void TBuiltInParseablesHlsl::initialize(int version, EProfile profile, const Spv
     // '>' as first letter of order creates an output parameter
     // '<' as first letter of order creates an input parameter
     // '^' as first letter of order takes transpose dimensions
+    // '#' as first letter of order sets rows=cols for mats
 
     static const struct {
         const char*   name;      // intrinsic name
@@ -321,6 +379,7 @@ void TBuiltInParseablesHlsl::initialize(int version, EProfile profile, const Spv
         { "isnan",                            nullptr, "B" ,      "SVM",        "F",      EShLangAll },
         { "ldexp",                            nullptr, nullptr,   "SVM,",       "F,",     EShLangAll },
         { "length",                           "S",     "F",       "V",          "F",      EShLangAll },
+        { "lerp",                             nullptr, nullptr,   "SVM,,",      "F,,",    EShLangAll },
         { "lit",                              "V4",    "F",       "S,,",        "F,,",    EShLangAll },
         { "log",                              nullptr, nullptr,   "SVM",        "F",      EShLangAll },
         { "log10",                            nullptr, nullptr,   "SVM",        "F",      EShLangAll },
@@ -330,16 +389,15 @@ void TBuiltInParseablesHlsl::initialize(int version, EProfile profile, const Spv
         { "min",                              nullptr, nullptr,   "SVM,",       "FI,",    EShLangAll },
         { "modf",                             nullptr, nullptr,   "SVM,>",      "FI,",    EShLangAll },
         { "msad4",                            "V4",    "U",       "S,V2,V4",    "U,,",    EShLangAll },
-        // TODO: fix matrix return size for non-square mats used with mul opcode
         { "mul",                              "S",     nullptr,   "S,S",        "FI,",    EShLangAll },
         { "mul",                              "V",     nullptr,   "S,V",        "FI,",    EShLangAll },
         { "mul",                              "M",     nullptr,   "S,M",        "FI,",    EShLangAll },
         { "mul",                              "V",     nullptr,   "V,S",        "FI,",    EShLangAll },
         { "mul",                              "S",     nullptr,   "V,V",        "FI,",    EShLangAll },
-        { "mul",                              "V",     nullptr,   "V,M",        "FI,",    EShLangAll },
+        { "mul",                              "#V",    nullptr,   "V,M",        "FI,",    EShLangAll },
         { "mul",                              "M",     nullptr,   "M,S",        "FI,",    EShLangAll },
-        { "mul",                              "V",     nullptr,   "M,V",        "FI,",    EShLangAll },
-        { "mul",                              "M",     nullptr,   "M,M",        "FI,",    EShLangAll },
+        { "mul",                              "V",     nullptr,   "M,#V",       "FI,",    EShLangAll },
+        // mat*mat form of mul is handled in createMatTimesMat()
         { "noise",                            "S",     "F",       "V",          "F",      EShLangFragmentMask },
         { "normalize",                        nullptr, nullptr,   "V",          "F",      EShLangAll },
         { "pow",                              nullptr, nullptr,   "SVM,",       "F,",     EShLangAll },
@@ -465,7 +523,7 @@ void TBuiltInParseablesHlsl::initialize(int version, EProfile profile, const Spv
                                 if (*nthArgOrder == ',' || *nthArgOrder == '\0') nthArgOrder = argOrder;
                                 if (*nthArgType == ',' || *nthArgType == '\0') nthArgType = argType;
 
-                                AppendTypeName(s, nthArgOrder, nthArgType, dim0, dim1); // Add first argument
+                                AppendTypeName(s, nthArgOrder, nthArgType, dim0, dim1); // Add arguments
                             }
                             
                             s.append(");\n");            // close paren and trailing semicolon
@@ -481,6 +539,8 @@ void TBuiltInParseablesHlsl::initialize(int version, EProfile profile, const Spv
                 break;
         }
     }
+
+    createMatTimesMat(); // handle this case separately, for convenience
 
     // printf("Common:\n%s\n",   getCommonString().c_str());
     // printf("Frag:\n%s\n",     getStageString(EShLangFragment).c_str());
@@ -586,6 +646,7 @@ void TBuiltInParseablesHlsl::identifyBuiltIns(int version, EProfile profile, con
     symbolTable.relateToOperator("isnan",                       EOpIsNan);
     symbolTable.relateToOperator("ldexp",                       EOpLdexp);
     symbolTable.relateToOperator("length",                      EOpLength);
+    symbolTable.relateToOperator("lerp",                        EOpMix);
     symbolTable.relateToOperator("lit",                         EOpLit);
     symbolTable.relateToOperator("log",                         EOpLog);
     symbolTable.relateToOperator("log10",                       EOpLog10);
@@ -628,25 +689,25 @@ void TBuiltInParseablesHlsl::identifyBuiltIns(int version, EProfile profile, con
     symbolTable.relateToOperator("tan",                         EOpTan);
     symbolTable.relateToOperator("tanh",                        EOpTanh);
     symbolTable.relateToOperator("tex1D",                       EOpTexture);
-    // symbolTable.relateToOperator("tex1Dbias",                  // TODO:
+    symbolTable.relateToOperator("tex1Dbias",                   EOpTextureBias);
     symbolTable.relateToOperator("tex1Dgrad",                   EOpTextureGrad);
     symbolTable.relateToOperator("tex1Dlod",                    EOpTextureLod);
     symbolTable.relateToOperator("tex1Dproj",                   EOpTextureProj);
     symbolTable.relateToOperator("tex2D",                       EOpTexture);
-    // symbolTable.relateToOperator("tex2Dbias",                  // TODO:
+    symbolTable.relateToOperator("tex2Dbias",                   EOpTextureBias);
     symbolTable.relateToOperator("tex2Dgrad",                   EOpTextureGrad);
     symbolTable.relateToOperator("tex2Dlod",                    EOpTextureLod);
-    // symbolTable.relateToOperator("tex2Dproj",                   EOpTextureProj);
+    symbolTable.relateToOperator("tex2Dproj",                   EOpTextureProj);
     symbolTable.relateToOperator("tex3D",                       EOpTexture);
-    // symbolTable.relateToOperator("tex3Dbias");                // TODO
+    symbolTable.relateToOperator("tex3Dbias",                   EOpTextureBias);
     symbolTable.relateToOperator("tex3Dgrad",                   EOpTextureGrad);
     symbolTable.relateToOperator("tex3Dlod",                    EOpTextureLod);
-    // symbolTable.relateToOperator("tex3Dproj",                   EOpTextureProj);
+    symbolTable.relateToOperator("tex3Dproj",                   EOpTextureProj);
     symbolTable.relateToOperator("texCUBE",                     EOpTexture);
-    // symbolTable.relateToOperator("texCUBEbias",              // TODO
+    symbolTable.relateToOperator("texCUBEbias",                 EOpTextureBias);
     symbolTable.relateToOperator("texCUBEgrad",                 EOpTextureGrad);
     symbolTable.relateToOperator("texCUBElod",                  EOpTextureLod);
-    // symbolTable.relateToOperator("texCUBEproj",                 EOpTextureProj);
+    symbolTable.relateToOperator("texCUBEproj",                 EOpTextureProj);
     symbolTable.relateToOperator("transpose",                   EOpTranspose);
     symbolTable.relateToOperator("trunc",                       EOpTrunc);
 }
