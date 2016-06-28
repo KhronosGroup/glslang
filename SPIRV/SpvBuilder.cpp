@@ -1430,10 +1430,10 @@ Id Builder::createTextureCall(Decoration precision, Id resultType, bool sparse, 
     bool explicitLod = false;
     texArgs[numArgs++] = parameters.sampler;
     texArgs[numArgs++] = parameters.coords;
-    if (parameters.Dref)
+    if (parameters.Dref != NoResult)
         texArgs[numArgs++] = parameters.Dref;
-    if (parameters.comp)
-        texArgs[numArgs++] = parameters.comp;
+    if (parameters.component != NoResult)
+        texArgs[numArgs++] = parameters.component;
 
     //
     // Set up the optional arguments
@@ -1830,6 +1830,9 @@ Id Builder::createMatrixConstructor(Decoration precision, const std::vector<Id>&
     int numCols = getTypeNumColumns(resultTypeId);
     int numRows = getTypeNumRows(resultTypeId);
 
+    Instruction* instr = module.getInstruction(componentTypeId);
+    Id bitCount = instr->getIdOperand(0);
+
     // Will use a two step process
     // 1. make a compile-time 2D array of values
     // 2. construct a matrix from that array
@@ -1838,8 +1841,8 @@ Id Builder::createMatrixConstructor(Decoration precision, const std::vector<Id>&
 
     // initialize the array to the identity matrix
     Id ids[maxMatrixSize][maxMatrixSize];
-    Id  one = makeFloatConstant(1.0);
-    Id zero = makeFloatConstant(0.0);
+    Id  one = (bitCount == 64 ? makeDoubleConstant(1.0) : makeFloatConstant(1.0));
+    Id zero = (bitCount == 64 ? makeDoubleConstant(0.0) : makeFloatConstant(0.0));
     for (int col = 0; col < 4; ++col) {
         for (int row = 0; row < 4; ++row) {
             if (col == row)

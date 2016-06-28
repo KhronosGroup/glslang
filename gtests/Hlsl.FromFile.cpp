@@ -1,5 +1,6 @@
 //
 // Copyright (C) 2016 Google, Inc.
+// Copyright (C) 2016 LunarG, Inc.
 //
 // All rights reserved.
 //
@@ -71,14 +72,35 @@ TEST_P(HlslCompileTest, FromFile)
 INSTANTIATE_TEST_CASE_P(
     ToSpirv, HlslCompileTest,
     ::testing::ValuesIn(std::vector<FileNameEntryPointPair>{
+        {"hlsl.array.frag", "PixelShaderFunction"},
         {"hlsl.assoc.frag", "PixelShaderFunction"},
+        {"hlsl.attribute.frag", "PixelShaderFunction"},
+        {"hlsl.cast.frag", "PixelShaderFunction"},
+        {"hlsl.doLoop.frag", "PixelShaderFunction"},
         {"hlsl.float1.frag", "PixelShaderFunction"},
         {"hlsl.float4.frag", "PixelShaderFunction"},
+        {"hlsl.forLoop.frag", "PixelShaderFunction"},
+        {"hlsl.if.frag", "PixelShaderFunction"},
+        {"hlsl.intrinsics.barriers.comp", "ComputeShaderFunction"},
+        {"hlsl.intrinsics.comp", "ComputeShaderFunction"},
+        {"hlsl.intrinsics.evalfns.frag", "main"},
+        {"hlsl.intrinsics.f1632.frag", "PixelShaderFunction"},
+        {"hlsl.intrinsics.frag", "PixelShaderFunction"},
+        {"hlsl.intrinsics.lit.frag", "PixelShaderFunction"},
+        {"hlsl.intrinsics.negative.comp", "ComputeShaderFunction"},
+        {"hlsl.intrinsics.negative.frag", "PixelShaderFunction"},
+        {"hlsl.intrinsics.negative.vert", "VertexShaderFunction"},
+        {"hlsl.intrinsics.vert", "VertexShaderFunction"},
         {"hlsl.matType.frag", "PixelShaderFunction"},
         {"hlsl.max.frag", "PixelShaderFunction"},
         {"hlsl.precedence.frag", "PixelShaderFunction"},
         {"hlsl.precedence2.frag", "PixelShaderFunction"},
+        {"hlsl.scope.frag", "PixelShaderFunction"},
         {"hlsl.sin.frag", "PixelShaderFunction"},
+        {"hlsl.struct.frag", "PixelShaderFunction"},
+        {"hlsl.swizzle.frag", "PixelShaderFunction"},
+        {"hlsl.whileLoop.frag", "PixelShaderFunction"},
+        {"hlsl.void.frag", "PixelShaderFunction"},
     }),
     FileNameAsCustomTestSuffix
 );

@@ -10,6 +10,7 @@ Linked vertex stage:
 // Id's are bound by 66
 
                               Capability Shader
+                              Capability ClipDistance
                1:             ExtInstImport  "GLSL.std.450"
                               MemoryModel Logical GLSL450
                               EntryPoint Vertex 4  "main" 12 23 34 38 41 42 62 65
@@ -62,9 +63,6 @@ Linked vertex stage:
                               Decorate 55(sampb2) Binding 5
                               Decorate 56(sampb4) DescriptorSet 0
                               Decorate 56(sampb4) Binding 31
-                              MemberDecorate 60(SS) 0 Flat
-                              MemberDecorate 60(SS) 1 Flat
-                              MemberDecorate 60(SS) 2 Flat
                               Decorate 62(var) Location 0
                               MemberDecorate 63(MS) 0 Location 17
                               Decorate 63(MS) Block

@@ -61,14 +61,14 @@ public:
     POOL_ALLOCATOR_NEW_DELETE(GetThreadPoolAllocator())
     TBuiltInParseables();
     virtual ~TBuiltInParseables();
-    virtual void initialize(int version, EProfile, int spv, int vulkan) = 0;
-    virtual void initialize(const TBuiltInResource& resources, int version, EProfile, int spv, int vulkan, EShLanguage) = 0;
+    virtual void initialize(int version, EProfile, const SpvVersion& spvVersion) = 0;
+    virtual void initialize(const TBuiltInResource& resources, int version, EProfile, const SpvVersion& spvVersion, EShLanguage) = 0;
     virtual const TString& getCommonString() const { return commonBuiltins; }
     virtual const TString& getStageString(EShLanguage language) const { return stageBuiltins[language]; }
 
-    virtual void identifyBuiltIns(int version, EProfile profile, int spv, int vulkan, EShLanguage language, TSymbolTable& symbolTable) = 0;
+    virtual void identifyBuiltIns(int version, EProfile profile, const SpvVersion& spvVersion, EShLanguage language, TSymbolTable& symbolTable) = 0;
     
-    virtual void identifyBuiltIns(int version, EProfile profile, int spv, int /*vulkan*/, EShLanguage language, TSymbolTable& symbolTable, const TBuiltInResource &resources) = 0;
+    virtual void identifyBuiltIns(int version, EProfile profile, const SpvVersion& spvVersion, EShLanguage language, TSymbolTable& symbolTable, const TBuiltInResource &resources) = 0;
 
 protected:
     TString commonBuiltins;
@@ -85,15 +85,15 @@ public:
     POOL_ALLOCATOR_NEW_DELETE(GetThreadPoolAllocator())
     TBuiltIns();
     virtual ~TBuiltIns();
-    void initialize(int version, EProfile, int spv, int vulkan);
-    void initialize(const TBuiltInResource& resources, int version, EProfile, int spv, int vulkan, EShLanguage);
+    void initialize(int version, EProfile, const SpvVersion& spvVersion);
+    void initialize(const TBuiltInResource& resources, int version, EProfile, const SpvVersion& spvVersion, EShLanguage);
 
-    void identifyBuiltIns(int version, EProfile profile, int spv, int vulkan, EShLanguage language, TSymbolTable& symbolTable);
+    void identifyBuiltIns(int version, EProfile profile, const SpvVersion& spvVersion, EShLanguage language, TSymbolTable& symbolTable);
     
-    void identifyBuiltIns(int version, EProfile profile, int spv, int /*vulkan*/, EShLanguage language, TSymbolTable& symbolTable, const TBuiltInResource &resources);
+    void identifyBuiltIns(int version, EProfile profile, const SpvVersion& spvVersion, EShLanguage language, TSymbolTable& symbolTable, const TBuiltInResource &resources);
 
 protected:
-    void add2ndGenerationSamplingImaging(int version, EProfile profile, int spv, int vulkan);
+    void add2ndGenerationSamplingImaging(int version, EProfile profile, const SpvVersion& spvVersion);
     void addSubpassSampling(TSampler, TString& typeName, int version, EProfile profile);
     void addQueryFunctions(TSampler, TString& typeName, int version, EProfile profile);
     void addImageFunctions(TSampler, TString& typeName, int version, EProfile profile);

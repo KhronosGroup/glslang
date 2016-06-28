@@ -1,6 +1,6 @@
 //
 //Copyright (C) 2002-2005  3Dlabs Inc. Ltd.
-//Copyright (C) 2012-2015 LunarG, Inc.
+//Copyright (C) 2012-2016 LunarG, Inc.
 //Copyright (C) 2015-2016 Google, Inc.
 //
 //All rights reserved.
@@ -1043,8 +1043,9 @@ public:
     POOL_ALLOCATOR_NEW_DELETE(GetThreadPoolAllocator())
 
     // for "empty" type (no args) or simple scalar/vector/matrix
-    explicit TType(TBasicType t = EbtVoid, TStorageQualifier q = EvqTemporary, int vs = 1, int mc = 0, int mr = 0) :
-                            basicType(t), vectorSize(vs), matrixCols(mc), matrixRows(mr), vector1(false),
+    explicit TType(TBasicType t = EbtVoid, TStorageQualifier q = EvqTemporary, int vs = 1, int mc = 0, int mr = 0,
+                   bool isVector = false) :
+                            basicType(t), vectorSize(vs), matrixCols(mc), matrixRows(mr), vector1(isVector && vs == 1),
                             arraySizes(nullptr), structure(nullptr), fieldName(nullptr), typeName(nullptr)
                             {
                                 sampler.clear();
@@ -1052,8 +1053,9 @@ public:
                                 qualifier.storage = q;
                             }
     // for explicit precision qualifier
-    TType(TBasicType t, TStorageQualifier q, TPrecisionQualifier p, int vs = 1, int mc = 0, int mr = 0) :
-                            basicType(t), vectorSize(vs), matrixCols(mc), matrixRows(mr), vector1(false),
+    TType(TBasicType t, TStorageQualifier q, TPrecisionQualifier p, int vs = 1, int mc = 0, int mr = 0, 
+          bool isVector = false) :
+                            basicType(t), vectorSize(vs), matrixCols(mc), matrixRows(mr), vector1(isVector && vs == 1),
                             arraySizes(nullptr), structure(nullptr), fieldName(nullptr), typeName(nullptr)
                             {
                                 sampler.clear();
@@ -1255,6 +1257,8 @@ public:
     virtual bool isStruct() const { return structure != nullptr; }
     virtual bool isFloatingDomain() const { return basicType == EbtFloat || basicType == EbtDouble; }
 
+    virtual bool isOpaque() const { return basicType == EbtSampler || basicType == EbtAtomicUint; }
+
     // "Image" is a superset of "Subpass"
     virtual bool isImage() const   { return basicType == EbtSampler && getSampler().isImage(); }
     virtual bool isSubpass() const { return basicType == EbtSampler && getSampler().isSubpass(); }
@@ -1315,7 +1319,7 @@ public:
 
     virtual bool containsOpaque() const
     {
-        if (basicType == EbtSampler || basicType == EbtAtomicUint)
+        if (isOpaque())
             return true;
         if (! structure)
             return false;

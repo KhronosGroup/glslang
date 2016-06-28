@@ -17,8 +17,8 @@ ERROR: 0:16: 'constant_id' : cannot declare a default, can only be used on a sca
 ERROR: 0:20: 'subpassLoad' : no matching overloaded function found 
 ERROR: 0:20: 'assign' :  cannot convert from 'const float' to 'smooth out 4-component vector of float'
 ERROR: 0:23: 'atomic counter types' : not allowed when using GLSL for Vulkan 
-ERROR: 0:24: 'shared' : not allowed when using GLSL for Vulkan 
-ERROR: 0:25: 'packed' : not allowed when using GLSL for Vulkan 
+ERROR: 0:24: 'shared' : not allowed when generating SPIR-V 
+ERROR: 0:25: 'packed' : not allowed when generating SPIR-V 
 ERROR: 0:32: 'initializer' : can't use with types containing arrays sized with a specialization constant 
 ERROR: 0:34: '=' : can't use with types containing arrays sized with a specialization constant 
 ERROR: 0:35: '==' : can't use with types containing arrays sized with a specialization constant 

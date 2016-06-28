@@ -4737,7 +4737,7 @@ yyreduce:
   case 155:
 #line 1210 "MachineIndependent/glslang.y" /* yacc.c:1646  */
     {
-        parseContext.profileRequires((yyvsp[0].lex).loc, ECoreProfile | ECompatibilityProfile, 430, 0, "shared");
+        parseContext.profileRequires((yyvsp[0].lex).loc, ECoreProfile | ECompatibilityProfile, 430, E_GL_ARB_compute_shader, "shared");
         parseContext.profileRequires((yyvsp[0].lex).loc, EEsProfile, 310, 0, "shared");
         parseContext.requireStage((yyvsp[0].lex).loc, EShLangCompute, "shared");
         (yyval.interm.type).init((yyvsp[0].lex).loc);

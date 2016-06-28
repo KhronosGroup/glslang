@@ -926,8 +926,17 @@ namespace spv {
         // Count function variable use
         process(
             [&](spv::Op opCode, unsigned start) {
-                if (opCode == spv::OpVariable) { ++varUseCount[asId(start+2)]; return true; }
-                return false;
+                if (opCode == spv::OpVariable) {
+                    ++varUseCount[asId(start+2)];
+                    return true;
+                } else if (opCode == spv::OpEntryPoint) {
+                    const int wordCount = asWordCount(start);
+                    for (int i = 4; i < wordCount; i++) {
+                        ++varUseCount[asId(start+i)];
+                    }
+                    return true;
+                } else
+                    return false;
             },
 
             [&](spv::Id& id) { if (varUseCount[id]) ++varUseCount[id]; }

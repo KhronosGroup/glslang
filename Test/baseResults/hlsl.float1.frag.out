@@ -1,5 +1,5 @@
 hlsl.float1.frag
-Shader version: 100
+Shader version: 450
 gl_FragCoord origin is upper left
 0:? Sequence
 0:1  move second child to first child (temp 1-component vector of float)
@@ -12,8 +12,8 @@ gl_FragCoord origin is upper left
 0:2      2.000000
 0:8  Function Definition: ShaderFunction(vf1;f1; (temp 1-component vector of float)
 0:5    Function Parameters: 
-0:5      'inFloat1' (temp 1-component vector of float)
-0:5      'inScalar' (temp float)
+0:5      'inFloat1' (in 1-component vector of float)
+0:5      'inScalar' (in float)
 0:?     Sequence
 0:6      Branch: Return with expression
 0:6        add (temp 1-component vector of float)
@@ -21,8 +21,8 @@ gl_FragCoord origin is upper left
 0:6            'f1' (temp 1-component vector of float)
 0:6            'scalar' (temp float)
 0:6          vector-scale (temp 1-component vector of float)
-0:6            'inFloat1' (temp 1-component vector of float)
-0:6            'inScalar' (temp float)
+0:6            'inFloat1' (in 1-component vector of float)
+0:6            'inScalar' (in float)
 0:?   Linker Objects
 0:?     'f1' (temp 1-component vector of float)
 0:?     'scalar' (temp float)
@@ -31,7 +31,7 @@ gl_FragCoord origin is upper left
 Linked fragment stage:
 
 
-Shader version: 100
+Shader version: 450
 gl_FragCoord origin is upper left
 0:? Sequence
 0:1  move second child to first child (temp 1-component vector of float)
@@ -44,8 +44,8 @@ gl_FragCoord origin is upper left
 0:2      2.000000
 0:8  Function Definition: ShaderFunction(vf1;f1; (temp 1-component vector of float)
 0:5    Function Parameters: 
-0:5      'inFloat1' (temp 1-component vector of float)
-0:5      'inScalar' (temp float)
+0:5      'inFloat1' (in 1-component vector of float)
+0:5      'inScalar' (in float)
 0:?     Sequence
 0:6      Branch: Return with expression
 0:6        add (temp 1-component vector of float)
@@ -53,8 +53,8 @@ gl_FragCoord origin is upper left
 0:6            'f1' (temp 1-component vector of float)
 0:6            'scalar' (temp float)
 0:6          vector-scale (temp 1-component vector of float)
-0:6            'inFloat1' (temp 1-component vector of float)
-0:6            'inScalar' (temp float)
+0:6            'inFloat1' (in 1-component vector of float)
+0:6            'inScalar' (in float)
 0:?   Linker Objects
 0:?     'f1' (temp 1-component vector of float)
 0:?     'scalar' (temp float)
@@ -68,7 +68,7 @@ gl_FragCoord origin is upper left
                               MemoryModel Logical GLSL450
                               EntryPoint Fragment 4  "PixelShaderFunction"
                               ExecutionMode 4 OriginUpperLeft
-                              Source HLSL 100
+                              Source HLSL 450
                               Name 4  "PixelShaderFunction"
                               Name 11  "ShaderFunction(vf1;f1;"
                               Name 9  "inFloat1"

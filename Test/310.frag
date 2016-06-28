@@ -62,11 +62,11 @@ void foo23()
 
 layout(binding=3) uniform sampler2D s1;
 layout(binding=3) uniform sampler2D s2; // ERROR: overlapping bindings?  Don't see that in the 310 spec.
-layout(binding=2) uniform writeonly image2D      i2D;
-layout(binding=4) uniform readonly  image3D      i3D;
-layout(binding=5) uniform           imageCube    iCube;
-layout(binding=6) uniform           image2DArray i2DA;
-layout(binding=6) uniform coherent volatile restrict image2D i2Dqualified;
+highp layout(binding=2) uniform writeonly image2D      i2D;
+      layout(binding=4) uniform readonly  image3D      i3D;    // ERROR, no default precision
+      layout(binding=5) uniform           imageCube    iCube;  // ERROR, no default precision
+      layout(binding=6) uniform           image2DArray i2DA;   // ERROR, no default precision
+      layout(binding=6) uniform coherent volatile restrict image2D i2Dqualified;    // ERROR, no default precision
 
 layout(binding = 1) uniform bb {
     int foo;
@@ -93,7 +93,7 @@ layout(shared) uniform bshar {
 in smooth vec4 smoothIn;
 in flat int flatIn;
 
-uniform sampler2DMS s2dms;
+uniform sampler2DMS s2dms;  // ERROR, no default precision qualifier
 
 void foots()
 {
@@ -108,7 +108,7 @@ void foots()
 }
 
 out bool bout;          // ERROR
-out image2D imageOut;   // ERROR
+highp out image2D imageOut;   // ERROR
 out mat2x3 mout;        // ERROR
 
 in bool inb;         // ERROR
@@ -201,7 +201,7 @@ uniform int sIndex;
 layout(binding = 0) uniform atomic_uint auArray[2];
 uniform ubName { int i; } ubInst[4];
 buffer bbName { int i; } bbInst[4];
-uniform writeonly image2D iArray[5];
+highp uniform writeonly image2D iArray[5];
 const ivec2 constOffsets[4] = ivec2[4](ivec2(0.1), ivec2(0.2), ivec2(0.3), ivec2(0.4));
 
 void pfooBad()

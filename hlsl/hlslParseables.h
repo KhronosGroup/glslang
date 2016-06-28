@@ -48,12 +48,12 @@ class TBuiltInParseablesHlsl : public TBuiltInParseables {
 public:
     POOL_ALLOCATOR_NEW_DELETE(GetThreadPoolAllocator())
     TBuiltInParseablesHlsl();
-    void initialize(int version, EProfile, int spv, int vulkan);
-    void initialize(const TBuiltInResource& resources, int version, EProfile, int spv, int vulkan, EShLanguage);
+    void initialize(int version, EProfile, const SpvVersion& spvVersion);
+    void initialize(const TBuiltInResource& resources, int version, EProfile, const SpvVersion& spvVersion, EShLanguage);
 
-    void identifyBuiltIns(int version, EProfile profile, int spv, int vulkan, EShLanguage language, TSymbolTable& symbolTable);
+    void identifyBuiltIns(int version, EProfile profile, const SpvVersion& spvVersion, EShLanguage language, TSymbolTable& symbolTable);
     
-    void identifyBuiltIns(int version, EProfile profile, int spv, int /*vulkan*/, EShLanguage language, TSymbolTable& symbolTable, const TBuiltInResource &resources);
+    void identifyBuiltIns(int version, EProfile profile, const SpvVersion& spvVersion, EShLanguage language, TSymbolTable& symbolTable, const TBuiltInResource &resources);
 };
 
 } // end namespace glslang

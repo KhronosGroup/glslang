@@ -37,7 +37,8 @@ ERROR: 0:140: 'textureQueryLod' : no matching overloaded function found
 ERROR: 0:140: 'assign' :  cannot convert from 'const float' to 'temp 2-component vector of float'
 ERROR: 0:141: 'textureQueryLod' : no matching overloaded function found 
 ERROR: 0:141: 'assign' :  cannot convert from 'const float' to 'temp 2-component vector of float'
-ERROR: 38 compilation errors.  No code generated.
+ERROR: 0:152: 'index' : value must be 0 or 1 
+ERROR: 39 compilation errors.  No code generated.
 
 
 Shader version: 330
@@ -122,6 +123,7 @@ ERROR: node is still EOpNull!
 0:?     'samp2Ds' (uniform sampler2DShadow)
 0:?     'precise' (global int)
 0:?     'KeyMem' (global structure{global int precise})
+0:?     'outIndex2' (layout(location=28 index=0 ) out 4-component vector of float)
 
 
 Linked fragment stage:
@@ -211,4 +213,5 @@ ERROR: node is still EOpNull!
 0:?     'samp2Ds' (uniform sampler2DShadow)
 0:?     'precise' (global int)
 0:?     'KeyMem' (global structure{global int precise})
+0:?     'outIndex2' (layout(location=28 index=0 ) out 4-component vector of float)
 

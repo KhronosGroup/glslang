@@ -100,6 +100,7 @@ INSTANTIATE_TEST_CASE_P(
         "spv.300layout.vert",
         "spv.300layoutp.vert",
         "spv.310.comp",
+        "spv.310.bitcast.frag",
         "spv.330.geom",
         "spv.400.frag",
         "spv.400.tesc",

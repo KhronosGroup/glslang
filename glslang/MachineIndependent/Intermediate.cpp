@@ -1028,7 +1028,7 @@ const TIntermTyped* TIntermediate::findLValueBase(const TIntermTyped* node, bool
 }
 
 //
-// Create loop nodes.
+// Create while and do-while loop nodes.
 //
 TIntermLoop* TIntermediate::addLoop(TIntermNode* body, TIntermTyped* test, TIntermTyped* terminal, bool testFirst, const TSourceLoc& loc)
 {
@@ -1036,6 +1036,22 @@ TIntermLoop* TIntermediate::addLoop(TIntermNode* body, TIntermTyped* test, TInte
     node->setLoc(loc);
 
     return node;
+}
+
+//
+// Create a for-loop sequence.
+//
+TIntermAggregate* TIntermediate::addForLoop(TIntermNode* body, TIntermNode* initializer, TIntermTyped* test, TIntermTyped* terminal, bool testFirst, const TSourceLoc& loc)
+{
+    TIntermLoop* node = new TIntermLoop(body, test, terminal, testFirst);
+    node->setLoc(loc);
+
+    // make a sequence of the initializer and statement
+    TIntermAggregate* loopSequence = makeAggregate(initializer, loc);
+    loopSequence = growAggregate(loopSequence, node);
+    loopSequence->setOperator(EOpSequence);
+
+    return loopSequence;
 }
 
 //
