@@ -65,6 +65,7 @@ INSTANTIATE_TEST_CASE_P(
         "preprocessor.success_if_parse_would_fail.vert",
         "preprocessor.defined.vert",
         "preprocessor.many.endif.vert",
+        "preprocessor.eof_missing.vert",
     })),
     FileNameAsCustomTestSuffix
 );
