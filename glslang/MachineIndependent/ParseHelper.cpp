@@ -1208,6 +1208,8 @@ TIntermNode* TParseContext::handleReturnValue(const TSourceLoc& loc, TIntermType
     } else if (*currentFunctionType != value->getType()) {
         TIntermTyped* converted = intermediate.addConversion(EOpReturn, *currentFunctionType, value);
         if (converted) {
+            if (*currentFunctionType != converted->getType())
+                error(loc, "cannot convert return value to function return type", "return", "");
             if (version < 420)
                 warn(loc, "type conversion on return values was not explicitly allowed until version 420", "return", "");
             return intermediate.addBranch(EOpReturn, converted, loc);

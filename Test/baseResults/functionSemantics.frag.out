@@ -1,8 +1,12 @@
 functionSemantics.frag
 Warning, version 400 is not yet complete; most version-specific features are present, but some are missing.
+ERROR: 0:74: 'return' : cannot convert return value to function return type 
+WARNING: 0:74: 'return' : type conversion on return values was not explicitly allowed until version 420 
+ERROR: 1 compilation errors.  No code generated.
+
 
 Shader version: 400
-0:? Sequence
+ERROR: node is still EOpNull!
 0:5  Function Definition: foo(i1;i1;i1;i1;i1;i1; (global int)
 0:5    Function Parameters: 
 0:5      'a' (in int)
@@ -195,6 +199,11 @@ Shader version: 400
 0:69          Construct ivec2 (temp 2-component vector of int)
 0:69            Convert float to int (temp int)
 0:69              'F' (temp float)
+0:72  Function Definition: badConv( (global 4-component vector of float)
+0:72    Function Parameters: 
+0:74    Sequence
+0:74      Branch: Return with expression
+0:74        'u' (uniform float)
 0:?   Linker Objects
 0:?     'u' (uniform float)
 
@@ -203,7 +212,7 @@ Linked fragment stage:
 
 
 Shader version: 400
-0:? Sequence
+ERROR: node is still EOpNull!
 0:5  Function Definition: foo(i1;i1;i1;i1;i1;i1; (global int)
 0:5    Function Parameters: 
 0:5      'a' (in int)
@@ -396,6 +405,11 @@ Shader version: 400
 0:69          Construct ivec2 (temp 2-component vector of int)
 0:69            Convert float to int (temp int)
 0:69              'F' (temp float)
+0:72  Function Definition: badConv( (global 4-component vector of float)
+0:72    Function Parameters: 
+0:74    Sequence
+0:74      Branch: Return with expression
+0:74        'u' (uniform float)
 0:?   Linker Objects
 0:?     'u' (uniform float)
 
