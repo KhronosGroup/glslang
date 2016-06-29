@@ -69,6 +69,11 @@ void HlslGrammar::expected(const char* syntax)
     parseContext.error(token.loc, "Expected", syntax, "");
 }
 
+void HlslGrammar::unimplemented(const char* error)
+{
+    parseContext.error(token.loc, "Unimplemented", error, "");
+}
+
 // Only process the next token if it is an identifier.
 // Return true if it was an identifier.
 bool HlslGrammar::acceptIdentifier(HlslToken& idToken)
@@ -105,8 +110,285 @@ bool HlslGrammar::acceptCompilationUnit()
     return true;
 }
 
+// sampler_state
+//      : sampler_state_assignment SEMI_COLON sampler_state_assignment SEMI_COLON ...
+bool HlslGrammar::acceptSamplerState()
+{
+    do {
+        // read state name
+        HlslToken state;
+        if (! acceptIdentifier(state))
+            return true; // end of list
+
+        // FXC accepts any case
+        TString stateName = *state.string;
+        std::transform(stateName.begin(), stateName.end(), stateName.begin(), ::tolower);
+
+        if (! acceptTokenClass(EHTokAssign)) {
+            expected("assign");
+            return false;
+        }
+
+        if (stateName == "minlod" || stateName == "maxlod") {
+            if (! peekTokenClass(EHTokIntConstant)) {
+                expected("integer");
+                return false;
+            }
+
+            TIntermTyped* lod = nullptr;
+            if (! acceptLiteral(lod))  // should never fail, since we just looked for an integer
+                return false;
+        } else if (stateName == "maxanisotropy") {
+            if (! peekTokenClass(EHTokIntConstant)) {
+                expected("integer");
+                return false;
+            }
+
+            TIntermTyped* maxAnisotropy = nullptr;
+            if (! acceptLiteral(maxAnisotropy))  // should never fail, since we just looked for an integer
+                return false;
+        } else if (stateName == "filter") {
+        } else if (stateName == "addressu" || stateName == "addressv" || stateName == "addressw") {
+            HlslToken addrMode;
+            if (! acceptIdentifier(addrMode)) {
+                expected("texture address mode");
+                return false;
+            }
+        } else if (stateName == "miplodbias") {
+            TIntermTyped* lodBias = nullptr;
+            if (! acceptLiteral(lodBias)) {
+                expected("lod bias");
+                return false;
+            }
+        } else if (stateName == "bordercolor") {
+            return false;
+        } else {
+            expected("texture state");
+            return false;
+        }
+
+        // SEMICOLON
+        if (! acceptTokenClass(EHTokSemicolon)) {
+            expected("semicolon");
+            return false;
+        }
+    } while (true);
+}
+
+// texture_declaration
+//   : texture_object identifier
+//   | texture_object identifier LEFT_BRACKET int_constant RIGHT_BRACKET
+//   | texture_object LEFT_ANGLE texture_type RIGHT_ANGLE identifier
+//   | texture_object LEFT_ANGLE texture_type COMMA samples RIGHT_ANGLE identifier
+//   | texture_object LEFT_ANGLE texture_type RIGHT_ANGLE identifier LEFT_BRACKET int_constant RIGHT_BRACKET
+//   | texture_object LEFT_ANGLE texture_type COMMA samples RIGHT_ANGLE identifier LEFT_BRACKET int_constant RIGHT_BRACKET
+bool HlslGrammar::acceptTextureDeclaration(TType& type)
+{
+    const EHlslTokenClass textureType = peek();
+
+    TSamplerDim dim = EsdNone;
+    bool array = false;
+    bool ms    = false;
+
+    switch (textureType) {
+    case EHTokBuffer:            dim = EsdBuffer;                      break;
+    case EHTokTexture1d:         dim = Esd1D;                          break;
+    case EHTokTexture1darray:    dim = Esd1D; array = true;            break;
+    case EHTokTexture2d:         dim = Esd2D;                          break;
+    case EHTokTexture2darray:    dim = Esd2D; array = true;            break;
+    case EHTokTexture3d:         dim = Esd3D;                          break; 
+    case EHTokTextureCube:       dim = EsdCube;                        break;
+    case EHTokTextureCubearray:  dim = EsdCube; array = true;          break;
+    case EHTokTexture2DMS:       dim = Esd2D; ms = true;               break;
+    case EHTokTexture2DMSarray:  dim = Esd2D; array = true; ms = true; break;
+    default:
+        return false;  // not a texture declaration
+    }
+
+    advanceToken();  // consume the texture object keyword
+
+    TType txType(EbtFloat, EvqUniform, 4); // default type is float4
+    
+    TIntermTyped* msCount = nullptr;
+
+    // texture type: required for multisample types!
+    if (acceptTokenClass(EHTokLeftAngle)) {
+        if (! acceptType(txType)) {
+            expected("scalar or vector type");
+            return false;
+        }
+
+        if (ms && acceptTokenClass(EHTokComma)) {
+            // read sample count for multisample types, if given
+            if (! peekTokenClass(EHTokIntConstant)) {
+                expected("multisample count");
+                return false;
+            }
+
+            if (! acceptLiteral(msCount))  // should never fail, since we just found an integer
+                return false;
+        }
+
+        if (! acceptTokenClass(EHTokRightAngle)) {
+            expected("right angle bracket");
+            return false;
+        }
+    } else if (ms) {
+        expected("texture type for multisample");
+        return false;
+    }
+
+    // texture name
+    HlslToken name;
+    if (! acceptIdentifier(name)) {
+        expected("sampler name");
+        return false;
+    }
+
+    TIntermTyped* arraySize = nullptr;
+
+    // read array size, if given
+    if (acceptTokenClass(EHTokLeftBracket)) {
+        if (! peekTokenClass(EHTokIntConstant)) {
+            expected("integer texture array size >= 1");
+            return false;
+        }
+
+        if (! acceptLiteral(arraySize))  // should never fail, since we just found an integer
+            return false;
+
+        if (!acceptTokenClass(EHTokRightBracket)) {
+            expected("right bracket");
+            return false;
+        }
+
+        unimplemented("texture arrays"); // TODO: ...
+    }
+
+    TArraySizes* arraySizes = nullptr; // TODO: array
+    bool shadow = false;               // TODO: shadow
+
+    TSampler sampler;
+    sampler.setTexture(txType.getBasicType(), dim, array, shadow, ms);
+    TType samplerType(sampler, EvqUniform, arraySizes);
+
+    parseContext.declareVariable(token.loc, *name.string, samplerType, arraySizes, nullptr);
+
+    return true;
+}
+
+// sampler_declaration
+//    : SAMPLER identifier EQUAL sampler_type LEFT_BRACE sampler_state_list RIGHT_BRACE
+//    | sampler_type identifier
+//    | sampler_type identifier LEFT_BRACE sampler_state RIGHT_BRACE
+//    | sampler_type identifier LEFT_BRACKET int_constant RIGHT_BRACKET
+//    | sampler_type identifier LEFT_BRACKET int_constant RIGHT_BRACKET LEFT_BRACE sampler_state RIGHT_BRACE
+bool HlslGrammar::acceptSamplerDeclaration(TType& type)
+{
+    // read sampler type
+    const EHlslTokenClass samplerType = peek();
+
+    TSamplerDim dim = EsdNone;
+
+    switch (samplerType) {
+    case EHTokSampler:      break;
+    case EHTokSampler1d:    dim = Esd1D; break;
+    case EHTokSampler2d:    dim = Esd2D; break;
+    case EHTokSampler3d:    dim = Esd3D; break;
+    case EHTokSamplerCube:  dim = EsdCube; break;
+    case EHTokSamplerState: break;
+    case EHTokSamplerComparisonState: break;
+    default:
+        return false;  // not a sampler declaration
+    }
+
+    advanceToken();  // consume the sampler type keyword
+ 
+    // read sampler name
+    HlslToken name;
+    if (! acceptIdentifier(name)) {
+        expected("sampler name");
+        return false;
+    }
+
+    if (samplerType == EHTokSampler && acceptTokenClass(EHTokAssign)) {
+        // accept sampler type
+
+        unimplemented("Direct3D 9 sampler declaration"); // TODO: ...
+        return false;
+
+        // DX9 style declaration
+        if (! acceptTokenClass(EHTokLeftBrace)) {
+            expected("expected left brace");
+            return false;
+        }
+
+        // sampler state parameters
+        if (! acceptSamplerState())
+            return false;
+
+        // parameter list is required in DX9 style
+        if (! acceptTokenClass(EHTokRightBrace)) {
+            expected("right brace");
+            return false;
+        }
+    } else {
+        // DX10 style declaration
+
+        TIntermTyped* arraySize = nullptr;
+        
+        // read array size, if given
+        if (acceptTokenClass(EHTokLeftBracket)) {
+            if (! peekTokenClass(EHTokIntConstant)) {
+                expected("integer sampler array size >= 1");
+                return false;
+            }
+
+            if (! acceptLiteral(arraySize))  // should never fail, since we just found an integer
+                return false;
+
+            if (!acceptTokenClass(EHTokRightBracket)) {
+                expected("right bracket");
+                return false;
+            }
+
+            unimplemented("sampler arrays"); // TODO: ...
+        }
+
+        // parameter list is optional in DX10 style, per experiments with FXC.
+        if (acceptTokenClass(EHTokLeftBrace)) {
+            // TODO: ...
+            parseContext.warn(token.loc, "unimplemented", "immediate sampler state", "");
+
+            // sampler state parameters
+            if (! acceptSamplerState())
+                return false;
+
+            if (! acceptTokenClass(EHTokRightBrace)) {
+                expected("right brace");
+                return false;
+            }
+        }
+
+        TArraySizes* arraySizes = nullptr; // TODO: array
+        bool shadow = false;               // TODO: shadow
+
+        TSampler sampler;
+        sampler.setPureSampler(shadow);
+
+        TType samplerType(sampler, EvqUniform, arraySizes);
+
+        parseContext.declareVariable(token.loc, *name.string, samplerType, arraySizes, nullptr);
+    }
+
+    return true;
+}
+
+
 // declaration
-//      : fully_specified_type declarator_list SEMICOLON
+//      : sampler_declaration post_decls SEMICOLON
+//      | texture_declaration post_decls SEMICOLON
+//      | fully_specified_type declarator_list SEMICOLON
 //      | fully_specified_type identifier function_parameters post_decls compound_statement  // function definition
 //      | typedef declaration
 //
@@ -134,8 +416,35 @@ bool HlslGrammar::acceptDeclaration(TIntermNode*& node)
     // typedef
     bool typedefDecl = acceptTokenClass(EHTokTypedef);
 
-    // fully_specified_type
     TType type;
+
+    // sampler declaration
+    if (acceptSamplerDeclaration(type)) {
+        // post_decls
+        acceptPostDecls(type);
+
+        // SEMICOLON
+        if (acceptTokenClass(EHTokSemicolon))
+            return true;
+
+        expected("semicolon");
+        return false;
+    }
+
+    // texture declaration
+    if (acceptTextureDeclaration(type)) {
+        // post_decls
+        acceptPostDecls(type);
+
+        // SEMICOLON
+        if (acceptTokenClass(EHTokSemicolon))
+            return true;
+
+        expected("semicolon");
+        return false;
+    }
+
+    // fully_specified_type
     if (! acceptFullySpecifiedType(type))
         return false;
     if (type.getQualifier().storage == EvqTemporary && parseContext.symbolTable.atGlobalLevel())
@@ -1420,13 +1729,23 @@ bool HlslGrammar::acceptPostfixExpression(TIntermTyped*& node)
         {
             // DOT IDENTIFIER
             // includes swizzles and struct members
-            // TODO: possibly includes "method" syntax
             HlslToken field;
             if (! acceptIdentifier(field)) {
                 expected("swizzle or member");
                 return false;
             }
+
+            TIntermTyped* base = node; // preserve for method function calls
             node = parseContext.handleDotDereference(field.loc, node, *field.string);
+
+            // In the event of a method node, we look for an open paren and accept the function call.
+            if (node->getAsMethodNode() != nullptr && peekTokenClass(EHTokLeftParen)) {
+                if (! acceptFunctionCall(field, node, base)) {
+                    expected("function parameters");
+                    return false;
+                }
+            }
+
             break;
         }
         case EOpIndexIndirect:
@@ -1489,11 +1808,16 @@ bool HlslGrammar::acceptConstructor(TIntermTyped*& node)
 // function_call
 //      : [idToken] arguments
 //
-bool HlslGrammar::acceptFunctionCall(HlslToken idToken, TIntermTyped*& node)
+bool HlslGrammar::acceptFunctionCall(HlslToken idToken, TIntermTyped*& node, TIntermTyped* base)
 {
     // arguments
     TFunction* function = new TFunction(idToken.string, TType(EbtVoid));
     TIntermTyped* arguments = nullptr;
+
+    // methods have an implicit first argument of the calling object.
+    if (base != nullptr)
+        parseContext.handleFunctionArgument(function, arguments, base);
+
     if (! acceptArguments(function, arguments))
         return false;
 

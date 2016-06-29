@@ -65,6 +65,12 @@ const char* BaseTypeName(const char* argOrder, const char* scalarName, const cha
     default:  return "UNKNOWN_TYPE";
     }
 }
+
+bool IsTextureType(const char argType)
+{
+    return argType == 'T' || argType == 'i' || argType == 'u';
+}
+
     
 // Create and return a type name.  This is done in GLSL, not HLSL conventions, until such
 // time as builtins are parsed using the HLSL parser.
@@ -95,6 +101,9 @@ glslang::TString& AppendTypeName(glslang::TString& s, const char* argOrder, cons
         case 'U': s += "uint";    break;
         case 'B': s += "bool";    break;
         case 'S': s += "sampler"; break;
+        case 'T': s += "Texture"; break;
+        case 'i': assert(0); // TODO: ...
+        case 'u': assert(0); // TODO: ...
         default:  s += "UNKNOWN_TYPE"; break;
         }
     } else {
@@ -105,7 +114,10 @@ glslang::TString& AppendTypeName(glslang::TString& s, const char* argOrder, cons
         case 'I': s += BaseTypeName(argOrder, "int",     "ivec",    "imat"); break;
         case 'U': s += BaseTypeName(argOrder, "uint",    "uvec",    "umat"); break;
         case 'B': s += BaseTypeName(argOrder, "bool",    "bvec",    "bmat"); break;
-        case 'S': s += BaseTypeName(argOrder, "sampler", "sampler", "sampler"); break; // TODO: 
+        case 'S': s += BaseTypeName(argOrder, "sampler", "sampler", "sampler"); break;
+        case 'T': s += BaseTypeName(argOrder, "texture", "texture", "texture"); break;
+        case 'i': s += BaseTypeName(argOrder, "itexture", "itexture", "itexture"); break;
+        case 'u': s += BaseTypeName(argOrder, "utexture", "utexture", "utexture"); break;
         default:  s += "UNKNOWN_TYPE"; break;
         }
     }
@@ -116,33 +128,36 @@ glslang::TString& AppendTypeName(glslang::TString& s, const char* argOrder, cons
         dim0 = dim1 = fixedVecSize;
 
     // Add sampler dimensions
-    if (*argType == 'S') {
-        switch (dim0) {
-        case 1: s += "1D";   break;
-        case 2: s += "2D";   break;
-        case 3: s += "3D";   break;
-        case 4: s += "Cube"; break;
-        default: s += "UNKNOWN_SAMPLER"; break;
+    if (*argType == 'S' || IsTextureType(*argType)) {
+        if (*argOrder == 'V') {
+            switch (dim0) {
+            case 1: s += "1D";   break;
+            case 2: s += "2D";   break;
+            case 3: s += "3D";   break;
+            case 4: s += "Cube"; break;
+            default: s += "UNKNOWN_SAMPLER"; break;
+            }
         }
-    }
+    } else {
+        // Non-sampler type:
+        // verify dimensions
+        if ((*argOrder == 'V' || *argOrder == 'M') && (dim0 < 1 || dim0 > 4) ||
+            (*argOrder == 'M' && (dim1 < 1 || dim1 > 4))) {
+            s += "UNKNOWN_DIMENSION";
+            return s;
+        }
 
-    // verify dimensions
-    if ((*argOrder == 'V' || *argOrder == 'M') && (dim0 < 1 || dim0 > 4) ||
-        (*argOrder == 'M' && (dim1 < 1 || dim1 > 4))) {
-        s += "UNKNOWN_DIMENSION";
-        return s;
-    }
-
-    switch (*argOrder) {
-    case '-': break;  // no dimensions for voids
-    case 'S': break;  // no dimensions on scalars
-    case 'V': s += ('0' + dim0); break;
-    case 'M': 
-        {
-            if (!UseHlslTypes)  // GLSL has column first for mat types
-                std::swap(dim0, dim1);
-            s += ('0' + dim0); s += 'x'; s += ('0' + dim1);
-            break;
+        switch (*argOrder) {
+        case '-': break;  // no dimensions for voids
+        case 'S': break;  // no dimensions on scalars
+        case 'V': s += ('0' + dim0); break;
+        case 'M': 
+            {
+                if (!UseHlslTypes)  // GLSL has column first for mat types
+                    std::swap(dim0, dim1);
+                s += ('0' + dim0); s += 'x'; s += ('0' + dim1);
+                break;
+            }
         }
     }
 
@@ -158,8 +173,9 @@ inline bool IsValidGlsl(const char* cname, char retOrder, char retType, char arg
     const bool isVec = dim0Max > 1 || argType == 'V';
     const bool isMat = dim1Max > 1 || argType == 'M';
 
-    if ((isVec && dim0 == 1)            ||  // avoid vec1
-        (isMat && dim0 == 1 && dim1 == 1))  // avoid mat1x1
+    if (!IsTextureType(argType) &&
+        ((isVec && dim0 == 1)            ||  // avoid vec1
+         (isMat && dim0 == 1 && dim1 == 1)))  // avoid mat1x1
         return false;
 
     const std::string name(cname);  // for ease of comparison. slow, but temporary, until HLSL parser is online.
@@ -282,7 +298,7 @@ void TBuiltInParseablesHlsl::initialize(int version, EProfile profile, const Spv
     // orderKey can be:
     //   S = scalar, V = vector, M = matrix, - = void
     // typekey can be:
-    //   D = double, F = float, U = uint, I = int, B = bool, S = sampler, - = void
+    //   D = double, F = float, U = uint, I = int, B = bool, S = sampler, T = texture, t = itexture, - = void
     // An empty order or type key repeats the first one.  E.g: SVM,, means 3 args each of SVM.
     // '>' as first letter of order creates an output parameter
     // '<' as first letter of order creates an input parameter
@@ -427,32 +443,38 @@ void TBuiltInParseablesHlsl::initialize(int version, EProfile profile, const Spv
         { "step",                             nullptr, nullptr,   "SVM,",       "F,",     EShLangAll },
         { "tan",                              nullptr, nullptr,   "SVM",        "F",      EShLangAll },
         { "tanh",                             nullptr, nullptr,   "SVM",        "F",      EShLangAll },
-        { "tex1D",                            "V4",    "F",       "S1,S",       "S,F",    EShLangFragmentMask },
-        { "tex1D",                            "V4",    "F",       "S1,S,V1,V1", "S,F,F,F",EShLangFragmentMask },
-        { "tex1Dbias",                        "V4",    "F",       "S1,V4",      "S,F",    EShLangFragmentMask },
-        { "tex1Dgrad",                        "V4",    "F",       "S1,V1,V1,V1","S,F,F,F",EShLangFragmentMask },
-        { "tex1Dlod",                         "V4",    "F",       "S1,V4",      "S,F",    EShLangFragmentMask },
-        { "tex1Dproj",                        "V4",    "F",       "S1,V4",      "S,F",    EShLangFragmentMask },
-        { "tex2D",                            "V4",    "F",       "S2,V2",      "S,F",    EShLangFragmentMask },
-        { "tex2D",                            "V4",    "F",       "S2,V2,V2,V2","S,F,F,F",EShLangFragmentMask },
-        { "tex2Dbias",                        "V4",    "F",       "S2,V4",      "S,F",    EShLangFragmentMask },
-        { "tex2Dgrad",                        "V4",    "F",       "S2,V2,V2,V2","S,F,F,F",EShLangFragmentMask },
-        { "tex2Dlod",                         "V4",    "F",       "S2,V4",      "S,F",    EShLangFragmentMask },
-        { "tex2Dproj",                        "V4",    "F",       "S2,V4",      "S,F",    EShLangFragmentMask },
-        { "tex3D",                            "V4",    "F",       "S3,V3",      "S,F",    EShLangFragmentMask },
-        { "tex3D",                            "V4",    "F",       "S3,V3,V3,V3","S,F,F,F",EShLangFragmentMask },
-        { "tex3Dbias",                        "V4",    "F",       "S3,V4",      "S,F",    EShLangFragmentMask },
-        { "tex3Dgrad",                        "V4",    "F",       "S3,V3,V3,V3","S,F,F,F",EShLangFragmentMask },
-        { "tex3Dlod",                         "V4",    "F",       "S3,V4",      "S,F",    EShLangFragmentMask },
-        { "tex3Dproj",                        "V4",    "F",       "S3,V4",      "S,F",    EShLangFragmentMask },
-        { "texCUBE",                          "V4",    "F",       "S4,V3",      "S,F",    EShLangFragmentMask },
-        { "texCUBE",                          "V4",    "F",       "S4,V3,V3,V3","S,F,F,F",EShLangFragmentMask },
-        { "texCUBEbias",                      "V4",    "F",       "S4,V4",      "S,F",    EShLangFragmentMask },
-        { "texCUBEgrad",                      "V4",    "F",       "S4,V3,V3,V3","S,F,F,F",EShLangFragmentMask },
-        { "texCUBElod",                       "V4",    "F",       "S4,V4",      "S,F",    EShLangFragmentMask },
-        { "texCUBEproj",                      "V4",    "F",       "S4,V4",      "S,F",    EShLangFragmentMask },
+        { "tex1D",                            "V4",    "F",       "V1,S",       "S,F",    EShLangFragmentMask },
+        { "tex1D",                            "V4",    "F",       "V1,S,V1,V1", "S,F,F,F",EShLangFragmentMask },
+        { "tex1Dbias",                        "V4",    "F",       "V1,V4",      "S,F",    EShLangFragmentMask },
+        { "tex1Dgrad",                        "V4",    "F",       "V1,V1,V1,V1","S,F,F,F",EShLangFragmentMask },
+        { "tex1Dlod",                         "V4",    "F",       "V1,V4",      "S,F",    EShLangFragmentMask },
+        { "tex1Dproj",                        "V4",    "F",       "V1,V4",      "S,F",    EShLangFragmentMask },
+        { "tex2D",                            "V4",    "F",       "V2,V2",      "S,F",    EShLangFragmentMask },
+        { "tex2D",                            "V4",    "F",       "V2,V2,V2,V2","S,F,F,F",EShLangFragmentMask },
+        { "tex2Dbias",                        "V4",    "F",       "V2,V4",      "S,F",    EShLangFragmentMask },
+        { "tex2Dgrad",                        "V4",    "F",       "V2,V2,V2,V2","S,F,F,F",EShLangFragmentMask },
+        { "tex2Dlod",                         "V4",    "F",       "V2,V4",      "S,F",    EShLangFragmentMask },
+        { "tex2Dproj",                        "V4",    "F",       "V2,V4",      "S,F",    EShLangFragmentMask },
+        { "tex3D",                            "V4",    "F",       "V3,V3",      "S,F",    EShLangFragmentMask },
+        { "tex3D",                            "V4",    "F",       "V3,V3,V3,V3","S,F,F,F",EShLangFragmentMask },
+        { "tex3Dbias",                        "V4",    "F",       "V3,V4",      "S,F",    EShLangFragmentMask },
+        { "tex3Dgrad",                        "V4",    "F",       "V3,V3,V3,V3","S,F,F,F",EShLangFragmentMask },
+        { "tex3Dlod",                         "V4",    "F",       "V3,V4",      "S,F",    EShLangFragmentMask },
+        { "tex3Dproj",                        "V4",    "F",       "V3,V4",      "S,F",    EShLangFragmentMask },
+        { "texCUBE",                          "V4",    "F",       "V4,V3",      "S,F",    EShLangFragmentMask },
+        { "texCUBE",                          "V4",    "F",       "V4,V3,V3,V3","S,F,F,F",EShLangFragmentMask },
+        { "texCUBEbias",                      "V4",    "F",       "V4,V4",      "S,F",    EShLangFragmentMask },
+        { "texCUBEgrad",                      "V4",    "F",       "V4,V3,V3,V3","S,F,F,F",EShLangFragmentMask },
+        { "texCUBElod",                       "V4",    "F",       "V4,V4",      "S,F",    EShLangFragmentMask },
+        { "texCUBEproj",                      "V4",    "F",       "V4,V4",      "S,F",    EShLangFragmentMask },
         { "transpose",                        "^M",    nullptr,   "M",          "F",      EShLangAll },
         { "trunc",                            nullptr, nullptr,   "SVM",        "F",      EShLangAll },
+
+        // Texture object methods.  Return type can be overridden by shader declaration.
+        { "Sample",                           "V4",    "F",       "V,S,V",      "T,S,F",  EShLangFragmentMask },
+        { "Sample",                           "V4",    "I",       "V,S,V",      "i,S,F",  EShLangFragmentMask },
+        { "Sample",                           "V4",    "U",       "V,S,V",      "u,S,F",  EShLangFragmentMask },
+        // TODO: forms with texel-space offset parameter
 
         // Mark end of list, since we want to avoid a range-based for, as some compilers don't handle it yet.
         { nullptr,                            nullptr, nullptr,   nullptr,      nullptr,  0 },
@@ -499,6 +521,8 @@ void TBuiltInParseablesHlsl::initialize(int version, EProfile profile, const Spv
                             s.append(intrinsic.name);                          // intrinsic name
                             s.append("(");                                     // open paren
 
+                            const bool isTexture = IsTextureType(*argType);
+
                             // Append argument types, if any.
                             for (int arg = 0; ; ++arg) {
                                 const char* nthArgOrder(NthArg(argOrder, arg));
@@ -506,6 +530,13 @@ void TBuiltInParseablesHlsl::initialize(int version, EProfile profile, const Spv
 
                                 if (nthArgOrder == nullptr || nthArgType == nullptr)
                                     break;
+
+                                // For textures, the 1D case isn't a 1-vector, but a scalar.
+                                if (isTexture && dim0 == 1 && arg > 0 && *nthArgOrder == 'V')
+                                    nthArgOrder = "S";
+
+                                // cube textures use vec3 coordinates
+                                const int argDim0 = isTexture && arg > 0 ? std::min(dim0, 3) : dim0;
 
                                 s.append(arg > 0 ? ", ": "");  // comma separator if needed
                                 
@@ -521,7 +552,7 @@ void TBuiltInParseablesHlsl::initialize(int version, EProfile profile, const Spv
                                 if (*nthArgOrder == ',' || *nthArgOrder == '\0') nthArgOrder = argOrder;
                                 if (*nthArgType == ',' || *nthArgType == '\0') nthArgType = argType;
 
-                                AppendTypeName(s, nthArgOrder, nthArgType, dim0, dim1); // Add arguments
+                                AppendTypeName(s, nthArgOrder, nthArgType, argDim0, dim1); // Add arguments
                             }
                             
                             s.append(");\n");            // close paren and trailing semicolon
@@ -604,7 +635,7 @@ void TBuiltInParseablesHlsl::identifyBuiltIns(int version, EProfile profile, con
     symbolTable.relateToOperator("ddy_fine",                    EOpDPdyFine);
     symbolTable.relateToOperator("degrees",                     EOpDegrees);
     symbolTable.relateToOperator("determinant",                 EOpDeterminant);
-    symbolTable.relateToOperator("DeviceMemoryBarrier",         EOpGroupMemoryBarrier); // == ScopeDevice+CrossWorkGroup
+    symbolTable.relateToOperator("DeviceMemoryBarrier",         EOpGroupMemoryBarrier);
     symbolTable.relateToOperator("DeviceMemoryBarrierWithGroupSync", EOpGroupMemoryBarrierWithGroupSync); // ...
     symbolTable.relateToOperator("distance",                    EOpDistance);
     symbolTable.relateToOperator("dot",                         EOpDot);
@@ -708,6 +739,9 @@ void TBuiltInParseablesHlsl::identifyBuiltIns(int version, EProfile profile, con
     symbolTable.relateToOperator("texCUBEproj",                 EOpTextureProj);
     symbolTable.relateToOperator("transpose",                   EOpTranspose);
     symbolTable.relateToOperator("trunc",                       EOpTrunc);
+
+    // Texture methods
+    symbolTable.relateToOperator("Sample",                      EOpMethodSample);
 }
 
 //
