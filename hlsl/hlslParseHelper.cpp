@@ -1168,6 +1168,35 @@ void HlslParseContext::decomposeIntrinsic(const TSourceLoc& loc, TIntermTyped*& 
             break;
         }
 
+    case EOpAsDouble:
+        {
+            // asdouble accepts two 32 bit ints.  we can use EOpUint64BitsToDouble, but must
+            // first construct a uint64.
+            TIntermTyped* arg0 = argAggregate->getSequence()[0]->getAsTyped();
+            TIntermTyped* arg1 = argAggregate->getSequence()[1]->getAsTyped();
+
+            if (arg0->getType().isVector()) { // TODO: ...
+                error(loc, "double2 conversion not implemented", "asdouble", "");
+                break;
+            }
+
+            TIntermAggregate* uint64 = new TIntermAggregate(EOpConstructUVec2);
+
+            uint64->getSequence().push_back(arg0);
+            uint64->getSequence().push_back(arg1);
+            uint64->setType(TType(EbtUint, EvqTemporary, 2));  // convert 2 uints to a uint2
+            uint64->setLoc(loc);
+
+            // bitcast uint2 to a double
+            TIntermTyped* convert = new TIntermUnary(EOpUint64BitsToDouble);
+            convert->getAsUnaryNode()->setOperand(uint64);
+            convert->setLoc(loc);
+            convert->setType(TType(EbtDouble, EvqTemporary));
+            node = convert;
+            
+            break;
+        }
+        
     case EOpF16tof32:
     case EOpF32tof16:
         {

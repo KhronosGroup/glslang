@@ -12,7 +12,7 @@ float PixelShaderFunction(float inF0, float inF1, float inF2, int inI0)
     f16tof32(inF0);                           // expected error: only integer inputs
     firstbithigh(inF0);                       // expected error: only integer inputs
     firstbitlow(inF0);                        // expected error: only integer inputs
-    fma(inF0, inF1, inF2);                    // expected error: only double inputs
+    // fma(inF0, inF1, inF2); // TODO: this might auto-promote: need to check against FXC
     // InterlockedAdd(inI0, inI0, 3);            // expected error: last parameter is out TODO: accepted even though marked as out in proto generator
     // InterlockedAnd(inI0, inI0, 3);            // expected error: last parameter is out TODO: accepted even though marked as out i    // InterlockedMax(inI0, inI0, 3);            // expected error: last parameter is out TODO: accepted even though marked as out in proto generator
     // InterlockedMin(inI0, inI0, 3);            // expected error: last parameter is out TODO: accepted even though marked as out in proto generator
@@ -52,7 +52,7 @@ float2 PixelShaderFunction(float2 inF0, float2 inF1, float2 inF2, int2 inI0)
     f16tof32(inF0);               // expected error: only integer inputs
     firstbithigh(inF0);           // expected error: only integer inputs
     firstbitlow(inF0);            // expected error: only integer inputs
-    fma(inF0, inF1, inF2);        // expected error: only double inputs
+    // fma(inF0, inF1, inF2); // TODO: this might auto-promote: need to check against FXC
     reversebits(inF0);            // expected error: only integer inputs
     transpose(inF0);              // expected error: only valid on mats
 
@@ -68,7 +68,7 @@ float3 PixelShaderFunction(float3 inF0, float3 inF1, float3 inF2, int3 inI0)
     f16tof32(inF0);             // expected error: only integer inputs
     firstbithigh(inF0);         // expected error: only integer inputs
     firstbitlow(inF0);          // expected error: only integer inputs
-    fma(inF0, inF1, inF2);      // expected error: only double inputs
+    // fma(inF0, inF1, inF2); // TODO: this might auto-promote: need to check against FXC
     reversebits(inF0);          // expected error: only integer inputs
     transpose(inF0);            // expected error: only valid on mats
 
@@ -85,7 +85,7 @@ float4 PixelShaderFunction(float4 inF0, float4 inF1, float4 inF2, int4 inI0)
     f16tof32(inF0);               // expected error: only integer inputs
     firstbithigh(inF0);           // expected error: only integer inputs
     firstbitlow(inF0);            // expected error: only integer inputs
-    fma(inF0, inF1, inF2);        // expected error: only double inputs
+    // fma(inF0, inF1, inF2); // TODO: this might auto-promote: need to check against FXC
     reversebits(inF0);            // expected error: only integer inputs
     transpose(inF0);              // expected error: only valid on mats
 
@@ -100,7 +100,6 @@ float4 PixelShaderFunction(float4 inF0, float4 inF1, float4 inF2, int4 inI0)
     f16tof32(inF0);           \
     firstbithigh(inF0);       \
     firstbitlow(inF0);        \
-    fma(inF0, inF1, inF2);    \
     reversebits(inF0);        \
     length(inF0);             \
     noise(inF0);              \

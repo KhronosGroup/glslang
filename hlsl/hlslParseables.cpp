@@ -158,9 +158,7 @@ inline bool IsValidGlsl(const char* cname, char retOrder, char retType, char arg
     const bool isVec = dim0Max > 1 || argType == 'V';
     const bool isMat = dim1Max > 1 || argType == 'M';
 
-    if (argType == 'D'                  ||  // avoid double args
-        retType == 'D'                  ||  // avoid double return
-        (isVec && dim0 == 1)            ||  // avoid vec1
+    if ((isVec && dim0 == 1)            ||  // avoid vec1
         (isMat && dim0 == 1 && dim1 == 1))  // avoid mat1x1
         return false;
 
@@ -582,7 +580,7 @@ void TBuiltInParseablesHlsl::identifyBuiltIns(int version, EProfile profile, con
     symbolTable.relateToOperator("AllMemoryBarrier",            EOpMemoryBarrier);
     symbolTable.relateToOperator("AllMemoryBarrierWithGroupSync", EOpAllMemoryBarrierWithGroupSync);
     symbolTable.relateToOperator("any",                         EOpAny);
-    symbolTable.relateToOperator("asdouble",                    EOpUint64BitsToDouble);
+    symbolTable.relateToOperator("asdouble",                    EOpAsDouble);
     symbolTable.relateToOperator("asfloat",                     EOpIntBitsToFloat);
     symbolTable.relateToOperator("asin",                        EOpAsin);
     symbolTable.relateToOperator("asint",                       EOpFloatBitsToInt);
@@ -651,7 +649,7 @@ void TBuiltInParseablesHlsl::identifyBuiltIns(int version, EProfile profile, con
     symbolTable.relateToOperator("log",                         EOpLog);
     symbolTable.relateToOperator("log10",                       EOpLog10);
     symbolTable.relateToOperator("log2",                        EOpLog2);
-    // symbolTable.relateToOperator("mad");
+    symbolTable.relateToOperator("mad",                         EOpFma);
     symbolTable.relateToOperator("max",                         EOpMax);
     symbolTable.relateToOperator("min",                         EOpMin);
     symbolTable.relateToOperator("modf",                        EOpModf);

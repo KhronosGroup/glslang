@@ -368,8 +368,8 @@ bool DeduceVersionProfile(TInfoSink& infoSink, EShLanguage stage, bool versionNo
     bool correct = true;
 
     if (source == EShSourceHlsl) {
-        version = 450;         // TODO: GLSL parser is still used for builtins.
-        profile = ENoProfile;
+        version = 450;          // TODO: GLSL parser is still used for builtins.
+        profile = ECoreProfile; // allow doubles in prototype parsing
         return correct;
     }
 
