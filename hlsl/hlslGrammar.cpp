@@ -1,5 +1,6 @@
 //
 //Copyright (C) 2016 Google, Inc.
+//Copyright (C) 2016 LunarG, Inc.
 //
 //All rights reserved.
 //
@@ -291,12 +292,188 @@ void HlslGrammar::acceptQualifier(TQualifier& qualifier)
     } while (true);
 }
 
+// basic_type
+//      : VOID
+//      | FLOAT
+//      | DOUBLE
+//      | INT
+//      | DWORD
+//      | UINT
+//      | BOOL
+//
+bool HlslGrammar::acceptBasicType(TBasicType& basicType)
+{
+    switch (peek()) {
+    case EHTokVoid:
+        basicType = EbtVoid;
+        break;
+    case EHTokFloat:
+        basicType = EbtFloat;
+        break;
+    case EHTokDouble:
+        basicType = EbtDouble;
+        break;
+    case EHTokInt:
+    case EHTokDword:
+        basicType = EbtInt;
+        break;
+    case EHTokUint:
+        basicType = EbtUint;
+        break;
+    case EHTokBool:
+        basicType = EbtBool;
+        break;
+    default:
+        return false;
+    }
+
+    advanceToken();
+
+    return true;
+}
+
+// vector_template_type
+//      : VECTOR
+//      | VECTOR LEFT_ANGLE basic_type COMMA integer_literal RIGHT_ANGLE
+//
+bool HlslGrammar::acceptVectorTemplateType(TType& type)
+{
+    if (! acceptTokenClass(EHTokVector))
+        return false;
+
+    if (! acceptTokenClass(EHTokLeftAngle)) {
+        // in HLSL, 'vector' alone means float4.
+        new(&type) TType(EbtFloat, EvqTemporary, 4);
+        return true;
+    }
+
+    TBasicType basicType;
+    const bool isBasicType = acceptBasicType(basicType);
+    if (!isBasicType || basicType == EbtVoid) {
+        expected("scalar type");
+        return false;
+    }
+
+    // COMMA
+    if (! acceptTokenClass(EHTokComma)) {
+        expected(",");
+        return false;
+    }
+
+    // integer
+    if (! peekTokenClass(EHTokIntConstant)) {
+        expected("literal integer");
+        return false;
+    }
+
+    TIntermTyped* vecSize;
+    if (! acceptLiteral(vecSize))
+        return false;
+
+    const int vecSizeI = vecSize->getAsConstantUnion()->getConstArray()[0].getIConst();
+
+    new(&type) TType(basicType, EvqTemporary, vecSizeI);
+
+    if (vecSizeI == 1)
+        type.makeVector();
+
+    if (!acceptTokenClass(EHTokRightAngle)) {
+        expected("right angle bracket");
+        return false;
+    }
+
+    return true;
+}
+
+// matrix_template_type
+//      : MATRIX
+//      | MATRIX LEFT_ANGLE basic_type COMMA integer_literal COMMA integer_literal RIGHT_ANGLE
+//
+bool HlslGrammar::acceptMatrixTemplateType(TType& type)
+{
+    if (! acceptTokenClass(EHTokMatrix))
+        return false;
+
+    if (! acceptTokenClass(EHTokLeftAngle)) {
+        // in HLSL, 'matrix' alone means float4x4.
+        new(&type) TType(EbtFloat, EvqTemporary, 0, 4, 4);
+        return true;
+    }
+
+    TBasicType basicType;
+    const bool isBasicType = acceptBasicType(basicType);
+    if (!isBasicType || basicType == EbtVoid) {
+        expected("scalar type");
+        return false;
+    }
+
+    // COMMA
+    if (! acceptTokenClass(EHTokComma)) {
+        expected(",");
+        return false;
+    }
+
+    // integer rows
+    if (! peekTokenClass(EHTokIntConstant)) {
+        expected("literal integer");
+        return false;
+    }
+
+    TIntermTyped* rows;
+    if (! acceptLiteral(rows))
+        return false;
+
+    // COMMA
+    if (! acceptTokenClass(EHTokComma)) {
+        expected(",");
+        return false;
+    }
+    
+    // integer cols
+    if (! peekTokenClass(EHTokIntConstant)) {
+        expected("literal integer");
+        return false;
+    }
+
+    TIntermTyped* cols;
+    if (! acceptLiteral(cols))
+        return false;
+
+    new(&type) TType(basicType, EvqTemporary, 0,
+                     cols->getAsConstantUnion()->getConstArray()[0].getIConst(),
+                     rows->getAsConstantUnion()->getConstArray()[0].getIConst());
+
+    if (!acceptTokenClass(EHTokRightAngle)) {
+        expected("right angle bracket");
+        return false;
+    }
+
+    return true;
+}
+
+
 // If token is for a type, update 'type' with the type information,
 // and return true and advance.
 // Otherwise, return false, and don't advance
 bool HlslGrammar::acceptType(TType& type)
 {
+    TBasicType basicType;
+
+    // voids and scalar types
+    if (acceptBasicType(basicType)) {
+        new(&type) TType(basicType);
+        return true;
+    }
+
     switch (peek()) {
+    case EHTokVector:
+        return acceptVectorTemplateType(type);
+        break;
+
+    case EHTokMatrix:
+        return acceptMatrixTemplateType(type);
+        break;
+
     case EHTokStruct:
         return acceptStruct(type);
         break;
@@ -313,13 +490,6 @@ bool HlslGrammar::acceptType(TType& type)
         } else
             return false;
 
-    case EHTokVoid:
-        new(&type) TType(EbtVoid);
-        break;
-
-    case EHTokFloat:
-        new(&type) TType(EbtFloat);
-        break;
     case EHTokFloat1:
         new(&type) TType(EbtFloat);
         type.makeVector();
@@ -334,9 +504,6 @@ bool HlslGrammar::acceptType(TType& type)
         new(&type) TType(EbtFloat, EvqTemporary, 4);
         break;
 
-    case EHTokDouble:
-        new(&type) TType(EbtDouble);
-        break;
     case EHTokDouble1:
         new(&type) TType(EbtDouble);
         type.makeVector();
@@ -351,10 +518,6 @@ bool HlslGrammar::acceptType(TType& type)
         new(&type) TType(EbtDouble, EvqTemporary, 4);
         break;
 
-    case EHTokInt:
-    case EHTokDword:
-        new(&type) TType(EbtInt);
-        break;
     case EHTokInt1:
         new(&type) TType(EbtInt);
         type.makeVector();
@@ -369,9 +532,6 @@ bool HlslGrammar::acceptType(TType& type)
         new(&type) TType(EbtInt, EvqTemporary, 4);
         break;
 
-    case EHTokUint:
-        new(&type) TType(EbtUint);
-        break;
     case EHTokUint1:
         new(&type) TType(EbtUint);
         type.makeVector();
@@ -386,9 +546,6 @@ bool HlslGrammar::acceptType(TType& type)
         new(&type) TType(EbtUint, EvqTemporary, 4);
         break;
 
-    case EHTokBool:
-        new(&type) TType(EbtBool);
-        break;
     case EHTokBool1:
         new(&type) TType(EbtBool);
         type.makeVector();
