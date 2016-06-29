@@ -564,12 +564,32 @@ TIntermTyped* HlslParseContext::handleDotDereference(const TSourceLoc& loc, TInt
     variableCheck(base);
 
     //
-    // .length() can't be resolved until we later see the function-calling syntax.
+    // methods can't be resolved until we later see the function-calling syntax.
     // Save away the name in the AST for now.  Processing is completed in 
-    // handleLengthMethod().
+    // handleLengthMethod(), etc.
     //
     if (field == "length") {
         return intermediate.addMethod(base, TType(EbtInt), &field, loc);
+    } else if (field == "CalculateLevelOfDetail"          ||
+               field == "CalculateLevelOfDetailUnclamped" ||
+               field == "Gather"                          ||
+               field == "GetDimensions"                   ||
+               field == "GetSamplePosition"               ||
+               field == "Load"                            ||
+               field == "Sample"                          ||
+               field == "SampleBias"                      ||
+               field == "SampleCmp"                       ||
+               field == "SampleCmpLevelZero"              ||
+               field == "SampleGrad"                      ||
+               field == "SampleLevel") {
+        // If it's not a method on a sampler object, we fall through in case it is a struct member.
+        if (base->getType().getBasicType() == EbtSampler) {
+            const TSampler& texType = base->getType().getSampler();
+            if (! texType.isPureSampler()) {
+                const int vecSize = texType.isShadow() ? 1 : 4;
+                return intermediate.addMethod(base, TType(texType.type, EvqTemporary, vecSize), &field, loc);
+            }
+        }
     }
 
     // It's not .length() if we get to here.
@@ -1006,9 +1026,7 @@ void HlslParseContext::decomposeIntrinsic(const TSourceLoc& loc, TIntermTyped*& 
 
             TIntermTyped* arg0 = argAggregate->getSequence()[0]->getAsTyped();
             TIntermTyped* arg1 = argAggregate->getSequence()[1]->getAsTyped();
-            TBasicType    type0 = arg0->getBasicType();
 
-            TIntermTyped* x = intermediate.addConstantUnion(0, loc, true);
             TIntermTyped* y = intermediate.addConstantUnion(1, loc, true);
             TIntermTyped* z = intermediate.addConstantUnion(2, loc, true);
             TIntermTyped* w = intermediate.addConstantUnion(3, loc, true);
@@ -1205,6 +1223,49 @@ void HlslParseContext::decomposeIntrinsic(const TSourceLoc& loc, TIntermTyped*& 
 }
 
 //
+// Decompose sample methods into AST
+//
+void HlslParseContext::decomposeSampleMethods(const TSourceLoc& loc, TIntermTyped*& node, TIntermNode* arguments)
+{
+    if (!node || !node->getAsOperator())
+        return;
+
+    const TIntermAggregate* argAggregate = arguments ? arguments->getAsAggregate() : nullptr;
+    const TOperator op  = node->getAsOperator()->getOp();
+
+    switch (op) {
+    case EOpMethodSample:
+        {
+            TIntermTyped* argTex   = argAggregate->getSequence()[0]->getAsTyped();
+            TIntermTyped* argSamp  = argAggregate->getSequence()[1]->getAsTyped();
+            TIntermTyped* argCoord = argAggregate->getSequence()[2]->getAsTyped();
+
+            TIntermAggregate* txcombine = new TIntermAggregate(EOpConstructTextureSampler);
+
+            txcombine->getSequence().push_back(argTex);
+            txcombine->getSequence().push_back(argSamp);
+            TSampler samplerType = argTex->getType().getSampler();
+            samplerType.combined = true;
+            txcombine->setType(TType(samplerType, EvqTemporary));
+            txcombine->setLoc(loc);
+
+            TIntermAggregate* txsample = new TIntermAggregate(EOpTexture);
+            txsample->getSequence().push_back(txcombine);
+            txsample->getSequence().push_back(argCoord);
+            txsample->setType(node->getType());
+            txsample->setLoc(loc);
+            node = txsample;
+
+            break;
+        }
+        
+    default:
+        break; // most pass through unchanged
+    }
+}
+
+
+//
 // Handle seeing function call syntax in the grammar, which could be any of
 //  - .length() method
 //  - constructor
@@ -1307,8 +1368,9 @@ TIntermTyped* HlslParseContext::handleFunctionCall(const TSourceLoc& loc, TFunct
                 result = addOutputArgumentConversions(*fnCandidate, *result->getAsAggregate());
             }
 
-            decomposeIntrinsic(loc, result, arguments);
-            textureParameters(loc, result, arguments);
+            decomposeIntrinsic(loc, result, arguments);      // HLSL->AST intrinsic decompositions
+            decomposeSampleMethods(loc, result, arguments);  // HLSL->AST sample method decompositions
+            textureParameters(loc, result, arguments);       // HLSL->AST texture intrinsics
         }
     }
 

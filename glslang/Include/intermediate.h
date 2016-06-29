@@ -525,6 +525,8 @@ enum TOperator {
     EOpLit,                              // HLSL lighting coefficient vector
     EOpTextureBias,                      // HLSL texture bias: will be lowered to EOpTexture
     EOpAsDouble,                         // slightly different from EOpUint64BitsToDouble
+
+    EOpMethodSample,
 };
 
 class TIntermTraverser;

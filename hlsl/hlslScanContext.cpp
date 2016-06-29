@@ -1,5 +1,6 @@
 //
 //Copyright (C) 2016 Google, Inc.
+//Copyright (C) 2016 LunarG, Inc.
 //
 //All rights reserved.
 //
@@ -249,6 +250,9 @@ void HlslScanContext::fillInKeywordMap()
     (*KeywordMap)["Texture2DArray"] =          EHTokTexture2darray;
     (*KeywordMap)["Texture3D"] =               EHTokTexture3d;
     (*KeywordMap)["TextureCube"] =             EHTokTextureCube;
+    (*KeywordMap)["TextureCubeArray"] =        EHTokTextureCubearray;
+    (*KeywordMap)["Texture2DMS"] =             EHTokTexture2DMS;
+    (*KeywordMap)["Texture2DMSArray"] =        EHTokTexture2DMSarray;
 
     (*KeywordMap)["struct"] =                  EHTokStruct;
     (*KeywordMap)["typedef"] =                 EHTokTypedef;
@@ -556,6 +560,9 @@ EHlslTokenClass HlslScanContext::tokenizeIdentifier()
     case EHTokTexture2darray:
     case EHTokTexture3d:
     case EHTokTextureCube:
+    case EHTokTextureCubearray:
+    case EHTokTexture2DMS:
+    case EHTokTexture2DMSarray:
         return keyword;
 
     // variable, user type, ...
