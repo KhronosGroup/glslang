@@ -162,6 +162,7 @@ Linked vertex stage:
                               Decorate 58(bBt3) BufferBlock
                               Decorate 60(bBtn3) DescriptorSet 1
                               Decorate 60(bBtn3) Binding 0
+                              Decorate 62(sout) Flat
                               MemberDecorate 63(S) 0 Invariant
                               MemberDecorate 63(S) 1 Invariant
                               MemberDecorate 63(S) 2 Invariant
