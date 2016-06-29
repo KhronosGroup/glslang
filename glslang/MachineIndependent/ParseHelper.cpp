@@ -1199,6 +1199,26 @@ TIntermTyped* TParseContext::handleFunctionCall(const TSourceLoc& loc, TFunction
     return result;
 }
 
+TIntermNode* TParseContext::handleReturnValue(const TSourceLoc& loc, TIntermTyped* value)
+{
+    functionReturnsValue = true;
+    if (currentFunctionType->getBasicType() == EbtVoid) {
+        error(loc, "void function cannot return a value", "return", "");
+        return intermediate.addBranch(EOpReturn, loc);
+    } else if (*currentFunctionType != value->getType()) {
+        TIntermTyped* converted = intermediate.addConversion(EOpReturn, *currentFunctionType, value);
+        if (converted) {
+            if (version < 420)
+                warn(loc, "type conversion on return values was not explicitly allowed until version 420", "return", "");
+            return intermediate.addBranch(EOpReturn, converted, loc);
+        } else {
+            error(loc, "type does not match, or is not convertible to, the function's return type", "return", "");
+            return intermediate.addBranch(EOpReturn, value, loc);
+        }
+    } else
+        return intermediate.addBranch(EOpReturn, value, loc);
+}
+
 // See if the operation is being done in an illegal location.
 void TParseContext::checkLocation(const TSourceLoc& loc, TOperator op)
 {
