@@ -161,9 +161,9 @@ ERROR: node is still EOpNull!
 0:62          packSnorm2x16 (global highp uint)
 0:62            'v2a' (global mediump 2-component vector of float)
 0:63      Sequence
-0:63        move second child to first child (temp highp 2-component vector of float)
+0:63        move second child to first child (temp mediump 2-component vector of float)
 0:63          'v20' (temp mediump 2-component vector of float)
-0:63          unpackSnorm2x16 (global highp 2-component vector of float)
+0:63          unpackSnorm2x16 (global mediump 2-component vector of float)
 0:63            'uy' (global mediump uint)
 0:64      Sequence
 0:64        move second child to first child (temp highp uint)
@@ -368,9 +368,9 @@ ERROR: node is still EOpNull!
 0:62          packSnorm2x16 (global highp uint)
 0:62            'v2a' (global mediump 2-component vector of float)
 0:63      Sequence
-0:63        move second child to first child (temp highp 2-component vector of float)
+0:63        move second child to first child (temp mediump 2-component vector of float)
 0:63          'v20' (temp mediump 2-component vector of float)
-0:63          unpackSnorm2x16 (global highp 2-component vector of float)
+0:63          unpackSnorm2x16 (global mediump 2-component vector of float)
 0:63            'uy' (global mediump uint)
 0:64      Sequence
 0:64        move second child to first child (temp highp uint)
