@@ -1,4 +1,4 @@
-float PixelShaderFunction(float inF0, float inF1, float inF2, int inI0)
+float PixelShaderFunctionS(float inF0, float inF1, float inF2, int inI0)
 {
     // AllMemoryBarrier();              // TODO: expected error: invalid in fragment stage
     // AllMemoryBarrierWithGroupSync(); // TODO: expected error: invalid in fragment stage
@@ -32,7 +32,7 @@ float PixelShaderFunction(float inF0, float inF1, float inF2, int inI0)
     return 0.0;
 }
 
-float1 PixelShaderFunction(float1 inF0, float1 inF1, float1 inF2, int1 inI0)
+float1 PixelShaderFunction1(float1 inF0, float1 inF1, float1 inF2, int1 inI0)
 {
     // TODO: ... add when float1 prototypes are generated
 
@@ -41,7 +41,7 @@ float1 PixelShaderFunction(float1 inF0, float1 inF1, float1 inF2, int1 inI0)
     return 0.0;
 }
 
-float2 PixelShaderFunction(float2 inF0, float2 inF1, float2 inF2, int2 inI0)
+float2 PixelShaderFunction2(float2 inF0, float2 inF1, float2 inF2, int2 inI0)
 {
     asdouble(inF0, inF1);         // expected error: only integer inputs
     CheckAccessFullyMapped(inF0); // expected error: only valid on scalars
@@ -59,7 +59,7 @@ float2 PixelShaderFunction(float2 inF0, float2 inF1, float2 inF2, int2 inI0)
     return float2(1,2);
 }
 
-float3 PixelShaderFunction(float3 inF0, float3 inF1, float3 inF2, int3 inI0)
+float3 PixelShaderFunction3(float3 inF0, float3 inF1, float3 inF2, int3 inI0)
 {
     CheckAccessFullyMapped(inF0);  // expected error: only valid on scalars
     countbits(inF0);            // expected error: only integer inputs
@@ -111,7 +111,7 @@ float4 PixelShaderFunction(float4 inF0, float4 inF1, float4 inF2, int4 inI0)
 
 // TODO: turn on non-square matrix tests when protos are available.
 
-float2x2 PixelShaderFunction(float2x2 inF0, float2x2 inF1, float2x2 inF2)
+float2x2 PixelShaderFunction2x2(float2x2 inF0, float2x2 inF1, float2x2 inF2)
 {
     // TODO: FXC doesn't accept this with (), but glslang doesn't accept it without.
     MATFNS()
@@ -119,7 +119,7 @@ float2x2 PixelShaderFunction(float2x2 inF0, float2x2 inF1, float2x2 inF2)
     return float2x2(2,2,2,2);
 }
 
-float3x3 PixelShaderFunction(float3x3 inF0, float3x3 inF1, float3x3 inF2)
+float3x3 PixelShaderFunction3x3(float3x3 inF0, float3x3 inF1, float3x3 inF2)
 {
     // TODO: FXC doesn't accept this with (), but glslang doesn't accept it without.
     MATFNS()
@@ -127,7 +127,7 @@ float3x3 PixelShaderFunction(float3x3 inF0, float3x3 inF1, float3x3 inF2)
     return float3x3(3,3,3,3,3,3,3,3,3);
 }
 
-float4x4 PixelShaderFunction(float4x4 inF0, float4x4 inF1, float4x4 inF2)
+float4x4 PixelShaderFunction4x4(float4x4 inF0, float4x4 inF1, float4x4 inF2)
 {
     // TODO: FXC doesn't accept this with (), but glslang doesn't accept it without.
     MATFNS()

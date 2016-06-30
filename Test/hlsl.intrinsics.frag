@@ -13,7 +13,7 @@ gs uint4 gs_ua4;
 gs uint4 gs_ub4;
 gs uint4 gs_uc4;
 
-float PixelShaderFunction(float inF0, float inF1, float inF2, uint inU0, uint inU1)
+float PixelShaderFunctionS(float inF0, float inF1, float inF2, uint inU0, uint inU1)
 {
     uint out_u1;
 
@@ -85,13 +85,13 @@ float PixelShaderFunction(float inF0, float inF1, float inF2, uint inU0, uint in
     return 0.0;
 }
 
-float1 PixelShaderFunction(float1 inF0, float1 inF1, float1 inF2)
+float1 PixelShaderFunction1(float1 inF0, float1 inF1, float1 inF2)
 {
     // TODO: ... add when float1 prototypes are generated
     return 0.0;
 }
 
-float2 PixelShaderFunction(float2 inF0, float2 inF1, float2 inF2, uint2 inU0, uint2 inU1)
+float2 PixelShaderFunction2(float2 inF0, float2 inF1, float2 inF2, uint2 inU0, uint2 inU1)
 {
     uint2 out_u2;
 
@@ -174,7 +174,7 @@ float2 PixelShaderFunction(float2 inF0, float2 inF1, float2 inF2, uint2 inU0, ui
     return float2(1,2);
 }
 
-float3 PixelShaderFunction(float3 inF0, float3 inF1, float3 inF2, uint3 inU0, uint3 inU1)
+float3 PixelShaderFunction3(float3 inF0, float3 inF1, float3 inF2, uint3 inU0, uint3 inU1)
 {
     uint3 out_u3;
     
@@ -396,7 +396,7 @@ float4 PixelShaderFunction(float4 inF0, float4 inF1, float4 inF2, uint4 inU0, ui
 
 // TODO: turn on non-square matrix tests when protos are available.
 
-float2x2 PixelShaderFunction(float2x2 inF0, float2x2 inF1, float2x2 inF2)
+float2x2 PixelShaderFunction2x2(float2x2 inF0, float2x2 inF1, float2x2 inF2)
 {
     // TODO: FXC doesn't accept this with (), but glslang doesn't accept it without.
     MATFNS(float2x2);
@@ -405,7 +405,7 @@ float2x2 PixelShaderFunction(float2x2 inF0, float2x2 inF1, float2x2 inF2)
     return float2x2(2,2,2,2);
 }
 
-float3x3 PixelShaderFunction(float3x3 inF0, float3x3 inF1, float3x3 inF2)
+float3x3 PixelShaderFunction3x3(float3x3 inF0, float3x3 inF1, float3x3 inF2)
 {
     // TODO: FXC doesn't accept this with (), but glslang doesn't accept it without.
     MATFNS(float3x3);
@@ -414,7 +414,7 @@ float3x3 PixelShaderFunction(float3x3 inF0, float3x3 inF1, float3x3 inF2)
     return float3x3(3,3,3,3,3,3,3,3,3);
 }
 
-float4x4 PixelShaderFunction(float4x4 inF0, float4x4 inF1, float4x4 inF2)
+float4x4 PixelShaderFunction4x4(float4x4 inF0, float4x4 inF1, float4x4 inF2)
 {
     // TODO: FXC doesn't accept this with (), but glslang doesn't accept it without.
     MATFNS(float4x4);
@@ -435,21 +435,21 @@ float4x4 PixelShaderFunction(float4x4 inF0, float4x4 inF1, float4x4 inF2)
     MT r8 = mul(inFM0, inFM1);
 
 
-void TestGenMul(float inF0, float inF1,
+void TestGenMul2(float inF0, float inF1,
                 float2 inFV0, float2 inFV1,
                 float2x2 inFM0, float2x2 inFM1)
 {
     TESTGENMUL(float, float2, float2x2);
 }
 
-void TestGenMul(float inF0, float inF1,
+void TestGenMul3(float inF0, float inF1,
                 float3 inFV0, float3 inFV1,
                 float3x3 inFM0, float3x3 inFM1)
 {
     TESTGENMUL(float, float3, float3x3);
 }
 
-void TestGenMul(float inF0, float inF1,
+void TestGenMul4(float inF0, float inF1,
                 float4 inFV0, float4 inFV1,
                 float4x4 inFM0, float4x4 inFM1)
 {
@@ -457,11 +457,11 @@ void TestGenMul(float inF0, float inF1,
 }
 
 // Test some non-square mats
-void TestGenMul(float inF0, float inF1,
-                float2 inFV2, float3 inFV3,
-                float2x3 inFM2x3, float3x2 inFM3x2,
-                float3x3 inFM3x3, float3x4 inFM3x4,
-                float2x4 inFM2x4)
+void TestGenMulNxM(float inF0, float inF1,
+                   float2 inFV2, float3 inFV3,
+                   float2x3 inFM2x3, float3x2 inFM3x2,
+                   float3x3 inFM3x3, float3x4 inFM3x4,
+                   float2x4 inFM2x4)
 {
     float  r00 = mul(inF0,  inF1);  // S=S*S
     float2 r01 = mul(inFV2, inF0);  // V=V*S
