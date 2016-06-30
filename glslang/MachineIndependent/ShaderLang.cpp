@@ -41,7 +41,7 @@
 // This is the platform independent interface between an OGL driver
 // and the shading language compiler/linker.
 //
-#include <string.h>
+#include <cstring>
 #include <iostream>
 #include <sstream>
 #include <memory>

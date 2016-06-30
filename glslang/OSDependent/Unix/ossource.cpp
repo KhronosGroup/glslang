@@ -40,9 +40,9 @@
 
 #include <pthread.h>
 #include <semaphore.h>
-#include <assert.h>
-#include <errno.h>
-#include <stdint.h>
+#include <cassert>
+#include <cerrno>
+#include <cstdint>
 
 namespace glslang {
 
@@ -69,7 +69,7 @@ static void DetachThreadLinux(void *)
 void OS_CleanupThreadData(void)
 {
 #ifdef __ANDROID__
-	DetachThreadLinux(NULL);
+  DetachThread();
 #else
 	int old_cancel_state, old_cancel_type;
 	void *cleanupArg = NULL;

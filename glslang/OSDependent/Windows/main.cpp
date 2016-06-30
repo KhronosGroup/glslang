@@ -37,7 +37,7 @@
 #define STRICT
 #define VC_EXTRALEAN 1
 #include <windows.h>
-#include <assert.h>
+#include <cassert>
 
 BOOL WINAPI DllMain(HINSTANCE hinstDLL, DWORD fdwReason, LPVOID lpvReserved)
 {
