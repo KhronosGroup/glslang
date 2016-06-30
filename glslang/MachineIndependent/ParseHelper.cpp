@@ -1930,7 +1930,13 @@ void TParseContext::variableCheck(TIntermTyped*& nodePtr)
         return;
 
     if (symbol->getType().getBasicType() == EbtVoid) {
-        error(symbol->getLoc(), "undeclared identifier", symbol->getName().c_str(), "");
+        const char *extraInfoFormat = "";
+        if (spvVersion.vulkan != 0 && symbol->getName() == "gl_VertexID") {
+          extraInfoFormat = "(Did you mean gl_VertexIndex?)";
+        } else if (spvVersion.vulkan != 0 && symbol->getName() == "gl_InstanceID") {
+          extraInfoFormat = "(Did you mean gl_InstanceIndex?)";
+        }
+        error(symbol->getLoc(), "undeclared identifier", symbol->getName().c_str(), extraInfoFormat);
 
         // Add to symbol table to prevent future error messages on the same name
         if (symbol->getName().size() > 0) {
