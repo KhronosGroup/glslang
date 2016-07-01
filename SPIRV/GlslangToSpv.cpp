@@ -2019,24 +2019,32 @@ void TGlslangToSpvTraverser::decorateStructType(const glslang::TType& type,
                     addMemberDecoration(spvType, member, memory[i]);
             }
 
-            // compute location decoration; tricky based on whether inheritance is at play
+            // Compute location decoration; tricky based on whether inheritance is at play and
+            // what kind of container we have, etc.
             // TODO: This algorithm (and it's cousin above doing almost the same thing) should
             //       probably move to the linker stage of the front end proper, and just have the
             //       answer sitting already distributed throughout the individual member locations.
             int location = -1;                // will only decorate if present or inherited
-            if (memberQualifier.hasLocation()) { // no inheritance, or override of inheritance
-                // struct members should not have explicit locations
-                assert(type.getBasicType() != glslang::EbtStruct);
-                location = memberQualifier.layoutLocation;
-            } else if (type.getBasicType() != glslang::EbtBlock) {
-                //  If it is a not a Block, (...) Its members are assigned consecutive locations (...)
-                //  The members, and their nested types, must not themselves have Location decorations.
-            } else if (qualifier.hasLocation()) // inheritance
-                location = qualifier.layoutLocation + locationOffset;
-            if (qualifier.hasLocation())      // track for upcoming inheritance
-                locationOffset += glslangIntermediate->computeTypeLocationSize(glslangMember);
+            // Ignore member locations if the container is an array, as that's
+            // ill-specified and decisions have been made to not allow this anyway.
+            // The object itself must have a location, and that comes out from decorating the object,
+            // not the type (this code decorates types).
+            if (! type.isArray()) {
+                if (memberQualifier.hasLocation()) { // no inheritance, or override of inheritance
+                    // struct members should not have explicit locations
+                    assert(type.getBasicType() != glslang::EbtStruct);
+                    location = memberQualifier.layoutLocation;
+                } else if (type.getBasicType() != glslang::EbtBlock) {
+                    // If it is a not a Block, (...) Its members are assigned consecutive locations (...)
+                    // The members, and their nested types, must not themselves have Location decorations.
+                } else if (qualifier.hasLocation()) // inheritance
+                    location = qualifier.layoutLocation + locationOffset;
+            }
             if (location >= 0)
                 builder.addMemberDecoration(spvType, member, spv::DecorationLocation, location);
+
+            if (qualifier.hasLocation())      // track for upcoming inheritance
+                locationOffset += glslangIntermediate->computeTypeLocationSize(glslangMember);
 
             // component, XFB, others
             if (glslangMember.getQualifier().hasComponent())
