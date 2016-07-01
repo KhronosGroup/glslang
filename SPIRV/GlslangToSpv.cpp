@@ -115,6 +115,10 @@ protected:
     spv::Id getSampledType(const glslang::TSampler&);
     spv::Id convertGlslangToSpvType(const glslang::TType& type);
     spv::Id convertGlslangToSpvType(const glslang::TType& type, glslang::TLayoutPacking, const glslang::TQualifier&);
+    spv::Id convertGlslangStructToSpvType(const glslang::TType&, const glslang::TTypeList* glslangStruct,
+                                          glslang::TLayoutPacking, const glslang::TQualifier&);
+    void decorateStructType(const glslang::TType&, const glslang::TTypeList* glslangStruct, glslang::TLayoutPacking,
+                            const glslang::TQualifier&, spv::Id);
     spv::Id makeArraySizeId(const glslang::TArraySizes&, int dim);
     spv::Id accessChainLoad(const glslang::TType& type);
     void    accessChainStore(const glslang::TType& type, spv::Id rvalue);
@@ -1789,6 +1793,7 @@ spv::Id TGlslangToSpvTraverser::convertGlslangToSpvType(const glslang::TType& ty
 
 // Do full recursive conversion of an arbitrary glslang type to a SPIR-V Id.
 // explicitLayout can be kept the same throughout the hierarchical recursive walk.
+// Mutually recursive with convertGlslangStructToSpvType().
 spv::Id TGlslangToSpvTraverser::convertGlslangToSpvType(const glslang::TType& type, glslang::TLayoutPacking explicitLayout, const glslang::TQualifier& qualifier)
 {
     spv::Id spvType = spv::NoResult;
@@ -1851,144 +1856,19 @@ spv::Id TGlslangToSpvTraverser::convertGlslangToSpvType(const glslang::TType& ty
     case glslang::EbtBlock:
         {
             // If we've seen this struct type, return it
-            const glslang::TTypeList* glslangStruct = type.getStruct();
-            std::vector<spv::Id> structFields;
+            const glslang::TTypeList* glslangMembers = type.getStruct();
 
             // Try to share structs for different layouts, but not yet for other
             // kinds of qualification (primarily not yet including interpolant qualification).
             if (! HasNonLayoutQualifiers(qualifier))
-                spvType = structMap[explicitLayout][qualifier.layoutMatrix][glslangStruct];
+                spvType = structMap[explicitLayout][qualifier.layoutMatrix][glslangMembers];
             if (spvType != spv::NoResult)
                 break;
 
             // else, we haven't seen it...
-
-            // Create a vector of struct types for SPIR-V to consume
-            int memberDelta = 0;  // how much the member's index changes from glslang to SPIR-V, normally 0, except sometimes for blocks
             if (type.getBasicType() == glslang::EbtBlock)
-                memberRemapper[glslangStruct].resize(glslangStruct->size());
-            int locationOffset = 0;  // for use across struct members, when they are called recursively
-            for (int i = 0; i < (int)glslangStruct->size(); i++) {
-                glslang::TType& glslangType = *(*glslangStruct)[i].type;
-                if (glslangType.hiddenMember()) {
-                    ++memberDelta;
-                    if (type.getBasicType() == glslang::EbtBlock)
-                        memberRemapper[glslangStruct][i] = -1;
-                } else {
-                    if (type.getBasicType() == glslang::EbtBlock)
-                        memberRemapper[glslangStruct][i] = i - memberDelta;
-                    // modify just this child's view of the qualifier
-                    glslang::TQualifier subQualifier = glslangType.getQualifier();
-                    InheritQualifiers(subQualifier, qualifier);
-
-                    // manually inherit location; it's more complex
-                    if (! subQualifier.hasLocation() && qualifier.hasLocation())
-                        subQualifier.layoutLocation = qualifier.layoutLocation + locationOffset;
-                    if (qualifier.hasLocation())
-                        locationOffset += glslangIntermediate->computeTypeLocationSize(glslangType);
-
-                    // recurse
-                    structFields.push_back(convertGlslangToSpvType(glslangType, explicitLayout, subQualifier));
-                }
-            }
-
-            // Make the SPIR-V type
-            spvType = builder.makeStructType(structFields, type.getTypeName().c_str());
-            if (! HasNonLayoutQualifiers(qualifier))
-                structMap[explicitLayout][qualifier.layoutMatrix][glslangStruct] = spvType;
-
-            // Name and decorate the non-hidden members
-            int offset = -1;
-            locationOffset = 0;  // for use within the members of this struct, right now
-            for (int i = 0; i < (int)glslangStruct->size(); i++) {
-                glslang::TType& glslangType = *(*glslangStruct)[i].type;
-                int member = i;
-                if (type.getBasicType() == glslang::EbtBlock)
-                    member = memberRemapper[glslangStruct][i];
-
-                // modify just this child's view of the qualifier
-                glslang::TQualifier subQualifier = glslangType.getQualifier();
-                InheritQualifiers(subQualifier, qualifier);
-
-                // using -1 above to indicate a hidden member
-                if (member >= 0) {
-                    builder.addMemberName(spvType, member, glslangType.getFieldName().c_str());
-                    addMemberDecoration(spvType, member, TranslateLayoutDecoration(glslangType, subQualifier.layoutMatrix));
-                    addMemberDecoration(spvType, member, TranslatePrecisionDecoration(glslangType));
-                    // Add interpolation and auxiliary storage decorations only to top-level members of Input and Output storage classes
-                    if (type.getQualifier().storage == glslang::EvqVaryingIn || type.getQualifier().storage == glslang::EvqVaryingOut) {
-                        if (type.getBasicType() == glslang::EbtBlock) {
-                            addMemberDecoration(spvType, member, TranslateInterpolationDecoration(subQualifier));
-                            addMemberDecoration(spvType, member, TranslateAuxiliaryStorageDecoration(subQualifier));
-                        }
-                    }
-                    addMemberDecoration(spvType, member, TranslateInvariantDecoration(subQualifier));
-
-                    if (qualifier.storage == glslang::EvqBuffer) {
-                        std::vector<spv::Decoration> memory;
-                        TranslateMemoryDecoration(subQualifier, memory);
-                        for (unsigned int i = 0; i < memory.size(); ++i)
-                            addMemberDecoration(spvType, member, memory[i]);
-                    }
-
-                    // compute location decoration; tricky based on whether inheritance is at play
-                    // TODO: This algorithm (and it's cousin above doing almost the same thing) should
-                    //       probably move to the linker stage of the front end proper, and just have the
-                    //       answer sitting already distributed throughout the individual member locations.
-                    int location = -1;                // will only decorate if present or inherited
-                    if (subQualifier.hasLocation()) { // no inheritance, or override of inheritance
-                        // struct members should not have explicit locations
-                        assert(type.getBasicType() != glslang::EbtStruct);
-                        location = subQualifier.layoutLocation;
-                    } else if (type.getBasicType() != glslang::EbtBlock) {
-                        //  If it is a not a Block, (...) Its members are assigned consecutive locations (...)
-                        //  The members, and their nested types, must not themselves have Location decorations.
-                    }
-                    else if (qualifier.hasLocation()) // inheritance
-                        location = qualifier.layoutLocation + locationOffset;
-                    if (qualifier.hasLocation())      // track for upcoming inheritance
-                        locationOffset += glslangIntermediate->computeTypeLocationSize(glslangType);
-                    if (location >= 0)
-                        builder.addMemberDecoration(spvType, member, spv::DecorationLocation, location);
-
-                    // component, XFB, others
-                    if (glslangType.getQualifier().hasComponent())
-                        builder.addMemberDecoration(spvType, member, spv::DecorationComponent, glslangType.getQualifier().layoutComponent);
-                    if (glslangType.getQualifier().hasXfbOffset())
-                        builder.addMemberDecoration(spvType, member, spv::DecorationOffset, glslangType.getQualifier().layoutXfbOffset);
-                    else if (explicitLayout != glslang::ElpNone) {
-                        // figure out what to do with offset, which is accumulating
-                        int nextOffset;
-                        updateMemberOffset(type, glslangType, offset, nextOffset, explicitLayout, subQualifier.layoutMatrix);
-                        if (offset >= 0)
-                            builder.addMemberDecoration(spvType, member, spv::DecorationOffset, offset);
-                        offset = nextOffset;
-                    }
-
-                    if (glslangType.isMatrix() && explicitLayout != glslang::ElpNone)
-                        builder.addMemberDecoration(spvType, member, spv::DecorationMatrixStride, getMatrixStride(glslangType, explicitLayout, subQualifier.layoutMatrix));
-
-                    // built-in variable decorations
-                    spv::BuiltIn builtIn = TranslateBuiltInDecoration(glslangType.getQualifier().builtIn, true);
-                    if (builtIn != spv::BadValue)
-                        addMemberDecoration(spvType, member, spv::DecorationBuiltIn, (int)builtIn);
-                }
-            }
-
-            // Decorate the structure
-            addDecoration(spvType, TranslateLayoutDecoration(type, qualifier.layoutMatrix));
-            addDecoration(spvType, TranslateBlockDecoration(type));
-            if (type.getQualifier().hasStream() && glslangIntermediate->isMultiStream()) {
-                builder.addCapability(spv::CapabilityGeometryStreams);
-                builder.addDecoration(spvType, spv::DecorationStream, type.getQualifier().layoutStream);
-            }
-            if (glslangIntermediate->getXfbMode()) {
-                builder.addCapability(spv::CapabilityTransformFeedback);
-                if (type.getQualifier().hasXfbStride())
-                    builder.addDecoration(spvType, spv::DecorationXfbStride, type.getQualifier().layoutXfbStride);
-                if (type.getQualifier().hasXfbBuffer())
-                    builder.addDecoration(spvType, spv::DecorationXfbBuffer, type.getQualifier().layoutXfbBuffer);
-            }
+                memberRemapper[glslangMembers].resize(glslangMembers->size());
+            spvType = convertGlslangStructToSpvType(type, glslangMembers, explicitLayout, qualifier);
         }
         break;
     default:
@@ -2049,6 +1929,153 @@ spv::Id TGlslangToSpvTraverser::convertGlslangToSpvType(const glslang::TType& ty
     }
 
     return spvType;
+}
+
+
+// Do full recursive conversion of a glslang structure (or block) type to a SPIR-V Id.
+// explicitLayout can be kept the same throughout the hierarchical recursive walk.
+// Mutually recursive with convertGlslangToSpvType().
+spv::Id TGlslangToSpvTraverser::convertGlslangStructToSpvType(const glslang::TType& type,
+                                                              const glslang::TTypeList* glslangMembers,
+                                                              glslang::TLayoutPacking explicitLayout,
+                                                              const glslang::TQualifier& qualifier)
+{
+    // Create a vector of struct types for SPIR-V to consume
+    std::vector<spv::Id> spvMembers;
+    int memberDelta = 0;  // how much the member's index changes from glslang to SPIR-V, normally 0, except sometimes for blocks
+    int locationOffset = 0;  // for use across struct members, when they are called recursively
+    for (int i = 0; i < (int)glslangMembers->size(); i++) {
+        glslang::TType& glslangMember = *(*glslangMembers)[i].type;
+        if (glslangMember.hiddenMember()) {
+            ++memberDelta;
+            if (type.getBasicType() == glslang::EbtBlock)
+                memberRemapper[glslangMembers][i] = -1;
+        } else {
+            if (type.getBasicType() == glslang::EbtBlock)
+                memberRemapper[glslangMembers][i] = i - memberDelta;
+            // modify just this child's view of the qualifier
+            glslang::TQualifier memberQualifier = glslangMember.getQualifier();
+            InheritQualifiers(memberQualifier, qualifier);
+
+            // manually inherit location; it's more complex
+            if (! memberQualifier.hasLocation() && qualifier.hasLocation())
+                memberQualifier.layoutLocation = qualifier.layoutLocation + locationOffset;
+            if (qualifier.hasLocation())
+                locationOffset += glslangIntermediate->computeTypeLocationSize(glslangMember);
+
+            // recurse
+            spvMembers.push_back(convertGlslangToSpvType(glslangMember, explicitLayout, memberQualifier));
+        }
+    }
+
+    // Make the SPIR-V type
+    spv::Id spvType = builder.makeStructType(spvMembers, type.getTypeName().c_str());
+    if (! HasNonLayoutQualifiers(qualifier))
+        structMap[explicitLayout][qualifier.layoutMatrix][glslangMembers] = spvType;
+
+    // Decorate it
+    decorateStructType(type, glslangMembers, explicitLayout, qualifier, spvType);
+
+    return spvType;
+}
+
+void TGlslangToSpvTraverser::decorateStructType(const glslang::TType& type,
+                                                const glslang::TTypeList* glslangMembers,
+                                                glslang::TLayoutPacking explicitLayout,
+                                                const glslang::TQualifier& qualifier,
+                                                spv::Id spvType)
+{
+    // Name and decorate the non-hidden members
+    int offset = -1;
+    int locationOffset = 0;  // for use within the members of this struct
+    for (int i = 0; i < (int)glslangMembers->size(); i++) {
+        glslang::TType& glslangMember = *(*glslangMembers)[i].type;
+        int member = i;
+        if (type.getBasicType() == glslang::EbtBlock)
+            member = memberRemapper[glslangMembers][i];
+
+        // modify just this child's view of the qualifier
+        glslang::TQualifier memberQualifier = glslangMember.getQualifier();
+        InheritQualifiers(memberQualifier, qualifier);
+
+        // using -1 above to indicate a hidden member
+        if (member >= 0) {
+            builder.addMemberName(spvType, member, glslangMember.getFieldName().c_str());
+            addMemberDecoration(spvType, member, TranslateLayoutDecoration(glslangMember, memberQualifier.layoutMatrix));
+            addMemberDecoration(spvType, member, TranslatePrecisionDecoration(glslangMember));
+            // Add interpolation and auxiliary storage decorations only to top-level members of Input and Output storage classes
+            if (type.getQualifier().storage == glslang::EvqVaryingIn || type.getQualifier().storage == glslang::EvqVaryingOut) {
+                if (type.getBasicType() == glslang::EbtBlock) {
+                    addMemberDecoration(spvType, member, TranslateInterpolationDecoration(memberQualifier));
+                    addMemberDecoration(spvType, member, TranslateAuxiliaryStorageDecoration(memberQualifier));
+                }
+            }
+            addMemberDecoration(spvType, member, TranslateInvariantDecoration(memberQualifier));
+
+            if (qualifier.storage == glslang::EvqBuffer) {
+                std::vector<spv::Decoration> memory;
+                TranslateMemoryDecoration(memberQualifier, memory);
+                for (unsigned int i = 0; i < memory.size(); ++i)
+                    addMemberDecoration(spvType, member, memory[i]);
+            }
+
+            // compute location decoration; tricky based on whether inheritance is at play
+            // TODO: This algorithm (and it's cousin above doing almost the same thing) should
+            //       probably move to the linker stage of the front end proper, and just have the
+            //       answer sitting already distributed throughout the individual member locations.
+            int location = -1;                // will only decorate if present or inherited
+            if (memberQualifier.hasLocation()) { // no inheritance, or override of inheritance
+                // struct members should not have explicit locations
+                assert(type.getBasicType() != glslang::EbtStruct);
+                location = memberQualifier.layoutLocation;
+            } else if (type.getBasicType() != glslang::EbtBlock) {
+                //  If it is a not a Block, (...) Its members are assigned consecutive locations (...)
+                //  The members, and their nested types, must not themselves have Location decorations.
+            } else if (qualifier.hasLocation()) // inheritance
+                location = qualifier.layoutLocation + locationOffset;
+            if (qualifier.hasLocation())      // track for upcoming inheritance
+                locationOffset += glslangIntermediate->computeTypeLocationSize(glslangMember);
+            if (location >= 0)
+                builder.addMemberDecoration(spvType, member, spv::DecorationLocation, location);
+
+            // component, XFB, others
+            if (glslangMember.getQualifier().hasComponent())
+                builder.addMemberDecoration(spvType, member, spv::DecorationComponent, glslangMember.getQualifier().layoutComponent);
+            if (glslangMember.getQualifier().hasXfbOffset())
+                builder.addMemberDecoration(spvType, member, spv::DecorationOffset, glslangMember.getQualifier().layoutXfbOffset);
+            else if (explicitLayout != glslang::ElpNone) {
+                // figure out what to do with offset, which is accumulating
+                int nextOffset;
+                updateMemberOffset(type, glslangMember, offset, nextOffset, explicitLayout, memberQualifier.layoutMatrix);
+                if (offset >= 0)
+                    builder.addMemberDecoration(spvType, member, spv::DecorationOffset, offset);
+                offset = nextOffset;
+            }
+
+            if (glslangMember.isMatrix() && explicitLayout != glslang::ElpNone)
+                builder.addMemberDecoration(spvType, member, spv::DecorationMatrixStride, getMatrixStride(glslangMember, explicitLayout, memberQualifier.layoutMatrix));
+
+            // built-in variable decorations
+            spv::BuiltIn builtIn = TranslateBuiltInDecoration(glslangMember.getQualifier().builtIn, true);
+            if (builtIn != spv::BadValue)
+                addMemberDecoration(spvType, member, spv::DecorationBuiltIn, (int)builtIn);
+        }
+    }
+
+    // Decorate the structure
+    addDecoration(spvType, TranslateLayoutDecoration(type, qualifier.layoutMatrix));
+    addDecoration(spvType, TranslateBlockDecoration(type));
+    if (type.getQualifier().hasStream() && glslangIntermediate->isMultiStream()) {
+        builder.addCapability(spv::CapabilityGeometryStreams);
+        builder.addDecoration(spvType, spv::DecorationStream, type.getQualifier().layoutStream);
+    }
+    if (glslangIntermediate->getXfbMode()) {
+        builder.addCapability(spv::CapabilityTransformFeedback);
+        if (type.getQualifier().hasXfbStride())
+            builder.addDecoration(spvType, spv::DecorationXfbStride, type.getQualifier().layoutXfbStride);
+        if (type.getQualifier().hasXfbBuffer())
+            builder.addDecoration(spvType, spv::DecorationXfbBuffer, type.getQualifier().layoutXfbBuffer);
+    }
 }
 
 // Turn the expression forming the array size into an id.
