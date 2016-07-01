@@ -1322,8 +1322,16 @@ bool HlslGrammar::acceptCompoundStatement(TIntermNode*& retStatement)
     // statement statement ...
     TIntermNode* statement = nullptr;
     while (acceptStatement(statement)) {
-        // hook it up
-        compoundStatement = intermediate.growAggregate(compoundStatement, statement);
+        TIntermBranch* branch = statement ? statement->getAsBranchNode() : nullptr;
+        if (branch != nullptr && (branch->getFlowOp() == EOpCase ||
+                                  branch->getFlowOp() == EOpDefault)) {
+            // hook up individual subsequences within a switch statement
+            parseContext.wrapupSwitchSubsequence(compoundStatement, statement);
+            compoundStatement = nullptr;
+        } else {
+            // hook it up to the growing compound statement
+            compoundStatement = intermediate.growAggregate(compoundStatement, statement);
+        }
     }
     if (compoundStatement)
         compoundStatement->setOperator(EOpSequence);
@@ -1397,6 +1405,8 @@ bool HlslGrammar::acceptStatement(TIntermNode*& statement)
 
     case EHTokCase:
         return acceptCaseLabel(statement);
+    case EHTokDefault:
+        return acceptDefaultLabel(statement);
 
     case EHTokSemicolon:
         return acceptTokenClass(EHTokSemicolon);
@@ -1527,9 +1537,34 @@ bool HlslGrammar::acceptSelectionStatement(TIntermNode*& statement)
     return true;
 }
 
+// switch_statement
+//      : SWITCH LEFT_PAREN expression RIGHT_PAREN compound_statement
+//
 bool HlslGrammar::acceptSwitchStatement(TIntermNode*& statement)
 {
-    return false;
+    // SWITCH
+    TSourceLoc loc = token.loc;
+    if (! acceptTokenClass(EHTokSwitch))
+        return false;
+
+    // LEFT_PAREN expression RIGHT_PAREN
+    parseContext.pushScope();
+    TIntermTyped* switchExpression;
+    if (! acceptParenExpression(switchExpression)) {
+        parseContext.popScope();
+        return false;
+    }
+
+    // compound_statement
+    parseContext.pushSwitchSequence(new TIntermSequence);
+    bool statementOkay = acceptCompoundStatement(statement);
+    if (statementOkay)
+        statement = parseContext.addSwitch(loc, switchExpression, statement ? statement->getAsAggregate() : nullptr);
+
+    parseContext.popSwitchSequence();
+    parseContext.popScope();
+
+    return statementOkay;
 }
 
 // iteration_statement
@@ -1718,9 +1753,48 @@ bool HlslGrammar::acceptJumpStatement(TIntermNode*& statement)
     return true;
 }
 
+// case_label
+//      : CASE expression COLON
+//
 bool HlslGrammar::acceptCaseLabel(TIntermNode*& statement)
 {
-    return false;
+    TSourceLoc loc = token.loc;
+    if (! acceptTokenClass(EHTokCase))
+        return false;
+
+    TIntermTyped* expression;
+    if (! acceptExpression(expression)) {
+        expected("case expression");
+        return false;
+    }
+
+    if (! acceptTokenClass(EHTokColon)) {
+        expected(":");
+        return false;
+    }
+
+    statement = parseContext.intermediate.addBranch(EOpCase, expression, loc);
+
+    return true;
+}
+
+// default_label
+//      : DEFAULT COLON
+//
+bool HlslGrammar::acceptDefaultLabel(TIntermNode*& statement)
+{
+    TSourceLoc loc = token.loc;
+    if (! acceptTokenClass(EHTokDefault))
+        return false;
+
+    if (! acceptTokenClass(EHTokColon)) {
+        expected(":");
+        return false;
+    }
+
+    statement = parseContext.intermediate.addBranch(EOpDefault, loc);
+
+    return true;
 }
 
 // array_specifier

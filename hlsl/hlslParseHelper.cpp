@@ -3969,8 +3969,6 @@ void HlslParseContext::wrapupSwitchSubsequence(TIntermAggregate* statements, TIn
     TIntermSequence* switchSequence = switchSequenceStack.back();
 
     if (statements) {
-        if (switchSequence->size() == 0)
-            error(statements->getLoc(), "cannot have statements before first case/default label", "switch", "");
         statements->setOperator(EOpSequence);
         switchSequence->push_back(statements);
     }

@@ -88,6 +88,7 @@ namespace glslang {
         bool acceptIterationStatement(TIntermNode*&);
         bool acceptJumpStatement(TIntermNode*&);
         bool acceptCaseLabel(TIntermNode*&);
+        bool acceptDefaultLabel(TIntermNode*&);
         void acceptArraySpecifier(TArraySizes*&);
         void acceptPostDecls(TType&);
 
