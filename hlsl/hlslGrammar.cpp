@@ -134,6 +134,8 @@ bool HlslGrammar::acceptDeclaration(TIntermNode*& node)
     TType type;
     if (! acceptFullySpecifiedType(type))
         return false;
+    if (type.getQualifier().storage == EvqTemporary && parseContext.symbolTable.atGlobalLevel())
+        type.getQualifier().storage = EvqGlobal;
 
     // identifier
     HlslToken idToken;

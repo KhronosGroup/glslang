@@ -2,7 +2,7 @@ hlsl.struct.frag
 Shader version: 450
 gl_FragCoord origin is upper left
 0:? Sequence
-0:40  Function Definition: PixelShaderFunction(vf4; (temp 4-component vector of float)
+0:40  Function Definition: PixelShaderFunction(vf4; (global 4-component vector of float)
 0:31    Function Parameters: 
 0:31      'input' (in 4-component vector of float)
 0:?     Sequence
@@ -11,19 +11,19 @@ gl_FragCoord origin is upper left
 0:36        's3' (temp structure{temp 3-component vector of bool b3})
 0:37      move second child to first child (temp 4-component vector of float)
 0:37        i: direct index for structure (temp 4-component vector of float)
-0:37          's2' (temp structure{temp 4-component vector of float i})
+0:37          's2' (global structure{temp 4-component vector of float i})
 0:37          Constant:
 0:37            0 (const int)
 0:37        ff4: direct index for structure (temp 4-component vector of float FragCoord)
-0:37          's4' (temp structure{smooth in 4-component vector of float a, flat temp bool b, centroid noperspective temp 1-component vector of float c, centroid sample temp 2-component vector of float d, temp bool Face ff1, temp bool ff2, temp bool ff3, temp 4-component vector of float FragCoord ff4})
+0:37          's4' (global structure{smooth in 4-component vector of float a, flat temp bool b, centroid noperspective temp 1-component vector of float c, centroid sample temp 2-component vector of float d, temp bool Face ff1, temp bool ff2, temp bool ff3, temp 4-component vector of float FragCoord ff4})
 0:37          Constant:
 0:37            7 (const int)
 0:39      Branch: Return with expression
 0:39        'input' (in 4-component vector of float)
 0:?   Linker Objects
-0:?     's1' (temp structure{temp bool b, temp bool c, temp 4-component vector of float a, temp 4-component vector of float d})
-0:?     's2' (temp structure{temp 4-component vector of float i})
-0:?     's4' (temp structure{smooth in 4-component vector of float a, flat temp bool b, centroid noperspective temp 1-component vector of float c, centroid sample temp 2-component vector of float d, temp bool Face ff1, temp bool ff2, temp bool ff3, temp 4-component vector of float FragCoord ff4})
+0:?     's1' (global structure{temp bool b, temp bool c, temp 4-component vector of float a, temp 4-component vector of float d})
+0:?     's2' (global structure{temp 4-component vector of float i})
+0:?     's4' (global structure{smooth in 4-component vector of float a, flat temp bool b, centroid noperspective temp 1-component vector of float c, centroid sample temp 2-component vector of float d, temp bool Face ff1, temp bool ff2, temp bool ff3, temp 4-component vector of float FragCoord ff4})
 
 
 Linked fragment stage:
@@ -32,7 +32,7 @@ Linked fragment stage:
 Shader version: 450
 gl_FragCoord origin is upper left
 0:? Sequence
-0:40  Function Definition: PixelShaderFunction(vf4; (temp 4-component vector of float)
+0:40  Function Definition: PixelShaderFunction(vf4; (global 4-component vector of float)
 0:31    Function Parameters: 
 0:31      'input' (in 4-component vector of float)
 0:?     Sequence
@@ -41,19 +41,19 @@ gl_FragCoord origin is upper left
 0:36        's3' (temp structure{temp 3-component vector of bool b3})
 0:37      move second child to first child (temp 4-component vector of float)
 0:37        i: direct index for structure (temp 4-component vector of float)
-0:37          's2' (temp structure{temp 4-component vector of float i})
+0:37          's2' (global structure{temp 4-component vector of float i})
 0:37          Constant:
 0:37            0 (const int)
 0:37        ff4: direct index for structure (temp 4-component vector of float FragCoord)
-0:37          's4' (temp structure{smooth in 4-component vector of float a, flat temp bool b, centroid noperspective temp 1-component vector of float c, centroid sample temp 2-component vector of float d, temp bool Face ff1, temp bool ff2, temp bool ff3, temp 4-component vector of float FragCoord ff4})
+0:37          's4' (global structure{smooth in 4-component vector of float a, flat temp bool b, centroid noperspective temp 1-component vector of float c, centroid sample temp 2-component vector of float d, temp bool Face ff1, temp bool ff2, temp bool ff3, temp 4-component vector of float FragCoord ff4})
 0:37          Constant:
 0:37            7 (const int)
 0:39      Branch: Return with expression
 0:39        'input' (in 4-component vector of float)
 0:?   Linker Objects
-0:?     's1' (temp structure{temp bool b, temp bool c, temp 4-component vector of float a, temp 4-component vector of float d})
-0:?     's2' (temp structure{temp 4-component vector of float i})
-0:?     's4' (temp structure{smooth in 4-component vector of float a, flat temp bool b, centroid noperspective temp 1-component vector of float c, centroid sample temp 2-component vector of float d, temp bool Face ff1, temp bool ff2, temp bool ff3, temp 4-component vector of float FragCoord ff4})
+0:?     's1' (global structure{temp bool b, temp bool c, temp 4-component vector of float a, temp 4-component vector of float d})
+0:?     's2' (global structure{temp 4-component vector of float i})
+0:?     's4' (global structure{smooth in 4-component vector of float a, flat temp bool b, centroid noperspective temp 1-component vector of float c, centroid sample temp 2-component vector of float d, temp bool Face ff1, temp bool ff2, temp bool ff3, temp 4-component vector of float FragCoord ff4})
 
 // Module Version 10000
 // Generated by (magic number): 80001
@@ -100,24 +100,24 @@ gl_FragCoord origin is upper left
               17:             TypeFloat 32
               18:             TypeVector 17(float) 4
               19:             TypeStruct 18(fvec4)
-              20:             TypePointer Function 19(struct)
+              20:             TypePointer Private 19(struct)
+          21(s2):     20(ptr) Variable Private
               22:             TypeInt 32 1
               23:     22(int) Constant 0
               24:             TypeVector 17(float) 2
               25:             TypeStruct 18(fvec4) 6(bool) 17(float) 24(fvec2) 6(bool) 6(bool) 6(bool) 18(fvec4)
-              26:             TypePointer Function 25(struct)
+              26:             TypePointer Private 25(struct)
+          27(s4):     26(ptr) Variable Private
               28:     22(int) Constant 7
-              29:             TypePointer Function 18(fvec4)
+              29:             TypePointer Private 18(fvec4)
               33:             TypePointer Input 18(fvec4)
        34(input):     33(ptr) Variable Input
          37(myS):             TypeStruct 6(bool) 6(bool) 18(fvec4) 18(fvec4)
-              38:             TypePointer Function 37(myS)
+              38:             TypePointer Private 37(myS)
+          39(s1):     38(ptr) Variable Private
 4(PixelShaderFunction):           2 Function None 3
                5:             Label
           10(s3):      9(ptr) Variable Function
-          21(s2):     20(ptr) Variable Function
-          27(s4):     26(ptr) Variable Function
-          39(s1):     38(ptr) Variable Function
               11:       8(FS) Load 10(s3)
               12:       8(FS) Load 10(s3)
               13:    7(bvec3) CompositeExtract 11 0

@@ -2,7 +2,7 @@ hlsl.precedence.frag
 Shader version: 450
 gl_FragCoord origin is upper left
 0:? Sequence
-0:10  Function Definition: PixelShaderFunction(vf4;vf4;vf4;vf4; (temp 4-component vector of float)
+0:10  Function Definition: PixelShaderFunction(vf4;vf4;vf4;vf4; (global 4-component vector of float)
 0:7    Function Parameters: 
 0:7      'a1' (in 4-component vector of float)
 0:7      'a2' (in 4-component vector of float)
@@ -26,7 +26,7 @@ Linked fragment stage:
 Shader version: 450
 gl_FragCoord origin is upper left
 0:? Sequence
-0:10  Function Definition: PixelShaderFunction(vf4;vf4;vf4;vf4; (temp 4-component vector of float)
+0:10  Function Definition: PixelShaderFunction(vf4;vf4;vf4;vf4; (global 4-component vector of float)
 0:7    Function Parameters: 
 0:7      'a1' (in 4-component vector of float)
 0:7      'a2' (in 4-component vector of float)

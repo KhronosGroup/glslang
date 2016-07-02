@@ -2,7 +2,7 @@ hlsl.intrinsics.frag
 Shader version: 450
 gl_FragCoord origin is upper left
 0:? Sequence
-0:88  Function Definition: PixelShaderFunctionS(f1;f1;f1;u1;u1; (temp float)
+0:88  Function Definition: PixelShaderFunctionS(f1;f1;f1;u1;u1; (global float)
 0:17    Function Parameters: 
 0:17      'inF0' (in float)
 0:17      'inF1' (in float)
@@ -339,7 +339,7 @@ gl_FragCoord origin is upper left
 0:85      Branch: Return with expression
 0:85        Constant:
 0:85          0.000000
-0:94  Function Definition: PixelShaderFunction1(vf1;vf1;vf1; (temp 1-component vector of float)
+0:94  Function Definition: PixelShaderFunction1(vf1;vf1;vf1; (global 1-component vector of float)
 0:89    Function Parameters: 
 0:89      'inF0' (in 1-component vector of float)
 0:89      'inF1' (in 1-component vector of float)
@@ -348,7 +348,7 @@ gl_FragCoord origin is upper left
 0:91      Branch: Return with expression
 0:91        Constant:
 0:91          0.000000
-0:177  Function Definition: PixelShaderFunction2(vf2;vf2;vf2;vu2;vu2; (temp 2-component vector of float)
+0:177  Function Definition: PixelShaderFunction2(vf2;vf2;vf2;vu2;vu2; (global 2-component vector of float)
 0:95    Function Parameters: 
 0:95      'inF0' (in 2-component vector of float)
 0:95      'inF1' (in 2-component vector of float)
@@ -733,7 +733,7 @@ gl_FragCoord origin is upper left
 0:?         Constant:
 0:?           1.000000
 0:?           2.000000
-0:258  Function Definition: PixelShaderFunction3(vf3;vf3;vf3;vu3;vu3; (temp 3-component vector of float)
+0:258  Function Definition: PixelShaderFunction3(vf3;vf3;vf3;vu3;vu3; (global 3-component vector of float)
 0:178    Function Parameters: 
 0:178      'inF0' (in 3-component vector of float)
 0:178      'inF1' (in 3-component vector of float)
@@ -1130,7 +1130,7 @@ gl_FragCoord origin is upper left
 0:?           1.000000
 0:?           2.000000
 0:?           3.000000
-0:399  Function Definition: PixelShaderFunction(vf4;vf4;vf4;vu4;vu4; (temp 4-component vector of float)
+0:399  Function Definition: PixelShaderFunction(vf4;vf4;vf4;vu4;vu4; (global 4-component vector of float)
 0:259    Function Parameters: 
 0:259      'inF0' (in 4-component vector of float)
 0:259      'inF1' (in 4-component vector of float)
@@ -1550,7 +1550,7 @@ gl_FragCoord origin is upper left
 0:?           2.000000
 0:?           3.000000
 0:?           4.000000
-0:408  Function Definition: PixelShaderFunction2x2(mf22;mf22;mf22; (temp 2X2 matrix of float)
+0:408  Function Definition: PixelShaderFunction2x2(mf22;mf22;mf22; (global 2X2 matrix of float)
 0:400    Function Parameters: 
 0:400      'inF0' (in 2X2 matrix of float)
 0:400      'inF1' (in 2X2 matrix of float)
@@ -1838,7 +1838,7 @@ gl_FragCoord origin is upper left
 0:?           2.000000
 0:?           2.000000
 0:?           2.000000
-0:417  Function Definition: PixelShaderFunction3x3(mf33;mf33;mf33; (temp 3X3 matrix of float)
+0:417  Function Definition: PixelShaderFunction3x3(mf33;mf33;mf33; (global 3X3 matrix of float)
 0:409    Function Parameters: 
 0:409      'inF0' (in 3X3 matrix of float)
 0:409      'inF1' (in 3X3 matrix of float)
@@ -2136,7 +2136,7 @@ gl_FragCoord origin is upper left
 0:?           3.000000
 0:?           3.000000
 0:?           3.000000
-0:438  Function Definition: PixelShaderFunction4x4(mf44;mf44;mf44; (temp 4X4 matrix of float)
+0:438  Function Definition: PixelShaderFunction4x4(mf44;mf44;mf44; (global 4X4 matrix of float)
 0:418    Function Parameters: 
 0:418      'inF0' (in 4X4 matrix of float)
 0:418      'inF1' (in 4X4 matrix of float)
@@ -2448,7 +2448,7 @@ gl_FragCoord origin is upper left
 0:?           4.000000
 0:?           4.000000
 0:?           4.000000
-0:445  Function Definition: TestGenMul2(f1;f1;vf2;vf2;mf22;mf22; (temp void)
+0:445  Function Definition: TestGenMul2(f1;f1;vf2;vf2;mf22;mf22; (global void)
 0:441    Function Parameters: 
 0:441      'inF0' (in float)
 0:441      'inF1' (in float)
@@ -2511,7 +2511,7 @@ gl_FragCoord origin is upper left
 0:442          matrix-multiply (temp 2X2 matrix of float)
 0:442            'inFM0' (in 2X2 matrix of float)
 0:442            'inFM1' (in 2X2 matrix of float)
-0:452  Function Definition: TestGenMul3(f1;f1;vf3;vf3;mf33;mf33; (temp void)
+0:452  Function Definition: TestGenMul3(f1;f1;vf3;vf3;mf33;mf33; (global void)
 0:448    Function Parameters: 
 0:448      'inF0' (in float)
 0:448      'inF1' (in float)
@@ -2574,7 +2574,7 @@ gl_FragCoord origin is upper left
 0:449          matrix-multiply (temp 3X3 matrix of float)
 0:449            'inFM0' (in 3X3 matrix of float)
 0:449            'inFM1' (in 3X3 matrix of float)
-0:460  Function Definition: TestGenMul4(f1;f1;vf4;vf4;mf44;mf44; (temp void)
+0:460  Function Definition: TestGenMul4(f1;f1;vf4;vf4;mf44;mf44; (global void)
 0:455    Function Parameters: 
 0:455      'inF0' (in float)
 0:455      'inF1' (in float)
@@ -2637,7 +2637,7 @@ gl_FragCoord origin is upper left
 0:456          matrix-multiply (temp 4X4 matrix of float)
 0:456            'inFM0' (in 4X4 matrix of float)
 0:456            'inFM1' (in 4X4 matrix of float)
-0:484  Function Definition: TestGenMulNxM(f1;f1;vf2;vf3;mf32;mf23;mf33;mf43;mf42; (temp void)
+0:484  Function Definition: TestGenMulNxM(f1;f1;vf2;vf3;mf32;mf23;mf33;mf43;mf42; (global void)
 0:465    Function Parameters: 
 0:465      'inF0' (in float)
 0:465      'inF1' (in float)
@@ -2752,18 +2752,18 @@ gl_FragCoord origin is upper left
 0:482            'inFM3x2' (in 2X3 matrix of float)
 0:482            'inFM2x4' (in 4X2 matrix of float)
 0:?   Linker Objects
-0:?     'gs_ua' (temp uint)
-0:?     'gs_ub' (temp uint)
-0:?     'gs_uc' (temp uint)
-0:?     'gs_ua2' (temp 2-component vector of uint)
-0:?     'gs_ub2' (temp 2-component vector of uint)
-0:?     'gs_uc2' (temp 2-component vector of uint)
-0:?     'gs_ua3' (temp 3-component vector of uint)
-0:?     'gs_ub3' (temp 3-component vector of uint)
-0:?     'gs_uc3' (temp 3-component vector of uint)
-0:?     'gs_ua4' (temp 4-component vector of uint)
-0:?     'gs_ub4' (temp 4-component vector of uint)
-0:?     'gs_uc4' (temp 4-component vector of uint)
+0:?     'gs_ua' (global uint)
+0:?     'gs_ub' (global uint)
+0:?     'gs_uc' (global uint)
+0:?     'gs_ua2' (global 2-component vector of uint)
+0:?     'gs_ub2' (global 2-component vector of uint)
+0:?     'gs_uc2' (global 2-component vector of uint)
+0:?     'gs_ua3' (global 3-component vector of uint)
+0:?     'gs_ub3' (global 3-component vector of uint)
+0:?     'gs_uc3' (global 3-component vector of uint)
+0:?     'gs_ua4' (global 4-component vector of uint)
+0:?     'gs_ub4' (global 4-component vector of uint)
+0:?     'gs_uc4' (global 4-component vector of uint)
 
 
 Linked fragment stage:
@@ -2772,7 +2772,7 @@ Linked fragment stage:
 Shader version: 450
 gl_FragCoord origin is upper left
 0:? Sequence
-0:88  Function Definition: PixelShaderFunctionS(f1;f1;f1;u1;u1; (temp float)
+0:88  Function Definition: PixelShaderFunctionS(f1;f1;f1;u1;u1; (global float)
 0:17    Function Parameters: 
 0:17      'inF0' (in float)
 0:17      'inF1' (in float)
@@ -3109,7 +3109,7 @@ gl_FragCoord origin is upper left
 0:85      Branch: Return with expression
 0:85        Constant:
 0:85          0.000000
-0:94  Function Definition: PixelShaderFunction1(vf1;vf1;vf1; (temp 1-component vector of float)
+0:94  Function Definition: PixelShaderFunction1(vf1;vf1;vf1; (global 1-component vector of float)
 0:89    Function Parameters: 
 0:89      'inF0' (in 1-component vector of float)
 0:89      'inF1' (in 1-component vector of float)
@@ -3118,7 +3118,7 @@ gl_FragCoord origin is upper left
 0:91      Branch: Return with expression
 0:91        Constant:
 0:91          0.000000
-0:177  Function Definition: PixelShaderFunction2(vf2;vf2;vf2;vu2;vu2; (temp 2-component vector of float)
+0:177  Function Definition: PixelShaderFunction2(vf2;vf2;vf2;vu2;vu2; (global 2-component vector of float)
 0:95    Function Parameters: 
 0:95      'inF0' (in 2-component vector of float)
 0:95      'inF1' (in 2-component vector of float)
@@ -3503,7 +3503,7 @@ gl_FragCoord origin is upper left
 0:?         Constant:
 0:?           1.000000
 0:?           2.000000
-0:258  Function Definition: PixelShaderFunction3(vf3;vf3;vf3;vu3;vu3; (temp 3-component vector of float)
+0:258  Function Definition: PixelShaderFunction3(vf3;vf3;vf3;vu3;vu3; (global 3-component vector of float)
 0:178    Function Parameters: 
 0:178      'inF0' (in 3-component vector of float)
 0:178      'inF1' (in 3-component vector of float)
@@ -3900,7 +3900,7 @@ gl_FragCoord origin is upper left
 0:?           1.000000
 0:?           2.000000
 0:?           3.000000
-0:399  Function Definition: PixelShaderFunction(vf4;vf4;vf4;vu4;vu4; (temp 4-component vector of float)
+0:399  Function Definition: PixelShaderFunction(vf4;vf4;vf4;vu4;vu4; (global 4-component vector of float)
 0:259    Function Parameters: 
 0:259      'inF0' (in 4-component vector of float)
 0:259      'inF1' (in 4-component vector of float)
@@ -4320,7 +4320,7 @@ gl_FragCoord origin is upper left
 0:?           2.000000
 0:?           3.000000
 0:?           4.000000
-0:408  Function Definition: PixelShaderFunction2x2(mf22;mf22;mf22; (temp 2X2 matrix of float)
+0:408  Function Definition: PixelShaderFunction2x2(mf22;mf22;mf22; (global 2X2 matrix of float)
 0:400    Function Parameters: 
 0:400      'inF0' (in 2X2 matrix of float)
 0:400      'inF1' (in 2X2 matrix of float)
@@ -4608,7 +4608,7 @@ gl_FragCoord origin is upper left
 0:?           2.000000
 0:?           2.000000
 0:?           2.000000
-0:417  Function Definition: PixelShaderFunction3x3(mf33;mf33;mf33; (temp 3X3 matrix of float)
+0:417  Function Definition: PixelShaderFunction3x3(mf33;mf33;mf33; (global 3X3 matrix of float)
 0:409    Function Parameters: 
 0:409      'inF0' (in 3X3 matrix of float)
 0:409      'inF1' (in 3X3 matrix of float)
@@ -4906,7 +4906,7 @@ gl_FragCoord origin is upper left
 0:?           3.000000
 0:?           3.000000
 0:?           3.000000
-0:438  Function Definition: PixelShaderFunction4x4(mf44;mf44;mf44; (temp 4X4 matrix of float)
+0:438  Function Definition: PixelShaderFunction4x4(mf44;mf44;mf44; (global 4X4 matrix of float)
 0:418    Function Parameters: 
 0:418      'inF0' (in 4X4 matrix of float)
 0:418      'inF1' (in 4X4 matrix of float)
@@ -5218,7 +5218,7 @@ gl_FragCoord origin is upper left
 0:?           4.000000
 0:?           4.000000
 0:?           4.000000
-0:445  Function Definition: TestGenMul2(f1;f1;vf2;vf2;mf22;mf22; (temp void)
+0:445  Function Definition: TestGenMul2(f1;f1;vf2;vf2;mf22;mf22; (global void)
 0:441    Function Parameters: 
 0:441      'inF0' (in float)
 0:441      'inF1' (in float)
@@ -5281,7 +5281,7 @@ gl_FragCoord origin is upper left
 0:442          matrix-multiply (temp 2X2 matrix of float)
 0:442            'inFM0' (in 2X2 matrix of float)
 0:442            'inFM1' (in 2X2 matrix of float)
-0:452  Function Definition: TestGenMul3(f1;f1;vf3;vf3;mf33;mf33; (temp void)
+0:452  Function Definition: TestGenMul3(f1;f1;vf3;vf3;mf33;mf33; (global void)
 0:448    Function Parameters: 
 0:448      'inF0' (in float)
 0:448      'inF1' (in float)
@@ -5344,7 +5344,7 @@ gl_FragCoord origin is upper left
 0:449          matrix-multiply (temp 3X3 matrix of float)
 0:449            'inFM0' (in 3X3 matrix of float)
 0:449            'inFM1' (in 3X3 matrix of float)
-0:460  Function Definition: TestGenMul4(f1;f1;vf4;vf4;mf44;mf44; (temp void)
+0:460  Function Definition: TestGenMul4(f1;f1;vf4;vf4;mf44;mf44; (global void)
 0:455    Function Parameters: 
 0:455      'inF0' (in float)
 0:455      'inF1' (in float)
@@ -5407,7 +5407,7 @@ gl_FragCoord origin is upper left
 0:456          matrix-multiply (temp 4X4 matrix of float)
 0:456            'inFM0' (in 4X4 matrix of float)
 0:456            'inFM1' (in 4X4 matrix of float)
-0:484  Function Definition: TestGenMulNxM(f1;f1;vf2;vf3;mf32;mf23;mf33;mf43;mf42; (temp void)
+0:484  Function Definition: TestGenMulNxM(f1;f1;vf2;vf3;mf32;mf23;mf33;mf43;mf42; (global void)
 0:465    Function Parameters: 
 0:465      'inF0' (in float)
 0:465      'inF1' (in float)
@@ -5522,22 +5522,22 @@ gl_FragCoord origin is upper left
 0:482            'inFM3x2' (in 2X3 matrix of float)
 0:482            'inFM2x4' (in 4X2 matrix of float)
 0:?   Linker Objects
-0:?     'gs_ua' (temp uint)
-0:?     'gs_ub' (temp uint)
-0:?     'gs_uc' (temp uint)
-0:?     'gs_ua2' (temp 2-component vector of uint)
-0:?     'gs_ub2' (temp 2-component vector of uint)
-0:?     'gs_uc2' (temp 2-component vector of uint)
-0:?     'gs_ua3' (temp 3-component vector of uint)
-0:?     'gs_ub3' (temp 3-component vector of uint)
-0:?     'gs_uc3' (temp 3-component vector of uint)
-0:?     'gs_ua4' (temp 4-component vector of uint)
-0:?     'gs_ub4' (temp 4-component vector of uint)
-0:?     'gs_uc4' (temp 4-component vector of uint)
+0:?     'gs_ua' (global uint)
+0:?     'gs_ub' (global uint)
+0:?     'gs_uc' (global uint)
+0:?     'gs_ua2' (global 2-component vector of uint)
+0:?     'gs_ub2' (global 2-component vector of uint)
+0:?     'gs_uc2' (global 2-component vector of uint)
+0:?     'gs_ua3' (global 3-component vector of uint)
+0:?     'gs_ub3' (global 3-component vector of uint)
+0:?     'gs_uc3' (global 3-component vector of uint)
+0:?     'gs_ua4' (global 4-component vector of uint)
+0:?     'gs_ub4' (global 4-component vector of uint)
+0:?     'gs_uc4' (global 4-component vector of uint)
 
 // Module Version 10000
 // Generated by (magic number): 80001
-// Id's are bound by 1802
+// Id's are bound by 1806
 
                               Capability Shader
                               Capability DerivativeControl
@@ -6052,18 +6052,18 @@ gl_FragCoord origin is upper left
                               Name 1778  "r14"
                               Name 1782  "r15"
                               Name 1786  "r16"
-                              Name 1790  "gs_ua"
-                              Name 1791  "gs_ub"
-                              Name 1792  "gs_uc"
-                              Name 1793  "gs_ua2"
-                              Name 1794  "gs_ub2"
-                              Name 1795  "gs_uc2"
-                              Name 1796  "gs_ua3"
-                              Name 1797  "gs_ub3"
-                              Name 1798  "gs_uc3"
-                              Name 1799  "gs_ua4"
-                              Name 1800  "gs_ub4"
-                              Name 1801  "gs_uc4"
+                              Name 1791  "gs_ua"
+                              Name 1792  "gs_ub"
+                              Name 1793  "gs_uc"
+                              Name 1795  "gs_ua2"
+                              Name 1796  "gs_ub2"
+                              Name 1797  "gs_uc2"
+                              Name 1799  "gs_ua3"
+                              Name 1800  "gs_ub3"
+                              Name 1801  "gs_uc3"
+                              Name 1803  "gs_ua4"
+                              Name 1804  "gs_ub4"
+                              Name 1805  "gs_uc4"
                2:             TypeVoid
                3:             TypeFunction 2
                6:             TypeFloat 32
@@ -6180,6 +6180,22 @@ gl_FragCoord origin is upper left
    1522(ResType):             TypeStruct 65 819(ivec4)
             1610:   64(fvec4) ConstantComposite 1053 1053 1053 1053
             1611:          65 ConstantComposite 1610 1610 1610 1610
+            1790:             TypePointer Private 8(int)
+     1791(gs_ua):   1790(ptr) Variable Private
+     1792(gs_ub):   1790(ptr) Variable Private
+     1793(gs_uc):   1790(ptr) Variable Private
+            1794:             TypePointer Private 26(ivec2)
+    1795(gs_ua2):   1794(ptr) Variable Private
+    1796(gs_ub2):   1794(ptr) Variable Private
+    1797(gs_uc2):   1794(ptr) Variable Private
+            1798:             TypePointer Private 38(ivec3)
+    1799(gs_ua3):   1798(ptr) Variable Private
+    1800(gs_ub3):   1798(ptr) Variable Private
+    1801(gs_uc3):   1798(ptr) Variable Private
+            1802:             TypePointer Private 824(ivec4)
+    1803(gs_ua4):   1802(ptr) Variable Private
+    1804(gs_ub4):   1802(ptr) Variable Private
+    1805(gs_uc4):   1802(ptr) Variable Private
 4(PixelShaderFunction):           2 Function None 3
                5:             Label
        802(r000):    122(ptr) Variable Function
@@ -8255,18 +8271,6 @@ gl_FragCoord origin is upper left
        1778(r14):    102(ptr) Variable Function
        1782(r15):    108(ptr) Variable Function
        1786(r16):    106(ptr) Variable Function
-     1790(gs_ua):      9(ptr) Variable Function
-     1791(gs_ub):      9(ptr) Variable Function
-     1792(gs_uc):      9(ptr) Variable Function
-    1793(gs_ua2):     27(ptr) Variable Function
-    1794(gs_ub2):     27(ptr) Variable Function
-    1795(gs_uc2):     27(ptr) Variable Function
-    1796(gs_ua3):     39(ptr) Variable Function
-    1797(gs_ub3):     39(ptr) Variable Function
-    1798(gs_uc3):     39(ptr) Variable Function
-    1799(gs_ua4):    825(ptr) Variable Function
-    1800(gs_ub4):    825(ptr) Variable Function
-    1801(gs_uc4):    825(ptr) Variable Function
             1723:    6(float) Load 110(inF0)
             1724:    6(float) Load 111(inF1)
             1725:    6(float) FMul 1723 1724
