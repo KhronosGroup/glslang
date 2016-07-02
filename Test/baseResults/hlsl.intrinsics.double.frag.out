@@ -13,18 +13,20 @@ gl_FragCoord origin is upper left
 0:5      'inU1a' (in uint)
 0:5      'inU1b' (in uint)
 0:?     Sequence
-0:6      move second child to first child (temp double)
-0:6        'r00' (temp double)
-0:6        fma (global double)
-0:6          'inDV1a' (in double)
-0:6          'inDV1b' (in double)
-0:6          'inDV1c' (in double)
-0:7      move second child to first child (temp double)
-0:7        'r01' (temp double)
-0:7        uint64BitsToDouble (temp double)
-0:7          Construct uvec2 (temp 2-component vector of uint)
-0:7            'inU1a' (in uint)
-0:7            'inU1b' (in uint)
+0:6      Sequence
+0:6        move second child to first child (temp double)
+0:6          'r00' (temp double)
+0:6          fma (global double)
+0:6            'inDV1a' (in double)
+0:6            'inDV1b' (in double)
+0:6            'inDV1c' (in double)
+0:7      Sequence
+0:7        move second child to first child (temp double)
+0:7          'r01' (temp double)
+0:7          uint64BitsToDouble (temp double)
+0:7            Construct uvec2 (temp 2-component vector of uint)
+0:7              'inU1a' (in uint)
+0:7              'inU1b' (in uint)
 0:9      Branch: Return with expression
 0:9        Constant:
 0:9          0.000000
@@ -48,18 +50,20 @@ gl_FragCoord origin is upper left
 0:5      'inU1a' (in uint)
 0:5      'inU1b' (in uint)
 0:?     Sequence
-0:6      move second child to first child (temp double)
-0:6        'r00' (temp double)
-0:6        fma (global double)
-0:6          'inDV1a' (in double)
-0:6          'inDV1b' (in double)
-0:6          'inDV1c' (in double)
-0:7      move second child to first child (temp double)
-0:7        'r01' (temp double)
-0:7        uint64BitsToDouble (temp double)
-0:7          Construct uvec2 (temp 2-component vector of uint)
-0:7            'inU1a' (in uint)
-0:7            'inU1b' (in uint)
+0:6      Sequence
+0:6        move second child to first child (temp double)
+0:6          'r00' (temp double)
+0:6          fma (global double)
+0:6            'inDV1a' (in double)
+0:6            'inDV1b' (in double)
+0:6            'inDV1c' (in double)
+0:7      Sequence
+0:7        move second child to first child (temp double)
+0:7          'r01' (temp double)
+0:7          uint64BitsToDouble (temp double)
+0:7            Construct uvec2 (temp 2-component vector of uint)
+0:7              'inU1a' (in uint)
+0:7              'inU1b' (in uint)
 0:9      Branch: Return with expression
 0:9        Constant:
 0:9          0.000000

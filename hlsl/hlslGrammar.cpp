@@ -107,12 +107,23 @@ bool HlslGrammar::acceptCompilationUnit()
 
 // declaration
 //      : SEMICOLON
-//      | fully_specified_type SEMICOLON
-//      | fully_specified_type identifier array_specifier post_decls (EQUAL expression)opt SEMICOLON
+//      | fully_specified_type init_declarator_list SEMICOLON
 //      | fully_specified_type identifier function_parameters post_decls SEMICOLON           // function prototype
 //      | fully_specified_type identifier function_parameters post_decls compound_statement  // function definition
 //
-// 'node' could get created if the declaration creates code, like an initializer
+// init_declarator_list
+//      : init_declarator COMMA init_declarator COMMA init_declarator...
+//
+// init_declarator
+//      : identifier array_specifier post_decls
+//      | identifier array_specifier post_decls EQUAL assignment_expression
+//
+// Parsing has to go pretty far in to know whether it's an init_declarator_list
+// or not, so the implementation below doesn't perfectly divide up the grammar
+// as above.  (The 'identifier' in the first item in init_declarator list is the
+// same as 'identifier' for function declarations.)
+//
+// 'node' could get populated if the declaration creates code, like an initializer
 // or a function body.
 //
 bool HlslGrammar::acceptDeclaration(TIntermNode*& node)
@@ -134,18 +145,72 @@ bool HlslGrammar::acceptDeclaration(TIntermNode*& node)
         // post_decls
         acceptPostDecls(type);
 
-        // EQUAL expression
+        // EQUAL assignment_expression
         TIntermTyped* expressionNode = nullptr;
         if (acceptTokenClass(EHTokAssign)) {
-            if (! acceptExpression(expressionNode)) {
+            if (! acceptAssignmentExpression(expressionNode)) {
                 expected("initializer");
                 return false;
             }
         }
 
+        // COMMA
+        // This means we've been in an init_declarator_list.
+        // Finish the first init_declarator and recognize the rest of the list.
+        if (acceptTokenClass(EHTokComma)) {
+            // init_declarator
+            // we know have multiple declarations
+            node = parseContext.declareVariable(idToken.loc, *idToken.string, type, arraySizes, expressionNode);
+            node = intermediate.makeAggregate(node);
+
+            do {
+                // identifier
+                if (! acceptIdentifier(idToken)) {
+                    expected("identifier");
+                    return false;
+                }
+
+                // array_specifier
+                arraySizes = nullptr;
+                acceptArraySpecifier(arraySizes);
+
+                // post_decls
+                acceptPostDecls(type);
+
+                // EQUAL assignment_expression
+                TIntermTyped* expressionNode = nullptr;
+                if (acceptTokenClass(EHTokAssign)) {
+                    if (! acceptAssignmentExpression(expressionNode)) {
+                        expected("initializer");
+                        return false;
+                    }
+                }
+
+                node = intermediate.growAggregate(node, parseContext.declareVariable(idToken.loc, *idToken.string, type, arraySizes, expressionNode));
+
+                if (acceptTokenClass(EHTokSemicolon)) {
+                    if (node != nullptr)
+                        node->getAsAggregate()->setOperator(EOpSequence);
+                    return true;
+                }
+
+                if (acceptTokenClass(EHTokComma))
+                    continue;
+
+                expected(", or ;");
+                return false;
+            } while (true);
+        }
+
         // SEMICOLON
+        // This also means we've been in an init_declarator_list, but with no COMMA seen.
+        // Recognize the init_declarator_list, which contains a single declaration.
         if (acceptTokenClass(EHTokSemicolon)) {
             node = parseContext.declareVariable(idToken.loc, *idToken.string, type, arraySizes, expressionNode);
+            // use standard AST shape for declarations; just to be safe
+            node = intermediate.makeAggregate(node);
+            if (node != nullptr)
+                node->getAsAggregate()->setOperator(EOpSequence);
             return true;
         }
 
@@ -451,8 +516,6 @@ bool HlslGrammar::acceptMatrixTemplateType(TType& type)
 // Otherwise, return false, and don't advance
 bool HlslGrammar::acceptType(TType& type)
 {
-    TBasicType basicType;
-
     switch (peek()) {
     case EHTokVector:
         return acceptVectorTemplateType(type);

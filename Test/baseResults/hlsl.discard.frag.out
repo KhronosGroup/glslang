@@ -31,12 +31,13 @@ gl_FragCoord origin is upper left
 0:10            0 (const int)
 0:10        true case
 0:11        Branch: Kill
-0:12      move second child to first child (temp float)
-0:12        'f' (temp float)
-0:12        direct index (temp float)
-0:12          'input' (in 4-component vector of float)
-0:12          Constant:
-0:12            0 (const int)
+0:12      Sequence
+0:12        move second child to first child (temp float)
+0:12          'f' (temp float)
+0:12          direct index (temp float)
+0:12            'input' (in 4-component vector of float)
+0:12            Constant:
+0:12              0 (const int)
 0:13      Branch: Kill
 0:?   Linker Objects
 
@@ -76,12 +77,13 @@ gl_FragCoord origin is upper left
 0:10            0 (const int)
 0:10        true case
 0:11        Branch: Kill
-0:12      move second child to first child (temp float)
-0:12        'f' (temp float)
-0:12        direct index (temp float)
-0:12          'input' (in 4-component vector of float)
-0:12          Constant:
-0:12            0 (const int)
+0:12      Sequence
+0:12        move second child to first child (temp float)
+0:12          'f' (temp float)
+0:12          direct index (temp float)
+0:12            'input' (in 4-component vector of float)
+0:12            Constant:
+0:12              0 (const int)
 0:13      Branch: Kill
 0:?   Linker Objects
 
