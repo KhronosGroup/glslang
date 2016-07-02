@@ -1173,28 +1173,77 @@ bool HlslGrammar::acceptExpression(TIntermTyped*& node)
     } while (true);
 }
 
+// initializer
+//      : LEFT_BRACE initializer_list RIGHT_BRACE
+//
+// initializer_list
+//      : assignment_expression COMMA assignment_expression COMMA ...
+//
+bool HlslGrammar::acceptInitializer(TIntermTyped*& node)
+{
+    // LEFT_BRACE
+    if (! acceptTokenClass(EHTokLeftBrace))
+        return false;
+
+    // initializer_list
+    TSourceLoc loc = token.loc;
+    node = nullptr;
+    do {
+        // assignment_expression
+        TIntermTyped* expr;
+        if (! acceptAssignmentExpression(expr)) {
+            expected("assignment expression in initializer list");
+            return false;
+        }
+        node = intermediate.growAggregate(node, expr, loc);
+
+        // COMMA
+        if (acceptTokenClass(EHTokComma))
+            continue;
+
+        // RIGHT_BRACE
+        if (acceptTokenClass(EHTokRightBrace))
+            return true;
+
+        expected(", or }");
+        return false;
+    } while (true);
+}
+
 // Accept an assignment expression, where assignment operations
-// associate right-to-left.  This is, it is implicit, for example
+// associate right-to-left.  That is, it is implicit, for example
 //
 //    a op (b op (c op d))
 //
 // assigment_expression
 //      : binary_expression op binary_expression op binary_expression ...
+//      | initializer
 //
 bool HlslGrammar::acceptAssignmentExpression(TIntermTyped*& node)
 {
+    // initializer
+    if (peekTokenClass(EHTokLeftBrace)) {
+        if (acceptInitializer(node))
+            return true;
+
+        expected("initializer");
+        return false;
+    }
+
+    // binary_expression
     if (! acceptBinaryExpression(node, PlLogicalOr))
         return false;
 
+    // assignment operation?
     TOperator assignOp = HlslOpMap::assignment(peek());
     if (assignOp == EOpNull)
         return true;
 
-    // ... op
+    // assignment op
     TSourceLoc loc = token.loc;
     advanceToken();
 
-    // ... binary_expression
+    // binary_expression
     // But, done by recursing this function, which automatically
     // gets the right-to-left associativity.
     TIntermTyped* rightNode = nullptr;

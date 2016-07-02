@@ -73,6 +73,7 @@ namespace glslang {
         bool acceptFunctionDefinition(TFunction&, TIntermNode*&);
         bool acceptParenExpression(TIntermTyped*&);
         bool acceptExpression(TIntermTyped*&);
+        bool acceptInitializer(TIntermTyped*&);
         bool acceptAssignmentExpression(TIntermTyped*&);
         bool acceptBinaryExpression(TIntermTyped*&, PrecedenceLevel);
         bool acceptUnaryExpression(TIntermTyped*&);
