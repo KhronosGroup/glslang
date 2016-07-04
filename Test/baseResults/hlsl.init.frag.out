@@ -37,12 +37,12 @@ gl_FragCoord origin is upper left
 0:3      'a2' (global float)
 0:3      Constant:
 0:3        0.200000
-0:?   Sequence
+0:4  Sequence
 0:4    move second child to first child (temp float)
 0:4      'b3' (global float)
 0:4      Constant:
 0:4        0.300000
-0:?   Sequence
+0:5  Sequence
 0:5    move second child to first child (temp float)
 0:5      'b4' (global float)
 0:5      Constant:
@@ -164,12 +164,12 @@ gl_FragCoord origin is upper left
 0:3      'a2' (global float)
 0:3      Constant:
 0:3        0.200000
-0:?   Sequence
+0:4  Sequence
 0:4    move second child to first child (temp float)
 0:4      'b3' (global float)
 0:4      Constant:
 0:4        0.300000
-0:?   Sequence
+0:5  Sequence
 0:5    move second child to first child (temp float)
 0:5      'b4' (global float)
 0:5      Constant:

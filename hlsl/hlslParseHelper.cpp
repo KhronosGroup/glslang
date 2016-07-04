@@ -652,12 +652,6 @@ TFunction* HlslParseContext::handleFunctionDeclarator(const TSourceLoc& loc, TFu
     // If this is a definition, the definition production code will check for redefinitions
     // (we don't know at this point if it's a definition or not).
     //
-    // Redeclarations (full signature match) are allowed.  But, return types and parameter qualifiers must also match.
-    //  - except ES 100, which only allows a single prototype
-    //
-    // ES 100 does not allow redefining, but does allow overloading of built-in functions.
-    // ES 300 does not allow redefining or overloading of built-in functions.
-    //
     bool builtIn;
     TSymbol* symbol = symbolTable.find(function.getMangledName(), &builtIn);
     const TFunction* prevDec = symbol ? symbol->getAsFunction() : 0;

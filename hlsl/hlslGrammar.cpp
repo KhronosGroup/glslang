@@ -106,20 +106,19 @@ bool HlslGrammar::acceptCompilationUnit()
 }
 
 // declaration
-//      : SEMICOLON
-//      | fully_specified_type init_declarator_list SEMICOLON
-//      | fully_specified_type identifier function_parameters post_decls SEMICOLON           // function prototype
+//      : fully_specified_type declarator_list SEMICOLON
 //      | fully_specified_type identifier function_parameters post_decls compound_statement  // function definition
 //
-// init_declarator_list
-//      : init_declarator COMMA init_declarator COMMA init_declarator...
+// declarator_list
+//      : declarator COMMA declarator COMMA declarator...  // zero or more declarators
 //
-// init_declarator
+// declarator
 //      : identifier array_specifier post_decls
 //      | identifier array_specifier post_decls EQUAL assignment_expression
+//      | identifier function_parameters post_decls                                          // function prototype
 //
-// Parsing has to go pretty far in to know whether it's an init_declarator_list
-// or not, so the implementation below doesn't perfectly divide up the grammar
+// Parsing has to go pretty far in to know whether it's a variable, prototype, or
+// function definition, so the implementation below doesn't perfectly divide up the grammar
 // as above.  (The 'identifier' in the first item in init_declarator list is the
 // same as 'identifier' for function declarations.)
 //
@@ -129,6 +128,7 @@ bool HlslGrammar::acceptCompilationUnit()
 bool HlslGrammar::acceptDeclaration(TIntermNode*& node)
 {
     node = nullptr;
+    bool list = false;
 
     // fully_specified_type
     TType type;
@@ -139,105 +139,64 @@ bool HlslGrammar::acceptDeclaration(TIntermNode*& node)
 
     // identifier
     HlslToken idToken;
-    if (acceptIdentifier(idToken)) {
-        // array_specifier
-        TArraySizes* arraySizes = nullptr;
-        acceptArraySpecifier(arraySizes);
-
-        // post_decls
-        acceptPostDecls(type);
-
-        // EQUAL assignment_expression
-        TIntermTyped* expressionNode = nullptr;
-        if (acceptTokenClass(EHTokAssign)) {
-            if (! acceptAssignmentExpression(expressionNode)) {
-                expected("initializer");
-                return false;
-            }
-        }
-
-        // COMMA
-        // This means we've been in an init_declarator_list.
-        // Finish the first init_declarator and recognize the rest of the list.
-        if (acceptTokenClass(EHTokComma)) {
-            // init_declarator
-            // we know have multiple declarations
-            node = parseContext.declareVariable(idToken.loc, *idToken.string, type, arraySizes, expressionNode);
-            node = intermediate.makeAggregate(node);
-
-            do {
-                // identifier
-                if (! acceptIdentifier(idToken)) {
-                    expected("identifier");
-                    return false;
-                }
-
-                // array_specifier
-                arraySizes = nullptr;
-                acceptArraySpecifier(arraySizes);
-
-                // post_decls
-                acceptPostDecls(type);
-
-                // EQUAL assignment_expression
-                TIntermTyped* expressionNode = nullptr;
-                if (acceptTokenClass(EHTokAssign)) {
-                    if (! acceptAssignmentExpression(expressionNode)) {
-                        expected("initializer");
-                        return false;
-                    }
-                }
-
-                node = intermediate.growAggregate(node, parseContext.declareVariable(idToken.loc, *idToken.string, type, arraySizes, expressionNode));
-
-                if (acceptTokenClass(EHTokSemicolon)) {
-                    if (node != nullptr)
-                        node->getAsAggregate()->setOperator(EOpSequence);
-                    return true;
-                }
-
-                if (acceptTokenClass(EHTokComma))
-                    continue;
-
-                expected(", or ;");
-                return false;
-            } while (true);
-        }
-
-        // SEMICOLON
-        // This also means we've been in an init_declarator_list, but with no COMMA seen.
-        // Recognize the init_declarator_list, which contains a single declaration.
-        if (acceptTokenClass(EHTokSemicolon)) {
-            node = parseContext.declareVariable(idToken.loc, *idToken.string, type, arraySizes, expressionNode);
-            // use standard AST shape for declarations; just to be safe
-            node = intermediate.makeAggregate(node);
-            if (node != nullptr)
-                node->getAsAggregate()->setOperator(EOpSequence);
-            return true;
-        }
-
+    while (acceptIdentifier(idToken)) {
         // function_parameters
         TFunction* function = new TFunction(idToken.string, type);
         if (acceptFunctionParameters(*function)) {
             // post_decls
             acceptPostDecls(type);
 
-            // compound_statement
-            if (peekTokenClass(EHTokLeftBrace))
+            // compound_statement (function body definition) or just a prototype?
+            if (peekTokenClass(EHTokLeftBrace)) {
+                if (list)
+                    parseContext.error(idToken.loc, "function body can't be in a declarator list", "{", "");
                 return acceptFunctionDefinition(*function, node);
+            } else
+                parseContext.handleFunctionDeclarator(idToken.loc, *function, true);
+        } else {
+            // a variable declaration
 
-            // SEMICOLON
-            if (acceptTokenClass(EHTokSemicolon))
-                return true;
+            // array_specifier
+            TArraySizes* arraySizes = nullptr;
+            acceptArraySpecifier(arraySizes);
 
-            return false;
+            // post_decls
+            acceptPostDecls(type);
+
+            // EQUAL assignment_expression
+            TIntermTyped* expressionNode = nullptr;
+            if (acceptTokenClass(EHTokAssign)) {
+                if (! acceptAssignmentExpression(expressionNode)) {
+                    expected("initializer");
+                    return false;
+                }
+            }
+
+            // Declare the variable and add any initializer code to the AST.
+            // The top-level node is always made into an aggregate, as that's
+            // historically how the AST has been.
+            node = intermediate.growAggregate(node,
+                                              parseContext.declareVariable(idToken.loc, *idToken.string, type,
+                                                                           arraySizes, expressionNode),
+                                              idToken.loc);
         }
-    }
+
+        if (acceptTokenClass(EHTokComma)) {
+            list = true;
+            continue;
+        }
+    };
+
+    // The top-level node is a sequence.
+    if (node != nullptr)
+        node->getAsAggregate()->setOperator(EOpSequence);
 
     // SEMICOLON
-    if (acceptTokenClass(EHTokSemicolon))
-        return true;
-
+    if (! acceptTokenClass(EHTokSemicolon)) {
+        expected(";");
+        return false;
+    }
+    
     return true;
 }
 
