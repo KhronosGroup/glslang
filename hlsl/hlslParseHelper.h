@@ -126,6 +126,7 @@ public:
     void checkNoShaderLayouts(const TSourceLoc&, const TShaderQualifiers&);
 
     const TFunction* findFunction(const TSourceLoc& loc, const TFunction& call, bool& builtIn);
+    void declareTypedef(const TSourceLoc&, TString& identifier, const TType&, TArraySizes* typeArray = 0);
     TIntermNode* declareVariable(const TSourceLoc&, TString& identifier, const TType&, TArraySizes* typeArray = 0, TIntermTyped* initializer = 0);
     TIntermTyped* addConstructor(const TSourceLoc&, TIntermNode*, const TType&, TOperator);
     TIntermTyped* constructAggregate(TIntermNode*, const TType&, int, const TSourceLoc&);

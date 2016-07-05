@@ -108,6 +108,7 @@ bool HlslGrammar::acceptCompilationUnit()
 // declaration
 //      : fully_specified_type declarator_list SEMICOLON
 //      | fully_specified_type identifier function_parameters post_decls compound_statement  // function definition
+//      | typedef declaration
 //
 // declarator_list
 //      : declarator COMMA declarator COMMA declarator...  // zero or more declarators
@@ -130,6 +131,9 @@ bool HlslGrammar::acceptDeclaration(TIntermNode*& node)
     node = nullptr;
     bool list = false;
 
+    // typedef
+    bool typedefDecl = acceptTokenClass(EHTokTypedef);
+
     // fully_specified_type
     TType type;
     if (! acceptFullySpecifiedType(type))
@@ -150,9 +154,14 @@ bool HlslGrammar::acceptDeclaration(TIntermNode*& node)
             if (peekTokenClass(EHTokLeftBrace)) {
                 if (list)
                     parseContext.error(idToken.loc, "function body can't be in a declarator list", "{", "");
+                if (typedefDecl)
+                    parseContext.error(idToken.loc, "function body can't be in a typedef", "{", "");
                 return acceptFunctionDefinition(*function, node);
-            } else
+            } else {
+                if (typedefDecl)
+                    parseContext.error(idToken.loc, "function typedefs not implemented", "{", "");
                 parseContext.handleFunctionDeclarator(idToken.loc, *function, true);
+            }
         } else {
             // a variable declaration
 
@@ -166,19 +175,25 @@ bool HlslGrammar::acceptDeclaration(TIntermNode*& node)
             // EQUAL assignment_expression
             TIntermTyped* expressionNode = nullptr;
             if (acceptTokenClass(EHTokAssign)) {
+                if (typedefDecl)
+                    parseContext.error(idToken.loc, "can't have an initializer", "typedef", "");
                 if (! acceptAssignmentExpression(expressionNode)) {
                     expected("initializer");
                     return false;
                 }
             }
 
-            // Declare the variable and add any initializer code to the AST.
-            // The top-level node is always made into an aggregate, as that's
-            // historically how the AST has been.
-            node = intermediate.growAggregate(node,
-                                              parseContext.declareVariable(idToken.loc, *idToken.string, type,
-                                                                           arraySizes, expressionNode),
-                                              idToken.loc);
+            if (typedefDecl)
+                parseContext.declareTypedef(idToken.loc, *idToken.string, type, arraySizes);
+            else {
+                // Declare the variable and add any initializer code to the AST.
+                // The top-level node is always made into an aggregate, as that's
+                // historically how the AST has been.
+                node = intermediate.growAggregate(node,
+                                                  parseContext.declareVariable(idToken.loc, *idToken.string, type,
+                                                                               arraySizes, expressionNode),
+                                                  idToken.loc);
+            }
         }
 
         if (acceptTokenClass(EHTokComma)) {

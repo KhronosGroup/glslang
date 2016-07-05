@@ -3019,6 +3019,27 @@ const TFunction* HlslParseContext::findFunction(const TSourceLoc& loc, const TFu
 }
 
 //
+// Do everything necessary to handle a typedef declaration, for a single symbol.
+// 
+// 'parseType' is the type part of the declaration (to the left)
+// 'arraySizes' is the arrayness tagged on the identifier (to the right)
+//
+void HlslParseContext::declareTypedef(const TSourceLoc& loc, TString& identifier, const TType& parseType, TArraySizes* arraySizes)
+{
+    TType type;
+    type.deepCopy(parseType);
+
+    // Arrayness is potentially coming both from the type and from the 
+    // variable: "int[] a[];" or just one or the other.
+    // Merge it all to the type, so all arrayness is part of the type.
+    arrayDimMerge(type, arraySizes);
+
+    TVariable* typeSymbol = new TVariable(&identifier, type, true);
+    if (! symbolTable.insert(*typeSymbol))
+        error(loc, "name already defined", "typedef", identifier.c_str());
+}
+
+//
 // Do everything necessary to handle a variable (non-block) declaration.
 // Either redeclaring a variable, or making a new one, updating the symbol
 // table, and all error checking.
@@ -3026,7 +3047,7 @@ const TFunction* HlslParseContext::findFunction(const TSourceLoc& loc, const TFu
 // Returns a subtree node that computes an initializer, if needed.
 // Returns nullptr if there is no code to execute for initialization.
 //
-// 'publicType' is the type part of the declaration (to the left)
+// 'parseType' is the type part of the declaration (to the left)
 // 'arraySizes' is the arrayness tagged on the identifier (to the right)
 //
 TIntermNode* HlslParseContext::declareVariable(const TSourceLoc& loc, TString& identifier, const TType& parseType, TArraySizes* arraySizes, TIntermTyped* initializer)
@@ -3036,7 +3057,7 @@ TIntermNode* HlslParseContext::declareVariable(const TSourceLoc& loc, TString& i
     if (type.isImplicitlySizedArray()) {
         // Because "int[] a = int[2](...), b = int[3](...)" makes two arrays a and b
         // of different sizes, for this case sharing the shallow copy of arrayness
-        // with the publicType oversubscribes it, so get a deep copy of the arrayness.
+        // with the parseType oversubscribes it, so get a deep copy of the arrayness.
         type.newArraySizes(*parseType.getArraySizes());
     }
 
@@ -3045,7 +3066,7 @@ TIntermNode* HlslParseContext::declareVariable(const TSourceLoc& loc, TString& i
 
     // Check for redeclaration of built-ins and/or attempting to declare a reserved name
     bool newDeclaration = false;    // true if a new entry gets added to the symbol table
-    TSymbol* symbol = nullptr; // = redeclareBuiltinVariable(loc, identifier, type.getQualifier(), publicType.shaderQualifiers, newDeclaration);
+    TSymbol* symbol = nullptr; // = redeclareBuiltinVariable(loc, identifier, type.getQualifier(), parseType.shaderQualifiers, newDeclaration);
 
     inheritGlobalDefaults(type.getQualifier());
 
