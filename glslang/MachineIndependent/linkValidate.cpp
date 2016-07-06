@@ -665,10 +665,10 @@ int TIntermediate::addUsedLocation(const TQualifier& qualifier, const TType& typ
     }
 
     TRange locationRange(qualifier.layoutLocation, qualifier.layoutLocation + size - 1);
-    TRange componentRange(0, 3);
+    TRange componentRange(0, type.getVectorSize() ? type.getVectorSize() - 1 : 3);
     if (qualifier.hasComponent()) {
-        componentRange.start = qualifier.layoutComponent;
-        componentRange.last = componentRange.start + type.getVectorSize() - 1;
+        componentRange.start += qualifier.layoutComponent;
+        componentRange.last += qualifier.layoutComponent;
     }
     TIoRange range(locationRange, componentRange, type.getBasicType(), qualifier.hasIndex() ? qualifier.layoutIndex : 0);
 
