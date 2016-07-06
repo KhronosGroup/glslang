@@ -46,7 +46,7 @@ namespace glslangtest {
 //
 // TODO(antiagainst): It's a known bug that some of the internal states need to
 // be reset if semantics change:
-//   https://github.com/KhronosGroup/glslang/issues/166
+//   https://github.com/KhronosGroup/glslang/issues/370
 // Therefore, the following mechanism is needed. Remove this once the above bug
 // gets fixed.
 class GlslangInitializer {
@@ -68,8 +68,8 @@ public:
     // there is at most one acquired token at any one time.
     InitializationToken acquire(EShMessages new_messages)
     {
-        if ((lastMessages ^ new_messages) &
-            (EShMsgVulkanRules | EShMsgSpvRules | EShMsgReadHlsl)) {
+        if ((lastMessages ^ new_messages) & (EShMsgReadHlsl))
+        {
             glslang::FinalizeProcess();
             glslang::InitializeProcess();
         }
