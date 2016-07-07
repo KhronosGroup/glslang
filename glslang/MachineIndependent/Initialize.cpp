@@ -1259,7 +1259,6 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
     }
 
     if (spvVersion.vulkan == 0) {
-        // gl_spirv TODO
         //
         // Atomic counter functions.
         //

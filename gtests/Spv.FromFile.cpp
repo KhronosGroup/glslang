@@ -41,16 +41,26 @@
 namespace glslangtest {
 namespace {
 
-using CompileToSpirvTest = GlslangTest<::testing::TestWithParam<std::string>>;
+using CompileVulkanToSpirvTest = GlslangTest<::testing::TestWithParam<std::string>>;
+using CompileOpenGLToSpirvTest = GlslangTest<::testing::TestWithParam<std::string>>;
 using VulkanSemantics = GlslangTest<::testing::TestWithParam<std::string>>;
 using VulkanAstSemantics = GlslangTest<::testing::TestWithParam<std::string>>;
 
 // Compiling GLSL to SPIR-V under Vulkan semantics. Expected to successfully
 // generate SPIR-V.
-TEST_P(CompileToSpirvTest, FromFile)
+TEST_P(CompileVulkanToSpirvTest, FromFile)
 {
     loadFileCompileAndCheck(GLSLANG_TEST_DIRECTORY, GetParam(),
                             Source::GLSL, Semantics::Vulkan,
+                            Target::Spv);
+}
+
+// Compiling GLSL to SPIR-V under OpenGL semantics. Expected to successfully
+// generate SPIR-V.
+TEST_P(CompileOpenGLToSpirvTest, FromFile)
+{
+    loadFileCompileAndCheck(GLSLANG_TEST_DIRECTORY, GetParam(),
+                            Source::GLSL, Semantics::OpenGL,
                             Target::Spv);
 }
 
@@ -73,7 +83,7 @@ TEST_P(VulkanAstSemantics, FromFile)
 
 // clang-format off
 INSTANTIATE_TEST_CASE_P(
-    Glsl, CompileToSpirvTest,
+    Glsl, CompileVulkanToSpirvTest,
     ::testing::ValuesIn(std::vector<std::string>({
         // Test looping constructs.
         // No tests yet for making sure break and continue from a nested loop
@@ -188,6 +198,18 @@ INSTANTIATE_TEST_CASE_P(
         "spv.specConstantOperations.vert",
         "spv.precise.tese",
         "spv.precise.tesc",
+    })),
+    FileNameAsCustomTestSuffix
+);
+
+// clang-format off
+INSTANTIATE_TEST_CASE_P(
+    Glsl, CompileOpenGLToSpirvTest,
+    ::testing::ValuesIn(std::vector<std::string>({
+        // Test looping constructs.
+        // No tests yet for making sure break and continue from a nested loop
+        // goes to the innermost target.
+        "spv.atomic.comp",
     })),
     FileNameAsCustomTestSuffix
 );

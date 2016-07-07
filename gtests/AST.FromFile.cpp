@@ -186,7 +186,6 @@ INSTANTIATE_TEST_CASE_P(
         "whileLoop.frag",
         "nonVulkan.frag",
         "negativeArraySize.comp",
-        "spv.atomic.comp",
         "precise.tesc",
         "precise_struct_block.vert",
         "maxClipDistances.vert",
