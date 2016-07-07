@@ -44,6 +44,7 @@ namespace {
 using CompileVulkanToSpirvTest = GlslangTest<::testing::TestWithParam<std::string>>;
 using CompileOpenGLToSpirvTest = GlslangTest<::testing::TestWithParam<std::string>>;
 using VulkanSemantics = GlslangTest<::testing::TestWithParam<std::string>>;
+using OpenGLSemantics = GlslangTest<::testing::TestWithParam<std::string>>;
 using VulkanAstSemantics = GlslangTest<::testing::TestWithParam<std::string>>;
 
 // Compiling GLSL to SPIR-V under Vulkan semantics. Expected to successfully
@@ -70,6 +71,15 @@ TEST_P(VulkanSemantics, FromFile)
 {
     loadFileCompileAndCheck(GLSLANG_TEST_DIRECTORY, GetParam(),
                             Source::GLSL, Semantics::Vulkan,
+                            Target::Spv);
+}
+
+// GLSL-level Vulkan semantics test. Expected to error out before generating
+// SPIR-V.
+TEST_P(OpenGLSemantics, FromFile)
+{
+    loadFileCompileAndCheck(GLSLANG_TEST_DIRECTORY, GetParam(),
+                            Source::GLSL, Semantics::OpenGL,
                             Target::Spv);
 }
 
@@ -206,10 +216,9 @@ INSTANTIATE_TEST_CASE_P(
 INSTANTIATE_TEST_CASE_P(
     Glsl, CompileOpenGLToSpirvTest,
     ::testing::ValuesIn(std::vector<std::string>({
-        // Test looping constructs.
-        // No tests yet for making sure break and continue from a nested loop
-        // goes to the innermost target.
         "spv.atomic.comp",
+        "spv.glFragColor.frag",
+        "spv.specConst.vert",
     })),
     FileNameAsCustomTestSuffix
 );
@@ -220,6 +229,18 @@ INSTANTIATE_TEST_CASE_P(
         "vulkan.frag",
         "vulkan.vert",
         "vulkan.comp",
+    })),
+    FileNameAsCustomTestSuffix
+);
+
+INSTANTIATE_TEST_CASE_P(
+    Glsl, OpenGLSemantics,
+    ::testing::ValuesIn(std::vector<std::string>({
+        "glspv.esversion.vert",
+        "glspv.version.frag",
+        "glspv.version.vert",
+        "glspv.frag",
+        "glspv.vert",
     })),
     FileNameAsCustomTestSuffix
 );

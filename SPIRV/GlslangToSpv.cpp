@@ -4078,6 +4078,9 @@ spv::Id TGlslangToSpvTraverser::getSymbolId(const glslang::TIntermSymbol* symbol
             if (symbol->getQualifier().hasXfbOffset())
                 builder.addDecoration(id, spv::DecorationOffset, symbol->getQualifier().layoutXfbOffset);
         }
+        // atomic counters use this:
+        if (symbol->getQualifier().hasOffset())
+            builder.addDecoration(id, spv::DecorationOffset, symbol->getQualifier().layoutOffset);
     }
 
     if (symbol->getQualifier().hasLocation())

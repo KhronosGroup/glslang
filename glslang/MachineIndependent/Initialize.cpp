@@ -1985,17 +1985,14 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
                 "\n");
         }
         if (version >= 130 && spvVersion.vulkan == 0)
-            // gl_spirv TODO
             stageBuiltins[EShLangVertex].append(
                 "int gl_VertexID;"            // needs qualifier fixed later
                 );
         if (version >= 140 && spvVersion.vulkan == 0)
-            // gl_spirv TODO
             stageBuiltins[EShLangVertex].append(
                 "int gl_InstanceID;"          // needs qualifier fixed later
                 );
         if (spvVersion.vulkan >= 100 && version >= 140)
-            // gl_spirv TODO
             stageBuiltins[EShLangVertex].append(
                 "in int gl_VertexIndex;"
                 "in int gl_InstanceIndex;"
@@ -2016,13 +2013,11 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
                 );
         } else {
             if (spvVersion.vulkan == 0)
-                // gl_spirv TODO
                 stageBuiltins[EShLangVertex].append(
                     "in highp int gl_VertexID;"      // needs qualifier fixed later
                     "in highp int gl_InstanceID;"    // needs qualifier fixed later
                     );
             if (spvVersion.vulkan >= 100)
-                // gl_spirv TODO
                 stageBuiltins[EShLangVertex].append(
                     "in highp int gl_VertexIndex;"
                     "in highp int gl_InstanceIndex;"
@@ -3633,13 +3628,14 @@ void TBuiltIns::identifyBuiltIns(int version, EProfile profile, const SpvVersion
         }
 
         if (spvVersion.vulkan == 0) {
-            // gl_spirv TODO
             SpecialQualifier("gl_VertexID",   EvqVertexId,   EbvVertexId,   symbolTable);
             SpecialQualifier("gl_InstanceID", EvqInstanceId, EbvInstanceId, symbolTable);
         }
 
-        BuiltInVariable("gl_VertexIndex",   EbvVertexIndex,   symbolTable);
-        BuiltInVariable("gl_InstanceIndex", EbvInstanceIndex, symbolTable);
+        if (spvVersion.vulkan >= 100) {
+            BuiltInVariable("gl_VertexIndex",   EbvVertexIndex,   symbolTable);
+            BuiltInVariable("gl_InstanceIndex", EbvInstanceIndex, symbolTable);
+        }
 
         // Fall through
 

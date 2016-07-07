@@ -176,7 +176,6 @@ void TParseVersions::initializeExtensionBehavior()
     extensionBehavior[E_GL_ARB_shader_texture_image_samples] = EBhDisable;
     extensionBehavior[E_GL_ARB_viewport_array]               = EBhDisable;
     extensionBehavior[E_GL_ARB_gpu_shader_int64]             = EBhDisable;
-    extensionBehavior[E_GL_ARB_gl_spirv]                     = EBhDisable;
     extensionBehavior[E_GL_ARB_shader_ballot]                = EBhDisable;
     extensionBehavior[E_GL_ARB_sparse_texture2]              = EBhDisable;
     extensionBehavior[E_GL_ARB_sparse_texture_clamp]         = EBhDisable;
@@ -282,7 +281,6 @@ void TParseVersions::getPreamble(std::string& preamble)
             "#define GL_ARB_shader_texture_image_samples 1\n"
             "#define GL_ARB_viewport_array 1\n"
             "#define GL_ARB_gpu_shader_int64 1\n"
-            "#define GL_ARB_gl_spirv 1\n"
             "#define GL_ARB_shader_ballot 1\n"
             "#define GL_ARB_sparse_texture2 1\n"
             "#define GL_ARB_sparse_texture_clamp 1\n"
@@ -298,14 +296,22 @@ void TParseVersions::getPreamble(std::string& preamble)
             ;
 
     // #define VULKAN XXXX
+    const int numberBufSize = 12;
+    char numberBuf[numberBufSize];
     if (spvVersion.vulkan > 0) {
         preamble += "#define VULKAN ";
-        char number[12];
-        snprintf(number, 12, "%d", spvVersion.vulkan);
-        preamble += number;
+        snprintf(numberBuf, numberBufSize, "%d", spvVersion.vulkan);
+        preamble += numberBuf;
         preamble += "\n";
     }
-    // gl_spirv TODO
+    // #define GL_SPIRV XXXX
+    if (spvVersion.openGl > 0) {
+        preamble += "#define GL_SPIRV ";
+        snprintf(numberBuf, numberBufSize, "%d", spvVersion.openGl);
+        preamble += numberBuf;
+        preamble += "\n";
+    }
+
 }
 
 //

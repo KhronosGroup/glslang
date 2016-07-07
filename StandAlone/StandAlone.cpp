@@ -222,7 +222,13 @@ void ProcessArguments(int argc, char* argv[])
             switch (argv[0][1]) {
             case 'H':
                 Options |= EOptionHumanReadableSpv;
-                // fall through to -V
+                if ((Options & EOptionSpv) == 0) {
+                    // default to Vulkan
+                    Options |= EOptionSpv;
+                    Options |= EOptionVulkanRules;
+                    Options |= EOptionLinkProgram;
+                }
+                break;
             case 'V':
                 Options |= EOptionSpv;
                 Options |= EOptionVulkanRules;
@@ -231,6 +237,8 @@ void ProcessArguments(int argc, char* argv[])
             case 'G':
                 Options |= EOptionSpv;
                 Options |= EOptionLinkProgram;
+                // undo a -H default to Vulkan
+                Options &= ~EOptionVulkanRules;
                 break;
             case 'E':
                 Options |= EOptionOutputPreprocessed;

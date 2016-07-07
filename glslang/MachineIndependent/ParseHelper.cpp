@@ -4109,7 +4109,10 @@ void TParseContext::setLayoutQualifier(const TSourceLoc& loc, TPublicType& publi
     std::transform(id.begin(), id.end(), id.begin(), ::tolower);
     
     if (id == "offset") {
-        const char* feature = "uniform offset";
+        // "offset" can be for either
+        //  - uniform offsets
+        //  - atomic_uint offsets
+        const char* feature = "offset";
         requireProfile(loc, EEsProfile | ECoreProfile | ECompatibilityProfile, feature);
         const char* exts[2] = { E_GL_ARB_enhanced_layouts, E_GL_ARB_shader_atomic_counters };
         profileRequires(loc, ECoreProfile | ECompatibilityProfile, 420, 2, exts, feature);
@@ -4140,6 +4143,8 @@ void TParseContext::setLayoutQualifier(const TSourceLoc& loc, TPublicType& publi
             error(loc, "set is too large", id.c_str(), "");
         else
             publicType.qualifier.layoutSet = value;
+        if (value != 0)
+            requireVulkan(loc, "descriptor set");
         return;
     } else if (id == "binding") {
         profileRequires(loc, ~EEsProfile, 420, E_GL_ARB_shading_language_420pack, "binding");

@@ -468,7 +468,11 @@ bool DeduceVersionProfile(TInfoSink& infoSink, EShLanguage stage, bool versionNo
                 infoSink.info.message(EPrefixError, "#version: ES shaders for Vulkan SPIR-V require version 310 or higher");
                 version = 310;
             }
-            // gl_spirv TODO: test versions
+            if (spvVersion.openGl >= 100) {
+                correct = false;
+                infoSink.info.message(EPrefixError, "#version: ES shaders for OpenGL SPIR-V are not supported");
+                version = 310;
+            }
             break;
         case ECompatibilityProfile:
             infoSink.info.message(EPrefixError, "#version: compilation for SPIR-V does not support the compatibility profile");
@@ -479,7 +483,11 @@ bool DeduceVersionProfile(TInfoSink& infoSink, EShLanguage stage, bool versionNo
                 infoSink.info.message(EPrefixError, "#version: Desktop shaders for Vulkan SPIR-V require version 140 or higher");
                 version = 140;
             }
-            // gl_spirv TODO: test versions
+            if (spvVersion.openGl >= 100 && version < 330) {
+                correct = false;
+                infoSink.info.message(EPrefixError, "#version: Desktop shaders for OpenGL SPIR-V require version 330 or higher");
+                version = 330;
+            }
             break;
         }
     }
@@ -623,6 +631,10 @@ bool ProcessDeferred(
     if (messages & EShMsgSpvRules)
         spvVersion.spv = 0x00010000;    // TODO: eventually have this come from the outside
     EShSource source = (messages & EShMsgReadHlsl) ? EShSourceHlsl : EShSourceGlsl;
+    if (messages & EShMsgVulkanRules)
+        spvVersion.vulkan = 100;     // TODO: eventually have this come from the outside
+    else if (spvVersion.spv != 0)
+        spvVersion.openGl = 100;     // TODO: eventually have this come from the outside
     bool goodVersion = DeduceVersionProfile(compiler->infoSink, compiler->getLanguage(), versionNotFirst, defaultVersion, source, version, profile, spvVersion);
     bool versionWillBeError = (versionNotFound || (profile == EEsProfile && version >= 300 && versionNotFirst));
     bool warnVersionNotFirst = false;
@@ -633,10 +645,6 @@ bool ProcessDeferred(
             versionWillBeError = true;
     }
 
-    if (messages & EShMsgVulkanRules)
-        spvVersion.vulkan = 100;     // TODO: eventually have this come from the outside
-    else if (spvVersion.spv != 0)
-        spvVersion.openGl = 100;
     intermediate.setSource(source);
     intermediate.setVersion(version);
     intermediate.setProfile(profile);
