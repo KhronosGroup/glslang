@@ -416,19 +416,19 @@ spv::BuiltIn TGlslangToSpvTraverser::TranslateBuiltInDecoration(glslang::TBuiltI
 {
     switch (builtIn) {
     case glslang::EbvPointSize:
-	// Defer adding the capability until the built-in is actually used.
-        if (!memberDeclaration) {
-	    switch (glslangIntermediate->getStage()) {
-	    case EShLangGeometry:
-		builder.addCapability(spv::CapabilityGeometryPointSize);
-		break;
-	    case EShLangTessControl:
-	    case EShLangTessEvaluation:
-		builder.addCapability(spv::CapabilityTessellationPointSize);
-		break;
-	    default:
-		break;
-	    }
+        // Defer adding the capability until the built-in is actually used.
+        if (! memberDeclaration) {
+            switch (glslangIntermediate->getStage()) {
+            case EShLangGeometry:
+                builder.addCapability(spv::CapabilityGeometryPointSize);
+                break;
+            case EShLangTessControl:
+            case EShLangTessEvaluation:
+                builder.addCapability(spv::CapabilityTessellationPointSize);
+                break;
+            default:
+                break;
+            }
         }
         return spv::BuiltInPointSize;
 
@@ -440,12 +440,12 @@ spv::BuiltIn TGlslangToSpvTraverser::TranslateBuiltInDecoration(glslang::TBuiltI
     //
     case glslang::EbvClipDistance:
         if (!memberDeclaration)
-	    builder.addCapability(spv::CapabilityClipDistance);
+        builder.addCapability(spv::CapabilityClipDistance);
         return spv::BuiltInClipDistance;
 
     case glslang::EbvCullDistance:
         if (!memberDeclaration)
-	    builder.addCapability(spv::CapabilityCullDistance);
+        builder.addCapability(spv::CapabilityCullDistance);
         return spv::BuiltInCullDistance;
 
     case glslang::EbvViewportIndex:
@@ -464,6 +464,10 @@ spv::BuiltIn TGlslangToSpvTraverser::TranslateBuiltInDecoration(glslang::TBuiltI
         builder.addCapability(spv::CapabilitySampleRateShading);
         return spv::BuiltInSampleMask;
 
+    case glslang::EbvLayer:
+        builder.addCapability(spv::CapabilityGeometry);
+        return spv::BuiltInLayer;
+
     case glslang::EbvPosition:             return spv::BuiltInPosition;
     case glslang::EbvVertexId:             return spv::BuiltInVertexId;
     case glslang::EbvInstanceId:           return spv::BuiltInInstanceId;
@@ -477,7 +481,6 @@ spv::BuiltIn TGlslangToSpvTraverser::TranslateBuiltInDecoration(glslang::TBuiltI
         return (spv::BuiltIn)spv::BadValue;
     case glslang::EbvPrimitiveId:          return spv::BuiltInPrimitiveId;
     case glslang::EbvInvocationId:         return spv::BuiltInInvocationId;
-    case glslang::EbvLayer:                return spv::BuiltInLayer;
     case glslang::EbvTessLevelInner:       return spv::BuiltInTessLevelInner;
     case glslang::EbvTessLevelOuter:       return spv::BuiltInTessLevelOuter;
     case glslang::EbvTessCoord:            return spv::BuiltInTessCoord;
