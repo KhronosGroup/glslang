@@ -84,6 +84,7 @@ struct TSampler {   // misnomer now; includes images, textures without sampler, 
     bool isCombined()    const { return combined; }
     bool isPureSampler() const { return sampler; }
     bool isTexture()     const { return !sampler && !image; }
+    bool isShadow()      const { return shadow; }
 
     void clear()
     {
@@ -1080,6 +1081,15 @@ public:
                                     typeName = NewPoolTString(p.userDef->getTypeName().c_str());
                                 }
                             }
+    // for construction of sampler types
+    TType(const TSampler& sampler, TStorageQualifier q = EvqUniform, TArraySizes* as = nullptr) :
+        basicType(EbtSampler), vectorSize(1), matrixCols(0), matrixRows(0), vector1(false),
+        arraySizes(as), structure(nullptr), fieldName(nullptr), typeName(nullptr),
+        sampler(sampler)
+    {
+        qualifier.clear();
+        qualifier.storage = q;
+    }
     // to efficiently make a dereferenced type
     // without ever duplicating the outer structure that will be thrown away
     // and using only shallow copy
