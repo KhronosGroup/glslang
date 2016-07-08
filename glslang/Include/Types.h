@@ -1553,6 +1553,13 @@ public:
         if (structure) {
             s.append("{");
             for (size_t i = 0; i < structure->size(); ++i) {
+                if (s.size() > 3 * GlslangMaxTypeLength) {
+                    // If we are getting too long, cut it short,
+                    // just need to draw the line somewhere, as there is no limit to
+                    // how large a struct/block type can get.
+                    s.append("...");
+                    break;
+                }
                 if (! (*structure)[i].type->hiddenMember()) {
                     s.append((*structure)[i].type->getCompleteString());
                     s.append(" ");
