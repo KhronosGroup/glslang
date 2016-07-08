@@ -75,7 +75,8 @@ enum TOptions {
     EOptionVulkanRules        = 0x2000,
     EOptionDefaultDesktop     = 0x4000,
     EOptionOutputPreprocessed = 0x8000,
-    EOptionReadHlsl          = 0x10000,
+    EOptionOutputHexadecimal  = 0x10000,
+    EOptionReadHlsl           = 0x20000,
 };
 
 //
@@ -302,6 +303,9 @@ void ProcessArguments(int argc, char* argv[])
             case 'w':
                 Options |= EOptionSuppressWarnings;
                 break;
+            case 'x':
+                Options |= EOptionOutputHexadecimal;
+                break;
             default:
                 usage();
                 break;
@@ -319,7 +323,7 @@ void ProcessArguments(int argc, char* argv[])
     if ((Options & EOptionOutputPreprocessed) && (Options & EOptionLinkProgram))
         Error("can't use -E when linking is selected");
 
-    // -o makes no sense if there is no target binary
+    // -o or -x makes no sense if there is no target binary
     if (binaryFileName && (Options & EOptionSpv) == 0)
         Error("no binary generation requested (e.g., -V)");
 }
@@ -488,8 +492,12 @@ void CompileAndLinkShaderUnits(std::vector<ShaderCompUnit> compUnits)
                     // Dump the spv to a file or stdout, etc., but only if not doing
                     // memory/perf testing, as it's not internal to programmatic use.
                     if (! (Options & EOptionMemoryLeakMode)) {
-                      printf("%s", logger.getAllMessages().c_str());
-                        glslang::OutputSpv(spirv, GetBinaryName((EShLanguage)stage));
+                        printf("%s", logger.getAllMessages().c_str());
+                        if (Options & EOptionOutputHexadecimal) {
+                            glslang::OutputSpvHex(spirv, GetBinaryName((EShLanguage)stage));
+                        } else {
+                            glslang::OutputSpvBin(spirv, GetBinaryName((EShLanguage)stage));
+                        }
                         if (Options & EOptionHumanReadableSpv) {
                             spv::Disassemble(std::cout, spirv);
                         }
@@ -757,7 +765,6 @@ void usage()
            "Each option must be specified separately.\n"
            "  -V          create SPIR-V binary, under Vulkan semantics; turns on -l;\n"
            "              default file name is <stage>.spv (-o overrides this)\n"
-           "              (unless -o is specified, which overrides the default file name)\n"
            "  -G          create SPIR-V binary, under OpenGL semantics; turns on -l;\n"
            "              default file name is <stage>.spv (-o overrides this)\n"
            "  -H          print human readable form of SPIR-V; turns on -V\n"
@@ -773,13 +780,14 @@ void usage()
            "  -i          intermediate tree (glslang AST) is printed out\n"
            "  -l          link all input files together to form a single module\n"
            "  -m          memory leak mode\n"
-           "  -o  <file>  save binary into <file>, requires a binary option (e.g., -V)\n"
+           "  -o  <file>  save binary to <file>, requires a binary option (e.g., -V)\n"
            "  -q          dump reflection query database\n"
            "  -r          relaxed semantic error-checking mode\n"
            "  -s          silent mode\n"
            "  -t          multi-threaded mode\n"
            "  -v          print version strings\n"
            "  -w          suppress warnings (except as required by #extension : warn)\n"
+           "  -x          save 32-bit hexadecimal numbers as text, requires a binary option (e.g., -V)\n"
            );
 
     exit(EFailUsage);
