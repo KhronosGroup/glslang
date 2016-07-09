@@ -68,7 +68,7 @@ EShLanguage GetShaderStage(const std::string& stage)
 
 EShMessages DeriveOptions(Source source, Semantics semantics, Target target)
 {
-    EShMessages result = EShMsgDefault;
+    EShMessages result = EShMsgCascadingErrors;
 
     switch (source) {
         case Source::GLSL:

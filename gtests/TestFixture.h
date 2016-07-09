@@ -264,8 +264,7 @@ public:
         tryLoadFile(expectedOutputFname, "expected output", &expectedOutput);
 
         const EShMessages controls = DeriveOptions(source, semantics, target);
-        GlslangResult result =
-            compileAndLink(testName, input, entryPointName, controls);
+        GlslangResult result = compileAndLink(testName, input, entryPointName, controls);
 
         // Generate the hybrid output in the way of glslangValidator.
         std::ostringstream stream;
@@ -290,7 +289,7 @@ public:
         glslang::TShader::ForbidInclude includer;
         const bool success = shader.preprocess(
             &glslang::DefaultTBuiltInResource, defaultVersion, defaultProfile,
-            forceVersionProfile, isForwardCompatible, EShMsgOnlyPreprocessor,
+            forceVersionProfile, isForwardCompatible, (EShMessages)(EShMsgOnlyPreprocessor | EShMsgCascadingErrors),
             &ppShader, includer);
 
         std::string log = shader.getInfoLog();

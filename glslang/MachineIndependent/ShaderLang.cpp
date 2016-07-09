@@ -809,8 +809,8 @@ struct DoPreprocessing {
     explicit DoPreprocessing(std::string* string): outputString(string) {}
     bool operator()(TParseContextBase& parseContext, TPpContext& ppContext,
                     TInputScanner& input, bool versionWillBeError,
-                    TSymbolTable& , TIntermediate& ,
-                    EShOptimizationLevel , EShMessages )
+                    TSymbolTable&, TIntermediate&,
+                    EShOptimizationLevel, EShMessages)
     {
         // This is a list of tokens that do not require a space before or after.
         static const std::string unNeededSpaceTokens = ";()[]";

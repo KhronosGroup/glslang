@@ -48,8 +48,7 @@ TEST_P(LinkTest, FromFile)
 {
     const auto& fileNames = GetParam();
     const size_t fileCount = fileNames.size();
-    const EShMessages controls = DeriveOptions(
-            Source::GLSL, Semantics::OpenGL, Target::AST);
+    const EShMessages controls = DeriveOptions(Source::GLSL, Semantics::OpenGL, Target::AST);
     GlslangResult result;
 
     // Compile each input shader file.

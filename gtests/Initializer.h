@@ -51,7 +51,7 @@ namespace glslangtest {
 // gets fixed.
 class GlslangInitializer {
 public:
-    GlslangInitializer() : lastMessages(EShMsgDefault)
+    GlslangInitializer() : lastMessages(EShMsgCascadingErrors)
     {
         glslang::InitializeProcess();
     }

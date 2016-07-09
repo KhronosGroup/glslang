@@ -141,6 +141,7 @@ enum EShMessages {
     EShMsgVulkanRules      = (1 << 4),  // issue messages for Vulkan-requirements of GLSL for SPIR-V
     EShMsgOnlyPreprocessor = (1 << 5),  // only print out errors produced by the preprocessor
     EShMsgReadHlsl         = (1 << 6),  // use HLSL parsing rules and semantics
+    EShMsgCascadingErrors  = (1 << 7),  // get cascading errors; risks error-recovery issues, instead of an early exit
 };
 
 //

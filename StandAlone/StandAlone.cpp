@@ -58,25 +58,26 @@ extern "C" {
 
 // Command-line options
 enum TOptions {
-    EOptionNone               = 0x0000,
-    EOptionIntermediate       = 0x0001,
-    EOptionSuppressInfolog    = 0x0002,
-    EOptionMemoryLeakMode     = 0x0004,
-    EOptionRelaxedErrors      = 0x0008,
-    EOptionGiveWarnings       = 0x0010,
-    EOptionLinkProgram        = 0x0020,
-    EOptionMultiThreaded      = 0x0040,
-    EOptionDumpConfig         = 0x0080,
-    EOptionDumpReflection     = 0x0100,
-    EOptionSuppressWarnings   = 0x0200,
-    EOptionDumpVersions       = 0x0400,
-    EOptionSpv                = 0x0800,
-    EOptionHumanReadableSpv   = 0x1000,
-    EOptionVulkanRules        = 0x2000,
-    EOptionDefaultDesktop     = 0x4000,
-    EOptionOutputPreprocessed = 0x8000,
-    EOptionOutputHexadecimal  = 0x10000,
-    EOptionReadHlsl           = 0x20000,
+    EOptionNone               = 0,
+    EOptionIntermediate       = (1 <<  0),
+    EOptionSuppressInfolog    = (1 <<  1),
+    EOptionMemoryLeakMode     = (1 <<  2),
+    EOptionRelaxedErrors      = (1 <<  3),
+    EOptionGiveWarnings       = (1 <<  4),
+    EOptionLinkProgram        = (1 <<  5),
+    EOptionMultiThreaded      = (1 <<  6),
+    EOptionDumpConfig         = (1 <<  7),
+    EOptionDumpReflection     = (1 <<  8),
+    EOptionSuppressWarnings   = (1 <<  9),
+    EOptionDumpVersions       = (1 << 10),
+    EOptionSpv                = (1 << 11),
+    EOptionHumanReadableSpv   = (1 << 12),
+    EOptionVulkanRules        = (1 << 13),
+    EOptionDefaultDesktop     = (1 << 14),
+    EOptionOutputPreprocessed = (1 << 15),
+    EOptionOutputHexadecimal  = (1 << 16),
+    EOptionReadHlsl           = (1 << 17),
+    EOptionCascadingErrors    = (1 << 18),
 };
 
 //
@@ -247,6 +248,9 @@ void ProcessArguments(int argc, char* argv[])
             case 'c':
                 Options |= EOptionDumpConfig;
                 break;
+            case 'C':
+                Options |= EOptionCascadingErrors;
+                break;
             case 'd':
                 Options |= EOptionDefaultDesktop;
                 break;
@@ -347,6 +351,8 @@ void SetMessageOptions(EShMessages& messages)
         messages = (EShMessages)(messages | EShMsgOnlyPreprocessor);
     if (Options & EOptionReadHlsl)
         messages = (EShMessages)(messages | EShMsgReadHlsl);
+    if (Options & EOptionCascadingErrors)
+        messages = (EShMessages)(messages | EShMsgCascadingErrors);
 }
 
 //
@@ -772,6 +778,7 @@ void usage()
            "              errors will appear on stderr.\n"
            "  -c          configuration dump;\n"
            "              creates the default configuration file (redirect to a .conf file)\n"
+           "  -C          cascading errors; risks crashes from accumulation of error recoveries\n"
            "  -d          default to desktop (#version 110) when there is no shader #version\n"
            "              (default is ES version 100)\n"
            "  -D          input is HLSL\n"
