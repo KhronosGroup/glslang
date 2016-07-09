@@ -37,6 +37,8 @@
 #include "../Include/ResourceLimits.h"
 #include "../MachineIndependent/Versions.h"
 
+#include <string.h>
+
 #ifdef _WIN32
 #define C_DECL __cdecl
 //#ifdef SH_EXPORTING
