@@ -55,6 +55,9 @@ namespace glslang {
         bool parse();
 
     protected:
+        HlslGrammar();
+        HlslGrammar& operator=(const HlslGrammar&);
+
         void expected(const char*);
         bool acceptIdentifier(HlslToken&);
         bool acceptCompilationUnit();

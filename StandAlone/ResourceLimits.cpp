@@ -238,7 +238,8 @@ std::string GetDefaultTBuiltInResourceString()
     return ostream.str();
 }
 
-void DecodeResourceLimits(TBuiltInResource* resources, char* config) {
+void DecodeResourceLimits(TBuiltInResource* resources, char* config)
+{
     const char* delims = " \t\n\r";
     const char* token = strtok(config, delims);
     while (token) {

@@ -409,7 +409,7 @@ TIntermTyped* HlslParseContext::handleBracketDereference(const TSourceLoc& loc, 
     return result;
 }
 
-void HlslParseContext::checkIndex(const TSourceLoc& loc, const TType& type, int& index)
+void HlslParseContext::checkIndex(const TSourceLoc& /*loc*/, const TType& /*type*/, int& /*index*/)
 {
     // HLSL todo: any rules for index fixups?
 }
@@ -527,7 +527,7 @@ int HlslParseContext::getIoArrayImplicitSize() const
         return 0;
 }
 
-void HlslParseContext::checkIoArrayConsistency(const TSourceLoc& loc, int requiredSize, const char* feature, TType& type, const TString& name)
+void HlslParseContext::checkIoArrayConsistency(const TSourceLoc& /*loc*/, int requiredSize, const char* /*feature*/, TType& type, const TString& /*name*/)
 {
     if (type.isImplicitlySizedArray())
         type.changeOuterArraySize(requiredSize);
@@ -1254,15 +1254,15 @@ TIntermTyped* HlslParseContext::handleFunctionCall(const TSourceLoc& loc, TFunct
 
             if (arguments) {
                 // Make sure qualifications work for these arguments.
-                TIntermAggregate* aggregate = arguments->getAsAggregate();
-                for (int i = 0; i < fnCandidate->getParamCount(); ++i) {
-                    // At this early point there is a slight ambiguity between whether an aggregate 'arguments'
-                    // is the single argument itself or its children are the arguments.  Only one argument
-                    // means take 'arguments' itself as the one argument.
-                    TIntermNode* arg = fnCandidate->getParamCount() == 1 ? arguments : (aggregate ? aggregate->getSequence()[i] : arguments);
-                    TQualifier& formalQualifier = (*fnCandidate)[i].type->getQualifier();
-                    TQualifier& argQualifier = arg->getAsTyped()->getQualifier();
-                }
+                //TIntermAggregate* aggregate = arguments->getAsAggregate();
+                //for (int i = 0; i < fnCandidate->getParamCount(); ++i) {
+                //    // At this early point there is a slight ambiguity between whether an aggregate 'arguments'
+                //    // is the single argument itself or its children are the arguments.  Only one argument
+                //    // means take 'arguments' itself as the one argument.
+                //    TIntermNode* arg = fnCandidate->getParamCount() == 1 ? arguments : (aggregate ? aggregate->getSequence()[i] : arguments);
+                //    TQualifier& formalQualifier = (*fnCandidate)[i].type->getQualifier();
+                //    TQualifier& argQualifier = arg->getAsTyped()->getQualifier();
+                //}
 
                 // Convert 'in' arguments
                 addInputArgumentConversions(*fnCandidate, arguments);  // arguments may be modified if it's just a single argument node
@@ -1895,7 +1895,7 @@ void HlslParseContext::globalCheck(const TSourceLoc& loc, const char* token)
 }
 
 
-bool HlslParseContext::builtInName(const TString& identifier)
+bool HlslParseContext::builtInName(const TString& /*identifier*/)
 {
     return false;
 }
@@ -1907,7 +1907,8 @@ bool HlslParseContext::builtInName(const TString& identifier)
 //
 // Returns true if there was an error in construction.
 //
-bool HlslParseContext::constructorError(const TSourceLoc& loc, TIntermNode* node, TFunction& function, TOperator op, TType& type)
+bool HlslParseContext::constructorError(const TSourceLoc& loc, TIntermNode* /*node*/, TFunction& function,
+                                        TOperator op, TType& type)
 {
     type.shallowCopy(function.getType());
 
@@ -2043,7 +2044,7 @@ bool HlslParseContext::constructorError(const TSourceLoc& loc, TIntermNode* node
         return true;
     }
 
-    TIntermTyped* typed = node->getAsTyped();
+    // TIntermTyped* typed = node->getAsTyped();
 
     return false;
 }
@@ -2132,7 +2133,7 @@ void HlslParseContext::boolCheck(const TSourceLoc& loc, const TIntermTyped* type
 //
 // Fix just a full qualifier (no variables or types yet, but qualifier is complete) at global level.
 //
-void HlslParseContext::globalQualifierFix(const TSourceLoc& loc, TQualifier& qualifier)
+void HlslParseContext::globalQualifierFix(const TSourceLoc&, TQualifier& qualifier)
 {
     // move from parameter/unknown qualifiers to pipeline in/out qualifiers
     switch (qualifier.storage) {
@@ -2398,7 +2399,9 @@ void HlslParseContext::updateImplicitArraySize(const TSourceLoc& loc, TIntermNod
 //
 // Returns a redeclared and type-modified variable if a redeclared occurred.
 //
-TSymbol* HlslParseContext::redeclareBuiltinVariable(const TSourceLoc& loc, const TString& identifier, const TQualifier& qualifier, const TShaderQualifiers& publicType, bool& newDeclaration)
+TSymbol* HlslParseContext::redeclareBuiltinVariable(const TSourceLoc& /*loc*/, const TString& identifier,
+                                                    const TQualifier& /*qualifier*/,
+                                                    const TShaderQualifiers& /*publicType*/, bool& /*newDeclaration*/)
 {
     if (! builtInName(identifier) || symbolTable.atBuiltInLevel() || ! symbolTable.atGlobalLevel())
         return nullptr;
@@ -2698,7 +2701,7 @@ void HlslParseContext::setLayoutQualifier(const TSourceLoc& loc, TPublicType& pu
 void HlslParseContext::setLayoutQualifier(const TSourceLoc& loc, TPublicType& publicType, TString& id, const TIntermTyped* node)
 {
     const char* feature = "layout-id value";
-    const char* nonLiteralFeature = "non-literal layout-id value";
+    //const char* nonLiteralFeature = "non-literal layout-id value";
 
     integerCheck(node, feature);
     const TIntermConstantUnion* constUnion = node->getAsConstantUnion();
@@ -2838,7 +2841,6 @@ void HlslParseContext::setLayoutQualifier(const TSourceLoc& loc, TPublicType& pu
 
     case EShLangFragment:
         if (id == "index") {
-            const char* exts[2] = { E_GL_ARB_separate_shader_objects, E_GL_ARB_explicit_attrib_location };
             publicType.qualifier.layoutIndex = value;
             return;
         }
@@ -2953,7 +2955,7 @@ void HlslParseContext::mergeObjectLayoutQualifiers(TQualifier& dst, const TQuali
 //
 const TFunction* HlslParseContext::findFunction(const TSourceLoc& loc, const TFunction& call, bool& builtIn)
 {
-    const TFunction* function = nullptr;
+    // const TFunction* function = nullptr;
 
     if (symbolTable.isFunctionNameVariable(call.getName())) {
         error(loc, "can't use function syntax on variable", call.getName().c_str(), "");
@@ -3866,7 +3868,7 @@ void HlslParseContext::updateStandaloneQualifierDefaults(const TSourceLoc& loc, 
 {
     if (publicType.shaderQualifiers.vertices != TQualifier::layoutNotSet) {
         assert(language == EShLangTessControl || language == EShLangGeometry);
-        const char* id = (language == EShLangTessControl) ? "vertices" : "max_vertices";
+        // const char* id = (language == EShLangTessControl) ? "vertices" : "max_vertices";
 
         if (language == EShLangTessControl)
             checkIoArraysConsistency(loc);

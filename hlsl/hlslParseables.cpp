@@ -136,12 +136,14 @@ glslang::TString& AppendTypeName(glslang::TString& s, const char* argOrder, cons
     switch (*argOrder) {
     case '-': break;  // no dimensions for voids
     case 'S': break;  // no dimensions on scalars
-    case 'V': s += ('0' + dim0); break;
+    case 'V': s += ('0' + (char)dim0); break;
     case 'M': 
         {
             if (!UseHlslTypes)  // GLSL has column first for mat types
                 std::swap(dim0, dim1);
-            s += ('0' + dim0); s += 'x'; s += ('0' + dim1);
+            s += ('0' + (char)dim0);
+            s += 'x';
+            s += ('0' + (char)dim1);
             break;
         }
     }
@@ -152,7 +154,7 @@ glslang::TString& AppendTypeName(glslang::TString& s, const char* argOrder, cons
 // TODO: the GLSL parser is currently used to parse HLSL prototypes.  However, many valid HLSL prototypes
 // are not valid GLSL prototypes.  This rejects the invalid ones.  Thus, there is a single switch below
 // to enable creation of the entire HLSL space.
-inline bool IsValidGlsl(const char* cname, char retOrder, char retType, char argOrder, char argType,
+inline bool IsValidGlsl(const char* cname, char retOrder, char retType, char /*argOrder*/, char argType,
                         int dim0, int dim1, int dim0Max, int dim1Max)
 {
     const bool isVec = dim0Max > 1 || argType == 'V';
@@ -208,7 +210,7 @@ inline const char* NthArg(const char* arg, int n)
     return arg;
 }
 
-inline void FindVectorMatrixBounds(const char* argOrder, int fixedVecSize, int& dim0Min, int& dim0Max, int& dim1Min, int& dim1Max)
+inline void FindVectorMatrixBounds(const char* argOrder, int fixedVecSize, int& dim0Min, int& dim0Max, int& /*dim1Min*/, int& dim1Max)
 {
     for (int arg = 0; ; ++arg) {
         const char* nthArgOrder(NthArg(argOrder, arg));
@@ -273,7 +275,7 @@ void TBuiltInParseablesHlsl::createMatTimesMat()
 // Most built-ins variables can be added as simple text strings.  Some need to
 // be added programmatically, which is done later in IdentifyBuiltIns() below.
 //
-void TBuiltInParseablesHlsl::initialize(int version, EProfile profile, const SpvVersion& spvVersion)
+void TBuiltInParseablesHlsl::initialize(int /*version*/, EProfile /*profile*/, const SpvVersion& /*spvVersion*/)
 {
     static const EShLanguageMask EShLangAll = EShLanguageMask(EShLangCount - 1);
 
@@ -556,8 +558,8 @@ void TBuiltInParseablesHlsl::initialize(int version, EProfile profile, const Spv
 // add stage-specific entries to the commonBuiltins, and only if that stage
 // was requested.
 //
-void TBuiltInParseablesHlsl::initialize(const TBuiltInResource &resources, int version, EProfile profile,
-                                        const SpvVersion& spvVersion, EShLanguage language)
+void TBuiltInParseablesHlsl::initialize(const TBuiltInResource& /*resources*/, int /*version*/, EProfile /*profile*/,
+                                        const SpvVersion& /*spvVersion*/, EShLanguage /*language*/)
 {
 }
 
@@ -570,7 +572,7 @@ void TBuiltInParseablesHlsl::initialize(const TBuiltInResource &resources, int v
 // 3) Tag extension-related symbols added to their base version with their extensions, so
 //    that if an early version has the extension turned off, there is an error reported on use.
 //
-void TBuiltInParseablesHlsl::identifyBuiltIns(int version, EProfile profile, const SpvVersion& spvVersion, EShLanguage language,
+void TBuiltInParseablesHlsl::identifyBuiltIns(int /*version*/, EProfile /*profile*/, const SpvVersion& /*spvVersion*/, EShLanguage /*language*/,
                                               TSymbolTable& symbolTable)
 {
     // symbolTable.relateToOperator("abort",                       EOpAbort);
@@ -719,8 +721,8 @@ void TBuiltInParseablesHlsl::identifyBuiltIns(int version, EProfile profile, con
 // 2) Tag extension-related symbols added to their base version with their extensions, so
 //    that if an early version has the extension turned off, there is an error reported on use.
 //
-void TBuiltInParseablesHlsl::identifyBuiltIns(int version, EProfile profile, const SpvVersion& spvVersion, EShLanguage language,
-                                              TSymbolTable& symbolTable, const TBuiltInResource &resources)
+void TBuiltInParseablesHlsl::identifyBuiltIns(int /*version*/, EProfile /*profile*/, const SpvVersion& /*spvVersion*/, EShLanguage /*language*/,
+                                              TSymbolTable& /*symbolTable*/, const TBuiltInResource& /*resources*/)
 {
 }
 

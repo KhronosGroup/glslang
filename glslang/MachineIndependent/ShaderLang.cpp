@@ -783,6 +783,8 @@ public:
     void setLineNum(int newLineNum) { lastLine = newLineNum; }
 
 private:
+    SourceLineSynchronizer& operator=(const SourceLineSynchronizer&);
+
     // A function for getting the index of the last valid source string we've
     // read tokens from.
     const std::function<int()> getLastSourceIndex;

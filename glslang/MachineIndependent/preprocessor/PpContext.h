@@ -487,6 +487,8 @@ protected:
         }
 
     private:
+        TokenizableIncludeFile& operator=(const TokenizableIncludeFile&);
+
         // Stores the prologue for this string.
         const std::string prologue_;
 

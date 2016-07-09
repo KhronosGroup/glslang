@@ -57,6 +57,9 @@ namespace glslang {
         HlslToken token;                  // the token we are currently looking at, but have not yet accepted
 
     private:
+        HlslTokenStream();
+        HlslTokenStream& operator=(const HlslTokenStream&);
+
         HlslScanContext& scanner;         // lexical scanner, to get next token
 
         // Previously scanned tokens, returned for future advances,

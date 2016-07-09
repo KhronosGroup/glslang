@@ -307,7 +307,7 @@ public:
     // 2. Call parse with an Includer.
     //
     // When the Glslang parser encounters an #include directive, it calls
-    // the Includer's include method with the the requested include name
+    // the Includer's include method with the requested include name
     // together with the current string name.  The returned IncludeResult
     // contains the fully resolved name of the included source, together
     // with the source text that should replace the #include directive
@@ -323,8 +323,10 @@ public:
         // An IncludeResult contains the resolved name and content of a source
         // inclusion.
         struct IncludeResult {
+            IncludeResult(const std::string& file_name, const char* const file_data, const size_t file_length, void* user_data) :
+                file_name(file_name), file_data(file_data), file_length(file_length), user_data(user_data) { }
             // For a successful inclusion, the fully resolved name of the requested
-            // include.  For example, in a filesystem-based includer, full resolution
+            // include.  For example, in a file system-based includer, full resolution
             // should convert a relative path name into an absolute path name.
             // For a failed inclusion, this is an empty string.
             const std::string file_name;
@@ -337,6 +339,9 @@ public:
             const size_t file_length;
             // Include resolver's context.
             void* user_data;
+        protected:
+            IncludeResult& operator=(const IncludeResult&);
+            IncludeResult();
         };
 
         // Resolves an inclusion request by name, type, current source name,
@@ -365,11 +370,8 @@ public:
     public:
         IncludeResult* include(const char*, IncludeType, const char*, size_t) override
         {
-            static const char unexpected_include[] =
-                "unexpected include directive";
-            static const IncludeResult unexpectedIncludeResult =
-                {"", unexpected_include, sizeof(unexpected_include) - 1, nullptr};
-            return new IncludeResult(unexpectedIncludeResult);
+            const char* unexpected_include = "unexpected include directive";
+            return new IncludeResult(std::string(""), unexpected_include, strlen(unexpected_include), nullptr);
         }
         virtual void releaseInclude(IncludeResult* result) override
         {

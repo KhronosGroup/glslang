@@ -60,8 +60,8 @@ public:
     void C_DECL ppWarn(const TSourceLoc&, const char* szReason, const char* szToken,
         const char* szExtraInfoFormat, ...);
 
-    void reservedPpErrorCheck(const TSourceLoc&, const char* name, const char* op) { }
-    bool lineContinuationCheck(const TSourceLoc&, bool endOfComment) { return true; }
+    void reservedPpErrorCheck(const TSourceLoc&, const char* /*name*/, const char* /*op*/) { }
+    bool lineContinuationCheck(const TSourceLoc&, bool /*endOfComment*/) { return true; }
     bool lineDirectiveShouldSetNextLine() const { return true; }
     bool builtInName(const TString&);
 

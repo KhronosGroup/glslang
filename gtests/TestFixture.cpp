@@ -107,7 +107,7 @@ std::pair<bool, std::string> ReadFile(const std::string& path)
     if (fstream) {
         std::string contents;
         fstream.seekg(0, std::ios::end);
-        contents.reserve(fstream.tellg());
+        contents.reserve((std::string::size_type)fstream.tellg());
         fstream.seekg(0, std::ios::beg);
         contents.assign((std::istreambuf_iterator<char>(fstream)),
                         std::istreambuf_iterator<char>());
