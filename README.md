@@ -23,7 +23,7 @@ There are two components:
 How to add a feature protected by a version/extension/stage/profile:  See the
 comment in `glslang/MachineIndependent/Versions.cpp`.
 
-Things left to do:  See `Todo.txt`
+Tasks waiting to be done are documented as GitHub issues.
 
 Execution of Standalone Wrapper
 -------------------------------
