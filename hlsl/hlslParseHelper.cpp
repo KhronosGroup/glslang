@@ -1236,9 +1236,17 @@ void HlslParseContext::decomposeSampleMethods(const TSourceLoc& loc, TIntermType
     switch (op) {
     case EOpMethodSample:
         {
-            TIntermTyped* argTex   = argAggregate->getSequence()[0]->getAsTyped();
-            TIntermTyped* argSamp  = argAggregate->getSequence()[1]->getAsTyped();
-            TIntermTyped* argCoord = argAggregate->getSequence()[2]->getAsTyped();
+            TIntermTyped* argTex    = argAggregate->getSequence()[0]->getAsTyped();
+            TIntermTyped* argSamp   = argAggregate->getSequence()[1]->getAsTyped();
+            TIntermTyped* argCoord  = argAggregate->getSequence()[2]->getAsTyped();
+            TIntermTyped* argOffset = nullptr;
+
+            TOperator textureOp = EOpTexture;
+
+            if (argAggregate->getSequence().size() == 4) { // 4th parameter is offset form
+                textureOp = EOpTextureOffset;
+                argOffset = argAggregate->getSequence()[3]->getAsTyped();
+            }
 
             TIntermAggregate* txcombine = new TIntermAggregate(EOpConstructTextureSampler);
 
@@ -1249,9 +1257,11 @@ void HlslParseContext::decomposeSampleMethods(const TSourceLoc& loc, TIntermType
             txcombine->setType(TType(samplerType, EvqTemporary));
             txcombine->setLoc(loc);
 
-            TIntermAggregate* txsample = new TIntermAggregate(EOpTexture);
+            TIntermAggregate* txsample = new TIntermAggregate(textureOp);
             txsample->getSequence().push_back(txcombine);
             txsample->getSequence().push_back(argCoord);
+            if (argOffset != nullptr)
+                txsample->getSequence().push_back(argOffset);
             txsample->setType(node->getType());
             txsample->setLoc(loc);
             node = txsample;

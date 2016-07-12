@@ -51,14 +51,15 @@
 #include "hlslParseables.h"
 #include <cctype>
 #include <utility>
+#include <algorithm>
 
 namespace {  // anonymous namespace functions
 
 const bool UseHlslTypes = false;
 
-const char* BaseTypeName(const char* argOrder, const char* scalarName, const char* vecName, const char* matName)
+const char* BaseTypeName(const char argOrder, const char* scalarName, const char* vecName, const char* matName)
 {
-    switch (*argOrder) {
+    switch (argOrder) {
     case 'S': return scalarName;
     case 'V': return vecName;
     case 'M': return matName;
@@ -66,11 +67,28 @@ const char* BaseTypeName(const char* argOrder, const char* scalarName, const cha
     }
 }
 
-bool IsTextureType(const char argType)
-{
-    return argType == 'T' || argType == 'i' || argType == 'u';
-}
+bool IsTextureType(const char argOrder)  { return argOrder == '%' || argOrder == '@'; }
+bool IsTextureArrayed(const char argOrder)  { return argOrder == '@'; }
 
+// Reject certain combinations that are illegal sample methods.  For example,
+// 3D arrays.
+bool IsIllegalSample(const glslang::TString& name, const char* argOrder, int dim0)
+{
+    const bool isArrayed = IsTextureArrayed(*argOrder);
+
+    if (isArrayed && dim0 == 3)  // there are no 3D arrayed textures.
+        return true;
+
+    const int numArgs = int(std::count(argOrder, argOrder + strlen(argOrder), ',')) + 1;
+
+    // Reject invalid offset arrayed forms.
+    if (isArrayed && dim0 == 4) {
+        if (name == "Sample" && numArgs == 4)
+            return true;
+    }
+
+    return false;
+}
     
 // Create and return a type name.  This is done in GLSL, not HLSL conventions, until such
 // time as builtins are parsed using the HLSL parser.
@@ -81,43 +99,62 @@ bool IsTextureType(const char argType)
 //    dim1 = matrix 2nd dimension
 glslang::TString& AppendTypeName(glslang::TString& s, const char* argOrder, const char* argType, int dim0, int dim1)
 {
-    const bool transpose = (argOrder[0] == '^');
-    const bool matMul    = (argOrder[0] == '#');
+    const bool isTranspose = (argOrder[0] == '^');
+    const bool isMatMul    = (argOrder[0] == '#');
+    const bool isTexture   = IsTextureType(argOrder[0]);
+    const bool isArrayed   = IsTextureArrayed(argOrder[0]);
 
-    if (transpose) {  // Take transpose of matrix dimensions
+    char order = *argOrder;
+    char type  = *argType;
+
+    if (isTranspose) {  // Take transpose of matrix dimensions
+        order = *++argOrder;
         std::swap(dim0, dim1); 
-        ++argOrder;
-    } else if (matMul) {
-        dim0 = dim1;  // set vector dimension to mat col
-        ++argOrder;
+    } else if (isMatMul) {
+        order = *++argOrder;
+        dim0 = dim1;    // set vector dimension to mat col
+    } else if (isTexture) {
+        order = *++argOrder;
+        if (type == 'F')       // map base type to texture of that type.
+            type = 'T';        // e.g, int -> itexture, uint -> utexture, etc.
+        else if (type == 'I')
+            type = 'i';
+        else if (type == 'U')
+            type = 'u';
     }
 
     if (UseHlslTypes) {
-        switch (*argType) {
-        case '-': s += "void";    break;
-        case 'F': s += "float";   break;
-        case 'D': s += "double";  break;
-        case 'I': s += "int";     break;
-        case 'U': s += "uint";    break;
-        case 'B': s += "bool";    break;
-        case 'S': s += "sampler"; break;
-        case 'T': s += "Texture"; break;
-        case 'i': assert(0); // TODO: ...
-        case 'u': assert(0); // TODO: ...
-        default:  s += "UNKNOWN_TYPE"; break;
+        switch (type) {
+        case '-': s += "void";            break;
+        case 'F': s += "float";           break;
+        case 'D': s += "double";          break;
+        case 'I': s += "int";             break;
+        case 'U': s += "uint";            break;
+        case 'B': s += "bool";            break;
+        case 'S': s += "sampler";         break;
+        case 'T': s += "Texture";         break;
+        case 'i': s += "Texture <int4>";  break;
+        case 'u': s += "Texture <uint4>"; break;
+        default:  s += "UNKNOWN_TYPE";    break;
         }
     } else {
-        switch (*argType) {
+        switch (type) {
         case '-': s += "void"; break;
-        case 'F': s += BaseTypeName(argOrder, "float",   "vec",     "mat");  break;
-        case 'D': s += BaseTypeName(argOrder, "double",  "dvec",    "dmat"); break;
-        case 'I': s += BaseTypeName(argOrder, "int",     "ivec",    "imat"); break;
-        case 'U': s += BaseTypeName(argOrder, "uint",    "uvec",    "umat"); break;
-        case 'B': s += BaseTypeName(argOrder, "bool",    "bvec",    "bmat"); break;
-        case 'S': s += BaseTypeName(argOrder, "sampler", "sampler", "sampler"); break;
-        case 'T': s += BaseTypeName(argOrder, "texture", "texture", "texture"); break;
-        case 'i': s += BaseTypeName(argOrder, "itexture", "itexture", "itexture"); break;
-        case 'u': s += BaseTypeName(argOrder, "utexture", "utexture", "utexture"); break;
+        case 'F': s += BaseTypeName(order, "float",   "vec",     "mat");     break;
+        case 'D': s += BaseTypeName(order, "double",  "dvec",    "dmat");    break;
+        case 'I': s += BaseTypeName(order, "int",     "ivec",    "imat");    break;
+        case 'U': s += BaseTypeName(order, "uint",    "uvec",    "umat");    break;
+        case 'B': s += BaseTypeName(order, "bool",    "bvec",    "bmat");    break;
+        case 'S': s += "sampler";                                            break;
+        case 'T': // fall through
+        case 'i': // ...
+        case 'u': // ...
+            if (type != 'T')
+                s += type;
+
+            s += "texture";
+            break;
+
         default:  s += "UNKNOWN_TYPE"; break;
         }
     }
@@ -128,8 +165,8 @@ glslang::TString& AppendTypeName(glslang::TString& s, const char* argOrder, cons
         dim0 = dim1 = fixedVecSize;
 
     // Add sampler dimensions
-    if (*argType == 'S' || IsTextureType(*argType)) {
-        if (*argOrder == 'V') {
+    if (type == 'S' || isTexture) {
+        if (order == 'V') {
             switch (dim0) {
             case 1: s += "1D";   break;
             case 2: s += "2D";   break;
@@ -141,13 +178,13 @@ glslang::TString& AppendTypeName(glslang::TString& s, const char* argOrder, cons
     } else {
         // Non-sampler type:
         // verify dimensions
-        if (((*argOrder == 'V' || *argOrder == 'M') && (dim0 < 1 || dim0 > 4)) ||
-            (*argOrder == 'M' && (dim1 < 1 || dim1 > 4))) {
+        if (((order == 'V' || order == 'M') && (dim0 < 1 || dim0 > 4)) ||
+            (order == 'M' && (dim1 < 1 || dim1 > 4))) {
             s += "UNKNOWN_DIMENSION";
             return s;
         }
 
-        switch (*argOrder) {
+        switch (order) {
         case '-': break;  // no dimensions for voids
         case 'S': break;  // no dimensions on scalars
         case 'V': s += ('0' + (char)dim0); break;
@@ -163,19 +200,23 @@ glslang::TString& AppendTypeName(glslang::TString& s, const char* argOrder, cons
         }
     }
 
+    // handle arrayed textures
+    if (isArrayed)
+        s += "Array";
+
     return s;
 }
 
 // TODO: the GLSL parser is currently used to parse HLSL prototypes.  However, many valid HLSL prototypes
 // are not valid GLSL prototypes.  This rejects the invalid ones.  Thus, there is a single switch below
 // to enable creation of the entire HLSL space.
-inline bool IsValidGlsl(const char* cname, char retOrder, char retType, char /*argOrder*/, char argType,
+inline bool IsValidGlsl(const char* cname, char retOrder, char retType, char argOrder, char argType,
                         int dim0, int dim1, int dim0Max, int dim1Max)
 {
     const bool isVec = dim0Max > 1 || argType == 'V';
     const bool isMat = dim1Max > 1 || argType == 'M';
 
-    if (!IsTextureType(argType) &&
+    if (!IsTextureType(argOrder) &&
         ((isVec && dim0 == 1)            ||  // avoid vec1
          (isMat && dim0 == 1 && dim1 == 1)))  // avoid mat1x1
         return false;
@@ -300,13 +341,14 @@ void TBuiltInParseablesHlsl::initialize(int /*version*/, EProfile /*profile*/, c
     // orderKey can be:
     //   S = scalar, V = vector, M = matrix, - = void
     // typekey can be:
-    //   D = double, F = float, U = uint, I = int, B = bool,
-    //   S = sampler, T = texture, i = itexture, u = utexture, - = void
+    //   D = double, F = float, U = uint, I = int, B = bool, S = sampler
     // An empty order or type key repeats the first one.  E.g: SVM,, means 3 args each of SVM.
     // '>' as first letter of order creates an output parameter
     // '<' as first letter of order creates an input parameter
     // '^' as first letter of order takes transpose dimensions
     // '#' as first letter of order sets rows=cols for mats
+    // '%' as first letter of order creates texture of given F/I/U type (texture, itexture, etc)
+    // '@' as first letter of order creates arrayed texture of given type
 
     static const struct {
         const char*   name;      // intrinsic name
@@ -474,10 +516,11 @@ void TBuiltInParseablesHlsl::initialize(int /*version*/, EProfile /*profile*/, c
         { "trunc",                            nullptr, nullptr,   "SVM",        "F",      EShLangAll },
 
         // Texture object methods.  Return type can be overridden by shader declaration.
-        { "Sample",                           "V4",    "F",       "V,S,V",      "T,S,F",  EShLangFragmentMask },
-        { "Sample",                           "V4",    "I",       "V,S,V",      "i,S,F",  EShLangFragmentMask },
-        { "Sample",                           "V4",    "U",       "V,S,V",      "u,S,F",  EShLangFragmentMask },
-        // TODO: forms with texel-space offset parameter
+        // !O = no offset, O = offset, !A = no array, A = array
+        { "Sample",  /*!O !A*/                "V4",    nullptr,   "%V,S,V",     "FIU,S,F",   EShLangFragmentMask },
+        { "Sample",  /* O !A*/                "V4",    nullptr,   "%V,S,V,V",   "FIU,S,F,I", EShLangFragmentMask },
+        { "Sample",  /*!O  A*/                "V4",    nullptr,   "@V,S,V",     "FIU,S,F",   EShLangFragmentMask },
+        { "Sample",  /* O  A*/                "V4",    nullptr,   "@V,S,V,V",   "FIU,S,F,I", EShLangFragmentMask },
 
         // Mark end of list, since we want to avoid a range-based for, as some compilers don't handle it yet.
         { nullptr,                            nullptr, nullptr,   nullptr,      nullptr,  0 },
@@ -499,6 +542,8 @@ void TBuiltInParseablesHlsl::initialize(int /*version*/, EProfile /*profile*/, c
             TString& s = (intrinsic.stage == EShLangAll) ? commonBuiltins : stageBuiltins[stage];
 
             for (const char* argOrder = intrinsic.argOrder; !IsEndOfArg(argOrder); ++argOrder) { // for each order...
+                const bool isTexture   = IsTextureType(*argOrder);
+                const bool isArrayed   = IsTextureArrayed(*argOrder);
                 const int fixedVecSize = isdigit(argOrder[1]) ? (argOrder[1] - '0') : 0;
 
                 // calculate min and max vector and matrix dimensions
@@ -519,12 +564,14 @@ void TBuiltInParseablesHlsl::initialize(int /*version*/, EProfile /*profile*/, c
                                                                 dim0, dim1, dim0Max, dim1Max))
                                 continue;
 
+                            // Reject some forms of sample methods that don't exist.
+                            if (isTexture && IsIllegalSample(s, argOrder, dim0))
+                                continue;
+
                             AppendTypeName(s, retOrder, retType, dim0, dim1);  // add return type
                             s.append(" ");                                     // space between type and name
                             s.append(intrinsic.name);                          // intrinsic name
                             s.append("(");                                     // open paren
-
-                            const bool isTexture = IsTextureType(*argType);
 
                             // Append argument types, if any.
                             for (int arg = 0; ; ++arg) {
@@ -534,12 +581,16 @@ void TBuiltInParseablesHlsl::initialize(int /*version*/, EProfile /*profile*/, c
                                 if (nthArgOrder == nullptr || nthArgType == nullptr)
                                     break;
 
-                                // For textures, the 1D case isn't a 1-vector, but a scalar.
-                                if (isTexture && dim0 == 1 && arg > 0 && *nthArgOrder == 'V')
-                                    nthArgOrder = "S";
-
                                 // cube textures use vec3 coordinates
-                                const int argDim0 = isTexture && arg > 0 ? std::min(dim0, 3) : dim0;
+                                int argDim0 = isTexture && arg > 0 ? std::min(dim0, 3) : dim0;
+
+                                // arrayed textures have one extra coordinate dimension
+                                if (isArrayed && arg == 2)
+                                    argDim0++;
+
+                                // For textures, the 1D case isn't a 1-vector, but a scalar.
+                                if (isTexture && argDim0 == 1 && arg > 0 && *nthArgOrder == 'V')
+                                    nthArgOrder = "S";
 
                                 s.append(arg > 0 ? ", ": "");  // comma separator if needed
                                 
@@ -563,7 +614,7 @@ void TBuiltInParseablesHlsl::initialize(int /*version*/, EProfile /*profile*/, c
                     }
                 }
 
-                if (fixedVecSize > 0)  // skip over number for fixed size vectors
+                if (fixedVecSize > 0 || isTexture)  // skip over special characters
                     ++argOrder;
             }
             
