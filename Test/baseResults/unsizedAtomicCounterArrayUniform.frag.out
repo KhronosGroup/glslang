@@ -1,0 +1,6 @@
+unsizedAtomicCounterArrayUniform.frag
+Warning, version 420 is not yet complete; most version-specific features are present, but some are missing.
+ERROR: 0:2: '' : atomic counter arrays can not be unsized or implicitly sized. 
+ERROR: 1 compilation errors.  No code generated.
+
+

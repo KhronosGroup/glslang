@@ -4753,7 +4753,10 @@ void TParseContext::fixOffset(const TSourceLoc& loc, TSymbol& symbol)
             // Check for overlap
             int numOffsets = 4;
             if (symbol.getType().isArray())
-                numOffsets *= symbol.getType().getCumulativeArraySize();
+                if(symbol.getType().isImplicitlySizedArray())
+                    error(loc, "atomic counter arrays can not be unsized or implicitly sized.", "", "");
+                else
+                    numOffsets *= symbol.getType().getCumulativeArraySize();
             int repeated = intermediate.addUsedOffsets(qualifier.layoutBinding, offset, numOffsets);
             if (repeated >= 0)
                 error(loc, "atomic counters sharing the same offset:", "offset", "%d", repeated);
